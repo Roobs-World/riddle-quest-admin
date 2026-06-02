@@ -259,27 +259,26 @@
           <a href="./android-emulator-firebase-qa-plan.html">android-emulator-firebase-qa-plan.html</a>. This file keeps
           defects and open verification gaps visible without removing checks from the full QA plan.
         </p>
-        <p class="meta">Last updated: 2026-05-31. Workspace: <code>E:\qwordly</code>.</p>
+        <p class="meta">Last updated: 2026-06-01. Workspace: <code>E:\qwordly</code>.</p>
         <p class="meta">
-          Current workstream note: this issue register is part of the 2026-05-31 docs backlog pass. Keep the tracker
-          synchronized with the latest evidence notes and avoid parallel edits while the active docs slice is in
-          flight.
+          Current workstream note: this issue register is archived evidence for the 2026-05-31 docs backlog pass.
+          Keep the tracker synchronized with the latest evidence notes, but do not treat this file as active work.
         </p>
         <p class="meta">
-          Current ownership note: this issue register is actively owned by the current Codex thread and should not be
-          parallel-edited until the tracker refresh lands.
+          Current ownership note: this issue register is retained for evidence history only. The active docs task is
+          DSI-006 in <code>docs/legal-todo.html</code>.
         </p>
         <p class="meta">
-          2026-05-30 refresh: no new QA evidence was added in this pass. The remaining open items stay visible until
-          the next emulator or legal verification run lands.
+          2026-06-01 refresh: no new QA evidence was added in this pass. The remaining open item lives in
+          <code>docs/legal-todo.html</code>; this register is archived evidence.
         </p>
         <p class="meta">
-          Work-in-progress ownership marker: this issue register remains under the active docs pass until the tracker refresh
-          lands.
+          Work-in-progress ownership marker: this issue register is no longer active work. It remains available as an
+          evidence record only.
         </p>
         <p class="meta">
-          2026-05-30 tracker refresh: this issue register is actively owned by the current docs thread while remaining
-          QA gaps are revalidated. No new defect evidence was added in this pass.
+          2026-06-01 tracker refresh: this issue register now records archived QA evidence while the legal blocker
+          tracker remains the only active docs task.
         </p>
         <p class="meta">
           2026-05-31 source verification: focused Jest passed for the rewarded-ad service and GameScreen reward branches,
@@ -372,16 +371,17 @@
               <td data-label="Status"><span class="badge blocked">Blocked</span></td>
               <td data-label="Priority" class="priority">P2</td>
               <td data-label="Issue">
-                Live production legal page reachability is still blocked or deferred. Localhost legal routes pass, and
-                emulator evidence verifies production URL construction, but live Terms and Privacy Policy evidence shows
-                hosted 404 pages.
+                Live production legal page reachability is still blocked or deferred. Localhost legal routes pass, the
+                full 119-URL matrix now passes locally, and emulator evidence verifies production URL construction,
+                but live Terms and Privacy Policy evidence still shows hosted 404 pages.
               </td>
               <td data-label="Evidence">
                 <code>72-continue-privacy-link-after-chrome-prompt.png</code>
                 showed <code>roobsworld.com/riddle-quest/en/privacy-policy</code> returning
                 <code>Not found | Roobs World</code>. Sign Up replay added <code>173-signup-terms-link-open.png</code>,
                 <code>176-signup-privacy-link-after-load.png</code>, and matching logcat with captured production URLs.
-                Localhost 119-route matrix and the LAN <code>localhost:3000</code> server checks pass. A fresh
+                Localhost 119-route matrix and the LAN <code>localhost:3000</code> server checks pass. On 2026-06-01,
+                the full local 119-URL matrix passed again. A fresh
                 production matrix on 2026-05-25 still returned <code>404</code> for all <code>119 / 119</code>
                 required URLs; evidence is in
                 <code>emulator-tests/logs/live-roobsworld-legal-matrix-20260525-154524.txt</code>, <code>.csv</code>,

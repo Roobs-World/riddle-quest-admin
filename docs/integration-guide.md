@@ -6,12 +6,11 @@ This guide explains how to integrate your high-quality 3D planet textures into t
 
 ## Current Workstream Note
 
-This guide is part of the current docs backlog pass. Keep the next-step list explicit about ownership and the remaining asset-import work so later agents can continue without re-deriving the plan.
+This guide is now retained as archived implementation evidence for the textured planet/ring integration. The source change is complete, the focused solar Jest coverage passed, and the root TypeScript check stayed clean. Keep the notes below as reference so future agents can understand the asset mapping and the chosen implementation pattern without reopening the slice.
 
-2026-05-30 refresh: the asset-import next steps remain open, but ownership is already explicit in the checklist. No texture import or rendering changes were made in this pass.
-2026-05-30 implementation follow-up: the existing `assets/3d` PNG catalog is now used directly by `src/components/background/SolarSystemConfig.ts`, and `src/components/background/SolarSystem3D.tsx` renders textured rings for configured planets with cached Three.js ring geometry/materials. Focused solar Jest coverage and root TypeScript passed after the change.
-Current ownership note: this guide is actively worked by the current docs thread and remains open for coordination until the tracker refresh lands.
-Reviewed in the 2026-05-30 docs backlog pass; the blocker notes and Next Steps ownership remain documented below.
+2026-06-02 archival refresh: the existing `assets/3d` PNG catalog is used directly by `src/components/background/SolarSystemConfig.ts`, and `src/components/background/SolarSystem3D.tsx` renders textured rings for configured planets with cached Three.js ring geometry/materials. Focused solar Jest coverage and root TypeScript passed after the change.
+Current ownership note: this guide is retained for reference rather than active work. No task lock is applied in this single-agent workspace.
+Reviewed in the 2026-06-02 docs pass; the blocker notes and reference implementation details remain documented below.
 
 ## Asset Analysis
 

@@ -1,6 +1,6 @@
 # Google Play Data Safety Draft
 
-Last updated: 2026-05-23
+Last updated: 2026-06-02
 
 Use this draft to complete Play Console Data Safety disclosures. Confirm with the final production build and legal reviewer before submission.
 
@@ -27,3 +27,7 @@ Data may be processed by Firebase/Google services, Sentry, OpenAI for server-sid
 ## Review Before Release
 
 Confirm the final production build's SDK list and backend processing before submission. Update the Play Console form if ad personalization, analytics settings, social login, crash reporting, or messaging behavior changes.
+
+## Console Entry Status
+
+This draft is ready for Play Console entry once access is available. The answers should match the current production build, the shared legal metadata, the no-tracking release decision, and the final SDK list before submission. The source-side privacy posture remains verified as of 2026-06-02, but console submission is still external.

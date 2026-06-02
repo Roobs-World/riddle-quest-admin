@@ -27,6 +27,8 @@ Last measured: 2026-05-30
 
 ## Still Pending
 
+These are long-horizon profiling targets, not active blocker items for the current docs pass.
+
 - Memory snapshot around scene preload and modal-heavy flows
 - Render jank on hot game and modal transition paths
 - JS frame rate on gameplay screen

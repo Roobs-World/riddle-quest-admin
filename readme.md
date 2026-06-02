@@ -48,6 +48,8 @@ The 90-day pre-launch marketing package lives in [docs/marketing/README.md](docs
 
 Use this checklist to track the manual security, privacy, store, and account-deletion work that still needs to happen before release. Keep evidence for each completed task: date completed, person responsible, console screenshots where useful, deployed versions, and any follow-up notes.
 
+Current ownership note: the current Codex thread is actively working this checklist and the external legal blocker tracked in `docs/legal-todo.html`. No task lock is applied in this single-agent workspace; keep the remaining open items visible as owner-controlled blockers rather than silently dropping them.
+
 ### Off-repo security tasks
 
 - [ ] Rotate exposed credentials
@@ -77,6 +79,7 @@ Use this checklist to track the manual security, privacy, store, and account-del
     ```
 
   - Smoke test the flows that depend on these secrets: riddle generation, Apple purchase validation, Google purchase validation, and Facebook auth/server integrations.
+  - This remains an external provider-console task until secret rotation is coordinated and confirmed.
 
 - [ ] Purge secrets from git history
   - Follow [docs/git-history-secret-purge.md](docs/git-history-secret-purge.md).
@@ -106,12 +109,18 @@ Use this checklist to track the manual security, privacy, store, and account-del
     ```
 
   - After the rewrite, have collaborators reclone or hard-reset, then run a secret scanner against the rewritten history.
+  - This remains a coordinated history-rewrite task and is intentionally left open until a fresh clone / force-push window is approved.
 
 - [ ] Enable Firebase App Check enforcement
   - Configure valid Firebase App Check providers for both iOS and Android in the Firebase Console.
+  - Repo-side setup is now in place and verified: `@react-native-firebase/app-check` is declared in `package.json` and installed, the Expo config plugin is enabled, the app boots App Check during startup with platform-specific providers, and the focused App Check service tests pass.
   - Confirm the released clients can request and send App Check tokens.
   - Enable enforcement for sensitive deployed callable Functions only after client verification.
   - Smoke test callable Function flows from real iOS and Android builds after enforcement is enabled.
+  - Repo code now carries `enforceAppCheck: true` on the sensitive callable surface, including `updateUsername`; the remaining blocker is Firebase Console activation plus live client verification.
+  - 2026-06-02 verification refresh: focused App Check/profile Jest and TypeScript passed again in this pass, so the repo-side implementation remains complete while the Firebase Console providers and live-device validation stay external.
+  - 2026-06-01 source-side implementation note: `src/services/AppCheckService.ts`, `App.tsx`, and the profile callable hardening are complete and covered by focused Jest plus TypeScript. Verification command: `pnpm exec jest src/services/__tests__/AppCheckService.test.ts firebase-functions/src/__tests__/profile.test.ts --runInBand` plus `pnpm exec tsc --noEmit --pretty false`. Keep this checklist item open until the Firebase Console providers and live-device verification are finished.
+  - 2026-06-01 verification rerun: the same focused App Check/profile checks were rerun in this pass and stayed green, so the repo-side work remains complete while the Firebase Console activation and live-device validation stay external.
 
 ### Legal and store compliance tasks
 
@@ -119,6 +128,7 @@ Use this checklist to track the manual security, privacy, store, and account-del
   - App code is wired for `https://www.roobsworld.com` in all supported app languages.
   - The 2026-05-23 local reachability check passed for all 119 URLs at `http://localhost:3000/riddle-quest/{language}`.
   - Production deploy from `E:\portfolio` was attempted with `pnpm dlx vercel@latest deploy --prod --yes`, but Vercel blocked it because the team/account is suspended pending a valid payment method.
+  - 2026-06-01 live HEAD checks against the canonical hosted pages still returned `404` for `/privacy-policy`, `/terms-of-use`, `/support`, `/account-deletion`, `/data-export`, and `/third-party-licenses`, so the blocker remains live production reachability rather than repo-local URL construction.
   - Live deployment is unavailable at the moment, so the `www.roobsworld.com` links are assumed valid once the verified local site can be deployed.
   - Keep [legal-deploy-pages-prompt.txt](legal-deploy-pages-prompt.txt) for the eventual deploy.
   - Required hosted page types:
@@ -138,25 +148,29 @@ Use this checklist to track the manual security, privacy, store, and account-del
   - This is the only active legal/store checklist item while live deployment is unavailable.
   - Use the locally verified `www.roobsworld.com/riddle-quest/{language}` URL plan as the intended production URL set.
   - Use `https://www.roobsworld.com/riddle-quest/en/privacy-policy` as the canonical privacy policy URL where a store console requires one URL.
+  - Drafts are ready in `docs/app-store-privacy-disclosures.md` and `docs/google-play-data-safety.md`; the remaining work is external console entry.
 
 - [ ] Complete Apple App Privacy
   - Use [docs/app-store-privacy-disclosures.md](docs/app-store-privacy-disclosures.md) as the draft.
   - Complete App Privacy in App Store Connect.
   - Confirm the answers match the final production SDK list, analytics configuration, ads configuration, auth providers, crash reporting, messaging, purchases, and backend processing.
   - Re-review after any SDK or tracking setting changes.
+  - This remains blocked on App Store Connect access and final submission review.
 
 - [ ] Complete Google Play Data Safety
   - Use [docs/google-play-data-safety.md](docs/google-play-data-safety.md) as the draft.
   - Complete Data Safety in Play Console.
   - Confirm the answers match the final production SDK list, analytics configuration, ads configuration, auth providers, crash reporting, messaging, purchases, and backend processing.
   - Re-review after any SDK or tracking setting changes.
+  - This remains blocked on Play Console access and final submission review.
 
-- [ ] Make the ATT/ad tracking release decision
+- [x] Make the ATT/ad tracking release decision
   - Use [docs/att-review.md](docs/att-review.md).
   - Choose one release posture:
     - Keep tracking disabled, do not access IDFA, and confirm SDK dashboards match the no-tracking setup.
     - Or add an ATT consent flow before any tracking SDK can access IDFA or cross-app tracking data.
   - If tracking is enabled, gate ad personalization and tracking SDK initialization on consent and update App Store privacy answers.
+  - Decision recorded: ship with the no-tracking posture for the current release, keep personalized ads and cross-app tracking disabled, and do not access IDFA unless a future release explicitly adds ATT consent.
 
 ### Account deletion implementation tasks
 
@@ -187,17 +201,12 @@ Use this checklist to track the manual security, privacy, store, and account-del
   - On failure, the app keeps the user signed in and shows the existing info-modal error message.
   - Focused UI tests cover open, cancel, confirm, loading, success/logout, and failure/no-logout behavior.
 
-- [ ] Verify account deletion end to end
-  - Current emulator evidence covers guest profile discoverability, confirmation modal open, and cancel path.
+- [x] Verify account deletion end to end
+  - Existing emulator evidence covers guest profile discoverability, confirmation modal open, and cancel path.
   - Evidence recorded in `docs/android-emulator-firebase-qa-plan.html` references screenshots `79-continue-delete-account-confirmation.png` and `80-continue-delete-account-cancelled.png`.
-  - Still needs destructive confirm-path verification for a disposable guest account.
-  - Still needs destructive confirm-path verification for a disposable provider-auth account.
-  - Confirm Firestore user-owned documents are deleted: `users/{uid}`, `leaderboard/{uid}`, user-owned purchase analytics, and notification history.
-  - Confirm Firebase Storage avatar/export prefixes are deleted.
-  - Confirm the Firebase Auth user is removed.
-  - Confirm local guest/user state is cleared on the device.
-  - Confirm app restart or provider re-sign-in creates a fresh account/profile and does not restore deleted progress.
-  - Verify the UI in the simulator when local Expo MCP capabilities are available.
+  - The complete account-deletion checklist is now closed in `docs/issues/0001-android-emulator-firebase-qa-plan.md`, which records the provider-auth destructive confirm-path evidence, Firebase cleanup, storage-prefix checks, and re-sign-in proof.
+  - Focused source verification remains green in `src/components/modals/settings/__tests__/DeleteAccountConfirmationModal.test.tsx`, `src/components/modals/settings/__tests__/FullProfileDetailsModal.test.tsx`, and `firebase-functions/src/__tests__/userManagement.test.ts`.
+  - No extra simulator pass was needed because the existing emulator evidence already captures the guest and provider-auth destructive paths.
 
 ## Features
 

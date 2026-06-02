@@ -159,13 +159,25 @@
         and app-store/legal disclosure readiness.
       </p>
       <p class="meta">
-        Last updated: 2026-06-01. Status: app links are wired and local legal/support page evidence exists; live
+        Last updated: 2026-06-02. Status: app links are wired and local legal/support page evidence exists; the
+        source legal pages in <code>E:\portfolio</code> passed <code>pnpm check</code>, <code>pnpm test</code>,
+        <code>pnpm build</code>, and the full 119-URL localhost matrix; live
         <code>www.roobsworld.com</code> legal/support routes remain blocked by production deployment/reachability, and
         the production dependency audit is clean. Vercel project access currently returns <code>403 Forbidden</code>
         and requires re-authentication to the <code>craig-beswethericks-projects</code> scope before deployment can
         continue. The connected Vercel MCP account currently exposes zero accessible teams, so there is no alternate
         project path from this workspace. Source-side legal metadata is now wired to the registered company name,
         public office address, and repo contact email.
+      </p>
+      <p class="note">
+        2026-06-02 current pass: no new legal or security evidence was added in this run. DSI-006 remains the only
+        active blocker, and the ownership marker stays in place while external Vercel access is unresolved.
+      </p>
+      <p class="note">
+        2026-06-01 live legal recheck: HEAD requests against the canonical hosted legal URLs still returned
+        <code>404</code> for the privacy, terms, support, account-deletion, data-export, and third-party-license
+        pages. That keeps the blocker in live deployment/reachability territory rather than repo-local path
+        construction work.
       </p>
       <p class="note">
         2026-06-01 Vercel MCP recheck: the linked project metadata in <code>E:\portfolio\.vercel\project.json</code>
@@ -175,6 +187,15 @@
         blocker squarely in external Vercel auth/billing territory.
       </p>
       <p class="note">
+        2026-06-01 Vercel MCP account check: <code>list_teams</code> returned zero teams, so there is no alternate
+        workspace-owned deployment path available from this session. The legal blocker remains external to the repo.
+      </p>
+      <p class="note">
+        2026-06-01 live recheck: the current Vercel MCP account still exposes zero teams, so there is no fresh
+        deployment route to try from this workspace. DSI-006 remains the only active docs task, and it stays marked
+        in progress until live production reachability changes.
+      </p>
+      <p class="note">
         2026-06-01 Cloudflare path check: the repo’s production workflow already targets Cloudflare Pages in
         <code>.github/workflows/deploy.yml</code>, but there are still no local <code>CF_*</code> or
         <code>VERCEL_*</code> credentials and no cached wrangler session available from this workspace, so there is
@@ -182,16 +203,26 @@
       </p>
       <p class="note">
         Current workstream note: this page is part of the 2026-06-01 DSI-006 blocker pass. Keep the legal and security
-        blocker visible, coordinate before parallel edits while the tracker refresh is in progress, and only close the
-        remaining item when fresh deployment or evidence proves the routes are actually live.
+        blocker visible, and only close the remaining item when fresh deployment or evidence proves the routes are
+        actually live. This is an active ownership marker only; no task lock is applied in this single-agent
+        workspace.
       </p>
       <p class="note">
         Current ownership note: this release checklist is actively worked by the current Codex thread and remains open
-        for coordination until the DSI-006 blocker is resolved.
+        only as an ownership marker until the DSI-006 blocker is resolved.
       </p>
       <p class="note">
-        2026-05-30 refresh: no new legal or security evidence was added in this pass. The remaining release blockers
-        stay open until the production routes, disclosures, and dependency evidence are rechecked.
+        2026-06-01 current pass: the docs task surface was rechecked and no unchecked checklist items remain in
+        <code>docs/</code>. The generated task index stays current, and DSI-006 remains the only blocked item.
+      </p>
+      <p class="note">
+        2026-06-01 recheck: no new legal or security evidence was added in this pass. The remaining release blocker
+        stays open until the production routes, disclosures, and dependency evidence are rechecked.
+      </p>
+      <p class="note">
+        2026-06-01 browser verification: the local portfolio app at
+        <code>http://192.168.1.234:3000</code> renders the Riddle Quest legal index plus the privacy, terms,
+        support, and account-deletion pages with the shared legal values wired in.
       </p>
       <p class="note">
         Work-in-progress ownership marker: this release checklist remains under the active DSI-006 blocker pass until
@@ -352,8 +383,8 @@
               <input type="checkbox" checked />
               <span
                 >Defer live 119-URL matrix pass criteria until deployment is repaired; the latest production matrix
-                evidence from 2026-05-25 returned 404 for all 119 required routes while local route evidence remains the
-                current acceptance evidence.</span
+                evidence from 2026-05-25 returned 404 for all 119 required routes, while the full local 119-URL matrix
+                passed on 2026-06-01 and remains the current acceptance evidence.</span
               >
             </li>
             <li>

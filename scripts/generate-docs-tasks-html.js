@@ -91,7 +91,8 @@ const getTitle = (content, extension, fallback) => {
     if (h1) return stripHtml(h1[1]);
   }
 
-  const heading = content.match(/^#\s+(.+)$/m);
+  const markdown = content.replace(/```[\s\S]*?```/g, "\n");
+  const heading = markdown.match(/^#{1,6}\s+(.+)$/m);
   return heading ? stripMarkdown(heading[1]) : fallback;
 };
 
@@ -243,7 +244,10 @@ const parseHtmlIssueRows = (content, relPath, title, lineStarts) => {
 };
 
 const collectTasks = () => {
-  const sources = walk(docsRoot)
+  const sources = [
+    ...walk(docsRoot),
+    path.join(workspaceRoot, "readme.md"),
+  ]
     .filter((file) => sourceExtensions.has(path.extname(file).toLowerCase()))
     .filter((file) => path.resolve(file) !== outputPath)
     .sort((a, b) => a.localeCompare(b));
@@ -298,8 +302,11 @@ const renderHtml = (tasks) => {
     acc.get(task.source).push(task);
     return acc;
   }, new Map());
-  const generatedAt = new Date().toISOString().slice(0, 10);
+  const generatedAt = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/London",
+  }).format(new Date());
   const activeWorkFiles = [
+    "readme.md",
     "docs/legal-todo.html",
     "docs/memory-bank/activeContext.md",
     "docs/memory-bank/progress.md",
@@ -617,12 +624,17 @@ const renderHtml = (tasks) => {
         <h1>Docs Task List</h1>
         <p class="lede">
           Consolidated task inventory generated from markdown checklists, HTML checklists, issue-register next actions,
-          and other structured task rows in the docs folder.
+          and the root release-readiness checklist in <code>readme.md</code>.
         </p>
         <p class="meta">
           <strong>Work-in-progress ownership marker:</strong> current docs backlog pass is actively updating the DSI-006
-          blocker notes and generated task index. Coordinate before parallel edits to the files listed in
-          <code>docs/memory-bank/activeContext.md</code> so progress notes stay consistent.
+          blocker notes and generated task index. This is an active owner marker for a single-agent workspace, so no
+          lock is applied; treat the files listed in <code>docs/memory-bank/activeContext.md</code> as in progress
+          while this pass is running.
+        </p>
+        <p class="meta">
+          2026-06-01 Vercel MCP recheck: <code>list_teams</code> returned zero teams, so DSI-006 is still externally
+          blocked and this thread remains the active owner of the remaining docs slice.
         </p>
         <p class="meta">
           Active work files:

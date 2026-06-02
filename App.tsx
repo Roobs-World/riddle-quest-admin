@@ -48,6 +48,7 @@ import {
 } from "./src/constants/AppStrings";
 import {isSharedAnimationBackendEnabled, isSharedAnimationBackendFlagRequested} from "./src/config/featureFlags";
 import {SOUND_ENABLED_STORAGE_KEY, readBooleanSetting} from "./src/utils/settingsStorage";
+import {initializeFirebaseAppCheck} from "./src/services/AppCheckService";
 
 const SOLAR_PRELOAD_TIMEOUT_MS = 60000;
 
@@ -105,6 +106,13 @@ const initializeFacebookSdkInBackground = async (): Promise<void> => {
   Settings.initializeSDK();
 };
 
+const initializeFirebaseAppCheckInBackground = async (): Promise<void> => {
+  const debugToken = Constants.expoConfig?.extra?.FIREBASE_APP_CHECK_DEBUG_TOKEN;
+  await initializeFirebaseAppCheck({
+    debugToken: typeof debugToken === "string" && debugToken.length > 0 ? debugToken : undefined,
+  });
+};
+
 /**
  * Main application component that initializes all services and provides the core app structure.
  *
@@ -132,6 +140,7 @@ export default Sentry.wrap(function App() {
 
     void (async () => {
       const tasks = [
+        initializeFirebaseAppCheckInBackground(),
         initializeSoundInBackground(),
         withTimeout(SolarSystemPreloader.preloadSolarSystem(), SOLAR_PRELOAD_TIMEOUT_MS),
         preloadShopCatalog(),

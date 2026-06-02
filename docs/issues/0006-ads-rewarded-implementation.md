@@ -5,6 +5,7 @@ Source: [docs/google-admob-rewarded-ads-implementation.md](docs/google-admob-rew
 Workstream status: complete for the 2026-06-01 tracker slice. The live provider-auth and guest replay evidence is now captured, and this guide is retained as archived evidence for the rewarded-ad rollout.
 
 - Current ownership note: this issue doc is retained for reference; the rewarded-ad replay item is no longer active work.
+- Historical note: the open-work references below are retained as archived evidence only and should not be treated as live tasks.
 - 2026-06-01 closure capture: the guest replay now emits `Rewarded ad guest reward applied locally` in `adb logcat`, and the on-device result is the `Coins Added!` modal with `+50 Coins` and `Total Coins: 350`. Provider-auth proof is already documented in the companion trackers, so the rewarded-ad replay evidence is now complete.
 - 2026-06-01 emulator recovery attempt: the Expo dev-client bundler was restarted in android-emulator mode on port 8081, but it is still rebuilding and has not produced a usable `/status` response yet. The reward replay note is now superseded by the later successful guest capture.
 - 2026-05-30 refresh: the ad work remains blocked on live replay evidence. The local environment has now been provisioned with production-like Google Mobile Ads IDs, but no new rewarded-ad callback or no-fill evidence was collected in this pass.

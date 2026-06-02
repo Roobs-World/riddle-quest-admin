@@ -116,3 +116,118 @@ Android Bundled 25080ms index.ts (2891 modules)
  LOG  Current daily riddle fetched and validated successfully: {"answer": "venus", "category": "daily", "dailyIndex": 49, "riddleId": "current", "text": "I spin backward and outheat my neighbors under a cloudy veil.", "timestamp": {"nanoseconds": 607000000, "seconds": 1780185623, "type": "firestore/timestamp/1.0"}}
  LOG  🧭 Navigation rendering - isAuthenticated: true isLoading: false timestamp: 2026-06-01T10:04:52.507Z
  LOG  🎯 Showing navigation stack - initialRoute: GAME timestamp: 2026-06-01T10:04:52.508Z
+ LOG  Firebase auth state changed. User: uzP9l7kPQ5h7svoQCer089yBYw12
+ LOG  User authenticated, loading user data...
+ LOG  Anonymous guest user detected, creating in-memory player data
+ LOG  Riddle initialization already in progress or completed, skipping...
+ LOG  [Analytics] Initialized for user uzP9l7kPQ5h7svoQCer089yBYw12
+ LOG  🧭 Navigation rendering - isAuthenticated: true isLoading: false timestamp: 2026-06-01T10:59:52.424Z
+ LOG  🎯 Showing navigation stack - initialRoute: GAME timestamp: 2026-06-01T10:59:52.432Z
+ LOG  Fetching current daily riddle from Firestore dailyRiddles/current (client index hint: 0)
+ LOG  Current daily riddle fetched and validated successfully: {"answer": "venus", "category": "daily", "dailyIndex": 49, "riddleId": "current", "text": "I spin backward and outheat my neighbors under a cloudy veil.", "timestamp": {"nanoseconds": 607000000, "seconds": 1780185623, "type": "firestore/timestamp/1.0"}}
+ LOG  🧭 Navigation rendering - isAuthenticated: true isLoading: false timestamp: 2026-06-01T10:59:53.288Z
+ LOG  🎯 Showing navigation stack - initialRoute: GAME timestamp: 2026-06-01T10:59:53.291Z
+ LOG  SoundManager: App state changed active to background
+ LOG  SoundManager: App state changed background to active
+ WARN  THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+ LOG  WideButton pressed: Save
+ LOG  onPress type: function
+ LOG  Save onPress handler executed successfully
+ LOG  SoundManager: App state changed active to background
+ LOG  SoundManager: App state changed background to active
+ WARN  THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+ WARN  InteractionManager has been deprecated and will be removed in a future release. Please refactor long tasks into smaller ones, and  use 'requestIdleCallback' instead.
+ LOG  SoundManager: App state changed active to background
+ WARN  This method is deprecated (as well as all React Native Firebase namespaced API) and will be removed in the next major release as part of move to match Firebase Web modular SDK API. Please see migration guide for more details: https://rnfirebase.io/migrating-to-v22. Method called was `linkWithCredential`. Please use `linkWithCredential()` instead.
+ LOG  SoundManager: App state changed background to active
+ ERROR  Error linking anonymous account with Google: [Error: [auth/credential-already-in-use] This credential is already associated with a different user account.]
+ ERROR  Upgrade account (Google) error: [Error: [auth/credential-already-in-use] This credential is already associated with a different user account.]
+ LOG  Firebase auth state changed. User: null
+ LOG  User signed out, clearing data
+ LOG  User signed out successfully.
+ LOG  Firebase auth state changed. User: null
+ LOG  User signed out, clearing data
+ LOG  Firebase auth state changed. User: null
+ LOG  User signed out, clearing data
+ LOG  Cleared all local app data.
+ LOG  Setting isLoading to false
+ LOG  Auth state processing completed
+ LOG  Cleared local data after auth transition (logout).
+ LOG  Cleared all local app data.
+ LOG  Setting isLoading to false
+ LOG  Auth state processing completed
+ LOG  Cleared all local app data.
+ LOG  Setting isLoading to false
+ LOG  Auth state processing completed
+ LOG  [Analytics] Reset
+ LOG  [Analytics] Reset
+ LOG  [Analytics] Reset
+ LOG  SoundManager: App state changed active to background
+ LOG  SoundManager: App state changed background to active
+ WARN  THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+ LOG  SoundManager: App state changed active to background
+ LOG  SoundManager: App state changed background to active
+ WARN  THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+ LOG  SoundManager: App state changed active to background
+ LOG  SoundManager: App state changed background to active
+ WARN  THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+ LOG  SoundManager: App state changed active to background
+ WARN  This method is deprecated (as well as all React Native Firebase namespaced API) and will be removed in the next major release as part of move to match Firebase Web modular SDK API. Please see migration guide for more details: https://rnfirebase.io/migrating-to-v22. Method called was `signInWithCredential`. Please use `signInWithCredential()` instead.
+ LOG  SoundManager: App state changed background to active
+ LOG  Firebase auth state changed. User: Lnq5dCdR0RVZVSiL0U1vIfb2pui2
+ LOG  User authenticated, loading user data...
+ LOG  Checking riddle database & loading user data in parallel...
+ LOG  Riddle initialization already in progress or completed, skipping...
+ LOG  Firebase auth state changed. User: Lnq5dCdR0RVZVSiL0U1vIfb2pui2
+ LOG  Skipping duplicate immediate auth event for user: Lnq5dCdR0RVZVSiL0U1vIfb2pui2
+ LOG  Firebase auth state changed. User: Lnq5dCdR0RVZVSiL0U1vIfb2pui2
+ LOG  Skipping duplicate immediate auth event for user: Lnq5dCdR0RVZVSiL0U1vIfb2pui2
+ LOG  ✅ Google authentication successful: {"displayName": "craig beswetherick", "email": null, "uid": "Lnq5dCdR0RVZVSiL0U1vIfb2pui2"}
+ LOG  [Analytics] Initialized for user Lnq5dCdR0RVZVSiL0U1vIfb2pui2
+ LOG  Cleared local data after auth transition (google-signin).
+ WARN  This method is deprecated (as well as all React Native Firebase namespaced API) and will be removed in the next major release as part of move to match Firebase Web modular SDK API. Please see migration guide for more details: https://rnfirebase.io/migrating-to-v22. Method called was `toJSON`
+ WARN  This method is deprecated (as well as all React Native Firebase namespaced API) and will be removed in the next major release as part of move to match Firebase Web modular SDK API. Please see migration guide for more details: https://rnfirebase.io/migrating-to-v22. Method called was `toJSON`
+ LOG  Google login success: {"additionalUserInfo": {"isNewUser": false, "profile": {"aud": "26666910831-20c5akqranakimukl895h7bpdc9pf5c5.apps.googleusercontent.com", "azp": "26666910831-9ack625lppchph6tiak6p8kpqheiocdj.apps.googleusercontent.com", "email": "craigbeswetherick@gmail.com", "email_verified": true, "exp": 1780317568, "family_name": "beswetherick", "given_name": "craig", "iat": 1780313968, "iss": "https://accounts.google.com", "name": "craig beswetherick", "picture": "https://lh3.googleusercontent.com/a/ACg8ocIf_UEoybKokziVqV-sNoLSBpTs7X1vbjoY4yBKWYOhN71t7N02=s96-c", "sub": "108129154580451512493"}, "providerId": "google.com"}, "user": {"displayName": "craig beswetherick", "email": null, "emailVerified": false, "isAnonymous": false, "metadata": [Object], "multiFactor": [Object], "phoneNumber": null, "photoURL": "https://lh3.googleusercontent.com/a/ACg8ocIf_UEoybKokziVqV-sNoLSBpTs7X1vbjoY4yBKWYOhN71t7N02=s96-c", "providerData": [Array], "providerId": "firebase", "tenantId": null, "uid": "Lnq5dCdR0RVZVSiL0U1vIfb2pui2"}}
+ LOG  Player data validated successfully.
+ LOG  Checking for existing user document...
+ LOG  Existing user document found
+ LOG  User data loaded successfully: true
+ LOG  User document updated successfully for user: Lnq5dCdR0RVZVSiL0U1vIfb2pui2
+ WARN  Unable to resolve daily completion from Firebase function for provider-auth user. Defaulting to not completed. [Error: Unauthenticated]
+ LOG  Loading riddle for initial game mode: daily
+ LOG  Fetching current daily riddle from Firestore dailyRiddles/current (client index hint: 4)
+ LOG  Current daily riddle fetched and validated successfully: {"answer": "venus", "category": "daily", "dailyIndex": 49, "riddleId": "current", "text": "I spin backward and outheat my neighbors under a cloudy veil.", "timestamp": {"nanoseconds": 607000000, "seconds": 1780185623, "type": "firestore/timestamp/1.0"}}
+ LOG  Riddle loading completed
+ LOG  Setting isLoading to false - initialization complete
+ LOG  Auth state processing completed
+ LOG  SoundManager: App state changed active to background
+ LOG  SoundManager: App state changed background to active
+ WARN  THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+ LOG  WideButton pressed: Save
+ LOG  onPress type: function
+ LOG  Save onPress handler executed successfully
+ LOG  WideButton pressed: Save
+ LOG  onPress type: function
+ LOG  Save onPress handler executed successfully
+ LOG  WideButton pressed: Save
+ LOG  onPress type: function
+ LOG  User document updated successfully for user: Lnq5dCdR0RVZVSiL0U1vIfb2pui2
+ LOG  AuthContext: Player data updated locally and in Firestore.
+ LOG  Save onPress handler executed successfully
+ LOG  Firebase auth state changed. User: Lnq5dCdR0RVZVSiL0U1vIfb2pui2
+ LOG  User authenticated, loading user data...
+ LOG  Checking riddle database & loading user data in parallel...
+ LOG  Riddle initialization already in progress or completed, skipping...
+ LOG  [Analytics] Initialized for user Lnq5dCdR0RVZVSiL0U1vIfb2pui2
+ LOG  Player data validated successfully.
+ LOG  Checking for existing user document...
+ LOG  Existing user document found
+ LOG  User data loaded successfully: true
+ LOG  User document updated successfully for user: Lnq5dCdR0RVZVSiL0U1vIfb2pui2
+ WARN  Unable to resolve daily completion from Firebase function for provider-auth user. Defaulting to not completed. [Error: Unauthenticated]
+ LOG  Loading riddle for initial game mode: daily
+ LOG  Fetching current daily riddle from Firestore dailyRiddles/current (client index hint: 4)
+ LOG  Current daily riddle fetched and validated successfully: {"answer": "venus", "category": "daily", "dailyIndex": 49, "riddleId": "current", "text": "I spin backward and outheat my neighbors under a cloudy veil.", "timestamp": {"nanoseconds": 607000000, "seconds": 1780185623, "type": "firestore/timestamp/1.0"}}
+ LOG  Riddle loading completed
+ LOG  Setting isLoading to false - initialization complete
+ LOG  Auth state processing completed

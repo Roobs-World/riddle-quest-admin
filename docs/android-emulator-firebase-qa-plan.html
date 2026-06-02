@@ -882,7 +882,7 @@
         <h3>Run Metadata</h3>
         <ul>
           <li>Date started: 2026-05-23</li>
-          <li>Latest handoff update: 2026-05-30</li>
+          <li>Latest handoff update: 2026-06-01</li>
           <li>Tester/agent: Codex</li>
           <li>Workspace: <code>E:\qwordly</code></li>
           <li>Firebase project: <code>qwordly-6ba44</code></li>
@@ -890,6 +890,11 @@
             Mode: Emulator setup, guest/dev-client UI slice, settings/profile/legal/hint/shop guest evidence, Google
             provider-auth UI evidence, legal source checks, and open TODO tracking. Live provider-auth Firebase
             UID/snapshot verification remains TODO.
+          </li>
+          <li>
+            2026-06-01 archive note: the provider-auth/billing replay checklist in this tracker is now complete and
+            retained as evidence history. The only active docs task left in the repo is the legal blocker tracked in
+            <code>docs/legal-todo.html</code>.
           </li>
           <li>
             2026-05-30 tracker refresh: this docs pass is actively maintaining the run tracker and backlog notes while
@@ -973,7 +978,8 @@
             all 119 required URLs. Evidence:
             <code>emulator-tests/logs/live-roobsworld-legal-matrix-20260525-154524.txt</code>, <code>.csv</code>, and
             <code>.json</code>. This keeps <code>DSI-006</code> blocked by live deployment/reachability, not app-side
-            URL construction.
+            URL construction. The local 119-URL matrix now also passes on <code>localhost:3000</code>, so the remaining
+            blocker is production reachability only.
           </li>
           <li>
             Latest initialization-error follow-up: all 52 files under <code>docs/</code> were reread via digest before
@@ -3488,9 +3494,9 @@
             <code>404</code>. Evidence is saved at
             <code>emulator-tests/logs/live-roobsworld-legal-matrix-20260525-154524.txt</code>,
             <code>emulator-tests/logs/live-roobsworld-legal-matrix-20260525-154524.csv</code>, and
-            <code>emulator-tests/logs/live-roobsworld-legal-matrix-20260525-154524.json</code>. Keep
-            <code>DSI-006</code> blocked until the verified local legal pages are deployed or the production routes are
-            otherwise repaired.
+            <code>emulator-tests/logs/live-roobsworld-legal-matrix-20260525-154524.json</code>. The verified local
+            legal pages now pass the full 119-URL localhost matrix on 2026-06-01. Keep <code>DSI-006</code> blocked
+            until the verified local legal pages are deployed or the production routes are otherwise repaired.
           </li>
           <li>
             PASS / AGENT-LEARNING NOTES: 2026-05-25 continuation confirmed Expo MCP remains unavailable through

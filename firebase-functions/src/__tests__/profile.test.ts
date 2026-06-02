@@ -17,6 +17,15 @@ const mockAdminFirestoreCollection = jest.fn((_path?: string) => ({
 
 const mockLoggerInfo = jest.fn<(...args: unknown[]) => void>();
 const mockLoggerError = jest.fn<(...args: unknown[]) => void>();
+const mockOnCallInvocations: Array<[unknown, unknown?]> = [];
+const mockOnCall = jest.fn((optionsOrHandler: unknown, handler?: unknown) => {
+  mockOnCallInvocations.push([optionsOrHandler, handler]);
+  // Handle both signatures: onCall(handler) and onCall(options, handler)
+  if (typeof optionsOrHandler === "function") {
+    return optionsOrHandler;
+  }
+  return handler;
+});
 
 // 2. Jest/type imports
 import {CallableRequest, HttpsError} from "firebase-functions/v2/https";
@@ -51,13 +60,7 @@ jest.mock("firebase-functions/v2/https", () => {
     "firebase-functions/v2/https",
   ) as typeof import("firebase-functions/v2/https");
   return {
-    onCall: jest.fn(((optionsOrHandler: unknown, handler?: unknown) => {
-      // Handle both signatures: onCall(handler) and onCall(options, handler)
-      if (typeof optionsOrHandler === "function") {
-        return optionsOrHandler; // Single argument: onCall(handler)
-      }
-      return handler; // Two arguments: onCall(options, handler)
-    }) as MockOnCallHandler),
+    onCall: mockOnCall as MockOnCallHandler,
     HttpsError: actualV2Https.HttpsError,
   };
 });
@@ -73,6 +76,13 @@ describe("Profile Cloud Functions", () => {
 
   afterEach(() => {
     jest.restoreAllMocks();
+  });
+
+  it("enables App Check on profile update callables", () => {
+    expect(mockOnCallInvocations).toEqual([
+      [{enforceAppCheck: true}, expect.any(Function)],
+      [{enforceAppCheck: true}, expect.any(Function)],
+    ]);
   });
 
   describe("updateAvatar", () => {

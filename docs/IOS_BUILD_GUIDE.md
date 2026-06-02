@@ -4,11 +4,11 @@ This guide explains how to build and test your Riddle Quest iOS app from Windows
 
 ## Current Workstream Note
 
-This guide is part of the 2026-05-30 docs backlog pass. The remaining setup steps are still blocked on Apple credentials and iOS CI runner access, so keep the blocker notes and next-step ownership explicit until those dependencies are available.
+This guide remains current as a blocked reference for iOS build/setup steps from Windows. The remaining setup steps are still blocked on Apple credentials and iOS CI runner access, so keep the blocker notes and next-step ownership explicit until those dependencies are available.
 
-2026-05-30 refresh: the owner assignments in the Next Steps section are now explicit, but no iOS build was attempted in this pass. Keep the Apple ID, app-specific password, and runner-access gaps visible until they are resolved.
-Current ownership note: this guide is actively worked by the current docs thread and remains open for coordination until the tracker refresh lands.
-Reviewed in the 2026-05-30 docs backlog pass; the blocker notes and Next Steps ownership remain documented below.
+2026-06-02 refresh: the owner assignments in the Next Steps section remain explicit, but no iOS build was attempted in this pass. Keep the Apple ID, app-specific password, and runner-access gaps visible until they are resolved.
+Current ownership note: this guide is actively tracked by the current docs thread and remains open for coordination until the blocker is resolved. No task lock is applied in this single-agent workspace.
+Reviewed in the 2026-06-02 docs pass; the blocker notes and Next Steps ownership remain documented below.
 
 ## Prerequisites
 
@@ -182,7 +182,7 @@ Add to app.config.js if needed:
 ```javascript
 ios: {
   infoPlist: {
-    NSUserTrackingUsageDescription: "This identifier will be used to deliver personalized ads to you.";
+    // Add NSUserTrackingUsageDescription only if a future release enables ATT-gated tracking.
   }
 }
 ```

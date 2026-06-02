@@ -116,9 +116,6 @@ module.exports = {
      * Optimized for high-quality audio playback and camera/photo access.
      */
     infoPlist: {
-      /** Ad tracking permission description */
-      NSUserTrackingUsageDescription: "This identifier will be used to deliver personalized ads to you.",
-
       /** Camera access permission for profile photos */
       NSCameraUsageDescription: "This app needs access to camera to capture profile photos.",
 
@@ -197,6 +194,7 @@ module.exports = {
    */
   plugins: [
     "@react-native-firebase/app",
+    "@react-native-firebase/app-check",
     "@react-native-firebase/auth",
     /** Firebase Crashlytics for error tracking */
     "./plugins/withReactNativeFirebaseCrashlytics.js",
@@ -368,6 +366,7 @@ module.exports = {
      */
     FACEBOOK_APP_ID: process.env.FACEBOOK_APP_ID || "YOUR_FACEBOOK_APP_ID",
     FACEBOOK_CLIENT_TOKEN: process.env.FACEBOOK_CLIENT_TOKEN || "YOUR_FACEBOOK_CLIENT_TOKEN",
+    FIREBASE_APP_CHECK_DEBUG_TOKEN: process.env.FIREBASE_APP_CHECK_DEBUG_TOKEN || "",
   },
 
   /**

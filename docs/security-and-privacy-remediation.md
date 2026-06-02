@@ -1,6 +1,6 @@
 # Security and Privacy Remediation Notes
 
-Last updated: 2026-06-01
+Last updated: 2026-06-02
 
 ## Completed in repo
 
@@ -10,21 +10,25 @@ Last updated: 2026-06-01
 - Restricted avatar profile URLs to Firebase Storage avatar objects under the authenticated user's own path.
 - Hardened Storage rules to validate `request.resource` content type, file size, and upload metadata for avatars.
 - Added avatar upload metadata from the React Native client to satisfy the Storage rule.
-- Added App Check enforcement flags to sensitive callable functions.
+- Added App Check enforcement flags to sensitive callable functions, including the remaining profile username update callable.
+- Declared `@react-native-firebase/app-check` in the app manifest, added the App Check Expo config plugin and app startup bootstrap so the client can request App Check tokens before Firebase service usage, and verified the source path with focused App Check service tests.
+- 2026-06-02 verification refresh: the focused `AppCheckService` and `profile` tests passed again in this pass and `pnpm exec tsc --noEmit --pretty false` stayed clean, so the repo-side App Check implementation remains source-complete while console activation and live-device verification stay external.
 - Added admin authorization checks to manual riddle-generation callable functions.
 - Redacted IAP purchase tokens and receipt validation payloads from function logs.
 - Replaced the vulnerable `in-app-purchase` dependency with direct Apple and Google validation helpers.
 - Replaced placeholder legal URLs with `roobsworld.com` URLs and exposed Privacy, Terms, Licenses, account deletion, and data export links from Settings.
 - Wired localized Riddle Quest legal/support URLs for `www.roobsworld.com` in app code for en, es, pt, fr, de, ja, ko, zh, hi, ru, tr, ar, id, it, nl, pl, and vi.
+- 2026-06-02 ATT refresh: the release decision remains the no-tracking posture, with IDFA disabled and personalized ads/cross-app tracking kept off unless a future release adds consent-gated tracking.
 
 ## Requires off-repo action
 
 - Rotate the committed Firebase Admin service account key in Google Cloud IAM.
 - Rotate every secret that appeared in tracked `.env`, Functions `.env.default.backup`, or `.runtimeconfig.json` files.
 - Purge historical secrets from git history using an audited history rewrite such as `git filter-repo`, then force-push according to the repository's release process.
-- Enable Firebase App Check enforcement for the deployed callable functions in Firebase after clients have valid App Check providers configured.
+- Enable Firebase App Check enforcement for the deployed callable functions in Firebase after clients have valid App Check providers configured. The repo code now also includes the client bootstrap, Expo plugin wiring, and focused source verification; the remaining step is console activation and live client verification.
 - Deploy the locally verified legal/support URL matrix from `localhost:3000` to `www.roobsworld.com` when deployment is available; for now, assume the live links will work because the identical local route matrix passed on 2026-05-23.
 - Apple App Privacy and Google Play Data Safety comparison is complete against the current data inventory and observed app behavior. The remaining step is owner-controlled console submission in App Store Connect / Play Console, using the hosted `www.roobsworld.com/riddle-quest/en/privacy-policy` URL where those forms require one canonical privacy policy URL after it is reachable.
+- 2026-06-02 verification refresh: the disclosure drafts remain aligned with the current no-tracking posture, and the source-side App Check/security changes stay verified. The remaining work is still external console submission and credential rotation.
 - Review ATT consent requirements with the final ad-tracking configuration before release.
 
 ## Data Inventory for Store Disclosures
