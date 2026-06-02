@@ -12,6 +12,8 @@ Use this draft to complete App Store Connect privacy disclosures. Confirm with t
 - Purchases: product ID, transaction/receipt validation metadata, purchase state, no-ads entitlement.
 - Usage Data: gameplay progress, coins, achievements, riddle attempts, ad interactions, feature usage analytics.
 - Diagnostics: crash logs, performance diagnostics, device/app state around crashes.
+- Messaging / Notifications: Firebase Cloud Messaging token and message delivery metadata.
+- Analytics: Firebase Analytics screen views, auth funnel events, gameplay events, purchase events, ad events, and shop events.
 
 ## Linked To User
 

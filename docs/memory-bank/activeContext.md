@@ -2,6 +2,8 @@
 
 ## Current Work Focus: Docs Task Continuation (June 2026)
 
+- 2026-06-02 current ownership refresh: this thread remains the active owner for the remaining release-readiness blockers and is keeping the coordination docs current while the external security, App Check console, and store-console items stay open. No task lock is applied in this single-agent workspace.
+- 2026-06-02 disclosure refinement: the App Store Privacy and Play Data Safety drafts now explicitly name Firebase Analytics and Firebase Cloud Messaging so the store-console entry notes stay aligned with the current SDK surface.
 - 2026-06-02 verification refresh: focused Jest for `src/services/__tests__/AppCheckService.test.ts` and `firebase-functions/src/__tests__/profile.test.ts` passed again in this pass, and `pnpm exec tsc --noEmit --pretty false` stayed clean. The app-side App Check implementation remains source-complete while Firebase Console activation and live-device validation remain external.
 - 2026-06-02 documentation refresh: the 3D texture integration guide is now archived as implementation evidence, and the iOS build guide remains a blocked reference. The remaining unchecked checklist items are still the off-repo security, App Check console, and store-console tasks.
 - 2026-06-02 Vercel recheck: the linked `E:\portfolio` project still returns `403 Forbidden` through `_get_project`, and `list_teams` still returns zero teams. That keeps the live legal blocker external and unchanged from the previous pass.

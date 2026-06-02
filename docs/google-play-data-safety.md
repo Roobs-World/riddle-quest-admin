@@ -12,6 +12,8 @@ Use this draft to complete Play Console Data Safety disclosures. Confirm with th
 - App info and performance: crash logs, diagnostics, app performance metrics.
 - Device or other IDs: Firebase installation identifiers, FCM token, advertising-related identifiers if enabled by SDK configuration.
 - Financial info: purchase history and purchase validation metadata for in-app purchases.
+- Analytics data: Firebase Analytics screen views, auth events, gameplay events, purchase events, ad events, and shop events.
+- Messages: Firebase Cloud Messaging token and notification delivery metadata.
 
 ## Data Sharing
 

@@ -48,7 +48,7 @@ The 90-day pre-launch marketing package lives in [docs/marketing/README.md](docs
 
 Use this checklist to track the manual security, privacy, store, and account-deletion work that still needs to happen before release. Keep evidence for each completed task: date completed, person responsible, console screenshots where useful, deployed versions, and any follow-up notes.
 
-Current ownership note: the current Codex thread is actively working this checklist and the external legal blocker tracked in `docs/legal-todo.html`. No task lock is applied in this single-agent workspace; keep the remaining open items visible as owner-controlled blockers rather than silently dropping them.
+Current ownership note: the current Codex thread is actively working this checklist and the external legal blocker tracked in `docs/legal-todo.html`. As of 2026-06-02, the remaining open items are the external security, App Check console, and store-console tasks. No task lock is applied in this single-agent workspace; keep the remaining open items visible as owner-controlled blockers rather than silently dropping them.
 
 ### Off-repo security tasks
 
