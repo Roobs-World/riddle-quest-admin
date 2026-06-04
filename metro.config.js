@@ -3,6 +3,15 @@ const {withNativeWind} = require("nativewind/metro");
 const path = require("path");
 const {getSentryExpoConfig} = require("@sentry/react-native/metro");
 const inlineRequiresEnabled = process.env.EXPO_METRO_INLINE_REQUIRES !== "false";
+const threeModulePath = path.resolve(__dirname, "node_modules/three");
+const threeEntrypointPath = path.join(threeModulePath, "build/three.cjs");
+const canonicalThreeSpecifiers = new Set([
+  "three",
+  "three/build/three.cjs",
+  "three/build/three.module.js",
+  "three/src/Three.js",
+  "three/src/Three.Core.js",
+]);
 
 // Load default Expo Metro config
 const config = getSentryExpoConfig(__dirname, {
@@ -99,6 +108,25 @@ windConfig.resolver.sourceExts = [...windConfig.resolver.sourceExts, "svg", "ts"
 // Add Node.js core module shims
 windConfig.resolver.extraNodeModules = {
   fs: false,
+  // Keep all Three.js consumers on the same package instance to avoid
+  // "Multiple instances of Three.js being imported" warnings at runtime.
+  three: threeModulePath,
+};
+
+const existingResolveRequest = windConfig.resolver.resolveRequest;
+windConfig.resolver.resolveRequest = (context, moduleName, platform) => {
+  if (canonicalThreeSpecifiers.has(moduleName)) {
+    return {
+      filePath: threeEntrypointPath,
+      type: "sourceFile",
+    };
+  }
+
+  if (typeof existingResolveRequest === "function") {
+    return existingResolveRequest(context, moduleName, platform);
+  }
+
+  return context.resolveRequest(context, moduleName, platform);
 };
 
 // Optional Metro TLS support for HTTPS/WSS local development.
@@ -115,16 +143,19 @@ if (tlsCertPath && tlsKeyPath) {
   };
 }
 
-// Block Firebase Functions node_modules
-const firebaseNodeModulesPath = path.resolve(__dirname, "firebase-functions/node_modules");
-const escapedFirebasePath = firebaseNodeModulesPath.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&");
-const gradleLocalPath = path.resolve(__dirname, ".gradle-local");
-const escapedGradleLocalPath = gradleLocalPath.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&");
+// Build path regexes that work for both Windows and POSIX separators.
+const escapeRegExp = (value) => value.replace(/[|\\{}()[\]^$+*?.]/g, "\\$&");
+const makeBlockedPathPattern = (relativePath) => {
+  const absolutePath = path.resolve(__dirname, relativePath);
+  const escapedPath = escapeRegExp(absolutePath).replace(/\\\\/g, "[/\\\\]");
+  return new RegExp(`${escapedPath}(?:[/\\\\].*)?$`);
+};
 
 windConfig.resolver.blockList = [
   new RegExp(/(\/__tests__\/.*)$/.source),
-  new RegExp(escapedFirebasePath + "/.*"),
-  new RegExp(escapedGradleLocalPath + "[/\\\\].*"),
+  makeBlockedPathPattern("firebase-functions/node_modules"),
+  makeBlockedPathPattern(".gradle-local"),
+  makeBlockedPathPattern(".git"),
 ];
 
 module.exports = windConfig;

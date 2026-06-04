@@ -1,7 +1,7 @@
 import React from "react";
 import {Text, View, StyleSheet} from "react-native";
 import {RIDDLE_TEXT_MAX_WIDTH} from "../../constants/layout";
-import {TYPOGRAPHY, SPACING} from "../../styles";
+import {TYPOGRAPHY, SPACING, COLORS} from "../../styles";
 
 /**
  * Define the props for the RiddleText component.
@@ -14,7 +14,7 @@ type RiddleTextProps = {
 
 const styles = StyleSheet.create({
   riddleText: {
-    color: "#1A1A1A",
+    color: COLORS.white,
     fontFamily: TYPOGRAPHY.fontPrimary,
     fontSize: TYPOGRAPHY.fontSize["2xl"],
     lineHeight: TYPOGRAPHY.fontSize["2xl"] * TYPOGRAPHY.lineHeight.normal,
@@ -32,7 +32,7 @@ const RiddleText: React.FC<RiddleTextProps> = ({riddleText}) => {
   return (
     <View className="items-center z-10" style={{paddingHorizontal: SPACING.lg}}>
       <Text
-        className="text-center text-black"
+        className="text-center text-white"
         style={styles.riddleText}
         numberOfLines={3}
         adjustsFontSizeToFit

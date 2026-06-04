@@ -69,14 +69,6 @@ jest.mock("../Keyboard", () => {
   };
 });
 
-// Mock SVG component
-jest.mock("../../../../assets/images/questions.svg", () => {
-  const React = require("react");
-  return function MockQuestionsSvg(props: any) {
-    return React.createElement("svg", props);
-  };
-});
-
 describe("GameBoard", () => {
   const mockSetTileRef = jest.fn();
   const mockOnKeyPress = jest.fn();
@@ -224,18 +216,10 @@ describe("GameBoard", () => {
       expect(getByTestId("riddle-text")).toBeTruthy();
     });
 
-    it("should render a taller riddle background behind the text", () => {
-      const {getByTestId} = render(<GameBoard {...defaultProps} />);
+    it("should not render a decorative riddle background", () => {
+      const {queryByTestId} = render(<GameBoard {...defaultProps} />);
 
-      const background = getByTestId("riddle-background");
-
-      expect(background.props.height).toBe("118%");
-      expect(background.props.style).toEqual(
-        expect.objectContaining({
-          position: "absolute",
-          top: "-9%",
-        }),
-      );
+      expect(queryByTestId("riddle-background")).toBeNull();
     });
   });
 

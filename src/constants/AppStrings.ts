@@ -186,14 +186,14 @@ const EN_APP_STRINGS = {
   Instructions: {
     TITLE: "How to Play",
     GOAL_TITLE: "The Goal",
-    GOAL_DESCRIPTION: "Guess the hidden riddle in 3 tries using the color clues to guide you.",
+    GOAL_DESCRIPTION: "Guess the hidden riddle in 5 tries using the color clues to guide you.",
     COLOR_CLUES_TITLE: "Color Clues",
     COLOR_CORRECT: "Letter is correct and in the right position",
     COLOR_MISPLACED: "Letter is in the word but wrong position",
     COLOR_WRONG: "Letter is not in the word at all",
     TIPS_TITLE: "Tips for Success",
     TIPS_DESCRIPTION:
-      "Start with common letters and use the color feedback to narrow down your guesses. Remember, you only have 3 attempts!",
+      "Start with common letters and use the color feedback to narrow down your guesses. Remember, you only have 5 attempts!",
     GOT_IT_BUTTON: "Got It!",
   },
   Profile: {

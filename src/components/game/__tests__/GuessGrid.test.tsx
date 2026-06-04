@@ -59,6 +59,7 @@ jest.mock("../../../constants/layout", () => ({
   GUESS_TILE_MARGIN: 4,
   GUESS_TILE_ROW_GAP: 4,
   GUESS_GRID_EFFECTIVE_WIDTH: 390,
+  GUESS_GRID_SLOT_HEIGHT: "36%",
   MAX_CONTENT_WIDTH: 560,
 }));
 
@@ -105,7 +106,7 @@ describe("GuessGrid", () => {
       const tree = toJSON();
       const first = Array.isArray(tree) ? tree[0] : tree;
       const gridContainer = first && typeof first === "object" ? first.children?.[0] : null;
-      expect(gridContainer && typeof gridContainer === "object" ? gridContainer.children : null).toHaveLength(4);
+      expect(gridContainer && typeof gridContainer === "object" ? gridContainer.children : null).toHaveLength(5);
     });
 
     it("should render correct number of cells per row", () => {
@@ -226,6 +227,10 @@ describe("GuessGrid", () => {
         },
         {
           guess: ["L", "A", "S", "T"],
+          feedback: ["red", "red", "red", "red"],
+        },
+        {
+          guess: ["F", "U", "L", "L"],
           feedback: ["red", "red", "red", "red"],
         },
       ];

@@ -139,15 +139,15 @@ describe("useGameLogic", () => {
       expect(processResult).toEqual({
         outcome: "continue",
         feedback: allRedFeedback,
-        attemptsRemaining: 3,
+        attemptsRemaining: 4,
       });
     });
 
-    it("should reach attemptLimitReached after 4 wrong guesses (classic)", async () => {
+    it("should reach attemptLimitReached after 5 wrong guesses (classic)", async () => {
       const {result} = renderHook(() => useGameLogic(defaultProps));
       const wrong = ["F", "A", "I", "L", "S"]; // no letters in THORN
 
-      for (let i = 0; i < 3; i++) {
+      for (let i = 0; i < 4; i++) {
         await act(async () => {
           await result.current.processGuess(wrong);
         });
@@ -160,7 +160,7 @@ describe("useGameLogic", () => {
 
       // completeGame NOT called yet (user can still continue)
       expect(mockCompleteGameCallable).not.toHaveBeenCalled();
-      expect(result.current.guesses.length).toBe(4);
+      expect(result.current.guesses.length).toBe(5);
       expect(result.current.gameOver).toBe(true);
       expect(processResult).toEqual({
         outcome: "attemptLimitReached",
@@ -172,7 +172,7 @@ describe("useGameLogic", () => {
       });
     });
 
-    it("should reach attemptLimitReached after 4 wrong guesses (challenge)", async () => {
+    it("should reach attemptLimitReached after 5 wrong guesses (challenge)", async () => {
       const challengeProps = {
         riddleId: "challengeRiddle456",
         gameMode: "challenge" as "classic" | "challenge",
@@ -181,7 +181,7 @@ describe("useGameLogic", () => {
       const {result} = renderHook(() => useGameLogic(challengeProps));
       const wrong = ["F", "A", "I", "L", "S"];
 
-      for (let i = 0; i < 3; i++) {
+      for (let i = 0; i < 4; i++) {
         await act(async () => {
           await result.current.processGuess(wrong);
         });
@@ -193,7 +193,7 @@ describe("useGameLogic", () => {
       });
 
       expect(mockCompleteGameCallable).not.toHaveBeenCalled();
-      expect(result.current.guesses.length).toBe(4);
+      expect(result.current.guesses.length).toBe(5);
       expect(result.current.gameOver).toBe(true);
       expect(processResult).toEqual({
         outcome: "attemptLimitReached",
@@ -213,8 +213,8 @@ describe("useGameLogic", () => {
       const {result} = renderHook(() => useGameLogic(defaultProps));
       const wrong = ["F", "A", "I", "L", "S"];
 
-      // Use up initial 4 attempts
-      for (let i = 0; i < 4; i++) {
+      // Use up initial 5 attempts
+      for (let i = 0; i < 5; i++) {
         await act(async () => {
           await result.current.processGuess(wrong);
         });
@@ -242,7 +242,7 @@ describe("useGameLogic", () => {
       expect(mockCompleteGameCallable).toHaveBeenCalledWith({
         riddleId: defaultProps.riddleId,
         gameMode: defaultProps.gameMode,
-        attempts: 7,
+        attempts: 8,
         isCorrect: false,
       });
       expect(result.current.gameOver).toBe(true);
@@ -277,8 +277,8 @@ describe("useGameLogic", () => {
       const {result} = renderHook(() => useGameLogic(defaultProps));
       const wrong = ["F", "A", "I", "L", "S"];
 
-      // Use up initial 4 attempts
-      for (let i = 0; i < 4; i++) {
+      // Use up initial 5 attempts
+      for (let i = 0; i < 5; i++) {
         await act(async () => {
           await result.current.processGuess(wrong);
         });
@@ -325,7 +325,7 @@ describe("useGameLogic", () => {
       const {result} = renderHook(() => useGameLogic({...defaultProps, isGuestMode: true}));
       const wrong = ["F", "A", "I", "L", "S"];
 
-      for (let i = 0; i < 4; i++) {
+      for (let i = 0; i < 5; i++) {
         await act(async () => {
           await result.current.processGuess(wrong);
         });
@@ -492,35 +492,35 @@ describe("useGameLogic", () => {
       const {result} = renderHook(() => useGameLogic(defaultProps));
 
       expect(result.current.attemptsUsed).toBe(0);
-      expect(result.current.attemptsRemaining).toBe(4);
+      expect(result.current.attemptsRemaining).toBe(5);
 
       await act(async () => {
         await result.current.processGuess(["F", "A", "I", "L", "S"]);
       });
 
       expect(result.current.attemptsUsed).toBe(1);
-      expect(result.current.attemptsRemaining).toBe(3);
+      expect(result.current.attemptsRemaining).toBe(4);
 
       await act(async () => {
         await result.current.processGuess(["F", "A", "I", "L", "S"]);
       });
 
       expect(result.current.attemptsUsed).toBe(2);
-      expect(result.current.attemptsRemaining).toBe(2);
+      expect(result.current.attemptsRemaining).toBe(3);
     });
 
     it("should increase max attempts after continueGame", async () => {
       const {result} = renderHook(() => useGameLogic(defaultProps));
       const wrong = ["F", "A", "I", "L", "S"];
 
-      // Use up initial 4 attempts
-      for (let i = 0; i < 4; i++) {
+      // Use up initial 5 attempts
+      for (let i = 0; i < 5; i++) {
         await act(async () => {
           await result.current.processGuess(wrong);
         });
       }
 
-      expect(result.current.attemptsUsed).toBe(4);
+      expect(result.current.attemptsUsed).toBe(5);
       expect(result.current.attemptsRemaining).toBe(0);
 
       // Continue game
@@ -528,7 +528,7 @@ describe("useGameLogic", () => {
         result.current.continueGame();
       });
 
-      expect(result.current.attemptsUsed).toBe(4);
+      expect(result.current.attemptsUsed).toBe(5);
       expect(result.current.attemptsRemaining).toBe(3); // 3 more attempts granted
     });
 
@@ -546,7 +546,7 @@ describe("useGameLogic", () => {
       });
 
       expect(result.current.attemptsUsed).toBe(0);
-      expect(result.current.attemptsRemaining).toBe(4);
+      expect(result.current.attemptsRemaining).toBe(5);
     });
   });
 
@@ -560,8 +560,8 @@ describe("useGameLogic", () => {
       const {result} = renderHook(() => useGameLogic(defaultProps));
       const wrong = ["F", "A", "I", "L", "S"];
 
-      // Use up initial 4 attempts
-      for (let i = 0; i < 4; i++) {
+      // Use up initial 5 attempts
+      for (let i = 0; i < 5; i++) {
         await act(async () => {
           await result.current.processGuess(wrong);
         });
@@ -578,7 +578,7 @@ describe("useGameLogic", () => {
       const {result} = renderHook(() => useGameLogic(defaultProps));
       const wrong = ["F", "A", "I", "L", "S"];
 
-      for (let i = 0; i < 4; i++) {
+      for (let i = 0; i < 5; i++) {
         await act(async () => {
           await result.current.processGuess(wrong);
         });
@@ -603,7 +603,7 @@ describe("useGameLogic", () => {
       const {result} = renderHook(() => useGameLogic(defaultProps));
       const wrong = ["F", "A", "I", "L", "S"];
 
-      for (let i = 0; i < 4; i++) {
+      for (let i = 0; i < 5; i++) {
         await act(async () => {
           await result.current.processGuess(wrong);
         });
@@ -622,7 +622,7 @@ describe("useGameLogic", () => {
       const {result} = renderHook(() => useGameLogic(defaultProps));
       const wrong = ["F", "A", "I", "L", "S"];
 
-      for (let i = 0; i < 4; i++) {
+      for (let i = 0; i < 5; i++) {
         await act(async () => {
           await result.current.processGuess(wrong);
         });

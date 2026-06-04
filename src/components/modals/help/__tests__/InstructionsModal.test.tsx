@@ -131,7 +131,7 @@ describe("InstructionsModal", () => {
       const {getByText} = render(<InstructionsModal isVisible={true} onClose={mockOnClose} />);
 
       expect(getByText("The Goal")).toBeTruthy();
-      expect(getByText("Guess the hidden riddle in 3 tries using the color clues to guide you.")).toBeTruthy();
+      expect(getByText("Guess the hidden riddle in 5 tries using the color clues to guide you.")).toBeTruthy();
       expect(getByText("Color Clues")).toBeTruthy();
     });
 

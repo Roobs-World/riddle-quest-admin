@@ -1,3 +1,18 @@
+jest.mock("../../../../assets/3d/tex_planet_a.png", () => "tex_planet_a.png");
+jest.mock("../../../../assets/3d/tex_planet_v.png", () => "tex_planet_v.png");
+jest.mock("../../../../assets/3d/tex_planet_d.png", () => "tex_planet_d.png");
+jest.mock("../../../../assets/3d/tex_planet_r.png", () => "tex_planet_r.png");
+jest.mock("../../../../assets/3d/tex_planet_k.png", () => "tex_planet_k.png");
+jest.mock("../../../../assets/3d/tex_planet_s.png", () => "tex_planet_s.png");
+jest.mock("../../../../assets/3d/tex_planet_u.png", () => "tex_planet_u.png");
+jest.mock("../../../../assets/3d/tex_moon_c.png", () => "tex_moon_c.png");
+jest.mock("../../../../assets/3d/tex_moon_d.png", () => "tex_moon_d.png");
+jest.mock("../../../../assets/3d/tex_moon_f.png", () => "tex_moon_f.png");
+jest.mock("../../../../assets/3d/tex_moon_g.png", () => "tex_moon_g.png");
+jest.mock("../../../../assets/3d/tex_moon_h.png", () => "tex_moon_h.png");
+jest.mock("../../../../assets/3d/tex_ring_a.png", () => "tex_ring_a.png");
+jest.mock("../../../../assets/3d/tex_ring_b.png", () => "tex_ring_b.png");
+
 import {SOLAR_SYSTEM_CONFIG} from "../SolarSystemConfig";
 
 describe("SolarSystemConfig", () => {
@@ -25,6 +40,24 @@ describe("SolarSystemConfig", () => {
     }
   });
 
+  it("assigns a unique texture to every planet", () => {
+    const textureKeys = SOLAR_SYSTEM_CONFIG.map((planet) => planet.textureKey);
+
+    expect(new Set(textureKeys).size).toBe(SOLAR_SYSTEM_CONFIG.length);
+  });
+
+  it("labels moon bodies with moon-only texture keys", () => {
+    const moonTextureKeys = SOLAR_SYSTEM_CONFIG.flatMap((planet) => planet.moons.map((moon) => moon.textureKey));
+
+    expect(moonTextureKeys.length).toBeGreaterThan(0);
+
+    for (const textureKey of moonTextureKeys) {
+      expect(textureKey.startsWith("moon_")).toBe(true);
+      expect(textureKey.startsWith("planet_")).toBe(false);
+      expect(textureKey).not.toBe("sun");
+    }
+  });
+
   it("keeps ring of major planets farther than inner planets", () => {
     const earth = SOLAR_SYSTEM_CONFIG.find((p) => p.name === "Earth");
     const saturn = SOLAR_SYSTEM_CONFIG.find((p) => p.name === "Saturn");
@@ -41,7 +74,7 @@ describe("SolarSystemConfig", () => {
   it("defines valid textured ring geometry for configured ringed planets", () => {
     const ringedPlanets = SOLAR_SYSTEM_CONFIG.filter((planet) => planet.ring);
 
-    expect(ringedPlanets.map((planet) => planet.name)).toEqual(["Earth", "Mars"]);
+    expect(ringedPlanets.map((planet) => planet.name)).toEqual(["Earth", "Saturn"]);
 
     for (const planet of ringedPlanets) {
       expect(planet.ring!.innerRadius).toBeGreaterThan(planet.size);

@@ -356,14 +356,23 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   );
 
   const showTooltipOnce = useCallback(
-    (id: TooltipId, targetRef?: TooltipTargetRef | null) =>
-      tooltip.showTooltipOnce({
+    (id: TooltipId, targetRef?: TooltipTargetRef | null) => {
+      logger.debug("[GameScreen] showTooltipOnce requested", {
+        id,
+        hasTargetRef: Boolean(targetRef?.current),
+        userId: currentTooltipUserId,
+        riddleId,
+        gameMode,
+      });
+
+      return tooltip.showTooltipOnce({
         id,
         targetRef,
         content: getTooltipContent(id),
         userId: currentTooltipUserId,
-      }),
-    [currentTooltipUserId, tooltip],
+      });
+    },
+    [currentTooltipUserId, gameMode, riddleId, tooltip],
   );
 
   const gameOverHandledRef = useRef(false);
@@ -513,6 +522,30 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     () => mergeLetterStates(preservedLetterStates, currentRoundLetterStates),
     [preservedLetterStates, currentRoundLetterStates],
   );
+
+  useEffect(() => {
+    logger.debug("[GameScreen] overlay state changed", {
+      isAnyModalVisible,
+      modalTypes: modal.modals.map((activeModal) => activeModal.type),
+      isOffline,
+      isInteractionBlocked,
+      isLoading,
+      isProfileModalLoading,
+      isPurchaseInProgress,
+      isTransitioningToNextLevel,
+      activeTooltipId: tooltip.activeTooltipId,
+    });
+  }, [
+    isAnyModalVisible,
+    isOffline,
+    isInteractionBlocked,
+    isLoading,
+    isProfileModalLoading,
+    isPurchaseInProgress,
+    isTransitioningToNextLevel,
+    modal.modals,
+    tooltip.activeTooltipId,
+  ]);
 
   useEffect(() => {
     return () => {

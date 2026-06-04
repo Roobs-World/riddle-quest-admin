@@ -21,6 +21,7 @@ import {
 } from "../../constants/layout";
 import {TYPOGRAPHY} from "../../styles/tokens/typography";
 import {NUM_GUESSES} from "../../utils/constants";
+import {dimensions} from "../../utils/responsive";
 
 /**
  * Returns background + text colour for a tile.
@@ -97,7 +98,17 @@ const GuessGrid: React.FC<GuessGridProps> = memo(function GuessGrid({
 
     const availableWidth = GUESS_GRID_EFFECTIVE_WIDTH - GUESS_GRID_H_PADDING;
     const maxTileFromWidth = Math.floor(availableWidth / slotCount) - GUESS_TILE_MARGIN * 2;
-    const tileSize = Math.min(GUESS_TILE_MAX_SIZE, maxTileFromWidth);
+    const gridHeightPercent =
+      typeof GUESS_GRID_SLOT_HEIGHT === "string" && GUESS_GRID_SLOT_HEIGHT.endsWith("%")
+        ? Number.parseFloat(GUESS_GRID_SLOT_HEIGHT) / 100
+        : null;
+    const maxTileFromHeight =
+      gridHeightPercent && dimensions
+        ? Math.floor((dimensions.screenHeight * gridHeightPercent) / NUM_GUESSES) -
+          GUESS_TILE_MARGIN * 2 -
+          GUESS_TILE_ROW_GAP
+        : Number.POSITIVE_INFINITY;
+    const tileSize = Math.max(0, Math.min(GUESS_TILE_MAX_SIZE, maxTileFromWidth, maxTileFromHeight));
     return {
       TILE_SIZE: tileSize,
       ROW_HEIGHT: tileSize + GUESS_TILE_MARGIN * 2 + GUESS_TILE_ROW_GAP,

@@ -17,16 +17,36 @@ const TooltipContext = createContext<TooltipContextValue | undefined>(undefined)
 const measureTarget = (request: TooltipRequest): Promise<TargetRect | null> => {
   const target = request.targetRef?.current;
   if (!target || typeof target.measureInWindow !== "function") {
+    logger.debug("[TooltipContext] target missing or not measurable", {
+      id: request.id,
+      hasTarget: Boolean(target),
+      hasMeasureInWindow: typeof target?.measureInWindow === "function",
+    });
     return Promise.resolve(null);
   }
 
   return new Promise((resolve) => {
     target.measureInWindow((x, y, width, height) => {
+      logger.debug("[TooltipContext] measured target", {
+        id: request.id,
+        x,
+        y,
+        width,
+        height,
+      });
+
       if ([x, y, width, height].every((value) => Number.isFinite(value))) {
         resolve({x, y, width, height});
         return;
       }
 
+      logger.warn("[TooltipContext] invalid target measurement", {
+        id: request.id,
+        x,
+        y,
+        width,
+        height,
+      });
       resolve(null);
     });
   });
@@ -39,7 +59,17 @@ export const TooltipProvider: React.FC<{children: React.ReactNode}> = ({children
 
   const showTooltip = useCallback(async (request: TooltipRequest): Promise<void> => {
     try {
+      logger.debug("[TooltipContext] showTooltip requested", {
+        id: request.id,
+        hasTargetRef: Boolean(request.targetRef?.current),
+        userId: request.userId ?? null,
+        persist: request.persist ?? false,
+      });
       const measuredTarget = await measureTarget(request);
+      logger.debug("[TooltipContext] activating tooltip", {
+        id: request.id,
+        measuredTarget,
+      });
       setTargetRect(measuredTarget);
       setActiveRequest(request);
       setIsTooltipVisible(true);
@@ -50,7 +80,15 @@ export const TooltipProvider: React.FC<{children: React.ReactNode}> = ({children
 
   const dismissTooltip = useCallback(
     (id?: TooltipId) => {
+      logger.debug("[TooltipContext] dismissTooltip requested", {
+        requestedId: id ?? null,
+        activeTooltipId: activeRequest?.id ?? null,
+      });
       if (id && activeRequest?.id !== id) {
+        logger.debug("[TooltipContext] dismiss ignored due to id mismatch", {
+          requestedId: id,
+          activeTooltipId: activeRequest?.id ?? null,
+        });
         return;
       }
 
@@ -63,6 +101,11 @@ export const TooltipProvider: React.FC<{children: React.ReactNode}> = ({children
     async (request: TooltipRequest): Promise<boolean> => {
       try {
         const seen = await hasSeenTooltip(request.id, request.userId);
+        logger.debug("[TooltipContext] showTooltipOnce check", {
+          id: request.id,
+          seen,
+          userId: request.userId ?? null,
+        });
         if (seen) {
           return false;
         }
@@ -109,6 +152,9 @@ export const TooltipProvider: React.FC<{children: React.ReactNode}> = ({children
             content={activeRequest.content}
             onDismiss={() => dismissTooltip(activeRequest.id)}
             onExited={() => {
+              logger.debug("[TooltipContext] tooltip exited", {
+                id: activeRequest.id,
+              });
               setActiveRequest(null);
               setTargetRect(null);
             }}

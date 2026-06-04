@@ -1,7 +1,6 @@
 import {logger} from "../utils/logger";
-import * as appCheckNamespace from "@react-native-firebase/app-check";
 import {getFirebaseApp} from "./firebaseApp";
-import type {ReactNativeFirebaseAppCheckProvider} from "@react-native-firebase/app-check";
+import type {AppCheck, ReactNativeFirebaseAppCheckProvider} from "@react-native-firebase/app-check";
 
 export type FirebaseAppCheckInitOptions = {
   debugToken?: string | null;
@@ -10,44 +9,16 @@ export type FirebaseAppCheckInitOptions = {
 
 let appCheckInitializationPromise: Promise<void> | null = null;
 
-type FirebaseAppCheckClient = {
-  initializeAppCheck: (options: {
-    provider: ReactNativeFirebaseAppCheckProvider;
-    isTokenAutoRefreshEnabled: boolean;
-  }) => Promise<void>;
-};
+const getAppCheckClient = (): AppCheck => getFirebaseApp().appCheck();
 
-const hasInitializeAppCheck = (value: unknown): value is FirebaseAppCheckClient =>
-  value != null &&
-  typeof value === "object" &&
-  "initializeAppCheck" in value &&
-  typeof (value as FirebaseAppCheckClient).initializeAppCheck === "function";
-
-const resolveAppCheckClient = (): FirebaseAppCheckClient => {
-  if (hasInitializeAppCheck(appCheckNamespace)) {
-    return appCheckNamespace;
-  }
-
-  const defaultExport = (appCheckNamespace as {default?: unknown}).default;
-  if (hasInitializeAppCheck(defaultExport)) {
-    return defaultExport;
-  }
-
-  if (typeof defaultExport === "function") {
-    const resolved = defaultExport();
-    if (hasInitializeAppCheck(resolved)) {
-      return resolved;
-    }
-  }
-
-  throw new TypeError("Firebase App Check namespace is not callable.");
-};
-
-export const createFirebaseAppCheckProvider = ({
-  debugToken,
-  isDevelopmentBuild = __DEV__,
-}: FirebaseAppCheckInitOptions = {}): ReactNativeFirebaseAppCheckProvider => {
-  const provider = getFirebaseApp().appCheck().newReactNativeFirebaseAppCheckProvider();
+const createFirebaseAppCheckProviderForClient = (
+  appCheckClient: AppCheck,
+  {
+    debugToken,
+    isDevelopmentBuild = __DEV__,
+  }: FirebaseAppCheckInitOptions = {},
+): ReactNativeFirebaseAppCheckProvider => {
+  const provider = appCheckClient.newReactNativeFirebaseAppCheckProvider();
   const isDebugBuild = Boolean(isDevelopmentBuild);
 
   provider.configure({
@@ -64,13 +35,23 @@ export const createFirebaseAppCheckProvider = ({
   return provider;
 };
 
+export const createFirebaseAppCheckProvider = ({
+  debugToken,
+  isDevelopmentBuild = __DEV__,
+}: FirebaseAppCheckInitOptions = {}): ReactNativeFirebaseAppCheckProvider =>
+  createFirebaseAppCheckProviderForClient(getAppCheckClient(), {
+    debugToken,
+    isDevelopmentBuild,
+  });
+
 export const initializeFirebaseAppCheck = async (
   options: FirebaseAppCheckInitOptions = {},
 ): Promise<void> => {
   if (!appCheckInitializationPromise) {
     appCheckInitializationPromise = (async () => {
-      const provider = createFirebaseAppCheckProvider(options);
-      await resolveAppCheckClient().initializeAppCheck({
+      const appCheckClient = getAppCheckClient();
+      const provider = createFirebaseAppCheckProviderForClient(appCheckClient, options);
+      await appCheckClient.initializeAppCheck({
         provider,
         isTokenAutoRefreshEnabled: true,
       });

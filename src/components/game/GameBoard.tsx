@@ -12,17 +12,13 @@
  */
 
 import React from "react";
-import {View, type DimensionValue} from "react-native";
+import {View} from "react-native";
 import RiddleText from "./RiddleText";
 import GuessGrid from "./GuessGrid";
 import Keyboard from "./Keyboard";
 import {isTablet, isLargeTablet} from "../../utils/responsive";
 import {styles} from "../../styles";
-import QuestionsSvg from "../../../assets/images/questions.svg";
 import type {Feedback} from "../../hooks/types";
-
-const RIDDLE_BACKGROUND_HEIGHT = "118%";
-const RIDDLE_BACKGROUND_TOP = "-9%";
 
 /**
  * Structure representing a submitted guess with feedback.
@@ -105,20 +101,18 @@ interface GameBoardProps {
  * layout and responsive behavior.
  *
  * Layout Structure:
- * 1. **Riddle Container (20% height)**: Displays the riddle question with decorative SVG background
+ * 1. **Riddle Container (20% height)**: Displays the riddle question
  * 2. **Guess Grid (36% height)**: Shows submitted guesses and current input
  * 3. **Keyboard (remaining height)**: Interactive letter input interface
  *
  * Visual Design:
  * - Fixed height percentages for consistent layout
- * - Decorative question mark SVG background for riddle area
  * - Responsive design with tablet-specific styling
  * - Proper z-index layering for visual hierarchy
  *
  * Features:
  * - Responsive layout supporting phones and tablets
  * - Keyboard visibility management based on overlay state
- * - Decorative SVG background for enhanced visual appeal
  * - Proper component composition following React best practices
  * - Fixed height sections for consistent user experience
  *
@@ -165,44 +159,29 @@ const GameBoard: React.FC<GameBoardProps> = ({
 }) => {
   // Use onKeyPress as a fallback if handleKeyPress is not provided
   const keyPressHandler = handleKeyPress || onKeyPress || (() => {});
-  const riddleContainerSlotHeight: DimensionValue = isLargeTablet ? "26%" : isTablet ? "24%" : "20%";
 
   return (
-    <>
-      {/* Riddle Display Container - 20% of screen height */}
+    <View style={{flex: 1, width: "100%", alignItems: "center"}}>
+      {/* Keep the riddle intrinsic, then use equal flex spacers around the grid. */}
       <View
         style={[
           styles.riddleContainer,
           isTablet && styles.riddleContainerTablet,
           isLargeTablet && styles.riddleContainerLargeTablet,
           {
-            maxHeight: riddleContainerSlotHeight,
-            height: riddleContainerSlotHeight,
             width: "100%",
-            minHeight: riddleContainerSlotHeight,
+            minHeight: 0,
             justifyContent: "center",
             alignItems: "center",
+            flexShrink: 0,
           },
         ]}
       >
-        {/* Decorative Background SVG */}
-        <QuestionsSvg
-          testID="riddle-background"
-          width="90%"
-          height={RIDDLE_BACKGROUND_HEIGHT}
-          preserveAspectRatio="none"
-          style={{
-            position: "absolute",
-            top: RIDDLE_BACKGROUND_TOP,
-            zIndex: 0,
-          }}
-        />
-
-        {/* Riddle Text Component */}
         <RiddleText riddleText={riddleText} />
       </View>
 
-      {/* Guess Grid - Shows submitted guesses and current input */}
+      <View style={{flexGrow: 1, minHeight: 0}} />
+
       <GuessGrid
         guesses={guesses}
         currentGuess={currentGuess}
@@ -213,14 +192,15 @@ const GameBoard: React.FC<GameBoardProps> = ({
         onSelectCurrentGuessSlot={onSelectCurrentGuessSlot}
       />
 
-      {/* Interactive Keyboard - Hidden when overlays are visible */}
+      <View style={{flexGrow: 1, minHeight: 0}} />
+
       <Keyboard
         submitKeyPress={keyPressHandler}
         handleBackspace={handleBackspace}
         isVisible={!isAnyOverlayVisible}
         letterStates={letterStates}
       />
-    </>
+    </View>
   );
 };
 

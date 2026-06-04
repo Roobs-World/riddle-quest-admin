@@ -41,6 +41,11 @@ const safeDelay = (ms: number): Promise<void> => {
   return new Promise((resolve) => setTimeout(resolve, ms));
 };
 
+const ensureMusicLoops = (player: AudioPlayer | null): void => {
+  if (!player) return;
+  player.loop = true;
+};
+
 export const SoundManager = {
   setSoundEnabled: (enabled: boolean) => {
     globalSoundEnabled = enabled;
@@ -83,6 +88,7 @@ export const SoundManager = {
         throw new Error("Failed to create music player");
       }
       music = result.sound;
+      ensureMusicLoops(music);
       monitorAudioQuality(music);
 
       logger.debug("SoundManager: Using config:", getOptimalAudioConfig());
@@ -113,6 +119,7 @@ export const SoundManager = {
   resumeCurrentMusic: async (): Promise<void> => {
     try {
       if (!isInitialized || !music || !globalSoundEnabled || appState !== "active") return;
+      ensureMusicLoops(music);
       if (!music.playing) music.play();
     } catch (error) {
       logger.error("Error resuming music:", error);
@@ -156,6 +163,7 @@ export const SoundManager = {
       if (!sound.isLoaded) return;
 
       if (!sound.playing) {
+        sound.loop = true;
         sound.volume = 0;
         sound.play();
       }

@@ -4,6 +4,7 @@ import {renderWithModalProvider} from "../../../../test-utils";
 import FullProfileDetailsModal from "../FullProfileDetailsModal";
 import {Player} from "../../../../validation/firestoreSchemas";
 import * as ImagePicker from "react-native-image-picker";
+import {MODAL_MAX_HEIGHT} from "../../../../constants/layout";
 
 const mockShowTooltip = jest.fn(() => Promise.resolve());
 const mockLogout = jest.fn(() => Promise.resolve());
@@ -379,7 +380,7 @@ describe("FullProfileDetailsModal", () => {
   });
 
   it("renders with proper positioning", () => {
-    const {getByTestId, getByText} = renderWithModalProvider(<FullProfileDetailsModal {...defaultProps} />);
+    const {getByTestId, getByText, UNSAFE_getAllByType} = renderWithModalProvider(<FullProfileDetailsModal {...defaultProps} />);
 
     expect(getByText("TestUser")).toBeTruthy();
     expect(getByTestId("profile-modal-shell").props.style).toEqual(
@@ -416,6 +417,16 @@ describe("FullProfileDetailsModal", () => {
         position: "relative",
       }),
     );
+    const profileCard = UNSAFE_getAllByType(require("react-native").View).find(
+      (node: {props?: {style?: unknown}}) =>
+        Array.isArray(node.props?.style)
+          ? node.props.style.some(
+              (style: {height?: unknown; maxWidth?: unknown} | undefined) =>
+                style?.height === MODAL_MAX_HEIGHT && style?.maxWidth === 430,
+            )
+          : node.props?.style?.height === MODAL_MAX_HEIGHT && node.props?.style?.maxWidth === 430,
+    );
+    expect(profileCard).toBeTruthy();
   });
 
   it("renders modal without gestures", () => {

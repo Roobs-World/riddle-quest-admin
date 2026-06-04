@@ -167,37 +167,16 @@ describe("ModalTogglePanel", () => {
     expect(queryByTestId("active-settings")).toBeTruthy();
   });
 
-  it("auto-opens the profile modal once player data is available", async () => {
+  it("does not auto-open the profile modal when player data becomes available", async () => {
     mockPlayerData = {userId: "user-123"};
 
     const {queryByTestId} = render(<ModalTogglePanel />);
 
-    expect(queryByTestId("active-fullProfileDetails")).toBeNull();
-
     await act(async () => {
-      jest.advanceTimersByTime(1800);
+      jest.advanceTimersByTime(2000);
     });
 
-    expect(queryByTestId("active-fullProfileDetails")).toBeTruthy();
-  });
-
-  it("does not auto-open the profile modal outside development", async () => {
-    const originalDev = (global as any).__DEV__;
-    (global as any).__DEV__ = false;
-
-    try {
-      mockPlayerData = {userId: "user-123"};
-
-      const {queryByTestId} = render(<ModalTogglePanel />);
-
-      await act(async () => {
-        jest.advanceTimersByTime(1800);
-      });
-
-      expect(queryByTestId("active-fullProfileDetails")).toBeNull();
-    } finally {
-      (global as any).__DEV__ = originalDev;
-    }
+    expect(queryByTestId("active-fullProfileDetails")).toBeNull();
   });
 
   it("handles __fetchServerData modal data updates and merges updated payload", async () => {

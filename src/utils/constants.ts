@@ -1,1 +1,1 @@
-export const NUM_GUESSES = 4;
+export const NUM_GUESSES = 5;

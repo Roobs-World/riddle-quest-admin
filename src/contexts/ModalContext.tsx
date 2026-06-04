@@ -1,4 +1,4 @@
-import React, {createContext, useContext, useReducer, useCallback, useMemo} from "react";
+import React, {createContext, useContext, useReducer, useCallback, useMemo, useEffect} from "react";
 import {ModalContextState, ModalInstance, ModalData, ModalOptions, ModalAction} from "../types/ModalTypes";
 import {logger} from "src/utils/logger";
 
@@ -57,6 +57,14 @@ const generateModalId = (): string => {
 export const ModalProvider: React.FC<{children: React.ReactNode}> = ({children}) => {
   const [modals, dispatch] = useReducer(modalReducer, initialState);
 
+  useEffect(() => {
+    logger.debug("[ModalContext] modal stack updated", {
+      count: modals.length,
+      types: modals.map((modal) => modal.type),
+      ids: modals.map((modal) => modal.id),
+    });
+  }, [modals]);
+
   // Open modal function
   const openModal = useCallback(<T extends ModalData>(type: string, data?: T, options?: ModalOptions): string => {
     const id = generateModalId();
@@ -71,21 +79,31 @@ export const ModalProvider: React.FC<{children: React.ReactNode}> = ({children})
       persistent,
     };
 
+    logger.debug("[ModalContext] openModal", {
+      id,
+      type,
+      priority,
+      persistent,
+      hasData: Boolean(data),
+    });
     dispatch({type: "OPEN_MODAL", payload: modalInstance});
     return id;
   }, []);
 
   // Close modal function
   const closeModal = useCallback((id: string): void => {
+    logger.debug("[ModalContext] closeModal", {id});
     dispatch({type: "CLOSE_MODAL", payload: id});
   }, []);
 
   const closeModalByType = useCallback((type: string): void => {
+    logger.debug("[ModalContext] closeModalByType", {type});
     dispatch({type: "CLOSE_MODAL_BY_TYPE", payload: type});
   }, []);
 
   // Close all modals function
   const closeAllModals = useCallback((): void => {
+    logger.debug("[ModalContext] closeAllModals");
     dispatch({type: "CLOSE_ALL_MODALS"});
   }, []);
 

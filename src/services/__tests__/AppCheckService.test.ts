@@ -1,20 +1,10 @@
 const mockInitializeAppCheck = jest.fn(async () => undefined);
 
-jest.mock("@react-native-firebase/app-check", () => {
-  const appCheckMock = jest.fn(() => ({
-    initializeAppCheck: mockInitializeAppCheck,
-  }));
-
-  return {
-    __esModule: true,
-    default: appCheckMock,
-  };
-});
-
 jest.mock("../firebaseApp", () => ({
   getFirebaseApp: jest.fn(() => ({
     name: "[DEFAULT]",
     appCheck: jest.fn(() => ({
+      initializeAppCheck: mockInitializeAppCheck,
       newReactNativeFirebaseAppCheckProvider: jest.fn(() => ({
         configure: jest.fn(),
       })),
@@ -37,7 +27,6 @@ import {
   resetFirebaseAppCheckForTests,
 } from "../AppCheckService";
 
-const mockAppCheckModule = require("@react-native-firebase/app-check").default as jest.Mock;
 const {getFirebaseApp: mockGetFirebaseApp} = require("../firebaseApp");
 
 const getLatestProviderMock = () => {
@@ -133,7 +122,6 @@ describe("AppCheckService", () => {
         debugToken: "debug-token",
       },
     });
-    expect(mockAppCheckModule).toHaveBeenCalledTimes(1);
     expect(mockInitializeAppCheck).toHaveBeenCalledTimes(1);
     expect(mockInitializeAppCheck).toHaveBeenCalledWith(
       expect.objectContaining({

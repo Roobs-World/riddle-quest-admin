@@ -220,6 +220,7 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisi
             style={{
               width: "100%",
               maxWidth: AUTH_CONTENT_MAX_WIDTH,
+              height: MODAL_MAX_HEIGHT,
               maxHeight: MODAL_MAX_HEIGHT,
               backgroundColor: CREAM,
               borderTopLeftRadius: 24,

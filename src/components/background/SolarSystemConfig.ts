@@ -29,6 +29,8 @@ import planetVTexture from "../../../assets/3d/tex_planet_v.png";
 import planetDTexture from "../../../assets/3d/tex_planet_d.png";
 import planetRTexture from "../../../assets/3d/tex_planet_r.png";
 import planetKTexture from "../../../assets/3d/tex_planet_k.png";
+import planetSTexture from "../../../assets/3d/tex_planet_s.png";
+import planetUTexture from "../../../assets/3d/tex_planet_u.png";
 import moonCTexture from "../../../assets/3d/tex_moon_c.png";
 import moonDTexture from "../../../assets/3d/tex_moon_d.png";
 import moonFTexture from "../../../assets/3d/tex_moon_f.png";
@@ -53,6 +55,7 @@ interface MoonConfig {
   distance: number;
   orbitSpeed: number;
   color: number;
+  textureKey: string;
   textureModule: number;
   startAngle: number;
 }
@@ -97,6 +100,7 @@ interface PlanetConfig {
   rotationSpeed: number;
   color: number;
   atmosphereColor: string;
+  textureKey: string;
   textureModule: number;
   startAngle: number;
   yPosition: number;
@@ -128,6 +132,7 @@ export const SOLAR_SYSTEM_CONFIG: PlanetConfig[] = [
     rotationSpeed: 0.01,
     color: 0x8c7853,
     atmosphereColor: "#aa9977",
+    textureKey: "planet_a",
     textureModule: planetATexture,
     startAngle: 0,
     yPosition: 30, // Earth's plane
@@ -141,6 +146,7 @@ export const SOLAR_SYSTEM_CONFIG: PlanetConfig[] = [
     rotationSpeed: 0.008,
     color: 0xffd700,
     atmosphereColor: "#ffcc44",
+    textureKey: "planet_d",
     textureModule: planetDTexture,
     startAngle: Math.PI / 3,
     yPosition: 30, // Slightly below Earth's plane
@@ -154,6 +160,7 @@ export const SOLAR_SYSTEM_CONFIG: PlanetConfig[] = [
     rotationSpeed: 0.02,
     color: 0x4169e1,
     atmosphereColor: "#4488ff",
+    textureKey: "planet_v",
     textureModule: planetVTexture,
     startAngle: (Math.PI * 2) / 3,
     yPosition: 30, // Main orbital plane
@@ -163,6 +170,7 @@ export const SOLAR_SYSTEM_CONFIG: PlanetConfig[] = [
         distance: 7, // Further increased orbital distance
         orbitSpeed: 0.06,
         color: 0xc0c0c0,
+        textureKey: "moon_d",
         textureModule: moonDTexture, // Updated to use moon D texture
         startAngle: 0,
       },
@@ -182,6 +190,7 @@ export const SOLAR_SYSTEM_CONFIG: PlanetConfig[] = [
     rotationSpeed: 0.015,
     color: 0xcd5c5c,
     atmosphereColor: "#ff5533",
+    textureKey: "planet_r",
     textureModule: planetRTexture,
     startAngle: Math.PI,
     yPosition: 28, // Above Earth's plane
@@ -191,16 +200,11 @@ export const SOLAR_SYSTEM_CONFIG: PlanetConfig[] = [
         distance: 7, // Further increased orbital distance
         orbitSpeed: 0.08,
         color: 0x8b7355,
+        textureKey: "moon_g",
         textureModule: moonGTexture, // Updated to use moon G texture
         startAngle: 0,
       },
     ],
-    ring: {
-      innerRadius: 11.5,
-      outerRadius: 16.5,
-      textureModule: ringBTexture,
-      tiltRadians: Math.PI / 2.25,
-    },
   },
 
   // Gas giants - increased distances for better spacing
@@ -212,6 +216,7 @@ export const SOLAR_SYSTEM_CONFIG: PlanetConfig[] = [
     rotationSpeed: 0.025,
     color: 0xdaa520,
     atmosphereColor: "#ddaa44",
+    textureKey: "planet_k",
     textureModule: planetKTexture,
     startAngle: Math.PI * 1.2,
     yPosition: 30, // Further below Earth's plane for depth
@@ -221,6 +226,7 @@ export const SOLAR_SYSTEM_CONFIG: PlanetConfig[] = [
         distance: 13, // Further increased orbital distance
         orbitSpeed: 0.03,
         color: 0xaaaaaa,
+        textureKey: "moon_h",
         textureModule: moonHTexture, // Keep moon H texture
         startAngle: 0,
       },
@@ -229,6 +235,7 @@ export const SOLAR_SYSTEM_CONFIG: PlanetConfig[] = [
         distance: 11.5, // Further increased orbital distance with more separation
         orbitSpeed: 0.032,
         color: 0xc0c0c0,
+        textureKey: "moon_c",
         textureModule: moonCTexture, // Updated to use moon C texture
         startAngle: Math.PI / 3,
       },
@@ -242,7 +249,8 @@ export const SOLAR_SYSTEM_CONFIG: PlanetConfig[] = [
     rotationSpeed: 0.022,
     color: 0xffd700,
     atmosphereColor: "#ffee88",
-    textureModule: moonCTexture,
+    textureKey: "planet_s",
+    textureModule: planetSTexture,
     startAngle: Math.PI * 1.7,
     yPosition: 30, // Above Earth's plane for depth
     moons: [
@@ -251,6 +259,7 @@ export const SOLAR_SYSTEM_CONFIG: PlanetConfig[] = [
         distance: 12, // Further increased orbital distance
         orbitSpeed: 0.038,
         color: 0xc0c0c0,
+        textureKey: "moon_f",
         textureModule: moonFTexture, // Updated to use moon F texture
         startAngle: 0,
       },
@@ -259,10 +268,17 @@ export const SOLAR_SYSTEM_CONFIG: PlanetConfig[] = [
         distance: 12, // Further increased orbital distance with more separation
         orbitSpeed: 0.03,
         color: 0xaaaaaa,
+        textureKey: "moon_d",
         textureModule: moonDTexture, // Updated to use moon D texture (different from Earth's moon)
         startAngle: Math.PI / 2,
       },
     ],
+    ring: {
+      innerRadius: 11.5,
+      outerRadius: 16.5,
+      textureModule: ringBTexture,
+      tiltRadians: Math.PI / 2.25,
+    },
   },
 
   // Ice giants - increased distance for better spacing
@@ -274,7 +290,8 @@ export const SOLAR_SYSTEM_CONFIG: PlanetConfig[] = [
     rotationSpeed: 0.018,
     color: 0x4fd0e3,
     atmosphereColor: "#44ddee",
-    textureModule: moonGTexture,
+    textureKey: "planet_u",
+    textureModule: planetUTexture,
     startAngle: Math.PI * 0.3,
     yPosition: 30, // Slight deviation below Earth's plane
     moons: [],

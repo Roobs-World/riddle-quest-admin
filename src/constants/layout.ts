@@ -264,7 +264,7 @@ export const SUBMIT_BUTTON_PADDING_H = scale(32);
 // ---------------------------------------------------------------------------
 
 /** Width/height of the Riddle Quest logo icon in the game header. */
-export const HEADER_LOGO_SIZE = moderateScale(48);
+export const HEADER_LOGO_SIZE = moderateScale(44);
 
 /** Width/height of the back-navigation arrow icon on auth/stack screens. */
 export const BACK_ICON_SIZE = moderateScale(35);
@@ -277,7 +277,7 @@ export const BACK_ICON_SIZE = moderateScale(35);
 export const COIN_ICON_SIZE_LARGE = moderateScale(125);
 
 /** Width/height of the coin icon in the in-game header coins display. */
-export const COIN_DISPLAY_ICON_SIZE = moderateScale(36);
+export const COIN_DISPLAY_ICON_SIZE = moderateScale(32);
 
 /** Width/height of the circular status icon in each achievement row. */
 export const ACHIEVEMENT_ICON_SIZE = moderateScale(40);

@@ -25,7 +25,7 @@
  * @since 2024
  */
 
-import React, {useCallback, useEffect, useRef, useState} from "react";
+import React, {useCallback, useState} from "react";
 import {View, Text, TouchableOpacity, Switch, ScrollView, StyleSheet} from "react-native";
 import {modalRegistry, getModalComponent} from "../modals/ModalRegistry";
 import {ModalData} from "../../types/ModalTypes";
@@ -415,7 +415,6 @@ const ModalTogglePanel: React.FC<ModalTogglePanelProps> = ({
     {label: "Coin Shop", modalType: "coinShop"},
     {label: "Settings", modalType: "settings"},
   ] as const;
-  const qaTourStartedRef = useRef(false);
 
   const spendDebugCoins = useCallback(
     (amount: number): boolean => {
@@ -462,24 +461,6 @@ const ModalTogglePanel: React.FC<ModalTogglePanelProps> = ({
       return updatedToggles;
     });
   }, []);
-
-  useEffect(() => {
-    if (!__DEV__ || qaTourStartedRef.current || !playerData) {
-      return;
-    }
-
-    qaTourStartedRef.current = true;
-    logger.debug("[ModalTogglePanel QA] Scheduling profile auto-open");
-
-    const profileTimer = setTimeout(() => {
-      logger.debug("[ModalTogglePanel QA] Opening profile modal");
-      toggleModal("fullProfileDetails", true);
-    }, 1800);
-
-    return () => {
-      clearTimeout(profileTimer);
-    };
-  }, [playerData, toggleModal]);
 
   // CRITICAL: Only render in development builds
   if (!__DEV__) {

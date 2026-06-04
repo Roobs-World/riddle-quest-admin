@@ -2,6 +2,7 @@ import React, {useEffect, useMemo, useState, useRef} from "react";
 import {Animated, Dimensions, Easing, Pressable, Text, View} from "react-native";
 import {AppStrings} from "../../constants/AppStrings";
 import {COLORS, SPACING, TYPOGRAPHY} from "../../styles";
+import {logger} from "../../utils/logger";
 import type {TargetRect, TooltipContent} from "./types";
 
 interface TooltipOverlayProps {
@@ -28,6 +29,12 @@ const TooltipOverlay: React.FC<TooltipOverlayProps> = ({visible, targetRect, con
   const animationRef = useRef<Animated.CompositeAnimation | null>(null);
 
   useEffect(() => {
+    logger.debug("[TooltipOverlay] visibility changed", {
+      visible,
+      title: content.title,
+      targetRect,
+    });
+
     const height = Dimensions.get("window").height;
     const toTranslateY = visible ? 0 : height + 80;
     const easing = visible ? Easing.out(Easing.cubic) : Easing.in(Easing.cubic);
@@ -46,7 +53,16 @@ const TooltipOverlay: React.FC<TooltipOverlayProps> = ({visible, targetRect, con
         useNativeDriver: true,
       }),
     ]).start(({finished}) => {
+      logger.debug("[TooltipOverlay] animation finished", {
+        finished,
+        visible,
+        title: content.title,
+      });
+
       if (finished && !visible) {
+        logger.debug("[TooltipOverlay] exit complete, clearing overlay", {
+          title: content.title,
+        });
         onExited?.();
       }
     });
@@ -131,6 +147,8 @@ const TooltipOverlay: React.FC<TooltipOverlayProps> = ({visible, targetRect, con
     return {left: panelLeft, top: panelTop};
   }, [targetRect]);
 
+  const overlayPointerEvents = visible ? "auto" : "none";
+
   return (
     <View
       pointerEvents="box-none"
@@ -147,7 +165,7 @@ const TooltipOverlay: React.FC<TooltipOverlayProps> = ({visible, targetRect, con
       {cutout ? (
         <>
           <Animated.View
-            pointerEvents="auto"
+            pointerEvents={overlayPointerEvents}
             testID="tooltip-backdrop-top"
             style={{
               position: "absolute",
@@ -160,7 +178,7 @@ const TooltipOverlay: React.FC<TooltipOverlayProps> = ({visible, targetRect, con
             }}
           />
           <Animated.View
-            pointerEvents="auto"
+            pointerEvents={overlayPointerEvents}
             testID="tooltip-backdrop-left"
             style={{
               position: "absolute",
@@ -173,7 +191,7 @@ const TooltipOverlay: React.FC<TooltipOverlayProps> = ({visible, targetRect, con
             }}
           />
           <Animated.View
-            pointerEvents="auto"
+            pointerEvents={overlayPointerEvents}
             testID="tooltip-target-cutout"
             style={{
               position: "absolute",
@@ -187,7 +205,7 @@ const TooltipOverlay: React.FC<TooltipOverlayProps> = ({visible, targetRect, con
             }}
           />
           <Animated.View
-            pointerEvents="auto"
+            pointerEvents={overlayPointerEvents}
             testID="tooltip-backdrop-right"
             style={{
               position: "absolute",
@@ -200,7 +218,7 @@ const TooltipOverlay: React.FC<TooltipOverlayProps> = ({visible, targetRect, con
             }}
           />
           <Animated.View
-            pointerEvents="auto"
+            pointerEvents={overlayPointerEvents}
             testID="tooltip-backdrop-bottom"
             style={{
               position: "absolute",
@@ -215,7 +233,7 @@ const TooltipOverlay: React.FC<TooltipOverlayProps> = ({visible, targetRect, con
         </>
       ) : (
         <Animated.View
-          pointerEvents="auto"
+          pointerEvents={overlayPointerEvents}
           testID="tooltip-backdrop"
           style={{
             position: "absolute",
@@ -230,7 +248,7 @@ const TooltipOverlay: React.FC<TooltipOverlayProps> = ({visible, targetRect, con
       )}
 
       <Animated.View
-        pointerEvents="auto"
+        pointerEvents={overlayPointerEvents}
         style={{
           position: "absolute",
           width: PANEL_WIDTH,
@@ -272,7 +290,13 @@ const TooltipOverlay: React.FC<TooltipOverlayProps> = ({visible, targetRect, con
           {content.body}
         </Text>
         <AnimatedPressable
-          onPress={onDismiss}
+          onPress={() => {
+            logger.debug("[TooltipOverlay] dismiss button pressed", {
+              title: content.title,
+              targetRect,
+            });
+            onDismiss();
+          }}
           accessibilityRole="button"
           accessibilityLabel={content.action}
           style={[

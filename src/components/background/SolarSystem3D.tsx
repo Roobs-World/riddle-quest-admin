@@ -68,6 +68,8 @@ let fallbackPhongMaterial: MeshPhongMaterial | null = null;
 let fallbackRingMaterial: MeshPhongMaterial | null = null;
 
 const isTextureDebugEnabled = process.env.EXPO_PUBLIC_TEXTURE_DEBUG === "1";
+const SUN_POSITION: [number, number, number] = [0, 30, 0];
+const SUN_DIRECTIONAL_POSITION: [number, number, number] = [0, 36, 42];
 
 const textureDebugLog = (level: "log" | "warn" | "error", message: string, details?: Record<string, unknown>): void => {
   if (!isTextureDebugEnabled) {
@@ -117,11 +119,11 @@ const getSharedTexturedPhongMaterial = (texture: Texture | null): MeshPhongMater
   if (!texture) {
     if (!fallbackPhongMaterial) {
       fallbackPhongMaterial = new MeshPhongMaterial({
-        color: 0xb8b8b8,
-        emissive: 0x111111,
-        emissiveIntensity: 0.15,
-        shininess: 20,
-        specular: 0x111111,
+        color: 0xd8d8d8,
+        emissive: 0x2a2a2a,
+        emissiveIntensity: 0.3,
+        shininess: 30,
+        specular: 0x222222,
       });
     }
     return fallbackPhongMaterial;
@@ -135,10 +137,10 @@ const getSharedTexturedPhongMaterial = (texture: Texture | null): MeshPhongMater
   const material = new MeshPhongMaterial({
     map: texture,
     color: 0xffffff,
-    emissive: 0x1a1a1a,
-    emissiveIntensity: 0.35,
-    shininess: 22,
-    specular: 0x222222,
+    emissive: 0x383838,
+    emissiveIntensity: 0.58,
+    shininess: 34,
+    specular: 0x3a3a3a,
   });
   texturedPhongMaterialCache.set(texture, material);
   return material;
@@ -148,10 +150,10 @@ const getSharedRingMaterial = (texture: Texture | null): MeshPhongMaterial => {
   if (!texture) {
     if (!fallbackRingMaterial) {
       fallbackRingMaterial = new MeshPhongMaterial({
-        color: 0xd7c891,
-        emissive: 0x18110a,
-        emissiveIntensity: 0.25,
-        opacity: 0.82,
+        color: 0xe4d6a4,
+        emissive: 0x241b10,
+        emissiveIntensity: 0.35,
+        opacity: 0.88,
         side: DoubleSide,
         transparent: true,
       });
@@ -167,9 +169,9 @@ const getSharedRingMaterial = (texture: Texture | null): MeshPhongMaterial => {
   const material = new MeshPhongMaterial({
     map: texture,
     color: 0xffffff,
-    emissive: 0x15110a,
-    emissiveIntensity: 0.22,
-    opacity: 0.92,
+    emissive: 0x2a2114,
+    emissiveIntensity: 0.32,
+    opacity: 0.96,
     side: DoubleSide,
     transparent: true,
   });
@@ -299,6 +301,7 @@ interface MoonProps {
     distance: number;
     orbitSpeed: number;
     color: number;
+    textureKey: string;
     textureModule: number;
     startAngle: number;
   };
@@ -451,10 +454,10 @@ Planet.displayName = "Planet";
 const SolarSystemScene: React.FC = () => {
   return (
     <>
-      <ambientLight intensity={0.55} />
-      <hemisphereLight intensity={0.7} color={0xbfdcff} groundColor={0x1a1328} />
-      <directionalLight position={[-60, 40, 80]} intensity={1.35} color={0xffffff} />
-      <pointLight position={[0, 30, 0]} intensity={4.75} color={0xffc36a} distance={280} />
+      <ambientLight intensity={0.98} />
+      <hemisphereLight intensity={1.2} color={0xe3f1ff} groundColor={0x2b1d3f} />
+      <directionalLight position={SUN_DIRECTIONAL_POSITION} intensity={2.45} color={0xfff5dd} />
+      <pointLight position={SUN_POSITION} intensity={8.6} color={0xffd27f} distance={360} />
 
       <Sun />
 

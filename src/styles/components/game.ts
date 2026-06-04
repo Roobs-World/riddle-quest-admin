@@ -14,7 +14,7 @@ export const gameStyles = StyleSheet.create({
   backspaceKey: {
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: COLORS.tileDefault,
+    backgroundColor: COLORS.transparent,
     borderRadius: BORDER_RADIUS.sm,
   } as ViewStyle,
 

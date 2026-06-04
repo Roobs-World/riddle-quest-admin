@@ -47,32 +47,32 @@ export const createSceneSetup = (): SceneSetup => {
  * @param lights Target list that collects created lights.
  */
 export const addEnhancedLights = (scene: Scene, lights: (DirectionalLight | AmbientLight | PointLight)[]): void => {
-  const ambientLight = new AmbientLight(0x5050a8, 3.2);
+  const ambientLight = new AmbientLight(0x7272cf, 5.0);
   scene.add(ambientLight);
   lights.push(ambientLight);
 
-  const sunLight = new DirectionalLight(0xffffff, 12.0);
-  sunLight.position.set(10, 5, 10);
+  const sunLight = new DirectionalLight(0xfff5dd, 18.0);
+  sunLight.position.set(0, 6, 34);
   sunLight.target.position.set(0, 0, 0);
   sunLight.castShadow = false;
   scene.add(sunLight);
   scene.add(sunLight.target);
   lights.push(sunLight);
 
-  const sunPointLight = new PointLight(0xffffff, 18.0, 300);
+  const sunPointLight = new PointLight(0xffd27f, 28.0, 380);
   sunPointLight.position.set(0, 0, 0);
   sunPointLight.castShadow = false;
   scene.add(sunPointLight);
   lights.push(sunPointLight);
 
-  const rimLight1 = new DirectionalLight(0x9aa0ff, 2.6);
+  const rimLight1 = new DirectionalLight(0xaeb6ff, 3.2);
   rimLight1.position.set(-20, 10, -20);
   rimLight1.target.position.set(0, 0, 0);
   scene.add(rimLight1);
   scene.add(rimLight1.target);
   lights.push(rimLight1);
 
-  const rimLight2 = new DirectionalLight(0xff9a9a, 2.0);
+  const rimLight2 = new DirectionalLight(0xffb0a0, 2.5);
   rimLight2.position.set(20, -10, 20);
   rimLight2.target.position.set(0, 0, 0);
   scene.add(rimLight2);
@@ -80,7 +80,7 @@ export const addEnhancedLights = (scene: Scene, lights: (DirectionalLight | Ambi
   lights.push(rimLight2);
 
   logger.debug(
-    "Enhanced lighting setup for MeshPhongMaterial: Ambient(3.2), Sun Directional(12.0), Sun Point(18.0), Rim Lights(2.6, 2.0)",
+    "Enhanced lighting setup for MeshPhongMaterial: Ambient(5.0), Sun Directional(18.0), Sun Point(28.0), Rim Lights(3.2, 2.5)",
   );
 };
 

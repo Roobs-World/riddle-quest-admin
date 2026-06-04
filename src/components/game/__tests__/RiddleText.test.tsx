@@ -56,6 +56,7 @@ jest.mock("../../../styles", () => ({
     textShadowDark: "rgba(0, 0, 0, 0.75)",
     primary: "#000000",
     secondary: "#ffffff",
+    white: "#ffffff",
   },
   TYPOGRAPHY: {
     fontPrimary: "System",
@@ -183,7 +184,7 @@ describe("RiddleText", () => {
       const Text = require("react-native").Text;
       const textElement = UNSAFE_getAllByType(Text)[0];
       expect(textElement.props.className).toContain("text-center");
-      expect(textElement.props.className).toContain("text-black");
+      expect(textElement.props.className).toContain("text-white");
       const style = Array.isArray(textElement.props.style)
         ? Object.assign({}, ...textElement.props.style)
         : (textElement.props.style ?? {});
@@ -213,6 +214,7 @@ describe("RiddleText", () => {
       const Text = require("react-native").Text;
       const textElement = UNSAFE_getAllByType(Text)[0];
       expect(textElement.props.style).toMatchObject({
+        color: "#ffffff",
         fontSize: 24,
         lineHeight: 36,
         maxWidth: 312,

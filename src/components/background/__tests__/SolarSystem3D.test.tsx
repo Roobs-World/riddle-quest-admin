@@ -183,6 +183,7 @@ describe("SolarSystem3D", () => {
       distance: 10,
       orbitSpeed: 0.2,
       color: 0xffffff,
+      textureKey: "moon_test",
       textureModule: 1,
       startAngle: 0,
     };

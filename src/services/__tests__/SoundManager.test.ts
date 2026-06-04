@@ -43,6 +43,7 @@ jest.mock("../../../assets/audio/music.wav", () => 1);
 // Helper to create a mock AudioPlayer
 const createMockPlayer = (overrides: Partial<MockAudioPlayer> = {}): MockAudioPlayer => ({
   volume: 1.0,
+  loop: false,
   playing: false,
   paused: true,
   isLoaded: true,
@@ -54,6 +55,7 @@ const createMockPlayer = (overrides: Partial<MockAudioPlayer> = {}): MockAudioPl
 
 interface MockAudioPlayer {
   volume: number;
+  loop: boolean;
   playing: boolean;
   paused: boolean;
   isLoaded: boolean;
@@ -246,10 +248,12 @@ describe("SoundManager", () => {
     it("should resume music when not playing and app is active", async () => {
       await SoundManager.init();
       mockPlayer.playing = false;
+      mockPlayer.loop = false;
       SoundManager.setSoundEnabled(true);
 
       await SoundManager.resumeCurrentMusic();
 
+      expect(mockPlayer.loop).toBe(true);
       expect(mockPlayer.play).toHaveBeenCalled();
     });
 
@@ -316,10 +320,12 @@ describe("SoundManager", () => {
     it("playBackgroundMusic should delegate to resumeCurrentMusic", async () => {
       await SoundManager.init();
       mockPlayer.playing = false;
+      mockPlayer.loop = false;
       SoundManager.setSoundEnabled(true);
 
       await SoundManager.playBackgroundMusic();
 
+      expect(mockPlayer.loop).toBe(true);
       expect(mockPlayer.play).toHaveBeenCalled();
     });
 
