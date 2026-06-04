@@ -208,7 +208,6 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisi
           justifyContent: "center",
           alignItems: "center",
           backgroundColor: "rgba(0,0,0,0.5)",
-          paddingHorizontal: SPACING.sm,
         }}
         testID="profile-modal-shell"
       >
@@ -234,7 +233,6 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisi
               style={{flex: 1, backgroundColor: CREAM}}
               contentContainerStyle={{
                 flexGrow: 1,
-                paddingHorizontal: SPACING.lg,
                 paddingTop: 0,
                 paddingBottom: SPACING.lg,
               }}
@@ -420,7 +418,14 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisi
               </View>
 
               {/* Body content follows inside same ScrollView so header scrolls with content */}
-              <View testID="profile-modal-body" style={{backgroundColor: CREAM, position: "relative"}}>
+              <View
+                testID="profile-modal-body"
+                style={{
+                  backgroundColor: CREAM,
+                  position: "relative",
+                  paddingHorizontal: SPACING.lg,
+                }}
+              >
                 {!hasProfileData ? (
                   <View
                     style={{

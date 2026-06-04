@@ -199,12 +199,21 @@ export const RIDDLE_CONTAINER_SLOT_HEIGHT: DimensionValue = viewport.isDesktop
 
 /** Guess grid height as a percentage string, balanced against riddle growth. */
 export const GUESS_GRID_SLOT_HEIGHT: DimensionValue = viewport.isDesktop
-  ? "32%"
+  ? "30%"
   : viewport.isLargeTablet
-    ? "32%"
+    ? "30%"
     : viewport.isTablet
-      ? "34%"
-      : "36%";
+      ? "31%"
+      : "32%";
+
+/** Equal vertical spacing used above and below the guess grid. */
+export const GAME_BOARD_VERTICAL_GAP = viewport.isDesktop
+  ? verticalScale(26)
+  : viewport.isLargeTablet
+    ? verticalScale(24)
+    : viewport.isTablet
+      ? verticalScale(20)
+      : verticalScale(16);
 
 // ---------------------------------------------------------------------------
 // Guess Grid (game board)

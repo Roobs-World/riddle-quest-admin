@@ -1,0 +1,67 @@
+{
+  "$schema": "https://raw.githubusercontent.com/fallow-rs/fallow/main/schema.json",
+  "entry": [
+    "index.{js,jsx,ts,tsx}",
+    "App.{js,jsx,ts,tsx}",
+
+    "app/**/*.{js,jsx,ts,tsx}",
+    "src/app/**/*.{js,jsx,ts,tsx}",
+
+    "src/screens/**/*.{js,jsx,ts,tsx}",
+    "src/navigation/**/*.{js,jsx,ts,tsx}",
+    "src/components/**/*.{js,jsx,ts,tsx}",
+    "src/hooks/**/*.{js,jsx,ts,tsx}",
+    "src/providers/**/*.{js,jsx,ts,tsx}",
+    "src/services/**/*.{js,jsx,ts,tsx}",
+    "src/utils/**/*.{js,jsx,ts,tsx}",
+    "src/constants/**/*.{js,jsx,ts,tsx}",
+    "src/styles/**/*.{js,jsx,ts,tsx}",
+
+    "firebase-functions/src/index.{ts,js}",
+    "firebase-functions/src/**/*.{ts,js}"
+  ],
+  "duplicates": {
+    "mode": "semantic",
+    "minOccurrences": 3,
+    "ignore": [
+      "**/lib/**",
+      "**/legacy/**",
+      "**/__generated__/**",
+      "**/generated/**",
+      "**/output/**",
+      "**/tests/**",
+      "**/__tests__/**",
+      "**/dist/**",
+      "**/build/**",
+      "**/out/**",
+      "**/coverage/**",
+      "**/node_modules/**",
+      "**/android/**",
+      "**/ios/**",
+
+      "firebase-functions/lib/**",
+      "firebase-functions/dist/**",
+      "firebase-functions/node_modules/**"
+    ]
+  },
+  "ignorePatterns": [
+    "node_modules/**",
+    "android/**",
+    "ios/**",
+    "dist/**",
+    "build/**",
+    "out/**",
+    "coverage/**",
+    ".expo/**",
+    ".expo-shared/**",
+    "**/__tests__/**",
+    "firebase-functions/lib/**",
+    "firebase-functions/dist/**",
+    "firebase-functions/node_modules/**",
+
+    "**/*.d.ts"
+  ],
+  "rules": {
+    "unused-dependencies": "warn"
+  }
+}

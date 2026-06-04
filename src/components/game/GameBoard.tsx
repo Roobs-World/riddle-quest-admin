@@ -16,6 +16,7 @@ import {View} from "react-native";
 import RiddleText from "./RiddleText";
 import GuessGrid from "./GuessGrid";
 import Keyboard from "./Keyboard";
+import {GAME_BOARD_VERTICAL_GAP, RIDDLE_CONTAINER_SLOT_HEIGHT} from "../../constants/layout";
 import {isTablet, isLargeTablet} from "../../utils/responsive";
 import {styles} from "../../styles";
 import type {Feedback} from "../../hooks/types";
@@ -161,8 +162,7 @@ const GameBoard: React.FC<GameBoardProps> = ({
   const keyPressHandler = handleKeyPress || onKeyPress || (() => {});
 
   return (
-    <View style={{flex: 1, width: "100%", alignItems: "center"}}>
-      {/* Keep the riddle intrinsic, then use equal flex spacers around the grid. */}
+    <View style={{flex: 1, width: "100%", alignItems: "center", justifyContent: "flex-start"}}>
       <View
         style={[
           styles.riddleContainer,
@@ -170,7 +170,9 @@ const GameBoard: React.FC<GameBoardProps> = ({
           isLargeTablet && styles.riddleContainerLargeTablet,
           {
             width: "100%",
-            minHeight: 0,
+            height: RIDDLE_CONTAINER_SLOT_HEIGHT,
+            minHeight: RIDDLE_CONTAINER_SLOT_HEIGHT,
+            maxHeight: RIDDLE_CONTAINER_SLOT_HEIGHT,
             justifyContent: "center",
             alignItems: "center",
             flexShrink: 0,
@@ -180,7 +182,7 @@ const GameBoard: React.FC<GameBoardProps> = ({
         <RiddleText riddleText={riddleText} />
       </View>
 
-      <View style={{flexGrow: 1, minHeight: 0}} />
+      <View style={{height: GAME_BOARD_VERTICAL_GAP, minHeight: GAME_BOARD_VERTICAL_GAP, flexShrink: 0}} />
 
       <GuessGrid
         guesses={guesses}
@@ -192,7 +194,7 @@ const GameBoard: React.FC<GameBoardProps> = ({
         onSelectCurrentGuessSlot={onSelectCurrentGuessSlot}
       />
 
-      <View style={{flexGrow: 1, minHeight: 0}} />
+      <View style={{height: GAME_BOARD_VERTICAL_GAP, minHeight: GAME_BOARD_VERTICAL_GAP, flexShrink: 0}} />
 
       <Keyboard
         submitKeyPress={keyPressHandler}

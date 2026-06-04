@@ -338,6 +338,9 @@ importers:
       expo-mcp:
         specifier: ~0.2.4
         version: 0.2.4
+      fallow:
+        specifier: 2.88.3
+        version: 2.88.3
       firebase-admin:
         specifier: ^13.10.0
         version: 13.10.0(encoding@0.1.13)
@@ -1503,6 +1506,46 @@ packages:
   '@expo/xcpretty@4.4.4':
     resolution: {integrity: sha512-4aQzz9vgxcNXFfo/iyNgDDYfsU5XGKKxWxZopw0cVotHiW+U8IJbIxMaxsINs6bHhtkG3StKNPcOrn3eBuxKPw==}
     hasBin: true
+
+  '@fallow-cli/darwin-arm64@2.88.3':
+    resolution: {integrity: sha512-lj3E3BevckfT9DHHN7iR/83pOHUA7cr+ynxarhiDNTlH6lklL5QqAb11nj+v7NzhSNQ+VzmwBLtuczrJEqeG7w==}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@fallow-cli/darwin-x64@2.88.3':
+    resolution: {integrity: sha512-DFzP/aiMli2AflKiUMbRVye3PrEHaqeXLi/CnWd+8jECt6LATTeWiEJsDmHDaCfXgF4eaEuCMgosFaJo+ADqKw==}
+    cpu: [x64]
+    os: [darwin]
+
+  '@fallow-cli/linux-arm64-gnu@2.88.3':
+    resolution: {integrity: sha512-bfOtlJXr240a1ZslSjyYI3ZG8Y0qXHwT5gBAx7r5JDbDEmuPqcZv0xoMv+ZfJkHDepb1taeEfyX+77ekm+gXbA==}
+    cpu: [arm64]
+    os: [linux]
+
+  '@fallow-cli/linux-arm64-musl@2.88.3':
+    resolution: {integrity: sha512-8Vt03oKYTVwQcXbVRR2OIQB5QfrJTm6D1kSUKUJ5deHPP+E5IiQBuQLLk9a6HhSnxOtNtIezCapDyz14Ztn3pw==}
+    cpu: [arm64]
+    os: [linux]
+
+  '@fallow-cli/linux-x64-gnu@2.88.3':
+    resolution: {integrity: sha512-LyKWd0nOqjbuQA/Bq6gbUiC1KO0O5fUSc3FQpnvmALX6Ia7ISppLWhbo0vQ0nnOvrywo6zhQrme6g7i04Y4tWg==}
+    cpu: [x64]
+    os: [linux]
+
+  '@fallow-cli/linux-x64-musl@2.88.3':
+    resolution: {integrity: sha512-dxI+ZYupRNr4swaG8nkeCVnAQtut/fhgGMVS0tA6jJGY/2kjkkVze5uvMpfm4l41OEwZ5WsBhPAyXPP8DKx7xg==}
+    cpu: [x64]
+    os: [linux]
+
+  '@fallow-cli/win32-arm64-msvc@2.88.3':
+    resolution: {integrity: sha512-6HFe6csw4RQuGEOfXEZdkYmXVv5TZT0hMQalKSc1ny87s+yvY0DuCHoSpOglAGthPqlTB1MJB7/uLEMDRVWr8Q==}
+    cpu: [arm64]
+    os: [win32]
+
+  '@fallow-cli/win32-x64-msvc@2.88.3':
+    resolution: {integrity: sha512-QPdOTlSoOj3ot29o+v4EaGuPq9ntOKVB4+OBxC31WG4ixjjwf+oHL9vk+tvyaIy2mooRSV0MKO/1m1NQkbJAmQ==}
+    cpu: [x64]
+    os: [win32]
 
   '@fastify/busboy@3.2.0':
     resolution: {integrity: sha512-m9FVDXU3GT2ITSe0UaMA5rU3QkfC/UXtCU8y0gSN/GugTqtVldOBWIB5V6V3sbmenVZUIpU6f+mPEO2+m5iTaA==}
@@ -4418,6 +4461,11 @@ packages:
 
   extend@3.0.2:
     resolution: {integrity: sha512-fjquC59cD7CyW6urNXK0FBufkZcoiGG80wTuPujX590cB5Ttln20E2UB4S/WARVqhXffZl2LNgS+gQdPIIim/g==}
+
+  fallow@2.88.3:
+    resolution: {integrity: sha512-vXgg/5G5jbx4p8Ff3U3I/nlCfO9ntvJLz5Ut7kUnvuE2Z9ubYtwMY2ZlD4af0i8WQFRvdWS2qwlCfeYP1bMg0A==}
+    engines: {node: '>=16'}
+    hasBin: true
 
   farmhash-modern@1.1.0:
     resolution: {integrity: sha512-6ypT4XfgqJk/F3Yuv4SX26I3doUjt0GTG4a+JgWxXQpxXzTBq8fPUeGHfcYMMDPHJHm3yPOSjaeBwBGAHWXCdA==}
@@ -9393,6 +9441,30 @@ snapshots:
       chalk: 4.1.2
       js-yaml: 4.1.1
 
+  '@fallow-cli/darwin-arm64@2.88.3':
+    optional: true
+
+  '@fallow-cli/darwin-x64@2.88.3':
+    optional: true
+
+  '@fallow-cli/linux-arm64-gnu@2.88.3':
+    optional: true
+
+  '@fallow-cli/linux-arm64-musl@2.88.3':
+    optional: true
+
+  '@fallow-cli/linux-x64-gnu@2.88.3':
+    optional: true
+
+  '@fallow-cli/linux-x64-musl@2.88.3':
+    optional: true
+
+  '@fallow-cli/win32-arm64-msvc@2.88.3':
+    optional: true
+
+  '@fallow-cli/win32-x64-msvc@2.88.3':
+    optional: true
+
   '@fastify/busboy@3.2.0': {}
 
   '@firebase/ai@2.12.0(@firebase/app-types@0.9.5)(@firebase/app@0.14.12)':
@@ -13203,6 +13275,19 @@ snapshots:
       - supports-color
 
   extend@3.0.2: {}
+
+  fallow@2.88.3:
+    dependencies:
+      detect-libc: 2.1.2
+    optionalDependencies:
+      '@fallow-cli/darwin-arm64': 2.88.3
+      '@fallow-cli/darwin-x64': 2.88.3
+      '@fallow-cli/linux-arm64-gnu': 2.88.3
+      '@fallow-cli/linux-arm64-musl': 2.88.3
+      '@fallow-cli/linux-x64-gnu': 2.88.3
+      '@fallow-cli/linux-x64-musl': 2.88.3
+      '@fallow-cli/win32-arm64-msvc': 2.88.3
+      '@fallow-cli/win32-x64-msvc': 2.88.3
 
   farmhash-modern@1.1.0: {}
 

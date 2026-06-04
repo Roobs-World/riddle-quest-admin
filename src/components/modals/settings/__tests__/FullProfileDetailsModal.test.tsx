@@ -406,7 +406,6 @@ describe("FullProfileDetailsModal", () => {
     expect(getByTestId("profile-modal-body-scroll").props.contentContainerStyle).toEqual(
       expect.objectContaining({
         flexGrow: 1,
-        paddingHorizontal: 24,
         paddingTop: 0,
         paddingBottom: 24,
       }),
@@ -415,6 +414,7 @@ describe("FullProfileDetailsModal", () => {
       expect.objectContaining({
         backgroundColor: "#FCFAF4",
         position: "relative",
+        paddingHorizontal: 24,
       }),
     );
     const profileCard = UNSAFE_getAllByType(require("react-native").View).find(

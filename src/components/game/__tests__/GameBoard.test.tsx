@@ -5,6 +5,7 @@ import GameBoard from "../GameBoard";
 // Mock the responsive utility
 jest.mock("../../../utils/responsive", () => ({
   scale: (n: number) => n,
+  verticalScale: (n: number) => n,
   moderateScale: (n: number) => n,
   isPhone: true,
   isTablet: false,

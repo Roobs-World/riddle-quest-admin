@@ -70,3 +70,4 @@ coverage/
 firebase-functions/*admin-sdk*.json
 firebase-functions/qwordly-admin-sdk.json
 firebase-functions/.runtimeconfig.json
+.fallow/
