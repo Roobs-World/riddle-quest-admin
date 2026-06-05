@@ -1,0 +1,21 @@
+{
+  "Navigation": {
+    "BUY_COINS_BUTTON": "Munten kopen",
+    "CREDITS": "Kredieten",
+    "FORGOT_PASSWORD": "Wachtwoord vergeten",
+    "GAME": "Spel",
+    "HINT_BUTTON": "Tip",
+    "LANDING": "Landen",
+    "LOGIN": "Inloggen",
+    "NEW_PASSWORD": "Nieuwwachtwoord",
+    "PLAY_BUTTON": "Spelen",
+    "PROFILE_BUTTON": "Profiel",
+    "SETTINGS_BUTTON": "Instellingen",
+    "SIGN_UP": "Aanmelden"
+  },
+  "NavigationMessages": {
+    "ERROR_LOADING_NEXT_RIDDLE": "Fout bij het laden van het volgende klassieke raadsel:",
+    "NO_CLASSIC_RIDDLE_FOUND": "⚠️ Geen klassiek raadsel gevonden in index ",
+    "SERVER_GENERATES_RIDDLES": ". De server genereert automatisch nieuwe raadsels wanneer u gissingen indient."
+  }
+}

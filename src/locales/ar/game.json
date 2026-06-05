@@ -1,0 +1,13 @@
+{
+  "GameMessages": {
+    "COINS_EARNED": "العملات المكتسبة:",
+    "GAME_LOST": "اللعبة الخاسرة: الإجابة الصحيحة -",
+    "GAME_WON": "الفوز باللعبة: المحاولات -",
+    "HINT_USED": "التلميح المستخدم: التكلفة -",
+    "IN_MODE": "في",
+    "MODE_SUFFIX": "الوضع.",
+    "RETRY_BUTTON_PRESSED": "تم الضغط على زر إعادة المحاولة",
+    "FALLBACK_CLUE_SINGLE": "حل هذه الكلمة.",
+    "FALLBACK_CLUE_TEMPLATE": "حل هذه الكلمة ذات الحرف {length}."
+  }
+}

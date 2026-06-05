@@ -23,3 +23,5 @@ Supported languages:
 - Vietnamese (`vi`)
 
 The regression test in `src/constants/__tests__/AppStrings.i18n.test.ts` compares every non-English locale override against the English string tree so new keys cannot silently fall back to English.
+
+Repo-wide localization verification runs through `pnpm run i18n:verify`, which chains catalog generation, strict i18n quality, the hardcoded-text scanner, and the legacy i18n usage check.

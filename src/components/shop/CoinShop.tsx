@@ -15,7 +15,7 @@ import {logger} from "../../utils/logger";
 import {analyticsService} from "../../services/AnalyticsService";
 import CloseButton from "../buttons/CloseButton";
 import WideButton from "../buttons/WideButton";
-import {AppStrings} from "../../constants/AppStrings";
+import {t} from "../../i18n";
 import SlideInModalContent from "../shared/SlideInModalContent";
 
 const {screenHeight} = dimensions;
@@ -196,30 +196,30 @@ const CoinShop: React.FC<CoinShopProps> = ({
             onPress={handleClose}
             size={CLOSE_BUTTON_SIZE_LG}
             style={styles.closeButton}
-            accessibilityLabel={AppStrings.Accessibility.CLOSE_COIN_SHOP}
+            accessibilityLabel={t("Accessibility.CLOSE_COIN_SHOP")}
           />
 
           {loading ? (
             <View style={styles.loadingContainer} testID="coin-shop-loading">
               <ActivityIndicator size="large" color={COLORS.primaryOrange} />
-              <Text style={styles.loadingText}>{AppStrings.CoinShop.LOADING_TEXT}</Text>
+              <Text style={styles.loadingText}>{t("CoinShop.LOADING_TEXT")}</Text>
             </View>
           ) : (
             <>
               <View style={styles.headerRow}>
-                <Text style={styles.title}>{AppStrings.CoinShop.TITLE}</Text>
+                <Text style={styles.title}>{t("CoinShop.TITLE")}</Text>
               </View>
 
               <View style={styles.coinsPill}>
                 <View style={styles.coinsPillLeft}>
                   <CoinSvg width={moderateScale(32)} height={moderateScale(32)} />
                   <View style={styles.coinsPillText}>
-                    <Text style={styles.coinsPillLabel}>{AppStrings.CoinShop.YOUR_BALANCE}</Text>
+                    <Text style={styles.coinsPillLabel}>{t("CoinShop.YOUR_BALANCE")}</Text>
                   </View>
                 </View>
                 <Text style={styles.coinsPillAmount}>
                   {currentCoins.toLocaleString()}
-                  {AppStrings.CoinShop.COINS_SUFFIX}
+                  {t("CoinShop.COINS_SUFFIX")}
                 </Text>
               </View>
 
@@ -255,7 +255,7 @@ const CoinShop: React.FC<CoinShopProps> = ({
                               />
                               <Text style={styles.productCoins}>
                                 {product.coins.toLocaleString()}
-                                {AppStrings.CoinShop.COINS_SUFFIX}
+                                {t("CoinShop.COINS_SUFFIX")}
                               </Text>
                               <View style={styles.productPriceButton}>
                                 <Text style={styles.productPriceText}>{displayPrice}</Text>
@@ -283,7 +283,7 @@ const CoinShop: React.FC<CoinShopProps> = ({
                                 <CoinSvg width={LIST_COIN_ICON_SIZE} height={LIST_COIN_ICON_SIZE} />
                                 <Text style={styles.listCoins}>
                                   {product.coins.toLocaleString()}
-                                  {AppStrings.CoinShop.COINS_SUFFIX}
+                                  {t("CoinShop.COINS_SUFFIX")}
                                 </Text>
                               </View>
                               <View style={styles.listPriceButton}>
@@ -299,8 +299,8 @@ const CoinShop: React.FC<CoinShopProps> = ({
 
                 {!error && sortedProducts.length === 0 && (
                   <View style={styles.emptyContainer}>
-                    <Text style={styles.errorText}>{AppStrings.CoinShop.NO_PACKS_AVAILABLE}</Text>
-                    <Text style={styles.emptySubText}>{AppStrings.ErrorMessages.FAILED_TO_LOAD_SHOP_PRODUCTS}</Text>
+                    <Text style={styles.errorText}>{t("CoinShop.NO_PACKS_AVAILABLE")}</Text>
+                    <Text style={styles.emptySubText}>{t("ErrorMessages.FAILED_TO_LOAD_SHOP_PRODUCTS")}</Text>
                   </View>
                 )}
               </View>
@@ -309,7 +309,7 @@ const CoinShop: React.FC<CoinShopProps> = ({
                 <View style={styles.purchaseButtonContainer}>
                   <WideButton
                     testID="purchase-button"
-                    buttonText={AppStrings.CoinShop.PURCHASE_BUTTON}
+                    buttonText={t("CoinShop.PURCHASE_BUTTON")}
                     onPress={handlePurchasePress}
                     disabled={!effectiveSelectedProductId}
                   />

@@ -1,0 +1,13 @@
+{
+  "GameMessages": {
+    "COINS_EARNED": "Pieces gagnees: ",
+    "GAME_LOST": "Partie perdue: Reponse - ",
+    "GAME_WON": "Partie gagnee: Essais - ",
+    "HINT_USED": "Indice utilise: Cout - ",
+    "IN_MODE": " en mode ",
+    "MODE_SUFFIX": ".",
+    "RETRY_BUTTON_PRESSED": "Bouton recommencer presse",
+    "FALLBACK_CLUE_SINGLE": "Résolvez ce mot.",
+    "FALLBACK_CLUE_TEMPLATE": "Résolvez ce mot de {longueur} lettre."
+  }
+}

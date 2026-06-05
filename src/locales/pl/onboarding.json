@@ -1,0 +1,24 @@
+{
+  "Instructions": {
+    "COLOR_CLUES_TITLE": "Kolorowe wskazówki",
+    "COLOR_CORRECT": "Litera jest prawidłowa i znajduje się na właściwym miejscu",
+    "COLOR_MISPLACED": "Litera znajduje się w słowie, ale w niewłaściwej pozycji",
+    "COLOR_WRONG": "Litery w ogóle nie ma w słowie",
+    "GOAL_DESCRIPTION": "Odgadnij ukrytą zagadkę w 3 próbach, korzystając z kolorowych wskazówek.",
+    "GOAL_TITLE": "Cel",
+    "GOT_IT_BUTTON": "Rozumiem!",
+    "TIPS_DESCRIPTION": "Zacznij od typowych liter i skorzystaj z informacji o kolorze, aby zawęzić swoje domysły. Pamiętaj, masz tylko 3 próby!",
+    "TIPS_TITLE": "Wskazówki dotyczące sukcesu",
+    "TITLE": "Jak grać"
+  },
+  "WelcomeBackModal": {
+    "TAP_TO_CONTINUE": "Kliknij, aby kontynuować",
+    "TITLE": "Witamy z powrotem"
+  },
+  "WelcomeModal": {
+    "EARN_COINS_TEXT": "Zarabiaj monety, pokonuj codzienne wyzwania i wspinaj się po rankingach.",
+    "LETS_PLAY": "Zagrajmy",
+    "SOLVE_RIDDLES_TEXT": "Rozwiązuj wciągające zagadki, zgadując odpowiedź litera po literze. Użyj wskazówek dotyczących kolorów, aby zawęzić każde przypuszczenie.",
+    "WELCOME_TITLE": "Witamy w Riddle Quest!"
+  }
+}

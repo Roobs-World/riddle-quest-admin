@@ -1,0 +1,10 @@
+{
+  "CoinShop": {
+    "COINS_SUFFIX": " pieces",
+    "LOADING_TEXT": "Chargement de la boutique...",
+    "NO_PACKS_AVAILABLE": "Aucun pack de pieces disponible pour le moment.",
+    "PURCHASE_BUTTON": "ACHETER",
+    "TITLE": "BOUTIQUE DE PIECES",
+    "YOUR_BALANCE": "Votre solde"
+  }
+}

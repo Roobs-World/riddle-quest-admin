@@ -9,7 +9,7 @@ import {
   isGoogleSignInCancellation,
 } from "../authErrorMessages";
 
-jest.mock("../../../constants/AppStrings", () => ({
+const mockI18n: any = {
   AppStrings: {
     AuthStrings: {
       Login: {
@@ -41,7 +41,11 @@ jest.mock("../../../constants/AppStrings", () => ({
       },
     },
   },
-}));
+};
+
+mockI18n.t = (key: string) => key.split(".").reduce((current: any, segment: string) => current?.[segment], mockI18n.AppStrings);
+
+jest.mock("../../../i18n", () => mockI18n);
 
 describe("authErrorMessages", () => {
   it("maps login auth codes to friendly copy", () => {

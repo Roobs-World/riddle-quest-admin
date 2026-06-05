@@ -1,0 +1,32 @@
+{
+  "Tooltips": {
+    "ACHIEVEMENT_EARNED_BODY": "अपनी उपलब्धियां और प्रगति देखने के लिए प्रोफ़ाइल खोलें।",
+    "ACHIEVEMENT_EARNED_TITLE": "उपलब्धि अनलॉक हुई",
+    "CLASSIC_FROM_DAILY_BODY": "दैनिक चुनौती पूरी हुई। क्लासिक मोड में आप अपनी गति से पहेलियां हल कर सकते हैं।",
+    "CLASSIC_FROM_DAILY_TITLE": "क्लासिक मोड",
+    "GOT_IT_BUTTON": "समझ गया",
+    "HELP_BUTTON_LABEL": "मदद",
+    "HINT_AFTER_WRONG_BODY": "यह अनुमान गलत था। उपयोगी अक्षर दिखाने और आगे बढ़ने के लिए संकेत टैप करें।",
+    "HINT_AFTER_WRONG_TITLE": "संकेत चाहिए?",
+    "LEADERBOARD_FIFTH_CORRECT_BODY": "पांच सही उत्तर! अपनी रैंक देखने के लिए प्रोफ़ाइल खोलें।",
+    "LEADERBOARD_FIFTH_CORRECT_TITLE": "लीडरबोर्ड पर चढ़ें",
+    "PROFILE_ACHIEVEMENTS_BODY": "अनलॉक की गई सभी उपलब्धियां देखने के लिए यह सेक्शन खोलें।",
+    "PROFILE_ACHIEVEMENTS_TITLE": "उपलब्धियां",
+    "PROFILE_COINS_BODY": "आपका सिक्का बैलेंस यहां दिखता है। संकेत, स्किप और अतिरिक्त मौकों पर सिक्के खर्च करें।",
+    "PROFILE_COINS_TITLE": "खज़ाना",
+    "PROFILE_DAILY_PUZZLES_BODY": "यह दिखाता है कि आपने कितनी दैनिक चुनौतियां पूरी की हैं।",
+    "PROFILE_DAILY_PUZZLES_TITLE": "दैनिक पहेलियां",
+    "PROFILE_IDENTITY_BODY": "आपका अवतार, उपयोगकर्ता नाम, XP स्तर और स्तर प्रगति यहां हैं।",
+    "PROFILE_IDENTITY_TITLE": "प्रोफ़ाइल",
+    "PROFILE_LEADERBOARD_BODY": "XP, जीत और स्ट्रीक की तुलना अन्य खिलाड़ियों से करने के लिए लीडरबोर्ड खोलें।",
+    "PROFILE_LEADERBOARD_TITLE": "लीडरबोर्ड",
+    "PROFILE_STATISTICS_BODY": "अपने गेम प्रदर्शन का विस्तृत विवरण देखने के लिए आंकड़े खोलें।",
+    "PROFILE_STATISTICS_TITLE": "आंकड़े",
+    "PROFILE_STATS_BODY": "ये कार्ड आपकी स्ट्रीक, अनुमानित शब्द, जीत दर और औसत अनुमान दिखाते हैं।",
+    "PROFILE_STATS_TITLE": "आंकड़ों का सार",
+    "SHOP_OUT_OF_COINS_BODY": "इस क्रिया के लिए आपके पास सिक्के नहीं हैं। और खरीदने या कमाने के लिए दुकान खोलें।",
+    "SHOP_OUT_OF_COINS_TITLE": "और सिक्के पाएं",
+    "SUBMIT_ANSWER_BODY": "जब सभी खाली जगहें भर जाएं, तो अपना अनुमान जांचने के लिए जमा करें टैप करें।",
+    "SUBMIT_ANSWER_TITLE": "अपना उत्तर जमा करें"
+  }
+}

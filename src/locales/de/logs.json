@@ -1,0 +1,10 @@
+{
+  "LogMessages": {
+    "IS_LOADING": "wird geladen:",
+    "NAVIGATION_RENDERING": "🧭 Navigationsrendering – isAuthenticated:",
+    "SHOWING_LOADING_SPINNER_AUTH": "⏳ Lade-Spinner wird angezeigt – Authentifizierungsstatus wird ermittelt",
+    "SHOWING_LOADING_SPINNER_USER_DATA": "⏳ Lade-Spinner wird angezeigt – Benutzerdaten werden geladen...",
+    "SHOWING_NAVIGATION_STACK": "🎯 Navigationsstapel wird angezeigt – initialRoute:",
+    "TIMESTAMP": "Zeitstempel:"
+  }
+}

@@ -1,7 +1,7 @@
 import React from "react";
 import {act, fireEvent, render} from "@testing-library/react-native";
 import WelcomeBackModal from "../WelcomeBackModal";
-import {AppStrings} from "../../../../constants/AppStrings";
+import {t} from "../../../../i18n";
 
 let mockPlayerData: {avatarUrl?: string | null} | null = null;
 
@@ -36,16 +36,16 @@ describe("WelcomeBackModal", () => {
       <WelcomeBackModal isVisible onClose={mockOnClose} onDismiss={mockOnDismiss} username="Craig" />,
     );
 
-    expect(getByText(AppStrings.WelcomeBackModal.TITLE)).toBeTruthy();
+    expect(getByText(t("WelcomeBackModal.TITLE"))).toBeTruthy();
     expect(getByText("Craig")).toBeTruthy();
-    expect(getByText(AppStrings.WelcomeBackModal.TAP_TO_CONTINUE)).toBeTruthy();
+    expect(getByText(t("WelcomeBackModal.TAP_TO_CONTINUE"))).toBeTruthy();
     expect(getByTestId("welcome-back-modal-touch-target")).toBeTruthy();
   });
 
   it("falls back to the guest username when no username is supplied", () => {
     const {getByText} = render(<WelcomeBackModal isVisible onClose={mockOnClose} username="" />);
 
-    expect(getByText(AppStrings.Profile.GUEST_USERNAME)).toBeTruthy();
+    expect(getByText(t("Profile.GUEST_USERNAME"))).toBeTruthy();
   });
 
   it("renders an avatar image when the auth profile has one", () => {

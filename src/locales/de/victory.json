@@ -1,0 +1,17 @@
+{
+  "VictoryModal": {
+    "ACHIEVEMENT_UNLOCKED": "Erfolg freigeschaltet!",
+    "COINS_SUFFIX": " Münzen",
+    "NEXT_LEVEL_BUTTON": "Nächstes Level",
+    "SHARE_TEXT": "Teilen Sie Ihren Sieg!",
+    "TITLE": "NETTER JOB!",
+    "TOTAL_COINS_LABEL": "Münzen insgesamt",
+    "YOU_WON_TITLE": "SIE HABEN GEWONNEN!",
+    "SHARE_ATTEMPT_PLURAL": "Versuche",
+    "SHARE_ATTEMPT_SINGULAR": "Versuch",
+    "SHARE_CLASSIC_MODE_LABEL": "Klassischer Modus",
+    "SHARE_DAILY_CHALLENGE_LABEL": "Tägliche Herausforderung",
+    "SHARE_MESSAGE_TEMPLATE": "Ich habe das heutige Riddle Quest {gameType} in {Versuchen} gelöst {attemptLabel}!\n\n{emojiGrid}\n\nKannst du meine Punktzahl übertreffen?\n\n#Riddle Quest #WordPuzzle #BrainGame",
+    "SHARE_RESULT_TITLE": "Sehen Sie sich mein Riddle Quest-Ergebnis an!"
+  }
+}

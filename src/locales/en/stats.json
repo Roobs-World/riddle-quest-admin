@@ -1,0 +1,21 @@
+{
+  "StatsModal": {
+    "AVG_GUESSES": "Avg Guesses (wins)",
+    "BEST_STREAK": "Best Streak",
+    "CHALLENGE_WINS": "Challenge Wins",
+    "CURRENT_STREAK": "Current Streak",
+    "DAILY_PUZZLES": "Daily Puzzles",
+    "GAMEPLAY_SECTION": "Gameplay",
+    "GAMES_PLAYED": "Games Played",
+    "HIGHEST_CLASSIC_LEVEL": "Highest Classic Level",
+    "HINTS_USED": "Hints Used",
+    "PERFORMANCE_SECTION": "Performance",
+    "TITLE": "Statistics",
+    "TOTAL_SCORE": "Total Score",
+    "TOTAL_WINS": "Total Wins",
+    "TOTAL_WORDS_GUESSED": "Total Words Guessed",
+    "WIN_RATE": "Win Rate",
+    "WINS_STREAKS_SECTION": "Wins & Streaks",
+    "XP": "XP"
+  }
+}

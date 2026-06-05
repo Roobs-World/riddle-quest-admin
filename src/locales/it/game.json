@@ -1,0 +1,13 @@
+{
+  "GameMessages": {
+    "COINS_EARNED": "Monete guadagnate:",
+    "GAME_LOST": "Partita persa: risposta corretta -",
+    "GAME_WON": "Partita vinta: tentativi -",
+    "HINT_USED": "Suggerimento utilizzato: Costo -",
+    "IN_MODE": "dentro",
+    "MODE_SUFFIX": "modalità.",
+    "RETRY_BUTTON_PRESSED": "Pulsante Riprova premuto",
+    "FALLBACK_CLUE_SINGLE": "Risolvi questa parola.",
+    "FALLBACK_CLUE_TEMPLATE": "Risolvi questa parola di {lunghezza} lettere."
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "LossModal": {
+    "ANSWER_PREFIX": "Antwort: ",
+    "EXTRA_GUESSES_PREFIX": "3 Extra-Versuche - ",
+    "EXTRA_GUESSES_PROMPT": "Keine Versuche mehr. Holen Sie 3 Extra-Versuche oder ueberspringen Sie dieses Raetsel.",
+    "EXTRA_GUESSES_SUFFIX": " Muenzen",
+    "NEXT_LEVEL_BUTTON": "Naechstes Level",
+    "OPEN_SHOP_BUTTON": "Shop oeffnen",
+    "OUT_OF_ATTEMPTS": "Keine Versuche mehr.",
+    "SKIP_LEVEL_PREFIX": "Level ueberspringen (",
+    "SKIP_LEVEL_SUFFIX": " Muenzen)",
+    "SKIP_PUZZLE_BUTTON": "Raetsel ueberspringen",
+    "TITLE": "Knapp daneben!",
+    "USE_COINS_PREFIX": "Verwende ",
+    "USE_COINS_SUFFIX": " Muenzen zum Weitermachen",
+    "WATCH_AD_BUTTON": "Werbung ansehen um weiterzumachen"
+  }
+}

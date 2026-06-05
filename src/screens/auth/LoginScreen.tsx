@@ -8,7 +8,7 @@ import UserPasswordInput from "../../components/inputFields/UserPasswordInput";
 import WideButton from "../../components/buttons/WideButton";
 import PulsingSpinner from "../../components/loading/PulsingSpinner";
 import Error from "../../components/text/Error";
-import {AppStrings} from "../../constants/AppStrings";
+import {t} from "../../i18n";
 import {LOADING_SPINNER_SIZE} from "../../constants/loading";
 import {AUTH_CONTENT_MAX_WIDTH} from "../../constants/layout";
 import {styles, SPACING} from "../../styles";
@@ -46,7 +46,7 @@ const LoginScreen = ({navigation}: LoginScreenProps) => {
     }
 
     if (!password) {
-      setAuthError(AppStrings.AuthStrings.Login.PASSWORD_CANNOT_BE_EMPTY);
+      setAuthError(t("AuthStrings.Login.PASSWORD_CANNOT_BE_EMPTY"));
       return;
     }
 
@@ -75,17 +75,17 @@ const LoginScreen = ({navigation}: LoginScreenProps) => {
           isWideAuthLayout ? {maxWidth: AUTH_CONTENT_MAX_WIDTH, justifyContent: "center"} : {justifyContent: "center"}
         }
       >
-        <Text style={[styles.title, {marginBottom: SPACING.xl}]}>{AppStrings.AuthStrings.Login.TITLE}</Text>
+        <Text style={[styles.title, {marginBottom: SPACING.xl}]}>{t("AuthStrings.Login.TITLE")}</Text>
         <View style={{width: "100%", gap: SPACING.md}}>
           <View>
             <Text className="text-gray-600 text-left" style={[styles.labelText, {marginBottom: SPACING.sm}]}>
-              {AppStrings.AuthStrings.Login.EMAIL_LABEL}
+              {t("AuthStrings.Login.EMAIL_LABEL")}
             </Text>
             <ReusableTextInput
               autoCapitalize="none"
               keyboardType="email-address"
               onChangeText={setEmail}
-              placeholder={AppStrings.AuthStrings.Login.EMAIL_PLACEHOLDER}
+              placeholder={t("AuthStrings.Login.EMAIL_PLACEHOLDER")}
               value={email}
             />
             {emailError && <Error message={emailError} />}
@@ -95,31 +95,31 @@ const LoginScreen = ({navigation}: LoginScreenProps) => {
 
           <TouchableOpacity
             accessibilityRole="button"
-            onPress={() => navigation?.navigate(AppStrings.Navigation.FORGOT_PASSWORD)}
+            onPress={() => navigation?.navigate(t("Navigation.FORGOT_PASSWORD"))}
           >
             <Text className="text-white text-right" style={styles.forgotPasswordText}>
-              {AppStrings.AuthStrings.Login.FORGOT_PASSWORD}
+              {t("AuthStrings.Login.FORGOT_PASSWORD")}
             </Text>
           </TouchableOpacity>
 
           {authError && <Error message={authError} />}
 
           <WideButton
-            buttonText={AppStrings.AuthStrings.Login.LOGIN_BUTTON}
+            buttonText={t("AuthStrings.Login.LOGIN_BUTTON")}
             disabled={isLoading}
             onPress={handleLogin}
           />
 
           <View className="flex-row justify-center">
             <Text className="text-white" style={styles.subtitle}>
-              {AppStrings.AuthStrings.Login.NO_ACCOUNT_PROMPT}
+              {t("AuthStrings.Login.NO_ACCOUNT_PROMPT")}
             </Text>
             <TouchableOpacity
               accessibilityRole="button"
-              onPress={() => navigation?.navigate(AppStrings.Navigation.SIGN_UP)}
+              onPress={() => navigation?.navigate(t("Navigation.SIGN_UP"))}
             >
               <Text className="text-white" style={styles.subtitle}>
-                {AppStrings.AuthStrings.Login.REGISTER_NOW}
+                {t("AuthStrings.Login.REGISTER_NOW")}
               </Text>
             </TouchableOpacity>
           </View>

@@ -1,0 +1,10 @@
+{
+  "LogMessages": {
+    "IS_LOADING": "đang tải:",
+    "NAVIGATION_RENDERING": "🧭 Hiển thị điều hướng - isAuthenticated:",
+    "SHOWING_LOADING_SPINNER_AUTH": "⏳ Hiển thị vòng quay tải - trạng thái xác thực đang được xác định",
+    "SHOWING_LOADING_SPINNER_USER_DATA": "⏳ Hiển thị vòng quay tải - Đang tải dữ liệu người dùng...",
+    "SHOWING_NAVIGATION_STACK": "🎯 Hiển thị ngăn xếp điều hướng - initRoute:",
+    "TIMESTAMP": "dấu thời gian:"
+  }
+}

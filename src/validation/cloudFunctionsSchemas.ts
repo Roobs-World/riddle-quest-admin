@@ -1,4 +1,5 @@
 import {z} from "zod";
+import {t} from "../i18n";
 
 // Define valid game modes
 export const GameModeSchema = z.union([z.literal("daily"), z.literal("classic"), z.literal("challenge")]);
@@ -64,7 +65,7 @@ export const GenerateClassicRiddlesOutputSchema = z.object({
 // getHint
 export const GetHintInputSchema = z.object({
   currentAttempt: z.array(z.string().length(1)),
-  riddleId: z.string().min(1, "Riddle ID is required"),
+  riddleId: z.string().min(1, t("ErrorMessages.RIDDLE_ID_REQUIRED")),
   gameMode: GameModeSchema,
 });
 export const GetHintOutputSchema = z
@@ -85,10 +86,10 @@ export const GuessFeedbackSchema = z.union([z.literal("green"), z.literal("yello
 
 // submitGuess
 export const SubmitGuessInputSchema = z.object({
-  guess: z.string().min(1, "Guess cannot be empty"),
-  riddleId: z.string().min(1, "Riddle ID is required"),
+  guess: z.string().min(1, t("ErrorMessages.GUESS_CANNOT_BE_EMPTY")),
+  riddleId: z.string().min(1, t("ErrorMessages.RIDDLE_ID_REQUIRED")),
   gameMode: z.enum(["challenge", "classic"]),
-  attempts: z.number().int().positive("Attempts must be a positive integer"),
+  attempts: z.number().int().positive(t("ErrorMessages.ATTEMPTS_MUST_BE_POSITIVE_INTEGER")),
 });
 
 export const SubmitGuessOutputSchema = z.object({
@@ -110,9 +111,9 @@ export type SubmitGuessOutput = z.infer<typeof SubmitGuessOutputSchema>;
 
 // completeGame
 export const CompleteGameInputSchema = z.object({
-  riddleId: z.string().min(1, "Riddle ID is required"),
+  riddleId: z.string().min(1, t("ErrorMessages.RIDDLE_ID_REQUIRED")),
   gameMode: BackendGameModeSchema,
-  attempts: z.number().int().positive("Attempts must be a positive integer"),
+  attempts: z.number().int().positive(t("ErrorMessages.ATTEMPTS_MUST_BE_POSITIVE_INTEGER")),
   isCorrect: z.boolean(),
 });
 
@@ -142,7 +143,7 @@ export type CompleteGameOutput = z.infer<typeof CompleteGameOutputSchema>;
 
 // skipRiddle
 export const SkipRiddleInputSchema = z.object({
-  riddleId: z.string().min(1, "Riddle ID is required"),
+  riddleId: z.string().min(1, t("ErrorMessages.RIDDLE_ID_REQUIRED")),
   gameMode: GameModeSchema,
 });
 
@@ -157,7 +158,7 @@ export const SkipRiddleOutputSchema = z.object({
 export const SpendCoinsInputSchema = z.object({
   reason: z.enum(["hint", "skip", "continue"]),
   gameMode: z.enum(["classic", "challenge"]).optional(),
-  amount: z.number().positive("Amount must be a positive number").optional(),
+  amount: z.number().positive(t("ErrorMessages.AMOUNT_MUST_BE_POSITIVE")).optional(),
 });
 
 export const SpendCoinsOutputSchema = z.object({

@@ -3,7 +3,7 @@ import {TouchableOpacity, Text} from "react-native";
 import GoogleIcon from "../icons/GoogleIcon";
 import {styles, SIZING, SPACING} from "../../styles";
 import {scale} from "../../utils/responsive";
-import {AppStrings} from "../../constants/AppStrings";
+import {t} from "../../i18n";
 
 interface GoogleSignInButtonProps {
   onPress: () => void;
@@ -25,7 +25,7 @@ const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({onPress, disable
         className={`font-medium ${disabled ? "text-gray-400" : "text-gray-700"}`}
         style={[styles.socialButtonText, {marginLeft: SPACING.sm}]}
       >
-        {AppStrings.AuthStrings.Login.CONTINUE_WITH_GOOGLE}
+        {t("AuthStrings.Login.CONTINUE_WITH_GOOGLE")}
       </Text>
     </TouchableOpacity>
   );

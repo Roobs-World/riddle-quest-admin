@@ -1,0 +1,13 @@
+{
+  "Achievements": {
+    "COINS_SUFFIX": " Монеты",
+    "FANFARE_TITLE": "Достижение разблокировано!",
+    "MODAL_TITLE": "Достижения",
+    "MORE_UNLOCKED_SUFFIX": " больше разблокировано",
+    "NEW_ACHIEVEMENT": "Новое достижение",
+    "NICE_BUTTON": "Хорошо",
+    "UNLOCKED_ALERT_MESSAGE": "Проверьте свой профиль, чтобы увидеть свои новые достижения.",
+    "UNLOCKED_ALERT_OK": "ХОРОШО",
+    "UNLOCKED_ALERT_TITLE": "Достижения разблокированы!"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "CoinShop": {
+    "COINS_SUFFIX": "金币",
+    "LOADING_TEXT": "加载商店中...",
+    "NO_PACKS_AVAILABLE": "目前没有可用的金币包。",
+    "PURCHASE_BUTTON": "购买",
+    "TITLE": "金币商店",
+    "YOUR_BALANCE": "余额"
+  }
+}

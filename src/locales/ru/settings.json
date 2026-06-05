@@ -1,0 +1,28 @@
+{
+  "Settings": {
+    "ABOUT_BUTTON": "О",
+    "ACCOUNT_DELETION_BUTTON": "Удалить аккаунт",
+    "CLOSE_BUTTON": "Закрыть",
+    "CREDITS_BUTTON": "Кредиты",
+    "DATA_EXPORT_BUTTON": "Экспортировать мои данные",
+    "HAPTICS_TOGGLE": "Гаптика",
+    "HELP_BUTTON": "Справка",
+    "LANGUAGE_LABEL": "Язык",
+    "LANGUAGE_SELECTED": "Выбранные",
+    "LICENSES_BUTTON": "Лицензии",
+    "LOGOUT_BUTTON": "Выход",
+    "LOGOUT_ERROR_MESSAGE": "Не удалось выйти из системы. Повторите попытку.",
+    "LOGOUT_ERROR_TITLE": "Ошибка",
+    "PRIVACY_POLICY_BUTTON": "Политика конфиденциальности",
+    "SOUND_TOGGLE": "Звук",
+    "TERMS_BUTTON": "Условия использования",
+    "TEST_CRASH_ALERT_CANCEL": "Отмена",
+    "TEST_CRASH_ALERT_CRASH": "Крушение",
+    "TEST_CRASH_ALERT_MESSAGE": "Это приведет к сбою приложения для проверки Firebase Crashlytics. Продолжить?",
+    "TEST_CRASH_ALERT_TITLE": "Сбой при тестировании",
+    "TEST_CRASH_BUTTON": "Сбой при тестировании",
+    "TITLE": "Настройки",
+    "TOGGLE_OFF": "Выкл.",
+    "TOGGLE_ON": "Вкл."
+  }
+}

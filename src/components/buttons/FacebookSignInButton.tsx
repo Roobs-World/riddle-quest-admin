@@ -3,7 +3,7 @@ import {TouchableOpacity, Text} from "react-native";
 import FacebookIcon from "../icons/FacebookIcon";
 import {styles, SIZING, SPACING} from "../../styles";
 import {scale} from "../../utils/responsive";
-import {AppStrings} from "../../constants/AppStrings";
+import {t} from "../../i18n";
 
 interface FacebookSignInButtonProps {
   onPress: () => void;
@@ -25,7 +25,7 @@ const FacebookSignInButton: React.FC<FacebookSignInButtonProps> = ({onPress, dis
         className={`font-medium ${disabled ? "text-gray-400" : "text-gray-700"}`}
         style={[styles.socialButtonText, {marginLeft: SPACING.sm}]}
       >
-        {AppStrings.AuthStrings.Login.CONTINUE_WITH_FACEBOOK}
+        {t("AuthStrings.Login.CONTINUE_WITH_FACEBOOK")}
       </Text>
     </TouchableOpacity>
   );

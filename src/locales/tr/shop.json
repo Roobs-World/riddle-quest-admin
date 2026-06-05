@@ -1,0 +1,10 @@
+{
+  "CoinShop": {
+    "COINS_SUFFIX": " para",
+    "LOADING_TEXT": "Magasa yukleniyor...",
+    "NO_PACKS_AVAILABLE": "Su an para paketi mevcut degil.",
+    "PURCHASE_BUTTON": "SATIN AL",
+    "TITLE": "PARA MAGASASI",
+    "YOUR_BALANCE": "Bakiyeniz"
+  }
+}

@@ -10,19 +10,10 @@ import ModalBg from "../../../../assets/images/modal-bg.svg";
 import HomeBg from "../../../../assets/images/home-bg.svg";
 import {TYPOGRAPHY} from "../../../styles";
 import {
-  MODAL_WIDTH,
-  MODAL_HEIGHT,
-  MODAL_CONTENT_PADDING,
-  MODAL_CLOSE_BUTTON_POSITION,
-  CARD_BORDER_RADIUS,
-  CARD_PADDING,
-  CARD_MARGIN_BOTTOM,
-  CLOSE_BUTTON_SIZE,
-  MODAL_MAX_HEIGHT,
-} from "../../../constants/layout";
+  MODAL_WIDTH, MODAL_HEIGHT, MODAL_CONTENT_PADDING, MODAL_CLOSE_BUTTON_POSITION, CARD_BORDER_RADIUS, CARD_PADDING, CARD_MARGIN_BOTTOM, CLOSE_BUTTON_SIZE, MODAL_MAX_HEIGHT, } from "../../../constants/layout";
 import {SPACING} from "../../../styles";
 import {verticalScale} from "../../../utils/responsive";
-import {AppStrings} from "../../../constants/AppStrings";
+import {t} from "../../../i18n";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import RotatingWheelBackground from "@/components/shared/RotatingWheelBackground";
 
@@ -118,7 +109,7 @@ const CreditsModal: React.FC<CreditsModalProps> = ({isVisible, onClose, topRight
                   textAlign: "center",
                 }}
               >
-                {AppStrings.Credits.TITLE}
+                {t("Credits.TITLE")}
               </Text>
               <FlatList
                 data={TEAM_MEMBERS}
@@ -131,7 +122,7 @@ const CreditsModal: React.FC<CreditsModalProps> = ({isVisible, onClose, topRight
                 }}
                 contentContainerStyle={{alignItems: "center"}}
               />
-              <WideButton buttonText={AppStrings.CommonAlerts.CLOSE_BUTTON} onPress={onClose} />
+              <WideButton buttonText={t("CommonAlerts.CLOSE_BUTTON")} onPress={onClose} />
             </View>
           </View>
         </SlideInModalContent>

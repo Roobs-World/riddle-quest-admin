@@ -1,0 +1,21 @@
+{
+  "Navigation": {
+    "BUY_COINS_BUTTON": "Купить монеты",
+    "CREDITS": "Кредиты",
+    "FORGOT_PASSWORD": "Забыли пароль",
+    "GAME": "Игра",
+    "HINT_BUTTON": "Подсказка",
+    "LANDING": "Лендинг",
+    "LOGIN": "Войти",
+    "NEW_PASSWORD": "Новый пароль",
+    "PLAY_BUTTON": "Играть",
+    "PROFILE_BUTTON": "Профиль",
+    "SETTINGS_BUTTON": "Настройки",
+    "SIGN_UP": "Зарегистрироваться"
+  },
+  "NavigationMessages": {
+    "ERROR_LOADING_NEXT_RIDDLE": "Ошибка при загрузке следующей классической загадки:",
+    "NO_CLASSIC_RIDDLE_FOUND": "⚠️ По индексу ",
+    "SERVER_GENERATES_RIDDLES": " не найдена классическая загадка. Сервер будет автоматически генерировать новые загадки, когда вы отправляете отгадки."
+  }
+}

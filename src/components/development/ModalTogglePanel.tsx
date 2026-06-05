@@ -37,7 +37,7 @@ import type {ProductPricing} from "../../services/ProductPricingService";
 import {COLORS, SPACING, BORDER_RADIUS, TYPOGRAPHY} from "../../styles";
 import {scale, verticalScale} from "../../utils/responsive";
 import {logger} from "../../utils/logger";
-import {AppStrings, getAppLanguage, SupportedLanguage} from "../../constants/AppStrings";
+import {t, getLocale, SupportedLanguage} from "../../i18n";
 import {HINT_COST_COINS, LEVEL_UP_COIN_BONUS} from "../../constants/game";
 import {loadRewardedAd, showRewardedAd} from "../../services/RewardedAdService";
 
@@ -53,6 +53,57 @@ interface ModalTogglePanelProps {
   onWatchRewardedAdForCoins?: () => void | Promise<void>;
   onWatchRewardedAdForLossContinue?: () => void | Promise<void>;
 }
+
+const getDebugModalLabel = (modalType: string): string => {
+  switch (modalType) {
+    case "victory":
+      return t("DevTools.MODAL_LABELS.VICTORY");
+    case "loss":
+      return t("DevTools.MODAL_LABELS.LOSS");
+    case "settings":
+      return t("DevTools.MODAL_LABELS.SETTINGS");
+    case "fullProfileDetails":
+      return t("DevTools.MODAL_LABELS.FULL_PROFILE_DETAILS");
+    case "upgradeAccount":
+      return t("DevTools.MODAL_LABELS.UPGRADE_ACCOUNT");
+    case "achievements":
+      return t("DevTools.MODAL_LABELS.ACHIEVEMENTS");
+    case "stats":
+      return t("DevTools.MODAL_LABELS.STATS");
+    case "leaderboard":
+      return t("DevTools.MODAL_LABELS.LEADERBOARD");
+    case "updateUsername":
+      return t("DevTools.MODAL_LABELS.UPDATE_USERNAME");
+    case "info":
+      return t("DevTools.MODAL_LABELS.INFO");
+    case "hint":
+      return t("DevTools.MODAL_LABELS.HINT");
+    case "skip":
+      return t("DevTools.MODAL_LABELS.SKIP");
+    case "welcome":
+      return t("DevTools.MODAL_LABELS.WELCOME");
+    case "welcomeBack":
+      return t("DevTools.MODAL_LABELS.WELCOME_BACK");
+    case "instructions":
+      return t("DevTools.MODAL_LABELS.INSTRUCTIONS");
+    case "credits":
+      return t("DevTools.MODAL_LABELS.CREDITS");
+    case "aboutLegal":
+      return t("DevTools.MODAL_LABELS.ABOUT_LEGAL");
+    case "coinShop":
+      return t("DevTools.MODAL_LABELS.COIN_SHOP");
+    case "coinPurchaseFanfare":
+      return t("DevTools.MODAL_LABELS.COIN_PURCHASE_FANFARE");
+    case "achievementUnlockFanfare":
+      return t("DevTools.MODAL_LABELS.ACHIEVEMENT_UNLOCK_FANFARE");
+    case "streakIncreaseFanfare":
+      return t("DevTools.MODAL_LABELS.STREAK_INCREASE_FANFARE");
+    case "levelUpFanfare":
+      return t("DevTools.MODAL_LABELS.LEVEL_UP_FANFARE");
+    default:
+      return modalType;
+  }
+};
 
 /**
  * Extended Modal Data with server data fetching capability
@@ -123,13 +174,13 @@ export const generateMockData = (
   const mockProducts: RNIap.Product[] = [
     {
       id: "coin_pack_small",
-      nameAndroid: "Small Coin Pack",
+      nameAndroid: t("DevTools.MOCK_SMALL_PACK_NAME"),
       platform: "android",
       price: 0.99,
       currency: "USD",
       displayPrice: "$0.99",
-      title: "Small Coin Pack",
-      description: "250 coins for hints and power-ups",
+      title: t("DevTools.MOCK_SMALL_PACK_NAME"),
+      description: t("DevTools.MOCK_SMALL_PACK_STORE_DESCRIPTION"),
       type: "in-app",
     } as RNIap.ProductAndroid,
   ];
@@ -138,13 +189,13 @@ export const generateMockData = (
     {
       productId: "coin_pack_small",
       productKey: "small",
-      name: "Small Coin Pack",
-      description: "A quick refill for a couple of hints.",
+      name: t("DevTools.MOCK_SMALL_PACK_NAME"),
+      description: t("DevTools.MOCK_SMALL_PACK_DESCRIPTION"),
       coins: 250,
       isActive: true,
       sortOrder: 1,
       featuredOrder: 1,
-      featuredBadge: "STARTER",
+      featuredBadge: t("DevTools.MOCK_SMALL_PACK_BADGE"),
       regionalPrices: [
         {
           amount: 0.99,
@@ -157,13 +208,13 @@ export const generateMockData = (
     {
       productId: "coin_pack_medium",
       productKey: "medium",
-      name: "Medium Coin Pack",
-      description: "Enough coins for a longer play session.",
+      name: t("DevTools.MOCK_MEDIUM_PACK_NAME"),
+      description: t("DevTools.MOCK_MEDIUM_PACK_DESCRIPTION"),
       coins: 550,
       isActive: true,
       sortOrder: 2,
       featuredOrder: 2,
-      featuredBadge: "POPULAR",
+      featuredBadge: t("DevTools.MOCK_MEDIUM_PACK_BADGE"),
       regionalPrices: [
         {
           amount: 1.99,
@@ -176,13 +227,13 @@ export const generateMockData = (
     {
       productId: "coin_pack_large",
       productKey: "large",
-      name: "Large Coin Pack",
-      description: "A bank of coins for hints and continues.",
+      name: t("DevTools.MOCK_LARGE_PACK_NAME"),
+      description: t("DevTools.MOCK_LARGE_PACK_DESCRIPTION"),
       coins: 1600,
       isActive: true,
       sortOrder: 3,
       featuredOrder: 3,
-      featuredBadge: "BEST VALUE",
+      featuredBadge: t("DevTools.MOCK_LARGE_PACK_BADGE"),
       regionalPrices: [
         {
           amount: 4.99,
@@ -283,7 +334,7 @@ export const generateMockData = (
       return {
         isSoundEnabled: true,
         isHapticsEnabled: false,
-        currentLanguage: getAppLanguage(),
+        currentLanguage: getLocale(),
         onToggleSound: (enabled: boolean) => logger.debug("Sound:", enabled),
         onToggleHaptics: (enabled: boolean) => logger.debug("Haptics:", enabled),
         onChangeLanguage: (language: SupportedLanguage) => logger.debug("Language:", language),
@@ -329,8 +380,8 @@ export const generateMockData = (
       };
     case "info":
       return {
-        title: "Debug Info",
-        message: "This is a test info modal from the debug panel.",
+        title: t("DevTools.DEBUG_INFO_TITLE"),
+        message: t("DevTools.DEBUG_INFO_MESSAGE"),
         onConfirm: () => logger.debug("Info confirm pressed"),
       };
     case "skip":
@@ -410,10 +461,10 @@ const ModalTogglePanel: React.FC<ModalTogglePanelProps> = ({
   }>({});
   const modalTypes = Object.keys(modalRegistry);
   const quickActions = [
-    {label: "Profile", modalType: "fullProfileDetails"},
-    {label: "Loss", modalType: "loss"},
-    {label: "Coin Shop", modalType: "coinShop"},
-    {label: "Settings", modalType: "settings"},
+    {label: t("DevTools.QUICK_ACTION_PROFILE"), modalType: "fullProfileDetails"},
+    {label: t("DevTools.QUICK_ACTION_LOSS"), modalType: "loss"},
+    {label: t("DevTools.QUICK_ACTION_COIN_SHOP"), modalType: "coinShop"},
+    {label: t("DevTools.QUICK_ACTION_SETTINGS"), modalType: "settings"},
   ] as const;
 
   const spendDebugCoins = useCallback(
@@ -526,7 +577,7 @@ const ModalTogglePanel: React.FC<ModalTogglePanelProps> = ({
    */
   const renderToggleSwitch = (modalType: string) => (
     <View key={modalType} style={styles.toggleRow}>
-      <Text style={styles.toggleLabel}>{modalType.charAt(0).toUpperCase() + modalType.slice(1)}</Text>
+      <Text style={styles.toggleLabel}>{getDebugModalLabel(modalType)}</Text>
       <Switch
         value={Boolean(modalToggles[modalType])}
         onValueChange={(value) => toggleModal(modalType, value)}
@@ -542,7 +593,7 @@ const ModalTogglePanel: React.FC<ModalTogglePanelProps> = ({
       <View style={styles.container}>
         <TouchableOpacity style={styles.header} onPress={() => setIsExpanded(!isExpanded)}>
           <Text style={styles.headerTitle}>
-            {AppStrings.DevTools.MODAL_TESTING_HEADER} {isExpanded ? "▼" : "▶"}
+            {t("DevTools.MODAL_TESTING_HEADER")} {isExpanded ? "▼" : "▶"}
           </Text>
         </TouchableOpacity>
 
@@ -568,10 +619,10 @@ const ModalTogglePanel: React.FC<ModalTogglePanelProps> = ({
               void onWatchRewardedAdForCoins();
             }}
             accessibilityRole="button"
-            accessibilityLabel="Watch Ad (Coins)"
+            accessibilityLabel={t("DevTools.WATCH_AD_COINS_BUTTON")}
             testID="modal-toggle-watch-rewarded-ad-coins"
           >
-            <Text style={styles.completeButtonText}>Watch Ad (Coins)</Text>
+            <Text style={styles.completeButtonText}>{t("DevTools.WATCH_AD_COINS_BUTTON")}</Text>
           </TouchableOpacity>
         ) : null}
 
@@ -582,10 +633,10 @@ const ModalTogglePanel: React.FC<ModalTogglePanelProps> = ({
               void onWatchRewardedAdForLossContinue();
             }}
             accessibilityRole="button"
-            accessibilityLabel="Watch Ad (Loss Continue)"
+            accessibilityLabel={t("DevTools.WATCH_AD_LOSS_CONTINUE_BUTTON")}
             testID="modal-toggle-watch-rewarded-ad-loss"
           >
-            <Text style={styles.completeButtonText}>Watch Ad (Loss Continue)</Text>
+            <Text style={styles.completeButtonText}>{t("DevTools.WATCH_AD_LOSS_CONTINUE_BUTTON")}</Text>
           </TouchableOpacity>
         ) : null}
 
@@ -600,7 +651,7 @@ const ModalTogglePanel: React.FC<ModalTogglePanelProps> = ({
                   void onCompleteRiddle();
                 }}
               >
-                <Text style={styles.completeButtonText}>{AppStrings.DevTools.COMPLETE_RIDDLE_BUTTON}</Text>
+                <Text style={styles.completeButtonText}>{t("DevTools.COMPLETE_RIDDLE_BUTTON")}</Text>
               </TouchableOpacity>
             ) : null}
 
@@ -611,7 +662,7 @@ const ModalTogglePanel: React.FC<ModalTogglePanelProps> = ({
                   void onGenerateDailyChallenge();
                 }}
               >
-                <Text style={styles.completeButtonText}>{AppStrings.DevTools.GENERATE_DAILY_CHALLENGE_BUTTON}</Text>
+                <Text style={styles.completeButtonText}>{t("DevTools.GENERATE_DAILY_CHALLENGE_BUTTON")}</Text>
               </TouchableOpacity>
             ) : null}
 
@@ -622,12 +673,12 @@ const ModalTogglePanel: React.FC<ModalTogglePanelProps> = ({
                   void onClearLocalData();
                 }}
               >
-                <Text style={styles.completeButtonText}>{AppStrings.DevTools.CLEAR_LOCAL_DATA_BUTTON}</Text>
+                <Text style={styles.completeButtonText}>{t("DevTools.CLEAR_LOCAL_DATA_BUTTON")}</Text>
               </TouchableOpacity>
             ) : null}
 
             <TouchableOpacity style={styles.clearButton} onPress={() => setModalToggles({})}>
-              <Text style={styles.clearButtonText}>{AppStrings.DevTools.CLEAR_ALL_BUTTON}</Text>
+              <Text style={styles.clearButtonText}>{t("DevTools.CLEAR_ALL_BUTTON")}</Text>
             </TouchableOpacity>
           </ScrollView>
         )}

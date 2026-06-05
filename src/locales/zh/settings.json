@@ -1,0 +1,28 @@
+{
+  "Settings": {
+    "ABOUT_BUTTON": "关于",
+    "ACCOUNT_DELETION_BUTTON": "删除账户",
+    "CLOSE_BUTTON": "关闭",
+    "CREDITS_BUTTON": "积分",
+    "DATA_EXPORT_BUTTON": "导出我的数据",
+    "HAPTICS_TOGGLE": "触觉",
+    "HELP_BUTTON": "帮助",
+    "LANGUAGE_LABEL": "语言",
+    "LANGUAGE_SELECTED": "已选择",
+    "LICENSES_BUTTON": "许可证",
+    "LOGOUT_BUTTON": "退出",
+    "LOGOUT_ERROR_MESSAGE": "无法注销。请重试。",
+    "LOGOUT_ERROR_TITLE": "错误",
+    "PRIVACY_POLICY_BUTTON": "隐私政策",
+    "SOUND_TOGGLE": "声音",
+    "TERMS_BUTTON": "使用条款",
+    "TEST_CRASH_ALERT_CANCEL": "取消",
+    "TEST_CRASH_ALERT_CRASH": "碰撞",
+    "TEST_CRASH_ALERT_MESSAGE": "这将使应用程序崩溃以测试 Firebase Crashlytics。继续？",
+    "TEST_CRASH_ALERT_TITLE": "测试崩溃",
+    "TEST_CRASH_BUTTON": "测试崩溃",
+    "TITLE": "设置",
+    "TOGGLE_OFF": "关",
+    "TOGGLE_ON": "开"
+  }
+}

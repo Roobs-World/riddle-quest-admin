@@ -1,0 +1,21 @@
+{
+  "Navigation": {
+    "BUY_COINS_BUTTON": "Kup monety",
+    "CREDITS": "Kredyty",
+    "FORGOT_PASSWORD": "Zapomniałem hasła",
+    "GAME": "Gra",
+    "HINT_BUTTON": "Podpowiedź",
+    "LANDING": "Lądowanie",
+    "LOGIN": "Zaloguj się",
+    "NEW_PASSWORD": "Nowe hasło",
+    "PLAY_BUTTON": "Grać",
+    "PROFILE_BUTTON": "Profil",
+    "SETTINGS_BUTTON": "Ustawienia",
+    "SIGN_UP": "Zapisać się"
+  },
+  "NavigationMessages": {
+    "ERROR_LOADING_NEXT_RIDDLE": "Błąd podczas ładowania następnej klasycznej zagadki:",
+    "NO_CLASSIC_RIDDLE_FOUND": "⚠️ Nie znaleziono klasycznej zagadki pod indeksem ",
+    "SERVER_GENERATES_RIDDLES": ". Serwer automatycznie wygeneruje nowe zagadki, gdy zgadniesz."
+  }
+}

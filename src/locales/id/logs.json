@@ -1,0 +1,10 @@
+{
+  "LogMessages": {
+    "IS_LOADING": "sedang memuat:",
+    "NAVIGATION_RENDERING": "🧭 Render navigasi - isAuthenticated:",
+    "SHOWING_LOADING_SPINNER_AUTH": "⏳ Menampilkan spinner pemuatan - status autentikasi sedang ditentukan",
+    "SHOWING_LOADING_SPINNER_USER_DATA": "⏳ Menampilkan spinner pemuatan - Memuat data pengguna...",
+    "SHOWING_NAVIGATION_STACK": "🎯 Menampilkan tumpukan navigasi - initialRoute:",
+    "TIMESTAMP": "cap waktu:"
+  }
+}

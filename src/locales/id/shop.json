@@ -1,0 +1,10 @@
+{
+  "CoinShop": {
+    "COINS_SUFFIX": "koin",
+    "LOADING_TEXT": "Memuat toko...",
+    "NO_PACKS_AVAILABLE": "Tidak ada paket koin yang tersedia saat ini.",
+    "PURCHASE_BUTTON": "PEMBELIAN",
+    "TITLE": "TOKO KOIN",
+    "YOUR_BALANCE": "Saldo Anda"
+  }
+}

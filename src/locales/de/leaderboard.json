@@ -1,0 +1,12 @@
+{
+  "Leaderboard": {
+    "GUEST_UNAVAILABLE": "Melden Sie sich an, um XP, Siege und Serien auf der Bestenliste zu vergleichen.",
+    "LOAD_ERROR": "Die Bestenliste konnte nicht geladen werden. Bitte versuchen Sie es noch einmal.",
+    "NO_SCORES_YET": "Noch keine Punkte – seien Sie der Erste, der es auf das Board schafft!",
+    "RETRY_BUTTON": "Erneut versuchen",
+    "TAB_STREAK": "Strähne",
+    "TAB_WINS": "Siege",
+    "TAB_XP": "Erfahrung",
+    "TITLE": "Bestenliste"
+  }
+}

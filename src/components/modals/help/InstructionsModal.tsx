@@ -6,22 +6,10 @@ import ModalBg from "../../../../assets/images/modal-bg.svg";
 import HomeBg from "../../../../assets/images/home-bg.svg";
 import {TYPOGRAPHY} from "src/styles";
 import {
-  MODAL_WIDTH,
-  MODAL_HEIGHT,
-  MODAL_CONTENT_PADDING,
-  MODAL_CLOSE_BUTTON_POSITION,
-  CARD_BORDER_RADIUS,
-  CARD_PADDING,
-  CARD_MARGIN_BOTTOM,
-  COLOR_CLUE_INDICATOR_SIZE,
-  COLOR_CLUE_BORDER_RADIUS,
-  COLOR_CLUE_MARGIN_RIGHT,
-  CLOSE_BUTTON_SIZE,
-  MODAL_MAX_HEIGHT,
-} from "../../../constants/layout";
+  MODAL_WIDTH, MODAL_HEIGHT, MODAL_CONTENT_PADDING, MODAL_CLOSE_BUTTON_POSITION, CARD_BORDER_RADIUS, CARD_PADDING, CARD_MARGIN_BOTTOM, COLOR_CLUE_INDICATOR_SIZE, COLOR_CLUE_BORDER_RADIUS, COLOR_CLUE_MARGIN_RIGHT, CLOSE_BUTTON_SIZE, MODAL_MAX_HEIGHT, } from "../../../constants/layout";
 import {SPACING} from "../../../styles";
 import {verticalScale} from "@/utils/responsive";
-import {AppStrings} from "../../../constants/AppStrings";
+import {t} from "../../../i18n";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import OnboardingProgressBadge from "../OnboardingProgressBadge";
 import {OnboardingProgress} from "../../../types/ModalTypes";
@@ -114,7 +102,7 @@ const InstructionsModal: React.FC<InstructionsModalProps> = ({isVisible, onClose
                   marginTop: verticalScale(16),
                 }}
               >
-                {AppStrings.Instructions.TITLE}
+                {t("Instructions.TITLE")}
               </Text>
 
               <View
@@ -123,24 +111,24 @@ const InstructionsModal: React.FC<InstructionsModalProps> = ({isVisible, onClose
                 }}
               >
                 <InstructionCard
-                  title={AppStrings.Instructions.GOAL_TITLE}
-                  description={AppStrings.Instructions.GOAL_DESCRIPTION}
+                  title={t("Instructions.GOAL_TITLE")}
+                  description={t("Instructions.GOAL_DESCRIPTION")}
                 />
-                <InstructionCard title={AppStrings.Instructions.COLOR_CLUES_TITLE}>
+                <InstructionCard title={t("Instructions.COLOR_CLUES_TITLE")}>
                   <View style={{gap: SPACING.sm, alignItems: "flex-start"}}>
-                    <ColorClue color="#22c55e" text={AppStrings.Instructions.COLOR_CORRECT} />
-                    <ColorClue color="#eab308" text={AppStrings.Instructions.COLOR_MISPLACED} />
-                    <ColorClue color="#ef4444" text={AppStrings.Instructions.COLOR_WRONG} />
+                    <ColorClue color="#22c55e" text={t("Instructions.COLOR_CORRECT")} />
+                    <ColorClue color="#eab308" text={t("Instructions.COLOR_MISPLACED")} />
+                    <ColorClue color="#ef4444" text={t("Instructions.COLOR_WRONG")} />
                   </View>
                 </InstructionCard>
                 <InstructionCard
-                  title={AppStrings.Instructions.TIPS_TITLE}
-                  description={AppStrings.Instructions.TIPS_DESCRIPTION}
+                  title={t("Instructions.TIPS_TITLE")}
+                  description={t("Instructions.TIPS_DESCRIPTION")}
                 />
               </View>
 
               <View style={{width: "100%"}}>
-                <WideButton buttonText={AppStrings.Instructions.GOT_IT_BUTTON} onPress={handleClose} />
+                <WideButton buttonText={t("Instructions.GOT_IT_BUTTON")} onPress={handleClose} />
               </View>
             </View>
           </View>

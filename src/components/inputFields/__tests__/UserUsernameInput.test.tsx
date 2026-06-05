@@ -30,7 +30,7 @@ jest.mock("../../text/Error", () => {
 });
 
 // Mock AppStrings
-jest.mock("../../../constants/AppStrings", () => ({
+jest.mock("../../../i18n", () => ({
   AppStrings: {
     AuthStrings: {
       Login: {

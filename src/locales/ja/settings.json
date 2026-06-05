@@ -1,0 +1,28 @@
+{
+  "Settings": {
+    "ABOUT_BUTTON": "概要",
+    "ACCOUNT_DELETION_BUTTON": "削除アカウント",
+    "CLOSE_BUTTON": "閉じる",
+    "CREDITS_BUTTON": "クレジット",
+    "DATA_EXPORT_BUTTON": "データのエクスポート",
+    "HAPTICS_TOGGLE": "ハプティクス",
+    "HELP_BUTTON": "ヘルプ",
+    "LANGUAGE_LABEL": "言語",
+    "LANGUAGE_SELECTED": "選択済み",
+    "LICENSES_BUTTON": "ライセンス",
+    "LOGOUT_BUTTON": "ログアウト",
+    "LOGOUT_ERROR_MESSAGE": "ログアウトできませんでした。もう一度お試しください。",
+    "LOGOUT_ERROR_TITLE": "エラー",
+    "PRIVACY_POLICY_BUTTON": "プライバシー ポリシー",
+    "SOUND_TOGGLE": "音",
+    "TERMS_BUTTON": "利用規約",
+    "TEST_CRASH_ALERT_CANCEL": "キャンセル",
+    "TEST_CRASH_ALERT_CRASH": "クラッシュ",
+    "TEST_CRASH_ALERT_MESSAGE": "これにより、Firebase Crashlytics をテストするためにアプリがクラッシュします。続行しますか?",
+    "TEST_CRASH_ALERT_TITLE": "テスト クラッシュ",
+    "TEST_CRASH_BUTTON": "テスト クラッシュ",
+    "TITLE": "設定",
+    "TOGGLE_OFF": "オフ",
+    "TOGGLE_ON": "オン"
+  }
+}

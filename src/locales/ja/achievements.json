@@ -1,0 +1,13 @@
+{
+  "Achievements": {
+    "COINS_SUFFIX": " コイン",
+    "FANFARE_TITLE": "実績のロックが解除されました!",
+    "MODAL_TITLE": "実績",
+    "MORE_UNLOCKED_SUFFIX": " もっとロック解除",
+    "NEW_ACHIEVEMENT": "新しい実績",
+    "NICE_BUTTON": "素敵",
+    "UNLOCKED_ALERT_MESSAGE": "新しい実績を確認するにはプロフィールをチェックしてください。",
+    "UNLOCKED_ALERT_OK": "わかりました",
+    "UNLOCKED_ALERT_TITLE": "実績のロックが解除されました!"
+  }
+}

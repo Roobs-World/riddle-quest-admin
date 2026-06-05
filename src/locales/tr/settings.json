@@ -1,0 +1,28 @@
+{
+  "Settings": {
+    "ABOUT_BUTTON": "Hakkında",
+    "ACCOUNT_DELETION_BUTTON": "Hesabı Sil",
+    "CLOSE_BUTTON": "Kapat",
+    "CREDITS_BUTTON": "Krediler",
+    "DATA_EXPORT_BUTTON": "Verilerimi Dışa Aktar",
+    "HAPTICS_TOGGLE": "Dokunsal",
+    "HELP_BUTTON": "Yardım",
+    "LANGUAGE_LABEL": "Dil",
+    "LANGUAGE_SELECTED": "Seçili",
+    "LICENSES_BUTTON": "Lisanslar",
+    "LOGOUT_BUTTON": "Oturumu Kapat",
+    "LOGOUT_ERROR_MESSAGE": "Oturum kapatılamadı. Lütfen tekrar deneyin.",
+    "LOGOUT_ERROR_TITLE": "Hata",
+    "PRIVACY_POLICY_BUTTON": "Gizlilik Politikası",
+    "SOUND_TOGGLE": "Ses",
+    "TERMS_BUTTON": "Kullanım Koşulları",
+    "TEST_CRASH_ALERT_CANCEL": "İptal",
+    "TEST_CRASH_ALERT_CRASH": "Kaza",
+    "TEST_CRASH_ALERT_MESSAGE": "Bu, Firebase Crashlytics'i test etmek için uygulamanın çökmesine neden olacaktır. Devam edilsin mi?",
+    "TEST_CRASH_ALERT_TITLE": "Test Çökmesi",
+    "TEST_CRASH_BUTTON": "Test Çökmesi",
+    "TITLE": "Ayarlar",
+    "TOGGLE_OFF": "Kapalı",
+    "TOGGLE_ON": "Açık"
+  }
+}

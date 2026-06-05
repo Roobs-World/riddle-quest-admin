@@ -1,12 +1,12 @@
-import {AppStrings} from "../constants/AppStrings";
+import {t} from "../i18n";
 
 export const validateEmail = (email: string): string => {
   if (!email) {
-    return AppStrings.AuthStrings.Login.INVALID_EMAIL_FORMAT_ERROR;
+    return t("AuthStrings.Login.INVALID_EMAIL_FORMAT_ERROR");
   }
   const emailRegex = /^[\w-]+(?:\.[\w-]+)*@(?:[\w-]+\.)+[a-zA-Z]{2,7}$/;
   if (!emailRegex.test(email)) {
-    return AppStrings.AuthStrings.Login.INVALID_EMAIL_FORMAT_ERROR;
+    return t("AuthStrings.Login.INVALID_EMAIL_FORMAT_ERROR");
   }
   return "";
 };

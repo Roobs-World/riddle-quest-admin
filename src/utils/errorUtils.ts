@@ -1,4 +1,5 @@
 import {ZodError} from "zod";
+import {t} from "../i18n";
 import {ValidationUtils} from "./validationUtils";
 import {logger} from "./logger";
 import {captureException} from "./sentry";
@@ -34,21 +35,21 @@ export class ValidationError extends AppError {
 }
 
 export class NetworkError extends AppError {
-  constructor(message: string = "Network request failed") {
+  constructor(message: string = t("ErrorMessages.NETWORK_REQUEST_FAILED")) {
     super(message, "NETWORK_ERROR", 503);
     this.name = "NetworkError";
   }
 }
 
 export class AuthenticationError extends AppError {
-  constructor(message: string = "Authentication failed") {
+  constructor(message: string = t("ErrorMessages.AUTHENTICATION_FAILED")) {
     super(message, "AUTH_ERROR", 401);
     this.name = "AuthenticationError";
   }
 }
 
 export class NotFoundError extends AppError {
-  constructor(message: string = "Resource not found") {
+  constructor(message: string = t("ErrorMessages.RESOURCE_NOT_FOUND")) {
     super(message, "NOT_FOUND", 404);
     this.name = "NotFoundError";
   }
@@ -119,23 +120,23 @@ export class ErrorUtils {
       {
         name: "ZodError",
         matches: (error: unknown): boolean => error instanceof ZodError,
-        resolve: () => "Invalid data format. Please check your input.",
+        resolve: () => t("ErrorMessages.INVALID_DATA_FORMAT"),
       },
       createCodeMapStrategy(
         "FirebaseAuthAndBackend",
         {
-          "auth/user-not-found": "No account found with this email address.",
-          "auth/wrong-password": "Incorrect password. Please try again.",
-          "auth/email-already-in-use": "An account with this email already exists.",
-          "auth/weak-password": "Password should be at least 6 characters long.",
-          "auth/invalid-email": "Please enter a valid email address.",
-          "auth/network-request-failed": "Network error. Please check your connection.",
-          "auth/too-many-requests": "Too many failed attempts. Please try again later.",
-          "firestore/permission-denied": "You do not have permission to perform this action.",
-          "firestore/unavailable": "Service temporarily unavailable. Please try again.",
-          "functions/not-found": "The requested function was not found.",
-          "functions/permission-denied": "You do not have permission to call this function.",
-          "functions/unauthenticated": "Please sign in to continue.",
+          "auth/user-not-found": t("ErrorMessages.NO_ACCOUNT_FOUND_WITH_EMAIL"),
+          "auth/wrong-password": t("ErrorMessages.WRONG_PASSWORD_TRY_AGAIN"),
+          "auth/email-already-in-use": t("ErrorMessages.ACCOUNT_WITH_EMAIL_EXISTS"),
+          "auth/weak-password": t("ErrorMessages.PASSWORD_MIN_LENGTH_AUTH"),
+          "auth/invalid-email": t("ErrorMessages.PLEASE_ENTER_VALID_EMAIL"),
+          "auth/network-request-failed": t("ErrorMessages.NETWORK_ERROR_CHECK_CONNECTION"),
+          "auth/too-many-requests": t("ErrorMessages.TOO_MANY_FAILED_ATTEMPTS"),
+          "firestore/permission-denied": t("ErrorMessages.PERMISSION_DENIED_ACTION"),
+          "firestore/unavailable": t("ErrorMessages.SERVICE_TEMPORARILY_UNAVAILABLE"),
+          "functions/not-found": t("ErrorMessages.RESOURCE_NOT_FOUND"),
+          "functions/permission-denied": t("ErrorMessages.PERMISSION_DENIED_FUNCTION"),
+          "functions/unauthenticated": t("ErrorMessages.SIGN_IN_TO_CONTINUE"),
         },
         {
           normalizeCode: (code: string) => code.trim().toLowerCase(),
@@ -145,16 +146,16 @@ export class ErrorUtils {
         name: "MessageFallback",
         matches: (error: unknown): boolean =>
           typeof error === "object" && error !== null && typeof extractErrorMessage(error) === "string",
-        resolve: (error: unknown): string | null => extractErrorMessage(error) ?? null,
+        resolve: () => null,
       },
       {
         name: "GenericError",
         matches: (error: unknown): boolean => error instanceof Error,
-        resolve: (error: unknown): string | null => (error instanceof Error ? error.message : null),
+        resolve: () => null,
       },
     ],
     {
-      fallbackMessage: "An unexpected error occurred. Please try again.",
+      fallbackMessage: t("ErrorMessages.GENERIC_UNEXPECTED_ERROR"),
     },
   );
 

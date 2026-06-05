@@ -1,0 +1,13 @@
+{
+  "Achievements": {
+    "COINS_SUFFIX": " Coins",
+    "FANFARE_TITLE": "Achievement Unlocked!",
+    "MODAL_TITLE": "Achievements",
+    "MORE_UNLOCKED_SUFFIX": " more unlocked",
+    "NEW_ACHIEVEMENT": "New Achievement",
+    "NICE_BUTTON": "Nice",
+    "UNLOCKED_ALERT_MESSAGE": "Check your profile to see your new achievements.",
+    "UNLOCKED_ALERT_OK": "OK",
+    "UNLOCKED_ALERT_TITLE": "Achievement(s) Unlocked!"
+  }
+}

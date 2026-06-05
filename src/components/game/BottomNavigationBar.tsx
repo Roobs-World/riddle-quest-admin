@@ -17,7 +17,7 @@ import ProfileIcon from "../icons/ProfileIcon";
 import SettingsIcon from "../icons/SettingsIcon";
 import {SPACING} from "../../styles";
 import {scale} from "../../utils/responsive";
-import {AppStrings} from "../../constants/AppStrings";
+import {t} from "../../i18n";
 
 /**
  * Type definition for overlay types that can be triggered from the navigation bar.
@@ -113,8 +113,8 @@ const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
         testID="settings-button"
         accessible={true}
         accessibilityRole="button"
-        accessibilityLabel={AppStrings.Accessibility.OPEN_SETTINGS}
-        accessibilityHint={AppStrings.Accessibility.OPEN_SETTINGS_HINT}
+        accessibilityLabel={t("Accessibility.OPEN_SETTINGS")}
+        accessibilityHint={t("Accessibility.OPEN_SETTINGS_HINT")}
       >
         <SettingsIcon color="#401F40" />
       </TouchableOpacity>
@@ -127,8 +127,8 @@ const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
         testID="profile-button"
         accessible={true}
         accessibilityRole="button"
-        accessibilityLabel={AppStrings.Accessibility.OPEN_PROFILE}
-        accessibilityHint={AppStrings.Accessibility.OPEN_PROFILE_HINT}
+        accessibilityLabel={t("Accessibility.OPEN_PROFILE")}
+        accessibilityHint={t("Accessibility.OPEN_PROFILE_HINT")}
       >
         <ProfileIcon color="#401F40" />
       </TouchableOpacity>

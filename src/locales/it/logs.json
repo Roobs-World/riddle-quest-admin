@@ -1,0 +1,10 @@
+{
+  "LogMessages": {
+    "IS_LOADING": "sta caricando:",
+    "NAVIGATION_RENDERING": "🧭 Rendering della navigazione - isAuthenticated:",
+    "SHOWING_LOADING_SPINNER_AUTH": "⏳ Visualizzazione dello spinner di caricamento - stato di autenticazione in corso di determinazione",
+    "SHOWING_LOADING_SPINNER_USER_DATA": "⏳ Visualizzazione dello spinner di caricamento - Caricamento dei dati utente...",
+    "SHOWING_NAVIGATION_STACK": "🎯 Visualizzazione dello stack di navigazione - percorso iniziale:",
+    "TIMESTAMP": "data e ora:"
+  }
+}

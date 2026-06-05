@@ -38,19 +38,13 @@
  */
 
 import React from "react";
-import {
-  AchievementUnlockFanfareItem,
-  BaseModalProps,
-  ModalData,
-  ModalSequenceProgress,
-  OnboardingProgress,
-} from "../../types/ModalTypes";
+import {AchievementUnlockFanfareItem, BaseModalProps, ModalData, ModalSequenceProgress, OnboardingProgress, } from "../../types/ModalTypes";
 import {SubmittedGuess} from "../../hooks/types";
 import {Player} from "../../validation/firestoreSchemas";
 import * as RNIap from "react-native-iap";
 import {logger} from "../../utils/logger";
 import {ProductPricing} from "../../services/ProductPricingService";
-import {SupportedLanguage, getAppLanguage} from "../../constants/AppStrings";
+import {SupportedLanguage, getLocale} from "../../i18n";
 
 // Import all modal components
 import VictoryModal from "./game/VictoryModal";
@@ -226,7 +220,7 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
     onClose: props.onClose,
     isSoundEnabled: (props.isSoundEnabled as boolean) || false,
     isHapticsEnabled: (props.isHapticsEnabled as boolean) || false,
-    currentLanguage: (props.currentLanguage as SupportedLanguage) ?? getAppLanguage(),
+    currentLanguage: (props.currentLanguage as SupportedLanguage) ?? getLocale(),
     onToggleSound: (props.onToggleSound as (enabled: boolean) => void) || (() => {}),
     onToggleHaptics: (props.onToggleHaptics as (enabled: boolean) => void) || (() => {}),
     onChangeLanguage: (props.onChangeLanguage as (language: SupportedLanguage) => void) || (() => {}),

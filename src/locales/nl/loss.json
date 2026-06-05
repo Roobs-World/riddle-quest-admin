@@ -1,0 +1,18 @@
+{
+  "LossModal": {
+    "ANSWER_PREFIX": "Antwoord:",
+    "EXTRA_GUESSES_PREFIX": "3 extra gissingen -",
+    "EXTRA_GUESSES_PROMPT": "Geen pogingen meer. Ontvang 3 extra gissingen of sla deze puzzel over.",
+    "EXTRA_GUESSES_SUFFIX": "Munten",
+    "NEXT_LEVEL_BUTTON": "Volgende niveau",
+    "OPEN_SHOP_BUTTON": "Winkel openen",
+    "OUT_OF_ATTEMPTS": "Geen pogingen meer.",
+    "SKIP_LEVEL_PREFIX": "Niveau overslaan (",
+    "SKIP_LEVEL_SUFFIX": "Munten)",
+    "SKIP_PUZZLE_BUTTON": "Puzzel overslaan",
+    "TITLE": "Zo dichtbij!",
+    "USE_COINS_PREFIX": "Gebruik",
+    "USE_COINS_SUFFIX": "Munten om door te gaan",
+    "WATCH_AD_BUTTON": "Bekijk de advertentie voor 3 extra gissingen"
+  }
+}

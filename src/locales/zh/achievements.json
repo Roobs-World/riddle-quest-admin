@@ -1,0 +1,13 @@
+{
+  "Achievements": {
+    "COINS_SUFFIX": " 金币",
+    "FANFARE_TITLE": "成就已解锁！",
+    "MODAL_TITLE": "成就",
+    "MORE_UNLOCKED_SUFFIX": " 更多已解锁",
+    "NEW_ACHIEVEMENT": "新成就",
+    "NICE_BUTTON": "好的",
+    "UNLOCKED_ALERT_MESSAGE": "检查您的个人资料以查看您的新成就。",
+    "UNLOCKED_ALERT_OK": "好的",
+    "UNLOCKED_ALERT_TITLE": "成就已解锁！"
+  }
+}

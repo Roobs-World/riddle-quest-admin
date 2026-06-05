@@ -2,7 +2,7 @@ import React from "react";
 import {act} from "react-test-renderer";
 import {render, fireEvent} from "@testing-library/react-native";
 import WelcomeModal from "../WelcomeModal";
-import {AppStrings} from "../../../../constants/AppStrings";
+import {t} from "../../../../i18n";
 
 jest.mock("../../../../assets/images/modal-bg.svg", () => "ModalBgSvg");
 jest.mock("../../../../assets/images/home-bg.svg", () => "HomeBgSvg");
@@ -27,9 +27,9 @@ describe("WelcomeModal", () => {
   it("renders welcome content when visible", () => {
     const {getByText} = render(<WelcomeModal isVisible={true} onClose={mockOnClose} />);
 
-    expect(getByText(AppStrings.WelcomeModal.WELCOME_TITLE)).toBeTruthy();
-    expect(getByText(AppStrings.WelcomeModal.SOLVE_RIDDLES_TEXT)).toBeTruthy();
-    expect(getByText(AppStrings.WelcomeModal.EARN_COINS_TEXT)).toBeTruthy();
+    expect(getByText(t("WelcomeModal.WELCOME_TITLE"))).toBeTruthy();
+    expect(getByText(t("WelcomeModal.SOLVE_RIDDLES_TEXT"))).toBeTruthy();
+    expect(getByText(t("WelcomeModal.EARN_COINS_TEXT"))).toBeTruthy();
   });
 
   it("renders onboarding progress when provided", () => {
@@ -44,7 +44,7 @@ describe("WelcomeModal", () => {
   it("does not render content when not visible", () => {
     const {queryByText} = render(<WelcomeModal isVisible={false} onClose={mockOnClose} />);
 
-    expect(queryByText(AppStrings.WelcomeModal.WELCOME_TITLE)).toBeNull();
+    expect(queryByText(t("WelcomeModal.WELCOME_TITLE"))).toBeNull();
   });
 
   it("fires dismiss callbacks when the welcome modal is tapped", () => {

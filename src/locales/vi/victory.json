@@ -1,0 +1,17 @@
+{
+  "VictoryModal": {
+    "ACHIEVEMENT_UNLOCKED": "Đã mở khóa thành tích!",
+    "COINS_SUFFIX": " Xu xu",
+    "NEXT_LEVEL_BUTTON": "Cấp độ tiếp theo",
+    "SHARE_TEXT": "Chia sẻ chiến thắng của bạn!",
+    "TITLE": " CÔNG VIỆC TUYỆT VỜI!",
+    "TOTAL_COINS_LABEL": "Tổng số xu",
+    "YOU_WON_TITLE": "BẠN THẮNG!",
+    "SHARE_ATTEMPT_PLURAL": "nỗ lực",
+    "SHARE_ATTEMPT_SINGULAR": "nỗ lực",
+    "SHARE_CLASSIC_MODE_LABEL": "Chế độ cổ điển",
+    "SHARE_DAILY_CHALLENGE_LABEL": "Thử thách hàng ngày",
+    "SHARE_MESSAGE_TEMPLATE": "Tôi đã giải được Riddle Quest {gameType} của ngày hôm nay trong {attempts} {attemptLabel}!\n\n{emojiGrid}\n\nBạn có thể đánh bại điểm số của tôi?\n\n#Riddle Quest #WordPuzzle #BrainGame",
+    "SHARE_RESULT_TITLE": "Xem kết quả Riddle Quest của tôi!"
+  }
+}

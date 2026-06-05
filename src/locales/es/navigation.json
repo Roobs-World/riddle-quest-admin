@@ -1,0 +1,21 @@
+{
+  "Navigation": {
+    "BUY_COINS_BUTTON": "Comprar monedas",
+    "CREDITS": "Créditos",
+    "FORGOT_PASSWORD": "Has olvidado tu contraseña",
+    "GAME": "Juego",
+    "HINT_BUTTON": "Pista",
+    "LANDING": "Aterrizaje",
+    "LOGIN": "Acceso",
+    "NEW_PASSWORD": "Nueva contraseña",
+    "PLAY_BUTTON": "Jugar",
+    "PROFILE_BUTTON": "Perfil",
+    "SETTINGS_BUTTON": "Configuración",
+    "SIGN_UP": "Inscribirse"
+  },
+  "NavigationMessages": {
+    "ERROR_LOADING_NEXT_RIDDLE": "Error al cargar el siguiente acertijo clásico:",
+    "NO_CLASSIC_RIDDLE_FOUND": "⚠️ No se encontró ningún acertijo clásico en el índice ",
+    "SERVER_GENERATES_RIDDLES": ". El servidor generará nuevos acertijos automáticamente cuando envíes tus conjeturas."
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "StatsModal": {
+    "AVG_GUESSES": "Média de palpites (vitórias)",
+    "BEST_STREAK": "Melhor sequência",
+    "CHALLENGE_WINS": "Vitórias no desafio",
+    "CURRENT_STREAK": "Sequência atual",
+    "DAILY_PUZZLES": "Quebra-cabeças diários",
+    "GAMEPLAY_SECTION": "Jogabilidade",
+    "GAMES_PLAYED": "Jogos jogados",
+    "HIGHEST_CLASSIC_LEVEL": "Nível clássico mais alto",
+    "HINTS_USED": "Dicas usadas",
+    "PERFORMANCE_SECTION": "Desempenho",
+    "TITLE": "Estatísticas",
+    "TOTAL_SCORE": "Pontuação total",
+    "TOTAL_WINS": "Total de vitórias",
+    "TOTAL_WORDS_GUESSED": "Total de palavras adivinhadas",
+    "WIN_RATE": "Taxa de vitórias",
+    "WINS_STREAKS_SECTION": "Vitórias e sequências",
+    "XP": "experiência"
+  }
+}

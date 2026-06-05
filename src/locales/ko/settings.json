@@ -1,0 +1,28 @@
+{
+  "Settings": {
+    "ABOUT_BUTTON": "정보",
+    "ACCOUNT_DELETION_BUTTON": "삭제 계정",
+    "CLOSE_BUTTON": "닫기",
+    "CREDITS_BUTTON": "크레딧",
+    "DATA_EXPORT_BUTTON": "내 데이터 내보내기",
+    "HAPTICS_TOGGLE": "햅틱",
+    "HELP_BUTTON": "돕다",
+    "LANGUAGE_LABEL": "언어",
+    "LANGUAGE_SELECTED": "선택된",
+    "LICENSES_BUTTON": "라이센스",
+    "LOGOUT_BUTTON": "로그아웃",
+    "LOGOUT_ERROR_MESSAGE": "로그아웃할 수 없습니다. 다시 시도해 주세요.",
+    "LOGOUT_ERROR_TITLE": "오류",
+    "PRIVACY_POLICY_BUTTON": "개인정보 보호정책",
+    "SOUND_TOGGLE": "소리",
+    "TERMS_BUTTON": "이용 약관",
+    "TEST_CRASH_ALERT_CANCEL": "취소",
+    "TEST_CRASH_ALERT_CRASH": "충돌",
+    "TEST_CRASH_ALERT_MESSAGE": "Firebase Crashlytics를 테스트하기 위해 앱이 다운됩니다. 계속하시겠습니까?",
+    "TEST_CRASH_ALERT_TITLE": "테스트 충돌",
+    "TEST_CRASH_BUTTON": "테스트 충돌",
+    "TITLE": "설정",
+    "TOGGLE_OFF": "끄기",
+    "TOGGLE_ON": "켜기"
+  }
+}

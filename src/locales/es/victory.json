@@ -1,0 +1,17 @@
+{
+  "VictoryModal": {
+    "ACHIEVEMENT_UNLOCKED": "¡Logro desbloqueado!",
+    "COINS_SUFFIX": " Monedas",
+    "NEXT_LEVEL_BUTTON": "Siguiente nivel",
+    "SHARE_TEXT": "¡Comparte tu victoria!",
+    "TITLE": "¡BUEN TRABAJO!",
+    "TOTAL_COINS_LABEL": "Total de monedas",
+    "YOU_WON_TITLE": "¡GANASTE!",
+    "SHARE_ATTEMPT_PLURAL": "intentos",
+    "SHARE_ATTEMPT_SINGULAR": "intento",
+    "SHARE_CLASSIC_MODE_LABEL": "Modo clásico",
+    "SHARE_DAILY_CHALLENGE_LABEL": "Desafío diario",
+    "SHARE_MESSAGE_TEMPLATE": "Resolví el Riddle Quest {tipo de juego} de hoy en {intentos} {intentoEtiqueta}!\n\n{emojiGrid}\n\n¿Puedes superar mi puntuación?\n\n#Riddle Quest #WordPuzzle #BrainGame",
+    "SHARE_RESULT_TITLE": "¡Mira mi resultado Riddle Quest!"
+  }
+}

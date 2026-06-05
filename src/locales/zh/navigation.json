@@ -1,0 +1,21 @@
+{
+  "Navigation": {
+    "BUY_COINS_BUTTON": "购买硬币",
+    "CREDITS": "积分",
+    "FORGOT_PASSWORD": "忘记密码",
+    "GAME": "游戏",
+    "HINT_BUTTON": "提示",
+    "LANDING": "降落",
+    "LOGIN": "登录",
+    "NEW_PASSWORD": "新密码",
+    "PLAY_BUTTON": "玩",
+    "PROFILE_BUTTON": "个人资料",
+    "SETTINGS_BUTTON": "设置",
+    "SIGN_UP": "报名"
+  },
+  "NavigationMessages": {
+    "ERROR_LOADING_NEXT_RIDDLE": "加载下一个经典谜语时出错：",
+    "NO_CLASSIC_RIDDLE_FOUND": "⚠️在索引 ",
+    "SERVER_GENERATES_RIDDLES": "中找不到经典谜语。当您提交猜测时，服务器将自动生成新的谜语。"
+  }
+}

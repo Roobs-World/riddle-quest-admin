@@ -12,16 +12,8 @@ import {TYPOGRAPHY, SPACING} from "../../../styles";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
 import HomeBg from "../../../../assets/images/home-bg.svg";
 import {
-  MODAL_WIDTH,
-  MODAL_HEIGHT,
-  CLOSE_BUTTON_SIZE,
-  MODAL_CLOSE_BUTTON_POSITION,
-  CARD_BORDER_RADIUS,
-  MODAL_CONTENT_PADDING,
-  MODAL_SCROLLABLE_MAX_HEIGHT,
-  MODAL_MAX_HEIGHT,
-} from "../../../constants/layout";
-import {AppStrings} from "../../../constants/AppStrings";
+  MODAL_WIDTH, MODAL_HEIGHT, CLOSE_BUTTON_SIZE, MODAL_CLOSE_BUTTON_POSITION, CARD_BORDER_RADIUS, MODAL_CONTENT_PADDING, MODAL_SCROLLABLE_MAX_HEIGHT, MODAL_MAX_HEIGHT, } from "../../../constants/layout";
+import {t} from "../../../i18n";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import {verticalScale} from "@/utils/responsive";
 
@@ -51,7 +43,7 @@ const StatsModal: React.FC<StatsModalProps> = ({isVisible, onClose, playerData})
       transparent
       animationType="none"
       onRequestClose={onClose}
-      accessibilityLabel={AppStrings.StatsModal.TITLE}
+      accessibilityLabel={t("StatsModal.TITLE")}
     >
       <View
         style={{
@@ -82,7 +74,7 @@ const StatsModal: React.FC<StatsModalProps> = ({isVisible, onClose, playerData})
               onPress={onClose}
               size={CLOSE_BUTTON_SIZE}
               style={{...MODAL_CLOSE_BUTTON_POSITION, marginTop: verticalScale(14)}}
-              accessibilityLabel={AppStrings.Accessibility.CLOSE_STATISTICS}
+              accessibilityLabel={t("Accessibility.CLOSE_STATISTICS")}
             />
             <Text
               style={{
@@ -94,7 +86,7 @@ const StatsModal: React.FC<StatsModalProps> = ({isVisible, onClose, playerData})
               }}
               accessibilityRole="header"
             >
-              {AppStrings.StatsModal.TITLE}
+              {t("StatsModal.TITLE")}
             </Text>
             <ScrollView
               style={{maxHeight: MODAL_SCROLLABLE_MAX_HEIGHT, width: "100%"}}
@@ -105,24 +97,24 @@ const StatsModal: React.FC<StatsModalProps> = ({isVisible, onClose, playerData})
               }}
               showsVerticalScrollIndicator={false}
             >
-              <SectionHeader label={AppStrings.StatsModal.GAMEPLAY_SECTION} />
-              <StatRow label={AppStrings.StatsModal.GAMES_PLAYED} value={gamesPlayed} />
-              <StatRow label={AppStrings.StatsModal.DAILY_PUZZLES} value={dailyPuzzlesCompleted} />
-              <StatRow label={AppStrings.StatsModal.HIGHEST_CLASSIC_LEVEL} value={highestClassicLevel} />
-              <StatRow label={AppStrings.StatsModal.XP} value={stats?.xp ?? 0} />
+              <SectionHeader label={t("StatsModal.GAMEPLAY_SECTION")} />
+              <StatRow label={t("StatsModal.GAMES_PLAYED")} value={gamesPlayed} />
+              <StatRow label={t("StatsModal.DAILY_PUZZLES")} value={dailyPuzzlesCompleted} />
+              <StatRow label={t("StatsModal.HIGHEST_CLASSIC_LEVEL")} value={highestClassicLevel} />
+              <StatRow label={t("StatsModal.XP")} value={stats?.xp ?? 0} />
 
-              <SectionHeader label={AppStrings.StatsModal.WINS_STREAKS_SECTION} />
-              <StatRow label={AppStrings.StatsModal.TOTAL_WINS} value={totalWins} />
-              <StatRow label={AppStrings.StatsModal.WIN_RATE} value={winRate} unit="%" />
-              <StatRow label={AppStrings.StatsModal.BEST_STREAK} value={stats?.bestStreak ?? 0} />
-              <StatRow label={AppStrings.StatsModal.CURRENT_STREAK} value={stats?.winStreak ?? 0} />
-              <StatRow label={AppStrings.StatsModal.CHALLENGE_WINS} value={stats?.challengeWins ?? 0} />
+              <SectionHeader label={t("StatsModal.WINS_STREAKS_SECTION")} />
+              <StatRow label={t("StatsModal.TOTAL_WINS")} value={totalWins} />
+              <StatRow label={t("StatsModal.WIN_RATE")} value={winRate} unit="%" />
+              <StatRow label={t("StatsModal.BEST_STREAK")} value={stats?.bestStreak ?? 0} />
+              <StatRow label={t("StatsModal.CURRENT_STREAK")} value={stats?.winStreak ?? 0} />
+              <StatRow label={t("StatsModal.CHALLENGE_WINS")} value={stats?.challengeWins ?? 0} />
 
-              <SectionHeader label={AppStrings.StatsModal.PERFORMANCE_SECTION} />
-              <StatRow label={AppStrings.StatsModal.AVG_GUESSES} value={avgGuesses} />
-              <StatRow label={AppStrings.StatsModal.TOTAL_WORDS_GUESSED} value={totalWordsGuessed} />
-              <StatRow label={AppStrings.StatsModal.TOTAL_SCORE} value={stats?.totalScore ?? 0} />
-              <StatRow label={AppStrings.StatsModal.HINTS_USED} value={stats?.totalHintsUsed ?? 0} />
+              <SectionHeader label={t("StatsModal.PERFORMANCE_SECTION")} />
+              <StatRow label={t("StatsModal.AVG_GUESSES")} value={avgGuesses} />
+              <StatRow label={t("StatsModal.TOTAL_WORDS_GUESSED")} value={totalWordsGuessed} />
+              <StatRow label={t("StatsModal.TOTAL_SCORE")} value={stats?.totalScore ?? 0} />
+              <StatRow label={t("StatsModal.HINTS_USED")} value={stats?.totalHintsUsed ?? 0} />
             </ScrollView>
           </View>
         </SlideInModalContent>

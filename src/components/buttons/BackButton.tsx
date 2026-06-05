@@ -17,7 +17,7 @@ import BackIcon from "@images/back-icon.svg";
 import {NativeStackNavigationProp} from "@react-navigation/native-stack";
 import {styles, SPACING} from "../../styles";
 import {BACK_ICON_SIZE} from "../../constants/layout";
-import {AppStrings} from "../../constants/AppStrings";
+import {t} from "../../i18n";
 
 /**
  * Props interface for the BackButton component.
@@ -94,10 +94,10 @@ const BackButton = <RootStackParamList extends Record<string, object | undefined
       accessibilityRole="button"
       accessibilityLabel={
         targetScreen
-          ? `${AppStrings.Accessibility.NAVIGATE_TO_PREFIX}${String(targetScreen)}`
-          : AppStrings.Accessibility.GO_BACK
+          ? `${t("Accessibility.NAVIGATE_TO_PREFIX")}${String(targetScreen)}`
+          : t("Accessibility.GO_BACK")
       }
-      accessibilityHint={AppStrings.Accessibility.BACK_BUTTON_HINT}
+      accessibilityHint={t("Accessibility.BACK_BUTTON_HINT")}
     >
       <BackIcon width={BACK_ICON_SIZE} height={BACK_ICON_SIZE} />
     </TouchableOpacity>

@@ -1,0 +1,18 @@
+{
+  "LossModal": {
+    "ANSWER_PREFIX": "Resposta: ",
+    "EXTRA_GUESSES_PREFIX": "3 tentativas extras - ",
+    "EXTRA_GUESSES_PROMPT": "Sem tentativas. Ganhe 3 tentativas extras ou pule este enigma.",
+    "EXTRA_GUESSES_SUFFIX": " moedas",
+    "NEXT_LEVEL_BUTTON": "Proximo nivel",
+    "OPEN_SHOP_BUTTON": "Abrir loja",
+    "OUT_OF_ATTEMPTS": "Sem tentativas.",
+    "SKIP_LEVEL_PREFIX": "Pular nivel (",
+    "SKIP_LEVEL_SUFFIX": " moedas)",
+    "SKIP_PUZZLE_BUTTON": "Pular enigma",
+    "TITLE": "Quase!",
+    "USE_COINS_PREFIX": "Usar ",
+    "USE_COINS_SUFFIX": " moedas para continuar",
+    "WATCH_AD_BUTTON": "Ver anuncio para continuar"
+  }
+}

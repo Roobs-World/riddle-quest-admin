@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {View, Text, TouchableOpacity} from "react-native";
-import {AppStrings} from "../../constants/AppStrings";
+import {t} from "../../i18n";
 import ReusableTextInput from "../shared/ReusableTextInput";
 import PasswordVisibilityIcon from "../icons/PasswordVisibilityIcon";
 import Error from "../text/Error";
@@ -28,8 +28,8 @@ const UserPasswordInput: React.FC<UserPasswordInputProps> = ({
     setIsPasswordVisible(!isPasswordVisible);
   };
 
-  const passwordLabel = label || AppStrings.AuthStrings.Login.PASSWORD_LABEL;
-  const passwordPlaceholder = placeholder || AppStrings.AuthStrings.Login.PASSWORD_PLACEHOLDER;
+  const passwordLabel = label || t("AuthStrings.Login.PASSWORD_LABEL");
+  const passwordPlaceholder = placeholder || t("AuthStrings.Login.PASSWORD_PLACEHOLDER");
 
   return (
     <View className="w-full">

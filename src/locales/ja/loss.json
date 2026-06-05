@@ -1,0 +1,18 @@
+{
+  "LossModal": {
+    "ANSWER_PREFIX": "答え: ",
+    "EXTRA_GUESSES_PREFIX": "追加3回 - ",
+    "EXTRA_GUESSES_PROMPT": "挑戦回数がなくなりました。3回追加するか、このパズルをスキップできます。",
+    "EXTRA_GUESSES_SUFFIX": "コイン",
+    "NEXT_LEVEL_BUTTON": "次のレベルへ",
+    "OPEN_SHOP_BUTTON": "ショップを開く",
+    "OUT_OF_ATTEMPTS": "挑戦回数切れ。",
+    "SKIP_LEVEL_PREFIX": "レベルをスキップ（",
+    "SKIP_LEVEL_SUFFIX": "コイン）",
+    "SKIP_PUZZLE_BUTTON": "パズルをスキップ",
+    "TITLE": "惜しい！",
+    "USE_COINS_PREFIX": "使用: ",
+    "USE_COINS_SUFFIX": "コインで続ける",
+    "WATCH_AD_BUTTON": "広告を見て続ける"
+  }
+}

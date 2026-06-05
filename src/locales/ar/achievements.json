@@ -1,0 +1,13 @@
+{
+  "Achievements": {
+    "COINS_SUFFIX": " عملات",
+    "FANFARE_TITLE": "تم فتح الإنجاز!",
+    "MODAL_TITLE": "الإنجازات",
+    "MORE_UNLOCKED_SUFFIX": " المزيد مفتوحًا",
+    "NEW_ACHIEVEMENT": "إنجاز جديد",
+    "NICE_BUTTON": "لطيف - جيد",
+    "UNLOCKED_ALERT_MESSAGE": "راجع ملفك الشخصي لرؤية إنجازاتك الجديدة.",
+    "UNLOCKED_ALERT_OK": "نعم",
+    "UNLOCKED_ALERT_TITLE": "تم فتح الإنجاز (الإنجازات)!"
+  }
+}

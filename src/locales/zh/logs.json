@@ -1,0 +1,10 @@
+{
+  "LogMessages": {
+    "IS_LOADING": "正在加载：",
+    "NAVIGATION_RENDERING": "🧭 导航渲染 - isAuthenticated:",
+    "SHOWING_LOADING_SPINNER_AUTH": "⏳ 显示加载微调器 - 正在确定身份验证状态",
+    "SHOWING_LOADING_SPINNER_USER_DATA": "⏳ 显示加载微调器 - 正在加载用户数据...",
+    "SHOWING_NAVIGATION_STACK": "🎯 显示导航堆栈 - 初始路由:",
+    "TIMESTAMP": "时间戳："
+  }
+}

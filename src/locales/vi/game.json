@@ -1,0 +1,13 @@
+{
+  "GameMessages": {
+    "COINS_EARNED": "Số tiền kiếm được:",
+    "GAME_LOST": "Trò chơi thua: Trả lời đúng -",
+    "GAME_WON": "Trò chơi đã thắng: Số lần thử -",
+    "HINT_USED": "Gợi ý được sử dụng: Chi phí -",
+    "IN_MODE": "trong",
+    "MODE_SUFFIX": "chế độ.",
+    "RETRY_BUTTON_PRESSED": "Đã nhấn nút thử lại",
+    "FALLBACK_CLUE_SINGLE": "Giải quyết từ này.",
+    "FALLBACK_CLUE_TEMPLATE": "Giải từ có chữ cái {length} này."
+  }
+}

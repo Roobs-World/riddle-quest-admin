@@ -14,19 +14,10 @@ import {TYPOGRAPHY, COLORS, SPACING} from "../../../styles";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
 import HomeBg from "../../../../assets/images/home-bg.svg";
 import {
-  MODAL_WIDTH,
-  MODAL_HEIGHT,
-  CLOSE_BUTTON_SIZE,
-  MODAL_CLOSE_BUTTON_POSITION,
-  CARD_BORDER_RADIUS,
-  ACHIEVEMENT_ICON_SIZE,
-  MODAL_CONTENT_PADDING,
-  MODAL_SCROLLABLE_MAX_HEIGHT,
-  MODAL_MAX_HEIGHT,
-} from "../../../constants/layout";
+  MODAL_WIDTH, MODAL_HEIGHT, CLOSE_BUTTON_SIZE, MODAL_CLOSE_BUTTON_POSITION, CARD_BORDER_RADIUS, ACHIEVEMENT_ICON_SIZE, MODAL_CONTENT_PADDING, MODAL_SCROLLABLE_MAX_HEIGHT, MODAL_MAX_HEIGHT, } from "../../../constants/layout";
 import {scale, verticalScale} from "../../../utils/responsive";
 import {ACHIEVEMENT_DEFINITIONS} from "../../../constants/achievements";
-import {AppStrings} from "../../../constants/AppStrings";
+import {t} from "../../../i18n";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 
 export interface AchievementsModalProps {
@@ -52,7 +43,7 @@ const AchievementsModal: React.FC<AchievementsModalProps> = ({isVisible, onClose
       transparent
       animationType="none"
       onRequestClose={onClose}
-      accessibilityLabel={AppStrings.Achievements.MODAL_TITLE}
+      accessibilityLabel={t("Achievements.MODAL_TITLE")}
     >
       <View
         style={{
@@ -94,7 +85,7 @@ const AchievementsModal: React.FC<AchievementsModalProps> = ({isVisible, onClose
               }}
               accessibilityRole="header"
             >
-              {AppStrings.Achievements.MODAL_TITLE}
+              {t("Achievements.MODAL_TITLE")}
             </Text>
             <ScrollView
               style={{

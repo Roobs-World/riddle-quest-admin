@@ -1,7 +1,7 @@
 import React from "react";
 import {View, Text, TouchableOpacity} from "react-native";
 import {styles, SPACING} from "../../styles";
-import {AppStrings} from "../../constants/AppStrings";
+import {t} from "../../i18n";
 
 interface SignUpButtonProps {
   onPress: () => void;
@@ -16,7 +16,7 @@ const SignUpButton: React.FC<SignUpButtonProps> = ({onPress}) => {
         style={{paddingHorizontal: SPACING.xl, paddingVertical: SPACING.sm}}
       >
         <Text className="text-white font-semibold" style={styles.signUpButtonText}>
-          {AppStrings.AuthStrings.Landing.SIGN_UP_BUTTON}
+          {t("AuthStrings.Landing.SIGN_UP_BUTTON")}
         </Text>
       </TouchableOpacity>
     </View>

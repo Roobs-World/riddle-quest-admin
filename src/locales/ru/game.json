@@ -1,0 +1,13 @@
+{
+  "GameMessages": {
+    "COINS_EARNED": "Монет получено: ",
+    "GAME_LOST": "Игра проиграна: правильный ответ - ",
+    "GAME_WON": "Игра выиграна: попытки - ",
+    "HINT_USED": "Подсказка использована: стоимость - ",
+    "IN_MODE": " в режиме ",
+    "MODE_SUFFIX": ".",
+    "RETRY_BUTTON_PRESSED": "Нажата кнопка повтора",
+    "FALLBACK_CLUE_SINGLE": "Разгадай это слово.",
+    "FALLBACK_CLUE_TEMPLATE": "Решите это слово из {длины} букв."
+  }
+}

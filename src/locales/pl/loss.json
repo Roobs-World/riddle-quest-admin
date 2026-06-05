@@ -1,0 +1,18 @@
+{
+  "LossModal": {
+    "ANSWER_PREFIX": "Odpowiedź:",
+    "EXTRA_GUESSES_PREFIX": "3 dodatkowe domysły —",
+    "EXTRA_GUESSES_PROMPT": "Poza próbami. Zdobądź 3 dodatkowe domysły lub pomiń tę łamigłówkę.",
+    "EXTRA_GUESSES_SUFFIX": "Monety",
+    "NEXT_LEVEL_BUTTON": "Następny poziom",
+    "OPEN_SHOP_BUTTON": "Otwórz sklep",
+    "OUT_OF_ATTEMPTS": "Poza próbami.",
+    "SKIP_LEVEL_PREFIX": "Pomiń poziom (",
+    "SKIP_LEVEL_SUFFIX": "Monety)",
+    "SKIP_PUZZLE_BUTTON": "Pomiń łamigłówkę",
+    "TITLE": "Tak blisko!",
+    "USE_COINS_PREFIX": "Użyj",
+    "USE_COINS_SUFFIX": "Monety, aby kontynuować",
+    "WATCH_AD_BUTTON": "Obejrzyj reklamę, aby uzyskać 3 dodatkowe domysły"
+  }
+}

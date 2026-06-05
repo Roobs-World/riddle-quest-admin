@@ -1,5 +1,5 @@
 import React from "react";
-import {AppStrings} from "../../constants/AppStrings";
+import {t} from "../../i18n";
 import {Text} from "react-native";
 import {TYPOGRAPHY, SPACING} from "../../styles";
 
@@ -15,7 +15,7 @@ export default function PasswordMatch({passwordsMatch, isPasswordLongEnough}: Pa
         className="text-red-600 text-right"
         style={{fontSize: TYPOGRAPHY.fontSize.xs, marginLeft: SPACING.xs, marginBottom: SPACING.md}}
       >
-        {AppStrings.AuthStrings.SignUp.PASSWORD_DOES_NOT_LONG_ENOUGH}
+        {t("AuthStrings.SignUp.PASSWORD_DOES_NOT_LONG_ENOUGH")}
       </Text>
     );
   }
@@ -26,7 +26,7 @@ export default function PasswordMatch({passwordsMatch, isPasswordLongEnough}: Pa
         className="text-red-600 text-right"
         style={{fontSize: TYPOGRAPHY.fontSize.xs, marginLeft: SPACING.xs, marginBottom: SPACING.md}}
       >
-        {AppStrings.AuthStrings.SignUp.PASSWORD_DOES_NOT_MATCH}
+        {t("AuthStrings.SignUp.PASSWORD_DOES_NOT_MATCH")}
       </Text>
     );
   }
@@ -36,7 +36,7 @@ export default function PasswordMatch({passwordsMatch, isPasswordLongEnough}: Pa
       className="text-green-600 text-right"
       style={{fontSize: TYPOGRAPHY.fontSize.xs, marginLeft: SPACING.xs, marginBottom: SPACING.md}}
     >
-      {AppStrings.AuthStrings.SignUp.PASSWORD_VALIDATION_GOOD}
+      {t("AuthStrings.SignUp.PASSWORD_VALIDATION_GOOD")}
     </Text>
   );
 }

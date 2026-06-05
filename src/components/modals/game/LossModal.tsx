@@ -36,14 +36,8 @@ import ModalBg from "../../../../assets/images/modal-bg.svg";
 import WheelBg from "../../../../assets/images/wheel-bg.svg";
 
 import {
-  MODAL_WIDTH,
-  MODAL_HEIGHT,
-  MODAL_CONTENT_PADDING,
-  MODAL_BUTTON_SPACER,
-  MODAL_MAX_HEIGHT,
-  wheelSize,
-} from "../../../constants/layout";
-import {AppStrings} from "../../../constants/AppStrings";
+  MODAL_WIDTH, MODAL_HEIGHT, MODAL_CONTENT_PADDING, MODAL_BUTTON_SPACER, MODAL_MAX_HEIGHT, wheelSize, } from "../../../constants/layout";
+import {t} from "../../../i18n";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import {NewCoins} from "@/components/shared/NewCoins";
 import {isQASurfaceRuntimeActive} from "../../../qa/qaRuntime";
@@ -208,7 +202,7 @@ const LossModal: React.FC<LossModalProps> = ({
         // Loss is a terminal decision point; hardware Back must not strand the
         // user on the completed board without the loss actions.
       }}
-      accessibilityLabel={AppStrings.Accessibility.GAME_LOSS_NOTIFICATION}
+      accessibilityLabel={t("Accessibility.GAME_LOSS_NOTIFICATION")}
     >
       <View
         style={{
@@ -300,7 +294,7 @@ const LossModal: React.FC<LossModalProps> = ({
                         textAlign: "center",
                       }}
                     >
-                      {AppStrings.LossModal.TITLE}
+                      {t("LossModal.TITLE")}
                     </Text>
                     <Text
                       style={{
@@ -310,7 +304,7 @@ const LossModal: React.FC<LossModalProps> = ({
                         textAlign: "center",
                       }}
                     >
-                      {AppStrings.LossModal.EXTRA_GUESSES_PROMPT}
+                      {t("LossModal.EXTRA_GUESSES_PROMPT")}
                     </Text>
                   </View>
 
@@ -321,7 +315,7 @@ const LossModal: React.FC<LossModalProps> = ({
                       <>
                         <WideButton
                           onPress={handleWatchAdContinue}
-                          buttonText={AppStrings.LossModal.WATCH_AD_BUTTON}
+                          buttonText={t("LossModal.WATCH_AD_BUTTON")}
                           disabled={isWatchAdDisabled}
                         />
                         <View style={{height: MODAL_BUTTON_SPACER}} />
@@ -331,7 +325,7 @@ const LossModal: React.FC<LossModalProps> = ({
                       <>
                         <WideButton
                           onPress={handleCoinContinue}
-                          buttonText={`${AppStrings.LossModal.EXTRA_GUESSES_PREFIX}${coinContinueCost ?? 0}${AppStrings.LossModal.EXTRA_GUESSES_SUFFIX}`}
+                          buttonText={`${t("LossModal.EXTRA_GUESSES_PREFIX")}${coinContinueCost ?? 0}${t("LossModal.EXTRA_GUESSES_SUFFIX")}`}
                           disabled={isCoinContinueDisabled}
                         />
                         <View style={{height: MODAL_BUTTON_SPACER}} />
@@ -339,11 +333,11 @@ const LossModal: React.FC<LossModalProps> = ({
                     )}
                     {onOpenShop && (
                       <>
-                        <WideButton onPress={handleOpenShop} buttonText={AppStrings.LossModal.OPEN_SHOP_BUTTON} />
+                        <WideButton onPress={handleOpenShop} buttonText={t("LossModal.OPEN_SHOP_BUTTON")} />
                         <View style={{height: MODAL_BUTTON_SPACER}} />
                       </>
                     )}
-                    <WideButton onPress={handleNextLevel} buttonText={AppStrings.LossModal.SKIP_PUZZLE_BUTTON} />
+                    <WideButton onPress={handleNextLevel} buttonText={t("LossModal.SKIP_PUZZLE_BUTTON")} />
                   </View>
                 </>
               ) : (
@@ -362,7 +356,7 @@ const LossModal: React.FC<LossModalProps> = ({
                         color: "black",
                       }}
                     >
-                      {AppStrings.LossModal.TITLE}
+                      {t("LossModal.TITLE")}
                     </Text>
                     <Text
                       style={{
@@ -372,7 +366,7 @@ const LossModal: React.FC<LossModalProps> = ({
                         textAlign: "center",
                       }}
                     >
-                      {AppStrings.LossModal.OUT_OF_ATTEMPTS}
+                      {t("LossModal.OUT_OF_ATTEMPTS")}
                     </Text>
                     {correctAnswer ? (
                       <Text
@@ -384,18 +378,18 @@ const LossModal: React.FC<LossModalProps> = ({
                           textAlign: "center",
                         }}
                       >
-                        {`${AppStrings.LossModal.ANSWER_PREFIX}${correctAnswer.toUpperCase()}`}
+                        {`${t("LossModal.ANSWER_PREFIX")}${correctAnswer.toUpperCase()}`}
                       </Text>
                     ) : null}
                   </View>
                   <View style={{flex: 2, justifyContent: "center", width: "100%"}}>
                     {onOpenShop && (
                       <>
-                        <WideButton onPress={handleOpenShop} buttonText={AppStrings.LossModal.OPEN_SHOP_BUTTON} />
+                        <WideButton onPress={handleOpenShop} buttonText={t("LossModal.OPEN_SHOP_BUTTON")} />
                         <View style={{height: MODAL_BUTTON_SPACER}} />
                       </>
                     )}
-                    <WideButton onPress={handleNextLevel} buttonText={AppStrings.LossModal.NEXT_LEVEL_BUTTON} />
+                    <WideButton onPress={handleNextLevel} buttonText={t("LossModal.NEXT_LEVEL_BUTTON")} />
                   </View>
                 </>
               )}

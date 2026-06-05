@@ -1,0 +1,10 @@
+{
+  "LogMessages": {
+    "IS_LOADING": "isLaden:",
+    "NAVIGATION_RENDERING": "🧭 Navigatieweergave - isAuthenticated:",
+    "SHOWING_LOADING_SPINNER_AUTH": "⏳ Toont laadspinner - authenticatiestatus wordt bepaald",
+    "SHOWING_LOADING_SPINNER_USER_DATA": "⏳ Toont laadspinner - Laden van gebruikersgegevens...",
+    "SHOWING_NAVIGATION_STACK": "🎯 Toont navigatiestack - initialRoute:",
+    "TIMESTAMP": "tijdstempel:"
+  }
+}

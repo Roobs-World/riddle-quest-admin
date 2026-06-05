@@ -1,0 +1,12 @@
+{
+  "Leaderboard": {
+    "GUEST_UNAVAILABLE": "Đăng nhập để so sánh XP, chiến thắng và chuỗi thành tích trên bảng xếp hạng.",
+    "LOAD_ERROR": "Không thể tải bảng xếp hạng. Vui lòng thử lại.",
+    "NO_SCORES_YET": "Chưa có điểm nào — hãy là người đầu tiên lên bảng!",
+    "RETRY_BUTTON": "Thử lại",
+    "TAB_STREAK": "Vệt",
+    "TAB_WINS": "Thắng",
+    "TAB_XP": "kinh nghiệm",
+    "TITLE": "Bảng xếp hạng"
+  }
+}

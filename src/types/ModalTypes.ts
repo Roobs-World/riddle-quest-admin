@@ -1,6 +1,6 @@
 import * as RNIap from "react-native-iap";
 import {ProductPricing} from "../services/ProductPricingService";
-import {SupportedLanguage} from "../constants/AppStrings";
+import {SupportedLanguage} from "../i18n";
 
 // Base modal interface that all modals must implement
 export interface BaseModalProps {

@@ -10,10 +10,11 @@
  * @since 2024
  */
 
-import {Share, Linking} from "react-native";
+import {Linking, Share} from "react-native";
 import {ShareDialog} from "react-native-fbsdk-next";
-import {logger} from "../utils/logger";
+import {t} from "../i18n";
 import {captureException} from "../utils/sentry";
+import {logger} from "../utils/logger";
 
 export interface ShareContent {
   attempts: number;
@@ -21,17 +22,27 @@ export interface ShareContent {
   gameMode?: "daily" | "classic";
 }
 
+const APP_SHARE_URL = "https://Riddle Quest.app";
+
 export class SocialSharingService {
   /**
    * Generate shareable text content for game results
    */
   static generateShareText(content: ShareContent): string {
     const {attempts, emojiGrid, gameMode = "daily"} = content;
+    const gameTypeText =
+      gameMode === "daily"
+        ? t("VictoryModal.SHARE_DAILY_CHALLENGE_LABEL")
+        : t("VictoryModal.SHARE_CLASSIC_MODE_LABEL");
+    const attemptText =
+      attempts === 1 ? t("VictoryModal.SHARE_ATTEMPT_SINGULAR") : t("VictoryModal.SHARE_ATTEMPT_PLURAL");
 
-    const gameTypeText = gameMode === "daily" ? "Daily Challenge" : "Classic Mode";
-    const attemptText = attempts === 1 ? "attempt" : "attempts";
-
-    return `🎯 I solved today's Riddle Quest ${gameTypeText} in ${attempts} ${attemptText}!\n\n${emojiGrid}\n\nCan you beat my score? 🤔\n\n#Riddle Quest #WordPuzzle #BrainGame`;
+    return t("VictoryModal.SHARE_MESSAGE_TEMPLATE", {
+      attempts,
+      attemptLabel: attemptText,
+      emojiGrid,
+      gameType: gameTypeText,
+    });
   }
 
   /**
@@ -43,7 +54,7 @@ export class SocialSharingService {
 
       const result = await Share.share({
         message: shareText,
-        title: "Check out my Riddle Quest result!",
+        title: t("VictoryModal.SHARE_RESULT_TITLE"),
       });
 
       return result.action === Share.sharedAction;
@@ -64,26 +75,25 @@ export class SocialSharingService {
       // Check if ShareDialog is available
       const canShow = await ShareDialog.canShow({
         contentType: "link",
-        contentUrl: "https://Riddle Quest.app", // Replace with your actual app URL
+        contentUrl: APP_SHARE_URL,
         quote: shareText,
       });
 
       if (canShow) {
         const result = await ShareDialog.show({
           contentType: "link",
-          contentUrl: "https://Riddle Quest.app", // Replace with your actual app URL
+          contentUrl: APP_SHARE_URL,
           quote: shareText,
         });
 
         return !result.isCancelled;
-      } else {
-        // Fallback to system share if Facebook app not available
-        return this.shareViaSystem(content);
       }
+
+      // Fallback to system share if Facebook app not available
+      return this.shareViaSystem(content);
     } catch (error) {
       logger.error("Error sharing to Facebook:", error);
       captureException(error);
-      // Fallback to system share
       return this.shareViaSystem(content);
     }
   }
@@ -103,23 +113,22 @@ export class SocialSharingService {
       if (canOpenXApp) {
         await Linking.openURL(xAppUrl);
         return true;
-      } else {
-        // Fallback to X web (still uses twitter.com)
-        const xWebUrl = `https://twitter.com/intent/tweet?text=${encodedText}`;
-        const canOpenWeb = await Linking.canOpenURL(xWebUrl);
-
-        if (canOpenWeb) {
-          await Linking.openURL(xWebUrl);
-          return true;
-        } else {
-          // Final fallback to system share
-          return this.shareViaSystem(content);
-        }
       }
+
+      // Fallback to X web (still uses twitter.com)
+      const xWebUrl = `https://twitter.com/intent/tweet?text=${encodedText}`;
+      const canOpenWeb = await Linking.canOpenURL(xWebUrl);
+
+      if (canOpenWeb) {
+        await Linking.openURL(xWebUrl);
+        return true;
+      }
+
+      // Final fallback to system share
+      return this.shareViaSystem(content);
     } catch (error) {
       logger.error("Error sharing to X:", error);
       captureException(error);
-      // Fallback to system share
       return this.shareViaSystem(content);
     }
   }

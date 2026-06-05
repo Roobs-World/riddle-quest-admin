@@ -1,16 +1,20 @@
-import {AppStrings} from "../../constants/AppStrings";
+import {t} from "../../i18n";
 import {
   ErrorMessageResolver,
   createCodeMapStrategy,
   extractErrorMessage,
 } from "../../utils/errorResolution";
 
+const translate = (key: Parameters<typeof t>[0]): string => {
+  return t(key);
+};
+
 const UPDATE_USERNAME_ERROR_RESOLVER = new ErrorMessageResolver(
   [
     createCodeMapStrategy(
       "UpdateUsernameFunctionsCodes",
       {
-        "already-exists": AppStrings.Profile?.ALERT_USERNAME_ALREADY_TAKEN ?? "Username already taken.",
+        "already-exists": translate("Profile.ALERT_USERNAME_ALREADY_TAKEN"),
       },
       {
         normalizeCode: (code: string) => code.trim().toLowerCase().replace(/^functions\//, ""),
@@ -19,18 +23,11 @@ const UPDATE_USERNAME_ERROR_RESOLVER = new ErrorMessageResolver(
     {
       name: "UpdateUsernameMessageFallback",
       matches: (error: unknown): boolean => typeof extractErrorMessage(error) === "string",
-      resolve: (error: unknown): string | null => {
-        const message = extractErrorMessage(error);
-        if (!message) {
-          return null;
-        }
-
-        return message.replace(/^\[[^\]]+\]\s*/, "").trim();
-      },
+      resolve: () => null,
     },
   ],
   {
-    fallbackMessage: AppStrings.Profile?.ALERT_AN_ERROR_OCCURRED ?? "An error occurred.",
+    fallbackMessage: translate("Profile.ALERT_AN_ERROR_OCCURRED"),
   },
 );
 

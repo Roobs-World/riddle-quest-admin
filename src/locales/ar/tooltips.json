@@ -1,0 +1,32 @@
+{
+  "Tooltips": {
+    "ACHIEVEMENT_EARNED_BODY": "افتح ملفك الشخصي لعرض إنجازاتك وتتبع تقدمك.",
+    "ACHIEVEMENT_EARNED_TITLE": "تم فتح الإنجاز",
+    "CLASSIC_FROM_DAILY_BODY": "التحدي اليومي كامل. يتيح لك الوضع الكلاسيكي الاستمرار في حل الألغاز بالسرعة التي تناسبك.",
+    "CLASSIC_FROM_DAILY_TITLE": "الوضع الكلاسيكي",
+    "GOT_IT_BUTTON": "حصلت عليه",
+    "HELP_BUTTON_LABEL": "مساعدة",
+    "HINT_AFTER_WRONG_BODY": "غاب هذا التخمين. اضغط على \"تلميح\" للكشف عن رسالة مفيدة والمتابعة.",
+    "HINT_AFTER_WRONG_TITLE": "هل تحتاج إلى دليل؟",
+    "LEADERBOARD_FIFTH_CORRECT_BODY": "خمس إجابات صحيحة! افتح ملفك الشخصي لترى كيف يتم تصنيفك.",
+    "LEADERBOARD_FIFTH_CORRECT_TITLE": "تسلق المتصدرين",
+    "PROFILE_ACHIEVEMENTS_BODY": "افتح هذا القسم لرؤية كل إنجاز قمت بفتحه.",
+    "PROFILE_ACHIEVEMENTS_TITLE": "الإنجازات",
+    "PROFILE_COINS_BODY": "يظهر رصيد العملة الخاصة بك هنا. أنفق العملات المعدنية على التلميحات والتخطيات والفرص الإضافية.",
+    "PROFILE_COINS_TITLE": "صندوق الكنز",
+    "PROFILE_DAILY_PUZZLES_BODY": "يوضح هذا عدد التحديات اليومية التي أكملتها.",
+    "PROFILE_DAILY_PUZZLES_TITLE": "الألغاز اليومية",
+    "PROFILE_IDENTITY_BODY": "الصورة الرمزية الخاصة بك واسم المستخدم ومستوى XP وتقدم المستوى موجودة هنا.",
+    "PROFILE_IDENTITY_TITLE": "الملف الشخصي",
+    "PROFILE_LEADERBOARD_BODY": "افتح لوحة المتصدرين لمقارنة نقاط الخبرة والانتصارات والسلاسل مع اللاعبين الآخرين.",
+    "PROFILE_LEADERBOARD_TITLE": "المتصدرين",
+    "PROFILE_STATISTICS_BODY": "إحصائيات مفتوحة للحصول على تفاصيل أعمق لأداء اللعب الخاص بك.",
+    "PROFILE_STATISTICS_TITLE": "الإحصائيات",
+    "PROFILE_STATS_BODY": "تلخص هذه البطاقات خطك، والكلمات التي تم تخمينها، ومعدل الفوز، ومتوسط التخمينات.",
+    "PROFILE_STATS_TITLE": "لقطة احصائيات",
+    "SHOP_OUT_OF_COINS_BODY": "لقد نفدت العملات المعدنية لهذا الإجراء. افتح المتجر للشراء أو كسب المزيد.",
+    "SHOP_OUT_OF_COINS_TITLE": "احصل على المزيد من العملات المعدنية",
+    "SUBMIT_ANSWER_BODY": "عندما يتم ملء كل خانة، انقر فوق إرسال للتحقق من تخمينك.",
+    "SUBMIT_ANSWER_TITLE": "أرسل إجابتك"
+  }
+}

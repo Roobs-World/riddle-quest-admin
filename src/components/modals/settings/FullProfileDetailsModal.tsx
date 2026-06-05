@@ -10,17 +10,13 @@ import {getStorage} from "@react-native-firebase/storage";
 import {getApp} from "@react-native-firebase/app";
 import {getAuth} from "@react-native-firebase/auth";
 import {
-  CLOSE_BUTTON_SIZE,
-  AVATAR_SIZE_LARGE,
-  AUTH_CONTENT_MAX_WIDTH,
-  MODAL_MAX_HEIGHT,
-} from "../../../constants/layout";
+  CLOSE_BUTTON_SIZE, AVATAR_SIZE_LARGE, AUTH_CONTENT_MAX_WIDTH, MODAL_MAX_HEIGHT, } from "../../../constants/layout";
 import {moderateScale, verticalScale} from "../../../utils/responsive";
 import LogoIcon from "../../icons/LogoIcon";
 import TreasureChest from "./TreasureChest";
 import {getXpLevel} from "../../../constants/game";
 import {isGuestPlayer} from "@/features/auth/sessionBootstrap";
-import {AppStrings} from "../../../constants/AppStrings";
+import {t} from "../../../i18n";
 import {useAuth} from "@/contexts/AuthContext";
 import PulsingSpinner from "@/components/loading/PulsingSpinner";
 import UpgradeAccountModal from "./UpgradeAccountModal";
@@ -45,51 +41,51 @@ const getProfileTooltipContent = (id: TooltipId) => {
   switch (id) {
     case "profileIdentity":
       return {
-        title: AppStrings.Tooltips.PROFILE_IDENTITY_TITLE,
-        body: AppStrings.Tooltips.PROFILE_IDENTITY_BODY,
-        action: AppStrings.Tooltips.GOT_IT_BUTTON,
+        title: t("Tooltips.PROFILE_IDENTITY_TITLE"),
+        body: t("Tooltips.PROFILE_IDENTITY_BODY"),
+        action: t("Tooltips.GOT_IT_BUTTON"),
       };
     case "profileDailyPuzzles":
       return {
-        title: AppStrings.Tooltips.PROFILE_DAILY_PUZZLES_TITLE,
-        body: AppStrings.Tooltips.PROFILE_DAILY_PUZZLES_BODY,
-        action: AppStrings.Tooltips.GOT_IT_BUTTON,
+        title: t("Tooltips.PROFILE_DAILY_PUZZLES_TITLE"),
+        body: t("Tooltips.PROFILE_DAILY_PUZZLES_BODY"),
+        action: t("Tooltips.GOT_IT_BUTTON"),
       };
     case "profileStats":
       return {
-        title: AppStrings.Tooltips.PROFILE_STATS_TITLE,
-        body: AppStrings.Tooltips.PROFILE_STATS_BODY,
-        action: AppStrings.Tooltips.GOT_IT_BUTTON,
+        title: t("Tooltips.PROFILE_STATS_TITLE"),
+        body: t("Tooltips.PROFILE_STATS_BODY"),
+        action: t("Tooltips.GOT_IT_BUTTON"),
       };
     case "profileCoins":
       return {
-        title: AppStrings.Tooltips.PROFILE_COINS_TITLE,
-        body: AppStrings.Tooltips.PROFILE_COINS_BODY,
-        action: AppStrings.Tooltips.GOT_IT_BUTTON,
+        title: t("Tooltips.PROFILE_COINS_TITLE"),
+        body: t("Tooltips.PROFILE_COINS_BODY"),
+        action: t("Tooltips.GOT_IT_BUTTON"),
       };
     case "profileAchievements":
       return {
-        title: AppStrings.Tooltips.PROFILE_ACHIEVEMENTS_TITLE,
-        body: AppStrings.Tooltips.PROFILE_ACHIEVEMENTS_BODY,
-        action: AppStrings.Tooltips.GOT_IT_BUTTON,
+        title: t("Tooltips.PROFILE_ACHIEVEMENTS_TITLE"),
+        body: t("Tooltips.PROFILE_ACHIEVEMENTS_BODY"),
+        action: t("Tooltips.GOT_IT_BUTTON"),
       };
     case "profileStatistics":
       return {
-        title: AppStrings.Tooltips.PROFILE_STATISTICS_TITLE,
-        body: AppStrings.Tooltips.PROFILE_STATISTICS_BODY,
-        action: AppStrings.Tooltips.GOT_IT_BUTTON,
+        title: t("Tooltips.PROFILE_STATISTICS_TITLE"),
+        body: t("Tooltips.PROFILE_STATISTICS_BODY"),
+        action: t("Tooltips.GOT_IT_BUTTON"),
       };
     case "profileLeaderboard":
       return {
-        title: AppStrings.Tooltips.PROFILE_LEADERBOARD_TITLE,
-        body: AppStrings.Tooltips.PROFILE_LEADERBOARD_BODY,
-        action: AppStrings.Tooltips.GOT_IT_BUTTON,
+        title: t("Tooltips.PROFILE_LEADERBOARD_TITLE"),
+        body: t("Tooltips.PROFILE_LEADERBOARD_BODY"),
+        action: t("Tooltips.GOT_IT_BUTTON"),
       };
     default:
       return {
-        title: AppStrings.CommonAlerts.INFO_TITLE,
+        title: t("CommonAlerts.INFO_TITLE"),
         body: "",
-        action: AppStrings.Tooltips.GOT_IT_BUTTON,
+        action: t("Tooltips.GOT_IT_BUTTON"),
       };
   }
 };
@@ -158,7 +154,7 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisi
         }
       }
     } catch {
-      Alert.alert(AppStrings.CommonAlerts.ERROR_TITLE, AppStrings.Profile.ALERT_AVATAR_UPDATE_ERROR);
+      Alert.alert(t("CommonAlerts.ERROR_TITLE"), t("Profile.ALERT_AVATAR_UPDATE_ERROR"));
     } finally {
       setIsUploading(false);
     }
@@ -179,8 +175,8 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisi
     } catch {
       setIsDeleteConfirmVisible(false);
       modal.showInfoModal({
-        title: AppStrings.Profile.DELETE_ACCOUNT_ERROR_TITLE,
-        message: AppStrings.Profile.DELETE_ACCOUNT_ERROR_MESSAGE,
+        title: t("Profile.DELETE_ACCOUNT_ERROR_TITLE"),
+        message: t("Profile.DELETE_ACCOUNT_ERROR_MESSAGE"),
       });
     } finally {
       setIsDeletingAccount(false);
@@ -286,7 +282,7 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisi
                     letterSpacing: 2,
                   }}
                 >
-                  {AppStrings.Profile.PROFILE_HEADER}
+                  {t("Profile.PROFILE_HEADER")}
                 </Text>
                 <View style={{flexDirection: "row", alignItems: "center", gap: 8}}>
                   <ProfileHelpButton
@@ -343,7 +339,7 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisi
                 <TouchableOpacity
                   onPress={() => setIsUsernameModalVisible(true)}
                   accessibilityRole="button"
-                  accessibilityLabel={AppStrings.Profile.UPDATE_USERNAME_TITLE}
+                  accessibilityLabel={t("Profile.UPDATE_USERNAME_TITLE")}
                   testID="profile-username-button"
                   style={{
                     flexDirection: "row",
@@ -359,7 +355,7 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisi
                       fontFamily: TYPOGRAPHY.fontSecondaryBold,
                     }}
                   >
-                    {resolvedPlayerData?.username || AppStrings.Profile.GUEST_USERNAME}
+                    {resolvedPlayerData?.username || t("Profile.GUEST_USERNAME")}
                   </Text>
                   <Text style={{color: GOLD, fontSize: 24}}>✏</Text>
                 </TouchableOpacity>
@@ -399,7 +395,7 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisi
                         fontFamily: TYPOGRAPHY.fontSecondary,
                       }}
                     >
-                      {AppStrings.Profile.XP_LEVEL_PREFIX}
+                      {t("Profile.XP_LEVEL_PREFIX")}
                       {level}
                     </Text>
                   </View>
@@ -443,7 +439,7 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisi
                         lineHeight: 22,
                       }}
                     >
-                      {AppStrings.Profile.LOADING_MESSAGE}
+                      {t("Profile.LOADING_MESSAGE")}
                     </Text>
                   </View>
                 ) : null}
@@ -464,7 +460,7 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisi
                         marginBottom: SPACING.sm,
                       }}
                     >
-                      {AppStrings.Profile.GUEST_MODE_TITLE}
+                      {t("Profile.GUEST_MODE_TITLE")}
                     </Text>
                     <Text
                       style={{
@@ -475,7 +471,7 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisi
                         marginBottom: SPACING.md,
                       }}
                     >
-                      {AppStrings.Profile.GUEST_MODE_DESCRIPTION}
+                      {t("Profile.GUEST_MODE_DESCRIPTION")}
                     </Text>
                     <TouchableOpacity
                       onPress={() => setIsUpgradeModalVisible(true)}
@@ -493,13 +489,13 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisi
                           color: "#1A1A1A",
                         }}
                       >
-                        {AppStrings.Profile.UPGRADE_ACCOUNT_BUTTON}
+                        {t("Profile.UPGRADE_ACCOUNT_BUTTON")}
                       </Text>
                     </TouchableOpacity>
                   </View>
                 ) : null}
                 <SectionHeader
-                  title={AppStrings.Profile.DAILY_PUZZLES_COMPLETED_HEADER}
+                  title={t("Profile.DAILY_PUZZLES_COMPLETED_HEADER")}
                   tooltipId="profileDailyPuzzles"
                   onPressHelp={showProfileTooltip}
                   testID="profile-help-daily-puzzles"
@@ -545,12 +541,12 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisi
                       textAlign: "right",
                     }}
                   >
-                    {AppStrings.Profile.REGULAR_DAYS_LABEL}
+                    {t("Profile.REGULAR_DAYS_LABEL")}
                   </Text>
                 </View>
 
                 <SectionHeader
-                  title={AppStrings.Profile.BEST_STRIKE_HEADER}
+                  title={t("Profile.BEST_STRIKE_HEADER")}
                   tooltipId="profileStats"
                   onPressHelp={showProfileTooltip}
                   testID="profile-help-stats"
@@ -563,15 +559,15 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisi
                     marginBottom: SPACING.lg,
                   }}
                 >
-                  <StatBox value={stats?.bestStreak ?? 0} label={AppStrings.StatsModal.BEST_STREAK} />
-                  <StatBox value={stats?.totalWordsGuessed ?? 0} label={AppStrings.StatsModal.TOTAL_WORDS_GUESSED} />
-                  <StatBox value={`${winRate}%`} label={AppStrings.StatsModal.WIN_RATE} />
-                  <StatBox value={avgGuess} label={AppStrings.Profile.AVG_GUESS_LABEL} />
+                  <StatBox value={stats?.bestStreak ?? 0} label={t("StatsModal.BEST_STREAK")} />
+                  <StatBox value={stats?.totalWordsGuessed ?? 0} label={t("StatsModal.TOTAL_WORDS_GUESSED")} />
+                  <StatBox value={`${winRate}%`} label={t("StatsModal.WIN_RATE")} />
+                  <StatBox value={avgGuess} label={t("Profile.AVG_GUESS_LABEL")} />
                 </View>
 
                 <View style={{marginBottom: SPACING.lg}}>
                   <SectionHeader
-                    title={AppStrings.Profile.TREASURE_CHEST_TITLE}
+                    title={t("Profile.TREASURE_CHEST_TITLE")}
                     tooltipId="profileCoins"
                     onPressHelp={showProfileTooltip}
                     testID="profile-help-coins"
@@ -592,7 +588,7 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisi
                   style={[actionButtonStyle, !hasProfileData ? actionButtonDisabledStyle : null]}
                 >
                   <View style={actionButtonContentStyle}>
-                    <Text style={actionButtonTextStyle}>{AppStrings.Achievements.MODAL_TITLE}</Text>
+                    <Text style={actionButtonTextStyle}>{t("Achievements.MODAL_TITLE")}</Text>
                     <ProfileHelpButton
                       tooltipId="profileAchievements"
                       onPress={showProfileTooltip}
@@ -614,7 +610,7 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisi
                   style={[actionButtonStyle, !hasProfileData ? actionButtonDisabledStyle : null]}
                 >
                   <View style={actionButtonContentStyle}>
-                    <Text style={actionButtonTextStyle}>{AppStrings.StatsModal.TITLE}</Text>
+                    <Text style={actionButtonTextStyle}>{t("StatsModal.TITLE")}</Text>
                     <ProfileHelpButton
                       tooltipId="profileStatistics"
                       onPress={showProfileTooltip}
@@ -636,7 +632,7 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisi
                   style={[actionButtonStyle, !hasProfileData ? actionButtonDisabledStyle : null]}
                 >
                   <View style={actionButtonContentStyle}>
-                    <Text style={actionButtonTextStyle}>{AppStrings.Leaderboard.TITLE}</Text>
+                    <Text style={actionButtonTextStyle}>{t("Leaderboard.TITLE")}</Text>
                     <ProfileHelpButton
                       tooltipId="profileLeaderboard"
                       onPress={showProfileTooltip}
@@ -656,7 +652,7 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisi
                     !hasProfileData || isDeletingAccount ? actionButtonDisabledStyle : null,
                   ]}
                 >
-                  <Text style={deleteAccountButtonTextStyle}>{AppStrings.Profile.DELETE_ACCOUNT_BUTTON}</Text>
+                  <Text style={deleteAccountButtonTextStyle}>{t("Profile.DELETE_ACCOUNT_BUTTON")}</Text>
                 </TouchableOpacity>
 
                 <View style={{height: SPACING.xl, marginBottom: verticalScale(24)}} />
@@ -749,7 +745,7 @@ const ProfileHelpButton = ({
         onPress(tooltipId, ref);
       }}
       accessibilityRole="button"
-      accessibilityLabel={`${AppStrings.Tooltips.HELP_BUTTON_LABEL}: ${getProfileTooltipContent(tooltipId).title}`}
+      accessibilityLabel={`${t("Tooltips.HELP_BUTTON_LABEL")}: ${getProfileTooltipContent(tooltipId).title}`}
       testID={testID}
       style={{
         width: moderateScale(26),

@@ -3,7 +3,7 @@ import {Text, View} from "react-native";
 import CoinSvg from "../../../assets/images/coin.svg";
 import {TYPOGRAPHY} from "../../styles";
 import {COIN_ICON_SIZE_LARGE, MODAL_CONTENT_PADDING, MODAL_WIDTH} from "../../constants/layout";
-import {AppStrings} from "../../constants/AppStrings";
+import {t} from "../../i18n";
 import TreasureChest from "../modals/settings/TreasureChest";
 
 interface NewCoinsProps {
@@ -29,7 +29,7 @@ export const NewCoins = ({coinsEarned, totalCoins}: NewCoinsProps): React.JSX.El
             }}
           >
             +{coinsEarned}
-            {AppStrings.VictoryModal.COINS_SUFFIX}
+            {t("VictoryModal.COINS_SUFFIX")}
           </Text>
         </View>
       )}
@@ -45,8 +45,9 @@ export const NewCoins = ({coinsEarned, totalCoins}: NewCoinsProps): React.JSX.El
               marginTop: 10,
             }}
           >
-            Cost: {Math.abs(coinsEarned)}
-            {AppStrings.VictoryModal.COINS_SUFFIX}
+            {t("GameScreenAlerts.COST_COINS_PREFIX")}
+            {Math.abs(coinsEarned)}
+            {t("VictoryModal.COINS_SUFFIX")}
           </Text>
         </View>
       )}

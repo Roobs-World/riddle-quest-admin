@@ -1,0 +1,10 @@
+{
+  "LogMessages": {
+    "IS_LOADING": "يتم التحميل:",
+    "NAVIGATION_RENDERING": "🧭 عرض التنقل - isAuthenticated:",
+    "SHOWING_LOADING_SPINNER_AUTH": "⏳ إظهار قرص التحميل - يتم تحديد حالة المصادقة",
+    "SHOWING_LOADING_SPINNER_USER_DATA": "⏳ إظهار قرص التحميل - جارٍ تحميل بيانات المستخدم...",
+    "SHOWING_NAVIGATION_STACK": "🎯 عرض مكدس التنقل - المسار الأولي:",
+    "TIMESTAMP": "الطابع الزمني:"
+  }
+}

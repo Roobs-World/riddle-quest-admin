@@ -5,7 +5,7 @@
 import React, {useEffect, useMemo, useState} from "react";
 import {Animated, Easing, Modal, StyleSheet, View} from "react-native";
 import {styles, COLORS} from "../../styles";
-import {AppStrings} from "../../constants/AppStrings";
+import {t} from "../../i18n";
 import SlideInModalContent from "../shared/SlideInModalContent";
 import {isQASurfaceRuntimeActive} from "../../qa/qaRuntime";
 
@@ -113,7 +113,7 @@ const PulsingSpinner = React.memo(function PulsingSpinner({
             maxHeight: size,
           },
         ]}
-        accessibilityLabel={AppStrings.Accessibility.LOADING}
+        accessibilityLabel={t("Accessibility.LOADING")}
         accessibilityRole="progressbar"
       >
         <View testID="spinner-ring" style={[styles.svgContainer, {width: size, height: size}]}>

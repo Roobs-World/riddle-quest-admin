@@ -2,7 +2,7 @@ import React, {ReactElement} from "react";
 import {Text, TouchableOpacity, View} from "react-native";
 import {SPACING, TYPOGRAPHY} from "../../styles";
 import {SUBMIT_BUTTON_PADDING_H} from "../../constants/layout";
-import {AppStrings} from "../../constants/AppStrings";
+import {t} from "../../i18n";
 
 /**
  * Props for the primary guess-submit control.
@@ -44,7 +44,7 @@ export const SubmitButton = React.forwardRef<View, SubmitButtonProps>(
         testID="submit-button"
         accessible={true}
         accessibilityRole="button"
-        accessibilityLabel={AppStrings.Accessibility.SUBMIT_GUESS}
+        accessibilityLabel={t("Accessibility.SUBMIT_GUESS")}
       >
         <Text
           numberOfLines={1}
@@ -56,7 +56,7 @@ export const SubmitButton = React.forwardRef<View, SubmitButtonProps>(
             color: "black",
           }}
         >
-          {AppStrings.GameScreenAlerts.SUBMIT_BUTTON}
+          {t("GameScreenAlerts.SUBMIT_BUTTON")}
         </Text>
       </TouchableOpacity>
     );

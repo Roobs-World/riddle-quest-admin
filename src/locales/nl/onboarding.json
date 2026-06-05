@@ -1,0 +1,24 @@
+{
+  "Instructions": {
+    "COLOR_CLUES_TITLE": "Kleur aanwijzingen",
+    "COLOR_CORRECT": "Letter is correct en staat op de juiste plaats",
+    "COLOR_MISPLACED": "Letter staat in het woord, maar verkeerde positie",
+    "COLOR_WRONG": "Letter zit helemaal niet in het woord",
+    "GOAL_DESCRIPTION": "Raad het verborgen raadsel in 3 pogingen en gebruik de kleuraanwijzingen om je te begeleiden.",
+    "GOAL_TITLE": "Het doel",
+    "GOT_IT_BUTTON": "Begrepen!",
+    "TIPS_DESCRIPTION": "Begin met gewone letters en gebruik de kleurfeedback om uw gissingen te verfijnen. Vergeet niet dat je maar 3 pogingen hebt!",
+    "TIPS_TITLE": "Tips voor succes",
+    "TITLE": "Hoe te spelen"
+  },
+  "WelcomeBackModal": {
+    "TAP_TO_CONTINUE": "Tik om door te gaan",
+    "TITLE": "Welkom terug"
+  },
+  "WelcomeModal": {
+    "EARN_COINS_TEXT": "Verdien munten, versla dagelijkse uitdagingen en beklim het klassement.",
+    "LETS_PLAY": "Laten we spelen",
+    "SOLVE_RIDDLES_TEXT": "Los boeiende raadsels op door het antwoord letter voor letter te raden. Gebruik de kleuraanwijzingen om elke gok te verfijnen.",
+    "WELCOME_TITLE": "Welkom bij Riddle Quest!"
+  }
+}

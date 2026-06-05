@@ -1,0 +1,22 @@
+{
+  "CommonAlerts": {
+    "CANCEL_BUTTON": "取消",
+    "CANNOT_OPEN_BROWSER_SUFFIX": " 在您的浏览器中.",
+    "CANNOT_OPEN_PREFIX": "无法打开 ",
+    "CANNOT_OPEN_VISIT_SUFFIX": "。请访问 ",
+    "CLOSE_BUTTON": "关闭",
+    "COULD_NOT_OPEN_PREFIX": "无法打开 ",
+    "COULD_NOT_OPEN_TRY_AGAIN": "。请稍后重试。",
+    "ERROR_TITLE": "错误",
+    "INFO_TITLE": "信息",
+    "OFFLINE_MESSAGE": "请重新连接以继续播放。",
+    "OFFLINE_TITLE": "没有互联网连接",
+    "OK_BUTTON": "好的",
+    "SUCCESS_TITLE": "成功",
+    "UNABLE_TO_OPEN_TITLE": "无法打开",
+    "TRY_AGAIN_LATER_MESSAGE": "请稍后重试。"
+  },
+  "CommonButtons": {
+    "RETRY": "重试"
+  }
+}

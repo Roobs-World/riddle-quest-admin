@@ -1,0 +1,18 @@
+{
+  "LossModal": {
+    "ANSWER_PREFIX": "Cevap: ",
+    "EXTRA_GUESSES_PREFIX": "3 ekstra tahmin - ",
+    "EXTRA_GUESSES_PROMPT": "Deneme hakkin bitti. 3 ekstra tahmin al veya bu bulmacayi atla.",
+    "EXTRA_GUESSES_SUFFIX": " jeton",
+    "NEXT_LEVEL_BUTTON": "Sonraki bolum",
+    "OPEN_SHOP_BUTTON": "Magazayi ac",
+    "OUT_OF_ATTEMPTS": "Deneme hakki bitti.",
+    "SKIP_LEVEL_PREFIX": "Bolumu atla (",
+    "SKIP_LEVEL_SUFFIX": " para)",
+    "SKIP_PUZZLE_BUTTON": "Bulmacayi atla",
+    "TITLE": "Az kaldi!",
+    "USE_COINS_PREFIX": "Kullan: ",
+    "USE_COINS_SUFFIX": " para ile devam et",
+    "WATCH_AD_BUTTON": "Devam icin reklam izle"
+  }
+}

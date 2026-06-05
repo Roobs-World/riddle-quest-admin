@@ -1,6 +1,7 @@
 import {getFirestore, collection, doc, getDoc, getDocs, query, where, limit} from "@react-native-firebase/firestore";
 import {FirestoreRiddle, FirestoreRiddleSchema} from "../validation/firestoreSchemas";
 import {ZodError} from "zod";
+import {t} from "../i18n";
 import {IRiddleDataService} from "./interfaces/IRiddleDataService";
 import {logger} from "../utils/logger";
 import {captureException} from "../utils/sentry";
@@ -49,7 +50,7 @@ export class RiddleDataService implements IRiddleDataService {
       if (error instanceof ZodError) {
         logger.error("Daily riddle validation failed:", error.issues);
         captureException(error);
-        throw new Error("Invalid daily riddle data structure");
+        throw new Error(t("ErrorMessages.INVALID_DATA_FORMAT"));
       }
       logger.error("Error fetching daily riddle:", error);
       captureException(error);
@@ -101,7 +102,7 @@ export class RiddleDataService implements IRiddleDataService {
       if (error instanceof ZodError) {
         logger.error("Classic riddle validation failed:", error.issues);
         captureException(error);
-        throw new Error("Invalid classic riddle data structure");
+        throw new Error(t("ErrorMessages.INVALID_DATA_FORMAT"));
       }
       logger.error(`Error fetching classic riddle for level ${level}:`, error);
       captureException(error);
@@ -117,7 +118,7 @@ export class RiddleDataService implements IRiddleDataService {
    */
   async fetchRiddleById(riddleId: string): Promise<FirestoreRiddle | null> {
     if (!riddleId || !riddleId.trim()) {
-      throw new Error("Riddle ID is required");
+      throw new Error(t("ErrorMessages.RIDDLE_ID_REQUIRED"));
     }
 
     try {
@@ -145,7 +146,7 @@ export class RiddleDataService implements IRiddleDataService {
       if (error instanceof ZodError) {
         logger.error("Riddle validation failed:", error.issues);
         captureException(error);
-        throw new Error("Invalid riddle data structure");
+        throw new Error(t("ErrorMessages.INVALID_DATA_FORMAT"));
       }
       logger.error("Error fetching riddle by ID:", error);
       captureException(error);

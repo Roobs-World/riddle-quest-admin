@@ -1,0 +1,18 @@
+{
+  "LossModal": {
+    "ANSWER_PREFIX": "Ответ: ",
+    "EXTRA_GUESSES_PREFIX": "3 дополнительные попытки - ",
+    "EXTRA_GUESSES_PROMPT": "Попытки закончились. Получите 3 дополнительные попытки или пропустите эту загадку.",
+    "EXTRA_GUESSES_SUFFIX": " монет",
+    "NEXT_LEVEL_BUTTON": "Sleduyushchiy uroven",
+    "OPEN_SHOP_BUTTON": "Otkryt magazin",
+    "OUT_OF_ATTEMPTS": "Popytki zakonchilis.",
+    "SKIP_LEVEL_PREFIX": "Propustit uroven (",
+    "SKIP_LEVEL_SUFFIX": " monet)",
+    "SKIP_PUZZLE_BUTTON": "Пропустить загадку",
+    "TITLE": "Pochti!",
+    "USE_COINS_PREFIX": "Ispolzovat ",
+    "USE_COINS_SUFFIX": " monet dlya prodolzheniya",
+    "WATCH_AD_BUTTON": "Posmotret reklamu dlya prodolzheniya"
+  }
+}

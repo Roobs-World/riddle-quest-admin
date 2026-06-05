@@ -2,6 +2,7 @@ import React from "react";
 import {Modal, StyleSheet, Text, View} from "react-native";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import {AUTH_CONTENT_MAX_WIDTH} from "../../../constants/layout";
+import {t} from "../../../i18n";
 import {scale, verticalScale} from "../../../utils/responsive";
 
 interface OfflineBlockingModalProps {
@@ -21,8 +22,8 @@ const OfflineBlockingModal: React.FC<OfflineBlockingModalProps> = ({isVisible}) 
       <View style={styles.backdrop}>
         <SlideInModalContent isVisible={isVisible} style={styles.content}>
           <View style={styles.card}>
-            <Text style={styles.title}>No Internet Connection</Text>
-            <Text style={styles.message}>Please reconnect to continue playing.</Text>
+            <Text style={styles.title}>{t("CommonAlerts.OFFLINE_TITLE")}</Text>
+            <Text style={styles.message}>{t("CommonAlerts.OFFLINE_MESSAGE")}</Text>
           </View>
         </SlideInModalContent>
       </View>

@@ -1,0 +1,7 @@
+{
+  "RewardedAdPrompts": {
+    "NO_THANKS_BUTTON": "No Thanks",
+    "OUT_OF_GUESSES_PROMPT": "You're out of guesses! Watch an ad to earn some coins?",
+    "WATCH_AD_BUTTON": "Watch Ad"
+  }
+}

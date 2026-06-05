@@ -1,0 +1,24 @@
+{
+  "Instructions": {
+    "COLOR_CLUES_TITLE": "Indices de Couleur",
+    "COLOR_CORRECT": "La lettre est correcte et bien placee",
+    "COLOR_MISPLACED": "La lettre est dans le mot mais mal placee",
+    "COLOR_WRONG": "La lettre n est pas dans le mot",
+    "GOAL_DESCRIPTION": "Devinez l enigme cache en 3 essais avec les indices de couleur.",
+    "GOAL_TITLE": "L Objectif",
+    "GOT_IT_BUTTON": "Compris!",
+    "TIPS_DESCRIPTION": "Commencez par des lettres courantes et utilisez les couleurs pour reduire vos propositions. Rappel: vous n avez que 3 essais!",
+    "TIPS_TITLE": "Conseils",
+    "TITLE": "Comment Jouer"
+  },
+  "WelcomeBackModal": {
+    "TAP_TO_CONTINUE": "Touchez pour continuer",
+    "TITLE": "Bon retour"
+  },
+  "WelcomeModal": {
+    "EARN_COINS_TEXT": "Gagnez des pieces, relevez des defis quotidiens et grimpez au classement.",
+    "LETS_PLAY": "A nous de jouer",
+    "SOLVE_RIDDLES_TEXT": "Resolvez des enigmes en devinant la reponse lettre par lettre. Utilisez les indices de couleur pour guider chaque tentative.",
+    "WELCOME_TITLE": "Bienvenue sur\nRiddle Quest!"
+  }
+}

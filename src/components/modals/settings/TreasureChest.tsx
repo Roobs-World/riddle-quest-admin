@@ -4,7 +4,7 @@ import TreasureChestRaysSvg from "../../../../assets/images/treasure-chest-rays.
 import TreasureChestSvg from "../../../../assets/images/chest.svg";
 import {TYPOGRAPHY, SPACING} from "../../../styles";
 import {verticalScale} from "../../../utils/responsive";
-import {AppStrings} from "../../../constants/AppStrings";
+import {t} from "../../../i18n";
 import {isQASurfaceRuntimeActive} from "../../../qa/qaRuntime";
 
 export default function TreasureChest({coins}: {coins: number}) {
@@ -98,7 +98,7 @@ export default function TreasureChest({coins}: {coins: number}) {
               marginTop: verticalScale(96),
             }}
           >
-            {AppStrings.Profile.TOTAL_COINS_LABEL}
+            {t("Profile.TOTAL_COINS_LABEL")}
           </Text>
           <Text
             className="text-black"

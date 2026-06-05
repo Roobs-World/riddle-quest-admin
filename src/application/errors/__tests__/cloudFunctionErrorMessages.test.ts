@@ -1,13 +1,17 @@
 import {getUpdateUsernameErrorMessage} from "../cloudFunctionErrorMessages";
 
-jest.mock("../../../constants/AppStrings", () => ({
+const mockI18n: any = {
   AppStrings: {
     Profile: {
       ALERT_USERNAME_ALREADY_TAKEN: "Username already taken.",
       ALERT_AN_ERROR_OCCURRED: "An error occurred.",
     },
   },
-}));
+};
+
+mockI18n.t = (key: string) => key.split(".").reduce((current: any, segment: string) => current?.[segment], mockI18n.AppStrings);
+
+jest.mock("../../../i18n", () => mockI18n);
 
 describe("cloudFunctionErrorMessages", () => {
   it("maps normalized functions codes to friendly copy", () => {
@@ -22,4 +26,3 @@ describe("cloudFunctionErrorMessages", () => {
     );
   });
 });
-

@@ -1,5 +1,5 @@
 import type {FirebaseAuthTypes} from "@react-native-firebase/auth";
-import {AppStrings} from "../../constants/AppStrings";
+import {t} from "../../i18n";
 import {
   ErrorMessageResolver,
   createCodeMapStrategy,
@@ -36,70 +36,63 @@ const ACCOUNT_CONFLICT_CODES = new Set([
   "auth/email-already-in-use",
 ]);
 
-const copy = (value: string | undefined, fallback: string): string => value ?? fallback;
-
-const loginStrings = AppStrings.AuthStrings?.Login ?? {};
-const signUpStrings = AppStrings.AuthStrings?.SignUp ?? {};
-const forgotPasswordStrings = AppStrings.AuthStrings?.ForgotPassword ?? {};
+const copy = (key: Parameters<typeof t>[0]): string => t(key);
 
 const LOGIN_ERROR_RESOLVER = new ErrorMessageResolver(
   [
     createCodeMapStrategy("LoginFirebaseCodes", {
-      "auth/invalid-email": copy(loginStrings.INVALID_EMAIL_FORMAT_ERROR, "Please enter a valid email address."),
-      "auth/user-not-found": copy(loginStrings.USER_NOT_FOUND_ERROR, "No account found with this email address."),
-      "auth/wrong-password": copy(loginStrings.WRONG_PASSWORD_ERROR, "Incorrect password. Please try again."),
-      "auth/invalid-credential": copy(loginStrings.WRONG_PASSWORD_ERROR, "Incorrect password. Please try again."),
-      "auth/user-disabled": copy(loginStrings.USER_DISABLED_ERROR, "This account is disabled."),
+      "auth/invalid-email": copy("AuthStrings.Login.INVALID_EMAIL_FORMAT_ERROR"),
+      "auth/user-not-found": copy("AuthStrings.Login.USER_NOT_FOUND_ERROR"),
+      "auth/wrong-password": copy("AuthStrings.Login.WRONG_PASSWORD_ERROR"),
+      "auth/invalid-credential": copy("AuthStrings.Login.WRONG_PASSWORD_ERROR"),
+      "auth/user-disabled": copy("AuthStrings.Login.USER_DISABLED_ERROR"),
     }),
     {
       name: "LoginMessageFallback",
       matches: (error: unknown): boolean =>
         typeof error === "object" && error !== null && typeof extractErrorMessage(error) === "string",
-      resolve: (error: unknown): string | null => extractErrorMessage(error) ?? null,
+      resolve: () => null,
     },
   ],
   {
-    fallbackMessage: copy(loginStrings.LOGIN_FAILED_GENERIC, "Login failed."),
+    fallbackMessage: copy("AuthStrings.Login.LOGIN_FAILED_GENERIC"),
   },
 );
 
 const SIGN_UP_ERROR_RESOLVER = new ErrorMessageResolver(
   [
     createCodeMapStrategy("SignUpFirebaseCodes", {
-      "auth/email-already-in-use": copy(signUpStrings.EMAIL_ALREADY_IN_USE_ERROR, "Email already in use."),
-      "auth/invalid-email": copy(signUpStrings.INVALID_EMAIL_ERROR, "Please enter a valid email address."),
-      "auth/operation-not-allowed": copy(signUpStrings.OPERATION_NOT_ALLOWED_ERROR, "Operation not allowed."),
-      "auth/weak-password": copy(signUpStrings.WEAK_PASSWORD_ERROR, "Password should be at least 6 characters long."),
+      "auth/email-already-in-use": copy("AuthStrings.SignUp.EMAIL_ALREADY_IN_USE_ERROR"),
+      "auth/invalid-email": copy("AuthStrings.SignUp.INVALID_EMAIL_ERROR"),
+      "auth/operation-not-allowed": copy("AuthStrings.SignUp.OPERATION_NOT_ALLOWED_ERROR"),
+      "auth/weak-password": copy("AuthStrings.SignUp.WEAK_PASSWORD_ERROR"),
     }),
     {
       name: "SignUpMessageFallback",
       matches: (error: unknown): boolean =>
         typeof error === "object" && error !== null && typeof extractErrorMessage(error) === "string",
-      resolve: (error: unknown): string | null => extractErrorMessage(error) ?? null,
+      resolve: () => null,
     },
   ],
   {
-    fallbackMessage: copy(signUpStrings.SIGNUP_UNEXPECTED_ERROR, "An unexpected error occurred."),
+    fallbackMessage: copy("AuthStrings.SignUp.SIGNUP_UNEXPECTED_ERROR"),
   },
 );
 
 const FORGOT_PASSWORD_ERROR_RESOLVER = new ErrorMessageResolver(
   [
     createCodeMapStrategy("ForgotPasswordFirebaseCodes", {
-      "auth/user-not-found": copy(
-        forgotPasswordStrings.USER_NOT_FOUND_ERROR,
-        "No account found with this email address.",
-      ),
+      "auth/user-not-found": copy("AuthStrings.ForgotPassword.USER_NOT_FOUND_ERROR"),
     }),
     {
       name: "ForgotPasswordMessageFallback",
       matches: (error: unknown): boolean =>
         typeof error === "object" && error !== null && typeof extractErrorMessage(error) === "string",
-      resolve: (error: unknown): string | null => extractErrorMessage(error) ?? null,
+      resolve: () => null,
     },
   ],
   {
-    fallbackMessage: copy(forgotPasswordStrings.GENERIC_ERROR, "An unexpected error occurred."),
+    fallbackMessage: copy("AuthStrings.ForgotPassword.GENERIC_ERROR"),
   },
 );
 
@@ -108,42 +101,39 @@ const FACEBOOK_ERROR_RESOLVER = new ErrorMessageResolver(
     createMessageContainsStrategy("FacebookDiagnosticPatterns", [
       {
         pattern: "access token",
-        message: copy(loginStrings.FACEBOOK_CONFIG_ERROR, "Facebook is not configured correctly."),
+        message: copy("AuthStrings.Login.FACEBOOK_CONFIG_ERROR"),
       },
       {
         pattern: "Facebook permission request timed out",
-        message: copy(loginStrings.FACEBOOK_TIMEOUT_ERROR, "Facebook login timed out."),
+        message: copy("AuthStrings.Login.FACEBOOK_TIMEOUT_ERROR"),
       },
       {
         pattern: "Facebook SDK not properly initialized",
-        message: copy(loginStrings.FACEBOOK_SDK_ERROR, "Facebook SDK error occurred."),
+        message: copy("AuthStrings.Login.FACEBOOK_SDK_ERROR"),
       },
     ]),
     createCodeMapStrategy("FacebookFirebaseCodes", {
       "auth/account-exists-with-different-credential":
-        copy(loginStrings.ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL, "Account already exists."),
+        copy("AuthStrings.Login.ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL"),
       "auth/operation-not-supported-in-this-environment": copy(
-        loginStrings.OPERATION_NOT_SUPPORTED_ERROR,
-        "Facebook login is not supported in this environment.",
+        "AuthStrings.Login.OPERATION_NOT_SUPPORTED_ERROR",
       ),
       "auth/network-request-failed": copy(
-        loginStrings.FACEBOOK_NETWORK_ERROR,
-        "Network error during Facebook login. Please check your connection and try again.",
+        "AuthStrings.Login.FACEBOOK_NETWORK_ERROR",
       ),
       "auth/invalid-credential": copy(
-        loginStrings.FACEBOOK_INVALID_CREDENTIAL_ERROR,
-        "Invalid Facebook credentials. Please try again.",
+        "AuthStrings.Login.FACEBOOK_INVALID_CREDENTIAL_ERROR",
       ),
     }),
     {
       name: "FacebookMessageFallback",
       matches: (error: unknown): boolean =>
         typeof error === "object" && error !== null && typeof extractErrorMessage(error) === "string",
-      resolve: (error: unknown): string | null => extractErrorMessage(error) ?? null,
+      resolve: () => null,
     },
   ],
   {
-    fallbackMessage: copy(loginStrings.FACEBOOK_UNEXPECTED_ERROR, "An unexpected error occurred during Facebook login."),
+    fallbackMessage: copy("AuthStrings.Login.FACEBOOK_UNEXPECTED_ERROR"),
   },
 );
 
@@ -151,17 +141,17 @@ const GOOGLE_ERROR_RESOLVER = new ErrorMessageResolver(
   [
     createCodeMapStrategy("GoogleFirebaseCodes", {
       "auth/account-exists-with-different-credential":
-        copy(loginStrings.ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL, "Account already exists."),
+        copy("AuthStrings.Login.ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL"),
     }),
     {
       name: "GoogleMessageFallback",
       matches: (error: unknown): boolean =>
         typeof error === "object" && error !== null && typeof extractErrorMessage(error) === "string",
-      resolve: (error: unknown): string | null => extractErrorMessage(error) ?? null,
+      resolve: () => null,
     },
   ],
   {
-    fallbackMessage: copy(loginStrings.GOOGLE_UNEXPECTED_ERROR, "An unexpected error occurred during Google login."),
+    fallbackMessage: copy("AuthStrings.Login.GOOGLE_UNEXPECTED_ERROR"),
   },
 );
 
@@ -241,10 +231,10 @@ export const getFacebookSignInErrorMessage = (error: unknown): string => FACEBOO
 export const getAuthErrorMessage = (error: unknown): string => {
   const code = extractErrorCode(error);
   if (code && normalizeAuthCode(code) === "auth/account-exists-with-different-credential") {
-    return copy(loginStrings.ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL, "Account already exists.");
+    return copy("AuthStrings.Login.ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL");
   }
 
-  return extractErrorMessage(error) ?? copy(loginStrings.GOOGLE_UNEXPECTED_ERROR, "An unexpected error occurred.");
+  return copy("AuthStrings.Login.GOOGLE_UNEXPECTED_ERROR");
 };
 
 export type NativeFirebaseAuthError = FirebaseAuthTypes.NativeFirebaseAuthError;

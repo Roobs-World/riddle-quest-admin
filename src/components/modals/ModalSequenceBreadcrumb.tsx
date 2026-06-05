@@ -2,6 +2,7 @@ import React from "react";
 import {Pressable, View} from "react-native";
 import type {ModalSequenceProgress} from "../../types/ModalTypes";
 import {moderateScale, verticalScale} from "../../utils/responsive";
+import {t} from "../../i18n";
 
 interface ModalSequenceBreadcrumbProps {
   sequenceProgress?: ModalSequenceProgress;
@@ -20,7 +21,7 @@ const ModalSequenceBreadcrumb: React.FC<ModalSequenceBreadcrumbProps> = ({sequen
 
   return (
     <View
-      accessibilityLabel={`Popup ${current} of ${total}`}
+      accessibilityLabel={t("Accessibility.MODAL_SEQUENCE_PROGRESS", {current, total})}
       testID="modal-sequence-breadcrumb"
       style={{
         alignSelf: "stretch",
@@ -49,8 +50,8 @@ const ModalSequenceBreadcrumb: React.FC<ModalSequenceBreadcrumbProps> = ({sequen
               key={index}
               testID={`modal-sequence-breadcrumb-dot-${popupIndex}`}
               accessibilityRole="button"
-              accessibilityLabel={`Go to popup ${popupIndex} of ${total}`}
-              accessibilityHint="Jump back to this popup"
+              accessibilityLabel={t("Accessibility.MODAL_SEQUENCE_GO_TO_POPUP", {popupIndex, total})}
+              accessibilityHint={t("Accessibility.MODAL_SEQUENCE_GO_TO_HINT")}
               accessibilityState={{selected: false}}
               hitSlop={8}
               onPress={() => sequenceProgress.onSelectPopup?.(popupIndex)}

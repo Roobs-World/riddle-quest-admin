@@ -1,0 +1,10 @@
+{
+  "CoinShop": {
+    "COINS_SUFFIX": "munten",
+    "LOADING_TEXT": "Winkel laden...",
+    "NO_PACKS_AVAILABLE": "Er zijn momenteel geen muntpakketten beschikbaar.",
+    "PURCHASE_BUTTON": "AANKOOP",
+    "TITLE": "MUNTWINKEL",
+    "YOUR_BALANCE": "Jouw saldo"
+  }
+}

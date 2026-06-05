@@ -1,0 +1,18 @@
+{
+  "LossModal": {
+    "ANSWER_PREFIX": "Respuesta: ",
+    "EXTRA_GUESSES_PREFIX": "3 intentos extra - ",
+    "EXTRA_GUESSES_PROMPT": "Sin intentos. Obten 3 intentos extra o salta este acertijo.",
+    "EXTRA_GUESSES_SUFFIX": " monedas",
+    "NEXT_LEVEL_BUTTON": "Siguiente nivel",
+    "OPEN_SHOP_BUTTON": "Abrir tienda",
+    "OUT_OF_ATTEMPTS": "Sin intentos.",
+    "SKIP_LEVEL_PREFIX": "Saltar nivel (",
+    "SKIP_LEVEL_SUFFIX": " monedas)",
+    "SKIP_PUZZLE_BUTTON": "Saltar acertijo",
+    "TITLE": "Casi!",
+    "USE_COINS_PREFIX": "Usar ",
+    "USE_COINS_SUFFIX": " monedas para continuar",
+    "WATCH_AD_BUTTON": "Ver anuncio para continuar"
+  }
+}

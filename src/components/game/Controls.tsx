@@ -14,7 +14,7 @@ import React from "react";
 import {View, TouchableOpacity, Text} from "react-native";
 import {SPACING, TYPOGRAPHY} from "../../styles";
 import {scale} from "../../utils/responsive";
-import {AppStrings} from "../../constants/AppStrings";
+import {t} from "../../i18n";
 
 /**
  * Props interface for the Controls component.
@@ -87,11 +87,11 @@ const Controls: React.FC<ControlsProps> = ({onNextPress, isWin}) => {
           style={{padding: scale(12)}}
           onPress={onNextPress}
           accessibilityRole="button"
-          accessibilityLabel={AppStrings.VictoryModal.NEXT_LEVEL_BUTTON}
-          accessibilityHint={AppStrings.Accessibility.NEXT_LEVEL_HINT}
+          accessibilityLabel={t("VictoryModal.NEXT_LEVEL_BUTTON")}
+          accessibilityHint={t("Accessibility.NEXT_LEVEL_HINT")}
         >
           <Text style={{color: "white", fontFamily: TYPOGRAPHY.fontPrimary}}>
-            {AppStrings.VictoryModal.NEXT_LEVEL_BUTTON}
+            {t("VictoryModal.NEXT_LEVEL_BUTTON")}
           </Text>
         </TouchableOpacity>
       )}

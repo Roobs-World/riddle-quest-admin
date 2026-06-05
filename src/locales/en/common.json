@@ -1,0 +1,22 @@
+{
+  "CommonAlerts": {
+    "CANCEL_BUTTON": "Cancel",
+    "CANNOT_OPEN_BROWSER_SUFFIX": " in your browser.",
+    "CANNOT_OPEN_PREFIX": "Cannot open ",
+    "CANNOT_OPEN_VISIT_SUFFIX": ". Please visit ",
+    "CLOSE_BUTTON": "Close",
+    "COULD_NOT_OPEN_PREFIX": "Could not open ",
+    "COULD_NOT_OPEN_TRY_AGAIN": ". Please try again later.",
+    "ERROR_TITLE": "Error",
+    "INFO_TITLE": "Info",
+    "OFFLINE_MESSAGE": "Please reconnect to continue playing.",
+    "OFFLINE_TITLE": "No Internet Connection",
+    "OK_BUTTON": "OK",
+    "SUCCESS_TITLE": "Success",
+    "UNABLE_TO_OPEN_TITLE": "Unable to Open",
+    "TRY_AGAIN_LATER_MESSAGE": "Please try again later."
+  },
+  "CommonButtons": {
+    "RETRY": "Retry"
+  }
+}

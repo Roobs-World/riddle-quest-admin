@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {Alert, Modal, Text, TouchableOpacity, View} from "react-native";
-import {AppStrings} from "@/constants/AppStrings";
+import {t} from "@/i18n";
 import {AuthService} from "@/services/AuthService";
 import {useModal} from "@/hooks/useModal";
 import CloseButton from "@/components/buttons/CloseButton";
@@ -72,8 +72,8 @@ const UpgradeAccountModal: React.FC<UpgradeAccountModalProps> = ({
     }
 
     Alert.alert(
-      AppStrings.CommonAlerts.ERROR_TITLE,
-      message || AppStrings.Profile.UPGRADE_ACCOUNT_ERROR,
+      t("CommonAlerts.ERROR_TITLE"),
+      message || t("Profile.UPGRADE_ACCOUNT_ERROR"),
     );
   };
 
@@ -83,8 +83,8 @@ const UpgradeAccountModal: React.FC<UpgradeAccountModalProps> = ({
       await AuthService.linkAnonymousWithGoogle();
       onClose();
       showInfoModal({
-        title: AppStrings.Profile.ALERT_SUCCESS_TITLE,
-        message: AppStrings.Profile.UPGRADE_ACCOUNT_SUCCESS,
+        title: t("Profile.ALERT_SUCCESS_TITLE"),
+        message: t("Profile.UPGRADE_ACCOUNT_SUCCESS"),
       });
     } catch (error) {
       if (isGoogleSignInCancellation(error)) {
@@ -109,8 +109,8 @@ const UpgradeAccountModal: React.FC<UpgradeAccountModalProps> = ({
 
       onClose();
       showInfoModal({
-        title: AppStrings.Profile.ALERT_SUCCESS_TITLE,
-        message: AppStrings.Profile.UPGRADE_ACCOUNT_SUCCESS,
+        title: t("Profile.ALERT_SUCCESS_TITLE"),
+        message: t("Profile.UPGRADE_ACCOUNT_SUCCESS"),
       });
     } catch (error) {
       if (isFacebookLoginCancellation(error)) {
@@ -134,7 +134,7 @@ const UpgradeAccountModal: React.FC<UpgradeAccountModalProps> = ({
     } catch (error) {
       logger.error("Upgrade account existing-account logout error:", error);
       captureException(error);
-      Alert.alert(AppStrings.Settings.LOGOUT_ERROR_TITLE, AppStrings.Settings.LOGOUT_ERROR_MESSAGE);
+      Alert.alert(t("Settings.LOGOUT_ERROR_TITLE"), t("Settings.LOGOUT_ERROR_MESSAGE"));
     } finally {
       setIsLoading(false);
     }
@@ -174,7 +174,7 @@ const UpgradeAccountModal: React.FC<UpgradeAccountModalProps> = ({
                   color: COLORS.black,
                 }}
               >
-                {AppStrings.Profile.UPGRADE_ACCOUNT_TITLE}
+                {t("Profile.UPGRADE_ACCOUNT_TITLE")}
               </Text>
               <CloseButton onPress={onClose} size={24} color="black" />
             </View>
@@ -188,7 +188,7 @@ const UpgradeAccountModal: React.FC<UpgradeAccountModalProps> = ({
                 lineHeight: TYPOGRAPHY.fontSize.lg * TYPOGRAPHY.lineHeight.normal,
               }}
             >
-              {AppStrings.Profile.UPGRADE_ACCOUNT_DESCRIPTION}
+              {t("Profile.UPGRADE_ACCOUNT_DESCRIPTION")}
             </Text>
 
             <View style={{gap: SPACING.md}}>
@@ -232,7 +232,7 @@ const UpgradeAccountModal: React.FC<UpgradeAccountModalProps> = ({
                   marginBottom: SPACING.sm,
                 }}
               >
-                {AppStrings.Profile.UPGRADE_ACCOUNT_EXISTING_ACCOUNT_TITLE}
+                {t("Profile.UPGRADE_ACCOUNT_EXISTING_ACCOUNT_TITLE")}
               </Text>
               <Text
                 style={{
@@ -242,7 +242,7 @@ const UpgradeAccountModal: React.FC<UpgradeAccountModalProps> = ({
                   lineHeight: TYPOGRAPHY.fontSize.base * TYPOGRAPHY.lineHeight.normal,
                 }}
               >
-                {AppStrings.Profile.UPGRADE_ACCOUNT_EXISTING_ACCOUNT_DESCRIPTION}
+                {t("Profile.UPGRADE_ACCOUNT_EXISTING_ACCOUNT_DESCRIPTION")}
               </Text>
 
               <View
@@ -267,7 +267,7 @@ const UpgradeAccountModal: React.FC<UpgradeAccountModalProps> = ({
                       color: "#4B5563",
                     }}
                   >
-                    {AppStrings.CommonAlerts.CANCEL_BUTTON}
+                    {t("CommonAlerts.CANCEL_BUTTON")}
                   </Text>
                 </TouchableOpacity>
 
@@ -285,7 +285,7 @@ const UpgradeAccountModal: React.FC<UpgradeAccountModalProps> = ({
                       color: "#DC2626",
                     }}
                   >
-                    {AppStrings.Settings.LOGOUT_BUTTON}
+                    {t("Settings.LOGOUT_BUTTON")}
                   </Text>
                 </TouchableOpacity>
               </View>

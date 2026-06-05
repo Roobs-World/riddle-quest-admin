@@ -1,0 +1,12 @@
+{
+  "Leaderboard": {
+    "GUEST_UNAVAILABLE": "Log in om XP, overwinningen en streaks op het klassement te vergelijken.",
+    "LOAD_ERROR": "Kan het klassement niet laden. Probeer het opnieuw.",
+    "NO_SCORES_YET": "Nog geen scores — wees de eerste die op het bord komt!",
+    "RETRY_BUTTON": "Opnieuw proberen",
+    "TAB_STREAK": "Streep",
+    "TAB_WINS": "Winnen",
+    "TAB_XP": "ervaring",
+    "TITLE": "Leiderbord"
+  }
+}

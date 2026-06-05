@@ -2,7 +2,7 @@ import React, {useCallback, useEffect} from "react";
 import {Image, Modal, Pressable, Text, View} from "react-native";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
 import HomeBg from "../../../../assets/images/home-bg.svg";
-import {AppStrings} from "../../../constants/AppStrings";
+import {t} from "../../../i18n";
 import {TYPOGRAPHY, SPACING} from "../../../styles";
 import {
   AVATAR_SIZE_LARGE,
@@ -29,7 +29,7 @@ const WelcomeBackModal: React.FC<WelcomeBackModalProps> = ({isVisible, onClose, 
   const {playerData} = useAuth();
   const avatarUrl = playerData?.avatarUrl ?? null;
   const avatarRadius = AVATAR_SIZE_LARGE / 2;
-  const initial = (username || AppStrings.Profile.GUEST_USERNAME).charAt(0).toUpperCase();
+  const initial = (username || t("Profile.GUEST_USERNAME")).charAt(0).toUpperCase();
 
   const handleDismiss = useCallback(() => {
     onClose();
@@ -140,7 +140,7 @@ const WelcomeBackModal: React.FC<WelcomeBackModalProps> = ({isVisible, onClose, 
                     textAlign: "center",
                   }}
                 >
-                  {AppStrings.WelcomeBackModal.TITLE}
+                  {t("WelcomeBackModal.TITLE")}
                 </Text>
                 <Text
                   style={{
@@ -151,7 +151,7 @@ const WelcomeBackModal: React.FC<WelcomeBackModalProps> = ({isVisible, onClose, 
                     textAlign: "center",
                   }}
                 >
-                  {username || AppStrings.Profile.GUEST_USERNAME}
+                  {username || t("Profile.GUEST_USERNAME")}
                 </Text>
                 <Text
                   style={{
@@ -162,7 +162,7 @@ const WelcomeBackModal: React.FC<WelcomeBackModalProps> = ({isVisible, onClose, 
                     textAlign: "center",
                   }}
                 >
-                  {AppStrings.WelcomeBackModal.TAP_TO_CONTINUE}
+                  {t("WelcomeBackModal.TAP_TO_CONTINUE")}
                 </Text>
               </View>
             </View>

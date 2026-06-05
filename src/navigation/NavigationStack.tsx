@@ -19,7 +19,7 @@ import PulsingSpinner from "../components/loading/PulsingSpinner";
 import {HINT_COST_COINS, getXpLevel} from "../constants/game";
 import {LOADING_SPINNER_OPACITY, LOADING_SPINNER_OPACITY_OVERLAY, LOADING_SPINNER_SIZE} from "../constants/loading";
 import {useAuth} from "../contexts/AuthContext";
-import {AppStrings} from "../constants/AppStrings";
+import {t} from "../i18n";
 import {View, Text, TouchableOpacity} from "react-native";
 import {styles, TYPOGRAPHY, SPACING} from "../styles";
 import {scale} from "../utils/responsive";
@@ -348,12 +348,12 @@ const GameScreenWrapper = () => {
   // or we don't have a riddle yet (unless there's a confirmed error)
   if (isLoading || isRiddlesInitializing) {
     logger.debug(
-      AppStrings.LogMessages.SHOWING_LOADING_SPINNER_USER_DATA,
+      t("LogMessages.SHOWING_LOADING_SPINNER_USER_DATA"),
       "isLoading:",
       isLoading,
       "isRiddlesInitializing:",
       isRiddlesInitializing,
-      AppStrings.LogMessages.TIMESTAMP,
+      t("LogMessages.TIMESTAMP"),
       new Date().toISOString(),
     );
     return <PulsingSpinner visible={true} size={LOADING_SPINNER_SIZE} opacity={LOADING_SPINNER_OPACITY} />;
@@ -383,9 +383,9 @@ const GameScreenWrapper = () => {
     if (initStatus.initializationFailed) {
       return (
         <View style={styles.errorContainer}>
-          <Text style={styles.errorMessage}>{AppStrings.ErrorMessages.FAILED_TO_INITIALIZE_RIDDLE_DATABASE}</Text>
+          <Text style={styles.errorMessage}>{t("ErrorMessages.FAILED_TO_INITIALIZE_RIDDLE_DATABASE")}</Text>
           <Text style={[styles.errorMessage, {fontSize: TYPOGRAPHY.fontSize.sm, marginTop: SPACING.sm}]}>
-            {AppStrings.ErrorMessages.CHECK_INTERNET_AND_TRY_AGAIN}
+            {t("ErrorMessages.CHECK_INTERNET_AND_TRY_AGAIN")}
           </Text>
           <TouchableOpacity
             style={[
@@ -394,14 +394,14 @@ const GameScreenWrapper = () => {
             ]}
             onPress={handleRetryInitialization}
           >
-            <Text style={styles.buttonText}>{AppStrings.CommonButtons.RETRY}</Text>
+            <Text style={styles.buttonText}>{t("CommonButtons.RETRY")}</Text>
           </TouchableOpacity>
         </View>
       );
     } else {
       return (
         <View style={styles.errorContainer}>
-          <Text style={styles.errorMessage}>{AppStrings.ErrorMessages.UNABLE_TO_LOAD_RIDDLES}</Text>
+          <Text style={styles.errorMessage}>{t("ErrorMessages.UNABLE_TO_LOAD_RIDDLES")}</Text>
           <TouchableOpacity
             style={[
               styles.keyButton,
@@ -409,7 +409,7 @@ const GameScreenWrapper = () => {
             ]}
             onPress={handleRetryInitialization}
           >
-            <Text style={styles.buttonText}>{AppStrings.CommonButtons.RETRY}</Text>
+            <Text style={styles.buttonText}>{t("CommonButtons.RETRY")}</Text>
           </TouchableOpacity>
         </View>
       );
@@ -444,13 +444,13 @@ const GameScreenWrapper = () => {
             }
 
             logger.debug(
-              AppStrings.GameMessages.GAME_WON +
+              t("GameMessages.GAME_WON") +
                 attempts +
-                AppStrings.GameMessages.IN_MODE +
+                t("GameMessages.IN_MODE") +
                 gameMode +
-                AppStrings.GameMessages.MODE_SUFFIX,
+                t("GameMessages.MODE_SUFFIX"),
             );
-            logger.debug(AppStrings.GameMessages.COINS_EARNED + coinsEarned);
+            logger.debug(t("GameMessages.COINS_EARNED") + coinsEarned);
 
             const resolvedDailyStreak = isDailyChallengeMode
               ? toNonNegativeNumber(dailyStreakAfterWin, toNonNegativeNumber(playerData.stats?.winStreak) + 1)
@@ -529,7 +529,7 @@ const GameScreenWrapper = () => {
             if (!playerData) {
               return;
             }
-            logger.debug(AppStrings.GameMessages.GAME_LOST + correctAnswer);
+            logger.debug(t("GameMessages.GAME_LOST") + correctAnswer);
 
             const nextStats = buildPostGameStatsUpdate(playerData, {
               attempts,
@@ -558,7 +558,7 @@ const GameScreenWrapper = () => {
               return [];
             }
 
-            logger.debug(AppStrings.GameMessages.HINT_USED + cost);
+            logger.debug(t("GameMessages.HINT_USED") + cost);
             if (cost > 0) {
               const nextUnlockedAchievements = [...(playerData.unlockedAchievements ?? [])];
               const newlyUnlockedAchievementIds: string[] = [];
@@ -621,11 +621,11 @@ export const Navigation = () => {
   const {isAuthenticated, isLoading} = useAuth();
 
   logger.debug(
-    AppStrings.LogMessages.NAVIGATION_RENDERING,
+    t("LogMessages.NAVIGATION_RENDERING"),
     isAuthenticated,
-    AppStrings.LogMessages.IS_LOADING,
+    t("LogMessages.IS_LOADING"),
     isLoading,
-    AppStrings.LogMessages.TIMESTAMP,
+    t("LogMessages.TIMESTAMP"),
     new Date().toISOString(),
   );
 
@@ -635,33 +635,33 @@ export const Navigation = () => {
   // reset the navigation stack back to Landing).
   if (isLoading) {
     logger.debug(
-      AppStrings.LogMessages.SHOWING_LOADING_SPINNER_AUTH,
+      t("LogMessages.SHOWING_LOADING_SPINNER_AUTH"),
       "isLoading:",
       isLoading,
-      AppStrings.LogMessages.TIMESTAMP,
+      t("LogMessages.TIMESTAMP"),
       new Date().toISOString(),
     );
     return <PulsingSpinner visible={true} size={LOADING_SPINNER_SIZE} opacity={LOADING_SPINNER_OPACITY_OVERLAY} />;
   }
 
   logger.debug(
-    AppStrings.LogMessages.SHOWING_NAVIGATION_STACK,
+    t("LogMessages.SHOWING_NAVIGATION_STACK"),
     isAuthenticated ? "GAME" : "LANDING",
-    AppStrings.LogMessages.TIMESTAMP,
+    t("LogMessages.TIMESTAMP"),
     new Date().toISOString(),
   );
 
   return (
     <Stack.Navigator screenOptions={{headerShown: false}} screenListeners={screenListeners}>
       {isAuthenticated ? (
-        <Stack.Screen name={AppStrings.Navigation.GAME} component={GameScreenWrapper} />
+        <Stack.Screen name={t("Navigation.GAME")} component={GameScreenWrapper} />
       ) : (
         <>
-          <Stack.Screen name={AppStrings.Navigation.LANDING} component={LandingScreen} />
-          <Stack.Screen name={AppStrings.Navigation.LOGIN} component={LoginScreen} />
-          <Stack.Screen name={AppStrings.Navigation.SIGN_UP} component={SignUpScreen} />
-          <Stack.Screen name={AppStrings.Navigation.FORGOT_PASSWORD} component={ForgotPasswordScreen} />
-          <Stack.Screen name={AppStrings.Navigation.NEW_PASSWORD} component={NewPasswordScreen} />
+          <Stack.Screen name={t("Navigation.LANDING")} component={LandingScreen} />
+          <Stack.Screen name={t("Navigation.LOGIN")} component={LoginScreen} />
+          <Stack.Screen name={t("Navigation.SIGN_UP")} component={SignUpScreen} />
+          <Stack.Screen name={t("Navigation.FORGOT_PASSWORD")} component={ForgotPasswordScreen} />
+          <Stack.Screen name={t("Navigation.NEW_PASSWORD")} component={NewPasswordScreen} />
         </>
       )}
     </Stack.Navigator>

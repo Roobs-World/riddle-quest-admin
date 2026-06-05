@@ -1,0 +1,12 @@
+{
+  "Leaderboard": {
+    "GUEST_UNAVAILABLE": "Sign in to compare XP, wins, and streaks on the leaderboard.",
+    "LOAD_ERROR": "Could not load leaderboard. Please try again.",
+    "NO_SCORES_YET": "No scores yet — be the first to make the board!",
+    "RETRY_BUTTON": "Retry",
+    "TAB_STREAK": "Streak",
+    "TAB_WINS": "Wins",
+    "TAB_XP": "XP",
+    "TITLE": "Leaderboard"
+  }
+}

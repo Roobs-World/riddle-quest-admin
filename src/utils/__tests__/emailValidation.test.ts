@@ -1,9 +1,9 @@
 import {validateEmail} from "../emailValidation";
-import {AppStrings} from "../../constants/AppStrings";
+import {t} from "../../i18n";
 
 describe("emailValidation", () => {
   describe("validateEmail", () => {
-    const expectedErrorMessage = AppStrings.AuthStrings.Login.INVALID_EMAIL_FORMAT_ERROR;
+    const expectedErrorMessage = t("AuthStrings.Login.INVALID_EMAIL_FORMAT_ERROR");
 
     it("should return empty string for valid email addresses", () => {
       const validEmails = [

@@ -14,7 +14,7 @@ import FacebookSignInButton from "../components/buttons/FacebookSignInButton";
 import WideButton from "../components/buttons/WideButton";
 import StarryBackground from "../components/background/StarryBackground";
 import PulsingSpinner from "../components/loading/PulsingSpinner";
-import {AppStrings} from "../constants/AppStrings";
+import {t} from "../i18n";
 import {LOADING_SPINNER_SIZE} from "../constants/loading";
 import {AuthService} from "../services/AuthService";
 import {useAuth} from "../contexts/AuthContext";
@@ -129,7 +129,7 @@ const LandingScreen = () => {
             className="font-bold text-white text-center"
             style={[styles.title, {marginBottom: SPACING.md, color: "#FFFFFF"}]}
           >
-            {AppStrings.AuthStrings.Landing.TAGLINE_1}
+            {t("AuthStrings.Landing.TAGLINE_1")}
           </Text>
         </View>
 
@@ -142,18 +142,18 @@ const LandingScreen = () => {
           <FacebookSignInButton onPress={handleFacebookSignIn} disabled={isLoading} />
           {authError && <Error message={authError} />}
           <WideButton
-            buttonText={AppStrings.AuthStrings.Landing.PLAY_AS_GUEST}
+            buttonText={t("AuthStrings.Landing.PLAY_AS_GUEST")}
             onPress={handlePlayButtonPress}
             disabled={isLoading}
           />
           <TouchableOpacity
-            accessibilityLabel="Made by Roobs World"
+            accessibilityLabel={t("Accessibility.LANDING_ATTRIBUTION_LINK")}
             accessibilityRole="link"
             onPress={handleRoobsWorldPress}
             testID="roobs-world-link"
           >
             <Text className="text-white text-center" style={[styles.creditsLink, {opacity: 0.85}]}>
-              Made by Roobs World
+              {t("AuthStrings.Landing.MADE_BY_ROOBS_WORLD")}
             </Text>
           </TouchableOpacity>
         </View>

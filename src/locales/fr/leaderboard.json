@@ -1,0 +1,12 @@
+{
+  "Leaderboard": {
+    "GUEST_UNAVAILABLE": "Connectez-vous pour comparer l'XP, les victoires et les séquences dans le classement.",
+    "LOAD_ERROR": "Impossible de charger le classement. Veuillez réessayer.",
+    "NO_SCORES_YET": "Aucun score pour l'instant — soyez le premier à figurer sur le tableau !",
+    "RETRY_BUTTON": "Réessayer",
+    "TAB_STREAK": "Série",
+    "TAB_WINS": "Gagnements",
+    "TAB_XP": "expérience",
+    "TITLE": "Classement"
+  }
+}

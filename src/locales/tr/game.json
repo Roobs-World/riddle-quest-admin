@@ -1,0 +1,13 @@
+{
+  "GameMessages": {
+    "COINS_EARNED": "Kazanilan jeton: ",
+    "GAME_LOST": "Oyun kaybedildi: Dogru cevap - ",
+    "GAME_WON": "Oyun kazanildi: Deneme - ",
+    "HINT_USED": "Ipucu kullanildi: Maliyet - ",
+    "IN_MODE": " mod: ",
+    "MODE_SUFFIX": " modunda.",
+    "RETRY_BUTTON_PRESSED": "Tekrar dene dugmesine basildi",
+    "FALLBACK_CLUE_SINGLE": "Bu kelimeyi çözün.",
+    "FALLBACK_CLUE_TEMPLATE": "Bu {uzunluk} harfli kelimeyi çözün."
+  }
+}

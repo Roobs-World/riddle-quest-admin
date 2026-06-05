@@ -1,6 +1,6 @@
 import React from "react";
 import {ActivityIndicator, Modal, Text, TouchableOpacity, View} from "react-native";
-import {AppStrings} from "../../../constants/AppStrings";
+import {t} from "../../../i18n";
 import {AUTH_CONTENT_MAX_WIDTH} from "../../../constants/layout";
 import {COLORS, SPACING, TYPOGRAPHY} from "../../../styles";
 import SlideInModalContent from "../../shared/SlideInModalContent";
@@ -54,7 +54,7 @@ const DeleteAccountConfirmationModal: React.FC<DeleteAccountConfirmationModalPro
                 textAlign: "center",
               }}
             >
-              {AppStrings.Profile.DELETE_ACCOUNT_CONFIRM_TITLE}
+              {t("Profile.DELETE_ACCOUNT_CONFIRM_TITLE")}
             </Text>
             <Text
               style={{
@@ -66,7 +66,7 @@ const DeleteAccountConfirmationModal: React.FC<DeleteAccountConfirmationModalPro
                 textAlign: "center",
               }}
             >
-              {AppStrings.Profile.DELETE_ACCOUNT_CONFIRM_MESSAGE}
+              {t("Profile.DELETE_ACCOUNT_CONFIRM_MESSAGE")}
             </Text>
 
             <View style={{gap: SPACING.sm}}>
@@ -100,7 +100,7 @@ const DeleteAccountConfirmationModal: React.FC<DeleteAccountConfirmationModalPro
                         color: COLORS.white,
                       }}
                     >
-                      {AppStrings.Profile.DELETE_ACCOUNT_LOADING}
+                      {t("Profile.DELETE_ACCOUNT_LOADING")}
                     </Text>
                   </View>
                 ) : (
@@ -111,7 +111,7 @@ const DeleteAccountConfirmationModal: React.FC<DeleteAccountConfirmationModalPro
                       color: COLORS.white,
                     }}
                   >
-                    {AppStrings.Profile.DELETE_ACCOUNT_CONFIRM_BUTTON}
+                    {t("Profile.DELETE_ACCOUNT_CONFIRM_BUTTON")}
                   </Text>
                 )}
               </TouchableOpacity>
@@ -139,7 +139,7 @@ const DeleteAccountConfirmationModal: React.FC<DeleteAccountConfirmationModalPro
                     color: "#401F40",
                   }}
                 >
-                  {AppStrings.Profile.DELETE_ACCOUNT_CANCEL_BUTTON}
+                  {t("Profile.DELETE_ACCOUNT_CANCEL_BUTTON")}
                 </Text>
               </TouchableOpacity>
             </View>

@@ -5,7 +5,7 @@ import ModalBg from "../../../../assets/images/modal-bg.svg";
 import HomeBg from "../../../../assets/images/home-bg.svg";
 import WideButton from "../../buttons/WideButton";
 import {MODAL_WIDTH, MODAL_HEIGHT, MODAL_MAX_HEIGHT} from "../../../constants/layout";
-import {AppStrings} from "../../../constants/AppStrings";
+import {t} from "../../../i18n";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import OnboardingProgressBadge from "../OnboardingProgressBadge";
 import {OnboardingProgress} from "../../../types/ModalTypes";
@@ -120,7 +120,7 @@ const InfoModal: React.FC<InfoModalProps> = ({
                     <WideButton buttonText={actionButtonText} onPress={handleAction} disabled={false} />
                   </View>
                 ) : null}
-                <WideButton buttonText={AppStrings.CommonAlerts.OK_BUTTON} onPress={handleConfirm} disabled={false} />
+                <WideButton buttonText={t("CommonAlerts.OK_BUTTON")} onPress={handleConfirm} disabled={false} />
               </View>
             </View>
           </View>

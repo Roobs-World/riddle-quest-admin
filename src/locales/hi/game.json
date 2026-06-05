@@ -1,0 +1,13 @@
+{
+  "GameMessages": {
+    "COINS_EARNED": "कमाए सिक्के: ",
+    "GAME_LOST": "गेम हारा: सही उत्तर - ",
+    "GAME_WON": "गेम जीता: प्रयास - ",
+    "HINT_USED": "हिंट इस्तेमाल: लागत - ",
+    "IN_MODE": " में ",
+    "MODE_SUFFIX": " मोड।",
+    "RETRY_BUTTON_PRESSED": "रीट्राई बटन दबाया गया",
+    "FALLBACK_CLUE_SINGLE": "इस शब्द को हल करें.",
+    "FALLBACK_CLUE_TEMPLATE": "इस {लंबाई}-अक्षर वाले शब्द को हल करें।"
+  }
+}

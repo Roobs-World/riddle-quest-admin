@@ -7,7 +7,7 @@ import UserPasswordInput from "../../components/inputFields/UserPasswordInput";
 import PasswordMatch from "../../components/text/PasswordMatch";
 import WideButton from "../../components/buttons/WideButton";
 import Error from "../../components/text/Error";
-import {AppStrings} from "../../constants/AppStrings";
+import {t} from "../../i18n";
 import {styles, SPACING} from "../../styles";
 
 const NewPasswordScreen = () => {
@@ -24,44 +24,44 @@ const NewPasswordScreen = () => {
     setSuccessMessage(null);
 
     if (!password || !confirmPassword) {
-      setFormError(AppStrings.Profile.ALERT_PASSWORD_FIELDS_EMPTY);
+      setFormError(t("Profile.ALERT_PASSWORD_FIELDS_EMPTY"));
       return;
     }
 
     if (!isPasswordLongEnough) {
-      setFormError(AppStrings.Profile.ALERT_PASSWORD_TOO_SHORT);
+      setFormError(t("Profile.ALERT_PASSWORD_TOO_SHORT"));
       return;
     }
 
     if (!passwordsMatch) {
-      setFormError(AppStrings.Profile.ALERT_PASSWORDS_DO_NOT_MATCH);
+      setFormError(t("Profile.ALERT_PASSWORDS_DO_NOT_MATCH"));
       return;
     }
 
     setFormError(null);
-    setSuccessMessage(AppStrings.Profile.ALERT_PASSWORD_UPDATE_SUCCESS);
+    setSuccessMessage(t("Profile.ALERT_PASSWORD_UPDATE_SUCCESS"));
   };
 
   return (
     <CustomSafeAreaView>
       <StarryBackground />
       <AuthLayout style={{justifyContent: "center"}}>
-        <Text style={[styles.title, {marginBottom: SPACING.md}]}>{AppStrings.AuthStrings.NewPassword.TITLE}</Text>
+        <Text style={[styles.title, {marginBottom: SPACING.md}]}>{t("AuthStrings.NewPassword.TITLE")}</Text>
         <Text className="text-white text-center" style={[styles.subtitle, {marginBottom: SPACING.xl}]}>
-          {AppStrings.AuthStrings.NewPassword.NEW_PASSWORD_DESCRIPTION}
+          {t("AuthStrings.NewPassword.NEW_PASSWORD_DESCRIPTION")}
         </Text>
 
         <View style={{width: "100%", gap: SPACING.md}}>
           <UserPasswordInput
-            label={AppStrings.AuthStrings.NewPassword.NEW_PASSWORD_LABEL}
+            label={t("AuthStrings.NewPassword.NEW_PASSWORD_LABEL")}
             password={password}
-            placeholder={AppStrings.AuthStrings.NewPassword.NEW_PASSWORD_PLACEHOLDER}
+            placeholder={t("AuthStrings.NewPassword.NEW_PASSWORD_PLACEHOLDER")}
             setPassword={setPassword}
           />
           <UserPasswordInput
-            label={AppStrings.AuthStrings.NewPassword.CONFIRM_PASSWORD_LABEL}
+            label={t("AuthStrings.NewPassword.CONFIRM_PASSWORD_LABEL")}
             password={confirmPassword}
-            placeholder={AppStrings.AuthStrings.NewPassword.CONFIRM_PASSWORD_PLACEHOLDER}
+            placeholder={t("AuthStrings.NewPassword.CONFIRM_PASSWORD_PLACEHOLDER")}
             setPassword={setConfirmPassword}
           />
 
@@ -76,7 +76,7 @@ const NewPasswordScreen = () => {
             </Text>
           )}
 
-          <WideButton buttonText={AppStrings.AuthStrings.NewPassword.SET_PASSWORD_BUTTON} onPress={handleSetPassword} />
+          <WideButton buttonText={t("AuthStrings.NewPassword.SET_PASSWORD_BUTTON")} onPress={handleSetPassword} />
         </View>
       </AuthLayout>
     </CustomSafeAreaView>

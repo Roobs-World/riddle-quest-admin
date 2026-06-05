@@ -1,0 +1,13 @@
+{
+  "GameMessages": {
+    "COINS_EARNED": "획득 코인: ",
+    "GAME_LOST": "게임 패배: 정답 - ",
+    "GAME_WON": "게임 승리: 시도 - ",
+    "HINT_USED": "힌트 사용: 비용 - ",
+    "IN_MODE": " / ",
+    "MODE_SUFFIX": " 모드.",
+    "RETRY_BUTTON_PRESSED": "재시도 버튼을 눌렀습니다",
+    "FALLBACK_CLUE_SINGLE": "이 단어를 풀어보세요.",
+    "FALLBACK_CLUE_TEMPLATE": "이 {length} 글자 단어를 풀어보세요."
+  }
+}

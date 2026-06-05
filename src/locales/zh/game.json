@@ -1,0 +1,13 @@
+{
+  "GameMessages": {
+    "COINS_EARNED": "获得金币：",
+    "GAME_LOST": "游戏失败：正确答案 - ",
+    "GAME_WON": "游戏胜利：尝试 - ",
+    "HINT_USED": "已用提示：花费 - ",
+    "IN_MODE": "，模式：",
+    "MODE_SUFFIX": "。",
+    "RETRY_BUTTON_PRESSED": "已按下重试按钮",
+    "FALLBACK_CLUE_SINGLE": "解这个词。",
+    "FALLBACK_CLUE_TEMPLATE": "解决这个由 {length} 字母组成的单词。"
+  }
+}

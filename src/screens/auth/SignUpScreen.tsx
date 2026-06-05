@@ -9,7 +9,7 @@ import PasswordMatch from "../../components/text/PasswordMatch";
 import WideButton from "../../components/buttons/WideButton";
 import PulsingSpinner from "../../components/loading/PulsingSpinner";
 import Error from "../../components/text/Error";
-import {AppStrings} from "../../constants/AppStrings";
+import {t} from "../../i18n";
 import {LOADING_SPINNER_SIZE} from "../../constants/loading";
 import {styles, SPACING} from "../../styles";
 import {AuthService} from "../../services/AuthService";
@@ -55,13 +55,13 @@ const SignUpScreen = ({navigation}: SignUpScreenProps) => {
     setFormError(null);
 
     if (!hasAcceptedTerms) {
-      setFormError(AppStrings.AuthStrings.SignUp.MUST_AGREE_TO_TERMS);
+      setFormError(t("AuthStrings.SignUp.MUST_AGREE_TO_TERMS"));
       return;
     }
 
     const result = signUpSchema.safeParse(signUpData);
     if (!result.success) {
-      setFormError(result.error.issues[0]?.message ?? AppStrings.AuthStrings.SignUp.SIGNUP_UNEXPECTED_ERROR);
+      setFormError(result.error.issues[0]?.message ?? t("AuthStrings.SignUp.SIGNUP_UNEXPECTED_ERROR"));
       return;
     }
 
@@ -85,45 +85,45 @@ const SignUpScreen = ({navigation}: SignUpScreenProps) => {
     <CustomSafeAreaView>
       <StarryBackground />
       <AuthLayout style={{justifyContent: "center"}}>
-        <Text style={[styles.title, {marginBottom: SPACING.xl}]}>{AppStrings.AuthStrings.SignUp.TITLE}</Text>
+        <Text style={[styles.title, {marginBottom: SPACING.xl}]}>{t("AuthStrings.SignUp.TITLE")}</Text>
 
         <View style={{width: "100%", gap: SPACING.md}}>
           <View>
             <Text className="text-gray-600 text-left" style={[styles.labelText, {marginBottom: SPACING.sm}]}>
-              {AppStrings.AuthStrings.SignUp.USERNAME_LABEL}
+              {t("AuthStrings.SignUp.USERNAME_LABEL")}
             </Text>
             <ReusableTextInput
               autoCapitalize="none"
               onChangeText={setUsername}
-              placeholder={AppStrings.AuthStrings.SignUp.USERNAME_PLACEHOLDER}
+              placeholder={t("AuthStrings.SignUp.USERNAME_PLACEHOLDER")}
               value={username}
             />
           </View>
 
           <View>
             <Text className="text-gray-600 text-left" style={[styles.labelText, {marginBottom: SPACING.sm}]}>
-              {AppStrings.AuthStrings.SignUp.EMAIL_LABEL}
+              {t("AuthStrings.SignUp.EMAIL_LABEL")}
             </Text>
             <ReusableTextInput
               autoCapitalize="none"
               keyboardType="email-address"
               onChangeText={setEmail}
-              placeholder={AppStrings.AuthStrings.SignUp.EMAIL_PLACEHOLDER}
+              placeholder={t("AuthStrings.SignUp.EMAIL_PLACEHOLDER")}
               value={email}
             />
           </View>
 
           <UserPasswordInput
-            label={AppStrings.AuthStrings.SignUp.PASSWORD_LABEL}
+            label={t("AuthStrings.SignUp.PASSWORD_LABEL")}
             password={password}
-            placeholder={AppStrings.AuthStrings.SignUp.PASSWORD_PLACEHOLDER}
+            placeholder={t("AuthStrings.SignUp.PASSWORD_PLACEHOLDER")}
             setPassword={setPassword}
           />
 
           <UserPasswordInput
-            label={AppStrings.AuthStrings.SignUp.CONFIRM_PASSWORD_LABEL}
+            label={t("AuthStrings.SignUp.CONFIRM_PASSWORD_LABEL")}
             password={confirmPassword}
-            placeholder={AppStrings.AuthStrings.SignUp.CONFIRM_PASSWORD_PLACEHOLDER}
+            placeholder={t("AuthStrings.SignUp.CONFIRM_PASSWORD_PLACEHOLDER")}
             setPassword={setConfirmPassword}
           />
 
@@ -134,13 +134,13 @@ const SignUpScreen = ({navigation}: SignUpScreenProps) => {
           <TouchableOpacity accessibilityRole="checkbox" onPress={() => setHasAcceptedTerms((current) => !current)}>
             <Text className="text-white" style={styles.subtitle}>
               {hasAcceptedTerms ? "[x] " : "[ ] "}
-              {AppStrings.AuthStrings.SignUp.TERMS_AGREEMENT_PART1}
-              <Text onPress={() => openLegalPage(AppStrings.AuthStrings.SignUp.TERMS_PAGE_NAME)}>
-                {AppStrings.AuthStrings.SignUp.TERMS_USER_AGREEMENT}
+              {t("AuthStrings.SignUp.TERMS_AGREEMENT_PART1")}
+              <Text onPress={() => openLegalPage(t("AuthStrings.SignUp.TERMS_PAGE_NAME"))}>
+                {t("AuthStrings.SignUp.TERMS_USER_AGREEMENT")}
               </Text>
-              {AppStrings.AuthStrings.SignUp.TERMS_AGREEMENT_PART2}
-              <Text onPress={() => openLegalPage(AppStrings.AuthStrings.SignUp.PRIVACY_POLICY_PAGE_NAME)}>
-                {AppStrings.AuthStrings.SignUp.TERMS_PRIVACY_POLICY}
+              {t("AuthStrings.SignUp.TERMS_AGREEMENT_PART2")}
+              <Text onPress={() => openLegalPage(t("AuthStrings.SignUp.PRIVACY_POLICY_PAGE_NAME"))}>
+                {t("AuthStrings.SignUp.TERMS_PRIVACY_POLICY")}
               </Text>
             </Text>
           </TouchableOpacity>
@@ -148,21 +148,21 @@ const SignUpScreen = ({navigation}: SignUpScreenProps) => {
           {formError && <Error message={formError} />}
 
           <WideButton
-            buttonText={AppStrings.AuthStrings.SignUp.NEXT_BUTTON}
+            buttonText={t("AuthStrings.SignUp.NEXT_BUTTON")}
             disabled={isLoading}
             onPress={handleSignUp}
           />
 
           <View className="flex-row justify-center">
             <Text className="text-white" style={styles.subtitle}>
-              {AppStrings.AuthStrings.SignUp.HAS_ACCOUNT_PROMPT}
+              {t("AuthStrings.SignUp.HAS_ACCOUNT_PROMPT")}
             </Text>
             <TouchableOpacity
               accessibilityRole="button"
-              onPress={() => navigation?.navigate(AppStrings.Navigation.LOGIN)}
+              onPress={() => navigation?.navigate(t("Navigation.LOGIN"))}
             >
               <Text className="text-white" style={styles.subtitle}>
-                {AppStrings.AuthStrings.SignUp.LOGIN_NOW}
+                {t("AuthStrings.SignUp.LOGIN_NOW")}
               </Text>
             </TouchableOpacity>
           </View>

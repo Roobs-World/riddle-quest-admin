@@ -7,7 +7,7 @@ import Logo from "../../../../assets/images/main-logo.svg";
 import {TYPOGRAPHY} from "src/styles";
 import {MODAL_WIDTH, MODAL_HEIGHT, MODAL_CONTENT_PADDING, MODAL_MAX_HEIGHT} from "../../../constants/layout";
 import {SPACING} from "../../../styles";
-import {AppStrings} from "../../../constants/AppStrings";
+import {t} from "../../../i18n";
 import {verticalScale} from "@/utils/responsive";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import RotatingWheelBackground from "../../shared/RotatingWheelBackground";
@@ -104,7 +104,7 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({isVisible, onClose, onDismis
                     marginTop: verticalScale(80),
                   }}
                 >
-                  {AppStrings.WelcomeModal.WELCOME_TITLE}
+                  {t("WelcomeModal.WELCOME_TITLE")}
                 </Text>
 
                 {/* Body text */}
@@ -125,7 +125,7 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({isVisible, onClose, onDismis
                       marginTop: verticalScale(80),
                     }}
                   >
-                    {AppStrings.WelcomeModal.SOLVE_RIDDLES_TEXT}
+                    {t("WelcomeModal.SOLVE_RIDDLES_TEXT")}
                   </Text>
                   <Text
                     style={{
@@ -135,7 +135,7 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({isVisible, onClose, onDismis
                       textAlign: "center",
                     }}
                   >
-                    {AppStrings.WelcomeModal.EARN_COINS_TEXT}
+                    {t("WelcomeModal.EARN_COINS_TEXT")}
                   </Text>
                 </View>
               </View>

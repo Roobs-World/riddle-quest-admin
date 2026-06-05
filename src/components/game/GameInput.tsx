@@ -5,7 +5,7 @@ import {styles} from "src/styles";
 import {GameInputButton} from "./GameInputButton";
 import HintIcon from "../../../assets/images/hint.svg";
 import ForwardIcon from "../../../assets/images/forward.svg";
-import {AppStrings} from "../../constants/AppStrings";
+import {t} from "../../i18n";
 
 /**
  * Props for the gameplay action row beneath the board.
@@ -47,7 +47,7 @@ const GameInputComponent = ({
       <GameInputButton
         ref={hintButtonRef}
         icon={<HintIcon />}
-        text={AppStrings.Navigation.HINT_BUTTON}
+        text={t("Navigation.HINT_BUTTON")}
         callback={handleHint}
       />
 
@@ -61,7 +61,7 @@ const GameInputComponent = ({
       <GameInputButton
         ref={nextButtonRef}
         icon={<ForwardIcon />}
-        text={AppStrings.GameScreenAlerts.NEXT_BUTTON}
+        text={t("GameScreenAlerts.NEXT_BUTTON")}
         callback={handleNext}
       />
     </View>

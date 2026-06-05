@@ -1,6 +1,7 @@
 // Simple profanity filter for usernames
 // This is a basic implementation that can be enhanced with more sophisticated filtering
 
+import {t} from "../i18n";
 import {PROFANE_WORDS} from "./profanityWords";
 
 /**
@@ -36,7 +37,7 @@ export function containsProfanity(username: string): boolean {
  */
 export function validateUsernameForProfanity(username: string): string {
   if (containsProfanity(username)) {
-    return "Username contains inappropriate language. Please choose a different username.";
+    return t("AuthStrings.Validation.USERNAME_PROFANITY");
   }
   return "";
 }

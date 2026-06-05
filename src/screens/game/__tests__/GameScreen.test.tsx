@@ -349,65 +349,18 @@ jest.mock("../../../components/background/StarryBackground", () => {
   };
 });
 
-// Mock AppStrings
-jest.mock("../../../constants/AppStrings", () => ({
-  APP_LANGUAGE_STORAGE_KEY: "appLanguage",
-  AppStrings: {
-    CommonAlerts: {
-      ERROR_TITLE: "Error",
-    },
-    CoinShop: {
-      NO_PACKS_AVAILABLE: "No packs available",
-    },
-    Profile: {
-      UPGRADE_ACCOUNT_BUTTON: "Upgrade Account",
-    },
-    DevTools: {
-      CLEAR_LOCAL_DATA_BUTTON: "Clear Local Data",
-    },
-    StreakFanfare: {
-      TITLE: "Streak Increased!",
-      STREAK_SUFFIX: "day streak",
-      CONTINUE_BUTTON: "Continue",
-    },
-    GameScreenAlerts: {
-      SUBMIT_GUESS_ERROR_TITLE: "Error",
-      SUBMIT_GUESS_ERROR_MESSAGE: "Could not submit guess",
-      NOT_ENOUGH_COINS_TITLE: "Not enough coins",
-      GUEST_MODE_NOTICE_TITLE: "Guest Mode",
-      GUEST_MODE_NOTICE_MESSAGE: "Progress is local only.",
-      AD_NOT_READY_TITLE: "Ad Not Ready",
-      AD_NOT_READY_MESSAGE: "Please try again soon.",
-      HINT_NOT_AVAILABLE_TITLE: "Hint Not Available",
-      HINT_NOT_AVAILABLE_MESSAGE: "All letters are already revealed.",
-      PURCHASE_FAILED_TITLE: "Purchase Failed",
-      PURCHASE_FAILED_MESSAGE: "Purchase failed. Please try again.",
-      SPEND_COINS_ERROR_MESSAGE: "Unable to spend coins.",
-      CONTINUE_NOT_ENOUGH_COINS_MESSAGE: "You do not have enough coins to continue.",
-      DAILY_CHALLENGE_LABEL: "Daily Challenge",
-      CLASSIC_LABEL: "Classic",
-    },
-    Tooltips: {
-      SUBMIT_ANSWER_TITLE: "Submit your answer",
-      SUBMIT_ANSWER_BODY: "Tap submit.",
-      HINT_AFTER_WRONG_TITLE: "Need a clue?",
-      HINT_AFTER_WRONG_BODY: "Tap hint.",
-      SHOP_OUT_OF_COINS_TITLE: "Grab more coins",
-      SHOP_OUT_OF_COINS_BODY: "Open shop.",
-      ACHIEVEMENT_EARNED_TITLE: "Achievement unlocked",
-      ACHIEVEMENT_EARNED_BODY: "Open profile.",
-      LEADERBOARD_FIFTH_CORRECT_TITLE: "Climb the leaderboard",
-      LEADERBOARD_FIFTH_CORRECT_BODY: "Open profile.",
-      CLASSIC_FROM_DAILY_TITLE: "Classic mode",
-      CLASSIC_FROM_DAILY_BODY: "Keep playing.",
-      GOT_IT_BUTTON: "Got it",
-    },
-  },
-  SupportedLanguage: {},
-  getAppLanguage: () => "en",
-  isSupportedLanguage: jest.fn(() => true),
-  setAppLanguage: jest.fn(),
-}));
+// Mock i18n
+jest.mock("../../../i18n", () => {
+  const actual = jest.requireActual("../../../i18n");
+
+  return {
+    ...actual,
+    getLocale: jest.fn(() => "en"),
+    getAppLanguage: jest.fn(() => "en"),
+    setLocale: jest.fn(),
+    setAppLanguage: jest.fn(),
+  };
+});
 
 // Mock constants
 jest.mock("../../../constants/game", () => ({
@@ -864,7 +817,7 @@ describe("GameScreen", () => {
         await waitFor(() => {
           expect(mockShowInfoModal).toHaveBeenCalledWith(
             expect.objectContaining({
-              title: "Guest Mode",
+              title: "Guest Mode Notice",
               actionButtonText: "Upgrade Account",
               onboardingProgress: {current: 2, total: 3},
               onAction: expect.any(Function),
@@ -872,7 +825,7 @@ describe("GameScreen", () => {
           );
         });
 
-        const guestInfoCall = mockShowInfoModal.mock.calls.find((call) => call[0]?.title === "Guest Mode");
+        const guestInfoCall = mockShowInfoModal.mock.calls.find((call) => call[0]?.title === "Guest Mode Notice");
         expect(guestInfoCall).toBeDefined();
 
         await act(async () => {
@@ -1888,7 +1841,7 @@ describe("GameScreen", () => {
         expect(mockShowInfoModal).toHaveBeenCalledWith(
           expect.objectContaining({
             title: "Ad Not Ready",
-            message: "Please try again soon.",
+            message: "The rewarded ad couldn't be shown at this time. Please try again shortly.",
           }),
         );
       });
@@ -2947,7 +2900,7 @@ describe("GameScreen", () => {
 
     it("applies settings modal toggle callbacks", async () => {
       const {SoundManager} = require("../../../services/SoundManager");
-      const {setAppLanguage} = require("../../../constants/AppStrings");
+      const {setLocale} = require("../../../i18n");
       render(<GameScreen {...defaultProps} />);
 
       const bottomNavProps = getLatestProps(mockBottomNavigationBar);
@@ -2963,7 +2916,7 @@ describe("GameScreen", () => {
 
       expect(SoundManager.pauseBackgroundMusic).toHaveBeenCalled();
       expect(SoundManager.playBackgroundMusic).toHaveBeenCalled();
-      expect(setAppLanguage).toHaveBeenCalledWith("es");
+      expect(setLocale).toHaveBeenCalledWith("es");
     });
 
     it("passes a complete-riddle callback to the debug panel", async () => {

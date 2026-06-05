@@ -1,0 +1,13 @@
+{
+  "GameMessages": {
+    "COINS_EARNED": "獲得コイン: ",
+    "GAME_LOST": "ゲーム敗北: 正解 - ",
+    "GAME_WON": "ゲーム勝利: 挑戦 - ",
+    "HINT_USED": "ヒント使用: コスト - ",
+    "IN_MODE": " / ",
+    "MODE_SUFFIX": "モード。",
+    "RETRY_BUTTON_PRESSED": "再試行ボタンが押されました",
+    "FALLBACK_CLUE_SINGLE": "この言葉を解いてください。",
+    "FALLBACK_CLUE_TEMPLATE": "この {length} 文字の単語を解きます。"
+  }
+}

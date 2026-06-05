@@ -4,12 +4,8 @@ import type {SubmittedGuess} from "../../../hooks/types";
 import {TYPOGRAPHY} from "../../../styles";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
 import {
-  MODAL_WIDTH,
-  MODAL_CONTENT_PADDING,
-  MODAL_MAX_SCREEN_HEIGHT_FRACTION,
-  getResponsiveModalHeight,
-} from "../../../constants/layout";
-import {AppStrings} from "../../../constants/AppStrings";
+  MODAL_WIDTH, MODAL_CONTENT_PADDING, MODAL_MAX_SCREEN_HEIGHT_FRACTION, getResponsiveModalHeight, } from "../../../constants/layout";
+import {t} from "../../../i18n";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import {NewCoins} from "@/components/shared/NewCoins";
 import {verticalScale} from "@/utils/responsive";
@@ -66,7 +62,7 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
   onClose,
 }) => {
   const modalHeight = getResponsiveModalHeight(VICTORY_MODAL_HEIGHT_MULTIPLIER, MODAL_MAX_SCREEN_HEIGHT_FRACTION);
-  const nextButtonText = sequenceProgress?.primaryActionText ?? AppStrings.VictoryModal.NEXT_LEVEL_BUTTON;
+  const nextButtonText = sequenceProgress?.primaryActionText ?? t("VictoryModal.NEXT_LEVEL_BUTTON");
 
   /**
    * Advances to the next level and closes the modal afterward.
@@ -144,14 +140,14 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
                   color: "black",
                 }}
               >
-                {AppStrings.VictoryModal.TITLE}
+                {t("VictoryModal.TITLE")}
               </Text>
 
               <NewCoins coinsEarned={coinsEarned} totalCoins={totalCoins} />
 
               <View style={{width: "100%"}}>
                 <WideButton
-                  buttonText={AppStrings.VictoryModal.SHARE_TEXT}
+                  buttonText={t("VictoryModal.SHARE_TEXT")}
                   onPress={() => {
                     void handleShare();
                   }}

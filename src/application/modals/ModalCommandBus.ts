@@ -1,4 +1,5 @@
 import type {GameModalTypes, ModalData, ModalDataType, ModalOptions} from "../../types/ModalTypes";
+import {t} from "../../i18n";
 
 /**
  * Typed command variant for game-modal registry entries.
@@ -78,8 +79,8 @@ export class ModalCommandBus {
         });
       case "offline":
         return this.openModal("info", {
-          title: command.title ?? "No Internet Connection",
-          message: command.message ?? "Please check your connection and try again.",
+          title: command.title ?? t("CommonAlerts.OFFLINE_TITLE"),
+          message: command.message ?? t("CommonAlerts.OFFLINE_MESSAGE"),
         });
       case "open":
         return this.openModal(command.modalType, command.data, command.options);

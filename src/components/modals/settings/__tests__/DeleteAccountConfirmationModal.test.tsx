@@ -2,7 +2,7 @@ import React from "react";
 import {fireEvent, render} from "@testing-library/react-native";
 import {Modal} from "react-native";
 import DeleteAccountConfirmationModal from "../DeleteAccountConfirmationModal";
-import {AppStrings} from "../../../../constants/AppStrings";
+import {t} from "../../../../i18n";
 
 describe("DeleteAccountConfirmationModal", () => {
   const mockOnCancel = jest.fn();
@@ -17,8 +17,8 @@ describe("DeleteAccountConfirmationModal", () => {
       <DeleteAccountConfirmationModal isVisible isDeleting={false} onCancel={mockOnCancel} onConfirm={mockOnConfirm} />,
     );
 
-    expect(getByText(AppStrings.Profile.DELETE_ACCOUNT_CONFIRM_TITLE)).toBeTruthy();
-    expect(getByText(AppStrings.Profile.DELETE_ACCOUNT_CONFIRM_MESSAGE)).toBeTruthy();
+    expect(getByText(t("Profile.DELETE_ACCOUNT_CONFIRM_TITLE"))).toBeTruthy();
+    expect(getByText(t("Profile.DELETE_ACCOUNT_CONFIRM_MESSAGE"))).toBeTruthy();
     expect(getByTestId("delete-account-confirm-button")).toBeTruthy();
     expect(getByTestId("delete-account-cancel-button")).toBeTruthy();
   });
@@ -52,6 +52,6 @@ describe("DeleteAccountConfirmationModal", () => {
       <DeleteAccountConfirmationModal isVisible isDeleting onCancel={mockOnCancel} onConfirm={mockOnConfirm} />,
     );
 
-    expect(getByText(AppStrings.Profile.DELETE_ACCOUNT_LOADING)).toBeTruthy();
+    expect(getByText(t("Profile.DELETE_ACCOUNT_LOADING"))).toBeTruthy();
   });
 });

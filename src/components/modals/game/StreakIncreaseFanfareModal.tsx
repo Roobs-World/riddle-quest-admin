@@ -4,13 +4,8 @@ import ModalBg from "../../../../assets/images/modal-bg.svg";
 import HomeBg from "../../../../assets/images/home-bg.svg";
 import {TYPOGRAPHY} from "../../../styles";
 import {
-  MODAL_WIDTH,
-  MODAL_HEIGHT,
-  MODAL_CONTENT_PADDING,
-  MODAL_BUTTON_SPACER,
-  MODAL_MAX_HEIGHT,
-} from "../../../constants/layout";
-import {AppStrings} from "../../../constants/AppStrings";
+  MODAL_WIDTH, MODAL_HEIGHT, MODAL_CONTENT_PADDING, MODAL_BUTTON_SPACER, MODAL_MAX_HEIGHT, } from "../../../constants/layout";
+import {t} from "../../../i18n";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import {NewCoins} from "@/components/shared/NewCoins";
 import RotatingWheelBackground from "@/components/shared/RotatingWheelBackground";
@@ -38,7 +33,7 @@ const StreakIncreaseFanfareModal: React.FC<StreakIncreaseFanfareModalProps> = ({
   onClose,
 }) => {
   const streakModalHeight = Math.min(MODAL_HEIGHT * 1.4, MODAL_MAX_HEIGHT ?? MODAL_HEIGHT * 1.4);
-  const continueButtonText = sequenceProgress?.primaryActionText ?? AppStrings.StreakFanfare.CONTINUE_BUTTON;
+  const continueButtonText = sequenceProgress?.primaryActionText ?? t("StreakFanfare.CONTINUE_BUTTON");
   const handleContinue = () => {
     onContinue?.();
     onClose();
@@ -98,7 +93,7 @@ const StreakIncreaseFanfareModal: React.FC<StreakIncreaseFanfareModalProps> = ({
                     textAlign: "center",
                   }}
                 >
-                  {AppStrings.StreakFanfare.TITLE}
+                  {t("StreakFanfare.TITLE")}
                 </Text>
 
                 <Text
@@ -109,7 +104,7 @@ const StreakIncreaseFanfareModal: React.FC<StreakIncreaseFanfareModalProps> = ({
                     textAlign: "center",
                   }}
                 >
-                  {`${streakValue}${AppStrings.StreakFanfare.STREAK_SUFFIX}`}
+                  {`${streakValue}${t("StreakFanfare.STREAK_SUFFIX")}`}
                 </Text>
 
                 <NewCoins coinsEarned={coinsAwarded} totalCoins={totalCoins} />

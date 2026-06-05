@@ -1,0 +1,24 @@
+{
+  "Instructions": {
+    "COLOR_CLUES_TITLE": "색깔 힌트",
+    "COLOR_CORRECT": "글자가 올바르고 올바른 위치에 있습니다",
+    "COLOR_MISPLACED": "글자가 단어에 있지만 위치가 다릅니다",
+    "COLOR_WRONG": "글자가 단어에 없습니다",
+    "GOAL_DESCRIPTION": "색깔 힌트를 사용해 3번의 시도로 숨겨진 수수께끼를 맞춰보세요.",
+    "GOAL_TITLE": "목표",
+    "GOT_IT_BUTTON": "알겠어요!",
+    "TIPS_DESCRIPTION": "자주 사용되는 글자부터 시작하고 색깔 피드백을 활용하세요. 시도는 3번뿐입니다!",
+    "TIPS_TITLE": "팁",
+    "TITLE": "플레이 방법"
+  },
+  "WelcomeBackModal": {
+    "TAP_TO_CONTINUE": "탭하여 계속",
+    "TITLE": "다시 오신 것을 환영합니다"
+  },
+  "WelcomeModal": {
+    "EARN_COINS_TEXT": "코인을 모으고 일일 챌린지를 완료하며 순위를 올려보세요.",
+    "LETS_PLAY": "시작하기",
+    "SOLVE_RIDDLES_TEXT": "글자 하나씩 답을 추측하며 수수께끼를 풀어보세요. 색깔 힌트로 각 시도를 안내받으세요.",
+    "WELCOME_TITLE": "Riddle Quest에\n오신 것을 환영합니다!"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "LossModal": {
+    "ANSWER_PREFIX": "Answer: ",
+    "EXTRA_GUESSES_PREFIX": "3 Extra Guesses - ",
+    "EXTRA_GUESSES_PROMPT": "Out of attempts. Get 3 extra guesses or skip this puzzle.",
+    "EXTRA_GUESSES_SUFFIX": " Coins",
+    "NEXT_LEVEL_BUTTON": "Next Level",
+    "OPEN_SHOP_BUTTON": "Open Shop",
+    "OUT_OF_ATTEMPTS": "Out of attempts.",
+    "SKIP_LEVEL_PREFIX": "Skip Level (",
+    "SKIP_LEVEL_SUFFIX": " Coins)",
+    "SKIP_PUZZLE_BUTTON": "Skip Puzzle",
+    "TITLE": "So close!",
+    "USE_COINS_PREFIX": "Use ",
+    "USE_COINS_SUFFIX": " Coins to Continue",
+    "WATCH_AD_BUTTON": "Watch Ad for 3 Extra Guesses"
+  }
+}

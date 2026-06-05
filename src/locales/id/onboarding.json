@@ -1,0 +1,24 @@
+{
+  "Instructions": {
+    "COLOR_CLUES_TITLE": "Petunjuk Warna",
+    "COLOR_CORRECT": "Surat sudah benar dan pada posisi yang tepat",
+    "COLOR_MISPLACED": "Huruf ada di kata tapi posisinya salah",
+    "COLOR_WRONG": "Surat tidak ada dalam kata sama sekali",
+    "GOAL_DESCRIPTION": "Tebak teka-teki tersembunyi dalam 3 percobaan menggunakan petunjuk warna untuk memandu Anda.",
+    "GOAL_TITLE": "Tujuannya",
+    "GOT_IT_BUTTON": "Mengerti!",
+    "TIPS_DESCRIPTION": "Mulailah dengan huruf-huruf umum dan gunakan umpan balik warna untuk mempersempit tebakan Anda. Ingat, Anda hanya punya 3 kesempatan!",
+    "TIPS_TITLE": "Kiat untuk Sukses",
+    "TITLE": "Cara Bermain"
+  },
+  "WelcomeBackModal": {
+    "TAP_TO_CONTINUE": "Ketuk untuk melanjutkan",
+    "TITLE": "Selamat datang kembali"
+  },
+  "WelcomeModal": {
+    "EARN_COINS_TEXT": "Hasilkan koin, kalahkan tantangan harian, dan naiki papan peringkat.",
+    "LETS_PLAY": "Ayo Bermain",
+    "SOLVE_RIDDLES_TEXT": "Pecahkan teka-teki menarik dengan menebak jawabannya huruf demi huruf. Gunakan petunjuk warna untuk mempersempit setiap tebakan.",
+    "WELCOME_TITLE": "Selamat datang di Pencarian Teka-teki!"
+  }
+}

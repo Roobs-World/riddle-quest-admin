@@ -1,0 +1,30 @@
+{
+  "ErrorMessages": {
+    "CHECK_INTERNET_AND_TRY_AGAIN": "Verifique su conexión a Internet e inténtelo nuevamente.",
+    "FAILED_TO_INITIALIZE_RIDDLE_DATABASE": "No se pudo inicializar la base de datos de acertijos. Esta podría ser la primera vez que usa la aplicación.",
+    "FAILED_TO_LOAD_PRODUCTS": "No se pudieron cargar los productos",
+    "FAILED_TO_LOAD_SHOP_PRODUCTS": "No se pudieron cargar los productos de la tienda",
+    "UNABLE_TO_LOAD_RIDDLES": "No se pudieron cargar ningún acertijo. Verifique su conexión e inténtelo nuevamente.",
+    "ACCOUNT_WITH_EMAIL_EXISTS": "Ya existe una cuenta con este correo electrónico.",
+    "AMOUNT_MUST_BE_POSITIVE": "La cantidad debe ser un número positivo",
+    "ATTEMPTS_MUST_BE_POSITIVE_INTEGER": "Los intentos deben ser un número entero positivo",
+    "AUTHENTICATION_FAILED": "Error de autenticación",
+    "EMAIL_PERMISSION_REQUIRED": "El correo electrónico es obligatorio pero no lo proporciona el proveedor de autenticación. Asegúrese de otorgar permiso por correo electrónico.",
+    "GENERIC_UNEXPECTED_ERROR": "Se produjo un error inesperado. Inténtelo de nuevo.",
+    "GUESS_CANNOT_BE_EMPTY": "Supongo que no puede estar vacío",
+    "INVALID_DATA_FORMAT": "Formato de datos no válido. Por favor verifique su entrada.",
+    "NETWORK_ERROR_CHECK_CONNECTION": "Error de red. Verifique su conexión.",
+    "NETWORK_REQUEST_FAILED": "Error en la solicitud de red",
+    "NO_ACCOUNT_FOUND_WITH_EMAIL": "No se encontró ninguna cuenta con esta dirección de correo electrónico.",
+    "PASSWORD_MIN_LENGTH_AUTH": "La contraseña debe tener al menos 6 caracteres.",
+    "PERMISSION_DENIED_ACTION": "No tiene permiso para realizar esta acción.",
+    "PERMISSION_DENIED_FUNCTION": "No tiene permiso para llamar a esta función.",
+    "PLEASE_ENTER_VALID_EMAIL": "Ingrese una dirección de correo electrónico válida.",
+    "RESOURCE_NOT_FOUND": "Recurso no encontrado",
+    "RIDDLE_ID_REQUIRED": "Se requiere ID de acertijo",
+    "SERVICE_TEMPORARILY_UNAVAILABLE": "El servicio no está disponible temporalmente. Inténtelo de nuevo.",
+    "SIGN_IN_TO_CONTINUE": "Inicie sesión para continuar.",
+    "TOO_MANY_FAILED_ATTEMPTS": "Demasiados intentos fallidos. Inténtelo de nuevo más tarde.",
+    "WRONG_PASSWORD_TRY_AGAIN": "Contraseña incorrecta. Por favor inténtalo de nuevo."
+  }
+}

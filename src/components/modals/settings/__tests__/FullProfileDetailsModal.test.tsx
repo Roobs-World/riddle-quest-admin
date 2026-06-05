@@ -6,6 +6,28 @@ import {Player} from "../../../../validation/firestoreSchemas";
 import * as ImagePicker from "react-native-image-picker";
 import {MODAL_MAX_HEIGHT} from "../../../../constants/layout";
 
+type StyleLike = {
+  height?: unknown;
+  maxWidth?: unknown;
+};
+
+const getStyleDimensions = (style: unknown): StyleLike | null => {
+  if (!style || typeof style !== "object" || Array.isArray(style)) {
+    return null;
+  }
+
+  return style as StyleLike;
+};
+
+const hasModalCardDimensions = (style: unknown): boolean => {
+  if (Array.isArray(style)) {
+    return style.some((entry) => hasModalCardDimensions(entry));
+  }
+
+  const dimensions = getStyleDimensions(style);
+  return dimensions?.height === MODAL_MAX_HEIGHT && dimensions?.maxWidth === 430;
+};
+
 const mockShowTooltip = jest.fn(() => Promise.resolve());
 const mockLogout = jest.fn(() => Promise.resolve());
 const mockUpdatePlayerData = jest.fn();
@@ -418,13 +440,7 @@ describe("FullProfileDetailsModal", () => {
       }),
     );
     const profileCard = UNSAFE_getAllByType(require("react-native").View).find(
-      (node: {props?: {style?: unknown}}) =>
-        Array.isArray(node.props?.style)
-          ? node.props.style.some(
-              (style: {height?: unknown; maxWidth?: unknown} | undefined) =>
-                style?.height === MODAL_MAX_HEIGHT && style?.maxWidth === 430,
-            )
-          : node.props?.style?.height === MODAL_MAX_HEIGHT && node.props?.style?.maxWidth === 430,
+      (node: {props?: {style?: unknown}}) => hasModalCardDimensions(node.props?.style),
     );
     expect(profileCard).toBeTruthy();
   });

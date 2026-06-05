@@ -7,7 +7,7 @@ import PulsingSpinner from "src/components/loading/PulsingSpinner";
 import {TYPOGRAPHY} from "src/styles";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
 import HomeBg from "../../../../assets/images/home-bg.svg";
-import {AppStrings} from "../../../constants/AppStrings";
+import {t} from "../../../i18n";
 import {
   MODAL_WIDTH,
   MODAL_HEIGHT,
@@ -54,11 +54,11 @@ const UpdateUsernameModal: React.FC<UpdateUsernameModalProps> = ({isVisible, onC
 
   const validateUsername = (username: string): string | null => {
     if (!username) {
-      return AppStrings.Profile.ALERT_USERNAME_EMPTY;
+      return t("Profile.ALERT_USERNAME_EMPTY");
     }
 
     if (username.length < 3) {
-      return AppStrings.Profile.ALERT_USERNAME_TOO_SHORT;
+      return t("Profile.ALERT_USERNAME_TOO_SHORT");
     }
 
     return null;
@@ -93,7 +93,7 @@ const UpdateUsernameModal: React.FC<UpdateUsernameModalProps> = ({isVisible, onC
         await updatePlayerData({username: trimmedUsername});
         onClose();
       } else {
-        setUsernameError(responseData.message || AppStrings.Profile.ALERT_USERNAME_UPDATE_FAILED);
+        setUsernameError(responseData.message || t("Profile.ALERT_USERNAME_UPDATE_FAILED"));
       }
     } catch (error) {
       setUsernameError(getUpdateUsernameErrorMessage(error));
@@ -167,7 +167,7 @@ const UpdateUsernameModal: React.FC<UpdateUsernameModalProps> = ({isVisible, onC
                   textAlign: "center",
                 }}
               >
-                {AppStrings.Profile.UPDATE_USERNAME_TITLE}
+                {t("Profile.UPDATE_USERNAME_TITLE")}
               </Text>
               <TextInput
                 style={{
@@ -185,11 +185,11 @@ const UpdateUsernameModal: React.FC<UpdateUsernameModalProps> = ({isVisible, onC
                     setUsernameError("");
                   }
                 }}
-                placeholder={AppStrings.Profile.ENTER_NEW_USERNAME_PLACEHOLDER}
+                placeholder={t("Profile.ENTER_NEW_USERNAME_PLACEHOLDER")}
                 placeholderTextColor="#888"
                 autoCapitalize="none"
                 testID="update-username-input"
-                accessibilityLabel={AppStrings.Profile.ENTER_NEW_USERNAME_PLACEHOLDER}
+                accessibilityLabel={t("Profile.ENTER_NEW_USERNAME_PLACEHOLDER")}
               />
               {usernameError ? (
                 <Text
@@ -206,7 +206,7 @@ const UpdateUsernameModal: React.FC<UpdateUsernameModalProps> = ({isVisible, onC
                 </Text>
               ) : null}
               <WideButton
-                buttonText={AppStrings.Profile.SAVE_BUTTON}
+                buttonText={t("Profile.SAVE_BUTTON")}
                 onPress={handleUpdateUsername}
                 disabled={isSubmitting}
                 testID="update-username-save-button"

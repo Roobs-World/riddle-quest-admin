@@ -6,7 +6,7 @@ import React from "react";
 import {Alert, Linking, Modal, ScrollView, Text, TouchableOpacity, View} from "react-native";
 import CloseButton from "../../buttons/CloseButton";
 import SlideInModalContent from "../../shared/SlideInModalContent";
-import {AppStrings, getAppLanguage} from "../../../constants/AppStrings";
+import {t, getLocale} from "../../../i18n";
 import {getLegalUrl, LegalUrlKey} from "../../../constants/legal";
 import {SPACING, TYPOGRAPHY} from "../../../styles";
 import {verticalScale} from "@/utils/responsive";
@@ -23,13 +23,13 @@ interface LegalLinkRow {
 }
 
 const getLegalLinkRows = (): LegalLinkRow[] => [
-  {key: "website", label: AppStrings.AboutLegal.RIDDLE_QUEST_WEBSITE},
-  {key: "privacyPolicy", label: AppStrings.AboutLegal.PRIVACY_POLICY},
-  {key: "termsOfUse", label: AppStrings.AboutLegal.TERMS_OF_USE},
-  {key: "accountDeletion", label: AppStrings.AboutLegal.ACCOUNT_DELETION},
-  {key: "dataExport", label: AppStrings.AboutLegal.DATA_EXPORT},
-  {key: "thirdPartyLicenses", label: AppStrings.AboutLegal.THIRD_PARTY_LICENSES},
-  {key: "support", label: AppStrings.AboutLegal.SUPPORT},
+  {key: "website", label: t("AboutLegal.RIDDLE_QUEST_WEBSITE")},
+  {key: "privacyPolicy", label: t("AboutLegal.PRIVACY_POLICY")},
+  {key: "termsOfUse", label: t("AboutLegal.TERMS_OF_USE")},
+  {key: "accountDeletion", label: t("AboutLegal.ACCOUNT_DELETION")},
+  {key: "dataExport", label: t("AboutLegal.DATA_EXPORT")},
+  {key: "thirdPartyLicenses", label: t("AboutLegal.THIRD_PARTY_LICENSES")},
+  {key: "support", label: t("AboutLegal.SUPPORT")},
 ];
 
 const openExternalUrl = async (label: string, url: string) => {
@@ -37,8 +37,8 @@ const openExternalUrl = async (label: string, url: string) => {
     await Linking.openURL(url);
   } catch {
     Alert.alert(
-      AppStrings.CommonAlerts.UNABLE_TO_OPEN_TITLE,
-      `${AppStrings.CommonAlerts.COULD_NOT_OPEN_PREFIX}${label}${AppStrings.CommonAlerts.COULD_NOT_OPEN_TRY_AGAIN}`,
+      t("CommonAlerts.UNABLE_TO_OPEN_TITLE"),
+      `${t("CommonAlerts.COULD_NOT_OPEN_PREFIX")}${label}${t("CommonAlerts.COULD_NOT_OPEN_TRY_AGAIN")}`,
     );
   }
 };
@@ -86,7 +86,7 @@ const AboutLegalModal: React.FC<AboutLegalModalProps> = ({isVisible, onClose}) =
                   textAlign: "center",
                 }}
               >
-                {AppStrings.AboutLegal.TITLE}
+                {t("AboutLegal.TITLE")}
               </Text>
               <CloseButton
                 onPress={onClose}
@@ -105,7 +105,7 @@ const AboutLegalModal: React.FC<AboutLegalModalProps> = ({isVisible, onClose}) =
                   <TouchableOpacity
                     accessibilityRole="link"
                     onPress={() => {
-                      void openExternalUrl(row.label, getLegalUrl(row.key, getAppLanguage()));
+                      void openExternalUrl(row.label, getLegalUrl(row.key, getLocale()));
                     }}
                     style={{
                       flexDirection: "row",

@@ -5,13 +5,8 @@ import ModalBg from "../../../../assets/images/modal-bg.svg";
 import HomeBg from "../../../../assets/images/home-bg.svg";
 import {TYPOGRAPHY} from "../../../styles";
 import {
-  MODAL_WIDTH,
-  MODAL_CONTENT_PADDING,
-  MODAL_BUTTON_SPACER,
-  MODAL_MAX_SCREEN_HEIGHT_FRACTION,
-  getResponsiveModalHeight,
-} from "../../../constants/layout";
-import {AppStrings} from "../../../constants/AppStrings";
+  MODAL_WIDTH, MODAL_CONTENT_PADDING, MODAL_BUTTON_SPACER, MODAL_MAX_SCREEN_HEIGHT_FRACTION, getResponsiveModalHeight, } from "../../../constants/layout";
+import {t} from "../../../i18n";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import {NewCoins} from "@/components/shared/NewCoins";
 import RotatingWheelBackground from "@/components/shared/RotatingWheelBackground";
@@ -89,14 +84,14 @@ const CoinPurchaseFanfareModal: React.FC<CoinPurchaseFanfareModalProps> = ({
                   textAlign: "center",
                 }}
               >
-                {AppStrings.CoinPurchase.TITLE}
+                {t("CoinPurchase.TITLE")}
               </Text>
 
               <NewCoins coinsEarned={coinsPurchased} totalCoins={totalCoins} />
 
               <View style={{width: "100%"}}>
                 <WideButton
-                  buttonText={AppStrings.CoinPurchase.AWESOME_BUTTON}
+                  buttonText={t("CoinPurchase.AWESOME_BUTTON")}
                   onPress={handleConfirm}
                   testID="coin-purchase-fanfare-confirm-button"
                 />

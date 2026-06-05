@@ -4,13 +4,8 @@ import ModalBg from "../../../../assets/images/modal-bg.svg";
 import HomeBg from "../../../../assets/images/home-bg.svg";
 import {TYPOGRAPHY} from "../../../styles";
 import {
-  MODAL_WIDTH,
-  MODAL_CONTENT_PADDING,
-  MODAL_BUTTON_SPACER,
-  MODAL_MAX_SCREEN_HEIGHT_FRACTION,
-  getResponsiveModalHeight,
-} from "../../../constants/layout";
-import {AppStrings} from "../../../constants/AppStrings";
+  MODAL_WIDTH, MODAL_CONTENT_PADDING, MODAL_BUTTON_SPACER, MODAL_MAX_SCREEN_HEIGHT_FRACTION, getResponsiveModalHeight, } from "../../../constants/layout";
+import {t} from "../../../i18n";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import {verticalScale} from "@/utils/responsive";
 import {NewCoins} from "@/components/shared/NewCoins";
@@ -45,7 +40,7 @@ const LevelUpFanfareModal: React.FC<LevelUpFanfareModalProps> = ({
   onContinue,
   onClose,
 }) => {
-  const continueButtonText = sequenceProgress?.primaryActionText ?? AppStrings.LevelUpFanfare.CONTINUE_BUTTON;
+  const continueButtonText = sequenceProgress?.primaryActionText ?? t("LevelUpFanfare.CONTINUE_BUTTON");
   const handleContinue = () => {
     onContinue?.();
     onClose();
@@ -113,7 +108,7 @@ const LevelUpFanfareModal: React.FC<LevelUpFanfareModalProps> = ({
                     marginTop: verticalScale(-40),
                   }}
                 >
-                  {AppStrings.LevelUpFanfare.TITLE}
+                  {t("LevelUpFanfare.TITLE")}
                 </Text>
 
                 <View style={{alignItems: "center"}}>
@@ -125,7 +120,7 @@ const LevelUpFanfareModal: React.FC<LevelUpFanfareModalProps> = ({
                       marginBottom: 6,
                     }}
                   >
-                    {`${AppStrings.LevelUpFanfare.LEVEL_PREFIX}${newLevel}`}
+                    {`${t("LevelUpFanfare.LEVEL_PREFIX")}${newLevel}`}
                   </Text>
 
                   <NewCoins coinsEarned={coinsAwarded} totalCoins={totalCoins} />

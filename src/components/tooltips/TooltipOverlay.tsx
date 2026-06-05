@@ -1,6 +1,6 @@
 import React, {useEffect, useMemo, useState, useRef} from "react";
 import {Animated, Dimensions, Easing, Pressable, Text, View} from "react-native";
-import {AppStrings} from "../../constants/AppStrings";
+import {t} from "../../i18n";
 import {COLORS, SPACING, TYPOGRAPHY} from "../../styles";
 import {logger} from "../../utils/logger";
 import type {TargetRect, TooltipContent} from "./types";
@@ -319,7 +319,7 @@ const TooltipOverlay: React.FC<TooltipOverlayProps> = ({visible, targetRect, con
               color: "#1A1A1A",
             }}
           >
-            {content.action || AppStrings.CommonAlerts.OK_BUTTON}
+            {content.action || t("CommonAlerts.OK_BUTTON")}
           </Text>
         </AnimatedPressable>
       </Animated.View>

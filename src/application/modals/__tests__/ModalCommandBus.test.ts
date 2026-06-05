@@ -18,7 +18,7 @@ describe("ModalCommandBus", () => {
 
     expect(openModal).toHaveBeenCalledWith("info", {
       title: "No Internet Connection",
-      message: "Please check your connection and try again.",
+      message: "Please reconnect to continue playing.",
     });
   });
 

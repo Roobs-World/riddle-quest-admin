@@ -2,7 +2,7 @@ import React from "react";
 import {TouchableOpacity, TouchableOpacityProps} from "react-native";
 import {MaterialCommunityIcons} from "@expo/vector-icons";
 import {SPACING} from "../../styles";
-import {AppStrings} from "../../constants/AppStrings";
+import {t} from "../../i18n";
 
 interface MuteButtonProps extends Omit<TouchableOpacityProps, "onPress"> {
   isMuted: boolean;
@@ -18,7 +18,7 @@ const MuteButton = ({isMuted, onToggle, iconSize = 22, iconColor = "#FFFFFF", st
     <TouchableOpacity
       onPress={onToggle}
       accessibilityRole="button"
-      accessibilityLabel={isMuted ? AppStrings.Accessibility.UNMUTE_SOUND : AppStrings.Accessibility.MUTE_SOUND}
+      accessibilityLabel={isMuted ? t("Accessibility.UNMUTE_SOUND") : t("Accessibility.MUTE_SOUND")}
       testID="mute-button"
       style={[
         {

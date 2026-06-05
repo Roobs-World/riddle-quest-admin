@@ -1,0 +1,17 @@
+{
+  "VictoryModal": {
+    "ACHIEVEMENT_UNLOCKED": "Достижение разблокировано!",
+    "COINS_SUFFIX": " Монеты",
+    "NEXT_LEVEL_BUTTON": "Следующий уровень",
+    "SHARE_TEXT": "Поделитесь своей победой!",
+    "TITLE": "ПРЕКРАСНАЯ РАБОТА!",
+    "TOTAL_COINS_LABEL": "Всего монет",
+    "YOU_WON_TITLE": "ВЫ ВЫИГРАЛИ!",
+    "SHARE_ATTEMPT_PLURAL": "попытки",
+    "SHARE_ATTEMPT_SINGULAR": "пытаться",
+    "SHARE_CLASSIC_MODE_LABEL": "Классический режим",
+    "SHARE_DAILY_CHALLENGE_LABEL": "Ежедневное испытание",
+    "SHARE_MESSAGE_TEMPLATE": "Я решил сегодняшнюю Riddle Quest {gameType} за {attempts} {attemptLabel}!\n\n{emojiGrid}\n\nСможешь ли ты побить мой результат?\n\n#Riddle Quest #WordPuzzle #BrainGame",
+    "SHARE_RESULT_TITLE": "Оцените мой результат Riddle Quest!"
+  }
+}

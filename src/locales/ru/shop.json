@@ -1,0 +1,10 @@
+{
+  "CoinShop": {
+    "COINS_SUFFIX": " monet",
+    "LOADING_TEXT": "Zagruzka magazina...",
+    "NO_PACKS_AVAILABLE": "Pakety monet nedostuny v dannyy moment.",
+    "PURCHASE_BUTTON": "KUPIT",
+    "TITLE": "MAGAZIN MONET",
+    "YOUR_BALANCE": "Vash balans"
+  }
+}

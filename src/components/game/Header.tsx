@@ -11,7 +11,7 @@ import CoinsDisplay from "./CoinsDisplay";
 import LogoIcon from "../icons/LogoIcon";
 import {TYPOGRAPHY, SPACING} from "../../styles";
 import {GAME_HEADER_SLOT_HEIGHT, HEADER_LOGO_SIZE} from "../../constants/layout";
-import {AppStrings} from "../../constants/AppStrings";
+import {t} from "../../i18n";
 
 /**
  * Props for the Header component.
@@ -101,7 +101,7 @@ const Header: React.FC<HeaderProps> = ({
       onLayout={handleHeaderLayout}
       accessible={true}
       accessibilityRole="none"
-      accessibilityLabel={AppStrings.Accessibility.GAME_HEADER}
+      accessibilityLabel={t("Accessibility.GAME_HEADER")}
     >
       {/* Logo Icon in top-left corner - positioned absolutely like CloseButton */}
       <View
@@ -113,7 +113,7 @@ const Header: React.FC<HeaderProps> = ({
           testID="logo-button"
           accessible={true}
           accessibilityRole="button"
-          accessibilityLabel="logo"
+          accessibilityLabel={t("Accessibility.LOGO_BUTTON")}
           onPress={onHintPress ?? (() => {})}
           activeOpacity={0.8}
         >

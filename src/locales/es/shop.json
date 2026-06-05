@@ -1,0 +1,10 @@
+{
+  "CoinShop": {
+    "COINS_SUFFIX": " monedas",
+    "LOADING_TEXT": "Cargando tienda...",
+    "NO_PACKS_AVAILABLE": "No hay paquetes de monedas disponibles ahora.",
+    "PURCHASE_BUTTON": "COMPRAR",
+    "TITLE": "TIENDA DE MONEDAS",
+    "YOUR_BALANCE": "Tu saldo"
+  }
+}

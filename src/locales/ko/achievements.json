@@ -1,0 +1,13 @@
+{
+  "Achievements": {
+    "COINS_SUFFIX": " 동전",
+    "FANFARE_TITLE": "업적 잠금 해제!",
+    "MODAL_TITLE": "업적",
+    "MORE_UNLOCKED_SUFFIX": " 더 많이 잠금 해제됨",
+    "NEW_ACHIEVEMENT": "새 업적",
+    "NICE_BUTTON": "좋습니다",
+    "UNLOCKED_ALERT_MESSAGE": "새 업적을 보려면 프로필을 확인하세요.",
+    "UNLOCKED_ALERT_OK": "좋아요",
+    "UNLOCKED_ALERT_TITLE": "업적 잠금 해제됨!"
+  }
+}

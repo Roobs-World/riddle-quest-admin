@@ -1,0 +1,13 @@
+{
+  "Achievements": {
+    "COINS_SUFFIX": " Moedas",
+    "FANFARE_TITLE": "Conquista desbloqueada!",
+    "MODAL_TITLE": "Conquistas",
+    "MORE_UNLOCKED_SUFFIX": " mais desbloqueado",
+    "NEW_ACHIEVEMENT": "Nova conquista",
+    "NICE_BUTTON": "Legal",
+    "UNLOCKED_ALERT_MESSAGE": "Verifique seu perfil para ver suas novas conquistas.",
+    "UNLOCKED_ALERT_OK": "Certo",
+    "UNLOCKED_ALERT_TITLE": "Conquista(s) desbloqueadas!"
+  }
+}

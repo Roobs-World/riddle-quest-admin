@@ -3,7 +3,7 @@ import {render} from "@testing-library/react-native";
 import PasswordMatch from "../PasswordMatch";
 
 // Mock AppStrings
-jest.mock("../../../constants/AppStrings", () => ({
+jest.mock("../../../i18n", () => ({
   AppStrings: {
     AuthStrings: {
       SignUp: {

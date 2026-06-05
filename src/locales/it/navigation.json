@@ -1,0 +1,21 @@
+{
+  "Navigation": {
+    "BUY_COINS_BUTTON": "Acquista monete",
+    "CREDITS": "Crediti",
+    "FORGOT_PASSWORD": "Ha dimenticato la password",
+    "GAME": "Gioco",
+    "HINT_BUTTON": "Suggerimento",
+    "LANDING": "Approdo",
+    "LOGIN": "Accedi",
+    "NEW_PASSWORD": "Nuova password",
+    "PLAY_BUTTON": "Giocare",
+    "PROFILE_BUTTON": "Profilo",
+    "SETTINGS_BUTTON": "Impostazioni",
+    "SIGN_UP": "Iscrizione"
+  },
+  "NavigationMessages": {
+    "ERROR_LOADING_NEXT_RIDDLE": "Errore durante il caricamento del prossimo indovinello classico:",
+    "NO_CLASSIC_RIDDLE_FOUND": "⚠️ Nessun enigma classico trovato all'indice ",
+    "SERVER_GENERATES_RIDDLES": ". Il server genererà automaticamente nuovi enigmi quando invii ipotesi."
+  }
+}

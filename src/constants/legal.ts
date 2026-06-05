@@ -1,4 +1,4 @@
-import type {SupportedLanguage} from "./AppStrings";
+import type {SupportedLanguage} from "../i18n";
 
 const LEGAL_BASE_URL = "https://www.roobsworld.com";
 

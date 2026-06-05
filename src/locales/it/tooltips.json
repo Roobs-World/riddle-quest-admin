@@ -1,0 +1,32 @@
+{
+  "Tooltips": {
+    "ACHIEVEMENT_EARNED_BODY": "Apri il tuo profilo per visualizzare i tuoi risultati e monitorare i tuoi progressi.",
+    "ACHIEVEMENT_EARNED_TITLE": "Obiettivo sbloccato",
+    "CLASSIC_FROM_DAILY_BODY": "Sfida quotidiana completata. La modalità classica ti consente di continuare a risolvere enigmi al tuo ritmo.",
+    "CLASSIC_FROM_DAILY_TITLE": "Modalità classica",
+    "GOT_IT_BUTTON": "Capito",
+    "HELP_BUTTON_LABEL": "Aiuto",
+    "HINT_AFTER_WRONG_BODY": "Quella supposizione non è riuscita. Tocca Suggerimento per rivelare una lettera utile e continuare.",
+    "HINT_AFTER_WRONG_TITLE": "Hai bisogno di un indizio?",
+    "LEADERBOARD_FIFTH_CORRECT_BODY": "Cinque risposte corrette! Apri il tuo profilo per vedere come ti classifichi.",
+    "LEADERBOARD_FIFTH_CORRECT_TITLE": "Scala la classifica",
+    "PROFILE_ACHIEVEMENTS_BODY": "Apri questa sezione per vedere tutti gli obiettivi che hai sbloccato.",
+    "PROFILE_ACHIEVEMENTS_TITLE": "Risultati",
+    "PROFILE_COINS_BODY": "Il saldo delle tue monete è mostrato qui. Spendi monete in suggerimenti, salti e possibilità extra.",
+    "PROFILE_COINS_TITLE": "Scrigno del tesoro",
+    "PROFILE_DAILY_PUZZLES_BODY": "Questo mostra quante sfide giornaliere hai completato.",
+    "PROFILE_DAILY_PUZZLES_TITLE": "Puzzle quotidiani",
+    "PROFILE_IDENTITY_BODY": "Il tuo avatar, nome utente, livello XP e progresso di livello si trovano qui.",
+    "PROFILE_IDENTITY_TITLE": "Profilo",
+    "PROFILE_LEADERBOARD_BODY": "Apri la classifica per confrontare XP, vittorie e serie consecutive con altri giocatori.",
+    "PROFILE_LEADERBOARD_TITLE": "Classifica",
+    "PROFILE_STATISTICS_BODY": "Apri le statistiche per un'analisi più approfondita delle tue prestazioni di gioco.",
+    "PROFILE_STATISTICS_TITLE": "Statistiche",
+    "PROFILE_STATS_BODY": "Queste carte riassumono la tua serie di vittorie consecutive, le parole indovinate, la percentuale di vincita e le ipotesi medie.",
+    "PROFILE_STATS_TITLE": "Istantanea delle statistiche",
+    "SHOP_OUT_OF_COINS_BODY": "Hai esaurito le monete per questa azione. Apri il negozio per acquistare o guadagnare di più.",
+    "SHOP_OUT_OF_COINS_TITLE": "Prendi più monete",
+    "SUBMIT_ANSWER_BODY": "Una volta riempiti tutti gli slot, tocca Invia per verificare la tua ipotesi.",
+    "SUBMIT_ANSWER_TITLE": "Invia la tua risposta"
+  }
+}

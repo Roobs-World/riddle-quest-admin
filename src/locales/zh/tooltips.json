@@ -1,0 +1,32 @@
+{
+  "Tooltips": {
+    "ACHIEVEMENT_EARNED_BODY": "打开个人资料查看你的成就和进度。",
+    "ACHIEVEMENT_EARNED_TITLE": "成就已解锁",
+    "CLASSIC_FROM_DAILY_BODY": "每日挑战完成。经典模式让你按自己的节奏继续解谜。",
+    "CLASSIC_FROM_DAILY_TITLE": "经典模式",
+    "GOT_IT_BUTTON": "明白了",
+    "HELP_BUTTON_LABEL": "帮助",
+    "HINT_AFTER_WRONG_BODY": "这次猜测不对。点击提示来显示一个有用的字母。",
+    "HINT_AFTER_WRONG_TITLE": "需要提示吗?",
+    "LEADERBOARD_FIFTH_CORRECT_BODY": "五题正确! 打开个人资料看看你的排名。",
+    "LEADERBOARD_FIFTH_CORRECT_TITLE": "冲击排行榜",
+    "PROFILE_ACHIEVEMENTS_BODY": "打开此部分查看你已解锁的所有成就。",
+    "PROFILE_ACHIEVEMENTS_TITLE": "成就",
+    "PROFILE_COINS_BODY": "你的金币余额显示在这里。可用于提示、跳过和额外机会。",
+    "PROFILE_COINS_TITLE": "宝箱",
+    "PROFILE_DAILY_PUZZLES_BODY": "这里显示你已完成的每日挑战数量。",
+    "PROFILE_DAILY_PUZZLES_TITLE": "每日谜题",
+    "PROFILE_IDENTITY_BODY": "你的头像、用户名、XP 等级和等级进度都在这里。",
+    "PROFILE_IDENTITY_TITLE": "个人资料",
+    "PROFILE_LEADERBOARD_BODY": "打开排行榜，与其他玩家比较 XP、胜场和连胜。",
+    "PROFILE_LEADERBOARD_TITLE": "排行榜",
+    "PROFILE_STATISTICS_BODY": "打开统计以查看更详细的游戏表现。",
+    "PROFILE_STATISTICS_TITLE": "统计",
+    "PROFILE_STATS_BODY": "这些卡片总结你的连胜、猜中词数、胜率和平均猜测次数。",
+    "PROFILE_STATS_TITLE": "统计摘要",
+    "SHOP_OUT_OF_COINS_BODY": "你的金币不足以执行此操作。打开商店购买或赚取更多金币。",
+    "SHOP_OUT_OF_COINS_TITLE": "获取更多金币",
+    "SUBMIT_ANSWER_BODY": "所有格子都填好后，点击提交来检查你的猜测。",
+    "SUBMIT_ANSWER_TITLE": "提交答案"
+  }
+}

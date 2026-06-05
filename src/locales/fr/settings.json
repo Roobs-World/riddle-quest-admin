@@ -1,0 +1,28 @@
+{
+  "Settings": {
+    "ABOUT_BUTTON": "À propos de",
+    "ACCOUNT_DELETION_BUTTON": "Supprimer le compte",
+    "CLOSE_BUTTON": "Fermer",
+    "CREDITS_BUTTON": "Crédits",
+    "DATA_EXPORT_BUTTON": "Exporter mes données",
+    "HAPTICS_TOGGLE": "Haptique",
+    "HELP_BUTTON": "Aide",
+    "LANGUAGE_LABEL": "Langue",
+    "LANGUAGE_SELECTED": "Choisi",
+    "LICENSES_BUTTON": "Licences",
+    "LOGOUT_BUTTON": "Déconnexion",
+    "LOGOUT_ERROR_MESSAGE": "Impossible de se déconnecter. Veuillez réessayer.",
+    "LOGOUT_ERROR_TITLE": "Erreur",
+    "PRIVACY_POLICY_BUTTON": "Politique de confidentialité",
+    "SOUND_TOGGLE": "Son",
+    "TERMS_BUTTON": "Conditions d'utilisation",
+    "TEST_CRASH_ALERT_CANCEL": "Annuler",
+    "TEST_CRASH_ALERT_CRASH": "Accident",
+    "TEST_CRASH_ALERT_MESSAGE": "Cela fera planter l'application pour tester Firebase Crashlytics. Continuer ?",
+    "TEST_CRASH_ALERT_TITLE": "Test de crash",
+    "TEST_CRASH_BUTTON": "Test de crash",
+    "TITLE": "Paramètres",
+    "TOGGLE_OFF": "Désactivé",
+    "TOGGLE_ON": "Activé"
+  }
+}

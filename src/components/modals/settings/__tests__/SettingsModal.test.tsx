@@ -1,51 +1,20 @@
 const React = require("react");
 import {render, fireEvent, waitFor, act} from "@testing-library/react-native";
 import SettingsModal from "../SettingsModal";
+import {getLanguageLabel, t} from "../../../../i18n";
 
 // Mock constants
-jest.mock("../../../../constants/AppStrings", () => ({
-  AppStrings: {
-    CommonAlerts: {
-      CLOSE_BUTTON: "Close",
-    },
-    Settings: {
-      TITLE: "Settings",
-      SOUND_TOGGLE: "Sound",
-      HAPTICS_TOGGLE: "Haptics",
-      TOGGLE_ON: "On",
-      TOGGLE_OFF: "Off",
-      LANGUAGE_LABEL: "Language",
-      LANGUAGE_SELECTED: "Selected",
-      HELP_BUTTON: "Help and Support?",
-      ABOUT_BUTTON: "About",
-      PRIVACY_POLICY_BUTTON: "Privacy Policy",
-      TERMS_BUTTON: "Terms of Use",
-      LICENSES_BUTTON: "Licenses",
-      ACCOUNT_DELETION_BUTTON: "Delete Account",
-      DATA_EXPORT_BUTTON: "Export My Data",
-      CREDITS_BUTTON: "Credits",
-      LOGOUT_BUTTON: "Logout",
-      LOGOUT_ERROR_TITLE: "Logout Error",
-      LOGOUT_ERROR_MESSAGE: "Unable to logout.",
-      CLOSE_BUTTON: "Close",
-    },
-  },
-  LANGUAGE_OPTIONS: [
-    {code: "en", label: "English"},
-    {code: "es", label: "Spanish"},
-    {code: "fr", label: "French"},
-  ],
-  getLanguageLabel: (code: string) => {
-    const labels: Record<string, string> = {
-      en: "English",
-      es: "Spanish",
-      fr: "French",
-    };
-    return labels[code] || code;
-  },
-  getAppLanguage: jest.fn(() => "en"),
-  SupportedLanguage: "en",
-}));
+jest.mock("../../../../i18n", () => {
+  const actual = jest.requireActual("../../../../i18n");
+
+  return {
+    ...actual,
+    getLocale: jest.fn(() => "en"),
+    getAppLanguage: jest.fn(() => "en"),
+    setLocale: jest.fn(),
+    setAppLanguage: jest.fn(),
+  };
+});
 
 // Mock styles
 jest.mock("../../../../styles", () => ({
@@ -88,8 +57,8 @@ describe("<SettingsModal />", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    const {getAppLanguage} = require("../../../../constants/AppStrings");
-    getAppLanguage.mockReturnValue("en");
+    const {getLocale} = require("../../../../i18n");
+    getLocale.mockReturnValue("en");
   });
 
   describe("Rendering", () => {
@@ -123,12 +92,12 @@ describe("<SettingsModal />", () => {
 
     it("should render current language label", () => {
       const {getByText} = render(<SettingsModal {...defaultProps} />);
-      expect(getByText("English")).toBeTruthy();
+      expect(getByText(getLanguageLabel("en"))).toBeTruthy();
     });
 
     it("should render help and support option", () => {
       const {getByText} = render(<SettingsModal {...defaultProps} />);
-      expect(getByText("Help and Support?")).toBeTruthy();
+      expect(getByText(t("Settings.HELP_BUTTON"))).toBeTruthy();
     });
 
     it("should render credits option", () => {
@@ -181,7 +150,7 @@ describe("<SettingsModal />", () => {
   describe("Navigation Interactions", () => {
     it("should call onPressHelp when help option is pressed", () => {
       const {getByText} = render(<SettingsModal {...defaultProps} />);
-      fireEvent.press(getByText("Help and Support?"));
+      fireEvent.press(getByText(t("Settings.HELP_BUTTON")));
       expect(defaultProps.onPressHelp).toHaveBeenCalledTimes(1);
     });
 
@@ -209,8 +178,8 @@ describe("<SettingsModal />", () => {
       const {getByText, queryByText} = render(<SettingsModal {...defaultProps} />);
       fireEvent.press(getByText("Language"));
       // After opening, the language picker should show language options
-      expect(queryByText("Spanish")).toBeTruthy();
-      expect(queryByText("French")).toBeTruthy();
+      expect(queryByText(getLanguageLabel("es"))).toBeTruthy();
+      expect(queryByText(getLanguageLabel("fr"))).toBeTruthy();
     });
 
     it("should call onChangeLanguage when a language is selected", () => {
@@ -218,14 +187,14 @@ describe("<SettingsModal />", () => {
       // Open language picker
       fireEvent.press(getByText("Language"));
       // Select Spanish
-      fireEvent.press(getByText("Spanish"));
+      fireEvent.press(getByText(getLanguageLabel("es")));
       expect(defaultProps.onChangeLanguage).toHaveBeenCalledWith("es");
     });
 
     it("should close language picker when a language is selected", () => {
       const {getByText, queryAllByText} = render(<SettingsModal {...defaultProps} />);
       fireEvent.press(getByText("Language"));
-      fireEvent.press(getByText("Spanish"));
+      fireEvent.press(getByText(getLanguageLabel("es")));
       // Language picker should close after selection
       // The Spanish text should only appear once (as current value)
     });
@@ -243,7 +212,7 @@ describe("<SettingsModal />", () => {
       const {getByText, queryByText} = render(<SettingsModal {...defaultProps} currentLanguage="en" />);
       fireEvent.press(getByText("Language"));
       // English should be marked as selected
-      expect(queryByText("Selected")).toBeTruthy();
+      expect(queryByText(t("Settings.LANGUAGE_SELECTED"))).toBeTruthy();
     });
 
     it("should handle onRequestClose of language picker modal", () => {
@@ -271,7 +240,7 @@ describe("<SettingsModal />", () => {
 
       // Open the language picker
       fireEvent.press(getByText("Language"));
-      expect(queryByText("Spanish")).toBeTruthy();
+      expect(queryByText(getLanguageLabel("es"))).toBeTruthy();
 
       // Find and press the backdrop TouchableOpacity
       const {TouchableOpacity} = require("react-native");
@@ -389,13 +358,13 @@ describe("<SettingsModal />", () => {
     });
 
     it("should handle different language values", () => {
-      const {getAppLanguage} = require("../../../../constants/AppStrings");
+      const {getLocale} = require("../../../../i18n");
       const {rerender, getByText} = render(<SettingsModal {...defaultProps} currentLanguage={"en" as any} />);
-      expect(getByText("English")).toBeTruthy();
+      expect(getByText(getLanguageLabel("en"))).toBeTruthy();
 
-      getAppLanguage.mockReturnValue("es");
+      getLocale.mockReturnValue("es");
       rerender(<SettingsModal {...defaultProps} currentLanguage={"es" as any} />);
-      expect(getByText("Spanish")).toBeTruthy();
+      expect(getByText(getLanguageLabel("es"))).toBeTruthy();
     });
   });
 });

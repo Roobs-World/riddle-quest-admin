@@ -1,0 +1,24 @@
+{
+  "Instructions": {
+    "COLOR_CLUES_TITLE": "Renk Ipuclari",
+    "COLOR_CORRECT": "Harf dogru ve dogru konumda",
+    "COLOR_MISPLACED": "Harf kelimede var ama yanlis konumda",
+    "COLOR_WRONG": "Harf kelimede yok",
+    "GOAL_DESCRIPTION": "Renk ipuclarini kullanarak 3 denemede gizli bilmecenin yanitini bulun.",
+    "GOAL_TITLE": "Amac",
+    "GOT_IT_BUTTON": "Anladim!",
+    "TIPS_DESCRIPTION": "Yaygin harflerle baslayin ve renk geri bildirimini kullanin. Unutmayin, sadece 3 deneme hakkiniz var!",
+    "TIPS_TITLE": "Ipuclari",
+    "TITLE": "Nasil Oynanir"
+  },
+  "WelcomeBackModal": {
+    "TAP_TO_CONTINUE": "Devam etmek icin dokun",
+    "TITLE": "Tekrar hos geldin"
+  },
+  "WelcomeModal": {
+    "EARN_COINS_TEXT": "Para kazanin, gunluk gorevleri tamamlayin ve siralama listesine yukselin.",
+    "LETS_PLAY": "Oynayalim",
+    "SOLVE_RIDDLES_TEXT": "Cevabi harf harf tahmin ederek bilmeceleri cozun. Renk ipuclari her tahmininize rehberlik eder.",
+    "WELCOME_TITLE": "Riddle Quest'e\nHos Geldiniz!"
+  }
+}

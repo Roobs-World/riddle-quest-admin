@@ -5,7 +5,7 @@
 import React from "react";
 import {View, Text, Modal, TouchableOpacity, Alert, ScrollView} from "react-native";
 import CloseButton from "../../buttons/CloseButton";
-import {AppStrings, LANGUAGE_OPTIONS, SupportedLanguage, getLanguageLabel} from "../../../constants/AppStrings";
+import {t, LANGUAGE_OPTIONS, SupportedLanguage, getLanguageLabel} from "../../../i18n";
 import {TYPOGRAPHY} from "../../../styles";
 import {SPACING} from "../../../styles";
 import {verticalScale} from "@/utils/responsive";
@@ -54,7 +54,7 @@ const SegmentedToggle = ({value, onChange}: {value: boolean; onChange: (v: boole
           fontWeight: "bold",
         }}
       >
-        {AppStrings.Settings.TOGGLE_ON}
+        {t("Settings.TOGGLE_ON")}
       </Text>
     </TouchableOpacity>
     <TouchableOpacity
@@ -73,7 +73,7 @@ const SegmentedToggle = ({value, onChange}: {value: boolean; onChange: (v: boole
           fontWeight: "bold",
         }}
       >
-        {AppStrings.Settings.TOGGLE_OFF}
+        {t("Settings.TOGGLE_OFF")}
       </Text>
     </TouchableOpacity>
   </View>
@@ -174,7 +174,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                   letterSpacing: 1,
                 }}
               >
-                {AppStrings.Settings.TITLE}
+                {t("Settings.TITLE")}
               </Text>
               <CloseButton
                 onPress={onClose}
@@ -202,7 +202,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                     color: "#1A1A1A",
                   }}
                 >
-                  {AppStrings.Settings.SOUND_TOGGLE}
+                  {t("Settings.SOUND_TOGGLE")}
                 </Text>
                 <SegmentedToggle
                   value={isSoundEnabled}
@@ -229,7 +229,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                     color: "#1A1A1A",
                   }}
                 >
-                  {AppStrings.Settings.HAPTICS_TOGGLE}
+                  {t("Settings.HAPTICS_TOGGLE")}
                 </Text>
                 <SegmentedToggle
                   value={isHapticsEnabled}
@@ -242,22 +242,22 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
               <View style={{height: 1, backgroundColor: "#E8E0E8"}} />
 
               <ArrowRow
-                label={AppStrings.Settings.LANGUAGE_LABEL}
+                label={t("Settings.LANGUAGE_LABEL")}
                 value={getLanguageLabel(currentLanguage)}
                 onPress={() => setIsLanguagePickerOpen(true)}
               />
 
               <View style={{height: 1, backgroundColor: "#E8E0E8"}} />
 
-              <ArrowRow label={AppStrings.Settings.HELP_BUTTON} onPress={onPressHelp} />
+              <ArrowRow label={t("Settings.HELP_BUTTON")} onPress={onPressHelp} />
 
               <View style={{height: 1, backgroundColor: "#E8E0E8"}} />
 
-              <ArrowRow label={AppStrings.Settings.CREDITS_BUTTON} onPress={onPressCredits} />
+              <ArrowRow label={t("Settings.CREDITS_BUTTON")} onPress={onPressCredits} />
 
               <View style={{height: 1, backgroundColor: "#E8E0E8"}} />
 
-              <ArrowRow label={AppStrings.Settings.ABOUT_BUTTON} onPress={onPressAbout} />
+              <ArrowRow label={t("Settings.ABOUT_BUTTON")} onPress={onPressAbout} />
 
               <View style={{height: 1, backgroundColor: "#E8E0E8"}} />
 
@@ -267,7 +267,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                     onClose();
                     if (onPressLogout) onPressLogout();
                   } catch {
-                    Alert.alert(AppStrings.Settings.LOGOUT_ERROR_TITLE, AppStrings.Settings.LOGOUT_ERROR_MESSAGE);
+                    Alert.alert(t("Settings.LOGOUT_ERROR_TITLE"), t("Settings.LOGOUT_ERROR_MESSAGE"));
                   }
                 }}
                 style={{paddingVertical: 16}}
@@ -279,7 +279,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                     color: "#F54160",
                   }}
                 >
-                  {AppStrings.Settings.LOGOUT_BUTTON}
+                  {t("Settings.LOGOUT_BUTTON")}
                 </Text>
               </TouchableOpacity>
             </ScrollView>
@@ -323,7 +323,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                   marginBottom: SPACING.md,
                 }}
               >
-                {AppStrings.Settings.LANGUAGE_LABEL}
+                {t("Settings.LANGUAGE_LABEL")}
               </Text>
 
               <ScrollView>
@@ -361,7 +361,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                           color: isSelected ? "#401F40" : "#9CA3AF",
                         }}
                       >
-                        {isSelected ? AppStrings.Settings.LANGUAGE_SELECTED : ""}
+                        {isSelected ? t("Settings.LANGUAGE_SELECTED") : ""}
                       </Text>
                     </TouchableOpacity>
                   );
@@ -384,7 +384,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                     color: "#401F40",
                   }}
                 >
-                  {AppStrings.Settings.CLOSE_BUTTON}
+                  {t("Settings.CLOSE_BUTTON")}
                 </Text>
               </TouchableOpacity>
             </View>

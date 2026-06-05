@@ -1,0 +1,32 @@
+{
+  "Tooltips": {
+    "ACHIEVEMENT_EARNED_BODY": "Abra seu perfil para ver suas conquistas e acompanhar seu progresso.",
+    "ACHIEVEMENT_EARNED_TITLE": "Conquista desbloqueada",
+    "CLASSIC_FROM_DAILY_BODY": "Desafio diario concluido. O modo Classico permite continuar resolvendo enigmas no seu ritmo.",
+    "CLASSIC_FROM_DAILY_TITLE": "Modo Classico",
+    "GOT_IT_BUTTON": "Entendi",
+    "HELP_BUTTON_LABEL": "Ajuda",
+    "HINT_AFTER_WRONG_BODY": "Esse palpite nao deu certo. Toque em Pista para revelar uma letra util e continuar.",
+    "HINT_AFTER_WRONG_TITLE": "Precisa de uma pista?",
+    "LEADERBOARD_FIFTH_CORRECT_BODY": "Cinco respostas corretas! Abra seu perfil para ver sua posicao.",
+    "LEADERBOARD_FIFTH_CORRECT_TITLE": "Suba no ranking",
+    "PROFILE_ACHIEVEMENTS_BODY": "Abra esta secao para ver todas as conquistas desbloqueadas.",
+    "PROFILE_ACHIEVEMENTS_TITLE": "Conquistas",
+    "PROFILE_COINS_BODY": "Seu saldo de moedas aparece aqui. Gaste moedas em pistas, pulos e chances extras.",
+    "PROFILE_COINS_TITLE": "Bau do tesouro",
+    "PROFILE_DAILY_PUZZLES_BODY": "Isto mostra quantos desafios diarios voce concluiu.",
+    "PROFILE_DAILY_PUZZLES_TITLE": "Desafios diarios",
+    "PROFILE_IDENTITY_BODY": "Seu avatar, nome de usuario, nivel de XP e progresso de nivel ficam aqui.",
+    "PROFILE_IDENTITY_TITLE": "Perfil",
+    "PROFILE_LEADERBOARD_BODY": "Abra o ranking para comparar XP, vitorias e sequencias com outros jogadores.",
+    "PROFILE_LEADERBOARD_TITLE": "Ranking",
+    "PROFILE_STATISTICS_BODY": "Abra estatisticas para ver uma analise mais detalhada do seu desempenho.",
+    "PROFILE_STATISTICS_TITLE": "Estatisticas",
+    "PROFILE_STATS_BODY": "Estes cartoes resumem sua sequencia, palavras acertadas, taxa de vitoria e media de palpites.",
+    "PROFILE_STATS_TITLE": "Resumo de estatisticas",
+    "SHOP_OUT_OF_COINS_BODY": "Voce esta sem moedas para esta acao. Abra a loja para comprar ou ganhar mais.",
+    "SHOP_OUT_OF_COINS_TITLE": "Pegue mais moedas",
+    "SUBMIT_ANSWER_BODY": "Quando todos os espacos estiverem preenchidos, toque em Enviar para verificar seu palpite.",
+    "SUBMIT_ANSWER_TITLE": "Envie sua resposta"
+  }
+}

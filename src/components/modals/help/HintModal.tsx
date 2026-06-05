@@ -10,14 +10,9 @@ import ModalBg from "../../../../assets/images/modal-bg.svg";
 import HomeBg from "../../../../assets/images/home-bg.svg";
 import WideButton from "src/components/buttons/WideButton";
 import {
-  MODAL_WIDTH,
-  MODAL_HEIGHT,
-  CLOSE_BUTTON_SIZE,
-  MODAL_CLOSE_BUTTON_POSITION,
-  MODAL_MAX_HEIGHT,
-} from "../../../constants/layout";
+  MODAL_WIDTH, MODAL_HEIGHT, CLOSE_BUTTON_SIZE, MODAL_CLOSE_BUTTON_POSITION, MODAL_MAX_HEIGHT, } from "../../../constants/layout";
 import {SPACING} from "../../../styles";
-import {AppStrings} from "../../../constants/AppStrings";
+import {t} from "../../../i18n";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import {verticalScale} from "../../../utils/responsive";
 import {NewCoins} from "@/components/shared/NewCoins";
@@ -102,7 +97,7 @@ const HintModal: React.FC<HintModalProps> = ({isVisible, userCoins, hintCost, on
                   textAlign: "center",
                 }}
               >
-                {AppStrings.GameScreenAlerts.HINT_MODAL_TITLE}
+                {t("GameScreenAlerts.HINT_MODAL_TITLE")}
               </Text>
 
               <NewCoins coinsEarned={-hintCost} totalCoins={userCoins} />
@@ -117,7 +112,7 @@ const HintModal: React.FC<HintModalProps> = ({isVisible, userCoins, hintCost, on
                     textAlign: "center",
                   }}
                 >
-                  {AppStrings.GameScreenAlerts.HINT_NOT_ENOUGH_COINS_MESSAGE}
+                  {t("GameScreenAlerts.HINT_NOT_ENOUGH_COINS_MESSAGE")}
                 </Text>
               )}
 
@@ -125,8 +120,8 @@ const HintModal: React.FC<HintModalProps> = ({isVisible, userCoins, hintCost, on
                 <WideButton
                   buttonText={
                     canAffordHint
-                      ? AppStrings.GameScreenAlerts.HINT_SHOW_BUTTON
-                      : AppStrings.Navigation.BUY_COINS_BUTTON
+                      ? t("GameScreenAlerts.HINT_SHOW_BUTTON")
+                      : t("Navigation.BUY_COINS_BUTTON")
                   }
                   onPress={() => {
                     onClose();

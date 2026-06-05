@@ -41,11 +41,11 @@ import {getCrashlytics, log as logCrashlyticsMessage} from "@react-native-fireba
 import {ModalProvider} from "./src/contexts/ModalContext";
 import {QASurfaceGate} from "./src/qa/QASurfaceHarness";
 import {
-  APP_LANGUAGE_STORAGE_KEY,
+  LOCALE_STORAGE_KEY,
   isSupportedLanguage,
-  setAppLanguage,
+  setLocale,
   detectDeviceLanguage,
-} from "./src/constants/AppStrings";
+} from "./src/i18n";
 import {isSharedAnimationBackendEnabled, isSharedAnimationBackendFlagRequested} from "./src/config/featureFlags";
 import {SOUND_ENABLED_STORAGE_KEY, readBooleanSetting} from "./src/utils/settingsStorage";
 import {initializeFirebaseAppCheck} from "./src/services/AppCheckService";
@@ -178,9 +178,9 @@ export default Sentry.wrap(function App() {
           );
         }
         logCrashlyticsMessage(getCrashlytics(), "App initialization started");
-        const savedLanguage = await AsyncStorage.getItem(APP_LANGUAGE_STORAGE_KEY);
+        const savedLanguage = await AsyncStorage.getItem(LOCALE_STORAGE_KEY);
         if (savedLanguage && isSupportedLanguage(savedLanguage)) {
-          setAppLanguage(savedLanguage);
+          setLocale(savedLanguage);
         } else {
           detectDeviceLanguage();
         }

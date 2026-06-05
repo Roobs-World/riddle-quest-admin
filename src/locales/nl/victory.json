@@ -1,0 +1,17 @@
+{
+  "VictoryModal": {
+    "ACHIEVEMENT_UNLOCKED": "Prestatie ontgrendeld!",
+    "COINS_SUFFIX": " Munten",
+    "NEXT_LEVEL_BUTTON": "Volgend niveau",
+    "SHARE_TEXT": "Deel je overwinning!",
+    "TITLE": "LEUKE BAAN!",
+    "TOTAL_COINS_LABEL": "Totaal aantal munten",
+    "YOU_WON_TITLE": "JE HEBT GEWONNEN!",
+    "SHARE_ATTEMPT_PLURAL": "pogingen",
+    "SHARE_ATTEMPT_SINGULAR": "poging",
+    "SHARE_CLASSIC_MODE_LABEL": "Klassieke modus",
+    "SHARE_DAILY_CHALLENGE_LABEL": "Dagelijkse uitdaging",
+    "SHARE_MESSAGE_TEMPLATE": "Ik heb de Riddle Quest {gameType} van vandaag opgelost in {attempts} {attemptLabel}!\n\n{emojiGrid}\n\nKun jij mijn score verbeteren?\n\n#Riddle Quest #WordPuzzle #BrainGame",
+    "SHARE_RESULT_TITLE": "Bekijk mijn Riddle Quest resultaat!"
+  }
+}

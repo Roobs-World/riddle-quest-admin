@@ -28,12 +28,12 @@ import {GameMode} from "../../contexts/AuthContext";
 import {useAuth} from "../../contexts/AuthContext";
 import {
   APP_LANGUAGE_STORAGE_KEY,
-  AppStrings,
   SupportedLanguage,
-  getAppLanguage,
+  getLocale,
   isSupportedLanguage,
-  setAppLanguage,
-} from "../../constants/AppStrings";
+  setLocale,
+  t,
+} from "../../i18n";
 import {isTablet, isLargeTablet, isDesktop} from "../../utils/responsive";
 import {safeDelay} from "../../utils/timing";
 import PulsingSpinner from "../../components/loading/PulsingSpinner";
@@ -152,45 +152,45 @@ const getTooltipContent = (id: TooltipId) => {
   switch (id) {
     case "submitAnswer":
       return {
-        title: AppStrings.Tooltips.SUBMIT_ANSWER_TITLE,
-        body: AppStrings.Tooltips.SUBMIT_ANSWER_BODY,
-        action: AppStrings.Tooltips.GOT_IT_BUTTON,
+        title: t("Tooltips.SUBMIT_ANSWER_TITLE"),
+        body: t("Tooltips.SUBMIT_ANSWER_BODY"),
+        action: t("Tooltips.GOT_IT_BUTTON"),
       };
     case "hintAfterWrongGuess":
       return {
-        title: AppStrings.Tooltips.HINT_AFTER_WRONG_TITLE,
-        body: AppStrings.Tooltips.HINT_AFTER_WRONG_BODY,
-        action: AppStrings.Tooltips.GOT_IT_BUTTON,
+        title: t("Tooltips.HINT_AFTER_WRONG_TITLE"),
+        body: t("Tooltips.HINT_AFTER_WRONG_BODY"),
+        action: t("Tooltips.GOT_IT_BUTTON"),
       };
     case "shopOutOfCoins":
       return {
-        title: AppStrings.Tooltips.SHOP_OUT_OF_COINS_TITLE,
-        body: AppStrings.Tooltips.SHOP_OUT_OF_COINS_BODY,
-        action: AppStrings.Tooltips.GOT_IT_BUTTON,
+        title: t("Tooltips.SHOP_OUT_OF_COINS_TITLE"),
+        body: t("Tooltips.SHOP_OUT_OF_COINS_BODY"),
+        action: t("Tooltips.GOT_IT_BUTTON"),
       };
     case "achievementEarned":
       return {
-        title: AppStrings.Tooltips.ACHIEVEMENT_EARNED_TITLE,
-        body: AppStrings.Tooltips.ACHIEVEMENT_EARNED_BODY,
-        action: AppStrings.Tooltips.GOT_IT_BUTTON,
+        title: t("Tooltips.ACHIEVEMENT_EARNED_TITLE"),
+        body: t("Tooltips.ACHIEVEMENT_EARNED_BODY"),
+        action: t("Tooltips.GOT_IT_BUTTON"),
       };
     case "leaderboardFifthCorrectAnswer":
       return {
-        title: AppStrings.Tooltips.LEADERBOARD_FIFTH_CORRECT_TITLE,
-        body: AppStrings.Tooltips.LEADERBOARD_FIFTH_CORRECT_BODY,
-        action: AppStrings.Tooltips.GOT_IT_BUTTON,
+        title: t("Tooltips.LEADERBOARD_FIFTH_CORRECT_TITLE"),
+        body: t("Tooltips.LEADERBOARD_FIFTH_CORRECT_BODY"),
+        action: t("Tooltips.GOT_IT_BUTTON"),
       };
     case "classicFromDaily":
       return {
-        title: AppStrings.Tooltips.CLASSIC_FROM_DAILY_TITLE,
-        body: AppStrings.Tooltips.CLASSIC_FROM_DAILY_BODY,
-        action: AppStrings.Tooltips.GOT_IT_BUTTON,
+        title: t("Tooltips.CLASSIC_FROM_DAILY_TITLE"),
+        body: t("Tooltips.CLASSIC_FROM_DAILY_BODY"),
+        action: t("Tooltips.GOT_IT_BUTTON"),
       };
     default:
       return {
-        title: AppStrings.CommonAlerts.INFO_TITLE,
+        title: t("CommonAlerts.INFO_TITLE"),
         body: "",
-        action: AppStrings.Tooltips.GOT_IT_BUTTON,
+        action: t("Tooltips.GOT_IT_BUTTON"),
       };
   }
 };
@@ -337,7 +337,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   const [isSoundEnabled, setIsSoundEnabled] = useState(true);
   const [isHapticsEnabled, setIsHapticsEnabled] = useState(true);
   const [hasLoadedSettings, setHasLoadedSettings] = useState(false);
-  const [currentLanguage, setCurrentLanguage] = useState<SupportedLanguage>(getAppLanguage());
+  const [currentLanguage, setCurrentLanguage] = useState<SupportedLanguage>(getLocale());
   const [activeSlotIndex, setActiveSlotIndex] = useState(0);
   const activeSlotIndexRef = useRef(0);
   const {isLoading, runWithServerLoading} = useGameSessionController();
@@ -632,11 +632,10 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     } catch (error) {
       logger.error("Error loading IAP products:", error);
       captureException(error);
-      const message = error instanceof Error ? error.message : "Failed to load products";
-      setIapError(message);
+      setIapError(t("ErrorMessages.FAILED_TO_LOAD_PRODUCTS"));
       return {
         products: [] as RNIap.Product[],
-        error: message,
+        error: t("ErrorMessages.FAILED_TO_LOAD_PRODUCTS"),
       };
     } finally {
       setIapLoading(false);
@@ -657,11 +656,10 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     } catch (error) {
       logger.error("Error loading Firestore product pricing:", error);
       captureException(error);
-      const message = error instanceof Error ? error.message : "Failed to load shop products";
-      setProductPricingError(message);
+      setProductPricingError(t("ErrorMessages.FAILED_TO_LOAD_SHOP_PRODUCTS"));
       return {
         products: [] as ProductPricing[],
-        error: message,
+        error: t("ErrorMessages.FAILED_TO_LOAD_SHOP_PRODUCTS"),
       };
     } finally {
       setProductPricingLoading(false);
@@ -740,9 +738,9 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           onDismiss: () => {
             if (isGuestMode) {
               showInfoModal({
-                title: AppStrings.GameScreenAlerts.GUEST_MODE_NOTICE_TITLE,
-                message: AppStrings.GameScreenAlerts.GUEST_MODE_NOTICE_MESSAGE,
-                actionButtonText: AppStrings.Profile.UPGRADE_ACCOUNT_BUTTON,
+                title: t("GameScreenAlerts.GUEST_MODE_NOTICE_TITLE"),
+                message: t("GameScreenAlerts.GUEST_MODE_NOTICE_MESSAGE"),
+                actionButtonText: t("Profile.UPGRADE_ACCOUNT_BUTTON"),
                 onboardingProgress: {
                   current: 2,
                   total: ONBOARDING_PROGRESS_TOTAL,
@@ -812,8 +810,11 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
 
       streakBreakModalShownRef.current = true;
       showInfoModal({
-        title: "Streak Broken",
-        message: `Your streak ended at ${pendingStreakBreak.previousStreak} day${pendingStreakBreak.previousStreak === 1 ? "" : "s"}. Complete today's daily challenge to start a new streak.`,
+        title: t("GameScreenAlerts.STREAK_BROKEN_TITLE"),
+        message: t("GameScreenAlerts.STREAK_BROKEN_MESSAGE", {
+          previousStreak: pendingStreakBreak.previousStreak,
+          daySuffix: pendingStreakBreak.previousStreak === 1 ? "" : "s",
+        }),
         onConfirm: consumePendingStreakBreak,
       });
     });
@@ -844,7 +845,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         setIsHapticsEnabled(hapticsEnabled);
 
         if (language && isSupportedLanguage(language)) {
-          setAppLanguage(language);
+          setLocale(language);
           setCurrentLanguage(language);
         }
       } catch (error) {
@@ -975,8 +976,8 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
 
     if (currentUserCoins < CONTINUE_COST_COINS) {
       modal.showInfoModal({
-        title: AppStrings.GameScreenAlerts.NOT_ENOUGH_COINS_TITLE,
-        message: AppStrings.GameScreenAlerts.CONTINUE_NOT_ENOUGH_COINS_MESSAGE,
+        title: t("GameScreenAlerts.NOT_ENOUGH_COINS_TITLE"),
+        message: t("GameScreenAlerts.CONTINUE_NOT_ENOUGH_COINS_MESSAGE"),
       });
       return false;
     }
@@ -1012,8 +1013,8 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       if (isInsufficientCoinsError(error)) {
         logger.warn("Insufficient coins for continue attempt");
         modal.showInfoModal({
-          title: AppStrings.GameScreenAlerts.NOT_ENOUGH_COINS_TITLE,
-          message: AppStrings.GameScreenAlerts.CONTINUE_NOT_ENOUGH_COINS_MESSAGE,
+          title: t("GameScreenAlerts.NOT_ENOUGH_COINS_TITLE"),
+          message: t("GameScreenAlerts.CONTINUE_NOT_ENOUGH_COINS_MESSAGE"),
         });
         return false;
       }
@@ -1021,8 +1022,8 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       logger.error("Error spending coins for continue:", error);
       captureException(error);
       modal.showInfoModal({
-        title: AppStrings.CommonAlerts.ERROR_TITLE,
-        message: AppStrings.GameScreenAlerts.SPEND_COINS_ERROR_MESSAGE,
+        title: t("CommonAlerts.ERROR_TITLE"),
+        message: t("GameScreenAlerts.SPEND_COINS_ERROR_MESSAGE"),
       });
       return false;
     }
@@ -1104,8 +1105,8 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     }
 
     modal.showInfoModal({
-      title: AppStrings.GameScreenAlerts.AD_NOT_READY_TITLE,
-      message: AppStrings.GameScreenAlerts.AD_NOT_READY_MESSAGE,
+      title: t("GameScreenAlerts.AD_NOT_READY_TITLE"),
+      message: t("GameScreenAlerts.AD_NOT_READY_MESSAGE"),
     });
     return false;
   }, [showRewardedAd, confirmRewardedAdReward, continueGame, preserveKeyboardLetterStates, modal, modalActions]);
@@ -1137,7 +1138,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
               resolvedNewCoins,
               currentUserCoins,
             });
-            throw new Error(AppStrings.GameScreenAlerts.PURCHASE_FAILED_MESSAGE);
+            throw new Error(t("GameScreenAlerts.PURCHASE_FAILED_MESSAGE"));
           }
           const backendUnlockedAchievementIds = Array.isArray(purchaseResult.newlyUnlockedAchievementIds)
             ? (purchaseResult.newlyUnlockedAchievementIds ?? [])
@@ -1226,9 +1227,9 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         logger.error("Purchase failed:", error);
         captureException(error);
         const errorMessage =
-          error instanceof Error ? error.message : AppStrings.GameScreenAlerts.PURCHASE_FAILED_MESSAGE;
+          error instanceof Error ? error.message : t("GameScreenAlerts.PURCHASE_FAILED_MESSAGE");
         modal.showInfoModal({
-          title: AppStrings.GameScreenAlerts.PURCHASE_FAILED_TITLE,
+          title: t("GameScreenAlerts.PURCHASE_FAILED_TITLE"),
           message: errorMessage,
         });
       } finally {
@@ -1470,7 +1471,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         runModalFanfareSequence(completionPopupSequence, {
           closeDelayMs: MODAL_CLOSE_DELAY_MS,
           delay: safeDelay,
-          nextActionText: AppStrings.GameScreenAlerts.NEXT_BUTTON ?? "Next",
+          nextActionText: t("GameScreenAlerts.NEXT_BUTTON") ?? "Next",
           onComplete: async () => {
             setIsTransitioningToNextLevel(true);
             void playDeferredCoinAnimation();
@@ -1607,7 +1608,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   }, []);
 
   const handleChangeLanguage = useCallback((language: SupportedLanguage) => {
-    setAppLanguage(language);
+    setLocale(language);
     setCurrentLanguage(language);
   }, []);
 
@@ -1643,8 +1644,8 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         setIsAwaitingPostSubmitModalClose(false);
         setCanAnimateCoinIncreases(true);
         modal.showInfoModal({
-          title: AppStrings.GameScreenAlerts.SUBMIT_GUESS_ERROR_TITLE,
-          message: AppStrings.GameScreenAlerts.SUBMIT_GUESS_ERROR_MESSAGE,
+          title: t("GameScreenAlerts.SUBMIT_GUESS_ERROR_TITLE"),
+          message: t("GameScreenAlerts.SUBMIT_GUESS_ERROR_MESSAGE"),
         });
       }
     } else if (isHapticsEnabled) {
@@ -1752,8 +1753,8 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
 
             if (revealIndex === -1) {
               modal.showInfoModal({
-                title: AppStrings.GameScreenAlerts.HINT_NOT_AVAILABLE_TITLE,
-                message: AppStrings.GameScreenAlerts.HINT_NOT_AVAILABLE_MESSAGE,
+                title: t("GameScreenAlerts.HINT_NOT_AVAILABLE_TITLE"),
+                message: t("GameScreenAlerts.HINT_NOT_AVAILABLE_MESSAGE"),
               });
               return;
             }
@@ -1793,8 +1794,8 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
 
             if (!data) {
               modal.showInfoModal({
-                title: AppStrings.GameScreenAlerts.HINT_NOT_AVAILABLE_TITLE,
-                message: AppStrings.GameScreenAlerts.HINT_NOT_AVAILABLE_MESSAGE,
+                title: t("GameScreenAlerts.HINT_NOT_AVAILABLE_TITLE"),
+                message: t("GameScreenAlerts.HINT_NOT_AVAILABLE_MESSAGE"),
               });
               return;
             }
@@ -1867,8 +1868,8 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
             logger.error("Error requesting hint from server:", err);
             captureException(err);
             modal.showInfoModal({
-              title: AppStrings.GameScreenAlerts.HINT_ERROR_TITLE,
-              message: AppStrings.GameScreenAlerts.SUBMIT_GUESS_ERROR_MESSAGE,
+              title: t("GameScreenAlerts.HINT_ERROR_TITLE"),
+              message: t("GameScreenAlerts.SUBMIT_GUESS_ERROR_MESSAGE"),
             });
           }
         })();
@@ -1942,8 +1943,8 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       logger.error("Error opening coin shop:", error);
       captureException(error);
       modal.showInfoModal({
-        title: AppStrings.CommonAlerts.ERROR_TITLE,
-        message: AppStrings.CoinShop.NO_PACKS_AVAILABLE,
+        title: t("CommonAlerts.ERROR_TITLE"),
+        message: t("CoinShop.NO_PACKS_AVAILABLE"),
       });
     }
   }, [
@@ -2116,7 +2117,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
 
   const handleDebugGenerateDailyChallenge = useCallback(async () => {
     try {
-      const response = await runWithServerLoading(() =>
+      await runWithServerLoading(() =>
         callValidatedFunction(
           "generateTodaysDailyChallengeFunction",
           {
@@ -2128,31 +2129,16 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       );
 
       modal.showInfoModal({
-        title: "Daily Challenge Generated",
-        message: response.message ?? "Successfully generated a new daily challenge in dailyRiddles/current.",
+        title: t("GameScreenAlerts.DEBUG_DAILY_CHALLENGE_GENERATED_TITLE"),
+        message: t("GameScreenAlerts.DEBUG_DAILY_CHALLENGE_GENERATED_MESSAGE"),
       });
     } catch (error) {
       logger.error("Error generating daily challenge from debug panel:", error);
       captureException(error);
 
-      const errorWithDetails = error as {
-        message?: string;
-        details?: unknown;
-        code?: string;
-      };
-      const detailsMessage =
-        typeof errorWithDetails.details === "string"
-          ? errorWithDetails.details
-          : typeof errorWithDetails.details === "object" &&
-              errorWithDetails.details &&
-              "message" in errorWithDetails.details &&
-              typeof (errorWithDetails.details as {message?: unknown}).message === "string"
-            ? (errorWithDetails.details as {message: string}).message
-            : null;
-
       modal.showInfoModal({
-        title: "Daily Challenge Error",
-        message: detailsMessage ?? errorWithDetails.message ?? "Failed to generate a new daily challenge.",
+        title: t("GameScreenAlerts.DEBUG_DAILY_CHALLENGE_ERROR_TITLE"),
+        message: t("GameScreenAlerts.DEBUG_DAILY_CHALLENGE_ERROR_MESSAGE"),
       });
     }
   }, [runWithServerLoading, modal]);
@@ -2165,8 +2151,8 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       logger.error("Error clearing local data from debug panel:", error);
       captureException(error);
       modal.showInfoModal({
-        title: "Clear Local Data Error",
-        message: "Failed to clear local data.",
+        title: t("GameScreenAlerts.DEBUG_CLEAR_LOCAL_DATA_ERROR_TITLE"),
+        message: t("GameScreenAlerts.DEBUG_CLEAR_LOCAL_DATA_ERROR_MESSAGE"),
       });
     }
   }, [logout, modal]);
@@ -2180,8 +2166,8 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
 
   const headerModeLabel =
     gameMode === "daily"
-      ? AppStrings.GameScreenAlerts.DAILY_CHALLENGE_LABEL
-      : AppStrings.GameScreenAlerts.CLASSIC_LABEL;
+      ? t("GameScreenAlerts.DAILY_CHALLENGE_LABEL")
+      : t("GameScreenAlerts.CLASSIC_LABEL");
   const spinnerSize = isTransitioningToNextLevel ? 120 : LOADING_SPINNER_SIZE;
   const spinnerOpacity = isTransitioningToNextLevel ? 0.8 : LOADING_SPINNER_OPACITY;
 

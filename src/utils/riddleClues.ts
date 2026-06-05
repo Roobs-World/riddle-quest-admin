@@ -1,3 +1,5 @@
+import {t} from "../i18n";
+
 const ANSWER_TOKEN_PATTERN = /[a-z0-9]+/gi;
 
 const escapeRegExp = (value: string): string => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -23,9 +25,9 @@ export const clueContainsLiteralAnswer = (clue: string, answer: string): boolean
 export const buildFallbackClue = (answer: string): string => {
   const answerLength = answer.trim().length;
   if (answerLength <= 0) {
-    return "Solve this word.";
+    return t("GameMessages.FALLBACK_CLUE_SINGLE");
   }
-  return `Solve this ${answerLength}-letter word.`;
+  return t("GameMessages.FALLBACK_CLUE_TEMPLATE", {length: answerLength});
 };
 
 export const resolvePlayableRiddleText = (riddleText: string, answer: string): string => {

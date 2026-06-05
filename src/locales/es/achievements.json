@@ -1,0 +1,13 @@
+{
+  "Achievements": {
+    "COINS_SUFFIX": " Monedas",
+    "FANFARE_TITLE": "¡Logro desbloqueado!",
+    "MODAL_TITLE": "Logros",
+    "MORE_UNLOCKED_SUFFIX": " más desbloqueado",
+    "NEW_ACHIEVEMENT": "Nuevo logro",
+    "NICE_BUTTON": "Bueno",
+    "UNLOCKED_ALERT_MESSAGE": "Consulta tu perfil para ver tus nuevos logros.",
+    "UNLOCKED_ALERT_OK": "DE ACUERDO",
+    "UNLOCKED_ALERT_TITLE": "¡Logro(s) desbloqueado!"
+  }
+}

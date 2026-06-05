@@ -20,11 +20,8 @@ import {BORDER_RADIUS} from "../../styles/tokens/borderRadius";
 import {TYPOGRAPHY} from "../../styles/tokens/typography";
 import {moderateScale} from "../../utils/responsive";
 import {
-  SOCIAL_BUTTON_MIN_WIDTH_SM,
-  SOCIAL_BUTTON_MIN_WIDTH_MD,
-  SOCIAL_BUTTON_MIN_WIDTH_LG,
-} from "../../constants/layout";
-import {AppStrings} from "../../constants/AppStrings";
+  SOCIAL_BUTTON_MIN_WIDTH_SM, SOCIAL_BUTTON_MIN_WIDTH_MD, SOCIAL_BUTTON_MIN_WIDTH_LG, } from "../../constants/layout";
+import {t} from "../../i18n";
 
 interface SocialShareButtonProps {
   platform: "facebook" | "x" | "system";
@@ -94,13 +91,13 @@ const SocialShareButton: React.FC<SocialShareButtonProps> = ({
   };
 
   const platformLabel =
-    platform === "facebook" ? "Facebook" : platform === "x" ? "X" : AppStrings.Accessibility.SHARE_SYSTEM;
+    platform === "facebook" ? "Facebook" : platform === "x" ? "X" : t("Accessibility.SHARE_SYSTEM");
   const accessibilityLabel =
     platform === "facebook"
-      ? AppStrings.Accessibility.SHARE_TO_FACEBOOK
+      ? t("Accessibility.SHARE_TO_FACEBOOK")
       : platform === "x"
-        ? AppStrings.Accessibility.SHARE_TO_X
-        : AppStrings.Accessibility.SHARE_SYSTEM;
+        ? t("Accessibility.SHARE_TO_X")
+        : t("Accessibility.SHARE_SYSTEM");
 
   return (
     <TouchableOpacity

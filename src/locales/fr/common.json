@@ -1,0 +1,22 @@
+{
+  "CommonAlerts": {
+    "CANCEL_BUTTON": "Annuler",
+    "CANNOT_OPEN_BROWSER_SUFFIX": " dans votre navigateur.",
+    "CANNOT_OPEN_PREFIX": "Impossible d'ouvrir ",
+    "CANNOT_OPEN_VISIT_SUFFIX": ". Veuillez visiter  ",
+    "CLOSE_BUTTON": "Fermer",
+    "COULD_NOT_OPEN_PREFIX": "Impossible d'ouvrir ",
+    "COULD_NOT_OPEN_TRY_AGAIN": ". Veuillez réessayer plus tard.",
+    "ERROR_TITLE": "Erreur",
+    "INFO_TITLE": "Informations",
+    "OFFLINE_MESSAGE": "Veuillez vous reconnecter pour continuer à jouer.",
+    "OFFLINE_TITLE": "Aucune connexion Internet",
+    "OK_BUTTON": "D'ACCORD",
+    "SUCCESS_TITLE": "Succès",
+    "UNABLE_TO_OPEN_TITLE": "Impossible d'ouvrir",
+    "TRY_AGAIN_LATER_MESSAGE": "Veuillez réessayer plus tard."
+  },
+  "CommonButtons": {
+    "RETRY": "Réessayer"
+  }
+}

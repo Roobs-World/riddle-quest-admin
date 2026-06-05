@@ -16,16 +16,10 @@ import {View, Text, TouchableOpacity, LayoutChangeEvent, Animated, Easing} from 
 import BackspaceIcon from "../icons/BackspaceIcon";
 import {gameStyles, TYPOGRAPHY} from "../../styles";
 import {
-  KEYBOARD_KEY_HEIGHT,
-  KEYBOARD_KEY_MARGIN,
-  KEYBOARD_KEY_BORDER_RADIUS,
-  KEYBOARD_MID_ROW_MARGIN_BOTTOM,
-  KEYBOARD_ROW_SPACER,
-  KEYBOARD_BOTTOM_OFFSET,
-} from "../../constants/layout";
+  KEYBOARD_KEY_HEIGHT, KEYBOARD_KEY_MARGIN, KEYBOARD_KEY_BORDER_RADIUS, KEYBOARD_MID_ROW_MARGIN_BOTTOM, KEYBOARD_ROW_SPACER, KEYBOARD_BOTTOM_OFFSET, } from "../../constants/layout";
 import {dimensions} from "../../utils/responsive";
 import type {Feedback} from "../../hooks/types";
-import {AppStrings} from "../../constants/AppStrings";
+import {t} from "../../i18n";
 
 /** QWERTY keyboard layout — defined at module scope so they are never reallocated */
 const TOP_ROW = ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"];
@@ -114,7 +108,7 @@ const KeyboardLetterKey: React.FC<KeyboardLetterKeyProps> = React.memo(function 
         }}
         activeOpacity={0.7}
         accessibilityRole="button"
-        accessibilityLabel={`${AppStrings.Accessibility.LETTER_PREFIX}${keyLabel.toUpperCase()}`}
+        accessibilityLabel={`${t("Accessibility.LETTER_PREFIX")}${keyLabel.toUpperCase()}`}
       >
         <Animated.View
           pointerEvents="none"
@@ -313,8 +307,8 @@ const Keyboard: React.FC<KeyboardProps> = React.memo(function Keyboard({
               }}
               activeOpacity={0.7}
               accessibilityRole="button"
-              accessibilityLabel={AppStrings.Accessibility.BACKSPACE}
-              accessibilityHint={AppStrings.Accessibility.DELETE_LAST_LETTER}
+              accessibilityLabel={t("Accessibility.BACKSPACE")}
+              accessibilityHint={t("Accessibility.DELETE_LAST_LETTER")}
             >
               <BackspaceIcon />
             </TouchableOpacity>

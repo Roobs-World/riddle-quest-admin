@@ -3,27 +3,17 @@ import {Alert, Linking} from "react-native";
 import {fireEvent, render, waitFor} from "@testing-library/react-native";
 import AboutLegalModal from "../AboutLegalModal";
 
-jest.mock("../../../../constants/AppStrings", () => ({
-  AppStrings: {
-    AboutLegal: {
-      TITLE: "About / Legal",
-      RIDDLE_QUEST_WEBSITE: "Riddle Quest Website",
-      PRIVACY_POLICY: "Privacy Policy",
-      TERMS_OF_USE: "Terms of Use",
-      ACCOUNT_DELETION: "Account Deletion",
-      DATA_EXPORT: "Data Export",
-      THIRD_PARTY_LICENSES: "Third-Party Licenses",
-      SUPPORT: "Support",
-    },
-    CommonAlerts: {
-      CLOSE_BUTTON: "Close",
-      UNABLE_TO_OPEN_TITLE: "Unable to Open",
-      COULD_NOT_OPEN_PREFIX: "Could not open ",
-      COULD_NOT_OPEN_TRY_AGAIN: ". Please try again later.",
-    },
-  },
-  getAppLanguage: jest.fn(() => "en"),
-}));
+jest.mock("../../../../i18n", () => {
+  const actual = jest.requireActual("../../../../i18n");
+
+  return {
+    ...actual,
+    getLocale: jest.fn(() => "en"),
+    getAppLanguage: jest.fn(() => "en"),
+    setLocale: jest.fn(),
+    setAppLanguage: jest.fn(),
+  };
+});
 
 jest.mock("../../../../styles", () => ({
   TYPOGRAPHY: {
@@ -64,8 +54,8 @@ describe("<AboutLegalModal />", () => {
     jest.clearAllMocks();
     mockOpenURL.mockResolvedValue(undefined);
     jest.spyOn(Alert, "alert").mockImplementation(jest.fn());
-    const {getAppLanguage} = require("../../../../constants/AppStrings");
-    getAppLanguage.mockReturnValue("en");
+    const {getLocale} = require("../../../../i18n");
+    getLocale.mockReturnValue("en");
   });
 
   afterAll(() => {
@@ -92,8 +82,8 @@ describe("<AboutLegalModal />", () => {
   });
 
   it("opens URLs for the current app language", async () => {
-    const {getAppLanguage} = require("../../../../constants/AppStrings");
-    getAppLanguage.mockReturnValue("es");
+    const {getLocale} = require("../../../../i18n");
+    getLocale.mockReturnValue("es");
     const {getByText} = render(<AboutLegalModal {...defaultProps} />);
 
     fireEvent.press(getByText("Terms of Use"));

@@ -5,13 +5,8 @@ import HomeBg from "../../../../assets/images/home-bg.svg";
 import {TYPOGRAPHY} from "../../../styles";
 import {AchievementUnlockFanfareItem} from "../../../types/ModalTypes";
 import {
-  MODAL_WIDTH,
-  MODAL_HEIGHT,
-  MODAL_CONTENT_PADDING,
-  MODAL_BUTTON_SPACER,
-  MODAL_MAX_HEIGHT,
-} from "../../../constants/layout";
-import {AppStrings} from "../../../constants/AppStrings";
+  MODAL_WIDTH, MODAL_HEIGHT, MODAL_CONTENT_PADDING, MODAL_BUTTON_SPACER, MODAL_MAX_HEIGHT, } from "../../../constants/layout";
+import {t} from "../../../i18n";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import {NewCoins} from "@/components/shared/NewCoins";
 import RotatingWheelBackground from "@/components/shared/RotatingWheelBackground";
@@ -45,10 +40,10 @@ const AchievementUnlockFanfareModal: React.FC<AchievementUnlockFanfareModalProps
   const modalBgOffsetY = -(modalBgHeight - MODAL_HEIGHT) / 2;
 
   const primaryAchievementName =
-    achievements[0]?.name ?? achievementNames[0] ?? AppStrings.Achievements.NEW_ACHIEVEMENT;
+    achievements[0]?.name ?? achievementNames[0] ?? t("Achievements.NEW_ACHIEVEMENT");
   const primaryAchievementDescription = achievements[0]?.description ?? "";
   const primaryAchievementIcon = achievements[0]?.icon ?? "";
-  const continueButtonText = sequenceProgress?.primaryActionText ?? AppStrings.Achievements.NICE_BUTTON;
+  const continueButtonText = sequenceProgress?.primaryActionText ?? t("Achievements.NICE_BUTTON");
   const handleContinue = () => {
     onContinue?.();
     onClose();
@@ -107,7 +102,7 @@ const AchievementUnlockFanfareModal: React.FC<AchievementUnlockFanfareModalProps
                     textAlign: "center",
                   }}
                 >
-                  {AppStrings.Achievements.FANFARE_TITLE}
+                  {t("Achievements.FANFARE_TITLE")}
                 </Text>
 
                 <View style={{alignItems: "center", maxWidth: "90%"}}>

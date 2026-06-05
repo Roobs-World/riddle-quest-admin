@@ -1,0 +1,10 @@
+{
+  "LogMessages": {
+    "IS_LOADING": "isLoading:",
+    "NAVIGATION_RENDERING": "🧭 Navigation rendering - isAuthenticated:",
+    "SHOWING_LOADING_SPINNER_AUTH": "⏳ Showing loading spinner - authentication state being determined",
+    "SHOWING_LOADING_SPINNER_USER_DATA": "⏳ Showing loading spinner - Loading user data...",
+    "SHOWING_NAVIGATION_STACK": "🎯 Showing navigation stack - initialRoute:",
+    "TIMESTAMP": "timestamp:"
+  }
+}

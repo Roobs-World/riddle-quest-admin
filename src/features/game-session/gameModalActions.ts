@@ -2,6 +2,7 @@
  * @fileoverview Centralized modal action creators used by game-session flows.
  */
 import useModal from "../../hooks/useModal";
+import {t} from "../../i18n";
 import {createModalCommandBus} from "../../application/modals/ModalCommandBus";
 
 /**
@@ -37,29 +38,29 @@ export const createGameModalActions = (modal: ReturnType<typeof useModal>): Game
     showSpendCoinsError: () =>
       commandBus.dispatch({
         type: "info",
-        title: "Error",
-        message: "Could not spend coins. Please try again.",
+        title: t("CommonAlerts.ERROR_TITLE"),
+        message: t("GameScreenAlerts.SPEND_COINS_ERROR_MESSAGE"),
       }),
 
     showNoProductsAvailable: () =>
       commandBus.dispatch({
         type: "info",
-        title: "No Products Available",
-        message: "Please try again later.",
+        title: t("GameScreenAlerts.NO_PRODUCTS_AVAILABLE_TITLE"),
+        message: t("CommonAlerts.TRY_AGAIN_LATER_MESSAGE"),
       }),
 
     showAdNotReady: () =>
       commandBus.dispatch({
         type: "info",
-        title: "Ad Not Ready",
-        message: "The rewarded ad couldn't be loaded at this time. Please try again later.",
+        title: t("GameScreenAlerts.AD_NOT_READY_TITLE"),
+        message: t("CommonAlerts.TRY_AGAIN_LATER_MESSAGE"),
       }),
 
     showAdError: () =>
       commandBus.dispatch({
         type: "info",
-        title: "Ad Error",
-        message: "An error occurred while trying to show the rewarded ad.",
+        title: t("GameScreenAlerts.AD_ERROR_TITLE"),
+        message: t("GameScreenAlerts.AD_ERROR_MESSAGE"),
       }),
   };
 };

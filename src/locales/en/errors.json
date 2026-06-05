@@ -1,0 +1,30 @@
+{
+  "ErrorMessages": {
+    "CHECK_INTERNET_AND_TRY_AGAIN": "Please check your internet connection and try again.",
+    "FAILED_TO_INITIALIZE_RIDDLE_DATABASE": "Failed to initialize the riddle database. This might be your first time using the app.",
+    "FAILED_TO_LOAD_PRODUCTS": "Failed to load products",
+    "FAILED_TO_LOAD_SHOP_PRODUCTS": "Failed to load shop products",
+    "UNABLE_TO_LOAD_RIDDLES": "Unable to load any riddles. Please check your connection and try again.",
+    "ACCOUNT_WITH_EMAIL_EXISTS": "An account with this email already exists.",
+    "AMOUNT_MUST_BE_POSITIVE": "Amount must be a positive number",
+    "ATTEMPTS_MUST_BE_POSITIVE_INTEGER": "Attempts must be a positive integer",
+    "AUTHENTICATION_FAILED": "Authentication failed",
+    "EMAIL_PERMISSION_REQUIRED": "Email is required but not provided by the authentication provider. Please ensure email permission is granted.",
+    "GENERIC_UNEXPECTED_ERROR": "An unexpected error occurred. Please try again.",
+    "GUESS_CANNOT_BE_EMPTY": "Guess cannot be empty",
+    "INVALID_DATA_FORMAT": "Invalid data format. Please check your input.",
+    "NETWORK_ERROR_CHECK_CONNECTION": "Network error. Please check your connection.",
+    "NETWORK_REQUEST_FAILED": "Network request failed",
+    "NO_ACCOUNT_FOUND_WITH_EMAIL": "No account found with this email address.",
+    "PASSWORD_MIN_LENGTH_AUTH": "Password should be at least 6 characters long.",
+    "PERMISSION_DENIED_ACTION": "You do not have permission to perform this action.",
+    "PERMISSION_DENIED_FUNCTION": "You do not have permission to call this function.",
+    "PLEASE_ENTER_VALID_EMAIL": "Please enter a valid email address.",
+    "RESOURCE_NOT_FOUND": "Resource not found",
+    "RIDDLE_ID_REQUIRED": "Riddle ID is required",
+    "SERVICE_TEMPORARILY_UNAVAILABLE": "Service temporarily unavailable. Please try again.",
+    "SIGN_IN_TO_CONTINUE": "Please sign in to continue.",
+    "TOO_MANY_FAILED_ATTEMPTS": "Too many failed attempts. Please try again later.",
+    "WRONG_PASSWORD_TRY_AGAIN": "Incorrect password. Please try again."
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "GameMessages": {
+    "COINS_EARNED": "Verdiende munten:",
+    "GAME_LOST": "Spel verloren: juist antwoord -",
+    "GAME_WON": "Gewonnen spel: pogingen -",
+    "HINT_USED": "Gebruikte tip: Kosten -",
+    "IN_MODE": "binnen",
+    "MODE_SUFFIX": "modus.",
+    "RETRY_BUTTON_PRESSED": "Knop voor opnieuw proberen ingedrukt",
+    "FALLBACK_CLUE_SINGLE": "Los dit woord op.",
+    "FALLBACK_CLUE_TEMPLATE": "Los dit woord van {lengte} letters op."
+  }
+}

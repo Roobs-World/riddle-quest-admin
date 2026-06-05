@@ -1,0 +1,10 @@
+{
+  "LogMessages": {
+    "IS_LOADING": "está cargando:",
+    "NAVIGATION_RENDERING": "🧭 Representación de navegación - isAuthenticated:",
+    "SHOWING_LOADING_SPINNER_AUTH": "⏳ Mostrando el control giratorio de carga - se está determinando el estado de autenticación",
+    "SHOWING_LOADING_SPINNER_USER_DATA": "⏳ Mostrando el control giratorio de carga - Cargando datos de usuario...",
+    "SHOWING_NAVIGATION_STACK": "🎯 Mostrando la pila de navegación - ruta inicial:",
+    "TIMESTAMP": "marca de tiempo:"
+  }
+}

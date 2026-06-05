@@ -18,17 +18,10 @@ import {TYPOGRAPHY, COLORS, SPACING} from "../../../styles";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
 import HomeBg from "../../../../assets/images/home-bg.svg";
 import {
-  MODAL_WIDTH,
-  MODAL_HEIGHT,
-  CLOSE_BUTTON_SIZE,
-  CARD_BORDER_RADIUS,
-  MODAL_CONTENT_PADDING,
-  AVATAR_SIZE_MEDIUM,
-  MODAL_MAX_HEIGHT,
-} from "../../../constants/layout";
+  MODAL_WIDTH, MODAL_HEIGHT, CLOSE_BUTTON_SIZE, CARD_BORDER_RADIUS, MODAL_CONTENT_PADDING, AVATAR_SIZE_MEDIUM, MODAL_MAX_HEIGHT, } from "../../../constants/layout";
 import {logger} from "../../../utils/logger";
 import {captureException} from "../../../utils/sentry";
-import {AppStrings} from "../../../constants/AppStrings";
+import {t} from "../../../i18n";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import {scale, verticalScale, moderateScale} from "@/utils/responsive";
 
@@ -122,9 +115,9 @@ const TABS: {type: LeaderboardType; statKey: keyof LeaderboardEntry}[] = [
 ];
 
 const getTabLabel = (type: LeaderboardType): string => {
-  if (type === "xp") return AppStrings.Leaderboard.TAB_XP;
-  if (type === "totalWins") return AppStrings.Leaderboard.TAB_WINS;
-  return AppStrings.Leaderboard.TAB_STREAK;
+  if (type === "xp") return t("Leaderboard.TAB_XP");
+  if (type === "totalWins") return t("Leaderboard.TAB_WINS");
+  return t("Leaderboard.TAB_STREAK");
 };
 
 const createDevFakeEntry = (index: number): LeaderboardEntry => {
@@ -259,7 +252,7 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({isVisible, onClose, 
 
         logger.error("[LeaderboardModal] Failed to fetch leaderboard:", err);
         captureException(err);
-        setError(AppStrings.Leaderboard.LOAD_ERROR);
+        setError(t("Leaderboard.LOAD_ERROR"));
       } finally {
         setIsLoading(false);
       }
@@ -305,7 +298,7 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({isVisible, onClose, 
       transparent
       animationType="none"
       onRequestClose={onClose}
-      accessibilityLabel={AppStrings.Leaderboard.TITLE}
+      accessibilityLabel={t("Leaderboard.TITLE")}
     >
       <View
         style={{
@@ -353,7 +346,7 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({isVisible, onClose, 
               }}
               accessibilityRole="header"
             >
-              {AppStrings.Leaderboard.TITLE}
+              {t("Leaderboard.TITLE")}
             </Text>
 
             {/* Tabs */}
@@ -418,7 +411,7 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({isVisible, onClose, 
                   <ActivityIndicator
                     color={PURPLE}
                     size="large"
-                    accessibilityLabel={AppStrings.Accessibility.LOADING_LEADERBOARD}
+                    accessibilityLabel={t("Accessibility.LOADING_LEADERBOARD")}
                   />
                 </View>
               ) : isGuestUnavailable ? (
@@ -438,7 +431,7 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({isVisible, onClose, 
                       textAlign: "center",
                     }}
                   >
-                    {AppStrings.Leaderboard.GUEST_UNAVAILABLE}
+                    {t("Leaderboard.GUEST_UNAVAILABLE")}
                   </Text>
                 </View>
               ) : error ? (
@@ -465,7 +458,7 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({isVisible, onClose, 
                     onPress={() => void fetchLeaderboard(activeTab)}
                     style={{marginTop: SPACING.md, alignItems: "center"}}
                     accessibilityRole="button"
-                    accessibilityLabel={AppStrings.Leaderboard.RETRY_BUTTON}
+                    accessibilityLabel={t("Leaderboard.RETRY_BUTTON")}
                   >
                     <Text
                       style={{
@@ -474,7 +467,7 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({isVisible, onClose, 
                         color: PURPLE,
                       }}
                     >
-                      {AppStrings.Leaderboard.RETRY_BUTTON}
+                      {t("Leaderboard.RETRY_BUTTON")}
                     </Text>
                   </TouchableOpacity>
                 </View>
@@ -495,7 +488,7 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({isVisible, onClose, 
                       textAlign: "center",
                     }}
                   >
-                    {AppStrings.Leaderboard.NO_SCORES_YET}
+                    {t("Leaderboard.NO_SCORES_YET")}
                   </Text>
                 </View>
               ) : (

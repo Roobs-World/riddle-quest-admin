@@ -1,0 +1,18 @@
+{
+  "LossModal": {
+    "ANSWER_PREFIX": "Risposta:",
+    "EXTRA_GUESSES_PREFIX": "3 ipotesi extra -",
+    "EXTRA_GUESSES_PROMPT": "Finiti i tentativi. Ottieni 3 tentativi extra o salta questo puzzle.",
+    "EXTRA_GUESSES_SUFFIX": "Monete",
+    "NEXT_LEVEL_BUTTON": "Livello successivo",
+    "OPEN_SHOP_BUTTON": "Negozio aperto",
+    "OUT_OF_ATTEMPTS": "Finiti i tentativi.",
+    "SKIP_LEVEL_PREFIX": "Salta livello (",
+    "SKIP_LEVEL_SUFFIX": "Monete)",
+    "SKIP_PUZZLE_BUTTON": "Salta l'enigma",
+    "TITLE": "Così vicino!",
+    "USE_COINS_PREFIX": "Utilizzare",
+    "USE_COINS_SUFFIX": "Monete per continuare",
+    "WATCH_AD_BUTTON": "Guarda l'annuncio per 3 ipotesi extra"
+  }
+}

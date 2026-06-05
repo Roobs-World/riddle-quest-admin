@@ -1,0 +1,10 @@
+{
+  "CoinShop": {
+    "COINS_SUFFIX": " coins",
+    "LOADING_TEXT": "Loading shop...",
+    "NO_PACKS_AVAILABLE": "No coin packs are available right now.",
+    "PURCHASE_BUTTON": "PURCHASE",
+    "TITLE": "COIN SHOP",
+    "YOUR_BALANCE": "Your balance"
+  }
+}

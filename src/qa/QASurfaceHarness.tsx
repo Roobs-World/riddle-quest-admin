@@ -16,7 +16,7 @@ import UpgradeAccountModal from "../components/modals/settings/UpgradeAccountMod
 import OfflineBlockingModal from "../components/modals/system/OfflineBlockingModal";
 import {getModalComponent} from "../components/modals/ModalRegistry";
 import {generateMockData} from "../components/development/ModalTogglePanel";
-import {AppStrings, getAppLanguage} from "../constants/AppStrings";
+import {t, getLocale} from "../i18n";
 import {HINT_COST_COINS} from "../constants/game";
 import type {ModalData, ModalSequenceProgress} from "../types/ModalTypes";
 import type {Player} from "../validation/firestoreSchemas";
@@ -101,8 +101,8 @@ const extractSurfaceId = (url: string | null): QASurfaceId | null => {
 };
 
 const SurfaceMarker = ({surfaceId}: {surfaceId: QASurfaceId}) => (
-  <Text accessibilityLabel={`qa-surface:${surfaceId}`} style={qaStyles.surfaceMarker}>
-    {`qa-surface:${surfaceId}`}
+  <Text accessibilityLabel={`${t("TestStrings.QA_SURFACE_PREFIX")}:${surfaceId}`} style={qaStyles.surfaceMarker}>
+    {`${t("TestStrings.QA_SURFACE_PREFIX")}:${surfaceId}`}
   </Text>
 );
 
@@ -116,12 +116,12 @@ const wrapSurface = (surfaceId: QASurfaceId, content: React.ReactNode) => (
 const renderInitializationError = () => (
   <View style={appStyles.errorContainer}>
     <Text style={[appStyles.title, {color: "#FFFFFF", fontSize: TYPOGRAPHY.fontSize["2xl"], marginBottom: SPACING.md}]}>
-      Riddle database unavailable
+      {t("GameScreenAlerts.QA_RIDDLE_DATABASE_UNAVAILABLE_TITLE")}
     </Text>
     <Text style={[appStyles.subtitle, {color: "#FFFFFF", textAlign: "center", marginBottom: SPACING.lg}]}>
-      The app could not finish loading its riddles. Please check your connection and try again.
+      {t("GameScreenAlerts.QA_RIDDLE_DATABASE_UNAVAILABLE_MESSAGE")}
     </Text>
-    <Text style={[appStyles.buttonText, {color: "#FFFFFF"}]}>Retry</Text>
+    <Text style={[appStyles.buttonText, {color: "#FFFFFF"}]}>{t("CommonButtons.RETRY")}</Text>
   </View>
 );
 
@@ -169,9 +169,9 @@ const getModalSurfaceOverrides = (surfaceId: QASurfaceId): ModalData => {
       };
     case "modal-info-onboarding-upgrade-action":
       return {
-        title: "Guest Mode Notice",
-        message: "Your progress is saved on this device. Upgrade your account to keep it safe across devices.",
-        actionButtonText: AppStrings.Profile.UPGRADE_ACCOUNT_BUTTON,
+        title: t("GameScreenAlerts.GUEST_MODE_NOTICE_TITLE"),
+        message: t("GameScreenAlerts.GUEST_MODE_SAVED_ON_DEVICE_MESSAGE"),
+        actionButtonText: t("Profile.UPGRADE_ACCOUNT_BUTTON"),
         onAction: noop,
         onboardingProgress: {current: 2, total: 3},
       };
@@ -223,7 +223,7 @@ const getModalSurfaceOverrides = (surfaceId: QASurfaceId): ModalData => {
         firestoreProducts: [],
         currentCoins: qaPlayer.coins,
         loading: false,
-        error: AppStrings.ErrorMessages.FAILED_TO_LOAD_SHOP_PRODUCTS,
+        error: t("ErrorMessages.FAILED_TO_LOAD_SHOP_PRODUCTS"),
       };
     case "modal-coin-shop-empty":
       return {
@@ -235,19 +235,19 @@ const getModalSurfaceOverrides = (surfaceId: QASurfaceId): ModalData => {
       };
     case "modal-victory-sequence":
       return {
-        sequenceProgress: qaSequenceProgress(AppStrings.VictoryModal.NEXT_LEVEL_BUTTON),
+        sequenceProgress: qaSequenceProgress(t("VictoryModal.NEXT_LEVEL_BUTTON")),
       };
     case "modal-achievement-unlock-fanfare-sequence":
       return {
-        sequenceProgress: qaSequenceProgress(AppStrings.Achievements.NICE_BUTTON),
+        sequenceProgress: qaSequenceProgress(t("Achievements.NICE_BUTTON")),
       };
     case "modal-streak-increase-fanfare-sequence":
       return {
-        sequenceProgress: qaSequenceProgress(AppStrings.StreakFanfare.CONTINUE_BUTTON),
+        sequenceProgress: qaSequenceProgress(t("StreakFanfare.CONTINUE_BUTTON")),
       };
     case "modal-level-up-fanfare-sequence":
       return {
-        sequenceProgress: qaSequenceProgress(AppStrings.LevelUpFanfare.CONTINUE_BUTTON),
+        sequenceProgress: qaSequenceProgress(t("LevelUpFanfare.CONTINUE_BUTTON")),
       };
     default:
       return {};
@@ -304,7 +304,7 @@ const renderSettingsLanguagePickerSurface = () => (
       onToggleSound={noopBoolean}
       isHapticsEnabled={false}
       onToggleHaptics={noopBoolean}
-      currentLanguage={getAppLanguage()}
+      currentLanguage={getLocale()}
       onChangeLanguage={noopLanguage}
       onPressHelp={noop}
       onPressAbout={noop}
@@ -326,15 +326,15 @@ const renderSubmitTooltipSurface = () => (
   <View style={qaStyles.centered}>
     <StarryBackground />
     <View style={qaStyles.tooltipTarget}>
-      <Text style={qaStyles.tooltipTargetText}>{AppStrings.GameScreenAlerts.SUBMIT_BUTTON}</Text>
+      <Text style={qaStyles.tooltipTargetText}>{t("GameScreenAlerts.SUBMIT_BUTTON")}</Text>
     </View>
     <TooltipOverlay
       visible={true}
       targetRect={{x: 120, y: 420, width: 140, height: 48}}
       content={{
-        title: AppStrings.Tooltips.SUBMIT_ANSWER_TITLE,
-        body: AppStrings.Tooltips.SUBMIT_ANSWER_BODY,
-        action: AppStrings.Tooltips.GOT_IT_BUTTON,
+        title: t("Tooltips.SUBMIT_ANSWER_TITLE"),
+        body: t("Tooltips.SUBMIT_ANSWER_BODY"),
+        action: t("Tooltips.GOT_IT_BUTTON"),
       }}
       onDismiss={noop}
     />

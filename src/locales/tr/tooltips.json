@@ -1,0 +1,32 @@
+{
+  "Tooltips": {
+    "ACHIEVEMENT_EARNED_BODY": "Basarilarini ve ilerlemeni gormek icin profilini ac.",
+    "ACHIEVEMENT_EARNED_TITLE": "Basari acildi",
+    "CLASSIC_FROM_DAILY_BODY": "Gunluk meydan okuma tamamlandi. Klasik mod bilmeceleri kendi hizinda cozmeye devam etmeni saglar.",
+    "CLASSIC_FROM_DAILY_TITLE": "Klasik mod",
+    "GOT_IT_BUTTON": "Anladim",
+    "HELP_BUTTON_LABEL": "Yardim",
+    "HINT_AFTER_WRONG_BODY": "Bu tahmin olmadi. Yararli bir harf acmak ve devam etmek icin Ipucu'na dokun.",
+    "HINT_AFTER_WRONG_TITLE": "Ipucu ister misin?",
+    "LEADERBOARD_FIFTH_CORRECT_BODY": "Bes dogru cevap! Siralamani gormek icin profilini ac.",
+    "LEADERBOARD_FIFTH_CORRECT_TITLE": "Lider tablosunda yuksel",
+    "PROFILE_ACHIEVEMENTS_BODY": "Actigin tum basarilari gormek icin bu bolumu ac.",
+    "PROFILE_ACHIEVEMENTS_TITLE": "Basarilar",
+    "PROFILE_COINS_BODY": "Para bakiyen burada gorunur. Paralari ipuclari, atlamalar ve ekstra sanslar icin harca.",
+    "PROFILE_COINS_TITLE": "Hazine sandigi",
+    "PROFILE_DAILY_PUZZLES_BODY": "Bu bolum kac gunluk meydan okumayi tamamladigini gosterir.",
+    "PROFILE_DAILY_PUZZLES_TITLE": "Gunluk bilmeceler",
+    "PROFILE_IDENTITY_BODY": "Avatarin, kullanici adin, XP seviyen ve seviye ilerlemen burada.",
+    "PROFILE_IDENTITY_TITLE": "Profil",
+    "PROFILE_LEADERBOARD_BODY": "XP, galibiyet ve serilerini diger oyuncularla karsilastirmak icin lider tablosunu ac.",
+    "PROFILE_LEADERBOARD_TITLE": "Lider tablosu",
+    "PROFILE_STATISTICS_BODY": "Oyun performansinin ayrintili dokumu icin istatistikleri ac.",
+    "PROFILE_STATISTICS_TITLE": "Istatistikler",
+    "PROFILE_STATS_BODY": "Bu kartlar serini, bildigin kelimeleri, kazanma oranini ve ortalama tahminlerini ozetler.",
+    "PROFILE_STATS_TITLE": "Istatistik ozeti",
+    "SHOP_OUT_OF_COINS_BODY": "Bu islem icin paran kalmadi. Daha fazla almak veya kazanmak icin magazayi ac.",
+    "SHOP_OUT_OF_COINS_TITLE": "Daha fazla para al",
+    "SUBMIT_ANSWER_BODY": "Tum kutular doldugunda tahminini kontrol etmek icin Gonder'e dokun.",
+    "SUBMIT_ANSWER_TITLE": "Cevabini gonder"
+  }
+}

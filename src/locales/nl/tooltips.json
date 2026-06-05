@@ -1,0 +1,32 @@
+{
+  "Tooltips": {
+    "ACHIEVEMENT_EARNED_BODY": "Open uw profiel om uw prestaties te bekijken en uw voortgang bij te houden.",
+    "ACHIEVEMENT_EARNED_TITLE": "Prestatie ontgrendeld",
+    "CLASSIC_FROM_DAILY_BODY": "Dagelijkse uitdaging voltooid. In de klassieke modus kun je raadsels in je eigen tempo blijven oplossen.",
+    "CLASSIC_FROM_DAILY_TITLE": "Klassieke modus",
+    "GOT_IT_BUTTON": "Ik heb het",
+    "HELP_BUTTON_LABEL": "Hulp",
+    "HINT_AFTER_WRONG_BODY": "Die gok miste. Tik op Hint om een ​​nuttige brief te onthullen en door te gaan.",
+    "HINT_AFTER_WRONG_TITLE": "Een aanwijzing nodig?",
+    "LEADERBOARD_FIFTH_CORRECT_BODY": "Vijf juiste antwoorden! Open uw profiel om te zien hoe u scoort.",
+    "LEADERBOARD_FIFTH_CORRECT_TITLE": "Beklim het klassement",
+    "PROFILE_ACHIEVEMENTS_BODY": "Open dit gedeelte om elke prestatie te zien die je hebt ontgrendeld.",
+    "PROFILE_ACHIEVEMENTS_TITLE": "Prestaties",
+    "PROFILE_COINS_BODY": "Hier wordt uw muntsaldo weergegeven. Geef munten uit aan hints, skips en extra kansen.",
+    "PROFILE_COINS_TITLE": "Schatkist",
+    "PROFILE_DAILY_PUZZLES_BODY": "Dit laat zien hoeveel dagelijkse uitdagingen je hebt voltooid.",
+    "PROFILE_DAILY_PUZZLES_TITLE": "Dagelijkse puzzels",
+    "PROFILE_IDENTITY_BODY": "Je avatar, gebruikersnaam, XP-niveau en niveauvoortgang zijn hier live te zien.",
+    "PROFILE_IDENTITY_TITLE": "Profiel",
+    "PROFILE_LEADERBOARD_BODY": "Open het klassement om XP, overwinningen en streaks met andere spelers te vergelijken.",
+    "PROFILE_LEADERBOARD_TITLE": "Leiderbord",
+    "PROFILE_STATISTICS_BODY": "Open statistieken voor een dieper inzicht in je gameplay-prestaties.",
+    "PROFILE_STATISTICS_TITLE": "Statistieken",
+    "PROFILE_STATS_BODY": "Deze kaarten geven een overzicht van uw streak, geraden woorden, winstpercentage en gemiddelde gissingen.",
+    "PROFILE_STATS_TITLE": "Momentopname van statistieken",
+    "SHOP_OUT_OF_COINS_BODY": "Je hebt geen munten meer voor deze actie. Open de winkel om meer te kopen of te verdienen.",
+    "SHOP_OUT_OF_COINS_TITLE": "Grijp meer munten",
+    "SUBMIT_ANSWER_BODY": "Wanneer elk slot gevuld is, tikt u op Verzenden om uw gok te controleren.",
+    "SUBMIT_ANSWER_TITLE": "Dien uw antwoord in"
+  }
+}

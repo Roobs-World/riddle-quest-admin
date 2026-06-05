@@ -1,0 +1,18 @@
+{
+  "LossModal": {
+    "ANSWER_PREFIX": "Jawaban:",
+    "EXTRA_GUESSES_PREFIX": "3 Tebakan Ekstra -",
+    "EXTRA_GUESSES_PROMPT": "Di luar upaya. Dapatkan 3 tebakan tambahan atau lewati teka-teki ini.",
+    "EXTRA_GUESSES_SUFFIX": "Koin",
+    "NEXT_LEVEL_BUTTON": "Tingkat Selanjutnya",
+    "OPEN_SHOP_BUTTON": "Buka Toko",
+    "OUT_OF_ATTEMPTS": "Di luar upaya.",
+    "SKIP_LEVEL_PREFIX": "Lewati Tingkat (",
+    "SKIP_LEVEL_SUFFIX": "Koin)",
+    "SKIP_PUZZLE_BUTTON": "Lewati Teka-teki",
+    "TITLE": "Sangat dekat!",
+    "USE_COINS_PREFIX": "Gunakan",
+    "USE_COINS_SUFFIX": "Koin untuk Melanjutkan",
+    "WATCH_AD_BUTTON": "Tonton Iklan untuk 3 Tebakan Ekstra"
+  }
+}

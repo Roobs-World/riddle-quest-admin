@@ -1,0 +1,22 @@
+{
+  "CommonAlerts": {
+    "CANCEL_BUTTON": "रद्द करें",
+    "CANNOT_OPEN_BROWSER_SUFFIX": " आपके ब्राउज़र में.",
+    "CANNOT_OPEN_PREFIX": "खोल नहीं सकता ",
+    "CANNOT_OPEN_VISIT_SUFFIX": "। कृपया विजिट करें ",
+    "CLOSE_BUTTON": "बंद करें",
+    "COULD_NOT_OPEN_PREFIX": "खोल नहीं सका ",
+    "COULD_NOT_OPEN_TRY_AGAIN": "। कृपया बाद में पुनः प्रयास करें।",
+    "ERROR_TITLE": "त्रुटि",
+    "INFO_TITLE": "जानकारी",
+    "OFFLINE_MESSAGE": "कृपया खेलना जारी रखने के लिए पुनः कनेक्ट करें।",
+    "OFFLINE_TITLE": "कोई इंटरनेट कनेक्शन नहीं",
+    "OK_BUTTON": "ठीक",
+    "SUCCESS_TITLE": "सफलता",
+    "UNABLE_TO_OPEN_TITLE": "खोलने में असमर्थ",
+    "TRY_AGAIN_LATER_MESSAGE": "कृपया बाद में पुनः प्रयास करें।"
+  },
+  "CommonButtons": {
+    "RETRY": "पुनः प्रयास करें"
+  }
+}

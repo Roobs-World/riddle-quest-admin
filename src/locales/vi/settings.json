@@ -1,0 +1,28 @@
+{
+  "Settings": {
+    "ABOUT_BUTTON": "Giới thiệu",
+    "ACCOUNT_DELETION_BUTTON": "Xóa tài khoản",
+    "CLOSE_BUTTON": "Đóng",
+    "CREDITS_BUTTON": "Tín dụng",
+    "DATA_EXPORT_BUTTON": "Xuất dữ liệu của tôi",
+    "HAPTICS_TOGGLE": "Xúc giác",
+    "HELP_BUTTON": "Trợ giúp",
+    "LANGUAGE_LABEL": "Ngôn ngữ",
+    "LANGUAGE_SELECTED": "Đã chọn",
+    "LICENSES_BUTTON": "Giấy phép",
+    "LOGOUT_BUTTON": "Đăng xuất",
+    "LOGOUT_ERROR_MESSAGE": "Không thể đăng xuất. Vui lòng thử lại.",
+    "LOGOUT_ERROR_TITLE": "Lỗi",
+    "PRIVACY_POLICY_BUTTON": "Chính sách quyền riêng tư",
+    "SOUND_TOGGLE": "Âm thanh",
+    "TERMS_BUTTON": "Điều khoản sử dụng",
+    "TEST_CRASH_ALERT_CANCEL": "Hủy",
+    "TEST_CRASH_ALERT_CRASH": "Tai nạn",
+    "TEST_CRASH_ALERT_MESSAGE": "Điều này sẽ làm hỏng ứng dụng để kiểm tra Firebase Crashlytics. Tiếp tục?",
+    "TEST_CRASH_ALERT_TITLE": "Kiểm tra sự cố",
+    "TEST_CRASH_BUTTON": "Kiểm tra sự cố",
+    "TITLE": "Cài đặt",
+    "TOGGLE_OFF": "Tắt",
+    "TOGGLE_ON": "Bật"
+  }
+}

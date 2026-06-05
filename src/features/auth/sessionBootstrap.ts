@@ -3,6 +3,7 @@
  */
 import {AccessToken} from "react-native-fbsdk-next";
 import type {FirebaseAuthTypes} from "@react-native-firebase/auth";
+import {t} from "../../i18n";
 import {Player} from "../../validation/firestoreSchemas";
 import {captureException} from "../../utils/sentry";
 import {logger} from "../../utils/logger";
@@ -165,7 +166,7 @@ export const resolveUserEmail = async (user: FirebaseAuthTypes.User): Promise<st
   }
 
   throw new Error(
-    "Email is required but not provided by authentication provider. Please ensure email permission is granted.",
+    t("ErrorMessages.EMAIL_PERMISSION_REQUIRED"),
   );
 };
 

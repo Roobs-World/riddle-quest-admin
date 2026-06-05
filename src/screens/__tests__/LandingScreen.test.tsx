@@ -175,7 +175,7 @@ jest.mock("../../../assets/images/home-bg.svg", () => {
 });
 
 // Mock constants
-jest.mock("../../constants/AppStrings", () => ({
+jest.mock("../../i18n", () => ({
   AppStrings: {
     AuthStrings: {
       Landing: {
