@@ -11,6 +11,23 @@ export type SupportedLanguage = Locale;
 const localeSubscribers = new Set<() => void>();
 const rootCatalogCache = new Map<Locale, TranslationSchema>();
 const supportedLanguageSet = new Set<string>(SUPPORTED_LOCALES);
+const LOCALE_ALIASES: Record<string, Locale> = {
+  es: "es",
+  pt: "pt",
+  fr: "fr",
+  de: "de",
+  ja: "ja",
+  ko: "ko",
+  zh: "zh",
+  hi: "hi",
+  ru: "ru",
+  tr: "tr",
+  ar: "ar",
+  it: "it",
+  nl: "nl",
+  pl: "pl",
+  vi: "vi",
+};
 
 let currentLocale: Locale = "en";
 
@@ -75,22 +92,15 @@ export const LANGUAGE_OPTIONS: readonly LanguageOption[] = SUPPORTED_LOCALES.map
 const normalizeLocale = (input?: string): Locale => {
   const value = (input ?? "en").toLowerCase();
 
-  if (value.startsWith("es")) return "es";
-  if (value.startsWith("pt")) return "pt";
-  if (value.startsWith("fr")) return "fr";
-  if (value.startsWith("de")) return "de";
-  if (value.startsWith("ja")) return "ja";
-  if (value.startsWith("ko")) return "ko";
-  if (value.startsWith("zh")) return "zh";
-  if (value.startsWith("hi")) return "hi";
-  if (value.startsWith("ru")) return "ru";
-  if (value.startsWith("tr")) return "tr";
-  if (value.startsWith("ar")) return "ar";
-  if (value.startsWith("id") || value.startsWith("in")) return "id";
-  if (value.startsWith("it")) return "it";
-  if (value.startsWith("nl")) return "nl";
-  if (value.startsWith("pl")) return "pl";
-  if (value.startsWith("vi")) return "vi";
+  if (value.startsWith("id") || value.startsWith("in")) {
+    return "id";
+  }
+
+  for (const [prefix, locale] of Object.entries(LOCALE_ALIASES)) {
+    if (value.startsWith(prefix)) {
+      return locale;
+    }
+  }
 
   return "en";
 };

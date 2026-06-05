@@ -26,6 +26,8 @@
     "SIGN_IN_TO_CONTINUE": "Vui lòng đăng nhập để tiếp tục.",
     "TOO_MANY_FAILED_ATTEMPTS": "Quá nhiều lần thử không thành công. Vui lòng thử lại sau.",
     "WRONG_PASSWORD_TRY_AGAIN": "Mật khẩu không chính xác. Vui lòng thử lại.",
-    "UNKNOWN_ERROR": "?? x?y ra l?i kh?ng x?c ??nh."
+    "UNKNOWN_ERROR": "?? x?y ra l?i kh?ng x?c ??nh.",
+    "FATAL_STARTUP_TITLE": "Kh?i ??ng th?t b?i",
+    "FATAL_STARTUP_MESSAGE": "Kh?ng th? t?i n?n h? M?t Tr?i. Vui l?ng kh?i ??ng l?i ?ng d?ng."
   }
 }

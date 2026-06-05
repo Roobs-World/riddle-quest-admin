@@ -4,9 +4,10 @@ import {
   PlayerSchema,
   FirestoreRiddleSchema,
   ClassicRiddleSchema,
+  RiddleCollections,
   type Player,
   type FirestoreRiddle,
-} from "@qwordly/core/validation/firestoreSchemas";
+} from "../validation/firestoreSchemas";
 
 describe("Firestore Schemas", () => {
   describe("PlayerSchema", () => {
@@ -79,6 +80,15 @@ describe("Firestore Schemas", () => {
       });
 
       expect(result.success).toBe(true);
+    });
+  });
+
+  describe("RiddleCollections", () => {
+    test("exposes canonical collection names", () => {
+      expect(RiddleCollections).toEqual({
+        RIDDLES: "riddles",
+        DAILY_RIDDLES: "dailyRiddles",
+      });
     });
   });
 });

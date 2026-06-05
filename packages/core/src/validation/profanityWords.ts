@@ -7,7 +7,7 @@
  * - Matching logic also checks substrings, so keep entries reasonably specific
  *   to avoid false positives (e.g. avoid "ass" which matches "class").
  */
-export const PROFANE_WORDS: readonly string[] = [
+export const PROFANE_WORDS = [
   "arse",
   "arsehole",
   "asshole",
@@ -124,4 +124,6 @@ export const PROFANE_WORDS: readonly string[] = [
   "pedophile",
   "pedo",
   "badword",
-];
+] as const;
+
+export type ProfaneWord = (typeof PROFANE_WORDS)[number];

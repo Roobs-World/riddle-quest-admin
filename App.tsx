@@ -22,7 +22,7 @@ import {logger} from "./src/utils/logger";
 
 import React, {useCallback, useEffect, useRef, useState} from "react";
 import {NavigationContainer} from "@react-navigation/native";
-import {View} from "react-native";
+import {StyleSheet, Text, View} from "react-native";
 import {SafeAreaProvider} from "react-native-safe-area-context";
 import {loadFonts} from "./src/utils/fontLoader";
 import {SoundManager} from "./src/services/SoundManager";
@@ -33,6 +33,7 @@ import {GoogleSignin} from "@react-native-google-signin/google-signin";
 import {AuthProvider} from "./src/contexts/AuthContext";
 import {TooltipProvider} from "./src/contexts/TooltipContext";
 import {Navigation} from "./src/navigation/NavigationStack";
+import LanguageSelectionScreen from "./src/screens/LanguageSelectionScreen";
 import PulsingSpinner from "@/components/loading/PulsingSpinner";
 import {SolarSystemPreloader} from "./src/services/SolarSystemPreloader";
 import {preloadShopCatalog} from "./src/services/ShopCatalogPreloader";
@@ -45,6 +46,7 @@ import {
   isSupportedLanguage,
   setLocale,
   detectDeviceLanguage,
+  t,
 } from "./src/i18n";
 import {isSharedAnimationBackendEnabled, isSharedAnimationBackendFlagRequested} from "./src/config/featureFlags";
 import {SOUND_ENABLED_STORAGE_KEY, readBooleanSetting} from "./src/utils/settingsStorage";
@@ -113,6 +115,15 @@ const initializeFirebaseAppCheckInBackground = async (): Promise<void> => {
   });
 };
 
+const FatalStartupScreen = (): React.JSX.Element => {
+  return (
+    <View style={styles.fatalContainer}>
+      <Text style={styles.fatalTitle}>{t("ErrorMessages.FATAL_STARTUP_TITLE")}</Text>
+      <Text style={styles.fatalMessage}>{t("ErrorMessages.FATAL_STARTUP_MESSAGE")}</Text>
+    </View>
+  );
+};
+
 /**
  * Main application component that initializes all services and provides the core app structure.
  *
@@ -129,6 +140,8 @@ const initializeFirebaseAppCheckInBackground = async (): Promise<void> => {
  */
 export default Sentry.wrap(function App() {
   const [isInitialized, setIsInitialized] = useState(false);
+  const [requiresInitialLanguageSelection, setRequiresInitialLanguageSelection] = useState(false);
+  const [startupError, setStartupError] = useState<unknown | null>(null);
   const hasStartedCriticalInitRef = useRef(false);
   const hasStartedBackgroundInitRef = useRef(false);
 
@@ -142,7 +155,6 @@ export default Sentry.wrap(function App() {
       const tasks = [
         initializeFirebaseAppCheckInBackground(),
         initializeSoundInBackground(),
-        withTimeout(SolarSystemPreloader.preloadSolarSystem(), SOLAR_PRELOAD_TIMEOUT_MS),
         preloadShopCatalog(),
         initializeRewardedAds(),
         initializeFacebookSdkInBackground(),
@@ -181,8 +193,24 @@ export default Sentry.wrap(function App() {
         const savedLanguage = await AsyncStorage.getItem(LOCALE_STORAGE_KEY);
         if (savedLanguage && isSupportedLanguage(savedLanguage)) {
           setLocale(savedLanguage);
+          if (isMounted) {
+            setRequiresInitialLanguageSelection(false);
+          }
         } else {
           detectDeviceLanguage();
+          if (isMounted) {
+            setRequiresInitialLanguageSelection(true);
+          }
+        }
+        try {
+          await withTimeout(SolarSystemPreloader.preloadSolarSystem(), SOLAR_PRELOAD_TIMEOUT_MS);
+        } catch (error) {
+          logger.error("Fatal solar startup error:", error);
+          captureException(error, {context: "App.solarStartup"});
+          if (isMounted) {
+            setStartupError(error);
+          }
+          return;
         }
         await loadFonts();
         configureGoogleSignIn();
@@ -201,9 +229,27 @@ export default Sentry.wrap(function App() {
     };
   }, [startBackgroundInitialization]);
 
+  if (startupError) {
+    return <FatalStartupScreen />;
+  }
+
   if (!isInitialized) {
     return <PulsingSpinner visible={true} size={120} opacity={0.8} />;
   }
+
+  const handleCompleteInitialLanguageSelection = async (language: Parameters<typeof setLocale>[0]): Promise<void> => {
+    setLocale(language);
+
+    try {
+      await AsyncStorage.setItem(LOCALE_STORAGE_KEY, language);
+    } catch (error) {
+      logger.error("Failed to persist initial language selection:", error);
+      captureException(error, {context: "App.persistInitialLanguageSelection"});
+    } finally {
+      setRequiresInitialLanguageSelection(false);
+    }
+  };
+
   return (
     <Sentry.ErrorBoundary
       fallback={<PulsingSpinner visible={true} size={120} opacity={0.8} />}
@@ -214,11 +260,15 @@ export default Sentry.wrap(function App() {
           <AuthProvider>
             <TooltipProvider>
               <View style={{flex: 1}}>
-                <QASurfaceGate>
-                  <NavigationContainer>
-                    <Navigation />
-                  </NavigationContainer>
-                </QASurfaceGate>
+                {requiresInitialLanguageSelection ? (
+                  <LanguageSelectionScreen onSubmit={handleCompleteInitialLanguageSelection} />
+                ) : (
+                  <QASurfaceGate>
+                    <NavigationContainer>
+                      <Navigation />
+                    </NavigationContainer>
+                  </QASurfaceGate>
+                )}
               </View>
             </TooltipProvider>
           </AuthProvider>
@@ -226,4 +276,28 @@ export default Sentry.wrap(function App() {
       </SafeAreaProvider>
     </Sentry.ErrorBoundary>
   );
+});
+
+const styles = StyleSheet.create({
+  fatalContainer: {
+    alignItems: "center",
+    backgroundColor: "#0b1020",
+    flex: 1,
+    justifyContent: "center",
+    paddingHorizontal: 24,
+  },
+  fatalTitle: {
+    color: "#fff7e6",
+    fontSize: 28,
+    fontWeight: "700",
+    marginBottom: 12,
+    textAlign: "center",
+  },
+  fatalMessage: {
+    color: "#d6d9e8",
+    fontSize: 16,
+    lineHeight: 24,
+    maxWidth: 420,
+    textAlign: "center",
+  },
 });

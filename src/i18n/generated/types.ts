@@ -222,7 +222,9 @@ export const translationSchema = {
     "SIGN_IN_TO_CONTINUE": "Please sign in to continue.",
     "TOO_MANY_FAILED_ATTEMPTS": "Too many failed attempts. Please try again later.",
     "WRONG_PASSWORD_TRY_AGAIN": "Incorrect password. Please try again.",
-    "UNKNOWN_ERROR": "Unknown error occurred"
+    "UNKNOWN_ERROR": "Unknown error occurred",
+    "FATAL_STARTUP_TITLE": "Startup failed",
+    "FATAL_STARTUP_MESSAGE": "The solar system background failed to load. Please restart the app."
   },
   "CommonButtons": {
     "RETRY": "Retry"

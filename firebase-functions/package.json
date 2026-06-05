@@ -3,6 +3,7 @@
   "scripts": {
     "lint": "eslint --ext .js,.ts",
     "prebuild": "pnpm --dir .. --filter @qwordly/core build",
+    "prepare:deploy": "node scripts/prepare-deploy.js",
     "build": "tsc -p tsconfig.json && rimraf lib/__tests__ lib/__mocks__",
     "pretest": "pnpm --dir .. --filter @qwordly/core build",
     "deploy": "firebase deploy --only functions",
@@ -16,6 +17,7 @@
   },
   "main": "lib/index.js",
   "dependencies": {
+    "@google-cloud/functions-framework": "5.0.2",
     "@qwordly/core": "file:../packages/core",
     "@sentry/node": "^10.54.0",
     "@types/express": "^4.17.25",

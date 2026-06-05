@@ -26,6 +26,8 @@
     "SIGN_IN_TO_CONTINUE": "Bitte melden Sie sich an, um fortzufahren.",
     "TOO_MANY_FAILED_ATTEMPTS": "Zu viele Fehlversuche. Bitte versuchen Sie es später noch einmal.",
     "WRONG_PASSWORD_TRY_AGAIN": "Falsches Passwort. Bitte versuchen Sie es erneut.",
-    "UNKNOWN_ERROR": "Ein unbekannter Fehler ist aufgetreten."
+    "UNKNOWN_ERROR": "Ein unbekannter Fehler ist aufgetreten.",
+    "FATAL_STARTUP_TITLE": "Start fehlgeschlagen",
+    "FATAL_STARTUP_MESSAGE": "Der Hintergrund des Sonnensystems konnte nicht geladen werden. Bitte starten Sie die App neu."
   }
 }

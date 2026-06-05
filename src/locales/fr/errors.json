@@ -26,6 +26,8 @@
     "SIGN_IN_TO_CONTINUE": "Veuillez vous connecter pour continuer.",
     "TOO_MANY_FAILED_ATTEMPTS": "Trop de tentatives infructueuses. Veuillez réessayer plus tard.",
     "WRONG_PASSWORD_TRY_AGAIN": "Mot de passe incorrect. Veuillez réessayer.",
-    "UNKNOWN_ERROR": "Une erreur inconnue s'est produite."
+    "UNKNOWN_ERROR": "Une erreur inconnue s'est produite.",
+    "FATAL_STARTUP_TITLE": "?chec du d?marrage",
+    "FATAL_STARTUP_MESSAGE": "L'arri?re-plan du syst?me solaire n'a pas pu se charger. Veuillez relancer l'application."
   }
 }

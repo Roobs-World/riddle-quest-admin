@@ -26,6 +26,8 @@
     "SIGN_IN_TO_CONTINUE": "Inicie sesión para continuar.",
     "TOO_MANY_FAILED_ATTEMPTS": "Demasiados intentos fallidos. Inténtelo de nuevo más tarde.",
     "WRONG_PASSWORD_TRY_AGAIN": "Contraseña incorrecta. Por favor inténtalo de nuevo.",
-    "UNKNOWN_ERROR": "Se produjo un error desconocido."
+    "UNKNOWN_ERROR": "Se produjo un error desconocido.",
+    "FATAL_STARTUP_TITLE": "Error al iniciar",
+    "FATAL_STARTUP_MESSAGE": "No se pudo cargar el fondo del sistema solar. Reinicia la aplicaci?n."
   }
 }

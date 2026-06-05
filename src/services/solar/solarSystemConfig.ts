@@ -26,6 +26,7 @@ import texSunSpots from "../../../assets/3d/tex_sun_spots_02.png";
  */
 export interface PlanetConfig {
   id: string;
+  textureKey: string;
   texture: string;
   orbitRadius: number;
   orbitSpeed: number;
@@ -40,6 +41,7 @@ export interface PlanetConfig {
  * Config for one moon orbiting a planet.
  */
 export interface MoonConfig {
+  textureKey: string;
   texture: string;
   orbitRadius: number;
   orbitSpeed: number;
@@ -50,6 +52,7 @@ export interface MoonConfig {
  * Config for a planet ring mesh.
  */
 export interface RingConfig {
+  textureKey: string;
   texture: string;
   innerRadius: number;
   outerRadius: number;
@@ -91,6 +94,7 @@ export const SOLAR_TEXTURE_MAPPING: TextureMappingEntry[] = [
 export const SOLAR_SYSTEM_CONFIG: PlanetConfig[] = [
   {
     id: "planet_a",
+    textureKey: "planet_a",
     texture: texPlanetA,
     orbitRadius: 35,
     orbitSpeed: 0.7,
@@ -99,6 +103,7 @@ export const SOLAR_SYSTEM_CONFIG: PlanetConfig[] = [
     materialType: "phong",
     moons: [
       {
+        textureKey: "moon_a_h",
         texture: texMoonH,
         orbitRadius: 8,
         orbitSpeed: 2.0,
@@ -108,6 +113,7 @@ export const SOLAR_SYSTEM_CONFIG: PlanetConfig[] = [
   },
   {
     id: "planet_d",
+    textureKey: "planet_d",
     texture: texPlanetD,
     orbitRadius: 45,
     orbitSpeed: 0.6,
@@ -116,12 +122,14 @@ export const SOLAR_SYSTEM_CONFIG: PlanetConfig[] = [
     materialType: "phong",
     moons: [
       {
+        textureKey: "moon_d_f",
         texture: texMoonF,
         orbitRadius: 10,
         orbitSpeed: 1.5,
         radius: 1.8,
       },
       {
+        textureKey: "moon_d_g",
         texture: texMoonG,
         orbitRadius: 13,
         orbitSpeed: 1.2,
@@ -131,6 +139,7 @@ export const SOLAR_SYSTEM_CONFIG: PlanetConfig[] = [
   },
   {
     id: "planet_v",
+    textureKey: "planet_v",
     texture: texPlanetV,
     orbitRadius: 60,
     orbitSpeed: 0.45,
@@ -138,6 +147,7 @@ export const SOLAR_SYSTEM_CONFIG: PlanetConfig[] = [
     radius: 8.0,
     materialType: "phong",
     rings: {
+      textureKey: "ring_planet_v",
       texture: texRingA,
       innerRadius: 10.0,
       outerRadius: 14.0,
@@ -145,6 +155,7 @@ export const SOLAR_SYSTEM_CONFIG: PlanetConfig[] = [
   },
   {
     id: "planet_k",
+    textureKey: "planet_k",
     texture: texPlanetK,
     orbitRadius: 75,
     orbitSpeed: 0.3,
@@ -153,12 +164,14 @@ export const SOLAR_SYSTEM_CONFIG: PlanetConfig[] = [
     materialType: "phong",
     moons: [
       {
+        textureKey: "moon_k_c",
         texture: texMoonC,
         orbitRadius: 15,
         orbitSpeed: 1.0,
         radius: 2.5,
       },
       {
+        textureKey: "moon_k_d",
         texture: texMoonD,
         orbitRadius: 20,
         orbitSpeed: 0.9,
@@ -166,6 +179,7 @@ export const SOLAR_SYSTEM_CONFIG: PlanetConfig[] = [
       },
     ],
     rings: {
+      textureKey: "ring_planet_k",
       texture: texRingB,
       innerRadius: 12.0,
       outerRadius: 18.0,

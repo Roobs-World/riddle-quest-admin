@@ -15,10 +15,6 @@ describe("QA Android screenshot surfaces", () => {
     expect(QA_PAGE_SURFACES.map((surface) => surface.id)).toEqual([
       "page-app-loading",
       "page-landing",
-      "page-login",
-      "page-sign-up",
-      "page-forgot-password",
-      "page-new-password",
       "page-riddle-loading",
       "page-initialization-error",
       "page-game",

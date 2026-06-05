@@ -26,6 +26,8 @@
     "SIGN_IN_TO_CONTINUE": "Silakan masuk untuk melanjutkan.",
     "TOO_MANY_FAILED_ATTEMPTS": "Terlalu banyak upaya yang gagal. Silakan coba lagi nanti.",
     "WRONG_PASSWORD_TRY_AGAIN": "Sandi salah. Silakan coba lagi.",
-    "UNKNOWN_ERROR": "Terjadi kesalahan yang tidak diketahui."
+    "UNKNOWN_ERROR": "Terjadi kesalahan yang tidak diketahui.",
+    "FATAL_STARTUP_TITLE": "Gagal memulai",
+    "FATAL_STARTUP_MESSAGE": "Latar sistem tata surya gagal dimuat. Silakan mulai ulang aplikasi."
   }
 }

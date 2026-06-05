@@ -1,6 +1,6 @@
 import {render, waitFor} from "@testing-library/react-native";
 import React from "react";
-import {ColorManagement} from "three";
+import {ColorManagement, MeshBasicMaterial} from "three";
 
 const mockSetClearColor = jest.fn();
 const mockLookAt = jest.fn();
@@ -49,6 +49,7 @@ const {
   default: SolarSystem3D,
   __resetSolarSystem3DTextureCacheForTests,
   __createSunMaterialForTests,
+  __createSharedRingMaterialForTests,
   __getSolarCanvasFrameloopForTests,
   __applySunFrameUpdateForTests,
   __applyMoonFrameUpdateForTests,
@@ -132,13 +133,21 @@ describe("SolarSystem3D", () => {
     expect(ColorManagement.enabled).toBe(false);
   });
 
-  it("uses the sun texture for both diffuse and emissive material channels", () => {
+  it("uses the sun texture in a self-luminous basic material", () => {
     const texture = {isTexture: true};
     const material = __createSunMaterialForTests(texture);
 
+    expect(material).toBeInstanceOf(MeshBasicMaterial);
     expect(material.map).toBe(texture);
-    expect(material.emissiveMap).toBe(texture);
-    expect(material.shininess).toBe(0);
+  });
+
+  it("creates translucent ring materials", () => {
+    const texture = {isTexture: true};
+    const material = __createSharedRingMaterialForTests(texture);
+
+    expect(material.transparent).toBe(true);
+    expect(material.opacity).toBeCloseTo(0.48);
+    expect(material.depthWrite).toBe(false);
   });
 
   it("handles texture loading failures without crashing", async () => {

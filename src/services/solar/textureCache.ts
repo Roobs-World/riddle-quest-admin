@@ -3,15 +3,15 @@
  */
 import {Texture} from "three";
 
-/** Cache shape for keyed texture instances (or missing texture null sentinels). */
-export type TextureCache = Map<string, Texture | null>;
+/** Cache shape for keyed texture instances. */
+export type TextureCache = Map<string, Texture>;
 
 /**
  * Creates a fresh texture cache map.
  *
  * @returns Empty `TextureCache`.
  */
-export const createTextureCache = (): TextureCache => new Map<string, Texture | null>();
+export const createTextureCache = (): TextureCache => new Map<string, Texture>();
 
 /**
  * Disposes every cached texture instance, then clears the cache map.
@@ -20,9 +20,7 @@ export const createTextureCache = (): TextureCache => new Map<string, Texture | 
  */
 export const disposeAndClearTextureCache = (cache: TextureCache): void => {
   cache.forEach((texture) => {
-    if (texture) {
-      texture.dispose();
-    }
+    texture.dispose();
   });
   cache.clear();
 };

@@ -145,6 +145,11 @@ export const DailyRiddleSchema = z.object({
 });
 export type DailyRiddle = z.infer<typeof DailyRiddleSchema>;
 
+export const RiddleCollections = {
+  RIDDLES: "riddles",
+  DAILY_RIDDLES: "dailyRiddles",
+} as const;
+
 export const RegionalPriceSchema = z
   .object({
     amount: z.number().nonnegative(),

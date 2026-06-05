@@ -1,12 +1,10 @@
 import React, {useEffect, useRef, useState} from "react";
 import {View, Text, Modal, TextInput} from "react-native";
-import {usePlayer} from "../../../contexts/AuthContext";
+import {useAuth} from "../../../contexts/AuthContext";
 import CloseButton from "../../buttons/CloseButton";
 import WideButton from "src/components/buttons/WideButton";
 import PulsingSpinner from "src/components/loading/PulsingSpinner";
 import {TYPOGRAPHY} from "src/styles";
-import ModalBg from "../../../../assets/images/modal-bg.svg";
-import HomeBg from "../../../../assets/images/home-bg.svg";
 import {t} from "../../../i18n";
 import {
   MODAL_WIDTH,
@@ -18,12 +16,12 @@ import {
   MODAL_MAX_HEIGHT,
 } from "../../../constants/layout";
 import {SPACING} from "../../../styles";
-import SlideInModalContent from "../../shared/SlideInModalContent";
 import {verticalScale} from "@/utils/responsive";
 import {callValidatedFunction} from "../../../utils/firebaseFunctions";
 import {getUpdateUsernameErrorMessage} from "../../../application/errors/cloudFunctionErrorMessages";
 import {BasicSuccessMessageOutputSchema, UpdateUsernameInputSchema} from "../../../validation/cloudFunctionsSchemas";
 import {validateUsernameForProfanity} from "../../../utils/profanityFilter";
+import DecoratedModalShell from "../../shared/DecoratedModalShell";
 
 interface UpdateUsernameModalProps {
   isVisible: boolean;
@@ -34,7 +32,7 @@ interface UpdateUsernameModalProps {
 const UpdateUsernameModal: React.FC<UpdateUsernameModalProps> = ({isVisible, onClose, currentUsername}) => {
   const COMPACT_MODAL_HEIGHT = Math.min(MODAL_HEIGHT * 0.75, MODAL_MAX_HEIGHT ?? MODAL_HEIGHT * 0.75);
   const compactContentHeight = Math.min(MODAL_HEIGHT * 0.56, MODAL_MAX_HEIGHT ?? MODAL_HEIGHT * 0.56);
-  const {updatePlayerData} = usePlayer();
+  const {updatePlayerData} = useAuth();
   const [newUsername, setNewUsername] = useState(currentUsername || "");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [usernameError, setUsernameError] = useState("");
@@ -127,99 +125,81 @@ const UpdateUsernameModal: React.FC<UpdateUsernameModalProps> = ({isVisible, onC
           backgroundColor: "rgba(0,0,0,0.5)",
         }}
       >
-        <SlideInModalContent isVisible={isVisible} style={{alignItems: "center"}}>
-          <View
+        <DecoratedModalShell
+          isVisible={isVisible}
+          width={MODAL_WIDTH}
+          height={compactContentHeight}
+          frameStyle={{overflow: "hidden"}}
+          contentStyle={{justifyContent: "center"}}
+          homeHeightMultiplier={1.1}
+          homeTopOffsetMultiplier={0.05}
+        >
+          <CloseButton
+            onPress={handleClose}
+            size={CLOSE_BUTTON_SIZE}
             style={{
-              width: MODAL_WIDTH,
-              height: compactContentHeight,
-              alignItems: "center",
-              justifyContent: "center",
-              overflow: "hidden",
+              position: "absolute",
+              marginTop: verticalScale(-130),
+              right: CLOSE_BUTTON_INSET,
+              zIndex: 10,
             }}
-          >
-            <ModalBg
-              width={MODAL_WIDTH}
-              height={compactContentHeight}
-              style={{position: "absolute"}}
-              preserveAspectRatio="none"
-            />
-            {/* Decorative wave — clipped to card bounds */}
-            <HomeBg
-              width={MODAL_WIDTH * 1.1}
-              height={COMPACT_MODAL_HEIGHT * 1.1}
+          />
+          <View style={{width: "80%", alignItems: "center"}}>
+            <Text
               style={{
-                position: "absolute",
-                top: -COMPACT_MODAL_HEIGHT * 0.05,
-                left: -MODAL_WIDTH * 0.05,
+                fontFamily: TYPOGRAPHY.fontPrimary,
+                fontSize: TYPOGRAPHY.fontSize["2xl"],
+                color: "black",
+                marginBottom: SPACING.lg,
+                textAlign: "center",
               }}
-            />
-            <CloseButton
-              onPress={handleClose}
-              size={CLOSE_BUTTON_SIZE}
+            >
+              {t("Profile.UPDATE_USERNAME_TITLE")}
+            </Text>
+            <TextInput
               style={{
-                position: "absolute",
-                marginTop: verticalScale(-130),
-                right: CLOSE_BUTTON_INSET,
-                zIndex: 10,
+                backgroundColor: "white",
+                width: "100%",
+                borderRadius: INPUT_BORDER_RADIUS,
+                padding: INPUT_PADDING,
+                marginBottom: SPACING.lg,
+                fontFamily: TYPOGRAPHY.fontSecondary,
               }}
+              value={newUsername}
+              onChangeText={(value) => {
+                setNewUsername(value);
+                if (usernameError) {
+                  setUsernameError("");
+                }
+              }}
+              placeholder={t("Profile.ENTER_NEW_USERNAME_PLACEHOLDER")}
+              placeholderTextColor="#888"
+              autoCapitalize="none"
+              testID="update-username-input"
+              accessibilityLabel={t("Profile.ENTER_NEW_USERNAME_PLACEHOLDER")}
             />
-            <View style={{width: "80%", alignItems: "center"}}>
+            {usernameError ? (
               <Text
+                testID="username-error-text"
                 style={{
-                  fontFamily: TYPOGRAPHY.fontPrimary,
-                  fontSize: TYPOGRAPHY.fontSize["2xl"],
-                  color: "black",
-                  marginBottom: SPACING.lg,
-                  textAlign: "center",
+                  width: "100%",
+                  color: "#B42318",
+                  fontFamily: TYPOGRAPHY.fontSecondary,
+                  marginTop: -SPACING.sm,
+                  marginBottom: SPACING.md,
                 }}
               >
-                {t("Profile.UPDATE_USERNAME_TITLE")}
+                {usernameError}
               </Text>
-              <TextInput
-                style={{
-                  backgroundColor: "white",
-                  width: "100%",
-                  borderRadius: INPUT_BORDER_RADIUS,
-                  padding: INPUT_PADDING,
-                  marginBottom: SPACING.lg,
-                  fontFamily: TYPOGRAPHY.fontSecondary,
-                }}
-                value={newUsername}
-                onChangeText={(value) => {
-                  setNewUsername(value);
-                  if (usernameError) {
-                    setUsernameError("");
-                  }
-                }}
-                placeholder={t("Profile.ENTER_NEW_USERNAME_PLACEHOLDER")}
-                placeholderTextColor="#888"
-                autoCapitalize="none"
-                testID="update-username-input"
-                accessibilityLabel={t("Profile.ENTER_NEW_USERNAME_PLACEHOLDER")}
-              />
-              {usernameError ? (
-                <Text
-                  testID="username-error-text"
-                  style={{
-                    width: "100%",
-                    color: "#B42318",
-                    fontFamily: TYPOGRAPHY.fontSecondary,
-                    marginTop: -SPACING.sm,
-                    marginBottom: SPACING.md,
-                  }}
-                >
-                  {usernameError}
-                </Text>
-              ) : null}
-              <WideButton
-                buttonText={t("Profile.SAVE_BUTTON")}
-                onPress={handleUpdateUsername}
-                disabled={isSubmitting}
-                testID="update-username-save-button"
-              />
-            </View>
+            ) : null}
+            <WideButton
+              buttonText={t("Profile.SAVE_BUTTON")}
+              onPress={handleUpdateUsername}
+              disabled={isSubmitting}
+              testID="update-username-save-button"
+            />
           </View>
-        </SlideInModalContent>
+        </DecoratedModalShell>
       </View>
       <PulsingSpinner visible={isSubmitting} opacity={0.35} />
     </Modal>

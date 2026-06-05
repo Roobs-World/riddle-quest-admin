@@ -1,19 +1,15 @@
 import React, {useCallback, useEffect} from "react";
 import {View, Text, Modal, Pressable} from "react-native";
-
-import ModalBg from "../../../../assets/images/modal-bg.svg";
-import HomeBg from "../../../../assets/images/home-bg.svg";
 import Logo from "../../../../assets/images/main-logo.svg";
-import {TYPOGRAPHY} from "src/styles";
+import {TYPOGRAPHY, SPACING} from "src/styles";
 import {MODAL_WIDTH, MODAL_HEIGHT, MODAL_CONTENT_PADDING, MODAL_MAX_HEIGHT} from "../../../constants/layout";
-import {SPACING} from "../../../styles";
 import {t} from "../../../i18n";
 import {verticalScale} from "@/utils/responsive";
-import SlideInModalContent from "../../shared/SlideInModalContent";
 import RotatingWheelBackground from "../../shared/RotatingWheelBackground";
 import OnboardingProgressBadge from "../OnboardingProgressBadge";
 import {OnboardingProgress} from "../../../types/ModalTypes";
 import {logger} from "@/utils/logger";
+import DecoratedModalShell from "../../shared/DecoratedModalShell";
 
 interface WelcomeModalProps {
   isVisible: boolean;
@@ -57,91 +53,74 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({isVisible, onClose, onDismis
       >
         <RotatingWheelBackground isVisible={isVisible} />
 
-        {/* Modal card */}
-        <SlideInModalContent isVisible={isVisible} style={{alignItems: "center"}}>
-          <Pressable onPress={handleDismiss} accessibilityRole="button" testID="welcome-modal-touch-target">
+        <DecoratedModalShell
+          isVisible={isVisible}
+          width={MODAL_WIDTH}
+          height={modalHeight}
+          frameStyle={{
+            overflow: "hidden",
+            marginBottom: modalHeight * 0.28,
+            paddingTop: verticalScale(30),
+          }}
+        >
+          <Pressable onPress={handleDismiss} accessibilityRole="button" testID="welcome-modal-touch-target" style={{width: "100%", height: "100%"}}>
             <View
               style={{
-                width: MODAL_WIDTH,
-                height: modalHeight,
+                flex: 1,
+                width: "100%",
                 alignItems: "center",
-                justifyContent: "center",
-                overflow: "hidden",
-                marginBottom: modalHeight * 0.28,
-                paddingTop: verticalScale(30),
+                justifyContent: "space-between",
+                padding: MODAL_CONTENT_PADDING,
+                paddingTop: MODAL_CONTENT_PADDING,
               }}
             >
-              {/* Card shape background */}
-              <ModalBg width={MODAL_WIDTH} height={modalHeight} style={{position: "absolute"}} />
-
-              {/* Decorative wave - clipped to card bounds */}
-              <HomeBg
-                width={MODAL_WIDTH * 1.1}
-                height={modalHeight * 1.1}
-                style={{position: "absolute", top: -modalHeight * 0.05, left: -MODAL_WIDTH * 0.05}}
-              />
-              {onboardingProgress ? <OnboardingProgressBadge {...onboardingProgress} /> : null}
-
-              {/* Content */}
-              <View
+              <Logo width={"100%"} style={{position: "absolute", marginTop: SPACING.lg}} />
+              <Text
                 style={{
-                  flex: 1,
-                  width: "100%",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  padding: MODAL_CONTENT_PADDING,
-                  paddingTop: MODAL_CONTENT_PADDING,
+                  fontFamily: TYPOGRAPHY.fontPrimary,
+                  fontSize: TYPOGRAPHY.fontSize["2xl"],
+                  color: "black",
+                  textAlign: "center",
+                  marginTop: verticalScale(80),
                 }}
               >
-                {/* Title */}
-                <Logo width={"100%"} style={{position: "absolute", marginTop: SPACING.lg}} />
+                {t("WelcomeModal.WELCOME_TITLE")}
+              </Text>
+
+              <View
+                style={{
+                  width: "80%",
+                  position: "absolute",
+                  marginTop: verticalScale(170),
+                }}
+              >
                 <Text
                   style={{
-                    fontFamily: TYPOGRAPHY.fontPrimary,
-                    fontSize: TYPOGRAPHY.fontSize["2xl"],
+                    fontFamily: TYPOGRAPHY.fontSecondary,
+                    fontSize: TYPOGRAPHY.fontSize.base,
                     color: "black",
                     textAlign: "center",
+                    position: "absolute",
                     marginTop: verticalScale(80),
                   }}
                 >
-                  {t("WelcomeModal.WELCOME_TITLE")}
+                  {t("WelcomeModal.SOLVE_RIDDLES_TEXT")}
                 </Text>
-
-                {/* Body text */}
-                <View
+                <Text
                   style={{
-                    width: "80%",
-                    position: "absolute",
-                    marginTop: verticalScale(170),
+                    fontFamily: TYPOGRAPHY.fontSecondary,
+                    fontSize: TYPOGRAPHY.fontSize.base,
+                    color: "black",
+                    textAlign: "center",
                   }}
                 >
-                  <Text
-                    style={{
-                      fontFamily: TYPOGRAPHY.fontSecondary,
-                      fontSize: TYPOGRAPHY.fontSize.base,
-                      color: "black",
-                      textAlign: "center",
-                      position: "absolute",
-                      marginTop: verticalScale(80),
-                    }}
-                  >
-                    {t("WelcomeModal.SOLVE_RIDDLES_TEXT")}
-                  </Text>
-                  <Text
-                    style={{
-                      fontFamily: TYPOGRAPHY.fontSecondary,
-                      fontSize: TYPOGRAPHY.fontSize.base,
-                      color: "black",
-                      textAlign: "center",
-                    }}
-                  >
-                    {t("WelcomeModal.EARN_COINS_TEXT")}
-                  </Text>
-                </View>
+                  {t("WelcomeModal.EARN_COINS_TEXT")}
+                </Text>
               </View>
+              {onboardingProgress ? <OnboardingProgressBadge {...onboardingProgress} /> : null}
             </View>
           </Pressable>
-        </SlideInModalContent>
+        </DecoratedModalShell>
       </View>
     </Modal>
   );
