@@ -445,7 +445,7 @@ import vi_streakFanfare from "../../locales/vi/streakFanfare.json";
 import vi_test from "../../locales/vi/test.json";
 import vi_tooltips from "../../locales/vi/tooltips.json";
 import vi_victory from "../../locales/vi/victory.json";
-import type {LanguageOption, Locale, Namespace} from "./types";
+import type {Locale, Namespace} from "./types";
 
 export const SUPPORTED_LOCALES = [
   "en",
@@ -467,25 +467,25 @@ export const SUPPORTED_LOCALES = [
   "vi"
 ] as const;
 
-export const LANGUAGE_OPTIONS: readonly LanguageOption[] = [
-  {code: "en", label: "English"},
-  {code: "es", label: "Español"},
-  {code: "pt", label: "Português"},
-  {code: "fr", label: "Français"},
-  {code: "de", label: "Deutsch"},
-  {code: "ja", label: "日本語"},
-  {code: "ko", label: "한국어"},
-  {code: "zh", label: "简体中文"},
-  {code: "hi", label: "हिन्दी"},
-  {code: "ru", label: "Русский"},
-  {code: "tr", label: "Türkçe"},
-  {code: "ar", label: "العربية"},
-  {code: "id", label: "Bahasa Indonesia"},
-  {code: "it", label: "Italiano"},
-  {code: "nl", label: "Nederlands"},
-  {code: "pl", label: "Polski"},
-  {code: "vi", label: "Tiếng Việt"}
-] as const;
+export const LANGUAGE_LABELS = {
+  "en": "English",
+  "es": "Español",
+  "pt": "Português",
+  "fr": "Français",
+  "de": "Deutsch",
+  "ja": "日本語",
+  "ko": "한국어",
+  "zh": "简体中文",
+  "hi": "हिन्दी",
+  "ru": "Русский",
+  "tr": "Türkçe",
+  "ar": "العربية",
+  "id": "Bahasa Indonesia",
+  "it": "Italiano",
+  "nl": "Nederlands",
+  "pl": "Polski",
+  "vi": "Tiếng Việt"
+} as const satisfies Record<Locale, string>;
 
 export const localeCatalogs: Record<Locale, Record<Namespace, unknown>> = {
   "en": {

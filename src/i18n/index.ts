@@ -1,5 +1,5 @@
 import {useSyncExternalStore} from "react";
-import {LANGUAGE_OPTIONS as GENERATED_LANGUAGE_OPTIONS, SUPPORTED_LOCALES, localeCatalogs} from "./generated/catalogs";
+import {LANGUAGE_LABELS, SUPPORTED_LOCALES, localeCatalogs} from "./generated/catalogs";
 import {TRANSLATION_KEYS} from "./generated/keys";
 import type {LanguageOption, Locale, TranslationKey, TranslationSchema} from "./generated/types";
 
@@ -67,9 +67,12 @@ const emitLocaleChange = (): void => {
   localeSubscribers.forEach((listener) => listener());
 };
 
-export const LANGUAGE_OPTIONS: readonly LanguageOption[] = GENERATED_LANGUAGE_OPTIONS;
+export const LANGUAGE_OPTIONS: readonly LanguageOption[] = SUPPORTED_LOCALES.map((code) => ({
+  code,
+  label: LANGUAGE_LABELS[code],
+}));
 
-export const normalizeLocale = (input?: string): Locale => {
+const normalizeLocale = (input?: string): Locale => {
   const value = (input ?? "en").toLowerCase();
 
   if (value.startsWith("es")) return "es";
@@ -132,7 +135,7 @@ const subscribe = (listener: () => void): (() => void) => {
   };
 };
 
-export const useT = (): typeof t => {
+const useT = (): typeof t => {
   const locale = useSyncExternalStore(subscribe, getLocale, getLocale);
 
   return (key, params) => {

@@ -16,6 +16,8 @@
     "src/utils/**/*.{js,jsx,ts,tsx}",
     "src/constants/**/*.{js,jsx,ts,tsx}",
     "src/styles/**/*.{js,jsx,ts,tsx}",
+    "src/constants/__tests__/AppStrings*.test.ts",
+    "src/i18n/__tests__/*.test.ts",
 
     "firebase-functions/src/index.{ts,js}",
     "firebase-functions/src/**/*.{ts,js}"
@@ -54,7 +56,6 @@
     "coverage/**",
     ".expo/**",
     ".expo-shared/**",
-    "**/__tests__/**",
     "firebase-functions/lib/**",
     "firebase-functions/dist/**",
     "firebase-functions/node_modules/**",
