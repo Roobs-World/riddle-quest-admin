@@ -98,6 +98,7 @@ windConfig.reporter = {
 };
 
 // Configure SVG support
+require("react-native-svg-transformer/expo");
 windConfig.transformer.babelTransformerPath = require.resolve("react-native-svg-transformer/expo");
 
 windConfig.transformer.inlineRequires = inlineRequiresEnabled;

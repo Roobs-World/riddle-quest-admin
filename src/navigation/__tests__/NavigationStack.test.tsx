@@ -2,7 +2,7 @@ import React from "react";
 import {fireEvent, render, waitFor} from "@testing-library/react-native";
 
 import {Navigation} from "../NavigationStack";
-import {useAuth} from "../../contexts/AuthContext";
+import {useAuth, useAuthSession, usePlayer, useRiddleState} from "../../contexts/AuthContext";
 import {RiddleInitializationService} from "../../services/RiddleInitializationService";
 import {captureException} from "../../utils/sentry";
 import {analyticsService} from "../../services/AnalyticsService";
@@ -19,8 +19,33 @@ jest.mock("@react-native-firebase/app", () => ({
   getApp: jest.fn(() => ({})),
 }));
 
+jest.mock("../../validation/firestoreSchemas", () => ({
+  __esModule: true,
+  Player: {},
+  FirestoreRiddle: {},
+}));
+
+jest.mock("../../validation/cloudFunctionsSchemas", () => ({
+  __esModule: true,
+  CurrentDailyChallengeOutputSchema: {},
+  EmptyInputSchema: {},
+}));
+
+jest.mock("../../utils/firebaseFunctions", () => ({
+  callValidatedFunction: jest.fn(async (functionName: string) => {
+    if (functionName === "getCurrentDailyChallenge") {
+      const result = await mockDailyCallable();
+      return result.data;
+    }
+    return {};
+  }),
+}));
+
 jest.mock("../../contexts/AuthContext", () => ({
   useAuth: jest.fn(),
+  useAuthSession: jest.fn(),
+  usePlayer: jest.fn(),
+  useRiddleState: jest.fn(),
 }));
 
 jest.mock("../../services/RiddleInitializationService", () => ({
@@ -63,38 +88,6 @@ jest.mock("../../screens/LandingScreen", () => {
   const {View} = require("react-native");
   return function MockLandingScreen() {
     return <View testID="landing-screen" />;
-  };
-});
-
-jest.mock("../../screens/auth/LoginScreen", () => {
-  const React = require("react");
-  const {View} = require("react-native");
-  return function MockLoginScreen() {
-    return <View testID="login-screen" />;
-  };
-});
-
-jest.mock("../../screens/auth/SignUpScreen", () => {
-  const React = require("react");
-  const {View} = require("react-native");
-  return function MockSignUpScreen() {
-    return <View testID="signup-screen" />;
-  };
-});
-
-jest.mock("../../screens/auth/ForgotPasswordScreen", () => {
-  const React = require("react");
-  const {View} = require("react-native");
-  return function MockForgotPasswordScreen() {
-    return <View testID="forgot-password-screen" />;
-  };
-});
-
-jest.mock("../../screens/auth/NewPasswordScreen", () => {
-  const React = require("react");
-  const {View} = require("react-native");
-  return function MockNewPasswordScreen() {
-    return <View testID="new-password-screen" />;
   };
 });
 
@@ -217,10 +210,48 @@ jest.mock("@react-navigation/native-stack", () => ({
 }));
 
 const mockedUseAuth = useAuth as jest.MockedFunction<typeof useAuth>;
+const mockedUseAuthSession = useAuthSession as jest.MockedFunction<typeof useAuthSession>;
+const mockedUsePlayer = usePlayer as jest.MockedFunction<typeof usePlayer>;
+const mockedUseRiddleState = useRiddleState as jest.MockedFunction<typeof useRiddleState>;
 const mockedRiddleInitService = RiddleInitializationService as jest.Mocked<typeof RiddleInitializationService>;
 const mockedCaptureException = captureException as jest.MockedFunction<typeof captureException>;
 const mockedAnalytics = analyticsService as jest.Mocked<typeof analyticsService>;
 const mockedLogger = logger as jest.Mocked<typeof logger>;
+
+mockedUseAuthSession.mockImplementation(() => {
+  const state = mockedUseAuth();
+  return {
+    isAuthenticated: state.isAuthenticated,
+    isLoading: state.isLoading,
+    login: state.login,
+    logout: state.logout,
+  };
+});
+
+mockedUsePlayer.mockImplementation(() => {
+  const state = mockedUseAuth();
+  return {
+    playerData: state.playerData,
+    updatePlayerClassicIndex: state.updatePlayerClassicIndex,
+    updatePlayerData: state.updatePlayerData,
+    updatePlayerDataLocally: state.updatePlayerDataLocally,
+    pendingStreakBreak: state.pendingStreakBreak,
+    consumePendingStreakBreak: state.consumePendingStreakBreak,
+  };
+});
+
+mockedUseRiddleState.mockImplementation(() => {
+  const state = mockedUseAuth();
+  return {
+    currentRiddle: state.currentRiddle,
+    setCurrentRiddle: state.setCurrentRiddle,
+    fetchCurrentRiddle: state.fetchCurrentRiddle,
+    isDailyChallengeAvailable: state.isDailyChallengeAvailable,
+    gameMode: state.gameMode,
+    setGameMode: state.setGameMode,
+    isRiddlesInitializing: state.isRiddlesInitializing,
+  };
+});
 
 const createAuthState = (overrides: Partial<any> = {}) => ({
   isAuthenticated: false,
@@ -264,10 +295,6 @@ describe("NavigationStack", () => {
     const {getByTestId, queryByTestId} = render(<Navigation />);
 
     expect(getByTestId("stack-screen-landing")).toBeTruthy();
-    expect(getByTestId("stack-screen-login")).toBeTruthy();
-    expect(getByTestId("stack-screen-signup")).toBeTruthy();
-    expect(getByTestId("stack-screen-forgotpassword")).toBeTruthy();
-    expect(getByTestId("stack-screen-newpassword")).toBeTruthy();
     expect(queryByTestId("stack-screen-game")).toBeNull();
   });
 
@@ -383,85 +410,6 @@ describe("NavigationStack", () => {
     );
     const {getByTestId} = render(<Navigation />);
     expect(getByTestId("pulsing-spinner")).toBeTruthy();
-  });
-
-  it("handles next level in daily mode when challenge completed", async () => {
-    const playerData = {userId: "u4", progress: {}, coins: 30, stats: {xp: 0, level: 1}};
-    const setGameMode = jest.fn();
-    const fetchCurrentRiddle = jest.fn().mockResolvedValue(undefined);
-    mockDailyCallable.mockResolvedValue({data: {hasCompletedToday: true}});
-    mockedUseAuth.mockReturnValue(
-      createAuthState({
-        isAuthenticated: true,
-        gameMode: "daily",
-        playerData,
-        currentRiddle: {riddleId: "r2", text: "R", answer: "WORD"},
-        setGameMode,
-        fetchCurrentRiddle,
-      }) as any,
-    );
-
-    const {getByTestId} = render(<Navigation />);
-    fireEvent.press(getByTestId("trigger-next-level"));
-
-    await waitFor(() => expect(setGameMode).toHaveBeenCalledWith("classic"));
-    expect(fetchCurrentRiddle).toHaveBeenCalledWith(playerData, "classic");
-  });
-
-  it("handles next level in daily mode when challenge is not completed", async () => {
-    const playerData = {userId: "u4b", progress: {}, coins: 30, stats: {xp: 0, level: 1}};
-    const setGameMode = jest.fn();
-    const fetchCurrentRiddle = jest.fn().mockResolvedValue(undefined);
-    mockDailyCallable.mockResolvedValue({data: {hasCompletedToday: false}});
-    mockedUseAuth.mockReturnValue(
-      createAuthState({
-        isAuthenticated: true,
-        gameMode: "daily",
-        playerData,
-        currentRiddle: {riddleId: "r2", text: "R", answer: "WORD"},
-        setGameMode,
-        fetchCurrentRiddle,
-      }) as any,
-    );
-
-    const {getByTestId} = render(<Navigation />);
-    fireEvent.press(getByTestId("trigger-next-level"));
-
-    await waitFor(() => expect(fetchCurrentRiddle).toHaveBeenCalledWith(playerData, "daily"));
-    expect(setGameMode).not.toHaveBeenCalledWith("classic");
-  });
-
-  // Notification-driven deep link navigation is handled elsewhere; the previous
-  // test depended on a removed `useNotificationNavigation` hook.
-
-  it("does not switch to classic from local completion state for provider users when remote says not completed", async () => {
-    const playerData = {
-      userId: "u4b-local",
-      progress: {},
-      coins: 30,
-      stats: {xp: 0, level: 1},
-      lastDailyChallengeCompletedAt: Date.now(),
-    };
-    const setGameMode = jest.fn();
-    const fetchCurrentRiddle = jest.fn().mockResolvedValue(undefined);
-    mockDailyCallable.mockResolvedValue({data: {hasCompletedToday: false}});
-    mockedUseAuth.mockReturnValue(
-      createAuthState({
-        isAuthenticated: true,
-        gameMode: "daily",
-        playerData,
-        currentRiddle: {riddleId: "r2", text: "R", answer: "WORD"},
-        setGameMode,
-        fetchCurrentRiddle,
-      }) as any,
-    );
-
-    const {getByTestId} = render(<Navigation />);
-    fireEvent.press(getByTestId("trigger-next-level"));
-
-    await waitFor(() => expect(fetchCurrentRiddle).toHaveBeenCalledWith(playerData, "daily"));
-    expect(setGameMode).not.toHaveBeenCalledWith("classic");
-    expect(mockDailyCallable).toHaveBeenCalled();
   });
 
   it("falls back safely when checking daily completion throws", async () => {

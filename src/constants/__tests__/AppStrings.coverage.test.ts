@@ -16,7 +16,7 @@ describe("i18n runtime coverage", () => {
 
   it("tracks locale changes through the runtime catalog", () => {
     setLocale("es");
-    expect(getRootCatalog().Settings.TITLE).toBe("Configuracion");
+    expect(getRootCatalog().Settings.TITLE).toBe("Configuración");
 
     setLocale("en");
     expect(getRootCatalog().Settings.TITLE).toBe("Settings");
@@ -25,7 +25,8 @@ describe("i18n runtime coverage", () => {
   it("publishes generated translation keys", () => {
     expect(translationKeys.length).toBeGreaterThan(50);
     expect(translationKeys).toContain("Settings.TITLE");
-    expect(translationKeys).toContain("AuthStrings.Login.TITLE");
+    expect(translationKeys).toContain("AuthStrings.Landing.PLAY_AS_GUEST");
+    expect(translationKeys).toContain("AuthStrings.Validation.USERNAME_PROFANITY");
     expect(translationKeys).toContain("Tooltips.SUBMIT_ANSWER_TITLE");
   });
 });

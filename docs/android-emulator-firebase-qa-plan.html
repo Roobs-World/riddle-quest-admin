@@ -253,8 +253,8 @@
           </li>
           <li>
             Save screenshots under
-            <code>emulator-tests/images/{device-name}/</code> and logs under
-            <code>emulator-tests/logs/{device-name}/</code>.
+            <code>device-matrix-test/DD-MM-YYYY/{device-name}/images/</code> and logs under
+            <code>device-matrix-test/DD-MM-YYYY/{device-name}/logs/</code>.
           </li>
           <li>
             Do not deploy Firebase Functions, change Firestore rules, or edit live production data outside the
@@ -3643,7 +3643,7 @@ Download and set up any missing Android SDK components, Platform Tools, Android 
 
 Before launching UI QA, run pnpm run android:assemble:emulator to build the debug APK with x86_64 native libraries and verify it against every rq_* AVD. Use pnpm run qa:android:compat as a fast preflight when an APK already exists. Then run pnpm run qa:android:emulators to boot-check the full rq_* emulator matrix with SDK-local ADB, timeout protection, screenshots, logcat capture, SwiftShader rendering, stale-lock cleanup, and shutdown cleanup. The rq_* AVD config.ini files are pinned to hw.gpu.mode=swiftshader_indirect because the historical 36.5.11 crash dump pointed at the Windows/NVIDIA/gfxstream rendering path; keep that setting unless a new emulator version is proven stable with host GPU rendering. pnpm run test:android:matrix already chains android:assemble:emulator and qa:android:emulators before test:android:matrix:run, so use test:android:matrix for the complete guarded matrix and test:android:matrix:run only when intentionally skipping preflights. If a physical Android device is attached, install and launch with explicit emulator serials or explicit Expo --device targets so the emulator APK is not sent to the physical device.
 
-Run the app on every emulator. Prefer Expo MCP for the Expo/React Native development flow; fall back to pnpm run android and pnpm run start only if MCP tools are unavailable. Capture screenshots for every requested page, modal, and meaningful state under emulator-tests/images/{device-name}/ with ordered descriptive filenames. Capture logs under emulator-tests/logs/{device-name}/. Record every screenshot and log path in the Embedded Run Tracker section of docs/android-emulator-firebase-qa-plan.html.
+Run the app on every emulator. Prefer Expo MCP for the Expo/React Native development flow; fall back to pnpm run android and pnpm run start only if MCP tools are unavailable. Capture screenshots for every requested page, modal, and meaningful state under device-matrix-test/DD-MM-YYYY/{device-name}/images/ with ordered descriptive filenames. Capture logs under device-matrix-test/DD-MM-YYYY/{device-name}/logs/. Record every screenshot and log path in the Embedded Run Tracker section of docs/android-emulator-firebase-qa-plan.html.
 
 Test requested pages: loading/auth spinner, Landing, Login, Sign Up from the Login flow, riddle loading, initialization retry/error, and offline blocking state. Do not include Forgot Password screen, New Password screen, or Game screen as standalone page coverage items. If another requested screen exists in source but is unreachable, record that as a defect in the Embedded Run Tracker section of docs/android-emulator-firebase-qa-plan.html.
 

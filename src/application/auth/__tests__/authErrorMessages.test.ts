@@ -1,79 +1,75 @@
+const mockCaptureException = jest.fn();
+
+jest.mock("../../../i18n", () => {
+  const translations: Record<string, string> = {
+    "ErrorMessages.AUTHENTICATION_FAILED": "Authentication failed",
+    "ErrorMessages.NETWORK_ERROR_CHECK_CONNECTION": "Network error. Please check your connection.",
+    "ErrorMessages.SERVICE_TEMPORARILY_UNAVAILABLE": "Service temporarily unavailable. Please try again.",
+    "ErrorMessages.UNKNOWN_ERROR": "Unknown error occurred",
+    "Profile.UPGRADE_ACCOUNT_PROVIDER_IN_USE":
+      "That provider account is already in use. Please choose a different provider.",
+  };
+
+  return {
+    t: (key: string) => translations[key] ?? key,
+  };
+});
+
+jest.mock("../../../utils/sentry", () => ({
+  captureException: (...args: unknown[]) => mockCaptureException(...args),
+}));
+
 import {
+  getAuthErrorMessage,
   getFacebookSignInErrorMessage,
-  getForgotPasswordErrorMessage,
   getGoogleSignInErrorMessage,
-  getLoginErrorMessage,
-  getSignUpErrorMessage,
   isAccountAlreadyInUseError,
   isFacebookLoginCancellation,
   isGoogleSignInCancellation,
 } from "../authErrorMessages";
 
-const mockI18n: any = {
-  AppStrings: {
-    AuthStrings: {
-      Login: {
-        INVALID_EMAIL_FORMAT_ERROR: "Invalid email format.",
-        USER_NOT_FOUND_ERROR: "User not found.",
-        WRONG_PASSWORD_ERROR: "Wrong password.",
-        USER_DISABLED_ERROR: "User disabled.",
-        LOGIN_FAILED_GENERIC: "Login failed.",
-        ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL: "Account already exists.",
-        OPERATION_NOT_SUPPORTED_ERROR: "Operation not supported.",
-        FACEBOOK_NETWORK_ERROR: "Facebook network error.",
-        FACEBOOK_INVALID_CREDENTIAL_ERROR: "Facebook invalid credential.",
-        FACEBOOK_UNEXPECTED_ERROR: "Facebook login failed.",
-        FACEBOOK_CONFIG_ERROR: "Facebook config error.",
-        FACEBOOK_TIMEOUT_ERROR: "Facebook timeout.",
-        FACEBOOK_SDK_ERROR: "Facebook SDK error.",
-        GOOGLE_UNEXPECTED_ERROR: "Google login failed.",
-      },
-      SignUp: {
-        EMAIL_ALREADY_IN_USE_ERROR: "Email already in use.",
-        INVALID_EMAIL_ERROR: "Invalid signup email.",
-        OPERATION_NOT_ALLOWED_ERROR: "Operation not allowed.",
-        WEAK_PASSWORD_ERROR: "Weak password.",
-        SIGNUP_UNEXPECTED_ERROR: "Signup failed.",
-      },
-      ForgotPassword: {
-        USER_NOT_FOUND_ERROR: "Forgot password user not found.",
-        GENERIC_ERROR: "Forgot password failed.",
-      },
-    },
-  },
-};
-
-mockI18n.t = (key: string) => key.split(".").reduce((current: any, segment: string) => current?.[segment], mockI18n.AppStrings);
-
-jest.mock("../../../i18n", () => mockI18n);
-
 describe("authErrorMessages", () => {
-  it("maps login auth codes to friendly copy", () => {
-    expect(getLoginErrorMessage({code: "auth/invalid-email"})).toBe("Invalid email format.");
-    expect(getLoginErrorMessage({code: "auth/user-disabled"})).toBe("User disabled.");
+  beforeEach(() => {
+    mockCaptureException.mockClear();
   });
 
-  it("falls back to the underlying auth error message when no mapping exists", () => {
-    expect(getSignUpErrorMessage({code: "auth/unknown", message: "Signup blew up"})).toBe("Signup blew up");
-  });
+  it("resolves known Google and Facebook mappings", () => {
+    expect(
+      getGoogleSignInErrorMessage({
+        code: "auth/account-exists-with-different-credential",
+      }),
+    ).toBe("That provider account is already in use. Please choose a different provider.");
 
-  it("maps forgot-password failures", () => {
-    expect(getForgotPasswordErrorMessage({code: "auth/user-not-found"})).toBe("Forgot password user not found.");
-  });
-
-  it("resolves Facebook diagnostics and account conflicts", () => {
-    expect(getFacebookSignInErrorMessage(new Error("Facebook SDK not properly initialized"))).toBe(
-      "Facebook SDK error.",
+    expect(getFacebookSignInErrorMessage({code: "auth/network-request-failed"})).toBe(
+      "Network error. Please check your connection.",
     );
-    expect(getGoogleSignInErrorMessage({code: "auth/account-exists-with-different-credential"})).toBe(
-      "Account already exists.",
-    );
+
+    expect(
+      getFacebookSignInErrorMessage({
+        message: "Facebook permission request timed out waiting for the login flow.",
+      }),
+    ).toBe("Service temporarily unavailable. Please try again.");
   });
 
-  it("detects cancellation and account-conflict errors", () => {
-    expect(isGoogleSignInCancellation({type: "cancelled"})).toBe(true);
+  it("keeps cancellation cases silent", () => {
+    expect(getGoogleSignInErrorMessage({type: "cancelled"})).toBeNull();
+    expect(getFacebookSignInErrorMessage({code: "auth/auth-popup-closed-by-user"})).toBeNull();
     expect(isGoogleSignInCancellation({code: "auth/auth-popup-closed-by-user"})).toBe(true);
     expect(isFacebookLoginCancellation({message: "User cancelled the login process"})).toBe(true);
+  });
+
+  it("formats unknown errors with localized text and the raw error code", () => {
+    const result = getAuthErrorMessage({code: "auth/unknown-error", message: "Something broke"}, "google");
+
+    expect(result).toBe("Unknown error occurred (auth/unknown-error)");
+    expect(mockCaptureException).toHaveBeenCalledTimes(1);
+
+    const capturedError = mockCaptureException.mock.calls[0][0] as Error;
+    expect(capturedError).toBeInstanceOf(Error);
+    expect(capturedError.message).toBe("Unhandled auth google error: auth/unknown-error");
+  });
+
+  it("detects account-in-use errors", () => {
     expect(isAccountAlreadyInUseError({message: "[auth/email-already-in-use] already associated"})).toBe(true);
   });
 });

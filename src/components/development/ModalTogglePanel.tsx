@@ -31,7 +31,7 @@ import {modalRegistry, getModalComponent} from "../modals/ModalRegistry";
 import {ModalData} from "../../types/ModalTypes";
 import {SubmittedGuess} from "../../hooks/types";
 import {Player} from "../../validation/firestoreSchemas";
-import {useAuth} from "../../contexts/AuthContext";
+import {usePlayer} from "../../contexts/AuthContext";
 import * as RNIap from "react-native-iap";
 import type {ProductPricing} from "../../services/ProductPricingService";
 import {COLORS, SPACING, BORDER_RADIUS, TYPOGRAPHY} from "../../styles";
@@ -454,7 +454,7 @@ const ModalTogglePanel: React.FC<ModalTogglePanelProps> = ({
   onWatchRewardedAdForCoins,
   onWatchRewardedAdForLossContinue,
 }) => {
-  const {playerData, updatePlayerDataLocally} = useAuth();
+  const {playerData, updatePlayerDataLocally} = usePlayer();
   const [isExpanded, setIsExpanded] = useState(false);
   const [modalToggles, setModalToggles] = useState<{
     [key: string]: boolean | Record<string, unknown>;

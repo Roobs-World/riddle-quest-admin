@@ -349,6 +349,8 @@ pnpm run setup:tests
 
 If Android Studio shows friendly names with spaces, use the underscore AVD IDs above for command-line runs.
 
+Matrix evidence is archived under `device-matrix-test/DD-MM-YYYY/<device>/images/` and `device-matrix-test/DD-MM-YYYY/<device>/logs/`, with shared runner logs stored under the `shared` device folder for that date.
+
 ## Memory Bank
 
 This project utilizes a `memory-bank` directory containing detailed documentation on project context, technical decisions, system patterns, and progress. Refer to these documents (`projectbrief.md`, `productContext.md`, `techContext.md`, `systemPatterns.md`, `activeContext.md`, `progress.md`) for in-depth information.

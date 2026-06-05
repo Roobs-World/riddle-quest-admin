@@ -35,5 +35,3 @@ export const useGameSessionController = (): GameSessionController => {
     runWithServerLoading,
   };
 };
-
-export default useGameSessionController;

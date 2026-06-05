@@ -2,16 +2,12 @@
   "Navigation": {
     "BUY_COINS_BUTTON": "Comprar monedas",
     "CREDITS": "Créditos",
-    "FORGOT_PASSWORD": "Has olvidado tu contraseña",
     "GAME": "Juego",
     "HINT_BUTTON": "Pista",
     "LANDING": "Aterrizaje",
-    "LOGIN": "Acceso",
-    "NEW_PASSWORD": "Nueva contraseña",
     "PLAY_BUTTON": "Jugar",
     "PROFILE_BUTTON": "Perfil",
-    "SETTINGS_BUTTON": "Configuración",
-    "SIGN_UP": "Inscribirse"
+    "SETTINGS_BUTTON": "Configuración"
   },
   "NavigationMessages": {
     "ERROR_LOADING_NEXT_RIDDLE": "Error al cargar el siguiente acertijo clásico:",

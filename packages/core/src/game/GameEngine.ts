@@ -48,14 +48,24 @@ export class GameEngine {
     };
   }
 
+  restore(snapshot: GameEngineSnapshot): void {
+    this.guesses = [...snapshot.guesses];
+    this.attemptsUsed = snapshot.attemptsUsed;
+    this.hasUsedContinue = snapshot.hasUsedContinue;
+    this.gameOver = snapshot.gameOver;
+  }
+
+  reset(): void {
+    this.guesses = [];
+    this.attemptsUsed = 0;
+    this.hasUsedContinue = false;
+    this.gameOver = false;
+  }
+
   getMaxAttempts(): number {
     return this.hasUsedContinue
       ? this.config.initialAttempts + this.config.continueAttempts
       : this.config.initialAttempts;
-  }
-
-  getAttemptsRemaining(): number {
-    return this.getMaxAttempts() - this.attemptsUsed;
   }
 
   isGameOver(): boolean {
@@ -108,20 +118,5 @@ export class GameEngine {
     this.hasUsedContinue = true;
     this.gameOver = false;
     this.guesses = [];
-  }
-
-  reset(): void {
-    this.guesses = [];
-    this.attemptsUsed = 0;
-    this.hasUsedContinue = false;
-    this.gameOver = false;
-  }
-
-  /** Restores engine state (e.g. guest session persistence). */
-  restore(snapshot: GameEngineSnapshot): void {
-    this.guesses = [...snapshot.guesses];
-    this.attemptsUsed = snapshot.attemptsUsed;
-    this.hasUsedContinue = snapshot.hasUsedContinue;
-    this.gameOver = snapshot.gameOver;
   }
 }

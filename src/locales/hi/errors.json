@@ -25,6 +25,7 @@
     "SERVICE_TEMPORARILY_UNAVAILABLE": "सेवा अस्थायी रूप से अनुपलब्ध है। कृपया पुनः प्रयास करें।",
     "SIGN_IN_TO_CONTINUE": "कृपया जारी रखने के लिए साइन इन करें।",
     "TOO_MANY_FAILED_ATTEMPTS": "बहुत सारे असफल प्रयास। कृपया बाद में पुनः प्रयास करें।",
-    "WRONG_PASSWORD_TRY_AGAIN": "गलत पासवर्ड। कृपया पुन: प्रयास करें।"
+    "WRONG_PASSWORD_TRY_AGAIN": "गलत पासवर्ड। कृपया पुन: प्रयास करें।",
+    "UNKNOWN_ERROR": "?? ?????? ?????? ??????? ????"
   }
 }

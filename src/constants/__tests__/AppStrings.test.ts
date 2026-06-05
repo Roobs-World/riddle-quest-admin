@@ -27,8 +27,11 @@ describe("generated i18n catalog", () => {
   it("preserves representative English copy", () => {
     const catalog = getRootCatalog();
 
-    expect(catalog.AuthStrings.Login.TITLE).toBe("Log in");
-    expect(catalog.AuthStrings.SignUp.TITLE).toBe("Create your account");
+    expect(catalog.AuthStrings.Landing.PLAY_AS_GUEST).toBe("Play as Guest");
+    expect(catalog.AuthStrings.Validation.USERNAME_PROFANITY).toBe(
+      "Username contains inappropriate language. Please choose a different username.",
+    );
+    expect(catalog.AuthStrings.Login.CONTINUE_WITH_GOOGLE).toBe("Continue with Google");
     expect(catalog.Navigation.GAME).toBe("Game");
     expect(catalog.Settings.TITLE).toBe("Settings");
     expect(catalog.Profile.TITLE).toBe("Profile");

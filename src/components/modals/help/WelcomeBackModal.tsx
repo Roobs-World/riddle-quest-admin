@@ -14,7 +14,7 @@ import {
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import {moderateScale, verticalScale} from "../../../utils/responsive";
 import RotatingWheelBackground from "@/components/shared/RotatingWheelBackground";
-import {useAuth} from "@/contexts/AuthContext";
+import {usePlayer} from "@/contexts/AuthContext";
 import {logger} from "@/utils/logger";
 
 interface WelcomeBackModalProps {
@@ -26,7 +26,7 @@ interface WelcomeBackModalProps {
 
 const WelcomeBackModal: React.FC<WelcomeBackModalProps> = ({isVisible, onClose, username, onDismiss}) => {
   const modalHeight = Math.min(MODAL_HEIGHT, MODAL_MAX_HEIGHT ?? MODAL_HEIGHT);
-  const {playerData} = useAuth();
+  const {playerData} = usePlayer();
   const avatarUrl = playerData?.avatarUrl ?? null;
   const avatarRadius = AVATAR_SIZE_LARGE / 2;
   const initial = (username || t("Profile.GUEST_USERNAME")).charAt(0).toUpperCase();

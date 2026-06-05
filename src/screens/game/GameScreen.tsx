@@ -25,7 +25,7 @@ import useGameLogic from "../../hooks/useGameLogic";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {GameMode} from "../../contexts/AuthContext";
 
-import {useAuth} from "../../contexts/AuthContext";
+import {useAuthSession, usePlayer} from "../../contexts/AuthContext";
 import {
   APP_LANGUAGE_STORAGE_KEY,
   SupportedLanguage,
@@ -326,7 +326,8 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   gameMode,
   suppressOnboarding = false,
 }) => {
-  const {playerData, logout, updatePlayerDataLocally, pendingStreakBreak, consumePendingStreakBreak} = useAuth();
+  const {logout} = useAuthSession();
+  const {playerData, updatePlayerDataLocally, pendingStreakBreak, consumePendingStreakBreak} = usePlayer();
   const modal = useModal();
   const tooltip = useTooltip();
   const {showWelcomeModal, showWelcomeBackModal, showInstructionsModal, showInfoModal} = modal;

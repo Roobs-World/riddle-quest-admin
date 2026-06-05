@@ -20,11 +20,6 @@ interface GameModalActionSet {
 }
 
 /**
- * Strongly-typed modal action bundle used by gameplay orchestrators.
- */
-export type GameModalActions = ReturnType<typeof createGameModalActions>;
-
-/**
  * Creates reusable, intent-based modal actions to keep gameplay orchestration
  * code free from repeated literal modal payloads.
  *
@@ -64,5 +59,3 @@ export const createGameModalActions = (modal: ReturnType<typeof useModal>): Game
       }),
   };
 };
-
-export default createGameModalActions;

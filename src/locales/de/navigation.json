@@ -2,16 +2,12 @@
   "Navigation": {
     "BUY_COINS_BUTTON": "Münzen kaufen",
     "CREDITS": "Mitwirkende",
-    "FORGOT_PASSWORD": "Passwort vergessen",
     "GAME": "Spiel",
     "HINT_BUTTON": "Hinweis",
     "LANDING": "Landung",
-    "LOGIN": "Anmelden",
-    "NEW_PASSWORD": "Neues Passwort",
     "PLAY_BUTTON": "Spielen",
     "PROFILE_BUTTON": "Profil",
-    "SETTINGS_BUTTON": "Einstellungen",
-    "SIGN_UP": "Melden Sie sich an"
+    "SETTINGS_BUTTON": "Einstellungen"
   },
   "NavigationMessages": {
     "ERROR_LOADING_NEXT_RIDDLE": "Fehler beim Laden des nächsten klassischen Rätsels:",

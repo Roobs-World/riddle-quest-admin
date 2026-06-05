@@ -25,6 +25,7 @@
     "SERVICE_TEMPORARILY_UNAVAILABLE": "El servicio no está disponible temporalmente. Inténtelo de nuevo.",
     "SIGN_IN_TO_CONTINUE": "Inicie sesión para continuar.",
     "TOO_MANY_FAILED_ATTEMPTS": "Demasiados intentos fallidos. Inténtelo de nuevo más tarde.",
-    "WRONG_PASSWORD_TRY_AGAIN": "Contraseña incorrecta. Por favor inténtalo de nuevo."
+    "WRONG_PASSWORD_TRY_AGAIN": "Contraseña incorrecta. Por favor inténtalo de nuevo.",
+    "UNKNOWN_ERROR": "Se produjo un error desconocido."
   }
 }

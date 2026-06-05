@@ -25,6 +25,7 @@
     "SERVICE_TEMPORARILY_UNAVAILABLE": "Service tijdelijk niet beschikbaar. Probeer het opnieuw.",
     "SIGN_IN_TO_CONTINUE": "Meld u aan om door te gaan.",
     "TOO_MANY_FAILED_ATTEMPTS": "Te veel mislukte pogingen. Probeer het later opnieuw.",
-    "WRONG_PASSWORD_TRY_AGAIN": "Onjuist wachtwoord. Probeer het opnieuw."
+    "WRONG_PASSWORD_TRY_AGAIN": "Onjuist wachtwoord. Probeer het opnieuw.",
+    "UNKNOWN_ERROR": "Er is een onbekende fout opgetreden."
   }
 }

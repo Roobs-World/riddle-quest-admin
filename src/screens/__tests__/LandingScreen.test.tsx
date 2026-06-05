@@ -4,7 +4,7 @@ import {Linking} from "react-native";
 import LandingScreen from "../LandingScreen";
 jest.unmock("../LandingScreen"); // Explicitly unmock to ensure coverage
 import {AuthService} from "../../services/AuthService";
-import {useAuth} from "../../contexts/AuthContext";
+import {useAuth, useAuthSession} from "../../contexts/AuthContext";
 import {ModalProvider} from "../../contexts/ModalContext";
 import {logger} from "../../utils/logger";
 import {captureException} from "../../utils/sentry";
@@ -48,12 +48,16 @@ jest.mock("../../utils/sentry", () => ({
   captureException: jest.fn(),
 }));
 
-// Mock useAuth hook
+// Mock useAuthSession hook
 const mockLogin = jest.fn();
 const mockSetGameMode = jest.fn();
 jest.mock("../../contexts/AuthContext", () => ({
   useAuth: jest.fn(),
+  useAuthSession: jest.fn(),
 }));
+const mockedUseAuth = useAuth as jest.MockedFunction<typeof useAuth>;
+const mockedUseAuthSession = useAuthSession as jest.MockedFunction<typeof useAuthSession>;
+mockedUseAuthSession.mockImplementation(() => mockedUseAuth() as any);
 
 // Mock components
 jest.mock("../../components/layouts/CustomSafeAreaView", () => {
@@ -93,16 +97,6 @@ jest.mock("../../components/buttons/WideButton", () => {
       onPress: disabled ? undefined : onPress,
       "data-text": buttonText,
       "data-disabled": disabled,
-    });
-  };
-});
-
-jest.mock("../../components/buttons/SignUpButton", () => {
-  const React = require("react");
-  return function MockSignUpButton({onPress}: any) {
-    return React.createElement("View", {
-      testID: "sign-up-button",
-      onPress: onPress,
     });
   };
 });
@@ -176,6 +170,31 @@ jest.mock("../../../assets/images/home-bg.svg", () => {
 
 // Mock constants
 jest.mock("../../i18n", () => ({
+  t: (key: string) => {
+    const lookup: Record<string, string> = {
+      "AuthStrings.Landing.TAGLINE_1": "Test Tagline 1",
+      "AuthStrings.Landing.TAGLINE_2": "Test Tagline 2",
+      "AuthStrings.Landing.SIGN_IN_BUTTON": "Sign In",
+      "AuthStrings.Landing.OR_SIGN_IN_WITH": "Or sign in with",
+      "AuthStrings.Landing.NO_ACCOUNT_PROMPT": "No account?",
+      "AuthStrings.Landing.PLAY_AS_GUEST": "Play as Guest",
+      "AuthStrings.Landing.CREDITS_BUTTON": "Credits",
+      "AuthStrings.Landing.SIGN_UP_BUTTON": "Sign up",
+      "AuthStrings.Landing.MADE_BY_ROOBS_WORLD": "Made by Roobs World",
+      "AuthStrings.Login.ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL":
+        "That provider account is already in use. Please choose a different provider.",
+      "ErrorMessages.AUTHENTICATION_FAILED": "Authentication failed",
+      "ErrorMessages.NETWORK_ERROR_CHECK_CONNECTION": "Network error. Please check your connection.",
+      "ErrorMessages.SERVICE_TEMPORARILY_UNAVAILABLE": "Service temporarily unavailable. Please try again.",
+      "ErrorMessages.UNKNOWN_ERROR": "Unknown error occurred",
+      "Profile.UPGRADE_ACCOUNT_PROVIDER_IN_USE":
+        "That provider account is already in use. Please choose a different provider.",
+      "Navigation.LOGIN": "Login",
+      "Navigation.SIGN_UP": "SignUp",
+      "Navigation.CREDITS": "Credits",
+    };
+    return lookup[key] ?? key;
+  },
   AppStrings: {
     AuthStrings: {
       Landing: {
@@ -190,15 +209,15 @@ jest.mock("../../i18n", () => ({
       },
       Login: {
         ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL:
-          "Account exists with different credential. Please use a different login method.",
-        GOOGLE_UNEXPECTED_ERROR: "An unexpected error occurred during Google login.",
-        FACEBOOK_CONFIG_ERROR: "Facebook is not configured correctly.",
-        FACEBOOK_TIMEOUT_ERROR: "Facebook login timed out.",
-        FACEBOOK_SDK_ERROR: "Facebook SDK error occurred.",
-        OPERATION_NOT_SUPPORTED_ERROR: "Facebook login is not supported in this environment.",
-        FACEBOOK_NETWORK_ERROR: "Network error during Facebook login. Please check your connection and try again.",
-        FACEBOOK_INVALID_CREDENTIAL_ERROR: "Invalid Facebook credentials. Please try again.",
-        FACEBOOK_UNEXPECTED_ERROR: "An unexpected error occurred during Facebook login.",
+          "That provider account is already in use. Please choose a different provider.",
+        GOOGLE_UNEXPECTED_ERROR: "Unknown error occurred",
+        FACEBOOK_CONFIG_ERROR: "Authentication failed",
+        FACEBOOK_TIMEOUT_ERROR: "Service temporarily unavailable. Please try again.",
+        FACEBOOK_SDK_ERROR: "Authentication failed",
+        OPERATION_NOT_SUPPORTED_ERROR: "Authentication failed",
+        FACEBOOK_NETWORK_ERROR: "Network error. Please check your connection.",
+        FACEBOOK_INVALID_CREDENTIAL_ERROR: "Authentication failed",
+        FACEBOOK_UNEXPECTED_ERROR: "Unknown error occurred",
       },
     },
     Navigation: {
@@ -242,6 +261,7 @@ describe("LandingScreen", () => {
       isAuthenticated: false,
       setGameMode: mockSetGameMode,
     });
+    mockedUseAuthSession.mockImplementation(() => mockedUseAuth() as any);
   });
 
   describe("Component Rendering", () => {
@@ -320,7 +340,7 @@ describe("LandingScreen", () => {
 
   describe("Google Sign In", () => {
     beforeEach(() => {
-      (useAuth as jest.Mock).mockReturnValue({login: mockLogin, isAuthenticated: false, setGameMode: mockSetGameMode});
+      (useAuthSession as jest.Mock).mockReturnValue({login: mockLogin, isAuthenticated: false});
       mockSignInWithGoogle.mockClear();
       mockLogin.mockClear();
     });
@@ -372,7 +392,7 @@ describe("LandingScreen", () => {
       await waitFor(() => {
         const errorMessage = getByTestId("error-message");
         expect(errorMessage.props["data-message"]).toBe(
-          "Account exists with different credential. Please use a different login method.",
+          "That provider account is already in use. Please choose a different provider.",
         );
       });
     });
@@ -409,14 +429,14 @@ describe("LandingScreen", () => {
 
       await waitFor(() => {
         const errorMessage = getByTestId("error-message");
-        expect(errorMessage.props["data-message"]).toBe("Unknown error occurred");
+        expect(errorMessage.props["data-message"]).toBe("Unknown error occurred (auth/unknown-error)");
       });
     });
   });
 
   describe("Facebook Sign In", () => {
     beforeEach(() => {
-      (useAuth as jest.Mock).mockReturnValue({login: mockLogin, isAuthenticated: false, setGameMode: mockSetGameMode});
+      (useAuthSession as jest.Mock).mockReturnValue({login: mockLogin, isAuthenticated: false});
       mockSignInWithFacebook.mockClear();
       mockLogin.mockClear();
     });
@@ -468,7 +488,7 @@ describe("LandingScreen", () => {
       await waitFor(() => {
         const errorMessage = getByTestId("error-message");
         expect(errorMessage.props["data-message"]).toBe(
-          "Account exists with different credential. Please use a different login method.",
+          "That provider account is already in use. Please choose a different provider.",
         );
       });
     });
@@ -487,12 +507,12 @@ describe("LandingScreen", () => {
 
       await waitFor(() => {
         const errorMessage = getByTestId("error-message");
-        expect(errorMessage.props["data-message"]).toBe("Facebook login is not supported in this environment.");
+        expect(errorMessage.props["data-message"]).toBe("Authentication failed");
       });
     });
 
     it("should handle Facebook sign-in failure with generic error", async () => {
-      const errorMessage = "An unexpected error occurred during Facebook login.";
+      const errorMessage = "Unknown error occurred";
       (AuthService.signInWithFacebook as jest.Mock).mockRejectedValueOnce(new Error(errorMessage));
       const {getByTestId, findByTestId} = renderWithProviders(<LandingScreen />);
 
@@ -581,7 +601,7 @@ describe("LandingScreen", () => {
 
       await waitFor(() => {
         const errorMessage = getByTestId("error-message");
-        expect(errorMessage.props["data-message"]).toBe("First error");
+        expect(errorMessage.props["data-message"]).toBe("Unknown error occurred (auth/unknown-error)");
       });
 
       // Now try Facebook sign in - should clear the error
@@ -623,7 +643,7 @@ describe("LandingScreen", () => {
 
     it("should handle useAuth hook correctly", () => {
       expect(() => renderWithProviders(<LandingScreen />)).not.toThrow();
-      expect(useAuth).toHaveBeenCalled();
+      expect(useAuthSession).toHaveBeenCalled();
     });
   });
 
@@ -704,7 +724,7 @@ describe("Google Sign-In", () => {
     });
 
     const errorComponent = await findByTestId("error-message");
-    expect(errorComponent.props["data-message"]).toBe(errorMessage);
+    expect(errorComponent.props["data-message"]).toBe("Unknown error occurred");
     expect(getByTestId("pulsing-spinner").props["data-visible"]).toBe(false);
   });
 
@@ -720,7 +740,7 @@ describe("Google Sign-In", () => {
 
     const errorComponent = await findByTestId("error-message");
     expect(errorComponent.props["data-message"]).toBe(
-      "Account exists with different credential. Please use a different login method.",
+      "That provider account is already in use. Please choose a different provider.",
     );
   });
 
@@ -767,7 +787,7 @@ describe("Facebook Sign-In", () => {
   });
 
   it("should handle Facebook sign-in failure with generic error", async () => {
-    const errorMessage = "An unexpected error occurred during Facebook login.";
+    const errorMessage = "Unknown error occurred";
     mockSignInWithFacebook.mockRejectedValueOnce(new Error(errorMessage));
     const {getByTestId, findByTestId} = renderWithProviders(<LandingScreen />);
 
@@ -795,7 +815,7 @@ describe("Facebook Sign-In", () => {
 
     const errorComponent = await findByTestId("error-message");
     expect(errorComponent.props["data-message"]).toBe(
-      "Account exists with different credential. Please use a different login method.",
+      "That provider account is already in use. Please choose a different provider.",
     );
   });
 
@@ -825,7 +845,7 @@ describe("Facebook Sign-In", () => {
     await waitFor(() => expect(mockSignInWithFacebook).toHaveBeenCalledTimes(1));
 
     const errorComponent = await findByTestId("error-message");
-    expect(errorComponent.props["data-message"]).toBe("Facebook login is not supported in this environment.");
+    expect(errorComponent.props["data-message"]).toBe("Authentication failed");
   });
 });
 
@@ -957,7 +977,7 @@ describe("Facebook Sign-In Edge Cases", () => {
 
     const errorComponent = await findByTestId("error-message");
     expect(errorComponent.props["data-message"]).toBe(
-      "Network error during Facebook login. Please check your connection and try again.",
+      "Network error. Please check your connection.",
     );
   });
 
@@ -973,7 +993,7 @@ describe("Facebook Sign-In Edge Cases", () => {
     fireEvent.press(getByTestId("facebook-signin-button"));
 
     const errorComponent = await findByTestId("error-message");
-    expect(errorComponent.props["data-message"]).toBe("Invalid Facebook credentials. Please try again.");
+    expect(errorComponent.props["data-message"]).toBe("Authentication failed");
   });
 
   it("should handle non-Error object rejection", async () => {
@@ -985,7 +1005,7 @@ describe("Facebook Sign-In Edge Cases", () => {
     fireEvent.press(getByTestId("facebook-signin-button"));
 
     const errorComponent = await findByTestId("error-message");
-    expect(errorComponent.props["data-message"]).toBe("An unexpected error occurred during Facebook login.");
+    expect(errorComponent.props["data-message"]).toBe("Unknown error occurred");
   });
 });
 
@@ -1009,7 +1029,7 @@ describe("Google Sign-In Edge Cases", () => {
     fireEvent.press(getByTestId("google-signin-button"));
 
     const errorComponent = await findByTestId("error-message");
-    expect(errorComponent.props["data-message"]).toBe("An unexpected error occurred during Google login.");
+    expect(errorComponent.props["data-message"]).toBe("Unknown error occurred (auth/unknown-error)");
   });
 
   it("should not call login if user uid is missing", async () => {

@@ -11,10 +11,6 @@ describe("responsive screen and modal coverage", () => {
       "src/screens/LandingScreen.tsx",
       ["LANDING_LOGO_WIDTH", "LANDING_LOGO_HEIGHT", "authContentContainer"],
     ],
-    ["ForgotPasswordScreen", "src/screens/auth/ForgotPasswordScreen.tsx", ["AuthLayout", "CustomSafeAreaView"]],
-    ["LoginScreen", "src/screens/auth/LoginScreen.tsx", ["AuthLayout", "isWideAuthLayout"]],
-    ["NewPasswordScreen", "src/screens/auth/NewPasswordScreen.tsx", ["AuthLayout", "CustomSafeAreaView"]],
-    ["SignUpScreen", "src/screens/auth/SignUpScreen.tsx", ["AuthLayout", "CustomSafeAreaView"]],
     ["GameScreen", "src/screens/game/GameScreen.tsx", ["isTablet", "isLargeTablet", "isDesktop", "gameContainer"]],
   ])("%s keeps responsive layout hooks in place", (_name, relativePath, markers) => {
     const source = read(relativePath);

@@ -21,7 +21,6 @@ module.exports = {
     "^@fonts/(.*)$": "<rootDir>/assets/fonts/$1",
     "react-native-fbsdk-next": "<rootDir>/src/__mocks__/react-native-fbsdk-next.js",
     "react-native-reanimated": "<rootDir>/src/__mocks__/react-native-reanimated.js",
-    "@react-native-firebase/messaging": "<rootDir>/src/__mocks__/@react-native-firebase/messaging.js",
   },
   testMatch: ["**/__tests__/**/*.(test|spec).(js|jsx|ts|tsx)", "**/*.(test|spec).(js|jsx|ts|tsx)"],
   collectCoverageFrom: [

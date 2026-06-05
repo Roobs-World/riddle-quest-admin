@@ -258,7 +258,7 @@ const CoinsDisplay: React.FC<CoinsDisplayProps> = ({coins, onPress, shouldAnimat
           fontFamily: TYPOGRAPHY.fontPrimary,
           color: "#ffffff",
           fontSize: TYPOGRAPHY.fontSize.lg,
-          marginRight: SPACING.xs,
+          marginRight: SPACING.sm,
         }}
       >
         {String(displayedCoins)}

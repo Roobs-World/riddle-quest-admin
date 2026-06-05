@@ -1,12 +1,6 @@
-import type {FirebaseAuthTypes} from "@react-native-firebase/auth";
 import {t} from "../../i18n";
-import {
-  ErrorMessageResolver,
-  createCodeMapStrategy,
-  createMessageContainsStrategy,
-  extractErrorCode,
-  extractErrorMessage,
-} from "../../utils/errorResolution";
+import {extractErrorCode, extractErrorMessage} from "../../utils/errorResolution";
+import {captureException} from "../../utils/sentry";
 
 const GOOGLE_CANCELLATION_CODES = new Set([
   "auth/auth-popup-closed-by-user",
@@ -36,126 +30,68 @@ const ACCOUNT_CONFLICT_CODES = new Set([
   "auth/email-already-in-use",
 ]);
 
-const copy = (key: Parameters<typeof t>[0]): string => t(key);
+type TranslateFn = typeof t;
 
-const LOGIN_ERROR_RESOLVER = new ErrorMessageResolver(
-  [
-    createCodeMapStrategy("LoginFirebaseCodes", {
-      "auth/invalid-email": copy("AuthStrings.Login.INVALID_EMAIL_FORMAT_ERROR"),
-      "auth/user-not-found": copy("AuthStrings.Login.USER_NOT_FOUND_ERROR"),
-      "auth/wrong-password": copy("AuthStrings.Login.WRONG_PASSWORD_ERROR"),
-      "auth/invalid-credential": copy("AuthStrings.Login.WRONG_PASSWORD_ERROR"),
-      "auth/user-disabled": copy("AuthStrings.Login.USER_DISABLED_ERROR"),
-    }),
-    {
-      name: "LoginMessageFallback",
-      matches: (error: unknown): boolean =>
-        typeof error === "object" && error !== null && typeof extractErrorMessage(error) === "string",
-      resolve: () => null,
-    },
-  ],
-  {
-    fallbackMessage: copy("AuthStrings.Login.LOGIN_FAILED_GENERIC"),
-  },
-);
-
-const SIGN_UP_ERROR_RESOLVER = new ErrorMessageResolver(
-  [
-    createCodeMapStrategy("SignUpFirebaseCodes", {
-      "auth/email-already-in-use": copy("AuthStrings.SignUp.EMAIL_ALREADY_IN_USE_ERROR"),
-      "auth/invalid-email": copy("AuthStrings.SignUp.INVALID_EMAIL_ERROR"),
-      "auth/operation-not-allowed": copy("AuthStrings.SignUp.OPERATION_NOT_ALLOWED_ERROR"),
-      "auth/weak-password": copy("AuthStrings.SignUp.WEAK_PASSWORD_ERROR"),
-    }),
-    {
-      name: "SignUpMessageFallback",
-      matches: (error: unknown): boolean =>
-        typeof error === "object" && error !== null && typeof extractErrorMessage(error) === "string",
-      resolve: () => null,
-    },
-  ],
-  {
-    fallbackMessage: copy("AuthStrings.SignUp.SIGNUP_UNEXPECTED_ERROR"),
-  },
-);
-
-const FORGOT_PASSWORD_ERROR_RESOLVER = new ErrorMessageResolver(
-  [
-    createCodeMapStrategy("ForgotPasswordFirebaseCodes", {
-      "auth/user-not-found": copy("AuthStrings.ForgotPassword.USER_NOT_FOUND_ERROR"),
-    }),
-    {
-      name: "ForgotPasswordMessageFallback",
-      matches: (error: unknown): boolean =>
-        typeof error === "object" && error !== null && typeof extractErrorMessage(error) === "string",
-      resolve: () => null,
-    },
-  ],
-  {
-    fallbackMessage: copy("AuthStrings.ForgotPassword.GENERIC_ERROR"),
-  },
-);
-
-const FACEBOOK_ERROR_RESOLVER = new ErrorMessageResolver(
-  [
-    createMessageContainsStrategy("FacebookDiagnosticPatterns", [
-      {
-        pattern: "access token",
-        message: copy("AuthStrings.Login.FACEBOOK_CONFIG_ERROR"),
-      },
-      {
-        pattern: "Facebook permission request timed out",
-        message: copy("AuthStrings.Login.FACEBOOK_TIMEOUT_ERROR"),
-      },
-      {
-        pattern: "Facebook SDK not properly initialized",
-        message: copy("AuthStrings.Login.FACEBOOK_SDK_ERROR"),
-      },
-    ]),
-    createCodeMapStrategy("FacebookFirebaseCodes", {
-      "auth/account-exists-with-different-credential":
-        copy("AuthStrings.Login.ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL"),
-      "auth/operation-not-supported-in-this-environment": copy(
-        "AuthStrings.Login.OPERATION_NOT_SUPPORTED_ERROR",
-      ),
-      "auth/network-request-failed": copy(
-        "AuthStrings.Login.FACEBOOK_NETWORK_ERROR",
-      ),
-      "auth/invalid-credential": copy(
-        "AuthStrings.Login.FACEBOOK_INVALID_CREDENTIAL_ERROR",
-      ),
-    }),
-    {
-      name: "FacebookMessageFallback",
-      matches: (error: unknown): boolean =>
-        typeof error === "object" && error !== null && typeof extractErrorMessage(error) === "string",
-      resolve: () => null,
-    },
-  ],
-  {
-    fallbackMessage: copy("AuthStrings.Login.FACEBOOK_UNEXPECTED_ERROR"),
-  },
-);
-
-const GOOGLE_ERROR_RESOLVER = new ErrorMessageResolver(
-  [
-    createCodeMapStrategy("GoogleFirebaseCodes", {
-      "auth/account-exists-with-different-credential":
-        copy("AuthStrings.Login.ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL"),
-    }),
-    {
-      name: "GoogleMessageFallback",
-      matches: (error: unknown): boolean =>
-        typeof error === "object" && error !== null && typeof extractErrorMessage(error) === "string",
-      resolve: () => null,
-    },
-  ],
-  {
-    fallbackMessage: copy("AuthStrings.Login.GOOGLE_UNEXPECTED_ERROR"),
-  },
-);
+export type AuthProvider = "google" | "facebook";
 
 const normalizeAuthCode = (code: string): string => code.trim().toLowerCase();
+
+const buildUnknownAuthError = (provider: AuthProvider, error: unknown): Error => {
+  const code = extractErrorCode(error);
+  const suffix = code ? `: ${code}` : "";
+  return new Error(`Unhandled auth ${provider} error${suffix}`);
+};
+
+const formatUnknownAuthMessage = (translate: TranslateFn, error: unknown): string => {
+  const code = extractErrorCode(error);
+  const baseMessage = translate("ErrorMessages.UNKNOWN_ERROR");
+  return code ? `${baseMessage} (${code})` : baseMessage;
+};
+
+const resolveGoogleKnownErrorMessage = (error: unknown, translate: TranslateFn): string | null => {
+  if (isAccountAlreadyInUseError(error)) {
+    return translate("Profile.UPGRADE_ACCOUNT_PROVIDER_IN_USE");
+  }
+
+  const code = extractErrorCode(error)?.toLowerCase() ?? "";
+  if (code === "auth/network-request-failed") {
+    return translate("ErrorMessages.NETWORK_ERROR_CHECK_CONNECTION");
+  }
+  if (code === "auth/invalid-credential") {
+    return translate("ErrorMessages.AUTHENTICATION_FAILED");
+  }
+
+  return null;
+};
+
+const resolveFacebookKnownErrorMessage = (error: unknown, translate: TranslateFn): string | null => {
+  const message = extractErrorMessage(error)?.toLowerCase() ?? "";
+  const code = extractErrorCode(error)?.toLowerCase() ?? "";
+
+  if (message.includes("access token")) {
+    return translate("ErrorMessages.AUTHENTICATION_FAILED");
+  }
+  if (message.includes("facebook permission request timed out")) {
+    return translate("ErrorMessages.SERVICE_TEMPORARILY_UNAVAILABLE");
+  }
+  if (message.includes("facebook sdk not properly initialized")) {
+    return translate("ErrorMessages.AUTHENTICATION_FAILED");
+  }
+  if (isAccountAlreadyInUseError(error)) {
+    return translate("Profile.UPGRADE_ACCOUNT_PROVIDER_IN_USE");
+  }
+  if (code === "auth/operation-not-supported-in-this-environment") {
+    return translate("ErrorMessages.AUTHENTICATION_FAILED");
+  }
+  if (code === "auth/network-request-failed") {
+    return translate("ErrorMessages.NETWORK_ERROR_CHECK_CONNECTION");
+  }
+  if (code === "auth/invalid-credential") {
+    return translate("ErrorMessages.AUTHENTICATION_FAILED");
+  }
+
+  return null;
+};
 
 export const isGoogleSignInCancellation = (error: unknown): boolean => {
   if (!error) {
@@ -218,23 +154,36 @@ export const isAccountAlreadyInUseError = (error: unknown): boolean => {
   );
 };
 
-export const getLoginErrorMessage = (error: unknown): string => LOGIN_ERROR_RESOLVER.resolve(error);
-
-export const getSignUpErrorMessage = (error: unknown): string => SIGN_UP_ERROR_RESOLVER.resolve(error);
-
-export const getForgotPasswordErrorMessage = (error: unknown): string => FORGOT_PASSWORD_ERROR_RESOLVER.resolve(error);
-
-export const getGoogleSignInErrorMessage = (error: unknown): string => GOOGLE_ERROR_RESOLVER.resolve(error);
-
-export const getFacebookSignInErrorMessage = (error: unknown): string => FACEBOOK_ERROR_RESOLVER.resolve(error);
-
-export const getAuthErrorMessage = (error: unknown): string => {
-  const code = extractErrorCode(error);
-  if (code && normalizeAuthCode(code) === "auth/account-exists-with-different-credential") {
-    return copy("AuthStrings.Login.ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL");
+export const getAuthErrorMessage = (
+  error: unknown,
+  provider: AuthProvider,
+  translate: TranslateFn = t,
+): string | null => {
+  if (provider === "google" && isGoogleSignInCancellation(error)) {
+    return null;
   }
 
-  return copy("AuthStrings.Login.GOOGLE_UNEXPECTED_ERROR");
+  if (provider === "facebook" && isFacebookLoginCancellation(error)) {
+    return null;
+  }
+
+  const knownMessage =
+    provider === "google"
+      ? resolveGoogleKnownErrorMessage(error, translate)
+      : resolveFacebookKnownErrorMessage(error, translate);
+
+  if (knownMessage) {
+    return knownMessage;
+  }
+
+  captureException(buildUnknownAuthError(provider, error));
+  return formatUnknownAuthMessage(translate, error);
 };
 
-export type NativeFirebaseAuthError = FirebaseAuthTypes.NativeFirebaseAuthError;
+export const getGoogleSignInErrorMessage = (error: unknown, translate: TranslateFn = t): string | null => {
+  return getAuthErrorMessage(error, "google", translate);
+};
+
+export const getFacebookSignInErrorMessage = (error: unknown, translate: TranslateFn = t): string | null => {
+  return getAuthErrorMessage(error, "facebook", translate);
+};

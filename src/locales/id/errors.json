@@ -25,6 +25,7 @@
     "SERVICE_TEMPORARILY_UNAVAILABLE": "Layanan untuk sementara tidak tersedia. Silakan coba lagi.",
     "SIGN_IN_TO_CONTINUE": "Silakan masuk untuk melanjutkan.",
     "TOO_MANY_FAILED_ATTEMPTS": "Terlalu banyak upaya yang gagal. Silakan coba lagi nanti.",
-    "WRONG_PASSWORD_TRY_AGAIN": "Sandi salah. Silakan coba lagi."
+    "WRONG_PASSWORD_TRY_AGAIN": "Sandi salah. Silakan coba lagi.",
+    "UNKNOWN_ERROR": "Terjadi kesalahan yang tidak diketahui."
   }
 }

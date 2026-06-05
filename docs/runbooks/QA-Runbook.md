@@ -44,7 +44,8 @@ Evidence collection (manual)
 
 Where to store artifacts
 
-- Place screenshots, logs, and JSON snapshots under `emulator-tests/logs/` or `docs/evidence/` and reference them in the issue checklist.
+- Place matrix screenshots, logs, and JSON snapshots under `device-matrix-test/DD-MM-YYYY/<device>/images/` and `device-matrix-test/DD-MM-YYYY/<device>/logs/`.
+- For non-matrix evidence, keep using `docs/evidence/` or the existing issue-specific archive paths and reference them in the issue checklist.
 
 Next steps for a teammate with credentials
 

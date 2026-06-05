@@ -2,16 +2,12 @@
   "Navigation": {
     "BUY_COINS_BUTTON": "Buy coins",
     "CREDITS": "Credits",
-    "FORGOT_PASSWORD": "ForgotPassword",
     "GAME": "Game",
     "HINT_BUTTON": "Hint",
     "LANDING": "Landing",
-    "LOGIN": "Login",
-    "NEW_PASSWORD": "NewPassword",
     "PLAY_BUTTON": "Play",
     "PROFILE_BUTTON": "Profile",
-    "SETTINGS_BUTTON": "Settings",
-    "SIGN_UP": "SignUp"
+    "SETTINGS_BUTTON": "Settings"
   },
   "NavigationMessages": {
     "ERROR_LOADING_NEXT_RIDDLE": "Error loading next classic riddle:",

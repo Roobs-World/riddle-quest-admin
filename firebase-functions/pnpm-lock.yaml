@@ -11,6 +11,9 @@ importers:
       '@google-cloud/functions-framework':
         specifier: ^4.0.0
         version: 4.0.0
+      '@qwordly/core':
+        specifier: file:../packages/core
+        version: file:../packages/core
       '@sentry/node':
         specifier: ^10.54.0
         version: 10.54.0
@@ -1052,6 +1055,9 @@ packages:
 
   '@protobufjs/utf8@1.1.0':
     resolution: {integrity: sha512-Vvn3zZrhQZkkBE8LSuW3em98c0FwgO4nxzv6OdSxPKJIEKY2bGbHn+mhGIPerzI4twdxaP8/0+06HBpwf345Lw==}
+
+  '@qwordly/core@file:../packages/core':
+    resolution: {directory: ../packages/core, type: directory}
 
   '@rollup/rollup-android-arm-eabi@4.41.1':
     resolution: {integrity: sha512-NELNvyEWZ6R9QMkiytB4/L4zSEaBC03KIXEghptLGLZWJ6VPrL63ooZQCOnlx36aQPGhzuOMwDerC1Eb2VmrLw==}
@@ -5236,6 +5242,10 @@ snapshots:
   '@protobufjs/pool@1.1.0': {}
 
   '@protobufjs/utf8@1.1.0': {}
+
+  '@qwordly/core@file:../packages/core':
+    dependencies:
+      zod: 4.4.3
 
   '@rollup/rollup-android-arm-eabi@4.41.1':
     optional: true

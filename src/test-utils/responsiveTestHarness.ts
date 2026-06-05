@@ -7,7 +7,7 @@ export interface ResponsiveTestProfile {
   expectedTier: ResponsiveDeviceTier;
 }
 
-export const responsiveTestProfiles = {
+const responsiveTestProfiles = {
   smallPhone: {
     name: "Pixel 4a-class small phone",
     screenWidth: 360,
@@ -60,7 +60,7 @@ export const responsiveTestProfiles = {
 
 export const responsiveTestProfileList = Object.values(responsiveTestProfiles);
 
-export const getResponsiveFlagsForProfile = (profile: ResponsiveTestProfile) => {
+const getResponsiveFlagsForProfile = (profile: ResponsiveTestProfile) => {
   const isDesktop = profile.screenWidth >= 1024;
   const isLargeTablet = profile.screenWidth >= 768;
   const isTablet = profile.screenWidth >= 600;
@@ -74,7 +74,7 @@ export const getResponsiveFlagsForProfile = (profile: ResponsiveTestProfile) => 
   };
 };
 
-export const getDeviceTypeForProfile = (profile: ResponsiveTestProfile): ResponsiveDeviceTier => {
+const getDeviceTypeForProfile = (profile: ResponsiveTestProfile): ResponsiveDeviceTier => {
   const flags = getResponsiveFlagsForProfile(profile);
   if (flags.isDesktop) return "desktop";
   if (flags.isLargeTablet) return "largeTablet";
@@ -98,7 +98,7 @@ const getVerticalScaleCap = (profile: ResponsiveTestProfile): number => {
   return Infinity;
 };
 
-export const createResponsiveMockForProfile = (profile: ResponsiveTestProfile) => {
+const createResponsiveMockForProfile = (profile: ResponsiveTestProfile) => {
   const flags = getResponsiveFlagsForProfile(profile);
   const widthScale = Math.min(profile.screenWidth / 390, getScaleCap(profile));
   const heightScale = Math.min(profile.screenHeight / 844, getVerticalScaleCap(profile));

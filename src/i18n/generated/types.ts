@@ -5,116 +5,29 @@
 
 export const translationSchema = {
   "AuthStrings": {
-    "ForgotPassword": {
-      "BACK_TO_LOGIN": "Back to Login",
-      "BUTTON_TEXT": "Reset Password",
-      "GENERIC_ERROR": "An error occurred while sending the reset email. Please try again.",
-      "SUCCESS_MESSAGE": "Password reset email sent! Check your inbox.",
-      "TITLE": "Reset Password",
-      "USER_NOT_FOUND_ERROR": "No account found with this email address. Please check your email or sign up for a new account."
-    },
     "Landing": {
-      "CREDITS_BUTTON": "Credits",
-      "NO_ACCOUNT_PROMPT": "Don't have an account? ",
-      "OR_SIGN_IN_WITH": "or Sign in with",
-      "PLAY_AS_GUEST": "Play as Guest",
-      "SIGN_IN_BUTTON": "Sign in",
-      "SIGN_UP_BUTTON": "Sign up",
       "TAGLINE_1": "Join millions of people to play Riddle Quest.",
-      "TAGLINE_2": "Ready to have fun while training your mind?",
+      "PLAY_AS_GUEST": "Play as Guest",
       "MADE_BY_ROOBS_WORLD": "Made by Roobs World"
     },
     "Login": {
-      "ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL": "Account exists with different credential. Please use a different login method.",
       "CONTINUE_WITH_FACEBOOK": "Continue with Facebook",
       "CONTINUE_WITH_GOOGLE": "Continue with Google",
-      "CONTINUE_WITH_TWITTER": "Continue with X",
-      "EMAIL_LABEL": "Email",
-      "EMAIL_PLACEHOLDER": "Enter your email",
-      "FACEBOOK_CONFIG_ERROR": "Facebook login configuration issue. Please try again or contact support.",
-      "FACEBOOK_INVALID_CREDENTIAL_ERROR": "Invalid Facebook credentials. Please try again.",
-      "FACEBOOK_NETWORK_ERROR": "Network error during Facebook login. Please check your connection and try again.",
-      "FACEBOOK_SDK_ERROR": "Facebook login is not properly configured. Please restart the app and try again.",
-      "FACEBOOK_TIMEOUT_ERROR": "Facebook login timed out. This may indicate a configuration issue. Please try again.",
-      "FACEBOOK_UNEXPECTED_ERROR": "An unexpected error occurred during Facebook login.",
-      "FORGOT_PASSWORD": "Forgot password?",
-      "GOOGLE_UNEXPECTED_ERROR": "An unexpected error occurred during Google login.",
-      "INVALID_EMAIL_FORMAT_ERROR": "Invalid email format ✗",
-      "LOGIN_BUTTON": "Log In",
-      "LOGIN_FAILED_GENERIC": "Login failed. Please check your credentials.",
-      "NO_ACCOUNT_PROMPT": "Don't have an account? ",
-      "OPERATION_NOT_SUPPORTED_ERROR": "Operation not supported in this environment.",
-      "OR_LOGIN_WITH": "Or login with",
-      "PASSWORD_CANNOT_BE_EMPTY": "Password cannot be empty",
-      "PASSWORD_LABEL": "Password",
-      "PASSWORD_PLACEHOLDER": "Enter your password",
-      "REGISTER_NOW": "Register Now",
-      "TITLE": "Log in",
-      "TWITTER_UNEXPECTED_ERROR": "An unexpected error occurred during X login.",
-      "USER_DISABLED_ERROR": "This account has been disabled.",
-      "USER_NOT_FOUND_ERROR": "User not found. Please check your email.",
-      "WRONG_PASSWORD_ERROR": "Incorrect password. Please try again."
-    },
-    "NewPassword": {
-      "CONFIRM_PASSWORD_LABEL": "Confirm New Password",
-      "CONFIRM_PASSWORD_PLACEHOLDER": "Confirm your new password",
-      "NEW_PASSWORD_DESCRIPTION": "Reset your password to recovery & login to your account.",
-      "NEW_PASSWORD_LABEL": "New Password",
-      "NEW_PASSWORD_PLACEHOLDER": "Enter your new password",
-      "SET_PASSWORD_BUTTON": "Confirm",
-      "TITLE": "Set New Password"
-    },
-    "SignUp": {
-      "CONFIRM_PASSWORD_LABEL": "Confirm Password",
-      "CONFIRM_PASSWORD_PLACEHOLDER": "Confirm your password",
-      "EMAIL_ALREADY_IN_USE_ERROR": "This email address is already in use.",
-      "EMAIL_LABEL": "Email",
-      "EMAIL_PLACEHOLDER": "Enter your email",
-      "HAS_ACCOUNT_PROMPT": "Do you have an account? ",
-      "INVALID_EMAIL_ERROR": "The email address is invalid.",
-      "LOGIN_NOW": "Log in now",
-      "MUST_AGREE_TO_TERMS": "Please agree to the terms and privacy policy.",
-      "NEXT_BUTTON": "Next",
-      "OPERATION_NOT_ALLOWED_ERROR": "Email and password sign-up is not enabled.",
-      "PASSWORD_DOES_NOT_LONG_ENOUGH": "Password is too short ✗",
-      "PASSWORD_DOES_NOT_MATCH": "Passwords do not match ✗",
-      "PASSWORD_LABEL": "Password",
-      "PASSWORD_PLACEHOLDER": "Enter your password",
-      "PASSWORD_VALIDATION_GOOD": "Passwords match ✓",
-      "PRIVACY_POLICY_PAGE_NAME": "Privacy Policy",
-      "SIGNUP_UNEXPECTED_ERROR": "An unexpected error occurred during sign up.",
-      "TERMS_AGREEMENT_PART1": "I agree to the ",
-      "TERMS_AGREEMENT_PART2": " and ",
-      "TERMS_PAGE_NAME": "Terms of Service",
-      "TERMS_PRIVACY_POLICY": "privacy policy",
-      "TERMS_USER_AGREEMENT": "user agreement",
-      "TITLE": "Create your account",
-      "USERNAME_CANNOT_BE_EMPTY": "Username cannot be empty",
-      "USERNAME_LABEL": "Username",
-      "USERNAME_PLACEHOLDER": "Enter your username",
-      "WEAK_PASSWORD_ERROR": "The password is too weak."
+      "CONTINUE_WITH_TWITTER": "Continue with X"
     },
     "Validation": {
-      "INVALID_EMAIL_ADDRESS": "Invalid email address",
-      "PASSWORD_MIN_LENGTH": "Password must be at least 6 characters long",
-      "PASSWORDS_DO_NOT_MATCH": "Passwords do not match",
-      "USERNAME_PROFANITY": "Username contains inappropriate language. Please choose a different username.",
-      "USERNAME_REQUIRED": "Username is required"
+      "USERNAME_PROFANITY": "Username contains inappropriate language. Please choose a different username."
     }
   },
   "Navigation": {
     "BUY_COINS_BUTTON": "Buy coins",
     "CREDITS": "Credits",
-    "FORGOT_PASSWORD": "ForgotPassword",
     "GAME": "Game",
     "HINT_BUTTON": "Hint",
     "LANDING": "Landing",
-    "LOGIN": "Login",
-    "NEW_PASSWORD": "NewPassword",
     "PLAY_BUTTON": "Play",
     "PROFILE_BUTTON": "Profile",
-    "SETTINGS_BUTTON": "Settings",
-    "SIGN_UP": "SignUp"
+    "SETTINGS_BUTTON": "Settings"
   },
   "NavigationMessages": {
     "ERROR_LOADING_NEXT_RIDDLE": "Error loading next classic riddle:",
@@ -308,7 +221,8 @@ export const translationSchema = {
     "SERVICE_TEMPORARILY_UNAVAILABLE": "Service temporarily unavailable. Please try again.",
     "SIGN_IN_TO_CONTINUE": "Please sign in to continue.",
     "TOO_MANY_FAILED_ATTEMPTS": "Too many failed attempts. Please try again later.",
-    "WRONG_PASSWORD_TRY_AGAIN": "Incorrect password. Please try again."
+    "WRONG_PASSWORD_TRY_AGAIN": "Incorrect password. Please try again.",
+    "UNKNOWN_ERROR": "Unknown error occurred"
   },
   "CommonButtons": {
     "RETRY": "Retry"

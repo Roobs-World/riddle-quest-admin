@@ -25,6 +25,7 @@
     "SERVICE_TEMPORARILY_UNAVAILABLE": "Serviço temporariamente indisponível. Tente novamente.",
     "SIGN_IN_TO_CONTINUE": "Faça login para continuar.",
     "TOO_MANY_FAILED_ATTEMPTS": "Muitas tentativas falhadas. Tente novamente mais tarde.",
-    "WRONG_PASSWORD_TRY_AGAIN": "Senha incorreta. Por favor, tente novamente."
+    "WRONG_PASSWORD_TRY_AGAIN": "Senha incorreta. Por favor, tente novamente.",
+    "UNKNOWN_ERROR": "Ocorreu um erro desconhecido."
   }
 }

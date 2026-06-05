@@ -231,6 +231,21 @@ describe("UpdateUsernameModal", () => {
       expect(queryByTestId("username-error-text")).toBeTruthy();
       expect(queryByText("Username must be at least 3 characters long.")).toBeTruthy();
     });
+
+    it("should show local validation error for profane usernames", async () => {
+      const {getByPlaceholderText, getByText, queryByTestId, queryByText} = render(
+        <UpdateUsernameModal isVisible={true} onClose={mockOnClose} currentUsername={currentUsername} />,
+      );
+
+      fireEvent.changeText(getByPlaceholderText("Enter new username"), "damnuser");
+      await act(async () => {
+        fireEvent.press(getByText("Save"));
+      });
+
+      expect(mockProcessFormSubmissionCallable).not.toHaveBeenCalled();
+      expect(queryByTestId("username-error-text")).toBeTruthy();
+      expect(queryByText("Username contains inappropriate language. Please choose a different username.")).toBeTruthy();
+    });
   });
 
   describe("Username Update Flow", () => {
@@ -270,7 +285,7 @@ describe("UpdateUsernameModal", () => {
 
       expect(mockProcessFormSubmissionCallable).toHaveBeenCalled();
       expect(queryByTestId("username-error-text")).toBeTruthy();
-      expect(queryByText("Invalid username data provided.")).toBeTruthy();
+      expect(queryByText("An error occurred.")).toBeTruthy();
     });
 
     it("should handle unsuccessful response from server", async () => {

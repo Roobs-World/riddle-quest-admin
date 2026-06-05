@@ -163,59 +163,6 @@ export const AuthService = {
   },
 
   /**
-   * Signs up a user with email and password.
-   *
-   * @param email The user's email address.
-   * @param password The user's password.
-   * @returns A Promise resolving to the UserCredential.
-   */
-  async signUpWithEmail(email: string, password: string): Promise<FirebaseAuthTypes.UserCredential> {
-    try {
-      const userCredential = await getAuth(getApp()).createUserWithEmailAndPassword(email, password);
-      return userCredential;
-    } catch (error) {
-      logger.error("Error signing up with email:", error);
-      captureException(error);
-      throw error;
-    }
-  },
-
-  /**
-   * Logs in a user with email and password.
-   *
-   * @param email The user's email address.
-   * @param password The user's password.
-   * @returns A Promise resolving to the UserCredential.
-   */
-  async loginWithEmail(email: string, password: string): Promise<FirebaseAuthTypes.UserCredential> {
-    try {
-      const userCredential = await getAuth(getApp()).signInWithEmailAndPassword(email, password);
-      return userCredential;
-    } catch (error) {
-      logger.error("Error logging in with email:", error);
-      captureException(error);
-      throw error;
-    }
-  },
-
-  /**
-   * Sends a password reset email to the user.
-   *
-   * @param email The user's email address.
-   * @returns A Promise that resolves when the email is sent.
-   */
-  async sendPasswordResetEmail(email: string): Promise<void> {
-    try {
-      await getAuth(getApp()).sendPasswordResetEmail(email);
-      logger.debug("Password reset email sent successfully.");
-    } catch (error) {
-      logger.error("Error sending password reset email:", error);
-      captureException(error);
-      throw error;
-    }
-  },
-
-  /**
    * Signs in a user using Google.
    *
    * @returns A Promise resolving to the UserCredential.

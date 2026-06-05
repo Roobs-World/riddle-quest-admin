@@ -31,7 +31,7 @@ import type {GameMode} from "./authTypes";
  * - Active session snapshots only hydrate when the stored user and UTC date
  *   still match the current request.
  */
-export class AuthSessionFacade {
+class AuthSessionFacade {
   /**
    * Resolves whether the player has already completed today's daily challenge.
    *

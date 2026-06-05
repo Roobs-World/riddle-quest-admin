@@ -2,16 +2,12 @@
   "Navigation": {
     "BUY_COINS_BUTTON": "Acheter des pièces",
     "CREDITS": "Crédits",
-    "FORGOT_PASSWORD": "Mot de passe oublié",
     "GAME": "Jeu",
     "HINT_BUTTON": "Indice",
     "LANDING": "Atterrissage",
-    "LOGIN": "Se connecter",
-    "NEW_PASSWORD": "NouveauMot de passe",
     "PLAY_BUTTON": "Jouer",
     "PROFILE_BUTTON": "Profil",
-    "SETTINGS_BUTTON": "Paramètres",
-    "SIGN_UP": "S'inscrire"
+    "SETTINGS_BUTTON": "Paramètres"
   },
   "NavigationMessages": {
     "ERROR_LOADING_NEXT_RIDDLE": "Erreur lors du chargement de la prochaine énigme classique :",

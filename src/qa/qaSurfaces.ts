@@ -1,6 +1,6 @@
-export type QASurfaceKind = "page" | "modal" | "popup";
+type QASurfaceKind = "page" | "modal" | "popup";
 
-export interface QASurfaceDefinition {
+interface QASurfaceDefinition {
   id: string;
   kind: QASurfaceKind;
   label: string;
@@ -9,10 +9,6 @@ export interface QASurfaceDefinition {
 export const QA_PAGE_SURFACES = [
   {id: "page-app-loading", kind: "page", label: "App loading"},
   {id: "page-landing", kind: "page", label: "Landing"},
-  {id: "page-login", kind: "page", label: "Login"},
-  {id: "page-sign-up", kind: "page", label: "Sign up"},
-  {id: "page-forgot-password", kind: "page", label: "Forgot password"},
-  {id: "page-new-password", kind: "page", label: "New password"},
   {id: "page-riddle-loading", kind: "page", label: "Riddle loading"},
   {id: "page-initialization-error", kind: "page", label: "Initialization error"},
   {id: "page-game", kind: "page", label: "Game"},

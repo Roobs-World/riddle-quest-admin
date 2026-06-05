@@ -2,16 +2,12 @@
   "Navigation": {
     "BUY_COINS_BUTTON": "Kup monety",
     "CREDITS": "Kredyty",
-    "FORGOT_PASSWORD": "Zapomniałem hasła",
     "GAME": "Gra",
     "HINT_BUTTON": "Podpowiedź",
     "LANDING": "Lądowanie",
-    "LOGIN": "Zaloguj się",
-    "NEW_PASSWORD": "Nowe hasło",
     "PLAY_BUTTON": "Grać",
     "PROFILE_BUTTON": "Profil",
-    "SETTINGS_BUTTON": "Ustawienia",
-    "SIGN_UP": "Zapisać się"
+    "SETTINGS_BUTTON": "Ustawienia"
   },
   "NavigationMessages": {
     "ERROR_LOADING_NEXT_RIDDLE": "Błąd podczas ładowania następnej klasycznej zagadki:",

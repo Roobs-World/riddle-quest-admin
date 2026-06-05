@@ -17,19 +17,14 @@ import PulsingSpinner from "../components/loading/PulsingSpinner";
 import {t} from "../i18n";
 import {LOADING_SPINNER_SIZE} from "../constants/loading";
 import {AuthService} from "../services/AuthService";
-import {useAuth} from "../contexts/AuthContext";
+import {useAuthSession} from "../contexts/AuthContext";
 import Error from "../components/text/Error";
 import {styles, SPACING} from "../styles";
 import {logger} from "../utils/logger";
 import {captureException} from "../utils/sentry";
 import MainLogoPng from "../../assets/images/logo.png";
 import {LANDING_LOGO_HEIGHT, LANDING_LOGO_WIDTH} from "../constants/layout";
-import {
-  getFacebookSignInErrorMessage,
-  getGoogleSignInErrorMessage,
-  isFacebookLoginCancellation,
-  isGoogleSignInCancellation,
-} from "../application/auth/authErrorMessages";
+import {getAuthErrorMessage} from "../application/auth/authErrorMessages";
 
 /**
  * Landing screen component used at the root of the auth stack.
@@ -40,7 +35,7 @@ import {
 const LandingScreen = () => {
   const [authError, setAuthError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const {login, isAuthenticated} = useAuth();
+  const {login, isAuthenticated} = useAuthSession();
 
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
@@ -53,14 +48,13 @@ const LandingScreen = () => {
         login();
       }
     } catch (error) {
-      if (isGoogleSignInCancellation(error)) {
-        logger.debug("Auth popup closed by user.");
+      const message = getAuthErrorMessage(error, "google");
+      if (!message) {
         return;
       }
 
       logger.error("Google login error:", error);
-      captureException(error);
-      setAuthError(getGoogleSignInErrorMessage(error));
+      setAuthError(message);
     } finally {
       setIsLoading(false);
     }
@@ -78,13 +72,13 @@ const LandingScreen = () => {
         login();
       }
     } catch (error: unknown) {
-      if (isFacebookLoginCancellation(error)) {
+      const message = getAuthErrorMessage(error, "facebook");
+      if (!message) {
         return;
       }
 
       logger.error("Facebook login error:", error);
-      captureException(error);
-      setAuthError(getFacebookSignInErrorMessage(error));
+      setAuthError(message);
     } finally {
       setIsLoading(false);
     }

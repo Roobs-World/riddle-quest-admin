@@ -10,15 +10,11 @@
 import React, {useEffect, useRef} from "react";
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import LandingScreen from "../screens/LandingScreen";
-import LoginScreen from "../screens/auth/LoginScreen";
-import SignUpScreen from "../screens/auth/SignUpScreen";
-import ForgotPasswordScreen from "../screens/auth/ForgotPasswordScreen";
-import NewPasswordScreen from "../screens/auth/NewPasswordScreen";
 import GameScreen from "../screens/game/GameScreen";
 import PulsingSpinner from "../components/loading/PulsingSpinner";
 import {HINT_COST_COINS, getXpLevel} from "../constants/game";
 import {LOADING_SPINNER_OPACITY, LOADING_SPINNER_OPACITY_OVERLAY, LOADING_SPINNER_SIZE} from "../constants/loading";
-import {useAuth} from "../contexts/AuthContext";
+import {useAuthSession, usePlayer, useRiddleState} from "../contexts/AuthContext";
 import {t} from "../i18n";
 import {View, Text, TouchableOpacity} from "react-native";
 import {styles, TYPOGRAPHY, SPACING} from "../styles";
@@ -62,21 +58,22 @@ const screenListeners = {
  * - Handling riddle initialization failures and retry flows.
  */
 const GameScreenWrapper = () => {
+  const {isAuthenticated, isLoading} = useAuthSession();
   const {
-    isAuthenticated,
-    isLoading,
-    isRiddlesInitializing,
     playerData,
-    currentRiddle,
-    gameMode,
-    isDailyChallengeAvailable,
-    setCurrentRiddle,
-    setGameMode,
-    fetchCurrentRiddle,
     updatePlayerData,
     updatePlayerDataLocally,
     updatePlayerClassicIndex,
-  } = useAuth();
+  } = usePlayer();
+  const {
+    currentRiddle,
+    gameMode,
+    isDailyChallengeAvailable,
+    isRiddlesInitializing,
+    setCurrentRiddle,
+    setGameMode,
+    fetchCurrentRiddle,
+  } = useRiddleState();
   const isGuestMode = isGuestPlayer(playerData);
   const isDailyChallengeMode = gameMode === "daily" || gameMode === "challenge";
 
@@ -618,7 +615,7 @@ const Stack = createNativeStackNavigator();
  * loading overlays while auth or riddle initialization are in progress.
  */
 export const Navigation = () => {
-  const {isAuthenticated, isLoading} = useAuth();
+  const {isAuthenticated, isLoading} = useAuthSession();
 
   logger.debug(
     t("LogMessages.NAVIGATION_RENDERING"),
@@ -656,13 +653,7 @@ export const Navigation = () => {
       {isAuthenticated ? (
         <Stack.Screen name={t("Navigation.GAME")} component={GameScreenWrapper} />
       ) : (
-        <>
-          <Stack.Screen name={t("Navigation.LANDING")} component={LandingScreen} />
-          <Stack.Screen name={t("Navigation.LOGIN")} component={LoginScreen} />
-          <Stack.Screen name={t("Navigation.SIGN_UP")} component={SignUpScreen} />
-          <Stack.Screen name={t("Navigation.FORGOT_PASSWORD")} component={ForgotPasswordScreen} />
-          <Stack.Screen name={t("Navigation.NEW_PASSWORD")} component={NewPasswordScreen} />
-        </>
+        <Stack.Screen name={t("Navigation.LANDING")} component={LandingScreen} />
       )}
     </Stack.Navigator>
   );

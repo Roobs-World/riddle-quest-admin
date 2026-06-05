@@ -25,6 +25,7 @@
     "SERVICE_TEMPORARILY_UNAVAILABLE": "Hizmet geçici olarak kullanılamıyor. Lütfen tekrar deneyin.",
     "SIGN_IN_TO_CONTINUE": "Devam etmek için lütfen oturum açın.",
     "TOO_MANY_FAILED_ATTEMPTS": "Çok fazla başarısız deneme. Lütfen daha sonra tekrar deneyin.",
-    "WRONG_PASSWORD_TRY_AGAIN": "Yanlış şifre. Lütfen tekrar deneyin."
+    "WRONG_PASSWORD_TRY_AGAIN": "Yanlış şifre. Lütfen tekrar deneyin.",
+    "UNKNOWN_ERROR": "Bilinmeyen bir hata olu?tu."
   }
 }

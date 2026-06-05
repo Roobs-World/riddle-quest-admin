@@ -41,6 +41,12 @@ import {
 } from "three";
 import type {MeshPhongMaterialParameters} from "three";
 import {AppState, StyleSheet, View} from "react-native";
+import {SOLAR_SYSTEM_CONFIG} from "./SolarSystemConfig";
+import {dimensions} from "../../utils/responsive";
+import {loadTextureFromAsset, resolveAssetModule} from "../../services/solar/textureLoader";
+import type {AssetModuleReference} from "../../services/solar/textureLoader";
+// Import texture assets
+import sunTextureModule from "../../../assets/3d/tex_sun_spots_02.png";
 
 // Expo's EXGL doesn't support UNPACK_COLORSPACE_CONVERSION_WEBGL which Three.js
 // r152+ tries to set when color management is enabled.
@@ -51,12 +57,6 @@ const EXGL_UNSUPPORTED_PIXEL_STORE_PARAMETERS = new Set<number>([
   0x9241, // UNPACK_PREMULTIPLY_ALPHA_WEBGL
   0x9243, // UNPACK_COLORSPACE_CONVERSION_WEBGL
 ]);
-import {SOLAR_SYSTEM_CONFIG} from "./SolarSystemConfig";
-import {dimensions} from "../../utils/responsive";
-import {loadTextureFromAsset, resolveAssetModule} from "../../services/solar/textureLoader";
-import type {AssetModuleReference} from "../../services/solar/textureLoader";
-// Import texture assets
-import sunTextureModule from "../../../assets/3d/tex_sun_spots_02.png";
 
 // Cache for loaded textures
 const textureCache = new Map<string | number, Texture>();

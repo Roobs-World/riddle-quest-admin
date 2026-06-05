@@ -25,6 +25,7 @@
     "SERVICE_TEMPORARILY_UNAVAILABLE": "서비스를 일시적으로 사용할 수 없습니다. 다시 시도하십시오.",
     "SIGN_IN_TO_CONTINUE": "계속하려면 로그인하십시오.",
     "TOO_MANY_FAILED_ATTEMPTS": "실패 횟수가 너무 많습니다. 나중에 다시 시도해 주세요.",
-    "WRONG_PASSWORD_TRY_AGAIN": "비밀번호가 잘못되었습니다. 다시 시도해 주세요."
+    "WRONG_PASSWORD_TRY_AGAIN": "비밀번호가 잘못되었습니다. 다시 시도해 주세요.",
+    "UNKNOWN_ERROR": "? ? ?? ??? ??????."
   }
 }

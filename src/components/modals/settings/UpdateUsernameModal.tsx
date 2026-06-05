@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from "react";
 import {View, Text, Modal, TextInput} from "react-native";
-import {useAuth} from "../../../contexts/AuthContext";
+import {usePlayer} from "../../../contexts/AuthContext";
 import CloseButton from "../../buttons/CloseButton";
 import WideButton from "src/components/buttons/WideButton";
 import PulsingSpinner from "src/components/loading/PulsingSpinner";
@@ -23,6 +23,7 @@ import {verticalScale} from "@/utils/responsive";
 import {callValidatedFunction} from "../../../utils/firebaseFunctions";
 import {getUpdateUsernameErrorMessage} from "../../../application/errors/cloudFunctionErrorMessages";
 import {BasicSuccessMessageOutputSchema, UpdateUsernameInputSchema} from "../../../validation/cloudFunctionsSchemas";
+import {validateUsernameForProfanity} from "../../../utils/profanityFilter";
 
 interface UpdateUsernameModalProps {
   isVisible: boolean;
@@ -33,7 +34,7 @@ interface UpdateUsernameModalProps {
 const UpdateUsernameModal: React.FC<UpdateUsernameModalProps> = ({isVisible, onClose, currentUsername}) => {
   const COMPACT_MODAL_HEIGHT = Math.min(MODAL_HEIGHT * 0.75, MODAL_MAX_HEIGHT ?? MODAL_HEIGHT * 0.75);
   const compactContentHeight = Math.min(MODAL_HEIGHT * 0.56, MODAL_MAX_HEIGHT ?? MODAL_HEIGHT * 0.56);
-  const {updatePlayerData} = useAuth();
+  const {updatePlayerData} = usePlayer();
   const [newUsername, setNewUsername] = useState(currentUsername || "");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [usernameError, setUsernameError] = useState("");
@@ -59,6 +60,11 @@ const UpdateUsernameModal: React.FC<UpdateUsernameModalProps> = ({isVisible, onC
 
     if (username.length < 3) {
       return t("Profile.ALERT_USERNAME_TOO_SHORT");
+    }
+
+    const profanityError = validateUsernameForProfanity(username);
+    if (profanityError) {
+      return profanityError;
     }
 
     return null;

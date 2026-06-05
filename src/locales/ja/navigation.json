@@ -2,16 +2,12 @@
   "Navigation": {
     "BUY_COINS_BUTTON": "コインを購入",
     "CREDITS": "クレジット",
-    "FORGOT_PASSWORD": "パスワードをお忘れですか",
     "GAME": "ゲーム",
     "HINT_BUTTON": "ヒント",
     "LANDING": "着陸",
-    "LOGIN": "ログイン",
-    "NEW_PASSWORD": "新しいパスワード",
     "PLAY_BUTTON": "遊ぶ",
     "PROFILE_BUTTON": "プロフィール",
-    "SETTINGS_BUTTON": "設定",
-    "SIGN_UP": "サインアップ"
+    "SETTINGS_BUTTON": "設定"
   },
   "NavigationMessages": {
     "ERROR_LOADING_NEXT_RIDDLE": "次の古典的ななぞなぞのロード中にエラーが発生しました:",

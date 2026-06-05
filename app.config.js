@@ -198,11 +198,8 @@ module.exports = {
     "@react-native-firebase/auth",
     /** Firebase Crashlytics for error tracking */
     "./plugins/withReactNativeFirebaseCrashlytics.js",
-    "@react-native-firebase/messaging",
     "expo-asset",
     "expo-font",
-    "expo-splash-screen",
-    "expo-status-bar",
     ...(useSentryExpoPlugin
       ? [
           [
@@ -258,9 +255,9 @@ module.exports = {
      * Platform-specific build settings optimized for audio quality,
      * performance, and compatibility. Disables compression and
      * minification to preserve audio fidelity.
-     */
+    */
     [
-      "expo-build-properties",
+      require("expo-build-properties").default,
       {
         /**
          * Android Build Configuration
@@ -347,7 +344,6 @@ module.exports = {
     FIREBASE_API_KEY: process.env.FIREBASE_API_KEY || "YOUR_FIREBASE_API_KEY",
     FIREBASE_APP_ID: process.env.FIREBASE_APP_ID || "YOUR_FIREBASE_APP_ID",
     FIREBASE_AUTH_DOMAIN: process.env.FIREBASE_AUTH_DOMAIN || "YOUR_FIREBASE_AUTH_DOMAIN",
-    FIREBASE_MESSAGING_SENDER_ID: process.env.FIREBASE_MESSAGING_SENDER_ID || "YOUR_FIREBASE_MESSAGING_SENDER_ID",
     FIREBASE_PROJECT_ID: process.env.FIREBASE_PROJECT_ID || "YOUR_FIREBASE_PROJECT_ID",
     FIREBASE_STORAGE_BUCKET: process.env.FIREBASE_STORAGE_BUCKET || "YOUR_FIREBASE_STORAGE_BUCKET",
 

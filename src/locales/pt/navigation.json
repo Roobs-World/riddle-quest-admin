@@ -2,16 +2,12 @@
   "Navigation": {
     "BUY_COINS_BUTTON": "Comprar moedas",
     "CREDITS": "Créditos",
-    "FORGOT_PASSWORD": "Esqueceu sua senha",
     "GAME": "Jogo",
     "HINT_BUTTON": "Dica",
     "LANDING": "Pousar",
-    "LOGIN": "Conecte-se",
-    "NEW_PASSWORD": "Nova Senha",
     "PLAY_BUTTON": "Jogar",
     "PROFILE_BUTTON": "Perfil",
-    "SETTINGS_BUTTON": "Configurações",
-    "SIGN_UP": "Inscrever-se"
+    "SETTINGS_BUTTON": "Configurações"
   },
   "NavigationMessages": {
     "ERROR_LOADING_NEXT_RIDDLE": "Erro ao carregar o próximo enigma clássico:",

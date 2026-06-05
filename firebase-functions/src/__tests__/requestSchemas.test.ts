@@ -6,7 +6,7 @@ import {
   CompleteGameResponseDataSchema,
   SubmitGuessRequestDataSchema,
   SubmitGuessResponseDataSchema,
-} from "../validation/requestSchemas";
+} from "@qwordly/core/validation/requestSchemas";
 
 // Import types and interfaces to test
 import type {
@@ -15,7 +15,7 @@ import type {
   SubmitGuessRequestData,
   SubmitGuessAuthContext,
   SubmitGuessResponseData,
-} from "../validation/requestSchemas";
+} from "@qwordly/core/validation/requestSchemas";
 
 describe("Request Schemas", () => {
   describe("Zod callable contracts", () => {
