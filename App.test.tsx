@@ -7,11 +7,14 @@ const mockLoadFonts = jest.fn();
 const mockLoadShopCatalog = jest.fn();
 const mockInitializeRewardedAds = jest.fn();
 const mockInitializeFirebaseAppCheck = jest.fn();
-const mockGetItem = jest.fn();
 const mockSetLocale = jest.fn();
 const mockDetectDeviceLanguage = jest.fn();
 const mockCaptureException = jest.fn();
 const mockCrashlyticsLog = jest.fn();
+const mockReadStoredLocale = jest.fn();
+const mockPersistLocale = jest.fn();
+const mockUpdatePlayerData = jest.fn();
+const mockUseAuth = jest.fn();
 
 jest.mock("@sentry/react-native", () => ({
   wrap: (component: any) => component,
@@ -43,10 +46,6 @@ jest.mock("./src/services/SoundManager", () => ({
   },
 }));
 
-jest.mock("@react-native-async-storage/async-storage", () => ({
-  getItem: (...args: any[]) => mockGetItem(...args),
-}));
-
 jest.mock("expo-constants", () => ({
   expoConfig: {
     extra: {
@@ -74,6 +73,13 @@ jest.mock("@react-native-google-signin/google-signin", () => ({
 
 jest.mock("./src/contexts/AuthContext", () => ({
   AuthProvider: ({children}: any) => React.createElement(View, {testID: "auth-provider"}, children),
+  useAuth: () =>
+    mockUseAuth({
+      isAuthenticated: false,
+      isLoading: false,
+      playerData: null,
+      updatePlayerData: mockUpdatePlayerData,
+    }),
 }));
 
 jest.mock("./src/contexts/TooltipContext", () => ({
@@ -114,7 +120,6 @@ jest.mock("./src/qa/QASurfaceHarness", () => ({
 }));
 
 jest.mock("./src/i18n", () => ({
-  LOCALE_STORAGE_KEY: "appLanguage",
   isSupportedLanguage: jest.fn(() => true),
   setLocale: (...args: any[]) => mockSetLocale(...args),
   detectDeviceLanguage: (...args: any[]) => mockDetectDeviceLanguage(...args),
@@ -127,6 +132,11 @@ jest.mock("./src/i18n", () => ({
     }
     return key;
   },
+}));
+
+jest.mock("./src/utils/localeStorage", () => ({
+  persistLocale: (...args: any[]) => mockPersistLocale(...args),
+  readStoredLocale: (...args: any[]) => mockReadStoredLocale(...args),
 }));
 
 jest.mock("@react-native-firebase/crashlytics", () => ({
@@ -145,7 +155,14 @@ const {default: App} = require("./App");
 describe("App startup", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockGetItem.mockResolvedValue("en");
+    mockReadStoredLocale.mockResolvedValue("en");
+    mockPersistLocale.mockResolvedValue(undefined);
+    mockUseAuth.mockReturnValue({
+      isAuthenticated: false,
+      isLoading: false,
+      playerData: null,
+      updatePlayerData: mockUpdatePlayerData,
+    });
     mockLoadFonts.mockResolvedValue(undefined);
     mockLoadShopCatalog.mockResolvedValue(undefined);
     mockInitializeRewardedAds.mockResolvedValue(undefined);

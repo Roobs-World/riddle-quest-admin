@@ -27,11 +27,8 @@ import {GameMode} from "../../contexts/AuthContext";
 
 import {useAuthSession, usePlayer} from "../../contexts/AuthContext";
 import {
-  APP_LANGUAGE_STORAGE_KEY,
   SupportedLanguage,
-  getLocale,
-  isSupportedLanguage,
-  setLocale,
+  useLocale,
   t,
 } from "../../i18n";
 import {isTablet, isLargeTablet, isDesktop} from "../../utils/responsive";
@@ -82,7 +79,9 @@ import {useTooltip} from "../../contexts/TooltipContext";
 import type {TooltipId, TooltipTargetRef} from "../../components/tooltips/types";
 import {resolveBackspaceGuessSlot, resolveEditableGuessSlot, resolveNextActiveGuessSlot} from "../../utils/guessSlots";
 import {resolvePlayableRiddleText} from "../../utils/riddleClues";
+import {persistLocale} from "../../utils/localeStorage";
 import {callValidatedFunction} from "../../utils/firebaseFunctions";
+import {graphemeLength, splitGraphemes} from "@qwordly/core/game";
 import {
   GenerateTodaysDailyChallengeInputSchema,
   GenerateTodaysDailyChallengeOutputSchema,
@@ -327,7 +326,8 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   suppressOnboarding = false,
 }) => {
   const {logout} = useAuthSession();
-  const {playerData, updatePlayerDataLocally, pendingStreakBreak, consumePendingStreakBreak} = usePlayer();
+  const {playerData, updatePlayerData, updatePlayerDataLocally, pendingStreakBreak, consumePendingStreakBreak} =
+    usePlayer();
   const modal = useModal();
   const tooltip = useTooltip();
   const {showWelcomeModal, showWelcomeBackModal, showInstructionsModal, showInfoModal} = modal;
@@ -338,7 +338,8 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   const [isSoundEnabled, setIsSoundEnabled] = useState(true);
   const [isHapticsEnabled, setIsHapticsEnabled] = useState(true);
   const [hasLoadedSettings, setHasLoadedSettings] = useState(false);
-  const [currentLanguage, setCurrentLanguage] = useState<SupportedLanguage>(getLocale());
+  const sharedLocale = useLocale();
+  const currentLanguage: SupportedLanguage = sharedLocale;
   const [activeSlotIndex, setActiveSlotIndex] = useState(0);
   const activeSlotIndexRef = useRef(0);
   const {isLoading, runWithServerLoading} = useGameSessionController();
@@ -350,7 +351,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   const shouldUseFullFirestoreCatalog = !isRunningUnderJest;
   const currentTooltipUserId = playerData?.userId ?? null;
   const playableAnswer = useMemo(() => answer.trim(), [answer]);
-  const playableAnswerLength = playableAnswer.length;
+  const playableAnswerLength = graphemeLength(playableAnswer, currentLanguage);
   const playableRiddleText = useMemo(
     () => resolvePlayableRiddleText(riddleText, playableAnswer),
     [riddleText, playableAnswer],
@@ -835,20 +836,14 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   useEffect(() => {
     const loadSettings = async () => {
       try {
-        const [soundEnabled, hapticsEnabled, language] = await Promise.all([
+        const [soundEnabled, hapticsEnabled] = await Promise.all([
           readBooleanSetting(SOUND_ENABLED_STORAGE_KEY, true),
           readBooleanSetting(HAPTICS_ENABLED_STORAGE_KEY, true),
-          AsyncStorage.getItem(APP_LANGUAGE_STORAGE_KEY),
         ]);
 
         setIsSoundEnabled(soundEnabled);
         SoundManager.setSoundEnabled(soundEnabled);
         setIsHapticsEnabled(hapticsEnabled);
-
-        if (language && isSupportedLanguage(language)) {
-          setLocale(language);
-          setCurrentLanguage(language);
-        }
       } catch (error) {
         logger.error("Error loading settings from AsyncStorage:", error);
         captureException(error);
@@ -881,13 +876,6 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       captureException(error);
     });
   }, [hasLoadedSettings, isHapticsEnabled]);
-
-  useEffect(() => {
-    AsyncStorage.setItem(APP_LANGUAGE_STORAGE_KEY, currentLanguage).catch((error: unknown) => {
-      logger.error("Error saving language setting to AsyncStorage:", error);
-      captureException(error);
-    });
-  }, [currentLanguage]);
 
   useEffect(() => {
     SoundManager.setSoundEnabled(isSoundEnabled);
@@ -1609,9 +1597,12 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   }, []);
 
   const handleChangeLanguage = useCallback((language: SupportedLanguage) => {
-    setLocale(language);
-    setCurrentLanguage(language);
-  }, []);
+    void persistLocale(language);
+    void updatePlayerData({preferredLanguage: language}).catch((error) => {
+      logger.error("Error saving language preference to player profile:", error);
+      captureException(error);
+    });
+  }, [updatePlayerData]);
 
   const handleSubmit = useCallback(async () => {
     tooltip.dismissTooltip("submitAnswer");
@@ -1749,7 +1740,9 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           // Guest/local flow: reveal locally and call onHintUsed to persist via
           // the surrounding navigation stack.
           if (isGuestMode || !playerData?.userId) {
-            const answerLetters = playableAnswer.toLowerCase().split("");
+            const answerLetters = splitGraphemes(playableAnswer, currentLanguage).map((letter) =>
+              letter.toLocaleLowerCase(currentLanguage),
+            );
             const revealIndex = answerLetters.findIndex((_, i) => !hintRevealedIndicesRef.current.includes(i));
 
             if (revealIndex === -1) {
@@ -1783,9 +1776,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           // Authenticated flow: ask server for authoritative hint.
           try {
             const backendGameMode = gameMode === "daily" ? "challenge" : "classic";
-            const fullAttempt = Array.from({length: playableAnswerLength}, (_, i) =>
-              (currentGuess[i] ?? "").slice(0, 1),
-            );
+            const fullAttempt = Array.from({length: playableAnswerLength}, (_, i) => currentGuess[i] ?? "");
             const data = await callValidatedFunction(
               "getHint",
               {currentAttempt: fullAttempt, riddleId, gameMode: backendGameMode},
@@ -2014,6 +2005,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     modalActions,
     isGuestMode,
     tooltip,
+    currentLanguage,
   ]);
 
   const handleSettingsPress = useCallback(() => {
@@ -2111,10 +2103,12 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   const handleDebugCompleteRiddle = useCallback(() => {
     if (gameOver) return;
 
-    const solvedGuess = playableAnswer.toUpperCase().split("");
+    const solvedGuess = splitGraphemes(playableAnswer, currentLanguage).map((letter) =>
+      letter.toLocaleUpperCase(currentLanguage),
+    );
     setCurrentGuess(solvedGuess);
     setActiveSlotIndexSynced(Math.max(0, playableAnswerLength - 1));
-  }, [gameOver, playableAnswer, playableAnswerLength, setCurrentGuess, setActiveSlotIndexSynced]);
+  }, [gameOver, playableAnswer, currentLanguage, playableAnswerLength, setCurrentGuess, setActiveSlotIndexSynced]);
 
   const handleDebugGenerateDailyChallenge = useCallback(async () => {
     try {

@@ -118,16 +118,6 @@ const screenStyles = StyleSheet.create({
     width: "100%",
     zIndex: 2,
   },
-  header: {
-    alignItems: "center",
-    paddingTop: SPACING.xl,
-  },
-  title: {
-    ...styles.title,
-    color: COLORS.white,
-    marginBottom: SPACING.md,
-    textAlign: "center",
-  },
   description: {
     color: "rgba(255,255,255,0.84)",
     fontFamily: TYPOGRAPHY.fontPrimary,
@@ -136,20 +126,28 @@ const screenStyles = StyleSheet.create({
     maxWidth: 420,
     textAlign: "center",
   },
-  scrollArea: {
-    flex: 1,
-    marginTop: SPACING.xl,
+  flag: {
+    fontSize: 30,
+    marginBottom: SPACING.sm,
   },
-  gridContent: {
-    flexGrow: 1,
-    justifyContent: "center",
-    paddingBottom: SPACING.xl,
+  footer: {
+    paddingBottom: SPACING.md,
+    paddingTop: SPACING.md,
   },
   grid: {
     flexDirection: "row",
     flexWrap: "wrap",
     gap: SPACING.md,
     justifyContent: "center",
+  },
+  gridContent: {
+    flexGrow: 1,
+    justifyContent: "center",
+    paddingBottom: SPACING.xl,
+  },
+  header: {
+    alignItems: "center",
+    paddingTop: SPACING.xl,
   },
   languageCard: {
     alignItems: "center",
@@ -161,13 +159,15 @@ const screenStyles = StyleSheet.create({
     paddingVertical: SPACING.lg,
     width: "29%",
   },
-  supportedLanguageCard: {
-    borderColor: "rgba(254, 200, 128, 0.55)",
-    shadowColor: COLORS.figmaGold,
-    shadowOffset: {width: 0, height: 0},
-    shadowOpacity: 0.35,
-    shadowRadius: 14,
-    elevation: 8,
+  languageLabel: {
+    color: COLORS.white,
+    fontFamily: TYPOGRAPHY.fontSecondaryBold,
+    fontSize: TYPOGRAPHY.fontSize.sm,
+    textAlign: "center",
+  },
+  scrollArea: {
+    flex: 1,
+    marginTop: SPACING.xl,
   },
   selectedLanguageCard: {
     backgroundColor: "rgba(64, 31, 64, 0.92)",
@@ -175,19 +175,19 @@ const screenStyles = StyleSheet.create({
     transform: [{translateY: -2}],
     ...SHADOWS.lg,
   },
-  flag: {
-    fontSize: 30,
-    marginBottom: SPACING.sm,
+  supportedLanguageCard: {
+    borderColor: "rgba(254, 200, 128, 0.55)",
+    elevation: 8,
+    shadowColor: COLORS.figmaGold,
+    shadowOffset: {width: 0, height: 0},
+    shadowOpacity: 0.35,
+    shadowRadius: 14,
   },
-  languageLabel: {
+  title: {
+    ...styles.title,
     color: COLORS.white,
-    fontFamily: TYPOGRAPHY.fontSecondaryBold,
-    fontSize: TYPOGRAPHY.fontSize.sm,
+    marginBottom: SPACING.md,
     textAlign: "center",
-  },
-  footer: {
-    paddingTop: SPACING.md,
-    paddingBottom: SPACING.md,
   },
 });
 

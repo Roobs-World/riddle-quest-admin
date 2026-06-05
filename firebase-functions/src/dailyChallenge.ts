@@ -2,8 +2,8 @@ import * as functions from "firebase-functions";
 import * as admin from "firebase-admin"; // Added for Firestore access
 import {onCall, HttpsError, CallableRequest} from "firebase-functions/v2/https";
 import {updateUserLastCompletedDailyChallengeDate, getUser} from "./firestoreService";
-import {generateTodaysDailyChallenge} from "./riddleGeneration";
 import {captureException} from "./sentry";
+import {SUPPORTED_LOCALES} from "../../packages/core/dist/validation";
 import {
   AdvanceDailyChallengeProgressResponseSchema,
   BooleanResponseSchema,
@@ -88,45 +88,27 @@ function isCompletedToday(lastCompletedAt: unknown): boolean {
  *
  * @returns Fresh challenge snapshot plus today's UTC date string.
  */
-async function getFreshDailyChallengeDoc(): Promise<{
+async function getFreshDailyChallengeDoc(locale: string = "en"): Promise<{
   dailyChallengeDoc: FirebaseFirestore.DocumentSnapshot<FirebaseFirestore.DocumentData>;
   todayDateString: string;
 }> {
   const todayDateString = new Date().toISOString().split("T")[0];
-  const dailyChallengeRef = admin.firestore().collection("dailyRiddles").doc(CURRENT_DAILY_RIDDLE_DOC_ID);
+  const safeLocale = locale || "en";
+  const localizedDailyChallengeRef = admin
+    .firestore()
+    .collection(`localizedRiddles/${safeLocale}/daily`)
+    .doc(CURRENT_DAILY_RIDDLE_DOC_ID);
+  const legacyDailyChallengeRef = admin.firestore().collection("dailyRiddles").doc(CURRENT_DAILY_RIDDLE_DOC_ID);
 
-  let dailyChallengeDoc = await dailyChallengeRef.get();
-  const challengeData = dailyChallengeDoc.data();
-  const challengeTimestamp = challengeData?.timestamp;
-  let challengeDate: string | null = null;
-  if (challengeTimestamp && typeof challengeTimestamp === "object" && "toDate" in challengeTimestamp) {
-    challengeDate = challengeTimestamp.toDate().toISOString().split("T")[0];
-  } else if (challengeTimestamp) {
-    const parsed = new Date(challengeTimestamp as string | number | Date);
-    challengeDate = Number.isNaN(parsed.getTime()) ? null : parsed.toISOString().split("T")[0];
-  }
-
-  const isChallengeUsable =
-    dailyChallengeDoc.exists &&
-    challengeDate === todayDateString &&
-    typeof challengeData?.text === "string" &&
-    challengeData.text.length > 0 &&
-    typeof challengeData?.answer === "string" &&
-    challengeData.answer.length > 0;
-
-  if (!isChallengeUsable) {
-    functions.logger.warn(`Daily challenge is missing/stale for ${todayDateString}. Attempting regeneration.`);
-    try {
-      await generateTodaysDailyChallenge(false);
-    } catch (error) {
-      captureException(error, {
-        functionName: "getFreshDailyChallengeDoc",
-        phase: "self_heal_generation",
-        challengeDate: todayDateString,
-      });
-      throw error;
+  let dailyChallengeDoc = await localizedDailyChallengeRef.get();
+  if (!dailyChallengeDoc.exists) {
+    const legacyDailyChallengeDoc = await legacyDailyChallengeRef.get();
+    if (legacyDailyChallengeDoc.exists) {
+      functions.logger.info(
+        `Daily challenge fallback hit legacy shared path for locale ${safeLocale} on ${todayDateString}.`,
+      );
+      return {dailyChallengeDoc: legacyDailyChallengeDoc, todayDateString};
     }
-    dailyChallengeDoc = await dailyChallengeRef.get();
   }
 
   return {dailyChallengeDoc, todayDateString};
@@ -218,7 +200,15 @@ export const getCurrentDailyChallenge = onCall(
   },
   async (request: CallableRequest<unknown>): Promise<GetCurrentDailyChallengeResponse> => {
     try {
-      const {dailyChallengeDoc, todayDateString} = await getFreshDailyChallengeDoc();
+      let locale = "en";
+      if (request.auth) {
+        const user = await getUser(request.auth.uid);
+        if (user?.preferredLanguage && SUPPORTED_LOCALES.includes(user.preferredLanguage as (typeof SUPPORTED_LOCALES)[number])) {
+          locale = user.preferredLanguage;
+        }
+      }
+
+      const {dailyChallengeDoc, todayDateString} = await getFreshDailyChallengeDoc(locale);
 
       if (!dailyChallengeDoc.exists) {
         functions.logger.warn("No daily challenge document found.");

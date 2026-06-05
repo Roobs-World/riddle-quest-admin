@@ -1,17 +1,15 @@
+jest.mock("../../../i18n", () => {
+  const translations: Record<string, string> = {
+    "Profile.ALERT_USERNAME_ALREADY_TAKEN": "Username already taken.",
+    "Profile.ALERT_AN_ERROR_OCCURRED": "An error occurred.",
+  };
+
+  return {
+    t: (key: string) => translations[key] ?? key,
+  };
+});
+
 import {getUpdateUsernameErrorMessage} from "../cloudFunctionErrorMessages";
-
-const mockI18n: any = {
-  AppStrings: {
-    Profile: {
-      ALERT_USERNAME_ALREADY_TAKEN: "Username already taken.",
-      ALERT_AN_ERROR_OCCURRED: "An error occurred.",
-    },
-  },
-};
-
-mockI18n.t = (key: string) => key.split(".").reduce((current: any, segment: string) => current?.[segment], mockI18n.AppStrings);
-
-jest.mock("../../../i18n", () => mockI18n);
 
 describe("cloudFunctionErrorMessages", () => {
   it("maps normalized functions codes to friendly copy", () => {
@@ -20,9 +18,9 @@ describe("cloudFunctionErrorMessages", () => {
     );
   });
 
-  it("strips bracketed prefixes from server messages", () => {
+  it("falls back to the generic error copy for unmapped messages", () => {
     expect(getUpdateUsernameErrorMessage({code: "functions/invalid-argument", message: "[x] Invalid payload"})).toBe(
-      "Invalid payload",
+      "An error occurred.",
     );
   });
 });

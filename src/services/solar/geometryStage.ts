@@ -31,10 +31,11 @@ const createGeometryEntries = (): Array<{key: string; create: () => SolarGeometr
       });
     });
 
-    if (planet.rings) {
+    const rings = planet.rings;
+    if (rings) {
       entries.push({
         key: getRingGeometryKey(planet),
-        create: () => new RingGeometry(planet.rings.innerRadius, planet.rings.outerRadius, 64),
+        create: () => new RingGeometry(rings.innerRadius, rings.outerRadius, 64),
       });
     }
   });

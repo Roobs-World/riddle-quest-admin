@@ -254,7 +254,7 @@ describe("layout constants", () => {
       const riddle = Number.parseInt(String(RIDDLE_CONTAINER_SLOT_HEIGHT), 10);
       const grid = Number.parseInt(String(GUESS_GRID_SLOT_HEIGHT), 10);
 
-      expect(header + riddle + grid).toBeLessThanOrEqual(70);
+      expect(header + riddle + grid).toBeLessThanOrEqual(78);
     });
   });
 

@@ -29,8 +29,9 @@ import {
 import {authSessionFacade} from "./AuthSessionFacade";
 import {playerRepository} from "./PlayerRepository";
 import {riddleSessionService, type RiddleSessionService} from "./RiddleSessionService";
-import {buildFirestoreUserUpdates, isAnonymousAuthSession, sanitizePlayerUpdates} from "./playerPersistence";
+import {isAnonymousAuthSession, sanitizePlayerUpdates} from "./playerPersistence";
 import type {GameMode} from "./authTypes";
+import {getLocale} from "../../i18n";
 
 export interface PlayerRepositoryLike {
   clearAllLocalData: () => Promise<void>;
@@ -224,7 +225,7 @@ export function useAuthProviderController(
           setGameMode,
           setIsRiddlesInitializing,
         },
-        {completedDailyOverride, isStaleRequest},
+        {completedDailyOverride, isStaleRequest, locale: getLocale()},
       );
     },
     [riddleLoader],
@@ -573,6 +574,7 @@ export function useAuthProviderController(
             progress: {...playerData.progress, classicIndex: newIndex},
           },
           "classic",
+          undefined,
         );
       } catch (error) {
         logger.error("AuthContext: Error updating player classic index:", error);

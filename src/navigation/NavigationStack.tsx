@@ -28,6 +28,7 @@ import {loadUserProgressFromFirestore} from "../services/FirestoreService";
 import {Player} from "../validation/firestoreSchemas";
 import {callValidatedFunction} from "../utils/firebaseFunctions";
 import {CurrentDailyChallengeOutputSchema, EmptyInputSchema} from "../validation/cloudFunctionsSchemas";
+import {useLocale} from "../i18n";
 
 const GUEST_CLASSIC_START_INDEX = 1;
 
@@ -74,10 +75,12 @@ const GameScreenWrapper = () => {
     setGameMode,
     fetchCurrentRiddle,
   } = useRiddleState();
+  const currentLocale = useLocale();
   const isGuestMode = isGuestPlayer(playerData);
   const isDailyChallengeMode = gameMode === "daily" || gameMode === "challenge";
 
   const lastFetchedModeRef = useRef<typeof gameMode | null>(null);
+  const lastFetchedLocaleRef = useRef<string | null>(null);
   const onboardingUserIdRef = useRef<string | null>(null);
   const suppressOnboardingRef = useRef(false);
 
@@ -103,11 +106,15 @@ const GameScreenWrapper = () => {
   useEffect(() => {
     const loadRiddle = async () => {
       if (isAuthenticated && playerData) {
-        if (lastFetchedModeRef.current === gameMode && currentRiddle) {
+        if (lastFetchedModeRef.current === gameMode && lastFetchedLocaleRef.current === currentLocale && currentRiddle) {
           return;
+        }
+        if (lastFetchedLocaleRef.current !== currentLocale) {
+          setCurrentRiddle(null);
         }
         await fetchCurrentRiddle(playerData, gameMode);
         lastFetchedModeRef.current = gameMode;
+        lastFetchedLocaleRef.current = currentLocale;
       }
     };
 
@@ -120,6 +127,7 @@ const GameScreenWrapper = () => {
     setCurrentRiddle,
     fetchCurrentRiddle,
     isAuthenticated,
+    currentLocale,
   ]);
 
   // Function to check if user completed today's single daily challenge

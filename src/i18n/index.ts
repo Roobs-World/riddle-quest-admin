@@ -145,12 +145,16 @@ const subscribe = (listener: () => void): (() => void) => {
   };
 };
 
-const useT = (): typeof t => {
+export const useT = (): typeof t => {
   const locale = useSyncExternalStore(subscribe, getLocale, getLocale);
 
   return (key, params) => {
     return formatMessage(getValueAtPath(buildRootCatalog(locale), key), params);
   };
+};
+
+export const useLocale = (): Locale => {
+  return useSyncExternalStore(subscribe, getLocale, getLocale);
 };
 
 export const translationKeys = TRANSLATION_KEYS;

@@ -1,5 +1,6 @@
 import {z} from "zod";
 import {validateUsernameForProfanity} from "./profanity";
+import {SUPPORTED_LOCALES} from "./locales";
 
 type TimestampLike = {
   toMillis?: () => number;
@@ -79,11 +80,13 @@ export const PlayerSchema = z.object({
   ),
   displayName: z.string().optional(),
   avatarUrl: z.string().url().optional(),
+  preferredLanguage: z.enum(SUPPORTED_LOCALES).optional(),
   coins: z.number().int().nonnegative().default(0),
   createdAt: TimestampAsMillisSchema.optional(),
   registeredAt: TimestampAsMillisSchema.optional(),
   lastLogin: TimestampAsMillisSchema.optional(),
   lastDailyChallengeCompletedAt: TimestampAsMillisSchema.optional(),
+  lastCompletedDailyChallengeKey: z.string().optional(),
   stats: PlayerStatsSchema.default(() => ({
     xp: 0,
     level: 1,
@@ -117,6 +120,9 @@ export type Player = z.infer<typeof PlayerSchema>;
 
 export const FirestoreRiddleSchema = z.object({
   riddleId: z.string(),
+  canonicalKey: z.string().optional(),
+  challengeKey: z.string().optional(),
+  locale: z.enum(SUPPORTED_LOCALES).optional(),
   dailyIndex: z.number().int().nonnegative().optional(),
   classicIndex: z.number().int().nonnegative().optional(),
   text: z.string(),
@@ -128,6 +134,8 @@ export type FirestoreRiddle = z.infer<typeof FirestoreRiddleSchema>;
 
 export const ClassicRiddleSchema = z.object({
   riddleId: z.string(),
+  canonicalKey: z.string().optional(),
+  locale: z.enum(SUPPORTED_LOCALES).optional(),
   text: z.string(),
   answer: z.string().min(1),
   classicIndex: z.number().int().nonnegative(),
@@ -137,6 +145,9 @@ export type ClassicRiddle = z.infer<typeof ClassicRiddleSchema>;
 
 export const DailyRiddleSchema = z.object({
   riddleId: z.string(),
+  canonicalKey: z.string().optional(),
+  challengeKey: z.string().optional(),
+  locale: z.enum(SUPPORTED_LOCALES).optional(),
   text: z.string(),
   answer: z.string().min(1),
   dailyIndex: z.number().int().nonnegative(),

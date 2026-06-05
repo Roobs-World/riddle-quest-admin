@@ -25,6 +25,10 @@ jest.mock("../../../contexts/AuthContext", () => ({
   useAuth: () => ({
     playerData: mockPlayerData,
   }),
+  usePlayer: () => ({
+    playerData: mockPlayerData,
+    updatePlayerDataLocally: jest.fn(),
+  }),
 }));
 
 jest.mock("../../../utils/logger", () => ({

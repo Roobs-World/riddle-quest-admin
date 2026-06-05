@@ -5,18 +5,15 @@ import {z} from "zod";
 import {captureException, withSentrySpan} from "./sentry";
 import {clueContainsLiteralAnswer} from "./riddleQuality";
 import {MAX_RIDDLE_ANSWER_CHARACTERS} from "./constants";
+import {type SupportedLocale} from "../../packages/core/dist/validation";
 
 // Lazy initialization variable
 let openaiClient: OpenAI | null = null;
 
 export const GeneratedRiddleSchema = z
   .object({
-    question: z.string().min(10).max(90).regex(/^[a-zA-Z0-9\s,.'?!-]+$/),
-    answer: z
-      .string()
-      .min(1)
-      .max(MAX_RIDDLE_ANSWER_CHARACTERS)
-      .regex(/^[a-z]+$/),
+    question: z.string().min(10).max(120).regex(/^[\p{L}\p{M}\p{N}\s,.'?!-]+$/u),
+    answer: z.string().min(1).max(MAX_RIDDLE_ANSWER_CHARACTERS).regex(/^[\p{Ll}\p{Lo}\p{Lm}\p{Mn}\p{Mc}\p{Nd}\s'-]+$/u),
   })
   .strict();
 
@@ -28,6 +25,17 @@ type GeneratedRiddle = z.infer<typeof GeneratedRiddleSchema>;
 export function resetOpenAIClient(): void {
   openaiClient = null;
 }
+
+const getLocaleSpecificPrompt = (locale: SupportedLocale): string => {
+  if (locale === "en") {
+    return "";
+  }
+
+  return (
+    `Write the question and answer naturally in ${locale}, using that locale's native script and everyday vocabulary. ` +
+    "Keep the answer concise, culturally appropriate, and playable on a mobile word game keyboard."
+  );
+};
 
 /**
  * Initializes the OpenAI client if not already initialized.
@@ -80,12 +88,12 @@ function validateGeneratedRiddle(generatedRiddle: GeneratedRiddle): [string, str
     return null;
   }
 
-  if (!/^[a-z]+$/.test(answer)) {
+  if (!/^[\p{L}\p{M}\p{N}\s'-]+$/u.test(answer)) {
     functions.logger.warn(`Answer contains invalid characters: "${answer}". Must be only lowercase letters.`);
     return null;
   }
 
-  if (!/^[a-zA-Z0-9\s,.'?!-]+$/.test(question)) {
+  if (!/^[\p{L}\p{M}\p{N}\s,.'?!-]+$/u.test(question)) {
     functions.logger.warn(
       `Question contains invalid characters: "${question}". Must contain only letters, numbers, spaces, and basic punctuation.`,
     );
@@ -106,9 +114,10 @@ function validateGeneratedRiddle(generatedRiddle: GeneratedRiddle): [string, str
  * @return {Promise<[string, string] | null>} A promise that resolves with a
  *   riddle [question, answer] or null if generation fails or is a duplicate.
  */
-export async function generateUniqueRiddle(): Promise<[string, string] | null> {
+export async function generateUniqueRiddle(locale: SupportedLocale = "en"): Promise<[string, string] | null> {
   const openai = initializeOpenAIClient();
   const model = process.env.OPENAI_MODEL || "gpt-5.5";
+  const localePrompt = getLocaleSpecificPrompt(locale);
 
   try {
     const completion = await withSentrySpan(
@@ -128,16 +137,18 @@ export async function generateUniqueRiddle(): Promise<[string, string] | null> {
                 "Vary clue styles: mini-scene, indirect trivia clue, compare/contrast, personification, light misdirection, playful logic, metaphor, or subtle wordplay. " +
                 "Make each clue fair, specific, and solvable with one clear answer; avoid obscure specialist trivia, vague clues, and clues that could fit many answers. " +
                 "Do not rely on the same opening pattern every time, especially not repeated 'What am I?' phrasing. " +
-                "Keep clues solvable, fair, and fun for mobile players.",
+                "Keep clues solvable, fair, and fun for mobile players. " +
+                localePrompt,
             },
             {
               role: "user",
               content:
                 "Generate a unique riddle as a JSON object matching the provided response schema with question and answer fields.\n\n" +
                 "Requirements:\n" +
-                "- Question: 10-90 characters, use natural language with proper grammar and punctuation\n" +
+                "- Question: 10-120 characters, use natural language with proper grammar and punctuation\n" +
                 "- Question must be a clue, not the answer itself, and must not include the answer word anywhere\n" +
-                `- Answer: MAXIMUM ${MAX_RIDDLE_ANSWER_CHARACTERS} characters, use ONLY lowercase letters (a-z), absolutely NO punctuation, NO numbers, NO special characters, NO apostrophes, NO hyphens\n` +
+                `- Answer: MAXIMUM ${MAX_RIDDLE_ANSWER_CHARACTERS} characters, use the locale's natural script and keep it easy to type on a mobile keyboard\n` +
+                "- Answer must contain only lowercase letters when the script has case\n" +
                 "- Content: Engaging, all-ages, and suitable for a wide audience of casual mobile game players\n" +
                 "- Topic scope: Root the riddle in one broad pub-quiz subject such as music, history, general knowledge, film and TV, sport, geography, science, literature and language, food and drink, art and culture, nature, technology, or everyday life\n" +
                 "- Pub quiz feel: Ask as a clue-based trivia style prompt while still feeling like a riddle\n" +
@@ -146,13 +157,14 @@ export async function generateUniqueRiddle(): Promise<[string, string] | null> {
                 "- Safety against spoilers: Do not include the answer, close variants, plurals, or obvious word stems in the question\n" +
                 "- Style diversity: Use a less common riddle angle, avoid generic textbook riddles, vague clues, and familiar tropes\n" +
                 "- Question pattern variety: Prefer alternatives to plain 'What am I?' prompts (use first-person voice, situation-based clues, or indirect questions when possible)\n" +
+                "- Locale fit: The question and answer must sound native to the target locale rather than translated word-for-word from English\n" +
                 "- Originality: Must be completely unique, not a common or well-known riddle\n\n" +
-                `The answer length and format are critical: it must never exceed ${MAX_RIDDLE_ANSWER_CHARACTERS} characters and must contain only lowercase letters.`,
+                `The answer length and format are critical: it must never exceed ${MAX_RIDDLE_ANSWER_CHARACTERS} characters.`,
             },
           ],
           response_format: zodResponseFormat(GeneratedRiddleSchema, "generated_riddle"),
         }),
-      {model},
+      {model, locale},
     );
 
     const generatedRiddle = completion.choices[0]?.message.parsed;

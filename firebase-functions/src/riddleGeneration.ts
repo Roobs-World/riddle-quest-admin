@@ -7,6 +7,7 @@ import {captureException} from "./sentry";
 import type {ClassicRiddle, DailyRiddle} from "./validation/firestoreSchemas";
 import {RiddleCollections} from "./validation/firestoreSchemas";
 import {clueContainsLiteralAnswer} from "./riddleQuality";
+import {SUPPORTED_LOCALES, type SupportedLocale} from "../../packages/core/dist/validation";
 import {
   GenerateRiddlesResponseSchema,
   GenerateTodaysDailyChallengeRequestSchema,
@@ -37,6 +38,37 @@ function riddleExists(
 
 function riddleHasPlayableClue(riddle: {question: string; answer: string}): boolean {
   return !clueContainsLiteralAnswer(riddle.question, riddle.answer);
+}
+
+const LOCALIZED_RIDDLES_COLLECTION = "localizedRiddles";
+
+const getLocalizedRiddleCollection = (locale: SupportedLocale, category: "classic" | "daily"): string =>
+  `${LOCALIZED_RIDDLES_COLLECTION}/${locale}/${category}`;
+
+const getLocalizedDailyDocRef = (locale: SupportedLocale): admin.firestore.DocumentReference =>
+  admin.firestore().collection(getLocalizedRiddleCollection(locale, "daily")).doc("current");
+
+const getLocalizedClassicDocRef = (locale: SupportedLocale, riddleId: string): admin.firestore.DocumentReference =>
+  admin.firestore().collection(getLocalizedRiddleCollection(locale, "classic")).doc(riddleId);
+
+const getLocalizedCanonicalKey = (category: "classic" | "daily", index: number, locale: SupportedLocale): string =>
+  `${category}:${index}:${locale}`;
+
+async function areLocalizedClassicRiddlesSeeded(): Promise<boolean> {
+  for (const locale of SUPPORTED_LOCALES) {
+    const snapshot = await admin
+      .firestore()
+      .collection(getLocalizedRiddleCollection(locale, "classic"))
+      .where("classicIndex", ">=", 0)
+      .limit(1)
+      .get();
+
+    if (snapshot.empty) {
+      return false;
+    }
+  }
+
+  return true;
 }
 
 /**
@@ -82,6 +114,45 @@ async function getExistingRiddlesFromFirestore(): Promise<{questions: string[]; 
     captureException(error);
     throw new Error("Failed to fetch existing riddles from Firestore.");
   }
+}
+
+async function getLocalizedExistingRiddlesFromFirestore(): Promise<{questions: string[]; answers: string[]}> {
+  const questions: string[] = [];
+  const answers: string[] = [];
+
+  for (const locale of SUPPORTED_LOCALES) {
+    const classicSnapshot = await admin.firestore().collection(getLocalizedRiddleCollection(locale, "classic")).get();
+    classicSnapshot.forEach((doc) => {
+      const data = doc.data();
+      if (data.text) {
+        questions.push(data.text.toLowerCase());
+      }
+      if (data.answer) {
+        answers.push(data.answer.toLowerCase());
+      }
+    });
+
+    const dailySnapshot = await admin.firestore().collection(getLocalizedRiddleCollection(locale, "daily")).get();
+    dailySnapshot.forEach((doc) => {
+      const data = doc.data();
+      if (data.text) {
+        questions.push(data.text.toLowerCase());
+      }
+      if (data.answer) {
+        answers.push(data.answer.toLowerCase());
+      }
+    });
+  }
+
+  // Include the legacy shared paths while the cutover is in flight.
+  const legacy = await getExistingRiddlesFromFirestore();
+  questions.push(...legacy.questions);
+  answers.push(...legacy.answers);
+
+  logger.info(
+    `Loaded ${questions.length} localized questions and ${answers.length} localized answers for duplicate checking`,
+  );
+  return {questions, answers};
 }
 
 async function requireAdmin(request: CallableRequest<unknown>): Promise<void> {
@@ -164,6 +235,39 @@ async function storeClassicRiddlesInFirestore(
   }
 }
 
+async function storeLocalizedClassicRiddlesInFirestore(
+  locale: SupportedLocale,
+  riddles: {question: string; answer: string}[],
+  startingIndex: number,
+): Promise<void> {
+  const batch = admin.firestore().batch();
+
+  riddles.forEach((riddle, index) => {
+    const docId = `classic_${startingIndex + index}`;
+    const riddleRef = getLocalizedClassicDocRef(locale, docId);
+    const riddleData: ClassicRiddle = {
+      riddleId: docId,
+      canonicalKey: getLocalizedCanonicalKey("classic", startingIndex + index, locale),
+      locale,
+      text: riddle.question,
+      answer: riddle.answer,
+      classicIndex: startingIndex + index,
+      category: "classic",
+    };
+
+    batch.set(riddleRef, riddleData);
+  });
+
+  try {
+    await batch.commit();
+    logger.info(`Successfully stored ${riddles.length} new classic riddles in Firestore for locale ${locale}.`);
+  } catch (error) {
+    logger.error(`Error storing classic riddles in Firestore for locale ${locale}:`, error);
+    captureException(error);
+    throw new Error(`Failed to store classic riddles in Firestore for locale ${locale}.`);
+  }
+}
+
 /**
  * Gets the next available daily index for new daily riddles.
  * @returns The next available daily index.
@@ -223,6 +327,194 @@ async function storeDailyRiddlesInFirestore(
     logger.error("Error storing daily riddles in Firestore:", error);
     captureException(error);
     throw new Error("Failed to store daily riddles in Firestore.");
+  }
+}
+
+async function storeLocalizedDailyRiddlesInFirestore(
+  locale: SupportedLocale,
+  riddles: {question: string; answer: string}[],
+  startingIndex: number,
+): Promise<void> {
+  if (riddles.length === 0) {
+    logger.warn(`No daily riddles provided to store for locale ${locale}.`);
+    return;
+  }
+
+  if (riddles.length > 1) {
+    logger.warn(
+      `Received ${riddles.length} daily riddles for locale ${locale}, but schema supports only one. Keeping the first and overwriting localizedRiddles/${locale}/daily/current.`,
+    );
+  }
+
+  const selectedRiddle = riddles[0];
+  const riddleRef = getLocalizedDailyDocRef(locale);
+  const riddleData: DailyRiddle = {
+    riddleId: "current",
+    canonicalKey: getLocalizedCanonicalKey("daily", startingIndex, locale),
+    challengeKey: new Date().toISOString().split("T")[0],
+    locale,
+    text: selectedRiddle.question,
+    answer: selectedRiddle.answer,
+    dailyIndex: startingIndex,
+    category: "daily",
+    timestamp: admin.firestore.FieldValue.serverTimestamp(),
+  };
+
+  try {
+    await riddleRef.set(riddleData);
+    logger.info(`Successfully stored daily riddle in localizedRiddles/${locale}/daily/current.`);
+  } catch (error) {
+    logger.error(`Error storing daily riddles in Firestore for locale ${locale}:`, error);
+    captureException(error);
+    throw new Error(`Failed to store daily riddles in Firestore for locale ${locale}.`);
+  }
+}
+
+async function generateLocalizedClassicRiddlesForLocale(
+  locale: SupportedLocale,
+  numberOfRiddles: number,
+): Promise<void> {
+  logger.info(`Generating ${numberOfRiddles} new classic riddles for locale ${locale}...`);
+
+  const openAIKey = process.env.OPENAI_API_KEY;
+  if (!openAIKey) {
+    throw new Error("OPENAI_API_KEY environment variable is required");
+  }
+
+  const existing = await getLocalizedExistingRiddlesFromFirestore();
+  const startingIndex = await getNextClassicIndex();
+  const newRiddles: {question: string; answer: string}[] = [];
+  const generatedAttempts: {question: string; answer: string}[] = [];
+  const maxAttempts = numberOfRiddles * 10;
+  let attemptCount = 0;
+
+  while (newRiddles.length < numberOfRiddles && attemptCount < maxAttempts) {
+    attemptCount++;
+    const riddle = await generateUniqueRiddle(locale);
+    if (!riddle) {
+      logger.warn(`Failed to generate unique classic riddle for locale ${locale}, retrying... (attempt ${attemptCount}/${maxAttempts})`);
+      continue;
+    }
+
+    const newRiddle = {question: riddle[0], answer: riddle[1]};
+    if (!riddleHasPlayableClue(newRiddle)) {
+      logger.warn(
+        `Generated classic riddle for locale ${locale} reveals its answer, trying again... (attempt ${attemptCount}/${maxAttempts})`,
+      );
+      continue;
+    }
+
+    if (
+      !riddleExists(newRiddle, existing.questions, existing.answers) &&
+      !riddleExists(
+        newRiddle,
+        generatedAttempts.map((item) => item.question),
+        generatedAttempts.map((item) => item.answer),
+      )
+    ) {
+      newRiddles.push(newRiddle);
+      existing.questions.push(newRiddle.question.toLowerCase());
+      existing.answers.push(newRiddle.answer.toLowerCase());
+      logger.info(`Generated classic riddle ${newRiddles.length}/${numberOfRiddles} for locale ${locale} (attempt ${attemptCount})`);
+    } else {
+      logger.warn(`Generated classic riddle for locale ${locale} is a duplicate, trying again... (attempt ${attemptCount}/${maxAttempts})`);
+    }
+
+    generatedAttempts.push(newRiddle);
+  }
+
+  if (newRiddles.length < numberOfRiddles && attemptCount >= maxAttempts) {
+    logger.warn(
+      `Circuit breaker activated: Only generated ${newRiddles.length}/${numberOfRiddles} classic riddles for locale ${locale} after ${maxAttempts} attempts`,
+    );
+    if (newRiddles.length === 0) {
+      throw new Error(`Failed to generate any unique classic riddles for locale ${locale} after ${maxAttempts} attempts`);
+    }
+  }
+
+  if (newRiddles.length > 0) {
+    await storeLocalizedClassicRiddlesInFirestore(locale, newRiddles, startingIndex);
+    logger.info(`Successfully generated and stored ${newRiddles.length} classic riddles for locale ${locale}.`);
+  }
+}
+
+async function generateLocalizedDailyRiddlesForLocale(
+  locale: SupportedLocale,
+  numberOfRiddles: number,
+): Promise<void> {
+  logger.info(`Generating ${numberOfRiddles} new daily riddles for locale ${locale}...`);
+
+  const openAIKey = process.env.OPENAI_API_KEY;
+  if (!openAIKey) {
+    throw new Error("OPENAI_API_KEY environment variable is required");
+  }
+
+  const existing = await getLocalizedExistingRiddlesFromFirestore();
+  const startingIndex = await getNextDailyIndex();
+  const newRiddles: {question: string; answer: string}[] = [];
+  const generatedAttempts: {question: string; answer: string}[] = [];
+  const maxAttempts = numberOfRiddles * 10;
+  let attemptCount = 0;
+
+  while (newRiddles.length < numberOfRiddles && attemptCount < maxAttempts) {
+    attemptCount++;
+    const riddle = await generateUniqueRiddle(locale);
+    if (!riddle) {
+      logger.warn(`Failed to generate unique daily riddle for locale ${locale}, retrying... (attempt ${attemptCount}/${maxAttempts})`);
+      continue;
+    }
+
+    const newRiddle = {question: riddle[0], answer: riddle[1]};
+    if (!riddleHasPlayableClue(newRiddle)) {
+      logger.warn(
+        `Generated daily riddle for locale ${locale} reveals its answer, trying again... (attempt ${attemptCount}/${maxAttempts})`,
+      );
+      continue;
+    }
+
+    if (
+      !riddleExists(newRiddle, existing.questions, existing.answers) &&
+      !riddleExists(
+        newRiddle,
+        generatedAttempts.map((item) => item.question),
+        generatedAttempts.map((item) => item.answer),
+      )
+    ) {
+      newRiddles.push(newRiddle);
+      existing.questions.push(newRiddle.question.toLowerCase());
+      existing.answers.push(newRiddle.answer.toLowerCase());
+      logger.info(`Generated daily riddle ${newRiddles.length}/${numberOfRiddles} for locale ${locale} (attempt ${attemptCount})`);
+    } else {
+      logger.warn(`Generated daily riddle for locale ${locale} is a duplicate, trying again... (attempt ${attemptCount}/${maxAttempts})`);
+    }
+
+    generatedAttempts.push(newRiddle);
+  }
+
+  if (newRiddles.length < numberOfRiddles && attemptCount >= maxAttempts) {
+    logger.warn(
+      `Circuit breaker activated: Only generated ${newRiddles.length}/${numberOfRiddles} daily riddles for locale ${locale} after ${maxAttempts} attempts`,
+    );
+    if (newRiddles.length === 0) {
+      throw new Error(`Failed to generate any unique daily riddles for locale ${locale} after ${maxAttempts} attempts`);
+    }
+  }
+
+  if (newRiddles.length > 0) {
+    await storeLocalizedDailyRiddlesInFirestore(locale, newRiddles, startingIndex);
+    logger.info(`Successfully generated and stored ${newRiddles.length} daily riddles for locale ${locale}.`);
+  }
+}
+
+export async function generateLocalizedClassicRiddles(numberOfRiddles: number): Promise<void> {
+  for (const locale of SUPPORTED_LOCALES) {
+    await generateLocalizedClassicRiddlesForLocale(locale, numberOfRiddles);
+  }
+}
+
+export async function generateLocalizedDailyRiddles(numberOfRiddles: number): Promise<void> {
+  for (const locale of SUPPORTED_LOCALES) {
+    await generateLocalizedDailyRiddlesForLocale(locale, numberOfRiddles);
   }
 }
 
@@ -432,6 +724,25 @@ export async function initializeRiddleDatabaseIfEmpty(initialRiddleCount: number
     logger.error("Error initializing riddle database:", error);
     captureException(error);
     throw new Error("Failed to initialize riddle database.");
+  }
+}
+
+export async function initializeLocalizedRiddleDatabaseIfEmpty(initialRiddleCount: number = 20): Promise<void> {
+  logger.info("Checking if localized riddle database needs initialization...");
+
+  try {
+    if (await areLocalizedClassicRiddlesSeeded()) {
+      logger.info("Localized riddle database already initialized - classic riddles exist for every locale.");
+      return;
+    }
+
+    logger.info(`Generating ${initialRiddleCount} initial riddles for each supported locale...`);
+    await generateLocalizedClassicRiddles(initialRiddleCount);
+    logger.info(`Localized riddle database initialized with ${initialRiddleCount} classic riddles per locale.`);
+  } catch (error) {
+    logger.error("Error initializing localized riddle database:", error);
+    captureException(error);
+    throw new Error("Failed to initialize localized riddle database.");
   }
 }
 
@@ -696,6 +1007,96 @@ export async function generateTodaysDailyChallenge(forceGenerate: boolean = fals
   } else {
     throw new Error("Failed to generate any daily challenge questions.");
   }
+}
+
+export async function generateLocalizedTodaysDailyChallenge(forceGenerate: boolean = false): Promise<void> {
+  const todayDateString = new Date().toISOString().split("T")[0];
+
+  for (const locale of SUPPORTED_LOCALES) {
+    const currentDailyRiddleRef = getLocalizedDailyDocRef(locale);
+    const existingChallenge = await currentDailyRiddleRef.get();
+
+    const getUtcDateFromStoredTimestamp = (value: unknown): string | null => {
+      if (!value) return null;
+      if (typeof value === "object" && value !== null && "toDate" in (value as object)) {
+        const ts = value as {toDate: () => Date};
+        const parsed = ts.toDate();
+        return Number.isNaN(parsed.getTime()) ? null : parsed.toISOString().split("T")[0];
+      }
+      const parsed = new Date(value as string | number | Date);
+      return Number.isNaN(parsed.getTime()) ? null : parsed.toISOString().split("T")[0];
+    };
+
+    if (existingChallenge.exists && !forceGenerate) {
+      const existingData = existingChallenge.data();
+      const existingChallengeDate = getUtcDateFromStoredTimestamp(existingData?.timestamp);
+      if (existingChallengeDate === todayDateString && existingData?.text && existingData?.answer) {
+        logger.info(`Today's daily challenge already exists for locale ${locale}.`);
+        continue;
+      }
+    }
+
+    logger.info(`Generating today's daily challenge for locale ${locale} on ${todayDateString}...`);
+
+    const openAIKey = process.env.OPENAI_API_KEY;
+    if (!openAIKey) {
+      throw new Error("OPENAI_API_KEY environment variable is required");
+    }
+
+    const existing = await getLocalizedExistingRiddlesFromFirestore();
+    const startingDailyIndex = await getNextDailyIndex();
+    const maxAttempts = 10;
+    let attemptCount = 0;
+    let selectedDailyChallengeRiddle: {text: string; answer: string} | null = null;
+    const generatedAttempts: {question: string; answer: string}[] = [];
+
+    while (!selectedDailyChallengeRiddle && attemptCount < maxAttempts) {
+      attemptCount++;
+      const riddle = await generateUniqueRiddle(locale);
+      if (!riddle) {
+        continue;
+      }
+
+      const newRiddle = {question: riddle[0], answer: riddle[1]};
+      if (
+        !riddleExists(newRiddle, existing.questions, existing.answers) &&
+        !riddleExists(
+          newRiddle,
+          generatedAttempts.map((item) => item.question),
+          generatedAttempts.map((item) => item.answer),
+        )
+      ) {
+        const riddleData: DailyRiddle = {
+          riddleId: "current",
+          canonicalKey: getLocalizedCanonicalKey("daily", startingDailyIndex, locale),
+          challengeKey: todayDateString,
+          locale,
+          text: newRiddle.question,
+          answer: newRiddle.answer,
+          dailyIndex: startingDailyIndex,
+          category: "daily",
+          timestamp: admin.firestore.FieldValue.serverTimestamp(),
+        };
+
+        await currentDailyRiddleRef.set(riddleData);
+        selectedDailyChallengeRiddle = {
+          text: newRiddle.question,
+          answer: newRiddle.answer,
+        };
+        existing.questions.push(newRiddle.question.toLowerCase());
+        existing.answers.push(newRiddle.answer.toLowerCase());
+        logger.info(`Generated daily challenge question for locale ${locale} (attempt ${attemptCount})`);
+      }
+
+      generatedAttempts.push(newRiddle);
+    }
+
+    if (!selectedDailyChallengeRiddle) {
+      throw new Error(`Failed to generate any daily challenge questions for locale ${locale}.`);
+    }
+  }
+
+  await resetAllUsersDailyChallengeProgress();
 }
 
 /**

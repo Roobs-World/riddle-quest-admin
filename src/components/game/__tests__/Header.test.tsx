@@ -192,7 +192,7 @@ describe("Header", () => {
       const logoButton = getByTestId("logo-button");
       expect(logoButton.props.accessible).toBe(true);
       expect(logoButton.props.accessibilityRole).toBe("button");
-      expect(logoButton.props.accessibilityLabel).toBe("logo");
+      expect(logoButton.props.accessibilityLabel).toBe("Logo");
     });
 
     it("maintains accessibility structure for components", () => {

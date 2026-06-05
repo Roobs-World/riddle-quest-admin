@@ -21,18 +21,15 @@ import {captureException} from "./src/utils/sentry";
 import {logger} from "./src/utils/logger";
 
 import React, {useCallback, useEffect, useRef, useState} from "react";
-import {NavigationContainer} from "@react-navigation/native";
 import {StyleSheet, Text, View} from "react-native";
 import {SafeAreaProvider} from "react-native-safe-area-context";
 import {loadFonts} from "./src/utils/fontLoader";
 import {SoundManager} from "./src/services/SoundManager";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import Constants from "expo-constants";
 import {Settings} from "react-native-fbsdk-next";
 import {GoogleSignin} from "@react-native-google-signin/google-signin";
-import {AuthProvider} from "./src/contexts/AuthContext";
+import {AuthProvider, useAuth} from "./src/contexts/AuthContext";
 import {TooltipProvider} from "./src/contexts/TooltipContext";
-import {Navigation} from "./src/navigation/NavigationStack";
 import LanguageSelectionScreen from "./src/screens/LanguageSelectionScreen";
 import PulsingSpinner from "@/components/loading/PulsingSpinner";
 import {SolarSystemPreloader} from "./src/services/SolarSystemPreloader";
@@ -41,16 +38,13 @@ import {initializeRewardedAds} from "./src/services/RewardedAdService";
 import {getCrashlytics, log as logCrashlyticsMessage} from "@react-native-firebase/crashlytics";
 import {ModalProvider} from "./src/contexts/ModalContext";
 import {QASurfaceGate} from "./src/qa/QASurfaceHarness";
-import {
-  LOCALE_STORAGE_KEY,
-  isSupportedLanguage,
-  setLocale,
-  detectDeviceLanguage,
-  t,
-} from "./src/i18n";
+import {isSupportedLanguage, setLocale, detectDeviceLanguage, t, type SupportedLanguage} from "./src/i18n";
 import {isSharedAnimationBackendEnabled, isSharedAnimationBackendFlagRequested} from "./src/config/featureFlags";
 import {SOUND_ENABLED_STORAGE_KEY, readBooleanSetting} from "./src/utils/settingsStorage";
 import {initializeFirebaseAppCheck} from "./src/services/AppCheckService";
+import {NavigationContainer} from "@react-navigation/native";
+import {Navigation} from "./src/navigation/NavigationStack";
+import {persistLocale, readStoredLocale} from "./src/utils/localeStorage";
 
 const SOLAR_PRELOAD_TIMEOUT_MS = 60000;
 
@@ -124,6 +118,93 @@ const FatalStartupScreen = (): React.JSX.Element => {
   );
 };
 
+const AppShell = (): React.JSX.Element => {
+  const {isAuthenticated, isLoading: isAuthLoading, playerData, updatePlayerData} = useAuth();
+  const [initialLanguageState, setInitialLanguageState] = useState<"pending" | "gate" | "ready">("pending");
+
+  useEffect(() => {
+    let isMounted = true;
+
+    void (async () => {
+      const storedLanguage = await readStoredLocale();
+
+      if (!isMounted) {
+        return;
+      }
+
+      if (storedLanguage) {
+        setLocale(storedLanguage);
+        setInitialLanguageState("ready");
+        return;
+      }
+
+      detectDeviceLanguage();
+      setInitialLanguageState("pending");
+    })();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isAuthLoading) {
+      return;
+    }
+
+    const preferredLanguage = playerData?.preferredLanguage;
+
+    if (preferredLanguage && isSupportedLanguage(preferredLanguage)) {
+      void persistLocale(preferredLanguage).then(() => {
+        setInitialLanguageState("ready");
+      });
+      return;
+    }
+
+    if (initialLanguageState === "pending") {
+      void Promise.resolve().then(() => {
+        setInitialLanguageState((current) => (current === "pending" ? "gate" : current));
+      });
+    }
+  }, [initialLanguageState, isAuthLoading, playerData?.preferredLanguage]);
+
+  const handleCompleteInitialLanguageSelection = useCallback(
+    async (language: SupportedLanguage): Promise<void> => {
+      await persistLocale(language);
+
+      if (isAuthenticated && playerData?.userId) {
+        try {
+          await updatePlayerData({preferredLanguage: language});
+        } catch (error) {
+          logger.warn("Failed to persist preferred language to player profile during initial selection.", error);
+          captureException(error, {context: "App.persistPreferredLanguage"});
+        }
+      }
+
+      setInitialLanguageState("ready");
+    },
+    [isAuthenticated, playerData?.userId, updatePlayerData],
+  );
+
+  if (initialLanguageState === "pending") {
+    return <PulsingSpinner visible={true} size={120} opacity={0.8} />;
+  }
+
+  return (
+    <View style={{flex: 1}}>
+      {initialLanguageState === "gate" ? (
+        <LanguageSelectionScreen onSubmit={handleCompleteInitialLanguageSelection} />
+      ) : (
+        <QASurfaceGate>
+          <NavigationContainer>
+            <Navigation />
+          </NavigationContainer>
+        </QASurfaceGate>
+      )}
+    </View>
+  );
+};
+
 /**
  * Main application component that initializes all services and provides the core app structure.
  *
@@ -140,7 +221,6 @@ const FatalStartupScreen = (): React.JSX.Element => {
  */
 export default Sentry.wrap(function App() {
   const [isInitialized, setIsInitialized] = useState(false);
-  const [requiresInitialLanguageSelection, setRequiresInitialLanguageSelection] = useState(false);
   const [startupError, setStartupError] = useState<unknown | null>(null);
   const hasStartedCriticalInitRef = useRef(false);
   const hasStartedBackgroundInitRef = useRef(false);
@@ -190,17 +270,11 @@ export default Sentry.wrap(function App() {
           );
         }
         logCrashlyticsMessage(getCrashlytics(), "App initialization started");
-        const savedLanguage = await AsyncStorage.getItem(LOCALE_STORAGE_KEY);
-        if (savedLanguage && isSupportedLanguage(savedLanguage)) {
+        const savedLanguage = await readStoredLocale();
+        if (savedLanguage) {
           setLocale(savedLanguage);
-          if (isMounted) {
-            setRequiresInitialLanguageSelection(false);
-          }
         } else {
           detectDeviceLanguage();
-          if (isMounted) {
-            setRequiresInitialLanguageSelection(true);
-          }
         }
         try {
           await withTimeout(SolarSystemPreloader.preloadSolarSystem(), SOLAR_PRELOAD_TIMEOUT_MS);
@@ -237,19 +311,6 @@ export default Sentry.wrap(function App() {
     return <PulsingSpinner visible={true} size={120} opacity={0.8} />;
   }
 
-  const handleCompleteInitialLanguageSelection = async (language: Parameters<typeof setLocale>[0]): Promise<void> => {
-    setLocale(language);
-
-    try {
-      await AsyncStorage.setItem(LOCALE_STORAGE_KEY, language);
-    } catch (error) {
-      logger.error("Failed to persist initial language selection:", error);
-      captureException(error, {context: "App.persistInitialLanguageSelection"});
-    } finally {
-      setRequiresInitialLanguageSelection(false);
-    }
-  };
-
   return (
     <Sentry.ErrorBoundary
       fallback={<PulsingSpinner visible={true} size={120} opacity={0.8} />}
@@ -259,17 +320,7 @@ export default Sentry.wrap(function App() {
         <ModalProvider>
           <AuthProvider>
             <TooltipProvider>
-              <View style={{flex: 1}}>
-                {requiresInitialLanguageSelection ? (
-                  <LanguageSelectionScreen onSubmit={handleCompleteInitialLanguageSelection} />
-                ) : (
-                  <QASurfaceGate>
-                    <NavigationContainer>
-                      <Navigation />
-                    </NavigationContainer>
-                  </QASurfaceGate>
-                )}
-              </View>
+              <AppShell />
             </TooltipProvider>
           </AuthProvider>
         </ModalProvider>
@@ -286,18 +337,18 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingHorizontal: 24,
   },
-  fatalTitle: {
-    color: "#fff7e6",
-    fontSize: 28,
-    fontWeight: "700",
-    marginBottom: 12,
-    textAlign: "center",
-  },
   fatalMessage: {
     color: "#d6d9e8",
     fontSize: 16,
     lineHeight: 24,
     maxWidth: 420,
+    textAlign: "center",
+  },
+  fatalTitle: {
+    color: "#fff7e6",
+    fontSize: 28,
+    fontWeight: "700",
+    marginBottom: 12,
     textAlign: "center",
   },
 });

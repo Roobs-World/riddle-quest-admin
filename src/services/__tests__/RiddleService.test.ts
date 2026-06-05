@@ -84,9 +84,11 @@ jest.mock("../../utils/logger", () => ({
 jest.mock("../../validation/cloudFunctionsSchemas", () => ({
   SubmitGuessInputSchema: {
     parse: jest.fn(),
+    safeParse: jest.fn(),
   },
   SubmitGuessOutputSchema: {
     parse: jest.fn(),
+    safeParse: jest.fn(),
   },
 }));
 
@@ -126,12 +128,38 @@ describe("RiddleService", () => {
     mockHttpsCallableFn.mockReturnValue(mockHttpsCallable);
     mockCaptureException.mockReset();
 
+    const mockSubmitGuessSchema = (
+      schema: {parse: jest.Mock; safeParse: jest.Mock},
+      defaultValue: unknown,
+    ) => {
+      schema.parse.mockImplementation((data) => data);
+      schema.safeParse.mockImplementation((data) => {
+        try {
+          return {success: true, data: schema.parse(data)};
+        } catch (error) {
+          return {
+            success: false,
+            error: error instanceof Error ? error : new Error(String(error ?? defaultValue)),
+          };
+        }
+      });
+    };
+
     // Setup defaults for standalone modular functions
     mockDoc.mockReturnValue({});
     mockCollection.mockReturnValue({});
     mockQuery.mockReturnValue({});
     mockWhere.mockReturnValue({});
     mockLimit.mockReturnValue({});
+
+    mockSubmitGuessSchema(
+      SubmitGuessInputSchema as unknown as {parse: jest.Mock; safeParse: jest.Mock},
+      "Invalid guess input",
+    );
+    mockSubmitGuessSchema(
+      SubmitGuessOutputSchema as unknown as {parse: jest.Mock; safeParse: jest.Mock},
+      "Invalid guess output",
+    );
 
     // Ensure Firebase auth mock returns our mock object
     (getAuth as jest.MockedFunction<typeof getAuth>).mockReturnValue(mockAuth as any);
@@ -198,9 +226,9 @@ describe("RiddleService", () => {
 
       expect(result).toBeNull();
       expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "users", mockUserId);
-      expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "dailyRiddles", "current");
+      expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "localizedRiddles/en/daily", "current");
       expect(logger.debug).toHaveBeenCalledWith(
-        `No current daily challenge found (docId: current) for date: ${mockToday}`,
+        `No current daily challenge found for locale en on date: ${mockToday}`,
       );
     });
 
@@ -238,8 +266,9 @@ describe("RiddleService", () => {
         riddleId: "current",
         completedToday: false,
         answerLength: 5,
+        locale: "en",
       });
-      expect(logger.debug).toHaveBeenCalledWith("Fetched current daily riddle from dailyRiddles/current");
+      expect(logger.debug).toHaveBeenCalledWith("Fetched current daily riddle from localizedRiddles/en/daily/current");
     });
 
     it("should handle Firestore errors gracefully and call captureException", async () => {
@@ -288,6 +317,7 @@ describe("RiddleService", () => {
         riddleId: "current",
         completedToday: false,
         answerLength: 4,
+        locale: "en",
       });
     });
 
@@ -315,6 +345,7 @@ describe("RiddleService", () => {
         riddleId: "current",
         completedToday: false,
         answerLength: 4,
+        locale: "en",
       });
     });
 
@@ -327,7 +358,7 @@ describe("RiddleService", () => {
 
       expect(result).toBeNull();
       expect(logger.debug).toHaveBeenCalledWith(
-        `No current daily challenge found (docId: current) for date: ${mockToday}`,
+        `No current daily challenge found for locale en on date: ${mockToday}`,
       );
     });
   });
@@ -360,11 +391,12 @@ describe("RiddleService", () => {
         ...mockClassicRiddleData,
         riddleId,
         answerLength: 4,
+        locale: "en",
       });
-      expect(mockCollection).toHaveBeenCalledWith(expect.any(Object), "riddles");
+      expect(mockCollection).toHaveBeenCalledWith(expect.any(Object), "localizedRiddles/en/classic");
       expect(mockWhere).toHaveBeenCalledWith("classicIndex", "==", level);
       expect(mockLimit).toHaveBeenCalledWith(1);
-      expect(logger.debug).toHaveBeenCalledWith(`Classic riddle found for level: ${level}`);
+      expect(logger.debug).toHaveBeenCalledWith(`Classic riddle found for level: ${level} in locale en`);
     });
 
     it("should return null when no classic riddle found for level", async () => {
@@ -435,6 +467,7 @@ describe("RiddleService", () => {
         classicIndex: 0,
         riddleId,
         answerLength: 4,
+        locale: "en",
       });
       expect(mockWhere).toHaveBeenCalledWith("classicIndex", "==", 0);
     });
@@ -512,11 +545,6 @@ describe("RiddleService", () => {
       correctAnswer: "PIANO",
     };
 
-    beforeEach(() => {
-      (SubmitGuessInputSchema.parse as jest.Mock).mockImplementation((data) => data);
-      (SubmitGuessOutputSchema.parse as jest.Mock).mockImplementation((data) => data);
-    });
-
     it("should submit guess successfully and return validated result", async () => {
       mockHttpsCallable.mockResolvedValue({data: mockValidResult});
 
@@ -582,6 +610,10 @@ describe("RiddleService", () => {
       (SubmitGuessInputSchema.parse as jest.Mock).mockImplementation(() => {
         throw zodError;
       });
+      (SubmitGuessInputSchema.safeParse as jest.Mock).mockImplementation(() => ({
+        success: false,
+        error: zodError,
+      }));
 
       await expect(RiddleService.submitGuess(mockGuessData)).rejects.toThrow("Invalid guess data provided.");
 
@@ -603,6 +635,10 @@ describe("RiddleService", () => {
       (SubmitGuessOutputSchema.parse as jest.Mock).mockImplementation(() => {
         throw zodError;
       });
+      (SubmitGuessOutputSchema.safeParse as jest.Mock).mockImplementation(() => ({
+        success: false,
+        error: zodError,
+      }));
 
       await expect(RiddleService.submitGuess(mockGuessData)).rejects.toThrow("Invalid guess data provided.");
 
@@ -659,6 +695,10 @@ describe("RiddleService", () => {
       (SubmitGuessInputSchema.parse as jest.Mock).mockImplementation(() => {
         throw zodError;
       });
+      (SubmitGuessInputSchema.safeParse as jest.Mock).mockImplementation(() => ({
+        success: false,
+        error: zodError,
+      }));
 
       await expect(RiddleService.submitGuess(emptyGuessData)).rejects.toThrow("Invalid guess data provided.");
 
@@ -770,8 +810,8 @@ describe("RiddleService", () => {
 
       // Verify doc/collection calls were made with correct collection names
       expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "users", expect.any(String));
-      expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "dailyRiddles", "current");
-      expect(mockCollection).toHaveBeenCalledWith(expect.any(Object), "riddles");
+      expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "localizedRiddles/en/daily", "current");
+      expect(mockCollection).toHaveBeenCalledWith(expect.any(Object), "localizedRiddles/en/classic");
     });
 
     it("should handle service recovery from intermittent errors", async () => {

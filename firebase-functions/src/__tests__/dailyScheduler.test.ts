@@ -76,9 +76,11 @@ jest.mock("firebase-admin", () => {
 });
 
 jest.mock("../riddleGeneration", () => ({
-  generateTodaysDailyChallenge: jest.fn(),
+  generateLocalizedTodaysDailyChallenge: jest.fn(),
 }));
-const mockGenerateTodaysDailyChallenge = jest.mocked(require("../riddleGeneration").generateTodaysDailyChallenge);
+const mockGenerateTodaysDailyChallenge = jest.mocked(
+  require("../riddleGeneration").generateLocalizedTodaysDailyChallenge,
+);
 
 // Mock firebase-functions/v2/scheduler (partially, we are testing the handler function directly)
 // The main utility of onSchedule is to wrap the function and define schedule/retry config.

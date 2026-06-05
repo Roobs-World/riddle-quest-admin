@@ -48,11 +48,11 @@ describe("i18n runtime support", () => {
 
   it("switches locale-specific strings", () => {
     setLocale("es");
-    expect(getRootCatalog().Settings.TITLE).toBe("Configuracion");
-    expect(t("Settings.TITLE")).toBe("Configuracion");
+    expect(getRootCatalog().Settings.TITLE).toBe("Configuración");
+    expect(t("Settings.TITLE")).toBe("Configuración");
 
     setLocale("fr");
-    expect(getRootCatalog().Settings.TITLE).toBe("Parametres");
+    expect(getRootCatalog().Settings.TITLE).toBe("Paramètres");
   });
 
   it("supports async locale loading", async () => {

@@ -2,6 +2,8 @@ import {getFirestore, collection, getDocs, query, where, limit} from "@react-nat
 import {getCallableFunction} from "../utils/firebaseFunctions";
 import {logger} from "../utils/logger";
 import {captureException, startTransaction} from "../utils/sentry";
+import {getLocale} from "../i18n";
+import {getLocalizedRiddleCollection} from "./riddleCollections";
 
 /**
  * Service responsible for checking and initializing the riddle database
@@ -47,22 +49,23 @@ export class RiddleInitializationService {
 
     this.isInitializing = true;
     logger.debug("Checking if riddle database needs initialization...");
+    const locale = getLocale();
 
     const txn = startTransaction("checkAndInitializeRiddles", "db");
     try {
-      // Check if any classic riddles exist in the riddles collection
+      // Check if any classic riddles exist in the localized collection for the active locale.
       const riddlesSnapshot = await getDocs(
-        query(collection(getFirestore(), "riddles"), where("classicIndex", ">=", 0), limit(1)),
+        query(collection(getFirestore(), getLocalizedRiddleCollection(locale, "classic")), where("classicIndex", ">=", 0), limit(1)),
       );
 
       if (!riddlesSnapshot.empty) {
-        logger.debug("Classic riddles database already has riddles - no initialization needed");
+        logger.debug(`Classic riddles database already has riddles for locale ${locale} - no initialization needed`);
         this.hasInitialized = true;
         this.initializationFailed = false;
         return;
       }
 
-      logger.warn("No classic riddles found in database - initializing...");
+      logger.warn(`No classic riddles found in localized database for locale ${locale} - initializing...`);
 
       // Call the Firebase function to initialize riddles with timeout
       const initializeRiddleDatabase = getCallableFunction("initializeRiddleDatabase");
@@ -125,14 +128,14 @@ export class RiddleInitializationService {
 
       // Verify classic riddles were created in the riddles collection
       const verifySnapshot = await getDocs(
-        query(collection(getFirestore(), "riddles"), where("classicIndex", ">=", 0), limit(1)),
+        query(collection(getFirestore(), getLocalizedRiddleCollection(locale, "classic")), where("classicIndex", ">=", 0), limit(1)),
       );
 
       if (verifySnapshot.empty) {
-        throw new Error("Riddle initialization completed but no classic riddles found in database");
+        throw new Error(`Riddle initialization completed but no classic riddles found in localized database for locale ${locale}`);
       }
 
-      logger.info("Classic riddles database successfully initialized!");
+      logger.info(`Classic riddles database successfully initialized for locale ${locale}!`);
       this.hasInitialized = true;
       this.initializationFailed = false;
     } catch (error) {
@@ -165,9 +168,12 @@ export class RiddleInitializationService {
   static async hasEnoughRiddles(minimumCount: number = 10): Promise<boolean> {
     try {
       const riddlesSnapshot = await getDocs(
-        query(collection(getFirestore(), "riddles"), where("classicIndex", ">=", 0), limit(minimumCount)),
+        query(
+          collection(getFirestore(), getLocalizedRiddleCollection(getLocale(), "classic")),
+          where("classicIndex", ">=", 0),
+          limit(minimumCount),
+        ),
       );
-
       return riddlesSnapshot.size >= minimumCount;
     } catch (error) {
       logger.error("Error checking riddle count:", error);

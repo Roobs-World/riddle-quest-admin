@@ -168,7 +168,7 @@ describe("RiddleInitializationService", () => {
         initializationFailed: false,
       });
       expect(loggerMock.debug).toHaveBeenCalledWith(
-        "Classic riddles database already has riddles - no initialization needed",
+        "Classic riddles database already has riddles for locale en - no initialization needed",
       );
     });
 
@@ -180,7 +180,7 @@ describe("RiddleInitializationService", () => {
 
       expect(mockInitializeRiddleDatabase).toHaveBeenCalledWith({});
       expect(mockGenerateClassicRiddles).not.toHaveBeenCalled();
-      expect(loggerMock.info).toHaveBeenCalledWith("Classic riddles database successfully initialized!");
+      expect(loggerMock.info).toHaveBeenCalledWith("Classic riddles database successfully initialized for locale en!");
       expect(RiddleInitializationService.getInitializationStatus()).toEqual({
         isInitializing: false,
         hasInitialized: true,
@@ -260,7 +260,7 @@ describe("RiddleInitializationService", () => {
       mockGet.mockResolvedValueOnce({empty: false, size: 10});
       const result = await RiddleInitializationService.hasEnoughRiddles();
       expect(result).toBe(true);
-      expect(mockCollection).toHaveBeenCalledWith(expect.any(Object), "riddles");
+      expect(mockCollection).toHaveBeenCalledWith(expect.any(Object), "localizedRiddles/en/classic");
       expect(mockWhere).toHaveBeenCalledWith("classicIndex", ">=", 0);
       expect(mockLimit).toHaveBeenCalledWith(10);
     });
@@ -269,7 +269,7 @@ describe("RiddleInitializationService", () => {
       mockGet.mockResolvedValueOnce({empty: false, size: 5});
       const result = await RiddleInitializationService.hasEnoughRiddles();
       expect(result).toBe(false);
-      expect(mockCollection).toHaveBeenCalledWith(expect.any(Object), "riddles");
+      expect(mockCollection).toHaveBeenCalledWith(expect.any(Object), "localizedRiddles/en/classic");
       expect(mockWhere).toHaveBeenCalledWith("classicIndex", ">=", 0);
       expect(mockLimit).toHaveBeenCalledWith(10);
     });

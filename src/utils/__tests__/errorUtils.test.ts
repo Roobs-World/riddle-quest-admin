@@ -305,7 +305,7 @@ describe("Error Utils", () => {
           {
             code: "unknown/error",
             message: "Unknown error",
-            expected: "Unknown error",
+            expected: "An unexpected error occurred. Please try again.",
           },
         ];
 
@@ -318,7 +318,7 @@ describe("Error Utils", () => {
       test("should return standard Error message", () => {
         const error = new Error("Standard error message");
 
-        expect(ErrorUtils.getUserFriendlyMessage(error)).toBe("Standard error message");
+        expect(ErrorUtils.getUserFriendlyMessage(error)).toBe("An unexpected error occurred. Please try again.");
       });
 
       test("should return default message for unknown errors", () => {

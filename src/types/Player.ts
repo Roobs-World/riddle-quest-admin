@@ -10,9 +10,11 @@ export type Player = {
   username: string;
   email: string;
   displayName: string;
+  preferredLanguage?: string;
   registeredAt: Date | null;
   lastLogin: Date | null;
   lastDailyChallengeCompletedAt?: Date | null;
+  lastCompletedDailyChallengeKey?: string;
   currentRiddle?: Riddle;
   avatarUrl?: string | null;
   stats?: PlayerStats;

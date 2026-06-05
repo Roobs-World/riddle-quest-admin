@@ -1,3 +1,5 @@
+import {graphemeLength} from "./graphemes";
+
 /**
  * Validates that a guess is the correct length and contains only letters.
  */
@@ -6,9 +8,9 @@ export function isValidGuess(guess: string, expectedLength: number = 5): boolean
     return false;
   }
 
-  if (guess.length !== expectedLength) {
+  if (graphemeLength(guess.trim()) !== expectedLength) {
     return false;
   }
 
-  return /^[a-zA-Z]+$/.test(guess);
+  return /^[\p{L}\p{M}]+$/u.test(guess);
 }

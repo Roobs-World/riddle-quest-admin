@@ -46,7 +46,7 @@ describe("responsive screen and modal coverage", () => {
   ])("%s keeps responsive modal constraints in place", (_name, relativePath) => {
     const source = read(relativePath);
 
-    expect(source).toContain("SlideInModalContent");
+    expect(source).toMatch(/SlideInModalContent|DecoratedModalShell/);
     expect(source).toMatch(/MODAL_MAX_HEIGHT|getResponsiveModalHeight|AUTH_CONTENT_MAX_WIDTH/);
   });
 });

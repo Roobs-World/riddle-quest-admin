@@ -26,6 +26,7 @@ export const buildFirestoreUserUpdates = (basePlayer: Player, updates: Partial<P
   delete clientEditableUpdates.hasPurchasedApp;
   delete clientEditableUpdates.unlockedAchievements;
   delete clientEditableUpdates.lastDailyChallengeCompletedAt;
+  delete clientEditableUpdates.preferredLanguage;
 
   return {
     ...clientEditableUpdates,

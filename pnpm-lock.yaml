@@ -297,7 +297,7 @@ importers:
         specifier: 5.0.2
         version: 5.0.2
       '@qwordly/core':
-        specifier: file:../packages/core
+        specifier: workspace:*
         version: link:../packages/core
       '@sentry/node':
         specifier: ^10.54.0

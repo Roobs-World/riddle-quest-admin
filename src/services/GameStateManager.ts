@@ -20,6 +20,7 @@ import {IAudioFeedbackService} from "./interfaces/IAudioFeedbackService";
 import {serviceRegistry} from "./ServiceRegistry";
 import {logger} from "../utils/logger";
 import {captureException} from "../utils/sentry";
+import {graphemeLength, splitGraphemes} from "@qwordly/core/game";
 
 /**
  * Internal snapshot of the current game state for a single riddle.
@@ -142,7 +143,7 @@ export class GameStateManager {
    * @param letter Letter to append to the current guess.
    */
   addLetter = (letter: string): void => {
-    if (this.state.currentGuess.length < this.getAnswerLength() && this.state.gameStatus === "playing") {
+    if (graphemeLength(this.state.currentGuess) < this.getAnswerLength() && this.state.gameStatus === "playing") {
       this.setState({
         currentGuess: this.state.currentGuess + letter.toLowerCase(),
       });
@@ -156,9 +157,10 @@ export class GameStateManager {
    * Removes the last letter from the current guess when available.
    */
   removeLetter = (): void => {
-    if (this.state.currentGuess.length > 0) {
+    const guessLetters = splitGraphemes(this.state.currentGuess);
+    if (guessLetters.length > 0) {
       this.setState({
-        currentGuess: this.state.currentGuess.slice(0, -1),
+        currentGuess: guessLetters.slice(0, -1).join(""),
       });
 
       // Play neutral feedback using injected service
@@ -173,7 +175,7 @@ export class GameStateManager {
    */
   submitGuess = async (): Promise<void> => {
     if (
-      this.state.currentGuess.length !== this.getAnswerLength() ||
+      graphemeLength(this.state.currentGuess) !== this.getAnswerLength() ||
       this.state.gameStatus !== "playing" ||
       !this.config.riddleId
     ) {

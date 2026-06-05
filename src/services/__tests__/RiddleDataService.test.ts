@@ -123,9 +123,8 @@ describe("RiddleDataService", () => {
 
       const result = await riddleDataService.fetchDailyRiddle();
 
-      expect(mockCollection).toHaveBeenCalledWith(expect.any(Object), "riddles");
-      expect(mockWhere).toHaveBeenCalledWith("category", "==", "daily");
-      expect(mockWhere).toHaveBeenCalledWith("date", "==", "2023-12-01");
+      expect(mockCollection).toHaveBeenCalledWith(expect.any(Object), "localizedRiddles/en/daily");
+      expect(mockWhere).toHaveBeenCalledWith("riddleId", "==", "current");
       expect(mockLimit).toHaveBeenCalledWith(1);
       expect(FirestoreRiddleSchema.parse).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -174,7 +173,7 @@ describe("RiddleDataService", () => {
         throw zodError;
       });
 
-      await expect(riddleDataService.fetchDailyRiddle()).rejects.toThrow("Invalid daily riddle data structure");
+      await expect(riddleDataService.fetchDailyRiddle()).rejects.toThrow("Invalid data format. Please check your input.");
     });
 
     it("should handle Firestore errors", async () => {
@@ -231,13 +230,15 @@ describe("RiddleDataService", () => {
 
       const result = await riddleDataService.fetchClassicRiddle(level);
 
-      expect(mockCollection).toHaveBeenCalledWith(expect.any(Object), "riddles");
+      expect(mockCollection).toHaveBeenCalledWith(expect.any(Object), "localizedRiddles/en/classic");
       expect(mockWhere).toHaveBeenCalledWith("classicIndex", "==", level);
       expect(mockLimit).toHaveBeenCalledWith(1);
       expect(FirestoreRiddleSchema.parse).toHaveBeenCalledWith({
         ...mockRiddleData,
         riddleId: "classic-riddle-123",
         answerLength: 4,
+        canonicalKey: "classic:5",
+        locale: "en",
       });
       expect(result).toEqual(mockValidatedRiddle);
     });
@@ -370,7 +371,7 @@ describe("RiddleDataService", () => {
       });
 
       await expect(riddleDataService.fetchClassicRiddle(level)).rejects.toThrow(
-        "Invalid classic riddle data structure",
+        "Invalid data format. Please check your input.",
       );
     });
 
@@ -408,10 +409,11 @@ describe("RiddleDataService", () => {
 
       const result = await riddleDataService.fetchRiddleById(riddleId);
 
-      expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "riddles", riddleId);
+      expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "localizedRiddles/en/classic", riddleId);
       expect(FirestoreRiddleSchema.parse).toHaveBeenCalledWith({
         ...mockRiddleData,
         riddleId: riddleId,
+        locale: "en",
       });
       expect(result).toEqual(mockValidatedRiddle);
     });
@@ -491,7 +493,7 @@ describe("RiddleDataService", () => {
         throw zodError;
       });
 
-      await expect(riddleDataService.fetchRiddleById(riddleId)).rejects.toThrow("Invalid riddle data structure");
+      await expect(riddleDataService.fetchRiddleById(riddleId)).rejects.toThrow("Invalid data format. Please check your input.");
     });
 
     it("should handle Firestore errors", async () => {
@@ -516,8 +518,8 @@ describe("RiddleDataService", () => {
 
       const result = await riddleDataService.getClassicRiddleCount();
 
-      expect(mockCollection).toHaveBeenCalledWith(expect.any(Object), "riddles");
-      expect(mockWhere).toHaveBeenCalledWith("category", "==", "classic");
+      expect(mockCollection).toHaveBeenCalledWith(expect.any(Object), "localizedRiddles/en/classic");
+      expect(mockWhere).toHaveBeenCalledWith("classicIndex", ">=", 0);
       expect(result).toBe(25);
     });
 
@@ -568,10 +570,6 @@ describe("RiddleDataService", () => {
   });
 
   describe("Service Integration", () => {
-    it("should have correct riddles collection constant", () => {
-      expect((RiddleDataService as any).RIDDLES_COLLECTION).toBe("riddles");
-    });
-
     it("should implement IRiddleDataService interface", () => {
       // Test that the service has all required methods
       expect(typeof riddleDataService.fetchDailyRiddle).toBe("function");
@@ -602,7 +600,7 @@ describe("RiddleDataService", () => {
       await riddleDataService.getClassicRiddleCount();
 
       // Verify all calls used the same collection name
-      expect(mockCollection).toHaveBeenCalledWith(expect.any(Object), "riddles");
+      expect(mockCollection).toHaveBeenCalledWith(expect.any(Object), "localizedRiddles/en/classic");
       expect(mockCollection).toHaveBeenCalledTimes(2);
     });
 

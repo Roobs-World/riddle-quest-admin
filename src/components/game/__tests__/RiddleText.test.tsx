@@ -217,7 +217,7 @@ describe("RiddleText", () => {
         color: "#ffffff",
         fontSize: 24,
         lineHeight: 36,
-        maxWidth: 312,
+        maxWidth: 351,
       });
     });
 
@@ -292,7 +292,7 @@ describe("RiddleText", () => {
       // we verify the values match what was passed to moderateScale
       expect(textElement.props.style.fontSize).toBe(24);
       expect(textElement.props.style.lineHeight).toBe(36);
-      expect(textElement.props.style.maxWidth).toBe(312);
+      expect(textElement.props.style.maxWidth).toBe(351);
     });
   });
 });

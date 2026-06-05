@@ -1,7 +1,7 @@
 import * as admin from "firebase-admin";
-import {type PlayerStats} from "@qwordly/core/validation";
+import {type PlayerStats} from "../../../packages/core/dist/validation";
 
-export * from "@qwordly/core/validation";
+export * from "../../../packages/core/dist/validation";
 
 export type PlayerStatsUpdate = {
   [key in keyof PlayerStats]?: PlayerStats[key] | admin.firestore.FieldValue;

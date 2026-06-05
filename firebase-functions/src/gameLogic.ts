@@ -28,6 +28,7 @@ import {
 import {evaluateAchievements} from "./achievements";
 import {ACHIEVEMENT_UNLOCK_COIN_REWARD} from "./constants";
 import {validateCallableRequest, validateCallableResponse} from "./validation/callableValidation";
+import {splitGraphemes, lowerCaseGraphemes} from "../../packages/core/dist/game";
 
 /**
  * Skips the current riddle by marking it as completed and advancing to the next level/question.
@@ -346,7 +347,8 @@ export const getHint = onCall(
         throw new HttpsError("internal", `Answer not found for ${gameMode} riddle ID ${riddleId}.`);
       }
 
-      const answer: string = riddleData.answer.toLowerCase();
+      const riddleLocale = riddleData.locale ?? "en";
+      const answer: string = lowerCaseGraphemes(riddleData.answer, riddleLocale).join("");
       const coinsCost = HINT_COST_COINS;
 
       const user = await getUser(currentUserId);
@@ -376,12 +378,13 @@ export const getHint = onCall(
       const guessedLetters: string[] = Array.isArray(currentAttempt)
         ? currentAttempt.map((letter: string) => String(letter).toLowerCase())
         : [];
+      const answerLetters = splitGraphemes(answer, riddleLocale);
 
       let revealedLetter: string | null = null;
       let index: number | null = null;
 
-      for (let i = 0; i < answer.length; i++) {
-        const answerLetter: string = answer[i];
+      for (let i = 0; i < answerLetters.length; i++) {
+        const answerLetter: string = answerLetters[i];
         const guessedLetter: string = guessedLetters[i] ?? "";
 
         if (guessedLetter !== answerLetter && !hintRevealedIndices.includes(i)) {

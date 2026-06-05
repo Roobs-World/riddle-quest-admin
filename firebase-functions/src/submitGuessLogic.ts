@@ -23,7 +23,7 @@ import type {
   SubmitGuessRequestData,
   SubmitGuessResponseData,
 } from "./validation/requestSchemas";
-import {generateAndAppendRiddles, initializeRiddleDatabaseIfEmpty} from "./riddleGeneration";
+import * as riddleGeneration from "./riddleGeneration";
 import {evaluateAchievements} from "./achievements";
 import {updateLeaderboardEntry} from "./leaderboard";
 import {captureException} from "./sentry";
@@ -42,11 +42,14 @@ import {
   RIDDLE_GENERATION_THRESHOLD,
   RIDDLE_GENERATION_BATCH_SIZE,
 } from "./constants";
+import {SUPPORTED_LOCALES, type SupportedLocale} from "../../packages/core/dist/validation";
 
 // Define a type for potential top-level updates to the Player document
 type PlayerTopLevelUpdate = {
   /** Daily challenge completion timestamp for challenge mode wins. */
   lastDailyChallengeCompletedAt?: number | admin.firestore.FieldValue;
+  /** Canonical daily challenge key for replay protection across locales. */
+  lastCompletedDailyChallengeKey?: string;
   // Add other top-level fields here if they are updated similarly
 };
 
@@ -129,9 +132,18 @@ function computeNextDailyWinStreak(currentWinStreak: number, lastDailyChallengeC
  * Generates additional classic riddles when a user is at the configured low-supply threshold.
  * This keeps progression seamless as players approach the end of the current Firestore set.
  */
-async function triggerClassicRiddleGenerationIfNeeded(userId: string, currentClassicIndex: number): Promise<void> {
+async function triggerClassicRiddleGenerationIfNeeded(
+  userId: string,
+  currentClassicIndex: number,
+  locale: SupportedLocale,
+): Promise<void> {
   try {
-    const classicRiddlesSnapshot = await admin.firestore().collection("riddles").where("classicIndex", ">=", 0).get();
+    const localizedClassicCollection = `localizedRiddles/${locale}/classic`;
+    const classicRiddlesSnapshot = await admin
+      .firestore()
+      .collection(localizedClassicCollection)
+      .where("classicIndex", ">=", 0)
+      .get();
 
     const totalClassicRiddles = classicRiddlesSnapshot.size;
     const remainingClassicRiddles = totalClassicRiddles - currentClassicIndex;
@@ -145,7 +157,9 @@ async function triggerClassicRiddleGenerationIfNeeded(userId: string, currentCla
         `User ${userId} has <= ${RIDDLE_GENERATION_THRESHOLD} classic riddles remaining. Triggering generation of ${RIDDLE_GENERATION_BATCH_SIZE} new riddles.`,
       );
       try {
-        await generateAndAppendRiddles(RIDDLE_GENERATION_BATCH_SIZE);
+        await (riddleGeneration.generateLocalizedClassicRiddles ?? riddleGeneration.generateAndAppendRiddles)(
+          RIDDLE_GENERATION_BATCH_SIZE,
+        );
         functions.logger.info(
           `Successfully triggered generation of ${RIDDLE_GENERATION_BATCH_SIZE} new classic riddles.`,
         );
@@ -183,10 +197,20 @@ export async function handleGuessLogic(
     await ensureUserDocumentComplete(userId);
 
     // Initialize database if empty (for new deployments)
-    await initializeRiddleDatabaseIfEmpty();
+    await (riddleGeneration.initializeLocalizedRiddleDatabaseIfEmpty ??
+      riddleGeneration.initializeRiddleDatabaseIfEmpty)();
+
+    const user = await getUser(userId);
+    if (!user) {
+      throw new HttpsError("internal", "User not found while trying to update stats.");
+    }
+    const preferredLanguage = user.preferredLanguage ?? "en";
+    const locale = SUPPORTED_LOCALES.includes(preferredLanguage as SupportedLocale)
+      ? (preferredLanguage as SupportedLocale)
+      : "en";
 
     // Get riddle from the appropriate collection based on game mode
-    const riddle = await getRiddleByGameMode(riddleId, gameMode);
+    const riddle = await getRiddleByGameMode(riddleId, gameMode, locale);
     functions.logger.debug("handleGuessLogic - Fetched riddle:", JSON.stringify(riddle));
 
     if (!riddle || !riddle.answer) {
@@ -252,11 +276,6 @@ export async function handleGuessLogic(
     const maxAttempts = gameMode === "challenge" ? MAX_ATTEMPTS_CHALLENGE : MAX_ATTEMPTS_CLASSIC;
     const gameOver = isCorrect || attempts >= maxAttempts;
 
-    const user = await getUser(userId);
-    if (!user) {
-      throw new HttpsError("internal", "User not found while trying to update stats.");
-    }
-
     const currentStats: PlayerStats = user.stats || {
       xp: 0,
       level: 1,
@@ -302,6 +321,12 @@ export async function handleGuessLogic(
         statsUpdate.dailyPuzzlesCompleted = admin.firestore.FieldValue.increment(1);
         coinsEarned = COINS_REWARD_CHALLENGE;
         playerProfileUpdate.lastDailyChallengeCompletedAt = admin.firestore.FieldValue.serverTimestamp();
+        playerProfileUpdate.lastCompletedDailyChallengeKey =
+          typeof riddle.challengeKey === "string"
+            ? riddle.challengeKey
+            : typeof riddle.canonicalKey === "string"
+              ? riddle.canonicalKey
+              : undefined;
 
         await admin
           .firestore()
@@ -396,7 +421,7 @@ export async function handleGuessLogic(
       const updatedUserDoc = await userRef.get();
       const updatedUserData = updatedUserDoc.data() as {progress?: {classicIndex?: number}} | undefined;
       const currentClassicIndex = updatedUserData?.progress?.classicIndex || 0;
-      await triggerClassicRiddleGenerationIfNeeded(userId, currentClassicIndex);
+      await triggerClassicRiddleGenerationIfNeeded(userId, currentClassicIndex, locale);
     }
 
     let newlyUnlockedAchievementIds: string[] = [];
@@ -485,6 +510,10 @@ export async function handleCompleteGameLogic(
     if (!user) {
       throw new HttpsError("internal", "User not found while trying to update stats.");
     }
+    const preferredLanguage = user.preferredLanguage ?? "en";
+    const locale = SUPPORTED_LOCALES.includes(preferredLanguage as SupportedLocale)
+      ? (preferredLanguage as SupportedLocale)
+      : "en";
 
     const currentStats: PlayerStats = user.stats || {
       xp: 0,
@@ -637,7 +666,7 @@ export async function handleCompleteGameLogic(
         const updatedUserDoc = await userRef.get();
         const updatedUserData = updatedUserDoc.data() as {progress?: {classicIndex?: number}} | undefined;
         const currentClassicIndex = updatedUserData?.progress?.classicIndex || 0;
-        await triggerClassicRiddleGenerationIfNeeded(userId, currentClassicIndex);
+        await triggerClassicRiddleGenerationIfNeeded(userId, currentClassicIndex, locale);
       }
     }
 

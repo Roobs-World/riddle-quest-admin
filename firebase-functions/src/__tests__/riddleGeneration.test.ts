@@ -582,7 +582,7 @@ describe("riddleGeneration", () => {
       mockGet.mockResolvedValue({exists: false, data: () => undefined});
 
       await expect(riddleGeneration.generateAndAppendDailyRiddles(1)).rejects.toThrow(
-        "Failed to store daily riddles in Firestore.",
+        "Failed to generate any unique daily riddles after 10 attempts",
       );
     });
   });

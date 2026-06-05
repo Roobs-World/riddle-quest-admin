@@ -50,6 +50,8 @@ class PlayerRepository {
           : guestBase.unlockedAchievements,
         hasPurchasedApp:
           typeof parsed.hasPurchasedApp === "boolean" ? parsed.hasPurchasedApp : guestBase.hasPurchasedApp,
+        preferredLanguage:
+          typeof parsed.preferredLanguage === "string" ? parsed.preferredLanguage : guestBase.preferredLanguage,
         avatarUrl: typeof parsed.avatarUrl === "string" ? parsed.avatarUrl : guestBase.avatarUrl,
         displayName: typeof parsed.displayName === "string" ? parsed.displayName : guestBase.displayName,
         lastDailyChallengeCompletedAt:

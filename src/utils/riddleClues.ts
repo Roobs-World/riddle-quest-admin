@@ -1,4 +1,5 @@
 import {t} from "../i18n";
+import {graphemeLength} from "@qwordly/core/game";
 
 const ANSWER_TOKEN_PATTERN = /[a-z0-9]+/gi;
 
@@ -23,7 +24,7 @@ export const clueContainsLiteralAnswer = (clue: string, answer: string): boolean
 };
 
 export const buildFallbackClue = (answer: string): string => {
-  const answerLength = answer.trim().length;
+  const answerLength = graphemeLength(answer.trim());
   if (answerLength <= 0) {
     return t("GameMessages.FALLBACK_CLUE_SINGLE");
   }

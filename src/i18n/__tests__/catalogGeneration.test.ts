@@ -35,13 +35,14 @@ describe("catalog generation", () => {
       encoding: "utf8",
     });
     const payload = JSON.parse(result) as {
+      totalIssues: number;
       allowlist: string[];
       issues: Record<string, string[]>;
     };
 
-    expect(payload.issues.es).toContain("common.CommonAlerts.ERROR_TITLE");
+    expect(payload.totalIssues).toBe(0);
     expect(payload.allowlist).toContain("auth.AuthStrings.Landing.MADE_BY_ROOBS_WORLD");
-    expect(payload.issues.es).not.toContain("auth.AuthStrings.Landing.MADE_BY_ROOBS_WORLD");
+    expect(payload.issues.es ?? []).not.toContain("auth.AuthStrings.Landing.MADE_BY_ROOBS_WORLD");
   });
 
   it("writes namespace JSON files for every locale", () => {

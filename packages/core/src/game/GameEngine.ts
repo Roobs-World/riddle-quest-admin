@@ -1,4 +1,5 @@
 import {computeFeedback} from "./computeFeedback";
+import {lowerCaseGraphemes} from "./graphemes";
 import type {Feedback, ScoredGuess} from "./types";
 
 export type GameEngineMode = "challenge" | "classic";
@@ -36,7 +37,7 @@ export class GameEngine {
     private readonly config: GameEngineConfig,
     answer?: string,
   ) {
-    this.normalizedAnswer = (answer ?? config.answer).toLowerCase();
+    this.normalizedAnswer = lowerCaseGraphemes(answer ?? config.answer).join("");
   }
 
   getSnapshot(): GameEngineSnapshot {
@@ -78,7 +79,7 @@ export class GameEngine {
     }
 
     const guessString = guessLetters.join("");
-    const normalizedGuess = guessString.toLowerCase();
+    const normalizedGuess = lowerCaseGraphemes(guessString).join("");
     const maxAttempts = this.getMaxAttempts();
     const currentAttempt = this.attemptsUsed + 1;
     const feedback = computeFeedback(normalizedGuess, this.normalizedAnswer);

@@ -5,6 +5,7 @@ import {
 import {RiddleInitializationService} from "../../services/RiddleInitializationService";
 import {FirestoreRiddle, Player} from "../../validation/firestoreSchemas";
 import {logger} from "../../utils/logger";
+import {type SupportedLanguage} from "../../i18n";
 import type {GameMode} from "./authTypes";
 import {authSessionFacade} from "./AuthSessionFacade";
 
@@ -42,9 +43,10 @@ async function fetchCurrentRiddle(
   options: {
     completedDailyOverride?: boolean;
     isStaleRequest: () => boolean;
+    locale?: SupportedLanguage;
   },
 ): Promise<void> {
-  const {completedDailyOverride, isStaleRequest} = options;
+  const {completedDailyOverride, isStaleRequest, locale} = options;
 
   if (!player) {
     if (!isStaleRequest()) {
@@ -72,12 +74,12 @@ async function fetchCurrentRiddle(
 
     if (mode === "daily") {
       if (dailyAvailable && player.progress?.dailyChallengeIndex !== undefined) {
-        riddle = await fetchDailyRiddleFromFirestore(player.progress.dailyChallengeIndex);
+        riddle = await fetchDailyRiddleFromFirestore(player.progress.dailyChallengeIndex, locale);
       }
       if (!riddle) {
         logger.debug("No daily riddle available, falling back to classic mode riddle.");
         if (player.progress?.classicIndex !== undefined) {
-          riddle = await fetchClassicRiddleFromFirestore(player.progress.classicIndex);
+          riddle = await fetchClassicRiddleFromFirestore(player.progress.classicIndex, locale);
           if (!isStaleRequest()) {
             sink.setGameMode("classic");
           }
@@ -87,18 +89,18 @@ async function fetchCurrentRiddle(
       }
     } else if (mode === "classic") {
       if (player.progress?.classicIndex !== undefined) {
-        riddle = await fetchClassicRiddleFromFirestore(player.progress.classicIndex);
+        riddle = await fetchClassicRiddleFromFirestore(player.progress.classicIndex, locale);
       } else {
         logger.warn("Classic index is undefined for classic mode.");
       }
     } else if (mode === "challenge") {
       if (dailyAvailable && player.progress?.dailyChallengeIndex !== undefined) {
-        riddle = await fetchDailyRiddleFromFirestore(player.progress.dailyChallengeIndex);
+        riddle = await fetchDailyRiddleFromFirestore(player.progress.dailyChallengeIndex, locale);
       }
       if (!riddle) {
         logger.debug("No daily challenge riddle available, falling back to classic mode riddle.");
         if (player.progress?.classicIndex !== undefined) {
-          riddle = await fetchClassicRiddleFromFirestore(player.progress.classicIndex);
+          riddle = await fetchClassicRiddleFromFirestore(player.progress.classicIndex, locale);
           if (!isStaleRequest()) {
             sink.setGameMode("classic");
           }

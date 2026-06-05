@@ -1,43 +1,43 @@
 import {getFirestore, collection, doc, getDoc, getDocs, query, where, limit} from "@react-native-firebase/firestore";
 import {FirestoreRiddle, FirestoreRiddleSchema} from "../validation/firestoreSchemas";
 import {ZodError} from "zod";
-import {t} from "../i18n";
+import {getLocale, t} from "../i18n";
 import {IRiddleDataService} from "./interfaces/IRiddleDataService";
 import {logger} from "../utils/logger";
 import {captureException} from "../utils/sentry";
+import {graphemeLength} from "@qwordly/core/game";
+import {LEGACY_DAILY_RIDDLE_DOC_ID, getLocalizedRiddleCollection} from "./riddleCollections";
 
 /**
  * Service for managing riddle data in Firestore
  */
 export class RiddleDataService implements IRiddleDataService {
-  /** Firestore collection containing riddle documents. */
-  private static readonly RIDDLES_COLLECTION = "riddles";
-
   /**
    * Fetches the current daily riddle.
    *
    * @returns Today's daily riddle, or `null` when unavailable.
    */
   async fetchDailyRiddle(): Promise<FirestoreRiddle | null> {
+    const locale = getLocale();
     try {
-      const snapshot = await getDocs(
+      const localizedSnapshot = await getDocs(
         query(
-          collection(getFirestore(), RiddleDataService.RIDDLES_COLLECTION),
-          where("category", "==", "daily"),
-          where("date", "==", new Date().toISOString().split("T")[0]),
+          collection(getFirestore(), getLocalizedRiddleCollection(locale, "daily")),
+          where("riddleId", "==", LEGACY_DAILY_RIDDLE_DOC_ID),
           limit(1),
         ),
       );
-
-      const currentSnapshot = snapshot.empty
-        ? await getDocs(query(collection(getFirestore(), "dailyRiddles"), where("riddleId", "==", "current"), limit(1)))
-        : snapshot;
+      const currentSnapshot = localizedSnapshot;
 
       if (!currentSnapshot.empty) {
         const riddleData = currentSnapshot.docs[0].data();
         const validatedRiddle = FirestoreRiddleSchema.parse({
           ...riddleData,
           riddleId: riddleData?.riddleId ?? currentSnapshot.docs[0].id,
+          locale: riddleData?.locale ?? locale,
+          canonicalKey: riddleData?.canonicalKey ?? `daily:${riddleData?.challengeKey ?? currentSnapshot.docs[0].id}`,
+          challengeKey: riddleData?.challengeKey ?? currentSnapshot.docs[0].id,
+          answerLength: graphemeLength(riddleData?.answer ?? "", riddleData?.locale ?? locale),
         });
 
         logger.debug("Daily riddle found");
@@ -65,16 +65,18 @@ export class RiddleDataService implements IRiddleDataService {
    * @returns Matching classic riddle, or `null` when missing.
    */
   async fetchClassicRiddle(level: number): Promise<FirestoreRiddle | null> {
+    const locale = getLocale();
     logger.debug(`Fetching classic riddle for level ${level} from Firestore`);
 
     try {
-      const snapshot = await getDocs(
+      const localizedSnapshot = await getDocs(
         query(
-          collection(getFirestore(), RiddleDataService.RIDDLES_COLLECTION),
+          collection(getFirestore(), getLocalizedRiddleCollection(locale, "classic")),
           where("classicIndex", "==", level),
           limit(1),
         ),
       );
+      const snapshot = localizedSnapshot;
 
       if (!snapshot.empty) {
         const riddleData = snapshot.docs[0].data();
@@ -83,7 +85,9 @@ export class RiddleDataService implements IRiddleDataService {
           const validatedRiddle = FirestoreRiddleSchema.parse({
             ...riddleData,
             riddleId: snapshot.docs[0].id,
-            answerLength: riddleData.answer.length,
+            locale: riddleData.locale ?? locale,
+            canonicalKey: riddleData.canonicalKey ?? `classic:${level}`,
+            answerLength: graphemeLength(riddleData.answer, riddleData.locale ?? locale),
           });
 
           logger.debug(`Classic riddle found for level: ${level}`);
@@ -122,9 +126,14 @@ export class RiddleDataService implements IRiddleDataService {
     }
 
     try {
-      const riddleDoc = await getDoc(doc(getFirestore(), RiddleDataService.RIDDLES_COLLECTION, riddleId));
+      const locale = getLocale();
+      const localizedClassicDoc = await getDoc(doc(getFirestore(), getLocalizedRiddleCollection(locale, "classic"), riddleId));
+      const localizedDailyDoc = localizedClassicDoc.exists()
+        ? null
+        : await getDoc(doc(getFirestore(), getLocalizedRiddleCollection(locale, "daily"), riddleId));
+      const riddleDoc = localizedClassicDoc.exists() ? localizedClassicDoc : localizedDailyDoc;
 
-      if (!riddleDoc.exists()) {
+      if (!riddleDoc || !riddleDoc.exists()) {
         logger.debug("No riddle found with ID:", riddleId);
         return null;
       }
@@ -138,6 +147,7 @@ export class RiddleDataService implements IRiddleDataService {
       const validatedRiddle = FirestoreRiddleSchema.parse({
         ...riddleData,
         riddleId: riddleDoc.id,
+        locale: riddleData.locale ?? locale,
       });
 
       logger.debug("Riddle loaded successfully for ID:", riddleId);
@@ -162,9 +172,8 @@ export class RiddleDataService implements IRiddleDataService {
   async getClassicRiddleCount(): Promise<number> {
     try {
       const snapshot = await getDocs(
-        query(collection(getFirestore(), RiddleDataService.RIDDLES_COLLECTION), where("category", "==", "classic")),
+        query(collection(getFirestore(), getLocalizedRiddleCollection(getLocale(), "classic")), where("classicIndex", ">=", 0)),
       );
-
       return snapshot.size;
     } catch (error) {
       logger.error("Error getting classic riddle count:", error);

@@ -9,11 +9,13 @@ import type {
   DailyRiddle,
   UnlockedAchievement,
 } from "./validation/firestoreSchemas";
-import {PlayerSchema, RiddleCollections} from "./validation/firestoreSchemas";
+import {PlayerSchema} from "./validation/firestoreSchemas";
 // Removed import for non-existent models.js: import type { GameState } from "./models.js";
 import * as functions from "firebase-functions";
+import {type SupportedLocale, SUPPORTED_LOCALES} from "../../packages/core/dist/validation";
 
 const INITIAL_COINS: number = 300;
+const LOCALIZED_RIDDLES_COLLECTION = "localizedRiddles";
 
 // const db = admin.firestore(); // Replaced with lazy initialization
 let dbInstance: admin.firestore.Firestore;
@@ -24,6 +26,12 @@ function getDb(): admin.firestore.Firestore {
   }
   return dbInstance;
 }
+
+const getLocalizedRiddleCollectionPath = (locale: SupportedLocale, category: "classic" | "daily"): string =>
+  `${LOCALIZED_RIDDLES_COLLECTION}/${locale}/${category}`;
+
+const resolveLocale = (locale?: string): SupportedLocale =>
+  (SUPPORTED_LOCALES.find((entry) => entry === locale) ?? "en") as SupportedLocale;
 
 // Define a type for PlayerUpdate that allows partial updates and FieldValue
 export type PlayerUpdate = {
@@ -37,8 +45,10 @@ export type PlayerUpdate = {
   registeredAt?: Date | null;
   lastLogin?: Date | null;
   lastDailyChallengeCompletedAt?: Date | null;
+  lastCompletedDailyChallengeKey?: string;
   currentRiddle?: string; // Define currentRiddle property directly
   avatarUrl?: string | null;
+  preferredLanguage?: string;
   bestStreak?: number | admin.firestore.FieldValue;
   totalWordsGuessed?: number | admin.firestore.FieldValue;
   winRate?: number | admin.firestore.FieldValue;
@@ -220,6 +230,8 @@ export async function initializeNewUser(
       username: userData.username,
       displayName: userData.displayName,
       avatarUrl: userData.avatarUrl,
+      preferredLanguage:
+        typeof seed.preferredLanguage === "string" ? (seed.preferredLanguage as SupportedLocale) : "en",
       coins: seedCoins,
       hasPurchasedApp: typeof seed.hasPurchasedApp === "boolean" ? seed.hasPurchasedApp : false,
       createdAt: now,
@@ -255,6 +267,10 @@ export async function initializeNewUser(
 
     if (typeof seed.lastDailyChallengeCompletedAt === "number") {
       defaultUserData.lastDailyChallengeCompletedAt = seed.lastDailyChallengeCompletedAt;
+    }
+
+    if (typeof seed.lastCompletedDailyChallengeKey === "string") {
+      defaultUserData.lastCompletedDailyChallengeKey = seed.lastCompletedDailyChallengeKey;
     }
 
     const validatedUserData = PlayerSchema.parse(defaultUserData);
@@ -433,18 +449,22 @@ export async function appendUnlockedAchievements(userId: string, newEntries: Unl
  * @param riddleId - The ID of the riddle.
  * @return A promise that resolves with the riddle document data, or undefined if not found.
  */
-export async function getClassicRiddle(riddleId: string): Promise<ClassicRiddle | undefined> {
-  const riddleRef = getDb().collection(RiddleCollections.RIDDLES).doc(riddleId);
-  const riddleDoc = await riddleRef.get();
+export async function getClassicRiddle(
+  riddleId: string,
+  locale?: string,
+): Promise<ClassicRiddle | undefined> {
+  const resolvedLocale = resolveLocale(locale);
+  const localizedRef = getDb().collection(getLocalizedRiddleCollectionPath(resolvedLocale, "classic")).doc(riddleId);
+  const localizedDoc = await localizedRef.get();
 
-  if (!riddleDoc.exists) {
-    functions.logger.info(`Classic riddle document not found for ID ${riddleId}`);
+  if (!localizedDoc.exists) {
+    functions.logger.info(`Classic riddle document not found for ID ${riddleId} in locale ${resolvedLocale}`);
     return undefined;
   }
 
-  const data = riddleDoc.data();
+  const data = localizedDoc.data();
   if (!data) {
-    functions.logger.info(`Classic riddle data is null for ID ${riddleId}`);
+    functions.logger.info(`Classic riddle data is null for ID ${riddleId} in locale ${resolvedLocale}`);
     return undefined;
   }
 
@@ -452,6 +472,7 @@ export async function getClassicRiddle(riddleId: string): Promise<ClassicRiddle 
   return {
     ...riddleData,
     riddleId: riddleData.riddleId || riddleId,
+    locale: riddleData.locale || resolvedLocale,
   };
 }
 
@@ -461,18 +482,22 @@ export async function getClassicRiddle(riddleId: string): Promise<ClassicRiddle 
  * @param riddleId - The ID of the riddle.
  * @return A promise that resolves with the riddle document data, or undefined if not found.
  */
-export async function getDailyRiddle(riddleId: string): Promise<DailyRiddle | undefined> {
-  const riddleRef = getDb().collection(RiddleCollections.DAILY_RIDDLES).doc(riddleId);
-  const riddleDoc = await riddleRef.get();
+export async function getDailyRiddle(
+  riddleId: string,
+  locale?: string,
+): Promise<DailyRiddle | undefined> {
+  const resolvedLocale = resolveLocale(locale);
+  const localizedRef = getDb().collection(getLocalizedRiddleCollectionPath(resolvedLocale, "daily")).doc(riddleId);
+  const localizedDoc = await localizedRef.get();
 
-  if (!riddleDoc.exists) {
-    functions.logger.info(`Daily riddle document not found for ID ${riddleId}`);
+  if (!localizedDoc.exists) {
+    functions.logger.info(`Daily riddle document not found for ID ${riddleId} in locale ${resolvedLocale}`);
     return undefined;
   }
 
-  const data = riddleDoc.data();
+  const data = localizedDoc.data();
   if (!data) {
-    functions.logger.info(`Daily riddle data is null for ID ${riddleId}`);
+    functions.logger.info(`Daily riddle data is null for ID ${riddleId} in locale ${resolvedLocale}`);
     return undefined;
   }
 
@@ -480,6 +505,7 @@ export async function getDailyRiddle(riddleId: string): Promise<DailyRiddle | un
   return {
     ...riddleData,
     riddleId: riddleData.riddleId || riddleId,
+    locale: riddleData.locale || resolvedLocale,
   };
 }
 
@@ -516,12 +542,13 @@ export async function getRiddle(riddleId: string): Promise<FirestoreRiddle | und
 export async function getRiddleByGameMode(
   riddleId: string,
   gameMode: "classic" | "challenge",
+  locale?: string,
 ): Promise<FirestoreRiddle | undefined> {
   switch (gameMode) {
     case "classic":
-      return await getClassicRiddle(riddleId);
+      return await getClassicRiddle(riddleId, locale);
     case "challenge":
-      return await getDailyRiddle(riddleId);
+      return await getDailyRiddle(riddleId, locale);
     default:
       functions.logger.warn(`Unknown game mode: ${gameMode}`);
       return undefined;
