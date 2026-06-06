@@ -1,10 +1,15 @@
 /* istanbul ignore file */
 /**
- * @fileoverview Thin authentication provider — orchestration lives in `application/auth/`.
+ * @fileoverview Thin authentication provider. Orchestration lives in `application/auth/`,
+ * while this module exposes a merged compatibility hook plus narrower slice hooks
+ * for session, player, and riddle state.
  */
 import React, {createContext, useContext} from "react";
-import {Player, FirestoreRiddle} from "../validation/firestoreSchemas";
-import {useAuthProviderController} from "../application/auth/useAuthProviderController";
+import {Player, FirestoreRiddle} from "@qwordly/core/validation/firestoreSchemas";
+import {
+  useAuthProviderController,
+  type AuthProviderControllerDependencies,
+} from "../application/auth/useAuthProviderController";
 import type {GameMode} from "../application/auth/authTypes";
 
 export type {GameMode};
@@ -55,8 +60,15 @@ const AuthSessionContext = createContext<AuthSessionContextType | undefined>(und
 const PlayerContext = createContext<PlayerContextType | undefined>(undefined);
 const RiddleContext = createContext<RiddleContextType | undefined>(undefined);
 
-export const AuthProvider: React.FC<{children: React.ReactNode}> = ({children}) => {
-  const {sessionValue, playerValue, riddleValue, contextValue} = useAuthProviderController();
+export interface AuthProviderProps {
+  children: React.ReactNode;
+  controllerDependencies?: AuthProviderControllerDependencies;
+}
+
+export const AuthProvider: React.FC<AuthProviderProps> = ({children, controllerDependencies}) => {
+  const {sessionValue, playerValue, riddleValue, contextValue} = useAuthProviderController(
+    controllerDependencies,
+  );
 
   return (
     <AuthSessionContext.Provider value={sessionValue}>

@@ -11,7 +11,7 @@ import {TooltipProvider} from "./contexts/TooltipContext";
 /**
  * Wraps children with ModalProvider for components that use useModal or useModalContext.
  */
-export const ModalProviderWrapper: React.FC<{children: React.ReactNode}> = ({children}) => (
+const ModalProviderWrapper: React.FC<{children: React.ReactNode}> = ({children}) => (
   <ModalProvider>
     <TooltipProvider>{children}</TooltipProvider>
   </ModalProvider>

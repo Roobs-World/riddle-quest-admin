@@ -195,7 +195,7 @@ export const RIDDLE_CONTAINER_SLOT_HEIGHT: DimensionValue = viewport.isDesktop
     ? "26%"
     : viewport.isTablet
       ? "24%"
-      : "20%";
+      : "20%"; // mobile
 
 /** Guess grid height as a percentage string, balanced against riddle growth. */
 export const GUESS_GRID_SLOT_HEIGHT: DimensionValue = viewport.isDesktop
@@ -204,7 +204,7 @@ export const GUESS_GRID_SLOT_HEIGHT: DimensionValue = viewport.isDesktop
     ? "30%"
     : viewport.isTablet
       ? "31%"
-      : "32%";
+      : "50%"; // mobile
 
 /** Equal vertical spacing used above and below the guess grid. */
 export const GAME_BOARD_VERTICAL_GAP = viewport.isDesktop
@@ -249,7 +249,7 @@ export const GUESS_TILE_ROW_GAP = scale(4);
 // ---------------------------------------------------------------------------
 
 /** Fraction of screen width used as the riddle text max-width. */
-export const RIDDLE_TEXT_MAX_WIDTH_FRACTION = 0.8;
+export const RIDDLE_TEXT_MAX_WIDTH_FRACTION = 0.9;
 
 /**
  * Pre-computed max-width for the riddle text.

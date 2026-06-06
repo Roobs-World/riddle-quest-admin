@@ -6,6 +6,12 @@
 
     "app/**/*.{js,jsx,ts,tsx}",
     "src/app/**/*.{js,jsx,ts,tsx}",
+    "**/__tests__/**/*.{js,jsx,ts,tsx}",
+    "**/*.test.{js,jsx,ts,tsx}",
+    "**/*.spec.{js,jsx,ts,tsx}",
+    "scripts/**/*.js",
+    "firebase-functions/scripts/**/*.js",
+    "firebase-functions/jest.config.js",
 
     "src/screens/**/*.{js,jsx,ts,tsx}",
     "src/navigation/**/*.{js,jsx,ts,tsx}",
@@ -16,6 +22,8 @@
     "src/utils/**/*.{js,jsx,ts,tsx}",
     "src/constants/**/*.{js,jsx,ts,tsx}",
     "src/styles/**/*.{js,jsx,ts,tsx}",
+    "src/constants/__tests__/AppStrings*.test.ts",
+    "src/i18n/__tests__/*.test.ts",
 
     "firebase-functions/src/index.{ts,js}",
     "firebase-functions/src/**/*.{ts,js}"
@@ -54,14 +62,25 @@
     "coverage/**",
     ".expo/**",
     ".expo-shared/**",
-    "**/__tests__/**",
     "firebase-functions/lib/**",
     "firebase-functions/dist/**",
     "firebase-functions/node_modules/**",
 
     "**/*.d.ts"
   ],
+  "dynamicallyLoaded": [
+    "firebase-functions/jest.env.setup.js",
+    "firebase-functions/__mocks__/**/*.js",
+    "plugins/withAndroidIapStoreSelection.js",
+    "plugins/withReactNativeFirebaseCrashlytics.js",
+    "plugins/withReactNativeGoogleSignin.js",
+    "src/__mocks__/**/*.js"
+  ],
   "rules": {
     "unused-dependencies": "warn"
-  }
+  },
+  "usedClassMembers": [
+    "restore",
+    "reset"
+  ]
 }

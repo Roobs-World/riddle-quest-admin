@@ -12,6 +12,7 @@ import {
 } from "@react-native-firebase/firestore";
 import {Player, PlayerSchema} from "../validation/firestoreSchemas";
 import {FirestoreRiddle, FirestoreRiddleSchema} from "../validation/firestoreSchemas";
+import {getLocale, type SupportedLanguage} from "../i18n";
 import {ZodError} from "zod";
 import {logger} from "../utils/logger";
 import {captureException, withSentrySpan} from "../utils/sentry";
@@ -25,6 +26,7 @@ import {
 /** Session cache for riddle fetches to avoid repeated Firestore reads (e.g. mode switch). */
 const RIDDLE_CACHE_MAX_SIZE = 50;
 const riddleCache = new Map<string, FirestoreRiddle>();
+const LOCALIZED_RIDDLES_COLLECTION = "localizedRiddles";
 const DAILY_RIDDLE_DOC_ID = "current";
 const FIRESTORE_RETRYABLE_CODES = new Set<string>([
   "firestore/unavailable",
@@ -43,6 +45,7 @@ const ALLOWED_USER_UPDATE_FIELDS = new Set<string>([
   "email",
   "displayName",
   "avatarUrl",
+  "preferredLanguage",
   "createdAt",
   "registeredAt",
   "lastLogin",
@@ -81,6 +84,11 @@ function setCachedRiddle(key: string, riddle: FirestoreRiddle): void {
   }
   riddleCache.set(key, riddle);
 }
+
+const resolveLocale = (locale?: SupportedLanguage): SupportedLanguage => locale ?? getLocale();
+
+const getLocalizedRiddleCollection = (locale: SupportedLanguage, category: "classic" | "daily"): string =>
+  `${LOCALIZED_RIDDLES_COLLECTION}/${locale}/${category}`;
 
 const wait = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -217,16 +225,23 @@ export const loadUserProgressFromFirestore = async (userId: string): Promise<Pla
  * @param dailyIndex Legacy client progress value retained for API compatibility.
  * @returns A Promise resolving to the FirestoreRiddle data or null if not found.
  */
-export const fetchDailyRiddleFromFirestore = async (dailyIndex: number): Promise<FirestoreRiddle | null> => {
+export const fetchDailyRiddleFromFirestore = async (
+  dailyIndex: number,
+  locale?: SupportedLanguage,
+): Promise<FirestoreRiddle | null> => {
+  const resolvedLocale = resolveLocale(locale);
   logger.debug(
-    `Fetching current daily riddle from Firestore dailyRiddles/${DAILY_RIDDLE_DOC_ID} (client index hint: ${dailyIndex})`,
+    `Fetching current daily riddle from Firestore ${getLocalizedRiddleCollection(
+      resolvedLocale,
+      "daily",
+    )}/${DAILY_RIDDLE_DOC_ID} (client index hint: ${dailyIndex})`,
   );
 
   try {
     const currentDailyDoc = await withFirestoreReadRetry("fetchDailyRiddleFromFirestore.current", () =>
       getDoc(
         withConverterIfAvailable(
-          doc(getFirestore(), "dailyRiddles", DAILY_RIDDLE_DOC_ID),
+          doc(getFirestore(), getLocalizedRiddleCollection(resolvedLocale, "daily"), DAILY_RIDDLE_DOC_ID),
           riddleFirestoreConverter,
         ),
       ),
@@ -239,6 +254,9 @@ export const fetchDailyRiddleFromFirestore = async (dailyIndex: number): Promise
           const validatedRiddle = FirestoreRiddleSchema.parse({
             ...riddleData,
             riddleId: riddleData.riddleId ?? currentDailyDoc.id ?? DAILY_RIDDLE_DOC_ID,
+            canonicalKey: riddleData.canonicalKey ?? `daily:${riddleData.challengeKey ?? currentDailyDoc.id ?? DAILY_RIDDLE_DOC_ID}`,
+            challengeKey: riddleData.challengeKey ?? currentDailyDoc.id ?? DAILY_RIDDLE_DOC_ID,
+            locale: riddleData.locale ?? resolvedLocale,
           });
           logger.debug("Current daily riddle fetched and validated successfully:", validatedRiddle);
           return validatedRiddle;
@@ -254,7 +272,7 @@ export const fetchDailyRiddleFromFirestore = async (dailyIndex: number): Promise
       }
     }
 
-    logger.debug(`No current daily riddle found at dailyRiddles/${DAILY_RIDDLE_DOC_ID}`);
+    logger.debug(`No current daily riddle found at ${getLocalizedRiddleCollection(resolvedLocale, "daily")}/${DAILY_RIDDLE_DOC_ID}`);
     return null;
   } catch (error) {
     logger.error("Error fetching daily riddle from Firestore:", error);
@@ -270,21 +288,28 @@ export const fetchDailyRiddleFromFirestore = async (dailyIndex: number): Promise
  * @param classicIndex The classic challenge index from the player's progress.
  * @returns A Promise resolving to the FirestoreRiddle data or null if not found.
  */
-export const fetchClassicRiddleFromFirestore = async (classicIndex: number): Promise<FirestoreRiddle | null> => {
-  const cacheKey = `classic:${classicIndex}`;
+export const fetchClassicRiddleFromFirestore = async (
+  classicIndex: number,
+  locale?: SupportedLanguage,
+): Promise<FirestoreRiddle | null> => {
+  const resolvedLocale = resolveLocale(locale);
+  const cacheKey = `classic:${resolvedLocale}:${classicIndex}`;
   const cached = getCachedRiddle(cacheKey);
   if (cached) {
-    logger.debug(`Classic riddle for index ${classicIndex} served from cache`);
+    logger.debug(`Classic riddle for index ${classicIndex} served from cache for locale ${resolvedLocale}`);
     return cached;
   }
 
-  logger.debug(`Fetching classic riddle for index ${classicIndex} from Firestore`);
+  logger.debug(`Fetching classic riddle for index ${classicIndex} from Firestore locale ${resolvedLocale}`);
 
   try {
     const riddleQuerySnapshot = await withFirestoreReadRetry("fetchClassicRiddleFromFirestore", () =>
       getDocs(
         query(
-          withConverterIfAvailable(collection(getFirestore(), "riddles"), riddleFirestoreConverter),
+          withConverterIfAvailable(
+            collection(getFirestore(), getLocalizedRiddleCollection(resolvedLocale, "classic")),
+            riddleFirestoreConverter,
+          ),
           where("classicIndex", "==", classicIndex),
           limit(1),
         ),
@@ -297,9 +322,14 @@ export const fetchClassicRiddleFromFirestore = async (classicIndex: number): Pro
       if (riddleData) {
         try {
           const validatedRiddle = FirestoreRiddleSchema.parse(riddleData);
-          setCachedRiddle(cacheKey, validatedRiddle);
-          logger.debug("Classic riddle fetched and validated successfully:", validatedRiddle);
-          return validatedRiddle;
+          const normalizedRiddle = {
+            ...validatedRiddle,
+            canonicalKey: validatedRiddle.canonicalKey ?? `classic:${classicIndex}`,
+            locale: validatedRiddle.locale ?? resolvedLocale,
+          };
+          setCachedRiddle(cacheKey, normalizedRiddle);
+          logger.debug("Classic riddle fetched and validated successfully:", normalizedRiddle);
+          return normalizedRiddle;
         } catch (zodError) {
           if (zodError instanceof ZodError) {
             logger.error("Zod validation error for classic riddle data:", zodError.issues);
@@ -311,7 +341,7 @@ export const fetchClassicRiddleFromFirestore = async (classicIndex: number): Pro
         }
       }
     } else {
-      logger.debug(`No classic riddle found for index: ${classicIndex}`);
+      logger.debug(`No classic riddle found for index: ${classicIndex} in locale ${resolvedLocale}`);
     }
     return null;
   } catch (error) {
@@ -329,13 +359,12 @@ export const fetchClassicRiddleFromFirestore = async (classicIndex: number): Pro
  */
 export const fetchDailyRiddleForDate = async (dateString: string): Promise<FirestoreRiddle | null> => {
   try {
-    // Assuming daily riddles are stored in a subcollection or have a field referencing the date
-    // For now, let's assume they are in the 'riddles' collection with a 'date' field.
+    const resolvedLocale = getLocale();
     const riddleQuerySnapshot = await withFirestoreReadRetry("fetchDailyRiddleForDate", () =>
       getDocs(
         query(
-          withConverterIfAvailable(collection(getFirestore(), "riddles"), riddleFirestoreConverter),
-          where("date", "==", dateString),
+          withConverterIfAvailable(collection(getFirestore(), `${LOCALIZED_RIDDLES_COLLECTION}/${resolvedLocale}/daily`), riddleFirestoreConverter),
+          where("challengeKey", "==", dateString),
           limit(1),
         ),
       ),
@@ -347,7 +376,7 @@ export const fetchDailyRiddleForDate = async (dateString: string): Promise<Fires
       if (riddleData) {
         try {
           const validatedRiddle = FirestoreRiddleSchema.parse(riddleData);
-          logger.debug("Daily riddle fetched and validated successfully for date:", dateString);
+          logger.debug("Daily riddle fetched and validated successfully for date and locale:", dateString, resolvedLocale);
           return validatedRiddle;
         } catch (zodError) {
           if (zodError instanceof ZodError) {
@@ -517,12 +546,13 @@ export const createUserDocumentInFirestore = async (
     throw new Error("Cannot create user document without a userId.");
   }
 
-  logger.debug("Creating user document with params:", {
-    userId,
-    email,
-    displayName,
-    avatarUrl,
-  });
+    logger.debug("Creating user document with params:", {
+      userId,
+      email,
+      displayName,
+      avatarUrl,
+      preferredLanguage: seed?.preferredLanguage,
+    });
 
   try {
     // Create default user data - only include defined values, omit undefined fields
@@ -562,6 +592,8 @@ export const createUserDocumentInFirestore = async (
       unlockedAchievements: Array.isArray(seed?.unlockedAchievements) ? seed.unlockedAchievements : [],
       createdAt: Date.now(),
       hasPurchasedApp: typeof seed?.hasPurchasedApp === "boolean" ? seed.hasPurchasedApp : false, // Default to false for new users
+      preferredLanguage:
+        typeof seed?.preferredLanguage === "string" ? seed.preferredLanguage : getLocale(),
       // Omit lastDailyChallengeCompletedAt since it's undefined - Firestore doesn't support undefined values
     };
 
@@ -575,7 +607,6 @@ export const createUserDocumentInFirestore = async (
     if (typeof seed?.lastDailyChallengeCompletedAt === "number") {
       defaultUserData.lastDailyChallengeCompletedAt = seed.lastDailyChallengeCompletedAt;
     }
-
     logger.debug("Default user data prepared:", JSON.stringify(defaultUserData, null, 2));
 
     // Validate the data before saving

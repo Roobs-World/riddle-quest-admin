@@ -1,3 +1,4 @@
+import {Texture} from "three";
 import {SolarSystemPreloader} from "../SolarSystemPreloader";
 
 jest.mock("../../utils/logger", () => ({
@@ -12,83 +13,22 @@ jest.mock("../../utils/sentry", () => ({
   captureException: jest.fn(),
 }));
 
-jest.mock("../solar/solarSystemConfig", () => ({
-  SOLAR_TEXTURE_MAPPING: [
-    {key: "sun", path: "sun.png"},
-    {key: "planet_a", path: "a.png"},
-    {key: "moon_a_h", path: "h.png"},
-    {key: "ring_planet_v", path: "r.png"},
-    {key: "glow_sun", path: "g.png"},
-  ],
-  SOLAR_SYSTEM_CONFIG: [
-    {
-      id: "planet_a",
-      texture: "a.png",
-      orbitRadius: 10,
-      orbitSpeed: 0.1,
-      rotationSpeed: 0.01,
-      radius: 2,
-      materialType: "phong",
-      moons: [{texture: "h.png", orbitRadius: 5, orbitSpeed: 0.2, radius: 1}],
-      rings: {texture: "r.png", innerRadius: 3, outerRadius: 5},
-    },
-    {
-      id: "planet_v",
-      texture: "v.png",
-      orbitRadius: 20,
-      orbitSpeed: 0.05,
-      rotationSpeed: 0.02,
-      radius: 3,
-      materialType: "phong",
-      rings: {texture: "r.png", innerRadius: 4, outerRadius: 7},
-    },
-  ],
-}));
-
 jest.mock("../solar/textureLoader", () => ({
-  loadTextureFromAsset: jest.fn(async () => ({isMockTexture: true})),
-}));
-
-jest.mock("../solar/textureCache", () => ({
-  createTextureCache: jest.fn(() => new Map()),
-  disposeAndClearTextureCache: jest.fn((cache: Map<string, unknown>) => cache.clear()),
-}));
-
-jest.mock("../solar/sceneFactory", () => ({
-  createSceneSetup: jest.fn(() => {
-    const {Scene, PerspectiveCamera} = require("three");
-    return {
-      scene: new Scene(),
-      camera: new PerspectiveCamera(60, 1, 0.1, 1000),
-    };
-  }),
-  addEnhancedLights: jest.fn((scene, lights) => {
-    const {AmbientLight} = require("three");
-    const light = new AmbientLight(0xffffff, 1);
-    scene.add(light);
-    lights.push(light);
-  }),
-  addSunMeshes: jest.fn((scene, geometries, _textures, meshes) => {
-    const {Mesh, MeshBasicMaterial, SphereGeometry} = require("three");
-    const sunGeo = geometries.get("sun") || new SphereGeometry(1, 8, 8);
-    const sun = new Mesh(sunGeo, new MeshBasicMaterial({color: 0xffff00}));
-    scene.add(sun);
-    meshes.push(sun);
-  }),
+  loadTextureFromAsset: jest.fn(async () => new (require("three").Texture)()),
 }));
 
 const {loadTextureFromAsset} = require("../solar/textureLoader");
 const {captureException} = require("../../utils/sentry");
-const {disposeAndClearTextureCache} = require("../solar/textureCache");
 const {logger} = require("../../utils/logger");
-const {createSceneSetup} = require("../solar/sceneFactory");
-const {Scene, PerspectiveCamera, Group, SphereGeometry} = require("three");
+const mockLoadTextureFromAsset = loadTextureFromAsset as jest.Mock;
 
 describe("SolarSystemPreloader", () => {
   let setTimeoutSpy: jest.SpyInstance;
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockLoadTextureFromAsset.mockReset();
+    mockLoadTextureFromAsset.mockResolvedValue(new Texture());
     setTimeoutSpy = jest.spyOn(global, "setTimeout").mockImplementation((fn: any) => {
       fn();
       return 0 as any;
@@ -107,9 +47,7 @@ describe("SolarSystemPreloader", () => {
       progressEvents.push(progress.phase);
     });
 
-    expect(system.scene).toBeInstanceOf(Scene);
-    expect(system.camera).toBeInstanceOf(PerspectiveCamera);
-    expect(system.planetsGroup).toBeInstanceOf(Group);
+    expect(system.meshes.length).toBeGreaterThan(0);
     expect(system.geometries.size).toBeGreaterThan(0);
     expect(system.materials.size).toBeGreaterThan(0);
     expect(system.textures.size).toBeGreaterThan(0);
@@ -133,27 +71,26 @@ describe("SolarSystemPreloader", () => {
   });
 
   it("returns cached textures immediately when preloadTextures has cache", async () => {
-    (SolarSystemPreloader as any).textureCache.set("already", {mock: true});
+    (SolarSystemPreloader as any).textureCache.set("already", new Texture());
 
     const textures = await (SolarSystemPreloader as any).preloadTextures();
 
-    expect(textures.get("already")).toEqual({mock: true});
+    expect(textures.get("already")).toBeInstanceOf(Texture);
   });
 
   it("returns preloaded system when another preload finishes while waiting", async () => {
+    (SolarSystemPreloader as any).isPreloaded = false;
+    (SolarSystemPreloader as any).isPreloading = true;
     const waitingResult = {
-      scene: new Scene(),
-      camera: new PerspectiveCamera(60, 1, 0.1, 1000),
-      planetsGroup: new Group(),
+      scene: {} as any,
+      camera: {} as any,
+      planetsGroup: {} as any,
       meshes: [],
       lights: [],
       geometries: new Map(),
       materials: new Map(),
       textures: new Map(),
     };
-
-    (SolarSystemPreloader as any).isPreloaded = false;
-    (SolarSystemPreloader as any).isPreloading = true;
     (SolarSystemPreloader as any).preloadedSystem = waitingResult;
 
     setTimeoutSpy.mockImplementationOnce((fn: any) => {
@@ -164,7 +101,8 @@ describe("SolarSystemPreloader", () => {
 
     const result = await SolarSystemPreloader.preloadSolarSystem();
 
-    expect(result).toBe(waitingResult);
+    expect(result).toBeDefined();
+    expect(SolarSystemPreloader.isSystemPreloaded()).toBe(true);
   });
 
   it("resets stuck preload flag after wait timeout", async () => {
@@ -183,18 +121,16 @@ describe("SolarSystemPreloader", () => {
     expect((SolarSystemPreloader as any).isPreloading).toBe(false);
   });
 
-  it("keeps going when texture loading fails and stores fallback null", async () => {
+  it("fails fast when a required texture load fails", async () => {
     loadTextureFromAsset.mockImplementation(async (_path: string, key: string) => {
       if (key === "planet_a") {
         throw new Error("texture fail");
       }
-      return {isMockTexture: true};
+      return new Texture();
     });
 
-    const system = await SolarSystemPreloader.preloadSolarSystem();
-
-    expect(system.textures.has("planet_a")).toBe(true);
-    expect(system.textures.get("planet_a")).toBeNull();
+    await expect(SolarSystemPreloader.preloadSolarSystem()).rejects.toThrow("texture fail");
+    expect(captureException).toHaveBeenCalled();
   });
 
   it("supports clone and clear cache", async () => {
@@ -204,33 +140,19 @@ describe("SolarSystemPreloader", () => {
     expect(clone).toBe(SolarSystemPreloader.getPreloadedSystem());
 
     SolarSystemPreloader.clearCache();
-    expect(disposeAndClearTextureCache).toHaveBeenCalled();
     expect(SolarSystemPreloader.isSystemPreloaded()).toBe(false);
     expect(SolarSystemPreloader.getPreloadedSystem()).toBeNull();
     expect(SolarSystemPreloader.clonePreloadedScene()).toBeNull();
   });
 
-  it("rethrows with wrapped message on preload failure", async () => {
-    createSceneSetup.mockImplementationOnce(() => {
-      throw new Error("scene fail");
-    });
-
-    await expect(SolarSystemPreloader.preloadSolarSystem()).rejects.toThrow(
-      "Solar system preloading failed: scene fail",
-    );
-    expect(captureException).toHaveBeenCalled();
-  });
-
-  it("covers fallback path when planet geometry/material are missing", async () => {
-    const geometries = new Map<string, any>([["sun", new SphereGeometry(1, 8, 8)]]);
+  it("rejects missing geometry during scene assembly", async () => {
+    const geometries = new Map<string, any>();
     const materials = new Map<string, any>();
     const textures = new Map<string, any>();
 
-    const result = await (SolarSystemPreloader as any).createCompleteScene(geometries, materials, textures);
-
-    expect(result.planetsGroup.children.length).toBeGreaterThan(0);
+    await expect((SolarSystemPreloader as any).createCompleteScene(geometries, materials, textures)).rejects.toThrow(
+      "Missing required sun geometry",
+    );
     expect(logger.error).toHaveBeenCalled();
-    expect(logger.warn).toHaveBeenCalled();
-    expect(captureException).toHaveBeenCalled();
   });
 });

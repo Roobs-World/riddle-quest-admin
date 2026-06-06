@@ -279,9 +279,14 @@ describe("FirestoreService", () => {
 
       const result = await FirestoreService.fetchDailyRiddleFromFirestore(dailyIndex);
 
-      expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "dailyRiddles", "current");
+      expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "localizedRiddles/en/daily", "current");
       expect(mockGetDocs).not.toHaveBeenCalled();
-      expect(result).toEqual(mockRiddleData);
+      expect(result).toMatchObject({
+        ...mockRiddleData,
+        canonicalKey: "daily:current",
+        challengeKey: "current",
+        locale: "en",
+      });
     });
 
     it("should return null when no daily riddle found", async () => {
@@ -293,7 +298,7 @@ describe("FirestoreService", () => {
 
       expect(result).toBeNull();
       expect(mockGetDocs).not.toHaveBeenCalled();
-      expect(logger.debug).toHaveBeenCalledWith("No current daily riddle found at dailyRiddles/current");
+      expect(logger.debug).toHaveBeenCalledWith("No current daily riddle found at localizedRiddles/en/daily/current");
     });
 
     it("should handle Zod validation errors", async () => {
@@ -373,10 +378,14 @@ describe("FirestoreService", () => {
 
       const result = await FirestoreService.fetchClassicRiddleFromFirestore(classicIndex);
 
-      expect(mockCollection).toHaveBeenCalledWith(expect.any(Object), "riddles");
+      expect(mockCollection).toHaveBeenCalledWith(expect.any(Object), "localizedRiddles/en/classic");
       expect(mockWhere).toHaveBeenCalledWith("classicIndex", "==", classicIndex);
       expect(mockLimit).toHaveBeenCalledWith(1);
-      expect(result).toEqual(mockRiddleData);
+      expect(result).toMatchObject({
+        ...mockRiddleData,
+        canonicalKey: "classic:10",
+        locale: "en",
+      });
     });
 
     it("should return null when no classic riddle found", async () => {
@@ -390,7 +399,7 @@ describe("FirestoreService", () => {
       const result = await FirestoreService.fetchClassicRiddleFromFirestore(classicIndex);
 
       expect(result).toBeNull();
-      expect(logger.debug).toHaveBeenCalledWith(`No classic riddle found for index: ${classicIndex}`);
+      expect(logger.debug).toHaveBeenCalledWith(`No classic riddle found for index: ${classicIndex} in locale en`);
     });
 
     it("handles classic riddle zod and non-zod parse errors", async () => {
@@ -440,8 +449,8 @@ describe("FirestoreService", () => {
 
       const result = await FirestoreService.fetchDailyRiddleForDate(dateString);
 
-      expect(mockCollection).toHaveBeenCalledWith(expect.any(Object), "riddles");
-      expect(mockWhere).toHaveBeenCalledWith("date", "==", dateString);
+      expect(mockCollection).toHaveBeenCalledWith(expect.any(Object), "localizedRiddles/en/daily");
+      expect(mockWhere).toHaveBeenCalledWith("challengeKey", "==", dateString);
       expect(mockLimit).toHaveBeenCalledWith(1);
       // expect(result).toEqual(mockRiddleData); // This line is removed as per the edit hint
     });

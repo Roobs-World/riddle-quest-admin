@@ -34,7 +34,7 @@ describe("layout constants across responsive device profiles", () => {
     const riddle = Number.parseInt(String(layout.RIDDLE_CONTAINER_SLOT_HEIGHT), 10);
     const grid = Number.parseInt(String(layout.GUESS_GRID_SLOT_HEIGHT), 10);
 
-    expect(header + riddle + grid).toBeLessThanOrEqual(70);
+    expect(header + riddle + grid).toBeLessThanOrEqual(78);
     if (profile.expectedTier === "largeTablet") {
       expect(layout.GUESS_GRID_EFFECTIVE_WIDTH).toBeLessThanOrEqual(layout.MAX_CONTENT_WIDTH);
     } else {
@@ -43,13 +43,13 @@ describe("layout constants across responsive device profiles", () => {
 
     if (profile.expectedTier === "largeTablet") {
       expect(layout.RIDDLE_CONTAINER_SLOT_HEIGHT).toBe("26%");
-      expect(layout.GUESS_GRID_SLOT_HEIGHT).toBe("32%");
+      expect(layout.GUESS_GRID_SLOT_HEIGHT).toBe("30%");
     } else if (profile.expectedTier === "tablet") {
       expect(layout.RIDDLE_CONTAINER_SLOT_HEIGHT).toBe("24%");
-      expect(layout.GUESS_GRID_SLOT_HEIGHT).toBe("34%");
+      expect(layout.GUESS_GRID_SLOT_HEIGHT).toBe("31%");
     } else {
       expect(layout.RIDDLE_CONTAINER_SLOT_HEIGHT).toBe("20%");
-      expect(layout.GUESS_GRID_SLOT_HEIGHT).toBe("36%");
+      expect(layout.GUESS_GRID_SLOT_HEIGHT).toBe("50%");
     }
   });
 });

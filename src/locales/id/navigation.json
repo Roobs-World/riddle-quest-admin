@@ -2,16 +2,12 @@
   "Navigation": {
     "BUY_COINS_BUTTON": "Beli koin",
     "CREDITS": "Kredit",
-    "FORGOT_PASSWORD": "LupaPassword",
     "GAME": "Permainan",
     "HINT_BUTTON": "Petunjuk",
     "LANDING": "Pendaratan",
-    "LOGIN": "Masuk",
-    "NEW_PASSWORD": "Kata Sandi Baru",
     "PLAY_BUTTON": "Bermain",
     "PROFILE_BUTTON": "Profil",
-    "SETTINGS_BUTTON": "Pengaturan",
-    "SIGN_UP": "Mendaftar"
+    "SETTINGS_BUTTON": "Pengaturan"
   },
   "NavigationMessages": {
     "ERROR_LOADING_NEXT_RIDDLE": "Kesalahan saat memuat teka-teki klasik berikutnya:",

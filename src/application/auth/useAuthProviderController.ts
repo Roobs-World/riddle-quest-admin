@@ -11,7 +11,7 @@
 import React, {useState, useEffect, useCallback, useMemo, useRef} from "react";
 import {getAuth, signOut, type FirebaseAuthTypes} from "@react-native-firebase/auth";
 import {getApp} from "@react-native-firebase/app";
-import {Player, FirestoreRiddle} from "../../validation/firestoreSchemas";
+import {Player, FirestoreRiddle} from "@qwordly/core/validation/firestoreSchemas";
 import {RiddleInitializationService} from "../../services/RiddleInitializationService";
 import {logger} from "../../utils/logger";
 import {captureException, setUser as sentrySetUser, clearUser as sentryClearUser, addBreadcrumb} from "../../utils/sentry";
@@ -28,9 +28,33 @@ import {
 } from "../../features/auth/sessionBootstrap";
 import {authSessionFacade} from "./AuthSessionFacade";
 import {playerRepository} from "./PlayerRepository";
-import {riddleSessionService} from "./RiddleSessionService";
-import {buildFirestoreUserUpdates, isAnonymousAuthSession, sanitizePlayerUpdates} from "./playerPersistence";
+import {riddleSessionService, type RiddleSessionService} from "./RiddleSessionService";
+import {isAnonymousAuthSession, sanitizePlayerUpdates} from "./playerPersistence";
 import type {GameMode} from "./authTypes";
+import {getLocale} from "../../i18n";
+
+export interface PlayerRepositoryLike {
+  clearAllLocalData: () => Promise<void>;
+  clearGuestProfile: () => Promise<void>;
+  createUserDocument: (
+    userId: string,
+    email: string,
+    displayName?: string,
+    avatarUrl?: string | null,
+    guestSeed?: Player,
+  ) => Promise<Player>;
+  loadGuestProfile: (uid: string) => Promise<Player | null>;
+  loadUserProgress: (userId: string) => Promise<Player | null>;
+  saveGuestProfile: (player: Player) => Promise<void>;
+  updateClassicIndex: (userId: string, newIndex: number) => Promise<void>;
+  updateUserDocument: (userId: string, basePlayer: Player, updates: Partial<Player>) => Promise<void>;
+}
+
+export interface AuthProviderControllerDependencies {
+  playerRepository?: PlayerRepositoryLike;
+  /** Riddle loader used to resolve the current riddle for the active session. */
+  riddleSessionService?: Pick<RiddleSessionService, "fetchCurrentRiddle">;
+}
 
 export interface AuthProviderControllerValue {
   /** Auth session state and login/logout actions exposed to the provider. */
@@ -76,13 +100,22 @@ export interface AuthProviderControllerValue {
     /** True while riddle generation or initialization work is still running. */
     isRiddlesInitializing: boolean;
   };
-  /** Backward-compatible merged controller value for `useAuth()` consumers. */
+  /** Backward-compatible merged controller value for callers that still need every slice together. */
   contextValue: AuthProviderControllerValue["sessionValue"] &
     AuthProviderControllerValue["playerValue"] &
     AuthProviderControllerValue["riddleValue"];
 }
 
-export function useAuthProviderController(): AuthProviderControllerValue {
+const defaultAuthProviderControllerDependencies: AuthProviderControllerDependencies = {
+  playerRepository,
+  riddleSessionService,
+};
+
+export function useAuthProviderController(
+  dependencies: AuthProviderControllerDependencies = defaultAuthProviderControllerDependencies,
+): AuthProviderControllerValue {
+  const repository = dependencies.playerRepository ?? playerRepository;
+  const riddleLoader = dependencies.riddleSessionService ?? riddleSessionService;
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [playerData, setPlayerData] = useState<Player | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -100,12 +133,12 @@ export function useAuthProviderController(): AuthProviderControllerValue {
 
   const saveGuestProfileToLocal = useCallback(async (player: Player): Promise<void> => {
     if (isGuestSignOutInProgressRef.current) return;
-    await playerRepository.saveGuestProfile(player);
-  }, []);
+    await repository.saveGuestProfile(player);
+  }, [repository]);
 
   const loadGuestProfileFromLocal = useCallback(
-    (uid: string): Promise<Player | null> => playerRepository.loadGuestProfile(uid),
-    [],
+    (uid: string): Promise<Player | null> => repository.loadGuestProfile(uid),
+    [repository],
   );
 
   useEffect(() => {
@@ -114,11 +147,11 @@ export function useAuthProviderController(): AuthProviderControllerValue {
   }, [playerData, saveGuestProfileToLocal]);
 
   const clearGuestProfileFromLocal = useCallback(
-    (): Promise<void> => playerRepository.clearGuestProfile(),
-    [],
+    (): Promise<void> => repository.clearGuestProfile(),
+    [repository],
   );
 
-  const clearAllLocalData = useCallback((): Promise<void> => playerRepository.clearAllLocalData(), []);
+  const clearAllLocalData = useCallback((): Promise<void> => repository.clearAllLocalData(), [repository]);
 
   const loadActiveGameSessionFromLocal = useCallback(
     (uid: string) => authSessionFacade.loadActiveGameSession(uid),
@@ -183,7 +216,7 @@ export function useAuthProviderController(): AuthProviderControllerValue {
     async (player: Player | null, mode: GameMode, completedDailyOverride?: boolean) => {
       const requestId = ++latestRiddleFetchRequestRef.current;
       const isStaleRequest = () => requestId !== latestRiddleFetchRequestRef.current;
-      await riddleSessionService.fetchCurrentRiddle(
+      await riddleLoader.fetchCurrentRiddle(
         player,
         mode,
         {
@@ -192,10 +225,10 @@ export function useAuthProviderController(): AuthProviderControllerValue {
           setGameMode,
           setIsRiddlesInitializing,
         },
-        {completedDailyOverride, isStaleRequest},
+        {completedDailyOverride, isStaleRequest, locale: getLocale()},
       );
     },
-    [],
+    [riddleLoader],
   );
 
   // Initialize offline queue once on mount
@@ -295,7 +328,7 @@ export function useAuthProviderController(): AuthProviderControllerValue {
           setIsRiddlesInitializing(true);
           const [, loadedData] = await Promise.all([
             RiddleInitializationService.checkAndInitializeRiddles(),
-            playerRepository.loadUserProgress(user.uid),
+            repository.loadUserProgress(user.uid),
           ]);
           setIsRiddlesInitializing(false);
 
@@ -330,7 +363,7 @@ export function useAuthProviderController(): AuthProviderControllerValue {
               const guestSeed = await loadGuestProfileFromLocal(user.uid);
               const shouldSeedFromGuest = isGuestPlayer(guestSeed);
 
-              data = await playerRepository.createUserDocument(
+              data = await repository.createUserDocument(
                 user.uid,
                 userEmail,
                 user.displayName || undefined,
@@ -380,7 +413,7 @@ export function useAuthProviderController(): AuthProviderControllerValue {
           }
 
           if (Object.keys(userDocUpdates).length > 0) {
-            await playerRepository.updateUserDocument(user.uid, data, userDocUpdates);
+            await repository.updateUserDocument(user.uid, data, userDocUpdates);
             data = {...data, ...userDocUpdates};
             logger.debug("Synced provider profile fields:", userDocUpdates);
           }
@@ -398,7 +431,7 @@ export function useAuthProviderController(): AuthProviderControllerValue {
                 }
               : data;
           if (brokenStreak > 0) {
-            await playerRepository.updateUserDocument(user.uid, data, {
+            await repository.updateUserDocument(user.uid, data, {
               stats: {
                 ...data.stats,
                 winStreak: 0,
@@ -509,6 +542,7 @@ export function useAuthProviderController(): AuthProviderControllerValue {
     saveGuestProfileToLocal,
     getBrokenDailyStreakValue,
     loadActiveGameSessionFromLocal,
+    repository,
   ]);
 
   // Wrapped in useCallback so these are stable references and don't invalidate
@@ -519,7 +553,7 @@ export function useAuthProviderController(): AuthProviderControllerValue {
       try {
         const isAnonymousSession = isAnonymousAuthSession();
         if (!isAnonymousSession) {
-          await playerRepository.updateClassicIndex(playerData.userId, newIndex);
+          await repository.updateClassicIndex(playerData.userId, newIndex);
         }
         let nextPlayerSnapshot: Player | null = null;
         setPlayerData((prevData: Player | null) => {
@@ -541,6 +575,7 @@ export function useAuthProviderController(): AuthProviderControllerValue {
             progress: {...playerData.progress, classicIndex: newIndex},
           },
           "classic",
+          undefined,
         );
       } catch (error) {
         logger.error("AuthContext: Error updating player classic index:", error);
@@ -548,7 +583,7 @@ export function useAuthProviderController(): AuthProviderControllerValue {
         throw error;
       }
     },
-    [playerData, fetchCurrentRiddle, saveGuestProfileToLocal],
+    [playerData, fetchCurrentRiddle, repository, saveGuestProfileToLocal],
   );
 
   const updatePlayerData = useCallback(
@@ -572,7 +607,7 @@ export function useAuthProviderController(): AuthProviderControllerValue {
               {authUid, playerUserId: playerData.userId},
             );
           }
-          await playerRepository.updateUserDocument(targetUserId, playerData, sanitizedUpdates);
+          await repository.updateUserDocument(targetUserId, playerData, sanitizedUpdates);
           setPlayerData((prevData: Player | null) =>
             prevData ? {...prevData, ...sanitizedUpdates, userId: targetUserId} : null,
           );
@@ -589,7 +624,7 @@ export function useAuthProviderController(): AuthProviderControllerValue {
         throw error;
       }
     },
-    [playerData, saveGuestProfileToLocal],
+    [playerData, saveGuestProfileToLocal, repository],
   );
 
   const updatePlayerDataLocally = useCallback(
@@ -613,7 +648,7 @@ export function useAuthProviderController(): AuthProviderControllerValue {
             });
             return nextPlayer;
           }
-          void playerRepository.updateUserDocument(prevData.userId, prevData, sanitizedUpdates).catch((error) => {
+          void repository.updateUserDocument(prevData.userId, prevData, sanitizedUpdates).catch((error) => {
             logger.error("AuthContext: Error syncing local player update to Firestore:", error);
             captureException(error);
           });
@@ -621,7 +656,7 @@ export function useAuthProviderController(): AuthProviderControllerValue {
         return nextPlayer;
       });
     },
-    [saveGuestProfileToLocal],
+    [saveGuestProfileToLocal, repository],
   );
 
   // Placeholder login function (keep for now, onAuthStateChanged listener handles state)
@@ -665,10 +700,11 @@ export function useAuthProviderController(): AuthProviderControllerValue {
   }, [clearAllLocalData]);
 
   // Three narrow memos - each slice only re-triggers consumers that depend on it.
-  // sessionValue  changes only on auth state / loading changes.
-  // playerValue   changes only when player data or its updaters change.
-  // riddleValue   changes only when riddle / game-mode state changes.
-  // The merged contextValue is kept for backward-compat via useAuth().
+  // sessionValue changes only on auth state / loading changes.
+  // playerValue changes only when player data or its updaters change.
+  // riddleValue changes only when riddle / game-mode state changes.
+  // The merged contextValue stays available for compatibility callers that still
+  // need the full aggregate auth surface.
   const sessionValue = useMemo(
     () => ({isAuthenticated, isLoading, login, logout}),
     [isAuthenticated, isLoading, login, logout],
@@ -714,9 +750,9 @@ export function useAuthProviderController(): AuthProviderControllerValue {
     ],
   );
 
-  // Merged value for useAuth() - consumers that call useAuth() still re-render
-  // when any slice changes, but targeted hooks (useAuthSession / usePlayer /
-  // useRiddle) can be adopted incrementally for finer-grained subscriptions.
+  // Merged value stays available for compatibility callers; targeted hooks
+  // (useAuthSession / usePlayer / useRiddleState) can subscribe to just the
+  // slice they need.
   const contextValue = useMemo(
     () => ({...sessionValue, ...playerValue, ...riddleValue}),
     [sessionValue, playerValue, riddleValue],

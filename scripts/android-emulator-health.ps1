@@ -17,8 +17,20 @@ param(
 
 $ErrorActionPreference = "Stop"
 
+. "$PSScriptRoot\device-matrix-artifacts.ps1"
+
+$script:MatrixCaptureDate = Get-Date
+$script:MatrixWorkspaceRoot = (Resolve-Path ".").Path
+
 function Fail($message) {
   throw "[android-emulator-health] $message"
+}
+
+function Get-MatrixArtifactDirs([string]$deviceName) {
+  return New-DeviceMatrixArtifactDirs `
+    -WorkspaceRoot $script:MatrixWorkspaceRoot `
+    -CaptureDate $script:MatrixCaptureDate `
+    -DeviceName $deviceName
 }
 
 function Get-EmulatorHostProcesses {
@@ -383,9 +395,9 @@ Invoke-AdbQuiet $adb @("start-server") | Out-Null
 $summary = @()
 
 foreach ($avd in $AvdNames) {
-  $logDir = Join-Path (Resolve-Path ".").Path "emulator-tests\logs\$avd"
-  $imageDir = Join-Path (Resolve-Path ".").Path "emulator-tests\images\$avd"
-  New-Item -ItemType Directory -Path $logDir, $imageDir -Force | Out-Null
+  $artifactDirs = Get-MatrixArtifactDirs $avd
+  $logDir = $artifactDirs.LogDir
+  $imageDir = $artifactDirs.ImageDir
 
   $stdout = Join-Path $logDir "03-health-boot-stdout.txt"
   $stderr = Join-Path $logDir "03-health-boot-stderr.txt"
@@ -489,7 +501,7 @@ foreach ($avd in $AvdNames) {
   }
 }
 
-$summaryPath = Join-Path (Resolve-Path ".").Path "emulator-tests\logs\android-emulator-health-summary.txt"
+$summaryPath = Join-Path (Get-MatrixArtifactDirs "shared").LogDir "android-emulator-health-summary.txt"
 $summary | Format-Table -AutoSize | Out-File -FilePath $summaryPath -Encoding utf8
 $summary | Format-Table -AutoSize
 

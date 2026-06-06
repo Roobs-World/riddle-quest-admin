@@ -1,10 +1,5 @@
-import {AmbientLight, DirectionalLight, Mesh, RingGeometry, Scene, SphereGeometry, Texture} from "three";
+import {AmbientLight, Mesh, PointLight, RingGeometry, Scene, SphereGeometry, Texture} from "three";
 import {addEnhancedLights, addSunMeshes, createSceneSetup} from "../sceneFactory";
-import {captureException} from "../../../utils/sentry";
-
-jest.mock("../../../utils/sentry", () => ({
-  captureException: jest.fn(),
-}));
 
 describe("sceneFactory", () => {
   it("creates scene setup with expected camera defaults", () => {
@@ -18,19 +13,19 @@ describe("sceneFactory", () => {
 
   it("adds enhanced lights to scene and output array", () => {
     const scene = new Scene();
-    const lights: (DirectionalLight | AmbientLight | any)[] = [];
+    const lights: Array<PointLight | AmbientLight> = [];
 
-    addEnhancedLights(scene, lights as any);
+    addEnhancedLights(scene, lights);
 
-    expect(lights).toHaveLength(5);
+    expect(lights).toHaveLength(2);
+    expect(scene.children.some((child) => child instanceof PointLight)).toBe(true);
     expect(scene.children.some((child) => child instanceof AmbientLight)).toBe(true);
-    expect(scene.children.some((child) => child instanceof DirectionalLight)).toBe(true);
   });
 
   it("adds layered sun meshes when sun geometry is available", () => {
     const scene = new Scene();
     const geometries = new Map<string, SphereGeometry | RingGeometry>([["sun", new SphereGeometry(10, 8, 8)]]);
-    const textures = new Map<string, Texture | null>([
+    const textures = new Map<string, Texture>([
       ["sun", new Texture()],
       ["glow_sun", new Texture()],
       ["glow_sun_intense", new Texture()],
@@ -44,36 +39,48 @@ describe("sceneFactory", () => {
     expect(scene.children.filter((child) => child instanceof Mesh)).toHaveLength(4);
   });
 
-  it("adds fallback sun mesh when geometry is missing", () => {
+  it("throws when sun geometry is missing", () => {
     const scene = new Scene();
     const geometries = new Map<string, SphereGeometry | RingGeometry>();
-    const textures = new Map<string, Texture | null>();
+    const textures = new Map<string, Texture>([
+      ["sun", new Texture()],
+      ["glow_sun", new Texture()],
+      ["glow_sun_intense", new Texture()],
+      ["glow_planet_intense", new Texture()],
+    ]);
     const meshes: Mesh[] = [];
 
-    addSunMeshes(scene, geometries, textures, meshes);
-
-    expect(meshes).toHaveLength(1);
-    expect((meshes[0].userData as any).isFallback).toBe(true);
+    expect(() => addSunMeshes(scene, geometries, textures, meshes)).toThrow("Missing required sun geometry");
   });
 
-  it("falls back when an exception occurs during sun mesh creation", () => {
-    let addCount = 0;
+  it("throws when a required sun texture is missing", () => {
+    const scene = new Scene();
+    const geometries = new Map<string, SphereGeometry | RingGeometry>([["sun", new SphereGeometry(10, 8, 8)]]);
+    const textures = new Map<string, Texture>([
+      ["sun", new Texture()],
+      ["glow_sun", new Texture()],
+      ["glow_sun_intense", new Texture()],
+    ]);
+    const meshes: Mesh[] = [];
+
+    expect(() => addSunMeshes(scene, geometries, textures, meshes)).toThrow("Missing required sun texture");
+  });
+
+  it("throws when an exception occurs during sun mesh creation", () => {
     const scene = {
       add: jest.fn(() => {
-        addCount += 1;
-        if (addCount === 1) {
-          throw new Error("add failed");
-        }
+        throw new Error("add failed");
       }),
     } as unknown as Scene;
     const geometries = new Map<string, SphereGeometry | RingGeometry>([["sun", new SphereGeometry(10, 8, 8)]]);
-    const textures = new Map<string, Texture | null>([["glow_sun", new Texture()]]);
+    const textures = new Map<string, Texture>([
+      ["sun", new Texture()],
+      ["glow_sun", new Texture()],
+      ["glow_sun_intense", new Texture()],
+      ["glow_planet_intense", new Texture()],
+    ]);
     const meshes: Mesh[] = [];
 
-    addSunMeshes(scene, geometries, textures, meshes);
-
-    expect(meshes).toHaveLength(1);
-    expect((meshes[0].userData as any).isFallback).toBe(true);
-    expect(captureException).toHaveBeenCalled();
+    expect(() => addSunMeshes(scene, geometries, textures, meshes)).toThrow("add failed");
   });
 });

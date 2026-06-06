@@ -21,4 +21,8 @@ describe("isValidGuess", () => {
     expect(isValidGuess("", 5)).toBe(false);
     expect(isValidGuess("   ", 5)).toBe(false);
   });
+
+  it("accepts composed letters as a single grapheme", () => {
+    expect(isValidGuess("e\u0301", 1)).toBe(true);
+  });
 });

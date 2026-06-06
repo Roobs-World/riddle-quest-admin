@@ -34,13 +34,20 @@ import {
   Group,
   SphereGeometry,
   RingGeometry,
+  MeshBasicMaterial,
   MeshPhongMaterial,
   ColorManagement,
   Texture,
   DoubleSide,
 } from "three";
-import type {MeshPhongMaterialParameters} from "three";
+import type {MeshBasicMaterialParameters} from "three";
 import {AppState, StyleSheet, View} from "react-native";
+import {SOLAR_SYSTEM_CONFIG} from "./SolarSystemConfig";
+import {dimensions} from "../../utils/responsive";
+import {loadTextureFromAsset, resolveAssetModule} from "../../services/solar/textureLoader";
+import type {AssetModuleReference} from "../../services/solar/textureLoader";
+// Import texture assets
+import sunTextureModule from "../../../assets/3d/tex_sun_spots_02.png";
 
 // Expo's EXGL doesn't support UNPACK_COLORSPACE_CONVERSION_WEBGL which Three.js
 // r152+ tries to set when color management is enabled.
@@ -51,12 +58,6 @@ const EXGL_UNSUPPORTED_PIXEL_STORE_PARAMETERS = new Set<number>([
   0x9241, // UNPACK_PREMULTIPLY_ALPHA_WEBGL
   0x9243, // UNPACK_COLORSPACE_CONVERSION_WEBGL
 ]);
-import {SOLAR_SYSTEM_CONFIG} from "./SolarSystemConfig";
-import {dimensions} from "../../utils/responsive";
-import {loadTextureFromAsset, resolveAssetModule} from "../../services/solar/textureLoader";
-import type {AssetModuleReference} from "../../services/solar/textureLoader";
-// Import texture assets
-import sunTextureModule from "../../../assets/3d/tex_sun_spots_02.png";
 
 // Cache for loaded textures
 const textureCache = new Map<string | number, Texture>();
@@ -69,7 +70,6 @@ let fallbackRingMaterial: MeshPhongMaterial | null = null;
 
 const isTextureDebugEnabled = process.env.EXPO_PUBLIC_TEXTURE_DEBUG === "1";
 const SUN_POSITION: [number, number, number] = [0, 30, 0];
-const SUN_DIRECTIONAL_POSITION: [number, number, number] = [0, 36, 42];
 
 const textureDebugLog = (level: "log" | "warn" | "error", message: string, details?: Record<string, unknown>): void => {
   if (!isTextureDebugEnabled) {
@@ -120,8 +120,6 @@ const getSharedTexturedPhongMaterial = (texture: Texture | null): MeshPhongMater
     if (!fallbackPhongMaterial) {
       fallbackPhongMaterial = new MeshPhongMaterial({
         color: 0xd8d8d8,
-        emissive: 0x2a2a2a,
-        emissiveIntensity: 0.3,
         shininess: 30,
         specular: 0x222222,
       });
@@ -137,8 +135,6 @@ const getSharedTexturedPhongMaterial = (texture: Texture | null): MeshPhongMater
   const material = new MeshPhongMaterial({
     map: texture,
     color: 0xffffff,
-    emissive: 0x383838,
-    emissiveIntensity: 0.58,
     shininess: 34,
     specular: 0x3a3a3a,
   });
@@ -151,9 +147,9 @@ const getSharedRingMaterial = (texture: Texture | null): MeshPhongMaterial => {
     if (!fallbackRingMaterial) {
       fallbackRingMaterial = new MeshPhongMaterial({
         color: 0xe4d6a4,
-        emissive: 0x241b10,
-        emissiveIntensity: 0.35,
-        opacity: 0.88,
+        opacity: 0.42,
+        depthWrite: false,
+        alphaTest: 0.01,
         side: DoubleSide,
         transparent: true,
       });
@@ -169,9 +165,9 @@ const getSharedRingMaterial = (texture: Texture | null): MeshPhongMaterial => {
   const material = new MeshPhongMaterial({
     map: texture,
     color: 0xffffff,
-    emissive: 0x2a2114,
-    emissiveIntensity: 0.32,
-    opacity: 0.96,
+    opacity: 0.48,
+    depthWrite: false,
+    alphaTest: 0.01,
     side: DoubleSide,
     transparent: true,
   });
@@ -179,20 +175,20 @@ const getSharedRingMaterial = (texture: Texture | null): MeshPhongMaterial => {
   return material;
 };
 
-const createSunMaterial = (texture: Texture | null): MeshPhongMaterial => {
-  const materialParameters: MeshPhongMaterialParameters = {
-    color: 0xffffff,
-    emissive: 0xffa500,
-    emissiveIntensity: texture ? 0.95 : 0.75,
-    shininess: 0,
+export const __createSharedRingMaterialForTests = getSharedRingMaterial;
+
+const createSunMaterial = (texture: Texture | null): MeshBasicMaterial => {
+  const materialParameters: MeshBasicMaterialParameters = {
+    color: 0xfff4d6,
+    toneMapped: false,
+    transparent: false,
   };
 
   if (texture) {
     materialParameters.map = texture;
-    materialParameters.emissiveMap = texture;
   }
 
-  return new MeshPhongMaterial(materialParameters);
+  return new MeshBasicMaterial(materialParameters);
 };
 
 export const __createSunMaterialForTests = createSunMaterial;
@@ -454,10 +450,7 @@ Planet.displayName = "Planet";
 const SolarSystemScene: React.FC = () => {
   return (
     <>
-      <ambientLight intensity={0.98} />
-      <hemisphereLight intensity={1.2} color={0xe3f1ff} groundColor={0x2b1d3f} />
-      <directionalLight position={SUN_DIRECTIONAL_POSITION} intensity={2.45} color={0xfff5dd} />
-      <pointLight position={SUN_POSITION} intensity={8.6} color={0xffd27f} distance={360} />
+      <pointLight position={SUN_POSITION} intensity={45000} color={0xfff4d6} distance={0} decay={2} />
 
       <Sun />
 

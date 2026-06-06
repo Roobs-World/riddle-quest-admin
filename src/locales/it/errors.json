@@ -25,6 +25,9 @@
     "SERVICE_TEMPORARILY_UNAVAILABLE": "Servizio temporaneamente non disponibile. Riprova.",
     "SIGN_IN_TO_CONTINUE": "Accedi per continuare.",
     "TOO_MANY_FAILED_ATTEMPTS": "Troppi tentativi falliti. Riprova più tardi.",
-    "WRONG_PASSWORD_TRY_AGAIN": "Password errata. Per favore riprova."
+    "WRONG_PASSWORD_TRY_AGAIN": "Password errata. Per favore riprova.",
+    "UNKNOWN_ERROR": "Si ? verificato un errore sconosciuto.",
+    "FATAL_STARTUP_TITLE": "Avvio non riuscito",
+    "FATAL_STARTUP_MESSAGE": "Lo sfondo del sistema solare non ? stato caricato. Riavvia l'app."
   }
 }

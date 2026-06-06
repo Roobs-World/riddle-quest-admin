@@ -1,5 +1,6 @@
 packages:
   - "packages/*"
+  - "firebase-functions"
 
 allowBuilds:
   "@firebase/util": true

@@ -1,4 +1,5 @@
 import type {Feedback} from "./types";
+import {lowerCaseGraphemes} from "./graphemes";
 
 /**
  * Computes green/yellow/red feedback for a guess against the correct answer.
@@ -9,8 +10,8 @@ import type {Feedback} from "./types";
  * 3. Everything else stays red.
  */
 export function computeFeedback(guess: string, answer: string): Feedback[] {
-  const guessChars = guess.toLowerCase().split("");
-  const answerChars = answer.toLowerCase().split("");
+  const guessChars = lowerCaseGraphemes(guess);
+  const answerChars = lowerCaseGraphemes(answer);
 
   const charCounts: Record<string, number> = {};
   for (const ch of answerChars) {

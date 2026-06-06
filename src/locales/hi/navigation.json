@@ -2,16 +2,12 @@
   "Navigation": {
     "BUY_COINS_BUTTON": "सिक्के खरीदें",
     "CREDITS": "क्रेडिट",
-    "FORGOT_PASSWORD": "पासवर्ड भूल गए",
     "GAME": "खेल",
     "HINT_BUTTON": "संकेत",
     "LANDING": "अवतरण",
-    "LOGIN": "लॉग इन करें",
-    "NEW_PASSWORD": "नया पासवर्ड",
     "PLAY_BUTTON": "खेल",
     "PROFILE_BUTTON": "प्रोफ़ाइल",
-    "SETTINGS_BUTTON": "सेटिंग्स",
-    "SIGN_UP": "साइन अप करें"
+    "SETTINGS_BUTTON": "सेटिंग्स"
   },
   "NavigationMessages": {
     "ERROR_LOADING_NEXT_RIDDLE": "अगली क्लासिक पहेली लोड करने में त्रुटि:",

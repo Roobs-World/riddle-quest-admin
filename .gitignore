@@ -5,7 +5,7 @@ node_modules/
 .pnpm/
 
 qwordly-6ba44-86f252fe3dab.json
-
+device-matrix-test/
 
 # Expo
 .expo/

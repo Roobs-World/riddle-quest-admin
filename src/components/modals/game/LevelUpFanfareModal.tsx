@@ -1,18 +1,21 @@
 import React from "react";
 import {View, Text, Modal, TouchableOpacity} from "react-native";
-import ModalBg from "../../../../assets/images/modal-bg.svg";
-import HomeBg from "../../../../assets/images/home-bg.svg";
 import {TYPOGRAPHY} from "../../../styles";
 import {
-  MODAL_WIDTH, MODAL_CONTENT_PADDING, MODAL_BUTTON_SPACER, MODAL_MAX_SCREEN_HEIGHT_FRACTION, getResponsiveModalHeight, } from "../../../constants/layout";
+  MODAL_WIDTH,
+  MODAL_CONTENT_PADDING,
+  MODAL_BUTTON_SPACER,
+  MODAL_MAX_SCREEN_HEIGHT_FRACTION,
+  getResponsiveModalHeight,
+} from "../../../constants/layout";
 import {t} from "../../../i18n";
-import SlideInModalContent from "../../shared/SlideInModalContent";
 import {verticalScale} from "@/utils/responsive";
 import {NewCoins} from "@/components/shared/NewCoins";
 import RotatingWheelBackground from "../../shared/RotatingWheelBackground";
 import type {ModalSequenceProgress} from "../../../types/ModalTypes";
 import ModalSequenceBreadcrumb from "../ModalSequenceBreadcrumb";
 import WideButton from "../../buttons/WideButton";
+import DecoratedModalShell from "../../shared/DecoratedModalShell";
 
 interface LevelUpFanfareModalProps {
   isVisible: boolean;
@@ -59,8 +62,19 @@ const LevelUpFanfareModal: React.FC<LevelUpFanfareModalProps> = ({
       >
         <RotatingWheelBackground isVisible={isVisible} />
 
-        <SlideInModalContent isVisible={isVisible} style={{alignItems: "center"}}>
-          <TouchableOpacity key={"coin-purchase-modal"} onPress={handleContinue}>
+        <DecoratedModalShell
+          isVisible={isVisible}
+          width={MODAL_WIDTH}
+          height={LEVEL_UP_FANFARE_MODAL_HEIGHT}
+          frameStyle={{alignItems: "center"}}
+          contentStyle={{justifyContent: "center"}}
+          modalBgTestID="level-up-fanfare-background"
+        >
+          <TouchableOpacity
+            key={"coin-purchase-modal"}
+            onPress={handleContinue}
+            style={{width: MODAL_WIDTH, height: LEVEL_UP_FANFARE_MODAL_HEIGHT}}
+          >
             <View
               testID="level-up-fanfare-frame"
               style={{
@@ -68,26 +82,8 @@ const LevelUpFanfareModal: React.FC<LevelUpFanfareModalProps> = ({
                 height: LEVEL_UP_FANFARE_MODAL_HEIGHT,
                 alignItems: "center",
                 justifyContent: "center",
-                overflow: "hidden",
               }}
             >
-              <ModalBg
-                testID="level-up-fanfare-background"
-                width={MODAL_WIDTH}
-                height={LEVEL_UP_FANFARE_MODAL_HEIGHT}
-                style={{position: "absolute"}}
-                preserveAspectRatio="none"
-              />
-              <HomeBg
-                width={MODAL_WIDTH * 1.1}
-                height={LEVEL_UP_FANFARE_MODAL_HEIGHT * 1.1}
-                style={{
-                  position: "absolute",
-                  top: -LEVEL_UP_FANFARE_MODAL_HEIGHT * 0.05,
-                  left: -MODAL_WIDTH * 0.05,
-                }}
-              />
-
               <View
                 style={{
                   flex: 1,
@@ -136,7 +132,7 @@ const LevelUpFanfareModal: React.FC<LevelUpFanfareModalProps> = ({
               </View>
             </View>
           </TouchableOpacity>
-        </SlideInModalContent>
+        </DecoratedModalShell>
       </View>
     </Modal>
   );

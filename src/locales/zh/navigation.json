@@ -2,16 +2,12 @@
   "Navigation": {
     "BUY_COINS_BUTTON": "购买硬币",
     "CREDITS": "积分",
-    "FORGOT_PASSWORD": "忘记密码",
     "GAME": "游戏",
     "HINT_BUTTON": "提示",
     "LANDING": "降落",
-    "LOGIN": "登录",
-    "NEW_PASSWORD": "新密码",
     "PLAY_BUTTON": "玩",
     "PROFILE_BUTTON": "个人资料",
-    "SETTINGS_BUTTON": "设置",
-    "SIGN_UP": "报名"
+    "SETTINGS_BUTTON": "设置"
   },
   "NavigationMessages": {
     "ERROR_LOADING_NEXT_RIDDLE": "加载下一个经典谜语时出错：",

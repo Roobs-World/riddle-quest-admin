@@ -2,20 +2,18 @@ import React from "react";
 import {View, Text, Modal, Pressable} from "react-native";
 import type {SubmittedGuess} from "../../../hooks/types";
 import {TYPOGRAPHY} from "../../../styles";
-import ModalBg from "../../../../assets/images/modal-bg.svg";
 import {
   MODAL_WIDTH, MODAL_CONTENT_PADDING, MODAL_MAX_SCREEN_HEIGHT_FRACTION, getResponsiveModalHeight, } from "../../../constants/layout";
 import {t} from "../../../i18n";
-import SlideInModalContent from "../../shared/SlideInModalContent";
 import {NewCoins} from "@/components/shared/NewCoins";
 import {verticalScale} from "@/utils/responsive";
 import RotatingWheelBackground from "@/components/shared/RotatingWheelBackground";
-import HomeBg from "../../../../assets/images/home-bg.svg";
 import WideButton from "../../buttons/WideButton";
 import {generateFeedbackEmojiGrid} from "../../../utils/gameUtils";
 import {SocialSharingService} from "../../../services/SocialSharingService";
 import type {ModalSequenceProgress} from "../../../types/ModalTypes";
 import ModalSequenceBreadcrumb from "../ModalSequenceBreadcrumb";
+import DecoratedModalShell from "../../shared/DecoratedModalShell";
 
 /**
  * Props for the victory feedback modal shown after a successful solve.
@@ -94,7 +92,14 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
         }}
       >
         <RotatingWheelBackground isVisible={isVisible} />
-        <SlideInModalContent isVisible={isVisible} style={{alignItems: "center"}}>
+        <DecoratedModalShell
+          isVisible={isVisible}
+          width={MODAL_WIDTH}
+          height={modalHeight}
+          frameStyle={{alignItems: "center"}}
+          contentStyle={{justifyContent: "center"}}
+          modalBgTestID="victory-modal-background"
+        >
           <Pressable
             style={{
               width: MODAL_WIDTH,
@@ -107,19 +112,6 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
             }}
             testID="victory-modal-tap-target"
           >
-            <ModalBg
-              testID="victory-modal-background"
-              width={MODAL_WIDTH}
-              height={modalHeight}
-              preserveAspectRatio="none"
-              style={{position: "absolute"}}
-            />
-            <HomeBg
-              width={MODAL_WIDTH * 1.1}
-              height={modalHeight * 1.05}
-              style={{position: "absolute", top: -modalHeight * 0.08, left: -MODAL_WIDTH * 0.05}}
-            />
-
             <View
               style={{
                 flex: 1,
@@ -162,9 +154,9 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
                   testID="victory-next-button"
                 />
               </View>
-            </View>
-          </Pressable>
-        </SlideInModalContent>
+              </View>
+            </Pressable>
+        </DecoratedModalShell>
       </View>
     </Modal>
   );

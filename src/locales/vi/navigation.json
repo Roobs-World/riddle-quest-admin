@@ -2,16 +2,12 @@
   "Navigation": {
     "BUY_COINS_BUTTON": "Mua xu",
     "CREDITS": "Tín dụng",
-    "FORGOT_PASSWORD": "Quên mật khẩu",
     "GAME": "Trò chơi",
     "HINT_BUTTON": "Gợi ý",
     "LANDING": "Đổ bộ",
-    "LOGIN": "Đăng nhập",
-    "NEW_PASSWORD": "Mật khẩu mới",
     "PLAY_BUTTON": "Chơi",
     "PROFILE_BUTTON": "Hồ sơ",
-    "SETTINGS_BUTTON": "Cài đặt",
-    "SIGN_UP": "Đăng ký"
+    "SETTINGS_BUTTON": "Cài đặt"
   },
   "NavigationMessages": {
     "ERROR_LOADING_NEXT_RIDDLE": "Lỗi khi tải câu đố cổ điển tiếp theo:",

@@ -14,38 +14,6 @@ jest.mock("../../screens/LandingScreen", () => {
   };
 });
 
-jest.mock("../../screens/auth/LoginScreen", () => {
-  const React = require("react");
-  const { Text } = require("react-native");
-  return function MockLoginScreen() {
-    return <Text>Login QA Surface</Text>;
-  };
-});
-
-jest.mock("../../screens/auth/SignUpScreen", () => {
-  const React = require("react");
-  const { Text } = require("react-native");
-  return function MockSignUpScreen() {
-    return <Text>Sign Up QA Surface</Text>;
-  };
-});
-
-jest.mock("../../screens/auth/ForgotPasswordScreen", () => {
-  const React = require("react");
-  const { Text } = require("react-native");
-  return function MockForgotPasswordScreen() {
-    return <Text>Forgot Password QA Surface</Text>;
-  };
-});
-
-jest.mock("../../screens/auth/NewPasswordScreen", () => {
-  const React = require("react");
-  const { Text } = require("react-native");
-  return function MockNewPasswordScreen() {
-    return <Text>New Password QA Surface</Text>;
-  };
-});
-
 jest.mock("../../screens/game/GameScreen", () => {
   const React = require("react");
   const { Text } = require("react-native");

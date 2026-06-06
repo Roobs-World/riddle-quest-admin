@@ -34,6 +34,7 @@ export const SubmitButton = React.forwardRef<View, SubmitButtonProps>(
           flex: 1.15,
           minWidth: 0,
           alignItems: "center",
+          marginBottom: SPACING.sm,
         }}
         onPress={() => {
           if (!isSubmitDisabled && !gameOver) {

@@ -2,16 +2,12 @@
   "Navigation": {
     "BUY_COINS_BUTTON": "코인 구매",
     "CREDITS": "크레딧",
-    "FORGOT_PASSWORD": "비밀번호를 잊으셨나요?",
     "GAME": "게임",
     "HINT_BUTTON": "힌트",
     "LANDING": "착륙",
-    "LOGIN": "로그인",
-    "NEW_PASSWORD": "새 비밀번호",
     "PLAY_BUTTON": "놀다",
     "PROFILE_BUTTON": "윤곽",
-    "SETTINGS_BUTTON": "설정",
-    "SIGN_UP": "가입"
+    "SETTINGS_BUTTON": "설정"
   },
   "NavigationMessages": {
     "ERROR_LOADING_NEXT_RIDDLE": "다음 클래식 수수께끼 로드 오류:",

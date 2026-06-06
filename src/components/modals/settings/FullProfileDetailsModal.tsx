@@ -17,7 +17,7 @@ import TreasureChest from "./TreasureChest";
 import {getXpLevel} from "../../../constants/game";
 import {isGuestPlayer} from "@/features/auth/sessionBootstrap";
 import {t} from "../../../i18n";
-import {useAuth} from "@/contexts/AuthContext";
+import {useAuthSession, usePlayer} from "@/contexts/AuthContext";
 import PulsingSpinner from "@/components/loading/PulsingSpinner";
 import UpgradeAccountModal from "./UpgradeAccountModal";
 import {LOADING_SPINNER_OPACITY, LOADING_SPINNER_SIZE} from "@/constants/loading";
@@ -93,7 +93,8 @@ const getProfileTooltipContent = (id: TooltipId) => {
 const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisible, onClose, playerData}) => {
   const modal = useModal();
   const tooltip = useTooltip();
-  const {logout, updatePlayerData, playerData: authPlayerData} = useAuth();
+  const {logout} = useAuthSession();
+  const {updatePlayerData, playerData: authPlayerData} = usePlayer();
   const resolvedPlayerData = authPlayerData ?? playerData;
   const firebaseUser = getAuth(getApp()).currentUser;
   const isGuestMode = firebaseUser ? firebaseUser.isAnonymous : isGuestPlayer(resolvedPlayerData);

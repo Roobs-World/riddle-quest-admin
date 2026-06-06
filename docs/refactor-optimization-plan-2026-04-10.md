@@ -75,7 +75,7 @@ This plan is based on a codebase scan focused on architecture depth, coupling se
     - `AuthSessionContext`
     - `PlayerContext`
     - `RiddleContext`
-  - Keep `useAuth()` as compatibility wrapper, but migrate high-churn callers to narrow hooks (`usePlayer`, `useRiddleState`).
+  - Keep the merged compatibility hook available, but migrate high-churn callers to narrow hooks (`usePlayer`, `useRiddleState`).
 - Optimization impact:
   - Fewer unnecessary renders for screens that only need one slice.
   - Clearer ownership for auth listeners and cleanup.

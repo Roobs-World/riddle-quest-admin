@@ -2,16 +2,12 @@
   "Navigation": {
     "BUY_COINS_BUTTON": "Coin satın al",
     "CREDITS": "Krediler",
-    "FORGOT_PASSWORD": "Parolanızı mı unuttunuz",
     "GAME": "Oyun",
     "HINT_BUTTON": "İpucu",
     "LANDING": "İniş",
-    "LOGIN": "Giriş yapmak",
-    "NEW_PASSWORD": "Yeni Şifre",
     "PLAY_BUTTON": "Oynamak",
     "PROFILE_BUTTON": "Profil",
-    "SETTINGS_BUTTON": "Ayarlar",
-    "SIGN_UP": "Üye olmak"
+    "SETTINGS_BUTTON": "Ayarlar"
   },
   "NavigationMessages": {
     "ERROR_LOADING_NEXT_RIDDLE": "Sonraki klasik bilmece yüklenirken hata oluştu:",

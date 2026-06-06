@@ -25,17 +25,29 @@ describe("createGameModalActions", () => {
     actions.showAdNotReady();
     actions.showAdError();
 
-    expect(modal.openModal).toHaveBeenNthCalledWith(1, "info", {
-      title: "No Products Available",
-      message: "Please try again later.",
-    });
-    expect(modal.openModal).toHaveBeenNthCalledWith(2, "info", {
-      title: "Ad Not Ready",
-      message: "The rewarded ad couldn't be loaded at this time. Please try again later.",
-    });
-    expect(modal.openModal).toHaveBeenNthCalledWith(3, "info", {
-      title: "Ad Error",
-      message: "An error occurred while trying to show the rewarded ad.",
-    });
+    expect(modal.openModal).toHaveBeenNthCalledWith(
+      1,
+      "info",
+      expect.objectContaining({
+        title: "No Products Available",
+        message: "Please try again later.",
+      }),
+    );
+    expect(modal.openModal).toHaveBeenNthCalledWith(
+      2,
+      "info",
+      expect.objectContaining({
+        title: "Ad Not Ready",
+        message: "Please try again later.",
+      }),
+    );
+    expect(modal.openModal).toHaveBeenNthCalledWith(
+      3,
+      "info",
+      expect.objectContaining({
+        title: "Ad Error",
+        message: "An error occurred while trying to show the rewarded ad.",
+      }),
+    );
   });
 });

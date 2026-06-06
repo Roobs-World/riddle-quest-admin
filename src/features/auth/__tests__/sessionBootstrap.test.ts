@@ -455,7 +455,7 @@ describe("sessionBootstrap", () => {
         (AccessToken.getCurrentAccessToken as jest.Mock).mockResolvedValue(null);
 
         await expect(resolveUserEmail(user)).rejects.toThrow(
-          "Email is required but not provided by authentication provider",
+          "Email is required but not provided by the authentication provider",
         );
         expect(logger.error).toHaveBeenCalledWith("Facebook Graph API call failed:", expect.any(Error));
         expect(captureException).toHaveBeenCalled();
@@ -478,7 +478,7 @@ describe("sessionBootstrap", () => {
         });
 
         await expect(resolveUserEmail(user)).rejects.toThrow(
-          "Email is required but not provided by authentication provider",
+          "Email is required but not provided by the authentication provider",
         );
         expect(logger.error).toHaveBeenCalledWith("Facebook Graph API call failed:", expect.any(Error));
         expect(captureException).toHaveBeenCalled();
@@ -500,7 +500,7 @@ describe("sessionBootstrap", () => {
         });
 
         await expect(resolveUserEmail(user)).rejects.toThrow(
-          "Email is required but not provided by authentication provider",
+          "Email is required but not provided by the authentication provider",
         );
       });
 
@@ -518,7 +518,7 @@ describe("sessionBootstrap", () => {
         mockFetch.mockRejectedValue(networkError);
 
         await expect(resolveUserEmail(user)).rejects.toThrow(
-          "Email is required but not provided by authentication provider",
+          "Email is required but not provided by the authentication provider",
         );
         expect(logger.error).toHaveBeenCalledWith("Facebook Graph API call failed:", networkError);
         expect(captureException).toHaveBeenCalledWith(networkError);
@@ -541,7 +541,7 @@ describe("sessionBootstrap", () => {
         });
 
         await expect(resolveUserEmail(user)).rejects.toThrow(
-          "Email is required but not provided by authentication provider",
+          "Email is required but not provided by the authentication provider",
         );
         expect(captureException).toHaveBeenCalledWith(jsonError);
       });
@@ -555,7 +555,7 @@ describe("sessionBootstrap", () => {
         } as unknown as FirebaseAuthTypes.User;
 
         await expect(resolveUserEmail(user)).rejects.toThrow(
-          "Email is required but not provided by authentication provider",
+          "Email is required but not provided by the authentication provider",
         );
       });
 
@@ -566,7 +566,7 @@ describe("sessionBootstrap", () => {
         } as unknown as FirebaseAuthTypes.User;
 
         await expect(resolveUserEmail(user)).rejects.toThrow(
-          "Email is required but not provided by authentication provider. Please ensure email permission is granted.",
+          "Email is required but not provided by the authentication provider. Please ensure email permission is granted.",
         );
       });
 
@@ -589,7 +589,7 @@ describe("sessionBootstrap", () => {
         } as unknown as FirebaseAuthTypes.User;
 
         await expect(resolveUserEmail(user)).rejects.toThrow(
-          "Email is required but not provided by authentication provider",
+          "Email is required but not provided by the authentication provider",
         );
       });
     });

@@ -1,5 +1,5 @@
 import {useSyncExternalStore} from "react";
-import {LANGUAGE_OPTIONS as GENERATED_LANGUAGE_OPTIONS, SUPPORTED_LOCALES, localeCatalogs} from "./generated/catalogs";
+import {LANGUAGE_LABELS, SUPPORTED_LOCALES, localeCatalogs} from "./generated/catalogs";
 import {TRANSLATION_KEYS} from "./generated/keys";
 import type {LanguageOption, Locale, TranslationKey, TranslationSchema} from "./generated/types";
 
@@ -11,6 +11,23 @@ export type SupportedLanguage = Locale;
 const localeSubscribers = new Set<() => void>();
 const rootCatalogCache = new Map<Locale, TranslationSchema>();
 const supportedLanguageSet = new Set<string>(SUPPORTED_LOCALES);
+const LOCALE_ALIASES: Record<string, Locale> = {
+  es: "es",
+  pt: "pt",
+  fr: "fr",
+  de: "de",
+  ja: "ja",
+  ko: "ko",
+  zh: "zh",
+  hi: "hi",
+  ru: "ru",
+  tr: "tr",
+  ar: "ar",
+  it: "it",
+  nl: "nl",
+  pl: "pl",
+  vi: "vi",
+};
 
 let currentLocale: Locale = "en";
 
@@ -67,27 +84,23 @@ const emitLocaleChange = (): void => {
   localeSubscribers.forEach((listener) => listener());
 };
 
-export const LANGUAGE_OPTIONS: readonly LanguageOption[] = GENERATED_LANGUAGE_OPTIONS;
+export const LANGUAGE_OPTIONS: readonly LanguageOption[] = SUPPORTED_LOCALES.map((code) => ({
+  code,
+  label: LANGUAGE_LABELS[code],
+}));
 
-export const normalizeLocale = (input?: string): Locale => {
+const normalizeLocale = (input?: string): Locale => {
   const value = (input ?? "en").toLowerCase();
 
-  if (value.startsWith("es")) return "es";
-  if (value.startsWith("pt")) return "pt";
-  if (value.startsWith("fr")) return "fr";
-  if (value.startsWith("de")) return "de";
-  if (value.startsWith("ja")) return "ja";
-  if (value.startsWith("ko")) return "ko";
-  if (value.startsWith("zh")) return "zh";
-  if (value.startsWith("hi")) return "hi";
-  if (value.startsWith("ru")) return "ru";
-  if (value.startsWith("tr")) return "tr";
-  if (value.startsWith("ar")) return "ar";
-  if (value.startsWith("id") || value.startsWith("in")) return "id";
-  if (value.startsWith("it")) return "it";
-  if (value.startsWith("nl")) return "nl";
-  if (value.startsWith("pl")) return "pl";
-  if (value.startsWith("vi")) return "vi";
+  if (value.startsWith("id") || value.startsWith("in")) {
+    return "id";
+  }
+
+  for (const [prefix, locale] of Object.entries(LOCALE_ALIASES)) {
+    if (value.startsWith(prefix)) {
+      return locale;
+    }
+  }
 
   return "en";
 };
@@ -132,12 +145,8 @@ const subscribe = (listener: () => void): (() => void) => {
   };
 };
 
-export const useT = (): typeof t => {
-  const locale = useSyncExternalStore(subscribe, getLocale, getLocale);
-
-  return (key, params) => {
-    return formatMessage(getValueAtPath(buildRootCatalog(locale), key), params);
-  };
+export const useLocale = (): Locale => {
+  return useSyncExternalStore(subscribe, getLocale, getLocale);
 };
 
 export const translationKeys = TRANSLATION_KEYS;

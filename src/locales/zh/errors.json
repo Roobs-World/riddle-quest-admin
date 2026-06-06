@@ -25,6 +25,9 @@
     "SERVICE_TEMPORARILY_UNAVAILABLE": "服务暂时不可用。请重试。",
     "SIGN_IN_TO_CONTINUE": "请登录才能继续。",
     "TOO_MANY_FAILED_ATTEMPTS": "失败的尝试次数过多。请稍后重试。",
-    "WRONG_PASSWORD_TRY_AGAIN": "密码错误。请再试一次。"
+    "WRONG_PASSWORD_TRY_AGAIN": "密码错误。请再试一次。",
+    "UNKNOWN_ERROR": "???????",
+    "FATAL_STARTUP_TITLE": "????",
+    "FATAL_STARTUP_MESSAGE": "??????????????????"
   }
 }

@@ -1,18 +1,21 @@
 import React from "react";
 import {View, Text, Modal, TouchableOpacity} from "react-native";
-import ModalBg from "../../../../assets/images/modal-bg.svg";
-import HomeBg from "../../../../assets/images/home-bg.svg";
 import {TYPOGRAPHY} from "../../../styles";
 import {AchievementUnlockFanfareItem} from "../../../types/ModalTypes";
 import {
-  MODAL_WIDTH, MODAL_HEIGHT, MODAL_CONTENT_PADDING, MODAL_BUTTON_SPACER, MODAL_MAX_HEIGHT, } from "../../../constants/layout";
+  MODAL_WIDTH,
+  MODAL_HEIGHT,
+  MODAL_CONTENT_PADDING,
+  MODAL_BUTTON_SPACER,
+  MODAL_MAX_HEIGHT,
+} from "../../../constants/layout";
 import {t} from "../../../i18n";
-import SlideInModalContent from "../../shared/SlideInModalContent";
 import {NewCoins} from "@/components/shared/NewCoins";
 import RotatingWheelBackground from "@/components/shared/RotatingWheelBackground";
 import type {ModalSequenceProgress} from "../../../types/ModalTypes";
 import ModalSequenceBreadcrumb from "../ModalSequenceBreadcrumb";
 import WideButton from "../../buttons/WideButton";
+import DecoratedModalShell from "../../shared/DecoratedModalShell";
 
 interface AchievementUnlockFanfareModalProps {
   isVisible: boolean;
@@ -60,28 +63,26 @@ const AchievementUnlockFanfareModal: React.FC<AchievementUnlockFanfareModalProps
         }}
       >
         <RotatingWheelBackground isVisible={isVisible} />
-        <SlideInModalContent isVisible={isVisible} style={{alignItems: "center"}}>
-          <TouchableOpacity testID="achievement-unlock-fanfare-modal" onPress={handleContinue}>
+        <DecoratedModalShell
+          isVisible={isVisible}
+          width={MODAL_WIDTH}
+          height={modalHeight}
+          frameStyle={{alignItems: "center"}}
+          contentStyle={{justifyContent: "center"}}
+          modalBgStyle={{top: modalBgOffsetY}}
+          homeBgStyle={{top: -modalHeight * 0.25}}
+          homeHeightMultiplier={1.1}
+          homeTopOffsetMultiplier={0.25}
+        >
+          <TouchableOpacity testID="achievement-unlock-fanfare-modal" onPress={handleContinue} style={{width: "100%", height: "100%"}}>
             <View
               style={{
-                width: MODAL_WIDTH,
-                height: modalHeight,
+                width: "100%",
+                height: "100%",
                 alignItems: "center",
                 justifyContent: "center",
               }}
             >
-              <ModalBg
-                width={MODAL_WIDTH}
-                height={modalBgHeight}
-                preserveAspectRatio="none"
-                style={{position: "absolute", top: modalBgOffsetY}}
-              />
-              <HomeBg
-                width={MODAL_WIDTH * 1.1}
-                height={modalHeight * 1.1}
-                style={{position: "absolute", top: -modalHeight * 0.25, left: -MODAL_WIDTH * 0.05}}
-              />
-
               <View
                 style={{
                   position: "absolute",
@@ -153,7 +154,7 @@ const AchievementUnlockFanfareModal: React.FC<AchievementUnlockFanfareModalProps
               </View>
             </View>
           </TouchableOpacity>
-        </SlideInModalContent>
+        </DecoratedModalShell>
       </View>
     </Modal>
   );

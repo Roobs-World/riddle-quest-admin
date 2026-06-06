@@ -1,6 +1,6 @@
 import {onSchedule} from "firebase-functions/v2/scheduler";
 import {ScheduledEvent} from "firebase-functions/v2/scheduler";
-import {generateTodaysDailyChallenge as generateTodaysDailyRiddle} from "./riddleGeneration";
+import {generateLocalizedTodaysDailyChallenge as generateTodaysDailyRiddle} from "./riddleGeneration";
 import * as functions from "firebase-functions";
 import {captureException} from "./sentry";
 

@@ -118,6 +118,18 @@ jest.mock("../../../contexts/AuthContext", () => ({
     consumePendingStreakBreak: mockConsumePendingStreakBreak,
     isLoading: mockAuthLoading,
   }),
+  useAuthSession: () => ({
+    logout: mockLogout,
+    isAuthenticated: false,
+    isLoading: mockAuthLoading,
+  }),
+  usePlayer: () => ({
+    playerData: mockAuthPlayerData,
+    updatePlayerData: jest.fn(() => Promise.resolve()),
+    updatePlayerDataLocally: mockUpdatePlayerDataLocally,
+    pendingStreakBreak: mockPendingStreakBreak,
+    consumePendingStreakBreak: mockConsumePendingStreakBreak,
+  }),
   GameMode: {},
 }));
 
@@ -2544,7 +2556,6 @@ describe("GameScreen", () => {
       await waitFor(() => {
         expect(logger.error).toHaveBeenCalledWith("Error saving sound setting to AsyncStorage:", expect.any(Error));
         expect(logger.error).toHaveBeenCalledWith("Error saving haptics setting to AsyncStorage:", expect.any(Error));
-        expect(logger.error).toHaveBeenCalledWith("Error saving language setting to AsyncStorage:", expect.any(Error));
         expect(captureException).toHaveBeenCalled();
       });
     });

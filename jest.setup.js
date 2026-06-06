@@ -185,7 +185,7 @@ jest.mock("react-native/Libraries/EventEmitter/NativeEventEmitter", () => {
   class MockNativeEventEmitter extends EventEmitter {
     constructor() {
       super();
-      this.setMaxListeners(20); // Avoid MaxListenersExceededWarning for Keyboard listeners
+      this.setMaxListeners(100); // Avoid MaxListenersExceededWarning for the accumulated test listeners
     }
 
     addListener(eventType, listener, context) {

@@ -369,10 +369,13 @@ describe("FirestoreService", () => {
 
       const result = await getRiddle(testRiddleId);
 
-      expect(mockFirestore.collection).toHaveBeenCalledWith("riddles");
+      expect(mockFirestore.collection).toHaveBeenCalledWith("localizedRiddles/en/classic");
       expect(mockCollection.doc).toHaveBeenCalledWith(testRiddleId);
       expect(mockDoc.get).toHaveBeenCalled();
-      expect(result).toEqual(testRiddleData);
+      expect(result).toEqual({
+        ...testRiddleData,
+        locale: "en",
+      });
     });
 
     test("should return undefined when riddle does not exist", async () => {
@@ -401,7 +404,7 @@ describe("FirestoreService", () => {
       const result = await getRiddle(testRiddleId);
 
       expect(result).toBeUndefined();
-      expect(mockLogger.info).toHaveBeenCalledWith(`Classic riddle data is null for ID ${testRiddleId}`);
+      expect(mockLogger.info).toHaveBeenCalledWith(`Classic riddle data is null for ID ${testRiddleId} in locale en`);
     });
 
     test("should add riddleId to data if missing", async () => {
@@ -422,6 +425,7 @@ describe("FirestoreService", () => {
       expect(result).toEqual({
         ...riddleDataWithoutId,
         riddleId: testRiddleId,
+        locale: "en",
       });
     });
 
@@ -1002,7 +1006,7 @@ describe("FirestoreService", () => {
       const result = await getDailyRiddle(testRiddleId);
 
       expect(result).toBeUndefined();
-      expect(mockLogger.info).toHaveBeenCalledWith(`Daily riddle data is null for ID ${testRiddleId}`);
+      expect(mockLogger.info).toHaveBeenCalledWith(`Daily riddle data is null for ID ${testRiddleId} in locale en`);
     });
 
     test("should return riddle data when daily riddle exists", async () => {
@@ -1021,15 +1025,18 @@ describe("FirestoreService", () => {
 
       const result = await getDailyRiddle(testRiddleId);
 
-      expect(mockFirestore.collection).toHaveBeenCalledWith("dailyRiddles");
-      expect(result).toEqual(dailyRiddleData);
+      expect(mockFirestore.collection).toHaveBeenCalledWith("localizedRiddles/en/daily");
+      expect(result).toEqual({
+        ...dailyRiddleData,
+        locale: "en",
+      });
     });
   });
 
-  describe("getRiddle - cross-collection search", () => {
+  describe("getRiddle - localized lookup", () => {
     const testRiddleId = "search123";
 
-    test("should return classic riddle when found in classic collection", async () => {
+    test("should return classic riddle from the localized classic collection", async () => {
       const classicRiddleData = {
         riddleId: testRiddleId,
         text: "Classic riddle",
@@ -1045,32 +1052,14 @@ describe("FirestoreService", () => {
 
       const result = await getRiddle(testRiddleId);
 
-      expect(result).toEqual(classicRiddleData);
-    });
-
-    test("should return daily riddle when not found in classic but found in daily", async () => {
-      const dailyRiddleData = {
-        riddleId: testRiddleId,
-        text: "Daily riddle",
-        answer: "DAILY",
-        dailyIndex: 1,
-      };
-
-      let callCount = 0;
-      (mockDoc.get as jest.MockedFunction<any>).mockImplementation(() => {
-        callCount++;
-        if (callCount === 1) {
-          return Promise.resolve({exists: false});
-        }
-        return Promise.resolve({exists: true, data: () => dailyRiddleData});
+      expect(mockFirestore.collection).toHaveBeenCalledWith("localizedRiddles/en/classic");
+      expect(result).toEqual({
+        ...classicRiddleData,
+        locale: "en",
       });
-
-      const result = await getRiddle(testRiddleId);
-
-      expect(result).toEqual(dailyRiddleData);
     });
 
-    test("should return undefined when riddle not found in any collection", async () => {
+    test("should return undefined when riddle not found in the localized collection", async () => {
       (mockDoc.get as jest.MockedFunction<any>).mockResolvedValue({exists: false});
 
       const result = await getRiddle(testRiddleId);
@@ -1101,8 +1090,11 @@ describe("FirestoreService", () => {
 
       const result = await getRiddleByGameMode(testRiddleId, "classic");
 
-      expect(mockFirestore.collection).toHaveBeenCalledWith("riddles");
-      expect(result).toEqual(classicRiddleData);
+      expect(mockFirestore.collection).toHaveBeenCalledWith("localizedRiddles/en/classic");
+      expect(result).toEqual({
+        ...classicRiddleData,
+        locale: "en",
+      });
     });
 
     test("should fetch from daily collection for 'challenge' game mode", async () => {
@@ -1121,8 +1113,11 @@ describe("FirestoreService", () => {
 
       const result = await getRiddleByGameMode(testRiddleId, "challenge");
 
-      expect(mockFirestore.collection).toHaveBeenCalledWith("dailyRiddles");
-      expect(result).toEqual(dailyRiddleData);
+      expect(mockFirestore.collection).toHaveBeenCalledWith("localizedRiddles/en/daily");
+      expect(result).toEqual({
+        ...dailyRiddleData,
+        locale: "en",
+      });
     });
 
     test("should return undefined and warn for unknown game mode", async () => {

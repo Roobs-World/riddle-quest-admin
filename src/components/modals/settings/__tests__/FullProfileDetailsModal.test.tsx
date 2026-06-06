@@ -40,6 +40,15 @@ jest.mock("../../../../contexts/AuthContext", () => ({
     updatePlayerData: mockUpdatePlayerData,
     playerData: null,
   }),
+  useAuthSession: () => ({
+    logout: mockLogout,
+    isAuthenticated: true,
+    isLoading: false,
+  }),
+  usePlayer: () => ({
+    updatePlayerData: mockUpdatePlayerData,
+    playerData: null,
+  }),
 }));
 
 jest.mock("../../../../utils/firebaseFunctions", () => ({

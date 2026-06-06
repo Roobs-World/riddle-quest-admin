@@ -1,48 +1,20 @@
 import React from "react";
 import {fireEvent, render, waitFor} from "@testing-library/react-native";
+import {Alert} from "react-native";
 import UpgradeAccountModal from "../UpgradeAccountModal";
 import {logger} from "@/utils/logger";
-import {captureException} from "@/utils/sentry";
+import {captureException} from "../../../../utils/sentry";
 
 const mockShowInfoModal = jest.fn();
 const mockLinkAnonymousWithGoogle = jest.fn();
 const mockLinkAnonymousWithFacebook = jest.fn();
 const mockLogout = jest.fn();
+const mockAlert = jest.spyOn(Alert, "alert").mockImplementation(() => undefined);
 
 jest.mock("@/hooks/useModal", () => ({
   useModal: () => ({
     showInfoModal: mockShowInfoModal,
   }),
-}));
-
-jest.mock("../../../../application/auth/authErrorMessages", () => ({
-  isGoogleSignInCancellation: (error: unknown) =>
-    (typeof error === "object" &&
-      error !== null &&
-      "code" in error &&
-      error.code === "auth/auth-popup-closed-by-user") ||
-    (error instanceof Error && error.message === "Google sign-in cancelled by user."),
-  isFacebookLoginCancellation: (error: unknown) =>
-    (typeof error === "object" &&
-      error !== null &&
-      "code" in error &&
-      error.code === "auth/auth-popup-closed-by-user") ||
-    (error instanceof Error && error.message === "User cancelled the login process"),
-  isAccountAlreadyInUseError: (error: unknown) =>
-    (typeof error === "object" &&
-      error !== null &&
-      "code" in error &&
-      typeof error.code === "string" &&
-      [
-        "auth/credential-already-in-use",
-        "auth/email-already-in-use",
-        "auth/account-exists-with-different-credential",
-      ].includes(error.code)) ||
-    (typeof error === "object" &&
-      error !== null &&
-      "message" in error &&
-      typeof error.message === "string" &&
-      error.message.toLowerCase().includes("credential is already associated")),
 }));
 
 jest.mock("@/services/AuthService", () => ({
@@ -59,7 +31,7 @@ jest.mock("@/utils/logger", () => ({
   },
 }));
 
-jest.mock("@/utils/sentry", () => ({
+jest.mock("../../../../utils/sentry", () => ({
   captureException: jest.fn(),
 }));
 
@@ -122,6 +94,7 @@ describe("<UpgradeAccountModal />", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockAlert.mockClear();
     mockLinkAnonymousWithGoogle.mockResolvedValue({});
     mockLinkAnonymousWithFacebook.mockResolvedValue({});
     mockLogout.mockResolvedValue(undefined);
@@ -215,6 +188,22 @@ describe("<UpgradeAccountModal />", () => {
     expect(mockShowInfoModal).not.toHaveBeenCalled();
     expect(logger.error).not.toHaveBeenCalled();
     expect(captureException).not.toHaveBeenCalled();
+  });
+
+  it("shows the localized unknown-error alert when Google linking fails with an unhandled error", async () => {
+    mockLinkAnonymousWithGoogle.mockRejectedValue({
+      code: "auth/unknown-error",
+      message: "Something unexpected happened",
+    });
+
+    const {getByText} = render(<UpgradeAccountModal {...defaultProps} />);
+
+    fireEvent.press(getByText("Continue with Google"));
+
+    await waitFor(() => {
+      expect(mockAlert).toHaveBeenCalledWith("Error", "Unknown error occurred (auth/unknown-error)");
+      expect(captureException).toHaveBeenCalledTimes(1);
+    });
   });
 
   it("shows existing-account logout modal when only message contains bracketed auth code", async () => {

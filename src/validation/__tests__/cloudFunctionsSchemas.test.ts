@@ -8,7 +8,7 @@ import {
   GetQuestionOutputSchema,
   SubmitGuessInputSchema,
   SubmitGuessOutputSchema,
-} from "../cloudFunctionsSchemas";
+} from "@qwordly/core/validation";
 
 describe("cloudFunctionsSchemas", () => {
   describe("GameModeSchema", () => {

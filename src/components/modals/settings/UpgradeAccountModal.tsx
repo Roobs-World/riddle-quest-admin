@@ -10,18 +10,9 @@ import PulsingSpinner from "@/components/loading/PulsingSpinner";
 import {LOADING_SPINNER_SIZE} from "@/constants/loading";
 import {AUTH_CONTENT_MAX_WIDTH, MODAL_CONTENT_PADDING} from "@/constants/layout";
 import {SPACING, TYPOGRAPHY, COLORS} from "@/styles";
-import {captureException} from "@/utils/sentry";
 import {logger} from "@/utils/logger";
 import SlideInModalContent from "../../shared/SlideInModalContent";
-import {
-  extractErrorMessage,
-  extractErrorCode,
-} from "../../../utils/errorResolution";
-import {
-  isAccountAlreadyInUseError,
-  isFacebookLoginCancellation,
-  isGoogleSignInCancellation,
-} from "../../../application/auth/authErrorMessages";
+import {getAuthErrorMessage, isAccountAlreadyInUseError} from "../../../application/auth/authErrorMessages";
 
 interface UpgradeAccountModalProps {
   isVisible: boolean;
@@ -58,19 +49,18 @@ const UpgradeAccountModal: React.FC<UpgradeAccountModalProps> = ({
     return () => clearTimeout(openPrompt);
   }, [initialExistingAccountPromptVisible, isVisible]);
 
-  const handleAuthError = (error: unknown) => {
-    const code = extractErrorCode(error) ?? "";
-    const message = extractErrorMessage(error) ?? "";
-
-    if (code === "auth/auth-popup-closed-by-user") {
-      return;
-    }
-
+  const handleAuthError = (error: unknown, provider: "google" | "facebook") => {
     if (isAccountAlreadyInUseError(error)) {
       setIsExistingAccountModalVisible(true);
       return;
     }
 
+    const message = getAuthErrorMessage(error, provider);
+    if (!message) {
+      return;
+    }
+
+    logger.error(`Upgrade account (${provider}) error:`, error);
     Alert.alert(
       t("CommonAlerts.ERROR_TITLE"),
       message || t("Profile.UPGRADE_ACCOUNT_ERROR"),
@@ -87,13 +77,7 @@ const UpgradeAccountModal: React.FC<UpgradeAccountModalProps> = ({
         message: t("Profile.UPGRADE_ACCOUNT_SUCCESS"),
       });
     } catch (error) {
-      if (isGoogleSignInCancellation(error)) {
-        return;
-      }
-
-      logger.error("Upgrade account (Google) error:", error);
-      captureException(error);
-      handleAuthError(error);
+      handleAuthError(error, "google");
     } finally {
       setIsLoading(false);
     }
@@ -113,13 +97,7 @@ const UpgradeAccountModal: React.FC<UpgradeAccountModalProps> = ({
         message: t("Profile.UPGRADE_ACCOUNT_SUCCESS"),
       });
     } catch (error) {
-      if (isFacebookLoginCancellation(error)) {
-        return;
-      }
-
-      logger.error("Upgrade account (Facebook) error:", error);
-      captureException(error);
-      handleAuthError(error);
+      handleAuthError(error, "facebook");
     } finally {
       setIsLoading(false);
     }
@@ -133,7 +111,6 @@ const UpgradeAccountModal: React.FC<UpgradeAccountModalProps> = ({
       onClose();
     } catch (error) {
       logger.error("Upgrade account existing-account logout error:", error);
-      captureException(error);
       Alert.alert(t("Settings.LOGOUT_ERROR_TITLE"), t("Settings.LOGOUT_ERROR_MESSAGE"));
     } finally {
       setIsLoading(false);

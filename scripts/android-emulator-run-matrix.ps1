@@ -24,6 +24,11 @@ param(
 
 $ErrorActionPreference = "Stop"
 
+. "$PSScriptRoot\device-matrix-artifacts.ps1"
+
+$script:MatrixCaptureDate = Get-Date
+$script:MatrixWorkspaceRoot = (Resolve-Path ".").Path
+
 $QASurfaceIds = @()
 
 $AndroidPackageName = "com.roobsworld.riddlequest"
@@ -33,10 +38,6 @@ $PlayStorePackageName = "com.android.vending"
 $QASurfaceExpectedTexts = @{
   "page-app-loading" = @("Loading")
   "page-landing" = @("Play as Guest", "Made by Roobs World")
-  "page-login" = @("Log in", "Log In", "Forgot password?")
-  "page-sign-up" = @("Create your account", "Username", "Next")
-  "page-forgot-password" = @("Reset Password")
-  "page-new-password" = @("Set New Password", "Confirm")
   "page-riddle-loading" = @("Loading")
   "page-initialization-error" = @("Riddle database unavailable", "Retry")
   "page-game" = @("I grow in rows", "Hint", "SUBMIT", "Next")
@@ -140,6 +141,13 @@ function Initialize-QASurfaceInventory {
 
   Assert-QASurfaceExpectedTextCoverage $script:QASurfaceIds
   Write-Host "INFO: Android matrix screenshot inventory contains $($script:QASurfaceIds.Count) QA surfaces across $($AvdNames.Count) AVDs."
+}
+
+function Get-MatrixArtifactDirs([string]$deviceName) {
+  return New-DeviceMatrixArtifactDirs `
+    -WorkspaceRoot $script:MatrixWorkspaceRoot `
+    -CaptureDate $script:MatrixCaptureDate `
+    -DeviceName $deviceName
 }
 
 function Stop-ProcessTree($processId) {
@@ -787,10 +795,9 @@ $taskLines
 }
 
 function Save-AppLaunchFailureEvidence($adb, $serial, $avdName, $context) {
-  $root = (Resolve-Path ".").Path
-  $imageDir = Join-Path $root "emulator-tests\images\$avdName"
-  $logDir = Join-Path $root "emulator-tests\logs\$avdName"
-  New-Item -ItemType Directory -Path $imageDir, $logDir -Force | Out-Null
+  $artifactDirs = Get-MatrixArtifactDirs $avdName
+  $imageDir = $artifactDirs.ImageDir
+  $logDir = $artifactDirs.LogDir
 
   $safeContext = $context -replace "[^A-Za-z0-9_-]", "-"
   $screenshot = Join-Path $imageDir "launch-failure-$safeContext.png"
@@ -933,10 +940,9 @@ function Dismiss-ExpoDeveloperMenuIfPresent($adb, $serial, $avdName) {
 }
 
 function Capture-AppEvidence($adb, $serial, $avdName) {
-  $root = (Resolve-Path ".").Path
-  $imageDir = Join-Path $root "emulator-tests\images\$avdName"
-  $logDir = Join-Path $root "emulator-tests\logs\$avdName"
-  New-Item -ItemType Directory -Path $imageDir, $logDir -Force | Out-Null
+  $artifactDirs = Get-MatrixArtifactDirs $avdName
+  $imageDir = $artifactDirs.ImageDir
+  $logDir = $artifactDirs.LogDir
 
   $screenshot = Join-Path $imageDir "05-matrix-app-post-launch.png"
   $uiTree = Join-Path $logDir "05-matrix-app-post-launch.xml"
@@ -1121,9 +1127,9 @@ function Get-QASurfacesToCapture {
 }
 
 function Save-QASurfaceFailureEvidence($adb, $serial, $avdName, $surfaceId, $fileStem) {
-  $root = (Resolve-Path ".").Path
-  $imageDir = Join-Path $root "emulator-tests\images\$avdName\surfaces"
-  $logDir = Join-Path $root "emulator-tests\logs\$avdName\surfaces"
+  $artifactDirs = Get-MatrixArtifactDirs $avdName
+  $imageDir = Join-Path $artifactDirs.ImageDir "surfaces"
+  $logDir = Join-Path $artifactDirs.LogDir "surfaces"
   New-Item -ItemType Directory -Path $imageDir, $logDir -Force | Out-Null
 
   $failureScreenshot = Join-Path $imageDir "$fileStem-failure.png"
@@ -1140,9 +1146,9 @@ function Save-QASurfaceFailureEvidence($adb, $serial, $avdName, $surfaceId, $fil
 }
 
 function Capture-QASurfaceEvidence($adb, $serial, $avdName, $surfaceId, $index) {
-  $root = (Resolve-Path ".").Path
-  $imageDir = Join-Path $root "emulator-tests\images\$avdName\surfaces"
-  $logDir = Join-Path $root "emulator-tests\logs\$avdName\surfaces"
+  $artifactDirs = Get-MatrixArtifactDirs $avdName
+  $imageDir = Join-Path $artifactDirs.ImageDir "surfaces"
+  $logDir = Join-Path $artifactDirs.LogDir "surfaces"
   New-Item -ItemType Directory -Path $imageDir, $logDir -Force | Out-Null
 
   $ordinal = "{0:D2}" -f $index
@@ -1206,8 +1212,7 @@ function Capture-QASurfaceMatrixEvidence($adb, $serial, $avdName) {
 
 function Invoke-ExpoRunAndroid($adb, $serial, $avdName, [string[]]$expoArgs, [int]$Attempt = 1) {
   $pnpm = Resolve-PnpmCommand
-  $logDir = Join-Path "emulator-tests\logs" $avdName
-  New-Item -ItemType Directory -Path $logDir -Force | Out-Null
+  $logDir = (Get-MatrixArtifactDirs $avdName).LogDir
   $logStem = if ($Attempt -eq 1) { "04-expo-run-android" } else { "04-expo-run-android-attempt$Attempt" }
   $stdoutFile = Join-Path $logDir "$logStem.stdout.txt"
   $stderrFile = Join-Path $logDir "$logStem.stderr.txt"
@@ -1309,8 +1314,7 @@ function Assert-PortAvailableOrMetro {
 
 function Start-MetroServer {
   $pnpm = Resolve-PnpmCommand
-  $logDir = "emulator-tests\logs"
-  New-Item -ItemType Directory -Path $logDir -Force | Out-Null
+  $logDir = (Get-MatrixArtifactDirs "shared").LogDir
   $stdoutFile = Join-Path $logDir "00-metro.stdout.txt"
   $stderrFile = Join-Path $logDir "00-metro.stderr.txt"
   Remove-Item -LiteralPath $stdoutFile, $stderrFile -ErrorAction SilentlyContinue

@@ -1,21 +1,13 @@
 import React, {useCallback, useEffect} from "react";
 import {Image, Modal, Pressable, Text, View} from "react-native";
-import ModalBg from "../../../../assets/images/modal-bg.svg";
-import HomeBg from "../../../../assets/images/home-bg.svg";
 import {t} from "../../../i18n";
 import {TYPOGRAPHY, SPACING} from "../../../styles";
-import {
-  AVATAR_SIZE_LARGE,
-  MODAL_CONTENT_PADDING,
-  MODAL_WIDTH,
-  MODAL_HEIGHT,
-  MODAL_MAX_HEIGHT,
-} from "../../../constants/layout";
-import SlideInModalContent from "../../shared/SlideInModalContent";
+import {AVATAR_SIZE_LARGE, MODAL_CONTENT_PADDING, MODAL_WIDTH, MODAL_HEIGHT, MODAL_MAX_HEIGHT} from "../../../constants/layout";
 import {moderateScale, verticalScale} from "../../../utils/responsive";
 import RotatingWheelBackground from "@/components/shared/RotatingWheelBackground";
 import {useAuth} from "@/contexts/AuthContext";
 import {logger} from "@/utils/logger";
+import DecoratedModalShell from "../../shared/DecoratedModalShell";
 
 interface WelcomeBackModalProps {
   isVisible: boolean;
@@ -61,113 +53,92 @@ const WelcomeBackModal: React.FC<WelcomeBackModalProps> = ({isVisible, onClose, 
         }}
       >
         <RotatingWheelBackground isVisible={isVisible} />
-        <SlideInModalContent isVisible={isVisible} style={{alignItems: "center"}}>
-          <Pressable onPress={handleDismiss} accessibilityRole="button" testID="welcome-back-modal-touch-target">
+        <DecoratedModalShell isVisible={isVisible} width={MODAL_WIDTH} height={modalHeight}>
+          <Pressable onPress={handleDismiss} accessibilityRole="button" testID="welcome-back-modal-touch-target" style={{width: "100%", height: "100%"}}>
             <View
               style={{
-                width: MODAL_WIDTH,
-                height: modalHeight,
+                flex: 1,
+                width: "100%",
                 alignItems: "center",
                 justifyContent: "center",
-                overflow: "hidden",
+                padding: MODAL_CONTENT_PADDING,
               }}
             >
-              <ModalBg width={MODAL_WIDTH} height={modalHeight} style={{position: "absolute"}} />
-              <HomeBg
-                width={MODAL_WIDTH * 1.1}
-                height={modalHeight * 1.1}
-                style={{
-                  position: "absolute",
-                  top: -modalHeight * 0.05,
-                  left: -MODAL_WIDTH * 0.05,
-                }}
-              />
-
-              <View
-                style={{
-                  flex: 1,
-                  width: "100%",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  padding: MODAL_CONTENT_PADDING,
-                }}
-              >
-                {avatarUrl ? (
-                  <Image
-                    key={avatarUrl}
-                    testID="welcome-back-avatar-image"
-                    source={{uri: avatarUrl}}
+              {avatarUrl ? (
+                <Image
+                  key={avatarUrl}
+                  testID="welcome-back-avatar-image"
+                  source={{uri: avatarUrl}}
+                  style={{
+                    width: AVATAR_SIZE_LARGE * 2,
+                    height: AVATAR_SIZE_LARGE * 2,
+                    borderRadius: avatarRadius,
+                    borderWidth: moderateScale(3),
+                    borderColor: "#FFFFFF",
+                    marginBottom: verticalScale(12),
+                  }}
+                />
+              ) : (
+                <View
+                  style={{
+                    width: AVATAR_SIZE_LARGE,
+                    height: AVATAR_SIZE_LARGE,
+                    borderRadius: avatarRadius,
+                    backgroundColor: "rgba(255,255,255,0.15)",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderWidth: moderateScale(3),
+                    borderColor: "#FFFFFF",
+                    marginBottom: verticalScale(12),
+                  }}
+                >
+                  <Text
                     style={{
-                      width: AVATAR_SIZE_LARGE * 2,
-                      height: AVATAR_SIZE_LARGE * 2,
-                      borderRadius: avatarRadius,
-                      borderWidth: moderateScale(3),
-                      borderColor: "#FFFFFF",
-                      marginBottom: verticalScale(12),
-                    }}
-                  />
-                ) : (
-                  <View
-                    style={{
-                      width: AVATAR_SIZE_LARGE,
-                      height: AVATAR_SIZE_LARGE,
-                      borderRadius: avatarRadius,
-                      backgroundColor: "rgba(255,255,255,0.15)",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      borderWidth: moderateScale(3),
-                      borderColor: "#FFFFFF",
-                      marginBottom: verticalScale(12),
+                      color: "#FFFFFF",
+                      fontSize: TYPOGRAPHY.fontSize.display,
+                      fontFamily: TYPOGRAPHY.fontSecondaryBold,
                     }}
                   >
-                    <Text
-                      style={{
-                        color: "#FFFFFF",
-                        fontSize: TYPOGRAPHY.fontSize.display,
-                        fontFamily: TYPOGRAPHY.fontSecondaryBold,
-                      }}
-                    >
-                      {initial}
-                    </Text>
-                  </View>
-                )}
+                    {initial}
+                  </Text>
+                </View>
+              )}
 
-                <Text
-                  style={{
-                    fontFamily: TYPOGRAPHY.fontPrimary,
-                    fontSize: TYPOGRAPHY.fontSize["3xl"],
-                    color: "black",
-                    textAlign: "center",
-                  }}
-                >
-                  {t("WelcomeBackModal.TITLE")}
-                </Text>
-                <Text
-                  style={{
-                    marginTop: SPACING.md,
-                    fontFamily: TYPOGRAPHY.fontSecondaryBold,
-                    fontSize: TYPOGRAPHY.fontSize["2xl"],
-                    color: "black",
-                    textAlign: "center",
-                  }}
-                >
-                  {username || t("Profile.GUEST_USERNAME")}
-                </Text>
-                <Text
-                  style={{
-                    marginTop: verticalScale(12),
-                    fontFamily: TYPOGRAPHY.fontSecondary,
-                    fontSize: TYPOGRAPHY.fontSize.base,
-                    color: "black",
-                    textAlign: "center",
-                  }}
-                >
-                  {t("WelcomeBackModal.TAP_TO_CONTINUE")}
-                </Text>
-              </View>
+              <Text
+                style={{
+                  fontFamily: TYPOGRAPHY.fontPrimary,
+                  fontSize: TYPOGRAPHY.fontSize["3xl"],
+                  color: "black",
+                  textAlign: "center",
+                }}
+              >
+                {t("WelcomeBackModal.TITLE")}
+              </Text>
+              <Text
+                style={{
+                  marginTop: SPACING.md,
+                  fontFamily: TYPOGRAPHY.fontSecondaryBold,
+                  fontSize: TYPOGRAPHY.fontSize["2xl"],
+                  color: "black",
+                  textAlign: "center",
+                }}
+              >
+                {username || t("Profile.GUEST_USERNAME")}
+              </Text>
+              <Text
+                style={{
+                  marginTop: verticalScale(12),
+                  fontFamily: TYPOGRAPHY.fontSecondary,
+                  fontSize: TYPOGRAPHY.fontSize.base,
+                  color: "black",
+                  textAlign: "center",
+                }}
+              >
+                {t("WelcomeBackModal.TAP_TO_CONTINUE")}
+              </Text>
             </View>
           </Pressable>
-        </SlideInModalContent>
+        </DecoratedModalShell>
       </View>
     </Modal>
   );

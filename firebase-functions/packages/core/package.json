@@ -1,0 +1,36 @@
+{
+  "name": "@qwordly/core",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Framework-agnostic game domain logic for Qwordly",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./game": {
+      "types": "./dist/game/index.d.ts",
+      "default": "./dist/game/index.js"
+    },
+    "./validation": {
+      "types": "./dist/validation/index.d.ts",
+      "default": "./dist/validation/index.js"
+    },
+    "./validation/*": {
+      "types": "./dist/validation/*.d.ts",
+      "default": "./dist/validation/*.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "test": "cross-env NODE_ENV=test jest --config jest.config.js"
+  },
+  "dependencies": {
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "typescript": "6.0.3"
+  }
+}

@@ -265,17 +265,7 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({isVisible, onClose, 
       return undefined;
     }
 
-    let isCancelled = false;
-    void Promise.resolve().then(() => {
-      if (isCancelled) {
-        return;
-      }
-      void fetchLeaderboard(activeTab);
-    });
-
-    return () => {
-      isCancelled = true;
-    };
+    void fetchLeaderboard(activeTab);
   }, [isVisible, activeTab, fetchLeaderboard]);
 
   const activeTabConfig = TABS.find((t) => t.type === activeTab)!;

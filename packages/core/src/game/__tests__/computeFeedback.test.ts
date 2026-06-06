@@ -21,4 +21,8 @@ describe("computeFeedback", () => {
   it("marks green before yellow to prevent double counting", () => {
     expect(computeFeedback("babes", "abbey")).toEqual(["yellow", "yellow", "green", "green", "red"]);
   });
+
+  it("treats composed characters as a single grapheme", () => {
+    expect(computeFeedback("e\u0301", "é")).toEqual(["green"]);
+  });
 });

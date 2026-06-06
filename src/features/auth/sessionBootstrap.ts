@@ -3,7 +3,7 @@
  */
 import {AccessToken} from "react-native-fbsdk-next";
 import type {FirebaseAuthTypes} from "@react-native-firebase/auth";
-import {t} from "../../i18n";
+import {getLocale, t} from "../../i18n";
 import {Player} from "../../validation/firestoreSchemas";
 import {captureException} from "../../utils/sentry";
 import {logger} from "../../utils/logger";
@@ -68,6 +68,7 @@ export const createGuestPlayer = (uid: string): Player => ({
   userId: uid,
   email: `guest_${uid}@guest.Riddle Quest.com`,
   username: "Guest",
+  preferredLanguage: getLocale(),
   coins: INITIAL_COINS,
   progress: {
     classicIndex: 1,

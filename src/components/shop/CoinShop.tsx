@@ -383,6 +383,17 @@ const styles = StyleSheet.create({
   coinsPillText: {
     marginLeft: scale(8),
   },
+  emptyContainer: {
+    alignItems: "center",
+    marginTop: verticalScale(12),
+  },
+  emptySubText: {
+    color: COLORS.gray600,
+    fontFamily: TYPOGRAPHY.fontPrimary,
+    fontSize: TYPOGRAPHY.fontSize.sm,
+    marginTop: verticalScale(6),
+    textAlign: "center",
+  },
   errorText: {
     color: COLORS.error,
     fontFamily: TYPOGRAPHY.fontPrimary,
@@ -533,17 +544,6 @@ const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.fontSize["2xl"],
     letterSpacing: 1,
     textAlign: "center",
-  },
-  emptyContainer: {
-    alignItems: "center",
-    marginTop: verticalScale(12),
-  },
-  emptySubText: {
-    color: COLORS.gray600,
-    fontFamily: TYPOGRAPHY.fontPrimary,
-    fontSize: TYPOGRAPHY.fontSize.sm,
-    textAlign: "center",
-    marginTop: verticalScale(6),
   },
 });
 

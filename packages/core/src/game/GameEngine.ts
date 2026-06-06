@@ -1,4 +1,5 @@
 import {computeFeedback} from "./computeFeedback";
+import {lowerCaseGraphemes} from "./graphemes";
 import type {Feedback, ScoredGuess} from "./types";
 
 export type GameEngineMode = "challenge" | "classic";
@@ -36,7 +37,7 @@ export class GameEngine {
     private readonly config: GameEngineConfig,
     answer?: string,
   ) {
-    this.normalizedAnswer = (answer ?? config.answer).toLowerCase();
+    this.normalizedAnswer = lowerCaseGraphemes(answer ?? config.answer).join("");
   }
 
   getSnapshot(): GameEngineSnapshot {
@@ -48,14 +49,24 @@ export class GameEngine {
     };
   }
 
+  restore(snapshot: GameEngineSnapshot): void {
+    this.guesses = [...snapshot.guesses];
+    this.attemptsUsed = snapshot.attemptsUsed;
+    this.hasUsedContinue = snapshot.hasUsedContinue;
+    this.gameOver = snapshot.gameOver;
+  }
+
+  reset(): void {
+    this.guesses = [];
+    this.attemptsUsed = 0;
+    this.hasUsedContinue = false;
+    this.gameOver = false;
+  }
+
   getMaxAttempts(): number {
     return this.hasUsedContinue
       ? this.config.initialAttempts + this.config.continueAttempts
       : this.config.initialAttempts;
-  }
-
-  getAttemptsRemaining(): number {
-    return this.getMaxAttempts() - this.attemptsUsed;
   }
 
   isGameOver(): boolean {
@@ -68,7 +79,7 @@ export class GameEngine {
     }
 
     const guessString = guessLetters.join("");
-    const normalizedGuess = guessString.toLowerCase();
+    const normalizedGuess = lowerCaseGraphemes(guessString).join("");
     const maxAttempts = this.getMaxAttempts();
     const currentAttempt = this.attemptsUsed + 1;
     const feedback = computeFeedback(normalizedGuess, this.normalizedAnswer);
@@ -108,20 +119,5 @@ export class GameEngine {
     this.hasUsedContinue = true;
     this.gameOver = false;
     this.guesses = [];
-  }
-
-  reset(): void {
-    this.guesses = [];
-    this.attemptsUsed = 0;
-    this.hasUsedContinue = false;
-    this.gameOver = false;
-  }
-
-  /** Restores engine state (e.g. guest session persistence). */
-  restore(snapshot: GameEngineSnapshot): void {
-    this.guesses = [...snapshot.guesses];
-    this.attemptsUsed = snapshot.attemptsUsed;
-    this.hasUsedContinue = snapshot.hasUsedContinue;
-    this.gameOver = snapshot.gameOver;
   }
 }

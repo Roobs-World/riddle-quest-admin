@@ -2,16 +2,12 @@
   "Navigation": {
     "BUY_COINS_BUTTON": "شراء العملات المعدنية",
     "CREDITS": "الاعتمادات",
-    "FORGOT_PASSWORD": "نسيت كلمة المرور",
     "GAME": "لعبة",
     "HINT_BUTTON": "تلميح",
     "LANDING": "الهبوط",
-    "LOGIN": "تسجيل الدخول",
-    "NEW_PASSWORD": "كلمة المرور الجديدة",
     "PLAY_BUTTON": "يلعب",
     "PROFILE_BUTTON": "الملف الشخصي",
-    "SETTINGS_BUTTON": "الإعدادات",
-    "SIGN_UP": "اشتراك"
+    "SETTINGS_BUTTON": "الإعدادات"
   },
   "NavigationMessages": {
     "ERROR_LOADING_NEXT_RIDDLE": "خطأ في تحميل اللغز الكلاسيكي التالي:",

@@ -1,10 +1,6 @@
 import React, {useCallback, useEffect, useMemo, useState} from "react";
 import {Linking, StyleSheet, Text, View} from "react-native";
 import LandingScreen from "../screens/LandingScreen";
-import LoginScreen from "../screens/auth/LoginScreen";
-import SignUpScreen from "../screens/auth/SignUpScreen";
-import ForgotPasswordScreen from "../screens/auth/ForgotPasswordScreen";
-import NewPasswordScreen from "../screens/auth/NewPasswordScreen";
 import GameScreen from "../screens/game/GameScreen";
 import PulsingSpinner from "../components/loading/PulsingSpinner";
 import StarryBackground from "../components/background/StarryBackground";
@@ -37,10 +33,6 @@ const QA_PATH_PATTERN = /:\/\/qa\/?([^?]*)/;
 const noop = () => {};
 const noopBoolean = () => {};
 const noopLanguage = () => {};
-
-const authNavigation = {
-  navigate: noop,
-};
 
 const qaPlayer: Player = {
   userId: "qa-user-123",
@@ -351,10 +343,6 @@ const renderGlobalMuteOverlaySurface = () => (
 export const QA_SURFACE_RENDERERS: Record<QASurfaceId, () => React.ReactNode> = {
   "page-app-loading": renderLoadingSurface,
   "page-landing": () => <LandingScreen />,
-  "page-login": () => <LoginScreen navigation={authNavigation} />,
-  "page-sign-up": () => <SignUpScreen navigation={authNavigation} />,
-  "page-forgot-password": () => <ForgotPasswordScreen navigation={authNavigation} />,
-  "page-new-password": () => <NewPasswordScreen />,
   "page-riddle-loading": renderLoadingSurface,
   "page-initialization-error": renderInitializationError,
   "page-game": renderGameSurface,
@@ -465,8 +453,6 @@ export const QASurfaceGate = ({children}: {children: React.ReactNode}) => {
 
   return <>{children}</>;
 };
-
-export const QA_SURFACE_COUNT = QA_SURFACES.length;
 
 export default QASurfaceHarness;
 

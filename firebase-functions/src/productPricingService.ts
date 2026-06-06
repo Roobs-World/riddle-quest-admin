@@ -1,41 +1,16 @@
 import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
+import {
+  DEFAULT_PRODUCT_PRICING,
+  cloneProductPricingCatalog,
+  type ProductPricing,
+} from "@qwordly/core";
 import {captureException} from "./sentry";
 
 let dbInstance: admin.firestore.Firestore;
 function getDb(): admin.firestore.Firestore {
   if (!dbInstance) dbInstance = admin.firestore();
   return dbInstance;
-}
-
-export interface RegionalPrice {
-  amount: number;
-  currency: string;
-  displayPrice: string;
-  symbol: string;
-}
-
-export interface SpecialOffer {
-  badgeText: string;
-  description: string;
-  discountPercentage: number;
-  isActive: boolean;
-  validFrom: number;
-  validTo: number;
-}
-
-export interface ProductPricing {
-  productId: string;
-  productKey: string;
-  name: string;
-  description: string;
-  coins: number;
-  isActive: boolean;
-  sortOrder: number;
-  regionalPrices: RegionalPrice[];
-  specialOffer?: SpecialOffer;
-  featuredOrder?: number;
-  featuredBadge?: string;
 }
 
 export interface PurchaseAnalyticRecord {
@@ -49,80 +24,6 @@ export interface PurchaseAnalyticRecord {
   transactionId: string;
   wasSpecialOffer: boolean;
   discountApplied?: number;
-}
-
-const DEFAULT_PRODUCT_PRICING: ProductPricing[] = [
-  {
-    productId: "com.roobsworld.riddlequest.coinpack1",
-    productKey: "COIN_PACK_TINY",
-    name: "Starter Pack",
-    description: "A small refill for a quick hint or two.",
-    coins: 250,
-    isActive: true,
-    sortOrder: 1,
-    regionalPrices: [{amount: 0.99, currency: "USD", displayPrice: "$0.99", symbol: "$"}],
-  },
-  {
-    productId: "com.roobsworld.riddlequest.coinpack2",
-    productKey: "COIN_PACK_SMALL",
-    name: "Small Pack",
-    description: "A balanced refill for regular play.",
-    coins: 550,
-    isActive: true,
-    sortOrder: 2,
-    regionalPrices: [{amount: 1.99, currency: "USD", displayPrice: "$1.99", symbol: "$"}],
-  },
-  {
-    productId: "com.roobsworld.riddlequest.coinpack3",
-    productKey: "COIN_PACK_MID",
-    name: "Mid Pack",
-    description: "A solid boost for a longer session.",
-    coins: 900,
-    isActive: true,
-    sortOrder: 3,
-    regionalPrices: [{amount: 2.99, currency: "USD", displayPrice: "$2.99", symbol: "$"}],
-  },
-  {
-    productId: "com.roobsworld.riddlequest.coinpack4",
-    productKey: "COIN_PACK_LARGE",
-    name: "Large Pack",
-    description: "A popular option for extra flexibility.",
-    coins: 1600,
-    isActive: true,
-    sortOrder: 4,
-    featuredOrder: 2,
-    featuredBadge: "POPULAR",
-    regionalPrices: [{amount: 4.99, currency: "USD", displayPrice: "$4.99", symbol: "$"}],
-  },
-  {
-    productId: "com.roobsworld.riddlequest.coinpack5",
-    productKey: "COIN_PACK_HUGE",
-    name: "Huge Pack",
-    description: "Strong value for players who keep coming back.",
-    coins: 3400,
-    isActive: true,
-    sortOrder: 5,
-    regionalPrices: [{amount: 9.99, currency: "USD", displayPrice: "$9.99", symbol: "$"}],
-  },
-  {
-    productId: "com.roobsworld.riddlequest.coinpack6",
-    productKey: "COIN_PACK_MEGA",
-    name: "Mega Pack",
-    description: "The best-value bundle for the long haul.",
-    coins: 7000,
-    isActive: true,
-    sortOrder: 6,
-    featuredOrder: 3,
-    featuredBadge: "BEST VALUE",
-    regionalPrices: [{amount: 19.99, currency: "USD", displayPrice: "$19.99", symbol: "$"}],
-  },
-];
-
-function cloneDefaultProducts(): ProductPricing[] {
-  return DEFAULT_PRODUCT_PRICING.map((product) => ({
-    ...product,
-    regionalPrices: product.regionalPrices.map((price) => ({...price})),
-  }));
 }
 
 /**
@@ -153,11 +54,11 @@ export async function getAllActiveProducts(): Promise<ProductPricing[]> {
       .orderBy("sortOrder")
       .get();
     const products = snapshot.docs.map((doc) => doc.data() as ProductPricing);
-    return products.length > 0 ? products : cloneDefaultProducts();
+    return products.length > 0 ? products : cloneProductPricingCatalog();
   } catch (err) {
     functions.logger.error("Failed to fetch active products:", err);
     captureException(err);
-    return cloneDefaultProducts();
+    return cloneProductPricingCatalog();
   }
 }
 

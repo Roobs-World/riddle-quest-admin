@@ -25,6 +25,9 @@
     "SERVICE_TEMPORARILY_UNAVAILABLE": "Hizmet geçici olarak kullanılamıyor. Lütfen tekrar deneyin.",
     "SIGN_IN_TO_CONTINUE": "Devam etmek için lütfen oturum açın.",
     "TOO_MANY_FAILED_ATTEMPTS": "Çok fazla başarısız deneme. Lütfen daha sonra tekrar deneyin.",
-    "WRONG_PASSWORD_TRY_AGAIN": "Yanlış şifre. Lütfen tekrar deneyin."
+    "WRONG_PASSWORD_TRY_AGAIN": "Yanlış şifre. Lütfen tekrar deneyin.",
+    "UNKNOWN_ERROR": "Bilinmeyen bir hata olu?tu.",
+    "FATAL_STARTUP_TITLE": "Ba?latma ba?ar?s?z",
+    "FATAL_STARTUP_MESSAGE": "G?ne? sistemi arka plan? y?klenemedi. L?tfen uygulamay? yeniden ba?lat?n."
   }
 }

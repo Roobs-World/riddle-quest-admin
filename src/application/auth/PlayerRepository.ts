@@ -27,7 +27,7 @@ import {buildFirestoreUserUpdates, GUEST_PROGRESS_STORAGE_KEY} from "./playerPer
  * - Firestore writes are sanitized before they cross the persistence boundary.
  * - Clearing local data is best-effort and never throws into UI code.
  */
-export class PlayerRepository {
+class PlayerRepository {
   /**
    * Loads the guest profile snapshot from local storage and merges it with a fresh guest baseline.
    *
@@ -50,6 +50,8 @@ export class PlayerRepository {
           : guestBase.unlockedAchievements,
         hasPurchasedApp:
           typeof parsed.hasPurchasedApp === "boolean" ? parsed.hasPurchasedApp : guestBase.hasPurchasedApp,
+        preferredLanguage:
+          typeof parsed.preferredLanguage === "string" ? parsed.preferredLanguage : guestBase.preferredLanguage,
         avatarUrl: typeof parsed.avatarUrl === "string" ? parsed.avatarUrl : guestBase.avatarUrl,
         displayName: typeof parsed.displayName === "string" ? parsed.displayName : guestBase.displayName,
         lastDailyChallengeCompletedAt:
