@@ -542,6 +542,7 @@ export function useAuthProviderController(
     saveGuestProfileToLocal,
     getBrokenDailyStreakValue,
     loadActiveGameSessionFromLocal,
+    repository,
   ]);
 
   // Wrapped in useCallback so these are stable references and don't invalidate
@@ -582,7 +583,7 @@ export function useAuthProviderController(
         throw error;
       }
     },
-    [playerData, fetchCurrentRiddle, saveGuestProfileToLocal],
+    [playerData, fetchCurrentRiddle, repository, saveGuestProfileToLocal],
   );
 
   const updatePlayerData = useCallback(
@@ -623,7 +624,7 @@ export function useAuthProviderController(
         throw error;
       }
     },
-    [playerData, saveGuestProfileToLocal],
+    [playerData, saveGuestProfileToLocal, repository],
   );
 
   const updatePlayerDataLocally = useCallback(
@@ -655,7 +656,7 @@ export function useAuthProviderController(
         return nextPlayer;
       });
     },
-    [saveGuestProfileToLocal],
+    [saveGuestProfileToLocal, repository],
   );
 
   // Placeholder login function (keep for now, onAuthStateChanged listener handles state)

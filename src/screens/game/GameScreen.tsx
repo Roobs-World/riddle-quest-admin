@@ -420,6 +420,12 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   const {isRewardedAdReady, loadRewardedAd, showRewardedAd, recordRewardedAdCompletion} = useRewardedAds();
   const {loadInterstitialAd, showInterstitialAd} = useInterstitialAds();
   const setActiveSlotIndexSynced = useCallback((value: React.SetStateAction<number>) => {
+    if (typeof value !== "function") {
+      activeSlotIndexRef.current = value;
+      setActiveSlotIndex(value);
+      return;
+    }
+
     setActiveSlotIndex((prev) => {
       const resolved = typeof value === "function" ? (value as (previous: number) => number)(prev) : value;
       activeSlotIndexRef.current = resolved;
@@ -451,6 +457,12 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   const [hintRevealedIndices, setHintRevealedIndices] = useState<number[]>([]);
   const hintRevealedIndicesRef = useRef<number[]>([]);
   const setHintRevealedIndicesSynced = useCallback((value: React.SetStateAction<number[]>) => {
+    if (typeof value !== "function") {
+      hintRevealedIndicesRef.current = value;
+      setHintRevealedIndices(value);
+      return;
+    }
+
     setHintRevealedIndices((previous) => {
       const resolved = typeof value === "function" ? (value as (currentValue: number[]) => number[])(previous) : value;
       hintRevealedIndicesRef.current = resolved;
@@ -503,16 +515,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
 
   useEffect(() => {
     logger.debug(`Game session context changed (mode=${gameMode}, riddleId=${riddleId}). Resetting local game state.`);
-    let isCancelled = false;
-    void Promise.resolve().then(() => {
-      if (!isCancelled) {
-        resetRoundState();
-      }
-    });
-
-    return () => {
-      isCancelled = true;
-    };
+    resetRoundState();
   }, [gameMode, riddleId, answer, resetRoundState]);
 
   const isAnyModalVisible = modal.modals.length > 0;
@@ -558,27 +561,16 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   }, []);
 
   useEffect(() => {
-    let isCancelled = false;
-    const scheduleCanAnimateCoinIncreases = (value: React.SetStateAction<boolean>) => {
-      void Promise.resolve().then(() => {
-        if (!isCancelled) {
-          setCanAnimateCoinIncreases(value);
-        }
-      });
-    };
-
     if (coinAnimationSettleTimeoutRef.current) {
       clearTimeout(coinAnimationSettleTimeoutRef.current);
       coinAnimationSettleTimeoutRef.current = null;
     }
 
     if (isAwaitingPostSubmitModalClose) {
-      scheduleCanAnimateCoinIncreases((previous) => (previous ? false : previous));
+      setCanAnimateCoinIncreases((previous) => (previous ? false : previous));
 
       if (isAnyModalVisible) {
-        return () => {
-          isCancelled = true;
-        };
+        return undefined;
       }
 
       coinAnimationSettleTimeoutRef.current = setTimeout(() => {
@@ -586,16 +578,12 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         setIsAwaitingPostSubmitModalClose((previous) => (previous ? false : previous));
         coinAnimationSettleTimeoutRef.current = null;
       }, MODAL_CLOSE_DELAY_MS);
-      return () => {
-        isCancelled = true;
-      };
+      return undefined;
     }
 
     if (isAnyModalVisible) {
-      scheduleCanAnimateCoinIncreases((previous) => (previous ? false : previous));
-      return () => {
-        isCancelled = true;
-      };
+      setCanAnimateCoinIncreases((previous) => (previous ? false : previous));
+      return undefined;
     }
 
     // Wait for modal transitions/next queued modal to settle before allowing
@@ -1885,6 +1873,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     onHintUsed,
     showTooltipOnce,
     tooltip,
+    currentLanguage,
   ]);
 
   const handleCoinsPress = useCallback(async () => {
@@ -2005,7 +1994,6 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     modalActions,
     isGuestMode,
     tooltip,
-    currentLanguage,
   ]);
 
   const handleSettingsPress = useCallback(() => {
