@@ -59,6 +59,7 @@ const CoinShop: React.FC<CoinShopProps> = ({
   const availableHeight = screenHeight - insets.top - insets.bottom;
   const hasPaintedForCurrentOpenRef = useRef(false);
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
+  const hasLoggedEmptyCatalogRef = useRef(false);
 
   const sortedProducts = useMemo(
     () => [...firestoreProducts].sort((a, b) => a.sortOrder - b.sortOrder),
@@ -105,6 +106,7 @@ const CoinShop: React.FC<CoinShopProps> = ({
   useEffect(() => {
     if (!isVisible) {
       hasPaintedForCurrentOpenRef.current = false;
+      hasLoggedEmptyCatalogRef.current = false;
       return;
     }
     if (hasPaintedForCurrentOpenRef.current) {
@@ -129,15 +131,19 @@ const CoinShop: React.FC<CoinShopProps> = ({
   const effectiveSelectedProductId = selectedProductStillAvailable ? selectedProductId : null;
 
   useEffect(() => {
-    if (!isVisible) return;
-    if (!error && sortedProducts.length === 0) {
-      // Firestore product catalog appears empty — record telemetry for investigation.
+    if (!isVisible || loading || error || hasLoggedEmptyCatalogRef.current) {
+      return;
+    }
+
+    if (sortedProducts.length === 0) {
+      hasLoggedEmptyCatalogRef.current = true;
+      // Firestore product catalog appears empty after loading completed - record telemetry for investigation.
       void analyticsService
         .logShopCatalogMissing({reason: "empty_firestore_catalog", productCount: 0})
         .catch((e) => logger.warn("Failed to log shop_catalog_missing analytic:", e));
       logger.warn("Coin shop opened with empty product catalog");
     }
-  }, [isVisible, error, sortedProducts]);
+  }, [isVisible, loading, error, sortedProducts]);
 
   useEffect(() => {
     if (isVisible || selectedProductId === null) {

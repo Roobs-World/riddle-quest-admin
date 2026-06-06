@@ -128,4 +128,27 @@ export const QA_SURFACE_IDS = QA_SURFACES.map((surface) => surface.id);
 export const isQASurfaceId = (value: string): value is QASurfaceId =>
   (QA_SURFACE_IDS as readonly string[]).includes(value);
 
+const SURFACE_QUERY_PATTERN = /[?&]surface=([^&]+)/;
+const QA_PATH_PATTERN = /:\/\/qa\/?([^?]*)/;
+
+export const extractQASurfaceIdFromUrl = (url: string | null): QASurfaceId | null => {
+  if (!url) {
+    return null;
+  }
+
+  const queryMatch = url.match(SURFACE_QUERY_PATTERN);
+  const querySurface = queryMatch ? decodeURIComponent(queryMatch[1]) : null;
+  if (querySurface && isQASurfaceId(querySurface)) {
+    return querySurface;
+  }
+
+  const pathMatch = url.match(QA_PATH_PATTERN);
+  const pathSurface = pathMatch?.[1]?.replace(/^\/+|\/+$/g, "");
+  if (pathSurface && isQASurfaceId(pathSurface)) {
+    return pathSurface;
+  }
+
+  return null;
+};
+
 export const getQASurface = (id: QASurfaceId) => QA_SURFACES.find((surface) => surface.id === id) ?? QA_SURFACES[0];

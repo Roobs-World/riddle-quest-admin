@@ -17,7 +17,7 @@
 
 import "./global.css";
 import * as Sentry from "@sentry/react-native";
-import {captureException} from "./src/utils/sentry";
+import {captureException, wrapAppWithSentry} from "./src/utils/sentry";
 import {logger} from "./src/utils/logger";
 
 import React, {useCallback, useEffect, useRef, useState} from "react";
@@ -195,11 +195,9 @@ const AppShell = (): React.JSX.Element => {
       {initialLanguageState === "gate" ? (
         <LanguageSelectionScreen onSubmit={handleCompleteInitialLanguageSelection} />
       ) : (
-        <QASurfaceGate>
-          <NavigationContainer>
-            <Navigation />
-          </NavigationContainer>
-        </QASurfaceGate>
+        <NavigationContainer>
+          <Navigation />
+        </NavigationContainer>
       )}
     </View>
   );
@@ -219,7 +217,7 @@ const AppShell = (): React.JSX.Element => {
  *
  * @returns {JSX.Element} The root application component with providers and navigation
  */
-export default Sentry.wrap(function App() {
+function App(): React.JSX.Element {
   const [isInitialized, setIsInitialized] = useState(false);
   const [startupError, setStartupError] = useState<unknown | null>(null);
   const hasStartedCriticalInitRef = useRef(false);
@@ -307,10 +305,6 @@ export default Sentry.wrap(function App() {
     return <FatalStartupScreen />;
   }
 
-  if (!isInitialized) {
-    return <PulsingSpinner visible={true} size={120} opacity={0.8} />;
-  }
-
   return (
     <Sentry.ErrorBoundary
       fallback={<PulsingSpinner visible={true} size={120} opacity={0.8} />}
@@ -320,14 +314,24 @@ export default Sentry.wrap(function App() {
         <ModalProvider>
           <AuthProvider>
             <TooltipProvider>
-              <AppShell />
+              <QASurfaceGate>
+                {startupError ? (
+                  <FatalStartupScreen />
+                ) : isInitialized ? (
+                  <AppShell />
+                ) : (
+                  <PulsingSpinner visible={true} size={120} opacity={0.8} />
+                )}
+              </QASurfaceGate>
             </TooltipProvider>
           </AuthProvider>
         </ModalProvider>
       </SafeAreaProvider>
     </Sentry.ErrorBoundary>
   );
-});
+}
+
+export default wrapAppWithSentry(App);
 
 const styles = StyleSheet.create({
   fatalContainer: {

@@ -1,1 +1,1 @@
-export * from "../../../packages/core/dist/validation/requestSchemas";
+export * from "@qwordly/core/validation/requestSchemas";

@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "strict": true,
+    "lib": ["ES2020", "ES2022.Intl"],
     "module": "ESNext",
     "moduleResolution": "bundler",
     "target": "ES2020",

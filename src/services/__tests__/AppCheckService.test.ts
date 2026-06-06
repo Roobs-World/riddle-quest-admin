@@ -1,15 +1,8 @@
 const mockInitializeAppCheck = jest.fn(async () => undefined);
+const mockGetFirebaseApp = jest.fn();
 
 jest.mock("../firebaseApp", () => ({
-  getFirebaseApp: jest.fn(() => ({
-    name: "[DEFAULT]",
-    appCheck: jest.fn(() => ({
-      initializeAppCheck: mockInitializeAppCheck,
-      newReactNativeFirebaseAppCheckProvider: jest.fn(() => ({
-        configure: jest.fn(),
-      })),
-    })),
-  })),
+  getFirebaseApp: () => mockGetFirebaseApp(),
 }));
 
 jest.mock("../../utils/logger", () => ({
@@ -26,8 +19,6 @@ import {
   initializeFirebaseAppCheck,
   resetFirebaseAppCheckForTests,
 } from "../AppCheckService";
-
-const {getFirebaseApp: mockGetFirebaseApp} = require("../firebaseApp");
 
 const getLatestProviderMock = () => {
   const app = mockGetFirebaseApp.mock.results[0]?.value;
@@ -48,6 +39,15 @@ describe("AppCheckService", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     resetFirebaseAppCheckForTests();
+    mockGetFirebaseApp.mockImplementation(() => ({
+      name: "[DEFAULT]",
+      appCheck: jest.fn(() => ({
+        initializeAppCheck: mockInitializeAppCheck,
+        newReactNativeFirebaseAppCheckProvider: jest.fn(() => ({
+          configure: jest.fn(),
+        })),
+      })),
+    }));
   });
 
   it("configures debug providers for development builds", () => {
@@ -129,5 +129,17 @@ describe("AppCheckService", () => {
         isTokenAutoRefreshEnabled: true,
       }),
     );
+  });
+
+  it("skips App Check setup when the runtime does not expose the module", async () => {
+    mockGetFirebaseApp.mockImplementation(() => ({
+      name: "[DEFAULT]",
+    }));
+
+    const provider = createFirebaseAppCheckProvider();
+    await expect(initializeFirebaseAppCheck()).resolves.toBeUndefined();
+
+    expect(provider).toBeNull();
+    expect(mockInitializeAppCheck).not.toHaveBeenCalled();
   });
 });

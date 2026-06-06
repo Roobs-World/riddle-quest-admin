@@ -1,7 +1,4 @@
-import {
-  fetchClassicRiddleFromFirestore,
-  fetchDailyRiddleFromFirestore,
-} from "../../services/FirestoreService";
+import {fetchClassicRiddleFromFirestore, fetchDailyRiddleFromFirestore} from "../../services/FirestoreService";
 import {RiddleInitializationService} from "../../services/RiddleInitializationService";
 import {FirestoreRiddle, Player} from "../../validation/firestoreSchemas";
 import {logger} from "../../utils/logger";
@@ -149,7 +146,11 @@ async function fetchCurrentRiddle(
   sink.setCurrentRiddle(fetchedRiddle);
 
   if (!fetchedRiddle) {
-    logger.error("❌ Failed to load any riddle after all attempts");
+    if (RiddleInitializationService.getInitializationStatus().initializationFailed) {
+      logger.error("❌ Failed to load any riddle after all attempts");
+    } else {
+      logger.warn("No riddle loaded after startup attempts; continuing with fallback state.");
+    }
   }
 }
 

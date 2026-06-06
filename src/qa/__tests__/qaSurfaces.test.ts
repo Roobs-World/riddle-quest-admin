@@ -8,6 +8,7 @@ import {
   QA_REGISTRY_MODAL_SURFACES,
   QA_STANDALONE_MODAL_SURFACES,
   QA_SURFACES,
+  extractQASurfaceIdFromUrl,
 } from "../qaSurfaces";
 
 describe("QA Android screenshot surfaces", () => {
@@ -70,5 +71,17 @@ describe("QA Android screenshot surfaces", () => {
   it("does not duplicate screenshot surface ids", () => {
     const ids = QA_SURFACES.map((surface) => surface.id);
     expect(new Set(ids).size).toBe(ids.length);
+  });
+
+  it("extracts QA surface ids from supported launch urls", () => {
+    expect(extractQASurfaceIdFromUrl("exp+riddle-quest://qa/page-game")).toBe("page-game");
+    expect(extractQASurfaceIdFromUrl("exp+riddle-quest://expo-development-client/?surface=page-game")).toBe(
+      "page-game",
+    );
+    expect(extractQASurfaceIdFromUrl("exp+riddle-quest://qa/popup-tooltip-submit-answer")).toBe(
+      "popup-tooltip-submit-answer",
+    );
+    expect(extractQASurfaceIdFromUrl("exp+riddle-quest://not-qa/page-game")).toBe(null);
+    expect(extractQASurfaceIdFromUrl(null)).toBe(null);
   });
 });

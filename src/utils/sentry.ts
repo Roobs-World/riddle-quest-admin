@@ -7,8 +7,10 @@
  */
 import * as Sentry from "@sentry/react-native";
 import type {Event, EventHint} from "@sentry/core";
+import type React from "react";
 
 const dsn = process.env.EXPO_PUBLIC_SENTRY_DSN;
+export const hasSentryDsn = Boolean(dsn);
 type SpanAttributes = Record<string, string | number | boolean | undefined>;
 
 const isDevelopmentRuntime = (): boolean => {
@@ -135,6 +137,9 @@ if (dsn) {
     beforeSend: (event, hint) => (shouldDropSentryEvent(event, hint) ? null : event),
   });
 }
+
+export const wrapAppWithSentry = <TProps,>(AppComponent: React.ComponentType<TProps>): React.ComponentType<TProps> =>
+  dsn ? (Sentry.wrap(AppComponent as React.ComponentType<any>) as React.ComponentType<TProps>) : AppComponent;
 
 /**
  * Captures an exception and sends it to Sentry (no-op if DSN not configured).

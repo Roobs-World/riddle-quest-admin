@@ -28,7 +28,7 @@ import {
 import {evaluateAchievements} from "./achievements";
 import {ACHIEVEMENT_UNLOCK_COIN_REWARD} from "./constants";
 import {validateCallableRequest, validateCallableResponse} from "./validation/callableValidation";
-import {splitGraphemes, lowerCaseGraphemes} from "../../packages/core/dist/game";
+import {splitGraphemes, lowerCaseGraphemes} from "@qwordly/core/game";
 
 /**
  * Skips the current riddle by marking it as completed and advancing to the next level/question.

@@ -4,7 +4,7 @@
 import {AccessToken} from "react-native-fbsdk-next";
 import type {FirebaseAuthTypes} from "@react-native-firebase/auth";
 import {getLocale, t} from "../../i18n";
-import {Player} from "../../validation/firestoreSchemas";
+import {Player, FirestoreRiddle} from "../../validation/firestoreSchemas";
 import {captureException} from "../../utils/sentry";
 import {logger} from "../../utils/logger";
 import {INITIAL_COINS} from "@/constants/game";
@@ -22,6 +22,7 @@ export type ActiveGameSessionSnapshot = {
   riddleId?: string;
   classicIndex?: number;
   dailyIndex?: number;
+  riddle?: FirestoreRiddle;
 };
 
 export const getUtcDateKey = (date: Date = new Date()): string => date.toISOString().slice(0, 10);

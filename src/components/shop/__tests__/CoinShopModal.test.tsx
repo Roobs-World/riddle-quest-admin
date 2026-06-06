@@ -26,6 +26,16 @@ jest.mock("../../../utils/logger", () => ({
   },
 }));
 
+const mockLogShopCatalogMissing = jest.fn(async () => undefined);
+
+jest.mock("../../../services/AnalyticsService", () => ({
+  analyticsService: {
+    logShopCatalogMissing: (...args: any[]) => mockLogShopCatalogMissing.apply(null, args),
+  },
+}));
+
+const {logger: mockLogger} = require("../../../utils/logger");
+
 jest.mock("../../buttons/CloseButton", () => {
   const React = require("react");
   const {Pressable, Text} = require("react-native");
@@ -105,6 +115,22 @@ describe("CoinShopModal", () => {
     const {getByText} = render(<CoinShopModal {...baseProps} firestoreProducts={[]} />);
 
     expect(getByText("No coin packs are available right now.")).toBeTruthy();
+  });
+
+  it("does not warn while loading even if the catalog is empty", () => {
+    render(<CoinShopModal {...baseProps} loading={true} firestoreProducts={[]} />);
+
+    expect(mockLogShopCatalogMissing).not.toHaveBeenCalled();
+    expect(mockLogger.warn).not.toHaveBeenCalledWith("Coin shop opened with empty product catalog");
+  });
+
+  it("warns once after loading completes and the catalog is still empty", () => {
+    const {rerender} = render(<CoinShopModal {...baseProps} loading={true} firestoreProducts={[]} />);
+
+    rerender(<CoinShopModal {...baseProps} loading={false} firestoreProducts={[]} />);
+
+    expect(mockLogShopCatalogMissing).toHaveBeenCalledTimes(1);
+    expect(mockLogger.warn).toHaveBeenCalledWith("Coin shop opened with empty product catalog");
   });
 
   it("uses store price when available", () => {

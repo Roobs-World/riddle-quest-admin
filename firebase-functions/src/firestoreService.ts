@@ -12,7 +12,7 @@ import type {
 import {PlayerSchema} from "./validation/firestoreSchemas";
 // Removed import for non-existent models.js: import type { GameState } from "./models.js";
 import * as functions from "firebase-functions";
-import {type SupportedLocale, SUPPORTED_LOCALES} from "../../packages/core/dist/validation";
+import {type SupportedLocale, SUPPORTED_LOCALES} from "@qwordly/core/validation";
 
 const INITIAL_COINS: number = 300;
 const LOCALIZED_RIDDLES_COLLECTION = "localizedRiddles";
@@ -472,6 +472,44 @@ export async function getClassicRiddle(
   return {
     ...riddleData,
     riddleId: riddleData.riddleId || riddleId,
+    locale: riddleData.locale || resolvedLocale,
+  };
+}
+
+/**
+ * Fetches a classic riddle document by its classic index from the localized collection.
+ *
+ * @param classicIndex - The classic progression index for the riddle.
+ * @param locale - Optional locale override.
+ * @return A promise that resolves with the riddle document data, or undefined if not found.
+ */
+export async function getClassicRiddleByIndex(
+  classicIndex: number,
+  locale?: string,
+): Promise<ClassicRiddle | undefined> {
+  const resolvedLocale = resolveLocale(locale);
+  const snapshot = await getDb()
+    .collection(getLocalizedRiddleCollectionPath(resolvedLocale, "classic"))
+    .where("classicIndex", "==", classicIndex)
+    .limit(1)
+    .get();
+
+  if (snapshot.empty) {
+    functions.logger.info(`Classic riddle document not found for index ${classicIndex} in locale ${resolvedLocale}`);
+    return undefined;
+  }
+
+  const doc = snapshot.docs[0];
+  const data = doc.data();
+  if (!data) {
+    functions.logger.info(`Classic riddle data is null for index ${classicIndex} in locale ${resolvedLocale}`);
+    return undefined;
+  }
+
+  const riddleData = data as ClassicRiddle;
+  return {
+    ...riddleData,
+    riddleId: riddleData.riddleId || doc.id,
     locale: riddleData.locale || resolvedLocale,
   };
 }

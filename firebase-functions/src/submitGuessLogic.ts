@@ -42,7 +42,7 @@ import {
   RIDDLE_GENERATION_THRESHOLD,
   RIDDLE_GENERATION_BATCH_SIZE,
 } from "./constants";
-import {SUPPORTED_LOCALES, type SupportedLocale} from "../../packages/core/dist/validation";
+import {SUPPORTED_LOCALES, type SupportedLocale} from "@qwordly/core/validation";
 
 // Define a type for potential top-level updates to the Player document
 type PlayerTopLevelUpdate = {

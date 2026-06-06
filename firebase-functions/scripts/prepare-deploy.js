@@ -5,6 +5,7 @@ const {execSync} = require("child_process");
 const repoRoot = path.resolve(__dirname, "..", "..");
 const sourceCoreDir = path.join(repoRoot, "packages", "core");
 const targetCoreDir = path.join(__dirname, "..", "packages", "core");
+const functionsNodeModulesDir = path.join(__dirname, "..", "node_modules");
 
 function copyBuildArtifact(source, target) {
   fs.copyFileSync(path.join(source, "package.json"), path.join(target, "package.json"));
@@ -30,6 +31,28 @@ function assertCopiedArtifactIsComplete(target) {
   }
 }
 
+function syncInstalledPackageCopy(targetCorePackageDir) {
+  const pnpmDir = path.join(functionsNodeModulesDir, ".pnpm");
+  if (!fs.existsSync(pnpmDir)) {
+    return;
+  }
+
+  const packageDirs = fs
+    .readdirSync(pnpmDir, {withFileTypes: true})
+    .filter((entry) => entry.isDirectory() && entry.name.startsWith("@qwordly+core@file+..+packages+core"))
+    .map((entry) => path.join(pnpmDir, entry.name, "node_modules", "@qwordly", "core"))
+    .filter((candidate) => fs.existsSync(candidate));
+
+  for (const installedCoreDir of packageDirs) {
+    fs.copyFileSync(path.join(targetCorePackageDir, "package.json"), path.join(installedCoreDir, "package.json"));
+    fs.cpSync(path.join(targetCorePackageDir, "dist"), path.join(installedCoreDir, "dist"), {
+      recursive: true,
+      force: true,
+      dereference: true,
+    });
+  }
+}
+
 execSync("pnpm --filter @qwordly/core build", {
   cwd: repoRoot,
   stdio: "inherit",
@@ -41,5 +64,6 @@ fs.mkdirSync(path.dirname(targetCoreDir), {recursive: true});
 
 copyBuildArtifact(sourceCoreDir, targetCoreDir);
 assertCopiedArtifactIsComplete(targetCoreDir);
+syncInstalledPackageCopy(targetCoreDir);
 
 console.log(`Prepared deploy build artifact at ${targetCoreDir}`);

@@ -31,18 +31,6 @@ jest.mock("../../../buttons/WideButton", () => {
   };
 });
 
-// Mock the SVG component
-jest.mock("../../../../../assets/images/modal-bg.svg", () => {
-  const React = require("react");
-  return function MockModalBg({width, height, style}: any) {
-    return React.createElement("View", {
-      testID: "modal-bg",
-      "data-width": width,
-      "data-height": height,
-    });
-  };
-});
-
 // Mock styles
 jest.mock("../../../../styles", () => ({
   TYPOGRAPHY: {
@@ -51,7 +39,10 @@ jest.mock("../../../../styles", () => ({
     fontSecondaryBold: "System-Bold",
     fontSize: {sm: 12, lg: 18, title: 24},
   },
-  SPACING: {lg: 24},
+  SPACING: {xs: 4, sm: 8, lg: 24, md: 16},
+  COLORS: {
+    black: "#000000",
+  },
 }));
 
 // Mock layout constants
@@ -115,10 +106,11 @@ describe("InfoModal", () => {
       expect(getByText("OK")).toBeTruthy();
     });
 
-    it("should render modal background SVG", () => {
-      const {getAllByTestId} = render(<InfoModal {...defaultProps} />);
+    it("should render the shared callout shell", () => {
+      const {getByTestId} = render(<InfoModal {...defaultProps} />);
 
-      expect(getAllByTestId("modal-bg").length).toBeGreaterThan(0);
+      expect(getByTestId("tooltip-callout-shell")).toBeTruthy();
+      expect(getByTestId("tooltip-panel")).toBeTruthy();
     });
 
     it("should render onboarding progress when provided", () => {

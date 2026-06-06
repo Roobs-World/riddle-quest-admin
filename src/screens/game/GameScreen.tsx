@@ -594,7 +594,10 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     }, MODAL_CLOSE_DELAY_MS);
 
     return () => {
-      isCancelled = true;
+      if (coinAnimationSettleTimeoutRef.current) {
+        clearTimeout(coinAnimationSettleTimeoutRef.current);
+        coinAnimationSettleTimeoutRef.current = null;
+      }
     };
   }, [isAnyModalVisible, isAwaitingPostSubmitModalClose]);
 

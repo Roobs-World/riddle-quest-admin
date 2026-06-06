@@ -1,9 +1,9 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin"; // Added for Firestore access
 import {onCall, HttpsError, CallableRequest} from "firebase-functions/v2/https";
-import {updateUserLastCompletedDailyChallengeDate, getUser} from "./firestoreService";
+import {updateUserLastCompletedDailyChallengeDate, getUser, getClassicRiddleByIndex} from "./firestoreService";
 import {captureException} from "./sentry";
-import {SUPPORTED_LOCALES} from "../../packages/core/dist/validation";
+import {SUPPORTED_LOCALES} from "@qwordly/core/validation";
 import {
   AdvanceDailyChallengeProgressResponseSchema,
   BooleanResponseSchema,
@@ -81,6 +81,24 @@ function isCompletedToday(lastCompletedAt: unknown): boolean {
   if (!lastCompletedDay) return false;
   const today = new Date().toISOString().split("T")[0];
   return lastCompletedDay === today;
+}
+
+function buildChallengeResponse(
+  riddle: {riddleId: string; text: string; answer: string},
+  date: string | undefined,
+): GetCurrentDailyChallengeResponse["challenge"] {
+  return {
+    date,
+    questions: [
+      {
+        riddleId: riddle.riddleId,
+        text: riddle.text,
+        answer: riddle.answer,
+        questionNumber: 1,
+      },
+    ],
+    totalQuestions: DAILY_CHALLENGE_QUESTION_COUNT,
+  };
 }
 
 /**
@@ -220,7 +238,13 @@ export const getCurrentDailyChallenge = onCall(
       }
 
       const allData = dailyChallengeDoc.data();
-      if (!allData || typeof allData.text !== "string" || allData.text.length === 0) {
+      if (
+        !allData ||
+        typeof allData.text !== "string" ||
+        allData.text.length === 0 ||
+        typeof allData.answer !== "string" ||
+        allData.answer.length === 0
+      ) {
         functions.logger.error("Daily challenge document is missing required question data.", allData);
         return validateCallableResponse(
           GetCurrentDailyChallengeResponseSchema,
@@ -240,6 +264,7 @@ export const getCurrentDailyChallenge = onCall(
           {
             riddleId: allData.riddleId || CURRENT_DAILY_RIDDLE_DOC_ID,
             text: allData.text,
+            answer: allData.answer,
             questionNumber: 1,
           },
         ],
@@ -289,6 +314,66 @@ export const getCurrentDailyChallenge = onCall(
         {error: "An error occurred while fetching the daily challenge."},
         "getCurrentDailyChallenge",
       );
+    }
+  },
+);
+
+/**
+ * Gets the current classic riddle for a player's progression index.
+ *
+ * This is a server-backed fallback so the client can avoid reading the classic
+ * collection directly when Firestore rules or App Check prevent it.
+ */
+export const getCurrentClassicRiddle = onCall(
+  {enforceAppCheck: true},
+  async (request: CallableRequest<{classicIndex?: number; locale?: string}>): Promise<GetCurrentDailyChallengeResponse> => {
+    try {
+      if (!request.auth) {
+        throw new HttpsError("unauthenticated", "The user must be authenticated to load a classic riddle.");
+      }
+
+      const classicIndex =
+        typeof request.data?.classicIndex === "number"
+          ? request.data.classicIndex
+          : undefined;
+      if (classicIndex === undefined || !Number.isInteger(classicIndex) || classicIndex < 0) {
+        throw new HttpsError("invalid-argument", "A non-negative classicIndex is required.");
+      }
+
+      let locale = "en";
+      const user = await getUser(request.auth.uid);
+      if (user?.preferredLanguage && SUPPORTED_LOCALES.includes(user.preferredLanguage as (typeof SUPPORTED_LOCALES)[number])) {
+        locale = user.preferredLanguage;
+      } else if (
+        typeof request.data?.locale === "string" &&
+        SUPPORTED_LOCALES.includes(request.data.locale as (typeof SUPPORTED_LOCALES)[number])
+      ) {
+        locale = request.data.locale;
+      }
+
+      const riddle = await getClassicRiddleByIndex(classicIndex, locale);
+      if (!riddle) {
+        return validateCallableResponse(
+          GetCurrentDailyChallengeResponseSchema,
+          {error: `No classic riddle available at index ${classicIndex}.`},
+          "getCurrentClassicRiddle",
+        );
+      }
+
+      return validateCallableResponse(
+        GetCurrentDailyChallengeResponseSchema,
+        {
+          challenge: buildChallengeResponse(riddle, undefined),
+        },
+        "getCurrentClassicRiddle",
+      );
+    } catch (error) {
+      if (error instanceof HttpsError) {
+        throw error;
+      }
+      functions.logger.error("Error getting current classic riddle:", error);
+      captureException(error);
+      throw new HttpsError("internal", "An error occurred while loading the current classic riddle.", error);
     }
   },
 );

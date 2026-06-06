@@ -1,5 +1,5 @@
 import React, {useCallback} from "react";
-import {StyleSheet, View} from "react-native";
+import {Modal, StyleSheet, View} from "react-native";
 import MuteButton from "../buttons/MuteButton";
 import {verticalScale} from "@/utils/responsive";
 
@@ -17,9 +17,13 @@ const GlobalMuteOverlay: React.FC<GlobalMuteOverlayProps> = ({isSoundEnabled, on
   }, [isSoundEnabled, onToggleSound]);
 
   return (
-    <View style={[styles.buttonContainer, {top: OVERLAY_TOP_OFFSET, right: OVERLAY_RIGHT_OFFSET}]}>
-      <MuteButton isMuted={!isSoundEnabled} onToggle={handleToggleMute} />
-    </View>
+    <Modal animationType="none" transparent={true} visible={true} presentationStyle="overFullScreen">
+      <View pointerEvents="box-none" style={styles.modalRoot}>
+        <View style={[styles.buttonContainer, {top: OVERLAY_TOP_OFFSET, right: OVERLAY_RIGHT_OFFSET}]}>
+          <MuteButton isMuted={!isSoundEnabled} onToggle={handleToggleMute} />
+        </View>
+      </View>
+    </Modal>
   );
 };
 
@@ -28,6 +32,9 @@ const styles = StyleSheet.create({
     elevation: 1000,
     position: "absolute",
     zIndex: 1000,
+  },
+  modalRoot: {
+    flex: 1,
   },
 });
 

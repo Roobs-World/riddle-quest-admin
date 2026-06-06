@@ -9,11 +9,11 @@ importers:
   .:
     dependencies:
       '@google-cloud/functions-framework':
-        specifier: 5.0.2
+        specifier: ^5.0.2
         version: 5.0.2
       '@qwordly/core':
-        specifier: file:../packages/core
-        version: file:../packages/core
+        specifier: file:./packages/core
+        version: file:packages/core
       '@sentry/node':
         specifier: ^10.54.0
         version: 10.54.0
@@ -1036,8 +1036,8 @@ packages:
   '@protobufjs/utf8@1.1.0':
     resolution: {integrity: sha512-Vvn3zZrhQZkkBE8LSuW3em98c0FwgO4nxzv6OdSxPKJIEKY2bGbHn+mhGIPerzI4twdxaP8/0+06HBpwf345Lw==}
 
-  '@qwordly/core@file:../packages/core':
-    resolution: {directory: ../packages/core, type: directory}
+  '@qwordly/core@file:packages/core':
+    resolution: {directory: packages/core, type: directory}
 
   '@rollup/rollup-android-arm-eabi@4.41.1':
     resolution: {integrity: sha512-NELNvyEWZ6R9QMkiytB4/L4zSEaBC03KIXEghptLGLZWJ6VPrL63ooZQCOnlx36aQPGhzuOMwDerC1Eb2VmrLw==}
@@ -4134,7 +4134,7 @@ snapshots:
       '@babel/types': 7.29.7
       '@jridgewell/remapping': 2.3.5
       convert-source-map: 2.0.0
-      debug: 4.4.1
+      debug: 4.4.3
       gensync: 1.0.0-beta.2
       json5: 2.2.3
       semver: 6.3.1
@@ -5296,7 +5296,7 @@ snapshots:
 
   '@protobufjs/utf8@1.1.0': {}
 
-  '@qwordly/core@file:../packages/core':
+  '@qwordly/core@file:packages/core':
     dependencies:
       zod: 4.4.3
 
@@ -7747,7 +7747,7 @@ snapshots:
 
   jwks-rsa@3.2.0:
     dependencies:
-      '@types/express': 4.17.22
+      '@types/express': 4.17.25
       '@types/jsonwebtoken': 9.0.9
       debug: 4.4.1
       jose: 4.15.9

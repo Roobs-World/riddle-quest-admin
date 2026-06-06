@@ -2,6 +2,17 @@ import React from "react";
 import {fireEvent, render} from "@testing-library/react-native";
 import GlobalMuteOverlay from "../GlobalMuteOverlay";
 
+jest.mock("react-native/Libraries/Modal/Modal", () => {
+  const React = require("react");
+  return {
+    __esModule: true,
+    default: function MockModal({children, visible}: any) {
+      if (!visible) return null;
+      return React.createElement(React.Fragment, null, children);
+    },
+  };
+});
+
 jest.mock("../../../components/buttons/MuteButton", () => {
   const React = require("react");
   const {View} = require("react-native");

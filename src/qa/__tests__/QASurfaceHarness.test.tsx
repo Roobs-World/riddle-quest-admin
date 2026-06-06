@@ -156,6 +156,13 @@ describe("QASurfaceHarness", () => {
     );
   });
 
+  it("renders visible loading text for loading QA surfaces", () => {
+    const screen = renderWithModalProvider(<QASurfaceHarness surfaceId="page-app-loading" />);
+
+    expect(screen.getByText("Loading")).toBeTruthy();
+    expect(screen.getByText("qa-surface:page-app-loading")).toBeTruthy();
+  });
+
   it.each(surfaceIds)("renders QA surface %s", (surfaceId) => {
     const screen = renderWithModalProvider(
       <QASurfaceHarness surfaceId={surfaceId} />

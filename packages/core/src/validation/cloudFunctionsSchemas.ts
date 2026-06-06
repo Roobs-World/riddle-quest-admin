@@ -162,6 +162,7 @@ export const InitializeRiddleDatabaseOutputSchema = z.object({
 export const DailyChallengeQuestionSchema = z.object({
   riddleId: z.string(),
   text: z.string(),
+  answer: z.string().min(1),
   questionNumber: z.number().int().positive(),
 });
 

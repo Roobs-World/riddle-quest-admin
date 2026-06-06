@@ -1,6 +1,24 @@
 import React from "react";
 import {fireEvent, render} from "@testing-library/react-native";
+import {Animated} from "react-native";
 import TooltipOverlay from "../TooltipOverlay";
+
+jest.mock("react-native/Libraries/Modal/Modal", () => {
+  const React = require("react");
+  return {
+    __esModule: true,
+    default: function MockModal({children, visible}: any) {
+      if (!visible) return null;
+      return React.createElement(React.Fragment, null, children);
+    },
+  };
+});
+
+jest.mock("../../../qa/qaRuntime", () => ({
+  isQASurfaceRuntimeActive: jest.fn(() => false),
+}));
+
+const {isQASurfaceRuntimeActive} = require("../../../qa/qaRuntime");
 
 describe("TooltipOverlay", () => {
   const content = {
@@ -22,6 +40,7 @@ describe("TooltipOverlay", () => {
     expect(getByTestId("tooltip-overlay")).toBeTruthy();
     expect(getByTestId("tooltip-backdrop-top")).toBeTruthy();
     expect(getByTestId("tooltip-target-cutout")).toBeTruthy();
+    expect(getByTestId("tooltip-pointer")).toBeTruthy();
     expect(getByText("Submit your answer")).toBeTruthy();
   });
 
@@ -41,5 +60,29 @@ describe("TooltipOverlay", () => {
 
     fireEvent.press(getByTestId("tooltip-dismiss-button"));
     expect(onDismiss).toHaveBeenCalled();
+  });
+
+  it("stays static in QA surface runtime and still clears on exit", () => {
+    (isQASurfaceRuntimeActive as jest.Mock).mockReturnValue(true);
+    const timingSpy = jest.spyOn(Animated, "timing");
+    const loopSpy = jest.spyOn(Animated, "loop");
+    const onExited = jest.fn();
+
+    const {rerender, getByTestId} = render(
+      <TooltipOverlay visible={true} targetRect={null} content={content} onDismiss={jest.fn()} onExited={onExited} />,
+    );
+
+    expect(timingSpy).not.toHaveBeenCalled();
+    expect(loopSpy).not.toHaveBeenCalled();
+
+    const panelStyle = getByTestId("tooltip-panel").props.style;
+    expect(panelStyle.opacity).toBeDefined();
+
+    rerender(<TooltipOverlay visible={false} targetRect={null} content={content} onDismiss={jest.fn()} onExited={onExited} />);
+
+    expect(onExited).toHaveBeenCalled();
+
+    timingSpy.mockRestore();
+    loopSpy.mockRestore();
   });
 });

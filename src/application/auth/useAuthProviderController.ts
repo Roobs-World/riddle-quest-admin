@@ -9,6 +9,7 @@
  * duplicate auth events, and local-storage cleanup.
  */
 import React, {useState, useEffect, useCallback, useMemo, useRef} from "react";
+import {Linking} from "react-native";
 import {getAuth, signOut, type FirebaseAuthTypes} from "@react-native-firebase/auth";
 import {getApp} from "@react-native-firebase/app";
 import {Player, FirestoreRiddle} from "@qwordly/core/validation/firestoreSchemas";
@@ -32,6 +33,7 @@ import {riddleSessionService, type RiddleSessionService} from "./RiddleSessionSe
 import {isAnonymousAuthSession, sanitizePlayerUpdates} from "./playerPersistence";
 import type {GameMode} from "./authTypes";
 import {getLocale} from "../../i18n";
+import {extractQASurfaceIdFromUrl} from "../../qa/qaSurfaces";
 
 export interface PlayerRepositoryLike {
   clearAllLocalData: () => Promise<void>;
@@ -109,6 +111,25 @@ export interface AuthProviderControllerValue {
 const defaultAuthProviderControllerDependencies: AuthProviderControllerDependencies = {
   playerRepository,
   riddleSessionService,
+};
+
+const isExpectedStartupAccessError = (error: unknown): boolean => {
+  const code =
+    error && typeof error === "object" && "code" in error && typeof (error as {code?: unknown}).code === "string"
+      ? ((error as {code: string}).code ?? "").toLowerCase()
+      : "";
+  const message =
+    error instanceof Error ? `${error.name} ${error.message}` : typeof error === "string" ? error : "";
+  const text = `${code} ${message}`.toLowerCase();
+
+  return (
+    text.includes("unauthenticated") ||
+    text.includes("permission-denied") ||
+    text.includes("firestore/permission-denied") ||
+    text.includes("functions/permission-denied") ||
+    text.includes("functions/unauthenticated") ||
+    text.includes("not authorized")
+  );
 };
 
 export function useAuthProviderController(
@@ -240,297 +261,366 @@ export function useAuthProviderController(
   useEffect(() => {
     logger.debug("Setting up Firebase auth listener...");
 
-    const auth = getAuth(getApp());
-    const authHandler = async (user: FirebaseAuthTypes.User | null) => {
-      logger.debug("Firebase auth state changed. User:", user ? user.uid : "null");
+    let isCancelled = false;
+    let unsubscribe: (() => void) | null = null;
 
-      if (user) {
-        isGuestSignOutInProgressRef.current = false;
-        const authBootstrapKey = `${user.uid}:${user.isAnonymous ? "anonymous" : "authenticated"}`;
-        const previousAuth = previousAuthSnapshotRef.current;
-        const previousImmediateAuthEvent = lastAuthEventRef.current;
-        const upgradedFromAnonymous =
-          (previousAuth.uid === user.uid && previousAuth.isAnonymous === true && user.isAnonymous === false) ||
-          (previousImmediateAuthEvent.uid === user.uid &&
-            previousImmediateAuthEvent.isAnonymous === true &&
-            user.isAnonymous === false);
+    const bootstrapAuth = async () => {
+      let initialUrl: string | null = null;
 
-        const now = Date.now();
-        const isDuplicateImmediateAuthEvent =
-          lastAuthEventRef.current.uid === user.uid &&
-          lastAuthEventRef.current.isAnonymous === user.isAnonymous &&
-          now - lastAuthEventRef.current.at < 1500;
-        if (isDuplicateImmediateAuthEvent) {
-          logger.debug("Skipping duplicate immediate auth event for user:", user.uid);
-          return;
-        }
-        lastAuthEventRef.current = {
-          uid: user.uid,
-          isAnonymous: user.isAnonymous,
-          at: now,
-        };
-        if (activeAuthBootstrapKeysRef.current.has(authBootstrapKey)) {
-          logger.debug("Skipping duplicate in-flight auth bootstrap for user:", user.uid);
-          return;
-        }
-        activeAuthBootstrapKeysRef.current.add(authBootstrapKey);
+      try {
+        initialUrl = await Linking.getInitialURL();
+      } catch (error) {
+        logger.warn("Failed to read initial URL before auth bootstrap", error);
+      }
 
-        // User is signed in
-        logger.debug("User authenticated, loading user data...");
-        setIsAuthenticated(true);
-        currentUserIdRef.current = user.uid;
-        sentrySetUser(user.uid, user.email, user.displayName);
-        addBreadcrumb("auth", "User signed in", {uid: user.uid});
-        void analyticsService.initialize(user.uid);
-        void analyticsService.logAuthEvent("login");
+      if (isCancelled) {
+        return;
+      }
 
-        try {
-          // Anonymous (guest) users get a minimal in-memory player - no Firestore read/write needed.
-          if (user.isAnonymous) {
-            logger.debug("Anonymous guest user detected, creating in-memory player data");
-            setIsRiddlesInitializing(true);
-            await RiddleInitializationService.checkAndInitializeRiddles();
-            setIsRiddlesInitializing(false);
-            const guestPlayerRaw: Player = (await loadGuestProfileFromLocal(user.uid)) ?? createGuestPlayer(user.uid);
-            const brokenGuestStreak = getBrokenDailyStreakValue(guestPlayerRaw);
-            const guestPlayer =
-              brokenGuestStreak > 0
-                ? {
-                    ...guestPlayerRaw,
-                    stats: {
-                      ...guestPlayerRaw.stats,
-                      winStreak: 0,
-                    },
-                  }
-                : guestPlayerRaw;
-            setPendingStreakBreak(brokenGuestStreak > 0 ? {previousStreak: brokenGuestStreak} : null);
-            setPlayerData(guestPlayer);
-            await saveGuestProfileToLocal(guestPlayer);
-
-            const guestCompletedToday = await hasCompletedDailyChallengeToday(guestPlayer);
-            const guestDefaultMode = resolveInitialGameMode(guestCompletedToday);
-            const guestStoredSession = await loadActiveGameSessionFromLocal(user.uid);
-            const guestInitialMode = resolveLaunchGameMode({
-              defaultMode: guestDefaultMode,
-              restoredMode: guestStoredSession?.gameMode,
-              dailyAvailable: !guestCompletedToday,
-            }) as GameMode;
-
-            setGameMode(guestInitialMode);
-            await fetchCurrentRiddle(guestPlayer, guestInitialMode, guestCompletedToday);
-            setIsLoading(false);
-            return;
-          }
-
-          // Run riddle initialization and user data load in parallel -
-          // they are independent and both can start immediately after sign-in.
-          logger.debug("Checking riddle database & loading user data in parallel...");
-          setIsRiddlesInitializing(true);
-          const [, loadedData] = await Promise.all([
-            RiddleInitializationService.checkAndInitializeRiddles(),
-            repository.loadUserProgress(user.uid),
-          ]);
-          setIsRiddlesInitializing(false);
-
-          logger.debug("Checking for existing user document...");
-          let data = loadedData;
-          const providerAvatarUrl = await resolveProviderAvatarUrl(user);
-
-          // If no user document exists, create one (new user signup)
-          if (!data) {
-            void analyticsService.logAuthEvent("signup");
-            logger.debug("No user document found, creating new user document for:", user.uid);
-            logger.debug("Firebase user email:", user.email || "(null/empty)");
-            logger.debug("Email type:", typeof user.email);
-            logger.debug("Email length:", user.email ? user.email.length : 0);
-            logger.debug("Using display name:", user.displayName || "undefined");
-            logger.debug("Full user object debug:", {
-              uid: user.uid,
-              email: user.email,
-              emailVerified: user.emailVerified,
-              displayName: user.displayName,
-              photoURL: user.photoURL,
-              providerData: user.providerData.map((provider) => ({
-                providerId: provider.providerId,
-                uid: provider.uid,
-                email: provider.email,
-                displayName: provider.displayName,
-              })),
-            });
-
-            try {
-              const userEmail = await resolveUserEmail(user);
-              const guestSeed = await loadGuestProfileFromLocal(user.uid);
-              const shouldSeedFromGuest = isGuestPlayer(guestSeed);
-
-              data = await repository.createUserDocument(
-                user.uid,
-                userEmail,
-                user.displayName || undefined,
-                providerAvatarUrl,
-                shouldSeedFromGuest ? (guestSeed ?? undefined) : undefined,
-              );
-              logger.debug("New user document created successfully");
-              logger.debug("Created user data:", JSON.stringify(data, null, 2));
-
-              if (shouldSeedFromGuest) {
-                await clearGuestProfileFromLocal();
-                logger.debug("Migrated guest progress into new account document");
-              }
-            } catch (createError) {
-              logger.error("Error creating user document:", createError);
-              captureException(createError);
-              throw createError;
-            }
-          } else {
-            logger.debug("Existing user document found");
-          }
-
-          const userDocUpdates: Partial<Player> = {};
-
-          if (providerAvatarUrl && data.avatarUrl !== providerAvatarUrl) {
-            userDocUpdates.avatarUrl = providerAvatarUrl;
-          }
-
-          const shouldSyncProviderUsername = upgradedFromAnonymous || (!user.isAnonymous && isGuestPlayer(data));
-          if (shouldSyncProviderUsername) {
-            const providerUsername = resolveProviderUsername(user);
-            if (providerUsername && data.username !== providerUsername) {
-              userDocUpdates.username = providerUsername;
-            }
-          }
-
-          const shouldSyncProviderEmail = !user.isAnonymous && isGuestPlayer(data);
-          if (shouldSyncProviderEmail) {
-            try {
-              const providerEmail = await resolveUserEmail(user);
-              if (providerEmail && data.email !== providerEmail) {
-                userDocUpdates.email = providerEmail;
-              }
-            } catch (emailError) {
-              logger.warn("Could not resolve provider email while reconciling upgraded profile.", emailError);
-            }
-          }
-
-          if (Object.keys(userDocUpdates).length > 0) {
-            await repository.updateUserDocument(user.uid, data, userDocUpdates);
-            data = {...data, ...userDocUpdates};
-            logger.debug("Synced provider profile fields:", userDocUpdates);
-          }
-
-          logger.debug("User data loaded successfully:", !!data);
-          const brokenStreak = getBrokenDailyStreakValue(data);
-          const normalizedData =
-            brokenStreak > 0
-              ? {
-                  ...data,
-                  stats: {
-                    ...data.stats,
-                    winStreak: 0,
-                  },
-                }
-              : data;
-          if (brokenStreak > 0) {
-            await repository.updateUserDocument(user.uid, data, {
-              stats: {
-                ...data.stats,
-                winStreak: 0,
-              },
-            });
-          }
-          setPendingStreakBreak(brokenStreak > 0 ? {previousStreak: brokenStreak} : null);
-          setPlayerData(normalizedData);
-
-          const completedToday = await hasCompletedDailyChallengeToday(normalizedData);
-          const defaultMode = resolveInitialGameMode(completedToday);
-          const storedSession = await loadActiveGameSessionFromLocal(user.uid);
-          const initialMode = resolveLaunchGameMode({
-            defaultMode,
-            restoredMode: storedSession?.gameMode,
-            dailyAvailable: !completedToday,
-          }) as GameMode;
-
-          setGameMode(initialMode);
-
-          // Fetch riddle based on Firebase-backed completion status at launch:
-          // daily by default, classic only when today's daily is already complete.
-          logger.debug("Loading riddle for initial game mode:", initialMode);
-          await fetchCurrentRiddle(normalizedData, initialMode, completedToday);
-          logger.debug("Riddle loading completed");
-
-          // Only set loading to false after everything is complete
-          logger.debug("Setting isLoading to false - initialization complete");
-          if (upgradedFromAnonymous) {
-            await clearAllLocalData();
-          }
-          setIsLoading(false);
-        } catch (error) {
-          logger.error("Error loading user data or riddle:", error);
-          logger.error("Error details:", {
-            code:
-              typeof error === "object" && error !== null && "code" in error
-                ? (error as {code?: unknown}).code
-                : undefined,
-            message: error instanceof Error ? error.message : String(error),
-            stack: error instanceof Error ? error.stack : undefined,
-          });
-          captureException(error);
-          setPlayerData(null);
-          setPendingStreakBreak(null);
-          setCurrentRiddle(null);
-          setIsDailyChallengeAvailable(undefined);
-          setIsRiddlesInitializing(false);
-          // Set loading to false even on error so user isn't stuck
-          setIsLoading(false);
-        } finally {
-          activeAuthBootstrapKeysRef.current.delete(authBootstrapKey);
-          previousAuthSnapshotRef.current = {
-            uid: user.uid,
-            isAnonymous: user.isAnonymous,
-          };
-        }
-      } else {
-        activeAuthBootstrapKeysRef.current.clear();
-        lastAuthEventRef.current = {uid: null, isAnonymous: null, at: Date.now()};
-        // User is signed out - no need to load riddles
-        logger.debug("User signed out, clearing data");
-        sentryClearUser();
-        addBreadcrumb("auth", "User signed out");
-        void analyticsService.logAuthEvent("logout");
-        void analyticsService.reset();
-
-        // Clean up FCM token-refresh listener (token itself was unregistered in logout()).
-        notifUnsubRef.current?.();
-        notifUnsubRef.current = null;
-        currentUserIdRef.current = null;
+      const initialSurfaceId = extractQASurfaceIdFromUrl(initialUrl);
+      if (initialSurfaceId) {
+        logger.debug("QA surface launch detected, skipping auth bootstrap", {
+          initialSurfaceId,
+          initialUrl,
+        });
         setIsAuthenticated(false);
         setPlayerData(null);
         setPendingStreakBreak(null);
         setCurrentRiddle(null);
         setIsDailyChallengeAvailable(undefined);
         setIsRiddlesInitializing(false);
-        await clearAllLocalData();
-        previousAuthSnapshotRef.current = {uid: null, isAnonymous: null};
-        logger.debug("Setting isLoading to false");
         setIsLoading(false);
+        return;
       }
 
-      logger.debug("Auth state processing completed");
+      logger.debug("Setting up Firebase auth listener...");
+
+      const auth = getAuth(getApp());
+      const authHandler = async (user: FirebaseAuthTypes.User | null) => {
+        logger.debug("Firebase auth state changed. User:", user ? user.uid : "null");
+
+        if (user) {
+          isGuestSignOutInProgressRef.current = false;
+          const authBootstrapKey = `${user.uid}:${user.isAnonymous ? "anonymous" : "authenticated"}`;
+          const previousAuth = previousAuthSnapshotRef.current;
+          const previousImmediateAuthEvent = lastAuthEventRef.current;
+          const upgradedFromAnonymous =
+            (previousAuth.uid === user.uid && previousAuth.isAnonymous === true && user.isAnonymous === false) ||
+            (previousImmediateAuthEvent.uid === user.uid &&
+              previousImmediateAuthEvent.isAnonymous === true &&
+              user.isAnonymous === false);
+
+          const now = Date.now();
+          const isDuplicateImmediateAuthEvent =
+            lastAuthEventRef.current.uid === user.uid &&
+            lastAuthEventRef.current.isAnonymous === user.isAnonymous &&
+            now - lastAuthEventRef.current.at < 1500;
+          if (isDuplicateImmediateAuthEvent) {
+            logger.debug("Skipping duplicate immediate auth event for user:", user.uid);
+            return;
+          }
+          lastAuthEventRef.current = {
+            uid: user.uid,
+            isAnonymous: user.isAnonymous,
+            at: now,
+          };
+          if (activeAuthBootstrapKeysRef.current.has(authBootstrapKey)) {
+            logger.debug("Skipping duplicate in-flight auth bootstrap for user:", user.uid);
+            return;
+          }
+          activeAuthBootstrapKeysRef.current.add(authBootstrapKey);
+
+          // User is signed in
+          logger.debug("User authenticated, loading user data...");
+          setIsAuthenticated(true);
+          currentUserIdRef.current = user.uid;
+          sentrySetUser(user.uid, user.email, user.displayName);
+          addBreadcrumb("auth", "User signed in", {uid: user.uid});
+          void analyticsService.initialize(user.uid);
+          void analyticsService.logAuthEvent("login");
+
+          try {
+            // Anonymous (guest) users get a minimal in-memory player - no Firestore read/write needed.
+            if (user.isAnonymous) {
+              logger.debug("Anonymous guest user detected, creating in-memory player data");
+              setIsRiddlesInitializing(true);
+              await RiddleInitializationService.checkAndInitializeRiddles();
+              setIsRiddlesInitializing(false);
+              const guestPlayerRaw: Player = (await loadGuestProfileFromLocal(user.uid)) ?? createGuestPlayer(user.uid);
+              const brokenGuestStreak = getBrokenDailyStreakValue(guestPlayerRaw);
+              const guestPlayer =
+                brokenGuestStreak > 0
+                  ? {
+                      ...guestPlayerRaw,
+                      stats: {
+                        ...guestPlayerRaw.stats,
+                        winStreak: 0,
+                      },
+                    }
+                  : guestPlayerRaw;
+              setPendingStreakBreak(brokenGuestStreak > 0 ? {previousStreak: brokenGuestStreak} : null);
+              setPlayerData(guestPlayer);
+              await saveGuestProfileToLocal(guestPlayer);
+
+              const guestCompletedToday = await hasCompletedDailyChallengeToday(guestPlayer);
+              const guestDefaultMode = resolveInitialGameMode(guestCompletedToday);
+              const guestStoredSession = await loadActiveGameSessionFromLocal(user.uid);
+              const guestInitialMode = resolveLaunchGameMode({
+                defaultMode: guestDefaultMode,
+                restoredMode: guestStoredSession?.gameMode,
+                dailyAvailable: !guestCompletedToday,
+              }) as GameMode;
+
+              setGameMode(guestInitialMode);
+              if (guestStoredSession?.riddle) {
+                logger.debug("Restoring guest riddle from local session snapshot.");
+                setCurrentRiddle(guestStoredSession.riddle);
+                setIsLoading(false);
+                return;
+              }
+              await fetchCurrentRiddle(guestPlayer, guestInitialMode, guestCompletedToday);
+              setIsLoading(false);
+              return;
+            }
+
+            // Run riddle initialization and user data load in parallel -
+            // they are independent and both can start immediately after sign-in.
+            logger.debug("Checking riddle database & loading user data in parallel...");
+            setIsRiddlesInitializing(true);
+            const [, loadedData] = await Promise.all([
+              RiddleInitializationService.checkAndInitializeRiddles(),
+              repository.loadUserProgress(user.uid),
+            ]);
+            setIsRiddlesInitializing(false);
+
+            logger.debug("Checking for existing user document...");
+            let data = loadedData;
+            const providerAvatarUrl = await resolveProviderAvatarUrl(user);
+
+            // If no user document exists, create one (new user signup)
+            if (!data) {
+              void analyticsService.logAuthEvent("signup");
+              logger.debug("No user document found, creating new user document for:", user.uid);
+              logger.debug("Firebase user email:", user.email || "(null/empty)");
+              logger.debug("Email type:", typeof user.email);
+              logger.debug("Email length:", user.email ? user.email.length : 0);
+              logger.debug("Using display name:", user.displayName || "undefined");
+              logger.debug("Full user object debug:", {
+                uid: user.uid,
+                email: user.email,
+                emailVerified: user.emailVerified,
+                displayName: user.displayName,
+                photoURL: user.photoURL,
+                providerData: user.providerData.map((provider) => ({
+                  providerId: provider.providerId,
+                  uid: provider.uid,
+                  email: provider.email,
+                  displayName: provider.displayName,
+                })),
+              });
+
+              try {
+                const userEmail = await resolveUserEmail(user);
+                const guestSeed = await loadGuestProfileFromLocal(user.uid);
+                const shouldSeedFromGuest = isGuestPlayer(guestSeed);
+
+                data = await repository.createUserDocument(
+                  user.uid,
+                  userEmail,
+                  user.displayName || undefined,
+                  providerAvatarUrl,
+                  shouldSeedFromGuest ? (guestSeed ?? undefined) : undefined,
+                );
+                logger.debug("New user document created successfully");
+                logger.debug("Created user data:", JSON.stringify(data, null, 2));
+
+                if (shouldSeedFromGuest) {
+                  await clearGuestProfileFromLocal();
+                  logger.debug("Migrated guest progress into new account document");
+                }
+              } catch (createError) {
+                logger.error("Error creating user document:", createError);
+                captureException(createError);
+                throw createError;
+              }
+            } else {
+              logger.debug("Existing user document found");
+            }
+
+            const userDocUpdates: Partial<Player> = {};
+
+            if (providerAvatarUrl && data.avatarUrl !== providerAvatarUrl) {
+              userDocUpdates.avatarUrl = providerAvatarUrl;
+            }
+
+            const shouldSyncProviderUsername = upgradedFromAnonymous || (!user.isAnonymous && isGuestPlayer(data));
+            if (shouldSyncProviderUsername) {
+              const providerUsername = resolveProviderUsername(user);
+              if (providerUsername && data.username !== providerUsername) {
+                userDocUpdates.username = providerUsername;
+              }
+            }
+
+            const shouldSyncProviderEmail = !user.isAnonymous && isGuestPlayer(data);
+            if (shouldSyncProviderEmail) {
+              try {
+                const providerEmail = await resolveUserEmail(user);
+                if (providerEmail && data.email !== providerEmail) {
+                  userDocUpdates.email = providerEmail;
+                }
+              } catch (emailError) {
+                logger.warn("Could not resolve provider email while reconciling upgraded profile.", emailError);
+              }
+            }
+
+            if (Object.keys(userDocUpdates).length > 0) {
+              await repository.updateUserDocument(user.uid, data, userDocUpdates);
+              data = {...data, ...userDocUpdates};
+              logger.debug("Synced provider profile fields:", userDocUpdates);
+            }
+
+            logger.debug("User data loaded successfully:", !!data);
+            const brokenStreak = getBrokenDailyStreakValue(data);
+            const normalizedData =
+              brokenStreak > 0
+                ? {
+                    ...data,
+                    stats: {
+                      ...data.stats,
+                      winStreak: 0,
+                    },
+                  }
+                : data;
+            if (brokenStreak > 0) {
+              await repository.updateUserDocument(user.uid, data, {
+                stats: {
+                  ...data.stats,
+                  winStreak: 0,
+                },
+              });
+            }
+            setPendingStreakBreak(brokenStreak > 0 ? {previousStreak: brokenStreak} : null);
+            setPlayerData(normalizedData);
+
+            const completedToday = await hasCompletedDailyChallengeToday(normalizedData);
+            const defaultMode = resolveInitialGameMode(completedToday);
+            const storedSession = await loadActiveGameSessionFromLocal(user.uid);
+            const initialMode = resolveLaunchGameMode({
+              defaultMode,
+              restoredMode: storedSession?.gameMode,
+              dailyAvailable: !completedToday,
+            }) as GameMode;
+
+            setGameMode(initialMode);
+            if (storedSession?.riddle) {
+              logger.debug("Restoring active riddle from local session snapshot.");
+              setCurrentRiddle(storedSession.riddle);
+              logger.debug("Setting isLoading to false - initialization complete");
+              if (upgradedFromAnonymous) {
+                await clearAllLocalData();
+              }
+              setIsLoading(false);
+              return;
+            }
+
+            // Fetch riddle based on Firebase-backed completion status at launch:
+            // daily by default, classic only when today's daily is already complete.
+            logger.debug("Loading riddle for initial game mode:", initialMode);
+            await fetchCurrentRiddle(normalizedData, initialMode, completedToday);
+            logger.debug("Riddle loading completed");
+
+            // Only set loading to false after everything is complete
+            logger.debug("Setting isLoading to false - initialization complete");
+            if (upgradedFromAnonymous) {
+              await clearAllLocalData();
+            }
+            setIsLoading(false);
+        } catch (error) {
+          if (isExpectedStartupAccessError(error)) {
+            logger.warn("Startup user data or riddle load was denied by the backend; continuing with fallback state.", {
+              code:
+                typeof error === "object" && error !== null && "code" in error
+                  ? (error as {code?: unknown}).code
+                  : undefined,
+              message: error instanceof Error ? error.message : String(error),
+            });
+          } else {
+            logger.error("Error loading user data or riddle:", error);
+            logger.error("Error details:", {
+              code:
+                typeof error === "object" && error !== null && "code" in error
+                  ? (error as {code?: unknown}).code
+                  : undefined,
+              message: error instanceof Error ? error.message : String(error),
+              stack: error instanceof Error ? error.stack : undefined,
+            });
+            captureException(error);
+          }
+          setPlayerData(null);
+          setPendingStreakBreak(null);
+          setCurrentRiddle(null);
+            setIsDailyChallengeAvailable(undefined);
+            setIsRiddlesInitializing(false);
+            // Set loading to false even on error so user isn't stuck
+            setIsLoading(false);
+          } finally {
+            activeAuthBootstrapKeysRef.current.delete(authBootstrapKey);
+            previousAuthSnapshotRef.current = {
+              uid: user.uid,
+              isAnonymous: user.isAnonymous,
+            };
+          }
+        } else {
+          activeAuthBootstrapKeysRef.current.clear();
+          lastAuthEventRef.current = {uid: null, isAnonymous: null, at: Date.now()};
+          // User is signed out - no need to load riddles
+          logger.debug("User signed out, clearing data");
+          sentryClearUser();
+          addBreadcrumb("auth", "User signed out");
+          void analyticsService.logAuthEvent("logout");
+          void analyticsService.reset();
+
+          // Clean up FCM token-refresh listener (token itself was unregistered in logout()).
+          notifUnsubRef.current?.();
+          notifUnsubRef.current = null;
+          currentUserIdRef.current = null;
+          setIsAuthenticated(false);
+          setPlayerData(null);
+          setPendingStreakBreak(null);
+          setCurrentRiddle(null);
+          setIsDailyChallengeAvailable(undefined);
+          setIsRiddlesInitializing(false);
+          await clearAllLocalData();
+          previousAuthSnapshotRef.current = {uid: null, isAnonymous: null};
+          logger.debug("Setting isLoading to false");
+          setIsLoading(false);
+        }
+
+        logger.debug("Auth state processing completed");
+      };
+
+      if (isCancelled) {
+        return;
+      }
+
+      const authWithUserChanged = auth as typeof auth & {
+        onUserChanged?: (listener: (user: FirebaseAuthTypes.User | null) => void) => () => void;
+      };
+
+      unsubscribe =
+        typeof authWithUserChanged.onUserChanged === "function"
+          ? authWithUserChanged.onUserChanged(authHandler)
+          : auth.onAuthStateChanged(authHandler);
+
+      logger.debug("Firebase auth listener set up successfully");
     };
 
-    const authWithUserChanged = auth as typeof auth & {
-      onUserChanged?: (listener: (user: FirebaseAuthTypes.User | null) => void) => () => void;
+    void bootstrapAuth();
+
+    return () => {
+      isCancelled = true;
+      unsubscribe?.();
     };
-
-    const subscriber =
-      typeof authWithUserChanged.onUserChanged === "function"
-        ? authWithUserChanged.onUserChanged(authHandler)
-        : auth.onAuthStateChanged(authHandler);
-
-    logger.debug("Firebase auth listener set up successfully");
-
-    // Unsubscribe on unmount
-    return subscriber;
     // fetchCurrentRiddle is stable (its own deps are React state setters).
     // gameModeRef.current is read at call time so gameMode need not be a dep.
   }, [

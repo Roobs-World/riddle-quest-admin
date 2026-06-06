@@ -1,8 +1,9 @@
-import React, {createContext, useCallback, useContext, useMemo, useState} from "react";
+import React, {createContext, useCallback, useContext, useEffect, useMemo, useState} from "react";
 import {View} from "react-native";
 import type {TooltipId, TooltipRequest, TargetRect} from "../components/tooltips/types";
 import TooltipOverlay from "../components/tooltips/TooltipOverlay";
 import {hasSeenTooltip, markTooltipSeen} from "../components/tooltips/tooltipStorage";
+import {DEV_SHOW_TIPS} from "../constants/tooltips";
 import {logger} from "../utils/logger";
 
 interface TooltipContextValue {
@@ -57,6 +58,12 @@ export const TooltipProvider: React.FC<{children: React.ReactNode}> = ({children
   const [isTooltipVisible, setIsTooltipVisible] = useState(false);
   const [targetRect, setTargetRect] = useState<TargetRect | null>(null);
 
+  useEffect(() => {
+    if (DEV_SHOW_TIPS) {
+      logger.info("[TooltipContext] DEV_SHOW_TIPS enabled; tooltip seen state will not suppress tips.");
+    }
+  }, []);
+
   const showTooltip = useCallback(async (request: TooltipRequest): Promise<void> => {
     try {
       logger.debug("[TooltipContext] showTooltip requested", {
@@ -92,18 +99,25 @@ export const TooltipProvider: React.FC<{children: React.ReactNode}> = ({children
         return;
       }
 
+      if (activeRequest && !activeRequest.persist) {
+        void Promise.resolve(markTooltipSeen(activeRequest.id, activeRequest.userId)).catch((err) => {
+          logger.warn("markTooltipSeen failed", err);
+        });
+      }
+
       setIsTooltipVisible(false);
     },
-    [activeRequest?.id],
+    [activeRequest],
   );
 
   const showTooltipOnce = useCallback(
     async (request: TooltipRequest): Promise<boolean> => {
       try {
-        const seen = await hasSeenTooltip(request.id, request.userId);
+        const seen = DEV_SHOW_TIPS ? false : await hasSeenTooltip(request.id, request.userId);
         logger.debug("[TooltipContext] showTooltipOnce check", {
           id: request.id,
           seen,
+          devShowTips: DEV_SHOW_TIPS,
           userId: request.userId ?? null,
         });
         if (seen) {
@@ -111,16 +125,6 @@ export const TooltipProvider: React.FC<{children: React.ReactNode}> = ({children
         }
 
         await showTooltip(request);
-
-        // If the tooltip is meant to persist (eg. should not be tracked as seen),
-        // skip marking it. Otherwise mark it as seen so it won't show again.
-        if (!request.persist) {
-          try {
-            await markTooltipSeen(request.id, request.userId);
-          } catch (err) {
-            logger.warn("markTooltipSeen failed", err);
-          }
-        }
 
         return true;
       } catch (err) {

@@ -46,6 +46,7 @@ import {SOLAR_SYSTEM_CONFIG} from "./SolarSystemConfig";
 import {dimensions} from "../../utils/responsive";
 import {loadTextureFromAsset, resolveAssetModule} from "../../services/solar/textureLoader";
 import type {AssetModuleReference} from "../../services/solar/textureLoader";
+import {isQASurfaceRuntimeActive} from "../../qa/qaRuntime";
 // Import texture assets
 import sunTextureModule from "../../../assets/3d/tex_sun_spots_02.png";
 
@@ -514,7 +515,10 @@ const SolarSystem3D: React.FC<SolarSystem3DProps> = ({visible = true}) => {
     }),
     [],
   );
-  const frameloop = useMemo(() => __getSolarCanvasFrameloopForTests(visible && isAppActive), [visible, isAppActive]);
+  const frameloop = useMemo(
+    () => __getSolarCanvasFrameloopForTests(visible && isAppActive && !isQASurfaceRuntimeActive()),
+    [visible, isAppActive],
+  );
 
   return (
     <View style={styles.container}>

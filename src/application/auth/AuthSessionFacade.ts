@@ -6,7 +6,7 @@ import {
   normalizeRestorableGameMode,
 } from "../../features/auth/sessionBootstrap";
 import {isGuestPlayer} from "../../features/auth/sessionBootstrap";
-import {Player, FirestoreRiddle} from "../../validation/firestoreSchemas";
+import {Player, FirestoreRiddle, FirestoreRiddleSchema} from "../../validation/firestoreSchemas";
 import {callValidatedFunction} from "../../utils/firebaseFunctions";
 import {CurrentDailyChallengeOutputSchema, EmptyInputSchema} from "../../validation/cloudFunctionsSchemas";
 import {logger} from "../../utils/logger";
@@ -125,6 +125,9 @@ class AuthSessionFacade {
         riddleId: typeof parsed.riddleId === "string" ? parsed.riddleId : undefined,
         classicIndex: typeof parsed.classicIndex === "number" ? parsed.classicIndex : undefined,
         dailyIndex: typeof parsed.dailyIndex === "number" ? parsed.dailyIndex : undefined,
+        riddle: FirestoreRiddleSchema.safeParse((parsed as {riddle?: unknown}).riddle).success
+          ? (parsed as {riddle: FirestoreRiddle}).riddle
+          : undefined,
       };
     } catch (error) {
       logger.warn("Error loading active game session locally:", error);
@@ -150,6 +153,7 @@ class AuthSessionFacade {
         riddleId: riddle.riddleId,
         classicIndex: typeof riddle.classicIndex === "number" ? riddle.classicIndex : player.progress?.classicIndex,
         dailyIndex: typeof riddle.dailyIndex === "number" ? riddle.dailyIndex : player.progress?.dailyChallengeIndex,
+        riddle,
       };
       await AsyncStorage.setItem(ACTIVE_GAME_SESSION_STORAGE_KEY, JSON.stringify(snapshot));
     } catch (error) {

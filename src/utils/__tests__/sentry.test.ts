@@ -6,16 +6,18 @@ const mockAddBreadcrumb = jest.fn();
 const mockStartSpan = jest.fn();
 const mockStartInactiveSpan = jest.fn();
 const mockWithScope = jest.fn();
+const mockWrap = jest.fn((component: unknown) => component);
 
 jest.mock("@sentry/react-native", () => ({
-  init: (...args: unknown[]) => mockInit(...args),
-  captureException: (...args: unknown[]) => mockCaptureException(...args),
-  captureMessage: (...args: unknown[]) => mockCaptureMessage(...args),
-  setUser: (...args: unknown[]) => mockSetUser(...args),
-  addBreadcrumb: (...args: unknown[]) => mockAddBreadcrumb(...args),
-  startSpan: (...args: unknown[]) => mockStartSpan(...args),
-  startInactiveSpan: (...args: unknown[]) => mockStartInactiveSpan(...args),
-  withScope: (...args: unknown[]) => mockWithScope(...args),
+  init: (...args: any[]) => mockInit.apply(null, args),
+  captureException: (...args: any[]) => mockCaptureException.apply(null, args),
+  captureMessage: (...args: any[]) => mockCaptureMessage.apply(null, args),
+  setUser: (...args: any[]) => mockSetUser.apply(null, args),
+  addBreadcrumb: (...args: any[]) => mockAddBreadcrumb.apply(null, args),
+  startSpan: (...args: any[]) => mockStartSpan.apply(null, args),
+  startInactiveSpan: (...args: any[]) => mockStartInactiveSpan.apply(null, args),
+  withScope: (...args: any[]) => mockWithScope.apply(null, args),
+  wrap: (...args: any[]) => mockWrap.apply(null, args),
 }));
 
 const originalDsn = process.env.EXPO_PUBLIC_SENTRY_DSN;
@@ -224,5 +226,20 @@ describe("utils/sentry", () => {
       op: "ui.action",
     });
     expect(end).toHaveBeenCalledTimes(1);
+  });
+
+  it("wrapAppWithSentry returns the component unchanged when DSN is missing", () => {
+    const sentry = loadSentryUtils(undefined);
+    const AppComponent = () => null;
+
+    expect(sentry.wrapAppWithSentry(AppComponent)).toBe(AppComponent);
+  });
+
+  it("wrapAppWithSentry delegates to Sentry.wrap when DSN exists", () => {
+    const sentry = loadSentryUtils("dsn");
+    const AppComponent = () => null;
+
+    expect(sentry.wrapAppWithSentry(AppComponent)).toBe(AppComponent);
+    expect(mockWrap).toHaveBeenCalledWith(AppComponent);
   });
 });

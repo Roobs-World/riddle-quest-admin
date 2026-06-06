@@ -45,6 +45,10 @@ jest.mock("expo-modules-core", () => ({
   }),
 }));
 
+jest.mock("../../../qa/qaRuntime", () => ({
+  isQASurfaceRuntimeActive: jest.fn(() => false),
+}));
+
 const {
   default: SolarSystem3D,
   __resetSolarSystem3DTextureCacheForTests,
@@ -55,12 +59,14 @@ const {
   __applyMoonFrameUpdateForTests,
   __applyPlanetFrameUpdateForTests,
 } = require("../SolarSystem3D");
+const {isQASurfaceRuntimeActive} = require("../../../qa/qaRuntime");
 
 describe("SolarSystem3D", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     frameCallbacks.length = 0;
     __resetSolarSystem3DTextureCacheForTests();
+    (isQASurfaceRuntimeActive as jest.Mock).mockReturnValue(false);
     mockGetContext.mockReturnValue({
       pixelStorei: mockPixelStorei,
     });
@@ -126,6 +132,14 @@ describe("SolarSystem3D", () => {
     expect(getByTestId("mock-canvas").props.frameloop).toBe("never");
     expect(__getSolarCanvasFrameloopForTests(false)).toBe("never");
     expect(__getSolarCanvasFrameloopForTests(true)).toBe("always");
+  });
+
+  it("disables the canvas frame loop during QA surface rendering", () => {
+    (isQASurfaceRuntimeActive as jest.Mock).mockReturnValue(true);
+
+    const {getByTestId} = render(<SolarSystem3D />);
+
+    expect(getByTestId("mock-canvas").props.frameloop).toBe("never");
   });
 
   it("disables Three color management for expo-gl compatibility", () => {

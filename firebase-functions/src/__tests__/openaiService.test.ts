@@ -122,9 +122,12 @@ describe("OpenAI Service", () => {
       expect(userPrompt).toContain("music, history, general knowledge, film and TV, sport, geography, science");
       expect(userPrompt).toContain("one clear answer");
       expect(userPrompt).toContain("obscure proper nouns");
+      expect(userPrompt).toContain("Cultural fit");
+      expect(userPrompt).toContain("Localization depth");
       expect(systemPrompt).toContain("pub quizzes");
       expect(systemPrompt).toContain("Rotate subjects over time");
       expect(systemPrompt).toContain("avoid obscure specialist trivia");
+      expect(systemPrompt).toContain("adapt the subject choice, references, and idioms");
       expect(request.response_format).toEqual(
         expect.objectContaining({
           type: "json_schema",

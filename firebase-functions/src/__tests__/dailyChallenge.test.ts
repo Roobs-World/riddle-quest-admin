@@ -27,6 +27,7 @@ jest.mock("../firestoreService", () => ({
   updateUserLastCompletedDailyChallengeDate: jest.fn(),
   // Refine getUser mock return type to match Player | undefined
   getUser: jest.fn<(...args: any[]) => Promise<Player | undefined>>().mockResolvedValue(undefined), // Default to undefined for user not found
+  getClassicRiddleByIndex: jest.fn(),
 }));
 
 jest.mock("../riddleGeneration", () => ({
@@ -198,6 +199,7 @@ const createCurrentDailyRiddleDoc = (
 describe("Daily Challenge Functions", () => {
   let mockUpdateUserLastCompletedDailyChallengeDate: jest.MockedFunction<typeof originalUpdateUserDate>;
   let mockGetUser: jest.MockedFunction<typeof originalGetUser>;
+  let mockGetClassicRiddleByIndex: jest.Mock;
   let mockFirebaseFunctionsV1: {
     logger: {error: jest.MockedFunction<(message?: any, ...optionalParams: any[]) => void>};
     https: {HttpsError: typeof functions.https.HttpsError};
@@ -205,6 +207,7 @@ describe("Daily Challenge Functions", () => {
   let setCompletedDailyChallenge: any;
   let hasCompletedDailyChallenge: any;
   let getCurrentDailyChallenge: any;
+  let getCurrentClassicRiddle: any;
   let advanceDailyChallengeProgress: any;
 
   beforeEach(() => {
@@ -234,14 +237,17 @@ describe("Daily Challenge Functions", () => {
     setCompletedDailyChallenge = dailyChallengeModule.setCompletedDailyChallenge;
     hasCompletedDailyChallenge = dailyChallengeModule.hasCompletedDailyChallenge;
     getCurrentDailyChallenge = dailyChallengeModule.getCurrentDailyChallenge;
+    getCurrentClassicRiddle = dailyChallengeModule.getCurrentClassicRiddle;
     advanceDailyChallengeProgress = dailyChallengeModule.advanceDailyChallengeProgress;
 
     const mockFsService = jest.requireMock("../firestoreService") as {
       updateUserLastCompletedDailyChallengeDate: jest.MockedFunction<typeof originalUpdateUserDate>;
       getUser: jest.MockedFunction<typeof originalGetUser>;
+      getClassicRiddleByIndex: jest.Mock;
     };
     mockUpdateUserLastCompletedDailyChallengeDate = mockFsService.updateUserLastCompletedDailyChallengeDate;
     mockGetUser = mockFsService.getUser;
+    mockGetClassicRiddleByIndex = mockFsService.getClassicRiddleByIndex;
 
     mockFirebaseFunctionsV1 = jest.requireMock("firebase-functions") as {
       logger: {error: jest.MockedFunction<(message?: any, ...optionalParams: any[]) => void>};
@@ -418,7 +424,7 @@ describe("Daily Challenge Functions", () => {
 
       expect(result.challenge).toEqual({
         date: "2023-01-01",
-        questions: [{riddleId: "current", text: "Question 1?", questionNumber: 1}],
+        questions: [{riddleId: "current", text: "Question 1?", answer: "answer", questionNumber: 1}],
         totalQuestions: 1,
       });
       expect(result.hasCompletedToday).toBe(false); // Player has no lastDailyChallengeCompletedAt
@@ -451,7 +457,7 @@ describe("Daily Challenge Functions", () => {
 
       expect(result.challenge).toEqual({
         date: "2023-01-01",
-        questions: [{riddleId: "current", text: "Question 1?", questionNumber: 1}],
+        questions: [{riddleId: "current", text: "Question 1?", answer: "answer", questionNumber: 1}],
         totalQuestions: 1,
       });
       expect(result.hasCompletedToday).toBe(true); // Player completed today
@@ -517,7 +523,7 @@ describe("Daily Challenge Functions", () => {
 
       expect(result.challenge).toEqual({
         date: "2023-01-01",
-        questions: [{riddleId: "current", text: "Question 1?", questionNumber: 1}],
+        questions: [{riddleId: "current", text: "Question 1?", answer: "answer", questionNumber: 1}],
         totalQuestions: 1,
       });
       expect(result.hasCompletedToday).toBeUndefined(); // Not authenticated means no completion status
@@ -543,7 +549,7 @@ describe("Daily Challenge Functions", () => {
 
       expect(result.challenge).toEqual({
         date: "2023-01-02",
-        questions: [{riddleId: "current", text: "Question 1?", questionNumber: 1}],
+        questions: [{riddleId: "current", text: "Question 1?", answer: "answer", questionNumber: 1}],
         totalQuestions: 1,
       });
       expect(result.hasCompletedToday).toBe(false); // Challenge is not for today
@@ -604,6 +610,61 @@ describe("Daily Challenge Functions", () => {
       expect(result.questionsCompleted).toBe(0);
       expect(result.hasCompletedToday).toBe(false);
       expect(result.challenge).toBeDefined();
+    });
+  });
+
+  describe("getCurrentClassicRiddle (v2)", () => {
+    it("should throw HttpsError if not authenticated", async () => {
+      const mockRequest = {auth: undefined, data: {classicIndex: 4}} as CallableRequest<{
+        classicIndex?: number;
+        locale?: string;
+      }>;
+
+      await expect(getCurrentClassicRiddle(mockRequest)).rejects.toMatchObject({
+        code: "unauthenticated",
+        message: "The user must be authenticated to load a classic riddle.",
+      });
+      expect(mockGetClassicRiddleByIndex).not.toHaveBeenCalled();
+    });
+
+    it("should return classic challenge payload for authenticated user", async () => {
+      const mockUserId = "classicUser";
+      mockGetUser.mockResolvedValue(getDefaultPlayer(mockUserId));
+      mockGetClassicRiddleByIndex.mockResolvedValue({
+        riddleId: "classic-10",
+        text: "Classic question?",
+        answer: "ANSWER",
+        locale: "en",
+      });
+
+      const mockRequest = {auth: {uid: mockUserId}, data: {classicIndex: 10}} as CallableRequest<{
+        classicIndex?: number;
+        locale?: string;
+      }>;
+
+      const result = await getCurrentClassicRiddle(mockRequest);
+
+      expect(result.challenge).toEqual({
+        date: undefined,
+        questions: [{riddleId: "classic-10", text: "Classic question?", answer: "ANSWER", questionNumber: 1}],
+        totalQuestions: 1,
+      });
+      expect(mockGetClassicRiddleByIndex).toHaveBeenCalledWith(10, "en");
+    });
+
+    it("should return error when the requested classic riddle is unavailable", async () => {
+      const mockUserId = "classicMissingUser";
+      mockGetUser.mockResolvedValue(getDefaultPlayer(mockUserId));
+      mockGetClassicRiddleByIndex.mockResolvedValue(undefined);
+
+      const mockRequest = {auth: {uid: mockUserId}, data: {classicIndex: 10}} as CallableRequest<{
+        classicIndex?: number;
+        locale?: string;
+      }>;
+
+      const result = await getCurrentClassicRiddle(mockRequest);
+
+      expect(result.error).toBe("No classic riddle available at index 10.");
     });
   });
 

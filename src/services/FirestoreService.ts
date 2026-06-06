@@ -13,10 +13,11 @@ import {
 import {Player, PlayerSchema} from "../validation/firestoreSchemas";
 import {FirestoreRiddle, FirestoreRiddleSchema} from "../validation/firestoreSchemas";
 import {getLocale, type SupportedLanguage} from "../i18n";
-import {ZodError} from "zod";
+import {ZodError, z} from "zod";
 import {logger} from "../utils/logger";
 import {captureException, withSentrySpan} from "../utils/sentry";
-import {getCallableFunction} from "../utils/firebaseFunctions";
+import {callValidatedFunction, getCallableFunction} from "../utils/firebaseFunctions";
+import {CurrentDailyChallengeOutputSchema, EmptyInputSchema} from "../validation/cloudFunctionsSchemas";
 import {
   playerFirestoreConverter,
   riddleFirestoreConverter,
@@ -28,6 +29,10 @@ const RIDDLE_CACHE_MAX_SIZE = 50;
 const riddleCache = new Map<string, FirestoreRiddle>();
 const LOCALIZED_RIDDLES_COLLECTION = "localizedRiddles";
 const DAILY_RIDDLE_DOC_ID = "current";
+const CurrentClassicRiddleInputSchema = z.object({
+  classicIndex: z.number().int().nonnegative(),
+  locale: z.string().optional(),
+});
 const FIRESTORE_RETRYABLE_CODES = new Set<string>([
   "firestore/unavailable",
   "unavailable",
@@ -123,6 +128,93 @@ const isRetryableFirestoreReadError = (error: unknown): boolean => {
     message.includes("transient condition") ||
     message.includes("network request failed")
   );
+};
+
+const isExpectedFirestoreAccessError = (error: unknown): boolean => {
+  const code = normalizeFirestoreErrorCode(error)?.toLowerCase() ?? "";
+  const text =
+    error instanceof Error
+      ? `${error.name} ${error.message}`
+      : typeof error === "string"
+        ? error
+        : error && typeof error === "object" && "message" in error && typeof (error as {message?: unknown}).message === "string"
+          ? (error as {message: string}).message
+          : String(error);
+  const normalized = `${code} ${text}`.toLowerCase();
+
+  return (
+    normalized.includes("permission-denied") ||
+    normalized.includes("unauthenticated") ||
+    normalized.includes("firestore/permission-denied") ||
+    normalized.includes("firestore/unauthenticated") ||
+    normalized.includes("permission denied") ||
+    normalized.includes("not authorized")
+  );
+};
+
+const logExpectedFirestoreAccessWarning = (scope: string, error: unknown): void => {
+  logger.warn(`${scope} denied during startup; falling back to local state.`, error);
+};
+
+const buildDailyRiddleFromChallenge = (
+  challengeResponse: Awaited<ReturnType<typeof callValidatedFunction<typeof EmptyInputSchema, typeof CurrentDailyChallengeOutputSchema>>>,
+  resolvedLocale: SupportedLanguage,
+  dailyIndex: number,
+): FirestoreRiddle | null => {
+  const challenge = challengeResponse.challenge;
+  const question = challenge?.questions?.[0];
+
+  if (
+    !challenge ||
+    !question ||
+    typeof question.text !== "string" ||
+    question.text.length === 0 ||
+    typeof question.answer !== "string" ||
+    question.answer.length === 0
+  ) {
+    return null;
+  }
+
+  return {
+    riddleId: question.riddleId,
+    canonicalKey: challenge.date ? `daily:${challenge.date}` : `daily:${question.riddleId}`,
+    challengeKey: challenge.date,
+    locale: resolvedLocale,
+    dailyIndex,
+    text: question.text,
+    answer: question.answer,
+    category: "daily",
+  };
+};
+
+const buildClassicRiddleFromChallenge = (
+  challengeResponse: Awaited<ReturnType<typeof callValidatedFunction<typeof CurrentClassicRiddleInputSchema, typeof CurrentDailyChallengeOutputSchema>>>,
+  resolvedLocale: SupportedLanguage,
+  classicIndex: number,
+): FirestoreRiddle | null => {
+  const challenge = challengeResponse.challenge;
+  const question = challenge?.questions?.[0];
+
+  if (
+    !challenge ||
+    !question ||
+    typeof question.text !== "string" ||
+    question.text.length === 0 ||
+    typeof question.answer !== "string" ||
+    question.answer.length === 0
+  ) {
+    return null;
+  }
+
+  return {
+    riddleId: question.riddleId,
+    canonicalKey: `classic:${classicIndex}`,
+    locale: resolvedLocale,
+    dailyIndex: classicIndex,
+    text: question.text,
+    answer: question.answer,
+    category: "classic",
+  };
 };
 
 async function withFirestoreReadRetry<T>(operationName: string, operation: () => Promise<T>): Promise<T> {
@@ -230,52 +322,28 @@ export const fetchDailyRiddleFromFirestore = async (
   locale?: SupportedLanguage,
 ): Promise<FirestoreRiddle | null> => {
   const resolvedLocale = resolveLocale(locale);
-  logger.debug(
-    `Fetching current daily riddle from Firestore ${getLocalizedRiddleCollection(
-      resolvedLocale,
-      "daily",
-    )}/${DAILY_RIDDLE_DOC_ID} (client index hint: ${dailyIndex})`,
-  );
 
   try {
-    const currentDailyDoc = await withFirestoreReadRetry("fetchDailyRiddleFromFirestore.current", () =>
-      getDoc(
-        withConverterIfAvailable(
-          doc(getFirestore(), getLocalizedRiddleCollection(resolvedLocale, "daily"), DAILY_RIDDLE_DOC_ID),
-          riddleFirestoreConverter,
-        ),
-      ),
+    logger.debug("Fetching current daily riddle from the daily challenge callable");
+    const challengeResponse = await callValidatedFunction(
+      "getCurrentDailyChallenge",
+      {},
+      EmptyInputSchema,
+      CurrentDailyChallengeOutputSchema,
     );
-
-    if (currentDailyDoc.exists()) {
-      const riddleData = currentDailyDoc.data();
-      if (riddleData) {
-        try {
-          const validatedRiddle = FirestoreRiddleSchema.parse({
-            ...riddleData,
-            riddleId: riddleData.riddleId ?? currentDailyDoc.id ?? DAILY_RIDDLE_DOC_ID,
-            canonicalKey: riddleData.canonicalKey ?? `daily:${riddleData.challengeKey ?? currentDailyDoc.id ?? DAILY_RIDDLE_DOC_ID}`,
-            challengeKey: riddleData.challengeKey ?? currentDailyDoc.id ?? DAILY_RIDDLE_DOC_ID,
-            locale: riddleData.locale ?? resolvedLocale,
-          });
-          logger.debug("Current daily riddle fetched and validated successfully:", validatedRiddle);
-          return validatedRiddle;
-        } catch (zodError) {
-          if (zodError instanceof ZodError) {
-            logger.error("Zod validation error for daily riddle data:", zodError.issues);
-          } else {
-            logger.error("Unexpected error during daily riddle data validation:", zodError);
-          }
-          captureException(zodError);
-          return null;
-        }
-      }
+    const riddle = buildDailyRiddleFromChallenge(challengeResponse, resolvedLocale, dailyIndex);
+    if (riddle) {
+      logger.debug("Current daily riddle fetched and validated successfully:", riddle);
+      return riddle;
     }
-
-    logger.debug(`No current daily riddle found at ${getLocalizedRiddleCollection(resolvedLocale, "daily")}/${DAILY_RIDDLE_DOC_ID}`);
+    logger.debug(`No current daily riddle available for locale ${resolvedLocale}`);
     return null;
   } catch (error) {
-    logger.error("Error fetching daily riddle from Firestore:", error);
+    if (isExpectedFirestoreAccessError(error)) {
+      logExpectedFirestoreAccessWarning("Daily riddle Firestore read", error);
+      return null;
+    }
+    logger.error("Error fetching daily riddle from callable:", error);
     captureException(error);
     throw error;
   }
@@ -303,48 +371,25 @@ export const fetchClassicRiddleFromFirestore = async (
   logger.debug(`Fetching classic riddle for index ${classicIndex} from Firestore locale ${resolvedLocale}`);
 
   try {
-    const riddleQuerySnapshot = await withFirestoreReadRetry("fetchClassicRiddleFromFirestore", () =>
-      getDocs(
-        query(
-          withConverterIfAvailable(
-            collection(getFirestore(), getLocalizedRiddleCollection(resolvedLocale, "classic")),
-            riddleFirestoreConverter,
-          ),
-          where("classicIndex", "==", classicIndex),
-          limit(1),
-        ),
-      ),
+    const challengeResponse = await callValidatedFunction(
+      "getCurrentClassicRiddle",
+      {classicIndex, locale: resolvedLocale},
+      CurrentClassicRiddleInputSchema,
+      CurrentDailyChallengeOutputSchema,
     );
-
-    if (!riddleQuerySnapshot.empty) {
-      const riddleDoc = riddleQuerySnapshot.docs[0];
-      const riddleData = riddleDoc.data();
-      if (riddleData) {
-        try {
-          const validatedRiddle = FirestoreRiddleSchema.parse(riddleData);
-          const normalizedRiddle = {
-            ...validatedRiddle,
-            canonicalKey: validatedRiddle.canonicalKey ?? `classic:${classicIndex}`,
-            locale: validatedRiddle.locale ?? resolvedLocale,
-          };
-          setCachedRiddle(cacheKey, normalizedRiddle);
-          logger.debug("Classic riddle fetched and validated successfully:", normalizedRiddle);
-          return normalizedRiddle;
-        } catch (zodError) {
-          if (zodError instanceof ZodError) {
-            logger.error("Zod validation error for classic riddle data:", zodError.issues);
-          } else {
-            logger.error("Unexpected error during classic riddle data validation:", zodError);
-          }
-          captureException(zodError);
-          return null;
-        }
-      }
-    } else {
-      logger.debug(`No classic riddle found for index: ${classicIndex} in locale ${resolvedLocale}`);
+    const riddle = buildClassicRiddleFromChallenge(challengeResponse, resolvedLocale, classicIndex);
+    if (riddle) {
+      setCachedRiddle(cacheKey, riddle);
+      logger.debug("Classic riddle fetched and validated successfully:", riddle);
+      return riddle;
     }
+    logger.debug(`No classic riddle found for index: ${classicIndex} in locale ${resolvedLocale}`);
     return null;
   } catch (error) {
+    if (isExpectedFirestoreAccessError(error)) {
+      logExpectedFirestoreAccessWarning("Classic riddle Firestore read", error);
+      return null;
+    }
     logger.error("Error fetching classic riddle from Firestore:", error);
     captureException(error);
     throw error;
@@ -393,6 +438,10 @@ export const fetchDailyRiddleForDate = async (dateString: string): Promise<Fires
     }
     return null;
   } catch (error) {
+    if (isExpectedFirestoreAccessError(error)) {
+      logExpectedFirestoreAccessWarning("Daily riddle lookup for date", error);
+      return null;
+    }
     logger.error("Error fetching daily riddle for date from Firestore:", error);
     captureException(error);
     throw error;

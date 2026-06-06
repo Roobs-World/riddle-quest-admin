@@ -7,7 +7,7 @@ import {captureException} from "./sentry";
 import type {ClassicRiddle, DailyRiddle} from "./validation/firestoreSchemas";
 import {RiddleCollections} from "./validation/firestoreSchemas";
 import {clueContainsLiteralAnswer} from "./riddleQuality";
-import {SUPPORTED_LOCALES, type SupportedLocale} from "../../packages/core/dist/validation";
+import {SUPPORTED_LOCALES, type SupportedLocale} from "@qwordly/core/validation";
 import {
   GenerateRiddlesResponseSchema,
   GenerateTodaysDailyChallengeRequestSchema,

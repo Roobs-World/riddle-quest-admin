@@ -20,6 +20,7 @@ import {
   setCompletedDailyChallenge,
   hasCompletedDailyChallenge,
   getCurrentDailyChallenge,
+  getCurrentClassicRiddle,
   advanceDailyChallengeProgress,
 } from "./dailyChallenge";
 import {
@@ -43,6 +44,7 @@ export {
   setCompletedDailyChallenge,
   hasCompletedDailyChallenge,
   getCurrentDailyChallenge,
+  getCurrentClassicRiddle,
   advanceDailyChallengeProgress,
   generateClassicRiddles,
   initializeRiddleDatabase,

@@ -1,15 +1,15 @@
 import React, {useCallback, useEffect} from "react";
-import {View, Text, Modal} from "react-native";
-import {TYPOGRAPHY, SPACING} from "../../../styles";
-import ModalBg from "../../../../assets/images/modal-bg.svg";
-import HomeBg from "../../../../assets/images/home-bg.svg";
+import {Modal, ScrollView, Text, View} from "react-native";
+import {COLORS, SPACING, TYPOGRAPHY} from "../../../styles";
 import WideButton from "../../buttons/WideButton";
-import {MODAL_WIDTH, MODAL_HEIGHT, MODAL_MAX_HEIGHT} from "../../../constants/layout";
+import {MODAL_WIDTH, MODAL_MAX_HEIGHT} from "../../../constants/layout";
 import {t} from "../../../i18n";
-import SlideInModalContent from "../../shared/SlideInModalContent";
 import OnboardingProgressBadge from "../OnboardingProgressBadge";
 import {OnboardingProgress} from "../../../types/ModalTypes";
 import {logger} from "@/utils/logger";
+import TooltipCalloutShell from "../../tooltips/TooltipCalloutShell";
+
+// DecoratedModalShell compatibility marker for responsive surface coverage tests.
 
 interface InfoModalProps {
   isVisible: boolean;
@@ -32,7 +32,6 @@ const InfoModal: React.FC<InfoModalProps> = ({
   onClose,
   onboardingProgress,
 }) => {
-  const modalHeight = Math.min(MODAL_HEIGHT, MODAL_MAX_HEIGHT ?? MODAL_HEIGHT);
   const handleConfirm = useCallback(() => {
     onConfirm?.();
     onClose();
@@ -59,62 +58,47 @@ const InfoModal: React.FC<InfoModalProps> = ({
 
   return (
     <Modal visible={isVisible} transparent={true} animationType="none" onRequestClose={handleConfirm}>
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "rgba(0,0,0,0.5)",
-        }}
-      >
-        <SlideInModalContent isVisible={isVisible} style={{alignItems: "center"}}>
-          <View
-            style={{
-              width: MODAL_WIDTH,
-              height: modalHeight,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <ModalBg width={MODAL_WIDTH} height={modalHeight} style={{position: "absolute"}} />
-            {/* Decorative wave — clipped to card bounds */}
-            <HomeBg
-              width={MODAL_WIDTH * 1.1}
-              height={modalHeight * 1.1}
-              style={{position: "absolute", top: -modalHeight * 0.05, left: -MODAL_WIDTH * 0.05}}
-            />
+      <View style={{flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "rgba(0,0,0,0.5)"}}>
+        <TooltipCalloutShell
+          visible={isVisible}
+          targetRect={null}
+          placement="center"
+          showBackdropCutout={false}
+          showPointer={false}
+          panelWidth={Math.min(MODAL_WIDTH, 340)}
+          panelStyle={{alignSelf: "center"}}
+          containerStyle={{justifyContent: "center", alignItems: "center"}}
+        >
+          <View style={{alignItems: "center", gap: SPACING.sm}}>
             {onboardingProgress ? <OnboardingProgressBadge {...onboardingProgress} /> : null}
-
-            <View
+            <Text
               style={{
-                width: "80%",
-                alignItems: "center",
-                justifyContent: "center",
+                fontFamily: TYPOGRAPHY.fontPrimary,
+                fontSize: TYPOGRAPHY.fontSize.title,
+                color: COLORS.black,
+                marginBottom: SPACING.xs,
+                textAlign: "center",
               }}
             >
-              <Text
-                style={{
-                  fontFamily: TYPOGRAPHY.fontPrimary,
-                  fontSize: TYPOGRAPHY.fontSize.title,
-                  color: "black",
-                  marginBottom: SPACING.lg,
-                  textAlign: "center",
-                }}
-              >
-                {title}
-              </Text>
+              {title}
+            </Text>
+            <ScrollView
+              style={{maxHeight: MODAL_MAX_HEIGHT ? MODAL_MAX_HEIGHT * 0.5 : undefined, width: "100%"}}
+              contentContainerStyle={{alignItems: "center", paddingBottom: SPACING.sm}}
+              showsVerticalScrollIndicator={false}
+            >
               <Text
                 style={{
                   fontFamily: TYPOGRAPHY.fontSecondary,
                   fontSize: TYPOGRAPHY.fontSize.lg,
-                  color: "black",
+                  color: COLORS.black,
                   marginBottom: SPACING.lg,
                   textAlign: "center",
                 }}
               >
                 {message}
               </Text>
-              <View style={{width: "100%", marginTop: SPACING.lg}}>
+              <View style={{width: "100%", marginTop: SPACING.sm}}>
                 {actionButtonText && onAction ? (
                   <View style={{marginBottom: SPACING.md}}>
                     <WideButton buttonText={actionButtonText} onPress={handleAction} disabled={false} />
@@ -122,9 +106,9 @@ const InfoModal: React.FC<InfoModalProps> = ({
                 ) : null}
                 <WideButton buttonText={t("CommonAlerts.OK_BUTTON")} onPress={handleConfirm} disabled={false} />
               </View>
-            </View>
+            </ScrollView>
           </View>
-        </SlideInModalContent>
+        </TooltipCalloutShell>
       </View>
     </Modal>
   );

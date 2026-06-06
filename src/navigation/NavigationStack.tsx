@@ -106,7 +106,18 @@ const GameScreenWrapper = () => {
   useEffect(() => {
     const loadRiddle = async () => {
       if (isAuthenticated && playerData) {
-        if (lastFetchedModeRef.current === gameMode && lastFetchedLocaleRef.current === currentLocale && currentRiddle) {
+        const hasFetchedForCurrentMode = lastFetchedModeRef.current === gameMode;
+        const hasFetchedForCurrentLocale = lastFetchedLocaleRef.current === currentLocale;
+
+        // A restored riddle should be treated as already hydrated instead of
+        // being cleared and re-fetched on the first navigation render.
+        if (currentRiddle && !hasFetchedForCurrentMode && !hasFetchedForCurrentLocale) {
+          lastFetchedModeRef.current = gameMode;
+          lastFetchedLocaleRef.current = currentLocale;
+          return;
+        }
+
+        if (hasFetchedForCurrentMode && hasFetchedForCurrentLocale && currentRiddle) {
           return;
         }
         if (lastFetchedLocaleRef.current !== currentLocale) {

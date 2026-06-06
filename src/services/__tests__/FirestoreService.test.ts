@@ -16,6 +16,7 @@ let mockQuery: jest.Mock;
 let mockServerTimestamp: jest.Mock;
 let mockGetFirestore: jest.Mock;
 let mockGetCallableFunction: jest.Mock;
+let mockCallValidatedFunction: jest.Mock;
 let mockCallableFunction: jest.Mock;
 
 // Keep legacy aliases for assertions that still use v8-style names
@@ -81,8 +82,10 @@ jest.mock("../../utils/logger", () => ({
 jest.mock("../../utils/firebaseFunctions", () => {
   mockCallableFunction = jest.fn();
   mockGetCallableFunction = jest.fn(() => mockCallableFunction);
+  mockCallValidatedFunction = jest.fn();
 
   return {
+    callValidatedFunction: mockCallValidatedFunction,
     getCallableFunction: mockGetCallableFunction,
   };
 });
@@ -105,6 +108,7 @@ describe("FirestoreService", () => {
     mockServerTimestamp.mockReset();
     mockGetFirestore.mockReset();
     mockGetCallableFunction.mockReset();
+    mockCallValidatedFunction.mockReset();
     mockCallableFunction.mockReset();
 
     // Setup defaults: standalone functions return their arg or {}
@@ -116,6 +120,16 @@ describe("FirestoreService", () => {
     mockGetFirestore.mockReturnValue({});
     mockServerTimestamp.mockReturnValue("MOCK_SERVER_TIMESTAMP");
     mockGetCallableFunction.mockReturnValue(mockCallableFunction);
+    mockCallValidatedFunction.mockResolvedValue({
+      challenge: {
+        date: "2023-01-01",
+        questions: [{riddleId: "current", text: "Question 1?", answer: "answer", questionNumber: 1}],
+        totalQuestions: 1,
+      },
+      currentQuestion: 0,
+      hasCompletedToday: false,
+      questionsCompleted: 0,
+    });
 
     // Default: schema parse returns input (identity)
     (PlayerSchema.parse as jest.Mock).mockImplementation((x: unknown) => x);
@@ -271,85 +285,83 @@ describe("FirestoreService", () => {
     };
 
     it("should fetch the current daily riddle successfully", async () => {
-      mockGetDoc.mockResolvedValue({
-        exists: () => true,
-        id: "current",
-        data: () => mockRiddleData,
-      });
-
       const result = await FirestoreService.fetchDailyRiddleFromFirestore(dailyIndex);
 
-      expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "localizedRiddles/en/daily", "current");
-      expect(mockGetDocs).not.toHaveBeenCalled();
       expect(result).toMatchObject({
-        ...mockRiddleData,
-        canonicalKey: "daily:current",
-        challengeKey: "current",
+        riddleId: "current",
+        canonicalKey: "daily:2023-01-01",
+        challengeKey: "2023-01-01",
         locale: "en",
+        dailyIndex,
+        text: "Question 1?",
+        answer: "answer",
+        category: "daily",
       });
     });
 
     it("should return null when no daily riddle found", async () => {
-      mockGetDoc.mockResolvedValue({
-        exists: () => false,
-      });
+      mockCallValidatedFunction.mockResolvedValue({error: "No daily challenge available at the moment."});
 
       const result = await FirestoreService.fetchDailyRiddleFromFirestore(dailyIndex);
 
       expect(result).toBeNull();
-      expect(mockGetDocs).not.toHaveBeenCalled();
-      expect(logger.debug).toHaveBeenCalledWith("No current daily riddle found at localizedRiddles/en/daily/current");
+      expect(logger.debug).toHaveBeenCalledWith("No current daily riddle available for locale en");
     });
 
     it("should handle Zod validation errors", async () => {
-      const zodError = new ZodError([
-        {
-          code: "invalid_type",
-          expected: "string",
-          path: ["riddle"],
-          message: "Expected string, received number",
+      mockCallValidatedFunction.mockResolvedValue({
+        challenge: {
+          date: "2023-01-01",
+          questions: [{riddleId: "current", text: "Question 1?", answer: "", questionNumber: 1}],
+          totalQuestions: 1,
         },
-      ]);
-
-      mockGetDoc.mockResolvedValue({
-        exists: () => true,
-        id: "current",
-        data: () => mockRiddleData,
-      });
-      (FirestoreRiddleSchema.parse as jest.Mock).mockImplementation(() => {
-        throw zodError;
       });
 
       const result = await FirestoreService.fetchDailyRiddleFromFirestore(dailyIndex);
 
-      expect(logger.error).toHaveBeenCalledWith("Zod validation error for daily riddle data:", zodError.issues);
       expect(result).toBeNull();
+      expect(logger.debug).toHaveBeenCalledWith("No current daily riddle available for locale en");
     });
 
     it("handles non-Zod daily riddle parse error path", async () => {
-      const parseErr = new Error("bad parse");
-      mockGetDoc.mockResolvedValue({
-        exists: () => true,
-        id: "current",
-        data: () => mockRiddleData,
+      mockCallValidatedFunction.mockResolvedValue({
+        challenge: {
+          date: "2023-01-01",
+          questions: [{riddleId: "current", text: "Question 1?", answer: 123 as unknown as string, questionNumber: 1}],
+          totalQuestions: 1,
+        },
       });
-      (FirestoreRiddleSchema.parse as jest.Mock).mockImplementation(() => {
-        throw parseErr;
-      });
+
       const result = await FirestoreService.fetchDailyRiddleFromFirestore(dailyIndex);
       expect(result).toBeNull();
-      expect(logger.error).toHaveBeenCalledWith("Unexpected error during daily riddle data validation:", parseErr);
+      expect(logger.debug).toHaveBeenCalledWith("No current daily riddle available for locale en");
     });
 
     it("should handle Firestore errors", async () => {
       const error = new Error("Firestore connection failed");
-      mockGetDoc.mockRejectedValue(error);
+      mockCallValidatedFunction.mockRejectedValue(error);
 
       await expect(FirestoreService.fetchDailyRiddleFromFirestore(dailyIndex)).rejects.toThrow(
         "Firestore connection failed",
       );
 
-      expect(logger.error).toHaveBeenCalledWith("Error fetching daily riddle from Firestore:", error);
+      expect(logger.error).toHaveBeenCalledWith("Error fetching daily riddle from callable:", error);
+    });
+
+    it("returns null instead of throwing on permission-denied access errors", async () => {
+      const error = {
+        code: "firestore/permission-denied",
+        message: "[firestore/permission-denied] Access denied",
+      };
+      mockCallValidatedFunction.mockRejectedValue(error);
+
+      const result = await FirestoreService.fetchDailyRiddleFromFirestore(dailyIndex);
+
+      expect(result).toBeNull();
+      expect(logger.warn).toHaveBeenCalledWith(
+        "Daily riddle Firestore read denied during startup; falling back to local state.",
+        error,
+      );
     });
   });
 
@@ -365,36 +377,33 @@ describe("FirestoreService", () => {
     };
 
     it("should fetch classic riddle successfully", async () => {
-      const mockSnapshot = {
-        empty: false,
-        docs: [
-          {
-            data: () => mockRiddleData,
-          },
-        ],
-      };
-
-      mockGetDocs.mockResolvedValue(mockSnapshot);
+      mockCallValidatedFunction.mockResolvedValue({
+        challenge: {
+          date: undefined,
+          questions: [{riddleId: "classic-10", text: "Question 1?", answer: "answer", questionNumber: 1}],
+          totalQuestions: 1,
+        },
+      });
 
       const result = await FirestoreService.fetchClassicRiddleFromFirestore(classicIndex);
 
-      expect(mockCollection).toHaveBeenCalledWith(expect.any(Object), "localizedRiddles/en/classic");
-      expect(mockWhere).toHaveBeenCalledWith("classicIndex", "==", classicIndex);
-      expect(mockLimit).toHaveBeenCalledWith(1);
+      expect(mockCallValidatedFunction).toHaveBeenCalledWith(
+        "getCurrentClassicRiddle",
+        {classicIndex, locale: "en"},
+        expect.any(Object),
+        expect.any(Object),
+      );
       expect(result).toMatchObject({
-        ...mockRiddleData,
         canonicalKey: "classic:10",
         locale: "en",
+        category: "classic",
+        text: "Question 1?",
+        answer: "answer",
       });
     });
 
     it("should return null when no classic riddle found", async () => {
-      const mockSnapshot = {
-        empty: true,
-        docs: [],
-      };
-
-      mockGetDocs.mockResolvedValue(mockSnapshot);
+      mockCallValidatedFunction.mockResolvedValue({error: "No classic riddle available at index 10."});
 
       const result = await FirestoreService.fetchClassicRiddleFromFirestore(classicIndex);
 
@@ -403,24 +412,41 @@ describe("FirestoreService", () => {
     });
 
     it("handles classic riddle zod and non-zod parse errors", async () => {
-      const zodError = new ZodError([]);
-      mockGetDocs.mockResolvedValue({
-        empty: false,
-        docs: [{data: () => mockRiddleData}],
-      });
-      (FirestoreRiddleSchema.parse as jest.Mock).mockImplementationOnce(() => {
-        throw zodError;
+      mockCallValidatedFunction.mockResolvedValue({
+        challenge: {
+          date: undefined,
+          questions: [{riddleId: "classic-10", text: "", answer: "answer", questionNumber: 1}],
+          totalQuestions: 1,
+        },
       });
       const zodResult = await FirestoreService.fetchClassicRiddleFromFirestore(classicIndex);
       expect(zodResult).toBeNull();
 
-      const otherErr = new Error("other parse");
-      (FirestoreRiddleSchema.parse as jest.Mock).mockImplementationOnce(() => {
-        throw otherErr;
+      mockCallValidatedFunction.mockResolvedValue({
+        challenge: {
+          date: undefined,
+          questions: [{riddleId: "classic-11", text: "Question 1?", answer: 123 as unknown as string, questionNumber: 1}],
+          totalQuestions: 1,
+        },
       });
       const otherResult = await FirestoreService.fetchClassicRiddleFromFirestore(classicIndex + 1);
       expect(otherResult).toBeNull();
-      expect(logger.error).toHaveBeenCalledWith("Unexpected error during classic riddle data validation:", otherErr);
+    });
+
+    it("returns null instead of throwing on permission-denied access errors", async () => {
+      const error = {
+        code: "firestore/permission-denied",
+        message: "[firestore/permission-denied] Access denied",
+      };
+      mockCallValidatedFunction.mockRejectedValue(error);
+
+      const result = await FirestoreService.fetchClassicRiddleFromFirestore(classicIndex);
+
+      expect(result).toBeNull();
+      expect(logger.warn).toHaveBeenCalledWith(
+        "Classic riddle Firestore read denied during startup; falling back to local state.",
+        error,
+      );
     });
   });
 
@@ -500,6 +526,22 @@ describe("FirestoreService", () => {
       await expect(FirestoreService.fetchDailyRiddleForDate(dateString)).rejects.toThrow("Database error");
 
       expect(logger.error).toHaveBeenCalledWith("Error fetching daily riddle for date from Firestore:", error);
+    });
+
+    it("returns null instead of throwing on permission-denied access errors", async () => {
+      const error = {
+        code: "firestore/permission-denied",
+        message: "[firestore/permission-denied] Access denied",
+      };
+      mockGetDocs.mockRejectedValue(error);
+
+      const result = await FirestoreService.fetchDailyRiddleForDate(dateString);
+
+      expect(result).toBeNull();
+      expect(logger.warn).toHaveBeenCalledWith(
+        "Daily riddle lookup for date denied during startup; falling back to local state.",
+        error,
+      );
     });
   });
 

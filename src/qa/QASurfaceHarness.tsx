@@ -21,14 +21,11 @@ import {useModalContext} from "../contexts/ModalContext";
 import {
   QA_MODAL_SURFACE_TO_REGISTRY_TYPE,
   QA_SURFACES,
+  extractQASurfaceIdFromUrl,
   getQASurface,
-  isQASurfaceId,
   type QASurfaceId,
 } from "./qaSurfaces";
 import {setQASurfaceRuntimeActive} from "./qaRuntime";
-
-const SURFACE_QUERY_PATTERN = /[?&]surface=([^&]+)/;
-const QA_PATH_PATTERN = /:\/\/qa\/?([^?]*)/;
 
 const noop = () => {};
 const noopBoolean = () => {};
@@ -72,25 +69,6 @@ const qaPlayer: Player = {
   ],
 };
 
-const extractSurfaceId = (url: string | null): QASurfaceId | null => {
-  if (!url) {
-    return null;
-  }
-
-  const queryMatch = url.match(SURFACE_QUERY_PATTERN);
-  const querySurface = queryMatch ? decodeURIComponent(queryMatch[1]) : null;
-  if (querySurface && isQASurfaceId(querySurface)) {
-    return querySurface;
-  }
-
-  const pathMatch = url.match(QA_PATH_PATTERN);
-  const pathSurface = pathMatch?.[1]?.replace(/^\/+|\/+$/g, "");
-  if (pathSurface && isQASurfaceId(pathSurface)) {
-    return pathSurface;
-  }
-
-  return null;
-};
 
 const SurfaceMarker = ({surfaceId}: {surfaceId: QASurfaceId}) => (
   <Text accessibilityLabel={`${t("TestStrings.QA_SURFACE_PREFIX")}:${surfaceId}`} style={qaStyles.surfaceMarker}>
@@ -121,6 +99,7 @@ const renderLoadingSurface = () => (
   <View style={qaStyles.centered}>
     <StarryBackground />
     <PulsingSpinner visible={true} size={120} opacity={0.8} />
+    <Text style={qaStyles.loadingLabel}>{t("Accessibility.LOADING")}</Text>
   </View>
 );
 
@@ -427,14 +406,14 @@ export const QASurfaceGate = ({children}: {children: React.ReactNode}) => {
       if (!isMounted) {
         return;
       }
-      const nextSurfaceId = extractSurfaceId(initialUrl);
+      const nextSurfaceId = extractQASurfaceIdFromUrl(initialUrl);
       if (nextSurfaceId) {
         setNextSurfaceId(nextSurfaceId);
       }
     });
 
     const subscription = Linking.addEventListener("url", ({url}) => {
-      const nextSurfaceId = extractSurfaceId(url);
+      const nextSurfaceId = extractQASurfaceIdFromUrl(url);
       if (nextSurfaceId) {
         setNextSurfaceId(nextSurfaceId);
       }
@@ -476,6 +455,13 @@ const qaStyles = StyleSheet.create({
     top: 0,
     width: 1,
     zIndex: 9999,
+  },
+  loadingLabel: {
+    color: "#FFFFFF",
+    fontFamily: TYPOGRAPHY.fontPrimary,
+    fontSize: TYPOGRAPHY.fontSize.lg,
+    marginTop: SPACING.lg,
+    textAlign: "center",
   },
   tooltipTarget: {
     alignItems: "center",

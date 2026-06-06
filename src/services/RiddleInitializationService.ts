@@ -1,9 +1,43 @@
-import {getFirestore, collection, getDocs, query, where, limit} from "@react-native-firebase/firestore";
+import {collection, getDocs, getFirestore, limit, query, where} from "@react-native-firebase/firestore";
 import {getCallableFunction} from "../utils/firebaseFunctions";
 import {logger} from "../utils/logger";
 import {captureException, startTransaction} from "../utils/sentry";
 import {getLocale} from "../i18n";
 import {getLocalizedRiddleCollection} from "./riddleCollections";
+
+const isExpectedStartupAccessError = (error: unknown): boolean => {
+  const code =
+    error && typeof error === "object" && "code" in error && typeof (error as {code?: unknown}).code === "string"
+      ? ((error as {code: string}).code ?? "").toLowerCase()
+      : "";
+  const message =
+    error instanceof Error ? `${error.name} ${error.message}` : typeof error === "string" ? error : "";
+  const text = `${code} ${message}`.toLowerCase();
+
+  return (
+    text.includes("unauthenticated") ||
+    text.includes("permission-denied") ||
+    text.includes("firestore/permission-denied") ||
+    text.includes("functions/permission-denied") ||
+    text.includes("functions/unauthenticated") ||
+    text.includes("appcheck") ||
+    text.includes("app-check") ||
+    text.includes("app check")
+  );
+};
+
+const describeStartupAccessError = (error: unknown): Record<string, unknown> => {
+  if (error && typeof error === "object") {
+    return {
+      code: "code" in error ? (error as {code?: unknown}).code : undefined,
+      message: error instanceof Error ? error.message : undefined,
+    };
+  }
+
+  return {
+    message: String(error),
+  };
+};
 
 /**
  * Service responsible for checking and initializing the riddle database
@@ -50,12 +84,17 @@ export class RiddleInitializationService {
     this.isInitializing = true;
     logger.debug("Checking if riddle database needs initialization...");
     const locale = getLocale();
+    let sawExpectedStartupAccessError = false;
 
     const txn = startTransaction("checkAndInitializeRiddles", "db");
     try {
       // Check if any classic riddles exist in the localized collection for the active locale.
       const riddlesSnapshot = await getDocs(
-        query(collection(getFirestore(), getLocalizedRiddleCollection(locale, "classic")), where("classicIndex", ">=", 0), limit(1)),
+        query(
+          collection(getFirestore(), getLocalizedRiddleCollection(locale, "classic")),
+          where("classicIndex", ">=", 0),
+          limit(1),
+        ),
       );
 
       if (!riddlesSnapshot.empty) {
@@ -73,7 +112,6 @@ export class RiddleInitializationService {
       try {
         logger.info("Calling initializeRiddleDatabase Firebase function...");
 
-        // Add timeout handling for Firebase Function calls
         let timeoutId: ReturnType<typeof setTimeout>;
         const timeoutPromise = new Promise((_, reject) => {
           timeoutId = setTimeout(() => reject(new Error("Firebase function timeout after 60 seconds")), 60000);
@@ -88,8 +126,16 @@ export class RiddleInitializationService {
 
         logger.info("Riddle initialization result:", (result as {data: unknown})?.data);
       } catch (error) {
-        logger.error("❌ Error calling initializeRiddleDatabase:", error);
-        captureException(error);
+        if (isExpectedStartupAccessError(error)) {
+          sawExpectedStartupAccessError = true;
+          logger.warn("Riddle initialization callable unavailable during startup; continuing with fallback.", {
+            functionName: "initializeRiddleDatabase",
+            ...describeStartupAccessError(error),
+          });
+        } else {
+          logger.error("❌ Error calling initializeRiddleDatabase:", error);
+          captureException(error);
+        }
 
         // Try the alternative function
         logger.info("Trying alternative: generateClassicRiddles...");
@@ -98,7 +144,6 @@ export class RiddleInitializationService {
         try {
           logger.info("Calling generateClassicRiddles Firebase function...");
 
-          // Add timeout for fallback function too
           let fallbackTimeoutId: ReturnType<typeof setTimeout>;
           const fallbackTimeoutPromise = new Promise((_, reject) => {
             fallbackTimeoutId = setTimeout(
@@ -116,31 +161,52 @@ export class RiddleInitializationService {
 
           logger.info("Classic riddles generation result:", (result as {data: unknown})?.data);
         } catch (fallbackError) {
-          logger.error("❌ Error calling generateClassicRiddles:", fallbackError);
-          captureException(fallbackError);
-          const errorMessage = error instanceof Error ? error.message : String(error);
-          const fallbackErrorMessage = fallbackError instanceof Error ? fallbackError.message : String(fallbackError);
-          throw new Error(
-            `Failed to initialize riddle database with both methods. Primary error: ${errorMessage}. Fallback error: ${fallbackErrorMessage}`,
-          );
+          if (isExpectedStartupAccessError(fallbackError)) {
+            sawExpectedStartupAccessError = true;
+            logger.warn("Riddle initialization fallback unavailable during startup; using safe fallback state.", {
+              functionName: "generateClassicRiddles",
+              ...describeStartupAccessError(fallbackError),
+            });
+          } else {
+            logger.error("❌ Error calling generateClassicRiddles:", fallbackError);
+            captureException(fallbackError);
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            const fallbackErrorMessage =
+              fallbackError instanceof Error ? fallbackError.message : String(fallbackError);
+            throw new Error(
+              `Failed to initialize riddle database with both methods. Primary error: ${errorMessage}. Fallback error: ${fallbackErrorMessage}`,
+            );
+          }
         }
       }
 
       // Verify classic riddles were created in the riddles collection
       const verifySnapshot = await getDocs(
-        query(collection(getFirestore(), getLocalizedRiddleCollection(locale, "classic")), where("classicIndex", ">=", 0), limit(1)),
+        query(
+          collection(getFirestore(), getLocalizedRiddleCollection(locale, "classic")),
+          where("classicIndex", ">=", 0),
+          limit(1),
+        ),
       );
 
       if (verifySnapshot.empty) {
-        throw new Error(`Riddle initialization completed but no classic riddles found in localized database for locale ${locale}`);
+        throw new Error(
+          `Riddle initialization completed but no classic riddles found in localized database for locale ${locale}`,
+        );
       }
 
       logger.info(`Classic riddles database successfully initialized for locale ${locale}!`);
       this.hasInitialized = true;
       this.initializationFailed = false;
     } catch (error) {
-      logger.error("❌ Error during riddle initialization check:", error);
-      captureException(error);
+      if (sawExpectedStartupAccessError || isExpectedStartupAccessError(error)) {
+        logger.warn("Riddle initialization skipped because the backend denied access during startup.", {
+          ...describeStartupAccessError(error),
+        });
+      } else {
+        logger.error("❌ Error during riddle initialization check:", error);
+        captureException(error);
+      }
       this.initializationFailed = true;
       // Don't throw here - allow the app to continue even if initialization fails
       // The user will see appropriate error messages when trying to play

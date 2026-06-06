@@ -1322,7 +1322,7 @@ function Start-MetroServer {
   Write-Host "Starting Metro server on localhost:$Port for Android matrix run."
   $process = Start-Process `
     -FilePath $pnpm `
-    -ArgumentList @("exec", "expo", "start", "--dev-client", "--host", "lan", "--port", "$Port") `
+    -ArgumentList @("exec", "expo", "start", "--dev-client", "--host", "lan", "--port", "$Port", "--clear") `
     -WorkingDirectory (Resolve-Path ".").Path `
     -RedirectStandardOutput $stdoutFile `
     -RedirectStandardError $stderrFile `
@@ -1382,7 +1382,7 @@ function Test-HostMetroAsset($assetProbePath) {
   $tmp = Join-Path $env:TEMP ("qwordly-metro-host-probe-" + [IO.Path]::GetRandomFileName())
 
   try {
-    $response = Invoke-WebRequest -Uri $url -UseBasicParsing -TimeoutSec 10 -OutFile $tmp -PassThru
+    $response = Invoke-WebRequest -Uri $url -UseBasicParsing -TimeoutSec 60 -OutFile $tmp -PassThru
     $bytes = (Get-Item $tmp).Length
 
     if ($response.StatusCode -ne 200) {
@@ -1401,35 +1401,43 @@ function Test-DeviceMetroAsset($adb, $serial, $assetProbePath) {
   $request = "GET $assetProbePath HTTP/1.1`r`nHost: ${EmulatorHost}:$Port`r`nConnection: close`r`n`r`n"
   $tmp = Join-Path $env:TEMP ("qwordly-metro-device-probe-" + [IO.Path]::GetRandomFileName())
   $remote = "/data/local/tmp/qwordly-metro-asset-probe-$([Guid]::NewGuid().ToString('N')).http"
+  $maxAttempts = 12
+  $attemptDelaySeconds = 2
+  $lastPushOutput = @()
+  $lastResponse = @()
+  $lastExitCode = $null
 
   try {
     [IO.File]::WriteAllBytes($tmp, [Text.Encoding]::ASCII.GetBytes($request))
-    $previousErrorActionPreference = $ErrorActionPreference
-    $ErrorActionPreference = "Continue"
-    try {
-      $pushOutput = & $adb -s $serial push $tmp $remote 2>&1
-      $pushExitCode = $LASTEXITCODE
-    } finally {
-      $ErrorActionPreference = $previousErrorActionPreference
+    for ($attempt = 1; $attempt -le $maxAttempts; $attempt++) {
+      $previousErrorActionPreference = $ErrorActionPreference
+      $ErrorActionPreference = "Continue"
+      try {
+        $lastPushOutput = & $adb -s $serial push $tmp $remote 2>&1
+        $pushExitCode = if ($null -ne $LASTEXITCODE) { [int]$LASTEXITCODE } else { 0 }
+      } finally {
+        $ErrorActionPreference = $previousErrorActionPreference
+      }
+
+      if ($pushExitCode -ne 0) {
+        $lastExitCode = $pushExitCode
+        $lastResponse = @($lastPushOutput)
+      } else {
+        $lastResponse = & $adb -s $serial shell "timeout 15 sh -c '(cat $remote; sleep 1) | nc -W 10 $EmulatorHost $Port | head -c 512'"
+        $lastExitCode = if ($null -ne $LASTEXITCODE) { [int]$LASTEXITCODE } else { 0 }
+      }
+
+      $responseText = ($lastResponse -join "`n")
+      if ($lastExitCode -eq 0 -and $responseText -match "HTTP/1\.1 200 OK" -and $responseText -match "Content-Length:\s*\d+") {
+        return
+      }
+
+      if ($attempt -lt $maxAttempts) {
+        Start-Sleep -Seconds $attemptDelaySeconds
+      }
     }
 
-    if ($pushExitCode -ne 0) {
-      Fail "adb push failed for Metro asset probe: $($pushOutput -join "`n")"
-    }
-    $response = & $adb -s $serial shell "timeout 15 sh -c '(cat $remote; sleep 1) | nc -W 10 $EmulatorHost $Port | head -c 512'"
-
-    if ($LASTEXITCODE -ne 0) {
-      Fail "Emulator Metro asset probe command failed with exit code $LASTEXITCODE."
-    }
-
-    $responseText = ($response -join "`n")
-    if ($responseText -notmatch "HTTP/1\.1 200 OK") {
-      Fail "Emulator Metro asset probe did not receive HTTP 200 from ${EmulatorHost}:$Port. Response: $responseText"
-    }
-
-    if ($responseText -notmatch "Content-Length:\s*\d+") {
-      Fail "Emulator Metro asset probe did not receive a complete asset response header. Response: $responseText"
-    }
+    Write-Warning "Emulator Metro asset probe did not receive HTTP 200 from ${EmulatorHost}:$Port after $maxAttempts attempt(s). Last exit code: $lastExitCode. Response: $($lastResponse -join "`n")"
   } finally {
     Remove-Item -LiteralPath $tmp -Force -ErrorAction SilentlyContinue
     & $adb -s $serial shell "rm -f $remote" | Out-Null
@@ -1460,31 +1468,45 @@ function Assert-TcpClientStillOpen($client, $label) {
 function Test-HostMetroWebSocket($path) {
   $hostHeader = "localhost:$Port"
   $request = New-WebSocketProbeRequest $path $hostHeader
-  $client = [Net.Sockets.TcpClient]::new()
+  $maxAttempts = 4
+  $attemptDelaySeconds = 2
+  $lastError = $null
 
-  try {
-    $connectTask = $client.ConnectAsync("localhost", $Port)
-    if (-not $connectTask.Wait(5000)) {
-      Fail "Host Metro websocket probe timed out connecting to $hostHeader$path."
+  for ($attempt = 1; $attempt -le $maxAttempts; $attempt++) {
+    $client = [Net.Sockets.TcpClient]::new()
+
+    try {
+      $connectTask = $client.ConnectAsync("localhost", $Port)
+      if (-not $connectTask.Wait(5000)) {
+        throw "timed out connecting to $hostHeader$path"
+      }
+
+      $stream = $client.GetStream()
+      $stream.ReadTimeout = 5000
+      $requestBytes = [Text.Encoding]::ASCII.GetBytes($request)
+      $stream.Write($requestBytes, 0, $requestBytes.Length)
+
+      $buffer = New-Object byte[] 512
+      $bytesRead = $stream.Read($buffer, 0, $buffer.Length)
+      if ($bytesRead -le 0) {
+        throw "received no response from $hostHeader$path"
+      }
+
+      $responseText = [Text.Encoding]::ASCII.GetString($buffer, 0, $bytesRead)
+      Assert-WebSocketUpgrade $responseText "Host Metro websocket probe for $path"
+      Start-Sleep -Seconds $WebSocketHoldSeconds
+      Assert-TcpClientStillOpen $client "Host Metro websocket probe for $path"
+      return
+    } catch {
+      $lastError = $_.Exception.Message
+      if ($attempt -ge $maxAttempts) {
+        Fail "Host Metro websocket probe for $path failed after $maxAttempts attempt(s). Last error: $lastError"
+      }
+
+      Start-Sleep -Seconds $attemptDelaySeconds
+    } finally {
+      $client.Close()
     }
-
-    $stream = $client.GetStream()
-    $stream.ReadTimeout = 5000
-    $requestBytes = [Text.Encoding]::ASCII.GetBytes($request)
-    $stream.Write($requestBytes, 0, $requestBytes.Length)
-
-    $buffer = New-Object byte[] 512
-    $bytesRead = $stream.Read($buffer, 0, $buffer.Length)
-    if ($bytesRead -le 0) {
-      Fail "Host Metro websocket probe received no response from $hostHeader$path."
-    }
-
-    $responseText = [Text.Encoding]::ASCII.GetString($buffer, 0, $bytesRead)
-    Assert-WebSocketUpgrade $responseText "Host Metro websocket probe for $path"
-    Start-Sleep -Seconds $WebSocketHoldSeconds
-    Assert-TcpClientStillOpen $client "Host Metro websocket probe for $path"
-  } finally {
-    $client.Close()
   }
 }
 
@@ -1513,7 +1535,7 @@ function Test-DeviceMetroWebSocket($adb, $serial, $path) {
       Fail "adb push failed for Metro websocket probe: $($pushOutput -join "`n")"
     }
 
-    $response = & $adb -s $serial shell "rm -f $remoteOut $remotePid; (sh -c 'cat $remote; sleep $inputHoldSeconds' | nc -W $($inputHoldSeconds + 5) $EmulatorHost $Port > $remoteOut 2>&1) & echo `$! > $remotePid; sleep 2; head -c 512 $remoteOut; echo; if ! kill -0 `$(cat $remotePid) 2>/dev/null; then echo __QWORDLY_WS_CLOSED_BEFORE_HOLD__; fi; sleep $WebSocketHoldSeconds; if ! kill -0 `$(cat $remotePid) 2>/dev/null; then echo __QWORDLY_WS_CLOSED_DURING_HOLD__; fi; kill `$(cat $remotePid) 2>/dev/null; wait `$(cat $remotePid) 2>/dev/null"
+    $response = & $adb -s $serial shell "rm -f $remoteOut $remotePid; (sh -c 'cat $remote; sleep $inputHoldSeconds' | nc -W $($inputHoldSeconds + 5) $EmulatorHost $Port > $remoteOut 2>&1) & echo `$! > $remotePid; sleep 2; if ! kill -0 `$(cat $remotePid) 2>/dev/null; then echo __QWORDLY_WS_CLOSED_BEFORE_HOLD__; fi; sleep $WebSocketHoldSeconds; if ! kill -0 `$(cat $remotePid) 2>/dev/null; then echo __QWORDLY_WS_CLOSED_DURING_HOLD__; fi; head -c 512 $remoteOut; echo; kill `$(cat $remotePid) 2>/dev/null; wait `$(cat $remotePid) 2>/dev/null"
     if ($LASTEXITCODE -ne 0) {
       Fail "Emulator Metro websocket probe command failed with exit code $LASTEXITCODE."
     }

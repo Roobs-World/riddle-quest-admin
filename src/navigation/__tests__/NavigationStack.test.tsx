@@ -298,7 +298,7 @@ describe("NavigationStack", () => {
     expect(queryByTestId("stack-screen-game")).toBeNull();
   });
 
-  it("renders authenticated game flow and fetches riddle on mount", async () => {
+  it("renders authenticated game flow without refetching a restored riddle", async () => {
     const playerData = {userId: "u1", coins: 100, stats: {level: 1, xp: 0}};
     const fetchCurrentRiddle = jest.fn().mockResolvedValue(undefined);
     mockedUseAuth.mockReturnValue(
@@ -315,8 +315,26 @@ describe("NavigationStack", () => {
     expect(getByTestId("stack-screen-game")).toBeTruthy();
     expect(getByTestId("game-screen")).toBeTruthy();
 
-    await waitFor(() => expect(fetchCurrentRiddle).toHaveBeenCalledWith(playerData, "classic"));
+    await waitFor(() => expect(fetchCurrentRiddle).not.toHaveBeenCalled());
     expect(mockedAnalytics.logScreenView).toHaveBeenCalled();
+  });
+
+  it("fetches a riddle on mount when no restored riddle exists", async () => {
+    const playerData = {userId: "u1b", coins: 100, stats: {level: 1, xp: 0}};
+    const fetchCurrentRiddle = jest.fn().mockResolvedValue(undefined);
+    mockedUseAuth.mockReturnValue(
+      createAuthState({
+        isAuthenticated: true,
+        playerData,
+        currentRiddle: null,
+        gameMode: "classic",
+        fetchCurrentRiddle,
+      }) as any,
+    );
+
+    render(<Navigation />);
+
+    await waitFor(() => expect(fetchCurrentRiddle).toHaveBeenCalledWith(playerData, "classic"));
   });
 
   it("suppresses onboarding on remount after first game screen mount in-session", () => {
@@ -827,8 +845,7 @@ describe("NavigationStack", () => {
     );
 
     const {rerender} = render(<Navigation />);
-    await waitFor(() => expect(fetchCurrentRiddle).toHaveBeenCalledWith(playerData, "classic"));
-    expect(fetchCurrentRiddle).toHaveBeenCalledTimes(1);
+    await waitFor(() => expect(fetchCurrentRiddle).not.toHaveBeenCalled());
 
     mockedUseAuth.mockReturnValue(
       createAuthState({
@@ -841,6 +858,6 @@ describe("NavigationStack", () => {
       }) as any,
     );
     rerender(<Navigation />);
-    await waitFor(() => expect(fetchCurrentRiddle).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(fetchCurrentRiddle).not.toHaveBeenCalled());
   });
 });

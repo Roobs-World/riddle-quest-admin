@@ -5,7 +5,7 @@ import {z} from "zod";
 import {captureException, withSentrySpan} from "./sentry";
 import {clueContainsLiteralAnswer} from "./riddleQuality";
 import {MAX_RIDDLE_ANSWER_CHARACTERS} from "./constants";
-import {type SupportedLocale} from "../../packages/core/dist/validation";
+import {type SupportedLocale} from "@qwordly/core/validation";
 
 // Lazy initialization variable
 let openaiClient: OpenAI | null = null;
@@ -33,6 +33,9 @@ const getLocaleSpecificPrompt = (locale: SupportedLocale): string => {
 
   return (
     `Write the question and answer naturally in ${locale}, using that locale's native script and everyday vocabulary. ` +
+    "Adapt the clue, imagery, and references so they feel native to the locale rather than translated from English. " +
+    "Prefer widely understood local concepts, idioms, foods, places, customs, and everyday objects that a native speaker would recognize immediately. " +
+    "Avoid culture-specific references that only make sense in English or in a different country, and avoid obscure local trivia that would be unfair to a broad audience. " +
     "Keep the answer concise, culturally appropriate, and playable on a mobile word game keyboard."
   );
 };
@@ -138,6 +141,8 @@ export async function generateUniqueRiddle(locale: SupportedLocale = "en"): Prom
                 "Make each clue fair, specific, and solvable with one clear answer; avoid obscure specialist trivia, vague clues, and clues that could fit many answers. " +
                 "Do not rely on the same opening pattern every time, especially not repeated 'What am I?' phrasing. " +
                 "Keep clues solvable, fair, and fun for mobile players. " +
+                "For non-English locales, adapt the subject choice, references, and idioms to the target culture so the riddle feels native, not translated. " +
+                "Prefer culturally familiar clues that still work for a broad audience within that language community, not niche region-specific references unless they are very widely understood. " +
                 localePrompt,
             },
             {
@@ -158,6 +163,8 @@ export async function generateUniqueRiddle(locale: SupportedLocale = "en"): Prom
                 "- Style diversity: Use a less common riddle angle, avoid generic textbook riddles, vague clues, and familiar tropes\n" +
                 "- Question pattern variety: Prefer alternatives to plain 'What am I?' prompts (use first-person voice, situation-based clues, or indirect questions when possible)\n" +
                 "- Locale fit: The question and answer must sound native to the target locale rather than translated word-for-word from English\n" +
+                "- Cultural fit: Choose references, metaphors, and everyday examples that make sense naturally in the target locale; adjust the clue to local speech patterns and shared knowledge without losing fairness\n" +
+                "- Localization depth: If a direct English concept would feel awkward, replace it with a culturally equivalent local concept instead of translating literally\n" +
                 "- Originality: Must be completely unique, not a common or well-known riddle\n\n" +
                 `The answer length and format are critical: it must never exceed ${MAX_RIDDLE_ANSWER_CHARACTERS} characters.`,
             },
