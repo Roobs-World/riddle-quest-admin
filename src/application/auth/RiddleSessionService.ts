@@ -11,7 +11,7 @@ interface RiddleSessionSink {
   setCurrentRiddle: (riddle: FirestoreRiddle | null) => void;
   /** Updates whether the current player can access the daily challenge. */
   setIsDailyChallengeAvailable: (available: boolean | undefined) => void;
-  /** Updates the active game mode after fallbacks or restores. */
+  /** Updates the active game mode after restores. */
   setGameMode: (mode: GameMode) => void;
   /** Flags whether riddle initialization is still in progress. */
   setIsRiddlesInitializing: (initializing: boolean) => void;
@@ -30,7 +30,7 @@ interface RiddleSessionSink {
  *
  * Invariants:
  * - Stale requests never win over newer auth state.
- * - Daily mode falls back to classic mode when no daily riddle is available.
+ * - Daily mode stays on daily and returns no riddle when the current daily challenge is unavailable.
  * - Sink updates happen only after stale-request checks pass.
  */
 async function fetchCurrentRiddle(
@@ -74,15 +74,7 @@ async function fetchCurrentRiddle(
         riddle = await fetchDailyRiddleFromFirestore(player.progress.dailyChallengeIndex, locale);
       }
       if (!riddle) {
-        logger.debug("No daily riddle available, falling back to classic mode riddle.");
-        if (player.progress?.classicIndex !== undefined) {
-          riddle = await fetchClassicRiddleFromFirestore(player.progress.classicIndex, locale);
-          if (!isStaleRequest()) {
-            sink.setGameMode("classic");
-          }
-        } else {
-          logger.warn("Classic index is undefined, cannot load fallback riddle.");
-        }
+        logger.debug("No daily riddle available for daily mode.");
       }
     } else if (mode === "classic") {
       if (player.progress?.classicIndex !== undefined) {
@@ -95,13 +87,7 @@ async function fetchCurrentRiddle(
         riddle = await fetchDailyRiddleFromFirestore(player.progress.dailyChallengeIndex, locale);
       }
       if (!riddle) {
-        logger.debug("No daily challenge riddle available, falling back to classic mode riddle.");
-        if (player.progress?.classicIndex !== undefined) {
-          riddle = await fetchClassicRiddleFromFirestore(player.progress.classicIndex, locale);
-          if (!isStaleRequest()) {
-            sink.setGameMode("classic");
-          }
-        }
+        logger.debug("No daily challenge riddle available for challenge mode.");
       }
     }
 
@@ -149,7 +135,7 @@ async function fetchCurrentRiddle(
     if (RiddleInitializationService.getInitializationStatus().initializationFailed) {
       logger.error("❌ Failed to load any riddle after all attempts");
     } else {
-      logger.warn("No riddle loaded after startup attempts; continuing with fallback state.");
+      logger.warn("No riddle loaded after startup attempts; leaving the current riddle empty.");
     }
   }
 }

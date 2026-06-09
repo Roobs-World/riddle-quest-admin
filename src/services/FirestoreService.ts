@@ -92,8 +92,8 @@ function setCachedRiddle(key: string, riddle: FirestoreRiddle): void {
 
 const resolveLocale = (locale?: SupportedLanguage): SupportedLanguage => locale ?? getLocale();
 
-const getLocalizedRiddleCollection = (locale: SupportedLanguage, category: "classic" | "daily"): string =>
-  `${LOCALIZED_RIDDLES_COLLECTION}/${locale}/${category}`;
+const getLocalizedRiddleCollection = (locale: SupportedLanguage): string =>
+  `${LOCALIZED_RIDDLES_COLLECTION}/${locale}/riddles`;
 
 const wait = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -408,7 +408,7 @@ export const fetchDailyRiddleForDate = async (dateString: string): Promise<Fires
     const riddleQuerySnapshot = await withFirestoreReadRetry("fetchDailyRiddleForDate", () =>
       getDocs(
         query(
-          withConverterIfAvailable(collection(getFirestore(), `${LOCALIZED_RIDDLES_COLLECTION}/${resolvedLocale}/daily`), riddleFirestoreConverter),
+          withConverterIfAvailable(collection(getFirestore(), getLocalizedRiddleCollection(resolvedLocale)), riddleFirestoreConverter),
           where("challengeKey", "==", dateString),
           limit(1),
         ),

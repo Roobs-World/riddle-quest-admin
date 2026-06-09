@@ -12,7 +12,6 @@ let mockLimit: jest.Mock;
 let mockDoc: jest.Mock;
 let mockQuery: jest.Mock;
 
-// Legacy alias: mockGet used throughout tests - routes to both getDocs and getDoc
 let mockGet: jest.Mock;
 
 jest.mock("@react-native-firebase/firestore", () => {
@@ -23,7 +22,6 @@ jest.mock("@react-native-firebase/firestore", () => {
   mockWhere = jest.fn(() => ({}));
   mockCollection = jest.fn(() => ({}));
   mockQuery = jest.fn(() => ({}));
-  // mockGet is a shared alias - assigned after factory
   mockGet = mockGetDocs;
 
   return {
@@ -123,7 +121,7 @@ describe("RiddleDataService", () => {
 
       const result = await riddleDataService.fetchDailyRiddle();
 
-      expect(mockCollection).toHaveBeenCalledWith(expect.any(Object), "localizedRiddles/en/daily");
+      expect(mockCollection).toHaveBeenCalledWith(expect.any(Object), "localizedRiddles/en/riddles");
       expect(mockWhere).toHaveBeenCalledWith("riddleId", "==", "current");
       expect(mockLimit).toHaveBeenCalledWith(1);
       expect(FirestoreRiddleSchema.parse).toHaveBeenCalledWith(
@@ -230,7 +228,7 @@ describe("RiddleDataService", () => {
 
       const result = await riddleDataService.fetchClassicRiddle(level);
 
-      expect(mockCollection).toHaveBeenCalledWith(expect.any(Object), "localizedRiddles/en/classic");
+      expect(mockCollection).toHaveBeenCalledWith(expect.any(Object), "localizedRiddles/en/riddles");
       expect(mockWhere).toHaveBeenCalledWith("classicIndex", "==", level);
       expect(mockLimit).toHaveBeenCalledWith(1);
       expect(FirestoreRiddleSchema.parse).toHaveBeenCalledWith({
@@ -409,7 +407,7 @@ describe("RiddleDataService", () => {
 
       const result = await riddleDataService.fetchRiddleById(riddleId);
 
-      expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "localizedRiddles/en/classic", riddleId);
+      expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "localizedRiddles/en/riddles", riddleId);
       expect(FirestoreRiddleSchema.parse).toHaveBeenCalledWith({
         ...mockRiddleData,
         riddleId: riddleId,
@@ -518,7 +516,7 @@ describe("RiddleDataService", () => {
 
       const result = await riddleDataService.getClassicRiddleCount();
 
-      expect(mockCollection).toHaveBeenCalledWith(expect.any(Object), "localizedRiddles/en/classic");
+      expect(mockCollection).toHaveBeenCalledWith(expect.any(Object), "localizedRiddles/en/riddles");
       expect(mockWhere).toHaveBeenCalledWith("classicIndex", ">=", 0);
       expect(result).toBe(25);
     });
@@ -600,7 +598,7 @@ describe("RiddleDataService", () => {
       await riddleDataService.getClassicRiddleCount();
 
       // Verify all calls used the same collection name
-      expect(mockCollection).toHaveBeenCalledWith(expect.any(Object), "localizedRiddles/en/classic");
+      expect(mockCollection).toHaveBeenCalledWith(expect.any(Object), "localizedRiddles/en/riddles");
       expect(mockCollection).toHaveBeenCalledTimes(2);
     });
 

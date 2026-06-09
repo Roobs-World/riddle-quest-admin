@@ -354,7 +354,7 @@ export const translationSchema = {
     "DEBUG_CLEAR_LOCAL_DATA_ERROR_TITLE": "Clear Local Data Error",
     "DEBUG_DAILY_CHALLENGE_ERROR_MESSAGE": "Failed to generate a new daily challenge.",
     "DEBUG_DAILY_CHALLENGE_ERROR_TITLE": "Daily Challenge Error",
-    "DEBUG_DAILY_CHALLENGE_GENERATED_MESSAGE": "Successfully generated a new daily challenge in dailyRiddles/current.",
+    "DEBUG_DAILY_CHALLENGE_GENERATED_MESSAGE": "Successfully generated a new daily challenge in localizedRiddles/{locale}/riddles/current.",
     "DEBUG_DAILY_CHALLENGE_GENERATED_TITLE": "Daily Challenge Generated",
     "GUEST_MODE_SAVED_ON_DEVICE_MESSAGE": "Your progress is saved on this device. Upgrade your account to keep it safe across devices.",
     "STREAK_BROKEN_MESSAGE": "Your streak ended at {previousStreak} day{daySuffix}. Complete today's daily challenge to start a new streak.",

@@ -10,10 +10,17 @@ import {type SupportedLocale} from "@qwordly/core/validation";
 // Lazy initialization variable
 let openaiClient: OpenAI | null = null;
 
+const OpenAIGeneratedRiddleSchema = z
+  .object({
+    question: z.string().min(10).max(120),
+    answer: z.string().min(1).max(MAX_RIDDLE_ANSWER_CHARACTERS),
+  })
+  .strict();
+
 export const GeneratedRiddleSchema = z
   .object({
-    question: z.string().min(10).max(120).regex(/^[\p{L}\p{M}\p{N}\s,.'?!-]+$/u),
-    answer: z.string().min(1).max(MAX_RIDDLE_ANSWER_CHARACTERS).regex(/^[\p{Ll}\p{Lo}\p{Lm}\p{Mn}\p{Mc}\p{Nd}\s'-]+$/u),
+    question: z.string().min(10).max(120).regex(/^[\p{L}\p{M}\p{N}\p{P}\s]+$/u),
+    answer: z.string().min(1).max(MAX_RIDDLE_ANSWER_CHARACTERS).regex(/^[\p{L}\p{M}\p{N}\s'-]+$/u),
   })
   .strict();
 
@@ -70,9 +77,21 @@ function summarizeZodIssues(issues: {path: PropertyKey[]; message: string}[]): s
     .join("; ");
 }
 
+function normalizeGeneratedText(value: string): string {
+  return value
+    .normalize("NFC")
+    .replace(/[\u2018\u2019\u201B\u2032]/gu, "'")
+    .replace(/[\u201C\u201D\u201F\u2033]/gu, '"')
+    .replace(/[\u2010\u2011\u2012\u2013\u2014\u2212]/gu, "-")
+    .replace(/\u2026/gu, "...")
+    .replace(/[\u00A0\u2000-\u200A\u202F\u205F\u3000]/gu, " ")
+    .replace(/\s+/gu, " ")
+    .trim();
+}
+
 function validateGeneratedRiddle(generatedRiddle: GeneratedRiddle): [string, string] | null {
-  const question = generatedRiddle.question.trim();
-  const answer = generatedRiddle.answer.trim();
+  const question = normalizeGeneratedText(generatedRiddle.question);
+  const answer = normalizeGeneratedText(generatedRiddle.answer).toLocaleLowerCase();
 
   if (!question || !answer) {
     functions.logger.warn("Question or answer is empty after structured parsing.");
@@ -96,9 +115,9 @@ function validateGeneratedRiddle(generatedRiddle: GeneratedRiddle): [string, str
     return null;
   }
 
-  if (!/^[\p{L}\p{M}\p{N}\s,.'?!-]+$/u.test(question)) {
+  if (!/^[\p{L}\p{M}\p{N}\p{P}\s]+$/u.test(question)) {
     functions.logger.warn(
-      `Question contains invalid characters: "${question}". Must contain only letters, numbers, spaces, and basic punctuation.`,
+      `Question contains invalid characters: "${question}". Must contain only letters, numbers, spaces, and punctuation.`,
     );
     return null;
   }
@@ -169,7 +188,7 @@ export async function generateUniqueRiddle(locale: SupportedLocale = "en"): Prom
                 `The answer length and format are critical: it must never exceed ${MAX_RIDDLE_ANSWER_CHARACTERS} characters.`,
             },
           ],
-          response_format: zodResponseFormat(GeneratedRiddleSchema, "generated_riddle"),
+          response_format: zodResponseFormat(OpenAIGeneratedRiddleSchema, "generated_riddle"),
         }),
       {model, locale},
     );

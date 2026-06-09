@@ -24,10 +24,10 @@ import {
   advanceDailyChallengeProgress,
 } from "./dailyChallenge";
 import {
-  generateClassicRiddles,
   initializeRiddleDatabase,
   generateDailyRiddles,
   generateTodaysDailyChallengeFunction,
+  seedLocalizedRiddles,
 } from "./riddleGeneration";
 import {updateAvatar, updateUsername} from "./profile";
 import {submitGuess, completeGame} from "./submitGuessLogic";
@@ -46,10 +46,10 @@ export {
   getCurrentDailyChallenge,
   getCurrentClassicRiddle,
   advanceDailyChallengeProgress,
-  generateClassicRiddles,
   initializeRiddleDatabase,
   generateDailyRiddles,
   generateTodaysDailyChallengeFunction,
+  seedLocalizedRiddles,
   updateAvatar,
   updateUsername,
   submitGuess,

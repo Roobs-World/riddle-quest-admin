@@ -34,7 +34,7 @@
     "DEBUG_CLEAR_LOCAL_DATA_ERROR_TITLE": "ローカル データのクリア エラー",
     "DEBUG_DAILY_CHALLENGE_ERROR_MESSAGE": "新しいデイリー チャレンジの生成に失敗しました。",
     "DEBUG_DAILY_CHALLENGE_ERROR_TITLE": "デイリー チャレンジ エラー",
-    "DEBUG_DAILY_CHALLENGE_GENERATED_MESSAGE": "dailyRiddles/current で新しいデイリー チャレンジが正常に生成されました。",
+    "DEBUG_DAILY_CHALLENGE_GENERATED_MESSAGE": "localizedRiddles/{locale}/riddles/current で新しいデイリー チャレンジが正常に生成されました。",
     "DEBUG_DAILY_CHALLENGE_GENERATED_TITLE": "デイリー チャレンジGenerated",
     "GUEST_MODE_SAVED_ON_DEVICE_MESSAGE": "進行状況はこのデバイスに保存されます。アカウントをアップグレードして、さまざまなデバイスで安全に保ちます。",
     "STREAK_BROKEN_MESSAGE": "あなたの連続記録は {previousStreak} 日 {daySuffix} で終了しました。今日のデイリー チャレンジを完了して、新たな連勝記録を開始しましょう。",

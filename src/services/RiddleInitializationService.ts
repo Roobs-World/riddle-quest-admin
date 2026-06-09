@@ -84,14 +84,13 @@ export class RiddleInitializationService {
     this.isInitializing = true;
     logger.debug("Checking if riddle database needs initialization...");
     const locale = getLocale();
-    let sawExpectedStartupAccessError = false;
 
     const txn = startTransaction("checkAndInitializeRiddles", "db");
     try {
       // Check if any classic riddles exist in the localized collection for the active locale.
       const riddlesSnapshot = await getDocs(
         query(
-          collection(getFirestore(), getLocalizedRiddleCollection(locale, "classic")),
+          collection(getFirestore(), getLocalizedRiddleCollection(locale)),
           where("classicIndex", ">=", 0),
           limit(1),
         ),
@@ -109,81 +108,26 @@ export class RiddleInitializationService {
       // Call the Firebase function to initialize riddles with timeout
       const initializeRiddleDatabase = getCallableFunction("initializeRiddleDatabase");
 
+      logger.info("Calling initializeRiddleDatabase Firebase function...");
+
+      let timeoutId: ReturnType<typeof setTimeout>;
+      const timeoutPromise = new Promise((_, reject) => {
+        timeoutId = setTimeout(() => reject(new Error("Firebase function timeout after 60 seconds")), 60000);
+      });
+
+      let result: unknown;
       try {
-        logger.info("Calling initializeRiddleDatabase Firebase function...");
-
-        let timeoutId: ReturnType<typeof setTimeout>;
-        const timeoutPromise = new Promise((_, reject) => {
-          timeoutId = setTimeout(() => reject(new Error("Firebase function timeout after 60 seconds")), 60000);
-        });
-
-        let result: unknown;
-        try {
-          result = await Promise.race([initializeRiddleDatabase({}), timeoutPromise]);
-        } finally {
-          clearTimeout(timeoutId!);
-        }
-
-        logger.info("Riddle initialization result:", (result as {data: unknown})?.data);
-      } catch (error) {
-        if (isExpectedStartupAccessError(error)) {
-          sawExpectedStartupAccessError = true;
-          logger.warn("Riddle initialization callable unavailable during startup; continuing with fallback.", {
-            functionName: "initializeRiddleDatabase",
-            ...describeStartupAccessError(error),
-          });
-        } else {
-          logger.error("❌ Error calling initializeRiddleDatabase:", error);
-          captureException(error);
-        }
-
-        // Try the alternative function
-        logger.info("Trying alternative: generateClassicRiddles...");
-        const generateClassicRiddles = getCallableFunction("generateClassicRiddles");
-
-        try {
-          logger.info("Calling generateClassicRiddles Firebase function...");
-
-          let fallbackTimeoutId: ReturnType<typeof setTimeout>;
-          const fallbackTimeoutPromise = new Promise((_, reject) => {
-            fallbackTimeoutId = setTimeout(
-              () => reject(new Error("Firebase function timeout after 60 seconds")),
-              60000,
-            );
-          });
-
-          let result: unknown;
-          try {
-            result = await Promise.race([generateClassicRiddles({}), fallbackTimeoutPromise]);
-          } finally {
-            clearTimeout(fallbackTimeoutId!);
-          }
-
-          logger.info("Classic riddles generation result:", (result as {data: unknown})?.data);
-        } catch (fallbackError) {
-          if (isExpectedStartupAccessError(fallbackError)) {
-            sawExpectedStartupAccessError = true;
-            logger.warn("Riddle initialization fallback unavailable during startup; using safe fallback state.", {
-              functionName: "generateClassicRiddles",
-              ...describeStartupAccessError(fallbackError),
-            });
-          } else {
-            logger.error("❌ Error calling generateClassicRiddles:", fallbackError);
-            captureException(fallbackError);
-            const errorMessage = error instanceof Error ? error.message : String(error);
-            const fallbackErrorMessage =
-              fallbackError instanceof Error ? fallbackError.message : String(fallbackError);
-            throw new Error(
-              `Failed to initialize riddle database with both methods. Primary error: ${errorMessage}. Fallback error: ${fallbackErrorMessage}`,
-            );
-          }
-        }
+        result = await Promise.race([initializeRiddleDatabase({}), timeoutPromise]);
+      } finally {
+        clearTimeout(timeoutId!);
       }
+
+      logger.info("Riddle initialization result:", (result as {data: unknown})?.data);
 
       // Verify classic riddles were created in the riddles collection
       const verifySnapshot = await getDocs(
         query(
-          collection(getFirestore(), getLocalizedRiddleCollection(locale, "classic")),
+          collection(getFirestore(), getLocalizedRiddleCollection(locale)),
           where("classicIndex", ">=", 0),
           limit(1),
         ),
@@ -199,7 +143,7 @@ export class RiddleInitializationService {
       this.hasInitialized = true;
       this.initializationFailed = false;
     } catch (error) {
-      if (sawExpectedStartupAccessError || isExpectedStartupAccessError(error)) {
+      if (isExpectedStartupAccessError(error)) {
         logger.warn("Riddle initialization skipped because the backend denied access during startup.", {
           ...describeStartupAccessError(error),
         });
@@ -235,7 +179,7 @@ export class RiddleInitializationService {
     try {
       const riddlesSnapshot = await getDocs(
         query(
-          collection(getFirestore(), getLocalizedRiddleCollection(getLocale(), "classic")),
+          collection(getFirestore(), getLocalizedRiddleCollection(getLocale())),
           where("classicIndex", ">=", 0),
           limit(minimumCount),
         ),

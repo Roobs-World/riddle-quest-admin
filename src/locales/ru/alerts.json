@@ -34,7 +34,7 @@
     "DEBUG_CLEAR_LOCAL_DATA_ERROR_TITLE": "Ошибка очистки локальных данных",
     "DEBUG_DAILY_CHALLENGE_ERROR_MESSAGE": "Не удалось создать новое ежедневное задание.",
     "DEBUG_DAILY_CHALLENGE_ERROR_TITLE": "Ошибка ежедневного задания",
-    "DEBUG_DAILY_CHALLENGE_GENERATED_MESSAGE": "Успешно создано новое ежедневное задание в dailyRiddles/current.",
+    "DEBUG_DAILY_CHALLENGE_GENERATED_MESSAGE": "Успешно создано новое ежедневное задание в localizedRiddles/{locale}/riddles/current.",
     "DEBUG_DAILY_CHALLENGE_GENERATED_TITLE": "Daily Задача создана",
     "GUEST_MODE_SAVED_ON_DEVICE_MESSAGE": "Ваш прогресс сохраняется на этом устройстве. Обновите свою учетную запись, чтобы обеспечить ее безопасность на всех устройствах.",
     "STREAK_BROKEN_MESSAGE": "Ваша серия закончилась в {previousStreak} день{daySuffix}. Выполните сегодняшнее ежедневное задание, чтобы начать новую серию.",

@@ -156,7 +156,9 @@ describe("dailyChallengeScheduler", () => {
 
     await scheduledTaskHandler(mockScheduledEvent());
 
-    expect(mockLogger.info).toHaveBeenCalledWith("Daily scheduler started (target: dailyRiddles/current).");
+    expect(mockLogger.info).toHaveBeenCalledWith(
+      "Daily scheduler started (target: localizedRiddles/{locale}/riddles/current).",
+    );
     expect(mockGenerateTodaysDailyChallenge).toHaveBeenCalledWith(false);
   });
 
@@ -170,11 +172,11 @@ describe("dailyChallengeScheduler", () => {
 
       await scheduledTaskHandler(mockScheduledEvent());
 
-      expect(mockLogger.info).toHaveBeenCalledWith("Daily scheduler started (target: dailyRiddles/current).");
-      expect(mockGenerateTodaysDailyChallenge).toHaveBeenCalledWith(false);
       expect(mockLogger.info).toHaveBeenCalledWith(
-        "Daily scheduler finished successfully (dailyRiddles/current updated).",
+        "Daily scheduler started (target: localizedRiddles/{locale}/riddles/current).",
       );
+      expect(mockGenerateTodaysDailyChallenge).toHaveBeenCalledWith(false);
+      expect(mockLogger.info).toHaveBeenCalledWith("Daily scheduler finished successfully (localized daily riddles updated).");
       expect(mockLogger.error).not.toHaveBeenCalled();
     });
 
@@ -183,12 +185,12 @@ describe("dailyChallengeScheduler", () => {
 
       await scheduledTaskHandler(mockScheduledEvent());
 
-      expect(mockLogger.info).toHaveBeenCalledWith("Daily scheduler started (target: dailyRiddles/current).");
+      expect(mockLogger.info).toHaveBeenCalledWith(
+        "Daily scheduler started (target: localizedRiddles/{locale}/riddles/current).",
+      );
       expect(mockGenerateTodaysDailyChallenge).toHaveBeenCalledWith(false);
       expect(mockLogger.error).not.toHaveBeenCalled();
-      expect(mockLogger.info).toHaveBeenCalledWith(
-        "Daily scheduler finished successfully (dailyRiddles/current updated).",
-      );
+      expect(mockLogger.info).toHaveBeenCalledWith("Daily scheduler finished successfully (localized daily riddles updated).");
     });
   });
 
@@ -202,10 +204,10 @@ describe("dailyChallengeScheduler", () => {
       );
 
       expect(mockGenerateTodaysDailyChallenge).toHaveBeenCalledWith(false);
-      expect(mockLogger.info).toHaveBeenCalledWith("Daily scheduler started (target: dailyRiddles/current).");
-      expect(mockLogger.info).not.toHaveBeenCalledWith(
-        "Daily scheduler finished successfully (dailyRiddles/current updated).",
+      expect(mockLogger.info).toHaveBeenCalledWith(
+        "Daily scheduler started (target: localizedRiddles/{locale}/riddles/current).",
       );
+      expect(mockLogger.info).not.toHaveBeenCalledWith("Daily scheduler finished successfully (localized daily riddles updated).");
     });
 
     test("should log an error and return if riddle generation fails", async () => {
@@ -215,9 +217,7 @@ describe("dailyChallengeScheduler", () => {
       await expect(scheduledTaskHandler(mockScheduledEvent())).rejects.toThrow("Riddle generation failed");
 
       expect(mockGenerateTodaysDailyChallenge).toHaveBeenCalled();
-      expect(mockLogger.info).not.toHaveBeenCalledWith(
-        "Daily scheduler finished successfully (dailyRiddles/current updated).",
-      );
+      expect(mockLogger.info).not.toHaveBeenCalledWith("Daily scheduler finished successfully (localized daily riddles updated).");
     });
   });
 
@@ -232,10 +232,10 @@ describe("dailyChallengeScheduler", () => {
       await expect(scheduledTaskHandler(mockScheduledEvent())).rejects.toThrow("Firestore get failed!");
 
       expect(mockGenerateTodaysDailyChallenge).toHaveBeenCalled();
-      expect(mockLogger.info).toHaveBeenCalledWith("Daily scheduler started (target: dailyRiddles/current).");
-      expect(mockLogger.info).not.toHaveBeenCalledWith(
-        "Daily scheduler finished successfully (dailyRiddles/current updated).",
+      expect(mockLogger.info).toHaveBeenCalledWith(
+        "Daily scheduler started (target: localizedRiddles/{locale}/riddles/current).",
       );
+      expect(mockLogger.info).not.toHaveBeenCalledWith("Daily scheduler finished successfully (localized daily riddles updated).");
     });
 
     test("should log an error if Firestore 'set' operation fails", async () => {
@@ -244,10 +244,10 @@ describe("dailyChallengeScheduler", () => {
       await expect(scheduledTaskHandler(mockScheduledEvent())).rejects.toThrow("Firestore set failed!");
 
       expect(mockGenerateTodaysDailyChallenge).toHaveBeenCalled();
-      expect(mockLogger.info).toHaveBeenCalledWith("Daily scheduler started (target: dailyRiddles/current).");
-      expect(mockLogger.info).not.toHaveBeenCalledWith(
-        "Daily scheduler finished successfully (dailyRiddles/current updated).",
+      expect(mockLogger.info).toHaveBeenCalledWith(
+        "Daily scheduler started (target: localizedRiddles/{locale}/riddles/current).",
       );
+      expect(mockLogger.info).not.toHaveBeenCalledWith("Daily scheduler finished successfully (localized daily riddles updated).");
     });
   });
 });

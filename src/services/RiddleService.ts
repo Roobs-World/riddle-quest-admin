@@ -16,7 +16,7 @@ import {
   riddleFirestoreConverter,
   withConverterIfAvailable,
 } from "./firestoreConverters";
-import {LEGACY_DAILY_RIDDLE_DOC_ID, getLocalizedRiddleCollection} from "./riddleCollections";
+import {CURRENT_DAILY_RIDDLE_DOC_ID, getLocalizedRiddleCollection} from "./riddleCollections";
 
 const DailyCompletionUserSchema = PlayerSchema.pick({lastDailyChallengeCompletedAt: true}).partial().passthrough();
 
@@ -42,6 +42,19 @@ const readRiddleData = (data: unknown, fallbackRiddleId: string) => {
   }
 
   return result.data;
+};
+
+const snapshotExists = (snapshot: unknown): boolean => {
+  if (!snapshot || typeof snapshot !== "object") {
+    return false;
+  }
+
+  const typedSnapshot = snapshot as {exists?: boolean | (() => boolean)};
+  if (typeof typedSnapshot.exists === "function") {
+    return typedSnapshot.exists();
+  }
+
+  return Boolean(typedSnapshot.exists);
 };
 
 /**
@@ -105,24 +118,30 @@ export const RiddleService = {
       const locale = getLocale();
       const localizedDailyDoc = await getDoc(
         withConverterIfAvailable(
-          doc(getFirestore(), getLocalizedRiddleCollection(locale, "daily"), LEGACY_DAILY_RIDDLE_DOC_ID),
+          doc(getFirestore(), getLocalizedRiddleCollection(locale), CURRENT_DAILY_RIDDLE_DOC_ID),
           riddleFirestoreConverter,
         ),
       );
-      const hasCurrentDocApi =
-        !!localizedDailyDoc && typeof localizedDailyDoc.exists === "function" && typeof localizedDailyDoc.data === "function";
+      const activeDailyDoc = localizedDailyDoc;
 
-      if (!hasCurrentDocApi || !localizedDailyDoc.exists()) {
+      const hasCurrentDocApi =
+        !!activeDailyDoc &&
+        ((typeof (activeDailyDoc as {exists?: unknown}).exists === "function" &&
+          typeof (activeDailyDoc as {data?: unknown}).data === "function") ||
+          (typeof (activeDailyDoc as {exists?: unknown}).exists === "boolean" &&
+            typeof (activeDailyDoc as {data?: unknown}).data === "function"));
+
+      if (!hasCurrentDocApi || !snapshotExists(activeDailyDoc)) {
         logger.debug(`No current daily challenge found for locale ${locale} on date: ${today}`);
         return null;
       }
       let currentDailyData: ReturnType<typeof readRiddleData> = null;
       let currentDailyRawData: unknown;
       try {
-        currentDailyRawData = localizedDailyDoc.data();
+        currentDailyRawData = activeDailyDoc.data();
         currentDailyData = readRiddleData(
           currentDailyRawData,
-          typeof localizedDailyDoc.id === "string" ? localizedDailyDoc.id : LEGACY_DAILY_RIDDLE_DOC_ID,
+          typeof activeDailyDoc.id === "string" ? activeDailyDoc.id : CURRENT_DAILY_RIDDLE_DOC_ID,
         );
       } catch (error) {
         if (error instanceof ZodError) {
@@ -136,12 +155,10 @@ export const RiddleService = {
         return null;
       }
 
-      logger.debug(
-        `Fetched current daily riddle from ${getLocalizedRiddleCollection(locale, "daily")}/${localizedDailyDoc.id}`,
-      );
+      logger.debug(`Fetched current daily riddle from ${getLocalizedRiddleCollection(locale)}/${activeDailyDoc.id}`);
       return {
         ...currentDailyData,
-        riddleId: currentDailyData.riddleId ?? localizedDailyDoc.id,
+        riddleId: currentDailyData.riddleId ?? activeDailyDoc.id,
         completedToday: false,
         answerLength: graphemeLength(currentDailyData.answer, locale),
         locale: currentDailyData.locale ?? locale,
@@ -166,7 +183,7 @@ export const RiddleService = {
     try {
       const localizedSnapshot = await getDocs(
         query(
-          withConverterIfAvailable(collection(getFirestore(), getLocalizedRiddleCollection(locale, "classic")), riddleFirestoreConverter),
+          withConverterIfAvailable(collection(getFirestore(), getLocalizedRiddleCollection(locale)), riddleFirestoreConverter),
           where("classicIndex", "==", level),
           limit(1),
         ),

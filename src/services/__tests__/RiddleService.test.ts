@@ -226,7 +226,7 @@ describe("RiddleService", () => {
 
       expect(result).toBeNull();
       expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "users", mockUserId);
-      expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "localizedRiddles/en/daily", "current");
+      expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "localizedRiddles/en/riddles", "current");
       expect(logger.debug).toHaveBeenCalledWith(
         `No current daily challenge found for locale en on date: ${mockToday}`,
       );
@@ -249,7 +249,7 @@ describe("RiddleService", () => {
       });
     });
 
-    it("should fetch current daily riddle from dailyRiddles/current", async () => {
+    it("should fetch current daily riddle from the localized riddles path", async () => {
       const userDoc = {exists: () => false};
       const currentDailyDoc = {
         exists: () => true,
@@ -268,7 +268,7 @@ describe("RiddleService", () => {
         answerLength: 5,
         locale: "en",
       });
-      expect(logger.debug).toHaveBeenCalledWith("Fetched current daily riddle from localizedRiddles/en/daily/current");
+      expect(logger.debug).toHaveBeenCalledWith("Fetched current daily riddle from localizedRiddles/en/riddles/current");
     });
 
     it("should handle Firestore errors gracefully and call captureException", async () => {
@@ -393,7 +393,7 @@ describe("RiddleService", () => {
         answerLength: 4,
         locale: "en",
       });
-      expect(mockCollection).toHaveBeenCalledWith(expect.any(Object), "localizedRiddles/en/classic");
+      expect(mockCollection).toHaveBeenCalledWith(expect.any(Object), "localizedRiddles/en/riddles");
       expect(mockWhere).toHaveBeenCalledWith("classicIndex", "==", level);
       expect(mockLimit).toHaveBeenCalledWith(1);
       expect(logger.debug).toHaveBeenCalledWith(`Classic riddle found for level: ${level} in locale en`);
@@ -810,8 +810,8 @@ describe("RiddleService", () => {
 
       // Verify doc/collection calls were made with correct collection names
       expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "users", expect.any(String));
-      expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "localizedRiddles/en/daily", "current");
-      expect(mockCollection).toHaveBeenCalledWith(expect.any(Object), "localizedRiddles/en/classic");
+      expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "localizedRiddles/en/riddles", "current");
+      expect(mockCollection).toHaveBeenCalledWith(expect.any(Object), "localizedRiddles/en/riddles");
     });
 
     it("should handle service recovery from intermittent errors", async () => {

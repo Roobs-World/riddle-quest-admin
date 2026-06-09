@@ -72,8 +72,8 @@ describe("OpenAI Service", () => {
       ).toThrow();
       expect(() =>
         GeneratedRiddleSchema.parse({
-          question: "What answer uses uppercase letters?",
-          answer: "WORD",
+          question: "What answer uses punctuation?",
+          answer: "word!",
         }),
       ).toThrow();
     });
@@ -178,6 +178,32 @@ describe("OpenAI Service", () => {
       expect(result).toBeNull();
       expect(mockLogger.warn).toHaveBeenCalledWith(
         'Question reveals the literal answer: "A joke makes people laugh." -> "joke".',
+      );
+    });
+
+    test("normalizes smart punctuation before validation", async () => {
+      mockParse.mockResolvedValue(
+        parsedRiddleResponse("I\u2019m Earth\u2019s bright neighbor after sunset.", "venus"),
+      );
+
+      const result = await generateUniqueRiddle();
+
+      expect(result).toEqual(["I'm Earth's bright neighbor after sunset.", "venus"]);
+      expect(mockLogger.warn).not.toHaveBeenCalledWith(
+        expect.stringContaining("Question contains invalid characters"),
+      );
+    });
+
+    test("accepts native-script punctuation in localized questions", async () => {
+      mockParse.mockResolvedValue(
+        parsedRiddleResponse("銭湯の壁でよく主役、標高3776メートルの日本一といえば？", "ふじさん"),
+      );
+
+      const result = await generateUniqueRiddle("ja");
+
+      expect(result).toEqual(["銭湯の壁でよく主役、標高3776メートルの日本一といえば？", "ふじさん"]);
+      expect(mockLogger.warn).not.toHaveBeenCalledWith(
+        expect.stringContaining("Question contains invalid characters"),
       );
     });
 

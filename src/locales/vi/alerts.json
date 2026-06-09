@@ -34,7 +34,7 @@
     "DEBUG_CLEAR_LOCAL_DATA_ERROR_TITLE": "Xóa lỗi dữ liệu cục bộ",
     "DEBUG_DAILY_CHALLENGE_ERROR_MESSAGE": "Không thể tạo thử thách hàng ngày mới.",
     "DEBUG_DAILY_CHALLENGE_ERROR_TITLE": "Lỗi thử thách hàng ngày",
-    "DEBUG_DAILY_CHALLENGE_GENERATED_MESSAGE": "Đã tạo thành công thử thách hàng ngày mới trong dailyRiddles/current.",
+    "DEBUG_DAILY_CHALLENGE_GENERATED_MESSAGE": "Đã tạo thành công thử thách hàng ngày mới trong localizedRiddles/{locale}/riddles/current.",
     "DEBUG_DAILY_CHALLENGE_GENERATED_TITLE": "Thử thách hàng ngày được tạo",
     "GUEST_MODE_SAVED_ON_DEVICE_MESSAGE": "Tiến trình của bạn được lưu trên thiết bị này. Nâng cấp tài khoản của bạn để giữ tài khoản an toàn trên các thiết bị.",
     "STREAK_BROKEN_MESSAGE": "Kỳ của bạn đã kết thúc vào {previousStreak} ngày{daySuffix}. Hãy hoàn thành thử thách hàng ngày của ngày hôm nay để bắt đầu một chuỗi mới.",

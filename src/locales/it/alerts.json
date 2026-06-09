@@ -34,7 +34,7 @@
     "DEBUG_CLEAR_LOCAL_DATA_ERROR_TITLE": "Cancella dati locali Errore",
     "DEBUG_DAILY_CHALLENGE_ERROR_MESSAGE": "Impossibile generare una nuova sfida quotidiana.",
     "DEBUG_DAILY_CHALLENGE_ERROR_TITLE": "Errore sfida giornaliera",
-    "DEBUG_DAILY_CHALLENGE_GENERATED_MESSAGE": "Generata con successo una nuova sfida quotidiana in dailyRiddles/current.",
+    "DEBUG_DAILY_CHALLENGE_GENERATED_MESSAGE": "Generata con successo una nuova sfida quotidiana in localizedRiddles/{locale}/riddles/current.",
     "DEBUG_DAILY_CHALLENGE_GENERATED_TITLE": "Sfida giornaliera generata",
     "GUEST_MODE_SAVED_ON_DEVICE_MESSAGE": "I tuoi progressi vengono salvati su questo dispositivo. Aggiorna il tuo account per mantenerlo al sicuro su tutti i dispositivi.",
     "STREAK_BROKEN_MESSAGE": "La tua serie è terminata il {previousStreak} giorno{daySuffix}. Completa la sfida quotidiana di oggi per iniziare una nuova serie.",

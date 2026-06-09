@@ -16,6 +16,7 @@ import {type SupportedLocale, SUPPORTED_LOCALES} from "@qwordly/core/validation"
 
 const INITIAL_COINS: number = 300;
 const LOCALIZED_RIDDLES_COLLECTION = "localizedRiddles";
+const LOCALIZED_RIDDLE_SUBCOLLECTION = "riddles";
 
 // const db = admin.firestore(); // Replaced with lazy initialization
 let dbInstance: admin.firestore.Firestore;
@@ -27,8 +28,8 @@ function getDb(): admin.firestore.Firestore {
   return dbInstance;
 }
 
-const getLocalizedRiddleCollectionPath = (locale: SupportedLocale, category: "classic" | "daily"): string =>
-  `${LOCALIZED_RIDDLES_COLLECTION}/${locale}/${category}`;
+const getLocalizedRiddleCollectionPath = (locale: SupportedLocale): string =>
+  `${LOCALIZED_RIDDLES_COLLECTION}/${locale}/${LOCALIZED_RIDDLE_SUBCOLLECTION}`;
 
 const resolveLocale = (locale?: string): SupportedLocale =>
   (SUPPORTED_LOCALES.find((entry) => entry === locale) ?? "en") as SupportedLocale;
@@ -454,7 +455,7 @@ export async function getClassicRiddle(
   locale?: string,
 ): Promise<ClassicRiddle | undefined> {
   const resolvedLocale = resolveLocale(locale);
-  const localizedRef = getDb().collection(getLocalizedRiddleCollectionPath(resolvedLocale, "classic")).doc(riddleId);
+  const localizedRef = getDb().collection(getLocalizedRiddleCollectionPath(resolvedLocale)).doc(riddleId);
   const localizedDoc = await localizedRef.get();
 
   if (!localizedDoc.exists) {
@@ -489,7 +490,7 @@ export async function getClassicRiddleByIndex(
 ): Promise<ClassicRiddle | undefined> {
   const resolvedLocale = resolveLocale(locale);
   const snapshot = await getDb()
-    .collection(getLocalizedRiddleCollectionPath(resolvedLocale, "classic"))
+    .collection(getLocalizedRiddleCollectionPath(resolvedLocale))
     .where("classicIndex", "==", classicIndex)
     .limit(1)
     .get();
@@ -525,7 +526,7 @@ export async function getDailyRiddle(
   locale?: string,
 ): Promise<DailyRiddle | undefined> {
   const resolvedLocale = resolveLocale(locale);
-  const localizedRef = getDb().collection(getLocalizedRiddleCollectionPath(resolvedLocale, "daily")).doc(riddleId);
+  const localizedRef = getDb().collection(getLocalizedRiddleCollectionPath(resolvedLocale)).doc(riddleId);
   const localizedDoc = await localizedRef.get();
 
   if (!localizedDoc.exists) {

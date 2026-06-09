@@ -103,9 +103,9 @@ service cloud.firestore {
     }
 
     // Localized riddles collection - read-only for authenticated clients, write-only for server
-    match /localizedRiddles/{locale}/{category}/{riddleId} {
+    match /localizedRiddles/{locale}/riddles/{riddleId} {
       // Authenticated users can read localized riddles for supported locales
-      allow read: if isAuthenticated() && isSupportedLocale(locale) && (category == "classic" || category == "daily");
+      allow read: if isAuthenticated() && isSupportedLocale(locale);
 
       // Only server (Cloud Functions) can create/update/delete localized riddles
       allow write: if isServerRequest();

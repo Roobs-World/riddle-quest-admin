@@ -34,7 +34,7 @@
     "DEBUG_CLEAR_LOCAL_DATA_ERROR_TITLE": "Erro ao limpar dados locais",
     "DEBUG_DAILY_CHALLENGE_ERROR_MESSAGE": "Falha ao gerar um novo desafio diário.",
     "DEBUG_DAILY_CHALLENGE_ERROR_TITLE": "Erro de desafio diário",
-    "DEBUG_DAILY_CHALLENGE_GENERATED_MESSAGE": "Gerou com sucesso um novo desafio diário em dailyRiddles/current.",
+    "DEBUG_DAILY_CHALLENGE_GENERATED_MESSAGE": "Gerou com sucesso um novo desafio diário em localizedRiddles/{locale}/riddles/current.",
     "DEBUG_DAILY_CHALLENGE_GENERATED_TITLE": "Desafio Diário Gerado",
     "GUEST_MODE_SAVED_ON_DEVICE_MESSAGE": "Seu progresso é salvo neste dispositivo. Atualize sua conta para mantê-la segura em todos os dispositivos.",
     "STREAK_BROKEN_MESSAGE": "Sua sequência terminou em {previousStreak} dia{daySuffix}. Complete o desafio diário de hoje para iniciar uma nova seqüência.",

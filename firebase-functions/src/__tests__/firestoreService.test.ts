@@ -369,7 +369,7 @@ describe("FirestoreService", () => {
 
       const result = await getRiddle(testRiddleId);
 
-      expect(mockFirestore.collection).toHaveBeenCalledWith("localizedRiddles/en/classic");
+      expect(mockFirestore.collection).toHaveBeenCalledWith("localizedRiddles/en/riddles");
       expect(mockCollection.doc).toHaveBeenCalledWith(testRiddleId);
       expect(mockDoc.get).toHaveBeenCalled();
       expect(result).toEqual({
@@ -1025,7 +1025,7 @@ describe("FirestoreService", () => {
 
       const result = await getDailyRiddle(testRiddleId);
 
-      expect(mockFirestore.collection).toHaveBeenCalledWith("localizedRiddles/en/daily");
+      expect(mockFirestore.collection).toHaveBeenCalledWith("localizedRiddles/en/riddles");
       expect(result).toEqual({
         ...dailyRiddleData,
         locale: "en",
@@ -1052,7 +1052,7 @@ describe("FirestoreService", () => {
 
       const result = await getRiddle(testRiddleId);
 
-      expect(mockFirestore.collection).toHaveBeenCalledWith("localizedRiddles/en/classic");
+      expect(mockFirestore.collection).toHaveBeenCalledWith("localizedRiddles/en/riddles");
       expect(result).toEqual({
         ...classicRiddleData,
         locale: "en",
@@ -1090,7 +1090,7 @@ describe("FirestoreService", () => {
 
       const result = await getRiddleByGameMode(testRiddleId, "classic");
 
-      expect(mockFirestore.collection).toHaveBeenCalledWith("localizedRiddles/en/classic");
+      expect(mockFirestore.collection).toHaveBeenCalledWith("localizedRiddles/en/riddles");
       expect(result).toEqual({
         ...classicRiddleData,
         locale: "en",
@@ -1113,7 +1113,7 @@ describe("FirestoreService", () => {
 
       const result = await getRiddleByGameMode(testRiddleId, "challenge");
 
-      expect(mockFirestore.collection).toHaveBeenCalledWith("localizedRiddles/en/daily");
+      expect(mockFirestore.collection).toHaveBeenCalledWith("localizedRiddles/en/riddles");
       expect(result).toEqual({
         ...dailyRiddleData,
         locale: "en",

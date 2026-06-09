@@ -10,7 +10,6 @@ let mockUpdateDoc: jest.Mock;
 let mockDoc: jest.Mock;
 let mockGetFirestore: jest.Mock;
 
-// Legacy aliases for assertions still referencing old names
 let mockGet: jest.Mock;
 let mockSet: jest.Mock;
 let mockUpdate: jest.Mock;
@@ -28,7 +27,6 @@ jest.mock("@react-native-firebase/firestore", () => {
   mockDoc = jest.fn(() => ({}));
   mockGetFirestore = jest.fn(() => ({}));
 
-  // Legacy aliases
   mockGet = mockGetDoc;
   mockSet = mockSetDoc;
   mockUpdate = mockUpdateDoc;

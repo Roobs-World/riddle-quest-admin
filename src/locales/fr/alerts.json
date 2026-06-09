@@ -34,7 +34,7 @@
     "DEBUG_CLEAR_LOCAL_DATA_ERROR_TITLE": "Erreur d'effacement des données locales",
     "DEBUG_DAILY_CHALLENGE_ERROR_MESSAGE": "Échec de la génération d'un nouveau défi quotidien.",
     "DEBUG_DAILY_CHALLENGE_ERROR_TITLE": "Erreur de défi quotidien",
-    "DEBUG_DAILY_CHALLENGE_GENERATED_MESSAGE": "Génération réussie d'un nouveau défi quotidien dans dailyRiddles/current.",
+    "DEBUG_DAILY_CHALLENGE_GENERATED_MESSAGE": "Génération réussie d'un nouveau défi quotidien dans localizedRiddles/{locale}/riddles/current.",
     "DEBUG_DAILY_CHALLENGE_GENERATED_TITLE": "Défi quotidien Généré",
     "GUEST_MODE_SAVED_ON_DEVICE_MESSAGE": "Votre progression est enregistrée sur cet appareil. Mettez à niveau votre compte pour le protéger sur tous les appareils.",
     "STREAK_BROKEN_MESSAGE": "Votre séquence s'est terminée le {previousStreak} jour{daySuffix}. Relevez le défi quotidien d'aujourd'hui pour démarrer une nouvelle séquence.",

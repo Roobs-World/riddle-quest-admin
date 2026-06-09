@@ -34,7 +34,7 @@
     "DEBUG_CLEAR_LOCAL_DATA_ERROR_TITLE": "स्थानीय डेटा त्रुटि साफ़ करें",
     "DEBUG_DAILY_CHALLENGE_ERROR_MESSAGE": "एक नई दैनिक चुनौती उत्पन्न करने में विफल.",
     "DEBUG_DAILY_CHALLENGE_ERROR_TITLE": "दैनिक चुनौती त्रुटि",
-    "DEBUG_DAILY_CHALLENGE_GENERATED_MESSAGE": "dailyRiddles/current",
+    "DEBUG_DAILY_CHALLENGE_GENERATED_MESSAGE": "localizedRiddles/{locale}/riddles/current",
     "DEBUG_DAILY_CHALLENGE_GENERATED_TITLE": "दैनिक में एक नई दैनिक चुनौती सफलतापूर्वक उत्पन्न हुई चुनौती उत्पन्न हुई",
     "GUEST_MODE_SAVED_ON_DEVICE_MESSAGE": "आपकी प्रगति इस डिवाइस पर सहेजी गई है। अपने खाते को सभी डिवाइसों पर सुरक्षित रखने के लिए उसे अपग्रेड करें।",
     "STREAK_BROKEN_MESSAGE": "आपकी स्ट्रीक {previousStreak} दिन{daySuffix} पर समाप्त हो गई। एक नई श्रृंखला शुरू करने के लिए आज की दैनिक चुनौती को पूरा करें।",

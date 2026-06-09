@@ -34,7 +34,7 @@
     "DEBUG_CLEAR_LOCAL_DATA_ERROR_TITLE": "Błąd czyszczenia danych lokalnych",
     "DEBUG_DAILY_CHALLENGE_ERROR_MESSAGE": "Nie udało się wygenerować nowego codziennego wyzwania.",
     "DEBUG_DAILY_CHALLENGE_ERROR_TITLE": "Błąd codziennego wyzwania",
-    "DEBUG_DAILY_CHALLENGE_GENERATED_MESSAGE": "Pomyślnie wygenerowano nowe codzienne wyzwanie w dailyRiddles/current.",
+    "DEBUG_DAILY_CHALLENGE_GENERATED_MESSAGE": "Pomyślnie wygenerowano nowe codzienne wyzwanie w localizedRiddles/{locale}/riddles/current.",
     "DEBUG_DAILY_CHALLENGE_GENERATED_TITLE": "Codzienne wyzwanie Wygenerowano",
     "GUEST_MODE_SAVED_ON_DEVICE_MESSAGE": "Twoje postępy są zapisywane na tym urządzeniu. Uaktualnij swoje konto, aby zapewnić jego bezpieczeństwo na różnych urządzeniach.",
     "STREAK_BROKEN_MESSAGE": "Twoja passa zakończyła się o {previousStreak} day{daySuffix}. Ukończ dzisiejsze codzienne wyzwanie, aby rozpocząć nową passę.",

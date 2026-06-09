@@ -34,7 +34,7 @@
     "DEBUG_CLEAR_LOCAL_DATA_ERROR_TITLE": "Yerel Verileri Temizle Hatası",
     "DEBUG_DAILY_CHALLENGE_ERROR_MESSAGE": "Yeni bir günlük meydan okuma oluşturulamadı.",
     "DEBUG_DAILY_CHALLENGE_ERROR_TITLE": "Günlük Mücadele Hatası",
-    "DEBUG_DAILY_CHALLENGE_GENERATED_MESSAGE": "dailyRiddles/current.",
+    "DEBUG_DAILY_CHALLENGE_GENERATED_MESSAGE": "localizedRiddles/{locale}/riddles/current.",
     "DEBUG_DAILY_CHALLENGE_GENERATED_TITLE": "Günlük Mücadelede başarıyla yeni bir günlük meydan okuma oluşturuldu Oluşturuldu",
     "GUEST_MODE_SAVED_ON_DEVICE_MESSAGE": "İlerlemeniz bu cihaza kaydedildi. Hesabınızı cihazlar arasında güvende tutmak için yükseltin.",
     "STREAK_BROKEN_MESSAGE": "Seriniz {preciousStreak} day{daySuffix} tarihinde sona erdi. Yeni bir seri başlatmak için bugünkü günlük mücadeleyi tamamlayın.",

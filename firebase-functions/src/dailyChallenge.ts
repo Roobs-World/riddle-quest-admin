@@ -114,20 +114,9 @@ async function getFreshDailyChallengeDoc(locale: string = "en"): Promise<{
   const safeLocale = locale || "en";
   const localizedDailyChallengeRef = admin
     .firestore()
-    .collection(`localizedRiddles/${safeLocale}/daily`)
+    .collection(`localizedRiddles/${safeLocale}/riddles`)
     .doc(CURRENT_DAILY_RIDDLE_DOC_ID);
-  const legacyDailyChallengeRef = admin.firestore().collection("dailyRiddles").doc(CURRENT_DAILY_RIDDLE_DOC_ID);
-
-  let dailyChallengeDoc = await localizedDailyChallengeRef.get();
-  if (!dailyChallengeDoc.exists) {
-    const legacyDailyChallengeDoc = await legacyDailyChallengeRef.get();
-    if (legacyDailyChallengeDoc.exists) {
-      functions.logger.info(
-        `Daily challenge fallback hit legacy shared path for locale ${safeLocale} on ${todayDateString}.`,
-      );
-      return {dailyChallengeDoc: legacyDailyChallengeDoc, todayDateString};
-    }
-  }
+  const dailyChallengeDoc = await localizedDailyChallengeRef.get();
 
   return {dailyChallengeDoc, todayDateString};
 }

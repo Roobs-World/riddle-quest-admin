@@ -47,10 +47,7 @@ describe("RiddleInitializationService expected access denials", () => {
           message: "Access denied",
         });
       }
-      return jest.fn().mockRejectedValue({
-        code: "unauthenticated",
-        message: "Not signed in",
-      });
+      return jest.fn().mockResolvedValue({data: {}});
     });
   });
 
@@ -59,8 +56,10 @@ describe("RiddleInitializationService expected access denials", () => {
 
     await RiddleInitializationService.checkAndInitializeRiddles();
 
-    expect(mockLogger.error).not.toHaveBeenCalledWith("❌ Error calling initializeRiddleDatabase:", expect.anything());
-    expect(mockLogger.error).not.toHaveBeenCalledWith("❌ Error calling generateClassicRiddles:", expect.anything());
+    expect(mockLogger.error).not.toHaveBeenCalledWith(
+      expect.stringContaining("Error during riddle initialization check:"),
+      expect.anything(),
+    );
     expect(mockCaptureException).not.toHaveBeenCalled();
     expect(RiddleInitializationService.getInitializationStatus()).toEqual({
       isInitializing: false,

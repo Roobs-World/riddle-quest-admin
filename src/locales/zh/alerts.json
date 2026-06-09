@@ -34,7 +34,7 @@
     "DEBUG_CLEAR_LOCAL_DATA_ERROR_TITLE": "清除本地数据错误",
     "DEBUG_DAILY_CHALLENGE_ERROR_MESSAGE": "无法生成新的每日挑战。",
     "DEBUG_DAILY_CHALLENGE_ERROR_TITLE": "每日挑战错误",
-    "DEBUG_DAILY_CHALLENGE_GENERATED_MESSAGE": "在dailyRiddles/current中成功生成新的每日挑战。",
+    "DEBUG_DAILY_CHALLENGE_GENERATED_MESSAGE": "在localizedRiddles/{locale}/riddles/current中成功生成新的每日挑战。",
     "DEBUG_DAILY_CHALLENGE_GENERATED_TITLE": "每日挑战已生成",
     "GUEST_MODE_SAVED_ON_DEVICE_MESSAGE": "您的进度保存在此设备上。升级您的帐户以保证跨设备的安全。",
     "STREAK_BROKEN_MESSAGE": "您的连续记录已于 {previousStreak} 天{daySuffix}结束。完成今天的每日挑战，开始新的连胜。",

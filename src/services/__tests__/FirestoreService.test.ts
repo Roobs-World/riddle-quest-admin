@@ -19,7 +19,6 @@ let mockGetCallableFunction: jest.Mock;
 let mockCallValidatedFunction: jest.Mock;
 let mockCallableFunction: jest.Mock;
 
-// Keep legacy aliases for assertions that still use v8-style names
 let mockGet: jest.Mock;
 let mockSet: jest.Mock;
 let mockUpdate: jest.Mock;
@@ -37,7 +36,6 @@ jest.mock("@react-native-firebase/firestore", () => {
   mockServerTimestamp = jest.fn(() => "MOCK_SERVER_TIMESTAMP");
   mockGetFirestore = jest.fn(() => ({}));
 
-  // Legacy aliases
   mockGet = mockGetDoc;
   mockSet = mockSetDoc;
   mockUpdate = mockUpdateDoc;
@@ -475,7 +473,7 @@ describe("FirestoreService", () => {
 
       const result = await FirestoreService.fetchDailyRiddleForDate(dateString);
 
-      expect(mockCollection).toHaveBeenCalledWith(expect.any(Object), "localizedRiddles/en/daily");
+      expect(mockCollection).toHaveBeenCalledWith(expect.any(Object), "localizedRiddles/en/riddles");
       expect(mockWhere).toHaveBeenCalledWith("challengeKey", "==", dateString);
       expect(mockLimit).toHaveBeenCalledWith(1);
       // expect(result).toEqual(mockRiddleData); // This line is removed as per the edit hint

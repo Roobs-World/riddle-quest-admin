@@ -34,7 +34,7 @@
     "DEBUG_CLEAR_LOCAL_DATA_ERROR_TITLE": "Wis lokale gegevensfout",
     "DEBUG_DAILY_CHALLENGE_ERROR_MESSAGE": "Kan geen nieuwe dagelijkse uitdaging genereren.",
     "DEBUG_DAILY_CHALLENGE_ERROR_TITLE": "Dagelijkse uitdagingsfout",
-    "DEBUG_DAILY_CHALLENGE_GENERATED_MESSAGE": "Succesvol een nieuwe dagelijkse uitdaging gegenereerd in dailyRiddles/current.",
+    "DEBUG_DAILY_CHALLENGE_GENERATED_MESSAGE": "Succesvol een nieuwe dagelijkse uitdaging gegenereerd in localizedRiddles/{locale}/riddles/current.",
     "DEBUG_DAILY_CHALLENGE_GENERATED_TITLE": "Dagelijkse uitdaging Gegenereerd",
     "GUEST_MODE_SAVED_ON_DEVICE_MESSAGE": "Je voortgang wordt op dit apparaat opgeslagen. Upgrade uw account om het op verschillende apparaten veilig te houden.",
     "STREAK_BROKEN_MESSAGE": "Uw streak eindigde op {previousStreak} dag{daySuffix}. Voltooi de dagelijkse uitdaging van vandaag om een ​​nieuwe streak te starten.",

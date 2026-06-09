@@ -95,7 +95,7 @@ export interface AuthProviderControllerValue {
     fetchCurrentRiddle: (player: Player | null, mode: GameMode, completedDailyOverride?: boolean) => Promise<void>;
     /** Whether the daily challenge is currently available to the player. */
     isDailyChallengeAvailable: boolean | undefined;
-    /** The active game mode after bootstrap and fallback resolution. */
+    /** The active game mode after bootstrap. */
     gameMode: GameMode;
     /** Updates the active game mode. */
     setGameMode: (mode: GameMode) => void;
@@ -537,7 +537,7 @@ export function useAuthProviderController(
             setIsLoading(false);
         } catch (error) {
           if (isExpectedStartupAccessError(error)) {
-            logger.warn("Startup user data or riddle load was denied by the backend; continuing with fallback state.", {
+            logger.warn("Startup user data or riddle load was denied by the backend; continuing with empty state.", {
               code:
                 typeof error === "object" && error !== null && "code" in error
                   ? (error as {code?: unknown}).code

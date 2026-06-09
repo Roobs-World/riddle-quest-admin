@@ -84,7 +84,7 @@ jest.mock("firebase-admin", () => {
           (documentPath?: string): MockDocumentReference<T> =>
             ({
               get:
-                collectionPath === "dailyRiddles" && documentPath === "current"
+                collectionPath === "localizedRiddles/en/riddles" && documentPath === "current"
                   ? mockAdminFirestoreGet
                   : jest
                       .fn<() => Promise<MockDocumentSnapshot<T>>>()
@@ -680,7 +680,7 @@ describe("Daily Challenge Functions", () => {
       adminMock.mockFirestoreCollection.mockImplementation((collectionPath: string) => ({
         doc: jest.fn((docId?: string) => ({
           get:
-            collectionPath === "dailyRiddles" && docId === "current"
+            collectionPath === "localizedRiddles/en/riddles" && docId === "current"
               ? mockAdminFirestoreGet
               : jest.fn().mockResolvedValue({exists: false, data: () => undefined}),
           set: jest.fn().mockResolvedValue(undefined),

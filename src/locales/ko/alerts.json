@@ -34,7 +34,7 @@
     "DEBUG_CLEAR_LOCAL_DATA_ERROR_TITLE": "로컬 데이터 지우기 오류",
     "DEBUG_DAILY_CHALLENGE_ERROR_MESSAGE": "새 일일 챌린지를 생성하지 못했습니다.",
     "DEBUG_DAILY_CHALLENGE_ERROR_TITLE": "일일 챌린지 오류",
-    "DEBUG_DAILY_CHALLENGE_GENERATED_MESSAGE": "dailyRiddles/current에서 새 일일 챌린지를 성공적으로 생성했습니다.",
+    "DEBUG_DAILY_CHALLENGE_GENERATED_MESSAGE": "localizedRiddles/{locale}/riddles/current에서 새 일일 챌린지를 성공적으로 생성했습니다.",
     "DEBUG_DAILY_CHALLENGE_GENERATED_TITLE": "일일 챌린지 생성됨",
     "GUEST_MODE_SAVED_ON_DEVICE_MESSAGE": "진행 상황이 이 기기에 저장됩니다. 여러 기기에서 안전하게 계정을 유지하려면 계정을 업그레이드하세요.",
     "STREAK_BROKEN_MESSAGE": "연속 기록이 {previousStreak}일{daySuffix}에 종료되었습니다. 새로운 연속을 시작하려면 오늘의 일일 챌린지를 완료하세요.",

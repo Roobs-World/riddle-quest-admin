@@ -34,7 +34,7 @@
     "DEBUG_CLEAR_LOCAL_DATA_ERROR_TITLE": "مسح خطأ البيانات المحلية",
     "DEBUG_DAILY_CHALLENGE_ERROR_MESSAGE": "فشل في إنشاء تحدي يومي جديد.",
     "DEBUG_DAILY_CHALLENGE_ERROR_TITLE": "خطأ التحدي اليومي",
-    "DEBUG_DAILY_CHALLENGE_GENERATED_MESSAGE": "تم إنشاء تحدي يومي جديد بنجاح في dailyRiddles/current.",
+    "DEBUG_DAILY_CHALLENGE_GENERATED_MESSAGE": "تم إنشاء تحدي يومي جديد بنجاح في localizedRiddles/{locale}/riddles/current.",
     "DEBUG_DAILY_CHALLENGE_GENERATED_TITLE": "التحدي اليومي تم الإنشاء",
     "GUEST_MODE_SAVED_ON_DEVICE_MESSAGE": "يتم حفظ تقدمك على هذا الجهاز. قم بترقية حسابك للحفاظ على أمانه عبر الأجهزة.",
     "STREAK_BROKEN_MESSAGE": "انتهت خطتك في يوم {previousStreak}{daySuffix}. أكمل التحدي اليومي اليوم لبدء سلسلة جديدة.",

@@ -138,13 +138,12 @@ async function triggerClassicRiddleGenerationIfNeeded(
   locale: SupportedLocale,
 ): Promise<void> {
   try {
-    const localizedClassicCollection = `localizedRiddles/${locale}/classic`;
+    const localizedClassicCollection = `localizedRiddles/${locale}/riddles`;
     const classicRiddlesSnapshot = await admin
       .firestore()
       .collection(localizedClassicCollection)
       .where("classicIndex", ">=", 0)
       .get();
-
     const totalClassicRiddles = classicRiddlesSnapshot.size;
     const remainingClassicRiddles = totalClassicRiddles - currentClassicIndex;
 

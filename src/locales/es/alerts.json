@@ -34,7 +34,7 @@
     "DEBUG_CLEAR_LOCAL_DATA_ERROR_TITLE": "Error de borrado de datos locales",
     "DEBUG_DAILY_CHALLENGE_ERROR_MESSAGE": "No se pudo generar un nuevo desafío diario.",
     "DEBUG_DAILY_CHALLENGE_ERROR_TITLE": "Error del desafío diario",
-    "DEBUG_DAILY_CHALLENGE_GENERATED_MESSAGE": "Se generó exitosamente un nuevo desafío diario en dailyRiddles/current.",
+    "DEBUG_DAILY_CHALLENGE_GENERATED_MESSAGE": "Se generó exitosamente un nuevo desafío diario en localizedRiddles/{locale}/riddles/current.",
     "DEBUG_DAILY_CHALLENGE_GENERATED_TITLE": "Desafío diario Generado",
     "GUEST_MODE_SAVED_ON_DEVICE_MESSAGE": "Su progreso se guarda en este dispositivo. Actualice su cuenta para mantenerla segura en todos los dispositivos.",
     "STREAK_BROKEN_MESSAGE": "Su racha terminó el {previousStreak} día{daySuffix}. Completa el desafío diario de hoy para comenzar una nueva racha.",

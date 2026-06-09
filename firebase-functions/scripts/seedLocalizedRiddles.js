@@ -11,6 +11,10 @@ const functionsRoot = path.resolve(__dirname, "..");
 dotenv.config({path: path.join(repoRoot, ".env")});
 dotenv.config({path: path.join(functionsRoot, ".env")});
 
+if (!process.env.OPENAI_API_KEY && process.env.OPEN_AI_KEY) {
+  process.env.OPENAI_API_KEY = process.env.OPEN_AI_KEY;
+}
+
 function findFileByName(startDir, fileName) {
   const skipDirectories = new Set([".git", "node_modules", ".expo", ".gradle-local", "coverage", "lib"]);
   const stack = [startDir];
@@ -95,7 +99,7 @@ async function main() {
   await initializeLocalizedRiddleDatabaseIfEmpty(normalizedClassicCount);
 
   console.log("Seeding today's localized daily challenge for all supported locales...");
-  await generateLocalizedTodaysDailyChallenge(true);
+  await generateLocalizedTodaysDailyChallenge(false);
 
   console.log("Localized riddle seed complete.");
 }

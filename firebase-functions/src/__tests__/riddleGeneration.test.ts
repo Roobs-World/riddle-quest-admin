@@ -701,30 +701,6 @@ describe("riddleGeneration", () => {
   });
 
   describe("Callable Functions", () => {
-    describe("generateClassicRiddles", () => {
-      test("should return success when riddles are generated", async () => {
-        (mockGenerateUniqueRiddle as any).mockResolvedValue(["Old-mode riddle?", "classic"]);
-        (mockFirestoreCollection as any).mockReturnValue({
-          get: jest.fn().mockResolvedValue({empty: true, docs: [], forEach: jest.fn()}),
-          doc: mockFirestoreDoc,
-          where: mockWhere,
-        } as any);
-
-        const result = await riddleGeneration.generateClassicRiddles(adminCallableRequest);
-
-        expect(result).toEqual({
-          success: true,
-          message: "New Classic Mode riddles generated and added to Firestore.",
-        });
-      });
-
-      test("should handle errors and throw HttpsError", async () => {
-        (mockGenerateUniqueRiddle as any).mockRejectedValue(new Error("Generation failed"));
-
-        await expect(riddleGeneration.generateClassicRiddles(adminCallableRequest)).rejects.toThrow();
-      });
-    });
-
     describe("initializeRiddleDatabase", () => {
       test("should return success when database is already initialized", async () => {
         const existenceQuery = {
@@ -918,7 +894,6 @@ describe("riddleGeneration", () => {
       expect(typeof riddleGeneration.generateAndAppendRiddles).toBe("function");
       expect(typeof riddleGeneration.generateAndAppendDailyRiddles).toBe("function");
       expect(typeof riddleGeneration.initializeRiddleDatabaseIfEmpty).toBe("function");
-      expect(typeof riddleGeneration.generateClassicRiddles).toBe("function");
       expect(typeof riddleGeneration.initializeRiddleDatabase).toBe("function");
       expect(typeof riddleGeneration.generateDailyRiddles).toBe("function");
       expect(typeof riddleGeneration.generateTodaysDailyChallenge).toBe("function");
@@ -1086,6 +1061,38 @@ describe("riddleGeneration", () => {
     });
 
     // Removed very large riddle generation test to prevent memory issues
+  });
+
+  describe("generateLocalizedClassicRiddles", () => {
+    test("skips locales that already have localized classic riddles", async () => {
+      const supportedLocales = ["ar", "de", "en", "es", "fr", "hi", "id", "it", "ja", "ko", "nl", "pl", "pt", "ru", "tr", "vi", "zh"];
+      const seededLocale = "de";
+      const emptySnapshot = {empty: true, docs: [], forEach: jest.fn()};
+      const seededSnapshot = {empty: false, docs: [{data: () => ({classicIndex: 1})}], forEach: jest.fn()};
+
+      (mockGenerateUniqueRiddle as any).mockResolvedValue(["New localized riddle?", "answer"]);
+
+      (mockFirestoreCollection as any).mockImplementation((collectionPath: string) => {
+        const locale = collectionPath.split("/")[1];
+        const isSeededLocale = locale === seededLocale;
+        const query = {
+          get: jest.fn().mockResolvedValue(isSeededLocale ? seededSnapshot : emptySnapshot),
+          orderBy: jest.fn().mockReturnThis(),
+          limit: jest.fn().mockReturnThis(),
+        };
+
+        return {
+          get: jest.fn().mockResolvedValue(emptySnapshot),
+          doc: mockFirestoreDoc,
+          where: jest.fn().mockReturnValue(query),
+        };
+      });
+
+      await riddleGeneration.generateLocalizedClassicRiddles(1);
+
+      expect(mockGenerateUniqueRiddle).toHaveBeenCalledTimes(supportedLocales.length - 1);
+      expect(mockSet).toHaveBeenCalledTimes(supportedLocales.length - 1);
+    });
   });
 
   // Integration tests removed to reduce memory usage and test complexity

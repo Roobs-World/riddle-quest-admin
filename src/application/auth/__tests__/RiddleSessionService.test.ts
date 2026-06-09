@@ -139,9 +139,52 @@ describe("RiddleSessionService", () => {
     );
 
     expect(logger.warn).toHaveBeenCalledWith(
-      "No riddle loaded after startup attempts; continuing with fallback state.",
+      "No riddle loaded after startup attempts; leaving the current riddle empty.",
     );
     expect(logger.error).not.toHaveBeenCalledWith("❌ Failed to load any riddle after all attempts");
+    setTimeoutSpy.mockRestore();
+  });
+
+  it("does not downgrade daily mode to classic when the daily riddle is missing", async () => {
+    mockedGetInitializationStatus.mockReturnValue({
+      isInitializing: false,
+      hasInitialized: true,
+      initializationFailed: false,
+    });
+    (fetchDailyRiddleFromFirestore as jest.Mock).mockResolvedValue(null);
+    const setTimeoutSpy = jest.spyOn(global, "setTimeout").mockImplementation(((callback: (...args: any[]) => void) => {
+      callback();
+      return 0 as unknown as ReturnType<typeof setTimeout>;
+    }) as typeof setTimeout);
+
+    const sink = {
+      setCurrentRiddle: jest.fn(),
+      setIsDailyChallengeAvailable: jest.fn(),
+      setGameMode: jest.fn(),
+      setIsRiddlesInitializing: jest.fn(),
+    };
+
+    await riddleSessionService.fetchCurrentRiddle(
+      {
+        userId: "user-1",
+        progress: {
+          classicIndex: 7,
+          dailyChallengeIndex: 4,
+          dailyChallengeCurrentQuestion: 0,
+        },
+      } as any,
+      "daily",
+      sink,
+      {
+        completedDailyOverride: false,
+        isStaleRequest: () => false,
+        locale: "en",
+      },
+    );
+
+    expect(fetchClassicRiddleFromFirestore).not.toHaveBeenCalled();
+    expect(sink.setGameMode).not.toHaveBeenCalledWith("classic");
+    expect(sink.setCurrentRiddle).toHaveBeenCalledWith(null);
     setTimeoutSpy.mockRestore();
   });
 });
