@@ -3,12 +3,12 @@ const path = require("path");
 
 const projectRoot = path.resolve(__dirname, "..");
 const packageJsonPath = path.join(projectRoot, "package.json");
+const nvmrcPath = path.join(projectRoot, ".nvmrc");
 const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"));
 
 const requiredDeps = {
   "react-native": "0.85.3",
-  expo: "56.0.5",
-  "@expo/metro-runtime": "56.0.13",
+  expo: "56.0.9",
   "react-native-reanimated": "4.3.1",
   "react-native-worklets": "0.8.3",
 };
@@ -50,6 +50,20 @@ function walk(dir, out) {
 }
 
 function run() {
+  const nodeEngine = packageJson.engines?.node;
+  const expectedNodeVersion = typeof nodeEngine === "string" && nodeEngine.startsWith(">=")
+    ? nodeEngine.slice(2).trim()
+    : null;
+
+  if (!expectedNodeVersion) {
+    throw new Error(`Unable to derive expected Node version from engines.node "${nodeEngine ?? "missing"}".`);
+  }
+
+  const nvmrcVersion = fs.readFileSync(nvmrcPath, "utf8").trim();
+  if (nvmrcVersion !== expectedNodeVersion) {
+    throw new Error(`.nvmrc is "${nvmrcVersion}", expected "${expectedNodeVersion}" to match package.json engines.node.`);
+  }
+
   for (const [pkg, version] of Object.entries(requiredDeps)) {
     assertVersion(packageJson.dependencies || {}, "dependencies", pkg, version);
   }
