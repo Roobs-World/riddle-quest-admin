@@ -28,7 +28,6 @@ import {
 const RIDDLE_CACHE_MAX_SIZE = 50;
 const riddleCache = new Map<string, FirestoreRiddle>();
 const LOCALIZED_RIDDLES_COLLECTION = "localizedRiddles";
-const DAILY_RIDDLE_DOC_ID = "current";
 const CurrentClassicRiddleInputSchema = z.object({
   classicIndex: z.number().int().nonnegative(),
   locale: z.string().optional(),

@@ -3,7 +3,7 @@ import {
   BasicSuccessMessageOutputSchema,
   DailyChallengeQuestionSchema,
 } from "./cloudFunctionsSchemas";
-import {PlayerSchema, type Player, type PlayerProgress, type PlayerStats} from "./firestoreSchemas";
+import {PlayerSchema, type Player} from "./firestoreSchemas";
 
 const FunctionGameModeSchema = z.enum(["challenge", "classic"]);
 

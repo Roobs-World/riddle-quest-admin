@@ -139,7 +139,7 @@ if (dsn) {
 }
 
 export const wrapAppWithSentry = <TProps,>(AppComponent: React.ComponentType<TProps>): React.ComponentType<TProps> =>
-  dsn ? (Sentry.wrap(AppComponent as React.ComponentType<any>) as React.ComponentType<TProps>) : AppComponent;
+  dsn ? (Sentry.wrap(AppComponent) as React.ComponentType<TProps>) : AppComponent;
 
 /**
  * Captures an exception and sends it to Sentry (no-op if DSN not configured).

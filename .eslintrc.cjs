@@ -41,6 +41,8 @@ module.exports = {
     "react-native/no-inline-styles": "off",
     "react-native/no-color-literals": "off",
     "react-native/no-raw-text": "warn",
+    "react-hooks/refs": "off",
+    "react-hooks/set-state-in-effect": "off",
     "@typescript-eslint/no-explicit-any": "error",
   },
 
@@ -67,6 +69,18 @@ module.exports = {
       rules: {
         "@typescript-eslint/no-explicit-any": "error",
         "@typescript-eslint/no-unused-vars": ["error", {argsIgnorePattern: "^_"}],
+      },
+    },
+    {
+      files: ["index.ts"],
+      rules: {
+        "@typescript-eslint/no-require-imports": "off",
+      },
+    },
+    {
+      files: ["packages/portal/**/*"],
+      rules: {
+        "react-native/no-raw-text": "off",
       },
     },
   ],

@@ -20,7 +20,6 @@ import {styles as appStyles, SPACING, TYPOGRAPHY} from "../styles";
 import {useModalContext} from "../contexts/ModalContext";
 import {
   QA_MODAL_SURFACE_TO_REGISTRY_TYPE,
-  QA_SURFACES,
   extractQASurfaceIdFromUrl,
   getQASurface,
   type QASurfaceId,
@@ -448,6 +447,13 @@ const qaStyles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
   },
+  loadingLabel: {
+    color: "#FFFFFF",
+    fontFamily: TYPOGRAPHY.fontPrimary,
+    fontSize: TYPOGRAPHY.fontSize.lg,
+    marginTop: SPACING.lg,
+    textAlign: "center",
+  },
   root: {
     flex: 1,
   },
@@ -461,13 +467,6 @@ const qaStyles = StyleSheet.create({
     top: 0,
     width: 1,
     zIndex: 9999,
-  },
-  loadingLabel: {
-    color: "#FFFFFF",
-    fontFamily: TYPOGRAPHY.fontPrimary,
-    fontSize: TYPOGRAPHY.fontSize.lg,
-    marginTop: SPACING.lg,
-    textAlign: "center",
   },
   tooltipTarget: {
     alignItems: "center",

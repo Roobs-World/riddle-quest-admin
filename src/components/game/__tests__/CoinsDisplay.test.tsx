@@ -1,5 +1,6 @@
 import React from "react";
-import {render, fireEvent} from "@testing-library/react-native";
+import {act, fireEvent, render} from "@testing-library/react-native";
+import {Animated} from "react-native";
 import CoinsDisplay from "../CoinsDisplay";
 
 // Mock react-native-svg
@@ -263,6 +264,83 @@ describe("CoinsDisplay", () => {
       rerender(<CoinsDisplay coins={30} />);
 
       expect(getByTestId("coins-display")).toBeTruthy();
+    });
+
+    it("defers coin increases until animations are allowed", () => {
+      const {getByText, rerender} = render(<CoinsDisplay coins={10} shouldAnimateIncreases={false} />);
+
+      rerender(<CoinsDisplay coins={25} shouldAnimateIncreases={false} />);
+      expect(getByText("10")).toBeTruthy();
+
+      rerender(<CoinsDisplay coins={25} shouldAnimateIncreases={true} />);
+      expect(getByText("25")).toBeTruthy();
+    });
+
+    it("runs the count-up and scale animations outside the test environment", () => {
+      const originalNodeEnv = process.env.NODE_ENV;
+      const timingStart = jest.fn((callback?: (result: {finished: boolean}) => void) => {
+        callback?.({finished: true});
+      });
+      const sequenceStart = jest.fn();
+      const timingSpy = jest.spyOn(Animated, "timing").mockReturnValue({
+        start: timingStart,
+        stop: jest.fn(),
+        reset: jest.fn(),
+        _startNativeLoop: jest.fn(),
+        _isUsingNativeDriver: jest.fn(() => false),
+      } as ReturnType<typeof Animated.timing>);
+      const sequenceSpy = jest.spyOn(Animated, "sequence").mockReturnValue({
+        start: sequenceStart,
+        stop: jest.fn(),
+        reset: jest.fn(),
+        _startNativeLoop: jest.fn(),
+        _isUsingNativeDriver: jest.fn(() => false),
+      } as ReturnType<typeof Animated.sequence>);
+
+      try {
+        process.env.NODE_ENV = "development";
+        const {rerender} = render(<CoinsDisplay coins={10} />);
+
+        act(() => {
+          rerender(<CoinsDisplay coins={35} />);
+        });
+
+        expect(timingSpy).toHaveBeenCalled();
+        expect(timingStart).toHaveBeenCalled();
+        expect(sequenceSpy).toHaveBeenCalled();
+        expect(sequenceStart).toHaveBeenCalled();
+      } finally {
+        process.env.NODE_ENV = originalNodeEnv;
+        timingSpy.mockRestore();
+        sequenceSpy.mockRestore();
+      }
+    });
+
+    it("does not pulse when a count-up animation is interrupted", () => {
+      const originalNodeEnv = process.env.NODE_ENV;
+      const timingSpy = jest.spyOn(Animated, "timing").mockReturnValue({
+        start: (callback?: (result: {finished: boolean}) => void) => callback?.({finished: false}),
+        stop: jest.fn(),
+        reset: jest.fn(),
+        _startNativeLoop: jest.fn(),
+        _isUsingNativeDriver: jest.fn(() => false),
+      } as ReturnType<typeof Animated.timing>);
+      const sequenceSpy = jest.spyOn(Animated, "sequence");
+
+      try {
+        process.env.NODE_ENV = "development";
+        const {rerender} = render(<CoinsDisplay coins={10} />);
+
+        act(() => {
+          rerender(<CoinsDisplay coins={20} />);
+        });
+
+        expect(sequenceSpy).not.toHaveBeenCalled();
+      } finally {
+        process.env.NODE_ENV = originalNodeEnv;
+        timingSpy.mockRestore();
+        sequenceSpy.mockRestore();
+      }
     });
   });
 });

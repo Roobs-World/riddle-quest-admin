@@ -386,7 +386,7 @@ function PlayersView({
           <form className="modal-card" onSubmit={submitAdjustment} onMouseDown={(event) => event.stopPropagation()}>
             <button className="modal-close" type="button" onClick={() => setSelected(null)}>Close</button>
             <p className="eyebrow">Audited correction</p>
-            <h2>Adjust {selected.username}'s coins</h2>
+            <h2>Adjust {selected.username}&apos;s coins</h2>
             <p className="muted">Current balance: {selected.coins.toLocaleString()} coins</p>
             <label>
               Change
@@ -482,8 +482,8 @@ function OperationsView({
       <article className="operation-card urgent">
         <span className="operation-number">01</span>
         <p className="eyebrow">Daily content</p>
-        <h2>Generate today's challenge</h2>
-        <p>Creates a daily riddle only when today's content is missing.</p>
+        <h2>Generate today&apos;s challenge</h2>
+        <p>Creates a daily riddle only when today&apos;s content is missing.</p>
         <button className="primary-button" disabled={disabled} onClick={() => void onGenerateDaily(false)}>
           Generate if missing
         </button>
@@ -491,7 +491,7 @@ function OperationsView({
       <article className="operation-card">
         <span className="operation-number">02</span>
         <p className="eyebrow">Recovery action</p>
-        <h2>Replace today's challenge</h2>
+        <h2>Replace today&apos;s challenge</h2>
         <p>Forces fresh generation across the current daily pipeline. Use after reviewing a bad clue.</p>
         <button className="danger-button" disabled={disabled} onClick={() => void onGenerateDaily(true)}>
           Force regeneration

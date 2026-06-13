@@ -219,20 +219,20 @@ const TooltipCalloutShell: React.FC<TooltipCalloutShellProps> = ({
 
 const styles = StyleSheet.create({
   backdrop: {
-    position: "absolute",
     backgroundColor: "rgba(0,0,0,0.3)",
+    position: "absolute",
   },
   content: {
     alignItems: "stretch",
     padding: SPACING.md,
   },
   panel: {
-    position: "absolute",
     backgroundColor: palette.figmaCream,
     borderColor: palette.figmaGold,
     borderRadius: 16,
     borderWidth: 2,
     elevation: 10,
+    position: "absolute",
     shadowColor: "#000",
     shadowOffset: {width: 0, height: 8},
     shadowOpacity: 0.2,

@@ -30,7 +30,6 @@ interface UpdateUsernameModalProps {
 }
 
 const UpdateUsernameModal: React.FC<UpdateUsernameModalProps> = ({isVisible, onClose, currentUsername}) => {
-  const COMPACT_MODAL_HEIGHT = Math.min(MODAL_HEIGHT * 0.75, MODAL_MAX_HEIGHT ?? MODAL_HEIGHT * 0.75);
   const compactContentHeight = Math.min(MODAL_HEIGHT * 0.56, MODAL_MAX_HEIGHT ?? MODAL_HEIGHT * 0.56);
   const {updatePlayerData} = useAuth();
   const [newUsername, setNewUsername] = useState(currentUsername || "");

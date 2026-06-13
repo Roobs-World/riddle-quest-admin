@@ -93,7 +93,7 @@ const TooltipOverlay: React.FC<TooltipOverlayProps> = ({visible, targetRect, con
     });
 
     previousVisibleRef.current = visible;
-  }, [onExited, opacity, translateY, visible]);
+  }, [buttonScale, content.title, onExited, opacity, targetRect, translateY, visible]);
 
   useEffect(() => {
     if (isQASurfaceRuntimeActive()) {
