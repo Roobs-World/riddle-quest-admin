@@ -86,5 +86,31 @@
     "WIN_RATE_STAT": "Tỷ lệ thắng",
     "WORDS_GUESSED_STAT": "Số từ đã đoán",
     "XP_LEVEL_PREFIX": "Cấp"
+  },
+  "Ranks": {
+    "TITLE": "Bac hang",
+    "SUBTITLE": "Giai do, tang cap va chinh phuc moi bac hang.",
+    "VIEW_ALL_BUTTON": "Xem tat ca bac hang",
+    "LEVEL_REQUIREMENT_PREFIX": "Cap ",
+    "CURRENT_RANK": "Bac hien tai",
+    "NEXT_RANK_PREFIX": "Tiep theo:",
+    "AT_LEVEL_PREFIX": "o cap",
+    "HIGHEST_RANK": "Da dat bac cao nhat",
+    "STARGAZER_NAME": "Nguoi ngam sao",
+    "STARGAZER_DESCRIPTION": "Ban da bat dau doc cac vi sao.",
+    "PATHFINDER_NAME": "Nguoi mo loi",
+    "PATHFINDER_DESCRIPTION": "Ban tim thay loi qua nhung cau do kho.",
+    "RIDDLE_SCOUT_NAME": "Trinh sat cau do",
+    "RIDDLE_SCOUT_DESCRIPTION": "Rat it manh moi thoat khoi tam mat ban.",
+    "CIPHER_KNIGHT_NAME": "Hiep si mat ma",
+    "CIPHER_KNIGHT_DESCRIPTION": "Ban bao ve dap an bang logic sac ben.",
+    "ORACLE_NAME": "Nha tien tri",
+    "ORACLE_DESCRIPTION": "Quy luat hien ra truoc mat ban.",
+    "LUMINARY_NAME": "Nguoi dan sang",
+    "LUMINARY_DESCRIPTION": "Tri tue cua ban soi duong cho nguoi khac.",
+    "ASTRAL_SAGE_NAME": "Hien gia tinh tu",
+    "ASTRAL_SAGE_DESCRIPTION": "Ban lam chu cau do cua vu tru.",
+    "QUEST_LEGEND_NAME": "Huyen thoai hanh trinh",
+    "QUEST_LEGEND_DESCRIPTION": "Ten ban thuoc ve nhung bac thay vi dai."
   }
 }

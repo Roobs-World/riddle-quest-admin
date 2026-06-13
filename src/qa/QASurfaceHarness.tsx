@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useMemo, useState} from "react";
-import {Linking, StyleSheet, Text, View} from "react-native";
+import {Linking, LogBox, StyleSheet, Text, View} from "react-native";
 import LandingScreen from "../screens/LandingScreen";
 import GameScreen from "../screens/game/GameScreen";
 import PulsingSpinner from "../components/loading/PulsingSpinner";
@@ -78,8 +78,8 @@ const SurfaceMarker = ({surfaceId}: {surfaceId: QASurfaceId}) => (
 
 const wrapSurface = (surfaceId: QASurfaceId, content: React.ReactNode) => (
   <View collapsable={false} style={qaStyles.root} testID={`qa-surface-${surfaceId}`}>
-    <SurfaceMarker surfaceId={surfaceId} />
     {content}
+    <SurfaceMarker surfaceId={surfaceId} />
   </View>
 );
 
@@ -104,21 +104,24 @@ const renderLoadingSurface = () => (
 );
 
 const renderGameSurface = () => (
-  <GameScreen
-    riddleId="qa-orchard"
-    riddleText="I grow in rows and fill baskets when autumn arrives."
-    answer="ORCHARD"
-    answerLength={7}
-    userCoins={qaPlayer.coins}
-    hintCost={HINT_COST_COINS}
-    onGameWin={noop}
-    onGameLoss={noop}
-    onHintUsed={() => ["A place where fruit trees grow."]}
-    onSkipUsed={noop}
-    onNextLevel={noop}
-    gameMode="classic"
-    suppressOnboarding={true}
-  />
+  <>
+    <GameScreen
+      riddleId="qa-orchard"
+      riddleText="I grow in rows and fill baskets when autumn arrives."
+      answer="ORCHARD"
+      answerLength={7}
+      userCoins={qaPlayer.coins}
+      hintCost={HINT_COST_COINS}
+      onGameWin={noop}
+      onGameLoss={noop}
+      onHintUsed={() => ["A place where fruit trees grow."]}
+      onSkipUsed={noop}
+      onNextLevel={noop}
+      gameMode="classic"
+      suppressOnboarding={true}
+      qaAccessibilityLabel="qa-surface:page-game I grow in rows Hint SUBMIT Next"
+    />
+  </>
 );
 
 const qaSequenceProgress = (primaryActionText: string): ModalSequenceProgress => ({
@@ -345,6 +348,7 @@ export const QA_SURFACE_RENDERERS: Record<QASurfaceId, () => React.ReactNode> = 
   "modal-achievements": () => renderRegistryModalSurface("modal-achievements"),
   "modal-stats": () => renderRegistryModalSurface("modal-stats"),
   "modal-leaderboard": () => renderRegistryModalSurface("modal-leaderboard"),
+  "modal-ranks": () => renderRegistryModalSurface("modal-ranks"),
   "modal-credits": () => renderRegistryModalSurface("modal-credits"),
   "modal-about-legal": () => renderRegistryModalSurface("modal-about-legal"),
   "modal-welcome-onboarding-progress": () => renderRegistryModalSurface("modal-welcome-onboarding-progress"),
@@ -387,6 +391,7 @@ export const QASurfaceGate = ({children}: {children: React.ReactNode}) => {
   const setNextSurfaceId = useCallback(
     (nextSurfaceId: QASurfaceId) => {
       closeAllModals();
+      LogBox.ignoreAllLogs(true);
       setQASurfaceRuntimeActive(true);
       setSurfaceState((currentSurfaceState) => ({
         id: nextSurfaceId,
@@ -421,6 +426,7 @@ export const QASurfaceGate = ({children}: {children: React.ReactNode}) => {
 
     return () => {
       isMounted = false;
+      LogBox.ignoreAllLogs(false);
       setQASurfaceRuntimeActive(false);
       subscription.remove();
     };

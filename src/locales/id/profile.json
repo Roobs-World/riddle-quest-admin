@@ -86,5 +86,31 @@
     "WIN_RATE_STAT": "Tingkat Kemenangan",
     "WORDS_GUESSED_STAT": "Tebakan Kata",
     "XP_LEVEL_PREFIX": "Tingkat"
+  },
+  "Ranks": {
+    "TITLE": "Peringkat",
+    "SUBTITLE": "Pecahkan teka-teki, naik level, dan raih semua peringkat.",
+    "VIEW_ALL_BUTTON": "Lihat semua peringkat",
+    "LEVEL_REQUIREMENT_PREFIX": "Tingkat ",
+    "CURRENT_RANK": "Peringkat saat ini",
+    "NEXT_RANK_PREFIX": "Berikutnya:",
+    "AT_LEVEL_PREFIX": "di level",
+    "HIGHEST_RANK": "Peringkat tertinggi tercapai",
+    "STARGAZER_NAME": "Pengamat bintang",
+    "STARGAZER_DESCRIPTION": "Kamu mulai membaca bintang.",
+    "PATHFINDER_NAME": "Perintis",
+    "PATHFINDER_DESCRIPTION": "Kamu menemukan jalan melalui teka-teki sulit.",
+    "RIDDLE_SCOUT_NAME": "Pengintai teka-teki",
+    "RIDDLE_SCOUT_DESCRIPTION": "Hampir tak ada petunjuk yang lolos.",
+    "CIPHER_KNIGHT_NAME": "Ksatria sandi",
+    "CIPHER_KNIGHT_DESCRIPTION": "Kamu menjaga jawaban dengan logika tajam.",
+    "ORACLE_NAME": "Peramal",
+    "ORACLE_DESCRIPTION": "Pola terbuka di hadapanmu.",
+    "LUMINARY_NAME": "Penerang",
+    "LUMINARY_DESCRIPTION": "Wawasanmu menerangi jalan orang lain.",
+    "ASTRAL_SAGE_NAME": "Resi astral",
+    "ASTRAL_SAGE_DESCRIPTION": "Kamu menguasai teka-teki kosmos.",
+    "QUEST_LEGEND_NAME": "Legenda misi",
+    "QUEST_LEGEND_DESCRIPTION": "Namamu sejajar dengan pemecah terhebat."
   }
 }

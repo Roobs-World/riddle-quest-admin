@@ -1,4 +1,9 @@
-import {XP_LEVEL_THRESHOLDS, getXpLevel, getXpThresholdForLevel} from "../game";
+import {
+  XP_LEVEL_THRESHOLDS,
+  getXpLevel,
+  getXpThresholdForLevel,
+  isStreakRewardMilestone,
+} from "../game";
 
 describe("XP curve", () => {
   it("uses a config object instead of an array", () => {
@@ -37,5 +42,17 @@ describe("XP curve", () => {
     expect(result.nextLevelXp).toBe(getXpThresholdForLevel(targetLevel + 1) - threshold);
     expect(result.progressPct).toBeGreaterThan(0);
     expect(result.progressPct).toBeLessThan(1);
+  });
+});
+
+describe("streak rewards", () => {
+  it.each([
+    [1, false],
+    [6, false],
+    [7, true],
+    [8, false],
+    [14, true],
+  ])("reports milestone status for a %s-day streak", (streak, expected) => {
+    expect(isStreakRewardMilestone(streak)).toBe(expected);
   });
 });

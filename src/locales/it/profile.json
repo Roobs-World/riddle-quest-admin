@@ -86,5 +86,31 @@
     "WIN_RATE_STAT": "Vota vincita",
     "WORDS_GUESSED_STAT": "Parole indovinate",
     "XP_LEVEL_PREFIX": "Liv."
+  },
+  "Ranks": {
+    "TITLE": "Gradi",
+    "SUBTITLE": "Risolvi enigmi, sali di livello e conquista ogni grado.",
+    "VIEW_ALL_BUTTON": "Vedi tutti i gradi",
+    "LEVEL_REQUIREMENT_PREFIX": "Livello ",
+    "CURRENT_RANK": "Grado attuale",
+    "NEXT_RANK_PREFIX": "Prossimo:",
+    "AT_LEVEL_PREFIX": "al livello",
+    "HIGHEST_RANK": "Grado massimo raggiunto",
+    "STARGAZER_NAME": "Osservatore stellare",
+    "STARGAZER_DESCRIPTION": "Hai iniziato a leggere le stelle.",
+    "PATHFINDER_NAME": "Apripista",
+    "PATHFINDER_DESCRIPTION": "Trovi la via negli enigmi piu difficili.",
+    "RIDDLE_SCOUT_NAME": "Esploratore di enigmi",
+    "RIDDLE_SCOUT_DESCRIPTION": "Pochi indizi sfuggono al tuo sguardo.",
+    "CIPHER_KNIGHT_NAME": "Cavaliere del codice",
+    "CIPHER_KNIGHT_DESCRIPTION": "Difendi ogni risposta con logica affilata.",
+    "ORACLE_NAME": "Oracolo",
+    "ORACLE_DESCRIPTION": "Gli schemi si rivelano davanti a te.",
+    "LUMINARY_NAME": "Luminare",
+    "LUMINARY_DESCRIPTION": "Il tuo intuito illumina la via agli altri.",
+    "ASTRAL_SAGE_NAME": "Saggio astrale",
+    "ASTRAL_SAGE_DESCRIPTION": "Domini gli enigmi del cosmo.",
+    "QUEST_LEGEND_NAME": "Leggenda della missione",
+    "QUEST_LEGEND_DESCRIPTION": "Il tuo nome e tra i piu grandi."
   }
 }

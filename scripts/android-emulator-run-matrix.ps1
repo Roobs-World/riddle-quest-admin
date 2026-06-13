@@ -61,6 +61,7 @@ $QASurfaceExpectedTexts = @{
   "modal-achievements" = @("Achievements")
   "modal-stats" = @("Statistics", "Games Played")
   "modal-leaderboard" = @("Leaderboard")
+  "modal-ranks" = @("Ranks", "Stargazer")
   "modal-credits" = @("Credits", "Close")
   "modal-about-legal" = @("About / Legal", "Privacy Policy")
   "modal-welcome-onboarding-progress" = @("Welcome to Riddle Quest!", "1/3")

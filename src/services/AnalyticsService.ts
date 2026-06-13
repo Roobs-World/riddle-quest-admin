@@ -28,6 +28,28 @@ import {logger} from "../utils/logger";
 import {captureException} from "../utils/sentry";
 import {gameEventBus, AnyGameEvent, GameCompletedEvent, GuessSubmittedEvent, GuessValidatedEvent} from "./GameEventBus";
 
+export type GameInteractionAction =
+  | "coin_shop_opened"
+  | "continue_with_ad_selected"
+  | "continue_with_coins_selected"
+  | "guess_letter_added"
+  | "guess_letter_removed"
+  | "guess_slot_selected"
+  | "hint_confirmed"
+  | "hint_opened"
+  | "language_changed"
+  | "loss_next_selected"
+  | "pay_and_play_selected"
+  | "profile_opened"
+  | "settings_opened"
+  | "skip_confirmed"
+  | "skip_opened"
+  | "sound_toggled"
+  | "submit_invalid"
+  | "support_opened"
+  | "haptics_toggled"
+  | "watch_ad_for_coins_selected";
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Service
 // ─────────────────────────────────────────────────────────────────────────────
@@ -121,7 +143,23 @@ export class AnalyticsService {
    * Log when the user starts a new game (any mode).
    */
   async logGameStart(params: {gameMode: "daily" | "classic"; riddleId: string}): Promise<void> {
-    await this.logEvent("game_start", params);
+    await this.logEvent("game_start", {
+      game_mode: params.gameMode,
+      riddle_id: params.riddleId,
+    });
+  }
+
+  /**
+   * Log a player interaction within the active game experience.
+   */
+  async logGameInteraction(
+    action: GameInteractionAction,
+    params: Record<string, string | number | boolean> = {},
+  ): Promise<void> {
+    await this.logEvent("game_interaction", {
+      action,
+      ...params,
+    });
   }
 
   /**
@@ -305,6 +343,21 @@ export class AnalyticsService {
         break;
       case "GAME_COMPLETED":
         void this.onGameCompleted(event as GameCompletedEvent);
+        break;
+      case "LETTER_ADDED":
+        void this.logGameInteraction("guess_letter_added", {
+          position: event.position,
+        });
+        break;
+      case "LETTER_REMOVED":
+        void this.logGameInteraction("guess_letter_removed", {
+          position: event.position,
+        });
+        break;
+      case "HINT_REQUESTED":
+        void this.logGameInteraction("hint_confirmed", {
+          hint_type: event.hintType,
+        });
         break;
       default:
         break;

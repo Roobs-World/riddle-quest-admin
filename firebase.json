@@ -12,6 +12,20 @@
   "storage": {
     "rules": "firebase-functions/storage.rules"
   },
+  "hosting": {
+    "public": "packages/portal/dist",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  },
   "emulators": {
     "functions": {
       "port": 5001

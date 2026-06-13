@@ -35,6 +35,7 @@ export const QA_REGISTRY_MODAL_SURFACES = [
   {id: "modal-achievements", kind: "modal", label: "Achievements modal"},
   {id: "modal-stats", kind: "modal", label: "Stats modal"},
   {id: "modal-leaderboard", kind: "modal", label: "Leaderboard modal"},
+  {id: "modal-ranks", kind: "modal", label: "Ranks modal"},
   {id: "modal-credits", kind: "modal", label: "Credits modal"},
   {id: "modal-about-legal", kind: "modal", label: "About and legal modal"},
 ] as const satisfies readonly QASurfaceDefinition[];
@@ -95,6 +96,7 @@ export const QA_MODAL_SURFACE_TO_REGISTRY_TYPE = {
   "modal-achievements": "achievements",
   "modal-stats": "stats",
   "modal-leaderboard": "leaderboard",
+  "modal-ranks": "ranks",
   "modal-credits": "credits",
   "modal-about-legal": "aboutLegal",
   "modal-welcome-onboarding-progress": "welcome",

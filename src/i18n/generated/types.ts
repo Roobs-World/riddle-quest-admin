@@ -191,6 +191,32 @@ export const translationSchema = {
     "WORDS_GUESSED_STAT": "Words Guessed",
     "XP_LEVEL_PREFIX": "Lv."
   },
+  "Ranks": {
+    "TITLE": "Ranks",
+    "SUBTITLE": "Solve riddles, level up, and rise through every rank.",
+    "VIEW_ALL_BUTTON": "View all ranks",
+    "LEVEL_REQUIREMENT_PREFIX": "Level ",
+    "CURRENT_RANK": "Current rank",
+    "NEXT_RANK_PREFIX": "Next:",
+    "AT_LEVEL_PREFIX": "at level",
+    "HIGHEST_RANK": "Highest rank reached",
+    "STARGAZER_NAME": "Stargazer",
+    "STARGAZER_DESCRIPTION": "You have begun reading the stars.",
+    "PATHFINDER_NAME": "Pathfinder",
+    "PATHFINDER_DESCRIPTION": "You are finding your way through tougher riddles.",
+    "RIDDLE_SCOUT_NAME": "Riddle Scout",
+    "RIDDLE_SCOUT_DESCRIPTION": "Clues rarely escape your eye.",
+    "CIPHER_KNIGHT_NAME": "Cipher Knight",
+    "CIPHER_KNIGHT_DESCRIPTION": "You defend every answer with sharp logic.",
+    "ORACLE_NAME": "Oracle",
+    "ORACLE_DESCRIPTION": "Patterns reveal themselves before you.",
+    "LUMINARY_NAME": "Luminary",
+    "LUMINARY_DESCRIPTION": "Your insight lights the way for others.",
+    "ASTRAL_SAGE_NAME": "Astral Sage",
+    "ASTRAL_SAGE_DESCRIPTION": "You command riddles written across the cosmos.",
+    "QUEST_LEGEND_NAME": "Quest Legend",
+    "QUEST_LEGEND_DESCRIPTION": "Your name belongs among the greatest solvers."
+  },
   "TestStrings": {
     "MOCK_SVG_TEXT": "Mock SVG Text",
     "QA_SURFACE_PREFIX": "qa-surface"
@@ -450,7 +476,8 @@ export const translationSchema = {
     "COINS_SUFFIX": " Coins",
     "CONTINUE_BUTTON": "Awesome",
     "LEVEL_PREFIX": "Level ",
-    "TITLE": "Level Up!"
+    "TITLE": "Level Up!",
+    "PROFILE_GUIDANCE": "Your new level and rank are waiting in Profile. Tap the profile icon after this celebration."
   },
   "Leaderboard": {
     "GUEST_UNAVAILABLE": "Sign in to compare XP, wins, and streaks on the leaderboard.",

@@ -199,12 +199,6 @@ const useGameLogic = ({riddleId, answer, gameMode, isGuestMode = false}: UseGame
         addBreadcrumb("game", "Game won", {attempts: engineOutcome.attempts, riddleId, gameMode});
         void clearGuestSession();
 
-        gameEventBus.emit<import("../services/GameEventBus").GameCompletedEvent>({
-          type: "GAME_COMPLETED",
-          outcome: "won",
-          attempts: engineOutcome.attempts,
-        });
-
         let coinsEarned = 0;
         let scoreEarned = 0;
         let newlyUnlockedAchievementIds: string[] = [];
@@ -230,17 +224,18 @@ const useGameLogic = ({riddleId, answer, gameMode, isGuestMode = false}: UseGame
             newlyUnlockedAchievementIds = data.newlyUnlockedAchievementIds ?? [];
             newWinStreak = data.newWinStreak;
             rewardBreakdown = data.rewardBreakdown;
-            gameEventBus.emit<import("../services/GameEventBus").GameCompletedEvent>({
-              type: "GAME_COMPLETED",
-              outcome: "won",
-              attempts: engineOutcome.attempts,
-              coinsEarned,
-            });
           } catch (err) {
             logger.error("Error calling completeGame on win:", err);
             captureException(err);
           }
         }
+
+        gameEventBus.emit<import("../services/GameEventBus").GameCompletedEvent>({
+          type: "GAME_COMPLETED",
+          outcome: "won",
+          attempts: engineOutcome.attempts,
+          coinsEarned,
+        });
 
         return {
           outcome: "win",

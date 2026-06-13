@@ -215,6 +215,13 @@ export const useModal = () => {
     [openGameModal],
   );
 
+  const showRanksModal = useCallback(
+    (data: ModalDataType<"ranks">, options?: ModalOptions): string => {
+      return openGameModal("ranks", data, options);
+    },
+    [openGameModal],
+  );
+
   const showChangePasswordModal = useCallback(
     (data: ModalDataType<"changePassword">, options?: ModalOptions): string => {
       return openGameModal("changePassword", data, options);
@@ -281,6 +288,7 @@ export const useModal = () => {
     showStreakIncreaseFanfareModal,
     showLevelUpFanfareModal,
     showFullProfileDetailsModal,
+    showRanksModal,
     showChangePasswordModal,
     showUpdateUsernameModal,
     showAvatarOptionsModal,

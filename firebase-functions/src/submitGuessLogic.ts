@@ -34,6 +34,7 @@ import {
   COINS_REWARD_CLASSIC,
   COINS_REWARD_CHALLENGE,
   DAILY_COMPLETION_BONUS,
+  STREAK_REWARD_INTERVAL_DAYS,
   ACHIEVEMENT_UNLOCK_COIN_REWARD,
   LEVEL_UP_COIN_BONUS,
   BASE_SCORE_CLASSIC,
@@ -569,8 +570,8 @@ export async function handleCompleteGameLogic(
         statsUpdate.dailyPuzzlesCompleted = admin.firestore.FieldValue.increment(1);
         baseWinCoins = COINS_REWARD_CHALLENGE;
 
-        // Award daily streak bonus when streak is active (> 0)
-        if (updatedDailyWinStreak && updatedDailyWinStreak > 0) {
+        // Award the streak bonus at each completed seven-day milestone.
+        if (updatedDailyWinStreak && updatedDailyWinStreak % STREAK_REWARD_INTERVAL_DAYS === 0) {
           dailyStreakBonus = DAILY_COMPLETION_BONUS;
         }
 

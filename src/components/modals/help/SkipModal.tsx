@@ -11,7 +11,7 @@ import {SPACING} from "../../../styles";
 import {t} from "../../../i18n";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import {verticalScale} from "@/utils/responsive";
-import {NewCoins} from "@/components/shared/NewCoins";
+import {ModalReward} from "@/components/rewards/RewardFactory";
 
 interface SkipModalProps {
   isVisible: boolean;
@@ -93,7 +93,7 @@ const SkipModal: React.FC<SkipModalProps> = ({
                 {t("GameScreenAlerts.SKIP_MODAL_TITLE")}
               </Text>
 
-              <NewCoins coinsEarned={-skipCost} totalCoins={totalCoins} />
+              <ModalReward amount={-skipCost} totalCoins={totalCoins} />
 
               {!canAffordSkip && (
                 <Text

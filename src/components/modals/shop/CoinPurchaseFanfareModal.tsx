@@ -8,7 +8,7 @@ import {
   MODAL_WIDTH, MODAL_CONTENT_PADDING, MODAL_BUTTON_SPACER, MODAL_MAX_SCREEN_HEIGHT_FRACTION, getResponsiveModalHeight, } from "../../../constants/layout";
 import {t} from "../../../i18n";
 import SlideInModalContent from "../../shared/SlideInModalContent";
-import {NewCoins} from "@/components/shared/NewCoins";
+import {ModalReward} from "@/components/rewards/RewardFactory";
 import RotatingWheelBackground from "@/components/shared/RotatingWheelBackground";
 import WideButton from "../../buttons/WideButton";
 
@@ -87,7 +87,7 @@ const CoinPurchaseFanfareModal: React.FC<CoinPurchaseFanfareModalProps> = ({
                 {t("CoinPurchase.TITLE")}
               </Text>
 
-              <NewCoins coinsEarned={coinsPurchased} totalCoins={totalCoins} />
+              <ModalReward amount={coinsPurchased} totalCoins={totalCoins} />
 
               <View style={{width: "100%"}}>
                 <WideButton

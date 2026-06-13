@@ -39,7 +39,7 @@ import {
   MODAL_WIDTH, MODAL_HEIGHT, MODAL_CONTENT_PADDING, MODAL_BUTTON_SPACER, MODAL_MAX_HEIGHT, wheelSize, } from "../../../constants/layout";
 import {t} from "../../../i18n";
 import SlideInModalContent from "../../shared/SlideInModalContent";
-import {NewCoins} from "@/components/shared/NewCoins";
+import {ModalReward} from "@/components/rewards/RewardFactory";
 import {isQASurfaceRuntimeActive} from "../../../qa/qaRuntime";
 
 /**
@@ -308,7 +308,7 @@ const LossModal: React.FC<LossModalProps> = ({
                     </Text>
                   </View>
 
-                  <NewCoins coinsEarned={0} totalCoins={totalCoins} />
+                  <ModalReward amount={0} totalCoins={totalCoins} />
 
                   <View style={{flex: 2, justifyContent: "center", width: "100%"}}>
                     {onWatchAdContinue && (

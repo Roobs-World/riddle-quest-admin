@@ -5,13 +5,14 @@
  * This header is used at the top of the main `GameScreen` and is responsible
  * for providing quick access to the coin shop and surfacing current mode context.
  */
-import React, {useMemo, useState} from "react";
+import React, {useEffect, useImperativeHandle, useMemo, useRef, useState} from "react";
 import {LayoutChangeEvent, View, TouchableOpacity, Text} from "react-native";
 import CoinsDisplay from "./CoinsDisplay";
 import LogoIcon from "../icons/LogoIcon";
 import {TYPOGRAPHY, SPACING} from "../../styles";
 import {GAME_HEADER_SLOT_HEIGHT, HEADER_LOGO_SIZE} from "../../constants/layout";
 import {t} from "../../i18n";
+import {useRewardAnimation} from "../../contexts/RewardAnimationContext";
 
 /**
  * Props for the Header component.
@@ -54,6 +55,15 @@ const Header: React.FC<HeaderProps> = ({
   const [headerWidth, setHeaderWidth] = useState(0);
   const [leftAnchor, setLeftAnchor] = useState({x: SPACING.md, width: HEADER_LOGO_SIZE});
   const [rightAnchor, setRightAnchor] = useState({x: 0, width: 0});
+  const {registerCoinTarget} = useRewardAnimation();
+  const localCoinsTargetRef = useRef<View>(null);
+
+  useImperativeHandle(coinsButtonRef, () => localCoinsTargetRef.current as View);
+
+  useEffect(() => {
+    registerCoinTarget(localCoinsTargetRef.current);
+    return () => registerCoinTarget(null);
+  }, [registerCoinTarget]);
 
   const modeLabelContainerStyle = useMemo(() => {
     const leftBoundary = leftAnchor.x + leftAnchor.width;
@@ -142,7 +152,7 @@ const Header: React.FC<HeaderProps> = ({
 
       {/* Right side: Coins */}
       <View
-        ref={coinsButtonRef}
+        ref={localCoinsTargetRef}
         style={{position: "absolute", top: SPACING.md, right: SPACING.md, zIndex: 10}}
         testID="header-right-side"
         onLayout={handleRightAnchorLayout}

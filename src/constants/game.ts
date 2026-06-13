@@ -79,10 +79,19 @@ export const MODAL_CLOSE_DELAY_MS = 100;
 export const HINT_COST_COINS = 50;
 /** Bonus coins awarded whenever a player levels up. */
 export const LEVEL_UP_COIN_BONUS = 50;
+/** Coins awarded whenever an achievement unlocks. Must match the backend constant. */
+export const ACHIEVEMENT_UNLOCK_COIN_REWARD = 25;
 /** Coins awarded for completing a Daily Challenge. */
 export const DAILY_CHALLENGE_COIN_REWARD = 75;
 /** Bonus coins awarded for completing Daily Challenge with active streak. */
 export const DAILY_COMPLETION_BONUS = 25;
+/** Number of consecutive daily wins required for each streak reward. */
+export const STREAK_REWARD_INTERVAL_DAYS = 7;
+
+/** Returns true when a daily streak has reached a weekly reward milestone. */
+export function isStreakRewardMilestone(streakValue: number): boolean {
+  return streakValue > 0 && streakValue % STREAK_REWARD_INTERVAL_DAYS === 0;
+}
 /** Coins awarded for completing a Classic riddle. */
 export const CLASSIC_RIDDLE_COIN_REWARD = 25;
 /** Coin cost to continue after exhausting initial attempts. */

@@ -86,5 +86,31 @@
     "WIN_RATE_STAT": "Winingspercentage",
     "WORDS_GUESSED_STAT": "Woorden geraden",
     "XP_LEVEL_PREFIX": "Niv."
+  },
+  "Ranks": {
+    "TITLE": "Rangen",
+    "SUBTITLE": "Los raadsels op, stijg in level en bereik elke rang.",
+    "VIEW_ALL_BUTTON": "Alle rangen bekijken",
+    "LEVEL_REQUIREMENT_PREFIX": "Niveau ",
+    "CURRENT_RANK": "Huidige rang",
+    "NEXT_RANK_PREFIX": "Volgende:",
+    "AT_LEVEL_PREFIX": "op level",
+    "HIGHEST_RANK": "Hoogste rang bereikt",
+    "STARGAZER_NAME": "Sterrenkijker",
+    "STARGAZER_DESCRIPTION": "Je bent begonnen de sterren te lezen.",
+    "PATHFINDER_NAME": "Padvinder",
+    "PATHFINDER_DESCRIPTION": "Je vindt je weg door moeilijke raadsels.",
+    "RIDDLE_SCOUT_NAME": "Raadselverkenner",
+    "RIDDLE_SCOUT_DESCRIPTION": "Bijna geen aanwijzing ontsnapt aan je blik.",
+    "CIPHER_KNIGHT_NAME": "Cijferridder",
+    "CIPHER_KNIGHT_DESCRIPTION": "Je verdedigt elk antwoord met scherpe logica.",
+    "ORACLE_NAME": "Orakel",
+    "ORACLE_DESCRIPTION": "Patronen tonen zich als eerste aan jou.",
+    "LUMINARY_NAME": "Lichtbrenger",
+    "LUMINARY_DESCRIPTION": "Jouw inzicht verlicht de weg voor anderen.",
+    "ASTRAL_SAGE_NAME": "Astrale wijze",
+    "ASTRAL_SAGE_DESCRIPTION": "Je beheerst raadsels uit de kosmos.",
+    "QUEST_LEGEND_NAME": "Queestelegende",
+    "QUEST_LEGEND_DESCRIPTION": "Je naam hoort bij de grootste oplossers."
   }
 }

@@ -67,7 +67,10 @@ describe("LevelUpFanfareModal", () => {
 
     expect(getByText("Level Up!")).toBeTruthy();
     expect(getByText("Level 4")).toBeTruthy();
+    expect(getByText("Pathfinder")).toBeTruthy();
     expect(getByText("+50 Coins")).toBeTruthy();
+    expect(getByText(/waiting in Profile/)).toBeTruthy();
+    expect(queryByTestId("modal-reward-chest")).toBeTruthy();
     expect(queryByTestId("modal-sequence-breadcrumb")).toBeNull();
   });
 

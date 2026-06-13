@@ -10,7 +10,7 @@ import {
   MODAL_MAX_HEIGHT,
 } from "../../../constants/layout";
 import {t} from "../../../i18n";
-import {NewCoins} from "@/components/shared/NewCoins";
+import {ModalReward} from "@/components/rewards/RewardFactory";
 import RotatingWheelBackground from "@/components/shared/RotatingWheelBackground";
 import type {ModalSequenceProgress} from "../../../types/ModalTypes";
 import ModalSequenceBreadcrumb from "../ModalSequenceBreadcrumb";
@@ -142,7 +142,7 @@ const AchievementUnlockFanfareModal: React.FC<AchievementUnlockFanfareModalProps
                   ) : null}
                 </View>
 
-                <NewCoins coinsEarned={coinsEarned} totalCoins={totalCoins} />
+                <ModalReward amount={coinsEarned} totalCoins={totalCoins} />
 
                 <View style={{width: "100%"}}>
                   <WideButton

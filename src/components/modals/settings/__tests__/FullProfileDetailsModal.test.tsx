@@ -522,6 +522,15 @@ describe("FullProfileDetailsModal", () => {
     expect(getByText("Leaderboard")).toBeTruthy();
   });
 
+  it("renders an interactive rank crest that links to the rank gallery", () => {
+    const {getByTestId} = renderWithModalProvider(<FullProfileDetailsModal {...defaultProps} />);
+    const rankButton = getByTestId("profile-rank-button");
+
+    expect(rankButton.props.accessibilityRole).toBe("button");
+    expect(rankButton.props.accessibilityLabel).toContain("View all ranks");
+    fireEvent.press(rankButton);
+  });
+
   it("opens achievements modal when Achievements button is pressed", () => {
     const {getByText} = renderWithModalProvider(<FullProfileDetailsModal {...defaultProps} />);
 

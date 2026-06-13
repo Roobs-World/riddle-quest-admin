@@ -414,7 +414,7 @@ export const getHint = onCall(
 
       // Increment totalHintsUsed stat
       try {
-        await updateUserStats(currentUserId, {totalHintsUsed: admin.firestore.FieldValue.increment(1) as any});
+        await updateUserStats(currentUserId, {totalHintsUsed: admin.firestore.FieldValue.increment(1)});
       } catch (err) {
         logger.error("Error updating totalHintsUsed stat:", err);
       }

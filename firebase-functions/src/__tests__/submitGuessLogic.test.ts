@@ -2,7 +2,12 @@ import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
 import {HttpsError} from "firebase-functions/v2/https";
 import {handleCompleteGameLogic, handleGuessLogic} from "../submitGuessLogic";
-import {COINS_REWARD_CLASSIC, COINS_REWARD_CHALLENGE, ACHIEVEMENT_UNLOCK_COIN_REWARD} from "../constants";
+import {
+  COINS_REWARD_CLASSIC,
+  COINS_REWARD_CHALLENGE,
+  DAILY_COMPLETION_BONUS,
+  ACHIEVEMENT_UNLOCK_COIN_REWARD,
+} from "../constants";
 import * as firestoreService from "../firestoreService";
 import * as riddleGeneration from "../riddleGeneration";
 import * as achievements from "../achievements";
@@ -900,6 +905,61 @@ describe("handleGuessLogic", () => {
           winStreak: 5,
           bestStreak: 5,
         }),
+      );
+    });
+
+    test("does not award a streak bonus before a seven-day milestone", async () => {
+      const yesterday = new Date();
+      yesterday.setUTCDate(yesterday.getUTCDate() - 1);
+
+      (firestoreService.getUser as jest.Mock).mockResolvedValue({
+        ...mockUser,
+        stats: {...mockUser.stats, winStreak: 5},
+        lastDailyChallengeCompletedAt: yesterday,
+      });
+
+      const result = await handleCompleteGameLogic(
+        {
+          riddleId: "riddle-123",
+          gameMode: "challenge",
+          attempts: 2,
+          isCorrect: true,
+        },
+        authContext,
+      );
+
+      expect(result.newWinStreak).toBe(6);
+      expect(result.rewardBreakdown?.dailyStreakBonus).toBe(0);
+      expect(result.coinsEarned).toBe(COINS_REWARD_CHALLENGE);
+    });
+
+    test("awards the streak bonus at a seven-day milestone", async () => {
+      const yesterday = new Date();
+      yesterday.setUTCDate(yesterday.getUTCDate() - 1);
+
+      (firestoreService.getUser as jest.Mock).mockResolvedValue({
+        ...mockUser,
+        stats: {...mockUser.stats, winStreak: 6},
+        lastDailyChallengeCompletedAt: yesterday,
+      });
+
+      const result = await handleCompleteGameLogic(
+        {
+          riddleId: "riddle-123",
+          gameMode: "challenge",
+          attempts: 2,
+          isCorrect: true,
+        },
+        authContext,
+      );
+
+      expect(result.newWinStreak).toBe(7);
+      expect(result.rewardBreakdown?.dailyStreakBonus).toBe(DAILY_COMPLETION_BONUS);
+      expect(result.coinsEarned).toBe(COINS_REWARD_CHALLENGE + DAILY_COMPLETION_BONUS);
+      expect(firestoreService.updateUserCoins).toHaveBeenNthCalledWith(
+        2,
+        authContext.uid,
+        DAILY_COMPLETION_BONUS,
       );
     });
 

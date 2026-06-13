@@ -86,5 +86,31 @@
     "WIN_RATE_STAT": "Porcentaje de ganancias",
     "WORDS_GUESSED_STAT": "Palabras adivinadas",
     "XP_LEVEL_PREFIX": "Niv."
+  },
+  "Ranks": {
+    "TITLE": "Rangos",
+    "SUBTITLE": "Resuelve acertijos, sube de nivel y alcanza todos los rangos.",
+    "VIEW_ALL_BUTTON": "Ver todos los rangos",
+    "LEVEL_REQUIREMENT_PREFIX": "Nivel ",
+    "CURRENT_RANK": "Rango actual",
+    "NEXT_RANK_PREFIX": "Siguiente:",
+    "AT_LEVEL_PREFIX": "en el nivel",
+    "HIGHEST_RANK": "Rango maximo alcanzado",
+    "STARGAZER_NAME": "Observador estelar",
+    "STARGAZER_DESCRIPTION": "Has comenzado a leer las estrellas.",
+    "PATHFINDER_NAME": "Pionero",
+    "PATHFINDER_DESCRIPTION": "Encuentras el camino entre acertijos mas dificiles.",
+    "RIDDLE_SCOUT_NAME": "Explorador de acertijos",
+    "RIDDLE_SCOUT_DESCRIPTION": "Pocas pistas escapan a tu mirada.",
+    "CIPHER_KNIGHT_NAME": "Caballero del codigo",
+    "CIPHER_KNIGHT_DESCRIPTION": "Defiendes cada respuesta con logica afilada.",
+    "ORACLE_NAME": "Oraculo",
+    "ORACLE_DESCRIPTION": "Los patrones se revelan ante ti.",
+    "LUMINARY_NAME": "Luminaria",
+    "LUMINARY_DESCRIPTION": "Tu ingenio ilumina el camino de otros.",
+    "ASTRAL_SAGE_NAME": "Sabio astral",
+    "ASTRAL_SAGE_DESCRIPTION": "Dominas acertijos escritos en el cosmos.",
+    "QUEST_LEGEND_NAME": "Leyenda de la mision",
+    "QUEST_LEGEND_DESCRIPTION": "Tu nombre esta entre los mejores."
   }
 }

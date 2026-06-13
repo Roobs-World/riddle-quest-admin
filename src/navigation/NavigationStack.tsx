@@ -454,6 +454,7 @@ const GameScreenWrapper = () => {
             scoreEarned: number,
             dailyStreakAfterWin?: number,
             bonusCoinsAwarded: number = 0,
+            bonusCoinsPersistedByServer: boolean = false,
           ) => {
             if (!playerData) {
               return;
@@ -526,7 +527,9 @@ const GameScreenWrapper = () => {
                 stats: nextPlayerSnapshot.stats,
                 lastDailyChallengeCompletedAt: nextPlayerSnapshot.lastDailyChallengeCompletedAt,
               });
-              await persistAuthenticatedBonusCoins(Math.max(0, bonusCoinsAwarded));
+              if (!bonusCoinsPersistedByServer) {
+                await persistAuthenticatedBonusCoins(Math.max(0, bonusCoinsAwarded));
+              }
             }
 
             // Check if user completed today's daily challenge

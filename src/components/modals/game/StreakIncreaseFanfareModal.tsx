@@ -7,7 +7,7 @@ import {
   MODAL_WIDTH, MODAL_HEIGHT, MODAL_CONTENT_PADDING, MODAL_BUTTON_SPACER, MODAL_MAX_HEIGHT, } from "../../../constants/layout";
 import {t} from "../../../i18n";
 import SlideInModalContent from "../../shared/SlideInModalContent";
-import {NewCoins} from "@/components/shared/NewCoins";
+import {ModalReward} from "@/components/rewards/RewardFactory";
 import RotatingWheelBackground from "@/components/shared/RotatingWheelBackground";
 import type {ModalSequenceProgress} from "../../../types/ModalTypes";
 import ModalSequenceBreadcrumb from "../ModalSequenceBreadcrumb";
@@ -107,7 +107,7 @@ const StreakIncreaseFanfareModal: React.FC<StreakIncreaseFanfareModalProps> = ({
                   {`${streakValue}${t("StreakFanfare.STREAK_SUFFIX")}`}
                 </Text>
 
-                <NewCoins coinsEarned={coinsAwarded} totalCoins={totalCoins} />
+                <ModalReward amount={coinsAwarded} totalCoins={totalCoins} />
 
                 <View style={{width: "100%"}}>
                   <WideButton

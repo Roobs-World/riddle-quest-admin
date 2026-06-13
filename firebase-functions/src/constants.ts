@@ -27,6 +27,8 @@ export const COINS_REWARD_CLASSIC = 25;
 export const COINS_REWARD_CHALLENGE = 75;
 /** Bonus coins awarded for daily streak completion. */
 export const DAILY_COMPLETION_BONUS = 25;
+/** Number of consecutive daily wins required for each streak reward. */
+export const STREAK_REWARD_INTERVAL_DAYS = 7;
 /** Bonus coins awarded per level-up. */
 export const LEVEL_UP_COIN_BONUS = 50;
 /** Bonus coins awarded per newly unlocked achievement. */

@@ -86,5 +86,31 @@
     "WIN_RATE_STAT": "Taxa de vitórias",
     "WORDS_GUESSED_STAT": "Palavras adivinhadas",
     "XP_LEVEL_PREFIX": "Nív."
+  },
+  "Ranks": {
+    "TITLE": "Patentes",
+    "SUBTITLE": "Resolva enigmas, suba de nivel e avance por todas as patentes.",
+    "VIEW_ALL_BUTTON": "Ver todas as patentes",
+    "LEVEL_REQUIREMENT_PREFIX": "Nivel ",
+    "CURRENT_RANK": "Patente atual",
+    "NEXT_RANK_PREFIX": "Proxima:",
+    "AT_LEVEL_PREFIX": "no nivel",
+    "HIGHEST_RANK": "Patente maxima alcancada",
+    "STARGAZER_NAME": "Observador estelar",
+    "STARGAZER_DESCRIPTION": "Voce comecou a ler as estrelas.",
+    "PATHFINDER_NAME": "Desbravador",
+    "PATHFINDER_DESCRIPTION": "Voce encontra caminhos em enigmas dificeis.",
+    "RIDDLE_SCOUT_NAME": "Batedor de enigmas",
+    "RIDDLE_SCOUT_DESCRIPTION": "Poucas pistas escapam ao seu olhar.",
+    "CIPHER_KNIGHT_NAME": "Cavaleiro da cifra",
+    "CIPHER_KNIGHT_DESCRIPTION": "Voce protege respostas com logica afiada.",
+    "ORACLE_NAME": "Oraculo",
+    "ORACLE_DESCRIPTION": "Os padroes se revelam diante de voce.",
+    "LUMINARY_NAME": "Luminar",
+    "LUMINARY_DESCRIPTION": "Sua perspicacia ilumina outros jogadores.",
+    "ASTRAL_SAGE_NAME": "Sabio astral",
+    "ASTRAL_SAGE_DESCRIPTION": "Voce domina enigmas do cosmos.",
+    "QUEST_LEGEND_NAME": "Lenda da jornada",
+    "QUEST_LEGEND_DESCRIPTION": "Seu nome esta entre os maiores."
   }
 }

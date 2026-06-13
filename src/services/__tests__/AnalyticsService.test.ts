@@ -6,7 +6,15 @@
  */
 
 import {AnalyticsService} from "../AnalyticsService";
-import {gameEventBus, GuessSubmittedEvent, GuessValidatedEvent, GameCompletedEvent} from "../GameEventBus";
+import {
+  gameEventBus,
+  GuessSubmittedEvent,
+  GuessValidatedEvent,
+  GameCompletedEvent,
+  HintRequestedEvent,
+  LetterAddedEvent,
+  LetterRemovedEvent,
+} from "../GameEventBus";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Mocks
@@ -125,6 +133,21 @@ describe("AnalyticsService", () => {
     });
   });
 
+  describe("logGameInteraction", () => {
+    it("logs a game_interaction event with action and dimensions", async () => {
+      await service.logGameInteraction("hint_opened", {
+        game_mode: "classic",
+        can_afford: true,
+      });
+
+      expect(mockLogEvent).toHaveBeenCalledWith("game_interaction", {
+        action: "hint_opened",
+        game_mode: "classic",
+        can_afford: true,
+      });
+    });
+  });
+
   describe("logAchievementUnlocked", () => {
     it("logs an achievement_unlocked event", async () => {
       await service.logAchievementUnlocked("first_win");
@@ -186,6 +209,45 @@ describe("AnalyticsService", () => {
         is_correct: false,
         green_letters: 2,
         yellow_letters: 1,
+      });
+    });
+
+    it("logs privacy-safe keyboard interactions without the entered letter", async () => {
+      gameEventBus.emit<LetterAddedEvent>({
+        type: "LETTER_ADDED",
+        letter: "A",
+        position: 2,
+      });
+      gameEventBus.emit<LetterRemovedEvent>({
+        type: "LETTER_REMOVED",
+        position: 2,
+      });
+      await flushPromises();
+
+      expect(mockLogEvent).toHaveBeenCalledWith("game_interaction", {
+        action: "guess_letter_added",
+        position: 2,
+      });
+      expect(mockLogEvent).toHaveBeenCalledWith("game_interaction", {
+        action: "guess_letter_removed",
+        position: 2,
+      });
+      expect(mockLogEvent).not.toHaveBeenCalledWith(
+        "game_interaction",
+        expect.objectContaining({letter: expect.any(String)}),
+      );
+    });
+
+    it("logs confirmed hint interactions", async () => {
+      gameEventBus.emit<HintRequestedEvent>({
+        type: "HINT_REQUESTED",
+        hintType: "letter",
+      });
+      await flushPromises();
+
+      expect(mockLogEvent).toHaveBeenCalledWith("game_interaction", {
+        action: "hint_confirmed",
+        hint_type: "letter",
       });
     });
 
@@ -468,8 +530,8 @@ describe("AnalyticsService", () => {
       await service.logGameStart({gameMode: "daily", riddleId: "riddle-456"});
 
       expect(mockLogEvent).toHaveBeenCalledWith("game_start", {
-        gameMode: "daily",
-        riddleId: "riddle-456",
+        game_mode: "daily",
+        riddle_id: "riddle-456",
       });
     });
   });

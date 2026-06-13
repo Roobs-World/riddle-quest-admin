@@ -72,6 +72,8 @@ const getDebugModalLabel = (modalType: string): string => {
       return t("DevTools.MODAL_LABELS.STATS");
     case "leaderboard":
       return t("DevTools.MODAL_LABELS.LEADERBOARD");
+    case "ranks":
+      return t("Ranks.TITLE");
     case "updateUsername":
       return t("DevTools.MODAL_LABELS.UPDATE_USERNAME");
     case "info":
@@ -354,6 +356,8 @@ export const generateMockData = (
       return {playerData: resolvedPlayer};
     case "leaderboard":
       return {currentUserId: resolvedPlayer.userId};
+    case "ranks":
+      return {currentLevel: 10};
     case "changePassword":
       return {onPasswordChanged: () => logger.debug("Password changed")};
     case "updateUsername":

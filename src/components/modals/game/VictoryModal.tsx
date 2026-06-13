@@ -5,7 +5,7 @@ import {TYPOGRAPHY} from "../../../styles";
 import {
   MODAL_WIDTH, MODAL_CONTENT_PADDING, MODAL_MAX_SCREEN_HEIGHT_FRACTION, getResponsiveModalHeight, } from "../../../constants/layout";
 import {t} from "../../../i18n";
-import {NewCoins} from "@/components/shared/NewCoins";
+import {ModalReward} from "@/components/rewards/RewardFactory";
 import {verticalScale} from "@/utils/responsive";
 import RotatingWheelBackground from "@/components/shared/RotatingWheelBackground";
 import WideButton from "../../buttons/WideButton";
@@ -29,6 +29,8 @@ interface VictoryModalProps {
   unlockedAchievementNames?: string[];
   /** Optional current wallet balance shown in the summary strip. */
   totalCoins?: number;
+  /** Daily streak displayed beneath the reward chest. */
+  streakValue?: number;
   /** Callback for advancing to the next level/riddle. */
   onNextLevel: () => void;
   /** Submitted guesses used to build shareable emoji summary. */
@@ -53,6 +55,7 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
   attempts,
   coinsEarned,
   totalCoins = coinsEarned,
+  streakValue,
   onNextLevel,
   guesses,
   gameMode,
@@ -135,7 +138,7 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
                 {t("VictoryModal.TITLE")}
               </Text>
 
-              <NewCoins coinsEarned={coinsEarned} totalCoins={totalCoins} />
+              <ModalReward amount={coinsEarned} totalCoins={totalCoins} streakValue={streakValue} />
 
               <View style={{width: "100%"}}>
                 <WideButton

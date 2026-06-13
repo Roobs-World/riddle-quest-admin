@@ -6,10 +6,14 @@
  * tree, which keeps emulator startup focused on the screen under test.
  */
 import React, {useEffect, useState} from "react";
-import {Linking, StyleSheet, Text, View} from "react-native";
+import {Linking, LogBox, StyleSheet, Text, View} from "react-native";
 import {registerRootComponent} from "expo";
 
 import {extractQASurfaceIdFromUrl, type QASurfaceId} from "./src/qa/qaSurfaces";
+
+if (__DEV__) {
+  LogBox.ignoreLogs(["[Reanimated] Reduced motion setting is enabled on this device."]);
+}
 
 const LIGHTWEIGHT_LOADING_SURFACES = new Set<QASurfaceId>(["page-app-loading", "page-riddle-loading"]);
 
@@ -65,6 +69,7 @@ const AppBootstrap = (): React.JSX.Element => {
       const nextSurfaceId = extractQASurfaceIdFromUrl(initialUrl);
 
       if (nextSurfaceId) {
+        LogBox.ignoreAllLogs(true);
         if (LIGHTWEIGHT_LOADING_SURFACES.has(nextSurfaceId)) {
           if (!isMounted) return;
           setSurfaceId(nextSurfaceId);

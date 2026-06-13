@@ -85,6 +85,19 @@ jest.mock("../../../services/SoundManager", () => ({
   },
 }));
 
+const mockLogGameStart = jest.fn((_params: unknown) => Promise.resolve());
+const mockLogGameInteraction = jest.fn((_action: unknown, _params?: unknown) => Promise.resolve());
+const mockLogCoinSpend = jest.fn((_params: unknown) => Promise.resolve());
+const mockLogAchievementUnlocked = jest.fn((_achievementId: unknown) => Promise.resolve());
+jest.mock("../../../services/AnalyticsService", () => ({
+  analyticsService: {
+    logGameStart: (params: unknown) => mockLogGameStart(params),
+    logGameInteraction: (action: unknown, params?: unknown) => mockLogGameInteraction(action, params),
+    logCoinSpend: (params: unknown) => mockLogCoinSpend(params),
+    logAchievementUnlocked: (achievementId: unknown) => mockLogAchievementUnlocked(achievementId),
+  },
+}));
+
 // Mock AuthContext
 const mockLogout = jest.fn();
 const mockSetGameMode = jest.fn();
@@ -380,6 +393,8 @@ jest.mock("../../../constants/game", () => ({
   SKIP_COST_DAILY: 150,
   LEVEL_UP_COIN_BONUS: 50,
   DAILY_CHALLENGE_COIN_REWARD: 75,
+  DAILY_COMPLETION_BONUS: 25,
+  isStreakRewardMilestone: (streakValue: number) => streakValue > 0 && streakValue % 7 === 0,
   CONTINUE_COST_COINS: 100,
   CONTINUE_REWARDED_AD_COIN_REWARD: 50,
   MODAL_CLOSE_DELAY_MS: 300,
@@ -561,6 +576,37 @@ describe("GameScreen", () => {
       expect(element).toBeTruthy();
       expect(element.type).toBe(GameScreen);
     });
+
+    it("does not reschedule the submit tooltip when the tooltip context value rerenders", () => {
+      jest.useFakeTimers();
+      const {rerender} = render(<GameScreen {...defaultProps} />);
+
+      act(() => {
+        jest.advanceTimersByTime(650);
+      });
+      expect(mockShowTooltipOnce).toHaveBeenCalledTimes(1);
+      expect(mockShowTooltipOnce).toHaveBeenCalledWith(expect.objectContaining({id: "submitAnswer"}));
+
+      rerender(<GameScreen {...defaultProps} />);
+      act(() => {
+        jest.advanceTimersByTime(650);
+      });
+
+      expect(mockShowTooltipOnce).toHaveBeenCalledTimes(1);
+      jest.useRealTimers();
+    });
+
+    it("does not show the submit tooltip when onboarding is suppressed", () => {
+      jest.useFakeTimers();
+      render(<GameScreen {...defaultProps} suppressOnboarding={true} />);
+
+      act(() => {
+        jest.advanceTimersByTime(650);
+      });
+
+      expect(mockShowTooltipOnce).not.toHaveBeenCalledWith(expect.objectContaining({id: "submitAnswer"}));
+      jest.useRealTimers();
+    });
   });
 
   describe("Rendering", () => {
@@ -584,6 +630,7 @@ describe("GameScreen", () => {
         expect(queryByTestId("mock-header")).toBeTruthy();
       });
     });
+
   });
 
   describe("Props Handling", () => {
@@ -1659,8 +1706,8 @@ describe("GameScreen", () => {
         expect(mockShowStreakIncreaseFanfareModal).toHaveBeenCalledWith(
           expect.objectContaining({
             streakValue: 5,
-            coinsAwarded: 75,
-            totalCoins: 255,
+            coinsAwarded: 0,
+            totalCoins: 180,
           }),
         );
       });
@@ -1671,7 +1718,48 @@ describe("GameScreen", () => {
       await waitFor(() => {
         expect(mockShowVictoryModal).toHaveBeenCalled();
       });
-      expect(defaultProps.onGameWin).toHaveBeenCalledWith(1, 30, 200, 5, 125);
+      expect(defaultProps.onGameWin).toHaveBeenCalledWith(1, 30, 200, 5, 50);
+      expect(mockShowVictoryModal).toHaveBeenCalledWith(
+        expect.objectContaining({
+          streakValue: 5,
+        }),
+      );
+    });
+
+    it("awards the streak bonus on each seven-day milestone", async () => {
+      mockUseGameLogic.currentGuess = ["K", "E", "Y", "B", "O", "A", "R", "D"];
+      mockUseGameLogic.processGuess.mockResolvedValueOnce({
+        outcome: "win",
+        coinsEarned: 100,
+        scoreEarned: 0,
+        newWinStreak: 7,
+        rewardBreakdown: {
+          baseWinCoins: 75,
+          dailyStreakBonus: 25,
+          levelUpBonus: 0,
+          achievementBonus: 0,
+          totalAwarded: 100,
+          newBalance: 200,
+        },
+      });
+
+      const {rerender} = render(<GameScreen {...defaultProps} gameMode="daily" />);
+      const inputProps = getLatestProps(mockGameInput);
+      await act(async () => {
+        await inputProps.handleSubmit();
+      });
+      mockUseGameLogic.gameOver = true;
+      rerender(<GameScreen {...defaultProps} gameMode="daily" />);
+
+      await waitFor(() => {
+        expect(mockShowStreakIncreaseFanfareModal).toHaveBeenCalledWith(
+          expect.objectContaining({
+            streakValue: 7,
+            coinsAwarded: 25,
+          }),
+        );
+      });
+      expect(defaultProps.onGameWin).toHaveBeenCalledWith(1, 75, 0, 7, 25, true);
     });
 
     it("handles onboarding dismiss callback", async () => {

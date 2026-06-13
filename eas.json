@@ -30,6 +30,13 @@
         "buildConfiguration": "Release"
       }
     },
+    "browserstack": {
+      "extends": "production",
+      "autoIncrement": false,
+      "ios": {
+        "buildConfiguration": "Release"
+      }
+    },
     "production": {
       "autoIncrement": true,
       "env": {

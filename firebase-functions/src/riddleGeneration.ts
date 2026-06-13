@@ -148,7 +148,7 @@ async function getLocalizedExistingRiddlesFromFirestoreForLocale(
   const answers: string[] = [];
 
   const snapshot = await admin.firestore().collection(getLocalizedRiddleCollection(locale)).get();
-  snapshot.forEach((doc: any) => {
+  snapshot.forEach((doc: FirebaseFirestore.QueryDocumentSnapshot) => {
     const data = doc.data();
     if (data.text) {
       questions.push(data.text.toLowerCase());

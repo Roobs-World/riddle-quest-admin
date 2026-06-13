@@ -26,6 +26,8 @@ import {useTooltip} from "../../../contexts/TooltipContext";
 import type {TooltipId} from "../../tooltips/types";
 import DeleteAccountConfirmationModal from "./DeleteAccountConfirmationModal";
 import {getCallableFunction} from "../../../utils/firebaseFunctions";
+import {getNextRankForLevel, getRankForLevel} from "../../../constants/ranks";
+import RankBadge from "../../progression/RankBadge";
 
 interface FullProfileDetailsModalProps {
   isVisible: boolean;
@@ -195,6 +197,8 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisi
     0;
   const totalXp = Number.isFinite(Number(xpFromProfile)) ? Number(xpFromProfile) : 0;
   const {level, progressPct, currentXp, nextLevelXp} = getXpLevel(totalXp);
+  const currentRank = getRankForLevel(level);
+  const nextRank = getNextRankForLevel(level);
   const xpProgressWidth = `${Math.round(progressPct * 100)}%` as `${number}%`;
 
   return (
@@ -360,6 +364,31 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisi
                   </Text>
                   <Text style={{color: GOLD, fontSize: 24}}>✏</Text>
                 </TouchableOpacity>
+
+                <View style={{marginTop: SPACING.md, alignItems: "center"}}>
+                  <RankBadge
+                    rank={currentRank}
+                    size={76}
+                    showLabel
+                    onPress={() => modal.openGameModal("ranks", {currentLevel: level})}
+                    testID="profile-rank-button"
+                  />
+                  <Text
+                    style={{
+                      color: "rgba(255,255,255,0.78)",
+                      fontSize: TYPOGRAPHY.fontSize.xs,
+                      fontFamily: TYPOGRAPHY.fontSecondary,
+                      textAlign: "center",
+                      marginTop: 5,
+                    }}
+                  >
+                    {nextRank
+                      ? `${t("Ranks.NEXT_RANK_PREFIX")} ${t(nextRank.nameKey)} ${t("Ranks.AT_LEVEL_PREFIX")} ${
+                          nextRank.minimumLevel
+                        }`
+                      : t("Ranks.HIGHEST_RANK")}
+                  </Text>
+                </View>
 
                 <View
                   style={{

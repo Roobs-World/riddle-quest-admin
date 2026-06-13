@@ -586,6 +586,14 @@ describe("ModalTypes", () => {
 
       expect(profileData.playerData).toHaveProperty("username");
     });
+
+    it("should define ranks modal type", () => {
+      const ranksData: GameModalTypes["ranks"] = {
+        currentLevel: 10,
+      };
+
+      expect(ranksData.currentLevel).toBe(10);
+    });
   });
 
   describe("ModalDataType helper type", () => {

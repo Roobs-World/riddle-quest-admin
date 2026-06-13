@@ -86,5 +86,31 @@
     "WIN_RATE_STAT": "Kazanma Oranı",
     "WORDS_GUESSED_STAT": "Tahmin Edilen Kelimeler",
     "XP_LEVEL_PREFIX": "Sev."
+  },
+  "Ranks": {
+    "TITLE": "Rutbeler",
+    "SUBTITLE": "Bilmeceleri coz, seviye atla ve tum rutbelere yuksel.",
+    "VIEW_ALL_BUTTON": "Tum rutbeleri gor",
+    "LEVEL_REQUIREMENT_PREFIX": "Seviye ",
+    "CURRENT_RANK": "Mevcut rutbe",
+    "NEXT_RANK_PREFIX": "Siradaki:",
+    "AT_LEVEL_PREFIX": "seviye",
+    "HIGHEST_RANK": "En yuksek rutbeye ulasildi",
+    "STARGAZER_NAME": "Yildiz gozlemcisi",
+    "STARGAZER_DESCRIPTION": "Yildizlari okumaya basladin.",
+    "PATHFINDER_NAME": "Yol bulucu",
+    "PATHFINDER_DESCRIPTION": "Zor bilmecelerde yolunu buluyorsun.",
+    "RIDDLE_SCOUT_NAME": "Bilmece izcisi",
+    "RIDDLE_SCOUT_DESCRIPTION": "Ipuclari gozunden kacmiyor.",
+    "CIPHER_KNIGHT_NAME": "Sifre sovalyasi",
+    "CIPHER_KNIGHT_DESCRIPTION": "Her cevabi keskin mantikla savunuyorsun.",
+    "ORACLE_NAME": "Kahin",
+    "ORACLE_DESCRIPTION": "Desenler sana erkenden gorunuyor.",
+    "LUMINARY_NAME": "Isik rehberi",
+    "LUMINARY_DESCRIPTION": "Sezgin baskalarina yol gosteriyor.",
+    "ASTRAL_SAGE_NAME": "Astral bilge",
+    "ASTRAL_SAGE_DESCRIPTION": "Kozmik bilmecelere hukmediyorsun.",
+    "QUEST_LEGEND_NAME": "Gorev efsanesi",
+    "QUEST_LEGEND_DESCRIPTION": "Adin en buyuk cozenler arasinda."
   }
 }

@@ -36,6 +36,7 @@ import {initializeUser, ensureUserComplete, updateUserStats, deleteAccount} from
 import {getLeaderboard} from "./leaderboard";
 import {dailyStreakReminder} from "./streakNotifications";
 import {awardedAdCallback} from "./ads";
+import {adjustAdminUserCoins, generateAdminDailyChallenge, getAdminPortalOverview} from "./adminPortal";
 export {
   validatePurchase,
   grantDevCoinsForPurchase,
@@ -62,4 +63,7 @@ export {
   getLeaderboard,
   dailyStreakReminder,
   awardedAdCallback,
+  adjustAdminUserCoins,
+  generateAdminDailyChallenge,
+  getAdminPortalOverview,
 };

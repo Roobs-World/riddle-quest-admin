@@ -90,11 +90,13 @@ describe("AchievementsModal", () => {
   });
 
   it("renders achievement list with names and descriptions", () => {
-    const {getByText} = render(<AchievementsModal {...defaultProps} />);
+    const {getByText, getByTestId, queryByTestId} = render(<AchievementsModal {...defaultProps} />);
     expect(getByText("First Win")).toBeTruthy();
     expect(getByText("Win your first riddle")).toBeTruthy();
     expect(getByText("Daily Challenger")).toBeTruthy();
     expect(getByText("Complete a daily challenge")).toBeTruthy();
+    expect(getByTestId("achievement-reward-chest-first_win")).toBeTruthy();
+    expect(queryByTestId("achievement-reward-chest-wins_25")).toBeNull();
   });
 
   it("calls onClose when close button is pressed", () => {

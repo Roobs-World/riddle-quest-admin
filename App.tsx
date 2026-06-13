@@ -45,6 +45,7 @@ import {initializeFirebaseAppCheck} from "./src/services/AppCheckService";
 import {NavigationContainer} from "@react-navigation/native";
 import {Navigation} from "./src/navigation/NavigationStack";
 import {persistLocale, readStoredLocale} from "./src/utils/localeStorage";
+import {RewardAnimationProvider} from "./src/contexts/RewardAnimationContext";
 
 const SOLAR_PRELOAD_TIMEOUT_MS = 60000;
 
@@ -312,19 +313,21 @@ function App(): React.JSX.Element {
     >
       <SafeAreaProvider>
         <ModalProvider>
-          <AuthProvider>
-            <TooltipProvider>
-              <QASurfaceGate>
-                {startupError ? (
-                  <FatalStartupScreen />
-                ) : isInitialized ? (
-                  <AppShell />
-                ) : (
-                  <PulsingSpinner visible={true} size={120} opacity={0.8} />
-                )}
-              </QASurfaceGate>
-            </TooltipProvider>
-          </AuthProvider>
+          <RewardAnimationProvider>
+            <AuthProvider>
+              <TooltipProvider>
+                <QASurfaceGate>
+                  {startupError ? (
+                    <FatalStartupScreen />
+                  ) : isInitialized ? (
+                    <AppShell />
+                  ) : (
+                    <PulsingSpinner visible={true} size={120} opacity={0.8} />
+                  )}
+                </QASurfaceGate>
+              </TooltipProvider>
+            </AuthProvider>
+          </RewardAnimationProvider>
         </ModalProvider>
       </SafeAreaProvider>
     </Sentry.ErrorBoundary>

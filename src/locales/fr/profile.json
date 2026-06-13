@@ -86,5 +86,31 @@
     "WIN_RATE_STAT": "Taux de victoire",
     "WORDS_GUESSED_STAT": "Mots devinés",
     "XP_LEVEL_PREFIX": "Niv."
+  },
+  "Ranks": {
+    "TITLE": "Rangs",
+    "SUBTITLE": "Resolvez des enigmes, progressez et gravissez tous les rangs.",
+    "VIEW_ALL_BUTTON": "Voir tous les rangs",
+    "LEVEL_REQUIREMENT_PREFIX": "Niveau ",
+    "CURRENT_RANK": "Rang actuel",
+    "NEXT_RANK_PREFIX": "Suivant :",
+    "AT_LEVEL_PREFIX": "au niveau",
+    "HIGHEST_RANK": "Rang maximal atteint",
+    "STARGAZER_NAME": "Observateur des etoiles",
+    "STARGAZER_DESCRIPTION": "Vous commencez a lire les etoiles.",
+    "PATHFINDER_NAME": "Eclaireur",
+    "PATHFINDER_DESCRIPTION": "Vous trouvez la voie parmi les enigmes ardues.",
+    "RIDDLE_SCOUT_NAME": "Pisteur enigmes",
+    "RIDDLE_SCOUT_DESCRIPTION": "Peu indices echappent a votre regard.",
+    "CIPHER_KNIGHT_NAME": "Chevalier du chiffre",
+    "CIPHER_KNIGHT_DESCRIPTION": "Vous defendez chaque reponse avec logique.",
+    "ORACLE_NAME": "L'Oracle",
+    "ORACLE_DESCRIPTION": "Les motifs se revelent devant vous.",
+    "LUMINARY_NAME": "Luminaire",
+    "LUMINARY_DESCRIPTION": "Votre intuition guide les autres.",
+    "ASTRAL_SAGE_NAME": "Sage astral",
+    "ASTRAL_SAGE_DESCRIPTION": "Vous maitrisez les enigmes du cosmos.",
+    "QUEST_LEGEND_NAME": "Legende de la quete",
+    "QUEST_LEGEND_DESCRIPTION": "Votre nom rejoint les plus grands."
   }
 }

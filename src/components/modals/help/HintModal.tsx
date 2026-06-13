@@ -15,7 +15,7 @@ import {SPACING} from "../../../styles";
 import {t} from "../../../i18n";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import {verticalScale} from "../../../utils/responsive";
-import {NewCoins} from "@/components/shared/NewCoins";
+import {ModalReward} from "@/components/rewards/RewardFactory";
 
 /**
  * Props for the hint purchase modal shown during gameplay.
@@ -100,7 +100,7 @@ const HintModal: React.FC<HintModalProps> = ({isVisible, userCoins, hintCost, on
                 {t("GameScreenAlerts.HINT_MODAL_TITLE")}
               </Text>
 
-              <NewCoins coinsEarned={-hintCost} totalCoins={userCoins} />
+              <ModalReward amount={-hintCost} totalCoins={userCoins} />
 
               {!canAffordHint && (
                 <Text

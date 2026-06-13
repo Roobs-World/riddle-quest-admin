@@ -7,6 +7,7 @@ export const MODAL_REGISTRY_TYPES = [
   "achievements",
   "stats",
   "leaderboard",
+  "ranks",
   "updateUsername",
   "info",
   "hint",

@@ -59,6 +59,7 @@ import UpdateUsernameModal from "./settings/UpdateUsernameModal";
 import AchievementsModal from "./settings/AchievementsModal";
 import StatsModal from "./settings/StatsModal";
 import LeaderboardModal from "./settings/LeaderboardModal";
+import RanksModal from "./settings/RanksModal";
 
 import HintModal from "./help/HintModal";
 import InfoModal from "./help/InfoModal";
@@ -186,6 +187,7 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
     attempts: (props.attempts as number) || 0,
     coinsEarned: (props.coinsEarned as number) || 0,
     totalCoins: props.totalCoins as number | undefined,
+    streakValue: props.streakValue as number | undefined,
     unlockedAchievementNames: (props.unlockedAchievementNames as string[] | undefined) ?? [],
     onNextLevel: (props.onNext as () => void) || (() => {}),
     onHome: (props.onHome as () => void) || (() => {}),
@@ -257,6 +259,12 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
     isVisible: props.isVisible,
     onClose: props.onClose,
     currentUserId: (props.currentUserId as string | null) ?? null,
+  })),
+
+  ranks: createModalWrapper(RanksModal, (props: BaseModalProps & ModalData) => ({
+    isVisible: props.isVisible,
+    onClose: props.onClose,
+    currentLevel: (props.currentLevel as number) || 1,
   })),
 
   updateUsername: createModalWrapper(UpdateUsernameModal, (props: BaseModalProps & ModalData) => ({

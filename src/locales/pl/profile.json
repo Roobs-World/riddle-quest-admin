@@ -86,5 +86,31 @@
     "WIN_RATE_STAT": "Współczynnik wygranych",
     "WORDS_GUESSED_STAT": "Odgadnięte słowa",
     "XP_LEVEL_PREFIX": "Poziom"
+  },
+  "Ranks": {
+    "TITLE": "Rangi",
+    "SUBTITLE": "Rozwiazuj zagadki, zdobywaj poziomy i wszystkie rangi.",
+    "VIEW_ALL_BUTTON": "Zobacz wszystkie rangi",
+    "LEVEL_REQUIREMENT_PREFIX": "Poziom ",
+    "CURRENT_RANK": "Obecna ranga",
+    "NEXT_RANK_PREFIX": "Nastepna:",
+    "AT_LEVEL_PREFIX": "na poziomie",
+    "HIGHEST_RANK": "Najwyzsza ranga zdobyta",
+    "STARGAZER_NAME": "Obserwator gwiazd",
+    "STARGAZER_DESCRIPTION": "Zaczynasz czytac z gwiazd.",
+    "PATHFINDER_NAME": "Odkrywca szlakow",
+    "PATHFINDER_DESCRIPTION": "Odnajdujesz droge w trudnych zagadkach.",
+    "RIDDLE_SCOUT_NAME": "Zwiadowca zagadek",
+    "RIDDLE_SCOUT_DESCRIPTION": "Niewiele wskazowek umyka twej uwadze.",
+    "CIPHER_KNIGHT_NAME": "Rycerz szyfru",
+    "CIPHER_KNIGHT_DESCRIPTION": "Bronisz odpowiedzi ostra logika.",
+    "ORACLE_NAME": "Wyrocznia",
+    "ORACLE_DESCRIPTION": "Wzory ujawniaja sie przed toba.",
+    "LUMINARY_NAME": "Luminarz",
+    "LUMINARY_DESCRIPTION": "Twoj wglad oswietla droge innym.",
+    "ASTRAL_SAGE_NAME": "Astralny medrzec",
+    "ASTRAL_SAGE_DESCRIPTION": "Wladasz zagadkami kosmosu.",
+    "QUEST_LEGEND_NAME": "Legenda wyprawy",
+    "QUEST_LEGEND_DESCRIPTION": "Twoje imie jest wsrod najwiekszych."
   }
 }

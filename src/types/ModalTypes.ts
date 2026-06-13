@@ -84,6 +84,7 @@ export interface GameModalTypes {
     attempts: number;
     coinsEarned: number;
     totalCoins?: number;
+    streakValue?: number;
     guesses: import("../hooks/types").SubmittedGuess[];
     /** Human-readable names of achievements newly unlocked by this win. */
     unlockedAchievementNames?: string[];
@@ -141,6 +142,10 @@ export interface GameModalTypes {
 
   leaderboard: {
     currentUserId: string | null;
+  };
+
+  ranks: {
+    currentLevel: number;
   };
 
   changePassword: {

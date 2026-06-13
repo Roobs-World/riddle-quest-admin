@@ -40,7 +40,8 @@ import {
   CONTINUE_COST_COINS,
   CONTINUE_REWARDED_AD_COIN_REWARD,
   LEVEL_UP_COIN_BONUS,
-  DAILY_CHALLENGE_COIN_REWARD,
+  DAILY_COMPLETION_BONUS,
+  isStreakRewardMilestone,
   MODAL_CLOSE_DELAY_MS,
   SOUND_RESUME_DELAY_MS,
   getXpLevel,
@@ -82,6 +83,13 @@ import {resolvePlayableRiddleText} from "../../utils/riddleClues";
 import {persistLocale} from "../../utils/localeStorage";
 import {callValidatedFunction} from "../../utils/firebaseFunctions";
 import {graphemeLength, splitGraphemes} from "@qwordly/core/game";
+import {analyticsService} from "../../services/AnalyticsService";
+import {
+  gameEventBus,
+  type HintRequestedEvent,
+  type LetterAddedEvent,
+  type LetterRemovedEvent,
+} from "../../services/GameEventBus";
 import {
   GenerateTodaysDailyChallengeInputSchema,
   GenerateTodaysDailyChallengeOutputSchema,
@@ -125,6 +133,7 @@ interface GameScreenProps {
     scoreEarned: number,
     dailyStreakAfterWin?: number,
     bonusCoinsAwarded?: number,
+    bonusCoinsPersistedByServer?: boolean,
   ) => void;
   onGameLoss: (correctAnswer: string, attempts: number) => void;
   onHintUsed: (cost: number) => void | string[] | Promise<void | string[]>;
@@ -132,6 +141,7 @@ interface GameScreenProps {
   onNextLevel: () => void;
   gameMode: GameMode;
   suppressOnboarding?: boolean;
+  qaAccessibilityLabel?: string;
 }
 
 const ONBOARDING_SEEN_STORAGE_KEY_PREFIX = "gameScreenOnboardingSeen";
@@ -324,12 +334,14 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   onNextLevel,
   gameMode,
   suppressOnboarding = false,
+  qaAccessibilityLabel,
 }) => {
   const {logout} = useAuthSession();
   const {playerData, updatePlayerData, updatePlayerDataLocally, pendingStreakBreak, consumePendingStreakBreak} =
     usePlayer();
   const modal = useModal();
   const tooltip = useTooltip();
+  const showTooltipRequestOnce = tooltip.showTooltipOnce;
   const {showWelcomeModal, showWelcomeBackModal, showInstructionsModal, showInfoModal} = modal;
   const isGuestMode = isGuestPlayer(playerData);
 
@@ -367,14 +379,14 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         gameMode,
       });
 
-      return tooltip.showTooltipOnce({
+      return showTooltipRequestOnce({
         id,
         targetRef,
         content: getTooltipContent(id),
         userId: currentTooltipUserId,
       });
     },
-    [currentTooltipUserId, gameMode, riddleId, tooltip],
+    [currentTooltipUserId, gameMode, riddleId, showTooltipRequestOnce],
   );
 
   const gameOverHandledRef = useRef(false);
@@ -391,12 +403,16 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   const coinAnimationSettleTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
+    if (suppressOnboarding) {
+      return;
+    }
+
     const timeoutId = setTimeout(() => {
       void showTooltipOnce("submitAnswer", submitButtonRef);
     }, 650);
 
     return () => clearTimeout(timeoutId);
-  }, [showTooltipOnce]);
+  }, [showTooltipOnce, suppressOnboarding]);
 
   useEffect(() => {
     const previousGameMode = previousGameModeRef.current;
@@ -439,6 +455,13 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     gameMode: gameMode === "daily" ? "challenge" : "classic",
     isGuestMode,
   });
+
+  useEffect(() => {
+    void analyticsService.logGameStart({
+      gameMode: gameMode === "classic" ? "classic" : "daily",
+      riddleId,
+    });
+  }, [gameMode, riddleId]);
 
   const currentUserCoins = useMemo(() => {
     const authCoins = parseCoinBalance(playerData?.coins);
@@ -933,6 +956,12 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   }, [playableAnswerLength, currentGuess, setActiveSlotIndexSynced]);
 
   const handleCoinContinue = useCallback(async () => {
+    void analyticsService.logGameInteraction("continue_with_coins_selected", {
+      game_mode: gameMode,
+      cost: CONTINUE_COST_COINS,
+      can_afford: currentUserCoins >= CONTINUE_COST_COINS,
+    });
+
     const isInsufficientCoinsError = (error: unknown): boolean => {
       if (!error || typeof error !== "object") {
         return false;
@@ -988,6 +1017,11 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       setLastGuessResult(null);
       preserveKeyboardLetterStates();
       continueGame();
+      void analyticsService.logCoinSpend({
+        action: "continue",
+        amount: CONTINUE_COST_COINS,
+        gameMode,
+      });
       return true;
     } catch (error) {
       if (isInsufficientCoinsError(error)) {
@@ -1016,6 +1050,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     playerData,
     updatePlayerDataLocally,
     currentUserCoins,
+    gameMode,
   ]);
 
   const confirmRewardedAdReward = useCallback(
@@ -1222,6 +1257,9 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
 
   const handlePayAndPlay = useCallback(() => {
     logger.debug("Pay and play button pressed");
+    void analyticsService.logGameInteraction("pay_and_play_selected", {
+      game_mode: gameMode,
+    });
 
     const cheapestProduct = [...iapProducts].sort((a, b) => (a.price ?? 0) - (b.price ?? 0))[0];
 
@@ -1230,10 +1268,13 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     } else {
       modalActions.showNoProductsAvailable();
     }
-  }, [iapProducts, handlePurchaseProduct, modalActions]);
+  }, [iapProducts, handlePurchaseProduct, modalActions, gameMode]);
 
   const handleWatchAdForCoins = useCallback(async () => {
     logger.debug("Watch ad for coins button pressed");
+    void analyticsService.logGameInteraction("watch_ad_for_coins_selected", {
+      game_mode: gameMode,
+    });
     modal.closeModalByType("coinShop");
 
     try {
@@ -1254,7 +1295,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       captureException(error);
       modalActions.showAdError();
     }
-  }, [modal, showRewardedAd, confirmRewardedAdReward, modalActions]);
+  }, [modal, showRewardedAd, confirmRewardedAdReward, modalActions, gameMode]);
 
   const showPostVictoryInterstitialAd = useCallback(async () => {
     if (playerData?.hasPurchasedApp === true) {
@@ -1282,6 +1323,9 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           .filter((achievement): achievement is (typeof ACHIEVEMENT_DEFINITIONS)[number] => Boolean(achievement));
 
         const unlockedAchievementNames = unlockedAchievements.map((achievement) => achievement.name);
+        unlockedAchievements.forEach((achievement) => {
+          void analyticsService.logAchievementUnlocked(achievement.id);
+        });
 
         if (playerData && unlockedAchievements.length > 0) {
           const existingUnlockedAchievements = Array.isArray(playerData.unlockedAchievements)
@@ -1343,7 +1387,9 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           gameMode === "daily" ? (result.newWinStreak ?? deriveDailyStreakAfterWin()) : undefined;
         const dailyChallengeBonusCoins =
           rewardBreakdown?.dailyStreakBonus ??
-          (gameMode === "daily" && resolvedDailyStreak ? DAILY_CHALLENGE_COIN_REWARD : 0);
+          (gameMode === "daily" && resolvedDailyStreak && isStreakRewardMilestone(resolvedDailyStreak)
+            ? DAILY_COMPLETION_BONUS
+            : 0);
         const achievementBonusCoins = rewardBreakdown?.achievementBonus ?? 0;
         const totalBonusCoinsAwarded = levelUpBonusCoins + dailyChallengeBonusCoins + achievementBonusCoins;
         const totalCoinsAfterWin =
@@ -1418,6 +1464,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
                 attempts: resolvedAttempts,
                 coinsEarned: (rewardBreakdown?.totalAwarded as number) ?? result.coinsEarned ?? 0,
                 totalCoins: totalCoinsAfterWin,
+                streakValue: resolvedDailyStreak,
                 unlockedAchievementNames,
                 guesses,
                 sequenceProgress,
@@ -1467,13 +1514,24 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
 
         const baseWinCoins = rewardBreakdown?.baseWinCoins ?? (result.coinsEarned || 0);
 
-        onGameWin(
-          resolvedAttempts,
-          baseWinCoins,
-          result.scoreEarned || 0,
-          resolvedDailyStreak,
-          totalBonusCoinsAwarded,
-        );
+        if (rewardBreakdown) {
+          onGameWin(
+            resolvedAttempts,
+            baseWinCoins,
+            result.scoreEarned || 0,
+            resolvedDailyStreak,
+            totalBonusCoinsAwarded,
+            true,
+          );
+        } else {
+          onGameWin(
+            resolvedAttempts,
+            baseWinCoins,
+            result.scoreEarned || 0,
+            resolvedDailyStreak,
+            totalBonusCoinsAwarded,
+          );
+        }
       } else if (result.outcome === "attemptLimitReached") {
         const canAffordCoinContinue = currentUserCoins >= CONTINUE_COST_COINS;
         const skipLevelCost = SKIP_COST_CLASSIC;
@@ -1491,6 +1549,10 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
             totalCoins: currentUserCoins,
             onWatchAdContinue: result.canOfferRewardedAd
               ? () => {
+                  void analyticsService.logGameInteraction("continue_with_ad_selected", {
+                    game_mode: gameMode,
+                    ad_ready: isRewardedAdReady,
+                  });
                   modal.closeModalByType("loss");
                   void runRewardedAdContinueFlow();
                   return true;
@@ -1503,6 +1565,10 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
             canUseCoin: canAffordCoinContinue,
             onOpenShop: () => openShopFromLossRef.current(),
             onNext: () => {
+              void analyticsService.logGameInteraction("loss_next_selected", {
+                game_mode: gameMode,
+                outcome: "attempt_limit_reached",
+              });
               modal.closeModalByType("loss");
               resetRoundState();
               runWithServerLoading(() => onNextLevel()).catch((error) => {
@@ -1531,6 +1597,10 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
             skipLevelCost,
             onOpenShop: () => openShopFromLossRef.current(),
             onNext: () => {
+              void analyticsService.logGameInteraction("loss_next_selected", {
+                game_mode: gameMode,
+                outcome: "lost",
+              });
               modal.closeModalByType("loss");
               resetRoundState();
               runWithServerLoading(() => onNextLevel()).catch((error) => {
@@ -1574,6 +1644,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   ]);
 
   const toggleSoundEnabled = useCallback((isEnabled: boolean) => {
+    void analyticsService.logGameInteraction("sound_toggled", {enabled: isEnabled});
     setIsSoundEnabled(isEnabled);
     SoundManager.setSoundEnabled(isEnabled);
     if (isEnabled) {
@@ -1584,10 +1655,12 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   }, []);
 
   const toggleHapticsEnabled = useCallback((isEnabled: boolean) => {
+    void analyticsService.logGameInteraction("haptics_toggled", {enabled: isEnabled});
     setIsHapticsEnabled(isEnabled);
   }, []);
 
   const handleChangeLanguage = useCallback((language: SupportedLanguage) => {
+    void analyticsService.logGameInteraction("language_changed", {language});
     void persistLocale(language);
     void updatePlayerData({preferredLanguage: language}).catch((error) => {
       logger.error("Error saving language preference to player profile:", error);
@@ -1632,6 +1705,11 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         });
       }
     } else if (isHapticsEnabled) {
+      void analyticsService.logGameInteraction("submit_invalid", {
+        game_mode: gameMode,
+        filled_slots: currentGuess.filter(Boolean).length,
+        answer_length: playableAnswerLength,
+      });
       void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
     }
   }, [
@@ -1644,6 +1722,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     runWithServerLoading,
     showTooltipOnce,
     tooltip,
+    gameMode,
   ]);
 
   const handleKeyPress = useCallback(
@@ -1666,6 +1745,11 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           next.length = playableAnswerLength;
         }
         return next;
+      });
+      gameEventBus.emit<LetterAddedEvent>({
+        type: "LETTER_ADDED",
+        letter: key,
+        position: targetIndex,
       });
 
       setActiveSlotIndexSynced(
@@ -1693,6 +1777,10 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       }
       return next;
     });
+    gameEventBus.emit<LetterRemovedEvent>({
+      type: "LETTER_REMOVED",
+      position: targetIndex,
+    });
 
     setActiveSlotIndexSynced(targetIndex);
   }, [playableAnswerLength, currentGuess, setCurrentGuess, setActiveSlotIndexSynced]);
@@ -1707,13 +1795,21 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         hintRevealedIndicesRef.current,
       );
       if (editableSlotIndex === null) return;
+      void analyticsService.logGameInteraction("guess_slot_selected", {
+        position: editableSlotIndex,
+        game_mode: gameMode,
+      });
       setActiveSlotIndexSynced(editableSlotIndex);
     },
-    [playableAnswerLength, setActiveSlotIndexSynced],
+    [playableAnswerLength, setActiveSlotIndexSynced, gameMode],
   );
 
   const handleShowHint = useCallback(async () => {
     if (!playerData?.userId) return;
+    void analyticsService.logGameInteraction("hint_opened", {
+      game_mode: gameMode,
+      can_afford: currentUserCoins >= hintCost,
+    });
     tooltip.dismissTooltip("hintAfterWrongGuess");
 
     if (currentUserCoins < hintCost) {
@@ -1727,6 +1823,10 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       hintCost,
       onOpenShop: () => openShopFromLossRef.current(),
       onShowHint: () => {
+        gameEventBus.emit<HintRequestedEvent>({
+          type: "HINT_REQUESTED",
+          hintType: "letter",
+        });
         (async () => {
           // Guest/local flow: reveal locally and call onHintUsed to persist via
           // the surrounding navigation stack.
@@ -1761,6 +1861,11 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
             );
 
             Promise.resolve(onHintUsed(hintCost)).catch((e) => logger.error("onHintUsed error:", e));
+            void analyticsService.logCoinSpend({
+              action: "hint",
+              amount: hintCost,
+              gameMode,
+            });
             return;
           }
 
@@ -1806,6 +1911,11 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
             if (typeof updatePlayerDataLocally === "function" && data.newCoins !== undefined) {
               updatePlayerDataLocally({coins: data.newCoins}, {syncToFirestore: false});
             }
+            void analyticsService.logCoinSpend({
+              action: "hint",
+              amount: hintCost,
+              gameMode,
+            });
 
             const newlyUnlocked = data.newlyUnlockedAchievementIds ?? [];
             if (newlyUnlocked.length > 0) {
@@ -1880,6 +1990,10 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   ]);
 
   const handleCoinsPress = useCallback(async () => {
+    void analyticsService.logGameInteraction("coin_shop_opened", {
+      game_mode: gameMode,
+      source: latestResultRef.current?.outcome === "attemptLimitReached" ? "loss_modal" : "game_header",
+    });
     tooltip.dismissTooltip("shopOutOfCoins");
     let productsForModal = iapProducts;
     let firestoreProductsForModal = firestoreProducts;
@@ -1946,9 +2060,14 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     handleWatchAdForCoins,
     handlePayAndPlay,
     tooltip,
+    gameMode,
   ]);
 
   const handleOverlayNext = useCallback(() => {
+    void analyticsService.logGameInteraction("skip_opened", {
+      game_mode: gameMode,
+      can_afford: currentUserCoins >= (gameMode === "daily" ? SKIP_COST_DAILY : SKIP_COST_CLASSIC),
+    });
     tooltip.dismissTooltip("classicFromDaily");
     logger.debug("Next button pressed - opening skip modal");
 
@@ -1960,6 +2079,10 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       skipCost,
       onOpenShop: handleCoinsPress,
       onSkipLevel: async () => {
+        void analyticsService.logGameInteraction("skip_confirmed", {
+          game_mode: gameMode,
+          cost: skipCost,
+        });
         try {
           if (!isGuestMode) {
             await runWithServerLoading(() =>
@@ -1976,6 +2099,11 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           }
 
           onSkipUsed(skipCost);
+          void analyticsService.logCoinSpend({
+            action: "skip",
+            amount: skipCost,
+            gameMode,
+          });
           resetRoundState();
           await runWithServerLoading(() => onNextLevel());
         } catch (error) {
@@ -2001,6 +2129,9 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
 
   const handleSettingsPress = useCallback(() => {
     logger.debug("Settings button pressed - opening settings modal");
+    void analyticsService.logGameInteraction("settings_opened", {
+      game_mode: gameMode,
+    });
     modal.showSettingsModal({
       isSoundEnabled,
       isHapticsEnabled,
@@ -2011,6 +2142,9 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       onPressLogout: logout,
       onPressHelp: () => {
         logger.debug("Help button pressed - opening support email composer");
+        void analyticsService.logGameInteraction("support_opened", {
+          game_mode: gameMode,
+        });
         void Linking.openURL("mailto:support@adspeq.com").catch((error) => {
           logger.error("Failed to open support email composer:", error);
           captureException(error);
@@ -2042,9 +2176,13 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     toggleHapticsEnabled,
     handleChangeLanguage,
     logout,
+    gameMode,
   ]);
 
   const handleProfilePress = useCallback(async () => {
+    void analyticsService.logGameInteraction("profile_opened", {
+      game_mode: gameMode,
+    });
     tooltip.dismissTooltip("achievementEarned");
     tooltip.dismissTooltip("leaderboardFifthCorrectAnswer");
     if (isProfileModalLoading) {
@@ -2085,7 +2223,16 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     } finally {
       setIsProfileModalLoading(false);
     }
-  }, [modal, playerData, isGuestMode, runWithServerLoading, updatePlayerDataLocally, isProfileModalLoading, tooltip]);
+  }, [
+    modal,
+    playerData,
+    isGuestMode,
+    runWithServerLoading,
+    updatePlayerDataLocally,
+    isProfileModalLoading,
+    tooltip,
+    gameMode,
+  ]);
 
   useEffect(() => {
     openShopFromLossRef.current = handleCoinsPress;
@@ -2211,7 +2358,11 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           />
 
           {process.env.NODE_ENV !== "test" && (
-            <GlobalMuteOverlay isSoundEnabled={isSoundEnabled} onToggleSound={toggleSoundEnabled} />
+            <GlobalMuteOverlay
+              isSoundEnabled={isSoundEnabled}
+              onToggleSound={toggleSoundEnabled}
+              accessibilityLabel={qaAccessibilityLabel}
+            />
           )}
         </KeyboardAvoidingView>
 
@@ -2232,7 +2383,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
 
         <Controls onNextPress={handleOverlayNext} isWin={gameOver && lastGuessResult?.outcome === "win"} />
 
-        {__DEV__ && (
+        {__DEV__ && !suppressOnboarding && (
           <ModalTogglePanel
             onCompleteRiddle={handleDebugCompleteRiddle}
             onGenerateDailyChallenge={handleDebugGenerateDailyChallenge}

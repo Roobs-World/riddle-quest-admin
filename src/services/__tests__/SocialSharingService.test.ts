@@ -39,6 +39,13 @@ jest.mock("../../utils/sentry", () => ({
   captureException: jest.fn(),
 }));
 
+const mockLogShare = jest.fn((_params: unknown) => Promise.resolve());
+jest.mock("../AnalyticsService", () => ({
+  analyticsService: {
+    logShare: (params: unknown) => mockLogShare(params),
+  },
+}));
+
 import {Share, Linking} from "react-native";
 import {ShareDialog} from "react-native-fbsdk-next";
 import {SocialSharingService, ShareContent} from "../SocialSharingService";
@@ -384,6 +391,10 @@ describe("SocialSharingService", () => {
 
       expect(result).toBe(true);
       expect(Share.share).toHaveBeenCalled();
+      expect(mockLogShare).toHaveBeenCalledWith({
+        platform: "system",
+        gameMode: "daily",
+      });
     });
 
     it("should default to system share for unknown platform", async () => {

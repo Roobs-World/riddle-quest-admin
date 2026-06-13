@@ -19,6 +19,8 @@ import {scale, verticalScale} from "../../../utils/responsive";
 import {ACHIEVEMENT_DEFINITIONS} from "../../../constants/achievements";
 import {t} from "../../../i18n";
 import SlideInModalContent from "../../shared/SlideInModalContent";
+import {AchievementReward} from "../../rewards/RewardFactory";
+import {ACHIEVEMENT_UNLOCK_COIN_REWARD} from "../../../constants/game";
 
 export interface AchievementsModalProps {
   isVisible: boolean;
@@ -190,6 +192,12 @@ const AchievementsModal: React.FC<AchievementsModalProps> = ({isVisible, onClose
                         </Text>
                       )}
                     </View>
+                    {isUnlocked ? (
+                      <AchievementReward
+                        amount={ACHIEVEMENT_UNLOCK_COIN_REWARD}
+                        testID={`achievement-reward-chest-${def.id}`}
+                      />
+                    ) : null}
                   </View>
                 );
               })}

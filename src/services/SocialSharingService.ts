@@ -15,6 +15,7 @@ import {ShareDialog} from "react-native-fbsdk-next";
 import {t} from "../i18n";
 import {captureException} from "../utils/sentry";
 import {logger} from "../utils/logger";
+import {analyticsService} from "./AnalyticsService";
 
 export interface ShareContent {
   attempts: number;
@@ -138,14 +139,28 @@ export class SocialSharingService {
    * then falls back to system share
    */
   static async share(platform: "facebook" | "x" | "system", content: ShareContent): Promise<boolean> {
+    let didShare = false;
+
     switch (platform) {
       case "facebook":
-        return this.shareToFacebook(content);
+        didShare = await this.shareToFacebook(content);
+        break;
       case "x":
-        return this.shareToX(content);
+        didShare = await this.shareToX(content);
+        break;
       case "system":
       default:
-        return this.shareViaSystem(content);
+        didShare = await this.shareViaSystem(content);
+        break;
     }
+
+    if (didShare) {
+      void analyticsService.logShare({
+        platform,
+        gameMode: content.gameMode ?? "daily",
+      });
+    }
+
+    return didShare;
   }
 }

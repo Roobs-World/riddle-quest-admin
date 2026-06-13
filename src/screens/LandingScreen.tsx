@@ -139,6 +139,7 @@ const LandingScreen = () => {
             buttonText={t("AuthStrings.Landing.PLAY_AS_GUEST")}
             onPress={handlePlayButtonPress}
             disabled={isLoading}
+            testID="play-as-guest-button"
           />
           <TouchableOpacity
             accessibilityLabel={t("Accessibility.LANDING_ATTRIBUTION_LINK")}

@@ -408,6 +408,7 @@ describe("ModalRegistry", () => {
       expect(modalRegistry.achievements).toBeDefined();
       expect(modalRegistry.stats).toBeDefined();
       expect(modalRegistry.leaderboard).toBeDefined();
+      expect(modalRegistry.ranks).toBeDefined();
 
       // Help modals
       expect(modalRegistry.hint).toBeDefined();

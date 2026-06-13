@@ -53,6 +53,7 @@ const SECTION_TO_NAMESPACE = {
   WelcomeBackModal: "onboarding",
   Instructions: "onboarding",
   Profile: "profile",
+  Ranks: "profile",
   TestStrings: "test",
   RewardedAdPrompts: "ads",
   ErrorMessages: "errors",

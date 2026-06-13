@@ -5,7 +5,7 @@ import {
   type Functions,
 } from "@react-native-firebase/functions";
 import {getApp} from "@react-native-firebase/app";
-import {ZodError, type ZodType, type ZodTypeAny, z} from "zod";
+import {ZodError, type ZodTypeAny, z} from "zod";
 import {withSentrySpan} from "./sentry";
 
 const getFunctionsEmulatorMarker = (): string | null => {
@@ -107,7 +107,7 @@ export const getValidatedCallableFunction = <IS extends ZodTypeAny, OS extends Z
       `firebase.callable.${functionName}`,
       "firebase.callable",
       async () => {
-        const result = await callable(validatedInput as any);
+        const result = await callable(validatedInput);
         try {
           return parseWithSchema(outputSchema, result.data);
         } catch (error) {

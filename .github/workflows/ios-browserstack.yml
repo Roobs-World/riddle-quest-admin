@@ -1,0 +1,72 @@
+name: iOS BrowserStack Matrix
+
+on:
+  workflow_dispatch:
+    inputs:
+      devices:
+        description: JSON array of BrowserStack iOS deviceName/osVersion pairs
+        required: false
+        default: '[{"deviceName":"iPhone 15","osVersion":"17"},{"deviceName":"iPad Pro 12.9 2022","osVersion":"16"}]'
+      ipa_url:
+        description: Optional public signed IPA URL; skips the EAS build when supplied
+        required: false
+        default: ""
+
+jobs:
+  ios-browserstack:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Validate required secrets
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
+          BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+          SUPPLIED_IPA_URL: ${{ inputs.ipa_url }}
+        run: |
+          test -n "$BROWSERSTACK_USERNAME" || { echo "BROWSERSTACK_USERNAME is not configured"; exit 1; }
+          test -n "$BROWSERSTACK_ACCESS_KEY" || { echo "BROWSERSTACK_ACCESS_KEY is not configured"; exit 1; }
+          if [ -z "$SUPPLIED_IPA_URL" ]; then
+            test -n "$EXPO_TOKEN" || { echo "EXPO_TOKEN is not configured and no ipa_url was supplied"; exit 1; }
+          fi
+
+      - name: Build signed iOS IPA with EAS
+        if: ${{ inputs.ipa_url == '' }}
+        id: eas-build
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: |
+          pnpm exec eas build --platform ios --profile browserstack --non-interactive --wait --json > eas-build.json
+          node -e "const fs=require('fs'); const data=JSON.parse(fs.readFileSync('eas-build.json','utf8')); const build=Array.isArray(data)?data[0]:data; if(!build?.artifacts?.buildUrl) throw new Error('EAS did not return an IPA URL'); fs.appendFileSync(process.env.GITHUB_OUTPUT, 'ipa_url='+build.artifacts.buildUrl+'\n')"
+
+      - name: Download IPA
+        env:
+          IPA_URL: ${{ inputs.ipa_url || steps.eas-build.outputs.ipa_url }}
+        run: curl --fail --location "$IPA_URL" --output qwordly-browserstack.ipa
+
+      - name: Run BrowserStack iOS matrix
+        env:
+          BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
+          BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+          BROWSERSTACK_APP: ./qwordly-browserstack.ipa
+          BROWSERSTACK_BUILD_NAME: qwordly-ios-${{ github.run_number }}
+          BROWSERSTACK_IOS_DEVICES: ${{ inputs.devices }}
+        run: pnpm run test:ios:browserstack

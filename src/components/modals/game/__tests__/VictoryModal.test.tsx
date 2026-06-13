@@ -50,10 +50,11 @@ describe("VictoryModal", () => {
   });
 
   it("renders the updated design content", () => {
-    const {getByText, queryByTestId} = render(<VictoryModal {...defaultProps} />);
+    const {getByText, getByTestId, queryByTestId} = render(<VictoryModal {...defaultProps} />);
 
     expect(getByText("NICE JOB!")).toBeTruthy();
     expect(getByText("+50 Coins")).toBeTruthy();
+    expect(getByTestId("modal-reward-chest")).toBeTruthy();
     expect(getByText("Total Coins:")).toBeTruthy();
     expect(getByText("305")).toBeTruthy();
     expect(queryByTestId("modal-sequence-breadcrumb")).toBeNull();
@@ -97,6 +98,14 @@ describe("VictoryModal", () => {
     const {getByText} = render(<VictoryModal {...defaultProps} totalCoins={undefined} />);
 
     expect(getByText("50")).toBeTruthy();
+  });
+
+  it("shows daily streak progress after the reward chest", () => {
+    const {getByText, getByTestId} = render(<VictoryModal {...defaultProps} streakValue={7} />);
+
+    expect(getByTestId("streak-counter")).toBeTruthy();
+    expect(getByText("7-Day Streak")).toBeTruthy();
+    expect(getByText("7/7")).toBeTruthy();
   });
 
   it("advances when the modal is tapped", async () => {

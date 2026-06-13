@@ -86,5 +86,31 @@
     "WIN_RATE_STAT": "Gewinnrate",
     "WORDS_GUESSED_STAT": "Wörter erraten",
     "XP_LEVEL_PREFIX": "Lvl."
+  },
+  "Ranks": {
+    "TITLE": "Range",
+    "SUBTITLE": "Lose Ratsel, steige auf und erreiche jeden Rang.",
+    "VIEW_ALL_BUTTON": "Alle Range ansehen",
+    "LEVEL_REQUIREMENT_PREFIX": "Stufe ",
+    "CURRENT_RANK": "Aktueller Rang",
+    "NEXT_RANK_PREFIX": "Nachster:",
+    "AT_LEVEL_PREFIX": "auf Level",
+    "HIGHEST_RANK": "Hochster Rang erreicht",
+    "STARGAZER_NAME": "Sternengucker",
+    "STARGAZER_DESCRIPTION": "Du beginnst, die Sterne zu lesen.",
+    "PATHFINDER_NAME": "Pfadfinder",
+    "PATHFINDER_DESCRIPTION": "Du findest Wege durch schwere Ratsel.",
+    "RIDDLE_SCOUT_NAME": "Ratselspaher",
+    "RIDDLE_SCOUT_DESCRIPTION": "Kaum ein Hinweis entgeht dir.",
+    "CIPHER_KNIGHT_NAME": "Chiffrenritter",
+    "CIPHER_KNIGHT_DESCRIPTION": "Du verteidigst Antworten mit scharfer Logik.",
+    "ORACLE_NAME": "Orakel",
+    "ORACLE_DESCRIPTION": "Muster offenbaren sich vor dir.",
+    "LUMINARY_NAME": "Lichtbringer",
+    "LUMINARY_DESCRIPTION": "Deine Einsicht weist anderen den Weg.",
+    "ASTRAL_SAGE_NAME": "Astralweiser",
+    "ASTRAL_SAGE_DESCRIPTION": "Du beherrschst Ratsel des Kosmos.",
+    "QUEST_LEGEND_NAME": "Questlegende",
+    "QUEST_LEGEND_DESCRIPTION": "Dein Name gehort zu den Grosten."
   }
 }
