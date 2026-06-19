@@ -6,12 +6,15 @@
  * when the DSN is absent.
  */
 import * as Sentry from "@sentry/react-native";
-import type {Event, EventHint} from "@sentry/core";
+import type {ReactNativeOptions} from "@sentry/react-native";
 import type React from "react";
 
 const dsn = process.env.EXPO_PUBLIC_SENTRY_DSN;
 export const hasSentryDsn = Boolean(dsn);
 type SpanAttributes = Record<string, string | number | boolean | undefined>;
+type BeforeSend = NonNullable<ReactNativeOptions["beforeSend"]>;
+type SentryEvent = Parameters<BeforeSend>[0];
+type SentryEventHint = Parameters<BeforeSend>[1];
 
 const isDevelopmentRuntime = (): boolean => {
   if (typeof __DEV__ !== "undefined") {
@@ -45,7 +48,7 @@ const normalizeUnknownText = (value: unknown): string => {
   return parts.length > 0 ? parts.join(" ") : String(value);
 };
 
-const eventToText = (event: Event): string => {
+const eventToText = (event: SentryEvent): string => {
   const exceptionValues = event.exception?.values ?? [];
   const exceptionText = exceptionValues
     .flatMap((exception) => [exception.type, exception.value])
@@ -118,7 +121,7 @@ const isExpectedSentryNoise = (text: string, isDevelopment: boolean): boolean =>
   );
 };
 
-export const shouldDropSentryEvent = (event: Event, hint?: EventHint): boolean => {
+export const shouldDropSentryEvent = (event: SentryEvent, hint?: SentryEventHint): boolean => {
   const eventText = eventToText(event);
   const hintText = normalizeUnknownText(hint?.originalException);
   const isDevelopmentEvent = event.environment === "development" || isDevelopmentRuntime();
@@ -139,7 +142,9 @@ if (dsn) {
 }
 
 export const wrapAppWithSentry = <TProps,>(AppComponent: React.ComponentType<TProps>): React.ComponentType<TProps> =>
-  dsn ? (Sentry.wrap(AppComponent) as React.ComponentType<TProps>) : AppComponent;
+  dsn
+    ? (Sentry.wrap(AppComponent as unknown as React.ComponentType<Record<string, unknown>>) as React.ComponentType<TProps>)
+    : AppComponent;
 
 /**
  * Captures an exception and sends it to Sentry (no-op if DSN not configured).

@@ -24,55 +24,47 @@ export type {PreloadedSolarSystem};
 
 export class SolarSystemPreloader {
   private static preloadedSystem: PreloadedSolarSystem | null = null;
+  private static preloadPromise: Promise<PreloadedSolarSystem> | null = null;
   private static isPreloading = false;
   private static isPreloaded = false;
   private static textureCache: TextureCache = createTextureCache();
+  private static progressListeners = new Set<(progress: SolarSystemPreloadProgress) => void>();
   private static readonly textureLoadTimeoutMs = 15000;
 
-  private static emitProgress(
-    onProgress: ((progress: SolarSystemPreloadProgress) => void) | undefined,
-    progress: SolarSystemPreloadProgress,
-  ): void {
-    onProgress?.(progress);
+  private static addProgressListener(
+    onProgress?: (progress: SolarSystemPreloadProgress) => void,
+  ): () => void {
+    if (!onProgress) {
+      return () => undefined;
+    }
+
+    this.progressListeners.add(onProgress);
+    return () => {
+      this.progressListeners.delete(onProgress);
+    };
+  }
+
+  private static emitProgress(progress: SolarSystemPreloadProgress): void {
+    this.progressListeners.forEach((listener) => {
+      listener(progress);
+    });
   }
 
   private static resetState(): void {
     this.preloadedSystem = null;
+    this.preloadPromise = null;
     this.isPreloaded = false;
     this.isPreloading = false;
   }
 
-  private static async waitForExistingPreload(): Promise<PreloadedSolarSystem | null> {
-    let waitTime = 0;
-    const maxWaitTime = 10000;
-
-    while (this.isPreloading && waitTime < maxWaitTime) {
-      await new Promise((resolve) => setTimeout(resolve, 100));
-      waitTime += 100;
-    }
-
-    if (this.isPreloaded && this.preloadedSystem) {
-      return this.preloadedSystem;
-    }
-
-    if (waitTime >= maxWaitTime) {
-      logger.warn("SolarSystemPreloader: Existing preload did not finish in time; restarting.");
-      this.resetState();
-    }
-
-    return null;
-  }
-
-  private static async preloadTextures(
-    onProgress?: (progress: SolarSystemPreloadProgress) => void,
-  ): Promise<Map<string, Texture>> {
+  private static async preloadTextures(): Promise<Map<string, Texture>> {
     if (this.textureCache.size > 0) {
       logger.debug("SolarSystemPreloader: Textures already preloaded, returning cache");
       return this.textureCache;
     }
 
     const textures = await preloadTexturesStage(SOLAR_TEXTURE_MAPPING, this.textureLoadTimeoutMs, (progress) => {
-      this.emitProgress(onProgress, {
+      this.emitProgress({
         phase: "textures",
         loaded: progress.loaded,
         total: progress.total,
@@ -90,11 +82,9 @@ export class SolarSystemPreloader {
     return textures;
   }
 
-  private static async createGeometries(
-    onProgress?: (progress: SolarSystemPreloadProgress) => void,
-  ): Promise<Map<string, SolarGeometry>> {
+  private static async createGeometries(): Promise<Map<string, SolarGeometry>> {
     return createGeometriesStage((progress: GeometryProgress) => {
-      this.emitProgress(onProgress, {
+      this.emitProgress({
         phase: "geometries",
         loaded: progress.loaded,
         total: progress.total,
@@ -106,10 +96,9 @@ export class SolarSystemPreloader {
 
   private static async createMaterials(
     textures: Map<string, Texture>,
-    onProgress?: (progress: SolarSystemPreloadProgress) => void,
   ): Promise<Map<string, SolarMaterial>> {
     return createMaterialsStage(textures, (progress: MaterialProgress) => {
-      this.emitProgress(onProgress, {
+      this.emitProgress({
         phase: "materials",
         loaded: progress.loaded,
         total: progress.total,
@@ -123,10 +112,9 @@ export class SolarSystemPreloader {
     geometries: Map<string, SolarGeometry>,
     materials: Map<string, SolarMaterial>,
     textures: Map<string, Texture>,
-    onProgress?: (progress: SolarSystemPreloadProgress) => void,
   ): Promise<PreloadedSolarSystem> {
     return assembleSolarSystemScene(geometries, materials, textures, (loaded, total, current) => {
-      this.emitProgress(onProgress, {
+      this.emitProgress({
         phase: "scene",
         loaded,
         total,
@@ -136,36 +124,18 @@ export class SolarSystemPreloader {
     });
   }
 
-  static async preloadSolarSystem(
-    onProgress?: (progress: SolarSystemPreloadProgress) => void,
-  ): Promise<PreloadedSolarSystem> {
-    if (this.isPreloaded && this.preloadedSystem) {
-      logger.debug("SolarSystemPreloader: System already preloaded, returning cached version");
-      return this.preloadedSystem;
-    }
-
-    if (this.isPreloading) {
-      logger.debug("SolarSystemPreloader: System is currently preloading, waiting...");
-      const existing = await this.waitForExistingPreload();
-      if (existing) {
-        return existing;
-      }
-    }
-
-    this.isPreloading = true;
-
+  private static async runPreload(): Promise<PreloadedSolarSystem> {
     try {
       logger.debug("SolarSystemPreloader: Starting solar system preloading...");
       console.time("SolarSystemPreloader: Total preload time");
 
-      const textures = await this.preloadTextures(onProgress);
-      const geometries = await this.createGeometries(onProgress);
-      const materials = await this.createMaterials(textures, onProgress);
-      this.preloadedSystem = await this.createCompleteScene(geometries, materials, textures, onProgress);
+      const [textures, geometries] = await Promise.all([this.preloadTextures(), this.createGeometries()]);
+      const materials = await this.createMaterials(textures);
+      this.preloadedSystem = await this.createCompleteScene(geometries, materials, textures);
 
       this.isPreloaded = true;
 
-      this.emitProgress(onProgress, {
+      this.emitProgress({
         phase: "complete",
         loaded: 100,
         total: 100,
@@ -182,8 +152,35 @@ export class SolarSystemPreloader {
       throw error instanceof Error ? error : new Error(`Solar system preloading failed: ${String(error)}`);
     } finally {
       this.isPreloading = false;
+      this.preloadPromise = null;
       console.timeEnd("SolarSystemPreloader: Total preload time");
     }
+  }
+
+  static async preloadSolarSystem(
+    onProgress?: (progress: SolarSystemPreloadProgress) => void,
+  ): Promise<PreloadedSolarSystem> {
+    const removeProgressListener = this.addProgressListener(onProgress);
+
+    if (this.isPreloaded && this.preloadedSystem) {
+      logger.debug("SolarSystemPreloader: System already preloaded, returning cached version");
+      removeProgressListener();
+      return this.preloadedSystem;
+    }
+
+    if (this.preloadPromise) {
+      logger.debug("SolarSystemPreloader: System is currently preloading, reusing in-flight preload");
+      return this.preloadPromise.finally(removeProgressListener);
+    }
+
+    if (this.isPreloading) {
+      logger.warn("SolarSystemPreloader: Stale preload flag detected; restarting.");
+      this.resetState();
+    }
+
+    this.isPreloading = true;
+    this.preloadPromise = this.runPreload();
+    return this.preloadPromise.finally(removeProgressListener);
   }
 
   static getPreloadedSystem(): PreloadedSolarSystem | null {
@@ -202,6 +199,7 @@ export class SolarSystemPreloader {
     logger.debug("SolarSystemPreloader: Clearing all caches...");
     disposeAndClearTextureCache(this.textureCache);
     this.resetState();
+    this.progressListeners.clear();
     this.textureCache = createTextureCache();
     logger.debug("SolarSystemPreloader: All caches cleared successfully");
   }

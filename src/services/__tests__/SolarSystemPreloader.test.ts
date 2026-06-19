@@ -23,21 +23,11 @@ const {logger} = require("../../utils/logger");
 const mockLoadTextureFromAsset = loadTextureFromAsset as jest.Mock;
 
 describe("SolarSystemPreloader", () => {
-  let setTimeoutSpy: jest.SpyInstance;
-
   beforeEach(() => {
     jest.clearAllMocks();
     mockLoadTextureFromAsset.mockReset();
     mockLoadTextureFromAsset.mockResolvedValue(new Texture());
-    setTimeoutSpy = jest.spyOn(global, "setTimeout").mockImplementation((fn: any) => {
-      fn();
-      return 0 as any;
-    });
     SolarSystemPreloader.clearCache();
-  });
-
-  afterEach(() => {
-    setTimeoutSpy.mockRestore();
   });
 
   it("preloads and caches the solar system", async () => {
@@ -78,47 +68,64 @@ describe("SolarSystemPreloader", () => {
     expect(textures.get("already")).toBeInstanceOf(Texture);
   });
 
-  it("returns preloaded system when another preload finishes while waiting", async () => {
-    (SolarSystemPreloader as any).isPreloaded = false;
-    (SolarSystemPreloader as any).isPreloading = true;
-    const waitingResult = {
-      scene: {} as any,
-      camera: {} as any,
-      planetsGroup: {} as any,
-      meshes: [],
-      lights: [],
-      geometries: new Map(),
-      materials: new Map(),
-      textures: new Map(),
-    };
-    (SolarSystemPreloader as any).preloadedSystem = waitingResult;
+  it("reuses the in-flight preload for concurrent callers", async () => {
+    let resolveTextureLoad: (texture: Texture) => void = () => undefined;
+    const textureLoad = new Promise<Texture>((resolve) => {
+      resolveTextureLoad = resolve;
+    });
+    mockLoadTextureFromAsset.mockReturnValue(textureLoad);
 
-    setTimeoutSpy.mockImplementationOnce((fn: any) => {
-      (SolarSystemPreloader as any).isPreloading = false;
-      fn();
-      return 0 as any;
+    const firstProgressEvents: string[] = [];
+    const secondProgressEvents: string[] = [];
+    const first = SolarSystemPreloader.preloadSolarSystem((progress) => {
+      firstProgressEvents.push(progress.phase);
+    });
+    const second = SolarSystemPreloader.preloadSolarSystem((progress) => {
+      secondProgressEvents.push(progress.phase);
     });
 
-    const result = await SolarSystemPreloader.preloadSolarSystem();
+    await Promise.resolve();
+    const callsWhilePending = loadTextureFromAsset.mock.calls.length;
 
-    expect(result).toBeDefined();
-    expect(SolarSystemPreloader.isSystemPreloaded()).toBe(true);
+    resolveTextureLoad(new Texture());
+    const [firstResult, secondResult] = await Promise.all([first, second]);
+
+    expect(secondResult).toBe(firstResult);
+    expect(loadTextureFromAsset.mock.calls.length).toBe(callsWhilePending);
+    expect(firstProgressEvents).toContain("complete");
+    expect(secondProgressEvents).toContain("complete");
   });
 
-  it("resets stuck preload flag after wait timeout", async () => {
+  it("creates geometries while texture loading is still pending", async () => {
+    let resolveTextureLoad: (texture: Texture) => void = () => undefined;
+    const textureLoad = new Promise<Texture>((resolve) => {
+      resolveTextureLoad = resolve;
+    });
+    mockLoadTextureFromAsset.mockReturnValue(textureLoad);
+
+    const progressEvents: string[] = [];
+    const preload = SolarSystemPreloader.preloadSolarSystem((progress) => {
+      progressEvents.push(progress.phase);
+    });
+
+    await Promise.resolve();
+    expect(progressEvents).toContain("geometries");
+    expect(progressEvents).not.toContain("materials");
+
+    resolveTextureLoad(new Texture());
+    await preload;
+    expect(progressEvents).toContain("complete");
+  });
+
+  it("resets stale preload flag before starting a new preload", async () => {
     (SolarSystemPreloader as any).isPreloaded = false;
     (SolarSystemPreloader as any).isPreloading = true;
     (SolarSystemPreloader as any).preloadedSystem = null;
 
-    const original = setTimeoutSpy;
-    original.mockImplementation((fn: any) => {
-      fn();
-      return 0 as any;
-    });
-
     await SolarSystemPreloader.preloadSolarSystem();
 
     expect((SolarSystemPreloader as any).isPreloading).toBe(false);
+    expect(logger.warn).toHaveBeenCalledWith("SolarSystemPreloader: Stale preload flag detected; restarting.");
   });
 
   it("fails fast when a required texture load fails", async () => {

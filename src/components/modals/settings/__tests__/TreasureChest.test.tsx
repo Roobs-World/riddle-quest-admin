@@ -4,7 +4,7 @@ import TreasureChest from "../TreasureChest";
 import {t} from "../../../../i18n";
 
 jest.mock("../../../../../assets/images/treasure-chest-rays.svg", () => "TreasureChestRaysSvg");
-jest.mock("../../../../../assets/images/chest.svg", () => "TreasureChestSvg");
+jest.mock("../../../../../assets/images/chest-closed.png", () => "TreasureChestImage");
 jest.mock("../../../../qa/qaRuntime", () => ({
   isQASurfaceRuntimeActive: () => true,
 }));

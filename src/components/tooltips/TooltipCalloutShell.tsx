@@ -109,8 +109,8 @@ const TooltipCalloutShell: React.FC<TooltipCalloutShellProps> = ({
       borderBottomWidth: isTopPointer ? POINTER_SIZE : 0,
       borderLeftColor: "transparent",
       borderRightColor: "transparent",
-      borderTopColor: "transparent",
-      borderBottomColor: palette.figmaCream,
+      borderTopColor: isTopPointer ? "transparent" : palette.figmaCream,
+      borderBottomColor: isTopPointer ? palette.figmaCream : "transparent",
     } as ViewStyle;
   }, [layout.pointerLeft, layout.pointerPlacement, showPointer]);
 
@@ -119,7 +119,7 @@ const TooltipCalloutShell: React.FC<TooltipCalloutShellProps> = ({
       {showBackdropCutout && targetRect ? (
         <>
           <View
-            pointerEvents={visible ? "auto" : "none"}
+            pointerEvents="none"
             testID={backdropTopTestID}
             style={[
               styles.backdrop,
@@ -133,7 +133,7 @@ const TooltipCalloutShell: React.FC<TooltipCalloutShellProps> = ({
             ]}
           />
           <View
-            pointerEvents={visible ? "auto" : "none"}
+            pointerEvents="none"
             testID={backdropLeftTestID}
             style={[
               styles.backdrop,
@@ -147,7 +147,7 @@ const TooltipCalloutShell: React.FC<TooltipCalloutShellProps> = ({
             ]}
           />
           <View
-            pointerEvents={visible ? "auto" : "none"}
+            pointerEvents="none"
             testID={backdropRightTestID}
             style={[
               styles.backdrop,
@@ -161,7 +161,7 @@ const TooltipCalloutShell: React.FC<TooltipCalloutShellProps> = ({
             ]}
           />
           <View
-            pointerEvents={visible ? "auto" : "none"}
+            pointerEvents="none"
             testID={backdropBottomTestID}
             style={[
               styles.backdrop,
@@ -174,24 +174,10 @@ const TooltipCalloutShell: React.FC<TooltipCalloutShellProps> = ({
               backdropStyle,
             ]}
           />
-          <View
-            pointerEvents={visible ? "auto" : "none"}
-            testID="tooltip-target-cutout"
-            style={{
-              position: "absolute",
-              top: Math.max(0, targetRect.y - 8),
-              left: Math.max(0, targetRect.x - 8),
-              width: Math.max(0, targetRect.width + 16),
-              height: Math.max(0, targetRect.height + 16),
-              borderRadius: 18,
-              borderColor: palette.figmaGold,
-              borderWidth: 2,
-            }}
-          />
         </>
       ) : (
         <View
-          pointerEvents={visible ? "auto" : "none"}
+          pointerEvents="none"
           testID={backdropTestID}
           style={[styles.backdrop, backdropStyle]}
         />

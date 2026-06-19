@@ -1,7 +1,7 @@
 import {useEffect, useMemo, useState} from "react";
-import {View, Text, Animated, Easing} from "react-native";
+import {View, Text, Animated, Easing, Image} from "react-native";
 import TreasureChestRaysSvg from "../../../../assets/images/treasure-chest-rays.svg";
-import TreasureChestSvg from "../../../../assets/images/chest.svg";
+import TreasureChestImage from "../../../../assets/images/chest-closed.png";
 import {TYPOGRAPHY, SPACING} from "../../../styles";
 import {verticalScale} from "../../../utils/responsive";
 import {t} from "../../../i18n";
@@ -82,7 +82,7 @@ export default function TreasureChest({coins}: {coins: number}) {
             paddingTop: verticalScale(25),
           }}
         >
-          <TreasureChestSvg width="50%" height="50%" style={{borderWidth: 0}} />
+          <Image source={TreasureChestImage} resizeMode="contain" style={{width: "50%", height: "50%"}} />
         </View>
 
         {/* Coins text */}

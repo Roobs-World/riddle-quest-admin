@@ -1,18 +1,7 @@
 import React from "react";
 import {fireEvent, render} from "@testing-library/react-native";
-import {Animated} from "react-native";
+import {Animated, Modal} from "react-native";
 import TooltipOverlay from "../TooltipOverlay";
-
-jest.mock("react-native/Libraries/Modal/Modal", () => {
-  const React = require("react");
-  return {
-    __esModule: true,
-    default: function MockModal({children, visible}: any) {
-      if (!visible) return null;
-      return React.createElement(React.Fragment, null, children);
-    },
-  };
-});
 
 jest.mock("../../../qa/qaRuntime", () => ({
   isQASurfaceRuntimeActive: jest.fn(() => false),
@@ -27,8 +16,8 @@ describe("TooltipOverlay", () => {
     action: "Got it",
   };
 
-  it("renders backdrop segments and a target cutout when target rect is available", () => {
-    const {getByTestId, getByText} = render(
+  it("renders backdrop segments and a pointer when target rect is available", () => {
+    const {getByTestId, getByText, queryByTestId} = render(
       <TooltipOverlay
         visible={true}
         targetRect={{x: 20, y: 80, width: 120, height: 48}}
@@ -39,9 +28,17 @@ describe("TooltipOverlay", () => {
 
     expect(getByTestId("tooltip-overlay")).toBeTruthy();
     expect(getByTestId("tooltip-backdrop-top")).toBeTruthy();
-    expect(getByTestId("tooltip-target-cutout")).toBeTruthy();
+    expect(queryByTestId("tooltip-target-cutout")).toBeNull();
     expect(getByTestId("tooltip-pointer")).toBeTruthy();
     expect(getByText("Submit your answer")).toBeTruthy();
+  });
+
+  it("does not use a native modal that would trap game input", () => {
+    const {UNSAFE_queryByType} = render(
+      <TooltipOverlay visible={true} targetRect={null} content={content} onDismiss={jest.fn()} />,
+    );
+
+    expect(UNSAFE_queryByType(Modal)).toBeNull();
   });
 
   it("renders a full backdrop when no target is available", () => {

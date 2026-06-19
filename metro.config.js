@@ -154,9 +154,21 @@ const makeBlockedPathPattern = (relativePath) => {
 
 windConfig.resolver.blockList = [
   new RegExp(/(\/__tests__\/.*)$/.source),
-  makeBlockedPathPattern("firebase-functions/node_modules"),
+  makeBlockedPathPattern(".expo"),
   makeBlockedPathPattern(".gradle-local"),
+  makeBlockedPathPattern(".gradle-local-linux"),
   makeBlockedPathPattern(".git"),
+  makeBlockedPathPattern("android/.gradle"),
+  makeBlockedPathPattern("android/.gradle-local"),
+  makeBlockedPathPattern("android/.gradle-local-linux"),
+  makeBlockedPathPattern("android/app/.cxx"),
+  makeBlockedPathPattern("android/app/build"),
+  makeBlockedPathPattern("android/build"),
+  makeBlockedPathPattern("coverage"),
+  makeBlockedPathPattern("device-matrix-test"),
+  makeBlockedPathPattern("emulator-tests"),
+  makeBlockedPathPattern("firebase-functions/coverage"),
+  makeBlockedPathPattern("firebase-functions/node_modules"),
 ];
 
 module.exports = windConfig;

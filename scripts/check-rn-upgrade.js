@@ -8,14 +8,14 @@ const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"));
 
 const requiredDeps = {
   "react-native": "0.85.3",
-  expo: "56.0.9",
+  expo: "56.0.12",
   "react-native-reanimated": "4.3.1",
   "react-native-worklets": "0.8.3",
 };
 
 const requiredDevDeps = {
   "@react-native/jest-preset": "0.85.3",
-  "jest-expo": "56.0.4",
+  "jest-expo": "56.0.5",
 };
 
 const bannedPatterns = [
