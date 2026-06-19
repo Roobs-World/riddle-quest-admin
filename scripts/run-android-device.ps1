@@ -36,7 +36,7 @@ function Ensure-MetroServer([int]$MetroPort, [switch]$EnableDebugCli) {
     "Set-Location 'E:\qwordly'; " +
     '$env:CI=''1''; ' +
     $debugPrefix +
-    "pnpm exec expo start --dev-client --host localhost --port $MetroPort --clear *>&1 | Tee-Object -FilePath '$logFile'"
+    "pnpm exec expo start --dev-client --host lan --port $MetroPort --clear *>&1 | Tee-Object -FilePath '$logFile'"
 
   $process = Start-Process -FilePath powershell `
     -ArgumentList "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", $command `

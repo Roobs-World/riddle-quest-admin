@@ -23,6 +23,7 @@ import {
   riddleFirestoreConverter,
   withConverterIfAvailable,
 } from "./firestoreConverters";
+import {RiddleDataService} from "./RiddleDataService";
 
 /** Session cache for riddle fetches to avoid repeated Firestore reads (e.g. mode switch). */
 const RIDDLE_CACHE_MAX_SIZE = 50;
@@ -42,6 +43,7 @@ const FIRESTORE_RETRYABLE_CODES = new Set<string>([
 ]);
 const MAX_READ_RETRY_ATTEMPTS = 3;
 const BASE_RETRY_DELAY_MS = 300;
+const directRiddleDataService = new RiddleDataService();
 
 const ALLOWED_USER_UPDATE_FIELDS = new Set<string>([
   "userId",
@@ -340,7 +342,12 @@ export const fetchDailyRiddleFromFirestore = async (
   } catch (error) {
     if (isExpectedFirestoreAccessError(error)) {
       logExpectedFirestoreAccessWarning("Daily riddle Firestore read", error);
-      return null;
+      try {
+        return await directRiddleDataService.fetchDailyRiddle();
+      } catch (fallbackError) {
+        logger.warn("Direct daily riddle fallback was unavailable.", fallbackError);
+        return null;
+      }
     }
     logger.error("Error fetching daily riddle from callable:", error);
     captureException(error);
@@ -387,7 +394,12 @@ export const fetchClassicRiddleFromFirestore = async (
   } catch (error) {
     if (isExpectedFirestoreAccessError(error)) {
       logExpectedFirestoreAccessWarning("Classic riddle Firestore read", error);
-      return null;
+      try {
+        return await directRiddleDataService.fetchClassicRiddle(classicIndex);
+      } catch (fallbackError) {
+        logger.warn("Direct classic riddle fallback was unavailable.", fallbackError);
+        return null;
+      }
     }
     logger.error("Error fetching classic riddle from Firestore:", error);
     captureException(error);

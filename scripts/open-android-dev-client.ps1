@@ -16,6 +16,7 @@ if (-not (Get-Command adb -ErrorAction SilentlyContinue)) {
 
 Write-Host "Using adb reverse for localhost:$Port and opening the Expo dev-client URI for $AndroidPackageName."
 & adb reverse tcp:$Port tcp:$Port | Out-Null
+& adb shell am force-stop $AndroidPackageName | Out-Null
 
 $uri = "exp+riddle-quest://expo-development-client/?url=http%3A%2F%2F${EmulatorHost}%3A$Port"
 Write-Host "Opening: $uri"

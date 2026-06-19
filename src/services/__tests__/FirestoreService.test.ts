@@ -352,6 +352,7 @@ describe("FirestoreService", () => {
         message: "[firestore/permission-denied] Access denied",
       };
       mockCallValidatedFunction.mockRejectedValue(error);
+      mockGetDocs.mockResolvedValue({empty: true, docs: []});
 
       const result = await FirestoreService.fetchDailyRiddleFromFirestore(dailyIndex);
 
@@ -360,6 +361,32 @@ describe("FirestoreService", () => {
         "Daily riddle Firestore read denied during startup; falling back to local state.",
         error,
       );
+    });
+
+    it("falls back to the localized Firestore daily riddle when the callable denies guest access", async () => {
+      mockCallValidatedFunction.mockRejectedValue({
+        code: "functions/unauthenticated",
+        message: "Unauthenticated",
+      });
+      mockGetDocs.mockResolvedValue({
+        empty: false,
+        docs: [
+          {
+            id: "current",
+            data: () => mockRiddleData,
+          },
+        ],
+      });
+
+      const result = await FirestoreService.fetchDailyRiddleFromFirestore(dailyIndex);
+
+      expect(mockWhere).toHaveBeenCalledWith("riddleId", "==", "current");
+      expect(result).toMatchObject({
+        riddleId: "daily-5",
+        category: "daily",
+        text: "What has four legs?",
+        answer: "DOG",
+      });
     });
   });
 
@@ -437,6 +464,7 @@ describe("FirestoreService", () => {
         message: "[firestore/permission-denied] Access denied",
       };
       mockCallValidatedFunction.mockRejectedValue(error);
+      mockGetDocs.mockResolvedValue({empty: true, docs: []});
 
       const result = await FirestoreService.fetchClassicRiddleFromFirestore(classicIndex);
 
@@ -445,6 +473,32 @@ describe("FirestoreService", () => {
         "Classic riddle Firestore read denied during startup; falling back to local state.",
         error,
       );
+    });
+
+    it("falls back to the localized Firestore classic riddle when the callable denies guest access", async () => {
+      mockCallValidatedFunction.mockRejectedValue({
+        code: "functions/unauthenticated",
+        message: "Unauthenticated",
+      });
+      mockGetDocs.mockResolvedValue({
+        empty: false,
+        docs: [
+          {
+            id: "classic-10",
+            data: () => mockRiddleData,
+          },
+        ],
+      });
+
+      const result = await FirestoreService.fetchClassicRiddleFromFirestore(classicIndex);
+
+      expect(mockWhere).toHaveBeenCalledWith("classicIndex", "==", classicIndex);
+      expect(result).toMatchObject({
+        riddleId: "classic-10",
+        category: "classic",
+        text: "I am thinking of a word",
+        answer: "WORD",
+      });
     });
   });
 
