@@ -53,6 +53,30 @@ jest.mock("../../components/buttons/WideButton", () => {
   };
 });
 
+jest.mock("@react-native-masked-view/masked-view", () => {
+  const React = require("react");
+  const {View} = require("react-native");
+
+  return function MockMaskedView({
+    children,
+    maskElement,
+    style,
+    testID,
+  }: {
+    children: React.ReactNode;
+    maskElement: React.ReactNode;
+    style?: object;
+    testID?: string;
+  }) {
+    return (
+      <View style={style} testID={testID}>
+        {maskElement}
+        {children}
+      </View>
+    );
+  };
+});
+
 describe("LanguageSelectionScreen", () => {
   let timingSpy: jest.SpiedFunction<typeof Animated.timing>;
 
@@ -112,6 +136,26 @@ describe("LanguageSelectionScreen", () => {
     const headerCopyStyle = StyleSheet.flatten(getByTestId("language-selection-copy").props.style);
 
     expect(headerCopyStyle.height).toBe(132);
+  });
+
+  it("uses a light background for unselected country cards", () => {
+    const {getByTestId} = render(<LanguageSelectionScreen onSubmit={jest.fn()} />);
+
+    const englishOptionStyle = StyleSheet.flatten(getByTestId("language-option-en").props.style);
+
+    expect(englishOptionStyle.backgroundColor).toBe("rgba(252, 250, 244, 0.92)");
+  });
+
+  it("uses an alpha mask to fade language cards before the top clip point", () => {
+    const {getByTestId, queryByTestId} = render(<LanguageSelectionScreen onSubmit={jest.fn()} />);
+
+    const scrollMaskStyle = StyleSheet.flatten(getByTestId("language-scroll-mask").props.style);
+    const alphaMaskStyle = StyleSheet.flatten(getByTestId("language-scroll-alpha-mask").props.style);
+
+    expect(scrollMaskStyle.flex).toBe(1);
+    expect(alphaMaskStyle.flex).toBe(1);
+    expect(queryByTestId("language-scroll-top-fade")).toBeNull();
+    expect(queryByTestId("language-scroll-bottom-fade")).toBeNull();
   });
 
   it("pauses cycling and fades to the selected language", () => {
