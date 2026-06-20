@@ -1,6 +1,7 @@
 import React from "react";
+import {StyleSheet} from "react-native";
 import {fireEvent, render} from "@testing-library/react-native";
-import GlobalMuteOverlay from "../GlobalMuteOverlay";
+import GlobalMuteOverlay, {GLOBAL_MUTE_OVERLAY_TOP_OFFSET} from "../GlobalMuteOverlay";
 
 jest.mock("react-native/Libraries/Modal/Modal", () => {
   const React = require("react");
@@ -55,5 +56,13 @@ describe("GlobalMuteOverlay", () => {
 
     rerender(<GlobalMuteOverlay isSoundEnabled={false} onToggleSound={jest.fn()} />);
     expect(getByTestId("global-mute-button").props["data-muted"]).toBe(true);
+  });
+
+  it("positions the mute button below the top coin button row", () => {
+    const {getByTestId} = render(<GlobalMuteOverlay isSoundEnabled={true} onToggleSound={jest.fn()} />);
+    const containerStyle = StyleSheet.flatten(getByTestId("global-mute-button-container").props.style);
+
+    expect(containerStyle.top).toBe(GLOBAL_MUTE_OVERLAY_TOP_OFFSET);
+    expect(containerStyle.top).toBeGreaterThanOrEqual(100);
   });
 });

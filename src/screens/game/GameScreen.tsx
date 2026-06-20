@@ -53,6 +53,7 @@ import {IapService} from "../../services/IapService";
 import {ProductPricing, ProductPricingService} from "../../services/ProductPricingService";
 import ModalTogglePanel from "../../components/development/ModalTogglePanel";
 import StarryBackground from "../../components/background/StarryBackground";
+import GuestOnboardingModal from "../../components/modals/help/GuestOnboardingModal";
 import {logger} from "../../utils/logger";
 import {captureException} from "../../utils/sentry";
 import {computeLetterStates} from "../../utils/letterStates";
@@ -138,7 +139,6 @@ interface GameScreenProps {
 
 const ONBOARDING_SEEN_STORAGE_KEY_PREFIX = "gameScreenOnboardingSeen";
 const RESULT_MODAL_REVEAL_DELAY_MS = 850;
-const ONBOARDING_PROGRESS_TOTAL = 3;
 const FIFTH_CORRECT_ANSWER_COUNT = 5;
 
 const getOnboardingSeenStorageKey = (userId?: string): string => {
@@ -333,7 +333,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   const modal = useModal();
   const tooltip = useTooltip();
   const showTooltipRequestOnce = tooltip.showTooltipOnce;
-  const {showWelcomeModal, showWelcomeBackModal, showInstructionsModal, showInfoModal} = modal;
+  const {showWelcomeBackModal, showInfoModal} = modal;
   const isGuestMode = isGuestPlayer(playerData);
   const {
     isSoundEnabled,
@@ -352,6 +352,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   const modalActions = useMemo(() => createGameModalActions(modal), [modal]);
   const [isProfileModalLoading, setIsProfileModalLoading] = useState(false);
   const [isUpgradeModalVisible, setIsUpgradeModalVisible] = useState(false);
+  const [isGuestOnboardingModalVisible, setIsGuestOnboardingModalVisible] = useState(false);
   const [isTransitioningToNextLevel, setIsTransitioningToNextLevel] = useState(false);
   const [isOnboardingComplete, setIsOnboardingComplete] = useState(suppressOnboarding);
   const isRunningUnderJest = typeof process !== "undefined" && Boolean(process.env.JEST_WORKER_ID);
@@ -365,7 +366,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   );
 
   const showTooltipOnce = useCallback(
-    (id: TooltipId, targetRef?: TooltipTargetRef | null) => {
+    (id: TooltipId, targetRef?: TooltipTargetRef | null, highlightElement?: React.ReactNode) => {
       if (!isOnboardingComplete || isUpgradeModalVisible) {
         logger.debug("[GameScreen] showTooltipOnce skipped until intro prompts complete", {
           id,
@@ -389,6 +390,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       return showTooltipRequestOnce({
         id,
         targetRef,
+        highlightElement,
         content: getTooltipContent(id),
         userId: currentTooltipUserId,
       });
@@ -410,18 +412,15 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   const coinAnimationSettleTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const hasQueuedSubmitTooltipRef = useRef(false);
 
-  useEffect(() => {
-    if (suppressOnboarding || !isOnboardingComplete || isUpgradeModalVisible || hasQueuedSubmitTooltipRef.current) {
-      return;
-    }
+  const completeGuestOnboarding = useCallback(() => {
+    setIsGuestOnboardingModalVisible(false);
+    setIsOnboardingComplete(true);
+  }, []);
 
-    hasQueuedSubmitTooltipRef.current = true;
-    const timeoutId = setTimeout(() => {
-      void showTooltipOnce("submitAnswer", submitButtonRef);
-    }, 650);
-
-    return () => clearTimeout(timeoutId);
-  }, [isOnboardingComplete, isUpgradeModalVisible, showTooltipOnce, suppressOnboarding]);
+  const handleGuestOnboardingUpgrade = useCallback(() => {
+    completeGuestOnboarding();
+    setIsUpgradeModalVisible(true);
+  }, [completeGuestOnboarding]);
 
   useEffect(() => {
     if (suppressOnboarding) {
@@ -770,49 +769,14 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           return;
         }
 
-        showWelcomeModal({
-          onboardingProgress: {current: 1, total: ONBOARDING_PROGRESS_TOTAL},
-          onDismiss: () => {
-            safeDelay(MODAL_CLOSE_DELAY_MS).then(() => {
-              showInstructionsModal({
-                onDismiss: () => {
-                  if (!isGuestMode) {
-                    setIsOnboardingComplete(true);
-                    return;
-                  }
-
-                  safeDelay(MODAL_CLOSE_DELAY_MS).then(() => {
-                    showInfoModal({
-                      message: t("GameScreenAlerts.GUEST_MODE_NOTICE_MESSAGE"),
-                      actionButtonText: t("Profile.UPGRADE_ACCOUNT_BUTTON"),
-                      onboardingProgress: {
-                        current: 3,
-                        total: ONBOARDING_PROGRESS_TOTAL,
-                      },
-                      onAction: () => {
-                        setIsOnboardingComplete(true);
-                        setIsUpgradeModalVisible(true);
-                      },
-                      onConfirm: () => {
-                        setIsOnboardingComplete(true);
-                      },
-                    });
-                  });
-                },
-                onboardingProgress: {
-                  current: 2,
-                  total: ONBOARDING_PROGRESS_TOTAL,
-                },
-              });
-            });
-          },
-        });
+        setIsGuestOnboardingModalVisible(true);
 
         AsyncStorage.setItem(onboardingSeenStorageKey, "true").catch((error: unknown) => {
           logger.error("Error saving onboarding seen state:", error);
           captureException(error);
         });
       } catch (error) {
+        setIsOnboardingComplete(true);
         logger.error("Error running onboarding flow:", error);
         captureException(error);
       }
@@ -827,9 +791,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     isGuestMode,
     playerData,
     playerData?.userId,
-    showWelcomeModal,
     showWelcomeBackModal,
-    showInstructionsModal,
     showInfoModal,
     suppressOnboarding,
   ]);
@@ -2257,6 +2219,19 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     [currentGuess, playableAnswerLength],
   );
 
+  useEffect(() => {
+    if (suppressOnboarding || !isOnboardingComplete || isUpgradeModalVisible || hasQueuedSubmitTooltipRef.current) {
+      return;
+    }
+
+    hasQueuedSubmitTooltipRef.current = true;
+    const timeoutId = setTimeout(() => {
+      void showTooltipOnce("submitAnswer", submitButtonRef);
+    }, 650);
+
+    return () => clearTimeout(timeoutId);
+  }, [isOnboardingComplete, isUpgradeModalVisible, showTooltipOnce, suppressOnboarding]);
+
   const headerModeLabel =
     gameMode === "daily"
       ? t("GameScreenAlerts.DAILY_CHALLENGE_LABEL")
@@ -2309,6 +2284,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
             hintButtonRef={hintButtonRef}
             submitButtonRef={submitButtonRef}
             nextButtonRef={nextButtonRef}
+            isSubmitTooltipTargetActive={tooltip.activeTooltipId === "submitAnswer"}
           />
 
           <BottomNavigationBar
@@ -2326,6 +2302,11 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         />
 
         <ModalProvider />
+        <GuestOnboardingModal
+          isVisible={isGuestOnboardingModalVisible}
+          onClose={completeGuestOnboarding}
+          onUpgrade={handleGuestOnboardingUpgrade}
+        />
         <OfflineBlockingModal isVisible={isOffline} />
         {isGuestMode ? (
           <UpgradeAccountModal

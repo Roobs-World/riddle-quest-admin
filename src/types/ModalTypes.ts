@@ -185,6 +185,7 @@ export interface GameModalTypes {
     /** Optional callback fired after the welcome modal is dismissed. */
     onDismiss?: () => void;
     onboardingProgress?: OnboardingProgress;
+    showRotatingBackground?: boolean;
   };
 
   welcomeBack: {
@@ -197,6 +198,7 @@ export interface GameModalTypes {
     /** Optional callback fired after the instructions modal is dismissed. */
     onDismiss?: () => void;
     onboardingProgress?: OnboardingProgress;
+    showRotatingBackground?: boolean;
   };
 
   credits: Record<string, never>;
@@ -213,6 +215,7 @@ export interface GameModalTypes {
     /** Optional callback fired when the secondary action button is pressed. */
     onAction?: () => void;
     onboardingProgress?: OnboardingProgress;
+    showRotatingBackground?: boolean;
   };
 
   // Shop modals

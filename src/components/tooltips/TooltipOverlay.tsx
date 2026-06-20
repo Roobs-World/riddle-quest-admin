@@ -10,8 +10,11 @@ import type {TargetRect, TooltipContent} from "./types";
 interface TooltipOverlayProps {
   visible: boolean;
   targetRect: TargetRect | null;
+  highlightElement?: React.ReactNode;
+  cutoutTarget?: boolean;
   content: TooltipContent;
   preferredPlacement?: "auto" | "above" | "below";
+  useNativeModal?: boolean;
   onDismiss: () => void;
   onExited?: () => void;
 }
@@ -25,11 +28,15 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 const TooltipOverlay: React.FC<TooltipOverlayProps> = ({
   visible,
   targetRect,
+  highlightElement,
+  cutoutTarget = false,
   content,
   preferredPlacement = "auto",
+  useNativeModal = true,
   onDismiss,
   onExited,
 }) => {
+  const {width, height} = Dimensions.get("screen");
   const [translateY] = useState(() => new Animated.Value(Dimensions.get("window").height + 80));
   const [opacity] = useState(() => new Animated.Value(0));
   const [buttonScale] = useState(() => new Animated.Value(1));
@@ -138,8 +145,99 @@ const TooltipOverlay: React.FC<TooltipOverlayProps> = ({
     };
   }, [visible, buttonScale]);
 
+  if (!useNativeModal && !visible) {
+    return null;
+  }
+
   if (!isModalMounted) {
     return null;
+  }
+
+  const overlayContent = (
+    <View pointerEvents="box-none" style={{height, width}} testID="tooltip-overlay">
+      <Animated.View
+        pointerEvents={visible ? "box-none" : "none"}
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width,
+          height,
+          opacity,
+        }}
+      >
+        <TooltipCalloutShell
+          visible={visible}
+          targetRect={targetRect}
+          highlightElement={highlightElement}
+          cutoutTarget={cutoutTarget}
+          preferredPlacement={preferredPlacement}
+          showPointer={Boolean(targetRect)}
+          panelStyle={{
+            opacity: 1,
+            transform: [{translateY}],
+          }}
+        >
+          <Text
+            style={{
+              fontFamily: TYPOGRAPHY.fontPrimary,
+              fontSize: TYPOGRAPHY.fontSize.xl,
+              color: "#1A1A1A",
+              marginBottom: SPACING.xs,
+            }}
+          >
+            {content.title}
+          </Text>
+          <Text
+            style={{
+              fontFamily: TYPOGRAPHY.fontSecondary,
+              fontSize: TYPOGRAPHY.fontSize.base,
+              color: "#1A1A1A",
+              lineHeight: 22,
+            }}
+          >
+            {content.body}
+          </Text>
+          <AnimatedPressable
+            onPress={() => {
+              logger.debug("[TooltipOverlay] dismiss button pressed", {
+                title: content.title,
+                targetRect,
+              });
+              onDismiss();
+            }}
+            accessibilityRole="button"
+            accessibilityLabel={content.action}
+            style={[
+              {transform: [{scale: buttonScale}]},
+              {
+                alignSelf: "flex-end",
+                backgroundColor: COLORS.figmaGold,
+                borderRadius: 12,
+                paddingHorizontal: SPACING.md,
+                paddingVertical: SPACING.sm,
+                marginTop: SPACING.md,
+              },
+            ]}
+            testID="tooltip-dismiss-button"
+          >
+            <Text
+              style={{
+                fontFamily: TYPOGRAPHY.fontSecondaryBold,
+                fontSize: TYPOGRAPHY.fontSize.base,
+                color: "#1A1A1A",
+              }}
+            >
+              {content.action || t("CommonAlerts.OK_BUTTON")}
+            </Text>
+          </AnimatedPressable>
+        </TooltipCalloutShell>
+      </Animated.View>
+    </View>
+  );
+
+  if (!useNativeModal) {
+    return overlayContent;
   }
 
   return (
@@ -150,85 +248,7 @@ const TooltipOverlay: React.FC<TooltipOverlayProps> = ({
       presentationStyle="overFullScreen"
       statusBarTranslucent
     >
-      <View pointerEvents="box-none" style={{flex: 1}} testID="tooltip-overlay">
-        <Animated.View
-          pointerEvents={visible ? "box-none" : "none"}
-          style={{
-            position: "absolute",
-            top: 0,
-            right: 0,
-            bottom: 0,
-            left: 0,
-            opacity,
-          }}
-        >
-          <TooltipCalloutShell
-            visible={visible}
-            targetRect={targetRect}
-            preferredPlacement={preferredPlacement}
-            showBackdropCutout={true}
-            showPointer={Boolean(targetRect)}
-            panelStyle={{
-              opacity: 1,
-              transform: [{translateY}],
-            }}
-          >
-            <Text
-              style={{
-                fontFamily: TYPOGRAPHY.fontPrimary,
-                fontSize: TYPOGRAPHY.fontSize.xl,
-                color: "#1A1A1A",
-                marginBottom: SPACING.xs,
-              }}
-            >
-              {content.title}
-            </Text>
-            <Text
-              style={{
-                fontFamily: TYPOGRAPHY.fontSecondary,
-                fontSize: TYPOGRAPHY.fontSize.base,
-                color: "#1A1A1A",
-                lineHeight: 22,
-              }}
-            >
-              {content.body}
-            </Text>
-            <AnimatedPressable
-              onPress={() => {
-                logger.debug("[TooltipOverlay] dismiss button pressed", {
-                  title: content.title,
-                  targetRect,
-                });
-                onDismiss();
-              }}
-              accessibilityRole="button"
-              accessibilityLabel={content.action}
-              style={[
-                {transform: [{scale: buttonScale}]},
-                {
-                  alignSelf: "flex-end",
-                  backgroundColor: COLORS.figmaGold,
-                  borderRadius: 12,
-                  paddingHorizontal: SPACING.md,
-                  paddingVertical: SPACING.sm,
-                  marginTop: SPACING.md,
-                },
-              ]}
-              testID="tooltip-dismiss-button"
-            >
-              <Text
-                style={{
-                  fontFamily: TYPOGRAPHY.fontSecondaryBold,
-                  fontSize: TYPOGRAPHY.fontSize.base,
-                  color: "#1A1A1A",
-                }}
-              >
-                {content.action || t("CommonAlerts.OK_BUTTON")}
-              </Text>
-            </AnimatedPressable>
-          </TooltipCalloutShell>
-        </Animated.View>
-      </View>
+      {overlayContent}
     </Modal>
   );
 };

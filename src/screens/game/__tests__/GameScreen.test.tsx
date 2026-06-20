@@ -169,6 +169,7 @@ const mockShowAchievementUnlockFanfareModal = jest.fn();
 const mockShowStreakIncreaseFanfareModal = jest.fn();
 const mockShowLevelUpFanfareModal = jest.fn();
 const mockUpgradeAccountModal = jest.fn();
+const mockGuestOnboardingModal = jest.fn();
 const mockShowTooltipOnce = jest.fn(() => Promise.resolve(true));
 const mockShowTooltip = jest.fn(() => Promise.resolve());
 const mockDismissTooltip = jest.fn();
@@ -284,6 +285,15 @@ jest.mock("../../../components/modals/settings/UpgradeAccountModal", () => {
   return function MockUpgradeAccountModal(props: any) {
     mockUpgradeAccountModal(props);
     return React.createElement(View, {testID: "mock-upgrade-account-modal"});
+  };
+});
+
+jest.mock("../../../components/modals/help/GuestOnboardingModal", () => {
+  const React = require("react");
+  const {View} = require("react-native");
+  return function MockGuestOnboardingModal(props: any) {
+    mockGuestOnboardingModal(props);
+    return React.createElement(View, {testID: "mock-guest-onboarding-modal"});
   };
 });
 
@@ -626,6 +636,12 @@ describe("GameScreen", () => {
       await waitFor(() => {
         expect(mockShowTooltipOnce).toHaveBeenCalledWith(expect.objectContaining({id: "submitAnswer"}));
       });
+      expect(mockShowTooltipOnce).toHaveBeenCalledWith(
+        expect.objectContaining({
+          id: "submitAnswer",
+          highlightElement: undefined,
+        }),
+      );
       jest.useRealTimers();
     });
 
@@ -646,36 +662,21 @@ describe("GameScreen", () => {
         expect(mockShowTooltipOnce).not.toHaveBeenCalledWith(expect.objectContaining({id: "submitAnswer"}));
 
         await waitFor(() => {
-          expect(mockShowWelcomeModal).toHaveBeenCalled();
-        });
-
-        act(() => {
-          mockShowWelcomeModal.mock.calls[0][0].onDismiss();
-        });
-        await waitFor(() => {
-          expect(mockShowInstructionsModal).toHaveBeenCalled();
-        });
-
-        act(() => {
-          mockShowInstructionsModal.mock.calls[0][0].onDismiss();
-        });
-        await waitFor(() => {
-          expect(mockShowInfoModal).toHaveBeenCalledWith(
+          expect(mockGuestOnboardingModal).toHaveBeenCalledWith(
             expect.objectContaining({
-              message: "Your progress could be lost in guest mode, and some features like the leaderboard are unavailable.",
+              isVisible: true,
+              onClose: expect.any(Function),
+              onUpgrade: expect.any(Function),
             }),
           );
         });
-        expect(mockShowInfoModal.mock.calls[0][0].onboardingProgress).toEqual({current: 3, total: 3});
 
         act(() => {
-          jest.advanceTimersByTime(650);
+          mockGuestOnboardingModal.mock.calls[mockGuestOnboardingModal.mock.calls.length - 1][0].onClose();
         });
+
         expect(mockShowTooltipOnce).not.toHaveBeenCalledWith(expect.objectContaining({id: "submitAnswer"}));
 
-        act(() => {
-          mockShowInfoModal.mock.calls[0][0].onConfirm?.();
-        });
         act(() => {
           jest.advanceTimersByTime(650);
         });
@@ -927,7 +928,7 @@ describe("GameScreen", () => {
       expect(AsyncStorage.setItem).not.toHaveBeenCalledWith("gameScreenOnboardingSeen:test-user-123", "true");
     });
 
-    it("should still show welcome modal for guest users", async () => {
+    it("should show the single guest onboarding modal for guest users", async () => {
       const originalEmail = mockPlayerData.email;
       const originalUsername = mockPlayerData.username;
       try {
@@ -937,12 +938,16 @@ describe("GameScreen", () => {
         render(<GameScreen {...defaultProps} />);
 
         await waitFor(() => {
-          expect(mockShowWelcomeModal).toHaveBeenCalledWith(
+          expect(mockGuestOnboardingModal).toHaveBeenCalledWith(
             expect.objectContaining({
-              onboardingProgress: {current: 1, total: 3},
+              isVisible: true,
+              onClose: expect.any(Function),
+              onUpgrade: expect.any(Function),
             }),
           );
         });
+        expect(mockShowWelcomeModal).not.toHaveBeenCalled();
+        expect(mockShowInstructionsModal).not.toHaveBeenCalled();
         expect(mockShowInfoModal).not.toHaveBeenCalled();
       } finally {
         mockPlayerData.email = originalEmail;
@@ -961,44 +966,16 @@ describe("GameScreen", () => {
         render(<GameScreen {...defaultProps} />);
 
         await waitFor(() => {
-          expect(mockShowWelcomeModal).toHaveBeenCalled();
-        });
-
-        const onboardingConfig = mockShowWelcomeModal.mock.calls[0][0];
-        onboardingConfig.onDismiss();
-
-        await waitFor(() => {
-          expect(mockShowInstructionsModal).toHaveBeenCalledWith(
+          expect(mockGuestOnboardingModal).toHaveBeenCalledWith(
             expect.objectContaining({
-              onboardingProgress: {current: 2, total: 3},
-              onDismiss: expect.any(Function),
+              isVisible: true,
+              onUpgrade: expect.any(Function),
             }),
           );
         });
-
-        const instructionsConfig = mockShowInstructionsModal.mock.calls[0][0];
-        instructionsConfig.onDismiss();
-
-        await waitFor(() => {
-          expect(mockShowInfoModal).toHaveBeenCalledWith(
-            expect.objectContaining({
-              message: "Your progress could be lost in guest mode, and some features like the leaderboard are unavailable.",
-              actionButtonText: "Upgrade Account",
-              onAction: expect.any(Function),
-            }),
-          );
-        });
-
-        const guestInfoCall = mockShowInfoModal.mock.calls.find(
-          (call) =>
-            call[0]?.message ===
-            "Your progress could be lost in guest mode, and some features like the leaderboard are unavailable.",
-        );
-        expect(guestInfoCall).toBeDefined();
-        expect(guestInfoCall?.[0]?.onboardingProgress).toEqual({current: 3, total: 3});
 
         await act(async () => {
-          guestInfoCall?.[0]?.onAction?.();
+          mockGuestOnboardingModal.mock.calls[mockGuestOnboardingModal.mock.calls.length - 1][0].onUpgrade();
         });
 
         await waitFor(() => {
@@ -1894,37 +1871,16 @@ describe("GameScreen", () => {
         render(<GameScreen {...defaultProps} />);
 
         await waitFor(() => {
-          expect(mockShowWelcomeModal).toHaveBeenCalled();
-        });
-
-        const onboardingConfig = mockShowWelcomeModal.mock.calls[0][0];
-        onboardingConfig.onDismiss();
-
-        await waitFor(() => {
-          expect(mockShowInstructionsModal).toHaveBeenCalledWith(
+          expect(mockGuestOnboardingModal).toHaveBeenCalledWith(
             expect.objectContaining({
-              onboardingProgress: {current: 2, total: 3},
-              onDismiss: expect.any(Function),
+              isVisible: true,
+              onClose: expect.any(Function),
             }),
           );
         });
 
-        const instructionsConfig = mockShowInstructionsModal.mock.calls[0][0];
-        instructionsConfig.onDismiss();
-
-        await waitFor(() => {
-          expect(mockShowInfoModal).toHaveBeenCalledWith(
-            expect.objectContaining({
-              message: "Your progress could be lost in guest mode, and some features like the leaderboard are unavailable.",
-              onConfirm: expect.any(Function),
-            }),
-          );
-        });
-        expect(mockShowInfoModal.mock.calls[0][0].onboardingProgress).toEqual({current: 3, total: 3});
-
-        const guestNotice = mockShowInfoModal.mock.calls[0][0];
         await act(async () => {
-          guestNotice.onConfirm?.();
+          mockGuestOnboardingModal.mock.calls[mockGuestOnboardingModal.mock.calls.length - 1][0].onClose();
         });
       } finally {
         mockPlayerData.email = originalEmail;
@@ -2739,14 +2695,12 @@ describe("GameScreen", () => {
       });
     });
 
-    it("handles onboarding flow outer catch when welcome modal throws", async () => {
+    it("handles onboarding flow outer catch when onboarding storage check throws", async () => {
       const {logger} = require("../../../utils/logger");
       const {captureException} = require("../../../utils/sentry");
       const originalEmail = mockPlayerData.email;
       const originalUsername = mockPlayerData.username;
-      mockShowWelcomeModal.mockImplementationOnce(() => {
-        throw new Error("welcome crash");
-      });
+      (AsyncStorage.getItem as jest.Mock).mockRejectedValueOnce(new Error("onboarding storage crash"));
 
       try {
         mockPlayerData.email = "";

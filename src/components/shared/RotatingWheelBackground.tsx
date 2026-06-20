@@ -5,6 +5,7 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withRepeat,
+  withSequence,
   withTiming,
 } from "react-native-reanimated";
 import WheelBg from "../../../assets/images/wheel-bg.svg";
@@ -19,6 +20,7 @@ interface RotatingWheelBackgroundProps {
 
 const {screenWidth: SCREEN_W, screenHeight: SCREEN_H} = dimensions;
 const WHEEL_SIZE = Math.ceil(Math.sqrt(SCREEN_W * SCREEN_W + SCREEN_H * SCREEN_H));
+const ROTATION_EPOCH_MS = Date.now();
 
 const RotatingWheelBackground: React.FC<RotatingWheelBackgroundProps> = ({
   isVisible,
@@ -29,13 +31,33 @@ const RotatingWheelBackground: React.FC<RotatingWheelBackgroundProps> = ({
 
   useEffect(() => {
     if (isVisible && !isQASurfaceRuntimeActive()) {
-      rotation.value = withRepeat(
+      const elapsedMs = (Date.now() - ROTATION_EPOCH_MS) % durationMs;
+      const initialRotation = elapsedMs / durationMs;
+      const remainingDurationMs = Math.max(1, durationMs - elapsedMs);
+      rotation.value = initialRotation;
+      rotation.value = withSequence(
         withTiming(1, {
-          duration: durationMs,
+          duration: remainingDurationMs,
           easing: Easing.linear,
         }),
-        -1,
-        false,
+        withTiming(0, {
+          duration: 0,
+          easing: Easing.linear,
+        }),
+        withRepeat(
+          withSequence(
+            withTiming(1, {
+              duration: durationMs,
+              easing: Easing.linear,
+            }),
+            withTiming(0, {
+              duration: 0,
+              easing: Easing.linear,
+            }),
+          ),
+          -1,
+          false,
+        ),
       );
     } else {
       cancelAnimation(rotation);
@@ -44,7 +66,6 @@ const RotatingWheelBackground: React.FC<RotatingWheelBackgroundProps> = ({
 
     return () => {
       cancelAnimation(rotation);
-      rotation.value = 0;
     };
   }, [durationMs, isVisible, rotation]);
 

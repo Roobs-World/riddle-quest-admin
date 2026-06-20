@@ -39,6 +39,7 @@ const PURPLE = "#401F40";
 const CREAM = "#FCFAF4";
 const GOLD = "#FEC880";
 const PROFILE_TOOLTIP_SCROLL_TOP_PADDING = 24;
+const PROFILE_DAILY_STREAK_SCROLL_TOP_PADDING = 8;
 const PROFILE_TOOLTIP_SCROLL_SETTLE_MS = 260;
 
 const getProfileTooltipContent = (id: TooltipId) => {
@@ -229,8 +230,10 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisi
 
   const scrollToTooltipAnchor = useCallback((id: TooltipId): Promise<void> => {
     const y = tooltipAnchorOffsetsRef.current[id] ?? 0;
+    const topPadding =
+      id === "profileDailyStreak" ? PROFILE_DAILY_STREAK_SCROLL_TOP_PADDING : PROFILE_TOOLTIP_SCROLL_TOP_PADDING;
     scrollViewRef.current?.scrollTo({
-      y: Math.max(0, y - PROFILE_TOOLTIP_SCROLL_TOP_PADDING),
+      y: Math.max(0, y - topPadding),
       animated: true,
     });
     return new Promise((resolve) => {
@@ -249,12 +252,132 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisi
     }
 
     hasStartedTooltipSequenceRef.current = true;
+    const createProfileTooltipHighlight = (id: TooltipId): React.ReactNode => {
+      switch (id) {
+        case "profileIdentity":
+          return (
+            <View style={{alignItems: "center", width: "100%"}}>
+              {avatarUrl ? (
+                <Image
+                  source={{uri: avatarUrl}}
+                  style={{
+                    width: AVATAR_SIZE_LARGE,
+                    height: AVATAR_SIZE_LARGE,
+                    borderRadius: avatarRadius,
+                    borderWidth: moderateScale(3),
+                    borderColor: "#FFFFFF",
+                  }}
+                />
+              ) : (
+                <View
+                  style={{
+                    width: AVATAR_SIZE_LARGE,
+                    height: AVATAR_SIZE_LARGE,
+                    borderRadius: avatarRadius,
+                    backgroundColor: "rgba(255,255,255,0.15)",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderWidth: moderateScale(3),
+                    borderColor: "#FFFFFF",
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: "#FFFFFF",
+                      fontSize: TYPOGRAPHY.fontSize.display,
+                      fontFamily: TYPOGRAPHY.fontSecondaryBold,
+                    }}
+                  >
+                    {initial}
+                  </Text>
+                </View>
+              )}
+              <Text
+                style={{
+                  color: "#FFFFFF",
+                  fontSize: TYPOGRAPHY.fontSize.lg,
+                  fontFamily: TYPOGRAPHY.fontSecondaryBold,
+                  marginTop: SPACING.sm,
+                }}
+              >
+                {resolvedPlayerData?.username || t("Profile.GUEST_USERNAME")}
+              </Text>
+            </View>
+          );
+        case "profileProgression":
+          return (
+            <View style={{width: "100%", gap: 4}}>
+              <View style={{flexDirection: "row", alignItems: "center", gap: 6}}>
+                <Text style={{color: GOLD, fontSize: 24}}>★</Text>
+                <View
+                  style={{
+                    flex: 1,
+                    height: 8,
+                    backgroundColor: "rgba(255,255,255,0.2)",
+                    borderRadius: 4,
+                    overflow: "hidden",
+                  }}
+                >
+                  <View
+                    style={{
+                      width: xpProgressWidth,
+                      height: "100%",
+                      backgroundColor: GOLD,
+                      borderRadius: 4,
+                    }}
+                  />
+                </View>
+                <Text
+                  style={{
+                    color: GOLD,
+                    fontSize: TYPOGRAPHY.fontSize.lg,
+                    fontFamily: TYPOGRAPHY.fontSecondary,
+                  }}
+                >
+                  {t("Profile.XP_LEVEL_PREFIX")}
+                  {level}
+                </Text>
+              </View>
+              <Text
+                style={{
+                  color: COLORS.white,
+                  fontSize: TYPOGRAPHY.fontSize.lg,
+                  fontFamily: TYPOGRAPHY.fontSecondary,
+                  textAlign: "center",
+                }}
+              >
+                {`${currentXp} / ${nextLevelXp} XP`}
+              </Text>
+            </View>
+          );
+        case "profileAchievements":
+          return <ProfileActionHighlight label={t("Achievements.MODAL_TITLE")} />;
+        case "profileStatistics":
+          return <ProfileActionHighlight label={t("StatsModal.TITLE")} />;
+        case "profileLeaderboard":
+          return <ProfileActionHighlight label={t("Leaderboard.TITLE")} />;
+        case "profileDailyPuzzles":
+          return <ProfileSectionHeaderHighlight title={t("Profile.DAILY_PUZZLES_COMPLETED_HEADER")} />;
+        case "profileDailyStreak":
+          return (
+            <ProfileDailyPuzzlesCompletedHighlight dailyPuzzlesCompleted={stats?.dailyPuzzlesCompleted ?? 0} />
+          );
+        case "profileStats":
+          return <ProfileSectionHeaderHighlight title={t("Profile.BEST_STRIKE_HEADER")} />;
+        case "profileCoins":
+          return <ProfileSectionHeaderHighlight title={t("Profile.TREASURE_CHEST_TITLE")} />;
+        default:
+          return null;
+      }
+    };
+
     const createProfileTooltipRequest = (
       id: TooltipId,
       targetRef: React.RefObject<View | null>,
     ): TooltipSequenceRequest => ({
       id,
       targetRef,
+      highlightElement: createProfileTooltipHighlight(id),
       content: getProfileTooltipContent(id),
       preferredPlacement: id === "profileDailyStreak" ? "below" : "auto",
       onBeforeShow: () => scrollToTooltipAnchor(id),
@@ -280,7 +403,22 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisi
       clearTimeout(startSequenceTimer);
       cancelTooltipSequence();
     };
-  }, [cancelTooltipSequence, hasProfileData, isVisible, scrollToTooltipAnchor, showTooltipSequence]);
+  }, [
+    avatarRadius,
+    avatarUrl,
+    cancelTooltipSequence,
+    currentXp,
+    hasProfileData,
+    initial,
+    isVisible,
+    level,
+    nextLevelXp,
+    resolvedPlayerData?.username,
+    scrollToTooltipAnchor,
+    showTooltipSequence,
+    stats?.dailyPuzzlesCompleted,
+    xpProgressWidth,
+  ]);
 
   return (
     <Modal visible={isVisible} transparent={true} animationType="none" onRequestClose={onClose}>
@@ -606,60 +744,62 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisi
                     </TouchableOpacity>
                   </View>
                 ) : null}
-                <SectionHeader
-                  title={t("Profile.DAILY_PUZZLES_COMPLETED_HEADER")}
-                  targetRef={dailyPuzzlesRef}
-                  onLayout={setTooltipAnchorOffset("profileDailyPuzzles")}
-                />
-                <View
-                  style={{
-                    backgroundColor: "#F5EDD4",
-                    borderRadius: 16,
-                    padding: SPACING.md,
-                    flexDirection: "row",
-                    alignItems: "center",
-                    marginBottom: SPACING.lg,
-                    gap: SPACING.md,
-                  }}
-                >
-                  <View
-                    style={{
-                      width: AVATAR_SIZE_LARGE * 0.55,
-                      height: AVATAR_SIZE_LARGE * 0.55,
-                      backgroundColor: COLORS.figmaGold,
-                      borderRadius: 100,
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Text style={{fontSize: 24}}>🏅</Text>
-                  </View>
-                  <Text
-                    style={{
-                      fontFamily: TYPOGRAPHY.fontPrimary,
-                      fontSize: TYPOGRAPHY.fontSize["2xl"],
-                      color: "#1A1A1A",
-                      flex: 1,
-                    }}
-                  >
-                    {stats?.dailyPuzzlesCompleted ?? 0}
-                  </Text>
-                  <Text
-                    style={{
-                      fontFamily: TYPOGRAPHY.fontSecondary,
-                      fontSize: TYPOGRAPHY.fontSize.sm,
-                      color: "#6B7280",
-                      textAlign: "right",
-                    }}
-                  >
-                    {t("Profile.REGULAR_DAYS_LABEL")}
-                  </Text>
-                </View>
-
                 <View
                   ref={profileDailyStreakRef}
                   onLayout={setTooltipAnchorOffset("profileDailyStreak")}
                 >
+                  <SectionHeader
+                    title={t("Profile.DAILY_PUZZLES_COMPLETED_HEADER")}
+                    targetRef={dailyPuzzlesRef}
+                    onLayout={setTooltipAnchorOffset("profileDailyPuzzles")}
+                  />
+                  <View
+                    style={{
+                      backgroundColor: "#F5EDD4",
+                      borderRadius: 16,
+                      padding: SPACING.md,
+                      flexDirection: "row",
+                      alignItems: "center",
+                      marginBottom: SPACING.lg,
+                      gap: SPACING.md,
+                    }}
+                  >
+                    <View
+                      style={{
+                        width: AVATAR_SIZE_LARGE * 0.55,
+                        height: AVATAR_SIZE_LARGE * 0.55,
+                        backgroundColor: COLORS.figmaGold,
+                        borderRadius: 100,
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Text style={{fontSize: 24}}>🏅</Text>
+                    </View>
+                    <Text
+                      style={{
+                        fontFamily: TYPOGRAPHY.fontPrimary,
+                        fontSize: TYPOGRAPHY.fontSize["2xl"],
+                        color: "#1A1A1A",
+                        flex: 1,
+                      }}
+                    >
+                      {stats?.dailyPuzzlesCompleted ?? 0}
+                    </Text>
+                    <Text
+                      style={{
+                        fontFamily: TYPOGRAPHY.fontSecondary,
+                        fontSize: TYPOGRAPHY.fontSize.sm,
+                        color: "#6B7280",
+                        textAlign: "right",
+                      }}
+                    >
+                      {t("Profile.REGULAR_DAYS_LABEL")}
+                    </Text>
+                  </View>
+                </View>
+
+                <View>
                   <SectionHeader
                     title={t("Profile.BEST_STRIKE_HEADER")}
                     targetRef={profileStatsRef}
@@ -815,6 +955,87 @@ const actionButtonTextStyle = {
   fontSize: TYPOGRAPHY.fontSize.base,
   color: "#1A1A1A",
 };
+
+const ProfileActionHighlight = ({label}: {label: string}) => (
+  <View style={[actionButtonStyle, {width: "100%"}]}>
+    <View style={actionButtonContentStyle}>
+      <Text style={actionButtonTextStyle}>{label}</Text>
+    </View>
+  </View>
+);
+
+const ProfileSectionHeaderHighlight = ({title}: {title: string}) => (
+  <View
+    style={{
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      marginBottom: SPACING.md,
+      gap: SPACING.sm,
+      width: "100%",
+    }}
+  >
+    <Text
+      style={{
+        fontFamily: TYPOGRAPHY.fontPrimary,
+        fontSize: TYPOGRAPHY.fontSize.lg,
+        color: "#1A1A1A",
+        flex: 1,
+      }}
+    >
+      {title}
+    </Text>
+  </View>
+);
+
+const ProfileDailyPuzzlesCompletedHighlight = ({dailyPuzzlesCompleted}: {dailyPuzzlesCompleted: number}) => (
+  <View style={{width: "100%"}}>
+    <ProfileSectionHeaderHighlight title={t("Profile.DAILY_PUZZLES_COMPLETED_HEADER")} />
+    <View
+      style={{
+        backgroundColor: "#F5EDD4",
+        borderRadius: 16,
+        padding: SPACING.md,
+        flexDirection: "row",
+        alignItems: "center",
+        gap: SPACING.md,
+      }}
+    >
+      <View
+        style={{
+          width: AVATAR_SIZE_LARGE * 0.55,
+          height: AVATAR_SIZE_LARGE * 0.55,
+          backgroundColor: COLORS.figmaGold,
+          borderRadius: 100,
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Text style={{fontSize: 24}}>🏅</Text>
+      </View>
+      <Text
+        style={{
+          fontFamily: TYPOGRAPHY.fontPrimary,
+          fontSize: TYPOGRAPHY.fontSize["2xl"],
+          color: "#1A1A1A",
+          flex: 1,
+        }}
+      >
+        {dailyPuzzlesCompleted}
+      </Text>
+      <Text
+        style={{
+          fontFamily: TYPOGRAPHY.fontSecondary,
+          fontSize: TYPOGRAPHY.fontSize.sm,
+          color: "#6B7280",
+          textAlign: "right",
+        }}
+      >
+        {t("Profile.REGULAR_DAYS_LABEL")}
+      </Text>
+    </View>
+  </View>
+);
 
 const deleteAccountButtonStyle = {
   backgroundColor: "#C93535",

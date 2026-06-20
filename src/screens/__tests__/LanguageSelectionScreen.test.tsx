@@ -4,6 +4,14 @@ import {act, fireEvent, render, waitFor} from "@testing-library/react-native";
 import LanguageSelectionScreen from "../LanguageSelectionScreen";
 import {setLocale} from "../../i18n";
 
+const isAnimatedPointValue = (value: unknown): value is {x: number; y: number} =>
+  typeof value === "object" &&
+  value !== null &&
+  "x" in value &&
+  "y" in value &&
+  typeof value.x === "number" &&
+  typeof value.y === "number";
+
 jest.mock("../../components/layouts/CustomSafeAreaView", () => {
   const React = require("react");
   const {View} = require("react-native");
@@ -55,8 +63,10 @@ describe("LanguageSelectionScreen", () => {
       const animation = {
         reset: jest.fn(),
         start: jest.fn((callback?: Animated.EndCallback) => {
-          if ("setValue" in value && typeof value.setValue === "function") {
-            value.setValue(config.toValue as number);
+          if (value instanceof Animated.Value && typeof config.toValue === "number") {
+            value.setValue(config.toValue);
+          } else if (value instanceof Animated.ValueXY && isAnimatedPointValue(config.toValue)) {
+            value.setValue(config.toValue);
           }
           callback?.({finished: true});
         }),

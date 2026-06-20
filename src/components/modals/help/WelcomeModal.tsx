@@ -16,11 +16,18 @@ interface WelcomeModalProps {
   /** Optional callback fired after the welcome modal is dismissed. */
   onDismiss?: () => void;
   onboardingProgress?: OnboardingProgress;
+  showRotatingBackground?: boolean;
 }
 
 const WELCOME_COPY_TOP_OFFSET = verticalScale(132);
 
-const WelcomeModal: React.FC<WelcomeModalProps> = ({isVisible, onClose, onDismiss, onboardingProgress}) => {
+const WelcomeModal: React.FC<WelcomeModalProps> = ({
+  isVisible,
+  onClose,
+  onDismiss,
+  onboardingProgress,
+  showRotatingBackground = true,
+}) => {
   const modalHeight = Math.min(MODAL_HEIGHT, MODAL_MAX_HEIGHT ?? MODAL_HEIGHT);
   const handleDismiss = useCallback(() => {
     onClose();
@@ -34,11 +41,11 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({isVisible, onClose, onDismis
           flex: 1,
           justifyContent: "center",
           alignItems: "center",
-          backgroundColor: "rgba(0,0,0,0.5)",
+          backgroundColor: showRotatingBackground ? "rgba(0,0,0,0.5)" : "transparent",
           paddingTop: verticalScale(30),
         }}
       >
-        <RotatingWheelBackground isVisible={isVisible} />
+        {showRotatingBackground ? <RotatingWheelBackground isVisible={isVisible} /> : null}
 
         <DecoratedModalShell
           isVisible={isVisible}

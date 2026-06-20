@@ -146,6 +146,12 @@ describe("<SubmitButton />", () => {
       const button = getByTestId("submit-button");
       expect(button.props.style).toBeDefined();
     });
+
+    it("should lift above the tooltip backdrop while targeted", () => {
+      const {getByTestId} = render(<SubmitButton {...defaultProps} isTooltipTargetActive={true} />);
+      const button = getByTestId("submit-button");
+      expect(button.props.style).toEqual(expect.objectContaining({position: "relative", zIndex: 30, elevation: 30}));
+    });
   });
 
   describe("Component Lifecycle", () => {

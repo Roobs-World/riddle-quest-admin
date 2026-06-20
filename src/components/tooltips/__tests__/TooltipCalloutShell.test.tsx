@@ -4,11 +4,12 @@ import {render} from "@testing-library/react-native";
 import TooltipCalloutShell from "../TooltipCalloutShell";
 
 describe("TooltipCalloutShell", () => {
-  it("renders backdrop cutout segments and pointer when anchored to a target", () => {
+  it("renders a full backdrop, lifted target, and pointer when anchored to a target", () => {
     const {getByTestId, queryByTestId} = render(
       <TooltipCalloutShell
         visible={true}
         targetRect={{x: 48, y: 120, width: 120, height: 44}}
+        highlightElement={<></>}
         showPointer={true}
       >
         <></>
@@ -16,12 +17,83 @@ describe("TooltipCalloutShell", () => {
     );
 
     expect(queryByTestId("tooltip-target-cutout")).toBeNull();
+    expect(queryByTestId("tooltip-backdrop-top")).toBeNull();
+    expect(queryByTestId("tooltip-backdrop-left")).toBeNull();
+    expect(queryByTestId("tooltip-backdrop-right")).toBeNull();
+    expect(queryByTestId("tooltip-backdrop-bottom")).toBeNull();
+    expect(getByTestId("tooltip-backdrop")).toBeTruthy();
+    expect(getByTestId("tooltip-highlighted-target")).toBeTruthy();
     expect(getByTestId("tooltip-pointer")).toBeTruthy();
-    expect(getByTestId("tooltip-backdrop-top").props.pointerEvents).toBe("none");
 
     const pointerStyle = StyleSheet.flatten(getByTestId("tooltip-pointer").props.style);
     expect(pointerStyle.left).toBeGreaterThan(0);
     expect(pointerStyle.borderBottomColor).not.toBe("transparent");
+  });
+
+  it("can cut the backdrop around a measured target without rendering a duplicate target", () => {
+    const {getByTestId, queryByTestId} = render(
+      <TooltipCalloutShell
+        visible={true}
+        targetRect={{x: 48, y: 120, width: 120, height: 44}}
+        cutoutTarget={true}
+        showPointer={true}
+      >
+        <></>
+      </TooltipCalloutShell>,
+    );
+
+    expect(getByTestId("tooltip-backdrop")).toBeTruthy();
+    expect(getByTestId("tooltip-backdrop-piece-0")).toBeTruthy();
+    expect(getByTestId("tooltip-backdrop-piece-1")).toBeTruthy();
+    expect(getByTestId("tooltip-backdrop-piece-2")).toBeTruthy();
+    expect(getByTestId("tooltip-backdrop-piece-3")).toBeTruthy();
+    expect(queryByTestId("tooltip-highlighted-target")).toBeNull();
+  });
+
+  it("sizes the full backdrop from the viewport", () => {
+    const {getByTestId} = render(
+      <TooltipCalloutShell
+        visible={true}
+        targetRect={null}
+        showPointer={true}
+      >
+        <></>
+      </TooltipCalloutShell>,
+    );
+
+    const shellStyle = StyleSheet.flatten(getByTestId("tooltip-callout-shell").props.style);
+    const backdropStyle = StyleSheet.flatten(getByTestId("tooltip-backdrop").props.style);
+
+    expect(backdropStyle.left).toBe(0);
+    expect(backdropStyle.top).toBe(0);
+    expect(backdropStyle.width).toBe(shellStyle.width);
+    expect(backdropStyle.height).toBe(shellStyle.height);
+  });
+
+  it("positions the lifted target at the measured target rect", () => {
+    const targetRect = {x: 120, y: 420, width: 140, height: 48};
+    const {getByTestId} = render(
+      <TooltipCalloutShell visible={true} targetRect={targetRect} highlightElement={<></>} showPointer={true}>
+        <></>
+      </TooltipCalloutShell>,
+    );
+
+    const highlightedTargetStyle = StyleSheet.flatten(getByTestId("tooltip-highlighted-target").props.style);
+
+    expect(highlightedTargetStyle.left).toBe(targetRect.x);
+    expect(highlightedTargetStyle.top).toBe(targetRect.y);
+    expect(highlightedTargetStyle.width).toBe(targetRect.width);
+    expect(highlightedTargetStyle.height).toBe(targetRect.height);
+  });
+
+  it("does not draw around a measured target when no lifted target is supplied", () => {
+    const {queryByTestId} = render(
+      <TooltipCalloutShell visible={true} targetRect={{x: 120, y: 420, width: 140, height: 48}} showPointer={true}>
+        <></>
+      </TooltipCalloutShell>,
+    );
+
+    expect(queryByTestId("tooltip-highlighted-target")).toBeNull();
   });
 
   it("fills the pointer when the callout is above the target", () => {
@@ -67,6 +139,9 @@ describe("TooltipCalloutShell", () => {
 
     expect(getByTestId("tooltip-backdrop")).toBeTruthy();
     expect(getByTestId("tooltip-backdrop").props.pointerEvents).toBe("none");
+    expect(StyleSheet.flatten(getByTestId("tooltip-backdrop").props.style).width).toBe(
+      StyleSheet.flatten(getByTestId("tooltip-callout-shell").props.style).width,
+    );
     expect(queryByTestId("tooltip-pointer")).toBeNull();
   });
 });

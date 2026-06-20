@@ -2,6 +2,8 @@ const React = require("react");
 import {render, fireEvent} from "@testing-library/react-native";
 import {GameInput} from "../GameInput";
 
+const mockSubmitButton = jest.fn();
+
 // Mock child components
 jest.mock("../SubmitButton", () => {
   const {TouchableOpacity, Text} = require("react-native");
@@ -9,20 +11,25 @@ jest.mock("../SubmitButton", () => {
     SubmitButton: ({
       isSubmitDisabled,
       gameOver,
+      isTooltipTargetActive,
       handleKeyPress,
     }: {
       isSubmitDisabled: boolean;
       gameOver: boolean;
+      isTooltipTargetActive?: boolean;
       handleKeyPress: (key: string) => void;
-    }) => (
-      <TouchableOpacity
-        testID="submit-button"
-        onPress={() => handleKeyPress("ENTER")}
-        disabled={isSubmitDisabled || gameOver}
-      >
-        <Text>SUBMIT</Text>
-      </TouchableOpacity>
-    ),
+    }) => {
+      mockSubmitButton({isSubmitDisabled, gameOver, isTooltipTargetActive});
+      return (
+        <TouchableOpacity
+          testID="submit-button"
+          onPress={() => handleKeyPress("ENTER")}
+          disabled={isSubmitDisabled || gameOver}
+        >
+          <Text>SUBMIT</Text>
+        </TouchableOpacity>
+      );
+    },
   };
 });
 
@@ -62,6 +69,7 @@ describe("<GameInput />", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockSubmitButton.mockClear();
   });
 
   describe("Rendering", () => {
@@ -165,6 +173,11 @@ describe("<GameInput />", () => {
     it("should handle both submit disabled and game over", () => {
       const {getByTestId} = render(<GameInput {...defaultProps} isSubmitDisabled={true} gameOver={true} />);
       expect(getByTestId("submit-button")).toBeTruthy();
+    });
+
+    it("should pass tooltip target state to SubmitButton", () => {
+      render(<GameInput {...defaultProps} isSubmitTooltipTargetActive={true} />);
+      expect(mockSubmitButton).toHaveBeenLastCalledWith(expect.objectContaining({isTooltipTargetActive: true}));
     });
   });
 

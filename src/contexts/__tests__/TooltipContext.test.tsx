@@ -17,15 +17,18 @@ jest.mock("../../components/tooltips/tooltipStorage", () => ({
   markTooltipSeen: jest.fn(),
 }));
 
+const mockTooltipOverlay = jest.fn();
+
 jest.mock("../../components/tooltips/TooltipOverlay", () => {
   const React = require("react");
   const {View} = require("react-native");
 
-  return function MockTooltipOverlay({visible, content}: any) {
+  return function MockTooltipOverlay(props: any) {
+    mockTooltipOverlay(props);
     return React.createElement(View, {
       testID: "tooltip-overlay",
-      "data-visible": visible,
-      "data-title": content?.title,
+      "data-visible": props.visible,
+      "data-title": props.content?.title,
     });
   };
 });
@@ -46,6 +49,7 @@ const createTargetRef = (): TooltipRequest["targetRef"] => ({
 describe("TooltipContext", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockTooltipOverlay.mockClear();
     mockDevShowTips = false;
     (hasSeenTooltip as jest.Mock).mockResolvedValue(false);
   });
@@ -141,4 +145,5 @@ describe("TooltipContext", () => {
       expect(markTooltipSeen).toHaveBeenCalledWith("shopOutOfCoins", "user-3");
     });
   });
+
 });

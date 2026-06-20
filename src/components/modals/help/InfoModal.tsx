@@ -23,6 +23,7 @@ interface InfoModalProps {
   onConfirm?: () => void;
   onClose: () => void;
   onboardingProgress?: OnboardingProgress;
+  showRotatingBackground?: boolean;
 }
 
 const InfoModal: React.FC<InfoModalProps> = ({
@@ -34,9 +35,11 @@ const InfoModal: React.FC<InfoModalProps> = ({
   onConfirm,
   onClose,
   onboardingProgress,
+  showRotatingBackground = true,
 }) => {
   const isOnboarding = Boolean(onboardingProgress);
-  const hasActionButton = Boolean(actionButtonText && onAction);
+  const backdropColor = isOnboarding && !showRotatingBackground ? "transparent" : "rgba(0,0,0,0.5)";
+  const actionButtonLabel = actionButtonText && onAction ? actionButtonText : null;
   const hasTitle = Boolean(title?.trim());
   const modalHeight = Math.min(MODAL_HEIGHT, MODAL_MAX_HEIGHT ?? MODAL_HEIGHT);
   const messageMaxHeight = isOnboarding ? modalHeight * 0.34 : MODAL_MAX_HEIGHT ? MODAL_MAX_HEIGHT * 0.5 : undefined;
@@ -92,9 +95,9 @@ const InfoModal: React.FC<InfoModalProps> = ({
         </Text>
       </ScrollView>
       <View style={{width: "100%", marginTop: isOnboarding ? "auto" : SPACING.sm}}>
-        {hasActionButton ? (
+        {actionButtonLabel ? (
           <View style={{marginBottom: SPACING.md}}>
-            <WideButton buttonText={actionButtonText} onPress={handleAction} disabled={false} />
+            <WideButton buttonText={actionButtonLabel} onPress={handleAction} disabled={false} />
           </View>
         ) : null}
         <WideButton buttonText={t("CommonAlerts.OK_BUTTON")} onPress={handleConfirm} disabled={false} />
@@ -104,10 +107,10 @@ const InfoModal: React.FC<InfoModalProps> = ({
 
   return (
     <Modal visible={isVisible} transparent={true} animationType="none" onRequestClose={handleConfirm}>
-      <View style={{flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "rgba(0,0,0,0.5)"}}>
+      <View style={{flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: backdropColor}}>
         {isOnboarding ? (
           <>
-            <RotatingWheelBackground isVisible={isVisible} />
+            {showRotatingBackground ? <RotatingWheelBackground isVisible={isVisible} /> : null}
             <DecoratedModalShell
               isVisible={isVisible}
               width={MODAL_WIDTH}
@@ -127,7 +130,6 @@ const InfoModal: React.FC<InfoModalProps> = ({
             visible={isVisible}
             targetRect={null}
             placement="center"
-            showBackdropCutout={false}
             showPointer={false}
             panelWidth={Math.min(MODAL_WIDTH, 340)}
             panelStyle={{alignSelf: "center"}}

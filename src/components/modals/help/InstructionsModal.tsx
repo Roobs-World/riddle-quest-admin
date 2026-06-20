@@ -34,16 +34,24 @@ interface InstructionsModalProps {
   onClose: () => void;
   onDismiss?: () => void;
   onboardingProgress?: OnboardingProgress;
+  showRotatingBackground?: boolean;
 }
 
 const INSTRUCTIONS_MODAL_HEIGHT = Math.min(MODAL_MAX_HEIGHT ?? 600, 560);
 
-const InstructionsModal: React.FC<InstructionsModalProps> = ({isVisible, onClose, onDismiss, onboardingProgress}) => {
+const InstructionsModal: React.FC<InstructionsModalProps> = ({
+  isVisible,
+  onClose,
+  onDismiss,
+  onboardingProgress,
+  showRotatingBackground = true,
+}) => {
   const handleClose = useCallback(() => {
     onClose();
     onDismiss?.();
   }, [onClose, onDismiss]);
   const isOnboarding = Boolean(onboardingProgress);
+  const backdropColor = isOnboarding && !showRotatingBackground ? "transparent" : "rgba(0,0,0,0.5)";
   const modalHeight = isOnboarding
     ? INSTRUCTIONS_MODAL_HEIGHT
     : Math.min(MODAL_HEIGHT, MODAL_MAX_HEIGHT ?? MODAL_HEIGHT);
@@ -52,7 +60,7 @@ const InstructionsModal: React.FC<InstructionsModalProps> = ({isVisible, onClose
     <View
       style={{
         width: "100%",
-        ...(isOnboarding ? {flex: 1, justifyContent: "space-around", paddingVertical: SPACING.md} : {}),
+        ...(isOnboarding ? {gap: SPACING.xs, paddingTop: SPACING.xs} : {}),
       }}
     >
       <InstructionCard
@@ -81,7 +89,7 @@ const InstructionsModal: React.FC<InstructionsModalProps> = ({isVisible, onClose
         width: "100%",
         ...(isOnboarding ? {flex: 1} : {}),
         alignItems: "center",
-        justifyContent: "space-between",
+        justifyContent: isOnboarding ? "flex-start" : "space-between",
         padding: MODAL_CONTENT_PADDING,
         paddingBottom: isOnboarding ? MODAL_CONTENT_PADDING : MODAL_CONTENT_PADDING + SPACING.md,
       }}
@@ -120,10 +128,10 @@ const InstructionsModal: React.FC<InstructionsModalProps> = ({isVisible, onClose
 
   return (
     <Modal animationType="none" transparent={true} visible={isVisible} onRequestClose={handleClose}>
-      <View style={{flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "rgba(0,0,0,0.5)"}}>
+      <View style={{flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: backdropColor}}>
         {isOnboarding ? (
           <>
-            <RotatingWheelBackground isVisible={isVisible} />
+            {showRotatingBackground ? <RotatingWheelBackground isVisible={isVisible} /> : null}
             <DecoratedModalShell
               isVisible={isVisible}
               width={MODAL_WIDTH}
@@ -151,7 +159,6 @@ const InstructionsModal: React.FC<InstructionsModalProps> = ({isVisible, onClose
             visible={isVisible}
             targetRect={null}
             placement="center"
-            showBackdropCutout={false}
             showPointer={false}
             panelWidth={Math.min(MODAL_WIDTH, 360)}
             panelStyle={{alignSelf: "center"}}

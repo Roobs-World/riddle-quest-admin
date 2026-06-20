@@ -1,5 +1,5 @@
 import React from "react";
-import {fireEvent, waitFor} from "@testing-library/react-native";
+import {fireEvent, render, waitFor} from "@testing-library/react-native";
 import {renderWithModalProvider} from "../../../../test-utils";
 import FullProfileDetailsModal from "../FullProfileDetailsModal";
 import {Player} from "../../../../validation/firestoreSchemas";
@@ -328,6 +328,7 @@ describe("FullProfileDetailsModal", () => {
       expect(mockShowTooltipSequence).toHaveBeenCalledWith([
         expect.objectContaining({
           id: "profileProgression",
+          highlightElement: expect.any(Object),
           onBeforeShow: expect.any(Function),
           content: expect.objectContaining({
             title: "User progression",
@@ -336,6 +337,7 @@ describe("FullProfileDetailsModal", () => {
         }),
         expect.objectContaining({
           id: "profileDailyStreak",
+          highlightElement: expect.any(Object),
           preferredPlacement: "below",
           onBeforeShow: expect.any(Function),
           content: expect.objectContaining({
@@ -343,22 +345,81 @@ describe("FullProfileDetailsModal", () => {
             body: "Your streak tracks regular daily play. Keep solving daily puzzles to build it up.",
           }),
         }),
-        expect.objectContaining({id: "profileAchievements", onBeforeShow: expect.any(Function)}),
-        expect.objectContaining({id: "profileStatistics", onBeforeShow: expect.any(Function)}),
-        expect.objectContaining({id: "profileLeaderboard", onBeforeShow: expect.any(Function)}),
-        expect.objectContaining({id: "profileIdentity", onBeforeShow: expect.any(Function)}),
+        expect.objectContaining({
+          id: "profileAchievements",
+          highlightElement: expect.any(Object),
+          onBeforeShow: expect.any(Function),
+        }),
+        expect.objectContaining({
+          id: "profileStatistics",
+          highlightElement: expect.any(Object),
+          onBeforeShow: expect.any(Function),
+        }),
+        expect.objectContaining({
+          id: "profileLeaderboard",
+          highlightElement: expect.any(Object),
+          onBeforeShow: expect.any(Function),
+        }),
+        expect.objectContaining({
+          id: "profileIdentity",
+          highlightElement: expect.any(Object),
+          onBeforeShow: expect.any(Function),
+        }),
         expect.objectContaining({
           id: "profileDailyPuzzles",
+          highlightElement: expect.any(Object),
           onBeforeShow: expect.any(Function),
           content: expect.objectContaining({
             title: "Daily puzzles",
             body: "This shows how many daily challenges you have completed.",
           }),
         }),
-        expect.objectContaining({id: "profileStats", onBeforeShow: expect.any(Function)}),
-        expect.objectContaining({id: "profileCoins", onBeforeShow: expect.any(Function)}),
+        expect.objectContaining({
+          id: "profileStats",
+          highlightElement: expect.any(Object),
+          onBeforeShow: expect.any(Function),
+        }),
+        expect.objectContaining({
+          id: "profileCoins",
+          highlightElement: expect.any(Object),
+          onBeforeShow: expect.any(Function),
+        }),
       ]);
     });
+  });
+
+  it("anchors the daily streak tooltip to the daily puzzles completed section", async () => {
+    jest.useFakeTimers();
+    renderWithModalProvider(<FullProfileDetailsModal {...defaultProps} />);
+
+    jest.advanceTimersByTime(450);
+
+    await waitFor(() => {
+      expect(mockShowTooltipSequence).toHaveBeenCalled();
+    });
+
+    const tooltipSequenceCalls = mockShowTooltipSequence.mock.calls as unknown as [
+      Array<{
+        id: string;
+        preferredPlacement?: string;
+        highlightElement?: React.ReactNode;
+      }>,
+    ][];
+    const tooltipSequence = tooltipSequenceCalls[0][0];
+    const dailyStreakTooltip = tooltipSequence.find((request) => request.id === "profileDailyStreak");
+
+    expect(dailyStreakTooltip).toEqual(
+      expect.objectContaining({
+        preferredPlacement: "below",
+        highlightElement: expect.any(Object),
+      }),
+    );
+    expect(React.isValidElement(dailyStreakTooltip?.highlightElement)).toBe(true);
+
+    const {getByText, queryByText} = render(dailyStreakTooltip?.highlightElement as React.ReactElement);
+    expect(getByText("Daily puzzles completed")).toBeTruthy();
+    expect(getByText(String(mockPlayerData.stats.dailyPuzzlesCompleted))).toBeTruthy();
+    expect(queryByText("Best Streak")).toBeNull();
   });
 
   it("renders loading state when player data is null", () => {

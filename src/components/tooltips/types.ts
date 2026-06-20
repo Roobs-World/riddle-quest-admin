@@ -29,6 +29,7 @@ export interface TooltipContent {
 export interface TooltipRequest {
   id: TooltipId;
   targetRef?: TooltipTargetRef | null;
+  highlightElement?: React.ReactNode;
   content: TooltipContent;
   preferredPlacement?: "auto" | "above" | "below";
   persist?: boolean;

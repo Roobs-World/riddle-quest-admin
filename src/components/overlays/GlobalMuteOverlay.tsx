@@ -3,7 +3,7 @@ import {StyleSheet, View} from "react-native";
 import MuteButton from "../buttons/MuteButton";
 import {verticalScale} from "@/utils/responsive";
 
-const OVERLAY_TOP_OFFSET = verticalScale(64);
+export const GLOBAL_MUTE_OVERLAY_TOP_OFFSET = verticalScale(112);
 const OVERLAY_RIGHT_OFFSET = 16;
 
 interface GlobalMuteOverlayProps {
@@ -23,7 +23,11 @@ const GlobalMuteOverlay: React.FC<GlobalMuteOverlayProps> = ({
 
   return (
     <View pointerEvents="box-none" style={styles.overlayRoot}>
-      <View pointerEvents="box-none" style={[styles.buttonContainer, {top: OVERLAY_TOP_OFFSET, right: OVERLAY_RIGHT_OFFSET}]}>
+      <View
+        pointerEvents="box-none"
+        style={[styles.buttonContainer, {top: GLOBAL_MUTE_OVERLAY_TOP_OFFSET, right: OVERLAY_RIGHT_OFFSET}]}
+        testID="global-mute-button-container"
+      >
         <MuteButton
           isMuted={!isSoundEnabled}
           onToggle={handleToggleMute}

@@ -13,6 +13,8 @@ type SubmitButtonProps = {
   isSubmitDisabled: boolean;
   /** True once the current riddle has ended. */
   gameOver: boolean;
+  /** Temporarily lifts the real button above the submit tooltip backdrop. */
+  isTooltipTargetActive?: boolean;
   /** Keyboard-style callback invoked with `"ENTER"` when submitted. */
   handleKeyPress: (key: string) => void;
 };
@@ -24,7 +26,7 @@ type SubmitButtonProps = {
  * @returns Styled submit button with disabled-state handling.
  */
 export const SubmitButton = React.forwardRef<View, SubmitButtonProps>(
-  ({isSubmitDisabled, gameOver, handleKeyPress}, ref): ReactElement => {
+  ({isSubmitDisabled, gameOver, isTooltipTargetActive = false, handleKeyPress}, ref): ReactElement => {
     return (
       <TouchableOpacity
         ref={ref}
@@ -36,6 +38,7 @@ export const SubmitButton = React.forwardRef<View, SubmitButtonProps>(
           minWidth: 0,
           alignItems: "center",
           marginBottom: SPACING.sm,
+          ...(isTooltipTargetActive ? {position: "relative" as const, zIndex: 30, elevation: 30} : {}),
         }}
         onPress={() => {
           if (!isSubmitDisabled && !gameOver) {

@@ -201,8 +201,11 @@ export const TooltipProvider: React.FC<{children: React.ReactNode}> = ({children
           <TooltipOverlay
             visible={isTooltipVisible}
             targetRect={targetRect}
+            highlightElement={activeRequest.highlightElement}
+            cutoutTarget={activeRequest.id === "submitAnswer"}
             content={activeRequest.content}
             preferredPlacement={activeRequest.preferredPlacement}
+            useNativeModal={activeRequest.id !== "submitAnswer"}
             onDismiss={() => dismissTooltip(activeRequest.id)}
             onExited={() => {
               logger.debug("[TooltipContext] tooltip exited", {

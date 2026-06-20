@@ -287,6 +287,7 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
     onAction: (props.onAction as (() => void) | undefined) ?? undefined,
     onConfirm: (props.onConfirm as (() => void) | undefined) ?? undefined,
     onboardingProgress: props.onboardingProgress as OnboardingProgress | undefined,
+    showRotatingBackground: (props.showRotatingBackground as boolean | undefined) ?? true,
     onClose: props.onClose,
   })),
 
@@ -314,6 +315,7 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
     onClose: props.onClose,
     onDismiss: (props as {onDismiss?: () => void}).onDismiss,
     onboardingProgress: props.onboardingProgress as OnboardingProgress | undefined,
+    showRotatingBackground: (props.showRotatingBackground as boolean | undefined) ?? true,
   })),
 
   welcomeBack: createModalWrapper(WelcomeBackModal, (props: BaseModalProps & ModalData) => ({
@@ -328,6 +330,7 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
     onClose: props.onClose,
     onDismiss: (props as {onDismiss?: () => void}).onDismiss,
     onboardingProgress: props.onboardingProgress as OnboardingProgress | undefined,
+    showRotatingBackground: (props.showRotatingBackground as boolean | undefined) ?? true,
   })),
 
   credits: createModalWrapper(CreditsModal, (props: BaseModalProps & ModalData) => ({

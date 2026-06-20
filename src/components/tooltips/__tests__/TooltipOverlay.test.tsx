@@ -16,21 +16,60 @@ describe("TooltipOverlay", () => {
     action: "Got it",
   };
 
-  it("renders backdrop segments and a pointer when target rect is available", () => {
+  it("renders a full backdrop, lifted target, and pointer when target rect is available", () => {
     const {getByTestId, getByText, queryByTestId} = render(
       <TooltipOverlay
         visible={true}
         targetRect={{x: 20, y: 80, width: 120, height: 48}}
+        highlightElement={<></>}
         content={content}
         onDismiss={jest.fn()}
       />,
     );
 
     expect(getByTestId("tooltip-overlay")).toBeTruthy();
-    expect(getByTestId("tooltip-backdrop-top")).toBeTruthy();
+    expect(getByTestId("tooltip-backdrop")).toBeTruthy();
+    expect(getByTestId("tooltip-highlighted-target")).toBeTruthy();
+    expect(queryByTestId("tooltip-backdrop-top")).toBeNull();
+    expect(queryByTestId("tooltip-backdrop-left")).toBeNull();
+    expect(queryByTestId("tooltip-backdrop-right")).toBeNull();
+    expect(queryByTestId("tooltip-backdrop-bottom")).toBeNull();
     expect(queryByTestId("tooltip-target-cutout")).toBeNull();
     expect(getByTestId("tooltip-pointer")).toBeTruthy();
     expect(getByText("Submit your answer")).toBeTruthy();
+  });
+
+  it("can render an inline cutout overlay without cloning the target", () => {
+    const {UNSAFE_queryByType, getByTestId, queryByTestId} = render(
+      <TooltipOverlay
+        visible={true}
+        targetRect={{x: 20, y: 80, width: 120, height: 48}}
+        cutoutTarget={true}
+        useNativeModal={false}
+        content={content}
+        onDismiss={jest.fn()}
+      />,
+    );
+
+    expect(UNSAFE_queryByType(Modal)).toBeNull();
+    expect(getByTestId("tooltip-backdrop-piece-0")).toBeTruthy();
+    expect(queryByTestId("tooltip-highlighted-target")).toBeNull();
+  });
+
+  it("does not leave the inline submit overlay mounted after it becomes inactive", () => {
+    const {queryByTestId} = render(
+      <TooltipOverlay
+        visible={false}
+        targetRect={{x: 20, y: 80, width: 120, height: 48}}
+        cutoutTarget={true}
+        useNativeModal={false}
+        content={content}
+        onDismiss={jest.fn()}
+      />,
+    );
+
+    expect(queryByTestId("tooltip-overlay")).toBeNull();
+    expect(queryByTestId("tooltip-backdrop")).toBeNull();
   });
 
   it("uses a native modal so tooltips appear above modal overlays", () => {
