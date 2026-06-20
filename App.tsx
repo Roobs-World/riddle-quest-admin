@@ -167,47 +167,56 @@ const AppShell = (): React.JSX.Element => {
     let isMounted = true;
 
     void (async () => {
-      const storedLanguage = await readStoredLocale();
+      try {
+        const storedLanguage = await readStoredLocale();
 
-      if (!isMounted) {
-        return;
+        if (!isMounted) {
+          return;
+        }
+
+        if (storedLanguage) {
+          setLocale(storedLanguage);
+          setInitialLanguageState("ready");
+          return;
+        }
+
+        const preferredLanguage = playerData?.preferredLanguage;
+        if (preferredLanguage && isSupportedLanguage(preferredLanguage)) {
+          await persistLocale(preferredLanguage);
+
+          if (!isMounted) {
+            return;
+          }
+
+          setInitialLanguageState("ready");
+          return;
+        }
+
+        detectDeviceLanguage();
+
+        if (isAuthLoading) {
+          setInitialLanguageState("pending");
+          return;
+        }
+
+        setInitialLanguageState("gate");
+      } catch (error) {
+        logger.warn("Failed to resolve initial language state during app bootstrap.", error);
+        captureException(error, {context: "App.initialLanguageBootstrap"});
+
+        if (!isMounted) {
+          return;
+        }
+
+        detectDeviceLanguage();
+        setInitialLanguageState(isAuthLoading ? "pending" : "gate");
       }
-
-      if (storedLanguage) {
-        setLocale(storedLanguage);
-        setInitialLanguageState("ready");
-        return;
-      }
-
-      detectDeviceLanguage();
-      setInitialLanguageState("pending");
     })();
 
     return () => {
       isMounted = false;
     };
-  }, []);
-
-  useEffect(() => {
-    if (isAuthLoading) {
-      return;
-    }
-
-    const preferredLanguage = playerData?.preferredLanguage;
-
-    if (preferredLanguage && isSupportedLanguage(preferredLanguage)) {
-      void persistLocale(preferredLanguage).then(() => {
-        setInitialLanguageState("ready");
-      });
-      return;
-    }
-
-    if (initialLanguageState === "pending") {
-      void Promise.resolve().then(() => {
-        setInitialLanguageState((current) => (current === "pending" ? "gate" : current));
-      });
-    }
-  }, [initialLanguageState, isAuthLoading, playerData?.preferredLanguage]);
+  }, [isAuthLoading, playerData?.preferredLanguage]);
 
   const handleCompleteInitialLanguageSelection = useCallback(
     async (language: SupportedLanguage): Promise<void> => {

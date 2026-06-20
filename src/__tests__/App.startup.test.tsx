@@ -269,6 +269,21 @@ describe("App startup", () => {
     expect(queryByText("Startup failed")).toBeNull();
   });
 
+  it("shows the language selection screen when no locale is stored for a signed-out user", async () => {
+    mockReadStoredLocale.mockResolvedValue(null);
+    mockUseAuth.mockReturnValue({
+      isAuthenticated: false,
+      isLoading: false,
+      playerData: null,
+      updatePlayerData: mockUpdatePlayerData,
+    });
+
+    const {getByTestId, queryByTestId} = render(<App />);
+
+    await waitFor(() => expect(getByTestId("language-selection-screen")).toBeTruthy());
+    expect(queryByTestId("startup-spinner")).toBeNull();
+  });
+
   it("clears persisted local state on startup in development", async () => {
     const clearLocalStorage = jest.fn();
     Object.defineProperty(globalThis, "localStorage", {
