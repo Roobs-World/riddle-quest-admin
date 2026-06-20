@@ -581,6 +581,11 @@ describe("GameScreen", () => {
       jest.useFakeTimers();
       const {rerender} = render(<GameScreen {...defaultProps} />);
 
+      const welcomeBackConfig = mockShowWelcomeBackModal.mock.calls[0]?.[0];
+      act(() => {
+        welcomeBackConfig?.onDismiss?.();
+      });
+
       act(() => {
         jest.advanceTimersByTime(650);
       });
@@ -593,6 +598,29 @@ describe("GameScreen", () => {
       });
 
       expect(mockShowTooltipOnce).toHaveBeenCalledTimes(1);
+      jest.useRealTimers();
+    });
+
+    it("waits until onboarding finishes before showing the submit tooltip", async () => {
+      jest.useFakeTimers();
+      render(<GameScreen {...defaultProps} />);
+
+      act(() => {
+        jest.advanceTimersByTime(650);
+      });
+      expect(mockShowTooltipOnce).not.toHaveBeenCalledWith(expect.objectContaining({id: "submitAnswer"}));
+
+      const welcomeBackConfig = mockShowWelcomeBackModal.mock.calls[0]?.[0];
+      act(() => {
+        welcomeBackConfig?.onDismiss?.();
+      });
+      act(() => {
+        jest.advanceTimersByTime(650);
+      });
+
+      await waitFor(() => {
+        expect(mockShowTooltipOnce).toHaveBeenCalledWith(expect.objectContaining({id: "submitAnswer"}));
+      });
       jest.useRealTimers();
     });
 
@@ -1223,7 +1251,7 @@ describe("GameScreen", () => {
     const getLatestProps = (mockFn: jest.Mock) => mockFn.mock.calls[mockFn.mock.calls.length - 1][0];
 
     it("passes a watch-video handler to coin shop", async () => {
-      render(<GameScreen {...defaultProps} />);
+      render(<GameScreen {...defaultProps} suppressOnboarding={true} />);
       const headerProps = getLatestProps(mockHeader);
       await act(async () => {
         await headerProps.onCoinsPress();
@@ -1303,7 +1331,7 @@ describe("GameScreen", () => {
       mockUseGameLogic.currentGuess = ["K", "E", "Y", "B", "O", "A", "R", "D"];
       mockUseGameLogic.processGuess.mockResolvedValueOnce(result);
 
-      render(<GameScreen {...defaultProps} />);
+      render(<GameScreen {...defaultProps} suppressOnboarding={true} />);
 
       const inputProps = getLatestProps(mockGameInput);
       await act(async () => {
@@ -1330,7 +1358,7 @@ describe("GameScreen", () => {
 
     it("shows the shop tooltip when trying to use a hint without enough coins", async () => {
       mockAuthPlayerData = {...mockPlayerData, coins: 0};
-      render(<GameScreen {...defaultProps} userCoins={0} />);
+      render(<GameScreen {...defaultProps} userCoins={0} suppressOnboarding={true} />);
 
       const inputProps = getLatestProps(mockGameInput);
       await act(async () => {
@@ -1786,7 +1814,12 @@ describe("GameScreen", () => {
         guestNotice.onConfirm?.();
 
         await waitFor(() => {
-          expect(mockShowInstructionsModal).toHaveBeenCalled();
+          expect(mockShowInstructionsModal).toHaveBeenCalledWith(
+            expect.objectContaining({
+              onboardingProgress: {current: 3, total: 3},
+              onDismiss: expect.any(Function),
+            }),
+          );
         });
       } finally {
         mockPlayerData.email = originalEmail;

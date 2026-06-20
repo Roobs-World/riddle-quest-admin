@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect} from "react";
+import React, {useCallback} from "react";
 import {View, Text, Modal, Pressable} from "react-native";
 import Logo from "../../../../assets/images/main-logo.svg";
 import {TYPOGRAPHY, SPACING} from "src/styles";
@@ -8,7 +8,6 @@ import {verticalScale} from "@/utils/responsive";
 import RotatingWheelBackground from "../../shared/RotatingWheelBackground";
 import OnboardingProgressBadge from "../OnboardingProgressBadge";
 import {OnboardingProgress} from "../../../types/ModalTypes";
-import {logger} from "@/utils/logger";
 import DecoratedModalShell from "../../shared/DecoratedModalShell";
 
 interface WelcomeModalProps {
@@ -25,20 +24,6 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({isVisible, onClose, onDismis
     onClose();
     onDismiss?.();
   }, [onClose, onDismiss]);
-
-  useEffect(() => {
-    if (!__DEV__ || !isVisible) {
-      return;
-    }
-
-    logger.debug("[WelcomeModal QA] Scheduling dev auto-dismiss");
-    const timer = setTimeout(() => {
-      logger.debug("[WelcomeModal QA] Dev auto-dismiss firing");
-      handleDismiss();
-    }, 1500);
-
-    return () => clearTimeout(timer);
-  }, [handleDismiss, isVisible]);
 
   return (
     <Modal animationType="none" transparent={true} visible={isVisible} onRequestClose={handleDismiss}>

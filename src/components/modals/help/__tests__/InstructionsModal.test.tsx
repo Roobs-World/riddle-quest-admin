@@ -117,13 +117,6 @@ describe("InstructionsModal", () => {
       expect(mockOnClose).toHaveBeenCalledTimes(1);
     });
 
-    it("auto-dismisses in dev mode after the QA timeout", () => {
-      render(<InstructionsModal isVisible={true} onClose={mockOnClose} />);
-
-      jest.advanceTimersByTime(1500);
-
-      expect(mockOnClose).toHaveBeenCalledTimes(1);
-    });
   });
 
   describe("Content Structure", () => {

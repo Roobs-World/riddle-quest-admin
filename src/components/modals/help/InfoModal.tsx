@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect} from "react";
+import React, {useCallback} from "react";
 import {Modal, ScrollView, Text, View} from "react-native";
 import {COLORS, SPACING, TYPOGRAPHY} from "../../../styles";
 import WideButton from "../../buttons/WideButton";
@@ -6,7 +6,6 @@ import {MODAL_WIDTH, MODAL_MAX_HEIGHT} from "../../../constants/layout";
 import {t} from "../../../i18n";
 import OnboardingProgressBadge from "../OnboardingProgressBadge";
 import {OnboardingProgress} from "../../../types/ModalTypes";
-import {logger} from "@/utils/logger";
 import TooltipCalloutShell from "../../tooltips/TooltipCalloutShell";
 
 // DecoratedModalShell compatibility marker for responsive surface coverage tests.
@@ -41,20 +40,6 @@ const InfoModal: React.FC<InfoModalProps> = ({
     onAction?.();
     onClose();
   }, [onAction, onClose]);
-
-  useEffect(() => {
-    if (!__DEV__ || !isVisible) {
-      return;
-    }
-
-    logger.debug("[InfoModal QA] Scheduling dev auto-dismiss");
-    const timer = setTimeout(() => {
-      logger.debug("[InfoModal QA] Dev auto-dismiss firing");
-      handleConfirm();
-    }, 1500);
-
-    return () => clearTimeout(timer);
-  }, [handleConfirm, isVisible]);
 
   return (
     <Modal visible={isVisible} transparent={true} animationType="none" onRequestClose={handleConfirm}>

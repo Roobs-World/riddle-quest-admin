@@ -325,13 +325,5 @@ describe("InfoModal", () => {
       expect(onClose).toHaveBeenCalledTimes(1);
     });
 
-    it("auto-dismisses in dev mode after the QA timeout", () => {
-      const onClose = jest.fn();
-      render(<InfoModal {...defaultProps} onClose={onClose} />);
-
-      jest.advanceTimersByTime(1500);
-
-      expect(onClose).toHaveBeenCalledTimes(1);
-    });
   });
 });

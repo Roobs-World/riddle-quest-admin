@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect} from "react";
+import React, {useCallback} from "react";
 import {Modal, ScrollView, Text, View} from "react-native";
 import CloseButton from "../../buttons/CloseButton";
 import WideButton from "../../buttons/WideButton";
@@ -20,7 +20,6 @@ import {SPACING} from "../../../styles";
 import {t} from "../../../i18n";
 import OnboardingProgressBadge from "../OnboardingProgressBadge";
 import {OnboardingProgress} from "../../../types/ModalTypes";
-import {logger} from "@/utils/logger";
 import TooltipCalloutShell from "../../tooltips/TooltipCalloutShell";
 
 // DecoratedModalShell compatibility marker for responsive surface coverage tests.
@@ -28,29 +27,17 @@ import TooltipCalloutShell from "../../tooltips/TooltipCalloutShell";
 interface InstructionsModalProps {
   isVisible: boolean;
   onClose: () => void;
+  onDismiss?: () => void;
   onboardingProgress?: OnboardingProgress;
 }
 
 const INSTRUCTIONS_MODAL_HEIGHT = Math.min(MODAL_MAX_HEIGHT ?? 600, 560);
 
-const InstructionsModal: React.FC<InstructionsModalProps> = ({isVisible, onClose, onboardingProgress}) => {
+const InstructionsModal: React.FC<InstructionsModalProps> = ({isVisible, onClose, onDismiss, onboardingProgress}) => {
   const handleClose = useCallback(() => {
     onClose();
-  }, [onClose]);
-
-  useEffect(() => {
-    if (!__DEV__ || !isVisible) {
-      return;
-    }
-
-    logger.debug("[InstructionsModal QA] Scheduling dev auto-dismiss");
-    const timer = setTimeout(() => {
-      logger.debug("[InstructionsModal QA] Dev auto-dismiss firing");
-      handleClose();
-    }, 1500);
-
-    return () => clearTimeout(timer);
-  }, [handleClose, isVisible]);
+    onDismiss?.();
+  }, [onClose, onDismiss]);
 
   return (
     <Modal animationType="none" transparent={true} visible={isVisible} onRequestClose={handleClose}>

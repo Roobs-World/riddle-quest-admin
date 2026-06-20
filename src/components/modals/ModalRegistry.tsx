@@ -326,6 +326,7 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
   instructions: createModalWrapper(InstructionsModal, (props: BaseModalProps & ModalData) => ({
     isVisible: props.isVisible,
     onClose: props.onClose,
+    onDismiss: (props as {onDismiss?: () => void}).onDismiss,
     onboardingProgress: props.onboardingProgress as OnboardingProgress | undefined,
   })),
 

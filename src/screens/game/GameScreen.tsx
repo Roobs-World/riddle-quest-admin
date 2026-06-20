@@ -359,6 +359,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   const [isProfileModalLoading, setIsProfileModalLoading] = useState(false);
   const [isUpgradeModalVisible, setIsUpgradeModalVisible] = useState(false);
   const [isTransitioningToNextLevel, setIsTransitioningToNextLevel] = useState(false);
+  const [isOnboardingComplete, setIsOnboardingComplete] = useState(suppressOnboarding);
   const isRunningUnderJest = typeof process !== "undefined" && Boolean(process.env.JEST_WORKER_ID);
   const shouldUseFullFirestoreCatalog = !isRunningUnderJest;
   const currentTooltipUserId = playerData?.userId ?? null;
@@ -371,6 +372,16 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
 
   const showTooltipOnce = useCallback(
     (id: TooltipId, targetRef?: TooltipTargetRef | null) => {
+      if (!isOnboardingComplete) {
+        logger.debug("[GameScreen] showTooltipOnce skipped until onboarding completes", {
+          id,
+          userId: currentTooltipUserId,
+          riddleId,
+          gameMode,
+        });
+        return Promise.resolve(false);
+      }
+
       logger.debug("[GameScreen] showTooltipOnce requested", {
         id,
         hasTargetRef: Boolean(targetRef?.current),
@@ -386,7 +397,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         userId: currentTooltipUserId,
       });
     },
-    [currentTooltipUserId, gameMode, riddleId, showTooltipRequestOnce],
+    [currentTooltipUserId, gameMode, isOnboardingComplete, riddleId, showTooltipRequestOnce],
   );
 
   const gameOverHandledRef = useRef(false);
@@ -401,18 +412,26 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   const previousGameModeRef = useRef<GameMode>(gameMode);
   const openShopFromLossRef = useRef<() => void>(() => {});
   const coinAnimationSettleTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const hasQueuedSubmitTooltipRef = useRef(false);
 
   useEffect(() => {
-    if (suppressOnboarding) {
+    if (suppressOnboarding || !isOnboardingComplete || hasQueuedSubmitTooltipRef.current) {
       return;
     }
 
+    hasQueuedSubmitTooltipRef.current = true;
     const timeoutId = setTimeout(() => {
       void showTooltipOnce("submitAnswer", submitButtonRef);
     }, 650);
 
     return () => clearTimeout(timeoutId);
-  }, [showTooltipOnce, suppressOnboarding]);
+  }, [isOnboardingComplete, showTooltipOnce, suppressOnboarding]);
+
+  useEffect(() => {
+    if (suppressOnboarding) {
+      setIsOnboardingComplete(true);
+    }
+  }, [suppressOnboarding]);
 
   useEffect(() => {
     const previousGameMode = previousGameModeRef.current;
@@ -739,13 +758,19 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         // modal when they enter the game.
         if (!isGuestMode) {
           const username = playerData?.username?.trim() || "";
-          showWelcomeBackModal({username});
+          showWelcomeBackModal({
+            username,
+            onDismiss: () => {
+              setIsOnboardingComplete(true);
+            },
+          });
           return;
         }
 
         const onboardingSeenStorageKey = getOnboardingSeenStorageKey(playerData?.userId);
         const hasSeenOnboarding = (await AsyncStorage.getItem(onboardingSeenStorageKey)) === "true";
         if (isCancelled || hasSeenOnboarding) {
+          setIsOnboardingComplete(true);
           return;
         }
 
@@ -765,6 +790,9 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
                 onConfirm: () => {
                   safeDelay(MODAL_CLOSE_DELAY_MS).then(() => {
                     showInstructionsModal({
+                      onDismiss: () => {
+                        setIsOnboardingComplete(true);
+                      },
                       onboardingProgress: {
                         current: 3,
                         total: ONBOARDING_PROGRESS_TOTAL,
@@ -778,6 +806,9 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
 
             safeDelay(MODAL_CLOSE_DELAY_MS).then(() => {
               showInstructionsModal({
+                onDismiss: () => {
+                  setIsOnboardingComplete(true);
+                },
                 onboardingProgress: {
                   current: 2,
                   total: ONBOARDING_PROGRESS_TOTAL,

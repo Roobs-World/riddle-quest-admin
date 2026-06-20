@@ -194,6 +194,8 @@ export interface GameModalTypes {
   };
 
   instructions: {
+    /** Optional callback fired after the instructions modal is dismissed. */
+    onDismiss?: () => void;
     onboardingProgress?: OnboardingProgress;
   };
 
