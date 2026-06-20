@@ -69,6 +69,9 @@ module.exports = {
   /** URL-friendly app identifier used by Expo */
   slug: "riddle-quest",
 
+  /** URL schemes used by deep links and Expo development-client launches */
+  scheme: ["riddle-quest", "exp+riddle-quest", "com.roobsworld.riddlequest"],
+
   /** Application version for app stores and updates */
   version: "1.0.0",
 
@@ -276,6 +279,7 @@ module.exports = {
           proguardMinifyEnabled: false, // Disable minification to preserve audio quality
           resourceShrinkingEnabled: false, // Disable resource shrinking for audio assets
           compressionEnabled: false, // Disable asset compression
+          useLegacyPackaging: true, // Extract native libraries so SoLoader can resolve expo-gl on device.
 
           /** Native library packaging options */
           packagingOptions: {

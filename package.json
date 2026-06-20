@@ -87,7 +87,6 @@
     "expo-font": "56.0.7",
     "expo-gl": "~56.0.5",
     "expo-haptics": "56.0.3",
-    "expo-modules-core": "~56.0.17",
     "firebase-functions": "^7.2.5",
     "googleapis": "^171.4.0",
     "metro": "^0.84.4",
@@ -133,7 +132,6 @@
     "babel-jest": "^30.4.1",
     "babel-plugin-module-resolver": "^5.0.3",
     "cross-env": "^10.1.0",
-    "eas-cli": "18.8.1",
     "expo-build-properties": "56.0.19",
     "fallow": "2.88.3",
     "firebase-admin": "^13.10.0",
@@ -151,8 +149,8 @@
   "expo": {
     "install": {
       "exclude": [
-        "react-native",
         "@sentry/react-native",
+        "@react-native/jest-preset",
         "jest",
         "@types/jest"
       ]

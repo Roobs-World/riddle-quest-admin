@@ -1,8 +1,8 @@
-# React Native 0.85 Upgrade Playbook
+# React Native 0.85 / Expo SDK 56 Playbook
 
 ## Current State
 
-- Runtime aligned to `react-native@0.85.1` on Expo SDK 56 canary.
+- Runtime aligned to `react-native@0.85.3`, Expo SDK 56's bundled native version.
 - Node policy is `>=20.19.4` (`.nvmrc` and `package.json` engines).
 - Jest preset migrated to `@react-native/jest-preset`.
 - Removed deprecated `StyleSheet.absoluteFillObject`.
@@ -11,9 +11,9 @@
 ## Plan Completion Status
 
 - Baseline + branch: complete (baseline template added, upgrade branch active).
-- Core version alignment: complete.
+- Core version alignment: complete on Expo SDK 56's bundled RN line.
 - Breaking changes sweep: complete.
-- Shared animation backend adoption: unblocked at the version gate; `react-native@0.85.1` and `@react-native/jest-preset@0.85.1` are installed. The runtime flag remains off by default for targeted experimental-channel builds only.
+- Shared animation backend adoption: blocked on the Expo SDK 56 native bundle; the runtime flag remains off by default for targeted experimental-channel builds only.
 - Reanimated/Animated optimization pass: complete for compatibility and safety guards.
 - DevTools workflow upgrade: documented.
 - Metro TLS enablement: complete.
@@ -25,7 +25,7 @@
 
 ### 1. Shared Animation Backend
 
-- Status: version gate complete; runtime is now on `react-native@0.85.1`.
+- Status: deferred until the Expo SDK native bundle supports the required React Native line.
 - Keep `EXPO_PUBLIC_ENABLE_SHARED_ANIMATION_BACKEND=false` by default.
 - Action for targeted experimental test builds:
   1. Enable `EXPO_PUBLIC_ENABLE_SHARED_ANIMATION_BACKEND=true`.
@@ -55,6 +55,23 @@
 - `pnpm run lint`
 - `pnpm run test:rn -- --runInBand`
 - `pnpm exec expo install --check`
+
+## 2026-06-20 Expo SDK 56 Alignment Notes
+
+- Backed the runtime down to Expo SDK 56's bundled native versions: `react-native@0.85.3`, `react-native-reanimated@4.3.1`, and `react-native-worklets@0.8.3`.
+- Removed `react-native`, `react-native-reanimated`, and `react-native-worklets` from `expo.install.exclude` so Expo dependency validation catches future drift.
+- Removed direct `expo-modules-core` and local `eas-cli` dependencies after `expo-doctor` flagged them.
+- Root cause for the rollback: `react-native@0.86.0` built `libreactnative.so` without the JSI symbol shape expected by `expo-gl@56.0.5`, causing `libexpo-gl.so` to fail loading on Android devices.
+
+## 2026-06-20 React Native 0.86 Update Notes
+
+- Superseded by the Expo SDK 56 alignment notes above.
+- Verified published package metadata with `pnpm view react-native@0.86 version`; latest resolved to `0.86.0` with React `^19.2.3` and `@react-native/jest-preset@0.86.0` peers.
+- Updated runtime pins to `react-native@0.86.0`, `react-native-reanimated@4.4.1`, and `react-native-worklets@0.9.2`.
+- Updated test preset pin to `@react-native/jest-preset@0.86.0`.
+- Expo CLI install was attempted for Reanimated/Worklets first, but pnpm's workspace-root guard blocked Expo's generated `pnpm add` command because it omitted `-w`; the same explicit workspace-root pnpm fallback used for the RN pin was applied.
+- `react-native`, `react-native-reanimated`, `react-native-worklets`, and `@react-native/jest-preset` are listed in `expo.install.exclude` because they intentionally move ahead of Expo SDK 56's current dependency validator.
+- Remaining ecosystem caveat: `expo-modules-core@56.0.17` still declares a peer range for `react-native-worklets` up to `0.8.x`, and `jest-expo@56.0.5` still declares `@react-native/jest-preset@^0.85.0`.
 
 ## 2026-05-25 Continuation Notes
 

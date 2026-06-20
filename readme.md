@@ -8,7 +8,7 @@ firebase deploy --only functions
 if the build breaks, then:
 
 1. npx expo prebuild --clean in root
-2. ./gradlew clean in the android directory
+2. ./gradlew clean -x app:externalNativeBuildCleanDebug -x app:externalNativeBuildCleanRelease in the android directory
 3. try a new build
 
 use firebase functions:config:get to return the config settings used
@@ -20,9 +20,10 @@ eas build --platform android --profile preview
 
 adb install path/to/app.apk
 
-## RN 0.85 Upgrade Notes
+## RN 0.85 / Expo SDK 56 Notes
 
-- Runtime now targets React Native `0.85.1` with Expo SDK 56 canary.
+- Runtime targets React Native `0.85.3`, Expo SDK 56's bundled native version.
+- Reanimated is pinned to `4.3.1` and Worklets to `0.8.3` for Expo SDK 56 native compatibility.
 - Node.js minimum version is `20.19.4` (`.nvmrc` and `package.json` engines).
 - Run upgrade guardrails:
   - `pnpm run check:rn-upgrade`
@@ -34,7 +35,7 @@ adb install path/to/app.apk
   - optional `METRO_TLS_CA_PATH`
 - Shared Animation Backend flag:
   - `EXPO_PUBLIC_ENABLE_SHARED_ANIMATION_BACKEND=true`
-  - RN `0.85.1+` is now available in this project; keep the flag disabled by default and enable it only for targeted experimental-channel test builds.
+  - Keep the flag disabled by default and enable it only for targeted experimental-channel test builds.
 
 ## Project Overview
 

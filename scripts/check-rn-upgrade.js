@@ -95,7 +95,7 @@ function run() {
     throw new Error(`RN upgrade checks failed:\n- ${violations.join("\n- ")}`);
   }
 
-  console.log("RN 0.85 upgrade checks passed.");
+  console.log("RN 0.85 Expo SDK 56 alignment checks passed.");
 }
 
 try {
