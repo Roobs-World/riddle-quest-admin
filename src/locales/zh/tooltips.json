@@ -5,7 +5,6 @@
     "CLASSIC_FROM_DAILY_BODY": "每日挑战完成。经典模式让你按自己的节奏继续解谜。",
     "CLASSIC_FROM_DAILY_TITLE": "经典模式",
     "GOT_IT_BUTTON": "明白了",
-    "HELP_BUTTON_LABEL": "帮助",
     "HINT_AFTER_WRONG_BODY": "这次猜测不对。点击提示来显示一个有用的字母。",
     "HINT_AFTER_WRONG_TITLE": "需要提示吗?",
     "LEADERBOARD_FIFTH_CORRECT_BODY": "五题正确! 打开个人资料看看你的排名。",
@@ -27,6 +26,10 @@
     "SHOP_OUT_OF_COINS_BODY": "你的金币不足以执行此操作。打开商店购买或赚取更多金币。",
     "SHOP_OUT_OF_COINS_TITLE": "获取更多金币",
     "SUBMIT_ANSWER_BODY": "所有格子都填好后，点击提交来检查你的猜测。",
-    "SUBMIT_ANSWER_TITLE": "提交答案"
+    "SUBMIT_ANSWER_TITLE": "提交答案",
+    "PROFILE_PROGRESSION_TITLE": "用户进度",
+    "PROFILE_PROGRESSION_BODY": "你的段位、XP 等级和进度条会显示你距离下一级还有多近。",
+    "PROFILE_DAILY_STREAK_TITLE": "每日连续记录",
+    "PROFILE_DAILY_STREAK_BODY": "连续记录会追踪你的每日稳定游玩。继续完成每日谜题来提升它。"
   }
 }

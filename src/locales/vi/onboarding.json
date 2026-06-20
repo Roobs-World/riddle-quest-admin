@@ -8,8 +8,7 @@
     "GOAL_TITLE": "Mục tiêu",
     "GOT_IT_BUTTON": "Hiểu rồi!",
     "TIPS_DESCRIPTION": "Bắt đầu bằng các chữ cái phổ biến và sử dụng phản hồi về màu sắc để thu hẹp phạm vi dự đoán của bạn. Hãy nhớ rằng, bạn chỉ có 3 lần thử!",
-    "TIPS_TITLE": "Lời khuyên để thành công",
-    "TITLE": "Cách chơi"
+    "TIPS_TITLE": "Lời khuyên để thành công"
   },
   "WelcomeBackModal": {
     "TAP_TO_CONTINUE": "Nhấn để tiếp tục",
@@ -18,7 +17,6 @@
   "WelcomeModal": {
     "EARN_COINS_TEXT": "Kiếm tiền, vượt qua các thử thách hàng ngày và leo lên bảng xếp hạng.",
     "LETS_PLAY": "Hãy chơi",
-    "SOLVE_RIDDLES_TEXT": "Giải các câu đố hấp dẫn bằng cách đoán câu trả lời từng chữ cái. Sử dụng manh mối màu sắc để thu hẹp từng lần đoán.",
-    "WELCOME_TITLE": "Chào mừng đến với Câu đố tìm kiếm!"
+    "SOLVE_RIDDLES_TEXT": "Giải các câu đố hấp dẫn bằng cách đoán câu trả lời từng chữ cái. Sử dụng manh mối màu sắc để thu hẹp từng lần đoán."
   }
 }

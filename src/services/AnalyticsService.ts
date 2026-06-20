@@ -29,6 +29,7 @@ import {captureException} from "../utils/sentry";
 import {gameEventBus, AnyGameEvent, GameCompletedEvent, GuessSubmittedEvent, GuessValidatedEvent} from "./GameEventBus";
 
 export type GameInteractionAction =
+  | "button_pressed"
   | "coin_shop_opened"
   | "continue_with_ad_selected"
   | "continue_with_coins_selected"
@@ -160,6 +161,22 @@ export class AnalyticsService {
       action,
       ...params,
     });
+  }
+
+  /**
+   * Log a button/tappable-control press. Keep this broad so reusable controls
+   * can feed a single GA stream while domain-specific handlers log richer events.
+   */
+  async logButtonPress(
+    buttonId: string,
+    params: Record<string, string | number | boolean> = {},
+  ): Promise<void> {
+    const eventParams = {
+      button_id: buttonId,
+      ...params,
+    };
+    await this.logEvent("button_pressed", eventParams);
+    await this.logGameInteraction("button_pressed", eventParams);
   }
 
   /**
@@ -396,8 +413,21 @@ export class AnalyticsService {
    * @param event - Game-completed event payload from the game bus.
    */
   private async onGameCompleted(event: GameCompletedEvent): Promise<void> {
+    const riddleId = event.riddleId ?? "unknown";
+    const gameMode = event.gameMode ?? "unknown";
+
     await this.logEvent("game_completed", {
       outcome: event.outcome,
+      riddle_id: riddleId,
+      game_mode: gameMode,
+      attempts: event.attempts,
+      coins_earned: event.coinsEarned ?? 0,
+    });
+
+    await this.logEvent("level_completed", {
+      outcome: event.outcome,
+      riddle_id: riddleId,
+      game_mode: gameMode,
       attempts: event.attempts,
       coins_earned: event.coinsEarned ?? 0,
     });
@@ -405,7 +435,9 @@ export class AnalyticsService {
     if (event.outcome === "won") {
       // Also log the standard Firebase Analytics `level_end` event.
       await this.logEvent("level_end", {
-        level: event.attempts,
+        level_name: riddleId,
+        game_mode: gameMode,
+        attempts: event.attempts,
         success: "true",
       });
     }

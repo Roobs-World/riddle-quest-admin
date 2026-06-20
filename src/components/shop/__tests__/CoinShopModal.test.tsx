@@ -27,10 +27,14 @@ jest.mock("../../../utils/logger", () => ({
 }));
 
 const mockLogShopCatalogMissing = jest.fn(async () => undefined);
+const mockLogButtonPress = jest.fn(async () => undefined);
+const mockLogShopPackSelected = jest.fn(async () => undefined);
 
 jest.mock("../../../services/AnalyticsService", () => ({
   analyticsService: {
+    logButtonPress: (...args: any[]) => mockLogButtonPress.apply(null, args),
     logShopCatalogMissing: (...args: any[]) => mockLogShopCatalogMissing.apply(null, args),
+    logShopPackSelected: (...args: any[]) => mockLogShopPackSelected.apply(null, args),
   },
 }));
 

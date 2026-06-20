@@ -16,6 +16,7 @@ import {Text, TouchableOpacity, Animated, Easing} from "react-native";
 import {SvgXml} from "react-native-svg";
 import {COIN_DISPLAY_ICON_SIZE} from "../../constants/layout";
 import {TYPOGRAPHY, SPACING} from "../../styles";
+import {analyticsService} from "../../services/AnalyticsService";
 
 /**
  * Embedded SVG icon for the coin display.
@@ -274,9 +275,16 @@ const CoinsDisplay: React.FC<CoinsDisplayProps> = ({coins, onPress, shouldAnimat
    * to enable tap interactions (typically for opening the coin shop).
    */
   if (onPress) {
+    const handlePress = () => {
+      void analyticsService.logButtonPress?.("coins_display", {
+        label: touchableAccessibilityLabel,
+      });
+      onPress();
+    };
+
     return (
       <TouchableOpacity
-        onPress={onPress}
+        onPress={handlePress}
         className="flex-row items-center"
         testID="coins-display-touchable"
         accessible={true}

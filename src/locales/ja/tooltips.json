@@ -5,7 +5,6 @@
     "CLASSIC_FROM_DAILY_BODY": "デイリーチャレンジ完了。クラシックモードでは自分のペースで続けられます。",
     "CLASSIC_FROM_DAILY_TITLE": "クラシックモード",
     "GOT_IT_BUTTON": "了解",
-    "HELP_BUTTON_LABEL": "ヘルプ",
     "HINT_AFTER_WRONG_BODY": "その答えは違いました。ヒントをタップして役立つ文字を表示しましょう。",
     "HINT_AFTER_WRONG_TITLE": "ヒントが必要ですか?",
     "LEADERBOARD_FIFTH_CORRECT_BODY": "5問正解! プロフィールを開いて順位を確認しましょう。",
@@ -27,6 +26,10 @@
     "SHOP_OUT_OF_COINS_BODY": "この操作に必要なコインが足りません。ショップで購入するか獲得できます。",
     "SHOP_OUT_OF_COINS_TITLE": "コインを追加",
     "SUBMIT_ANSWER_BODY": "すべての枠が埋まったら、送信をタップして答えを確認しましょう。",
-    "SUBMIT_ANSWER_TITLE": "回答を送信"
+    "SUBMIT_ANSWER_TITLE": "回答を送信",
+    "PROFILE_PROGRESSION_TITLE": "ユーザーの進行状況",
+    "PROFILE_PROGRESSION_BODY": "ランク、XPレベル、進行バーで次のレベルまでの近さがわかります。",
+    "PROFILE_DAILY_STREAK_TITLE": "デイリーストリーク",
+    "PROFILE_DAILY_STREAK_BODY": "ストリークは毎日のプレイ継続を記録します。デイリーパズルを解き続けて伸ばしましょう。"
   }
 }

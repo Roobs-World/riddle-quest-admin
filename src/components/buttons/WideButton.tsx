@@ -4,6 +4,7 @@ import {styles, SPACING, TYPOGRAPHY} from "../../styles";
 import {verticalScale} from "../../utils/responsive";
 import {logger} from "../../utils/logger";
 import {captureException} from "../../utils/sentry";
+import {analyticsService} from "../../services/AnalyticsService";
 
 interface WideButtonProps {
   buttonText: string;
@@ -35,6 +36,10 @@ const WideButton: React.FC<WideButtonProps> = ({
   const handlePress = async () => {
     logger.debug(`WideButton pressed: ${buttonText}`);
     logger.debug("onPress type:", typeof onPress);
+    void analyticsService.logButtonPress?.(testID ?? "wide_button", {
+      label: buttonText,
+      disabled,
+    });
 
     if (typeof onPress === "function") {
       try {

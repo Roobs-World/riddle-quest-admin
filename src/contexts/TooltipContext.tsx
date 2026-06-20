@@ -1,6 +1,6 @@
-import React, {createContext, useCallback, useContext, useEffect, useMemo, useState} from "react";
+import React, {createContext, useCallback, useContext, useEffect, useMemo, useRef, useState} from "react";
 import {View} from "react-native";
-import type {TooltipId, TooltipRequest, TargetRect} from "../components/tooltips/types";
+import type {TooltipId, TooltipRequest, TargetRect, TooltipSequenceRequest} from "../components/tooltips/types";
 import TooltipOverlay from "../components/tooltips/TooltipOverlay";
 import {hasSeenTooltip, markTooltipSeen} from "../components/tooltips/tooltipStorage";
 import {DEV_SHOW_TIPS} from "../constants/tooltips";
@@ -10,6 +10,8 @@ interface TooltipContextValue {
   activeTooltipId: TooltipId | null;
   showTooltip: (request: TooltipRequest) => Promise<void>;
   showTooltipOnce: (request: TooltipRequest) => Promise<boolean>;
+  showTooltipSequence: (requests: TooltipSequenceRequest[]) => Promise<boolean>;
+  cancelTooltipSequence: () => void;
   dismissTooltip: (id?: TooltipId) => void;
 }
 
@@ -53,10 +55,16 @@ const measureTarget = (request: TooltipRequest): Promise<TargetRect | null> => {
   });
 };
 
+const waitForNextFrame = (): Promise<void> =>
+  new Promise((resolve) => {
+    requestAnimationFrame(() => resolve());
+  });
+
 export const TooltipProvider: React.FC<{children: React.ReactNode}> = ({children}) => {
   const [activeRequest, setActiveRequest] = useState<TooltipRequest | null>(null);
   const [isTooltipVisible, setIsTooltipVisible] = useState(false);
   const [targetRect, setTargetRect] = useState<TargetRect | null>(null);
+  const sequenceQueueRef = useRef<TooltipSequenceRequest[]>([]);
 
   useEffect(() => {
     if (DEV_SHOW_TIPS) {
@@ -64,8 +72,10 @@ export const TooltipProvider: React.FC<{children: React.ReactNode}> = ({children
     }
   }, []);
 
-  const showTooltip = useCallback(async (request: TooltipRequest): Promise<void> => {
+  const activateTooltip = useCallback(async (request: TooltipRequest): Promise<void> => {
     try {
+      await request.onBeforeShow?.();
+      await waitForNextFrame();
       logger.debug("[TooltipContext] showTooltip requested", {
         id: request.id,
         hasTargetRef: Boolean(request.targetRef?.current),
@@ -83,6 +93,34 @@ export const TooltipProvider: React.FC<{children: React.ReactNode}> = ({children
     } catch (err) {
       logger.warn("showTooltip failed", err);
     }
+  }, []);
+
+  const showTooltip = useCallback(
+    async (request: TooltipRequest): Promise<void> => {
+      sequenceQueueRef.current = [];
+      await activateTooltip(request);
+    },
+    [activateTooltip],
+  );
+
+  const showTooltipSequence = useCallback(
+    async (requests: TooltipSequenceRequest[]): Promise<boolean> => {
+      const [firstRequest, ...remainingRequests] = requests;
+      if (!firstRequest) {
+        sequenceQueueRef.current = [];
+        return false;
+      }
+
+      sequenceQueueRef.current = remainingRequests;
+      await activateTooltip(firstRequest);
+      return true;
+    },
+    [activateTooltip],
+  );
+
+  const cancelTooltipSequence = useCallback(() => {
+    sequenceQueueRef.current = [];
+    setIsTooltipVisible(false);
   }, []);
 
   const dismissTooltip = useCallback(
@@ -140,9 +178,19 @@ export const TooltipProvider: React.FC<{children: React.ReactNode}> = ({children
       activeTooltipId: isTooltipVisible ? (activeRequest?.id ?? null) : null,
       showTooltip,
       showTooltipOnce,
+      showTooltipSequence,
+      cancelTooltipSequence,
       dismissTooltip,
     }),
-    [activeRequest?.id, dismissTooltip, isTooltipVisible, showTooltip, showTooltipOnce],
+    [
+      activeRequest?.id,
+      cancelTooltipSequence,
+      dismissTooltip,
+      isTooltipVisible,
+      showTooltip,
+      showTooltipOnce,
+      showTooltipSequence,
+    ],
   );
 
   return (
@@ -154,13 +202,18 @@ export const TooltipProvider: React.FC<{children: React.ReactNode}> = ({children
             visible={isTooltipVisible}
             targetRect={targetRect}
             content={activeRequest.content}
+            preferredPlacement={activeRequest.preferredPlacement}
             onDismiss={() => dismissTooltip(activeRequest.id)}
             onExited={() => {
               logger.debug("[TooltipContext] tooltip exited", {
                 id: activeRequest.id,
               });
+              const nextRequest = sequenceQueueRef.current.shift();
               setActiveRequest(null);
               setTargetRect(null);
+              if (nextRequest) {
+                void activateTooltip(nextRequest);
+              }
             }}
           />
         ) : null}

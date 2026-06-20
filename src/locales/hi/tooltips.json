@@ -5,7 +5,6 @@
     "CLASSIC_FROM_DAILY_BODY": "दैनिक चुनौती पूरी हुई। क्लासिक मोड में आप अपनी गति से पहेलियां हल कर सकते हैं।",
     "CLASSIC_FROM_DAILY_TITLE": "क्लासिक मोड",
     "GOT_IT_BUTTON": "समझ गया",
-    "HELP_BUTTON_LABEL": "मदद",
     "HINT_AFTER_WRONG_BODY": "यह अनुमान गलत था। उपयोगी अक्षर दिखाने और आगे बढ़ने के लिए संकेत टैप करें।",
     "HINT_AFTER_WRONG_TITLE": "संकेत चाहिए?",
     "LEADERBOARD_FIFTH_CORRECT_BODY": "पांच सही उत्तर! अपनी रैंक देखने के लिए प्रोफ़ाइल खोलें।",
@@ -27,6 +26,10 @@
     "SHOP_OUT_OF_COINS_BODY": "इस क्रिया के लिए आपके पास सिक्के नहीं हैं। और खरीदने या कमाने के लिए दुकान खोलें।",
     "SHOP_OUT_OF_COINS_TITLE": "और सिक्के पाएं",
     "SUBMIT_ANSWER_BODY": "जब सभी खाली जगहें भर जाएं, तो अपना अनुमान जांचने के लिए जमा करें टैप करें।",
-    "SUBMIT_ANSWER_TITLE": "अपना उत्तर जमा करें"
+    "SUBMIT_ANSWER_TITLE": "अपना उत्तर जमा करें",
+    "PROFILE_PROGRESSION_TITLE": "उपयोगकर्ता प्रगति",
+    "PROFILE_PROGRESSION_BODY": "आपकी रैंक, XP स्तर और प्रगति बार दिखाते हैं कि आप अगले स्तर के कितने करीब हैं।",
+    "PROFILE_DAILY_STREAK_TITLE": "दैनिक स्ट्रीक",
+    "PROFILE_DAILY_STREAK_BODY": "आपकी स्ट्रीक नियमित दैनिक खेल को ट्रैक करती है। इसे बढ़ाने के लिए दैनिक पहेलियां हल करते रहें।"
   }
 }

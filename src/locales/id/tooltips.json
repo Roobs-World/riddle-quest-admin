@@ -5,7 +5,6 @@
     "CLASSIC_FROM_DAILY_BODY": "Tantangan harian selesai. Mode klasik memungkinkan Anda terus memecahkan teka-teki sesuai keinginan Anda.",
     "CLASSIC_FROM_DAILY_TITLE": "Modus klasik",
     "GOT_IT_BUTTON": "Mengerti",
-    "HELP_BUTTON_LABEL": "Bantuan",
     "HINT_AFTER_WRONG_BODY": "Tebakan itu meleset. Ketuk Petunjuk untuk menampilkan surat yang bermanfaat dan melanjutkan.",
     "HINT_AFTER_WRONG_TITLE": "Butuh petunjuk?",
     "LEADERBOARD_FIFTH_CORRECT_BODY": "Lima jawaban yang benar! Buka profil Anda untuk melihat peringkat Anda.",
@@ -27,6 +26,10 @@
     "SHOP_OUT_OF_COINS_BODY": "Anda kehabisan koin untuk tindakan ini. Buka toko untuk membeli atau mendapatkan lebih banyak.",
     "SHOP_OUT_OF_COINS_TITLE": "Ambil lebih banyak koin",
     "SUBMIT_ANSWER_BODY": "Ketika setiap slot terisi, ketuk Kirim untuk memeriksa tebakan Anda.",
-    "SUBMIT_ANSWER_TITLE": "Kirimkan jawaban Anda"
+    "SUBMIT_ANSWER_TITLE": "Kirimkan jawaban Anda",
+    "PROFILE_PROGRESSION_TITLE": "Perkembangan pengguna",
+    "PROFILE_PROGRESSION_BODY": "Peringkat, level XP, dan bilah progres menunjukkan seberapa dekat kamu ke level berikutnya.",
+    "PROFILE_DAILY_STREAK_TITLE": "Rentetan harian",
+    "PROFILE_DAILY_STREAK_BODY": "Rentetanmu melacak permainan harian yang rutin. Terus selesaikan teka-teki harian untuk meningkatkannya."
   }
 }

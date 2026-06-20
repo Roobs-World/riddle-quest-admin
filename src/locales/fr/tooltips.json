@@ -5,7 +5,6 @@
     "CLASSIC_FROM_DAILY_BODY": "Defi quotidien termine. Le mode Classique vous permet de continuer les enigmes a votre rythme.",
     "CLASSIC_FROM_DAILY_TITLE": "Mode Classique",
     "GOT_IT_BUTTON": "Compris",
-    "HELP_BUTTON_LABEL": "Aide",
     "HINT_AFTER_WRONG_BODY": "Cet essai a echoue. Touchez Indice pour reveler une lettre utile et continuer.",
     "HINT_AFTER_WRONG_TITLE": "Besoin d'un indice?",
     "LEADERBOARD_FIFTH_CORRECT_BODY": "Cinq bonnes reponses! Ouvrez votre profil pour voir votre rang.",
@@ -27,6 +26,10 @@
     "SHOP_OUT_OF_COINS_BODY": "Vous n'avez plus assez de pieces pour cette action. Ouvrez la boutique pour en acheter ou en gagner.",
     "SHOP_OUT_OF_COINS_TITLE": "Obtenez plus de pieces",
     "SUBMIT_ANSWER_BODY": "Quand toutes les cases sont remplies, touchez Valider pour verifier votre essai.",
-    "SUBMIT_ANSWER_TITLE": "Validez votre reponse"
+    "SUBMIT_ANSWER_TITLE": "Validez votre reponse",
+    "PROFILE_PROGRESSION_TITLE": "Progression utilisateur",
+    "PROFILE_PROGRESSION_BODY": "Ton rang, ton niveau XP et ta barre de progression indiquent à quel point tu es proche du niveau suivant.",
+    "PROFILE_DAILY_STREAK_TITLE": "Série quotidienne",
+    "PROFILE_DAILY_STREAK_BODY": "Ta série suit ton activité quotidienne régulière. Continue les énigmes quotidiennes pour la faire grandir."
   }
 }

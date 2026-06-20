@@ -1,5 +1,5 @@
 import React, {useMemo} from "react";
-import {Dimensions, StyleSheet, View, type StyleProp, type ViewStyle} from "react-native";
+import {Animated, Dimensions, StyleSheet, View, type StyleProp, type ViewStyle} from "react-native";
 import {COLORS, SPACING} from "../../styles";
 import type {TargetRect} from "./types";
 
@@ -17,12 +17,14 @@ const SCREEN_PADDING = 18;
 const DEFAULT_PANEL_WIDTH = Math.min(Dimensions.get("window").width - SCREEN_PADDING * 2, 340);
 const DEFAULT_PANEL_TOP_OFFSET = 140;
 const POINTER_SIZE = 10;
+const AnimatedView = Animated.createAnimatedComponent(View);
 
 interface TooltipCalloutShellProps {
   children: React.ReactNode;
   targetRect?: TargetRect | null;
   visible: boolean;
   placement?: "anchored" | "center";
+  preferredPlacement?: "auto" | "above" | "below";
   panelWidth?: number;
   panelStyle?: StyleProp<ViewStyle>;
   contentStyle?: StyleProp<ViewStyle>;
@@ -47,6 +49,7 @@ const TooltipCalloutShell: React.FC<TooltipCalloutShellProps> = ({
   targetRect,
   visible,
   placement = "anchored",
+  preferredPlacement = "auto",
   panelWidth = DEFAULT_PANEL_WIDTH,
   panelStyle,
   contentStyle,
@@ -68,7 +71,8 @@ const TooltipCalloutShell: React.FC<TooltipCalloutShellProps> = ({
   const layout = useMemo(() => {
     if (targetRect && placement !== "center") {
       const targetCenterX = targetRect.x + targetRect.width / 2;
-      const preferredAbove = targetRect.y > height * 0.45;
+      const preferredAbove =
+        preferredPlacement === "above" || (preferredPlacement === "auto" && targetRect.y > height * 0.45);
       const top = preferredAbove
         ? Math.max(SCREEN_PADDING, targetRect.y - DEFAULT_PANEL_TOP_OFFSET)
         : Math.min(height - DEFAULT_PANEL_TOP_OFFSET, targetRect.y + targetRect.height + 28);
@@ -88,7 +92,7 @@ const TooltipCalloutShell: React.FC<TooltipCalloutShellProps> = ({
       pointerLeft: Math.round(panelWidth / 2 - POINTER_SIZE),
       pointerPlacement: "top" as const,
     };
-  }, [height, panelWidth, placement, targetRect, width]);
+  }, [height, panelWidth, placement, preferredPlacement, targetRect, width]);
 
   const pointerStyle = useMemo(() => {
     if (!showPointer) {
@@ -179,11 +183,11 @@ const TooltipCalloutShell: React.FC<TooltipCalloutShellProps> = ({
         <View
           pointerEvents="none"
           testID={backdropTestID}
-          style={[styles.backdrop, backdropStyle]}
+          style={[styles.backdrop, StyleSheet.absoluteFill, backdropStyle]}
         />
       )}
 
-      <View
+      <AnimatedView
         pointerEvents={visible ? "auto" : "none"}
         style={StyleSheet.flatten([
           styles.panel,
@@ -198,7 +202,7 @@ const TooltipCalloutShell: React.FC<TooltipCalloutShellProps> = ({
       >
         {showPointer && pointerStyle ? <View testID={pointerTestID} style={pointerStyle} /> : null}
         <View style={[styles.content, contentStyle]}>{children}</View>
-      </View>
+      </AnimatedView>
     </View>
   );
 };

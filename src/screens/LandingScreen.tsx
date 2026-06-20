@@ -7,7 +7,7 @@
  * into gameplay.
  */
 import React, {useState} from "react";
-import {View, Text, Linking, Image, TouchableOpacity} from "react-native";
+import {View, Text, Linking, TouchableOpacity} from "react-native";
 import CustomSafeAreaView from "../components/layouts/CustomSafeAreaView";
 import GoogleSignInButton from "../components/buttons/GoogleSignInButton";
 import FacebookSignInButton from "../components/buttons/FacebookSignInButton";
@@ -22,9 +22,8 @@ import Error from "../components/text/Error";
 import {styles, SPACING} from "../styles";
 import {logger} from "../utils/logger";
 import {captureException} from "../utils/sentry";
-import MainLogoPng from "../../assets/images/logo.png";
-import {LANDING_LOGO_HEIGHT, LANDING_LOGO_WIDTH} from "../constants/layout";
 import {getAuthErrorMessage} from "../application/auth/authErrorMessages";
+import {RiddleQuestLogo} from "../components/branding/RiddleQuestLogo";
 
 /**
  * Landing screen component used at the root of the auth stack.
@@ -113,12 +112,7 @@ const LandingScreen = () => {
       <View style={{flex: 1, width: "100%", alignItems: "center", zIndex: 2}}>
         {/* Title at the top */}
         <View style={{alignItems: "center", paddingTop: SPACING.xl}}>
-          <Image
-            testID="main-logo-svg"
-            source={MainLogoPng}
-            style={{width: LANDING_LOGO_WIDTH, height: LANDING_LOGO_HEIGHT}}
-            resizeMode="contain"
-          />
+          <RiddleQuestLogo />
           <Text
             className="font-bold text-white text-center"
             style={[styles.title, {marginBottom: SPACING.md, color: "#FFFFFF"}]}

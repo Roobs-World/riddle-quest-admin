@@ -52,7 +52,7 @@ interface ScreenTitleProps {
  * Usage Examples:
  * ```tsx
  * // Basic screen title
- * <ScreenTitle title="Welcome to Riddle Quest" />
+ * <ScreenTitle title="Welcome" />
  *
  * // With custom styling
  * <ScreenTitle

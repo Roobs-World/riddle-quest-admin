@@ -8,8 +8,7 @@
     "GOAL_TITLE": "Het doel",
     "GOT_IT_BUTTON": "Begrepen!",
     "TIPS_DESCRIPTION": "Begin met gewone letters en gebruik de kleurfeedback om uw gissingen te verfijnen. Vergeet niet dat je maar 3 pogingen hebt!",
-    "TIPS_TITLE": "Tips voor succes",
-    "TITLE": "Hoe te spelen"
+    "TIPS_TITLE": "Tips voor succes"
   },
   "WelcomeBackModal": {
     "TAP_TO_CONTINUE": "Tik om door te gaan",
@@ -18,7 +17,6 @@
   "WelcomeModal": {
     "EARN_COINS_TEXT": "Verdien munten, versla dagelijkse uitdagingen en beklim het klassement.",
     "LETS_PLAY": "Laten we spelen",
-    "SOLVE_RIDDLES_TEXT": "Los boeiende raadsels op door het antwoord letter voor letter te raden. Gebruik de kleuraanwijzingen om elke gok te verfijnen.",
-    "WELCOME_TITLE": "Welkom bij Riddle Quest!"
+    "SOLVE_RIDDLES_TEXT": "Los boeiende raadsels op door het antwoord letter voor letter te raden. Gebruik de kleuraanwijzingen om elke gok te verfijnen."
   }
 }

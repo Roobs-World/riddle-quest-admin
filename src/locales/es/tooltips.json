@@ -5,7 +5,6 @@
     "CLASSIC_FROM_DAILY_BODY": "Desafio diario completado. El modo Clasico te permite seguir resolviendo acertijos a tu ritmo.",
     "CLASSIC_FROM_DAILY_TITLE": "Modo Clasico",
     "GOT_IT_BUTTON": "Entendido",
-    "HELP_BUTTON_LABEL": "Ayuda",
     "HINT_AFTER_WRONG_BODY": "Ese intento fallo. Toca Pista para revelar una letra util y seguir jugando.",
     "HINT_AFTER_WRONG_TITLE": "Necesitas una pista?",
     "LEADERBOARD_FIFTH_CORRECT_BODY": "Cinco respuestas correctas! Abre tu perfil para ver tu posicion.",
@@ -27,6 +26,10 @@
     "SHOP_OUT_OF_COINS_BODY": "No tienes monedas para esta accion. Abre la tienda para comprar o ganar mas.",
     "SHOP_OUT_OF_COINS_TITLE": "Consigue mas monedas",
     "SUBMIT_ANSWER_BODY": "Cuando todos los espacios esten llenos, toca Enviar para comprobar tu intento.",
-    "SUBMIT_ANSWER_TITLE": "Envia tu respuesta"
+    "SUBMIT_ANSWER_TITLE": "Envia tu respuesta",
+    "PROFILE_PROGRESSION_TITLE": "Progreso del usuario",
+    "PROFILE_PROGRESSION_BODY": "Tu rango, nivel de XP y barra de progreso muestran qué tan cerca estás del siguiente nivel.",
+    "PROFILE_DAILY_STREAK_TITLE": "Racha diaria",
+    "PROFILE_DAILY_STREAK_BODY": "Tu racha registra el juego diario regular. Sigue resolviendo acertijos diarios para aumentarla."
   }
 }

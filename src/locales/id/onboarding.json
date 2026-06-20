@@ -8,8 +8,7 @@
     "GOAL_TITLE": "Tujuannya",
     "GOT_IT_BUTTON": "Mengerti!",
     "TIPS_DESCRIPTION": "Mulailah dengan huruf-huruf umum dan gunakan umpan balik warna untuk mempersempit tebakan Anda. Ingat, Anda hanya punya 3 kesempatan!",
-    "TIPS_TITLE": "Kiat untuk Sukses",
-    "TITLE": "Cara Bermain"
+    "TIPS_TITLE": "Kiat untuk Sukses"
   },
   "WelcomeBackModal": {
     "TAP_TO_CONTINUE": "Ketuk untuk melanjutkan",
@@ -18,7 +17,6 @@
   "WelcomeModal": {
     "EARN_COINS_TEXT": "Hasilkan koin, kalahkan tantangan harian, dan naiki papan peringkat.",
     "LETS_PLAY": "Ayo Bermain",
-    "SOLVE_RIDDLES_TEXT": "Pecahkan teka-teki menarik dengan menebak jawabannya huruf demi huruf. Gunakan petunjuk warna untuk mempersempit setiap tebakan.",
-    "WELCOME_TITLE": "Selamat datang di Pencarian Teka-teki!"
+    "SOLVE_RIDDLES_TEXT": "Pecahkan teka-teki menarik dengan menebak jawabannya huruf demi huruf. Gunakan petunjuk warna untuk mempersempit setiap tebakan."
   }
 }

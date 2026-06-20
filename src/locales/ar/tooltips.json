@@ -5,7 +5,6 @@
     "CLASSIC_FROM_DAILY_BODY": "التحدي اليومي كامل. يتيح لك الوضع الكلاسيكي الاستمرار في حل الألغاز بالسرعة التي تناسبك.",
     "CLASSIC_FROM_DAILY_TITLE": "الوضع الكلاسيكي",
     "GOT_IT_BUTTON": "حصلت عليه",
-    "HELP_BUTTON_LABEL": "مساعدة",
     "HINT_AFTER_WRONG_BODY": "غاب هذا التخمين. اضغط على \"تلميح\" للكشف عن رسالة مفيدة والمتابعة.",
     "HINT_AFTER_WRONG_TITLE": "هل تحتاج إلى دليل؟",
     "LEADERBOARD_FIFTH_CORRECT_BODY": "خمس إجابات صحيحة! افتح ملفك الشخصي لترى كيف يتم تصنيفك.",
@@ -27,6 +26,10 @@
     "SHOP_OUT_OF_COINS_BODY": "لقد نفدت العملات المعدنية لهذا الإجراء. افتح المتجر للشراء أو كسب المزيد.",
     "SHOP_OUT_OF_COINS_TITLE": "احصل على المزيد من العملات المعدنية",
     "SUBMIT_ANSWER_BODY": "عندما يتم ملء كل خانة، انقر فوق إرسال للتحقق من تخمينك.",
-    "SUBMIT_ANSWER_TITLE": "أرسل إجابتك"
+    "SUBMIT_ANSWER_TITLE": "أرسل إجابتك",
+    "PROFILE_PROGRESSION_TITLE": "تقدم اللاعب",
+    "PROFILE_PROGRESSION_BODY": "توضح رتبتك ومستوى الخبرة وشريط التقدم مدى قربك من المستوى التالي.",
+    "PROFILE_DAILY_STREAK_TITLE": "سلسلة يومية",
+    "PROFILE_DAILY_STREAK_BODY": "تتتبع السلسلة انتظامك في اللعب اليومي. واصل حل الألغاز اليومية لزيادتها."
   }
 }

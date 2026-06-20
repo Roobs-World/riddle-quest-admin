@@ -8,8 +8,7 @@
     "GOAL_TITLE": "Cel",
     "GOT_IT_BUTTON": "Rozumiem!",
     "TIPS_DESCRIPTION": "Zacznij od typowych liter i skorzystaj z informacji o kolorze, aby zawęzić swoje domysły. Pamiętaj, masz tylko 3 próby!",
-    "TIPS_TITLE": "Wskazówki dotyczące sukcesu",
-    "TITLE": "Jak grać"
+    "TIPS_TITLE": "Wskazówki dotyczące sukcesu"
   },
   "WelcomeBackModal": {
     "TAP_TO_CONTINUE": "Kliknij, aby kontynuować",
@@ -18,7 +17,6 @@
   "WelcomeModal": {
     "EARN_COINS_TEXT": "Zarabiaj monety, pokonuj codzienne wyzwania i wspinaj się po rankingach.",
     "LETS_PLAY": "Zagrajmy",
-    "SOLVE_RIDDLES_TEXT": "Rozwiązuj wciągające zagadki, zgadując odpowiedź litera po literze. Użyj wskazówek dotyczących kolorów, aby zawęzić każde przypuszczenie.",
-    "WELCOME_TITLE": "Witamy w Riddle Quest!"
+    "SOLVE_RIDDLES_TEXT": "Rozwiązuj wciągające zagadki, zgadując odpowiedź litera po literze. Użyj wskazówek dotyczących kolorów, aby zawęzić każde przypuszczenie."
   }
 }

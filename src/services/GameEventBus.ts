@@ -64,6 +64,10 @@ export interface GameCompletedEvent extends GameEvent {
   type: "GAME_COMPLETED";
   /** Final game outcome for the riddle. */
   outcome: "won" | "lost";
+  /** Riddle identifier for the completed level. */
+  riddleId?: string;
+  /** Game mode used by the completed level. */
+  gameMode?: "challenge" | "classic";
   /** Total attempts used in this game session. */
   attempts: number;
   /** Optional coin payout awarded on win. */

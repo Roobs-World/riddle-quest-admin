@@ -29,6 +29,7 @@ const hasModalCardDimensions = (style: unknown): boolean => {
 };
 
 const mockShowTooltip = jest.fn(() => Promise.resolve());
+const mockShowTooltipSequence = jest.fn(() => Promise.resolve(true));
 const mockLogout = jest.fn(() => Promise.resolve());
 const mockUpdatePlayerData = jest.fn();
 const mockDeleteAccountCallable = jest.fn(() => Promise.resolve({data: {success: true}}));
@@ -152,6 +153,8 @@ jest.mock("../../../../contexts/TooltipContext", () => ({
     activeTooltipId: null,
     showTooltip: mockShowTooltip,
     showTooltipOnce: jest.fn(() => Promise.resolve(true)),
+    showTooltipSequence: mockShowTooltipSequence,
+    cancelTooltipSequence: jest.fn(),
     dismissTooltip: jest.fn(),
   }),
 }));
@@ -291,6 +294,10 @@ describe("FullProfileDetailsModal", () => {
     mockDeleteAccountCallable.mockResolvedValue({data: {success: true}});
   });
 
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
   it("renders correctly when visible with player data", () => {
     const {getByText, getByTestId} = renderWithModalProvider(<FullProfileDetailsModal {...defaultProps} />);
 
@@ -299,32 +306,59 @@ describe("FullProfileDetailsModal", () => {
     expect(getByTestId("close-button")).toBeTruthy();
   });
 
-  it("renders profile section help buttons", () => {
-    const {getByTestId} = renderWithModalProvider(<FullProfileDetailsModal {...defaultProps} />);
+  it("does not render profile help buttons", () => {
+    const {queryByTestId} = renderWithModalProvider(<FullProfileDetailsModal {...defaultProps} />);
 
-    expect(getByTestId("profile-help-identity")).toBeTruthy();
-    expect(getByTestId("profile-help-daily-puzzles")).toBeTruthy();
-    expect(getByTestId("profile-help-stats")).toBeTruthy();
-    expect(getByTestId("profile-help-coins")).toBeTruthy();
-    expect(getByTestId("profile-help-achievements")).toBeTruthy();
-    expect(getByTestId("profile-help-statistics")).toBeTruthy();
-    expect(getByTestId("profile-help-leaderboard")).toBeTruthy();
+    expect(queryByTestId("profile-help-identity")).toBeNull();
+    expect(queryByTestId("profile-help-daily-puzzles")).toBeNull();
+    expect(queryByTestId("profile-help-stats")).toBeNull();
+    expect(queryByTestId("profile-help-coins")).toBeNull();
+    expect(queryByTestId("profile-help-achievements")).toBeNull();
+    expect(queryByTestId("profile-help-statistics")).toBeNull();
+    expect(queryByTestId("profile-help-leaderboard")).toBeNull();
   });
 
-  it("opens a localized tooltip from a profile help button", () => {
-    const {getByTestId} = renderWithModalProvider(<FullProfileDetailsModal {...defaultProps} />);
+  it("starts the localized profile tooltip sequence when visible", async () => {
+    jest.useFakeTimers();
+    renderWithModalProvider(<FullProfileDetailsModal {...defaultProps} />);
 
-    fireEvent.press(getByTestId("profile-help-daily-puzzles"));
+    jest.advanceTimersByTime(450);
 
-    expect(mockShowTooltip).toHaveBeenCalledWith(
-      expect.objectContaining({
-        id: "profileDailyPuzzles",
-        content: expect.objectContaining({
-          title: "Daily puzzles",
-          body: "This shows how many daily challenges you have completed.",
+    await waitFor(() => {
+      expect(mockShowTooltipSequence).toHaveBeenCalledWith([
+        expect.objectContaining({
+          id: "profileProgression",
+          onBeforeShow: expect.any(Function),
+          content: expect.objectContaining({
+            title: "User progression",
+            body: "Your rank, XP level, and progress bar show how close you are to the next level.",
+          }),
         }),
-      }),
-    );
+        expect.objectContaining({
+          id: "profileDailyStreak",
+          preferredPlacement: "below",
+          onBeforeShow: expect.any(Function),
+          content: expect.objectContaining({
+            title: "Daily streak",
+            body: "Your streak tracks regular daily play. Keep solving daily puzzles to build it up.",
+          }),
+        }),
+        expect.objectContaining({id: "profileAchievements", onBeforeShow: expect.any(Function)}),
+        expect.objectContaining({id: "profileStatistics", onBeforeShow: expect.any(Function)}),
+        expect.objectContaining({id: "profileLeaderboard", onBeforeShow: expect.any(Function)}),
+        expect.objectContaining({id: "profileIdentity", onBeforeShow: expect.any(Function)}),
+        expect.objectContaining({
+          id: "profileDailyPuzzles",
+          onBeforeShow: expect.any(Function),
+          content: expect.objectContaining({
+            title: "Daily puzzles",
+            body: "This shows how many daily challenges you have completed.",
+          }),
+        }),
+        expect.objectContaining({id: "profileStats", onBeforeShow: expect.any(Function)}),
+        expect.objectContaining({id: "profileCoins", onBeforeShow: expect.any(Function)}),
+      ]);
+    });
   });
 
   it("renders loading state when player data is null", () => {

@@ -18,9 +18,14 @@ describe("WelcomeModal", () => {
   it("renders welcome content when visible", () => {
     const {getByText} = render(<WelcomeModal isVisible={true} onClose={mockOnClose} />);
 
-    expect(getByText(t("WelcomeModal.WELCOME_TITLE"))).toBeTruthy();
     expect(getByText(t("WelcomeModal.SOLVE_RIDDLES_TEXT"))).toBeTruthy();
     expect(getByText(t("WelcomeModal.EARN_COINS_TEXT"))).toBeTruthy();
+  });
+
+  it("keeps the welcome copy close to the logo", () => {
+    const {getByTestId} = render(<WelcomeModal isVisible={true} onClose={mockOnClose} />);
+
+    expect(getByTestId("welcome-modal-copy-block").props.style.marginTop).toBeLessThan(150);
   });
 
   it("renders onboarding progress when provided", () => {
@@ -35,7 +40,7 @@ describe("WelcomeModal", () => {
   it("does not render content when not visible", () => {
     const {queryByText} = render(<WelcomeModal isVisible={false} onClose={mockOnClose} />);
 
-    expect(queryByText(t("WelcomeModal.WELCOME_TITLE"))).toBeNull();
+    expect(queryByText(t("WelcomeModal.SOLVE_RIDDLES_TEXT"))).toBeNull();
   });
 
   it("fires dismiss callbacks when the welcome modal is tapped", () => {

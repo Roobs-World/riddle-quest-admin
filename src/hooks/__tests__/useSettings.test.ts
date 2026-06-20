@@ -6,6 +6,16 @@ import {renderHook, act, waitFor} from "@testing-library/react-native";
 
 const mockGetItem = jest.fn();
 const mockSetItem = jest.fn();
+const localStorageStore: Record<string, string> = {};
+const localStorageMock = {
+  getItem: jest.fn((key: string) => localStorageStore[key] ?? null),
+  removeItem: jest.fn((key: string) => {
+    delete localStorageStore[key];
+  }),
+  setItem: jest.fn((key: string, value: string) => {
+    localStorageStore[key] = value;
+  }),
+};
 // Use a simple object to hold mutable state that can be changed by tests
 const setItemConfig = {shouldFail: false};
 jest.mock("@react-native-async-storage/async-storage", () => ({
@@ -49,12 +59,42 @@ jest.mock("../../utils/sentry", () => ({
 import {useSettings} from "../useSettings";
 
 describe("useSettings", () => {
+  const devGlobal = globalThis as typeof globalThis & {__DEV__?: boolean};
+  const originalDev = devGlobal.__DEV__;
+  const originalLocalStorage = Object.getOwnPropertyDescriptor(globalThis, "localStorage");
+  const setDevMode = (enabled: boolean) => {
+    Object.defineProperty(devGlobal, "__DEV__", {
+      configurable: true,
+      value: enabled,
+    });
+  };
+
   beforeEach(() => {
     jest.clearAllMocks();
+    mockGetItem.mockReset();
+    mockSetItem.mockClear();
     mockGetItem.mockResolvedValue(null);
+    Object.keys(localStorageStore).forEach((key) => delete localStorageStore[key]);
+    Object.defineProperty(globalThis, "localStorage", {
+      configurable: true,
+      value: localStorageMock,
+    });
+    setDevMode(false);
   });
 
-  it("should return API with isSoundEnabled, isHapticsEnabled and toggles", () => {
+  afterEach(() => {
+    Object.defineProperty(devGlobal, "__DEV__", {
+      configurable: true,
+      value: originalDev,
+    });
+    if (originalLocalStorage) {
+      Object.defineProperty(globalThis, "localStorage", originalLocalStorage);
+    } else {
+      delete (globalThis as {localStorage?: unknown}).localStorage;
+    }
+  });
+
+  it("should return API with isSoundEnabled, isHapticsEnabled and toggles", async () => {
     const {result} = renderHook(() => useSettings());
     expect(result.current).toHaveProperty("isSoundEnabled");
     expect(result.current).toHaveProperty("isHapticsEnabled");
@@ -62,25 +102,55 @@ describe("useSettings", () => {
     expect(result.current).toHaveProperty("toggleHapticsEnabled");
     expect(typeof result.current.toggleSoundEnabled).toBe("function");
     expect(typeof result.current.toggleHapticsEnabled).toBe("function");
+    await waitFor(() => {
+      expect(mockSetSoundEnabled).toHaveBeenCalled();
+    });
   });
 
   it("should default to sound and haptics enabled when storage is empty", async () => {
     mockGetItem.mockResolvedValue(null);
     const {result} = renderHook(() => useSettings());
     await waitFor(() => {
-      expect(result.current.isSoundEnabled).toBe(true);
       expect(result.current.isHapticsEnabled).toBe(true);
+      expect(mockSetSoundEnabled).toHaveBeenCalledWith(true);
     });
-    expect(mockSetSoundEnabled).toHaveBeenCalledWith(true);
+    expect(result.current.isSoundEnabled).toBe(true);
+  });
+
+  it("should always load muted in development when storage is empty", async () => {
+    setDevMode(true);
+    mockGetItem.mockResolvedValue(null);
+
+    const {result} = renderHook(() => useSettings());
+
+    expect(result.current.isSoundEnabled).toBe(false);
+    await waitFor(() => {
+      expect(result.current.isHapticsEnabled).toBe(true);
+      expect(mockSetSoundEnabled).toHaveBeenCalledWith(false);
+    });
+    expect(mockGetItem).not.toHaveBeenCalledWith("isSoundEnabled");
+  });
+
+  it("should ignore persisted sound-on setting in development", async () => {
+    setDevMode(true);
+    mockGetItem.mockResolvedValueOnce(JSON.stringify(true)).mockResolvedValueOnce(null);
+
+    const {result} = renderHook(() => useSettings());
+
+    await waitFor(() => {
+      expect(result.current.isSoundEnabled).toBe(false);
+    });
+    expect(mockSetSoundEnabled).toHaveBeenCalledWith(false);
+    await waitFor(() => {
+      expect(mockSetItem).toHaveBeenCalledWith("isSoundEnabled", JSON.stringify(false));
+    });
   });
 
   it("should load persisted sound setting from AsyncStorage", async () => {
     mockGetItem.mockResolvedValueOnce(JSON.stringify(false)).mockResolvedValueOnce(null);
     const {result} = renderHook(() => useSettings());
-    await waitFor(() => {
-      expect(result.current.isSoundEnabled).toBe(false);
-    });
-    expect(mockSetSoundEnabled).toHaveBeenCalledWith(false);
+    await waitFor(() => expect(mockSetSoundEnabled).toHaveBeenCalledWith(false));
+    expect(result.current.isSoundEnabled).toBe(false);
   });
 
   it("does not overwrite persisted muted state during initial load", async () => {
@@ -88,9 +158,8 @@ describe("useSettings", () => {
 
     const {result} = renderHook(() => useSettings());
 
-    await waitFor(() => {
-      expect(result.current.isSoundEnabled).toBe(false);
-    });
+    await waitFor(() => expect(mockSetSoundEnabled).toHaveBeenCalledWith(false));
+    expect(result.current.isSoundEnabled).toBe(false);
 
     expect(mockSetItem).not.toHaveBeenCalledWith("isSoundEnabled", JSON.stringify(true));
   });

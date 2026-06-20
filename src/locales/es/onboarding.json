@@ -8,8 +8,7 @@
     "GOAL_TITLE": "El objetivo",
     "GOT_IT_BUTTON": "Entendido!",
     "TIPS_DESCRIPTION": "Comienza con letras comunes y usa el color para reducir tus intentos. Recuerda, solo tienes 3 intentos!",
-    "TIPS_TITLE": "Consejos",
-    "TITLE": "Como jugar"
+    "TIPS_TITLE": "Consejos"
   },
   "WelcomeBackModal": {
     "TAP_TO_CONTINUE": "Toca para continuar",
@@ -18,7 +17,6 @@
   "WelcomeModal": {
     "EARN_COINS_TEXT": "Gana monedas, supera desafios diarios y sube en el marcador.",
     "LETS_PLAY": "A Jugar",
-    "SOLVE_RIDDLES_TEXT": "Resuelve acertijos adivinando la respuesta letra por letra. Usa las pistas de color para guiar cada intento.",
-    "WELCOME_TITLE": "Bienvenido a\nRiddle Quest!"
+    "SOLVE_RIDDLES_TEXT": "Resuelve acertijos adivinando la respuesta letra por letra. Usa las pistas de color para guiar cada intento."
   }
 }

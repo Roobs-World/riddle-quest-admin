@@ -5,7 +5,6 @@
     "CLASSIC_FROM_DAILY_BODY": "Desafio diario concluido. O modo Classico permite continuar resolvendo enigmas no seu ritmo.",
     "CLASSIC_FROM_DAILY_TITLE": "Modo Classico",
     "GOT_IT_BUTTON": "Entendi",
-    "HELP_BUTTON_LABEL": "Ajuda",
     "HINT_AFTER_WRONG_BODY": "Esse palpite nao deu certo. Toque em Pista para revelar uma letra util e continuar.",
     "HINT_AFTER_WRONG_TITLE": "Precisa de uma pista?",
     "LEADERBOARD_FIFTH_CORRECT_BODY": "Cinco respostas corretas! Abra seu perfil para ver sua posicao.",
@@ -27,6 +26,10 @@
     "SHOP_OUT_OF_COINS_BODY": "Voce esta sem moedas para esta acao. Abra a loja para comprar ou ganhar mais.",
     "SHOP_OUT_OF_COINS_TITLE": "Pegue mais moedas",
     "SUBMIT_ANSWER_BODY": "Quando todos os espacos estiverem preenchidos, toque em Enviar para verificar seu palpite.",
-    "SUBMIT_ANSWER_TITLE": "Envie sua resposta"
+    "SUBMIT_ANSWER_TITLE": "Envie sua resposta",
+    "PROFILE_PROGRESSION_TITLE": "Progresso do usuário",
+    "PROFILE_PROGRESSION_BODY": "Sua classificação, nível de XP e barra de progresso mostram o quanto falta para o próximo nível.",
+    "PROFILE_DAILY_STREAK_TITLE": "Sequência diária",
+    "PROFILE_DAILY_STREAK_BODY": "Sua sequência acompanha o jogo diário regular. Continue resolvendo enigmas diários para aumentá-la."
   }
 }

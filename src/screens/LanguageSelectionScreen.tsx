@@ -1,10 +1,10 @@
-import React, {useMemo, useState} from "react";
-import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
+import {Animated, ScrollView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import CustomSafeAreaView from "../components/layouts/CustomSafeAreaView";
 import StarryBackground from "../components/background/StarryBackground";
 import WideButton from "../components/buttons/WideButton";
 import {COLORS, SHADOWS, SPACING, TYPOGRAPHY, styles} from "../styles";
-import {LANGUAGE_OPTIONS, type SupportedLanguage, setLocale, t} from "../i18n";
+import {LANGUAGE_OPTIONS, type SupportedLanguage, getRootCatalog, setLocale, t} from "../i18n";
 
 interface LanguageSelectionScreenProps {
   onSubmit: (language: SupportedLanguage) => Promise<void> | void;
@@ -30,9 +30,30 @@ const LANGUAGE_FLAGS: Record<SupportedLanguage, string> = {
   vi: "🇻🇳",
 };
 
+const LANGUAGE_TITLE_HOLD_MS = 1500;
+const LANGUAGE_TITLE_FADE_MS = 500;
+const LANGUAGE_HEADER_COPY_HEIGHT = 132;
+
+const getLanguageSelectionCopy = (language: SupportedLanguage) => {
+  const languageSelection = getRootCatalog(language).AuthStrings.LanguageSelection;
+
+  return {
+    description: languageSelection.DESCRIPTION,
+    title: languageSelection.TITLE,
+  };
+};
+
+const getLanguageOptionIndex = (language: SupportedLanguage): number =>
+  LANGUAGE_OPTIONS.findIndex((option) => option.code === language);
+
 const LanguageSelectionScreen = ({onSubmit}: LanguageSelectionScreenProps): React.JSX.Element => {
   const [selectedLanguage, setSelectedLanguage] = useState<SupportedLanguage | null>(null);
+  const [titleLanguage, setTitleLanguage] = useState<SupportedLanguage>(LANGUAGE_OPTIONS[0]?.code ?? "en");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const titleOpacity = useRef(new Animated.Value(1)).current;
+  const titleAnimationRef = useRef<Animated.CompositeAnimation | null>(null);
+  const titleCycleTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const titleLanguageIndexRef = useRef(0);
 
   const languageOptions = useMemo(() => {
     return LANGUAGE_OPTIONS.map((option) => ({
@@ -41,8 +62,98 @@ const LanguageSelectionScreen = ({onSubmit}: LanguageSelectionScreenProps): Reac
     }));
   }, []);
 
+  const languageSelectionCopy = getLanguageSelectionCopy(titleLanguage);
+
+  const clearTitleCycleTimeout = useCallback(() => {
+    if (titleCycleTimeoutRef.current) {
+      clearTimeout(titleCycleTimeoutRef.current);
+      titleCycleTimeoutRef.current = null;
+    }
+  }, []);
+
+  const clearTitleTween = useCallback(() => {
+    clearTitleCycleTimeout();
+    titleAnimationRef.current?.stop();
+    titleAnimationRef.current = null;
+  }, [clearTitleCycleTimeout]);
+
+  const fadeTitleToLanguage = useCallback(
+    (language: SupportedLanguage, onComplete?: () => void) => {
+      clearTitleTween();
+
+      const fadeOut = Animated.timing(titleOpacity, {
+        duration: LANGUAGE_TITLE_FADE_MS,
+        toValue: 0,
+        useNativeDriver: true,
+      });
+
+      titleAnimationRef.current = fadeOut;
+      fadeOut.start(({finished}) => {
+        if (!finished) {
+          return;
+        }
+
+        setTitleLanguage(language);
+
+        const fadeIn = Animated.timing(titleOpacity, {
+          duration: LANGUAGE_TITLE_FADE_MS,
+          toValue: 1,
+          useNativeDriver: true,
+        });
+
+        titleAnimationRef.current = fadeIn;
+        fadeIn.start(({finished: fadeInFinished}) => {
+          titleAnimationRef.current = null;
+
+          if (fadeInFinished) {
+            onComplete?.();
+          }
+        });
+      });
+    },
+    [clearTitleTween, titleOpacity],
+  );
+
+  useEffect(() => {
+    if (selectedLanguage || languageOptions.length <= 1) {
+      return clearTitleCycleTimeout;
+    }
+
+    const scheduleNextTitle = () => {
+      titleCycleTimeoutRef.current = setTimeout(() => {
+        const nextIndex = (titleLanguageIndexRef.current + 1) % languageOptions.length;
+        const nextLanguage = languageOptions[nextIndex].code;
+
+        titleLanguageIndexRef.current = nextIndex;
+        fadeTitleToLanguage(nextLanguage, scheduleNextTitle);
+      }, LANGUAGE_TITLE_HOLD_MS);
+    };
+
+    scheduleNextTitle();
+
+    return clearTitleCycleTimeout;
+  }, [clearTitleCycleTimeout, fadeTitleToLanguage, languageOptions, selectedLanguage]);
+
+  useEffect(() => {
+    return clearTitleTween;
+  }, [clearTitleTween]);
+
   const handleSelectLanguage = (language: SupportedLanguage) => {
+    const selectedOptionIndex = getLanguageOptionIndex(language);
+
+    if (selectedLanguage === language) {
+      const titleOptionIndex = getLanguageOptionIndex(titleLanguage);
+
+      clearTitleTween();
+      titleOpacity.setValue(1);
+      titleLanguageIndexRef.current = titleOptionIndex >= 0 ? titleOptionIndex : titleLanguageIndexRef.current;
+      setSelectedLanguage(null);
+      return;
+    }
+
+    titleLanguageIndexRef.current = selectedOptionIndex >= 0 ? selectedOptionIndex : titleLanguageIndexRef.current;
     setSelectedLanguage(language);
+    fadeTitleToLanguage(language);
     setLocale(language);
   };
 
@@ -52,6 +163,7 @@ const LanguageSelectionScreen = ({onSubmit}: LanguageSelectionScreenProps): Reac
     }
 
     setIsSubmitting(true);
+    clearTitleTween();
     try {
       await onSubmit(selectedLanguage);
     } finally {
@@ -65,8 +177,13 @@ const LanguageSelectionScreen = ({onSubmit}: LanguageSelectionScreenProps): Reac
 
       <View style={screenStyles.container}>
         <View style={screenStyles.header}>
-          <Text style={screenStyles.title}>{t("AuthStrings.LanguageSelection.TITLE")}</Text>
-          <Text style={screenStyles.description}>{t("AuthStrings.LanguageSelection.DESCRIPTION")}</Text>
+          <Animated.View
+            style={[screenStyles.headerCopy, {opacity: titleOpacity}]}
+            testID="language-selection-copy"
+          >
+            <Text style={screenStyles.title}>{languageSelectionCopy.title}</Text>
+            <Text style={screenStyles.description}>{languageSelectionCopy.description}</Text>
+          </Animated.View>
         </View>
 
         <ScrollView
@@ -149,6 +266,14 @@ const screenStyles = StyleSheet.create({
     alignItems: "center",
     paddingTop: SPACING.xl,
   },
+  headerCopy: {
+    alignItems: "center",
+    gap: SPACING.md,
+    height: LANGUAGE_HEADER_COPY_HEIGHT,
+    justifyContent: "center",
+    paddingHorizontal: SPACING.md,
+    width: "100%",
+  },
   languageCard: {
     alignItems: "center",
     backgroundColor: "rgba(12, 17, 37, 0.74)",
@@ -172,7 +297,6 @@ const screenStyles = StyleSheet.create({
   selectedLanguageCard: {
     backgroundColor: "rgba(64, 31, 64, 0.92)",
     borderColor: COLORS.primaryOrangeLight,
-    transform: [{translateY: -2}],
     ...SHADOWS.lg,
   },
   supportedLanguageCard: {
@@ -186,7 +310,6 @@ const screenStyles = StyleSheet.create({
   title: {
     ...styles.title,
     color: COLORS.white,
-    marginBottom: SPACING.md,
     textAlign: "center",
   },
 });

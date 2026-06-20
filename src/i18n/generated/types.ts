@@ -84,8 +84,7 @@ export const translationSchema = {
   "WelcomeModal": {
     "EARN_COINS_TEXT": "Earn coins, beat daily challenges, and climb the leaderboard.",
     "LETS_PLAY": "Let's Play",
-    "SOLVE_RIDDLES_TEXT": "Solve engaging riddles by guessing the answer letter by letter. Use the colour clues to narrow down each guess.",
-    "WELCOME_TITLE": "Welcome to Riddle Quest!"
+    "SOLVE_RIDDLES_TEXT": "Solve engaging riddles by guessing the answer letter by letter. Use the colour clues to narrow down each guess."
   },
   "WelcomeBackModal": {
     "TAP_TO_CONTINUE": "Tap to continue",
@@ -100,8 +99,7 @@ export const translationSchema = {
     "GOAL_TITLE": "The Goal",
     "GOT_IT_BUTTON": "Got It!",
     "TIPS_DESCRIPTION": "Start with common letters and use the color feedback to narrow down your guesses. Remember, you only have 5 attempts!",
-    "TIPS_TITLE": "Tips for Success",
-    "TITLE": "How to Play"
+    "TIPS_TITLE": "Tips for Success"
   },
   "Profile": {
     "ACCOUNT_SETTINGS_TITLE": "Account Settings",
@@ -355,7 +353,6 @@ export const translationSchema = {
     "COST_COINS_SUFFIX": " Coins.",
     "DAILY_CHALLENGE_LABEL": "Daily Challenge",
     "GUEST_MODE_NOTICE_MESSAGE": "Your progress could be lost in guest mode, and some features like the leaderboard are unavailable.",
-    "GUEST_MODE_NOTICE_TITLE": "Guest Mode Notice",
     "HINT_ERROR_TITLE": "Error",
     "HINT_MODAL_TITLE": "Use a Hint?",
     "HINT_NOT_AVAILABLE_MESSAGE": "No more letters can be revealed.",
@@ -395,7 +392,6 @@ export const translationSchema = {
     "CLASSIC_FROM_DAILY_BODY": "Daily challenge complete. Classic mode lets you keep solving riddles at your own pace.",
     "CLASSIC_FROM_DAILY_TITLE": "Classic mode",
     "GOT_IT_BUTTON": "Got it",
-    "HELP_BUTTON_LABEL": "Help",
     "HINT_AFTER_WRONG_BODY": "That guess missed. Tap Hint to reveal a helpful letter and keep going.",
     "HINT_AFTER_WRONG_TITLE": "Need a clue?",
     "LEADERBOARD_FIFTH_CORRECT_BODY": "Five correct answers! Open your profile to see how you rank.",
@@ -417,7 +413,11 @@ export const translationSchema = {
     "SHOP_OUT_OF_COINS_BODY": "You are out of coins for this action. Open the shop to buy or earn more.",
     "SHOP_OUT_OF_COINS_TITLE": "Grab more coins",
     "SUBMIT_ANSWER_BODY": "When every slot is filled, tap Submit to check your guess.",
-    "SUBMIT_ANSWER_TITLE": "Submit your answer"
+    "SUBMIT_ANSWER_TITLE": "Submit your answer",
+    "PROFILE_PROGRESSION_TITLE": "User progression",
+    "PROFILE_PROGRESSION_BODY": "Your rank, XP level, and progress bar show how close you are to the next level.",
+    "PROFILE_DAILY_STREAK_TITLE": "Daily streak",
+    "PROFILE_DAILY_STREAK_BODY": "Your streak tracks regular daily play. Keep solving daily puzzles to build it up."
   },
   "VictoryModal": {
     "ACHIEVEMENT_UNLOCKED": "Achievement Unlocked!",

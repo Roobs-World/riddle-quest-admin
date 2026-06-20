@@ -14,8 +14,10 @@ describe("OnboardingProgressBadge", () => {
       left: 0,
       position: "absolute",
       right: 0,
+      top: expect.any(Number),
       zIndex: 20,
     });
+    expect(getByTestId("onboarding-progress-badge").props.style.top).toBeLessThan(24);
 
     const previousCircle = getByTestId("onboarding-progress-breadcrumb-dot-1").props.style;
     const currentCircle = getByTestId("onboarding-progress-breadcrumb-dot-2").props.style;

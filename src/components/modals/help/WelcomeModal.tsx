@@ -1,7 +1,6 @@
 import React, {useCallback} from "react";
 import {View, Text, Modal, Pressable} from "react-native";
-import Logo from "../../../../assets/images/main-logo.svg";
-import {TYPOGRAPHY, SPACING} from "src/styles";
+import {TYPOGRAPHY} from "src/styles";
 import {MODAL_WIDTH, MODAL_HEIGHT, MODAL_CONTENT_PADDING, MODAL_MAX_HEIGHT} from "../../../constants/layout";
 import {t} from "../../../i18n";
 import {verticalScale} from "@/utils/responsive";
@@ -9,6 +8,7 @@ import RotatingWheelBackground from "../../shared/RotatingWheelBackground";
 import OnboardingProgressBadge from "../OnboardingProgressBadge";
 import {OnboardingProgress} from "../../../types/ModalTypes";
 import DecoratedModalShell from "../../shared/DecoratedModalShell";
+import {OnboardingLogoHeader} from "../../branding/RiddleQuestLogo";
 
 interface WelcomeModalProps {
   isVisible: boolean;
@@ -17,6 +17,8 @@ interface WelcomeModalProps {
   onDismiss?: () => void;
   onboardingProgress?: OnboardingProgress;
 }
+
+const WELCOME_COPY_TOP_OFFSET = verticalScale(132);
 
 const WelcomeModal: React.FC<WelcomeModalProps> = ({isVisible, onClose, onDismiss, onboardingProgress}) => {
   const modalHeight = Math.min(MODAL_HEIGHT, MODAL_MAX_HEIGHT ?? MODAL_HEIGHT);
@@ -59,24 +61,14 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({isVisible, onClose, onDismis
                 paddingTop: MODAL_CONTENT_PADDING,
               }}
             >
-              <Logo width={"100%"} style={{position: "absolute", marginTop: SPACING.lg}} />
-              <Text
-                style={{
-                  fontFamily: TYPOGRAPHY.fontPrimary,
-                  fontSize: TYPOGRAPHY.fontSize["2xl"],
-                  color: "black",
-                  textAlign: "center",
-                  marginTop: verticalScale(80),
-                }}
-              >
-                {t("WelcomeModal.WELCOME_TITLE")}
-              </Text>
+              <OnboardingLogoHeader />
 
               <View
+                testID="welcome-modal-copy-block"
                 style={{
                   width: "80%",
                   position: "absolute",
-                  marginTop: verticalScale(170),
+                  marginTop: WELCOME_COPY_TOP_OFFSET,
                 }}
               >
                 <Text

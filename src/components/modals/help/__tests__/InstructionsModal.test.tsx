@@ -37,7 +37,7 @@ describe("InstructionsModal", () => {
     it("renders correctly when visible", () => {
       const {getByText} = render(<InstructionsModal isVisible={true} onClose={mockOnClose} />);
 
-      expect(getByText("How to Play")).toBeTruthy();
+      expect(getByText("The Goal")).toBeTruthy();
     });
 
     it("renders as a Modal component", () => {
@@ -59,6 +59,33 @@ describe("InstructionsModal", () => {
 
       expect(getByTestId("onboarding-progress-badge")).toBeTruthy();
       expect(queryByText("3/3")).toBeNull();
+    });
+
+    it("hides the top close button during onboarding", () => {
+      const {queryByTestId} = render(
+        <InstructionsModal isVisible={true} onClose={mockOnClose} onboardingProgress={{current: 3, total: 3}} />,
+      );
+
+      expect(queryByTestId("close-button")).toBeNull();
+    });
+
+    it("uses the decorated onboarding background when progress is provided", () => {
+      const {getByTestId} = render(
+        <InstructionsModal isVisible={true} onClose={mockOnClose} onboardingProgress={{current: 2, total: 3}} />,
+      );
+
+      expect(getByTestId("instructions-onboarding-modal-background")).toBeTruthy();
+    });
+
+    it("uses tap-to-continue instead of a visible button during onboarding", () => {
+      const {getByTestId, queryByText} = render(
+        <InstructionsModal isVisible={true} onClose={mockOnClose} onboardingProgress={{current: 2, total: 3}} />,
+      );
+
+      expect(queryByText("Got It!")).toBeNull();
+
+      fireEvent.press(getByTestId("instructions-onboarding-touch-target"));
+      expect(mockOnClose).toHaveBeenCalledTimes(1);
     });
   });
 

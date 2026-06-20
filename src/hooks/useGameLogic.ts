@@ -233,6 +233,8 @@ const useGameLogic = ({riddleId, answer, gameMode, isGuestMode = false}: UseGame
         gameEventBus.emit<import("../services/GameEventBus").GameCompletedEvent>({
           type: "GAME_COMPLETED",
           outcome: "won",
+          riddleId,
+          gameMode,
           attempts: engineOutcome.attempts,
           coinsEarned,
         });
@@ -255,6 +257,8 @@ const useGameLogic = ({riddleId, answer, gameMode, isGuestMode = false}: UseGame
         gameEventBus.emit<import("../services/GameEventBus").GameCompletedEvent>({
           type: "GAME_COMPLETED",
           outcome: "lost",
+          riddleId,
+          gameMode,
           attempts: engineOutcome.attempts,
         });
         void clearGuestSession();

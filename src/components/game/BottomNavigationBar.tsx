@@ -18,6 +18,7 @@ import SettingsIcon from "../icons/SettingsIcon";
 import {SPACING} from "../../styles";
 import {scale} from "../../utils/responsive";
 import {t} from "../../i18n";
+import {analyticsService} from "../../services/AnalyticsService";
 
 /**
  * Type definition for overlay types that can be triggered from the navigation bar.
@@ -92,6 +93,20 @@ const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
   onSettingsPress,
   profileButtonRef,
 }) => {
+  const handleSettingsPress = () => {
+    void analyticsService.logButtonPress?.("settings_button", {
+      label: t("Accessibility.OPEN_SETTINGS"),
+    });
+    onSettingsPress();
+  };
+
+  const handleProfilePress = () => {
+    void analyticsService.logButtonPress?.("profile_button", {
+      label: t("Accessibility.OPEN_PROFILE"),
+    });
+    onProfilePress();
+  };
+
   return (
     <View
       style={{
@@ -109,7 +124,7 @@ const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
       {/* Left Side - Settings Button */}
       <TouchableOpacity
         style={{marginLeft: scale(20), padding: scale(8)}}
-        onPress={onSettingsPress}
+        onPress={handleSettingsPress}
         testID="settings-button"
         accessible={true}
         accessibilityRole="button"
@@ -123,7 +138,7 @@ const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
       <TouchableOpacity
         ref={profileButtonRef}
         style={{marginRight: scale(20), padding: scale(8)}}
-        onPress={onProfilePress}
+        onPress={handleProfilePress}
         testID="profile-button"
         accessible={true}
         accessibilityRole="button"

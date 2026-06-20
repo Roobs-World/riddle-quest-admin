@@ -8,8 +8,7 @@
     "GOAL_TITLE": "Amac",
     "GOT_IT_BUTTON": "Anladim!",
     "TIPS_DESCRIPTION": "Yaygin harflerle baslayin ve renk geri bildirimini kullanin. Unutmayin, sadece 3 deneme hakkiniz var!",
-    "TIPS_TITLE": "Ipuclari",
-    "TITLE": "Nasil Oynanir"
+    "TIPS_TITLE": "Ipuclari"
   },
   "WelcomeBackModal": {
     "TAP_TO_CONTINUE": "Devam etmek icin dokun",
@@ -18,7 +17,6 @@
   "WelcomeModal": {
     "EARN_COINS_TEXT": "Para kazanin, gunluk gorevleri tamamlayin ve siralama listesine yukselin.",
     "LETS_PLAY": "Oynayalim",
-    "SOLVE_RIDDLES_TEXT": "Cevabi harf harf tahmin ederek bilmeceleri cozun. Renk ipuclari her tahmininize rehberlik eder.",
-    "WELCOME_TITLE": "Riddle Quest'e\nHos Geldiniz!"
+    "SOLVE_RIDDLES_TEXT": "Cevabi harf harf tahmin ederek bilmeceleri cozun. Renk ipuclari her tahmininize rehberlik eder."
   }
 }

@@ -89,12 +89,14 @@ const mockLogGameStart = jest.fn((_params: unknown) => Promise.resolve());
 const mockLogGameInteraction = jest.fn((_action: unknown, _params?: unknown) => Promise.resolve());
 const mockLogCoinSpend = jest.fn((_params: unknown) => Promise.resolve());
 const mockLogAchievementUnlocked = jest.fn((_achievementId: unknown) => Promise.resolve());
+const mockLogButtonPress = jest.fn((_buttonId: unknown, _params?: unknown) => Promise.resolve());
 jest.mock("../../../services/AnalyticsService", () => ({
   analyticsService: {
     logGameStart: (params: unknown) => mockLogGameStart(params),
     logGameInteraction: (action: unknown, params?: unknown) => mockLogGameInteraction(action, params),
     logCoinSpend: (params: unknown) => mockLogCoinSpend(params),
     logAchievementUnlocked: (achievementId: unknown) => mockLogAchievementUnlocked(achievementId),
+    logButtonPress: (buttonId: unknown, params?: unknown) => mockLogButtonPress(buttonId, params),
   },
 }));
 
@@ -660,11 +662,11 @@ describe("GameScreen", () => {
         await waitFor(() => {
           expect(mockShowInfoModal).toHaveBeenCalledWith(
             expect.objectContaining({
-              title: "Guest Mode Notice",
+              message: "Your progress could be lost in guest mode, and some features like the leaderboard are unavailable.",
             }),
           );
         });
-        expect(mockShowInfoModal.mock.calls[0][0].onboardingProgress).toBeUndefined();
+        expect(mockShowInfoModal.mock.calls[0][0].onboardingProgress).toEqual({current: 3, total: 3});
 
         act(() => {
           jest.advanceTimersByTime(650);
@@ -937,7 +939,7 @@ describe("GameScreen", () => {
         await waitFor(() => {
           expect(mockShowWelcomeModal).toHaveBeenCalledWith(
             expect.objectContaining({
-              onboardingProgress: {current: 1, total: 2},
+              onboardingProgress: {current: 1, total: 3},
             }),
           );
         });
@@ -968,7 +970,7 @@ describe("GameScreen", () => {
         await waitFor(() => {
           expect(mockShowInstructionsModal).toHaveBeenCalledWith(
             expect.objectContaining({
-              onboardingProgress: {current: 2, total: 2},
+              onboardingProgress: {current: 2, total: 3},
               onDismiss: expect.any(Function),
             }),
           );
@@ -980,16 +982,20 @@ describe("GameScreen", () => {
         await waitFor(() => {
           expect(mockShowInfoModal).toHaveBeenCalledWith(
             expect.objectContaining({
-              title: "Guest Mode Notice",
+              message: "Your progress could be lost in guest mode, and some features like the leaderboard are unavailable.",
               actionButtonText: "Upgrade Account",
               onAction: expect.any(Function),
             }),
           );
         });
 
-        const guestInfoCall = mockShowInfoModal.mock.calls.find((call) => call[0]?.title === "Guest Mode Notice");
+        const guestInfoCall = mockShowInfoModal.mock.calls.find(
+          (call) =>
+            call[0]?.message ===
+            "Your progress could be lost in guest mode, and some features like the leaderboard are unavailable.",
+        );
         expect(guestInfoCall).toBeDefined();
-        expect(guestInfoCall?.[0]?.onboardingProgress).toBeUndefined();
+        expect(guestInfoCall?.[0]?.onboardingProgress).toEqual({current: 3, total: 3});
 
         await act(async () => {
           guestInfoCall?.[0]?.onAction?.();
@@ -1897,7 +1903,7 @@ describe("GameScreen", () => {
         await waitFor(() => {
           expect(mockShowInstructionsModal).toHaveBeenCalledWith(
             expect.objectContaining({
-              onboardingProgress: {current: 2, total: 2},
+              onboardingProgress: {current: 2, total: 3},
               onDismiss: expect.any(Function),
             }),
           );
@@ -1909,12 +1915,12 @@ describe("GameScreen", () => {
         await waitFor(() => {
           expect(mockShowInfoModal).toHaveBeenCalledWith(
             expect.objectContaining({
-              title: "Guest Mode Notice",
+              message: "Your progress could be lost in guest mode, and some features like the leaderboard are unavailable.",
               onConfirm: expect.any(Function),
             }),
           );
         });
-        expect(mockShowInfoModal.mock.calls[0][0].onboardingProgress).toBeUndefined();
+        expect(mockShowInfoModal.mock.calls[0][0].onboardingProgress).toEqual({current: 3, total: 3});
 
         const guestNotice = mockShowInfoModal.mock.calls[0][0];
         await act(async () => {

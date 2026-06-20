@@ -142,7 +142,6 @@ const getModalSurfaceOverrides = (surfaceId: QASurfaceId): ModalData => {
       };
     case "modal-info-onboarding-upgrade-action":
       return {
-        title: t("GameScreenAlerts.GUEST_MODE_NOTICE_TITLE"),
         message: t("GameScreenAlerts.GUEST_MODE_SAVED_ON_DEVICE_MESSAGE"),
         actionButtonText: t("Profile.UPGRADE_ACCOUNT_BUTTON"),
         onAction: noop,

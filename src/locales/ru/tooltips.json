@@ -5,7 +5,6 @@
     "CLASSIC_FROM_DAILY_BODY": "Ezhednevnoe ispytanie zaversheno. V klassicheskom rezhime mozhno reshat zagadki v svoem tempe.",
     "CLASSIC_FROM_DAILY_TITLE": "Klassicheskiy rezhim",
     "GOT_IT_BUTTON": "Ponyatno",
-    "HELP_BUTTON_LABEL": "Spravka",
     "HINT_AFTER_WRONG_BODY": "Eta dogadka ne podoshla. Nazhmite Podskazka, chtoby otkryt poleznuyu bukvu.",
     "HINT_AFTER_WRONG_TITLE": "Nuzhna podskazka?",
     "LEADERBOARD_FIFTH_CORRECT_BODY": "Pyat pravilnykh otvetov! Otkroyte profil, chtoby uvidet svoe mesto.",
@@ -27,6 +26,10 @@
     "SHOP_OUT_OF_COINS_BODY": "Dlya etogo deystviya ne khvataet monet. Otkroyte magazin, chtoby kupit ili zarabotat eshche.",
     "SHOP_OUT_OF_COINS_TITLE": "Poluchite bolshe monet",
     "SUBMIT_ANSWER_BODY": "Kogda vse kletki zapolneny, nazhmite Otpravit, chtoby proverit dogadku.",
-    "SUBMIT_ANSWER_TITLE": "Otpravte otvet"
+    "SUBMIT_ANSWER_TITLE": "Otpravte otvet",
+    "PROFILE_PROGRESSION_TITLE": "Прогресс пользователя",
+    "PROFILE_PROGRESSION_BODY": "Ваш ранг, уровень XP и шкала прогресса показывают, насколько вы близки к следующему уровню.",
+    "PROFILE_DAILY_STREAK_TITLE": "Ежедневная серия",
+    "PROFILE_DAILY_STREAK_BODY": "Серия отслеживает регулярную ежедневную игру. Решайте ежедневные загадки, чтобы увеличить ее."
   }
 }

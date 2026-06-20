@@ -1,5 +1,5 @@
-import React, {useRef, useState} from "react";
-import {View, Text, TouchableOpacity, Modal, ScrollView, Image, Alert} from "react-native";
+import React, {useCallback, useEffect, useRef, useState} from "react";
+import {View, Text, TouchableOpacity, Modal, ScrollView, Image, Alert, type LayoutChangeEvent} from "react-native";
 import {Player} from "../../../validation/firestoreSchemas";
 import CloseButton from "../../buttons/CloseButton";
 import {useModal} from "../../../hooks/useModal";
@@ -23,7 +23,7 @@ import UpgradeAccountModal from "./UpgradeAccountModal";
 import {LOADING_SPINNER_OPACITY, LOADING_SPINNER_SIZE} from "@/constants/loading";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import {useTooltip} from "../../../contexts/TooltipContext";
-import type {TooltipId} from "../../tooltips/types";
+import type {TooltipId, TooltipSequenceRequest} from "../../tooltips/types";
 import DeleteAccountConfirmationModal from "./DeleteAccountConfirmationModal";
 import {getCallableFunction} from "../../../utils/firebaseFunctions";
 import {getNextRankForLevel, getRankForLevel} from "../../../constants/ranks";
@@ -38,9 +38,23 @@ interface FullProfileDetailsModalProps {
 const PURPLE = "#401F40";
 const CREAM = "#FCFAF4";
 const GOLD = "#FEC880";
+const PROFILE_TOOLTIP_SCROLL_TOP_PADDING = 24;
+const PROFILE_TOOLTIP_SCROLL_SETTLE_MS = 260;
 
 const getProfileTooltipContent = (id: TooltipId) => {
   switch (id) {
+    case "profileProgression":
+      return {
+        title: t("Tooltips.PROFILE_PROGRESSION_TITLE"),
+        body: t("Tooltips.PROFILE_PROGRESSION_BODY"),
+        action: t("Tooltips.GOT_IT_BUTTON"),
+      };
+    case "profileDailyStreak":
+      return {
+        title: t("Tooltips.PROFILE_DAILY_STREAK_TITLE"),
+        body: t("Tooltips.PROFILE_DAILY_STREAK_BODY"),
+        action: t("Tooltips.GOT_IT_BUTTON"),
+      };
     case "profileIdentity":
       return {
         title: t("Tooltips.PROFILE_IDENTITY_TITLE"),
@@ -94,7 +108,7 @@ const getProfileTooltipContent = (id: TooltipId) => {
 
 const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisible, onClose, playerData}) => {
   const modal = useModal();
-  const tooltip = useTooltip();
+  const {cancelTooltipSequence, showTooltipSequence} = useTooltip();
   const {logout} = useAuthSession();
   const {updatePlayerData, playerData: authPlayerData} = usePlayer();
   const resolvedPlayerData = authPlayerData ?? playerData;
@@ -105,14 +119,19 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisi
   const [isUploading, setIsUploading] = useState(false);
   const [isDeleteConfirmVisible, setIsDeleteConfirmVisible] = useState(false);
   const [isDeletingAccount, setIsDeletingAccount] = useState(false);
+  const hasStartedTooltipSequenceRef = useRef(false);
+  const scrollViewRef = useRef<ScrollView>(null);
+  const tooltipAnchorOffsetsRef = useRef<Partial<Record<TooltipId, number>>>({});
+  const profileIdentityRef = useRef<View>(null);
+  const profileProgressionRef = useRef<View>(null);
+  const profileDailyStreakRef = useRef<View>(null);
+  const dailyPuzzlesRef = useRef<View>(null);
+  const profileStatsRef = useRef<View>(null);
+  const profileCoinsRef = useRef<View>(null);
+  const profileAchievementsRef = useRef<View>(null);
+  const profileStatisticsRef = useRef<View>(null);
+  const profileLeaderboardRef = useRef<View>(null);
   const avatarUrl = resolvedPlayerData?.avatarUrl ?? null;
-  const showProfileTooltip = (id: TooltipId, targetRef: React.RefObject<View | null>) => {
-    void tooltip.showTooltip({
-      id,
-      targetRef,
-      content: getProfileTooltipContent(id),
-    });
-  };
 
   const hasProfileData = Boolean(resolvedPlayerData);
   const stats = resolvedPlayerData?.stats;
@@ -201,6 +220,68 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisi
   const nextRank = getNextRankForLevel(level);
   const xpProgressWidth = `${Math.round(progressPct * 100)}%` as `${number}%`;
 
+  const setTooltipAnchorOffset = useCallback(
+    (id: TooltipId) => (event: LayoutChangeEvent) => {
+      tooltipAnchorOffsetsRef.current[id] = event.nativeEvent.layout.y;
+    },
+    [],
+  );
+
+  const scrollToTooltipAnchor = useCallback((id: TooltipId): Promise<void> => {
+    const y = tooltipAnchorOffsetsRef.current[id] ?? 0;
+    scrollViewRef.current?.scrollTo({
+      y: Math.max(0, y - PROFILE_TOOLTIP_SCROLL_TOP_PADDING),
+      animated: true,
+    });
+    return new Promise((resolve) => {
+      setTimeout(resolve, PROFILE_TOOLTIP_SCROLL_SETTLE_MS);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!isVisible) {
+      hasStartedTooltipSequenceRef.current = false;
+      return;
+    }
+
+    if (!hasProfileData || hasStartedTooltipSequenceRef.current) {
+      return;
+    }
+
+    hasStartedTooltipSequenceRef.current = true;
+    const createProfileTooltipRequest = (
+      id: TooltipId,
+      targetRef: React.RefObject<View | null>,
+    ): TooltipSequenceRequest => ({
+      id,
+      targetRef,
+      content: getProfileTooltipContent(id),
+      preferredPlacement: id === "profileDailyStreak" ? "below" : "auto",
+      onBeforeShow: () => scrollToTooltipAnchor(id),
+    });
+
+    const tooltipSequence: TooltipSequenceRequest[] = [
+      createProfileTooltipRequest("profileProgression", profileProgressionRef),
+      createProfileTooltipRequest("profileDailyStreak", profileDailyStreakRef),
+      createProfileTooltipRequest("profileAchievements", profileAchievementsRef),
+      createProfileTooltipRequest("profileStatistics", profileStatisticsRef),
+      createProfileTooltipRequest("profileLeaderboard", profileLeaderboardRef),
+      createProfileTooltipRequest("profileIdentity", profileIdentityRef),
+      createProfileTooltipRequest("profileDailyPuzzles", dailyPuzzlesRef),
+      createProfileTooltipRequest("profileStats", profileStatsRef),
+      createProfileTooltipRequest("profileCoins", profileCoinsRef),
+    ];
+
+    const startSequenceTimer = setTimeout(() => {
+      void showTooltipSequence(tooltipSequence);
+    }, 450);
+
+    return () => {
+      clearTimeout(startSequenceTimer);
+      cancelTooltipSequence();
+    };
+  }, [cancelTooltipSequence, hasProfileData, isVisible, scrollToTooltipAnchor, showTooltipSequence]);
+
   return (
     <Modal visible={isVisible} transparent={true} animationType="none" onRequestClose={onClose}>
       <View
@@ -230,6 +311,7 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisi
             }}
           >
             <ScrollView
+              ref={scrollViewRef}
               testID="profile-modal-body-scroll"
               style={{flex: 1, backgroundColor: CREAM}}
               contentContainerStyle={{
@@ -290,17 +372,15 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisi
                   {t("Profile.PROFILE_HEADER")}
                 </Text>
                 <View style={{flexDirection: "row", alignItems: "center", gap: 8}}>
-                  <ProfileHelpButton
-                    tooltipId="profileIdentity"
-                    onPress={showProfileTooltip}
-                    inverse
-                    testID="profile-help-identity"
-                  />
                   <CloseButton onPress={onClose} size={CLOSE_BUTTON_SIZE} color="white" />
                 </View>
               </View>
 
-              <View style={{alignItems: "center", marginTop: SPACING.sm}}>
+              <View
+                ref={profileIdentityRef}
+                onLayout={setTooltipAnchorOffset("profileIdentity")}
+                style={{alignItems: "center", marginTop: SPACING.sm}}
+              >
                 <TouchableOpacity onPress={handleUploadAvatar} activeOpacity={0.8}>
                   {avatarUrl ? (
                     <Image
@@ -391,6 +471,8 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisi
                 </View>
 
                 <View
+                  ref={profileProgressionRef}
+                  onLayout={setTooltipAnchorOffset("profileProgression")}
                   style={{
                     width: "70%",
                     marginTop: SPACING.sm,
@@ -526,9 +608,8 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisi
                 ) : null}
                 <SectionHeader
                   title={t("Profile.DAILY_PUZZLES_COMPLETED_HEADER")}
-                  tooltipId="profileDailyPuzzles"
-                  onPressHelp={showProfileTooltip}
-                  testID="profile-help-daily-puzzles"
+                  targetRef={dailyPuzzlesRef}
+                  onLayout={setTooltipAnchorOffset("profileDailyPuzzles")}
                 />
                 <View
                   style={{
@@ -575,101 +656,95 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisi
                   </Text>
                 </View>
 
-                <SectionHeader
-                  title={t("Profile.BEST_STRIKE_HEADER")}
-                  tooltipId="profileStats"
-                  onPressHelp={showProfileTooltip}
-                  testID="profile-help-stats"
-                />
                 <View
-                  style={{
-                    flexDirection: "row",
-                    flexWrap: "wrap",
-                    gap: SPACING.sm,
-                    marginBottom: SPACING.lg,
-                  }}
+                  ref={profileDailyStreakRef}
+                  onLayout={setTooltipAnchorOffset("profileDailyStreak")}
                 >
-                  <StatBox value={stats?.bestStreak ?? 0} label={t("StatsModal.BEST_STREAK")} />
-                  <StatBox value={stats?.totalWordsGuessed ?? 0} label={t("StatsModal.TOTAL_WORDS_GUESSED")} />
-                  <StatBox value={`${winRate}%`} label={t("StatsModal.WIN_RATE")} />
-                  <StatBox value={avgGuess} label={t("Profile.AVG_GUESS_LABEL")} />
+                  <SectionHeader
+                    title={t("Profile.BEST_STRIKE_HEADER")}
+                    targetRef={profileStatsRef}
+                    onLayout={setTooltipAnchorOffset("profileStats")}
+                  />
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      flexWrap: "wrap",
+                      gap: SPACING.sm,
+                      marginBottom: SPACING.lg,
+                    }}
+                  >
+                    <StatBox value={stats?.bestStreak ?? 0} label={t("StatsModal.BEST_STREAK")} />
+                    <StatBox value={stats?.totalWordsGuessed ?? 0} label={t("StatsModal.TOTAL_WORDS_GUESSED")} />
+                    <StatBox value={`${winRate}%`} label={t("StatsModal.WIN_RATE")} />
+                    <StatBox value={avgGuess} label={t("Profile.AVG_GUESS_LABEL")} />
+                  </View>
                 </View>
 
                 <View style={{marginBottom: SPACING.lg}}>
                   <SectionHeader
                     title={t("Profile.TREASURE_CHEST_TITLE")}
-                    tooltipId="profileCoins"
-                    onPressHelp={showProfileTooltip}
-                    testID="profile-help-coins"
+                    targetRef={profileCoinsRef}
+                    onLayout={setTooltipAnchorOffset("profileCoins")}
                   />
                   <TreasureChest coins={resolvedPlayerData?.coins ?? 0} />
                 </View>
 
                 <View style={{height: SPACING.sm}} />
 
-                <TouchableOpacity
-                  disabled={!hasProfileData}
-                  onPress={() => {
-                    if (!resolvedPlayerData) return;
-                    modal.openGameModal("achievements", {
-                      playerData: resolvedPlayerData,
-                    });
-                  }}
-                  style={[actionButtonStyle, !hasProfileData ? actionButtonDisabledStyle : null]}
-                >
-                  <View style={actionButtonContentStyle}>
-                    <Text style={actionButtonTextStyle}>{t("Achievements.MODAL_TITLE")}</Text>
-                    <ProfileHelpButton
-                      tooltipId="profileAchievements"
-                      onPress={showProfileTooltip}
-                      testID="profile-help-achievements"
-                    />
-                  </View>
-                </TouchableOpacity>
+                <View ref={profileAchievementsRef} onLayout={setTooltipAnchorOffset("profileAchievements")}>
+                  <TouchableOpacity
+                    disabled={!hasProfileData}
+                    onPress={() => {
+                      if (!resolvedPlayerData) return;
+                      modal.openGameModal("achievements", {
+                        playerData: resolvedPlayerData,
+                      });
+                    }}
+                    style={[actionButtonStyle, !hasProfileData ? actionButtonDisabledStyle : null]}
+                  >
+                    <View style={actionButtonContentStyle}>
+                      <Text style={actionButtonTextStyle}>{t("Achievements.MODAL_TITLE")}</Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
 
                 <View style={{height: SPACING.sm}} />
 
-                <TouchableOpacity
-                  disabled={!hasProfileData}
-                  onPress={() => {
-                    if (!resolvedPlayerData) return;
-                    modal.openGameModal("stats", {
-                      playerData: resolvedPlayerData,
-                    });
-                  }}
-                  style={[actionButtonStyle, !hasProfileData ? actionButtonDisabledStyle : null]}
-                >
-                  <View style={actionButtonContentStyle}>
-                    <Text style={actionButtonTextStyle}>{t("StatsModal.TITLE")}</Text>
-                    <ProfileHelpButton
-                      tooltipId="profileStatistics"
-                      onPress={showProfileTooltip}
-                      testID="profile-help-statistics"
-                    />
-                  </View>
-                </TouchableOpacity>
+                <View ref={profileStatisticsRef} onLayout={setTooltipAnchorOffset("profileStatistics")}>
+                  <TouchableOpacity
+                    disabled={!hasProfileData}
+                    onPress={() => {
+                      if (!resolvedPlayerData) return;
+                      modal.openGameModal("stats", {
+                        playerData: resolvedPlayerData,
+                      });
+                    }}
+                    style={[actionButtonStyle, !hasProfileData ? actionButtonDisabledStyle : null]}
+                  >
+                    <View style={actionButtonContentStyle}>
+                      <Text style={actionButtonTextStyle}>{t("StatsModal.TITLE")}</Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
 
                 <View style={{height: SPACING.sm}} />
 
-                <TouchableOpacity
-                  disabled={!hasProfileData}
-                  onPress={() => {
-                    if (!resolvedPlayerData) return;
-                    modal.openGameModal("leaderboard", {
-                      currentUserId: firebaseUser?.uid ?? resolvedPlayerData.userId,
-                    });
-                  }}
-                  style={[actionButtonStyle, !hasProfileData ? actionButtonDisabledStyle : null]}
-                >
-                  <View style={actionButtonContentStyle}>
-                    <Text style={actionButtonTextStyle}>{t("Leaderboard.TITLE")}</Text>
-                    <ProfileHelpButton
-                      tooltipId="profileLeaderboard"
-                      onPress={showProfileTooltip}
-                      testID="profile-help-leaderboard"
-                    />
-                  </View>
-                </TouchableOpacity>
+                <View ref={profileLeaderboardRef} onLayout={setTooltipAnchorOffset("profileLeaderboard")}>
+                  <TouchableOpacity
+                    disabled={!hasProfileData}
+                    onPress={() => {
+                      if (!resolvedPlayerData) return;
+                      modal.openGameModal("leaderboard", {
+                        currentUserId: firebaseUser?.uid ?? resolvedPlayerData.userId,
+                      });
+                    }}
+                    style={[actionButtonStyle, !hasProfileData ? actionButtonDisabledStyle : null]}
+                  >
+                    <View style={actionButtonContentStyle}>
+                      <Text style={actionButtonTextStyle}>{t("Leaderboard.TITLE")}</Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
 
                 <View style={{height: SPACING.md}} />
 
@@ -754,65 +829,18 @@ const deleteAccountButtonTextStyle = {
   color: "#FFFFFF",
 };
 
-const ProfileHelpButton = ({
-  tooltipId,
-  onPress,
-  inverse = false,
-  testID,
-}: {
-  tooltipId: TooltipId;
-  onPress: (id: TooltipId, targetRef: React.RefObject<View | null>) => void;
-  inverse?: boolean;
-  testID: string;
-}) => {
-  const ref = useRef<View>(null);
-
-  return (
-    <TouchableOpacity
-      ref={ref}
-      onPress={(event) => {
-        event?.stopPropagation?.();
-        onPress(tooltipId, ref);
-      }}
-      accessibilityRole="button"
-      accessibilityLabel={`${t("Tooltips.HELP_BUTTON_LABEL")}: ${getProfileTooltipContent(tooltipId).title}`}
-      testID={testID}
-      style={{
-        width: moderateScale(26),
-        height: moderateScale(26),
-        borderRadius: moderateScale(13),
-        alignItems: "center",
-        justifyContent: "center",
-        backgroundColor: inverse ? "rgba(255,255,255,0.18)" : "#FFFFFF",
-        borderWidth: 1,
-        borderColor: inverse ? "#FFFFFF" : "#E4D8B8",
-      }}
-    >
-      <Text
-        style={{
-          fontFamily: TYPOGRAPHY.fontSecondaryBold,
-          fontSize: TYPOGRAPHY.fontSize.base,
-          color: inverse ? "#FFFFFF" : "#401F40",
-        }}
-      >
-        ?
-      </Text>
-    </TouchableOpacity>
-  );
-};
-
 const SectionHeader = ({
   title,
-  tooltipId,
-  onPressHelp,
-  testID,
+  targetRef,
+  onLayout,
 }: {
   title: string;
-  tooltipId: TooltipId;
-  onPressHelp: (id: TooltipId, targetRef: React.RefObject<View | null>) => void;
-  testID: string;
+  targetRef: React.RefObject<View | null>;
+  onLayout: (event: LayoutChangeEvent) => void;
 }) => (
   <View
+    ref={targetRef}
+    onLayout={onLayout}
     style={{
       flexDirection: "row",
       alignItems: "center",
@@ -831,7 +859,6 @@ const SectionHeader = ({
     >
       {title}
     </Text>
-    <ProfileHelpButton tooltipId={tooltipId} onPress={onPressHelp} testID={testID} />
   </View>
 );
 

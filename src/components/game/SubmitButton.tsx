@@ -3,6 +3,7 @@ import {Text, TouchableOpacity, View} from "react-native";
 import {SPACING, TYPOGRAPHY} from "../../styles";
 import {SUBMIT_BUTTON_PADDING_H} from "../../constants/layout";
 import {t} from "../../i18n";
+import {analyticsService} from "../../services/AnalyticsService";
 
 /**
  * Props for the primary guess-submit control.
@@ -38,6 +39,9 @@ export const SubmitButton = React.forwardRef<View, SubmitButtonProps>(
         }}
         onPress={() => {
           if (!isSubmitDisabled && !gameOver) {
+            void analyticsService.logButtonPress?.("submit_button", {
+              label: t("GameScreenAlerts.SUBMIT_BUTTON"),
+            });
             handleKeyPress("ENTER");
           }
         }}

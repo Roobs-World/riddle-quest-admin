@@ -8,8 +8,7 @@
     "GOAL_TITLE": "L'obiettivo",
     "GOT_IT_BUTTON": "Fatto!",
     "TIPS_DESCRIPTION": "Inizia con lettere comuni e utilizza il feedback colorato per restringere le tue ipotesi. Ricorda, hai solo 3 tentativi!",
-    "TIPS_TITLE": "Suggerimenti per il successo",
-    "TITLE": "Come giocare"
+    "TIPS_TITLE": "Suggerimenti per il successo"
   },
   "WelcomeBackModal": {
     "TAP_TO_CONTINUE": "Tocca per continuare",
@@ -18,7 +17,6 @@
   "WelcomeModal": {
     "EARN_COINS_TEXT": "Guadagna monete, supera le sfide quotidiane e scala la classifica.",
     "LETS_PLAY": "Giochiamo",
-    "SOLVE_RIDDLES_TEXT": "Risolvi enigmi avvincenti indovinando la risposta lettera per lettera. Usa gli indizi colorati per restringere il campo di ogni ipotesi.",
-    "WELCOME_TITLE": "Benvenuti a Riddle Quest!"
+    "SOLVE_RIDDLES_TEXT": "Risolvi enigmi avvincenti indovinando la risposta lettera per lettera. Usa gli indizi colorati per restringere il campo di ogni ipotesi."
   }
 }

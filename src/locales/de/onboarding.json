@@ -8,8 +8,7 @@
     "GOAL_TITLE": "Das Ziel",
     "GOT_IT_BUTTON": "Verstanden!",
     "TIPS_DESCRIPTION": "Beginnen Sie mit haeufigen Buchstaben und nutzen Sie die Farbrueckmeldung. Denken Sie daran: Sie haben nur 3 Versuche!",
-    "TIPS_TITLE": "Tipps",
-    "TITLE": "Wie man spielt"
+    "TIPS_TITLE": "Tipps"
   },
   "WelcomeBackModal": {
     "TAP_TO_CONTINUE": "Zum Fortfahren tippen",
@@ -18,7 +17,6 @@
   "WelcomeModal": {
     "EARN_COINS_TEXT": "Verdienen Sie Muenzen, meistern Sie taegliche Herausforderungen und erklimmen Sie die Bestenliste.",
     "LETS_PLAY": "Los geht's",
-    "SOLVE_RIDDLES_TEXT": "Losen Sie Raetsel, indem Sie die Antwort Buchstabe fuer Buchstabe erraten. Nutzen Sie die Farbhinweise fuer jeden Versuch.",
-    "WELCOME_TITLE": "Willkommen bei\nRiddle Quest!"
+    "SOLVE_RIDDLES_TEXT": "Losen Sie Raetsel, indem Sie die Antwort Buchstabe fuer Buchstabe erraten. Nutzen Sie die Farbhinweise fuer jeden Versuch."
   }
 }

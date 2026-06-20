@@ -1,13 +1,17 @@
 import React from "react";
+import type {StyleProp, ViewStyle} from "react-native";
 import {moderateScale, verticalScale} from "../../utils/responsive";
 import StepBreadcrumb from "../shared/StepBreadcrumb";
 
 interface OnboardingProgressBadgeProps {
   current: number;
+  style?: StyleProp<ViewStyle>;
   total: number;
 }
 
-const OnboardingProgressBadge: React.FC<OnboardingProgressBadgeProps> = ({current, total}) => {
+const ONBOARDING_PROGRESS_BADGE_TOP_OFFSET = verticalScale(8);
+
+const OnboardingProgressBadge: React.FC<OnboardingProgressBadgeProps> = ({current, style, total}) => {
   return (
     <StepBreadcrumb
       current={current}
@@ -15,6 +19,7 @@ const OnboardingProgressBadge: React.FC<OnboardingProgressBadgeProps> = ({curren
       accessibilityLabel={`Onboarding step ${current} of ${total}`}
       testID="onboarding-progress-badge"
       dotTestIDPrefix="onboarding-progress-breadcrumb-dot"
+      style={[{top: ONBOARDING_PROGRESS_BADGE_TOP_OFFSET}, style]}
       contentStyle={{
         minWidth: moderateScale(58),
         minHeight: verticalScale(28),

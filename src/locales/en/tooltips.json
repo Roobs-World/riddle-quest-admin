@@ -5,7 +5,6 @@
     "CLASSIC_FROM_DAILY_BODY": "Daily challenge complete. Classic mode lets you keep solving riddles at your own pace.",
     "CLASSIC_FROM_DAILY_TITLE": "Classic mode",
     "GOT_IT_BUTTON": "Got it",
-    "HELP_BUTTON_LABEL": "Help",
     "HINT_AFTER_WRONG_BODY": "That guess missed. Tap Hint to reveal a helpful letter and keep going.",
     "HINT_AFTER_WRONG_TITLE": "Need a clue?",
     "LEADERBOARD_FIFTH_CORRECT_BODY": "Five correct answers! Open your profile to see how you rank.",
@@ -27,6 +26,10 @@
     "SHOP_OUT_OF_COINS_BODY": "You are out of coins for this action. Open the shop to buy or earn more.",
     "SHOP_OUT_OF_COINS_TITLE": "Grab more coins",
     "SUBMIT_ANSWER_BODY": "When every slot is filled, tap Submit to check your guess.",
-    "SUBMIT_ANSWER_TITLE": "Submit your answer"
+    "SUBMIT_ANSWER_TITLE": "Submit your answer",
+    "PROFILE_PROGRESSION_TITLE": "User progression",
+    "PROFILE_PROGRESSION_BODY": "Your rank, XP level, and progress bar show how close you are to the next level.",
+    "PROFILE_DAILY_STREAK_TITLE": "Daily streak",
+    "PROFILE_DAILY_STREAK_BODY": "Your streak tracks regular daily play. Keep solving daily puzzles to build it up."
   }
 }

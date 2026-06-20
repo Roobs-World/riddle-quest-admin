@@ -138,7 +138,7 @@ interface GameScreenProps {
 
 const ONBOARDING_SEEN_STORAGE_KEY_PREFIX = "gameScreenOnboardingSeen";
 const RESULT_MODAL_REVEAL_DELAY_MS = 850;
-const ONBOARDING_PROGRESS_TOTAL = 2;
+const ONBOARDING_PROGRESS_TOTAL = 3;
 const FIFTH_CORRECT_ANSWER_COUNT = 5;
 
 const getOnboardingSeenStorageKey = (userId?: string): string => {
@@ -783,9 +783,12 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
 
                   safeDelay(MODAL_CLOSE_DELAY_MS).then(() => {
                     showInfoModal({
-                      title: t("GameScreenAlerts.GUEST_MODE_NOTICE_TITLE"),
                       message: t("GameScreenAlerts.GUEST_MODE_NOTICE_MESSAGE"),
                       actionButtonText: t("Profile.UPGRADE_ACCOUNT_BUTTON"),
+                      onboardingProgress: {
+                        current: 3,
+                        total: ONBOARDING_PROGRESS_TOTAL,
+                      },
                       onAction: () => {
                         setIsOnboardingComplete(true);
                         setIsUpgradeModalVisible(true);

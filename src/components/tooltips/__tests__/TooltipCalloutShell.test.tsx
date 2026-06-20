@@ -40,6 +40,24 @@ describe("TooltipCalloutShell", () => {
     expect(pointerStyle.borderBottomColor).toBe("transparent");
   });
 
+  it("keeps the pointer on top when a low target prefers a below callout", () => {
+    const {getByTestId} = render(
+      <TooltipCalloutShell
+        visible={true}
+        targetRect={{x: 48, y: 620, width: 120, height: 44}}
+        preferredPlacement="below"
+        showPointer={true}
+      >
+        <></>
+      </TooltipCalloutShell>,
+    );
+
+    const pointerStyle = StyleSheet.flatten(getByTestId("tooltip-pointer").props.style);
+    expect(pointerStyle.top).toBeDefined();
+    expect(pointerStyle.borderBottomColor).not.toBe("transparent");
+    expect(pointerStyle.borderTopColor).toBe("transparent");
+  });
+
   it("renders a full backdrop without a pointer when there is no target", () => {
     const {getByTestId, queryByTestId} = render(
       <TooltipCalloutShell visible={true} targetRect={null} showPointer={false}>

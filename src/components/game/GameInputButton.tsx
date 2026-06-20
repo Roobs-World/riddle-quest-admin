@@ -2,6 +2,7 @@ import React, {ReactElement} from "react";
 import {Text, TouchableOpacity, View} from "react-native";
 import {GAME_INPUT_BUTTON_HEIGHT} from "../../constants/layout";
 import {SPACING, TYPOGRAPHY} from "../../styles";
+import {analyticsService} from "../../services/AnalyticsService";
 
 /**
  * Props for a reusable circular action button in the game input row.
@@ -23,6 +24,13 @@ type GameInputButtonProps = {
  */
 export const GameInputButton = React.forwardRef<View, GameInputButtonProps>(
   ({text, icon, callback}, ref): ReactElement => {
+    const handlePress = () => {
+      void analyticsService.logButtonPress?.("game_input_button", {
+        label: text,
+      });
+      callback();
+    };
+
     return (
       <TouchableOpacity
         ref={ref}
@@ -34,7 +42,7 @@ export const GameInputButton = React.forwardRef<View, GameInputButtonProps>(
           flex: 1,
           minWidth: 0,
         }}
-        onPress={callback}
+        onPress={handlePress}
       >
         {icon}
         <Text

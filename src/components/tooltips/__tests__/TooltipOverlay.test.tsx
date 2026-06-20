@@ -33,12 +33,12 @@ describe("TooltipOverlay", () => {
     expect(getByText("Submit your answer")).toBeTruthy();
   });
 
-  it("does not use a native modal that would trap game input", () => {
+  it("uses a native modal so tooltips appear above modal overlays", () => {
     const {UNSAFE_queryByType} = render(
       <TooltipOverlay visible={true} targetRect={null} content={content} onDismiss={jest.fn()} />,
     );
 
-    expect(UNSAFE_queryByType(Modal)).toBeNull();
+    expect(UNSAFE_queryByType(Modal)).toBeTruthy();
   });
 
   it("renders a full backdrop when no target is available", () => {

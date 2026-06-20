@@ -159,8 +159,23 @@ const CoinShop: React.FC<CoinShopProps> = ({
     onClose();
   }, [onClose]);
 
-  const handlePackPress = (product: ProductPricing) => {
+  const handlePackPress = (product: ProductPricing, sortOrder: number, featured: boolean) => {
     logger.debug("Shop pack tapped:", product.productId);
+    void analyticsService.logButtonPress?.(`pack_card_${product.productId}`, {
+      product_id: product.productId,
+      coins: product.coins,
+      sort_order: sortOrder,
+      featured,
+    });
+    void analyticsService.logShopPackSelected({
+      productId: product.productId,
+      productKey: product.productKey,
+      coins: product.coins,
+      sortOrder,
+      featured,
+      displayPrice: getDisplayPrice(product),
+    });
+
     if (effectiveSelectedProductId === product.productId) {
       setSelectedProductId(null);
       return;
@@ -171,6 +186,11 @@ const CoinShop: React.FC<CoinShopProps> = ({
 
   const handlePurchasePress = () => {
     if (!effectiveSelectedProductId) return;
+    const selectedProduct = sortedProducts.find((product) => product.productId === effectiveSelectedProductId);
+    void analyticsService.logButtonPress?.("purchase_button", {
+      product_id: effectiveSelectedProductId,
+      coins: selectedProduct?.coins ?? 0,
+    });
     onPurchaseProduct(effectiveSelectedProductId);
   };
 
@@ -244,7 +264,7 @@ const CoinShop: React.FC<CoinShopProps> = ({
                             <TouchableOpacity
                               key={product.productId}
                               style={[styles.gridCard, isSelected && styles.gridCardSelected]}
-                              onPress={() => handlePackPress(product)}
+                              onPress={() => handlePackPress(product, product.sortOrder, true)}
                               activeOpacity={0.8}
                               testID={`pack-card-${product.productId}`}
                             >
@@ -281,7 +301,7 @@ const CoinShop: React.FC<CoinShopProps> = ({
                             <TouchableOpacity
                               key={product.productId}
                               style={[styles.listCard, isSelected && styles.listCardSelected]}
-                              onPress={() => handlePackPress(product)}
+                              onPress={() => handlePackPress(product, product.sortOrder, false)}
                               activeOpacity={0.8}
                               testID={`pack-card-${product.productId}`}
                             >

@@ -204,7 +204,7 @@ export interface GameModalTypes {
   aboutLegal: Record<string, never>;
 
   info: {
-    title: string;
+    title?: string;
     message: string;
     /** Optional extra callback fired when the user presses OK (before the modal closes). */
     onConfirm?: () => void;

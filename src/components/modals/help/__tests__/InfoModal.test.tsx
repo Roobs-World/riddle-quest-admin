@@ -121,6 +121,21 @@ describe("InfoModal", () => {
       expect(getByTestId("onboarding-progress-badge")).toBeTruthy();
       expect(queryByText("2/3")).toBeNull();
     });
+
+    it("should use the decorated onboarding background when progress is provided", () => {
+      const {getByTestId, queryByTestId} = render(
+        <InfoModal
+          {...defaultProps}
+          actionButtonText="Upgrade Account"
+          onAction={jest.fn()}
+          onboardingProgress={{current: 3, total: 3}}
+        />,
+      );
+
+      expect(getByTestId("info-onboarding-modal-background")).toBeTruthy();
+      expect(getByTestId("onboarding-logo-header")).toBeTruthy();
+      expect(queryByTestId("tooltip-callout-shell")).toBeNull();
+    });
   });
 
   describe("Interactions", () => {

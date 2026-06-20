@@ -5,7 +5,6 @@
     "CLASSIC_FROM_DAILY_BODY": "일일 챌린지를 완료했습니다. 클래식 모드에서 자신의 속도로 계속 풀어보세요.",
     "CLASSIC_FROM_DAILY_TITLE": "클래식 모드",
     "GOT_IT_BUTTON": "알겠어요",
-    "HELP_BUTTON_LABEL": "도움말",
     "HINT_AFTER_WRONG_BODY": "이번 추측은 틀렸습니다. 힌트를 눌러 도움이 되는 글자를 확인하세요.",
     "HINT_AFTER_WRONG_TITLE": "힌트가 필요한가요?",
     "LEADERBOARD_FIFTH_CORRECT_BODY": "다섯 번 정답! 프로필을 열어 순위를 확인하세요.",
@@ -27,6 +26,10 @@
     "SHOP_OUT_OF_COINS_BODY": "이 작업에 필요한 코인이 부족합니다. 상점을 열어 구매하거나 획득하세요.",
     "SHOP_OUT_OF_COINS_TITLE": "코인을 더 받기",
     "SUBMIT_ANSWER_BODY": "모든 칸을 채우면 제출을 눌러 추측을 확인하세요.",
-    "SUBMIT_ANSWER_TITLE": "답을 제출하세요"
+    "SUBMIT_ANSWER_TITLE": "답을 제출하세요",
+    "PROFILE_PROGRESSION_TITLE": "사용자 성장",
+    "PROFILE_PROGRESSION_BODY": "랭크, XP 레벨, 진행 바가 다음 레벨까지 얼마나 남았는지 보여 줍니다.",
+    "PROFILE_DAILY_STREAK_TITLE": "일일 연속 기록",
+    "PROFILE_DAILY_STREAK_BODY": "연속 기록은 꾸준한 일일 플레이를 추적합니다. 매일 퍼즐을 풀어 기록을 늘려 보세요."
   }
 }

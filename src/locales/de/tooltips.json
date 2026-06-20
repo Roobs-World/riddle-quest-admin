@@ -5,7 +5,6 @@
     "CLASSIC_FROM_DAILY_BODY": "Taegliche Herausforderung abgeschlossen. Im klassischen Modus kannst du in deinem Tempo weiterspielen.",
     "CLASSIC_FROM_DAILY_TITLE": "Klassischer Modus",
     "GOT_IT_BUTTON": "Verstanden",
-    "HELP_BUTTON_LABEL": "Hilfe",
     "HINT_AFTER_WRONG_BODY": "Dieser Tipp war falsch. Tippe auf Hinweis, um einen hilfreichen Buchstaben aufzudecken.",
     "HINT_AFTER_WRONG_TITLE": "Brauchst du einen Hinweis?",
     "LEADERBOARD_FIFTH_CORRECT_BODY": "Fuenf richtige Antworten! Oeffne dein Profil, um deinen Rang zu sehen.",
@@ -27,6 +26,10 @@
     "SHOP_OUT_OF_COINS_BODY": "Du hast fuer diese Aktion nicht genug Muenzen. Oeffne den Shop, um mehr zu kaufen oder zu verdienen.",
     "SHOP_OUT_OF_COINS_TITLE": "Mehr Muenzen holen",
     "SUBMIT_ANSWER_BODY": "Wenn alle Felder gefuellt sind, tippe auf Einreichen, um deinen Tipp zu pruefen.",
-    "SUBMIT_ANSWER_TITLE": "Antwort einreichen"
+    "SUBMIT_ANSWER_TITLE": "Antwort einreichen",
+    "PROFILE_PROGRESSION_TITLE": "Nutzerfortschritt",
+    "PROFILE_PROGRESSION_BODY": "Dein Rang, XP-Level und Fortschrittsbalken zeigen, wie nah du am nächsten Level bist.",
+    "PROFILE_DAILY_STREAK_TITLE": "Tägliche Serie",
+    "PROFILE_DAILY_STREAK_BODY": "Deine Serie zeigt regelmäßiges tägliches Spielen. Löse weiter tägliche Rätsel, um sie auszubauen."
   }
 }

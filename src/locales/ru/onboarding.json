@@ -8,8 +8,7 @@
     "GOAL_TITLE": "Tsel igry",
     "GOT_IT_BUTTON": "Ponyatno!",
     "TIPS_DESCRIPTION": "Nachinayte s chastykh bukv i ispolzuyte tsvetovuyu obratnuyu svyaz. Pomnite: tolko 3 popytki!",
-    "TIPS_TITLE": "Sovety",
-    "TITLE": "Kak igrat"
+    "TIPS_TITLE": "Sovety"
   },
   "WelcomeBackModal": {
     "TAP_TO_CONTINUE": "Нажмите, чтобы продолжить",
@@ -18,7 +17,6 @@
   "WelcomeModal": {
     "EARN_COINS_TEXT": "Zarabatyvayte monety, prohodite ezhednevnye vyzovy i podnimaytes v reytinge.",
     "LETS_PLAY": "Igrat",
-    "SOLVE_RIDDLES_TEXT": "Reshayte zagadki, ugadyvaya otvet bukva za bukvoy. Ispolzuyte tsvetovye podskazki dlya kazhdoy popytki.",
-    "WELCOME_TITLE": "Dobro pozhalovat\nv Riddle Quest!"
+    "SOLVE_RIDDLES_TEXT": "Reshayte zagadki, ugadyvaya otvet bukva za bukvoy. Ispolzuyte tsvetovye podskazki dlya kazhdoy popytki."
   }
 }

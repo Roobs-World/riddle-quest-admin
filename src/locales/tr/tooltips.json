@@ -5,7 +5,6 @@
     "CLASSIC_FROM_DAILY_BODY": "Gunluk meydan okuma tamamlandi. Klasik mod bilmeceleri kendi hizinda cozmeye devam etmeni saglar.",
     "CLASSIC_FROM_DAILY_TITLE": "Klasik mod",
     "GOT_IT_BUTTON": "Anladim",
-    "HELP_BUTTON_LABEL": "Yardim",
     "HINT_AFTER_WRONG_BODY": "Bu tahmin olmadi. Yararli bir harf acmak ve devam etmek icin Ipucu'na dokun.",
     "HINT_AFTER_WRONG_TITLE": "Ipucu ister misin?",
     "LEADERBOARD_FIFTH_CORRECT_BODY": "Bes dogru cevap! Siralamani gormek icin profilini ac.",
@@ -27,6 +26,10 @@
     "SHOP_OUT_OF_COINS_BODY": "Bu islem icin paran kalmadi. Daha fazla almak veya kazanmak icin magazayi ac.",
     "SHOP_OUT_OF_COINS_TITLE": "Daha fazla para al",
     "SUBMIT_ANSWER_BODY": "Tum kutular doldugunda tahminini kontrol etmek icin Gonder'e dokun.",
-    "SUBMIT_ANSWER_TITLE": "Cevabini gonder"
+    "SUBMIT_ANSWER_TITLE": "Cevabini gonder",
+    "PROFILE_PROGRESSION_TITLE": "Kullanıcı ilerlemesi",
+    "PROFILE_PROGRESSION_BODY": "Rütben, XP seviyen ve ilerleme çubuğun bir sonraki seviyeye ne kadar yaklaştığını gösterir.",
+    "PROFILE_DAILY_STREAK_TITLE": "Günlük seri",
+    "PROFILE_DAILY_STREAK_BODY": "Serin düzenli günlük oyunu takip eder. Büyütmek için günlük bilmeceleri çözmeye devam et."
   }
 }

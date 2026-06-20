@@ -8,8 +8,7 @@
     "GOAL_TITLE": "目标",
     "GOT_IT_BUTTON": "明白了！",
     "TIPS_DESCRIPTION": "从常用字母开始，利用颜色反馈缩小范围。记住，只有3次机会！",
-    "TIPS_TITLE": "技巧",
-    "TITLE": "玩法介绍"
+    "TIPS_TITLE": "技巧"
   },
   "WelcomeBackModal": {
     "TAP_TO_CONTINUE": "点击继续",
@@ -18,7 +17,6 @@
   "WelcomeModal": {
     "EARN_COINS_TEXT": "赢取金币，完成每日挑战，登上排行榜。",
     "LETS_PLAY": "开始游戏",
-    "SOLVE_RIDDLES_TEXT": "逐个猜测字母来解答谜题。利用颜色提示引导每次尝试。",
-    "WELCOME_TITLE": "欢迎来到\nRiddle Quest！"
+    "SOLVE_RIDDLES_TEXT": "逐个猜测字母来解答谜题。利用颜色提示引导每次尝试。"
   }
 }

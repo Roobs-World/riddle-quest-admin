@@ -148,6 +148,24 @@ describe("AnalyticsService", () => {
     });
   });
 
+  describe("logButtonPress", () => {
+    it("logs broad button press telemetry and game interaction telemetry", async () => {
+      await service.logButtonPress("hint_button", {
+        game_mode: "classic",
+      });
+
+      expect(mockLogEvent).toHaveBeenCalledWith("button_pressed", {
+        button_id: "hint_button",
+        game_mode: "classic",
+      });
+      expect(mockLogEvent).toHaveBeenCalledWith("game_interaction", {
+        action: "button_pressed",
+        button_id: "hint_button",
+        game_mode: "classic",
+      });
+    });
+  });
+
   describe("logAchievementUnlocked", () => {
     it("logs an achievement_unlocked event", async () => {
       await service.logAchievementUnlocked("first_win");
@@ -255,17 +273,30 @@ describe("AnalyticsService", () => {
       gameEventBus.emit<GameCompletedEvent>({
         type: "GAME_COMPLETED",
         outcome: "won",
+        riddleId: "classic-7",
+        gameMode: "classic",
         attempts: 3,
         coinsEarned: 150,
       });
       await flushPromises();
       expect(mockLogEvent).toHaveBeenCalledWith("game_completed", {
         outcome: "won",
+        riddle_id: "classic-7",
+        game_mode: "classic",
+        attempts: 3,
+        coins_earned: 150,
+      });
+      expect(mockLogEvent).toHaveBeenCalledWith("level_completed", {
+        outcome: "won",
+        riddle_id: "classic-7",
+        game_mode: "classic",
         attempts: 3,
         coins_earned: 150,
       });
       expect(mockLogEvent).toHaveBeenCalledWith("level_end", {
-        level: 3,
+        level_name: "classic-7",
+        game_mode: "classic",
+        attempts: 3,
         success: "true",
       });
     });
@@ -279,6 +310,15 @@ describe("AnalyticsService", () => {
       await flushPromises();
       expect(mockLogEvent).toHaveBeenCalledWith("game_completed", {
         outcome: "lost",
+        riddle_id: "unknown",
+        game_mode: "unknown",
+        attempts: 6,
+        coins_earned: 0,
+      });
+      expect(mockLogEvent).toHaveBeenCalledWith("level_completed", {
+        outcome: "lost",
+        riddle_id: "unknown",
+        game_mode: "unknown",
         attempts: 6,
         coins_earned: 0,
       });

@@ -17,6 +17,7 @@ import CloseIconWhite from "../icons/CloseIconWhite";
 import {SPACING} from "../../styles";
 import {CLOSE_BUTTON_SIZE_LG} from "../../constants/layout";
 import {t} from "../../i18n";
+import {analyticsService} from "../../services/AnalyticsService";
 
 /**
  * Props interface for the CloseButton component.
@@ -99,10 +100,17 @@ const CloseButton = ({
   ...props
 }: CloseButtonProps) => {
   const IconComponent = color === "white" ? CloseIconWhite : CloseIcon;
+  const handlePress = () => {
+    void analyticsService.logButtonPress?.("close_button", {
+      label: props.accessibilityLabel?.toString() ?? t("CommonAlerts.CLOSE_BUTTON"),
+      color,
+    });
+    onPress();
+  };
 
   return (
     <TouchableOpacity
-      onPress={onPress}
+      onPress={handlePress}
       className={className}
       style={[
         {

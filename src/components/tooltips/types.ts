@@ -8,6 +8,8 @@ export type TooltipId =
   | "achievementEarned"
   | "leaderboardFifthCorrectAnswer"
   | "classicFromDaily"
+  | "profileProgression"
+  | "profileDailyStreak"
   | "profileIdentity"
   | "profileDailyPuzzles"
   | "profileStats"
@@ -28,9 +30,13 @@ export interface TooltipRequest {
   id: TooltipId;
   targetRef?: TooltipTargetRef | null;
   content: TooltipContent;
+  preferredPlacement?: "auto" | "above" | "below";
   persist?: boolean;
   userId?: string | null;
+  onBeforeShow?: () => void | Promise<void>;
 }
+
+export type TooltipSequenceRequest = TooltipRequest;
 
 export interface TargetRect {
   x: number;

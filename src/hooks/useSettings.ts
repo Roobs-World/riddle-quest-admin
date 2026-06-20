@@ -19,6 +19,29 @@ import {
   writeBooleanSetting,
 } from "../utils/settingsStorage";
 
+const isDevelopmentRuntime = (): boolean => {
+  const globalDev = (globalThis as {__DEV__?: boolean}).__DEV__;
+  if (typeof globalDev !== "undefined") {
+    return globalDev;
+  }
+
+  if (typeof __DEV__ !== "undefined") {
+    return __DEV__;
+  }
+
+  return process.env.NODE_ENV !== "production";
+};
+
+const getInitialSoundEnabled = (): boolean => !isDevelopmentRuntime();
+
+const readSoundEnabledSetting = async (): Promise<boolean> => {
+  if (isDevelopmentRuntime()) {
+    return false;
+  }
+
+  return readBooleanSetting(SOUND_ENABLED_STORAGE_KEY, true);
+};
+
 /**
  * Manages persisted sound and haptics preferences for the current user.
  *
@@ -30,14 +53,14 @@ import {
  * to update each preference.
  */
 export const useSettings = () => {
-  const [isSoundEnabled, setIsSoundEnabled] = useState(true);
+  const [isSoundEnabled, setIsSoundEnabled] = useState(getInitialSoundEnabled);
   const [isHapticsEnabled, setIsHapticsEnabled] = useState(true);
   const [hasLoadedSettings, setHasLoadedSettings] = useState(false);
 
   useEffect(() => {
     const loadSettings = async () => {
       try {
-        const soundEnabled = await readBooleanSetting(SOUND_ENABLED_STORAGE_KEY, true);
+        const soundEnabled = await readSoundEnabledSetting();
         setIsSoundEnabled(soundEnabled);
         SoundManager.setSoundEnabled(soundEnabled);
 
