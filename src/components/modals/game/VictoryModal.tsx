@@ -125,9 +125,7 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
                 paddingBottom: MODAL_CONTENT_PADDING + verticalScale(20),
               }}
             >
-              <View style={{marginTop: 20}}>
-                <ModalSequenceBreadcrumb sequenceProgress={sequenceProgress} />
-              </View>
+              <ModalSequenceBreadcrumb sequenceProgress={sequenceProgress} />
               <Text
                 style={{
                   fontFamily: TYPOGRAPHY.fontPrimary,

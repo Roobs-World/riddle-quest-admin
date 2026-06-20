@@ -44,6 +44,10 @@ jest.mock("../../src/utils/logger", () => ({
   },
 }));
 
+jest.mock("../../src/utils/timing", () => ({
+  safeDelay: jest.fn(() => Promise.resolve()),
+}));
+
 jest.mock("../../src/utils/fontLoader", () => ({
   loadFonts: () => mockLoadFonts(),
 }));
@@ -53,6 +57,7 @@ jest.mock("../../src/services/SoundManager", () => ({
     init: jest.fn(() => Promise.resolve()),
     setSoundEnabled: jest.fn(),
     playBackgroundMusic: jest.fn(() => Promise.resolve()),
+    pauseBackgroundMusic: jest.fn(() => Promise.resolve()),
   },
 }));
 
@@ -145,6 +150,22 @@ jest.mock("../../src/screens/LanguageSelectionScreen", () => ({
         testID: "language-selection-screen",
       },
       "Language selection",
+    );
+  },
+}));
+
+jest.mock("../../src/components/overlays/GlobalMuteOverlay", () => ({
+  __esModule: true,
+  default: ({isSoundEnabled, onToggleSound}: {isSoundEnabled: boolean; onToggleSound: (enabled: boolean) => void}) => {
+    const ReactLocal = require("react");
+    const {Text: ReactNativeText} = require("react-native");
+    return ReactLocal.createElement(
+      ReactNativeText,
+      {
+        onPress: () => onToggleSound(!isSoundEnabled),
+        testID: "global-mute-overlay",
+      },
+      isSoundEnabled ? "Sound on" : "Sound off",
     );
   },
 }));
@@ -266,6 +287,7 @@ describe("App startup", () => {
     await waitFor(() => expect(mockPreloadSolarSystem).toHaveBeenCalled());
     await waitFor(() => expect(getByTestId("navigation")).toBeTruthy());
 
+    expect(getByTestId("global-mute-overlay")).toBeTruthy();
     expect(queryByText("Startup failed")).toBeNull();
   });
 
@@ -281,6 +303,7 @@ describe("App startup", () => {
     const {getByTestId, queryByTestId} = render(<App />);
 
     await waitFor(() => expect(getByTestId("language-selection-screen")).toBeTruthy());
+    expect(getByTestId("global-mute-overlay")).toBeTruthy();
     expect(queryByTestId("startup-spinner")).toBeNull();
   });
 

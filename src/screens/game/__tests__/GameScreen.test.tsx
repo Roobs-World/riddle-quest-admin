@@ -467,6 +467,7 @@ jest.mock("../../../styles", () => ({
 
 // Import component after all mocks
 import GameScreen from "../GameScreen";
+import {SettingsProvider} from "../../../contexts/SettingsContext";
 
 const pendingPromise = <T,>() => new Promise<T>(() => {});
 
@@ -481,6 +482,8 @@ async function invokeGameAction<T>(action: () => T | Promise<T>): Promise<T> {
 function getLatestMockProps(mockFn: jest.Mock) {
   return mockFn.mock.calls[mockFn.mock.calls.length - 1][0];
 }
+
+const renderWithSettingsProvider = (ui: React.ReactElement) => render(<SettingsProvider>{ui}</SettingsProvider>);
 
 describe("GameScreen", () => {
   const defaultProps = {
@@ -603,7 +606,7 @@ describe("GameScreen", () => {
 
     it("waits until onboarding finishes before showing the submit tooltip", async () => {
       jest.useFakeTimers();
-      render(<GameScreen {...defaultProps} />);
+      renderWithSettingsProvider(<GameScreen {...defaultProps} />);
 
       act(() => {
         jest.advanceTimersByTime(650);
@@ -622,6 +625,67 @@ describe("GameScreen", () => {
         expect(mockShowTooltipOnce).toHaveBeenCalledWith(expect.objectContaining({id: "submitAnswer"}));
       });
       jest.useRealTimers();
+    });
+
+    it("waits until the guest upgrade notice is dismissed before showing the submit tooltip", async () => {
+      jest.useFakeTimers();
+      const originalEmail = mockPlayerData.email;
+      const originalUsername = mockPlayerData.username;
+
+      try {
+        mockPlayerData.email = "";
+        mockPlayerData.username = "Guest";
+
+        renderWithSettingsProvider(<GameScreen {...defaultProps} />);
+
+        act(() => {
+          jest.advanceTimersByTime(650);
+        });
+        expect(mockShowTooltipOnce).not.toHaveBeenCalledWith(expect.objectContaining({id: "submitAnswer"}));
+
+        await waitFor(() => {
+          expect(mockShowWelcomeModal).toHaveBeenCalled();
+        });
+
+        act(() => {
+          mockShowWelcomeModal.mock.calls[0][0].onDismiss();
+        });
+        await waitFor(() => {
+          expect(mockShowInstructionsModal).toHaveBeenCalled();
+        });
+
+        act(() => {
+          mockShowInstructionsModal.mock.calls[0][0].onDismiss();
+        });
+        await waitFor(() => {
+          expect(mockShowInfoModal).toHaveBeenCalledWith(
+            expect.objectContaining({
+              title: "Guest Mode Notice",
+            }),
+          );
+        });
+        expect(mockShowInfoModal.mock.calls[0][0].onboardingProgress).toBeUndefined();
+
+        act(() => {
+          jest.advanceTimersByTime(650);
+        });
+        expect(mockShowTooltipOnce).not.toHaveBeenCalledWith(expect.objectContaining({id: "submitAnswer"}));
+
+        act(() => {
+          mockShowInfoModal.mock.calls[0][0].onConfirm?.();
+        });
+        act(() => {
+          jest.advanceTimersByTime(650);
+        });
+
+        await waitFor(() => {
+          expect(mockShowTooltipOnce).toHaveBeenCalledWith(expect.objectContaining({id: "submitAnswer"}));
+        });
+      } finally {
+        mockPlayerData.email = originalEmail;
+        mockPlayerData.username = originalUsername;
+        jest.useRealTimers();
+      }
     });
 
     it("does not show the submit tooltip when onboarding is suppressed", () => {
@@ -821,7 +885,7 @@ describe("GameScreen", () => {
     });
 
     it("should show welcome-back modal instead of onboarding for provider users", async () => {
-      render(<GameScreen {...defaultProps} />);
+      renderWithSettingsProvider(<GameScreen {...defaultProps} />);
 
       await waitFor(() => {
         expect(mockShowWelcomeBackModal).toHaveBeenCalledWith(
@@ -838,7 +902,7 @@ describe("GameScreen", () => {
     it("should skip onboarding modals when onboarding was already seen", async () => {
       (AsyncStorage.getItem as jest.Mock).mockResolvedValueOnce("true");
 
-      render(<GameScreen {...defaultProps} />);
+      renderWithSettingsProvider(<GameScreen {...defaultProps} />);
 
       await waitFor(() => {
         expect(mockShowWelcomeBackModal).toHaveBeenCalledWith(
@@ -852,7 +916,7 @@ describe("GameScreen", () => {
     });
 
     it("should persist onboarding seen state after first modal display", async () => {
-      render(<GameScreen {...defaultProps} />);
+      renderWithSettingsProvider(<GameScreen {...defaultProps} />);
 
       await waitFor(() => {
         expect(mockShowWelcomeBackModal).toHaveBeenCalled();
@@ -873,7 +937,7 @@ describe("GameScreen", () => {
         await waitFor(() => {
           expect(mockShowWelcomeModal).toHaveBeenCalledWith(
             expect.objectContaining({
-              onboardingProgress: {current: 1, total: 3},
+              onboardingProgress: {current: 1, total: 2},
             }),
           );
         });
@@ -902,11 +966,22 @@ describe("GameScreen", () => {
         onboardingConfig.onDismiss();
 
         await waitFor(() => {
+          expect(mockShowInstructionsModal).toHaveBeenCalledWith(
+            expect.objectContaining({
+              onboardingProgress: {current: 2, total: 2},
+              onDismiss: expect.any(Function),
+            }),
+          );
+        });
+
+        const instructionsConfig = mockShowInstructionsModal.mock.calls[0][0];
+        instructionsConfig.onDismiss();
+
+        await waitFor(() => {
           expect(mockShowInfoModal).toHaveBeenCalledWith(
             expect.objectContaining({
               title: "Guest Mode Notice",
               actionButtonText: "Upgrade Account",
-              onboardingProgress: {current: 2, total: 3},
               onAction: expect.any(Function),
             }),
           );
@@ -914,6 +989,7 @@ describe("GameScreen", () => {
 
         const guestInfoCall = mockShowInfoModal.mock.calls.find((call) => call[0]?.title === "Guest Mode Notice");
         expect(guestInfoCall).toBeDefined();
+        expect(guestInfoCall?.[0]?.onboardingProgress).toBeUndefined();
 
         await act(async () => {
           guestInfoCall?.[0]?.onAction?.();
@@ -1206,14 +1282,26 @@ describe("GameScreen", () => {
 
   describe("Settings Integration", () => {
     it("should render with default sound enabled", async () => {
-      const {queryByTestId} = render(<GameScreen {...defaultProps} />);
+      (AsyncStorage.getItem as jest.Mock).mockImplementation((key: string) => {
+        if (key === "isSoundEnabled" || key === "isHapticsEnabled") {
+          return Promise.resolve("true");
+        }
+        if (key.startsWith("gameScreenOnboardingSeen")) {
+          return Promise.resolve(null);
+        }
+        return pendingPromise<string | null>();
+      });
+
+      const {queryByTestId} = renderWithSettingsProvider(<GameScreen {...defaultProps} />);
 
       await waitFor(() => {
         expect(queryByTestId("mock-header")).toBeTruthy();
       });
 
       const {SoundManager} = require("../../../services/SoundManager");
-      expect(SoundManager.setSoundEnabled).toHaveBeenCalled();
+      await waitFor(() => {
+        expect(SoundManager.setSoundEnabled).toHaveBeenCalled();
+      });
     });
 
     it("should render with default haptics enabled", async () => {
@@ -1272,7 +1360,7 @@ describe("GameScreen", () => {
         message: "Rewarded ad reward applied.",
       });
 
-      render(<GameScreen {...defaultProps} />);
+      renderWithSettingsProvider(<GameScreen {...defaultProps} />);
       const headerProps = getLatestProps(mockHeader);
       await act(async () => {
         await headerProps.onCoinsPress();
@@ -1308,7 +1396,7 @@ describe("GameScreen", () => {
     it("shows the coin-shop ad fallback when a rewarded ad does not grant a reward", async () => {
       mockShowRewardedAd.mockResolvedValueOnce(false);
 
-      render(<GameScreen {...defaultProps} />);
+      renderWithSettingsProvider(<GameScreen {...defaultProps} />);
       const headerProps = getLatestProps(mockHeader);
       await act(async () => {
         await headerProps.onCoinsPress();
@@ -1343,7 +1431,7 @@ describe("GameScreen", () => {
     });
 
     it("passes tooltip target refs into game controls", () => {
-      render(<GameScreen {...defaultProps} />);
+      renderWithSettingsProvider(<GameScreen {...defaultProps} />);
 
       const inputProps = getLatestProps(mockGameInput);
       const headerProps = getLatestProps(mockHeader);
@@ -1807,19 +1895,30 @@ describe("GameScreen", () => {
         onboardingConfig.onDismiss();
 
         await waitFor(() => {
-          expect(mockShowInfoModal).toHaveBeenCalled();
-        });
-
-        const guestNotice = mockShowInfoModal.mock.calls[0][0];
-        guestNotice.onConfirm?.();
-
-        await waitFor(() => {
           expect(mockShowInstructionsModal).toHaveBeenCalledWith(
             expect.objectContaining({
-              onboardingProgress: {current: 3, total: 3},
+              onboardingProgress: {current: 2, total: 2},
               onDismiss: expect.any(Function),
             }),
           );
+        });
+
+        const instructionsConfig = mockShowInstructionsModal.mock.calls[0][0];
+        instructionsConfig.onDismiss();
+
+        await waitFor(() => {
+          expect(mockShowInfoModal).toHaveBeenCalledWith(
+            expect.objectContaining({
+              title: "Guest Mode Notice",
+              onConfirm: expect.any(Function),
+            }),
+          );
+        });
+        expect(mockShowInfoModal.mock.calls[0][0].onboardingProgress).toBeUndefined();
+
+        const guestNotice = mockShowInfoModal.mock.calls[0][0];
+        await act(async () => {
+          guestNotice.onConfirm?.();
         });
       } finally {
         mockPlayerData.email = originalEmail;
@@ -2668,15 +2767,15 @@ describe("GameScreen", () => {
         .mockRejectedValueOnce(new Error("save haptics fail"))
         .mockRejectedValueOnce(new Error("save language fail"));
 
-      render(<GameScreen {...defaultProps} />);
+      renderWithSettingsProvider(<GameScreen {...defaultProps} />);
 
       await waitFor(() => {
         expect(logger.error).toHaveBeenCalledWith("Error loading settings from AsyncStorage:", expect.any(Error));
       });
 
       await waitFor(() => {
-        expect(logger.error).toHaveBeenCalledWith("Error saving sound setting to AsyncStorage:", expect.any(Error));
-        expect(logger.error).toHaveBeenCalledWith("Error saving haptics setting to AsyncStorage:", expect.any(Error));
+        expect(logger.error).toHaveBeenCalledWith("Error saving sound setting:", expect.any(Error));
+        expect(logger.error).toHaveBeenCalledWith("Error saving haptics setting:", expect.any(Error));
         expect(captureException).toHaveBeenCalled();
       });
     });
@@ -2688,7 +2787,7 @@ describe("GameScreen", () => {
         .mockResolvedValueOnce("true")
         .mockResolvedValueOnce("en");
 
-      render(<GameScreen {...defaultProps} />);
+      renderWithSettingsProvider(<GameScreen {...defaultProps} />);
 
       await waitFor(() => {
         expect(SoundManager.pauseBackgroundMusic).toHaveBeenCalled();
@@ -2701,7 +2800,7 @@ describe("GameScreen", () => {
         .mockResolvedValueOnce("true")
         .mockResolvedValueOnce("en");
 
-      render(<GameScreen {...defaultProps} />);
+      renderWithSettingsProvider(<GameScreen {...defaultProps} />);
 
       await waitFor(() => {
         expect(AsyncStorage.setItem).not.toHaveBeenCalledWith("isSoundEnabled", JSON.stringify(true));
@@ -3033,26 +3132,46 @@ describe("GameScreen", () => {
     it("applies settings modal toggle callbacks", async () => {
       const {SoundManager} = require("../../../services/SoundManager");
       const {setLocale} = require("../../../i18n");
-      render(<GameScreen {...defaultProps} />);
+      (AsyncStorage.getItem as jest.Mock).mockImplementation((key: string) => {
+        if (key === "isSoundEnabled" || key === "isHapticsEnabled") {
+          return Promise.resolve("true");
+        }
+        if (key.startsWith("gameScreenOnboardingSeen")) {
+          return Promise.resolve(null);
+        }
+        return pendingPromise<string | null>();
+      });
+
+      renderWithSettingsProvider(<GameScreen {...defaultProps} />);
 
       const bottomNavProps = getLatestProps(mockBottomNavigationBar);
       bottomNavProps.onSettingsPress();
       const config = mockShowSettingsModal.mock.calls[mockShowSettingsModal.mock.calls.length - 1][0];
 
+      await waitFor(() => {
+        expect(SoundManager.setSoundEnabled).toHaveBeenCalled();
+      });
+
       await invokeGameAction(() => {
         config.onToggleSound(false);
+      });
+      await waitFor(() => {
+        expect(SoundManager.pauseBackgroundMusic).toHaveBeenCalled();
+      });
+
+      await invokeGameAction(() => {
         config.onToggleSound(true);
         config.onToggleHaptics(false);
         config.onChangeLanguage("es");
       });
-
-      expect(SoundManager.pauseBackgroundMusic).toHaveBeenCalled();
-      expect(SoundManager.playBackgroundMusic).toHaveBeenCalled();
+      await waitFor(() => {
+        expect(SoundManager.playBackgroundMusic).toHaveBeenCalled();
+      });
       expect(setLocale).toHaveBeenCalledWith("es");
     });
 
     it("passes a complete-riddle callback to the debug panel", async () => {
-      render(<GameScreen {...defaultProps} />);
+      renderWithSettingsProvider(<GameScreen {...defaultProps} />);
 
       await waitFor(() => {
         expect(mockModalTogglePanel).toHaveBeenCalled();
@@ -3065,7 +3184,7 @@ describe("GameScreen", () => {
     });
 
     it("debug clear-local-data clears AsyncStorage and logs out", async () => {
-      render(<GameScreen {...defaultProps} />);
+      renderWithSettingsProvider(<GameScreen {...defaultProps} />);
 
       await waitFor(() => {
         expect(mockModalTogglePanel).toHaveBeenCalled();
@@ -3080,7 +3199,7 @@ describe("GameScreen", () => {
     });
 
     it("debug complete-riddle fills letters without submitting", async () => {
-      render(<GameScreen {...defaultProps} />);
+      renderWithSettingsProvider(<GameScreen {...defaultProps} />);
 
       await waitFor(() => {
         expect(mockModalTogglePanel).toHaveBeenCalled();

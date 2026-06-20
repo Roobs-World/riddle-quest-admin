@@ -24,12 +24,12 @@ describe("WelcomeModal", () => {
   });
 
   it("renders onboarding progress when provided", () => {
-    const {getByText, getByTestId} = render(
+    const {getByTestId, queryByText} = render(
       <WelcomeModal isVisible={true} onClose={mockOnClose} onboardingProgress={{current: 1, total: 3}} />,
     );
 
     expect(getByTestId("onboarding-progress-badge")).toBeTruthy();
-    expect(getByText("1/3")).toBeTruthy();
+    expect(queryByText("1/3")).toBeNull();
   });
 
   it("does not render content when not visible", () => {

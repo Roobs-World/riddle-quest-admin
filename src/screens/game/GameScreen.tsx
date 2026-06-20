@@ -20,7 +20,6 @@ import Header from "../../components/game/Header";
 import Controls from "../../components/game/Controls";
 import BottomNavigationBar from "../../components/game/BottomNavigationBar";
 import GameBoard from "../../components/game/GameBoard";
-import {SoundManager} from "../../services/SoundManager";
 import useGameLogic from "../../hooks/useGameLogic";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {GameMode} from "../../contexts/AuthContext";
@@ -43,7 +42,6 @@ import {
   DAILY_COMPLETION_BONUS,
   isStreakRewardMilestone,
   MODAL_CLOSE_DELAY_MS,
-  SOUND_RESUME_DELAY_MS,
   getXpLevel,
 } from "../../constants/game";
 import {LOADING_SPINNER_OPACITY, LOADING_SPINNER_SIZE} from "../../constants/loading";
@@ -55,7 +53,6 @@ import {IapService} from "../../services/IapService";
 import {ProductPricing, ProductPricingService} from "../../services/ProductPricingService";
 import ModalTogglePanel from "../../components/development/ModalTogglePanel";
 import StarryBackground from "../../components/background/StarryBackground";
-import GlobalMuteOverlay from "../../components/overlays/GlobalMuteOverlay";
 import {logger} from "../../utils/logger";
 import {captureException} from "../../utils/sentry";
 import {computeLetterStates} from "../../utils/letterStates";
@@ -66,12 +63,6 @@ import {isGuestPlayer} from "../../features/auth/sessionBootstrap";
 import {loadUserProgressFromFirestore} from "../../services/FirestoreService";
 import UpgradeAccountModal from "../../components/modals/settings/UpgradeAccountModal";
 import type {Player} from "../../validation/firestoreSchemas";
-import {
-  SOUND_ENABLED_STORAGE_KEY,
-  HAPTICS_ENABLED_STORAGE_KEY,
-  readBooleanSetting,
-  writeBooleanSetting,
-} from "../../utils/settingsStorage";
 import type {Feedback} from "../../hooks/types";
 import type {ModalSequenceProgress} from "../../types/ModalTypes";
 import {runModalFanfareSequence, type ModalSequenceStep} from "../../application/modals/ModalFanfareSequence";
@@ -84,6 +75,7 @@ import {persistLocale} from "../../utils/localeStorage";
 import {callValidatedFunction} from "../../utils/firebaseFunctions";
 import {graphemeLength, splitGraphemes} from "@qwordly/core/game";
 import {analyticsService} from "../../services/AnalyticsService";
+import {useAppSettings} from "../../contexts/SettingsContext";
 import {
   gameEventBus,
   type HintRequestedEvent,
@@ -146,7 +138,7 @@ interface GameScreenProps {
 
 const ONBOARDING_SEEN_STORAGE_KEY_PREFIX = "gameScreenOnboardingSeen";
 const RESULT_MODAL_REVEAL_DELAY_MS = 850;
-const ONBOARDING_PROGRESS_TOTAL = 3;
+const ONBOARDING_PROGRESS_TOTAL = 2;
 const FIFTH_CORRECT_ANSWER_COUNT = 5;
 
 const getOnboardingSeenStorageKey = (userId?: string): string => {
@@ -334,7 +326,6 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   onNextLevel,
   gameMode,
   suppressOnboarding = false,
-  qaAccessibilityLabel,
 }) => {
   const {logout} = useAuthSession();
   const {playerData, updatePlayerData, updatePlayerDataLocally, pendingStreakBreak, consumePendingStreakBreak} =
@@ -344,12 +335,15 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   const showTooltipRequestOnce = tooltip.showTooltipOnce;
   const {showWelcomeModal, showWelcomeBackModal, showInstructionsModal, showInfoModal} = modal;
   const isGuestMode = isGuestPlayer(playerData);
+  const {
+    isSoundEnabled,
+    isHapticsEnabled,
+    toggleSoundEnabled: toggleSoundEnabledSetting,
+    toggleHapticsEnabled: toggleHapticsEnabledSetting,
+  } = useAppSettings();
 
   const [lastGuessResult, setLastGuessResult] = useState<GuessResult | null>(null);
   const [isOffline, setIsOffline] = useState(false);
-  const [isSoundEnabled, setIsSoundEnabled] = useState(true);
-  const [isHapticsEnabled, setIsHapticsEnabled] = useState(true);
-  const [hasLoadedSettings, setHasLoadedSettings] = useState(false);
   const sharedLocale = useLocale();
   const currentLanguage: SupportedLanguage = sharedLocale;
   const [activeSlotIndex, setActiveSlotIndex] = useState(0);
@@ -372,12 +366,14 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
 
   const showTooltipOnce = useCallback(
     (id: TooltipId, targetRef?: TooltipTargetRef | null) => {
-      if (!isOnboardingComplete) {
-        logger.debug("[GameScreen] showTooltipOnce skipped until onboarding completes", {
+      if (!isOnboardingComplete || isUpgradeModalVisible) {
+        logger.debug("[GameScreen] showTooltipOnce skipped until intro prompts complete", {
           id,
           userId: currentTooltipUserId,
           riddleId,
           gameMode,
+          isOnboardingComplete,
+          isUpgradeModalVisible,
         });
         return Promise.resolve(false);
       }
@@ -397,7 +393,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         userId: currentTooltipUserId,
       });
     },
-    [currentTooltipUserId, gameMode, isOnboardingComplete, riddleId, showTooltipRequestOnce],
+    [currentTooltipUserId, gameMode, isOnboardingComplete, isUpgradeModalVisible, riddleId, showTooltipRequestOnce],
   );
 
   const gameOverHandledRef = useRef(false);
@@ -415,7 +411,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   const hasQueuedSubmitTooltipRef = useRef(false);
 
   useEffect(() => {
-    if (suppressOnboarding || !isOnboardingComplete || hasQueuedSubmitTooltipRef.current) {
+    if (suppressOnboarding || !isOnboardingComplete || isUpgradeModalVisible || hasQueuedSubmitTooltipRef.current) {
       return;
     }
 
@@ -425,7 +421,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     }, 650);
 
     return () => clearTimeout(timeoutId);
-  }, [isOnboardingComplete, showTooltipOnce, suppressOnboarding]);
+  }, [isOnboardingComplete, isUpgradeModalVisible, showTooltipOnce, suppressOnboarding]);
 
   useEffect(() => {
     if (suppressOnboarding) {
@@ -777,37 +773,28 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         showWelcomeModal({
           onboardingProgress: {current: 1, total: ONBOARDING_PROGRESS_TOTAL},
           onDismiss: () => {
-            if (isGuestMode) {
-              showInfoModal({
-                title: t("GameScreenAlerts.GUEST_MODE_NOTICE_TITLE"),
-                message: t("GameScreenAlerts.GUEST_MODE_NOTICE_MESSAGE"),
-                actionButtonText: t("Profile.UPGRADE_ACCOUNT_BUTTON"),
-                onboardingProgress: {
-                  current: 2,
-                  total: ONBOARDING_PROGRESS_TOTAL,
-                },
-                onAction: () => setIsUpgradeModalVisible(true),
-                onConfirm: () => {
-                  safeDelay(MODAL_CLOSE_DELAY_MS).then(() => {
-                    showInstructionsModal({
-                      onDismiss: () => {
-                        setIsOnboardingComplete(true);
-                      },
-                      onboardingProgress: {
-                        current: 3,
-                        total: ONBOARDING_PROGRESS_TOTAL,
-                      },
-                    });
-                  });
-                },
-              });
-              return;
-            }
-
             safeDelay(MODAL_CLOSE_DELAY_MS).then(() => {
               showInstructionsModal({
                 onDismiss: () => {
-                  setIsOnboardingComplete(true);
+                  if (!isGuestMode) {
+                    setIsOnboardingComplete(true);
+                    return;
+                  }
+
+                  safeDelay(MODAL_CLOSE_DELAY_MS).then(() => {
+                    showInfoModal({
+                      title: t("GameScreenAlerts.GUEST_MODE_NOTICE_TITLE"),
+                      message: t("GameScreenAlerts.GUEST_MODE_NOTICE_MESSAGE"),
+                      actionButtonText: t("Profile.UPGRADE_ACCOUNT_BUTTON"),
+                      onAction: () => {
+                        setIsOnboardingComplete(true);
+                        setIsUpgradeModalVisible(true);
+                      },
+                      onConfirm: () => {
+                        setIsOnboardingComplete(true);
+                      },
+                    });
+                  });
                 },
                 onboardingProgress: {
                   current: 2,
@@ -877,61 +864,6 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     consumePendingStreakBreak,
     suppressOnboarding,
   ]);
-
-  useEffect(() => {
-    const loadSettings = async () => {
-      try {
-        const [soundEnabled, hapticsEnabled] = await Promise.all([
-          readBooleanSetting(SOUND_ENABLED_STORAGE_KEY, true),
-          readBooleanSetting(HAPTICS_ENABLED_STORAGE_KEY, true),
-        ]);
-
-        setIsSoundEnabled(soundEnabled);
-        SoundManager.setSoundEnabled(soundEnabled);
-        setIsHapticsEnabled(hapticsEnabled);
-      } catch (error) {
-        logger.error("Error loading settings from AsyncStorage:", error);
-        captureException(error);
-      } finally {
-        setHasLoadedSettings(true);
-      }
-    };
-
-    loadSettings();
-  }, []);
-
-  useEffect(() => {
-    if (!hasLoadedSettings) {
-      return;
-    }
-
-    writeBooleanSetting(SOUND_ENABLED_STORAGE_KEY, isSoundEnabled).catch((error: unknown) => {
-      logger.error("Error saving sound setting to AsyncStorage:", error);
-      captureException(error);
-    });
-  }, [hasLoadedSettings, isSoundEnabled]);
-
-  useEffect(() => {
-    if (!hasLoadedSettings) {
-      return;
-    }
-
-    writeBooleanSetting(HAPTICS_ENABLED_STORAGE_KEY, isHapticsEnabled).catch((error: unknown) => {
-      logger.error("Error saving haptics setting to AsyncStorage:", error);
-      captureException(error);
-    });
-  }, [hasLoadedSettings, isHapticsEnabled]);
-
-  useEffect(() => {
-    SoundManager.setSoundEnabled(isSoundEnabled);
-    if (isSoundEnabled) {
-      safeDelay(SOUND_RESUME_DELAY_MS).then(() => {
-        SoundManager.playBackgroundMusic();
-      });
-    } else {
-      SoundManager.pauseBackgroundMusic();
-    }
-  }, [isSoundEnabled]);
 
   useEffect(() => {
     if (!gameOver) {
@@ -1676,19 +1608,13 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
 
   const toggleSoundEnabled = useCallback((isEnabled: boolean) => {
     void analyticsService.logGameInteraction("sound_toggled", {enabled: isEnabled});
-    setIsSoundEnabled(isEnabled);
-    SoundManager.setSoundEnabled(isEnabled);
-    if (isEnabled) {
-      SoundManager.playBackgroundMusic();
-    } else {
-      SoundManager.pauseBackgroundMusic();
-    }
-  }, []);
+    toggleSoundEnabledSetting(isEnabled);
+  }, [toggleSoundEnabledSetting]);
 
   const toggleHapticsEnabled = useCallback((isEnabled: boolean) => {
     void analyticsService.logGameInteraction("haptics_toggled", {enabled: isEnabled});
-    setIsHapticsEnabled(isEnabled);
-  }, []);
+    toggleHapticsEnabledSetting(isEnabled);
+  }, [toggleHapticsEnabledSetting]);
 
   const handleChangeLanguage = useCallback((language: SupportedLanguage) => {
     void analyticsService.logGameInteraction("language_changed", {language});
@@ -2388,13 +2314,6 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
             profileButtonRef={profileButtonRef}
           />
 
-          {process.env.NODE_ENV !== "test" && (
-            <GlobalMuteOverlay
-              isSoundEnabled={isSoundEnabled}
-              onToggleSound={toggleSoundEnabled}
-              accessibilityLabel={qaAccessibilityLabel}
-            />
-          )}
         </KeyboardAvoidingView>
 
         <PulsingSpinner

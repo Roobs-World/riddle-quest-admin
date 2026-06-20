@@ -35,10 +35,11 @@ describe("ModalSequenceBreadcrumb", () => {
     expect(breadcrumb.props.accessibilityLabel).toBe("Popup 2 of 4");
     expect(queryByText("2/4")).toBeNull();
     expect(breadcrumb.props.style).toMatchObject({
-      alignSelf: "stretch",
       alignItems: "center",
-      flexDirection: "row",
-      justifyContent: "center",
+      left: 0,
+      position: "absolute",
+      right: 0,
+      zIndex: 20,
     });
 
     for (let step = 1; step <= 4; step += 1) {
@@ -47,7 +48,7 @@ describe("ModalSequenceBreadcrumb", () => {
     expect(queryByTestId("modal-sequence-breadcrumb-dot-5")).toBeNull();
   });
 
-  it("fills only the current circle and leaves previous and future circles empty", () => {
+  it("makes the current circle larger than the surrounding circles", () => {
     const {getByTestId} = render(
       <ModalSequenceBreadcrumb
         sequenceProgress={{
@@ -58,21 +59,24 @@ describe("ModalSequenceBreadcrumb", () => {
       />,
     );
 
-    expect(getByTestId("modal-sequence-breadcrumb-dot-1").props.style).toMatchObject({
-      backgroundColor: "transparent",
+    const previousCircle = getByTestId("modal-sequence-breadcrumb-dot-2").props.style;
+    const currentCircle = getByTestId("modal-sequence-breadcrumb-dot-3").props.style;
+    const futureCircle = getByTestId("modal-sequence-breadcrumb-dot-4").props.style;
+
+    expect(previousCircle).toMatchObject({
+      backgroundColor: "#D1D5DB",
     });
-    expect(getByTestId("modal-sequence-breadcrumb-dot-2").props.style).toMatchObject({
-      backgroundColor: "transparent",
-    });
-    expect(getByTestId("modal-sequence-breadcrumb-dot-3").props.style).toMatchObject({
+    expect(currentCircle).toMatchObject({
       backgroundColor: "#111111",
     });
-    expect(getByTestId("modal-sequence-breadcrumb-dot-4").props.style).toMatchObject({
-      backgroundColor: "transparent",
+    expect(futureCircle).toMatchObject({
+      backgroundColor: "#D1D5DB",
     });
-    expect(getByTestId("modal-sequence-breadcrumb-dot-5").props.style).toMatchObject({
-      backgroundColor: "transparent",
-    });
+
+    expect(currentCircle.width).toBeGreaterThan(previousCircle.width);
+    expect(currentCircle.height).toBeGreaterThan(futureCircle.height);
+    expect(currentCircle.borderRadius).toBe(currentCircle.width / 2);
+    expect(previousCircle.borderRadius).toBe(previousCircle.width / 2);
   });
 
   it("allows jumping back to previous popups", () => {

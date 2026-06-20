@@ -49,6 +49,8 @@ import {NavigationContainer} from "@react-navigation/native";
 import {Navigation} from "./src/navigation/NavigationStack";
 import {persistLocale, readStoredLocale} from "./src/utils/localeStorage";
 import {RewardAnimationProvider} from "./src/contexts/RewardAnimationContext";
+import GlobalMuteOverlay from "./src/components/overlays/GlobalMuteOverlay";
+import {SettingsProvider, useAppSettings} from "./src/contexts/SettingsContext";
 
 const SOLAR_PRELOAD_TIMEOUT_MS = 60000;
 
@@ -161,6 +163,7 @@ const FatalStartupScreen = (): React.JSX.Element => {
 
 const AppShell = (): React.JSX.Element => {
   const {isAuthenticated, isLoading: isAuthLoading, playerData, updatePlayerData} = useAuth();
+  const {isSoundEnabled, toggleSoundEnabled} = useAppSettings();
   const [initialLanguageState, setInitialLanguageState] = useState<"pending" | "gate" | "ready">("pending");
 
   useEffect(() => {
@@ -249,6 +252,7 @@ const AppShell = (): React.JSX.Element => {
           <Navigation />
         </NavigationContainer>
       )}
+      <GlobalMuteOverlay isSoundEnabled={isSoundEnabled} onToggleSound={toggleSoundEnabled} />
     </View>
   );
 };
@@ -365,17 +369,19 @@ function App(): React.JSX.Element {
         <ModalProvider>
           <RewardAnimationProvider>
             <AuthProvider>
-              <TooltipProvider>
-                <QASurfaceGate>
-                  {startupError ? (
-                    <FatalStartupScreen />
-                  ) : isInitialized ? (
-                    <AppShell />
-                  ) : (
-                    <PulsingSpinner visible={true} size={120} opacity={0.8} />
-                  )}
-                </QASurfaceGate>
-              </TooltipProvider>
+              <SettingsProvider>
+                <TooltipProvider>
+                  <QASurfaceGate>
+                    {startupError ? (
+                      <FatalStartupScreen />
+                    ) : isInitialized ? (
+                      <AppShell />
+                    ) : (
+                      <PulsingSpinner visible={true} size={120} opacity={0.8} />
+                    )}
+                  </QASurfaceGate>
+                </TooltipProvider>
+              </SettingsProvider>
             </AuthProvider>
           </RewardAnimationProvider>
         </ModalProvider>

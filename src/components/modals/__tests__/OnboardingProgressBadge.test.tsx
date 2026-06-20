@@ -3,12 +3,28 @@ import {render} from "@testing-library/react-native";
 import OnboardingProgressBadge from "../OnboardingProgressBadge";
 
 describe("OnboardingProgressBadge", () => {
-  it("renders the current step, total, and accessibility label", () => {
-    const {getByLabelText, getByTestId, getByText} = render(<OnboardingProgressBadge current={2} total={3} />);
+  it("renders circle-only onboarding progress with an accessibility label", () => {
+    const {getByLabelText, getByTestId, queryByText} = render(<OnboardingProgressBadge current={2} total={3} />);
 
     expect(getByTestId("onboarding-progress-badge")).toBeTruthy();
-    expect(getByText("2/3")).toBeTruthy();
+    expect(queryByText("2/3")).toBeNull();
     expect(getByLabelText("Onboarding step 2 of 3")).toBeTruthy();
+    expect(getByTestId("onboarding-progress-badge").props.style).toMatchObject({
+      alignItems: "center",
+      left: 0,
+      position: "absolute",
+      right: 0,
+      zIndex: 20,
+    });
+
+    const previousCircle = getByTestId("onboarding-progress-breadcrumb-dot-1").props.style;
+    const currentCircle = getByTestId("onboarding-progress-breadcrumb-dot-2").props.style;
+    const futureCircle = getByTestId("onboarding-progress-breadcrumb-dot-3").props.style;
+
+    expect(currentCircle.width).toBeGreaterThan(previousCircle.width);
+    expect(currentCircle.height).toBeGreaterThan(futureCircle.height);
+    expect(currentCircle.backgroundColor).toBe("#111111");
+    expect(previousCircle.backgroundColor).toBe("#D1D5DB");
   });
 
   it.each([

@@ -114,12 +114,12 @@ describe("InfoModal", () => {
     });
 
     it("should render onboarding progress when provided", () => {
-      const {getByText, getByTestId} = render(
+      const {getByTestId, queryByText} = render(
         <InfoModal {...defaultProps} onboardingProgress={{current: 2, total: 3}} />,
       );
 
       expect(getByTestId("onboarding-progress-badge")).toBeTruthy();
-      expect(getByText("2/3")).toBeTruthy();
+      expect(queryByText("2/3")).toBeNull();
     });
   });
 

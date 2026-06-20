@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     zIndex: 1000,
   },
   overlayRoot: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
   },
 });
 
