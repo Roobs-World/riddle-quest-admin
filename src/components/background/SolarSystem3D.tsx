@@ -46,6 +46,7 @@ import {SOLAR_SYSTEM_CONFIG} from "./SolarSystemConfig";
 import {dimensions} from "../../utils/responsive";
 import {loadTextureFromAsset, resolveAssetModule} from "../../services/solar/textureLoader";
 import type {AssetModuleReference} from "../../services/solar/textureLoader";
+import {SolarSystemPreloader} from "../../services/SolarSystemPreloader";
 import {isQASurfaceRuntimeActive} from "../../qa/qaRuntime";
 // Import texture assets
 import sunTextureModule from "../../../assets/3d/tex_sun_spots_02.png";
@@ -202,7 +203,15 @@ function useExpoTexture(assetModule: AssetModuleReference | null | undefined): T
   const resolvedModule = useMemo(() => (assetModule == null ? null : resolveAssetModule(assetModule)), [assetModule]);
 
   const [texture, setTexture] = useState<Texture | null>(() => {
-    return resolvedModule == null ? null : textureCache.get(resolvedModule) || null;
+    if (resolvedModule == null) {
+      return null;
+    }
+
+    const cached = textureCache.get(resolvedModule) ?? SolarSystemPreloader.getPreloadedTexture(resolvedModule);
+    if (cached) {
+      textureCache.set(resolvedModule, cached);
+    }
+    return cached ?? null;
   });
 
   useEffect(() => {
@@ -214,8 +223,9 @@ function useExpoTexture(assetModule: AssetModuleReference | null | undefined): T
     let mounted = true;
     const loadTexture = async () => {
       try {
-        const cached = textureCache.get(resolvedModule);
+        const cached = textureCache.get(resolvedModule) ?? SolarSystemPreloader.getPreloadedTexture(resolvedModule);
         if (cached) {
+          textureCache.set(resolvedModule, cached);
           if (mounted) {
             setTexture(cached);
           }

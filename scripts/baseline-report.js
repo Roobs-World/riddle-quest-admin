@@ -10,6 +10,9 @@ function safeExec(cmd) {
   try {
     return execSync(cmd, {cwd: root, stdio: ["ignore", "pipe", "ignore"]})
       .toString()
+      .split(/\r?\n/)
+      .filter((line) => !line.includes("Unsupported engine"))
+      .join("\n")
       .trim();
   } catch {
     return "unavailable";

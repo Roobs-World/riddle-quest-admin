@@ -60,12 +60,14 @@ const {
   __applyPlanetFrameUpdateForTests,
 } = require("../SolarSystem3D");
 const {isQASurfaceRuntimeActive} = require("../../../qa/qaRuntime");
+const {SolarSystemPreloader} = require("../../../services/SolarSystemPreloader");
 
 describe("SolarSystem3D", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     frameCallbacks.length = 0;
     __resetSolarSystem3DTextureCacheForTests();
+    SolarSystemPreloader.clearCache();
     (isQASurfaceRuntimeActive as jest.Mock).mockReturnValue(false);
     mockGetContext.mockReturnValue({
       pixelStorei: mockPixelStorei,
@@ -189,6 +191,17 @@ describe("SolarSystem3D", () => {
 
     await waitFor(() => {
       expect(mockLoadAsync.mock.calls.length).toBe(callCountAfterFirst);
+    });
+  });
+
+  it("uses textures warmed by the solar preloader", async () => {
+    await SolarSystemPreloader.preloadSolarSystem();
+    const callCountAfterPreload = mockLoadAsync.mock.calls.length;
+
+    render(<SolarSystem3D />);
+
+    await waitFor(() => {
+      expect(mockLoadAsync.mock.calls.length).toBe(callCountAfterPreload);
     });
   });
 

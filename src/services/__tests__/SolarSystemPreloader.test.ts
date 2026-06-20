@@ -15,6 +15,12 @@ jest.mock("../../utils/sentry", () => ({
 
 jest.mock("../solar/textureLoader", () => ({
   loadTextureFromAsset: jest.fn(async () => new (require("three").Texture)()),
+  resolveAssetModule: jest.fn((assetModule) => {
+    if (assetModule && typeof assetModule === "object" && "default" in assetModule) {
+      return assetModule.default;
+    }
+    return assetModule;
+  }),
 }));
 
 const {loadTextureFromAsset} = require("../solar/textureLoader");
@@ -30,22 +36,20 @@ describe("SolarSystemPreloader", () => {
     SolarSystemPreloader.clearCache();
   });
 
-  it("preloads and caches the solar system", async () => {
+  it("preloads and caches the solar system textures", async () => {
     const progressEvents: string[] = [];
 
     const system = await SolarSystemPreloader.preloadSolarSystem((progress) => {
       progressEvents.push(progress.phase);
     });
 
-    expect(system.meshes.length).toBeGreaterThan(0);
-    expect(system.geometries.size).toBeGreaterThan(0);
-    expect(system.materials.size).toBeGreaterThan(0);
     expect(system.textures.size).toBeGreaterThan(0);
     expect(progressEvents).toContain("textures");
-    expect(progressEvents).toContain("geometries");
-    expect(progressEvents).toContain("materials");
-    expect(progressEvents).toContain("scene");
+    expect(progressEvents).not.toContain("geometries");
+    expect(progressEvents).not.toContain("materials");
+    expect(progressEvents).not.toContain("scene");
     expect(progressEvents).toContain("complete");
+    expect("meshes" in system).toBe(false);
     expect(SolarSystemPreloader.isSystemPreloaded()).toBe(true);
     expect(SolarSystemPreloader.getPreloadedSystem()).toBe(system);
   });
@@ -96,7 +100,7 @@ describe("SolarSystemPreloader", () => {
     expect(secondProgressEvents).toContain("complete");
   });
 
-  it("creates geometries while texture loading is still pending", async () => {
+  it("does not build scene resources while texture loading is still pending", async () => {
     let resolveTextureLoad: (texture: Texture) => void = () => undefined;
     const textureLoad = new Promise<Texture>((resolve) => {
       resolveTextureLoad = resolve;
@@ -109,8 +113,9 @@ describe("SolarSystemPreloader", () => {
     });
 
     await Promise.resolve();
-    expect(progressEvents).toContain("geometries");
+    expect(progressEvents).not.toContain("geometries");
     expect(progressEvents).not.toContain("materials");
+    expect(progressEvents).not.toContain("scene");
 
     resolveTextureLoad(new Texture());
     await preload;
@@ -140,26 +145,17 @@ describe("SolarSystemPreloader", () => {
     expect(captureException).toHaveBeenCalled();
   });
 
-  it("supports clone and clear cache", async () => {
+  it("supports cached lookup and clear cache", async () => {
     await SolarSystemPreloader.preloadSolarSystem();
 
-    const clone = SolarSystemPreloader.clonePreloadedScene();
-    expect(clone).toBe(SolarSystemPreloader.getPreloadedSystem());
+    const system = SolarSystemPreloader.getPreloadedSystem();
+    expect(system).not.toBeNull();
+    const firstTextureKey = Array.from(system?.textures.keys() ?? [])[0];
+    expect(SolarSystemPreloader.getPreloadedTexture(firstTextureKey)).toBe(system?.textures.get(firstTextureKey));
 
     SolarSystemPreloader.clearCache();
     expect(SolarSystemPreloader.isSystemPreloaded()).toBe(false);
     expect(SolarSystemPreloader.getPreloadedSystem()).toBeNull();
-    expect(SolarSystemPreloader.clonePreloadedScene()).toBeNull();
-  });
-
-  it("rejects missing geometry during scene assembly", async () => {
-    const geometries = new Map<string, any>();
-    const materials = new Map<string, any>();
-    const textures = new Map<string, any>();
-
-    await expect((SolarSystemPreloader as any).createCompleteScene(geometries, materials, textures)).rejects.toThrow(
-      "Missing required sun geometry",
-    );
-    expect(logger.error).toHaveBeenCalled();
+    expect(SolarSystemPreloader.getPreloadedTexture(firstTextureKey)).toBeNull();
   });
 });

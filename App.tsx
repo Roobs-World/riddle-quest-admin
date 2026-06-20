@@ -22,12 +22,15 @@ import {logger} from "./src/utils/logger";
 
 import React, {useCallback, useEffect, useRef, useState} from "react";
 import {StyleSheet, Text, View} from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {SafeAreaProvider} from "react-native-safe-area-context";
 import {loadFonts} from "./src/utils/fontLoader";
 import {SoundManager} from "./src/services/SoundManager";
 import Constants from "expo-constants";
 import {Settings} from "react-native-fbsdk-next";
 import {GoogleSignin} from "@react-native-google-signin/google-signin";
+import {getApp} from "@react-native-firebase/app";
+import {getAuth, signOut} from "@react-native-firebase/auth";
 import {AuthProvider, useAuth} from "./src/contexts/AuthContext";
 import {TooltipProvider} from "./src/contexts/TooltipContext";
 import LanguageSelectionScreen from "./src/screens/LanguageSelectionScreen";
@@ -48,6 +51,43 @@ import {persistLocale, readStoredLocale} from "./src/utils/localeStorage";
 import {RewardAnimationProvider} from "./src/contexts/RewardAnimationContext";
 
 const SOLAR_PRELOAD_TIMEOUT_MS = 60000;
+
+const clearBrowserLocalStorage = (): void => {
+  const localStorageApi = (globalThis as {localStorage?: {clear?: () => void}}).localStorage;
+  if (typeof localStorageApi?.clear === "function") {
+    localStorageApi.clear();
+  }
+};
+
+const resetDevelopmentLocalState = async (): Promise<void> => {
+  if (!__DEV__) {
+    return;
+  }
+
+  try {
+    await AsyncStorage.clear();
+  } catch (error) {
+    logger.warn("Failed to clear AsyncStorage during development startup reset.", error);
+    captureException(error, {context: "App.devStartupReset.asyncStorage"});
+  }
+
+  try {
+    clearBrowserLocalStorage();
+  } catch (error) {
+    logger.warn("Failed to clear browser localStorage during development startup reset.", error);
+    captureException(error, {context: "App.devStartupReset.localStorage"});
+  }
+
+  try {
+    const auth = getAuth(getApp());
+    if (auth.currentUser) {
+      await signOut(auth);
+    }
+  } catch (error) {
+    logger.warn("Failed to clear Firebase auth session during development startup reset.", error);
+    captureException(error, {context: "App.devStartupReset.auth"});
+  }
+};
 
 const withTimeout = async <T,>(promise: Promise<T>, timeoutMs: number): Promise<T> => {
   let timeoutId: ReturnType<typeof setTimeout> | null = null;
@@ -261,6 +301,7 @@ function App(): React.JSX.Element {
     void (async () => {
       try {
         logger.info("Starting app initialization");
+        await resetDevelopmentLocalState();
         if (isSharedAnimationBackendEnabled()) {
           logger.info("Shared Animation Backend is active (RN 0.85.1+ requirement satisfied).");
         } else if (isSharedAnimationBackendFlagRequested()) {

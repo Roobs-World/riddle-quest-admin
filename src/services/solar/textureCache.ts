@@ -4,14 +4,14 @@
 import {Texture} from "three";
 
 /** Cache shape for keyed texture instances. */
-export type TextureCache = Map<string, Texture>;
+export type TextureCache = Map<string | number, Texture>;
 
 /**
  * Creates a fresh texture cache map.
  *
  * @returns Empty `TextureCache`.
  */
-export const createTextureCache = (): TextureCache => new Map<string, Texture>();
+export const createTextureCache = (): TextureCache => new Map<string | number, Texture>();
 
 /**
  * Disposes every cached texture instance, then clears the cache map.

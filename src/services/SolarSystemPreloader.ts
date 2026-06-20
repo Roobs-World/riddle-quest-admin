@@ -1,15 +1,14 @@
 /**
- * @fileoverview Strict preload coordinator for the solar-system background.
+ * @fileoverview Texture preload coordinator for the solar-system background.
  */
 import {type Texture} from "three";
 import {logger} from "../utils/logger";
 import {captureException} from "../utils/sentry";
-import {SOLAR_TEXTURE_MAPPING} from "./solar/solarSystemConfig";
 import {createTextureCache, disposeAndClearTextureCache, type TextureCache} from "./solar/textureCache";
 import {preloadTexturesStage, type TexturePreloadProgress} from "./solar/textureStage";
-import {createGeometriesStage, type GeometryProgress, type SolarGeometry} from "./solar/geometryStage";
-import {createMaterialsStage, type MaterialProgress, type SolarMaterial} from "./solar/materialStage";
-import {assembleSolarSystemScene, type PreloadedSolarSystem} from "./solar/sceneStage";
+import {resolveAssetModule, type AssetModuleReference} from "./solar/textureLoader";
+import {SOLAR_SYSTEM_CONFIG} from "../components/background/SolarSystemConfig";
+import sunTextureModule from "../../assets/3d/tex_sun_spots_02.png";
 
 export interface SolarSystemPreloadProgress {
   phase: "textures" | "geometries" | "materials" | "scene" | "complete";
@@ -20,7 +19,41 @@ export interface SolarSystemPreloadProgress {
   textureProgress?: TexturePreloadProgress;
 }
 
-export type {PreloadedSolarSystem};
+export interface PreloadedSolarSystem {
+  textures: TextureCache;
+}
+
+interface SolarTexturePreloadSpec {
+  key: string;
+  path: AssetModuleReference;
+}
+
+const getSolarTexturePreloadSpecs = (): SolarTexturePreloadSpec[] => {
+  const specs: SolarTexturePreloadSpec[] = [{key: "sun", path: sunTextureModule}];
+  const seenModules = new Set<string | number>();
+
+  const addSpec = (key: string, path: AssetModuleReference): void => {
+    const resolvedModule = resolveAssetModule(path);
+    if (seenModules.has(resolvedModule)) {
+      return;
+    }
+
+    seenModules.add(resolvedModule);
+    specs.push({key, path});
+  };
+
+  SOLAR_SYSTEM_CONFIG.forEach((planet) => {
+    addSpec(planet.textureKey, planet.textureModule);
+    planet.moons.forEach((moon) => {
+      addSpec(moon.textureKey, moon.textureModule);
+    });
+    if (planet.ring) {
+      addSpec(`${planet.textureKey}_ring`, planet.ring.textureModule);
+    }
+  });
+
+  return specs;
+};
 
 export class SolarSystemPreloader {
   private static preloadedSystem: PreloadedSolarSystem | null = null;
@@ -31,9 +64,7 @@ export class SolarSystemPreloader {
   private static progressListeners = new Set<(progress: SolarSystemPreloadProgress) => void>();
   private static readonly textureLoadTimeoutMs = 15000;
 
-  private static addProgressListener(
-    onProgress?: (progress: SolarSystemPreloadProgress) => void,
-  ): () => void {
+  private static addProgressListener(onProgress?: (progress: SolarSystemPreloadProgress) => void): () => void {
     if (!onProgress) {
       return () => undefined;
     }
@@ -57,82 +88,42 @@ export class SolarSystemPreloader {
     this.isPreloading = false;
   }
 
-  private static async preloadTextures(): Promise<Map<string, Texture>> {
+  private static async preloadTextures(): Promise<TextureCache> {
     if (this.textureCache.size > 0) {
       logger.debug("SolarSystemPreloader: Textures already preloaded, returning cache");
       return this.textureCache;
     }
 
-    const textures = await preloadTexturesStage(SOLAR_TEXTURE_MAPPING, this.textureLoadTimeoutMs, (progress) => {
+    const textureSpecs = getSolarTexturePreloadSpecs();
+    const textures = await preloadTexturesStage(textureSpecs, this.textureLoadTimeoutMs, (progress) => {
       this.emitProgress({
         phase: "textures",
         loaded: progress.loaded,
         total: progress.total,
         currentItem: progress.currentTexture,
-        percentage: Math.round((progress.loaded / progress.total) * 30),
+        percentage: Math.round((progress.loaded / progress.total) * 100),
         textureProgress: progress,
       });
     });
 
     this.textureCache = createTextureCache();
-    textures.forEach((texture, key) => {
-      this.textureCache.set(key, texture);
+    textureSpecs.forEach((spec) => {
+      const texture = textures.get(spec.key);
+      if (texture) {
+        this.textureCache.set(resolveAssetModule(spec.path), texture);
+      }
     });
 
-    return textures;
-  }
-
-  private static async createGeometries(): Promise<Map<string, SolarGeometry>> {
-    return createGeometriesStage((progress: GeometryProgress) => {
-      this.emitProgress({
-        phase: "geometries",
-        loaded: progress.loaded,
-        total: progress.total,
-        currentItem: progress.currentItem,
-        percentage: 30 + Math.round((progress.loaded / progress.total) * 15),
-      });
-    });
-  }
-
-  private static async createMaterials(
-    textures: Map<string, Texture>,
-  ): Promise<Map<string, SolarMaterial>> {
-    return createMaterialsStage(textures, (progress: MaterialProgress) => {
-      this.emitProgress({
-        phase: "materials",
-        loaded: progress.loaded,
-        total: progress.total,
-        currentItem: progress.currentItem,
-        percentage: 45 + Math.round((progress.loaded / progress.total) * 15),
-      });
-    });
-  }
-
-  private static async createCompleteScene(
-    geometries: Map<string, SolarGeometry>,
-    materials: Map<string, SolarMaterial>,
-    textures: Map<string, Texture>,
-  ): Promise<PreloadedSolarSystem> {
-    return assembleSolarSystemScene(geometries, materials, textures, (loaded, total, current) => {
-      this.emitProgress({
-        phase: "scene",
-        loaded,
-        total,
-        currentItem: current,
-        percentage: 60 + Math.round((loaded / total) * 40),
-      });
-    });
+    return this.textureCache;
   }
 
   private static async runPreload(): Promise<PreloadedSolarSystem> {
     try {
-      logger.debug("SolarSystemPreloader: Starting solar system preloading...");
+      logger.debug("SolarSystemPreloader: Starting solar system texture preloading...");
       console.time("SolarSystemPreloader: Total preload time");
 
-      const [textures, geometries] = await Promise.all([this.preloadTextures(), this.createGeometries()]);
-      const materials = await this.createMaterials(textures);
-      this.preloadedSystem = await this.createCompleteScene(geometries, materials, textures);
-
+      const textures = await this.preloadTextures();
+      this.preloadedSystem = {textures};
       this.isPreloaded = true;
 
       this.emitProgress({
@@ -143,7 +134,7 @@ export class SolarSystemPreloader {
         percentage: 100,
       });
 
-      logger.debug(`SolarSystemPreloader: ready with ${this.preloadedSystem.meshes.length} meshes`);
+      logger.debug(`SolarSystemPreloader: ready with ${this.preloadedSystem.textures.size} textures`);
       return this.preloadedSystem;
     } catch (error) {
       logger.error("SolarSystemPreloader: Critical error during preloading:", error);
@@ -193,6 +184,10 @@ export class SolarSystemPreloader {
 
   static clonePreloadedScene(): PreloadedSolarSystem | null {
     return this.preloadedSystem;
+  }
+
+  static getPreloadedTexture(assetModule: AssetModuleReference): Texture | null {
+    return this.textureCache.get(resolveAssetModule(assetModule)) ?? null;
   }
 
   static clearCache(): void {

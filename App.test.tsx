@@ -1,6 +1,7 @@
 import React from "react";
 import {Text, View} from "react-native";
 import {render, waitFor} from "@testing-library/react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const mockPreloadSolarSystem = jest.fn();
 const mockLoadFonts = jest.fn();
@@ -15,6 +16,8 @@ const mockReadStoredLocale = jest.fn();
 const mockPersistLocale = jest.fn();
 const mockUpdatePlayerData = jest.fn();
 const mockUseAuth = jest.fn();
+const mockFirebaseSignOut = jest.fn();
+const mockFirebaseAuth = {currentUser: null as {uid: string} | null};
 
 jest.mock("@sentry/react-native", () => ({
   wrap: (component: any) => component,
@@ -69,6 +72,11 @@ jest.mock("@react-native-google-signin/google-signin", () => ({
   GoogleSignin: {
     configure: jest.fn(),
   },
+}));
+
+jest.mock("@react-native-firebase/auth", () => ({
+  getAuth: () => mockFirebaseAuth,
+  signOut: (...args: any[]) => mockFirebaseSignOut(...args),
 }));
 
 jest.mock("./src/contexts/AuthContext", () => ({
@@ -153,8 +161,13 @@ jest.mock("./src/services/SolarSystemPreloader", () => ({
 const {default: App} = require("./App");
 
 describe("App startup", () => {
+  const originalDev = (global as typeof global & {__DEV__?: boolean}).__DEV__;
+  const originalLocalStorage = Object.getOwnPropertyDescriptor(globalThis, "localStorage");
+
   beforeEach(() => {
     jest.clearAllMocks();
+    (global as typeof global & {__DEV__?: boolean}).__DEV__ = true;
+    mockFirebaseAuth.currentUser = null;
     mockReadStoredLocale.mockResolvedValue("en");
     mockPersistLocale.mockResolvedValue(undefined);
     mockUseAuth.mockReturnValue({
@@ -179,6 +192,15 @@ describe("App startup", () => {
     });
   });
 
+  afterAll(() => {
+    (global as typeof global & {__DEV__?: boolean}).__DEV__ = originalDev;
+    if (originalLocalStorage) {
+      Object.defineProperty(globalThis, "localStorage", originalLocalStorage);
+      return;
+    }
+    delete (globalThis as {localStorage?: unknown}).localStorage;
+  });
+
   it("allows app initialization when solar preload succeeds", async () => {
     const {getByTestId, queryByText} = render(<App />);
 
@@ -198,5 +220,31 @@ describe("App startup", () => {
     expect(getByText("The solar system background failed to load. Please restart the app.")).toBeTruthy();
     expect(queryByTestId("navigation")).toBeNull();
     expect(mockCaptureException).toHaveBeenCalledWith(expect.any(Error), {context: "App.solarStartup"});
+  });
+
+  it("clears persisted local state on startup in development", async () => {
+    const clearLocalStorage = jest.fn();
+    Object.defineProperty(globalThis, "localStorage", {
+      configurable: true,
+      value: {clear: clearLocalStorage},
+    });
+    mockFirebaseAuth.currentUser = {uid: "persisted-user"};
+
+    render(<App />);
+
+    await waitFor(() => expect(AsyncStorage.clear).toHaveBeenCalled());
+    await waitFor(() => expect(mockFirebaseSignOut).toHaveBeenCalledWith(mockFirebaseAuth));
+    expect(clearLocalStorage).toHaveBeenCalled();
+  });
+
+  it("does not clear persisted local state on startup in production", async () => {
+    (global as typeof global & {__DEV__?: boolean}).__DEV__ = false;
+    mockFirebaseAuth.currentUser = {uid: "prod-user"};
+
+    const {getByTestId} = render(<App />);
+
+    await waitFor(() => expect(getByTestId("navigation")).toBeTruthy());
+    expect(AsyncStorage.clear).not.toHaveBeenCalled();
+    expect(mockFirebaseSignOut).not.toHaveBeenCalled();
   });
 });
