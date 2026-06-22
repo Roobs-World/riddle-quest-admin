@@ -40,4 +40,8 @@ onlyBuiltDependencies:
 allowBuilds:
   "@firebase/util": true
   "@sentry/cli": true
+  edgedriver: false
+  esbuild: false
+  geckodriver: false
   protobufjs: true
+  unrs-resolver: false

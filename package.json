@@ -87,6 +87,7 @@
     "expo-font": "56.0.7",
     "expo-gl": "~56.0.5",
     "expo-haptics": "56.0.3",
+    "expo-modules-core": "~56.0.17",
     "firebase-functions": "^7.2.5",
     "googleapis": "^171.4.0",
     "metro": "^0.84.4",
@@ -94,6 +95,7 @@
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-native": "0.85.3",
+    "react-native-css-interop": "0.2.5",
     "react-native-fbsdk-next": "^13.4.3",
     "react-native-google-mobile-ads": "^16.3.4",
     "react-native-iap": "^15.3.2",
@@ -159,5 +161,5 @@
       "exclude": []
     }
   },
-  "packageManager": "pnpm@10.33.0"
+  "packageManager": "pnpm@11.8.0+sha1.d1cb3c2c0c77584011fece2f27384b37788fb7ca"
 }

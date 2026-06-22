@@ -53,7 +53,15 @@ import sunTextureModule from "../../../assets/3d/tex_sun_spots_02.png";
 
 // Expo's EXGL doesn't support UNPACK_COLORSPACE_CONVERSION_WEBGL which Three.js
 // r152+ tries to set when color management is enabled.
-ColorManagement.enabled = false;
+const disableThreeColorManagement = (): void => {
+  try {
+    ColorManagement.enabled = false;
+  } catch (error) {
+    console.warn("Unable to disable Three color management.", error);
+  }
+};
+
+disableThreeColorManagement();
 
 const EXGL_UNSUPPORTED_PIXEL_STORE_PARAMETERS = new Set<number>([
   0x9240, // UNPACK_FLIP_Y_WEBGL

@@ -8,11 +8,10 @@
  */
 import React, {useState} from "react";
 import {View, Text, Linking, TouchableOpacity} from "react-native";
-import CustomSafeAreaView from "../components/layouts/CustomSafeAreaView";
+import AuthScreenShell from "../components/layouts/AuthScreenShell";
 import GoogleSignInButton from "../components/buttons/GoogleSignInButton";
 import FacebookSignInButton from "../components/buttons/FacebookSignInButton";
 import WideButton from "../components/buttons/WideButton";
-import StarryBackground from "../components/background/StarryBackground";
 import PulsingSpinner from "../components/loading/PulsingSpinner";
 import {t} from "../i18n";
 import {LOADING_SPINNER_SIZE} from "../constants/loading";
@@ -36,51 +35,38 @@ const LandingScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
   const {login, isAuthenticated} = useAuthSession();
 
-  const handleGoogleSignIn = async () => {
+  const handleSocialSignIn = async (
+    signInFn: () => Promise<{user?: {uid?: string}} | null>,
+    provider: "google" | "facebook",
+  ) => {
     setIsLoading(true);
     setAuthError(null);
 
     try {
-      const userCredential = await AuthService.signInWithGoogle();
-      logger.debug("Google login success:", userCredential);
-      if (userCredential.user?.uid) {
+      const userCredential = await signInFn();
+      logger.debug(`${provider} login success:`, userCredential);
+      if (userCredential?.user?.uid) {
         login();
       }
-    } catch (error) {
-      const message = getAuthErrorMessage(error, "google");
+    } catch (error: unknown) {
+      const message = getAuthErrorMessage(error, provider);
       if (!message) {
         return;
       }
 
-      logger.error("Google login error:", error);
+      logger.error(`${provider} login error:`, error);
       setAuthError(message);
     } finally {
       setIsLoading(false);
     }
   };
 
-  /* istanbul ignore next */
+  const handleGoogleSignIn = async () => {
+    await handleSocialSignIn(AuthService.signInWithGoogle, "google");
+  };
+
   const handleFacebookSignIn = async () => {
-    setIsLoading(true);
-    setAuthError(null);
-
-    try {
-      const userCredential = await AuthService.signInWithFacebook();
-      logger.debug("Facebook login success:", userCredential);
-      if (userCredential?.user?.uid) {
-        login();
-      }
-    } catch (error: unknown) {
-      const message = getAuthErrorMessage(error, "facebook");
-      if (!message) {
-        return;
-      }
-
-      logger.error("Facebook login error:", error);
-      setAuthError(message);
-    } finally {
-      setIsLoading(false);
-    }
+    await handleSocialSignIn(AuthService.signInWithFacebook, "facebook");
   };
 
   const handlePlayButtonPress = async () => {
@@ -106,50 +92,50 @@ const LandingScreen = () => {
   };
 
   return (
-    <CustomSafeAreaView className="justify-start">
-      <StarryBackground />
+    <AuthScreenShell>
+      <View style={{alignItems: "center", paddingTop: SPACING.xl}}>
+        <RiddleQuestLogo />
+        <Text
+          className="font-bold text-white text-center"
+          style={[styles.title, {marginBottom: SPACING.md, color: "#FFFFFF"}]}
+        >
+          {t("AuthStrings.Landing.TAGLINE_1")}
+        </Text>
+      </View>
 
-      <View style={{flex: 1, width: "100%", alignItems: "center", zIndex: 2}}>
-        {/* Title at the top */}
-        <View style={{alignItems: "center", paddingTop: SPACING.xl}}>
-          <RiddleQuestLogo />
-          <Text
-            className="font-bold text-white text-center"
-            style={[styles.title, {marginBottom: SPACING.md, color: "#FFFFFF"}]}
-          >
-            {t("AuthStrings.Landing.TAGLINE_1")}
+      <View style={{flex: 1, minHeight: 0}} />
+
+      <View
+        style={{
+          alignItems: "center",
+          gap: SPACING.md,
+          paddingBottom: SPACING.xl,
+          width: "100%",
+        }}
+      >
+        <GoogleSignInButton onPress={handleGoogleSignIn} disabled={isLoading} />
+        <FacebookSignInButton onPress={handleFacebookSignIn} disabled={isLoading} />
+        {authError && <Error message={authError} />}
+        <WideButton
+          buttonText={t("AuthStrings.Landing.PLAY_AS_GUEST")}
+          onPress={handlePlayButtonPress}
+          disabled={isLoading}
+          testID="play-as-guest-button"
+        />
+        <TouchableOpacity
+          accessibilityLabel={t("Accessibility.LANDING_ATTRIBUTION_LINK")}
+          accessibilityRole="link"
+          onPress={handleRoobsWorldPress}
+          testID="roobs-world-link"
+        >
+          <Text className="text-white text-center" style={[styles.creditsLink, {opacity: 0.85}]}>
+            {t("AuthStrings.Landing.MADE_BY_ROOBS_WORLD")}
           </Text>
-        </View>
-
-        {/* Spacer — solar system visible here */}
-        <View style={{flex: 1, minHeight: 0}} />
-
-        {/* Buttons at the bottom */}
-        <View style={[styles.authContentContainer, {alignItems: "center", gap: SPACING.md, paddingBottom: SPACING.xl}]}>
-          <GoogleSignInButton onPress={handleGoogleSignIn} disabled={isLoading} />
-          <FacebookSignInButton onPress={handleFacebookSignIn} disabled={isLoading} />
-          {authError && <Error message={authError} />}
-          <WideButton
-            buttonText={t("AuthStrings.Landing.PLAY_AS_GUEST")}
-            onPress={handlePlayButtonPress}
-            disabled={isLoading}
-            testID="play-as-guest-button"
-          />
-          <TouchableOpacity
-            accessibilityLabel={t("Accessibility.LANDING_ATTRIBUTION_LINK")}
-            accessibilityRole="link"
-            onPress={handleRoobsWorldPress}
-            testID="roobs-world-link"
-          >
-            <Text className="text-white text-center" style={[styles.creditsLink, {opacity: 0.85}]}>
-              {t("AuthStrings.Landing.MADE_BY_ROOBS_WORLD")}
-            </Text>
-          </TouchableOpacity>
-        </View>
+        </TouchableOpacity>
       </View>
 
       <PulsingSpinner visible={isLoading} size={LOADING_SPINNER_SIZE} />
-    </CustomSafeAreaView>
+    </AuthScreenShell>
   );
 };
 

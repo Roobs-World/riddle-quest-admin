@@ -134,7 +134,7 @@ const initializeFacebookSdkInBackground = async (): Promise<void> => {
   const facebookClientToken = Constants.expoConfig?.extra?.FACEBOOK_CLIENT_TOKEN;
 
   if (!facebookAppId || facebookAppId === "YOUR_FACEBOOK_APP_ID") {
-    logger.warn("Facebook App ID not configured. Facebook features disabled.");
+    logger.info("Facebook App ID not configured. Facebook features disabled.");
     return;
   }
 

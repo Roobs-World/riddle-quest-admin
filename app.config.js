@@ -251,6 +251,8 @@ module.exports = {
     "react-native-iap",
     /** Custom plugin for Android IAP store selection */
     "./plugins/withAndroidIapStoreSelection.js",
+    /** Increase Gradle heap so multi-ABI debug APK packaging can complete locally and in prebuilds. */
+    "./plugins/withAndroidGradleJvmArgs.js",
 
     /**
      * Expo Build Properties Configuration
