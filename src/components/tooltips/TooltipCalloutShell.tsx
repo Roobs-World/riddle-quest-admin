@@ -1,5 +1,5 @@
 import React, {useMemo} from "react";
-import {Animated, Dimensions, StyleSheet, View, type StyleProp, type ViewStyle} from "react-native";
+import {Animated, StyleSheet, useWindowDimensions, View, type StyleProp, type ViewStyle} from "react-native";
 import {COLORS, SPACING} from "../../styles";
 import type {TargetRect} from "./types";
 
@@ -14,8 +14,9 @@ const palette = {
 };
 
 const SCREEN_PADDING = 18;
-const DEFAULT_PANEL_WIDTH = Math.min(Dimensions.get("window").width - SCREEN_PADDING * 2, 340);
-const DEFAULT_PANEL_TOP_OFFSET = 140;
+const DEFAULT_PANEL_WIDTH = 340;
+const ABOVE_TARGET_PANEL_OFFSET = 140;
+const BELOW_TARGET_PANEL_OFFSET = 140;
 const POINTER_SIZE = 10;
 const AnimatedView = Animated.createAnimatedComponent(View);
 
@@ -33,6 +34,7 @@ interface TooltipCalloutShellProps {
   backdropStyle?: StyleProp<ViewStyle>;
   containerStyle?: StyleProp<ViewStyle>;
   showPointer?: boolean;
+  showBackdrop?: boolean;
   testID?: string;
   backdropTestID?: string;
   panelTestID?: string;
@@ -55,12 +57,13 @@ const TooltipCalloutShell: React.FC<TooltipCalloutShellProps> = ({
   backdropStyle,
   containerStyle,
   showPointer = Boolean(targetRect),
+  showBackdrop = true,
   testID = "tooltip-callout-shell",
   backdropTestID = "tooltip-backdrop",
   panelTestID = "tooltip-panel",
   pointerTestID = "tooltip-pointer",
 }) => {
-  const {width, height} = Dimensions.get("screen");
+  const {width, height} = useWindowDimensions();
   const resolvedPanelWidth = Math.min(panelWidth, Math.max(0, width - SCREEN_PADDING * 2));
   const layout = useMemo(() => {
     if (targetRect && placement !== "center") {
@@ -68,8 +71,8 @@ const TooltipCalloutShell: React.FC<TooltipCalloutShellProps> = ({
       const preferredAbove =
         preferredPlacement === "above" || (preferredPlacement === "auto" && targetRect.y > height * 0.45);
       const top = preferredAbove
-        ? Math.max(SCREEN_PADDING, targetRect.y - DEFAULT_PANEL_TOP_OFFSET)
-        : Math.min(height - DEFAULT_PANEL_TOP_OFFSET, targetRect.y + targetRect.height + 28);
+        ? Math.max(SCREEN_PADDING, targetRect.y - ABOVE_TARGET_PANEL_OFFSET)
+        : Math.min(height - BELOW_TARGET_PANEL_OFFSET, targetRect.y + targetRect.height + 28);
       const left = clamp(
         targetCenterX - resolvedPanelWidth / 2,
         SCREEN_PADDING,
@@ -167,7 +170,7 @@ const TooltipCalloutShell: React.FC<TooltipCalloutShellProps> = ({
       style={[styles.container, {width, height}, containerStyle]}
       testID={testID}
     >
-      {backdropPieces ? (
+      {!showBackdrop ? null : backdropPieces ? (
         <View pointerEvents="none" testID={backdropTestID} style={[styles.backdropGroup, backdropStyle]}>
           {backdropPieces.map((piece, index) => (
             <View
@@ -178,7 +181,7 @@ const TooltipCalloutShell: React.FC<TooltipCalloutShellProps> = ({
             />
           ))}
         </View>
-      ) : (
+      ) : cutoutTarget ? null : (
         <View
           pointerEvents="none"
           testID={backdropTestID}

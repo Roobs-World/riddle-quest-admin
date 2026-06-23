@@ -140,6 +140,16 @@ interface GameScreenProps {
 const ONBOARDING_SEEN_STORAGE_KEY_PREFIX = "gameScreenOnboardingSeen";
 const RESULT_MODAL_REVEAL_DELAY_MS = 850;
 const FIFTH_CORRECT_ANSWER_COUNT = 5;
+const SUBMIT_TOOLTIP_BACKDROP_LAYER = {
+  bottom: 0,
+  backgroundColor: "rgba(0,0,0,0.45)",
+  elevation: 20,
+  left: 0,
+  position: "absolute" as const,
+  right: 0,
+  top: 0,
+  zIndex: 20,
+} as const;
 
 const getOnboardingSeenStorageKey = (userId?: string): string => {
   if (userId) {
@@ -2274,6 +2284,10 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
             activeSlotIndex={activeSlotIndex}
             onSelectCurrentGuessSlot={handleSelectCurrentGuessSlot}
           />
+
+          {tooltip.activeTooltipId === "submitAnswer" ? (
+            <View pointerEvents="none" style={SUBMIT_TOOLTIP_BACKDROP_LAYER} testID="submit-tooltip-local-backdrop" />
+          ) : null}
 
           <GameInput
             isSubmitDisabled={isSubmitDisabled}

@@ -50,6 +50,37 @@ describe("TooltipCalloutShell", () => {
     expect(queryByTestId("tooltip-highlighted-target")).toBeNull();
   });
 
+  it("does not fall back to a full backdrop for a cutout tooltip without a target", () => {
+    const {queryByTestId} = render(
+      <TooltipCalloutShell
+        visible={true}
+        targetRect={null}
+        cutoutTarget={true}
+        showPointer={false}
+      >
+        <></>
+      </TooltipCalloutShell>,
+    );
+
+    expect(queryByTestId("tooltip-backdrop")).toBeNull();
+  });
+
+  it("can render the callout without owning a backdrop", () => {
+    const {getByTestId, queryByTestId} = render(
+      <TooltipCalloutShell
+        visible={true}
+        targetRect={{x: 48, y: 120, width: 120, height: 44}}
+        showBackdrop={false}
+        showPointer={true}
+      >
+        <></>
+      </TooltipCalloutShell>,
+    );
+
+    expect(queryByTestId("tooltip-backdrop")).toBeNull();
+    expect(getByTestId("tooltip-panel")).toBeTruthy();
+  });
+
   it("sizes the full backdrop from the viewport", () => {
     const {getByTestId} = render(
       <TooltipCalloutShell

@@ -146,4 +146,108 @@ describe("TooltipContext", () => {
     });
   });
 
+  it("retries target measurement when the first layout pass has no size", async () => {
+    const measureInWindow = jest
+      .fn()
+      .mockImplementationOnce((cb) => cb(0, 0, 0, 0))
+      .mockImplementationOnce((cb) => cb(12, 24, 48, 36));
+    const targetRef: TooltipRequest["targetRef"] = {
+      current: {measureInWindow} as any,
+    };
+    const {result} = renderHook(() => useTooltip(), {
+      wrapper: createWrapper(),
+    });
+
+    await act(async () => {
+      await expect(
+        result.current.showTooltipOnce({
+          id: "submitAnswer",
+          userId: "user-4",
+          targetRef,
+          content: {
+            title: "Submit answer",
+            body: "Tap submit.",
+            action: "Got it",
+          },
+        }),
+      ).resolves.toBe(true);
+    });
+
+    await waitFor(() => {
+      expect(measureInWindow).toHaveBeenCalledTimes(2);
+      expect(mockTooltipOverlay).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          targetRect: {x: 12, y: 24, width: 48, height: 36},
+        }),
+      );
+    });
+  });
+
+  it("retries target measurement when the first layout pass is offscreen", async () => {
+    const measureInWindow = jest
+      .fn()
+      .mockImplementationOnce((cb) => cb(133, -18, 93, 37))
+      .mockImplementationOnce((cb) => cb(133, 586, 93, 48));
+    const targetRef: TooltipRequest["targetRef"] = {
+      current: {measureInWindow} as any,
+    };
+    const {result} = renderHook(() => useTooltip(), {
+      wrapper: createWrapper(),
+    });
+
+    await act(async () => {
+      await expect(
+        result.current.showTooltipOnce({
+          id: "submitAnswer",
+          userId: "user-5",
+          targetRef,
+          content: {
+            title: "Submit answer",
+            body: "Tap submit.",
+            action: "Got it",
+          },
+        }),
+      ).resolves.toBe(true);
+    });
+
+    await waitFor(() => {
+      expect(measureInWindow).toHaveBeenCalledTimes(2);
+      expect(mockTooltipOverlay).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          targetRect: {x: 133, y: 586, width: 93, height: 48},
+        }),
+      );
+    });
+  });
+
+  it("uses the game-local backdrop for submit tooltips", async () => {
+    const {result} = renderHook(() => useTooltip(), {
+      wrapper: createWrapper(),
+    });
+
+    await act(async () => {
+      await expect(
+        result.current.showTooltipOnce({
+          id: "submitAnswer",
+          userId: "user-6",
+          targetRef: createTargetRef(),
+          content: {
+            title: "Submit answer",
+            body: "Tap submit.",
+            action: "Got it",
+          },
+        }),
+      ).resolves.toBe(true);
+    });
+
+    await waitFor(() => {
+      expect(mockTooltipOverlay).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          cutoutTarget: true,
+          showBackdrop: false,
+        }),
+      );
+    });
+  });
+
 });

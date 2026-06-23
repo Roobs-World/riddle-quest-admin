@@ -56,6 +56,22 @@ describe("TooltipOverlay", () => {
     expect(queryByTestId("tooltip-highlighted-target")).toBeNull();
   });
 
+  it("does not draw a full inline backdrop for a cutout tooltip without a target", () => {
+    const {UNSAFE_queryByType, queryByTestId} = render(
+      <TooltipOverlay
+        visible={true}
+        targetRect={null}
+        cutoutTarget={true}
+        useNativeModal={false}
+        content={content}
+        onDismiss={jest.fn()}
+      />,
+    );
+
+    expect(UNSAFE_queryByType(Modal)).toBeNull();
+    expect(queryByTestId("tooltip-backdrop")).toBeNull();
+  });
+
   it("does not leave the inline submit overlay mounted after it becomes inactive", () => {
     const {queryByTestId} = render(
       <TooltipOverlay

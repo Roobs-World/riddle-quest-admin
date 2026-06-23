@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from "react";
-import {Animated, Dimensions, Easing, Modal, Pressable, Text, View} from "react-native";
+import {Animated, Easing, Modal, Pressable, Text, useWindowDimensions, View} from "react-native";
 import {t} from "../../i18n";
 import {COLORS, SPACING, TYPOGRAPHY} from "../../styles";
 import {isQASurfaceRuntimeActive} from "../../qa/qaRuntime";
@@ -15,6 +15,7 @@ interface TooltipOverlayProps {
   content: TooltipContent;
   preferredPlacement?: "auto" | "above" | "below";
   useNativeModal?: boolean;
+  showBackdrop?: boolean;
   onDismiss: () => void;
   onExited?: () => void;
 }
@@ -33,11 +34,12 @@ const TooltipOverlay: React.FC<TooltipOverlayProps> = ({
   content,
   preferredPlacement = "auto",
   useNativeModal = true,
+  showBackdrop = true,
   onDismiss,
   onExited,
 }) => {
-  const {width, height} = Dimensions.get("screen");
-  const [translateY] = useState(() => new Animated.Value(Dimensions.get("window").height + 80));
+  const {width, height} = useWindowDimensions();
+  const [translateY] = useState(() => new Animated.Value(height + 80));
   const [opacity] = useState(() => new Animated.Value(0));
   const [buttonScale] = useState(() => new Animated.Value(1));
   const [isModalMounted, setIsModalMounted] = useState(visible);
@@ -56,7 +58,6 @@ const TooltipOverlay: React.FC<TooltipOverlayProps> = ({
     }
 
     const isQASurfaceRuntime = isQASurfaceRuntimeActive();
-    const height = Dimensions.get("window").height;
     const toTranslateY = visible ? 0 : height + 80;
     const easing = visible ? Easing.out(Easing.cubic) : Easing.in(Easing.cubic);
 
@@ -108,7 +109,7 @@ const TooltipOverlay: React.FC<TooltipOverlayProps> = ({
     });
 
     previousVisibleRef.current = visible;
-  }, [buttonScale, content.title, onExited, opacity, targetRect, translateY, visible]);
+  }, [buttonScale, content.title, height, onExited, opacity, targetRect, translateY, visible]);
 
   useEffect(() => {
     if (isQASurfaceRuntimeActive()) {
@@ -154,7 +155,11 @@ const TooltipOverlay: React.FC<TooltipOverlayProps> = ({
   }
 
   const overlayContent = (
-    <View pointerEvents="box-none" style={{height, width}} testID="tooltip-overlay">
+    <View
+      pointerEvents="box-none"
+      style={{height, left: 0, position: "absolute", top: 0, width}}
+      testID="tooltip-overlay"
+    >
       <Animated.View
         pointerEvents={visible ? "box-none" : "none"}
         style={{
@@ -173,6 +178,7 @@ const TooltipOverlay: React.FC<TooltipOverlayProps> = ({
           cutoutTarget={cutoutTarget}
           preferredPlacement={preferredPlacement}
           showPointer={Boolean(targetRect)}
+          showBackdrop={showBackdrop}
           panelStyle={{
             opacity: 1,
             transform: [{translateY}],

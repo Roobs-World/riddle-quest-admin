@@ -17,14 +17,19 @@ interface TooltipContextValue {
 
 const TooltipContext = createContext<TooltipContextValue | undefined>(undefined);
 
-const measureTarget = (request: TooltipRequest): Promise<TargetRect | null> => {
+const TARGET_MEASURE_RETRY_COUNT = 6;
+
+const waitForNextFrame = (): Promise<void> =>
+  new Promise((resolve) => {
+    requestAnimationFrame(() => resolve());
+  });
+
+const isValidTargetRect = (x: number, y: number, width: number, height: number): boolean =>
+  [x, y, width, height].every((value) => Number.isFinite(value)) && x >= 0 && y >= 0 && width > 0 && height > 0;
+
+const measureTargetOnce = (request: TooltipRequest): Promise<TargetRect | null> => {
   const target = request.targetRef?.current;
   if (!target || typeof target.measureInWindow !== "function") {
-    logger.debug("[TooltipContext] target missing or not measurable", {
-      id: request.id,
-      hasTarget: Boolean(target),
-      hasMeasureInWindow: typeof target?.measureInWindow === "function",
-    });
     return Promise.resolve(null);
   }
 
@@ -38,27 +43,44 @@ const measureTarget = (request: TooltipRequest): Promise<TargetRect | null> => {
         height,
       });
 
-      if ([x, y, width, height].every((value) => Number.isFinite(value))) {
+      if (isValidTargetRect(x, y, width, height)) {
         resolve({x, y, width, height});
         return;
       }
 
-      logger.warn("[TooltipContext] invalid target measurement", {
-        id: request.id,
-        x,
-        y,
-        width,
-        height,
-      });
       resolve(null);
     });
   });
 };
 
-const waitForNextFrame = (): Promise<void> =>
-  new Promise((resolve) => {
-    requestAnimationFrame(() => resolve());
+const measureTarget = async (request: TooltipRequest): Promise<TargetRect | null> => {
+  for (let attempt = 0; attempt <= TARGET_MEASURE_RETRY_COUNT; attempt += 1) {
+    const target = request.targetRef?.current;
+    if (!target || typeof target.measureInWindow !== "function") {
+      logger.debug("[TooltipContext] target missing or not measurable", {
+        id: request.id,
+        attempt,
+        hasTarget: Boolean(target),
+        hasMeasureInWindow: typeof target?.measureInWindow === "function",
+      });
+    } else {
+      const measuredTarget = await measureTargetOnce(request);
+      if (measuredTarget) {
+        return measuredTarget;
+      }
+    }
+
+    if (attempt < TARGET_MEASURE_RETRY_COUNT) {
+      await waitForNextFrame();
+    }
+  }
+
+  logger.warn("[TooltipContext] target measurement unavailable after retries", {
+    id: request.id,
+    retryCount: TARGET_MEASURE_RETRY_COUNT,
   });
+  return null;
+};
 
 export const TooltipProvider: React.FC<{children: React.ReactNode}> = ({children}) => {
   const [activeRequest, setActiveRequest] = useState<TooltipRequest | null>(null);
@@ -206,6 +228,7 @@ export const TooltipProvider: React.FC<{children: React.ReactNode}> = ({children
             content={activeRequest.content}
             preferredPlacement={activeRequest.preferredPlacement}
             useNativeModal={activeRequest.id !== "submitAnswer"}
+            showBackdrop={activeRequest.id !== "submitAnswer"}
             onDismiss={() => dismissTooltip(activeRequest.id)}
             onExited={() => {
               logger.debug("[TooltipContext] tooltip exited", {
