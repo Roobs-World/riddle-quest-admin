@@ -28,8 +28,6 @@
     "SUBMIT_ANSWER_BODY": "Cuando todos los espacios esten llenos, toca Enviar para comprobar tu intento.",
     "SUBMIT_ANSWER_TITLE": "Envia tu respuesta",
     "PROFILE_PROGRESSION_TITLE": "Progreso del usuario",
-    "PROFILE_PROGRESSION_BODY": "Tu rango, nivel de XP y barra de progreso muestran qué tan cerca estás del siguiente nivel.",
-    "PROFILE_DAILY_STREAK_TITLE": "Racha diaria",
-    "PROFILE_DAILY_STREAK_BODY": "Tu racha registra el juego diario regular. Sigue resolviendo acertijos diarios para aumentarla."
+    "PROFILE_PROGRESSION_BODY": "Tu rango, nivel de XP y barra de progreso muestran qué tan cerca estás del siguiente nivel."
   }
 }

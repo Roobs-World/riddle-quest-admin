@@ -30,17 +30,24 @@
 import React, {useRef, useMemo, useState, useEffect} from "react";
 import {Canvas, useFrame} from "@react-three/fiber";
 import {
+  AdditiveBlending,
+  ClampToEdgeWrapping,
+  DataTexture,
   Mesh,
   Group,
   SphereGeometry,
   RingGeometry,
   MeshBasicMaterial,
+  SpriteMaterial,
   MeshPhongMaterial,
   ColorManagement,
   Texture,
   DoubleSide,
+  LinearFilter,
+  RGBAFormat,
+  UnsignedByteType,
 } from "three";
-import type {MeshBasicMaterialParameters} from "three";
+import type {MeshBasicMaterialParameters, Sprite, SpriteMaterialParameters} from "three";
 import {AppState, StyleSheet, View} from "react-native";
 import {SOLAR_SYSTEM_CONFIG} from "./SolarSystemConfig";
 import {dimensions} from "../../utils/responsive";
@@ -79,7 +86,13 @@ let fallbackPhongMaterial: MeshPhongMaterial | null = null;
 let fallbackRingMaterial: MeshPhongMaterial | null = null;
 
 const isTextureDebugEnabled = process.env.EXPO_PUBLIC_TEXTURE_DEBUG === "1";
+const SUN_RADIUS = 12.0;
 const SUN_POSITION: [number, number, number] = [0, 30, 0];
+const SUN_INNER_GLOW_SCALE = 46;
+const SUN_OUTER_GLOW_SCALE = 78;
+const SUN_GLOW_PULSE_SPEED = 0.85;
+const SUN_CORONA_TEXTURE_SIZE = 256;
+let sunCoronaTexture: DataTexture | null = null;
 
 const textureDebugLog = (level: "log" | "warn" | "error", message: string, details?: Record<string, unknown>): void => {
   if (!isTextureDebugEnabled) {
@@ -99,6 +112,8 @@ export const __resetSolarSystem3DTextureCacheForTests = (): void => {
   texturedRingMaterialCache = new WeakMap<Texture, MeshPhongMaterial>();
   fallbackPhongMaterial = null;
   fallbackRingMaterial = null;
+  sunCoronaTexture?.dispose();
+  sunCoronaTexture = null;
 };
 
 const getSphereGeometry = (radius: number, widthSegments: number, heightSegments: number): SphereGeometry => {
@@ -203,6 +218,86 @@ const createSunMaterial = (texture: Texture | null): MeshBasicMaterial => {
 
 export const __createSunMaterialForTests = createSunMaterial;
 
+const clamp01 = (value: number): number => Math.min(1, Math.max(0, value));
+
+const smoothstep = (edge0: number, edge1: number, value: number): number => {
+  const x = clamp01((value - edge0) / (edge1 - edge0));
+  return x * x * (3 - 2 * x);
+};
+
+const createSunCoronaTexture = (): DataTexture => {
+  const size = SUN_CORONA_TEXTURE_SIZE;
+  const data = new Uint8Array(size * size * 4);
+
+  for (let y = 0; y < size; y += 1) {
+    const ny = (y / (size - 1)) * 2 - 1;
+
+    for (let x = 0; x < size; x += 1) {
+      const nx = (x / (size - 1)) * 2 - 1;
+      const radius = Math.sqrt(nx * nx + ny * ny);
+      const index = (y * size + x) * 4;
+
+      if (radius >= 0.995) {
+        data[index] = 0;
+        data[index + 1] = 0;
+        data[index + 2] = 0;
+        data[index + 3] = 0;
+        continue;
+      }
+
+      const fadeToEdge = 1 - smoothstep(0.78, 0.995, radius);
+      const softCore = 0.1 * (1 - smoothstep(0.0, 0.5, radius));
+      const brightLimb = 0.42 * smoothstep(0.2, 0.42, radius) * (1 - smoothstep(0.58, 0.86, radius));
+      const outerAtmosphere = 0.32 * smoothstep(0.36, 0.58, radius) * (1 - smoothstep(0.82, 1.0, radius));
+      const alpha = clamp01((softCore + brightLimb + outerAtmosphere) * fadeToEdge);
+      const alphaByte = Math.round(alpha * 255);
+
+      data[index] = alphaByte === 0 ? 0 : 255;
+      data[index + 1] = alphaByte === 0 ? 0 : Math.round(126 + 90 * (1 - radius));
+      data[index + 2] = alphaByte === 0 ? 0 : Math.round(12 + 52 * (1 - radius));
+      data[index + 3] = alphaByte;
+    }
+  }
+
+  const texture = new DataTexture(data, size, size, RGBAFormat, UnsignedByteType);
+  texture.needsUpdate = true;
+  texture.generateMipmaps = false;
+  texture.minFilter = LinearFilter;
+  texture.magFilter = LinearFilter;
+  texture.wrapS = ClampToEdgeWrapping;
+  texture.wrapT = ClampToEdgeWrapping;
+  texture.flipY = false;
+  texture.unpackAlignment = 1;
+  return texture;
+};
+
+export const __createSunCoronaTextureForTests = createSunCoronaTexture;
+
+const getSunCoronaTexture = (): DataTexture => {
+  if (!sunCoronaTexture) {
+    sunCoronaTexture = createSunCoronaTexture();
+  }
+
+  return sunCoronaTexture;
+};
+
+const createSunGlowMaterial = (color: number, opacity: number): SpriteMaterial => {
+  const materialParameters: SpriteMaterialParameters = {
+    color,
+    opacity,
+    map: getSunCoronaTexture(),
+    transparent: true,
+    blending: AdditiveBlending,
+    depthWrite: false,
+    depthTest: false,
+    toneMapped: false,
+  };
+
+  return new SpriteMaterial(materialParameters);
+};
+
+export const __createSunGlowMaterialForTests = createSunGlowMaterial;
+
 /**
  * Custom hook to load textures for React Native using expo-asset directly.
  * Avoids expo-three's problematic loader imports.
@@ -274,7 +369,7 @@ function useExpoTexture(assetModule: AssetModuleReference | null | undefined): T
 const {screenWidth: SCREEN_WIDTH, screenHeight: SCREEN_HEIGHT} = dimensions;
 
 // Pre-defined shared geometries — lower segment counts are fine for a background
-const sunGeometry = getSphereGeometry(12.0, 48, 48);
+const sunGeometry = getSphereGeometry(SUN_RADIUS, 48, 48);
 
 /**
  * Sun component with enhanced size and brightness for dramatic effect.
@@ -284,17 +379,56 @@ const sunGeometry = getSphereGeometry(12.0, 48, 48);
  */
 const Sun: React.FC = React.memo(() => {
   const sunRef = useRef<Mesh>(null);
+  const innerGlowRef = useRef<Sprite>(null);
+  const outerGlowRef = useRef<Sprite>(null);
   const sunTexture = useExpoTexture(sunTextureModule);
 
   const sunMaterial = useMemo(() => createSunMaterial(sunTexture), [sunTexture]);
+  const innerGlowMaterial = useMemo(() => createSunGlowMaterial(0xffd284, 0.72), []);
+  const outerGlowMaterial = useMemo(() => createSunGlowMaterial(0xff9b2f, 0.34), []);
 
-  useFrame(() => {
-    __applySunFrameUpdateForTests(sunRef.current as unknown as {rotation: {x: number; y: number}} | null);
+  useFrame((state) => {
+    __applySunFrameUpdateForTests(
+      sunRef.current as unknown as {rotation: {x: number; y: number}} | null,
+      [
+        {
+          material: innerGlowMaterial,
+          scale: innerGlowRef.current?.scale,
+          baseOpacity: 0.64,
+          opacityPulse: 0.12,
+          baseScale: SUN_INNER_GLOW_SCALE,
+          scalePulse: 3.5,
+          phase: 0,
+        },
+        {
+          material: outerGlowMaterial,
+          scale: outerGlowRef.current?.scale,
+          baseOpacity: 0.26,
+          opacityPulse: 0.1,
+          baseScale: SUN_OUTER_GLOW_SCALE,
+          scalePulse: 6,
+          phase: Math.PI / 2,
+        },
+      ],
+      state?.clock?.getElapsedTime?.() ?? 0,
+    );
   });
 
   return (
-    <group position={[0, 30, 0]}>
-      <mesh ref={sunRef} geometry={sunGeometry} material={sunMaterial} />
+    <group position={SUN_POSITION}>
+      <sprite
+        ref={outerGlowRef}
+        material={outerGlowMaterial}
+        scale={[SUN_OUTER_GLOW_SCALE, SUN_OUTER_GLOW_SCALE, 1]}
+        renderOrder={0}
+      />
+      <sprite
+        ref={innerGlowRef}
+        material={innerGlowMaterial}
+        scale={[SUN_INNER_GLOW_SCALE, SUN_INNER_GLOW_SCALE, 1]}
+        renderOrder={1}
+      />
+      <mesh ref={sunRef} geometry={sunGeometry} material={sunMaterial} renderOrder={2} />
     </group>
   );
 });
@@ -322,11 +456,35 @@ interface MoonProps {
   };
 }
 
-export const __applySunFrameUpdateForTests = (sun: {rotation: {x: number; y: number}} | null): void => {
+interface SunGlowFrameLayer {
+  material?: {opacity: number} | null;
+  scale?: {set: (x: number, y: number, z: number) => void} | null;
+  baseOpacity: number;
+  opacityPulse: number;
+  baseScale: number;
+  scalePulse: number;
+  phase: number;
+}
+
+export const __applySunFrameUpdateForTests = (
+  sun: {rotation: {x: number; y: number}} | null,
+  glowLayers: SunGlowFrameLayer[] = [],
+  elapsedTime = 0,
+): void => {
   if (sun) {
     sun.rotation.y += 0.008;
     sun.rotation.x += 0.002;
   }
+
+  glowLayers.forEach((layer) => {
+    const pulse = (Math.sin(elapsedTime * SUN_GLOW_PULSE_SPEED + layer.phase) + 1) / 2;
+    const scale = layer.baseScale + pulse * layer.scalePulse;
+    layer.scale?.set(scale, scale, 1);
+
+    if (layer.material) {
+      layer.material.opacity = layer.baseOpacity + pulse * layer.opacityPulse;
+    }
+  });
 };
 
 export const __applyMoonFrameUpdateForTests = (

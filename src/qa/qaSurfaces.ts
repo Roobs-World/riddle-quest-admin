@@ -28,6 +28,7 @@ export const QA_REGISTRY_MODAL_SURFACES = [
   {id: "modal-achievement-unlock-fanfare", kind: "modal", label: "Achievement unlock fanfare"},
   {id: "modal-streak-increase-fanfare", kind: "modal", label: "Streak increase fanfare"},
   {id: "modal-level-up-fanfare", kind: "modal", label: "Level up fanfare"},
+  {id: "modal-rank-up-fanfare", kind: "modal", label: "Rank up fanfare"},
   {id: "modal-settings", kind: "modal", label: "Settings modal"},
   {id: "modal-full-profile-details", kind: "modal", label: "Full profile details modal"},
   {id: "modal-upgrade-account", kind: "modal", label: "Upgrade account modal"},
@@ -55,6 +56,7 @@ export const QA_MODAL_VARIANT_SURFACES = [
   {id: "modal-achievement-unlock-fanfare-sequence", kind: "modal", label: "Achievement sequence breadcrumb"},
   {id: "modal-streak-increase-fanfare-sequence", kind: "modal", label: "Streak sequence breadcrumb"},
   {id: "modal-level-up-fanfare-sequence", kind: "modal", label: "Level up sequence breadcrumb"},
+  {id: "modal-rank-up-fanfare-sequence", kind: "modal", label: "Rank up sequence breadcrumb"},
   {id: "modal-settings-language-picker", kind: "modal", label: "Settings language picker"},
   {id: "modal-upgrade-account-existing-account", kind: "modal", label: "Upgrade account existing account prompt"},
 ] as const satisfies readonly QASurfaceDefinition[];
@@ -89,6 +91,7 @@ export const QA_MODAL_SURFACE_TO_REGISTRY_TYPE = {
   "modal-achievement-unlock-fanfare": "achievementUnlockFanfare",
   "modal-streak-increase-fanfare": "streakIncreaseFanfare",
   "modal-level-up-fanfare": "levelUpFanfare",
+  "modal-rank-up-fanfare": "rankUpFanfare",
   "modal-settings": "settings",
   "modal-full-profile-details": "fullProfileDetails",
   "modal-upgrade-account": "upgradeAccount",
@@ -113,6 +116,7 @@ export const QA_MODAL_SURFACE_TO_REGISTRY_TYPE = {
   "modal-achievement-unlock-fanfare-sequence": "achievementUnlockFanfare",
   "modal-streak-increase-fanfare-sequence": "streakIncreaseFanfare",
   "modal-level-up-fanfare-sequence": "levelUpFanfare",
+  "modal-rank-up-fanfare-sequence": "rankUpFanfare",
   "modal-settings-language-picker": "settings",
   "modal-upgrade-account-existing-account": "upgradeAccount",
 } as const;

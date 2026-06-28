@@ -134,7 +134,7 @@ const RanksModal: React.FC<RanksModalProps> = ({isVisible, currentLevel, onClose
                       }}
                     >
                       <MaterialCommunityIcons
-                        name={isUnlocked ? rank.icon : "lock"}
+                        name={rank.icon}
                         size={26}
                         color={isUnlocked ? "#FFF8DA" : "#F2EEF3"}
                       />

@@ -29,7 +29,7 @@ interface SolarTexturePreloadSpec {
 }
 
 const getSolarTexturePreloadSpecs = (): SolarTexturePreloadSpec[] => {
-  const specs: SolarTexturePreloadSpec[] = [{key: "sun", path: sunTextureModule}];
+  const specs: SolarTexturePreloadSpec[] = [];
   const seenModules = new Set<string | number>();
 
   const addSpec = (key: string, path: AssetModuleReference): void => {
@@ -41,6 +41,8 @@ const getSolarTexturePreloadSpecs = (): SolarTexturePreloadSpec[] => {
     seenModules.add(resolvedModule);
     specs.push({key, path});
   };
+
+  addSpec("sun", sunTextureModule);
 
   SOLAR_SYSTEM_CONFIG.forEach((planet) => {
     addSpec(planet.textureKey, planet.textureModule);

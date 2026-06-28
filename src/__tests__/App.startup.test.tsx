@@ -18,6 +18,10 @@ const mockUpdatePlayerData = jest.fn();
 const mockUseAuth = jest.fn();
 const mockFirebaseSignOut = jest.fn();
 const mockFirebaseAuth = {currentUser: null as {uid: string} | null};
+const mockSoundManagerInit = jest.fn(() => Promise.resolve());
+const mockSetSoundEnabled = jest.fn();
+const mockPlayBackgroundMusic = jest.fn(() => Promise.resolve());
+const mockPauseBackgroundMusic = jest.fn(() => Promise.resolve());
 
 jest.mock("../../global.css", () => ({}));
 
@@ -54,10 +58,10 @@ jest.mock("../../src/utils/fontLoader", () => ({
 
 jest.mock("../../src/services/SoundManager", () => ({
   SoundManager: {
-    init: jest.fn(() => Promise.resolve()),
-    setSoundEnabled: jest.fn(),
-    playBackgroundMusic: jest.fn(() => Promise.resolve()),
-    pauseBackgroundMusic: jest.fn(() => Promise.resolve()),
+    init: (...args: any[]) => mockSoundManagerInit(...args),
+    setSoundEnabled: (...args: any[]) => mockSetSoundEnabled(...args),
+    playBackgroundMusic: (...args: any[]) => mockPlayBackgroundMusic(...args),
+    pauseBackgroundMusic: (...args: any[]) => mockPauseBackgroundMusic(...args),
   },
 }));
 
@@ -128,6 +132,20 @@ jest.mock("../../src/contexts/ModalContext", () => ({
     const {View: ReactNativeView} = require("react-native");
     return ReactLocal.createElement(ReactNativeView, {testID: "modal-provider"}, children);
   },
+}));
+
+jest.mock("../../src/contexts/SettingsContext", () => ({
+  SettingsProvider: ({children}: any) => {
+    const ReactLocal = require("react");
+    const {View: ReactNativeView} = require("react-native");
+    return ReactLocal.createElement(ReactNativeView, {testID: "settings-provider"}, children);
+  },
+  useAppSettings: () => ({
+    isHapticsEnabled: true,
+    isSoundEnabled: true,
+    toggleHapticsEnabled: jest.fn(),
+    toggleSoundEnabled: jest.fn(),
+  }),
 }));
 
 jest.mock("../../src/navigation/NavigationStack", () => ({
@@ -331,5 +349,28 @@ describe("App startup", () => {
     await waitFor(() => expect(getByTestId("navigation")).toBeTruthy());
     expect(AsyncStorage.clear).not.toHaveBeenCalled();
     expect(mockFirebaseSignOut).not.toHaveBeenCalled();
+  });
+
+  it("applies a persisted muted state before initializing startup music", async () => {
+    (global as typeof global & {__DEV__?: boolean}).__DEV__ = false;
+    Object.defineProperty(globalThis, "localStorage", {
+      configurable: true,
+      value: {
+        getItem: jest.fn((key: string) => (key === "isSoundEnabled" ? JSON.stringify(false) : null)),
+        setItem: jest.fn(),
+      },
+    });
+
+    render(<App />);
+
+    await waitFor(() => expect(mockSoundManagerInit).toHaveBeenCalled());
+
+    const firstInitOrder = mockSoundManagerInit.mock.invocationCallOrder[0];
+    const mutedBeforeInit = mockSetSoundEnabled.mock.calls.some(
+      ([enabled], index) => enabled === false && mockSetSoundEnabled.mock.invocationCallOrder[index] < firstInitOrder,
+    );
+
+    expect(mutedBeforeInit).toBe(true);
+    expect(mockPlayBackgroundMusic).not.toHaveBeenCalled();
   });
 });

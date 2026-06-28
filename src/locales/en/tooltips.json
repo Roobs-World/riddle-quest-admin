@@ -28,8 +28,6 @@
     "SUBMIT_ANSWER_BODY": "When every slot is filled, tap Submit to check your guess.",
     "SUBMIT_ANSWER_TITLE": "Submit your answer",
     "PROFILE_PROGRESSION_TITLE": "User progression",
-    "PROFILE_PROGRESSION_BODY": "Your rank, XP level, and progress bar show how close you are to the next level.",
-    "PROFILE_DAILY_STREAK_TITLE": "Daily streak",
-    "PROFILE_DAILY_STREAK_BODY": "Your streak tracks regular daily play. Keep solving daily puzzles to build it up."
+    "PROFILE_PROGRESSION_BODY": "Your rank, XP level, and progress bar show how close you are to the next level."
   }
 }

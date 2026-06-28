@@ -1,13 +1,19 @@
-import {useEffect, useMemo, useState} from "react";
-import {View, Text, Animated, Easing, Image} from "react-native";
+import {useEffect, useMemo, useState, type RefObject} from "react";
+import {View, Text, Animated, Easing} from "react-native";
 import TreasureChestRaysSvg from "../../../../assets/images/treasure-chest-rays.svg";
-import TreasureChestImage from "../../../../assets/images/chest-closed.png";
+import TreasureChestOpenSvg from "../../../../assets/images/chest-open.svg";
 import {TYPOGRAPHY, SPACING} from "../../../styles";
 import {verticalScale} from "../../../utils/responsive";
 import {t} from "../../../i18n";
 import {isQASurfaceRuntimeActive} from "../../../qa/qaRuntime";
 
-export default function TreasureChest({coins}: {coins: number}) {
+type TreasureChestProps = {
+  coins: number;
+  cardRef?: RefObject<View | null>;
+  cardTestID?: string;
+};
+
+export default function TreasureChest({coins, cardRef, cardTestID}: TreasureChestProps) {
   const [rotationAnim] = useState(() => new Animated.Value(0));
 
   useEffect(() => {
@@ -45,6 +51,8 @@ export default function TreasureChest({coins}: {coins: number}) {
   return (
     <View className="w-full">
       <View
+        ref={cardRef}
+        testID={cardTestID}
         style={{
           width: "100%",
           height: verticalScale(192),
@@ -82,7 +90,7 @@ export default function TreasureChest({coins}: {coins: number}) {
             paddingTop: verticalScale(25),
           }}
         >
-          <Image source={TreasureChestImage} resizeMode="contain" style={{width: "50%", height: "50%"}} />
+          <TreasureChestOpenSvg width="50%" height="50%" />
         </View>
 
         {/* Coins text */}

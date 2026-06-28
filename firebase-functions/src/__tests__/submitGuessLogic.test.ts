@@ -5,8 +5,8 @@ import {handleCompleteGameLogic, handleGuessLogic} from "../submitGuessLogic";
 import {
   COINS_REWARD_CLASSIC,
   COINS_REWARD_CHALLENGE,
-  DAILY_COMPLETION_BONUS,
   ACHIEVEMENT_UNLOCK_COIN_REWARD,
+  getStreakRewardBonus,
 } from "../constants";
 import * as firestoreService from "../firestoreService";
 import * as riddleGeneration from "../riddleGeneration";
@@ -414,10 +414,14 @@ describe("handleGuessLogic", () => {
     };
 
     test("should calculate challenge coins correctly and update lastDailyChallengeCompletedAt", async () => {
+      const expectedStreakBonus = getStreakRewardBonus(1);
       const result = await handleGuessLogic(requestData, authContext);
       expect(result.isCorrect).toBe(true);
-      expect(result.coinsEarned).toBe(COINS_REWARD_CHALLENGE);
-      expect(firestoreService.updateUserCoins).toHaveBeenCalledWith(authContext.uid, COINS_REWARD_CHALLENGE);
+      expect(result.coinsEarned).toBe(COINS_REWARD_CHALLENGE + expectedStreakBonus);
+      expect(firestoreService.updateUserCoins).toHaveBeenCalledWith(
+        authContext.uid,
+        COINS_REWARD_CHALLENGE + expectedStreakBonus,
+      );
       // Check if the admin.firestore().update (which is the mockAdminUpdate in beforeEach) was called
       const adminUpdateMock = (admin.firestore() as unknown as {update: jest.Mock}).update; // Get the mock for this specific call context
       expect(adminUpdateMock).toHaveBeenCalledWith({
@@ -908,9 +912,10 @@ describe("handleGuessLogic", () => {
       );
     });
 
-    test("does not award a streak bonus before a seven-day milestone", async () => {
+    test("awards the initial streak bonus before the first seven-day milestone", async () => {
       const yesterday = new Date();
       yesterday.setUTCDate(yesterday.getUTCDate() - 1);
+      const expectedStreakBonus = getStreakRewardBonus(6);
 
       (firestoreService.getUser as jest.Mock).mockResolvedValue({
         ...mockUser,
@@ -929,13 +934,14 @@ describe("handleGuessLogic", () => {
       );
 
       expect(result.newWinStreak).toBe(6);
-      expect(result.rewardBreakdown?.dailyStreakBonus).toBe(0);
-      expect(result.coinsEarned).toBe(COINS_REWARD_CHALLENGE);
+      expect(result.rewardBreakdown?.dailyStreakBonus).toBe(expectedStreakBonus);
+      expect(result.coinsEarned).toBe(COINS_REWARD_CHALLENGE + expectedStreakBonus);
     });
 
-    test("awards the streak bonus at a seven-day milestone", async () => {
+    test("increases the streak bonus at a seven-day milestone", async () => {
       const yesterday = new Date();
       yesterday.setUTCDate(yesterday.getUTCDate() - 1);
+      const expectedStreakBonus = getStreakRewardBonus(7);
 
       (firestoreService.getUser as jest.Mock).mockResolvedValue({
         ...mockUser,
@@ -954,13 +960,40 @@ describe("handleGuessLogic", () => {
       );
 
       expect(result.newWinStreak).toBe(7);
-      expect(result.rewardBreakdown?.dailyStreakBonus).toBe(DAILY_COMPLETION_BONUS);
-      expect(result.coinsEarned).toBe(COINS_REWARD_CHALLENGE + DAILY_COMPLETION_BONUS);
+      expect(result.rewardBreakdown?.dailyStreakBonus).toBe(expectedStreakBonus);
+      expect(result.coinsEarned).toBe(COINS_REWARD_CHALLENGE + expectedStreakBonus);
       expect(firestoreService.updateUserCoins).toHaveBeenNthCalledWith(
         2,
         authContext.uid,
-        DAILY_COMPLETION_BONUS,
+        expectedStreakBonus,
       );
+    });
+
+    test("increases the streak bonus at later seven-day milestones", async () => {
+      const yesterday = new Date();
+      yesterday.setUTCDate(yesterday.getUTCDate() - 1);
+      const expectedStreakBonus = getStreakRewardBonus(14);
+
+      (firestoreService.getUser as jest.Mock).mockResolvedValue({
+        ...mockUser,
+        stats: {...mockUser.stats, winStreak: 13},
+        lastDailyChallengeCompletedAt: yesterday,
+      });
+
+      const result = await handleCompleteGameLogic(
+        {
+          riddleId: "riddle-123",
+          gameMode: "challenge",
+          attempts: 2,
+          isCorrect: true,
+        },
+        authContext,
+      );
+
+      expect(result.newWinStreak).toBe(14);
+      expect(result.rewardBreakdown?.dailyStreakBonus).toBe(expectedStreakBonus);
+      expect(result.coinsEarned).toBe(COINS_REWARD_CHALLENGE + expectedStreakBonus);
+      expect(firestoreService.updateUserCoins).toHaveBeenNthCalledWith(2, authContext.uid, expectedStreakBonus);
     });
 
     test("adds achievement bonus coins to balance and response on win", async () => {
@@ -1019,6 +1052,29 @@ describe("handleGuessLogic", () => {
       await handleCompleteGameLogic(requestData, authContext);
 
       expect(leaderboard.updateLeaderboardEntry).not.toHaveBeenCalled();
+    });
+
+    test("resets challenge win streak when the daily game is lost", async () => {
+      const requestData = {
+        riddleId: "riddle-123",
+        gameMode: "challenge" as const,
+        attempts: 5,
+        isCorrect: false,
+      };
+
+      (firestoreService.getUser as jest.Mock).mockResolvedValue({
+        ...mockUser,
+        stats: {...mockUser.stats, winStreak: 5},
+      });
+
+      const result = await handleCompleteGameLogic(requestData, authContext);
+
+      expect(result.newWinStreak).toBe(0);
+      expect(result.rewardBreakdown).toBeUndefined();
+      expect(firestoreService.updateUserStats).toHaveBeenCalledWith(
+        authContext.uid,
+        expect.objectContaining({winStreak: 0}),
+      );
     });
 
     test("should not update leaderboard entry for guest users even when game is won", async () => {

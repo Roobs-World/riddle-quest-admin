@@ -108,9 +108,9 @@ const withTimeout = async <T,>(promise: Promise<T>, timeoutMs: number): Promise<
 };
 
 const initializeSoundInBackground = async (): Promise<void> => {
-  await SoundManager.init();
   const soundEnabled = await readBooleanSetting(SOUND_ENABLED_STORAGE_KEY, true);
   SoundManager.setSoundEnabled(soundEnabled);
+  await SoundManager.init();
   if (soundEnabled) {
     await SoundManager.playBackgroundMusic();
   }

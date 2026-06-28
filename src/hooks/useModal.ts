@@ -208,6 +208,13 @@ export const useModal = () => {
     [openGameModal],
   );
 
+  const showRankUpFanfareModal = useCallback(
+    (data: ModalDataType<"rankUpFanfare">, options?: ModalOptions): string => {
+      return openGameModal("rankUpFanfare", data, options);
+    },
+    [openGameModal],
+  );
+
   const showFullProfileDetailsModal = useCallback(
     (data: ModalDataType<"fullProfileDetails">, options?: ModalOptions): string => {
       return openGameModal("fullProfileDetails", data, options);
@@ -287,6 +294,7 @@ export const useModal = () => {
     showAchievementUnlockFanfareModal,
     showStreakIncreaseFanfareModal,
     showLevelUpFanfareModal,
+    showRankUpFanfareModal,
     showFullProfileDetailsModal,
     showRanksModal,
     showChangePasswordModal,

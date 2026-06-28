@@ -10,19 +10,28 @@ export interface RewardTargetLayout {
 
 interface RewardAnimationContextValue {
   registerCoinTarget: (target: View | null) => void;
+  registerCoinCounterAnimator: (animator: ((coinValue: number) => void) | null) => void;
   measureCoinTarget: () => Promise<RewardTargetLayout | null>;
+  notifyCoinCounterHit: (coinValue: number) => void;
 }
 
 const RewardAnimationContext = createContext<RewardAnimationContextValue>({
   registerCoinTarget: () => {},
+  registerCoinCounterAnimator: () => {},
   measureCoinTarget: async () => null,
+  notifyCoinCounterHit: () => {},
 });
 
 export const RewardAnimationProvider: React.FC<{children: React.ReactNode}> = ({children}) => {
   const coinTargetRef = useRef<View | null>(null);
+  const coinCounterAnimatorRef = useRef<((coinValue: number) => void) | null>(null);
 
   const registerCoinTarget = useCallback((target: View | null) => {
     coinTargetRef.current = target;
+  }, []);
+
+  const registerCoinCounterAnimator = useCallback((animator: ((coinValue: number) => void) | null) => {
+    coinCounterAnimatorRef.current = animator;
   }, []);
 
   const measureCoinTarget = useCallback(async (): Promise<RewardTargetLayout | null> => {
@@ -38,9 +47,13 @@ export const RewardAnimationProvider: React.FC<{children: React.ReactNode}> = ({
     });
   }, []);
 
+  const notifyCoinCounterHit = useCallback((coinValue: number) => {
+    coinCounterAnimatorRef.current?.(coinValue);
+  }, []);
+
   const value = useMemo(
-    () => ({registerCoinTarget, measureCoinTarget}),
-    [measureCoinTarget, registerCoinTarget],
+    () => ({registerCoinTarget, registerCoinCounterAnimator, measureCoinTarget, notifyCoinCounterHit}),
+    [measureCoinTarget, notifyCoinCounterHit, registerCoinCounterAnimator, registerCoinTarget],
   );
 
   return <RewardAnimationContext.Provider value={value}>{children}</RewardAnimationContext.Provider>;

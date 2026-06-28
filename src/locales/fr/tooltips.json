@@ -28,8 +28,6 @@
     "SUBMIT_ANSWER_BODY": "Quand toutes les cases sont remplies, touchez Valider pour verifier votre essai.",
     "SUBMIT_ANSWER_TITLE": "Validez votre reponse",
     "PROFILE_PROGRESSION_TITLE": "Progression utilisateur",
-    "PROFILE_PROGRESSION_BODY": "Ton rang, ton niveau XP et ta barre de progression indiquent à quel point tu es proche du niveau suivant.",
-    "PROFILE_DAILY_STREAK_TITLE": "Série quotidienne",
-    "PROFILE_DAILY_STREAK_BODY": "Ta série suit ton activité quotidienne régulière. Continue les énigmes quotidiennes pour la faire grandir."
+    "PROFILE_PROGRESSION_BODY": "Ton rang, ton niveau XP et ta barre de progression indiquent à quel point tu es proche du niveau suivant."
   }
 }

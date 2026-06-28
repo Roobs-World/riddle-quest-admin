@@ -28,8 +28,6 @@
     "SUBMIT_ANSWER_BODY": "Una volta riempiti tutti gli slot, tocca Invia per verificare la tua ipotesi.",
     "SUBMIT_ANSWER_TITLE": "Invia la tua risposta",
     "PROFILE_PROGRESSION_TITLE": "Progressi utente",
-    "PROFILE_PROGRESSION_BODY": "Il tuo grado, il livello XP e la barra di avanzamento mostrano quanto sei vicino al livello successivo.",
-    "PROFILE_DAILY_STREAK_TITLE": "Serie giornaliera",
-    "PROFILE_DAILY_STREAK_BODY": "La serie tiene traccia del gioco quotidiano regolare. Continua a risolvere enigmi giornalieri per aumentarla."
+    "PROFILE_PROGRESSION_BODY": "Il tuo grado, il livello XP e la barra di avanzamento mostrano quanto sei vicino al livello successivo."
   }
 }

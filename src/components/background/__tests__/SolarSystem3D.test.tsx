@@ -1,6 +1,6 @@
 import {render, waitFor} from "@testing-library/react-native";
 import React from "react";
-import {ColorManagement, MeshBasicMaterial} from "three";
+import {AdditiveBlending, ColorManagement, DataTexture, MeshBasicMaterial, SpriteMaterial} from "three";
 
 const mockSetClearColor = jest.fn();
 const mockLookAt = jest.fn();
@@ -53,6 +53,8 @@ const {
   default: SolarSystem3D,
   __resetSolarSystem3DTextureCacheForTests,
   __createSunMaterialForTests,
+  __createSunCoronaTextureForTests,
+  __createSunGlowMaterialForTests,
   __createSharedRingMaterialForTests,
   __getSolarCanvasFrameloopForTests,
   __applySunFrameUpdateForTests,
@@ -157,6 +159,47 @@ describe("SolarSystem3D", () => {
     expect(material.map).toBe(texture);
   });
 
+  it("creates additive translucent sun glow materials", () => {
+    const material = __createSunGlowMaterialForTests(0xffd284, 0.72);
+
+    expect(material).toBeInstanceOf(SpriteMaterial);
+    expect(material.map).toBeInstanceOf(DataTexture);
+    expect(material.transparent).toBe(true);
+    expect(material.opacity).toBeCloseTo(0.72);
+    expect(material.blending).toBe(AdditiveBlending);
+    expect(material.depthWrite).toBe(false);
+    expect(material.depthTest).toBe(false);
+    expect(material.toneMapped).toBe(false);
+  });
+
+  it("creates a circular sun corona texture with transparent corners", () => {
+    const texture = __createSunCoronaTextureForTests();
+    const data = texture.image.data as Uint8Array;
+    const size = texture.image.width as number;
+    const centerIndex = ((Math.floor(size / 2) * size + Math.floor(size / 2)) * 4) + 3;
+
+    expect(texture).toBeInstanceOf(DataTexture);
+    expect(data[3]).toBe(0);
+    expect(data[centerIndex]).toBeGreaterThan(0);
+  });
+
+  it("keeps the sun corona alpha even around the same radius", () => {
+    const texture = __createSunCoronaTextureForTests();
+    const data = texture.image.data as Uint8Array;
+    const size = texture.image.width as number;
+    const center = Math.floor(size / 2);
+    const offset = Math.floor(size * 0.28);
+    const alphaAt = (x: number, y: number) => data[(y * size + x) * 4 + 3];
+    const alphas = [
+      alphaAt(center + offset, center),
+      alphaAt(center - offset, center),
+      alphaAt(center, center + offset),
+      alphaAt(center, center - offset),
+    ];
+
+    expect(Math.max(...alphas) - Math.min(...alphas)).toBeLessThanOrEqual(2);
+  });
+
   it("creates translucent ring materials", () => {
     const texture = {isTexture: true};
     const material = __createSharedRingMaterialForTests(texture);
@@ -207,9 +250,27 @@ describe("SolarSystem3D", () => {
 
   it("applies sun, moon, and planet frame updates through helper functions", () => {
     const sun = {rotation: {x: 0, y: 0}};
-    __applySunFrameUpdateForTests(sun);
+    const glowScaleSet = jest.fn();
+    const glowMaterial = {opacity: 0};
+    __applySunFrameUpdateForTests(
+      sun,
+      [
+        {
+          material: glowMaterial,
+          scale: {set: glowScaleSet},
+          baseOpacity: 0.5,
+          opacityPulse: 0.1,
+          baseScale: 40,
+          scalePulse: 4,
+          phase: 0,
+        },
+      ],
+      0,
+    );
     expect(sun.rotation.x).toBeCloseTo(0.002);
     expect(sun.rotation.y).toBeCloseTo(0.008);
+    expect(glowMaterial.opacity).toBeCloseTo(0.55);
+    expect(glowScaleSet).toHaveBeenCalledWith(42, 42, 1);
     expect(() => __applySunFrameUpdateForTests(null)).not.toThrow();
 
     const moonPositionSet = jest.fn();

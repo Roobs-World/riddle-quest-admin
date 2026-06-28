@@ -1,17 +1,33 @@
 import React from "react";
-import {View, Text, Modal} from "react-native";
+import {View, Text, Modal, type LayoutChangeEvent} from "react-native";
 import CloseButton from "../../buttons/CloseButton";
 import {TYPOGRAPHY} from "src/styles";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
 import HomeBg from "../../../../assets/images/home-bg.svg";
 import WideButton from "src/components/buttons/WideButton";
 import {
-  MODAL_WIDTH, MODAL_HEIGHT, CLOSE_BUTTON_SIZE, MODAL_CLOSE_BUTTON_POSITION, MODAL_MAX_HEIGHT, } from "../../../constants/layout";
+  MODAL_WIDTH,
+  MODAL_HEIGHT,
+  CLOSE_BUTTON_SIZE,
+  MODAL_CLOSE_BUTTON_POSITION,
+  MODAL_MAX_HEIGHT,
+} from "../../../constants/layout";
 import {SPACING} from "../../../styles";
 import {t} from "../../../i18n";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import {verticalScale} from "@/utils/responsive";
 import {ModalReward} from "@/components/rewards/RewardFactory";
+
+const MODAL_TOP_PADDING = verticalScale(36);
+const MODAL_BOTTOM_PADDING = verticalScale(34);
+const EXPANDED_MODAL_HEIGHT_MULTIPLIER = 1.18;
+
+const getModalHeight = (contentHeight: number, hasSupplementalCopy: boolean): number => {
+  const fallbackHeight = MODAL_HEIGHT * (hasSupplementalCopy ? EXPANDED_MODAL_HEIGHT_MULTIPLIER : 1);
+  const contentSizedHeight = contentHeight > 0 ? contentHeight + MODAL_TOP_PADDING + MODAL_BOTTOM_PADDING : fallbackHeight;
+
+  return Math.min(contentSizedHeight, MODAL_MAX_HEIGHT ?? contentSizedHeight);
+};
 
 interface SkipModalProps {
   isVisible: boolean;
@@ -33,11 +49,17 @@ const SkipModal: React.FC<SkipModalProps> = ({
   onClose,
 }) => {
   const canAffordSkip = userCoins >= skipCost;
-  const skipModalHeightMultiplier = canAffordSkip ? 1.4 : 1.6;
-  const skipModalHeight = Math.min(
-    MODAL_HEIGHT * skipModalHeightMultiplier,
-    MODAL_MAX_HEIGHT ?? MODAL_HEIGHT * skipModalHeightMultiplier,
-  );
+  const [contentHeight, setContentHeight] = React.useState(0);
+  const skipModalHeight = getModalHeight(contentHeight, !canAffordSkip);
+
+  React.useEffect(() => {
+    setContentHeight(0);
+  }, [canAffordSkip, skipCost]);
+
+  const handleContentLayout = React.useCallback((event: LayoutChangeEvent) => {
+    const nextHeight = Math.ceil(event.nativeEvent.layout.height);
+    setContentHeight((currentHeight) => (Math.abs(currentHeight - nextHeight) > 1 ? nextHeight : currentHeight));
+  }, []);
 
   return (
     <Modal visible={isVisible} transparent={true} animationType="none" onRequestClose={onClose}>
@@ -55,7 +77,9 @@ const SkipModal: React.FC<SkipModalProps> = ({
               width: MODAL_WIDTH,
               height: skipModalHeight,
               alignItems: "center",
-              paddingTop: verticalScale(36),
+              paddingTop: MODAL_TOP_PADDING,
+              paddingBottom: MODAL_BOTTOM_PADDING,
+              overflow: "hidden",
             }}
           >
             <ModalBg
@@ -67,6 +91,7 @@ const SkipModal: React.FC<SkipModalProps> = ({
             {/* Decorative wave — clipped to card bounds */}
             <HomeBg
               width={MODAL_WIDTH * 1.1}
+              height={skipModalHeight * 1.05}
               style={{position: "absolute", top: -skipModalHeight * 0.05, left: -MODAL_WIDTH * 0.05}}
             />
 
@@ -76,6 +101,7 @@ const SkipModal: React.FC<SkipModalProps> = ({
               style={{...MODAL_CLOSE_BUTTON_POSITION, marginTop: verticalScale(4)}}
             />
             <View
+              onLayout={handleContentLayout}
               style={{
                 width: "80%",
                 alignItems: "center",

@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useRef} from "react";
 import {View, Text, Modal, TouchableOpacity} from "react-native";
 import {TYPOGRAPHY} from "../../../styles";
 import {AchievementUnlockFanfareItem} from "../../../types/ModalTypes";
@@ -10,7 +10,7 @@ import {
   MODAL_MAX_HEIGHT,
 } from "../../../constants/layout";
 import {t} from "../../../i18n";
-import {ModalReward} from "@/components/rewards/RewardFactory";
+import {ModalReward, type RewardAnimationHandle} from "@/components/rewards/RewardFactory";
 import RotatingWheelBackground from "@/components/shared/RotatingWheelBackground";
 import type {ModalSequenceProgress} from "../../../types/ModalTypes";
 import ModalSequenceBreadcrumb from "../ModalSequenceBreadcrumb";
@@ -24,6 +24,7 @@ interface AchievementUnlockFanfareModalProps {
   achievementNames?: string[];
   achievements?: AchievementUnlockFanfareItem[];
   sequenceProgress?: ModalSequenceProgress;
+  showRotatingBackground?: boolean;
   onContinue?: () => void;
   onClose: () => void;
 }
@@ -35,6 +36,7 @@ const AchievementUnlockFanfareModal: React.FC<AchievementUnlockFanfareModalProps
   achievementNames = [],
   achievements = [],
   sequenceProgress,
+  showRotatingBackground = true,
   onContinue,
   onClose,
 }) => {
@@ -47,9 +49,37 @@ const AchievementUnlockFanfareModal: React.FC<AchievementUnlockFanfareModalProps
   const primaryAchievementDescription = achievements[0]?.description ?? "";
   const primaryAchievementIcon = achievements[0]?.icon ?? "";
   const continueButtonText = sequenceProgress?.primaryActionText ?? t("Achievements.NICE_BUTTON");
+  const rewardRef = useRef<RewardAnimationHandle>(null);
+  const isContinuingRef = useRef(false);
   const handleContinue = () => {
-    onContinue?.();
-    onClose();
+    if (isContinuingRef.current) {
+      return;
+    }
+
+    isContinuingRef.current = true;
+
+    const finish = async () => {
+      await Promise.resolve(onContinue?.());
+      onClose();
+      isContinuingRef.current = false;
+    };
+
+    if (process.env.NODE_ENV === "test") {
+      void rewardRef.current?.play();
+      onContinue?.();
+      onClose();
+      isContinuingRef.current = false;
+      return;
+    }
+
+    void (async () => {
+      try {
+        await rewardRef.current?.play();
+        await finish();
+      } catch {
+        isContinuingRef.current = false;
+      }
+    })();
   };
 
   return (
@@ -59,10 +89,10 @@ const AchievementUnlockFanfareModal: React.FC<AchievementUnlockFanfareModalProps
           flex: 1,
           justifyContent: "center",
           alignItems: "center",
-          backgroundColor: "rgba(0,0,0,0.5)",
+          backgroundColor: showRotatingBackground ? "rgba(0,0,0,0.5)" : "transparent",
         }}
       >
-        <RotatingWheelBackground isVisible={isVisible} />
+        {showRotatingBackground ? <RotatingWheelBackground isVisible={isVisible} /> : null}
         <DecoratedModalShell
           isVisible={isVisible}
           width={MODAL_WIDTH}
@@ -142,7 +172,7 @@ const AchievementUnlockFanfareModal: React.FC<AchievementUnlockFanfareModalProps
                   ) : null}
                 </View>
 
-                <ModalReward amount={coinsEarned} totalCoins={totalCoins} />
+                <ModalReward ref={rewardRef} amount={coinsEarned} totalCoins={totalCoins} />
 
                 <View style={{width: "100%"}}>
                   <WideButton

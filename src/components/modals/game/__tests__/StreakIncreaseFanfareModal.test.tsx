@@ -1,6 +1,13 @@
 import React from "react";
 import {render, fireEvent} from "@testing-library/react-native";
-import StreakIncreaseFanfareModal from "../StreakIncreaseFanfareModal";
+import StreakIncreaseFanfareModal, {
+  STREAK_INCREASE_FANFARE_MODAL_HEIGHT_MULTIPLIER,
+} from "../StreakIncreaseFanfareModal";
+import {
+  MODAL_MAX_SCREEN_HEIGHT_FRACTION,
+  MODAL_WIDTH,
+  getResponsiveModalHeight,
+} from "../../../../constants/layout";
 
 jest.mock("react-native/Libraries/Animated/Animated", () => {
   const {View} = require("react-native");
@@ -63,28 +70,28 @@ describe("StreakIncreaseFanfareModal", () => {
     const {getByText, queryByTestId} = render(
       <StreakIncreaseFanfareModal
         isVisible={true}
-        streakValue={4}
-        coinsAwarded={50}
-        totalCoins={250}
+        streakValue={7}
+        coinsAwarded={40}
+        totalCoins={240}
         onClose={jest.fn()}
       />,
     );
 
     expect(getByText("Streak Increased!")).toBeTruthy();
     expect(queryByTestId("modal-sequence-breadcrumb")).toBeNull();
-    expect(getByText("4-Day Streak")).toBeTruthy();
-    expect(getByText("+50 Coins")).toBeTruthy();
+    expect(getByText("7-Day Streak")).toBeTruthy();
+    expect(getByText("+40 Coins")).toBeTruthy();
     expect(getByText("Total Coins:")).toBeTruthy();
-    expect(getByText("250")).toBeTruthy();
+    expect(getByText("240")).toBeTruthy();
   });
 
   it("shows sequence progress and Next text for an intermediate popup", () => {
     const {getByTestId, getByText, queryByText} = render(
       <StreakIncreaseFanfareModal
         isVisible={true}
-        streakValue={4}
-        coinsAwarded={50}
-        totalCoins={250}
+        streakValue={7}
+        coinsAwarded={40}
+        totalCoins={240}
         sequenceProgress={{
           currentPopupIndex: 2,
           totalPopups: 4,
@@ -100,13 +107,40 @@ describe("StreakIncreaseFanfareModal", () => {
     expect(getByText("Next")).toBeTruthy();
   });
 
+  it("uses a compact decorative background frame", () => {
+    const {getByTestId} = render(
+      <StreakIncreaseFanfareModal
+        isVisible={true}
+        streakValue={7}
+        coinsAwarded={40}
+        totalCoins={240}
+        onClose={jest.fn()}
+      />,
+    );
+    const expectedHeight = getResponsiveModalHeight(
+      STREAK_INCREASE_FANFARE_MODAL_HEIGHT_MULTIPLIER,
+      MODAL_MAX_SCREEN_HEIGHT_FRACTION,
+    );
+    const previousHeight = getResponsiveModalHeight(1.4, MODAL_MAX_SCREEN_HEIGHT_FRACTION);
+
+    expect(expectedHeight).toBeLessThan(previousHeight);
+    expect(getByTestId("streak-increase-fanfare-frame").props.style).toEqual(
+      expect.objectContaining({
+        width: MODAL_WIDTH,
+        height: expectedHeight,
+      }),
+    );
+    expect(getByTestId("streak-increase-fanfare-background").props.height).toBe(expectedHeight);
+    expect(getByTestId("streak-increase-fanfare-background").props.preserveAspectRatio).toBe("none");
+  });
+
   it("does not render content when hidden", () => {
     const {queryByText} = render(
       <StreakIncreaseFanfareModal
         isVisible={false}
-        streakValue={2}
-        coinsAwarded={50}
-        totalCoins={150}
+        streakValue={7}
+        coinsAwarded={40}
+        totalCoins={140}
         onClose={jest.fn()}
       />,
     );
@@ -120,8 +154,8 @@ describe("StreakIncreaseFanfareModal", () => {
     const {getByText} = render(
       <StreakIncreaseFanfareModal
         isVisible={true}
-        streakValue={3}
-        coinsAwarded={20}
+        streakValue={7}
+        coinsAwarded={40}
         totalCoins={200}
         onContinue={onContinue}
         onClose={onClose}

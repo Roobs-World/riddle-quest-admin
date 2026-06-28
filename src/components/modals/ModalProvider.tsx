@@ -9,6 +9,8 @@ import {useModalContext} from "../../contexts/ModalContext";
 import {getModalComponent} from "./ModalRegistry";
 import {logger} from "../../utils/logger";
 import {ModalInstance} from "../../types/ModalTypes";
+import FanfareSequenceBackgroundModal from "./FanfareSequenceBackgroundModal";
+import {FANFARE_SEQUENCE_BACKGROUND_MODAL_TYPE} from "./modalTypes";
 
 interface RenderedModalProps {
   modal: ModalInstance;
@@ -17,6 +19,15 @@ interface RenderedModalProps {
 
 const RenderedModal = React.memo(
   ({modal, closeModal}: RenderedModalProps) => {
+    if (modal.type === FANFARE_SEQUENCE_BACKGROUND_MODAL_TYPE) {
+      return (
+        <FanfareSequenceBackgroundModal
+          isVisible
+          onClose={() => closeModal(modal.id)}
+        />
+      );
+    }
+
     const modalComponent = getModalComponent(modal.type);
     if (!modalComponent) {
       logger.warn(`Skipping unknown modal type "${modal.type}"`);

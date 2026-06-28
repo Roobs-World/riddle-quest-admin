@@ -5,5 +5,10 @@
     "LEVEL_PREFIX": "Seviye ",
     "TITLE": "Seviye Atlayın!",
     "PROFILE_GUIDANCE": "Yeni seviyen ve rutben Profil icinde. Bu kutlamadan sonra profil simgesine dokun."
+  },
+  "RankUpFanfare": {
+    "CONTINUE_BUTTON": "Devam",
+    "SUBTITLE": "Yeni bir rutbeye ulastin.",
+    "TITLE": "Yeni Rutbe!"
   }
 }

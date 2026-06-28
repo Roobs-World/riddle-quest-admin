@@ -1,4 +1,4 @@
-import React, {useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {
   Animated,
   Dimensions,
@@ -8,6 +8,8 @@ import {
   Text,
   View,
 } from "react-native";
+import ChestClosedSvg from "../../../assets/images/chest-closed.svg";
+import ChestOpenSvg from "../../../assets/images/chest-open.svg";
 import CoinSvg from "../../../assets/images/coin.svg";
 import {TYPOGRAPHY} from "../../styles";
 import {useRewardAnimation} from "../../contexts/RewardAnimationContext";
@@ -35,6 +37,10 @@ export interface RewardChestViewProps extends RewardChestProps {
   variant: "modal" | "achievement";
 }
 
+export interface RewardChestHandle {
+  play: () => Promise<void>;
+}
+
 interface CoinParticle {
   x: Animated.Value;
   y: Animated.Value;
@@ -43,6 +49,9 @@ interface CoinParticle {
   spreadX: number;
   lift: number;
 }
+
+export const REWARD_CHEST_COIN_COUNT = 5;
+const OPEN_CHEST_LEAD_IN_MS = 80;
 
 const measureView = async (
   view: View | null,
@@ -56,56 +65,150 @@ const measureView = async (
   });
 };
 
-const RewardChestView: React.FC<RewardChestViewProps> = ({
-  rewardAmount,
-  preset,
-  variant,
-  testID,
-  onOpened,
-}) => {
-  const {measureCoinTarget} = useRewardAnimation();
+const splitRewardAmount = (amount: number, coinCount: number): number[] => {
+  if (!Number.isFinite(amount) || amount <= 0 || coinCount <= 0) {
+    return Array.from({length: Math.max(0, coinCount)}, () => 0);
+  }
+
+  if (!Number.isInteger(amount)) {
+    return Array.from({length: coinCount}, () => amount / coinCount);
+  }
+
+  const baseCoinValue = Math.floor(amount / coinCount);
+  const remainder = amount - baseCoinValue * coinCount;
+  return Array.from({length: coinCount}, (_, index) => baseCoinValue + (index < remainder ? 1 : 0));
+};
+
+const RewardChestView = React.forwardRef<RewardChestHandle, RewardChestViewProps>(
+  ({rewardAmount, preset, variant, testID, onOpened}, ref) => {
+  const {measureCoinTarget, notifyCoinCounterHit} = useRewardAnimation();
   const sourceRef = useRef<View>(null);
   const [isOpened, setIsOpened] = useState(false);
   const [openProgress] = useState(() => new Animated.Value(0));
   const [chestScale] = useState(() => new Animated.Value(1));
+  const [chestWobble] = useState(() => new Animated.Value(0));
+  const isOpenedRef = useRef(false);
+  const animationPromiseRef = useRef<Promise<void> | null>(null);
+  const animationTimeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
   const [particles] = useState<CoinParticle[]>(() =>
-    Array.from({length: preset.particleCount}, (_, index) => ({
+    Array.from({length: REWARD_CHEST_COIN_COUNT}, (_, index) => ({
       x: new Animated.Value(0),
       y: new Animated.Value(0),
       opacity: new Animated.Value(0),
       scale: new Animated.Value(0.45),
-      spreadX: ((index % 2 === 0 ? 1 : -1) * (index + 1) * preset.width) / (preset.particleCount * 2.2),
+      spreadX: ((index % 2 === 0 ? 1 : -1) * (index + 1) * preset.width) / (REWARD_CHEST_COIN_COUNT * 2.2),
       lift: 24 + ((index * 17) % 28),
     })),
   );
 
   const amountLabel = `${rewardAmount >= 0 ? "+" : ""}${rewardAmount}`;
-  const lidRotation = openProgress.interpolate({
-    inputRange: [0, 1],
-    outputRange: ["0deg", "-24deg"],
-  });
   const glowOpacity = openProgress.interpolate({
     inputRange: [0, 0.35, 1],
     outputRange: [0.12, 0.82, 0.32],
   });
+  const wobbleRotation = chestWobble.interpolate({
+    inputRange: [-1, 0, 1],
+    outputRange: ["-4deg", "0deg", "4deg"],
+  });
+  const wobbleTranslateX = chestWobble.interpolate({
+    inputRange: [-1, 0, 1],
+    outputRange: [-3, 0, 3],
+  });
 
-  const handlePress = async (event?: GestureResponderEvent) => {
-    event?.stopPropagation?.();
-    if (isOpened || rewardAmount <= 0) {
-      return;
+  const clearAnimationTimeouts = () => {
+    animationTimeoutsRef.current.forEach((timeoutId) => clearTimeout(timeoutId));
+    animationTimeoutsRef.current = [];
+  };
+
+  useEffect(() => {
+    return () => {
+      clearAnimationTimeouts();
+    };
+  }, []);
+
+  useEffect(() => {
+    chestWobble.stopAnimation();
+    chestWobble.setValue(0);
+
+    if (rewardAmount <= 0 || isOpened || process.env.NODE_ENV === "test") {
+      return undefined;
     }
 
-    setIsOpened(true);
-    const [source, measuredTarget] = await Promise.all([measureView(sourceRef.current), measureCoinTarget()]);
-    const screenWidth = Dimensions.get("window").width;
-    const target = measuredTarget ?? {x: screenWidth - 36, y: 24, width: 24, height: 24};
-    const sourceCenter = source
-      ? {x: source.x + source.width / 2, y: source.y + source.height / 2}
-      : {x: screenWidth / 2, y: 360};
-    const targetX = target.x + target.width / 2 - sourceCenter.x;
-    const targetY = target.y + target.height / 2 - sourceCenter.y;
+    const wobbleAnimation = Animated.loop(
+      Animated.sequence([
+        Animated.delay(450),
+        Animated.timing(chestWobble, {
+          toValue: 1,
+          duration: 80,
+          easing: Easing.out(Easing.quad),
+          useNativeDriver: true,
+        }),
+        Animated.timing(chestWobble, {
+          toValue: -1,
+          duration: 120,
+          easing: Easing.inOut(Easing.quad),
+          useNativeDriver: true,
+        }),
+        Animated.timing(chestWobble, {
+          toValue: 0,
+          duration: 90,
+          easing: Easing.out(Easing.quad),
+          useNativeDriver: true,
+        }),
+      ]),
+    );
+    wobbleAnimation.start();
 
-    Animated.parallel([
+    return () => {
+      wobbleAnimation.stop();
+      chestWobble.stopAnimation();
+      chestWobble.setValue(0);
+    };
+  }, [chestWobble, isOpened, rewardAmount]);
+
+  const playRewardAnimation = (event?: GestureResponderEvent): Promise<void> => {
+    event?.stopPropagation?.();
+    if (animationPromiseRef.current) {
+      return animationPromiseRef.current;
+    }
+
+    if (isOpenedRef.current || rewardAmount <= 0) {
+      return Promise.resolve();
+    }
+
+    isOpenedRef.current = true;
+    setIsOpened(true);
+    openProgress.stopAnimation();
+    openProgress.setValue(1);
+    clearAnimationTimeouts();
+
+    const animationPromise = (async () => {
+      const [source, measuredTarget] = await Promise.all([measureView(sourceRef.current), measureCoinTarget()]);
+      const screenWidth = Dimensions.get("window").width;
+      const target = measuredTarget ?? {x: screenWidth - 36, y: 24, width: 24, height: 24};
+      const sourceCenter = source
+        ? {x: source.x + source.width / 2, y: source.y + source.height / 2}
+        : {x: screenWidth / 2, y: 360};
+      const targetX = target.x + target.width / 2 - sourceCenter.x;
+      const targetY = target.y + target.height / 2 - sourceCenter.y;
+      const coinValues = splitRewardAmount(rewardAmount, REWARD_CHEST_COIN_COUNT);
+      const particleFlightMs = 180 + preset.flightDurationMs;
+      const totalFlightMs =
+        OPEN_CHEST_LEAD_IN_MS + (REWARD_CHEST_COIN_COUNT - 1) * preset.staggerMs + particleFlightMs + 180;
+
+      particles.forEach((particle) => {
+        particle.x.setValue(0);
+        particle.y.setValue(0);
+        particle.opacity.setValue(0);
+        particle.scale.setValue(0.45);
+      });
+
+      if (process.env.NODE_ENV === "test") {
+        coinValues.forEach((coinValue) => notifyCoinCounterHit(coinValue));
+        onOpened?.();
+        return;
+      }
+
       Animated.sequence([
         Animated.timing(chestScale, {
           toValue: 0.92,
@@ -125,94 +228,102 @@ const RewardChestView: React.FC<RewardChestViewProps> = ({
           tension: 90,
           useNativeDriver: true,
         }),
-      ]),
-      Animated.timing(openProgress, {
-        toValue: 1,
-        duration: 360,
-        easing: Easing.out(Easing.back(1.5)),
-        useNativeDriver: true,
-      }),
-    ]).start();
+      ]).start();
 
-    const particleAnimations = particles.map((particle) => {
-      particle.x.setValue(0);
-      particle.y.setValue(0);
-      particle.opacity.setValue(0);
-      particle.scale.setValue(0.45);
+      particles.forEach((particle, index) => {
+        const startTimeoutId = setTimeout(() => {
+          Animated.parallel([
+            Animated.sequence([
+              Animated.timing(particle.x, {
+                toValue: particle.spreadX,
+                duration: 180,
+                easing: Easing.out(Easing.quad),
+                useNativeDriver: true,
+              }),
+              Animated.timing(particle.x, {
+                toValue: targetX,
+                duration: preset.flightDurationMs,
+                easing: Easing.inOut(Easing.cubic),
+                useNativeDriver: true,
+              }),
+            ]),
+            Animated.sequence([
+              Animated.timing(particle.y, {
+                toValue: -particle.lift,
+                duration: 180,
+                easing: Easing.out(Easing.quad),
+                useNativeDriver: true,
+              }),
+              Animated.timing(particle.y, {
+                toValue: targetY,
+                duration: preset.flightDurationMs,
+                easing: Easing.in(Easing.cubic),
+                useNativeDriver: true,
+              }),
+            ]),
+            Animated.sequence([
+              Animated.timing(particle.opacity, {
+                toValue: 1,
+                duration: 80,
+                useNativeDriver: true,
+              }),
+              Animated.delay(Math.max(0, particleFlightMs - 80)),
+              Animated.timing(particle.opacity, {
+                toValue: 0,
+                duration: 120,
+                useNativeDriver: true,
+              }),
+            ]),
+            Animated.sequence([
+              Animated.spring(particle.scale, {
+                toValue: 1,
+                friction: 5,
+                tension: 130,
+                useNativeDriver: true,
+              }),
+              Animated.timing(particle.scale, {
+                toValue: 0.62,
+                duration: preset.flightDurationMs,
+                useNativeDriver: true,
+              }),
+            ]),
+          ]).start();
 
-      return Animated.parallel([
-        Animated.sequence([
-          Animated.timing(particle.x, {
-            toValue: particle.spreadX,
-            duration: 180,
-            easing: Easing.out(Easing.quad),
-            useNativeDriver: true,
-          }),
-          Animated.timing(particle.x, {
-            toValue: targetX,
-            duration: preset.flightDurationMs,
-            easing: Easing.inOut(Easing.cubic),
-            useNativeDriver: true,
-          }),
-        ]),
-        Animated.sequence([
-          Animated.timing(particle.y, {
-            toValue: -particle.lift,
-            duration: 180,
-            easing: Easing.out(Easing.quad),
-            useNativeDriver: true,
-          }),
-          Animated.timing(particle.y, {
-            toValue: targetY,
-            duration: preset.flightDurationMs,
-            easing: Easing.in(Easing.cubic),
-            useNativeDriver: true,
-          }),
-        ]),
-        Animated.sequence([
-          Animated.timing(particle.opacity, {
-            toValue: 1,
-            duration: 80,
-            useNativeDriver: true,
-          }),
-          Animated.delay(Math.max(100, preset.flightDurationMs - 140)),
-          Animated.timing(particle.opacity, {
-            toValue: 0,
-            duration: 240,
-            useNativeDriver: true,
-          }),
-        ]),
-        Animated.sequence([
-          Animated.spring(particle.scale, {
-            toValue: 1,
-            friction: 5,
-            tension: 130,
-            useNativeDriver: true,
-          }),
-          Animated.timing(particle.scale, {
-            toValue: 0.62,
-            duration: preset.flightDurationMs,
-            useNativeDriver: true,
-          }),
-        ]),
-      ]);
+          const landTimeoutId = setTimeout(() => {
+            notifyCoinCounterHit(coinValues[index]);
+          }, particleFlightMs);
+          animationTimeoutsRef.current.push(landTimeoutId);
+        }, OPEN_CHEST_LEAD_IN_MS + index * preset.staggerMs);
+
+        animationTimeoutsRef.current.push(startTimeoutId);
+      });
+
+      await new Promise<void>((resolve) => {
+        const doneTimeoutId = setTimeout(resolve, totalFlightMs);
+        animationTimeoutsRef.current.push(doneTimeoutId);
+      });
+
+      clearAnimationTimeouts();
+      onOpened?.();
+    })();
+
+    animationPromiseRef.current = animationPromise;
+    void animationPromise.finally(() => {
+      animationPromiseRef.current = null;
     });
 
-    Animated.stagger(preset.staggerMs, particleAnimations).start(({finished}) => {
-      if (finished) {
-        onOpened?.();
-      }
-    });
+    return animationPromise;
   };
 
-  const chestWidth = preset.width * 0.78;
-  const borderWidth = Math.max(2, preset.width * 0.025);
+  React.useImperativeHandle(ref, () => ({play: playRewardAnimation}));
+
+  const chestSize = preset.width * 0.9;
 
   return (
     <Pressable
       ref={sourceRef}
       onPress={(event) => {
-        void handlePress(event);
+        void playRewardAnimation(event);
       }}
       disabled={isOpened || rewardAmount <= 0}
       accessibilityRole="button"
@@ -259,107 +370,19 @@ const RewardChestView: React.FC<RewardChestViewProps> = ({
 
       <Animated.View
         style={{
-          width: chestWidth,
-          height: preset.baseHeight + preset.lidHeight,
-          marginTop: preset.height * 0.12,
+          width: chestSize,
+          height: chestSize,
+          marginTop: preset.height * 0.04,
           alignItems: "center",
-          justifyContent: "flex-end",
-          transform: [{scale: chestScale}],
+          justifyContent: "center",
+          transform: [{translateX: wobbleTranslateX}, {rotate: wobbleRotation}, {scale: chestScale}],
         }}
       >
-        <View
-          style={{
-            position: "absolute",
-            bottom: 0,
-            width: "100%",
-            height: preset.baseHeight,
-            borderRadius: Math.max(6, preset.width * 0.08),
-            borderWidth,
-            borderColor: "#713810",
-            backgroundColor: "#B95D1D",
-            overflow: "hidden",
-          }}
-        >
-          <View
-            style={{
-              position: "absolute",
-              left: "8%",
-              right: "8%",
-              top: "18%",
-              bottom: "16%",
-              borderRadius: Math.max(4, preset.width * 0.04),
-              backgroundColor: "#D87824",
-              borderWidth: 1,
-              borderColor: "#8A4314",
-            }}
-          />
-          <View
-            style={{
-              position: "absolute",
-              zIndex: 3,
-              top: -1,
-              left: "41%",
-              width: "18%",
-              height: "48%",
-              borderBottomLeftRadius: 5,
-              borderBottomRightRadius: 5,
-              backgroundColor: "#FFD253",
-              borderWidth: 1,
-              borderColor: "#9D6512",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <View
-              style={{
-                width: Math.max(2, preset.width * 0.025),
-                height: Math.max(5, preset.height * 0.07),
-                borderRadius: 3,
-                backgroundColor: "#6E4214",
-              }}
-            />
-          </View>
-        </View>
-
-        <Animated.View
-          style={{
-            position: "absolute",
-            zIndex: 4,
-            top: 0,
-            width: "104%",
-            height: preset.lidHeight,
-            borderTopLeftRadius: preset.width * 0.18,
-            borderTopRightRadius: preset.width * 0.18,
-            borderBottomLeftRadius: 4,
-            borderBottomRightRadius: 4,
-            borderWidth,
-            borderColor: "#713810",
-            backgroundColor: "#C86A20",
-            overflow: "hidden",
-            transform: [
-              {
-                translateY: openProgress.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [0, -preset.lidHeight * 0.65],
-                }),
-              },
-              {rotate: lidRotation},
-            ],
-          }}
-        >
-          <View
-            style={{
-              position: "absolute",
-              left: "42%",
-              width: "16%",
-              height: "100%",
-              backgroundColor: "#FFD253",
-              borderLeftWidth: 1,
-              borderRightWidth: 1,
-              borderColor: "#9D6512",
-            }}
-          />
-        </Animated.View>
+        {isOpened ? (
+          <ChestOpenSvg width={chestSize} height={chestSize} />
+        ) : (
+          <ChestClosedSvg width={chestSize} height={chestSize} />
+        )}
       </Animated.View>
 
       {preset.showAmount ? (
@@ -377,6 +400,8 @@ const RewardChestView: React.FC<RewardChestViewProps> = ({
       ) : null}
     </Pressable>
   );
-};
+});
+
+RewardChestView.displayName = "RewardChestView";
 
 export default RewardChestView;

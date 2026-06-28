@@ -74,6 +74,7 @@ import CoinShopModal from "../shop/CoinShop";
 import CoinPurchaseFanfareModal from "./shop/CoinPurchaseFanfareModal";
 import StreakIncreaseFanfareModal from "./game/StreakIncreaseFanfareModal";
 import LevelUpFanfareModal from "./game/LevelUpFanfareModal";
+import RankUpFanfareModal from "./game/RankUpFanfareModal";
 
 /**
  * Modal Wrapper Factory Function
@@ -193,6 +194,7 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
     onHome: (props.onHome as () => void) || (() => {}),
     guesses: (props.guesses as SubmittedGuess[]) || [],
     sequenceProgress: props.sequenceProgress as ModalSequenceProgress | undefined,
+    showRotatingBackground: (props.showRotatingBackground as boolean | undefined) ?? true,
     onClose: props.onClose,
   })),
 
@@ -379,6 +381,7 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
     achievementNames: (props.achievementNames as string[] | undefined) ?? [],
     achievements: (props.achievements as AchievementUnlockFanfareItem[] | undefined) ?? [],
     sequenceProgress: props.sequenceProgress as ModalSequenceProgress | undefined,
+    showRotatingBackground: (props.showRotatingBackground as boolean | undefined) ?? true,
   })),
 
   streakIncreaseFanfare: createModalWrapper(StreakIncreaseFanfareModal, (props: BaseModalProps & ModalData) => ({
@@ -387,6 +390,7 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
     coinsAwarded: (props.coinsAwarded as number) || 0,
     totalCoins: (props.totalCoins as number) || 0,
     sequenceProgress: props.sequenceProgress as ModalSequenceProgress | undefined,
+    showRotatingBackground: (props.showRotatingBackground as boolean | undefined) ?? true,
     onContinue: (props.onContinue as (() => void) | undefined) ?? undefined,
     onClose: props.onClose,
   })),
@@ -397,6 +401,16 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
     coinsAwarded: (props.coinsAwarded as number) || 0,
     totalCoins: (props.totalCoins as number) || 0,
     sequenceProgress: props.sequenceProgress as ModalSequenceProgress | undefined,
+    showRotatingBackground: (props.showRotatingBackground as boolean | undefined) ?? true,
+    onContinue: (props.onContinue as (() => void) | undefined) ?? undefined,
+    onClose: props.onClose,
+  })),
+
+  rankUpFanfare: createModalWrapper(RankUpFanfareModal, (props: BaseModalProps & ModalData) => ({
+    isVisible: props.isVisible,
+    newLevel: (props.newLevel as number) || 1,
+    sequenceProgress: props.sequenceProgress as ModalSequenceProgress | undefined,
+    showRotatingBackground: (props.showRotatingBackground as boolean | undefined) ?? true,
     onContinue: (props.onContinue as (() => void) | undefined) ?? undefined,
     onClose: props.onClose,
   })),

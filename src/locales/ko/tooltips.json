@@ -28,8 +28,6 @@
     "SUBMIT_ANSWER_BODY": "모든 칸을 채우면 제출을 눌러 추측을 확인하세요.",
     "SUBMIT_ANSWER_TITLE": "답을 제출하세요",
     "PROFILE_PROGRESSION_TITLE": "사용자 성장",
-    "PROFILE_PROGRESSION_BODY": "랭크, XP 레벨, 진행 바가 다음 레벨까지 얼마나 남았는지 보여 줍니다.",
-    "PROFILE_DAILY_STREAK_TITLE": "일일 연속 기록",
-    "PROFILE_DAILY_STREAK_BODY": "연속 기록은 꾸준한 일일 플레이를 추적합니다. 매일 퍼즐을 풀어 기록을 늘려 보세요."
+    "PROFILE_PROGRESSION_BODY": "랭크, XP 레벨, 진행 바가 다음 레벨까지 얼마나 남았는지 보여 줍니다."
   }
 }

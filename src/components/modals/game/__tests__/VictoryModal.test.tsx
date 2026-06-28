@@ -1,6 +1,6 @@
 import React from "react";
 import {render, fireEvent, waitFor} from "@testing-library/react-native";
-import VictoryModal, {VICTORY_MODAL_HEIGHT_MULTIPLIER} from "../VictoryModal";
+import VictoryModal, {VICTORY_MODAL_HEIGHT_MULTIPLIER, VICTORY_TITLE_TOP_OFFSET} from "../VictoryModal";
 import type {SubmittedGuess, Feedback} from "../../../../hooks/types";
 import {SocialSharingService} from "../../../../services/SocialSharingService";
 import {MODAL_MAX_SCREEN_HEIGHT_FRACTION, MODAL_WIDTH, getResponsiveModalHeight} from "../../../../constants/layout";
@@ -60,12 +60,14 @@ describe("VictoryModal", () => {
     expect(queryByTestId("modal-sequence-breadcrumb")).toBeNull();
   });
 
-  it("uses the taller DSI-035 decorative background frame", () => {
+  it("uses a compact decorative background frame that still clears the DSI-035 baseline", () => {
     const {getByTestId} = render(<VictoryModal {...defaultProps} />);
     const expectedHeight = getResponsiveModalHeight(VICTORY_MODAL_HEIGHT_MULTIPLIER, MODAL_MAX_SCREEN_HEIGHT_FRACTION);
-    const previousHeight = getResponsiveModalHeight(1.4, MODAL_MAX_SCREEN_HEIGHT_FRACTION);
+    const overflowBaselineHeight = getResponsiveModalHeight(1.4, MODAL_MAX_SCREEN_HEIGHT_FRACTION);
+    const previousTallHeight = getResponsiveModalHeight(1.55, MODAL_MAX_SCREEN_HEIGHT_FRACTION);
 
-    expect(expectedHeight).toBeGreaterThan(previousHeight);
+    expect(expectedHeight).toBeGreaterThan(overflowBaselineHeight);
+    expect(expectedHeight).toBeLessThan(previousTallHeight);
     expect(getByTestId("victory-modal-tap-target").props.style).toEqual(
       expect.objectContaining({
         width: MODAL_WIDTH,
@@ -74,6 +76,16 @@ describe("VictoryModal", () => {
     );
     expect(getByTestId("victory-modal-background").props.height).toBe(expectedHeight);
     expect(getByTestId("victory-modal-background").props.preserveAspectRatio).toBe("none");
+  });
+
+  it("positions the title below the onboarding-style top inset", () => {
+    const {getByTestId} = render(<VictoryModal {...defaultProps} />);
+
+    expect(getByTestId("victory-title-text").props.style).toEqual(
+      expect.objectContaining({
+        marginTop: VICTORY_TITLE_TOP_OFFSET,
+      }),
+    );
   });
 
   it("shows sequence progress and Next text for an intermediate popup", () => {

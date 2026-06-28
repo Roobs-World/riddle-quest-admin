@@ -1,5 +1,6 @@
 import React from "react";
-import {fireEvent, render, waitFor} from "@testing-library/react-native";
+import {act, fireEvent, render, waitFor} from "@testing-library/react-native";
+import {ScrollView} from "react-native";
 import {renderWithModalProvider} from "../../../../test-utils";
 import FullProfileDetailsModal from "../FullProfileDetailsModal";
 import {Player} from "../../../../validation/firestoreSchemas";
@@ -34,6 +35,30 @@ const mockLogout = jest.fn(() => Promise.resolve());
 const mockUpdatePlayerData = jest.fn();
 const mockDeleteAccountCallable = jest.fn(() => Promise.resolve({data: {success: true}}));
 const mockGetCallableFunction = jest.fn((_functionName: string) => mockDeleteAccountCallable);
+
+type TooltipSequenceRequestForTest = {
+  id: string;
+  userId?: string | null;
+  preferredPlacement?: string;
+  useNativeModal?: boolean;
+  highlightElement?: React.ReactNode;
+  onBeforeShow?: () => void | Promise<void>;
+};
+
+const getLatestTooltipSequence = (): TooltipSequenceRequestForTest[] => {
+  const calls = mockShowTooltipSequence.mock.calls as unknown as [TooltipSequenceRequestForTest[]][];
+  return calls[calls.length - 1]?.[0] ?? [];
+};
+
+const spyOnScrollTo = () => {
+  const scrollViewPrototype = ScrollView.prototype as unknown as {
+    scrollTo?: (options: {y?: number; x?: number; animated?: boolean}) => void;
+  };
+
+  scrollViewPrototype.scrollTo ??= jest.fn();
+
+  return jest.spyOn(scrollViewPrototype, "scrollTo").mockImplementation(() => {});
+};
 
 jest.mock("../../../../contexts/AuthContext", () => ({
   useAuth: () => ({
@@ -295,6 +320,7 @@ describe("FullProfileDetailsModal", () => {
   });
 
   afterEach(() => {
+    jest.restoreAllMocks();
     jest.useRealTimers();
   });
 
@@ -325,72 +351,92 @@ describe("FullProfileDetailsModal", () => {
     jest.advanceTimersByTime(450);
 
     await waitFor(() => {
-      expect(mockShowTooltipSequence).toHaveBeenCalledWith([
-        expect.objectContaining({
-          id: "profileProgression",
-          highlightElement: expect.any(Object),
-          onBeforeShow: expect.any(Function),
-          content: expect.objectContaining({
-            title: "User progression",
-            body: "Your rank, XP level, and progress bar show how close you are to the next level.",
+      expect(mockShowTooltipSequence).toHaveBeenCalledWith(
+        [
+          expect.objectContaining({
+            id: "profileIdentity",
+            userId: "test-user-123",
+            highlightElement: expect.any(Object),
+            onBeforeShow: expect.any(Function),
+            content: expect.objectContaining({
+              title: "Profile",
+            }),
           }),
-        }),
-        expect.objectContaining({
-          id: "profileDailyStreak",
-          highlightElement: expect.any(Object),
-          preferredPlacement: "below",
-          onBeforeShow: expect.any(Function),
-          content: expect.objectContaining({
-            title: "Daily streak",
-            body: "Your streak tracks regular daily play. Keep solving daily puzzles to build it up.",
+          expect.objectContaining({
+            id: "profileProgression",
+            userId: "test-user-123",
+            highlightElement: undefined,
+            preferredPlacement: "above",
+            onBeforeShow: expect.any(Function),
+            content: expect.objectContaining({
+              title: "User progression",
+              body: "Your rank, XP level, and progress bar show how close you are to the next level.",
+            }),
           }),
-        }),
-        expect.objectContaining({
-          id: "profileAchievements",
-          highlightElement: expect.any(Object),
-          onBeforeShow: expect.any(Function),
-        }),
-        expect.objectContaining({
-          id: "profileStatistics",
-          highlightElement: expect.any(Object),
-          onBeforeShow: expect.any(Function),
-        }),
-        expect.objectContaining({
-          id: "profileLeaderboard",
-          highlightElement: expect.any(Object),
-          onBeforeShow: expect.any(Function),
-        }),
-        expect.objectContaining({
-          id: "profileIdentity",
-          highlightElement: expect.any(Object),
-          onBeforeShow: expect.any(Function),
-        }),
-        expect.objectContaining({
-          id: "profileDailyPuzzles",
-          highlightElement: expect.any(Object),
-          onBeforeShow: expect.any(Function),
-          content: expect.objectContaining({
-            title: "Daily puzzles",
-            body: "This shows how many daily challenges you have completed.",
+          expect.objectContaining({
+            id: "profileDailyPuzzles",
+            userId: "test-user-123",
+            highlightElement: expect.any(Object),
+            preferredPlacement: "below",
+            onBeforeShow: expect.any(Function),
+            content: expect.objectContaining({
+              title: "Daily puzzles",
+              body: "This shows how many daily challenges you have completed.",
+            }),
           }),
-        }),
-        expect.objectContaining({
-          id: "profileStats",
-          highlightElement: expect.any(Object),
-          onBeforeShow: expect.any(Function),
-        }),
-        expect.objectContaining({
-          id: "profileCoins",
-          highlightElement: expect.any(Object),
-          onBeforeShow: expect.any(Function),
-        }),
-      ]);
+          expect.objectContaining({
+            id: "profileStats",
+            userId: "test-user-123",
+            highlightElement: expect.any(Object),
+            preferredPlacement: "below",
+            onBeforeShow: expect.any(Function),
+            content: expect.objectContaining({
+              title: "Stats snapshot",
+            }),
+          }),
+          expect.objectContaining({
+            id: "profileCoins",
+            userId: "test-user-123",
+            highlightElement: undefined,
+            preferredPlacement: "below",
+            onBeforeShow: expect.any(Function),
+            content: expect.objectContaining({
+              title: "Treasure chest",
+            }),
+          }),
+          expect.objectContaining({
+            id: "profileAchievements",
+            userId: "test-user-123",
+            highlightElement: expect.any(Object),
+            onBeforeShow: expect.any(Function),
+          }),
+          expect.objectContaining({
+            id: "profileStatistics",
+            userId: "test-user-123",
+            highlightElement: expect.any(Object),
+            preferredPlacement: "above",
+            onBeforeShow: expect.any(Function),
+          }),
+          expect.objectContaining({
+            id: "profileLeaderboard",
+            userId: "test-user-123",
+            highlightElement: expect.any(Object),
+            onBeforeShow: expect.any(Function),
+          }),
+        ],
+        {sequenceId: "profileTour", userId: "test-user-123"},
+      );
     });
+
+    expect(getLatestTooltipSequence().every((request) => request.useNativeModal === false)).toBe(true);
   });
 
-  it("anchors the daily streak tooltip to the daily puzzles completed section", async () => {
+  it("targets the combined rank and XP progression section above the tooltip", async () => {
     jest.useFakeTimers();
-    renderWithModalProvider(<FullProfileDetailsModal {...defaultProps} />);
+    const scrollToSpy = spyOnScrollTo();
+    const {getByTestId} = renderWithModalProvider(<FullProfileDetailsModal {...defaultProps} />);
+
+    fireEvent(getByTestId("profile-progression-section"), "layout", {nativeEvent: {layout: {y: 260}}});
 
     jest.advanceTimersByTime(450);
 
@@ -398,28 +444,187 @@ describe("FullProfileDetailsModal", () => {
       expect(mockShowTooltipSequence).toHaveBeenCalled();
     });
 
-    const tooltipSequenceCalls = mockShowTooltipSequence.mock.calls as unknown as [
-      Array<{
-        id: string;
-        preferredPlacement?: string;
-        highlightElement?: React.ReactNode;
-      }>,
-    ][];
-    const tooltipSequence = tooltipSequenceCalls[0][0];
-    const dailyStreakTooltip = tooltipSequence.find((request) => request.id === "profileDailyStreak");
-
-    expect(dailyStreakTooltip).toEqual(
+    const progressionTooltip = getLatestTooltipSequence().find((request) => request.id === "profileProgression");
+    expect(progressionTooltip).toEqual(
       expect.objectContaining({
-        preferredPlacement: "below",
-        highlightElement: expect.any(Object),
+        highlightElement: undefined,
+        preferredPlacement: "above",
+        onBeforeShow: expect.any(Function),
       }),
     );
-    expect(React.isValidElement(dailyStreakTooltip?.highlightElement)).toBe(true);
 
-    const {getByText, queryByText} = render(dailyStreakTooltip?.highlightElement as React.ReactElement);
+    const beforeShowPromise = progressionTooltip?.onBeforeShow?.();
+    jest.advanceTimersByTime(260);
+    await act(async () => {
+      await beforeShowPromise;
+    });
+
+    expect(scrollToSpy).toHaveBeenCalledWith({y: 236, animated: true});
+  });
+
+  it("targets the full daily puzzles card and places the tooltip below it", async () => {
+    jest.useFakeTimers();
+    const scrollToSpy = spyOnScrollTo();
+    const {getByTestId} = renderWithModalProvider(<FullProfileDetailsModal {...defaultProps} />);
+
+    fireEvent(getByTestId("profile-modal-body"), "layout", {nativeEvent: {layout: {y: 320}}});
+    fireEvent(getByTestId("profile-daily-puzzles-section"), "layout", {nativeEvent: {layout: {y: 64}}});
+
+    jest.advanceTimersByTime(450);
+
+    await waitFor(() => {
+      expect(mockShowTooltipSequence).toHaveBeenCalled();
+    });
+
+    const dailyPuzzlesTooltip = getLatestTooltipSequence().find((request) => request.id === "profileDailyPuzzles");
+    expect(dailyPuzzlesTooltip).toEqual(
+      expect.objectContaining({
+        highlightElement: expect.any(Object),
+        preferredPlacement: "below",
+        onBeforeShow: expect.any(Function),
+      }),
+    );
+
+    const {getByText, queryByText} = render(dailyPuzzlesTooltip?.highlightElement as React.ReactElement);
     expect(getByText("Daily puzzles completed")).toBeTruthy();
     expect(getByText(String(mockPlayerData.stats.dailyPuzzlesCompleted))).toBeTruthy();
     expect(queryByText("Best Streak")).toBeNull();
+
+    const beforeShowPromise = dailyPuzzlesTooltip?.onBeforeShow?.();
+    jest.advanceTimersByTime(260);
+    await act(async () => {
+      await beforeShowPromise;
+    });
+
+    expect(scrollToSpy).toHaveBeenCalledWith({y: 360, animated: true});
+  });
+
+  it("targets the full stats snapshot grid and highlights each stat card", async () => {
+    jest.useFakeTimers();
+    const scrollToSpy = spyOnScrollTo();
+    const {getByTestId} = renderWithModalProvider(<FullProfileDetailsModal {...defaultProps} />);
+
+    fireEvent(getByTestId("profile-modal-body"), "layout", {nativeEvent: {layout: {y: 320}}});
+    fireEvent(getByTestId("profile-stats-snapshot-section"), "layout", {nativeEvent: {layout: {y: 196}}});
+
+    jest.advanceTimersByTime(450);
+
+    await waitFor(() => {
+      expect(mockShowTooltipSequence).toHaveBeenCalled();
+    });
+
+    const statsTooltip = getLatestTooltipSequence().find((request) => request.id === "profileStats");
+    expect(statsTooltip).toEqual(
+      expect.objectContaining({
+        highlightElement: expect.any(Object),
+        preferredPlacement: "below",
+        onBeforeShow: expect.any(Function),
+      }),
+    );
+
+    const {getByText, queryByText} = render(statsTooltip?.highlightElement as React.ReactElement);
+    expect(getByText("Best Streak")).toBeTruthy();
+    expect(getByText("Total Words Guessed")).toBeTruthy();
+    expect(getByText("Win Rate")).toBeTruthy();
+    expect(getByText("Avg Guess")).toBeTruthy();
+    expect(getByText(String(mockPlayerData.stats.bestStreak))).toBeTruthy();
+    expect(getByText(String(mockPlayerData.stats.totalWordsGuessed))).toBeTruthy();
+    expect(getByText(`${mockPlayerData.stats.winRate}%`)).toBeTruthy();
+    expect(queryByText("Treasure Chest")).toBeNull();
+
+    const beforeShowPromise = statsTooltip?.onBeforeShow?.();
+    jest.advanceTimersByTime(260);
+    await act(async () => {
+      await beforeShowPromise;
+    });
+
+    expect(scrollToSpy).toHaveBeenCalledWith({y: 492, animated: true});
+  });
+
+  it("targets the original treasure chest card with a cutout spotlight", async () => {
+    jest.useFakeTimers();
+    const scrollToSpy = spyOnScrollTo();
+    const {getByTestId} = renderWithModalProvider(<FullProfileDetailsModal {...defaultProps} />);
+
+    fireEvent(getByTestId("profile-modal-body"), "layout", {nativeEvent: {layout: {y: 320}}});
+    expect(getByTestId("profile-treasure-chest-card")).toBeTruthy();
+    fireEvent(getByTestId("profile-treasure-chest-section"), "layout", {nativeEvent: {layout: {y: 440}}});
+
+    jest.advanceTimersByTime(450);
+
+    await waitFor(() => {
+      expect(mockShowTooltipSequence).toHaveBeenCalled();
+    });
+
+    const treasureTooltip = getLatestTooltipSequence().find((request) => request.id === "profileCoins");
+    expect(treasureTooltip).toEqual(
+      expect.objectContaining({
+        highlightElement: undefined,
+        preferredPlacement: "below",
+        onBeforeShow: expect.any(Function),
+      }),
+    );
+
+    const beforeShowPromise = treasureTooltip?.onBeforeShow?.();
+    jest.advanceTimersByTime(260);
+    await act(async () => {
+      await beforeShowPromise;
+    });
+
+    expect(scrollToSpy).toHaveBeenCalledWith({y: 736, animated: true});
+  });
+
+  it("scrolls the statistics button lower so its above tooltip points at the button top", async () => {
+    jest.useFakeTimers();
+    const scrollToSpy = spyOnScrollTo();
+    const {getByTestId} = renderWithModalProvider(<FullProfileDetailsModal {...defaultProps} />);
+
+    fireEvent(getByTestId("profile-modal-body"), "layout", {nativeEvent: {layout: {y: 320}}});
+    fireEvent(getByTestId("profile-statistics-button-section"), "layout", {nativeEvent: {layout: {y: 468}}});
+
+    jest.advanceTimersByTime(450);
+
+    await waitFor(() => {
+      expect(mockShowTooltipSequence).toHaveBeenCalled();
+    });
+
+    const statisticsTooltip = getLatestTooltipSequence().find((request) => request.id === "profileStatistics");
+    expect(statisticsTooltip?.onBeforeShow).toEqual(expect.any(Function));
+
+    const beforeShowPromise = statisticsTooltip?.onBeforeShow?.();
+    jest.advanceTimersByTime(260);
+    await act(async () => {
+      await beforeShowPromise;
+    });
+
+    expect(statisticsTooltip).toEqual(expect.objectContaining({preferredPlacement: "above"}));
+    expect(scrollToSpy).toHaveBeenCalledWith({y: 588, animated: true});
+  });
+
+  it("scrolls the leaderboard button using the profile body offset before showing its tooltip", async () => {
+    jest.useFakeTimers();
+    const scrollToSpy = spyOnScrollTo();
+    const {getByTestId} = renderWithModalProvider(<FullProfileDetailsModal {...defaultProps} />);
+
+    fireEvent(getByTestId("profile-modal-body"), "layout", {nativeEvent: {layout: {y: 320}}});
+    fireEvent(getByTestId("profile-leaderboard-button-section"), "layout", {nativeEvent: {layout: {y: 532}}});
+
+    jest.advanceTimersByTime(450);
+
+    await waitFor(() => {
+      expect(mockShowTooltipSequence).toHaveBeenCalled();
+    });
+
+    const leaderboardTooltip = getLatestTooltipSequence().find((request) => request.id === "profileLeaderboard");
+    expect(leaderboardTooltip?.onBeforeShow).toEqual(expect.any(Function));
+
+    const beforeShowPromise = leaderboardTooltip?.onBeforeShow?.();
+    jest.advanceTimersByTime(260);
+    await act(async () => {
+      await beforeShowPromise;
+    });
+
+    expect(scrollToSpy).toHaveBeenCalledWith({y: 828, animated: true});
   });
 
   it("renders loading state when player data is null", () => {
@@ -609,6 +814,20 @@ describe("FullProfileDetailsModal", () => {
     const xpFill = getByTestId("xp-progress-fill");
     expect(xpFill.props.style.width).toBe("48%");
     expect(getByText("100 / 210 XP")).toBeTruthy();
+  });
+
+  it("centers the rank and XP content as one horizontal progression group", () => {
+    const {getByTestId} = renderWithModalProvider(<FullProfileDetailsModal {...defaultProps} />);
+
+    expect(getByTestId("profile-progression-row").props.style).toEqual(
+      expect.objectContaining({
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+      }),
+    );
+    expect(getByTestId("profile-rank-cluster")).toBeTruthy();
+    expect(getByTestId("profile-xp-content")).toBeTruthy();
   });
 
   it("renders the Leaderboard button", () => {

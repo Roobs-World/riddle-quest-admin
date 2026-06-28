@@ -5,5 +5,10 @@
     "LEVEL_PREFIX": "Livello ",
     "TITLE": "Sali di livello!",
     "PROFILE_GUIDANCE": "Il nuovo livello e grado ti aspettano nel Profilo. Tocca icona profilo dopo i festeggiamenti."
+  },
+  "RankUpFanfare": {
+    "CONTINUE_BUTTON": "Continua",
+    "SUBTITLE": "Hai raggiunto un nuovo grado.",
+    "TITLE": "Nuovo grado!"
   }
 }

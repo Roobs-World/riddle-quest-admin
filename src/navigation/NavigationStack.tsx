@@ -7,13 +7,13 @@
  * and centralizes riddle progression behavior for daily and classic
  * modes.
  */
-import React, {useEffect, useRef} from "react";
+import React, {useCallback, useEffect, useRef} from "react";
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import LandingScreen from "../screens/LandingScreen";
 import GameScreen from "../screens/game/GameScreen";
 import PulsingSpinner from "../components/loading/PulsingSpinner";
 import {HINT_COST_COINS, getXpLevel} from "../constants/game";
-import {LOADING_SPINNER_OPACITY, LOADING_SPINNER_OPACITY_OVERLAY, LOADING_SPINNER_SIZE} from "../constants/loading";
+import {LOADING_SPINNER_OPACITY, LOADING_SPINNER_SIZE} from "../constants/loading";
 import {useAuthSession, usePlayer, useRiddleState} from "../contexts/AuthContext";
 import {t} from "../i18n";
 import {View, Text, TouchableOpacity} from "react-native";
@@ -244,7 +244,7 @@ const GameScreenWrapper = () => {
     const nextWinStreak = isDailyChallengeMode
       ? options.won
         ? toNonNegativeNumber(options.resolvedDailyStreak, toNonNegativeNumber(previousStats?.winStreak) + 1)
-        : toNonNegativeNumber(previousStats?.winStreak)
+        : 0
       : toNonNegativeNumber(previousStats?.winStreak);
 
     return {
@@ -638,6 +638,26 @@ const Stack = createNativeStackNavigator();
  */
 export const Navigation = () => {
   const {isAuthenticated, isLoading} = useAuthSession();
+  const {playerData} = usePlayer();
+  const {currentRiddle, isRiddlesInitializing} = useRiddleState();
+  const hasShownGameRef = useRef(false);
+  const initStatus = RiddleInitializationService.getInitializationStatus();
+  const isFirstGameReady = isAuthenticated && !isLoading && !isRiddlesInitializing && !!playerData && !!currentRiddle;
+  const shouldShowRiddleError = isAuthenticated && !currentRiddle && initStatus.initializationFailed;
+  const shouldShowGame = hasShownGameRef.current || isFirstGameReady || shouldShowRiddleError;
+  const shouldHoldLandingInLoadingState =
+    !shouldShowGame && (isLoading || isAuthenticated || isRiddlesInitializing);
+
+  useEffect(() => {
+    if (isFirstGameReady) {
+      hasShownGameRef.current = true;
+    }
+  }, [isFirstGameReady]);
+
+  const LandingScreenWithLaunchState = useCallback(
+    () => <LandingScreen isTransitioningToGame={shouldHoldLandingInLoadingState} />,
+    [shouldHoldLandingInLoadingState],
+  );
 
   logger.debug(
     t("LogMessages.NAVIGATION_RENDERING"),
@@ -648,34 +668,19 @@ export const Navigation = () => {
     new Date().toISOString(),
   );
 
-  // Show loading overlay only while the initial authentication state is being determined.
-  // isRiddlesInitializing is intentionally excluded — GameScreenWrapper handles that
-  // spinner internally, so we never unmount the root stack mid-flow (which would
-  // reset the navigation stack back to Landing).
-  if (isLoading) {
-    logger.debug(
-      t("LogMessages.SHOWING_LOADING_SPINNER_AUTH"),
-      "isLoading:",
-      isLoading,
-      t("LogMessages.TIMESTAMP"),
-      new Date().toISOString(),
-    );
-    return <PulsingSpinner visible={true} size={LOADING_SPINNER_SIZE} opacity={LOADING_SPINNER_OPACITY_OVERLAY} />;
-  }
-
   logger.debug(
     t("LogMessages.SHOWING_NAVIGATION_STACK"),
-    isAuthenticated ? "GAME" : "LANDING",
+    shouldShowGame ? "GAME" : "LANDING",
     t("LogMessages.TIMESTAMP"),
     new Date().toISOString(),
   );
 
   return (
     <Stack.Navigator screenOptions={{headerShown: false}} screenListeners={screenListeners}>
-      {isAuthenticated ? (
+      {shouldShowGame ? (
         <Stack.Screen name={t("Navigation.GAME")} component={GameScreenWrapper} />
       ) : (
-        <Stack.Screen name={t("Navigation.LANDING")} component={LandingScreen} />
+        <Stack.Screen name={t("Navigation.LANDING")} component={LandingScreenWithLaunchState} />
       )}
     </Stack.Navigator>
   );

@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useRef} from "react";
 import {View, Text, Modal} from "react-native";
 
 import ModalBg from "../../../../assets/images/modal-bg.svg";
@@ -8,7 +8,7 @@ import {
   MODAL_WIDTH, MODAL_CONTENT_PADDING, MODAL_BUTTON_SPACER, MODAL_MAX_SCREEN_HEIGHT_FRACTION, getResponsiveModalHeight, } from "../../../constants/layout";
 import {t} from "../../../i18n";
 import SlideInModalContent from "../../shared/SlideInModalContent";
-import {ModalReward} from "@/components/rewards/RewardFactory";
+import {ModalReward, type RewardAnimationHandle} from "@/components/rewards/RewardFactory";
 import RotatingWheelBackground from "@/components/shared/RotatingWheelBackground";
 import WideButton from "../../buttons/WideButton";
 
@@ -28,9 +28,37 @@ const CoinPurchaseFanfareModal: React.FC<CoinPurchaseFanfareModalProps> = ({
   onClose,
 }) => {
   const modalHeight = getResponsiveModalHeight(1.45, MODAL_MAX_SCREEN_HEIGHT_FRACTION);
+  const rewardRef = useRef<RewardAnimationHandle>(null);
+  const isConfirmingRef = useRef(false);
   const handleConfirm = () => {
-    onConfirm?.();
-    onClose();
+    if (isConfirmingRef.current) {
+      return;
+    }
+
+    isConfirmingRef.current = true;
+
+    const finish = async () => {
+      await Promise.resolve(onConfirm?.());
+      onClose();
+      isConfirmingRef.current = false;
+    };
+
+    if (process.env.NODE_ENV === "test") {
+      void rewardRef.current?.play();
+      onConfirm?.();
+      onClose();
+      isConfirmingRef.current = false;
+      return;
+    }
+
+    void (async () => {
+      try {
+        await rewardRef.current?.play();
+        await finish();
+      } catch {
+        isConfirmingRef.current = false;
+      }
+    })();
   };
 
   return (
@@ -87,7 +115,7 @@ const CoinPurchaseFanfareModal: React.FC<CoinPurchaseFanfareModalProps> = ({
                 {t("CoinPurchase.TITLE")}
               </Text>
 
-              <ModalReward amount={coinsPurchased} totalCoins={totalCoins} />
+              <ModalReward ref={rewardRef} amount={coinsPurchased} totalCoins={totalCoins} />
 
               <View style={{width: "100%"}}>
                 <WideButton

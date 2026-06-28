@@ -102,6 +102,8 @@ const getDebugModalLabel = (modalType: string): string => {
       return t("DevTools.MODAL_LABELS.STREAK_INCREASE_FANFARE");
     case "levelUpFanfare":
       return t("DevTools.MODAL_LABELS.LEVEL_UP_FANFARE");
+    case "rankUpFanfare":
+      return t("RankUpFanfare.TITLE");
     default:
       return modalType;
   }
@@ -433,15 +435,19 @@ export const generateMockData = (
       };
     case "streakIncreaseFanfare":
       return {
-        streakValue: 4,
-        coinsAwarded: 50,
-        totalCoins: currentCoins + 50,
+        streakValue: 7,
+        coinsAwarded: 40,
+        totalCoins: currentCoins + 40,
       };
     case "levelUpFanfare":
       return {
         newLevel: 2,
         coinsAwarded: LEVEL_UP_COIN_BONUS,
         totalCoins: currentCoins + LEVEL_UP_COIN_BONUS,
+      };
+    case "rankUpFanfare":
+      return {
+        newLevel: 3,
       };
     default:
       return {};

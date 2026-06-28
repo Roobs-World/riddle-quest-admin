@@ -1,6 +1,7 @@
 import React from "react";
 import {render, fireEvent} from "@testing-library/react-native";
 import ModalProvider from "../ModalProvider";
+import {FANFARE_SEQUENCE_BACKGROUND_MODAL_TYPE} from "../modalTypes";
 
 jest.mock("../../../contexts/ModalContext", () => ({
   useModalContext: jest.fn(),
@@ -9,6 +10,14 @@ jest.mock("../../../contexts/ModalContext", () => ({
 jest.mock("../ModalRegistry", () => ({
   getModalComponent: jest.fn(),
 }));
+
+jest.mock("../../shared/RotatingWheelBackground", () => {
+  const React = require("react");
+  const {View} = require("react-native");
+  return function MockRotatingWheelBackground(props: any) {
+    return <View testID="shared-fanfare-spinner" {...props} />;
+  };
+});
 
 jest.mock("../../../utils/logger", () => ({
   logger: {
@@ -70,5 +79,28 @@ describe("ModalProvider", () => {
 
     expect(toJSON()).toBeNull();
     expect(logger.warn).toHaveBeenCalledWith('Skipping unknown modal type "unknownType"');
+  });
+
+  it("renders the fanfare sequence background without looking it up in the modal registry", () => {
+    const closeModal = jest.fn();
+
+    useModalContext.mockReturnValue({
+      modals: [
+        {
+          id: "fanfare-background",
+          type: FANFARE_SEQUENCE_BACKGROUND_MODAL_TYPE,
+          data: {},
+          priority: -1,
+          persistent: true,
+        },
+      ],
+      closeModal,
+    });
+
+    const {getByTestId} = render(<ModalProvider />);
+
+    expect(getByTestId("fanfare-sequence-background")).toBeTruthy();
+    expect(getByTestId("shared-fanfare-spinner").props.isVisible).toBe(true);
+    expect(getModalComponent).not.toHaveBeenCalled();
   });
 });

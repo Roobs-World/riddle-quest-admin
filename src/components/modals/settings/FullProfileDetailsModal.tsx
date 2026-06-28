@@ -22,7 +22,7 @@ import PulsingSpinner from "@/components/loading/PulsingSpinner";
 import UpgradeAccountModal from "./UpgradeAccountModal";
 import {LOADING_SPINNER_OPACITY, LOADING_SPINNER_SIZE} from "@/constants/loading";
 import SlideInModalContent from "../../shared/SlideInModalContent";
-import {useTooltip} from "../../../contexts/TooltipContext";
+import {TooltipProvider, useTooltip} from "../../../contexts/TooltipContext";
 import type {TooltipId, TooltipSequenceRequest} from "../../tooltips/types";
 import DeleteAccountConfirmationModal from "./DeleteAccountConfirmationModal";
 import {getCallableFunction} from "../../../utils/firebaseFunctions";
@@ -39,8 +39,17 @@ const PURPLE = "#401F40";
 const CREAM = "#FCFAF4";
 const GOLD = "#FEC880";
 const PROFILE_TOOLTIP_SCROLL_TOP_PADDING = 24;
-const PROFILE_DAILY_STREAK_SCROLL_TOP_PADDING = 8;
+const PROFILE_STATISTICS_SCROLL_TOP_PADDING = 200;
 const PROFILE_TOOLTIP_SCROLL_SETTLE_MS = 260;
+const PROFILE_TOOLTIP_SEQUENCE_ID = "profileTour";
+const PROFILE_BODY_TOOLTIP_IDS = new Set<TooltipId>([
+  "profileDailyPuzzles",
+  "profileStats",
+  "profileCoins",
+  "profileAchievements",
+  "profileStatistics",
+  "profileLeaderboard",
+]);
 
 const getProfileTooltipContent = (id: TooltipId) => {
   switch (id) {
@@ -48,12 +57,6 @@ const getProfileTooltipContent = (id: TooltipId) => {
       return {
         title: t("Tooltips.PROFILE_PROGRESSION_TITLE"),
         body: t("Tooltips.PROFILE_PROGRESSION_BODY"),
-        action: t("Tooltips.GOT_IT_BUTTON"),
-      };
-    case "profileDailyStreak":
-      return {
-        title: t("Tooltips.PROFILE_DAILY_STREAK_TITLE"),
-        body: t("Tooltips.PROFILE_DAILY_STREAK_BODY"),
         action: t("Tooltips.GOT_IT_BUTTON"),
       };
     case "profileIdentity":
@@ -107,7 +110,7 @@ const getProfileTooltipContent = (id: TooltipId) => {
   }
 };
 
-const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisible, onClose, playerData}) => {
+const FullProfileDetailsModalContent: React.FC<FullProfileDetailsModalProps> = ({isVisible, onClose, playerData}) => {
   const modal = useModal();
   const {cancelTooltipSequence, showTooltipSequence} = useTooltip();
   const {logout} = useAuthSession();
@@ -122,10 +125,10 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisi
   const [isDeletingAccount, setIsDeletingAccount] = useState(false);
   const hasStartedTooltipSequenceRef = useRef(false);
   const scrollViewRef = useRef<ScrollView>(null);
+  const profileBodyOffsetRef = useRef(0);
   const tooltipAnchorOffsetsRef = useRef<Partial<Record<TooltipId, number>>>({});
   const profileIdentityRef = useRef<View>(null);
   const profileProgressionRef = useRef<View>(null);
-  const profileDailyStreakRef = useRef<View>(null);
   const dailyPuzzlesRef = useRef<View>(null);
   const profileStatsRef = useRef<View>(null);
   const profileCoinsRef = useRef<View>(null);
@@ -133,6 +136,7 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisi
   const profileStatisticsRef = useRef<View>(null);
   const profileLeaderboardRef = useRef<View>(null);
   const avatarUrl = resolvedPlayerData?.avatarUrl ?? null;
+  const profileTooltipUserId = resolvedPlayerData?.userId ?? firebaseUser?.uid ?? null;
 
   const hasProfileData = Boolean(resolvedPlayerData);
   const stats = resolvedPlayerData?.stats;
@@ -228,10 +232,15 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisi
     [],
   );
 
+  const setProfileBodyOffset = useCallback((event: LayoutChangeEvent) => {
+    profileBodyOffsetRef.current = event.nativeEvent.layout.y;
+  }, []);
+
   const scrollToTooltipAnchor = useCallback((id: TooltipId): Promise<void> => {
-    const y = tooltipAnchorOffsetsRef.current[id] ?? 0;
+    const anchorY = tooltipAnchorOffsetsRef.current[id] ?? 0;
+    const y = PROFILE_BODY_TOOLTIP_IDS.has(id) ? profileBodyOffsetRef.current + anchorY : anchorY;
     const topPadding =
-      id === "profileDailyStreak" ? PROFILE_DAILY_STREAK_SCROLL_TOP_PADDING : PROFILE_TOOLTIP_SCROLL_TOP_PADDING;
+      id === "profileStatistics" ? PROFILE_STATISTICS_SCROLL_TOP_PADDING : PROFILE_TOOLTIP_SCROLL_TOP_PADDING;
     scrollViewRef.current?.scrollTo({
       y: Math.max(0, y - topPadding),
       animated: true,
@@ -304,52 +313,6 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisi
               </Text>
             </View>
           );
-        case "profileProgression":
-          return (
-            <View style={{width: "100%", gap: 4}}>
-              <View style={{flexDirection: "row", alignItems: "center", gap: 6}}>
-                <Text style={{color: GOLD, fontSize: 24}}>★</Text>
-                <View
-                  style={{
-                    flex: 1,
-                    height: 8,
-                    backgroundColor: "rgba(255,255,255,0.2)",
-                    borderRadius: 4,
-                    overflow: "hidden",
-                  }}
-                >
-                  <View
-                    style={{
-                      width: xpProgressWidth,
-                      height: "100%",
-                      backgroundColor: GOLD,
-                      borderRadius: 4,
-                    }}
-                  />
-                </View>
-                <Text
-                  style={{
-                    color: GOLD,
-                    fontSize: TYPOGRAPHY.fontSize.lg,
-                    fontFamily: TYPOGRAPHY.fontSecondary,
-                  }}
-                >
-                  {t("Profile.XP_LEVEL_PREFIX")}
-                  {level}
-                </Text>
-              </View>
-              <Text
-                style={{
-                  color: COLORS.white,
-                  fontSize: TYPOGRAPHY.fontSize.lg,
-                  fontFamily: TYPOGRAPHY.fontSecondary,
-                  textAlign: "center",
-                }}
-              >
-                {`${currentXp} / ${nextLevelXp} XP`}
-              </Text>
-            </View>
-          );
         case "profileAchievements":
           return <ProfileActionHighlight label={t("Achievements.MODAL_TITLE")} />;
         case "profileStatistics":
@@ -357,15 +320,16 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisi
         case "profileLeaderboard":
           return <ProfileActionHighlight label={t("Leaderboard.TITLE")} />;
         case "profileDailyPuzzles":
-          return <ProfileSectionHeaderHighlight title={t("Profile.DAILY_PUZZLES_COMPLETED_HEADER")} />;
-        case "profileDailyStreak":
-          return (
-            <ProfileDailyPuzzlesCompletedHighlight dailyPuzzlesCompleted={stats?.dailyPuzzlesCompleted ?? 0} />
-          );
+          return <ProfileDailyPuzzlesHighlight dailyPuzzlesCompleted={stats?.dailyPuzzlesCompleted ?? 0} />;
         case "profileStats":
-          return <ProfileSectionHeaderHighlight title={t("Profile.BEST_STRIKE_HEADER")} />;
-        case "profileCoins":
-          return <ProfileSectionHeaderHighlight title={t("Profile.TREASURE_CHEST_TITLE")} />;
+          return (
+            <ProfileStatsSnapshotHighlight
+              bestStreak={stats?.bestStreak ?? 0}
+              totalWordsGuessed={stats?.totalWordsGuessed ?? 0}
+              winRate={`${winRate}%`}
+              averageGuesses={avgGuess}
+            />
+          );
         default:
           return null;
       }
@@ -376,27 +340,38 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisi
       targetRef: React.RefObject<View | null>,
     ): TooltipSequenceRequest => ({
       id,
+      userId: profileTooltipUserId,
       targetRef,
-      highlightElement: createProfileTooltipHighlight(id),
+      highlightElement:
+        id === "profileProgression" || id === "profileCoins" ? undefined : createProfileTooltipHighlight(id),
       content: getProfileTooltipContent(id),
-      preferredPlacement: id === "profileDailyStreak" ? "below" : "auto",
+      preferredPlacement:
+        id === "profileDailyPuzzles" || id === "profileStats" || id === "profileCoins"
+          ? "below"
+          : id === "profileProgression" || id === "profileStatistics"
+            ? "above"
+            : "auto",
+      useNativeModal: false,
+      showBackdrop: true,
       onBeforeShow: () => scrollToTooltipAnchor(id),
     });
 
     const tooltipSequence: TooltipSequenceRequest[] = [
-      createProfileTooltipRequest("profileProgression", profileProgressionRef),
-      createProfileTooltipRequest("profileDailyStreak", profileDailyStreakRef),
-      createProfileTooltipRequest("profileAchievements", profileAchievementsRef),
-      createProfileTooltipRequest("profileStatistics", profileStatisticsRef),
-      createProfileTooltipRequest("profileLeaderboard", profileLeaderboardRef),
       createProfileTooltipRequest("profileIdentity", profileIdentityRef),
+      createProfileTooltipRequest("profileProgression", profileProgressionRef),
       createProfileTooltipRequest("profileDailyPuzzles", dailyPuzzlesRef),
       createProfileTooltipRequest("profileStats", profileStatsRef),
       createProfileTooltipRequest("profileCoins", profileCoinsRef),
+      createProfileTooltipRequest("profileAchievements", profileAchievementsRef),
+      createProfileTooltipRequest("profileStatistics", profileStatisticsRef),
+      createProfileTooltipRequest("profileLeaderboard", profileLeaderboardRef),
     ];
 
     const startSequenceTimer = setTimeout(() => {
-      void showTooltipSequence(tooltipSequence);
+      void showTooltipSequence(tooltipSequence, {
+        sequenceId: PROFILE_TOOLTIP_SEQUENCE_ID,
+        userId: profileTooltipUserId,
+      });
     }, 450);
 
     return () => {
@@ -407,21 +382,22 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisi
     avatarRadius,
     avatarUrl,
     cancelTooltipSequence,
-    currentXp,
     hasProfileData,
     initial,
     isVisible,
-    level,
-    nextLevelXp,
     resolvedPlayerData?.username,
+    profileTooltipUserId,
     scrollToTooltipAnchor,
     showTooltipSequence,
+    avgGuess,
+    stats?.bestStreak,
     stats?.dailyPuzzlesCompleted,
-    xpProgressWidth,
+    stats?.totalWordsGuessed,
+    winRate,
   ]);
 
   return (
-    <Modal visible={isVisible} transparent={true} animationType="none" onRequestClose={onClose}>
+    <>
       <View
         style={{
           flex: 1,
@@ -583,21 +559,109 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisi
                   <Text style={{color: GOLD, fontSize: 24}}>✏</Text>
                 </TouchableOpacity>
 
-                <View style={{marginTop: SPACING.md, alignItems: "center"}}>
-                  <RankBadge
-                    rank={currentRank}
-                    size={76}
-                    showLabel
-                    onPress={() => modal.openGameModal("ranks", {currentLevel: level})}
-                    testID="profile-rank-button"
-                  />
+                <View
+                  ref={profileProgressionRef}
+                  onLayout={setTooltipAnchorOffset("profileProgression")}
+                  testID="profile-progression-section"
+                  style={{marginTop: SPACING.md, alignItems: "center", alignSelf: "center", width: "100%"}}
+                >
+                  <View
+                    testID="profile-progression-row"
+                    style={{
+                      width: "86%",
+                      maxWidth: 340,
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: SPACING.md,
+                    }}
+                  >
+                    <View testID="profile-rank-cluster" style={{width: 84, flexShrink: 0, alignItems: "center"}}>
+                      <RankBadge
+                        rank={currentRank}
+                        size={64}
+                        onPress={() => modal.openGameModal("ranks", {currentLevel: level})}
+                        testID="profile-rank-button"
+                      />
+                      <Text
+                        numberOfLines={2}
+                        adjustsFontSizeToFit
+                        style={{
+                          width: "100%",
+                          color: COLORS.white,
+                          fontSize: TYPOGRAPHY.fontSize.sm,
+                          fontFamily: TYPOGRAPHY.fontSecondaryBold,
+                          textAlign: "center",
+                          marginTop: 6,
+                        }}
+                      >
+                        {t(currentRank.nameKey)}
+                      </Text>
+                    </View>
+
+                    <View
+                      testID="profile-xp-content"
+                      style={{
+                        flex: 1,
+                        maxWidth: 230,
+                        minWidth: 0,
+                        gap: 4,
+                      }}
+                    >
+                      <View style={{flexDirection: "row", alignItems: "center", gap: 6}}>
+                        <Text style={{color: GOLD, fontSize: 24}}>★</Text>
+                        <View
+                          style={{
+                            flex: 1,
+                            height: 8,
+                            backgroundColor: "rgba(255,255,255,0.2)",
+                            borderRadius: 4,
+                            overflow: "hidden",
+                          }}
+                        >
+                          <View
+                            testID="xp-progress-fill"
+                            style={{
+                              width: xpProgressWidth,
+                              height: "100%",
+                              backgroundColor: GOLD,
+                              borderRadius: 4,
+                            }}
+                          />
+                        </View>
+                        <Text
+                          style={{
+                            color: GOLD,
+                            fontSize: TYPOGRAPHY.fontSize.lg,
+                            fontFamily: TYPOGRAPHY.fontSecondary,
+                          }}
+                        >
+                          {t("Profile.XP_LEVEL_PREFIX")}
+                          {level}
+                        </Text>
+                      </View>
+                      <Text
+                        style={{
+                          color: COLORS.white,
+                          fontSize: TYPOGRAPHY.fontSize.lg,
+                          fontFamily: TYPOGRAPHY.fontSecondary,
+                          textAlign: "center",
+                        }}
+                      >
+                        {`${currentXp} / ${nextLevelXp} XP`}
+                      </Text>
+                    </View>
+                  </View>
+
                   <Text
                     style={{
+                      width: "86%",
+                      maxWidth: 340,
                       color: "rgba(255,255,255,0.78)",
                       fontSize: TYPOGRAPHY.fontSize.xs,
                       fontFamily: TYPOGRAPHY.fontSecondary,
                       textAlign: "center",
-                      marginTop: 5,
+                      marginTop: SPACING.sm,
                     }}
                   >
                     {nextRank
@@ -607,65 +671,13 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisi
                       : t("Ranks.HIGHEST_RANK")}
                   </Text>
                 </View>
-
-                <View
-                  ref={profileProgressionRef}
-                  onLayout={setTooltipAnchorOffset("profileProgression")}
-                  style={{
-                    width: "70%",
-                    marginTop: SPACING.sm,
-                    gap: 4,
-                  }}
-                >
-                  <View style={{flexDirection: "row", alignItems: "center", gap: 6}}>
-                    <Text style={{color: GOLD, fontSize: 24}}>★</Text>
-                    <View
-                      style={{
-                        flex: 1,
-                        height: 8,
-                        backgroundColor: "rgba(255,255,255,0.2)",
-                        borderRadius: 4,
-                        overflow: "hidden",
-                      }}
-                    >
-                      <View
-                        testID="xp-progress-fill"
-                        style={{
-                          width: xpProgressWidth,
-                          height: "100%",
-                          backgroundColor: GOLD,
-                          borderRadius: 4,
-                        }}
-                      />
-                    </View>
-                    <Text
-                      style={{
-                        color: GOLD,
-                        fontSize: TYPOGRAPHY.fontSize.lg,
-                        fontFamily: TYPOGRAPHY.fontSecondary,
-                      }}
-                    >
-                      {t("Profile.XP_LEVEL_PREFIX")}
-                      {level}
-                    </Text>
-                  </View>
-                  <Text
-                    style={{
-                      color: COLORS.white,
-                      fontSize: TYPOGRAPHY.fontSize.lg,
-                      fontFamily: TYPOGRAPHY.fontSecondary,
-                      textAlign: "center",
-                    }}
-                  >
-                    {`${currentXp} / ${nextLevelXp} XP`}
-                  </Text>
-                </View>
               </View>
               </View>
 
               {/* Body content follows inside same ScrollView so header scrolls with content */}
               <View
                 testID="profile-modal-body"
+                onLayout={setProfileBodyOffset}
                 style={{
                   backgroundColor: CREAM,
                   position: "relative",
@@ -745,13 +757,13 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisi
                   </View>
                 ) : null}
                 <View
-                  ref={profileDailyStreakRef}
-                  onLayout={setTooltipAnchorOffset("profileDailyStreak")}
+                  ref={dailyPuzzlesRef}
+                  onLayout={setTooltipAnchorOffset("profileDailyPuzzles")}
+                  testID="profile-daily-puzzles-section"
+                  style={{marginBottom: SPACING.lg}}
                 >
                   <SectionHeader
                     title={t("Profile.DAILY_PUZZLES_COMPLETED_HEADER")}
-                    targetRef={dailyPuzzlesRef}
-                    onLayout={setTooltipAnchorOffset("profileDailyPuzzles")}
                   />
                   <View
                     style={{
@@ -760,7 +772,6 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisi
                       padding: SPACING.md,
                       flexDirection: "row",
                       alignItems: "center",
-                      marginBottom: SPACING.lg,
                       gap: SPACING.md,
                     }}
                   >
@@ -799,18 +810,20 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisi
                   </View>
                 </View>
 
-                <View>
+                <View
+                  ref={profileStatsRef}
+                  onLayout={setTooltipAnchorOffset("profileStats")}
+                  testID="profile-stats-snapshot-section"
+                  style={{marginBottom: SPACING.lg}}
+                >
                   <SectionHeader
                     title={t("Profile.BEST_STRIKE_HEADER")}
-                    targetRef={profileStatsRef}
-                    onLayout={setTooltipAnchorOffset("profileStats")}
                   />
                   <View
                     style={{
                       flexDirection: "row",
                       flexWrap: "wrap",
                       gap: SPACING.sm,
-                      marginBottom: SPACING.lg,
                     }}
                   >
                     <StatBox value={stats?.bestStreak ?? 0} label={t("StatsModal.BEST_STREAK")} />
@@ -820,13 +833,19 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisi
                   </View>
                 </View>
 
-                <View style={{marginBottom: SPACING.lg}}>
+                <View
+                  onLayout={setTooltipAnchorOffset("profileCoins")}
+                  testID="profile-treasure-chest-section"
+                  style={{marginBottom: SPACING.lg}}
+                >
                   <SectionHeader
                     title={t("Profile.TREASURE_CHEST_TITLE")}
-                    targetRef={profileCoinsRef}
-                    onLayout={setTooltipAnchorOffset("profileCoins")}
                   />
-                  <TreasureChest coins={resolvedPlayerData?.coins ?? 0} />
+                  <TreasureChest
+                    coins={resolvedPlayerData?.coins ?? 0}
+                    cardRef={profileCoinsRef}
+                    cardTestID="profile-treasure-chest-card"
+                  />
                 </View>
 
                 <View style={{height: SPACING.sm}} />
@@ -850,7 +869,11 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisi
 
                 <View style={{height: SPACING.sm}} />
 
-                <View ref={profileStatisticsRef} onLayout={setTooltipAnchorOffset("profileStatistics")}>
+                <View
+                  ref={profileStatisticsRef}
+                  onLayout={setTooltipAnchorOffset("profileStatistics")}
+                  testID="profile-statistics-button-section"
+                >
                   <TouchableOpacity
                     disabled={!hasProfileData}
                     onPress={() => {
@@ -869,7 +892,11 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisi
 
                 <View style={{height: SPACING.sm}} />
 
-                <View ref={profileLeaderboardRef} onLayout={setTooltipAnchorOffset("profileLeaderboard")}>
+                <View
+                  ref={profileLeaderboardRef}
+                  onLayout={setTooltipAnchorOffset("profileLeaderboard")}
+                  testID="profile-leaderboard-button-section"
+                >
                   <TouchableOpacity
                     disabled={!hasProfileData}
                     onPress={() => {
@@ -928,9 +955,17 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisi
       />
 
       <PulsingSpinner visible={isUploading} size={LOADING_SPINNER_SIZE} opacity={LOADING_SPINNER_OPACITY} />
-    </Modal>
+    </>
   );
 };
+
+const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = (props) => (
+  <Modal visible={props.isVisible} transparent={true} animationType="none" onRequestClose={props.onClose}>
+    <TooltipProvider>
+      <FullProfileDetailsModalContent {...props} />
+    </TooltipProvider>
+  </Modal>
+);
 
 const actionButtonStyle = {
   backgroundColor: "#FEC880",
@@ -988,7 +1023,7 @@ const ProfileSectionHeaderHighlight = ({title}: {title: string}) => (
   </View>
 );
 
-const ProfileDailyPuzzlesCompletedHighlight = ({dailyPuzzlesCompleted}: {dailyPuzzlesCompleted: number}) => (
+const ProfileDailyPuzzlesHighlight = ({dailyPuzzlesCompleted}: {dailyPuzzlesCompleted: number}) => (
   <View style={{width: "100%"}}>
     <ProfileSectionHeaderHighlight title={t("Profile.DAILY_PUZZLES_COMPLETED_HEADER")} />
     <View
@@ -1037,6 +1072,70 @@ const ProfileDailyPuzzlesCompletedHighlight = ({dailyPuzzlesCompleted}: {dailyPu
   </View>
 );
 
+const ProfileStatsSnapshotHighlightBox = ({value, label}: {value: number | string; label: string}) => (
+  <View
+    style={{
+      flex: 1,
+      minWidth: "45%",
+      backgroundColor: "#FFFFFF",
+      borderRadius: 14,
+      padding: SPACING.md,
+      alignItems: "center",
+      borderWidth: 1,
+      borderColor: "#F0EAF0",
+    }}
+  >
+    <Text
+      style={{
+        fontFamily: TYPOGRAPHY.fontPrimary,
+        fontSize: TYPOGRAPHY.fontSize["2xl"],
+        color: "#1A1A1A",
+      }}
+    >
+      {typeof value === "number" ? value.toString() : value}
+    </Text>
+    <Text
+      style={{
+        fontFamily: TYPOGRAPHY.fontSecondary,
+        fontSize: TYPOGRAPHY.fontSize.sm,
+        color: "#6B7280",
+        textAlign: "center",
+        marginTop: 4,
+      }}
+    >
+      {label}
+    </Text>
+  </View>
+);
+
+const ProfileStatsSnapshotHighlight = ({
+  bestStreak,
+  totalWordsGuessed,
+  winRate,
+  averageGuesses,
+}: {
+  bestStreak: number;
+  totalWordsGuessed: number;
+  winRate: string;
+  averageGuesses: number | string;
+}) => (
+  <View style={{width: "100%"}}>
+    <ProfileSectionHeaderHighlight title={t("Profile.BEST_STRIKE_HEADER")} />
+    <View
+      style={{
+        flexDirection: "row",
+        flexWrap: "wrap",
+        gap: SPACING.sm,
+      }}
+    >
+      <ProfileStatsSnapshotHighlightBox value={bestStreak} label={t("StatsModal.BEST_STREAK")} />
+      <ProfileStatsSnapshotHighlightBox value={totalWordsGuessed} label={t("StatsModal.TOTAL_WORDS_GUESSED")} />
+      <ProfileStatsSnapshotHighlightBox value={winRate} label={t("StatsModal.WIN_RATE")} />
+      <ProfileStatsSnapshotHighlightBox value={averageGuesses} label={t("Profile.AVG_GUESS_LABEL")} />
+    </View>
+  </View>
+);
+
 const deleteAccountButtonStyle = {
   backgroundColor: "#C93535",
   borderRadius: 14,
@@ -1056,8 +1155,8 @@ const SectionHeader = ({
   onLayout,
 }: {
   title: string;
-  targetRef: React.RefObject<View | null>;
-  onLayout: (event: LayoutChangeEvent) => void;
+  targetRef?: React.RefObject<View | null>;
+  onLayout?: (event: LayoutChangeEvent) => void;
 }) => (
   <View
     ref={targetRef}

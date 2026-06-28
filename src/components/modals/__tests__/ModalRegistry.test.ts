@@ -9,6 +9,7 @@ jest.mock("../game/LossModal", () => MockModal);
 jest.mock("../game/AchievementUnlockFanfareModal", () => MockModal);
 jest.mock("../game/StreakIncreaseFanfareModal", () => MockModal);
 jest.mock("../game/LevelUpFanfareModal", () => MockModal);
+jest.mock("../game/RankUpFanfareModal", () => MockModal);
 jest.mock("../settings/SettingsModal", () => MockModal);
 jest.mock("../settings/FullProfileDetailsModal", () => MockModal);
 jest.mock("../settings/UpgradeAccountModal", () => MockModal);
@@ -383,6 +384,16 @@ describe("ModalRegistry", () => {
 
         expect(() => AchievementUnlockFanfareModal(props)).not.toThrow();
       });
+
+      it("should map props correctly for rankUpFanfare modal", () => {
+        const RankUpFanfareModal = getModalComponent("rankUpFanfare");
+        const props = {
+          ...createBaseProps(),
+          newLevel: 3,
+        };
+
+        expect(() => RankUpFanfareModal(props)).not.toThrow();
+      });
     });
   });
 
@@ -399,6 +410,7 @@ describe("ModalRegistry", () => {
       expect(modalRegistry.achievementUnlockFanfare).toBeDefined();
       expect(modalRegistry.streakIncreaseFanfare).toBeDefined();
       expect(modalRegistry.levelUpFanfare).toBeDefined();
+      expect(modalRegistry.rankUpFanfare).toBeDefined();
 
       // Settings modals
       expect(modalRegistry.settings).toBeDefined();

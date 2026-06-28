@@ -33,8 +33,7 @@ import {
   MAX_ATTEMPTS_CHALLENGE,
   COINS_REWARD_CLASSIC,
   COINS_REWARD_CHALLENGE,
-  DAILY_COMPLETION_BONUS,
-  STREAK_REWARD_INTERVAL_DAYS,
+  getStreakRewardBonus,
   ACHIEVEMENT_UNLOCK_COIN_REWARD,
   LEVEL_UP_COIN_BONUS,
   BASE_SCORE_CLASSIC,
@@ -319,7 +318,7 @@ export async function handleGuessLogic(
         statsUpdate.winStreak = updatedDailyWinStreak;
         statsUpdate.challengeWins = admin.firestore.FieldValue.increment(1);
         statsUpdate.dailyPuzzlesCompleted = admin.firestore.FieldValue.increment(1);
-        coinsEarned = COINS_REWARD_CHALLENGE;
+        coinsEarned = COINS_REWARD_CHALLENGE + getStreakRewardBonus(updatedDailyWinStreak ?? 0);
         playerProfileUpdate.lastDailyChallengeCompletedAt = admin.firestore.FieldValue.serverTimestamp();
         playerProfileUpdate.lastCompletedDailyChallengeKey =
           typeof riddle.challengeKey === "string"
@@ -385,6 +384,9 @@ export async function handleGuessLogic(
           captureException(error);
         }
       }
+    } else if (gameOver && gameMode === "challenge") {
+      updatedDailyWinStreak = 0;
+      statsUpdate.winStreak = 0;
     }
 
     const newTotalWins = (currentStats.totalWins || 0) + (isCorrect ? 1 : 0);
@@ -570,10 +572,8 @@ export async function handleCompleteGameLogic(
         statsUpdate.dailyPuzzlesCompleted = admin.firestore.FieldValue.increment(1);
         baseWinCoins = COINS_REWARD_CHALLENGE;
 
-        // Award the streak bonus at each completed seven-day milestone.
-        if (updatedDailyWinStreak && updatedDailyWinStreak % STREAK_REWARD_INTERVAL_DAYS === 0) {
-          dailyStreakBonus = DAILY_COMPLETION_BONUS;
-        }
+        // Award the current streak tier every day while the streak is active.
+        dailyStreakBonus = getStreakRewardBonus(updatedDailyWinStreak ?? 0);
 
         playerProfileUpdate.lastDailyChallengeCompletedAt = admin.firestore.FieldValue.serverTimestamp();
 
@@ -668,6 +668,9 @@ export async function handleCompleteGameLogic(
         const currentClassicIndex = updatedUserData?.progress?.classicIndex || 0;
         await triggerClassicRiddleGenerationIfNeeded(userId, currentClassicIndex, locale);
       }
+    } else if (gameMode === "challenge") {
+      updatedDailyWinStreak = 0;
+      statsUpdate.winStreak = 0;
     }
 
     const newTotalWins = (currentStats.totalWins || 0) + (isCorrect ? 1 : 0);

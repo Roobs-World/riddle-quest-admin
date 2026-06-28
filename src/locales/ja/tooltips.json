@@ -28,8 +28,6 @@
     "SUBMIT_ANSWER_BODY": "すべての枠が埋まったら、送信をタップして答えを確認しましょう。",
     "SUBMIT_ANSWER_TITLE": "回答を送信",
     "PROFILE_PROGRESSION_TITLE": "ユーザーの進行状況",
-    "PROFILE_PROGRESSION_BODY": "ランク、XPレベル、進行バーで次のレベルまでの近さがわかります。",
-    "PROFILE_DAILY_STREAK_TITLE": "デイリーストリーク",
-    "PROFILE_DAILY_STREAK_BODY": "ストリークは毎日のプレイ継続を記録します。デイリーパズルを解き続けて伸ばしましょう。"
+    "PROFILE_PROGRESSION_BODY": "ランク、XPレベル、進行バーで次のレベルまでの近さがわかります。"
   }
 }

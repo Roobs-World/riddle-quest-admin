@@ -24,16 +24,21 @@ import {captureException} from "../utils/sentry";
 import {getAuthErrorMessage} from "../application/auth/authErrorMessages";
 import {RiddleQuestLogo} from "../components/branding/RiddleQuestLogo";
 
+interface LandingScreenProps {
+  isTransitioningToGame?: boolean;
+}
+
 /**
  * Landing screen component used at the root of the auth stack.
  *
  * It wires social sign-in handlers and exposes a guest play CTA for anonymous
  * sign-in.
  */
-const LandingScreen = () => {
+const LandingScreen = ({isTransitioningToGame = false}: LandingScreenProps) => {
   const [authError, setAuthError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const {login, isAuthenticated} = useAuthSession();
+  const isBusy = isLoading || isTransitioningToGame;
 
   const handleSocialSignIn = async (
     signInFn: () => Promise<{user?: {uid?: string}} | null>,
@@ -41,11 +46,13 @@ const LandingScreen = () => {
   ) => {
     setIsLoading(true);
     setAuthError(null);
+    let shouldKeepLoadingUntilGameReady = false;
 
     try {
       const userCredential = await signInFn();
       logger.debug(`${provider} login success:`, userCredential);
       if (userCredential?.user?.uid) {
+        shouldKeepLoadingUntilGameReady = true;
         login();
       }
     } catch (error: unknown) {
@@ -57,7 +64,9 @@ const LandingScreen = () => {
       logger.error(`${provider} login error:`, error);
       setAuthError(message);
     } finally {
-      setIsLoading(false);
+      if (!shouldKeepLoadingUntilGameReady) {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -72,18 +81,22 @@ const LandingScreen = () => {
   const handlePlayButtonPress = async () => {
     setIsLoading(true);
     setAuthError(null);
+    let shouldKeepLoadingUntilGameReady = false;
 
     try {
       if (isAuthenticated) {
         await AuthService.logout();
       }
       await AuthService.signInAnonymously();
-      // isAuthenticated becomes true -> Navigation switches to Game automatically
+      shouldKeepLoadingUntilGameReady = true;
+      // Navigation keeps this screen visible until the first game riddle is ready.
     } catch (error) {
       logger.error("Error signing in anonymously for guest play:", error);
       captureException(error);
     } finally {
-      setIsLoading(false);
+      if (!shouldKeepLoadingUntilGameReady) {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -113,13 +126,13 @@ const LandingScreen = () => {
           width: "100%",
         }}
       >
-        <GoogleSignInButton onPress={handleGoogleSignIn} disabled={isLoading} />
-        <FacebookSignInButton onPress={handleFacebookSignIn} disabled={isLoading} />
+        <GoogleSignInButton onPress={handleGoogleSignIn} disabled={isBusy} />
+        <FacebookSignInButton onPress={handleFacebookSignIn} disabled={isBusy} />
         {authError && <Error message={authError} />}
         <WideButton
           buttonText={t("AuthStrings.Landing.PLAY_AS_GUEST")}
           onPress={handlePlayButtonPress}
-          disabled={isLoading}
+          disabled={isBusy}
           testID="play-as-guest-button"
         />
         <TouchableOpacity
@@ -134,7 +147,7 @@ const LandingScreen = () => {
         </TouchableOpacity>
       </View>
 
-      <PulsingSpinner visible={isLoading} size={LOADING_SPINNER_SIZE} />
+      <PulsingSpinner visible={isBusy} size={LOADING_SPINNER_SIZE} />
     </AuthScreenShell>
   );
 };

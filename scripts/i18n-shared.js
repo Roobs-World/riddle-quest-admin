@@ -69,6 +69,7 @@ const SECTION_TO_NAMESPACE = {
   CoinPurchase: "coinPurchase",
   StreakFanfare: "streakFanfare",
   LevelUpFanfare: "levelUpFanfare",
+  RankUpFanfare: "levelUpFanfare",
   Leaderboard: "leaderboard",
   StatsModal: "stats",
   CoinShop: "shop",

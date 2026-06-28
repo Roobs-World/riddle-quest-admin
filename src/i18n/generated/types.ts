@@ -415,9 +415,7 @@ export const translationSchema = {
     "SUBMIT_ANSWER_BODY": "When every slot is filled, tap Submit to check your guess.",
     "SUBMIT_ANSWER_TITLE": "Submit your answer",
     "PROFILE_PROGRESSION_TITLE": "User progression",
-    "PROFILE_PROGRESSION_BODY": "Your rank, XP level, and progress bar show how close you are to the next level.",
-    "PROFILE_DAILY_STREAK_TITLE": "Daily streak",
-    "PROFILE_DAILY_STREAK_BODY": "Your streak tracks regular daily play. Keep solving daily puzzles to build it up."
+    "PROFILE_PROGRESSION_BODY": "Your rank, XP level, and progress bar show how close you are to the next level."
   },
   "VictoryModal": {
     "ACHIEVEMENT_UNLOCKED": "Achievement Unlocked!",
@@ -478,6 +476,11 @@ export const translationSchema = {
     "LEVEL_PREFIX": "Level ",
     "TITLE": "Level Up!",
     "PROFILE_GUIDANCE": "Your new level and rank are waiting in Profile. Tap the profile icon after this celebration."
+  },
+  "RankUpFanfare": {
+    "CONTINUE_BUTTON": "Brilliant",
+    "SUBTITLE": "You reached a new rank.",
+    "TITLE": "New Rank!"
   },
   "Leaderboard": {
     "GUEST_UNAVAILABLE": "Sign in to compare XP, wins, and streaks on the leaderboard.",

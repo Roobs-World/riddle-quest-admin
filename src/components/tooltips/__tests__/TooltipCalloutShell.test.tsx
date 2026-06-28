@@ -1,6 +1,6 @@
 import React from "react";
 import {StyleSheet} from "react-native";
-import {render} from "@testing-library/react-native";
+import {fireEvent, render} from "@testing-library/react-native";
 import TooltipCalloutShell from "../TooltipCalloutShell";
 
 describe("TooltipCalloutShell", () => {
@@ -141,6 +141,22 @@ describe("TooltipCalloutShell", () => {
     const pointerStyle = StyleSheet.flatten(getByTestId("tooltip-pointer").props.style);
     expect(pointerStyle.borderTopColor).not.toBe("transparent");
     expect(pointerStyle.borderBottomColor).toBe("transparent");
+  });
+
+  it("uses measured panel height to point an above callout at the target top", () => {
+    const targetRect = {x: 48, y: 360, width: 120, height: 44};
+    const {getByTestId} = render(
+      <TooltipCalloutShell visible={true} targetRect={targetRect} preferredPlacement="above" showPointer={true}>
+        <></>
+      </TooltipCalloutShell>,
+    );
+
+    fireEvent(getByTestId("tooltip-panel"), "layout", {nativeEvent: {layout: {height: 160}}});
+
+    const panelStyle = StyleSheet.flatten(getByTestId("tooltip-panel").props.style);
+    const pointerStyle = StyleSheet.flatten(getByTestId("tooltip-pointer").props.style);
+    expect(pointerStyle.bottom).toBe(-9);
+    expect(panelStyle.top + 160 + Math.abs(pointerStyle.bottom)).toBe(targetRect.y);
   });
 
   it("keeps the pointer on top when a low target prefers a below callout", () => {

@@ -159,6 +159,7 @@ const mockShowInfoModal = jest.fn();
 const mockShowWelcomeModal = jest.fn();
 const mockShowWelcomeBackModal = jest.fn();
 const mockShowInstructionsModal = jest.fn();
+const mockOpenModal = jest.fn(() => "fanfare-background-modal");
 const mockCloseModalByType = jest.fn();
 const mockCloseModal = jest.fn();
 const mockShowCreditsModal = jest.fn();
@@ -168,6 +169,7 @@ const mockShowCoinPurchaseFanfareModal = jest.fn();
 const mockShowAchievementUnlockFanfareModal = jest.fn();
 const mockShowStreakIncreaseFanfareModal = jest.fn();
 const mockShowLevelUpFanfareModal = jest.fn();
+const mockShowRankUpFanfareModal = jest.fn();
 const mockUpgradeAccountModal = jest.fn();
 const mockGuestOnboardingModal = jest.fn();
 const mockShowTooltipOnce = jest.fn(() => Promise.resolve(true));
@@ -188,6 +190,7 @@ jest.mock("../../../hooks/useModal", () => ({
     showWelcomeModal: mockShowWelcomeModal,
     showWelcomeBackModal: mockShowWelcomeBackModal,
     showInstructionsModal: mockShowInstructionsModal,
+    openModal: mockOpenModal,
     showCreditsModal: mockShowCreditsModal,
     showAboutLegalModal: mockShowAboutLegalModal,
     showFullProfileDetailsModal: mockShowFullProfileDetailsModal,
@@ -195,6 +198,7 @@ jest.mock("../../../hooks/useModal", () => ({
     showAchievementUnlockFanfareModal: mockShowAchievementUnlockFanfareModal,
     showStreakIncreaseFanfareModal: mockShowStreakIncreaseFanfareModal,
     showLevelUpFanfareModal: mockShowLevelUpFanfareModal,
+    showRankUpFanfareModal: mockShowRankUpFanfareModal,
     closeModalByType: mockCloseModalByType,
     closeModal: mockCloseModal,
   }),
@@ -405,14 +409,14 @@ jest.mock("../../../constants/game", () => ({
   SKIP_COST_DAILY: 150,
   LEVEL_UP_COIN_BONUS: 50,
   DAILY_CHALLENGE_COIN_REWARD: 75,
-  DAILY_COMPLETION_BONUS: 25,
-  isStreakRewardMilestone: (streakValue: number) => streakValue > 0 && streakValue % 7 === 0,
+  getStreakRewardBonus: (streakValue: number) =>
+    streakValue > 0 ? Math.min(20 + Math.floor(streakValue / 7) * 20, 300) : 0,
   CONTINUE_COST_COINS: 100,
   CONTINUE_REWARDED_AD_COIN_REWARD: 50,
   MODAL_CLOSE_DELAY_MS: 300,
   SOUND_RESUME_DELAY_MS: 100,
   getXpLevel: (totalScore: number) => ({
-    level: totalScore >= 100 ? 2 : 1,
+    level: totalScore >= 250 ? 3 : totalScore >= 100 ? 2 : 1,
     progressPct: 0,
     currentXp: totalScore,
     nextLevelXp: 100,
@@ -1413,6 +1417,72 @@ describe("GameScreen", () => {
       expect(mockShowTooltipOnce).toHaveBeenCalledWith(expect.objectContaining({id: "hintAfterWrongGuess"}));
     });
 
+    it("autofills and locks green letters into the next row after a wrong submit", async () => {
+      mockUseGameLogic.currentGuess = ["T", "E", "S", "X"];
+      mockUseGameLogic.processGuess.mockResolvedValueOnce({
+        outcome: "continue",
+        attemptsRemaining: 3,
+        feedback: ["green", "green", "green", "red"],
+      });
+
+      render(<GameScreen {...defaultProps} answer="TEST" answerLength={4} suppressOnboarding={true} />);
+
+      const inputProps = getLatestProps(mockGameInput);
+      await act(async () => {
+        await inputProps.handleSubmit();
+      });
+
+      expect(mockUseGameLogic.setCurrentGuess).toHaveBeenCalledWith(["T", "E", "S", ""]);
+
+      const boardProps = getLatestProps(mockGameBoard);
+      expect(boardProps.hintRevealedIndices).toEqual([0, 1, 2]);
+      expect(boardProps.activeSlotIndex).toBe(3);
+
+      await invokeGameAction(() => {
+        boardProps.handleKeyPress("T");
+      });
+
+      const keyUpdater =
+        mockUseGameLogic.setCurrentGuess.mock.calls[mockUseGameLogic.setCurrentGuess.mock.calls.length - 1][0];
+      expect(keyUpdater(["T", "E", "S", ""])).toEqual(["T", "E", "S", "T"]);
+    });
+
+    it("restores locked green letters after continuing from the attempt-limit modal", async () => {
+      const {httpsCallable} = require("@react-native-firebase/functions");
+      const spendCoins = jest.fn(() => Promise.resolve({data: {newCoins: 0}}));
+      httpsCallable.mockReturnValue(spendCoins);
+      mockUseGameLogic.currentGuess = ["T", "E", "X", "T"];
+      mockUseGameLogic.processGuess.mockResolvedValueOnce({
+        outcome: "attemptLimitReached",
+        correctAnswer: "TEST",
+        canOfferCoinContinue: true,
+        feedback: ["green", "green", "red", "green"],
+      });
+
+      const {rerender} = render(
+        <GameScreen {...defaultProps} answer="TEST" answerLength={4} userCoins={100} suppressOnboarding={true} />,
+      );
+
+      const inputProps = getLatestProps(mockGameInput);
+      await act(async () => {
+        await inputProps.handleSubmit();
+      });
+      mockUseGameLogic.gameOver = true;
+      rerender(
+        <GameScreen {...defaultProps} answer="TEST" answerLength={4} userCoins={100} suppressOnboarding={true} />,
+      );
+
+      await waitFor(() => {
+        expect(mockShowLossModal).toHaveBeenCalled();
+      });
+
+      const config = mockShowLossModal.mock.calls[mockShowLossModal.mock.calls.length - 1][0];
+      await invokeGameAction(() => config.onCoinContinue());
+
+      expect(mockUseGameLogic.continueGame).toHaveBeenCalled();
+      expect(mockUseGameLogic.setCurrentGuess).toHaveBeenCalledWith(["T", "E", "", "T"]);
+    });
+
     it("passes tooltip target refs into game controls", () => {
       renderWithSettingsProvider(<GameScreen {...defaultProps} />);
 
@@ -1648,7 +1718,7 @@ describe("GameScreen", () => {
       });
     });
 
-    it("shows a non-rewarded interstitial only after the victory modal is dismissed", async () => {
+    it("shows a non-rewarded interstitial after the completion sequence when victory is final", async () => {
       mockShowInterstitialAd.mockResolvedValueOnce(true);
       mockUseGameLogic.currentGuess = ["K", "E", "Y", "B", "O", "A", "R", "D"];
       mockUseGameLogic.processGuess.mockResolvedValueOnce({
@@ -1674,7 +1744,9 @@ describe("GameScreen", () => {
       await invokeGameAction(() => victoryConfig.onNext());
 
       expect(mockCloseModalByType).toHaveBeenCalledWith("victory");
-      expect(mockShowInterstitialAd).toHaveBeenCalledWith("post_victory");
+      await waitFor(() => {
+        expect(mockShowInterstitialAd).toHaveBeenCalledWith("post_victory");
+      });
       expect(mockRecordRewardedAdCompletion).not.toHaveBeenCalled();
       expect(mockShowCoinPurchaseFanfareModal).not.toHaveBeenCalled();
       expect(mockUpdatePlayerDataLocally).not.toHaveBeenCalledWith(
@@ -1784,7 +1856,82 @@ describe("GameScreen", () => {
       expect(mockConsumePendingStreakBreak).not.toHaveBeenCalled();
     });
 
-    it("shows daily streak fanfare before victory when challenge streak increases", async () => {
+    it("shows rank-up fanfare after level-up when the win reaches a new rank", async () => {
+      mockShowInterstitialAd.mockResolvedValueOnce(true);
+      mockUseGameLogic.currentGuess = ["K", "E", "Y", "B", "O", "A", "R", "D"];
+      mockUseGameLogic.processGuess.mockResolvedValueOnce({
+        outcome: "win",
+        coinsEarned: 15,
+        scoreEarned: 250,
+      });
+
+      const {rerender} = render(<GameScreen {...defaultProps} />);
+
+      const inputProps = getLatestProps(mockGameInput);
+      await act(async () => {
+        await inputProps.handleSubmit();
+      });
+
+      mockUseGameLogic.gameOver = true;
+      rerender(<GameScreen {...defaultProps} />);
+
+      await waitFor(() => {
+        expect(mockShowVictoryModal).toHaveBeenCalled();
+      });
+
+      const victoryConfig = mockShowVictoryModal.mock.calls[mockShowVictoryModal.mock.calls.length - 1][0];
+      expect(mockOpenModal).toHaveBeenCalledWith("fanfareSequenceBackground", {}, {priority: -1, persistent: true});
+      expect(victoryConfig.showRotatingBackground).toBe(false);
+      await invokeGameAction(() => victoryConfig.onNext());
+      expect(mockShowInterstitialAd).not.toHaveBeenCalled();
+
+      await waitFor(() => {
+        expect(mockShowLevelUpFanfareModal).toHaveBeenCalledWith(
+          expect.objectContaining({
+            newLevel: 3,
+            sequenceProgress: expect.objectContaining({
+              currentPopupIndex: 2,
+              totalPopups: 3,
+              hasNextPopup: true,
+              primaryActionText: "Next",
+            }),
+            showRotatingBackground: false,
+          }),
+        );
+      });
+
+      const levelUpConfig =
+        mockShowLevelUpFanfareModal.mock.calls[mockShowLevelUpFanfareModal.mock.calls.length - 1][0];
+      await invokeGameAction(() => levelUpConfig.onContinue());
+      expect(mockShowInterstitialAd).not.toHaveBeenCalled();
+
+      await waitFor(() => {
+        expect(mockShowRankUpFanfareModal).toHaveBeenCalledWith(
+          expect.objectContaining({
+            newLevel: 3,
+            sequenceProgress: expect.objectContaining({
+              currentPopupIndex: 3,
+              totalPopups: 3,
+              hasNextPopup: false,
+            }),
+            showRotatingBackground: false,
+            onContinue: expect.any(Function),
+          }),
+        );
+      });
+
+      const rankUpConfig = mockShowRankUpFanfareModal.mock.calls[mockShowRankUpFanfareModal.mock.calls.length - 1][0];
+      await invokeGameAction(() => rankUpConfig.onContinue());
+
+      await waitFor(() => {
+        expect(mockCloseModal).toHaveBeenCalledWith("fanfare-background-modal");
+      });
+      await waitFor(() => {
+        expect(mockShowInterstitialAd).toHaveBeenCalledWith("post_victory");
+      });
+    });
+
+    it("shows daily streak progress on victory without a separate streak fanfare", async () => {
       mockUseGameLogic.currentGuess = ["K", "E", "Y", "B", "O", "A", "R", "D"];
       mockUseGameLogic.processGuess.mockResolvedValueOnce({
         outcome: "win",
@@ -1802,43 +1949,37 @@ describe("GameScreen", () => {
       rerender(<GameScreen {...defaultProps} gameMode="daily" />);
 
       await waitFor(() => {
-        expect(mockShowStreakIncreaseFanfareModal).toHaveBeenCalledWith(
+        expect(mockShowVictoryModal).toHaveBeenCalledWith(
           expect.objectContaining({
             streakValue: 5,
-            coinsAwarded: 0,
-            totalCoins: 180,
+            totalCoins: 200,
+            sequenceProgress: expect.objectContaining({
+              currentPopupIndex: 1,
+              totalPopups: 2,
+              hasNextPopup: true,
+              primaryActionText: "Next",
+            }),
           }),
         );
       });
-
-      const fanfareConfig =
-        mockShowStreakIncreaseFanfareModal.mock.calls[mockShowStreakIncreaseFanfareModal.mock.calls.length - 1][0];
-      await invokeGameAction(() => fanfareConfig.onContinue());
-      await waitFor(() => {
-        expect(mockShowVictoryModal).toHaveBeenCalled();
-      });
-      expect(defaultProps.onGameWin).toHaveBeenCalledWith(1, 30, 200, 5, 50);
-      expect(mockShowVictoryModal).toHaveBeenCalledWith(
-        expect.objectContaining({
-          streakValue: 5,
-        }),
-      );
+      expect(mockShowStreakIncreaseFanfareModal).not.toHaveBeenCalled();
+      expect(defaultProps.onGameWin).toHaveBeenCalledWith(1, 30, 200, 5, 70);
     });
 
-    it("awards the streak bonus on each seven-day milestone", async () => {
+    it("uses the increased daily streak tier at a seven-day milestone", async () => {
       mockUseGameLogic.currentGuess = ["K", "E", "Y", "B", "O", "A", "R", "D"];
       mockUseGameLogic.processGuess.mockResolvedValueOnce({
         outcome: "win",
-        coinsEarned: 100,
+        coinsEarned: 115,
         scoreEarned: 0,
         newWinStreak: 7,
         rewardBreakdown: {
           baseWinCoins: 75,
-          dailyStreakBonus: 25,
+          dailyStreakBonus: 40,
           levelUpBonus: 0,
           achievementBonus: 0,
-          totalAwarded: 100,
-          newBalance: 200,
+          totalAwarded: 115,
+          newBalance: 215,
         },
       });
 
@@ -1851,14 +1992,16 @@ describe("GameScreen", () => {
       rerender(<GameScreen {...defaultProps} gameMode="daily" />);
 
       await waitFor(() => {
-        expect(mockShowStreakIncreaseFanfareModal).toHaveBeenCalledWith(
+        expect(mockShowVictoryModal).toHaveBeenCalledWith(
           expect.objectContaining({
             streakValue: 7,
-            coinsAwarded: 25,
+            coinsEarned: 115,
+            totalCoins: 215,
           }),
         );
       });
-      expect(defaultProps.onGameWin).toHaveBeenCalledWith(1, 75, 0, 7, 25, true);
+      expect(mockShowStreakIncreaseFanfareModal).not.toHaveBeenCalled();
+      expect(defaultProps.onGameWin).toHaveBeenCalledWith(1, 75, 0, 7, 40, true);
     });
 
     it("handles onboarding dismiss callback", async () => {

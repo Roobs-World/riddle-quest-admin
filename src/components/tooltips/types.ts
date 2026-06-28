@@ -9,7 +9,6 @@ export type TooltipId =
   | "leaderboardFifthCorrectAnswer"
   | "classicFromDaily"
   | "profileProgression"
-  | "profileDailyStreak"
   | "profileIdentity"
   | "profileDailyPuzzles"
   | "profileStats"
@@ -32,9 +31,16 @@ export interface TooltipRequest {
   highlightElement?: React.ReactNode;
   content: TooltipContent;
   preferredPlacement?: "auto" | "above" | "below";
+  useNativeModal?: boolean;
+  showBackdrop?: boolean;
   persist?: boolean;
   userId?: string | null;
   onBeforeShow?: () => void | Promise<void>;
+}
+
+export interface TooltipSequenceOptions {
+  sequenceId?: string;
+  userId?: string | null;
 }
 
 export type TooltipSequenceRequest = TooltipRequest;

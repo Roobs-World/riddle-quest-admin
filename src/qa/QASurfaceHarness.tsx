@@ -221,6 +221,10 @@ const getModalSurfaceOverrides = (surfaceId: QASurfaceId): ModalData => {
       return {
         sequenceProgress: qaSequenceProgress(t("LevelUpFanfare.CONTINUE_BUTTON")),
       };
+    case "modal-rank-up-fanfare-sequence":
+      return {
+        sequenceProgress: qaSequenceProgress(t("RankUpFanfare.CONTINUE_BUTTON")),
+      };
     default:
       return {};
   }
@@ -339,6 +343,7 @@ export const QA_SURFACE_RENDERERS: Record<QASurfaceId, () => React.ReactNode> = 
   "modal-achievement-unlock-fanfare": () => renderRegistryModalSurface("modal-achievement-unlock-fanfare"),
   "modal-streak-increase-fanfare": () => renderRegistryModalSurface("modal-streak-increase-fanfare"),
   "modal-level-up-fanfare": () => renderRegistryModalSurface("modal-level-up-fanfare"),
+  "modal-rank-up-fanfare": () => renderRegistryModalSurface("modal-rank-up-fanfare"),
   "modal-settings": () => renderRegistryModalSurface("modal-settings"),
   "modal-full-profile-details": () => renderRegistryModalSurface("modal-full-profile-details"),
   "modal-upgrade-account": () => renderRegistryModalSurface("modal-upgrade-account"),
@@ -364,6 +369,7 @@ export const QA_SURFACE_RENDERERS: Record<QASurfaceId, () => React.ReactNode> = 
     renderRegistryModalSurface("modal-achievement-unlock-fanfare-sequence"),
   "modal-streak-increase-fanfare-sequence": () => renderRegistryModalSurface("modal-streak-increase-fanfare-sequence"),
   "modal-level-up-fanfare-sequence": () => renderRegistryModalSurface("modal-level-up-fanfare-sequence"),
+  "modal-rank-up-fanfare-sequence": () => renderRegistryModalSurface("modal-rank-up-fanfare-sequence"),
   "modal-settings-language-picker": renderSettingsLanguagePickerSurface,
   "modal-upgrade-account-existing-account": renderUpgradeExistingAccountSurface,
   "modal-delete-account-confirmation": renderDeleteAccountConfirmationSurface,

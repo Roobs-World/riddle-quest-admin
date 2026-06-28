@@ -1,5 +1,13 @@
-import React, {useMemo} from "react";
-import {Animated, StyleSheet, useWindowDimensions, View, type StyleProp, type ViewStyle} from "react-native";
+import React, {useCallback, useMemo, useState} from "react";
+import {
+  Animated,
+  StyleSheet,
+  useWindowDimensions,
+  View,
+  type LayoutChangeEvent,
+  type StyleProp,
+  type ViewStyle,
+} from "react-native";
 import {COLORS, SPACING} from "../../styles";
 import type {TargetRect} from "./types";
 
@@ -15,9 +23,9 @@ const palette = {
 
 const SCREEN_PADDING = 18;
 const DEFAULT_PANEL_WIDTH = 340;
-const ABOVE_TARGET_PANEL_OFFSET = 140;
-const BELOW_TARGET_PANEL_OFFSET = 140;
+const ESTIMATED_PANEL_HEIGHT = 176;
 const POINTER_SIZE = 10;
+const POINTER_TIP_OVERLAP = POINTER_SIZE - 1;
 const AnimatedView = Animated.createAnimatedComponent(View);
 
 interface TooltipCalloutShellProps {
@@ -64,15 +72,22 @@ const TooltipCalloutShell: React.FC<TooltipCalloutShellProps> = ({
   pointerTestID = "tooltip-pointer",
 }) => {
   const {width, height} = useWindowDimensions();
+  const [measuredPanelHeight, setMeasuredPanelHeight] = useState(0);
   const resolvedPanelWidth = Math.min(panelWidth, Math.max(0, width - SCREEN_PADDING * 2));
+  const resolvedPanelHeight = measuredPanelHeight > 0 ? measuredPanelHeight : ESTIMATED_PANEL_HEIGHT;
   const layout = useMemo(() => {
     if (targetRect && placement !== "center") {
       const targetCenterX = targetRect.x + targetRect.width / 2;
+      const targetBottom = targetRect.y + targetRect.height;
+      const maxPanelTop = Math.max(SCREEN_PADDING, height - resolvedPanelHeight - SCREEN_PADDING);
+      const aboveTop = targetRect.y - resolvedPanelHeight - POINTER_TIP_OVERLAP;
+      const belowTop = targetBottom + POINTER_TIP_OVERLAP;
+      const hasSpaceAbove = aboveTop >= SCREEN_PADDING;
+      const hasSpaceBelow = belowTop + resolvedPanelHeight <= height - SCREEN_PADDING;
       const preferredAbove =
-        preferredPlacement === "above" || (preferredPlacement === "auto" && targetRect.y > height * 0.45);
-      const top = preferredAbove
-        ? Math.max(SCREEN_PADDING, targetRect.y - ABOVE_TARGET_PANEL_OFFSET)
-        : Math.min(height - BELOW_TARGET_PANEL_OFFSET, targetRect.y + targetRect.height + 28);
+        preferredPlacement === "above" ||
+        (preferredPlacement === "auto" && (targetRect.y > height * 0.45 || (!hasSpaceBelow && hasSpaceAbove)));
+      const top = clamp(preferredAbove ? aboveTop : belowTop, SCREEN_PADDING, maxPanelTop);
       const left = clamp(
         targetCenterX - resolvedPanelWidth / 2,
         SCREEN_PADDING,
@@ -93,7 +108,17 @@ const TooltipCalloutShell: React.FC<TooltipCalloutShellProps> = ({
       pointerLeft: Math.round(resolvedPanelWidth / 2 - POINTER_SIZE),
       pointerPlacement: "top" as const,
     };
-  }, [height, placement, preferredPlacement, resolvedPanelWidth, targetRect, width]);
+  }, [height, placement, preferredPlacement, resolvedPanelHeight, resolvedPanelWidth, targetRect, width]);
+
+  const handlePanelLayout = useCallback(
+    (event: LayoutChangeEvent) => {
+      const nextHeight = event.nativeEvent.layout.height;
+      if (nextHeight > 0 && Math.abs(nextHeight - measuredPanelHeight) > 1) {
+        setMeasuredPanelHeight(nextHeight);
+      }
+    },
+    [measuredPanelHeight],
+  );
 
   const pointerStyle = useMemo(() => {
     if (!showPointer) {
@@ -197,6 +222,7 @@ const TooltipCalloutShell: React.FC<TooltipCalloutShellProps> = ({
 
       <AnimatedView
         pointerEvents={visible ? "auto" : "none"}
+        onLayout={handlePanelLayout}
         style={StyleSheet.flatten([
           styles.panel,
           {

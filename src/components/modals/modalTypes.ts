@@ -1,3 +1,5 @@
+export const FANFARE_SEQUENCE_BACKGROUND_MODAL_TYPE = "fanfareSequenceBackground";
+
 export const MODAL_REGISTRY_TYPES = [
   "victory",
   "loss",
@@ -22,6 +24,7 @@ export const MODAL_REGISTRY_TYPES = [
   "achievementUnlockFanfare",
   "streakIncreaseFanfare",
   "levelUpFanfare",
+  "rankUpFanfare",
 ] as const;
 
 export type ModalRegistryType = (typeof MODAL_REGISTRY_TYPES)[number];

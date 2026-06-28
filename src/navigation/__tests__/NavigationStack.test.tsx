@@ -86,8 +86,8 @@ jest.mock("../../constants/game", () => ({
 jest.mock("../../screens/LandingScreen", () => {
   const React = require("react");
   const {View} = require("react-native");
-  return function MockLandingScreen() {
-    return <View testID="landing-screen" />;
+  return function MockLandingScreen(props: any) {
+    return <View testID="landing-screen" data-transitioning-to-game={props.isTransitioningToGame} />;
   };
 });
 
@@ -284,10 +284,11 @@ describe("NavigationStack", () => {
     });
   });
 
-  it("shows loading overlay while auth state is loading", () => {
+  it("keeps the landing screen visible while auth state is loading", () => {
     mockedUseAuth.mockReturnValue(createAuthState({isLoading: true}) as any);
-    const {getByTestId} = render(<Navigation />);
-    expect(getByTestId("pulsing-spinner")).toBeTruthy();
+    const {getByTestId, queryByTestId} = render(<Navigation />);
+    expect(getByTestId("landing-screen").props["data-transitioning-to-game"]).toBe(true);
+    expect(queryByTestId("pulsing-spinner")).toBeNull();
   });
 
   it("renders unauthenticated stack screens", () => {
@@ -319,7 +320,7 @@ describe("NavigationStack", () => {
     expect(mockedAnalytics.logScreenView).toHaveBeenCalled();
   });
 
-  it("fetches a riddle on mount when no restored riddle exists", async () => {
+  it("keeps the landing screen visible during first riddle hydration", async () => {
     const playerData = {userId: "u1b", coins: 100, stats: {level: 1, xp: 0}};
     const fetchCurrentRiddle = jest.fn().mockResolvedValue(undefined);
     mockedUseAuth.mockReturnValue(
@@ -332,9 +333,11 @@ describe("NavigationStack", () => {
       }) as any,
     );
 
-    render(<Navigation />);
+    const {getByTestId, queryByTestId} = render(<Navigation />);
 
-    await waitFor(() => expect(fetchCurrentRiddle).toHaveBeenCalledWith(playerData, "classic"));
+    expect(getByTestId("landing-screen").props["data-transitioning-to-game"]).toBe(true);
+    expect(queryByTestId("stack-screen-game")).toBeNull();
+    await waitFor(() => expect(fetchCurrentRiddle).not.toHaveBeenCalled());
   });
 
   it("suppresses onboarding on remount after first game screen mount in-session", () => {
@@ -364,7 +367,7 @@ describe("NavigationStack", () => {
     expect(latestGameScreenProps?.suppressOnboarding).toBe(true);
   });
 
-  it("shows spinner in wrapper when authenticated but player data is missing", () => {
+  it("keeps the landing screen visible when authenticated but player data is missing", () => {
     mockedUseAuth.mockReturnValue(
       createAuthState({
         isAuthenticated: true,
@@ -372,11 +375,12 @@ describe("NavigationStack", () => {
         currentRiddle: null,
       }) as any,
     );
-    const {getByTestId} = render(<Navigation />);
-    expect(getByTestId("pulsing-spinner")).toBeTruthy();
+    const {getByTestId, queryByTestId} = render(<Navigation />);
+    expect(getByTestId("landing-screen").props["data-transitioning-to-game"]).toBe(true);
+    expect(queryByTestId("pulsing-spinner")).toBeNull();
   });
 
-  it("shows wrapper loading spinner when riddles are initializing", () => {
+  it("keeps the landing screen visible when riddles are initializing before first game", () => {
     mockedUseAuth.mockReturnValue(
       createAuthState({
         isAuthenticated: true,
@@ -384,8 +388,9 @@ describe("NavigationStack", () => {
         playerData: {userId: "u-init", stats: {level: 1, xp: 0}},
       }) as any,
     );
-    const {getByTestId} = render(<Navigation />);
-    expect(getByTestId("pulsing-spinner")).toBeTruthy();
+    const {getByTestId, queryByTestId} = render(<Navigation />);
+    expect(getByTestId("landing-screen").props["data-transitioning-to-game"]).toBe(true);
+    expect(queryByTestId("pulsing-spinner")).toBeNull();
   });
 
   it("shows initialization error and retries when retry is pressed", async () => {
@@ -413,7 +418,7 @@ describe("NavigationStack", () => {
     expect(fetchCurrentRiddle).toHaveBeenCalledWith(playerData, "daily");
   });
 
-  it("shows spinner when no riddle exists and initialization has not failed", () => {
+  it("keeps the landing screen visible when no first riddle exists and initialization has not failed", () => {
     mockedRiddleInitService.getInitializationStatus.mockReturnValue({
       isInitializing: false,
       hasInitialized: false,
@@ -426,8 +431,9 @@ describe("NavigationStack", () => {
         currentRiddle: null,
       }) as any,
     );
-    const {getByTestId} = render(<Navigation />);
-    expect(getByTestId("pulsing-spinner")).toBeTruthy();
+    const {getByTestId, queryByTestId} = render(<Navigation />);
+    expect(getByTestId("landing-screen").props["data-transitioning-to-game"]).toBe(true);
+    expect(queryByTestId("pulsing-spinner")).toBeNull();
   });
 
   it("falls back safely when checking daily completion throws", async () => {
@@ -584,7 +590,7 @@ describe("NavigationStack", () => {
     });
   });
 
-  it("keeps daily win streak unchanged on loss for authenticated users", async () => {
+  it("resets daily win streak on loss for authenticated users", async () => {
     const playerData = {
       userId: "u-loss",
       progress: {},
@@ -622,7 +628,7 @@ describe("NavigationStack", () => {
       expect(updatePlayerDataLocally).toHaveBeenCalledWith(
         expect.objectContaining({
           stats: expect.objectContaining({
-            winStreak: 5,
+            winStreak: 0,
             gamesPlayed: 8,
             totalWordsGuessed: 23,
             challengeWins: 2,

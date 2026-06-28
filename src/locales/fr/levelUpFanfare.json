@@ -5,5 +5,10 @@
     "LEVEL_PREFIX": "Niveau ",
     "TITLE": "Niveau supérieur !",
     "PROFILE_GUIDANCE": "Votre nouveau niveau et votre rang vous attendent dans Profil. Touchez icone de profil apres cette celebration."
+  },
+  "RankUpFanfare": {
+    "CONTINUE_BUTTON": "Bravo",
+    "SUBTITLE": "Vous avez atteint un nouveau rang.",
+    "TITLE": "Nouveau rang !"
   }
 }

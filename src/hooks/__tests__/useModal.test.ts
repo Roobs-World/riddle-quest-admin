@@ -435,6 +435,7 @@ describe("useModal", () => {
         result.current.showInfoModal({} as any);
         result.current.showAchievementUnlockFanfareModal({} as any);
         result.current.showLevelUpFanfareModal({} as any);
+        result.current.showRankUpFanfareModal({} as any);
       });
 
       expect(result.current.isModalOpen("victory")).toBe(true);
@@ -455,6 +456,7 @@ describe("useModal", () => {
       expect(result.current.isModalOpen("info")).toBe(true);
       expect(result.current.isModalOpen("achievementUnlockFanfare")).toBe(true);
       expect(result.current.isModalOpen("levelUpFanfare")).toBe(true);
+      expect(result.current.isModalOpen("rankUpFanfare")).toBe(true);
     });
   });
 

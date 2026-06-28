@@ -1,11 +1,11 @@
-import React from "react";
+import React, {useRef} from "react";
 import {View, Text, Modal, Pressable} from "react-native";
 import type {SubmittedGuess} from "../../../hooks/types";
 import {TYPOGRAPHY} from "../../../styles";
 import {
   MODAL_WIDTH, MODAL_CONTENT_PADDING, MODAL_MAX_SCREEN_HEIGHT_FRACTION, getResponsiveModalHeight, } from "../../../constants/layout";
 import {t} from "../../../i18n";
-import {ModalReward} from "@/components/rewards/RewardFactory";
+import {ModalReward, type RewardAnimationHandle} from "@/components/rewards/RewardFactory";
 import {verticalScale} from "@/utils/responsive";
 import RotatingWheelBackground from "@/components/shared/RotatingWheelBackground";
 import WideButton from "../../buttons/WideButton";
@@ -38,11 +38,13 @@ interface VictoryModalProps {
   /** Game mode label included in share analytics/payload. */
   gameMode?: "daily" | "classic";
   sequenceProgress?: ModalSequenceProgress;
+  showRotatingBackground?: boolean;
   /** Closes the modal. */
   onClose: () => void;
 }
 
-export const VICTORY_MODAL_HEIGHT_MULTIPLIER = 1.55;
+export const VICTORY_MODAL_HEIGHT_MULTIPLIER = 1.42;
+export const VICTORY_TITLE_TOP_OFFSET = verticalScale(30);
 
 /**
  * Celebratory modal with rewards, optional achievement fanfare, and sharing CTA.
@@ -60,17 +62,39 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
   guesses,
   gameMode,
   sequenceProgress,
+  showRotatingBackground = true,
   onClose,
 }) => {
   const modalHeight = getResponsiveModalHeight(VICTORY_MODAL_HEIGHT_MULTIPLIER, MODAL_MAX_SCREEN_HEIGHT_FRACTION);
   const nextButtonText = sequenceProgress?.primaryActionText ?? t("VictoryModal.NEXT_LEVEL_BUTTON");
+  const rewardRef = useRef<RewardAnimationHandle>(null);
+  const isContinuingRef = useRef(false);
 
   /**
    * Advances to the next level and closes the modal afterward.
    */
   const handleNextLevel = async () => {
-    await Promise.resolve(onNextLevel?.());
-    onClose?.();
+    if (isContinuingRef.current) {
+      return;
+    }
+
+    isContinuingRef.current = true;
+
+    if (process.env.NODE_ENV === "test") {
+      void rewardRef.current?.play();
+      await Promise.resolve(onNextLevel?.());
+      onClose?.();
+      isContinuingRef.current = false;
+      return;
+    }
+
+    try {
+      await rewardRef.current?.play();
+      await Promise.resolve(onNextLevel?.());
+      onClose?.();
+    } finally {
+      isContinuingRef.current = false;
+    }
   };
 
   /**
@@ -85,16 +109,23 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
   };
 
   return (
-    <Modal transparent animationType="none" visible={isVisible} onRequestClose={onClose}>
+    <Modal
+      transparent
+      animationType="none"
+      visible={isVisible}
+      onRequestClose={() => {
+        void handleNextLevel();
+      }}
+    >
       <View
         style={{
           flex: 1,
           justifyContent: "center",
           alignItems: "center",
-          backgroundColor: "rgba(0,0,0,0.5)",
+          backgroundColor: showRotatingBackground ? "rgba(0,0,0,0.5)" : "transparent",
         }}
       >
-        <RotatingWheelBackground isVisible={isVisible} />
+        {showRotatingBackground ? <RotatingWheelBackground isVisible={isVisible} /> : null}
         <DecoratedModalShell
           isVisible={isVisible}
           width={MODAL_WIDTH}
@@ -127,16 +158,19 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
             >
               <ModalSequenceBreadcrumb sequenceProgress={sequenceProgress} />
               <Text
+                testID="victory-title-text"
                 style={{
                   fontFamily: TYPOGRAPHY.fontPrimary,
                   fontSize: TYPOGRAPHY.fontSize["4xl"],
                   color: "black",
+                  textAlign: "center",
+                  marginTop: VICTORY_TITLE_TOP_OFFSET,
                 }}
               >
                 {t("VictoryModal.TITLE")}
               </Text>
 
-              <ModalReward amount={coinsEarned} totalCoins={totalCoins} streakValue={streakValue} />
+              <ModalReward ref={rewardRef} amount={coinsEarned} totalCoins={totalCoins} streakValue={streakValue} />
 
               <View style={{width: "100%"}}>
                 <WideButton

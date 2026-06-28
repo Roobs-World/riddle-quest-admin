@@ -39,16 +39,17 @@ import {
   CONTINUE_COST_COINS,
   CONTINUE_REWARDED_AD_COIN_REWARD,
   LEVEL_UP_COIN_BONUS,
-  DAILY_COMPLETION_BONUS,
-  isStreakRewardMilestone,
+  getStreakRewardBonus,
   MODAL_CLOSE_DELAY_MS,
   getXpLevel,
 } from "../../constants/game";
+import {getRankForLevel} from "../../constants/ranks";
 import {LOADING_SPINNER_OPACITY, LOADING_SPINNER_SIZE} from "../../constants/loading";
 import {styles} from "../../styles";
 import {GameInput} from "../../components/game/GameInput";
 import {useModal} from "../../hooks/useModal";
 import {ModalProvider} from "../../components/modals/ModalProvider";
+import {FANFARE_SEQUENCE_BACKGROUND_MODAL_TYPE} from "../../components/modals/modalTypes";
 import {IapService} from "../../services/IapService";
 import {ProductPricing, ProductPricingService} from "../../services/ProductPricingService";
 import ModalTogglePanel from "../../components/development/ModalTogglePanel";
@@ -136,6 +137,41 @@ interface GameScreenProps {
   suppressOnboarding?: boolean;
   qaAccessibilityLabel?: string;
 }
+
+type LockedGuessState = {
+  guess: string[];
+  indices: number[];
+};
+
+const EMPTY_LOCKED_GUESS_STATE: LockedGuessState = {
+  guess: [],
+  indices: [],
+};
+
+const buildLockedGuessState = (
+  submittedGuess: readonly string[],
+  feedback: GuessResult["feedback"],
+  answerLength: number,
+): LockedGuessState => {
+  if (!feedback || answerLength <= 0) {
+    return EMPTY_LOCKED_GUESS_STATE;
+  }
+
+  const nextGuess = Array<string>(answerLength).fill("");
+  const indices: number[] = [];
+
+  feedback.slice(0, answerLength).forEach((status, index) => {
+    const letter = submittedGuess[index];
+    if (status !== "green" || typeof letter !== "string" || letter.length === 0) {
+      return;
+    }
+
+    nextGuess[index] = letter;
+    indices.push(index);
+  });
+
+  return indices.length > 0 ? {guess: nextGuess, indices} : EMPTY_LOCKED_GUESS_STATE;
+};
 
 const ONBOARDING_SEEN_STORAGE_KEY_PREFIX = "gameScreenOnboardingSeen";
 const RESULT_MODAL_REVEAL_DELAY_MS = 850;
@@ -503,6 +539,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
 
   const [hintRevealedIndices, setHintRevealedIndices] = useState<number[]>([]);
   const hintRevealedIndicesRef = useRef<number[]>([]);
+  const pendingLockedGuessStateRef = useRef<LockedGuessState | null>(null);
   const setHintRevealedIndicesSynced = useCallback((value: React.SetStateAction<number[]>) => {
     if (typeof value !== "function") {
       hintRevealedIndicesRef.current = value;
@@ -516,10 +553,27 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       return resolved;
     });
   }, []);
+  const applyLockedGuessState = useCallback(
+    (lockedGuessState: LockedGuessState) => {
+      setHintRevealedIndicesSynced(lockedGuessState.indices);
+      setCurrentGuess(lockedGuessState.guess);
+      setActiveSlotIndexSynced(
+        resolveEditableGuessSlot(0, playableAnswerLength, lockedGuessState.indices) ??
+          Math.max(0, Math.min(playableAnswerLength - 1, activeSlotIndexRef.current)),
+      );
+    },
+    [playableAnswerLength, setActiveSlotIndexSynced, setCurrentGuess, setHintRevealedIndicesSynced],
+  );
+  const applyPendingLockedGuessState = useCallback(() => {
+    const lockedGuessState = pendingLockedGuessStateRef.current ?? EMPTY_LOCKED_GUESS_STATE;
+    pendingLockedGuessStateRef.current = null;
+    applyLockedGuessState(lockedGuessState);
+  }, [applyLockedGuessState]);
   const preserveKeyboardLetterStates = useCallback(() => {
     setPreservedLetterStates((existing) => mergeLetterStates(existing, computeLetterStates(guesses)));
   }, [guesses]);
   const resetRoundState = useCallback(() => {
+    pendingLockedGuessStateRef.current = null;
     setPreservedLetterStates({});
     setHintRevealedIndicesSynced([]);
     resetGame();
@@ -875,23 +929,27 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     setActiveSlotIndexSynced((prev) => {
       const maxIndex = Math.max(0, playableAnswerLength - 1);
       const clampedPrev = Math.min(Math.max(0, prev), maxIndex);
+      const editablePrev =
+        resolveEditableGuessSlot(clampedPrev, playableAnswerLength, hintRevealedIndicesRef.current) ?? clampedPrev;
 
       if (currentGuess.length === 0) {
-        return 0;
+        return editablePrev;
       }
 
-      if (!currentGuess[clampedPrev]) {
-        return clampedPrev;
+      if (!currentGuess[editablePrev]) {
+        return editablePrev;
       }
 
-      const firstEmptyIndex = currentGuess.findIndex((letter) => !letter);
+      const firstEmptyIndex = currentGuess.findIndex(
+        (letter, index) => !letter && !hintRevealedIndicesRef.current.includes(index),
+      );
       if (firstEmptyIndex !== -1) {
         return firstEmptyIndex;
       }
 
-      return clampedPrev;
+      return editablePrev;
     });
-  }, [playableAnswerLength, currentGuess, setActiveSlotIndexSynced]);
+  }, [playableAnswerLength, currentGuess, hintRevealedIndices, setActiveSlotIndexSynced]);
 
   const handleCoinContinue = useCallback(async () => {
     void analyticsService.logGameInteraction("continue_with_coins_selected", {
@@ -955,6 +1013,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       setLastGuessResult(null);
       preserveKeyboardLetterStates();
       continueGame();
+      applyPendingLockedGuessState();
       void analyticsService.logCoinSpend({
         action: "continue",
         amount: CONTINUE_COST_COINS,
@@ -982,6 +1041,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   }, [
     modal,
     continueGame,
+    applyPendingLockedGuessState,
     preserveKeyboardLetterStates,
     runWithServerLoading,
     isGuestMode,
@@ -1054,6 +1114,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       setLastGuessResult(null);
       preserveKeyboardLetterStates();
       continueGame();
+      applyPendingLockedGuessState();
       return true;
     }
 
@@ -1062,7 +1123,15 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       message: t("GameScreenAlerts.AD_NOT_READY_MESSAGE"),
     });
     return false;
-  }, [showRewardedAd, confirmRewardedAdReward, continueGame, preserveKeyboardLetterStates, modal, modalActions]);
+  }, [
+    showRewardedAd,
+    confirmRewardedAdReward,
+    continueGame,
+    applyPendingLockedGuessState,
+    preserveKeyboardLetterStates,
+    modal,
+    modalActions,
+  ]);
 
   const handlePurchaseProduct = useCallback(
     async (productId: string) => {
@@ -1316,6 +1385,9 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         const previousLevel = getXpLevel(currentXp).level;
         const nextLevel = getXpLevel(currentXp + earnedXp).level;
         const didLevelUp = earnedXp > 0 && nextLevel > previousLevel;
+        const previousRank = getRankForLevel(previousLevel);
+        const nextRank = getRankForLevel(nextLevel);
+        const didReachNewRank = nextRank.id !== previousRank.id;
         // Prefer server-provided breakdown when available; fall back to
         // client-side constants for older deployments or error cases.
         const rewardBreakdown = result.rewardBreakdown;
@@ -1325,9 +1397,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           gameMode === "daily" ? (result.newWinStreak ?? deriveDailyStreakAfterWin()) : undefined;
         const dailyChallengeBonusCoins =
           rewardBreakdown?.dailyStreakBonus ??
-          (gameMode === "daily" && resolvedDailyStreak && isStreakRewardMilestone(resolvedDailyStreak)
-            ? DAILY_COMPLETION_BONUS
-            : 0);
+          (gameMode === "daily" && resolvedDailyStreak ? getStreakRewardBonus(resolvedDailyStreak) : 0);
         const achievementBonusCoins = rewardBreakdown?.achievementBonus ?? 0;
         const totalBonusCoinsAwarded = levelUpBonusCoins + dailyChallengeBonusCoins + achievementBonusCoins;
         const totalCoinsAfterWin =
@@ -1365,11 +1435,19 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           }
         };
 
+        const completionPopupCount =
+          unlockedAchievementFanfareItems.length + 1 + (didLevelUp ? 1 : 0) + (didReachNewRank ? 1 : 0);
+        const shouldUseSharedFanfareBackground = completionPopupCount > 1;
+        const sharedFanfareBackgroundProps = shouldUseSharedFanfareBackground
+          ? {showRotatingBackground: false}
+          : {};
+
         const completionPopupSequence: ModalSequenceStep[] = [
           ...unlockedAchievementFanfareItems.map((achievement, index) => ({
             name: `achievement-${achievement.name}`,
             open: (sequenceProgress: ModalSequenceProgress, onContinue: () => void | Promise<void>) => {
               modal.showAchievementUnlockFanfareModal({
+                ...sharedFanfareBackgroundProps,
                 coinsEarned: index === 0 ? achievementBonusCoins || result.coinsEarned || 0 : 0,
                 totalCoins: totalCoinsAfterWin,
                 achievementNames: [achievement.name],
@@ -1379,26 +1457,11 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
               });
             },
           })),
-          ...(gameMode === "daily" && resolvedDailyStreak
-            ? [
-                {
-                  name: "daily-streak",
-                  open: (sequenceProgress: ModalSequenceProgress, onContinue: () => void | Promise<void>) => {
-                    modal.showStreakIncreaseFanfareModal({
-                      streakValue: resolvedDailyStreak,
-                      coinsAwarded: dailyChallengeBonusCoins,
-                      totalCoins: totalCoinsAfterWin,
-                      sequenceProgress,
-                      onContinue,
-                    });
-                  },
-                },
-              ]
-            : []),
           {
             name: "victory",
             open: (sequenceProgress: ModalSequenceProgress, onContinue: () => void | Promise<void>) => {
               modal.showVictoryModal({
+                ...sharedFanfareBackgroundProps,
                 attempts: resolvedAttempts,
                 coinsEarned: (rewardBreakdown?.totalAwarded as number) ?? result.coinsEarned ?? 0,
                 totalCoins: totalCoinsAfterWin,
@@ -1408,8 +1471,6 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
                 sequenceProgress,
                 onNext: async () => {
                   modal.closeModalByType("victory");
-                  await safeDelay(MODAL_CLOSE_DELAY_MS);
-                  await showPostVictoryInterstitialAd();
                   await Promise.resolve(onContinue());
                 },
               });
@@ -1421,6 +1482,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
                   name: "level-up",
                   open: (sequenceProgress: ModalSequenceProgress, onContinue: () => void | Promise<void>) => {
                     modal.showLevelUpFanfareModal({
+                      ...sharedFanfareBackgroundProps,
                       newLevel: nextLevel,
                       coinsAwarded: levelUpBonusCoins,
                       totalCoins: totalCoinsAfterWin,
@@ -1431,13 +1493,38 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
                 },
               ]
             : []),
+          ...(didReachNewRank
+            ? [
+                {
+                  name: "rank-up",
+                  open: (sequenceProgress: ModalSequenceProgress, onContinue: () => void | Promise<void>) => {
+                    modal.showRankUpFanfareModal({
+                      ...sharedFanfareBackgroundProps,
+                      newLevel: nextLevel,
+                      sequenceProgress,
+                      onContinue,
+                    });
+                  },
+                },
+              ]
+            : []),
         ];
+
+        const fanfareBackgroundModalId = shouldUseSharedFanfareBackground
+          ? modal.openModal(FANFARE_SEQUENCE_BACKGROUND_MODAL_TYPE, {}, {priority: -1, persistent: true})
+          : null;
 
         runModalFanfareSequence(completionPopupSequence, {
           closeDelayMs: MODAL_CLOSE_DELAY_MS,
           delay: safeDelay,
           nextActionText: t("GameScreenAlerts.NEXT_BUTTON") ?? "Next",
           onComplete: async () => {
+            await Promise.resolve();
+            if (fanfareBackgroundModalId) {
+              modal.closeModal(fanfareBackgroundModalId);
+            }
+            await safeDelay(MODAL_CLOSE_DELAY_MS);
+            await showPostVictoryInterstitialAd();
             setIsTransitioningToNextLevel(true);
             void playDeferredCoinAnimation();
             await continueToNextLevel();
@@ -1616,9 +1703,16 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         // can decide exactly when deferred animations should resume.
         setCanAnimateCoinIncreases(false);
         const result = (await runWithServerLoading(() => processGuess(currentGuess))) as GuessResult;
+        const lockedGuessState = buildLockedGuessState(currentGuess, result.feedback, playableAnswerLength);
         setLastGuessResult(result);
         if (result.outcome === "continue") {
+          pendingLockedGuessStateRef.current = null;
+          applyLockedGuessState(lockedGuessState);
           void showTooltipOnce("hintAfterWrongGuess", hintButtonRef);
+        } else if (result.outcome === "attemptLimitReached") {
+          pendingLockedGuessStateRef.current = lockedGuessState;
+        } else {
+          pendingLockedGuessStateRef.current = null;
         }
         const willOpenResultModal = result.outcome !== "continue";
         setIsAwaitingPostSubmitModalClose(willOpenResultModal);
@@ -1650,6 +1744,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     playableAnswerLength,
     processGuess,
     isHapticsEnabled,
+    applyLockedGuessState,
     modal,
     runWithServerLoading,
     showTooltipOnce,

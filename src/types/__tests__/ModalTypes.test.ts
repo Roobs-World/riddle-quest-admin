@@ -471,14 +471,14 @@ describe("ModalTypes", () => {
 
     it("should define streakIncreaseFanfare modal type", () => {
       const streakData: GameModalTypes["streakIncreaseFanfare"] = {
-        streakValue: 5,
-        coinsAwarded: 50,
+        streakValue: 7,
+        coinsAwarded: 40,
         totalCoins: 250,
         onContinue: jest.fn(),
       };
 
-      expect(streakData.streakValue).toBe(5);
-      expect(streakData.coinsAwarded).toBe(50);
+      expect(streakData.streakValue).toBe(7);
+      expect(streakData.coinsAwarded).toBe(40);
       expect(streakData.totalCoins).toBe(250);
     });
 
@@ -493,6 +493,16 @@ describe("ModalTypes", () => {
       expect(levelUpData.newLevel).toBe(2);
       expect(levelUpData.coinsAwarded).toBe(50);
       expect(levelUpData.totalCoins).toBe(250);
+    });
+
+    it("should define rankUpFanfare modal type", () => {
+      const rankUpData: GameModalTypes["rankUpFanfare"] = {
+        newLevel: 3,
+        onContinue: jest.fn(),
+      };
+
+      expect(rankUpData.newLevel).toBe(3);
+      expect(typeof rankUpData.onContinue).toBe("function");
     });
 
     it("should define leaderboard modal type", () => {

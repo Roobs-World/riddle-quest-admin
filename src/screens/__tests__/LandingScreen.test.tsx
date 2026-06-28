@@ -294,6 +294,16 @@ describe("LandingScreen", () => {
       expect(spinner.props["data-visible"]).toBe(false);
       expect(spinner.props["data-size"]).toBe(120);
     });
+
+    it("should keep controls disabled and spinner visible while transitioning to the game", () => {
+      const {getAllByTestId, getByTestId} = renderWithProviders(<LandingScreen isTransitioningToGame={true} />);
+
+      const guestButton = getAllByTestId("wide-button").find((btn: any) => btn.props["data-text"] === "Play as Guest");
+      expect(getByTestId("pulsing-spinner").props["data-visible"]).toBe(true);
+      expect(getByTestId("google-signin-button").props["data-disabled"]).toBe(true);
+      expect(getByTestId("facebook-signin-button").props["data-disabled"]).toBe(true);
+      expect(guestButton!.props["data-disabled"]).toBe(true);
+    });
   });
 
   describe("Modal Triggers", () => {
@@ -549,7 +559,7 @@ describe("LandingScreen", () => {
       expect(facebookButton.props["data-disabled"]).toBe(true);
     });
 
-    it("should hide spinner after successful authentication", async () => {
+    it("should keep spinner visible after successful authentication until navigation shows the game", async () => {
       const mockUserCredential = {
         user: {uid: "test-uid"},
       };
@@ -562,7 +572,7 @@ describe("LandingScreen", () => {
 
       await waitFor(() => {
         const spinner = getByTestId("pulsing-spinner");
-        expect(spinner.props["data-visible"]).toBe(false);
+        expect(spinner.props["data-visible"]).toBe(true);
       });
     });
 
@@ -707,8 +717,8 @@ describe("Google Sign-In", () => {
       expect(mockLogin).toHaveBeenCalledTimes(1);
     });
 
-    expect(getByTestId("pulsing-spinner").props["data-visible"]).toBe(false);
-    expect(getByTestId("google-signin-button").props["data-disabled"]).toBe(false);
+    expect(getByTestId("pulsing-spinner").props["data-visible"]).toBe(true);
+    expect(getByTestId("google-signin-button").props["data-disabled"]).toBe(true);
   });
 
   it("should handle Google sign-in failure with generic error", async () => {
@@ -782,8 +792,8 @@ describe("Facebook Sign-In", () => {
       expect(mockLogin).toHaveBeenCalledTimes(1);
     });
 
-    expect(getByTestId("pulsing-spinner").props["data-visible"]).toBe(false);
-    expect(getByTestId("facebook-signin-button").props["data-disabled"]).toBe(false);
+    expect(getByTestId("pulsing-spinner").props["data-visible"]).toBe(true);
+    expect(getByTestId("facebook-signin-button").props["data-disabled"]).toBe(true);
   });
 
   it("should handle Facebook sign-in failure with generic error", async () => {
@@ -876,10 +886,10 @@ describe("Loading States and Button Disabling", () => {
     expect(facebookButton.props["data-disabled"]).toBe(true);
     expect(guestButton!.props["data-disabled"]).toBe(true);
 
-    // Resolve the promise to allow cleanup
+    // Resolve the promise to mimic a successful auth response while landing waits for game readiness.
     resolveGooglePromise!({user: {uid: "test-uid"}} as any);
     await waitFor(() => {
-      expect(getByTestId("pulsing-spinner").props["data-visible"]).toBe(false);
+      expect(getByTestId("pulsing-spinner").props["data-visible"]).toBe(true);
     });
   });
 
@@ -904,10 +914,10 @@ describe("Loading States and Button Disabling", () => {
     expect(facebookButton.props["data-disabled"]).toBe(true);
     expect(guestButton!.props["data-disabled"]).toBe(true);
 
-    // Resolve the promise to allow cleanup
+    // Resolve the promise to mimic a successful auth response while landing waits for game readiness.
     resolveFacebookPromise!({user: {uid: "test-uid"}} as any);
     await waitFor(() => {
-      expect(getByTestId("pulsing-spinner").props["data-visible"]).toBe(false);
+      expect(getByTestId("pulsing-spinner").props["data-visible"]).toBe(true);
     });
   });
 });
@@ -1140,7 +1150,7 @@ describe("Modal Integration", () => {
     await waitFor(() => {
       expect(AuthService.logout).not.toHaveBeenCalled();
       expect(AuthService.signInAnonymously).toHaveBeenCalledTimes(1);
-      expect(getByTestId("pulsing-spinner").props["data-visible"]).toBe(false);
+      expect(getByTestId("pulsing-spinner").props["data-visible"]).toBe(true);
     });
   });
 
@@ -1160,7 +1170,7 @@ describe("Modal Integration", () => {
     await waitFor(() => {
       expect(AuthService.logout).toHaveBeenCalled();
       expect(AuthService.signInAnonymously).toHaveBeenCalled();
-      expect(getByTestId("pulsing-spinner").props["data-visible"]).toBe(false);
+      expect(getByTestId("pulsing-spinner").props["data-visible"]).toBe(true);
     });
   });
 });
@@ -1194,10 +1204,10 @@ describe("Concurrent Operations", () => {
     // Button should be disabled during loading
     expect(googleButton.props["data-disabled"]).toBe(true);
 
-    // Cleanup
+    // Successful auth keeps the landing spinner active until the game is ready.
     resolvePromise!({user: {uid: "test-uid"}} as any);
     await waitFor(() => {
-      expect(getByTestId("pulsing-spinner").props["data-visible"]).toBe(false);
+      expect(getByTestId("pulsing-spinner").props["data-visible"]).toBe(true);
     });
   });
 });

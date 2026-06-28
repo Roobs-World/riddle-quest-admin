@@ -89,6 +89,7 @@ export interface GameModalTypes {
     /** Human-readable names of achievements newly unlocked by this win. */
     unlockedAchievementNames?: string[];
     sequenceProgress?: ModalSequenceProgress;
+    showRotatingBackground?: boolean;
     onNext: () => void;
   };
 
@@ -243,6 +244,7 @@ export interface GameModalTypes {
     achievementNames?: string[];
     achievements?: AchievementUnlockFanfareItem[];
     sequenceProgress?: ModalSequenceProgress;
+    showRotatingBackground?: boolean;
     onContinue?: () => void;
   };
 
@@ -251,6 +253,7 @@ export interface GameModalTypes {
     coinsAwarded: number;
     totalCoins: number;
     sequenceProgress?: ModalSequenceProgress;
+    showRotatingBackground?: boolean;
     onContinue?: () => void;
   };
 
@@ -259,6 +262,14 @@ export interface GameModalTypes {
     coinsAwarded: number;
     totalCoins: number;
     sequenceProgress?: ModalSequenceProgress;
+    showRotatingBackground?: boolean;
+    onContinue?: () => void;
+  };
+
+  rankUpFanfare: {
+    newLevel: number;
+    sequenceProgress?: ModalSequenceProgress;
+    showRotatingBackground?: boolean;
     onContinue?: () => void;
   };
 }

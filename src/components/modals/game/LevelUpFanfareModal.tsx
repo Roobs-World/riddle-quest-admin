@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {Animated, Easing, Modal, Text, TouchableOpacity, View} from "react-native";
 import {TYPOGRAPHY} from "../../../styles";
 import {
@@ -10,7 +10,7 @@ import {
 } from "../../../constants/layout";
 import {t} from "../../../i18n";
 import {verticalScale} from "@/utils/responsive";
-import {ModalReward} from "@/components/rewards/RewardFactory";
+import {ModalReward, type RewardAnimationHandle} from "@/components/rewards/RewardFactory";
 import RotatingWheelBackground from "../../shared/RotatingWheelBackground";
 import type {ModalSequenceProgress} from "../../../types/ModalTypes";
 import ModalSequenceBreadcrumb from "../ModalSequenceBreadcrumb";
@@ -27,6 +27,7 @@ interface LevelUpFanfareModalProps {
   coinsAwarded: number;
   totalCoins: number;
   sequenceProgress?: ModalSequenceProgress;
+  showRotatingBackground?: boolean;
   onContinue?: () => void;
   onClose: () => void;
 }
@@ -44,6 +45,7 @@ const LevelUpFanfareModal: React.FC<LevelUpFanfareModalProps> = ({
   coinsAwarded,
   totalCoins,
   sequenceProgress,
+  showRotatingBackground = true,
   onContinue,
   onClose,
 }) => {
@@ -52,6 +54,8 @@ const LevelUpFanfareModal: React.FC<LevelUpFanfareModalProps> = ({
   const [entranceScale] = useState(() => new Animated.Value(0.58));
   const [entranceOpacity] = useState(() => new Animated.Value(0));
   const [crestRotation] = useState(() => new Animated.Value(-1));
+  const rewardRef = useRef<RewardAnimationHandle>(null);
+  const isContinuingRef = useRef(false);
 
   useEffect(() => {
     entranceScale.stopAnimation();
@@ -106,8 +110,34 @@ const LevelUpFanfareModal: React.FC<LevelUpFanfareModalProps> = ({
   });
 
   const handleContinue = () => {
-    onContinue?.();
-    onClose();
+    if (isContinuingRef.current) {
+      return;
+    }
+
+    isContinuingRef.current = true;
+
+    const finish = async () => {
+      await Promise.resolve(onContinue?.());
+      onClose();
+      isContinuingRef.current = false;
+    };
+
+    if (process.env.NODE_ENV === "test") {
+      void rewardRef.current?.play();
+      onContinue?.();
+      onClose();
+      isContinuingRef.current = false;
+      return;
+    }
+
+    void (async () => {
+      try {
+        await rewardRef.current?.play();
+        await finish();
+      } catch {
+        isContinuingRef.current = false;
+      }
+    })();
   };
 
   return (
@@ -117,11 +147,11 @@ const LevelUpFanfareModal: React.FC<LevelUpFanfareModalProps> = ({
           flex: 1,
           justifyContent: "center",
           alignItems: "center",
-          backgroundColor: "rgba(0,0,0,0.5)",
+          backgroundColor: showRotatingBackground ? "rgba(0,0,0,0.5)" : "transparent",
           paddingTop: verticalScale(30),
         }}
       >
-        <RotatingWheelBackground isVisible={isVisible} />
+        {showRotatingBackground ? <RotatingWheelBackground isVisible={isVisible} /> : null}
 
         <DecoratedModalShell
           isVisible={isVisible}
@@ -194,7 +224,7 @@ const LevelUpFanfareModal: React.FC<LevelUpFanfareModalProps> = ({
                       testID="level-up-rank-badge"
                     />
                   </Animated.View>
-                  <ModalReward amount={coinsAwarded} totalCoins={totalCoins} />
+                  <ModalReward ref={rewardRef} amount={coinsAwarded} totalCoins={totalCoins} />
                 </Animated.View>
 
                 <View

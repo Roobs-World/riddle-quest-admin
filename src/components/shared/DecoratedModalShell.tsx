@@ -48,30 +48,42 @@ const DecoratedModalShell: React.FC<DecoratedModalShellProps> = ({
             height,
             alignItems: "center",
             justifyContent: "center",
-            overflow: "hidden",
+            overflow: "visible",
           },
           frameStyle,
         ]}
       >
-        <ModalBg
-          testID={modalBgTestID}
-          width={width}
-          height={height}
-          preserveAspectRatio={preserveAspectRatio}
-          style={[{position: "absolute"}, modalBgStyle]}
-        />
-        <HomeBg
-          width={width * homeWidthMultiplier}
-          height={height * homeHeightMultiplier}
-          style={[
-            {
-              position: "absolute",
-              top: -height * homeTopOffsetMultiplier,
-              left: -width * homeLeftOffsetMultiplier,
-            },
-            homeBgStyle,
-          ]}
-        />
+        <View
+          pointerEvents="none"
+          style={{
+            position: "absolute",
+            width,
+            height,
+            alignItems: "center",
+            justifyContent: "center",
+            overflow: "hidden",
+          }}
+        >
+          <ModalBg
+            testID={modalBgTestID}
+            width={width}
+            height={height}
+            preserveAspectRatio={preserveAspectRatio}
+            style={[{position: "absolute"}, modalBgStyle]}
+          />
+          <HomeBg
+            width={width * homeWidthMultiplier}
+            height={height * homeHeightMultiplier}
+            style={[
+              {
+                position: "absolute",
+                top: -height * homeTopOffsetMultiplier,
+                left: -width * homeLeftOffsetMultiplier,
+              },
+              homeBgStyle,
+            ]}
+          />
+        </View>
         <View
           style={[
             {

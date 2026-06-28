@@ -1,4 +1,13 @@
-import {XP_LEVEL_THRESHOLDS, getLevelFromXp, getXpThresholdForLevel} from "../constants";
+import {
+  INITIAL_STREAK_REWARD_BONUS,
+  MAX_STREAK_REWARD_BONUS,
+  STREAK_REWARD_BONUS_STEP,
+  XP_LEVEL_THRESHOLDS,
+  getLevelFromXp,
+  getStreakRewardBonus,
+  getXpThresholdForLevel,
+  isStreakRewardMilestone,
+} from "../constants";
 
 describe("server XP curve", () => {
   it("uses an object config instead of threshold array", () => {
@@ -30,5 +39,30 @@ describe("server XP curve", () => {
 
     expect(getLevelFromXp(threshold)).toBe(veryHighLevel);
     expect(getLevelFromXp(threshold + 999)).toBeGreaterThanOrEqual(veryHighLevel);
+  });
+});
+
+describe("server streak rewards", () => {
+  it.each([
+    [1, false],
+    [6, false],
+    [7, true],
+    [8, false],
+    [14, true],
+  ])("reports milestone status for a %s-day streak", (streak, expected) => {
+    expect(isStreakRewardMilestone(streak)).toBe(expected);
+  });
+
+  it.each([
+    [0, 0],
+    [1, INITIAL_STREAK_REWARD_BONUS],
+    [6, INITIAL_STREAK_REWARD_BONUS],
+    [7, INITIAL_STREAK_REWARD_BONUS + STREAK_REWARD_BONUS_STEP],
+    [8, INITIAL_STREAK_REWARD_BONUS + STREAK_REWARD_BONUS_STEP],
+    [14, INITIAL_STREAK_REWARD_BONUS + STREAK_REWARD_BONUS_STEP * 2],
+    [98, MAX_STREAK_REWARD_BONUS],
+    [112, MAX_STREAK_REWARD_BONUS],
+  ])("calculates the bonus for a %s-day streak", (streak, expectedBonus) => {
+    expect(getStreakRewardBonus(streak)).toBe(expectedBonus);
   });
 });

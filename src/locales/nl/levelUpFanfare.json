@@ -5,5 +5,10 @@
     "LEVEL_PREFIX": "Niveau ",
     "TITLE": "Niveau omhoog!",
     "PROFILE_GUIDANCE": "Je nieuwe level en rang staan in Profiel. Tik na deze viering op het profielicoon."
+  },
+  "RankUpFanfare": {
+    "CONTINUE_BUTTON": "Doorgaan",
+    "SUBTITLE": "Je hebt een nieuwe rang bereikt.",
+    "TITLE": "Nieuwe rang!"
   }
 }

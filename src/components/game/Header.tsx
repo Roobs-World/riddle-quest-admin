@@ -55,7 +55,7 @@ const Header: React.FC<HeaderProps> = ({
   const [headerWidth, setHeaderWidth] = useState(0);
   const [leftAnchor, setLeftAnchor] = useState({x: SPACING.md, width: HEADER_LOGO_SIZE});
   const [rightAnchor, setRightAnchor] = useState({x: 0, width: 0});
-  const {registerCoinTarget} = useRewardAnimation();
+  const {registerCoinTarget, registerCoinCounterAnimator} = useRewardAnimation();
   const localCoinsTargetRef = useRef<View>(null);
 
   useImperativeHandle(coinsButtonRef, () => localCoinsTargetRef.current as View);
@@ -157,7 +157,12 @@ const Header: React.FC<HeaderProps> = ({
         testID="header-right-side"
         onLayout={handleRightAnchorLayout}
       >
-        <CoinsDisplay coins={userCoins} onPress={onCoinsPress} shouldAnimateIncreases={shouldAnimateCoins} />
+        <CoinsDisplay
+          coins={userCoins}
+          onPress={onCoinsPress}
+          shouldAnimateIncreases={shouldAnimateCoins}
+          registerCoinHitAnimator={registerCoinCounterAnimator}
+        />
       </View>
     </View>
   );

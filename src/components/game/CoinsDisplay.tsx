@@ -11,7 +11,7 @@
  * @since 2024
  */
 
-import React, {useEffect, useRef, useState} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import {Text, TouchableOpacity, Animated, Easing} from "react-native";
 import {SvgXml} from "react-native-svg";
 import {COIN_DISPLAY_ICON_SIZE} from "../../constants/layout";
@@ -82,6 +82,12 @@ interface CoinsDisplayProps {
    * When false, coin increases are deferred until this becomes true.
    */
   shouldAnimateIncreases?: boolean;
+
+  /**
+   * Registers an imperative hit animation used by reward chests when flying
+   * coins land on the header counter.
+   */
+  registerCoinHitAnimator?: (animator: ((coinValue: number) => void) | null) => void;
 }
 
 /**
@@ -129,15 +135,76 @@ interface CoinsDisplayProps {
  * @param {CoinsDisplayProps} props - Component props
  * @returns {JSX.Element} Rendered coin display component
  */
-const CoinsDisplay: React.FC<CoinsDisplayProps> = ({coins, onPress, shouldAnimateIncreases = true}) => {
+const CoinsDisplay: React.FC<CoinsDisplayProps> = ({
+  coins,
+  onPress,
+  shouldAnimateIncreases = true,
+  registerCoinHitAnimator,
+}) => {
   const normalizedCoins = typeof coins === "number" && Number.isFinite(coins) ? coins : 0;
   const [displayedCoinsAnimatedValue] = useState(() => new Animated.Value(normalizedCoins));
   const [scaleAnimatedValue] = useState(() => new Animated.Value(1));
   const previousCoinsRef = useRef(normalizedCoins);
   const displayedCoinsRef = useRef(normalizedCoins);
+  const normalizedCoinsRef = useRef(normalizedCoins);
   const isCountUpAnimationRunningRef = useRef(false);
   const lastAnimatedTextUpdateAtRef = useRef(0);
   const [displayedCoins, setDisplayedCoins] = useState(normalizedCoins);
+
+  useEffect(() => {
+    normalizedCoinsRef.current = normalizedCoins;
+  }, [normalizedCoins]);
+
+  const playCounterBounce = useCallback(() => {
+    scaleAnimatedValue.stopAnimation();
+    scaleAnimatedValue.setValue(1);
+
+    Animated.sequence([
+      Animated.timing(scaleAnimatedValue, {
+        toValue: 1.18,
+        duration: 120,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      }),
+      Animated.spring(scaleAnimatedValue, {
+        toValue: 1,
+        friction: 5,
+        tension: 140,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, [scaleAnimatedValue]);
+
+  const animateCoinHit = useCallback(
+    (coinValue: number) => {
+      const normalizedCoinValue = typeof coinValue === "number" && Number.isFinite(coinValue) ? coinValue : 0;
+      if (normalizedCoinValue <= 0) {
+        return;
+      }
+
+      const currentDisplayedCoins = displayedCoinsRef.current;
+      const targetBalance = normalizedCoinsRef.current;
+      if (targetBalance <= currentDisplayedCoins) {
+        return;
+      }
+
+      const nextDisplayedCoins = Math.min(currentDisplayedCoins + normalizedCoinValue, targetBalance);
+
+      displayedCoinsAnimatedValue.stopAnimation();
+      isCountUpAnimationRunningRef.current = false;
+      displayedCoinsAnimatedValue.setValue(nextDisplayedCoins);
+      displayedCoinsRef.current = nextDisplayedCoins;
+      previousCoinsRef.current = nextDisplayedCoins;
+      setDisplayedCoins(nextDisplayedCoins);
+      playCounterBounce();
+    },
+    [displayedCoinsAnimatedValue, playCounterBounce],
+  );
+
+  useEffect(() => {
+    registerCoinHitAnimator?.(animateCoinHit);
+    return () => registerCoinHitAnimator?.(null);
+  }, [animateCoinHit, registerCoinHitAnimator]);
 
   useEffect(() => {
     const listenerId = displayedCoinsAnimatedValue.addListener(({value}) => {
@@ -216,22 +283,9 @@ const CoinsDisplay: React.FC<CoinsDisplayProps> = ({coins, onPress, shouldAnimat
       displayedCoinsRef.current = normalizedCoins;
       setDisplayedCoins(normalizedCoins);
 
-      Animated.sequence([
-        Animated.timing(scaleAnimatedValue, {
-          toValue: 1.15,
-          duration: 250,
-          easing: Easing.out(Easing.cubic),
-          useNativeDriver: true,
-        }),
-        Animated.timing(scaleAnimatedValue, {
-          toValue: 1,
-          duration: 250,
-          easing: Easing.in(Easing.cubic),
-          useNativeDriver: true,
-        }),
-      ]).start();
+      playCounterBounce();
     });
-  }, [normalizedCoins, shouldAnimateIncreases, displayedCoinsAnimatedValue, scaleAnimatedValue]);
+  }, [normalizedCoins, shouldAnimateIncreases, displayedCoinsAnimatedValue, scaleAnimatedValue, playCounterBounce]);
 
   /** Generate appropriate text for singular/plural coin count */
   const coinText = normalizedCoins === 1 ? "coin" : "coins";

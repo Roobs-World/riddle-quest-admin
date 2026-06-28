@@ -25,10 +25,30 @@ export const MAX_ATTEMPTS_CHALLENGE = 5;
 export const COINS_REWARD_CLASSIC = 25;
 /** Coins earned for solving a Daily Challenge riddle. */
 export const COINS_REWARD_CHALLENGE = 75;
-/** Bonus coins awarded for daily streak completion. */
-export const DAILY_COMPLETION_BONUS = 25;
 /** Number of consecutive daily wins required for each streak reward. */
 export const STREAK_REWARD_INTERVAL_DAYS = 7;
+/** Daily streak bonus paid while a streak is active. */
+export const INITIAL_STREAK_REWARD_BONUS = 20;
+/** Coin increase applied at each weekly daily-streak reward milestone. */
+export const STREAK_REWARD_BONUS_STEP = 20;
+/** Maximum daily-streak reward bonus paid for a daily win. */
+export const MAX_STREAK_REWARD_BONUS = 300;
+/** Bonus coins awarded for the first active daily streak day. */
+export const DAILY_COMPLETION_BONUS = INITIAL_STREAK_REWARD_BONUS;
+/** Returns true when a daily streak has reached a weekly reward milestone. */
+export function isStreakRewardMilestone(streakValue: number): boolean {
+  const normalizedStreak = Math.max(0, Math.floor(streakValue));
+  return normalizedStreak > 0 && normalizedStreak % STREAK_REWARD_INTERVAL_DAYS === 0;
+}
+/** Returns the daily-streak bonus for the active streak day. */
+export function getStreakRewardBonus(streakValue: number): number {
+  const normalizedStreak = Math.max(0, Math.floor(streakValue));
+  if (normalizedStreak === 0) return 0;
+
+  const completedMilestones = Math.floor(normalizedStreak / STREAK_REWARD_INTERVAL_DAYS);
+  const bonus = INITIAL_STREAK_REWARD_BONUS + completedMilestones * STREAK_REWARD_BONUS_STEP;
+  return Math.min(bonus, MAX_STREAK_REWARD_BONUS);
+}
 /** Bonus coins awarded per level-up. */
 export const LEVEL_UP_COIN_BONUS = 50;
 /** Bonus coins awarded per newly unlocked achievement. */
