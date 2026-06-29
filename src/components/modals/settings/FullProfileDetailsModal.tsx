@@ -1,5 +1,16 @@
 import React, {useCallback, useEffect, useRef, useState} from "react";
-import {View, Text, TouchableOpacity, Modal, ScrollView, Image, Alert, type LayoutChangeEvent} from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Modal,
+  ScrollView,
+  Image,
+  Alert,
+  type LayoutChangeEvent,
+  type NativeScrollEvent,
+  type NativeSyntheticEvent,
+} from "react-native";
 import {Player} from "../../../validation/firestoreSchemas";
 import CloseButton from "../../buttons/CloseButton";
 import {useModal} from "../../../hooks/useModal";
@@ -40,8 +51,19 @@ const CREAM = "#FCFAF4";
 const GOLD = "#FEC880";
 const PROFILE_TOOLTIP_SCROLL_TOP_PADDING = 24;
 const PROFILE_STATISTICS_SCROLL_TOP_PADDING = 200;
-const PROFILE_TOOLTIP_SCROLL_SETTLE_MS = 260;
+const PROFILE_TOOLTIP_SCROLL_SETTLE_TIMEOUT_MS = 900;
+const PROFILE_TOOLTIP_SCROLL_TOLERANCE = 2;
 const PROFILE_TOOLTIP_SEQUENCE_ID = "profileTour";
+const PROFILE_TOOLTIP_IDS = new Set<TooltipId>([
+  "profileIdentity",
+  "profileProgression",
+  "profileDailyPuzzles",
+  "profileStats",
+  "profileCoins",
+  "profileAchievements",
+  "profileStatistics",
+  "profileLeaderboard",
+]);
 const PROFILE_BODY_TOOLTIP_IDS = new Set<TooltipId>([
   "profileDailyPuzzles",
   "profileStats",
@@ -50,6 +72,12 @@ const PROFILE_BODY_TOOLTIP_IDS = new Set<TooltipId>([
   "profileStatistics",
   "profileLeaderboard",
 ]);
+
+type PendingProfileTooltipScroll = {
+  targetY: number;
+  timeoutId: ReturnType<typeof setTimeout>;
+  resolve: () => void;
+};
 
 const getProfileTooltipContent = (id: TooltipId) => {
   switch (id) {
@@ -112,7 +140,13 @@ const getProfileTooltipContent = (id: TooltipId) => {
 
 const FullProfileDetailsModalContent: React.FC<FullProfileDetailsModalProps> = ({isVisible, onClose, playerData}) => {
   const modal = useModal();
-  const {cancelTooltipSequence, showTooltipSequence} = useTooltip();
+  const {
+    activeTooltipId,
+    activeTooltipSequenceId,
+    cancelTooltipSequence,
+    isTooltipSequenceActive,
+    showTooltipSequence,
+  } = useTooltip();
   const {logout} = useAuthSession();
   const {updatePlayerData, playerData: authPlayerData} = usePlayer();
   const resolvedPlayerData = authPlayerData ?? playerData;
@@ -125,10 +159,14 @@ const FullProfileDetailsModalContent: React.FC<FullProfileDetailsModalProps> = (
   const [isDeletingAccount, setIsDeletingAccount] = useState(false);
   const hasStartedTooltipSequenceRef = useRef(false);
   const scrollViewRef = useRef<ScrollView>(null);
+  const profileScrollOffsetYRef = useRef(0);
+  const pendingProfileTooltipScrollRef = useRef<PendingProfileTooltipScroll | null>(null);
   const profileBodyOffsetRef = useRef(0);
   const tooltipAnchorOffsetsRef = useRef<Partial<Record<TooltipId, number>>>({});
   const profileIdentityRef = useRef<View>(null);
+  const profileUsernameRef = useRef<View>(null);
   const profileProgressionRef = useRef<View>(null);
+  const profileXpRef = useRef<View>(null);
   const dailyPuzzlesRef = useRef<View>(null);
   const profileStatsRef = useRef<View>(null);
   const profileCoinsRef = useRef<View>(null);
@@ -142,6 +180,11 @@ const FullProfileDetailsModalContent: React.FC<FullProfileDetailsModalProps> = (
   const stats = resolvedPlayerData?.stats;
   const avatarRadius = AVATAR_SIZE_LARGE / 2;
   const initial = resolvedPlayerData?.username ? resolvedPlayerData.username.charAt(0).toUpperCase() : "?";
+  const profileUsername = resolvedPlayerData?.username || t("Profile.GUEST_USERNAME");
+  const isProfileTooltipSequenceActive =
+    isTooltipSequenceActive && activeTooltipSequenceId === PROFILE_TOOLTIP_SEQUENCE_ID;
+  const isProfileTooltipScrollLocked =
+    isProfileTooltipSequenceActive || (activeTooltipId ? PROFILE_TOOLTIP_IDS.has(activeTooltipId) : false);
 
   const handleUploadAvatar = async () => {
     try {
@@ -236,19 +279,88 @@ const FullProfileDetailsModalContent: React.FC<FullProfileDetailsModalProps> = (
     profileBodyOffsetRef.current = event.nativeEvent.layout.y;
   }, []);
 
+  const completePendingProfileTooltipScroll = useCallback(() => {
+    const pendingScroll = pendingProfileTooltipScrollRef.current;
+    if (!pendingScroll) {
+      return;
+    }
+
+    clearTimeout(pendingScroll.timeoutId);
+    pendingProfileTooltipScrollRef.current = null;
+    pendingScroll.resolve();
+  }, []);
+
+  const updateProfileScrollOffset = useCallback(
+    (offsetY: number) => {
+      profileScrollOffsetYRef.current = offsetY;
+      const pendingScroll = pendingProfileTooltipScrollRef.current;
+      if (!pendingScroll) {
+        return;
+      }
+
+      if (Math.abs(offsetY - pendingScroll.targetY) <= PROFILE_TOOLTIP_SCROLL_TOLERANCE) {
+        completePendingProfileTooltipScroll();
+      }
+    },
+    [completePendingProfileTooltipScroll],
+  );
+
+  const handleProfileScroll = useCallback(
+    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+      updateProfileScrollOffset(event.nativeEvent.contentOffset.y);
+    },
+    [updateProfileScrollOffset],
+  );
+
+  const handleProfileScrollEnd = useCallback(
+    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+      profileScrollOffsetYRef.current = event.nativeEvent.contentOffset.y;
+      completePendingProfileTooltipScroll();
+    },
+    [completePendingProfileTooltipScroll],
+  );
+
   const scrollToTooltipAnchor = useCallback((id: TooltipId): Promise<void> => {
     const anchorY = tooltipAnchorOffsetsRef.current[id] ?? 0;
     const y = PROFILE_BODY_TOOLTIP_IDS.has(id) ? profileBodyOffsetRef.current + anchorY : anchorY;
     const topPadding =
       id === "profileStatistics" ? PROFILE_STATISTICS_SCROLL_TOP_PADDING : PROFILE_TOOLTIP_SCROLL_TOP_PADDING;
+    const targetY = Math.max(0, y - topPadding);
+    if (Math.abs(profileScrollOffsetYRef.current - targetY) <= PROFILE_TOOLTIP_SCROLL_TOLERANCE) {
+      return Promise.resolve();
+    }
+
+    completePendingProfileTooltipScroll();
+
+    const scrollView = scrollViewRef.current;
+    if (!scrollView) {
+      return Promise.resolve();
+    }
+
+    const scrollCompletePromise = new Promise<void>((resolve) => {
+      const timeoutId = setTimeout(() => {
+        completePendingProfileTooltipScroll();
+      }, PROFILE_TOOLTIP_SCROLL_SETTLE_TIMEOUT_MS);
+
+      pendingProfileTooltipScrollRef.current = {
+        targetY,
+        timeoutId,
+        resolve,
+      };
+    });
+
     scrollViewRef.current?.scrollTo({
-      y: Math.max(0, y - topPadding),
+      y: targetY,
       animated: true,
     });
-    return new Promise((resolve) => {
-      setTimeout(resolve, PROFILE_TOOLTIP_SCROLL_SETTLE_MS);
-    });
-  }, []);
+    return scrollCompletePromise;
+  }, [completePendingProfileTooltipScroll]);
+
+  useEffect(() => {
+    return () => {
+      completePendingProfileTooltipScroll();
+    };
+  }, [completePendingProfileTooltipScroll]);
 
   useEffect(() => {
     if (!isVisible) {
@@ -264,55 +376,7 @@ const FullProfileDetailsModalContent: React.FC<FullProfileDetailsModalProps> = (
     const createProfileTooltipHighlight = (id: TooltipId): React.ReactNode => {
       switch (id) {
         case "profileIdentity":
-          return (
-            <View style={{alignItems: "center", width: "100%"}}>
-              {avatarUrl ? (
-                <Image
-                  source={{uri: avatarUrl}}
-                  style={{
-                    width: AVATAR_SIZE_LARGE,
-                    height: AVATAR_SIZE_LARGE,
-                    borderRadius: avatarRadius,
-                    borderWidth: moderateScale(3),
-                    borderColor: "#FFFFFF",
-                  }}
-                />
-              ) : (
-                <View
-                  style={{
-                    width: AVATAR_SIZE_LARGE,
-                    height: AVATAR_SIZE_LARGE,
-                    borderRadius: avatarRadius,
-                    backgroundColor: "rgba(255,255,255,0.15)",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    borderWidth: moderateScale(3),
-                    borderColor: "#FFFFFF",
-                  }}
-                >
-                  <Text
-                    style={{
-                      color: "#FFFFFF",
-                      fontSize: TYPOGRAPHY.fontSize.display,
-                      fontFamily: TYPOGRAPHY.fontSecondaryBold,
-                    }}
-                  >
-                    {initial}
-                  </Text>
-                </View>
-              )}
-              <Text
-                style={{
-                  color: "#FFFFFF",
-                  fontSize: TYPOGRAPHY.fontSize.lg,
-                  fontFamily: TYPOGRAPHY.fontSecondaryBold,
-                  marginTop: SPACING.sm,
-                }}
-              >
-                {resolvedPlayerData?.username || t("Profile.GUEST_USERNAME")}
-              </Text>
-            </View>
-          );
+          return <ProfileUsernameHighlight username={profileUsername} />;
         case "profileAchievements":
           return <ProfileActionHighlight label={t("Achievements.MODAL_TITLE")} />;
         case "profileStatistics":
@@ -346,9 +410,12 @@ const FullProfileDetailsModalContent: React.FC<FullProfileDetailsModalProps> = (
         id === "profileProgression" || id === "profileCoins" ? undefined : createProfileTooltipHighlight(id),
       content: getProfileTooltipContent(id),
       preferredPlacement:
-        id === "profileDailyPuzzles" || id === "profileStats" || id === "profileCoins"
+        id === "profileProgression" ||
+        id === "profileDailyPuzzles" ||
+        id === "profileStats" ||
+        id === "profileCoins"
           ? "below"
-          : id === "profileProgression" || id === "profileStatistics"
+          : id === "profileStatistics"
             ? "above"
             : "auto",
       useNativeModal: false,
@@ -357,8 +424,8 @@ const FullProfileDetailsModalContent: React.FC<FullProfileDetailsModalProps> = (
     });
 
     const tooltipSequence: TooltipSequenceRequest[] = [
-      createProfileTooltipRequest("profileIdentity", profileIdentityRef),
-      createProfileTooltipRequest("profileProgression", profileProgressionRef),
+      createProfileTooltipRequest("profileIdentity", profileUsernameRef),
+      createProfileTooltipRequest("profileProgression", profileXpRef),
       createProfileTooltipRequest("profileDailyPuzzles", dailyPuzzlesRef),
       createProfileTooltipRequest("profileStats", profileStatsRef),
       createProfileTooltipRequest("profileCoins", profileCoinsRef),
@@ -379,13 +446,10 @@ const FullProfileDetailsModalContent: React.FC<FullProfileDetailsModalProps> = (
       cancelTooltipSequence();
     };
   }, [
-    avatarRadius,
-    avatarUrl,
     cancelTooltipSequence,
     hasProfileData,
-    initial,
     isVisible,
-    resolvedPlayerData?.username,
+    profileUsername,
     profileTooltipUserId,
     scrollToTooltipAnchor,
     showTooltipSequence,
@@ -428,14 +492,19 @@ const FullProfileDetailsModalContent: React.FC<FullProfileDetailsModalProps> = (
               ref={scrollViewRef}
               testID="profile-modal-body-scroll"
               style={{flex: 1, backgroundColor: CREAM}}
+              scrollEnabled={!isProfileTooltipScrollLocked}
               contentContainerStyle={{
                 flexGrow: 1,
                 paddingTop: 0,
                 paddingBottom: SPACING.lg,
               }}
               showsVerticalScrollIndicator={false}
-              alwaysBounceVertical={true}
-              bounces={true}
+              alwaysBounceVertical={!isProfileTooltipScrollLocked}
+              bounces={!isProfileTooltipScrollLocked}
+              onScroll={handleProfileScroll}
+              onMomentumScrollEnd={handleProfileScrollEnd}
+              onScrollEndDrag={handleProfileScrollEnd}
+              scrollEventThrottle={16}
             >
               <View
                 style={{
@@ -547,15 +616,13 @@ const FullProfileDetailsModalContent: React.FC<FullProfileDetailsModalProps> = (
                     gap: 6,
                   }}
                 >
-                  <Text
-                    style={{
-                      color: "#FFFFFF",
-                      fontSize: TYPOGRAPHY.fontSize.lg,
-                      fontFamily: TYPOGRAPHY.fontSecondaryBold,
-                    }}
+                  <View
+                    ref={profileUsernameRef}
+                    collapsable={false}
+                    testID="profile-username-tooltip-target"
                   >
-                    {resolvedPlayerData?.username || t("Profile.GUEST_USERNAME")}
-                  </Text>
+                    <Text style={profileUsernameTextStyle}>{profileUsername}</Text>
+                  </View>
                   <Text style={{color: GOLD, fontSize: 24}}>✏</Text>
                 </TouchableOpacity>
 
@@ -577,6 +644,19 @@ const FullProfileDetailsModalContent: React.FC<FullProfileDetailsModalProps> = (
                     }}
                   >
                     <View testID="profile-rank-cluster" style={{width: 84, flexShrink: 0, alignItems: "center"}}>
+                      <Text
+                        testID="profile-rank-label"
+                        style={{
+                          width: "100%",
+                          color: COLORS.white,
+                          fontSize: TYPOGRAPHY.fontSize.sm,
+                          fontFamily: TYPOGRAPHY.fontSecondaryBold,
+                          textAlign: "center",
+                          marginBottom: 6,
+                        }}
+                      >
+                        {t("Ranks.RANK_LABEL")}
+                      </Text>
                       <RankBadge
                         rank={currentRank}
                         size={64}
@@ -600,6 +680,8 @@ const FullProfileDetailsModalContent: React.FC<FullProfileDetailsModalProps> = (
                     </View>
 
                     <View
+                      ref={profileXpRef}
+                      collapsable={false}
                       testID="profile-xp-content"
                       style={{
                         flex: 1,
@@ -765,53 +847,15 @@ const FullProfileDetailsModalContent: React.FC<FullProfileDetailsModalProps> = (
                   <SectionHeader
                     title={t("Profile.DAILY_PUZZLES_COMPLETED_HEADER")}
                   />
-                  <View
-                    style={{
-                      backgroundColor: "#F5EDD4",
-                      borderRadius: 16,
-                      padding: SPACING.md,
-                      flexDirection: "row",
-                      alignItems: "center",
-                      gap: SPACING.md,
-                    }}
-                  >
-                    <View
-                      style={{
-                        width: AVATAR_SIZE_LARGE * 0.55,
-                        height: AVATAR_SIZE_LARGE * 0.55,
-                        backgroundColor: COLORS.figmaGold,
-                        borderRadius: 100,
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <Text style={{fontSize: 24}}>🏅</Text>
-                    </View>
-                    <Text
-                      style={{
-                        fontFamily: TYPOGRAPHY.fontPrimary,
-                        fontSize: TYPOGRAPHY.fontSize["2xl"],
-                        color: "#1A1A1A",
-                        flex: 1,
-                      }}
-                    >
-                      {stats?.dailyPuzzlesCompleted ?? 0}
-                    </Text>
-                    <Text
-                      style={{
-                        fontFamily: TYPOGRAPHY.fontSecondary,
-                        fontSize: TYPOGRAPHY.fontSize.sm,
-                        color: "#6B7280",
-                        textAlign: "right",
-                      }}
-                    >
-                      {t("Profile.REGULAR_DAYS_LABEL")}
-                    </Text>
-                  </View>
+                  <DailyPuzzlesCard
+                    dailyPuzzlesCompleted={stats?.dailyPuzzlesCompleted ?? 0}
+                    testID="profile-daily-puzzles-card"
+                  />
                 </View>
 
                 <View
                   ref={profileStatsRef}
+                  collapsable={false}
                   onLayout={setTooltipAnchorOffset("profileStats")}
                   testID="profile-stats-snapshot-section"
                   style={{marginBottom: SPACING.lg}}
@@ -819,18 +863,13 @@ const FullProfileDetailsModalContent: React.FC<FullProfileDetailsModalProps> = (
                   <SectionHeader
                     title={t("Profile.BEST_STRIKE_HEADER")}
                   />
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      flexWrap: "wrap",
-                      gap: SPACING.sm,
-                    }}
-                  >
-                    <StatBox value={stats?.bestStreak ?? 0} label={t("StatsModal.BEST_STREAK")} />
-                    <StatBox value={stats?.totalWordsGuessed ?? 0} label={t("StatsModal.TOTAL_WORDS_GUESSED")} />
-                    <StatBox value={`${winRate}%`} label={t("StatsModal.WIN_RATE")} />
-                    <StatBox value={avgGuess} label={t("Profile.AVG_GUESS_LABEL")} />
-                  </View>
+                  <StatsSnapshotGrid
+                    bestStreak={stats?.bestStreak ?? 0}
+                    totalWordsGuessed={stats?.totalWordsGuessed ?? 0}
+                    winRate={`${winRate}%`}
+                    averageGuesses={avgGuess}
+                    testID="profile-stats-snapshot-grid"
+                  />
                 </View>
 
                 <View
@@ -991,6 +1030,18 @@ const actionButtonTextStyle = {
   color: "#1A1A1A",
 };
 
+const profileUsernameTextStyle = {
+  color: "#FFFFFF",
+  fontSize: TYPOGRAPHY.fontSize.lg,
+  fontFamily: TYPOGRAPHY.fontSecondaryBold,
+};
+
+const ProfileUsernameHighlight = ({username}: {username: string}) => (
+  <View style={{height: "100%", width: "100%", justifyContent: "center"}}>
+    <Text style={profileUsernameTextStyle}>{username}</Text>
+  </View>
+);
+
 const ProfileActionHighlight = ({label}: {label: string}) => (
   <View style={[actionButtonStyle, {width: "100%"}]}>
     <View style={actionButtonContentStyle}>
@@ -999,80 +1050,77 @@ const ProfileActionHighlight = ({label}: {label: string}) => (
   </View>
 );
 
-const ProfileSectionHeaderHighlight = ({title}: {title: string}) => (
+const DailyPuzzlesCard = ({
+  dailyPuzzlesCompleted,
+  testID,
+}: {
+  dailyPuzzlesCompleted: number;
+  testID: string;
+}) => (
   <View
+    collapsable={false}
+    testID={testID}
     style={{
+      backgroundColor: "#F5EDD4",
+      borderRadius: 16,
+      padding: SPACING.md,
       flexDirection: "row",
       alignItems: "center",
-      justifyContent: "space-between",
-      marginBottom: SPACING.md,
-      gap: SPACING.sm,
-      width: "100%",
+      gap: SPACING.md,
     }}
   >
+    <View
+      style={{
+        width: AVATAR_SIZE_LARGE * 0.55,
+        height: AVATAR_SIZE_LARGE * 0.55,
+        backgroundColor: COLORS.figmaGold,
+        borderRadius: 100,
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <Text style={{fontSize: 24}}>🏅</Text>
+    </View>
     <Text
       style={{
         fontFamily: TYPOGRAPHY.fontPrimary,
-        fontSize: TYPOGRAPHY.fontSize.lg,
+        fontSize: TYPOGRAPHY.fontSize["2xl"],
         color: "#1A1A1A",
         flex: 1,
       }}
     >
-      {title}
+      {dailyPuzzlesCompleted}
+    </Text>
+    <Text
+      style={{
+        fontFamily: TYPOGRAPHY.fontSecondary,
+        fontSize: TYPOGRAPHY.fontSize.sm,
+        color: "#6B7280",
+        textAlign: "right",
+      }}
+    >
+      {t("Profile.REGULAR_DAYS_LABEL")}
     </Text>
   </View>
 );
 
 const ProfileDailyPuzzlesHighlight = ({dailyPuzzlesCompleted}: {dailyPuzzlesCompleted: number}) => (
-  <View style={{width: "100%"}}>
-    <ProfileSectionHeaderHighlight title={t("Profile.DAILY_PUZZLES_COMPLETED_HEADER")} />
-    <View
-      style={{
-        backgroundColor: "#F5EDD4",
-        borderRadius: 16,
-        padding: SPACING.md,
-        flexDirection: "row",
-        alignItems: "center",
-        gap: SPACING.md,
-      }}
-    >
-      <View
-        style={{
-          width: AVATAR_SIZE_LARGE * 0.55,
-          height: AVATAR_SIZE_LARGE * 0.55,
-          backgroundColor: COLORS.figmaGold,
-          borderRadius: 100,
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <Text style={{fontSize: 24}}>🏅</Text>
-      </View>
-      <Text
-        style={{
-          fontFamily: TYPOGRAPHY.fontPrimary,
-          fontSize: TYPOGRAPHY.fontSize["2xl"],
-          color: "#1A1A1A",
-          flex: 1,
-        }}
-      >
-        {dailyPuzzlesCompleted}
-      </Text>
-      <Text
-        style={{
-          fontFamily: TYPOGRAPHY.fontSecondary,
-          fontSize: TYPOGRAPHY.fontSize.sm,
-          color: "#6B7280",
-          textAlign: "right",
-        }}
-      >
-        {t("Profile.REGULAR_DAYS_LABEL")}
-      </Text>
-    </View>
+  <View
+    testID="profile-daily-puzzles-highlight-section"
+    style={{
+      width: "100%",
+      height: "100%",
+    }}
+  >
+    <SectionHeader title={t("Profile.DAILY_PUZZLES_COMPLETED_HEADER")} />
+    <DailyPuzzlesCard
+      dailyPuzzlesCompleted={dailyPuzzlesCompleted}
+      testID="profile-daily-puzzles-highlight-card"
+    />
   </View>
 );
 
-const ProfileStatsSnapshotHighlightBox = ({value, label}: {value: number | string; label: string}) => (
+const StatBox = ({value, label}: {value: number | string; label: string}) => (
   <View
     style={{
       flex: 1,
@@ -1097,14 +1145,43 @@ const ProfileStatsSnapshotHighlightBox = ({value, label}: {value: number | strin
     <Text
       style={{
         fontFamily: TYPOGRAPHY.fontSecondary,
-        fontSize: TYPOGRAPHY.fontSize.sm,
+        fontSize: TYPOGRAPHY.fontSize.xs,
         color: "#6B7280",
         textAlign: "center",
-        marginTop: 4,
+        marginTop: 2,
       }}
     >
       {label}
     </Text>
+  </View>
+);
+
+const StatsSnapshotGrid = ({
+  bestStreak,
+  totalWordsGuessed,
+  winRate,
+  averageGuesses,
+  testID,
+}: {
+  bestStreak: number;
+  totalWordsGuessed: number;
+  winRate: string;
+  averageGuesses: number | string;
+  testID: string;
+}) => (
+  <View
+    collapsable={false}
+    testID={testID}
+    style={{
+      flexDirection: "row",
+      flexWrap: "wrap",
+      gap: SPACING.sm,
+    }}
+  >
+    <StatBox value={bestStreak} label={t("StatsModal.BEST_STREAK")} />
+    <StatBox value={totalWordsGuessed} label={t("StatsModal.TOTAL_WORDS_GUESSED")} />
+    <StatBox value={winRate} label={t("StatsModal.WIN_RATE")} />
+    <StatBox value={averageGuesses} label={t("Profile.AVG_GUESS_LABEL")} />
   </View>
 );
 
@@ -1119,20 +1196,21 @@ const ProfileStatsSnapshotHighlight = ({
   winRate: string;
   averageGuesses: number | string;
 }) => (
-  <View style={{width: "100%"}}>
-    <ProfileSectionHeaderHighlight title={t("Profile.BEST_STRIKE_HEADER")} />
-    <View
-      style={{
-        flexDirection: "row",
-        flexWrap: "wrap",
-        gap: SPACING.sm,
-      }}
-    >
-      <ProfileStatsSnapshotHighlightBox value={bestStreak} label={t("StatsModal.BEST_STREAK")} />
-      <ProfileStatsSnapshotHighlightBox value={totalWordsGuessed} label={t("StatsModal.TOTAL_WORDS_GUESSED")} />
-      <ProfileStatsSnapshotHighlightBox value={winRate} label={t("StatsModal.WIN_RATE")} />
-      <ProfileStatsSnapshotHighlightBox value={averageGuesses} label={t("Profile.AVG_GUESS_LABEL")} />
-    </View>
+  <View
+    testID="profile-stats-snapshot-highlight-section"
+    style={{
+      width: "100%",
+      height: "100%",
+    }}
+  >
+    <SectionHeader title={t("Profile.BEST_STRIKE_HEADER")} />
+    <StatsSnapshotGrid
+      bestStreak={bestStreak}
+      totalWordsGuessed={totalWordsGuessed}
+      winRate={winRate}
+      averageGuesses={averageGuesses}
+      testID="profile-stats-snapshot-highlight-grid"
+    />
   </View>
 );
 
@@ -1178,42 +1256,6 @@ const SectionHeader = ({
       }}
     >
       {title}
-    </Text>
-  </View>
-);
-
-const StatBox = ({value, label}: {value: number | string; label: string}) => (
-  <View
-    style={{
-      flex: 1,
-      minWidth: "45%",
-      backgroundColor: "#FFFFFF",
-      borderRadius: 14,
-      padding: SPACING.md,
-      alignItems: "center",
-      borderWidth: 1,
-      borderColor: "#F0EAF0",
-    }}
-  >
-    <Text
-      style={{
-        fontFamily: TYPOGRAPHY.fontPrimary,
-        fontSize: TYPOGRAPHY.fontSize["2xl"],
-        color: "#1A1A1A",
-      }}
-    >
-      {typeof value === "number" ? value.toString() : value}
-    </Text>
-    <Text
-      style={{
-        fontFamily: TYPOGRAPHY.fontSecondary,
-        fontSize: TYPOGRAPHY.fontSize.xs,
-        color: "#6B7280",
-        textAlign: "center",
-        marginTop: 2,
-      }}
-    >
-      {label}
     </Text>
   </View>
 );

@@ -93,6 +93,7 @@
     "VIEW_ALL_BUTTON": "Ver todas as patentes",
     "LEVEL_REQUIREMENT_PREFIX": "Nivel ",
     "CURRENT_RANK": "Patente atual",
+    "RANK_LABEL": "Patente",
     "NEXT_RANK_PREFIX": "Proxima:",
     "AT_LEVEL_PREFIX": "no nivel",
     "HIGHEST_RANK": "Patente maxima alcancada",

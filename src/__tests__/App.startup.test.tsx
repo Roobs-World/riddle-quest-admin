@@ -18,10 +18,10 @@ const mockUpdatePlayerData = jest.fn();
 const mockUseAuth = jest.fn();
 const mockFirebaseSignOut = jest.fn();
 const mockFirebaseAuth = {currentUser: null as {uid: string} | null};
-const mockSoundManagerInit = jest.fn(() => Promise.resolve());
+const mockSoundManagerInit = jest.fn((..._args: unknown[]) => Promise.resolve());
 const mockSetSoundEnabled = jest.fn();
-const mockPlayBackgroundMusic = jest.fn(() => Promise.resolve());
-const mockPauseBackgroundMusic = jest.fn(() => Promise.resolve());
+const mockPlayBackgroundMusic = jest.fn((..._args: unknown[]) => Promise.resolve());
+const mockPauseBackgroundMusic = jest.fn((..._args: unknown[]) => Promise.resolve());
 
 jest.mock("../../global.css", () => ({}));
 

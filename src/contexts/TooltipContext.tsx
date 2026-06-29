@@ -19,6 +19,8 @@ import {logger} from "../utils/logger";
 
 interface TooltipContextValue {
   activeTooltipId: TooltipId | null;
+  activeTooltipSequenceId: string | null;
+  isTooltipSequenceActive: boolean;
   showTooltip: (request: TooltipRequest) => Promise<void>;
   showTooltipOnce: (request: TooltipRequest) => Promise<boolean>;
   showTooltipSequence: (requests: TooltipSequenceRequest[], options?: TooltipSequenceOptions) => Promise<boolean>;
@@ -102,6 +104,8 @@ export const TooltipProvider: React.FC<{children: React.ReactNode}> = ({children
   const [activeRequest, setActiveRequest] = useState<TooltipRequest | null>(null);
   const [isTooltipVisible, setIsTooltipVisible] = useState(false);
   const [targetRect, setTargetRect] = useState<TargetRect | null>(null);
+  const [activeTooltipSequenceId, setActiveTooltipSequenceId] = useState<string | null>(null);
+  const [isTooltipSequenceActive, setIsTooltipSequenceActive] = useState(false);
   const sequenceQueueRef = useRef<TooltipSequenceRequest[]>([]);
   const activeRequestRef = useRef<TooltipRequest | null>(null);
   const isTooltipVisibleRef = useRef(false);
@@ -146,6 +150,8 @@ export const TooltipProvider: React.FC<{children: React.ReactNode}> = ({children
       isSequenceRunningRef.current = false;
       activeSequenceRef.current = null;
       sequenceQueueRef.current = [];
+      setActiveTooltipSequenceId(null);
+      setIsTooltipSequenceActive(false);
       await activateTooltip(request);
     },
     [activateTooltip],
@@ -180,6 +186,9 @@ export const TooltipProvider: React.FC<{children: React.ReactNode}> = ({children
           if (seenSequence) {
             sequenceQueueRef.current = [];
             isSequenceRunningRef.current = false;
+            activeSequenceRef.current = null;
+            setActiveTooltipSequenceId(null);
+            setIsTooltipSequenceActive(false);
             return false;
           }
         }
@@ -207,22 +216,30 @@ export const TooltipProvider: React.FC<{children: React.ReactNode}> = ({children
           sequenceQueueRef.current = [];
           isSequenceRunningRef.current = false;
           activeSequenceRef.current = null;
+          setActiveTooltipSequenceId(null);
+          setIsTooltipSequenceActive(false);
           return false;
         }
 
         sequenceQueueRef.current = remainingRequests;
         activeSequenceRef.current = options?.sequenceId ? options : null;
+        setActiveTooltipSequenceId(options?.sequenceId ?? null);
+        setIsTooltipSequenceActive(true);
         const activated = await activateTooltip(firstRequest);
         if (!activated) {
           sequenceQueueRef.current = [];
           isSequenceRunningRef.current = false;
           activeSequenceRef.current = null;
+          setActiveTooltipSequenceId(null);
+          setIsTooltipSequenceActive(false);
         }
         return activated;
       } catch (err) {
         sequenceQueueRef.current = [];
         isSequenceRunningRef.current = false;
         activeSequenceRef.current = null;
+        setActiveTooltipSequenceId(null);
+        setIsTooltipSequenceActive(false);
         logger.warn("showTooltipSequence failed", err);
         return false;
       }
@@ -236,6 +253,8 @@ export const TooltipProvider: React.FC<{children: React.ReactNode}> = ({children
     activeSequenceRef.current = null;
     activeRequestRef.current = null;
     isTooltipVisibleRef.current = false;
+    setActiveTooltipSequenceId(null);
+    setIsTooltipSequenceActive(false);
     setActiveRequest(null);
     setTargetRect(null);
     setIsTooltipVisible(false);
@@ -264,6 +283,9 @@ export const TooltipProvider: React.FC<{children: React.ReactNode}> = ({children
           if (!activated) {
             sequenceQueueRef.current = [];
             isSequenceRunningRef.current = false;
+            activeSequenceRef.current = null;
+            setActiveTooltipSequenceId(null);
+            setIsTooltipSequenceActive(false);
           }
         });
         return;
@@ -277,6 +299,8 @@ export const TooltipProvider: React.FC<{children: React.ReactNode}> = ({children
       }
       activeSequenceRef.current = null;
       isSequenceRunningRef.current = false;
+      setActiveTooltipSequenceId(null);
+      setIsTooltipSequenceActive(false);
     },
     [activateTooltip],
   );
@@ -341,6 +365,8 @@ export const TooltipProvider: React.FC<{children: React.ReactNode}> = ({children
   const contextValue = useMemo(
     () => ({
       activeTooltipId: isTooltipVisible ? (activeRequest?.id ?? null) : null,
+      activeTooltipSequenceId,
+      isTooltipSequenceActive,
       showTooltip,
       showTooltipOnce,
       showTooltipSequence,
@@ -349,8 +375,10 @@ export const TooltipProvider: React.FC<{children: React.ReactNode}> = ({children
     }),
     [
       activeRequest?.id,
+      activeTooltipSequenceId,
       cancelTooltipSequence,
       dismissTooltip,
+      isTooltipSequenceActive,
       isTooltipVisible,
       showTooltip,
       showTooltipOnce,

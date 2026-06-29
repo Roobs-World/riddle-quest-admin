@@ -1,5 +1,7 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {Animated, ScrollView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import MaskedView from "@react-native-masked-view/masked-view";
+import Svg, {Defs, LinearGradient, Rect, Stop} from "react-native-svg";
 import AuthScreenShell from "../components/layouts/AuthScreenShell";
 import WideButton from "../components/buttons/WideButton";
 import {COLORS, SHADOWS, SPACING, TYPOGRAPHY, styles} from "../styles";
@@ -32,6 +34,7 @@ const LANGUAGE_FLAGS: Record<SupportedLanguage, string> = {
 const LANGUAGE_TITLE_HOLD_MS = 1500;
 const LANGUAGE_TITLE_FADE_MS = 500;
 const LANGUAGE_HEADER_COPY_HEIGHT = 132;
+const LANGUAGE_SCROLL_TOP_FADE_HEIGHT = 44;
 
 const getLanguageSelectionCopy = (language: SupportedLanguage) => {
   const languageSelection = getRootCatalog(language).AuthStrings.LanguageSelection;
@@ -184,37 +187,65 @@ const LanguageSelectionScreen = ({onSubmit}: LanguageSelectionScreenProps): Reac
         </View>
 
         <View style={screenStyles.scrollFrame}>
-          <ScrollView
-            contentContainerStyle={screenStyles.gridContent}
-            showsVerticalScrollIndicator={false}
-            style={screenStyles.scrollArea}
+          <MaskedView
+            maskElement={
+              <View style={screenStyles.scrollAlphaMask} testID="language-scroll-alpha-mask">
+                <Svg height={LANGUAGE_SCROLL_TOP_FADE_HEIGHT} width="100%">
+                  <Defs>
+                    <LinearGradient id="language-scroll-top-alpha" x1="0" x2="0" y1="0" y2="1">
+                      <Stop offset="0" stopColor={COLORS.black} stopOpacity="0" />
+                      <Stop offset="1" stopColor={COLORS.black} stopOpacity="1" />
+                    </LinearGradient>
+                  </Defs>
+                  <Rect fill="url(#language-scroll-top-alpha)" height="100%" width="100%" />
+                </Svg>
+                <View style={screenStyles.scrollSolidMask} />
+                <Svg height={LANGUAGE_SCROLL_TOP_FADE_HEIGHT} width="100%">
+                  <Defs>
+                    <LinearGradient id="language-scroll-bottom-alpha" x1="0" x2="0" y1="0" y2="1">
+                      <Stop offset="0" stopColor={COLORS.black} stopOpacity="1" />
+                      <Stop offset="1" stopColor={COLORS.black} stopOpacity="0" />
+                    </LinearGradient>
+                  </Defs>
+                  <Rect fill="url(#language-scroll-bottom-alpha)" height="100%" width="100%" />
+                </Svg>
+              </View>
+            }
+            style={screenStyles.scrollMask}
+            testID="language-scroll-mask"
           >
-            <View style={screenStyles.grid}>
-              {languageOptions.map((option) => {
-                const isSelected = selectedLanguage === option.code;
+            <ScrollView
+              contentContainerStyle={screenStyles.gridContent}
+              showsVerticalScrollIndicator={false}
+              style={screenStyles.scrollArea}
+            >
+              <View style={screenStyles.grid}>
+                {languageOptions.map((option) => {
+                  const isSelected = selectedLanguage === option.code;
 
-                return (
-                  <TouchableOpacity
-                    key={option.code}
-                    accessibilityRole="button"
-                    accessibilityState={{selected: isSelected}}
-                    onPress={() => handleSelectLanguage(option.code)}
-                    style={[
-                      screenStyles.languageCard,
-                      screenStyles.supportedLanguageCard,
-                      isSelected && screenStyles.selectedLanguageCard,
-                    ]}
-                    testID={`language-option-${option.code}`}
-                  >
-                    <Text style={screenStyles.flag}>{option.flag}</Text>
-                    <Text style={[screenStyles.languageLabel, isSelected && screenStyles.selectedLanguageLabel]}>
-                      {option.label}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })}
-            </View>
-          </ScrollView>
+                  return (
+                    <TouchableOpacity
+                      key={option.code}
+                      accessibilityRole="button"
+                      accessibilityState={{selected: isSelected}}
+                      onPress={() => handleSelectLanguage(option.code)}
+                      style={[
+                        screenStyles.languageCard,
+                        screenStyles.supportedLanguageCard,
+                        isSelected && screenStyles.selectedLanguageCard,
+                      ]}
+                      testID={`language-option-${option.code}`}
+                    >
+                      <Text style={screenStyles.flag}>{option.flag}</Text>
+                      <Text style={[screenStyles.languageLabel, isSelected && screenStyles.selectedLanguageLabel]}>
+                        {option.label}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+            </ScrollView>
+          </MaskedView>
         </View>
 
         <View style={screenStyles.footer}>
@@ -292,12 +323,22 @@ const screenStyles = StyleSheet.create({
     fontSize: TYPOGRAPHY.fontSize.sm,
     textAlign: "center",
   },
+  scrollAlphaMask: {
+    flex: 1,
+  },
   scrollArea: {
     flex: 1,
   },
   scrollFrame: {
     flex: 1,
     marginTop: SPACING.xl,
+  },
+  scrollMask: {
+    flex: 1,
+  },
+  scrollSolidMask: {
+    backgroundColor: COLORS.black,
+    flex: 1,
   },
   selectedLanguageCard: {
     backgroundColor: "rgba(64, 31, 64, 0.92)",

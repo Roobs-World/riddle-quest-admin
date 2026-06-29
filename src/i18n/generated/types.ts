@@ -195,6 +195,7 @@ export const translationSchema = {
     "VIEW_ALL_BUTTON": "View all ranks",
     "LEVEL_REQUIREMENT_PREFIX": "Level ",
     "CURRENT_RANK": "Current rank",
+    "RANK_LABEL": "Rank",
     "NEXT_RANK_PREFIX": "Next:",
     "AT_LEVEL_PREFIX": "at level",
     "HIGHEST_RANK": "Highest rank reached",
