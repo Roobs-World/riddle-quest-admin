@@ -31,6 +31,6 @@
     "LOGO_BUTTON": "Logotipo",
     "MODAL_SEQUENCE_GO_TO_HINT": "Voltar para este pop-up",
     "MODAL_SEQUENCE_GO_TO_POPUP": "Vá para o pop-up {popupIndex} de {total}",
-    "MODAL_SEQUENCE_PROGRESS": "Popup {atual} de {total}"
+    "MODAL_SEQUENCE_PROGRESS": "Popup {current} de {total}"
   }
 }

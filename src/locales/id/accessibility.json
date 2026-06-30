@@ -31,6 +31,6 @@
     "LOGO_BUTTON": "logo",
     "MODAL_SEQUENCE_GO_TO_HINT": "Langsung kembali ke popup ini",
     "MODAL_SEQUENCE_GO_TO_POPUP": "Buka popup {popupIndex} dari {total}",
-    "MODAL_SEQUENCE_PROGRESS": "Popup {saat ini} dari {total}"
+    "MODAL_SEQUENCE_PROGRESS": "Popup {current} dari {total}"
   }
 }

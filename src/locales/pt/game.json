@@ -8,6 +8,6 @@
     "MODE_SUFFIX": " modo.",
     "RETRY_BUTTON_PRESSED": "Botao tentar novamente pressionado",
     "FALLBACK_CLUE_SINGLE": "Resolva esta palavra.",
-    "FALLBACK_CLUE_TEMPLATE": "Resolva esta palavra com {comprimento} letras."
+    "FALLBACK_CLUE_TEMPLATE": "Resolva esta palavra com {length} letras."
   }
 }

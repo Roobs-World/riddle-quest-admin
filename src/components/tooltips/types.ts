@@ -3,6 +3,7 @@ import type {View} from "react-native";
 
 export type TooltipId =
   | "submitAnswer"
+  | "gameCoins"
   | "hintAfterWrongGuess"
   | "shopOutOfCoins"
   | "achievementEarned"
@@ -31,6 +32,7 @@ export interface TooltipRequest {
   highlightElement?: React.ReactNode;
   content: TooltipContent;
   preferredPlacement?: "auto" | "above" | "below";
+  targetOffsetY?: number;
   useNativeModal?: boolean;
   showBackdrop?: boolean;
   persist?: boolean;

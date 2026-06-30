@@ -4,6 +4,8 @@
     "ACHIEVEMENT_EARNED_TITLE": "Obiettivo sbloccato",
     "CLASSIC_FROM_DAILY_BODY": "Sfida quotidiana completata. La modalità classica ti consente di continuare a risolvere enigmi al tuo ritmo.",
     "CLASSIC_FROM_DAILY_TITLE": "Modalità classica",
+    "GAME_COINS_BODY": "Le tue monete sono mostrate qui. Toccale per aprire il negozio quando ti servono indizi, salti o possibilità extra.",
+    "GAME_COINS_TITLE": "Saldo monete",
     "GOT_IT_BUTTON": "Capito",
     "HINT_AFTER_WRONG_BODY": "Quella supposizione non è riuscita. Tocca Suggerimento per rivelare una lettera utile e continuare.",
     "HINT_AFTER_WRONG_TITLE": "Hai bisogno di un indizio?",
@@ -19,6 +21,8 @@
     "PROFILE_IDENTITY_TITLE": "Profilo",
     "PROFILE_LEADERBOARD_BODY": "Apri la classifica per confrontare XP, vittorie e serie consecutive con altri giocatori.",
     "PROFILE_LEADERBOARD_TITLE": "Classifica",
+    "PROFILE_PROGRESSION_BODY": "Il tuo grado, il livello XP e la barra di avanzamento mostrano quanto sei vicino al livello successivo.",
+    "PROFILE_PROGRESSION_TITLE": "Progressi utente",
     "PROFILE_STATISTICS_BODY": "Apri le statistiche per un'analisi più approfondita delle tue prestazioni di gioco.",
     "PROFILE_STATISTICS_TITLE": "Statistiche",
     "PROFILE_STATS_BODY": "Queste carte riassumono la tua serie di vittorie consecutive, le parole indovinate, la percentuale di vincita e le ipotesi medie.",
@@ -26,8 +30,6 @@
     "SHOP_OUT_OF_COINS_BODY": "Hai esaurito le monete per questa azione. Apri il negozio per acquistare o guadagnare di più.",
     "SHOP_OUT_OF_COINS_TITLE": "Prendi più monete",
     "SUBMIT_ANSWER_BODY": "Una volta riempiti tutti gli slot, tocca Invia per verificare la tua ipotesi.",
-    "SUBMIT_ANSWER_TITLE": "Invia la tua risposta",
-    "PROFILE_PROGRESSION_TITLE": "Progressi utente",
-    "PROFILE_PROGRESSION_BODY": "Il tuo grado, il livello XP e la barra di avanzamento mostrano quanto sei vicino al livello successivo."
+    "SUBMIT_ANSWER_TITLE": "Invia la tua risposta"
   }
 }

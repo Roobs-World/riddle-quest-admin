@@ -191,6 +191,36 @@ describe("TooltipContext", () => {
     });
   });
 
+  it("applies an optional vertical offset to the measured target", async () => {
+    const {result} = renderHook(() => useTooltip(), {
+      wrapper: createWrapper(),
+    });
+
+    await act(async () => {
+      await expect(
+        result.current.showTooltipOnce({
+          id: "gameCoins",
+          userId: "user-4",
+          targetRef: createTargetRef(),
+          targetOffsetY: 32,
+          content: {
+            title: "Coins",
+            body: "Tap the coins.",
+            action: "Got it",
+          },
+        }),
+      ).resolves.toBe(true);
+    });
+
+    await waitFor(() => {
+      expect(mockTooltipOverlay).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          targetRect: {x: 12, y: 56, width: 48, height: 36},
+        }),
+      );
+    });
+  });
+
   it("retries target measurement when the first layout pass is offscreen", async () => {
     const measureInWindow = jest
       .fn()
@@ -228,7 +258,7 @@ describe("TooltipContext", () => {
     });
   });
 
-  it("uses the game-local backdrop for submit tooltips", async () => {
+  it("uses the window overlay for submit tooltips so window target measurements line up", async () => {
     const {result} = renderHook(() => useTooltip(), {
       wrapper: createWrapper(),
     });
@@ -251,8 +281,9 @@ describe("TooltipContext", () => {
     await waitFor(() => {
       expect(mockTooltipOverlay).toHaveBeenLastCalledWith(
         expect.objectContaining({
-          cutoutTarget: true,
-          showBackdrop: false,
+          cutoutTarget: false,
+          showBackdrop: true,
+          useNativeModal: true,
         }),
       );
     });

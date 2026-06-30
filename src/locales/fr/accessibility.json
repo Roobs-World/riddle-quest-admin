@@ -31,6 +31,6 @@
     "LOGO_BUTTON": "Logo de l'application",
     "MODAL_SEQUENCE_GO_TO_HINT": "Revenir à cette fenêtre contextuelle",
     "MODAL_SEQUENCE_GO_TO_POPUP": "Aller à la fenêtre contextuelle {popupIndex} sur {total}",
-    "MODAL_SEQUENCE_PROGRESS": "Popup {actuel} sur {total}"
+    "MODAL_SEQUENCE_PROGRESS": "Popup {current} sur {total}"
   }
 }

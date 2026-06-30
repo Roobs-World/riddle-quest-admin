@@ -8,7 +8,7 @@
  * progression across modes, and user settings such as sound and haptics.
  */
 import React, {useState, useEffect, useCallback, useMemo, useRef} from "react";
-import {KeyboardAvoidingView, Platform, View, Linking} from "react-native";
+import {KeyboardAvoidingView, Platform, Text, View, Linking} from "react-native";
 import {SafeAreaView} from "react-native-safe-area-context";
 import * as RNIap from "react-native-iap";
 import * as Haptics from "expo-haptics";
@@ -45,7 +45,8 @@ import {
 } from "../../constants/game";
 import {getRankForLevel} from "../../constants/ranks";
 import {LOADING_SPINNER_OPACITY, LOADING_SPINNER_SIZE} from "../../constants/loading";
-import {styles} from "../../styles";
+import {SUBMIT_BUTTON_PADDING_H} from "../../constants/layout";
+import {COLORS, SPACING, TYPOGRAPHY, styles} from "../../styles";
 import {GameInput} from "../../components/game/GameInput";
 import {useModal} from "../../hooks/useModal";
 import {ModalProvider} from "../../components/modals/ModalProvider";
@@ -176,16 +177,35 @@ const buildLockedGuessState = (
 const ONBOARDING_SEEN_STORAGE_KEY_PREFIX = "gameScreenOnboardingSeen";
 const RESULT_MODAL_REVEAL_DELAY_MS = 850;
 const FIFTH_CORRECT_ANSWER_COUNT = 5;
-const SUBMIT_TOOLTIP_BACKDROP_LAYER = {
-  bottom: 0,
-  backgroundColor: "rgba(0,0,0,0.45)",
-  elevation: 20,
-  left: 0,
-  position: "absolute" as const,
-  right: 0,
-  top: 0,
-  zIndex: 20,
-} as const;
+
+const SubmitTooltipHighlight = ({isDisabled}: {isDisabled: boolean}): React.JSX.Element => (
+  <View
+    testID="submit-tooltip-highlight-button"
+    style={{
+      alignItems: "center",
+      backgroundColor: isDisabled ? COLORS.gray300 : COLORS.primaryOrange,
+      borderRadius: 999,
+      height: "100%",
+      justifyContent: "center",
+      paddingHorizontal: SUBMIT_BUTTON_PADDING_H,
+      paddingVertical: SPACING.md,
+      width: "100%",
+    }}
+  >
+    <Text
+      numberOfLines={1}
+      adjustsFontSizeToFit
+      minimumFontScale={0.78}
+      style={{
+        color: COLORS.black,
+        fontFamily: TYPOGRAPHY.fontPrimary,
+        fontSize: TYPOGRAPHY.fontSize.lg,
+      }}
+    >
+      {t("GameScreenAlerts.SUBMIT_BUTTON")}
+    </Text>
+  </View>
+);
 
 const getOnboardingSeenStorageKey = (userId?: string): string => {
   if (userId) {
@@ -201,6 +221,12 @@ const getTooltipContent = (id: TooltipId) => {
       return {
         title: t("Tooltips.SUBMIT_ANSWER_TITLE"),
         body: t("Tooltips.SUBMIT_ANSWER_BODY"),
+        action: t("Tooltips.GOT_IT_BUTTON"),
+      };
+    case "gameCoins":
+      return {
+        title: t("Tooltips.GAME_COINS_TITLE"),
+        body: t("Tooltips.GAME_COINS_BODY"),
         action: t("Tooltips.GOT_IT_BUTTON"),
       };
     case "hintAfterWrongGuess":
@@ -379,6 +405,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   const modal = useModal();
   const tooltip = useTooltip();
   const showTooltipRequestOnce = tooltip.showTooltipOnce;
+  const showTooltipSequenceRequest = tooltip.showTooltipSequence;
   const {showWelcomeBackModal, showInfoModal} = modal;
   const isGuestMode = isGuestPlayer(playerData);
   const {
@@ -410,6 +437,19 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     () => resolvePlayableRiddleText(riddleText, playableAnswer),
     [riddleText, playableAnswer],
   );
+  const gameOverHandledRef = useRef(false);
+  const isMountedRef = useRef(true);
+  const latestResultRef = useRef<GuessResult | null>(null);
+  const lastSubmittedAttemptRef = useRef<number | null>(null);
+  const submitButtonRef = useRef<View>(null);
+  const hintButtonRef = useRef<View>(null);
+  const nextButtonRef = useRef<View>(null);
+  const coinsButtonRef = useRef<View>(null);
+  const profileButtonRef = useRef<View>(null);
+  const previousGameModeRef = useRef<GameMode>(gameMode);
+  const openShopFromLossRef = useRef<() => void>(() => {});
+  const coinAnimationSettleTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const hasQueuedSubmitTooltipRef = useRef(false);
 
   const showTooltipOnce = useCallback(
     (id: TooltipId, targetRef?: TooltipTargetRef | null, highlightElement?: React.ReactNode) => {
@@ -438,25 +478,13 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         targetRef,
         highlightElement,
         content: getTooltipContent(id),
+        preferredPlacement: id === "submitAnswer" ? "above" : undefined,
+        useNativeModal: id === "submitAnswer" ? true : undefined,
         userId: currentTooltipUserId,
       });
     },
     [currentTooltipUserId, gameMode, isOnboardingComplete, isUpgradeModalVisible, riddleId, showTooltipRequestOnce],
   );
-
-  const gameOverHandledRef = useRef(false);
-  const isMountedRef = useRef(true);
-  const latestResultRef = useRef<GuessResult | null>(null);
-  const lastSubmittedAttemptRef = useRef<number | null>(null);
-  const submitButtonRef = useRef<View>(null);
-  const hintButtonRef = useRef<View>(null);
-  const nextButtonRef = useRef<View>(null);
-  const coinsButtonRef = useRef<View>(null);
-  const profileButtonRef = useRef<View>(null);
-  const previousGameModeRef = useRef<GameMode>(gameMode);
-  const openShopFromLossRef = useRef<() => void>(() => {});
-  const coinAnimationSettleTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const hasQueuedSubmitTooltipRef = useRef(false);
 
   const completeGuestOnboarding = useCallback(() => {
     setIsGuestOnboardingModalVisible(false);
@@ -2324,6 +2352,56 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     [currentGuess, playableAnswerLength],
   );
 
+  const showIntroTooltipSequence = useCallback(() => {
+    if (!isOnboardingComplete || isUpgradeModalVisible) {
+      logger.debug("[GameScreen] showIntroTooltipSequence skipped until intro prompts complete", {
+        userId: currentTooltipUserId,
+        riddleId,
+        gameMode,
+        isOnboardingComplete,
+        isUpgradeModalVisible,
+      });
+      return Promise.resolve(false);
+    }
+
+    logger.debug("[GameScreen] showIntroTooltipSequence requested", {
+      hasSubmitTargetRef: Boolean(submitButtonRef.current),
+      hasCoinsTargetRef: Boolean(coinsButtonRef.current),
+      userId: currentTooltipUserId,
+      riddleId,
+      gameMode,
+    });
+
+    return showTooltipSequenceRequest([
+      {
+        id: "submitAnswer",
+        targetRef: submitButtonRef,
+        highlightElement: <SubmitTooltipHighlight isDisabled={isSubmitDisabled || gameOver} />,
+        content: getTooltipContent("submitAnswer"),
+        preferredPlacement: "above",
+        useNativeModal: true,
+        userId: currentTooltipUserId,
+      },
+      {
+        id: "gameCoins",
+        targetRef: coinsButtonRef,
+        content: getTooltipContent("gameCoins"),
+        preferredPlacement: "below",
+        targetOffsetY: SPACING.xl,
+        userId: currentTooltipUserId,
+      },
+    ]);
+  }, [
+    currentTooltipUserId,
+    gameMode,
+    gameOver,
+    isOnboardingComplete,
+    isSubmitDisabled,
+    isUpgradeModalVisible,
+    riddleId,
+    showTooltipSequenceRequest,
+  ]);
+
   useEffect(() => {
     if (suppressOnboarding || !isOnboardingComplete || isUpgradeModalVisible || hasQueuedSubmitTooltipRef.current) {
       return;
@@ -2331,11 +2409,11 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
 
     hasQueuedSubmitTooltipRef.current = true;
     const timeoutId = setTimeout(() => {
-      void showTooltipOnce("submitAnswer", submitButtonRef);
+      void showIntroTooltipSequence();
     }, 650);
 
     return () => clearTimeout(timeoutId);
-  }, [isOnboardingComplete, isUpgradeModalVisible, showTooltipOnce, suppressOnboarding]);
+  }, [isOnboardingComplete, isUpgradeModalVisible, showIntroTooltipSequence, suppressOnboarding]);
 
   const headerModeLabel =
     gameMode === "daily"
@@ -2380,10 +2458,6 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
             onSelectCurrentGuessSlot={handleSelectCurrentGuessSlot}
           />
 
-          {tooltip.activeTooltipId === "submitAnswer" ? (
-            <View pointerEvents="none" style={SUBMIT_TOOLTIP_BACKDROP_LAYER} testID="submit-tooltip-local-backdrop" />
-          ) : null}
-
           <GameInput
             isSubmitDisabled={isSubmitDisabled}
             gameOver={gameOver}
@@ -2393,7 +2467,6 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
             hintButtonRef={hintButtonRef}
             submitButtonRef={submitButtonRef}
             nextButtonRef={nextButtonRef}
-            isSubmitTooltipTargetActive={tooltip.activeTooltipId === "submitAnswer"}
           />
 
           <BottomNavigationBar

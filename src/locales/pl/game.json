@@ -8,6 +8,6 @@
     "MODE_SUFFIX": "tryb.",
     "RETRY_BUTTON_PRESSED": "Naciśnięto przycisk Ponów próbę",
     "FALLBACK_CLUE_SINGLE": "Rozwiąż to słowo.",
-    "FALLBACK_CLUE_TEMPLATE": "Rozwiąż to słowo o długości {długość}."
+    "FALLBACK_CLUE_TEMPLATE": "Rozwiąż to słowo o długości {length}."
   }
 }

@@ -1,5 +1,6 @@
 import React from "react";
 import {render, act} from "@testing-library/react-native";
+import {StyleSheet} from "react-native";
 import {withRepeat, withTiming, cancelAnimation} from "react-native-reanimated";
 
 jest.mock("../SolarSystem3D", () => {
@@ -79,6 +80,17 @@ describe("StarryBackground", () => {
     expect(getByTestId(`star-${__STAR_COUNT_FOR_TESTS - 1}`)).toBeTruthy();
     expect(getByTestId("shooting-star-0")).toBeTruthy();
     expect(getByTestId(`shooting-star-${__SHOOTING_STAR_COUNT_FOR_TESTS - 1}`)).toBeTruthy();
+  });
+
+  it("keeps shooting stars behind the fully opaque solar system layer", () => {
+    const {getByTestId} = render(<StarryBackground />);
+
+    const shootingStarsLayerStyle = StyleSheet.flatten(getByTestId("shooting-stars-layer").props.style);
+    const solarSystemLayerStyle = StyleSheet.flatten(getByTestId("solar-system-layer").props.style);
+
+    expect(solarSystemLayerStyle.zIndex).toBeGreaterThan(shootingStarsLayerStyle.zIndex);
+    expect(solarSystemLayerStyle.elevation).toBeGreaterThan(shootingStarsLayerStyle.elevation);
+    expect(solarSystemLayerStyle.opacity).toBeUndefined();
   });
 
   it("starts animation sequences after timeout and cancels on unmount", () => {

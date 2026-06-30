@@ -439,6 +439,8 @@ export const TRANSLATION_KEYS = [
   "Tooltips.ACHIEVEMENT_EARNED_TITLE",
   "Tooltips.CLASSIC_FROM_DAILY_BODY",
   "Tooltips.CLASSIC_FROM_DAILY_TITLE",
+  "Tooltips.GAME_COINS_BODY",
+  "Tooltips.GAME_COINS_TITLE",
   "Tooltips.GOT_IT_BUTTON",
   "Tooltips.HINT_AFTER_WRONG_BODY",
   "Tooltips.HINT_AFTER_WRONG_TITLE",

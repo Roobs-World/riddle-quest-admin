@@ -33,7 +33,7 @@ const TooltipContext = createContext<TooltipContextValue | undefined>(undefined)
 const TARGET_MEASURE_RETRY_COUNT = 6;
 
 const usesOriginalTargetSpotlight = (id: TooltipId): boolean =>
-  id === "submitAnswer" || id === "profileProgression" || id === "profileCoins";
+  id === "gameCoins" || id === "profileProgression" || id === "profileCoins";
 
 const shouldCheckIndividualTooltipSeenState = (options?: TooltipSequenceOptions): boolean => !options?.sequenceId;
 
@@ -44,6 +44,19 @@ const waitForNextFrame = (): Promise<void> =>
 
 const isValidTargetRect = (x: number, y: number, width: number, height: number): boolean =>
   [x, y, width, height].every((value) => Number.isFinite(value)) && x >= 0 && y >= 0 && width > 0 && height > 0;
+
+const applyTargetOffset = (targetRect: TargetRect | null, request: TooltipRequest): TargetRect | null => {
+  const targetOffsetY =
+    typeof request.targetOffsetY === "number" && Number.isFinite(request.targetOffsetY) ? request.targetOffsetY : 0;
+  if (!targetRect || targetOffsetY === 0) {
+    return targetRect;
+  }
+
+  return {
+    ...targetRect,
+    y: Math.max(0, targetRect.y + targetOffsetY),
+  };
+};
 
 const measureTargetOnce = (request: TooltipRequest): Promise<TargetRect | null> => {
   const target = request.targetRef?.current;
@@ -129,11 +142,13 @@ export const TooltipProvider: React.FC<{children: React.ReactNode}> = ({children
         persist: request.persist ?? false,
       });
       const measuredTarget = await measureTarget(request);
+      const adjustedTarget = applyTargetOffset(measuredTarget, request);
       logger.debug("[TooltipContext] activating tooltip", {
         id: request.id,
         measuredTarget,
+        adjustedTarget,
       });
-      setTargetRect(measuredTarget);
+      setTargetRect(adjustedTarget);
       activeRequestRef.current = request;
       isTooltipVisibleRef.current = true;
       setActiveRequest(request);
@@ -398,8 +413,8 @@ export const TooltipProvider: React.FC<{children: React.ReactNode}> = ({children
             cutoutTarget={usesOriginalTargetSpotlight(activeRequest.id)}
             content={activeRequest.content}
             preferredPlacement={activeRequest.preferredPlacement}
-            useNativeModal={activeRequest.useNativeModal ?? activeRequest.id !== "submitAnswer"}
-            showBackdrop={activeRequest.showBackdrop ?? activeRequest.id !== "submitAnswer"}
+            useNativeModal={activeRequest.useNativeModal ?? true}
+            showBackdrop={activeRequest.showBackdrop ?? true}
             onDismiss={() => dismissTooltip(activeRequest.id)}
             onExited={() => {
               logger.debug("[TooltipContext] tooltip exited", {

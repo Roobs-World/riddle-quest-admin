@@ -298,15 +298,27 @@ const renderUpgradeExistingAccountSurface = () => (
   </>
 );
 
+const SUBMIT_TOOLTIP_QA_TARGET_RECT = {x: 120, y: 420, width: 140, height: 48} as const;
+
 const renderSubmitTooltipSurface = () => (
   <View style={qaStyles.centered}>
     <StarryBackground />
-    <View style={qaStyles.tooltipTarget}>
+    <View
+      style={[
+        qaStyles.tooltipTarget,
+        {
+          left: SUBMIT_TOOLTIP_QA_TARGET_RECT.x,
+          position: "absolute",
+          top: SUBMIT_TOOLTIP_QA_TARGET_RECT.y,
+        },
+      ]}
+    >
       <Text style={qaStyles.tooltipTargetText}>{t("GameScreenAlerts.SUBMIT_BUTTON")}</Text>
     </View>
     <TooltipOverlay
       visible={true}
-      targetRect={{x: 120, y: 420, width: 140, height: 48}}
+      targetRect={SUBMIT_TOOLTIP_QA_TARGET_RECT}
+      preferredPlacement="above"
       content={{
         title: t("Tooltips.SUBMIT_ANSWER_TITLE"),
         body: t("Tooltips.SUBMIT_ANSWER_BODY"),

@@ -290,11 +290,11 @@ const styles = StyleSheet.create({
   solarSystemContainer: {
     bottom: 0,
     left: 0,
-    opacity: 0.78,
     position: "absolute",
     right: 0,
     top: 0,
-    zIndex: 1,
+    zIndex: 2,
+    elevation: 2,
   },
   star: {
     backgroundColor: COLORS.white,
@@ -311,6 +311,15 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     zIndex: 0,
+  },
+  shootingStarsContainer: {
+    bottom: 0,
+    left: 0,
+    position: "absolute",
+    right: 0,
+    top: 0,
+    zIndex: 1,
+    elevation: 1,
   },
 });
 
@@ -332,10 +341,13 @@ const StarryBackground: React.FC = () => {
     <View style={styles.container}>
       <View style={styles.starsContainer}>
         {starComponents}
+      </View>
+
+      <View testID="shooting-stars-layer" style={styles.shootingStarsContainer}>
         {shootingStarComponents}
       </View>
 
-      <View style={styles.solarSystemContainer}>
+      <View testID="solar-system-layer" style={styles.solarSystemContainer}>
         <SolarSystem3D />
       </View>
     </View>

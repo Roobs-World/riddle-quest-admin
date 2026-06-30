@@ -174,6 +174,7 @@ const mockUpgradeAccountModal = jest.fn();
 const mockGuestOnboardingModal = jest.fn();
 const mockShowTooltipOnce = jest.fn(() => Promise.resolve(true));
 const mockShowTooltip = jest.fn(() => Promise.resolve());
+const mockShowTooltipSequence = jest.fn(() => Promise.resolve(true));
 const mockDismissTooltip = jest.fn();
 
 jest.mock("../../../hooks/useModal", () => ({
@@ -207,8 +208,12 @@ jest.mock("../../../hooks/useModal", () => ({
 jest.mock("../../../contexts/TooltipContext", () => ({
   useTooltip: () => ({
     activeTooltipId: null,
+    activeTooltipSequenceId: null,
+    isTooltipSequenceActive: false,
     showTooltip: mockShowTooltip,
     showTooltipOnce: mockShowTooltipOnce,
+    showTooltipSequence: mockShowTooltipSequence,
+    cancelTooltipSequence: jest.fn(),
     dismissTooltip: mockDismissTooltip,
   }),
 }));
@@ -563,6 +568,7 @@ describe("GameScreen", () => {
     mockShowInterstitialAd.mockResolvedValue(false);
     mockShowTooltipOnce.mockClear();
     mockShowTooltip.mockClear();
+    mockShowTooltipSequence.mockClear();
     mockDismissTooltip.mockClear();
     mockOfflineBlockingModal.mockClear();
     mockIsRewardedAdReady = true;
@@ -608,15 +614,17 @@ describe("GameScreen", () => {
       act(() => {
         jest.advanceTimersByTime(650);
       });
-      expect(mockShowTooltipOnce).toHaveBeenCalledTimes(1);
-      expect(mockShowTooltipOnce).toHaveBeenCalledWith(expect.objectContaining({id: "submitAnswer"}));
+      expect(mockShowTooltipSequence).toHaveBeenCalledTimes(1);
+      expect(mockShowTooltipSequence).toHaveBeenCalledWith(
+        expect.arrayContaining([expect.objectContaining({id: "submitAnswer"})]),
+      );
 
       rerender(<GameScreen {...defaultProps} />);
       act(() => {
         jest.advanceTimersByTime(650);
       });
 
-      expect(mockShowTooltipOnce).toHaveBeenCalledTimes(1);
+      expect(mockShowTooltipSequence).toHaveBeenCalledTimes(1);
       jest.useRealTimers();
     });
 
@@ -627,7 +635,7 @@ describe("GameScreen", () => {
       act(() => {
         jest.advanceTimersByTime(650);
       });
-      expect(mockShowTooltipOnce).not.toHaveBeenCalledWith(expect.objectContaining({id: "submitAnswer"}));
+      expect(mockShowTooltipSequence).not.toHaveBeenCalled();
 
       const welcomeBackConfig = mockShowWelcomeBackModal.mock.calls[0]?.[0];
       act(() => {
@@ -638,13 +646,23 @@ describe("GameScreen", () => {
       });
 
       await waitFor(() => {
-        expect(mockShowTooltipOnce).toHaveBeenCalledWith(expect.objectContaining({id: "submitAnswer"}));
+        expect(mockShowTooltipSequence).toHaveBeenCalledWith(
+          expect.arrayContaining([expect.objectContaining({id: "submitAnswer"})]),
+        );
       });
-      expect(mockShowTooltipOnce).toHaveBeenCalledWith(
-        expect.objectContaining({
-          id: "submitAnswer",
-          highlightElement: undefined,
-        }),
+      expect(mockShowTooltipSequence).toHaveBeenCalledWith(
+        [
+          expect.objectContaining({
+            id: "submitAnswer",
+            preferredPlacement: "above",
+            useNativeModal: true,
+          }),
+          expect.objectContaining({
+            id: "gameCoins",
+            preferredPlacement: "below",
+            targetOffsetY: expect.any(Number),
+          }),
+        ],
       );
       jest.useRealTimers();
     });
@@ -663,7 +681,7 @@ describe("GameScreen", () => {
         act(() => {
           jest.advanceTimersByTime(650);
         });
-        expect(mockShowTooltipOnce).not.toHaveBeenCalledWith(expect.objectContaining({id: "submitAnswer"}));
+        expect(mockShowTooltipSequence).not.toHaveBeenCalled();
 
         await waitFor(() => {
           expect(mockGuestOnboardingModal).toHaveBeenCalledWith(
@@ -679,14 +697,16 @@ describe("GameScreen", () => {
           mockGuestOnboardingModal.mock.calls[mockGuestOnboardingModal.mock.calls.length - 1][0].onClose();
         });
 
-        expect(mockShowTooltipOnce).not.toHaveBeenCalledWith(expect.objectContaining({id: "submitAnswer"}));
+        expect(mockShowTooltipSequence).not.toHaveBeenCalled();
 
         act(() => {
           jest.advanceTimersByTime(650);
         });
 
         await waitFor(() => {
-          expect(mockShowTooltipOnce).toHaveBeenCalledWith(expect.objectContaining({id: "submitAnswer"}));
+          expect(mockShowTooltipSequence).toHaveBeenCalledWith(
+            expect.arrayContaining([expect.objectContaining({id: "submitAnswer"})]),
+          );
         });
       } finally {
         mockPlayerData.email = originalEmail;
@@ -704,6 +724,7 @@ describe("GameScreen", () => {
       });
 
       expect(mockShowTooltipOnce).not.toHaveBeenCalledWith(expect.objectContaining({id: "submitAnswer"}));
+      expect(mockShowTooltipSequence).not.toHaveBeenCalled();
       jest.useRealTimers();
     });
   });

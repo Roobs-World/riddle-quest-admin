@@ -11,7 +11,7 @@
     "SHARE_ATTEMPT_SINGULAR": "Versuch",
     "SHARE_CLASSIC_MODE_LABEL": "Klassischer Modus",
     "SHARE_DAILY_CHALLENGE_LABEL": "Tägliche Herausforderung",
-    "SHARE_MESSAGE_TEMPLATE": "Ich habe das heutige Riddle Quest {gameType} in {Versuchen} gelöst {attemptLabel}!\n\n{emojiGrid}\n\nKannst du meine Punktzahl übertreffen?\n\n#Riddle Quest #WordPuzzle #BrainGame",
+    "SHARE_MESSAGE_TEMPLATE": "Ich habe das heutige Riddle Quest {gameType} in {attempts} gelöst {attemptLabel}!\n\n{emojiGrid}\n\nKannst du meine Punktzahl übertreffen?\n\n#Riddle Quest #WordPuzzle #BrainGame",
     "SHARE_RESULT_TITLE": "Sehen Sie sich mein Riddle Quest-Ergebnis an!"
   }
 }

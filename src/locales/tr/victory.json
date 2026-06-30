@@ -11,7 +11,7 @@
     "SHARE_ATTEMPT_SINGULAR": "deneme",
     "SHARE_CLASSIC_MODE_LABEL": "Klasik Mod",
     "SHARE_DAILY_CHALLENGE_LABEL": "Günlük Mücadele",
-    "SHARE_MESSAGE_TEMPLATE": "Bugünün Riddle Quest {gameType} sorununu {denemelerde} çözdüm {attemptLabel}!\n\n{emojiGrid}\n\nPuanımı geçebilir misin?\n\n#Riddle Quest #WordPuzzle #BrainGame",
+    "SHARE_MESSAGE_TEMPLATE": "Bugünün Riddle Quest {gameType} sorununu {attempts} çözdüm {attemptLabel}!\n\n{emojiGrid}\n\nPuanımı geçebilir misin?\n\n#Riddle Quest #WordPuzzle #BrainGame",
     "SHARE_RESULT_TITLE": "Riddle Quest sonucuma göz atın!"
   }
 }

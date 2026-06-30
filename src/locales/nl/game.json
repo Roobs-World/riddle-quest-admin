@@ -8,6 +8,6 @@
     "MODE_SUFFIX": "modus.",
     "RETRY_BUTTON_PRESSED": "Knop voor opnieuw proberen ingedrukt",
     "FALLBACK_CLUE_SINGLE": "Los dit woord op.",
-    "FALLBACK_CLUE_TEMPLATE": "Los dit woord van {lengte} letters op."
+    "FALLBACK_CLUE_TEMPLATE": "Los dit woord van {length} letters op."
   }
 }

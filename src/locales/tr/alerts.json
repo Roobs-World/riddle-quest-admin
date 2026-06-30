@@ -36,7 +36,7 @@
     "DEBUG_DAILY_CHALLENGE_GENERATED_MESSAGE": "localizedRiddles/{locale}/riddles/current.",
     "DEBUG_DAILY_CHALLENGE_GENERATED_TITLE": "Günlük Mücadelede başarıyla yeni bir günlük meydan okuma oluşturuldu Oluşturuldu",
     "GUEST_MODE_SAVED_ON_DEVICE_MESSAGE": "İlerlemeniz bu cihaza kaydedildi. Hesabınızı cihazlar arasında güvende tutmak için yükseltin.",
-    "STREAK_BROKEN_MESSAGE": "Seriniz {preciousStreak} day{daySuffix} tarihinde sona erdi. Yeni bir seri başlatmak için bugünkü günlük mücadeleyi tamamlayın.",
+    "STREAK_BROKEN_MESSAGE": "Seriniz {previousStreak} day{daySuffix} tarihinde sona erdi. Yeni bir seri başlatmak için bugünkü günlük mücadeleyi tamamlayın.",
     "STREAK_BROKEN_TITLE": "Seri Kırıldı",
     "NO_PRODUCTS_AVAILABLE_TITLE": "Mevcut Ürün Yok",
     "QA_RIDDLE_DATABASE_UNAVAILABLE_MESSAGE": "Uygulama bilmecelerini yüklemeyi tamamlayamadı. Lütfen bağlantınızı kontrol edin ve tekrar deneyin.",

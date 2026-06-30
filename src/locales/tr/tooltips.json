@@ -4,6 +4,8 @@
     "ACHIEVEMENT_EARNED_TITLE": "Basari acildi",
     "CLASSIC_FROM_DAILY_BODY": "Gunluk meydan okuma tamamlandi. Klasik mod bilmeceleri kendi hizinda cozmeye devam etmeni saglar.",
     "CLASSIC_FROM_DAILY_TITLE": "Klasik mod",
+    "GAME_COINS_BODY": "Jetonların burada görünür. İpuçları, atlamalar veya ekstra haklar gerektiğinde mağazayı açmak için dokun.",
+    "GAME_COINS_TITLE": "Jeton bakiyesi",
     "GOT_IT_BUTTON": "Anladim",
     "HINT_AFTER_WRONG_BODY": "Bu tahmin olmadi. Yararli bir harf acmak ve devam etmek icin Ipucu'na dokun.",
     "HINT_AFTER_WRONG_TITLE": "Ipucu ister misin?",
@@ -19,6 +21,8 @@
     "PROFILE_IDENTITY_TITLE": "Profil",
     "PROFILE_LEADERBOARD_BODY": "XP, galibiyet ve serilerini diger oyuncularla karsilastirmak icin lider tablosunu ac.",
     "PROFILE_LEADERBOARD_TITLE": "Lider tablosu",
+    "PROFILE_PROGRESSION_BODY": "Rütben, XP seviyen ve ilerleme çubuğun bir sonraki seviyeye ne kadar yaklaştığını gösterir.",
+    "PROFILE_PROGRESSION_TITLE": "Kullanıcı ilerlemesi",
     "PROFILE_STATISTICS_BODY": "Oyun performansinin ayrintili dokumu icin istatistikleri ac.",
     "PROFILE_STATISTICS_TITLE": "Istatistikler",
     "PROFILE_STATS_BODY": "Bu kartlar serini, bildigin kelimeleri, kazanma oranini ve ortalama tahminlerini ozetler.",
@@ -26,8 +30,6 @@
     "SHOP_OUT_OF_COINS_BODY": "Bu islem icin paran kalmadi. Daha fazla almak veya kazanmak icin magazayi ac.",
     "SHOP_OUT_OF_COINS_TITLE": "Daha fazla para al",
     "SUBMIT_ANSWER_BODY": "Tum kutular doldugunda tahminini kontrol etmek icin Gonder'e dokun.",
-    "SUBMIT_ANSWER_TITLE": "Cevabini gonder",
-    "PROFILE_PROGRESSION_TITLE": "Kullanıcı ilerlemesi",
-    "PROFILE_PROGRESSION_BODY": "Rütben, XP seviyen ve ilerleme çubuğun bir sonraki seviyeye ne kadar yaklaştığını gösterir."
+    "SUBMIT_ANSWER_TITLE": "Cevabini gonder"
   }
 }

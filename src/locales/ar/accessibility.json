@@ -30,7 +30,7 @@
     "LANDING_ATTRIBUTION_LINK": "صنع بواسطة __محمي_0__",
     "LOGO_BUTTON": "الشعار",
     "MODAL_SEQUENCE_GO_TO_HINT": "الرجوع إلى هذه النافذة المنبثقة",
-    "MODAL_SEQUENCE_GO_TO_POPUP": "انتقل إلى النافذة المنبثقة {popupIndex} الخاصة {الإجمالي}",
-    "MODAL_SEQUENCE_PROGRESS": "النوافذ المنبثقة {الحالية} من {الإجمالي}"
+    "MODAL_SEQUENCE_GO_TO_POPUP": "انتقل إلى النافذة المنبثقة {popupIndex} الخاصة {total}",
+    "MODAL_SEQUENCE_PROGRESS": "النوافذ المنبثقة {current} من {total}"
   }
 }

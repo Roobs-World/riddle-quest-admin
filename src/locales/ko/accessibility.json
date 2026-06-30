@@ -30,7 +30,7 @@
     "LANDING_ATTRIBUTION_LINK": "제작자 Roobs World",
     "LOGO_BUTTON": "로고",
     "MODAL_SEQUENCE_GO_TO_HINT": "이 팝업으로 다시 이동",
-    "MODAL_SEQUENCE_GO_TO_POPUP": "{total}개의 팝업 {popupIndex}로 이동",
-    "MODAL_SEQUENCE_PROGRESS": "Popup {총} 중 {현재}"
+    "MODAL_SEQUENCE_GO_TO_POPUP": "{popupIndex}개의 팝업 {total}로 이동",
+    "MODAL_SEQUENCE_PROGRESS": "Popup {current} 중 {total}"
   }
 }

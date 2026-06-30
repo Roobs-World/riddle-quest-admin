@@ -4,6 +4,8 @@
     "ACHIEVEMENT_EARNED_TITLE": "実績を解除",
     "CLASSIC_FROM_DAILY_BODY": "デイリーチャレンジ完了。クラシックモードでは自分のペースで続けられます。",
     "CLASSIC_FROM_DAILY_TITLE": "クラシックモード",
+    "GAME_COINS_BODY": "コインはここに表示されます。ヒント、スキップ、追加チャンスが必要なときはタップしてショップを開きましょう。",
+    "GAME_COINS_TITLE": "コイン残高",
     "GOT_IT_BUTTON": "了解",
     "HINT_AFTER_WRONG_BODY": "その答えは違いました。ヒントをタップして役立つ文字を表示しましょう。",
     "HINT_AFTER_WRONG_TITLE": "ヒントが必要ですか?",
@@ -19,6 +21,8 @@
     "PROFILE_IDENTITY_TITLE": "プロフィール",
     "PROFILE_LEADERBOARD_BODY": "XP、勝利数、連勝を他のプレイヤーと比較できます。",
     "PROFILE_LEADERBOARD_TITLE": "ランキング",
+    "PROFILE_PROGRESSION_BODY": "ランク、XPレベル、進行バーで次のレベルまでの近さがわかります。",
+    "PROFILE_PROGRESSION_TITLE": "ユーザーの進行状況",
     "PROFILE_STATISTICS_BODY": "統計を開くと、ゲーム成績の詳細を確認できます。",
     "PROFILE_STATISTICS_TITLE": "統計",
     "PROFILE_STATS_BODY": "連勝、推測した単語、勝率、平均推測数をまとめて表示します。",
@@ -26,8 +30,6 @@
     "SHOP_OUT_OF_COINS_BODY": "この操作に必要なコインが足りません。ショップで購入するか獲得できます。",
     "SHOP_OUT_OF_COINS_TITLE": "コインを追加",
     "SUBMIT_ANSWER_BODY": "すべての枠が埋まったら、送信をタップして答えを確認しましょう。",
-    "SUBMIT_ANSWER_TITLE": "回答を送信",
-    "PROFILE_PROGRESSION_TITLE": "ユーザーの進行状況",
-    "PROFILE_PROGRESSION_BODY": "ランク、XPレベル、進行バーで次のレベルまでの近さがわかります。"
+    "SUBMIT_ANSWER_TITLE": "回答を送信"
   }
 }

@@ -31,6 +31,6 @@
     "LOGO_BUTTON": "标识",
     "MODAL_SEQUENCE_GO_TO_HINT": "跳回此弹出窗口",
     "MODAL_SEQUENCE_GO_TO_POPUP": "转到弹出窗口{popupIndex} of {total}",
-    "MODAL_SEQUENCE_PROGRESS": "Popup {current} of {总计}"
+    "MODAL_SEQUENCE_PROGRESS": "第 {current} 个弹窗，共 {total} 个"
   }
 }

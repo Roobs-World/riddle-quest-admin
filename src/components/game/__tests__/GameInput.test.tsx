@@ -11,15 +11,13 @@ jest.mock("../SubmitButton", () => {
     SubmitButton: ({
       isSubmitDisabled,
       gameOver,
-      isTooltipTargetActive,
       handleKeyPress,
     }: {
       isSubmitDisabled: boolean;
       gameOver: boolean;
-      isTooltipTargetActive?: boolean;
       handleKeyPress: (key: string) => void;
     }) => {
-      mockSubmitButton({isSubmitDisabled, gameOver, isTooltipTargetActive});
+      mockSubmitButton({isSubmitDisabled, gameOver});
       return (
         <TouchableOpacity
           testID="submit-button"
@@ -175,10 +173,6 @@ describe("<GameInput />", () => {
       expect(getByTestId("submit-button")).toBeTruthy();
     });
 
-    it("should pass tooltip target state to SubmitButton", () => {
-      render(<GameInput {...defaultProps} isSubmitTooltipTargetActive={true} />);
-      expect(mockSubmitButton).toHaveBeenLastCalledWith(expect.objectContaining({isTooltipTargetActive: true}));
-    });
   });
 
   describe("Component Lifecycle", () => {

@@ -8,6 +8,6 @@
     "MODE_SUFFIX": "modus.",
     "RETRY_BUTTON_PRESSED": "Tombol coba lagi ditekan",
     "FALLBACK_CLUE_SINGLE": "Pecahkan kata ini.",
-    "FALLBACK_CLUE_TEMPLATE": "Selesaikan kata dengan huruf {panjang} ini."
+    "FALLBACK_CLUE_TEMPLATE": "Selesaikan kata dengan huruf {length} ini."
   }
 }

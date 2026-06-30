@@ -4,6 +4,8 @@
     "ACHIEVEMENT_EARNED_TITLE": "Dostizhenie otkryto",
     "CLASSIC_FROM_DAILY_BODY": "Ezhednevnoe ispytanie zaversheno. V klassicheskom rezhime mozhno reshat zagadki v svoem tempe.",
     "CLASSIC_FROM_DAILY_TITLE": "Klassicheskiy rezhim",
+    "GAME_COINS_BODY": "Ваши монеты показаны здесь. Нажмите на них, чтобы открыть магазин, когда нужны подсказки, пропуски или дополнительные шансы.",
+    "GAME_COINS_TITLE": "Баланс монет",
     "GOT_IT_BUTTON": "Ponyatno",
     "HINT_AFTER_WRONG_BODY": "Eta dogadka ne podoshla. Nazhmite Podskazka, chtoby otkryt poleznuyu bukvu.",
     "HINT_AFTER_WRONG_TITLE": "Nuzhna podskazka?",
@@ -19,6 +21,8 @@
     "PROFILE_IDENTITY_TITLE": "Profil",
     "PROFILE_LEADERBOARD_BODY": "Otkroyte reyting, chtoby sravnit XP, pobedy i serii s drugimi igrokami.",
     "PROFILE_LEADERBOARD_TITLE": "Reyting",
+    "PROFILE_PROGRESSION_BODY": "Ваш ранг, уровень XP и шкала прогресса показывают, насколько вы близки к следующему уровню.",
+    "PROFILE_PROGRESSION_TITLE": "Прогресс пользователя",
     "PROFILE_STATISTICS_BODY": "Otkroyte statistiku dlya podrobnogo razbora rezultatov igry.",
     "PROFILE_STATISTICS_TITLE": "Statistika",
     "PROFILE_STATS_BODY": "Eti kartochki pokazyvayut seriyu, ugadannye slova, protsent pobed i srednee chislo popytok.",
@@ -26,8 +30,6 @@
     "SHOP_OUT_OF_COINS_BODY": "Dlya etogo deystviya ne khvataet monet. Otkroyte magazin, chtoby kupit ili zarabotat eshche.",
     "SHOP_OUT_OF_COINS_TITLE": "Poluchite bolshe monet",
     "SUBMIT_ANSWER_BODY": "Kogda vse kletki zapolneny, nazhmite Otpravit, chtoby proverit dogadku.",
-    "SUBMIT_ANSWER_TITLE": "Otpravte otvet",
-    "PROFILE_PROGRESSION_TITLE": "Прогресс пользователя",
-    "PROFILE_PROGRESSION_BODY": "Ваш ранг, уровень XP и шкала прогресса показывают, насколько вы близки к следующему уровню."
+    "SUBMIT_ANSWER_TITLE": "Otpravte otvet"
   }
 }

@@ -4,6 +4,8 @@
     "ACHIEVEMENT_EARNED_TITLE": "Conquista desbloqueada",
     "CLASSIC_FROM_DAILY_BODY": "Desafio diario concluido. O modo Classico permite continuar resolvendo enigmas no seu ritmo.",
     "CLASSIC_FROM_DAILY_TITLE": "Modo Classico",
+    "GAME_COINS_BODY": "As suas moedas aparecem aqui. Toque nelas para abrir a loja quando precisar de dicas, saltos ou chances extras.",
+    "GAME_COINS_TITLE": "Saldo de moedas",
     "GOT_IT_BUTTON": "Entendi",
     "HINT_AFTER_WRONG_BODY": "Esse palpite nao deu certo. Toque em Pista para revelar uma letra util e continuar.",
     "HINT_AFTER_WRONG_TITLE": "Precisa de uma pista?",
@@ -19,6 +21,8 @@
     "PROFILE_IDENTITY_TITLE": "Perfil",
     "PROFILE_LEADERBOARD_BODY": "Abra o ranking para comparar XP, vitorias e sequencias com outros jogadores.",
     "PROFILE_LEADERBOARD_TITLE": "Ranking",
+    "PROFILE_PROGRESSION_BODY": "Sua classificação, nível de XP e barra de progresso mostram o quanto falta para o próximo nível.",
+    "PROFILE_PROGRESSION_TITLE": "Progresso do usuário",
     "PROFILE_STATISTICS_BODY": "Abra estatisticas para ver uma analise mais detalhada do seu desempenho.",
     "PROFILE_STATISTICS_TITLE": "Estatisticas",
     "PROFILE_STATS_BODY": "Estes cartoes resumem sua sequencia, palavras acertadas, taxa de vitoria e media de palpites.",
@@ -26,8 +30,6 @@
     "SHOP_OUT_OF_COINS_BODY": "Voce esta sem moedas para esta acao. Abra a loja para comprar ou ganhar mais.",
     "SHOP_OUT_OF_COINS_TITLE": "Pegue mais moedas",
     "SUBMIT_ANSWER_BODY": "Quando todos os espacos estiverem preenchidos, toque em Enviar para verificar seu palpite.",
-    "SUBMIT_ANSWER_TITLE": "Envie sua resposta",
-    "PROFILE_PROGRESSION_TITLE": "Progresso do usuário",
-    "PROFILE_PROGRESSION_BODY": "Sua classificação, nível de XP e barra de progresso mostram o quanto falta para o próximo nível."
+    "SUBMIT_ANSWER_TITLE": "Envie sua resposta"
   }
 }

@@ -31,6 +31,6 @@
     "LOGO_BUTTON": "Logotipo",
     "MODAL_SEQUENCE_GO_TO_HINT": "Volver a esta ventana emergente",
     "MODAL_SEQUENCE_GO_TO_POPUP": "Ir a la ventana emergente {popupIndex} de {total}",
-    "MODAL_SEQUENCE_PROGRESS": "Popup {actual} de {total}"
+    "MODAL_SEQUENCE_PROGRESS": "Popup {current} de {total}"
   }
 }

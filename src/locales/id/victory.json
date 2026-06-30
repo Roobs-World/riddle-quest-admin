@@ -11,7 +11,7 @@
     "SHARE_ATTEMPT_SINGULAR": "percobaan",
     "SHARE_CLASSIC_MODE_LABEL": "Mode Klasik",
     "SHARE_DAILY_CHALLENGE_LABEL": "Tantangan Harian",
-    "SHARE_MESSAGE_TEMPLATE": "Saya menyelesaikan Riddle Quest {gameType} hari ini dalam {attempts} {percobaanLabel}!\n\n{emojiGrid}\n\nBisakah kamu mengalahkan skorku?\n\n#Riddle Quest #WordPuzzle #BrainGame",
+    "SHARE_MESSAGE_TEMPLATE": "Saya menyelesaikan Riddle Quest {gameType} hari ini dalam {attempts} {attemptLabel}!\n\n{emojiGrid}\n\nBisakah kamu mengalahkan skorku?\n\n#Riddle Quest #WordPuzzle #BrainGame",
     "SHARE_RESULT_TITLE": "Lihat hasil Riddle Quest saya!"
   }
 }

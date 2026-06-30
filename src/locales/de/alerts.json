@@ -36,7 +36,7 @@
     "DEBUG_DAILY_CHALLENGE_GENERATED_MESSAGE": "Es wurde erfolgreich eine neue tägliche Herausforderung in localizedRiddles/{locale}/riddles/current generiert.",
     "DEBUG_DAILY_CHALLENGE_GENERATED_TITLE": "Tägliche Herausforderung Generiert",
     "GUEST_MODE_SAVED_ON_DEVICE_MESSAGE": "Ihr Fortschritt wird auf diesem Gerät gespeichert. Aktualisieren Sie Ihr Konto, um es auf allen Geräten sicher zu halten.",
-    "STREAK_BROKEN_MESSAGE": "Ihr Streak endete am { previousStreak} Tag{daySuffix}. Schließe die heutige tägliche Herausforderung ab, um einen neuen Streak zu starten.",
+    "STREAK_BROKEN_MESSAGE": "Ihr Streak endete am {previousStreak} Tag{daySuffix}. Schließe die heutige tägliche Herausforderung ab, um einen neuen Streak zu starten.",
     "STREAK_BROKEN_TITLE": "Streak gebrochen",
     "NO_PRODUCTS_AVAILABLE_TITLE": "Keine Produkte verfügbar",
     "QA_RIDDLE_DATABASE_UNAVAILABLE_MESSAGE": "Die App konnte ihre Rätsel nicht vollständig laden. Bitte überprüfen Sie Ihre Verbindung und versuchen Sie es erneut.",

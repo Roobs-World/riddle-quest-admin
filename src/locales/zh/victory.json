@@ -11,7 +11,7 @@
     "SHARE_ATTEMPT_SINGULAR": "试图",
     "SHARE_CLASSIC_MODE_LABEL": "经典模式",
     "SHARE_DAILY_CHALLENGE_LABEL": "每日挑战",
-    "SHARE_MESSAGE_TEMPLATE": "我在{attempts} {attemptLabel}中解决了今天的Riddle Quest {gameType}！\n\n{表情符号网格}\n\n你能打败我的分数吗？\n\n#Riddle Quest #WordPuzzle #BrainGame",
+    "SHARE_MESSAGE_TEMPLATE": "我在{gameType} {attempts}中解决了今天的Riddle Quest {attemptLabel}！\n\n{emojiGrid}\n\n你能打败我的分数吗？\n\n#Riddle Quest #WordPuzzle #BrainGame",
     "SHARE_RESULT_TITLE": "查看我的 Riddle Quest 结果！"
   }
 }

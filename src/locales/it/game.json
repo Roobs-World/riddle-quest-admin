@@ -8,6 +8,6 @@
     "MODE_SUFFIX": "modalità.",
     "RETRY_BUTTON_PRESSED": "Pulsante Riprova premuto",
     "FALLBACK_CLUE_SINGLE": "Risolvi questa parola.",
-    "FALLBACK_CLUE_TEMPLATE": "Risolvi questa parola di {lunghezza} lettere."
+    "FALLBACK_CLUE_TEMPLATE": "Risolvi questa parola di {length} lettere."
   }
 }

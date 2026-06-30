@@ -30,7 +30,7 @@
     "LANDING_ATTRIBUTION_LINK": "Gemaakt door Roobs World",
     "LOGO_BUTTON": "Logo van de app",
     "MODAL_SEQUENCE_GO_TO_HINT": "Ga terug naar deze pop-up",
-    "MODAL_SEQUENCE_GO_TO_POPUP": "Ga naar pop-up {popupIndex} van {totaal}",
-    "MODAL_SEQUENCE_PROGRESS": "Popup {huidig} van {totaal}"
+    "MODAL_SEQUENCE_GO_TO_POPUP": "Ga naar pop-up {popupIndex} van {total}",
+    "MODAL_SEQUENCE_PROGRESS": "Popup {current} van {total}"
   }
 }

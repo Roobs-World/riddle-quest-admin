@@ -1,7 +1,8 @@
 npx eas-cli build --profile development --platform android
 
-pnpm exec expo start --clear ( clears metro cache )
 pnpm exec expo run:android
+
+pnpm exec expo start --clear ( clears metro cache )
 
 firebase deploy --only functions
 

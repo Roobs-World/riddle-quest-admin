@@ -31,6 +31,6 @@
     "LOGO_BUTTON": "Logo aplikacji",
     "MODAL_SEQUENCE_GO_TO_HINT": "Wróć do tego wyskakującego okienka",
     "MODAL_SEQUENCE_GO_TO_POPUP": "Przejdź do wyskakującego okienka {popupIndex} z {total}",
-    "MODAL_SEQUENCE_PROGRESS": "Popup {bieżący} z {total}"
+    "MODAL_SEQUENCE_PROGRESS": "Popup {current} z {total}"
   }
 }

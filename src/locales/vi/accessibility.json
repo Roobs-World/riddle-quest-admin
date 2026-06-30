@@ -30,7 +30,7 @@
     "LANDING_ATTRIBUTION_LINK": "Được tạo bởi Roobs World",
     "LOGO_BUTTON": "biểu tượng",
     "MODAL_SEQUENCE_GO_TO_HINT": "Quay lại cửa sổ bật lên này",
-    "MODAL_SEQUENCE_GO_TO_POPUP": "Chuyển đến cửa sổ bật lên {popupIndex} của {total",
+    "MODAL_SEQUENCE_GO_TO_POPUP": "Chuyển đến cửa sổ bật lên {popupIndex} của {total}",
     "MODAL_SEQUENCE_PROGRESS": "Popup {current} của {total}"
   }
 }

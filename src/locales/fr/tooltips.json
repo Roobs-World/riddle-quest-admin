@@ -4,6 +4,8 @@
     "ACHIEVEMENT_EARNED_TITLE": "Succes debloque",
     "CLASSIC_FROM_DAILY_BODY": "Defi quotidien termine. Le mode Classique vous permet de continuer les enigmes a votre rythme.",
     "CLASSIC_FROM_DAILY_TITLE": "Mode Classique",
+    "GAME_COINS_BODY": "Tes pièces apparaissent ici. Touche-les pour ouvrir la boutique quand tu as besoin d’indices, de passer une énigme ou d’obtenir des chances en plus.",
+    "GAME_COINS_TITLE": "Solde de pièces",
     "GOT_IT_BUTTON": "Compris",
     "HINT_AFTER_WRONG_BODY": "Cet essai a echoue. Touchez Indice pour reveler une lettre utile et continuer.",
     "HINT_AFTER_WRONG_TITLE": "Besoin d'un indice?",
@@ -19,6 +21,8 @@
     "PROFILE_IDENTITY_TITLE": "Profil",
     "PROFILE_LEADERBOARD_BODY": "Ouvrez le classement pour comparer XP, victoires et series avec les autres joueurs.",
     "PROFILE_LEADERBOARD_TITLE": "Classement",
+    "PROFILE_PROGRESSION_BODY": "Ton rang, ton niveau XP et ta barre de progression indiquent à quel point tu es proche du niveau suivant.",
+    "PROFILE_PROGRESSION_TITLE": "Progression utilisateur",
     "PROFILE_STATISTICS_BODY": "Ouvrez les statistiques pour une analyse plus detaillee de vos performances.",
     "PROFILE_STATISTICS_TITLE": "Statistiques",
     "PROFILE_STATS_BODY": "Ces cartes resument votre serie, les mots devines, le taux de victoire et la moyenne d'essais.",
@@ -26,8 +30,6 @@
     "SHOP_OUT_OF_COINS_BODY": "Vous n'avez plus assez de pieces pour cette action. Ouvrez la boutique pour en acheter ou en gagner.",
     "SHOP_OUT_OF_COINS_TITLE": "Obtenez plus de pieces",
     "SUBMIT_ANSWER_BODY": "Quand toutes les cases sont remplies, touchez Valider pour verifier votre essai.",
-    "SUBMIT_ANSWER_TITLE": "Validez votre reponse",
-    "PROFILE_PROGRESSION_TITLE": "Progression utilisateur",
-    "PROFILE_PROGRESSION_BODY": "Ton rang, ton niveau XP et ta barre de progression indiquent à quel point tu es proche du niveau suivant."
+    "SUBMIT_ANSWER_TITLE": "Validez votre reponse"
   }
 }

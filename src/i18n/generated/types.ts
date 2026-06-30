@@ -392,6 +392,8 @@ export const translationSchema = {
     "ACHIEVEMENT_EARNED_TITLE": "Achievement unlocked",
     "CLASSIC_FROM_DAILY_BODY": "Daily challenge complete. Classic mode lets you keep solving riddles at your own pace.",
     "CLASSIC_FROM_DAILY_TITLE": "Classic mode",
+    "GAME_COINS_BODY": "Your coins are shown here. Tap them to open the shop when you need hints, skips, or extra chances.",
+    "GAME_COINS_TITLE": "Coin balance",
     "GOT_IT_BUTTON": "Got it",
     "HINT_AFTER_WRONG_BODY": "That guess missed. Tap Hint to reveal a helpful letter and keep going.",
     "HINT_AFTER_WRONG_TITLE": "Need a clue?",
@@ -403,10 +405,12 @@ export const translationSchema = {
     "PROFILE_COINS_TITLE": "Treasure chest",
     "PROFILE_DAILY_PUZZLES_BODY": "This shows how many daily challenges you have completed.",
     "PROFILE_DAILY_PUZZLES_TITLE": "Daily puzzles",
-    "PROFILE_IDENTITY_BODY": "Your avatar, username, XP level, and level progress live here.",
+    "PROFILE_IDENTITY_BODY": "Your avatar, username live here. Tap on them to change them.",
     "PROFILE_IDENTITY_TITLE": "Profile",
     "PROFILE_LEADERBOARD_BODY": "Open the leaderboard to compare XP, wins, and streaks with other players.",
     "PROFILE_LEADERBOARD_TITLE": "Leaderboard",
+    "PROFILE_PROGRESSION_BODY": "Your rank, XP level, and progress bar show how close you are to the next level.",
+    "PROFILE_PROGRESSION_TITLE": "User progression",
     "PROFILE_STATISTICS_BODY": "Open statistics for a deeper breakdown of your gameplay performance.",
     "PROFILE_STATISTICS_TITLE": "Statistics",
     "PROFILE_STATS_BODY": "These cards summarize your streak, words guessed, win rate, and average guesses.",
@@ -414,9 +418,7 @@ export const translationSchema = {
     "SHOP_OUT_OF_COINS_BODY": "You are out of coins for this action. Open the shop to buy or earn more.",
     "SHOP_OUT_OF_COINS_TITLE": "Grab more coins",
     "SUBMIT_ANSWER_BODY": "When every slot is filled, tap Submit to check your guess.",
-    "SUBMIT_ANSWER_TITLE": "Submit your answer",
-    "PROFILE_PROGRESSION_TITLE": "User progression",
-    "PROFILE_PROGRESSION_BODY": "Your rank, XP level, and progress bar show how close you are to the next level."
+    "SUBMIT_ANSWER_TITLE": "Submit your answer"
   },
   "VictoryModal": {
     "ACHIEVEMENT_UNLOCKED": "Achievement Unlocked!",

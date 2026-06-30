@@ -30,7 +30,7 @@
     "LANDING_ATTRIBUTION_LINK": "Hergestellt von Roobs World",
     "LOGO_BUTTON": "Logo-Schaltfläche",
     "MODAL_SEQUENCE_GO_TO_HINT": "Zurück zu diesem Popup springen",
-    "MODAL_SEQUENCE_GO_TO_POPUP": "Gehe zum Popup {popupIndex} von {gesamt}",
-    "MODAL_SEQUENCE_PROGRESS": "Popup {aktuell} von {gesamt}"
+    "MODAL_SEQUENCE_GO_TO_POPUP": "Gehe zum Popup {popupIndex} von {total}",
+    "MODAL_SEQUENCE_PROGRESS": "Popup {current} von {total}"
   }
 }

@@ -24,7 +24,6 @@ type GameInputProps = {
   hintButtonRef?: React.Ref<View>;
   submitButtonRef?: React.Ref<View>;
   nextButtonRef?: React.Ref<View>;
-  isSubmitTooltipTargetActive?: boolean;
 };
 
 /**
@@ -42,7 +41,6 @@ const GameInputComponent = ({
   hintButtonRef,
   submitButtonRef,
   nextButtonRef,
-  isSubmitTooltipTargetActive = false,
 }: GameInputProps): React.JSX.Element => {
   return (
     <View style={styles.gameInput}>
@@ -57,7 +55,6 @@ const GameInputComponent = ({
         ref={submitButtonRef}
         isSubmitDisabled={isSubmitDisabled}
         gameOver={gameOver}
-        isTooltipTargetActive={isSubmitTooltipTargetActive}
         handleKeyPress={handleSubmit}
       />
 

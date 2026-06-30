@@ -4,6 +4,8 @@
     "ACHIEVEMENT_EARNED_TITLE": "تم فتح الإنجاز",
     "CLASSIC_FROM_DAILY_BODY": "التحدي اليومي كامل. يتيح لك الوضع الكلاسيكي الاستمرار في حل الألغاز بالسرعة التي تناسبك.",
     "CLASSIC_FROM_DAILY_TITLE": "الوضع الكلاسيكي",
+    "GAME_COINS_BODY": "تظهر عملاتك هنا. اضغط عليها لفتح المتجر عندما تحتاج إلى تلميحات أو تخطي أو فرص إضافية.",
+    "GAME_COINS_TITLE": "رصيد العملات",
     "GOT_IT_BUTTON": "حصلت عليه",
     "HINT_AFTER_WRONG_BODY": "غاب هذا التخمين. اضغط على \"تلميح\" للكشف عن رسالة مفيدة والمتابعة.",
     "HINT_AFTER_WRONG_TITLE": "هل تحتاج إلى دليل؟",
@@ -19,6 +21,8 @@
     "PROFILE_IDENTITY_TITLE": "الملف الشخصي",
     "PROFILE_LEADERBOARD_BODY": "افتح لوحة المتصدرين لمقارنة نقاط الخبرة والانتصارات والسلاسل مع اللاعبين الآخرين.",
     "PROFILE_LEADERBOARD_TITLE": "المتصدرين",
+    "PROFILE_PROGRESSION_BODY": "توضح رتبتك ومستوى الخبرة وشريط التقدم مدى قربك من المستوى التالي.",
+    "PROFILE_PROGRESSION_TITLE": "تقدم اللاعب",
     "PROFILE_STATISTICS_BODY": "إحصائيات مفتوحة للحصول على تفاصيل أعمق لأداء اللعب الخاص بك.",
     "PROFILE_STATISTICS_TITLE": "الإحصائيات",
     "PROFILE_STATS_BODY": "تلخص هذه البطاقات خطك، والكلمات التي تم تخمينها، ومعدل الفوز، ومتوسط التخمينات.",
@@ -26,8 +30,6 @@
     "SHOP_OUT_OF_COINS_BODY": "لقد نفدت العملات المعدنية لهذا الإجراء. افتح المتجر للشراء أو كسب المزيد.",
     "SHOP_OUT_OF_COINS_TITLE": "احصل على المزيد من العملات المعدنية",
     "SUBMIT_ANSWER_BODY": "عندما يتم ملء كل خانة، انقر فوق إرسال للتحقق من تخمينك.",
-    "SUBMIT_ANSWER_TITLE": "أرسل إجابتك",
-    "PROFILE_PROGRESSION_TITLE": "تقدم اللاعب",
-    "PROFILE_PROGRESSION_BODY": "توضح رتبتك ومستوى الخبرة وشريط التقدم مدى قربك من المستوى التالي."
+    "SUBMIT_ANSWER_TITLE": "أرسل إجابتك"
   }
 }

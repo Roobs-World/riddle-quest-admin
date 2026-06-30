@@ -8,6 +8,6 @@
     "MODE_SUFFIX": "-Modus.",
     "RETRY_BUTTON_PRESSED": "Erneut-versuchen-Schaltflaeche gedrueckt",
     "FALLBACK_CLUE_SINGLE": "Lösen Sie dieses Wort.",
-    "FALLBACK_CLUE_TEMPLATE": "Lösen Sie dieses {Länge}-Buchstabenwort."
+    "FALLBACK_CLUE_TEMPLATE": "Lösen Sie dieses {length}-Buchstabenwort."
   }
 }

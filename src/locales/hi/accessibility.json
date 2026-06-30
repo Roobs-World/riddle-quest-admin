@@ -30,7 +30,7 @@
     "LANDING_ATTRIBUTION_LINK": "द्वारा निर्मित Roobs World",
     "LOGO_BUTTON": "लोगो",
     "MODAL_SEQUENCE_GO_TO_HINT": "इस पॉपअप पर वापस जाएं",
-    "MODAL_SEQUENCE_GO_TO_POPUP": "पॉपअप {popupIndex} पर जाएं {कुल}",
-    "MODAL_SEQUENCE_PROGRESS": "पॉपअप {वर्तमान} {कुल} में से"
+    "MODAL_SEQUENCE_GO_TO_POPUP": "पॉपअप {popupIndex} पर जाएं {total}",
+    "MODAL_SEQUENCE_PROGRESS": "पॉपअप {current} {total} में से"
   }
 }

@@ -8,6 +8,6 @@
     "MODE_SUFFIX": " मोड।",
     "RETRY_BUTTON_PRESSED": "रीट्राई बटन दबाया गया",
     "FALLBACK_CLUE_SINGLE": "इस शब्द को हल करें.",
-    "FALLBACK_CLUE_TEMPLATE": "इस {लंबाई}-अक्षर वाले शब्द को हल करें।"
+    "FALLBACK_CLUE_TEMPLATE": "इस {length}-अक्षर वाले शब्द को हल करें।"
   }
 }

@@ -4,6 +4,8 @@
     "ACHIEVEMENT_EARNED_TITLE": "Pencapaian terbuka",
     "CLASSIC_FROM_DAILY_BODY": "Tantangan harian selesai. Mode klasik memungkinkan Anda terus memecahkan teka-teki sesuai keinginan Anda.",
     "CLASSIC_FROM_DAILY_TITLE": "Modus klasik",
+    "GAME_COINS_BODY": "Koinmu ditampilkan di sini. Ketuk untuk membuka toko saat kamu perlu petunjuk, melewati teka-teki, atau kesempatan ekstra.",
+    "GAME_COINS_TITLE": "Saldo koin",
     "GOT_IT_BUTTON": "Mengerti",
     "HINT_AFTER_WRONG_BODY": "Tebakan itu meleset. Ketuk Petunjuk untuk menampilkan surat yang bermanfaat dan melanjutkan.",
     "HINT_AFTER_WRONG_TITLE": "Butuh petunjuk?",
@@ -19,6 +21,8 @@
     "PROFILE_IDENTITY_TITLE": "Profil",
     "PROFILE_LEADERBOARD_BODY": "Buka papan peringkat untuk membandingkan XP, kemenangan, dan pukulan beruntun dengan pemain lain.",
     "PROFILE_LEADERBOARD_TITLE": "Papan peringkat",
+    "PROFILE_PROGRESSION_BODY": "Peringkat, level XP, dan bilah progres menunjukkan seberapa dekat kamu ke level berikutnya.",
+    "PROFILE_PROGRESSION_TITLE": "Perkembangan pengguna",
     "PROFILE_STATISTICS_BODY": "Buka statistik untuk rincian lebih dalam tentang performa gameplay Anda.",
     "PROFILE_STATISTICS_TITLE": "Statistik",
     "PROFILE_STATS_BODY": "Kartu-kartu ini merangkum pukulan Anda, tebakan kata, tingkat kemenangan, dan tebakan rata-rata.",
@@ -26,8 +30,6 @@
     "SHOP_OUT_OF_COINS_BODY": "Anda kehabisan koin untuk tindakan ini. Buka toko untuk membeli atau mendapatkan lebih banyak.",
     "SHOP_OUT_OF_COINS_TITLE": "Ambil lebih banyak koin",
     "SUBMIT_ANSWER_BODY": "Ketika setiap slot terisi, ketuk Kirim untuk memeriksa tebakan Anda.",
-    "SUBMIT_ANSWER_TITLE": "Kirimkan jawaban Anda",
-    "PROFILE_PROGRESSION_TITLE": "Perkembangan pengguna",
-    "PROFILE_PROGRESSION_BODY": "Peringkat, level XP, dan bilah progres menunjukkan seberapa dekat kamu ke level berikutnya."
+    "SUBMIT_ANSWER_TITLE": "Kirimkan jawaban Anda"
   }
 }

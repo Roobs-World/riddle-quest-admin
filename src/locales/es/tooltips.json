@@ -4,6 +4,8 @@
     "ACHIEVEMENT_EARNED_TITLE": "Logro desbloqueado",
     "CLASSIC_FROM_DAILY_BODY": "Desafio diario completado. El modo Clasico te permite seguir resolviendo acertijos a tu ritmo.",
     "CLASSIC_FROM_DAILY_TITLE": "Modo Clasico",
+    "GAME_COINS_BODY": "Tus monedas aparecen aquí. Tócalas para abrir la tienda cuando necesites pistas, saltos o oportunidades extra.",
+    "GAME_COINS_TITLE": "Saldo de monedas",
     "GOT_IT_BUTTON": "Entendido",
     "HINT_AFTER_WRONG_BODY": "Ese intento fallo. Toca Pista para revelar una letra util y seguir jugando.",
     "HINT_AFTER_WRONG_TITLE": "Necesitas una pista?",
@@ -19,6 +21,8 @@
     "PROFILE_IDENTITY_TITLE": "Perfil",
     "PROFILE_LEADERBOARD_BODY": "Abre la clasificacion para comparar XP, victorias y rachas con otros jugadores.",
     "PROFILE_LEADERBOARD_TITLE": "Clasificacion",
+    "PROFILE_PROGRESSION_BODY": "Tu rango, nivel de XP y barra de progreso muestran qué tan cerca estás del siguiente nivel.",
+    "PROFILE_PROGRESSION_TITLE": "Progreso del usuario",
     "PROFILE_STATISTICS_BODY": "Abre estadisticas para ver un desglose mas detallado de tu rendimiento.",
     "PROFILE_STATISTICS_TITLE": "Estadisticas",
     "PROFILE_STATS_BODY": "Estas tarjetas resumen tu racha, palabras adivinadas, porcentaje de victoria y promedio de intentos.",
@@ -26,8 +30,6 @@
     "SHOP_OUT_OF_COINS_BODY": "No tienes monedas para esta accion. Abre la tienda para comprar o ganar mas.",
     "SHOP_OUT_OF_COINS_TITLE": "Consigue mas monedas",
     "SUBMIT_ANSWER_BODY": "Cuando todos los espacios esten llenos, toca Enviar para comprobar tu intento.",
-    "SUBMIT_ANSWER_TITLE": "Envia tu respuesta",
-    "PROFILE_PROGRESSION_TITLE": "Progreso del usuario",
-    "PROFILE_PROGRESSION_BODY": "Tu rango, nivel de XP y barra de progreso muestran qué tan cerca estás del siguiente nivel."
+    "SUBMIT_ANSWER_TITLE": "Envia tu respuesta"
   }
 }

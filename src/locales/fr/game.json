@@ -8,6 +8,6 @@
     "MODE_SUFFIX": ".",
     "RETRY_BUTTON_PRESSED": "Bouton recommencer presse",
     "FALLBACK_CLUE_SINGLE": "Résolvez ce mot.",
-    "FALLBACK_CLUE_TEMPLATE": "Résolvez ce mot de {longueur} lettre."
+    "FALLBACK_CLUE_TEMPLATE": "Résolvez ce mot de {length} lettre."
   }
 }

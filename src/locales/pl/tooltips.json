@@ -4,6 +4,8 @@
     "ACHIEVEMENT_EARNED_TITLE": "Osiągnięcie odblokowane",
     "CLASSIC_FROM_DAILY_BODY": "Codzienne wyzwanie ukończone. Tryb klasyczny pozwala na rozwiązywanie zagadek we własnym tempie.",
     "CLASSIC_FROM_DAILY_TITLE": "Tryb klasyczny",
+    "GAME_COINS_BODY": "Twoje monety są pokazane tutaj. Stuknij je, aby otworzyć sklep, gdy potrzebujesz podpowiedzi, pominięć lub dodatkowych szans.",
+    "GAME_COINS_TITLE": "Saldo monet",
     "GOT_IT_BUTTON": "Rozumiem",
     "HINT_AFTER_WRONG_BODY": "To przypuszczenie chybiło. Stuknij opcję Podpowiedź, aby wyświetlić pomocny list i idź dalej.",
     "HINT_AFTER_WRONG_TITLE": "Potrzebujesz wskazówki?",
@@ -19,6 +21,8 @@
     "PROFILE_IDENTITY_TITLE": "Profil",
     "PROFILE_LEADERBOARD_BODY": "Otwórz tabelę wyników, aby porównać XP, zwycięstwa i passy z innymi graczami.",
     "PROFILE_LEADERBOARD_TITLE": "Tabela liderów",
+    "PROFILE_PROGRESSION_BODY": "Twoja ranga, poziom XP i pasek postępu pokazują, jak blisko jesteś następnego poziomu.",
+    "PROFILE_PROGRESSION_TITLE": "Postęp użytkownika",
     "PROFILE_STATISTICS_BODY": "Otwórz statystyki, aby uzyskać głębszy przegląd wyników w grze.",
     "PROFILE_STATISTICS_TITLE": "Statystyki",
     "PROFILE_STATS_BODY": "Karty te podsumowują Twoją passę, odgadnięte słowa, współczynnik wygranych i średnie domysły.",
@@ -26,8 +30,6 @@
     "SHOP_OUT_OF_COINS_BODY": "Nie masz już monet na tę akcję. Otwórz sklep, aby kupić lub zarobić więcej.",
     "SHOP_OUT_OF_COINS_TITLE": "Zdobądź więcej monet",
     "SUBMIT_ANSWER_BODY": "Gdy wszystkie miejsca zostaną zajęte, dotknij opcji Prześlij, aby sprawdzić swoje przypuszczenie.",
-    "SUBMIT_ANSWER_TITLE": "Prześlij swoją odpowiedź",
-    "PROFILE_PROGRESSION_TITLE": "Postęp użytkownika",
-    "PROFILE_PROGRESSION_BODY": "Twoja ranga, poziom XP i pasek postępu pokazują, jak blisko jesteś następnego poziomu."
+    "SUBMIT_ANSWER_TITLE": "Prześlij swoją odpowiedź"
   }
 }
