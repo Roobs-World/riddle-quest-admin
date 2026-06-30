@@ -33,7 +33,11 @@ const TooltipContext = createContext<TooltipContextValue | undefined>(undefined)
 const TARGET_MEASURE_RETRY_COUNT = 6;
 
 const usesOriginalTargetSpotlight = (id: TooltipId): boolean =>
-  id === "gameCoins" || id === "profileProgression" || id === "profileCoins";
+  id === "gameCoins" ||
+  id === "gameHint" ||
+  id === "gameSkip" ||
+  id === "profileProgression" ||
+  id === "profileCoins";
 
 const shouldCheckIndividualTooltipSeenState = (options?: TooltipSequenceOptions): boolean => !options?.sequenceId;
 

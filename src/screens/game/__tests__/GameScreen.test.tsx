@@ -480,6 +480,18 @@ jest.mock("../../../utils/letterStates", () => ({
 
 // Mock styles
 jest.mock("../../../styles", () => ({
+  COLORS: {
+    black: "#000000",
+    gray300: "#D1D5DB",
+    primaryOrange: "#F97316",
+  },
+  SPACING: {xs: 4, sm: 8, md: 16, lg: 24, xl: 32, "2xl": 48},
+  TYPOGRAPHY: {
+    fontPrimary: "System",
+    fontSize: {
+      lg: 18,
+    },
+  },
   styles: {
     container: {},
     gameContainer: {},
@@ -655,7 +667,18 @@ describe("GameScreen", () => {
           expect.objectContaining({
             id: "submitAnswer",
             preferredPlacement: "above",
-            useNativeModal: true,
+            targetOffsetY: expect.any(Number),
+            useNativeModal: false,
+          }),
+          expect.objectContaining({
+            id: "gameHint",
+            preferredPlacement: "above",
+            useNativeModal: false,
+          }),
+          expect.objectContaining({
+            id: "gameSkip",
+            preferredPlacement: "above",
+            useNativeModal: false,
           }),
           expect.objectContaining({
             id: "gameCoins",

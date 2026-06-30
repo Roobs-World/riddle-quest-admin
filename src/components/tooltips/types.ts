@@ -4,6 +4,8 @@ import type {View} from "react-native";
 export type TooltipId =
   | "submitAnswer"
   | "gameCoins"
+  | "gameHint"
+  | "gameSkip"
   | "hintAfterWrongGuess"
   | "shopOutOfCoins"
   | "achievementEarned"

@@ -39,7 +39,7 @@ jest.mock("expo-asset", () => ({
   },
 }));
 
-jest.mock("expo-modules-core", () => ({
+jest.mock("expo", () => ({
   requireNativeModule: () => ({
     downloadAsync: (...args: any[]) => mockNativeDownloadAsync(...args),
   }),

@@ -2,7 +2,7 @@
  * @fileoverview Texture loading utilities for Expo assets -> Three.js textures.
  */
 import {Asset} from "expo-asset";
-import {requireNativeModule} from "expo-modules-core";
+import {requireNativeModule} from "expo";
 import {ClampToEdgeWrapping, LinearFilter, Texture} from "three";
 import {logger} from "../../utils/logger";
 

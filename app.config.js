@@ -275,7 +275,7 @@ module.exports = {
           compileSdkVersion: 36,
           targetSdkVersion: 36,
           buildToolsVersion: "36.0.0",
-          kotlinVersion: "2.3.0",
+          kotlinVersion: "2.1.20",
 
           /** Audio quality preservation settings */
           proguardMinifyEnabled: false, // Disable minification to preserve audio quality

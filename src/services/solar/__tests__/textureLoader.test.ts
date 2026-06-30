@@ -8,7 +8,7 @@ jest.mock("expo-asset", () => ({
 }));
 
 const mockNativeDownloadAsync = jest.fn();
-jest.mock("expo-modules-core", () => ({
+jest.mock("expo", () => ({
   requireNativeModule: () => ({
     downloadAsync: (...args: unknown[]) => mockNativeDownloadAsync(...args),
   }),

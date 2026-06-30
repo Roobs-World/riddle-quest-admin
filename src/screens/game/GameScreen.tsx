@@ -177,6 +177,7 @@ const buildLockedGuessState = (
 const ONBOARDING_SEEN_STORAGE_KEY_PREFIX = "gameScreenOnboardingSeen";
 const RESULT_MODAL_REVEAL_DELAY_MS = 850;
 const FIFTH_CORRECT_ANSWER_COUNT = 5;
+const SUBMIT_TOOLTIP_TARGET_OFFSET_Y = SPACING.lg;
 
 const SubmitTooltipHighlight = ({isDisabled}: {isDisabled: boolean}): React.JSX.Element => (
   <View
@@ -227,6 +228,18 @@ const getTooltipContent = (id: TooltipId) => {
       return {
         title: t("Tooltips.GAME_COINS_TITLE"),
         body: t("Tooltips.GAME_COINS_BODY"),
+        action: t("Tooltips.GOT_IT_BUTTON"),
+      };
+    case "gameHint":
+      return {
+        title: t("Tooltips.GAME_HINT_TITLE"),
+        body: t("Tooltips.GAME_HINT_BODY"),
+        action: t("Tooltips.GOT_IT_BUTTON"),
+      };
+    case "gameSkip":
+      return {
+        title: t("Tooltips.GAME_SKIP_TITLE"),
+        body: t("Tooltips.GAME_SKIP_BODY"),
         action: t("Tooltips.GOT_IT_BUTTON"),
       };
     case "hintAfterWrongGuess":
@@ -479,7 +492,8 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         highlightElement,
         content: getTooltipContent(id),
         preferredPlacement: id === "submitAnswer" ? "above" : undefined,
-        useNativeModal: id === "submitAnswer" ? true : undefined,
+        targetOffsetY: id === "submitAnswer" ? SUBMIT_TOOLTIP_TARGET_OFFSET_Y : undefined,
+        useNativeModal: id === "submitAnswer" ? false : undefined,
         userId: currentTooltipUserId,
       });
     },
@@ -2365,7 +2379,9 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     }
 
     logger.debug("[GameScreen] showIntroTooltipSequence requested", {
+      hasHintTargetRef: Boolean(hintButtonRef.current),
       hasSubmitTargetRef: Boolean(submitButtonRef.current),
+      hasSkipTargetRef: Boolean(nextButtonRef.current),
       hasCoinsTargetRef: Boolean(coinsButtonRef.current),
       userId: currentTooltipUserId,
       riddleId,
@@ -2379,7 +2395,24 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         highlightElement: <SubmitTooltipHighlight isDisabled={isSubmitDisabled || gameOver} />,
         content: getTooltipContent("submitAnswer"),
         preferredPlacement: "above",
-        useNativeModal: true,
+        targetOffsetY: SUBMIT_TOOLTIP_TARGET_OFFSET_Y,
+        useNativeModal: false,
+        userId: currentTooltipUserId,
+      },
+      {
+        id: "gameHint",
+        targetRef: hintButtonRef,
+        content: getTooltipContent("gameHint"),
+        preferredPlacement: "above",
+        useNativeModal: false,
+        userId: currentTooltipUserId,
+      },
+      {
+        id: "gameSkip",
+        targetRef: nextButtonRef,
+        content: getTooltipContent("gameSkip"),
+        preferredPlacement: "above",
+        useNativeModal: false,
         userId: currentTooltipUserId,
       },
       {
