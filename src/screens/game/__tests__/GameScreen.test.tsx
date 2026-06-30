@@ -667,7 +667,6 @@ describe("GameScreen", () => {
           expect.objectContaining({
             id: "submitAnswer",
             preferredPlacement: "above",
-            targetOffsetY: expect.any(Number),
             useNativeModal: false,
           }),
           expect.objectContaining({
@@ -687,6 +686,12 @@ describe("GameScreen", () => {
           }),
         ],
       );
+      const tooltipRequests =
+        mockShowTooltipSequence.mock.calls[mockShowTooltipSequence.mock.calls.length - 1][0];
+      const submitTooltipRequest = tooltipRequests.find(
+        (request: {id: string}) => request.id === "submitAnswer",
+      );
+      expect(submitTooltipRequest).not.toHaveProperty("targetOffsetY");
       jest.useRealTimers();
     });
 

@@ -177,7 +177,6 @@ const buildLockedGuessState = (
 const ONBOARDING_SEEN_STORAGE_KEY_PREFIX = "gameScreenOnboardingSeen";
 const RESULT_MODAL_REVEAL_DELAY_MS = 850;
 const FIFTH_CORRECT_ANSWER_COUNT = 5;
-const SUBMIT_TOOLTIP_TARGET_OFFSET_Y = SPACING.lg;
 
 const SubmitTooltipHighlight = ({isDisabled}: {isDisabled: boolean}): React.JSX.Element => (
   <View
@@ -492,7 +491,6 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         highlightElement,
         content: getTooltipContent(id),
         preferredPlacement: id === "submitAnswer" ? "above" : undefined,
-        targetOffsetY: id === "submitAnswer" ? SUBMIT_TOOLTIP_TARGET_OFFSET_Y : undefined,
         useNativeModal: id === "submitAnswer" ? false : undefined,
         userId: currentTooltipUserId,
       });
@@ -2395,7 +2393,6 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         highlightElement: <SubmitTooltipHighlight isDisabled={isSubmitDisabled || gameOver} />,
         content: getTooltipContent("submitAnswer"),
         preferredPlacement: "above",
-        targetOffsetY: SUBMIT_TOOLTIP_TARGET_OFFSET_Y,
         useNativeModal: false,
         userId: currentTooltipUserId,
       },
