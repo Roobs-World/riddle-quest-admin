@@ -1,9 +1,8 @@
 {
   "LossModal": {
     "ANSWER_PREFIX": "उत्तर: ",
-    "EXTRA_GUESSES_PREFIX": "3 अतिरिक्त अनुमान - ",
-    "EXTRA_GUESSES_PROMPT": "प्रयास समाप्त। 3 अतिरिक्त अनुमान लें या इस पहेली को छोड़ें।",
-    "EXTRA_GUESSES_SUFFIX": " सिक्के",
+    "COIN_EXTRA_GO_BUTTON": "{coins} सिक्के एक अतिरिक्त मौके के लिए",
+    "EXTRA_GO_PROMPT": "प्रयास समाप्त। एक अतिरिक्त मौका लें या इस पहेली को छोड़ें।",
     "NEXT_LEVEL_BUTTON": "अगला स्तर",
     "OPEN_SHOP_BUTTON": "दुकान खोलें",
     "OUT_OF_ATTEMPTS": "कोशिशें समाप्त हो गईं।",
@@ -13,6 +12,6 @@
     "TITLE": "लगभग हो गया था!",
     "USE_COINS_PREFIX": "जारी रखने के लिए ",
     "USE_COINS_SUFFIX": " सिक्के इस्तेमाल करें",
-    "WATCH_AD_BUTTON": "जारी रखने के लिए विज्ञापन देखें"
+    "WATCH_AD_BUTTON": "एक अतिरिक्त मौके के लिए विज्ञापन देखें"
   }
 }

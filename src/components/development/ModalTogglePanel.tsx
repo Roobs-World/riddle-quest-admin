@@ -38,7 +38,7 @@ import {COLORS, SPACING, BORDER_RADIUS, TYPOGRAPHY} from "../../styles";
 import {scale, verticalScale} from "../../utils/responsive";
 import {logger} from "../../utils/logger";
 import {t, getLocale, SupportedLanguage} from "../../i18n";
-import {HINT_COST_COINS, LEVEL_UP_COIN_BONUS} from "../../constants/game";
+import {CONTINUE_COST_COINS, HINT_COST_COINS, LEVEL_UP_COIN_BONUS} from "../../constants/game";
 import {loadRewardedAd, showRewardedAd} from "../../services/RewardedAdService";
 
 /**
@@ -280,7 +280,7 @@ export const generateMockData = (
         },
       };
     case "loss": {
-      const coinContinueCost = 25;
+      const coinContinueCost = CONTINUE_COST_COINS;
       return {
         correctAnswer: "HIDDEN",
         totalCoins: currentCoins,

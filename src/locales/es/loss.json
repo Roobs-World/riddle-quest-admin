@@ -1,9 +1,8 @@
 {
   "LossModal": {
     "ANSWER_PREFIX": "Respuesta: ",
-    "EXTRA_GUESSES_PREFIX": "3 intentos extra - ",
-    "EXTRA_GUESSES_PROMPT": "Sin intentos. Obten 3 intentos extra o salta este acertijo.",
-    "EXTRA_GUESSES_SUFFIX": " monedas",
+    "COIN_EXTRA_GO_BUTTON": "{coins} monedas para un intento extra",
+    "EXTRA_GO_PROMPT": "Sin intentos. Obten un intento extra o salta este acertijo.",
     "NEXT_LEVEL_BUTTON": "Siguiente nivel",
     "OPEN_SHOP_BUTTON": "Abrir tienda",
     "OUT_OF_ATTEMPTS": "Sin intentos.",
@@ -13,6 +12,6 @@
     "TITLE": "Casi!",
     "USE_COINS_PREFIX": "Usar ",
     "USE_COINS_SUFFIX": " monedas para continuar",
-    "WATCH_AD_BUTTON": "Ver anuncio para continuar"
+    "WATCH_AD_BUTTON": "Ver anuncio para un intento extra"
   }
 }

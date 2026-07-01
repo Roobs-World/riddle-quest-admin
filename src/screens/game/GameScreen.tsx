@@ -53,6 +53,7 @@ import {ModalProvider} from "../../components/modals/ModalProvider";
 import {FANFARE_SEQUENCE_BACKGROUND_MODAL_TYPE} from "../../components/modals/modalTypes";
 import {IapService} from "../../services/IapService";
 import {ProductPricing, ProductPricingService} from "../../services/ProductPricingService";
+import type {RewardedAdPlacement} from "../../services/RewardedAdService";
 import ModalTogglePanel from "../../components/development/ModalTogglePanel";
 import StarryBackground from "../../components/background/StarryBackground";
 import GuestOnboardingModal from "../../components/modals/help/GuestOnboardingModal";
@@ -462,6 +463,8 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   const openShopFromLossRef = useRef<() => void>(() => {});
   const coinAnimationSettleTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const hasQueuedSubmitTooltipRef = useRef(false);
+  const hasRequestedHintAfterWrongGuessTooltipRef = useRef(false);
+  const previousTooltipUserIdRef = useRef(currentTooltipUserId);
 
   const showTooltipOnce = useCallback(
     (id: TooltipId, targetRef?: TooltipTargetRef | null, highlightElement?: React.ReactNode) => {
@@ -502,6 +505,24 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     setIsGuestOnboardingModalVisible(false);
     setIsOnboardingComplete(true);
   }, []);
+
+  useEffect(() => {
+    if (previousTooltipUserIdRef.current === currentTooltipUserId) {
+      return;
+    }
+
+    previousTooltipUserIdRef.current = currentTooltipUserId;
+    hasRequestedHintAfterWrongGuessTooltipRef.current = false;
+  }, [currentTooltipUserId]);
+
+  const showHintAfterWrongGuessTooltipOnce = useCallback(() => {
+    if (hasRequestedHintAfterWrongGuessTooltipRef.current) {
+      return;
+    }
+
+    hasRequestedHintAfterWrongGuessTooltipRef.current = true;
+    void showTooltipOnce("hintAfterWrongGuess", hintButtonRef);
+  }, [showTooltipOnce]);
 
   const handleGuestOnboardingUpgrade = useCallback(() => {
     completeGuestOnboarding();
@@ -1092,7 +1113,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   ]);
 
   const confirmRewardedAdReward = useCallback(
-    async (placement: "loss_continue" | "coin_shop") => {
+    async (placement: RewardedAdPlacement) => {
       if (!isGuestMode) {
         logger.debug("Confirming rewarded ad reward with backend callback", {
           placement,
@@ -1748,7 +1769,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         if (result.outcome === "continue") {
           pendingLockedGuessStateRef.current = null;
           applyLockedGuessState(lockedGuessState);
-          void showTooltipOnce("hintAfterWrongGuess", hintButtonRef);
+          showHintAfterWrongGuessTooltipOnce();
         } else if (result.outcome === "attemptLimitReached") {
           pendingLockedGuessStateRef.current = lockedGuessState;
         } else {
@@ -1787,7 +1808,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     applyLockedGuessState,
     modal,
     runWithServerLoading,
-    showTooltipOnce,
+    showHintAfterWrongGuessTooltipOnce,
     tooltip,
     gameMode,
   ]);

@@ -1,9 +1,8 @@
 {
   "LossModal": {
     "ANSWER_PREFIX": "الجواب:",
-    "EXTRA_GUESSES_PREFIX": "3 تخمينات إضافية -",
-    "EXTRA_GUESSES_PROMPT": "من المحاولات. احصل على 3 تخمينات إضافية أو تخطي هذا اللغز.",
-    "EXTRA_GUESSES_SUFFIX": "عملات معدنية",
+    "COIN_EXTRA_GO_BUTTON": "{coins} عملات لفرصة إضافية",
+    "EXTRA_GO_PROMPT": "نفدت المحاولات. احصل على فرصة إضافية أو تخط هذا اللغز.",
     "NEXT_LEVEL_BUTTON": "المستوى التالي",
     "OPEN_SHOP_BUTTON": "افتح المتجر",
     "OUT_OF_ATTEMPTS": "من المحاولات.",
@@ -13,6 +12,6 @@
     "TITLE": "قريبة جدا!",
     "USE_COINS_PREFIX": "استخدم",
     "USE_COINS_SUFFIX": "العملات المعدنية للمتابعة",
-    "WATCH_AD_BUTTON": "شاهد الإعلان لمدة 3 تخمينات إضافية"
+    "WATCH_AD_BUTTON": "شاهد إعلانا للحصول على فرصة إضافية"
   }
 }

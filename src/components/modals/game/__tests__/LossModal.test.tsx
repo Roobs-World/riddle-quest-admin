@@ -98,8 +98,8 @@ describe("LossModal", () => {
         />,
       );
 
-      expect(getByText("Watch Ad for 3 Extra Guesses")).toBeTruthy();
-      expect(getByText("3 Extra Guesses - 25 Coins")).toBeTruthy();
+      expect(getByText("watch ad for an extra go")).toBeTruthy();
+      expect(getByText("25 coins for an extra go")).toBeTruthy();
       expect(getByText("305")).toBeTruthy();
     });
   });
@@ -193,25 +193,25 @@ describe("LossModal", () => {
     it("should show Watch Ad button when onWatchAdContinue is provided", () => {
       const {getByText} = render(<LossModal {...defaultProps} onWatchAdContinue={jest.fn()} />);
 
-      expect(getByText("Watch Ad for 3 Extra Guesses")).toBeTruthy();
+      expect(getByText("watch ad for an extra go")).toBeTruthy();
     });
 
     it("should show coin continue button when onCoinContinue is provided", () => {
       const {getByText} = render(<LossModal {...defaultProps} onCoinContinue={jest.fn()} coinContinueCost={50} />);
 
-      expect(getByText("3 Extra Guesses - 50 Coins")).toBeTruthy();
+      expect(getByText("50 coins for an extra go")).toBeTruthy();
     });
 
-    it("should show default 0 coins when coinContinueCost is not provided", () => {
+    it("should show default 100 coins when coinContinueCost is not provided", () => {
       const {getByText} = render(<LossModal {...defaultProps} onCoinContinue={jest.fn()} />);
 
-      expect(getByText("3 Extra Guesses - 0 Coins")).toBeTruthy();
+      expect(getByText("100 coins for an extra go")).toBeTruthy();
     });
 
     it("should show Skip Puzzle but not Next Level when continue options are available", () => {
       const {getByText, queryByText} = render(<LossModal {...defaultProps} onWatchAdContinue={jest.fn()} />);
 
-      expect(getByText("Watch Ad for 3 Extra Guesses")).toBeTruthy();
+      expect(getByText("watch ad for an extra go")).toBeTruthy();
       expect(getByText("Skip Puzzle")).toBeTruthy();
       expect(queryByText("Skip Level (75 Coins)")).toBeNull();
       expect(queryByText("Next Level")).toBeNull();
@@ -222,9 +222,9 @@ describe("LossModal", () => {
         <LossModal {...defaultProps} onWatchAdContinue={jest.fn()} onCoinContinue={jest.fn()} coinContinueCost={25} />,
       );
 
-      expect(getByText("Watch Ad for 3 Extra Guesses")).toBeTruthy();
+      expect(getByText("watch ad for an extra go")).toBeTruthy();
       expect(getByText("Skip Puzzle")).toBeTruthy();
-      expect(getByText("3 Extra Guesses - 25 Coins")).toBeTruthy();
+      expect(getByText("25 coins for an extra go")).toBeTruthy();
     });
 
     it("should show Open Shop in continue-options view when callback is provided", () => {
@@ -238,7 +238,7 @@ describe("LossModal", () => {
 
       const {getByText} = render(<LossModal {...defaultProps} onWatchAdContinue={mockWatchAd} />);
 
-      fireEvent.press(getByText("Watch Ad for 3 Extra Guesses"));
+      fireEvent.press(getByText("watch ad for an extra go"));
 
       expect(mockWatchAd).toHaveBeenCalledTimes(1);
     });
@@ -250,7 +250,7 @@ describe("LossModal", () => {
         <LossModal {...defaultProps} onCoinContinue={mockCoinContinue} coinContinueCost={50} />,
       );
 
-      fireEvent.press(getByText("3 Extra Guesses - 50 Coins"));
+      fireEvent.press(getByText("50 coins for an extra go"));
 
       expect(mockCoinContinue).toHaveBeenCalledTimes(1);
     });
@@ -261,7 +261,7 @@ describe("LossModal", () => {
 
       const {getByText} = render(<LossModal {...defaultProps} onWatchAdContinue={mockWatchAd} onClose={mockOnClose} />);
 
-      fireEvent.press(getByText("Watch Ad for 3 Extra Guesses"));
+      fireEvent.press(getByText("watch ad for an extra go"));
 
       await waitFor(() => {
         expect(mockWatchAd).toHaveBeenCalledTimes(1);
@@ -279,7 +279,7 @@ describe("LossModal", () => {
         <LossModal {...defaultProps} onCoinContinue={mockCoinContinue} coinContinueCost={50} onClose={mockOnClose} />,
       );
 
-      fireEvent.press(getByText("3 Extra Guesses - 50 Coins"));
+      fireEvent.press(getByText("50 coins for an extra go"));
 
       await waitFor(() => {
         expect(mockCoinContinue).toHaveBeenCalledTimes(1);
@@ -294,7 +294,7 @@ describe("LossModal", () => {
 
       const {getByText} = render(<LossModal {...defaultProps} onWatchAdContinue={mockWatchAd} onClose={mockOnClose} />);
 
-      fireEvent.press(getByText("Watch Ad for 3 Extra Guesses"));
+      fireEvent.press(getByText("watch ad for an extra go"));
 
       await waitFor(() => {
         expect(mockOnClose).toHaveBeenCalledTimes(1);
@@ -307,16 +307,16 @@ describe("LossModal", () => {
       const mockWatchAd = jest.fn();
       const {getByText} = render(<LossModal {...defaultProps} onWatchAdContinue={mockWatchAd} canWatchAd={false} />);
 
-      expect(getByText("Watch Ad for 3 Extra Guesses")).toBeTruthy();
+      expect(getByText("watch ad for an extra go")).toBeTruthy();
       const calls = getWideButtonMockCalls();
       expect(calls).toContainEqual(
         expect.objectContaining({
-          buttonText: "Watch Ad for 3 Extra Guesses",
+          buttonText: "watch ad for an extra go",
           disabled: true,
         }),
       );
 
-      fireEvent.press(getByText("Watch Ad for 3 Extra Guesses"));
+      fireEvent.press(getByText("watch ad for an extra go"));
       expect(mockWatchAd).not.toHaveBeenCalled();
     });
 
@@ -326,16 +326,16 @@ describe("LossModal", () => {
         <LossModal {...defaultProps} onCoinContinue={mockCoinContinue} coinContinueCost={50} canUseCoin={false} />,
       );
 
-      expect(getByText("3 Extra Guesses - 50 Coins")).toBeTruthy();
+      expect(getByText("50 coins for an extra go")).toBeTruthy();
       const calls = getWideButtonMockCalls();
       expect(calls).toContainEqual(
         expect.objectContaining({
-          buttonText: "3 Extra Guesses - 50 Coins",
+          buttonText: "50 coins for an extra go",
           disabled: true,
         }),
       );
 
-      fireEvent.press(getByText("3 Extra Guesses - 50 Coins"));
+      fireEvent.press(getByText("50 coins for an extra go"));
       expect(mockCoinContinue).not.toHaveBeenCalled();
     });
 
@@ -351,8 +351,8 @@ describe("LossModal", () => {
         />,
       );
 
-      expect(getByText("Watch Ad for 3 Extra Guesses")).toBeTruthy();
-      expect(getByText("3 Extra Guesses - 50 Coins")).toBeTruthy();
+      expect(getByText("watch ad for an extra go")).toBeTruthy();
+      expect(getByText("50 coins for an extra go")).toBeTruthy();
     });
   });
 

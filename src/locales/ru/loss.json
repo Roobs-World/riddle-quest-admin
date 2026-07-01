@@ -1,9 +1,8 @@
 {
   "LossModal": {
     "ANSWER_PREFIX": "Ответ: ",
-    "EXTRA_GUESSES_PREFIX": "3 дополнительные попытки - ",
-    "EXTRA_GUESSES_PROMPT": "Попытки закончились. Получите 3 дополнительные попытки или пропустите эту загадку.",
-    "EXTRA_GUESSES_SUFFIX": " монет",
+    "COIN_EXTRA_GO_BUTTON": "{coins} монет за дополнительную попытку",
+    "EXTRA_GO_PROMPT": "Попытки закончились. Получите одну дополнительную попытку или пропустите эту загадку.",
     "NEXT_LEVEL_BUTTON": "Sleduyushchiy uroven",
     "OPEN_SHOP_BUTTON": "Otkryt magazin",
     "OUT_OF_ATTEMPTS": "Popytki zakonchilis.",
@@ -13,6 +12,6 @@
     "TITLE": "Pochti!",
     "USE_COINS_PREFIX": "Ispolzovat ",
     "USE_COINS_SUFFIX": " monet dlya prodolzheniya",
-    "WATCH_AD_BUTTON": "Posmotret reklamu dlya prodolzheniya"
+    "WATCH_AD_BUTTON": "Посмотреть рекламу за дополнительную попытку"
   }
 }

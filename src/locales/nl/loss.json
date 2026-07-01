@@ -1,9 +1,8 @@
 {
   "LossModal": {
     "ANSWER_PREFIX": "Antwoord:",
-    "EXTRA_GUESSES_PREFIX": "3 extra gissingen -",
-    "EXTRA_GUESSES_PROMPT": "Geen pogingen meer. Ontvang 3 extra gissingen of sla deze puzzel over.",
-    "EXTRA_GUESSES_SUFFIX": "Munten",
+    "COIN_EXTRA_GO_BUTTON": "{coins} munten voor een extra kans",
+    "EXTRA_GO_PROMPT": "Geen pogingen meer. Ontvang een extra kans of sla deze puzzel over.",
     "NEXT_LEVEL_BUTTON": "Volgende niveau",
     "OPEN_SHOP_BUTTON": "Winkel openen",
     "OUT_OF_ATTEMPTS": "Geen pogingen meer.",
@@ -13,6 +12,6 @@
     "TITLE": "Zo dichtbij!",
     "USE_COINS_PREFIX": "Gebruik",
     "USE_COINS_SUFFIX": "Munten om door te gaan",
-    "WATCH_AD_BUTTON": "Bekijk de advertentie voor 3 extra gissingen"
+    "WATCH_AD_BUTTON": "Bekijk de advertentie voor een extra kans"
   }
 }

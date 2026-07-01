@@ -1,9 +1,8 @@
 {
   "LossModal": {
     "ANSWER_PREFIX": "答え: ",
-    "EXTRA_GUESSES_PREFIX": "追加3回 - ",
-    "EXTRA_GUESSES_PROMPT": "挑戦回数がなくなりました。3回追加するか、このパズルをスキップできます。",
-    "EXTRA_GUESSES_SUFFIX": "コイン",
+    "COIN_EXTRA_GO_BUTTON": "{coins}コインで追加の1回",
+    "EXTRA_GO_PROMPT": "挑戦回数がなくなりました。追加の1回を得るか、このパズルをスキップできます。",
     "NEXT_LEVEL_BUTTON": "次のレベルへ",
     "OPEN_SHOP_BUTTON": "ショップを開く",
     "OUT_OF_ATTEMPTS": "挑戦回数切れ。",
@@ -13,6 +12,6 @@
     "TITLE": "惜しい！",
     "USE_COINS_PREFIX": "使用: ",
     "USE_COINS_SUFFIX": "コインで続ける",
-    "WATCH_AD_BUTTON": "広告を見て続ける"
+    "WATCH_AD_BUTTON": "広告を見て追加の1回を得る"
   }
 }

@@ -205,7 +205,7 @@ describe("useGameLogic", () => {
       });
     });
 
-    it("should produce final loss after using continue and exhausting extra attempts", async () => {
+    it("should produce final loss after using continue and exhausting the extra go", async () => {
       mockCompleteGameCallable.mockResolvedValueOnce({
         data: {coinsEarned: 0, newlyUnlockedAchievementIds: []},
       });
@@ -226,13 +226,6 @@ describe("useGameLogic", () => {
       });
       expect(result.current.gameOver).toBe(false);
 
-      // Use up the 3 extra attempts — final one triggers completeGame
-      for (let i = 0; i < 2; i++) {
-        await act(async () => {
-          await result.current.processGuess(wrong);
-        });
-      }
-
       let processResult: unknown;
       await act(async () => {
         processResult = await result.current.processGuess(guessWord);
@@ -242,7 +235,7 @@ describe("useGameLogic", () => {
       expect(mockCompleteGameCallable).toHaveBeenCalledWith({
         riddleId: defaultProps.riddleId,
         gameMode: defaultProps.gameMode,
-        attempts: 8,
+        attempts: 6,
         isCorrect: false,
       });
       expect(result.current.gameOver).toBe(true);
@@ -289,16 +282,14 @@ describe("useGameLogic", () => {
         result.current.continueGame();
       });
 
-      // Use up the 3 extra attempts on the fresh continuation grid
-      for (let i = 0; i < 3; i++) {
-        await act(async () => {
-          await result.current.processGuess(wrong);
-        });
-      }
+      // Use up the extra attempt on the fresh continuation grid
+      await act(async () => {
+        await result.current.processGuess(wrong);
+      });
 
       // Game still ends — error is swallowed so the user isn't blocked
       expect(result.current.gameOver).toBe(true);
-      expect(result.current.guesses.length).toBe(3);
+      expect(result.current.guesses.length).toBe(1);
     });
 
     it("should keep guest wins local and skip completeGame calls", async () => {
@@ -335,15 +326,13 @@ describe("useGameLogic", () => {
         result.current.continueGame();
       });
 
-      for (let i = 0; i < 3; i++) {
-        await act(async () => {
-          await result.current.processGuess(wrong);
-        });
-      }
+      await act(async () => {
+        await result.current.processGuess(wrong);
+      });
 
       expect(mockCompleteGameCallable).not.toHaveBeenCalled();
       expect(result.current.gameOver).toBe(true);
-      expect(result.current.guesses.length).toBe(3);
+      expect(result.current.guesses.length).toBe(1);
     });
 
     it("persists guest in-progress sessions to AsyncStorage", async () => {
@@ -529,7 +518,7 @@ describe("useGameLogic", () => {
       });
 
       expect(result.current.attemptsUsed).toBe(5);
-      expect(result.current.attemptsRemaining).toBe(3); // 3 more attempts granted
+      expect(result.current.attemptsRemaining).toBe(1); // one more attempt granted
     });
 
     it("should reset attempts counter on resetGame", async () => {

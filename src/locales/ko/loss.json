@@ -1,9 +1,8 @@
 {
   "LossModal": {
     "ANSWER_PREFIX": "정답: ",
-    "EXTRA_GUESSES_PREFIX": "추가 시도 3회 - ",
-    "EXTRA_GUESSES_PROMPT": "시도 횟수가 없습니다. 추가 시도 3회를 얻거나 이 퍼즐을 건너뛰세요.",
-    "EXTRA_GUESSES_SUFFIX": "코인",
+    "COIN_EXTRA_GO_BUTTON": "{coins}코인으로 추가 기회 얻기",
+    "EXTRA_GO_PROMPT": "시도 횟수가 없습니다. 추가 기회 1회를 얻거나 이 퍼즐을 건너뛰세요.",
     "NEXT_LEVEL_BUTTON": "다음 레벨",
     "OPEN_SHOP_BUTTON": "상점 열기",
     "OUT_OF_ATTEMPTS": "시도 횟수 초과.",
@@ -13,6 +12,6 @@
     "TITLE": "아쉽다!",
     "USE_COINS_PREFIX": "사용: ",
     "USE_COINS_SUFFIX": "코인으로 계속하기",
-    "WATCH_AD_BUTTON": "광고 보고 계속하기"
+    "WATCH_AD_BUTTON": "광고를 보고 추가 기회 얻기"
   }
 }

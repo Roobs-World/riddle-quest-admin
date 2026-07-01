@@ -37,6 +37,7 @@ import WheelBg from "../../../../assets/images/wheel-bg.svg";
 
 import {
   MODAL_WIDTH, MODAL_HEIGHT, MODAL_CONTENT_PADDING, MODAL_BUTTON_SPACER, MODAL_MAX_HEIGHT, wheelSize, } from "../../../constants/layout";
+import {CONTINUE_COST_COINS} from "../../../constants/game";
 import {t} from "../../../i18n";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import {ModalReward} from "@/components/rewards/RewardFactory";
@@ -63,10 +64,10 @@ interface LossModalProps {
   /** Function to close the modal (from BaseModalProps) */
   onClose?: () => void;
 
-  /** When provided, shows a "Watch Ad" button to continue with extra attempts */
+  /** When provided, shows a Watch Ad button to continue with an extra go */
   onWatchAdContinue?: () => void | boolean | Promise<void | boolean>;
 
-  /** When provided, shows a "Use Coins" button to continue with extra attempts */
+  /** When provided, shows a coin button to continue with an extra go */
   onCoinContinue?: () => void | boolean | Promise<void | boolean>;
 
   /** Coin cost shown on the coin-continue button */
@@ -101,7 +102,7 @@ const LossModal: React.FC<LossModalProps> = ({
   onClose,
   onWatchAdContinue,
   onCoinContinue,
-  coinContinueCost,
+  coinContinueCost = CONTINUE_COST_COINS,
   totalCoins = 0,
   canWatchAd,
   canUseCoin,
@@ -304,7 +305,7 @@ const LossModal: React.FC<LossModalProps> = ({
                         textAlign: "center",
                       }}
                     >
-                      {t("LossModal.EXTRA_GUESSES_PROMPT")}
+                      {t("LossModal.EXTRA_GO_PROMPT")}
                     </Text>
                   </View>
 
@@ -325,7 +326,7 @@ const LossModal: React.FC<LossModalProps> = ({
                       <>
                         <WideButton
                           onPress={handleCoinContinue}
-                          buttonText={`${t("LossModal.EXTRA_GUESSES_PREFIX")}${coinContinueCost ?? 0}${t("LossModal.EXTRA_GUESSES_SUFFIX")}`}
+                          buttonText={t("LossModal.COIN_EXTRA_GO_BUTTON", {coins: coinContinueCost})}
                           disabled={isCoinContinueDisabled}
                         />
                         <View style={{height: MODAL_BUTTON_SPACER}} />

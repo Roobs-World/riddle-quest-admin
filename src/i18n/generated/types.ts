@@ -441,9 +441,8 @@ export const translationSchema = {
   },
   "LossModal": {
     "ANSWER_PREFIX": "Answer: ",
-    "EXTRA_GUESSES_PREFIX": "3 Extra Guesses - ",
-    "EXTRA_GUESSES_PROMPT": "Out of attempts. Get 3 extra guesses or skip this puzzle.",
-    "EXTRA_GUESSES_SUFFIX": " Coins",
+    "COIN_EXTRA_GO_BUTTON": "{coins} coins for an extra go",
+    "EXTRA_GO_PROMPT": "Out of attempts. Get an extra go or skip this puzzle.",
     "NEXT_LEVEL_BUTTON": "Next Level",
     "OPEN_SHOP_BUTTON": "Open Shop",
     "OUT_OF_ATTEMPTS": "Out of attempts.",
@@ -453,7 +452,7 @@ export const translationSchema = {
     "TITLE": "So close!",
     "USE_COINS_PREFIX": "Use ",
     "USE_COINS_SUFFIX": " Coins to Continue",
-    "WATCH_AD_BUTTON": "Watch Ad for 3 Extra Guesses"
+    "WATCH_AD_BUTTON": "watch ad for an extra go"
   },
   "Achievements": {
     "COINS_SUFFIX": " Coins",

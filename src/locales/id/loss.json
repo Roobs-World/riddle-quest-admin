@@ -1,9 +1,8 @@
 {
   "LossModal": {
     "ANSWER_PREFIX": "Jawaban:",
-    "EXTRA_GUESSES_PREFIX": "3 Tebakan Ekstra -",
-    "EXTRA_GUESSES_PROMPT": "Di luar upaya. Dapatkan 3 tebakan tambahan atau lewati teka-teki ini.",
-    "EXTRA_GUESSES_SUFFIX": "Koin",
+    "COIN_EXTRA_GO_BUTTON": "{coins} Koin untuk Kesempatan Ekstra",
+    "EXTRA_GO_PROMPT": "Kesempatan habis. Dapatkan satu kesempatan ekstra atau lewati teka-teki ini.",
     "NEXT_LEVEL_BUTTON": "Tingkat Selanjutnya",
     "OPEN_SHOP_BUTTON": "Buka Toko",
     "OUT_OF_ATTEMPTS": "Di luar upaya.",
@@ -13,6 +12,6 @@
     "TITLE": "Sangat dekat!",
     "USE_COINS_PREFIX": "Gunakan",
     "USE_COINS_SUFFIX": "Koin untuk Melanjutkan",
-    "WATCH_AD_BUTTON": "Tonton Iklan untuk 3 Tebakan Ekstra"
+    "WATCH_AD_BUTTON": "Tonton Iklan untuk Kesempatan Ekstra"
   }
 }

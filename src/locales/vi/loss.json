@@ -1,9 +1,8 @@
 {
   "LossModal": {
     "ANSWER_PREFIX": "Trả lời:",
-    "EXTRA_GUESSES_PREFIX": "3 lần đoán bổ sung -",
-    "EXTRA_GUESSES_PROMPT": "Hết sức cố gắng. Nhận thêm 3 lần đoán hoặc bỏ qua câu đố này.",
-    "EXTRA_GUESSES_SUFFIX": "tiền xu",
+    "COIN_EXTRA_GO_BUTTON": "{coins} xu để có thêm một lượt",
+    "EXTRA_GO_PROMPT": "Hết lượt thử. Nhận thêm một lượt hoặc bỏ qua câu đố này.",
     "NEXT_LEVEL_BUTTON": "Cấp độ tiếp theo",
     "OPEN_SHOP_BUTTON": "Mở cửa hàng",
     "OUT_OF_ATTEMPTS": "Hết sức cố gắng.",
@@ -13,6 +12,6 @@
     "TITLE": "Thật gần!",
     "USE_COINS_PREFIX": "sử dụng",
     "USE_COINS_SUFFIX": "Tiền xu để tiếp tục",
-    "WATCH_AD_BUTTON": "Xem quảng cáo để có thêm 3 lần đoán"
+    "WATCH_AD_BUTTON": "Xem quảng cáo để có thêm một lượt"
   }
 }

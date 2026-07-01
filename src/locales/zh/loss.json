@@ -1,9 +1,8 @@
 {
   "LossModal": {
     "ANSWER_PREFIX": "答案：",
-    "EXTRA_GUESSES_PREFIX": "3次额外猜测 - ",
-    "EXTRA_GUESSES_PROMPT": "尝试次数已用完。获得3次额外猜测或跳过此谜题。",
-    "EXTRA_GUESSES_SUFFIX": "金币",
+    "COIN_EXTRA_GO_BUTTON": "{coins}金币获得一次额外机会",
+    "EXTRA_GO_PROMPT": "尝试次数已用完。获得一次额外机会或跳过此谜题。",
     "NEXT_LEVEL_BUTTON": "下一关",
     "OPEN_SHOP_BUTTON": "打开商店",
     "OUT_OF_ATTEMPTS": "尝试次数用尽。",
@@ -13,6 +12,6 @@
     "TITLE": "差一点！",
     "USE_COINS_PREFIX": "使用",
     "USE_COINS_SUFFIX": "金币继续",
-    "WATCH_AD_BUTTON": "看广告继续"
+    "WATCH_AD_BUTTON": "观看广告获得一次额外机会"
   }
 }

@@ -13,7 +13,7 @@ import OfflineBlockingModal from "../components/modals/system/OfflineBlockingMod
 import {getModalComponent} from "../components/modals/ModalRegistry";
 import {generateMockData} from "../components/development/ModalTogglePanel";
 import {t, getLocale} from "../i18n";
-import {HINT_COST_COINS} from "../constants/game";
+import {CONTINUE_COST_COINS, HINT_COST_COINS} from "../constants/game";
 import type {ModalData, ModalSequenceProgress} from "../types/ModalTypes";
 import type {Player} from "../validation/firestoreSchemas";
 import {styles as appStyles, SPACING, TYPOGRAPHY} from "../styles";
@@ -174,7 +174,7 @@ const getModalSurfaceOverrides = (surfaceId: QASurfaceId): ModalData => {
       return {
         correctAnswer: "HIDDEN",
         totalCoins: 150,
-        coinContinueCost: 25,
+        coinContinueCost: CONTINUE_COST_COINS,
         canWatchAd: false,
         canUseCoin: true,
         onWatchAdContinue: undefined,

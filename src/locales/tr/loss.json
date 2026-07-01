@@ -1,9 +1,8 @@
 {
   "LossModal": {
     "ANSWER_PREFIX": "Cevap: ",
-    "EXTRA_GUESSES_PREFIX": "3 ekstra tahmin - ",
-    "EXTRA_GUESSES_PROMPT": "Deneme hakkin bitti. 3 ekstra tahmin al veya bu bulmacayi atla.",
-    "EXTRA_GUESSES_SUFFIX": " jeton",
+    "COIN_EXTRA_GO_BUTTON": "{coins} jeton ile ekstra hak",
+    "EXTRA_GO_PROMPT": "Deneme hakkin bitti. Bir ekstra hak al veya bu bulmacayi atla.",
     "NEXT_LEVEL_BUTTON": "Sonraki bolum",
     "OPEN_SHOP_BUTTON": "Magazayi ac",
     "OUT_OF_ATTEMPTS": "Deneme hakki bitti.",
@@ -13,6 +12,6 @@
     "TITLE": "Az kaldi!",
     "USE_COINS_PREFIX": "Kullan: ",
     "USE_COINS_SUFFIX": " para ile devam et",
-    "WATCH_AD_BUTTON": "Devam icin reklam izle"
+    "WATCH_AD_BUTTON": "Ekstra hak icin reklam izle"
   }
 }

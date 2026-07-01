@@ -3,6 +3,7 @@ import {render, waitFor, cleanup, act} from "@testing-library/react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import NetInfo from "@react-native-community/netinfo";
 import {CONTINUE_REWARDED_AD_COIN_REWARD, LEVEL_UP_COIN_BONUS} from "../../../constants/game";
+import type {TooltipRequest} from "../../../components/tooltips/types";
 
 // Mock all external dependencies before importing the component
 
@@ -172,9 +173,9 @@ const mockShowLevelUpFanfareModal = jest.fn();
 const mockShowRankUpFanfareModal = jest.fn();
 const mockUpgradeAccountModal = jest.fn();
 const mockGuestOnboardingModal = jest.fn();
-const mockShowTooltipOnce = jest.fn(() => Promise.resolve(true));
-const mockShowTooltip = jest.fn(() => Promise.resolve());
-const mockShowTooltipSequence = jest.fn(() => Promise.resolve(true));
+const mockShowTooltipOnce = jest.fn<Promise<boolean>, [TooltipRequest]>(() => Promise.resolve(true));
+const mockShowTooltip = jest.fn<Promise<void>, [TooltipRequest]>(() => Promise.resolve());
+const mockShowTooltipSequence = jest.fn<Promise<boolean>, [TooltipRequest[]]>(() => Promise.resolve(true));
 const mockDismissTooltip = jest.fn();
 
 jest.mock("../../../hooks/useModal", () => ({
@@ -1464,6 +1465,30 @@ describe("GameScreen", () => {
 
       expect(mockUseGameLogic.processGuess).toHaveBeenCalledWith(["K", "E", "Y", "B", "O", "A", "R", "D"]);
       expect(mockShowTooltipOnce).toHaveBeenCalledWith(expect.objectContaining({id: "hintAfterWrongGuess"}));
+    });
+
+    it("shows the need-a-clue tooltip only once after repeated wrong submits", async () => {
+      mockUseGameLogic.currentGuess = ["K", "E", "Y", "B", "O", "A", "R", "D"];
+      mockUseGameLogic.processGuess.mockResolvedValue({
+        outcome: "continue",
+        attemptsRemaining: 2,
+      });
+
+      render(<GameScreen {...defaultProps} suppressOnboarding={true} />);
+
+      const inputProps = getLatestProps(mockGameInput);
+      await act(async () => {
+        await inputProps.handleSubmit();
+      });
+      await act(async () => {
+        await inputProps.handleSubmit();
+      });
+
+      const clueTooltipCalls = mockShowTooltipOnce.mock.calls.filter(
+        ([request]) => request.id === "hintAfterWrongGuess",
+      );
+      expect(mockUseGameLogic.processGuess).toHaveBeenCalledTimes(2);
+      expect(clueTooltipCalls).toHaveLength(1);
     });
 
     it("autofills and locks green letters into the next row after a wrong submit", async () => {

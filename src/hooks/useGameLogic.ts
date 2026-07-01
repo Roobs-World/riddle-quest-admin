@@ -34,7 +34,7 @@ interface UseGameLogicProps {
 
 const GUEST_GAME_SESSION_STORAGE_KEY = "@guest_game_session_v1";
 const INITIAL_ATTEMPTS = NUM_GUESSES;
-const CONTINUE_ATTEMPTS = 3;
+const CONTINUE_ATTEMPTS = 1;
 
 type GuestGameSessionSnapshot = {
   version: 2;
