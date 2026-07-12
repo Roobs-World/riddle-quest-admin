@@ -9,5 +9,31 @@
     "RETRY_BUTTON_PRESSED": "已按下重试按钮",
     "FALLBACK_CLUE_SINGLE": "解这个词。",
     "FALLBACK_CLUE_TEMPLATE": "解决这个由 {length} 字母组成的单词。"
+  },
+  "WebPortal": {
+    "APP_TITLE": "Riddle Quest",
+    "HTML5_BADGE": "HTML5 可玩门户",
+    "EMAIL_LABEL": "邮箱",
+    "PASSWORD_LABEL": "密码",
+    "SIGN_IN_WITH_EMAIL": "用邮箱登录",
+    "SIGNING_IN": "正在登录...",
+    "GUEST_WARNING": "以访客身份游玩，或登录以同步进度、金币和排行榜。",
+    "HOST_STATUS_READY": "宿主已连接",
+    "HOST_STATUS_WAITING": "正在等待宿主外壳",
+    "JEST_HARNESS": "Jest 测试环境已启用",
+    "GAME_FRAME_TITLE": "Riddle Quest 游戏框架",
+    "MODE_LABEL": "游戏模式",
+    "PLAY_CLASSIC": "经典",
+    "PLAY_DAILY": "每日",
+    "OPEN_GAME": "加载谜题",
+    "PURCHASE_COMPLETE": "已添加 {coins} 枚金币。",
+    "PROFILE_PROGRESS": "等级 {level}，{xp} XP。",
+    "ACHIEVEMENTS_EMPTY": "还没有解锁成就。",
+    "PAUSE_GAME": "暂停游戏",
+    "RESUME_GAME": "继续游戏",
+    "PAUSED": "已暂停",
+    "BRIDGE_ERROR": "游戏桥接收到了无效消息。",
+    "FILL_WORD_NOTICE": "提交前请填满每个字母。",
+    "PROVIDER_NOT_CONFIGURED": "此网页提供方尚未配置。"
   }
 }

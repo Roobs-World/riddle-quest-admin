@@ -9,5 +9,31 @@
     "RETRY_BUTTON_PRESSED": "Đã nhấn nút thử lại",
     "FALLBACK_CLUE_SINGLE": "Giải quyết từ này.",
     "FALLBACK_CLUE_TEMPLATE": "Giải từ có chữ cái {length} này."
+  },
+  "WebPortal": {
+    "APP_TITLE": "Riddle Quest",
+    "HTML5_BADGE": "Cổng HTML5 có thể chơi",
+    "EMAIL_LABEL": "Email người chơi",
+    "PASSWORD_LABEL": "Mật khẩu",
+    "SIGN_IN_WITH_EMAIL": "Đăng nhập bằng email",
+    "SIGNING_IN": "Đang đăng nhập...",
+    "GUEST_WARNING": "Chơi với tư cách khách hoặc đăng nhập để đồng bộ tiến trình, xu và bảng xếp hạng.",
+    "HOST_STATUS_READY": "Host đã kết nối",
+    "HOST_STATUS_WAITING": "Đang chờ lớp host",
+    "JEST_HARNESS": "Harness Jest đang bật",
+    "GAME_FRAME_TITLE": "Khung trò chơi Riddle Quest",
+    "MODE_LABEL": "Chế độ chơi",
+    "PLAY_CLASSIC": "Cổ điển",
+    "PLAY_DAILY": "Hằng ngày",
+    "OPEN_GAME": "Tải câu đố",
+    "PURCHASE_COMPLETE": "Đã thêm {coins} xu.",
+    "PROFILE_PROGRESS": "Cấp {level} với {xp} XP.",
+    "ACHIEVEMENTS_EMPTY": "Chưa mở khóa thành tựu nào.",
+    "PAUSE_GAME": "Tạm dừng trò chơi",
+    "RESUME_GAME": "Tiếp tục trò chơi",
+    "PAUSED": "Đã tạm dừng",
+    "BRIDGE_ERROR": "Cầu nối trò chơi nhận được tin nhắn không hợp lệ.",
+    "FILL_WORD_NOTICE": "Điền đủ mọi chữ cái trước khi gửi.",
+    "PROVIDER_NOT_CONFIGURED": "Nhà cung cấp web này chưa được cấu hình."
   }
 }

@@ -9,5 +9,31 @@
     "RETRY_BUTTON_PRESSED": "रीट्राई बटन दबाया गया",
     "FALLBACK_CLUE_SINGLE": "इस शब्द को हल करें.",
     "FALLBACK_CLUE_TEMPLATE": "इस {length}-अक्षर वाले शब्द को हल करें।"
+  },
+  "WebPortal": {
+    "APP_TITLE": "Riddle Quest",
+    "HTML5_BADGE": "HTML5 खेलने योग्य पोर्टल",
+    "EMAIL_LABEL": "ईमेल",
+    "PASSWORD_LABEL": "पासवर्ड",
+    "SIGN_IN_WITH_EMAIL": "ईमेल से साइन इन करें",
+    "SIGNING_IN": "साइन इन हो रहा है...",
+    "GUEST_WARNING": "अतिथि के रूप में खेलें या प्रगति, सिक्के और लीडरबोर्ड सिंक करने के लिए साइन इन करें।",
+    "HOST_STATUS_READY": "होस्ट जुड़ा है",
+    "HOST_STATUS_WAITING": "होस्ट रैपर की प्रतीक्षा",
+    "JEST_HARNESS": "Jest हार्नेस सक्रिय",
+    "GAME_FRAME_TITLE": "Riddle Quest गेम फ्रेम",
+    "MODE_LABEL": "गेम मोड",
+    "PLAY_CLASSIC": "क्लासिक",
+    "PLAY_DAILY": "दैनिक",
+    "OPEN_GAME": "पहेली लोड करें",
+    "PURCHASE_COMPLETE": "{coins} सिक्के जोड़े गए।",
+    "PROFILE_PROGRESS": "लेवल {level} और {xp} XP।",
+    "ACHIEVEMENTS_EMPTY": "अभी कोई उपलब्धि अनलॉक नहीं हुई।",
+    "PAUSE_GAME": "गेम रोकें",
+    "RESUME_GAME": "गेम जारी रखें",
+    "PAUSED": "रुका हुआ",
+    "BRIDGE_ERROR": "गेम ब्रिज को अमान्य संदेश मिला।",
+    "FILL_WORD_NOTICE": "सबमिट करने से पहले हर अक्षर भरें।",
+    "PROVIDER_NOT_CONFIGURED": "यह वेब प्रदाता अभी कॉन्फ़िगर नहीं है।"
   }
 }

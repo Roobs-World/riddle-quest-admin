@@ -12,15 +12,20 @@ import {z} from "zod";
 import {SUPPORTED_LOCALES} from "@qwordly/core/validation";
 import {captureException} from "./sentry";
 import {generateTodaysDailyChallenge} from "./riddleGeneration";
+import {requireAdmin} from "./adminAuth";
 
 const OverviewRequestSchema = z
   .object({
+    clerkToken: z.string().min(1).optional(),
     userLimit: z.number().int().min(1).max(100).optional(),
     riddleLimit: z.number().int().min(1).max(100).optional(),
+    auditLimit: z.number().int().min(1).max(50).optional(),
+    leaderboardLimit: z.number().int().min(1).max(25).optional(),
   })
   .optional();
 
 const AdjustCoinsRequestSchema = z.object({
+  clerkToken: z.string().min(1).optional(),
   userId: z.string().min(1),
   delta: z.number().int().min(-100000).max(100000).refine((value) => value !== 0),
   reason: z.string().trim().min(3).max(200),
@@ -49,6 +54,28 @@ type PortalRiddle = {
   challengeKey: string | null;
 };
 
+type PortalLeaderboardEntry = {
+  userId: string;
+  username: string;
+  level: number;
+  xp: number;
+  totalWins: number;
+  bestStreak: number;
+  updatedAt: number | null;
+};
+
+type PortalAuditEvent = {
+  auditId: string;
+  action: string;
+  adminUserId: string;
+  targetUserId: string;
+  delta: number | null;
+  previousBalance: number | null;
+  newBalance: number | null;
+  reason: string;
+  createdAt: number | null;
+};
+
 function toMillis(value: unknown): number | null {
   if (!value) return null;
   if (typeof value === "number") return value;
@@ -59,23 +86,6 @@ function toMillis(value: unknown): number | null {
     if (typeof timestamp.toDate === "function") return timestamp.toDate().getTime();
   }
   return null;
-}
-
-async function requireAdmin(request: CallableRequest<unknown>): Promise<string> {
-  if (!request.auth) {
-    throw new HttpsError("unauthenticated", "Sign in to access the management portal.");
-  }
-
-  if (request.auth.token?.admin === true) {
-    return request.auth.uid;
-  }
-
-  const adminDoc = await admin.firestore().collection("admins").doc(request.auth.uid).get();
-  if (!adminDoc.exists) {
-    throw new HttpsError("permission-denied", "This account does not have portal access.");
-  }
-
-  return request.auth.uid;
 }
 
 async function getCollectionCount(path: string): Promise<number> {
@@ -113,32 +123,88 @@ function mapRiddle(doc: FirebaseFirestore.QueryDocumentSnapshot, locale: string)
   };
 }
 
+function mapLeaderboardEntry(doc: FirebaseFirestore.QueryDocumentSnapshot): PortalLeaderboardEntry {
+  const data = doc.data();
+  return {
+    userId: typeof data.userId === "string" ? data.userId : doc.id,
+    username: typeof data.username === "string" ? data.username : "Player",
+    level: typeof data.level === "number" ? data.level : 1,
+    xp: typeof data.xp === "number" ? data.xp : 0,
+    totalWins: typeof data.totalWins === "number" ? data.totalWins : 0,
+    bestStreak: typeof data.bestStreak === "number" ? data.bestStreak : 0,
+    updatedAt: toMillis(data.updatedAt),
+  };
+}
+
+function mapAuditEvent(doc: FirebaseFirestore.QueryDocumentSnapshot): PortalAuditEvent {
+  const data = doc.data();
+  return {
+    auditId: doc.id,
+    action: typeof data.action === "string" ? data.action : "unknown",
+    adminUserId: typeof data.adminUserId === "string" ? data.adminUserId : "",
+    targetUserId: typeof data.targetUserId === "string" ? data.targetUserId : "",
+    delta: typeof data.delta === "number" ? data.delta : null,
+    previousBalance: typeof data.previousBalance === "number" ? data.previousBalance : null,
+    newBalance: typeof data.newBalance === "number" ? data.newBalance : null,
+    reason: typeof data.reason === "string" ? data.reason : "",
+    createdAt: toMillis(data.createdAt),
+  };
+}
+
+async function getLeaderboardSnapshot(
+  db: FirebaseFirestore.Firestore,
+  limit: number,
+): Promise<Record<"xp" | "totalWins" | "bestStreak", PortalLeaderboardEntry[]>> {
+  const baseRef = db.collection("leaderboard");
+  const [xp, totalWins, bestStreak] = await Promise.all([
+    baseRef.orderBy("progressScore", "desc").limit(limit).get(),
+    baseRef.orderBy("totalWins", "desc").limit(limit).get(),
+    baseRef.orderBy("bestStreak", "desc").limit(limit).get(),
+  ]);
+
+  return {
+    xp: xp.docs.map(mapLeaderboardEntry),
+    totalWins: totalWins.docs.map(mapLeaderboardEntry),
+    bestStreak: bestStreak.docs.map(mapLeaderboardEntry),
+  };
+}
+
 /**
  * Returns bounded project health, users, and riddle inventory for admins.
  */
 export const getAdminPortalOverview = onCall(
-  {cors: true, region: "us-central1"},
+  {cors: true, region: "us-central1", secrets: ["CLERK_SECRET_KEY"]},
   async (request: CallableRequest<unknown>) => {
     try {
       await requireAdmin(request);
       const input = OverviewRequestSchema.parse(request.data);
       const userLimit = input?.userLimit ?? 50;
       const riddleLimit = input?.riddleLimit ?? 60;
+      const auditLimit = input?.auditLimit ?? 20;
+      const leaderboardLimit = input?.leaderboardLimit ?? 10;
       const db = admin.firestore();
 
-      const [userCount, classicCount, userSnapshot, englishRiddles, ...localizedCounts] = await Promise.all([
+      const [
+        userCount,
+        classicCount,
+        userSnapshot,
+        englishRiddles,
+        localizedCounts,
+        dailyByLocale,
+        auditSnapshot,
+        leaderboard,
+      ] = await Promise.all([
         getCollectionCount("users"),
         getCollectionCount("riddles"),
         db.collection("users").orderBy("lastLogin", "desc").limit(userLimit).get(),
         db.collection("localizedRiddles/en/riddles").orderBy("classicIndex", "desc").limit(riddleLimit).get(),
-        ...SUPPORTED_LOCALES.map(async (locale) => ({
-          locale,
-          count: await getCollectionCount(`localizedRiddles/${locale}/riddles`),
-        })),
-      ]);
-
-      const dailyByLocale = await Promise.all(
-        SUPPORTED_LOCALES.map(async (locale) => {
+        Promise.all(
+          SUPPORTED_LOCALES.map(async (locale) => ({
+            locale,
+            count: await getCollectionCount(`localizedRiddles/${locale}/riddles`),
+          })),
+        ),
+        Promise.all(SUPPORTED_LOCALES.map(async (locale) => {
           const snapshot = await db.collection(`localizedRiddles/${locale}/riddles`).doc("current").get();
           const data = snapshot.data();
           return {
@@ -147,8 +213,16 @@ export const getAdminPortalOverview = onCall(
             challengeKey: typeof data?.challengeKey === "string" ? data.challengeKey : null,
             text: typeof data?.text === "string" ? data.text : null,
           };
-        }),
-      );
+        })),
+        db.collection("adminAuditLog").orderBy("createdAt", "desc").limit(auditLimit).get(),
+        getLeaderboardSnapshot(db, leaderboardLimit),
+      ]);
+
+      const users = userSnapshot.docs.map(mapUser);
+      const riddles = englishRiddles.docs.map((doc) => mapRiddle(doc, "en"));
+      const activeWindowStart = Date.now() - 14 * 24 * 60 * 60 * 1000;
+      const activeUsersLoaded = users.filter((user) => (user.lastLogin ?? 0) >= activeWindowStart).length;
+      const totalCoinsLoaded = users.reduce((total, user) => total + user.coins, 0);
 
       return {
         generatedAt: Date.now(),
@@ -158,11 +232,16 @@ export const getAdminPortalOverview = onCall(
           localizedRiddleCount: localizedCounts.reduce((total, item) => total + item.count, 0),
           healthyDailyLocales: dailyByLocale.filter((item) => item.available).length,
           localeCount: SUPPORTED_LOCALES.length,
+          activeUsersLoaded,
+          totalCoinsLoaded,
+          auditEventsLoaded: auditSnapshot.docs.length,
         },
-        users: userSnapshot.docs.map(mapUser),
-        riddles: englishRiddles.docs.map((doc) => mapRiddle(doc, "en")),
+        users,
+        riddles,
         localizedCounts,
         dailyByLocale,
+        auditLog: auditSnapshot.docs.map(mapAuditEvent),
+        leaderboard,
       };
     } catch (error) {
       if (error instanceof HttpsError) throw error;
@@ -176,7 +255,7 @@ export const getAdminPortalOverview = onCall(
  * Applies an audited coin correction without allowing negative balances.
  */
 export const adjustAdminUserCoins = onCall(
-  {cors: true, region: "us-central1"},
+  {cors: true, region: "us-central1", secrets: ["CLERK_SECRET_KEY"]},
   async (request: CallableRequest<unknown>) => {
     try {
       const adminUserId = await requireAdmin(request);
@@ -232,12 +311,15 @@ export const generateAdminDailyChallenge = onCall(
     cors: true,
     region: "us-central1",
     timeoutSeconds: 540,
-    secrets: ["OPENAI_API_KEY"],
+    secrets: ["OPENAI_API_KEY", "CLERK_SECRET_KEY"],
   },
   async (request: CallableRequest<unknown>) => {
     try {
       await requireAdmin(request);
-      const input = z.object({forceGenerate: z.boolean().optional()}).optional().parse(request.data);
+      const input = z.object({
+        clerkToken: z.string().min(1).optional(),
+        forceGenerate: z.boolean().optional(),
+      }).optional().parse(request.data);
       await generateTodaysDailyChallenge(input?.forceGenerate ?? false);
       return {
         success: true,

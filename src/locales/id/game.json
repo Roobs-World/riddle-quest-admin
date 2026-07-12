@@ -9,5 +9,31 @@
     "RETRY_BUTTON_PRESSED": "Tombol coba lagi ditekan",
     "FALLBACK_CLUE_SINGLE": "Pecahkan kata ini.",
     "FALLBACK_CLUE_TEMPLATE": "Selesaikan kata dengan huruf {length} ini."
+  },
+  "WebPortal": {
+    "APP_TITLE": "Riddle Quest",
+    "HTML5_BADGE": "Portal HTML5 yang bisa dimainkan",
+    "EMAIL_LABEL": "Email pengguna",
+    "PASSWORD_LABEL": "Kata sandi",
+    "SIGN_IN_WITH_EMAIL": "Masuk dengan email",
+    "SIGNING_IN": "Sedang masuk...",
+    "GUEST_WARNING": "Main sebagai tamu atau masuk untuk menyinkronkan progres, koin, dan papan peringkat.",
+    "HOST_STATUS_READY": "Host terhubung",
+    "HOST_STATUS_WAITING": "Menunggu pembungkus host",
+    "JEST_HARNESS": "Harness Jest aktif",
+    "GAME_FRAME_TITLE": "Frame permainan Riddle Quest",
+    "MODE_LABEL": "Mode permainan",
+    "PLAY_CLASSIC": "Klasik",
+    "PLAY_DAILY": "Harian",
+    "OPEN_GAME": "Muat teka-teki",
+    "PURCHASE_COMPLETE": "{coins} koin ditambahkan.",
+    "PROFILE_PROGRESS": "Level {level} dengan {xp} XP.",
+    "ACHIEVEMENTS_EMPTY": "Belum ada pencapaian terbuka.",
+    "PAUSE_GAME": "Jeda permainan",
+    "RESUME_GAME": "Lanjutkan permainan",
+    "PAUSED": "Dijeda",
+    "BRIDGE_ERROR": "Bridge game menerima pesan tidak valid.",
+    "FILL_WORD_NOTICE": "Isi semua huruf sebelum mengirim.",
+    "PROVIDER_NOT_CONFIGURED": "Penyedia web ini belum dikonfigurasi."
   }
 }

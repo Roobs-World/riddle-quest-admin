@@ -9,5 +9,31 @@
     "RETRY_BUTTON_PRESSED": "재시도 버튼을 눌렀습니다",
     "FALLBACK_CLUE_SINGLE": "이 단어를 풀어보세요.",
     "FALLBACK_CLUE_TEMPLATE": "이 {length} 글자 단어를 풀어보세요."
+  },
+  "WebPortal": {
+    "APP_TITLE": "Riddle Quest",
+    "HTML5_BADGE": "HTML5 플레이 포털",
+    "EMAIL_LABEL": "이메일",
+    "PASSWORD_LABEL": "비밀번호",
+    "SIGN_IN_WITH_EMAIL": "이메일로 로그인",
+    "SIGNING_IN": "로그인 중...",
+    "GUEST_WARNING": "게스트로 플레이하거나 로그인해 진행도, 코인, 순위를 동기화하세요.",
+    "HOST_STATUS_READY": "호스트 연결됨",
+    "HOST_STATUS_WAITING": "호스트 래퍼를 기다리는 중",
+    "JEST_HARNESS": "Jest 하네스 활성",
+    "GAME_FRAME_TITLE": "Riddle Quest 게임 프레임",
+    "MODE_LABEL": "게임 모드",
+    "PLAY_CLASSIC": "클래식",
+    "PLAY_DAILY": "데일리",
+    "OPEN_GAME": "수수께끼 불러오기",
+    "PURCHASE_COMPLETE": "{coins} 코인이 추가되었습니다.",
+    "PROFILE_PROGRESS": "레벨 {level}, {xp} XP.",
+    "ACHIEVEMENTS_EMPTY": "아직 해제된 업적이 없습니다.",
+    "PAUSE_GAME": "게임 일시정지",
+    "RESUME_GAME": "게임 재개",
+    "PAUSED": "일시정지됨",
+    "BRIDGE_ERROR": "게임 브리지가 잘못된 메시지를 받았습니다.",
+    "FILL_WORD_NOTICE": "제출 전에 모든 글자를 채우세요.",
+    "PROVIDER_NOT_CONFIGURED": "이 웹 제공자는 아직 설정되지 않았습니다."
   }
 }

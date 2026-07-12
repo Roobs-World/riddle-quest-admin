@@ -1,0 +1,18 @@
+import type {Locale, Namespace, NamespaceCatalog} from "./i18n";
+
+const NON_ENGLISH_NAMESPACE_MODULES = import.meta.glob<NamespaceCatalog>(
+  "../../../../src/locales/{ar,de,es,fr,hi,id,it,ja,ko,nl,pl,pt,ru,tr,vi,zh}/{accessibility,achievements,ads,alerts,auth,common,errors,game,leaderboard,loss,navigation,profile,settings,shop,stats,victory}.json",
+  {import: "default"},
+);
+
+export const loadNonEnglishNamespace = async (
+  locale: Exclude<Locale, "en">,
+  namespace: Namespace,
+): Promise<NamespaceCatalog> => {
+  const modulePath = `../../../../src/locales/${locale}/${namespace}.json`;
+  const loadNamespace = NON_ENGLISH_NAMESPACE_MODULES[modulePath];
+  if (!loadNamespace) {
+    throw new Error(`Missing locale namespace: ${locale}/${namespace}`);
+  }
+  return loadNamespace();
+};

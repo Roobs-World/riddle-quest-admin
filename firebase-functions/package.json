@@ -17,6 +17,7 @@
   },
   "main": "lib/index.js",
   "dependencies": {
+    "@clerk/backend": "^3.11.0",
     "@google-cloud/functions-framework": "^5.0.2",
     "@qwordly/core": "file:./packages/core",
     "@sentry/node": "^10.62.0",

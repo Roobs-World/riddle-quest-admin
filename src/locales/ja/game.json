@@ -9,5 +9,31 @@
     "RETRY_BUTTON_PRESSED": "再試行ボタンが押されました",
     "FALLBACK_CLUE_SINGLE": "この言葉を解いてください。",
     "FALLBACK_CLUE_TEMPLATE": "この {length} 文字の単語を解きます。"
+  },
+  "WebPortal": {
+    "APP_TITLE": "Riddle Quest",
+    "HTML5_BADGE": "HTML5 プレイ用ポータル",
+    "EMAIL_LABEL": "メール",
+    "PASSWORD_LABEL": "パスワード",
+    "SIGN_IN_WITH_EMAIL": "メールでサインイン",
+    "SIGNING_IN": "サインイン中...",
+    "GUEST_WARNING": "ゲストで遊ぶか、サインインして進行、コイン、ランキングを同期します。",
+    "HOST_STATUS_READY": "ホスト接続済み",
+    "HOST_STATUS_WAITING": "ホストラッパーを待機中",
+    "JEST_HARNESS": "Jest ハーネス有効",
+    "GAME_FRAME_TITLE": "Riddle Quest ゲームフレーム",
+    "MODE_LABEL": "ゲームモード",
+    "PLAY_CLASSIC": "クラシック",
+    "PLAY_DAILY": "デイリー",
+    "OPEN_GAME": "なぞなぞを読み込む",
+    "PURCHASE_COMPLETE": "{coins} コインを追加しました。",
+    "PROFILE_PROGRESS": "レベル {level}、{xp} XP。",
+    "ACHIEVEMENTS_EMPTY": "まだ実績は解除されていません。",
+    "PAUSE_GAME": "ゲームを一時停止",
+    "RESUME_GAME": "ゲームを再開",
+    "PAUSED": "一時停止中",
+    "BRIDGE_ERROR": "ゲームブリッジが無効なメッセージを受信しました。",
+    "FILL_WORD_NOTICE": "送信前にすべての文字を入力してください。",
+    "PROVIDER_NOT_CONFIGURED": "このWebプロバイダーはまだ設定されていません。"
   }
 }

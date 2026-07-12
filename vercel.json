@@ -1,0 +1,18 @@
+{
+  "installCommand": "pnpm install --frozen-lockfile",
+  "buildCommand": "pnpm --filter @qwordly/portal build",
+  "outputDirectory": "packages/portal/dist",
+  "rewrites": [
+    {"source": "/__clerk/:path*", "destination": "https://clerk.roobsworld.com/:path*"},
+    {"source": "/riddle-quest/assets/:path*", "destination": "/assets/:path*"},
+    {"source": "/riddle-quest/performance/latest.json", "destination": "/performance/latest.json"},
+    {"source": "/riddle-quest/", "destination": "/index.html"},
+    {"source": "/riddle-quest/admin/", "destination": "/index.html"},
+    {"source": "/riddle-quest/play/", "destination": "/index.html"},
+    {"source": "/riddle-quest/play/game/", "destination": "/index.html"},
+    {"source": "/riddle-quest/performance/", "destination": "/index.html"},
+    {"source": "/riddle-quest/progress/", "destination": "/progress/index.html"},
+    {"source": "/riddle-quest/:path*", "destination": "/index.html"},
+    {"source": "/", "destination": "/index.html"}
+  ]
+}

@@ -9,5 +9,31 @@
     "RETRY_BUTTON_PRESSED": "Pulsante Riprova premuto",
     "FALLBACK_CLUE_SINGLE": "Risolvi questa parola.",
     "FALLBACK_CLUE_TEMPLATE": "Risolvi questa parola di {length} lettere."
+  },
+  "WebPortal": {
+    "APP_TITLE": "Riddle Quest",
+    "HTML5_BADGE": "Portale HTML5 giocabile",
+    "EMAIL_LABEL": "E-mail",
+    "PASSWORD_LABEL": "Password locale",
+    "SIGN_IN_WITH_EMAIL": "Accedi con e-mail",
+    "SIGNING_IN": "Accesso in corso...",
+    "GUEST_WARNING": "Gioca come ospite o accedi per sincronizzare progressi, monete e classifica.",
+    "HOST_STATUS_READY": "Host connesso",
+    "HOST_STATUS_WAITING": "In attesa dell'involucro host",
+    "JEST_HARNESS": "Harness Jest attivo",
+    "GAME_FRAME_TITLE": "Frame di gioco Riddle Quest",
+    "MODE_LABEL": "Modalita di gioco",
+    "PLAY_CLASSIC": "Classica",
+    "PLAY_DAILY": "Giornaliera",
+    "OPEN_GAME": "Carica enigma",
+    "PURCHASE_COMPLETE": "{coins} monete aggiunte.",
+    "PROFILE_PROGRESS": "Livello {level} con {xp} XP.",
+    "ACHIEVEMENTS_EMPTY": "Nessun obiettivo sbloccato finora.",
+    "PAUSE_GAME": "Metti in pausa",
+    "RESUME_GAME": "Riprendi il gioco",
+    "PAUSED": "In pausa",
+    "BRIDGE_ERROR": "Il bridge del gioco ha ricevuto un messaggio non valido.",
+    "FILL_WORD_NOTICE": "Completa ogni lettera prima di inviare.",
+    "PROVIDER_NOT_CONFIGURED": "Questo provider web non e ancora configurato."
   }
 }

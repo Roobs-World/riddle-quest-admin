@@ -1,0 +1,69 @@
+[debug] [2026-07-07T14:37:04.145Z] ----------------------------------------------------------------------
+[debug] [2026-07-07T14:37:04.146Z] Command:       /home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin/node /home/craig-beswetherick/snap/code/247/.local/share/pnpm/global/v11/7e724-19f10283dd8/node_modules/firebase-tools/lib/bin/firebase.js apps:list --project qwordly-6ba44
+[debug] [2026-07-07T14:37:04.146Z] CLI Version:   15.22.3
+[debug] [2026-07-07T14:37:04.146Z] Platform:      linux
+[debug] [2026-07-07T14:37:04.146Z] Node Version:  v24.17.0
+[debug] [2026-07-07T14:37:04.146Z] Detected Agent: codex_cli
+[debug] [2026-07-07T14:37:04.146Z] Time:          Tue Jul 07 2026 15:37:04 GMT+0100 (British Summer Time)
+[debug] [2026-07-07T14:37:04.146Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-07-07T14:37:04.147Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
+[debug] [2026-07-07T14:37:04.232Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-07-07T14:37:04.145Z] ----------------------------------------------------------------------
+[debug] [2026-07-07T14:37:04.146Z] Command:       /home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin/node /home/craig-beswetherick/snap/code/247/.local/share/pnpm/global/v11/7e724-19f10283dd8/node_modules/firebase-tools/lib/bin/firebase.js functions:secrets:access CLERK_SECRET_KEY --project qwordly-6ba44
+[debug] [2026-07-07T14:37:04.146Z] CLI Version:   15.22.3
+[debug] [2026-07-07T14:37:04.146Z] Platform:      linux
+[debug] [2026-07-07T14:37:04.146Z] Node Version:  v24.17.0
+[debug] [2026-07-07T14:37:04.146Z] Detected Agent: codex_cli
+[debug] [2026-07-07T14:37:04.146Z] Time:          Tue Jul 07 2026 15:37:04 GMT+0100 (British Summer Time)
+[debug] [2026-07-07T14:37:04.146Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-07-07T14:37:04.147Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
+[debug] [2026-07-07T14:37:04.234Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-07-07T14:37:04.388Z] Error: Could not load the default credentials. Browse to https://cloud.google.com/docs/authentication/getting-started for more information.
+    at GoogleAuth.getApplicationDefaultAsync (/home/craig-beswetherick/snap/code/247/.local/share/pnpm/store/v11/links/@/google-auth-library/9.15.1/54d0aaef87efac37216a53b7cbef10c7d5b2d890c6688e1bd261642d0fb93d8b/node_modules/google-auth-library/build/src/auth/googleauth.js:287:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async GoogleAuth._GoogleAuth_determineClient (/home/craig-beswetherick/snap/code/247/.local/share/pnpm/store/v11/links/@/google-auth-library/9.15.1/54d0aaef87efac37216a53b7cbef10c7d5b2d890c6688e1bd261642d0fb93d8b/node_modules/google-auth-library/build/src/auth/googleauth.js:834:32)
+    at async GoogleAuth.getClient (/home/craig-beswetherick/snap/code/247/.local/share/pnpm/store/v11/links/@/google-auth-library/9.15.1/54d0aaef87efac37216a53b7cbef10c7d5b2d890c6688e1bd261642d0fb93d8b/node_modules/google-auth-library/build/src/auth/googleauth.js:698:20)
+    at async GoogleAuth.getAccessToken (/home/craig-beswetherick/snap/code/247/.local/share/pnpm/store/v11/links/@/google-auth-library/9.15.1/54d0aaef87efac37216a53b7cbef10c7d5b2d890c6688e1bd261642d0fb93d8b/node_modules/google-auth-library/build/src/auth/googleauth.js:722:24)
+    at async autoAuth (/home/craig-beswetherick/snap/code/247/.local/share/pnpm/store/v11/links/@/firebase-tools/15.22.3/a7dcf6c7cdb5301e852b13e3b33aeabae55bce9d17a6c779746173bfc1c5ac04/node_modules/firebase-tools/lib/requireAuth.js:38:19)
+    at async Object.requireAuth [as fn] (/home/craig-beswetherick/snap/code/247/.local/share/pnpm/store/v11/links/@/firebase-tools/15.22.3/a7dcf6c7cdb5301e852b13e3b33aeabae55bce9d17a6c779746173bfc1c5ac04/node_modules/firebase-tools/lib/requireAuth.js:100:20)
+    at async /home/craig-beswetherick/snap/code/247/.local/share/pnpm/store/v11/links/@/firebase-tools/15.22.3/a7dcf6c7cdb5301e852b13e3b33aeabae55bce9d17a6c779746173bfc1c5ac04/node_modules/firebase-tools/lib/command.js:278:17
+[error] 
+[error] Error: Failed to authenticate, have you run firebase login?
+[debug] [2026-07-07T14:37:04.397Z] Error: Could not load the default credentials. Browse to https://cloud.google.com/docs/authentication/getting-started for more information.
+    at GoogleAuth.getApplicationDefaultAsync (/home/craig-beswetherick/snap/code/247/.local/share/pnpm/store/v11/links/@/google-auth-library/9.15.1/54d0aaef87efac37216a53b7cbef10c7d5b2d890c6688e1bd261642d0fb93d8b/node_modules/google-auth-library/build/src/auth/googleauth.js:287:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async GoogleAuth._GoogleAuth_determineClient (/home/craig-beswetherick/snap/code/247/.local/share/pnpm/store/v11/links/@/google-auth-library/9.15.1/54d0aaef87efac37216a53b7cbef10c7d5b2d890c6688e1bd261642d0fb93d8b/node_modules/google-auth-library/build/src/auth/googleauth.js:834:32)
+    at async GoogleAuth.getClient (/home/craig-beswetherick/snap/code/247/.local/share/pnpm/store/v11/links/@/google-auth-library/9.15.1/54d0aaef87efac37216a53b7cbef10c7d5b2d890c6688e1bd261642d0fb93d8b/node_modules/google-auth-library/build/src/auth/googleauth.js:698:20)
+    at async GoogleAuth.getAccessToken (/home/craig-beswetherick/snap/code/247/.local/share/pnpm/store/v11/links/@/google-auth-library/9.15.1/54d0aaef87efac37216a53b7cbef10c7d5b2d890c6688e1bd261642d0fb93d8b/node_modules/google-auth-library/build/src/auth/googleauth.js:722:24)
+    at async autoAuth (/home/craig-beswetherick/snap/code/247/.local/share/pnpm/store/v11/links/@/firebase-tools/15.22.3/a7dcf6c7cdb5301e852b13e3b33aeabae55bce9d17a6c779746173bfc1c5ac04/node_modules/firebase-tools/lib/requireAuth.js:38:19)
+    at async Object.requireAuth [as fn] (/home/craig-beswetherick/snap/code/247/.local/share/pnpm/store/v11/links/@/firebase-tools/15.22.3/a7dcf6c7cdb5301e852b13e3b33aeabae55bce9d17a6c779746173bfc1c5ac04/node_modules/firebase-tools/lib/requireAuth.js:100:20)
+    at async /home/craig-beswetherick/snap/code/247/.local/share/pnpm/store/v11/links/@/firebase-tools/15.22.3/a7dcf6c7cdb5301e852b13e3b33aeabae55bce9d17a6c779746173bfc1c5ac04/node_modules/firebase-tools/lib/command.js:278:17
+[error] 
+[error] Error: Failed to authenticate, have you run firebase login?
+[debug] [2026-07-07T14:37:04.565Z] <<< [apiv2][status] GET https://firebase-public.firebaseio.com/cli.json 200
+[debug] [2026-07-07T14:37:04.576Z] <<< [apiv2][status] GET https://firebase-public.firebaseio.com/cli.json 200
+[debug] [2026-07-07T14:37:04.565Z] <<< [apiv2][body] GET https://firebase-public.firebaseio.com/cli.json {"cloudBuildErrorAfter":1594252800000,"cloudBuildWarnAfter":1590019200000,"defaultNode10After":1594252800000,"minVersion":"3.0.5","node8DeploysDisabledAfter":1613390400000,"node8RuntimeDisabledAfter":1615809600000,"node8WarnAfter":1600128000000}
+[debug] [2026-07-07T14:37:04.576Z] <<< [apiv2][body] GET https://firebase-public.firebaseio.com/cli.json {"cloudBuildErrorAfter":1594252800000,"cloudBuildWarnAfter":1590019200000,"defaultNode10After":1594252800000,"minVersion":"3.0.5","node8DeploysDisabledAfter":1613390400000,"node8RuntimeDisabledAfter":1615809600000,"node8WarnAfter":1600128000000}
+[debug] [2026-07-07T15:13:24.624Z] ----------------------------------------------------------------------
+[debug] [2026-07-07T15:13:24.625Z] Command:       /home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin/node /home/craig-beswetherick/snap/code/247/.local/share/pnpm/global/v11/7e724-19f10283dd8/node_modules/firebase-tools/lib/bin/firebase.js functions:secrets:set CLERK_SECRET_KEY --project qwordly-6ba44
+[debug] [2026-07-07T15:13:24.625Z] CLI Version:   15.22.3
+[debug] [2026-07-07T15:13:24.625Z] Platform:      linux
+[debug] [2026-07-07T15:13:24.625Z] Node Version:  v24.17.0
+[debug] [2026-07-07T15:13:24.625Z] Detected Agent: codex_cli
+[debug] [2026-07-07T15:13:24.625Z] Time:          Tue Jul 07 2026 16:13:24 GMT+0100 (British Summer Time)
+[debug] [2026-07-07T15:13:24.625Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-07-07T15:13:24.699Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-07-07T15:13:24.879Z] Error: Could not load the default credentials. Browse to https://cloud.google.com/docs/authentication/getting-started for more information.
+    at GoogleAuth.getApplicationDefaultAsync (/home/craig-beswetherick/snap/code/247/.local/share/pnpm/store/v11/links/@/google-auth-library/9.15.1/54d0aaef87efac37216a53b7cbef10c7d5b2d890c6688e1bd261642d0fb93d8b/node_modules/google-auth-library/build/src/auth/googleauth.js:287:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async GoogleAuth._GoogleAuth_determineClient (/home/craig-beswetherick/snap/code/247/.local/share/pnpm/store/v11/links/@/google-auth-library/9.15.1/54d0aaef87efac37216a53b7cbef10c7d5b2d890c6688e1bd261642d0fb93d8b/node_modules/google-auth-library/build/src/auth/googleauth.js:834:32)
+    at async GoogleAuth.getClient (/home/craig-beswetherick/snap/code/247/.local/share/pnpm/store/v11/links/@/google-auth-library/9.15.1/54d0aaef87efac37216a53b7cbef10c7d5b2d890c6688e1bd261642d0fb93d8b/node_modules/google-auth-library/build/src/auth/googleauth.js:698:20)
+    at async GoogleAuth.getAccessToken (/home/craig-beswetherick/snap/code/247/.local/share/pnpm/store/v11/links/@/google-auth-library/9.15.1/54d0aaef87efac37216a53b7cbef10c7d5b2d890c6688e1bd261642d0fb93d8b/node_modules/google-auth-library/build/src/auth/googleauth.js:722:24)
+    at async autoAuth (/home/craig-beswetherick/snap/code/247/.local/share/pnpm/store/v11/links/@/firebase-tools/15.22.3/a7dcf6c7cdb5301e852b13e3b33aeabae55bce9d17a6c779746173bfc1c5ac04/node_modules/firebase-tools/lib/requireAuth.js:38:19)
+    at async Object.requireAuth [as fn] (/home/craig-beswetherick/snap/code/247/.local/share/pnpm/store/v11/links/@/firebase-tools/15.22.3/a7dcf6c7cdb5301e852b13e3b33aeabae55bce9d17a6c779746173bfc1c5ac04/node_modules/firebase-tools/lib/requireAuth.js:100:20)
+    at async /home/craig-beswetherick/snap/code/247/.local/share/pnpm/store/v11/links/@/firebase-tools/15.22.3/a7dcf6c7cdb5301e852b13e3b33aeabae55bce9d17a6c779746173bfc1c5ac04/node_modules/firebase-tools/lib/command.js:278:17
+[error] 
+[error] Error: Failed to authenticate, have you run firebase login?

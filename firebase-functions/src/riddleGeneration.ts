@@ -7,6 +7,7 @@ import {captureException} from "./sentry";
 import type {ClassicRiddle, DailyRiddle} from "./validation/firestoreSchemas";
 import {RiddleCollections} from "./validation/firestoreSchemas";
 import {clueContainsLiteralAnswer} from "./riddleQuality";
+import {requireAdmin} from "./adminAuth";
 import {SUPPORTED_LOCALES, type SupportedLocale} from "@qwordly/core/validation";
 import {
   GenerateRiddlesResponseSchema,
@@ -19,6 +20,7 @@ import {z} from "zod";
 
 const SeedLocalizedRiddlesRequestSchema = z
   .object({
+    clerkToken: z.string().min(1).optional(),
     classicCount: z.number().int().positive().max(100).optional(),
     forceGenerateDaily: z.boolean().optional(),
   })
@@ -162,23 +164,6 @@ async function getLocalizedExistingRiddlesFromFirestoreForLocale(
     `Loaded ${questions.length} localized questions and ${answers.length} localized answers for duplicate checking in locale ${locale}`,
   );
   return {questions, answers};
-}
-
-async function requireAdmin(request: CallableRequest<unknown>): Promise<void> {
-  if (!request.auth) {
-    throw new functions.https.HttpsError("unauthenticated", "The function must be called while authenticated.");
-  }
-
-  if (request.auth.token?.admin === true) {
-    return;
-  }
-
-  const adminDoc = await admin.firestore().collection("admins").doc(request.auth.uid).get();
-  if (adminDoc.exists) {
-    return;
-  }
-
-  throw new functions.https.HttpsError("permission-denied", "This operation requires admin privileges.");
 }
 
 /**
@@ -772,7 +757,7 @@ export const initializeRiddleDatabase = onCall(
     cors: true,
     region: "us-central1",
     timeoutSeconds: 300, // 5 minutes for initial database setup
-    secrets: ["OPENAI_API_KEY"],
+    secrets: ["OPENAI_API_KEY", "CLERK_SECRET_KEY"],
   } as CallableOptions,
   async (request: CallableRequest<unknown>): Promise<{success: boolean; message: string; riddlesGenerated: number}> => {
     logger.info("initializeRiddleDatabase function called - entry point reached");
@@ -832,7 +817,7 @@ export const generateDailyRiddles = onCall(
     cors: true,
     region: "us-central1",
     timeoutSeconds: 540, // 9 minutes for riddle generation
-    secrets: ["OPENAI_API_KEY"],
+    secrets: ["OPENAI_API_KEY", "CLERK_SECRET_KEY"],
   } as CallableOptions,
   async (request: CallableRequest<unknown>): Promise<{success: boolean; message: string}> => {
     logger.info("generateDailyRiddles function called - entry point reached");
@@ -1123,7 +1108,7 @@ export const generateTodaysDailyChallengeFunction = onCall(
     cors: true,
     region: "us-central1",
     timeoutSeconds: 540, // 9 minutes for riddle generation
-    secrets: ["OPENAI_API_KEY"],
+    secrets: ["OPENAI_API_KEY", "CLERK_SECRET_KEY"],
   } as CallableOptions,
   async (
     request: CallableRequest<{forceGenerate?: boolean}>,
@@ -1173,7 +1158,7 @@ export const seedLocalizedRiddles = onCall(
     cors: true,
     region: "us-central1",
     timeoutSeconds: 540,
-    secrets: ["OPENAI_API_KEY"],
+    secrets: ["OPENAI_API_KEY", "CLERK_SECRET_KEY"],
   } as CallableOptions,
   async (request: CallableRequest<unknown>) => {
     logger.info("seedLocalizedRiddles function called - entry point reached");

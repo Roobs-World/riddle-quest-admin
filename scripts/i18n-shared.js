@@ -60,6 +60,7 @@ const SECTION_TO_NAMESPACE = {
   CommonButtons: "common",
   DevTools: "devtools",
   GameMessages: "game",
+  WebPortal: "game",
   LogMessages: "logs",
   GameScreenAlerts: "alerts",
   Tooltips: "tooltips",
@@ -88,6 +89,7 @@ const NAMESPACE_TO_SECTIONS = Object.entries(SECTION_TO_NAMESPACE).reduce((acc, 
 const NON_TRANSLATABLE_KEY_ALLOWLIST = new Set([
   "accessibility.Accessibility.LANDING_ATTRIBUTION_LINK",
   "auth.AuthStrings.Landing.MADE_BY_ROOBS_WORLD",
+  "game.WebPortal.APP_TITLE",
   "stats.StatsModal.XP",
 ]);
 

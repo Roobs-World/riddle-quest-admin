@@ -39,8 +39,10 @@ onlyBuiltDependencies:
   - unrs-resolver
 
 allowBuilds:
+  "@clerk/shared": true
   "@firebase/util": true
   "@sentry/cli": true
+  dtrace-provider: false
   edgedriver: false
   esbuild: false
   geckodriver: false

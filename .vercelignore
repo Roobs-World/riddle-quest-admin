@@ -1,0 +1,42 @@
+# Dependencies and package manager caches.
+node_modules
+**/node_modules
+.pnpm-store
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+
+# Native builds and large local artifacts that are not needed for the portal deploy.
+android
+ios
+builds
+releases
+coverage
+emulator-tests
+.expo
+.firebase
+packages/portal/dist
+*.log
+android-*.log
+
+# Keep only the root image assets imported by the portal bundle.
+assets/**
+!assets/
+!assets/images/
+!assets/images/backspace-key.svg
+!assets/images/coin.svg
+!assets/images/facebook.svg
+!assets/images/google.svg
+!assets/images/hint.svg
+!assets/images/large-coin-stack.svg
+!assets/images/profile-icon.svg
+!assets/images/settings-icon.svg
+
+# Local/editor state.
+.git
+.vercel
+.idea
+.cursor
+.claude
+.vscode
+.DS_Store

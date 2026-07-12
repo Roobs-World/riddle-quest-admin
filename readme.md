@@ -1,3 +1,81 @@
+# Riddle Quest
+
+## Access Guide
+
+Use this section as the source of truth for where each surface lives. The portfolio and the Riddle Quest portal are separate deployments.
+
+### Live Web Surfaces
+
+| Surface | URL | Notes |
+| --- | --- | --- |
+| Personal portfolio | `https://www.roobsworld.com` | This is the portfolio site. Do not deploy, proxy, alias, or override it for the Riddle Quest portal. |
+| Riddle Quest portal | `https://riddle-quest-omega.vercel.app/riddle-quest/` | Isolated Vercel project: `riddle-quest`. |
+| Admin portal | `https://riddle-quest-omega.vercel.app/riddle-quest/admin/` | Uses Clerk on the isolated `riddle-quest` Vercel project. Live management data needs the Firebase Functions Clerk secret and function deploy. |
+| HTML5 play host | `https://riddle-quest-omega.vercel.app/riddle-quest/play/` | Public wrapper route for the browser game. |
+| Game iframe | `https://riddle-quest-omega.vercel.app/riddle-quest/play/game/` | Embeddable game surface used by the play host. |
+| Performance dashboard | `https://riddle-quest-omega.vercel.app/riddle-quest/performance/` | Reads the latest portal performance snapshot. |
+| Progress tracker | `https://riddle-quest-omega.vercel.app/riddle-quest/progress/` | Public copy of `docs/html5-riddle-quest-progress.html`. |
+
+The hosted portfolio Vercel project has its own environment variables, including Clerk keys. Those values are project-scoped and do not automatically apply to the isolated `riddle-quest` Vercel project. The `riddle-quest` project now has the Firebase web env vars and live Clerk publishable key needed for the deployed portal. Clerk's frontend API is proxied for the static portal through the `riddle-quest` Vercel rewrite at `/__clerk/*`.
+
+### Local Portal Access
+
+Run the portal from the repository root:
+
+```bash
+pnpm install --frozen-lockfile
+pnpm portal -- --host 127.0.0.1 --port 5173
+```
+
+Then open:
+
+| Surface | Local URL |
+| --- | --- |
+| Admin portal | `http://127.0.0.1:5173/riddle-quest/admin/` |
+| Admin test harness | `http://127.0.0.1:5173/riddle-quest/admin/?harness=jest` |
+| HTML5 play host | `http://127.0.0.1:5173/riddle-quest/play/` |
+| Play test harness | `http://127.0.0.1:5173/riddle-quest/play/?harness=jest` |
+| Game iframe | `http://127.0.0.1:5173/riddle-quest/play/game/` |
+| Performance dashboard | `http://127.0.0.1:5173/riddle-quest/performance/` |
+| Progress tracker | `http://127.0.0.1:5173/riddle-quest/progress/` |
+
+The harness routes use deterministic fake providers and do not require Firebase or Clerk. Non-harness admin access requires `VITE_CLERK_PUBLISHABLE_KEY` or `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`. Live Firebase-backed play and management data also require the `VITE_FIREBASE_*` portal env vars from `packages/portal/.env.example`.
+
+### Build, Preview, And Test Portal
+
+```bash
+pnpm portal:build
+pnpm --filter @qwordly/portal exec vite preview --host 127.0.0.1 --port 4178
+```
+
+Preview URLs use the same paths on port `4178`, for example `http://127.0.0.1:4178/riddle-quest/admin/?harness=jest`.
+
+Useful checks:
+
+```bash
+pnpm --filter @qwordly/portal test
+PORTAL_BROWSER_TESTS=1 pnpm --filter @qwordly/portal exec jest --config jest.config.cjs src/play/__tests__/hostedBrowser.jest-playwright.test.ts --runInBand
+pnpm portal:perf
+```
+
+### Deployment Boundary
+
+- Vercel project for the HTML5 portal: `riddle-quest`.
+- Vercel production alias: `https://riddle-quest-omega.vercel.app`.
+- Optional branded subdomain target: `riddle-quest.roobsworld.com`, if the domain owner adds DNS/Vercel access.
+- Do not use `roobsworld.com` or `www.roobsworld.com` for the portal; those remain the portfolio/legal/support host.
+- Do not copy portfolio rewrites into the portfolio app to serve the portal. Keep the portal isolated on its own Vercel project or a dedicated subdomain.
+
+Remaining production operations:
+
+- Set Firebase Functions `CLERK_SECRET_KEY` and redeploy Functions once Firebase CLI credentials are available.
+- Allowlist admin users through a Clerk `admin: true` JWT claim or Firestore `admins` documents.
+- Add `VITE_FIREBASE_APP_CHECK_SITE_KEY` before enforcing App Check for the web portal.
+- Enable Vercel Web Analytics and Speed Insights before setting `VITE_ENABLE_VERCEL_TELEMETRY=1`.
+- Select and wire production web purchase and rewarded-ad providers.
+
+## Native App Quick Commands
+
 npx eas-cli build --profile development --platform android
 
 pnpm exec expo run:android
@@ -293,6 +371,10 @@ Run these commands with `pnpm run <script>`, except `start`, `android`, `ios`, a
 | `qa:android:emulators`         | Runs Android emulator health checks, including lock cleanup, with a 300-second timeout.                                                                  |
 | `ios`                          | Builds and runs the iOS app through Expo.                                                                                                                |
 | `web`                          | Starts the Expo web development server.                                                                                                                  |
+| `portal`                       | Starts the Vite dev server for `@qwordly/portal`, including `/riddle-quest/admin/`, `/riddle-quest/play/`, `/riddle-quest/performance/`, and `/riddle-quest/progress/`. |
+| `portal:build`                 | Builds the HTML5 portal package for Vercel/Firebase hosting.                                                                                             |
+| `portal:perf`                  | Measures portal route performance and updates the public performance snapshot.                                                                            |
+| `portal:deploy`                | Builds the portal and deploys `packages/portal/dist` to Firebase Hosting. Vercel production deploys should use the isolated `riddle-quest` Vercel project instead. |
 | `lint`                         | Runs ESLint across JavaScript and TypeScript files using the legacy ESLint config mode, applying automatic fixes.                                        |
 | `test`                         | Runs the Jest test suite with `NODE_ENV=test`.                                                                                                           |
 | `test:rn`                      | Runs Jest against tests under `src`.                                                                                                                     |

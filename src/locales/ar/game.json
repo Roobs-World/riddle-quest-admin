@@ -9,5 +9,31 @@
     "RETRY_BUTTON_PRESSED": "تم الضغط على زر إعادة المحاولة",
     "FALLBACK_CLUE_SINGLE": "حل هذه الكلمة.",
     "FALLBACK_CLUE_TEMPLATE": "حل هذه الكلمة ذات الحرف {length}."
+  },
+  "WebPortal": {
+    "APP_TITLE": "Riddle Quest",
+    "HTML5_BADGE": "بوابة HTML5 قابلة للعب",
+    "EMAIL_LABEL": "البريد الإلكتروني",
+    "PASSWORD_LABEL": "كلمة المرور",
+    "SIGN_IN_WITH_EMAIL": "تسجيل الدخول بالبريد",
+    "SIGNING_IN": "جار تسجيل الدخول...",
+    "GUEST_WARNING": "العب كضيف أو سجل الدخول لمزامنة التقدم والعملات ولوحة الصدارة.",
+    "HOST_STATUS_READY": "المضيف متصل",
+    "HOST_STATUS_WAITING": "بانتظار غلاف المضيف",
+    "JEST_HARNESS": "بيئة Jest نشطة",
+    "GAME_FRAME_TITLE": "إطار لعبة Riddle Quest",
+    "MODE_LABEL": "وضع اللعب",
+    "PLAY_CLASSIC": "كلاسيكي",
+    "PLAY_DAILY": "يومي",
+    "OPEN_GAME": "تحميل اللغز",
+    "PURCHASE_COMPLETE": "تمت إضافة {coins} عملة.",
+    "PROFILE_PROGRESS": "المستوى {level} مع {xp} XP.",
+    "ACHIEVEMENTS_EMPTY": "لا توجد إنجازات مفتوحة بعد.",
+    "PAUSE_GAME": "إيقاف اللعبة مؤقتا",
+    "RESUME_GAME": "استئناف اللعبة",
+    "PAUSED": "متوقف مؤقتا",
+    "BRIDGE_ERROR": "استقبل جسر اللعبة رسالة غير صالحة.",
+    "FILL_WORD_NOTICE": "املأ كل الحروف قبل الإرسال.",
+    "PROVIDER_NOT_CONFIGURED": "مزود الويب هذا غير مهيأ بعد."
   }
 }

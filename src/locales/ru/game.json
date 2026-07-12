@@ -9,5 +9,31 @@
     "RETRY_BUTTON_PRESSED": "Нажата кнопка повтора",
     "FALLBACK_CLUE_SINGLE": "Разгадай это слово.",
     "FALLBACK_CLUE_TEMPLATE": "Решите это слово из {length} букв."
+  },
+  "WebPortal": {
+    "APP_TITLE": "Riddle Quest",
+    "HTML5_BADGE": "Игровой портал HTML5",
+    "EMAIL_LABEL": "Эл. почта",
+    "PASSWORD_LABEL": "Пароль",
+    "SIGN_IN_WITH_EMAIL": "Войти по почте",
+    "SIGNING_IN": "Вход...",
+    "GUEST_WARNING": "Играйте гостем или войдите, чтобы синхронизировать прогресс, монеты и рейтинг.",
+    "HOST_STATUS_READY": "Хост подключен",
+    "HOST_STATUS_WAITING": "Ожидание хост-обертки",
+    "JEST_HARNESS": "Среда Jest активна",
+    "GAME_FRAME_TITLE": "Игровой фрейм Riddle Quest",
+    "MODE_LABEL": "Режим игры",
+    "PLAY_CLASSIC": "Классика",
+    "PLAY_DAILY": "Ежедневно",
+    "OPEN_GAME": "Загрузить загадку",
+    "PURCHASE_COMPLETE": "Добавлено монет: {coins}.",
+    "PROFILE_PROGRESS": "Уровень {level}, {xp} XP.",
+    "ACHIEVEMENTS_EMPTY": "Достижения пока не открыты.",
+    "PAUSE_GAME": "Пауза",
+    "RESUME_GAME": "Продолжить",
+    "PAUSED": "Пауза",
+    "BRIDGE_ERROR": "Игровой мост получил недопустимое сообщение.",
+    "FILL_WORD_NOTICE": "Заполните все буквы перед отправкой.",
+    "PROVIDER_NOT_CONFIGURED": "Этот веб-провайдер еще не настроен."
   }
 }

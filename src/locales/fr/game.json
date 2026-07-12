@@ -9,5 +9,31 @@
     "RETRY_BUTTON_PRESSED": "Bouton recommencer presse",
     "FALLBACK_CLUE_SINGLE": "Résolvez ce mot.",
     "FALLBACK_CLUE_TEMPLATE": "Résolvez ce mot de {length} lettre."
+  },
+  "WebPortal": {
+    "APP_TITLE": "Riddle Quest",
+    "HTML5_BADGE": "Portail jouable HTML5",
+    "EMAIL_LABEL": "E-mail",
+    "PASSWORD_LABEL": "Mot de passe",
+    "SIGN_IN_WITH_EMAIL": "Connexion par e-mail",
+    "SIGNING_IN": "Connexion...",
+    "GUEST_WARNING": "Jouez en invite ou connectez-vous pour synchroniser progression, pieces et classement.",
+    "HOST_STATUS_READY": "Hote connecte",
+    "HOST_STATUS_WAITING": "En attente de l'enveloppe hote",
+    "JEST_HARNESS": "Harnais Jest actif",
+    "GAME_FRAME_TITLE": "Cadre de jeu Riddle Quest",
+    "MODE_LABEL": "Mode de jeu",
+    "PLAY_CLASSIC": "Classique",
+    "PLAY_DAILY": "Quotidien",
+    "OPEN_GAME": "Charger une enigme",
+    "PURCHASE_COMPLETE": "{coins} pieces ajoutees.",
+    "PROFILE_PROGRESS": "Niveau {level} avec {xp} XP.",
+    "ACHIEVEMENTS_EMPTY": "Aucun succes debloque pour le moment.",
+    "PAUSE_GAME": "Mettre en pause",
+    "RESUME_GAME": "Reprendre le jeu",
+    "PAUSED": "En pause",
+    "BRIDGE_ERROR": "Le pont du jeu a recu un message invalide.",
+    "FILL_WORD_NOTICE": "Remplissez chaque lettre avant d'envoyer.",
+    "PROVIDER_NOT_CONFIGURED": "Ce fournisseur web n'est pas encore configure."
   }
 }

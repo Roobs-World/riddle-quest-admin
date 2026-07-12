@@ -9,5 +9,31 @@
     "RETRY_BUTTON_PRESSED": "Naciśnięto przycisk Ponów próbę",
     "FALLBACK_CLUE_SINGLE": "Rozwiąż to słowo.",
     "FALLBACK_CLUE_TEMPLATE": "Rozwiąż to słowo o długości {length}."
+  },
+  "WebPortal": {
+    "APP_TITLE": "Riddle Quest",
+    "HTML5_BADGE": "Grywalny portal HTML5",
+    "EMAIL_LABEL": "Adres e-mail",
+    "PASSWORD_LABEL": "Hasło",
+    "SIGN_IN_WITH_EMAIL": "Zaloguj e-mailem",
+    "SIGNING_IN": "Logowanie...",
+    "GUEST_WARNING": "Graj jako gość albo zaloguj się, aby synchronizować postęp, monety i ranking.",
+    "HOST_STATUS_READY": "Host połączony",
+    "HOST_STATUS_WAITING": "Oczekiwanie na host wrapper",
+    "JEST_HARNESS": "Harness Jest aktywny",
+    "GAME_FRAME_TITLE": "Ramka gry Riddle Quest",
+    "MODE_LABEL": "Tryb gry",
+    "PLAY_CLASSIC": "Klasyczny",
+    "PLAY_DAILY": "Dzienny",
+    "OPEN_GAME": "Wczytaj zagadkę",
+    "PURCHASE_COMPLETE": "Dodano {coins} monet.",
+    "PROFILE_PROGRESS": "Poziom {level} z {xp} XP.",
+    "ACHIEVEMENTS_EMPTY": "Brak odblokowanych osiągnięć.",
+    "PAUSE_GAME": "Wstrzymaj grę",
+    "RESUME_GAME": "Wznów grę",
+    "PAUSED": "Wstrzymano",
+    "BRIDGE_ERROR": "Most gry otrzymał nieprawidłową wiadomość.",
+    "FILL_WORD_NOTICE": "Wypełnij wszystkie litery przed wysłaniem.",
+    "PROVIDER_NOT_CONFIGURED": "Ten dostawca web nie jest jeszcze skonfigurowany."
   }
 }
