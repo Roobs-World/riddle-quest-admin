@@ -1,21 +1,7 @@
 import {z} from "zod";
-import {
-  BasicSuccessMessageOutputSchema,
-  DailyChallengeQuestionSchema,
-} from "./cloudFunctionsSchemas";
-import {PlayerSchema, type Player} from "./firestoreSchemas";
+import {DailyChallengeQuestionSchema} from "./cloudFunctionsSchemas";
 
 const FunctionGameModeSchema = z.enum(["challenge", "classic"]);
-
-export const EmptyRequestDataSchema = z.union([z.object({}).strict(), z.undefined(), z.null()]).transform(() => ({}));
-
-export const BooleanResponseSchema = z.boolean();
-
-export const MessageResponseSchema = z
-  .object({
-    message: z.string(),
-  })
-  .strict();
 
 export const BasicSuccessMessageResponseSchema = z
   .object({
@@ -100,13 +86,6 @@ export const CompleteGameResponseDataSchema = z
   .strict();
 export type CompleteGameResponseData = z.infer<typeof CompleteGameResponseDataSchema>;
 
-export const HasCompletedDailyChallengeRequestSchema = z
-  .object({
-    id: z.string().min(1),
-  })
-  .strict();
-export type HasCompletedDailyChallengeRequest = z.infer<typeof HasCompletedDailyChallengeRequestSchema>;
-
 export const DailyChallengeDataSchema = z
   .object({
     date: z.string().optional(),
@@ -125,14 +104,6 @@ export const GetCurrentDailyChallengeResponseSchema = z
   })
   .strict();
 export type GetCurrentDailyChallengeResponse = z.infer<typeof GetCurrentDailyChallengeResponseSchema>;
-
-export const AdvanceDailyChallengeProgressResponseSchema = z
-  .object({
-    newQuestionIndex: z.number().int().nonnegative(),
-    isFullyCompleted: z.boolean(),
-    message: z.string(),
-  })
-  .strict();
 
 export const SkipRiddleRequestSchema = z
   .object({
@@ -193,38 +164,6 @@ export const GetHintResponseSchema = z
   })
   .nullable();
 
-const RewardedAdPlacementSchema = z.enum(["loss_continue", "coin_shop"]);
-export type RewardedAdPlacement = z.infer<typeof RewardedAdPlacementSchema>;
-
-export const AwardedAdCallbackRequestSchema = z
-  .object({
-    userId: z.string().min(1),
-    placement: RewardedAdPlacementSchema,
-    callbackId: z.string().min(1).optional(),
-    provider: z.string().min(1).optional(),
-  })
-  .strict();
-export type AwardedAdCallbackRequest = z.infer<typeof AwardedAdCallbackRequestSchema>;
-
-export const AwardedAdCallbackResponseSchema = z
-  .object({
-    success: z.boolean(),
-    placement: RewardedAdPlacementSchema,
-    callbackId: z.string().min(1),
-    rewardCoins: z.number().int().nonnegative(),
-    newCoins: z.number().int().nonnegative(),
-    alreadyProcessed: z.boolean(),
-    message: z.string(),
-  })
-  .strict();
-export type AwardedAdCallbackResponse = z.infer<typeof AwardedAdCallbackResponseSchema>;
-
-export const UpdateAvatarRequestSchema = z
-  .object({
-    avatarUrl: z.string().min(1),
-  })
-  .strict();
-
 export const UpdateUsernameRequestSchema = z
   .object({
     username: z.string().min(3),
@@ -265,106 +204,3 @@ export const GetLeaderboardResponseSchema = z
   })
   .strict();
 export type GetLeaderboardResponse = z.infer<typeof GetLeaderboardResponseSchema>;
-
-export const GenerateTodaysDailyChallengeRequestSchema = z
-  .object({
-    forceGenerate: z.boolean().optional(),
-  })
-  .strict()
-  .default({});
-
-export const GenerateTodaysDailyChallengeResponseSchema = z
-  .object({
-    success: z.boolean(),
-    message: z.string(),
-    questionsGenerated: z.number().int().nonnegative(),
-  })
-  .strict();
-
-export const GenerateRiddlesResponseSchema = BasicSuccessMessageOutputSchema;
-
-export const InitializeRiddleDatabaseResponseSchema = BasicSuccessMessageOutputSchema.extend({
-  riddlesGenerated: z.number().int().nonnegative(),
-}).strict();
-
-export const ValidatePurchaseRequestSchema = z
-  .object({
-    purchaseToken: z.string().min(1),
-    productId: z.string().min(1),
-    platform: z.enum(["ios", "android"]),
-  })
-  .strict();
-export type ValidatePurchaseRequest = z.infer<typeof ValidatePurchaseRequestSchema>;
-
-export const ValidatePurchaseResponseSchema = z
-  .object({
-    success: z.boolean(),
-    newCoins: z.number().int().nonnegative().optional(),
-    newlyUnlockedAchievementIds: z.array(z.string()).optional(),
-  })
-  .strict();
-
-export const GrantDevCoinsForPurchaseRequestSchema = z
-  .object({
-    productId: z.string().min(1),
-  })
-  .strict();
-
-export const GrantDevCoinsForPurchaseResponseSchema = z
-  .object({
-    success: z.boolean(),
-    newCoins: z.number().int().nonnegative(),
-    coinsAwarded: z.number().int().nonnegative(),
-    newlyUnlockedAchievementIds: z.array(z.string()).optional(),
-  })
-  .strict();
-
-export const InitializeUserRequestDataSchema = z
-  .object({
-    email: z.string().email(),
-    username: z.string().min(1),
-    displayName: z.string().optional(),
-    avatarUrl: z.string().optional(),
-    seed: z
-      .custom<Partial<Player>>((value) => value === undefined || (typeof value === "object" && value !== null && !Array.isArray(value)))
-      .optional(),
-  })
-  .strict();
-export type InitializeUserRequestData = z.infer<typeof InitializeUserRequestDataSchema>;
-
-export const InitializeUserResponseDataSchema = z
-  .object({
-    success: z.boolean(),
-    message: z.string(),
-    userId: z.string().min(1),
-    player: PlayerSchema,
-  })
-  .strict();
-export type InitializeUserResponseData = z.infer<typeof InitializeUserResponseDataSchema>;
-
-export const DeleteAccountResponseDataSchema = BasicSuccessMessageOutputSchema;
-export type DeleteAccountResponseData = z.infer<typeof DeleteAccountResponseDataSchema>;
-
-export const UpdateUserStatsRequestDataSchema = z
-  .object({
-    targetUserId: z.string().min(1),
-    statsUpdate: z
-      .object({
-        dailyPuzzlesCompleted: z.number().optional(),
-        bestStreak: z.number().optional(),
-        totalWordsGuessed: z.number().optional(),
-        winRate: z.number().optional(),
-        averageGuesses: z.number().optional(),
-        totalScore: z.number().optional(),
-        highestLevelClassic: z.number().optional(),
-        gamesPlayed: z.number().optional(),
-        wins: z.number().optional(),
-        challengeWins: z.number().optional(),
-        winStreak: z.number().optional(),
-        totalWins: z.number().optional(),
-        totalGuessesInWins: z.number().optional(),
-      })
-      .strict(),
-  })
-  .strict();
-export type UpdateUserStatsRequestData = z.infer<typeof UpdateUserStatsRequestDataSchema>;

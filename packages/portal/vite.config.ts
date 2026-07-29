@@ -3,8 +3,8 @@ import react from "@vitejs/plugin-react";
 import {fileURLToPath, URL} from "node:url";
 
 export default defineConfig({
-  base: "/riddle-quest/",
-  envPrefix: ["VITE_", "NEXT_PUBLIC_"],
+  base: process.env.JEST_BUILD === "1" ? "./" : "/riddle-quest/",
+  envPrefix: "VITE_",
   plugins: [react()],
   resolve: {
     alias: {
@@ -30,9 +30,6 @@ export default defineConfig({
               normalizedId.includes("/node_modules/scheduler/")
             ) {
               return "vendor-react";
-            }
-            if (normalizedId.includes("/node_modules/@clerk/")) {
-              return "vendor-clerk";
             }
             if (id.includes("/zod/")) {
               return "vendor-zod";

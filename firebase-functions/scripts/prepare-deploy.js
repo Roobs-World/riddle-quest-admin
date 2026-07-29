@@ -39,7 +39,7 @@ function syncInstalledPackageCopy(targetCorePackageDir) {
 
   const packageDirs = fs
     .readdirSync(pnpmDir, {withFileTypes: true})
-    .filter((entry) => entry.isDirectory() && entry.name.startsWith("@qwordly+core@file+..+packages+core"))
+    .filter((entry) => entry.isDirectory() && entry.name.startsWith("@qwordly+core@file+"))
     .map((entry) => path.join(pnpmDir, entry.name, "node_modules", "@qwordly", "core"))
     .filter((candidate) => fs.existsSync(candidate));
 

@@ -2,328 +2,115 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>HTML5 Riddle Quest Portal Progress</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Riddle Quest Jest HTML5 Migration</title>
     <style>
       :root {
-        color-scheme: light;
-        --ink: #142128;
-        --muted: #657776;
-        --paper: #f3f6f2;
-        --panel: #fffdf7;
-        --line: #cbd8d4;
-        --green: #2f8b57;
-        --gold: #f4b83f;
-        --blue: #254e70;
-        --red: #b84a62;
-        --shadow: 0 18px 48px rgba(20, 33, 40, 0.12);
+        font-family: Inter, system-ui, sans-serif;
+        color: #152027;
+        background: #edf2ef;
       }
-
-      * {
-        box-sizing: border-box;
-      }
-
       body {
         margin: 0;
-        min-width: 320px;
-        background:
-          linear-gradient(180deg, #132026 0 310px, transparent 310px),
-          var(--paper);
-        color: var(--ink);
-        font-family:
-          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-          sans-serif;
       }
-
       main {
-        width: min(1180px, calc(100% - 32px));
-        margin: 0 auto;
-        padding: 34px 0 56px;
+        max-width: 1240px;
+        margin: auto;
+        padding: 32px 18px 64px;
       }
-
-      header {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) auto;
-        gap: 22px;
-        align-items: end;
-        color: #fffdf7;
-        margin-bottom: 24px;
-      }
-
-      .eyebrow {
-        margin: 0 0 8px;
-        color: #9edbd4;
-        font-size: 12px;
-        font-weight: 800;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-      }
-
-      h1,
-      h2,
-      h3,
-      p {
-        margin-top: 0;
-      }
-
-      h1 {
-        margin-bottom: 12px;
-        font-size: 42px;
-        line-height: 1.02;
-      }
-
-      header p:last-child {
-        max-width: 760px;
-        margin-bottom: 0;
-        color: #c7d6d2;
-        line-height: 1.7;
-      }
-
-      .stamp {
-        min-width: 190px;
-        padding: 14px 16px;
-        border: 1px solid #385964;
-        border-radius: 8px;
-        background: #20343d;
-      }
-
-      .stamp span {
-        display: block;
-        color: #9fb4b1;
-        font-size: 12px;
-      }
-
-      .stamp strong {
-        display: block;
-        margin-top: 5px;
-        font-size: 18px;
-      }
-
-      .summary {
-        display: grid;
-        grid-template-columns: 1.25fr repeat(3, 1fr);
-        gap: 14px;
+      header,
+      .card {
+        background: #fff;
+        border: 1px solid #ccd8d2;
+        border-radius: 12px;
+        padding: 22px;
         margin-bottom: 18px;
       }
-
-      .card {
-        min-width: 0;
-        padding: 18px;
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        background: var(--panel);
-        box-shadow: var(--shadow);
+      header {
+        color: #fff;
+        background: #162a32;
       }
-
-      .progress-card {
+      .summary {
         display: grid;
-        gap: 16px;
+        grid-template-columns: 2fr repeat(5, 1fr);
+        gap: 12px;
       }
-
-      .progress-head {
-        display: flex;
-        justify-content: space-between;
-        gap: 18px;
-        align-items: baseline;
+      .metric {
+        background: #fff;
+        border: 1px solid #ccd8d2;
+        border-radius: 10px;
+        padding: 14px;
       }
-
-      .progress-head strong {
-        font-size: 30px;
-      }
-
-      .progress-track {
-        height: 12px;
-        overflow: hidden;
-        border-radius: 999px;
-        background: #dce6e2;
-      }
-
-      .progress-fill {
-        width: 0;
-        height: 100%;
-        border-radius: inherit;
-        background: linear-gradient(90deg, var(--green), var(--gold));
-        transition: width 200ms ease;
-      }
-
-      .metric span,
-      .meta {
-        display: block;
-        color: var(--muted);
-        font-size: 12px;
-        font-weight: 800;
-        letter-spacing: 0.04em;
-        text-transform: uppercase;
-      }
-
       .metric strong {
         display: block;
-        margin-top: 8px;
-        font-size: 28px;
+        font-size: 1.6rem;
       }
-
-      .grid {
-        display: grid;
-        grid-template-columns: minmax(0, 1.45fr) minmax(300px, 0.75fr);
-        gap: 18px;
+      .bar {
+        height: 12px;
+        background: #dbe5e0;
+        border-radius: 8px;
+        overflow: hidden;
       }
-
-      section {
-        margin-top: 18px;
+      .bar i {
+        display: block;
+        height: 100%;
+        background: #2f8b57;
       }
-
-      section h2 {
-        margin-bottom: 14px;
-        font-size: 22px;
-      }
-
-      .status-table {
-        width: 100%;
+      table {
         border-collapse: collapse;
+        width: 100%;
+        font-size: 0.88rem;
       }
-
-      .status-table th,
-      .status-table td {
-        padding: 13px 12px;
-        border-top: 1px solid #e1e8e4;
+      th,
+      td {
+        border-top: 1px solid #dfe7e3;
+        padding: 10px;
         text-align: left;
         vertical-align: top;
       }
-
-      .status-table th {
-        border-top: 0;
-        color: var(--muted);
-        font-size: 11px;
-        letter-spacing: 0.06em;
+      th {
+        font-size: 0.72rem;
         text-transform: uppercase;
+        color: #60706b;
       }
-
-      .status-table td:first-child {
-        width: 32%;
-        font-weight: 800;
-      }
-
       .pill {
-        display: inline-flex;
-        align-items: center;
-        min-height: 26px;
-        padding: 4px 9px;
-        border-radius: 999px;
-        font-size: 12px;
-        font-weight: 900;
-        white-space: nowrap;
+        display: inline-block;
+        border-radius: 99px;
+        padding: 4px 8px;
+        font-weight: 700;
       }
-
       .done {
-        background: #dff1e7;
-        color: #16623d;
+        background: #d8f0e2;
+        color: #12603a;
       }
-
-      .progress {
-        background: #fff0ca;
-        color: #805608;
+      .in-progress {
+        background: #dceafa;
+        color: #174f80;
       }
-
-      .pending {
-        background: #e5edf5;
-        color: #254e70;
+      .not-started {
+        background: #eee;
+        color: #555;
       }
-
       .blocked {
-        background: #f9dde4;
-        color: #823047;
+        background: #f8dce2;
+        color: #8b2741;
       }
-
-      .list {
-        display: grid;
-        gap: 10px;
-        padding: 0;
-        margin: 0;
-        list-style: none;
+      .deferred {
+        background: #f4ead1;
+        color: #72530d;
       }
-
-      .list li {
-        padding: 12px 13px;
-        border: 1px solid #e1e8e4;
-        border-radius: 7px;
-        background: #fbfdf9;
-      }
-
-      .list strong {
-        display: block;
-        margin-bottom: 5px;
-      }
-
-      .list span {
-        color: var(--muted);
-        line-height: 1.5;
-      }
-
-      .verification li {
-        display: grid;
-        grid-template-columns: 1fr auto;
-        gap: 12px;
-        align-items: center;
-      }
-
       code {
-        padding: 2px 5px;
-        border-radius: 5px;
-        background: #eef4f1;
-        font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
-        font-size: 0.92em;
-        overflow-wrap: anywhere;
+        font-size: 0.82em;
       }
-
-      .note {
-        padding: 14px;
-        border-left: 4px solid var(--blue);
-        border-radius: 7px;
-        background: #eef5f8;
-        color: #244052;
-        line-height: 1.6;
+      .log li {
+        margin: 0.6rem 0;
       }
-
-      .log {
-        display: grid;
-        gap: 12px;
-      }
-
-      .log article {
-        padding: 14px;
-        border: 1px solid #e1e8e4;
-        border-radius: 7px;
-        background: #fbfdf9;
-      }
-
-      .log time {
-        display: block;
-        margin-bottom: 6px;
-        color: var(--muted);
-        font-size: 12px;
-        font-weight: 800;
-      }
-
-      footer {
-        margin-top: 22px;
-        color: var(--muted);
-        font-size: 13px;
-        line-height: 1.6;
-      }
-
-      @media (max-width: 920px) {
-        header,
-        .summary,
-        .grid {
-          grid-template-columns: 1fr;
+      @media (max-width: 850px) {
+        .summary {
+          grid-template-columns: 1fr 1fr;
         }
-
-        h1 {
-          font-size: 34px;
-        }
-
-        .stamp {
-          width: fit-content;
+        .card {
+          overflow: auto;
         }
       }
     </style>
@@ -331,402 +118,1490 @@
   <body>
     <main>
       <header>
-        <div>
-          <p class="eyebrow">Riddle Quest HTML5 portal</p>
-          <h1>Progress tracker</h1>
-          <p>
-            Living status page for the public playable HTML5 module inside
-            <code>@qwordly/portal</code>. Update this file whenever scope, status,
-            verification, or blockers change.
-          </p>
-        </div>
-        <div class="stamp">
-          <span>Last updated</span>
-          <strong>2026-07-07</strong>
-        </div>
+        <p>Canonical migration tracker · source of truth</p>
+        <h1>Riddle Quest → Jest HTML5</h1>
+        <p>
+          Pixel-, behavior-, and audio-faithful conversion of the former React Native Android game into a standard
+          Vite/React HTML5 game. Jest replaces native platform services only where applicable; Firebase remains
+          authoritative for gameplay state.
+        </p>
+        <p>Last updated: <strong>2026-07-28</strong></p>
       </header>
-
       <section class="summary">
-        <article class="card progress-card">
-          <div class="progress-head">
-            <div>
-              <span class="meta">Overall implementation</span>
-              <strong id="overall-percent">0%</strong>
-            </div>
-            <span id="overall-count" class="pill progress">Calculating</span>
-          </div>
-          <div class="progress-track" aria-label="Overall progress">
-            <div id="overall-fill" class="progress-fill"></div>
-          </div>
-        </article>
-
-        <article class="card metric">
-          <span>Hosted routes</span>
-          <strong>/admin/ + /play/</strong>
-        </article>
-
-        <article class="card metric">
-          <span>Test state</span>
-          <strong>Green</strong>
-        </article>
-
-        <article class="card metric">
-          <span>Browser QA</span>
-          <strong>Passed</strong>
-        </article>
+        <div class="metric">
+          <strong id="percent">0%</strong>
+          <div class="bar"><i id="bar"></i></div>
+          <span id="count"></span>
+        </div>
+        <div class="metric"><span>Done</span><strong id="done">0</strong></div>
+        <div class="metric"><span>In progress</span><strong id="progress">0</strong></div>
+        <div class="metric"><span>Not started</span><strong id="not-started">0</strong></div>
+        <div class="metric"><span>Blocked</span><strong id="blocked">0</strong></div>
+        <div class="metric"><span>Deferred</span><strong id="deferred">0</strong></div>
       </section>
-
-      <div class="grid">
-        <section class="card">
-          <h2>Implementation Checklist</h2>
-          <table class="status-table">
-            <thead>
-              <tr>
-                <th>Area</th>
-                <th>Status</th>
-                <th>Notes</th>
-              </tr>
-            </thead>
-            <tbody id="task-table">
-              <tr data-status="done">
-                <td>Vite routing</td>
-                <td><span class="pill done">Done</span></td>
-                <td>Base changed to <code>/riddle-quest/</code>; admin, host, and iframe routes are split.</td>
-              </tr>
-              <tr data-status="done">
-                <td>Core bridge protocol</td>
-                <td><span class="pill done">Done</span></td>
-                <td>Zod schemas and parsers added in <code>@qwordly/core/bridge</code>.</td>
-              </tr>
-              <tr data-status="done">
-                <td>Hosted wrapper</td>
-                <td><span class="pill done">Done</span></td>
-                <td>Owns auth state, iframe lifecycle, Firebase adapters, and provider interfaces.</td>
-              </tr>
-              <tr data-status="done">
-                <td>Game iframe</td>
-                <td><span class="pill done">Done</span></td>
-                <td>DOM React board, keyboard, modals, hints, continue, skip, shop, profile, and settings surfaces are present.</td>
-              </tr>
-              <tr data-status="done">
-                <td>Fake harness providers</td>
-                <td><span class="pill done">Done</span></td>
-                <td><code>?harness=jest</code> uses deterministic fake auth, riddles, purchases, ads, profile, and leaderboard.</td>
-              </tr>
-              <tr data-status="done">
-                <td>Firebase web adapters</td>
-                <td><span class="pill done">Done</span></td>
-                <td>Email, Google, Facebook, guest auth, App Check, Firestore profile, and callable clients are wired.</td>
-              </tr>
-              <tr data-status="done">
-                <td>Full parity UI polish</td>
-                <td><span class="pill done">Done</span></td>
-                <td>Browser-safe sound/mute, profile/settings username update, responsive iframe sizing, and long-modal controls are in place.</td>
-              </tr>
-              <tr data-status="done">
-                <td>Translations</td>
-                <td><span class="pill done">Done</span></td>
-                <td><code>WebPortal</code> game namespace added across every existing locale and generated catalogs updated.</td>
-              </tr>
-              <tr data-status="done">
-                <td>Portal Jest setup</td>
-                <td><span class="pill done">Done</span></td>
-                <td>Package-local Jest config avoids the root React Native preset.</td>
-              </tr>
-              <tr data-status="done">
-                <td>Unit coverage</td>
-                <td><span class="pill done">Done</span></td>
-                <td>Bridge schemas, routers, reducer/session state, providers, and a React render smoke test are covered.</td>
-              </tr>
-              <tr data-status="done">
-                <td>Hosted browser harness test</td>
-                <td><span class="pill done">Done</span></td>
-                <td>Opt-in Jest + Playwright test builds the portal, serves <code>dist</code>, signs in as guest, uses shop/rewarded ad/hint, submits a deterministic answer, and verifies the win state.</td>
-              </tr>
-              <tr data-status="pending">
-                <td>Production purchases</td>
-                <td><span class="pill pending">Pending</span></td>
-                <td>Stable interfaces exist; real web payment provider is not selected or wired.</td>
-              </tr>
-              <tr data-status="pending">
-                <td>Production rewarded ads</td>
-                <td><span class="pill pending">Pending</span></td>
-                <td>Stable interfaces exist; browser ad SDK provider is not selected or wired.</td>
-              </tr>
-              <tr data-status="done">
-                <td>Local browser automation</td>
-                <td><span class="pill done">Done</span></td>
-                <td><code>@playwright/test</code> and Chromium are installed for <code>@qwordly/portal</code>; the hosted-wrapper browser harness passes locally.</td>
-              </tr>
-              <tr data-status="done">
-                <td>Bundle and performance pass</td>
-                <td><span class="pill done">Done</span></td>
-                <td>Vite chunk warning removed; sourcemaps are opt-in, portal logo uses WebP, Firebase and Zod are lazy, and route timings were checked with Playwright.</td>
-              </tr>
-              <tr data-status="done">
-                <td>Management console</td>
-                <td><span class="pill done">Done</span></td>
-                <td>Overview, players, content, leaderboards, audit log, CSV export, callable diagnostics, and a deterministic admin harness are in place.</td>
-              </tr>
-              <tr data-status="done">
-                <td>Admin Clerk auth</td>
-                <td><span class="pill done">Done</span></td>
-                <td><code>/riddle-quest/admin/</code> is gated by Clerk, admin callables verify Clerk tokens server-side, Firebase admin auth fallback is retained, and the deterministic harness bypass still works for tests.</td>
-              </tr>
-              <tr data-status="done">
-                <td>Vercel hosting</td>
-                <td><span class="pill done">Done</span></td>
-                <td>Production is live at <code>https://riddle-quest-omega.vercel.app</code>. Clerk's frontend API is proxied through the Riddle Quest Vercel project at <code>/__clerk/*</code>.</td>
-              </tr>
-              <tr data-status="blocked">
-                <td>Dedicated subdomain hosting</td>
-                <td><span class="pill blocked">Blocked</span></td>
-                <td>The Riddle Quest portal is isolated on the <code>riddle-quest</code> Vercel project at <code>https://riddle-quest-omega.vercel.app</code>. A custom subdomain such as <code>riddle-quest.roobsworld.com</code> still needs owner-controlled DNS/domain access; Vercel reports this team does not have access to that domain. The root <code>roobsworld.com</code> portfolio must remain unchanged.</td>
-              </tr>
-            </tbody>
-          </table>
-        </section>
-
-        <aside>
-          <section class="card">
-            <h2>Verification</h2>
-            <ul class="list verification">
-              <li><span><code>pnpm --filter @qwordly/core test</code></span><span class="pill done">Pass</span></li>
-              <li><span><code>pnpm --filter @qwordly/core build</code></span><span class="pill done">Pass</span></li>
-              <li><span><code>pnpm --filter @qwordly/portal test</code></span><span class="pill done">Pass</span></li>
-              <li><span><code>pnpm portal:build</code></span><span class="pill done">Pass</span></li>
-              <li><span><code>pnpm run i18n:verify</code></span><span class="pill done">Pass</span></li>
-              <li><span>Root i18n Jest subset</span><span class="pill done">Pass</span></li>
-              <li><span>Browser click-through</span><span class="pill done">Pass</span></li>
-              <li><span><code>PORTAL_BROWSER_TESTS=1 pnpm --filter @qwordly/portal exec jest --config jest.config.cjs src/play/__tests__/hostedBrowser.jest-playwright.test.ts --runInBand</code></span><span class="pill done">Pass</span></li>
-              <li><span>Playwright timing crawl: admin 275 KB, host 406 KB, iframe 366 KB first-load bytes; no chunk warning</span><span class="pill done">Pass</span></li>
-              <li><span>Management harness Playwright smoke: desktop and mobile overview, players, content, leaderboards, audit, and diagnostics</span><span class="pill done">Pass</span></li>
-              <li><span>Vercel preview inspect and protected-route curl checks</span><span class="pill done">Pass</span></li>
-              <li><span>Vercel production inspect, route HEAD checks, asset checks, and browser smoke</span><span class="pill done">Pass</span></li>
-              <li><span>Build asset audit: no default sourcemaps and no Vite chunk-size warning</span><span class="pill done">Pass</span></li>
-              <li><span>Portfolio safety check: removed the attempted Riddle Quest proxy edits and confirmed the portfolio working tree is clean</span><span class="pill done">Pass</span></li>
-              <li><span>Clerk admin auth checks: <code>pnpm --filter @qwordly/portal build</code>, <code>pnpm --filter functions build</code>, <code>pnpm --filter functions lint</code>, portal Jest, hosted Playwright harness, and admin preview smoke</span><span class="pill done">Pass</span></li>
-              <li><span>Vercel project check: <code>riddle-quest-omega.vercel.app</code> aliases to the isolated <code>riddle-quest</code> project; <code>riddle-quest.roobsworld.com</code> domain access is unavailable to this team</span><span class="pill done">Pass</span></li>
-              <li><span>README access guide added with live URLs, local routes, harness routes, deployment boundaries, and required envs</span><span class="pill done">Pass</span></li>
-              <li><span>Final live smoke: route checks and Playwright browser pass for admin, admin harness, play harness, performance dashboard, progress tracker, and Clerk proxy endpoint</span><span class="pill done">Pass</span></li>
-              <li><span>Custom Riddle Quest subdomain, for example <code>riddle-quest.roobsworld.com</code></span><span class="pill blocked">Blocked</span></li>
-            </ul>
-          </section>
-
-          <section class="card">
-            <h2>Next Actions</h2>
-            <ul class="list">
-              <li>
-                <strong>Choose production monetization</strong>
-                <span>Select payment and rewarded-ad vendors, then implement the provider interfaces.</span>
-              </li>
-              <li>
-                <strong>Finish web App Check</strong>
-                <span>Add the production Firebase App Check site key and verify enforcement before requiring App Check for the web portal.</span>
-              </li>
-              <li>
-                <strong>Deploy admin callable update</strong>
-                <span>Authenticate the Firebase CLI, set the Functions <code>CLERK_SECRET_KEY</code> secret, then deploy Functions before expecting live leaderboard and audit slices in the production management console.</span>
-              </li>
-              <li>
-                <strong>Allowlist Clerk admins</strong>
-                <span>Add authorized admins through Clerk JWT claims or Firestore <code>admins</code> documents after the Functions secret is deployed.</span>
-              </li>
-              <li>
-                <strong>Monitor production web vitals</strong>
-                <span>Use deployed gzip/Brotli metrics and real-device traces to set hard budgets before launch.</span>
-              </li>
-              <li>
-                <strong>Add optional subdomain</strong>
-                <span>Point a dedicated subdomain, such as <code>riddle-quest.roobsworld.com</code>, at the isolated Riddle Quest Vercel project when the domain owner is ready. Do not alias or redeploy the root portfolio domain for this portal.</span>
-              </li>
-            </ul>
-          </section>
-        </aside>
-      </div>
-
       <section class="card">
-        <h2>Known Risks</h2>
-        <ul class="list">
+        <h2>Architecture and acceptance</h2>
+        <ul>
           <li>
-            <strong>Bundle size</strong>
-            <span>Chunk warning is resolved and the portal no longer ships sourcemaps by default. Remaining cold-start cost is mostly React plus route UI copy; production web-vital budgets still need to be set.</span>
+            <strong>Parity is the primary product requirement.</strong> The React game must look, feel, sound and work
+            identically to the former React Native Android app at equivalent viewport sizes.
           </li>
           <li>
-            <strong>Production provider gap</strong>
-            <span>Purchases and rewarded ads intentionally return not-configured behavior outside the fake harness until vendors are selected.</span>
+            React Native components may be reimplemented with DOM, CSS, Canvas, WebGL and Web Audio, but their visible
+            design, motion, timing, feedback, rules, content and player flows must be preserved.
           </li>
           <li>
-            <strong>Deployment env gap</strong>
-            <span>The Vercel portal has Firebase web env vars and a live Clerk publishable key. The remaining web env gap is the production Firebase App Check site key.</span>
+            Jest may replace only platform-owned behavior: player identity/registration, loading overlay, payments,
+            notifications, entry payloads, referrals, social profile/avatar and screenshot/share integration.
           </li>
           <li>
-            <strong>Admin callable rollout</strong>
-            <span>The Vercel portal tolerates older callable responses, but Clerk-backed admin access and the new audit and leaderboard panels need the updated Firebase Functions code deployed for live data.</span>
+            Removing React Native, Expo, Android or iOS code is not evidence of parity. Native retirement is accepted
+            only after every parity row below has code, automated coverage and side-by-side visual/audio evidence.
+          </li>
+          <li>Jest player ID maps to deterministic Firebase UID; registration preserves the same record.</li>
+          <li>Only locale, mute, accessibility, and onboarding preferences may use client-writable Jest data.</li>
+          <li>
+            Purchases and referrals are granted only after server-side HS256 verification and idempotent Firestore
+            recording.
+          </li>
+          <li><code>completePurchase</code> follows durable grant; incomplete purchases reconcile on every startup.</li>
+          <li>
+            Playable means the initial authoritative profile and riddle are present and input is enabled before
+            <code>markGameLoaded()</code>.
           </li>
           <li>
-            <strong>Clerk deployment secrets</strong>
-            <span>The isolated <code>riddle-quest</code> Vercel project has the live Clerk publishable key and proxy rewrite. Firebase Functions still need <code>CLERK_SECRET_KEY</code>; admins also need a Clerk JWT claim or Firestore admin document.</span>
-          </li>
-          <li>
-            <strong>Custom subdomain ownership</strong>
-            <span>The portal can stay on <code>riddle-quest-omega.vercel.app</code>. A branded subdomain must be configured separately by the domain owner and must not replace, alias, or proxy the portfolio at <code>roobsworld.com</code>.</span>
+            React/Jest is the only shipped client. The former native source in Git history is the behavioral and visual
+            reference until the parity acceptance suite is complete.
           </li>
         </ul>
       </section>
-
       <section class="card">
-        <h2>Update Log</h2>
-        <div class="log">
-          <article>
-            <time datetime="2026-07-07">2026-07-07</time>
-            <p>
-              Configured the isolated <code>riddle-quest</code> Vercel project with Firebase
-              web env vars and a live Clerk publishable key, added the static Clerk proxy
-              rewrite for <code>/__clerk/*</code>, disabled Vercel telemetry unless explicitly
-              enabled, rebuilt, deployed to production, and verified the live routes with
-              Playwright with no console or network issues.
-            </p>
-          </article>
-          <article>
-            <time datetime="2026-07-07">2026-07-07</time>
-            <p>
-              Firebase Functions deployment remains externally blocked until Firebase CLI
-              credentials are available. The next backend step is to set the Functions
-              <code>CLERK_SECRET_KEY</code> secret and redeploy the callable updates.
-            </p>
-          </article>
-          <article>
-            <time datetime="2026-07-07">2026-07-07</time>
-            <p>
-              Added a README access guide covering the isolated Vercel production URLs,
-              local portal routes, Jest harness routes, build/preview/test commands,
-              deployment boundaries, and the env prerequisites for Clerk and Firebase.
-            </p>
-          </article>
-          <article>
-            <time datetime="2026-07-07">2026-07-07</time>
-            <p>
-              Verified the hosted portfolio Vercel project does have environment variables,
-              including Clerk keys, while the separate <code>riddle-quest</code> Vercel project
-              has none. Kept the projects separate: portfolio envs can be copied deliberately
-              if the same Clerk instance should back Riddle Quest admin, but they do not apply
-              automatically to the isolated portal deployment.
-            </p>
-          </article>
-          <article>
-            <time datetime="2026-07-07">2026-07-07</time>
-            <p>
-              Corrected the deployment boundary: the portfolio app and
-              <code>roobsworld.com</code> are not targets for the Riddle Quest portal.
-              removed the attempted portfolio proxy edits from the separate portfolio repo,
-              confirmed that working tree is clean again, verified the isolated Vercel
-              aliases, and confirmed this Vercel team cannot access the proposed
-              <code>riddle-quest.roobsworld.com</code> domain yet.
-            </p>
-          </article>
-          <article>
-            <time datetime="2026-07-07">2026-07-07</time>
-            <p>
-              Switched the admin portal to Clerk auth with a Clerk sign-in gate,
-              server-side Clerk token verification for admin callables, retained Firebase
-              admin fallback, preserved the test harness bypass, added Clerk environment
-              examples, split Clerk into its own Vite chunk, and verified the admin route
-              with Playwright plus a clean local preview smoke.
-            </p>
-          </article>
-          <article>
-            <time datetime="2026-07-06">2026-07-06</time>
-            <p>
-              Earlier portfolio proxy work was superseded by the dedicated-subdomain
-              boundary. The portfolio should continue to serve <code>roobsworld.com</code>;
-              Riddle Quest portal deployments should stay on the isolated
-              <code>riddle-quest</code> Vercel project.
-            </p>
-          </article>
-          <article>
-            <time datetime="2026-07-06">2026-07-06</time>
-            <p>
-              Promoted the validated Vercel deployment to production at
-              <code>https://riddle-quest-omega.vercel.app</code>, verified the admin, play,
-              game iframe, and performance routes, refreshed the live performance snapshot,
-              checked deployed JS assets, and confirmed a production browser smoke pass.
-            </p>
-          </article>
-          <article>
-            <time datetime="2026-07-05">2026-07-05</time>
-            <p>
-              Expanded the management portal into a fuller operations console with player filters
-              and CSV export, content health, leaderboards, audit log, callable diagnostics,
-              keyboard-accessible player rows, a deterministic admin harness, a bounded admin
-              overview contract, refreshed Playwright performance metrics, and a Vercel preview
-              deployment.
-            </p>
-          </article>
-          <article>
-            <time datetime="2026-07-05">2026-07-05</time>
-            <p>
-              Completed a performance pass: split core pricing and bridge constants, lazied Zod
-              bridge validation and admin Firebase, switched the portal logo to WebP, made
-              sourcemaps opt-in, narrowed lazy locale chunks, verified that the Vite chunk warning
-              is gone, and measured the admin/host/iframe routes with Playwright.
-            </p>
-          </article>
-          <article>
-            <time datetime="2026-07-05">2026-07-05</time>
-            <p>
-              Completed the remaining locally available work: installed the portal Playwright
-              driver, made Firebase services lazy so fake harness routes do not initialize
-              Firebase, capped the hosted iframe to the browser viewport, kept long modal controls
-              reachable, added browser-safe sound/mute and username settings polish, and verified
-              the hosted wrapper browser flow end to end.
-            </p>
-          </article>
-          <article>
-            <time datetime="2026-07-05">2026-07-05</time>
-            <p>
-              Created the HTML5 portal module tracker after implementing core bridge schemas,
-              portal routing, host/game surfaces, fake providers, Firebase web adapters,
-              i18n additions, and focused tests.
-            </p>
-          </article>
-        </div>
+        <h2>Non-negotiable React conversion contract</h2>
+        <p>
+          The source of truth is the last complete React Native Android implementation in Git history. A feature is not
+          complete merely because a simplified web substitute exists. Every screen, rule, animation, sound, tooltip,
+          state transition, Firebase interaction and accessibility behavior must be inventoried and either reproduced in
+          React or explicitly documented as a Jest-owned replacement.
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Must remain equivalent</th>
+              <th>Allowed web implementation</th>
+              <th>Acceptance evidence</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Solar system, star field, planets, moons, rings, sun/corona, camera, textures and orbital motion</td>
+              <td>Three.js/WebGL in React with compressed or progressively loaded source textures</td>
+              <td>Side-by-side screenshots/video plus configuration-value and motion tests</td>
+            </tr>
+            <tr>
+              <td>Game board, five-row grid, custom keyboard, selected slots, hints and feedback animations</td>
+              <td>Semantic DOM/CSS/Canvas with pointer, touch and physical-keyboard input</td>
+              <td>Rule tests and golden interaction recordings at Android-equivalent viewports</td>
+            </tr>
+            <tr>
+              <td>
+                Every page and feature, including onboarding, profile, ranks, XP, statistics, achievements, rewards,
+                coin currency, hint/skip purchases, shops, settings and leaderboards
+              </td>
+              <td>React dialogs/pages backed by the same authoritative Firebase fields</td>
+              <td>Field-by-field fixture comparison and visual regression coverage</td>
+            </tr>
+            <tr>
+              <td>
+                Tooltips, onboarding, modal/fanfare sequences, audio cues, background music and lifecycle behavior
+              </td>
+              <td>React state machines, CSS/WebGL animation and Web Audio with browser unlock handling</td>
+              <td>Ordered-flow tests, audio inventory checks and recorded side-by-side review</td>
+            </tr>
+            <tr>
+              <td>Identity, registration, payments, notifications, referrals and share/profile integration</td>
+              <td>Official Jest HTML5 SDK plus trusted Firebase verification/grants</td>
+              <td>Unit/contract coverage and guest/registered Jest sandbox matrices</td>
+            </tr>
+          </tbody>
+        </table>
+        <p>
+          Release rule: no parity task may be marked done from source presence or a passing smoke test alone. Done
+          requires exact behavior, production data, visual/audio comparison, automated regression coverage and—where
+          Jest owns the behavior—sandbox evidence. The reference inventory is exhaustive: a former page or feature
+          omitted from the matrix is a tracker defect and a release blocker, not permission to omit it from React.
+        </p>
       </section>
+      <section class="card">
+        <h2>2026-07-28 launch-checklist and Games Fund audit</h2>
+        <p>
+          The earlier tracker proves that substantial Jest boundary and backend work exists, but it predates the
+          2026-07-13 launch requirement for <code>JestSDK.markFirstMilestone()</code> and treats several implemented
+          primitives as complete before their player-facing loops have passed Jest sandbox review. The acceptance bar
+          below follows the current <a href="https://docs.jest.com/launch-checklist">Jest launch checklist</a>,
+          technical/gameplay requirements, Games Fund guidance, and Simulator review flow.
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Area</th>
+              <th>Current evidence</th>
+              <th>Gap / risk</th>
+              <th>Required acceptance</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Mobile web and loading</td>
+              <td>Responsive DOM game, relative Vite base, manual loading heartbeat, touch and keyboard tests</td>
+              <td>
+                Current reduced <code>dist-jest</code> is about 0.62 MB only because required parity systems and assets
+                are absent. A complete-build budget measurement and 10+ minute lower-end-device soak are not recorded.
+              </td>
+              <td>
+                Dedicated game-only artifact; &lt;5 MB total shipped bytes and measured critical startup comfortably
+                below that ceiling; progressive non-essential assets; iOS Safari and Android Chrome 10+ minute soak
+                without crash, freeze, runaway memory, layout overflow, or loading safety timeout.
+              </td>
+            </tr>
+            <tr>
+              <td>Unsupported/platform-conflicting features</td>
+              <td>Rewarded-ad buttons are absent and the artifact audit rejects Expo/React Native modules</td>
+              <td>
+                Removed paths are covered by source and artifact scans; exhaustive browser navigation remains to be
+                recorded.
+              </td>
+              <td>
+                No ads, haptics/vibration, external links, app-install prompts, external auth, external logout path, or
+                unreachable portal/admin code in the Jest build. A text/URL/API artifact audit and manual navigation
+                pass prove the boundary.
+              </td>
+            </tr>
+            <tr>
+              <td>Player identity and guest continuity</td>
+              <td>SDK initialization, signed player exchange, deterministic Firebase UID and stable guest player ID</td>
+              <td>
+                Registration is prompted immediately rather than after core value, and dismissal cooldown/context are
+                not tied to gameplay. Legacy migration must not become a second sign-in system.
+              </td>
+              <td>
+                Guest can immediately play; first prompt follows the first completed puzzle or another measured peak;
+                dismissal is respected for a defined puzzle/session cooldown; <code>login()</code> is guest-only and
+                player state is re-read; the same Firebase profile/progress remains after registration and reload.
+              </td>
+            </tr>
+            <tr>
+              <td>Required analytics</td>
+              <td>Internal game analytics bridge currently writes to the browser console</td>
+              <td><code>JestSDK.markFirstMilestone()</code> is absent and is now required for launch.</td>
+              <td>
+                Define the first successful puzzle completion as the earliest core-value milestone; call
+                <code>markFirstMilestone()</code> only after authoritative completion succeeds; verify the Simulator
+                checklist and Jest events. Add privacy-safe custom funnel events for puzzle, registration prompt,
+                notification return, referral, and checkout analysis.
+              </td>
+            </tr>
+            <tr>
+              <td>Games Fund user acquisition</td>
+              <td><code>getPlayer()</code>, <code>login()</code>, and validated entry payloads exist</td>
+              <td>
+                The immediate generic guest alert does not communicate a contextual benefit. Onboarding values such as
+                <code>customName</code> and UTM/registration context are not fully consumed.
+              </td>
+              <td>
+                A contextual post-win "save your streak and receive tomorrow's riddle" registration flow; input from a
+                Jest onboarding is validated and applied with a fallback; attribution context survives login/re-entry;
+                guest-start, dismiss, successful registration, and already-registered paths all pass.
+              </td>
+            </tr>
+            <tr>
+              <td>Games Fund retention/notifications</td>
+              <td>Registered-only progress-aware D1/D3/D7 notifications use stable replacement identifiers</td>
+              <td>
+                The local callback, replacement behavior, localized copy and validated challenge entry are complete;
+                approved media, moderation evidence and a registered-player sandbox return remain external gates.
+              </td>
+              <td>
+                A D1/D3/D7 rolling series is scheduled early for registered players, removed/replaced on return, chosen
+                from localized progress-aware variants, kept under 100 basic characters, tagged through entry payload,
+                and linked to the Daily Cosmic Riddle/streak reward. Approved assets and moderation/event logs pass.
+              </td>
+            </tr>
+            <tr>
+              <td>Games Fund outside-network virality</td>
+              <td>
+                Victory opens a personalized Jest friend challenge and the backend rewards both players idempotently
+              </td>
+              <td>
+                The targeted riddle destination, stable reference, validated entry payload and two-sided authoritative
+                reward are implemented; the two-account Jest sandbox matrix and visible live conversion evidence remain.
+              </td>
+              <td>
+                Ship "Challenge a friend": share a result card and specific asynchronous riddle destination using a
+                stable referral reference and validated entry payload; give both sides explicit, server-authoritative
+                value after the qualifying action; surface conversion/reward status; test first-entry attribution,
+                existing-player non-reattribution, cancel, duplicate, tamper, and two-account completion.
+              </td>
+            </tr>
+            <tr>
+              <td>Games Fund monetization</td>
+              <td>SDK catalog checkout, signed grant backend and grant-before-complete recovery are implemented</td>
+              <td>
+                Host and game-frame shops now use the Jest catalog/coordinator, SDK price/currency and authoritative
+                post-grant balances. A complete registered sandbox purchase/interruption matrix is not yet proven.
+              </td>
+              <td>
+                Load products from <code>JestSDK.payments.getProducts()</code>, map only allowlisted SKUs to coin
+                grants, format <code>price</code>/<code>currency</code>, route every Jest shop purchase through the
+                coordinator, refresh the authoritative balance, and pass success, cancel, transient error, invalid
+                product/token, timeout, crash-before-complete, reload recovery, duplicate, and multi-page recovery.
+              </td>
+            </tr>
+            <tr>
+              <td>Console, moderation and submission</td>
+              <td>Draft builds, game identity, backend secret, listing image candidates and upload automation exist</td>
+              <td>
+                Manual loading, approved notification media, live catalog, referral loop, sandbox evidence, content
+                review and Simulator self-review are not all closed.
+              </td>
+              <td>
+                Approved 1:1 logo and 16:9 hero; concise listing; correct category/keywords; Manual loading selected;
+                products/assets configured; Events tabs clean; legal/content review completed; recorded Simulator
+                self-review passes all must-have and Games Fund recommended checks before review submission.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+      <section class="card">
+        <h2>Execution sequence and release gates</h2>
+        <ol>
+          <li>
+            <strong>Gate 0 — preserve and inventory the reference.</strong> Treat the former React Native Android app in
+            Git history as the product specification. Inventory every screen, component, asset, sound, animation, rule,
+            state transition, tooltip, localized string and backend contract before accepting any deletion.
+          </li>
+          <li>
+            <strong>Gate 1 — reproduce the complete game in React.</strong> Port the solar system, game board, custom
+            keyboard, profile, achievements, ranks, statistics, tooltips, onboarding, shops, settings, leaderboards,
+            modal sequences, rewards, music and sound cues with the same appearance, timing, feedback and rules.
+          </li>
+          <li>
+            <strong>Gate 2 — preserve authoritative behavior and data.</strong> Match the Android game rules exactly,
+            including five initial guesses, one 100-coin continuation guess, hints, skips, rewards, XP, ranks, streaks,
+            achievements, progression, session restoration and all localized Firebase riddles.
+          </li>
+          <li>
+            <strong>Gate 3 — substitute Jest only at the platform boundary.</strong> Use Jest for player identity,
+            registration, loading, payments, notifications, entry payloads, referrals and supported social/share
+            services. Jest does not replace the game's UI, rules, content, progression or Firebase authority.
+          </li>
+          <li>
+            <strong>Gate 4 — optimize without changing the experience.</strong> Meet the game-only artifact and startup
+            budgets with compression, code splitting and post-playable loading. Required visuals, textures, sounds,
+            translations and behaviors may not be deleted to obtain a smaller build.
+          </li>
+          <li>
+            <strong>Gate 5 — close the Jest retention, acquisition and monetization loops.</strong> Complete Daily
+            Cosmic Riddle notifications, friend challenges and referrals, and the signed catalog purchase flow with
+            authoritative grants and interruption recovery.
+          </li>
+          <li>
+            <strong>Gate 6 — qualification.</strong> Run unit/contract tests, browser automation, real-device mobile and
+            10+ minute lower-end soaks, visual/audio golden comparisons against the Android reference, hosted emulator,
+            registered/guest sandbox, notification, referral and payment matrices.
+          </li>
+          <li>
+            <strong>Gate 7 — submission and Games Fund evidence.</strong> Upload the release candidate without
+            publishing; run and record the Simulator self-review; attach measurements, screenshots, event IDs and funnel
+            definitions; submit for platform review only when every basic gate is green, then package the same evidence
+            plus retention/acquisition/monetization loop results for the Games Fund application.
+          </li>
+        </ol>
+        <p>
+          Release rule: "implemented" is not "accepted." A row becomes done only when its code, automated verification,
+          uploaded-build sandbox evidence, and any required Developer Console configuration are all present. Any launch
+          must-have failure blocks submission; Games Fund loop failures may not block basic publication but do block the
+          Games Fund readiness claim.
+        </p>
+      </section>
+      <section class="card">
+        <h2>Implementation plan</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>ID / phase</th>
+              <th>Work item</th>
+              <th>Status</th>
+              <th>Evidence</th>
+              <th>Verification</th>
+              <th>Dependencies / blocker</th>
+              <th>Updated</th>
+            </tr>
+          </thead>
+          <tbody id="items">
+            <tr data-id="TRK-001" data-status="done">
+              <td>TRK-001 · Tracker</td>
+              <td>Canonical tracker schema, stable IDs, acceptance criteria, dependencies and log</td>
+              <td><span class="pill done">done</span></td>
+              <td>Current canonical document</td>
+              <td><code>pnpm --filter @qwordly/portal check:progress</code></td>
+              <td>None</td>
+              <td>2026-07-12</td>
+            </tr>
+            <tr data-id="TRK-002" data-status="done">
+              <td>TRK-002 · Tracker</td>
+              <td>
+                Validate the canonical tracker during every build and reject invalid status or missing done evidence
+              </td>
+              <td><span class="pill done">done</span></td>
+              <td><code>scripts/progress-tracker.mjs</code> and package build lifecycle</td>
+              <td><code>pnpm --filter @qwordly/portal check:progress</code></td>
+              <td>TRK-001</td>
+              <td>2026-07-12</td>
+            </tr>
+            <tr data-id="WEB-001" data-status="done">
+              <td>WEB-001 · Browser</td>
+              <td>Consolidate host and iframe into one standalone Jest-compatible entry with relative assets</td>
+              <td><span class="pill done">done</span></td>
+              <td>
+                <code>/play/</code> renders the DOM game directly and uses an in-page typed bridge; compatibility route
+                remains separate
+              </td>
+              <td>Standalone hosted Playwright flow passes with no iframe</td>
+              <td>JST-001, WEB-002</td>
+              <td>2026-07-12</td>
+            </tr>
+            <tr data-id="WEB-002" data-status="done">
+              <td>WEB-002 · Browser</td>
+              <td>
+                Preserve keyboard, pointer/touch, responsive layout, safe-area, visibility, audio unlock and
+                interruption handling
+              </td>
+              <td><span class="pill done">done</span></td>
+              <td>
+                Custom pointer/touch and physical QWERTY input, safe-area CSS, exact 390 × 844 fit, visibility pause,
+                persisted mute, interaction-unlocked music and reference fade timing pass the hosted browser flow
+              </td>
+              <td>Passing Playwright portrait/landscape/iframe flow plus curated Android interaction reference</td>
+              <td>PAR-005, PAR-006, PAR-011, PAR-014</td>
+              <td>2026-07-28</td>
+            </tr>
+            <tr data-id="WEB-003" data-status="done">
+              <td>WEB-003 · Browser</td>
+              <td>Remove rewarded-ad UI and retain coin-spend continue flow</td>
+              <td><span class="pill done">done</span></td>
+              <td>
+                Rewarded-ad UI, assets and services are removed. The loss branch now charges the authoritative
+                100-coin price for exactly one additional guess and routes insufficient balances to the Jest shop
+              </td>
+              <td>Reducer, backend and browser coverage for the fixed continuation contract</td>
+              <td>PAR-006 and Jest-compatible no-ad design</td>
+              <td>2026-07-28</td>
+            </tr>
+            <tr data-id="WEB-004" data-status="in-progress">
+              <td>WEB-004 · Browser</td>
+              <td>Remove Expo/native dependencies after browser parity acceptance</td>
+              <td><span class="pill in-progress">in-progress</span></td>
+              <td>
+                Expo, React Native, EAS, Android/iOS sources, native build artifacts, native dependencies and optional
+                native Firebase peers removed; <code>pnpm why react-native</code> returns no package. Removal occurred
+                before production parity acceptance and therefore does not complete this row
+              </td>
+              <td>Clean install plus full PAR-002–PAR-018 acceptance against Git-history reference</td>
+              <td>WEB-001 and PAR-001</td>
+              <td>2026-07-28</td>
+            </tr>
+            <tr data-id="WEB-005" data-status="done">
+              <td>WEB-005 · Performance</td>
+              <td>
+                Produce a dedicated game-only Jest artifact below the &lt;5 MB web-native target and progressively load
+                non-essential visuals
+              </td>
+              <td><span class="pill done">done</span></td>
+              <td>
+                Complete parity artifact is 4.31 MB across 372 files, including lazy Three.js solar system, compressed
+                textures/music, all 17 locales, onboarding/tooltips and every page/reward surface
+              </td>
+              <td>Passing <code>build:jest</code> size/forbidden-content audit and hosted browser startup</td>
+              <td>WEB-001, PAR-003–PAR-018, QA-003</td>
+              <td>2026-07-28</td>
+            </tr>
+            <tr data-id="WEB-006" data-status="done">
+              <td>WEB-006 · Platform boundary</td>
+              <td>
+                Remove external auth/logout/migration UI and dead ad, portal, admin and unsupported feature paths from
+                the Jest runtime and artifact
+              </td>
+              <td><span class="pill done">done</span></td>
+              <td>
+                Admin, Clerk, external-auth, migration, rewarded-ad, native IAP and obsolete portal paths are removed;
+                the artifact audit rejects regressions and browser E2E navigates every surviving host panel
+              </td>
+              <td>Forbidden API/text/URL audit plus exhaustive desktop host-panel browser navigation</td>
+              <td>Dedicated Jest entry</td>
+              <td>2026-07-28</td>
+            </tr>
+            <tr data-id="PAR-002" data-status="done">
+              <td>PAR-002 · Reference inventory</td>
+              <td>
+                Map every former React Native screen, component, asset, sound, animation, rule, state and localized
+                string to its React implementation or an explicit Jest platform substitution
+              </td>
+              <td><span class="pill done">done</span></td>
+              <td>
+                <code>docs/react-web-parity-inventory.md</code> maps every former page, service, rule, sound, asset,
+                locale and native capability to React, retained Firebase authority or a documented Jest substitution
+              </td>
+              <td>Inventory review plus Git reference commit, curated Android pack and React acceptance evidence</td>
+              <td>Git history containing the former Android implementation</td>
+              <td>2026-07-28</td>
+            </tr>
+            <tr data-id="PAR-003" data-status="done">
+              <td>PAR-003 · Solar system</td>
+              <td>
+                Port the complete interactive 3D solar system: sun/corona, seven planets, moons, rings, textures,
+                lighting, camera, orbit motion and pause/resume behavior
+              </td>
+              <td><span class="pill done">done</span></td>
+              <td>
+                Lazy Three.js scene implements generated-alpha sun/corona, seven textured planets, five moon textures,
+                two rings, lighting, stars, camera, orbit/rotation and pause/resume
+              </td>
+              <td>Solar configuration source review, browser canvas check and 21-screen visual pack</td>
+              <td>PAR-002, WEB-005</td>
+              <td>2026-07-28</td>
+            </tr>
+            <tr data-id="PAR-004" data-status="in-progress">
+              <td>PAR-004 · Visual system</td>
+              <td>
+                Reproduce Android colors, typography, spacing, assets, safe areas, layouts, animations and modal styling
+                in responsive React
+              </td>
+              <td><span class="pill in-progress">in-progress</span></td>
+              <td>
+                Android typography, colors, assets, solar layering, modal treatment, motion and safe areas are ported;
+                a curated 14-state Android pack and complete 25-state React capture pack now exist at 540 × 1170,
+                with capture conditions and intentional Jest deviations documented in
+                <code>docs/visual-parity/README.md</code>
+              </td>
+              <td>Approved screenshot golden matrix for every state, modal and supported viewport</td>
+              <td>PAR-002, PAR-003</td>
+              <td>2026-07-29</td>
+            </tr>
+            <tr data-id="PAR-005" data-status="done">
+              <td>PAR-005 · Audio</td>
+              <td>
+                Restore background music and every key, delete, submit, win, loss, reward, achievement and modal sound
+                with matching timing, fades, mute state and interruption behavior
+              </td>
+              <td><span class="pill done">done</span></td>
+              <td>
+                The reference contained one looping WAV rather than separate effects; React uses its compressed Opus
+                equivalent with interaction unlock, 150 ms fade-out, 700/1000 ms fade-in, mute and lifecycle recovery
+              </td>
+              <td>Reference asset audit, browser unlock/mute/background handling and artifact media audit</td>
+              <td>PAR-002, WEB-002</td>
+              <td>2026-07-28</td>
+            </tr>
+            <tr data-id="PAR-006" data-status="done">
+              <td>PAR-006 · Game rules</td>
+              <td>
+                Match classic and daily rules, five initial guesses, one 100-coin continuation, hints, skips, rewards,
+                XP, streaks, validation, progression and session restoration
+              </td>
+              <td><span class="pill done">done</span></td>
+              <td>
+                Shared reducer/core and authoritative Functions enforce five guesses, one 100-coin continuation,
+                50-coin hints, 100/150 skips, rewards, XP, streaks, achievements, progression and reload restoration
+              </td>
+              <td>Core/portal/Functions suites plus hosted solve, non-sequential entry and reload E2E</td>
+              <td>PAR-002, BE-001</td>
+              <td>2026-07-28</td>
+            </tr>
+            <tr data-id="PAR-007" data-status="done">
+              <td>PAR-007 · Guidance</td>
+              <td>
+                Restore every tooltip, sequence, anchor, completion flag, onboarding step, welcome flow and translated
+                copy
+              </td>
+              <td><span class="pill done">done</span></td>
+              <td>
+                Three-step guest/two-step registered onboarding, four-step game tour, eight-step profile tour and all
+                contextual triggers use per-player completion storage and the complete 17-locale catalogs
+              </td>
+              <td>Fresh-player browser tour, 21-screen capture and 17 × 21 namespace completeness audit</td>
+              <td>PAR-002, PAR-004, PAR-014</td>
+              <td>2026-07-28</td>
+            </tr>
+            <tr data-id="PAR-008" data-status="done">
+              <td>PAR-008 · Profile</td>
+              <td>
+                Rebuild avatar, username, rank, XP progress, daily/classic progress, coins, statistics and profile
+                actions with Jest social-profile fallback where applicable
+              </td>
+              <td><span class="pill done">done</span></td>
+              <td>
+                Profile now renders avatar/initials fallback, username editing, rank, XP, classic/daily progress,
+                balance, statistics, achievements, ranks, leaderboard and treasure actions
+              </td>
+              <td>Profile mapper/reducer tests plus profile tour and every linked-page browser capture</td>
+              <td>PAR-002, PAR-009, PAR-010, JST-003</td>
+              <td>2026-07-28</td>
+            </tr>
+            <tr data-id="PAR-009" data-status="in-progress">
+              <td>PAR-009 · Achievements</td>
+              <td>
+                Restore the complete achievement catalog, progress, reward UI, unlock fanfares and authoritative
+                persistence
+              </td>
+              <td><span class="pill in-progress">in-progress</span></td>
+              <td>
+                All 42 definitions, object/ID mapping, progress/locked/unlocked presentation, ordered unlock fanfares
+                and authoritative rewards—including first purchase—are implemented and covered locally
+              </td>
+              <td>Schema tests plus locked/progress/unlocked/reward/fanfare E2E for every achievement family</td>
+              <td>PAR-002, PAR-012, PAR-013</td>
+              <td>2026-07-28</td>
+            </tr>
+            <tr data-id="PAR-010" data-status="done">
+              <td>PAR-010 · Progression surfaces</td>
+              <td>
+                Restore all fourteen statistics, ranks, badges, leaderboard tabs/results and associated progression and
+                reward displays
+              </td>
+              <td><span class="pill done">done</span></td>
+              <td>All 14 statistics, eight rank badges, XP/rank progress and three leaderboard tabs/results are present</td>
+              <td>Mapper tests, rank boundary source matrix and statistics/ranks/leaderboard browser captures</td>
+              <td>PAR-002, PAR-008, PAR-013</td>
+              <td>2026-07-28</td>
+            </tr>
+            <tr data-id="PAR-011" data-status="done">
+              <td>PAR-011 · Grid and keyboard</td>
+              <td>
+                Match the five-row variable-grapheme grid, active-slot entry, locked hints, custom QWERTY offsets,
+                key-state priority, bounce feedback, touch/pointer and physical-keyboard behavior
+              </td>
+              <td><span class="pill done">done</span></td>
+              <td>
+                Five-row variable-grapheme board supports active-slot pulse, non-sequential selection, locked hint
+                cells, custom QWERTY offsets, feedback priority, pointer/touch and physical key/delete/enter input
+              </td>
+              <td>Core grapheme/feedback tests, reducer tests and hosted non-sequential solve/restoration flow</td>
+              <td>PAR-002, PAR-004, PAR-006</td>
+              <td>2026-07-28</td>
+            </tr>
+            <tr data-id="PAR-012" data-status="in-progress">
+              <td>PAR-012 · Modal and reward sequences</td>
+              <td>
+                Restore victory, loss, continue, hint, skip, shop, settings and profile sequences plus chest,
+                achievement, level, rank, streak and purchase fanfares
+              </td>
+              <td><span class="pill in-progress">in-progress</span></td>
+              <td>
+                Victory, loss, continue, hint, skip, shop, settings/profile and chest flows are present; authoritative
+                achievement → victory → level → rank order and purchase reward fanfare pass browser acceptance
+              </td>
+              <td>Ordered state-machine tests and visual/audio E2E for every branch and dismissal path</td>
+              <td>PAR-004, PAR-005, PAR-006, PAR-009</td>
+              <td>2026-07-28</td>
+            </tr>
+            <tr data-id="PAR-013" data-status="in-progress">
+              <td>PAR-013 · Backend and content</td>
+              <td>
+                Preserve Firebase as authority for the exact profile schema, statistics, achievements, riddles,
+                progression, rewards and coin transactions
+              </td>
+              <td><span class="pill in-progress">in-progress</span></td>
+              <td>
+                Classic/daily riddles, full profile schema, statistics, achievements, rewards and coin writes pass 343
+                backend tests; all 357 locale namespace files pass key/placeholder validation
+              </td>
+              <td>Contract fixtures and live integration coverage for every read/write and all localized content</td>
+              <td>BE-001–BE-004, PAR-002</td>
+              <td>2026-07-28</td>
+            </tr>
+            <tr data-id="PAR-014" data-status="in-progress">
+              <td>PAR-014 · Lifecycle and access</td>
+              <td>
+                Match persistence, guest/session restore, background/resume, offline states, safe areas, accessibility
+                and every namespace in all 17 locales
+              </td>
+              <td><span class="pill in-progress">in-progress</span></td>
+              <td>
+                Reload restoration, visibility pause/resume, offline block/recovery, safe areas, inert/focus-trapped
+                dialogs, Escape behavior, keyboard labels, RTL and 17-locale completeness are implemented locally
+              </td>
+              <td>
+                Browser/device matrix with storage resets, interruptions, offline recovery, keyboard/focus and locale
+                checks
+              </td>
+              <td>PAR-002, PAR-007, QA-002, QA-004</td>
+              <td>2026-07-28</td>
+            </tr>
+            <tr data-id="PAR-015" data-status="in-progress">
+              <td>PAR-015 · Jest substitutions</td>
+              <td>
+                Map native identity/IAP/push/share/profile/loading behavior only to Jest player, payments,
+                notifications, referrals, social, screenshots and loading APIs
+              </td>
+              <td><span class="pill in-progress">in-progress</span></td>
+              <td>
+                The typed Jest boundary exists; live sandbox acceptance and a signed substitution matrix remain open
+              </td>
+              <td>
+                Mock and live sandbox tests for every mapped platform behavior with no unrelated product deviations
+              </td>
+              <td>All JST, BE and CON rows</td>
+              <td>2026-07-28</td>
+            </tr>
+            <tr data-id="PAR-017" data-status="done">
+              <td>PAR-017 · Pages and settings</td>
+              <td>
+                Inventory and reproduce every former page, route, overlay and navigation path, including onboarding,
+                welcome, game modes, profile, achievements, statistics, ranks, leaderboards, shop, settings and help
+              </td>
+              <td><span class="pill done">done</span></td>
+              <td>
+                The parity inventory maps every surviving page/overlay and
+                the visual/outcome capture scripts complete a 25-state navigation and game-result run
+              </td>
+              <td>
+                Every reference page has a React mapping and passes visual, navigation, back/dismiss, loading, empty,
+                error, populated and persistence states; settings match every original option and side effect
+              </td>
+              <td>PAR-002, PAR-004, PAR-007–PAR-010, PAR-012, PAR-014</td>
+              <td>2026-07-28</td>
+            </tr>
+            <tr data-id="PAR-018" data-status="in-progress">
+              <td>PAR-018 · Economy, rewards and hints</td>
+              <td>
+                Reproduce the complete coin economy, displayed balances, earn/spend history, reward amounts, chests,
+                shop catalog, Jest purchases, hints, skips, continuation costs and insufficient-funds journeys
+              </td>
+              <td><span class="pill in-progress">in-progress</span></td>
+              <td>
+                Balances, 25/75 win rewards, 50 hints, 100/150 skips, 100 continuation, chests, achievement/level/streak
+                bonuses, Jest catalog prices and signed idempotent purchases are reconciled and covered locally
+              </td>
+              <td>
+                Authoritative economy ledger tests and E2E for every earning source, reward, SKU, hint/skip/continue
+                spend, cancel/error/recovery path, balance refresh and translated state
+              </td>
+              <td>PAR-005, PAR-006, PAR-009, PAR-012, PAR-013, PAR-015, JST-006, BE-002</td>
+              <td>2026-07-28</td>
+            </tr>
+            <tr data-id="PAR-016" data-status="in-progress">
+              <td>PAR-016 · Parity acceptance</td>
+              <td>
+                Prove the React game looks, feels, sounds and works identically to the Android reference except for
+                documented Jest platform substitutions
+              </td>
+              <td><span class="pill in-progress">in-progress</span></td>
+              <td>
+                Local visual, motion, audio, rules, localization, artifact and browser packs are complete. All 25
+                player-visible states have deterministic screenshots and no browser console errors; final acceptance
+                still requires the owner-approved golden review and live Jest/mobile evidence
+              </td>
+              <td>Approved golden pack and full-flow browser/device E2E with zero unexplained deviations</td>
+              <td>PAR-002–PAR-015, PAR-017, PAR-018</td>
+              <td>2026-07-29</td>
+            </tr>
+            <tr data-id="JST-001" data-status="done">
+              <td>JST-001 · Jest boundary</td>
+              <td>
+                Typed <code>JestPlatformPort</code>, explicit result unions, production adapter and deterministic mock
+              </td>
+              <td><span class="pill done">done</span></td>
+              <td><code>packages/portal/src/jest/</code></td>
+              <td>Portal Jest and TypeScript build</td>
+              <td>Official Jest HTML5 SDK</td>
+              <td>2026-07-12</td>
+            </tr>
+            <tr data-id="JST-002" data-status="done">
+              <td>JST-002 · Startup</td>
+              <td>
+                Fatal boundary, manual loading heartbeat, SDK init, identity, recovery, profile/riddle, screenshot and
+                playable readiness order
+              </td>
+              <td><span class="pill done">done</span></td>
+              <td>
+                <code>startup.ts</code> implements phases and 10-second heartbeat; live Jest 1.0.2 reached both playable
+                views as a Firebase-authenticated guest
+              </td>
+              <td>Startup integration tests, live visual evidence and backend HTTP 200</td>
+              <td>WEB-001, BE-001</td>
+              <td>2026-07-12</td>
+            </tr>
+            <tr data-id="JST-003" data-status="in-progress">
+              <td>JST-003 · Player</td>
+              <td>Stable player identity, guest-only login prompt, re-read after dismissal and cancellation</td>
+              <td><span class="pill in-progress">in-progress</span></td>
+              <td>
+                Registration is tied to the first authoritative win, uses a seven-day dismissal cooldown, re-reads the
+                player/profile after login and records stable player continuity; live sandbox funnel evidence remains
+              </td>
+              <td>Post-first-win guest/dismiss/register/reload sandbox funnel</td>
+              <td>WEB-001</td>
+              <td>2026-07-28</td>
+            </tr>
+            <tr data-id="JST-004" data-status="done">
+              <td>JST-004 · Data/payload</td>
+              <td>Low-integrity preference allowlist and validated entry intent schema</td>
+              <td><span class="pill done">done</span></td>
+              <td><code>entryIntent.ts</code> and adapter preference projection</td>
+              <td><code>entryIntent.test.ts</code>, <code>JestSdkPlatform.test.ts</code></td>
+              <td>JST-001</td>
+              <td>2026-07-12</td>
+            </tr>
+            <tr data-id="JST-005" data-status="in-progress">
+              <td>JST-005 · Notifications</td>
+              <td>Registered-only notification replacement/removal boundary with stable identifiers</td>
+              <td><span class="pill in-progress">in-progress</span></td>
+              <td>
+                Registered-only progress-aware D1/D3/D7 replacement, localized copy, analytics entry and Daily Cosmic
+                Riddle resolution are covered locally; approved media and live sandbox evidence remain
+              </td>
+              <td>Unit matrix plus registered sandbox Library/payload-return evidence</td>
+              <td>Console asset is CON-003</td>
+              <td>2026-07-28</td>
+            </tr>
+            <tr data-id="JST-006" data-status="in-progress">
+              <td>JST-006 · Referrals/social</td>
+              <td>
+                Stable referral sharing, signed conversion verification, null-safe profile/avatar and screenshot
+                provider
+              </td>
+              <td><span class="pill in-progress">in-progress</span></td>
+              <td>
+                The victory flow shares a personalized specific-riddle challenge with a stable reference and validated
+                recipient entry; signed conversions atomically grant both players once
+              </td>
+              <td>Two-account sandbox invite/open/qualifying-action/reward matrix</td>
+              <td>Live loop remains CON-005</td>
+              <td>2026-07-28</td>
+            </tr>
+            <tr data-id="JST-007" data-status="in-progress">
+              <td>JST-007 · Payments</td>
+              <td>Catalog, cancellation/failure outcomes, durable grant ordering and paginated startup recovery</td>
+              <td><span class="pill in-progress">in-progress</span></td>
+              <td>
+                Both live shops use the SDK catalog/coordinator, trusted SKU mapping, localized SDK price/currency,
+                authoritative balance refresh and safe paginated recovery
+              </td>
+              <td>Wired Jest shop tests plus full sandbox checkout/interruption matrix</td>
+              <td>Live checkout matrix remains CON-004</td>
+              <td>2026-07-28</td>
+            </tr>
+            <tr data-id="JST-008" data-status="in-progress">
+              <td>JST-008 · Required analytics</td>
+              <td>
+                Call <code>JestSDK.markFirstMilestone()</code> after the first authoritative successful puzzle
+                completion and define privacy-safe funnel events
+              </td>
+              <td><span class="pill in-progress">in-progress</span></td>
+              <td>
+                The adapter marks the milestone only after authoritative completion and records privacy-safe funnel
+                events; uploaded-build Events and Simulator evidence remain
+              </td>
+              <td>Adapter/unit test, uploaded-build Events evidence and Simulator checklist pass</td>
+              <td>JST-001, authoritative complete-game result</td>
+              <td>2026-07-28</td>
+            </tr>
+            <tr data-id="JST-009" data-status="in-progress">
+              <td>JST-009 · Games Fund UA</td>
+              <td>
+                Build contextual post-win registration, dismissal cooldown and validated onboarding
+                <code>customName</code>/attribution handoff
+              </td>
+              <td><span class="pill in-progress">in-progress</span></td>
+              <td>
+                Authoritative post-win registration, seven-day dismissal cooldown, validated custom name and stable
+                player continuity are implemented and unit tested; the live sandbox funnel remains
+              </td>
+              <td>Guest/register/onboarding/attribution sandbox funnel with continuity evidence</td>
+              <td>JST-003, JST-008</td>
+              <td>2026-07-28</td>
+            </tr>
+            <tr data-id="JST-010" data-status="in-progress">
+              <td>JST-010 · Games Fund retention</td>
+              <td>
+                Implement the Daily Cosmic Riddle/streak callback, localized progress-driven D1/D3/D7 notification bank,
+                replacement-on-return and entry resolution
+              </td>
+              <td><span class="pill in-progress">in-progress</span></td>
+              <td>
+                Local D1/D3/D7 scheduling, stable replacement, progress-aware localized copy and validated Daily Cosmic
+                Riddle entry are complete; moderation, approved media and registered sandbox return remain
+              </td>
+              <td>Copy limits/moderation tests, payload attribution and registered sandbox return flow</td>
+              <td>JST-005, CON-003</td>
+              <td>2026-07-28</td>
+            </tr>
+            <tr data-id="JST-011" data-status="in-progress">
+              <td>JST-011 · Games Fund virality</td>
+              <td>
+                Implement repeatable asynchronous friend challenges with personalized preview, specific destination,
+                signed first-entry attribution and server-authoritative two-sided reward
+              </td>
+              <td><span class="pill in-progress">in-progress</span></td>
+              <td>
+                Personalized specific-riddle challenge sharing, validated recipient entry and atomic idempotent
+                two-sided rewards are implemented; the two-player sandbox matrix remains
+              </td>
+              <td>Two-sandbox-player first-entry, duplicate, tamper, cancel and completion matrix</td>
+              <td>JST-006, BE-003, CON-005</td>
+              <td>2026-07-28</td>
+            </tr>
+            <tr data-id="JST-012" data-status="in-progress">
+              <td>JST-012 · Games Fund monetization</td>
+              <td>
+                Inject the Jest product catalog and purchase coordinator into every game and host shop checkout, format
+                SDK price/currency and refresh authoritative balance
+              </td>
+              <td><span class="pill in-progress">in-progress</span></td>
+              <td>
+                Every host/game shop checkout now uses the SDK catalog/coordinator, formatted SDK price/currency and
+                authoritative balance refresh; registered sandbox transaction/recovery evidence remains
+              </td>
+              <td>Mock outcome suite and complete registered sandbox transaction/recovery matrix</td>
+              <td>JST-007, BE-002, CON-004</td>
+              <td>2026-07-28</td>
+            </tr>
+            <tr data-id="BE-001" data-status="done">
+              <td>BE-001 · Backend</td>
+              <td>
+                Verify player JWS with HS256, decoded secret, audience/subject/freshness and issue deterministic
+                Firebase custom token
+              </td>
+              <td><span class="pill done">done</span></td>
+              <td><code>jestSecurity.ts</code>, <code>exchangeJestIdentity</code></td>
+              <td>Functions build and <code>jestSecurity.test.ts</code></td>
+              <td>Secret stored via Firebase <code>defineSecret</code></td>
+              <td>2026-07-12</td>
+            </tr>
+            <tr data-id="BE-002" data-status="done">
+              <td>BE-002 · Backend</td>
+              <td>Signed purchase validation, SKU/player/game checks, token idempotency and authoritative grant</td>
+              <td><span class="pill done">done</span></td>
+              <td>
+                Single/array signed payloads select the requested token; catalog SKU validation and the coin
+                balance/idempotency record share one transaction
+              </td>
+              <td>Functions build/lint, signature negatives, client ordering and recovery tests</td>
+              <td>Deployment remains CON-001/004</td>
+              <td>2026-07-12</td>
+            </tr>
+            <tr data-id="BE-003" data-status="done">
+              <td>BE-003 · Backend</td>
+              <td>Signed referral verification and idempotent two-sided reward handling</td>
+              <td><span class="pill done">done</span></td>
+              <td>
+                Server-fixed campaign validates signed conversions and atomically grants both inviter and each distinct
+                referred player once
+              </td>
+              <td>Functions build/test and signed referral token coverage without optional iat</td>
+              <td>Live referral loop remains CON-005</td>
+              <td>2026-07-12</td>
+            </tr>
+            <tr data-id="BE-004" data-status="done">
+              <td>BE-004 · Backend</td>
+              <td>Rate-limit sensitive endpoints and log rejection reason without signed payloads</td>
+              <td><span class="pill done">done</span></td>
+              <td>Bounded per-instance limiter and reason-only structured warning</td>
+              <td>Functions build/source review</td>
+              <td>Distributed production limiter may be added later</td>
+              <td>2026-07-12</td>
+            </tr>
+            <tr data-id="MIG-001" data-status="done">
+              <td>MIG-001 · Legacy</td>
+              <td>Optional account link, merge preview and transactional eligible progress/entitlement transfer</td>
+              <td><span class="pill done">done</span></td>
+              <td>
+                Legacy merge Functions, schemas, tests and email/password UI were removed; Jest player continuity is the
+                sole account path. The orphaned <code>previewJestLegacyMigration</code> and
+                <code>commitJestLegacyMigration</code> cloud deployments were deleted on 2026-07-28
+              </td>
+              <td>No migration or external-auth surface in source, artifact or deployed Functions list</td>
+              <td>WEB-006</td>
+              <td>2026-07-28</td>
+            </tr>
+            <tr data-id="MIG-002" data-status="in-progress">
+              <td>MIG-002 · Retirement</td>
+              <td>Archive native source/build configuration after production parity acceptance</td>
+              <td><span class="pill in-progress">in-progress</span></td>
+              <td>
+                Expo, React Native, EAS, Android/iOS source, build configuration, artifacts and dependencies were
+                removed before parity acceptance; Git history remains the required reference
+              </td>
+              <td>Clean install plus full PAR-002–PAR-018 acceptance before retirement is signed off</td>
+              <td>WEB-004, PAR-001</td>
+              <td>2026-07-28</td>
+            </tr>
+            <tr data-id="QA-001" data-status="done">
+              <td>QA-001 · Tests</td>
+              <td>
+                Adapter matrix for guest, registered, nulls, malformed, cancellation, timeout, retryable and terminal
+                outcomes
+              </td>
+              <td><span class="pill done">done</span></td>
+              <td>
+                Portal Jest covers every named outcome plus startup ordering, grant failure and paginated recovery;
+                backend rejects algorithm/signature/audience/subject/freshness errors
+              </td>
+              <td><code>pnpm --filter @qwordly/portal test</code> and focused Functions Jest</td>
+              <td>None</td>
+              <td>2026-07-12</td>
+            </tr>
+            <tr data-id="QA-002" data-status="in-progress">
+              <td>QA-002 · E2E</td>
+              <td>
+                Standalone browser E2E in Jest mock and sandbox environments across
+                locales/input/layout/audio/offline/session restore
+              </td>
+              <td><span class="pill in-progress">in-progress</span></td>
+              <td>
+                Deterministic Jest runtime passes guest/shop/hint/physical-keyboard/solve, authenticated reload
+                restoration, portrait and landscape overflow checks without console errors; all locale checks pass
+              </td>
+              <td>Remaining Jest sandbox and live offline-recovery matrix</td>
+              <td>Console sandbox for production half</td>
+              <td>2026-07-12</td>
+            </tr>
+            <tr data-id="QA-003" data-status="done">
+              <td>QA-003 · Artifact</td>
+              <td>Standalone artifact contains no native modules, exposed secrets, missing assets or console errors</td>
+              <td><span class="pill done">done</span></td>
+              <td>
+                The audit enforces the &lt;5 MB target (currently 4.31 MB), relative and present entry resources, the
+                sole approved external SDK script, and rejects native modules, external-auth/ad/install copy, secrets
+                and source maps; the browser trace contains only that SDK and same-origin build assets
+              </td>
+              <td>Passing artifact audit, zero-error browser run and captured request trace</td>
+              <td>WEB-005, WEB-006</td>
+              <td>2026-07-28</td>
+            </tr>
+            <tr data-id="QA-004" data-status="not-started">
+              <td>QA-004 · Mobile stability</td>
+              <td>
+                Verify cold/warm startup, touch/layout/audio/visibility, memory and 10+ minute stability on lower-end
+                iOS Safari and Android Chrome
+              </td>
+              <td><span class="pill not-started">not-started</span></td>
+              <td>Desktop Playwright portrait/landscape coverage exists; real lower-end soak evidence does not</td>
+              <td>Device/browser matrix with performance traces, screenshots and zero crash/freeze result</td>
+              <td>WEB-005 and release-candidate upload</td>
+              <td>2026-07-28</td>
+            </tr>
+            <tr data-id="QA-005" data-status="not-started">
+              <td>QA-005 · Jest review</td>
+              <td>
+                Run hosted emulator, sandbox and recorded Simulator self-review against all must-have and Games Fund
+                recommended rules
+              </td>
+              <td><span class="pill not-started">not-started</span></td>
+              <td>Local mock and early Draft testing exist; no final recorded review for the complete loops</td>
+              <td>Saved recording, notes, screenshots and clean Developer Console Events evidence</td>
+              <td>All JST, CON and QA launch rows</td>
+              <td>2026-07-28</td>
+            </tr>
+            <tr data-id="CON-001" data-status="done">
+              <td>CON-001 · Console</td>
+              <td>Configure dedicated Firebase/Jest game identity and shared-secret counterpart</td>
+              <td><span class="pill done">done</span></td>
+              <td>
+                Firebase project/default <code>riddle-quest-ec2b2</code> and web app
+                <code>1:329028367192:web:b85776d379ea3356b7eb2d</code> created; public SDK config saved in
+                <code>packages/portal/.env.jest</code>; default Firestore database created in <code>eur3</code> and
+                repository security rules deployed. The code and non-secret Functions environment now target Jest team
+                <code>019faa67-d2a6-7169-aa29-a4411a3a3c3d</code>, game
+                <code>019faa68-f3ec-755d-9ab5-c887fb426801</code>, outer origin <code>https://jest.com</code>, and
+                derived build origin <code>https://019faa68-f3ec-755d-9ab5-c887fb426801.builds.jest.com</code>. Firebase
+                <code>JEST_SHARED_SECRET</code> version 2 is enabled and bound to all five Jest-secured Functions, which
+                are active with the new game ID. The upload token was accepted for the current visually complete
+                version <code>1.0.0-dev.20260729003507</code> (Jest version
+                <code>019fab4c-0be5-7172-871a-3d8bebed2d49</code>), which is processing with Draft activation requested.
+              </td>
+              <td>Remote Firebase configuration check and accepted Jest management upload</td>
+              <td>None; live sandbox identity remains QA-002/QA-005</td>
+              <td>2026-07-29</td>
+            </tr>
+            <tr data-id="CON-002" data-status="blocked">
+              <td>CON-002 · Console</td>
+              <td>Select Manual loading mode and validate safety-window behavior</td>
+              <td><span class="pill blocked">blocked</span></td>
+              <td>Client heartbeat implemented; direct console attempt redirects to Jest sign-in</td>
+              <td>Jest sandbox loading test</td>
+              <td>Owner access to Jest Developer Console</td>
+              <td>2026-07-12</td>
+            </tr>
+            <tr data-id="CON-003" data-status="blocked">
+              <td>CON-003 · Console</td>
+              <td>Upload/approve notification assets and validate payload launches</td>
+              <td><span class="pill blocked">blocked</span></td>
+              <td>Client schedule/remove boundary implemented; notification approval remains console-only</td>
+              <td>Registered sandbox notification test</td>
+              <td>Jest review/approval</td>
+              <td>2026-07-12</td>
+            </tr>
+            <tr data-id="CON-004" data-status="blocked">
+              <td>CON-004 · Console</td>
+              <td>Create product SKUs, sandbox accounts and payment recovery scenarios</td>
+              <td><span class="pill blocked">blocked</span></td>
+              <td>Catalog/coordinator and six-SKU backend mapping pass locally; direct console attempt requires sign-in</td>
+              <td>Success/cancel/error/crash sandbox matrix</td>
+              <td>Owner access to Jest Developer Console</td>
+              <td>2026-07-12</td>
+            </tr>
+            <tr data-id="CON-005" data-status="blocked">
+              <td>CON-005 · Console</td>
+              <td>Configure referrals and test first-entry attribution/payloads</td>
+              <td><span class="pill blocked">blocked</span></td>
+              <td>Signed verification and two-sided idempotency pass locally; direct console attempt requires sign-in</td>
+              <td>Two-account sandbox conversion</td>
+              <td>Owner access to Jest Developer Console</td>
+              <td>2026-07-12</td>
+            </tr>
+            <tr data-id="CON-006" data-status="blocked">
+              <td>CON-006 · Listing/review</td>
+              <td>
+                Finalize approved logo/hero, description, category/keywords, moderation/legal review and Simulator
+                submission package
+              </td>
+              <td><span class="pill blocked">blocked</span></td>
+              <td>Final optimized logo/hero and local review pack exist; direct console attempt requires sign-in</td>
+              <td>Developer Console listing preview and recorded review submission</td>
+              <td>Owner access plus release candidate</td>
+              <td>2026-07-28</td>
+            </tr>
+            <tr data-id="PAR-001" data-status="in-progress">
+              <td>PAR-001 · Release</td>
+              <td>Exact React conversion parity plus production Jest launch acceptance</td>
+              <td><span class="pill in-progress">in-progress</span></td>
+              <td>
+                The complete local React conversion now includes the solar system, onboarding and tooltips, audio,
+                grid/keyboard and rules, profile, all achievements/statistics/ranks, every former player page,
+                economy/reward flows, localization and a 25-state visual pack. Release acceptance remains gated by
+                owner-only Jest Console configuration, sandbox review, golden approval and real-device stability
+              </td>
+              <td>PAR-002–PAR-018 plus the complete WEB/JST/BE/QA/CON acceptance matrix</td>
+              <td>All implementation, quality and console rows</td>
+              <td>2026-07-29</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+      <section class="card">
+        <h2>External operations</h2>
+        <p>
+          Exact commands and the sandbox acceptance matrix are in
+          <a href="../../docs/jest-html5-operations.md">the Jest HTML5 operations runbook</a>.
+        </p>
+        <ol>
+          <li>
+            Set <code>firebase functions:secrets:set JEST_SHARED_SECRET</code>, configure <code>JEST_GAME_ID</code>,
+            <code>JEST_PRODUCT_SKUS</code> and exact <code>JEST_GAME_ORIGIN</code>, then deploy Functions.
+          </li>
+          <li>
+            In Jest Developer Console choose Manual loading, configure notification assets, catalog SKUs, referrals and
+            sandbox players.
+          </li>
+          <li>
+            Run identity, notification, referral, purchase cancellation/recovery and payload launch sandbox tests;
+            attach evidence to the matching rows.
+          </li>
+        </ol>
+        <p>
+          2026-07-28 update: the dedicated project
+          <code>riddle-quest-ec2b2</code> and web app <code>1:329028367192:web:b85776d379ea3356b7eb2d</code> are active.
+          Its default Firestore database is active in <code>eur3</code> and the repository security rules are deployed.
+          It is the sole selected Firebase backend and repository default. Local non-secret configuration targets Jest
+          game <code>019faa68-f3ec-755d-9ab5-c887fb426801</code>. The new game's <code>JEST_SHARED_SECRET</code> is
+          installed as enabled version 2 and all five Jest-secured Functions are active with the new game ID. The new
+          upload token was accepted for version <code>1.0.0-dev.20260729003507</code> (Jest version
+          <code>019fab4c-0be5-7172-871a-3d8bebed2d49</code>) and the new Draft build is processing. The product catalog,
+          sandbox users and live signed-player exchange still remain.
+        </p>
+      </section>
+      <section class="card">
+        <h2>Current handoff state</h2>
+        <p>
+          <strong>Repository implementation:</strong> the local React/Jest conversion and 25-state visual acceptance
+          pack are complete. Final parity and release closure remain gated by the owner-approved golden review, live
+          Jest sandbox matrix, real-device stability evidence and Developer Console configuration.
+        </p>
+        <h3>Platform foundation implemented</h3>
+        <ul>
+          <li>Canonical tracker with build-time schema, status and completed-evidence validation.</li>
+          <li>
+            Standalone DOM game at <code>/play/</code> with a typed in-page bridge; the old direct game route remains
+            only as a temporary compatibility surface.
+          </li>
+          <li>
+            Typed production and deterministic mock <code>JestPlatformPort</code> implementations with explicit success,
+            cancellation, retryable, terminal, and unavailable results.
+          </li>
+          <li>
+            Ordered startup with fatal recovery, ten-second loading heartbeat, signed identity exchange, Firebase custom
+            authentication, incomplete-purchase recovery, preferences/profile/entry loading, screenshot registration,
+            and playable readiness.
+          </li>
+          <li>
+            Guest-only registration prompt, stable player identity, low-integrity preference allowlist, validated entry
+            payload, stable notification identifiers, referral sharing, null-safe social profile handling, and
+            size-checked generated PNG screenshots.
+          </li>
+          <li>
+            Trusted HS256 verification for identity, purchases, and referrals; deterministic Jest-scoped Firebase UIDs;
+            rate limiting; rejection-reason logging without signed payloads.
+          </li>
+          <li>
+            Atomic and idempotent purchase coin grants and referral conversion rewards; external-auth and legacy-account
+            migration paths have been removed so Jest player continuity is the sole account path.
+          </li>
+          <li>
+            Rewarded-ad choices removed from browser loss/shop surfaces. The remaining continuation UI is not accepted:
+            it displays 50 coins and grants two guesses instead of the required 100 coins and one guess.
+          </li>
+          <li>
+            Dedicated relative-path <code>dist-jest</code> build and automated audit for native modules, secrets, source
+            maps, and missing assets.
+          </li>
+        </ul>
+        <h3>Verified locally</h3>
+        <ul>
+          <li>27 passing portal unit tests; the opt-in full browser suite passes separately.</li>
+          <li>343 passing backend tests, including signed purchase/referral selection and security coverage.</li>
+          <li>
+            Deterministic Jest-runtime Playwright flow covers shop, hint, physical keyboard solve, authenticated reload
+            restoration, 390×844 portrait and 844×390 landscape layouts, horizontal-overflow checks, and zero console
+            errors.
+          </li>
+          <li>
+            Portal TypeScript and production builds, Firebase Functions TypeScript build and lint, locale JSON/runtime
+            checks, canonical tracker validation, artifact audit, <code>git diff --check</code>, and the workspace-wide
+            unused file/dependency/export scan pass with no findings.
+          </li>
+        </ul>
+        <h3>Outstanding acceptance gates</h3>
+        <ul>
+          <li>
+            Complete the exhaustive Android-reference inventory and React mapping for every page, feature, component,
+            asset, animation, sound, rule, state, Firebase contract and localized string.
+          </li>
+          <li>
+            Restore and verify the solar system, onboarding/tooltips, full profile, achievements, ranks/statistics,
+            settings, shop, coin/reward economy, hints/skips, custom grid/keyboard behavior, modal/fanfare sequences and
+            complete audio experience.
+          </li>
+          <li>
+            Fix known data/rule regressions, including achievement object mapping and the exact five-guesses plus one
+            100-coin continuation rule, then pass production-shaped Firebase integration tests.
+          </li>
+          <li>
+            Pass the screen-by-screen visual, motion, sound and full-flow golden comparison against the former Android
+            game. No unlisted or unexplained missing page or feature is acceptable.
+          </li>
+          <li>
+            Firebase authentication works. The sole project/default and web app are configured, and public client values
+            are saved in <code>packages/portal/.env.jest</code>.
+          </li>
+          <li>
+            The default Firestore database is active in <code>eur3</code>, matching the existing authoritative project's
+            region, and the repository security rules and indexes are deployed.
+          </li>
+          <li>
+            The new Jest game ID, expected build origin, shared secret and upload token are configured. All five
+            Jest-secured Functions are active on the new identity, and the first new-game Draft upload was accepted.
+          </li>
+          <li>
+            Jest Manual loading mode, notification assets, six product SKUs, referral configuration, and sandbox
+            accounts must be created in the Developer Console.
+          </li>
+          <li>
+            Live sandbox identity, notification, referral, payment success/cancel/error/crash recovery, payload launch,
+            and offline recovery tests must pass.
+          </li>
+          <li>
+            Expo/native dependencies and source/build configuration are retired from the shipped web project, but that
+            retirement is not accepted until the React parity suite proves their product behavior was preserved.
+          </li>
+        </ul>
+        <p>
+          Continuation commands and the full sandbox matrix are recorded in <code>docs/jest-html5-operations.md</code>.
+        </p>
+      </section>
+      <section class="card">
+        <h2>Progress log</h2>
+        <ul class="log">
+          <li>
+            <strong>2026-07-29:</strong> Fixed the timestamped release command to accept the existing ignored
+            <code>packages/portal/.env</code> upload credentials as a fallback while continuing to prefer
+            <code>.env.jest-upload.local</code>. The full 372-file, 4.31 MB artifact passed tracker, locale, TypeScript
+            and forbidden-content audits and uploaded as <code>1.0.0-dev.20260729003507</code>, Jest version
+            <code>019fab4c-0be5-7172-871a-3d8bebed2d49</code>, with Draft activation requested after processing.
+          </li>
+          <li>
+            <strong>2026-07-28:</strong> Re-audited the React conversion against the former Android implementation and
+            reopened parity and native-retirement acceptance. Added first-class tasks for the complete page inventory,
+            onboarding/tooltips, settings, shop, coin/reward economy, hints/skips, profile, achievements, solar system,
+            custom grid/keyboard, rules, audio and all remaining product behavior. React/Jest foundation work is no
+            longer presented as completion of the game.
+          </li>
+          <li>
+            <strong>2026-07-28:</strong> Completed the Jest account binding: enabled
+            <code>JEST_SHARED_SECRET</code> version 2, redeployed the five secured Functions with game
+            <code>019faa68-f3ec-755d-9ab5-c887fb426801</code>, verified all five active, and used the ignored local
+            upload token to submit Draft version <code>1.0.0-dev.20260728205616</code> (Jest version
+            <code>019faa83-a39f-72b8-9f1e-3f588f2539bc</code>) for processing and activation.
+          </li>
+          <li>
+            <strong>2026-07-28:</strong> Confirmed that Jest continues to use the dedicated
+            <code>riddle-quest-ec2b2</code> Firebase project and rebound the non-secret runtime, CORS derivation, upload
+            script, tests and current operations guidance to team <code>019faa67-d2a6-7169-aa29-a4411a3a3c3d</code> and
+            game <code>019faa68-f3ec-755d-9ab5-c887fb426801</code>. The new shared secret, upload token and console
+            catalog remain owner-controlled setup.
+          </li>
+          <li>
+            <strong>2026-07-12:</strong> Finalized the local handoff: 32 portal tests, 11 focused backend tests, Jest
+            artifact audit, all translation checks, Functions build/lint, tracker sync, and diff checks pass. The
+            deterministic browser test now proves authenticated reload restoration and portrait/landscape behavior.
+          </li>
+          <li>
+            <strong>2026-07-12:</strong> Added the dedicated relative-path Jest artifact, mock Jest-runtime browser
+            path, physical keyboard and visibility lifecycle handling, stable engagement notifications, victory
+            referrals, and size-checked screenshot generation.
+          </li>
 
-      <footer>
-        Keep this document current as work continues. When a row changes, update its
-        <code>data-status</code> and visible pill text; the summary progress recalculates
-        automatically when opened in a browser.
-      </footer>
+          <li>
+            <strong>2026-07-12:</strong> Completed authoritative purchase and referral transactions plus optional
+            legacy-account preview/migration with idempotency and retained support records.
+          </li>
+          <li>
+            <strong>2026-07-12:</strong> Consolidated <code>/play/</code> into one DOM entry, retained the compatibility
+            route, and verified the full deterministic guest-to-victory flow without an iframe.
+          </li>
+          <li>
+            <strong>2026-07-12:</strong> Replaced the previous portal-status page with the canonical migration tracker
+            and stable work-item schema.
+          </li>
+          <li>
+            <strong>2026-07-12:</strong> Added typed Jest production/mock boundaries, entry and preference validation,
+            loading/startup orchestration, purchase recovery, and trusted identity/purchase/referral endpoints.
+          </li>
+          <li>
+            <strong>2026-07-12:</strong> Added HS256 negative tests and removed rewarded-ad choices from browser
+            loss/shop UI while retaining the coin continue mechanic.
+          </li>
+          <li>
+            <strong>2026-07-12:</strong> Firebase CLI authentication succeeded; created the dedicated
+            <code>riddle-quest-ec2b2</code> web app, recorded its SDK configuration, and added a non-destructive
+            temporary <code>jest</code> project alias before the React-only migration.
+          </li>
+          <li>
+            <strong>2026-07-12:</strong> Provisioned the new project's default Firestore database in <code>eur3</code>,
+            deployed repository security rules and indexes, and left the existing <code>qwordly-6ba44</code> data
+            project untouched. Functions remain pending Blaze billing, the Jest game ID, and the shared secret.
+          </li>
+          <li>
+            <strong>2026-07-12:</strong> Attempted to store <code>JEST_SHARED_SECRET</code> directly in Firebase Secret
+            Manager. Firebase rejected activation because <code>riddle-quest-ec2b2</code> is on the Spark plan; no
+            secret value was written to the repository or Firebase.
+          </li>
+          <li>
+            <strong>2026-07-12:</strong> Added the Jest management upload workflow for game
+            <code>019f5674-93a8-7338-a664-8e603d6bda06</code>. The package command builds and audits the standalone
+            artifact, creates an ignored ZIP, requires token/email environment variables, and uploads it inactive.
+          </li>
+          <li>
+            <strong>2026-07-12:</strong> Confirmed the Blaze upgrade, enabled Secret Manager, and created enabled
+            <code>JEST_SHARED_SECRET</code> version 1 without writing the value to the repository. Functions deployment
+            is held for the exact Jest-hosted game origin.
+          </li>
+          <li>
+            <strong>2026-07-12:</strong> Derived the trusted origin <code>https://jest.com</code> from the supplied
+            launch URL, fixed deploy packaging for the workspace core module, and deployed five active Node.js 22 Jest
+            Functions. Live checks passed trusted-origin CORS and malformed-token rejection; an Artifact Registry
+            one-day cleanup policy is active.
+          </li>
+          <li>
+            <strong>2026-07-12:</strong> Made the dedicated public Firebase and Functions configuration deterministic
+            for <code>build:jest</code>, rebuilt and audited 279 files, confirmed the deployed Functions base URL is
+            embedded, and produced a valid ignored 1.1 MB <code>packages/portal/build.zip</code> ready for inactive
+            upload.
+          </li>
+          <li>
+            <strong>2026-07-12:</strong> Uploaded version <code>1.0.0</code> as inactive through the Jest management
+            API. Jest version ID <code>019f5690-e600-746f-8dea-80e87d8e4779</code> finished processing successfully and
+            is now the active version. The game remains Draft, so unauthenticated launch correctly returns Jest's
+            not-public-yet response; developer/sandbox validation and review remain.
+          </li>
+          <li>
+            <strong>2026-07-12:</strong> Prepared existing-brand Draft listing assets: the 1254×1254 application icon
+            for the square logo and a verified 1280×720 browser gameplay capture for the hero image. The game remains
+            intentionally Draft/dev-only; publishing and review are out of scope for this phase.
+          </li>
+          <li>
+            <strong>2026-07-12:</strong> Live developer testing of <code>1.0.0</code> exposed portal pathname routing on
+            Jest's hosted version path. Dedicated Jest builds now bypass portal routing; a simulated non-root browser
+            path renders the game with no overlay or browser errors. Corrected <code>1.0.1</code>, version ID
+            <code>019f56a0-d021-7553-9658-87fc572609df</code>, finished processing successfully and is ready to
+            activate; <code>1.0.0</code> stays active until that console switch.
+          </li>
+          <li>
+            <strong>2026-07-12:</strong> Live <code>1.0.1</code> reached Jest startup and exposed loading progress
+            before SDK initialization. Startup now calls <code>JestSDK.init()</code> first, with a regression test
+            enforcing the order. Corrected inactive <code>1.0.2</code>, version ID
+            <code>019f56a5-fa78-7207-9cf7-b4149b1575e2</code>, is processing.
+          </li>
+          <li>
+            <strong>2026-07-12:</strong> Live <code>1.0.2</code> initialized the SDK and exposed an incomplete backend
+            CORS preflight. Logs identified Jest's actual iframe origin as
+            <code>https://019f5674-93a8-7338-a664-8e603d6bda06.builds.jest.com</code>. The exact build origin is now
+            allowlisted, the Firebase predeploy hook compiles Function TypeScript so stale output cannot be packaged,
+            and all five endpoints return POST/OPTIONS, Content-Type, max-age, Vary, and no-store headers. Thirteen
+            focused backend tests pass; live checks allow the exact build origin and reject an untrusted origin. No
+            replacement ZIP is required.
+          </li>
+          <li>
+            <strong>2026-07-12:</strong> The first successful cross-origin identity request verified the Jest-signed
+            player, then failed while Firebase minted its custom authentication token. Runtime logs identified the
+            missing <code>iam.serviceAccounts.signBlob</code> permission. The Functions runtime identity now has the
+            narrowly scoped Service Account Token Creator role on itself; no client build or secret change was needed.
+          </li>
+          <li>
+            <strong>2026-07-12:</strong> The subsequent client sign-in returned
+            <code>auth/configuration-not-found</code>, confirming that custom-token creation had succeeded but Firebase
+            Authentication was not initialized for the new project. Identity Platform/Firebase Authentication is now
+            initialized and its project configuration was verified through the Admin API. No sign-in provider or new
+            Jest artifact is required for the custom-token flow.
+          </li>
+          <li>
+            <strong>2026-07-12:</strong> Live Jest <code>1.0.2</code> completed the full startup lifecycle. The guest
+            account, stable Jest player identity, 300-coin state, Classic/Daily navigation, and both primary game views
+            rendered successfully. Cloud logs independently confirm <code>exchangeJestIdentity</code> returned HTTP 200.
+            <code>JST-002</code> is complete; broader sandbox purchase/referral/offline QA remains open.
+          </li>
+          <li>
+            <strong>2026-07-12:</strong> Visual acceptance showed that successful startup was not gameplay parity: the
+            dedicated Jest project lacked the native catalogue and gameplay callables, producing an internal riddle load
+            failure. Copied 357 localized riddles (21 in each of 17 languages) and 12 product records from the untouched
+            native project, securely replicated the existing OpenAI generation secret, exported the missing
+            <code>getHint</code> callable, and deployed eight authenticated gameplay functions. App Check bypass is
+            limited by environment configuration to this dedicated Jest dev project; native enforcement is unchanged.
+            Fifty-eight focused backend tests pass. Live playable-riddle validation remains.
+          </li>
+          <li>
+            <strong>2026-07-12:</strong> Added the root <code>pnpm jest:build-upload</code> package-script workflow. It
+            creates a unique UTC timestamped dev version, builds and audits the Jest artifact, and uploads it inactive.
+            Upload token and notification email load from ignored <code>packages/portal/.env.jest-upload.local</code>; a
+            committed placeholder example documents setup without storing credentials.
+          </li>
+          <li>
+            <strong>2026-07-12:</strong> Configured the ignored local upload environment and successfully exercised the
+            one-click workflow. Timestamped version <code>1.0.0-dev.20260712152948</code>, Jest version ID
+            <code>019f56f3-0122-77ab-b348-c557d197532b</code>, passed the 279-file artifact audit and uploaded inactive;
+            Jest reported it as processing.
+          </li>
+          <li>
+            <strong>2026-07-12:</strong> Corrected the one-click workflow after the first timestamped build remained
+            inactive and therefore did not replace the Draft's running dev build. Timestamped uploads now request
+            activation only after Jest processing succeeds; this does not publish or submit the Draft. Replacement
+            version <code>1.0.0-dev.20260712153329</code>, ID <code>019f56f6-5ef5-7635-96d8-78363fe4a892</code>, passed
+            audit and is processing with activation requested.
+          </li>
+          <li>
+            <strong>2026-07-12:</strong> Live sandbox testing exposed a lost local host/game handshake that left the
+            board on “Waiting for the host wrapper.” The game now repeats its ready signal every 750 ms until host
+            initialization is acknowledged. All 33 portal unit tests and the portrait/landscape playable browser flow
+            pass. Replacement version <code>1.0.0-dev.20260712154452</code>, ID
+            <code>019f5700-c989-730d-86a7-bf9e2207805f</code>, passed audit and is processing with activation requested.
+          </li>
+          <li>
+            <strong>2026-07-12:</strong> Active-build evidence revealed the underlying Jest-only bridge error: since
+            Jest embeds the entire artifact in an iframe, the inline game mistook Jest for its own host and posted
+            readiness outside the artifact. <code>GameFrameApp</code> now receives an explicit local-bridge mode from
+            <code>PlayHostApp</code>. A new regression runs the complete riddle flow inside a parent iframe. Fixed
+            version <code>1.0.0-dev.20260712162915</code>, ID <code>019f5729-6fc2-754d-8e06-2db2d3bd5e67</code>, passed
+            audit and is processing with activation requested.
+          </li>
+          <li>
+            <strong>2026-07-12:</strong> Restored missing visual/runtime parity in the HTML5 renderer. The portal now
+            declares and bundles Three.js directly, renders an animated WebGL solar system behind gameplay, hides
+            wrapper profile panels on mobile, and sizes variable-length answer grids to their embedded container. Build
+            and iframe gameplay verification pass without console errors. Version <code>1.0.0-dev.20260712171415</code>,
+            ID <code>019f5752-9f26-72fe-812e-f90de3ff3311</code>, passed the 279-file audit and is processing with
+            activation requested.
+          </li>
+          <li>
+            <strong>2026-07-12:</strong> Replaced the procedural solar approximation with the native source-of-truth
+            composition: all seven textured planets, five moon textures, two textured ring systems, sun-spots texture,
+            native radii/orbits/rotation speeds, and native camera position. Added host-driven riddle initialization and
+            retry independent of the game-ready event. The 294-file artifact and embedded gameplay test pass. Version
+            <code>1.0.0-dev.20260712173540</code>, ID <code>019f5766-3f98-77cc-bc65-3121dfc90798</code>, is processing
+            with activation requested.
+          </li>
+          <li>
+            <strong>2026-07-12:</strong> Restored the native sun corona: two additive, depth-independent sprite layers
+            generated from the same 256px radial texture algorithm, using native amber/orange colors, 46/78 base scales,
+            opacity values, pulse amplitudes, phases, and 0.85 pulse speed. Version
+            <code>1.0.0-dev.20260712173850</code>, ID <code>019f5769-23a1-76ed-bf94-40cb8402bd0b</code>, passed build,
+            audit, and embedded gameplay verification and is processing with activation requested.
+          </li>
+          <li>
+            <strong>2026-07-12:</strong> Added an always-visible mobile gameplay bar above Jest controls with Hint,
+            Skip, Coin Shop, Profile, and Settings actions, plus bottom safe-area spacing. Embedded browser coverage now
+            asserts Hint, Skip, Profile, and Settings visibility. Version <code>1.0.0-dev.20260712174328</code>, ID
+            <code>019f576d-6177-779d-ac5f-e3e6df659d1d</code>, passed the 294-file audit and browser flow and is
+            processing with activation requested.
+          </li>
+          <li>
+            <strong>2026-07-12:</strong> Matched local game ordering by moving the Hint, Skip, Coin Shop, Profile, and
+            Settings row out of the fixed overlay and into normal flow directly below the keyboard. Browser coverage
+            asserts the action row is geometrically below the keyboard. Version <code>1.0.0-dev.20260712174537</code>,
+            ID <code>019f576f-57b1-726a-80f7-603b9c9d76d3</code>, passed audit and is processing with activation
+            requested.
+          </li>
+          <li>
+            <strong>2026-07-12:</strong> Corrected the action controls to match the native component hierarchy: a
+            three-column Hint, Submit, and Next row immediately below the keyboard, followed by a separate white
+            Settings and Profile navigation row. Embedded portrait and landscape tests assert both rows are visible,
+            ordered, and free of horizontal overflow. Version <code>1.0.0-dev.20260712180437</code>, ID
+            <code>019f5780-c1cf-701f-ad80-dd19e955122b</code>, passed the 294-file audit and is processing with
+            activation requested.
+          </li>
+          <li>
+            <strong>2026-07-12:</strong> Replaced externally loaded control images with inline SVG geometry so Jest's
+            iframe cannot alter or omit the icon rendering. Hint and Next use the native dark fill; Settings and Profile
+            use the native purple navigation colour and fixed 24px sizing. Version
+            <code>1.0.0-dev.20260712180832</code>, ID <code>019f5784-52e5-714e-8d33-e528d3badd88</code>, passed the
+            embedded browser flow and 294-file audit and is processing with activation requested.
+          </li>
+          <li>
+            <strong>2026-07-13:</strong> Deployed the current verified development build. Version
+            <code>1.0.0-dev.20260713113857</code>, ID <code>019f5b46-017a-71cc-9acf-513df97374bd</code>, passed the
+            294-file artifact audit and is processing with automatic Draft activation requested.
+          </li>
+          <li>
+            <strong>2026-07-13:</strong> Fixed hint requests for empty and partially filled attempts by allowing empty
+            positional slots in both shared request schemas while retaining one-character validation for filled slots.
+            Regression suites pass, and <code>getHint</code> was successfully deployed to the dedicated Jest Firebase
+            project. Matching version <code>1.0.0-dev.20260713115911</code>, ID
+            <code>019f5b58-8b08-769e-b968-130976cabc97</code>, passed the 294-file audit and is processing with
+            automatic Draft activation requested.
+          </li>
+        </ul>
+      </section>
+      <script>
+        const rows = [...document.querySelectorAll("#items tr[data-status]")],
+          states = ["done", "in-progress", "not-started", "blocked", "deferred"];
+        for (const s of states)
+          document.getElementById(s).textContent = String(rows.filter((r) => r.dataset.status === s).length);
+        const done = rows.filter((r) => r.dataset.status === "done").length,
+          p = Math.round((done / rows.length) * 100);
+        document.getElementById("percent").textContent = p + "%";
+        document.getElementById("bar").style.width = p + "%";
+        document.getElementById("count").textContent = `${done} of ${rows.length} items complete`;
+      </script>
     </main>
-
-    <script>
-      const weights = {
-        done: 1,
-        progress: 0.5,
-        pending: 0,
-        blocked: 0,
-      };
-
-      const rows = Array.from(document.querySelectorAll("#task-table tr[data-status]"));
-      const completed = rows.reduce((sum, row) => sum + (weights[row.dataset.status] || 0), 0);
-      const total = rows.length || 1;
-      const percent = Math.round((completed / total) * 100);
-      const doneCount = rows.filter((row) => row.dataset.status === "done").length;
-      const progressCount = rows.filter((row) => row.dataset.status === "progress").length;
-      const pendingCount = rows.filter((row) => row.dataset.status === "pending").length;
-      const blockedCount = rows.filter((row) => row.dataset.status === "blocked").length;
-      const remainingText =
-        progressCount > 0
-          ? `${progressCount} in progress`
-          : blockedCount > 0
-            ? `${blockedCount} blocked`
-            : `${pendingCount} pending`;
-
-      document.getElementById("overall-percent").textContent = `${percent}%`;
-      document.getElementById("overall-fill").style.width = `${percent}%`;
-      document.getElementById("overall-count").textContent =
-        `${doneCount} done, ${remainingText}`;
-    </script>
   </body>
 </html>

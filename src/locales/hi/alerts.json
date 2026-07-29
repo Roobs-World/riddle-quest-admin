@@ -1,7 +1,5 @@
 {
   "GameScreenAlerts": {
-    "AD_NOT_READY_MESSAGE": "पुरस्कृत विज्ञापन इस समय नहीं दिखाया जा सका. कृपया शीघ्र ही पुनः प्रयास करें।",
-    "AD_NOT_READY_TITLE": "विज्ञापन तैयार नहीं",
     "CLASSIC_LABEL": "क्लासिक",
     "CONTINUE_NOT_ENOUGH_COINS_MESSAGE": "आपके पास जारी रखने के लिए पर्याप्त सिक्के नहीं हैं।",
     "COST_COINS_MIDDLE": " सिक्के।",
@@ -27,8 +25,6 @@
     "SUBMIT_BUTTON": "जमा करना",
     "SUBMIT_GUESS_ERROR_MESSAGE": "अनुमान सबमिट नहीं किया जा सका. कृपया पुनः प्रयास करें.",
     "SUBMIT_GUESS_ERROR_TITLE": "त्रुटि",
-    "AD_ERROR_MESSAGE": "पुरस्कृत विज्ञापन दिखाने का प्रयास करते समय एक त्रुटि उत्पन्न हुई.",
-    "AD_ERROR_TITLE": "विज्ञापन त्रुटि",
     "DEBUG_CLEAR_LOCAL_DATA_ERROR_MESSAGE": "स्थानीय डेटा साफ़ करने में विफल.",
     "DEBUG_CLEAR_LOCAL_DATA_ERROR_TITLE": "स्थानीय डेटा त्रुटि साफ़ करें",
     "DEBUG_DAILY_CHALLENGE_ERROR_MESSAGE": "एक नई दैनिक चुनौती उत्पन्न करने में विफल.",

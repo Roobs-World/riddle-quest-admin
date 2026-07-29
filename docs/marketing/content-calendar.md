@@ -57,6 +57,6 @@ Last updated: 2026-05-23
 - Riddle and brain teaser communities.
 - Indie game communities.
 - Language-learning communities for localized tests.
-- Cozy/casual mobile game groups.
+- Cozy/casual browser game groups.
 
 Always adapt posts to community rules and avoid drive-by promotion. Lead with a playable riddle or a beta feedback request.

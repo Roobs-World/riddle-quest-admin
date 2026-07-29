@@ -1,13 +1,7 @@
-import type {
-  BridgeLeaderboardEntry,
-  BridgeProfile,
-  BridgeRiddle,
-  BridgeUser,
-} from "@qwordly/core/bridge";
+import type {BridgeLeaderboardEntry, BridgeProfile, BridgeRiddle, BridgeUser} from "@qwordly/core/bridge";
 import type {ProductPricing} from "@qwordly/core/pricing/catalog";
 
 export type WebGameMode = "classic" | "challenge";
-export type RewardedAdPlacement = "loss_continue" | "coin_shop";
 export type LeaderboardType = "xp" | "totalWins" | "bestStreak";
 
 export type ProductSummary = {
@@ -24,16 +18,11 @@ export type AuthSnapshot = {
   profile: BridgeProfile | null;
 };
 
-export type AuthAdapter = {
+type AuthAdapter = {
   subscribe(listener: (snapshot: AuthSnapshot) => void): () => void;
-  signInGuest(): Promise<void>;
-  signInEmail(email: string, password: string): Promise<void>;
-  signInGoogle(): Promise<void>;
-  signInFacebook(): Promise<void>;
-  signOut(): Promise<void>;
 };
 
-export type HintResult = {
+type HintResult = {
   revealedLetter: string;
   index: number;
   coinsCost: number;
@@ -54,11 +43,11 @@ export type CompletionResult = {
   };
 };
 
-export type SpendCoinsResult = {
+type SpendCoinsResult = {
   newCoins: number;
 };
 
-export type SkipResult = {
+type SkipResult = {
   success: boolean;
   message: string;
   costDeducted: number;
@@ -77,16 +66,6 @@ export type PurchaseResult = {
   newlyUnlockedAchievementIds?: string[];
 };
 
-export type RewardedAdResult = {
-  success: boolean;
-  placement: RewardedAdPlacement;
-  callbackId: string;
-  provider: string;
-  rewardCoins: number;
-  newCoins: number;
-  alreadyProcessed?: boolean;
-};
-
 export type HostServices = {
   readonly products: ProductSummary[];
   readonly auth: AuthAdapter;
@@ -98,11 +77,7 @@ export type HostServices = {
     attempts: number;
     isCorrect: boolean;
   }): Promise<CompletionResult>;
-  requestHint(input: {
-    riddleId: string;
-    gameMode: WebGameMode;
-    currentAttempt: string[];
-  }): Promise<HintResult>;
+  requestHint(input: {riddleId: string; gameMode: WebGameMode; currentAttempt: string[]}): Promise<HintResult>;
   spendCoins(input: {
     reason: "hint" | "skip" | "continue";
     gameMode?: WebGameMode;
@@ -110,23 +85,8 @@ export type HostServices = {
   }): Promise<SpendCoinsResult>;
   skipRiddle(input: {riddleId: string; gameMode: WebGameMode}): Promise<SkipResult>;
   requestPurchase(productId: string): Promise<PurchaseResult>;
-  requestRewardedAd(input: {placement: RewardedAdPlacement; userId: string}): Promise<RewardedAdResult>;
   loadLeaderboard(type: LeaderboardType): Promise<BridgeLeaderboardEntry[]>;
   updateUsername(username: string): Promise<BridgeProfile | null>;
-};
-
-export type WebPurchaseProvider = {
-  readonly id: string;
-  purchase(product: ProductSummary, profile: BridgeProfile | null): Promise<PurchaseResult>;
-};
-
-export type WebRewardedAdProvider = {
-  readonly id: string;
-  requestReward(placement: RewardedAdPlacement): Promise<{
-    callbackId: string;
-    provider: string;
-    rewardCoins: number;
-  }>;
 };
 
 export const toProductSummaries = (products: ProductPricing[]): ProductSummary[] =>

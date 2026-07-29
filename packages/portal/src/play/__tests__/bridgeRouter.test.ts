@@ -13,7 +13,6 @@ describe("portal bridge routers", () => {
       requestHint: jest.fn(),
       spendCoins: jest.fn(),
       requestPurchase: jest.fn(),
-      requestRewardedAd: jest.fn(),
       analytics: jest.fn(),
       error: jest.fn(),
     });
@@ -73,7 +72,6 @@ describe("portal bridge routers", () => {
       requestHint: jest.fn(),
       spendCoins: jest.fn(),
       requestPurchase: jest.fn(),
-      requestRewardedAd: jest.fn(),
       analytics: jest.fn(),
       error: jest.fn(),
     });

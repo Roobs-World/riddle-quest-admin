@@ -4,12 +4,9 @@ import {logger} from "firebase-functions/v2";
 import {updateUserProfile} from "./firestoreService";
 import {validateUsernameForProfanity} from "./utils/profanityFilter";
 import {captureException} from "./sentry";
-import {
-  BasicSuccessMessageResponseSchema,
-  UpdateAvatarRequestSchema,
-  UpdateUsernameRequestSchema,
-} from "./validation/requestSchemas";
+import {BasicSuccessMessageResponseSchema, UpdateUsernameRequestSchema} from "./validation/requestSchemas";
 import {validateCallableRequest, validateCallableResponse} from "./validation/callableValidation";
+const jestWebCallableOptions = {enforceAppCheck: process.env.JEST_ALLOW_WEB_CALLABLES !== "true"};
 
 async function syncLeaderboardProfileFields(
   userId: string,
@@ -40,47 +37,10 @@ async function syncLeaderboardProfileFields(
 }
 
 /**
- * Updates the authenticated user's avatar URL in Firestore.
- * Requires authentication.
- * @param data - The request data containing the new avatar URL.
- * @param data.avatarUrl - The new URL of the user's avatar in Firebase Storage.
- */
-export const updateAvatar = onCall({enforceAppCheck: true}, async (request: CallableRequest<unknown>) => {
-  if (!request.auth) {
-    throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
-  }
-
-  const userId = request.auth.uid;
-  const {avatarUrl} = validateCallableRequest(
-    UpdateAvatarRequestSchema,
-    request.data,
-    "updateAvatar",
-    "Invalid or missing avatar URL.",
-  );
-
-  logger.info(`Updating avatar URL for user: ${userId} with ${avatarUrl}`);
-
-  try {
-    await updateUserProfile(userId, {avatarUrl: avatarUrl});
-    await syncLeaderboardProfileFields(userId, {avatarUrl});
-    logger.info(`User ${userId} avatar URL updated successfully.`);
-    return validateCallableResponse(
-      BasicSuccessMessageResponseSchema,
-      {success: true, message: "Avatar URL updated successfully."},
-      "updateAvatar",
-    );
-  } catch (error) {
-    logger.error(`Error updating avatar URL for user ${userId}:`, error);
-    captureException(error);
-    throw new HttpsError("internal", "An error occurred while updating avatar URL.", error);
-  }
-});
-
-/**
  * Updates the authenticated user's username in Firestore.
  * Validates for profanity and uniqueness before saving.
  */
-export const updateUsername = onCall({enforceAppCheck: true}, async (request: CallableRequest<unknown>) => {
+export const updateUsername = onCall(jestWebCallableOptions, async (request: CallableRequest<unknown>) => {
   if (!request.auth) {
     throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
   }

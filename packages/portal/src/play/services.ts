@@ -48,21 +48,6 @@ const createLazyFirebaseHostServices = (): HostServices => ({
         unsubscribe?.();
       };
     },
-    async signInGuest() {
-      return (await getFirebaseServices()).auth.signInGuest();
-    },
-    async signInEmail(email, password) {
-      return (await getFirebaseServices()).auth.signInEmail(email, password);
-    },
-    async signInGoogle() {
-      return (await getFirebaseServices()).auth.signInGoogle();
-    },
-    async signInFacebook() {
-      return (await getFirebaseServices()).auth.signInFacebook();
-    },
-    async signOut() {
-      return (await getFirebaseServices()).auth.signOut();
-    },
   },
   async loadRiddle(input) {
     return (await getFirebaseServices()).loadRiddle(input);
@@ -85,9 +70,6 @@ const createLazyFirebaseHostServices = (): HostServices => ({
   async requestPurchase(productId) {
     return (await getFirebaseServices()).requestPurchase(productId);
   },
-  async requestRewardedAd(input) {
-    return (await getFirebaseServices()).requestRewardedAd(input);
-  },
   async loadLeaderboard(type) {
     return (await getFirebaseServices()).loadLeaderboard(type);
   },
@@ -103,7 +85,7 @@ export const resolveHostServicesMode = (search = window.location.search): HostSe
 
 export const createHostServices = (mode: HostServicesMode = resolveHostServicesMode()): HostServices => {
   if (mode === "fake") {
-    return createFakeHostServices();
+    return createFakeHostServices({initiallyAuthenticated: true});
   }
 
   return createLazyFirebaseHostServices();

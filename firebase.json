@@ -3,17 +3,16 @@
     "source": "firebase-functions",
     "runtime": "nodejs22",
     "predeploy": [
-      "pnpm --dir firebase-functions run prepare:deploy"
+      "pnpm --dir firebase-functions run prepare:deploy",
+      "pnpm --dir firebase-functions run build"
     ]
   },
   "firestore": {
-    "rules": "firebase-functions/firestore.rules"
-  },
-  "storage": {
-    "rules": "firebase-functions/storage.rules"
+    "rules": "firebase-functions/firestore.rules",
+    "indexes": "firebase-functions/firestore.indexes.json"
   },
   "hosting": {
-    "public": "packages/portal/dist",
+    "public": "packages/portal/dist-jest",
     "ignore": [
       "firebase.json",
       "**/.*",

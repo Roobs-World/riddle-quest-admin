@@ -1,7 +1,5 @@
 {
   "GameScreenAlerts": {
-    "AD_NOT_READY_MESSAGE": "現時点ではリワード広告を表示できませんでした。しばらくしてからもう一度お試しください。",
-    "AD_NOT_READY_TITLE": "広告の準備ができていません",
     "CLASSIC_LABEL": "クラシック",
     "CONTINUE_NOT_ENOUGH_COINS_MESSAGE": "続行するには十分なコインがありません。",
     "COST_COINS_MIDDLE": " コイン.",
@@ -27,8 +25,6 @@
     "SUBMIT_BUTTON": "提出する",
     "SUBMIT_GUESS_ERROR_MESSAGE": "推測を送信できませんでした。もう一度お試しください。",
     "SUBMIT_GUESS_ERROR_TITLE": "エラー",
-    "AD_ERROR_MESSAGE": "リワード広告を表示しようとしているときにエラーが発生しました。",
-    "AD_ERROR_TITLE": "広告エラー",
     "DEBUG_CLEAR_LOCAL_DATA_ERROR_MESSAGE": "ローカル データのクリアに失敗しました。",
     "DEBUG_CLEAR_LOCAL_DATA_ERROR_TITLE": "ローカル データのクリア エラー",
     "DEBUG_DAILY_CHALLENGE_ERROR_MESSAGE": "新しいデイリー チャレンジの生成に失敗しました。",

@@ -1,6 +1,6 @@
 # Riddle Quest Is Coming Soon: Help Us Test the Next Word Puzzle Adventure
 
-We're excited to announce **Riddle Quest**, a new mobile word puzzle game that turns every answer into a mini-mystery.
+We're excited to announce **Riddle Quest**, a new HTML5 word puzzle game on Jest that turns every answer into a mini-mystery.
 
 Instead of guessing a random word from thin air, each round begins with a riddle. Read the clue, follow the hints hidden in the wording, and make your best guess. Each attempt gives you color-coded feedback, helping you narrow the answer until that lovely "of course!" moment lands.
 

@@ -1,15 +1,11 @@
 import {splitGraphemes} from "@qwordly/core/game";
 import {cloneProductPricingCatalog} from "@qwordly/core/pricing/catalog";
 import type {BridgeLeaderboardEntry, BridgeProfile, BridgeRiddle, BridgeUser} from "@qwordly/core/bridge";
-import {createFakePurchaseProvider, createFakeRewardedAdProvider} from "./providers";
 import type {
   AuthSnapshot,
   HostServices,
   LeaderboardType,
   ProductSummary,
-  RewardedAdPlacement,
-  WebPurchaseProvider,
-  WebRewardedAdProvider,
 } from "./types";
 import {toProductSummaries} from "./types";
 
@@ -67,14 +63,14 @@ const leaderboardRows: BridgeLeaderboardEntry[] = [
 ];
 
 export const createFakeHostServices = ({
-  purchaseProvider = createFakePurchaseProvider(),
-  rewardedAdProvider = createFakeRewardedAdProvider(),
+  initiallyAuthenticated = true,
 }: {
-  purchaseProvider?: WebPurchaseProvider;
-  rewardedAdProvider?: WebRewardedAdProvider;
+  initiallyAuthenticated?: boolean;
 } = {}): HostServices => {
   const products = toProductSummaries(cloneProductPricingCatalog());
-  let snapshot: AuthSnapshot = {user: null, profile: null};
+  let snapshot: AuthSnapshot = initiallyAuthenticated
+    ? {user: createFakeUser(), profile: createFakeProfile()}
+    : {user: null, profile: null};
   const subscribers = new Set<(nextSnapshot: AuthSnapshot) => void>();
 
   const emit = () => {
@@ -112,35 +108,6 @@ export const createFakeHostServices = ({
         listener(snapshot);
         return () => subscribers.delete(listener);
       },
-      async signInGuest() {
-        snapshot = {user: createFakeUser(), profile: createFakeProfile()};
-        emit();
-      },
-      async signInEmail(email) {
-        snapshot = {
-          user: {...createFakeUser(), uid: "jest-email-user", email, isAnonymous: false},
-          profile: {...createFakeProfile(), username: email.split("@")[0] || "Player"},
-        };
-        emit();
-      },
-      async signInGoogle() {
-        snapshot = {
-          user: {...createFakeUser(), uid: "jest-google-user", displayName: "Google Solver", isAnonymous: false},
-          profile: {...createFakeProfile(), username: "Google Solver"},
-        };
-        emit();
-      },
-      async signInFacebook() {
-        snapshot = {
-          user: {...createFakeUser(), uid: "jest-facebook-user", displayName: "Facebook Solver", isAnonymous: false},
-          profile: {...createFakeProfile(), username: "Facebook Solver"},
-        };
-        emit();
-      },
-      async signOut() {
-        snapshot = {user: null, profile: null};
-        emit();
-      },
     },
     async loadRiddle({gameMode, classicIndex}) {
       const modeRiddles = fakeRiddles.filter((entry) => entry.gameMode === gameMode);
@@ -170,7 +137,7 @@ export const createFakeHostServices = ({
 
       return {
         coinsEarned,
-        newlyUnlockedAchievementIds: isCorrect ? ["sharp_solver"] : [],
+        newlyUnlockedAchievementIds: isCorrect ? ["first_win"] : [],
         newXp: nextProfile?.xp,
         newLevel: nextProfile?.level,
         newWinStreak: nextProfile?.winStreak,
@@ -189,27 +156,28 @@ export const createFakeHostServices = ({
         return null;
       }
 
-      const newCoins = spend(25);
+      const newCoins = spend(50);
       return {
         revealedLetter: answerLetters[revealIndex],
         index: revealIndex,
-        coinsCost: 25,
+        coinsCost: 50,
         newCoins,
       };
     },
     async spendCoins({reason, amount}) {
-      const cost = amount ?? (reason === "continue" ? 50 : reason === "skip" ? 100 : 25);
+      const cost = amount ?? (reason === "continue" ? 100 : reason === "skip" ? 100 : 50);
       return {newCoins: spend(cost)};
     },
-    async skipRiddle() {
+    async skipRiddle({gameMode}) {
       const profile = snapshot.profile;
-      const newCoins = spend(100);
+      const skipCost = gameMode === "challenge" ? 150 : 100;
+      const newCoins = spend(skipCost);
       const newClassicIndex = (profile?.classicIndex ?? 1) + 1;
       updateProfile({coins: newCoins, classicIndex: newClassicIndex});
       return {
         success: true,
         message: "Skipped.",
-        costDeducted: 100,
+        costDeducted: skipCost,
         newProgress: {classicIndex: newClassicIndex},
       };
     },
@@ -218,22 +186,15 @@ export const createFakeHostServices = ({
       if (!product) {
         throw new Error("Product not found.");
       }
-      const result = await purchaseProvider.purchase(product, snapshot.profile);
+      const result = {
+        success: true as const,
+        productId: product.productId,
+        coinsAwarded: product.coins,
+        newCoins: (snapshot.profile?.coins ?? 0) + product.coins,
+        newlyUnlockedAchievementIds: product.coins >= 900 ? ["coin_collector"] : [],
+      };
       updateProfile({coins: result.newCoins});
       return result;
-    },
-    async requestRewardedAd({placement}: {placement: RewardedAdPlacement}) {
-      const adResult = await rewardedAdProvider.requestReward(placement);
-      const newCoins = updateProfile({coins: (snapshot.profile?.coins ?? 0) + adResult.rewardCoins})?.coins ?? 0;
-      return {
-        success: true,
-        placement,
-        callbackId: adResult.callbackId,
-        provider: adResult.provider,
-        rewardCoins: adResult.rewardCoins,
-        newCoins,
-        alreadyProcessed: false,
-      };
     },
     async loadLeaderboard(type: LeaderboardType) {
       const rows = [...leaderboardRows];

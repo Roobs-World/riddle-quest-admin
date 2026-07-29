@@ -2,7 +2,7 @@
 
 Status updated: 2026-05-27.
 
-This file is now a completed readiness audit. It does not claim that external submissions, store-console edits, live
+This file is now a completed readiness audit. It does not claim that external submissions, Jest-console edits, live
 video capture, billing repair, or owner-only company confirmations have happened. Those items are recorded below as
 submission blockers so the consolidated docs task list does not keep vague local TODOs open.
 
@@ -37,10 +37,7 @@ round submission.
 
 - [x] 2-minute pitch video plan prepared in `two-minute-pitch-video-script.md`; live recording/export remains an owner
       production task.
-- [x] Android preview evidence exists as a local debug APK at `android/app/build/outputs/apk/debug/app-debug.apk`;
-      distribution-ready build links still require the chosen reviewer channel.
-- [x] iOS evidence is explicitly blocked on this Windows host because there is no local `ios/` project directory or
-      iOS simulator/TestFlight tooling.
+- [x] React/Jest preview evidence exists; distribution-ready access uses the Jest sandbox reviewer channel.
 - [x] One-page summary prepared in `one-page-summary.md`.
 - [x] 10-slide pitch deck copy prepared in `pitch-deck-outline.md`.
 - [x] Budget and use-of-funds table prepared in `budget-and-runway.csv`.
@@ -52,15 +49,14 @@ round submission.
       recruitment starts.
 - [x] Gameplay capture targets prepared in `two-minute-pitch-video-script.md`; actual clips remain a video-production
       task.
-- [x] Store privacy/security/data-safety source docs exist in `docs/app-store-privacy-disclosures.md`,
-      `docs/google-play-data-safety.md`, `docs/security-and-privacy-remediation.md`, and `docs/legal-todo.html`.
+- [x] Jest security, privacy, and release operations are captured in `docs/jest-html5-operations.md`.
 
 ## Application Claims To Use
 
-- Riddle Quest is an own-IP mobile puzzle game for entertainment.
+- Riddle Quest is an own-IP HTML5 puzzle game for entertainment.
 - The funded work turns an existing beta into a measurable launch-readiness sprint.
 - The project has a clear market differentiator: riddle-led deduction layered over a familiar word-game loop.
-- The business model is fair freemium: rewarded ads, coin packs, and no-ads IAP without forced spend.
+- The business model is fair freemium: normal play remains free and optional coin packs use Jest purchases.
 - The grant creates additionality by funding QA, analytics, beta validation, polish, and assets that make later publisher
   or launch funding more likely.
 - The company is not dependent on grant funding alone; publisher, community, platform, and bootstrapped revenue paths

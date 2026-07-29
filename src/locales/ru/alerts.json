@@ -1,7 +1,5 @@
 {
   "GameScreenAlerts": {
-    "AD_NOT_READY_MESSAGE": "В настоящее время невозможно показать объявление с вознаграждением. Повторите попытку позже.",
-    "AD_NOT_READY_TITLE": "Объявление не готово",
     "CLASSIC_LABEL": "Классический",
     "CONTINUE_NOT_ENOUGH_COINS_MESSAGE": "У вас недостаточно монет для продолжения.",
     "COST_COINS_MIDDLE": " Монеты.",
@@ -27,8 +25,6 @@
     "SUBMIT_BUTTON": "ПРЕДСТАВЛЯТЬ НА РАССМОТРЕНИЕ",
     "SUBMIT_GUESS_ERROR_MESSAGE": "Не удалось отправить предположение. Повторите попытку.",
     "SUBMIT_GUESS_ERROR_TITLE": "Ошибка",
-    "AD_ERROR_MESSAGE": "Произошла ошибка при попытке показать объявление с вознаграждением.",
-    "AD_ERROR_TITLE": "Ошибка объявления",
     "DEBUG_CLEAR_LOCAL_DATA_ERROR_MESSAGE": "Не удалось очистить локальные данные.",
     "DEBUG_CLEAR_LOCAL_DATA_ERROR_TITLE": "Ошибка очистки локальных данных",
     "DEBUG_DAILY_CHALLENGE_ERROR_MESSAGE": "Не удалось создать новое ежедневное задание.",

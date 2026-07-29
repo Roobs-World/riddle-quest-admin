@@ -12,8 +12,6 @@ import {PlayerStats, PlayerStatsUpdate} from "./validation/firestoreSchemas";
 import {
   CompleteGameRequestDataSchema,
   CompleteGameResponseDataSchema,
-  SubmitGuessRequestDataSchema,
-  SubmitGuessResponseDataSchema,
 } from "./validation/requestSchemas";
 import type {
   CompleteGameRequestData,
@@ -463,24 +461,6 @@ export async function handleGuessLogic(
   }
 }
 
-// This is the callable function wrapper
-export const submitGuess = onCall<SubmitGuessRequestData, Promise<SubmitGuessResponseData>>(
-  {
-    secrets: ["OPENAI_API_KEY"],
-  } as CallableOptions,
-  async (request) => {
-    if (!request.auth) {
-      throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
-    }
-    const data = validateCallableRequest(SubmitGuessRequestDataSchema, request.data, "submitGuess");
-    const response = await handleGuessLogic(data, {
-      uid: request.auth.uid,
-      isAnonymous: request.auth.token?.firebase?.sign_in_provider === "anonymous",
-    });
-    return validateCallableResponse(SubmitGuessResponseDataSchema, response, "submitGuess");
-  },
-);
-
 // ---------------------------------------------------------------------------
 // completeGame â€” called once when a game truly ends (win or final loss).
 // Feedback is computed client-side; this function handles all server-side
@@ -742,7 +722,7 @@ export async function handleCompleteGameLogic(
 
 export const completeGame = onCall<CompleteGameRequestData, Promise<CompleteGameResponseData>>(
   {
-    secrets: ["OPENAI_API_KEY"],
+    secrets: process.env.JEST_ALLOW_WEB_CALLABLES === "true" ? [] : ["OPENAI_API_KEY"],
   } as CallableOptions,
   async (request) => {
     if (!request.auth) {

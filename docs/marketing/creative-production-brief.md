@@ -8,11 +8,11 @@ Last updated: 2026-05-23
 2. Deduction loop: guesses create color feedback.
 3. Daily habit: streaks, daily challenge, shareable wins.
 4. Progression: Classic Mode, coins, hints, achievements, leaderboard.
-5. Fair free play: optional hints, rewarded ads, and purchases.
+5. Fair free play: optional hints and Jest purchases.
 
-## App Store Screenshot Set
+## Jest Game Page Screenshot Set
 
-Produce 5-8 screenshots per listing.
+Produce 5-8 responsive gameplay screenshots.
 
 | Order | Scene                                      | Overlay Copy                      |
 | ----: | ------------------------------------------ | --------------------------------- |
@@ -91,8 +91,8 @@ Post bank:
 ## Production Rules
 
 - Use real gameplay captures where possible.
-- Keep captions large enough for mobile feeds.
+- Keep captions large enough for narrow social feeds.
 - Avoid tiny UI text in paid ads.
 - Show the riddle by second 2 in video.
 - End every asset with one clear CTA: "Play Riddle Quest" or "Join the 7-Day Challenge."
-- Localized assets must use real translated UI and store copy, not only translated captions.
+- Localized assets must use real translated UI and game-page copy, not only translated captions.

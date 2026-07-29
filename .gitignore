@@ -1,74 +1,26 @@
-# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
-
-# dependencies
 node_modules/
 .pnpm/
-
-qwordly-6ba44-86f252fe3dab.json
-device-matrix-test/
-
-# Expo
-.expo/
 dist/
-web-build/
-expo-env.d.ts
-.gradle-local
-
-# Native
-.kotlin/
-*.orig.*
-*.jks
-*.p8
-*.p12
-*.key
-*.mobileprovision
-
-android/
-ios/
-releases/
-.gradle-user/
-emulator-tests/
-
-# Metro
-.metro-health-check*
-
-# debug
-npm-debug.*
-yarn-debug.*
-yarn-error.*
-
-# macOS
-.DS_Store
-*.pem
-
-# local env files
-.env*.local
-.env
-.example
-
-# typescript
+dist-jest/
+coverage/
 *.tsbuildinfo
 
-# Eclipse & Java IDE files at ROOT level (this is a React Native project)
-# Note: android/ folder may need these files for Java compilation
-/.project
-/.classpath
-/.settings/
-node_modules/**/.project
-node_modules/**/.classpath
-node_modules/**/.settings/
-*.class
-*.jar
-*.war
-*.ear
-.factorypath
-.apt_generated
-.apt_generated_test
+.env
+.env*.local
+firebase-debug.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-.env.local
-coverage/
+.DS_Store
+.fallow/
+.vercel/
+.firebase/
+
+firebase-functions/lib/
+firebase-functions/.emulator-data/
 firebase-functions/*admin-sdk*.json
 firebase-functions/qwordly-admin-sdk.json
 firebase-functions/.runtimeconfig.json
-.fallow/
-.vercel
+
+packages/portal/build.zip

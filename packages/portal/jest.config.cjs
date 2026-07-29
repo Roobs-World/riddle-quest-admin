@@ -16,7 +16,7 @@ module.exports = {
     "^@qwordly/core/(.*)$": "<rootDir>/../core/src/$1",
     "^\\./localeModules$": "<rootDir>/src/test/localeModulesMock.ts",
     "\\.(css|less|scss)$": "<rootDir>/src/test/styleMock.cjs",
-    "\\.(svg|png|jpg|jpeg|webp)$": "<rootDir>/src/test/fileMock.cjs",
+    "\\.(svg|png|jpg|jpeg|webp|webm|ogg|mp3|wav)$": "<rootDir>/src/test/fileMock.cjs",
   },
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json"],
 };

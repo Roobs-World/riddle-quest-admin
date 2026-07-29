@@ -19,8 +19,16 @@ const OpenAIGeneratedRiddleSchema = z
 
 export const GeneratedRiddleSchema = z
   .object({
-    question: z.string().min(10).max(120).regex(/^[\p{L}\p{M}\p{N}\p{P}\s]+$/u),
-    answer: z.string().min(1).max(MAX_RIDDLE_ANSWER_CHARACTERS).regex(/^[\p{L}\p{M}\p{N}\s'-]+$/u),
+    question: z
+      .string()
+      .min(10)
+      .max(120)
+      .regex(/^[\p{L}\p{M}\p{N}\p{P}\s]+$/u),
+    answer: z
+      .string()
+      .min(1)
+      .max(MAX_RIDDLE_ANSWER_CHARACTERS)
+      .regex(/^[\p{L}\p{M}\p{N}\s'-]+$/u),
   })
   .strict();
 
@@ -173,7 +181,7 @@ export async function generateUniqueRiddle(locale: SupportedLocale = "en"): Prom
                 "- Question must be a clue, not the answer itself, and must not include the answer word anywhere\n" +
                 `- Answer: MAXIMUM ${MAX_RIDDLE_ANSWER_CHARACTERS} characters, use the locale's natural script and keep it easy to type on a mobile keyboard\n` +
                 "- Answer must contain only lowercase letters when the script has case\n" +
-                "- Content: Engaging, all-ages, and suitable for a wide audience of casual mobile game players\n" +
+                "- Content: Engaging, all-ages, and suitable for a wide audience of casual puzzle players\n" +
                 "- Topic scope: Root the riddle in one broad pub-quiz subject such as music, history, general knowledge, film and TV, sport, geography, science, literature and language, food and drink, art and culture, nature, technology, or everyday life\n" +
                 "- Pub quiz feel: Ask as a clue-based trivia style prompt while still feeling like a riddle\n" +
                 "- Clue quality: Give enough concrete detail to point to one clear answer, but do not make the solution obvious\n" +

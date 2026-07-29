@@ -35,23 +35,7 @@ export function captureException(error: unknown, context?: Record<string, unknow
   }
 }
 
-/**
- * Captures a plain message and sends it to Sentry (no-op if DSN not configured).
- *
- * @param message - Human-readable message.
- * @param level   - Sentry severity level (defaults to "info").
- */
-export function captureMessage(message: string, level: "info" | "warning" | "error" = "info"): void {
-  if (!dsn) return;
-  Sentry.captureMessage(message, level);
-}
-
-export function withSentrySpan<T>(
-  name: string,
-  op: string,
-  callback: () => T,
-  attributes?: SpanAttributes,
-): T {
+export function withSentrySpan<T>(name: string, op: string, callback: () => T, attributes?: SpanAttributes): T {
   if (!dsn) return callback();
   return Sentry.startSpan({name, op, attributes}, callback);
 }

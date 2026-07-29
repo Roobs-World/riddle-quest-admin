@@ -18,10 +18,7 @@ than open repo tasks.
 - [x] Finalize GBP 24,500 budget in `budget-and-runway.csv`.
 - [x] Prepare 2-minute gameplay-forward pitch video script and capture plan; recording/export remains owner production
       work.
-- [x] Record Android preview evidence: local debug APK exists at `android/app/build/outputs/apk/debug/app-debug.apk`;
-      reviewer distribution channel remains to be chosen.
-- [x] Document iOS build readiness: this Windows host has no `ios/` project directory or iOS simulator/TestFlight
-      tooling, so iOS remains a platform/tooling blocker.
+- [x] Record React/Jest preview evidence and define the sandbox reviewer distribution path.
 - [x] Define reviewer-folder contents: build link, deck, one-pager, video, budget, beta plan, and store/legal docs.
 
 ## Weeks 3-4: Grant Applications

@@ -1,11 +1,11 @@
-import {onSchedule} from "firebase-functions/v2/scheduler";
-import {ScheduledEvent} from "firebase-functions/v2/scheduler";
+import {onSchedule, type ScheduledEvent} from "firebase-functions/v2/scheduler";
 import {generateLocalizedTodaysDailyChallenge as generateTodaysDailyRiddle} from "./riddleGeneration";
 import * as functions from "firebase-functions";
 import {captureException} from "./sentry";
 
 // Export the handler function for testing first
-export const scheduledTaskHandler = async (_context: ScheduledEvent) => {
+export const scheduledTaskHandler = async (context: ScheduledEvent) => {
+  void context;
   functions.logger.info("Daily scheduler started (target: localizedRiddles/{locale}/riddles/current).");
   const currentDate = new Date();
   const todayDateString = currentDate.toISOString().split("T")[0]; // YYYY-MM-DD format
@@ -41,7 +41,7 @@ export const dailyChallengeScheduler = onSchedule(
   {
     schedule: "0 0 * * *", // Runs once daily at 00:00 UTC
     timeZone: "UTC",
-    secrets: ["OPENAI_API_KEY"],
+    secrets: process.env.JEST_ALLOW_WEB_CALLABLES === "true" ? [] : ["OPENAI_API_KEY"],
   },
   scheduledTaskHandler, // Use the exported handler here
 );

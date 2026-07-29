@@ -8,7 +8,7 @@ Recruit 100-300 target players and produce a credible beta metrics report that i
 
 Primary testers:
 
-- Mobile puzzle players aged 18-45.
+- Browser puzzle players aged 18-45.
 - People who play Wordle, crosswords, trivia, anagrams, or daily brain-training games.
 - Players comfortable with 5-10 minute daily sessions.
 
@@ -31,7 +31,7 @@ Secondary testers:
 **Phase 1: 25 players**
 
 - Verify onboarding comprehension.
-- Catch crashes, device issues, auth friction, and unclear puzzle feedback.
+- Catch crashes, responsive-browser issues, identity friction, and unclear puzzle feedback.
 - Collect qualitative feedback before scaling.
 
 **Phase 2: 100 players**
@@ -41,7 +41,7 @@ Secondary testers:
 
 **Phase 3: 100-300 players**
 
-- Measure D7 retention, daily challenge return rate, rewarded ad opt-in, IAP intent, and referral/share interest.
+- Measure D7 retention, daily challenge return rate, Jest purchase intent, and referral/share interest.
 - Collect testimonials and short gameplay clips where permission is granted.
 
 ## KPI Dashboard
@@ -49,7 +49,7 @@ Secondary testers:
 Track these before beta begins:
 
 - Signups from landing page.
-- Install-to-account conversion.
+- Guest-to-registered conversion.
 - Tutorial start rate.
 - Tutorial completion rate.
 - First puzzle completion rate.
@@ -59,9 +59,7 @@ Track these before beta begins:
 - Failed puzzle rate.
 - Hint usage rate.
 - Coin balance before and after hint use.
-- Rewarded ad availability and opt-in rate.
-- Coin purchase intent and purchase conversion if enabled.
-- No-ads purchase intent and purchase conversion if enabled.
+- Jest coin purchase intent and purchase conversion if enabled.
 - D1 retention.
 - D7 retention.
 - Crash-free sessions.
@@ -76,8 +74,8 @@ Use a 2-minute post-session survey:
 3. Was the riddle difficulty too easy, about right, or too hard?
 4. Did the color feedback make sense?
 5. Did hints feel fair at 50 coins?
-6. Would you watch a rewarded ad for coins or hints?
-7. Would you consider buying coins or removing ads?
+6. Would you consider buying a coin pack through Jest?
+7. Did the shop prices and coin value feel clear?
 8. Which mode would you return for: Daily Challenge, Classic Mode, both, or neither?
 9. What one thing should be improved before launch?
 10. May we quote your feedback anonymously in funding materials?

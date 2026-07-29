@@ -1,7 +1,5 @@
 {
   "GameScreenAlerts": {
-    "AD_NOT_READY_MESSAGE": "W tej chwili nie można wyświetlić reklamy z nagrodą. Spróbuj ponownie wkrótce.",
-    "AD_NOT_READY_TITLE": "Reklama nie jest gotowa",
     "CLASSIC_LABEL": "Klasyczny",
     "CONTINUE_NOT_ENOUGH_COINS_MESSAGE": "Nie masz wystarczającej liczby monet, aby kontynuować.",
     "COST_COINS_MIDDLE": " Monety.",
@@ -27,8 +25,6 @@
     "SUBMIT_BUTTON": "SKŁADAĆ",
     "SUBMIT_GUESS_ERROR_MESSAGE": "Nie można przesłać odpowiedzi. Spróbuj ponownie.",
     "SUBMIT_GUESS_ERROR_TITLE": "Błąd",
-    "AD_ERROR_MESSAGE": "Wystąpił błąd podczas próby wyświetlenia reklamy z nagrodą.",
-    "AD_ERROR_TITLE": "Błąd reklamy",
     "DEBUG_CLEAR_LOCAL_DATA_ERROR_MESSAGE": "Nie udało się wyczyścić danych lokalnych.",
     "DEBUG_CLEAR_LOCAL_DATA_ERROR_TITLE": "Błąd czyszczenia danych lokalnych",
     "DEBUG_DAILY_CHALLENGE_ERROR_MESSAGE": "Nie udało się wygenerować nowego codziennego wyzwania.",

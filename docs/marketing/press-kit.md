@@ -4,7 +4,7 @@ Last updated: 2026-05-23
 
 ## One-Line Pitch
 
-Riddle Quest is a multilingual mobile word puzzle game where players solve clever riddles with Wordle-style color clues.
+Riddle Quest is a multilingual HTML5 word puzzle on Jest where players solve clever riddles with Wordle-style color clues.
 
 ## Short Description
 
@@ -12,7 +12,7 @@ Riddle Quest turns every word puzzle into a mini-mystery. Players read a riddle,
 
 ## Boilerplate
 
-Riddle Quest is a mobile puzzle game for iOS and Android built for players who enjoy riddles, word games, brain teasers, and short daily challenges. The game combines clue-led puzzle solving with familiar color feedback, then adds progression through classic levels, streaks, achievements, statistics, coins, hints, and leaderboards.
+Riddle Quest is a browser puzzle game on Jest built for players who enjoy riddles, word games, brain teasers, and short daily challenges. The game combines clue-led puzzle solving with familiar color feedback, then adds progression through classic levels, streaks, achievements, statistics, coins, hints, and leaderboards.
 
 ## Founder / Team Angle
 
@@ -20,7 +20,7 @@ Riddle Quest was built to make daily word puzzles feel less random and more like
 
 ## Launch Announcement Draft
 
-Riddle Quest, a new multilingual mobile puzzle game, is preparing for launch on iOS and Android.
+Riddle Quest, a new multilingual HTML5 puzzle game, is preparing for launch on Jest.
 
 The game combines riddle solving with Wordle-style color feedback. Players read a clue, guess the answer, and use green, yellow, and red letter feedback to crack the puzzle before attempts run out. Riddle Quest includes a Daily Challenge for quick sessions, Classic Mode for ongoing progression, coins and hints for tough puzzles, achievements, leaderboards, and shareable win moments.
 
@@ -32,27 +32,24 @@ Store and press assets to prepare:
 
 - App icon PNG.
 - Logo PNG/SVG.
-- 5-8 phone screenshots.
-- 1 app preview video.
+- 5-8 responsive gameplay screenshots.
+- 1 gameplay preview video.
 - 10 short vertical social videos.
 - 20 static riddle posts.
 - Team/founder photo if available.
 - Trailer thumbnail.
-- App Store and Google Play badges.
+- Jest play badge/link.
 - Privacy policy and support URLs.
 
 Existing repo assets to review:
 
 - `assets/images/icon.png`
-- `assets/images/logo.png`
-- `assets/images/main-logo.svg`
-- `assets/images/splash-icon.png`
-- `assets/video/neutral.mp4`
-- `assets/video/negative.mp4`
+- `assets/images/main-logo.webp`
+- `docs/jest-assets/riddle-quest-hero.png`
 
 ## Press Targets
 
-- Mobile game sites.
+- Browser and HTML5 game sites.
 - Indie game newsletters.
 - Puzzle and word game blogs.
 - Education/brain-training outlets.
@@ -61,6 +58,6 @@ Existing repo assets to review:
 
 ## Reviewer Notes
 
-- The game is free-to-play with optional purchases and rewarded ads.
+- The game is free-to-play with optional Jest purchases.
 - No purchase should be required to solve normal puzzles.
 - Reviewers should receive the beta build, press kit, and 5 sample riddles.

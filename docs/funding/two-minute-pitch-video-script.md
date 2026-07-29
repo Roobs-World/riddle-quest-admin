@@ -12,7 +12,7 @@ Visual: App logo, then immediate gameplay: riddle visible, first guess entered.
 
 Voiceover:
 
-"Riddle Quest is a mobile word puzzle where every answer starts as a mystery. Instead of guessing random words, players solve a riddle, test guesses, and use color feedback to close in on the answer."
+"Riddle Quest is an HTML5 word puzzle on Jest where every answer starts as a mystery. Instead of guessing random words, players solve a riddle, test guesses, and use color feedback to close in on the answer."
 
 ### 10-30 seconds - Core Loop
 
@@ -32,11 +32,11 @@ Voiceover:
 
 ### 50-70 seconds - Retention And Monetization
 
-Visual: Hint button, coins, achievement modal, profile/stats, shop or no-ads surface.
+Visual: Hint button, coins, achievement modal, profile/stats, and Jest shop.
 
 Voiceover:
 
-"Players earn coins, spend hints, unlock achievements, track stats, and customize profiles. Monetization is designed to be fair: rewarded ads, optional coin packs, and no-ads purchases without forced spend."
+"Players earn coins, spend hints, unlock achievements, and track stats. Monetization is designed to be fair: normal play remains free and optional coin packs use Jest's purchase flow."
 
 ### 70-90 seconds - Technical Proof
 
@@ -44,7 +44,7 @@ Visual: Quick montage of app screens, backend/Firebase diagram if available, tes
 
 Voiceover:
 
-"The project is already a working Expo and React Native app with Firebase accounts, synced progress, server-side validation, IAP and rewarded ad infrastructure, achievements, store privacy documentation, and more than 2,500 passing tests recorded in the project notes."
+"The project is already a working React HTML5 game with Jest identity, Firebase-synced progress, server-authoritative rewards, Jest purchases, achievements, and a substantial automated test suite."
 
 ### 90-110 seconds - Funding Use
 
@@ -52,7 +52,7 @@ Visual: Three-column roadmap: Polish, Beta, Launch Readiness.
 
 Voiceover:
 
-"We are seeking GBP 24,500 for a focused 90-day sprint: polish onboarding and difficulty, complete accessibility and device QA, create store and pitch assets, run a 100-300 player beta, and produce the metrics needed for launch and publishing conversations."
+"We are seeking GBP 24,500 for a focused 90-day sprint: polish onboarding and difficulty, complete accessibility and responsive-browser QA, create Jest page and pitch assets, run a 100-300 player beta, and produce the metrics needed for launch and publishing conversations."
 
 ### 110-120 seconds - Close
 
@@ -76,7 +76,7 @@ browser-playable export remain owner/video-production work outside the local doc
 - [x] Win and loss states capture target defined.
 - [x] Achievements capture target defined.
 - [x] Profile/stats capture target defined.
-- [x] Coin shop or no-ads surface capture target defined.
+- [x] Jest coin shop capture target defined.
 - [x] One roadmap or budget graphic capture target defined.
 
 ## Export Notes

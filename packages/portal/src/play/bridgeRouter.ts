@@ -20,7 +20,8 @@ export type HostMessageHandlers = {
   requestHint(message: Extract<GameToHostMessage, {type: "game:requestHint"}>): void | Promise<void>;
   spendCoins(message: Extract<GameToHostMessage, {type: "game:spendCoins"}>): void | Promise<void>;
   requestPurchase(message: Extract<GameToHostMessage, {type: "game:requestPurchase"}>): void | Promise<void>;
-  requestRewardedAd(message: Extract<GameToHostMessage, {type: "game:requestRewardedAd"}>): void | Promise<void>;
+  loadLeaderboard(message: Extract<GameToHostMessage, {type: "game:loadLeaderboard"}>): void | Promise<void>;
+  updateUsername(message: Extract<GameToHostMessage, {type: "game:updateUsername"}>): void | Promise<void>;
   analytics(message: Extract<GameToHostMessage, {type: "game:analytics"}>): void | Promise<void>;
   error(message: Extract<GameToHostMessage, {type: "game:error"}>): void | Promise<void>;
 };
@@ -52,8 +53,11 @@ export const createHostMessageRouter = (handlers: HostMessageHandlers) => {
       case "game:requestPurchase":
         await handlers.requestPurchase(message);
         break;
-      case "game:requestRewardedAd":
-        await handlers.requestRewardedAd(message);
+      case "game:loadLeaderboard":
+        await handlers.loadLeaderboard(message);
+        break;
+      case "game:updateUsername":
+        await handlers.updateUsername(message);
         break;
       case "game:analytics":
         await handlers.analytics(message);

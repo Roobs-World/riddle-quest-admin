@@ -1,0 +1,47 @@
+import {createHmac, timingSafeEqual} from "node:crypto";
+
+export type JestSignedPayload = {
+  aud: string;
+  sub: string;
+  iat?: number;
+  player?: {playerId: string; registered: boolean};
+  [key: string]: unknown;
+};
+
+const decodePart = (part: string): unknown => JSON.parse(Buffer.from(part, "base64url").toString("utf8"));
+
+export function verifyJestSigned(
+  token: string,
+  secretBase64: string,
+  expectedGameId: string,
+  expectedPlayerId?: string,
+  nowSeconds = Math.floor(Date.now() / 1000),
+  maxAgeSeconds: number | null = null,
+): JestSignedPayload {
+  const parts = token.split(".");
+  if (parts.length !== 3) throw new Error("malformed-token");
+  const header = decodePart(parts[0]) as {alg?: unknown; typ?: unknown};
+  if (header.alg !== "HS256") throw new Error("invalid-algorithm");
+
+  const secret = Buffer.from(secretBase64, "base64");
+  if (secret.length < 32) throw new Error("invalid-secret");
+  const expected = createHmac("sha256", secret).update(`${parts[0]}.${parts[1]}`).digest();
+  const actual = Buffer.from(parts[2], "base64url");
+  if (actual.length !== expected.length || !timingSafeEqual(actual, expected)) throw new Error("invalid-signature");
+
+  const payload = decodePart(parts[1]) as JestSignedPayload;
+  if (payload.aud !== expectedGameId) throw new Error("invalid-audience");
+  if (typeof payload.sub !== "string" || !payload.sub) throw new Error("invalid-subject");
+  if (expectedPlayerId && payload.sub !== expectedPlayerId) throw new Error("invalid-subject");
+  if (maxAgeSeconds !== null) {
+    const issuedAt = payload.iat;
+    if (typeof issuedAt !== "number" || !Number.isInteger(issuedAt) || issuedAt > nowSeconds + 60 || nowSeconds - issuedAt > maxAgeSeconds) {
+      throw new Error("stale-token");
+    }
+  }
+  if (payload.player && payload.player.playerId !== payload.sub) throw new Error("player-subject-mismatch");
+  return payload;
+}
+
+export const jestFirebaseUid = (playerId: string): string =>
+  `jest_${createHmac("sha256", "riddle-quest-jest-uid-v1").update(playerId).digest("hex").slice(0, 40)}`;

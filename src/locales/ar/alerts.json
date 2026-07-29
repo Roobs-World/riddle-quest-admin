@@ -1,7 +1,5 @@
 {
   "GameScreenAlerts": {
-    "AD_NOT_READY_MESSAGE": "لا يمكن عرض الإعلان بمكافأة في الوقت الحالي. يرجى المحاولة مرة أخرى قريبًا.",
-    "AD_NOT_READY_TITLE": "الإعلان غير جاهز",
     "CLASSIC_LABEL": "كلاسيكي",
     "CONTINUE_NOT_ENOUGH_COINS_MESSAGE": "ليس لديك ما يكفي من العملات المعدنية للمتابعة.",
     "COST_COINS_MIDDLE": " عملات معدنية.",
@@ -27,8 +25,6 @@
     "SUBMIT_BUTTON": "يُقدِّم",
     "SUBMIT_GUESS_ERROR_MESSAGE": "تعذر إرسال التخمين. يرجى المحاولة مرة أخرى.",
     "SUBMIT_GUESS_ERROR_TITLE": "خطأ",
-    "AD_ERROR_MESSAGE": "حدث خطأ أثناء محاولة عرض الإعلان بمكافأة.",
-    "AD_ERROR_TITLE": "خطأ الإعلان",
     "DEBUG_CLEAR_LOCAL_DATA_ERROR_MESSAGE": "فشل في مسح البيانات المحلية.",
     "DEBUG_CLEAR_LOCAL_DATA_ERROR_TITLE": "مسح خطأ البيانات المحلية",
     "DEBUG_DAILY_CHALLENGE_ERROR_MESSAGE": "فشل في إنشاء تحدي يومي جديد.",

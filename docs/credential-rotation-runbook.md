@@ -33,8 +33,8 @@ firebase functions:secrets:set FACEBOOK_APP_SECRET
 ```
 
 3. Client/public config
-   - Keep only non-secret client config in Expo/EAS variables.
-   - Do not put OpenAI keys, Apple shared secrets, service account JSON, or Facebook app secrets in Expo `extra`.
+   - Keep only non-secret client config in Vite `VITE_*` variables.
+   - Never put OpenAI keys, the Jest shared secret, or service-account JSON in browser configuration.
 
 4. Provider dashboards
    - OpenAI: create a new API key, deploy it as a Functions secret, then revoke the old key.

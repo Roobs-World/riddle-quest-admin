@@ -15,6 +15,7 @@ import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
 import {onCall, HttpsError} from "firebase-functions/v2/https";
 import {captureException} from "./sentry";
+const jestWebCallableOptions = {enforceAppCheck: process.env.JEST_ALLOW_WEB_CALLABLES !== "true"};
 import {
   GetLeaderboardRequest,
   GetLeaderboardRequestSchema,
@@ -401,7 +402,7 @@ export async function updateLeaderboardEntry(
  * Request: `{ type: LeaderboardType, limit?: number }` (limit capped at 100)
  * Response: `{ entries: LeaderboardEntry[], requestingUserId: string }`
  */
-export const getLeaderboard = onCall({enforceAppCheck: true}, async (request) => {
+export const getLeaderboard = onCall(jestWebCallableOptions, async (request) => {
   if (!request.auth) {
     throw new HttpsError("unauthenticated", "Must be authenticated to view the leaderboard.");
   }

@@ -7,10 +7,30 @@ import {
   type GameEngineSnapshot,
   type ScoredGuess,
 } from "@qwordly/core/game";
-import type {BridgeProfile, BridgeRiddle, BridgeUser} from "@qwordly/core/bridge";
+import type {BridgeLeaderboardEntry, BridgeProfile, BridgeRiddle, BridgeUser} from "@qwordly/core/bridge";
 import type {ProductSummary} from "./types";
 
-export type GameModal = "victory" | "loss" | "continue" | "shop" | "profile" | "settings" | "leaderboard" | "achievements" | null;
+export type GameModal =
+  | "victory"
+  | "loss"
+  | "continue"
+  | "shop"
+  | "profile"
+  | "settings"
+  | "leaderboard"
+  | "achievements"
+  | "statistics"
+  | "ranks"
+  | "instructions"
+  | "credits"
+  | "about"
+  | "hint"
+  | "skip"
+  | "username"
+  | "gameMode"
+  | "treasure"
+  | "reward"
+  | null;
 
 export type GameSessionState = {
   initialized: boolean;
@@ -20,13 +40,32 @@ export type GameSessionState = {
   user: BridgeUser | null;
   profile: BridgeProfile | null;
   products: ProductSummary[];
+  leaderboard: BridgeLeaderboardEntry[];
+  leaderboardType: "xp" | "totalWins" | "bestStreak";
   riddle: BridgeRiddle | null;
   currentLetters: string[];
+  activeSlotIndex: number;
+  hintRevealedIndices: number[];
   guesses: ScoredGuess[];
   engineSnapshot: GameEngineSnapshot | null;
   modal: GameModal;
   muted: boolean;
   notice: string | null;
+  lastRewards: {
+    coinsEarned: number;
+    newXp?: number;
+    newLevel?: number;
+    leveledUp?: boolean;
+    newWinStreak?: number;
+    newlyUnlockedAchievementIds: string[];
+  } | null;
+  auxiliaryFanfare: {
+    id: string;
+    kind: "purchase" | "achievement";
+    coinsAwarded: number;
+    totalCoins: number;
+    achievementIds: string[];
+  } | null;
   lastOutcome: {
     id: string;
     kind: "win" | "loss";
@@ -51,10 +90,35 @@ export type GameSessionAction =
   | {type: "loadRiddle"; riddle: BridgeRiddle; profile?: BridgeProfile | null}
   | {type: "typeLetter"; letter: string}
   | {type: "backspace"}
+  | {type: "selectSlot"; index: number}
   | {type: "submitGuess"}
   | {type: "applyHint"; index: number; letter: string; newCoins?: number}
   | {type: "coinsUpdated"; newCoins: number}
+  | {
+      type: "leaderboardLoaded";
+      leaderboardType: "xp" | "totalWins" | "bestStreak";
+      entries: BridgeLeaderboardEntry[];
+    }
+  | {type: "profileUpdated"; profile: BridgeProfile}
+  | {
+      type: "completionReward";
+      reward: NonNullable<GameSessionState["lastRewards"]>;
+    }
+  | {
+      type: "showAuxiliaryFanfare";
+      fanfare: NonNullable<GameSessionState["auxiliaryFanfare"]>;
+    }
+  | {
+      type: "restoreSession";
+      currentLetters: string[];
+      activeSlotIndex: number;
+      hintRevealedIndices: number[];
+      guesses: ScoredGuess[];
+      engineSnapshot: GameEngineSnapshot;
+      letterStates: Record<string, Feedback>;
+    }
   | {type: "continueGranted"}
+  | {type: "declineContinue"}
   | {type: "openModal"; modal: Exclude<GameModal, null>}
   | {type: "closeModal"}
   | {type: "setNotice"; notice: string | null}
@@ -70,13 +134,22 @@ export const createInitialGameSession = (): GameSessionState => ({
   user: null,
   profile: null,
   products: [],
+  leaderboard: [],
+  leaderboardType: "xp",
   riddle: null,
   currentLetters: [],
+  activeSlotIndex: 0,
+  hintRevealedIndices: [],
   guesses: [],
   engineSnapshot: null,
   modal: null,
-  muted: false,
+  muted:
+    typeof localStorage !== "undefined"
+      ? localStorage.getItem("riddleQuest:soundEnabled") === "false"
+      : false,
   notice: null,
+  lastRewards: null,
+  auxiliaryFanfare: null,
   lastOutcome: null,
   letterStates: {},
 });
@@ -90,7 +163,7 @@ const createEngine = (state: GameSessionState): GameEngine | null => {
     {
       answer: state.riddle.answer,
       initialAttempts: 5,
-      continueAttempts: 2,
+      continueAttempts: 1,
     },
     state.riddle.answer,
   );
@@ -115,6 +188,37 @@ const computeStates = (guesses: ScoredGuess[]): Record<string, Feedback> => {
   return computeLetterStates(guesses);
 };
 
+const firstEditableSlot = (letters: string[], locked: number[], start = 0): number => {
+  for (let offset = 0; offset < letters.length; offset += 1) {
+    const index = (start + offset) % letters.length;
+    if (!locked.includes(index) && !letters[index]) {
+      return index;
+    }
+  }
+  return Math.max(0, Math.min(start, letters.length - 1));
+};
+
+const previousEditableSlot = (letters: string[], locked: number[], start: number): number | null => {
+  for (let index = Math.min(start, letters.length - 1); index >= 0; index -= 1) {
+    if (!locked.includes(index) && letters[index]) {
+      return index;
+    }
+  }
+  for (let index = letters.length - 1; index > start; index -= 1) {
+    if (!locked.includes(index) && letters[index]) {
+      return index;
+    }
+  }
+  return null;
+};
+
+const resetAttemptLetters = (state: GameSessionState): string[] =>
+  state.riddle
+    ? Array.from({length: state.riddle.answerLength}, (_, index) =>
+        state.hintRevealedIndices.includes(index) ? (state.currentLetters[index] ?? "") : "",
+      )
+    : [];
+
 export const gameSessionReducer = (
   state: GameSessionState,
   action: GameSessionAction,
@@ -133,36 +237,74 @@ export const gameSessionReducer = (
     case "authState":
       return {...state, user: action.user, profile: action.profile};
     case "loadRiddle": {
-      const engine = new GameEngine({answer: action.riddle.answer, initialAttempts: 5, continueAttempts: 2});
+      const engine = new GameEngine({answer: action.riddle.answer, initialAttempts: 5, continueAttempts: 1});
       const snapshot = engine.getSnapshot();
       return {
         ...state,
         riddle: action.riddle,
         gameMode: action.riddle.gameMode,
         profile: action.profile === undefined ? state.profile : action.profile,
-        currentLetters: [],
+        currentLetters: Array.from({length: action.riddle.answerLength}, () => ""),
+        activeSlotIndex: 0,
+        hintRevealedIndices: [],
         guesses: snapshot.guesses,
         engineSnapshot: snapshot,
         modal: null,
         notice: null,
         lastOutcome: null,
+        lastRewards: null,
+        auxiliaryFanfare: null,
         letterStates: {},
       };
     }
     case "typeLetter": {
-      if (!state.riddle || state.currentLetters.length >= state.riddle.answerLength || state.modal) {
+      if (!state.riddle || state.modal) {
         return state;
       }
       const letter = normalizeInputLetter(action.letter);
-      return letter ? {...state, currentLetters: [...state.currentLetters, letter], notice: null} : state;
+      if (!letter || state.hintRevealedIndices.includes(state.activeSlotIndex)) {
+        return state;
+      }
+      const currentLetters = [...state.currentLetters];
+      currentLetters[state.activeSlotIndex] = letter;
+      return {
+        ...state,
+        currentLetters,
+        activeSlotIndex: firstEditableSlot(
+          currentLetters,
+          state.hintRevealedIndices,
+          (state.activeSlotIndex + 1) % currentLetters.length,
+        ),
+        notice: null,
+      };
     }
-    case "backspace":
-      return {...state, currentLetters: state.currentLetters.slice(0, -1), notice: null};
+    case "backspace": {
+      const target =
+        !state.hintRevealedIndices.includes(state.activeSlotIndex) && state.currentLetters[state.activeSlotIndex]
+          ? state.activeSlotIndex
+          : previousEditableSlot(state.currentLetters, state.hintRevealedIndices, state.activeSlotIndex - 1);
+      if (target === null) {
+        return state;
+      }
+      const currentLetters = [...state.currentLetters];
+      currentLetters[target] = "";
+      return {...state, currentLetters, activeSlotIndex: target, notice: null};
+    }
+    case "selectSlot":
+      if (
+        !state.riddle ||
+        action.index < 0 ||
+        action.index >= state.riddle.answerLength ||
+        state.hintRevealedIndices.includes(action.index)
+      ) {
+        return state;
+      }
+      return {...state, activeSlotIndex: action.index};
     case "submitGuess": {
       if (!state.riddle) {
         return state;
       }
-      if (state.currentLetters.length !== state.riddle.answerLength) {
+      if (state.currentLetters.some((letter) => !letter)) {
         return {...state, notice: "WebPortal.FILL_WORD_NOTICE"};
       }
 
@@ -176,10 +318,12 @@ export const gameSessionReducer = (
       const guesses = snapshot.guesses;
       const isTerminal = outcome.kind === "win" || outcome.kind === "loss";
       const modal = outcome.kind === "win" ? "victory" : outcome.kind === "attemptLimitReached" ? "continue" : outcome.kind === "loss" ? "loss" : state.modal;
+      const nextLetters = resetAttemptLetters(state);
 
       return {
         ...state,
-        currentLetters: [],
+        currentLetters: nextLetters,
+        activeSlotIndex: firstEditableSlot(nextLetters, state.hintRevealedIndices),
         guesses,
         engineSnapshot: snapshot,
         modal,
@@ -206,15 +350,41 @@ export const gameSessionReducer = (
         nextLetters.push("");
       }
       nextLetters[action.index] = action.letter.toUpperCase();
+      const hintRevealedIndices = [...new Set([...state.hintRevealedIndices, action.index])].sort(
+        (left, right) => left - right,
+      );
       return {
         ...state,
         currentLetters: nextLetters.slice(0, state.riddle.answerLength),
+        activeSlotIndex: firstEditableSlot(nextLetters, hintRevealedIndices, action.index + 1),
+        hintRevealedIndices,
         profile: withProfileCoins(state.profile, action.newCoins),
         notice: null,
       };
     }
     case "coinsUpdated":
       return {...state, profile: withProfileCoins(state.profile, action.newCoins)};
+    case "leaderboardLoaded":
+      return {...state, leaderboardType: action.leaderboardType, leaderboard: action.entries};
+    case "profileUpdated":
+      return {...state, profile: action.profile};
+    case "completionReward":
+      return {...state, lastRewards: action.reward};
+    case "showAuxiliaryFanfare":
+      return {...state, auxiliaryFanfare: action.fanfare, modal: "reward"};
+    case "restoreSession":
+      if (!state.riddle || action.currentLetters.length !== state.riddle.answerLength) {
+        return state;
+      }
+      return {
+        ...state,
+        currentLetters: action.currentLetters,
+        activeSlotIndex: action.activeSlotIndex,
+        hintRevealedIndices: action.hintRevealedIndices,
+        guesses: action.guesses,
+        engineSnapshot: action.engineSnapshot,
+        letterStates: action.letterStates,
+      };
     case "continueGranted": {
       const engine = createEngine(state);
       if (!engine) {
@@ -222,20 +392,42 @@ export const gameSessionReducer = (
       }
       engine.continueAfterLimit();
       const snapshot = engine.getSnapshot();
+      const nextLetters = resetAttemptLetters(state);
       return {
         ...state,
         guesses: snapshot.guesses,
         engineSnapshot: snapshot,
-        currentLetters: [],
+        currentLetters: nextLetters,
+        activeSlotIndex: firstEditableSlot(nextLetters, state.hintRevealedIndices),
         modal: null,
         notice: null,
         letterStates: {},
       };
     }
+    case "declineContinue":
+      if (state.modal !== "continue" || !state.riddle || !state.engineSnapshot) {
+        return state;
+      }
+      return {
+        ...state,
+        modal: "loss",
+        lastOutcome: {
+          id: `${state.riddle.riddleId}-loss-${state.engineSnapshot.attemptsUsed}`,
+          kind: "loss",
+          riddleId: state.riddle.riddleId,
+          gameMode: state.riddle.gameMode,
+          attempts: state.engineSnapshot.attemptsUsed,
+          isCorrect: false,
+        },
+      };
     case "openModal":
       return {...state, modal: action.modal};
     case "closeModal":
-      return {...state, modal: null};
+      return {
+        ...state,
+        modal: null,
+        auxiliaryFanfare: state.modal === "reward" ? null : state.auxiliaryFanfare,
+      };
     case "setNotice":
       return {...state, notice: action.notice};
     case "toggleMute":

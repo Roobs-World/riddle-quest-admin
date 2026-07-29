@@ -2,10 +2,10 @@
 
 ## Snapshot
 
-**Product:** Mobile riddle-based Wordle-style puzzle game for iOS and Android.  
-**Stage:** Pre-launch beta with working app, Firebase backend, IAP/ads infrastructure, achievements, profiles, and extensive automated tests.  
+**Product:** React HTML5 riddle-based Wordle-style puzzle game for Jest.
+**Stage:** Pre-launch beta with a working Jest SDK integration, Firebase backend, purchases, achievements, profiles, and automated tests.
 **Ask:** GBP 24,500, below a GBP 30k initial funding cap.  
-**Funding goal:** 90-day sprint to polish the beta, validate the audience, prepare store launch assets, and make the project more attractive to grants, publishers, and launch partners.
+**Funding goal:** 90-day sprint to polish the beta, validate the audience, prepare Jest launch assets, and make the project more attractive to grants, publishers, and launch partners.
 
 ## The Problem
 
@@ -20,29 +20,29 @@ Riddle Quest blends:
 - Variable answer lengths for more variety than fixed five-letter games.
 - Coins, hints, achievements, stats, and avatars for retention.
 - Firebase-backed accounts, progress sync, server-side validation, and scalable riddle generation.
-- Fair freemium monetization through rewarded ads, coin packs, and no-ads IAP.
+- Fair freemium monetization through optional Jest coin packs.
 
 ## Why It Can Win
 
-The game has a clear audience: casual mobile puzzle players aged 18-45 who like Wordle, crosswords, trivia, and short daily sessions. The differentiator is not just another word grid; it is the combination of riddle context, deduction, daily habit, progression, and scalable content.
+The game has a clear audience: casual browser puzzle players aged 18-45 who like Wordle, crosswords, trivia, and short daily sessions. The differentiator is not just another word grid; it is the combination of riddle context, deduction, daily habit, progression, and scalable content.
 
 ## Proof Already In Place
 
-- Expo/React Native mobile app targeting iOS and Android.
-- Firebase Auth, Firestore, Functions, Storage, Analytics, and Crashlytics.
-- Server-authoritative guess validation and progression logic.
-- In-app purchase and rewarded ad infrastructure.
-- Achievements, stats, profiles, tutorial flow, audio/haptics, and accessibility-oriented UI.
-- Store privacy, data safety, security, and ATT documentation.
-- More than 2,500 passing tests recorded in project progress notes.
+- Standard React HTML5 game targeting the Jest gaming platform.
+- Jest identity and SDK lifecycle integration with Firebase Auth, Firestore, and Functions.
+- Server-authoritative rewards and progression logic.
+- Jest purchase grant/recovery flow.
+- Achievements, stats, profiles, responsive layout, audio, and accessibility-oriented UI.
+- Jest security, privacy, artifact, and release operations documentation.
+- Automated core, portal, and backend test suites.
 
 ## Use Of Funds
 
 The GBP 24,500 ask funds a focused beta-to-launch-readiness sprint:
 
 - Product polish and onboarding improvement.
-- Accessibility, device, and store QA.
-- Trailer, store assets, screenshots, and pitch materials.
+- Accessibility, responsive-browser, and Jest sandbox QA.
+- Trailer, Jest page assets, screenshots, and pitch materials.
 - Analytics event refinement and dashboard setup.
 - Closed beta recruitment and feedback incentives.
 - Small paid user-acquisition tests.

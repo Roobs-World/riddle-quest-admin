@@ -5,24 +5,33 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "NODE_ENV=production tsc -b && NODE_ENV=production vite build",
-    "perf:measure": "node scripts/measure-performance.mjs",
+    "build:jest": "pnpm check:progress && pnpm check:locales && NODE_ENV=production tsc -b && JEST_BUILD=1 VITE_JEST_RUNTIME=1 NODE_ENV=production vite build --mode jest --outDir dist-jest && pnpm audit:jest-artifact",
+    "upload:jest": "node scripts/upload-jest-build.mjs",
+    "release:jest": "pnpm build:jest && pnpm upload:jest",
+    "release:jest:timestamped": "node scripts/release-jest-timestamped.mjs",
+    "audit:jest-artifact": "node scripts/audit-jest-artifact.mjs dist-jest",
+    "check:progress": "node scripts/progress-tracker.mjs --check",
+    "check:locales": "node scripts/audit-locales.mjs",
     "preview": "vite preview",
     "test": "jest --config jest.config.cjs"
   },
   "dependencies": {
-    "@clerk/react": "^6.11.4",
-    "@vercel/analytics": "^2.0.1",
-    "@vercel/speed-insights": "^2.0.0",
+    "@qwordly/core": "workspace:*",
     "firebase": "^12.15.0",
     "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "react-dom": "19.2.3",
+    "three": "^0.185.1"
   },
   "devDependencies": {
+    "@jest/globals": "30.4.1",
     "@playwright/test": "^1.61.1",
+    "@types/jest": "30.0.0",
     "@types/react": "~19.2.17",
     "@types/react-dom": "^19.2.3",
+    "@types/three": "^0.185.1",
     "@vitejs/plugin-react": "^5.2.0",
+    "jest": "30.4.2",
+    "ts-jest": "29.4.11",
     "typescript": "6.0.3",
     "vite": "^7.3.6"
   }

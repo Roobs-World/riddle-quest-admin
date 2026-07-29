@@ -4,7 +4,7 @@
 
 Prioritize publishers with:
 
-- Mobile, casual, puzzle, word, trivia, or daily-game experience.
+- HTML5, casual, puzzle, word, trivia, or daily-game experience.
 - Soft-launch or user-acquisition capability.
 - Comfort with free-to-play or hybrid casual monetization.
 - Willingness to fund polish, launch marketing, or UA testing.
@@ -23,15 +23,15 @@ Preferred asks, in order:
 
 ## Publisher Email
 
-Subject: Riddle Quest - riddle-led Wordle-style mobile puzzle beta
+Subject: Riddle Quest - riddle-led Wordle-style Jest puzzle beta
 
 Hi [Name],
 
-I am reaching out with Riddle Quest, a pre-launch iOS/Android word puzzle game that combines Wordle-style deduction with riddle solving, daily challenges, classic progression, profiles, achievements, and fair freemium monetization.
+I am reaching out with Riddle Quest, a pre-launch HTML5 word puzzle for Jest that combines Wordle-style deduction with riddle solving, daily challenges, classic progression, profiles, achievements, and fair freemium monetization.
 
-The game is already playable, with Firebase-backed accounts/progress, server-side validation, IAP/rewarded ad infrastructure, and a substantial automated test base. We are now preparing a 90-day beta sprint to validate retention, puzzle difficulty, hint usage, ad opt-in, and IAP intent with 100-300 target players.
+The game is already playable, with Jest identity, Firebase-backed progress, server-authoritative rewards, Jest purchases, and a substantial automated test base. We are now preparing a 90-day beta sprint to validate retention, puzzle difficulty, hint usage, referral conversion, and purchase intent with 100-300 target players.
 
-We are looking for a mobile/casual publishing partner who can help with soft launch, user-acquisition testing, store positioning, and launch marketing. We are also pursuing non-dilutive grant funding, so the current ask is focused and de-risked rather than a broad production raise.
+We are looking for an HTML5/casual publishing partner who can help with launch, player-acquisition testing, Jest positioning, and marketing. We are also pursuing non-dilutive grant funding, so the current ask is focused and de-risked rather than a broad production raise.
 
 Would you be open to reviewing the 2-minute gameplay video and preview build?
 
@@ -40,11 +40,11 @@ Best,
 
 ## Follow-Up 1
 
-Subject: Re: Riddle Quest mobile puzzle beta
+Subject: Re: Riddle Quest HTML5 puzzle beta
 
 Hi [Name],
 
-Quick follow-up in case this is a fit for your mobile/casual slate. The short version: Riddle Quest is a riddle-led word puzzle with daily habit loops, progression, achievements, and fair freemium monetization. We are collecting beta evidence now and are looking for publishing input before soft launch.
+Quick follow-up in case this is a fit for your HTML5/casual slate. The short version: Riddle Quest is a riddle-led word puzzle with daily habit loops, progression, achievements, and fair freemium monetization. We are collecting beta evidence now and are looking for publishing input before launch.
 
 Happy to send a reviewer build and the 10-slide deck.
 
@@ -55,13 +55,13 @@ Best,
 
 Use only when the contact invests in games, consumer apps, or studios.
 
-Subject: Riddle Quest - mobile puzzle IP with scalable content pipeline
+Subject: Riddle Quest - HTML5 puzzle IP with scalable content pipeline
 
 Hi [Name],
 
-Riddle Quest is a pre-launch mobile puzzle game built around riddle-led word deduction. The first product is designed as a fair freemium mobile game, but the broader thesis is a repeatable puzzle-content platform: scalable riddle generation, server-authoritative validation, analytics-led difficulty tuning, and daily/progression modes that can support a portfolio of word and trivia experiences.
+Riddle Quest is a pre-launch HTML5 puzzle game for Jest built around riddle-led word deduction. The broader thesis is a repeatable puzzle-content platform: scalable riddle generation, server-authoritative validation, analytics-led difficulty tuning, and daily/progression modes that can support a portfolio of word and trivia experiences.
 
-We are currently seeking under GBP 30k for a beta-to-launch-readiness sprint and are prioritizing non-dilutive funding first. I would value a conversation if you are interested in early mobile game IP where the next milestone is measurable retention and monetization evidence rather than concept risk.
+We are currently seeking under GBP 30k for a beta-to-launch-readiness sprint and are prioritizing non-dilutive funding first. I would value a conversation if you are interested in early HTML5 game IP where the next milestone is measurable retention and monetization evidence rather than concept risk.
 
 Best,  
 [Name]

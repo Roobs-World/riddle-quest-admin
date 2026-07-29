@@ -148,33 +148,6 @@ service cloud.firestore {
       allow delete: if false;
     }
 
-    // Processed Ad Callbacks - server-only subcollection for idempotency
-    match /users/{userId}/processedAdCallbacks/{tokenId} {
-      allow read: if isOwner(userId);
-      allow write: if isServerRequest();
-    }
-
-    // Pending Ad Completions - server-only subcollection for rewarded ad queue
-    match /users/{userId}/pendingAdCompletions/{docId} {
-      allow read: if isOwner(userId);
-      allow write: if isServerRequest();
-    }
-
-    // Processed Purchases - user subcollection for IAP tracking
-    match /users/{userId}/processedPurchases/{purchaseToken} {
-      // Users can read their own purchase history
-      allow read: if isOwner(userId);
-      
-      // Only server can create/update purchase records
-      allow write: if isServerRequest();
-    }
-
-    // Ad interaction tracking - server-only collection
-    match /adInteractions/{interactionId} {
-      // Only server can manage ad interactions
-      allow read, write: if isServerRequest();
-    }
-
     // Tutorial progress tracking - if it exists as a separate collection
     match /tutorialProgress/{userId} {
       // Users can read their own tutorial progress

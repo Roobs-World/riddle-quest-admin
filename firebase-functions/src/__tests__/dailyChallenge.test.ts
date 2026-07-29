@@ -24,7 +24,6 @@ jest.mock("firebase-functions", () => {
 });
 
 jest.mock("../firestoreService", () => ({
-  updateUserLastCompletedDailyChallengeDate: jest.fn(),
   // Refine getUser mock return type to match Player | undefined
   getUser: jest.fn<(...args: any[]) => Promise<Player | undefined>>().mockResolvedValue(undefined), // Default to undefined for user not found
   getClassicRiddleByIndex: jest.fn(),
@@ -148,19 +147,8 @@ import * as functions from "firebase-functions";
 import {HttpsError, CallableRequest} from "firebase-functions/v2/https";
 
 // Original imports from mocked services for typing
-import type {
-  updateUserLastCompletedDailyChallengeDate as originalUpdateUserDate,
-  getUser as originalGetUser,
-} from "../firestoreService";
+import type {getUser as originalGetUser} from "../firestoreService";
 import {PlayerSchema, PlayerStatsSchema, PlayerProgressSchema, Player} from "../validation/firestoreSchemas";
-
-interface MockHasCompletedDailyChallengeData {
-  id: string;
-}
-
-interface MockSetCompletedDailyChallengeData {
-  // No specific data required for setCompletedDailyChallenge
-}
 
 const getDefaultPlayer = (userId: string, overrides: Partial<Player> = {}): Player => {
   const now = Date.now();
@@ -197,18 +185,14 @@ const createCurrentDailyRiddleDoc = (
 });
 
 describe("Daily Challenge Functions", () => {
-  let mockUpdateUserLastCompletedDailyChallengeDate: jest.MockedFunction<typeof originalUpdateUserDate>;
   let mockGetUser: jest.MockedFunction<typeof originalGetUser>;
   let mockGetClassicRiddleByIndex: jest.Mock;
   let mockFirebaseFunctionsV1: {
     logger: {error: jest.MockedFunction<(message?: any, ...optionalParams: any[]) => void>};
     https: {HttpsError: typeof functions.https.HttpsError};
   };
-  let setCompletedDailyChallenge: any;
-  let hasCompletedDailyChallenge: any;
   let getCurrentDailyChallenge: any;
   let getCurrentClassicRiddle: any;
-  let advanceDailyChallengeProgress: any;
 
   beforeEach(() => {
     jest.resetModules();
@@ -234,18 +218,13 @@ describe("Daily Challenge Functions", () => {
 
     // Import the module to get the functions
     const dailyChallengeModule = require("../dailyChallenge");
-    setCompletedDailyChallenge = dailyChallengeModule.setCompletedDailyChallenge;
-    hasCompletedDailyChallenge = dailyChallengeModule.hasCompletedDailyChallenge;
     getCurrentDailyChallenge = dailyChallengeModule.getCurrentDailyChallenge;
     getCurrentClassicRiddle = dailyChallengeModule.getCurrentClassicRiddle;
-    advanceDailyChallengeProgress = dailyChallengeModule.advanceDailyChallengeProgress;
 
     const mockFsService = jest.requireMock("../firestoreService") as {
-      updateUserLastCompletedDailyChallengeDate: jest.MockedFunction<typeof originalUpdateUserDate>;
       getUser: jest.MockedFunction<typeof originalGetUser>;
       getClassicRiddleByIndex: jest.Mock;
     };
-    mockUpdateUserLastCompletedDailyChallengeDate = mockFsService.updateUserLastCompletedDailyChallengeDate;
     mockGetUser = mockFsService.getUser;
     mockGetClassicRiddleByIndex = mockFsService.getClassicRiddleByIndex;
 
@@ -264,125 +243,6 @@ describe("Daily Challenge Functions", () => {
 
   afterAll(() => {
     Date.now = originalDateNow;
-  });
-
-  describe("setCompletedDailyChallenge (v2)", () => {
-    it("should throw HttpsError if not authenticated", async () => {
-      const mockRequest = {auth: undefined, data: {}} as CallableRequest<MockSetCompletedDailyChallengeData>;
-      await expect(setCompletedDailyChallenge(mockRequest)).rejects.toMatchObject({
-        code: "unauthenticated",
-        message: "The user must be authenticated to set completed daily challenge.",
-      });
-      expect(mockUpdateUserLastCompletedDailyChallengeDate).not.toHaveBeenCalled();
-    });
-
-    it("should call updateUserLastCompletedDailyChallengeDate and return success if authenticated", async () => {
-      const mockUserId = "testUser123";
-      const mockRequest = {auth: {uid: mockUserId}, data: {}} as CallableRequest<MockSetCompletedDailyChallengeData>;
-      mockUpdateUserLastCompletedDailyChallengeDate.mockResolvedValue(undefined as any);
-      const expectedIsoDate = "2023-01-01T10:00:00.000Z";
-
-      await setCompletedDailyChallenge(mockRequest);
-      expect(mockUpdateUserLastCompletedDailyChallengeDate).toHaveBeenCalledWith(mockUserId, expectedIsoDate);
-    });
-
-    it("should throw internal HttpsError if updateUserLastCompletedDailyChallengeDate fails", async () => {
-      const mockUserId = "testUser123";
-      const mockRequest = {auth: {uid: mockUserId}, data: {}} as CallableRequest<MockSetCompletedDailyChallengeData>;
-      const dbError = new Error("Database update failed");
-      mockUpdateUserLastCompletedDailyChallengeDate.mockRejectedValue(dbError);
-
-      await expect(setCompletedDailyChallenge(mockRequest)).rejects.toMatchObject({
-        code: "internal",
-        message: "An error occurred while setting completed daily challenge.",
-      });
-      expect(mockFirebaseFunctionsV1.logger.error).toHaveBeenCalledWith(
-        "Error setting completed daily challenge:",
-        dbError,
-      );
-    });
-  });
-
-  describe("hasCompletedDailyChallenge (v2)", () => {
-    it("should return true if user completed challenge today", async () => {
-      const mockUserId = "testUserToday";
-      const today = new Date();
-      const todayTimestamp: number = today.getTime(); // Use milliseconds, not seconds
-      mockGetUser.mockResolvedValue(
-        getDefaultPlayer(mockUserId, {
-          lastDailyChallengeCompletedAt: todayTimestamp,
-          progress: {
-            classicIndex: 0,
-            dailyChallengeIndex: 0,
-            dailyChallengeCurrentQuestion: 5, // Completed all 5 questions
-          },
-        }),
-      );
-      const mockRequest = {data: {id: mockUserId}} as CallableRequest<MockHasCompletedDailyChallengeData>;
-
-      const result = await hasCompletedDailyChallenge(mockRequest);
-      expect(result).toBe(true);
-      expect(mockGetUser).toHaveBeenCalledWith(mockUserId);
-    });
-
-    it("should return true when completion is a Firestore Timestamp-like object", async () => {
-      const mockUserId = "testUserTimestampToday";
-      const mockRequest = {data: {id: mockUserId}} as CallableRequest<MockHasCompletedDailyChallengeData>;
-      const playerWithTimestamp = {
-        ...getDefaultPlayer(mockUserId),
-        lastDailyChallengeCompletedAt: createTimestampMock("2023-01-01T08:00:00.000Z"),
-      } as unknown as Player;
-
-      mockGetUser.mockResolvedValue(playerWithTimestamp);
-
-      const result = await hasCompletedDailyChallenge(mockRequest);
-
-      expect(result).toBe(true);
-    });
-
-    it("should return false if user completed challenge yesterday", async () => {
-      const mockUserId = "testUserYesterday";
-      // Create yesterday's timestamp manually since Date constructor is mocked
-      // Mocked date is 2023-01-01T10:00:00.000Z, so yesterday would be 2022-12-31
-      const yesterdayTimestamp: number = 1672444800000; // 2022-12-31T00:00:00.000Z
-      mockGetUser.mockResolvedValue(getDefaultPlayer(mockUserId, {lastDailyChallengeCompletedAt: yesterdayTimestamp}));
-      const mockRequest = {data: {id: mockUserId}} as CallableRequest<MockHasCompletedDailyChallengeData>;
-
-      const result = await hasCompletedDailyChallenge(mockRequest);
-      expect(result).toBe(false);
-    });
-
-    it("should return false if user has no lastDailyChallengeCompletedAt", async () => {
-      const mockUserId = "testUserNever";
-      mockGetUser.mockResolvedValue(getDefaultPlayer(mockUserId, {lastDailyChallengeCompletedAt: undefined}));
-      const mockRequest = {data: {id: mockUserId}} as CallableRequest<MockHasCompletedDailyChallengeData>;
-
-      const result = await hasCompletedDailyChallenge(mockRequest);
-      expect(result).toBe(false);
-    });
-
-    it("should return false if user is not found", async () => {
-      const mockUserId = "testUserNotFound";
-      // Mock getUser to return undefined for a not-found user
-      mockGetUser.mockResolvedValue(undefined);
-      const mockRequest = {data: {id: mockUserId}} as CallableRequest<MockHasCompletedDailyChallengeData>;
-
-      const result = await hasCompletedDailyChallenge(mockRequest);
-      expect(result).toBe(false);
-      expect(mockGetUser).toHaveBeenCalledWith(mockUserId);
-    });
-
-    it("should throw internal error if getUser fails", async () => {
-      const mockUserId = "testUserError";
-      const dbError = new Error("DB fetch failed");
-      mockGetUser.mockRejectedValue(dbError);
-      const mockRequest = {data: {id: mockUserId}} as CallableRequest<MockHasCompletedDailyChallengeData>;
-
-      await expect(hasCompletedDailyChallenge(mockRequest)).rejects.toMatchObject({
-        code: "internal",
-        message: "An error occurred while checking daily challenge status.",
-      });
-    });
   });
 
   // --- Tests for getCurrentDailyChallenge (v2) ---
@@ -668,163 +528,6 @@ describe("Daily Challenge Functions", () => {
     });
   });
 
-  // --- Tests for advanceDailyChallengeProgress (v2) ---
-  describe("advanceDailyChallengeProgress (v2)", () => {
-    let mockUserUpdate: jest.Mock;
-
-    beforeEach(() => {
-      mockAdminFirestoreGet.mockReset();
-      mockUserUpdate = jest.fn().mockResolvedValue(undefined);
-
-      const adminMock = jest.requireMock("firebase-admin") as any;
-      adminMock.mockFirestoreCollection.mockImplementation((collectionPath: string) => ({
-        doc: jest.fn((docId?: string) => ({
-          get:
-            collectionPath === "localizedRiddles/en/riddles" && docId === "current"
-              ? mockAdminFirestoreGet
-              : jest.fn().mockResolvedValue({exists: false, data: () => undefined}),
-          set: jest.fn().mockResolvedValue(undefined),
-          update: mockUserUpdate,
-        })),
-        where: jest.fn().mockReturnThis(),
-        get: jest.fn().mockResolvedValue({docs: [], empty: true, size: 0}),
-      }));
-    });
-
-    it("should throw HttpsError unauthenticated if not authenticated", async () => {
-      const mockRequest = {auth: undefined, data: {}} as CallableRequest<unknown>;
-      await expect(advanceDailyChallengeProgress(mockRequest)).rejects.toMatchObject({
-        code: "unauthenticated",
-        message: "User must be authenticated to advance progress.",
-      });
-    });
-
-    it("should throw HttpsError not-found if user data not found", async () => {
-      mockGetUser.mockResolvedValue(undefined);
-      const mockRequest = {auth: {uid: "unknownUser"}, data: {}} as CallableRequest<unknown>;
-      await expect(advanceDailyChallengeProgress(mockRequest)).rejects.toMatchObject({
-        code: "not-found",
-        message: "User data not found.",
-      });
-    });
-
-    it("should return already completed when currentQuestionIndex >= 1", async () => {
-      const mockUserId = "completedUser";
-      mockGetUser.mockResolvedValue(
-        getDefaultPlayer(mockUserId, {
-          progress: {
-            classicIndex: 0,
-            dailyChallengeIndex: 0,
-            dailyChallengeCurrentQuestion: 1,
-          },
-        }),
-      );
-
-      const mockRequest = {auth: {uid: mockUserId}, data: {}} as CallableRequest<unknown>;
-      const result = await advanceDailyChallengeProgress(mockRequest);
-      expect(result).toEqual({
-        newQuestionIndex: 1,
-        isFullyCompleted: true,
-        message: "Daily challenge already completed.",
-      });
-      expect(mockUserUpdate).not.toHaveBeenCalled();
-    });
-
-    it("should complete challenge when not yet completed", async () => {
-      const mockUserId = "progressUser";
-      mockGetUser.mockResolvedValue(
-        getDefaultPlayer(mockUserId, {
-          progress: {
-            classicIndex: 0,
-            dailyChallengeIndex: 0,
-            dailyChallengeCurrentQuestion: 0,
-          },
-        }),
-      );
-
-      const mockRequest = {auth: {uid: mockUserId}, data: {}} as CallableRequest<unknown>;
-      const result = await advanceDailyChallengeProgress(mockRequest);
-      expect(result).toEqual({
-        newQuestionIndex: 1,
-        isFullyCompleted: true,
-        message: "Daily challenge completed! 1 riddle finished.",
-      });
-      expect(mockUserUpdate).toHaveBeenCalledWith(
-        expect.objectContaining({
-          "progress.dailyChallengeCurrentQuestion": 1,
-        }),
-      );
-    });
-
-    it("should mark fully completed when advancing from question 0", async () => {
-      const mockUserId = "almostDoneUser";
-      mockGetUser.mockResolvedValue(
-        getDefaultPlayer(mockUserId, {
-          progress: {
-            classicIndex: 0,
-            dailyChallengeIndex: 0,
-            dailyChallengeCurrentQuestion: 0,
-          },
-        }),
-      );
-
-      const mockRequest = {auth: {uid: mockUserId}, data: {}} as CallableRequest<unknown>;
-      const result = await advanceDailyChallengeProgress(mockRequest);
-      expect(result).toEqual({
-        newQuestionIndex: 1,
-        isFullyCompleted: true,
-        message: "Daily challenge completed! 1 riddle finished.",
-      });
-      expect(mockUserUpdate).toHaveBeenCalledWith(
-        expect.objectContaining({
-          "progress.dailyChallengeCurrentQuestion": 1,
-        }),
-      );
-    });
-
-    it("should advance from question 0 to 1", async () => {
-      const mockUserId = "freshUser";
-      mockGetUser.mockResolvedValue(getDefaultPlayer(mockUserId));
-
-      const mockRequest = {auth: {uid: mockUserId}, data: {}} as CallableRequest<unknown>;
-      const result = await advanceDailyChallengeProgress(mockRequest);
-      expect(result).toEqual({
-        newQuestionIndex: 1,
-        isFullyCompleted: true,
-        message: "Daily challenge completed! 1 riddle finished.",
-      });
-      expect(mockUserUpdate).toHaveBeenCalledWith(
-        expect.objectContaining({
-          "progress.dailyChallengeCurrentQuestion": 1,
-        }),
-      );
-    });
-
-    it("should wrap non-HttpsError in internal HttpsError", async () => {
-      const mockUserId = "errorUser";
-      const dbError = new Error("Unexpected DB error");
-      mockGetUser.mockRejectedValue(dbError);
-
-      const mockRequest = {auth: {uid: mockUserId}, data: {}} as CallableRequest<unknown>;
-      await expect(advanceDailyChallengeProgress(mockRequest)).rejects.toMatchObject({
-        code: "internal",
-        message: "An error occurred while advancing progress.",
-      });
-      expect(mockLogger.error).toHaveBeenCalledWith("Error advancing daily challenge progress:", dbError);
-    });
-
-    it("should re-throw HttpsError without wrapping", async () => {
-      const mockUserId = "errorUser";
-      const {HttpsError: CurrentHttpsError} = jest.requireMock("firebase-functions/v2/https") as {
-        HttpsError: typeof HttpsError;
-      };
-      const httpsError = new CurrentHttpsError("permission-denied", "Custom error");
-      mockGetUser.mockRejectedValue(httpsError);
-
-      const mockRequest = {auth: {uid: mockUserId}, data: {}} as CallableRequest<unknown>;
-      await expect(advanceDailyChallengeProgress(mockRequest)).rejects.toThrow(httpsError);
-    });
-  });
 });
 
 // Helper function to create a CallableRequest mock

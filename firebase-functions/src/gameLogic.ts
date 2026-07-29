@@ -9,6 +9,7 @@ import {
   CONTINUE_COST_COINS,
   RIDDLE_GENERATION_THRESHOLD,
   RIDDLE_GENERATION_BATCH_SIZE,
+  ACHIEVEMENT_UNLOCK_COIN_REWARD,
 } from "./constants";
 import {generateAndAppendRiddles} from "./riddleGeneration";
 import {captureException} from "./sentry";
@@ -26,8 +27,9 @@ import {
   GetHintResponseSchema,
 } from "./validation/requestSchemas";
 import {evaluateAchievements} from "./achievements";
-import {ACHIEVEMENT_UNLOCK_COIN_REWARD} from "./constants";
 import {validateCallableRequest, validateCallableResponse} from "./validation/callableValidation";
+
+const jestWebCallableOptions = {enforceAppCheck: process.env.JEST_ALLOW_WEB_CALLABLES !== "true"};
 import {splitGraphemes, lowerCaseGraphemes} from "@qwordly/core/game";
 
 /**
@@ -39,7 +41,7 @@ import {splitGraphemes, lowerCaseGraphemes} from "@qwordly/core/game";
  * @return An object containing success status and new progress information.
  */
 export const skipRiddle = onCall(
-  {enforceAppCheck: true},
+  jestWebCallableOptions,
   async (request: CallableRequest<SkipRiddleRequest>): Promise<SkipRiddleResponse> => {
     try {
       if (!request.auth) {
@@ -238,7 +240,7 @@ export const skipRiddle = onCall(
  * @return {Promise<{ newCoins: number }>} A Promise resolving to the new coin balance.
  */
 export const spendCoins = onCall(
-  {enforceAppCheck: true},
+  jestWebCallableOptions,
   async (request: CallableRequest<SpendCoinsRequest>): Promise<{newCoins: number}> => {
     if (!request.auth) {
       throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
@@ -328,8 +330,8 @@ export const spendCoins = onCall(
  * evaluates hint-related achievements, and returns the revealed letter index and costs.
  */
 export const getHint = onCall(
-  {enforceAppCheck: true},
-  async (request: CallableRequest<z.infer<typeof SpendCoinsRequestSchema> & any>) => {
+  jestWebCallableOptions,
+  async (request: CallableRequest<z.infer<typeof GetHintRequestSchema>>) => {
     try {
       if (!request.auth) {
         throw new HttpsError("unauthenticated", "The function must be called while authenticated.");

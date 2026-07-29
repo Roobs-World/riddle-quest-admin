@@ -1,15 +1,15 @@
 # Riddle Quest Pitch Deck Outline
 
 Deck length: 10 slides.  
-Audience: grant panels, mobile/casual publishers, angels, and platform contacts.  
+Audience: grant panels, HTML5/casual publishers, angels, and platform contacts.
 Tone: commercially grounded, player-first, evidence-led.
 
 ## Slide 1 - Cover
 
 **Kicker:** RIDDLE QUEST  
 **Claim:** A daily word puzzle becomes a mini-mystery.  
-**Proof object:** App logo/key art plus three proof points: mobile beta, fair freemium, scalable content.  
-**Speaker note:** Riddle Quest is a pre-launch mobile puzzle game combining riddle solving with Wordle-style feedback and long-term progression.
+**Proof object:** Game logo/key art plus three proof points: Jest beta, fair freemium, scalable content.
+**Speaker note:** Riddle Quest is a pre-launch HTML5 puzzle game on Jest combining riddle solving with Wordle-style feedback and long-term progression.
 
 ## Slide 2 - Problem
 
@@ -43,14 +43,14 @@ Tone: commercially grounded, player-first, evidence-led.
 
 **Kicker:** FAIR FREEMIUM  
 **Claim:** Monetization supports play without forcing spend.  
-**Proof object:** Monetization bridge: free play -> coins from play/rewarded ads -> hints -> coin packs/no-ads IAP.  
+**Proof object:** Monetization bridge: free play -> coins from play -> hints -> optional Jest coin packs.
 **Speaker note:** The design avoids paywalls and uses opt-in value exchanges.
 
 ## Slide 7 - Evidence
 
 **Kicker:** BUILT, NOT JUST DESCRIBED  
 **Claim:** The beta already has the technical foundations funders usually ask to see.  
-**Proof object:** Proof stack: working app, Firebase backend, IAP/ads, achievements, profiles, store docs, 2,500+ passing tests.  
+**Proof object:** Proof stack: working React game, Jest SDK, Firebase backend, Jest purchases, achievements, profiles, and automated tests.
 **Speaker note:** Funding goes into beta polish and market validation, not proving whether the core product can be built.
 
 ## Slide 8 - Funding Ask
@@ -71,7 +71,7 @@ Tone: commercially grounded, player-first, evidence-led.
 
 **Kicker:** DECISION  
 **Claim:** Fund the beta sprint to de-risk launch while preserving the upside of original IP.  
-**Proof object:** Three requested outcomes: funding commitment, reviewer build access, intro to mobile/casual publishers.  
+**Proof object:** Three requested outcomes: funding commitment, reviewer build access, intro to HTML5/casual publishers.
 **Speaker note:** Riddle Quest is ready for a small, disciplined funding push that can unlock larger opportunities.
 
 ## Appendix Slides To Add If Needed

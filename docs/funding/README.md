@@ -4,7 +4,7 @@ This folder turns the funding plan into working materials for a sub-GBP 30k rais
 
 ## Funding Positioning
 
-Riddle Quest is a pre-launch mobile puzzle game that combines Wordle-style deduction with riddle solving, persistent progression, fair freemium monetization, and scalable content generation.
+Riddle Quest is a pre-launch HTML5 puzzle game for Jest that combines Wordle-style deduction with riddle solving, persistent progression, fair freemium monetization, and scalable content generation.
 
 Primary ask: **GBP 24,500** to fund a focused 90-day beta, polish, evidence, and launch-preparation sprint.
 
@@ -26,7 +26,7 @@ Primary route: **non-dilutive grant first**, with publisher, investor, community
 
 1. Confirm company eligibility: UK company age, PAYE status, employee/contractor structure, IP ownership, and subsidy history.
 2. Record a 2-minute pitch video using the script in this folder.
-3. Build the current Android preview and iOS TestFlight candidate for reviewers.
+3. Build and upload the current Jest sandbox candidate for reviewers.
 4. Fill the first 20 rows of `outreach-tracker.csv` with real publishers, grant contacts, and platform contacts.
 5. Run a closed beta signup campaign and start collecting D1/D7 retention, completion rate, hint usage, ad opt-in, and IAP intent.
 

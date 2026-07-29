@@ -1,63 +1,55 @@
 import {useSyncExternalStore} from "react";
+import enAboutLegal from "../../../../src/locales/en/aboutLegal.json";
 import enAccessibility from "../../../../src/locales/en/accessibility.json";
 import enAchievements from "../../../../src/locales/en/achievements.json";
-import enAds from "../../../../src/locales/en/ads.json";
 import enAlerts from "../../../../src/locales/en/alerts.json";
-import enAuth from "../../../../src/locales/en/auth.json";
+import enCoinPurchase from "../../../../src/locales/en/coinPurchase.json";
 import enCommon from "../../../../src/locales/en/common.json";
+import enCredits from "../../../../src/locales/en/credits.json";
 import enErrors from "../../../../src/locales/en/errors.json";
 import enGame from "../../../../src/locales/en/game.json";
 import enLeaderboard from "../../../../src/locales/en/leaderboard.json";
+import enLevelUpFanfare from "../../../../src/locales/en/levelUpFanfare.json";
 import enLoss from "../../../../src/locales/en/loss.json";
 import enNavigation from "../../../../src/locales/en/navigation.json";
+import enOnboarding from "../../../../src/locales/en/onboarding.json";
 import enProfile from "../../../../src/locales/en/profile.json";
 import enSettings from "../../../../src/locales/en/settings.json";
 import enShop from "../../../../src/locales/en/shop.json";
 import enStats from "../../../../src/locales/en/stats.json";
+import enStreakFanfare from "../../../../src/locales/en/streakFanfare.json";
+import enTooltips from "../../../../src/locales/en/tooltips.json";
 import enVictory from "../../../../src/locales/en/victory.json";
 import {loadNonEnglishNamespace} from "./localeModules";
 
 export type Locale =
-  | "en"
-  | "es"
-  | "pt"
-  | "fr"
-  | "de"
-  | "ja"
-  | "ko"
-  | "zh"
-  | "hi"
-  | "ru"
-  | "tr"
-  | "ar"
-  | "id"
-  | "it"
-  | "nl"
-  | "pl"
-  | "vi";
+  "en" | "es" | "pt" | "fr" | "de" | "ja" | "ko" | "zh" | "hi" | "ru" | "tr" | "ar" | "id" | "it" | "nl" | "pl" | "vi";
 
 export type Namespace =
+  | "aboutLegal"
   | "accessibility"
   | "achievements"
-  | "ads"
   | "alerts"
-  | "auth"
+  | "coinPurchase"
   | "common"
+  | "credits"
   | "errors"
   | "game"
   | "leaderboard"
+  | "levelUpFanfare"
   | "loss"
   | "navigation"
+  | "onboarding"
   | "profile"
   | "settings"
   | "shop"
   | "stats"
+  | "streakFanfare"
+  | "tooltips"
   | "victory";
 
 export type NamespaceCatalog = Record<string, unknown>;
 type RootCatalog = Record<string, unknown>;
-
-export const LOCALE_STORAGE_KEY = "appLanguage";
 
 const SUPPORTED_LOCALES = [
   "en",
@@ -100,59 +92,74 @@ const LANGUAGE_LABELS: Record<Locale, string> = {
 };
 
 const REQUIRED_NAMESPACES = [
+  "aboutLegal",
   "accessibility",
   "achievements",
-  "ads",
   "alerts",
-  "auth",
+  "coinPurchase",
   "common",
+  "credits",
   "errors",
   "game",
   "leaderboard",
+  "levelUpFanfare",
   "loss",
   "navigation",
+  "onboarding",
   "profile",
   "settings",
   "shop",
   "stats",
+  "streakFanfare",
+  "tooltips",
   "victory",
 ] as const satisfies readonly Namespace[];
 
 const ENGLISH_NAMESPACES: NamespaceCatalog[] = [
+  enAboutLegal,
   enAccessibility,
   enAchievements,
-  enAds,
   enAlerts,
-  enAuth,
+  enCoinPurchase,
   enCommon,
+  enCredits,
   enErrors,
   enGame,
   enLeaderboard,
+  enLevelUpFanfare,
   enLoss,
   enNavigation,
+  enOnboarding,
   enProfile,
   enSettings,
   enShop,
   enStats,
+  enStreakFanfare,
+  enTooltips,
   enVictory,
 ];
 
 const ENGLISH_NAMESPACE_BY_NAME: Record<Namespace, NamespaceCatalog> = {
+  aboutLegal: enAboutLegal,
   accessibility: enAccessibility,
   achievements: enAchievements,
-  ads: enAds,
   alerts: enAlerts,
-  auth: enAuth,
+  coinPurchase: enCoinPurchase,
   common: enCommon,
+  credits: enCredits,
   errors: enErrors,
   game: enGame,
   leaderboard: enLeaderboard,
+  levelUpFanfare: enLevelUpFanfare,
   loss: enLoss,
   navigation: enNavigation,
+  onboarding: enOnboarding,
   profile: enProfile,
   settings: enSettings,
   shop: enShop,
   stats: enStats,
+  streakFanfare: enStreakFanfare,
+  tooltips: enTooltips,
   victory: enVictory,
 };
 
@@ -280,20 +287,18 @@ export const LANGUAGE_OPTIONS: readonly {code: Locale; label: string}[] = SUPPOR
   label: LANGUAGE_LABELS[code],
 }));
 
-export const isSupportedLanguage = (language: string): language is Locale => {
-  return supportedLanguageSet.has(language);
-};
-
 export const getLanguageLabel = (language: Locale): string => {
   return LANGUAGE_LABELS[language] ?? LANGUAGE_LABELS.en;
 };
 
-export const getLocale = (): Locale => currentLocale;
-
-export const loadLocale = async (locale: Locale): Promise<RootCatalog> => loadLocaleCatalog(locale);
+const getLocale = (): Locale => currentLocale;
 
 export const setLocale = (locale: Locale): void => {
   currentLocale = locale;
+  if (typeof document !== "undefined") {
+    document.documentElement.lang = locale;
+    document.documentElement.dir = locale === "ar" ? "rtl" : "ltr";
+  }
   emitLocaleChange();
   void loadLocaleCatalog(locale)
     .then(() => emitLocaleChange())

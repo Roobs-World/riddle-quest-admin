@@ -1,7 +1,5 @@
 {
   "GameScreenAlerts": {
-    "AD_NOT_READY_MESSAGE": "현재 보상형 광고를 게재할 수 없습니다. 잠시 후 다시 시도하십시오.",
-    "AD_NOT_READY_TITLE": "광고 준비 안 됨",
     "CLASSIC_LABEL": "권위 있는",
     "CONTINUE_NOT_ENOUGH_COINS_MESSAGE": "계속하려면 코인이 충분하지 않습니다.",
     "COST_COINS_MIDDLE": " 동전.",
@@ -27,8 +25,6 @@
     "SUBMIT_BUTTON": "제출하다",
     "SUBMIT_GUESS_ERROR_MESSAGE": "추측을 제출할 수 없습니다. 다시 시도하십시오.",
     "SUBMIT_GUESS_ERROR_TITLE": "오류",
-    "AD_ERROR_MESSAGE": "보상형 광고를 표시하는 동안 오류가 발생했습니다.",
-    "AD_ERROR_TITLE": "광고 오류",
     "DEBUG_CLEAR_LOCAL_DATA_ERROR_MESSAGE": "로컬 데이터를 지우지 못했습니다.",
     "DEBUG_CLEAR_LOCAL_DATA_ERROR_TITLE": "로컬 데이터 지우기 오류",
     "DEBUG_DAILY_CHALLENGE_ERROR_MESSAGE": "새 일일 챌린지를 생성하지 못했습니다.",

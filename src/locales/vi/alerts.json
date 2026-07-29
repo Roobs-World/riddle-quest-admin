@@ -1,7 +1,5 @@
 {
   "GameScreenAlerts": {
-    "AD_NOT_READY_MESSAGE": "Không thể hiển thị quảng cáo có tặng thưởng vào lúc này. Vui lòng thử lại sau.",
-    "AD_NOT_READY_TITLE": "Quảng cáo chưa sẵn sàng",
     "CLASSIC_LABEL": "Cổ điển",
     "CONTINUE_NOT_ENOUGH_COINS_MESSAGE": "Bạn không có đủ xu để tiếp tục.",
     "COST_COINS_MIDDLE": " Tiền xu.",
@@ -27,8 +25,6 @@
     "SUBMIT_BUTTON": "NỘP",
     "SUBMIT_GUESS_ERROR_MESSAGE": "Không thể gửi dự đoán. Vui lòng thử lại.",
     "SUBMIT_GUESS_ERROR_TITLE": "Lỗi",
-    "AD_ERROR_MESSAGE": "Đã xảy ra lỗi khi cố gắng hiển thị quảng cáo có tặng thưởng.",
-    "AD_ERROR_TITLE": "Lỗi quảng cáo",
     "DEBUG_CLEAR_LOCAL_DATA_ERROR_MESSAGE": "Không xóa được dữ liệu cục bộ.",
     "DEBUG_CLEAR_LOCAL_DATA_ERROR_TITLE": "Xóa lỗi dữ liệu cục bộ",
     "DEBUG_DAILY_CHALLENGE_ERROR_MESSAGE": "Không thể tạo thử thách hàng ngày mới.",

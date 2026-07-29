@@ -2,9 +2,10 @@ packages:
   - "packages/*"
   - "firebase-functions"
 
+autoInstallPeers: false
+
 peerDependencyRules:
   allowedVersions:
-    "@react-native/jest-preset": "0.86.0"
     jest: "30"
     typescript: "6"
 
@@ -39,7 +40,6 @@ onlyBuiltDependencies:
   - unrs-resolver
 
 allowBuilds:
-  "@clerk/shared": true
   "@firebase/util": true
   "@sentry/cli": true
   dtrace-provider: false
@@ -48,20 +48,3 @@ allowBuilds:
   geckodriver: false
   protobufjs: true
   unrs-resolver: false
-
-minimumReleaseAgeExclude:
-  - '@expo/cli@57.0.3'
-  - '@expo/fingerprint@0.20.1'
-  - '@expo/inline-modules@0.1.1'
-  - '@expo/local-build-cache-provider@57.0.1'
-  - '@expo/metro-config@57.0.2'
-  - '@expo/prebuild-config@57.0.3'
-  - '@expo/router-server@57.0.1'
-  - babel-preset-expo@57.0.1
-  - expo-asset@57.0.2
-  - expo-constants@57.0.2
-  - expo-modules-autolinking@57.0.3
-  - expo-modules-core@57.0.1
-  - expo@57.0.1
-  - expo-gl@57.0.1
-  - expo-build-properties@57.0.2

@@ -1,7 +1,5 @@
 {
   "GameScreenAlerts": {
-    "AD_NOT_READY_MESSAGE": "O anúncio premiado não pôde ser exibido no momento. Tente novamente em breve.",
-    "AD_NOT_READY_TITLE": "Anúncio não pronto",
     "CLASSIC_LABEL": "Clássico",
     "CONTINUE_NOT_ENOUGH_COINS_MESSAGE": "Você não tem moedas suficientes para continuar.",
     "COST_COINS_MIDDLE": " Moedas.",
@@ -27,8 +25,6 @@
     "SUBMIT_BUTTON": "ENVIAR",
     "SUBMIT_GUESS_ERROR_MESSAGE": "Não foi possível enviar o palpite. Tente novamente.",
     "SUBMIT_GUESS_ERROR_TITLE": "Erro",
-    "AD_ERROR_MESSAGE": "Ocorreu um erro ao tentar exibir o anúncio premiado.",
-    "AD_ERROR_TITLE": "Erro de anúncio",
     "DEBUG_CLEAR_LOCAL_DATA_ERROR_MESSAGE": "Falha ao limpar os dados locais.",
     "DEBUG_CLEAR_LOCAL_DATA_ERROR_TITLE": "Erro ao limpar dados locais",
     "DEBUG_DAILY_CHALLENGE_ERROR_MESSAGE": "Falha ao gerar um novo desafio diário.",

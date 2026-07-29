@@ -1,7 +1,5 @@
-import {describe, test, expect, jest, beforeAll, afterAll} from "@jest/globals";
+import {describe, test, expect, jest, afterAll} from "@jest/globals";
 import * as admin from "firebase-admin";
-import functionsTest from "firebase-functions-test";
-import {initializeIapConfig} from "../iapConfig";
 
 // Mock firebase-admin to prevent initializeApp from running multiple times
 if (admin.apps.length === 0) {
@@ -171,24 +169,16 @@ jest.mock("firebase-functions/v2", () => {
 import * as myFunctions from "../index";
 
 describe("Firebase Functions", () => {
-  let testEnv: ReturnType<typeof functionsTest>;
-
-  beforeAll(() => {
-    testEnv = functionsTest();
-    initializeIapConfig();
-  });
-
   describe("Exported Functions Existence", () => {
     const expectedFunctions = [
-      "validatePurchase",
       "spendCoins",
-      "setCompletedDailyChallenge",
-      "hasCompletedDailyChallenge",
       "getCurrentDailyChallenge",
-      "updateAvatar",
-      "deleteAccount",
-      "submitGuess",
-      "awardedAdCallback",
+      "getCurrentClassicRiddle",
+      "completeGame",
+      "updateUsername",
+      "exchangeJestIdentity",
+      "grantJestPurchase",
+      "verifyJestReferrals",
     ];
 
     expectedFunctions.forEach((funcName) => {
@@ -212,7 +202,6 @@ describe("Firebase Functions", () => {
   // Add more describe blocks for other functions...
 
   afterAll(() => {
-    testEnv.cleanup();
     jest.restoreAllMocks(); // Restore all mocks
   });
 });

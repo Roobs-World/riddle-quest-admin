@@ -10,6 +10,12 @@
     "outDir": "lib",
     "rootDir": "src",
     "baseUrl": ".",
+    "paths": {
+      "@qwordly/core": ["../packages/core/dist/index.d.ts"],
+      "@qwordly/core/game": ["../packages/core/dist/game/index.d.ts"],
+      "@qwordly/core/validation": ["../packages/core/dist/validation/index.d.ts"],
+      "@qwordly/core/validation/*": ["../packages/core/dist/validation/*"]
+    },
     "ignoreDeprecations": "6.0",
     "sourceMap": true,
     "strict": true,

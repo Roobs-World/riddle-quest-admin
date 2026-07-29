@@ -1,7 +1,5 @@
 {
   "GameScreenAlerts": {
-    "AD_NOT_READY_MESSAGE": "L'annonce récompensée n'a pas pu être diffusée pour le moment. Veuillez réessayer sous peu.",
-    "AD_NOT_READY_TITLE": "Annonce non prête",
     "CLASSIC_LABEL": "Classique",
     "CONTINUE_NOT_ENOUGH_COINS_MESSAGE": "Vous n'avez pas assez de pièces pour continuer.",
     "COST_COINS_MIDDLE": " Pièces.",
@@ -27,8 +25,6 @@
     "SUBMIT_BUTTON": "SOUMETTRE",
     "SUBMIT_GUESS_ERROR_MESSAGE": "Impossible de soumettre votre estimation. Veuillez réessayer.",
     "SUBMIT_GUESS_ERROR_TITLE": "Erreur",
-    "AD_ERROR_MESSAGE": "Une erreur s'est produite lors de la tentative d'affichage de l'annonce récompensée.",
-    "AD_ERROR_TITLE": "Erreur d'annonce",
     "DEBUG_CLEAR_LOCAL_DATA_ERROR_MESSAGE": "Échec de l'effacement des données locales.",
     "DEBUG_CLEAR_LOCAL_DATA_ERROR_TITLE": "Erreur d'effacement des données locales",
     "DEBUG_DAILY_CHALLENGE_ERROR_MESSAGE": "Échec de la génération d'un nouveau défi quotidien.",

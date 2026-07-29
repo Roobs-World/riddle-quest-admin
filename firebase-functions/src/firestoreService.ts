@@ -34,32 +34,6 @@ const getLocalizedRiddleCollectionPath = (locale: SupportedLocale): string =>
 const resolveLocale = (locale?: string): SupportedLocale =>
   (SUPPORTED_LOCALES.find((entry) => entry === locale) ?? "en") as SupportedLocale;
 
-// Define a type for PlayerUpdate that allows partial updates and FieldValue
-export type PlayerUpdate = {
-  userId?: string;
-  dailyChallengeIndex?: number | admin.firestore.FieldValue;
-  dailyChallengeCurrentQuestion?: number | admin.firestore.FieldValue;
-  classicIndex?: number | admin.firestore.FieldValue;
-  coins?: number | admin.firestore.FieldValue;
-  username?: string;
-  email?: string;
-  registeredAt?: Date | null;
-  lastLogin?: Date | null;
-  lastDailyChallengeCompletedAt?: Date | null;
-  lastCompletedDailyChallengeKey?: string;
-  currentRiddle?: string; // Define currentRiddle property directly
-  avatarUrl?: string | null;
-  preferredLanguage?: string;
-  bestStreak?: number | admin.firestore.FieldValue;
-  totalWordsGuessed?: number | admin.firestore.FieldValue;
-  winRate?: number | admin.firestore.FieldValue;
-  totalScore?: number | admin.firestore.FieldValue;
-  highestLevelClassic?: number | admin.firestore.FieldValue;
-  gamesPlayed?: number | admin.firestore.FieldValue;
-  classicLevel?: number | admin.firestore.FieldValue;
-  challengeWins?: number | admin.firestore.FieldValue;
-};
-
 /**
  * Fetches a user document by ID.
  *
@@ -450,10 +424,7 @@ export async function appendUnlockedAchievements(userId: string, newEntries: Unl
  * @param riddleId - The ID of the riddle.
  * @return A promise that resolves with the riddle document data, or undefined if not found.
  */
-export async function getClassicRiddle(
-  riddleId: string,
-  locale?: string,
-): Promise<ClassicRiddle | undefined> {
+async function getClassicRiddle(riddleId: string, locale?: string): Promise<ClassicRiddle | undefined> {
   const resolvedLocale = resolveLocale(locale);
   const localizedRef = getDb().collection(getLocalizedRiddleCollectionPath(resolvedLocale)).doc(riddleId);
   const localizedDoc = await localizedRef.get();
@@ -521,10 +492,7 @@ export async function getClassicRiddleByIndex(
  * @param riddleId - The ID of the riddle.
  * @return A promise that resolves with the riddle document data, or undefined if not found.
  */
-export async function getDailyRiddle(
-  riddleId: string,
-  locale?: string,
-): Promise<DailyRiddle | undefined> {
+export async function getDailyRiddle(riddleId: string, locale?: string): Promise<DailyRiddle | undefined> {
   const resolvedLocale = resolveLocale(locale);
   const localizedRef = getDb().collection(getLocalizedRiddleCollectionPath(resolvedLocale)).doc(riddleId);
   const localizedDoc = await localizedRef.get();

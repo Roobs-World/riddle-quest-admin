@@ -81,5 +81,27 @@ describe("game session reducer", () => {
 
     expect(state.modal).toBeNull();
     expect(state.guesses).toHaveLength(0);
+
+    for (const letter of ["C", "L", "O", "C", "K"]) {
+      state = reduce(state, {type: "typeLetter", letter});
+    }
+    state = reduce(state, {type: "submitGuess"});
+
+    expect(state.modal).toBe("loss");
+    expect(state.lastOutcome).toEqual(expect.objectContaining({kind: "loss", attempts: 6}));
+  });
+
+  it("locks hinted slots while allowing non-sequential editing", () => {
+    let state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle});
+    state = reduce(state, {type: "applyHint", index: 2, letter: "A"});
+    state = reduce(state, {type: "selectSlot", index: 4});
+    state = reduce(state, {type: "typeLetter", letter: "O"});
+    state = reduce(state, {type: "selectSlot", index: 0});
+    state = reduce(state, {type: "typeLetter", letter: "P"});
+    state = reduce(state, {type: "selectSlot", index: 2});
+    state = reduce(state, {type: "typeLetter", letter: "X"});
+
+    expect(state.currentLetters).toEqual(["P", "X", "A", "", "O"]);
+    expect(state.hintRevealedIndices).toEqual([2]);
   });
 });

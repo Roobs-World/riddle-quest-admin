@@ -700,104 +700,6 @@ describe("riddleGeneration", () => {
     });
   });
 
-  describe("Callable Functions", () => {
-    describe("initializeRiddleDatabase", () => {
-      test("should return success when database is already initialized", async () => {
-        const existenceQuery = {
-          get: jest.fn().mockResolvedValue({
-            empty: false,
-            docs: [{data: () => ({classicIndex: 1})}],
-            forEach: jest.fn(),
-          }),
-          limit: jest.fn().mockReturnThis(),
-        };
-
-        (mockFirestoreCollection as any).mockReturnValue({
-          where: jest.fn().mockReturnValue(existenceQuery),
-        } as any);
-
-        const result = await riddleGeneration.initializeRiddleDatabase(adminCallableRequest);
-
-        expect(result).toEqual({
-          success: true,
-          message: "Riddle database already initialized.",
-          riddlesGenerated: 0,
-        });
-      });
-
-      test("should initialize database and return success", async () => {
-        const existenceQuery = {
-          get: jest.fn().mockResolvedValue({empty: true, docs: [], forEach: jest.fn()}),
-          limit: jest.fn().mockReturnThis(),
-        };
-
-        const indexQuery = {
-          get: jest.fn().mockResolvedValue({empty: true, docs: [], forEach: jest.fn()}),
-          orderBy: jest.fn().mockReturnThis(),
-          limit: jest.fn().mockReturnThis(),
-        };
-
-        (mockFirestoreCollection as any).mockReturnValue({
-          get: jest.fn().mockResolvedValue({empty: true, docs: [], forEach: jest.fn()}),
-          doc: mockFirestoreDoc,
-          where: jest
-            .fn()
-            .mockReturnValueOnce(existenceQuery) // For existence check
-            .mockReturnValue(indexQuery), // For index queries
-        } as any);
-
-        (mockGenerateUniqueRiddle as any).mockResolvedValue(["Opening riddle?", "init"]);
-
-        const result = await riddleGeneration.initializeRiddleDatabase(adminCallableRequest);
-
-        expect(result).toEqual({
-          success: true,
-          message: "Riddle database initialized with 20 classic riddles.",
-          riddlesGenerated: 20,
-        });
-      });
-
-      test("should handle initialization errors", async () => {
-        const existenceQuery = {
-          get: jest.fn().mockRejectedValue(new Error("Database error")),
-          limit: jest.fn().mockReturnThis(),
-        };
-
-        (mockFirestoreCollection as any).mockReturnValue({
-          where: jest.fn().mockReturnValue(existenceQuery),
-        } as any);
-
-        await expect(riddleGeneration.initializeRiddleDatabase(adminCallableRequest)).rejects.toThrow();
-      });
-    });
-
-    describe("generateDailyRiddles", () => {
-      test("should return success when daily riddles are generated", async () => {
-        (mockGenerateUniqueRiddle as any).mockResolvedValue(["Today-only riddle?", "daily"]);
-        (mockFirestoreCollection as any).mockReturnValue({
-          get: jest.fn().mockResolvedValue({empty: true, docs: [], forEach: jest.fn()}),
-          doc: mockFirestoreDoc,
-          where: mockWhere,
-        } as any);
-
-        const result = await riddleGeneration.generateDailyRiddles(adminCallableRequest);
-
-        expect(result).toEqual({
-          success: true,
-          message: "New Daily Mode riddles generated and added to Firestore.",
-        });
-      });
-
-      test("should handle errors and throw HttpsError", async () => {
-        (mockFirestoreCollection as any).mockImplementation(() => {
-          throw new Error("Firestore error");
-        });
-
-        await expect(riddleGeneration.generateDailyRiddles(adminCallableRequest)).rejects.toThrow();
-      });
-    });
-  });
-
   describe("generateTodaysDailyChallenge", () => {
     test("should skip generation when today's challenge already exists with 1 question", async () => {
       mockGet.mockResolvedValue({
@@ -858,46 +760,12 @@ describe("riddleGeneration", () => {
     });
   });
 
-  describe("generateTodaysDailyChallengeFunction", () => {
-    test("should return success and questionsGenerated when challenge is generated", async () => {
-      mockGet.mockResolvedValue({
-        exists: true,
-        data: () => ({
-          riddleId: "current",
-          text: "Existing daily question?",
-          answer: "answer",
-          timestamp: {toDate: () => new Date()},
-          dailyIndex: 1,
-          category: "daily",
-        }),
-      });
-
-      const result = await riddleGeneration.generateTodaysDailyChallengeFunction(adminCallableRequest);
-
-      expect(result.success).toBe(true);
-      expect(result.questionsGenerated).toBe(1);
-    });
-
-    test("should handle errors and throw HttpsError", async () => {
-      (mockFirestoreCollection as any).mockReturnValueOnce({
-        doc: () => ({
-          get: jest.fn().mockRejectedValue(new Error("Firestore error")),
-        }),
-      } as any);
-
-      await expect(riddleGeneration.generateTodaysDailyChallengeFunction(adminCallableRequest)).rejects.toThrow();
-    });
-  });
-
   describe("Module Structure and Type Safety", () => {
     test("should export all required functions", () => {
       expect(typeof riddleGeneration.generateAndAppendRiddles).toBe("function");
       expect(typeof riddleGeneration.generateAndAppendDailyRiddles).toBe("function");
       expect(typeof riddleGeneration.initializeRiddleDatabaseIfEmpty).toBe("function");
-      expect(typeof riddleGeneration.initializeRiddleDatabase).toBe("function");
-      expect(typeof riddleGeneration.generateDailyRiddles).toBe("function");
       expect(typeof riddleGeneration.generateTodaysDailyChallenge).toBe("function");
-      expect(typeof riddleGeneration.generateTodaysDailyChallengeFunction).toBe("function");
     });
 
     test("functions should have proper TypeScript types", () => {

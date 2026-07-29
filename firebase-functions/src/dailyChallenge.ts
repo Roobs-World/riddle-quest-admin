@@ -1,21 +1,20 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin"; // Added for Firestore access
 import {onCall, HttpsError, CallableRequest} from "firebase-functions/v2/https";
-import {updateUserLastCompletedDailyChallengeDate, getUser, getClassicRiddleByIndex} from "./firestoreService";
+import {getUser, getClassicRiddleByIndex} from "./firestoreService";
 import {captureException} from "./sentry";
 import {SUPPORTED_LOCALES} from "@qwordly/core/validation";
 import {
-  AdvanceDailyChallengeProgressResponseSchema,
-  BooleanResponseSchema,
   GetCurrentDailyChallengeResponse,
   GetCurrentDailyChallengeResponseSchema,
-  HasCompletedDailyChallengeRequestSchema,
-  MessageResponseSchema,
 } from "./validation/requestSchemas";
-import {validateCallableRequest, validateCallableResponse} from "./validation/callableValidation";
+import {validateCallableResponse} from "./validation/callableValidation";
 
 const DAILY_CHALLENGE_QUESTION_COUNT = 1;
 const CURRENT_DAILY_RIDDLE_DOC_ID = "current";
+const jestWebCallableOptions = {
+  enforceAppCheck: process.env.JEST_ALLOW_WEB_CALLABLES !== "true",
+};
 
 /**
  * Converts unknown date-like input to an ISO UTC day string (`YYYY-MM-DD`).
@@ -122,88 +121,14 @@ async function getFreshDailyChallengeDoc(locale: string = "en"): Promise<{
 }
 
 /**
- * Sets the last completed daily challenge date for the authenticated user.
- * @param request - The request object representing the request context.
- * @return A message indicating the success of the operation.
- */
-export const setCompletedDailyChallenge = onCall(
-  {enforceAppCheck: true},
-  async (request: CallableRequest<unknown>): Promise<{message: string}> => {
-    try {
-      if (!request.auth) {
-        throw new HttpsError("unauthenticated", "The user must be authenticated to set completed daily challenge.");
-      }
-      const currentUserId = request.auth.uid;
-
-      const currentDate = new Date().toISOString();
-
-      await updateUserLastCompletedDailyChallengeDate(currentUserId, currentDate);
-
-      return validateCallableResponse(
-        MessageResponseSchema,
-        {
-          message: "Last completed daily challenge date set successfully.",
-        },
-        "setCompletedDailyChallenge",
-      );
-    } catch (error) {
-      // Re-throw HttpsError instances directly
-      if (error instanceof HttpsError) {
-        throw error;
-      }
-      functions.logger.error("Error setting completed daily challenge:", error);
-      captureException(error);
-      throw new HttpsError("internal", "An error occurred while setting completed daily challenge.", error);
-    }
-  },
-);
-
-/**
- * Checks if the user has completed the current daily challenge for today.
- * @param request - The request object representing the request context.
- * @param request.data - The request data object containing the user ID.
- * @param request.data.id - The user ID.
- * @return A promise that resolves to true if the user completed today's challenge.
- */
-export const hasCompletedDailyChallenge = onCall(
-  {enforceAppCheck: true},
-  async (request: CallableRequest<{id: string}>): Promise<boolean> => {
-    try {
-      const {id: currentUserId} = validateCallableRequest(
-        HasCompletedDailyChallengeRequestSchema,
-        request.data,
-        "hasCompletedDailyChallenge",
-      );
-
-      const user = await getUser(currentUserId);
-
-      return validateCallableResponse(
-        BooleanResponseSchema,
-        isCompletedToday(user?.lastDailyChallengeCompletedAt),
-        "hasCompletedDailyChallenge",
-      );
-    } catch (error) {
-      if (error instanceof HttpsError) {
-        throw error;
-      }
-      functions.logger.error("Error checking daily challenge status:", error);
-      captureException(error, {
-        functionName: "hasCompletedDailyChallenge",
-      });
-      throw new HttpsError("internal", "An error occurred while checking daily challenge status.", error);
-    }
-  },
-);
-
-/**
  * Gets the current daily challenge data (single question, excluding answer).
  * Returns the daily challenge and the user's progress.
  * Optionally includes the user's completion status if authenticated.
  */
 export const getCurrentDailyChallenge = onCall(
   {
-    enforceAppCheck: true,
-    secrets: ["OPENAI_API_KEY"],
+    ...jestWebCallableOptions,
+    secrets: process.env.JEST_ALLOW_WEB_CALLABLES === "true" ? [] : ["OPENAI_API_KEY"],
   },
   async (request: CallableRequest<unknown>): Promise<GetCurrentDailyChallengeResponse> => {
     try {
@@ -314,7 +239,7 @@ export const getCurrentDailyChallenge = onCall(
  * collection directly when Firestore rules or App Check prevent it.
  */
 export const getCurrentClassicRiddle = onCall(
-  {enforceAppCheck: true},
+  jestWebCallableOptions,
   async (request: CallableRequest<{classicIndex?: number; locale?: string}>): Promise<GetCurrentDailyChallengeResponse> => {
     try {
       if (!request.auth) {
@@ -363,89 +288,6 @@ export const getCurrentClassicRiddle = onCall(
       functions.logger.error("Error getting current classic riddle:", error);
       captureException(error);
       throw new HttpsError("internal", "An error occurred while loading the current classic riddle.", error);
-    }
-  },
-);
-
-/**
- * Advances the user daily challenge progress.
- * For the single-riddle challenge, this marks completion.
- */
-export const advanceDailyChallengeProgress = onCall(
-  {enforceAppCheck: true},
-  async (
-    request: CallableRequest<unknown>,
-  ): Promise<{
-    newQuestionIndex: number;
-    isFullyCompleted: boolean;
-    message: string;
-  }> => {
-    try {
-      if (!request.auth) {
-        throw new HttpsError("unauthenticated", "User must be authenticated to advance progress.");
-      }
-
-      const userId = request.auth.uid;
-
-      const user = await getUser(userId);
-      if (!user) {
-        throw new HttpsError("not-found", "User data not found.");
-      }
-
-      const currentQuestionIndex = user.progress?.dailyChallengeCurrentQuestion || 0;
-      const completedToday = isCompletedToday(user.lastDailyChallengeCompletedAt);
-
-      if (completedToday || currentQuestionIndex >= DAILY_CHALLENGE_QUESTION_COUNT) {
-        return validateCallableResponse(
-          AdvanceDailyChallengeProgressResponseSchema,
-          {
-            newQuestionIndex: DAILY_CHALLENGE_QUESTION_COUNT,
-            isFullyCompleted: true,
-            message: "Daily challenge already completed.",
-          },
-          "advanceDailyChallengeProgress",
-        );
-      }
-
-      const newQuestionIndex = DAILY_CHALLENGE_QUESTION_COUNT;
-      const isFullyCompleted = true;
-
-      // Update progress
-      const userRef = admin.firestore().collection("users").doc(userId);
-      const updates: admin.firestore.UpdateData<{
-        progress: {dailyChallengeCurrentQuestion: number};
-        lastDailyChallengeCompletedAt: admin.firestore.FieldValue;
-      }> = {
-        "progress.dailyChallengeCurrentQuestion": newQuestionIndex,
-      };
-
-      updates.lastDailyChallengeCompletedAt = admin.firestore.FieldValue.serverTimestamp();
-
-      await userRef.update(updates);
-
-      functions.logger.info(
-        `User ${userId} marked daily challenge complete (${newQuestionIndex}/${DAILY_CHALLENGE_QUESTION_COUNT})`,
-      );
-
-      return validateCallableResponse(
-        AdvanceDailyChallengeProgressResponseSchema,
-        {
-          newQuestionIndex,
-          isFullyCompleted,
-          message: "Daily challenge completed! 1 riddle finished.",
-        },
-        "advanceDailyChallengeProgress",
-      );
-    } catch (error) {
-      if (error instanceof HttpsError) {
-        throw error;
-      }
-      functions.logger.error("Error advancing daily challenge progress:", error);
-      captureException(error, {
-        functionName: "advanceDailyChallengeProgress",
-        isAuthenticated: !!request.auth,
-      });
-      throw new HttpsError("internal", "An error occurred while advancing progress.");
     }
   },
 );

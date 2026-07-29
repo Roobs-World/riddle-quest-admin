@@ -17,7 +17,6 @@ const OperationSchema = z.enum([
   "hint",
   "spendCoins",
   "purchase",
-  "rewardedAd",
   "skip",
   "profile",
   "leaderboard",
@@ -29,6 +28,7 @@ export const BridgeUserSchema = z.object({
   email: z.string().email().optional(),
   photoURL: z.string().url().optional(),
   isAnonymous: z.boolean(),
+  platformRegistered: z.boolean().optional(),
 });
 export type BridgeUser = z.infer<typeof BridgeUserSchema>;
 
@@ -42,6 +42,21 @@ export const BridgeProfileSchema = z.object({
   wins: z.number().int().nonnegative(),
   achievements: z.array(z.string()).default([]),
   classicIndex: z.number().int().nonnegative(),
+  avatarUrl: z.string().url().optional(),
+  dailyChallengeIndex: z.number().int().nonnegative().optional(),
+  dailyChallengeCurrentQuestion: z.number().int().nonnegative().optional(),
+  dailyPuzzlesCompleted: z.number().int().nonnegative().optional(),
+  bestStreak: z.number().int().nonnegative().optional(),
+  totalWordsGuessed: z.number().int().nonnegative().optional(),
+  winRate: z.number().nonnegative().optional(),
+  averageGuesses: z.number().nonnegative().optional(),
+  totalScore: z.number().int().nonnegative().optional(),
+  highestLevelClassic: z.number().int().nonnegative().optional(),
+  challengeWins: z.number().int().nonnegative().optional(),
+  totalWins: z.number().int().nonnegative().optional(),
+  totalGuessesInWins: z.number().int().nonnegative().optional(),
+  totalHintsUsed: z.number().int().nonnegative().optional(),
+  hasPurchasedApp: z.boolean().optional(),
 });
 export type BridgeProfile = z.infer<typeof BridgeProfileSchema>;
 
@@ -135,10 +150,17 @@ export const GameRequestPurchaseMessageSchema = envelope(
   }),
 );
 
-export const GameRequestRewardedAdMessageSchema = envelope(
-  "game:requestRewardedAd",
+export const GameLoadLeaderboardMessageSchema = envelope(
+  "game:loadLeaderboard",
   z.object({
-    placement: z.enum(["loss_continue", "coin_shop"]),
+    leaderboardType: z.enum(["xp", "totalWins", "bestStreak"]),
+  }),
+);
+
+export const GameUpdateUsernameMessageSchema = envelope(
+  "game:updateUsername",
+  z.object({
+    username: z.string().trim().min(3).max(24),
   }),
 );
 
@@ -166,7 +188,8 @@ export const GameToHostMessageSchema = z.discriminatedUnion("type", [
   GameRequestHintMessageSchema,
   GameSpendCoinsMessageSchema,
   GameRequestPurchaseMessageSchema,
-  GameRequestRewardedAdMessageSchema,
+  GameLoadLeaderboardMessageSchema,
+  GameUpdateUsernameMessageSchema,
   GameAnalyticsMessageSchema,
   GameErrorMessageSchema,
 ]);
