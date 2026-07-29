@@ -13,6 +13,7 @@ import {scheduleEngagementReminders} from "./engagement";
 import {MockJestPlatform} from "./MockJestPlatform";
 import {recordAuthoritativeCompletion} from "./milestone";
 import type {ProductSummary, PurchaseResult} from "../play/types";
+import {SpinningWheelLoader} from "../play/SpinningWheelLoader";
 
 export function JestPlayApp() {
   const mockRuntime = new URLSearchParams(window.location.search).get("harness") === "jest";
@@ -203,9 +204,9 @@ export function JestPlayApp() {
   }, [platform, session, trackFunnel]);
 
   if (error) return <main className="route-missing"><div><h1>Riddle Quest could not start</h1><p>{error}</p><button onClick={() => window.location.reload()}>Retry</button></div></main>;
-  if (!session) return <main className="route-loading" aria-live="polite">Loading Riddle Quest…</main>;
+  if (!session) return <main className="route-loading"><SpinningWheelLoader /></main>;
   return <>
-    {!session.player.registered && showRegistration ? <aside className="play-alert">
+    {!session.player.registered && showRegistration ? <aside className="play-alert jest-registration-alert">
       <strong>{tr("Profile.GUEST_MODE_TITLE")}</strong>
       {session.entryIntent.customName ? <p>{session.entryIntent.customName}</p> : null}
       <p>{tr("Profile.GUEST_MODE_DESCRIPTION")}</p>

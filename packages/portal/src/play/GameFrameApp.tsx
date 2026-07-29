@@ -4,7 +4,6 @@ import type {GameToHostMessage} from "@qwordly/core/bridge";
 import {BridgeLeaderboardEntrySchema, BridgeProfileSchema} from "@qwordly/core/bridge";
 import {BRIDGE_PROTOCOL_VERSION} from "@qwordly/core/bridge/constants";
 import {splitGraphemes, type Feedback} from "@qwordly/core/game";
-import logoUrl from "../../../../assets/images/main-logo.webp";
 import mascotUrl from "../../../../assets/images-web/riddlequest-r.webp";
 import coinUrl from "../../../../assets/images/coin.svg";
 import backspaceUrl from "../../../../assets/images/backspace-key.svg";
@@ -23,6 +22,7 @@ import {dispatchLocalBridge, GAME_TO_HOST_EVENT, HOST_TO_GAME_EVENT} from "./loc
 import {ACHIEVEMENT_DEFINITIONS, type AchievementPlayerData} from "./achievements";
 import {getNextRankForLevel, getRankForLevel, PLAYER_RANKS} from "./ranks";
 import {GuidanceOverlay} from "./GuidanceOverlay";
+import {SpinningWheelLoader} from "./SpinningWheelLoader";
 
 const SolarSystem = lazy(() => import("./SolarSystem").then((module) => ({default: module.SolarSystem})));
 
@@ -37,6 +37,8 @@ const getStringArray = (value: unknown): string[] =>
   Array.isArray(value) ? value.filter((item): item is string => typeof item === "string") : [];
 
 export function GameFrameApp({localBridge = false}: {localBridge?: boolean} = {}) {
+  const shellRef = useRef<HTMLElement | null>(null);
+  const contentRef = useRef<HTMLDivElement | null>(null);
   const [state, dispatch] = useReducer(gameSessionReducer, undefined, createInitialGameSession);
   const [online, setOnline] = useState(() => (typeof navigator === "undefined" ? true : navigator.onLine));
   const [solarReady, setSolarReady] = useState(false);
@@ -148,6 +150,48 @@ export function GameFrameApp({localBridge = false}: {localBridge?: boolean} = {}
   }, [state.initialized]);
 
   useEffect(() => {
+    const shell = shellRef.current;
+    const content = contentRef.current;
+    if (!shell || !content) {
+      return;
+    }
+
+    let animationFrame = 0;
+    const fitContent = () => {
+      window.cancelAnimationFrame(animationFrame);
+      animationFrame = window.requestAnimationFrame(() => {
+        const availableHeight = shell.clientHeight;
+        const naturalHeight = content.scrollHeight;
+        const scale = availableHeight > 0 && naturalHeight > availableHeight
+          ? availableHeight / naturalHeight
+          : 1;
+        const nextScale = Math.max(0.01, Math.min(1, scale));
+        const nextWidth = `${100 / nextScale}%`;
+        const nextTransform = `scale(${nextScale}) translateX(-50%)`;
+
+        if (content.style.width !== nextWidth) {
+          content.style.width = nextWidth;
+        }
+        if (content.style.transform !== nextTransform) {
+          content.style.transform = nextTransform;
+        }
+        content.dataset.viewportScale = nextScale.toFixed(4);
+      });
+    };
+
+    fitContent();
+    window.addEventListener("resize", fitContent);
+    const observer = new ResizeObserver(fitContent);
+    observer.observe(shell);
+    observer.observe(content);
+    return () => {
+      window.cancelAnimationFrame(animationFrame);
+      window.removeEventListener("resize", fitContent);
+      observer.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
     const handleOnline = () => setOnline(true);
     const handleOffline = () => setOnline(false);
     window.addEventListener("online", handleOnline);
@@ -170,8 +214,8 @@ export function GameFrameApp({localBridge = false}: {localBridge?: boolean} = {}
         type: "game:resize",
         requestId: createRequestId("resize"),
         payload: {
-          width: Math.ceil(document.documentElement.scrollWidth),
-          height: Math.ceil(document.documentElement.scrollHeight),
+          width: Math.ceil(document.documentElement.clientWidth),
+          height: Math.ceil(document.documentElement.clientHeight),
         },
       });
     };
@@ -572,7 +616,7 @@ export function GameFrameApp({localBridge = false}: {localBridge?: boolean} = {}
   }, [postToHost]);
 
   return (
-    <main className={state.paused ? "game-app paused" : "game-app"}>
+    <main ref={shellRef} className={state.paused ? "game-app paused" : "game-app"}>
       {solarReady && (
         <Suspense fallback={null}>
           <SolarSystem paused={state.paused} />
@@ -580,6 +624,7 @@ export function GameFrameApp({localBridge = false}: {localBridge?: boolean} = {}
       )}
       <audio ref={musicRef} src={musicUrl} loop preload="metadata" aria-hidden="true" />
       <div
+        ref={contentRef}
         className="game-content"
         inert={state.modal !== null || guidanceActive ? true : undefined}
         aria-hidden={state.modal !== null || guidanceActive ? true : undefined}
@@ -591,8 +636,7 @@ export function GameFrameApp({localBridge = false}: {localBridge?: boolean} = {}
 
         {!state.riddle ? (
           <section className="game-loading">
-            <img src={logoUrl} alt={tr("WebPortal.APP_TITLE")} />
-            <p>{tr("WebPortal.HOST_STATUS_WAITING")}</p>
+            <SpinningWheelLoader />
           </section>
         ) : (
           <>

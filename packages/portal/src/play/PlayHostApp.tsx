@@ -8,6 +8,7 @@ import {GameFrameApp} from "./GameFrameApp";
 import {dispatchLocalBridge, GAME_TO_HOST_EVENT, HOST_TO_GAME_EVENT} from "./localBridge";
 import {createHostServices, getHostConfigurationWarning, resolveHostServicesMode} from "./services";
 import type {AuthSnapshot, CompletionResult, HostServices, ProductSummary, WebGameMode} from "./types";
+import {SpinningWheelLoader} from "./SpinningWheelLoader";
 type OperationName =
   "loadRiddle" | "completeGame" | "hint" | "spendCoins" | "purchase" | "skip" | "profile" | "leaderboard";
 
@@ -59,6 +60,7 @@ export function PlayHostApp({
   const [frameReady, setFrameReady] = useState(false);
   const [gameMode, setGameMode] = useState<WebGameMode>(initialGameMode ?? "classic");
   const [notice, setNotice] = useState<string | null>(configurationWarning);
+  const [pendingServerOperations, setPendingServerOperations] = useState(0);
   const loadedUserIdRef = useRef<string | null>(null);
   const riddleLoadedRef = useRef(false);
   const playableReportedRef = useRef(false);
@@ -73,6 +75,20 @@ export function PlayHostApp({
         : null,
     [authSnapshot.user, platformPlayerRegistered],
   );
+
+  const withServerActivity = useCallback(async <Result,>(operation: () => Promise<Result>): Promise<Result> => {
+    const startedAt = Date.now();
+    setPendingServerOperations((current) => current + 1);
+    try {
+      return await operation();
+    } finally {
+      const minimumVisibleTime = 180;
+      const remainingTime = Math.max(0, minimumVisibleTime - (Date.now() - startedAt));
+      window.setTimeout(() => {
+        setPendingServerOperations((current) => Math.max(0, current - 1));
+      }, remainingTime);
+    }
+  }, []);
 
   useEffect(() => {
     detectDeviceLanguage(localStorage.getItem("appLanguage") ?? navigator.language);
@@ -128,7 +144,7 @@ export function PlayHostApp({
     async (input: {gameMode: WebGameMode; locale: string; classicIndex?: number}, requestId?: string) => {
       try {
         setGameMode(input.gameMode);
-        const riddle = await services.loadRiddle(input);
+        const riddle = await withServerActivity(() => services.loadRiddle(input));
         riddleLoadedRef.current = true;
         postToGame({
           type: "host:riddleLoaded",
@@ -145,7 +161,7 @@ export function PlayHostApp({
         postOperation(requestId, "loadRiddle", false, undefined, message);
       }
     },
-    [authSnapshot.profile, postOperation, postToGame, services],
+    [authSnapshot.profile, postOperation, postToGame, services, withServerActivity],
   );
   const loadAndPostRiddleRef = useRef(loadAndPostRiddle);
   loadAndPostRiddleRef.current = loadAndPostRiddle;
@@ -183,7 +199,7 @@ export function PlayHostApp({
         },
         completeGame: async (message) => {
           try {
-            const result = await services.completeGame(message.payload);
+            const result = await withServerActivity(() => services.completeGame(message.payload));
             postOperation(message.requestId, "completeGame", true, result);
             onAuthoritativeComplete?.(message.payload, result);
           } catch (error) {
@@ -192,7 +208,7 @@ export function PlayHostApp({
         },
         requestHint: async (message) => {
           try {
-            const result = await services.requestHint(message.payload);
+            const result = await withServerActivity(() => services.requestHint(message.payload));
             postOperation(message.requestId, "hint", true, result);
           } catch (error) {
             postOperation(message.requestId, "hint", false, undefined, getErrorMessage(error));
@@ -201,20 +217,21 @@ export function PlayHostApp({
         spendCoins: async (message) => {
           try {
             if (message.payload.reason === "skip" && message.payload.riddleId && message.payload.gameMode) {
-              const result = await services.skipRiddle({
-                riddleId: message.payload.riddleId,
-                gameMode: message.payload.gameMode,
-              });
+              const {riddleId, gameMode: skipGameMode} = message.payload;
+              const result = await withServerActivity(() => services.skipRiddle({
+                riddleId,
+                gameMode: skipGameMode,
+              }));
               postOperation(message.requestId, "skip", true, result);
               await loadAndPostRiddle({
-                gameMode: message.payload.gameMode,
+                gameMode: skipGameMode,
                 locale,
                 classicIndex: result.newProgress?.classicIndex ?? authSnapshot.profile?.classicIndex,
               });
               return;
             }
 
-            const result = await services.spendCoins(message.payload);
+            const result = await withServerActivity(() => services.spendCoins(message.payload));
             postOperation(message.requestId, "spendCoins", true, result);
           } catch (error) {
             postOperation(
@@ -228,7 +245,7 @@ export function PlayHostApp({
         },
         requestPurchase: async (message) => {
           try {
-            const result = await services.requestPurchase(message.payload.productId);
+            const result = await withServerActivity(() => services.requestPurchase(message.payload.productId));
             applyPurchaseBalance(result);
             setNotice(tr("WebPortal.PURCHASE_COMPLETE", {coins: result.coinsAwarded}));
             postOperation(message.requestId, "purchase", true, result);
@@ -238,7 +255,7 @@ export function PlayHostApp({
         },
         loadLeaderboard: async (message) => {
           try {
-            const entries = await services.loadLeaderboard(message.payload.leaderboardType);
+            const entries = await withServerActivity(() => services.loadLeaderboard(message.payload.leaderboardType));
             postOperation(message.requestId, "leaderboard", true, {
               type: message.payload.leaderboardType,
               entries,
@@ -249,7 +266,7 @@ export function PlayHostApp({
         },
         updateUsername: async (message) => {
           try {
-            const profile = await services.updateUsername(message.payload.username);
+            const profile = await withServerActivity(() => services.updateUsername(message.payload.username));
             postOperation(message.requestId, "profile", true, {profile});
           } catch (error) {
             postOperation(message.requestId, "profile", false, undefined, getErrorMessage(error));
@@ -274,6 +291,7 @@ export function PlayHostApp({
       postOperation,
       sendInit,
       services,
+      withServerActivity,
     ],
   );
 
@@ -353,6 +371,7 @@ export function PlayHostApp({
     <main className="play-game-shell">
       {notice && <div className="play-alert game-shell-alert">{notice}</div>}
       <GameFrameApp localBridge />
+      {pendingServerOperations > 0 ? <SpinningWheelLoader overlay /> : null}
     </main>
   );
 }

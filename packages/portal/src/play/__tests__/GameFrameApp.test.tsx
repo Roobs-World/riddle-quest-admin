@@ -7,6 +7,8 @@ describe("GameFrameApp", () => {
     const html = renderToString(<GameFrameApp />);
 
     expect(html).toContain("game-app");
-    expect(html).toContain("Waiting for the host wrapper");
+    expect(html).toContain('data-testid="preloader"');
+    expect(html).toContain('role="status"');
+    expect(html).toContain('aria-label="Loading"');
   });
 });

@@ -77,6 +77,20 @@ describeBrowser("standalone Jest browser game", () => {
             document.documentElement.scrollHeight <= innerHeight + 1,
         ),
       ).toBe(true);
+      await page.setViewportSize({width: 390, height: 667});
+      await page.waitForFunction(
+        () => (document.querySelector(".game-bottom-navigation")?.getBoundingClientRect().bottom ?? Infinity) <= innerHeight + 1,
+      );
+      expect(
+        await page.evaluate(() => {
+          const navigation = document.querySelector(".game-bottom-navigation")?.getBoundingClientRect();
+          return (
+            document.documentElement.scrollWidth <= innerWidth + 1 &&
+            document.documentElement.scrollHeight <= innerHeight + 1 &&
+            Boolean(navigation && navigation.bottom <= innerHeight + 1)
+          );
+        }),
+      ).toBe(true);
 
       await page.getByRole("button", {name: /^profile$/i}).first().click();
       await page.getByRole("heading", {name: /^profile$/i}).waitFor();
@@ -115,7 +129,19 @@ describeBrowser("standalone Jest browser game", () => {
 
       await page.setViewportSize({width: 844, height: 390});
       await page.keyboard.press("Escape");
-      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
+      await page.waitForFunction(
+        () => (document.querySelector(".game-bottom-navigation")?.getBoundingClientRect().bottom ?? Infinity) <= innerHeight + 1,
+      );
+      expect(
+        await page.evaluate(() => {
+          const navigation = document.querySelector(".game-bottom-navigation")?.getBoundingClientRect();
+          return (
+            document.documentElement.scrollWidth <= innerWidth + 1 &&
+            document.documentElement.scrollHeight <= innerHeight + 1 &&
+            Boolean(navigation && navigation.bottom <= innerHeight + 1)
+          );
+        }),
+      ).toBe(true);
       await page.setViewportSize({width: 1280, height: 800});
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
 

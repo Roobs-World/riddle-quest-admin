@@ -1,5 +1,6 @@
 import {useEffect, useMemo, useState} from "react";
 import logoUrl from "../../../../assets/images/main-logo.webp";
+import {SpinningWheel} from "./SpinningWheelLoader";
 import {tr, useLocale} from "./i18n";
 import type {GameModal, GameSessionState} from "./gameSession";
 
@@ -240,6 +241,7 @@ export function GuidanceOverlay({
     const totalSteps = state.user?.platformRegistered === false ? 3 : 2;
     return (
       <div className="guidance-backdrop" role="presentation">
+        <SpinningWheel />
         <section className="onboarding-card" role="dialog" aria-modal="true" aria-labelledby="onboarding-title">
           <span className="onboarding-progress">{onboardingStep + 1}/{totalSteps}</span>
           {isWelcome ? (
