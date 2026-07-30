@@ -19,6 +19,7 @@ const OperationSchema = z.enum([
   "purchase",
   "skip",
   "profile",
+  "avatar",
   "leaderboard",
 ]);
 
@@ -73,6 +74,7 @@ export type BridgeRiddle = z.infer<typeof BridgeRiddleSchema>;
 export const BridgeLeaderboardEntrySchema = z.object({
   userId: z.string().min(1),
   username: z.string().min(1),
+  avatarUrl: z.string().url().optional(),
   level: z.number().int().positive(),
   xp: z.number().int().nonnegative(),
   totalWins: z.number().int().nonnegative(),
@@ -164,6 +166,16 @@ export const GameUpdateUsernameMessageSchema = envelope(
   }),
 );
 
+export const GameUpdateAvatarMessageSchema = envelope(
+  "game:updateAvatar",
+  z.object({
+    imageDataUrl: z
+      .string()
+      .max(700_000)
+      .regex(/^data:image\/(?:jpeg|png|webp);base64,[A-Za-z0-9+/]+={0,2}$/),
+  }),
+);
+
 export const GameAnalyticsMessageSchema = envelope(
   "game:analytics",
   z.object({
@@ -190,6 +202,7 @@ export const GameToHostMessageSchema = z.discriminatedUnion("type", [
   GameRequestPurchaseMessageSchema,
   GameLoadLeaderboardMessageSchema,
   GameUpdateUsernameMessageSchema,
+  GameUpdateAvatarMessageSchema,
   GameAnalyticsMessageSchema,
   GameErrorMessageSchema,
 ]);

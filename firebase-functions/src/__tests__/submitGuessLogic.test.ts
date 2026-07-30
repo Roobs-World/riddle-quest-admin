@@ -1014,6 +1014,27 @@ describe("handleGuessLogic", () => {
       expect(firestoreService.updateUserCoins).toHaveBeenNthCalledWith(2, authContext.uid, achievementBonus);
     });
 
+    test("adds every awarded point to the persisted total score", async () => {
+      const result = await handleCompleteGameLogic(
+        {
+          riddleId: "riddle-123",
+          gameMode: "classic",
+          attempts: 2,
+          isCorrect: true,
+        },
+        authContext,
+      );
+
+      expect(result.scoreEarned).toBeGreaterThan(0);
+      expect(firestoreService.updateUserStats).toHaveBeenCalledWith(
+        authContext.uid,
+        expect.objectContaining({
+          totalScore: `increment(${result.scoreEarned})`,
+          xp: `increment(${result.xpEarned})`,
+        }),
+      );
+    });
+
     test("should update leaderboard entry when game is won", async () => {
       const requestData = {
         riddleId: "riddle-123",

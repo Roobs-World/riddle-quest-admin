@@ -4,7 +4,11 @@ import {afterEach, beforeEach, describe, expect, it, jest} from "@jest/globals";
 // 1. Mock const declarations
 const mockUpdateUserProfile = jest.fn<(userId: string, profileData: Record<string, unknown>) => Promise<void>>();
 const mockAdminFirestoreUpdate = jest.fn<() => Promise<void>>();
-const mockAdminFirestoreDoc = jest.fn((_id?: string) => ({update: mockAdminFirestoreUpdate}));
+const mockAdminFirestoreSet = jest.fn<() => Promise<void>>();
+const mockAdminFirestoreDoc = jest.fn((_id?: string) => ({
+  update: mockAdminFirestoreUpdate,
+  set: mockAdminFirestoreSet,
+}));
 const mockExistingUsersGet = jest.fn();
 const mockAdminFirestoreCollection = jest.fn((_path?: string) => ({
   doc: mockAdminFirestoreDoc,
@@ -17,6 +21,10 @@ const mockAdminFirestoreCollection = jest.fn((_path?: string) => ({
 
 const mockLoggerInfo = jest.fn<(...args: unknown[]) => void>();
 const mockLoggerError = jest.fn<(...args: unknown[]) => void>();
+const mockStorageSave = jest.fn<() => Promise<void>>();
+const mockStorageFile = jest.fn((_path?: string) => ({
+  save: mockStorageSave,
+}));
 const mockOnCallInvocations: Array<[unknown, unknown?]> = [];
 const mockOnCall = jest.fn((optionsOrHandler: unknown, handler?: unknown) => {
   mockOnCallInvocations.push([optionsOrHandler, handler]);
@@ -49,6 +57,12 @@ jest.mock("firebase-admin", () => ({
   firestore: () => ({
     collection: (path: string) => mockAdminFirestoreCollection(path),
   }),
+  storage: () => ({
+    bucket: () => ({
+      name: "test-bucket",
+      file: (path: string) => mockStorageFile(path),
+    }),
+  }),
 }));
 
 interface MockOnCallHandler {
@@ -66,7 +80,7 @@ jest.mock("firebase-functions/v2/https", () => {
 });
 
 // 4. Import the module under test
-import {updateUsername} from "../profile";
+import {updateAvatar, updateUsername} from "../profile";
 
 // 5. Describe block
 describe("Profile Cloud Functions", () => {
@@ -79,7 +93,10 @@ describe("Profile Cloud Functions", () => {
   });
 
   it("enables App Check on profile update callables", () => {
-    expect(mockOnCallInvocations).toEqual([[{enforceAppCheck: true}, expect.any(Function)]]);
+    expect(mockOnCallInvocations).toEqual([
+      [{enforceAppCheck: true}, expect.any(Function)],
+      [{enforceAppCheck: true}, expect.any(Function)],
+    ]);
   });
 
   describe("updateUsername", () => {
@@ -132,6 +149,47 @@ describe("Profile Cloud Functions", () => {
       await expect((updateUsername as any)(request)).rejects.toThrow(
         new HttpsError("already-exists", "Username already taken."),
       );
+    });
+  });
+
+  describe("updateAvatar", () => {
+    const pngDataUrl = `data:image/png;base64,${Buffer.from([
+      0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a,
+    ]).toString("base64")}`;
+
+    it("uploads a registered Jest player's avatar and updates profile records", async () => {
+      mockStorageSave.mockResolvedValue(undefined);
+      mockUpdateUserProfile.mockResolvedValue(undefined);
+      mockAdminFirestoreSet.mockResolvedValue(undefined);
+      const request = {
+        auth: {uid: "jest_user", token: {jestRegistered: true}},
+        data: {imageDataUrl: pngDataUrl},
+      } as unknown as CallableRequest<{imageDataUrl: string}>;
+
+      const result = await (updateAvatar as any)(request);
+
+      expect(mockStorageFile).toHaveBeenCalledWith("avatars/jest_user/profile");
+      expect(mockStorageSave).toHaveBeenCalledWith(
+        expect.any(Buffer),
+        expect.objectContaining({resumable: false, metadata: expect.objectContaining({contentType: "image/png"})}),
+      );
+      expect(mockUpdateUserProfile).toHaveBeenCalledWith(
+        "jest_user",
+        expect.objectContaining({avatarUrl: expect.stringContaining("firebasestorage.googleapis.com")}),
+      );
+      expect(result).toEqual(expect.objectContaining({success: true, avatarUrl: expect.any(String)}));
+    });
+
+    it("rejects guest players before accepting avatar data", async () => {
+      const request = {
+        auth: {uid: "jest_guest", token: {jestRegistered: false}},
+        data: {imageDataUrl: pngDataUrl},
+      } as unknown as CallableRequest<{imageDataUrl: string}>;
+
+      await expect((updateAvatar as any)(request)).rejects.toThrow(
+        new HttpsError("failed-precondition", "Register with Jest before uploading a profile photo."),
+      );
+      expect(mockStorageSave).not.toHaveBeenCalled();
     });
   });
 });

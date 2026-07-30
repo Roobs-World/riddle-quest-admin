@@ -26,18 +26,28 @@ export async function startJestSession(
     platform.setLoadingProgress(phaseProgress[1]);
     const signed = await platform.getPlayerSigned();
     const entryIntent = platform.getEntryIntent();
-    platform.setLoadingProgress(phaseProgress[2]);
-    onProgress?.({stage: "progress", progress: phaseProgress[2]});
+    const preferences = platform.readPreferences();
+    let playerData: JestSession["playerData"] = null;
+    let profile: JestSession["profile"] = null;
+
+    if (signed.player.registered) {
+      platform.setLoadingProgress(phaseProgress[2]);
+      onProgress?.({stage: "progress", progress: phaseProgress[2]});
+      playerData = platform.readPlayerData();
+      profile = await platform.getProfile();
+    }
+
+    platform.setLoadingProgress(phaseProgress[3]);
+    onProgress?.({stage: "game", progress: phaseProgress[3]});
     const identity = await backend.exchangeIdentity(signed.playerSigned);
     await authenticateFirebase(identity.customToken);
-    platform.setLoadingProgress(phaseProgress[3]);
-    const recovered = await purchases.reconcile(signed.player.playerId);
-    if (recovered.status !== "success") return recovered;
     platform.setLoadingProgress(phaseProgress[4]);
-    onProgress?.({stage: "game", progress: phaseProgress[4]});
-    const preferences = platform.readPreferences();
-    const playerData = platform.readPlayerData();
-    const profile = await platform.getProfile();
+
+    if (signed.player.registered) {
+      const recovered = await purchases.reconcile(signed.player.playerId);
+      if (recovered.status !== "success") return recovered;
+    }
+
     platform.setLoadingProgress(phaseProgress[5]);
     return {
       status: "success",

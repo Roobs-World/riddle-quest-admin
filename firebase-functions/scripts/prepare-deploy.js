@@ -32,16 +32,24 @@ function assertCopiedArtifactIsComplete(target) {
 }
 
 function syncInstalledPackageCopy(targetCorePackageDir) {
-  const pnpmDir = path.join(functionsNodeModulesDir, ".pnpm");
-  if (!fs.existsSync(pnpmDir)) {
-    return;
+  const installedPackageLink = path.join(functionsNodeModulesDir, "@qwordly", "core");
+  const packageDirs = new Set();
+  if (fs.existsSync(installedPackageLink)) {
+    packageDirs.add(fs.realpathSync(installedPackageLink));
   }
 
-  const packageDirs = fs
-    .readdirSync(pnpmDir, {withFileTypes: true})
-    .filter((entry) => entry.isDirectory() && entry.name.startsWith("@qwordly+core@file+"))
-    .map((entry) => path.join(pnpmDir, entry.name, "node_modules", "@qwordly", "core"))
-    .filter((candidate) => fs.existsSync(candidate));
+  const pnpmDir = path.join(functionsNodeModulesDir, ".pnpm");
+  if (fs.existsSync(pnpmDir)) {
+    for (const entry of fs.readdirSync(pnpmDir, {withFileTypes: true})) {
+      if (!entry.isDirectory() || !entry.name.startsWith("@qwordly+core@file+")) {
+        continue;
+      }
+      const candidate = path.join(pnpmDir, entry.name, "node_modules", "@qwordly", "core");
+      if (fs.existsSync(candidate)) {
+        packageDirs.add(fs.realpathSync(candidate));
+      }
+    }
+  }
 
   for (const installedCoreDir of packageDirs) {
     fs.copyFileSync(path.join(targetCorePackageDir, "package.json"), path.join(installedCoreDir, "package.json"));

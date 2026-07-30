@@ -2,7 +2,10 @@
   "Leaderboard": {
     "GUEST_UNAVAILABLE": "Masuk untuk membandingkan XP, kemenangan, dan pukulan di papan peringkat.",
     "LOAD_ERROR": "Tidak dapat memuat papan peringkat. Silakan coba lagi.",
+    "NEXT_PAGE": "Halaman berikutnya",
     "NO_SCORES_YET": "Belum ada skor — jadilah yang pertama masuk papan!",
+    "PAGINATION_LABEL": "Halaman papan peringkat",
+    "PREVIOUS_PAGE": "Halaman sebelumnya",
     "RETRY_BUTTON": "Coba lagi",
     "TAB_STREAK": "Garis",
     "TAB_WINS": "Menang",

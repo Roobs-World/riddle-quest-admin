@@ -345,6 +345,7 @@ export async function handleGuessLogic(
       const priorLevel = currentStats.level ?? getLevelFromXp(currentXp);
       const newLevel = getLevelFromXp(newXp);
       statsUpdate.xp = admin.firestore.FieldValue.increment(scoreEarned);
+      statsUpdate.totalScore = admin.firestore.FieldValue.increment(scoreEarned);
       if (newLevel !== priorLevel) {
         statsUpdate.level = newLevel;
       }
@@ -574,6 +575,7 @@ export async function handleCompleteGameLogic(
       const attemptsBonus = Math.max(0, (maxAttempts - attempts + 1) * 10);
       xpEarned = baseScore + attemptsBonus;
       statsUpdate.xp = admin.firestore.FieldValue.increment(xpEarned);
+      statsUpdate.totalScore = admin.firestore.FieldValue.increment(xpEarned);
       newXp = (currentStats.xp ?? 0) + xpEarned;
       const previousLevel = currentStats.level ?? getLevelFromXp(currentStats.xp ?? 0);
       newLevel = getLevelFromXp(newXp);
@@ -722,7 +724,7 @@ export async function handleCompleteGameLogic(
 
 export const completeGame = onCall<CompleteGameRequestData, Promise<CompleteGameResponseData>>(
   {
-    secrets: process.env.JEST_ALLOW_WEB_CALLABLES === "true" ? [] : ["OPENAI_API_KEY"],
+    secrets: ["OPENAI_API_KEY"],
   } as CallableOptions,
   async (request) => {
     if (!request.auth) {

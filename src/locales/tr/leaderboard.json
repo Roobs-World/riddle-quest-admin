@@ -2,7 +2,10 @@
   "Leaderboard": {
     "GUEST_UNAVAILABLE": "Liderlik tablosunda XP'yi, galibiyetleri ve serileri karşılaştırmak için oturum açın.",
     "LOAD_ERROR": "Skor tablosu yüklenemedi. Lütfen tekrar deneyin.",
+    "NEXT_PAGE": "Sonraki sayfa",
     "NO_SCORES_YET": "Henüz puan yok — tahtaya çıkan ilk kişi olun!",
+    "PAGINATION_LABEL": "Liderlik tablosu sayfaları",
+    "PREVIOUS_PAGE": "Önceki sayfa",
     "RETRY_BUTTON": "Yeniden deneyin",
     "TAB_STREAK": "Seri",
     "TAB_WINS": "Galibiyet",

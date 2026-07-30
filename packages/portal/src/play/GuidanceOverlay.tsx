@@ -35,6 +35,8 @@ const PROFILE_TOUR: TooltipId[] = [
   "profileLeaderboard",
 ];
 
+const TOOLTIP_TOUR_VERSION = "v2";
+
 const tooltipKeys: Record<TooltipId, [string, string]> = {
   submitAnswer: ["Tooltips.SUBMIT_ANSWER_TITLE", "Tooltips.SUBMIT_ANSWER_BODY"],
   gameCoins: ["Tooltips.GAME_COINS_TITLE", "Tooltips.GAME_COINS_BODY"],
@@ -74,6 +76,8 @@ const tooltipSelector: Partial<Record<TooltipId, string>> = {
 };
 
 const storageKey = (kind: string, userId?: string) => `riddleQuest:${kind}:${userId ?? "anonymous"}`;
+const tooltipTourStorageKey = (tourName: string, userId?: string) =>
+  storageKey(`tooltipSequenceSeen:${tourName}:${TOOLTIP_TOUR_VERSION}`, userId);
 
 export function GuidanceOverlay({
   state,
@@ -143,7 +147,7 @@ export function GuidanceOverlay({
       setOnboardingStep(0);
       return;
     }
-    if (localStorage.getItem(storageKey("tooltipSequenceSeen:gameTour", userId)) !== "seen") {
+    if (localStorage.getItem(tooltipTourStorageKey("gameTour", userId)) !== "seen") {
       setSequence(GAME_TOUR);
       setSequenceName("gameTour");
       setSequenceIndex(0);
@@ -155,7 +159,7 @@ export function GuidanceOverlay({
       modal === "profile" &&
       onboardingStep === null &&
       sequence.length === 0 &&
-      localStorage.getItem(storageKey("tooltipSequenceSeen:profileTour", userId)) !== "seen"
+      localStorage.getItem(tooltipTourStorageKey("profileTour", userId)) !== "seen"
     ) {
       const timer = window.setTimeout(() => {
         setSequence(PROFILE_TOUR);
@@ -171,7 +175,7 @@ export function GuidanceOverlay({
       onboardingStep !== null ||
       sequence.length > 0 ||
       localStorage.getItem(storageKey("onboarding", userId)) !== "seen" ||
-      localStorage.getItem(storageKey("tooltipSequenceSeen:gameTour", userId)) !== "seen"
+      localStorage.getItem(tooltipTourStorageKey("gameTour", userId)) !== "seen"
     ) {
       return;
     }
@@ -259,7 +263,7 @@ export function GuidanceOverlay({
     if (sequenceName?.startsWith("contextual:")) {
       localStorage.setItem(storageKey(`tooltipSeen:${sequenceName.slice("contextual:".length)}`, userId), "seen");
     } else if (sequenceName) {
-      localStorage.setItem(storageKey(`tooltipSequenceSeen:${sequenceName}`, userId), "seen");
+      localStorage.setItem(tooltipTourStorageKey(sequenceName, userId), "seen");
     }
     setSequence([]);
     setSequenceName(null);

@@ -1,5 +1,8 @@
 import {onSchedule, type ScheduledEvent} from "firebase-functions/v2/scheduler";
-import {generateLocalizedTodaysDailyChallenge as generateTodaysDailyRiddle} from "./riddleGeneration";
+import {
+  generateLocalizedTodaysDailyChallenge as generateTodaysDailyRiddle,
+  initializeLocalizedRiddleDatabaseIfEmpty,
+} from "./riddleGeneration";
 import * as functions from "firebase-functions";
 import {captureException} from "./sentry";
 
@@ -14,6 +17,10 @@ export const scheduledTaskHandler = async (context: ScheduledEvent) => {
     functions.logger.info(
       `Starting localized daily riddle generation for ${todayDateString} into localizedRiddles/{locale}/riddles/current...`,
     );
+
+    // Keep the localized classic catalog recoverable after an intentional
+    // reset or an empty-database deployment.
+    await initializeLocalizedRiddleDatabaseIfEmpty(20);
 
     // Generate (or validate) today's single localized daily riddle for each supported locale.
     await generateTodaysDailyRiddle(false); // forceGenerate = false
@@ -41,7 +48,9 @@ export const dailyChallengeScheduler = onSchedule(
   {
     schedule: "0 0 * * *", // Runs once daily at 00:00 UTC
     timeZone: "UTC",
-    secrets: process.env.JEST_ALLOW_WEB_CALLABLES === "true" ? [] : ["OPENAI_API_KEY"],
+    timeoutSeconds: 1800,
+    memory: "512MiB",
+    secrets: ["OPENAI_API_KEY"],
   },
   scheduledTaskHandler, // Use the exported handler here
 );

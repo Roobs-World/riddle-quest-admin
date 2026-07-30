@@ -128,7 +128,7 @@ async function getFreshDailyChallengeDoc(locale: string = "en"): Promise<{
 export const getCurrentDailyChallenge = onCall(
   {
     ...jestWebCallableOptions,
-    secrets: process.env.JEST_ALLOW_WEB_CALLABLES === "true" ? [] : ["OPENAI_API_KEY"],
+    secrets: ["OPENAI_API_KEY"],
   },
   async (request: CallableRequest<unknown>): Promise<GetCurrentDailyChallengeResponse> => {
     try {

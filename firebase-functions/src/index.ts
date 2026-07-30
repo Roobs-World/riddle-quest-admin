@@ -18,7 +18,7 @@ import {
   getCurrentDailyChallenge,
   getCurrentClassicRiddle,
 } from "./dailyChallenge";
-import {updateUsername} from "./profile";
+import {updateAvatar, updateUsername} from "./profile";
 import {completeGame} from "./submitGuessLogic";
 import {dailyChallengeScheduler} from "./dailyScheduler";
 import {getLeaderboard} from "./leaderboard";
@@ -30,6 +30,7 @@ export {
   getCurrentDailyChallenge,
   getCurrentClassicRiddle,
   updateUsername,
+  updateAvatar,
   completeGame,
   dailyChallengeScheduler,
   getLeaderboard,

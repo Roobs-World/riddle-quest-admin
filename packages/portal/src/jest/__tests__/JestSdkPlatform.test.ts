@@ -1,4 +1,30 @@
 import {JestSdkPlatform} from "../JestSdkPlatform";
+import type {BridgeProfile} from "@qwordly/core/bridge";
+
+const completeProfile: BridgeProfile = {
+  username: "Nova",
+  coins: 425,
+  level: 6,
+  xp: 740,
+  winStreak: 4,
+  gamesPlayed: 12,
+  wins: 8,
+  achievements: ["first_win", "wins_5"],
+  classicIndex: 9,
+  dailyChallengeIndex: 3,
+  dailyChallengeCurrentQuestion: 2,
+  dailyPuzzlesCompleted: 5,
+  bestStreak: 7,
+  totalWordsGuessed: 51,
+  winRate: 66.7,
+  averageGuesses: 3.2,
+  totalScore: 1400,
+  highestLevelClassic: 9,
+  challengeWins: 3,
+  totalWins: 8,
+  totalGuessesInWins: 26,
+  totalHintsUsed: 2,
+};
 
 const sdk = () => ({
   init: jest.fn().mockResolvedValue(undefined), getPlayer: jest.fn(() => ({playerId: "p1", registered: false})),
@@ -26,6 +52,7 @@ it("stores only low-integrity preferences", () => expect(new JestSdkPlatform(sdk
 }));
 it("loads a versioned player snapshot from the Jest player store", () => {
   const mock = sdk();
+  mock.getPlayer.mockReturnValue({playerId: "p1", registered: true});
   const activeGame = {
     schemaVersion: 1,
     savedAt: 10,
@@ -42,7 +69,7 @@ it("loads a versioned player snapshot from the Jest player store", () => {
     riddleQuestPlayerState: {
       schemaVersion: 1,
       updatedAt: 11,
-      profile: {coins: 10},
+      profile: completeProfile,
       activeGame,
     },
   });
@@ -50,8 +77,24 @@ it("loads a versioned player snapshot from the Jest player store", () => {
   expect(new JestSdkPlatform(mock).readPlayerData()).toEqual({
     schemaVersion: 1,
     updatedAt: 11,
-    profile: {coins: 10},
+    profile: completeProfile,
     activeGame,
+  });
+});
+it("discards an incomplete Jest profile instead of restoring partial statistics", () => {
+  const mock = sdk();
+  mock.getPlayer.mockReturnValue({playerId: "p1", registered: true});
+  mock.data.getAll.mockReturnValue({
+    riddleQuestPlayerState: {
+      schemaVersion: 1,
+      updatedAt: 11,
+      profile: {username: "Partial", coins: 10},
+    },
+  });
+
+  expect(new JestSdkPlatform(mock).readPlayerData()).toEqual({
+    schemaVersion: 1,
+    updatedAt: 11,
   });
 });
 it("wires the custom registration overlay actions and options", () => {
@@ -75,6 +118,7 @@ it("wires the custom registration overlay actions and options", () => {
 });
 it("rejects unknown player snapshot versions", () => {
   const mock = sdk();
+  mock.getPlayer.mockReturnValue({playerId: "p1", registered: true});
   mock.data.getAll.mockReturnValue({
     riddleQuestPlayerState: {schemaVersion: 2, updatedAt: 11},
   });
@@ -82,10 +126,23 @@ it("rejects unknown player snapshot versions", () => {
 });
 it("flushes player snapshot writes to Jest", async () => {
   const mock = sdk();
-  const playerData = {schemaVersion: 1 as const, updatedAt: 11};
+  mock.getPlayer.mockReturnValue({playerId: "p1", registered: true});
+  const playerData = {schemaVersion: 1 as const, updatedAt: 11, profile: completeProfile};
   await new JestSdkPlatform(mock).writePlayerData(playerData);
   expect(mock.data.set).toHaveBeenCalledWith("riddleQuestPlayerState", playerData);
   expect(mock.data.flush).toHaveBeenCalledTimes(1);
+});
+it("does not read or write player snapshots for guests", async () => {
+  const mock = sdk();
+  const platform = new JestSdkPlatform(mock);
+  const playerData = {schemaVersion: 1 as const, updatedAt: 11};
+
+  expect(platform.readPlayerData()).toBeNull();
+  await platform.writePlayerData(playerData);
+
+  expect(mock.data.getAll).not.toHaveBeenCalled();
+  expect(mock.data.set).not.toHaveBeenCalled();
+  expect(mock.data.flush).not.toHaveBeenCalled();
 });
 it("does not schedule notifications for guests", async () => expect(await new JestSdkPlatform(sdk()).scheduleNotification({identifier: "daily", scheduledInDays: 1, body: "Play", ctaText: "Open"})).toEqual({status: "unavailable", message: "Registration is required"}));
 it("distinguishes purchase cancellation", async () => { const mock = sdk(); mock.payments.beginPurchase.mockResolvedValue({result: "cancel"}); expect(await new JestSdkPlatform(mock).beginPurchase("coins")).toEqual({status: "cancelled"}); });

@@ -132,4 +132,29 @@ describe("game session reducer", () => {
     expect(state.currentLetters).toEqual(["P", "X", "A", "", "O"]);
     expect(state.hintRevealedIndices).toEqual([2]);
   });
+
+  it("clears leaderboard rows while a fresh leaderboard request is loading", () => {
+    const existingEntry = {
+      userId: "player-1",
+      username: "Previous result",
+      level: 3,
+      xp: 420,
+      totalWins: 5,
+      bestStreak: 2,
+    };
+    let state: GameSessionState = {
+      ...createInitialGameSession(),
+      leaderboard: [existingEntry],
+    };
+
+    state = reduce(state, {type: "openModal", modal: "leaderboard"});
+
+    expect(state.leaderboard).toEqual([]);
+    expect(state.leaderboardLoading).toBe(true);
+
+    state = reduce(state, {type: "leaderboardLoaded", leaderboardType: "xp", entries: [existingEntry]});
+
+    expect(state.leaderboard).toEqual([existingEntry]);
+    expect(state.leaderboardLoading).toBe(false);
+  });
 });

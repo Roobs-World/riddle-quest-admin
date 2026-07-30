@@ -4,16 +4,45 @@ import {startJestSession} from "../startup";
 it("runs identity, Firebase auth and recovery in startup order", async () => {
   const order: string[] = [];
   const platform = new MockJestPlatform();
+  platform.player.registered = true;
+  const savedPlayerData = {schemaVersion: 1 as const, updatedAt: 10};
   platform.init = async () => { order.push("init"); return {status: "success", value: undefined}; };
   platform.getPlayerSigned = async () => { order.push("signed"); return {player: platform.player, playerSigned: "signed"}; };
-  platform.readPlayerData = () => { order.push("playerData"); return null; };
+  platform.readPreferences = () => { order.push("preferences"); return {}; };
+  platform.readPlayerData = () => { order.push("playerData"); return savedPlayerData; };
   platform.getProfile = async () => { order.push("profile"); return null; };
   const backend = {exchangeIdentity: async () => { order.push("exchange"); return {customToken: "firebase", uid: "uid"}; }};
   const purchases = {reconcile: async () => { order.push("recover"); return {status: "success", value: 0}; }};
   const result = await startJestSession(platform, backend as never, purchases as never, async () => { order.push("firebase"); });
-  expect(result).toMatchObject({status: "success", value: {firebaseAuthenticated: true, playerData: null}});
-  expect(order).toEqual(["init", "signed", "exchange", "firebase", "recover", "playerData", "profile"]);
+  expect(result).toMatchObject({status: "success", value: {firebaseAuthenticated: true, playerData: savedPlayerData}});
+  expect(order).toEqual(["init", "signed", "preferences", "playerData", "profile", "exchange", "firebase", "recover"]);
   expect(platform.progress).toEqual([5, 15, 28, 42, 58, 72]);
+});
+
+it("skips saved progress, profile and purchase recovery for guests", async () => {
+  const order: string[] = [];
+  const updates: string[] = [];
+  const platform = new MockJestPlatform();
+  platform.readPreferences = () => { order.push("preferences"); return {}; };
+  platform.readPlayerData = () => { order.push("playerData"); return null; };
+  platform.getProfile = async () => { order.push("profile"); return null; };
+  const backend = {exchangeIdentity: async () => { order.push("exchange"); return {customToken: "firebase", uid: "uid"}; }};
+  const purchases = {reconcile: async () => { order.push("recover"); return {status: "success", value: 0}; }};
+
+  const result = await startJestSession(
+    platform,
+    backend as never,
+    purchases as never,
+    async () => { order.push("firebase"); },
+    (update) => updates.push(update.stage),
+  );
+
+  expect(result).toMatchObject({
+    status: "success",
+    value: {player: {registered: false}, playerData: null, profile: null},
+  });
+  expect(order).toEqual(["preferences", "exchange", "firebase"]);
+  expect(updates).toEqual(["player", "game"]);
 });
 
 it("returns retryable failure without claiming readiness", async () => {

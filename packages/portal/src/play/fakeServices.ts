@@ -58,8 +58,25 @@ const createFakeProfile = (): BridgeProfile => ({
 
 const leaderboardRows: BridgeLeaderboardEntry[] = [
   {userId: "jest-guest", username: "Guest Solver", level: 3, xp: 420, totalWins: 5, bestStreak: 2},
-  {userId: "mira", username: "Mira", level: 8, xp: 2220, totalWins: 29, bestStreak: 9},
+  {
+    userId: "mira",
+    username: "Mira",
+    avatarUrl:
+      "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMzIiIGZpbGw9IiM4YzVkYmUiLz48dGV4dCB4PSIzMiIgeT0iNDEiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMjgiIGZpbGw9IndoaXRlIj5NPC90ZXh0Pjwvc3ZnPg==",
+    level: 8,
+    xp: 2220,
+    totalWins: 29,
+    bestStreak: 9,
+  },
   {userId: "tal", username: "Tal", level: 6, xp: 1540, totalWins: 21, bestStreak: 6},
+  ...Array.from({length: 20}, (_, index) => ({
+    userId: `solver-${index + 1}`,
+    username: `Solver ${index + 1}`,
+    level: 2 + (index % 7),
+    xp: 360 + index * 85,
+    totalWins: 4 + index,
+    bestStreak: 1 + (index % 11),
+  })),
 ];
 
 export const createFakeHostServices = ({
@@ -122,17 +139,37 @@ export const createFakeHostServices = ({
     async loadProfile() {
       return snapshot.profile;
     },
-    async completeGame({isCorrect, gameMode}) {
+    async completeGame({isCorrect, gameMode, attempts}) {
       const profile = snapshot.profile;
       const coinsEarned = isCorrect ? (gameMode === "challenge" ? 75 : 50) : 0;
       const nextClassicIndex = gameMode === "classic" && isCorrect ? (profile?.classicIndex ?? 1) + 1 : profile?.classicIndex;
+      const gamesPlayed = (profile?.gamesPlayed ?? 0) + 1;
+      const totalWins = (profile?.totalWins ?? profile?.wins ?? 0) + (isCorrect ? 1 : 0);
+      const totalGuessesInWins = (profile?.totalGuessesInWins ?? 0) + (isCorrect ? attempts : 0);
+      const challengeWinStreak =
+        gameMode === "challenge" ? (isCorrect ? (profile?.winStreak ?? 0) + 1 : 0) : (profile?.winStreak ?? 0);
+      const scoreEarned = isCorrect ? 90 : 0;
       const nextProfile = updateProfile({
         coins: (profile?.coins ?? 0) + coinsEarned,
-        gamesPlayed: (profile?.gamesPlayed ?? 0) + 1,
+        gamesPlayed,
         wins: (profile?.wins ?? 0) + (isCorrect ? 1 : 0),
-        winStreak: isCorrect ? (profile?.winStreak ?? 0) + 1 : 0,
-        xp: (profile?.xp ?? 0) + (isCorrect ? 90 : 20),
+        totalWins,
+        challengeWins: (profile?.challengeWins ?? 0) + (isCorrect && gameMode === "challenge" ? 1 : 0),
+        dailyPuzzlesCompleted:
+          (profile?.dailyPuzzlesCompleted ?? 0) + (isCorrect && gameMode === "challenge" ? 1 : 0),
+        winStreak: challengeWinStreak,
+        bestStreak: Math.max(profile?.bestStreak ?? 0, challengeWinStreak),
+        totalWordsGuessed: (profile?.totalWordsGuessed ?? 0) + attempts,
+        totalGuessesInWins,
+        winRate: gamesPlayed > 0 ? Number(((totalWins / gamesPlayed) * 100).toFixed(2)) : 0,
+        averageGuesses: totalWins > 0 ? Number((totalGuessesInWins / totalWins).toFixed(2)) : 0,
+        totalScore: (profile?.totalScore ?? 0) + scoreEarned,
+        xp: (profile?.xp ?? 0) + scoreEarned,
         classicIndex: nextClassicIndex ?? 1,
+        highestLevelClassic:
+          gameMode === "classic" && isCorrect
+            ? Math.max(profile?.highestLevelClassic ?? 0, profile?.classicIndex ?? 1)
+            : (profile?.highestLevelClassic ?? 0),
       });
 
       return {
@@ -157,6 +194,7 @@ export const createFakeHostServices = ({
       }
 
       const newCoins = spend(50);
+      updateProfile({totalHintsUsed: (snapshot.profile?.totalHintsUsed ?? 0) + 1});
       return {
         revealedLetter: answerLetters[revealIndex],
         index: revealIndex,
@@ -197,6 +235,7 @@ export const createFakeHostServices = ({
       return result;
     },
     async loadLeaderboard(type: LeaderboardType) {
+      await new Promise((resolve) => window.setTimeout(resolve, 250));
       const rows = [...leaderboardRows];
       if (type === "totalWins") {
         return rows.sort((left, right) => right.totalWins - left.totalWins);
@@ -208,6 +247,9 @@ export const createFakeHostServices = ({
     },
     async updateUsername(username) {
       return updateProfile({username});
+    },
+    async updateAvatar(imageDataUrl) {
+      return updateProfile({avatarUrl: imageDataUrl});
     },
   };
 };

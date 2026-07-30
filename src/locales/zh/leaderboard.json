@@ -2,7 +2,10 @@
   "Leaderboard": {
     "GUEST_UNAVAILABLE": "登录以比较排行榜上的 XP、胜场数和连胜数。",
     "LOAD_ERROR": "无法加载排行榜。请再试一次。",
+    "NEXT_PAGE": "下一页",
     "NO_SCORES_YET": "尚未得分 — 成为第一个登上棋盘的人！",
+    "PAGINATION_LABEL": "排行榜页面",
+    "PREVIOUS_PAGE": "上一页",
     "RETRY_BUTTON": "重试",
     "TAB_STREAK": "条纹",
     "TAB_WINS": "胜利",

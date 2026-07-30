@@ -11,6 +11,7 @@ import {
   loadUserDocument,
   skipRiddle,
   spendCoins,
+  updateAvatar as updateAvatarCallable,
   updateUsername as updateUsernameCallable,
   type CurrentRiddleResponse,
 } from "../firebase";
@@ -129,6 +130,15 @@ export const createFirebaseHostServices = (): HostServices => {
     },
     async updateUsername(username) {
       await updateUsernameCallable({username});
+      if (!latestSnapshot.user) {
+        return null;
+      }
+      const profile = await reloadProfile(latestSnapshot.user);
+      emit({user: latestSnapshot.user, profile});
+      return profile;
+    },
+    async updateAvatar(imageDataUrl) {
+      await updateAvatarCallable({imageDataUrl});
       if (!latestSnapshot.user) {
         return null;
       }

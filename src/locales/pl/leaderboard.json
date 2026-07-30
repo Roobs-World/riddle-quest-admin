@@ -2,7 +2,10 @@
   "Leaderboard": {
     "GUEST_UNAVAILABLE": "Zaloguj się, aby porównać XP, zwycięstwa i passy w tabeli liderów.",
     "LOAD_ERROR": "Nie można wczytać tabeli wyników. Spróbuj ponownie.",
+    "NEXT_PAGE": "Następna strona",
     "NO_SCORES_YET": "Nie ma jeszcze żadnych punktów — bądź pierwszym, który dotrze na planszę!",
+    "PAGINATION_LABEL": "Strony tabeli wyników",
+    "PREVIOUS_PAGE": "Poprzednia strona",
     "RETRY_BUTTON": "Ponów próbę",
     "TAB_STREAK": "Pasemko",
     "TAB_WINS": "Wygrane",

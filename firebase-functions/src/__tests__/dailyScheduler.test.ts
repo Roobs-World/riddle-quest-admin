@@ -77,9 +77,13 @@ jest.mock("firebase-admin", () => {
 
 jest.mock("../riddleGeneration", () => ({
   generateLocalizedTodaysDailyChallenge: jest.fn(),
+  initializeLocalizedRiddleDatabaseIfEmpty: jest.fn(),
 }));
 const mockGenerateTodaysDailyChallenge = jest.mocked(
   require("../riddleGeneration").generateLocalizedTodaysDailyChallenge,
+);
+const mockInitializeLocalizedRiddleDatabase = jest.mocked(
+  require("../riddleGeneration").initializeLocalizedRiddleDatabaseIfEmpty,
 );
 
 // Mock firebase-functions/v2/scheduler (partially, we are testing the handler function directly)
@@ -128,6 +132,7 @@ describe("dailyChallengeScheduler", () => {
     mockCollectionGet.mockReset();
     mockRiddleDocSet.mockReset();
     mockGenerateTodaysDailyChallenge.mockReset();
+    mockInitializeLocalizedRiddleDatabase.mockReset();
     mockLogger.info.mockReset();
     mockLogger.warn.mockReset();
     mockLogger.error.mockReset();
@@ -137,6 +142,7 @@ describe("dailyChallengeScheduler", () => {
     mockFirestoreGet.mockResolvedValue({exists: false, data: () => undefined} as MockFirestoreDocumentSnapshot<any>);
     mockFirestoreSet.mockResolvedValue(undefined);
     mockRiddleDocSet.mockResolvedValue(undefined);
+    mockInitializeLocalizedRiddleDatabase.mockResolvedValue(undefined);
     mockCollectionGet.mockResolvedValue({
       empty: true,
       forEach: () => {},
@@ -160,6 +166,7 @@ describe("dailyChallengeScheduler", () => {
       "Daily scheduler started (target: localizedRiddles/{locale}/riddles/current).",
     );
     expect(mockGenerateTodaysDailyChallenge).toHaveBeenCalledWith(false);
+    expect(mockInitializeLocalizedRiddleDatabase).toHaveBeenCalledWith(20);
   });
 
   describe("Successful execution", () => {

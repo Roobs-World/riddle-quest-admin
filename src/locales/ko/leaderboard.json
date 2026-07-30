@@ -2,7 +2,10 @@
   "Leaderboard": {
     "GUEST_UNAVAILABLE": "리더보드에서 XP, 승리, 연속 기록을 비교하려면 로그인하세요.",
     "LOAD_ERROR": "리더보드를 로드할 수 없습니다. 다시 시도해 주세요.",
+    "NEXT_PAGE": "다음 페이지",
     "NO_SCORES_YET": "아직 점수가 없습니다. 가장 먼저 보드를 만드세요!",
+    "PAGINATION_LABEL": "리더보드 페이지",
+    "PREVIOUS_PAGE": "이전 페이지",
     "RETRY_BUTTON": "재시도",
     "TAB_STREAK": "연속",
     "TAB_WINS": "승",

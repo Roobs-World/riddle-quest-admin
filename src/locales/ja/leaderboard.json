@@ -2,7 +2,10 @@
   "Leaderboard": {
     "GUEST_UNAVAILABLE": "サインインして、リーダーボード上の XP、勝利数、連勝数を比較してください。",
     "LOAD_ERROR": "リーダーボードを読み込めませんでした。もう一度お試しください。",
+    "NEXT_PAGE": "次のページ",
     "NO_SCORES_YET": "スコアはまだありません — 最初にボードに参加してください!",
+    "PAGINATION_LABEL": "リーダーボードのページ",
+    "PREVIOUS_PAGE": "前のページ",
     "RETRY_BUTTON": "再試行してください。",
     "TAB_STREAK": "連勝",
     "TAB_WINS": "勝利",

@@ -12,6 +12,7 @@
     "audit:jest-artifact": "node scripts/audit-jest-artifact.mjs dist-jest",
     "check:progress": "node scripts/progress-tracker.mjs --check",
     "check:locales": "node scripts/audit-locales.mjs",
+    "test:jest-auth:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/jest/__tests__/authentication.jest-playwright.test.ts",
     "preview": "vite preview",
     "test": "jest --config jest.config.cjs"
   },

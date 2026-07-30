@@ -17,6 +17,8 @@
   },
   "main": "lib/index.js",
   "dependencies": {
+    "@firebase/app": "0.15.0",
+    "@firebase/app-compat": "0.5.14",
     "@qwordly/core": "file:./packages/core",
     "@sentry/node": "^10.62.0",
     "firebase-admin": "^13.10.0",

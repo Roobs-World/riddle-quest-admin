@@ -170,6 +170,23 @@ export const UpdateUsernameRequestSchema = z
   })
   .strict();
 
+export const UpdateAvatarRequestSchema = z
+  .object({
+    imageDataUrl: z
+      .string()
+      .max(700_000)
+      .regex(/^data:image\/(?:jpeg|png|webp);base64,[A-Za-z0-9+/]+={0,2}$/),
+  })
+  .strict();
+
+export const UpdateAvatarResponseSchema = z
+  .object({
+    success: z.literal(true),
+    message: z.string().min(1),
+    avatarUrl: z.string().url(),
+  })
+  .strict();
+
 export const LeaderboardTypeSchema = z.enum(["xp", "totalWins", "bestStreak"]);
 export type LeaderboardType = z.infer<typeof LeaderboardTypeSchema>;
 

@@ -40,6 +40,7 @@ export type GameSessionState = {
   products: ProductSummary[];
   leaderboard: BridgeLeaderboardEntry[];
   leaderboardType: "xp" | "totalWins" | "bestStreak";
+  leaderboardLoading: boolean;
   riddle: BridgeRiddle | null;
   currentLetters: string[];
   activeSlotIndex: number;
@@ -97,6 +98,11 @@ export type GameSessionAction =
       leaderboardType: "xp" | "totalWins" | "bestStreak";
       entries: BridgeLeaderboardEntry[];
     }
+  | {
+      type: "leaderboardRequested";
+      leaderboardType: "xp" | "totalWins" | "bestStreak";
+    }
+  | {type: "leaderboardLoadFailed"}
   | {type: "profileUpdated"; profile: BridgeProfile}
   | {
       type: "completionReward";
@@ -134,6 +140,7 @@ export const createInitialGameSession = (): GameSessionState => ({
   products: [],
   leaderboard: [],
   leaderboardType: "xp",
+  leaderboardLoading: false,
   riddle: null,
   currentLetters: [],
   activeSlotIndex: 0,
@@ -369,8 +376,22 @@ export const gameSessionReducer = (
     }
     case "coinsUpdated":
       return {...state, profile: withProfileCoins(state.profile, action.newCoins)};
+    case "leaderboardRequested":
+      return {
+        ...state,
+        leaderboardType: action.leaderboardType,
+        leaderboard: [],
+        leaderboardLoading: true,
+      };
     case "leaderboardLoaded":
-      return {...state, leaderboardType: action.leaderboardType, leaderboard: action.entries};
+      return {
+        ...state,
+        leaderboardType: action.leaderboardType,
+        leaderboard: action.entries,
+        leaderboardLoading: false,
+      };
+    case "leaderboardLoadFailed":
+      return {...state, leaderboard: [], leaderboardLoading: false};
     case "profileUpdated":
       return {...state, profile: action.profile};
     case "completionReward":
@@ -426,7 +447,9 @@ export const gameSessionReducer = (
         },
       };
     case "openModal":
-      return {...state, modal: action.modal};
+      return action.modal === "leaderboard"
+        ? {...state, modal: action.modal, leaderboard: [], leaderboardLoading: true}
+        : {...state, modal: action.modal};
     case "closeModal":
       return {
         ...state,

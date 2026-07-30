@@ -1,4 +1,5 @@
 import {parseEntryIntent} from "./entryIntent";
+import {BridgeProfileSchema} from "@qwordly/core/bridge";
 import type {
   JestPlatformPort,
   JestPlayerData,
@@ -77,17 +78,20 @@ export class JestSdkPlatform implements JestPlatformPort {
   }
   async writePreferences(value: JestPreferences) { this.sdk.data.set(value); await this.sdk.data.flush(); }
   readPlayerData(): JestPlayerData | null {
+    if (!this.getPlayer().registered) return null;
     const value: unknown = this.sdk.data?.getAll?.()?.[PLAYER_DATA_KEY];
     if (!isRecord(value) || value.schemaVersion !== 1 || typeof value.updatedAt !== "number") return null;
     const activeGame = value.activeGame === null ? null : parseSavedGame(value.activeGame);
+    const profile = BridgeProfileSchema.safeParse(value.profile);
     return {
       schemaVersion: 1,
       updatedAt: value.updatedAt,
-      ...(isRecord(value.profile) ? {profile: value.profile as JestPlayerData["profile"]} : {}),
+      ...(profile.success ? {profile: profile.data} : {}),
       ...(value.activeGame === null || activeGame ? {activeGame} : {}),
     };
   }
   async writePlayerData(value: JestPlayerData) {
+    if (!this.getPlayer().registered) return;
     this.sdk.data.set(PLAYER_DATA_KEY, value);
     await this.sdk.data.flush();
   }

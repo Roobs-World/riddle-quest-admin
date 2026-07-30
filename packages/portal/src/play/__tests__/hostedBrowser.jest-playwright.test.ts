@@ -16,7 +16,7 @@ const completeOnboardingAndTours = async (page: Page) => {
 };
 
 describeBrowser("standalone Jest browser game", () => {
-  it("covers onboarding, navigation, gameplay, rewards, restoration and responsive layouts", async () => {
+  it("covers onboarding, navigation, guest progress reset, gameplay, rewards and responsive layouts", async () => {
     const {execFileSync} = await import("node:child_process");
     const {createServer} = await import("node:http");
     const {readFile} = await import("node:fs/promises");
@@ -63,6 +63,10 @@ describeBrowser("standalone Jest browser game", () => {
       page.on("console", (message) => {
         if (message.type() === "error") consoleErrors.push(message.text());
       });
+      await page.addInitScript(() => {
+        localStorage.setItem("riddleQuest:tooltipSequenceSeen:gameTour:jest-guest", "seen");
+        localStorage.setItem("riddleQuest:tooltipSequenceSeen:profileTour:jest-guest", "seen");
+      });
       await page.goto("http://127.0.0.1:4178/?harness=jest");
       await page.getByRole("button", {name: /let's play/i}).waitFor({timeout: 15000});
       await completeOnboardingAndTours(page);
@@ -97,9 +101,62 @@ describeBrowser("standalone Jest browser game", () => {
 
       await page.getByRole("button", {name: /^profile$/i}).first().click();
       await page.getByRole("heading", {name: /^profile$/i}).waitFor();
+      await page.locator(".tooltip-card").getByRole("heading", {name: /^profile$/i}).waitFor();
+      for (let step = 0; step < 8; step += 1) {
+        await page.locator(".tooltip-card").getByRole("button", {name: /got it/i}).click();
+      }
       for (const name of [/statistics/i, /achievements/i, /ranks/i, /leaderboard/i, /treasure/i]) {
         expect(await page.getByRole("button", {name}).isVisible()).toBe(true);
       }
+      await page.getByRole("button", {name: /^ranks$/i}).evaluate((button) => (button as HTMLButtonElement).click());
+      await page.locator(".modal-ranks").waitFor();
+      const rankIconNames = await page.locator(".modal-ranks [data-rank-icon]").evaluateAll(
+        (icons) => icons.map((icon) => icon.getAttribute("data-rank-icon")),
+      );
+      expect(rankIconNames).toHaveLength(8);
+      expect(new Set(rankIconNames).size).toBe(8);
+      await page.keyboard.press("Escape");
+      await page.getByRole("button", {name: /^profile$/i}).first().click();
+      await page.locator(".modal-profile").waitFor();
+      const loadingLeaderboard = await page.getByRole("button", {name: /^leaderboard$/i}).evaluate(
+        async (button) => {
+          (button as HTMLButtonElement).click();
+          await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+          const list = document.querySelector(".leaderboard-list");
+          return {
+            busy: list?.getAttribute("aria-busy"),
+            text: list?.textContent?.trim() ?? "",
+          };
+        },
+      );
+      expect(loadingLeaderboard).toEqual({busy: "true", text: ""});
+      const leaderboardList = page.locator(".leaderboard-list");
+      await leaderboardList.waitFor();
+      const leaderboardOffsets = await page.locator(".modal-leaderboard").evaluate((element) => {
+        const rect = element.getBoundingClientRect();
+        return {
+          horizontal: Math.abs(rect.left + rect.width / 2 - innerWidth / 2),
+          vertical: Math.abs(rect.top + rect.height / 2 - innerHeight / 2),
+        };
+      });
+      expect(leaderboardOffsets.horizontal).toBeLessThanOrEqual(0.5);
+      expect(leaderboardOffsets.vertical).toBeLessThanOrEqual(0.5);
+      await page.waitForFunction(
+        () => document.querySelector(".leaderboard-list")?.getAttribute("aria-busy") === "false",
+      );
+      expect((await leaderboardList.innerText()).trim()).not.toBe("");
+      expect(await leaderboardList.locator("li").count()).toBe(10);
+      expect(await leaderboardList.locator(".leaderboard-avatar").count()).toBeGreaterThan(0);
+      expect(await leaderboardList.locator(".leaderboard-avatar-fallback").count()).toBeGreaterThan(0);
+      const firstPageFits = await leaderboardList.evaluate((list) => {
+        const lastRow = list.lastElementChild?.getBoundingClientRect();
+        const listRect = list.getBoundingClientRect();
+        return Boolean(lastRow && lastRow.bottom <= listRect.bottom + 1);
+      });
+      expect(firstPageFits).toBe(true);
+      await page.getByRole("button", {name: /next page/i}).click();
+      expect(await leaderboardList.locator("li").count()).toBe(10);
+      expect(await leaderboardList.locator("li").first().locator("b").textContent()).toBe("11");
       await page.keyboard.press("Escape");
       await page.getByRole("button", {name: /^settings$/i}).first().click();
       await page.getByRole("heading", {name: /^settings$/i}).waitFor();
@@ -113,11 +170,13 @@ describeBrowser("standalone Jest browser game", () => {
       await page.locator(".keyboard").getByRole("button", {name: /^A$/}).click();
       await page.reload();
       await page.getByText(/what has keys/i).waitFor({timeout: 15000});
-      expect(await page.getByRole("button", {name: /^letter 1: p$/i}).isVisible()).toBe(true);
-      expect(await page.getByRole("button", {name: /^letter 3: a$/i}).isVisible()).toBe(true);
+      const activeGuessRow = page.locator(".guess-row").first();
+      expect(await activeGuessRow.getByRole("button", {name: /^letter 1$/i}).isVisible()).toBe(true);
+      expect(await activeGuessRow.getByRole("button", {name: /^letter 3$/i}).isVisible()).toBe(true);
 
-      await page.locator(".guess-row").first().getByRole("button", {name: /^letter 2$/i}).click();
+      await page.locator(".keyboard").getByRole("button", {name: /^P$/}).click();
       await page.locator(".keyboard").getByRole("button", {name: /^I$/}).click();
+      await page.locator(".keyboard").getByRole("button", {name: /^A$/}).click();
       await page.locator(".keyboard").getByRole("button", {name: /^N$/}).click();
       await page.locator(".keyboard").getByRole("button", {name: /^O$/}).click();
       await page.locator(".game-input-actions").getByRole("button", {name: /submit/i}).click();
@@ -162,6 +221,37 @@ describeBrowser("standalone Jest browser game", () => {
         .getByText(/what has keys/i)
         .waitFor({timeout: 15000});
       await iframePage.close();
+
+      const registeredPage = await browser.newPage({viewport: {width: 390, height: 844}});
+      await registeredPage.goto("http://127.0.0.1:4178/?harness=jest&registered=1");
+      await registeredPage.getByRole("button", {name: /let's play/i}).waitFor({timeout: 15000});
+      await completeOnboardingAndTours(registeredPage);
+      await registeredPage.getByRole("button", {name: /^profile$/i}).first().click();
+      const avatarButton = registeredPage.getByRole("button", {name: /upload from photo library/i});
+      await avatarButton.waitFor();
+      const avatarPng = await registeredPage.evaluate(() => {
+        const canvas = document.createElement("canvas");
+        canvas.width = 8;
+        canvas.height = 8;
+        const context = canvas.getContext("2d");
+        if (!context) throw new Error("Canvas is unavailable");
+        context.fillStyle = "#8c5dbe";
+        context.fillRect(0, 0, 8, 8);
+        return canvas.toDataURL("image/png").split(",")[1];
+      });
+      const fileChooserPromise = registeredPage.waitForEvent("filechooser");
+      await avatarButton.click();
+      const fileChooser = await fileChooserPromise;
+      await fileChooser.setFiles({
+        name: "avatar.png",
+        mimeType: "image/png",
+        buffer: Buffer.from(avatarPng, "base64"),
+      });
+      await registeredPage.locator(".profile-avatar-button img").waitFor({timeout: 15000});
+      expect(await registeredPage.locator(".profile-avatar-button img").getAttribute("src")).toMatch(
+        /^data:image\/webp;base64,/,
+      );
+      await registeredPage.close();
     } finally {
       await browser.close();
       server.close();

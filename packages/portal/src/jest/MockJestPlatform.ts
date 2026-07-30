@@ -9,11 +9,14 @@ import type {
 const ok = <T>(value: T): PlatformResult<T> => ({status: "success", value});
 const MOCK_PLAYER_DATA_KEY = "riddleQuest:mockJestPlayerData";
 export class MockJestPlatform implements JestPlatformPort {
-  player = {playerId: "jest-mock-player", registered: false};
+  player: {playerId: string; registered: boolean};
   preferences: JestPreferences = {};
   progress: number[] = [];
   loaded = false;
   firstMilestoneMarked = false;
+  constructor(registered = false) {
+    this.player = {playerId: "jest-mock-player", registered};
+  }
   init = async () => ok(undefined);
   getPlayer = () => this.player;
   getPlayerSigned = async () => ({player: this.player, playerSigned: "mock.signed.player"});
@@ -36,6 +39,7 @@ export class MockJestPlatform implements JestPlatformPort {
   readPreferences = () => ({...this.preferences});
   writePreferences = async (value: JestPreferences) => { this.preferences = {...this.preferences, ...value}; };
   readPlayerData = (): JestPlayerData | null => {
+    if (!this.player.registered) return null;
     try {
       const raw = globalThis.localStorage?.getItem(MOCK_PLAYER_DATA_KEY);
       return raw ? JSON.parse(raw) as JestPlayerData : null;
@@ -44,6 +48,7 @@ export class MockJestPlatform implements JestPlatformPort {
     }
   };
   writePlayerData = async (value: JestPlayerData) => {
+    if (!this.player.registered) return;
     globalThis.localStorage?.setItem(MOCK_PLAYER_DATA_KEY, JSON.stringify(value));
   };
   getEntryIntent = () => ({});

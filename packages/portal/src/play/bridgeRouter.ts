@@ -22,6 +22,7 @@ export type HostMessageHandlers = {
   requestPurchase(message: Extract<GameToHostMessage, {type: "game:requestPurchase"}>): void | Promise<void>;
   loadLeaderboard(message: Extract<GameToHostMessage, {type: "game:loadLeaderboard"}>): void | Promise<void>;
   updateUsername(message: Extract<GameToHostMessage, {type: "game:updateUsername"}>): void | Promise<void>;
+  updateAvatar(message: Extract<GameToHostMessage, {type: "game:updateAvatar"}>): void | Promise<void>;
   analytics(message: Extract<GameToHostMessage, {type: "game:analytics"}>): void | Promise<void>;
   error(message: Extract<GameToHostMessage, {type: "game:error"}>): void | Promise<void>;
 };
@@ -58,6 +59,9 @@ export const createHostMessageRouter = (handlers: HostMessageHandlers) => {
         break;
       case "game:updateUsername":
         await handlers.updateUsername(message);
+        break;
+      case "game:updateAvatar":
+        await handlers.updateAvatar(message);
         break;
       case "game:analytics":
         await handlers.analytics(message);

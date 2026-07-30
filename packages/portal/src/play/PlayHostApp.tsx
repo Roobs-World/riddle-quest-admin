@@ -10,8 +10,9 @@ import {createHostServices, getHostConfigurationWarning, resolveHostServicesMode
 import type {AuthSnapshot, CompletionResult, HostServices, ProductSummary, WebGameMode} from "./types";
 import {SpinningWheelLoader} from "./SpinningWheelLoader";
 import type {JestPlayerData, JestPlayerDataUpdate} from "../jest/types";
+import {restoreJestProfileWhileServerLoads} from "../jest/playerData";
 type OperationName =
-  "loadRiddle" | "completeGame" | "hint" | "spendCoins" | "purchase" | "skip" | "profile" | "leaderboard";
+  "loadRiddle" | "completeGame" | "hint" | "spendCoins" | "purchase" | "skip" | "profile" | "avatar" | "leaderboard";
 
 const getErrorMessage = (error: unknown): string => {
   if (typeof error === "object" && error && "message" in error) {
@@ -107,7 +108,13 @@ export function PlayHostApp({
     detectDeviceLanguage(localStorage.getItem("appLanguage") ?? navigator.language);
   }, []);
 
-  useEffect(() => services.auth.subscribe(setAuthSnapshot), [services]);
+  useEffect(
+    () =>
+      services.auth.subscribe((snapshot) => {
+        setAuthSnapshot(restoreJestProfileWhileServerLoads(snapshot, initialPlayerData?.profile));
+      }),
+    [initialPlayerData?.profile, services],
+  );
 
   useEffect(() => {
     if (authSnapshot.profile) {
@@ -296,6 +303,14 @@ export function PlayHostApp({
             postOperation(message.requestId, "profile", true, {profile});
           } catch (error) {
             postOperation(message.requestId, "profile", false, undefined, getErrorMessage(error));
+          }
+        },
+        updateAvatar: async (message) => {
+          try {
+            const profile = await withServerActivity(() => services.updateAvatar(message.payload.imageDataUrl));
+            postOperation(message.requestId, "profile", true, {profile});
+          } catch (error) {
+            postOperation(message.requestId, "avatar", false, undefined, getErrorMessage(error));
           }
         },
         analytics: (message) => {

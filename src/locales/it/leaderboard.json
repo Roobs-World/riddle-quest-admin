@@ -2,7 +2,10 @@
   "Leaderboard": {
     "GUEST_UNAVAILABLE": "Accedi per confrontare XP, vittorie e serie consecutive nella classifica.",
     "LOAD_ERROR": "Impossibile caricare la classifica. Riprova.",
+    "NEXT_PAGE": "Pagina successiva",
     "NO_SCORES_YET": "Ancora nessun punteggio: sii il primo a raggiungere il tabellone!",
+    "PAGINATION_LABEL": "Pagine della classifica",
+    "PREVIOUS_PAGE": "Pagina precedente",
     "RETRY_BUTTON": "Riprova",
     "TAB_STREAK": "Strisciante",
     "TAB_WINS": "Vince",

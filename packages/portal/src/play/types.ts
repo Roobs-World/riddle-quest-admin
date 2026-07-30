@@ -87,6 +87,7 @@ export type HostServices = {
   requestPurchase(productId: string): Promise<PurchaseResult>;
   loadLeaderboard(type: LeaderboardType): Promise<BridgeLeaderboardEntry[]>;
   updateUsername(username: string): Promise<BridgeProfile | null>;
+  updateAvatar(imageDataUrl: string): Promise<BridgeProfile | null>;
 };
 
 export const toProductSummaries = (products: ProductPricing[]): ProductSummary[] =>

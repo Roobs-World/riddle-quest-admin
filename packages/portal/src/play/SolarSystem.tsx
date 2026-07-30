@@ -15,6 +15,7 @@ import moonGTextureUrl from "../../../../assets/3d-web/tex_moon_g.webp";
 import moonHTextureUrl from "../../../../assets/3d-web/tex_moon_h.webp";
 import ringATextureUrl from "../../../../assets/3d-web/tex_ring_a.webp";
 import ringBTextureUrl from "../../../../assets/3d-web/tex_ring_b.webp";
+import {advanceAngle, getFrameDeltaSeconds} from "./solarMotion";
 
 type MoonConfig = {
   size: number;
@@ -263,22 +264,34 @@ export function SolarSystem({paused}: {paused: boolean}) {
     const observer = new ResizeObserver(resize);
     observer.observe(mount);
 
-    const animationStartedAt = performance.now();
+    let lastFrameAt = performance.now();
+    let animationElapsed = 0;
     let frame = 0;
     const animate = () => {
       frame = window.requestAnimationFrame(animate);
-      const elapsed = (performance.now() - animationStartedAt) / 1000;
+      const frameAt = performance.now();
+      const deltaSeconds = getFrameDeltaSeconds(frameAt, lastFrameAt);
+      lastFrameAt = frameAt;
       if (!paused && !document.hidden) {
-        sun.rotation.y += 0.0018;
-        coronaMaterial.opacity = 0.28 + Math.sin(elapsed * 0.85) * 0.08;
-        const coronaScale = 53 + Math.sin(elapsed * 0.85) * 2.5;
+        animationElapsed += deltaSeconds;
+        sun.rotation.y = advanceAngle(sun.rotation.y, 0.0018, deltaSeconds);
+        coronaMaterial.opacity = 0.28 + Math.sin(animationElapsed * 0.85) * 0.08;
+        const coronaScale = 53 + Math.sin(animationElapsed * 0.85) * 2.5;
         corona.scale.set(coronaScale, coronaScale, 1);
-        stars.rotation.y += 0.00004;
+        stars.rotation.y = advanceAngle(stars.rotation.y, 0.00004, deltaSeconds);
         for (const runtime of runtimes) {
-          runtime.orbit.rotation.y += runtime.config.orbitSpeed;
-          runtime.planet.rotation.y += runtime.config.rotationSpeed;
+          runtime.orbit.rotation.y = advanceAngle(
+            runtime.orbit.rotation.y,
+            runtime.config.orbitSpeed,
+            deltaSeconds,
+          );
+          runtime.planet.rotation.y = advanceAngle(
+            runtime.planet.rotation.y,
+            runtime.config.rotationSpeed,
+            deltaSeconds,
+          );
           runtime.moons.forEach(({config, mesh}) => {
-            const angle = config.startAngle + elapsed * config.orbitSpeed;
+            const angle = config.startAngle + animationElapsed * config.orbitSpeed;
             mesh.position.set(Math.cos(angle) * config.distance, 0, Math.sin(angle) * config.distance);
           });
         }

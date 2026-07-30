@@ -312,7 +312,10 @@ async function generateLocalizedClassicRiddlesForLocale(
 
   while (newRiddles.length < numberOfRiddles && attemptCount < maxAttempts) {
     attemptCount++;
-    const riddle = await generateUniqueRiddle(locale);
+    const riddle = await generateUniqueRiddle(locale, [
+      ...existing.answers,
+      ...generatedAttempts.map((item) => item.answer),
+    ]);
     if (!riddle) {
       logger.warn(
         `Failed to generate unique classic riddle for locale ${locale}, retrying... (attempt ${attemptCount}/${maxAttempts})`,
@@ -369,13 +372,19 @@ async function generateLocalizedClassicRiddlesForLocale(
 }
 
 export async function generateLocalizedClassicRiddles(numberOfRiddles: number): Promise<void> {
-  for (const locale of SUPPORTED_LOCALES) {
-    if (await areLocalizedClassicRiddlesSeededForLocale(locale)) {
-      logger.info(`Skipping locale ${locale} because localized classic riddles already exist.`);
-      continue;
-    }
+  const localeConcurrency = 3;
+  for (let index = 0; index < SUPPORTED_LOCALES.length; index += localeConcurrency) {
+    const localeBatch = SUPPORTED_LOCALES.slice(index, index + localeConcurrency);
+    await Promise.all(
+      localeBatch.map(async (locale) => {
+        if (await areLocalizedClassicRiddlesSeededForLocale(locale)) {
+          logger.info(`Skipping locale ${locale} because localized classic riddles already exist.`);
+          return;
+        }
 
-    await generateLocalizedClassicRiddlesForLocale(locale, numberOfRiddles);
+        await generateLocalizedClassicRiddlesForLocale(locale, numberOfRiddles);
+      }),
+    );
   }
 }
 
@@ -411,7 +420,10 @@ export async function generateAndAppendRiddles(numberOfRiddles: number): Promise
     attemptCount++;
 
     // Generate a riddle using the OpenAI service
-    const riddle = await generateUniqueRiddle();
+    const riddle = await generateUniqueRiddle("en", [
+      ...existing.answers,
+      ...generatedAttempts.map((item) => item.answer),
+    ]);
 
     if (riddle) {
       const newRiddle = {
@@ -498,7 +510,10 @@ export async function generateAndAppendDailyRiddles(numberOfRiddles: number): Pr
     attemptCount++;
 
     // Generate a riddle using the OpenAI service
-    const riddle = await generateUniqueRiddle();
+    const riddle = await generateUniqueRiddle("en", [
+      ...existing.answers,
+      ...generatedAttempts.map((item) => item.answer),
+    ]);
 
     if (riddle) {
       const newRiddle = {
@@ -666,7 +681,10 @@ export async function generateTodaysDailyChallenge(forceGenerate: boolean = fals
     attemptCount++;
 
     // Generate a riddle using the OpenAI service
-    const riddle = await generateUniqueRiddle();
+    const riddle = await generateUniqueRiddle("en", [
+      ...existing.answers,
+      ...generatedAttempts.map((item) => item.answer),
+    ]);
 
     if (riddle) {
       const newRiddle = {
@@ -733,7 +751,7 @@ export async function generateTodaysDailyChallenge(forceGenerate: boolean = fals
 export async function generateLocalizedTodaysDailyChallenge(forceGenerate: boolean = false): Promise<void> {
   const todayDateString = new Date().toISOString().split("T")[0];
 
-  for (const locale of SUPPORTED_LOCALES) {
+  const generateForLocale = async (locale: SupportedLocale): Promise<void> => {
     const currentDailyRiddleRef = getLocalizedDailyDocRef(locale);
     const existingChallenge = await currentDailyRiddleRef.get();
 
@@ -753,7 +771,7 @@ export async function generateLocalizedTodaysDailyChallenge(forceGenerate: boole
       const existingChallengeDate = getUtcDateFromStoredTimestamp(existingData?.timestamp);
       if (existingChallengeDate === todayDateString && existingData?.text && existingData?.answer) {
         logger.info(`Today's daily challenge already exists for locale ${locale}.`);
-        continue;
+        return;
       }
     }
 
@@ -773,7 +791,10 @@ export async function generateLocalizedTodaysDailyChallenge(forceGenerate: boole
 
     while (!selectedDailyChallengeRiddle && attemptCount < maxAttempts) {
       attemptCount++;
-      const riddle = await generateUniqueRiddle(locale);
+      const riddle = await generateUniqueRiddle(locale, [
+        ...existing.answers,
+        ...generatedAttempts.map((item) => item.answer),
+      ]);
       if (!riddle) {
         continue;
       }
@@ -815,6 +836,11 @@ export async function generateLocalizedTodaysDailyChallenge(forceGenerate: boole
     if (!selectedDailyChallengeRiddle) {
       throw new Error(`Failed to generate any daily challenge questions for locale ${locale}.`);
     }
+  };
+
+  const localeConcurrency = 3;
+  for (let index = 0; index < SUPPORTED_LOCALES.length; index += localeConcurrency) {
+    await Promise.all(SUPPORTED_LOCALES.slice(index, index + localeConcurrency).map(generateForLocale));
   }
 
   await resetAllUsersDailyChallengeProgress();

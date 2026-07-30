@@ -68,6 +68,7 @@ export const getLeaderboard = httpsCallable<
     entries: Array<{
       userId: string;
       username: string;
+      avatarUrl?: string;
       level: number;
       xp: number;
       totalWins: number;
@@ -81,6 +82,11 @@ export const updateUsername = httpsCallable<{username: string}, {success: boolea
   functions,
   "updateUsername",
 );
+
+export const updateAvatar = httpsCallable<
+  {imageDataUrl: string},
+  {success: true; message: string; avatarUrl: string}
+>(functions, "updateAvatar");
 
 export const loadUserDocument = async (userId: string): Promise<Record<string, unknown> | null> => {
   const snapshot = await getDoc(doc(firestore, "users", userId));

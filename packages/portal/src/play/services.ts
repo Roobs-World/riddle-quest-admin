@@ -76,11 +76,15 @@ const createLazyFirebaseHostServices = (): HostServices => ({
   async updateUsername(username) {
     return (await getFirebaseServices()).updateUsername(username);
   },
+  async updateAvatar(imageDataUrl) {
+    return (await getFirebaseServices()).updateAvatar(imageDataUrl);
+  },
 });
 
 export const resolveHostServicesMode = (search = window.location.search): HostServicesMode => {
   const params = new URLSearchParams(search);
-  return import.meta.env.DEV || params.get("harness") === "jest" || params.get("harness") === "dev"
+  const harness = params.get("harness");
+  return import.meta.env.DEV || harness === "jest" || harness === "jest-auth" || harness === "dev"
     ? "fake"
     : "firebase";
 };

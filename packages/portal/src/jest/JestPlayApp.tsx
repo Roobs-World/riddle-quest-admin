@@ -21,11 +21,37 @@ import type {ProductSummary, PurchaseResult} from "../play/types";
 import {SpinningWheelLoader} from "../play/SpinningWheelLoader";
 
 export function JestPlayApp() {
-  const harness = new URLSearchParams(window.location.search).get("harness");
-  const mockRuntime = import.meta.env.DEV || harness === "jest" || harness === "dev";
-  const platform = useMemo(() => mockRuntime ? new MockJestPlatform() : new JestSdkPlatform(), [mockRuntime]);
+  const searchParams = new URLSearchParams(window.location.search);
+  const harness = searchParams.get("harness");
+  const authHarness = harness === "jest-auth";
+  const mockRuntime = import.meta.env.DEV || harness === "jest" || harness === "dev" || authHarness;
+  const mockRegistered = searchParams.get("registered") === "1";
+  const platform = useMemo(
+    () => authHarness ? new JestSdkPlatform() : mockRuntime ? new MockJestPlatform(mockRegistered) : new JestSdkPlatform(),
+    [authHarness, mockRegistered, mockRuntime],
+  );
   const backend = useMemo(() => mockRuntime ? {
-    exchangeIdentity: async () => ({customToken: "mock", uid: "jest-mock-player"}),
+    exchangeIdentity: async (playerSigned: string) => {
+      const testState = authHarness
+        ? (window as typeof window & {
+            __RIDDLE_QUEST_JEST_AUTH_TEST__?: {
+              scenario?: string;
+              backendExchanges: string[];
+              firebaseTokens: string[];
+            };
+          }).__RIDDLE_QUEST_JEST_AUTH_TEST__
+        : undefined;
+      testState?.backendExchanges.push(playerSigned);
+      const onceKey = "riddleQuest:jestAuthHarness:identityFailed";
+      const shouldFailOnce =
+        testState?.scenario === "identity-once-failure" &&
+        sessionStorage.getItem(onceKey) !== "1";
+      if (shouldFailOnce) sessionStorage.setItem(onceKey, "1");
+      if (testState?.scenario === "identity-failure" || shouldFailOnce) {
+        throw new Error("Mock Jest identity exchange failed");
+      }
+      return {customToken: "mock", uid: "jest-mock-player"};
+    },
     grantPurchase: async (_signed: string, _playerId: string, purchaseToken: string) => ({
       granted: true,
       purchaseToken,
@@ -33,7 +59,7 @@ export function JestPlayApp() {
       newCoins: 550,
     }),
     verifyReferrals: async () => ({verified: true}),
-  } satisfies JestBackendPort : new JestBackendClient(import.meta.env.VITE_JEST_FUNCTIONS_BASE_URL || "/"), [mockRuntime]);
+  } satisfies JestBackendPort : new JestBackendClient(import.meta.env.VITE_JEST_FUNCTIONS_BASE_URL || "/"), [authHarness, mockRuntime]);
   const purchases = useMemo(() => new JestPurchaseCoordinator(platform, backend), [backend, platform]);
   const [session, setSession] = useState<JestSession | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -67,13 +93,22 @@ export function JestPlayApp() {
   const trackFunnel = useCallback((eventName: string, params: Record<string, string | number | boolean> = {}) => {
     console.info("[riddle-quest-funnel]", eventName, params);
   }, []);
+  const authenticateJestIdentity = useCallback(async (token: string) => {
+    if (authHarness) {
+      (window as typeof window & {
+        __RIDDLE_QUEST_JEST_AUTH_TEST__?: {firebaseTokens: string[]};
+      }).__RIDDLE_QUEST_JEST_AUTH_TEST__?.firebaseTokens.push(token);
+    } else if (!mockRuntime) {
+      await signInWithCustomToken(auth, token);
+    }
+  }, [authHarness, mockRuntime]);
   useEffect(() => {
     let active = true;
     void startJestSession(
       platform,
       backend,
       purchases,
-      async (token) => { if (!mockRuntime) await signInWithCustomToken(auth, token); },
+      authenticateJestIdentity,
       setStartup,
     )
       .then((result) => {
@@ -90,9 +125,10 @@ export function JestPlayApp() {
         else setError("message" in result ? result.message : "Jest startup was cancelled");
       });
     return () => { active = false; };
-  }, [backend, mockRuntime, platform, purchases, trackFunnel]);
+  }, [authenticateJestIdentity, backend, platform, purchases, trackFunnel]);
 
   const savePlayerData = useCallback((update: JestPlayerDataUpdate) => {
+    if (!sessionRef.current?.player.registered) return;
     const next: JestPlayerData = {
       ...(playerDataRef.current ?? {}),
       schemaVersion: 1,
@@ -128,6 +164,9 @@ export function JestPlayApp() {
         const player = platform.getPlayer();
         registered = player.registered;
         if (registered) {
+          const signed = await platform.getPlayerSigned();
+          const identity = await backend.exchangeIdentity(signed.playerSigned);
+          await authenticateJestIdentity(identity.customToken);
           let profile = previousSession?.profile ?? null;
           try {
             profile = await platform.getProfile();
@@ -161,7 +200,7 @@ export function JestPlayApp() {
         }));
       }
     });
-  }, [platform, trackFunnel, withPlatformActivity]);
+  }, [authenticateJestIdentity, backend, platform, trackFunnel, withPlatformActivity]);
 
   const openRegistrationPrompt = useCallback((
     source: "post_instructions" | "authoritative_win",

@@ -1,5 +1,5 @@
 import {lazy, Suspense, useCallback, useEffect, useMemo, useReducer, useRef, useState} from "react";
-import type {CSSProperties, Dispatch, FormEvent} from "react";
+import type {ChangeEvent, CSSProperties, Dispatch, FormEvent} from "react";
 import type {GameToHostMessage} from "@qwordly/core/bridge";
 import {BridgeLeaderboardEntrySchema, BridgeProfileSchema} from "@qwordly/core/bridge";
 import {BRIDGE_PROTOCOL_VERSION} from "@qwordly/core/bridge/constants";
@@ -21,13 +21,16 @@ import {createRequestId} from "./requestIds";
 import {dispatchLocalBridge, GAME_TO_HOST_EVENT, HOST_TO_GAME_EVENT} from "./localBridge";
 import {ACHIEVEMENT_DEFINITIONS, type AchievementPlayerData} from "./achievements";
 import {getNextRankForLevel, getRankForLevel, PLAYER_RANKS} from "./ranks";
+import {RankIcon} from "./RankIcon";
 import {GuidanceOverlay} from "./GuidanceOverlay";
 import {SpinningWheel, SpinningWheelLoader} from "./SpinningWheelLoader";
+import {prepareAvatarImage} from "./avatarImage";
 import type {JestSavedGame} from "../jest/types";
 
 const SolarSystem = lazy(() => import("./SolarSystem").then((module) => ({default: module.SolarSystem})));
 
 const keyboardRows = ["QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM"];
+const LEADERBOARD_PAGE_SIZE = 10;
 
 const getObjectData = (data: unknown): Record<string, unknown> =>
   typeof data === "object" && data !== null ? (data as Record<string, unknown>) : {};
@@ -284,6 +287,9 @@ export function GameFrameApp({
         },
         operationResult: (message) => {
           if (!message.payload.ok) {
+            if (message.payload.operation === "leaderboard") {
+              dispatch({type: "leaderboardLoadFailed"});
+            }
             dispatch({type: "setNotice", notice: message.payload.error ?? "ErrorMessages.GENERIC_UNEXPECTED_ERROR"});
             return;
           }
@@ -450,72 +456,19 @@ export function GameFrameApp({
   }, [completedIds, state.lastOutcome]);
 
   useEffect(() => {
-    if (!state.riddle) {
+    if (!state.riddle || restoredGame?.riddleId !== state.riddle.riddleId) {
       return;
     }
-    const key = `riddleQuest:session:${state.user?.uid ?? "anonymous"}:${state.riddle.riddleId}`;
-    try {
-      const raw = localStorage.getItem(key);
-      const saved = restoredGame?.riddleId === state.riddle.riddleId
-        ? restoredGame
-        : raw
-          ? JSON.parse(raw) as Record<string, unknown>
-          : null;
-      if (!saved) {
-        return;
-      }
-      if (
-        Array.isArray(saved.currentLetters) &&
-        saved.currentLetters.every((letter) => typeof letter === "string") &&
-        typeof saved.activeSlotIndex === "number" &&
-        Array.isArray(saved.hintRevealedIndices) &&
-        Array.isArray(saved.guesses) &&
-        typeof saved.engineSnapshot === "object" &&
-        saved.engineSnapshot !== null &&
-        typeof saved.letterStates === "object" &&
-        saved.letterStates !== null
-      ) {
-        dispatch({
-          type: "restoreSession",
-          currentLetters: saved.currentLetters,
-          activeSlotIndex: saved.activeSlotIndex,
-          hintRevealedIndices: saved.hintRevealedIndices.filter(
-            (index): index is number => typeof index === "number",
-          ),
-          guesses: saved.guesses as GameSessionState["guesses"],
-          engineSnapshot: saved.engineSnapshot as NonNullable<GameSessionState["engineSnapshot"]>,
-          letterStates: saved.letterStates as GameSessionState["letterStates"],
-        });
-      }
-    } catch {
-      localStorage.removeItem(key);
-    }
-  }, [restoredGame, state.riddle?.riddleId, state.user?.uid]);
-
-  useEffect(() => {
-    if (!state.riddle || !state.engineSnapshot) {
-      return;
-    }
-    const key = `riddleQuest:session:${state.user?.uid ?? "anonymous"}:${state.riddle.riddleId}`;
-    if (state.lastOutcome) {
-      localStorage.removeItem(key);
-      return;
-    }
-    const savedGame = getSavedGame();
-    if (!savedGame) return;
-    localStorage.setItem(key, JSON.stringify(savedGame));
-  }, [
-    getSavedGame,
-    state.activeSlotIndex,
-    state.currentLetters,
-    state.engineSnapshot,
-    state.guesses,
-    state.hintRevealedIndices,
-    state.lastOutcome,
-    state.letterStates,
-    state.riddle,
-    state.user?.uid,
-  ]);
+    dispatch({
+      type: "restoreSession",
+      currentLetters: restoredGame.currentLetters,
+      activeSlotIndex: restoredGame.activeSlotIndex,
+      hintRevealedIndices: restoredGame.hintRevealedIndices,
+      guesses: restoredGame.guesses,
+      engineSnapshot: restoredGame.engineSnapshot,
+      letterStates: restoredGame.letterStates,
+    });
+  }, [restoredGame, state.riddle?.riddleId]);
 
   useEffect(() => {
     if (state.lastOutcome) {
@@ -680,6 +633,7 @@ export function GameFrameApp({
   };
 
   const requestLeaderboard = useCallback((leaderboardType: "xp" | "totalWins" | "bestStreak") => {
+    dispatch({type: "leaderboardRequested", leaderboardType});
     postToHost({
       type: "game:loadLeaderboard",
       requestId: createRequestId("leaderboard"),
@@ -692,6 +646,15 @@ export function GameFrameApp({
       type: "game:updateUsername",
       requestId: createRequestId("username"),
       payload: {username},
+    });
+  }, [postToHost]);
+
+  const updateAvatar = useCallback(async (file: File) => {
+    const imageDataUrl = await prepareAvatarImage(file);
+    postToHost({
+      type: "game:updateAvatar",
+      requestId: createRequestId("avatar"),
+      payload: {imageDataUrl},
     });
   }, [postToHost]);
 
@@ -781,6 +744,7 @@ export function GameFrameApp({
         onRequestSkip={requestSkip}
         onRequestLeaderboard={requestLeaderboard}
         onUpdateUsername={updateUsername}
+        onUpdateAvatar={updateAvatar}
       />
       <GuidanceOverlay state={state} modal={state.modal} onActiveChange={setGuidanceActive} />
       {!online && (
@@ -990,6 +954,7 @@ function GameModalView({
   onRequestSkip,
   onRequestLeaderboard,
   onUpdateUsername,
+  onUpdateAvatar,
 }: {
   state: GameSessionState;
   onClose: () => void;
@@ -1002,11 +967,15 @@ function GameModalView({
   onRequestSkip: () => void;
   onRequestLeaderboard: (type: "xp" | "totalWins" | "bestStreak") => void;
   onUpdateUsername: (username: string) => void;
+  onUpdateAvatar: (file: File) => Promise<void>;
 }) {
   const [username, setUsername] = useState("");
+  const [avatarError, setAvatarError] = useState<string | null>(null);
   const [victoryStepIndex, setVictoryStepIndex] = useState(0);
   const [rewardStepIndex, setRewardStepIndex] = useState(0);
+  const [leaderboardPage, setLeaderboardPage] = useState(0);
   const modalRef = useRef<HTMLElement | null>(null);
+  const avatarInputRef = useRef<HTMLInputElement | null>(null);
   const onCloseRef = useRef(onClose);
   onCloseRef.current = onClose;
 
@@ -1015,6 +984,10 @@ function GameModalView({
       onRequestLeaderboard(state.leaderboardType);
     }
   }, [onRequestLeaderboard, state.leaderboardType, state.modal]);
+
+  useEffect(() => {
+    setLeaderboardPage(0);
+  }, [state.leaderboardType, state.modal]);
 
   useEffect(() => {
     if (!state.modal) {
@@ -1116,6 +1089,13 @@ function GameModalView({
     : [];
   const activeVictoryStep = victorySteps[Math.min(victoryStepIndex, Math.max(0, victorySteps.length - 1))];
   const activeRewardStep = auxiliarySteps[Math.min(rewardStepIndex, Math.max(0, auxiliarySteps.length - 1))];
+  const leaderboardPageCount = Math.max(1, Math.ceil(state.leaderboard.length / LEADERBOARD_PAGE_SIZE));
+  const activeLeaderboardPage = Math.min(leaderboardPage, leaderboardPageCount - 1);
+  const leaderboardPageStart = activeLeaderboardPage * LEADERBOARD_PAGE_SIZE;
+  const visibleLeaderboardEntries = state.leaderboard.slice(
+    leaderboardPageStart,
+    leaderboardPageStart + LEADERBOARD_PAGE_SIZE,
+  );
 
   const titles: Record<Exclude<GameModal, null>, string> = {
     victory: tr("VictoryModal.TITLE"),
@@ -1194,6 +1174,26 @@ function GameModalView({
     onUpdateUsername(normalized);
     setUsername("");
   };
+  const chooseAvatar = () => {
+    setAvatarError(null);
+    if (state.user?.platformRegistered === false) {
+      window.dispatchEvent(new CustomEvent("riddle-quest:registration-prompt-opened"));
+      return;
+    }
+    avatarInputRef.current?.click();
+  };
+  const selectAvatar = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.currentTarget.files?.[0];
+    event.currentTarget.value = "";
+    if (!file) return;
+    setAvatarError(null);
+    try {
+      await onUpdateAvatar(file);
+    } catch (error) {
+      console.warn("[riddle-quest] Avatar selection failed", error);
+      setAvatarError(tr("Profile.ALERT_AVATAR_SELECT_FAIL"));
+    }
+  };
   const skipCost = state.gameMode === "challenge" ? 150 : 100;
   const isMandatoryOutcome = state.modal === "victory";
   const advanceVictoryFanfare = () => {
@@ -1253,7 +1253,7 @@ function GameModalView({
                   className="rank-emblem large"
                   style={{background: getRankForLevel(victoryLevel ?? 1).color}}
                 >
-                  ✦
+                  <RankIcon name={getRankForLevel(victoryLevel ?? 1).icon} />
                 </span>
                 <strong>{tr(getRankForLevel(victoryLevel ?? 1).nameKey)}</strong>
                 <span>{tr("RankUpFanfare.SUBTITLE")}</span>
@@ -1377,13 +1377,35 @@ function GameModalView({
           <div className="profile-page">
             <div className="profile-hero">
               <div className="profile-identity" data-tooltip="profileIdentity">
-                {profile?.avatarUrl ? (
-                  <img src={profile.avatarUrl} alt="" referrerPolicy="no-referrer" />
-                ) : (
-                  <div className="profile-avatar-fallback" aria-hidden="true">
-                    {(profile?.username ?? tr("Profile.GUEST_USERNAME")).slice(0, 1).toUpperCase()}
-                  </div>
-                )}
+                <button
+                  type="button"
+                  className="profile-avatar-button"
+                  aria-label={
+                    state.user?.platformRegistered === false
+                      ? tr("Profile.UPGRADE_ACCOUNT_BUTTON")
+                      : tr("Profile.UPLOAD_FROM_LIBRARY_BUTTON")
+                  }
+                  onClick={chooseAvatar}
+                >
+                  {profile?.avatarUrl ? (
+                    <img src={profile.avatarUrl} alt="" referrerPolicy="no-referrer" />
+                  ) : (
+                    <span className="profile-avatar-fallback" aria-hidden="true">
+                      {(profile?.username ?? tr("Profile.GUEST_USERNAME")).slice(0, 1).toUpperCase()}
+                    </span>
+                  )}
+                  <span className="profile-avatar-edit" aria-hidden="true">＋</span>
+                </button>
+                <input
+                  ref={avatarInputRef}
+                  className="profile-avatar-input"
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  onChange={(event) => void selectAvatar(event)}
+                  tabIndex={-1}
+                  aria-hidden="true"
+                />
+                {avatarError ? <small className="profile-avatar-error" role="alert">{avatarError}</small> : null}
                 <div>
                   <strong>{profile?.username ?? tr("Profile.GUEST_USERNAME")}</strong>
                   <button className="play-text-button" onClick={() => onOpenModal("username")}>
@@ -1392,7 +1414,9 @@ function GameModalView({
                 </div>
               </div>
               <section className="rank-card" data-tooltip="profileProgression">
-                <span className="rank-emblem" style={{background: rank.color}}>✦</span>
+                <span className="rank-emblem" style={{background: rank.color}}>
+                  <RankIcon name={rank.icon} />
+                </span>
                 <div>
                   <small>{tr("Ranks.CURRENT_RANK")}</small>
                   <strong>{tr(rank.nameKey)}</strong>
@@ -1519,7 +1543,9 @@ function GameModalView({
           <div className="rank-list">
             {PLAYER_RANKS.map((item) => (
               <article className={item.id === rank.id ? "current" : ""} key={item.id}>
-                <span className="rank-emblem" style={{background: item.color}}>✦</span>
+                <span className="rank-emblem" style={{background: item.color}}>
+                  <RankIcon name={item.icon} />
+                </span>
                 <div><strong>{tr(item.nameKey)}</strong><p>{tr(item.descriptionKey)}</p></div>
                 <small>{tr("Ranks.LEVEL_REQUIREMENT_PREFIX")}{item.minimumLevel}</small>
               </article>
@@ -1528,7 +1554,7 @@ function GameModalView({
         )}
 
         {state.modal === "leaderboard" && (
-          <div>
+          <div className="leaderboard-panel">
             <div className="leaderboard-tabs">
               {(["xp", "totalWins", "bestStreak"] as const).map((type) => (
                 <button
@@ -1540,15 +1566,49 @@ function GameModalView({
                 </button>
               ))}
             </div>
-            <ol className="leaderboard-list">
-              {state.leaderboard.length === 0 && <li>{tr("Leaderboard.NO_SCORES_YET")}</li>}
-              {state.leaderboard.map((entry, index) => (
+            <ol className="leaderboard-list" aria-busy={state.leaderboardLoading}>
+              {!state.leaderboardLoading && state.leaderboard.length === 0 && (
+                <li>{tr("Leaderboard.NO_SCORES_YET")}</li>
+              )}
+              {!state.leaderboardLoading && visibleLeaderboardEntries.map((entry, index) => (
                 <li key={entry.userId}>
-                  <b>{index + 1}</b><span>{entry.username}</span>
+                  <b>{leaderboardPageStart + index + 1}</b>
+                  {entry.avatarUrl ? (
+                    <img
+                      className="leaderboard-avatar"
+                      src={entry.avatarUrl}
+                      alt=""
+                      referrerPolicy="no-referrer"
+                    />
+                  ) : (
+                    <span className="leaderboard-avatar-fallback" aria-hidden="true">
+                      {entry.username.slice(0, 1).toUpperCase()}
+                    </span>
+                  )}
+                  <span>{entry.username}</span>
                   <strong>{state.leaderboardType === "xp" ? entry.xp : state.leaderboardType === "totalWins" ? entry.totalWins : entry.bestStreak}</strong>
                 </li>
               ))}
             </ol>
+            {!state.leaderboardLoading && state.leaderboard.length > LEADERBOARD_PAGE_SIZE && (
+              <nav className="leaderboard-pagination" aria-label={tr("Leaderboard.PAGINATION_LABEL")}>
+                <button
+                  className="play-secondary compact"
+                  disabled={activeLeaderboardPage === 0}
+                  onClick={() => setLeaderboardPage((page) => Math.max(0, page - 1))}
+                >
+                  {tr("Leaderboard.PREVIOUS_PAGE")}
+                </button>
+                <span>{activeLeaderboardPage + 1} / {leaderboardPageCount}</span>
+                <button
+                  className="play-secondary compact"
+                  disabled={activeLeaderboardPage === leaderboardPageCount - 1}
+                  onClick={() => setLeaderboardPage((page) => Math.min(leaderboardPageCount - 1, page + 1))}
+                >
+                  {tr("Leaderboard.NEXT_PAGE")}
+                </button>
+              </nav>
+            )}
           </div>
         )}
 
