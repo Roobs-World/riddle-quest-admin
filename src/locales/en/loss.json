@@ -1,15 +1,12 @@
 {
   "LossModal": {
-    "ANSWER_PREFIX": "Answer: ",
     "COIN_EXTRA_GO_BUTTON": "{coins} coins for an extra go",
     "EXTRA_GO_PROMPT": "Out of attempts. Get an extra go or skip this puzzle.",
-    "NEXT_LEVEL_BUTTON": "Next Level",
     "OPEN_SHOP_BUTTON": "Open Shop",
-    "OUT_OF_ATTEMPTS": "Out of attempts.",
+    "OUT_OF_ATTEMPTS": "Out of Attempts",
     "SKIP_LEVEL_PREFIX": "Skip Level (",
     "SKIP_LEVEL_SUFFIX": " Coins)",
     "SKIP_PUZZLE_BUTTON": "Skip Puzzle",
-    "TITLE": "So close!",
     "USE_COINS_PREFIX": "Use ",
     "USE_COINS_SUFFIX": " Coins to Continue"
   }

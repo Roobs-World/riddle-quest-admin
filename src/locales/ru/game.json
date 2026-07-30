@@ -20,9 +20,12 @@
     "GUEST_WARNING": "Играйте гостем или войдите, чтобы синхронизировать прогресс, монеты и рейтинг.",
     "HOST_STATUS_READY": "Хост подключен",
     "HOST_STATUS_WAITING": "Ожидание хост-обертки",
+    "STARTUP_CONNECTING": "Подключение к Jest…",
+    "STARTUP_PLAYER": "Загрузка аккаунта игрока…",
+    "STARTUP_PROGRESS": "Загрузка сохранённого прогресса…",
+    "STARTUP_GAME": "Подготовка игры…",
     "JEST_HARNESS": "Среда Jest активна",
     "GAME_FRAME_TITLE": "Игровой фрейм Riddle Quest",
-    "MODE_LABEL": "Режим игры",
     "PLAY_CLASSIC": "Классика",
     "PLAY_DAILY": "Ежедневно",
     "OPEN_GAME": "Загрузить загадку",
@@ -33,7 +36,6 @@
     "RESUME_GAME": "Продолжить",
     "PAUSED": "Пауза",
     "BRIDGE_ERROR": "Игровой мост получил недопустимое сообщение.",
-    "FILL_WORD_NOTICE": "Заполните все буквы перед отправкой.",
     "PROVIDER_NOT_CONFIGURED": "Этот веб-провайдер еще не настроен."
   }
 }

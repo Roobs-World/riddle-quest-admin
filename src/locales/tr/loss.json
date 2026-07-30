@@ -1,15 +1,12 @@
 {
   "LossModal": {
-    "ANSWER_PREFIX": "Cevap: ",
     "COIN_EXTRA_GO_BUTTON": "{coins} jeton ile ekstra hak",
     "EXTRA_GO_PROMPT": "Deneme hakkin bitti. Bir ekstra hak al veya bu bulmacayi atla.",
-    "NEXT_LEVEL_BUTTON": "Sonraki bolum",
     "OPEN_SHOP_BUTTON": "Magazayi ac",
     "OUT_OF_ATTEMPTS": "Deneme hakki bitti.",
     "SKIP_LEVEL_PREFIX": "Bolumu atla (",
     "SKIP_LEVEL_SUFFIX": " para)",
     "SKIP_PUZZLE_BUTTON": "Bulmacayi atla",
-    "TITLE": "Az kaldi!",
     "USE_COINS_PREFIX": "Kullan: ",
     "USE_COINS_SUFFIX": " para ile devam et"
   }

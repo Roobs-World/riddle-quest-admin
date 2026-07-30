@@ -12,7 +12,6 @@ import type {ProductSummary} from "./types";
 
 export type GameModal =
   | "victory"
-  | "loss"
   | "continue"
   | "shop"
   | "profile"
@@ -27,7 +26,6 @@ export type GameModal =
   | "hint"
   | "skip"
   | "username"
-  | "gameMode"
   | "treasure"
   | "reward"
   | null;
@@ -305,7 +303,7 @@ export const gameSessionReducer = (
         return state;
       }
       if (state.currentLetters.some((letter) => !letter)) {
-        return {...state, notice: "WebPortal.FILL_WORD_NOTICE"};
+        return state;
       }
 
       const engine = createEngine(state);
@@ -317,7 +315,14 @@ export const gameSessionReducer = (
       const snapshot = engine.getSnapshot();
       const guesses = snapshot.guesses;
       const isTerminal = outcome.kind === "win" || outcome.kind === "loss";
-      const modal = outcome.kind === "win" ? "victory" : outcome.kind === "attemptLimitReached" ? "continue" : outcome.kind === "loss" ? "loss" : state.modal;
+      const modal =
+        outcome.kind === "win"
+          ? "victory"
+          : outcome.kind === "attemptLimitReached"
+            ? "continue"
+            : outcome.kind === "loss"
+              ? null
+              : state.modal;
       const nextLetters = resetAttemptLetters(state);
 
       return {
@@ -410,7 +415,7 @@ export const gameSessionReducer = (
       }
       return {
         ...state,
-        modal: "loss",
+        modal: null,
         lastOutcome: {
           id: `${state.riddle.riddleId}-loss-${state.engineSnapshot.attemptsUsed}`,
           kind: "loss",

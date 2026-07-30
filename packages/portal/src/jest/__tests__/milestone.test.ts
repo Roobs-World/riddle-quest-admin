@@ -8,6 +8,7 @@ const session = (overrides: Partial<JestSession> = {}): JestSession => ({
   profile: null,
   entryIntent: {},
   preferences: {},
+  playerData: null,
   firebaseAuthenticated: true,
   ...overrides,
 });

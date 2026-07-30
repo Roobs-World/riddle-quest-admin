@@ -1,4 +1,4 @@
-import {useEffect, useMemo, useState} from "react";
+import {useEffect, useMemo, useRef, useState} from "react";
 import logoUrl from "../../../../assets/images/main-logo.webp";
 import {SpinningWheel} from "./SpinningWheelLoader";
 import {tr, useLocale} from "./i18n";
@@ -87,11 +87,28 @@ export function GuidanceOverlay({
   useLocale();
   const userId = state.user?.uid;
   const [onboardingStep, setOnboardingStep] = useState<number | null>(null);
+  const [welcomeOnly, setWelcomeOnly] = useState(false);
   const [sequence, setSequence] = useState<TooltipId[]>([]);
   const [sequenceName, setSequenceName] = useState<string | null>(null);
   const [sequenceIndex, setSequenceIndex] = useState(0);
   const [targetRect, setTargetRect] = useState<DOMRect | null>(null);
+  const onboardingCardRef = useRef<HTMLElement | null>(null);
   const activeTooltip = sequence[sequenceIndex];
+
+  useEffect(() => {
+    onboardingCardRef.current?.scrollTo({top: 0});
+  }, [onboardingStep]);
+
+  useEffect(() => {
+    if (onboardingStep !== 2 || state.user?.platformRegistered !== false) return;
+    window.dispatchEvent(new CustomEvent("riddle-quest:registration-prompt-opened"));
+    const closePrompt = () => {
+      localStorage.setItem(storageKey("onboarding", userId), "seen");
+      setOnboardingStep(null);
+    };
+    window.addEventListener("riddle-quest:registration-prompt-closed", closePrompt);
+    return () => window.removeEventListener("riddle-quest:registration-prompt-closed", closePrompt);
+  }, [onboardingStep, state.user?.platformRegistered, userId]);
 
   useEffect(() => {
     const active = onboardingStep !== null || Boolean(activeTooltip);
@@ -114,7 +131,15 @@ export function GuidanceOverlay({
     if (!state.riddle || onboardingStep !== null || sequence.length > 0) {
       return;
     }
-    if (localStorage.getItem(storageKey("onboarding", userId)) !== "seen") {
+    const hasCompletedOnboarding =
+      localStorage.getItem(storageKey("onboarding", userId)) === "seen";
+    if (sessionStorage.getItem(storageKey("welcomeSession", userId)) !== "seen") {
+      setWelcomeOnly(hasCompletedOnboarding);
+      setOnboardingStep(0);
+      return;
+    }
+    if (!hasCompletedOnboarding) {
+      setWelcomeOnly(false);
       setOnboardingStep(0);
       return;
     }
@@ -205,8 +230,14 @@ export function GuidanceOverlay({
     const updateRect = () => {
       const selector = tooltipSelector[activeTooltip];
       const element = selector ? document.querySelector(selector) : null;
-      setTargetRect(element?.getBoundingClientRect() ?? null);
-      element?.scrollIntoView({block: "nearest", behavior: "smooth"});
+      if (!element) {
+        setTargetRect(null);
+        return;
+      }
+      element.scrollIntoView({block: "center", inline: "nearest", behavior: "auto"});
+      window.requestAnimationFrame(() => {
+        setTargetRect(element.getBoundingClientRect());
+      });
     };
     const timer = window.setTimeout(updateRect, 80);
     window.addEventListener("resize", updateRect);
@@ -242,8 +273,16 @@ export function GuidanceOverlay({
     return (
       <div className="guidance-backdrop" role="presentation">
         <SpinningWheel />
-        <section className="onboarding-card" role="dialog" aria-modal="true" aria-labelledby="onboarding-title">
-          <span className="onboarding-progress">{onboardingStep + 1}/{totalSteps}</span>
+        <section
+          ref={onboardingCardRef}
+          className={`onboarding-card${isWelcome ? " onboarding-card-welcome" : ""}`}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="onboarding-title"
+        >
+          {!welcomeOnly && (
+            <span className="onboarding-progress">{onboardingStep + 1}/{totalSteps}</span>
+          )}
           {isWelcome ? (
             <img id="onboarding-title" className="onboarding-logo" src={logoUrl} alt={tr("WebPortal.APP_TITLE")} />
           ) : (
@@ -281,11 +320,20 @@ export function GuidanceOverlay({
             className="play-primary"
             onClick={() => {
               if (isWelcome) {
+                sessionStorage.setItem(storageKey("welcomeSession", userId), "seen");
+                if (welcomeOnly) {
+                  setOnboardingStep(null);
+                  return;
+                }
                 setOnboardingStep(1);
                 return;
               }
               if (!isGuestNotice && totalSteps === 3) {
                 setOnboardingStep(2);
+                return;
+              }
+              if (isGuestNotice) {
+                window.dispatchEvent(new CustomEvent("riddle-quest:dismiss-registration"));
                 return;
               }
               localStorage.setItem(storageKey("onboarding", userId), "seen");
@@ -308,10 +356,10 @@ export function GuidanceOverlay({
   }
 
   const panelStyle =
-    targetRect && targetRect.bottom < window.innerHeight * 0.62
-      ? {top: Math.min(window.innerHeight - 190, targetRect.bottom + 14)}
+    targetRect && targetRect.bottom < window.innerHeight * 0.58
+      ? {top: targetRect.bottom + 18}
       : targetRect
-        ? {bottom: Math.max(14, window.innerHeight - targetRect.top + 14)}
+        ? {bottom: window.innerHeight - targetRect.top + 18}
         : {top: "50%", transform: "translate(-50%, -50%)"};
 
   return (

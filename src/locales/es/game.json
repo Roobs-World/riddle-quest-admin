@@ -20,9 +20,12 @@
     "GUEST_WARNING": "Juega como invitado o inicia sesion para sincronizar progreso, monedas y clasificacion.",
     "HOST_STATUS_READY": "Host conectado",
     "HOST_STATUS_WAITING": "Esperando al contenedor host",
+    "STARTUP_CONNECTING": "Conectando con Jest…",
+    "STARTUP_PLAYER": "Cargando la cuenta del jugador…",
+    "STARTUP_PROGRESS": "Cargando el progreso guardado…",
+    "STARTUP_GAME": "Preparando tu partida…",
     "JEST_HARNESS": "Arnes Jest activo",
     "GAME_FRAME_TITLE": "Marco de juego de Riddle Quest",
-    "MODE_LABEL": "Modo de juego",
     "PLAY_CLASSIC": "Clasico",
     "PLAY_DAILY": "Diario",
     "OPEN_GAME": "Cargar acertijo",
@@ -33,7 +36,6 @@
     "RESUME_GAME": "Reanudar juego",
     "PAUSED": "Pausado",
     "BRIDGE_ERROR": "El puente del juego recibio un mensaje invalido.",
-    "FILL_WORD_NOTICE": "Completa todas las letras antes de enviar.",
     "PROVIDER_NOT_CONFIGURED": "Este proveedor web aun no esta configurado."
   }
 }

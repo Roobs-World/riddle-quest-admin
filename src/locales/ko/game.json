@@ -20,9 +20,12 @@
     "GUEST_WARNING": "게스트로 플레이하거나 로그인해 진행도, 코인, 순위를 동기화하세요.",
     "HOST_STATUS_READY": "호스트 연결됨",
     "HOST_STATUS_WAITING": "호스트 래퍼를 기다리는 중",
+    "STARTUP_CONNECTING": "Jest에 연결 중…",
+    "STARTUP_PLAYER": "플레이어 계정 불러오는 중…",
+    "STARTUP_PROGRESS": "저장된 진행 상황 불러오는 중…",
+    "STARTUP_GAME": "게임 준비 중…",
     "JEST_HARNESS": "Jest 하네스 활성",
     "GAME_FRAME_TITLE": "Riddle Quest 게임 프레임",
-    "MODE_LABEL": "게임 모드",
     "PLAY_CLASSIC": "클래식",
     "PLAY_DAILY": "데일리",
     "OPEN_GAME": "수수께끼 불러오기",
@@ -33,7 +36,6 @@
     "RESUME_GAME": "게임 재개",
     "PAUSED": "일시정지됨",
     "BRIDGE_ERROR": "게임 브리지가 잘못된 메시지를 받았습니다.",
-    "FILL_WORD_NOTICE": "제출 전에 모든 글자를 채우세요.",
     "PROVIDER_NOT_CONFIGURED": "이 웹 제공자는 아직 설정되지 않았습니다."
   }
 }

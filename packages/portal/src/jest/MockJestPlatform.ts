@@ -1,6 +1,13 @@
-import type {JestPlatformPort, JestPreferences, PlatformResult, ScreenshotProvider} from "./types";
+import type {
+  JestPlatformPort,
+  JestPlayerData,
+  JestPreferences,
+  PlatformResult,
+  ScreenshotProvider,
+} from "./types";
 
 const ok = <T>(value: T): PlatformResult<T> => ({status: "success", value});
+const MOCK_PLAYER_DATA_KEY = "riddleQuest:mockJestPlayerData";
 export class MockJestPlatform implements JestPlatformPort {
   player = {playerId: "jest-mock-player", registered: false};
   preferences: JestPreferences = {};
@@ -11,8 +18,34 @@ export class MockJestPlatform implements JestPlatformPort {
   getPlayer = () => this.player;
   getPlayerSigned = async () => ({player: this.player, playerSigned: "mock.signed.player"});
   login = async () => { this.player.registered = true; return ok(this.player); };
+  showRegistrationOverlay = (options: Parameters<JestPlatformPort["showRegistrationOverlay"]>[0]) => {
+    let closed = false;
+    const close = () => {
+      if (closed) return;
+      closed = true;
+      options.onClose();
+    };
+    return ok({
+      loginButtonAction: () => {
+        this.player.registered = true;
+        close();
+      },
+      closeButtonAction: close,
+    });
+  };
   readPreferences = () => ({...this.preferences});
   writePreferences = async (value: JestPreferences) => { this.preferences = {...this.preferences, ...value}; };
+  readPlayerData = (): JestPlayerData | null => {
+    try {
+      const raw = globalThis.localStorage?.getItem(MOCK_PLAYER_DATA_KEY);
+      return raw ? JSON.parse(raw) as JestPlayerData : null;
+    } catch {
+      return null;
+    }
+  };
+  writePlayerData = async (value: JestPlayerData) => {
+    globalThis.localStorage?.setItem(MOCK_PLAYER_DATA_KEY, JSON.stringify(value));
+  };
   getEntryIntent = () => ({});
   getProfile = async () => null;
   scheduleNotification = async () => this.player.registered ? ok(undefined) : ({status: "unavailable", message: "Registration is required"} as const);

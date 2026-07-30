@@ -1,15 +1,12 @@
 {
   "LossModal": {
-    "ANSWER_PREFIX": "Reponse: ",
     "COIN_EXTRA_GO_BUTTON": "{coins} pieces pour un essai supplementaire",
     "EXTRA_GO_PROMPT": "Plus d essais. Obtenez un essai supplementaire ou passez cette enigme.",
-    "NEXT_LEVEL_BUTTON": "Niveau suivant",
     "OPEN_SHOP_BUTTON": "Ouvrir la boutique",
     "OUT_OF_ATTEMPTS": "Plus d essais.",
     "SKIP_LEVEL_PREFIX": "Passer le niveau (",
     "SKIP_LEVEL_SUFFIX": " pieces)",
     "SKIP_PUZZLE_BUTTON": "Passer l enigme",
-    "TITLE": "Presque!",
     "USE_COINS_PREFIX": "Utiliser ",
     "USE_COINS_SUFFIX": " pieces pour continuer"
   }

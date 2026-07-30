@@ -20,9 +20,12 @@
     "GUEST_WARNING": "Play as a guest or sign in to sync progress, coins, and leaderboard results.",
     "HOST_STATUS_READY": "Host connected",
     "HOST_STATUS_WAITING": "Waiting for the host wrapper",
+    "STARTUP_CONNECTING": "Connecting to Jest…",
+    "STARTUP_PLAYER": "Loading player account…",
+    "STARTUP_PROGRESS": "Loading saved progress…",
+    "STARTUP_GAME": "Preparing your game…",
     "JEST_HARNESS": "Jest harness active",
     "GAME_FRAME_TITLE": "Riddle Quest game frame",
-    "MODE_LABEL": "Game mode",
     "PLAY_CLASSIC": "Classic",
     "PLAY_DAILY": "Daily",
     "OPEN_GAME": "Load riddle",
@@ -33,7 +36,6 @@
     "RESUME_GAME": "Resume game",
     "PAUSED": "Paused",
     "BRIDGE_ERROR": "The game bridge received an invalid message.",
-    "FILL_WORD_NOTICE": "Fill every letter before submitting.",
     "PROVIDER_NOT_CONFIGURED": "This web provider is not configured yet."
   }
 }

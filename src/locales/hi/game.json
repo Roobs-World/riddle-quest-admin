@@ -20,9 +20,12 @@
     "GUEST_WARNING": "अतिथि के रूप में खेलें या प्रगति, सिक्के और लीडरबोर्ड सिंक करने के लिए साइन इन करें।",
     "HOST_STATUS_READY": "होस्ट जुड़ा है",
     "HOST_STATUS_WAITING": "होस्ट रैपर की प्रतीक्षा",
+    "STARTUP_CONNECTING": "Jest से कनेक्ट किया जा रहा है…",
+    "STARTUP_PLAYER": "खिलाड़ी खाता लोड हो रहा है…",
+    "STARTUP_PROGRESS": "सहेजी गई प्रगति लोड हो रही है…",
+    "STARTUP_GAME": "आपका गेम तैयार हो रहा है…",
     "JEST_HARNESS": "Jest हार्नेस सक्रिय",
     "GAME_FRAME_TITLE": "Riddle Quest गेम फ्रेम",
-    "MODE_LABEL": "गेम मोड",
     "PLAY_CLASSIC": "क्लासिक",
     "PLAY_DAILY": "दैनिक",
     "OPEN_GAME": "पहेली लोड करें",
@@ -33,7 +36,6 @@
     "RESUME_GAME": "गेम जारी रखें",
     "PAUSED": "रुका हुआ",
     "BRIDGE_ERROR": "गेम ब्रिज को अमान्य संदेश मिला।",
-    "FILL_WORD_NOTICE": "सबमिट करने से पहले हर अक्षर भरें।",
     "PROVIDER_NOT_CONFIGURED": "यह वेब प्रदाता अभी कॉन्फ़िगर नहीं है।"
   }
 }

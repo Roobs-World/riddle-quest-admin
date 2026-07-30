@@ -6,12 +6,13 @@ it("runs identity, Firebase auth and recovery in startup order", async () => {
   const platform = new MockJestPlatform();
   platform.init = async () => { order.push("init"); return {status: "success", value: undefined}; };
   platform.getPlayerSigned = async () => { order.push("signed"); return {player: platform.player, playerSigned: "signed"}; };
+  platform.readPlayerData = () => { order.push("playerData"); return null; };
   platform.getProfile = async () => { order.push("profile"); return null; };
   const backend = {exchangeIdentity: async () => { order.push("exchange"); return {customToken: "firebase", uid: "uid"}; }};
   const purchases = {reconcile: async () => { order.push("recover"); return {status: "success", value: 0}; }};
   const result = await startJestSession(platform, backend as never, purchases as never, async () => { order.push("firebase"); });
-  expect(result).toMatchObject({status: "success", value: {firebaseAuthenticated: true}});
-  expect(order).toEqual(["init", "signed", "exchange", "firebase", "recover", "profile"]);
+  expect(result).toMatchObject({status: "success", value: {firebaseAuthenticated: true, playerData: null}});
+  expect(order).toEqual(["init", "signed", "exchange", "firebase", "recover", "playerData", "profile"]);
   expect(platform.progress).toEqual([5, 15, 28, 42, 58, 72]);
 });
 

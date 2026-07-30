@@ -20,9 +20,12 @@
     "GUEST_WARNING": "Misafir olarak oyna veya ilerleme, jeton ve lider tablosunu esitlemek icin giris yap.",
     "HOST_STATUS_READY": "Host baglandi",
     "HOST_STATUS_WAITING": "Host sarmalayici bekleniyor",
+    "STARTUP_CONNECTING": "Jest'e bağlanılıyor…",
+    "STARTUP_PLAYER": "Oyuncu hesabı yükleniyor…",
+    "STARTUP_PROGRESS": "Kayıtlı ilerleme yükleniyor…",
+    "STARTUP_GAME": "Oyunun hazırlanıyor…",
     "JEST_HARNESS": "Jest kosumu aktif",
     "GAME_FRAME_TITLE": "Riddle Quest oyun cercevesi",
-    "MODE_LABEL": "Oyun modu",
     "PLAY_CLASSIC": "Klasik",
     "PLAY_DAILY": "Gunluk",
     "OPEN_GAME": "Bilmece yukle",
@@ -33,7 +36,6 @@
     "RESUME_GAME": "Oyuna devam et",
     "PAUSED": "Duraklatildi",
     "BRIDGE_ERROR": "Oyun koprusu gecersiz bir mesaj aldi.",
-    "FILL_WORD_NOTICE": "Gondermeden once tum harfleri doldurun.",
     "PROVIDER_NOT_CONFIGURED": "Bu web saglayicisi henuz yapilandirilmadi."
   }
 }

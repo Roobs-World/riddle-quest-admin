@@ -3,6 +3,10 @@ import {JestSdkPlatform} from "../JestSdkPlatform";
 const sdk = () => ({
   init: jest.fn().mockResolvedValue(undefined), getPlayer: jest.fn(() => ({playerId: "p1", registered: false})),
   getPlayerSigned: jest.fn(), login: jest.fn().mockResolvedValue(undefined), getEntryPayload: jest.fn(() => ({gameMode: "classic"})),
+  showRegistrationOverlay: jest.fn((options) => ({
+    loginButtonAction: jest.fn(),
+    closeButtonAction: () => options.onClose(),
+  })),
   data: {getAll: jest.fn(() => ({locale: "en", coins: 999})), set: jest.fn(), flush: jest.fn().mockResolvedValue(undefined)},
   notifications: {scheduleNotification: jest.fn(), unscheduleNotification: jest.fn()},
   social: {getProfile: jest.fn(() => null), setScreenshotProvider: jest.fn()},
@@ -20,6 +24,69 @@ it("stores only low-integrity preferences", () => expect(new JestSdkPlatform(sdk
   registrationPromptDismissedAt: undefined,
   firstMilestoneMarked: undefined,
 }));
+it("loads a versioned player snapshot from the Jest player store", () => {
+  const mock = sdk();
+  const activeGame = {
+    schemaVersion: 1,
+    savedAt: 10,
+    riddleId: "riddle-1",
+    gameMode: "classic",
+    currentLetters: ["A", ""],
+    activeSlotIndex: 1,
+    hintRevealedIndices: [0],
+    guesses: [],
+    engineSnapshot: {attemptsRemaining: 5},
+    letterStates: {},
+  };
+  mock.data.getAll.mockReturnValue({
+    riddleQuestPlayerState: {
+      schemaVersion: 1,
+      updatedAt: 11,
+      profile: {coins: 10},
+      activeGame,
+    },
+  });
+
+  expect(new JestSdkPlatform(mock).readPlayerData()).toEqual({
+    schemaVersion: 1,
+    updatedAt: 11,
+    profile: {coins: 10},
+    activeGame,
+  });
+});
+it("wires the custom registration overlay actions and options", () => {
+  const mock = sdk();
+  const onClose = jest.fn();
+  const result = new JestSdkPlatform(mock).showRegistrationOverlay({
+    theme: "dark",
+    entryPayload: {source: "post_instructions"},
+    onClose,
+  });
+
+  expect(mock.showRegistrationOverlay).toHaveBeenCalledWith({
+    theme: "dark",
+    entryPayload: {source: "post_instructions"},
+    onClose,
+  });
+  expect(result.status).toBe("success");
+  if (result.status !== "success") return;
+  result.value.closeButtonAction();
+  expect(onClose).toHaveBeenCalledTimes(1);
+});
+it("rejects unknown player snapshot versions", () => {
+  const mock = sdk();
+  mock.data.getAll.mockReturnValue({
+    riddleQuestPlayerState: {schemaVersion: 2, updatedAt: 11},
+  });
+  expect(new JestSdkPlatform(mock).readPlayerData()).toBeNull();
+});
+it("flushes player snapshot writes to Jest", async () => {
+  const mock = sdk();
+  const playerData = {schemaVersion: 1 as const, updatedAt: 11};
+  await new JestSdkPlatform(mock).writePlayerData(playerData);
+  expect(mock.data.set).toHaveBeenCalledWith("riddleQuestPlayerState", playerData);
+  expect(mock.data.flush).toHaveBeenCalledTimes(1);
+});
 it("does not schedule notifications for guests", async () => expect(await new JestSdkPlatform(sdk()).scheduleNotification({identifier: "daily", scheduledInDays: 1, body: "Play", ctaText: "Open"})).toEqual({status: "unavailable", message: "Registration is required"}));
 it("distinguishes purchase cancellation", async () => { const mock = sdk(); mock.payments.beginPurchase.mockResolvedValue({result: "cancel"}); expect(await new JestSdkPlatform(mock).beginPurchase("coins")).toEqual({status: "cancelled"}); });
 it("treats invalid products and tokens as terminal", async () => {

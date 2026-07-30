@@ -1,15 +1,12 @@
 {
   "LossModal": {
-    "ANSWER_PREFIX": "Trả lời:",
     "COIN_EXTRA_GO_BUTTON": "{coins} xu để có thêm một lượt",
     "EXTRA_GO_PROMPT": "Hết lượt thử. Nhận thêm một lượt hoặc bỏ qua câu đố này.",
-    "NEXT_LEVEL_BUTTON": "Cấp độ tiếp theo",
     "OPEN_SHOP_BUTTON": "Mở cửa hàng",
     "OUT_OF_ATTEMPTS": "Hết sức cố gắng.",
     "SKIP_LEVEL_PREFIX": "Bỏ qua cấp độ (",
     "SKIP_LEVEL_SUFFIX": "tiền xu)",
     "SKIP_PUZZLE_BUTTON": "Bỏ qua câu đố",
-    "TITLE": "Thật gần!",
     "USE_COINS_PREFIX": "sử dụng",
     "USE_COINS_SUFFIX": "Tiền xu để tiếp tục"
   }

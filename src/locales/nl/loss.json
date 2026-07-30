@@ -1,15 +1,12 @@
 {
   "LossModal": {
-    "ANSWER_PREFIX": "Antwoord:",
     "COIN_EXTRA_GO_BUTTON": "{coins} munten voor een extra kans",
     "EXTRA_GO_PROMPT": "Geen pogingen meer. Ontvang een extra kans of sla deze puzzel over.",
-    "NEXT_LEVEL_BUTTON": "Volgende niveau",
     "OPEN_SHOP_BUTTON": "Winkel openen",
     "OUT_OF_ATTEMPTS": "Geen pogingen meer.",
     "SKIP_LEVEL_PREFIX": "Niveau overslaan (",
     "SKIP_LEVEL_SUFFIX": "Munten)",
     "SKIP_PUZZLE_BUTTON": "Puzzel overslaan",
-    "TITLE": "Zo dichtbij!",
     "USE_COINS_PREFIX": "Gebruik",
     "USE_COINS_SUFFIX": "Munten om door te gaan"
   }

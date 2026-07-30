@@ -20,9 +20,12 @@
     "GUEST_WARNING": "Chơi với tư cách khách hoặc đăng nhập để đồng bộ tiến trình, xu và bảng xếp hạng.",
     "HOST_STATUS_READY": "Host đã kết nối",
     "HOST_STATUS_WAITING": "Đang chờ lớp host",
+    "STARTUP_CONNECTING": "Đang kết nối với Jest…",
+    "STARTUP_PLAYER": "Đang tải tài khoản người chơi…",
+    "STARTUP_PROGRESS": "Đang tải tiến trình đã lưu…",
+    "STARTUP_GAME": "Đang chuẩn bị trò chơi…",
     "JEST_HARNESS": "Harness Jest đang bật",
     "GAME_FRAME_TITLE": "Khung trò chơi Riddle Quest",
-    "MODE_LABEL": "Chế độ chơi",
     "PLAY_CLASSIC": "Cổ điển",
     "PLAY_DAILY": "Hằng ngày",
     "OPEN_GAME": "Tải câu đố",
@@ -33,7 +36,6 @@
     "RESUME_GAME": "Tiếp tục trò chơi",
     "PAUSED": "Đã tạm dừng",
     "BRIDGE_ERROR": "Cầu nối trò chơi nhận được tin nhắn không hợp lệ.",
-    "FILL_WORD_NOTICE": "Điền đủ mọi chữ cái trước khi gửi.",
     "PROVIDER_NOT_CONFIGURED": "Nhà cung cấp web này chưa được cấu hình."
   }
 }

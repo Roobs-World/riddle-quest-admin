@@ -1,4 +1,12 @@
+import type {BridgeProfile} from "@qwordly/core/bridge";
+import type {Feedback, GameEngineSnapshot, ScoredGuess} from "@qwordly/core/game";
+
 type JestPlayer = {playerId: string; registered: boolean};
+
+export type JestRegistrationOverlayHandle = {
+  loginButtonAction(): void;
+  closeButtonAction(): void;
+};
 
 export type JestEntryIntent = {
   gameMode?: "classic" | "challenge";
@@ -19,6 +27,28 @@ export type JestPreferences = {
   registrationPromptDismissedAt?: number;
   firstMilestoneMarked?: boolean;
 };
+
+export type JestSavedGame = {
+  schemaVersion: 1;
+  savedAt: number;
+  riddleId: string;
+  gameMode: "classic" | "challenge";
+  currentLetters: string[];
+  activeSlotIndex: number;
+  hintRevealedIndices: number[];
+  guesses: ScoredGuess[];
+  engineSnapshot: GameEngineSnapshot;
+  letterStates: Record<string, Feedback>;
+};
+
+export type JestPlayerData = {
+  schemaVersion: 1;
+  updatedAt: number;
+  profile?: BridgeProfile;
+  activeGame?: JestSavedGame | null;
+};
+
+export type JestPlayerDataUpdate = Pick<JestPlayerData, "profile" | "activeGame">;
 
 export type PlatformResult<T> =
   | {status: "success"; value: T}
@@ -42,6 +72,7 @@ export type JestSession = {
   profile: {username?: string; avatarUrl?: string | null} | null;
   entryIntent: JestEntryIntent;
   preferences: JestPreferences;
+  playerData: JestPlayerData | null;
   firebaseAuthenticated: boolean;
 };
 
@@ -60,8 +91,15 @@ export interface JestPlatformPort {
   getPlayer(): JestPlayer;
   getPlayerSigned(): Promise<{player: JestPlayer; playerSigned: string}>;
   login(): Promise<PlatformResult<JestPlayer>>;
+  showRegistrationOverlay(options: {
+    theme: "dark" | "light";
+    entryPayload?: Record<string, string>;
+    onClose: () => void;
+  }): PlatformResult<JestRegistrationOverlayHandle>;
   readPreferences(): JestPreferences;
   writePreferences(preferences: JestPreferences): Promise<void>;
+  readPlayerData(): JestPlayerData | null;
+  writePlayerData(playerData: JestPlayerData): Promise<void>;
   getEntryIntent(): JestEntryIntent;
   getProfile(): Promise<{username?: string; avatarUrl?: string | null} | null>;
   scheduleNotification(input: {

@@ -9,6 +9,7 @@ import {dispatchLocalBridge, GAME_TO_HOST_EVENT, HOST_TO_GAME_EVENT} from "./loc
 import {createHostServices, getHostConfigurationWarning, resolveHostServicesMode} from "./services";
 import type {AuthSnapshot, CompletionResult, HostServices, ProductSummary, WebGameMode} from "./types";
 import {SpinningWheelLoader} from "./SpinningWheelLoader";
+import type {JestPlayerData, JestPlayerDataUpdate} from "../jest/types";
 type OperationName =
   "loadRiddle" | "completeGame" | "hint" | "spendCoins" | "purchase" | "skip" | "profile" | "leaderboard";
 
@@ -31,16 +32,22 @@ export function PlayHostApp({
   platformProducts,
   platformPurchase,
   platformPlayerRegistered,
+  externalInteractionBlocked = false,
+  initialPlayerData,
+  onPlayerDataChange,
 }: {
   initialGameMode?: WebGameMode;
   onPlayable?: () => void;
   onAuthoritativeComplete?: (
     input: {riddleId: string; gameMode: WebGameMode; attempts: number; isCorrect: boolean},
     result: CompletionResult,
-  ) => void;
+  ) => void | Promise<void>;
   platformProducts?: ProductSummary[];
   platformPurchase?: (productId: string) => Promise<import("./types").PurchaseResult>;
   platformPlayerRegistered?: boolean;
+  externalInteractionBlocked?: boolean;
+  initialPlayerData?: JestPlayerData | null;
+  onPlayerDataChange?: (update: JestPlayerDataUpdate) => void;
 } = {}) {
   const locale = useLocale();
   const sessionIdRef = useRef(createRequestId("session"));
@@ -61,6 +68,8 @@ export function PlayHostApp({
   const [gameMode, setGameMode] = useState<WebGameMode>(initialGameMode ?? "classic");
   const [notice, setNotice] = useState<string | null>(configurationWarning);
   const [pendingServerOperations, setPendingServerOperations] = useState(0);
+  const [startupComplete, setStartupComplete] = useState(false);
+  const serverInteractionActive = pendingServerOperations > 0 || externalInteractionBlocked || !startupComplete;
   const loadedUserIdRef = useRef<string | null>(null);
   const riddleLoadedRef = useRef(false);
   const playableReportedRef = useRef(false);
@@ -89,12 +98,22 @@ export function PlayHostApp({
       }, remainingTime);
     }
   }, []);
+  const saveActiveGame = useCallback(
+    (activeGame: NonNullable<JestPlayerData["activeGame"]> | null) => onPlayerDataChange?.({activeGame}),
+    [onPlayerDataChange],
+  );
 
   useEffect(() => {
     detectDeviceLanguage(localStorage.getItem("appLanguage") ?? navigator.language);
   }, []);
 
   useEffect(() => services.auth.subscribe(setAuthSnapshot), [services]);
+
+  useEffect(() => {
+    if (authSnapshot.profile) {
+      onPlayerDataChange?.({profile: authSnapshot.profile});
+    }
+  }, [authSnapshot.profile, onPlayerDataChange]);
 
   const postToGame = useCallback((message: HostToGameMessage) => {
     dispatchLocalBridge(HOST_TO_GAME_EVENT, createHostMessage(message));
@@ -155,6 +174,7 @@ export function PlayHostApp({
           },
         });
         postOperation(requestId, "loadRiddle", true, {riddleId: riddle.riddleId});
+        setStartupComplete(true);
       } catch (error) {
         const message = getErrorMessage(error);
         setNotice(message);
@@ -195,13 +215,19 @@ export function PlayHostApp({
         },
         resize: () => undefined,
         loadRiddle: async (message) => {
-          await loadAndPostRiddle(message.payload, message.requestId);
+          await loadAndPostRiddle(
+            {...message.payload, gameMode},
+            message.requestId,
+          );
         },
         completeGame: async (message) => {
           try {
-            const result = await withServerActivity(() => services.completeGame(message.payload));
+            const result = await withServerActivity(async () => {
+              const completion = await services.completeGame(message.payload);
+              await onAuthoritativeComplete?.(message.payload, completion);
+              return completion;
+            });
             postOperation(message.requestId, "completeGame", true, result);
-            onAuthoritativeComplete?.(message.payload, result);
           } catch (error) {
             postOperation(message.requestId, "completeGame", false, undefined, getErrorMessage(error));
           }
@@ -362,7 +388,7 @@ export function PlayHostApp({
   if (!authSnapshot.user) {
     return (
       <main className="route-loading" aria-live="polite">
-        {tr("WebPortal.HOST_STATUS_WAITING")}
+        <SpinningWheelLoader message={tr("WebPortal.STARTUP_GAME")} progress={72} />
       </main>
     );
   }
@@ -370,8 +396,19 @@ export function PlayHostApp({
   return (
     <main className="play-game-shell">
       {notice && <div className="play-alert game-shell-alert">{notice}</div>}
-      <GameFrameApp localBridge />
-      {pendingServerOperations > 0 ? <SpinningWheelLoader overlay /> : null}
+      <GameFrameApp
+        localBridge
+        interactionBlocked={serverInteractionActive}
+        restoredGame={initialPlayerData?.activeGame}
+        onSaveGame={saveActiveGame}
+      />
+      {serverInteractionActive ? (
+        <SpinningWheelLoader
+          overlay
+          message={!startupComplete ? tr("WebPortal.STARTUP_GAME") : undefined}
+          progress={!startupComplete ? 88 : undefined}
+        />
+      ) : null}
     </main>
   );
 }

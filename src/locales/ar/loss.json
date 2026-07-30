@@ -1,15 +1,12 @@
 {
   "LossModal": {
-    "ANSWER_PREFIX": "الجواب:",
     "COIN_EXTRA_GO_BUTTON": "{coins} عملات لفرصة إضافية",
     "EXTRA_GO_PROMPT": "نفدت المحاولات. احصل على فرصة إضافية أو تخط هذا اللغز.",
-    "NEXT_LEVEL_BUTTON": "المستوى التالي",
     "OPEN_SHOP_BUTTON": "افتح المتجر",
     "OUT_OF_ATTEMPTS": "من المحاولات.",
     "SKIP_LEVEL_PREFIX": "تخطي المستوى (",
     "SKIP_LEVEL_SUFFIX": "عملات معدنية)",
     "SKIP_PUZZLE_BUTTON": "تخطي اللغز",
-    "TITLE": "قريبة جدا!",
     "USE_COINS_PREFIX": "استخدم",
     "USE_COINS_SUFFIX": "العملات المعدنية للمتابعة"
   }

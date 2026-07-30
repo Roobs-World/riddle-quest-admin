@@ -1,15 +1,12 @@
 {
   "LossModal": {
-    "ANSWER_PREFIX": "정답: ",
     "COIN_EXTRA_GO_BUTTON": "{coins}코인으로 추가 기회 얻기",
     "EXTRA_GO_PROMPT": "시도 횟수가 없습니다. 추가 기회 1회를 얻거나 이 퍼즐을 건너뛰세요.",
-    "NEXT_LEVEL_BUTTON": "다음 레벨",
     "OPEN_SHOP_BUTTON": "상점 열기",
     "OUT_OF_ATTEMPTS": "시도 횟수 초과.",
     "SKIP_LEVEL_PREFIX": "레벨 건너뛰기 (",
     "SKIP_LEVEL_SUFFIX": "코인)",
     "SKIP_PUZZLE_BUTTON": "퍼즐 건너뛰기",
-    "TITLE": "아쉽다!",
     "USE_COINS_PREFIX": "사용: ",
     "USE_COINS_SUFFIX": "코인으로 계속하기"
   }

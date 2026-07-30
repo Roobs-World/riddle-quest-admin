@@ -1,15 +1,12 @@
 {
   "LossModal": {
-    "ANSWER_PREFIX": "答え: ",
     "COIN_EXTRA_GO_BUTTON": "{coins}コインで追加の1回",
     "EXTRA_GO_PROMPT": "挑戦回数がなくなりました。追加の1回を得るか、このパズルをスキップできます。",
-    "NEXT_LEVEL_BUTTON": "次のレベルへ",
     "OPEN_SHOP_BUTTON": "ショップを開く",
     "OUT_OF_ATTEMPTS": "挑戦回数切れ。",
     "SKIP_LEVEL_PREFIX": "レベルをスキップ（",
     "SKIP_LEVEL_SUFFIX": "コイン）",
     "SKIP_PUZZLE_BUTTON": "パズルをスキップ",
-    "TITLE": "惜しい！",
     "USE_COINS_PREFIX": "使用: ",
     "USE_COINS_SUFFIX": "コインで続ける"
   }

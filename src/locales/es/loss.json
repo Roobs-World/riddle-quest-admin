@@ -1,15 +1,12 @@
 {
   "LossModal": {
-    "ANSWER_PREFIX": "Respuesta: ",
     "COIN_EXTRA_GO_BUTTON": "{coins} monedas para un intento extra",
     "EXTRA_GO_PROMPT": "Sin intentos. Obten un intento extra o salta este acertijo.",
-    "NEXT_LEVEL_BUTTON": "Siguiente nivel",
     "OPEN_SHOP_BUTTON": "Abrir tienda",
     "OUT_OF_ATTEMPTS": "Sin intentos.",
     "SKIP_LEVEL_PREFIX": "Saltar nivel (",
     "SKIP_LEVEL_SUFFIX": " monedas)",
     "SKIP_PUZZLE_BUTTON": "Saltar acertijo",
-    "TITLE": "Casi!",
     "USE_COINS_PREFIX": "Usar ",
     "USE_COINS_SUFFIX": " monedas para continuar"
   }

@@ -20,9 +20,12 @@
     "GUEST_WARNING": "Speel als gast of log in om voortgang, munten en klassement te synchroniseren.",
     "HOST_STATUS_READY": "Host verbonden",
     "HOST_STATUS_WAITING": "Wachten op host-wrapper",
+    "STARTUP_CONNECTING": "Verbinden met Jest…",
+    "STARTUP_PLAYER": "Spelersaccount laden…",
+    "STARTUP_PROGRESS": "Opgeslagen voortgang laden…",
+    "STARTUP_GAME": "Je spel voorbereiden…",
     "JEST_HARNESS": "Jest-harnas actief",
     "GAME_FRAME_TITLE": "Riddle Quest spelframe",
-    "MODE_LABEL": "Spelmodus",
     "PLAY_CLASSIC": "Klassiek",
     "PLAY_DAILY": "Dagelijks",
     "OPEN_GAME": "Raadsel laden",
@@ -33,7 +36,6 @@
     "RESUME_GAME": "Spel hervatten",
     "PAUSED": "Gepauzeerd",
     "BRIDGE_ERROR": "De spelbrug ontving een ongeldig bericht.",
-    "FILL_WORD_NOTICE": "Vul elke letter in voordat je verzendt.",
     "PROVIDER_NOT_CONFIGURED": "Deze webprovider is nog niet geconfigureerd."
   }
 }

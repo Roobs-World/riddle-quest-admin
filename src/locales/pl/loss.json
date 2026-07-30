@@ -1,15 +1,12 @@
 {
   "LossModal": {
-    "ANSWER_PREFIX": "Odpowiedź:",
     "COIN_EXTRA_GO_BUTTON": "{coins} monet za dodatkowa probe",
     "EXTRA_GO_PROMPT": "Brak prob. Zdobadz jedna dodatkowa probe albo pomin te lamiglowke.",
-    "NEXT_LEVEL_BUTTON": "Następny poziom",
     "OPEN_SHOP_BUTTON": "Otwórz sklep",
     "OUT_OF_ATTEMPTS": "Poza próbami.",
     "SKIP_LEVEL_PREFIX": "Pomiń poziom (",
     "SKIP_LEVEL_SUFFIX": "Monety)",
     "SKIP_PUZZLE_BUTTON": "Pomiń łamigłówkę",
-    "TITLE": "Tak blisko!",
     "USE_COINS_PREFIX": "Użyj",
     "USE_COINS_SUFFIX": "Monety, aby kontynuować"
   }

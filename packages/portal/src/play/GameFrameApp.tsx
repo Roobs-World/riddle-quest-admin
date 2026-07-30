@@ -22,7 +22,8 @@ import {dispatchLocalBridge, GAME_TO_HOST_EVENT, HOST_TO_GAME_EVENT} from "./loc
 import {ACHIEVEMENT_DEFINITIONS, type AchievementPlayerData} from "./achievements";
 import {getNextRankForLevel, getRankForLevel, PLAYER_RANKS} from "./ranks";
 import {GuidanceOverlay} from "./GuidanceOverlay";
-import {SpinningWheelLoader} from "./SpinningWheelLoader";
+import {SpinningWheel, SpinningWheelLoader} from "./SpinningWheelLoader";
+import type {JestSavedGame} from "../jest/types";
 
 const SolarSystem = lazy(() => import("./SolarSystem").then((module) => ({default: module.SolarSystem})));
 
@@ -36,7 +37,17 @@ const getNumber = (value: unknown): number | undefined => (typeof value === "num
 const getStringArray = (value: unknown): string[] =>
   Array.isArray(value) ? value.filter((item): item is string => typeof item === "string") : [];
 
-export function GameFrameApp({localBridge = false}: {localBridge?: boolean} = {}) {
+export function GameFrameApp({
+  localBridge = false,
+  interactionBlocked = false,
+  restoredGame,
+  onSaveGame,
+}: {
+  localBridge?: boolean;
+  interactionBlocked?: boolean;
+  restoredGame?: JestSavedGame | null;
+  onSaveGame?: (game: JestSavedGame | null) => void;
+} = {}) {
   const shellRef = useRef<HTMLElement | null>(null);
   const contentRef = useRef<HTMLDivElement | null>(null);
   const [state, dispatch] = useReducer(gameSessionReducer, undefined, createInitialGameSession);
@@ -50,7 +61,28 @@ export function GameFrameApp({localBridge = false}: {localBridge?: boolean} = {}
   const musicFadeTokenRef = useRef(0);
   const lastAudioOutcomeRef = useRef<string | null>(null);
   const lastAudioGuessCountRef = useRef(0);
+  const lastClearedOutcomeRef = useRef<string | null>(null);
+  const lastServerCheckpointRef = useRef<{riddleId: string; signature: string} | null>(null);
   stateRef.current = state;
+
+  const getSavedGame = useCallback((): JestSavedGame | null => {
+    const current = stateRef.current;
+    if (!current.riddle || !current.engineSnapshot || current.lastOutcome) {
+      return null;
+    }
+    return {
+      schemaVersion: 1,
+      savedAt: Date.now(),
+      riddleId: current.riddle.riddleId,
+      gameMode: current.gameMode,
+      currentLetters: current.currentLetters,
+      activeSlotIndex: current.activeSlotIndex,
+      hintRevealedIndices: current.hintRevealedIndices,
+      guesses: current.guesses,
+      engineSnapshot: current.engineSnapshot,
+      letterStates: current.letterStates,
+    };
+  }, []);
 
   const postToHost = useCallback((message: GameToHostMessage) => {
     if (localBridge || window.parent === window) {
@@ -121,12 +153,12 @@ export function GameFrameApp({localBridge = false}: {localBridge?: boolean} = {}
     });
   }, [postToHost]);
 
-  const requestRiddle = useCallback((nextMode = stateRef.current.gameMode) => {
+  const requestRiddle = useCallback(() => {
     postToHost({
       type: "game:loadRiddle",
       requestId: createRequestId("load"),
       payload: {
-        gameMode: nextMode,
+        gameMode: stateRef.current.gameMode,
         locale: stateRef.current.locale,
         classicIndex: stateRef.current.profile?.classicIndex,
       },
@@ -316,6 +348,7 @@ export function GameFrameApp({localBridge = false}: {localBridge?: boolean} = {}
 
           if (message.payload.operation === "completeGame") {
             const reward = getNumber(data.coinsEarned);
+            const completedOutcome = stateRef.current.lastOutcome;
             dispatch({
               type: "completionReward",
               reward: {
@@ -333,6 +366,9 @@ export function GameFrameApp({localBridge = false}: {localBridge?: boolean} = {}
             });
             if (reward && stateRef.current.profile) {
               dispatch({type: "setNotice", notice: tr("GameMessages.COINS_EARNED") + reward});
+            }
+            if (completedOutcome?.kind === "loss") {
+              requestRiddle();
             }
             return;
           }
@@ -361,7 +397,7 @@ export function GameFrameApp({localBridge = false}: {localBridge?: boolean} = {}
         pause: () => dispatch({type: "pause"}),
         resume: () => dispatch({type: "resume"}),
       }),
-    [postToHost],
+    [postToHost, requestRiddle],
   );
 
   useEffect(() => {
@@ -420,10 +456,14 @@ export function GameFrameApp({localBridge = false}: {localBridge?: boolean} = {}
     const key = `riddleQuest:session:${state.user?.uid ?? "anonymous"}:${state.riddle.riddleId}`;
     try {
       const raw = localStorage.getItem(key);
-      if (!raw) {
+      const saved = restoredGame?.riddleId === state.riddle.riddleId
+        ? restoredGame
+        : raw
+          ? JSON.parse(raw) as Record<string, unknown>
+          : null;
+      if (!saved) {
         return;
       }
-      const saved = JSON.parse(raw) as Record<string, unknown>;
       if (
         Array.isArray(saved.currentLetters) &&
         saved.currentLetters.every((letter) => typeof letter === "string") &&
@@ -450,7 +490,7 @@ export function GameFrameApp({localBridge = false}: {localBridge?: boolean} = {}
     } catch {
       localStorage.removeItem(key);
     }
-  }, [state.riddle?.riddleId, state.user?.uid]);
+  }, [restoredGame, state.riddle?.riddleId, state.user?.uid]);
 
   useEffect(() => {
     if (!state.riddle || !state.engineSnapshot) {
@@ -461,18 +501,11 @@ export function GameFrameApp({localBridge = false}: {localBridge?: boolean} = {}
       localStorage.removeItem(key);
       return;
     }
-    localStorage.setItem(
-      key,
-      JSON.stringify({
-        currentLetters: state.currentLetters,
-        activeSlotIndex: state.activeSlotIndex,
-        hintRevealedIndices: state.hintRevealedIndices,
-        guesses: state.guesses,
-        engineSnapshot: state.engineSnapshot,
-        letterStates: state.letterStates,
-      }),
-    );
+    const savedGame = getSavedGame();
+    if (!savedGame) return;
+    localStorage.setItem(key, JSON.stringify(savedGame));
   }, [
+    getSavedGame,
     state.activeSlotIndex,
     state.currentLetters,
     state.engineSnapshot,
@@ -483,6 +516,49 @@ export function GameFrameApp({localBridge = false}: {localBridge?: boolean} = {}
     state.riddle,
     state.user?.uid,
   ]);
+
+  useEffect(() => {
+    if (state.lastOutcome) {
+      if (lastClearedOutcomeRef.current !== state.lastOutcome.id) {
+        lastClearedOutcomeRef.current = state.lastOutcome.id;
+        onSaveGame?.(null);
+      }
+      return;
+    }
+    const savedGame = getSavedGame();
+    if (!savedGame) return;
+    const signature = JSON.stringify({
+      guesses: savedGame.guesses.length,
+      hints: savedGame.hintRevealedIndices,
+      attemptsUsed: savedGame.engineSnapshot.attemptsUsed,
+      hasUsedContinue: savedGame.engineSnapshot.hasUsedContinue,
+    });
+    if (lastServerCheckpointRef.current?.riddleId !== savedGame.riddleId) {
+      lastServerCheckpointRef.current = {riddleId: savedGame.riddleId, signature};
+      return;
+    }
+    if (lastServerCheckpointRef.current.signature === signature) return;
+    lastServerCheckpointRef.current = {riddleId: savedGame.riddleId, signature};
+    onSaveGame?.(savedGame);
+  }, [
+    getSavedGame,
+    onSaveGame,
+    state.engineSnapshot,
+    state.guesses,
+    state.hintRevealedIndices,
+    state.lastOutcome,
+    state.riddle?.riddleId,
+  ]);
+
+  useEffect(() => {
+    const saveBeforeBackgrounding = () => {
+      if (document.visibilityState !== "hidden") return;
+      const savedGame = getSavedGame();
+      if (savedGame) onSaveGame?.(savedGame);
+    };
+    document.addEventListener("visibilitychange", saveBeforeBackgrounding);
+    return () => document.removeEventListener("visibilitychange", saveBeforeBackgrounding);
+  }, [getSavedGame, onSaveGame]);
 
   useEffect(() => {
     const outcome = state.lastOutcome;
@@ -525,13 +601,17 @@ export function GameFrameApp({localBridge = false}: {localBridge?: boolean} = {}
     }
   }, [state.muted, state.paused]);
 
-  const submitGuess = useCallback(() => {
-    playFeedback("submit");
-    dispatch({type: "submitGuess"});
-  }, [playFeedback]);
   const currentAttempt = state.riddle
     ? Array.from({length: state.riddle.answerLength}, (_, index) => state.currentLetters[index] ?? "")
     : [];
+  const canSubmit = currentAttempt.length > 0 && currentAttempt.every(Boolean);
+  const submitGuess = useCallback(() => {
+    if (!canSubmit) {
+      return;
+    }
+    playFeedback("submit");
+    dispatch({type: "submitGuess"});
+  }, [canSubmit, playFeedback]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -616,7 +696,11 @@ export function GameFrameApp({localBridge = false}: {localBridge?: boolean} = {}
   }, [postToHost]);
 
   return (
-    <main ref={shellRef} className={state.paused ? "game-app paused" : "game-app"}>
+    <main
+      ref={shellRef}
+      className={state.paused ? "game-app paused" : "game-app"}
+      inert={interactionBlocked ? true : undefined}
+    >
       {solarReady && (
         <Suspense fallback={null}>
           <SolarSystem paused={state.paused} />
@@ -631,13 +715,11 @@ export function GameFrameApp({localBridge = false}: {localBridge?: boolean} = {}
       >
         <GameHeader
           state={state}
-          onOpenModal={(modal) => dispatch({type: "openModal", modal})}
+          onOpenShop={() => dispatch({type: "openModal", modal: "shop"})}
         />
 
         {!state.riddle ? (
-          <section className="game-loading">
-            <SpinningWheelLoader />
-          </section>
+          <section className="game-loading" aria-hidden="true" />
         ) : (
           <>
             <section className="riddle-surface">
@@ -662,7 +744,14 @@ export function GameFrameApp({localBridge = false}: {localBridge?: boolean} = {}
                 <HintIcon />
                 {tr("Navigation.HINT_BUTTON")}
               </button>
-              <button data-tooltip="submitAnswer" className="submit-action" onClick={submitGuess}>{tr("GameScreenAlerts.SUBMIT_BUTTON")}</button>
+              <button
+                data-tooltip="submitAnswer"
+                className="submit-action"
+                onClick={submitGuess}
+                disabled={!canSubmit}
+              >
+                {tr("GameScreenAlerts.SUBMIT_BUTTON")}
+              </button>
               <button data-tooltip="gameSkip" onClick={() => dispatch({type: "openModal", modal: "skip"})}>
                 <ForwardIcon />
                 {tr("GameScreenAlerts.NEXT_BUTTON")}
@@ -685,18 +774,18 @@ export function GameFrameApp({localBridge = false}: {localBridge?: boolean} = {}
         }
         onContinue={requestContinue}
         onPurchase={requestPurchase}
-        onNext={() => requestRiddle(state.gameMode)}
+        onNext={requestRiddle}
         onOpenModal={(modal) => dispatch({type: "openModal", modal})}
         onToggleMute={() => dispatch({type: "toggleMute"})}
         onRequestHint={requestHint}
         onRequestSkip={requestSkip}
         onRequestLeaderboard={requestLeaderboard}
         onUpdateUsername={updateUsername}
-        onSelectMode={requestRiddle}
       />
       <GuidanceOverlay state={state} modal={state.modal} onActiveChange={setGuidanceActive} />
       {!online && (
         <div className="offline-backdrop" role="alertdialog" aria-modal="true">
+          <SpinningWheel />
           <section>
             <strong>{tr("CommonAlerts.OFFLINE_TITLE")}</strong>
             <p>{tr("CommonAlerts.OFFLINE_MESSAGE")}</p>
@@ -709,23 +798,27 @@ export function GameFrameApp({localBridge = false}: {localBridge?: boolean} = {}
 
 function GameHeader({
   state,
-  onOpenModal,
+  onOpenShop,
 }: {
   state: GameSessionState;
-  onOpenModal: (modal: Exclude<GameModal, null>) => void;
+  onOpenShop: () => void;
 }) {
   return (
     <header className="game-header">
-      <button className="logo-button" onClick={() => onOpenModal("gameMode")} aria-label={tr("Accessibility.LOGO_BUTTON")}>
-        <img src={mascotUrl} alt="" />
-      </button>
-      <button className="game-mode-button" onClick={() => onOpenModal("gameMode")}>
+      <img className="game-logo" src={mascotUrl} alt={tr("Accessibility.LOGO_BUTTON")} />
+      <div className="game-mode-label">
         {state.gameMode === "challenge" ? tr("WebPortal.PLAY_DAILY") : tr("WebPortal.PLAY_CLASSIC")}
-      </button>
-      <div className="coin-pill" data-tooltip="gameCoins">
+      </div>
+      <button
+        type="button"
+        className="coin-pill"
+        data-tooltip="gameCoins"
+        aria-label={tr("Navigation.BUY_COINS_BUTTON")}
+        onClick={onOpenShop}
+      >
         <strong>{(state.profile?.coins ?? 0).toLocaleString()}</strong>
         <img src={coinUrl} alt="" />
-      </div>
+      </button>
     </header>
   );
 }
@@ -897,7 +990,6 @@ function GameModalView({
   onRequestSkip,
   onRequestLeaderboard,
   onUpdateUsername,
-  onSelectMode,
 }: {
   state: GameSessionState;
   onClose: () => void;
@@ -910,7 +1002,6 @@ function GameModalView({
   onRequestSkip: () => void;
   onRequestLeaderboard: (type: "xp" | "totalWins" | "bestStreak") => void;
   onUpdateUsername: (username: string) => void;
-  onSelectMode: (mode: "classic" | "challenge") => void;
 }) {
   const [username, setUsername] = useState("");
   const [victoryStepIndex, setVictoryStepIndex] = useState(0);
@@ -948,7 +1039,7 @@ function GameModalView({
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         event.preventDefault();
-        if (state.modal !== "victory" && state.modal !== "loss") {
+        if (state.modal !== "victory") {
           onCloseRef.current();
         }
         return;
@@ -1028,8 +1119,7 @@ function GameModalView({
 
   const titles: Record<Exclude<GameModal, null>, string> = {
     victory: tr("VictoryModal.TITLE"),
-    loss: tr("LossModal.TITLE"),
-    continue: tr("LossModal.TITLE"),
+    continue: tr("LossModal.OUT_OF_ATTEMPTS"),
     shop: tr("CoinShop.TITLE"),
     profile: tr("Profile.TITLE"),
     settings: tr("Settings.TITLE"),
@@ -1043,7 +1133,6 @@ function GameModalView({
     hint: tr("GameScreenAlerts.HINT_MODAL_TITLE"),
     skip: tr("GameScreenAlerts.SKIP_MODAL_TITLE"),
     username: tr("Profile.UPDATE_USERNAME_TITLE"),
-    gameMode: tr("WebPortal.MODE_LABEL"),
     treasure: tr("Profile.TREASURE_CHEST_TITLE"),
     reward: tr("CoinPurchase.TITLE"),
   };
@@ -1106,7 +1195,7 @@ function GameModalView({
     setUsername("");
   };
   const skipCost = state.gameMode === "challenge" ? 150 : 100;
-  const isMandatoryOutcome = state.modal === "victory" || state.modal === "loss";
+  const isMandatoryOutcome = state.modal === "victory";
   const advanceVictoryFanfare = () => {
     if (victoryStepIndex + 1 < victorySteps.length) {
       setVictoryStepIndex((index) => index + 1);
@@ -1129,6 +1218,7 @@ function GameModalView({
       role="presentation"
       onMouseDown={isMandatoryOutcome ? undefined : onClose}
     >
+      {state.modal !== "profile" ? <SpinningWheel /> : null}
       <section
         ref={modalRef}
         className={`game-modal modal-${state.modal}`}
@@ -1252,13 +1342,6 @@ function GameModalView({
             <button className="play-primary" onClick={() => onOpenModal("skip")}>
               {tr("LossModal.SKIP_PUZZLE_BUTTON")}
             </button>
-          </div>
-        )}
-
-        {state.modal === "loss" && (
-          <div className="modal-actions">
-            <p>{tr("LossModal.ANSWER_PREFIX")}{state.riddle?.answer.toUpperCase()}</p>
-            <button className="play-primary" onClick={onNext}>{tr("LossModal.NEXT_LEVEL_BUTTON")}</button>
           </div>
         )}
 
@@ -1564,31 +1647,6 @@ function GameModalView({
               "THIRD_PARTY_LICENSES",
               "SUPPORT",
             ].map((key) => <div key={key}>{tr(`AboutLegal.${key}`)}</div>)}
-          </div>
-        )}
-
-        {state.modal === "gameMode" && (
-          <div className="game-mode-modal">
-            <button
-              className={state.gameMode === "classic" ? "active" : ""}
-              onClick={() => {
-                onClose();
-                onSelectMode("classic");
-              }}
-            >
-              <strong>{tr("WebPortal.PLAY_CLASSIC")}</strong>
-              <span>{tr("Instructions.TIPS_DESCRIPTION")}</span>
-            </button>
-            <button
-              className={state.gameMode === "challenge" ? "active" : ""}
-              onClick={() => {
-                onClose();
-                onSelectMode("challenge");
-              }}
-            >
-              <strong>{tr("WebPortal.PLAY_DAILY")}</strong>
-              <span>{tr("Profile.DAILY_PUZZLES_COMPLETED_HEADER")}</span>
-            </button>
           </div>
         )}
 

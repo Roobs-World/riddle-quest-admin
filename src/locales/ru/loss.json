@@ -1,15 +1,12 @@
 {
   "LossModal": {
-    "ANSWER_PREFIX": "Ответ: ",
     "COIN_EXTRA_GO_BUTTON": "{coins} монет за дополнительную попытку",
     "EXTRA_GO_PROMPT": "Попытки закончились. Получите одну дополнительную попытку или пропустите эту загадку.",
-    "NEXT_LEVEL_BUTTON": "Sleduyushchiy uroven",
     "OPEN_SHOP_BUTTON": "Otkryt magazin",
     "OUT_OF_ATTEMPTS": "Popytki zakonchilis.",
     "SKIP_LEVEL_PREFIX": "Propustit uroven (",
     "SKIP_LEVEL_SUFFIX": " monet)",
     "SKIP_PUZZLE_BUTTON": "Пропустить загадку",
-    "TITLE": "Pochti!",
     "USE_COINS_PREFIX": "Ispolzovat ",
     "USE_COINS_SUFFIX": " monet dlya prodolzheniya"
   }

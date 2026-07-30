@@ -19,6 +19,18 @@ const riddle = {
 const reduce = (state: GameSessionState, action: GameSessionAction) => gameSessionReducer(state, action);
 
 describe("game session reducer", () => {
+  it("ignores incomplete submissions without showing an error", () => {
+    let state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle});
+    state = reduce(state, {type: "typeLetter", letter: "P"});
+
+    const beforeSubmit = state;
+    state = reduce(state, {type: "submitGuess"});
+
+    expect(state).toBe(beforeSubmit);
+    expect(state.notice).toBeNull();
+    expect(state.guesses).toHaveLength(0);
+  });
+
   it("loads a riddle and wins with a correct guess", () => {
     let state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle});
 
@@ -87,8 +99,24 @@ describe("game session reducer", () => {
     }
     state = reduce(state, {type: "submitGuess"});
 
-    expect(state.modal).toBe("loss");
+    expect(state.modal).toBeNull();
     expect(state.lastOutcome).toEqual(expect.objectContaining({kind: "loss", attempts: 6}));
+  });
+
+  it("records a declined continue without opening an answer modal", () => {
+    let state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle});
+
+    for (let attempt = 0; attempt < 5; attempt += 1) {
+      for (const letter of ["C", "L", "O", "C", "K"]) {
+        state = reduce(state, {type: "typeLetter", letter});
+      }
+      state = reduce(state, {type: "submitGuess"});
+    }
+
+    state = reduce(state, {type: "declineContinue"});
+
+    expect(state.modal).toBeNull();
+    expect(state.lastOutcome).toEqual(expect.objectContaining({kind: "loss", attempts: 5}));
   });
 
   it("locks hinted slots while allowing non-sequential editing", () => {

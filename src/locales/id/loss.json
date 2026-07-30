@@ -1,15 +1,12 @@
 {
   "LossModal": {
-    "ANSWER_PREFIX": "Jawaban:",
     "COIN_EXTRA_GO_BUTTON": "{coins} Koin untuk Kesempatan Ekstra",
     "EXTRA_GO_PROMPT": "Kesempatan habis. Dapatkan satu kesempatan ekstra atau lewati teka-teki ini.",
-    "NEXT_LEVEL_BUTTON": "Tingkat Selanjutnya",
     "OPEN_SHOP_BUTTON": "Buka Toko",
     "OUT_OF_ATTEMPTS": "Di luar upaya.",
     "SKIP_LEVEL_PREFIX": "Lewati Tingkat (",
     "SKIP_LEVEL_SUFFIX": "Koin)",
     "SKIP_PUZZLE_BUTTON": "Lewati Teka-teki",
-    "TITLE": "Sangat dekat!",
     "USE_COINS_PREFIX": "Gunakan",
     "USE_COINS_SUFFIX": "Koin untuk Melanjutkan"
   }

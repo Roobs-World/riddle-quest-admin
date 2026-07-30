@@ -1,15 +1,12 @@
 {
   "LossModal": {
-    "ANSWER_PREFIX": "Risposta:",
     "COIN_EXTRA_GO_BUTTON": "{coins} monete per un tentativo extra",
     "EXTRA_GO_PROMPT": "Tentativi finiti. Ottieni un tentativo extra o salta questo enigma.",
-    "NEXT_LEVEL_BUTTON": "Livello successivo",
     "OPEN_SHOP_BUTTON": "Negozio aperto",
     "OUT_OF_ATTEMPTS": "Finiti i tentativi.",
     "SKIP_LEVEL_PREFIX": "Salta livello (",
     "SKIP_LEVEL_SUFFIX": "Monete)",
     "SKIP_PUZZLE_BUTTON": "Salta l'enigma",
-    "TITLE": "Così vicino!",
     "USE_COINS_PREFIX": "Utilizzare",
     "USE_COINS_SUFFIX": "Monete per continuare"
   }

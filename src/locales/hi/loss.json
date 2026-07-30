@@ -1,15 +1,12 @@
 {
   "LossModal": {
-    "ANSWER_PREFIX": "उत्तर: ",
     "COIN_EXTRA_GO_BUTTON": "{coins} सिक्के एक अतिरिक्त मौके के लिए",
     "EXTRA_GO_PROMPT": "प्रयास समाप्त। एक अतिरिक्त मौका लें या इस पहेली को छोड़ें।",
-    "NEXT_LEVEL_BUTTON": "अगला स्तर",
     "OPEN_SHOP_BUTTON": "दुकान खोलें",
     "OUT_OF_ATTEMPTS": "कोशिशें समाप्त हो गईं।",
     "SKIP_LEVEL_PREFIX": "स्तर छोड़ें (",
     "SKIP_LEVEL_SUFFIX": " सिक्के)",
     "SKIP_PUZZLE_BUTTON": "पहेली छोड़ें",
-    "TITLE": "लगभग हो गया था!",
     "USE_COINS_PREFIX": "जारी रखने के लिए ",
     "USE_COINS_SUFFIX": " सिक्के इस्तेमाल करें"
   }

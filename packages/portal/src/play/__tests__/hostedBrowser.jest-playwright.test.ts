@@ -77,6 +77,9 @@ describeBrowser("standalone Jest browser game", () => {
             document.documentElement.scrollHeight <= innerHeight + 1,
         ),
       ).toBe(true);
+      await page.getByRole("button", {name: /buy coins/i}).first().click();
+      await page.getByRole("heading", {name: /coin shop/i}).waitFor();
+      await page.keyboard.press("Escape");
       await page.setViewportSize({width: 390, height: 667});
       await page.waitForFunction(
         () => (document.querySelector(".game-bottom-navigation")?.getBoundingClientRect().bottom ?? Infinity) <= innerHeight + 1,

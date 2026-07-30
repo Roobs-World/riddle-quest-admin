@@ -80,7 +80,9 @@ const createLazyFirebaseHostServices = (): HostServices => ({
 
 export const resolveHostServicesMode = (search = window.location.search): HostServicesMode => {
   const params = new URLSearchParams(search);
-  return params.get("harness") === "jest" || params.get("harness") === "dev" ? "fake" : "firebase";
+  return import.meta.env.DEV || params.get("harness") === "jest" || params.get("harness") === "dev"
+    ? "fake"
+    : "firebase";
 };
 
 export const createHostServices = (mode: HostServicesMode = resolveHostServicesMode()): HostServices => {
