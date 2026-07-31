@@ -17,6 +17,17 @@ pnpm --dir firebase-functions lint
 pnpm build
 ```
 
+The Fund-facing end-to-end check must target the active uploaded build through a real registered Jest sandbox session:
+
+```bash
+JEST_SANDBOX_LOGIN_URL='https://jest.com/...' \
+pnpm --filter @qwordly/portal test:jest-deployed:playwright
+```
+
+Generate the short-lived login URL from **Developer Console → Sandbox Users**. The test opens the deployed Riddle Quest route after sandbox authentication; `JEST_DEPLOYED_GAME_URL` can override the default `https://jest.com/g/riddle-q` route. The test rejects direct storage-origin access, local servers, and `harness=` mock mode; it requires the game iframe at the configured `*.builds.jest.com` origin and verifies real identity and riddle Function traffic.
+
+The authenticated browser state is cached only in `/tmp/riddle-quest-jest-sandbox-state.json` so a consumed one-time link can be reused while diagnosing a failed run. Set `JEST_SANDBOX_STORAGE_STATE` to override that ephemeral path.
+
 `build:jest` validates the canonical progress tracker, TypeScript, every imported locale JSON file, the production build, and the standalone artifact. The artifact audit enforces the 5 MB limit, local relative assets, the single approved Jest SDK script, and the absence of native modules, external authentication, ads, install prompts, secrets, and source maps.
 
 ## Current projects
@@ -43,22 +54,23 @@ The command creates a timestamped version, builds and audits `dist-jest`, create
 
 The last accepted current-game upload was:
 
-- Build: `1.0.0-dev.20260729003507`
-- Jest version: `019fab4c-0be5-7172-871a-3d8bebed2d49`
-- Upload result: accepted and processing with Draft activation requested
+- Build: `1.0.0-dev.20260731000321`
+- Jest version: `019fb57b-a3ff-777b-9a12-a7755d058a70`
+- Upload result: active on the Jest game route
 
 ## Developer Console setup
 
 Owner access to `https://jest.com/developers` is required:
 
 1. Select Manual loading mode.
-2. Create the six SKUs listed in `firebase-functions/.env.example`.
-3. Upload the showcase assets and select:
+2. Create the six consumable SKUs listed in `JEST_PRODUCT_SKUS` in `firebase-functions/.env.example`.
+3. Create a monthly subscription with the exact SKU `com.roobsworld.riddlequest.premium.monthly`, matching `JEST_SUBSCRIPTION_SKUS`. The deployed acceptance test deliberately fails if this subscription is absent from Jest's live catalog.
+4. Upload the showcase assets and select:
    - logo: `assets/images/icon.png`
    - hero: `docs/jest-assets/riddle-quest-hero.png`
-4. If a dedicated notification image is approved, set its reference as `VITE_JEST_NOTIFICATION_ASSET_REFERENCE`. Without one, Jest uses the configured Hero image.
-5. Create at least two sandbox players.
-6. Activate the audited Draft build and run the acceptance matrix below.
+5. If a dedicated notification image is approved, set its reference as `VITE_JEST_NOTIFICATION_ASSET_REFERENCE`. Without one, Jest uses the configured Hero image.
+6. Create at least two sandbox players.
+7. Activate the audited Draft build and run the acceptance matrix below.
 
 ## Sandbox acceptance matrix
 
@@ -76,3 +88,12 @@ Attach screenshots, recordings, event IDs, and device traces to the matching row
 ```bash
 pnpm --filter @qwordly/portal check:progress
 ```
+
+## Jest Games Fund readiness
+
+- **User acquisition:** guests see the custom registration step immediately after the instructions and again after an authoritative win when the cooldown permits. Jest onboarding `customName`, campaign, source, and reference values are preserved through the native registration overlay.
+- **Notifications:** registered players receive fuzzy D1, D3, and D7 schedules early in the session. Stable identifiers replace the existing schedule whenever level, wins, streak, name, or locale changes. Each localized message has distinct reward-focused copy and carries template, offset, campaign, and callback attribution back into the Daily Cosmic Riddle.
+- **Virality:** the victory modal creates an outside-network Jest referral share containing the exact challenge destination, a spoiler-free result image, and localized result text. Referral grants are verified and applied server-side with stable campaign and player idempotency keys.
+- **Monetization:** consumables and the monthly subscription use the Jest payment APIs. Signed receipts and subscription state are verified server-side; SKU grants are idempotent; canceled or failed transactions do not mutate balances; and incomplete purchases are recovered page-by-page before normal play.
+
+Automated coverage proves the integration contract and failure handling. Before a Fund submission, repeat the Notifications, Payments, and Referrals rows above with real Jest sandbox players and retain the Developer Console evidence; local mocks cannot prove catalog configuration, delivery by the messaging network, or live payment settlement.

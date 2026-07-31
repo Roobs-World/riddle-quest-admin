@@ -8,6 +8,10 @@ export interface JestBackendPort {
     newlyUnlockedAchievementIds?: string[];
   }>;
   verifyReferrals(referralsSigned: string, playerId: string): Promise<{verified: boolean}>;
+  syncSubscriptions(subscriptionsSigned: string, playerId: string): Promise<{
+    verified: boolean;
+    activeSkus: string[];
+  }>;
 }
 
 export class JestBackendClient implements JestBackendPort {
@@ -37,4 +41,10 @@ export class JestBackendClient implements JestBackendPort {
     );
   }
   verifyReferrals(referralsSigned: string, playerId: string) { return this.post<{verified: boolean}>("verifyJestReferrals", {referralsSigned, playerId}); }
+  syncSubscriptions(subscriptionsSigned: string, playerId: string) {
+    return this.post<{verified: boolean; activeSkus: string[]}>(
+      "syncJestSubscriptions",
+      {subscriptionsSigned, playerId},
+    );
+  }
 }

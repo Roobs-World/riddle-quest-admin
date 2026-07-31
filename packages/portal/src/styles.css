@@ -95,6 +95,7 @@ h1, h2, h3, p { margin-top: 0; }
   left: 50%;
   width: min(520px, calc(100vw - 24px));
   transform: translateX(-50%);
+  pointer-events: none;
 }
 .jest-registration-alert {
   position: fixed;
@@ -1038,6 +1039,27 @@ h1, h2, h3, p { margin-top: 0; }
   margin-top: 7px;
   object-fit: contain;
   filter: drop-shadow(0 3px 0 rgba(160,94,0,.18));
+}
+.game-shop-grid article.shop-subscription-card {
+  grid-column: 1 / -1;
+  border-color: #8c5dbe;
+  background: linear-gradient(145deg, rgba(255,255,255,.96), rgba(236,218,255,.94));
+}
+.shop-subscription-icon {
+  display: grid;
+  width: 64px;
+  height: 64px;
+  margin-top: 4px;
+  place-items: center;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #f7d970, #f29a4a);
+  color: #5b2d65;
+  font-size: 34px;
+  box-shadow: 0 5px 0 rgba(91,45,101,.2);
+}
+.shop-subscription-card .shop-product-description {
+  max-width: 34rem;
+  text-align: center;
 }
 .shop-product-name {
   max-width: 100%;

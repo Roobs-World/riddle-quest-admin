@@ -102,6 +102,7 @@ export class JestSdkPlatform implements JestPlatformPort {
     try { await this.sdk.notifications.scheduleNotification(input); return success(undefined); } catch (e) { return failure(e); }
   }
   async removeNotification(identifier: string) {
+    if (!this.getPlayer().registered) return {status: "unavailable", message: "Registration is required"} as const;
     try { await this.sdk.notifications.unscheduleNotification({identifier}); return success(undefined); } catch (e) { return failure(e); }
   }
   async shareReferral(input: Parameters<JestPlatformPort["shareReferral"]>[0]) {
@@ -137,6 +138,32 @@ export class JestSdkPlatform implements JestPlatformPort {
           : {status: "retryable-failure", message: String(result.error)} as const;
       }
       return success(undefined);
+    } catch (e) { return failure(e); }
+  }
+  async getSubscriptions() {
+    try {
+      const result = await this.sdk.payments.getSubscriptions();
+      return success({
+        subscriptions: result.subscriptions ?? [],
+        subscriptionsSigned: result.subscriptionsSigned ?? result.signed,
+      });
+    } catch (e) { return failure(e); }
+  }
+  async beginSubscription(subscriptionSku: string) {
+    try {
+      const result = await this.sdk.payments.beginSubscription({subscriptionSku});
+      if (result?.result === "cancel") return {status: "cancelled"} as const;
+      if (result?.result === "error") {
+        return result.error === "invalid_subscription"
+          ? {status: "terminal-failure", message: result.error} as const
+          : result.error === "guest_not_allowed" || result.error === "already_subscribed"
+            ? {status: "unavailable", message: result.error} as const
+            : {status: "retryable-failure", message: String(result.error)} as const;
+      }
+      return success({
+        subscription: result.subscription,
+        subscriptionSigned: result.subscriptionSigned,
+      });
     } catch (e) { return failure(e); }
   }
   async markFirstMilestone() {

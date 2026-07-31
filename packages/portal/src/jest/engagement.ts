@@ -7,22 +7,16 @@ export const WEEKLY_REMINDER_ID = "riddle-quest-d7-v2";
 export async function scheduleEngagementReminders(
   platform: JestPlatformPort,
   copy: {
-    title: string;
-    dailyLabel: string;
-    levelLabel: string;
-    streakLabel: string;
-    ctaText: string;
-    level?: number;
-    winStreak?: number;
+    dailyBody: string;
+    streakBody: string;
+    weeklyBody: string;
+    dailyCta: string;
+    streakCta: string;
+    weeklyCta: string;
     assetReference?: string;
   },
 ): Promise<PlatformResult<void>[]> {
-  await removeEngagementReminders(platform);
-  const level = Math.max(1, copy.level ?? 1);
-  const winStreak = Math.max(0, copy.winStreak ?? 0);
   const common = {
-    title: copy.title,
-    ctaText: copy.ctaText,
     ...(copy.assetReference ? {assetReference: copy.assetReference} : {}),
     entryPayload: {
       gameMode: "challenge",
@@ -36,24 +30,45 @@ export async function scheduleEngagementReminders(
       identifier: DAILY_REMINDER_ID,
       scheduledInDays: 1,
       priority: "medium",
-      body: `${copy.dailyLabel} · ${copy.levelLabel} ${level}`,
-      entryPayload: {...common.entryPayload, reference: "notification_d1_v2"},
+      body: copy.dailyBody,
+      ctaText: copy.dailyCta,
+      entryPayload: {
+        ...common.entryPayload,
+        reference: "notification_d1_v3",
+        notification_template: "daily_reward_progress_v3",
+        notification_offset: "D1",
+        callback: "daily_coin_reward",
+      },
     }),
     platform.scheduleNotification({
       ...common,
       identifier: STREAK_REMINDER_ID,
       scheduledInDays: 3,
       priority: "high",
-      body: `${copy.dailyLabel} · ${copy.streakLabel} ${winStreak}`,
-      entryPayload: {...common.entryPayload, reference: "notification_d3_v2"},
+      body: copy.streakBody,
+      ctaText: copy.streakCta,
+      entryPayload: {
+        ...common.entryPayload,
+        reference: "notification_d3_v3",
+        notification_template: "streak_progress_v3",
+        notification_offset: "D3",
+        callback: "daily_streak",
+      },
     }),
     platform.scheduleNotification({
       ...common,
       identifier: WEEKLY_REMINDER_ID,
       scheduledInDays: 7,
       priority: "high",
-      body: `${copy.dailyLabel} · ${copy.levelLabel} ${level} · ${copy.streakLabel} ${winStreak}`,
-      entryPayload: {...common.entryPayload, reference: "notification_d7_v2"},
+      body: copy.weeklyBody,
+      ctaText: copy.weeklyCta,
+      entryPayload: {
+        ...common.entryPayload,
+        reference: "notification_d7_v3",
+        notification_template: "level_progress_v3",
+        notification_offset: "D7",
+        callback: "daily_coin_reward",
+      },
     }),
   ]);
 }

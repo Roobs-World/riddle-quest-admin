@@ -4,6 +4,14 @@
     "LOADING_TEXT": "Shop wird geladen...",
     "NO_PACKS_AVAILABLE": "Derzeit keine Muenzenpakete verfuegbar.",
     "PURCHASE_BUTTON": "KAUFEN",
+    "PERIOD_MONTHLY": "Monat",
+    "PERIOD_WEEKLY": "Woche",
+    "PERIOD_YEARLY": "Jahr",
+    "START_TRIAL_BUTTON": "GRATIS TESTEN",
+    "SUBSCRIBE_BUTTON": "ABONNIEREN",
+    "SUBSCRIBED_BUTTON": "ABONNIERT",
+    "SUBSCRIPTION_ACTIVE": "Premium aktiv",
+    "SUBSCRIPTION_ACTIVE_NOTICE": "Dein Premium-Abo ist aktiv.",
     "TITLE": "MUENZENSHOP",
     "YOUR_BALANCE": "Ihr Guthaben"
   }

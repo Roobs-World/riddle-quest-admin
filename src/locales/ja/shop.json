@@ -4,6 +4,14 @@
     "LOADING_TEXT": "ショップを読み込み中...",
     "NO_PACKS_AVAILABLE": "現在コインパックはありません。",
     "PURCHASE_BUTTON": "購入",
+    "PERIOD_MONTHLY": "月",
+    "PERIOD_WEEKLY": "週",
+    "PERIOD_YEARLY": "年",
+    "START_TRIAL_BUTTON": "無料トライアルを開始",
+    "SUBSCRIBE_BUTTON": "登録する",
+    "SUBSCRIBED_BUTTON": "登録済み",
+    "SUBSCRIPTION_ACTIVE": "プレミアム有効",
+    "SUBSCRIPTION_ACTIVE_NOTICE": "プレミアム登録が有効です。",
     "TITLE": "コインショップ",
     "YOUR_BALANCE": "残高"
   }

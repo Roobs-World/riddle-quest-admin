@@ -4,6 +4,14 @@
     "LOADING_TEXT": "Chargement de la boutique...",
     "NO_PACKS_AVAILABLE": "Aucun pack de pieces disponible pour le moment.",
     "PURCHASE_BUTTON": "ACHETER",
+    "PERIOD_MONTHLY": "mois",
+    "PERIOD_WEEKLY": "semaine",
+    "PERIOD_YEARLY": "an",
+    "START_TRIAL_BUTTON": "ESSAI GRATUIT",
+    "SUBSCRIBE_BUTTON": "S’ABONNER",
+    "SUBSCRIBED_BUTTON": "ABONNÉ",
+    "SUBSCRIPTION_ACTIVE": "Premium actif",
+    "SUBSCRIPTION_ACTIVE_NOTICE": "Votre abonnement premium est actif.",
     "TITLE": "BOUTIQUE DE PIECES",
     "YOUR_BALANCE": "Votre solde"
   }

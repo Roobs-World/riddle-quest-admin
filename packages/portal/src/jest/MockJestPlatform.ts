@@ -8,12 +8,14 @@ import type {
 
 const ok = <T>(value: T): PlatformResult<T> => ({status: "success", value});
 const MOCK_PLAYER_DATA_KEY = "riddleQuest:mockJestPlayerData";
+const PREMIUM_SUBSCRIPTION_SKU = "com.roobsworld.riddlequest.premium.monthly";
 export class MockJestPlatform implements JestPlatformPort {
   player: {playerId: string; registered: boolean};
   preferences: JestPreferences = {};
   progress: number[] = [];
   loaded = false;
   firstMilestoneMarked = false;
+  subscriptionActive = false;
   constructor(registered = false) {
     this.player = {playerId: "jest-mock-player", registered};
   }
@@ -54,7 +56,7 @@ export class MockJestPlatform implements JestPlatformPort {
   getEntryIntent = () => ({});
   getProfile = async () => null;
   scheduleNotification = async () => this.player.registered ? ok(undefined) : ({status: "unavailable", message: "Registration is required"} as const);
-  removeNotification = async () => ok(undefined);
+  removeNotification = async () => this.player.registered ? ok(undefined) : ({status: "unavailable", message: "Registration is required"} as const);
   shareReferral = async (_input: Parameters<JestPlatformPort["shareReferral"]>[0]) => ok(undefined);
   listReferralsSigned = async () => ok("mock.referrals.signed");
   setScreenshotProvider = (_provider: ScreenshotProvider | null) => {};
@@ -105,6 +107,40 @@ export class MockJestPlatform implements JestPlatformPort {
   beginPurchase = async (sku: string) => ok({purchase: {purchaseToken: `mock-${sku}`, productSku: sku}, purchaseSigned: "mock.purchase.signed"});
   getIncompletePurchases = async () => ok({purchases: [], purchasesSigned: "mock.purchases.signed", hasMore: false});
   completePurchase = async () => ok(undefined);
+  getSubscriptions = async () => ok({
+    subscriptions: this.player.registered ? [{
+      sku: PREMIUM_SUBSCRIPTION_SKU,
+      displayName: "Riddle Quest Premium",
+      displayDescription: "Premium membership for dedicated riddle solvers.",
+      price: 4.99,
+      currency: "USD",
+      billingPeriod: "monthly" as const,
+      status: this.subscriptionActive ? "active" as const : "inactive" as const,
+      trialEligible: !this.subscriptionActive,
+    }] : [],
+    subscriptionsSigned: this.subscriptionActive
+      ? "mock.subscriptions.active.signed"
+      : "mock.subscriptions.inactive.signed",
+  });
+  beginSubscription = async (subscriptionSku: string) => {
+    if (!this.player.registered) {
+      return {status: "unavailable", message: "guest_not_allowed"} as const;
+    }
+    this.subscriptionActive = true;
+    return ok({
+      subscription: {
+        sku: subscriptionSku,
+        displayName: "Riddle Quest Premium",
+        displayDescription: "Premium membership for dedicated riddle solvers.",
+        price: 4.99,
+        currency: "USD",
+        billingPeriod: "monthly" as const,
+        status: "active" as const,
+        trialEligible: false,
+      },
+      subscriptionSigned: "mock.subscription.signed",
+    });
+  };
   markFirstMilestone = async () => { this.firstMilestoneMarked = true; return ok(undefined); };
   setLoadingProgress = (value: number) => { this.progress.push(value); };
   markGameLoaded = () => { this.loaded = true; };

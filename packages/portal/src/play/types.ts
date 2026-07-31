@@ -6,11 +6,15 @@ export type LeaderboardType = "xp" | "totalWins" | "bestStreak";
 
 export type ProductSummary = {
   productId: string;
+  productType?: "consumable" | "subscription";
   name: string;
   description: string;
   coins: number;
   displayPrice: string;
   featuredBadge?: string;
+  billingPeriod?: "weekly" | "monthly" | "yearly";
+  subscriptionStatus?: "active" | "inactive";
+  trialEligible?: boolean;
 };
 
 export type AuthSnapshot = {
@@ -61,8 +65,9 @@ type SkipResult = {
 export type PurchaseResult = {
   success: boolean;
   productId: string;
-  coinsAwarded: number;
-  newCoins: number;
+  purchaseType?: "consumable" | "subscription";
+  coinsAwarded?: number;
+  newCoins?: number;
   newlyUnlockedAchievementIds?: string[];
 };
 

@@ -6,3 +6,7 @@ export const JEST_COIN_PRODUCTS: Readonly<Record<string, number>> = Object.freez
   "com.roobsworld.riddlequest.coinpack5": 3400,
   "com.roobsworld.riddlequest.coinpack6": 7000,
 });
+
+export const JEST_SUBSCRIPTIONS = Object.freeze({
+  "com.roobsworld.riddlequest.premium.monthly": "premium",
+} as const);

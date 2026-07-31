@@ -4,6 +4,14 @@
     "LOADING_TEXT": "Cargando tienda...",
     "NO_PACKS_AVAILABLE": "No hay paquetes de monedas disponibles ahora.",
     "PURCHASE_BUTTON": "COMPRAR",
+    "PERIOD_MONTHLY": "mes",
+    "PERIOD_WEEKLY": "semana",
+    "PERIOD_YEARLY": "año",
+    "START_TRIAL_BUTTON": "PRUEBA GRATIS",
+    "SUBSCRIBE_BUTTON": "SUSCRIBIRSE",
+    "SUBSCRIBED_BUTTON": "SUSCRITO",
+    "SUBSCRIPTION_ACTIVE": "Premium activo",
+    "SUBSCRIPTION_ACTIVE_NOTICE": "Tu suscripción premium está activa.",
     "TITLE": "TIENDA DE MONEDAS",
     "YOUR_BALANCE": "Tu saldo"
   }

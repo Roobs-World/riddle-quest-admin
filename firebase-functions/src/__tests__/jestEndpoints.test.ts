@@ -1,4 +1,9 @@
-import {applyJestCors, resolveSignedPurchase, selectReferralConversions} from "../jestEndpoints";
+import {
+  applyJestCors,
+  resolveSignedPurchase,
+  resolveSignedSubscriptions,
+  selectReferralConversions,
+} from "../jestEndpoints";
 
 describe("Jest endpoint CORS", () => {
   it("allows JSON POST preflights only from the configured Jest origin", () => {
@@ -39,6 +44,31 @@ describe("signed Jest purchase selection", () => {
   it("rejects unsigned selectors and disallowed SKUs", () => {
     expect(() => resolveSignedPurchase({purchases: []}, "missing")).toThrow("purchase-not-signed");
     expect(() => resolveSignedPurchase({purchase: {purchaseToken: "one", productSku: sku}}, "one", new Set(["different"]))).toThrow("invalid-sku");
+  });
+});
+
+describe("signed Jest subscription selection", () => {
+  const sku = "com.roobsworld.riddlequest.premium.monthly";
+
+  it("accepts configured active and inactive subscription entitlements", () => {
+    expect(resolveSignedSubscriptions({
+      subscriptions: [
+        {sku, status: "active"},
+        {sku, status: "inactive"},
+      ],
+    }, new Set([sku]))).toEqual([
+      {sku, status: "active"},
+      {sku, status: "inactive"},
+    ]);
+  });
+
+  it("rejects malformed and unconfigured subscription entitlements", () => {
+    expect(() => resolveSignedSubscriptions({
+      subscriptions: [{sku, status: "unknown"}],
+    }, new Set([sku]))).toThrow("invalid-subscription");
+    expect(() => resolveSignedSubscriptions({
+      subscription: {sku: "different", status: "active"},
+    }, new Set([sku]))).toThrow("invalid-subscription");
   });
 });
 

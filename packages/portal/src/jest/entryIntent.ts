@@ -15,5 +15,8 @@ export function parseEntryIntent(value: unknown): JestEntryIntent {
     customName: clean(source.customName, 80),
     inviterName: clean(source.inviterName, 80),
     challengeId: clean(source.challengeId, 160),
+    notificationTemplate: clean(source.notification_template, 80),
+    notificationOffset: clean(source.notification_offset, 16),
+    callback: clean(source.callback, 80),
   };
 }

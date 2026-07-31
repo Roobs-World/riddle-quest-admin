@@ -66,3 +66,100 @@ it("maps the Jest catalog with SDK currency and trusted coin values", async () =
     displayPrice: "$19.99",
   }));
 });
+
+it("uses only backend-verified subscription status in the shop catalog", async () => {
+  const platform = new MockJestPlatform(true);
+  platform.getSubscriptions = async () => ({
+    status: "success",
+    value: {
+      subscriptions: [{
+        sku: "premium",
+        displayName: "Premium",
+        displayDescription: "Member access",
+        price: 4.99,
+        currency: "USD",
+        billingPeriod: "monthly",
+        status: "active",
+        trialEligible: true,
+      }],
+      subscriptionsSigned: "catalog.signed",
+    },
+  });
+  const backend = {
+    syncSubscriptions: jest.fn(async () => ({verified: true, activeSkus: []})),
+  };
+  const result = await new JestPurchaseCoordinator(platform, backend as never)
+    .getSubscriptions("p1", "en-US");
+  expect(backend.syncSubscriptions).toHaveBeenCalledWith("catalog.signed", "p1");
+  expect(result).toEqual({
+    status: "success",
+    value: [expect.objectContaining({
+      productId: "premium",
+      productType: "subscription",
+      subscriptionStatus: "inactive",
+      displayPrice: "$4.99",
+      billingPeriod: "monthly",
+    })],
+  });
+});
+
+it("verifies a subscription before applying the active entitlement and never completes it as an IAP", async () => {
+  const platform = new MockJestPlatform(true);
+  platform.completePurchase = jest.fn(platform.completePurchase);
+  platform.beginSubscription = async () => ({
+    status: "success",
+    value: {
+      subscription: {
+        sku: "premium",
+        displayName: "Premium",
+        displayDescription: null,
+        price: 4.99,
+        currency: "USD",
+        billingPeriod: "monthly",
+        status: "active",
+      },
+      subscriptionSigned: "subscription.signed",
+    },
+  });
+  const backend = {
+    syncSubscriptions: jest.fn(async () => ({verified: true, activeSkus: ["premium"]})),
+  };
+  expect(await new JestPurchaseCoordinator(platform, backend as never).subscribe("premium", "p1"))
+    .toEqual({status: "success", value: {activeSku: "premium"}});
+  expect(backend.syncSubscriptions).toHaveBeenCalledWith("subscription.signed", "p1");
+  expect(platform.completePurchase).not.toHaveBeenCalled();
+});
+
+it("rejects an unverified active subscription", async () => {
+  const platform = new MockJestPlatform(true);
+  const backend = {
+    syncSubscriptions: async () => ({verified: true, activeSkus: []}),
+  };
+  expect(await new JestPurchaseCoordinator(platform, backend as never).subscribe(
+    "com.roobsworld.riddlequest.premium.monthly",
+    "p1",
+  )).toEqual({
+    status: "terminal-failure",
+    message: "Subscription entitlement was not active",
+  });
+});
+
+it("refreshes and verifies an existing subscription after an already-subscribed response", async () => {
+  const platform = new MockJestPlatform(true);
+  platform.beginSubscription = async () => ({status: "unavailable", message: "already_subscribed"});
+  platform.getSubscriptions = jest.fn(async () => ({
+    status: "success",
+    value: {
+      subscriptions: [],
+      subscriptionsSigned: "subscriptions.refreshed",
+    },
+  }));
+  const backend = {
+    syncSubscriptions: jest.fn(async () => ({verified: true, activeSkus: ["premium"]})),
+  };
+
+  expect(await new JestPurchaseCoordinator(platform, backend as never).subscribe("premium", "p1"))
+    .toEqual({status: "success", value: {activeSku: "premium"}});
+  expect(platform.getSubscriptions).toHaveBeenCalledTimes(1);
+  expect(backend.syncSubscriptions).toHaveBeenCalledWith("subscriptions.refreshed", "p1");
+});

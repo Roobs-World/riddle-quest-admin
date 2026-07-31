@@ -37,7 +37,14 @@ const sdk = () => ({
   notifications: {scheduleNotification: jest.fn(), unscheduleNotification: jest.fn()},
   social: {getProfile: jest.fn(() => null), setScreenshotProvider: jest.fn()},
   referrals: {shareReferralLink: jest.fn(), listReferrals: jest.fn()},
-  payments: {getProducts: jest.fn(), beginPurchase: jest.fn(), getIncompletePurchases: jest.fn(), completePurchase: jest.fn()},
+  payments: {
+    getProducts: jest.fn(),
+    beginPurchase: jest.fn(),
+    getIncompletePurchases: jest.fn(),
+    completePurchase: jest.fn(),
+    getSubscriptions: jest.fn(),
+    beginSubscription: jest.fn(),
+  },
   markFirstMilestone: jest.fn(),
 });
 
@@ -144,7 +151,28 @@ it("does not read or write player snapshots for guests", async () => {
   expect(mock.data.set).not.toHaveBeenCalled();
   expect(mock.data.flush).not.toHaveBeenCalled();
 });
-it("does not schedule notifications for guests", async () => expect(await new JestSdkPlatform(sdk()).scheduleNotification({identifier: "daily", scheduledInDays: 1, body: "Play", ctaText: "Open"})).toEqual({status: "unavailable", message: "Registration is required"}));
+it("does not schedule or remove notifications for guests", async () => {
+  const platform = new JestSdkPlatform(sdk());
+  await expect(platform.scheduleNotification({
+    identifier: "daily",
+    scheduledInDays: 1,
+    body: "Play",
+    ctaText: "Open",
+  })).resolves.toEqual({status: "unavailable", message: "Registration is required"});
+  await expect(platform.removeNotification("daily"))
+    .resolves.toEqual({status: "unavailable", message: "Registration is required"});
+});
+it("treats invalid notification arguments as terminal", async () => {
+  const mock = sdk();
+  mock.getPlayer.mockReturnValue({playerId: "p1", registered: true});
+  mock.notifications.scheduleNotification.mockRejectedValue(new Error("INVALID_ARGUMENTS"));
+  await expect(new JestSdkPlatform(mock).scheduleNotification({
+    identifier: "daily",
+    scheduledInDays: 1,
+    body: "Play",
+    ctaText: "Open",
+  })).resolves.toEqual({status: "terminal-failure", message: "INVALID_ARGUMENTS"});
+});
 it("distinguishes purchase cancellation", async () => { const mock = sdk(); mock.payments.beginPurchase.mockResolvedValue({result: "cancel"}); expect(await new JestSdkPlatform(mock).beginPurchase("coins")).toEqual({status: "cancelled"}); });
 it("treats invalid products and tokens as terminal", async () => {
   const mock = sdk();
@@ -152,6 +180,62 @@ it("treats invalid products and tokens as terminal", async () => {
   mock.payments.completePurchase.mockResolvedValue({result: "error", error: "invalid_token"});
   expect(await new JestSdkPlatform(mock).beginPurchase("bad")).toEqual({status: "terminal-failure", message: "invalid_product"});
   expect(await new JestSdkPlatform(mock).completePurchase("bad")).toEqual({status: "terminal-failure", message: "invalid_token"});
+});
+it("normalizes subscription catalogs and successful checkout", async () => {
+  const mock = sdk();
+  const subscription = {
+    sku: "premium",
+    displayName: "Premium",
+    displayDescription: null,
+    price: 4.99,
+    currency: "USD",
+    billingPeriod: "monthly",
+    status: "inactive",
+  };
+  mock.payments.getSubscriptions.mockResolvedValue({
+    subscriptions: [subscription],
+    signed: "catalog.signed",
+  });
+  mock.payments.beginSubscription.mockResolvedValue({
+    result: "success",
+    subscription: {...subscription, status: "active"},
+    subscriptionSigned: "subscription.signed",
+  });
+  const platform = new JestSdkPlatform(mock);
+  expect(await platform.getSubscriptions()).toEqual({
+    status: "success",
+    value: {subscriptions: [subscription], subscriptionsSigned: "catalog.signed"},
+  });
+  expect(await platform.beginSubscription("premium")).toEqual({
+    status: "success",
+    value: {
+      subscription: {...subscription, status: "active"},
+      subscriptionSigned: "subscription.signed",
+    },
+  });
+  expect(mock.payments.beginSubscription).toHaveBeenCalledWith({subscriptionSku: "premium"});
+});
+it("maps subscription cancellation and non-retryable errors", async () => {
+  const mock = sdk();
+  mock.payments.beginSubscription
+    .mockResolvedValueOnce({result: "cancel"})
+    .mockResolvedValueOnce({result: "error", error: "invalid_subscription"})
+    .mockResolvedValueOnce({result: "error", error: "guest_not_allowed"})
+    .mockResolvedValueOnce({result: "error", error: "already_subscribed"});
+  const platform = new JestSdkPlatform(mock);
+  expect(await platform.beginSubscription("premium")).toEqual({status: "cancelled"});
+  expect(await platform.beginSubscription("premium")).toEqual({
+    status: "terminal-failure",
+    message: "invalid_subscription",
+  });
+  expect(await platform.beginSubscription("premium")).toEqual({
+    status: "unavailable",
+    message: "guest_not_allowed",
+  });
+  expect(await platform.beginSubscription("premium")).toEqual({
+    status: "unavailable",
+    message: "already_subscribed",
+  });
 });
 it("handles registered notifications, nullable profiles and referral cancellation", async () => {
   const mock = sdk();
@@ -161,10 +245,18 @@ it("handles registered notifications, nullable profiles and referral cancellatio
   expect(await new JestSdkPlatform(mock).scheduleNotification({identifier: "daily", scheduledInDays: 1, body: "Play", ctaText: "Open"})).toEqual({status: "success", value: undefined});
   expect(await new JestSdkPlatform(mock).shareReferral({
     reference: "campaign",
-    title: "Challenge",
-    text: "Can you beat me?",
+    shareTitle: "Challenge",
+    shareText: "Can you beat me?",
+    shareImage: "data:image/png;base64,YQ==",
     entryPayload: {gameMode: "classic"},
   })).toEqual({status: "cancelled"});
+  expect(mock.referrals.shareReferralLink).toHaveBeenCalledWith({
+    reference: "campaign",
+    shareTitle: "Challenge",
+    shareText: "Can you beat me?",
+    shareImage: "data:image/png;base64,YQ==",
+    entryPayload: {gameMode: "classic"},
+  });
 });
 it("maps thrown timeouts to retryable failures", async () => {
   const mock = sdk();

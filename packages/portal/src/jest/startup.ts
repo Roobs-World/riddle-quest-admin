@@ -43,10 +43,8 @@ export async function startJestSession(
     await authenticateFirebase(identity.customToken);
     platform.setLoadingProgress(phaseProgress[4]);
 
-    if (signed.player.registered) {
-      const recovered = await purchases.reconcile(signed.player.playerId);
-      if (recovered.status !== "success") return recovered;
-    }
+    const recovered = await purchases.reconcile(signed.player.playerId);
+    if (recovered.status !== "success") return recovered;
 
     platform.setLoadingProgress(phaseProgress[5]);
     return {

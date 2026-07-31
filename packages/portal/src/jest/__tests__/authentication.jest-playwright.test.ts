@@ -13,10 +13,32 @@ type AuthHarnessState = {
   calls: string[];
   backendExchanges: string[];
   firebaseTokens: string[];
-  overlayOptions: Array<{theme?: string; source?: string}>;
+  overlayOptions: Array<{
+    theme?: string;
+    source?: string;
+    campaign?: string;
+    reference?: string;
+    customName?: string;
+  }>;
   playerDataReads: number;
   preferenceWrites: Array<Record<string, unknown>>;
   profileReads: number;
+  notificationSchedules: Array<{
+    identifier?: string;
+    scheduledInDays?: number;
+    priority?: string;
+    body?: string;
+    ctaText?: string;
+    entryPayload?: Record<string, string>;
+  }>;
+  referralShares: Array<{
+    reference?: string;
+    shareTitle?: string;
+    shareText?: string;
+    shareImage?: string;
+    onboardingSlug?: string;
+    entryPayload?: Record<string, string>;
+  }>;
 };
 
 const installJestSdkHarness = async (page: Page, scenario = "success") => {
@@ -30,6 +52,8 @@ const installJestSdkHarness = async (page: Page, scenario = "success") => {
       playerDataReads: 0,
       preferenceWrites: [],
       profileReads: 0,
+      notificationSchedules: [],
+      referralShares: [],
     };
     const once = (key: string) => {
       const storageKey = `riddleQuest:jestAuthHarness:${key}`;
@@ -46,6 +70,7 @@ const installJestSdkHarness = async (page: Page, scenario = "success") => {
     };
     const preferences: Record<string, unknown> = {};
     let overlayClosed = false;
+    let subscriptionActive = false;
     const sdk = {
       init: async () => {
         state.calls.push("sdk.init");
@@ -74,13 +99,21 @@ const installJestSdkHarness = async (page: Page, scenario = "success") => {
       },
       showRegistrationOverlay: (options: {
         theme?: string;
-        entryPayload?: {source?: string};
+        entryPayload?: {
+          source?: string;
+          campaign?: string;
+          reference?: string;
+          customName?: string;
+        };
         onClose: () => void;
       }) => {
         state.calls.push("sdk.showRegistrationOverlay");
         state.overlayOptions.push({
           theme: options.theme,
           source: options.entryPayload?.source,
+          campaign: options.entryPayload?.campaign,
+          reference: options.entryPayload?.reference,
+          customName: options.entryPayload?.customName,
         });
         if (selectedScenario === "overlay-failure") {
           throw new Error("Mock registration overlay failed");
@@ -125,7 +158,12 @@ const installJestSdkHarness = async (page: Page, scenario = "success") => {
           state.calls.push("sdk.data.flush");
         },
       },
-      getEntryPayload: () => ({}),
+      getEntryPayload: () => params.get("customName")
+        ? {
+            customName: params.get("customName"),
+            campaign: "jest_onboarding",
+          }
+        : {},
       social: {
         getProfile: async () => {
           state.calls.push("sdk.social.getProfile");
@@ -136,12 +174,21 @@ const installJestSdkHarness = async (page: Page, scenario = "success") => {
         setScreenshotProvider: () => {},
       },
       notifications: {
-        scheduleNotification: async () => {},
-        unscheduleNotification: async () => {},
+        scheduleNotification: async (input: AuthHarnessState["notificationSchedules"][number]) => {
+          state.calls.push("sdk.notifications.scheduleNotification");
+          state.notificationSchedules.push(structuredClone(input));
+        },
+        unscheduleNotification: async () => {
+          state.calls.push("sdk.notifications.unscheduleNotification");
+        },
       },
       referrals: {
         listReferrals: async () => ({referralsSigned: "signed-referrals"}),
-        shareReferralLink: async () => ({canceled: false}),
+        shareReferralLink: async (input: AuthHarnessState["referralShares"][number]) => {
+          state.calls.push("sdk.referrals.shareReferralLink");
+          state.referralShares.push(structuredClone(input));
+          return {canceled: false};
+        },
       },
       payments: {
         getProducts: async () => [],
@@ -152,6 +199,42 @@ const installJestSdkHarness = async (page: Page, scenario = "success") => {
         }),
         completePurchase: async () => ({result: "success"}),
         beginPurchase: async () => ({result: "cancel"}),
+        getSubscriptions: async () => {
+          state.calls.push("sdk.payments.getSubscriptions");
+          return {
+            subscriptions: player.registered ? [{
+              sku: "com.roobsworld.riddlequest.premium.monthly",
+              displayName: "Riddle Quest Premium",
+              displayDescription: "Premium membership",
+              price: 4.99,
+              currency: "USD",
+              billingPeriod: "monthly",
+              status: subscriptionActive ? "active" : "inactive",
+              trialEligible: !subscriptionActive,
+            }] : [],
+            signed: subscriptionActive
+              ? "mock.subscriptions.active.signed"
+              : "mock.subscriptions.inactive.signed",
+          };
+        },
+        beginSubscription: async ({subscriptionSku}: {subscriptionSku: string}) => {
+          state.calls.push("sdk.payments.beginSubscription");
+          subscriptionActive = true;
+          return {
+            result: "success",
+            subscription: {
+              sku: subscriptionSku,
+              displayName: "Riddle Quest Premium",
+              displayDescription: "Premium membership",
+              price: 4.99,
+              currency: "USD",
+              billingPeriod: "monthly",
+              status: "active",
+              trialEligible: false,
+            },
+            subscriptionSigned: "mock.subscription.active.signed",
+          };
+        },
       },
       markFirstMilestone: async () => {},
       setLoadingProgress: (progress: number) => state.calls.push(`sdk.progress:${progress}`),
@@ -173,7 +256,7 @@ const getHarnessState = (page: Page) =>
 
 const openHarness = async (
   browser: Browser,
-  options: {registered?: boolean; scenario?: string} = {},
+  options: {registered?: boolean; scenario?: string; customName?: string} = {},
 ) => {
   const context = await browser.newContext({viewport: {width: 390, height: 844}});
   const page = await context.newPage();
@@ -181,6 +264,7 @@ const openHarness = async (
   await installJestSdkHarness(page, options.scenario);
   const query = new URLSearchParams({harness: "jest-auth"});
   if (options.registered) query.set("registered", "1");
+  if (options.customName) query.set("customName", options.customName);
   await page.goto(`${baseUrl}/?${query}`);
   return {context, page};
 };
@@ -188,7 +272,7 @@ const openHarness = async (
 const advanceToRegistration = async (page: Page) => {
   await page.getByRole("button", {name: /let's play/i}).click();
   await page.getByRole("button", {name: /got it/i}).click();
-  await page.getByRole("heading", {name: /playing as a guest/i}).waitFor();
+  await page.getByText("Keep your cosmic progress", {exact: true}).waitFor();
 };
 
 describeBrowser("Jest authentication integration", () => {
@@ -250,22 +334,30 @@ describeBrowser("Jest authentication integration", () => {
     expect(state.profileReads).toBe(0);
     expect(state.calls).not.toContain("sdk.social.getProfile");
     expect(state.calls.filter((call) => call === "sdk.data.getAll")).toHaveLength(1);
+    expect(state.notificationSchedules).toEqual([]);
     await context.close();
   });
 
   it("prompts only after instructions and dismisses without treating the guest as registered", async () => {
-    const {context, page} = await openHarness(browser);
+    const {context, page} = await openHarness(browser, {customName: "Nova"});
     await page.getByRole("button", {name: /let's play/i}).waitFor({timeout: 15_000});
     expect((await getHarnessState(page)).overlayOptions).toEqual([]);
     await page.getByRole("button", {name: /let's play/i}).click();
     expect((await getHarnessState(page)).overlayOptions).toEqual([]);
     await page.getByRole("button", {name: /got it/i}).click();
-    await page.getByRole("heading", {name: /playing as a guest/i}).waitFor();
+    await page.getByText("Keep your cosmic progress", {exact: true}).waitFor();
+    await page.getByText("Welcome, Nova.").waitFor();
     expect((await getHarnessState(page)).overlayOptions).toEqual([
-      {theme: "dark", source: "post_instructions"},
+      {
+        theme: "dark",
+        source: "post_instructions",
+        campaign: "jest_onboarding",
+        reference: "registration_post_instructions_v1",
+        customName: "Nova",
+      },
     ]);
     await page.getByRole("button", {name: /^ok$/i}).click();
-    await page.getByRole("heading", {name: /playing as a guest/i}).waitFor({state: "detached"});
+    await page.getByText("Keep your cosmic progress", {exact: true}).waitFor({state: "detached"});
     const state = await getHarnessState(page);
     expect(state.calls).toContain("sdk.registration.closeButtonAction");
     expect(state.backendExchanges).toHaveLength(1);
@@ -279,7 +371,7 @@ describeBrowser("Jest authentication integration", () => {
     const {context, page} = await openHarness(browser);
     await page.getByRole("button", {name: /let's play/i}).waitFor({timeout: 15_000});
     await advanceToRegistration(page);
-    await page.getByRole("button", {name: /upgrade account/i}).click();
+    await page.getByRole("button", {name: /save my progress/i}).click();
     await page.getByText(/what has keys/i).waitFor({timeout: 15_000});
     let state = await getHarnessState(page);
     expect(state.calls).toContain("sdk.registration.loginButtonAction");
@@ -289,6 +381,64 @@ describeBrowser("Jest authentication integration", () => {
     ]);
     expect(state.firebaseTokens).toEqual(["mock", "mock"]);
     expect(state.profileReads).toBe(1);
+    await page.waitForFunction(() =>
+      (window as typeof window & {
+        __RIDDLE_QUEST_JEST_AUTH_TEST__: AuthHarnessState;
+      }).__RIDDLE_QUEST_JEST_AUTH_TEST__.notificationSchedules.length === 3,
+    );
+    expect((await getHarnessState(page)).notificationSchedules).toEqual([
+      expect.objectContaining({
+        identifier: "riddle-quest-d1-v2",
+        scheduledInDays: 1,
+        priority: "medium",
+        ctaText: "Solve it",
+        entryPayload: expect.objectContaining({
+          gameMode: "challenge",
+          reference: "notification_d1_v3",
+          notification_template: "daily_reward_progress_v3",
+          notification_offset: "D1",
+          callback: "daily_coin_reward",
+        }),
+      }),
+      expect.objectContaining({
+        identifier: "riddle-quest-d3-v2",
+        scheduledInDays: 3,
+        priority: "high",
+      }),
+      expect.objectContaining({
+        identifier: "riddle-quest-d7-v2",
+        scheduledInDays: 7,
+        priority: "high",
+      }),
+    ]);
+    await page.evaluate(() => window.dispatchEvent(new CustomEvent("riddle-quest:share-referral", {
+      detail: {
+        gameMode: "challenge",
+        challengeId: "daily-riddle-1",
+        attempts: 2,
+        emojiGrid: "⬛🟨⬛⬛⬛\n🟩🟩🟩🟩🟩",
+      },
+    })));
+    await page.waitForFunction(() =>
+      (window as typeof window & {
+        __RIDDLE_QUEST_JEST_AUTH_TEST__: AuthHarnessState;
+      }).__RIDDLE_QUEST_JEST_AUTH_TEST__.referralShares.length === 1,
+    );
+    const [share] = (await getHarnessState(page)).referralShares;
+    expect(share).toEqual(expect.objectContaining({
+      reference: "riddle_quest_friend_challenge_v2",
+      shareTitle: "Check out my Riddle Quest result!",
+      onboardingSlug: "friend-challenge",
+      entryPayload: expect.objectContaining({
+        campaign: "friend_challenge_v2",
+        reference: "victory_friend_challenge_v2",
+        gameMode: "challenge",
+        challengeId: "daily-riddle-1",
+      }),
+    }));
+    expect(share.shareText).toContain("2 attempts");
+    expect(share.shareText).toContain("🟩🟩🟩🟩🟩");
+    expect(share.shareImage).toMatch(/^data:image\/png;base64,/);
 
     await page.reload();
     await page.getByText(/what has keys/i).waitFor({timeout: 15_000});
@@ -316,7 +466,7 @@ describeBrowser("Jest authentication integration", () => {
     const {context, page} = await openHarness(browser, {scenario: "overlay-failure"});
     await page.getByRole("button", {name: /let's play/i}).waitFor({timeout: 15_000});
     await advanceToRegistration(page);
-    await page.getByRole("button", {name: /upgrade account/i}).click();
+    await page.getByRole("button", {name: /save my progress/i}).click();
     await page.getByText(/what has keys/i).waitFor({timeout: 15_000});
     const state = await getHarnessState(page);
     expect(state.calls).toContain("sdk.login");
@@ -328,7 +478,7 @@ describeBrowser("Jest authentication integration", () => {
     const {context, page} = await openHarness(browser, {scenario: "duplicate-close"});
     await page.getByRole("button", {name: /let's play/i}).waitFor({timeout: 15_000});
     await advanceToRegistration(page);
-    await page.getByRole("button", {name: /upgrade account/i}).click();
+    await page.getByRole("button", {name: /save my progress/i}).click();
     await page.getByText(/what has keys/i).waitFor({timeout: 15_000});
     const state = await getHarnessState(page);
     expect(state.backendExchanges).toHaveLength(2);

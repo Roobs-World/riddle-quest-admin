@@ -186,6 +186,9 @@ describeBrowser("standalone Jest browser game", () => {
       expect(await page.locator(".game-content").evaluate((element) => (element as HTMLElement).inert)).toBe(true);
       await page.getByRole("button", {name: /^next$/i}).click();
       await page.getByRole("heading", {name: /nice job/i}).waitFor();
+      await page.getByRole("button", {name: /share your victory/i}).click();
+      await page.locator('[data-testid="server-activity-loader"]').waitFor({state: "detached"});
+      expect(await page.locator(".modal-victory").count()).toBe(1);
       await page.waitForTimeout(2800);
       expect(await page.locator(".modal-victory").count()).toBe(1);
 
@@ -226,6 +229,26 @@ describeBrowser("standalone Jest browser game", () => {
       await registeredPage.goto("http://127.0.0.1:4178/?harness=jest&registered=1");
       await registeredPage.getByRole("button", {name: /let's play/i}).waitFor({timeout: 15000});
       await completeOnboardingAndTours(registeredPage);
+      await registeredPage.getByRole("button", {name: /buy coins/i}).first().click();
+      const subscriptionCard = registeredPage.locator(".shop-subscription-card");
+      await subscriptionCard.getByText(/riddle quest premium/i).waitFor();
+      await registeredPage
+        .locator(".game-shop-grid article:not(.shop-subscription-card)")
+        .first()
+        .getByRole("button")
+        .click();
+      await registeredPage.locator(".modal-reward").waitFor();
+      expect(await registeredPage.locator(".modal-reward").innerText()).toMatch(/\+250/);
+      await registeredPage.keyboard.press("Escape");
+      await registeredPage.getByRole("button", {name: /buy coins/i}).first().click();
+      await subscriptionCard.getByRole("button", {name: /start free trial/i}).click();
+      await subscriptionCard.waitFor({state: "detached"});
+      await registeredPage.getByRole("button", {name: /buy coins/i}).first().click();
+      await registeredPage.locator(".shop-subscription-card").getByRole("button", {name: /subscribed/i}).waitFor();
+      expect(
+        await registeredPage.locator(".shop-subscription-card").getByRole("button", {name: /subscribed/i}).isDisabled(),
+      ).toBe(true);
+      await registeredPage.keyboard.press("Escape");
       await registeredPage.getByRole("button", {name: /^profile$/i}).first().click();
       const avatarButton = registeredPage.getByRole("button", {name: /upload from photo library/i});
       await avatarButton.waitFor();

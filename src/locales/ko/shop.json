@@ -4,6 +4,14 @@
     "LOADING_TEXT": "상점 로딩 중...",
     "NO_PACKS_AVAILABLE": "현재 코인 팩이 없습니다.",
     "PURCHASE_BUTTON": "구매",
+    "PERIOD_MONTHLY": "월",
+    "PERIOD_WEEKLY": "주",
+    "PERIOD_YEARLY": "년",
+    "START_TRIAL_BUTTON": "무료 체험 시작",
+    "SUBSCRIBE_BUTTON": "구독",
+    "SUBSCRIBED_BUTTON": "구독 중",
+    "SUBSCRIPTION_ACTIVE": "프리미엄 활성",
+    "SUBSCRIPTION_ACTIVE_NOTICE": "프리미엄 구독이 활성화되었습니다.",
     "TITLE": "코인 상점",
     "YOUR_BALANCE": "잔액"
   }

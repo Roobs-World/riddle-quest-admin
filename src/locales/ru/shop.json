@@ -4,6 +4,14 @@
     "LOADING_TEXT": "Zagruzka magazina...",
     "NO_PACKS_AVAILABLE": "Pakety monet nedostuny v dannyy moment.",
     "PURCHASE_BUTTON": "KUPIT",
+    "PERIOD_MONTHLY": "mesyats",
+    "PERIOD_WEEKLY": "nedelya",
+    "PERIOD_YEARLY": "god",
+    "START_TRIAL_BUTTON": "BESPLATNYY PERIOD",
+    "SUBSCRIBE_BUTTON": "PODPISATSYA",
+    "SUBSCRIBED_BUTTON": "PODPISKA AKTIVNA",
+    "SUBSCRIPTION_ACTIVE": "Premium aktiven",
+    "SUBSCRIPTION_ACTIVE_NOTICE": "Vasha premium-podpiska aktivna.",
     "TITLE": "MAGAZIN MONET",
     "YOUR_BALANCE": "Vash balans"
   }

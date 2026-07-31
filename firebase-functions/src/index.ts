@@ -22,7 +22,12 @@ import {updateAvatar, updateUsername} from "./profile";
 import {completeGame} from "./submitGuessLogic";
 import {dailyChallengeScheduler} from "./dailyScheduler";
 import {getLeaderboard} from "./leaderboard";
-import {exchangeJestIdentity, grantJestPurchase, verifyJestReferrals} from "./jestEndpoints";
+import {
+  exchangeJestIdentity,
+  grantJestPurchase,
+  syncJestSubscriptions,
+  verifyJestReferrals,
+} from "./jestEndpoints";
 export {
   spendCoins,
   skipRiddle,
@@ -36,5 +41,6 @@ export {
   getLeaderboard,
   exchangeJestIdentity,
   grantJestPurchase,
+  syncJestSubscriptions,
   verifyJestReferrals,
 };

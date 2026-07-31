@@ -4,6 +4,14 @@
     "LOADING_TEXT": "Memuat toko...",
     "NO_PACKS_AVAILABLE": "Tidak ada paket koin yang tersedia saat ini.",
     "PURCHASE_BUTTON": "PEMBELIAN",
+    "PERIOD_MONTHLY": "bulan",
+    "PERIOD_WEEKLY": "minggu",
+    "PERIOD_YEARLY": "tahun",
+    "START_TRIAL_BUTTON": "MULAI UJI COBA GRATIS",
+    "SUBSCRIBE_BUTTON": "BERLANGGANAN",
+    "SUBSCRIBED_BUTTON": "BERLANGGANAN",
+    "SUBSCRIPTION_ACTIVE": "Premium aktif",
+    "SUBSCRIPTION_ACTIVE_NOTICE": "Langganan premium Anda aktif.",
     "TITLE": "TOKO KOIN",
     "YOUR_BALANCE": "Saldo Anda"
   }

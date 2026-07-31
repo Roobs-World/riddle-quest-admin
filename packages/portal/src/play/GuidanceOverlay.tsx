@@ -83,10 +83,12 @@ export function GuidanceOverlay({
   state,
   modal,
   onActiveChange,
+  registrationName,
 }: {
   state: GameSessionState;
   modal: GameModal;
   onActiveChange?: (active: boolean) => void;
+  registrationName?: string;
 }) {
   useLocale();
   const userId = state.user?.uid;
@@ -291,7 +293,7 @@ export function GuidanceOverlay({
             <img id="onboarding-title" className="onboarding-logo" src={logoUrl} alt={tr("WebPortal.APP_TITLE")} />
           ) : (
             <h2 id="onboarding-title">
-              {isGuestNotice ? tr("Profile.GUEST_MODE_TITLE") : tr("Instructions.GOAL_TITLE")}
+              {isGuestNotice ? tr("Profile.JEST_REGISTRATION_TITLE") : tr("Instructions.GOAL_TITLE")}
             </h2>
           )}
           {isWelcome ? (
@@ -301,12 +303,15 @@ export function GuidanceOverlay({
             </>
           ) : isGuestNotice ? (
             <>
-              <p>{tr("GameScreenAlerts.GUEST_MODE_NOTICE_MESSAGE")}</p>
+              {registrationName ? (
+                <p>{tr("Profile.JEST_REGISTRATION_GREETING", {name: registrationName})}</p>
+              ) : null}
+              <p>{tr("Profile.JEST_REGISTRATION_DESCRIPTION")}</p>
               <button
                 className="play-secondary"
                 onClick={() => window.dispatchEvent(new CustomEvent("riddle-quest:register-player"))}
               >
-                {tr("Profile.UPGRADE_ACCOUNT_BUTTON")}
+                {tr("Profile.JEST_REGISTRATION_BUTTON")}
               </button>
             </>
           ) : (

@@ -4,6 +4,14 @@
     "LOADING_TEXT": "Magasa yukleniyor...",
     "NO_PACKS_AVAILABLE": "Su an para paketi mevcut degil.",
     "PURCHASE_BUTTON": "SATIN AL",
+    "PERIOD_MONTHLY": "ay",
+    "PERIOD_WEEKLY": "hafta",
+    "PERIOD_YEARLY": "yıl",
+    "START_TRIAL_BUTTON": "ÜCRETSİZ DENE",
+    "SUBSCRIBE_BUTTON": "ABONE OL",
+    "SUBSCRIBED_BUTTON": "ABONE",
+    "SUBSCRIPTION_ACTIVE": "Premium aktif",
+    "SUBSCRIPTION_ACTIVE_NOTICE": "Premium aboneliğiniz aktif.",
     "TITLE": "PARA MAGASASI",
     "YOUR_BALANCE": "Bakiyeniz"
   }

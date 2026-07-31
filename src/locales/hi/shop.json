@@ -4,6 +4,14 @@
     "LOADING_TEXT": "दुकान लोड हो रही है...",
     "NO_PACKS_AVAILABLE": "अभी कोई सिक्का पैक उपलब्ध नहीं है।",
     "PURCHASE_BUTTON": "खरीदें",
+    "PERIOD_MONTHLY": "महीना",
+    "PERIOD_WEEKLY": "सप्ताह",
+    "PERIOD_YEARLY": "वर्ष",
+    "START_TRIAL_BUTTON": "मुफ़्त ट्रायल शुरू करें",
+    "SUBSCRIBE_BUTTON": "सदस्यता लें",
+    "SUBSCRIBED_BUTTON": "सदस्यता सक्रिय",
+    "SUBSCRIPTION_ACTIVE": "प्रीमियम सक्रिय",
+    "SUBSCRIPTION_ACTIVE_NOTICE": "आपकी प्रीमियम सदस्यता सक्रिय है।",
     "TITLE": "सिक्का दुकान",
     "YOUR_BALANCE": "आपका बैलेंस"
   }

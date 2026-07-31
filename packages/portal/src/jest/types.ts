@@ -16,6 +16,9 @@ export type JestEntryIntent = {
   customName?: string;
   inviterName?: string;
   challengeId?: string;
+  notificationTemplate?: string;
+  notificationOffset?: string;
+  callback?: string;
 };
 
 export type JestPreferences = {
@@ -67,6 +70,17 @@ type JestProduct = {
 
 type JestPurchase = {purchaseToken: string; productSku: string; [key: string]: unknown};
 
+export type JestSubscription = {
+  sku: string;
+  displayName: string;
+  displayDescription: string | null;
+  price: number;
+  currency: string;
+  billingPeriod: "weekly" | "monthly" | "yearly";
+  status: "active" | "inactive";
+  trialEligible?: boolean;
+};
+
 export type JestSession = {
   player: JestPlayer;
   profile: {username?: string; avatarUrl?: string | null} | null;
@@ -80,11 +94,27 @@ export type ScreenshotProvider = () => string | null | Promise<string | null>;
 
 type JestReferralShare = {
   reference: string;
-  title: string;
-  text: string;
+  shareTitle: string;
+  shareText: string;
+  shareImage?: string;
   onboardingSlug?: string;
   entryPayload: Record<string, string>;
 };
+
+type JestNotificationContent = {
+  identifier?: string;
+  title?: string;
+  body: string;
+  ctaText: string;
+  priority?: "low" | "medium" | "high" | "critical";
+  assetReference?: string;
+  entryPayload?: Record<string, string>;
+};
+
+export type JestNotificationSchedule = JestNotificationContent & (
+  | {scheduledInDays: number; scheduledAt?: never}
+  | {scheduledAt: Date; scheduledInDays?: never}
+);
 
 export interface JestPlatformPort {
   init(): Promise<PlatformResult<void>>;
@@ -102,16 +132,7 @@ export interface JestPlatformPort {
   writePlayerData(playerData: JestPlayerData): Promise<void>;
   getEntryIntent(): JestEntryIntent;
   getProfile(): Promise<{username?: string; avatarUrl?: string | null} | null>;
-  scheduleNotification(input: {
-    identifier: string;
-    scheduledInDays: number;
-    title?: string;
-    body: string;
-    ctaText: string;
-    priority?: "low" | "medium" | "high" | "critical";
-    assetReference?: string;
-    entryPayload?: Record<string, string>;
-  }): Promise<PlatformResult<void>>;
+  scheduleNotification(input: JestNotificationSchedule): Promise<PlatformResult<void>>;
   removeNotification(identifier: string): Promise<PlatformResult<void>>;
   shareReferral(input: JestReferralShare): Promise<PlatformResult<void>>;
   listReferralsSigned(): Promise<PlatformResult<string>>;
@@ -122,6 +143,12 @@ export interface JestPlatformPort {
     PlatformResult<{purchases: JestPurchase[]; purchasesSigned: string; hasMore: boolean}>
   >;
   completePurchase(purchaseToken: string): Promise<PlatformResult<void>>;
+  getSubscriptions(): Promise<
+    PlatformResult<{subscriptions: JestSubscription[]; subscriptionsSigned: string}>
+  >;
+  beginSubscription(subscriptionSku: string): Promise<
+    PlatformResult<{subscription: JestSubscription; subscriptionSigned: string}>
+  >;
   markFirstMilestone(): Promise<PlatformResult<void>>;
   setLoadingProgress(progress: number): void;
   markGameLoaded(): void;

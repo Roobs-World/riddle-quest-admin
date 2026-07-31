@@ -19,7 +19,7 @@ it("runs identity, Firebase auth and recovery in startup order", async () => {
   expect(platform.progress).toEqual([5, 15, 28, 42, 58, 72]);
 });
 
-it("skips saved progress, profile and purchase recovery for guests", async () => {
+it("skips saved progress and profile for guests while recovering guest purchases", async () => {
   const order: string[] = [];
   const updates: string[] = [];
   const platform = new MockJestPlatform();
@@ -41,7 +41,7 @@ it("skips saved progress, profile and purchase recovery for guests", async () =>
     status: "success",
     value: {player: {registered: false}, playerData: null, profile: null},
   });
-  expect(order).toEqual(["preferences", "exchange", "firebase"]);
+  expect(order).toEqual(["preferences", "exchange", "firebase", "recover"]);
   expect(updates).toEqual(["player", "game"]);
 });
 

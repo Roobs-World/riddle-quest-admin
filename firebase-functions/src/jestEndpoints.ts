@@ -3,14 +3,20 @@ import {defineSecret} from "firebase-functions/params";
 import {onRequest} from "firebase-functions/v2/https";
 import {logger} from "firebase-functions";
 import {jestFirebaseUid, verifyJestSigned} from "./jestSecurity";
-import {JEST_COIN_PRODUCTS} from "./jestProductCatalog";
+import {JEST_COIN_PRODUCTS, JEST_SUBSCRIPTIONS} from "./jestProductCatalog";
 import {createHash} from "node:crypto";
 import {ACHIEVEMENT_UNLOCK_COIN_REWARD} from "./constants";
 
 const jestSharedSecret = defineSecret("JEST_SHARED_SECRET");
 const JEST_GAME_ID = process.env.JEST_GAME_ID ?? "riddle-quest";
 const configuredSkus = new Set((process.env.JEST_PRODUCT_SKUS ?? "").split(",").filter(Boolean));
+const configuredSubscriptionSkus = new Set(
+  (process.env.JEST_SUBSCRIPTION_SKUS ?? "").split(",").map((value) => value.trim()).filter(Boolean),
+);
 const coinGrants = new Map(Object.entries(JEST_COIN_PRODUCTS));
+const subscriptionSkus = configuredSubscriptionSkus.size > 0
+  ? configuredSubscriptionSkus
+  : new Set(Object.keys(JEST_SUBSCRIPTIONS));
 const REFERRAL_REFERENCE = "riddle_quest_friend_challenge_v2";
 const REFERRAL_REWARD_COINS = 100;
 const attempts = new Map<string, {count: number; resetAt: number}>();
@@ -125,6 +131,46 @@ export const grantJestPurchase = onRequest({secrets: [jestSharedSecret]}, async 
       newlyUnlockedAchievementIds,
     });
   } catch (error) { response.status(400).json({error: rejection(error)}); }
+});
+
+export const syncJestSubscriptions = onRequest({secrets: [jestSharedSecret]}, async (request, response) => {
+  applyJestCors(response, request.get("origin"));
+  if (request.method === "OPTIONS") { response.status(204).send(""); return; }
+  if (request.method !== "POST" || !allowRequest(request.ip ?? "unknown")) {
+    response.status(429).json({error: "rate-limited"});
+    return;
+  }
+  try {
+    const {subscriptionsSigned, playerId} = request.body as {
+      subscriptionsSigned?: unknown;
+      playerId?: unknown;
+    };
+    if (typeof subscriptionsSigned !== "string" || typeof playerId !== "string") {
+      throw new Error("invalid-request");
+    }
+    const payload = verifyJestSigned(
+      subscriptionsSigned,
+      jestSharedSecret.value(),
+      JEST_GAME_ID,
+      playerId,
+    );
+    const subscriptions = resolveSignedSubscriptions(payload, subscriptionSkus);
+    const activeSkus = subscriptions
+      .filter((subscription) => subscription.status === "active")
+      .map((subscription) => subscription.sku);
+    const uid = jestFirebaseUid(playerId);
+    await admin.firestore().collection("users").doc(uid).set({
+      hasActiveSubscription: activeSkus.length > 0,
+      jestSubscriptions: {
+        activeSkus,
+        verifiedAt: admin.firestore.FieldValue.serverTimestamp(),
+      },
+      lastLogin: Date.now(),
+    }, {merge: true});
+    response.json({verified: true, activeSkus});
+  } catch (error) {
+    response.status(400).json({error: rejection(error)});
+  }
 });
 
 export const verifyJestReferrals = onRequest({secrets: [jestSharedSecret]}, async (request, response) => {
@@ -248,6 +294,34 @@ export function resolveSignedPurchase(payload: Record<string, unknown>, requeste
   return {purchaseToken, productSku, coins};
 }
 
+type VerifiedSubscription = {
+  sku: string;
+  status: "active" | "inactive";
+};
+
+export function resolveSignedSubscriptions(
+  payload: Record<string, unknown>,
+  allowedSkus: ReadonlySet<string> = subscriptionSkus,
+): VerifiedSubscription[] {
+  const candidates = Array.isArray(payload.subscriptions)
+    ? payload.subscriptions
+    : payload.subscription
+      ? [payload.subscription]
+      : [];
+  return candidates.map((candidate) => {
+    if (!isRecord(candidate)) throw new Error("invalid-subscription");
+    const {sku, status} = candidate;
+    if (
+      typeof sku !== "string" ||
+      (status !== "active" && status !== "inactive") ||
+      !allowedSkus.has(sku)
+    ) {
+      throw new Error("invalid-subscription");
+    }
+    return {sku, status};
+  });
+}
+
 function createJestUser(uid: string, playerId: string): Record<string, unknown> {
   const now = Date.now();
   return {
@@ -256,6 +330,7 @@ function createJestUser(uid: string, playerId: string): Record<string, unknown> 
     username: `Jest Player ${playerId.slice(-6)}`,
     coins: 300,
     hasPurchasedApp: false,
+    hasActiveSubscription: false,
     createdAt: now,
     registeredAt: now,
     lastLogin: now,

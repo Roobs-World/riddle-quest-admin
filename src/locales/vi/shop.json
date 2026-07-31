@@ -4,6 +4,14 @@
     "LOADING_TEXT": "Đang tải cửa hàng...",
     "NO_PACKS_AVAILABLE": "Hiện tại không có gói tiền xu nào có sẵn.",
     "PURCHASE_BUTTON": "MUA HÀNG",
+    "PERIOD_MONTHLY": "tháng",
+    "PERIOD_WEEKLY": "tuần",
+    "PERIOD_YEARLY": "năm",
+    "START_TRIAL_BUTTON": "DÙNG THỬ MIỄN PHÍ",
+    "SUBSCRIBE_BUTTON": "ĐĂNG KÝ",
+    "SUBSCRIBED_BUTTON": "ĐÃ ĐĂNG KÝ",
+    "SUBSCRIPTION_ACTIVE": "Premium đang hoạt động",
+    "SUBSCRIPTION_ACTIVE_NOTICE": "Gói premium của bạn đang hoạt động.",
     "TITLE": "CỬA HÀNG ĐỒNG XU",
     "YOUR_BALANCE": "Số dư của bạn"
   }

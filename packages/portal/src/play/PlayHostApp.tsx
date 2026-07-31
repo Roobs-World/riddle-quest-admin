@@ -36,6 +36,7 @@ export function PlayHostApp({
   externalInteractionBlocked = false,
   initialPlayerData,
   onPlayerDataChange,
+  registrationName,
 }: {
   initialGameMode?: WebGameMode;
   onPlayable?: () => void;
@@ -49,6 +50,7 @@ export function PlayHostApp({
   externalInteractionBlocked?: boolean;
   initialPlayerData?: JestPlayerData | null;
   onPlayerDataChange?: (update: JestPlayerDataUpdate) => void;
+  registrationName?: string;
 } = {}) {
   const locale = useLocale();
   const sessionIdRef = useRef(createRequestId("session"));
@@ -161,8 +163,9 @@ export function PlayHostApp({
   );
 
   const applyPurchaseBalance = useCallback((result: import("./types").PurchaseResult) => {
+    if (typeof result.newCoins !== "number") return;
     setAuthSnapshot((current) =>
-      current.profile ? {...current, profile: {...current.profile, coins: result.newCoins}} : current,
+      current.profile ? {...current, profile: {...current.profile, coins: result.newCoins!}} : current,
     );
   }, []);
 
@@ -280,7 +283,11 @@ export function PlayHostApp({
           try {
             const result = await withServerActivity(() => services.requestPurchase(message.payload.productId));
             applyPurchaseBalance(result);
-            setNotice(tr("WebPortal.PURCHASE_COMPLETE", {coins: result.coinsAwarded}));
+            setNotice(
+              result.purchaseType === "subscription"
+                ? tr("CoinShop.SUBSCRIPTION_ACTIVE_NOTICE")
+                : tr("WebPortal.PURCHASE_COMPLETE", {coins: result.coinsAwarded ?? 0}),
+            );
             postOperation(message.requestId, "purchase", true, result);
           } catch (error) {
             postOperation(message.requestId, "purchase", false, undefined, getErrorMessage(error));
@@ -416,6 +423,7 @@ export function PlayHostApp({
         interactionBlocked={serverInteractionActive}
         restoredGame={initialPlayerData?.activeGame}
         onSaveGame={saveActiveGame}
+        registrationName={registrationName}
       />
       {serverInteractionActive ? (
         <SpinningWheelLoader

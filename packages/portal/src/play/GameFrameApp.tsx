@@ -45,11 +45,13 @@ export function GameFrameApp({
   interactionBlocked = false,
   restoredGame,
   onSaveGame,
+  registrationName,
 }: {
   localBridge?: boolean;
   interactionBlocked?: boolean;
   restoredGame?: JestSavedGame | null;
   onSaveGame?: (game: JestSavedGame | null) => void;
+  registrationName?: string;
 } = {}) {
   const shellRef = useRef<HTMLElement | null>(null);
   const contentRef = useRef<HTMLDivElement | null>(null);
@@ -334,6 +336,10 @@ export function GameFrameApp({
           }
 
           if (message.payload.operation === "purchase") {
+            if (data.purchaseType === "subscription") {
+              dispatch({type: "closeModal"});
+              return;
+            }
             const newCoins = getNumber(data.newCoins);
             const coinsAwarded = getNumber(data.coinsAwarded) ?? 0;
             if (newCoins !== undefined) {
@@ -746,7 +752,12 @@ export function GameFrameApp({
         onUpdateUsername={updateUsername}
         onUpdateAvatar={updateAvatar}
       />
-      <GuidanceOverlay state={state} modal={state.modal} onActiveChange={setGuidanceActive} />
+      <GuidanceOverlay
+        state={state}
+        modal={state.modal}
+        onActiveChange={setGuidanceActive}
+        registrationName={registrationName}
+      />
       {!online && (
         <div className="offline-backdrop" role="alertdialog" aria-modal="true">
           <SpinningWheel />
@@ -1273,6 +1284,11 @@ function GameModalView({
                       gameMode: state.riddle?.gameMode,
                       challengeId: state.riddle?.riddleId,
                       attempts: state.guesses.length,
+                      emojiGrid: state.guesses
+                        .map((guess) => guess.feedback.map((feedback) =>
+                          feedback === "green" ? "🟩" : feedback === "yellow" ? "🟨" : "⬛",
+                        ).join(""))
+                        .join("\n"),
                     },
                   }))}
                 >
@@ -1355,17 +1371,44 @@ function GameModalView({
             <div className="game-shop-grid">
               {state.products.length === 0 && <p>{tr("CoinShop.NO_PACKS_AVAILABLE")}</p>}
               {state.products.map((product) => (
-                <article key={product.productId}>
+                <article
+                  key={product.productId}
+                  className={product.productType === "subscription" ? "shop-subscription-card" : undefined}
+                >
                   {product.featuredBadge && <em>{product.featuredBadge}</em>}
-                  <img className="shop-product-coins" src={coinUrl} alt="" />
+                  {product.productType === "subscription"
+                    ? <span className="shop-subscription-icon" aria-hidden="true">★</span>
+                    : <img className="shop-product-coins" src={coinUrl} alt="" />}
                   <strong className="shop-product-name">{product.name}</strong>
-                  <span className="shop-product-amount">
-                    {product.coins.toLocaleString()} {tr("CoinShop.COINS_SUFFIX")}
-                  </span>
+                  {product.productType === "subscription" ? (
+                    <span className="shop-product-amount">
+                      {product.subscriptionStatus === "active"
+                        ? tr("CoinShop.SUBSCRIPTION_ACTIVE")
+                        : `${product.displayPrice} / ${tr(`CoinShop.PERIOD_${product.billingPeriod?.toUpperCase() ?? "MONTHLY"}`)}`}
+                    </span>
+                  ) : (
+                    <span className="shop-product-amount">
+                      {product.coins.toLocaleString()} {tr("CoinShop.COINS_SUFFIX")}
+                    </span>
+                  )}
                   <small className="shop-product-description">{product.description}</small>
-                  <button className="play-primary compact" onClick={() => onPurchase(product.productId)}>
-                    <span className="shop-purchase-label">{tr("CoinShop.PURCHASE_BUTTON")} </span>
-                    {product.displayPrice}
+                  <button
+                    className="play-primary compact"
+                    disabled={product.subscriptionStatus === "active"}
+                    onClick={() => onPurchase(product.productId)}
+                  >
+                    {product.productType === "subscription" ? (
+                      product.subscriptionStatus === "active"
+                        ? tr("CoinShop.SUBSCRIBED_BUTTON")
+                        : product.trialEligible
+                          ? tr("CoinShop.START_TRIAL_BUTTON")
+                          : tr("CoinShop.SUBSCRIBE_BUTTON")
+                    ) : (
+                      <>
+                        <span className="shop-purchase-label">{tr("CoinShop.PURCHASE_BUTTON")} </span>
+                        {product.displayPrice}
+                      </>
+                    )}
                   </button>
                 </article>
               ))}

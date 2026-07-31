@@ -3,6 +3,8 @@ import type {JestPlatformPort, PlatformResult} from "./types";
 import {DEFAULT_PRODUCT_PRICING} from "@qwordly/core/pricing/catalog";
 import type {ProductSummary} from "../play/types";
 
+const isCurrency = (value: string) => /^[A-Z]{3}$/.test(value);
+
 export class JestPurchaseCoordinator {
   constructor(private readonly platform: JestPlatformPort, private readonly backend: JestBackendPort) {}
 
@@ -14,7 +16,7 @@ export class JestPurchaseCoordinator {
       status: "success",
       value: result.value.flatMap((product) => {
         const local = localCatalog.get(product.sku);
-        if (!local || !Number.isFinite(product.price) || !/^[A-Z]{3}$/.test(product.currency)) return [];
+        if (!local || !Number.isFinite(product.price) || !isCurrency(product.currency)) return [];
         return [{
           productId: product.sku,
           name: product.name || local.name,
@@ -28,6 +30,73 @@ export class JestPurchaseCoordinator {
         }];
       }),
     };
+  }
+
+  async getSubscriptions(playerId: string, locale?: string): Promise<PlatformResult<ProductSummary[]>> {
+    const result = await this.platform.getSubscriptions();
+    if (result.status !== "success") return result;
+    if (typeof result.value.subscriptionsSigned !== "string") {
+      return {status: "retryable-failure", message: "Jest returned unsigned subscription data"};
+    }
+    let activeSkus: Set<string>;
+    try {
+      const verified = await this.backend.syncSubscriptions(result.value.subscriptionsSigned, playerId);
+      activeSkus = new Set(verified.activeSkus);
+    } catch (error) {
+      return {status: "retryable-failure", message: error instanceof Error ? error.message : String(error)};
+    }
+    return {
+      status: "success",
+      value: result.value.subscriptions.flatMap((subscription) => {
+        if (
+          !Number.isFinite(subscription.price) ||
+          !isCurrency(subscription.currency) ||
+          !["weekly", "monthly", "yearly"].includes(subscription.billingPeriod)
+        ) {
+          return [];
+        }
+        return [{
+          productId: subscription.sku,
+          productType: "subscription" as const,
+          name: subscription.displayName,
+          description: subscription.displayDescription ?? "",
+          coins: 0,
+          displayPrice: new Intl.NumberFormat(locale, {
+            style: "currency",
+            currency: subscription.currency,
+          }).format(subscription.price),
+          billingPeriod: subscription.billingPeriod,
+          subscriptionStatus: activeSkus.has(subscription.sku) ? "active" as const : "inactive" as const,
+          trialEligible: subscription.trialEligible,
+        }];
+      }),
+    };
+  }
+
+  async subscribe(subscriptionSku: string, playerId: string): Promise<PlatformResult<{activeSku: string}>> {
+    const started = await this.platform.beginSubscription(subscriptionSku);
+    if (started.status !== "success") {
+      if (started.status !== "unavailable" || started.message !== "already_subscribed") return started;
+      const refreshed = await this.platform.getSubscriptions();
+      if (refreshed.status !== "success") return refreshed;
+      try {
+        const verified = await this.backend.syncSubscriptions(refreshed.value.subscriptionsSigned, playerId);
+        return verified.activeSkus.includes(subscriptionSku)
+          ? {status: "success", value: {activeSku: subscriptionSku}}
+          : started;
+      } catch (error) {
+        return {status: "retryable-failure", message: error instanceof Error ? error.message : String(error)};
+      }
+    }
+    try {
+      const verified = await this.backend.syncSubscriptions(started.value.subscriptionSigned, playerId);
+      if (!verified.activeSkus.includes(subscriptionSku)) {
+        return {status: "terminal-failure", message: "Subscription entitlement was not active"};
+      }
+      return {status: "success", value: {activeSku: subscriptionSku}};
+    } catch (error) {
+      return {status: "retryable-failure", message: error instanceof Error ? error.message : String(error)};
+    }
   }
 
   async purchase(productSku: string, playerId: string): Promise<PlatformResult<{

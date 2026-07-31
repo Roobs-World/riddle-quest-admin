@@ -4,6 +4,14 @@
     "LOADING_TEXT": "加载商店中...",
     "NO_PACKS_AVAILABLE": "目前没有可用的金币包。",
     "PURCHASE_BUTTON": "购买",
+    "PERIOD_MONTHLY": "月",
+    "PERIOD_WEEKLY": "周",
+    "PERIOD_YEARLY": "年",
+    "START_TRIAL_BUTTON": "开始免费试用",
+    "SUBSCRIBE_BUTTON": "订阅",
+    "SUBSCRIBED_BUTTON": "已订阅",
+    "SUBSCRIPTION_ACTIVE": "高级会员已生效",
+    "SUBSCRIPTION_ACTIVE_NOTICE": "您的高级会员订阅已生效。",
     "TITLE": "金币商店",
     "YOUR_BALANCE": "余额"
   }

@@ -221,11 +221,15 @@ export const HostInitMessageSchema = envelope(
       .array(
         z.object({
           productId: z.string().min(1),
+          productType: z.enum(["consumable", "subscription"]).optional(),
           name: z.string().min(1),
           description: z.string(),
           coins: z.number().int().nonnegative(),
           displayPrice: z.string().min(1),
           featuredBadge: z.string().optional(),
+          billingPeriod: z.enum(["weekly", "monthly", "yearly"]).optional(),
+          subscriptionStatus: z.enum(["active", "inactive"]).optional(),
+          trialEligible: z.boolean().optional(),
         }),
       )
       .default([]),

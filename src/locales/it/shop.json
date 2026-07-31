@@ -4,6 +4,14 @@
     "LOADING_TEXT": "Caricamento negozio...",
     "NO_PACKS_AVAILABLE": "Nessun pacchetto di monete è disponibile al momento.",
     "PURCHASE_BUTTON": "ACQUISTO",
+    "PERIOD_MONTHLY": "mese",
+    "PERIOD_WEEKLY": "settimana",
+    "PERIOD_YEARLY": "anno",
+    "START_TRIAL_BUTTON": "PROVA GRATIS",
+    "SUBSCRIBE_BUTTON": "ABBONATI",
+    "SUBSCRIBED_BUTTON": "ABBONATO",
+    "SUBSCRIPTION_ACTIVE": "Premium attivo",
+    "SUBSCRIPTION_ACTIVE_NOTICE": "Il tuo abbonamento premium è attivo.",
     "TITLE": "NEGOZIO DI MONETE",
     "YOUR_BALANCE": "Il tuo equilibrio"
   }

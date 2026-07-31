@@ -4,6 +4,14 @@
     "LOADING_TEXT": "Loading shop...",
     "NO_PACKS_AVAILABLE": "No coin packs are available right now.",
     "PURCHASE_BUTTON": "PURCHASE",
+    "PERIOD_MONTHLY": "month",
+    "PERIOD_WEEKLY": "week",
+    "PERIOD_YEARLY": "year",
+    "START_TRIAL_BUTTON": "START FREE TRIAL",
+    "SUBSCRIBE_BUTTON": "SUBSCRIBE",
+    "SUBSCRIBED_BUTTON": "SUBSCRIBED",
+    "SUBSCRIPTION_ACTIVE": "Premium active",
+    "SUBSCRIPTION_ACTIVE_NOTICE": "Your premium subscription is active.",
     "TITLE": "COIN SHOP",
     "YOUR_BALANCE": "Your balance"
   }
