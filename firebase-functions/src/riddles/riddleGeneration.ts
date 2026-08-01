@@ -1,8 +1,8 @@
 import {logger} from "firebase-functions/v2";
-import {admin} from "./firebaseAdmin";
+import {admin} from "../shared/firebaseAdmin";
 import {generateUniqueRiddle} from "./openaiService";
-import {captureException} from "./sentry";
-import {RiddleCollections} from "./validation/firestoreSchemas";
+import {captureException} from "../shared/sentry";
+import {RiddleCollections} from "../validation/firestoreSchemas";
 import {SUPPORTED_LOCALES, type SupportedLocale} from "@qwordly/core/validation";
 import {
   areLocalizedClassicRiddlesSeeded,
@@ -18,7 +18,7 @@ import {
   storeLocalizedClassicRiddlesInFirestore,
 } from "./riddleGenerationRepository";
 
-export {generateLocalizedTodaysDailyChallenge, generateTodaysDailyChallenge} from "./dailyRiddleGeneration";
+export {generateLocalizedTodaysDailyChallenge, generateTodaysDailyChallenge} from "../daily/dailyRiddleGeneration";
 
 async function generateLocalizedClassicRiddlesForLocale(
   locale: SupportedLocale,

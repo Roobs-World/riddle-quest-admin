@@ -1,8 +1,8 @@
 import {beforeEach, describe, expect, it, jest, beforeAll, afterAll} from "@jest/globals";
 import {HttpsError as HttpsErrorV2, CallableRequest as CallableRequestV2} from "firebase-functions/v2/https"; // Specifically for onCall v2 HttpsError
 import {logger} from "firebase-functions";
-import {spendCoins as spendCoinsOriginal, skipRiddle as skipRiddleOriginal} from "../gameLogic";
-import {updateUserCoins, getUser, getRiddleByGameMode} from "../firestoreService";
+import {spendCoins as spendCoinsOriginal, skipRiddle as skipRiddleOriginal} from "../gameplay/gameLogic";
+import {updateUserCoins, getUser, getRiddleByGameMode} from "../gameplay/firestoreService";
 import {DecodedIdToken} from "firebase-admin/auth";
 
 // Mock document snapshot interface
@@ -12,7 +12,7 @@ interface MockDocumentSnapshot {
 }
 
 // --- Mocks Start ---
-jest.mock("../firestoreService", () => ({
+jest.mock("../gameplay/firestoreService", () => ({
   updateUserCoins: jest.fn(),
   getUser: jest.fn(),
   getRiddleByGameMode: jest.fn(),

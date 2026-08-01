@@ -11,10 +11,10 @@
  *  - "bestStreak"  â€” longest win streak ever achieved
  */
 
-import {admin} from "./firebaseAdmin";
+import {admin} from "../shared/firebaseAdmin";
 import * as functions from "firebase-functions";
 import {onCall, HttpsError} from "firebase-functions/v2/https";
-import {captureException} from "./sentry";
+import {captureException} from "../shared/sentry";
 const jestWebCallableOptions = {enforceAppCheck: process.env.JEST_ALLOW_WEB_CALLABLES !== "true"};
 import {
   GetLeaderboardRequest,
@@ -23,8 +23,8 @@ import {
   GetLeaderboardResponseSchema,
   LeaderboardEntry,
   LeaderboardType,
-} from "./validation/requestSchemas";
-import {validateCallableRequest, validateCallableResponse} from "./validation/callableValidation";
+} from "../validation/requestSchemas";
+import {validateCallableRequest, validateCallableResponse} from "../validation/callableValidation";
 
 //
 // Types

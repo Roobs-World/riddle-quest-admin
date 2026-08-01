@@ -1,9 +1,9 @@
-import {admin} from "./firebaseAdmin";
+import {admin} from "../shared/firebaseAdmin";
 import * as functions from "firebase-functions";
 import type {SupportedLocale} from "@qwordly/core/validation";
-import {RIDDLE_GENERATION_BATCH_SIZE, RIDDLE_GENERATION_THRESHOLD} from "./constants";
+import {RIDDLE_GENERATION_BATCH_SIZE, RIDDLE_GENERATION_THRESHOLD} from "../shared/constants";
 import * as riddleGeneration from "./riddleGeneration";
-import {captureException} from "./sentry";
+import {captureException} from "../shared/sentry";
 
 /** Replenishes localized classic riddles when a player nears the end of supply. */
 export async function triggerClassicRiddleGenerationIfNeeded(

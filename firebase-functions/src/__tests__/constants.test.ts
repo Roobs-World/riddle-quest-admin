@@ -7,7 +7,7 @@ import {
   getStreakRewardBonus,
   getXpThresholdForLevel,
   isStreakRewardMilestone,
-} from "../constants";
+} from "../shared/constants";
 
 describe("server XP curve", () => {
   it("uses an object config instead of threshold array", () => {

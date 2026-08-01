@@ -1,6 +1,6 @@
-import {admin} from "./firebaseAdmin";
+import {admin} from "../shared/firebaseAdmin";
 import type {Firestore, Transaction, UpdateData} from "firebase-admin/firestore";
-import {captureException} from "./sentry";
+import {captureException} from "../shared/sentry";
 import type {
   Player,
   PlayerStatsUpdate,
@@ -8,8 +8,8 @@ import type {
   ClassicRiddle,
   DailyRiddle,
   UnlockedAchievement,
-} from "./validation/firestoreSchemas";
-import {PlayerSchema} from "./validation/firestoreSchemas";
+} from "../validation/firestoreSchemas";
+import {PlayerSchema} from "../validation/firestoreSchemas";
 import * as functions from "firebase-functions";
 import {type SupportedLocale, SUPPORTED_LOCALES} from "@qwordly/core/validation";
 

@@ -1,5 +1,5 @@
 import * as functions from "firebase-functions";
-import {admin} from "./firebaseAdmin";
+import {admin} from "../shared/firebaseAdmin";
 import type {FieldValue} from "firebase-admin/firestore";
 import {HttpsError} from "firebase-functions/v2/https";
 import {
@@ -9,7 +9,7 @@ import {
   getRiddleByGameMode,
   ensureUserDocumentComplete,
 } from "./firestoreService";
-import {PlayerStats, PlayerStatsUpdate} from "./validation/firestoreSchemas";
+import {PlayerStats, PlayerStatsUpdate} from "../validation/firestoreSchemas";
 import type {
   CompleteGameRequestData,
   CompleteGameResponseData,
@@ -17,11 +17,11 @@ import type {
   SubmitGuessAuthContext,
   SubmitGuessRequestData,
   SubmitGuessResponseData,
-} from "./validation/requestSchemas";
-import * as riddleGeneration from "./riddleGeneration";
+} from "../validation/requestSchemas";
+import * as riddleGeneration from "../riddles/riddleGeneration";
 import {evaluateAchievements} from "./achievements";
 import {updateLeaderboardEntry} from "./leaderboard";
-import {captureException} from "./sentry";
+import {captureException} from "../shared/sentry";
 import {
   MAX_ATTEMPTS_CLASSIC,
   MAX_ATTEMPTS_CHALLENGE,
@@ -33,10 +33,10 @@ import {
   BASE_SCORE_CLASSIC,
   BASE_SCORE_CHALLENGE,
   getLevelFromXp,
-} from "./constants";
+} from "../shared/constants";
 import {SUPPORTED_LOCALES, type SupportedLocale} from "@qwordly/core/validation";
-import {computeNextDailyWinStreak} from "./dailyStreak";
-import {triggerClassicRiddleGenerationIfNeeded} from "./riddleSupply";
+import {computeNextDailyWinStreak} from "../daily/dailyStreak";
+import {triggerClassicRiddleGenerationIfNeeded} from "../riddles/riddleSupply";
 
 // Define a type for potential top-level updates to the Player document
 type PlayerTopLevelUpdate = {

@@ -13,12 +13,12 @@ import {getApps, initializeApp} from "firebase-admin/app";
 // Initialize the Firebase Admin SDK once for all functions in this project.
 if (getApps().length === 0) initializeApp();
 
-import {getHint, spendCoins, skipRiddle} from "./gameLogic";
-import {getCurrentDailyChallenge, getCurrentClassicRiddle} from "./dailyChallenge";
-import {updateAvatar, updateUsername} from "./profile";
-import {completeGame} from "./completeGameCallable";
-import {dailyChallengeScheduler} from "./dailyScheduler";
-import {getLeaderboard} from "./leaderboard";
+import {getHint, spendCoins, skipRiddle} from "./gameplay/gameLogic";
+import {getCurrentDailyChallenge, getCurrentClassicRiddle} from "./daily/dailyChallenge";
+import {updateAvatar, updateUsername} from "./profile/profile";
+import {completeGame} from "./gameplay/completeGameCallable";
+import {dailyChallengeScheduler} from "./daily/dailyScheduler";
+import {getLeaderboard} from "./gameplay/leaderboard";
 import {
   getRaceChallenge,
   getRaceAccess,
@@ -33,7 +33,12 @@ import {
   startRaceRun,
   submitRaceGuess,
 } from "./race/raceCallables";
-import {exchangeJestIdentity, grantJestPurchase, syncJestSubscriptions, verifyJestReferrals} from "./jestEndpoints";
+import {
+  exchangeJestIdentity,
+  grantJestPurchase,
+  syncJestSubscriptions,
+  verifyJestReferrals,
+} from "./jest/jestEndpoints";
 export {
   spendCoins,
   skipRiddle,

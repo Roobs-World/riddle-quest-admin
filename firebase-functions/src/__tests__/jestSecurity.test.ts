@@ -1,5 +1,5 @@
 import {createHmac} from "node:crypto";
-import {jestFirebaseUid, verifyJestSigned} from "../jestSecurity";
+import {jestFirebaseUid, verifyJestSigned} from "../jest/jestSecurity";
 
 const secret = Buffer.alloc(32, 7).toString("base64");
 const sign = (payload: object, alg = "HS256") => {

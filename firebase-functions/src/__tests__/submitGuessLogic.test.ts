@@ -1,17 +1,17 @@
 import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
 import {HttpsError} from "firebase-functions/v2/https";
-import {handleCompleteGameLogic, handleGuessLogic} from "../submitGuessLogic";
+import {handleCompleteGameLogic, handleGuessLogic} from "../gameplay/submitGuessLogic";
 import {
   COINS_REWARD_CLASSIC,
   COINS_REWARD_CHALLENGE,
   ACHIEVEMENT_UNLOCK_COIN_REWARD,
   getStreakRewardBonus,
-} from "../constants";
-import * as firestoreService from "../firestoreService";
-import * as riddleGeneration from "../riddleGeneration";
-import * as achievements from "../achievements";
-import * as leaderboard from "../leaderboard";
+} from "../shared/constants";
+import * as firestoreService from "../gameplay/firestoreService";
+import * as riddleGeneration from "../riddles/riddleGeneration";
+import * as achievements from "../gameplay/achievements";
+import * as leaderboard from "../gameplay/leaderboard";
 import type {Player, FirestoreRiddle} from "../validation/firestoreSchemas";
 import type {SubmitGuessRequestData, SubmitGuessAuthContext} from "../validation/requestSchemas";
 
@@ -53,7 +53,7 @@ const mockFieldValue = {
 (admin.firestore as unknown as {FieldValue: typeof mockFieldValue}).FieldValue = mockFieldValue;
 
 // Mock firestoreService
-jest.mock("../firestoreService", () => ({
+jest.mock("../gameplay/firestoreService", () => ({
   getUser: jest.fn(),
   updateUserCoins: jest.fn(),
   updateUserStats: jest.fn(),
@@ -62,18 +62,18 @@ jest.mock("../firestoreService", () => ({
 }));
 
 // Mock riddleGeneration
-jest.mock("../riddleGeneration", () => ({
+jest.mock("../riddles/riddleGeneration", () => ({
   generateAndAppendRiddles: jest.fn(),
   initializeRiddleDatabaseIfEmpty: jest.fn(),
 }));
 
 // Mock achievements
-jest.mock("../achievements", () => ({
+jest.mock("../gameplay/achievements", () => ({
   evaluateAchievements: jest.fn().mockResolvedValue([]),
 }));
 
 // Mock leaderboard (non-blocking update, errors are swallowed)
-jest.mock("../leaderboard", () => ({
+jest.mock("../gameplay/leaderboard", () => ({
   updateLeaderboardEntry: jest.fn().mockResolvedValue(undefined),
 }));
 

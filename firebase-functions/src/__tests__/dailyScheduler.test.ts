@@ -1,6 +1,6 @@
 import {ScheduledEvent} from "firebase-functions/v2/scheduler";
 // Import the function to test directly
-import {scheduledTaskHandler} from "../dailyScheduler";
+import {scheduledTaskHandler} from "../daily/dailyScheduler";
 // Mock dependencies
 
 // Define a simple mock interface for a Firestore DocumentSnapshot
@@ -75,15 +75,17 @@ jest.mock("firebase-admin", () => {
   };
 });
 
-jest.mock("../riddleGeneration", () => ({
-  generateLocalizedTodaysDailyChallenge: jest.fn(),
+jest.mock("../riddles/riddleGeneration", () => ({
   initializeLocalizedRiddleDatabaseIfEmpty: jest.fn(),
 }));
+jest.mock("../daily/dailyRiddleGeneration", () => ({
+  generateLocalizedTodaysDailyChallenge: jest.fn(),
+}));
 const mockGenerateTodaysDailyChallenge = jest.mocked(
-  require("../riddleGeneration").generateLocalizedTodaysDailyChallenge,
+  require("../daily/dailyRiddleGeneration").generateLocalizedTodaysDailyChallenge,
 );
 const mockInitializeLocalizedRiddleDatabase = jest.mocked(
-  require("../riddleGeneration").initializeLocalizedRiddleDatabaseIfEmpty,
+  require("../riddles/riddleGeneration").initializeLocalizedRiddleDatabaseIfEmpty,
 );
 
 // Mock firebase-functions/v2/scheduler (partially, we are testing the handler function directly)

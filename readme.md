@@ -167,7 +167,7 @@ Repository values and Developer Console values must agree.
 Monetization configuration has three locks, and all three must be changed together:
 
 1. Create or update the SKU in the Jest Developer Console.
-2. Add its trusted grant or entitlement in `firebase-functions/src/jestProductCatalog.ts`.
+2. Add its trusted grant or entitlement in `firebase-functions/src/jest/jestProductCatalog.ts`.
 3. Add it to `JEST_PRODUCT_SKUS` or `JEST_SUBSCRIPTION_SKUS` in the deployed Functions environment.
 
 Coin-pack values are granted only from the server catalog. Never accept a coin amount from the client. A purchase is granted transactionally using `purchaseToken` as the idempotency key before the client calls `completePurchase()`.

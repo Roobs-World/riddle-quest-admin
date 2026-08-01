@@ -4,7 +4,7 @@ import {
   resolveSignedPurchase,
   resolveSignedSubscriptions,
   selectReferralConversions,
-} from "../jestEndpoints";
+} from "../jest/jestEndpoints";
 
 describe("Jest endpoint CORS", () => {
   it("allows JSON POST preflights only from the configured Jest origin", () => {

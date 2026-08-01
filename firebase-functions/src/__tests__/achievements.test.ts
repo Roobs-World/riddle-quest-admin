@@ -1,8 +1,8 @@
-import {evaluateAchievements} from "../achievements";
-import * as firestoreService from "../firestoreService";
+import {evaluateAchievements} from "../gameplay/achievements";
+import * as firestoreService from "../gameplay/firestoreService";
 import type {Player} from "../validation/firestoreSchemas";
 
-jest.mock("../firestoreService", () => ({
+jest.mock("../gameplay/firestoreService", () => ({
   getUser: jest.fn(),
   appendUnlockedAchievements: jest.fn().mockResolvedValue(undefined),
 }));

@@ -14,7 +14,7 @@ const mockWhere: any = jest.fn();
 const mockOrderBy: any = jest.fn();
 const mockLimit: any = jest.fn();
 
-jest.mock("../openaiService", () => ({
+jest.mock("../riddles/openaiService", () => ({
   generateUniqueRiddle: mockGenerateUniqueRiddle,
 }));
 
@@ -77,7 +77,7 @@ jest.mock("firebase-functions/v2/https", () => ({
   onCall: jest.fn((options, handler) => handler),
 }));
 
-import * as riddleGeneration from "../riddleGeneration";
+import * as riddleGeneration from "../riddles/riddleGeneration";
 
 describe("riddleGeneration", () => {
   const adminCallableRequest = {auth: {uid: "admin-user", token: {admin: true}}, data: {}} as any;

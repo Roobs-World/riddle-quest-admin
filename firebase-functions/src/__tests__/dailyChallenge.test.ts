@@ -22,13 +22,13 @@ jest.mock("firebase-functions", () => {
   };
 });
 
-jest.mock("../firestoreService", () => ({
+jest.mock("../gameplay/firestoreService", () => ({
   // Refine getUser mock return type to match Player | undefined
   getUser: jest.fn<(...args: any[]) => Promise<Player | undefined>>().mockResolvedValue(undefined), // Default to undefined for user not found
   getClassicRiddleByIndex: jest.fn(),
 }));
 
-jest.mock("../riddleGeneration", () => ({
+jest.mock("../riddles/riddleGeneration", () => ({
   generateTodaysDailyChallenge: jest.fn().mockResolvedValue(undefined),
 }));
 
@@ -146,7 +146,7 @@ import * as functions from "firebase-functions";
 import {HttpsError, CallableRequest} from "firebase-functions/v2/https";
 
 // Original imports from mocked services for typing
-import type {getUser as originalGetUser} from "../firestoreService";
+import type {getUser as originalGetUser} from "../gameplay/firestoreService";
 import {PlayerSchema, PlayerStatsSchema, PlayerProgressSchema, Player} from "../validation/firestoreSchemas";
 
 const getDefaultPlayer = (userId: string, overrides: Partial<Player> = {}): Player => {
@@ -216,11 +216,11 @@ describe("Daily Challenge Functions", () => {
     global.Date.now = jest.fn(() => mockDate.getTime());
 
     // Import the module to get the functions
-    const dailyChallengeModule = require("../dailyChallenge");
+    const dailyChallengeModule = require("../daily/dailyChallenge");
     getCurrentDailyChallenge = dailyChallengeModule.getCurrentDailyChallenge;
     getCurrentClassicRiddle = dailyChallengeModule.getCurrentClassicRiddle;
 
-    const mockFsService = jest.requireMock("../firestoreService") as {
+    const mockFsService = jest.requireMock("../gameplay/firestoreService") as {
       getUser: jest.MockedFunction<typeof originalGetUser>;
       getClassicRiddleByIndex: jest.Mock;
     };

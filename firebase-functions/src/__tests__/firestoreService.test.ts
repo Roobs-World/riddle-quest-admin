@@ -52,7 +52,7 @@ import {
   appendUnlockedAchievements,
   getDailyRiddle,
   getRiddleByGameMode,
-} from "../firestoreService";
+} from "../gameplay/firestoreService";
 
 describe("FirestoreService", () => {
   beforeEach(() => {

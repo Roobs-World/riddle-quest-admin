@@ -38,7 +38,7 @@ const mockOnCall = jest.fn((optionsOrHandler: unknown, handler?: unknown) => {
 import {CallableRequest, HttpsError} from "firebase-functions/v2/https";
 
 // 3. jest.mock() calls
-jest.mock("../firestoreService", () => ({
+jest.mock("../gameplay/firestoreService", () => ({
   updateUserProfile: (...args: [string, Record<string, unknown>]) => mockUpdateUserProfile(...args),
 }));
 
@@ -79,7 +79,7 @@ jest.mock("firebase-functions/v2/https", () => {
 });
 
 // 4. Import the module under test
-import {updateAvatar, updateUsername} from "../profile";
+import {updateAvatar, updateUsername} from "../profile/profile";
 
 // 5. Describe block
 describe("Profile Cloud Functions", () => {

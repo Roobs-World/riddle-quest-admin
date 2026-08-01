@@ -8,9 +8,9 @@
 
 import * as functions from "firebase-functions";
 import {getUser, appendUnlockedAchievements} from "./firestoreService";
-import {captureException} from "./sentry";
-import {MAX_ATTEMPTS_CHALLENGE, MAX_ATTEMPTS_CLASSIC} from "./constants";
-import type {Player, UnlockedAchievement} from "./validation/firestoreSchemas";
+import {captureException} from "../shared/sentry";
+import {MAX_ATTEMPTS_CHALLENGE, MAX_ATTEMPTS_CLASSIC} from "../shared/constants";
+import type {Player, UnlockedAchievement} from "../validation/firestoreSchemas";
 
 /** Context passed from submitGuess (or other callers) for achievement evaluation. */
 export interface AchievementContext {

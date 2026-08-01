@@ -1,4 +1,4 @@
-import {avatarDownloadUrl, decodeAvatarDataUrl} from "../avatarUpload";
+import {avatarDownloadUrl, decodeAvatarDataUrl} from "../profile/avatarUpload";
 
 describe("avatar upload validation", () => {
   it("accepts a matching PNG signature", () => {

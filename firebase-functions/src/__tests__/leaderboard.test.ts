@@ -1,5 +1,5 @@
 /**
- * Unit tests for firebase-functions/src/leaderboard.ts
+ * Unit tests for firebase-functions/src/gameplay/leaderboard.ts
  *
  * Covers:
  *  - updateLeaderboardEntry: writes correct data, omits avatarUrl when absent
@@ -101,7 +101,7 @@ jest.mock("firebase-functions/v2/https", () => ({
 
 // â”€â”€ Import under test (after mocks) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
-import {updateLeaderboardEntry, getLeaderboard, LeaderboardEntry} from "../leaderboard";
+import {updateLeaderboardEntry, getLeaderboard, LeaderboardEntry} from "../gameplay/leaderboard";
 
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Helpers

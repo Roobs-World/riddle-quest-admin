@@ -2,9 +2,9 @@ import {onCall, HttpsError, type CallableOptions} from "firebase-functions/v2/ht
 import {
   CompleteGameRequestDataSchema,
   CompleteGameResponseDataSchema,
-} from "./validation/requestSchemas";
-import type {CompleteGameRequestData, CompleteGameResponseData} from "./validation/requestSchemas";
-import {validateCallableRequest, validateCallableResponse} from "./validation/callableValidation";
+} from "../validation/requestSchemas";
+import type {CompleteGameRequestData, CompleteGameResponseData} from "../validation/requestSchemas";
+import {validateCallableRequest, validateCallableResponse} from "../validation/callableValidation";
 import {handleCompleteGameLogic} from "./submitGuessLogic";
 
 export const completeGame = onCall<CompleteGameRequestData, Promise<CompleteGameResponseData>>(

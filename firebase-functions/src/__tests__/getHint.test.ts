@@ -50,7 +50,7 @@ const mockUpdateUserCoins = jest.fn();
 const mockUpdateUserStats = jest.fn();
 const mockGetRiddleByGameMode = jest.fn();
 
-jest.mock("../firestoreService", () => ({
+jest.mock("../gameplay/firestoreService", () => ({
   getUser: (...args: any[]) => mockGetUser(...args),
   updateUserCoins: (...args: any[]) => mockUpdateUserCoins(...args),
   updateUserStats: (...args: any[]) => mockUpdateUserStats(...args),
@@ -58,14 +58,14 @@ jest.mock("../firestoreService", () => ({
 }));
 
 const mockEvaluateAchievements = jest.fn();
-jest.mock("../achievements", () => ({
+jest.mock("../gameplay/achievements", () => ({
   evaluateAchievements: (...args: any[]) => mockEvaluateAchievements(...args),
 }));
 
 // Import the function under test
-import {getHint} from "../gameLogic";
+import {getHint} from "../gameplay/gameLogic";
 import {HttpsError} from "firebase-functions/v2/https";
-import {HINT_COST_COINS} from "../constants";
+import {HINT_COST_COINS} from "../shared/constants";
 
 describe("getHint callable", () => {
   beforeEach(() => {

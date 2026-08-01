@@ -2,9 +2,9 @@ import OpenAI from "openai";
 import {zodResponseFormat} from "openai/helpers/zod";
 import * as functions from "firebase-functions";
 import {z} from "zod";
-import {captureException, withSentrySpan} from "./sentry";
+import {captureException, withSentrySpan} from "../shared/sentry";
 import {clueContainsLiteralAnswer} from "./riddleQuality";
-import {MAX_RIDDLE_ANSWER_CHARACTERS} from "./constants";
+import {MAX_RIDDLE_ANSWER_CHARACTERS} from "../shared/constants";
 import {type SupportedLocale} from "@qwordly/core/validation";
 
 // Lazy initialization variable

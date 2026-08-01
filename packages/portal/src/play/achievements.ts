@@ -3,7 +3,7 @@
  *
  * This module is the client-side source of truth for achievement names, descriptions,
  * criteria types, thresholds, icons, and progress calculation.  Unlock authority
- * lives server-side in firebase-functions/src/achievements.ts; this file is used for:
+ * lives server-side in firebase-functions/src/gameplay/achievements.ts; this file is used for:
  * - Rendering the achievements list (AchievementsModal)
  * - Computing per-achievement progress from player stats/progress.
  *

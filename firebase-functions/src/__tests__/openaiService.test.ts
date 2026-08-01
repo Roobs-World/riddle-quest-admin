@@ -17,8 +17,8 @@ jest.mock("openai", () => ({
   default: mockOpenAI,
 }));
 
-import {GeneratedRiddleSchema, generateUniqueRiddle, resetOpenAIClient} from "../openaiService";
-import {MAX_RIDDLE_ANSWER_CHARACTERS} from "../constants";
+import {GeneratedRiddleSchema, generateUniqueRiddle, resetOpenAIClient} from "../riddles/openaiService";
+import {MAX_RIDDLE_ANSWER_CHARACTERS} from "../shared/constants";
 
 function parsedRiddleResponse(question: string, answer: string) {
   return {

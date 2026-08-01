@@ -1,5 +1,5 @@
 import {logger} from "firebase-functions/v2";
-import {admin} from "./firebaseAdmin";
+import {admin} from "../shared/firebaseAdmin";
 import {onCall, HttpsError, CallableRequest} from "firebase-functions/v2/https";
 import {updateUserCoins, getUser, getRiddleByGameMode, updateUserStats} from "./firestoreService";
 import {
@@ -9,10 +9,10 @@ import {
   RIDDLE_GENERATION_THRESHOLD,
   RIDDLE_GENERATION_BATCH_SIZE,
   ACHIEVEMENT_UNLOCK_COIN_REWARD,
-} from "./constants";
-import {generateAndAppendRiddles} from "./riddleGeneration";
-import {captureException} from "./sentry";
-import type {PlayerProgress} from "./validation/firestoreSchemas";
+} from "../shared/constants";
+import {generateAndAppendRiddles} from "../riddles/riddleGeneration";
+import {captureException} from "../shared/sentry";
+import type {PlayerProgress} from "../validation/firestoreSchemas";
 import {z} from "zod";
 import {
   SkipRiddleRequest,
@@ -24,9 +24,9 @@ import {
   SpendCoinsResponseSchema,
   GetHintRequestSchema,
   GetHintResponseSchema,
-} from "./validation/requestSchemas";
+} from "../validation/requestSchemas";
 import {evaluateAchievements} from "./achievements";
-import {validateCallableRequest, validateCallableResponse} from "./validation/callableValidation";
+import {validateCallableRequest, validateCallableResponse} from "../validation/callableValidation";
 
 const jestWebCallableOptions = {enforceAppCheck: process.env.JEST_ALLOW_WEB_CALLABLES !== "true"};
 import {splitGraphemes, lowerCaseGraphemes} from "@qwordly/core/game";

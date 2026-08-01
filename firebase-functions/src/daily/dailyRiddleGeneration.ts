@@ -1,9 +1,9 @@
 import {logger} from "firebase-functions/v2";
-import {admin} from "./firebaseAdmin";
-import {generateUniqueRiddle} from "./openaiService";
-import {captureException} from "./sentry";
-import type {DailyRiddle} from "./validation/firestoreSchemas";
-import {RiddleCollections} from "./validation/firestoreSchemas";
+import {admin} from "../shared/firebaseAdmin";
+import {generateUniqueRiddle} from "../riddles/openaiService";
+import {captureException} from "../shared/sentry";
+import type {DailyRiddle} from "../validation/firestoreSchemas";
+import {RiddleCollections} from "../validation/firestoreSchemas";
 import {SUPPORTED_LOCALES, type SupportedLocale} from "@qwordly/core/validation";
 import {
   getExistingRiddlesFromFirestore,
@@ -12,7 +12,7 @@ import {
   getLocalizedExistingRiddlesFromFirestoreForLocale,
   getNextDailyIndex,
   riddleExists,
-} from "./riddleGenerationRepository";
+} from "../riddles/riddleGenerationRepository";
 
 export async function generateTodaysDailyChallenge(forceGenerate: boolean = false): Promise<void> {
   const dailyChallengeQuestionCount = 1;

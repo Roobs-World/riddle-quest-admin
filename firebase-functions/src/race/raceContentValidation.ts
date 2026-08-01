@@ -1,8 +1,8 @@
 import {RACE_CATEGORY_IDS, RACE_DECK_SIZE, type RaceCategoryId, type RaceDifficultyBand} from "@qwordly/core/race";
 import {graphemeLength} from "@qwordly/core/game";
 import {type SupportedLocale} from "@qwordly/core/validation";
-import {clueContainsLiteralAnswer} from "../riddleQuality";
-import {MAX_RIDDLE_ANSWER_CHARACTERS} from "../constants";
+import {clueContainsLiteralAnswer} from "../riddles/riddleQuality";
+import {MAX_RIDDLE_ANSWER_CHARACTERS} from "../shared/constants";
 import type {ExistingRaceContentRecord} from "./raceContentMigration";
 
 export const RACE_POOL_SIZE = 30;

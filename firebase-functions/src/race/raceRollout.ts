@@ -1,4 +1,4 @@
-import {admin} from "../firebaseAdmin";
+import {admin} from "../shared/firebaseAdmin";
 import {createHash} from "node:crypto";
 import {
   RACE_ANALYTICS_FIELDS,

@@ -1,11 +1,11 @@
-import {admin} from "./firebaseAdmin";
+import {admin} from "../shared/firebaseAdmin";
 import {defineSecret} from "firebase-functions/params";
 import {onRequest} from "firebase-functions/v2/https";
 import {logger} from "firebase-functions";
 import {jestFirebaseUid, verifyJestSigned} from "./jestSecurity";
 import {JEST_COIN_PRODUCTS, JEST_SUBSCRIPTIONS} from "./jestProductCatalog";
 import {createHash} from "node:crypto";
-import {ACHIEVEMENT_UNLOCK_COIN_REWARD} from "./constants";
+import {ACHIEVEMENT_UNLOCK_COIN_REWARD} from "../shared/constants";
 
 const jestSharedSecret = defineSecret("JEST_SHARED_SECRET");
 const JEST_GAME_ID = process.env.JEST_GAME_ID ?? "riddle-quest";

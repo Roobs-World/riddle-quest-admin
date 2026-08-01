@@ -1,14 +1,14 @@
 import * as functions from "firebase-functions";
-import {admin} from "./firebaseAdmin";
+import {admin} from "../shared/firebaseAdmin";
 import {onCall, HttpsError, CallableRequest} from "firebase-functions/v2/https";
-import {getUser, getClassicRiddleByIndex} from "./firestoreService";
-import {captureException} from "./sentry";
+import {getUser, getClassicRiddleByIndex} from "../gameplay/firestoreService";
+import {captureException} from "../shared/sentry";
 import {SUPPORTED_LOCALES} from "@qwordly/core/validation";
 import {
   GetCurrentDailyChallengeResponse,
   GetCurrentDailyChallengeResponseSchema,
-} from "./validation/requestSchemas";
-import {validateCallableResponse} from "./validation/callableValidation";
+} from "../validation/requestSchemas";
+import {validateCallableResponse} from "../validation/callableValidation";
 
 const DAILY_CHALLENGE_QUESTION_COUNT = 1;
 const CURRENT_DAILY_RIDDLE_DOC_ID = "current";

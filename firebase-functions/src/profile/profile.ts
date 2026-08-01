@@ -1,17 +1,17 @@
-import {admin} from "./firebaseAdmin";
+import {admin} from "../shared/firebaseAdmin";
 import {randomUUID} from "node:crypto";
 import {onCall, CallableRequest, HttpsError} from "firebase-functions/v2/https";
 import {logger} from "firebase-functions/v2";
-import {updateUserProfile} from "./firestoreService";
-import {validateUsernameForProfanity} from "./utils/profanityFilter";
-import {captureException} from "./sentry";
+import {updateUserProfile} from "../gameplay/firestoreService";
+import {validateUsernameForProfanity} from "../utils/profanityFilter";
+import {captureException} from "../shared/sentry";
 import {
   BasicSuccessMessageResponseSchema,
   UpdateAvatarRequestSchema,
   UpdateAvatarResponseSchema,
   UpdateUsernameRequestSchema,
-} from "./validation/requestSchemas";
-import {validateCallableRequest, validateCallableResponse} from "./validation/callableValidation";
+} from "../validation/requestSchemas";
+import {validateCallableRequest, validateCallableResponse} from "../validation/callableValidation";
 import {avatarDownloadUrl, decodeAvatarDataUrl} from "./avatarUpload";
 const jestWebCallableOptions = {
   enforceAppCheck: process.env.JEST_ALLOW_WEB_CALLABLES !== "true",

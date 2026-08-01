@@ -1,10 +1,10 @@
 import {onSchedule, type ScheduledEvent} from "firebase-functions/v2/scheduler";
 import {
-  generateLocalizedTodaysDailyChallenge as generateTodaysDailyRiddle,
   initializeLocalizedRiddleDatabaseIfEmpty,
-} from "./riddleGeneration";
+} from "../riddles/riddleGeneration";
+import {generateLocalizedTodaysDailyChallenge as generateTodaysDailyRiddle} from "./dailyRiddleGeneration";
 import * as functions from "firebase-functions";
-import {captureException} from "./sentry";
+import {captureException} from "../shared/sentry";
 
 // Export the handler function for testing first
 export const scheduledTaskHandler = async (context: ScheduledEvent) => {
