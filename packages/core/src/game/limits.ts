@@ -1,0 +1,1 @@
+export const MAX_RIDDLE_ANSWER_CHARACTERS = 7;

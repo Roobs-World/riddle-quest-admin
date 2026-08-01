@@ -1,13 +1,9 @@
 import {splitGraphemes} from "@qwordly/core/game";
 import {cloneProductPricingCatalog} from "@qwordly/core/pricing/catalog";
 import type {BridgeLeaderboardEntry, BridgeProfile, BridgeRiddle, BridgeUser} from "@qwordly/core/bridge";
-import type {
-  AuthSnapshot,
-  HostServices,
-  LeaderboardType,
-  ProductSummary,
-} from "./types";
+import type {AuthSnapshot, HostServices, LeaderboardType, ProductSummary} from "./types";
 import {toProductSummaries} from "./types";
+import {createFakeRaceServices} from "./race/fakeRaceServices";
 
 const fakeRiddles: BridgeRiddle[] = [
   {
@@ -89,6 +85,7 @@ export const createFakeHostServices = ({
     ? {user: createFakeUser(), profile: createFakeProfile()}
     : {user: null, profile: null};
   const subscribers = new Set<(nextSnapshot: AuthSnapshot) => void>();
+  const raceServices = createFakeRaceServices();
 
   const emit = () => {
     subscribers.forEach((subscriber) => subscriber(snapshot));
@@ -118,6 +115,13 @@ export const createFakeHostServices = ({
   };
 
   return {
+    ...raceServices,
+    async getRaceAccess() {
+      return {enabled: true, locale: "en" as const, reason: "enabled" as const};
+    },
+    async recordRaceAnalytics() {
+      return {accepted: true as const};
+    },
     products,
     auth: {
       subscribe(listener) {
@@ -142,7 +146,8 @@ export const createFakeHostServices = ({
     async completeGame({isCorrect, gameMode, attempts}) {
       const profile = snapshot.profile;
       const coinsEarned = isCorrect ? (gameMode === "challenge" ? 75 : 50) : 0;
-      const nextClassicIndex = gameMode === "classic" && isCorrect ? (profile?.classicIndex ?? 1) + 1 : profile?.classicIndex;
+      const nextClassicIndex =
+        gameMode === "classic" && isCorrect ? (profile?.classicIndex ?? 1) + 1 : profile?.classicIndex;
       const gamesPlayed = (profile?.gamesPlayed ?? 0) + 1;
       const totalWins = (profile?.totalWins ?? profile?.wins ?? 0) + (isCorrect ? 1 : 0);
       const totalGuessesInWins = (profile?.totalGuessesInWins ?? 0) + (isCorrect ? attempts : 0);
@@ -155,8 +160,7 @@ export const createFakeHostServices = ({
         wins: (profile?.wins ?? 0) + (isCorrect ? 1 : 0),
         totalWins,
         challengeWins: (profile?.challengeWins ?? 0) + (isCorrect && gameMode === "challenge" ? 1 : 0),
-        dailyPuzzlesCompleted:
-          (profile?.dailyPuzzlesCompleted ?? 0) + (isCorrect && gameMode === "challenge" ? 1 : 0),
+        dailyPuzzlesCompleted: (profile?.dailyPuzzlesCompleted ?? 0) + (isCorrect && gameMode === "challenge" ? 1 : 0),
         winStreak: challengeWinStreak,
         bestStreak: Math.max(profile?.bestStreak ?? 0, challengeWinStreak),
         totalWordsGuessed: (profile?.totalWordsGuessed ?? 0) + attempts,

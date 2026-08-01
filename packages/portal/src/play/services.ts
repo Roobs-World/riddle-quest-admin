@@ -79,12 +79,53 @@ const createLazyFirebaseHostServices = (): HostServices => ({
   async updateAvatar(imageDataUrl) {
     return (await getFirebaseServices()).updateAvatar(imageDataUrl);
   },
+  async listRaceCategories(locale) {
+    return (await getFirebaseServices()).listRaceCategories(locale);
+  },
+  async startRace(input) {
+    return (await getFirebaseServices()).startRace(input);
+  },
+  async submitRaceGuess(input) {
+    return (await getFirebaseServices()).submitRaceGuess(input);
+  },
+  async requestRaceHint(input) {
+    return (await getFirebaseServices()).requestRaceHint(input);
+  },
+  async skipRaceRiddle(input) {
+    return (await getFirebaseServices()).skipRaceRiddle(input);
+  },
+  async resumeRace(runId) {
+    return (await getFirebaseServices()).resumeRace(runId);
+  },
+  async publishRace(input) {
+    return (await getFirebaseServices()).publishRace(input);
+  },
+  async getRaceChallenge(challengeId) {
+    return (await getFirebaseServices()).getRaceChallenge(challengeId);
+  },
+  async getRaceOutcome(runId) {
+    return (await getFirebaseServices()).getRaceOutcome(runId);
+  },
+  async listRaceInbox(input) {
+    return (await getFirebaseServices()).listRaceInbox(input);
+  },
+  async getRaceAccess() {
+    return (await getFirebaseServices()).getRaceAccess();
+  },
+  async recordRaceAnalytics(input) {
+    return (await getFirebaseServices()).recordRaceAnalytics(input);
+  },
 });
 
 export const resolveHostServicesMode = (search = window.location.search): HostServicesMode => {
   const params = new URLSearchParams(search);
   const harness = params.get("harness");
-  return import.meta.env.DEV || harness === "jest" || harness === "jest-auth" || harness === "dev"
+  return import.meta.env.DEV ||
+    harness === "jest" ||
+    harness === "jest-auth" ||
+    harness === "race-auth" ||
+    harness === "dev" ||
+    harness === "race"
     ? "fake"
     : "firebase";
 };

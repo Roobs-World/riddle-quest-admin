@@ -1,5 +1,5 @@
-import * as admin from "firebase-admin";
-// Removed unused import: import { getFirestore, FieldValue, Timestamp } from "firebase-admin/firestore";
+import {admin} from "./firebaseAdmin";
+import type {Firestore, Transaction, UpdateData} from "firebase-admin/firestore";
 import {captureException} from "./sentry";
 import type {
   Player,
@@ -10,7 +10,6 @@ import type {
   UnlockedAchievement,
 } from "./validation/firestoreSchemas";
 import {PlayerSchema} from "./validation/firestoreSchemas";
-// Removed import for non-existent models.js: import type { GameState } from "./models.js";
 import * as functions from "firebase-functions";
 import {type SupportedLocale, SUPPORTED_LOCALES} from "@qwordly/core/validation";
 
@@ -19,9 +18,9 @@ const LOCALIZED_RIDDLES_COLLECTION = "localizedRiddles";
 const LOCALIZED_RIDDLE_SUBCOLLECTION = "riddles";
 
 // const db = admin.firestore(); // Replaced with lazy initialization
-let dbInstance: admin.firestore.Firestore;
+let dbInstance: Firestore;
 
-function getDb(): admin.firestore.Firestore {
+function getDb(): Firestore {
   if (!dbInstance) {
     dbInstance = admin.firestore();
   }
@@ -79,11 +78,11 @@ export async function updateUserLastCompletedDailyChallengeDate(userId: string, 
 export async function updateUserCoins(
   userId: string,
   coinsToAdd: number,
-  transaction?: admin.firestore.Transaction,
+  transaction?: Transaction,
 ): Promise<void> {
   const userRef = getDb().collection("users").doc(userId);
 
-  const updateOperation = async (txn: admin.firestore.Transaction) => {
+  const updateOperation = async (txn: Transaction) => {
     const userDoc = await txn.get(userRef);
 
     if (!userDoc.exists) {
@@ -125,15 +124,15 @@ export async function updateUserCoins(
 export async function updateUserStats(
   userId: string,
   statsUpdate: PlayerStatsUpdate,
-  transaction?: admin.firestore.Transaction,
+  transaction?: Transaction,
 ): Promise<void> {
   const userRef = getDb().collection("users").doc(userId);
 
   const statsFieldUpdates = Object.fromEntries(
     Object.entries(statsUpdate).flatMap(([key, value]) => (value === undefined ? [] : [[`stats.${key}`, value]])),
-  ) as admin.firestore.UpdateData<Player>;
+  ) as UpdateData<Player>;
 
-  const updateOperation = async (txn: admin.firestore.Transaction) => {
+  const updateOperation = async (txn: Transaction) => {
     const userDoc = await txn.get(userRef);
     if (!userDoc.exists) {
       const errorMessage = `User with ID ${userId} not found during transaction for updateUserStats.`;

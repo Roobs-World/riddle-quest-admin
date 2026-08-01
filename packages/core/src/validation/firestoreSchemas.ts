@@ -1,6 +1,7 @@
 import {z} from "zod";
 import {validateUsernameForProfanity} from "./profanity";
 import {SUPPORTED_LOCALES} from "./locales";
+import {RaceCategoryIdSchema, RaceContentQualityVersionSchema, RaceDifficultyBandSchema} from "../race/raceSchemas";
 
 type TimestampLike = {
   toMillis?: () => number;
@@ -72,12 +73,9 @@ export type UnlockedAchievement = z.infer<typeof UnlockedAchievementSchema>;
 export const PlayerSchema = z.object({
   userId: z.string(),
   email: z.string().email(),
-  username: z.string().refine(
-    (username) => validateUsernameForProfanity(username) === "",
-    {
-      message: "Username contains inappropriate language. Please choose a different username.",
-    },
-  ),
+  username: z.string().refine((username) => validateUsernameForProfanity(username) === "", {
+    message: "Username contains inappropriate language. Please choose a different username.",
+  }),
   displayName: z.string().optional(),
   avatarUrl: z.string().url().optional(),
   preferredLanguage: z.enum(SUPPORTED_LOCALES).optional(),
@@ -120,6 +118,7 @@ export type Player = z.infer<typeof PlayerSchema>;
 
 export const FirestoreRiddleSchema = z.object({
   riddleId: z.string(),
+  canonicalRiddleId: z.string().min(1).max(160).optional(),
   canonicalKey: z.string().optional(),
   challengeKey: z.string().optional(),
   locale: z.enum(SUPPORTED_LOCALES).optional(),
@@ -128,23 +127,33 @@ export const FirestoreRiddleSchema = z.object({
   text: z.string(),
   answer: z.string().min(1),
   category: z.string().optional(),
+  categoryId: RaceCategoryIdSchema.optional(),
+  difficultyBand: RaceDifficultyBandSchema.optional(),
+  raceEligible: z.boolean().optional(),
+  qualityVersion: RaceContentQualityVersionSchema.optional(),
   timestamp: z.unknown().optional(),
 });
 export type FirestoreRiddle = z.infer<typeof FirestoreRiddleSchema>;
 
 export const ClassicRiddleSchema = z.object({
   riddleId: z.string(),
+  canonicalRiddleId: z.string().min(1).max(160).optional(),
   canonicalKey: z.string().optional(),
   locale: z.enum(SUPPORTED_LOCALES).optional(),
   text: z.string(),
   answer: z.string().min(1),
   classicIndex: z.number().int().nonnegative(),
   category: z.string().default("classic"),
+  categoryId: RaceCategoryIdSchema.optional(),
+  difficultyBand: RaceDifficultyBandSchema.optional(),
+  raceEligible: z.boolean().optional(),
+  qualityVersion: RaceContentQualityVersionSchema.optional(),
 });
 export type ClassicRiddle = z.infer<typeof ClassicRiddleSchema>;
 
 export const DailyRiddleSchema = z.object({
   riddleId: z.string(),
+  canonicalRiddleId: z.string().min(1).max(160).optional(),
   canonicalKey: z.string().optional(),
   challengeKey: z.string().optional(),
   locale: z.enum(SUPPORTED_LOCALES).optional(),
@@ -152,6 +161,10 @@ export const DailyRiddleSchema = z.object({
   answer: z.string().min(1),
   dailyIndex: z.number().int().nonnegative(),
   category: z.string().default("daily"),
+  categoryId: RaceCategoryIdSchema.optional(),
+  difficultyBand: RaceDifficultyBandSchema.optional(),
+  raceEligible: z.boolean().optional(),
+  qualityVersion: RaceContentQualityVersionSchema.optional(),
   timestamp: z.unknown(),
 });
 export type DailyRiddle = z.infer<typeof DailyRiddleSchema>;

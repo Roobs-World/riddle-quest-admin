@@ -1,5 +1,5 @@
 import * as functions from "firebase-functions";
-import * as admin from "firebase-admin"; // Added for Firestore access
+import {admin} from "./firebaseAdmin";
 import {onCall, HttpsError, CallableRequest} from "firebase-functions/v2/https";
 import {getUser, getClassicRiddleByIndex} from "./firestoreService";
 import {captureException} from "./sentry";

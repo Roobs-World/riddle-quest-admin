@@ -1,5 +1,17 @@
 import {z} from "zod";
 import {BRIDGE_PROTOCOL_VERSION} from "./constants";
+import {
+  ListRaceCategoriesRequestSchema,
+  ListRaceInboxRequestSchema,
+  PublishRaceChallengeRequestSchema,
+  RaceChallengeIdRequestSchema,
+  RaceAnalyticsEventRequestSchema,
+  RaceRunIdRequestSchema,
+  RequestRaceHintRequestSchema,
+  SkipRaceRiddleRequestSchema,
+  StartRaceRunRequestSchema,
+  SubmitRaceGuessRequestSchema,
+} from "../race";
 
 export {BRIDGE_PROTOCOL_VERSION} from "./constants";
 
@@ -21,6 +33,16 @@ const OperationSchema = z.enum([
   "profile",
   "avatar",
   "leaderboard",
+  "raceCategories",
+  "raceStart",
+  "raceGuess",
+  "raceHint",
+  "raceSkip",
+  "raceResume",
+  "racePublish",
+  "raceChallenge",
+  "raceOutcome",
+  "raceInbox",
 ]);
 
 export const BridgeUserSchema = z.object({
@@ -82,10 +104,7 @@ export const BridgeLeaderboardEntrySchema = z.object({
 });
 export type BridgeLeaderboardEntry = z.infer<typeof BridgeLeaderboardEntrySchema>;
 
-const envelope = <Type extends string, Payload extends z.ZodTypeAny>(
-  type: Type,
-  payload: Payload,
-) =>
+const envelope = <Type extends string, Payload extends z.ZodTypeAny>(type: Type, payload: Payload) =>
   MetadataSchema.extend({
     type: z.literal(type),
     payload,
@@ -176,12 +195,20 @@ export const GameUpdateAvatarMessageSchema = envelope(
   }),
 );
 
+export const GameListRaceCategoriesMessageSchema = envelope("game:listRaceCategories", ListRaceCategoriesRequestSchema);
+export const GameStartRaceMessageSchema = envelope("game:startRace", StartRaceRunRequestSchema);
+export const GameSubmitRaceGuessMessageSchema = envelope("game:submitRaceGuess", SubmitRaceGuessRequestSchema);
+export const GameRequestRaceHintMessageSchema = envelope("game:requestRaceHint", RequestRaceHintRequestSchema);
+export const GameSkipRaceRiddleMessageSchema = envelope("game:skipRaceRiddle", SkipRaceRiddleRequestSchema);
+export const GameResumeRaceMessageSchema = envelope("game:resumeRace", RaceRunIdRequestSchema);
+export const GamePublishRaceMessageSchema = envelope("game:publishRace", PublishRaceChallengeRequestSchema);
+export const GameGetRaceChallengeMessageSchema = envelope("game:getRaceChallenge", RaceChallengeIdRequestSchema);
+export const GameGetRaceOutcomeMessageSchema = envelope("game:getRaceOutcome", RaceRunIdRequestSchema);
+export const GameListRaceInboxMessageSchema = envelope("game:listRaceInbox", ListRaceInboxRequestSchema);
+
 export const GameAnalyticsMessageSchema = envelope(
   "game:analytics",
-  z.object({
-    eventName: z.string().min(1),
-    params: z.record(z.string(), z.unknown()).optional(),
-  }),
+  RaceAnalyticsEventRequestSchema.omit({eventId: true}),
 );
 
 export const GameErrorMessageSchema = envelope(
@@ -203,6 +230,16 @@ export const GameToHostMessageSchema = z.discriminatedUnion("type", [
   GameLoadLeaderboardMessageSchema,
   GameUpdateUsernameMessageSchema,
   GameUpdateAvatarMessageSchema,
+  GameListRaceCategoriesMessageSchema,
+  GameStartRaceMessageSchema,
+  GameSubmitRaceGuessMessageSchema,
+  GameRequestRaceHintMessageSchema,
+  GameSkipRaceRiddleMessageSchema,
+  GameResumeRaceMessageSchema,
+  GamePublishRaceMessageSchema,
+  GameGetRaceChallengeMessageSchema,
+  GameGetRaceOutcomeMessageSchema,
+  GameListRaceInboxMessageSchema,
   GameAnalyticsMessageSchema,
   GameErrorMessageSchema,
 ]);

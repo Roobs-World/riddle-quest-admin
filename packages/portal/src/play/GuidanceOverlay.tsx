@@ -79,6 +79,11 @@ const storageKey = (kind: string, userId?: string) => `riddleQuest:${kind}:${use
 const tooltipTourStorageKey = (tourName: string, userId?: string) =>
   storageKey(`tooltipSequenceSeen:${tourName}:${TOOLTIP_TOUR_VERSION}`, userId);
 
+export const getOnboardingTotalSteps = (
+  onboardingStep: number,
+  platformRegistered?: boolean,
+) => (onboardingStep === 2 || platformRegistered === false ? 3 : 2);
+
 export function GuidanceOverlay({
   state,
   modal,
@@ -106,15 +111,19 @@ export function GuidanceOverlay({
   }, [onboardingStep]);
 
   useEffect(() => {
-    if (onboardingStep !== 2 || state.user?.platformRegistered !== false) return;
-    window.dispatchEvent(new CustomEvent("riddle-quest:registration-prompt-opened"));
+    if (onboardingStep !== 2) return;
     const closePrompt = () => {
       localStorage.setItem(storageKey("onboarding", userId), "seen");
       setOnboardingStep(null);
     };
     window.addEventListener("riddle-quest:registration-prompt-closed", closePrompt);
     return () => window.removeEventListener("riddle-quest:registration-prompt-closed", closePrompt);
-  }, [onboardingStep, state.user?.platformRegistered, userId]);
+  }, [onboardingStep, userId]);
+
+  useEffect(() => {
+    if (onboardingStep !== 2 || state.user?.platformRegistered !== false) return;
+    window.dispatchEvent(new CustomEvent("riddle-quest:registration-prompt-opened"));
+  }, [onboardingStep, state.user?.platformRegistered]);
 
   useEffect(() => {
     const active = onboardingStep !== null || Boolean(activeTooltip);
@@ -275,7 +284,7 @@ export function GuidanceOverlay({
   if (onboardingStep !== null) {
     const isWelcome = onboardingStep === 0;
     const isGuestNotice = onboardingStep === 2;
-    const totalSteps = state.user?.platformRegistered === false ? 3 : 2;
+    const totalSteps = getOnboardingTotalSteps(onboardingStep, state.user?.platformRegistered);
     return (
       <div className="guidance-backdrop" role="presentation">
         <SpinningWheel />
@@ -307,12 +316,26 @@ export function GuidanceOverlay({
                 <p>{tr("Profile.JEST_REGISTRATION_GREETING", {name: registrationName})}</p>
               ) : null}
               <p>{tr("Profile.JEST_REGISTRATION_DESCRIPTION")}</p>
-              <button
-                className="play-secondary"
-                onClick={() => window.dispatchEvent(new CustomEvent("riddle-quest:register-player"))}
-              >
-                {tr("Profile.JEST_REGISTRATION_BUTTON")}
-              </button>
+              <div className="onboarding-registration-actions">
+                <button
+                  className="play-primary"
+                  onClick={() => window.dispatchEvent(new CustomEvent("riddle-quest:register-player"))}
+                >
+                  {tr("Profile.JEST_REGISTER_BUTTON")}
+                </button>
+                <button
+                  className="play-secondary"
+                  onClick={() => window.dispatchEvent(new CustomEvent("riddle-quest:login-player"))}
+                >
+                  {tr("Profile.JEST_LOGIN_BUTTON")}
+                </button>
+                <button
+                  className="play-text-button"
+                  onClick={() => window.dispatchEvent(new CustomEvent("riddle-quest:dismiss-registration"))}
+                >
+                  {tr("Profile.JEST_PLAY_AS_GUEST_BUTTON")}
+                </button>
+              </div>
             </>
           ) : (
             <>
@@ -325,36 +348,30 @@ export function GuidanceOverlay({
               <p>{tr("Instructions.TIPS_DESCRIPTION")}</p>
             </>
           )}
-          <button
-            className="play-primary"
-            onClick={() => {
-              if (isWelcome) {
-                sessionStorage.setItem(storageKey("welcomeSession", userId), "seen");
-                if (welcomeOnly) {
-                  setOnboardingStep(null);
+          {!isGuestNotice ? (
+            <button
+              className="play-primary"
+              onClick={() => {
+                if (isWelcome) {
+                  sessionStorage.setItem(storageKey("welcomeSession", userId), "seen");
+                  if (welcomeOnly) {
+                    setOnboardingStep(null);
+                    return;
+                  }
+                  setOnboardingStep(1);
                   return;
                 }
-                setOnboardingStep(1);
-                return;
-              }
-              if (!isGuestNotice && totalSteps === 3) {
-                setOnboardingStep(2);
-                return;
-              }
-              if (isGuestNotice) {
-                window.dispatchEvent(new CustomEvent("riddle-quest:dismiss-registration"));
-                return;
-              }
-              localStorage.setItem(storageKey("onboarding", userId), "seen");
-              setOnboardingStep(null);
-            }}
-          >
-            {isWelcome
-              ? tr("WelcomeModal.LETS_PLAY")
-              : isGuestNotice
-                ? tr("CommonAlerts.OK_BUTTON")
-                : tr("Instructions.GOT_IT_BUTTON")}
-          </button>
+                if (totalSteps === 3) {
+                  setOnboardingStep(2);
+                  return;
+                }
+                localStorage.setItem(storageKey("onboarding", userId), "seen");
+                setOnboardingStep(null);
+              }}
+            >
+              {isWelcome ? tr("WelcomeModal.LETS_PLAY") : tr("Instructions.GOT_IT_BUTTON")}
+            </button>
+          ) : null}
         </section>
       </div>
     );

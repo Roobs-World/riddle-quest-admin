@@ -11,6 +11,7 @@ export default defineConfig({
       "@qwordly/core/bridge/constants": fileURLToPath(new URL("../core/src/bridge/constants.ts", import.meta.url)),
       "@qwordly/core/bridge": fileURLToPath(new URL("../core/src/bridge/index.ts", import.meta.url)),
       "@qwordly/core/pricing/catalog": fileURLToPath(new URL("../core/src/pricing/catalog.ts", import.meta.url)),
+      "@qwordly/core/race": fileURLToPath(new URL("../core/src/race/index.ts", import.meta.url)),
       "@qwordly/core/validation": fileURLToPath(new URL("../core/src/validation/index.ts", import.meta.url)),
       "@qwordly/core/game": fileURLToPath(new URL("../core/src/game/index.ts", import.meta.url)),
       "@qwordly/core": fileURLToPath(new URL("../core/src/index.ts", import.meta.url)),
@@ -19,41 +20,40 @@ export default defineConfig({
   build: {
     outDir: "dist",
     sourcemap: process.env.PORTAL_SOURCEMAPS === "1",
-    rollupOptions: {
+    chunkSizeWarningLimit: 450,
+    rolldownOptions: {
       output: {
-        manualChunks(id) {
-          if (id.includes("node_modules")) {
-            const normalizedId = id.replaceAll("\\", "/");
-            if (
-              normalizedId.includes("/node_modules/react/") ||
-              normalizedId.includes("/node_modules/react-dom/") ||
-              normalizedId.includes("/node_modules/scheduler/")
-            ) {
-              return "vendor-react";
-            }
-            if (id.includes("/zod/")) {
-              return "vendor-zod";
-            }
-          }
-
-          if (id.includes("/src/i18n/")) {
-            return "app-i18n";
-          }
-          if (id.includes("/packages/core/src/bridge/constants.ts")) {
-            return "core-bridge-constants";
-          }
-          if (id.includes("/packages/core/src/bridge/")) {
-            return "core-bridge";
-          }
-          if (id.includes("/packages/core/src/validation/")) {
-            return "core-validation";
-          }
-          if (id.includes("/packages/core/src/game/")) {
-            return "core-game";
-          }
-          if (id.includes("/packages/core/src/pricing/")) {
-            return "core-pricing";
-          }
+        strictExecutionOrder: true,
+        codeSplitting: {
+          groups: [
+            {
+              name: "vendor-react",
+              test: /node_modules[\\/](?:react|react-dom|scheduler)[\\/]/,
+              priority: 30,
+            },
+            {
+              name: "vendor-three",
+              test: /node_modules[\\/]three[\\/]src[\\/]/,
+              maxSize: 280 * 1024,
+              priority: 25,
+            },
+            {
+              name: "vendor-firebase",
+              test: /node_modules[\\/](?:@firebase|firebase)[\\/]/,
+              priority: 20,
+            },
+            {name: "vendor-zod", test: /node_modules[\\/]zod[\\/]/, priority: 20},
+            {name: "app-i18n", test: /[\\/]src[\\/]i18n[\\/]/, priority: 15},
+            {
+              name: "core-bridge-constants",
+              test: /[\\/]packages[\\/]core[\\/]src[\\/]bridge[\\/]constants\.ts$/,
+              priority: 15,
+            },
+            {name: "core-bridge", test: /[\\/]packages[\\/]core[\\/]src[\\/]bridge[\\/]/, priority: 10},
+            {name: "core-validation", test: /[\\/]packages[\\/]core[\\/]src[\\/]validation[\\/]/, priority: 10},
+            {name: "core-game", test: /[\\/]packages[\\/]core[\\/]src[\\/]game[\\/]/, priority: 10},
+            {name: "core-pricing", test: /[\\/]packages[\\/]core[\\/]src[\\/]pricing[\\/]/, priority: 10},
+          ],
         },
       },
     },

@@ -1,4 +1,4 @@
-import * as admin from "firebase-admin";
+import {admin} from "./firebaseAdmin";
 import {randomUUID} from "node:crypto";
 import {onCall, CallableRequest, HttpsError} from "firebase-functions/v2/https";
 import {logger} from "firebase-functions/v2";
@@ -13,7 +13,11 @@ import {
 } from "./validation/requestSchemas";
 import {validateCallableRequest, validateCallableResponse} from "./validation/callableValidation";
 import {avatarDownloadUrl, decodeAvatarDataUrl} from "./avatarUpload";
-const jestWebCallableOptions = {enforceAppCheck: process.env.JEST_ALLOW_WEB_CALLABLES !== "true"};
+const jestWebCallableOptions = {
+  enforceAppCheck: process.env.JEST_ALLOW_WEB_CALLABLES !== "true",
+  // Cloud Run must accept the request before Firebase callable auth can validate it.
+  invoker: "public" as const,
+};
 
 async function syncLeaderboardProfileFields(
   userId: string,

@@ -1,0 +1,907 @@
+{
+  "projectId": "riddle-quest-ec2b2",
+  "createdAt": "2026-07-31T23:04:24.763Z",
+  "targeted": [
+    {
+      "path": "localizedRiddles/en/riddles/race-en-8171aa39d05d2c354e6aa41b",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-9682bbf6ed020be40ee42195",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-93cbb723f6b84bf8f7a744a4",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-510d27b464134cdea95cff97",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-16db2a293fa9d2c9cf44a50c",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-a60f3a3abcabb2fb11fc4b8a",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-46428ffed195248fb808df73",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-545de04c258f5694aefb9c87",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-43d9f1d596118e46df593cc7",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-e267dfe380c0ba78ec55c64f",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-0c703f538580a6914d388a5b",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-2a5a95a009308f0f4ce49842",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-4e5f75a98d0c6d4091e1d008",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-dcb4d72a49bab7b14dd68ab0",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-7f641a3d03175a0428e99fc7",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-10944275baa5e9100e4e6150",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-247c32f6370363bea44f302b",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-fe15c633deb2227caedd015e",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-199505eaa259e6dfb9a8c7e7",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-a294440d5f27a55a50719a03",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-08bba2bbd4e2344e5976fe13",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-ebdd344b7d7c11140a8dbd06",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-406d2443a39d15e6f9ed4f60",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-263b79f8733d8944229f0d24",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-33b0ad32ec2b2e7b4d4b651b",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-5368c9ef67b2cf1b20bf7a60",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-9b6afed9116153f6bf401545",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-82793f59eea32090b653fddb",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-bc5b1aae98776034c3820a02",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-20f6b75fa7c830f44b7c9a89",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-06ecb93f0c39590a0fe2e38a",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-c0bb1d1b8316dec35d1f0dd5",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-3888e6b7b883370c9bdf4092",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-eda72742739ee22d1970bd54",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-174c50f0417bf8ba69ab161a",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-079d78d804658b54050b36d7",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-91dbdcc3c872deff73facf23",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-a0d8eefc7091d8b2928b8796",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-acf50859897a2bedd8ceeed4",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-2e04541a069783f6a126414e",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-e41b2d2dd0b772263cc48baf",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-9c2c79da567770eb607f8d4c",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-ad9ae30368245367b81cf391",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-ce9099f24d04bc4d4133d6d2",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-163cec1f1c456b053d5f623f",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-df1c62a3c6170dae6b0562b0",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-cfe85114c12dd264542b3517",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-2c10f6619666812974f6ac2a",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-b6d626ba670d8821aeef39e2",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-18f260f1027c33a0ad4de209",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-fbd1c67b91f0a85459c03e89",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-a414a70b9555ddb11a47742b",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-f0b4b7088aedf2158acefcd0",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-fc4174d4336c560b86fe1de6",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-41a1c9502d1a2f39a0eea02e",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-0af2b57bd95067d189947afb",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-d3667a97d4267be1782e56bb",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-2cfe01ad99150c7de42c3976",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-c4a7c1f47aa793124a178888",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-dc70f34254ff46d1389fd512",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-0c94db49bdfa54b56a96ddf7",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-2761aaa992b8a984e61a04ad",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-b767ae990f74c0ccd6606505",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-750ba6149256d959daf5213c",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-1e0fb513b28587884528f7ed",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-9995b469f3148fbd46f38238",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-b5be2a0310016c1d90428d5a",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-5596b35915d796bbd08bb3c3",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-d0df9fb245c33cc4779d41d3",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-f8babf4416e96c8c9e0c6709",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-4c1ba13efbdd9d778eb8ad71",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-0e5e7250b5ab0b1e087bd40e",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-4bdfcee6c11079991376be33",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-df71701ae4e1392d7020f5b8",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-6ee0451e52bded0e2c5dc537",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-c8f33b90087fb84cf56d6f38",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-f62f30b9a57cf5ff659d73f4",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-3b1fe1b3851151b897095fe8",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-4aae7b578ad11b13cd35ed18",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-a4b1d6f8faeb37341877f14b",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-5b0ebafa2cbac565c760a672",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-ae87cbfffd61f6923a5d9f5d",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-df6cda96b44130ba40f8f8ec",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-123d9f1f53f8ba81ef080f30",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-d37028a3011377b998126ce6",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-aed0499655c5b73a5007589b",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-79454c83a3e46948fe040172",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-34c38dbfb69a20e13b47a278",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-947e9c66767efc2c2d51ab09",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-eb8b18897b4bc99a3e02b1e7",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-3bb25fbbdd3f19e200017f54",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-9cd61496202b7dc8a36671f5",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-16f23507cf7ae6cd67ba9e78",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-7b798b66548b6aea16d3dedc",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-bdeb2a892190dab26e0ec979",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-9ce44d7ded354b39ab857a2d",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-13b3d902ad41b8a56ddfe4a0",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-39fcadd05be05311a3bb8240",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-caf4cd67ad493a0d63bfe7e7",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-d9d1d6f89d09f0714f58fb9a",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-84d375ac37d902a3fe609cd9",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-45e0c45fe78b41e2be81f872",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-c1f75ffe0dd3130488bf61b8",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-858d3d648a7a0bff70f99e56",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-e4496fb35b2f78dd373ee513",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-b591c4a05337933b492b0044",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-d51d7b0ce31b73fcd23f108a",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-f4aaa62a318bc908ca594597",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-6061d99e09e23dec7e3c664c",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-7ad6489c91d1665656c8fcaf",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-fcf56c736555337807d9bd1a",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-b5ab94945617f4a5a26cbc74",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-07b4d2c2b9074e50855c131a",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-c91b1e7c4b3de40f352dd2eb",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-c0336ccc0721dd8e1d06f74e",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-30fd0cc35c02e6b084be2173",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-4a9872069b5511ed5761b845",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-35dbf7803a7cdc7ddcab359c",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-4e1c6bfe8d87822655cd5d63",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-5d4c4dbd1f0840faa50fef19",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-bd49cccbf144317e57a7cf3d",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-6744a93ab84092809c92a667",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-7b974d36a5ad2573dd5500ae",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-e5b4d2881c09860ec09239ac",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-5587d5f76db4d1de12f0061e",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-4897a54dfa8b55babd121276",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-dd0ec423686c1323e0dbc2f7",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-8d9de6211131f1ea9645602b",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-bc347fb9429fdd70d45d3e02",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-bc989cb092da0a8c2e1b37c4",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-b400644d4b5aa757ea80fa10",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-e3481ad84b8c398eaf1e1867",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-ae3f7a3612bdfb63eaff75b1",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-10d9682b163b185cbc6d44c0",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-eb87f5266de49c151a3e7c93",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-8de6868237b8c71e67cc4ad4",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-b79653b40b8e19e0f45a73a6",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-e05d9f58c3a8f70b33656746",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-c151a44afe7c6284fa304921",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-dc9bd949608911e6dfa0f741",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-9662a5b3302fee6d5f19303e",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-265b2568f73e7ff8de1b5166",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-756a3e82b5ef48efda595240",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-5424e2faeb7f45eb2963597e",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-96847e7ecbd46744f46d2350",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-8c9906326d4c6534d6cdfacf",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-a303765d42172922c79a6090",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-4319f0f5c7b27fb1d61a17b8",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-13a66919507e5484bc976779",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-797b90612fa27fe41772ab00",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-59cdd2ef7317c81aea220c73",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-1f9b814ba3be04cec1af5e68",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-36d1477cc75e142b173bb59d",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-8c08205542bbcbe03ebea3de",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-a4a69a9f0b219f82ff265d5f",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-b8329239e0e25a444c646ed9",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-413e3d0adc3038e7aba10221",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-0a581e6f78a6344d4c7c2943",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-7055be45e2b630f7e500c458",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-5f91a9d042783292fd6b4eb1",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-2d438819d1eb22f519392c77",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-526a1fd5ce2bb7451a76bd66",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-7b8cbe37506a23a46e338105",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-9a2218e12a35dab2c9a0882b",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-54ca9ba13916cddd127e13ce",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-2c49acc356fb82a4a1e46e52",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-289da8e0173c96babf7cbea3",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-44ef4d8be13534a42220c558",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-063f45b00f7dabe3e0f6d0ef",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-c24c152eb3564c49e5b7c9fe",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-c092193ff22451c02cab75a4",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-1025a16678c978455f34bdda",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-a57d2bec67ebee07b76a91e7",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-4fd0da4ecf0c65ea4adc61ee",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-a833298e5ed8acbb08a6aa49",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-1dd94f5d0fc2c4814943b5e6",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-35856433c0b03dad93da2b82",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-8351805bad269e1145cba432",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-57590a9fd040903ff69e58b0",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-dff87f55a305a752e0860900",
+      "existed": false,
+      "data": null
+    }
+  ],
+  "retired": []
+}

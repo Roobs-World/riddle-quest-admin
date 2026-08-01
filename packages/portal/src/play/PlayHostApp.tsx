@@ -11,8 +11,27 @@ import type {AuthSnapshot, CompletionResult, HostServices, ProductSummary, WebGa
 import {SpinningWheelLoader} from "./SpinningWheelLoader";
 import type {JestPlayerData, JestPlayerDataUpdate} from "../jest/types";
 import {restoreJestProfileWhileServerLoads} from "../jest/playerData";
+import {isRaceTo10Enabled} from "./race/raceFeatureFlag";
 type OperationName =
-  "loadRiddle" | "completeGame" | "hint" | "spendCoins" | "purchase" | "skip" | "profile" | "avatar" | "leaderboard";
+  | "loadRiddle"
+  | "completeGame"
+  | "hint"
+  | "spendCoins"
+  | "purchase"
+  | "skip"
+  | "profile"
+  | "avatar"
+  | "leaderboard"
+  | "raceCategories"
+  | "raceStart"
+  | "raceGuess"
+  | "raceHint"
+  | "raceSkip"
+  | "raceResume"
+  | "racePublish"
+  | "raceChallenge"
+  | "raceOutcome"
+  | "raceInbox";
 
 const getErrorMessage = (error: unknown): string => {
   if (typeof error === "object" && error && "message" in error) {
@@ -37,6 +56,7 @@ export function PlayHostApp({
   initialPlayerData,
   onPlayerDataChange,
   registrationName,
+  initialRaceChallengeId,
 }: {
   initialGameMode?: WebGameMode;
   onPlayable?: () => void;
@@ -51,6 +71,7 @@ export function PlayHostApp({
   initialPlayerData?: JestPlayerData | null;
   onPlayerDataChange?: (update: JestPlayerDataUpdate) => void;
   registrationName?: string;
+  initialRaceChallengeId?: string;
 } = {}) {
   const locale = useLocale();
   const sessionIdRef = useRef(createRequestId("session"));
@@ -65,8 +86,17 @@ export function PlayHostApp({
     [baseServices, platformProducts, platformPurchase],
   );
   const configurationWarning = getHostConfigurationWarning(servicesMode);
+  const raceBuildEnabled = useMemo(
+    () =>
+      isRaceTo10Enabled({
+        search: window.location.search,
+        envValue: import.meta.env.VITE_RACE_TO_10_ENABLED,
+      }),
+    [],
+  );
 
   const [authSnapshot, setAuthSnapshot] = useState<AuthSnapshot>({user: null, profile: null});
+  const [raceAccessEnabled, setRaceAccessEnabled] = useState(false);
   const [frameReady, setFrameReady] = useState(false);
   const [gameMode, setGameMode] = useState<WebGameMode>(initialGameMode ?? "classic");
   const [notice, setNotice] = useState<string | null>(configurationWarning);
@@ -81,10 +111,7 @@ export function PlayHostApp({
   gameModeRef.current = gameMode;
   classicIndexRef.current = authSnapshot.profile?.classicIndex;
   const bridgeUser = useMemo(
-    () =>
-      authSnapshot.user
-        ? {...authSnapshot.user, platformRegistered: platformPlayerRegistered}
-        : null,
+    () => (authSnapshot.user ? {...authSnapshot.user, platformRegistered: platformPlayerRegistered} : null),
     [authSnapshot.user, platformPlayerRegistered],
   );
 
@@ -123,6 +150,23 @@ export function PlayHostApp({
       onPlayerDataChange?.({profile: authSnapshot.profile});
     }
   }, [authSnapshot.profile, onPlayerDataChange]);
+
+  useEffect(() => {
+    let cancelled = false;
+    setRaceAccessEnabled(false);
+    if (!raceBuildEnabled || !authSnapshot.user || locale !== "en") return;
+    void services
+      .getRaceAccess()
+      .then((access) => {
+        if (!cancelled) setRaceAccessEnabled(access.enabled);
+      })
+      .catch((error) => {
+        console.warn("[riddle-quest-race-access] Unable to load rollout access", error);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [authSnapshot.user, locale, raceBuildEnabled, services]);
 
   const postToGame = useCallback((message: HostToGameMessage) => {
     dispatchLocalBridge(HOST_TO_GAME_EVENT, createHostMessage(message));
@@ -168,6 +212,29 @@ export function PlayHostApp({
       current.profile ? {...current, profile: {...current.profile, coins: result.newCoins!}} : current,
     );
   }, []);
+
+  const runRaceOperation = useCallback(
+    async (requestId: string | undefined, operation: OperationName, action: () => Promise<unknown>) => {
+      const startedAt = performance.now();
+      try {
+        postOperation(requestId, operation, true, await withServerActivity(action));
+        const durationMs = Math.round(performance.now() - startedAt);
+        const report = durationMs >= 2_000 ? console.warn : console.info;
+        report("[riddle-quest-race-latency]", operation, {
+          ok: true,
+          durationMs,
+          slow: durationMs >= 2_000,
+        });
+      } catch (error) {
+        postOperation(requestId, operation, false, undefined, getErrorMessage(error));
+        console.warn("[riddle-quest-race-latency]", operation, {
+          ok: false,
+          durationMs: Math.round(performance.now() - startedAt),
+        });
+      }
+    },
+    [postOperation, withServerActivity],
+  );
 
   const loadAndPostRiddle = useCallback(
     async (input: {gameMode: WebGameMode; locale: string; classicIndex?: number}, requestId?: string) => {
@@ -225,10 +292,7 @@ export function PlayHostApp({
         },
         resize: () => undefined,
         loadRiddle: async (message) => {
-          await loadAndPostRiddle(
-            {...message.payload, gameMode},
-            message.requestId,
-          );
+          await loadAndPostRiddle({...message.payload, gameMode}, message.requestId);
         },
         completeGame: async (message) => {
           try {
@@ -254,10 +318,12 @@ export function PlayHostApp({
           try {
             if (message.payload.reason === "skip" && message.payload.riddleId && message.payload.gameMode) {
               const {riddleId, gameMode: skipGameMode} = message.payload;
-              const result = await withServerActivity(() => services.skipRiddle({
-                riddleId,
-                gameMode: skipGameMode,
-              }));
+              const result = await withServerActivity(() =>
+                services.skipRiddle({
+                  riddleId,
+                  gameMode: skipGameMode,
+                }),
+              );
               postOperation(message.requestId, "skip", true, result);
               await loadAndPostRiddle({
                 gameMode: skipGameMode,
@@ -320,8 +386,39 @@ export function PlayHostApp({
             postOperation(message.requestId, "avatar", false, undefined, getErrorMessage(error));
           }
         },
+        listRaceCategories: (message) =>
+          runRaceOperation(message.requestId, "raceCategories", () =>
+            services.listRaceCategories(message.payload.locale),
+          ),
+        startRace: (message) =>
+          runRaceOperation(message.requestId, "raceStart", () => services.startRace(message.payload)),
+        submitRaceGuess: (message) =>
+          runRaceOperation(message.requestId, "raceGuess", () => services.submitRaceGuess(message.payload)),
+        requestRaceHint: (message) =>
+          runRaceOperation(message.requestId, "raceHint", () => services.requestRaceHint(message.payload)),
+        skipRaceRiddle: (message) =>
+          runRaceOperation(message.requestId, "raceSkip", () => services.skipRaceRiddle(message.payload)),
+        resumeRace: (message) =>
+          runRaceOperation(message.requestId, "raceResume", () => services.resumeRace(message.payload.runId)),
+        publishRace: (message) =>
+          runRaceOperation(message.requestId, "racePublish", () => services.publishRace(message.payload)),
+        getRaceChallenge: (message) =>
+          runRaceOperation(message.requestId, "raceChallenge", () =>
+            services.getRaceChallenge(message.payload.challengeId),
+          ),
+        getRaceOutcome: (message) =>
+          runRaceOperation(message.requestId, "raceOutcome", () => services.getRaceOutcome(message.payload.runId)),
+        listRaceInbox: (message) =>
+          runRaceOperation(message.requestId, "raceInbox", () => services.listRaceInbox(message.payload)),
         analytics: (message) => {
           console.info("[riddle-quest-web]", message.payload.eventName, message.payload.params ?? {});
+          void services
+            .recordRaceAnalytics({
+              eventId: message.requestId ?? createRequestId("race-analytics"),
+              eventName: message.payload.eventName,
+              params: message.payload.params,
+            })
+            .catch((error) => console.warn("[riddle-quest-race-analytics] Event was not persisted", error));
         },
         error: (message) => {
           setNotice(message.payload.message);
@@ -337,6 +434,7 @@ export function PlayHostApp({
       onAuthoritativeComplete,
       onPlayable,
       postOperation,
+      runRaceOperation,
       sendInit,
       services,
       withServerActivity,
@@ -424,6 +522,8 @@ export function PlayHostApp({
         restoredGame={initialPlayerData?.activeGame}
         onSaveGame={saveActiveGame}
         registrationName={registrationName}
+        initialRaceChallengeId={initialRaceChallengeId}
+        raceFeatureEnabled={raceBuildEnabled && raceAccessEnabled}
       />
       {serverInteractionActive ? (
         <SpinningWheelLoader

@@ -19,22 +19,23 @@
   },
   "dependencies": {
     "@qwordly/core": "workspace:*",
-    "firebase": "^12.15.0",
-    "react": "19.2.3",
-    "react-dom": "19.2.3",
+    "firebase": "^12.17.0",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
     "three": "^0.185.1"
   },
   "devDependencies": {
     "@jest/globals": "30.4.1",
-    "@playwright/test": "^1.61.1",
+    "@playwright/test": "^1.62.1",
     "@types/jest": "30.0.0",
-    "@types/react": "~19.2.17",
-    "@types/react-dom": "^19.2.3",
+    "@types/react": "~19.2.18",
+    "@types/react-dom": "^19.2.4",
     "@types/three": "^0.185.1",
-    "@vitejs/plugin-react": "^5.2.0",
+    "@vitejs/plugin-react": "^6.0.5",
     "jest": "30.4.2",
-    "ts-jest": "29.4.11",
-    "typescript": "6.0.3",
-    "vite": "^7.3.6"
+    "ts-jest": "29.4.12",
+    "typescript": "npm:@typescript/typescript6@6.0.2",
+    "typescript7": "npm:typescript@7.0.2",
+    "vite": "^8.2.0"
   }
 }

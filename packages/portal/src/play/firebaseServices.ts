@@ -9,6 +9,18 @@ import {
   getHint,
   getLeaderboard,
   loadUserDocument,
+  listRaceCategories,
+  listRaceInbox,
+  startRaceRun,
+  submitRaceGuess,
+  requestRaceHint,
+  skipRaceRiddle,
+  resumeRaceRun,
+  publishRaceChallenge,
+  getRaceChallenge,
+  getRaceOutcome,
+  getRaceAccess,
+  recordRaceAnalytics,
   skipRiddle,
   spendCoins,
   updateAvatar as updateAvatarCallable,
@@ -86,7 +98,10 @@ export const createFirebaseHostServices = (): HostServices => {
         return mapRiddleResponse(result.data, "challenge");
       }
 
-      const result = await getCurrentClassicRiddle({classicIndex: classicIndex ?? latestSnapshot.profile?.classicIndex ?? 1, locale});
+      const result = await getCurrentClassicRiddle({
+        classicIndex: classicIndex ?? latestSnapshot.profile?.classicIndex ?? 1,
+        locale,
+      });
       return mapRiddleResponse(result.data, "classic");
     },
     async loadProfile(userId) {
@@ -145,6 +160,42 @@ export const createFirebaseHostServices = (): HostServices => {
       const profile = await reloadProfile(latestSnapshot.user);
       emit({user: latestSnapshot.user, profile});
       return profile;
+    },
+    async listRaceCategories(locale) {
+      return (await listRaceCategories({locale})).data;
+    },
+    async startRace(input) {
+      return (await startRaceRun(input)).data;
+    },
+    async submitRaceGuess(input) {
+      return (await submitRaceGuess(input)).data;
+    },
+    async requestRaceHint(input) {
+      return (await requestRaceHint(input)).data;
+    },
+    async skipRaceRiddle(input) {
+      return (await skipRaceRiddle(input)).data;
+    },
+    async resumeRace(runId) {
+      return (await resumeRaceRun({runId})).data;
+    },
+    async publishRace(input) {
+      return (await publishRaceChallenge(input)).data;
+    },
+    async getRaceChallenge(challengeId) {
+      return (await getRaceChallenge({challengeId})).data;
+    },
+    async getRaceOutcome(runId) {
+      return (await getRaceOutcome({runId})).data;
+    },
+    async listRaceInbox(input) {
+      return (await listRaceInbox({...input, limit: input?.limit ?? 20})).data;
+    },
+    async getRaceAccess() {
+      return (await getRaceAccess({locale: "en"})).data;
+    },
+    async recordRaceAnalytics(input) {
+      return (await recordRaceAnalytics(input)).data;
     },
   };
 };

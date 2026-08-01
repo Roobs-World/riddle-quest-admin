@@ -1,7 +1,7 @@
 import type {Locale, Namespace, NamespaceCatalog} from "./i18n";
 
 const NON_ENGLISH_NAMESPACE_MODULES = import.meta.glob<NamespaceCatalog>(
-  "../../../../src/locales/{ar,de,es,fr,hi,id,it,ja,ko,nl,pl,pt,ru,tr,vi,zh}/{aboutLegal,accessibility,achievements,alerts,coinPurchase,common,credits,errors,game,leaderboard,levelUpFanfare,loss,navigation,onboarding,profile,settings,shop,stats,streakFanfare,tooltips,victory}.json",
+  "../../../../src/locales/{ar,de,es,fr,hi,id,it,ja,ko,nl,pl,pt,ru,tr,vi,zh}/{aboutLegal,accessibility,achievements,alerts,coinPurchase,common,credits,errors,game,leaderboard,levelUpFanfare,loss,navigation,onboarding,profile,race,settings,shop,stats,streakFanfare,tooltips,victory}.json",
   {import: "default"},
 );
 

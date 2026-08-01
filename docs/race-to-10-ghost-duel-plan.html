@@ -1,0 +1,2541 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="description" content="Implementation plan for Race to 10 asynchronous ghost duels in Riddle Quest." />
+    <title>Riddle Quest · Race to 10 Ghost Duel Plan</title>
+    <style>
+      :root {
+        color-scheme: light;
+        font-family:
+          Inter,
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+        color: #17252c;
+        background: #edf3f0;
+        --ink: #17252c;
+        --muted: #5c6d73;
+        --line: #cad8d2;
+        --paper: #ffffff;
+        --navy: #132d38;
+        --green: #2e8b57;
+        --green-soft: #ddf2e6;
+        --blue: #286b8e;
+        --blue-soft: #dfeef7;
+        --amber: #a46712;
+        --amber-soft: #fbefd9;
+        --red: #a43b4d;
+        --red-soft: #f8e1e5;
+        --purple: #6847a5;
+        --purple-soft: #eee7fa;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        line-height: 1.55;
+      }
+      a {
+        color: #17658b;
+      }
+      main {
+        width: min(1220px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 32px 0 72px;
+      }
+      header,
+      .card {
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 24px;
+        margin-bottom: 18px;
+      }
+      header {
+        color: #fff;
+        background:
+          radial-gradient(circle at 88% 18%, rgba(126, 216, 163, 0.2), transparent 27%),
+          linear-gradient(135deg, #102a35, #173e4c 66%, #1f6048);
+        border: 0;
+        padding: 34px;
+      }
+      header p {
+        max-width: 850px;
+        color: #e3eeea;
+      }
+      h1,
+      h2,
+      h3 {
+        line-height: 1.2;
+      }
+      h1 {
+        margin: 8px 0 14px;
+        font-size: clamp(2rem, 5vw, 3.7rem);
+        letter-spacing: -0.04em;
+      }
+      h2 {
+        margin-top: 0;
+        font-size: 1.45rem;
+      }
+      h3 {
+        margin: 1.25rem 0 0.45rem;
+        font-size: 1.02rem;
+      }
+      p:first-child,
+      h2 + p {
+        margin-top: 0;
+      }
+      .eyebrow {
+        margin: 0;
+        font-size: 0.78rem;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+      .lede {
+        font-size: 1.12rem;
+      }
+      .grid {
+        display: grid;
+        gap: 16px;
+      }
+      .grid.two {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .grid.three {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+      .tracker-summary {
+        display: grid;
+        grid-template-columns: 2fr repeat(5, 1fr);
+        gap: 10px;
+        margin: 18px 0;
+      }
+      .metric {
+        min-width: 0;
+        padding: 13px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #fbfdfc;
+      }
+      .metric span {
+        display: block;
+        color: var(--muted);
+        font-size: 0.74rem;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+      .metric strong {
+        display: block;
+        margin-top: 3px;
+        font-size: 1.45rem;
+      }
+      .progress-bar {
+        height: 10px;
+        margin-top: 9px;
+        overflow: hidden;
+        border-radius: 99px;
+        background: #dce7e2;
+      }
+      .progress-bar i {
+        display: block;
+        width: 0;
+        height: 100%;
+        border-radius: inherit;
+        background: var(--green);
+      }
+      .mini {
+        border: 1px solid var(--line);
+        border-radius: 11px;
+        padding: 16px;
+        background: #fbfdfc;
+      }
+      .mini h3 {
+        margin-top: 0;
+      }
+      .callout {
+        border-left: 5px solid var(--blue);
+        background: var(--blue-soft);
+        border-radius: 8px;
+        padding: 14px 16px;
+        margin: 16px 0;
+      }
+      .callout.good {
+        border-color: var(--green);
+        background: var(--green-soft);
+      }
+      .callout.warn {
+        border-color: var(--amber);
+        background: var(--amber-soft);
+      }
+      .callout.risk {
+        border-color: var(--red);
+        background: var(--red-soft);
+      }
+      .pill {
+        display: inline-block;
+        border-radius: 99px;
+        padding: 3px 9px;
+        font-size: 0.76rem;
+        font-weight: 800;
+        white-space: nowrap;
+      }
+      .mvp {
+        color: #145a37;
+        background: var(--green-soft);
+      }
+      .later {
+        color: #54348b;
+        background: var(--purple-soft);
+      }
+      .server {
+        color: #184f6d;
+        background: var(--blue-soft);
+      }
+      .decision {
+        color: #704707;
+        background: var(--amber-soft);
+      }
+      .status-done {
+        color: #145a37;
+        background: var(--green-soft);
+      }
+      .status-in-progress {
+        color: #184f6d;
+        background: var(--blue-soft);
+      }
+      .status-not-started {
+        color: #536168;
+        background: #e9eeec;
+      }
+      .status-blocked {
+        color: #8b273b;
+        background: var(--red-soft);
+      }
+      .status-deferred {
+        color: #704707;
+        background: var(--amber-soft);
+      }
+      .tracker td:nth-child(1),
+      .tracker td:nth-child(2) {
+        white-space: nowrap;
+      }
+      .tracker .evidence,
+      .tracker .issues {
+        min-width: 210px;
+      }
+      .empty-state td {
+        color: var(--muted);
+        font-style: italic;
+        text-align: center;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.91rem;
+      }
+      th,
+      td {
+        padding: 11px 10px;
+        border-top: 1px solid #dbe4e0;
+        text-align: left;
+        vertical-align: top;
+      }
+      th {
+        color: var(--muted);
+        font-size: 0.74rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+      code,
+      pre {
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      }
+      code {
+        padding: 0.1em 0.3em;
+        border-radius: 4px;
+        background: #edf2ef;
+        font-size: 0.86em;
+      }
+      pre {
+        overflow: auto;
+        padding: 16px;
+        border-radius: 10px;
+        color: #e8f0ed;
+        background: #14272f;
+        font-size: 0.82rem;
+        line-height: 1.55;
+      }
+      ul,
+      ol {
+        padding-left: 1.35rem;
+      }
+      li {
+        margin: 0.38rem 0;
+      }
+      .flow {
+        display: grid;
+        grid-template-columns: repeat(7, minmax(105px, 1fr));
+        align-items: stretch;
+        gap: 9px;
+        margin: 18px 0 4px;
+      }
+      .flow div {
+        position: relative;
+        display: grid;
+        place-items: center;
+        min-height: 76px;
+        padding: 10px;
+        text-align: center;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #f8fbf9;
+        font-size: 0.85rem;
+        font-weight: 750;
+      }
+      .flow div:not(:last-child)::after {
+        content: "→";
+        position: absolute;
+        right: -10px;
+        z-index: 2;
+        color: var(--green);
+        font-size: 1.2rem;
+      }
+      .timeline {
+        display: grid;
+        grid-template-columns: 80px 1fr;
+        gap: 7px 14px;
+        max-width: 540px;
+      }
+      .timeline dt {
+        color: var(--green);
+        font-weight: 850;
+      }
+      .timeline dd {
+        margin: 0;
+        padding-bottom: 7px;
+        border-bottom: 1px dotted var(--line);
+      }
+      .phase {
+        border-left: 4px solid var(--green);
+        padding-left: 17px;
+        margin: 22px 0 28px;
+      }
+      .phase h3 {
+        margin: 0 0 6px;
+      }
+      .checklist {
+        list-style: none;
+        padding-left: 0;
+      }
+      .checklist li {
+        position: relative;
+        padding-left: 1.7rem;
+      }
+      .checklist li::before {
+        content: "□";
+        position: absolute;
+        left: 0;
+        color: var(--green);
+        font-weight: 900;
+      }
+      .muted {
+        color: var(--muted);
+      }
+      footer {
+        color: var(--muted);
+        padding: 4px 6px;
+        font-size: 0.84rem;
+      }
+      @media (max-width: 900px) {
+        .grid.two,
+        .grid.three {
+          grid-template-columns: 1fr;
+        }
+        .flow {
+          grid-template-columns: 1fr;
+        }
+        .flow div:not(:last-child)::after {
+          content: "↓";
+          right: auto;
+          bottom: -13px;
+        }
+        .card {
+          overflow-x: auto;
+        }
+        .tracker-summary {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+      @media print {
+        :root {
+          background: #fff;
+        }
+        main {
+          width: 100%;
+          padding: 0;
+        }
+        header,
+        .card {
+          break-inside: avoid;
+          box-shadow: none;
+        }
+        a {
+          color: inherit;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <p class="eyebrow">Product + engineering implementation plan</p>
+        <h1>Race to 10: Recorded Ghost Duels</h1>
+        <p class="lede">
+          Let a player record a category-specific run, share it, and let a friend race the real performance later as if
+          the contest were unfolding live. The first player to solve ten riddles wins.
+        </p>
+        <p>
+          <strong>Status:</strong> implementation in progress; production flag off · <strong>Plan date:</strong> 31 July
+          2026 · <strong>Target:</strong> Jest HTML5 · <strong>Launch scope:</strong> English only
+        </p>
+      </header>
+
+      <section class="card">
+        <h2>1. Outcome and product thesis</h2>
+        <p>
+          Race to 10 should become Riddle Quest's primary friend-challenge loop. It creates real competitive pressure
+          without requiring simultaneous availability, matchmaking supply, sockets, or reconnection logic. The opponent
+          is a replay of a genuine, server-verified run—not a simulated player.
+        </p>
+        <div class="grid three">
+          <article class="mini">
+            <h3>Player promise</h3>
+            <p>“Pick your strongest category, set a real time, and dare a friend to reach ten before your ghost.”</p>
+          </article>
+          <article class="mini">
+            <h3>Growth loop</h3>
+            <p>Record → share → friend races → result changes hands → loser records a rematch → share again.</p>
+          </article>
+          <article class="mini">
+            <h3>Technical principle</h3>
+            <p>Firebase owns identity, deck selection, answers, timestamps, results, replay data, and rewards.</p>
+          </article>
+        </div>
+        <div class="callout good">
+          <strong>MVP recommendation:</strong> ship asynchronous recorded duels only. Preserve the “live” presentation,
+          but label the opponent as a recorded run so the experience is exciting without misleading players.
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>2. MVP rules</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Rule</th>
+              <th>MVP decision</th>
+              <th>Reason</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Win condition</td>
+              <td>First to 10 correct riddles</td>
+              <td>Simple, readable, and ideal for a progress race.</td>
+            </tr>
+            <tr>
+              <td>Deck</td>
+              <td>15 canonical riddles from one category</td>
+              <td>Allows different players to skip different hard riddles.</td>
+            </tr>
+            <tr>
+              <td>Order</td>
+              <td>Identical canonical order for both runs</td>
+              <td>Protects perceived fairness.</td>
+            </tr>
+            <tr>
+              <td>Run cap</td>
+              <td>5 minutes of adjusted race time</td>
+              <td>Keeps links quick to play; hint and skip penalties count toward the cap.</td>
+            </tr>
+            <tr>
+              <td>Guesses</td>
+              <td>Maximum 5 guesses per riddle</td>
+              <td>Matches the established board pattern and limits brute force.</td>
+            </tr>
+            <tr>
+              <td>Skip</td>
+              <td>Manual after one guess or automatic after five wrong guesses; either adds 45 seconds</td>
+              <td>A deliberately heavy cost prevents players from cycling through the deck for easy riddles.</td>
+            </tr>
+            <tr>
+              <td>Hints</td>
+              <td>One per riddle; reveals one server-selected letter; adds 15 seconds</td>
+              <td>Hints remain useful, but the time cost can materially change the result.</td>
+            </tr>
+            <tr>
+              <td>Penalty clock</td>
+              <td>Adjusted time = server wall time + 15 seconds per hint + 45 seconds per skip</td>
+              <td>
+                The opponent ghost moves forward when a penalty is applied, making the disadvantage immediately visible.
+              </td>
+            </tr>
+            <tr>
+              <td>Paid continues</td>
+              <td>Disabled</td>
+              <td>Competitive results must never be purchasable.</td>
+            </tr>
+            <tr>
+              <td>Pause</td>
+              <td>The authoritative clock continues while hidden or disconnected</td>
+              <td>Prevents pausing for extra thinking time.</td>
+            </tr>
+            <tr>
+              <td>Expiry</td>
+              <td>Challenge accepts new attempts for 7 days</td>
+              <td>Creates urgency and aligns with Jest's notification horizon.</td>
+            </tr>
+            <tr>
+              <td>Attempts</td>
+              <td>One ranked attempt per player per challenge</td>
+              <td>Keeps the initial comparison meaningful; practice is unranked.</td>
+            </tr>
+            <tr>
+              <td>Tie</td>
+              <td>Earliest server-recorded adjusted tenth-solve time wins</td>
+              <td>Deterministic and server-verifiable.</td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="muted">
+          Initial penalty values are server-configured and frozen into <code>race10_v1</code> challenge records. Race
+          hints do not spend coins: every player receives the same hint allowance and pays through adjusted time. If the
+          creator fails to reach ten before five minutes of adjusted time, the run is saved as incomplete but cannot be
+          published.
+        </p>
+      </section>
+
+      <section class="card">
+        <h2>3. End-to-end player journey</h2>
+        <div class="flow" aria-label="Race to 10 player journey">
+          <div>Choose Race to 10</div>
+          <div>Pick category</div>
+          <div>Record a run</div>
+          <div>Publish challenge</div>
+          <div>Share Jest link</div>
+          <div>Friend races ghost</div>
+          <div>Share or rematch</div>
+        </div>
+        <div class="grid two">
+          <div>
+            <h3>Creator path</h3>
+            <ol>
+              <li>Select <strong>Race to 10</strong> from the game-mode surface.</li>
+              <li>Choose an available category and review the rules.</li>
+              <li>Start after a three-second countdown.</li>
+              <li>Solve ten; hints add 15 seconds and skips add 45 seconds to the server-owned race clock.</li>
+              <li>Review the run and publish it as an immutable challenge.</li>
+              <li>Share a personalized result card and referral link.</li>
+            </ol>
+          </div>
+          <div>
+            <h3>Recipient path</h3>
+            <ol>
+              <li>Open the link and land on a challenge preview, not the home screen.</li>
+              <li>See challenger, category, ten-riddle goal, adjusted time to beat, and expiry.</li>
+              <li>Start the same canonical deck after a countdown.</li>
+              <li>Watch the recorded opponent progress against the live attempt and surge ahead after penalties.</li>
+              <li>See an authoritative win/loss comparison.</li>
+              <li>Record a counter-challenge or share the victory.</li>
+            </ol>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>4. The ghost replay model</h2>
+        <p>
+          Store competitive milestones rather than keystrokes or answers. On replay, the UI advances the ghost's score
+          whenever the player's adjusted race clock crosses a recorded milestone. A hint adds 15 seconds and a skip adds
+          45 seconds to that clock, so the ghost visibly surges ahead when either penalty is taken.
+        </p>
+        <div class="grid two">
+          <div>
+            <dl class="timeline">
+              <dt>00:00.000</dt>
+              <dd>Run starts</dd>
+              <dt>00:08.420</dt>
+              <dd>Correct count becomes 1</dd>
+              <dt>00:19.105</dt>
+              <dd>Hint used; adjusted race clock jumps to 00:34.105 (+15 seconds)</dd>
+              <dt>00:42.230</dt>
+              <dd>Correct count becomes 2</dd>
+              <dt>00:46.780</dt>
+              <dd>Riddle skipped; adjusted race clock jumps to 01:31.780 (+45 seconds)</dd>
+              <dt>01:44.230</dt>
+              <dd>Correct count becomes 3</dd>
+              <dt>02:51.510</dt>
+              <dd>Correct count becomes 10; run completes</dd>
+            </dl>
+          </div>
+          <div>
+            <h3>Playback behavior</h3>
+            <ul>
+              <li>Anchor animation to the attempt's server-issued start time.</li>
+              <li>Use <code>performance.now()</code> only for smooth display between server syncs.</li>
+              <li>Display both the added penalty and the new adjusted time when a hint or skip is accepted.</li>
+              <li>
+                Fast-forward the ghost against adjusted time after a penalty; animate the catch-up rather than
+                teleporting silently.
+              </li>
+              <li>When a tab resumes, jump the ghost to the correct current milestone.</li>
+              <li>Never pause the authoritative clock on visibility change.</li>
+              <li>Stop immediately when the player or ghost reaches ten.</li>
+              <li>Expose only event type, adjusted time, penalty amount, and cumulative score to the opponent.</li>
+              <li>
+                On the result screen, show the transparent calculation: wall time + hint penalties + skip penalties =
+                adjusted finish time.
+              </li>
+            </ul>
+          </div>
+        </div>
+        <pre><code>type GhostEvent = {
+  sequence: number;
+  type: "correct" | "hint" | "skip";
+  riddlePosition: number;
+  wallElapsedMs: number;
+  penaltyAddedMs: 0 | 15000 | 45000;
+  totalPenaltyMs: number;
+  adjustedElapsedMs: number;
+  correctCount: number;
+};</code></pre>
+        <div class="callout good">
+          <strong>Penalty behavior:</strong> the backend calculates and returns the new adjusted time. The client never
+          adds a local-only penalty. If the adjusted clock crosses the ghost's next milestone—or the five-minute run
+          cap—the backend result wins and the UI catches up to it.
+        </div>
+        <div class="callout warn">
+          <strong>Latency policy:</strong> v1 uses backend receipt time for competitive milestones. This is harder to
+          manipulate but includes network latency. Measure p50/p95 submission latency before considering a bounded,
+          server-validated client timestamp in a later integrity version.
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>5. Categories and content preparation</h2>
+        <p>
+          The current Firestore <code>category</code> field represents content mode values such as
+          <code>classic</code> and <code>daily</code>. Keep <code>gameMode</code> for mode and introduce a separate,
+          stable <code>categoryId</code> for subject taxonomy.
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Launch category</th>
+              <th>ID</th>
+              <th>Content focus</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>History</td>
+              <td><code>history</code></td>
+              <td>People, events, civilizations, and eras from the past.</td>
+            </tr>
+            <tr>
+              <td>Geography</td>
+              <td><code>geography</code></td>
+              <td>Countries, cities, landmarks, borders, and the world.</td>
+            </tr>
+            <tr>
+              <td>Music</td>
+              <td><code>music</code></td>
+              <td>Artists, songs, instruments, genres, and sounds.</td>
+            </tr>
+            <tr>
+              <td>Film</td>
+              <td><code>film</code></td>
+              <td>Movies, characters, actors, directors, and cinema.</td>
+            </tr>
+            <tr>
+              <td>Science</td>
+              <td><code>science</code></td>
+              <td>Discoveries, nature, space, experiments, and technology.</td>
+            </tr>
+            <tr>
+              <td>Mixed</td>
+              <td><code>mixed</code></td>
+              <td>A dedicated varied pool spanning the five subject areas.</td>
+            </tr>
+          </tbody>
+        </table>
+        <h3>Content model requirements</h3>
+        <ul>
+          <li>Launch in English only; retain a stable <code>canonicalRiddleId</code> for possible future translations.</li>
+          <li>
+            Add <code>categoryId</code>, <code>difficultyBand</code>, <code>raceEligible</code>, and
+            <code>qualityVersion</code>.
+          </li>
+          <li>Build each deck from comparable difficulty bands rather than fifteen unrestricted random riddles.</li>
+          <li>Never generate content during a race. Use pre-generated, validated pools.</li>
+          <li>
+            Enable each of the six English categories only when it has exactly 30 approved, race-eligible riddles.
+          </li>
+          <li>Every answer must respect the existing game-wide limit of seven characters.</li>
+          <li>Mixed is its own 30-riddle pool; it does not aggregate the other five pools.</li>
+          <li>Do not expose Race entry outside English until translated content is explicitly added and reviewed.</li>
+        </ul>
+        <div class="callout risk">
+          <strong>Fairness risk:</strong> trivia familiarity varies even within English. Track performance by canonical
+          riddle and category, exclude outliers through a new quality version, and do not add other locales until their
+          difficulty has been reviewed independently.
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>6. Authoritative backend design</h2>
+        <p>
+          Add dedicated race collections and expose them only through callable Cloud Functions. Firestore clients must
+          not read decks, answer-bearing documents, raw opponent events, or writable competitive state directly.
+        </p>
+        <div class="grid two">
+          <div>
+            <h3>Collections</h3>
+            <ul>
+              <li><code>raceCategories/{categoryId}</code> — server-managed availability and pool versions.</li>
+              <li><code>raceDecks/{deckId}</code> — immutable canonical sequence and content version.</li>
+              <li><code>raceRuns/{runId}</code> — owner, active position, guesses, milestones, integrity status.</li>
+              <li><code>raceChallenges/{challengeId}</code> — immutable published creator run and expiry.</li>
+              <li><code>raceAttempts/{attemptId}</code> — recipient run and authoritative comparison.</li>
+              <li><code>users/{uid}/raceInbox/{itemId}</code> — outcome/rematch items visible to one player.</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Indexes and lifecycle</h3>
+            <ul>
+              <li>Index inbox by <code>createdAt desc</code> and challenge attempts by challenge/player.</li>
+              <li>Use idempotency keys for create, submit, hint, skip, publish, and rematch operations.</li>
+              <li>Apply Firestore TTL to abandoned runs and expired challenge operational data.</li>
+              <li>Retain compact aggregate results separately if product analytics requires them.</li>
+              <li>Version rules, scoring, content pool, and replay integrity on every run.</li>
+            </ul>
+          </div>
+        </div>
+        <pre><code>raceChallenges/{challengeId} {
+  creatorId: string,
+  creatorRunId: string,
+  creatorSnapshot: { displayName: string, avatarUrl?: string },
+  categoryId: string,
+  deckId: string,
+  targetCorrect: 10,
+  creatorWallFinishMs: number,
+  creatorTotalPenaltyMs: number,
+  creatorAdjustedFinishMs: number,
+  penalties: { hintMs: 15000, skipMs: 45000 },
+  ghostEvents: GhostEvent[],
+  rulesVersion: "race10_v1",
+  contentVersion: string,
+  status: "active" | "expired" | "revoked",
+  createdAt: Timestamp,
+  expiresAt: Timestamp
+}</code></pre>
+        <p>
+          Public callable responses must return a redacted view. A challenge preview may expose the challenger snapshot,
+          category, adjusted time to beat, target, and expiry; it must not expose <code>deckId</code>, future riddles,
+          answers, or internal integrity fields.
+        </p>
+      </section>
+
+      <section class="card">
+        <h2>7. Callable function contract</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Callable</th>
+              <th>Purpose</th>
+              <th>Key validation / response</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>listRaceCategories</code></td>
+              <td>Return categories enabled for the current locale.</td>
+              <td>Return IDs, localized-key references, art tokens, and pool availability only.</td>
+            </tr>
+            <tr>
+              <td><code>startRaceRun</code></td>
+              <td>Create a creator run or challenge attempt.</td>
+              <td>
+                Verify identity; validate category/challenge; select or reuse deck; return run ID, first clue, and
+                server start.
+              </td>
+            </tr>
+            <tr>
+              <td><code>submitRaceGuess</code></td>
+              <td>Validate one guess and advance state.</td>
+              <td>
+                Require run ID, riddle ID, guess, and request ID; rate-limit; record server wall and adjusted time;
+                return feedback and next clue if needed.
+              </td>
+            </tr>
+            <tr>
+              <td><code>requestRaceHint</code></td>
+              <td>Reveal one server-selected letter and apply the hint penalty.</td>
+              <td>
+                Enforce one hint per riddle; add 15 seconds idempotently; return the revealed letter, total penalty, and
+                authoritative adjusted time. Do not spend coins.
+              </td>
+            </tr>
+            <tr>
+              <td><code>skipRaceRiddle</code></td>
+              <td>Advance after at least one submitted guess.</td>
+              <td>
+                Add 45 seconds idempotently, record the skip, return adjusted time, and advance without awarding
+                progress.
+              </td>
+            </tr>
+            <tr>
+              <td><code>resumeRaceRun</code></td>
+              <td>Recover a reload or short disconnect.</td>
+              <td>
+                Return redacted current state, accumulated penalties, and authoritative adjusted time; never reset the
+                clock.
+              </td>
+            </tr>
+            <tr>
+              <td><code>publishRaceChallenge</code></td>
+              <td>Freeze a completed creator run into a shareable challenge.</td>
+              <td>Only the owner; must have ten verified solves; idempotently return the same challenge ID.</td>
+            </tr>
+            <tr>
+              <td><code>getRaceChallengePreview</code></td>
+              <td>Render the referral landing experience.</td>
+              <td>Accept opaque challenge ID; return redacted snapshot or expired/revoked state.</td>
+            </tr>
+            <tr>
+              <td><code>getRaceOutcome</code></td>
+              <td>Return comparison and rematch eligibility.</td>
+              <td>Only participating players; derive result from canonical runs.</td>
+            </tr>
+            <tr>
+              <td><code>listRaceInbox</code></td>
+              <td>Show completed attempts and pending rematches on return.</td>
+              <td>Owner-only, cursor-paginated, redacted opponent snapshots.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="card">
+        <h2>8. Frontend integration</h2>
+        <p>
+          Keep Jest APIs in the outer platform adapter and Firebase gameplay in host services. Extend the existing
+          host/game bridge rather than calling Firebase or Jest directly from board components.
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Area</th>
+              <th>Planned change</th>
+              <th>Likely location</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Entry intent</td>
+              <td>Parse and validate <code>raceChallengeId</code> and race campaign fields.</td>
+              <td><code>packages/portal/src/jest/entryIntent.ts</code></td>
+            </tr>
+            <tr>
+              <td>Jest share</td>
+              <td>Add <code>race_to_10_ghost_v1</code> referral campaign and a category/result share image.</td>
+              <td><code>packages/portal/src/jest/JestPlayApp.tsx</code></td>
+            </tr>
+            <tr>
+              <td>Bridge schemas</td>
+              <td>
+                Add race category, create/start, guess, hint, skip, resume, publish, preview, outcome, and inbox
+                messages.
+              </td>
+              <td><code>packages/core/src/bridge</code></td>
+            </tr>
+            <tr>
+              <td>Host services</td>
+              <td>Add typed race methods to fake and Firebase implementations.</td>
+              <td><code>packages/portal/src/play/services.ts</code></td>
+            </tr>
+            <tr>
+              <td>Backend adapter</td>
+              <td>Wrap new callable functions and parse every response with shared Zod schemas.</td>
+              <td><code>packages/portal/src/play/firebaseServices.ts</code></td>
+            </tr>
+            <tr>
+              <td>Game state</td>
+              <td>Create a separate race state machine; do not overload classic/challenge completion.</td>
+              <td><code>packages/portal/src/play/race/</code></td>
+            </tr>
+            <tr>
+              <td>UI</td>
+              <td>
+                Add category picker, challenge preview, countdown, dual HUD, ghost reactions, result, rematch, and
+                inbox.
+              </td>
+              <td><code>packages/portal/src/play/race/</code></td>
+            </tr>
+            <tr>
+              <td>Screenshots</td>
+              <td>
+                Render challenger, category, 10 target, adjusted finish time, penalty breakdown, and CTA within Jest's
+                share-image size limit.
+              </td>
+              <td><code>packages/portal/src/jest/screenshots.ts</code></td>
+            </tr>
+            <tr>
+              <td>Backend</td>
+              <td>Create isolated race modules plus exports and tests.</td>
+              <td><code>firebase-functions/src/race/</code></td>
+            </tr>
+            <tr>
+              <td>Security</td>
+              <td>Deny all direct client access to race collections.</td>
+              <td><code>firebase-functions/firestore.rules</code></td>
+            </tr>
+          </tbody>
+        </table>
+        <h3>Race UI state machine</h3>
+        <pre><code>idle → categories → preparing → countdown → racing
+                                      ↘ recovering
+racing → won | lost | timed_out | disconnected
+result → publish → share
+result → counter_challenge → categories</code></pre>
+        <p>
+          Wrong guesses, hints, and skips remain within <code>racing</code>. Hint/skip controls stay disabled until the
+          server returns the authoritative penalty and adjusted clock, preventing double taps from displaying or
+          applying multiple penalties. Every network action must represent loading, success, retryable failure, terminal
+          failure, and duplicate/idempotent completion explicitly.
+        </p>
+      </section>
+
+      <section class="card">
+        <h2>9. Jest platform lifecycle</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Capability</th>
+              <th>Race to 10 use</th>
+              <th>Guardrail</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Player identity</td>
+              <td>
+                Exchange <code>getPlayerSigned()</code> through the existing backend boundary before creating a run.
+              </td>
+              <td>Verify HS256, decoded secret, algorithm, audience, subject, and freshness server-side.</td>
+            </tr>
+            <tr>
+              <td>Entry payload</td>
+              <td>Carry only <code>raceChallengeId</code>, campaign, reference, and inviter display context.</td>
+              <td>Treat all payload values as untrusted; resolve the opaque ID on the backend.</td>
+            </tr>
+            <tr>
+              <td>Referral sharing</td>
+              <td>Open the Jest share dialog with a personalized Race to 10 card.</td>
+              <td>Opening or dismissing the dialog is not proof of a completed share or challenge attempt.</td>
+            </tr>
+            <tr>
+              <td>Referral attribution</td>
+              <td>Measure new-player conversions under a stable <code>race_to_10_ghost_v1</code> reference.</td>
+              <td>
+                Attribution applies only on first entry; existing players can still play but are not referral
+                conversions.
+              </td>
+            </tr>
+            <tr>
+              <td>Social profile</td>
+              <td>Use username/avatar in previews and result cards.</td>
+              <td>Profile and avatar may be null; use localized “Player” and a safe fallback avatar.</td>
+            </tr>
+            <tr>
+              <td>Notifications</td>
+              <td>
+                After sharing, registered creators may schedule a generic “Your race results are waiting” return
+                reminder with challenge entry payload.
+              </td>
+              <td>
+                The current-player SDK is not a general server-to-opponent push channel. Show exact opponent results in
+                the in-game inbox.
+              </td>
+            </tr>
+            <tr>
+              <td>Loading</td>
+              <td>
+                Load only the preview and initial playable clue before marking the game ready; prefetch the rest after.
+              </td>
+              <td>
+                Continue meaningful manual progress updates and call <code>markGameLoaded()</code> when interaction is
+                possible.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <h3>Developer Console work</h3>
+        <ul>
+          <li>
+            Confirm or create the <code>friend-challenge</code> onboarding slug used by the existing sharing flow.
+          </li>
+          <li>
+            Upload and approve any notification asset references; otherwise deliberately use the hero-image fallback.
+          </li>
+          <li>Verify the game ID and shared secret remain server-only and are available to identity verification.</li>
+          <li>Review referral, moderation, notification, and error events during sandbox acceptance.</li>
+        </ul>
+        <p class="muted">
+          Current official references:
+          <a href="https://docs.jest.com/sdk/html5/referrals">Referrals</a>,
+          <a href="https://docs.jest.com/sdk/html5/entry-payload">Entry payload</a>,
+          <a href="https://docs.jest.com/sdk/html5/player">Player</a>,
+          <a href="https://docs.jest.com/sdk/html5/social">Social</a>, and
+          <a href="https://docs.jest.com/sdk/html5/notifications">Notifications</a>.
+        </p>
+      </section>
+
+      <section class="card">
+        <h2>10. Integrity, abuse prevention, and privacy</h2>
+        <div class="grid two">
+          <div>
+            <h3>Required controls</h3>
+            <ul>
+              <li>Authenticate every callable; derive UID from verified Firebase auth, never request data.</li>
+              <li>Store answers only in server-readable riddle documents.</li>
+              <li>Validate run ownership, active riddle, deck position, and state transition on every mutation.</li>
+              <li>
+                Use server timestamps and server-calculated penalties; reject submissions after adjusted-time expiry or
+                completion.
+              </li>
+              <li>Rate-limit guesses per player, run, IP signal, and riddle.</li>
+              <li>Normalize guesses using the same locale-aware rules as existing gameplay.</li>
+              <li>
+                Make hint, skip, guess, and finalization request IDs idempotent so retries cannot duplicate penalties.
+              </li>
+              <li>Reject impossible progress, out-of-order messages, and conflicting duplicate requests.</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Privacy and display</h3>
+            <ul>
+              <li>Snapshot only the public display name and avatar needed for a challenge.</li>
+              <li>Do not expose Jest player IDs, Firebase UIDs, guesses, email, or answer text.</li>
+              <li>Add a server-side revoke path for moderation and account deletion.</li>
+              <li>Use neutral fallback names and avatars for guest/missing profiles.</li>
+              <li>Escape all names in DOM and canvas share rendering.</li>
+              <li>Expire operational replay data according to a documented retention policy.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="callout risk">
+          <strong>Reward rule:</strong> do not add coins, category crowns, leaderboard placement, or achievements until
+          the complete server-authoritative flow and idempotent grant path are tested. The MVP can award cosmetic,
+          non-economic result labels while integrity data is gathered.
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>11. Localization, accessibility, and resilience</h2>
+        <ul>
+          <li>
+            Add every new visible string to all supported locales before merge; do not fall back silently for shipped
+            UI.
+          </li>
+          <li>
+            Keep category IDs stable and untranslated; the launch UI and content are English-only.
+          </li>
+          <li>Announce score changes through a throttled ARIA live region; do not announce every animation frame.</li>
+          <li>Represent player/ghost progress with text such as “You 6 of 10, Craig 7 of 10,” not color alone.</li>
+          <li>Honor reduced-motion by replacing avatar bursts, screen shake, and progress trails with short fades.</li>
+          <li>Maintain keyboard, pointer, and touch parity; preserve visible focus and minimum touch targets.</li>
+          <li>Provide mute controls and avoid audio-only countdown or result signals.</li>
+          <li>
+            On offline/reload, offer resume while the authoritative run is active; otherwise show the canonical result.
+          </li>
+          <li>If share, screenshot, or notification scheduling fails, keep the completed run and offer a retry.</li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <h2>12. Analytics and product gates</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Funnel event</th>
+              <th>Decision it supports</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>race_mode_opened</code> → <code>race_category_selected</code></td>
+              <td>Whether mode discovery and category supply are compelling.</td>
+            </tr>
+            <tr>
+              <td><code>race_run_started</code> → <code>race_run_completed</code></td>
+              <td>Difficulty, abandonment, and five-minute adjusted-time cap suitability.</td>
+            </tr>
+            <tr>
+              <td><code>race_hint_used</code> / <code>race_skip_used</code></td>
+              <td>
+                Whether the 15-second and 45-second penalties are heavy enough without making recovery feel impossible.
+              </td>
+            </tr>
+            <tr>
+              <td><code>race_challenge_published</code> → <code>race_share_dialog_opened</code></td>
+              <td>Whether completed runs convert into sharing intent.</td>
+            </tr>
+            <tr>
+              <td><code>race_link_entered</code> → <code>race_attempt_started</code></td>
+              <td>Challenge-preview conversion.</td>
+            </tr>
+            <tr>
+              <td><code>race_attempt_started</code> → <code>race_attempt_completed</code></td>
+              <td>Recipient experience and technical reliability.</td>
+            </tr>
+            <tr>
+              <td><code>race_result_viewed</code> → <code>race_counter_challenge_started</code></td>
+              <td>Whether the rivalry loop continues.</td>
+            </tr>
+            <tr>
+              <td><code>race_referral_verified</code></td>
+              <td>New registered players attributable to the stable Jest reference.</td>
+            </tr>
+          </tbody>
+        </table>
+        <h3>MVP success indicators</h3>
+        <ul>
+          <li>Run completion rate by category and locale.</li>
+          <li>Published challenges per completed creator run.</li>
+          <li>Challenge-link attempt-start rate.</li>
+          <li>Recipient completion rate.</li>
+          <li>Counter-challenge rate and average exchanges per rivalry.</li>
+          <li>Hint/skip rate, win-rate impact, and abandonment immediately after each penalty.</li>
+          <li>Submission latency p50/p95, resume rate, and terminal error rate.</li>
+          <li>
+            Distribution of wall and adjusted finish times and solve rates by canonical riddle, locale, and category.
+          </li>
+        </ul>
+        <p>
+          Do not log clue text, answer text, raw guesses, signed Jest tokens, or personally identifying platform IDs in
+          analytics payloads.
+        </p>
+        <h3>Operational readiness review — 2026-07-31</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Area</th>
+              <th>Measured / reviewed</th>
+              <th>Accepted threshold</th>
+              <th>Owner and mitigation</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Latency</td>
+              <td>
+                Local transactional emulator suite: 6 tests in 5.98s; production p50/p95 unavailable before rollout.
+              </td>
+              <td>Warn per operation at 2,000ms; rollout p95 &lt; 2,000ms and terminal errors &lt; 1%.</td>
+              <td>
+                Engineering: inspect <code>riddle-quest-race-latency</code>, pause flag and profile slow transactions if
+                breached.
+              </td>
+            </tr>
+            <tr>
+              <td>Difficulty</td>
+              <td>Deterministic 5 easy / 5 medium / 5 hard / 15-card deck and five guesses per card.</td>
+              <td>
+                Launch pools require exactly 30 validated English riddles per category and seven-character answers;
+                monitor solve and abandonment by canonical riddle/category.
+              </td>
+              <td>Content: disable bad pools/riddles and rebalance only through a new content version.</td>
+            </tr>
+            <tr>
+              <td>Abuse and integrity</td>
+              <td>30 actions / 10 seconds, idempotent receipts, one ranked attempt, participant-only rivalry links.</td>
+              <td>No duplicate state transitions; rate rejection remains below 2% of legitimate sessions.</td>
+              <td>Backend: hashed diagnostics only; lower flag cohort or revoke affected challenges.</td>
+            </tr>
+            <tr>
+              <td>Indexes and retention</td>
+              <td>
+                Category eligibility index plus TTL on decks, runs, challenges, attempts, start requests, receipts, and
+                inbox records.
+              </td>
+              <td>Seven-day challenge/run retention; no client read path to answers or race state.</td>
+              <td>Backend: verify deployed index/TTL state before enabling the flag.</td>
+            </tr>
+            <tr>
+              <td>Cost</td>
+              <td>
+                Each action is bounded to one transaction over run, receipt/rate state, with extra terminal/inbox writes
+                only at completion.
+              </td>
+              <td>No unbounded queries; inbox page maximum 50; deck fixed at 15.</td>
+              <td>Engineering: alert on write amplification or unexpected collection growth and disable the cohort.</td>
+            </tr>
+            <tr>
+              <td>Artifact</td>
+              <td>
+                Standalone audit: 389 files / 4.43MB; main JS 375.84KB (107.40KB gzip); existing solar chunk warning
+                528.67KB.
+              </td>
+              <td>
+                Race must not introduce a new &gt;500KB chunk; artifact must remain below Jest limits and secret-free.
+              </td>
+              <td>Web: preserve source splitting and run artifact audit on every release.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="card">
+        <h2>13. Implementation sequence</h2>
+        <div class="callout good">
+          <strong>Canonical tracker:</strong> this task matrix is the persistent source of truth for delivery. Update
+          the row in this HTML file whenever work starts, completes, becomes blocked, or produces unexpected behavior.
+          Do not rely on browser-local checkboxes or a separate private task list.
+        </div>
+        <div class="tracker-summary" aria-label="Implementation progress summary">
+          <div class="metric">
+            <span>Complete</span>
+            <strong id="tracker-percent">0%</strong>
+            <div class="progress-bar"><i id="tracker-bar"></i></div>
+            <small id="tracker-count">0 of 35 tasks complete</small>
+          </div>
+          <div class="metric"><span>Done</span><strong id="tracker-done">0</strong></div>
+          <div class="metric"><span>In progress</span><strong id="tracker-in-progress">0</strong></div>
+          <div class="metric"><span>Not started</span><strong id="tracker-not-started">35</strong></div>
+          <div class="metric"><span>Blocked</span><strong id="tracker-blocked">0</strong></div>
+          <div class="metric"><span>Deferred</span><strong id="tracker-deferred">0</strong></div>
+        </div>
+
+        <h3>How to maintain this tracker</h3>
+        <ul>
+          <li>
+            Allowed statuses are <strong>Not started</strong>, <strong>In progress</strong>, <strong>Blocked</strong>,
+            <strong>Done</strong>, and <strong>Deferred</strong>. Update both the row's <code>data-status</code> and its
+            visible status pill.
+          </li>
+          <li>Only mark a task Done when its acceptance evidence is linked or summarized in the Evidence column.</li>
+          <li>
+            Record errors, failed approaches, unexpected behavior, and unresolved questions in the task's Issues/notes
+            column even when the problem is later fixed.
+          </li>
+          <li>
+            Add material problems to the issue log below using a stable <code>R10-ISSUE-###</code> identifier and link
+            the affected task IDs.
+          </li>
+          <li>Append a dated change-log entry on every material tracker update.</li>
+          <li>Never erase useful failure history; mark it resolved and record the resolution instead.</li>
+        </ul>
+
+        <h3>Task matrix</h3>
+        <table class="tracker" id="race-task-tracker">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Phase</th>
+              <th>Task</th>
+              <th>Status</th>
+              <th>Acceptance / evidence</th>
+              <th>Issues / notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr data-task-id="R10-001" data-status="done">
+              <td><code>R10-001</code></td>
+              <td>0</td>
+              <td>Freeze and document <code>race10_v1</code> rules and penalty constants.</td>
+              <td><span class="pill status-done">Done</span></td>
+              <td class="evidence">
+                <code>packages/core/src/race/raceSchemas.ts</code> freezes <code>race10_v1</code>; core contract tests
+                pass.
+              </td>
+              <td class="issues">Completed 2026-07-31. No rule-contract errors encountered.</td>
+            </tr>
+            <tr data-task-id="R10-002" data-status="done">
+              <td><code>R10-002</code></td>
+              <td>0</td>
+              <td>Define shared Zod schemas for categories, runs, events, challenges, attempts, and outcomes.</td>
+              <td><span class="pill status-done">Done</span></td>
+              <td class="evidence">
+                Shared strict schemas and inferred types live under <code>@qwordly/core/race</code>; 10 focused contract
+                tests pass.
+              </td>
+              <td class="issues">Completed 2026-07-31. No schema blockers encountered.</td>
+            </tr>
+            <tr data-task-id="R10-003" data-status="done">
+              <td><code>R10-003</code></td>
+              <td>0</td>
+              <td>Create deterministic launch-scope test decks and ghost timelines.</td>
+              <td><span class="pill status-done">Done</span></td>
+              <td class="evidence">
+                <code>raceFixtures.ts</code> provides a deterministic 15-riddle English deck and a complete penalized
+                ghost timeline.
+              </td>
+              <td class="issues">
+                Completed 2026-07-31. Fixtures are deterministic test data, not production content.
+              </td>
+            </tr>
+            <tr data-task-id="R10-004" data-status="done">
+              <td><code>R10-004</code></td>
+              <td>0</td>
+              <td>Add a Race to 10 feature flag that defaults off outside the deterministic harness.</td>
+              <td><span class="pill status-done">Done</span></td>
+              <td class="evidence">
+                <code>raceFeatureFlag.ts</code> defaults off, enables <code>?harness=race</code> or explicit build flag;
+                3 tests pass.
+              </td>
+              <td class="issues">Completed 2026-07-31. Existing development harness behavior remains unchanged.</td>
+            </tr>
+
+            <tr data-task-id="R10-005" data-status="done">
+              <td><code>R10-005</code></td>
+              <td>1</td>
+              <td>Add canonical riddle, semantic category, difficulty, eligibility, and quality fields.</td>
+              <td><span class="pill status-done">Done</span></td>
+              <td class="evidence">
+                Firestore schemas accept optional canonical ID, semantic category, difficulty, eligibility, and quality
+                version; legacy/enriched tests pass.
+              </td>
+              <td class="issues">
+                Completed 2026-07-31. Fields remain optional so current classic/daily documents are unchanged.
+              </td>
+            </tr>
+            <tr data-task-id="R10-006" data-status="done">
+              <td><code>R10-006</code></td>
+              <td>1</td>
+              <td>Build a dry-run migration and backfill report for existing riddles.</td>
+              <td><span class="pill status-done">Done</span></td>
+              <td class="evidence">
+                <code>raceContentMigration.ts</code> and <code>pnpm race:content:dry-run</code> report patches, gaps,
+                collisions, and missing translations without writes.
+              </td>
+              <td class="issues">
+                Completed 2026-07-31. Live reporting requires ADC and a project ID; unit fixtures prove behavior.
+              </td>
+            </tr>
+            <tr data-task-id="R10-007" data-status="done">
+              <td><code>R10-007</code></td>
+              <td>1</td>
+              <td>Implement competitive-pool validation.</td>
+              <td><span class="pill status-done">Done</span></td>
+              <td class="evidence">
+                <code>validateRacePool</code> enforces exact 30-item English pools, global/category uniqueness, clue
+                safety, the seven-character game limit, and balanced difficulty.
+              </td>
+              <td class="issues">
+                Completed 2026-07-31. Production pools remain disabled until reviewed content is seeded.
+              </td>
+            </tr>
+            <tr data-task-id="R10-008" data-status="done">
+              <td><code>R10-008</code></td>
+              <td>1</td>
+              <td>Seed 30 reviewed, race-eligible English riddles in each of the six launch categories.</td>
+              <td><span class="pill status-done">Done</span></td>
+              <td class="evidence">
+                History, Geography, Music, Film, Science, and Mixed each contain exactly 30 approved riddles and build
+                balanced 15-riddle decks; every answer is at most seven characters.
+              </td>
+              <td class="issues">
+                Completed 2026-07-31. Imported and live-validated 180 riddles: exactly 30 each for History, Geography,
+                Music, Film, Science, and Mixed, with balanced 10/10/10 difficulty bands. The pre-import production
+                backup is retained under <code>firebase-functions/artifacts/race-content-backups/</code>.
+              </td>
+            </tr>
+
+            <tr data-task-id="R10-009" data-status="done">
+              <td><code>R10-009</code></td>
+              <td>2</td>
+              <td>Create server-only race collections, indexes, TTL policy, and Firestore rules.</td>
+              <td><span class="pill status-done">Done</span></td>
+              <td class="evidence">
+                Firestore emulator rules suite (3/3) proves clients cannot read source answers or read/write any
+                competitive collection; TTL and index configuration is checked in.
+              </td>
+              <td class="issues">
+                Completed 2026-07-31. Source riddle reads were also closed because those documents contain answers.
+              </td>
+            </tr>
+            <tr data-task-id="R10-010" data-status="done">
+              <td><code>R10-010</code></td>
+              <td>2</td>
+              <td>Implement deterministic deck creation and authoritative run start/resume.</td>
+              <td><span class="pill status-done">Done</span></td>
+              <td class="evidence">
+                Emulator tests prove idempotent starts, preserved elapsed time, and identical creator/challenger
+                canonical decks.
+              </td>
+              <td class="issues">
+                Completed 2026-07-31. Balanced selection has deterministic English launch-scope unit coverage.
+              </td>
+            </tr>
+            <tr data-task-id="R10-011" data-status="done">
+              <td><code>R10-011</code></td>
+              <td>2</td>
+              <td>Implement authoritative race guess submission and progression.</td>
+              <td><span class="pill status-done">Done</span></td>
+              <td class="evidence">
+                Correct/wrong feedback, five-guess limit, ordering, and tenth-solve finalization pass emulator tests.
+              </td>
+              <td class="issues">
+                Completed 2026-07-31. Engine and transactional emulator suites cover wrong/correct progression and
+                ten-solve finalization.
+              </td>
+            </tr>
+            <tr data-task-id="R10-012" data-status="done">
+              <td><code>R10-012</code></td>
+              <td>2</td>
+              <td>Implement one race hint per riddle with a server-owned 15-second penalty.</td>
+              <td><span class="pill status-done">Done</span></td>
+              <td class="evidence">
+                Hint reveals one server-selected letter, spends no coins, and duplicate requests add time once.
+              </td>
+              <td class="issues">
+                Completed 2026-07-31. Emulator replay returns the original receipt and leaves the hint penalty at +15
+                seconds.
+              </td>
+            </tr>
+            <tr data-task-id="R10-013" data-status="done">
+              <td><code>R10-013</code></td>
+              <td>2</td>
+              <td>Implement manual and automatic skips with a server-owned 45-second penalty.</td>
+              <td><span class="pill status-done">Done</span></td>
+              <td class="evidence">
+                Manual/automatic paths add one penalty, award no solve, and advance to the correct next riddle.
+              </td>
+              <td class="issues">
+                Completed 2026-07-31. Manual, fifth-wrong automatic, and duplicate-receipt paths add +45 seconds exactly
+                once.
+              </td>
+            </tr>
+            <tr data-task-id="R10-014" data-status="done">
+              <td><code>R10-014</code></td>
+              <td>2</td>
+              <td>Implement adjusted clock, run cap, event timeline, and authoritative outcome calculation.</td>
+              <td><span class="pill status-done">Done</span></td>
+              <td class="evidence">
+                Wall time + penalties is deterministic and can trigger timeout, ghost win, player win, or tie-break.
+              </td>
+              <td class="issues">
+                Completed 2026-07-31. Adjusted clock, cap, ghost arbitration, and redacted outcome pass unit and
+                integration tests.
+              </td>
+            </tr>
+            <tr data-task-id="R10-015" data-status="done">
+              <td><code>R10-015</code></td>
+              <td>2</td>
+              <td>Add idempotency, rate limits, transition validation, and abuse diagnostics.</td>
+              <td><span class="pill status-done">Done</span></td>
+              <td class="evidence">
+                Duplicate, stale, concurrent, out-of-order, impossible, and post-expiry requests are covered.
+              </td>
+              <td class="issues">
+                Completed 2026-07-31. Transaction-safe 30-action/10-second window logs hashed diagnostics; emulator
+                covers duplicate concurrency, stale order, timeout, and exhaustion.
+              </td>
+            </tr>
+
+            <tr data-task-id="R10-016" data-status="done">
+              <td><code>R10-016</code></td>
+              <td>3</td>
+              <td>Extend bridge schemas plus fake and Firebase host-service adapters.</td>
+              <td><span class="pill status-done">Done</span></td>
+              <td class="evidence">
+                Every race request/response is validated and correlated across the existing host boundary.
+              </td>
+              <td class="issues">
+                Completed 2026-07-31. Strict bridge unions, correlation IDs, host routing, Firebase callables, and
+                deterministic fake services pass portal/core tests.
+              </td>
+            </tr>
+            <tr data-task-id="R10-017" data-status="done">
+              <td><code>R10-017</code></td>
+              <td>3</td>
+              <td>Add mode entry, category picker, rules preview, and countdown.</td>
+              <td><span class="pill status-done">Done</span></td>
+              <td class="evidence">Responsive keyboard, touch, and screen-reader flows work in the harness.</td>
+              <td class="issues">
+                Completed 2026-07-31. Harness evidence:
+                <code>artifacts/race-to-10/category-picker-desktop.png</code> and countdown-to-race interaction.
+              </td>
+            </tr>
+            <tr data-task-id="R10-018" data-status="done">
+              <td><code>R10-018</code></td>
+              <td>3</td>
+              <td>Build the Race to 10 state machine, dual progress HUD, and recovery states.</td>
+              <td><span class="pill status-done">Done</span></td>
+              <td class="evidence">
+                Success, wrong answer, offline, resume, timeout, and terminal failure flows are tested.
+              </td>
+              <td class="issues">
+                Completed 2026-07-31. State, HUD, resume/retry, timeout, terminal outcomes, and server failure paths are
+                covered; the mobile offline alertdialog is captured in <code>offline-recovery-mobile.png</code>.
+              </td>
+            </tr>
+            <tr data-task-id="R10-019" data-status="done">
+              <td><code>R10-019</code></td>
+              <td>3</td>
+              <td>Add race hint/skip controls and visible penalty feedback.</td>
+              <td><span class="pill status-done">Done</span></td>
+              <td class="evidence">
+                Controls lock during requests and show +15/+45 plus the authoritative adjusted clock.
+              </td>
+              <td class="issues">
+                Completed 2026-07-31. Browser verified hint reveal, locked requests, skip-after-first-guess, +15/+45
+                feedback, and adjusted clock; see <code>penalty-feedback-desktop.png</code>.
+              </td>
+            </tr>
+            <tr data-task-id="R10-020" data-status="done">
+              <td><code>R10-020</code></td>
+              <td>3</td>
+              <td>Build result UI with wall time, hint penalties, skip penalties, adjusted time, and winner.</td>
+              <td><span class="pill status-done">Done</span></td>
+              <td class="evidence">Result matches backend fixtures and remains readable on small and RTL layouts.</td>
+              <td class="issues">
+                Completed 2026-07-31. Mobile browser result matched the fake authoritative totals (1:16 wall + 0:15 hint
+                + 0:45 skip = 2:16 adjusted); see <code>result-mobile.png</code>.
+              </td>
+            </tr>
+            <tr data-task-id="R10-021" data-status="done">
+              <td><code>R10-021</code></td>
+              <td>3</td>
+              <td>Add every Race to 10 string to all supported locales and complete accessibility behavior.</td>
+              <td><span class="pill status-done">Done</span></td>
+              <td class="evidence">
+                Locale validation, RTL, reduced motion, focus, touch targets, and ARIA announcements pass.
+              </td>
+              <td class="issues">
+                Completed 2026-07-31. All 17 locales pass the 22-namespace audit; focus trap/restore, Escape, live
+                regions, reduced motion, touch sizing, RTL and 390px no-overflow checks pass.
+              </td>
+            </tr>
+
+            <tr data-task-id="R10-022" data-status="done">
+              <td><code>R10-022</code></td>
+              <td>4</td>
+              <td>Implement immutable challenge publication and redacted preview.</td>
+              <td><span class="pill status-done">Done</span></td>
+              <td class="evidence">
+                Only verified ten-solve runs publish; previews expose no deck, answer, or integrity secrets.
+              </td>
+              <td class="issues">
+                Completed 2026-07-31. Emulator proves idempotent publication; preview contains no answers, deck,
+                riddles, or ghost events.
+              </td>
+            </tr>
+            <tr data-task-id="R10-023" data-status="done">
+              <td><code>R10-023</code></td>
+              <td>4</td>
+              <td>Extend Jest entry-intent parsing and direct challenge routing.</td>
+              <td><span class="pill status-done">Done</span></td>
+              <td class="evidence">
+                Valid, missing, malformed, expired, and revoked challenge IDs have tested outcomes.
+              </td>
+              <td class="issues">
+                Completed 2026-07-31. Entry parsing rejects malformed fields, valid direct routing is captured in
+                <code>direct-challenge-mobile.png</code>, and emulator tests verify missing, expired, and revoked
+                outcomes.
+              </td>
+            </tr>
+            <tr data-task-id="R10-024" data-status="done">
+              <td><code>R10-024</code></td>
+              <td>4</td>
+              <td>Implement deterministic ghost playback and penalty fast-forward.</td>
+              <td><span class="pill status-done">Done</span></td>
+              <td class="evidence">
+                Milestones, background catch-up, +15/+45 jumps, slow frames, and finish arbitration pass tests.
+              </td>
+              <td class="issues">
+                Completed 2026-07-31. Pure adjusted-time projection is tested for milestones, no opponent, +45 jumps,
+                slow/background catch-up, and finish.
+              </td>
+            </tr>
+            <tr data-task-id="R10-025" data-status="done">
+              <td><code>R10-025</code></td>
+              <td>4</td>
+              <td>Add personalized Race to 10 share cards and Jest referral campaign.</td>
+              <td><span class="pill status-done">Done</span></td>
+              <td class="evidence">Share image, opaque payload, cancellation, retry, and size-limit cases pass.</td>
+              <td class="issues">
+                Completed 2026-07-31. Packaged Jest browser acceptance verifies the personalized PNG and opaque race
+                payload; adapter suites cover cancellation/retry and screenshot suites cover MIME/2MB rejection.
+              </td>
+            </tr>
+            <tr data-task-id="R10-026" data-status="done">
+              <td><code>R10-026</code></td>
+              <td>4</td>
+              <td>Verify the complete two-browser creator-to-recipient vertical slice.</td>
+              <td><span class="pill status-done">Done</span></td>
+              <td class="evidence">
+                Browser B races browser A's adjusted timeline and Firebase declares the expected winner.
+              </td>
+              <td class="issues">
+                Completed 2026-07-31. The 14-case packaged browser suite creates and publishes a run in one isolated
+                browser context, opens its opaque challenge in a second context, replays the recorded 10/10 ghost, and
+                reaches the server-shaped result. The emulator independently verifies arbitration and inbox writes.
+              </td>
+            </tr>
+
+            <tr data-task-id="R10-027" data-status="done">
+              <td><code>R10-027</code></td>
+              <td>5</td>
+              <td>Add owner-only race inbox items for completed opponent attempts.</td>
+              <td><span class="pill status-done">Done</span></td>
+              <td class="evidence">
+                Only participants can view redacted outcomes; pagination and unread state pass tests.
+              </td>
+              <td class="issues">
+                Completed 2026-07-31. Owner-only redacted creation, rules, UI, unread transition, two-page cursor, and
+                malformed cursor are covered by the passing emulator suite.
+              </td>
+            </tr>
+            <tr data-task-id="R10-028" data-status="done">
+              <td><code>R10-028</code></td>
+              <td>5</td>
+              <td>Add rematch and “choose my category” counter-challenge flows.</td>
+              <td><span class="pill status-done">Done</span></td>
+              <td class="evidence">
+                Each rematch creates a new immutable run/challenge and preserves rivalry context.
+              </td>
+              <td class="issues">
+                Completed 2026-07-31. Same-category/category-choice actions create new creator runs; immutable previews
+                retain participant-validated <code>rivalryChallengeId</code>, while outsiders are rejected.
+              </td>
+            </tr>
+            <tr data-task-id="R10-029" data-status="done">
+              <td><code>R10-029</code></td>
+              <td>5</td>
+              <td>Add registered-player return reminders with attributed challenge payloads.</td>
+              <td><span class="pill status-done">Done</span></td>
+              <td class="evidence">
+                Schedule, replacement, invalid arguments, moderation fallback, and unregistered behavior are tested.
+              </td>
+              <td class="issues">
+                Completed 2026-07-31. Packaged Jest acceptance verifies D1 attributed replacement and guest exclusion;
+                adapter tests cover invalid arguments, and nullable profiles use the localized fallback.
+              </td>
+            </tr>
+            <tr data-task-id="R10-030" data-status="done">
+              <td><code>R10-030</code></td>
+              <td>5</td>
+              <td>Add race funnel analytics, latency metrics, penalty metrics, and operational alerts.</td>
+              <td><span class="pill status-done">Done</span></td>
+              <td class="evidence">
+                Events contain no clue, answer, guess, token, or direct platform identifier data.
+              </td>
+              <td class="issues">
+                Completed 2026-07-31. Funnel/penalty/share/reminder and per-operation latency metrics are implemented;
+                privacy allowlisting drops clue/answer/guess/token/player IDs and slow operations warn at 2,000ms.
+              </td>
+            </tr>
+
+            <tr data-task-id="R10-031" data-status="done">
+              <td><code>R10-031</code></td>
+              <td>6</td>
+              <td>Complete automated regression, function, integration, localization, and accessibility suites.</td>
+              <td><span class="pill status-done">Done</span></td>
+              <td class="evidence">
+                <code>pnpm test</code> and <code>pnpm test:functions</code> pass with recorded output.
+              </td>
+              <td class="issues">
+                Completed 2026-07-31. Core 37/37, portal 64 active tests, Functions 380/380, Firestore emulator 6/6,
+                locale audit 17 × 22, and packaged browser acceptance 14/14 pass. Functions and emulator evidence was
+                repeated on the declared Node 22 runtime.
+              </td>
+            </tr>
+            <tr data-task-id="R10-032" data-status="done">
+              <td><code>R10-032</code></td>
+              <td>6</td>
+              <td>Complete Jest mock and two-user sandbox acceptance.</td>
+              <td><span class="pill status-done">Done</span></td>
+              <td class="evidence">
+                Guest/registered, referral, entry, profile fallback, share, and reminder matrix passes.
+              </td>
+              <td class="issues">
+                Completed 2026-07-31. Fourteen packaged Jest browser cases cover guest/registered identity,
+                entry/profile fallbacks, referral share image/payload, reminder attribution, failure recovery, and an
+                automated creator-to-recipient challenge across isolated browser contexts.
+              </td>
+            </tr>
+            <tr data-task-id="R10-033" data-status="done">
+              <td><code>R10-033</code></td>
+              <td>6</td>
+              <td>Review latency, difficulty, abuse signals, indexes, TTL, cost, and error budgets.</td>
+              <td><span class="pill status-done">Done</span></td>
+              <td class="evidence">Review records measurements, accepted thresholds, owners, and mitigations.</td>
+              <td class="issues">
+                Completed 2026-07-31. Section 12 records lab measurements, thresholds, ownership, and mitigations;
+                production measurements remain an explicit rollout gate.
+              </td>
+            </tr>
+            <tr data-task-id="R10-034" data-status="done">
+              <td><code>R10-034</code></td>
+              <td>6</td>
+              <td>Verify mobile/desktop UI and build the standalone Jest artifact.</td>
+              <td><span class="pill status-done">Done</span></td>
+              <td class="evidence">
+                <code>pnpm build</code> and <code>pnpm build:web</code> pass; browser evidence is linked.
+              </td>
+              <td class="issues">
+                Completed 2026-07-31. Root <code>pnpm build</code> passes on Node 22 as a release-runtime cross-check;
+                standalone audit reports 389 files / 4.43MB. Desktop/mobile/RTL screenshots live in
+                <code>artifacts/race-to-10/</code>.
+              </td>
+            </tr>
+            <tr data-task-id="R10-036" data-status="done">
+              <td><code>R10-036</code></td>
+              <td>6</td>
+              <td>Apply the revised English-only category, pool-size, and answer-limit contracts.</td>
+              <td><span class="pill status-done">Done</span></td>
+              <td class="evidence">
+                Shared contracts, backend, fake services, UI gating, locale keys, and automated tests agree on History,
+                Geography, Music, Film, Science, Mixed, 30 per pool, and seven-character answers.
+              </td>
+              <td class="issues">
+                Completed 2026-07-31. Shared seven-grapheme contracts, English-only APIs/UI gating, six category IDs,
+                exact 30-item pool validation, and the 180-item corpus contract pass unit, build, and browser checks.
+              </td>
+            </tr>
+            <tr data-task-id="R10-037" data-status="done">
+              <td><code>R10-037</code></td>
+              <td>6</td>
+              <td>Add safe English production-content preview, import, backup, replacement, and live validation tooling.</td>
+              <td><span class="pill status-done">Done</span></td>
+              <td class="evidence">
+                Default preview makes no writes; apply requires an exact project confirmation, backs up affected
+                records, refuses path collisions, retires replaced eligibility without deletion, and validates all 180
+                records.
+              </td>
+              <td class="issues">
+                Completed 2026-07-31. Import planning tests accept exactly 180 valid records and reject oversized
+                answers and cross-category duplicates. Preview, confirmed apply, backup, replacement, and live
+                validation commands are available; production execution remains R10-008.
+              </td>
+            </tr>
+            <tr data-task-id="R10-038" data-status="done">
+              <td><code>R10-038</code></td>
+              <td>6</td>
+              <td>Persist the privacy-safe rollout funnel and add missing challenge-loop events.</td>
+              <td><span class="pill status-done">Done</span></td>
+              <td class="evidence">
+                Production events are queryable beyond console logs and cover link entry, attempt start/completion,
+                result view, share-dialog open, and counter-challenge start without sensitive payloads.
+              </td>
+              <td class="issues">
+                Completed 2026-07-31. The host persists an allowlisted twelve-event funnel with idempotent event IDs,
+                hashed cohort identity, no clues/answers/guesses/tokens/direct IDs, and a 30-day TTL.
+              </td>
+            </tr>
+            <tr data-task-id="R10-039" data-status="done">
+              <td><code>R10-039</code></td>
+              <td>6</td>
+              <td>Add a server-authoritative English cohort gate with deterministic percentage and allowlist controls.</td>
+              <td><span class="pill status-done">Done</span></td>
+              <td class="evidence">
+                The build can remain deployed while the backend admits only configured players, defaults off, and can
+                be disabled without uploading another client artifact.
+              </td>
+              <td class="issues">
+                Completed 2026-07-31. Every callable enforces a default-off Firestore rollout document; deterministic
+                percentage and hashed allowlist decisions are tested. The preview-first configuration command requires
+                exact project confirmation for apply and backs up the previous configuration.
+              </td>
+            </tr>
+            <tr data-task-id="R10-035" data-status="blocked">
+              <td><code>R10-035</code></td>
+              <td>6</td>
+              <td>Launch publicly at a 100% cohort and monitor general availability.</td>
+              <td><span class="pill status-blocked">Blocked</span></td>
+              <td class="evidence">
+                The server rollout is set to enabled at 100%, the public Jest build is active, and launch monitoring
+                covers completion, reliability, integrity, and engagement measurements.
+              </td>
+              <td class="issues">
+                Blocked 2026-07-31 at the Jest publication boundary. Production content, rules, indexes, TTL, and all
+                twelve Race Functions are deployed; the server gate is enabled at 100% with no allowlist; build
+                <code>1.0.0-dev.20260731231001</code> was accepted for automatic activation. An unauthenticated live
+                check still returns Jest's <q>This app isn't public yet</q> page, so an owner must complete Jest review
+                and set the game Public before general availability can be claimed. Reconfirmed in a clean browser on
+                2026-08-01; evidence is stored at
+                <code>artifacts/race-to-10/public-launch-full-2026-08-01.png</code>.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Issue and error log</h3>
+        <p>
+          Add a row as soon as implementation differs from the plan, a test reveals a defect, an external dependency
+          blocks work, or an attempted approach fails. Keep resolved issues in the table as project memory.
+        </p>
+        <table id="race-issue-log">
+          <thead>
+            <tr>
+              <th>Issue</th>
+              <th>Tasks</th>
+              <th>Status</th>
+              <th>Error / unexpected behavior</th>
+              <th>Investigation, resolution, or next step</th>
+              <th>Updated</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr data-issue-id="R10-ISSUE-001">
+              <td><code>R10-ISSUE-001</code></td>
+              <td>R10-031, R10-034</td>
+              <td><span class="pill status-done">Resolved</span></td>
+              <td>Local commands run on Node 24.17.0 while Firebase Functions declares Node 22.</td>
+              <td>
+                Repeated the 380-test Functions suite, six-test Firestore emulator suite, and complete root/Jest
+                artifact build under Node 22.23.2. All passed; the root workspace's Node ≥24 warning is expected because
+                local web tooling has a stricter development engine than the deployed Functions runtime.
+              </td>
+              <td>2026-07-31</td>
+            </tr>
+            <tr data-issue-id="R10-ISSUE-002">
+              <td><code>R10-ISSUE-002</code></td>
+              <td>R10-006</td>
+              <td><span class="pill status-done">Resolved</span></td>
+              <td>
+                The first live dry run failed with <code>ERR_PACKAGE_PATH_NOT_EXPORTED</code> for
+                <code>@qwordly/core/race</code>.
+              </td>
+              <td>
+                The installed Functions file dependency had a stale export map. The dry-run script now executes
+                <code>prepare-deploy.js</code> first, which synchronizes the complete core artifact and asserts the race
+                export.
+              </td>
+              <td>2026-07-31</td>
+            </tr>
+            <tr data-issue-id="R10-ISSUE-003">
+              <td><code>R10-ISSUE-003</code></td>
+              <td>R10-008</td>
+              <td><span class="pill status-blocked">Open</span></td>
+              <td>
+                The read-only live content inventory reaches Firestore but fails because this environment has no Google
+                Application Default Credentials.
+              </td>
+              <td>
+                Continue engine work with deterministic fixtures. Before enabling production categories, authenticate
+                ADC (or supply an approved read/seed workflow), run the inventory, generate/review gaps, and validate
+                all six English category pools.
+              </td>
+              <td>2026-07-31</td>
+            </tr>
+            <tr data-issue-id="R10-ISSUE-004">
+              <td><code>R10-ISSUE-004</code></td>
+              <td>R10-009, R10-010</td>
+              <td><span class="pill status-done">Resolved</span></td>
+              <td>
+                Initial persistence cleanup could flatten Firestore <code>Timestamp</code> values and full run
+                replacements could remove TTL metadata.
+              </td>
+              <td>
+                Replaced JSON serialization with prototype-preserving cleanup, stored run expiry at creation, and
+                changed state updates to merge writes so TTL metadata survives.
+              </td>
+              <td>2026-07-31</td>
+            </tr>
+            <tr data-issue-id="R10-ISSUE-005">
+              <td><code>R10-ISSUE-005</code></td>
+              <td>R10-009</td>
+              <td><span class="pill status-done">Resolved</span></td>
+              <td>
+                The first rules-emulator command started Firestore successfully, but Jest found no tests because the
+                main suite intentionally excludes <code>*.it.test.ts</code>.
+              </td>
+              <td>
+                Added <code>jest.rules.config.js</code> and a dedicated <code>test:race:rules</code> command. The rerun
+                passed 3/3 emulator tests.
+              </td>
+              <td>2026-07-31</td>
+            </tr>
+            <tr data-issue-id="R10-ISSUE-006">
+              <td><code>R10-ISSUE-006</code></td>
+              <td>R10-010–014, R10-022</td>
+              <td><span class="pill status-done">Resolved</span></td>
+              <td>
+                The first transaction-emulator run loaded stale local <code>@qwordly/core</code> artifacts, leaving new
+                response schemas undefined.
+              </td>
+              <td>
+                Applied <code>prepare-deploy.js</code> to the integration command before Jest. The complete rules and
+                transaction rerun passed 5/5.
+              </td>
+              <td>2026-07-31</td>
+            </tr>
+            <tr data-issue-id="R10-ISSUE-007">
+              <td><code>R10-ISSUE-007</code></td>
+              <td>R10-015</td>
+              <td><span class="pill status-done">Resolved</span></td>
+              <td>The concurrency test caused a transient Firestore emulator transaction lock-timeout warning.</td>
+              <td>
+                The Admin SDK retried the transaction as designed; both concurrent callers received the same receipt and
+                the persisted guess count remained one.
+              </td>
+              <td>2026-07-31</td>
+            </tr>
+            <tr data-issue-id="R10-ISSUE-008">
+              <td><code>R10-ISSUE-008</code></td>
+              <td>R10-016, R10-034</td>
+              <td><span class="pill status-done">Resolved</span></td>
+              <td>
+                The first required browser verification rendered a blank page because Vite could not resolve
+                <code>@qwordly/core/race</code>, although TypeScript and Jest passed.
+              </td>
+              <td>
+                Added the race subpath to the portal Vite source aliases, restarted the server, and verified meaningful
+                content with no error overlay. The failed state is retained at
+                <code>artifacts/race-to-10/runtime-error.png</code>.
+              </td>
+              <td>2026-07-31</td>
+            </tr>
+            <tr data-issue-id="R10-ISSUE-009">
+              <td><code>R10-ISSUE-009</code></td>
+              <td>R10-031</td>
+              <td><span class="pill status-done">Resolved</span></td>
+              <td>
+                A portal-scoped Prettier command failed because Prettier is installed in the Functions workspace, not
+                the portal package.
+              </td>
+              <td>
+                Reran formatting through <code>pnpm --dir firebase-functions exec prettier</code>; TypeScript and all 63
+                active portal tests then passed.
+              </td>
+              <td>2026-07-31</td>
+            </tr>
+            <tr data-issue-id="R10-ISSUE-010">
+              <td><code>R10-ISSUE-010</code></td>
+              <td>R10-035</td>
+              <td><span class="pill status-blocked">Open</span></td>
+              <td>
+                The in-game rollout is ready, but Jest has not made the game public to unauthenticated players.
+              </td>
+              <td>
+                Content and backend launch gates are complete. The client flag is on and the server gate is confirmed
+                enabled at 100% with no allowlist. Complete the Jest Simulator/review flow and set visibility to Public,
+                then run the deployed registered-session check and watch the Section 12 thresholds from launch.
+              </td>
+              <td>2026-07-31</td>
+            </tr>
+            <tr data-issue-id="R10-ISSUE-011">
+              <td><code>R10-ISSUE-011</code></td>
+              <td>R10-026, R10-032</td>
+              <td><span class="pill status-done">Resolved</span></td>
+              <td>
+                The first automated two-context browser slice timed out because the four-step gameplay tooltip overlay
+                correctly intercepted the Race launcher after initial onboarding.
+              </td>
+              <td>
+                The first helper checked before the asynchronously mounted tooltip existed, so the second run repeated
+                the timeout. The third run reached gameplay but typed the next answer before the authoritative riddle
+                transition completed, leaving Submit disabled. The fourth run still found Submit disabled after the
+                heading wait. The fifth diagnostic run proved that the base game's global keyboard listener intercepted
+                letters typed in the Race dialog, routed them to the normal puzzle, and left the controlled Race field
+                empty. The listener now yields while Race/guidance is open and for editable targets. The sixth run still
+                saw an empty value, so the helper now explicitly waits for an enabled input and types through the page
+                keyboard. The seventh run completed and published the creator run; it then showed that a direct-link
+                recipient's Race modal intentionally covers onboarding. The eighth run exposed a mount-order race where
+                the initial challenge bridge event fired before the host listener existed. Initial challenge, resume,
+                and category requests are now deferred until all mount effects have installed their listeners. The final
+                rerun passed all 14 cases and completed the isolated creator-to-recipient flow.
+              </td>
+              <td>2026-07-31</td>
+            </tr>
+            <tr data-issue-id="R10-ISSUE-012">
+              <td><code>R10-ISSUE-012</code></td>
+              <td>R10-036–039</td>
+              <td><span class="pill status-done">Resolved</span></td>
+              <td>
+                Revised scope checks first exposed stale Functions core packaging, two outdated inferred-difficulty
+                expectations, missing exported access/analytics types, and a packaged browser assertion for Logic.
+              </td>
+              <td>
+                Functions tests now synchronize core during pretest; expectations follow the revised bands; core
+                exports the new types; and browser acceptance selects History. The reruns pass Core 37/37, Functions
+                380/380 on Node 22.23.2, Portal 64 active tests, emulator 6/6, and packaged browser 14/14.
+              </td>
+              <td>2026-07-31</td>
+            </tr>
+            <tr data-issue-id="R10-ISSUE-013">
+              <td><code>R10-ISSUE-013</code></td>
+              <td>R10-008, R10-035</td>
+              <td><span class="pill status-done">Resolved</span></td>
+              <td>
+                Three Node 24 live inventory attempts failed while the Admin SDK refreshed ADC with
+                <code>Invalid response body</code> / <code>Premature close</code>, although Firebase CLI authentication
+                and project access succeed.
+              </td>
+              <td>
+                ADC was valid: <code>gcloud auth application-default print-access-token</code> succeeded. The same
+                credential and inventory succeeded under the declared Functions runtime, Node 22.23.2. All credentialed
+                race operations now pass through <code>run-with-functions-node.js</code>, which automatically uses Node
+                22. Standard dry-run and rollout-preview commands both reach live Firestore successfully.
+              </td>
+              <td>2026-07-31</td>
+            </tr>
+            <tr data-issue-id="R10-ISSUE-014">
+              <td><code>R10-ISSUE-014</code></td>
+              <td>R10-035</td>
+              <td><span class="pill status-done">Resolved</span></td>
+              <td>
+                The first production Functions deployment failed in Cloud Build because
+                <code>firebase-functions/package-lock.json</code> was out of sync with the added test dependencies.
+              </td>
+              <td>
+                Regenerated the npm lockfile, proved it with <code>npm ci --dry-run</code>, and redeployed. All twelve
+                Race callables now report <code>ACTIVE</code>; Firestore rules, indexes, and TTL configuration also
+                deployed successfully.
+              </td>
+              <td>2026-07-31</td>
+            </tr>
+            <tr data-issue-id="R10-ISSUE-015">
+              <td><code>R10-ISSUE-015</code></td>
+              <td>R10-035</td>
+              <td><span class="pill status-blocked">Open</span></td>
+              <td>
+                The public route <code>https://jest.com/g/riddle-q</code> returns HTTP 403 with
+                <q>This app isn't public yet</q> for an unauthenticated player.
+              </td>
+              <td>
+                The upload token can create and auto-activate builds but cannot approve or publish the game. A Jest
+                owner must sign in, complete the Simulator/review requirements, and set the approved game to Public.
+                A clean-browser check on 2026-08-01 reproduced the same platform-level response.
+              </td>
+              <td>2026-08-01</td>
+            </tr>
+            <tr data-issue-id="R10-ISSUE-016">
+              <td><code>R10-ISSUE-016</code></td>
+              <td>R10-035</td>
+              <td><span class="pill status-done">Resolved</span></td>
+              <td>
+                Production probes found that the twelve Race callables and newly created avatar callable had empty
+                Cloud Run invoker policies. Google rejected requests with an infrastructure HTML 403 before Firebase
+                callable authentication could execute. The local <code>gcloud</code> CLI also had no active credential,
+                and <code>compute.googleapis.com</code> was disabled.
+              </td>
+              <td>
+                Connected <code>gcloud</code> to the existing ADC, assigned the production quota project, enabled the
+                Compute Engine API, and restored <code>allUsers</code> with <code>roles/run.invoker</code> on the thirteen
+                affected services. Repeat probes now receive structured Firebase schema or
+                <code>UNAUTHENTICATED</code> responses with the Jest CORS origin, proving public ingress and application
+                authorization are both operating. Source options now declare the public invoker requirement explicitly.
+              </td>
+              <td>2026-08-01</td>
+            </tr>
+            <tr data-issue-id="R10-ISSUE-017">
+              <td><code>R10-ISSUE-017</code></td>
+              <td>R10-031, R10-035</td>
+              <td><span class="pill status-done">Resolved</span></td>
+              <td>
+                The final local handoff rerun found one stale profile callable options assertion and two Race lint
+                violations.
+              </td>
+              <td>
+                Updated the regression assertion to cover both App Check and public Cloud Run ingress, made the
+                integration run identifier immutable, and braced the publication precondition. Core 37/37, Portal
+                64/64, Functions 380/380, emulator 6/6, browser 14/14, lint, the root build, and the 388-file / 4.43 MB
+                artifact audit all pass.
+              </td>
+              <td>2026-08-01</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Tracker change log</h3>
+        <table id="race-tracker-log">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Tasks / issues</th>
+              <th>Change</th>
+              <th>Evidence or follow-up</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>2026-07-31</td>
+              <td>Plan</td>
+              <td>Created the Race to 10 recorded ghost-duel implementation plan.</td>
+              <td>Initial planning artifact.</td>
+            </tr>
+            <tr>
+              <td>2026-07-31</td>
+              <td>R10-001, R10-012–014</td>
+              <td>Specified +15-second hints and deliberately heavy +45-second skip penalties.</td>
+              <td>Implementation remains not started.</td>
+            </tr>
+            <tr>
+              <td>2026-07-31</td>
+              <td>R10-001–035</td>
+              <td>
+                Added the canonical task matrix, issue log, evidence fields, status rules, and automatic progress
+                summary.
+              </td>
+              <td>Future work must update this file directly.</td>
+            </tr>
+            <tr>
+              <td>2026-07-31</td>
+              <td>R10-001–004, R10-ISSUE-001</td>
+              <td>
+                Completed the versioned rules, strict shared contracts, deterministic fixtures, and disabled-by-default
+                feature flag.
+              </td>
+              <td>
+                Core: 34/34 tests; race flag: 3/3 tests; TypeScript builds. Node runtime mismatch recorded for release
+                follow-up.
+              </td>
+            </tr>
+            <tr>
+              <td>2026-08-01</td>
+              <td>R10-035, R10-ISSUE-016</td>
+              <td>Repaired and verified the complete Google Cloud runtime boundary.</td>
+              <td>
+                Billing is enabled; all 26 Functions are ACTIVE on Node 22; all Cloud Run services are ready; the
+                scheduler's latest attempt returned 200; both secret versions are enabled; the index is READY; seven TTL
+                policies are ACTIVE; the last 24 hours contain no Cloud Run 5xx entries; and all Race endpoints now
+                reach Firebase authentication instead of failing at Cloud Run IAM.
+              </td>
+            </tr>
+            <tr>
+              <td>2026-07-31</td>
+              <td>R10-005–008</td>
+              <td>
+                Completed backward-compatible race metadata, safe dry-run migration/reporting, and competitive-pool
+                validation; began content seeding.
+              </td>
+              <td>
+                Core: 36/36; Functions: 365/365; Functions build passes. Production pools remain disabled pending
+                reviewed content.
+              </td>
+            </tr>
+            <tr>
+              <td>2026-07-31</td>
+              <td>R10-009–015, R10-022, R10-ISSUE-004</td>
+              <td>
+                Started the server-authoritative slice: deterministic decks, race engine, authenticated callables,
+                immutable challenge records, explicit server-only rules, indexes, and TTL configuration.
+              </td>
+              <td>
+                Focused Functions suites: 21/21 tests; Functions TypeScript build passes. Transaction/rules-emulator,
+                rate-limit, and publication integration coverage remain.
+              </td>
+            </tr>
+            <tr>
+              <td>2026-07-31</td>
+              <td>R10-009, R10-ISSUE-005</td>
+              <td>Completed the server-only Firestore trust boundary and added its dedicated emulator suite.</td>
+              <td>
+                Initial <code>pnpm test:race:rules</code>: 3/3 passed, covering source answers, race state, challenges,
+                attempts, request receipts, and inbox data.
+              </td>
+            </tr>
+            <tr>
+              <td>2026-07-31</td>
+              <td>R10-010–014, R10-022, R10-ISSUE-006</td>
+              <td>Completed the authoritative deck, run, penalty, clock, outcome, and immutable publication paths.</td>
+              <td>
+                Combined Firestore rules and transactional integration suite: 5/5 passed after core artifact
+                synchronization.
+              </td>
+            </tr>
+            <tr>
+              <td>2026-07-31</td>
+              <td>R10-015, R10-ISSUE-007</td>
+              <td>
+                Completed request idempotency, concurrency serialization, transition rejection, action rate limiting,
+                and privacy-safe abuse diagnostics.
+              </td>
+              <td>Functions build passed; combined emulator suite now passes 6/6.</td>
+            </tr>
+            <tr>
+              <td>2026-07-31</td>
+              <td>R10-016–025, R10-027–030, R10-ISSUE-008–009</td>
+              <td>
+                Implemented and began browser acceptance of the complete portal race flow, including penalties, ghost
+                projection, results, sharing, inbox, reminders, analytics, and replay actions.
+              </td>
+              <td>
+                Portal: 17 suites / 63 active tests pass. Desktop/mobile harness screenshots are stored in
+                <code>artifacts/race-to-10/</code>; remaining acceptance gaps stay explicitly in progress.
+              </td>
+            </tr>
+            <tr>
+              <td>2026-07-31</td>
+              <td>R10-018, R10-021, R10-023–034, R10-ISSUE-010</td>
+              <td>
+                Closed the remaining implementable UI, rivalry, inbox, Jest, analytics, accessibility, test,
+                operational-review, and artifact tasks.
+              </td>
+              <td>
+                Final evidence: core 37/37, portal 64 active, Functions 380/380, emulator 6/6, Jest browser 14/14, root
+                build and 4.43MB artifact audit. R10-008 and R10-035 remain blocked rather than being falsely marked
+                complete.
+              </td>
+            </tr>
+            <tr>
+              <td>2026-07-31</td>
+              <td>R10-036–039, R10-ISSUE-012</td>
+              <td>
+                Completed the English-only six-category contract revision, safe 180-riddle content tooling, durable
+                privacy-safe analytics, and the server-authoritative cohort gate.
+              </td>
+              <td>
+                Core 37/37, Functions 380/380, Portal 64 active, emulator 6/6, packaged browser 14/14, locale audit 17 ×
+                22, and standalone Jest artifact 388 files / 4.43MB. Production content and rollout remain blocked.
+              </td>
+            </tr>
+            <tr>
+              <td>2026-07-31</td>
+              <td>R10-035, R10-ISSUE-013</td>
+              <td>Changed the release target from a private cohort to a public 100% rollout.</td>
+              <td>
+                Upload credentials and Firebase CLI project access are present. The Node 24 ADC incompatibility is
+                resolved by running credentialed operations under Node 22; activation remains blocked only by the
+                absent reviewed 180-riddle corpus.
+              </td>
+            </tr>
+            <tr>
+              <td>2026-07-31</td>
+              <td>R10-008, R10-035, R10-ISSUE-010, R10-ISSUE-014–015</td>
+              <td>
+                Seeded and live-validated the complete 180-riddle production corpus, deployed the authoritative backend,
+                enabled the unrestricted 100% cohort, and uploaded the public client build for automatic activation.
+              </td>
+              <td>
+                All automated and packaged-browser checks pass; all twelve Race Functions are ACTIVE. The final live
+                route check records Jest's platform-level private-game 403, leaving only owner review/publication open.
+              </td>
+            </tr>
+            <tr>
+              <td>2026-08-01</td>
+              <td>R10-031, R10-035, R10-ISSUE-015, R10-ISSUE-017</td>
+              <td>Closed all locally actionable validation debt and rechecked the public launch boundary.</td>
+              <td>
+                The complete local test, lint, browser, build, locale, tracker, and artifact gates pass. A clean browser
+                still receives Jest's private-game 403; owner review/publication and post-launch monitoring remain the
+                sole Race-to-10 completion boundary.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Detailed phase notes</h3>
+        <p>
+          These phases are ordered dependency slices. Each phase should land with tests and usable acceptance evidence;
+          avoid building every backend layer before exercising the first complete vertical path.
+        </p>
+
+        <div class="phase">
+          <h3>Phase 0 — Freeze rules and fixtures <span class="pill mvp">MVP</span></h3>
+          <ul class="checklist">
+            <li>Approve the rules in section 2 and version them as <code>race10_v1</code>.</li>
+            <li>Define shared Zod request, response, event, category, run, and challenge schemas.</li>
+            <li>Create deterministic test decks and ghost timelines for English.</li>
+            <li>Add a feature flag that defaults off outside the deterministic harness.</li>
+          </ul>
+          <p><strong>Exit:</strong> contracts and fixtures compile in core; malformed examples fail tests.</p>
+        </div>
+
+        <div class="phase">
+          <h3>Phase 1 — Category-ready content <span class="pill mvp">MVP</span></h3>
+          <ul class="checklist">
+            <li>Add semantic category and canonical translation fields without changing classic/daily behavior.</li>
+            <li>Write a migration/backfill tool and a dry-run report for existing riddles.</li>
+            <li>
+              Build pool validation for exact size, duplicate answers, clue leakage, English content, and answer length.
+            </li>
+            <li>Seed enough reviewed content for categories/locales enabled at launch.</li>
+          </ul>
+          <p>
+            <strong>Exit:</strong> the backend can deterministically build a valid 15-riddle deck from every enabled
+            English category pool.
+          </p>
+        </div>
+
+        <div class="phase">
+          <h3>Phase 2 — Authoritative run recorder <span class="pill server">Server first</span></h3>
+          <ul class="checklist">
+            <li>Implement start, submit, hint, skip, adjusted clock, resume, completion, expiry, and idempotency.</li>
+            <li>Add server-only collections, rules, indexes, rate limits, and structured diagnostics.</li>
+            <li>Prove that clients cannot select questions, forge elapsed/penalty times, or advance score directly.</li>
+            <li>Add emulator tests for duplicate, stale, concurrent, out-of-order, and post-expiry requests.</li>
+          </ul>
+          <p>
+            <strong>Exit:</strong> a test client can record a verified ten-solve timeline and safely recover it after
+            reload.
+          </p>
+        </div>
+
+        <div class="phase">
+          <h3>Phase 3 — Creator experience <span class="pill mvp">Vertical slice</span></h3>
+          <ul class="checklist">
+            <li>Add the mode entry, category picker, rules, countdown, race HUD, and result screen.</li>
+            <li>Connect the bridge and host-service contracts to the run recorder.</li>
+            <li>
+              Add fake-service scenarios for success, wrong answer, hint, skip, penalty timeout, offline, resume, and
+              duplicate response.
+            </li>
+            <li>Add all visible strings to every supported locale.</li>
+          </ul>
+          <p>
+            <strong>Exit:</strong> a player can complete and review a creator run in the Jest harness with accessible
+            controls.
+          </p>
+        </div>
+
+        <div class="phase">
+          <h3>Phase 4 — Publish, deep-link, and ghost replay <span class="pill mvp">Core loop</span></h3>
+          <ul class="checklist">
+            <li>Implement immutable challenge publication and redacted preview.</li>
+            <li>
+              Extend entry-intent parsing and direct routing for valid, absent, expired, malformed, and revoked IDs.
+            </li>
+            <li>
+              Build deterministic ghost playback, penalty fast-forward, visibility catch-up, and finish arbitration.
+            </li>
+            <li>Create personalized share cards and the stable Jest referral campaign.</li>
+            <li>Preserve completed runs when share is canceled or fails.</li>
+          </ul>
+          <p>
+            <strong>Exit:</strong> sandbox player B can open player A's link, race the correct ghost, and receive the
+            authoritative result.
+          </p>
+        </div>
+
+        <div class="phase">
+          <h3>Phase 5 — Rivalries and return loop <span class="pill mvp">Retention</span></h3>
+          <ul class="checklist">
+            <li>Create owner-only race inbox items when an opponent completes an attempt.</li>
+            <li>Add rematch and “choose my category” counter-challenge flows.</li>
+            <li>Add safe generic return reminders for registered creators, with identifiers and entry attribution.</li>
+            <li>Add race funnel analytics and operational dashboards/alerts.</li>
+          </ul>
+          <p>
+            <strong>Exit:</strong> the original creator can return, see the result, and publish a counter-challenge
+            without re-entering context.
+          </p>
+        </div>
+
+        <div class="phase">
+          <h3>Phase 6 — Hardening and release <span class="pill decision">Release gate</span></h3>
+          <ul class="checklist">
+            <li>Run the complete unit, function, integration, browser, localization, and accessibility matrix.</li>
+            <li>Test guest/registered and two-user referral behavior in Jest mock and sandbox environments.</li>
+            <li>Review latency, content difficulty, abuse signals, indexes, TTL, cost, and error budgets.</li>
+            <li>Verify the UI in a mobile browser and build the standalone Jest artifact.</li>
+            <li>Roll out behind the feature flag to a small cohort before general availability.</li>
+          </ul>
+          <p>
+            <strong>Exit:</strong> acceptance evidence in section 15 is complete and the standalone artifact passes
+            sandbox review.
+          </p>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>14. Verification matrix</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Layer</th>
+              <th>Required coverage</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Core schemas</td>
+              <td>
+                Valid contracts plus missing, extra, oversized, malformed, unsupported-locale, and invalid-transition
+                cases.
+              </td>
+            </tr>
+            <tr>
+              <td>Deck builder</td>
+              <td>
+                Deterministic order, category membership, difficulty mix, no duplicates, English content, and pool
+                exhaustion.
+              </td>
+            </tr>
+            <tr>
+              <td>Functions</td>
+              <td>
+                Auth, ownership, correct/wrong guesses, one-hint limit, 15-second hint penalty, 45-second skip penalty,
+                fifth failure, adjusted-time timeout, replay, idempotency, races, revocation, and rate limits.
+              </td>
+            </tr>
+            <tr>
+              <td>Rules</td>
+              <td>
+                All race collections denied to direct clients; owner inbox access follows the intended server-return
+                path.
+              </td>
+            </tr>
+            <tr>
+              <td>Replay</td>
+              <td>
+                Exact milestone boundaries, hint/skip clock jumps, penalty-triggered ghost fast-forward,
+                background/resume catch-up, slow frame rate, clock drift, player win, ghost win, and tie.
+              </td>
+            </tr>
+            <tr>
+              <td>Bridge</td>
+              <td>
+                Origin/source validation, request correlation, duplicate replies, malformed responses, and teardown.
+              </td>
+            </tr>
+            <tr>
+              <td>UI</td>
+              <td>
+                Small mobile viewport, English input, null profile/avatar, reduced motion, keyboard, touch, and screen
+                reader. Non-English and RTL Race behavior is explicitly out of launch scope.
+              </td>
+            </tr>
+            <tr>
+              <td>Failure recovery</td>
+              <td>
+                Offline before start, during guess, after tenth solve, during publish, during share, reload, and expired
+                challenge.
+              </td>
+            </tr>
+            <tr>
+              <td>Jest mock</td>
+              <td>
+                Guest/registered identity, missing entry payload, valid/malformed challenge ID, share
+                cancel/success/error, missing profile, screenshot oversize.
+              </td>
+            </tr>
+            <tr>
+              <td>Jest sandbox</td>
+              <td>
+                Two separate users, first-entry referral attribution, existing-player challenge, personalized preview,
+                deep-link routing, and registered reminders.
+              </td>
+            </tr>
+            <tr>
+              <td>Regression</td>
+              <td>
+                Classic, daily challenge, hints, skip, achievements, leaderboards, purchases, startup, and current
+                victory share remain unchanged.
+              </td>
+            </tr>
+            <tr>
+              <td>Build</td>
+              <td>
+                <code>pnpm test</code>, <code>pnpm test:functions</code>, <code>pnpm build</code>, and
+                <code>pnpm build:web</code>.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="card">
+        <h2>15. Definition of done</h2>
+        <ul class="checklist">
+          <li>A player can choose an enabled category and record a valid first-to-ten run.</li>
+          <li>The recorded timeline is produced exclusively from server-validated events and server timestamps.</li>
+          <li>A published challenge is immutable, opaque in shared payloads, revocable, and expires correctly.</li>
+          <li>A recipient reaches the correct preview directly from a Jest referral link.</li>
+          <li>The recipient sees the same canonical English deck without silent substitutions.</li>
+          <li>The ghost score advances at the recorded milestones and catches up after visibility changes.</li>
+          <li>
+            Each hint adds exactly 15 seconds, each skip adds exactly 45 seconds, retries cannot duplicate a penalty,
+            and the adjusted clock can trigger the run cap or a ghost victory.
+          </li>
+          <li>
+            The backend determines winner, wall time, penalty total, adjusted finish time, and ranked-attempt
+            eligibility.
+          </li>
+          <li>Share cancellation or failure never loses a completed result.</li>
+          <li>Rematch and counter-category paths create a new immutable challenge.</li>
+          <li>
+            Guests, registered users, missing profiles, invalid payloads, and expired challenges have complete UX.
+          </li>
+          <li>Every visible string exists in every supported locale and RTL/reduced-motion behavior is verified.</li>
+          <li>No race collection or answer-bearing field is directly readable or writable by clients.</li>
+          <li>Automated suites, browser verification, standalone Jest build, and two-user sandbox acceptance pass.</li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <h2>16. Explicitly deferred</h2>
+        <p>Keep these out of the first release until the recorded duel loop proves engagement and integrity:</p>
+        <div class="grid two">
+          <ul>
+            <li><span class="pill later">Later</span> True simultaneous multiplayer and matchmaking.</li>
+            <li><span class="pill later">Later</span> Four-player party races and tournaments.</li>
+            <li>
+              <span class="pill later">Later</span> Spectating, chat, reactions sent between players, or presence.
+            </li>
+            <li><span class="pill later">Later</span> Player-authored riddles or unrestricted packs.</li>
+          </ul>
+          <ul>
+            <li><span class="pill later">Later</span> Competitive coin entry fees or purchasable advantages.</li>
+            <li><span class="pill later">Later</span> Cross-locale global category leaderboards.</li>
+            <li><span class="pill later">Later</span> Client timestamp compensation before latency evidence exists.</li>
+            <li><span class="pill later">Later</span> Multiple ranked retries against the same recording.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>17. First implementation milestone</h2>
+        <p>
+          Build one narrow vertical slice before producing all six categories: English-only deterministic History
+          fixtures, one creator run, one published challenge, one recipient replay, and one authoritative result behind
+          the local Jest harness flag. This slice should exercise the final contracts and storage model. Once it
+          survives reload, duplicate requests, and two-browser playback, expand the English content matrix rather than
+          rewriting the feature around mock assumptions. Additional locales are a later, separately reviewed phase.
+        </p>
+        <div class="callout good">
+          <strong>Milestone proof:</strong> browser A records ten solves, browser B opens an encoded challenge entry
+          payload, hint and skip penalties move the adjusted clock by exactly 15 and 45 seconds, the ghost advances at
+          browser A's adjusted milestones, and Firebase—not either browser—declares the winner.
+        </div>
+      </section>
+
+      <footer>
+        Riddle Quest planning artifact. This document proposes implementation; it does not mark any feature as shipped.
+      </footer>
+      <script>
+        (() => {
+          const statuses = ["done", "in-progress", "not-started", "blocked", "deferred"];
+          const rows = [...document.querySelectorAll("#race-task-tracker tbody tr[data-task-id]")];
+          const counts = Object.fromEntries(statuses.map((status) => [status, 0]));
+
+          for (const row of rows) {
+            const status = row.dataset.status;
+            if (status in counts) counts[status] += 1;
+          }
+
+          for (const status of statuses) {
+            document.getElementById(`tracker-${status}`).textContent = String(counts[status]);
+          }
+
+          const percent = rows.length === 0 ? 0 : Math.round((counts.done / rows.length) * 100);
+          document.getElementById("tracker-percent").textContent = `${percent}%`;
+          document.getElementById("tracker-count").textContent = `${counts.done} of ${rows.length} tasks complete`;
+          document.getElementById("tracker-bar").style.width = `${percent}%`;
+        })();
+      </script>
+    </main>
+  </body>
+</html>

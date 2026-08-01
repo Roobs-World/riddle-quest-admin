@@ -5,12 +5,47 @@ import {fileURLToPath} from "node:url";
 const packageRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const localeRoot = path.resolve(packageRoot, "../../src/locales");
 const expectedLocales = [
-  "ar", "de", "en", "es", "fr", "hi", "id", "it", "ja", "ko", "nl", "pl", "pt", "ru", "tr", "vi", "zh",
+  "ar",
+  "de",
+  "en",
+  "es",
+  "fr",
+  "hi",
+  "id",
+  "it",
+  "ja",
+  "ko",
+  "nl",
+  "pl",
+  "pt",
+  "ru",
+  "tr",
+  "vi",
+  "zh",
 ];
 const expectedNamespaces = [
-  "aboutLegal", "accessibility", "achievements", "alerts", "coinPurchase", "common", "credits", "errors",
-  "game", "leaderboard", "levelUpFanfare", "loss", "navigation", "onboarding", "profile", "settings", "shop",
-  "stats", "streakFanfare", "tooltips", "victory",
+  "aboutLegal",
+  "accessibility",
+  "achievements",
+  "alerts",
+  "coinPurchase",
+  "common",
+  "credits",
+  "errors",
+  "game",
+  "leaderboard",
+  "levelUpFanfare",
+  "loss",
+  "navigation",
+  "onboarding",
+  "profile",
+  "race",
+  "settings",
+  "shop",
+  "stats",
+  "streakFanfare",
+  "tooltips",
+  "victory",
 ];
 
 const flatten = (value, prefix = "", output = new Map()) => {
@@ -26,9 +61,7 @@ const flatten = (value, prefix = "", output = new Map()) => {
 };
 
 const placeholders = (value) =>
-  typeof value === "string"
-    ? [...value.matchAll(/\{([A-Za-z0-9_]+)\}/g)].map((match) => match[1]).sort()
-    : [];
+  typeof value === "string" ? [...value.matchAll(/\{([A-Za-z0-9_]+)\}/g)].map((match) => match[1]).sort() : [];
 
 const actualLocales = (
   await Promise.all(
@@ -37,7 +70,10 @@ const actualLocales = (
       directory: (await stat(path.join(localeRoot, entry))).isDirectory(),
     })),
   )
-).filter(({directory}) => directory).map(({entry}) => entry).sort();
+)
+  .filter(({directory}) => directory)
+  .map(({entry}) => entry)
+  .sort();
 
 const errors = [];
 if (JSON.stringify(actualLocales) !== JSON.stringify(expectedLocales)) {
@@ -61,9 +97,7 @@ for (const locale of expectedLocales) {
     continue;
   }
   for (const namespace of expectedNamespaces) {
-    const translated = flatten(
-      JSON.parse(await readFile(path.join(localeRoot, locale, `${namespace}.json`), "utf8")),
-    );
+    const translated = flatten(JSON.parse(await readFile(path.join(localeRoot, locale, `${namespace}.json`), "utf8")));
     const english = englishCatalogs.get(namespace);
     for (const [key, englishValue] of english) {
       if (!translated.has(key)) {

@@ -16,6 +16,16 @@ describe("portal bridge routers", () => {
       loadLeaderboard: jest.fn(),
       updateUsername: jest.fn(),
       updateAvatar: jest.fn(),
+      listRaceCategories: jest.fn(),
+      startRace: jest.fn(),
+      submitRaceGuess: jest.fn(),
+      requestRaceHint: jest.fn(),
+      skipRaceRiddle: jest.fn(),
+      resumeRace: jest.fn(),
+      publishRace: jest.fn(),
+      getRaceChallenge: jest.fn(),
+      getRaceOutcome: jest.fn(),
+      listRaceInbox: jest.fn(),
       analytics: jest.fn(),
       error: jest.fn(),
     });
@@ -78,10 +88,61 @@ describe("portal bridge routers", () => {
       loadLeaderboard: jest.fn(),
       updateUsername: jest.fn(),
       updateAvatar: jest.fn(),
+      listRaceCategories: jest.fn(),
+      startRace: jest.fn(),
+      submitRaceGuess: jest.fn(),
+      requestRaceHint: jest.fn(),
+      skipRaceRiddle: jest.fn(),
+      resumeRace: jest.fn(),
+      publishRace: jest.fn(),
+      getRaceChallenge: jest.fn(),
+      getRaceOutcome: jest.fn(),
+      listRaceInbox: jest.fn(),
       analytics: jest.fn(),
       error: jest.fn(),
     });
 
     await expect(router({type: "game:spendCoins", payload: {reason: "magic"}})).rejects.toThrow();
+  });
+
+  it("routes schema-validated race requests with correlation IDs", async () => {
+    const submitRaceGuess = jest.fn();
+    const router = createHostMessageRouter({
+      ready: jest.fn(),
+      resize: jest.fn(),
+      loadRiddle: jest.fn(),
+      completeGame: jest.fn(),
+      requestHint: jest.fn(),
+      spendCoins: jest.fn(),
+      requestPurchase: jest.fn(),
+      loadLeaderboard: jest.fn(),
+      updateUsername: jest.fn(),
+      updateAvatar: jest.fn(),
+      listRaceCategories: jest.fn(),
+      startRace: jest.fn(),
+      submitRaceGuess,
+      requestRaceHint: jest.fn(),
+      skipRaceRiddle: jest.fn(),
+      resumeRace: jest.fn(),
+      publishRace: jest.fn(),
+      getRaceChallenge: jest.fn(),
+      getRaceOutcome: jest.fn(),
+      listRaceInbox: jest.fn(),
+      analytics: jest.fn(),
+      error: jest.fn(),
+    });
+    await router({
+      type: "game:submitRaceGuess",
+      requestId: "guess-message-1",
+      payload: {runId: "run-1", riddleId: "riddle-1", guess: "piano", requestId: "guess-request-1"},
+    });
+    expect(submitRaceGuess).toHaveBeenCalledWith(expect.objectContaining({requestId: "guess-message-1"}));
+    await expect(
+      router({
+        type: "game:submitRaceGuess",
+        requestId: "bad",
+        payload: {runId: "run-1", riddleId: "riddle-1", guess: "", requestId: "short"},
+      }),
+    ).rejects.toThrow();
   });
 });

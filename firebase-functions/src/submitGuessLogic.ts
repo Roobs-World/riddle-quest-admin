@@ -1,6 +1,7 @@
 import * as functions from "firebase-functions";
-import * as admin from "firebase-admin";
-import {onCall, HttpsError, CallableOptions} from "firebase-functions/v2/https";
+import {admin} from "./firebaseAdmin";
+import type {FieldValue} from "firebase-admin/firestore";
+import {HttpsError} from "firebase-functions/v2/https";
 import {
   getUser,
   updateUserCoins,
@@ -9,10 +10,6 @@ import {
   ensureUserDocumentComplete,
 } from "./firestoreService";
 import {PlayerStats, PlayerStatsUpdate} from "./validation/firestoreSchemas";
-import {
-  CompleteGameRequestDataSchema,
-  CompleteGameResponseDataSchema,
-} from "./validation/requestSchemas";
 import type {
   CompleteGameRequestData,
   CompleteGameResponseData,
@@ -25,7 +22,6 @@ import * as riddleGeneration from "./riddleGeneration";
 import {evaluateAchievements} from "./achievements";
 import {updateLeaderboardEntry} from "./leaderboard";
 import {captureException} from "./sentry";
-import {validateCallableRequest, validateCallableResponse} from "./validation/callableValidation";
 import {
   MAX_ATTEMPTS_CLASSIC,
   MAX_ATTEMPTS_CHALLENGE,
@@ -37,139 +33,19 @@ import {
   BASE_SCORE_CLASSIC,
   BASE_SCORE_CHALLENGE,
   getLevelFromXp,
-  RIDDLE_GENERATION_THRESHOLD,
-  RIDDLE_GENERATION_BATCH_SIZE,
 } from "./constants";
 import {SUPPORTED_LOCALES, type SupportedLocale} from "@qwordly/core/validation";
+import {computeNextDailyWinStreak} from "./dailyStreak";
+import {triggerClassicRiddleGenerationIfNeeded} from "./riddleSupply";
 
 // Define a type for potential top-level updates to the Player document
 type PlayerTopLevelUpdate = {
   /** Daily challenge completion timestamp for challenge mode wins. */
-  lastDailyChallengeCompletedAt?: number | admin.firestore.FieldValue;
+  lastDailyChallengeCompletedAt?: number | FieldValue;
   /** Canonical daily challenge key for replay protection across locales. */
   lastCompletedDailyChallengeKey?: string;
   // Add other top-level fields here if they are updated similarly
 };
-
-type TimestampLike = {
-  toDate?: () => Date;
-  toMillis?: () => number;
-  seconds?: number;
-  nanoseconds?: number;
-  _seconds?: number;
-  _nanoseconds?: number;
-};
-
-function coerceToDate(value: unknown): Date | null {
-  if (value === null || value === undefined) return null;
-
-  if (value instanceof Date) {
-    return value;
-  }
-
-  if (typeof value === "number" || typeof value === "string") {
-    const parsed = new Date(value);
-    return Number.isNaN(parsed.getTime()) ? null : parsed;
-  }
-
-  if (typeof value === "object") {
-    const timestampLike = value as TimestampLike;
-
-    if (typeof timestampLike.toDate === "function") {
-      const parsed = timestampLike.toDate();
-      return Number.isNaN(parsed.getTime()) ? null : parsed;
-    }
-
-    if (typeof timestampLike.toMillis === "function") {
-      const parsed = new Date(timestampLike.toMillis());
-      return Number.isNaN(parsed.getTime()) ? null : parsed;
-    }
-
-    const seconds =
-      typeof timestampLike.seconds === "number"
-        ? timestampLike.seconds
-        : typeof timestampLike._seconds === "number"
-          ? timestampLike._seconds
-          : null;
-
-    if (seconds !== null) {
-      const nanos =
-        typeof timestampLike.nanoseconds === "number"
-          ? timestampLike.nanoseconds
-          : typeof timestampLike._nanoseconds === "number"
-            ? timestampLike._nanoseconds
-            : 0;
-      const parsed = new Date(seconds * 1000 + Math.floor(nanos / 1_000_000));
-      return Number.isNaN(parsed.getTime()) ? null : parsed;
-    }
-  }
-
-  return null;
-}
-
-function getUtcDayString(value: unknown): string | null {
-  const date = coerceToDate(value);
-  if (!date) return null;
-  if (Number.isNaN(date.getTime())) return null;
-  return date.toISOString().split("T")[0];
-}
-
-function getYesterdayUtcDayString(): string {
-  const yesterday = new Date();
-  yesterday.setUTCDate(yesterday.getUTCDate() - 1);
-  return yesterday.toISOString().split("T")[0];
-}
-
-function computeNextDailyWinStreak(currentWinStreak: number, lastDailyChallengeCompletedAt: unknown): number {
-  const lastCompletedDay = getUtcDayString(lastDailyChallengeCompletedAt);
-  const yesterdayUtcDay = getYesterdayUtcDayString();
-  return lastCompletedDay === yesterdayUtcDay ? currentWinStreak + 1 : 1;
-}
-
-/**
- * Generates additional classic riddles when a user is at the configured low-supply threshold.
- * This keeps progression seamless as players approach the end of the current Firestore set.
- */
-async function triggerClassicRiddleGenerationIfNeeded(
-  userId: string,
-  currentClassicIndex: number,
-  locale: SupportedLocale,
-): Promise<void> {
-  try {
-    const localizedClassicCollection = `localizedRiddles/${locale}/riddles`;
-    const classicRiddlesSnapshot = await admin
-      .firestore()
-      .collection(localizedClassicCollection)
-      .where("classicIndex", ">=", 0)
-      .get();
-    const totalClassicRiddles = classicRiddlesSnapshot.size;
-    const remainingClassicRiddles = totalClassicRiddles - currentClassicIndex;
-
-    functions.logger.info(
-      `User ${userId} currentClassicIndex: ${currentClassicIndex}, totalClassicRiddles: ${totalClassicRiddles}, remainingClassicRiddles: ${remainingClassicRiddles}`,
-    );
-
-    if (remainingClassicRiddles <= RIDDLE_GENERATION_THRESHOLD) {
-      functions.logger.info(
-        `User ${userId} has <= ${RIDDLE_GENERATION_THRESHOLD} classic riddles remaining. Triggering generation of ${RIDDLE_GENERATION_BATCH_SIZE} new riddles.`,
-      );
-      try {
-        await (riddleGeneration.generateLocalizedClassicRiddles ?? riddleGeneration.generateAndAppendRiddles)(
-          RIDDLE_GENERATION_BATCH_SIZE,
-        );
-        functions.logger.info(
-          `Successfully triggered generation of ${RIDDLE_GENERATION_BATCH_SIZE} new classic riddles.`,
-        );
-      } catch (error) {
-        functions.logger.error("Error triggering generation of new classic riddles:", error);
-        captureException(error);
-      }
-    }
-  } catch (error) {
-    functions.logger.error("Error checking classic riddle count:", error);
-    captureException(error);
-  }
-}
 
 /**
  * Core server-side guess handling logic, exported for unit testing.
@@ -461,7 +337,6 @@ export async function handleGuessLogic(
     throw new HttpsError("internal", "An unexpected error occurred in handleGuessLogic.", error);
   }
 }
-
 // ---------------------------------------------------------------------------
 // completeGame â€” called once when a game truly ends (win or final loss).
 // Feedback is computed client-side; this function handles all server-side
@@ -721,20 +596,3 @@ export async function handleCompleteGameLogic(
     throw new HttpsError("internal", "An unexpected error occurred in handleCompleteGameLogic.", error);
   }
 }
-
-export const completeGame = onCall<CompleteGameRequestData, Promise<CompleteGameResponseData>>(
-  {
-    secrets: ["OPENAI_API_KEY"],
-  } as CallableOptions,
-  async (request) => {
-    if (!request.auth) {
-      throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
-    }
-    const data = validateCallableRequest(CompleteGameRequestDataSchema, request.data, "completeGame");
-    const response = await handleCompleteGameLogic(data, {
-      uid: request.auth.uid,
-      isAnonymous: request.auth.token?.firebase?.sign_in_provider === "anonymous",
-    });
-    return validateCallableResponse(CompleteGameResponseDataSchema, response, "completeGame");
-  },
-);

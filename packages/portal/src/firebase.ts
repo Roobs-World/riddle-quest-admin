@@ -9,6 +9,28 @@ import type {
   SkipRiddleResponse,
   SpendCoinsRequest,
 } from "@qwordly/core/validation";
+import type {
+  ListRaceCategoriesRequest,
+  ListRaceCategoriesResponse,
+  ListRaceInboxRequest,
+  ListRaceInboxResponse,
+  PublishRaceChallengeRequest,
+  PublishRaceChallengeResponse,
+  RaceAccessRequest,
+  RaceAccessResponse,
+  RaceAnalyticsEventRequest,
+  RaceAnalyticsEventResponse,
+  RaceChallengePreview,
+  RaceOutcome,
+  RaceRunResponse,
+  RequestRaceHintRequest,
+  RequestRaceHintResponse,
+  SkipRaceRiddleRequest,
+  SkipRaceRiddleResponse,
+  StartRaceRunRequest,
+  SubmitRaceGuessRequest,
+  SubmitRaceGuessResponse,
+} from "@qwordly/core/race";
 
 const rawFirebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -83,10 +105,47 @@ export const updateUsername = httpsCallable<{username: string}, {success: boolea
   "updateUsername",
 );
 
-export const updateAvatar = httpsCallable<
-  {imageDataUrl: string},
-  {success: true; message: string; avatarUrl: string}
->(functions, "updateAvatar");
+export const updateAvatar = httpsCallable<{imageDataUrl: string}, {success: true; message: string; avatarUrl: string}>(
+  functions,
+  "updateAvatar",
+);
+
+export const listRaceCategories = httpsCallable<ListRaceCategoriesRequest, ListRaceCategoriesResponse>(
+  functions,
+  "listRaceCategories",
+);
+export const startRaceRun = httpsCallable<StartRaceRunRequest, RaceRunResponse>(functions, "startRaceRun");
+export const submitRaceGuess = httpsCallable<SubmitRaceGuessRequest, SubmitRaceGuessResponse>(
+  functions,
+  "submitRaceGuess",
+);
+export const requestRaceHint = httpsCallable<RequestRaceHintRequest, RequestRaceHintResponse>(
+  functions,
+  "requestRaceHint",
+);
+export const skipRaceRiddle = httpsCallable<SkipRaceRiddleRequest, SkipRaceRiddleResponse>(functions, "skipRaceRiddle");
+export const resumeRaceRun = httpsCallable<{runId: string}, RaceRunResponse>(functions, "resumeRaceRun");
+export const publishRaceChallenge = httpsCallable<PublishRaceChallengeRequest, PublishRaceChallengeResponse>(
+  functions,
+  "publishRaceChallenge",
+);
+export const getRaceChallenge = httpsCallable<{challengeId: string}, RaceChallengePreview>(
+  functions,
+  "getRaceChallenge",
+);
+export const getRaceOutcome = httpsCallable<{runId: string}, RaceOutcome>(functions, "getRaceOutcome");
+export const listRaceInbox = httpsCallable<ListRaceInboxRequest | undefined, ListRaceInboxResponse>(
+  functions,
+  "listRaceInbox",
+);
+export const getRaceAccess = httpsCallable<RaceAccessRequest | undefined, RaceAccessResponse>(
+  functions,
+  "getRaceAccess",
+);
+export const recordRaceAnalytics = httpsCallable<RaceAnalyticsEventRequest, RaceAnalyticsEventResponse>(
+  functions,
+  "recordRaceAnalytics",
+);
 
 export const loadUserDocument = async (userId: string): Promise<Record<string, unknown> | null> => {
   const snapshot = await getDoc(doc(firestore, "users", userId));

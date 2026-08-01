@@ -1,9 +1,6 @@
 import type {GameToHostMessage, HostToGameMessage} from "@qwordly/core/bridge";
 
-type BridgeParsers = Pick<
-  typeof import("@qwordly/core/bridge"),
-  "parseGameToHostMessage" | "parseHostToGameMessage"
->;
+type BridgeParsers = Pick<typeof import("@qwordly/core/bridge"), "parseGameToHostMessage" | "parseHostToGameMessage">;
 
 let bridgeParsersPromise: Promise<BridgeParsers> | null = null;
 
@@ -23,6 +20,16 @@ export type HostMessageHandlers = {
   loadLeaderboard(message: Extract<GameToHostMessage, {type: "game:loadLeaderboard"}>): void | Promise<void>;
   updateUsername(message: Extract<GameToHostMessage, {type: "game:updateUsername"}>): void | Promise<void>;
   updateAvatar(message: Extract<GameToHostMessage, {type: "game:updateAvatar"}>): void | Promise<void>;
+  listRaceCategories(message: Extract<GameToHostMessage, {type: "game:listRaceCategories"}>): void | Promise<void>;
+  startRace(message: Extract<GameToHostMessage, {type: "game:startRace"}>): void | Promise<void>;
+  submitRaceGuess(message: Extract<GameToHostMessage, {type: "game:submitRaceGuess"}>): void | Promise<void>;
+  requestRaceHint(message: Extract<GameToHostMessage, {type: "game:requestRaceHint"}>): void | Promise<void>;
+  skipRaceRiddle(message: Extract<GameToHostMessage, {type: "game:skipRaceRiddle"}>): void | Promise<void>;
+  resumeRace(message: Extract<GameToHostMessage, {type: "game:resumeRace"}>): void | Promise<void>;
+  publishRace(message: Extract<GameToHostMessage, {type: "game:publishRace"}>): void | Promise<void>;
+  getRaceChallenge(message: Extract<GameToHostMessage, {type: "game:getRaceChallenge"}>): void | Promise<void>;
+  getRaceOutcome(message: Extract<GameToHostMessage, {type: "game:getRaceOutcome"}>): void | Promise<void>;
+  listRaceInbox(message: Extract<GameToHostMessage, {type: "game:listRaceInbox"}>): void | Promise<void>;
   analytics(message: Extract<GameToHostMessage, {type: "game:analytics"}>): void | Promise<void>;
   error(message: Extract<GameToHostMessage, {type: "game:error"}>): void | Promise<void>;
 };
@@ -62,6 +69,36 @@ export const createHostMessageRouter = (handlers: HostMessageHandlers) => {
         break;
       case "game:updateAvatar":
         await handlers.updateAvatar(message);
+        break;
+      case "game:listRaceCategories":
+        await handlers.listRaceCategories(message);
+        break;
+      case "game:startRace":
+        await handlers.startRace(message);
+        break;
+      case "game:submitRaceGuess":
+        await handlers.submitRaceGuess(message);
+        break;
+      case "game:requestRaceHint":
+        await handlers.requestRaceHint(message);
+        break;
+      case "game:skipRaceRiddle":
+        await handlers.skipRaceRiddle(message);
+        break;
+      case "game:resumeRace":
+        await handlers.resumeRace(message);
+        break;
+      case "game:publishRace":
+        await handlers.publishRace(message);
+        break;
+      case "game:getRaceChallenge":
+        await handlers.getRaceChallenge(message);
+        break;
+      case "game:getRaceOutcome":
+        await handlers.getRaceOutcome(message);
+        break;
+      case "game:listRaceInbox":
+        await handlers.listRaceInbox(message);
         break;
       case "game:analytics":
         await handlers.analytics(message);

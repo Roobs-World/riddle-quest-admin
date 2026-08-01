@@ -11,7 +11,7 @@
  *  - "bestStreak"  â€” longest win streak ever achieved
  */
 
-import * as admin from "firebase-admin";
+import {admin} from "./firebaseAdmin";
 import * as functions from "firebase-functions";
 import {onCall, HttpsError} from "firebase-functions/v2/https";
 import {captureException} from "./sentry";

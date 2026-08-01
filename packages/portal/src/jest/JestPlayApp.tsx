@@ -6,12 +6,7 @@ import {JestBackendClient, type JestBackendPort} from "./backend";
 import {JestSdkPlatform} from "./JestSdkPlatform";
 import {JestPurchaseCoordinator} from "./purchases";
 import {markJestPlayable, startJestSession, type JestStartupUpdate} from "./startup";
-import type {
-  JestPlayerData,
-  JestPlayerDataUpdate,
-  JestRegistrationOverlayHandle,
-  JestSession,
-} from "./types";
+import type {JestPlayerData, JestPlayerDataUpdate, JestRegistrationOverlayHandle, JestSession} from "./types";
 import {tr, useLocale} from "../play/i18n";
 import {captureGameScreenshot, captureVictoryShareImage, sizeCheckedScreenshotProvider} from "./screenshots";
 import {scheduleEngagementReminders} from "./engagement";
@@ -24,50 +19,58 @@ export function JestPlayApp() {
   const locale = useLocale();
   const searchParams = new URLSearchParams(window.location.search);
   const harness = searchParams.get("harness");
-  const authHarness = harness === "jest-auth";
+  const authHarness = harness === "jest-auth" || harness === "race-auth";
   const mockRuntime = import.meta.env.DEV || harness === "jest" || harness === "dev" || authHarness;
   const mockRegistered = searchParams.get("registered") === "1";
   const platform = useMemo(
-    () => authHarness ? new JestSdkPlatform() : mockRuntime ? new MockJestPlatform(mockRegistered) : new JestSdkPlatform(),
+    () =>
+      authHarness ? new JestSdkPlatform() : mockRuntime ? new MockJestPlatform(mockRegistered) : new JestSdkPlatform(),
     [authHarness, mockRegistered, mockRuntime],
   );
-  const backend = useMemo(() => mockRuntime ? {
-    exchangeIdentity: async (playerSigned: string) => {
-      const testState = authHarness
-        ? (window as typeof window & {
-            __RIDDLE_QUEST_JEST_AUTH_TEST__?: {
-              scenario?: string;
-              backendExchanges: string[];
-              firebaseTokens: string[];
-            };
-          }).__RIDDLE_QUEST_JEST_AUTH_TEST__
-        : undefined;
-      testState?.backendExchanges.push(playerSigned);
-      const onceKey = "riddleQuest:jestAuthHarness:identityFailed";
-      const shouldFailOnce =
-        testState?.scenario === "identity-once-failure" &&
-        sessionStorage.getItem(onceKey) !== "1";
-      if (shouldFailOnce) sessionStorage.setItem(onceKey, "1");
-      if (testState?.scenario === "identity-failure" || shouldFailOnce) {
-        throw new Error("Mock Jest identity exchange failed");
-      }
-      return {customToken: "mock", uid: "jest-mock-player"};
-    },
-    grantPurchase: async (_signed: string, _playerId: string, purchaseToken: string) => ({
-      granted: true,
-      purchaseToken,
-      coinsAwarded: 250,
-      newCoins: 550,
-    }),
-    verifyReferrals: async () => ({verified: true}),
-    syncSubscriptions: async (subscriptionsSigned: string) => ({
-      verified: true,
-      activeSkus:
-        subscriptionsSigned.includes(".active.") || subscriptionsSigned.includes(".subscription.")
-          ? ["com.roobsworld.riddlequest.premium.monthly"]
-          : [],
-    }),
-  } satisfies JestBackendPort : new JestBackendClient(import.meta.env.VITE_JEST_FUNCTIONS_BASE_URL || "/"), [authHarness, mockRuntime]);
+  const backend = useMemo(
+    () =>
+      mockRuntime
+        ? ({
+            exchangeIdentity: async (playerSigned: string) => {
+              const testState = authHarness
+                ? (
+                    window as typeof window & {
+                      __RIDDLE_QUEST_JEST_AUTH_TEST__?: {
+                        scenario?: string;
+                        backendExchanges: string[];
+                        firebaseTokens: string[];
+                      };
+                    }
+                  ).__RIDDLE_QUEST_JEST_AUTH_TEST__
+                : undefined;
+              testState?.backendExchanges.push(playerSigned);
+              const onceKey = "riddleQuest:jestAuthHarness:identityFailed";
+              const shouldFailOnce =
+                testState?.scenario === "identity-once-failure" && sessionStorage.getItem(onceKey) !== "1";
+              if (shouldFailOnce) sessionStorage.setItem(onceKey, "1");
+              if (testState?.scenario === "identity-failure" || shouldFailOnce) {
+                throw new Error("Mock Jest identity exchange failed");
+              }
+              return {customToken: "mock", uid: "jest-mock-player"};
+            },
+            grantPurchase: async (_signed: string, _playerId: string, purchaseToken: string) => ({
+              granted: true,
+              purchaseToken,
+              coinsAwarded: 250,
+              newCoins: 550,
+            }),
+            verifyReferrals: async () => ({verified: true}),
+            syncSubscriptions: async (subscriptionsSigned: string) => ({
+              verified: true,
+              activeSkus:
+                subscriptionsSigned.includes(".active.") || subscriptionsSigned.includes(".subscription.")
+                  ? ["com.roobsworld.riddlequest.premium.monthly"]
+                  : [],
+            }),
+          } satisfies JestBackendPort)
+        : new JestBackendClient(import.meta.env.VITE_JEST_FUNCTIONS_BASE_URL || "/"),
+    [authHarness, mockRuntime],
+  );
   const purchases = useMemo(() => new JestPurchaseCoordinator(platform, backend), [backend, platform]);
   const [session, setSession] = useState<JestSession | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -88,9 +91,7 @@ export function JestPlayApp() {
   const registrationCompletingRef = useRef(false);
   const registrationSourceRef = useRef("post_instructions");
   sessionRef.current = session;
-  const withPlatformActivity = useCallback(async <Result,>(
-    operation: () => Promise<Result>,
-  ): Promise<Result> => {
+  const withPlatformActivity = useCallback(async <Result,>(operation: () => Promise<Result>): Promise<Result> => {
     const startedAt = Date.now();
     setPendingPlatformOperations((current) => current + 1);
     try {
@@ -105,73 +106,75 @@ export function JestPlayApp() {
   const trackFunnel = useCallback((eventName: string, params: Record<string, string | number | boolean> = {}) => {
     console.info("[riddle-quest-funnel]", eventName, params);
   }, []);
-  const authenticateJestIdentity = useCallback(async (token: string) => {
-    if (authHarness) {
-      (window as typeof window & {
-        __RIDDLE_QUEST_JEST_AUTH_TEST__?: {firebaseTokens: string[]};
-      }).__RIDDLE_QUEST_JEST_AUTH_TEST__?.firebaseTokens.push(token);
-    } else if (!mockRuntime) {
-      await signInWithCustomToken(auth, token);
-    }
-  }, [authHarness, mockRuntime]);
+  const authenticateJestIdentity = useCallback(
+    async (token: string) => {
+      if (authHarness) {
+        (
+          window as typeof window & {
+            __RIDDLE_QUEST_JEST_AUTH_TEST__?: {firebaseTokens: string[]};
+          }
+        ).__RIDDLE_QUEST_JEST_AUTH_TEST__?.firebaseTokens.push(token);
+      } else if (!mockRuntime) {
+        await signInWithCustomToken(auth, token);
+      }
+    },
+    [authHarness, mockRuntime],
+  );
   useEffect(() => {
     let active = true;
-    void startJestSession(
-      platform,
-      backend,
-      purchases,
-      authenticateJestIdentity,
-      setStartup,
-    )
-      .then((result) => {
-        if (!active) return;
-        if (result.status === "success") {
-          playerDataRef.current = result.value.playerData;
-          const savedProfile = result.value.playerData?.profile;
-          setEngagementProgress({
-            level: savedProfile?.level ?? 1,
-            winStreak: savedProfile?.winStreak ?? 0,
-            wins: savedProfile?.wins ?? 0,
-          });
-          setSession(result.value);
-          trackFunnel("session_started", {
-            registered: result.value.player.registered,
-            campaign: result.value.entryIntent.campaign ?? "direct",
-            reference: result.value.entryIntent.reference ?? "none",
-            notificationTemplate: result.value.entryIntent.notificationTemplate ?? "none",
-            notificationOffset: result.value.entryIntent.notificationOffset ?? "none",
-          });
-        }
-        else setError("message" in result ? result.message : "Jest startup was cancelled");
-      });
-    return () => { active = false; };
+    void startJestSession(platform, backend, purchases, authenticateJestIdentity, setStartup).then((result) => {
+      if (!active) return;
+      if (result.status === "success") {
+        playerDataRef.current = result.value.playerData;
+        const savedProfile = result.value.playerData?.profile;
+        setEngagementProgress({
+          level: savedProfile?.level ?? 1,
+          winStreak: savedProfile?.winStreak ?? 0,
+          wins: savedProfile?.wins ?? 0,
+        });
+        setSession(result.value);
+        trackFunnel("session_started", {
+          registered: result.value.player.registered,
+          campaign: result.value.entryIntent.campaign ?? "direct",
+          reference: result.value.entryIntent.reference ?? "none",
+          notificationTemplate: result.value.entryIntent.notificationTemplate ?? "none",
+          notificationOffset: result.value.entryIntent.notificationOffset ?? "none",
+        });
+      } else setError("message" in result ? result.message : "Jest startup was cancelled");
+    });
+    return () => {
+      active = false;
+    };
   }, [authenticateJestIdentity, backend, platform, purchases, trackFunnel]);
 
-  const savePlayerData = useCallback((update: JestPlayerDataUpdate) => {
-    if (!sessionRef.current?.player.registered) return;
-    if (update.profile) {
-      setEngagementProgress({
-        level: update.profile.level,
-        winStreak: update.profile.winStreak,
-        wins: update.profile.wins,
+  const savePlayerData = useCallback(
+    (update: JestPlayerDataUpdate) => {
+      if (!sessionRef.current?.player.registered) return;
+      if (update.profile) {
+        setEngagementProgress({
+          level: update.profile.level,
+          winStreak: update.profile.winStreak,
+          wins: update.profile.wins,
+        });
+      }
+      const next: JestPlayerData = {
+        ...(playerDataRef.current ?? {}),
+        schemaVersion: 1,
+        updatedAt: Date.now(),
+        ...update,
+      };
+      playerDataRef.current = next;
+      const write = playerDataWriteQueueRef.current
+        .catch(() => undefined)
+        .then(() => withPlatformActivity(() => platform.writePlayerData(next)));
+      playerDataWriteQueueRef.current = write;
+      void write.catch((writeError) => {
+        console.warn("[riddle-quest] Jest player data save failed", writeError);
+        trackFunnel("player_data_save_failed");
       });
-    }
-    const next: JestPlayerData = {
-      ...(playerDataRef.current ?? {}),
-      schemaVersion: 1,
-      updatedAt: Date.now(),
-      ...update,
-    };
-    playerDataRef.current = next;
-    const write = playerDataWriteQueueRef.current
-      .catch(() => undefined)
-      .then(() => withPlatformActivity(() => platform.writePlayerData(next)));
-    playerDataWriteQueueRef.current = write;
-    void write.catch((writeError) => {
-      console.warn("[riddle-quest] Jest player data save failed", writeError);
-      trackFunnel("player_data_save_failed");
-    });
-  }, [platform, trackFunnel, withPlatformActivity]);
+    },
+    [platform, trackFunnel, withPlatformActivity],
+  );
 
   useEffect(() => {
     if (!session) return;
@@ -179,7 +182,7 @@ export function JestPlayApp() {
       const products = await purchases.getProducts(navigator.language);
       const subscriptions = session.player.registered
         ? await purchases.getSubscriptions(session.player.playerId, navigator.language)
-        : {status: "success", value: []} as const;
+        : ({status: "success", value: []} as const);
       return {products, subscriptions};
     }).then(({products, subscriptions}) => {
       const nextProducts = products.status === "success" ? products.value : [];
@@ -211,7 +214,7 @@ export function JestPlayApp() {
           } catch (profileError) {
             console.warn("[riddle-quest] Jest profile refresh after registration failed", profileError);
           }
-          setSession((current) => current ? {...current, player, profile} : current);
+          setSession((current) => (current ? {...current, player, profile} : current));
           trackFunnel("registration_completed", {
             playerContinuity: player.playerId === previousSession?.player.playerId,
             source: registrationSourceRef.current,
@@ -222,7 +225,7 @@ export function JestPlayApp() {
             registrationPromptDismissedAt: Date.now(),
           };
           await platform.writePreferences(preferences);
-          setSession((current) => current ? {...current, preferences} : current);
+          setSession((current) => (current ? {...current, preferences} : current));
           trackFunnel("registration_prompt_dismissed", {source: registrationSourceRef.current});
         }
       } catch (registrationError) {
@@ -233,47 +236,49 @@ export function JestPlayApp() {
         registrationCompletingRef.current = false;
         setRegistrationPending(false);
         setShowRegistration(false);
-        window.dispatchEvent(new CustomEvent("riddle-quest:registration-prompt-closed", {
-          detail: {registered},
-        }));
+        window.dispatchEvent(
+          new CustomEvent("riddle-quest:registration-prompt-closed", {
+            detail: {registered},
+          }),
+        );
       }
     });
   }, [authenticateJestIdentity, backend, platform, trackFunnel, withPlatformActivity]);
 
-  const openRegistrationPrompt = useCallback((
-    source: "post_instructions" | "authoritative_win",
-    showGamePrompt: boolean,
-  ) => {
-    const currentSession = sessionRef.current;
-    if (!currentSession || currentSession.player.registered) {
-      window.dispatchEvent(new CustomEvent("riddle-quest:registration-prompt-closed", {
-        detail: {registered: true},
-      }));
-      return;
-    }
-    registrationSourceRef.current = source;
-    if (!registrationHandleRef.current) {
-      const overlay = platform.showRegistrationOverlay({
-        theme: "dark",
-        entryPayload: {
-          source,
-          campaign: currentSession.entryIntent.campaign ?? "direct_to_game_registration_v2",
-          reference: `registration_${source}_v1`,
-          ...(currentSession.entryIntent.customName
-            ? {customName: currentSession.entryIntent.customName}
-            : {}),
-        },
-        onClose: completeRegistrationPrompt,
-      });
-      if (overlay.status === "success") {
-        registrationHandleRef.current = overlay.value;
-      } else {
-        trackFunnel("registration_overlay_failed", {source, status: overlay.status});
+  const openRegistrationPrompt = useCallback(
+    (source: "post_instructions" | "authoritative_win", showGamePrompt: boolean) => {
+      const currentSession = sessionRef.current;
+      if (!currentSession || currentSession.player.registered) {
+        window.dispatchEvent(
+          new CustomEvent("riddle-quest:registration-prompt-closed", {
+            detail: {registered: true},
+          }),
+        );
+        return;
       }
-    }
-    setShowRegistration(showGamePrompt);
-    trackFunnel("registration_prompt_shown", {after: source});
-  }, [completeRegistrationPrompt, platform, trackFunnel]);
+      registrationSourceRef.current = source;
+      if (!registrationHandleRef.current) {
+        const overlay = platform.showRegistrationOverlay({
+          theme: "dark",
+          entryPayload: {
+            source,
+            campaign: currentSession.entryIntent.campaign ?? "direct_to_game_registration_v2",
+            reference: `registration_${source}_v1`,
+            ...(currentSession.entryIntent.customName ? {customName: currentSession.entryIntent.customName} : {}),
+          },
+          onClose: completeRegistrationPrompt,
+        });
+        if (overlay.status === "success") {
+          registrationHandleRef.current = overlay.value;
+        } else {
+          trackFunnel("registration_overlay_failed", {source, status: overlay.status});
+        }
+      }
+      setShowRegistration(showGamePrompt);
+      trackFunnel("registration_prompt_shown", {after: source});
+    },
+    [completeRegistrationPrompt, platform, trackFunnel],
+  );
 
   const dismissRegistration = useCallback(() => {
     setRegistrationPending(true);
@@ -308,90 +313,123 @@ export function JestPlayApp() {
     });
   }, [completeRegistrationPrompt, platform, withPlatformActivity]);
 
-  const handleAuthoritativeComplete = useCallback(async (
-    input: {gameMode: "classic" | "challenge"; isCorrect: boolean},
-    result: {newLevel?: number; newWinStreak?: number},
-  ) => {
-    if (!session || !input.isCorrect) return;
-    trackFunnel("authoritative_puzzle_won", {
-      gameMode: input.gameMode,
-      winStreak: result.newWinStreak ?? 0,
+  const login = useCallback(() => {
+    setRegistrationPending(true);
+    void withPlatformActivity(() => platform.login()).then((result) => {
+      if (result.status !== "success") {
+        setRegistrationPending(false);
+        trackFunnel("login_failed", {status: result.status});
+        return;
+      }
+      const handle = registrationHandleRef.current;
+      if (handle) {
+        try {
+          handle.closeButtonAction();
+        } catch (registrationError) {
+          console.warn("[riddle-quest] Jest registration overlay close after login failed", registrationError);
+          completeRegistrationPrompt();
+        }
+        return;
+      }
+      completeRegistrationPrompt();
     });
-    setEngagementProgress((current) => ({
-      level: result.newLevel ?? current.level,
-      winStreak: result.newWinStreak ?? current.winStreak,
-      wins: current.wins + 1,
-    }));
-    const recorded = await recordAuthoritativeCompletion(platform, session, {
-      gameMode: input.gameMode,
-      isCorrect: input.isCorrect,
-      newWinStreak: result.newWinStreak,
-    });
-    if (recorded.status !== "success") {
-      trackFunnel("first_milestone_failed", {status: recorded.status});
-      return;
-    }
-    setSession((current) => current ? {...current, preferences: recorded.value.preferences} : current);
-    if (recorded.value.milestoneMarked) trackFunnel("first_milestone_marked");
-    if (recorded.value.shouldPromptRegistration) {
-      openRegistrationPrompt("authoritative_win", true);
-    }
-  }, [openRegistrationPrompt, platform, session, trackFunnel]);
+  }, [completeRegistrationPrompt, platform, trackFunnel, withPlatformActivity]);
+
+  const handleAuthoritativeComplete = useCallback(
+    async (
+      input: {gameMode: "classic" | "challenge"; isCorrect: boolean},
+      result: {newLevel?: number; newWinStreak?: number},
+    ) => {
+      if (!session || !input.isCorrect) return;
+      trackFunnel("authoritative_puzzle_won", {
+        gameMode: input.gameMode,
+        winStreak: result.newWinStreak ?? 0,
+      });
+      setEngagementProgress((current) => ({
+        level: result.newLevel ?? current.level,
+        winStreak: result.newWinStreak ?? current.winStreak,
+        wins: current.wins + 1,
+      }));
+      const recorded = await recordAuthoritativeCompletion(platform, session, {
+        gameMode: input.gameMode,
+        isCorrect: input.isCorrect,
+        newWinStreak: result.newWinStreak,
+      });
+      if (recorded.status !== "success") {
+        trackFunnel("first_milestone_failed", {status: recorded.status});
+        return;
+      }
+      setSession((current) => (current ? {...current, preferences: recorded.value.preferences} : current));
+      if (recorded.value.milestoneMarked) trackFunnel("first_milestone_marked");
+      if (recorded.value.shouldPromptRegistration) {
+        openRegistrationPrompt("authoritative_win", true);
+      }
+    },
+    [openRegistrationPrompt, platform, session, trackFunnel],
+  );
 
   useEffect(() => {
     const showPostInstructionsRegistration = () => {
       openRegistrationPrompt("post_instructions", false);
     };
     const requestRegistration = () => register();
+    const requestLogin = () => login();
     const dismissRegistrationPrompt = () => dismissRegistration();
     window.addEventListener("riddle-quest:registration-prompt-opened", showPostInstructionsRegistration);
     window.addEventListener("riddle-quest:register-player", requestRegistration);
+    window.addEventListener("riddle-quest:login-player", requestLogin);
     window.addEventListener("riddle-quest:dismiss-registration", dismissRegistrationPrompt);
     return () => {
       window.removeEventListener("riddle-quest:registration-prompt-opened", showPostInstructionsRegistration);
       window.removeEventListener("riddle-quest:register-player", requestRegistration);
+      window.removeEventListener("riddle-quest:login-player", requestLogin);
       window.removeEventListener("riddle-quest:dismiss-registration", dismissRegistrationPrompt);
     };
-  }, [dismissRegistration, openRegistrationPrompt, register]);
+  }, [dismissRegistration, login, openRegistrationPrompt, register]);
 
-  const purchaseProduct = useCallback(async (productId: string): Promise<PurchaseResult> => {
-    if (!session) throw new Error("Jest session is not ready.");
-    const product = jestProducts.find((candidate) => candidate.productId === productId);
-    if (product?.productType === "subscription") {
-      if (!session.player.registered) throw new Error("Registration is required to subscribe.");
-      if (product.subscriptionStatus === "active") {
+  const purchaseProduct = useCallback(
+    async (productId: string): Promise<PurchaseResult> => {
+      if (!session) throw new Error("Jest session is not ready.");
+      const product = jestProducts.find((candidate) => candidate.productId === productId);
+      if (product?.productType === "subscription") {
+        if (!session.player.registered) throw new Error("Registration is required to subscribe.");
+        if (product.subscriptionStatus === "active") {
+          return {success: true, productId, purchaseType: "subscription"};
+        }
+        const subscribed = await purchases.subscribe(productId, session.player.playerId);
+        if (subscribed.status !== "success") {
+          throw new Error("message" in subscribed ? subscribed.message : "Subscription cancelled.");
+        }
+        setJestProducts((current) =>
+          current.map((candidate) =>
+            candidate.productType === "subscription"
+              ? {
+                  ...candidate,
+                  subscriptionStatus: candidate.productId === productId ? "active" : candidate.subscriptionStatus,
+                  trialEligible: false,
+                }
+              : candidate,
+          ),
+        );
+        trackFunnel("subscription_completed", {productId});
         return {success: true, productId, purchaseType: "subscription"};
       }
-      const subscribed = await purchases.subscribe(productId, session.player.playerId);
-      if (subscribed.status !== "success") {
-        throw new Error("message" in subscribed ? subscribed.message : "Subscription cancelled.");
+      const result = await purchases.purchase(productId, session.player.playerId);
+      if (result.status !== "success") {
+        throw new Error("message" in result ? result.message : "Purchase cancelled.");
       }
-      setJestProducts((current) => current.map((candidate) =>
-        candidate.productType === "subscription"
-          ? {
-              ...candidate,
-              subscriptionStatus: candidate.productId === productId ? "active" : candidate.subscriptionStatus,
-              trialEligible: false,
-            }
-          : candidate,
-      ));
-      trackFunnel("subscription_completed", {productId});
-      return {success: true, productId, purchaseType: "subscription"};
-    }
-    const result = await purchases.purchase(productId, session.player.playerId);
-    if (result.status !== "success") {
-      throw new Error("message" in result ? result.message : "Purchase cancelled.");
-    }
-    trackFunnel("purchase_completed", {productId});
-    return {
-      success: true,
-      productId,
-      purchaseType: "consumable",
-      coinsAwarded: result.value.coinsAwarded,
-      newCoins: result.value.newCoins,
-      newlyUnlockedAchievementIds: result.value.newlyUnlockedAchievementIds,
-    };
-  }, [jestProducts, purchases, session, trackFunnel]);
+      trackFunnel("purchase_completed", {productId});
+      return {
+        success: true,
+        productId,
+        purchaseType: "consumable",
+        coinsAwarded: result.value.coinsAwarded,
+        newCoins: result.value.newCoins,
+        newlyUnlockedAchievementIds: result.value.newlyUnlockedAchievementIds,
+      };
+    },
+    [jestProducts, purchases, session, trackFunnel],
+  );
 
   useEffect(() => {
     if (!session) return;
@@ -406,22 +444,24 @@ export function JestPlayApp() {
       session.entryIntent.customName ??
       tr("WebPortal.NOTIFICATION_PLAYER_FALLBACK")
     ).slice(0, 24);
-    void withPlatformActivity(() => scheduleEngagementReminders(platform, {
-      dailyBody: tr("WebPortal.NOTIFICATION_DAILY_BODY", {name: playerName, coins: 75}),
-      streakBody: tr("WebPortal.NOTIFICATION_STREAK_BODY", {
-        wins: engagementProgress.wins,
-        streak: engagementProgress.winStreak,
-        coins: 75,
+    void withPlatformActivity(() =>
+      scheduleEngagementReminders(platform, {
+        dailyBody: tr("WebPortal.NOTIFICATION_DAILY_BODY", {name: playerName, coins: 75}),
+        streakBody: tr("WebPortal.NOTIFICATION_STREAK_BODY", {
+          wins: engagementProgress.wins,
+          streak: engagementProgress.winStreak,
+          coins: 75,
+        }),
+        weeklyBody: tr("WebPortal.NOTIFICATION_WEEKLY_BODY", {
+          level: engagementProgress.level,
+          coins: 75,
+        }),
+        dailyCta: tr("WebPortal.NOTIFICATION_DAILY_CTA"),
+        streakCta: tr("WebPortal.NOTIFICATION_STREAK_CTA"),
+        weeklyCta: tr("WebPortal.NOTIFICATION_WEEKLY_CTA"),
+        assetReference: import.meta.env.VITE_JEST_NOTIFICATION_ASSET_REFERENCE || undefined,
       }),
-      weeklyBody: tr("WebPortal.NOTIFICATION_WEEKLY_BODY", {
-        level: engagementProgress.level,
-        coins: 75,
-      }),
-      dailyCta: tr("WebPortal.NOTIFICATION_DAILY_CTA"),
-      streakCta: tr("WebPortal.NOTIFICATION_STREAK_CTA"),
-      weeklyCta: tr("WebPortal.NOTIFICATION_WEEKLY_CTA"),
-      assetReference: import.meta.env.VITE_JEST_NOTIFICATION_ASSET_REFERENCE || undefined,
-    })).then((results) => {
+    ).then((results) => {
       results.forEach((result, index) => {
         if (result.status !== "success") {
           trackFunnel("notification_schedule_failed", {index, status: result.status});
@@ -454,40 +494,37 @@ export function JestPlayApp() {
   useEffect(() => {
     if (!session) return;
     const share = (event: Event) => {
-      const detail = (event as CustomEvent<{
-        gameMode?: "classic" | "challenge";
-        challengeId?: string;
-        attempts?: number;
-        emojiGrid?: string;
-      }>).detail ?? {};
+      const detail =
+        (
+          event as CustomEvent<{
+            gameMode?: "classic" | "challenge";
+            challengeId?: string;
+            attempts?: number;
+            emojiGrid?: string;
+          }>
+        ).detail ?? {};
       const inviterName = session.profile?.username ?? "Riddle Quest player";
       const gameMode = detail.gameMode === "challenge" ? "challenge" : "classic";
       const attempts = Math.max(1, detail.attempts ?? 1);
       const gameType = tr(
-        gameMode === "challenge"
-          ? "VictoryModal.SHARE_DAILY_CHALLENGE_LABEL"
-          : "VictoryModal.SHARE_CLASSIC_MODE_LABEL",
+        gameMode === "challenge" ? "VictoryModal.SHARE_DAILY_CHALLENGE_LABEL" : "VictoryModal.SHARE_CLASSIC_MODE_LABEL",
       );
       const shareText = tr("VictoryModal.SHARE_MESSAGE_TEMPLATE", {
         gameType,
         attempts,
-        attemptLabel: tr(
-          attempts === 1
-            ? "VictoryModal.SHARE_ATTEMPT_SINGULAR"
-            : "VictoryModal.SHARE_ATTEMPT_PLURAL",
-        ),
+        attemptLabel: tr(attempts === 1 ? "VictoryModal.SHARE_ATTEMPT_SINGULAR" : "VictoryModal.SHARE_ATTEMPT_PLURAL"),
         emojiGrid: detail.emojiGrid?.slice(0, 500) || "🟩",
       });
       void withPlatformActivity(async () => {
-        const shareImage = await sizeCheckedScreenshotProvider(() => captureVictoryShareImage({
-          title: tr("VictoryModal.SHARE_RESULT_TITLE"),
-          summary: `${gameType} · ${attempts} ${tr(
-            attempts === 1
-              ? "VictoryModal.SHARE_ATTEMPT_SINGULAR"
-              : "VictoryModal.SHARE_ATTEMPT_PLURAL",
-          )}`,
-          emojiGrid: detail.emojiGrid?.slice(0, 500) || "🟩",
-        }))();
+        const shareImage = await sizeCheckedScreenshotProvider(() =>
+          captureVictoryShareImage({
+            title: tr("VictoryModal.SHARE_RESULT_TITLE"),
+            summary: `${gameType} · ${attempts} ${tr(
+              attempts === 1 ? "VictoryModal.SHARE_ATTEMPT_SINGULAR" : "VictoryModal.SHARE_ATTEMPT_PLURAL",
+            )}`,
+            emojiGrid: detail.emojiGrid?.slice(0, 500) || "🟩",
+          }),
+        )();
         return platform.shareReferral({
           reference: "riddle_quest_friend_challenge_v2",
           shareTitle: tr("VictoryModal.SHARE_RESULT_TITLE"),
@@ -504,17 +541,102 @@ export function JestPlayApp() {
             customName: tr("WebPortal.APP_TITLE"),
           },
         });
-      }).then((result) => trackFunnel("friend_challenge_share_dialog", {
-        status: result.status,
-        gameMode,
-        attempts,
-      }));
+      }).then((result) =>
+        trackFunnel("friend_challenge_share_dialog", {
+          status: result.status,
+          gameMode,
+          attempts,
+        }),
+      );
     };
     window.addEventListener("riddle-quest:share-referral", share);
     return () => window.removeEventListener("riddle-quest:share-referral", share);
   }, [platform, session, trackFunnel, withPlatformActivity]);
 
-  if (error) return <main className="route-missing"><div><h1>Riddle Quest could not start</h1><p>{error}</p><button onClick={() => window.location.reload()}>Retry</button></div></main>;
+  useEffect(() => {
+    if (!session?.player.registered) return;
+    const scheduleRaceReturn = (event: Event) => {
+      const detail = (event as CustomEvent<{challengeId?: string}>).detail;
+      if (!detail?.challengeId) return;
+      const challengeId = detail.challengeId;
+      void withPlatformActivity(() =>
+        platform.scheduleNotification({
+          identifier: "race_to_10_return_v1",
+          scheduledInDays: 1,
+          title: tr("RaceTo10.TITLE"),
+          body: tr("RaceTo10.CHALLENGE_READY"),
+          ctaText: tr("RaceTo10.ACCEPT_CHALLENGE"),
+          priority: "high",
+          entryPayload: {
+            campaign: "race_to_10_return_v1",
+            reference: "race_to_10_return_d1_v1",
+            challengeId,
+            challengeDestination: challengeId,
+            notification_template: "race_to_10_return_v1",
+            notification_offset: "D1",
+          },
+        }),
+      ).then((result) => trackFunnel("race_return_reminder_scheduled", {status: result.status}));
+    };
+    window.addEventListener("riddle-quest:race-challenge-published", scheduleRaceReturn);
+    return () => window.removeEventListener("riddle-quest:race-challenge-published", scheduleRaceReturn);
+  }, [platform, session?.player.registered, trackFunnel, withPlatformActivity]);
+
+  useEffect(() => {
+    if (!session) return;
+    const shareRace = (event: Event) => {
+      const detail = (
+        event as CustomEvent<{
+          challengeId?: string;
+          preview?: {adjustedTimeToBeatMs?: number; categoryId?: string};
+          outcome?: {adjustedFinishMs?: number};
+        }>
+      ).detail;
+      if (!detail?.challengeId || typeof detail.preview?.adjustedTimeToBeatMs !== "number") return;
+      const challengeId = detail.challengeId;
+      const inviterName = session.profile?.username ?? tr("WebPortal.NOTIFICATION_PLAYER_FALLBACK");
+      const seconds = (detail.preview.adjustedTimeToBeatMs / 1_000).toFixed(1);
+      const summary = `${inviterName} · ${seconds}s · ${tr("RaceTo10.FIRST_TO_TEN")}`;
+      void withPlatformActivity(async () => {
+        const shareImage = await sizeCheckedScreenshotProvider(() =>
+          captureVictoryShareImage({title: tr("RaceTo10.TITLE"), summary, emojiGrid: "🏁 10/10"}),
+        )();
+        return platform.shareReferral({
+          reference: "riddle_quest_race_to_10_v1",
+          shareTitle: tr("RaceTo10.TITLE"),
+          shareText: `${tr("RaceTo10.CHALLENGED_BY", {name: inviterName})} · ${tr("RaceTo10.TIME_TO_BEAT", {time: `${seconds}s`})}`,
+          ...(shareImage ? {shareImage} : {}),
+          onboardingSlug: "race-to-10",
+          entryPayload: {
+            campaign: "race_to_10_v1",
+            reference: "race_to_10_share_v1",
+            challengeDestination: challengeId,
+            challengeId,
+            inviterName,
+            customName: tr("WebPortal.APP_TITLE"),
+          },
+        });
+      }).then((result) =>
+        trackFunnel("race_challenge_share_dialog", {
+          status: result.status,
+          categoryId: detail.preview?.categoryId ?? "unknown",
+        }),
+      );
+    };
+    window.addEventListener("riddle-quest:share-race", shareRace);
+    return () => window.removeEventListener("riddle-quest:share-race", shareRace);
+  }, [platform, session, trackFunnel, withPlatformActivity]);
+
+  if (error)
+    return (
+      <main className="route-missing">
+        <div>
+          <h1>Riddle Quest could not start</h1>
+          <p>{error}</p>
+          <button onClick={() => window.location.reload()}>Retry</button>
+        </div>
+      </main>
+    );
   if (!session) {
     const startupMessageKey = {
       connecting: "WebPortal.STARTUP_CONNECTING",
@@ -528,32 +650,46 @@ export function JestPlayApp() {
       </main>
     );
   }
-  return <>
-    {!session.player.registered && showRegistration ? <aside
-      className="play-alert jest-registration-alert"
-      inert={pendingPlatformOperations > 0 || registrationPending ? true : undefined}
-    >
-      <strong>{tr("Profile.JEST_REGISTRATION_TITLE")}</strong>
-      {session.entryIntent.customName ? <p>{tr("Profile.JEST_REGISTRATION_GREETING", {
-        name: session.entryIntent.customName,
-      })}</p> : null}
-      <p>{tr("Profile.JEST_REGISTRATION_DESCRIPTION")}</p>
-      <button className="play-primary compact" onClick={register}>
-        {tr("Profile.JEST_REGISTRATION_BUTTON")}
-      </button>
-      <button className="play-text-button" onClick={dismissRegistration}>{tr("CommonAlerts.CLOSE_BUTTON")}</button>
-    </aside> : null}
-    <PlayHostApp
-      initialGameMode={session.entryIntent.gameMode}
-      registrationName={session.entryIntent.customName}
-      onPlayable={() => markJestPlayable(platform)}
-      onAuthoritativeComplete={handleAuthoritativeComplete}
-      platformProducts={jestProducts}
-      platformPurchase={purchaseProduct}
-      platformPlayerRegistered={session.player.registered}
-      externalInteractionBlocked={pendingPlatformOperations > 0}
-      initialPlayerData={session.playerData}
-      onPlayerDataChange={savePlayerData}
-    />
-  </>;
+  return (
+    <>
+      {!session.player.registered && showRegistration ? (
+        <aside
+          className="play-alert jest-registration-alert"
+          inert={pendingPlatformOperations > 0 || registrationPending ? true : undefined}
+        >
+          <strong>{tr("Profile.JEST_REGISTRATION_TITLE")}</strong>
+          {session.entryIntent.customName ? (
+            <p>
+              {tr("Profile.JEST_REGISTRATION_GREETING", {
+                name: session.entryIntent.customName,
+              })}
+            </p>
+          ) : null}
+          <p>{tr("Profile.JEST_REGISTRATION_DESCRIPTION")}</p>
+          <button className="play-primary compact" onClick={register}>
+            {tr("Profile.JEST_REGISTER_BUTTON")}
+          </button>
+          <button className="play-secondary compact" onClick={login}>
+            {tr("Profile.JEST_LOGIN_BUTTON")}
+          </button>
+          <button className="play-text-button" onClick={dismissRegistration}>
+            {tr("Profile.JEST_PLAY_AS_GUEST_BUTTON")}
+          </button>
+        </aside>
+      ) : null}
+      <PlayHostApp
+        initialGameMode={session.entryIntent.gameMode}
+        initialRaceChallengeId={session.entryIntent.challengeId}
+        registrationName={session.entryIntent.customName}
+        onPlayable={() => markJestPlayable(platform)}
+        onAuthoritativeComplete={handleAuthoritativeComplete}
+        platformProducts={jestProducts}
+        platformPurchase={purchaseProduct}
+        platformPlayerRegistered={session.player.registered}
+        externalInteractionBlocked={pendingPlatformOperations > 0}
+        initialPlayerData={session.playerData}
+        onPlayerDataChange={savePlayerData}
+      />
+    </>
+  );
 }

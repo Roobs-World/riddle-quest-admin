@@ -1,4 +1,21 @@
 {
-  "indexes": [],
-  "fieldOverrides": []
+  "indexes": [
+    {
+      "collectionGroup": "riddles",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {"fieldPath": "raceEligible", "order": "ASCENDING"},
+        {"fieldPath": "categoryId", "order": "ASCENDING"}
+      ]
+    }
+  ],
+  "fieldOverrides": [
+    {"collectionGroup": "raceDecks", "fieldPath": "expiresAt", "ttl": true, "indexes": []},
+    {"collectionGroup": "raceRuns", "fieldPath": "expiresAt", "ttl": true, "indexes": []},
+    {"collectionGroup": "raceChallenges", "fieldPath": "expiresAt", "ttl": true, "indexes": []},
+    {"collectionGroup": "raceAttempts", "fieldPath": "expiresAt", "ttl": true, "indexes": []},
+    {"collectionGroup": "raceStartRequests", "fieldPath": "expiresAt", "ttl": true, "indexes": []},
+    {"collectionGroup": "requests", "fieldPath": "expiresAt", "ttl": true, "indexes": []},
+    {"collectionGroup": "raceAnalytics", "fieldPath": "expiresAt", "ttl": true, "indexes": []}
+  ]
 }

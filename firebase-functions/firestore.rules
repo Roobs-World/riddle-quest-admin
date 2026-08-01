@@ -93,31 +93,19 @@ service cloud.firestore {
       allow delete: if false;
     }
 
-    // Riddles collection - read-only for clients, write-only for server
+    // Riddle answers are only returned through authoritative callable functions.
     match /riddles/{riddleId} {
-      // Authenticated users can read riddles
-      allow read: if isAuthenticated();
-      
-      // Only server (Cloud Functions) can create/update/delete riddles
-      allow write: if isServerRequest();
+      allow read, write: if false;
     }
 
-    // Localized riddles collection - read-only for authenticated clients, write-only for server
+    // Localized source content includes answers and must remain server-only.
     match /localizedRiddles/{locale}/riddles/{riddleId} {
-      // Authenticated users can read localized riddles for supported locales
-      allow read: if isAuthenticated() && isSupportedLocale(locale);
-
-      // Only server (Cloud Functions) can create/update/delete localized riddles
-      allow write: if isServerRequest();
+      allow read, write: if false;
     }
 
-    // Daily riddles collection - read-only for clients, write-only for server
+    // Legacy daily source content also contains answers.
     match /dailyRiddles/{riddleId} {
-      // Authenticated users (including anonymous guest accounts) can read daily riddles
-      allow read: if isAuthenticated();
-
-      // Only server (Cloud Functions) can create/update/delete daily riddles
-      allow write: if isServerRequest();
+      allow read, write: if false;
     }
 
     // User Classic Progress - strict user ownership
@@ -188,6 +176,49 @@ service cloud.firestore {
 
       // Only Cloud Functions (admin SDK) may create or update entries
       allow write: if isServerRequest();
+    }
+
+    // Race to 10 state is exclusively exposed through validated callable
+    // functions. Answers, ghost timelines, attempts, and request receipts must
+    // never be readable or writable through a client Firestore SDK.
+    match /raceCategories/{categoryId} {
+      allow read, write: if false;
+    }
+
+    match /raceDecks/{deckId} {
+      allow read, write: if false;
+    }
+
+    match /raceRuns/{runId} {
+      allow read, write: if false;
+
+      match /requests/{requestId} {
+        allow read, write: if false;
+      }
+    }
+
+    match /raceChallenges/{challengeId} {
+      allow read, write: if false;
+    }
+
+    match /raceAttempts/{attemptId} {
+      allow read, write: if false;
+    }
+
+    match /raceStartRequests/{requestId} {
+      allow read, write: if false;
+    }
+
+    match /raceConfig/{configId} {
+      allow read, write: if false;
+    }
+
+    match /raceAnalytics/{eventId} {
+      allow read, write: if false;
+    }
+
+    match /users/{userId}/raceInbox/{itemId} {
+      allow read, write: if false;
     }
 
     // Deny all other access by default

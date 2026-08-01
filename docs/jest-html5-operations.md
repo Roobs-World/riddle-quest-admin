@@ -42,6 +42,18 @@ The authenticated browser state is cached only in `/tmp/riddle-quest-jest-sandbo
 
 The committed `packages/portal/.env.jest` contains public Firebase client configuration. `JEST_SHARED_SECRET` remains in Firebase Secret Manager. The only deployed Functions are the authoritative Jest identity, purchase, referral, profile, leaderboard, riddle, and gameplay boundaries; the obsolete legacy-migration Functions have been deleted.
 
+### Google Cloud runtime health
+
+The production project uses Application Default Credentials with `riddle-quest-ec2b2` as both the active and quota
+project. Compute Engine, Cloud Functions, Cloud Run, Cloud Build, Artifact Registry, Eventarc, Pub/Sub, Scheduler,
+Firestore, Secret Manager, IAM Credentials, Logging, and Monitoring APIs are enabled.
+
+Firebase callable Functions are public at the Cloud Run ingress layer so browser requests can reach Firebase callable
+authentication. This does not make gameplay data public: authenticated callables still reject missing or invalid Firebase
+identity, Jest platform endpoints verify signed Jest payloads, and Firestore competitive collections remain server-only.
+After creating a new HTTP/callable Function, verify that its Cloud Run service has `allUsers` bound to
+`roles/run.invoker`; a missing binding appears as a Google HTML 403 rather than a structured Firebase error.
+
 ## Build and upload
 
 Copy `packages/portal/.env.jest-upload.example` to the ignored `packages/portal/.env.jest-upload.local`, then set the game upload token and notification email. The release tooling also accepts the legacy ignored `packages/portal/.env` file:
@@ -52,11 +64,13 @@ pnpm jest:build-upload
 
 The command creates a timestamped version, builds and audits `dist-jest`, creates the ignored `packages/portal/build.zip`, uploads it to the current game, and requests Draft activation after processing. It does not publish the game or submit it for review.
 
-The last accepted current-game upload was:
+The latest current-game upload was:
 
-- Build: `1.0.0-dev.20260731000321`
-- Jest version: `019fb57b-a3ff-777b-9a12-a7755d058a70`
-- Upload result: active on the Jest game route
+- Build: `1.0.0-dev.20260731231001`
+- Jest version: `019fba71-2c3b-72fd-937d-8cdc67b845cb`
+- Upload result: accepted for asynchronous processing with automatic activation requested
+- Publication status: the unauthenticated route still returns Jest's private-app 403; owner review and Public visibility
+  remain required in the Developer Console
 
 ## Developer Console setup
 

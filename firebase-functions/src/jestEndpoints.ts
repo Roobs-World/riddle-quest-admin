@@ -1,4 +1,4 @@
-import * as admin from "firebase-admin";
+import {admin} from "./firebaseAdmin";
 import {defineSecret} from "firebase-functions/params";
 import {onRequest} from "firebase-functions/v2/https";
 import {logger} from "firebase-functions";

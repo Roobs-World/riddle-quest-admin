@@ -1,5 +1,23 @@
 import type {BridgeLeaderboardEntry, BridgeProfile, BridgeRiddle, BridgeUser} from "@qwordly/core/bridge";
 import type {ProductPricing} from "@qwordly/core/pricing/catalog";
+import type {
+  ListRaceCategoriesResponse,
+  ListRaceInboxResponse,
+  PublishRaceChallengeRequest,
+  PublishRaceChallengeResponse,
+  RaceAccessResponse,
+  RaceAnalyticsEventRequest,
+  RaceChallengePreview,
+  RaceOutcome,
+  RaceRunResponse,
+  RequestRaceHintRequest,
+  RequestRaceHintResponse,
+  SkipRaceRiddleRequest,
+  SkipRaceRiddleResponse,
+  StartRaceRunRequest,
+  SubmitRaceGuessRequest,
+  SubmitRaceGuessResponse,
+} from "@qwordly/core/race";
 
 export type WebGameMode = "classic" | "challenge";
 export type LeaderboardType = "xp" | "totalWins" | "bestStreak";
@@ -93,6 +111,18 @@ export type HostServices = {
   loadLeaderboard(type: LeaderboardType): Promise<BridgeLeaderboardEntry[]>;
   updateUsername(username: string): Promise<BridgeProfile | null>;
   updateAvatar(imageDataUrl: string): Promise<BridgeProfile | null>;
+  listRaceCategories(locale: StartRaceRunRequest["locale"]): Promise<ListRaceCategoriesResponse>;
+  startRace(input: StartRaceRunRequest): Promise<RaceRunResponse>;
+  submitRaceGuess(input: SubmitRaceGuessRequest): Promise<SubmitRaceGuessResponse>;
+  requestRaceHint(input: RequestRaceHintRequest): Promise<RequestRaceHintResponse>;
+  skipRaceRiddle(input: SkipRaceRiddleRequest): Promise<SkipRaceRiddleResponse>;
+  resumeRace(runId: string): Promise<RaceRunResponse>;
+  publishRace(input: PublishRaceChallengeRequest): Promise<PublishRaceChallengeResponse>;
+  getRaceChallenge(challengeId: string): Promise<RaceChallengePreview>;
+  getRaceOutcome(runId: string): Promise<RaceOutcome>;
+  listRaceInbox(input?: {cursor?: string; limit?: number}): Promise<ListRaceInboxResponse>;
+  getRaceAccess(): Promise<RaceAccessResponse>;
+  recordRaceAnalytics(input: RaceAnalyticsEventRequest): Promise<{accepted: true}>;
 };
 
 export const toProductSummaries = (products: ProductPricing[]): ProductSummary[] =>

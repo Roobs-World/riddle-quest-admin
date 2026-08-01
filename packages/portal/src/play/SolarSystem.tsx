@@ -1,5 +1,5 @@
 import {useEffect, useRef} from "react";
-import * as THREE from "three";
+import * as THREE from "three/src/Three.js";
 import sunTextureUrl from "../../../../assets/3d-web/tex_sun_spots_02.webp";
 import mercuryTextureUrl from "../../../../assets/3d-web/tex_planet_a.webp";
 import venusTextureUrl from "../../../../assets/3d-web/tex_planet_d.webp";

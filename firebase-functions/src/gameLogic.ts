@@ -1,5 +1,6 @@
 import {logger} from "firebase-functions/v2";
-import * as admin from "firebase-admin";
+import {admin} from "./firebaseAdmin";
+import type {FieldValue, UpdateData} from "firebase-admin/firestore";
 import {onCall, HttpsError, CallableRequest} from "firebase-functions/v2/https";
 import {updateUserCoins, getUser, getRiddleByGameMode, updateUserStats} from "./firestoreService";
 import {
@@ -180,9 +181,9 @@ export const skipRiddle = onCall(
           dailyChallengeCurrentQuestion: newQuestionIndex,
         };
 
-        const updates: admin.firestore.UpdateData<{
+        const updates: UpdateData<{
           progress: Pick<PlayerProgress, "dailyChallengeCurrentQuestion">;
-          lastDailyChallengeCompletedAt?: admin.firestore.FieldValue;
+          lastDailyChallengeCompletedAt?: FieldValue;
         }> = {
           "progress.dailyChallengeCurrentQuestion": newQuestionIndex,
         };

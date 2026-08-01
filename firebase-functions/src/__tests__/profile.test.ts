@@ -92,10 +92,10 @@ describe("Profile Cloud Functions", () => {
     jest.restoreAllMocks();
   });
 
-  it("enables App Check on profile update callables", () => {
+  it("enables App Check and public Cloud Run ingress on profile update callables", () => {
     expect(mockOnCallInvocations).toEqual([
-      [{enforceAppCheck: true}, expect.any(Function)],
-      [{enforceAppCheck: true}, expect.any(Function)],
+      [{enforceAppCheck: true, invoker: "public"}, expect.any(Function)],
+      [{enforceAppCheck: true, invoker: "public"}, expect.any(Function)],
     ]);
   });
 

@@ -104,4 +104,4 @@ export const RIDDLE_GENERATION_THRESHOLD = 1;
 export const RIDDLE_GENERATION_BATCH_SIZE = 5;
 
 /** Maximum characters allowed in generated riddle answers. */
-export const MAX_RIDDLE_ANSWER_CHARACTERS = 7;
+export {MAX_RIDDLE_ANSWER_CHARACTERS} from "@qwordly/core/game";

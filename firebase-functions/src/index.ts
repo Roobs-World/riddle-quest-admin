@@ -8,26 +8,32 @@
  * environment variable access; this file is intentionally kept small and
  * declarative.
  */
-import * as admin from "firebase-admin";
+import {getApps, initializeApp} from "firebase-admin/app";
 
 // Initialize the Firebase Admin SDK once for all functions in this project.
-admin.initializeApp();
+if (getApps().length === 0) initializeApp();
 
 import {getHint, spendCoins, skipRiddle} from "./gameLogic";
-import {
-  getCurrentDailyChallenge,
-  getCurrentClassicRiddle,
-} from "./dailyChallenge";
+import {getCurrentDailyChallenge, getCurrentClassicRiddle} from "./dailyChallenge";
 import {updateAvatar, updateUsername} from "./profile";
-import {completeGame} from "./submitGuessLogic";
+import {completeGame} from "./completeGameCallable";
 import {dailyChallengeScheduler} from "./dailyScheduler";
 import {getLeaderboard} from "./leaderboard";
 import {
-  exchangeJestIdentity,
-  grantJestPurchase,
-  syncJestSubscriptions,
-  verifyJestReferrals,
-} from "./jestEndpoints";
+  getRaceChallenge,
+  getRaceAccess,
+  getRaceOutcome,
+  listRaceCategories,
+  listRaceInbox,
+  publishRaceChallenge,
+  recordRaceAnalytics,
+  requestRaceHint,
+  resumeRaceRun,
+  skipRaceRiddle,
+  startRaceRun,
+  submitRaceGuess,
+} from "./race/raceCallables";
+import {exchangeJestIdentity, grantJestPurchase, syncJestSubscriptions, verifyJestReferrals} from "./jestEndpoints";
 export {
   spendCoins,
   skipRiddle,
@@ -39,6 +45,18 @@ export {
   completeGame,
   dailyChallengeScheduler,
   getLeaderboard,
+  listRaceCategories,
+  listRaceInbox,
+  startRaceRun,
+  submitRaceGuess,
+  requestRaceHint,
+  skipRaceRiddle,
+  resumeRaceRun,
+  publishRaceChallenge,
+  getRaceChallenge,
+  getRaceAccess,
+  getRaceOutcome,
+  recordRaceAnalytics,
   exchangeJestIdentity,
   grantJestPurchase,
   syncJestSubscriptions,

@@ -20,6 +20,7 @@ import enStats from "../../../../src/locales/en/stats.json";
 import enStreakFanfare from "../../../../src/locales/en/streakFanfare.json";
 import enTooltips from "../../../../src/locales/en/tooltips.json";
 import enVictory from "../../../../src/locales/en/victory.json";
+import enRace from "../../../../src/locales/en/race.json";
 import {loadNonEnglishNamespace} from "./localeModules";
 
 export type Locale =
@@ -46,7 +47,8 @@ export type Namespace =
   | "stats"
   | "streakFanfare"
   | "tooltips"
-  | "victory";
+  | "victory"
+  | "race";
 
 export type NamespaceCatalog = Record<string, unknown>;
 type RootCatalog = Record<string, unknown>;
@@ -113,6 +115,7 @@ const REQUIRED_NAMESPACES = [
   "streakFanfare",
   "tooltips",
   "victory",
+  "race",
 ] as const satisfies readonly Namespace[];
 
 const ENGLISH_NAMESPACES: NamespaceCatalog[] = [
@@ -137,6 +140,7 @@ const ENGLISH_NAMESPACES: NamespaceCatalog[] = [
   enStreakFanfare,
   enTooltips,
   enVictory,
+  enRace,
 ];
 
 const ENGLISH_NAMESPACE_BY_NAME: Record<Namespace, NamespaceCatalog> = {
@@ -161,6 +165,7 @@ const ENGLISH_NAMESPACE_BY_NAME: Record<Namespace, NamespaceCatalog> = {
   streakFanfare: enStreakFanfare,
   tooltips: enTooltips,
   victory: enVictory,
+  race: enRace,
 };
 
 const localeSubscribers = new Set<() => void>();

@@ -9,10 +9,10 @@
     "noUnusedLocals": true,
     "outDir": "lib",
     "rootDir": "src",
-    "baseUrl": ".",
     "paths": {
       "@qwordly/core": ["../packages/core/dist/index.d.ts"],
       "@qwordly/core/game": ["../packages/core/dist/game/index.d.ts"],
+      "@qwordly/core/race": ["../packages/core/dist/race/index.d.ts"],
       "@qwordly/core/validation": ["../packages/core/dist/validation/index.d.ts"],
       "@qwordly/core/validation/*": ["../packages/core/dist/validation/*"]
     },

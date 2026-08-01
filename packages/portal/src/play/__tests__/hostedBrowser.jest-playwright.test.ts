@@ -6,7 +6,7 @@ const describeBrowser = process.env.PORTAL_BROWSER_TESTS === "1" ? describe : de
 const completeOnboardingAndTours = async (page: Page) => {
   await page.getByRole("button", {name: /let's play/i}).click();
   await page.getByRole("button", {name: /got it/i}).click();
-  const guestContinue = page.getByRole("button", {name: /^ok$/i});
+  const guestContinue = page.getByRole("button", {name: /play as guest/i});
   if (await guestContinue.isVisible()) {
     await guestContinue.click();
   }

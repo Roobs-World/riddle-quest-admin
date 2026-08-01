@@ -21,6 +21,8 @@ function assertCopiedArtifactIsComplete(target) {
     path.join(target, "dist", "validation", "firestoreSchemas.js"),
     path.join(target, "dist", "validation", "firestoreSchemas.d.ts"),
     path.join(target, "dist", "validation", "index.js"),
+    path.join(target, "dist", "race", "index.js"),
+    path.join(target, "dist", "race", "index.d.ts"),
     path.join(target, "dist", "index.js"),
   ];
 

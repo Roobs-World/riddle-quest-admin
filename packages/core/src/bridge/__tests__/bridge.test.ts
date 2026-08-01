@@ -70,4 +70,20 @@ describe("bridge protocol", () => {
 
     expect(result.success).toBe(true);
   });
+
+  it("validates Race to 10 requests at the bridge boundary", () => {
+    expect(
+      GameToHostMessageSchema.safeParse({
+        type: "game:startRace",
+        requestId: "bridge-start-1",
+        payload: {locale: "en", categoryId: "history", requestId: "backend-start-1"},
+      }).success,
+    ).toBe(true);
+    expect(
+      GameToHostMessageSchema.safeParse({
+        type: "game:startRace",
+        payload: {locale: "en", categoryId: "history", challengeId: "also-present", requestId: "backend-start-2"},
+      }).success,
+    ).toBe(false);
+  });
 });
