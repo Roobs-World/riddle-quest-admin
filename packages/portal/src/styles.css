@@ -644,9 +644,6 @@ p {
   gap: 8px;
   padding: 0 16px;
 }
-.game-input-actions.has-multiplayer {
-  grid-template-columns: 0.9fr 1.1fr 0.9fr 0.9fr;
-}
 .game-input-actions button {
   display: inline-flex;
   justify-content: center;
@@ -676,19 +673,6 @@ p {
   background: #d9dee4;
   color: #707780;
 }
-.game-input-actions .multiplayer-action {
-  flex-direction: column;
-  gap: 3px;
-  background: linear-gradient(120deg, #173e4c, #2e8b57);
-  color: #fff;
-  font-size: clamp(13px, 2.4vw, 18px);
-  line-height: 1;
-}
-.game-input-actions .multiplayer-action .native-control-icon {
-  width: 21px;
-  height: 21px;
-  fill: currentColor;
-}
 .game-input-actions img,
 .native-control-icon {
   width: 22px;
@@ -715,6 +699,25 @@ p {
   padding: 8px;
   border: 0;
   background: transparent;
+}
+.game-bottom-navigation .multiplayer-navigation-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  padding-inline: 14px;
+  color: #fff;
+  background: linear-gradient(120deg, #173e4c, #2e8b57);
+  border-radius: 999px;
+  font:
+    400 clamp(13px, 2.4vw, 18px)/1 "Poetsen One",
+    "Poppins",
+    sans-serif;
+}
+.game-bottom-navigation .multiplayer-navigation-action .native-control-icon {
+  width: 21px;
+  height: 21px;
+  fill: currentColor;
 }
 .game-bottom-navigation img,
 .game-bottom-navigation .native-navigation-icon {

@@ -14,6 +14,7 @@ type AuthHarnessState = {
   calls: string[];
   backendExchanges: string[];
   firebaseTokens: string[];
+  loginPayloads: Array<Record<string, string>>;
   overlayOptions: Array<{
     theme?: string;
     source?: string;
@@ -49,6 +50,7 @@ const installJestSdkHarness = async (page: Page, scenario = "success") => {
       calls: [],
       backendExchanges: [],
       firebaseTokens: [],
+      loginPayloads: [],
       overlayOptions: [],
       playerDataReads: 0,
       preferenceWrites: [],
@@ -89,8 +91,9 @@ const installJestSdkHarness = async (page: Page, scenario = "success") => {
         }
         return {player: {...player}, playerSigned: `signed:${player.playerId}:${player.registered}`};
       },
-      login: async () => {
+      login: async (options?: {entryPayload?: Record<string, string>}) => {
         state.calls.push("sdk.login");
+        state.loginPayloads.push(structuredClone(options?.entryPayload ?? {}));
         player.registered = true;
         localStorage.setItem("riddleQuest:jestAuthHarness:registered", "1");
       },
@@ -654,8 +657,13 @@ describeBrowser("Jest authentication integration", () => {
     await enterRegisteredGame(creator.page);
     const multiplayerButton = creator.page.getByRole("button", {name: /^multiplayer$/i});
     await multiplayerButton.waitFor({timeout: 5_000});
+    expect(await creator.page.locator(".race-mode-launcher").count()).toBe(0);
     const actionLabels = await creator.page.locator(".game-input-actions > button").allInnerTexts();
-    expect(actionLabels).toEqual(["Hint", "SUBMIT", "Multiplayer", "Skip"]);
+    expect(actionLabels).toEqual(["Hint", "SUBMIT", "Skip"]);
+    const navigationLabels = await creator.page.locator(".game-bottom-navigation > button").evaluateAll((buttons) =>
+      buttons.map((button) => button.getAttribute("aria-label")),
+    );
+    expect(navigationLabels).toEqual(["Settings", "Multiplayer", "Profile"]);
     await multiplayerButton.click();
     await creator.page.getByRole("button", {name: /^History /}).click();
     await creator.page.locator(".race-gameplay .guess-board").waitFor({state: "visible", timeout: 10_000});
@@ -709,6 +717,13 @@ describeBrowser("Jest authentication integration", () => {
     await page.getByText(/what has keys/i).waitFor({timeout: 15_000});
     const state = await getHarnessState(page);
     expect(state.calls).toContain("sdk.login");
+    expect(state.loginPayloads).toEqual([
+      {
+        source: "post_instructions",
+        campaign: "direct_to_game_registration_v2",
+        reference: "registration_post_instructions_v1",
+      },
+    ]);
     expect(state.backendExchanges.at(-1)).toBe("signed:jest-auth-player-stable:true");
     await context.close();
   });

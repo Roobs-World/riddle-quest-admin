@@ -399,10 +399,7 @@ export function GameFrameApp({
 
             <Keyboard state={state} dispatch={dispatch} playFeedback={playFeedback} />
 
-            <section
-              className={`game-input-actions${raceEnabled && state.gameMode === "classic" ? " has-multiplayer" : ""}`}
-              aria-label={tr("Navigation.GAME")}
-            >
+            <section className="game-input-actions" aria-label={tr("Navigation.GAME")}>
               <button data-tooltip="gameHint" onClick={() => dispatch({type: "openModal", modal: "hint"})}>
                 <HintIcon />
                 {tr("Navigation.HINT_BUTTON")}
@@ -410,12 +407,6 @@ export function GameFrameApp({
               <button data-tooltip="submitAnswer" className="submit-action" onClick={submitGuess} disabled={!canSubmit}>
                 {tr("GameScreenAlerts.SUBMIT_BUTTON")}
               </button>
-              {raceEnabled && (
-                <button className="multiplayer-action" onClick={() => setRaceOpen(true)}>
-                  <MultiplayerIcon />
-                  {tr("RaceTo10.MULTIPLAYER_BUTTON")}
-                </button>
-              )}
               {state.gameMode === "classic" && (
                 <button data-tooltip="gameSkip" onClick={() => dispatch({type: "openModal", modal: "skip"})}>
                   <ForwardIcon />
@@ -431,6 +422,16 @@ export function GameFrameApp({
               >
                 <SettingsIcon />
               </button>
+              {raceEnabled && state.gameMode === "classic" && (
+                <button
+                  className="multiplayer-navigation-action"
+                  onClick={() => setRaceOpen(true)}
+                  aria-label={tr("RaceTo10.MULTIPLAYER_BUTTON")}
+                >
+                  <MultiplayerIcon />
+                  <span>{tr("RaceTo10.MULTIPLAYER_BUTTON")}</span>
+                </button>
+              )}
               <button
                 onClick={() => dispatch({type: "openModal", modal: "profile"})}
                 aria-label={tr("Navigation.PROFILE_BUTTON")}

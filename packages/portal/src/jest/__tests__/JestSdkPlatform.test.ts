@@ -124,6 +124,21 @@ it("wires the custom registration overlay actions and options", () => {
   result.value.closeButtonAction();
   expect(onClose).toHaveBeenCalledTimes(1);
 });
+it("passes entry attribution to guest login and skips the dialog for registered players", async () => {
+  const guestSdk = sdk();
+  guestSdk.getPlayer
+    .mockReturnValueOnce({playerId: "p1", registered: false})
+    .mockReturnValue({playerId: "p1", registered: true});
+  const guestResult = await new JestSdkPlatform(guestSdk).login({source: "authoritative_win"});
+  expect(guestSdk.login).toHaveBeenCalledWith({entryPayload: {source: "authoritative_win"}});
+  expect(guestResult).toEqual({status: "success", value: {playerId: "p1", registered: true}});
+
+  const registeredSdk = sdk();
+  registeredSdk.getPlayer.mockReturnValue({playerId: "p1", registered: true});
+  const registeredResult = await new JestSdkPlatform(registeredSdk).login({source: "post_instructions"});
+  expect(registeredSdk.login).not.toHaveBeenCalled();
+  expect(registeredResult).toEqual({status: "success", value: {playerId: "p1", registered: true}});
+});
 it("rejects unknown player snapshot versions", () => {
   const mock = sdk();
   mock.getPlayer.mockReturnValue({playerId: "p1", registered: true});

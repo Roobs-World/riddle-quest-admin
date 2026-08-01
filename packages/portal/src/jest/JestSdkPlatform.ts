@@ -49,8 +49,13 @@ export class JestSdkPlatform implements JestPlatformPort {
   async init() { try { await this.sdk.init({autoLoginReminders: false}); return success(undefined); } catch (e) { return failure(e); } }
   getPlayer() { return this.sdk.getPlayer(); }
   getPlayerSigned() { return this.sdk.getPlayerSigned(); }
-  async login() {
-    try { await this.sdk.login(); return success(this.getPlayer()); } catch (e) { return failure(e); }
+  async login(entryPayload?: Record<string, string>) {
+    try {
+      const player = this.getPlayer();
+      if (player.registered) return success(player);
+      await this.sdk.login(entryPayload ? {entryPayload} : undefined);
+      return success(this.getPlayer());
+    } catch (e) { return failure(e); }
   }
   showRegistrationOverlay(options: Parameters<JestPlatformPort["showRegistrationOverlay"]>[0]) {
     try {

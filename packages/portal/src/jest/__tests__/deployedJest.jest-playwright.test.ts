@@ -1,6 +1,7 @@
 import {afterAll, beforeAll, describe, expect, it, jest} from "@jest/globals";
 import {chromium, type Browser, type BrowserContext, type Frame, type Page} from "@playwright/test";
 import {existsSync} from "node:fs";
+import {RaceRunResponseSchema} from "@qwordly/core/race";
 
 const liveRequested = process.env.PORTAL_DEPLOYED_TESTS === "1";
 const sandboxLoginUrl = process.env.JEST_SANDBOX_LOGIN_URL;
@@ -124,6 +125,57 @@ describeDeployed("deployed Jest sandbox game", () => {
       ),
     ).toBe(true);
 
+    await game.evaluate(() => {
+      const scope = globalThis as typeof globalThis & {__RIDDLE_QUEST_LIVE_RACE_MESSAGES__?: unknown[]};
+      scope.__RIDDLE_QUEST_LIVE_RACE_MESSAGES__ = [];
+      window.addEventListener("riddle-quest:host-to-game", (event) => {
+        const detail = (event as CustomEvent<unknown>).detail;
+        if (
+          detail &&
+          typeof detail === "object" &&
+          "type" in detail &&
+          detail.type === "host:operationResult"
+        ) {
+          scope.__RIDDLE_QUEST_LIVE_RACE_MESSAGES__?.push(structuredClone(detail));
+        }
+      });
+    });
+    await game.getByRole("button", {name: /^multiplayer$/i}).click();
+    await game.getByRole("button", {name: /^History /}).click();
+    await game.waitForFunction(
+      () =>
+        (globalThis as typeof globalThis & {__RIDDLE_QUEST_LIVE_RACE_MESSAGES__?: Array<{payload?: {operation?: string}}>} )
+          .__RIDDLE_QUEST_LIVE_RACE_MESSAGES__?.some((message) => message.payload?.operation === "raceStart") === true,
+      undefined,
+      {timeout: 30_000},
+    );
+    const raceMessages = await game.evaluate(() =>
+      (globalThis as typeof globalThis & {__RIDDLE_QUEST_LIVE_RACE_MESSAGES__?: unknown[]})
+        .__RIDDLE_QUEST_LIVE_RACE_MESSAGES__ ?? [],
+    );
+    expect(raceMessages).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        payload: expect.objectContaining({operation: "raceStart", ok: true}),
+      }),
+    ]));
+    const raceStart = raceMessages.find(
+      (message): message is {payload: {operation: string; data: unknown}} =>
+        typeof message === "object" &&
+        message !== null &&
+        "payload" in message &&
+        typeof message.payload === "object" &&
+        message.payload !== null &&
+        "operation" in message.payload &&
+        message.payload.operation === "raceStart",
+    );
+    const validation = RaceRunResponseSchema.safeParse(raceStart?.payload.data);
+    if (!validation.success) {
+      throw new Error(JSON.stringify({raceStart, issues: validation.error.issues}, null, 2));
+    }
+    await game.locator(".race-gameplay .guess-board").waitFor({state: "visible", timeout: 5_000});
+    expect(await game.locator(".race-error").count()).toBe(0);
+    await game.getByRole("button", {name: /close race to 10/i}).click();
+
     await game.getByRole("button", {name: /buy coins/i}).first().click();
     await game.getByRole("heading", {name: /coin shop/i}).waitFor();
     expect(await game.locator(".game-shop-grid article").count()).toBeGreaterThan(0);
@@ -131,6 +183,7 @@ describeDeployed("deployed Jest sandbox game", () => {
     expect([...successfulFunctions]).toEqual(expect.arrayContaining([
       "exchangeJestIdentity",
       "getCurrentClassicRiddle",
+      "startRaceRun",
     ]));
     expect(failedRequests.filter((url) => url.includes("cloudfunctions.net"))).toEqual([]);
     expect(consoleErrors).toEqual([]);

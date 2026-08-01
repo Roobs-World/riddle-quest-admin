@@ -125,7 +125,7 @@ export interface JestPlatformPort {
   init(): Promise<PlatformResult<void>>;
   getPlayer(): JestPlayer;
   getPlayerSigned(): Promise<{player: JestPlayer; playerSigned: string}>;
-  login(): Promise<PlatformResult<JestPlayer>>;
+  login(entryPayload?: Record<string, string>): Promise<PlatformResult<JestPlayer>>;
   showRegistrationOverlay(options: {
     theme: "dark" | "light";
     entryPayload?: Record<string, string>;

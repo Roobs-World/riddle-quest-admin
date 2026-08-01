@@ -14,6 +14,7 @@ import type {ProductSummary, PurchaseResult} from "../play/types";
 import {SpinningWheelLoader} from "../play/SpinningWheelLoader";
 import {useJestNotifications} from "./notifications/useJestNotifications";
 import {useJestSharing} from "./sharing/useJestSharing";
+import {createRegistrationEntryPayload, type RegistrationSource} from "./registrationAttribution";
 import {resolveJestRuntimeMode} from "./runtimeMode";
 
 export function JestPlayApp() {
@@ -95,7 +96,7 @@ export function JestPlayApp() {
   const sessionRef = useRef<JestSession | null>(null);
   const registrationHandleRef = useRef<JestRegistrationOverlayHandle | null>(null);
   const registrationCompletingRef = useRef(false);
-  const registrationSourceRef = useRef("post_instructions");
+  const registrationSourceRef = useRef<RegistrationSource>("post_instructions");
   sessionRef.current = session;
   const withPlatformActivity = useCallback(async <Result,>(operation: () => Promise<Result>): Promise<Result> => {
     const startedAt = Date.now();
@@ -281,7 +282,7 @@ export function JestPlayApp() {
   }, [authenticateJestIdentity, backend, platform, trackFunnel, withPlatformActivity]);
 
   const openRegistrationPrompt = useCallback(
-    (source: "post_instructions" | "authoritative_win", showGamePrompt: boolean) => {
+    (source: RegistrationSource, showGamePrompt: boolean) => {
       const currentSession = sessionRef.current;
       if (!currentSession || currentSession.player.registered) {
         window.dispatchEvent(
@@ -295,12 +296,7 @@ export function JestPlayApp() {
       if (!registrationHandleRef.current) {
         const overlay = platform.showRegistrationOverlay({
           theme: "dark",
-          entryPayload: {
-            source,
-            campaign: currentSession.entryIntent.campaign ?? "direct_to_game_registration_v2",
-            reference: `registration_${source}_v1`,
-            ...(currentSession.entryIntent.customName ? {customName: currentSession.entryIntent.customName} : {}),
-          },
+          entryPayload: createRegistrationEntryPayload(source, currentSession.entryIntent),
           onClose: completeRegistrationPrompt,
         });
         if (overlay.status === "success") {
@@ -343,14 +339,22 @@ export function JestPlayApp() {
       return;
     }
     void withPlatformActivity(async () => {
-      await platform.login();
+      const currentSession = sessionRef.current;
+      await platform.login(
+        createRegistrationEntryPayload(registrationSourceRef.current, currentSession?.entryIntent ?? {}),
+      );
       completeRegistrationPrompt();
     });
   }, [completeRegistrationPrompt, platform, withPlatformActivity]);
 
   const login = useCallback(() => {
     setRegistrationPending(true);
-    void withPlatformActivity(() => platform.login()).then((result) => {
+    const currentSession = sessionRef.current;
+    const entryPayload = createRegistrationEntryPayload(
+      registrationSourceRef.current,
+      currentSession?.entryIntent ?? {},
+    );
+    void withPlatformActivity(() => platform.login(entryPayload)).then((result) => {
       if (result.status !== "success") {
         setRegistrationPending(false);
         trackFunnel("login_failed", {status: result.status});
