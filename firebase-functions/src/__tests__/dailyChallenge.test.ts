@@ -1,7 +1,6 @@
 // Placed at the VERY TOP of the file, before any imports or other jest.mock calls
 const mockAdminFirestoreGet: jest.Mock<() => Promise<MockDocumentSnapshot<any>>> = jest.fn();
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {afterEach, beforeEach, describe, expect, it, jest, afterAll} from "@jest/globals";
 
 // Store original Date.now

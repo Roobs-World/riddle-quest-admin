@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {describe, expect, test, beforeEach, jest} from "@jest/globals";
 
 // Mock Firebase Admin SDK

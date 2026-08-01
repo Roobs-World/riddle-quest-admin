@@ -25,10 +25,6 @@ service cloud.firestore {
              avatarUrl.matches('^https://firebasestorage.googleapis.com/v0/b/[^/]+/o/avatars%2F' + userId + '%2F[^?]+\\?.*$');
     }
 
-    function isSupportedLocale(locale) {
-      return locale.matches('^(en|es|pt|fr|de|ja|ko|zh|hi|ru|tr|ar|id|it|nl|pl|vi)$');
-    }
-
     function hasOnlyClientEditableUserFields() {
       return !request.resource.data.diff(resource.data).affectedKeys().hasAny([
         'coins',

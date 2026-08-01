@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {afterEach, beforeEach, describe, expect, it, jest} from "@jest/globals";
 
 // 1. Mock const declarations

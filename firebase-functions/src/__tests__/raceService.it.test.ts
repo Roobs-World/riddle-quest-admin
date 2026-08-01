@@ -1,4 +1,5 @@
-import * as admin from "firebase-admin";
+import {getApps, initializeApp} from "firebase-admin/app";
+import {getFirestore} from "firebase-admin/firestore";
 import {
   getRaceChallengePreview,
   listRaceInboxForUser,
@@ -19,8 +20,8 @@ const clearCollection = async (name: string) => {
 };
 
 beforeAll(async () => {
-  if (admin.apps.length === 0) admin.initializeApp({projectId: PROJECT_ID});
-  db = admin.firestore();
+  if (getApps().length === 0) initializeApp({projectId: PROJECT_ID});
+  db = getFirestore();
   await Promise.all(
     ["localizedRiddles", "raceRuns", "raceDecks", "raceChallenges", "raceAttempts", "raceStartRequests", "users"].map(
       clearCollection,

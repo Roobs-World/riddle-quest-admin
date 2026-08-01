@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {beforeEach, describe, expect, it, jest} from "@jest/globals";
 
 // Mocks for firebase admin and functions
@@ -93,19 +92,16 @@ describe("getHint callable", () => {
     mockEvaluateAchievements.mockResolvedValue(["hints_1"]);
 
     // Act
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let result: any;
     try {
       result = await (getHint as any)(request);
     } catch (err) {
       // Surface the error details for debugging then rethrow
-      // eslint-disable-next-line no-console
       console.error("getHint test - caught error:", err);
       throw err;
     }
 
     // Assert
-    // eslint-disable-next-line no-console
     console.log("getHint test - result:", result);
     expect(mockGetRiddleByGameMode).toHaveBeenCalledWith("rid-1", "classic");
     expect(mockUpdateUserCoins).toHaveBeenCalledWith("user123", -HINT_COST_COINS);
