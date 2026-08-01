@@ -1,4 +1,4 @@
-import type {ScreenshotProvider} from "./types";
+import type {ScreenshotProvider} from "../types";
 
 const MAX_SCREENSHOT_BYTES = 2 * 1024 * 1024;
 

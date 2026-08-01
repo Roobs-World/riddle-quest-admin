@@ -3,7 +3,7 @@
     "MODE_LABEL": "Aufgezeichnetes Duell",
     "TITLE": "Rennen bis 10",
     "CLOSE": "Rennen schließen",
-    "LAUNCH_SUBTITLE": "Wer zuerst 10 Rätsel löst, gewinnt",
+    "MULTIPLAYER_BUTTON": "Mehrspieler",
     "ERROR_GENERIC": "Das Rennen konnte nicht fortgesetzt werden.",
     "ERROR_INVALID_RESPONSE": "Der Server hat eine ungültige Antwort gesendet.",
     "RETRY": "Erneut versuchen",

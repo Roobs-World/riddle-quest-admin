@@ -4,8 +4,8 @@
     "ACHIEVEMENT_EARNED_TITLE": "Succes debloque",
     "CLASSIC_FROM_DAILY_BODY": "Defi quotidien termine. Le mode Classique vous permet de continuer les enigmes a votre rythme.",
     "CLASSIC_FROM_DAILY_TITLE": "Mode Classique",
-    "GAME_COINS_BODY": "Voici la section des pièces. Appuie ici pour acheter plus de pièces quand tu dois passer un niveau ou acheter un indice.",
-    "GAME_COINS_TITLE": "Solde de pièces",
+    "GAME_COINS_BODY": "Appuie sur ce bouton pour acheter des pièces et alimenter ton aventure.",
+    "GAME_COINS_TITLE": "Ouvrir la boutique de pièces",
     "GAME_HINT_BODY": "Touchez Indice pour révéler une lettre utile quand vous êtes bloqué. Les indices coûtent des pièces.",
     "GAME_HINT_TITLE": "Utiliser un indice",
     "GAME_SKIP_BODY": "Touchez ce bouton pour quitter cette énigme quand vous êtes bloqué. Les passages coûtent des pièces.",
@@ -17,8 +17,6 @@
     "LEADERBOARD_FIFTH_CORRECT_TITLE": "Grimpez au classement",
     "PROFILE_ACHIEVEMENTS_BODY": "Ouvrez cette section pour voir tous les succes debloques.",
     "PROFILE_ACHIEVEMENTS_TITLE": "Succes",
-    "PROFILE_COINS_BODY": "Votre solde de pieces apparait ici. Depensez-les pour des indices, des sauts et des chances bonus.",
-    "PROFILE_COINS_TITLE": "Coffre au tresor",
     "PROFILE_DAILY_PUZZLES_BODY": "Cette zone indique combien de defis quotidiens vous avez termines.",
     "PROFILE_DAILY_PUZZLES_TITLE": "Enigmes quotidiennes",
     "PROFILE_IDENTITY_BODY": "Votre avatar, nom d'utilisateur, niveau d'XP et progression de niveau sont ici.",
@@ -33,6 +31,7 @@
     "PROFILE_STATS_TITLE": "Apercu des stats",
     "SHOP_OUT_OF_COINS_BODY": "Vous n'avez plus assez de pieces pour cette action. Ouvrez la boutique pour en acheter ou en gagner.",
     "SHOP_OUT_OF_COINS_TITLE": "Obtenez plus de pieces",
+    "PROFILE_TREASURE_BODY": "Ouvrez votre coffre au trésor pour voir vos pièces et accéder à la boutique.",
     "SUBMIT_ANSWER_BODY": "Quand toutes les cases sont remplies, touchez Valider pour verifier votre essai.",
     "SUBMIT_ANSWER_TITLE": "Validez votre reponse"
   }

@@ -3,7 +3,7 @@
     "MODE_LABEL": "مواجهة مسجلة",
     "TITLE": "سباق إلى 10",
     "CLOSE": "إغلاق السباق",
-    "LAUNCH_SUBTITLE": "يفوز أول من يحل 10 ألغاز",
+    "MULTIPLAYER_BUTTON": "متعدد اللاعبين",
     "ERROR_GENERIC": "تعذر متابعة السباق.",
     "ERROR_INVALID_RESPONSE": "أعاد الخادم استجابة غير صالحة.",
     "RETRY": "إعادة المحاولة",

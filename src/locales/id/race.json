@@ -3,7 +3,7 @@
     "MODE_LABEL": "Duel rekaman",
     "TITLE": "Balapan ke 10",
     "CLOSE": "Tutup balapan",
-    "LAUNCH_SUBTITLE": "Yang pertama memecahkan 10 teka-teki menang",
+    "MULTIPLAYER_BUTTON": "Multipemain",
     "ERROR_GENERIC": "Balapan tidak dapat dilanjutkan.",
     "ERROR_INVALID_RESPONSE": "Server memberi respons yang tidak valid.",
     "RETRY": "Coba lagi",

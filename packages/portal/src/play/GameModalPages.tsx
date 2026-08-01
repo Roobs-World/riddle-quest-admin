@@ -64,7 +64,7 @@ export function GameModalPages({state, onClose, onContinue, onPurchase, onOpenMo
   const leaderboardPageStart = activeLeaderboardPage * LEADERBOARD_PAGE_SIZE;
   const visibleLeaderboardEntries = state.leaderboard.slice(leaderboardPageStart,
     leaderboardPageStart + LEADERBOARD_PAGE_SIZE);
-  const skipCost = state.gameMode === "challenge" ? 150 : 100;
+  const skipCost = 100;
 
   useEffect(() => {
     if (state.modal === "leaderboard") onRequestLeaderboard(state.leaderboardType);
@@ -242,7 +242,7 @@ export function GameModalPages({state, onClose, onContinue, onPurchase, onOpenMo
               )}
             </div>
             <dl className="profile-stats" data-tooltip="profileStats">
-              <div data-tooltip="profileCoins"><dt>{tr("Profile.TOTAL_COINS_LABEL")}</dt><dd>{profile?.coins ?? 0}</dd></div>
+              <div><dt>{tr("Profile.TOTAL_COINS_LABEL")}</dt><dd>{profile?.coins ?? 0}</dd></div>
               <div><dt>{tr("Profile.TOTAL_WINS_STAT")}</dt><dd>{profile?.totalWins ?? profile?.wins ?? 0}</dd></div>
               <div><dt>{tr("Profile.BEST_STREAK_STAT")}</dt><dd>{profile?.bestStreak ?? 0}</dd></div>
               <div data-tooltip="profileDailyPuzzles"><dt>{tr("Profile.DAILY_PUZZLES_STAT")}</dt><dd>{profile?.dailyPuzzlesCompleted ?? 0}</dd></div>
@@ -260,7 +260,7 @@ export function GameModalPages({state, onClose, onContinue, onPurchase, onOpenMo
                 {tr("Ranks.TITLE")}
               </button>
               <button data-tooltip="profileLeaderboard" onClick={() => onOpenModal("leaderboard")}>{tr("Leaderboard.TITLE")}</button>
-              <button onClick={() => onOpenModal("treasure")}>{tr("Profile.TREASURE_CHEST_TITLE")}</button>
+              <button data-tooltip="profileTreasure" onClick={() => onOpenModal("treasure")}>{tr("Profile.TREASURE_CHEST_TITLE")}</button>
             </div>
           </div>
         )}
@@ -452,7 +452,7 @@ export function GameModalPages({state, onClose, onContinue, onPurchase, onOpenMo
           </div>
         )}
 
-        {state.modal === "skip" && (
+        {state.modal === "skip" && state.gameMode === "classic" && (
           <div className="modal-actions">
             <p>{tr("GameScreenAlerts.COST_COINS_PREFIX")}{skipCost}{tr("GameScreenAlerts.COST_COINS_SUFFIX")}</p>
             {(profile?.coins ?? 0) >= skipCost ? (

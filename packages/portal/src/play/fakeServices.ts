@@ -206,13 +206,19 @@ export const createFakeHostServices = ({
         newCoins,
       };
     },
-    async spendCoins({reason, amount}) {
+    async spendCoins({reason, amount, gameMode}) {
+      if (reason === "skip" && gameMode === "challenge") {
+        throw new Error("Daily riddles cannot be skipped.");
+      }
       const cost = amount ?? (reason === "continue" ? 100 : reason === "skip" ? 100 : 50);
       return {newCoins: spend(cost)};
     },
     async skipRiddle({gameMode}) {
+      if (gameMode === "challenge") {
+        throw new Error("Daily riddles cannot be skipped.");
+      }
       const profile = snapshot.profile;
-      const skipCost = gameMode === "challenge" ? 150 : 100;
+      const skipCost = 100;
       const newCoins = spend(skipCost);
       const newClassicIndex = (profile?.classicIndex ?? 1) + 1;
       updateProfile({coins: newCoins, classicIndex: newClassicIndex});

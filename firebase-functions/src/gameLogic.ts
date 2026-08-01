@@ -1,11 +1,9 @@
 import {logger} from "firebase-functions/v2";
 import {admin} from "./firebaseAdmin";
-import type {FieldValue, UpdateData} from "firebase-admin/firestore";
 import {onCall, HttpsError, CallableRequest} from "firebase-functions/v2/https";
 import {updateUserCoins, getUser, getRiddleByGameMode, updateUserStats} from "./firestoreService";
 import {
   SKIP_COST_CLASSIC,
-  SKIP_COST_DAILY,
   HINT_COST_COINS,
   CONTINUE_COST_COINS,
   RIDDLE_GENERATION_THRESHOLD,
@@ -37,7 +35,7 @@ import {splitGraphemes, lowerCaseGraphemes} from "@qwordly/core/game";
  * Skips the current riddle by marking it as completed and advancing to the next level/question.
  * @param data - The request data object containing riddleId and gameMode.
  * @param data.riddleId - The ID of the riddle being skipped.
- * @param data.gameMode - The game mode ('classic', 'challenge').
+ * @param data.gameMode - The game mode. Daily challenge riddles are rejected.
  * @param context - The context object representing the request context.
  * @return An object containing success status and new progress information.
  */
@@ -60,24 +58,17 @@ export const skipRiddle = onCall(
             : "Invalid request payload for skipRiddle.",
       );
 
-      // Check if user has enough coins (different costs for different modes)
+      if (gameMode === "challenge") {
+        throw new HttpsError("failed-precondition", "Daily riddles cannot be skipped.");
+      }
+
+      // Check if user has enough coins.
       const user = await getUser(currentUserId);
       if (!user) {
         throw new HttpsError("not-found", "User data not found.");
       }
 
-      // Different skip costs for different modes (must match client src/constants/game.ts)
-      let skipCost: number;
-      switch (gameMode) {
-        case "classic":
-          skipCost = SKIP_COST_CLASSIC;
-          break;
-        case "challenge":
-          skipCost = SKIP_COST_DAILY;
-          break;
-        default:
-          skipCost = SKIP_COST_CLASSIC;
-      }
+      const skipCost = SKIP_COST_CLASSIC;
 
       if (user.coins < skipCost) {
         throw new HttpsError(
@@ -166,43 +157,6 @@ export const skipRiddle = onCall(
         });
 
         progressMessage = `Advanced to classic level ${newClassicIndex + 1}`;
-      } else if (gameMode === "challenge") {
-        const currentQuestionIndex = userData?.progress?.dailyChallengeCurrentQuestion || 0;
-
-        if (currentQuestionIndex >= 5) {
-          throw new HttpsError("failed-precondition", "Daily challenge already completed (all 5 questions finished).");
-        }
-
-        const newQuestionIndex = currentQuestionIndex + 1;
-        const isFullyCompleted = newQuestionIndex >= 5;
-
-        newProgress = {
-          ...userData?.progress,
-          dailyChallengeCurrentQuestion: newQuestionIndex,
-        };
-
-        const updates: UpdateData<{
-          progress: Pick<PlayerProgress, "dailyChallengeCurrentQuestion">;
-          lastDailyChallengeCompletedAt?: FieldValue;
-        }> = {
-          "progress.dailyChallengeCurrentQuestion": newQuestionIndex,
-        };
-
-        // If all 5 questions are completed, mark daily challenge as fully completed
-        if (isFullyCompleted) {
-          updates.lastDailyChallengeCompletedAt = admin.firestore.FieldValue.serverTimestamp();
-        }
-
-        await userRef.update(updates);
-
-        // Update stats
-        await userRef.update({
-          "stats.challengeSkipped": admin.firestore.FieldValue.increment(1),
-        });
-
-        progressMessage = isFullyCompleted
-          ? "Daily challenge completed! All 5 questions finished."
-          : `Advanced to daily challenge question ${newQuestionIndex + 1}/5`;
       }
 
       logger.info(
@@ -261,6 +215,10 @@ export const spendCoins = onCall(
     const userId = request.auth.uid;
 
     try {
+      if (reason === "skip" && gameMode === "challenge") {
+        throw new HttpsError("failed-precondition", "Daily riddles cannot be skipped.");
+      }
+
       // Check if user exists
       const user = await getUser(userId);
       if (!user) {
@@ -275,7 +233,7 @@ export const spendCoins = onCall(
           break;
         case "skip":
           // Default to classic if gameMode not specified
-          expectedCost = gameMode === "challenge" ? SKIP_COST_DAILY : SKIP_COST_CLASSIC;
+          expectedCost = SKIP_COST_CLASSIC;
           break;
         case "continue":
           expectedCost = CONTINUE_COST_COINS;

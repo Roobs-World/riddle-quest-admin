@@ -16,6 +16,7 @@ import {
   GuessBoard,
   HintIcon,
   Keyboard,
+  MultiplayerIcon,
   ProfileIcon,
   SettingsIcon,
   SoundIcon,
@@ -25,6 +26,7 @@ import {useGameMessageRouter} from "./useGameMessageRouter";
 import {useOnlineStatus} from "./useOnlineStatus";
 import {isRaceHarness} from "./race/raceFeatureFlag";
 import {useGameAudio, useGameMessageListener, useGameReadyReporter, useViewportFit} from "./game/hooks";
+import {getMobileCapabilities, shouldLoadDecorativeWebGl} from "./performance/mobileCapabilities";
 
 const SolarSystem = lazy(() => import("./SolarSystem").then((module) => ({default: module.SolarSystem})));
 const RaceTo10Game = lazy(() => import("./race/RaceTo10Game").then((module) => ({default: module.RaceTo10Game})));
@@ -121,18 +123,16 @@ export function GameFrameApp({
   }, [postToHost]);
 
   useEffect(() => {
-    if (!state.initialized) {
-      return;
-    }
+    if (!state.initialized || !shouldLoadDecorativeWebGl(getMobileCapabilities())) return;
     const idleWindow = window as Window & {
       requestIdleCallback?: (callback: () => void, options?: {timeout: number}) => number;
       cancelIdleCallback?: (handle: number) => void;
     };
     if (idleWindow.requestIdleCallback) {
-      const handle = idleWindow.requestIdleCallback(() => setSolarReady(true), {timeout: 800});
+      const handle = idleWindow.requestIdleCallback(() => setSolarReady(true), {timeout: 5_000});
       return () => idleWindow.cancelIdleCallback?.(handle);
     }
-    const timer = window.setTimeout(() => setSolarReady(true), 250);
+    const timer = window.setTimeout(() => setSolarReady(true), 2_500);
     return () => window.clearTimeout(timer);
   }, [state.initialized]);
 
@@ -187,6 +187,8 @@ export function GameFrameApp({
     const savedGame = getSavedGame();
     if (!savedGame) return;
     const signature = JSON.stringify({
+      currentLetters: savedGame.currentLetters,
+      activeSlotIndex: savedGame.activeSlotIndex,
       guesses: savedGame.guesses.length,
       hints: savedGame.hintRevealedIndices,
       attemptsUsed: savedGame.engineSnapshot.attemptsUsed,
@@ -202,6 +204,8 @@ export function GameFrameApp({
   }, [
     getSavedGame,
     onSaveGame,
+    state.activeSlotIndex,
+    state.currentLetters,
     state.engineSnapshot,
     state.guesses,
     state.hintRevealedIndices,
@@ -291,7 +295,7 @@ export function GameFrameApp({
   };
 
   const requestSkip = () => {
-    if (!state.riddle) return;
+    if (!state.riddle || state.riddle.gameMode !== "classic") return;
     postToHost({
       type: "game:spendCoins",
       requestId: createRequestId("skip"),
@@ -357,7 +361,7 @@ export function GameFrameApp({
           <SolarSystem paused={state.paused} />
         </Suspense>
       )}
-      <audio ref={musicRef} loop preload="metadata" aria-hidden="true">
+      <audio ref={musicRef} loop preload="none" aria-hidden="true">
         <source src={musicUrl} type='audio/webm; codecs="opus"' />
       </audio>
       <div
@@ -373,12 +377,6 @@ export function GameFrameApp({
         ) : (
           <>
             <section className="riddle-surface">
-              {raceEnabled && (
-                <button className="race-mode-launcher" onClick={() => setRaceOpen(true)}>
-                  <strong>{tr("RaceTo10.TITLE")}</strong>
-                  <span>{tr("RaceTo10.LAUNCH_SUBTITLE")}</span>
-                </button>
-              )}
               <div className="riddle-card">
                 <button
                   className="riddle-sound-button"
@@ -401,7 +399,10 @@ export function GameFrameApp({
 
             <Keyboard state={state} dispatch={dispatch} playFeedback={playFeedback} />
 
-            <section className="game-input-actions" aria-label={tr("Navigation.GAME")}>
+            <section
+              className={`game-input-actions${raceEnabled && state.gameMode === "classic" ? " has-multiplayer" : ""}`}
+              aria-label={tr("Navigation.GAME")}
+            >
               <button data-tooltip="gameHint" onClick={() => dispatch({type: "openModal", modal: "hint"})}>
                 <HintIcon />
                 {tr("Navigation.HINT_BUTTON")}
@@ -409,10 +410,18 @@ export function GameFrameApp({
               <button data-tooltip="submitAnswer" className="submit-action" onClick={submitGuess} disabled={!canSubmit}>
                 {tr("GameScreenAlerts.SUBMIT_BUTTON")}
               </button>
-              <button data-tooltip="gameSkip" onClick={() => dispatch({type: "openModal", modal: "skip"})}>
-                <ForwardIcon />
-                {tr("GameScreenAlerts.NEXT_BUTTON")}
-              </button>
+              {raceEnabled && (
+                <button className="multiplayer-action" onClick={() => setRaceOpen(true)}>
+                  <MultiplayerIcon />
+                  {tr("RaceTo10.MULTIPLAYER_BUTTON")}
+                </button>
+              )}
+              {state.gameMode === "classic" && (
+                <button data-tooltip="gameSkip" onClick={() => dispatch({type: "openModal", modal: "skip"})}>
+                  <ForwardIcon />
+                  {tr("GameScreenAlerts.SKIP_BUTTON")}
+                </button>
+              )}
             </section>
 
             <nav className="game-bottom-navigation" aria-label={tr("Navigation.GAME")}>

@@ -126,6 +126,7 @@ jest.mock("firebase-functions/v2/https", () => {
 interface SpendCoinsData {
   amount: number;
   reason: string;
+  gameMode?: "classic" | "challenge";
 }
 
 interface SkipRiddleData {
@@ -328,6 +329,20 @@ describe("Game Logic Functions", () => {
       );
     });
 
+    it("should reject legacy skip spending for a daily riddle", async () => {
+      const auth = createMockAuth(mockUserId);
+      const request = createMockCallableRequest(
+        {amount: 150, reason: "skip", gameMode: "challenge"},
+        auth,
+      );
+
+      await expect(spendCoins(request)).rejects.toMatchObject({
+        code: "failed-precondition",
+        message: "Daily riddles cannot be skipped.",
+      });
+      expect(updateUserCoins).not.toHaveBeenCalled();
+    });
+
     it("should throw invalid-argument if reason is invalid", async () => {
       const auth = createMockAuth(mockUserId);
       const request = createMockCallableRequest({amount: amountToSpend, reason: "invalid_reason"}, auth);
@@ -527,52 +542,15 @@ describe("Game Logic Functions", () => {
       );
     });
 
-    it("should skip challenge riddle and advance dailyChallengeCurrentQuestion", async () => {
-      (getRiddleByGameMode as ReturnType<typeof jest.fn>).mockResolvedValueOnce({answer: "apple"});
-      const gameStateDoc: MockDocumentSnapshot = {exists: true, data: () => ({isCompleted: false})};
-      const userDoc: MockDocumentSnapshot = {
-        exists: true,
-        data: () => ({progress: {dailyChallengeCurrentQuestion: 2}, stats: {}}),
-      };
-      mockFirestoreGet.mockResolvedValueOnce(gameStateDoc).mockResolvedValueOnce(userDoc);
-      (updateUserCoins as ReturnType<typeof jest.fn>).mockResolvedValueOnce(undefined);
-      mockFirestoreSet.mockResolvedValueOnce(undefined);
-      mockFirestoreUpdate.mockResolvedValueOnce(undefined).mockResolvedValueOnce(undefined);
-
+    it("should reject attempts to skip a daily riddle", async () => {
       const request = createMockCallableRequest({riddleId, gameMode: "challenge" as const}, createMockAuth(mockUserId));
 
-      const result = await skipRiddle(request);
-
-      expect(result.success).toBe(true);
-      expect(result.costDeducted).toBe(150); // SKIP_COST_DAILY
-      expect(result.newProgress).toEqual({dailyChallengeCurrentQuestion: 3});
-      expect(updateUserCoins).toHaveBeenCalledWith(mockUserId, -150);
-      expect(mockFirestoreUpdate).toHaveBeenCalledWith(
-        expect.objectContaining({"progress.dailyChallengeCurrentQuestion": 3}),
-      );
-    });
-
-    it("should throw failed-precondition when daily challenge already completed (all 5 questions)", async () => {
-      (getRiddleByGameMode as ReturnType<typeof jest.fn>).mockResolvedValueOnce({answer: "apple"});
-      const gameStateDoc: MockDocumentSnapshot = {exists: true, data: () => ({isCompleted: false})};
-      const userDoc: MockDocumentSnapshot = {
-        exists: true,
-        data: () => ({progress: {dailyChallengeCurrentQuestion: 5}, stats: {}}),
-      };
-      mockFirestoreGet.mockResolvedValueOnce(gameStateDoc).mockResolvedValueOnce(userDoc);
-
-      const request = createMockCallableRequest({riddleId, gameMode: "challenge" as const}, createMockAuth(mockUserId));
-      try {
-        await skipRiddle(request);
-        throw new Error("Test failed: Expected HttpsErrorV2 to be thrown.");
-      } catch (e: unknown) {
-        if (e instanceof HttpsErrorV2) {
-          expect(e.code).toBe("failed-precondition");
-          expect(e.message).toBe("Daily challenge already completed (all 5 questions finished).");
-        } else {
-          throw e;
-        }
-      }
+      await expect(skipRiddle(request)).rejects.toMatchObject({
+        code: "failed-precondition",
+        message: "Daily riddles cannot be skipped.",
+      });
+      expect(getUser).not.toHaveBeenCalled();
+      expect(updateUserCoins).not.toHaveBeenCalled();
     });
 
     it("should handle unexpected errors and throw internal HttpsError", async () => {

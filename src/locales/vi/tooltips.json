@@ -4,8 +4,8 @@
     "ACHIEVEMENT_EARNED_TITLE": "Đã mở khóa thành tích",
     "CLASSIC_FROM_DAILY_BODY": "Thử thách hàng ngày hoàn thành. Chế độ cổ điển cho phép bạn tiếp tục giải các câu đố theo tốc độ của riêng mình.",
     "CLASSIC_FROM_DAILY_TITLE": "Chế độ cổ điển",
-    "GAME_COINS_BODY": "Đây là phần xu. Nhấn vào đây để mua thêm xu khi bạn cần bỏ qua một cấp hoặc mua gợi ý.",
-    "GAME_COINS_TITLE": "Số dư xu",
+    "GAME_COINS_BODY": "Nhấn nút này để mua xu và tiếp sức cho cuộc phiêu lưu của bạn.",
+    "GAME_COINS_TITLE": "Mở cửa hàng xu",
     "GAME_HINT_BODY": "Nhấn Gợi ý để mở một chữ cái hữu ích khi bạn bị mắc kẹt. Gợi ý tốn xu.",
     "GAME_HINT_TITLE": "Dùng gợi ý",
     "GAME_SKIP_BODY": "Nhấn nút này để vượt qua câu đố này khi bạn bị mắc kẹt. Bỏ qua tốn xu.",
@@ -17,8 +17,6 @@
     "LEADERBOARD_FIFTH_CORRECT_TITLE": "Leo lên bảng xếp hạng",
     "PROFILE_ACHIEVEMENTS_BODY": "Mở phần này để xem mọi thành tích bạn đã mở khóa.",
     "PROFILE_ACHIEVEMENTS_TITLE": "Thành tựu",
-    "PROFILE_COINS_BODY": "Số dư tiền xu của bạn được hiển thị ở đây. Chi tiền cho các gợi ý, bỏ qua và các cơ hội bổ sung.",
-    "PROFILE_COINS_TITLE": "Rương kho báu",
     "PROFILE_DAILY_PUZZLES_BODY": "Điều này cho thấy bạn đã hoàn thành bao nhiêu thử thách hàng ngày.",
     "PROFILE_DAILY_PUZZLES_TITLE": "Câu đố hàng ngày",
     "PROFILE_IDENTITY_BODY": "Hình đại diện, tên người dùng, cấp XP và tiến trình cấp độ của bạn có tại đây.",
@@ -33,6 +31,7 @@
     "PROFILE_STATS_TITLE": "Ảnh chụp nhanh số liệu thống kê",
     "SHOP_OUT_OF_COINS_BODY": "Bạn đã hết tiền cho hành động này. Mở cửa hàng để mua hoặc kiếm thêm tiền.",
     "SHOP_OUT_OF_COINS_TITLE": "Lấy thêm tiền xu",
+    "PROFILE_TREASURE_BODY": "Mở rương báu để xem xu và ghé thăm cửa hàng xu.",
     "SUBMIT_ANSWER_BODY": "Khi mọi ô đã được lấp đầy, hãy nhấn Gửi để kiểm tra dự đoán của bạn.",
     "SUBMIT_ANSWER_TITLE": "Gửi câu trả lời của bạn"
   }

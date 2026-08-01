@@ -3,7 +3,7 @@
     "MODE_LABEL": "Duel enregistré",
     "TITLE": "Course à 10",
     "CLOSE": "Fermer la Course à 10",
-    "LAUNCH_SUBTITLE": "Le premier à résoudre 10 énigmes gagne",
+    "MULTIPLAYER_BUTTON": "Multijoueur",
     "ERROR_GENERIC": "La course n’a pas pu continuer.",
     "ERROR_INVALID_RESPONSE": "Le serveur a renvoyé une réponse invalide.",
     "RETRY": "Réessayer",

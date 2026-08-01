@@ -1,4 +1,4 @@
-import {sizeCheckedScreenshotProvider} from "../screenshots";
+import {sizeCheckedScreenshotProvider} from "../sharing/screenshots";
 
 it("rejects non-PNG and oversized screenshots", async () => {
   expect(await sizeCheckedScreenshotProvider(() => "data:image/jpeg;base64,YQ==")()).toBeNull();

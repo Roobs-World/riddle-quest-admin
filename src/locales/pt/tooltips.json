@@ -4,8 +4,8 @@
     "ACHIEVEMENT_EARNED_TITLE": "Conquista desbloqueada",
     "CLASSIC_FROM_DAILY_BODY": "Desafio diario concluido. O modo Classico permite continuar resolvendo enigmas no seu ritmo.",
     "CLASSIC_FROM_DAILY_TITLE": "Modo Classico",
-    "GAME_COINS_BODY": "Esta é a secção das moedas. Prima aqui para comprar mais moedas quando precisar de saltar um nível ou comprar uma dica.",
-    "GAME_COINS_TITLE": "Saldo de moedas",
+    "GAME_COINS_BODY": "Toque neste botão para comprar moedas e alimentar a sua aventura.",
+    "GAME_COINS_TITLE": "Abrir a loja de moedas",
     "GAME_HINT_BODY": "Toque em Dica para revelar uma letra útil quando ficar preso. As dicas custam moedas.",
     "GAME_HINT_TITLE": "Use uma dica",
     "GAME_SKIP_BODY": "Toque neste botão para passar este enigma quando ficar preso. Saltar custa moedas.",
@@ -17,8 +17,6 @@
     "LEADERBOARD_FIFTH_CORRECT_TITLE": "Suba no ranking",
     "PROFILE_ACHIEVEMENTS_BODY": "Abra esta secao para ver todas as conquistas desbloqueadas.",
     "PROFILE_ACHIEVEMENTS_TITLE": "Conquistas",
-    "PROFILE_COINS_BODY": "Seu saldo de moedas aparece aqui. Gaste moedas em pistas, pulos e chances extras.",
-    "PROFILE_COINS_TITLE": "Bau do tesouro",
     "PROFILE_DAILY_PUZZLES_BODY": "Isto mostra quantos desafios diarios voce concluiu.",
     "PROFILE_DAILY_PUZZLES_TITLE": "Desafios diarios",
     "PROFILE_IDENTITY_BODY": "Seu avatar, nome de usuario, nivel de XP e progresso de nivel ficam aqui.",
@@ -33,6 +31,7 @@
     "PROFILE_STATS_TITLE": "Resumo de estatisticas",
     "SHOP_OUT_OF_COINS_BODY": "Voce esta sem moedas para esta acao. Abra a loja para comprar ou ganhar mais.",
     "SHOP_OUT_OF_COINS_TITLE": "Pegue mais moedas",
+    "PROFILE_TREASURE_BODY": "Abra seu baú do tesouro para ver suas moedas e visitar a loja de moedas.",
     "SUBMIT_ANSWER_BODY": "Quando todos os espacos estiverem preenchidos, toque em Enviar para verificar seu palpite.",
     "SUBMIT_ANSWER_TITLE": "Envie sua resposta"
   }

@@ -4,8 +4,8 @@
     "ACHIEVEMENT_EARNED_TITLE": "実績を解除",
     "CLASSIC_FROM_DAILY_BODY": "デイリーチャレンジ完了。クラシックモードでは自分のペースで続けられます。",
     "CLASSIC_FROM_DAILY_TITLE": "クラシックモード",
-    "GAME_COINS_BODY": "ここがコインセクションです。レベルをスキップしたりヒントを買ったりするためにコインが必要なときは、ここを押して追加のコインを購入してください。",
-    "GAME_COINS_TITLE": "コイン残高",
+    "GAME_COINS_BODY": "このボタンをタップしてコインを購入し、冒険を進めましょう。",
+    "GAME_COINS_TITLE": "コインショップを開く",
     "GAME_HINT_BODY": "行き詰まったらヒントをタップして役立つ文字を表示できます。ヒントにはコインが必要です。",
     "GAME_HINT_TITLE": "ヒントを使う",
     "GAME_SKIP_BODY": "行き詰まったらこのボタンをタップしてこのなぞなぞを飛ばせます。スキップにはコインが必要です。",
@@ -17,8 +17,6 @@
     "LEADERBOARD_FIFTH_CORRECT_TITLE": "ランキングを目指そう",
     "PROFILE_ACHIEVEMENTS_BODY": "このセクションで解除済みの実績をすべて確認できます。",
     "PROFILE_ACHIEVEMENTS_TITLE": "実績",
-    "PROFILE_COINS_BODY": "コイン残高がここに表示されます。ヒント、スキップ、追加チャンスに使えます。",
-    "PROFILE_COINS_TITLE": "宝箱",
     "PROFILE_DAILY_PUZZLES_BODY": "完了したデイリーチャレンジ数を表示します。",
     "PROFILE_DAILY_PUZZLES_TITLE": "デイリーなぞなぞ",
     "PROFILE_IDENTITY_BODY": "アバター、ユーザー名、XPレベル、レベル進行状況がここにあります。",
@@ -33,6 +31,7 @@
     "PROFILE_STATS_TITLE": "統計の概要",
     "SHOP_OUT_OF_COINS_BODY": "この操作に必要なコインが足りません。ショップで購入するか獲得できます。",
     "SHOP_OUT_OF_COINS_TITLE": "コインを追加",
+    "PROFILE_TREASURE_BODY": "宝箱を開いてコインを確認し、コインショップに行きましょう。",
     "SUBMIT_ANSWER_BODY": "すべての枠が埋まったら、送信をタップして答えを確認しましょう。",
     "SUBMIT_ANSWER_TITLE": "回答を送信"
   }

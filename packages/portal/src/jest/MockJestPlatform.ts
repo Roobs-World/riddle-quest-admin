@@ -1,4 +1,5 @@
-import type {JestPlatformPort, JestPlayerData, JestPreferences, PlatformResult, ScreenshotProvider} from "./types";
+import type {JestEntryIntent, JestPlatformPort, JestPlayerData, JestPreferences, PlatformResult, ScreenshotProvider} from "./types";
+import {parseEntryIntent} from "./entryIntent";
 
 const ok = <T>(value: T): PlatformResult<T> => ({status: "success", value});
 const MOCK_PLAYER_DATA_KEY = "riddleQuest:mockJestPlayerData";
@@ -9,6 +10,7 @@ export class MockJestPlatform implements JestPlatformPort {
   progress: number[] = [];
   loaded = false;
   firstMilestoneMarked = false;
+  capturedEvents: Array<{name: string; properties?: Record<string, string | number | boolean>}> = [];
   subscriptionActive = false;
   constructor(registered = false) {
     this.player = {playerId: "jest-mock-player", registered};
@@ -40,7 +42,6 @@ export class MockJestPlatform implements JestPlatformPort {
     this.preferences = {...this.preferences, ...value};
   };
   readPlayerData = (): JestPlayerData | null => {
-    if (!this.player.registered) return null;
     try {
       const raw = globalThis.localStorage?.getItem(MOCK_PLAYER_DATA_KEY);
       return raw ? (JSON.parse(raw) as JestPlayerData) : null;
@@ -49,15 +50,19 @@ export class MockJestPlatform implements JestPlatformPort {
     }
   };
   writePlayerData = async (value: JestPlayerData) => {
-    if (!this.player.registered) return;
     globalThis.localStorage?.setItem(MOCK_PLAYER_DATA_KEY, JSON.stringify(value));
   };
-  getEntryIntent = () => {
+  getEntryIntent = (): JestEntryIntent => {
     if (typeof location === "undefined") return {};
     const params = new URLSearchParams(location.search);
-    return params.get("harness") === "race" && params.get("challengeId")
-      ? {challengeId: params.get("challengeId") ?? undefined}
-      : {};
+    const gameMode = params.get("gameMode");
+    return {
+      ...parseEntryIntent({}, location.search),
+      ...(params.get("harness") === "race" && params.get("challengeId")
+        ? {challengeId: params.get("challengeId") ?? undefined}
+        : {}),
+      ...(gameMode === "classic" || gameMode === "challenge" ? {gameMode} : {}),
+    };
   };
   getProfile = async () => null;
   scheduleNotification = async () =>
@@ -154,6 +159,9 @@ export class MockJestPlatform implements JestPlatformPort {
       },
       subscriptionSigned: "mock.subscription.signed",
     });
+  };
+  captureEvent = (name: string, properties?: Record<string, string | number | boolean>) => {
+    this.capturedEvents.push({name, properties});
   };
   markFirstMilestone = async () => {
     this.firstMilestoneMarked = true;

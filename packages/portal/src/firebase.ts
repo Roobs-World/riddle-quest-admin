@@ -31,6 +31,7 @@ import type {
   SubmitRaceGuessRequest,
   SubmitRaceGuessResponse,
 } from "@qwordly/core/race";
+import {parseNotificationCopyDocument, type NotificationCopy} from "./jest/notifications/copy";
 
 const rawFirebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -150,6 +151,12 @@ export const recordRaceAnalytics = httpsCallable<RaceAnalyticsEventRequest, Race
 export const loadUserDocument = async (userId: string): Promise<Record<string, unknown> | null> => {
   const snapshot = await getDoc(doc(firestore, "users", userId));
   return snapshot.exists() ? snapshot.data() : null;
+};
+
+export const loadNotificationCopy = async (locale: string): Promise<NotificationCopy> => {
+  const snapshot = await getDoc(doc(firestore, "config", "notifications"));
+  if (!snapshot.exists()) throw new Error("Firestore notification copy is not configured.");
+  return parseNotificationCopyDocument(snapshot.data(), locale);
 };
 
 export type CurrentRiddleResponse = {

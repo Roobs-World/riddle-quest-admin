@@ -9,4 +9,5 @@ export const JEST_COIN_PRODUCTS: Readonly<Record<string, number>> = Object.freez
 
 export const JEST_SUBSCRIPTIONS = Object.freeze({
   "com.roobsworld.riddlequest.premium.monthly": "premium",
+  "com.roobsworld.riddlequest.premium.yearly": "premium",
 } as const);

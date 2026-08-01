@@ -3,7 +3,7 @@
     "MODE_LABEL": "記録対戦",
     "TITLE": "10問レース",
     "CLOSE": "10問レースを閉じる",
-    "LAUNCH_SUBTITLE": "先に10問正解した人の勝ち",
+    "MULTIPLAYER_BUTTON": "マルチプレイ",
     "ERROR_GENERIC": "レースを続行できませんでした。",
     "ERROR_INVALID_RESPONSE": "サーバーから無効な応答が返されました。",
     "RETRY": "再試行",

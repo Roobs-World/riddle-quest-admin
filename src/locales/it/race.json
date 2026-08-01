@@ -3,7 +3,7 @@
     "MODE_LABEL": "Duello registrato",
     "TITLE": "Corsa a 10",
     "CLOSE": "Chiudi la corsa",
-    "LAUNCH_SUBTITLE": "Vince chi risolve per primo 10 indovinelli",
+    "MULTIPLAYER_BUTTON": "Multigiocatore",
     "ERROR_GENERIC": "Impossibile continuare la corsa.",
     "ERROR_INVALID_RESPONSE": "Il server ha restituito una risposta non valida.",
     "RETRY": "Riprova",

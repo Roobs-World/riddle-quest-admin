@@ -15,6 +15,7 @@
     "race:content:import": "node scripts/prepare-deploy.js && pnpm build && node scripts/run-with-functions-node.js scripts/race-content-import.js",
     "race:content:validate-live": "node scripts/prepare-deploy.js && pnpm build && node scripts/run-with-functions-node.js scripts/race-content-validate-live.js",
     "race:rollout:configure": "node scripts/run-with-functions-node.js scripts/race-rollout-configure.js",
+    "notifications:configure": "node scripts/run-with-functions-node.js scripts/notification-copy-configure.js",
     "test:race:rules": "node scripts/prepare-deploy.js && pnpm dlx firebase-tools emulators:exec --only firestore \"pnpm jest --config jest.rules.config.js --runInBand\""
   },
   "engines": {

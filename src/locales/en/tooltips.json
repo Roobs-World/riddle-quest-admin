@@ -4,8 +4,8 @@
     "ACHIEVEMENT_EARNED_TITLE": "Achievement unlocked",
     "CLASSIC_FROM_DAILY_BODY": "Daily challenge complete. Classic mode lets you keep solving riddles at your own pace.",
     "CLASSIC_FROM_DAILY_TITLE": "Classic mode",
-    "GAME_COINS_BODY": "Here is the coin section. press this to buy more coins when you need to skip a level or buy a hint.",
-    "GAME_COINS_TITLE": "Coin balance",
+    "GAME_COINS_BODY": "Tap this button to buy coins to fuel your adventure.",
+    "GAME_COINS_TITLE": "Open the coin shop",
     "GAME_HINT_BODY": "Tap Hint to reveal a helpful letter when you get stuck. Hints cost coins.",
     "GAME_HINT_TITLE": "Use a hint",
     "GAME_SKIP_BODY": "Tap this button to move past this riddle when you are stuck. Skips cost coins.",
@@ -17,8 +17,6 @@
     "LEADERBOARD_FIFTH_CORRECT_TITLE": "Climb the leaderboard",
     "PROFILE_ACHIEVEMENTS_BODY": "Open this section to see every achievement you have unlocked.",
     "PROFILE_ACHIEVEMENTS_TITLE": "Achievements",
-    "PROFILE_COINS_BODY": "Your coin balance is shown here. Spend coins on hints, skips, and extra chances.",
-    "PROFILE_COINS_TITLE": "Treasure chest",
     "PROFILE_DAILY_PUZZLES_BODY": "This shows how many daily challenges you have completed.",
     "PROFILE_DAILY_PUZZLES_TITLE": "Daily puzzles",
     "PROFILE_IDENTITY_BODY": "Your avatar, username live here. Tap on them to change them.",
@@ -33,6 +31,7 @@
     "PROFILE_STATS_TITLE": "Stats snapshot",
     "SHOP_OUT_OF_COINS_BODY": "You are out of coins for this action. Open the shop to buy or earn more.",
     "SHOP_OUT_OF_COINS_TITLE": "Grab more coins",
+    "PROFILE_TREASURE_BODY": "Open your Treasure Chest to view your coins and visit the coin shop.",
     "SUBMIT_ANSWER_BODY": "When every slot is filled, tap Submit to check your guess.",
     "SUBMIT_ANSWER_TITLE": "Submit your answer"
   }

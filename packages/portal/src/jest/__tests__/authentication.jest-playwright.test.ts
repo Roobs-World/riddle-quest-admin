@@ -283,7 +283,7 @@ const openHarness = async (
 const advanceToRegistration = async (page: Page) => {
   await page.getByRole("button", {name: /let's play/i}).click();
   await page.getByRole("button", {name: /got it/i}).click();
-  await page.getByText("Keep your cosmic progress", {exact: true}).waitFor();
+  await page.getByText("Keep your progress", {exact: true}).waitFor();
   expect(await page.locator(".onboarding-progress").textContent()).toBe("3/3");
   expect(await page.getByRole("button", {name: /^register$/i}).isVisible()).toBe(true);
   expect(await page.getByRole("button", {name: /^log in$/i}).isVisible()).toBe(true);
@@ -299,6 +299,24 @@ const enterRegisteredGame = async (page: Page) => {
   for (let step = 0; step < 5; step += 1) {
     const tooltipButton = page.locator(".tooltip-backdrop").getByRole("button", {name: /got it/i});
     if ((await tooltipButton.count()) === 0 || !(await tooltipButton.isVisible())) break;
+    const tooltip = page.locator(".tooltip-card");
+    const tooltipTitle = await tooltip.getByRole("heading").innerText();
+    const targetTooltip = /use a hint/i.test(tooltipTitle)
+      ? "gameHint"
+      : /submit your answer/i.test(tooltipTitle)
+        ? "submitAnswer"
+        : /skip level/i.test(tooltipTitle)
+          ? "gameSkip"
+          : null;
+    if (targetTooltip) {
+      const [tooltipBox, targetButtonBox] = await Promise.all([
+        tooltip.boundingBox(),
+        page.locator(`[data-tooltip='${targetTooltip}']`).boundingBox(),
+      ]);
+      expect(tooltipBox).not.toBeNull();
+      expect(targetButtonBox).not.toBeNull();
+      expect(tooltipBox!.y + tooltipBox!.height).toBeLessThan(targetButtonBox!.y);
+    }
     await tooltipButton.click();
   }
   await page.locator(".tooltip-backdrop").waitFor({state: "detached", timeout: 5_000});
@@ -406,7 +424,7 @@ describeBrowser("Jest authentication integration", () => {
     await new Promise<void>((resolve, reject) => server?.close((error) => (error ? reject(error) : resolve())));
   });
 
-  it("starts a guest through signed identity exchange without reading saved player progress", async () => {
+  it("starts a guest through signed identity exchange and reads stable-player progress", async () => {
     const {context, page} = await openHarness(browser);
     await page.getByRole("button", {name: /let's play/i}).waitFor({timeout: 15_000});
     const state = await getHarnessState(page);
@@ -417,7 +435,7 @@ describeBrowser("Jest authentication integration", () => {
     expect(state.firebaseTokens).toEqual(["mock"]);
     expect(state.profileReads).toBe(0);
     expect(state.calls).not.toContain("sdk.social.getProfile");
-    expect(state.calls.filter((call) => call === "sdk.data.getAll")).toHaveLength(1);
+    expect(state.calls.filter((call) => call === "sdk.data.getAll")).toHaveLength(2);
     expect(state.notificationSchedules).toEqual([]);
     await context.close();
   });
@@ -429,7 +447,7 @@ describeBrowser("Jest authentication integration", () => {
     await page.getByRole("button", {name: /let's play/i}).click();
     expect((await getHarnessState(page)).overlayOptions).toEqual([]);
     await page.getByRole("button", {name: /got it/i}).click();
-    await page.getByText("Keep your cosmic progress", {exact: true}).waitFor();
+    await page.getByText("Keep your progress", {exact: true}).waitFor();
     await page.getByText("Welcome, Nova.").waitFor();
     expect((await getHarnessState(page)).overlayOptions).toEqual([
       {
@@ -441,7 +459,7 @@ describeBrowser("Jest authentication integration", () => {
       },
     ]);
     await page.getByRole("button", {name: /play as guest/i}).click();
-    await page.getByText("Keep your cosmic progress", {exact: true}).waitFor({state: "detached"});
+    await page.getByText("Keep your progress", {exact: true}).waitFor({state: "detached"});
     const state = await getHarnessState(page);
     expect(state.calls).toContain("sdk.registration.closeButtonAction");
     expect(state.backendExchanges).toHaveLength(1);
@@ -479,33 +497,30 @@ describeBrowser("Jest authentication integration", () => {
           window as typeof window & {
             __RIDDLE_QUEST_JEST_AUTH_TEST__: AuthHarnessState;
           }
-        ).__RIDDLE_QUEST_JEST_AUTH_TEST__.notificationSchedules.length === 3,
+        ).__RIDDLE_QUEST_JEST_AUTH_TEST__.notificationSchedules.length === 7,
     );
-    expect((await getHarnessState(page)).notificationSchedules).toEqual([
+    expect((await getHarnessState(page)).notificationSchedules).toEqual(expect.arrayContaining([
       expect.objectContaining({
-        identifier: "riddle-quest-d1-v2",
+        identifier: "riddle-quest-d1-v3",
         scheduledInDays: 1,
         priority: "medium",
-        ctaText: "Solve it",
         entryPayload: expect.objectContaining({
           gameMode: "challenge",
-          reference: "notification_d1_v3",
-          notification_template: "daily_reward_progress_v3",
+          reference: "notification_d1_v4",
           notification_offset: "D1",
-          callback: "daily_coin_reward",
         }),
       }),
       expect.objectContaining({
-        identifier: "riddle-quest-d3-v2",
+        identifier: "riddle-quest-d3-v3",
         scheduledInDays: 3,
         priority: "high",
       }),
       expect.objectContaining({
-        identifier: "riddle-quest-d7-v2",
+        identifier: "riddle-quest-d7-v3",
         scheduledInDays: 7,
         priority: "high",
       }),
-    ]);
+    ]));
     await page.evaluate(() =>
       window.dispatchEvent(
         new CustomEvent("riddle-quest:share-referral", {
@@ -637,7 +652,11 @@ describeBrowser("Jest authentication integration", () => {
       sharedRace: true,
     });
     await enterRegisteredGame(creator.page);
-    await creator.page.locator("button.race-mode-launcher").click({timeout: 5_000});
+    const multiplayerButton = creator.page.getByRole("button", {name: /^multiplayer$/i});
+    await multiplayerButton.waitFor({timeout: 5_000});
+    const actionLabels = await creator.page.locator(".game-input-actions > button").allInnerTexts();
+    expect(actionLabels).toEqual(["Hint", "SUBMIT", "Multiplayer", "Skip"]);
+    await multiplayerButton.click();
     await creator.page.getByRole("button", {name: /^History /}).click();
     await creator.page.locator(".race-gameplay .guess-board").waitFor({state: "visible", timeout: 10_000});
     await solveFakeRace(creator.page);

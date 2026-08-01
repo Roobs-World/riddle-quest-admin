@@ -3,7 +3,7 @@
     "MODE_LABEL": "Kayıtlı düello",
     "TITLE": "10’a Yarış",
     "CLOSE": "Yarışı kapat",
-    "LAUNCH_SUBTITLE": "10 bilmeceyi önce çözen kazanır",
+    "MULTIPLAYER_BUTTON": "Çok oyunculu",
     "ERROR_GENERIC": "Yarış devam edemedi.",
     "ERROR_INVALID_RESPONSE": "Sunucu geçersiz bir yanıt verdi.",
     "RETRY": "Tekrar dene",

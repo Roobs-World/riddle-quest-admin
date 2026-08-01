@@ -3,7 +3,7 @@
     "MODE_LABEL": "Recorded head-to-head",
     "TITLE": "Race to 10",
     "CLOSE": "Close Race to 10",
-    "LAUNCH_SUBTITLE": "First to solve 10 riddles wins",
+    "MULTIPLAYER_BUTTON": "Multiplayer",
     "ERROR_GENERIC": "The race could not continue.",
     "ERROR_INVALID_RESPONSE": "The race server returned an invalid response.",
     "RETRY": "Retry",

@@ -447,6 +447,9 @@ export const gameSessionReducer = (
         },
       };
     case "openModal":
+      if (action.modal === "skip" && state.gameMode === "challenge") {
+        return state;
+      }
       return action.modal === "leaderboard"
         ? {...state, modal: action.modal, leaderboard: [], leaderboardLoading: true}
         : {...state, modal: action.modal};

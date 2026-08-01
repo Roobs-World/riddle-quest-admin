@@ -135,6 +135,8 @@ type PlanetRuntime = {
 
 export function SolarSystem({paused}: {paused: boolean}) {
   const mountRef = useRef<HTMLDivElement>(null);
+  const pausedRef = useRef(paused);
+  pausedRef.current = paused;
 
   useEffect(() => {
     const mount = mountRef.current;
@@ -147,7 +149,11 @@ export function SolarSystem({paused}: {paused: boolean}) {
     camera.position.set(0, 45, 350);
     camera.lookAt(0, 0, 0);
 
-    const renderer = new THREE.WebGLRenderer({alpha: true, antialias: true, powerPreference: "high-performance"});
+    const renderer = new THREE.WebGLRenderer({
+      alpha: true,
+      antialias: window.devicePixelRatio <= 1.5 && navigator.hardwareConcurrency > 4,
+      powerPreference: "high-performance",
+    });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     mount.append(renderer.domElement);
@@ -272,7 +278,7 @@ export function SolarSystem({paused}: {paused: boolean}) {
       const frameAt = performance.now();
       const deltaSeconds = getFrameDeltaSeconds(frameAt, lastFrameAt);
       lastFrameAt = frameAt;
-      if (!paused && !document.hidden) {
+      if (!pausedRef.current && !document.hidden) {
         animationElapsed += deltaSeconds;
         sun.rotation.y = advanceAngle(sun.rotation.y, 0.0018, deltaSeconds);
         coronaMaterial.opacity = 0.28 + Math.sin(animationElapsed * 0.85) * 0.08;
@@ -295,8 +301,8 @@ export function SolarSystem({paused}: {paused: boolean}) {
             mesh.position.set(Math.cos(angle) * config.distance, 0, Math.sin(angle) * config.distance);
           });
         }
+        renderer.render(scene, camera);
       }
-      renderer.render(scene, camera);
     };
     animate();
 
@@ -318,9 +324,10 @@ export function SolarSystem({paused}: {paused: boolean}) {
       coronaTexture.dispose();
       coronaMaterial.dispose();
       renderer.dispose();
+      renderer.forceContextLoss();
       renderer.domElement.remove();
     };
-  }, [paused]);
+  }, []);
 
   return <div ref={mountRef} className="solar-system" aria-hidden="true" data-testid="solar-system" />;
 }

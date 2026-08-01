@@ -18,6 +18,7 @@
     "NOT_ENOUGH_COINS_TITLE": "金币不足",
     "PURCHASE_FAILED_MESSAGE": "购买失败。请再试一次。",
     "PURCHASE_FAILED_TITLE": "购买失败",
+    "SKIP_BUTTON": "跳过",
     "SKIP_LEVEL_BUTTON": "跳过关卡",
     "SKIP_MODAL_TITLE": "跳过关卡？",
     "SKIP_NOT_ENOUGH_COINS_MESSAGE": "您没有足够的金币来跳过关卡。",

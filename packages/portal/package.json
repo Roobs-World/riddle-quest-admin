@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:jest-hosted": "vite --mode jest --host 0.0.0.0 --port 3000 --strictPort",
     "build:jest": "pnpm check:progress && pnpm check:locales && NODE_ENV=production tsc -b && JEST_BUILD=1 VITE_JEST_RUNTIME=1 NODE_ENV=production vite build --mode jest --outDir dist-jest && pnpm audit:jest-artifact",
     "upload:jest": "node scripts/upload-jest-build.mjs",
     "release:jest": "pnpm build:jest && pnpm upload:jest",
@@ -12,8 +13,11 @@
     "audit:jest-artifact": "node scripts/audit-jest-artifact.mjs dist-jest",
     "check:progress": "node scripts/progress-tracker.mjs --check",
     "check:locales": "node scripts/audit-locales.mjs",
+    "test:game-browser:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/play/__tests__/hostedBrowser.jest-playwright.test.ts",
     "test:jest-auth:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/jest/__tests__/authentication.jest-playwright.test.ts",
+    "test:jest-local:playwright": "pnpm test:game-browser:playwright && pnpm test:jest-auth:playwright",
     "test:jest-deployed:playwright": "PORTAL_DEPLOYED_TESTS=1 jest --config jest.config.cjs --runInBand src/jest/__tests__/deployedJest.jest-playwright.test.ts",
+    "test:mobile-soak": "PORTAL_SOAK_TESTS=1 jest --config jest.config.cjs --runInBand src/play/__tests__/mobileSoak.jest-playwright.test.ts",
     "preview": "vite preview",
     "test": "jest --config jest.config.cjs"
   },

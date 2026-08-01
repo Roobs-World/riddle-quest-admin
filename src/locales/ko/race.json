@@ -3,7 +3,7 @@
     "MODE_LABEL": "기록 대결",
     "TITLE": "10문제 레이스",
     "CLOSE": "레이스 닫기",
-    "LAUNCH_SUBTITLE": "수수께끼 10개를 먼저 풀면 승리",
+    "MULTIPLAYER_BUTTON": "멀티플레이",
     "ERROR_GENERIC": "레이스를 계속할 수 없습니다.",
     "ERROR_INVALID_RESPONSE": "서버가 잘못된 응답을 보냈습니다.",
     "RETRY": "다시 시도",

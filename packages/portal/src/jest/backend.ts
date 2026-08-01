@@ -11,6 +11,7 @@ export interface JestBackendPort {
   syncSubscriptions(subscriptionsSigned: string, playerId: string): Promise<{
     verified: boolean;
     activeSkus: string[];
+    blockedSkus?: string[];
   }>;
 }
 
@@ -42,7 +43,7 @@ export class JestBackendClient implements JestBackendPort {
   }
   verifyReferrals(referralsSigned: string, playerId: string) { return this.post<{verified: boolean}>("verifyJestReferrals", {referralsSigned, playerId}); }
   syncSubscriptions(subscriptionsSigned: string, playerId: string) {
-    return this.post<{verified: boolean; activeSkus: string[]}>(
+    return this.post<{verified: boolean; activeSkus: string[]; blockedSkus?: string[]}>(
       "syncJestSubscriptions",
       {subscriptionsSigned, playerId},
     );

@@ -2,6 +2,61 @@
 
 Riddle Quest is a standard React HTML5 game. It has no React Native, Expo, Android, iOS, admin-panel, external-auth, ad, or native-purchase release path.
 
+## Testing modes
+
+### 1. Local Jest SDK mock
+
+Start the normal development server:
+
+```bash
+pnpm dev
+```
+
+Open `http://localhost:5173/riddle-quest/`. The game uses Jest's SDK adapter and the SDK's built-in local mock host, while keeping authoritative Firebase operations mocked. Use the **JestSDK** debug menu to switch guest/registered state, set entry payloads, and simulate SDK success, cancellation, and error responses.
+
+For repeatable automated regression tests, use the project's deterministic harness and Playwright suite:
+
+```bash
+pnpm --filter @qwordly/portal test:jest-local:playwright
+```
+
+The deterministic `?harness=jest` route is test-only; it deliberately uses the repository's fixed mock adapter instead of the JestSDK debug menu.
+
+### 2. Jest hosted emulator
+
+Start Vite on the port expected by the hosted emulator:
+
+```bash
+pnpm jest:hosted
+```
+
+While logged in to Jest, open:
+
+```text
+https://jest.com/g/riddle-q?host=http://localhost:3000
+```
+
+The embedded-development check selects the real `JestSDK` adapter and real Firebase backend, not the deterministic local harness. The deployed Functions CORS configuration must include `http://localhost:3000` in `JEST_GAME_ORIGIN` while hosted-emulator testing is enabled. Do not add `harness=` to this URL.
+
+Validate player identity, registration dismissal/completion, player-data persistence, entry payloads, catalog reads, cancellation, and retryable SDK errors here. Payment settlement, notification delivery, and referral attribution still require sandbox users.
+
+### 3. Uploaded build with sandbox users
+
+Create a sandbox user in **Developer Console → Sandbox Users**, upload and activate a build, generate a login URL, then run:
+
+```bash
+JEST_SANDBOX_LOGIN_URL='https://jest.com/...' \
+pnpm --filter @qwordly/portal test:jest-deployed:playwright
+```
+
+Use two sandbox users for referral attribution. Reset the invitee's player state between referral runs because attribution happens on first entry. Sandbox checkout uses the real platform UI at a zero charge; also inspect scheduled notifications and persisted player state in the Developer Console.
+
+### 4. Developer Console Simulator
+
+Open the uploaded version—or provide the `pnpm jest:hosted` local URL—in the Simulator. Complete its quality checklist and record a self-review that covers onboarding, guest play, registration, one complete riddle, the shop, a canceled checkout, a successful sandbox checkout, subscription state, notifications, sharing, portrait/landscape layout, audio, and background/foreground recovery. Attach the recording to the exact version being submitted for moderation.
+
+After upload, use the version's preview link with the developer account for a final smoke test before activation. A preview is not a substitute for sandbox payment, notification, persistence, or referral validation.
+
 ## Local release verification
 
 ```bash
@@ -29,6 +84,38 @@ Generate the short-lived login URL from **Developer Console → Sandbox Users**.
 The authenticated browser state is cached only in `/tmp/riddle-quest-jest-sandbox-state.json` so a consumed one-time link can be reused while diagnosing a failed run. Set `JEST_SANDBOX_STORAGE_STATE` to override that ephemeral path.
 
 `build:jest` validates the canonical progress tracker, TypeScript, every imported locale JSON file, the production build, and the standalone artifact. The artifact audit enforces the 5 MB limit, local relative assets, the single approved Jest SDK script, and the absence of native modules, external authentication, ads, install prompts, secrets, and source maps.
+
+## Jest testing modes
+
+### Local SDK mock
+
+Run `pnpm dev` and open `http://localhost:5173/riddle-quest/`. Standalone development uses JestSDK's built-in mock host; use the **JestSDK** debug menu to switch guest/registered state, inspect calls and entry payloads, and simulate success, cancellation, and error responses. Add `?harness=jest` only when you need the repository's deterministic browser-test adapter instead.
+
+Run both deterministic browser suites with:
+
+```bash
+pnpm --filter @qwordly/portal test:jest-local:playwright
+```
+
+### Hosted emulator
+
+Start the local server on the port expected by Jest:
+
+```bash
+pnpm jest:hosted
+```
+
+While logged into the developer account, open `https://jest.com/g/riddle-q?host=http://localhost:3000`. The game detects that it is embedded and uses the live Jest SDK and configured backend rather than either local mock adapter. Exercise registration dismissal/completion, stable player identity, entry payloads, platform overlays, and mobile iframe sizing here.
+
+### Uploaded build and sandbox users
+
+Upload an audited draft, generate a login link under **Developer Console → Sandbox Users**, then run `test:jest-deployed:playwright` using the command above. Manually exercise notifications, purchase success/cancel/error/recovery, subscriptions, persistence, and two-player referrals. Sandbox checkout shows the real checkout UI but charges zero.
+
+### Simulator and version preview
+
+Before review, select the uploaded version in the Developer Console Simulator, complete its quality checklist, and record a self-review covering onboarding, guest play, registration, the first solved riddle, shop entry, and multiplayer entry. Use the version preview link with the developer account for a final check of that exact uploaded build before activation.
+
+These environments are complementary: local mocks prove application branches, the hosted emulator proves the live SDK boundary, sandbox users prove platform-backed state, and the Simulator produces moderator evidence.
 
 ## Current projects
 
@@ -111,3 +198,11 @@ pnpm --filter @qwordly/portal check:progress
 - **Monetization:** consumables and the monthly subscription use the Jest payment APIs. Signed receipts and subscription state are verified server-side; SKU grants are idempotent; canceled or failed transactions do not mutate balances; and incomplete purchases are recovered page-by-page before normal play.
 
 Automated coverage proves the integration contract and failure handling. Before a Fund submission, repeat the Notifications, Payments, and Referrals rows above with real Jest sandbox players and retain the Developer Console evidence; local mocks cannot prove catalog configuration, delivery by the messaging network, or live payment settlement.
+
+## User acquisition configuration
+
+1. Keep the Explore logo, hero image, and short description aligned with the first-play experience.
+2. Use the direct game URL for paid and creator campaigns. Jest-preserved `utm_source`, `utm_medium`, `utm_campaign`, `utm_term`, and `utm_content` values are allowlisted and attached to the `session_started` analytics event.
+3. Use structured `entryPayload` values for referrals, onboardings, and notifications. Riddle Quest validates these values before routing and carries `customName`, campaign, and reference into registration.
+4. Compare `session_started`, `registration_prompt_shown`, `registration_prompt_dismissed`, and `registration_completed` in Jest analytics by campaign. Events contain attribution labels and booleans only, never player names or other personal data.
+5. Preserve both registration moments: the early post-instructions choice and the post-win prompt after the core-value milestone. The dismissal cooldown prevents repeated interruptions.

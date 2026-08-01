@@ -644,6 +644,9 @@ p {
   gap: 8px;
   padding: 0 16px;
 }
+.game-input-actions.has-multiplayer {
+  grid-template-columns: 0.9fr 1.1fr 0.9fr 0.9fr;
+}
 .game-input-actions button {
   display: inline-flex;
   justify-content: center;
@@ -672,6 +675,19 @@ p {
   opacity: 1;
   background: #d9dee4;
   color: #707780;
+}
+.game-input-actions .multiplayer-action {
+  flex-direction: column;
+  gap: 3px;
+  background: linear-gradient(120deg, #173e4c, #2e8b57);
+  color: #fff;
+  font-size: clamp(13px, 2.4vw, 18px);
+  line-height: 1;
+}
+.game-input-actions .multiplayer-action .native-control-icon {
+  width: 21px;
+  height: 21px;
+  fill: currentColor;
 }
 .game-input-actions img,
 .native-control-icon {
@@ -1753,6 +1769,15 @@ p {
   width: min(320px, 86%);
   height: auto;
 }
+.onboarding-card-welcome {
+  width: min(520px, 100%);
+  padding-inline: 18px;
+}
+.onboarding-card-welcome .onboarding-logo {
+  width: min(460px, calc(100% + 20px));
+  max-width: none;
+  max-height: none;
+}
 .onboarding-card p {
   margin: 0;
   font:
@@ -2075,26 +2100,6 @@ p {
   border: 0;
 }
 
-.race-mode-launcher {
-  width: min(620px, calc(100% - 20px));
-  margin: 0 auto 10px;
-  padding: 12px 18px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  color: #fff;
-  background: linear-gradient(120deg, #173e4c, #2e8b57);
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  border-radius: 16px;
-  box-shadow: 0 8px 24px rgba(8, 31, 38, 0.24);
-}
-
-.race-mode-launcher span {
-  font-size: 0.82em;
-  opacity: 0.9;
-}
-
 .race-screen {
   position: fixed;
   inset: 0;
@@ -2383,10 +2388,6 @@ p {
   }
   .race-progress {
     gap: 8px;
-  }
-  .race-mode-launcher {
-    align-items: flex-start;
-    flex-direction: column;
   }
 }
 

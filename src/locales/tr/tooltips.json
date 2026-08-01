@@ -4,8 +4,8 @@
     "ACHIEVEMENT_EARNED_TITLE": "Basari acildi",
     "CLASSIC_FROM_DAILY_BODY": "Gunluk meydan okuma tamamlandi. Klasik mod bilmeceleri kendi hizinda cozmeye devam etmeni saglar.",
     "CLASSIC_FROM_DAILY_TITLE": "Klasik mod",
-    "GAME_COINS_BODY": "Burası jeton bölümü. Bir seviyeyi atlaman veya ipucu satın alman gerektiğinde daha fazla jeton almak için buraya bas.",
-    "GAME_COINS_TITLE": "Jeton bakiyesi",
+    "GAME_COINS_BODY": "Maceranı sürdürmek için jeton satın almak üzere bu düğmeye dokun.",
+    "GAME_COINS_TITLE": "Jeton mağazasını aç",
     "GAME_HINT_BODY": "Takıldığında yararlı bir harf açmak için İpucu'na dokun. İpuçları jeton gerektirir.",
     "GAME_HINT_TITLE": "İpucu kullan",
     "GAME_SKIP_BODY": "Takıldığında bu bilmeceyi geçmek için bu düğmeye dokun. Atlamak jeton gerektirir.",
@@ -17,8 +17,6 @@
     "LEADERBOARD_FIFTH_CORRECT_TITLE": "Lider tablosunda yuksel",
     "PROFILE_ACHIEVEMENTS_BODY": "Actigin tum basarilari gormek icin bu bolumu ac.",
     "PROFILE_ACHIEVEMENTS_TITLE": "Basarilar",
-    "PROFILE_COINS_BODY": "Para bakiyen burada gorunur. Paralari ipuclari, atlamalar ve ekstra sanslar icin harca.",
-    "PROFILE_COINS_TITLE": "Hazine sandigi",
     "PROFILE_DAILY_PUZZLES_BODY": "Bu bolum kac gunluk meydan okumayi tamamladigini gosterir.",
     "PROFILE_DAILY_PUZZLES_TITLE": "Gunluk bilmeceler",
     "PROFILE_IDENTITY_BODY": "Avatarin, kullanici adin, XP seviyen ve seviye ilerlemen burada.",
@@ -33,6 +31,7 @@
     "PROFILE_STATS_TITLE": "Istatistik ozeti",
     "SHOP_OUT_OF_COINS_BODY": "Bu islem icin paran kalmadi. Daha fazla almak veya kazanmak icin magazayi ac.",
     "SHOP_OUT_OF_COINS_TITLE": "Daha fazla para al",
+    "PROFILE_TREASURE_BODY": "Hazine sandığını açarak paralarını gör ve para mağazasını ziyaret et.",
     "SUBMIT_ANSWER_BODY": "Tum kutular doldugunda tahminini kontrol etmek icin Gonder'e dokun.",
     "SUBMIT_ANSWER_TITLE": "Cevabini gonder"
   }

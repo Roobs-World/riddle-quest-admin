@@ -4,8 +4,8 @@
     "ACHIEVEMENT_EARNED_TITLE": "Obiettivo sbloccato",
     "CLASSIC_FROM_DAILY_BODY": "Sfida quotidiana completata. La modalità classica ti consente di continuare a risolvere enigmi al tuo ritmo.",
     "CLASSIC_FROM_DAILY_TITLE": "Modalità classica",
-    "GAME_COINS_BODY": "Questa è la sezione monete. Premi qui per comprare più monete quando devi saltare un livello o acquistare un indizio.",
-    "GAME_COINS_TITLE": "Saldo monete",
+    "GAME_COINS_BODY": "Tocca questo pulsante per acquistare monete e alimentare la tua avventura.",
+    "GAME_COINS_TITLE": "Apri il negozio di monete",
     "GAME_HINT_BODY": "Tocca Suggerimento per rivelare una lettera utile quando sei bloccato. I suggerimenti costano monete.",
     "GAME_HINT_TITLE": "Usa un suggerimento",
     "GAME_SKIP_BODY": "Tocca questo pulsante per superare questo enigma quando sei bloccato. I salti costano monete.",
@@ -17,8 +17,6 @@
     "LEADERBOARD_FIFTH_CORRECT_TITLE": "Scala la classifica",
     "PROFILE_ACHIEVEMENTS_BODY": "Apri questa sezione per vedere tutti gli obiettivi che hai sbloccato.",
     "PROFILE_ACHIEVEMENTS_TITLE": "Risultati",
-    "PROFILE_COINS_BODY": "Il saldo delle tue monete è mostrato qui. Spendi monete in suggerimenti, salti e possibilità extra.",
-    "PROFILE_COINS_TITLE": "Scrigno del tesoro",
     "PROFILE_DAILY_PUZZLES_BODY": "Questo mostra quante sfide giornaliere hai completato.",
     "PROFILE_DAILY_PUZZLES_TITLE": "Puzzle quotidiani",
     "PROFILE_IDENTITY_BODY": "Il tuo avatar, nome utente, livello XP e progresso di livello si trovano qui.",
@@ -33,6 +31,7 @@
     "PROFILE_STATS_TITLE": "Istantanea delle statistiche",
     "SHOP_OUT_OF_COINS_BODY": "Hai esaurito le monete per questa azione. Apri il negozio per acquistare o guadagnare di più.",
     "SHOP_OUT_OF_COINS_TITLE": "Prendi più monete",
+    "PROFILE_TREASURE_BODY": "Apri il tuo scrigno del tesoro per vedere le monete e visitare il negozio.",
     "SUBMIT_ANSWER_BODY": "Una volta riempiti tutti gli slot, tocca Invia per verificare la tua ipotesi.",
     "SUBMIT_ANSWER_TITLE": "Invia la tua risposta"
   }

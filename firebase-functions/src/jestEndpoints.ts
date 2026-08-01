@@ -14,9 +14,10 @@ const configuredSubscriptionSkus = new Set(
   (process.env.JEST_SUBSCRIPTION_SKUS ?? "").split(",").map((value) => value.trim()).filter(Boolean),
 );
 const coinGrants = new Map(Object.entries(JEST_COIN_PRODUCTS));
+const trustedSubscriptionSkus = new Set(Object.keys(JEST_SUBSCRIPTIONS));
 const subscriptionSkus = configuredSubscriptionSkus.size > 0
-  ? configuredSubscriptionSkus
-  : new Set(Object.keys(JEST_SUBSCRIPTIONS));
+  ? new Set([...configuredSubscriptionSkus].filter((sku) => trustedSubscriptionSkus.has(sku)))
+  : trustedSubscriptionSkus;
 const REFERRAL_REFERENCE = "riddle_quest_friend_challenge_v2";
 const REFERRAL_REWARD_COINS = 100;
 const attempts = new Map<string, {count: number; resetAt: number}>();
@@ -158,6 +159,7 @@ export const syncJestSubscriptions = onRequest({secrets: [jestSharedSecret]}, as
     const activeSkus = subscriptions
       .filter((subscription) => subscription.status === "active")
       .map((subscription) => subscription.sku);
+    const blockedSkus = resolveConflictingSubscriptionSkus(activeSkus, subscriptionSkus);
     const uid = jestFirebaseUid(playerId);
     await admin.firestore().collection("users").doc(uid).set({
       hasActiveSubscription: activeSkus.length > 0,
@@ -167,7 +169,7 @@ export const syncJestSubscriptions = onRequest({secrets: [jestSharedSecret]}, as
       },
       lastLogin: Date.now(),
     }, {merge: true});
-    response.json({verified: true, activeSkus});
+    response.json({verified: true, activeSkus, blockedSkus});
   } catch (error) {
     response.status(400).json({error: rejection(error)});
   }
@@ -320,6 +322,19 @@ export function resolveSignedSubscriptions(
     }
     return {sku, status};
   });
+}
+
+export function resolveConflictingSubscriptionSkus(
+  activeSkus: readonly string[],
+  allowedSkus: ReadonlySet<string> = subscriptionSkus,
+  entitlementCatalog: Readonly<Record<string, string>> = JEST_SUBSCRIPTIONS,
+): string[] {
+  const activeEntitlements = new Set(
+    activeSkus.map((sku) => entitlementCatalog[sku]).filter((value): value is string => typeof value === "string"),
+  );
+  return [...allowedSkus].filter((sku) =>
+    !activeSkus.includes(sku) && activeEntitlements.has(entitlementCatalog[sku]),
+  );
 }
 
 function createJestUser(uid: string, playerId: string): Record<string, unknown> {

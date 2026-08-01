@@ -3,7 +3,7 @@
     "MODE_LABEL": "Duelo gravado",
     "TITLE": "Corrida até 10",
     "CLOSE": "Fechar Corrida até 10",
-    "LAUNCH_SUBTITLE": "Quem resolver 10 enigmas primeiro vence",
+    "MULTIPLAYER_BUTTON": "Multijogador",
     "ERROR_GENERIC": "Não foi possível continuar a corrida.",
     "ERROR_INVALID_RESPONSE": "O servidor devolveu uma resposta inválida.",
     "RETRY": "Tentar novamente",

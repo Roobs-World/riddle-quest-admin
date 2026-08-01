@@ -3,7 +3,7 @@
     "MODE_LABEL": "Nagrany pojedynek",
     "TITLE": "Wyścig do 10",
     "CLOSE": "Zamknij wyścig",
-    "LAUNCH_SUBTITLE": "Wygrywa pierwszy, kto rozwiąże 10 zagadek",
+    "MULTIPLAYER_BUTTON": "Gra wieloosobowa",
     "ERROR_GENERIC": "Nie udało się kontynuować wyścigu.",
     "ERROR_INVALID_RESPONSE": "Serwer zwrócił nieprawidłową odpowiedź.",
     "RETRY": "Spróbuj ponownie",

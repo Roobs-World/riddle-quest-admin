@@ -31,15 +31,22 @@ async function waitForDeployedGame(page: Page): Promise<Frame> {
     expectedGameId,
     {timeout: 30_000},
   );
-  const frame = page.frames().find((candidate) => {
-    try {
-      return new URL(candidate.url()).hostname === `${expectedGameId}.builds.jest.com`;
-    } catch {
-      return false;
-    }
-  });
-  if (!frame) throw new Error("The deployed Jest game iframe was not found");
-  return frame;
+  const deadline = Date.now() + 30_000;
+  while (Date.now() < deadline) {
+    const frame = page.frames().find((candidate) => {
+      try {
+        return new URL(candidate.url()).hostname === `${expectedGameId}.builds.jest.com`;
+      } catch {
+        return false;
+      }
+    });
+    if (frame) return frame;
+    // The iframe element can be present just before Playwright observes the
+    // cross-origin frame attachment. Poll the frame tree instead of treating
+    // that normal hand-off as a missing deployment.
+    await page.waitForTimeout(100);
+  }
+  throw new Error("The deployed Jest game iframe was not found");
 }
 
 describeDeployed("deployed Jest sandbox game", () => {

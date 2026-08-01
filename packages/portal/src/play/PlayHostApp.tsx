@@ -318,6 +318,9 @@ export function PlayHostApp({
           try {
             if (message.payload.reason === "skip" && message.payload.riddleId && message.payload.gameMode) {
               const {riddleId, gameMode: skipGameMode} = message.payload;
+              if (skipGameMode === "challenge") {
+                throw new Error("Daily riddles cannot be skipped.");
+              }
               const result = await withServerActivity(() =>
                 services.skipRiddle({
                   riddleId,

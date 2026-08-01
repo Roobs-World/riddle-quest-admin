@@ -4,8 +4,8 @@
     "ACHIEVEMENT_EARNED_TITLE": "Pencapaian terbuka",
     "CLASSIC_FROM_DAILY_BODY": "Tantangan harian selesai. Mode klasik memungkinkan Anda terus memecahkan teka-teki sesuai keinginan Anda.",
     "CLASSIC_FROM_DAILY_TITLE": "Modus klasik",
-    "GAME_COINS_BODY": "Ini bagian koin. Tekan ini untuk membeli lebih banyak koin saat kamu perlu melewati level atau membeli petunjuk.",
-    "GAME_COINS_TITLE": "Saldo koin",
+    "GAME_COINS_BODY": "Ketuk tombol ini untuk membeli koin dan mendukung petualanganmu.",
+    "GAME_COINS_TITLE": "Buka toko koin",
     "GAME_HINT_BODY": "Ketuk Petunjuk untuk membuka huruf yang membantu saat kamu buntu. Petunjuk memakai koin.",
     "GAME_HINT_TITLE": "Gunakan petunjuk",
     "GAME_SKIP_BODY": "Ketuk tombol ini untuk melewati teka-teki ini saat kamu buntu. Lewati level memakai koin.",
@@ -17,8 +17,6 @@
     "LEADERBOARD_FIFTH_CORRECT_TITLE": "Naiki papan peringkat",
     "PROFILE_ACHIEVEMENTS_BODY": "Buka bagian ini untuk melihat setiap pencapaian yang telah Anda buka.",
     "PROFILE_ACHIEVEMENTS_TITLE": "Prestasi",
-    "PROFILE_COINS_BODY": "Saldo koin Anda ditampilkan di sini. Habiskan koin untuk petunjuk, lompatan, dan peluang ekstra.",
-    "PROFILE_COINS_TITLE": "Peti harta karun",
     "PROFILE_DAILY_PUZZLES_BODY": "Ini menunjukkan berapa banyak tantangan harian yang telah Anda selesaikan.",
     "PROFILE_DAILY_PUZZLES_TITLE": "Teka-teki harian",
     "PROFILE_IDENTITY_BODY": "Avatar Anda, nama pengguna, level XP, dan kemajuan level ada di sini.",
@@ -33,6 +31,7 @@
     "PROFILE_STATS_TITLE": "Cuplikan statistik",
     "SHOP_OUT_OF_COINS_BODY": "Anda kehabisan koin untuk tindakan ini. Buka toko untuk membeli atau mendapatkan lebih banyak.",
     "SHOP_OUT_OF_COINS_TITLE": "Ambil lebih banyak koin",
+    "PROFILE_TREASURE_BODY": "Buka peti harta karun untuk melihat koin dan mengunjungi toko koin.",
     "SUBMIT_ANSWER_BODY": "Ketika setiap slot terisi, ketuk Kirim untuk memeriksa tebakan Anda.",
     "SUBMIT_ANSWER_TITLE": "Kirimkan jawaban Anda"
   }

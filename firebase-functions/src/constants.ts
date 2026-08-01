@@ -7,7 +7,6 @@
 export const SKIP_COST_CLASSIC = 100;
 
 /** Coin cost to skip a level in Daily Challenge mode. */
-export const SKIP_COST_DAILY = 150;
 
 /** Coin cost to reveal one hint letter. */
 export const HINT_COST_COINS = 50;

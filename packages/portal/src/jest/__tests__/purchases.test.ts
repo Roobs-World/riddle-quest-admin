@@ -86,7 +86,7 @@ it("uses only backend-verified subscription status in the shop catalog", async (
     },
   });
   const backend = {
-    syncSubscriptions: jest.fn(async () => ({verified: true, activeSkus: []})),
+    syncSubscriptions: jest.fn(async () => ({verified: true, activeSkus: [], blockedSkus: []})),
   };
   const result = await new JestPurchaseCoordinator(platform, backend as never)
     .getSubscriptions("p1", "en-US");
@@ -99,6 +99,56 @@ it("uses only backend-verified subscription status in the shop catalog", async (
       subscriptionStatus: "inactive",
       displayPrice: "$4.99",
       billingPeriod: "monthly",
+    })],
+  });
+});
+
+it("hides an equivalent inactive subscription when another cadence is active", async () => {
+  const platform = new MockJestPlatform(true);
+  platform.getSubscriptions = async () => ({
+    status: "success",
+    value: {
+      subscriptions: [
+        {
+          sku: "premium-monthly",
+          displayName: "Premium monthly",
+          displayDescription: null,
+          price: 4.99,
+          currency: "USD",
+          billingPeriod: "monthly",
+          status: "active",
+          trialEligible: false,
+        },
+        {
+          sku: "premium-yearly",
+          displayName: "Premium yearly",
+          displayDescription: null,
+          price: 49.99,
+          currency: "USD",
+          billingPeriod: "yearly",
+          status: "inactive",
+          trialEligible: true,
+        },
+      ],
+      subscriptionsSigned: "catalog.signed",
+    },
+  });
+  const backend = {
+    syncSubscriptions: jest.fn(async () => ({
+      verified: true,
+      activeSkus: ["premium-monthly"],
+      blockedSkus: ["premium-yearly"],
+    })),
+  };
+
+  const result = await new JestPurchaseCoordinator(platform, backend as never)
+    .getSubscriptions("p1", "en-US");
+
+  expect(result).toEqual({
+    status: "success",
+    value: [expect.objectContaining({
+      productId: "premium-monthly",
+      subscriptionStatus: "active",
     })],
   });
 });
@@ -122,10 +172,10 @@ it("verifies a subscription before applying the active entitlement and never com
     },
   });
   const backend = {
-    syncSubscriptions: jest.fn(async () => ({verified: true, activeSkus: ["premium"]})),
+    syncSubscriptions: jest.fn(async () => ({verified: true, activeSkus: ["premium"], blockedSkus: ["premium-yearly"]})),
   };
   expect(await new JestPurchaseCoordinator(platform, backend as never).subscribe("premium", "p1"))
-    .toEqual({status: "success", value: {activeSku: "premium"}});
+    .toEqual({status: "success", value: {activeSku: "premium", blockedSkus: ["premium-yearly"]}});
   expect(backend.syncSubscriptions).toHaveBeenCalledWith("subscription.signed", "p1");
   expect(platform.completePurchase).not.toHaveBeenCalled();
 });
@@ -155,11 +205,11 @@ it("refreshes and verifies an existing subscription after an already-subscribed 
     },
   }));
   const backend = {
-    syncSubscriptions: jest.fn(async () => ({verified: true, activeSkus: ["premium"]})),
+    syncSubscriptions: jest.fn(async () => ({verified: true, activeSkus: ["premium"], blockedSkus: []})),
   };
 
   expect(await new JestPurchaseCoordinator(platform, backend as never).subscribe("premium", "p1"))
-    .toEqual({status: "success", value: {activeSku: "premium"}});
+    .toEqual({status: "success", value: {activeSku: "premium", blockedSkus: []}});
   expect(platform.getSubscriptions).toHaveBeenCalledTimes(1);
   expect(backend.syncSubscriptions).toHaveBeenCalledWith("subscriptions.refreshed", "p1");
 });

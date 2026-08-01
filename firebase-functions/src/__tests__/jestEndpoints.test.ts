@@ -1,5 +1,6 @@
 import {
   applyJestCors,
+  resolveConflictingSubscriptionSkus,
   resolveSignedPurchase,
   resolveSignedSubscriptions,
   selectReferralConversions,
@@ -69,6 +70,17 @@ describe("signed Jest subscription selection", () => {
     expect(() => resolveSignedSubscriptions({
       subscription: {sku: "different", status: "active"},
     }, new Set([sku]))).toThrow("invalid-subscription");
+  });
+
+  it("blocks other billing cadences that grant the active entitlement", () => {
+    const monthly = "premium-monthly";
+    const yearly = "premium-yearly";
+    const supporter = "supporter-monthly";
+    expect(resolveConflictingSubscriptionSkus(
+      [monthly],
+      new Set([monthly, yearly, supporter]),
+      {[monthly]: "premium", [yearly]: "premium", [supporter]: "supporter"},
+    )).toEqual([yearly]);
   });
 });
 

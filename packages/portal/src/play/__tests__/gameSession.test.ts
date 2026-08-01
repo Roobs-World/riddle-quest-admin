@@ -19,6 +19,13 @@ const riddle = {
 const reduce = (state: GameSessionState, action: GameSessionAction) => gameSessionReducer(state, action);
 
 describe("game session reducer", () => {
+  it("does not open the skip modal for a daily riddle", () => {
+    const dailyRiddle = {...riddle, riddleId: "daily-1", gameMode: "challenge" as const};
+    const state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle: dailyRiddle});
+
+    expect(reduce(state, {type: "openModal", modal: "skip"})).toBe(state);
+  });
+
   it("ignores incomplete submissions without showing an error", () => {
     let state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle});
     state = reduce(state, {type: "typeLetter", letter: "P"});

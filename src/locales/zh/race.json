@@ -3,7 +3,7 @@
     "MODE_LABEL": "录像对决",
     "TITLE": "十题竞速",
     "CLOSE": "关闭十题竞速",
-    "LAUNCH_SUBTITLE": "率先答对10道谜题者获胜",
+    "MULTIPLAYER_BUTTON": "多人游戏",
     "ERROR_GENERIC": "比赛无法继续。",
     "ERROR_INVALID_RESPONSE": "服务器返回了无效响应。",
     "RETRY": "重试",

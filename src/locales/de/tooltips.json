@@ -4,8 +4,8 @@
     "ACHIEVEMENT_EARNED_TITLE": "Erfolg freigeschaltet",
     "CLASSIC_FROM_DAILY_BODY": "Taegliche Herausforderung abgeschlossen. Im klassischen Modus kannst du in deinem Tempo weiterspielen.",
     "CLASSIC_FROM_DAILY_TITLE": "Klassischer Modus",
-    "GAME_COINS_BODY": "Hier ist der Münzbereich. Tippe hier, um mehr Münzen zu kaufen, wenn du ein Level überspringen oder einen Hinweis kaufen musst.",
-    "GAME_COINS_TITLE": "Münzstand",
+    "GAME_COINS_BODY": "Tippe auf diese Schaltfläche, um Münzen zu kaufen und dein Abenteuer voranzutreiben.",
+    "GAME_COINS_TITLE": "Münzshop öffnen",
     "GAME_HINT_BODY": "Tippe auf Hinweis, um einen hilfreichen Buchstaben aufzudecken, wenn du feststeckst. Hinweise kosten Münzen.",
     "GAME_HINT_TITLE": "Hinweis nutzen",
     "GAME_SKIP_BODY": "Tippe auf diese Schaltfläche, um dieses Rätsel zu überspringen, wenn du feststeckst. Überspringen kostet Münzen.",
@@ -17,8 +17,6 @@
     "LEADERBOARD_FIFTH_CORRECT_TITLE": "Steig in der Bestenliste auf",
     "PROFILE_ACHIEVEMENTS_BODY": "Oeffne diesen Bereich, um alle freigeschalteten Erfolge zu sehen.",
     "PROFILE_ACHIEVEMENTS_TITLE": "Erfolge",
-    "PROFILE_COINS_BODY": "Hier siehst du deinen Muenzenstand. Nutze Muenzen fuer Hinweise, Ueberspringen und Extra-Chancen.",
-    "PROFILE_COINS_TITLE": "Schatztruhe",
     "PROFILE_DAILY_PUZZLES_BODY": "Dies zeigt, wie viele taegliche Herausforderungen du abgeschlossen hast.",
     "PROFILE_DAILY_PUZZLES_TITLE": "Taegliche Raetsel",
     "PROFILE_IDENTITY_BODY": "Hier findest du Avatar, Benutzername, XP-Level und Level-Fortschritt.",
@@ -33,6 +31,7 @@
     "PROFILE_STATS_TITLE": "Statistikuebersicht",
     "SHOP_OUT_OF_COINS_BODY": "Du hast fuer diese Aktion nicht genug Muenzen. Oeffne den Shop, um mehr zu kaufen oder zu verdienen.",
     "SHOP_OUT_OF_COINS_TITLE": "Mehr Muenzen holen",
+    "PROFILE_TREASURE_BODY": "Öffne deine Schatztruhe, um deine Münzen anzusehen und den Münzshop zu besuchen.",
     "SUBMIT_ANSWER_BODY": "Wenn alle Felder gefuellt sind, tippe auf Einreichen, um deinen Tipp zu pruefen.",
     "SUBMIT_ANSWER_TITLE": "Antwort einreichen"
   }

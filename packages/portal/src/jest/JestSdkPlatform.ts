@@ -78,7 +78,6 @@ export class JestSdkPlatform implements JestPlatformPort {
   }
   async writePreferences(value: JestPreferences) { this.sdk.data.set(value); await this.sdk.data.flush(); }
   readPlayerData(): JestPlayerData | null {
-    if (!this.getPlayer().registered) return null;
     const value: unknown = this.sdk.data?.getAll?.()?.[PLAYER_DATA_KEY];
     if (!isRecord(value) || value.schemaVersion !== 1 || typeof value.updatedAt !== "number") return null;
     const activeGame = value.activeGame === null ? null : parseSavedGame(value.activeGame);
@@ -91,11 +90,12 @@ export class JestSdkPlatform implements JestPlatformPort {
     };
   }
   async writePlayerData(value: JestPlayerData) {
-    if (!this.getPlayer().registered) return;
     this.sdk.data.set(PLAYER_DATA_KEY, value);
     await this.sdk.data.flush();
   }
-  getEntryIntent() { return parseEntryIntent(this.sdk.getEntryPayload?.() ?? {}); }
+  getEntryIntent() {
+    return parseEntryIntent(this.sdk.getEntryPayload?.() ?? {}, globalThis.location?.search ?? "");
+  }
   async getProfile() { return this.sdk.social.getProfile({avatarSize: 128}) ?? null; }
   async scheduleNotification(input: Parameters<JestPlatformPort["scheduleNotification"]>[0]) {
     if (!this.getPlayer().registered) return {status: "unavailable", message: "Registration is required"} as const;
@@ -165,6 +165,9 @@ export class JestSdkPlatform implements JestPlatformPort {
         subscriptionSigned: result.subscriptionSigned,
       });
     } catch (e) { return failure(e); }
+  }
+  captureEvent(name: string, properties?: Record<string, string | number | boolean>) {
+    this.sdk.captureEvent?.(name, properties);
   }
   async markFirstMilestone() {
     try { await this.sdk.markFirstMilestone(); return success(undefined); } catch (e) { return failure(e); }

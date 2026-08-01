@@ -8,24 +8,29 @@ import {JestPurchaseCoordinator} from "./purchases";
 import {markJestPlayable, startJestSession, type JestStartupUpdate} from "./startup";
 import type {JestPlayerData, JestPlayerDataUpdate, JestRegistrationOverlayHandle, JestSession} from "./types";
 import {tr, useLocale} from "../play/i18n";
-import {captureGameScreenshot, captureVictoryShareImage, sizeCheckedScreenshotProvider} from "./screenshots";
-import {scheduleEngagementReminders} from "./engagement";
 import {MockJestPlatform} from "./MockJestPlatform";
 import {recordAuthoritativeCompletion} from "./milestone";
 import type {ProductSummary, PurchaseResult} from "../play/types";
 import {SpinningWheelLoader} from "../play/SpinningWheelLoader";
+import {useJestNotifications} from "./notifications/useJestNotifications";
+import {useJestSharing} from "./sharing/useJestSharing";
+import {resolveJestRuntimeMode} from "./runtimeMode";
 
 export function JestPlayApp() {
   const locale = useLocale();
   const searchParams = new URLSearchParams(window.location.search);
   const harness = searchParams.get("harness");
-  const authHarness = harness === "jest-auth" || harness === "race-auth";
-  const mockRuntime = import.meta.env.DEV || harness === "jest" || harness === "dev" || authHarness;
+  const runtimeMode = resolveJestRuntimeMode({
+    development: import.meta.env.DEV,
+    embedded: window.parent !== window,
+    harness,
+  });
+  const {authHarness, mockBackend: mockRuntime} = runtimeMode;
   const mockRegistered = searchParams.get("registered") === "1";
   const platform = useMemo(
     () =>
-      authHarness ? new JestSdkPlatform() : mockRuntime ? new MockJestPlatform(mockRegistered) : new JestSdkPlatform(),
-    [authHarness, mockRegistered, mockRuntime],
+      runtimeMode.useSdkPlatform ? new JestSdkPlatform() : new MockJestPlatform(mockRegistered),
+    [mockRegistered, runtimeMode.useSdkPlatform],
   );
   const backend = useMemo(
     () =>
@@ -66,6 +71,7 @@ export function JestPlayApp() {
                 subscriptionsSigned.includes(".active.") || subscriptionsSigned.includes(".subscription.")
                   ? ["com.roobsworld.riddlequest.premium.monthly"]
                   : [],
+              blockedSkus: [],
             }),
           } satisfies JestBackendPort)
         : new JestBackendClient(import.meta.env.VITE_JEST_FUNCTIONS_BASE_URL || "/"),
@@ -104,8 +110,32 @@ export function JestPlayApp() {
     }
   }, []);
   const trackFunnel = useCallback((eventName: string, params: Record<string, string | number | boolean> = {}) => {
-    console.info("[riddle-quest-funnel]", eventName, params);
-  }, []);
+    const intent = sessionRef.current?.entryIntent;
+    const attributedParams = {
+      ...(intent?.campaign ? {campaign: intent.campaign} : {}),
+      ...(intent?.reference ? {reference: intent.reference} : {}),
+      ...(intent?.utmSource ? {utm_source: intent.utmSource} : {}),
+      ...(intent?.utmMedium ? {utm_medium: intent.utmMedium} : {}),
+      ...(intent?.utmCampaign ? {utm_campaign: intent.utmCampaign} : {}),
+      ...(intent?.utmTerm ? {utm_term: intent.utmTerm} : {}),
+      ...(intent?.utmContent ? {utm_content: intent.utmContent} : {}),
+      ...params,
+    };
+    console.info("[riddle-quest-funnel]", eventName, attributedParams);
+    platform.captureEvent(eventName, attributedParams);
+  }, [platform]);
+  useJestNotifications({
+    locale,
+    mockRuntime,
+    session,
+    engagementProgress,
+    playerFallback: tr("WebPortal.NOTIFICATION_PLAYER_FALLBACK"),
+    assetReference: import.meta.env.VITE_JEST_NOTIFICATION_ASSET_REFERENCE || undefined,
+    platform,
+    withPlatformActivity,
+    trackFunnel,
+  });
+  useJestSharing({locale, session, platform, backend, withPlatformActivity, trackFunnel});
   const authenticateJestIdentity = useCallback(
     async (token: string) => {
       if (authHarness) {
@@ -139,6 +169,11 @@ export function JestPlayApp() {
           reference: result.value.entryIntent.reference ?? "none",
           notificationTemplate: result.value.entryIntent.notificationTemplate ?? "none",
           notificationOffset: result.value.entryIntent.notificationOffset ?? "none",
+          utm_source: result.value.entryIntent.utmSource ?? "none",
+          utm_medium: result.value.entryIntent.utmMedium ?? "none",
+          utm_campaign: result.value.entryIntent.utmCampaign ?? "none",
+          utm_term: result.value.entryIntent.utmTerm ?? "none",
+          utm_content: result.value.entryIntent.utmContent ?? "none",
         });
       } else setError("message" in result ? result.message : "Jest startup was cancelled");
     });
@@ -149,7 +184,7 @@ export function JestPlayApp() {
 
   const savePlayerData = useCallback(
     (update: JestPlayerDataUpdate) => {
-      if (!sessionRef.current?.player.registered) return;
+      if (!sessionRef.current) return;
       if (update.profile) {
         setEngagementProgress({
           level: update.profile.level,
@@ -166,14 +201,14 @@ export function JestPlayApp() {
       playerDataRef.current = next;
       const write = playerDataWriteQueueRef.current
         .catch(() => undefined)
-        .then(() => withPlatformActivity(() => platform.writePlayerData(next)));
+        .then(() => platform.writePlayerData(next));
       playerDataWriteQueueRef.current = write;
       void write.catch((writeError) => {
         console.warn("[riddle-quest] Jest player data save failed", writeError);
         trackFunnel("player_data_save_failed");
       });
     },
-    [platform, trackFunnel, withPlatformActivity],
+    [platform, trackFunnel],
   );
 
   useEffect(() => {
@@ -401,15 +436,17 @@ export function JestPlayApp() {
           throw new Error("message" in subscribed ? subscribed.message : "Subscription cancelled.");
         }
         setJestProducts((current) =>
-          current.map((candidate) =>
-            candidate.productType === "subscription"
-              ? {
-                  ...candidate,
-                  subscriptionStatus: candidate.productId === productId ? "active" : candidate.subscriptionStatus,
-                  trialEligible: false,
-                }
-              : candidate,
-          ),
+          current
+            .filter((candidate) => !subscribed.value.blockedSkus.includes(candidate.productId))
+            .map((candidate) =>
+              candidate.productType === "subscription"
+                ? {
+                    ...candidate,
+                    subscriptionStatus: candidate.productId === productId ? "active" : candidate.subscriptionStatus,
+                    trialEligible: false,
+                  }
+                : candidate,
+            ),
         );
         trackFunnel("subscription_completed", {productId});
         return {success: true, productId, purchaseType: "subscription"};
@@ -430,202 +467,6 @@ export function JestPlayApp() {
     },
     [jestProducts, purchases, session, trackFunnel],
   );
-
-  useEffect(() => {
-    if (!session) return;
-    platform.setScreenshotProvider(sizeCheckedScreenshotProvider(captureGameScreenshot));
-    return () => platform.setScreenshotProvider(null);
-  }, [platform, session?.player.playerId]);
-
-  useEffect(() => {
-    if (!session?.player.registered) return;
-    const playerName = (
-      session.profile?.username ??
-      session.entryIntent.customName ??
-      tr("WebPortal.NOTIFICATION_PLAYER_FALLBACK")
-    ).slice(0, 24);
-    void withPlatformActivity(() =>
-      scheduleEngagementReminders(platform, {
-        dailyBody: tr("WebPortal.NOTIFICATION_DAILY_BODY", {name: playerName, coins: 75}),
-        streakBody: tr("WebPortal.NOTIFICATION_STREAK_BODY", {
-          wins: engagementProgress.wins,
-          streak: engagementProgress.winStreak,
-          coins: 75,
-        }),
-        weeklyBody: tr("WebPortal.NOTIFICATION_WEEKLY_BODY", {
-          level: engagementProgress.level,
-          coins: 75,
-        }),
-        dailyCta: tr("WebPortal.NOTIFICATION_DAILY_CTA"),
-        streakCta: tr("WebPortal.NOTIFICATION_STREAK_CTA"),
-        weeklyCta: tr("WebPortal.NOTIFICATION_WEEKLY_CTA"),
-        assetReference: import.meta.env.VITE_JEST_NOTIFICATION_ASSET_REFERENCE || undefined,
-      }),
-    ).then((results) => {
-      results.forEach((result, index) => {
-        if (result.status !== "success") {
-          trackFunnel("notification_schedule_failed", {index, status: result.status});
-        }
-      });
-    });
-  }, [
-    engagementProgress.level,
-    engagementProgress.winStreak,
-    engagementProgress.wins,
-    locale,
-    platform,
-    session?.entryIntent.customName,
-    session?.player.registered,
-    session?.profile?.username,
-    trackFunnel,
-    withPlatformActivity,
-  ]);
-
-  useEffect(() => {
-    if (!session?.player.registered) return;
-    void withPlatformActivity(async () => {
-      const result = await platform.listReferralsSigned();
-      if (result.status === "success") {
-        await backend.verifyReferrals(result.value, session.player.playerId);
-      }
-    });
-  }, [backend, platform, session?.player.playerId, session?.player.registered, withPlatformActivity]);
-
-  useEffect(() => {
-    if (!session) return;
-    const share = (event: Event) => {
-      const detail =
-        (
-          event as CustomEvent<{
-            gameMode?: "classic" | "challenge";
-            challengeId?: string;
-            attempts?: number;
-            emojiGrid?: string;
-          }>
-        ).detail ?? {};
-      const inviterName = session.profile?.username ?? "Riddle Quest player";
-      const gameMode = detail.gameMode === "challenge" ? "challenge" : "classic";
-      const attempts = Math.max(1, detail.attempts ?? 1);
-      const gameType = tr(
-        gameMode === "challenge" ? "VictoryModal.SHARE_DAILY_CHALLENGE_LABEL" : "VictoryModal.SHARE_CLASSIC_MODE_LABEL",
-      );
-      const shareText = tr("VictoryModal.SHARE_MESSAGE_TEMPLATE", {
-        gameType,
-        attempts,
-        attemptLabel: tr(attempts === 1 ? "VictoryModal.SHARE_ATTEMPT_SINGULAR" : "VictoryModal.SHARE_ATTEMPT_PLURAL"),
-        emojiGrid: detail.emojiGrid?.slice(0, 500) || "🟩",
-      });
-      void withPlatformActivity(async () => {
-        const shareImage = await sizeCheckedScreenshotProvider(() =>
-          captureVictoryShareImage({
-            title: tr("VictoryModal.SHARE_RESULT_TITLE"),
-            summary: `${gameType} · ${attempts} ${tr(
-              attempts === 1 ? "VictoryModal.SHARE_ATTEMPT_SINGULAR" : "VictoryModal.SHARE_ATTEMPT_PLURAL",
-            )}`,
-            emojiGrid: detail.emojiGrid?.slice(0, 500) || "🟩",
-          }),
-        )();
-        return platform.shareReferral({
-          reference: "riddle_quest_friend_challenge_v2",
-          shareTitle: tr("VictoryModal.SHARE_RESULT_TITLE"),
-          shareText,
-          ...(shareImage ? {shareImage} : {}),
-          onboardingSlug: "friend-challenge",
-          entryPayload: {
-            campaign: "friend_challenge_v2",
-            reference: "victory_friend_challenge_v2",
-            gameMode,
-            challengeDestination: detail.challengeId ?? gameMode,
-            challengeId: detail.challengeId ?? gameMode,
-            inviterName,
-            customName: tr("WebPortal.APP_TITLE"),
-          },
-        });
-      }).then((result) =>
-        trackFunnel("friend_challenge_share_dialog", {
-          status: result.status,
-          gameMode,
-          attempts,
-        }),
-      );
-    };
-    window.addEventListener("riddle-quest:share-referral", share);
-    return () => window.removeEventListener("riddle-quest:share-referral", share);
-  }, [platform, session, trackFunnel, withPlatformActivity]);
-
-  useEffect(() => {
-    if (!session?.player.registered) return;
-    const scheduleRaceReturn = (event: Event) => {
-      const detail = (event as CustomEvent<{challengeId?: string}>).detail;
-      if (!detail?.challengeId) return;
-      const challengeId = detail.challengeId;
-      void withPlatformActivity(() =>
-        platform.scheduleNotification({
-          identifier: "race_to_10_return_v1",
-          scheduledInDays: 1,
-          title: tr("RaceTo10.TITLE"),
-          body: tr("RaceTo10.CHALLENGE_READY"),
-          ctaText: tr("RaceTo10.ACCEPT_CHALLENGE"),
-          priority: "high",
-          entryPayload: {
-            campaign: "race_to_10_return_v1",
-            reference: "race_to_10_return_d1_v1",
-            challengeId,
-            challengeDestination: challengeId,
-            notification_template: "race_to_10_return_v1",
-            notification_offset: "D1",
-          },
-        }),
-      ).then((result) => trackFunnel("race_return_reminder_scheduled", {status: result.status}));
-    };
-    window.addEventListener("riddle-quest:race-challenge-published", scheduleRaceReturn);
-    return () => window.removeEventListener("riddle-quest:race-challenge-published", scheduleRaceReturn);
-  }, [platform, session?.player.registered, trackFunnel, withPlatformActivity]);
-
-  useEffect(() => {
-    if (!session) return;
-    const shareRace = (event: Event) => {
-      const detail = (
-        event as CustomEvent<{
-          challengeId?: string;
-          preview?: {adjustedTimeToBeatMs?: number; categoryId?: string};
-          outcome?: {adjustedFinishMs?: number};
-        }>
-      ).detail;
-      if (!detail?.challengeId || typeof detail.preview?.adjustedTimeToBeatMs !== "number") return;
-      const challengeId = detail.challengeId;
-      const inviterName = session.profile?.username ?? tr("WebPortal.NOTIFICATION_PLAYER_FALLBACK");
-      const seconds = (detail.preview.adjustedTimeToBeatMs / 1_000).toFixed(1);
-      const summary = `${inviterName} · ${seconds}s · ${tr("RaceTo10.FIRST_TO_TEN")}`;
-      void withPlatformActivity(async () => {
-        const shareImage = await sizeCheckedScreenshotProvider(() =>
-          captureVictoryShareImage({title: tr("RaceTo10.TITLE"), summary, emojiGrid: "🏁 10/10"}),
-        )();
-        return platform.shareReferral({
-          reference: "riddle_quest_race_to_10_v1",
-          shareTitle: tr("RaceTo10.TITLE"),
-          shareText: `${tr("RaceTo10.CHALLENGED_BY", {name: inviterName})} · ${tr("RaceTo10.TIME_TO_BEAT", {time: `${seconds}s`})}`,
-          ...(shareImage ? {shareImage} : {}),
-          onboardingSlug: "race-to-10",
-          entryPayload: {
-            campaign: "race_to_10_v1",
-            reference: "race_to_10_share_v1",
-            challengeDestination: challengeId,
-            challengeId,
-            inviterName,
-            customName: tr("WebPortal.APP_TITLE"),
-          },
-        });
-      }).then((result) =>
-        trackFunnel("race_challenge_share_dialog", {
-          status: result.status,
-          categoryId: detail.preview?.categoryId ?? "unknown",
-        }),
-      );
-    };
-    window.addEventListener("riddle-quest:share-race", shareRace);
-    return () => window.removeEventListener("riddle-quest:share-race", shareRace);
-  }, [platform, session, trackFunnel, withPlatformActivity]);
 
   if (error)
     return (

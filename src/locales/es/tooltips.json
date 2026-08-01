@@ -4,8 +4,8 @@
     "ACHIEVEMENT_EARNED_TITLE": "Logro desbloqueado",
     "CLASSIC_FROM_DAILY_BODY": "Desafio diario completado. El modo Clasico te permite seguir resolviendo acertijos a tu ritmo.",
     "CLASSIC_FROM_DAILY_TITLE": "Modo Clasico",
-    "GAME_COINS_BODY": "Esta es la sección de monedas. Toca aquí para comprar más monedas cuando necesites saltar un nivel o comprar una pista.",
-    "GAME_COINS_TITLE": "Saldo de monedas",
+    "GAME_COINS_BODY": "Toca este botón para comprar monedas y alimentar tu aventura.",
+    "GAME_COINS_TITLE": "Abrir la tienda de monedas",
     "GAME_HINT_BODY": "Toca Pista para revelar una letra útil cuando te atasques. Las pistas cuestan monedas.",
     "GAME_HINT_TITLE": "Usa una pista",
     "GAME_SKIP_BODY": "Toca este botón para pasar este acertijo cuando te atasques. Los saltos cuestan monedas.",
@@ -17,8 +17,6 @@
     "LEADERBOARD_FIFTH_CORRECT_TITLE": "Sube en la clasificacion",
     "PROFILE_ACHIEVEMENTS_BODY": "Abre esta seccion para ver todos los logros que has desbloqueado.",
     "PROFILE_ACHIEVEMENTS_TITLE": "Logros",
-    "PROFILE_COINS_BODY": "Aqui se muestra tu saldo de monedas. Gastalas en pistas, saltos y oportunidades extra.",
-    "PROFILE_COINS_TITLE": "Cofre del tesoro",
     "PROFILE_DAILY_PUZZLES_BODY": "Esto muestra cuantos desafios diarios has completado.",
     "PROFILE_DAILY_PUZZLES_TITLE": "Acertijos diarios",
     "PROFILE_IDENTITY_BODY": "Aqui estan tu avatar, nombre de usuario, nivel de XP y progreso de nivel.",
@@ -33,6 +31,7 @@
     "PROFILE_STATS_TITLE": "Resumen de estadisticas",
     "SHOP_OUT_OF_COINS_BODY": "No tienes monedas para esta accion. Abre la tienda para comprar o ganar mas.",
     "SHOP_OUT_OF_COINS_TITLE": "Consigue mas monedas",
+    "PROFILE_TREASURE_BODY": "Abre tu cofre del tesoro para ver tus monedas y visitar la tienda de monedas.",
     "SUBMIT_ANSWER_BODY": "Cuando todos los espacios esten llenos, toca Enviar para comprobar tu intento.",
     "SUBMIT_ANSWER_TITLE": "Envia tu respuesta"
   }

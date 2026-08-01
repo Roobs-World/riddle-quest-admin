@@ -3,7 +3,7 @@
     "MODE_LABEL": "Duelo grabado",
     "TITLE": "Carrera a 10",
     "CLOSE": "Cerrar Carrera a 10",
-    "LAUNCH_SUBTITLE": "Gana quien resuelva 10 acertijos primero",
+    "MULTIPLAYER_BUTTON": "Multijugador",
     "ERROR_GENERIC": "La carrera no pudo continuar.",
     "ERROR_INVALID_RESPONSE": "El servidor devolvió una respuesta no válida.",
     "RETRY": "Reintentar",

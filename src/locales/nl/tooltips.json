@@ -4,8 +4,8 @@
     "ACHIEVEMENT_EARNED_TITLE": "Prestatie ontgrendeld",
     "CLASSIC_FROM_DAILY_BODY": "Dagelijkse uitdaging voltooid. In de klassieke modus kun je raadsels in je eigen tempo blijven oplossen.",
     "CLASSIC_FROM_DAILY_TITLE": "Klassieke modus",
-    "GAME_COINS_BODY": "Dit is de muntsectie. Druk hier om meer munten te kopen wanneer je een level moet overslaan of een hint wilt kopen.",
-    "GAME_COINS_TITLE": "Muntenbalans",
+    "GAME_COINS_BODY": "Tik op deze knop om munten te kopen en je avontuur voort te zetten.",
+    "GAME_COINS_TITLE": "Open de muntenwinkel",
     "GAME_HINT_BODY": "Tik op Hint om een nuttige letter te onthullen wanneer je vastzit. Hints kosten munten.",
     "GAME_HINT_TITLE": "Gebruik een hint",
     "GAME_SKIP_BODY": "Tik op deze knop om deze puzzel voorbij te gaan wanneer je vastzit. Overslaan kost munten.",
@@ -17,8 +17,6 @@
     "LEADERBOARD_FIFTH_CORRECT_TITLE": "Beklim het klassement",
     "PROFILE_ACHIEVEMENTS_BODY": "Open dit gedeelte om elke prestatie te zien die je hebt ontgrendeld.",
     "PROFILE_ACHIEVEMENTS_TITLE": "Prestaties",
-    "PROFILE_COINS_BODY": "Hier wordt uw muntsaldo weergegeven. Geef munten uit aan hints, skips en extra kansen.",
-    "PROFILE_COINS_TITLE": "Schatkist",
     "PROFILE_DAILY_PUZZLES_BODY": "Dit laat zien hoeveel dagelijkse uitdagingen je hebt voltooid.",
     "PROFILE_DAILY_PUZZLES_TITLE": "Dagelijkse puzzels",
     "PROFILE_IDENTITY_BODY": "Je avatar, gebruikersnaam, XP-niveau en niveauvoortgang zijn hier live te zien.",
@@ -33,6 +31,7 @@
     "PROFILE_STATS_TITLE": "Momentopname van statistieken",
     "SHOP_OUT_OF_COINS_BODY": "Je hebt geen munten meer voor deze actie. Open de winkel om meer te kopen of te verdienen.",
     "SHOP_OUT_OF_COINS_TITLE": "Grijp meer munten",
+    "PROFILE_TREASURE_BODY": "Open je schatkist om je munten te bekijken en de muntenwinkel te bezoeken.",
     "SUBMIT_ANSWER_BODY": "Wanneer elk slot gevuld is, tikt u op Verzenden om uw gok te controleren.",
     "SUBMIT_ANSWER_TITLE": "Dien uw antwoord in"
   }

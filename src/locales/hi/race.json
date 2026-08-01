@@ -3,7 +3,7 @@
     "MODE_LABEL": "रिकॉर्डेड मुकाबला",
     "TITLE": "10 तक रेस",
     "CLOSE": "रेस बंद करें",
-    "LAUNCH_SUBTITLE": "पहले 10 पहेलियाँ हल करने वाला जीतेगा",
+    "MULTIPLAYER_BUTTON": "मल्टीप्लेयर",
     "ERROR_GENERIC": "रेस जारी नहीं रह सकी।",
     "ERROR_INVALID_RESPONSE": "सर्वर ने अमान्य जवाब दिया।",
     "RETRY": "फिर कोशिश करें",

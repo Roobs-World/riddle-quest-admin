@@ -19,6 +19,11 @@ export type JestEntryIntent = {
   notificationTemplate?: string;
   notificationOffset?: string;
   callback?: string;
+  utmSource?: string;
+  utmMedium?: string;
+  utmCampaign?: string;
+  utmTerm?: string;
+  utmContent?: string;
 };
 
 export type JestPreferences = {
@@ -149,6 +154,7 @@ export interface JestPlatformPort {
   beginSubscription(subscriptionSku: string): Promise<
     PlatformResult<{subscription: JestSubscription; subscriptionSigned: string}>
   >;
+  captureEvent(name: string, properties?: Record<string, string | number | boolean>): void;
   markFirstMilestone(): Promise<PlatformResult<void>>;
   setLoadingProgress(progress: number): void;
   markGameLoaded(): void;

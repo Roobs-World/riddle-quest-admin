@@ -27,13 +27,12 @@ export async function startJestSession(
     const signed = await platform.getPlayerSigned();
     const entryIntent = platform.getEntryIntent();
     const preferences = platform.readPreferences();
-    let playerData: JestSession["playerData"] = null;
+    const playerData = platform.readPlayerData();
     let profile: JestSession["profile"] = null;
 
     if (signed.player.registered) {
       platform.setLoadingProgress(phaseProgress[2]);
       onProgress?.({stage: "progress", progress: phaseProgress[2]});
-      playerData = platform.readPlayerData();
       profile = await platform.getProfile();
     }
 

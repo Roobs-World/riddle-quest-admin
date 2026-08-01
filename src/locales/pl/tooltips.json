@@ -4,8 +4,8 @@
     "ACHIEVEMENT_EARNED_TITLE": "Osiągnięcie odblokowane",
     "CLASSIC_FROM_DAILY_BODY": "Codzienne wyzwanie ukończone. Tryb klasyczny pozwala na rozwiązywanie zagadek we własnym tempie.",
     "CLASSIC_FROM_DAILY_TITLE": "Tryb klasyczny",
-    "GAME_COINS_BODY": "To jest sekcja monet. Naciśnij tutaj, aby kupić więcej monet, gdy musisz pominąć poziom albo kupić podpowiedź.",
-    "GAME_COINS_TITLE": "Saldo monet",
+    "GAME_COINS_BODY": "Dotknij tego przycisku, aby kupić monety i napędzić swoją przygodę.",
+    "GAME_COINS_TITLE": "Otwórz sklep z monetami",
     "GAME_HINT_BODY": "Stuknij Podpowiedź, aby odkryć pomocną literę, gdy utkniesz. Podpowiedzi kosztują monety.",
     "GAME_HINT_TITLE": "Użyj podpowiedzi",
     "GAME_SKIP_BODY": "Stuknij ten przycisk, aby ominąć tę zagadkę, gdy utkniesz. Pominięcia kosztują monety.",
@@ -17,8 +17,6 @@
     "LEADERBOARD_FIFTH_CORRECT_TITLE": "Wspinaj się po tabeli liderów",
     "PROFILE_ACHIEVEMENTS_BODY": "Otwórz tę sekcję, aby zobaczyć wszystkie odblokowane osiągnięcia.",
     "PROFILE_ACHIEVEMENTS_TITLE": "Osiągnięcia",
-    "PROFILE_COINS_BODY": "Tutaj pokazane jest Twoje saldo monet. Wydawaj monety na podpowiedzi, pominięcia i dodatkowe szanse.",
-    "PROFILE_COINS_TITLE": "Skrzynia skarbów",
     "PROFILE_DAILY_PUZZLES_BODY": "Pokazuje, ile codziennych wyzwań ukończyłeś.",
     "PROFILE_DAILY_PUZZLES_TITLE": "Codzienne zagadki",
     "PROFILE_IDENTITY_BODY": "Twój awatar, nazwa użytkownika, poziom XP i postęp na poziomie znajdują się tutaj.",
@@ -33,6 +31,7 @@
     "PROFILE_STATS_TITLE": "Migawka statystyk",
     "SHOP_OUT_OF_COINS_BODY": "Nie masz już monet na tę akcję. Otwórz sklep, aby kupić lub zarobić więcej.",
     "SHOP_OUT_OF_COINS_TITLE": "Zdobądź więcej monet",
+    "PROFILE_TREASURE_BODY": "Otwórz skrzynię skarbów, aby zobaczyć monety i przejść do sklepu z monetami.",
     "SUBMIT_ANSWER_BODY": "Gdy wszystkie miejsca zostaną zajęte, dotknij opcji Prześlij, aby sprawdzić swoje przypuszczenie.",
     "SUBMIT_ANSWER_TITLE": "Prześlij swoją odpowiedź"
   }

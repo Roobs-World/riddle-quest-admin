@@ -3,6 +3,7 @@ import path from "node:path";
 
 const root = path.resolve(process.cwd(), process.argv[2] || "dist-jest");
 const maximumArtifactBytes = 5 * 1024 * 1024;
+const maximumInitialResourceBytes = 1.5 * 1024 * 1024;
 const allowedExternalEntryResources = new Set(["https://cdn.jest.com/sdk/latest/jestsdk.js"]);
 const files = [];
 async function walk(directory) {
@@ -27,6 +28,9 @@ const forbidden = [
   ["Metro runtime", /metro-runtime|__METRO_GLOBAL_PREFIX__/],
   ["External authentication provider", /\b(?:Clerk|Auth0|accounts\.google\.com|appleid\.apple\.com)\b/i],
   ["Advertising integration", /\b(?:AdMob|rewarded[ -]?ad|interstitial[ -]?ad)\b/i],
+  ["Vibration API", /\bnavigator\.vibrate\b/],
+  ["App-install prompt", /\bbeforeinstallprompt\b/i],
+  ["External social link", /https?:\/\/(?:www\.)?(?:facebook|instagram|tiktok)\.com\b/i],
   ["Native app-install copy", /\b(?:install|download)\s+(?:the|our|this)\s+(?:mobile\s+)?app\b/i],
   ["Firebase private key", /-----BEGIN PRIVATE KEY-----/],
   ["Jest shared secret", /JEST_SHARED_SECRET\s*[:=]\s*["'][^"']+/],
@@ -35,6 +39,7 @@ for (const [label, pattern] of forbidden) if (pattern.test(content)) throw new E
 if (files.some((file) => file.endsWith(".map"))) throw new Error("Source maps must not ship in the Jest artifact");
 
 const html = await readFile(path.join(root, "index.html"), "utf8");
+const initialResources = new Set();
 for (const match of html.matchAll(/(?:src|href)=["']([^"']+)["']/g)) {
   const reference = match[1];
   if (/^https?:\/\//i.test(reference)) {
@@ -52,9 +57,21 @@ for (const match of html.matchAll(/(?:src|href)=["']([^"']+)["']/g)) {
   if (!asset.startsWith(`${root}${path.sep}`) || !files.includes(asset)) {
     throw new Error(`Missing or unsafe referenced asset: ${reference}`);
   }
+  initialResources.add(asset);
+}
+
+const initialResourceBytes = (
+  await Promise.all([...initialResources].map(async (file) => (await stat(file)).size))
+).reduce((total, size) => total + size, 0);
+if (initialResourceBytes > maximumInitialResourceBytes) {
+  throw new Error(
+    `Initial Jest resources are ${(initialResourceBytes / 1024 / 1024).toFixed(2)} MB; ` +
+    `budget is ${(maximumInitialResourceBytes / 1024 / 1024).toFixed(2)} MB`,
+  );
 }
 
 console.log(
   `Jest artifact audit passed: ${files.length} files, ${(artifactBytes / 1024 / 1024).toFixed(2)} MB, ` +
-  "relative entry paths, no native modules, external auth/ads, install copy, secrets, source maps, or missing entry assets",
+  `${(initialResourceBytes / 1024 / 1024).toFixed(2)} MB initial resources, relative entry paths, ` +
+  "no native modules, external auth/ads, install copy, secrets, source maps, or missing entry assets",
 );

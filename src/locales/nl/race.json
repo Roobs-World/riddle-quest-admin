@@ -3,7 +3,7 @@
     "MODE_LABEL": "Opgenomen duel",
     "TITLE": "Race naar 10",
     "CLOSE": "Race sluiten",
-    "LAUNCH_SUBTITLE": "Wie als eerste 10 raadsels oplost, wint",
+    "MULTIPLAYER_BUTTON": "Multiplayer",
     "ERROR_GENERIC": "De race kon niet doorgaan.",
     "ERROR_INVALID_RESPONSE": "De server gaf een ongeldig antwoord.",
     "RETRY": "Opnieuw proberen",

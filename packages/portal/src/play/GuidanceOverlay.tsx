@@ -18,21 +18,22 @@ type TooltipId =
   | "profileIdentity"
   | "profileDailyPuzzles"
   | "profileStats"
-  | "profileCoins"
   | "profileAchievements"
   | "profileStatistics"
-  | "profileLeaderboard";
+  | "profileLeaderboard"
+  | "profileTreasure";
 
 const GAME_TOUR: TooltipId[] = ["gameCoins", "gameHint", "submitAnswer", "gameSkip"];
+const ABOVE_TARGET_TOOLTIPS = new Set<TooltipId>(["gameHint", "submitAnswer", "gameSkip"]);
 const PROFILE_TOUR: TooltipId[] = [
   "profileIdentity",
   "profileProgression",
   "profileDailyPuzzles",
   "profileStats",
-  "profileCoins",
   "profileAchievements",
   "profileStatistics",
   "profileLeaderboard",
+  "profileTreasure",
 ];
 
 const TOOLTIP_TOUR_VERSION = "v2";
@@ -54,10 +55,10 @@ const tooltipKeys: Record<TooltipId, [string, string]> = {
   profileIdentity: ["Tooltips.PROFILE_IDENTITY_TITLE", "Tooltips.PROFILE_IDENTITY_BODY"],
   profileDailyPuzzles: ["Tooltips.PROFILE_DAILY_PUZZLES_TITLE", "Tooltips.PROFILE_DAILY_PUZZLES_BODY"],
   profileStats: ["Tooltips.PROFILE_STATS_TITLE", "Tooltips.PROFILE_STATS_BODY"],
-  profileCoins: ["Tooltips.PROFILE_COINS_TITLE", "Tooltips.PROFILE_COINS_BODY"],
   profileAchievements: ["Tooltips.PROFILE_ACHIEVEMENTS_TITLE", "Tooltips.PROFILE_ACHIEVEMENTS_BODY"],
   profileStatistics: ["Tooltips.PROFILE_STATISTICS_TITLE", "Tooltips.PROFILE_STATISTICS_BODY"],
   profileLeaderboard: ["Tooltips.PROFILE_LEADERBOARD_TITLE", "Tooltips.PROFILE_LEADERBOARD_BODY"],
+  profileTreasure: ["Profile.TREASURE_CHEST_TITLE", "Tooltips.PROFILE_TREASURE_BODY"],
 };
 
 const tooltipSelector: Partial<Record<TooltipId, string>> = {
@@ -69,10 +70,10 @@ const tooltipSelector: Partial<Record<TooltipId, string>> = {
   profileProgression: "[data-tooltip='profileProgression']",
   profileDailyPuzzles: "[data-tooltip='profileDailyPuzzles']",
   profileStats: "[data-tooltip='profileStats']",
-  profileCoins: "[data-tooltip='profileCoins']",
   profileAchievements: "[data-tooltip='profileAchievements']",
   profileStatistics: "[data-tooltip='profileStatistics']",
   profileLeaderboard: "[data-tooltip='profileLeaderboard']",
+  profileTreasure: "[data-tooltip='profileTreasure']",
 };
 
 const storageKey = (kind: string, userId?: string) => `riddleQuest:${kind}:${userId ?? "anonymous"}`;
@@ -159,11 +160,11 @@ export function GuidanceOverlay({
       return;
     }
     if (localStorage.getItem(tooltipTourStorageKey("gameTour", userId)) !== "seen") {
-      setSequence(GAME_TOUR);
+      setSequence(state.gameMode === "challenge" ? GAME_TOUR.filter((id) => id !== "gameSkip") : GAME_TOUR);
       setSequenceName("gameTour");
       setSequenceIndex(0);
     }
-  }, [onboardingStep, sequence.length, state.riddle, userId]);
+  }, [onboardingStep, sequence.length, state.gameMode, state.riddle, userId]);
 
   useEffect(() => {
     if (
@@ -382,7 +383,7 @@ export function GuidanceOverlay({
   }
 
   const panelStyle =
-    targetRect && targetRect.bottom < window.innerHeight * 0.58
+    targetRect && !ABOVE_TARGET_TOOLTIPS.has(activeTooltip) && targetRect.bottom < window.innerHeight * 0.58
       ? {top: targetRect.bottom + 18}
       : targetRect
         ? {bottom: window.innerHeight - targetRect.top + 18}

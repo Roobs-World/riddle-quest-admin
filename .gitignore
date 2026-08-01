@@ -22,5 +22,6 @@ firebase-functions/.emulator-data/
 firebase-functions/*admin-sdk*.json
 firebase-functions/qwordly-admin-sdk.json
 firebase-functions/.runtimeconfig.json
+firebase-functions/artifacts/notification-copy-backups/
 
 packages/portal/build.zip

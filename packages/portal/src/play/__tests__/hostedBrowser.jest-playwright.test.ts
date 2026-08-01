@@ -10,13 +10,24 @@ const completeOnboardingAndTours = async (page: Page) => {
   if (await guestContinue.isVisible()) {
     await guestContinue.click();
   }
+  const coinTooltip = page.locator(".tooltip-card");
+  await coinTooltip.getByRole("heading", {name: /open the coin shop/i}).waitFor();
+  expect(await coinTooltip.getByText(/tap this button to buy coins to fuel your adventure/i).isVisible()).toBe(true);
+  const [coinButtonBox, spotlightBox] = await Promise.all([
+    page.locator(".coin-pill[data-tooltip='gameCoins']").boundingBox(),
+    page.locator(".tooltip-spotlight").boundingBox(),
+  ]);
+  expect(coinButtonBox).not.toBeNull();
+  expect(spotlightBox).not.toBeNull();
+  expect(spotlightBox!.x).toBeLessThan(coinButtonBox!.x);
+  expect(spotlightBox!.x + spotlightBox!.width).toBeGreaterThan(coinButtonBox!.x + coinButtonBox!.width);
   for (let step = 0; step < 4; step += 1) {
     await page.getByRole("button", {name: /got it/i}).click();
   }
 };
 
 describeBrowser("standalone Jest browser game", () => {
-  it("covers onboarding, navigation, guest progress reset, gameplay, rewards and responsive layouts", async () => {
+  it("covers onboarding, navigation, guest progress preservation, gameplay, rewards and responsive layouts", async () => {
     const {execFileSync} = await import("node:child_process");
     const {createServer} = await import("node:http");
     const {readFile} = await import("node:fs/promises");
@@ -69,11 +80,29 @@ describeBrowser("standalone Jest browser game", () => {
       });
       await page.goto("http://127.0.0.1:4178/?harness=jest");
       await page.getByRole("button", {name: /let's play/i}).waitFor({timeout: 15000});
+      const welcomeCard = await page.locator(".onboarding-card-welcome").boundingBox();
+      const welcomeLogo = await page.locator(".onboarding-card-welcome .onboarding-logo").boundingBox();
+      expect(welcomeCard).not.toBeNull();
+      expect(welcomeLogo).not.toBeNull();
+      expect(welcomeLogo!.width / welcomeCard!.width).toBeGreaterThan(0.85);
       await completeOnboardingAndTours(page);
 
       expect(await page.locator(".solar-system").count()).toBe(1);
       expect(await page.locator(".guess-row").count()).toBe(5);
       expect(await page.locator(".keyboard").isVisible()).toBe(true);
+      expect((await page.locator("[data-tooltip='gameSkip']").innerText()).trim()).toBe("Skip");
+
+      const dailyPage = await browser.newPage({viewport: {width: 390, height: 844}});
+      await dailyPage.addInitScript(() => {
+        localStorage.setItem("riddleQuest:onboarding:jest-guest", "seen");
+        localStorage.setItem("riddleQuest:tooltipSequenceSeen:gameTour:v2:jest-guest", "seen");
+        sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
+      });
+      await dailyPage.goto("http://127.0.0.1:4178/?harness=jest&gameMode=challenge");
+      await dailyPage.locator(".game-mode-label").getByText(/daily/i).waitFor({timeout: 15_000});
+      expect(await dailyPage.locator("[data-tooltip='gameSkip']").count()).toBe(0);
+      await dailyPage.close();
+
       expect(
         await page.evaluate(
           () =>
@@ -102,9 +131,13 @@ describeBrowser("standalone Jest browser game", () => {
       await page.getByRole("button", {name: /^profile$/i}).first().click();
       await page.getByRole("heading", {name: /^profile$/i}).waitFor();
       await page.locator(".tooltip-card").getByRole("heading", {name: /^profile$/i}).waitFor();
+      const profileTourHeadings: string[] = [];
       for (let step = 0; step < 8; step += 1) {
+        profileTourHeadings.push(await page.locator(".tooltip-card h3").innerText());
         await page.locator(".tooltip-card").getByRole("button", {name: /got it/i}).click();
       }
+      expect(profileTourHeadings).toContain("Your Treasure Chest");
+      await page.locator(".tooltip-card").waitFor({state: "detached"});
       for (const name of [/statistics/i, /achievements/i, /ranks/i, /leaderboard/i, /treasure/i]) {
         expect(await page.getByRole("button", {name}).isVisible()).toBe(true);
       }
@@ -171,12 +204,12 @@ describeBrowser("standalone Jest browser game", () => {
       await page.reload();
       await page.getByText(/what has keys/i).waitFor({timeout: 15000});
       const activeGuessRow = page.locator(".guess-row").first();
-      expect(await activeGuessRow.getByRole("button", {name: /^letter 1$/i}).isVisible()).toBe(true);
-      expect(await activeGuessRow.getByRole("button", {name: /^letter 3$/i}).isVisible()).toBe(true);
+      expect(await activeGuessRow.getByRole("button", {name: /^letter 1: p$/i}).isVisible()).toBe(true);
+      expect(await activeGuessRow.getByRole("button", {name: /^letter 3: a$/i}).isVisible()).toBe(true);
 
-      await page.locator(".keyboard").getByRole("button", {name: /^P$/}).click();
+      await activeGuessRow.getByRole("button", {name: /^letter 2$/i}).click();
       await page.locator(".keyboard").getByRole("button", {name: /^I$/}).click();
-      await page.locator(".keyboard").getByRole("button", {name: /^A$/}).click();
+      await activeGuessRow.getByRole("button", {name: /^letter 4$/i}).click();
       await page.locator(".keyboard").getByRole("button", {name: /^N$/}).click();
       await page.locator(".keyboard").getByRole("button", {name: /^O$/}).click();
       await page.locator(".game-input-actions").getByRole("button", {name: /submit/i}).click();
@@ -214,6 +247,37 @@ describeBrowser("standalone Jest browser game", () => {
         /Clerk|Auth0|sign in with Google|rewarded ad|install the app/i,
       );
       expect(consoleErrors).toEqual([]);
+
+      const lowEndPage = await browser.newPage({
+        viewport: {width: 360, height: 740},
+        deviceScaleFactor: 2,
+        hasTouch: true,
+        isMobile: true,
+        userAgent:
+          "Mozilla/5.0 (Linux; Android 11; Pixel 3a) AppleWebKit/537.36 " +
+          "(KHTML, like Gecko) Chrome/124.0 Mobile Safari/537.36",
+      });
+      await lowEndPage.addInitScript(() => {
+        Object.defineProperty(navigator, "hardwareConcurrency", {configurable: true, value: 4});
+        Object.defineProperty(navigator, "deviceMemory", {configurable: true, value: 4});
+        Object.defineProperty(navigator, "connection", {
+          configurable: true,
+          value: {effectiveType: "4g", saveData: false},
+        });
+        localStorage.setItem("riddleQuest:onboarding:jest-guest", "seen");
+        sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
+      });
+      await lowEndPage.goto("http://127.0.0.1:4178/?harness=jest");
+      await lowEndPage.getByText(/what has keys/i).waitFor({timeout: 15_000});
+      await lowEndPage.waitForTimeout(3_000);
+      expect(await lowEndPage.locator(".solar-system").count()).toBe(0);
+      const lowEndResources = await lowEndPage.evaluate(() =>
+        performance.getEntriesByType("resource").map((entry) => entry.name),
+      );
+      expect(lowEndResources.some((resource) => /music-.*\.webm/.test(resource))).toBe(false);
+      expect(lowEndResources.some((resource) => /vendor-three|SolarSystem/.test(resource))).toBe(false);
+      expect(await lowEndPage.locator(".keyboard").isVisible()).toBe(true);
+      await lowEndPage.close();
 
       const iframePage = await browser.newPage({viewport: {width: 390, height: 844}});
       await iframePage.setContent(

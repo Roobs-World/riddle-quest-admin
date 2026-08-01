@@ -4,8 +4,8 @@
     "ACHIEVEMENT_EARNED_TITLE": "Dostizhenie otkryto",
     "CLASSIC_FROM_DAILY_BODY": "Ezhednevnoe ispytanie zaversheno. V klassicheskom rezhime mozhno reshat zagadki v svoem tempe.",
     "CLASSIC_FROM_DAILY_TITLE": "Klassicheskiy rezhim",
-    "GAME_COINS_BODY": "Это раздел монет. Нажмите здесь, чтобы купить больше монет, когда нужно пропустить уровень или купить подсказку.",
-    "GAME_COINS_TITLE": "Баланс монет",
+    "GAME_COINS_BODY": "Нажмите эту кнопку, чтобы купить монеты и продолжить приключение.",
+    "GAME_COINS_TITLE": "Открыть магазин монет",
     "GAME_HINT_BODY": "Нажмите Подсказка, чтобы открыть полезную букву, когда вы застряли. Подсказки стоят монеты.",
     "GAME_HINT_TITLE": "Использовать подсказку",
     "GAME_SKIP_BODY": "Нажмите эту кнопку, чтобы пройти мимо этой загадки, когда вы застряли. Пропуск стоит монеты.",
@@ -17,8 +17,6 @@
     "LEADERBOARD_FIFTH_CORRECT_TITLE": "Podnimaytes v reytinge",
     "PROFILE_ACHIEVEMENTS_BODY": "Otkroyte etot razdel, chtoby uvidet vse otkrytye dostizheniya.",
     "PROFILE_ACHIEVEMENTS_TITLE": "Dostizheniya",
-    "PROFILE_COINS_BODY": "Zdes pokazan balans monet. Tratte monety na podskazki, propuski i dopolnitelnye shansy.",
-    "PROFILE_COINS_TITLE": "Sunduk s sokrovishchami",
     "PROFILE_DAILY_PUZZLES_BODY": "Zdes pokazano, skolko ezhednevnykh ispytaniy vy zavershili.",
     "PROFILE_DAILY_PUZZLES_TITLE": "Ezhednevnye zagadki",
     "PROFILE_IDENTITY_BODY": "Zdes nakhodyatsya avatar, imya, uroven XP i progress urovnya.",
@@ -33,6 +31,7 @@
     "PROFILE_STATS_TITLE": "Svodka statistiki",
     "SHOP_OUT_OF_COINS_BODY": "Dlya etogo deystviya ne khvataet monet. Otkroyte magazin, chtoby kupit ili zarabotat eshche.",
     "SHOP_OUT_OF_COINS_TITLE": "Poluchite bolshe monet",
+    "PROFILE_TREASURE_BODY": "Otkroyte sunduk, chtoby posmotret monety i pereyti v magazin monet.",
     "SUBMIT_ANSWER_BODY": "Kogda vse kletki zapolneny, nazhmite Otpravit, chtoby proverit dogadku.",
     "SUBMIT_ANSWER_TITLE": "Otpravte otvet"
   }

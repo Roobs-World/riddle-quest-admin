@@ -37,6 +37,7 @@ const sdk = () => ({
   notifications: {scheduleNotification: jest.fn(), unscheduleNotification: jest.fn()},
   social: {getProfile: jest.fn(() => null), setScreenshotProvider: jest.fn()},
   referrals: {shareReferralLink: jest.fn(), listReferrals: jest.fn()},
+  captureEvent: jest.fn(),
   payments: {
     getProducts: jest.fn(),
     beginPurchase: jest.fn(),
@@ -139,17 +140,17 @@ it("flushes player snapshot writes to Jest", async () => {
   expect(mock.data.set).toHaveBeenCalledWith("riddleQuestPlayerState", playerData);
   expect(mock.data.flush).toHaveBeenCalledTimes(1);
 });
-it("does not read or write player snapshots for guests", async () => {
+it("preserves player snapshots for guests using their stable Jest player store", async () => {
   const mock = sdk();
   const platform = new JestSdkPlatform(mock);
   const playerData = {schemaVersion: 1 as const, updatedAt: 11};
+  mock.data.getAll.mockReturnValue({riddleQuestPlayerState: playerData});
 
-  expect(platform.readPlayerData()).toBeNull();
+  expect(platform.readPlayerData()).toEqual(playerData);
   await platform.writePlayerData(playerData);
 
-  expect(mock.data.getAll).not.toHaveBeenCalled();
-  expect(mock.data.set).not.toHaveBeenCalled();
-  expect(mock.data.flush).not.toHaveBeenCalled();
+  expect(mock.data.set).toHaveBeenCalledWith("riddleQuestPlayerState", playerData);
+  expect(mock.data.flush).toHaveBeenCalledTimes(1);
 });
 it("does not schedule or remove notifications for guests", async () => {
   const platform = new JestSdkPlatform(sdk());
@@ -262,4 +263,10 @@ it("maps thrown timeouts to retryable failures", async () => {
   const mock = sdk();
   mock.payments.beginPurchase.mockRejectedValue(new Error("timeout"));
   expect(await new JestSdkPlatform(mock).beginPurchase("coins")).toEqual({status: "retryable-failure", message: "timeout"});
+});
+
+it("forwards acquisition events to Jest analytics", () => {
+  const mock = sdk();
+  new JestSdkPlatform(mock).captureEvent("registration_prompt_shown", {utmCampaign: "launch"});
+  expect(mock.captureEvent).toHaveBeenCalledWith("registration_prompt_shown", {utmCampaign: "launch"});
 });

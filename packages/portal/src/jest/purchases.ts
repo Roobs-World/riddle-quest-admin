@@ -39,15 +39,18 @@ export class JestPurchaseCoordinator {
       return {status: "retryable-failure", message: "Jest returned unsigned subscription data"};
     }
     let activeSkus: Set<string>;
+    let blockedSkus: Set<string>;
     try {
       const verified = await this.backend.syncSubscriptions(result.value.subscriptionsSigned, playerId);
       activeSkus = new Set(verified.activeSkus);
+      blockedSkus = new Set(verified.blockedSkus ?? []);
     } catch (error) {
       return {status: "retryable-failure", message: error instanceof Error ? error.message : String(error)};
     }
     return {
       status: "success",
       value: result.value.subscriptions.flatMap((subscription) => {
+        if (blockedSkus.has(subscription.sku)) return [];
         if (
           !Number.isFinite(subscription.price) ||
           !isCurrency(subscription.currency) ||
@@ -73,7 +76,10 @@ export class JestPurchaseCoordinator {
     };
   }
 
-  async subscribe(subscriptionSku: string, playerId: string): Promise<PlatformResult<{activeSku: string}>> {
+  async subscribe(subscriptionSku: string, playerId: string): Promise<PlatformResult<{
+    activeSku: string;
+    blockedSkus: string[];
+  }>> {
     const started = await this.platform.beginSubscription(subscriptionSku);
     if (started.status !== "success") {
       if (started.status !== "unavailable" || started.message !== "already_subscribed") return started;
@@ -82,7 +88,7 @@ export class JestPurchaseCoordinator {
       try {
         const verified = await this.backend.syncSubscriptions(refreshed.value.subscriptionsSigned, playerId);
         return verified.activeSkus.includes(subscriptionSku)
-          ? {status: "success", value: {activeSku: subscriptionSku}}
+          ? {status: "success", value: {activeSku: subscriptionSku, blockedSkus: verified.blockedSkus ?? []}}
           : started;
       } catch (error) {
         return {status: "retryable-failure", message: error instanceof Error ? error.message : String(error)};
@@ -93,7 +99,10 @@ export class JestPurchaseCoordinator {
       if (!verified.activeSkus.includes(subscriptionSku)) {
         return {status: "terminal-failure", message: "Subscription entitlement was not active"};
       }
-      return {status: "success", value: {activeSku: subscriptionSku}};
+      return {
+        status: "success",
+        value: {activeSku: subscriptionSku, blockedSkus: verified.blockedSkus ?? []},
+      };
     } catch (error) {
       return {status: "retryable-failure", message: error instanceof Error ? error.message : String(error)};
     }
