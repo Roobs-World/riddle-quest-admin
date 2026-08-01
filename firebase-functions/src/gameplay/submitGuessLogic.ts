@@ -165,6 +165,10 @@ export async function handleGuessLogic(
       winStreak: 0,
       totalWins: 0,
       totalGuessesInWins: 0,
+      totalHintsUsed: 0,
+      multiplayerGamesPlayed: 0,
+      multiplayerWins: 0,
+      multiplayerChallengesCreated: 0,
     };
 
     const statsUpdate: PlayerStatsUpdate = {
@@ -389,6 +393,10 @@ export async function handleCompleteGameLogic(
       winStreak: 0,
       totalWins: 0,
       totalGuessesInWins: 0,
+      totalHintsUsed: 0,
+      multiplayerGamesPlayed: 0,
+      multiplayerWins: 0,
+      multiplayerChallengesCreated: 0,
     };
 
     // Batch all guesses (attempts) into totalWordsGuessed at game end

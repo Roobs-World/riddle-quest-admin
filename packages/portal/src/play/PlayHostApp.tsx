@@ -160,11 +160,8 @@ export function PlayHostApp({
     setRaceAccessEnabled(false);
     setPrefetchedRaceCategories([]);
     if (!raceBuildEnabled || !authSnapshot.user || locale !== "en") return;
-    void Promise.all([
-      services.getRaceAccess(),
-      import("./race/RaceTo10Game"),
-    ])
-      .then(async ([access]) => {
+    void services.getRaceAccess()
+      .then(async (access) => {
         if (!access.enabled || cancelled) return;
         if (initialRaceChallengeId) {
           setRaceAccessEnabled(true);
@@ -235,7 +232,10 @@ export function PlayHostApp({
     async (requestId: string | undefined, operation: OperationName, action: () => Promise<unknown>) => {
       const startedAt = performance.now();
       try {
-        postOperation(requestId, operation, true, await withServerActivity(action));
+        // The multiplayer surface owns its pending states. Using the global
+        // server-activity wrapper here blocks the entire game behind an overlay
+        // while a race request is in flight, including the initial screen open.
+        postOperation(requestId, operation, true, await action());
         const durationMs = Math.round(performance.now() - startedAt);
         const report = durationMs >= 2_000 ? console.warn : console.info;
         report("[riddle-quest-race-latency]", operation, {
@@ -251,7 +251,37 @@ export function PlayHostApp({
         });
       }
     },
-    [postOperation, withServerActivity],
+    [postOperation],
+  );
+
+  const syncRaceAchievementProgress = useCallback(
+    async (result: {
+      newlyUnlockedAchievementIds?: string[];
+      newCoins?: number;
+    }) => {
+      if (typeof result.newCoins === "number") {
+        setAuthSnapshot((current) =>
+          current.profile ? {...current, profile: {...current.profile, coins: result.newCoins!}} : current,
+        );
+      }
+      for (const achievementId of result.newlyUnlockedAchievementIds ?? []) {
+        trackEvent("unlock_achievement", {achievement_id: achievementId, source: "multiplayer"});
+      }
+      const user = authSnapshot.user;
+      if (!user) return;
+      try {
+        const profile = await services.loadProfile(user.uid);
+        setAuthSnapshot((current) => ({...current, profile}));
+        postToGame({
+          type: "host:authState",
+          requestId: createRequestId("race-profile"),
+          payload: {user: bridgeUser, profile},
+        });
+      } catch (error) {
+        console.warn("[riddle-quest-race-achievements] Profile refresh failed", error);
+      }
+    },
+    [authSnapshot.user, bridgeUser, postToGame, services],
   );
 
   const loadAndPostRiddle = useCallback(
@@ -457,13 +487,21 @@ export function PlayHostApp({
         abandonRace: (message) =>
           runRaceOperation(message.requestId, "raceAbandon", () => services.abandonRace(message.payload)),
         publishRace: (message) =>
-          runRaceOperation(message.requestId, "racePublish", () => services.publishRace(message.payload)),
+          runRaceOperation(message.requestId, "racePublish", async () => {
+            const result = await services.publishRace(message.payload);
+            await syncRaceAchievementProgress(result);
+            return result;
+          }),
         getRaceChallenge: (message) =>
           runRaceOperation(message.requestId, "raceChallenge", () =>
             services.getRaceChallenge(message.payload.challengeId),
           ),
         getRaceOutcome: (message) =>
-          runRaceOperation(message.requestId, "raceOutcome", () => services.getRaceOutcome(message.payload.runId)),
+          runRaceOperation(message.requestId, "raceOutcome", async () => {
+            const result = await services.getRaceOutcome(message.payload.runId);
+            await syncRaceAchievementProgress(result);
+            return result;
+          }),
         listRaceInbox: (message) =>
           runRaceOperation(message.requestId, "raceInbox", () => services.listRaceInbox(message.payload)),
         analytics: (message) => {
@@ -494,6 +532,7 @@ export function PlayHostApp({
       runRaceOperation,
       sendInit,
       services,
+      syncRaceAchievementProgress,
       withServerActivity,
     ],
   );

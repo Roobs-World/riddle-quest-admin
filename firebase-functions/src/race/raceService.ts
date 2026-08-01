@@ -55,6 +55,7 @@ import {
 } from "./raceEngine";
 import {RACE_POOL_SIZE, validateRacePool} from "./raceContentValidation";
 import type {ExistingRaceContentRecord} from "./raceContentMigration";
+import {evaluateRaceAchievementEvent, type RaceAchievementEvent} from "./raceAchievements";
 
 type Firestore = FirebaseFirestore.Firestore;
 
@@ -136,6 +137,24 @@ const CATEGORY_PRESENTATION: Record<
 };
 
 const dbOrDefault = (db?: Firestore): Firestore => db ?? admin.firestore();
+
+const persistRaceAchievementEvent = (
+  transaction: FirebaseFirestore.Transaction,
+  userRef: FirebaseFirestore.DocumentReference,
+  userData: FirebaseFirestore.DocumentData,
+  event: RaceAchievementEvent,
+  nowMs: number,
+) => {
+  const update = evaluateRaceAchievementEvent(userData, event, nowMs);
+  transaction.set(userRef, {
+    stats: update.stats,
+    coins: update.newCoins,
+    ...(update.unlockedAchievementEntries.length > 0
+      ? {unlockedAchievements: admin.firestore.FieldValue.arrayUnion(...update.unlockedAchievementEntries)}
+      : {}),
+  }, {merge: true});
+  return update;
+};
 
 const stableHash = (value: string): string => createHash("sha256").update(value).digest("hex");
 
@@ -391,6 +410,9 @@ export async function startRaceRunForUser(
     const challengeSnapshot = await db.collection("raceChallenges").doc(input.challengeId).get();
     if (!challengeSnapshot.exists) throw new HttpsError("not-found", "Race to 10 challenge not found.");
     challenge = parseChallengeRecord(challengeSnapshot.data());
+    if (challenge.creatorId === userId) {
+      throw new HttpsError("failed-precondition", "You cannot compete against your own challenge.");
+    }
     const preview = challengePreview(challenge, nowMs);
     if (preview.status !== "active") throw new HttpsError("failed-precondition", `Challenge is ${preview.status}.`);
     categoryId = challenge.categoryId;
@@ -505,11 +527,14 @@ async function mutateRaceRun<T>(
       result.run.status !== "abandoned" &&
       result.run.challengeId
     ) {
-      const [challengeSnapshot, challengerSnapshot] = await Promise.all([
-        transaction.get(db.collection("raceChallenges").doc(result.run.challengeId)),
-        transaction.get(db.collection("users").doc(userId)),
-      ]);
+      const challengeRef = db.collection("raceChallenges").doc(result.run.challengeId);
+      const challengeSnapshot = await transaction.get(challengeRef);
       const challenge = parseChallengeRecord(challengeSnapshot.data());
+      const creatorRef = db.collection("users").doc(challenge.creatorId);
+      const [challengerSnapshot, creatorSnapshot] = await Promise.all([
+        transaction.get(db.collection("users").doc(userId)),
+        transaction.get(creatorRef),
+      ]);
       const outcome = raceOutcome(result.run, nowMs);
       const adjustedDeltaMs = outcome.adjustedFinishMs - challenge.creatorAdjustedFinishMs;
       const creatorResult = adjustedDeltaMs < 0 ? "loss" : adjustedDeltaMs > 0 ? "win" : "tie";
@@ -528,6 +553,15 @@ async function mutateRaceRun<T>(
         read: false,
         createdAtMs: nowMs,
       });
+      if (creatorSnapshot.exists) {
+        persistRaceAchievementEvent(
+          transaction,
+          creatorRef,
+          creatorSnapshot.data() ?? {},
+          {kind: "opponent_resolved", won: creatorResult === "win"},
+          nowMs,
+        );
+      }
     }
     transaction.set(runRef, stripUndefined(result.run), {merge: true});
     transaction.create(requestRef, {
@@ -704,9 +738,27 @@ export async function publishRaceChallengeForUser(
     const result = PublishRaceChallengeResponseSchema.parse({
       challengeId: challengeRef.id,
       preview: challengePreview(challenge, nowMs),
+      ...(() => {
+        if (!userSnapshot.exists) return {};
+        const update = evaluateRaceAchievementEvent(userSnapshot.data() ?? {}, {kind: "challenge_published"}, nowMs);
+        return {
+          newlyUnlockedAchievementIds: update.newlyUnlockedAchievementIds,
+          achievementCoinsAwarded: update.achievementCoinsAwarded,
+          newCoins: update.newCoins,
+        };
+      })(),
     });
     transaction.create(challengeRef, stripUndefined(challenge));
     transaction.set(runRef, {...stripUndefined(run), publishedChallengeId: challengeRef.id}, {merge: true});
+    if (userSnapshot.exists) {
+      persistRaceAchievementEvent(
+        transaction,
+        db.collection("users").doc(userId),
+        userSnapshot.data() ?? {},
+        {kind: "challenge_published"},
+        nowMs,
+      );
+    }
     transaction.create(requestRef, {
       userId,
       createdAtMs: nowMs,
@@ -734,11 +786,38 @@ export async function getRaceOutcomeForUser(
   options: {db?: Firestore; nowMs?: number} = {},
 ): Promise<RaceOutcome> {
   const db = dbOrDefault(options.db);
-  const snapshot = await db.collection("raceRuns").doc(runId).get();
-  if (!snapshot.exists) throw new HttpsError("not-found", "Race to 10 run not found.");
-  const run = parseRunRecord(snapshot.data());
-  if (run.userId !== userId) throw new HttpsError("permission-denied", "This race run belongs to another player.");
-  return validateCallableResponse(RaceOutcomeSchema, raceOutcome(run, options.nowMs ?? Date.now()), "getRaceOutcome");
+  const nowMs = options.nowMs ?? Date.now();
+  const runRef = db.collection("raceRuns").doc(runId);
+  const userRef = db.collection("users").doc(userId);
+  const outcome = await db.runTransaction(async (transaction) => {
+    const [runSnapshot, userSnapshot] = await Promise.all([transaction.get(runRef), transaction.get(userRef)]);
+    if (!runSnapshot.exists) throw new HttpsError("not-found", "Race to 10 run not found.");
+    const run = parseRunRecord(runSnapshot.data());
+    if (run.userId !== userId) throw new HttpsError("permission-denied", "This race run belongs to another player.");
+    const baseOutcome = raceOutcome(run, nowMs);
+    if (run.achievementProgressRecordedAtMs !== undefined) return baseOutcome;
+    if (!userSnapshot.exists) throw new HttpsError("internal", "Player progress is unavailable for this race.");
+
+    const update = persistRaceAchievementEvent(
+      transaction,
+      userRef,
+      userSnapshot.data() ?? {},
+      {
+        kind: "completed",
+        won: baseOutcome.result === "player_win",
+        cleanRun: baseOutcome.correctCount === RACE_TARGET_CORRECT && baseOutcome.totalPenaltyMs === 0,
+      },
+      nowMs,
+    );
+    transaction.set(runRef, {achievementProgressRecordedAtMs: nowMs}, {merge: true});
+    return {
+      ...baseOutcome,
+      newlyUnlockedAchievementIds: update.newlyUnlockedAchievementIds,
+      achievementCoinsAwarded: update.achievementCoinsAwarded,
+      newCoins: update.newCoins,
+    };
+  });
+  return validateCallableResponse(RaceOutcomeSchema, outcome, "getRaceOutcome");
 }
 
 const encodeInboxCursor = (createdAtMs: number, itemId: string): string =>

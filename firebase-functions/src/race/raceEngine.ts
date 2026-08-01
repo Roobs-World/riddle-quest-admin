@@ -57,6 +57,7 @@ export type RaceRunRecord = {
   opponent?: RaceOpponentRecord;
   rateLimitWindowStartedAtMs?: number;
   rateLimitActionCount?: number;
+  achievementProgressRecordedAtMs?: number;
 };
 
 export type RaceClock = {
@@ -321,5 +322,7 @@ export function raceOutcome(run: RaceRunRecord, nowMs: number): RaceOutcome {
     opponentAdjustedFinishMs: refreshed.opponent?.adjustedFinishMs,
     publishable: refreshed.role === "creator" && refreshed.result === "recorded" && refreshed.correctCount === 10,
     rematchEligible: refreshed.role === "challenger" && refreshed.status === "completed",
+    newlyUnlockedAchievementIds: [],
+    achievementCoinsAwarded: 0,
   };
 }

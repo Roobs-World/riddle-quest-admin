@@ -81,6 +81,9 @@ export const BridgeProfileSchema = z.object({
   totalWins: z.number().int().nonnegative().optional(),
   totalGuessesInWins: z.number().int().nonnegative().optional(),
   totalHintsUsed: z.number().int().nonnegative().optional(),
+  multiplayerGamesPlayed: z.number().int().nonnegative().optional(),
+  multiplayerWins: z.number().int().nonnegative().optional(),
+  multiplayerChallengesCreated: z.number().int().nonnegative().optional(),
   hasPurchasedApp: z.boolean().optional(),
 });
 export type BridgeProfile = z.infer<typeof BridgeProfileSchema>;

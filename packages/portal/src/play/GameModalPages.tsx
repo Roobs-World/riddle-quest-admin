@@ -57,6 +57,9 @@ export function GameModalPages({state, onClose, onContinue, onPurchase, onOpenMo
       challengeWins: profile?.challengeWins ?? 0, winStreak: profile?.winStreak ?? 0,
       totalWins: profile?.totalWins ?? profile?.wins ?? 0,
       totalGuessesInWins: profile?.totalGuessesInWins ?? 0, totalHintsUsed: profile?.totalHintsUsed ?? 0,
+      multiplayerGamesPlayed: profile?.multiplayerGamesPlayed ?? 0,
+      multiplayerWins: profile?.multiplayerWins ?? 0,
+      multiplayerChallengesCreated: profile?.multiplayerChallengesCreated ?? 0,
     },
   };
   const leaderboardPageCount = Math.max(1, Math.ceil(state.leaderboard.length / LEADERBOARD_PAGE_SIZE));
@@ -312,8 +315,8 @@ export function GameModalPages({state, onClose, onContinue, onPurchase, onOpenMo
                 <article className={unlocked ? "unlocked" : ""} key={achievement.id}>
                   <span className="achievement-icon">{achievement.icon}</span>
                   <div>
-                    <strong>{achievement.name}</strong>
-                    <p>{achievement.description}</p>
+                    <strong>{achievement.nameKey ? tr(achievement.nameKey) : achievement.name}</strong>
+                    <p>{achievement.descriptionKey ? tr(achievement.descriptionKey) : achievement.description}</p>
                     <div className="achievement-progress">
                       <i style={{width: `${(progress / achievement.threshold) * 100}%`}} />
                     </div>

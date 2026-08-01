@@ -71,8 +71,12 @@ describeBrowser("standalone Jest browser game", () => {
     try {
       const page = await browser.newPage({viewport: {width: 390, height: 844}});
       const consoleErrors: string[] = [];
+      const layoutWarnings: string[] = [];
       page.on("console", (message) => {
         if (message.type() === "error") consoleErrors.push(message.text());
+        if (/Layout was forced before|destination rect smaller than the viewport rect/i.test(message.text())) {
+          layoutWarnings.push(message.text());
+        }
       });
       await page.addInitScript(() => {
         localStorage.setItem("riddleQuest:tooltipSequenceSeen:gameTour:jest-guest", "seen");
@@ -88,9 +92,63 @@ describeBrowser("standalone Jest browser game", () => {
       await completeOnboardingAndTours(page);
 
       expect(await page.locator(".solar-system").count()).toBe(1);
+      await page.locator(".solar-system canvas").waitFor();
+      expect(
+        await page.locator(".solar-system canvas").evaluate((canvas: HTMLCanvasElement) => {
+          const context = canvas.getContext("webgl2") ?? canvas.getContext("webgl");
+          if (!context) return true;
+          const viewport = context.getParameter(context.VIEWPORT) as Int32Array;
+          return viewport[0] >= 0 && viewport[1] >= 0 &&
+            viewport[0] + viewport[2] <= context.drawingBufferWidth &&
+            viewport[1] + viewport[3] <= context.drawingBufferHeight;
+        }),
+      ).toBe(true);
+      const solarFrameBefore = await page.locator(".solar-system canvas").screenshot();
+      await page.waitForTimeout(500);
+      const solarFrameAfter = await page.locator(".solar-system canvas").screenshot();
+      expect(solarFrameBefore.equals(solarFrameAfter)).toBe(false);
       expect(await page.locator(".guess-row").count()).toBe(5);
       expect(await page.locator(".keyboard").isVisible()).toBe(true);
       expect((await page.locator("[data-tooltip='gameSkip']").innerText()).trim()).toBe("Skip");
+
+      const mainGameCoinBalance = (await page.locator(".game-header .coin-pill strong").innerText()).trim();
+      await page.evaluate(() => localStorage.setItem("riddleQuest:activeRaceRun", "expired-run-from-previous-session"));
+      const multiplayerOpenDurationMs = await page.getByRole("button", {name: /^multiplayer$/i}).evaluate(
+        (button) => new Promise<number>((resolve) => {
+          const openedAt = performance.now();
+          const observer = new MutationObserver(() => {
+            if (!document.querySelector(".race-screen")) return;
+            observer.disconnect();
+            resolve(performance.now() - openedAt);
+          });
+          observer.observe(document.body, {childList: true, subtree: true});
+          (button as HTMLButtonElement).click();
+        }),
+      );
+      expect(multiplayerOpenDurationMs).toBeLessThan(100);
+      expect(await page.locator('[data-testid="server-activity-loader"]').count()).toBe(0);
+      expect(await page.locator(".race-category-grid button").count()).toBeGreaterThan(0);
+      expect(await page.evaluate(() => localStorage.getItem("riddleQuest:activeRaceRun"))).toBeNull();
+      expect((await page.locator(".race-coin-balance strong").innerText()).trim()).toBe(mainGameCoinBalance);
+      expect(await page.locator(".race-coin-balance").isVisible()).toBe(true);
+      const penaltyCenterOffset = await page.locator(".race-screen").evaluate((screen) => {
+        const penalty = document.createElement("div");
+        penalty.className = "race-penalty-flash";
+        penalty.style.animation = "none";
+        penalty.textContent = "+15s";
+        screen.append(penalty);
+        const rect = penalty.getBoundingClientRect();
+        const offset = {
+          horizontal: Math.abs(rect.left + rect.width / 2 - innerWidth / 2),
+          vertical: Math.abs(rect.top + rect.height / 2 - innerHeight / 2),
+        };
+        penalty.remove();
+        return offset;
+      });
+      expect(penaltyCenterOffset.horizontal).toBeLessThanOrEqual(0.5);
+      expect(penaltyCenterOffset.vertical).toBeLessThanOrEqual(0.5);
+      await page.locator(".race-close").click();
+      await page.locator(".race-screen").waitFor({state: "detached"});
 
       const dailyPage = await browser.newPage({viewport: {width: 390, height: 844}});
       await dailyPage.addInitScript(() => {
@@ -141,6 +199,14 @@ describeBrowser("standalone Jest browser game", () => {
       for (const name of [/statistics/i, /achievements/i, /ranks/i, /leaderboard/i, /treasure/i]) {
         expect(await page.getByRole("button", {name}).isVisible()).toBe(true);
       }
+      await page.getByRole("button", {name: /^achievements$/i}).click();
+      await page.locator(".modal-achievements").waitFor();
+      await page.getByText("Race Debut", {exact: true}).waitFor();
+      await page.getByText("Challenge Issued", {exact: true}).waitFor();
+      await page.getByText("Clean Run", {exact: true}).waitFor();
+      await page.keyboard.press("Escape");
+      await page.getByRole("button", {name: /^profile$/i}).first().click();
+      await page.locator(".modal-profile").waitFor();
       await page.getByRole("button", {name: /^ranks$/i}).evaluate((button) => (button as HTMLButtonElement).click());
       await page.locator(".modal-ranks").waitFor();
       const rankIconNames = await page.locator(".modal-ranks [data-rank-icon]").evaluateAll(
@@ -247,6 +313,7 @@ describeBrowser("standalone Jest browser game", () => {
         /Clerk|Auth0|sign in with Google|rewarded ad|install the app/i,
       );
       expect(consoleErrors).toEqual([]);
+      expect(layoutWarnings).toEqual([]);
 
       const lowEndPage = await browser.newPage({
         viewport: {width: 360, height: 740},

@@ -228,6 +228,9 @@ export async function initializeNewUser(
         totalWins: 0,
         totalGuessesInWins: 0,
         totalHintsUsed: 0,
+        multiplayerGamesPlayed: 0,
+        multiplayerWins: 0,
+        multiplayerChallengesCreated: 0,
         ...seedStats,
       },
       unlockedAchievements: seedAchievements,
@@ -298,6 +301,9 @@ export async function ensureUserDocumentComplete(userId: string): Promise<void> 
         totalWins: 0,
         totalGuessesInWins: 0,
         totalHintsUsed: 0,
+        multiplayerGamesPlayed: 0,
+        multiplayerWins: 0,
+        multiplayerChallengesCreated: 0,
       };
     } else {
       // Check for missing stat fields and add defaults
@@ -319,6 +325,9 @@ export async function ensureUserDocumentComplete(userId: string): Promise<void> 
         totalWins: 0,
         totalGuessesInWins: 0,
         totalHintsUsed: 0,
+        multiplayerGamesPlayed: 0,
+        multiplayerWins: 0,
+        multiplayerChallengesCreated: 0,
       };
 
       let needsStatsUpdate = false;

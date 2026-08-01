@@ -15,7 +15,14 @@ import moonGTextureUrl from "../../../../assets/3d-web/tex_moon_g.webp";
 import moonHTextureUrl from "../../../../assets/3d-web/tex_moon_h.webp";
 import ringATextureUrl from "../../../../assets/3d-web/tex_ring_a.webp";
 import ringBTextureUrl from "../../../../assets/3d-web/tex_ring_b.webp";
-import {advanceFrameBasedAngle, getFrameDeltaSeconds} from "./solarMotion";
+import {runWhenLayoutReady} from "./game/layoutReady";
+import {
+  advanceFrameBasedAngle,
+  advanceSolarOrbitAngle,
+  advanceSolarRotationAngle,
+  getFrameDeltaSeconds,
+  getShootingStarProgress,
+} from "./solarMotion";
 
 type MoonConfig = {
   size: number;
@@ -133,6 +140,12 @@ type PlanetRuntime = {
   moons: {config: MoonConfig; mesh: THREE.Mesh}[];
 };
 
+const SHOOTING_STAR_CONFIG = [
+  {phaseOffsetSeconds: 0, startY: 105, depth: 70, scale: 86},
+  {phaseOffsetSeconds: 2.35, startY: 72, depth: 115, scale: 72},
+  {phaseOffsetSeconds: 4.7, startY: 125, depth: 35, scale: 96},
+] as const;
+
 export function SolarSystem({paused}: {paused: boolean}) {
   const mountRef = useRef<HTMLDivElement>(null);
   const pausedRef = useRef(paused);
@@ -219,6 +232,45 @@ export function SolarSystem({paused}: {paused: boolean}) {
     );
     scene.add(stars);
 
+    const shootingStarCanvas = document.createElement("canvas");
+    shootingStarCanvas.width = 128;
+    shootingStarCanvas.height = 16;
+    const shootingStarContext = shootingStarCanvas.getContext("2d");
+    if (shootingStarContext) {
+      const gradient = shootingStarContext.createLinearGradient(0, 0, 128, 0);
+      gradient.addColorStop(0, "rgba(185, 225, 255, 0)");
+      gradient.addColorStop(0.72, "rgba(205, 235, 255, 0.5)");
+      gradient.addColorStop(0.94, "rgba(255, 255, 255, 0.95)");
+      gradient.addColorStop(1, "rgba(255, 255, 255, 0.28)");
+      shootingStarContext.fillStyle = gradient;
+      shootingStarContext.fillRect(0, 5, 124, 6);
+      const head = shootingStarContext.createRadialGradient(120, 8, 0, 120, 8, 8);
+      head.addColorStop(0, "rgba(255, 255, 255, 1)");
+      head.addColorStop(0.28, "rgba(225, 245, 255, 0.95)");
+      head.addColorStop(1, "rgba(185, 225, 255, 0)");
+      shootingStarContext.fillStyle = head;
+      shootingStarContext.fillRect(112, 0, 16, 16);
+    }
+    const shootingStarTexture = new THREE.CanvasTexture(shootingStarCanvas);
+    shootingStarTexture.colorSpace = THREE.SRGBColorSpace;
+    const shootingStars = SHOOTING_STAR_CONFIG.map((config) => {
+      const material = new THREE.SpriteMaterial({
+        map: shootingStarTexture,
+        color: 0xe9f7ff,
+        opacity: 0,
+        transparent: true,
+        blending: THREE.AdditiveBlending,
+        depthTest: false,
+        depthWrite: false,
+        rotation: -0.2,
+      });
+      const sprite = new THREE.Sprite(material);
+      sprite.scale.set(config.scale, 5, 1);
+      sprite.visible = false;
+      scene.add(sprite);
+      return {config, material, sprite};
+    });
+
     const runtimes: PlanetRuntime[] = SOLAR_SYSTEM_CONFIG.map((config) => {
       const orbit = new THREE.Group();
       scene.add(orbit);
@@ -260,15 +312,26 @@ export function SolarSystem({paused}: {paused: boolean}) {
       return {config, orbit, planet, moons};
     });
 
-    const resize = () => {
-      const {width, height} = mount.getBoundingClientRect();
-      renderer.setSize(Math.max(1, width), Math.max(1, height), false);
-      camera.aspect = Math.max(1, width) / Math.max(1, height);
+    let renderingReady = false;
+    let observer: ResizeObserver | null = null;
+    const resize = ({width, height}: DOMRectReadOnly) => {
+      // Keep the WebGL viewport within the integer-sized drawing buffer. Fractional
+      // CSS pixels can otherwise make Firefox round the viewport up while the
+      // canvas backing store is rounded down.
+      const renderWidth = Math.max(1, Math.floor(width));
+      const renderHeight = Math.max(1, Math.floor(height));
+      renderer.setSize(renderWidth, renderHeight, false);
+      renderer.setViewport(0, 0, renderWidth, renderHeight);
+      camera.aspect = renderWidth / renderHeight;
       camera.updateProjectionMatrix();
+      renderingReady = width > 0 && height > 0;
     };
-    resize();
-    const observer = new ResizeObserver(resize);
-    observer.observe(mount);
+    const stopWaitingForLayout = runWhenLayoutReady(() => {
+      observer = new ResizeObserver(([entry]) => {
+        if (entry) resize(entry.contentRect);
+      });
+      observer.observe(mount);
+    });
 
     let lastFrameAt = performance.now();
     let animationElapsed = 0;
@@ -278,26 +341,32 @@ export function SolarSystem({paused}: {paused: boolean}) {
       const frameAt = performance.now();
       const deltaSeconds = getFrameDeltaSeconds(frameAt, lastFrameAt);
       lastFrameAt = frameAt;
-      if (!pausedRef.current && !document.hidden) {
+      if (renderingReady && !pausedRef.current && !document.hidden) {
         animationElapsed += deltaSeconds;
-        sun.rotation.y = advanceFrameBasedAngle(sun.rotation.y, 0.0018, deltaSeconds);
+        sun.rotation.y = advanceSolarRotationAngle(sun.rotation.y, 0.0018, deltaSeconds);
         coronaMaterial.opacity = 0.28 + Math.sin(animationElapsed * 0.85) * 0.08;
         const coronaScale = 53 + Math.sin(animationElapsed * 0.85) * 2.5;
         corona.scale.set(coronaScale, coronaScale, 1);
-        stars.rotation.y = advanceFrameBasedAngle(stars.rotation.y, 0.00004, deltaSeconds);
+        for (const {config, material, sprite} of shootingStars) {
+          const progress = getShootingStarProgress(animationElapsed, config.phaseOffsetSeconds);
+          sprite.visible = progress !== null;
+          if (progress === null) continue;
+          sprite.position.set(-185 + progress * 370, config.startY - progress * 72, config.depth);
+          material.opacity = Math.sin(progress * Math.PI) * 0.92;
+        }
         for (const runtime of runtimes) {
-          runtime.orbit.rotation.y = advanceFrameBasedAngle(
+          runtime.orbit.rotation.y = advanceSolarOrbitAngle(
             runtime.orbit.rotation.y,
             runtime.config.orbitSpeed,
             deltaSeconds,
           );
-          runtime.planet.rotation.y = advanceFrameBasedAngle(
+          runtime.planet.rotation.y = advanceSolarRotationAngle(
             runtime.planet.rotation.y,
             runtime.config.rotationSpeed,
             deltaSeconds,
           );
           runtime.moons.forEach(({config, mesh}) => {
-            const angle = config.startAngle + animationElapsed * config.orbitSpeed;
+            const angle = advanceFrameBasedAngle(config.startAngle, config.orbitSpeed, animationElapsed);
             mesh.position.set(Math.cos(angle) * config.distance, 0, Math.sin(angle) * config.distance);
           });
         }
@@ -308,7 +377,8 @@ export function SolarSystem({paused}: {paused: boolean}) {
 
     return () => {
       window.cancelAnimationFrame(frame);
-      observer.disconnect();
+      stopWaitingForLayout();
+      observer?.disconnect();
       scene.traverse((object) => {
         if (object instanceof THREE.Mesh || object instanceof THREE.Points) {
           object.geometry.dispose();
@@ -323,6 +393,8 @@ export function SolarSystem({paused}: {paused: boolean}) {
       });
       coronaTexture.dispose();
       coronaMaterial.dispose();
+      shootingStarTexture.dispose();
+      shootingStars.forEach(({material}) => material.dispose());
       renderer.dispose();
       renderer.forceContextLoss();
       renderer.domElement.remove();

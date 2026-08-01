@@ -350,7 +350,7 @@ function createJestUser(uid: string, playerId: string): Record<string, unknown> 
     registeredAt: now,
     lastLogin: now,
     preferredLanguage: "en",
-    stats: {xp: 0, level: 1, dailyPuzzlesCompleted: 0, bestStreak: 0, totalWordsGuessed: 0, winRate: 0, averageGuesses: 0, totalScore: 0, highestLevelClassic: 0, gamesPlayed: 0, wins: 0, challengeWins: 0, winStreak: 0, totalWins: 0, totalGuessesInWins: 0, totalHintsUsed: 0},
+    stats: {xp: 0, level: 1, dailyPuzzlesCompleted: 0, bestStreak: 0, totalWordsGuessed: 0, winRate: 0, averageGuesses: 0, totalScore: 0, highestLevelClassic: 0, gamesPlayed: 0, wins: 0, challengeWins: 0, winStreak: 0, totalWins: 0, totalGuessesInWins: 0, totalHintsUsed: 0, multiplayerGamesPlayed: 0, multiplayerWins: 0, multiplayerChallengesCreated: 0},
     progress: {classicIndex: 1, dailyChallengeIndex: 0, dailyChallengeCurrentQuestion: 0},
     unlockedAchievements: [],
   };

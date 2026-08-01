@@ -27,6 +27,7 @@ import {createRequestId} from "../requestIds";
 import {createRaceAnalyticsMessage} from "./raceAnalytics";
 import {getGhostCorrectCount} from "./racePlayback";
 import {trackEvent, trackScreen} from "../../analytics/googleAnalytics";
+import coinUrl from "../../../../../assets/images/coin.svg";
 
 type Stage = "categories" | "challenge" | "countdown" | "racing" | "result";
 type RaceOperation =
@@ -35,7 +36,6 @@ type RaceOperation =
   | "raceGuess"
   | "raceHint"
   | "raceSkip"
-  | "raceResume"
   | "raceAbandon"
   | "racePublish"
   | "raceChallenge"
@@ -67,12 +67,14 @@ const firstEditableSlot = (riddle: NonNullable<RaceRunView["currentRiddle"]> | n
 export function RaceTo10Game({
   locale,
   challengeId,
+  coins,
   postToHost,
   onClose,
   initialCategories = EMPTY_CATEGORIES,
 }: {
   locale: RaceLocale;
   challengeId?: string;
+  coins: number;
   postToHost: (message: GameToHostMessage) => void;
   onClose: () => void;
   initialCategories?: ListRaceCategoriesResponse["categories"];
@@ -101,6 +103,17 @@ export function RaceTo10Game({
   const rivalryChallengeIdRef = useRef<string | undefined>(undefined);
   const dialogRef = useRef<HTMLElement | null>(null);
   const quitDialogRef = useRef<HTMLDivElement | null>(null);
+  const formattedCoins = coins.toLocaleString();
+
+  const coinBalance = (
+    <div
+      className="race-coin-balance"
+      aria-label={`${tr("Profile.TOTAL_COINS_LABEL")} ${formattedCoins}`}
+    >
+      <strong>{formattedCoins}</strong>
+      <img src={coinUrl} alt="" />
+    </div>
+  );
 
   useEffect(() => {
     trackScreen(`multiplayer_${stage}`);
@@ -203,9 +216,11 @@ export function RaceTo10Game({
     const timer = window.setTimeout(() => {
       if (challengeId) send("raceChallenge", "game:getRaceChallenge", {challengeId});
       else {
-        const savedRunId = window.localStorage.getItem(ACTIVE_RACE_KEY);
-        if (savedRunId) send("raceResume", "game:resumeRace", {runId: savedRunId});
-        else if (initialCategories.length === 0) send("raceCategories", "game:listRaceCategories", {locale});
+        // Opening multiplayer from the main game always starts at a fresh lobby.
+        // A previous browser session must never jump the player into an expired
+        // run or its time-up result screen.
+        window.localStorage.removeItem(ACTIVE_RACE_KEY);
+        if (initialCategories.length === 0) send("raceCategories", "game:listRaceCategories", {locale});
       }
     }, 0);
     return () => window.clearTimeout(timer);
@@ -224,11 +239,6 @@ export function RaceTo10Game({
       const operation = message.payload.operation as RaceOperation;
       setPending(null);
       if (!message.payload.ok) {
-        if (operation === "raceResume") {
-          window.localStorage.removeItem(ACTIVE_RACE_KEY);
-          send("raceCategories", "game:listRaceCategories", {locale});
-          return;
-        }
         setError(message.payload.error ?? tr("RaceTo10.ERROR_GENERIC"));
         return;
       }
@@ -240,7 +250,7 @@ export function RaceTo10Game({
           setChallenge(preview);
           setSelectedCategory(preview.categoryId);
           analytics("race_link_entered");
-        } else if (operation === "raceStart" || operation === "raceResume") {
+        } else if (operation === "raceStart") {
           const nextRun = RaceRunResponseSchema.parse(message.payload.data).run;
           updateRun(nextRun);
           resetAttempt(nextRun);
@@ -505,9 +515,12 @@ export function RaceTo10Game({
             <span className="race-kicker">{tr("RaceTo10.MODE_LABEL")}</span>
             <h1 id="race-title">{tr("RaceTo10.TITLE")}</h1>
           </div>
-          <button className="race-close" onClick={requestClose} aria-label={tr("RaceTo10.CLOSE")}>
-            ×
-          </button>
+          <div className="race-topbar-actions">
+            {coinBalance}
+            <button className="race-close" onClick={requestClose} aria-label={tr("RaceTo10.CLOSE")}>
+              ×
+            </button>
+          </div>
         </header>
       )}
       {error && (
@@ -581,6 +594,7 @@ export function RaceTo10Game({
           <section className="race-scoreboard" aria-label={tr("RaceTo10.PROGRESS_LABEL")}>
             <div className="race-rail-header">
               <h1 id="race-title">{tr("RaceTo10.TITLE")}</h1>
+              {coinBalance}
               <button className="race-close" onClick={requestClose} aria-label={tr("RaceTo10.CLOSE")}>
                 ×
               </button>

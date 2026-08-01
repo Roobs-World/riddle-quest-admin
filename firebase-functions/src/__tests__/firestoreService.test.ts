@@ -660,6 +660,9 @@ describe("FirestoreService", () => {
           totalWins: 6,
           totalGuessesInWins: 24,
           totalHintsUsed: 0,
+          multiplayerGamesPlayed: 0,
+          multiplayerWins: 0,
+          multiplayerChallengesCreated: 0,
         },
         progress: {
           classicIndex: 5,

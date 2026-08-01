@@ -55,7 +55,14 @@ export type AchievementCriteriaType =
   | "xp_5000"
   | "coin_hoarder"
   | "treasure_vault"
-  | "first_purchase";
+  | "first_purchase"
+  | "race_debut"
+  | "race_first_win"
+  | "race_wins_5"
+  | "race_wins_25"
+  | "race_host"
+  | "race_hosts_5"
+  | "race_clean_run";
 
 /** Subset of player data needed to evaluate achievement progress. */
 export type AchievementPlayerData = {
@@ -69,6 +76,8 @@ export interface AchievementDefinition {
   id: string;
   name: string;
   description: string;
+  nameKey?: string;
+  descriptionKey?: string;
   criteriaType: AchievementCriteriaType;
   /** The target value at which this achievement unlocks. */
   threshold: number;
@@ -466,6 +475,83 @@ export const ACHIEVEMENT_DEFINITIONS: AchievementDefinition[] = [
     threshold: 1,
     icon: "❤️",
     getProgress: (p) => (p.hasPurchasedApp ? 1 : 0),
+  },
+  {
+    id: "race_debut",
+    name: "Race Debut",
+    description: "Complete your first multiplayer race",
+    nameKey: "RaceTo10.ACHIEVEMENT_DEBUT_NAME",
+    descriptionKey: "RaceTo10.ACHIEVEMENT_DEBUT_DESCRIPTION",
+    criteriaType: "race_debut",
+    threshold: 1,
+    icon: "🚦",
+    getProgress: (p) => p.stats?.multiplayerGamesPlayed ?? 0,
+  },
+  {
+    id: "race_first_win",
+    name: "Head-to-Head Hero",
+    description: "Win your first multiplayer challenge",
+    nameKey: "RaceTo10.ACHIEVEMENT_FIRST_WIN_NAME",
+    descriptionKey: "RaceTo10.ACHIEVEMENT_FIRST_WIN_DESCRIPTION",
+    criteriaType: "race_first_win",
+    threshold: 1,
+    icon: "⚔️",
+    getProgress: (p) => p.stats?.multiplayerWins ?? 0,
+  },
+  {
+    id: "race_wins_5",
+    name: "Rising Rival",
+    description: "Win 5 multiplayer challenges",
+    nameKey: "RaceTo10.ACHIEVEMENT_WINS_5_NAME",
+    descriptionKey: "RaceTo10.ACHIEVEMENT_WINS_5_DESCRIPTION",
+    criteriaType: "race_wins_5",
+    threshold: 5,
+    icon: "🥊",
+    getProgress: (p) => p.stats?.multiplayerWins ?? 0,
+  },
+  {
+    id: "race_wins_25",
+    name: "Cosmic Champion",
+    description: "Win 25 multiplayer challenges",
+    nameKey: "RaceTo10.ACHIEVEMENT_WINS_25_NAME",
+    descriptionKey: "RaceTo10.ACHIEVEMENT_WINS_25_DESCRIPTION",
+    criteriaType: "race_wins_25",
+    threshold: 25,
+    icon: "🏆",
+    getProgress: (p) => p.stats?.multiplayerWins ?? 0,
+  },
+  {
+    id: "race_host",
+    name: "Challenge Issued",
+    description: "Publish your first multiplayer challenge",
+    nameKey: "RaceTo10.ACHIEVEMENT_HOST_NAME",
+    descriptionKey: "RaceTo10.ACHIEVEMENT_HOST_DESCRIPTION",
+    criteriaType: "race_host",
+    threshold: 1,
+    icon: "📨",
+    getProgress: (p) => p.stats?.multiplayerChallengesCreated ?? 0,
+  },
+  {
+    id: "race_hosts_5",
+    name: "Rivalry Starter",
+    description: "Publish 5 multiplayer challenges",
+    nameKey: "RaceTo10.ACHIEVEMENT_HOSTS_5_NAME",
+    descriptionKey: "RaceTo10.ACHIEVEMENT_HOSTS_5_DESCRIPTION",
+    criteriaType: "race_hosts_5",
+    threshold: 5,
+    icon: "📣",
+    getProgress: (p) => p.stats?.multiplayerChallengesCreated ?? 0,
+  },
+  {
+    id: "race_clean_run",
+    name: "Clean Run",
+    description: "Complete a multiplayer race without a hint or skip",
+    nameKey: "RaceTo10.ACHIEVEMENT_CLEAN_RUN_NAME",
+    descriptionKey: "RaceTo10.ACHIEVEMENT_CLEAN_RUN_DESCRIPTION",
+    criteriaType: "race_clean_run",
+    threshold: 1,
+    icon: "✨",
+    getProgress: () => 0,
   },
 ];
 

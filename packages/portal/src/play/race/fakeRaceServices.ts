@@ -364,7 +364,12 @@ export const createFakeRaceServices = (): RaceMethods => {
       const challenge = {preview, runId: run.view.runId, events: run.view.events};
       challenges.set(challengeId, challenge);
       await persistChallenge(challengeId, challenge);
-      const response = {challengeId, preview};
+      const response = {
+        challengeId,
+        preview,
+        newlyUnlockedAchievementIds: [],
+        achievementCoinsAwarded: 0,
+      };
       run.responses.set(input.requestId, response);
       return response;
     },
@@ -399,6 +404,8 @@ export const createFakeRaceServices = (): RaceMethods => {
         opponentAdjustedFinishMs: view.opponent?.adjustedFinishMs,
         publishable: view.role === "creator" && view.status === "completed",
         rematchEligible: view.status === "completed",
+        newlyUnlockedAchievementIds: [],
+        achievementCoinsAwarded: 0,
       };
     },
     async listRaceInbox() {

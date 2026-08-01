@@ -11,6 +11,18 @@ export const RACE_SKIP_PENALTY_MS = 45_000;
 export const RACE_MAX_ADJUSTED_TIME_MS = 300_000;
 export const RACE_CHALLENGE_TTL_MS = 7 * 24 * 60 * 60 * 1_000;
 
+export const RACE_ACHIEVEMENT_IDS = [
+  "race_debut",
+  "race_first_win",
+  "race_wins_5",
+  "race_wins_25",
+  "race_host",
+  "race_hosts_5",
+  "race_clean_run",
+] as const;
+export const RaceAchievementIdSchema = z.enum(RACE_ACHIEVEMENT_IDS);
+export type RaceAchievementId = z.infer<typeof RaceAchievementIdSchema>;
+
 export const RACE_CATEGORY_IDS = ["history", "geography", "music", "film", "science", "mixed"] as const;
 export const RACE_SUPPORTED_LOCALES = ["en"] as const;
 
@@ -267,6 +279,9 @@ export const RaceOutcomeSchema = z
     opponentAdjustedFinishMs: MillisecondsSchema.optional(),
     publishable: z.boolean(),
     rematchEligible: z.boolean(),
+    newlyUnlockedAchievementIds: z.array(RaceAchievementIdSchema).default([]),
+    achievementCoinsAwarded: z.number().int().nonnegative().default(0),
+    newCoins: z.number().int().nonnegative().optional(),
   })
   .strict();
 export type RaceOutcome = z.infer<typeof RaceOutcomeSchema>;
@@ -376,6 +391,9 @@ export const PublishRaceChallengeResponseSchema = z
   .object({
     challengeId: OpaqueIdSchema,
     preview: RaceChallengePreviewSchema,
+    newlyUnlockedAchievementIds: z.array(RaceAchievementIdSchema).default([]),
+    achievementCoinsAwarded: z.number().int().nonnegative().default(0),
+    newCoins: z.number().int().nonnegative().optional(),
   })
   .strict();
 

@@ -2123,6 +2123,29 @@ p {
   align-items: center;
   justify-content: space-between;
 }
+.race-topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.race-coin-balance {
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 4px 9px 4px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 999px;
+  color: #fff;
+  background: rgba(2, 14, 20, 0.48);
+  font: 400 1.2rem/1 "Poetsen One", "Poppins", sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+.race-coin-balance img {
+  width: 32px;
+  height: 26px;
+}
 
 .race-topbar h1 {
   margin: 0;
@@ -2281,6 +2304,17 @@ p {
   height: 36px;
   font-size: 23px;
 }
+.race-rail-header .race-coin-balance {
+  width: 100%;
+  min-height: 34px;
+  gap: 3px;
+  padding: 3px 4px;
+  font-size: 0.9rem;
+}
+.race-rail-header .race-coin-balance img {
+  width: 25px;
+  height: 20px;
+}
 .race-progress {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2367,7 +2401,7 @@ p {
 }
 .race-penalty-flash {
   position: fixed;
-  inset: 40% auto auto 50%;
+  inset: 50% auto auto 50%;
   translate: -50% -50%;
   z-index: 2;
   padding: 18px 28px;

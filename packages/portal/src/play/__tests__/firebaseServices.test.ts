@@ -29,6 +29,9 @@ describe("Firebase profile mapping", () => {
           highestLevelClassic: 9,
           totalGuessesInWins: 26,
           totalHintsUsed: 2,
+          multiplayerGamesPlayed: 4,
+          multiplayerWins: 2,
+          multiplayerChallengesCreated: 3,
         },
       },
     );
@@ -43,6 +46,9 @@ describe("Firebase profile mapping", () => {
         totalWordsGuessed: 51,
         challengeWins: 3,
         totalHintsUsed: 2,
+        multiplayerGamesPlayed: 4,
+        multiplayerWins: 2,
+        multiplayerChallengesCreated: 3,
       }),
     );
   });

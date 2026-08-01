@@ -135,6 +135,20 @@ describe("Race to 10 transactional service", () => {
       );
     }
 
+    const creatorOutcome = await getRaceOutcomeForUser("creator-1", runId, {db, nowMs: NOW + 75_000});
+    expect(creatorOutcome).toMatchObject({
+      result: "recorded",
+      newlyUnlockedAchievementIds: ["race_debut", "race_clean_run"],
+      achievementCoinsAwarded: 50,
+      newCoins: 50,
+    });
+    const repeatedCreatorOutcome = await getRaceOutcomeForUser("creator-1", runId, {db, nowMs: NOW + 76_000});
+    expect(repeatedCreatorOutcome.newlyUnlockedAchievementIds).toEqual([]);
+    expect((await db.doc("users/creator-1").get()).data()).toMatchObject({
+      coins: 50,
+      stats: {multiplayerGamesPlayed: 1, multiplayerWins: 0, multiplayerChallengesCreated: 0},
+    });
+
     const publishInput = {runId, requestId: "publish-request-0001"};
     const published = await publishRaceChallengeForUser("creator-1", publishInput, {
       db,
@@ -145,9 +159,21 @@ describe("Race to 10 transactional service", () => {
       nowMs: NOW + 81_000,
     });
     expect(duplicatePublish).toEqual(published);
+    expect(published).toMatchObject({
+      newlyUnlockedAchievementIds: ["race_host"],
+      achievementCoinsAwarded: 25,
+      newCoins: 75,
+    });
     expect(JSON.stringify(await getRaceChallengePreview(published.challengeId, {db, nowMs: NOW + 82_000}))).not.toMatch(
       /answer|riddles|ghostEvents/,
     );
+    await expect(
+      startRaceRunForUser(
+        "creator-1",
+        {locale: "en", challengeId: published.challengeId, requestId: "self-challenge-start-0001"},
+        {db, nowMs: NOW + 85_000},
+      ),
+    ).rejects.toMatchObject({code: "failed-precondition"});
 
     const challenger = await startRaceRunForUser(
       "challenger-1",
@@ -181,6 +207,23 @@ describe("Race to 10 transactional service", () => {
         {db, nowMs: NOW + 94_000 + solved * 4_000},
       );
     }
+    const challengerOutcome = await getRaceOutcomeForUser("challenger-1", challenger.run.runId, {
+      db,
+      nowMs: NOW + 135_000,
+    });
+    expect(challengerOutcome).toMatchObject({
+      result: "player_win",
+      newlyUnlockedAchievementIds: ["race_debut", "race_first_win", "race_clean_run"],
+      achievementCoinsAwarded: 75,
+      newCoins: 75,
+    });
+    expect((await db.doc("users/challenger-1").get()).data()).toMatchObject({
+      stats: {multiplayerGamesPlayed: 1, multiplayerWins: 1},
+    });
+    expect((await db.doc("users/creator-1").get()).data()).toMatchObject({
+      coins: 75,
+      stats: {multiplayerGamesPlayed: 2, multiplayerWins: 0, multiplayerChallengesCreated: 1},
+    });
     const firstInbox = await listRaceInboxForUser("creator-1", {limit: 20}, db);
     expect(firstInbox.items).toEqual([
       expect.objectContaining({

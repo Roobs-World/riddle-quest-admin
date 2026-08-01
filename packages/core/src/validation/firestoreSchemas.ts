@@ -62,6 +62,9 @@ export const PlayerStatsSchema = z.object({
   totalWins: z.number().int().nonnegative().default(0),
   totalGuessesInWins: z.number().int().nonnegative().default(0),
   totalHintsUsed: z.number().int().nonnegative().default(0),
+  multiplayerGamesPlayed: z.number().int().nonnegative().default(0),
+  multiplayerWins: z.number().int().nonnegative().default(0),
+  multiplayerChallengesCreated: z.number().int().nonnegative().default(0),
 });
 
 export const UnlockedAchievementSchema = z.object({
@@ -102,6 +105,9 @@ export const PlayerSchema = z.object({
     totalWins: 0,
     totalGuessesInWins: 0,
     totalHintsUsed: 0,
+    multiplayerGamesPlayed: 0,
+    multiplayerWins: 0,
+    multiplayerChallengesCreated: 0,
   })),
   progress: PlayerProgressSchema.default(() => ({
     classicIndex: 1,

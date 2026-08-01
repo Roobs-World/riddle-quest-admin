@@ -57,6 +57,9 @@ export const toBridgeProfile = (user: BridgeUser, data: Record<string, unknown> 
     totalWins: Math.max(0, Math.floor(toNumber(stats.totalWins ?? stats.wins, 0))),
     totalGuessesInWins: Math.max(0, Math.floor(toNumber(stats.totalGuessesInWins, 0))),
     totalHintsUsed: Math.max(0, Math.floor(toNumber(stats.totalHintsUsed, 0))),
+    multiplayerGamesPlayed: Math.max(0, Math.floor(toNumber(stats.multiplayerGamesPlayed, 0))),
+    multiplayerWins: Math.max(0, Math.floor(toNumber(stats.multiplayerWins, 0))),
+    multiplayerChallengesCreated: Math.max(0, Math.floor(toNumber(stats.multiplayerChallengesCreated, 0))),
     hasPurchasedApp: data?.hasPurchasedApp === true,
   };
 };

@@ -1,8 +1,14 @@
 import {
   advanceFrameBasedAngle,
+  advanceSolarOrbitAngle,
+  advanceSolarRotationAngle,
   getFrameDeltaSeconds,
+  getShootingStarProgress,
   MAX_FRAME_DELTA_SECONDS,
   REFERENCE_FRAMES_PER_SECOND,
+  SOLAR_ORBIT_SPEED_SCALE,
+  SOLAR_ROTATION_SPEED_SCALE,
+  SHOOTING_STAR_DURATION_SECONDS,
 } from "../solarMotion";
 
 describe("solar-system motion", () => {
@@ -24,5 +30,23 @@ describe("solar-system motion", () => {
   it("caps long frame gaps so returning from the background cannot jump an orbit", () => {
     expect(getFrameDeltaSeconds(2_000, 1_000)).toBe(MAX_FRAME_DELTA_SECONDS);
     expect(getFrameDeltaSeconds(900, 1_000)).toBe(0);
+  });
+
+  it("keeps decorative movement clearly visible without depending on refresh rate", () => {
+    const speed = 0.004;
+
+    expect(advanceSolarOrbitAngle(0, speed, 1)).toBeCloseTo(
+      speed * REFERENCE_FRAMES_PER_SECOND * SOLAR_ORBIT_SPEED_SCALE,
+    );
+    expect(advanceSolarRotationAngle(0, speed, 1)).toBeCloseTo(
+      speed * REFERENCE_FRAMES_PER_SECOND * SOLAR_ROTATION_SPEED_SCALE,
+    );
+  });
+
+  it("stages shooting stars with a visible flight followed by an idle interval", () => {
+    expect(getShootingStarProgress(0, 0)).toBe(0);
+    expect(getShootingStarProgress(SHOOTING_STAR_DURATION_SECONDS / 2, 0)).toBeCloseTo(0.5);
+    expect(getShootingStarProgress(SHOOTING_STAR_DURATION_SECONDS + 0.01, 0)).toBeNull();
+    expect(getShootingStarProgress(0, 2.35)).toBeNull();
   });
 });

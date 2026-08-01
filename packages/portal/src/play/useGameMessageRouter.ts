@@ -95,6 +95,22 @@ export function useGameMessageRouter({
         });
         return;
       }
+      if (message.payload.operation === "raceOutcome" || message.payload.operation === "racePublish") {
+        const achievementIds = getStringArray(data.newlyUnlockedAchievementIds);
+        if (achievementIds.length > 0) {
+          dispatch({
+            type: "showAuxiliaryFanfare",
+            fanfare: {
+              id: `${message.payload.operation}-${Date.now()}`,
+              kind: "achievement",
+              coinsAwarded: getNumber(data.achievementCoinsAwarded) ?? 0,
+              totalCoins: getNumber(data.newCoins) ?? stateRef.current.profile?.coins ?? 0,
+              achievementIds,
+            },
+          });
+        }
+        return;
+      }
       if (message.payload.operation === "completeGame") {
         const reward = getNumber(data.coinsEarned);
         const completedOutcome = stateRef.current.lastOutcome;

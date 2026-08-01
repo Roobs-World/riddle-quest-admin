@@ -29,10 +29,9 @@ import {useGameAudio, useGameMessageListener, useGameReadyReporter, useViewportF
 import {getMobileCapabilities, shouldLoadDecorativeWebGl} from "./performance/mobileCapabilities";
 import {trackScreen} from "../analytics/googleAnalytics";
 import type {ListRaceCategoriesResponse} from "@qwordly/core/race";
+import {RaceTo10Game} from "./race/RaceTo10Game";
 
 const SolarSystem = lazy(() => import("./SolarSystem").then((module) => ({default: module.SolarSystem})));
-const loadRaceTo10Game = () => import("./race/RaceTo10Game").then((module) => ({default: module.RaceTo10Game}));
-const RaceTo10Game = lazy(loadRaceTo10Game);
 
 export function GameFrameApp({
   localBridge = false,
@@ -86,20 +85,6 @@ export function GameFrameApp({
     if (!raceEnabled) setRaceOpen(false);
     else if (initialRaceChallengeId) setRaceOpen(true);
   }, [initialRaceChallengeId, raceEnabled]);
-
-  useEffect(() => {
-    if (!raceEnabled || !state.riddle) return;
-    const idleWindow = window as Window & {
-      requestIdleCallback?: (callback: () => void, options?: {timeout: number}) => number;
-      cancelIdleCallback?: (handle: number) => void;
-    };
-    if (idleWindow.requestIdleCallback) {
-      const handle = idleWindow.requestIdleCallback(() => void loadRaceTo10Game(), {timeout: 2_000});
-      return () => idleWindow.cancelIdleCallback?.(handle);
-    }
-    const timer = window.setTimeout(() => void loadRaceTo10Game(), 1_000);
-    return () => window.clearTimeout(timer);
-  }, [raceEnabled, state.riddle]);
 
   const getSavedGame = useCallback((): JestSavedGame | null => {
     const current = stateRef.current;
@@ -498,15 +483,14 @@ export function GameFrameApp({
         registrationName={registrationName}
       />
       {raceOpen && raceEnabled && (
-        <Suspense fallback={<SpinningWheel />}>
-          <RaceTo10Game
-            locale="en"
-            challengeId={initialRaceChallengeId}
-            initialCategories={prefetchedRaceCategories}
-            postToHost={postToHost}
-            onClose={() => setRaceOpen(false)}
-          />
-        </Suspense>
+        <RaceTo10Game
+          locale="en"
+          challengeId={initialRaceChallengeId}
+          initialCategories={prefetchedRaceCategories}
+          coins={state.profile?.coins ?? 0}
+          postToHost={postToHost}
+          onClose={() => setRaceOpen(false)}
+        />
       )}
       {!online && (
         <div className="offline-backdrop" role="alertdialog" aria-modal="true">

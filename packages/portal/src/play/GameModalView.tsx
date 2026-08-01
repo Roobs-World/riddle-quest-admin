@@ -321,8 +321,8 @@ function AchievementFanfare({achievementId}: {achievementId: string}) {
   return (
     <div className="achievement-unlock">
       <span className="achievement-icon large" aria-hidden="true">{achievement?.icon ?? "🏆"}</span>
-      <strong>{achievement?.name ?? achievementId}</strong>
-      {achievement?.description && <p>{achievement.description}</p>}
+      <strong>{achievement ? (achievement.nameKey ? tr(achievement.nameKey) : achievement.name) : achievementId}</strong>
+      {achievement && <p>{achievement.descriptionKey ? tr(achievement.descriptionKey) : achievement.description}</p>}
     </div>
   );
 }
