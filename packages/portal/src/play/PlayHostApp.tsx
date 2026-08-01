@@ -8,10 +8,12 @@ import {GameFrameApp} from "./GameFrameApp";
 import {dispatchLocalBridge, GAME_TO_HOST_EVENT, HOST_TO_GAME_EVENT} from "./localBridge";
 import {createHostServices, getHostConfigurationWarning, resolveHostServicesMode} from "./services";
 import type {AuthSnapshot, CompletionResult, HostServices, ProductSummary, WebGameMode} from "./types";
+import type {ListRaceCategoriesResponse} from "@qwordly/core/race";
 import {SpinningWheelLoader} from "./SpinningWheelLoader";
 import type {JestPlayerData, JestPlayerDataUpdate} from "../jest/types";
 import {restoreJestProfileWhileServerLoads} from "../jest/playerData";
 import {isRaceTo10Enabled} from "./race/raceFeatureFlag";
+import {trackEvent} from "../analytics/googleAnalytics";
 type OperationName =
   | "loadRiddle"
   | "completeGame"
@@ -28,6 +30,7 @@ type OperationName =
   | "raceHint"
   | "raceSkip"
   | "raceResume"
+  | "raceAbandon"
   | "racePublish"
   | "raceChallenge"
   | "raceOutcome"
@@ -97,6 +100,7 @@ export function PlayHostApp({
 
   const [authSnapshot, setAuthSnapshot] = useState<AuthSnapshot>({user: null, profile: null});
   const [raceAccessEnabled, setRaceAccessEnabled] = useState(false);
+  const [prefetchedRaceCategories, setPrefetchedRaceCategories] = useState<ListRaceCategoriesResponse["categories"]>([]);
   const [frameReady, setFrameReady] = useState(false);
   const [gameMode, setGameMode] = useState<WebGameMode>(initialGameMode ?? "classic");
   const [notice, setNotice] = useState<string | null>(configurationWarning);
@@ -154,11 +158,25 @@ export function PlayHostApp({
   useEffect(() => {
     let cancelled = false;
     setRaceAccessEnabled(false);
+    setPrefetchedRaceCategories([]);
     if (!raceBuildEnabled || !authSnapshot.user || locale !== "en") return;
-    void services
-      .getRaceAccess()
-      .then((access) => {
-        if (!cancelled) setRaceAccessEnabled(access.enabled);
+    void Promise.all([
+      services.getRaceAccess(),
+      import("./race/RaceTo10Game"),
+    ])
+      .then(async ([access]) => {
+        if (!access.enabled || cancelled) return;
+        if (initialRaceChallengeId) {
+          setRaceAccessEnabled(true);
+          return;
+        }
+        try {
+          const categories = await services.listRaceCategories("en");
+          if (!cancelled) setPrefetchedRaceCategories(categories.categories);
+        } catch (error) {
+          console.warn("[riddle-quest-race-prefetch] Unable to preload categories", error);
+        }
+        if (!cancelled) setRaceAccessEnabled(true);
       })
       .catch((error) => {
         console.warn("[riddle-quest-race-access] Unable to load rollout access", error);
@@ -166,7 +184,7 @@ export function PlayHostApp({
     return () => {
       cancelled = true;
     };
-  }, [authSnapshot.user, locale, raceBuildEnabled, services]);
+  }, [authSnapshot.user, initialRaceChallengeId, locale, raceBuildEnabled, services]);
 
   const postToGame = useCallback((message: HostToGameMessage) => {
     dispatchLocalBridge(HOST_TO_GAME_EVENT, createHostMessage(message));
@@ -251,6 +269,11 @@ export function PlayHostApp({
           },
         });
         postOperation(requestId, "loadRiddle", true, {riddleId: riddle.riddleId});
+        trackEvent("level_start", {
+          game_mode: riddle.gameMode,
+          level_name: riddle.index === undefined ? riddle.gameMode : `${riddle.gameMode}_${riddle.index}`,
+          level_number: riddle.index,
+        });
         setStartupComplete(true);
       } catch (error) {
         const message = getErrorMessage(error);
@@ -302,6 +325,18 @@ export function PlayHostApp({
               return completion;
             });
             postOperation(message.requestId, "completeGame", true, result);
+            trackEvent("level_end", {
+              game_mode: message.payload.gameMode,
+              success: message.payload.isCorrect,
+              attempts: message.payload.attempts,
+              level: result.newLevel,
+              xp: result.newXp,
+              win_streak: result.newWinStreak,
+            });
+            if (result.leveledUp) trackEvent("level_up", {level: result.newLevel});
+            for (const achievementId of result.newlyUnlockedAchievementIds) {
+              trackEvent("unlock_achievement", {achievement_id: achievementId});
+            }
           } catch (error) {
             postOperation(message.requestId, "completeGame", false, undefined, getErrorMessage(error));
           }
@@ -310,6 +345,12 @@ export function PlayHostApp({
           try {
             const result = await withServerActivity(() => services.requestHint(message.payload));
             postOperation(message.requestId, "hint", true, result);
+            trackEvent("spend_virtual_currency", {
+              virtual_currency_name: "coins",
+              item_name: "hint",
+              value: result?.coinsCost,
+              game_mode: message.payload.gameMode,
+            });
           } catch (error) {
             postOperation(message.requestId, "hint", false, undefined, getErrorMessage(error));
           }
@@ -328,6 +369,10 @@ export function PlayHostApp({
                 }),
               );
               postOperation(message.requestId, "skip", true, result);
+              trackEvent("riddle_skipped", {
+                game_mode: skipGameMode,
+                value: result.costDeducted,
+              });
               await loadAndPostRiddle({
                 gameMode: skipGameMode,
                 locale,
@@ -338,6 +383,12 @@ export function PlayHostApp({
 
             const result = await withServerActivity(() => services.spendCoins(message.payload));
             postOperation(message.requestId, "spendCoins", true, result);
+            trackEvent("spend_virtual_currency", {
+              virtual_currency_name: "coins",
+              item_name: message.payload.reason,
+              value: message.payload.amount,
+              game_mode: message.payload.gameMode,
+            });
           } catch (error) {
             postOperation(
               message.requestId,
@@ -403,6 +454,8 @@ export function PlayHostApp({
           runRaceOperation(message.requestId, "raceSkip", () => services.skipRaceRiddle(message.payload)),
         resumeRace: (message) =>
           runRaceOperation(message.requestId, "raceResume", () => services.resumeRace(message.payload.runId)),
+        abandonRace: (message) =>
+          runRaceOperation(message.requestId, "raceAbandon", () => services.abandonRace(message.payload)),
         publishRace: (message) =>
           runRaceOperation(message.requestId, "racePublish", () => services.publishRace(message.payload)),
         getRaceChallenge: (message) =>
@@ -415,6 +468,7 @@ export function PlayHostApp({
           runRaceOperation(message.requestId, "raceInbox", () => services.listRaceInbox(message.payload)),
         analytics: (message) => {
           console.info("[riddle-quest-web]", message.payload.eventName, message.payload.params ?? {});
+          trackEvent(message.payload.eventName, message.payload.params);
           void services
             .recordRaceAnalytics({
               eventId: message.requestId ?? createRequestId("race-analytics"),
@@ -527,6 +581,7 @@ export function PlayHostApp({
         registrationName={registrationName}
         initialRaceChallengeId={initialRaceChallengeId}
         raceFeatureEnabled={raceBuildEnabled && raceAccessEnabled}
+        prefetchedRaceCategories={prefetchedRaceCategories}
       />
       {serverInteractionActive ? (
         <SpinningWheelLoader

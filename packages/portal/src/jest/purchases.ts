@@ -6,7 +6,13 @@ import type {ProductSummary} from "../play/types";
 const isCurrency = (value: string) => /^[A-Z]{3}$/.test(value);
 
 export class JestPurchaseCoordinator {
-  constructor(private readonly platform: JestPlatformPort, private readonly backend: JestBackendPort) {}
+  private readonly platform: JestPlatformPort;
+  private readonly backend: JestBackendPort;
+
+  constructor(platform: JestPlatformPort, backend: JestBackendPort) {
+    this.platform = platform;
+    this.backend = backend;
+  }
 
   async getProducts(locale?: string): Promise<PlatformResult<ProductSummary[]>> {
     const result = await this.platform.getProducts();
@@ -26,6 +32,8 @@ export class JestPurchaseCoordinator {
             style: "currency",
             currency: product.currency,
           }).format(product.price),
+          price: product.price,
+          currency: product.currency,
           featuredBadge: local.featuredBadge,
         }];
       }),
@@ -68,6 +76,8 @@ export class JestPurchaseCoordinator {
             style: "currency",
             currency: subscription.currency,
           }).format(subscription.price),
+          price: subscription.price,
+          currency: subscription.currency,
           billingPeriod: subscription.billingPeriod,
           subscriptionStatus: activeSkus.has(subscription.sku) ? "active" as const : "inactive" as const,
           trialEligible: subscription.trialEligible,

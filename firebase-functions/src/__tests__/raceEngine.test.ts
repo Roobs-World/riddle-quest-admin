@@ -1,5 +1,6 @@
 import {RACE_HINT_PENALTY_MS, RACE_SKIP_PENALTY_MS} from "@qwordly/core/race";
 import {
+  abandonRaceRun,
   applyRaceGuess,
   applyRaceHint,
   applyRaceSkip,
@@ -41,6 +42,16 @@ const createRun = (overrides: Partial<RaceRunRecord> = {}): RaceRunRecord => ({
 });
 
 describe("Race to 10 authoritative engine", () => {
+  it("abandons an active run with a null result", () => {
+    const abandoned = abandonRaceRun(createRun(), STARTED_AT + 12_000);
+    expect(abandoned).toMatchObject({
+      status: "abandoned",
+      result: null,
+      wallFinishMs: 12_000,
+      finishedAtMs: STARTED_AT + 12_000,
+    });
+    expect(() => raceOutcome(abandoned, STARTED_AT + 13_000)).toThrow(/does not have a final outcome/i);
+  });
   it("adds a server-owned 15-second hint penalty without coins", () => {
     const result = applyRaceHint(
       createRun(),

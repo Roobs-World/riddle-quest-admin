@@ -3,6 +3,7 @@ import type {GameToHostMessage} from "@qwordly/core/bridge";
 import {createRequestId} from "../../requestIds";
 import {HOST_TO_GAME_EVENT} from "../../localBridge";
 import {tr} from "../../i18n";
+import {runWhenLayoutReady} from "../layoutReady";
 
 type MessageRouter = (message: unknown) => Promise<unknown>;
 
@@ -45,15 +46,19 @@ export function useGameReadyReporter({
         },
       });
     };
-    reportSize();
-    window.addEventListener("resize", reportSize);
-    const observer = new ResizeObserver(reportSize);
-    observer.observe(document.body);
+    let observer: ResizeObserver | null = null;
+    const stopWaitingForLayout = runWhenLayoutReady(() => {
+      reportSize();
+      window.addEventListener("resize", reportSize);
+      observer = new ResizeObserver(reportSize);
+      observer.observe(document.body);
+    });
     return () => {
+      stopWaitingForLayout();
       window.clearTimeout(readyTimer);
       window.clearInterval(readyInterval);
       window.removeEventListener("resize", reportSize);
-      observer.disconnect();
+      observer?.disconnect();
     };
   }, [postToHost, sendReady]);
 }

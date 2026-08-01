@@ -26,6 +26,7 @@ export type HostMessageHandlers = {
   requestRaceHint(message: Extract<GameToHostMessage, {type: "game:requestRaceHint"}>): void | Promise<void>;
   skipRaceRiddle(message: Extract<GameToHostMessage, {type: "game:skipRaceRiddle"}>): void | Promise<void>;
   resumeRace(message: Extract<GameToHostMessage, {type: "game:resumeRace"}>): void | Promise<void>;
+  abandonRace(message: Extract<GameToHostMessage, {type: "game:abandonRace"}>): void | Promise<void>;
   publishRace(message: Extract<GameToHostMessage, {type: "game:publishRace"}>): void | Promise<void>;
   getRaceChallenge(message: Extract<GameToHostMessage, {type: "game:getRaceChallenge"}>): void | Promise<void>;
   getRaceOutcome(message: Extract<GameToHostMessage, {type: "game:getRaceOutcome"}>): void | Promise<void>;
@@ -87,6 +88,9 @@ export const createHostMessageRouter = (handlers: HostMessageHandlers) => {
         break;
       case "game:resumeRace":
         await handlers.resumeRace(message);
+        break;
+      case "game:abandonRace":
+        await handlers.abandonRace(message);
         break;
       case "game:publishRace":
         await handlers.publishRace(message);

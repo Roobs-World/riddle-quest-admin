@@ -97,6 +97,9 @@ const createLazyFirebaseHostServices = (): HostServices => ({
   async resumeRace(runId) {
     return (await getFirebaseServices()).resumeRace(runId);
   },
+  async abandonRace(input) {
+    return (await getFirebaseServices()).abandonRace(input);
+  },
   async publishRace(input) {
     return (await getFirebaseServices()).publishRace(input);
   },

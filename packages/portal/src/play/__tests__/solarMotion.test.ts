@@ -1,19 +1,24 @@
-import {advanceAngle, getFrameDeltaSeconds, MAX_FRAME_DELTA_SECONDS} from "../solarMotion";
+import {
+  advanceFrameBasedAngle,
+  getFrameDeltaSeconds,
+  MAX_FRAME_DELTA_SECONDS,
+  REFERENCE_FRAMES_PER_SECOND,
+} from "../solarMotion";
 
 describe("solar-system motion", () => {
   it("advances by elapsed time rather than rendered frame count", () => {
     const speed = 0.02;
     const at60Hz = Array.from({length: 60}).reduce<number>(
-      (angle) => advanceAngle(angle, speed, 1 / 60),
+      (angle) => advanceFrameBasedAngle(angle, speed, 1 / 60),
       0,
     );
     const at120Hz = Array.from({length: 120}).reduce<number>(
-      (angle) => advanceAngle(angle, speed, 1 / 120),
+      (angle) => advanceFrameBasedAngle(angle, speed, 1 / 120),
       0,
     );
 
-    expect(at60Hz).toBeCloseTo(speed);
-    expect(at120Hz).toBeCloseTo(speed);
+    expect(at60Hz).toBeCloseTo(speed * REFERENCE_FRAMES_PER_SECOND);
+    expect(at120Hz).toBeCloseTo(speed * REFERENCE_FRAMES_PER_SECOND);
   });
 
   it("caps long frame gaps so returning from the background cannot jump an orbit", () => {

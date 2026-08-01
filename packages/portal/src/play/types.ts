@@ -1,6 +1,8 @@
 import type {BridgeLeaderboardEntry, BridgeProfile, BridgeRiddle, BridgeUser} from "@qwordly/core/bridge";
 import type {ProductPricing} from "@qwordly/core/pricing/catalog";
 import type {
+  AbandonRaceRunRequest,
+  AbandonRaceRunResponse,
   ListRaceCategoriesResponse,
   ListRaceInboxResponse,
   PublishRaceChallengeRequest,
@@ -29,6 +31,8 @@ export type ProductSummary = {
   description: string;
   coins: number;
   displayPrice: string;
+  price?: number;
+  currency?: string;
   featuredBadge?: string;
   billingPeriod?: "weekly" | "monthly" | "yearly";
   subscriptionStatus?: "active" | "inactive";
@@ -117,6 +121,7 @@ export type HostServices = {
   requestRaceHint(input: RequestRaceHintRequest): Promise<RequestRaceHintResponse>;
   skipRaceRiddle(input: SkipRaceRiddleRequest): Promise<SkipRaceRiddleResponse>;
   resumeRace(runId: string): Promise<RaceRunResponse>;
+  abandonRace(input: AbandonRaceRunRequest): Promise<AbandonRaceRunResponse>;
   publishRace(input: PublishRaceChallengeRequest): Promise<PublishRaceChallengeResponse>;
   getRaceChallenge(challengeId: string): Promise<RaceChallengePreview>;
   getRaceOutcome(runId: string): Promise<RaceOutcome>;

@@ -18,6 +18,7 @@ type RaceMethods = Pick<
   | "requestRaceHint"
   | "skipRaceRiddle"
   | "resumeRace"
+  | "abandonRace"
   | "publishRace"
   | "getRaceChallenge"
   | "getRaceOutcome"
@@ -331,6 +332,18 @@ export const createFakeRaceServices = (): RaceMethods => {
     },
     async resumeRace(runId) {
       return {run: syncView(getRun(runId))};
+    },
+    async abandonRace(input) {
+      const run = getRun(input.runId);
+      const cached = run.responses.get(input.requestId);
+      if (cached) return cached as Awaited<ReturnType<RaceMethods["abandonRace"]>>;
+      if (run.view.status !== "active" && run.view.status !== "abandoned") {
+        throw new Error("This race already has a final result.");
+      }
+      run.view = {...syncView(run), status: "abandoned", currentRiddle: null};
+      const response = {run: syncView(run), result: null};
+      run.responses.set(input.requestId, response);
+      return response;
     },
     async publishRace(input) {
       const run = getRun(input.runId);

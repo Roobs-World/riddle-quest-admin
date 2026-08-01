@@ -1,4 +1,6 @@
 import {
+  AbandonRaceRunRequestSchema,
+  AbandonRaceRunResponseSchema,
   ListRaceCategoriesResponseSchema,
   RACE_HINT_PENALTY_MS,
   RACE_RULES,
@@ -133,6 +135,30 @@ describe("Race to 10 contracts", () => {
       events: [correctEvent, hintEvent],
     };
     expect(RaceRunViewSchema.parse(run)).toEqual(run);
+  });
+
+  it("requires an idempotency key and a null result when abandoning a run", () => {
+    expect(AbandonRaceRunRequestSchema.safeParse({runId: "run-en-1", requestId: "quit-request-1"}).success).toBe(true);
+    expect(AbandonRaceRunRequestSchema.safeParse({runId: "run-en-1"}).success).toBe(false);
+    expect(
+      AbandonRaceRunResponseSchema.safeParse({
+        run: {
+          runId: "run-en-1",
+          role: "creator",
+          status: "abandoned",
+          categoryId: "history",
+          locale: "en",
+          rules: RACE_RULES,
+          correctCount: 0,
+          wallElapsedMs: 1_000,
+          totalPenaltyMs: 0,
+          adjustedElapsedMs: 1_000,
+          currentRiddle: null,
+          events: [],
+        },
+        result: null,
+      }).success,
+    ).toBe(true);
   });
 
   it("provides a deterministic 15-riddle English deck and a complete penalized ghost timeline", () => {

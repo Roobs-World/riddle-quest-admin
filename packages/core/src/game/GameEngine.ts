@@ -31,12 +31,11 @@ export class GameEngine {
   private attemptsUsed = 0;
   private hasUsedContinue = false;
   private gameOver = false;
+  private readonly config: GameEngineConfig;
   private readonly normalizedAnswer: string;
 
-  constructor(
-    private readonly config: GameEngineConfig,
-    answer?: string,
-  ) {
+  constructor(config: GameEngineConfig, answer?: string) {
+    this.config = config;
     this.normalizedAnswer = lowerCaseGraphemes(answer ?? config.answer).join("");
   }
 

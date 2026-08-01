@@ -325,6 +325,20 @@ export const RaceRunIdRequestSchema = z
   })
   .strict();
 
+export const AbandonRaceRunRequestSchema = z
+  .object({
+    runId: OpaqueIdSchema,
+    requestId: RequestIdSchema,
+  })
+  .strict();
+
+export const AbandonRaceRunResponseSchema = z
+  .object({
+    run: RaceRunViewSchema,
+    result: z.null(),
+  })
+  .strict();
+
 export const SubmitRaceGuessRequestSchema = z
   .object({
     runId: OpaqueIdSchema,
@@ -404,6 +418,8 @@ export type ListRaceCategoriesRequest = z.infer<typeof ListRaceCategoriesRequest
 export type ListRaceCategoriesResponse = z.infer<typeof ListRaceCategoriesResponseSchema>;
 export type StartRaceRunRequest = z.infer<typeof StartRaceRunRequestSchema>;
 export type RaceRunResponse = z.infer<typeof RaceRunResponseSchema>;
+export type AbandonRaceRunRequest = z.infer<typeof AbandonRaceRunRequestSchema>;
+export type AbandonRaceRunResponse = z.infer<typeof AbandonRaceRunResponseSchema>;
 export type SubmitRaceGuessRequest = z.infer<typeof SubmitRaceGuessRequestSchema>;
 export type SubmitRaceGuessResponse = z.infer<typeof SubmitRaceGuessResponseSchema>;
 export type RequestRaceHintRequest = z.infer<typeof RequestRaceHintRequestSchema>;

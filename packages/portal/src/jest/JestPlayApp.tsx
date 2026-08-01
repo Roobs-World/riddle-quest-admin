@@ -16,6 +16,7 @@ import {useJestNotifications} from "./notifications/useJestNotifications";
 import {useJestSharing} from "./sharing/useJestSharing";
 import {createRegistrationEntryPayload, type RegistrationSource} from "./registrationAttribution";
 import {resolveJestRuntimeMode} from "./runtimeMode";
+import {trackEvent, trackPurchase, trackScreen} from "../analytics/googleAnalytics";
 
 export function JestPlayApp() {
   const locale = useLocale();
@@ -123,6 +124,7 @@ export function JestPlayApp() {
       ...params,
     };
     console.info("[riddle-quest-funnel]", eventName, attributedParams);
+    trackEvent(eventName, attributedParams);
     platform.captureEvent(eventName, attributedParams);
   }, [platform]);
   useJestNotifications({
@@ -430,6 +432,16 @@ export function JestPlayApp() {
     async (productId: string): Promise<PurchaseResult> => {
       if (!session) throw new Error("Jest session is not ready.");
       const product = jestProducts.find((candidate) => candidate.productId === productId);
+      trackEvent("begin_checkout", {
+        value: product?.price,
+        currency: product?.currency,
+        items: [{
+          item_id: productId,
+          item_category: product?.productType ?? "consumable",
+          price: product?.price ?? 0,
+          quantity: 1,
+        }],
+      });
       if (product?.productType === "subscription") {
         if (!session.player.registered) throw new Error("Registration is required to subscribe.");
         if (product.subscriptionStatus === "active") {
@@ -453,6 +465,12 @@ export function JestPlayApp() {
             ),
         );
         trackFunnel("subscription_completed", {productId});
+        trackPurchase({
+          productId,
+          purchaseType: "subscription",
+          price: product.price,
+          currency: product.currency,
+        });
         return {success: true, productId, purchaseType: "subscription"};
       }
       const result = await purchases.purchase(productId, session.player.playerId);
@@ -460,6 +478,12 @@ export function JestPlayApp() {
         throw new Error("message" in result ? result.message : "Purchase cancelled.");
       }
       trackFunnel("purchase_completed", {productId});
+      trackPurchase({
+        productId,
+        purchaseType: "consumable",
+        price: product?.price,
+        currency: product?.currency,
+      });
       return {
         success: true,
         productId,
@@ -472,7 +496,13 @@ export function JestPlayApp() {
     [jestProducts, purchases, session, trackFunnel],
   );
 
-  if (error)
+  useEffect(() => {
+    trackScreen(error ? "startup_error" : !session ? "startup_loading" : !session.player.registered && showRegistration
+      ? "registration_prompt"
+      : "game");
+  }, [error, session, showRegistration]);
+
+  if (error) {
     return (
       <main className="route-missing">
         <div>
@@ -482,6 +512,7 @@ export function JestPlayApp() {
         </div>
       </main>
     );
+  }
   if (!session) {
     const startupMessageKey = {
       connecting: "WebPortal.STARTUP_CONNECTING",
@@ -500,6 +531,7 @@ export function JestPlayApp() {
       {!session.player.registered && showRegistration ? (
         <aside
           className="play-alert jest-registration-alert"
+          data-analytics-screen="registration_prompt"
           inert={pendingPlatformOperations > 0 || registrationPending ? true : undefined}
         >
           <strong>{tr("Profile.JEST_REGISTRATION_TITLE")}</strong>

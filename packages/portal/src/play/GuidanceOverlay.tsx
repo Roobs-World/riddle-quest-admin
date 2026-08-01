@@ -180,6 +180,7 @@ export function GuidanceOverlay({
       }, 350);
       return () => window.clearTimeout(timer);
     }
+    return undefined;
   }, [modal, onboardingStep, sequence.length, userId]);
 
   useEffect(() => {
@@ -295,6 +296,7 @@ export function GuidanceOverlay({
           role="dialog"
           aria-modal="true"
           aria-labelledby="onboarding-title"
+          data-analytics-screen={`onboarding_${onboardingStep + 1}`}
         >
           {!welcomeOnly && (
             <span className="onboarding-progress">{onboardingStep + 1}/{totalSteps}</span>
@@ -402,7 +404,7 @@ export function GuidanceOverlay({
           }}
         />
       )}
-      <section className="tooltip-card" role="dialog" aria-modal="true" style={panelStyle}>
+      <section className="tooltip-card" role="dialog" aria-modal="true" style={panelStyle} data-analytics-screen="tooltip">
         <small>{sequenceIndex + 1}/{sequence.length}</small>
         <h3>{tooltipContent.title}</h3>
         <p>{tooltipContent.body}</p>

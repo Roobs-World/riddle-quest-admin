@@ -10,6 +10,8 @@ import type {
   SpendCoinsRequest,
 } from "@qwordly/core/validation";
 import type {
+  AbandonRaceRunRequest,
+  AbandonRaceRunResponse,
   ListRaceCategoriesRequest,
   ListRaceCategoriesResponse,
   ListRaceInboxRequest,
@@ -39,6 +41,7 @@ const rawFirebaseConfig = {
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
   projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  measurementId: import.meta.env.VITE_GOOGLE_ANALYTICS_MEASUREMENT_ID,
 };
 
 const firebaseConfig = {
@@ -47,22 +50,23 @@ const firebaseConfig = {
   authDomain: rawFirebaseConfig.authDomain || "missing.firebaseapp.com",
   messagingSenderId: rawFirebaseConfig.messagingSenderId || "0",
   projectId: rawFirebaseConfig.projectId || "missing-project",
+  measurementId: rawFirebaseConfig.measurementId || undefined,
 };
 
-const app = initializeApp(firebaseConfig);
+export const firebaseApp = initializeApp(firebaseConfig);
 const appCheckSiteKey = import.meta.env.VITE_FIREBASE_APP_CHECK_SITE_KEY;
 const isHarnessRoute = typeof window !== "undefined" && new URLSearchParams(window.location.search).has("harness");
 
 if (appCheckSiteKey && !isHarnessRoute) {
-  initializeAppCheck(app, {
+  initializeAppCheck(firebaseApp, {
     provider: new ReCaptchaEnterpriseProvider(appCheckSiteKey),
     isTokenAutoRefreshEnabled: true,
   });
 }
 
-export const auth = getAuth(app);
-const firestore = getFirestore(app);
-const functions = getFunctions(app, import.meta.env.VITE_FIREBASE_FUNCTIONS_REGION || "us-central1");
+export const auth = getAuth(firebaseApp);
+const firestore = getFirestore(firebaseApp);
+const functions = getFunctions(firebaseApp, import.meta.env.VITE_FIREBASE_FUNCTIONS_REGION || "us-central1");
 
 export const getCurrentDailyChallenge = httpsCallable<object | undefined, CurrentRiddleResponse>(
   functions,
@@ -126,6 +130,7 @@ export const requestRaceHint = httpsCallable<RequestRaceHintRequest, RequestRace
 );
 export const skipRaceRiddle = httpsCallable<SkipRaceRiddleRequest, SkipRaceRiddleResponse>(functions, "skipRaceRiddle");
 export const resumeRaceRun = httpsCallable<{runId: string}, RaceRunResponse>(functions, "resumeRaceRun");
+export const abandonRaceRun = httpsCallable<AbandonRaceRunRequest, AbandonRaceRunResponse>(functions, "abandonRaceRun");
 export const publishRaceChallenge = httpsCallable<PublishRaceChallengeRequest, PublishRaceChallengeResponse>(
   functions,
   "publishRaceChallenge",

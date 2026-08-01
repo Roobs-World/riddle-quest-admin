@@ -2172,25 +2172,6 @@ p {
 .race-category-grid small {
   opacity: 0.65;
 }
-.race-inbox {
-  margin: 24px 0 0;
-  padding: 0;
-  display: grid;
-  gap: 8px;
-  list-style: none;
-}
-.race-inbox li {
-  padding: 12px 14px;
-  display: grid;
-  grid-template-columns: 1fr auto auto;
-  gap: 12px;
-  align-items: center;
-  background: #eef5f2;
-  border-radius: 12px;
-}
-.race-inbox small {
-  font-variant-numeric: tabular-nums;
-}
 .race-primary {
   color: #fff;
   background: #2e8b57;
@@ -2218,6 +2199,7 @@ p {
   font-weight: 800;
 }
 .race-screen-gameplay {
+  padding-block-start: max(8px, env(safe-area-inset-top));
   background:
     radial-gradient(circle at 18% 22%, #fff 0 1px, transparent 1.5px),
     radial-gradient(circle at 72% 36%, #fff 0 1px, transparent 1.5px),
@@ -2225,58 +2207,136 @@ p {
     linear-gradient(180deg, #02070d, #071722);
   background-size: 83px 83px, 127px 127px, 173px 173px, 100% 100%;
 }
-.race-screen-gameplay .race-topbar {
-  margin-bottom: 10px;
+.race-header-clock {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  text-align: center;
 }
-.race-screen-gameplay .race-topbar h1 {
-  font-size: clamp(1.45rem, 5vw, 2.25rem);
+.race-header-clock span {
+  color: #a8bec7;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+.race-header-clock strong {
+  color: #fff;
+  font-size: 1.15rem;
+  font-variant-numeric: tabular-nums;
+}
+.race-header-clock small {
+  padding: 3px 6px;
+  border-radius: 999px;
+  background: rgba(164, 59, 77, 0.2);
+  color: #f89bad;
+  font-size: 0.68rem;
+  font-weight: 800;
 }
 .race-gameplay {
   width: min(900px, 100%);
   margin: 0 auto;
   display: grid;
-  justify-items: center;
+  grid-template-columns: minmax(0, 1fr) 118px;
+  grid-template-areas:
+    "riddle scoreboard"
+    "keyboard scoreboard"
+    "actions scoreboard";
+  align-items: start;
+  justify-items: stretch;
   gap: 10px;
 }
 .race-scoreboard {
-  width: min(760px, 100%);
-  padding: 12px 16px;
+  grid-area: scoreboard;
+  position: sticky;
+  top: max(8px, env(safe-area-inset-top));
+  width: 100%;
+  min-width: 0;
+  padding: 12px 9px;
   display: grid;
-  grid-template-columns: minmax(135px, 0.62fr) minmax(0, 1.38fr);
-  gap: 18px;
-  align-items: center;
+  gap: 12px;
+  align-self: start;
   border: 1px solid rgba(255, 255, 255, 0.22);
   border-radius: 18px;
   background: rgba(15, 42, 51, 0.9);
   box-shadow: 0 10px 28px rgba(0, 0, 0, 0.24);
 }
-.race-clock {
+.race-rail-header {
+  width: 100%;
+  min-width: 0;
   display: grid;
   justify-items: center;
+  gap: 7px;
 }
-.race-clock strong {
-  font-variant-numeric: tabular-nums;
-  font-size: clamp(1.8rem, 6vw, 3rem);
-  color: #fff;
+.race-rail-header h1 {
+  max-width: 100%;
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.05;
+  text-align: center;
 }
-.race-clock small {
-  color: #a43b4d;
-  font-weight: 800;
+.race-rail-header .race-close {
+  width: 36px;
+  height: 36px;
+  font-size: 23px;
 }
 .race-progress {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
+  gap: 8px;
+  min-height: 190px;
 }
 .race-progress > div {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 6px 10px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
 }
-.race-progress progress {
+.race-progress > div:only-child {
   grid-column: 1 / -1;
+}
+.race-progress span {
   width: 100%;
-  accent-color: #2e8b57;
+  overflow: hidden;
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.race-progress strong {
+  font-size: 1.2rem;
+  line-height: 1;
+}
+.race-progress-track {
+  position: relative;
+  width: 18px;
+  height: 140px;
+  overflow: hidden;
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  border-radius: 999px;
+  background: repeating-linear-gradient(to top, rgba(255, 255, 255, 0.16) 0 12px, transparent 12px 14px);
+}
+.race-progress-track i {
+  position: absolute;
+  inset: auto 0 0;
+  height: var(--race-progress);
+  background: repeating-linear-gradient(to top, #49cf87 0 12px, #2e8b57 12px 14px);
+  transition: height 240ms ease-out;
+}
+.race-progress > div:nth-child(2) .race-progress-track i {
+  background: repeating-linear-gradient(to top, #f4b83f 0 12px, #c77b17 12px 14px);
+}
+.race-riddle-surface {
+  grid-area: riddle;
+}
+.race-gameplay > .keyboard {
+  grid-area: keyboard;
+}
+.race-gameplay > .race-actions {
+  grid-area: actions;
 }
 .race-riddle-surface .riddle-card {
   min-height: 190px;
@@ -2317,6 +2377,49 @@ p {
   font-size: 2rem;
   font-weight: 950;
   animation: race-penalty 1.5s both;
+}
+.race-quit-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  padding: 20px;
+  display: grid;
+  place-items: center;
+  background: rgba(1, 7, 12, 0.78);
+}
+.race-quit-dialog {
+  width: min(430px, 100%);
+  padding: clamp(22px, 6vw, 34px);
+  color: #17252c;
+  text-align: center;
+  background: #fffdf6;
+  border: 3px solid #e0a53a;
+  border-radius: 24px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5);
+}
+.race-quit-dialog h2 {
+  margin: 0 0 10px;
+  font-size: clamp(1.6rem, 7vw, 2.2rem);
+}
+.race-quit-dialog p {
+  margin: 0 0 20px;
+  font-weight: 700;
+}
+.race-quit-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.race-quit-actions button {
+  min-height: 52px;
+}
+.race-quit-confirm {
+  color: #fff;
+  background: #a43b4d;
+  border-color: #792738;
+}
+.race-quit-error {
+  color: #792738;
 }
 .race-result-grid {
   display: grid;
@@ -2385,12 +2488,96 @@ p {
   .race-result-grid {
     grid-template-columns: 1fr;
   }
+  .race-screen-gameplay {
+    padding-inline: 8px;
+  }
+  .race-header-clock {
+    gap: 1px;
+  }
+  .race-header-clock span {
+    display: none;
+  }
+  .race-header-clock strong {
+    font-size: 1rem;
+  }
+  .race-header-clock small {
+    padding: 2px 4px;
+    font-size: 0.52rem;
+  }
+  .race-gameplay {
+    grid-template-columns: minmax(0, 1fr) 76px;
+    column-gap: 6px;
+    row-gap: 7px;
+  }
   .race-scoreboard {
-    grid-template-columns: 1fr;
-    gap: 10px;
+    padding: 8px 5px;
+    gap: 7px;
+    border-radius: 14px;
+  }
+  .race-rail-header {
+    gap: 4px;
+  }
+  .race-rail-header h1 {
+    font-size: 0.68rem;
+  }
+  .race-rail-header .race-close {
+    width: 32px;
+    height: 32px;
+    font-size: 21px;
+  }
+  .race-progress span {
+    font-size: 0.55rem;
   }
   .race-progress {
-    gap: 8px;
+    gap: 3px;
+    min-height: 160px;
+  }
+  .race-progress strong {
+    font-size: 1rem;
+  }
+  .race-progress-track {
+    width: 14px;
+    height: 116px;
+  }
+  .race-riddle-surface .riddle-card {
+    min-height: 156px;
+    padding: 24px 12px 14px;
+    border-radius: 24px;
+  }
+  .race-riddle-surface .riddle-card h2 {
+    font-size: clamp(20px, 6vw, 27px);
+  }
+  .race-riddle-surface .guess-board {
+    max-width: min(250px, 100%);
+  }
+  .race-gameplay > .keyboard > div {
+    gap: 3px;
+  }
+  .race-gameplay > .keyboard .key {
+    width: min(35px, 6.2vw);
+    height: 38px;
+    font-size: 17px;
+  }
+  .race-gameplay > .keyboard .key.utility {
+    width: 42px;
+  }
+  .race-actions {
+    gap: 4px;
+    padding: 0;
+  }
+  .race-actions button {
+    min-height: 50px;
+    padding-inline: 5px;
+    gap: 3px;
+    font-size: 15px;
+  }
+  .race-actions img,
+  .race-actions .native-control-icon {
+    width: 18px;
+    height: 18px;
+  }
+  .race-actions small {
+    font-size: 10px;
   }
 }
 

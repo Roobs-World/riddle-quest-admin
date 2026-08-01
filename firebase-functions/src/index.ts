@@ -20,6 +20,7 @@ import {completeGame} from "./gameplay/completeGameCallable";
 import {dailyChallengeScheduler} from "./daily/dailyScheduler";
 import {getLeaderboard} from "./gameplay/leaderboard";
 import {
+  abandonRaceRun,
   getRaceChallenge,
   getRaceAccess,
   getRaceOutcome,
@@ -57,6 +58,7 @@ export {
   requestRaceHint,
   skipRaceRiddle,
   resumeRaceRun,
+  abandonRaceRun,
   publishRaceChallenge,
   getRaceChallenge,
   getRaceAccess,

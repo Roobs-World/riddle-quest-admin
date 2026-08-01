@@ -37,7 +37,7 @@ export type RaceRunRecord = {
   rivalryChallengeId?: string;
   role: "creator" | "challenger";
   status: RaceRunStatus;
-  result?: RaceOutcome["result"];
+  result?: RaceOutcome["result"] | null;
   categoryId: RaceCategoryId;
   locale: RaceLocale;
   rulesVersion: typeof RACE_RULES.version;
@@ -242,6 +242,22 @@ export function applyRaceSkip(input: RaceRunRecord, inputData: {riddleId: string
   appendEvent(run, "skip", nowMs, RACE_SKIP_PENALTY_MS);
   advanceRiddle(run, nowMs);
   return finalizeAfterPenalty(run, nowMs);
+}
+
+export function abandonRaceRun(input: RaceRunRecord, nowMs: number): RaceRunRecord {
+  const run = refreshRaceRun(input, nowMs);
+  if (run.status === "abandoned") return run;
+  if (run.status !== "active") {
+    throw new HttpsError("failed-precondition", "This Race to 10 run already has a final result.");
+  }
+  const clock = raceClock(run, nowMs);
+  return {
+    ...run,
+    status: "abandoned",
+    result: null,
+    wallFinishMs: clock.wallElapsedMs,
+    finishedAtMs: nowMs,
+  };
 }
 
 export function toRaceRunView(input: RaceRunRecord, nowMs: number): RaceRunView {

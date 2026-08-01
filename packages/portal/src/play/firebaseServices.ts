@@ -16,6 +16,7 @@ import {
   requestRaceHint,
   skipRaceRiddle,
   resumeRaceRun,
+  abandonRaceRun,
   publishRaceChallenge,
   getRaceChallenge,
   getRaceOutcome,
@@ -178,6 +179,9 @@ export const createFirebaseHostServices = (): HostServices => {
     },
     async resumeRace(runId) {
       return (await resumeRaceRun({runId})).data;
+    },
+    async abandonRace(input) {
+      return (await abandonRaceRun(input)).data;
     },
     async publishRace(input) {
       return (await publishRaceChallenge(input)).data;

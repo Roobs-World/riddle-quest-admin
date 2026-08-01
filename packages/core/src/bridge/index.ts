@@ -1,6 +1,7 @@
 import {z} from "zod";
 import {BRIDGE_PROTOCOL_VERSION} from "./constants";
 import {
+  AbandonRaceRunRequestSchema,
   ListRaceCategoriesRequestSchema,
   ListRaceInboxRequestSchema,
   PublishRaceChallengeRequestSchema,
@@ -39,6 +40,7 @@ const OperationSchema = z.enum([
   "raceHint",
   "raceSkip",
   "raceResume",
+  "raceAbandon",
   "racePublish",
   "raceChallenge",
   "raceOutcome",
@@ -201,6 +203,7 @@ export const GameSubmitRaceGuessMessageSchema = envelope("game:submitRaceGuess",
 export const GameRequestRaceHintMessageSchema = envelope("game:requestRaceHint", RequestRaceHintRequestSchema);
 export const GameSkipRaceRiddleMessageSchema = envelope("game:skipRaceRiddle", SkipRaceRiddleRequestSchema);
 export const GameResumeRaceMessageSchema = envelope("game:resumeRace", RaceRunIdRequestSchema);
+export const GameAbandonRaceMessageSchema = envelope("game:abandonRace", AbandonRaceRunRequestSchema);
 export const GamePublishRaceMessageSchema = envelope("game:publishRace", PublishRaceChallengeRequestSchema);
 export const GameGetRaceChallengeMessageSchema = envelope("game:getRaceChallenge", RaceChallengeIdRequestSchema);
 export const GameGetRaceOutcomeMessageSchema = envelope("game:getRaceOutcome", RaceRunIdRequestSchema);
@@ -236,6 +239,7 @@ export const GameToHostMessageSchema = z.discriminatedUnion("type", [
   GameRequestRaceHintMessageSchema,
   GameSkipRaceRiddleMessageSchema,
   GameResumeRaceMessageSchema,
+  GameAbandonRaceMessageSchema,
   GamePublishRaceMessageSchema,
   GameGetRaceChallengeMessageSchema,
   GameGetRaceOutcomeMessageSchema,

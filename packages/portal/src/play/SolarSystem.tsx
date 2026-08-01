@@ -15,7 +15,7 @@ import moonGTextureUrl from "../../../../assets/3d-web/tex_moon_g.webp";
 import moonHTextureUrl from "../../../../assets/3d-web/tex_moon_h.webp";
 import ringATextureUrl from "../../../../assets/3d-web/tex_ring_a.webp";
 import ringBTextureUrl from "../../../../assets/3d-web/tex_ring_b.webp";
-import {advanceAngle, getFrameDeltaSeconds} from "./solarMotion";
+import {advanceFrameBasedAngle, getFrameDeltaSeconds} from "./solarMotion";
 
 type MoonConfig = {
   size: number;
@@ -280,18 +280,18 @@ export function SolarSystem({paused}: {paused: boolean}) {
       lastFrameAt = frameAt;
       if (!pausedRef.current && !document.hidden) {
         animationElapsed += deltaSeconds;
-        sun.rotation.y = advanceAngle(sun.rotation.y, 0.0018, deltaSeconds);
+        sun.rotation.y = advanceFrameBasedAngle(sun.rotation.y, 0.0018, deltaSeconds);
         coronaMaterial.opacity = 0.28 + Math.sin(animationElapsed * 0.85) * 0.08;
         const coronaScale = 53 + Math.sin(animationElapsed * 0.85) * 2.5;
         corona.scale.set(coronaScale, coronaScale, 1);
-        stars.rotation.y = advanceAngle(stars.rotation.y, 0.00004, deltaSeconds);
+        stars.rotation.y = advanceFrameBasedAngle(stars.rotation.y, 0.00004, deltaSeconds);
         for (const runtime of runtimes) {
-          runtime.orbit.rotation.y = advanceAngle(
+          runtime.orbit.rotation.y = advanceFrameBasedAngle(
             runtime.orbit.rotation.y,
             runtime.config.orbitSpeed,
             deltaSeconds,
           );
-          runtime.planet.rotation.y = advanceAngle(
+          runtime.planet.rotation.y = advanceFrameBasedAngle(
             runtime.planet.rotation.y,
             runtime.config.rotationSpeed,
             deltaSeconds,

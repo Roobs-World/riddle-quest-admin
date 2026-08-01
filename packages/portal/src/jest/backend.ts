@@ -16,7 +16,11 @@ export interface JestBackendPort {
 }
 
 export class JestBackendClient implements JestBackendPort {
-  constructor(private readonly baseUrl: string) {}
+  private readonly baseUrl: string;
+
+  constructor(baseUrl: string) {
+    this.baseUrl = baseUrl;
+  }
 
   private async post<T>(path: string, body: unknown): Promise<T> {
     const response = await fetch(`${this.baseUrl.replace(/\/$/, "")}/${path}`, {

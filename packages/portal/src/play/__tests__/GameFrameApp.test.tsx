@@ -29,6 +29,6 @@ describe("GameFrameApp", () => {
   it("makes the game surface inert while a server operation is pending", () => {
     const html = renderToString(<GameFrameApp interactionBlocked />);
 
-    expect(html).toContain('<main class="game-app" inert="">');
+    expect(html).toContain('<main class="game-app" inert="" data-analytics-screen="game_classic">');
   });
 });

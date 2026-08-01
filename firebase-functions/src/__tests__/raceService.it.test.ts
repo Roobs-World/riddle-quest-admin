@@ -1,6 +1,8 @@
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
 import {
+  abandonRaceRunForUser,
+  getRaceOutcomeForUser,
   getRaceChallengePreview,
   listRaceInboxForUser,
   publishRaceChallengeForUser,
@@ -54,6 +56,27 @@ afterAll(async () => {
 });
 
 describe("Race to 10 transactional service", () => {
+  it("abandons a run idempotently with a persisted null result", async () => {
+    const started = await startRaceRunForUser(
+      "creator-1",
+      {locale: "en", categoryId: "history", requestId: "abandon-start-0001"},
+      {db, nowMs: NOW + 2_000},
+    );
+    const input = {runId: started.run.runId, requestId: "abandon-request-0001"};
+    const first = await abandonRaceRunForUser("creator-1", input, {db, nowMs: NOW + 5_000});
+    const duplicate = await abandonRaceRunForUser("creator-1", input, {db, nowMs: NOW + 6_000});
+
+    expect(duplicate).toEqual(first);
+    expect(first).toMatchObject({run: {status: "abandoned", currentRiddle: null}, result: null});
+    expect((await db.doc(`raceRuns/${started.run.runId}`).get()).data()).toMatchObject({
+      status: "abandoned",
+      result: null,
+    });
+    await expect(getRaceOutcomeForUser("creator-1", started.run.runId, {db, nowMs: NOW + 7_000})).rejects.toMatchObject(
+      {code: "failed-precondition"},
+    );
+  });
+
   it("keeps starts and penalties idempotent and preserves elapsed time on resume", async () => {
     const startInput = {locale: "en" as const, categoryId: "history" as const, requestId: "start-request-0001"};
     const first = await startRaceRunForUser("creator-1", startInput, {db, nowMs: NOW});

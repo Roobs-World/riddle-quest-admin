@@ -27,9 +27,12 @@ import {useOnlineStatus} from "./useOnlineStatus";
 import {isRaceHarness} from "./race/raceFeatureFlag";
 import {useGameAudio, useGameMessageListener, useGameReadyReporter, useViewportFit} from "./game/hooks";
 import {getMobileCapabilities, shouldLoadDecorativeWebGl} from "./performance/mobileCapabilities";
+import {trackScreen} from "../analytics/googleAnalytics";
+import type {ListRaceCategoriesResponse} from "@qwordly/core/race";
 
 const SolarSystem = lazy(() => import("./SolarSystem").then((module) => ({default: module.SolarSystem})));
-const RaceTo10Game = lazy(() => import("./race/RaceTo10Game").then((module) => ({default: module.RaceTo10Game})));
+const loadRaceTo10Game = () => import("./race/RaceTo10Game").then((module) => ({default: module.RaceTo10Game}));
+const RaceTo10Game = lazy(loadRaceTo10Game);
 
 export function GameFrameApp({
   localBridge = false,
@@ -39,6 +42,7 @@ export function GameFrameApp({
   registrationName,
   initialRaceChallengeId,
   raceFeatureEnabled = false,
+  prefetchedRaceCategories = [],
 }: {
   localBridge?: boolean;
   interactionBlocked?: boolean;
@@ -47,6 +51,7 @@ export function GameFrameApp({
   registrationName?: string;
   initialRaceChallengeId?: string;
   raceFeatureEnabled?: boolean;
+  prefetchedRaceCategories?: ListRaceCategoriesResponse["categories"];
 } = {}) {
   const [state, dispatch] = useReducer(gameSessionReducer, undefined, createInitialGameSession);
   const {shellRef, contentRef} = useViewportFit();
@@ -65,9 +70,36 @@ export function GameFrameApp({
   stateRef.current = state;
 
   useEffect(() => {
+    const screen = raceOpen
+      ? "multiplayer"
+      : guidanceActive
+        ? "guidance"
+        : state.modal
+          ? `modal_${state.modal}`
+          : state.riddle
+            ? `game_${state.gameMode}`
+            : "game_loading";
+    trackScreen(screen, {game_mode: state.gameMode});
+  }, [guidanceActive, raceOpen, state.gameMode, state.modal, state.riddle]);
+
+  useEffect(() => {
     if (!raceEnabled) setRaceOpen(false);
     else if (initialRaceChallengeId) setRaceOpen(true);
   }, [initialRaceChallengeId, raceEnabled]);
+
+  useEffect(() => {
+    if (!raceEnabled || !state.riddle) return;
+    const idleWindow = window as Window & {
+      requestIdleCallback?: (callback: () => void, options?: {timeout: number}) => number;
+      cancelIdleCallback?: (handle: number) => void;
+    };
+    if (idleWindow.requestIdleCallback) {
+      const handle = idleWindow.requestIdleCallback(() => void loadRaceTo10Game(), {timeout: 2_000});
+      return () => idleWindow.cancelIdleCallback?.(handle);
+    }
+    const timer = window.setTimeout(() => void loadRaceTo10Game(), 1_000);
+    return () => window.clearTimeout(timer);
+  }, [raceEnabled, state.riddle]);
 
   const getSavedGame = useCallback((): JestSavedGame | null => {
     const current = stateRef.current;
@@ -355,6 +387,7 @@ export function GameFrameApp({
       ref={shellRef}
       className={state.paused ? "game-app paused" : "game-app"}
       inert={interactionBlocked ? true : undefined}
+      data-analytics-screen={raceOpen ? "multiplayer" : state.modal ? `modal_${state.modal}` : `game_${state.gameMode}`}
     >
       {solarReady && (
         <Suspense fallback={null}>
@@ -469,6 +502,7 @@ export function GameFrameApp({
           <RaceTo10Game
             locale="en"
             challengeId={initialRaceChallengeId}
+            initialCategories={prefetchedRaceCategories}
             postToHost={postToHost}
             onClose={() => setRaceOpen(false)}
           />

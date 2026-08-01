@@ -1,4 +1,6 @@
 import {
+  AbandonRaceRunRequestSchema,
+  AbandonRaceRunResponseSchema,
   ListRaceCategoriesRequestSchema,
   ListRaceCategoriesResponseSchema,
   ListRaceInboxRequestSchema,
@@ -25,6 +27,7 @@ import {
 import {HttpsError, onCall, type CallableRequest} from "firebase-functions/v2/https";
 import {validateCallableRequest, validateCallableResponse} from "../validation/callableValidation";
 import {
+  abandonRaceRunForUser,
   getRaceChallengePreview,
   getRaceOutcomeForUser,
   listRaceCategoriesForLocale,
@@ -116,6 +119,13 @@ export const resumeRaceRun = onCall(jestWebCallableOptions, async (request: Call
   const input = validateCallableRequest(RaceRunIdRequestSchema, request.data, "resumeRaceRun");
   const response = await resumeRaceRunForUser(userId, input.runId);
   return validateCallableResponse(RaceRunResponseSchema, response, "resumeRaceRun");
+});
+
+export const abandonRaceRun = onCall(jestWebCallableOptions, async (request: CallableRequest<unknown>) => {
+  const userId = await requireRaceUser(request);
+  const input = validateCallableRequest(AbandonRaceRunRequestSchema, request.data, "abandonRaceRun");
+  const response = await abandonRaceRunForUser(userId, input);
+  return validateCallableResponse(AbandonRaceRunResponseSchema, response, "abandonRaceRun");
 });
 
 export const publishRaceChallenge = onCall(jestWebCallableOptions, async (request: CallableRequest<unknown>) => {

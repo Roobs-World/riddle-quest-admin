@@ -19,7 +19,8 @@ describe("bridge protocol", () => {
     });
 
     expect(message.type).toBe("game:ready");
-    expect(message.payload.protocolVersion).toBe(1);
+    if (message.type !== "game:ready") throw new Error("Expected a ready message");
+    expect(message.payload.protocolVersion).toBe(BRIDGE_PROTOCOL_VERSION);
   });
 
   it("rejects malformed game messages", () => {
@@ -50,6 +51,7 @@ describe("bridge protocol", () => {
       },
     });
 
+    if (message.type !== "host:riddleLoaded") throw new Error("Expected a riddle-loaded message");
     expect(message.payload.riddle.answerLength).toBe(5);
   });
 

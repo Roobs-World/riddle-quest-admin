@@ -665,6 +665,8 @@ describeBrowser("Jest authentication integration", () => {
     );
     expect(navigationLabels).toEqual(["Settings", "Multiplayer", "Profile"]);
     await multiplayerButton.click();
+    await creator.page.getByRole("button", {name: /^History /}).waitFor();
+    expect(await creator.page.locator('[data-testid="server-activity-loader"]').count()).toBe(0);
     await creator.page.getByRole("button", {name: /^History /}).click();
     await creator.page.locator(".race-gameplay .guess-board").waitFor({state: "visible", timeout: 10_000});
     await solveFakeRace(creator.page);
@@ -692,6 +694,36 @@ describeBrowser("Jest authentication integration", () => {
     expect(await recipient.page.locator(".race-result h2").innerText()).toMatch(/You win|Opponent wins|tie/i);
 
     await Promise.all([creator.context.close(), recipient.context.close()]);
+  });
+
+  it("confirms quitting an active race and abandons it with no result", async () => {
+    const {context, page} = await openHarness(browser, {
+      registered: true,
+      harness: "race-auth",
+      playerId: "race-quitter",
+    });
+    await enterRegisteredGame(page);
+    await page.getByRole("button", {name: /^multiplayer$/i}).click();
+    await page.getByRole("button", {name: /^History /}).click();
+    await page.locator(".race-gameplay").waitFor({state: "visible", timeout: 10_000});
+
+    await page.getByRole("button", {name: /close race to 10/i}).click();
+    const confirmation = page.getByRole("alertdialog", {name: /quit this race/i});
+    await confirmation.waitFor();
+    expect(await confirmation.innerText()).toMatch(/result for this session will be null/i);
+    await confirmation.getByRole("button", {name: /keep playing/i}).click();
+    await confirmation.waitFor({state: "detached"});
+    expect(await page.locator(".race-gameplay").isVisible()).toBe(true);
+
+    await page.getByRole("button", {name: /close race to 10/i}).click();
+    await confirmation.getByRole("button", {name: /quit race/i}).click();
+    await page.locator(".race-screen").waitFor({state: "detached", timeout: 10_000});
+    expect(await page.evaluate(() => localStorage.getItem("riddleQuest:activeRaceRun"))).toBeNull();
+
+    await page.getByRole("button", {name: /^multiplayer$/i}).click();
+    await page.getByRole("button", {name: /^History /}).waitFor();
+    expect(await page.locator(".race-gameplay").count()).toBe(0);
+    await context.close();
   });
 
   it("does not schedule race reminders for an unregistered player", async () => {

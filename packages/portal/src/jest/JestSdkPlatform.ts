@@ -44,7 +44,11 @@ const parseSavedGame = (value: unknown): JestSavedGame | null => {
 };
 
 export class JestSdkPlatform implements JestPlatformPort {
-  constructor(private readonly sdk: Sdk = (globalThis as typeof globalThis & {JestSDK?: Sdk}).JestSDK ?? {}) {}
+  private readonly sdk: Sdk;
+
+  constructor(sdk: Sdk = (globalThis as typeof globalThis & {JestSDK?: Sdk}).JestSDK ?? {}) {
+    this.sdk = sdk;
+  }
 
   async init() { try { await this.sdk.init({autoLoginReminders: false}); return success(undefined); } catch (e) { return failure(e); } }
   getPlayer() { return this.sdk.getPlayer(); }

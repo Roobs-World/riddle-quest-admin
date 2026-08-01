@@ -1,4 +1,5 @@
 import {useEffect, useRef} from "react";
+import {runWhenLayoutReady} from "../layoutReady";
 
 export function useViewportFit() {
   const shellRef = useRef<HTMLElement | null>(null);
@@ -26,15 +27,19 @@ export function useViewportFit() {
       });
     };
 
-    fitContent();
-    window.addEventListener("resize", fitContent);
-    const observer = new ResizeObserver(fitContent);
-    observer.observe(shell);
-    observer.observe(content);
+    let observer: ResizeObserver | null = null;
+    const stopWaitingForLayout = runWhenLayoutReady(() => {
+      fitContent();
+      window.addEventListener("resize", fitContent);
+      observer = new ResizeObserver(fitContent);
+      observer.observe(shell);
+      observer.observe(content);
+    });
     return () => {
+      stopWaitingForLayout();
       window.cancelAnimationFrame(animationFrame);
       window.removeEventListener("resize", fitContent);
-      observer.disconnect();
+      observer?.disconnect();
     };
   }, []);
 

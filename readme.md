@@ -90,6 +90,7 @@ The dedicated Jest build loads `packages/portal/.env.jest`. Use `packages/portal
 | `VITE_FIREBASE_AUTH_DOMAIN` | Yes | Firebase Auth domain |
 | `VITE_FIREBASE_MESSAGING_SENDER_ID` | Yes | Firebase messaging sender ID |
 | `VITE_FIREBASE_PROJECT_ID` | Yes | Firebase project ID |
+| `VITE_GOOGLE_ANALYTICS_MEASUREMENT_ID` | Production analytics | Public GA4 web stream ID from the Firebase web app configuration. When absent, analytics is disabled without blocking gameplay |
 | `VITE_FIREBASE_FUNCTIONS_REGION` | No | Functions region; defaults to `us-central1` |
 | `VITE_FIREBASE_APP_CHECK_SITE_KEY` | Production | reCAPTCHA Enterprise site key used by Firebase App Check |
 | `VITE_JEST_FUNCTIONS_BASE_URL` | Production | Base URL for the authoritative Jest HTTP endpoints |
@@ -97,6 +98,8 @@ The dedicated Jest build loads `packages/portal/.env.jest`. Use `packages/portal
 | `VITE_RACE_TO_10_ENABLED` | No | Set to `1` to expose multiplayer in the normal game; rollout rules still apply server-side |
 
 After changing browser values, rebuild the game. Vite values are compile-time settings and do not change an already uploaded artifact.
+
+Google Analytics is loaded asynchronously after the essential game bundle. It records privacy-safe button presses, screen views, progression, registration and retention events, multiplayer events, checkout starts, and completed purchases. Do not add player names, riddle answers, guesses, email addresses, Jest player IDs, or purchase tokens to event parameters. Use GA4 DebugView with a sandbox player to verify new events before release; keep event names stable and extend the centralized helpers under `packages/portal/src/analytics/` when adding new screens or progression mechanics.
 
 Never place `JEST_SHARED_SECRET`, `OPENAI_API_KEY`, a service-account key, or `JEST_GAME_UPLOAD_TOKEN` in a `VITE_` variable.
 

@@ -1,6 +1,7 @@
 import {admin} from "../shared/firebaseAdmin";
 import {createHash} from "node:crypto";
 import {
+  AbandonRaceRunResponseSchema,
   ListRaceCategoriesResponseSchema,
   ListRaceInboxResponseSchema,
   PublishRaceChallengeResponseSchema,
@@ -17,6 +18,8 @@ import {
   SkipRaceRiddleResponseSchema,
   SubmitRaceGuessResponseSchema,
   type ListRaceCategoriesResponse,
+  type AbandonRaceRunRequest,
+  type AbandonRaceRunResponse,
   type ListRaceInboxRequest,
   type ListRaceInboxResponse,
   type PublishRaceChallengeRequest,
@@ -39,6 +42,7 @@ import {logger} from "firebase-functions";
 import {HttpsError} from "firebase-functions/v2/https";
 import {validateCallableResponse} from "../validation/callableValidation";
 import {
+  abandonRaceRun,
   applyRaceGuess,
   applyRaceHint,
   applyRaceSkip,
@@ -495,7 +499,12 @@ async function mutateRaceRun<T>(
     const run = parseRunRecord(runSnapshot.data());
     if (run.userId !== userId) throw new HttpsError("permission-denied", "This race run belongs to another player.");
     const result = mutate(applyActionRateLimit(run, userId, nowMs));
-    if (run.status === "active" && result.run.status !== "active" && result.run.challengeId) {
+    if (
+      run.status === "active" &&
+      result.run.status !== "active" &&
+      result.run.status !== "abandoned" &&
+      result.run.challengeId
+    ) {
       const [challengeSnapshot, challengerSnapshot] = await Promise.all([
         transaction.get(db.collection("raceChallenges").doc(result.run.challengeId)),
         transaction.get(db.collection("users").doc(userId)),
@@ -529,6 +538,26 @@ async function mutateRaceRun<T>(
     });
     return result.response;
   });
+}
+
+export async function abandonRaceRunForUser(
+  userId: string,
+  input: AbandonRaceRunRequest,
+  options: {db?: Firestore; nowMs?: number} = {},
+): Promise<AbandonRaceRunResponse> {
+  const db = dbOrDefault(options.db);
+  const nowMs = options.nowMs ?? Date.now();
+  const response = await mutateRaceRun(userId, input.runId, input.requestId, nowMs, db, (run) => {
+    const abandoned = abandonRaceRun(run, nowMs);
+    return {
+      run: abandoned,
+      response: {
+        run: toRaceRunView(abandoned, nowMs),
+        result: null,
+      },
+    };
+  });
+  return AbandonRaceRunResponseSchema.parse(response);
 }
 
 export async function submitRaceGuessForUser(

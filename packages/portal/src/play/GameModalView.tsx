@@ -200,6 +200,7 @@ export function GameModalView({
         aria-modal="true"
         aria-labelledby="game-modal-title"
         onMouseDown={(event) => event.stopPropagation()}
+        data-analytics-screen={`modal_${state.modal}`}
       >
         {!isMandatoryOutcome && (
           <button className="modal-x" onClick={onClose} aria-label={tr("CommonAlerts.CLOSE_BUTTON")}>

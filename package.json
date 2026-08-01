@@ -7,6 +7,7 @@
     "dev": "pnpm --filter @qwordly/portal dev",
     "build": "pnpm --filter @qwordly/core build && pnpm --filter @qwordly/portal build:jest && pnpm --dir firebase-functions build",
     "build:web": "pnpm --filter @qwordly/portal build:jest",
+    "check:types": "pnpm --filter @qwordly/core check:types && pnpm --filter @qwordly/portal check:types && pnpm --dir firebase-functions check:types",
     "test": "pnpm --filter @qwordly/core test && pnpm --filter @qwordly/portal test",
     "test:web": "pnpm --filter @qwordly/portal test",
     "test:core": "pnpm --filter @qwordly/core test",

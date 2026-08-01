@@ -11,6 +11,7 @@
     "release:jest": "pnpm build:jest && pnpm upload:jest",
     "release:jest:timestamped": "node scripts/release-jest-timestamped.mjs",
     "audit:jest-artifact": "node scripts/audit-jest-artifact.mjs dist-jest",
+    "check:types": "tsc -p tsconfig.json --noEmit",
     "check:progress": "node scripts/progress-tracker.mjs --check",
     "check:locales": "node scripts/audit-locales.mjs",
     "test:game-browser:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/play/__tests__/hostedBrowser.jest-playwright.test.ts",
@@ -38,8 +39,8 @@
     "@vitejs/plugin-react": "^6.0.5",
     "jest": "30.4.2",
     "ts-jest": "29.4.12",
+    "@typescript/native": "npm:typescript@7.0.2",
     "typescript": "npm:@typescript/typescript6@6.0.2",
-    "typescript7": "npm:typescript@7.0.2",
     "vite": "^8.2.0"
   }
 }

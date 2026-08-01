@@ -3,8 +3,8 @@ import type {GameToHostMessage} from "@qwordly/core/bridge";
 import {parseHostToGameMessage} from "@qwordly/core/bridge";
 import type {Feedback, ScoredGuess} from "@qwordly/core/game";
 import {
+  AbandonRaceRunResponseSchema,
   ListRaceCategoriesResponseSchema,
-  ListRaceInboxResponseSchema,
   PublishRaceChallengeResponseSchema,
   RaceChallengePreviewSchema,
   RaceOutcomeSchema,
@@ -16,7 +16,6 @@ import {
   type RaceCategoryId,
   type RaceChallengePreview,
   type RaceOutcome,
-  type RaceInboxItem,
   type RaceAnalyticsEventName,
   type RaceLocale,
   type RaceRunView,
@@ -27,6 +26,7 @@ import {HOST_TO_GAME_EVENT} from "../localBridge";
 import {createRequestId} from "../requestIds";
 import {createRaceAnalyticsMessage} from "./raceAnalytics";
 import {getGhostCorrectCount} from "./racePlayback";
+import {trackEvent, trackScreen} from "../../analytics/googleAnalytics";
 
 type Stage = "categories" | "challenge" | "countdown" | "racing" | "result";
 type RaceOperation =
@@ -36,10 +36,12 @@ type RaceOperation =
   | "raceHint"
   | "raceSkip"
   | "raceResume"
+  | "raceAbandon"
   | "racePublish"
   | "raceChallenge"
-  | "raceOutcome"
-  | "raceInbox";
+  | "raceOutcome";
+
+const EMPTY_CATEGORIES: ListRaceCategoriesResponse["categories"] = [];
 
 const ACTIVE_RACE_KEY = "riddleQuest:activeRaceRun";
 
@@ -67,17 +69,18 @@ export function RaceTo10Game({
   challengeId,
   postToHost,
   onClose,
+  initialCategories = EMPTY_CATEGORIES,
 }: {
   locale: RaceLocale;
   challengeId?: string;
   postToHost: (message: GameToHostMessage) => void;
   onClose: () => void;
+  initialCategories?: ListRaceCategoriesResponse["categories"];
 }) {
   const [stage, setStage] = useState<Stage>(challengeId ? "challenge" : "categories");
   const [activeChallengeId, setActiveChallengeId] = useState(challengeId);
   const [rivalryChallengeId, setRivalryChallengeId] = useState<string>();
-  const [categories, setCategories] = useState<ListRaceCategoriesResponse["categories"]>([]);
-  const [inbox, setInbox] = useState<RaceInboxItem[]>([]);
+  const [categories, setCategories] = useState<ListRaceCategoriesResponse["categories"]>(initialCategories);
   const [selectedCategory, setSelectedCategory] = useState<RaceCategoryId | null>(null);
   const [challenge, setChallenge] = useState<RaceChallengePreview | null>(null);
   const [run, setRun] = useState<RaceRunView | null>(null);
@@ -88,6 +91,7 @@ export function RaceTo10Game({
   const [raceGuesses, setRaceGuesses] = useState<ScoredGuess[]>([]);
   const [feedback, setFeedback] = useState<string | null>(null);
   const [penaltyFlash, setPenaltyFlash] = useState<string | null>(null);
+  const [quitConfirmationOpen, setQuitConfirmationOpen] = useState(false);
   const [pending, setPending] = useState<RaceOperation | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [published, setPublished] = useState<ReturnType<typeof PublishRaceChallengeResponseSchema.parse> | null>(null);
@@ -96,6 +100,15 @@ export function RaceTo10Game({
   const expectedRequestRef = useRef<string | null>(null);
   const rivalryChallengeIdRef = useRef<string | undefined>(undefined);
   const dialogRef = useRef<HTMLElement | null>(null);
+  const quitDialogRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    trackScreen(`multiplayer_${stage}`);
+  }, [stage]);
+
+  useEffect(() => {
+    if (!challengeId) trackEvent("race_mode_viewed");
+  }, [challengeId]);
 
   const resetAttempt = useCallback((nextRun: RaceRunView) => {
     setCurrentLetters(createAttempt(nextRun.currentRiddle));
@@ -107,7 +120,7 @@ export function RaceTo10Game({
   const send = useCallback(
     (operation: RaceOperation, type: GameToHostMessage["type"], payload: Record<string, unknown>) => {
       const requestId = createRequestId(operation);
-      const requiresReceipt = ["raceStart", "raceGuess", "raceHint", "raceSkip", "racePublish"].includes(operation);
+      const requiresReceipt = ["raceStart", "raceGuess", "raceHint", "raceSkip", "raceAbandon", "racePublish"].includes(operation);
       expectedRequestRef.current = requestId;
       setPending(operation);
       setError(null);
@@ -124,6 +137,14 @@ export function RaceTo10Game({
       postToHost(createRaceAnalyticsMessage(eventName, params)),
     [postToHost],
   );
+
+  const requestClose = useCallback(() => {
+    if (stage === "racing" && run?.status === "active") {
+      setQuitConfirmationOpen(true);
+      return;
+    }
+    onClose();
+  }, [onClose, run?.status, stage]);
 
   const updateRun = useCallback(
     (next: RaceRunView) => {
@@ -142,12 +163,15 @@ export function RaceTo10Game({
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         event.preventDefault();
-        onClose();
+        if (quitConfirmationOpen) setQuitConfirmationOpen(false);
+        else requestClose();
         return;
       }
       if (event.key !== "Tab" || !dialogRef.current) return;
+      const activeDialog = quitConfirmationOpen ? quitDialogRef.current : dialogRef.current;
+      if (!activeDialog) return;
       const focusable = Array.from(
-        dialogRef.current.querySelectorAll<HTMLElement>(
+        activeDialog.querySelectorAll<HTMLElement>(
           'button:not([disabled]), input:not([disabled]), [href], [tabindex]:not([tabindex="-1"])',
         ),
       );
@@ -167,7 +191,13 @@ export function RaceTo10Game({
       document.removeEventListener("keydown", handleKeyDown);
       previousFocus?.focus();
     };
-  }, [onClose]);
+  }, [quitConfirmationOpen, requestClose]);
+
+  useEffect(() => {
+    if (!quitConfirmationOpen) return;
+    const frame = window.requestAnimationFrame(() => quitDialogRef.current?.focus());
+    return () => window.cancelAnimationFrame(frame);
+  }, [quitConfirmationOpen]);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -175,11 +205,11 @@ export function RaceTo10Game({
       else {
         const savedRunId = window.localStorage.getItem(ACTIVE_RACE_KEY);
         if (savedRunId) send("raceResume", "game:resumeRace", {runId: savedRunId});
-        else send("raceCategories", "game:listRaceCategories", {locale});
+        else if (initialCategories.length === 0) send("raceCategories", "game:listRaceCategories", {locale});
       }
     }, 0);
     return () => window.clearTimeout(timer);
-  }, [challengeId, locale, send]);
+  }, [analytics, challengeId, initialCategories, locale, send]);
 
   useEffect(() => {
     const handle = (event: Event) => {
@@ -205,8 +235,6 @@ export function RaceTo10Game({
       try {
         if (operation === "raceCategories") {
           setCategories(ListRaceCategoriesResponseSchema.parse(message.payload.data).categories);
-          analytics("race_mode_viewed");
-          send("raceInbox", "game:listRaceInbox", {limit: 5});
         } else if (operation === "raceChallenge") {
           const preview = RaceChallengePreviewSchema.parse(message.payload.data);
           setChallenge(preview);
@@ -219,6 +247,13 @@ export function RaceTo10Game({
           setStage("racing");
           analytics("race_started", {kind: activeChallengeId ? "challenge" : "creator"});
           if (operation === "raceStart") analytics("race_attempt_started", {categoryId: nextRun.categoryId});
+        } else if (operation === "raceAbandon") {
+          const abandoned = AbandonRaceRunResponseSchema.parse(message.payload.data);
+          if (abandoned.run.status !== "abandoned" || abandoned.result !== null) throw new Error("Invalid abandon response");
+          window.localStorage.removeItem(ACTIVE_RACE_KEY);
+          setRun(abandoned.run);
+          setQuitConfirmationOpen(false);
+          onClose();
         } else if (operation === "raceGuess") {
           const result = SubmitRaceGuessResponseSchema.parse(message.payload.data);
           const previousRiddle = run?.currentRiddle?.riddleId;
@@ -268,8 +303,6 @@ export function RaceTo10Game({
             adjustedFinishMs: result.adjustedFinishMs,
           });
           analytics("race_result_viewed", {result: result.result});
-        } else if (operation === "raceInbox") {
-          setInbox(ListRaceInboxResponseSchema.parse(message.payload.data).items);
         } else if (operation === "racePublish") {
           const publication = PublishRaceChallengeResponseSchema.parse(message.payload.data);
           setPublished(publication);
@@ -282,7 +315,7 @@ export function RaceTo10Game({
     };
     window.addEventListener(HOST_TO_GAME_EVENT, handle);
     return () => window.removeEventListener(HOST_TO_GAME_EVENT, handle);
-  }, [activeChallengeId, activeSlotIndex, analytics, currentLetters, locale, resetAttempt, run?.currentRiddle?.riddleId, send, updateRun]);
+  }, [activeChallengeId, activeSlotIndex, analytics, currentLetters, locale, onClose, resetAttempt, run?.currentRiddle?.riddleId, send, updateRun]);
 
   useEffect(() => {
     if (stage !== "countdown") return;
@@ -460,20 +493,23 @@ export function RaceTo10Game({
     <section
       ref={dialogRef}
       className={stage === "racing" ? "race-screen race-screen-gameplay" : "race-screen"}
+      data-analytics-screen={`multiplayer_${stage}`}
       role="dialog"
       aria-modal="true"
       aria-labelledby="race-title"
       tabIndex={-1}
     >
-      <header className="race-topbar">
-        <div>
-          <span className="race-kicker">{tr("RaceTo10.MODE_LABEL")}</span>
-          <h1 id="race-title">{tr("RaceTo10.TITLE")}</h1>
-        </div>
-        <button className="race-close" onClick={onClose} aria-label={tr("RaceTo10.CLOSE")}>
-          ×
-        </button>
-      </header>
+      {stage !== "racing" && (
+        <header className="race-topbar">
+          <div>
+            <span className="race-kicker">{tr("RaceTo10.MODE_LABEL")}</span>
+            <h1 id="race-title">{tr("RaceTo10.TITLE")}</h1>
+          </div>
+          <button className="race-close" onClick={requestClose} aria-label={tr("RaceTo10.CLOSE")}>
+            ×
+          </button>
+        </header>
+      )}
       {error && (
         <div className="race-error" role="alert">
           {error}
@@ -509,24 +545,6 @@ export function RaceTo10Game({
             ))}
           </div>
           {pending === "raceCategories" && <p aria-live="polite">{tr("RaceTo10.LOADING_CATEGORIES")}</p>}
-          {inbox.length > 0 && (
-            <ul className="race-inbox" aria-label={tr("RaceTo10.TITLE")}>
-              {inbox.map((item) => (
-                <li key={item.itemId}>
-                  <strong>{item.opponentDisplayName}</strong>
-                  <span>
-                    {tr(
-                      `RaceTo10.RESULT_${item.result === "win" ? "PLAYER_WIN" : item.result === "loss" ? "GHOST_WIN" : "TIE"}`,
-                    )}
-                  </span>
-                  <small>
-                    {item.adjustedDeltaMs > 0 ? "+" : ""}
-                    {formatTime(Math.abs(item.adjustedDeltaMs))}
-                  </small>
-                </li>
-              ))}
-            </ul>
-          )}
         </div>
       )}
 
@@ -561,22 +579,36 @@ export function RaceTo10Game({
       {stage === "racing" && run && (
         <div className="race-gameplay">
           <section className="race-scoreboard" aria-label={tr("RaceTo10.PROGRESS_LABEL")}>
-            <div className="race-clock" aria-live="polite">
+            <div className="race-rail-header">
+              <h1 id="race-title">{tr("RaceTo10.TITLE")}</h1>
+              <button className="race-close" onClick={requestClose} aria-label={tr("RaceTo10.CLOSE")}>
+                ×
+              </button>
+            </div>
+            <div className="race-header-clock" aria-live="polite">
               <span>{tr("RaceTo10.ADJUSTED_TIME")}</span>
               <strong>{formatTime(adjustedNow)}</strong>
-              <small>{tr("RaceTo10.PENALTIES", {time: formatTime(run.totalPenaltyMs)})}</small>
+              <small aria-label={tr("RaceTo10.PENALTIES", {time: formatTime(run.totalPenaltyMs)})}>
+                +{formatTime(run.totalPenaltyMs)}
+              </small>
             </div>
             <div className="race-progress">
-              <div>
-                <span>{tr("RaceTo10.YOU")}</span>
-                <progress max="10" value={run.correctCount} />
-                <strong>{run.correctCount}/10</strong>
+              <div style={{"--race-progress": `${run.correctCount * 10}%`} as React.CSSProperties}>
+                <span title={tr("RaceTo10.YOU")}>{tr("RaceTo10.YOU")}</span>
+                <strong>{run.correctCount}</strong>
+                <div className="race-progress-track" aria-hidden="true"><i /></div>
+                <progress className="sr-only" max="10" value={run.correctCount}>
+                  {run.correctCount}/10
+                </progress>
               </div>
               {run.opponent && (
-                <div>
-                  <span>{run.opponent.displayName}</span>
-                  <progress max="10" value={ghostCorrect} />
-                  <strong>{ghostCorrect}/10</strong>
+                <div style={{"--race-progress": `${ghostCorrect * 10}%`} as React.CSSProperties}>
+                  <span title={run.opponent.displayName}>{run.opponent.displayName}</span>
+                  <strong>{ghostCorrect}</strong>
+                  <div className="race-progress-track" aria-hidden="true"><i /></div>
+                  <progress className="sr-only" max="10" value={ghostCorrect}>
+                    {ghostCorrect}/10
+                  </progress>
                 </div>
               )}
             </div>
@@ -678,6 +710,36 @@ export function RaceTo10Game({
             </div>
           )}
           <button onClick={onClose}>{tr("RaceTo10.BACK_TO_GAME")}</button>
+        </div>
+      )}
+
+      {quitConfirmationOpen && run?.status === "active" && (
+        <div className="race-quit-backdrop">
+          <div
+            ref={quitDialogRef}
+            className="race-quit-dialog"
+            role="alertdialog"
+            aria-modal="true"
+            aria-labelledby="race-quit-title"
+            aria-describedby="race-quit-message"
+            tabIndex={-1}
+          >
+            <h2 id="race-quit-title">{tr("RaceTo10.QUIT_TITLE")}</h2>
+            <p id="race-quit-message">{tr("RaceTo10.QUIT_MESSAGE")}</p>
+            {error && <p className="race-quit-error" role="alert">{error}</p>}
+            <div className="race-quit-actions">
+              <button onClick={() => setQuitConfirmationOpen(false)} disabled={pending === "raceAbandon"}>
+                {tr("RaceTo10.KEEP_PLAYING")}
+              </button>
+              <button
+                className="race-quit-confirm"
+                onClick={() => send("raceAbandon", "game:abandonRace", {runId: run.runId})}
+                disabled={pending === "raceAbandon"}
+              >
+                {pending === "raceAbandon" ? tr("RaceTo10.QUITTING") : tr("RaceTo10.QUIT_RACE")}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </section>
