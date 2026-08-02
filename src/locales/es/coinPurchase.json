@@ -2,6 +2,7 @@
   "CoinPurchase": {
     "AWESOME_BUTTON": "Excelente",
     "COINS_SUFFIX": " monedas",
+    "TAP_CHEST_TO_COLLECT": "Toca el cofre para recoger tus monedas",
     "TITLE": "Monedas anadidas!"
   }
 }

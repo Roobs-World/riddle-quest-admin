@@ -55,6 +55,8 @@ export const RACE_ANALYTICS_FIELDS = {
   race_result_viewed: ["result"],
   race_share_dialog_opened: ["categoryId"],
   race_counter_challenge_started: ["categoryId"],
+  race_inbox_viewed: ["resultCount"],
+  race_rematch_started: ["categoryId", "result"],
 } as const;
 export const RaceAnalyticsEventNameSchema = z.enum(
   Object.keys(RACE_ANALYTICS_FIELDS) as [keyof typeof RACE_ANALYTICS_FIELDS, ...(keyof typeof RACE_ANALYTICS_FIELDS)[]],

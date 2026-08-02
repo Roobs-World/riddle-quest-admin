@@ -1,9 +1,9 @@
 export const MAX_FRAME_DELTA_SECONDS = 0.1;
 export const REFERENCE_FRAMES_PER_SECOND = 60;
-export const SOLAR_ORBIT_SPEED_SCALE = 3;
+export const SOLAR_ORBIT_SPEED_SCALE = 1.5;
 export const SOLAR_ROTATION_SPEED_SCALE = 1.5;
-export const SHOOTING_STAR_CYCLE_SECONDS = 7;
-export const SHOOTING_STAR_DURATION_SECONDS = 1.35;
+export const SHOOTING_STAR_CYCLE_SECONDS = 24;
+export const SHOOTING_STAR_DURATION_SECONDS = 1.15;
 
 export const getFrameDeltaSeconds = (frameAt: number, previousFrameAt: number) =>
   Math.min(Math.max(0, (frameAt - previousFrameAt) / 1000), MAX_FRAME_DELTA_SECONDS);

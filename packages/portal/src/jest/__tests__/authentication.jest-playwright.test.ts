@@ -33,6 +33,7 @@ type AuthHarnessState = {
     ctaText?: string;
     entryPayload?: Record<string, string>;
   }>;
+  notificationRemovals: string[];
   referralShares: Array<{
     reference?: string;
     shareTitle?: string;
@@ -56,6 +57,7 @@ const installJestSdkHarness = async (page: Page, scenario = "success") => {
       preferenceWrites: [],
       profileReads: 0,
       notificationSchedules: [],
+      notificationRemovals: [],
       referralShares: [],
     };
     const once = (key: string) => {
@@ -161,6 +163,7 @@ const installJestSdkHarness = async (page: Page, scenario = "success") => {
       getEntryPayload: () => ({
         ...(params.get("customName") ? {customName: params.get("customName"), campaign: "jest_onboarding"} : {}),
         ...(params.get("challengeId") ? {challengeId: params.get("challengeId")} : {}),
+        ...(params.get("challengeDestination") ? {challengeDestination: params.get("challengeDestination")} : {}),
       }),
       social: {
         getProfile: async () => {
@@ -176,8 +179,9 @@ const installJestSdkHarness = async (page: Page, scenario = "success") => {
           state.calls.push("sdk.notifications.scheduleNotification");
           state.notificationSchedules.push(structuredClone(input));
         },
-        unscheduleNotification: async () => {
+        unscheduleNotification: async ({identifier}: {identifier: string}) => {
           state.calls.push("sdk.notifications.unscheduleNotification");
+          state.notificationRemovals.push(identifier);
         },
       },
       referrals: {
@@ -264,6 +268,7 @@ const openHarness = async (
     scenario?: string;
     customName?: string;
     challengeId?: string;
+    challengeDestination?: string;
     harness?: "jest-auth" | "race-auth";
     playerId?: string;
     sharedRace?: boolean;
@@ -277,6 +282,7 @@ const openHarness = async (
   if (options.registered) query.set("registered", "1");
   if (options.customName) query.set("customName", options.customName);
   if (options.challengeId) query.set("challengeId", options.challengeId);
+  if (options.challengeDestination) query.set("challengeDestination", options.challengeDestination);
   if (options.playerId) query.set("playerId", options.playerId);
   if (options.sharedRace) query.set("sharedRace", "1");
   await page.goto(`${baseUrl}/?${query}`);
@@ -617,18 +623,19 @@ describeBrowser("Jest authentication integration", () => {
       const state = (window as typeof window & {__RIDDLE_QUEST_JEST_AUTH_TEST__: AuthHarnessState})
         .__RIDDLE_QUEST_JEST_AUTH_TEST__;
       return (
-        state.notificationSchedules.some((item) => item.identifier === "race_to_10_return_v1") &&
+        state.notificationSchedules.some((item) => item.identifier === "race_to_10_results_v1") &&
         state.referralShares.some((item) => item.reference === "riddle_quest_race_to_10_v1")
       );
     });
     const state = await getHarnessState(page);
     expect(state.notificationSchedules).toContainEqual(
       expect.objectContaining({
-        identifier: "race_to_10_return_v1",
+        identifier: "race_to_10_results_v1",
         scheduledInDays: 1,
         entryPayload: expect.objectContaining({
           challengeId: "race-challenge-42",
-          reference: "race_to_10_return_d1_v1",
+          challengeDestination: "inbox",
+          reference: "race_to_10_results_d1_v1",
         }),
       }),
     );
@@ -643,6 +650,25 @@ describeBrowser("Jest authentication integration", () => {
         }),
       }),
     );
+    await context.close();
+  });
+
+  it("opens the authoritative race results inbox from a messaging deep link", async () => {
+    const {context, page} = await openHarness(browser, {
+      registered: true,
+      harness: "race-auth",
+      playerId: "race-results-player",
+      challengeDestination: "inbox",
+    });
+
+    await page.getByRole("heading", {name: /challenge results/i}).waitFor({timeout: 15_000});
+    expect(await page.getByText("Nova", {exact: true}).isVisible()).toBe(true);
+    expect(await page.getByText(/time difference: 0:03\.5/i).isVisible()).toBe(true);
+    const state = await getHarnessState(page);
+    expect(state.notificationRemovals).toContain("race_to_10_results_v1");
+    expect(state.calls).toContain("sdk.notifications.unscheduleNotification");
+    await page.getByRole("button", {name: /^rematch$/i}).click();
+    await page.locator(".race-gameplay").waitFor({state: "visible", timeout: 10_000});
     await context.close();
   });
 
@@ -664,11 +690,29 @@ describeBrowser("Jest authentication integration", () => {
       buttons.map((button) => button.getAttribute("aria-label")),
     );
     expect(navigationLabels).toEqual(["Settings", "Multiplayer", "Profile"]);
+    await creator.page.setViewportSize({width: 390, height: 667});
     await multiplayerButton.click();
     await creator.page.getByRole("button", {name: /^History /}).waitFor();
     expect(await creator.page.locator('[data-testid="server-activity-loader"]').count()).toBe(0);
     await creator.page.getByRole("button", {name: /^History /}).click();
+    const countdownRail = creator.page.locator(".race-countdown-rail");
+    await countdownRail.waitFor();
+    expect(await creator.page.locator(".race-topbar").count()).toBe(0);
+    expect(await countdownRail.getByText(/recorded head-to-head/i).isVisible()).toBe(true);
+    expect(await countdownRail.locator(".race-coin-balance").isVisible()).toBe(true);
+    expect(await countdownRail.getByRole("button", {name: /close race to 10/i}).isVisible()).toBe(true);
+    const countdownCenterOffset = await creator.page.locator(".race-countdown > span").evaluate((element) => {
+      const rect = element.getBoundingClientRect();
+      return Math.abs(rect.left + rect.width / 2 - innerWidth / 2);
+    });
+    expect(countdownCenterOffset).toBeLessThanOrEqual(0.5);
     await creator.page.locator(".race-gameplay .guess-board").waitFor({state: "visible", timeout: 10_000});
+    await creator.page.waitForFunction(() =>
+      Boolean(document.querySelector(".race-gameplay-viewport")?.getAttribute("data-viewport-scale")),
+    );
+    expect(
+      await creator.page.locator(".race-screen").evaluate((screen) => screen.scrollHeight <= screen.clientHeight + 1),
+    ).toBe(true);
     await solveFakeRace(creator.page);
     await creator.page.getByRole("button", {name: /create challenge/i}).click();
     await creator.page.getByRole("button", {name: /challenge a friend/i}).waitFor({timeout: 10_000});

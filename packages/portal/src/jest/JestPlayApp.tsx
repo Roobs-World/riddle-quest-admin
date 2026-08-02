@@ -557,6 +557,7 @@ export function JestPlayApp() {
       <PlayHostApp
         initialGameMode={session.entryIntent.gameMode}
         initialRaceChallengeId={session.entryIntent.challengeId}
+        initialRaceInbox={session.entryIntent.challengeDestination === "inbox"}
         registrationName={session.entryIntent.customName}
         onPlayable={() => markJestPlayable(platform)}
         onAuthoritativeComplete={handleAuthoritativeComplete}

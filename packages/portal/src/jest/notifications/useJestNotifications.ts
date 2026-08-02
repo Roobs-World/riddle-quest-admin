@@ -108,24 +108,33 @@ export function useJestNotifications({
       const detail = (event as CustomEvent<{challengeId?: string}>).detail;
       if (!detail?.challengeId) return;
       const challengeId = detail.challengeId;
-      void withPlatformActivity(() => platform.scheduleNotification({
-        identifier: "race_to_10_return_v1",
-        scheduledInDays: 1,
-        title: copy.raceTitle,
-        body: copy.raceBody,
-        ctaText: copy.raceCta,
-        priority: "high",
-        entryPayload: {
-          campaign: "race_to_10_return_v1",
-          reference: "race_to_10_return_d1_v1",
-          challengeId,
-          challengeDestination: challengeId,
-          notification_template: "race_to_10_return_v1",
-          notification_offset: "D1",
-        },
-      })).then((result) => trackFunnel("race_return_reminder_scheduled", {status: result.status}));
+      void withPlatformActivity(async () => {
+        await platform.removeNotification("race_to_10_return_v1");
+        return platform.scheduleNotification({
+          identifier: "race_to_10_results_v1",
+          scheduledInDays: 1,
+          title: copy.raceTitle,
+          body: copy.raceBody,
+          ctaText: copy.raceCta,
+          priority: "high",
+          entryPayload: {
+            campaign: "race_to_10_results_v1",
+            reference: "race_to_10_results_d1_v1",
+            challengeDestination: "inbox",
+            challengeId,
+            notification_template: "race_to_10_results_v1",
+            notification_offset: "D1",
+          },
+        });
+      }).then((result) => trackFunnel("race_results_reminder_scheduled", {status: result.status}));
     };
     window.addEventListener("riddle-quest:race-challenge-published", scheduleRaceReturn);
     return () => window.removeEventListener("riddle-quest:race-challenge-published", scheduleRaceReturn);
   }, [copy, platform, session?.player.registered, trackFunnel, withPlatformActivity]);
+
+  useEffect(() => {
+    if (!session?.player.registered || session.entryIntent.challengeDestination !== "inbox") return;
+    void withPlatformActivity(() => platform.removeNotification("race_to_10_results_v1"))
+      .then((result) => trackFunnel("race_results_reminder_opened", {status: result.status}));
+  }, [platform, session?.entryIntent.challengeDestination, session?.player.registered, trackFunnel, withPlatformActivity]);
 }

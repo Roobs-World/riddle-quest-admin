@@ -43,8 +43,8 @@ else {
         weeklyBody: game.WebPortal.NOTIFICATION_WEEKLY_BODY,
         weeklyCta: game.WebPortal.NOTIFICATION_WEEKLY_CTA,
         raceTitle: race.RaceTo10.TITLE,
-        raceBody: race.RaceTo10.CHALLENGE_READY,
-        raceCta: race.RaceTo10.ACCEPT_CHALLENGE,
+        raceBody: race.RaceTo10.RESULTS_NOTIFICATION_BODY,
+        raceCta: race.RaceTo10.CHECK_RESULTS,
       };
       const bodyFields = new Set(["dailyBody", "streakBody", "weeklyBody", "raceBody"]);
       const ctaFields = new Set(["dailyCta", "streakCta", "weeklyCta", "raceCta"]);

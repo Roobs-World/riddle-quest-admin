@@ -8,16 +8,21 @@ import {gameSessionReducer, type GameSessionState} from "./gameSession";
 
 const KEYBOARD_ROWS = ["QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM"];
 
-export function GameHeader({state, onOpenShop}: {state: GameSessionState; onOpenShop: () => void}) {
+export function GameHeader({state, displayedCoins, onOpenShop}: {
+  state: GameSessionState;
+  displayedCoins?: number;
+  onOpenShop: () => void;
+}) {
+  const coinBalance = displayedCoins ?? state.profile?.coins ?? 0;
   return (
     <header className="game-header">
       <img className="game-logo" src={mascotUrl} alt={tr("Accessibility.LOGO_BUTTON")} />
       <div className="game-mode-label">
         {state.gameMode === "challenge" ? tr("WebPortal.PLAY_DAILY") : tr("WebPortal.PLAY_CLASSIC")}
       </div>
-      <button type="button" className="coin-pill" data-tooltip="gameCoins"
+      <button type="button" className="coin-pill" data-tooltip="gameCoins" data-coin-meter
         aria-label={tr("Navigation.BUY_COINS_BUTTON")} onClick={onOpenShop}>
-        <strong>{(state.profile?.coins ?? 0).toLocaleString()}</strong>
+        <strong>{coinBalance.toLocaleString()}</strong>
         <img src={coinUrl} alt="" />
       </button>
     </header>

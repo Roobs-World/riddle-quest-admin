@@ -2,6 +2,7 @@
   "CoinPurchase": {
     "AWESOME_BUTTON": "Toll",
     "COINS_SUFFIX": " Muenzen",
+    "TAP_CHEST_TO_COLLECT": "Tippe auf die Truhe, um deine Münzen einzusammeln",
     "TITLE": "Muenzen hinzugefuegt!"
   }
 }

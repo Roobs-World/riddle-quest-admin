@@ -409,7 +409,18 @@ export const createFakeRaceServices = (): RaceMethods => {
       };
     },
     async listRaceInbox() {
-      return {items: []};
+      return {
+        items: [{
+          itemId: "fake-race-result-1",
+          challengeId: "fake-challenge-1",
+          opponentDisplayName: "Nova",
+          categoryId: "history" as const,
+          result: "win" as const,
+          adjustedDeltaMs: 3_500,
+          read: false,
+          createdAtMs: Date.now(),
+        }],
+      };
     },
   };
 };

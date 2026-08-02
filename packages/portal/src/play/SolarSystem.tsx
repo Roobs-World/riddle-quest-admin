@@ -1,6 +1,8 @@
 import {useEffect, useRef} from "react";
 import * as THREE from "three/src/Three.js";
 import sunTextureUrl from "../../../../assets/3d-web/tex_sun_spots_02.webp";
+// Corona plate derived from NASA's 2017 total solar eclipse imagery.
+import sunCoronaTextureUrl from "../../../../assets/3d-web/tex_sun_corona-v2.webp";
 import mercuryTextureUrl from "../../../../assets/3d-web/tex_planet_a.webp";
 import venusTextureUrl from "../../../../assets/3d-web/tex_planet_d.webp";
 import earthTextureUrl from "../../../../assets/3d-web/tex_planet_v.webp";
@@ -141,10 +143,23 @@ type PlanetRuntime = {
 };
 
 const SHOOTING_STAR_CONFIG = [
-  {phaseOffsetSeconds: 0, startY: 105, depth: 70, scale: 86},
-  {phaseOffsetSeconds: 2.35, startY: 72, depth: 115, scale: 72},
-  {phaseOffsetSeconds: 4.7, startY: 125, depth: 35, scale: 96},
+  {phaseOffsetSeconds: 0, startX: -185, startY: 105, endX: 185, endY: 33, scale: 86},
+  {phaseOffsetSeconds: 4, startX: 185, startY: 118, endX: -185, endY: 38, scale: 78},
+  {phaseOffsetSeconds: 8, startX: -135, startY: 145, endX: 70, endY: -18, scale: 88},
+  {phaseOffsetSeconds: 12, startX: 155, startY: -18, endX: -82, endY: 142, scale: 82},
+  {phaseOffsetSeconds: 16, startX: -160, startY: -12, endX: 112, endY: 140, scale: 92},
+  {phaseOffsetSeconds: 20, startX: 170, startY: 142, endX: -115, endY: -16, scale: 84},
 ] as const;
+
+const SHOOTING_STAR_BACKGROUND_DEPTH =
+  -Math.max(
+    ...SOLAR_SYSTEM_CONFIG.map((planet) =>
+      Math.max(
+        planet.distance + planet.size,
+        ...planet.moons.map((moon) => planet.distance + moon.distance + moon.size),
+      ),
+    ),
+  ) - 24;
 
 export function SolarSystem({paused}: {paused: boolean}) {
   const mountRef = useRef<HTMLDivElement>(null);
@@ -191,31 +206,54 @@ export function SolarSystem({paused}: {paused: boolean}) {
     sun.position.set(0, 30, 0);
     scene.add(sun);
 
-    const coronaCanvas = document.createElement("canvas");
-    coronaCanvas.width = 128;
-    coronaCanvas.height = 128;
-    const coronaContext = coronaCanvas.getContext("2d");
-    if (coronaContext) {
-      const gradient = coronaContext.createRadialGradient(64, 64, 8, 64, 64, 64);
-      gradient.addColorStop(0, "rgba(255, 237, 169, 0.95)");
-      gradient.addColorStop(0.3, "rgba(255, 174, 63, 0.6)");
-      gradient.addColorStop(0.68, "rgba(255, 120, 35, 0.18)");
-      gradient.addColorStop(1, "rgba(255, 120, 35, 0)");
-      coronaContext.fillStyle = gradient;
-      coronaContext.fillRect(0, 0, 128, 128);
-    }
-    const coronaTexture = new THREE.CanvasTexture(coronaCanvas);
-    const coronaMaterial = new THREE.SpriteMaterial({
-      map: coronaTexture,
-      color: 0xff9d32,
-      opacity: 0.5,
+    const sunLimbMaterial = new THREE.ShaderMaterial({
+      uniforms: {glowColour: {value: new THREE.Color(0xffd45a)}},
+      vertexShader: `
+        varying float limbIntensity;
+        void main() {
+          vec4 viewPosition = modelViewMatrix * vec4(position, 1.0);
+          vec3 viewNormal = normalize(normalMatrix * normal);
+          vec3 viewDirection = normalize(-viewPosition.xyz);
+          limbIntensity = pow(1.0 - max(dot(viewNormal, viewDirection), 0.0), 2.1);
+          gl_Position = projectionMatrix * viewPosition;
+        }
+      `,
+      fragmentShader: `
+        uniform vec3 glowColour;
+        varying float limbIntensity;
+        void main() {
+          float glow = smoothstep(0.12, 1.0, limbIntensity) * 0.82;
+          gl_FragColor = vec4(glowColour * glow, glow);
+        }
+      `,
       transparent: true,
       blending: THREE.AdditiveBlending,
+      depthTest: true,
+      depthWrite: false,
+    });
+    const sunLimb = new THREE.Mesh(new THREE.SphereGeometry(13, 40, 28), sunLimbMaterial);
+    sunLimb.position.copy(sun.position);
+    sunLimb.renderOrder = 1;
+    scene.add(sunLimb);
+
+    const coronaTexture = loadTexture(sunCoronaTextureUrl);
+    const coronaMaterial = new THREE.SpriteMaterial({
+      map: coronaTexture,
+      color: 0xffcf4a,
+      opacity: 0.92,
+      transparent: true,
+      blending: THREE.AdditiveBlending,
+      depthTest: true,
       depthWrite: false,
     });
     const corona = new THREE.Sprite(coronaMaterial);
-    corona.scale.set(54, 54, 1);
+    // Pull the photographed limb more than two world units underneath the
+    // sun's silhouette. That overlap prevents depth-buffer antialiasing from
+    // exposing a dark seam while the corona remains behind orbiting bodies.
+    corona.scale.set(80, 80, 1);
     corona.position.copy(sun.position);
+    corona.position.z -= 0.5;
+    corona.renderOrder = 0;
     scene.add(corona);
 
     const starPositions = new Float32Array(900 * 3);
@@ -254,15 +292,16 @@ export function SolarSystem({paused}: {paused: boolean}) {
     const shootingStarTexture = new THREE.CanvasTexture(shootingStarCanvas);
     shootingStarTexture.colorSpace = THREE.SRGBColorSpace;
     const shootingStars = SHOOTING_STAR_CONFIG.map((config) => {
+      const rotation = Math.atan2(config.endY - config.startY, config.endX - config.startX);
       const material = new THREE.SpriteMaterial({
         map: shootingStarTexture,
         color: 0xe9f7ff,
         opacity: 0,
         transparent: true,
         blending: THREE.AdditiveBlending,
-        depthTest: false,
+        depthTest: true,
         depthWrite: false,
-        rotation: -0.2,
+        rotation,
       });
       const sprite = new THREE.Sprite(material);
       sprite.scale.set(config.scale, 5, 1);
@@ -314,6 +353,7 @@ export function SolarSystem({paused}: {paused: boolean}) {
 
     let renderingReady = false;
     let observer: ResizeObserver | null = null;
+    const drawingBufferSize = new THREE.Vector2();
     const resize = ({width, height}: DOMRectReadOnly) => {
       // Keep the WebGL viewport within the integer-sized drawing buffer. Fractional
       // CSS pixels can otherwise make Firefox round the viewport up while the
@@ -321,7 +361,14 @@ export function SolarSystem({paused}: {paused: boolean}) {
       const renderWidth = Math.max(1, Math.floor(width));
       const renderHeight = Math.max(1, Math.floor(height));
       renderer.setSize(renderWidth, renderHeight, false);
-      renderer.setViewport(0, 0, renderWidth, renderHeight);
+      renderer.getDrawingBufferSize(drawingBufferSize);
+      const pixelRatio = renderer.getPixelRatio();
+      renderer.setViewport(
+        0,
+        0,
+        drawingBufferSize.x / pixelRatio,
+        drawingBufferSize.y / pixelRatio,
+      );
       camera.aspect = renderWidth / renderHeight;
       camera.updateProjectionMatrix();
       renderingReady = width > 0 && height > 0;
@@ -344,14 +391,15 @@ export function SolarSystem({paused}: {paused: boolean}) {
       if (renderingReady && !pausedRef.current && !document.hidden) {
         animationElapsed += deltaSeconds;
         sun.rotation.y = advanceSolarRotationAngle(sun.rotation.y, 0.0018, deltaSeconds);
-        coronaMaterial.opacity = 0.28 + Math.sin(animationElapsed * 0.85) * 0.08;
-        const coronaScale = 53 + Math.sin(animationElapsed * 0.85) * 2.5;
-        corona.scale.set(coronaScale, coronaScale, 1);
         for (const {config, material, sprite} of shootingStars) {
           const progress = getShootingStarProgress(animationElapsed, config.phaseOffsetSeconds);
           sprite.visible = progress !== null;
           if (progress === null) continue;
-          sprite.position.set(-185 + progress * 370, config.startY - progress * 72, config.depth);
+          sprite.position.set(
+            config.startX + (config.endX - config.startX) * progress,
+            config.startY + (config.endY - config.startY) * progress,
+            SHOOTING_STAR_BACKGROUND_DEPTH,
+          );
           material.opacity = Math.sin(progress * Math.PI) * 0.92;
         }
         for (const runtime of runtimes) {

@@ -60,6 +60,7 @@ export function PlayHostApp({
   onPlayerDataChange,
   registrationName,
   initialRaceChallengeId,
+  initialRaceInbox = false,
 }: {
   initialGameMode?: WebGameMode;
   onPlayable?: () => void;
@@ -75,6 +76,7 @@ export function PlayHostApp({
   onPlayerDataChange?: (update: JestPlayerDataUpdate) => void;
   registrationName?: string;
   initialRaceChallengeId?: string;
+  initialRaceInbox?: boolean;
 } = {}) {
   const locale = useLocale();
   const sessionIdRef = useRef(createRequestId("session"));
@@ -99,7 +101,6 @@ export function PlayHostApp({
   );
 
   const [authSnapshot, setAuthSnapshot] = useState<AuthSnapshot>({user: null, profile: null});
-  const [raceAccessEnabled, setRaceAccessEnabled] = useState(false);
   const [prefetchedRaceCategories, setPrefetchedRaceCategories] = useState<ListRaceCategoriesResponse["categories"]>([]);
   const [frameReady, setFrameReady] = useState(false);
   const [gameMode, setGameMode] = useState<WebGameMode>(initialGameMode ?? "classic");
@@ -157,23 +158,18 @@ export function PlayHostApp({
 
   useEffect(() => {
     let cancelled = false;
-    setRaceAccessEnabled(false);
     setPrefetchedRaceCategories([]);
     if (!raceBuildEnabled || !authSnapshot.user || locale !== "en") return;
     void services.getRaceAccess()
       .then(async (access) => {
         if (!access.enabled || cancelled) return;
-        if (initialRaceChallengeId) {
-          setRaceAccessEnabled(true);
-          return;
-        }
+        if (initialRaceChallengeId) return;
         try {
           const categories = await services.listRaceCategories("en");
           if (!cancelled) setPrefetchedRaceCategories(categories.categories);
         } catch (error) {
           console.warn("[riddle-quest-race-prefetch] Unable to preload categories", error);
         }
-        if (!cancelled) setRaceAccessEnabled(true);
       })
       .catch((error) => {
         console.warn("[riddle-quest-race-access] Unable to load rollout access", error);
@@ -619,7 +615,8 @@ export function PlayHostApp({
         onSaveGame={saveActiveGame}
         registrationName={registrationName}
         initialRaceChallengeId={initialRaceChallengeId}
-        raceFeatureEnabled={raceBuildEnabled && raceAccessEnabled}
+        initialRaceInbox={initialRaceInbox}
+        raceFeatureEnabled={raceBuildEnabled}
         prefetchedRaceCategories={prefetchedRaceCategories}
       />
       {serverInteractionActive ? (

@@ -93,6 +93,6 @@ export const MOCK_NOTIFICATION_COPY: NotificationCopy = {
   weeklyBody: "Level {level} solver: a fresh Daily Cosmic Riddle is ready. Claim {coins}+ coins.",
   weeklyCta: "Claim coins",
   raceTitle: "Race to 10",
-  raceBody: "Your recorded race is ready to share.",
-  raceCta: "Accept challenge",
+  raceBody: "A friend may have finished your challenge. Check the result and send a rematch.",
+  raceCta: "Check results",
 };

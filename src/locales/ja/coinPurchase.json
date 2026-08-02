@@ -2,6 +2,7 @@
   "CoinPurchase": {
     "AWESOME_BUTTON": "すごい",
     "COINS_SUFFIX": "コイン",
+    "TAP_CHEST_TO_COLLECT": "宝箱をタップしてコインを受け取ろう",
     "TITLE": "コイン追加！"
   }
 }

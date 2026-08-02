@@ -103,6 +103,9 @@ describeBrowser("standalone Jest browser game", () => {
             viewport[1] + viewport[3] <= context.drawingBufferHeight;
         }),
       ).toBe(true);
+      await page.waitForFunction(() =>
+        performance.getEntriesByType("resource").some((entry) => entry.name.includes("tex_sun_corona")),
+      );
       const solarFrameBefore = await page.locator(".solar-system canvas").screenshot();
       await page.waitForTimeout(500);
       const solarFrameAfter = await page.locator(".solar-system canvas").screenshot();
@@ -147,6 +150,48 @@ describeBrowser("standalone Jest browser game", () => {
       });
       expect(penaltyCenterOffset.horizontal).toBeLessThanOrEqual(0.5);
       expect(penaltyCenterOffset.vertical).toBeLessThanOrEqual(0.5);
+
+      await page.evaluate(() => {
+        window.dispatchEvent(new CustomEvent("riddle-quest:host-to-game", {
+          detail: {
+            type: "host:operationResult",
+            requestId: "race-outcome-achievement-test",
+            payload: {
+              operation: "raceOutcome",
+              ok: true,
+              data: {
+                newlyUnlockedAchievementIds: ["race_debut"],
+                achievementCoinsAwarded: 25,
+                newCoins: 205,
+              },
+            },
+          },
+        }));
+      });
+      const multiplayerAchievementPopup = page.locator(".modal-reward");
+      await multiplayerAchievementPopup.getByRole("heading", {name: /achievement unlocked/i}).waitFor();
+      expect(await multiplayerAchievementPopup.getByText("Race Debut", {exact: true}).isVisible()).toBe(true);
+      const [popupZIndex, raceZIndex] = await Promise.all([
+        page.locator(".game-modal-backdrop").evaluate((element) => Number(getComputedStyle(element).zIndex)),
+        page.locator(".race-screen").evaluate((element) => Number(getComputedStyle(element).zIndex)),
+      ]);
+      expect(popupZIndex).toBeGreaterThan(raceZIndex);
+      await multiplayerAchievementPopup.getByRole("button", {name: /^next$/i}).click();
+      const multiplayerChest = multiplayerAchievementPopup.getByRole("button", {name: /tap the chest/i});
+      await multiplayerChest.waitFor();
+      const multiplayerContinue = multiplayerAchievementPopup.getByRole("button", {name: /awesome/i});
+      expect(await multiplayerContinue.isDisabled()).toBe(true);
+      expect(await multiplayerChest.evaluate((element) => getComputedStyle(element).animationName)).toContain("reward-chest-wobble");
+      expect(await multiplayerChest.locator("img").getAttribute("src")).toMatch(/chest-closed/);
+      await multiplayerChest.click();
+      expect(await multiplayerChest.locator("img").getAttribute("src")).toMatch(/chest-open/);
+      expect(await page.locator(".reward-coin-particle").count()).toBeGreaterThan(0);
+      await multiplayerContinue.waitFor({state: "visible"});
+      await page.waitForFunction(() => !(document.querySelector(".reward-continue") as HTMLButtonElement)?.disabled);
+      expect((await page.locator(".game-header .coin-pill strong").innerText()).trim()).toBe("205");
+      await multiplayerContinue.click();
+      expect(await page.locator(".race-screen").isVisible()).toBe(true);
+
       await page.locator(".race-close").click();
       await page.locator(".race-screen").waitFor({state: "detached"});
 
@@ -259,6 +304,9 @@ describeBrowser("standalone Jest browser game", () => {
       await page.keyboard.press("Escape");
       await page.getByRole("button", {name: /^settings$/i}).first().click();
       await page.getByRole("heading", {name: /^settings$/i}).waitFor();
+      const modalCloseBox = await page.locator(".modal-x").boundingBox();
+      expect(modalCloseBox?.width).toBeGreaterThanOrEqual(48);
+      expect(modalCloseBox?.height).toBeGreaterThanOrEqual(48);
       for (const text of [/sound/i, /language/i, /help/i, /credits/i, /about/i, /buy coins/i]) {
         expect(await page.getByText(text).first().isVisible()).toBe(true);
       }
@@ -285,6 +333,28 @@ describeBrowser("standalone Jest browser game", () => {
       expect(await page.locator(".game-content").evaluate((element) => (element as HTMLElement).inert)).toBe(true);
       await page.getByRole("button", {name: /^next$/i}).click();
       await page.getByRole("heading", {name: /nice job/i}).waitFor();
+      const victoryChest = page.getByRole("button", {name: /tap the chest/i});
+      const victoryContinue = page.getByRole("button", {name: /next level/i});
+      await victoryChest.waitFor();
+      expect(await victoryContinue.isDisabled()).toBe(true);
+      expect(await victoryChest.evaluate((element) => getComputedStyle(element).animationName)).toContain("reward-chest-wobble");
+      await page.keyboard.press("Escape");
+      expect(await page.locator(".modal-victory").count()).toBe(1);
+      await page.waitForTimeout(50);
+      const balanceBeforeVictoryCollection = Number(
+        (await page.locator(".game-header .coin-pill strong").innerText()).replace(/,/g, ""),
+      );
+      await victoryChest.click();
+      expect(await page.locator(".reward-coin-particle").count()).toBeGreaterThan(0);
+      await page.waitForFunction(
+        (startingBalance) => Number(
+          document.querySelector(".game-header .coin-pill strong")?.textContent?.replace(/,/g, "") ?? "0",
+        ) > startingBalance,
+        balanceBeforeVictoryCollection,
+      );
+      await page.waitForFunction(() => !(document.querySelector(".reward-continue") as HTMLButtonElement)?.disabled);
+      expect(Number((await page.locator(".game-header .coin-pill strong").innerText()).replace(/,/g, "")))
+        .toBe(balanceBeforeVictoryCollection + 50);
       await page.getByRole("button", {name: /share your victory/i}).click();
       await page.locator('[data-testid="server-activity-loader"]').waitFor({state: "detached"});
       expect(await page.locator(".modal-victory").count()).toBe(1);
@@ -292,7 +362,7 @@ describeBrowser("standalone Jest browser game", () => {
       expect(await page.locator(".modal-victory").count()).toBe(1);
 
       await page.setViewportSize({width: 844, height: 390});
-      await page.keyboard.press("Escape");
+      await victoryContinue.click();
       await page.waitForFunction(
         () => (document.querySelector(".game-bottom-navigation")?.getBoundingClientRect().bottom ?? Infinity) <= innerHeight + 1,
       );
@@ -370,7 +440,14 @@ describeBrowser("standalone Jest browser game", () => {
         .click();
       await registeredPage.locator(".modal-reward").waitFor();
       expect(await registeredPage.locator(".modal-reward").innerText()).toMatch(/\+250/);
+      const purchaseContinue = registeredPage.getByRole("button", {name: /awesome/i});
+      expect(await purchaseContinue.isDisabled()).toBe(true);
       await registeredPage.keyboard.press("Escape");
+      expect(await registeredPage.locator(".modal-reward").count()).toBe(1);
+      await registeredPage.getByRole("button", {name: /tap the chest/i}).click();
+      expect(await registeredPage.locator(".reward-coin-particle").count()).toBeGreaterThan(0);
+      await registeredPage.waitForFunction(() => !(document.querySelector(".reward-continue") as HTMLButtonElement)?.disabled);
+      await purchaseContinue.click();
       await registeredPage.getByRole("button", {name: /buy coins/i}).first().click();
       await subscriptionCard.getByRole("button", {name: /start free trial/i}).click();
       await subscriptionCard.waitFor({state: "detached"});

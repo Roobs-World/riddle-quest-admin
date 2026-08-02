@@ -52,6 +52,7 @@ export type GameSessionState = {
   notice: string | null;
   lastRewards: {
     coinsEarned: number;
+    totalCoins?: number;
     newXp?: number;
     newLevel?: number;
     leveledUp?: boolean;

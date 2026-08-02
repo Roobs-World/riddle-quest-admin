@@ -40,6 +40,7 @@ export function GameFrameApp({
   onSaveGame,
   registrationName,
   initialRaceChallengeId,
+  initialRaceInbox = false,
   raceFeatureEnabled = false,
   prefetchedRaceCategories = [],
 }: {
@@ -49,6 +50,7 @@ export function GameFrameApp({
   onSaveGame?: (game: JestSavedGame | null) => void;
   registrationName?: string;
   initialRaceChallengeId?: string;
+  initialRaceInbox?: boolean;
   raceFeatureEnabled?: boolean;
   prefetchedRaceCategories?: ListRaceCategoriesResponse["categories"];
 } = {}) {
@@ -58,10 +60,11 @@ export function GameFrameApp({
   const online = useOnlineStatus();
   const [solarReady, setSolarReady] = useState(false);
   const [guidanceActive, setGuidanceActive] = useState(false);
+  const [animatedCoinBalance, setAnimatedCoinBalance] = useState<number | null>(null);
   const raceEnabled =
     state.locale === "en" &&
     (raceFeatureEnabled || isRaceHarness(typeof window === "undefined" ? "" : window.location.search));
-  const [raceOpen, setRaceOpen] = useState(Boolean(initialRaceChallengeId && raceEnabled));
+  const [raceOpen, setRaceOpen] = useState(Boolean((initialRaceChallengeId || initialRaceInbox) && raceEnabled));
   const [completedIds] = useState(() => new Set<string>());
   const stateRef = useRef(state);
   const lastClearedOutcomeRef = useRef<string | null>(null);
@@ -83,8 +86,12 @@ export function GameFrameApp({
 
   useEffect(() => {
     if (!raceEnabled) setRaceOpen(false);
-    else if (initialRaceChallengeId) setRaceOpen(true);
-  }, [initialRaceChallengeId, raceEnabled]);
+    else if (initialRaceChallengeId || initialRaceInbox) setRaceOpen(true);
+  }, [initialRaceChallengeId, initialRaceInbox, raceEnabled]);
+
+  useEffect(() => {
+    if (state.modal === null) setAnimatedCoinBalance(null);
+  }, [state.modal]);
 
   const getSavedGame = useCallback((): JestSavedGame | null => {
     const current = stateRef.current;
@@ -388,7 +395,11 @@ export function GameFrameApp({
         inert={state.modal !== null || guidanceActive || raceOpen ? true : undefined}
         aria-hidden={state.modal !== null || guidanceActive || raceOpen ? true : undefined}
       >
-        <GameHeader state={state} onOpenShop={() => dispatch({type: "openModal", modal: "shop"})} />
+        <GameHeader
+          state={state}
+          displayedCoins={animatedCoinBalance ?? undefined}
+          onOpenShop={() => dispatch({type: "openModal", modal: "shop"})}
+        />
 
         {!state.riddle ? (
           <section className="game-loading" aria-hidden="true" />
@@ -464,6 +475,7 @@ export function GameFrameApp({
       </div>
       <GameModalView
         state={state}
+        onCoinBalancePreview={setAnimatedCoinBalance}
         onClose={() => dispatch(state.modal === "continue" ? {type: "declineContinue"} : {type: "closeModal"})}
         onContinue={requestContinue}
         onPurchase={requestPurchase}
@@ -486,6 +498,7 @@ export function GameFrameApp({
         <RaceTo10Game
           locale="en"
           challengeId={initialRaceChallengeId}
+          openInbox={initialRaceInbox}
           initialCategories={prefetchedRaceCategories}
           coins={state.profile?.coins ?? 0}
           postToHost={postToHost}

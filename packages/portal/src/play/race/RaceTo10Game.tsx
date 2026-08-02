@@ -5,6 +5,7 @@ import type {Feedback, ScoredGuess} from "@qwordly/core/game";
 import {
   AbandonRaceRunResponseSchema,
   ListRaceCategoriesResponseSchema,
+  ListRaceInboxResponseSchema,
   PublishRaceChallengeResponseSchema,
   RaceChallengePreviewSchema,
   RaceOutcomeSchema,
@@ -13,6 +14,7 @@ import {
   SkipRaceRiddleResponseSchema,
   SubmitRaceGuessResponseSchema,
   type ListRaceCategoriesResponse,
+  type RaceInboxItem,
   type RaceCategoryId,
   type RaceChallengePreview,
   type RaceOutcome,
@@ -29,7 +31,7 @@ import {getGhostCorrectCount} from "./racePlayback";
 import {trackEvent, trackScreen} from "../../analytics/googleAnalytics";
 import coinUrl from "../../../../../assets/images/coin.svg";
 
-type Stage = "categories" | "challenge" | "countdown" | "racing" | "result";
+type Stage = "categories" | "challenge" | "inbox" | "countdown" | "racing" | "result";
 type RaceOperation =
   | "raceCategories"
   | "raceStart"
@@ -39,7 +41,8 @@ type RaceOperation =
   | "raceAbandon"
   | "racePublish"
   | "raceChallenge"
-  | "raceOutcome";
+  | "raceOutcome"
+  | "raceInbox";
 
 const EMPTY_CATEGORIES: ListRaceCategoriesResponse["categories"] = [];
 
@@ -67,6 +70,7 @@ const firstEditableSlot = (riddle: NonNullable<RaceRunView["currentRiddle"]> | n
 export function RaceTo10Game({
   locale,
   challengeId,
+  openInbox = false,
   coins,
   postToHost,
   onClose,
@@ -74,17 +78,19 @@ export function RaceTo10Game({
 }: {
   locale: RaceLocale;
   challengeId?: string;
+  openInbox?: boolean;
   coins: number;
   postToHost: (message: GameToHostMessage) => void;
   onClose: () => void;
   initialCategories?: ListRaceCategoriesResponse["categories"];
 }) {
-  const [stage, setStage] = useState<Stage>(challengeId ? "challenge" : "categories");
-  const [activeChallengeId, setActiveChallengeId] = useState(challengeId);
+  const [stage, setStage] = useState<Stage>(openInbox ? "inbox" : challengeId ? "challenge" : "categories");
+  const [activeChallengeId, setActiveChallengeId] = useState(openInbox ? undefined : challengeId);
   const [rivalryChallengeId, setRivalryChallengeId] = useState<string>();
   const [categories, setCategories] = useState<ListRaceCategoriesResponse["categories"]>(initialCategories);
   const [selectedCategory, setSelectedCategory] = useState<RaceCategoryId | null>(null);
   const [challenge, setChallenge] = useState<RaceChallengePreview | null>(null);
+  const [inboxItems, setInboxItems] = useState<RaceInboxItem[]>([]);
   const [run, setRun] = useState<RaceRunView | null>(null);
   const [outcome, setOutcome] = useState<RaceOutcome | null>(null);
   const [countdown, setCountdown] = useState(3);
@@ -101,7 +107,10 @@ export function RaceTo10Game({
   const [, setTick] = useState(0);
   const expectedRequestRef = useRef<string | null>(null);
   const rivalryChallengeIdRef = useRef<string | undefined>(undefined);
+  const countdownFinishedRef = useRef(false);
   const dialogRef = useRef<HTMLElement | null>(null);
+  const gameplayViewportRef = useRef<HTMLDivElement | null>(null);
+  const gameplayRef = useRef<HTMLDivElement | null>(null);
   const quitDialogRef = useRef<HTMLDivElement | null>(null);
   const formattedCoins = coins.toLocaleString();
 
@@ -150,6 +159,10 @@ export function RaceTo10Game({
       postToHost(createRaceAnalyticsMessage(eventName, params)),
     [postToHost],
   );
+  const showInbox = useCallback(() => {
+    setStage("inbox");
+    send("raceInbox", "game:listRaceInbox", {limit: 20});
+  }, [send]);
 
   const requestClose = useCallback(() => {
     if (stage === "racing" && run?.status === "active") {
@@ -214,7 +227,8 @@ export function RaceTo10Game({
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
-      if (challengeId) send("raceChallenge", "game:getRaceChallenge", {challengeId});
+      if (openInbox) send("raceInbox", "game:listRaceInbox", {limit: 20});
+      else if (challengeId) send("raceChallenge", "game:getRaceChallenge", {challengeId});
       else {
         // Opening multiplayer from the main game always starts at a fresh lobby.
         // A previous browser session must never jump the player into an expired
@@ -224,7 +238,7 @@ export function RaceTo10Game({
       }
     }, 0);
     return () => window.clearTimeout(timer);
-  }, [analytics, challengeId, initialCategories, locale, send]);
+  }, [analytics, challengeId, initialCategories, locale, openInbox, send]);
 
   useEffect(() => {
     const handle = (event: Event) => {
@@ -245,6 +259,11 @@ export function RaceTo10Game({
       try {
         if (operation === "raceCategories") {
           setCategories(ListRaceCategoriesResponseSchema.parse(message.payload.data).categories);
+        } else if (operation === "raceInbox") {
+          const inbox = ListRaceInboxResponseSchema.parse(message.payload.data);
+          setInboxItems(inbox.items);
+          setStage("inbox");
+          analytics("race_inbox_viewed", {resultCount: inbox.items.length});
         } else if (operation === "raceChallenge") {
           const preview = RaceChallengePreviewSchema.parse(message.payload.data);
           setChallenge(preview);
@@ -254,7 +273,7 @@ export function RaceTo10Game({
           const nextRun = RaceRunResponseSchema.parse(message.payload.data).run;
           updateRun(nextRun);
           resetAttempt(nextRun);
-          setStage("racing");
+          if (countdownFinishedRef.current) setStage("racing");
           analytics("race_started", {kind: activeChallengeId ? "challenge" : "creator"});
           if (operation === "raceStart") analytics("race_attempt_started", {categoryId: nextRun.categoryId});
         } else if (operation === "raceAbandon") {
@@ -330,23 +349,58 @@ export function RaceTo10Game({
   useEffect(() => {
     if (stage !== "countdown") return;
     if (countdown <= 0) {
-      send(
-        "raceStart",
-        "game:startRace",
-        activeChallengeId
-          ? {locale, challengeId: activeChallengeId}
-          : {locale, categoryId: selectedCategory, ...(rivalryChallengeId ? {rivalryChallengeId} : {})},
-      );
+      countdownFinishedRef.current = true;
+      if (run) setStage("racing");
       return;
     }
-    const timer = window.setTimeout(() => setCountdown((value) => value - 1), 750);
+    const timer = window.setTimeout(() => setCountdown((value) => value - 1), 1_000);
     return () => window.clearTimeout(timer);
-  }, [activeChallengeId, countdown, locale, rivalryChallengeId, selectedCategory, send, stage]);
+  }, [countdown, run, stage]);
 
   useEffect(() => {
     if (stage !== "racing") return;
     const timer = window.setInterval(() => setTick((value) => value + 1), 100);
     return () => window.clearInterval(timer);
+  }, [stage]);
+
+  useEffect(() => {
+    if (stage !== "racing") return;
+    const screen = dialogRef.current;
+    const viewport = gameplayViewportRef.current;
+    const gameplay = gameplayRef.current;
+    if (!screen || !viewport || !gameplay) return;
+
+    let frame = 0;
+    const fitGameplay = () => {
+      window.cancelAnimationFrame(frame);
+      frame = window.requestAnimationFrame(() => {
+        gameplay.style.transform = "none";
+        viewport.style.height = "auto";
+        const screenRect = screen.getBoundingClientRect();
+        const viewportRect = viewport.getBoundingClientRect();
+        const paddingBottom = Number.parseFloat(getComputedStyle(screen).paddingBottom) || 0;
+        const availableHeight = Math.max(1, screenRect.bottom - paddingBottom - viewportRect.top);
+        const naturalHeight = gameplay.offsetHeight;
+        const scale = naturalHeight > availableHeight ? availableHeight / naturalHeight : 1;
+        gameplay.style.transform = `scale(${scale})`;
+        viewport.style.height = `${naturalHeight * scale}px`;
+        viewport.dataset.viewportScale = scale.toFixed(4);
+      });
+    };
+
+    fitGameplay();
+    const observer = new ResizeObserver(fitGameplay);
+    observer.observe(screen);
+    observer.observe(gameplay);
+    window.addEventListener("resize", fitGameplay);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      observer.disconnect();
+      window.removeEventListener("resize", fitGameplay);
+      gameplay.style.transform = "";
+      viewport.style.height = "";
+      delete viewport.dataset.viewportScale;
+    };
   }, [stage]);
 
   useEffect(() => {
@@ -380,12 +434,25 @@ export function RaceTo10Game({
     return states;
   }, [raceGuesses]);
 
-  const begin = (categoryId: RaceCategoryId) => {
+  const begin = (
+    categoryId: RaceCategoryId,
+    startContext?: {challengeId?: string; rivalryChallengeId?: string},
+  ) => {
+    const challengeIdForStart = startContext ? startContext.challengeId : activeChallengeId;
+    const rivalryIdForStart = startContext ? startContext.rivalryChallengeId : rivalryChallengeId;
     analytics("race_category_selected", {categoryId});
     if (rivalryChallengeIdRef.current) analytics("race_counter_challenge_started", {categoryId});
     setSelectedCategory(categoryId);
     setCountdown(3);
+    countdownFinishedRef.current = false;
     setStage("countdown");
+    send(
+      "raceStart",
+      "game:startRace",
+      challengeIdForStart
+        ? {locale, challengeId: challengeIdForStart}
+        : {locale, categoryId, ...(rivalryIdForStart ? {rivalryChallengeId: rivalryIdForStart} : {})},
+    );
   };
   const submit = () => {
     if (
@@ -478,8 +545,8 @@ export function RaceTo10Game({
       }),
     );
   };
-  const resetForNewRace = (categoryId?: RaceCategoryId) => {
-    const nextRivalryChallengeId = run?.challengeId ?? run?.rivalryChallengeId ?? challenge?.challengeId;
+  const resetForNewRace = (categoryId?: RaceCategoryId, rivalryId?: string) => {
+    const nextRivalryChallengeId = rivalryId ?? run?.challengeId ?? run?.rivalryChallengeId ?? challenge?.challengeId;
     rivalryChallengeIdRef.current = nextRivalryChallengeId;
     setRivalryChallengeId(nextRivalryChallengeId);
     setActiveChallengeId(undefined);
@@ -491,13 +558,27 @@ export function RaceTo10Game({
     setRaceGuesses([]);
     setFeedback(null);
     setPenaltyFlash(null);
-    if (categoryId) begin(categoryId);
+    if (categoryId) begin(categoryId, {rivalryChallengeId: nextRivalryChallengeId});
     else {
       setSelectedCategory(null);
       setStage("categories");
       if (categories.length === 0) send("raceCategories", "game:listRaceCategories", {locale});
     }
   };
+  const startInboxRematch = (item: RaceInboxItem) => {
+    analytics("race_rematch_started", {categoryId: item.categoryId, result: item.result});
+    resetForNewRace(item.categoryId, item.challengeId);
+  };
+  const raceRailHeader = (
+    <div className="race-rail-header">
+      <span className="race-kicker">{tr("RaceTo10.MODE_LABEL")}</span>
+      <h1 id="race-title">{tr("RaceTo10.TITLE")}</h1>
+      {coinBalance}
+      <button className="race-close" onClick={requestClose} aria-label={tr("RaceTo10.CLOSE")}>
+        ×
+      </button>
+    </div>
+  );
 
   return (
     <section
@@ -509,7 +590,7 @@ export function RaceTo10Game({
       aria-labelledby="race-title"
       tabIndex={-1}
     >
-      {stage !== "racing" && (
+      {stage !== "racing" && stage !== "countdown" && (
         <header className="race-topbar">
           <div>
             <span className="race-kicker">{tr("RaceTo10.MODE_LABEL")}</span>
@@ -528,7 +609,9 @@ export function RaceTo10Game({
           {error}
           <button
             onClick={() =>
-              activeChallengeId
+              stage === "inbox"
+                ? send("raceInbox", "game:listRaceInbox", {limit: 20})
+                : activeChallengeId
                 ? send("raceChallenge", "game:getRaceChallenge", {challengeId: activeChallengeId})
                 : send("raceCategories", "game:listRaceCategories", {locale})
             }
@@ -558,6 +641,43 @@ export function RaceTo10Game({
             ))}
           </div>
           {pending === "raceCategories" && <p aria-live="polite">{tr("RaceTo10.LOADING_CATEGORIES")}</p>}
+          <button className="race-secondary" onClick={showInbox}>
+            {tr("RaceTo10.CHECK_RESULTS")}
+          </button>
+        </div>
+      )}
+
+      {stage === "inbox" && (
+        <div className="race-panel race-inbox">
+          <h2>{tr("RaceTo10.RESULTS_TITLE")}</h2>
+          {pending === "raceInbox" ? (
+            <p aria-live="polite">{tr("RaceTo10.RESULTS_LOADING")}</p>
+          ) : inboxItems.length === 0 ? (
+            <p>{tr("RaceTo10.RESULTS_EMPTY")}</p>
+          ) : (
+            <ul>
+              {inboxItems.map((item) => (
+                <li key={item.itemId}>
+                  {item.opponentAvatarUrl ? <img src={item.opponentAvatarUrl} alt="" /> : <span aria-hidden="true">⚔️</span>}
+                  <div>
+                    <strong>{tr(
+                      item.result === "win"
+                        ? "RaceTo10.RESULT_PLAYER_WIN"
+                        : item.result === "loss"
+                          ? "RaceTo10.RESULT_GHOST_WIN"
+                          : "RaceTo10.RESULT_TIE",
+                    )}</strong>
+                    <span>{item.opponentDisplayName}</span>
+                    <small>{tr("RaceTo10.RESULT_MARGIN", {time: formatTime(Math.abs(item.adjustedDeltaMs))})}</small>
+                  </div>
+                  <button className="race-primary" onClick={() => startInboxRematch(item)}>
+                    {tr("RaceTo10.REMATCH")}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+          <button onClick={() => setStage("categories")}>{tr("RaceTo10.CHOOSE_CATEGORY")}</button>
         </div>
       )}
 
@@ -583,22 +703,26 @@ export function RaceTo10Game({
       )}
 
       {stage === "countdown" && (
-        <div className="race-countdown" aria-live="assertive">
-          <span>{countdown > 0 ? countdown : tr("RaceTo10.GO")}</span>
-          <p>{tr("RaceTo10.FIRST_TO_TEN")}</p>
+        <div className="race-countdown-layout">
+          <div className="race-countdown" aria-live="assertive">
+            <span>{countdown > 0 ? countdown : tr("RaceTo10.GO")}</span>
+            <p>
+              {countdown <= 0 && pending === "raceStart"
+                ? tr("Accessibility.LOADING")
+                : tr("RaceTo10.FIRST_TO_TEN")}
+            </p>
+          </div>
+          <aside className="race-scoreboard race-countdown-rail">
+            {raceRailHeader}
+          </aside>
         </div>
       )}
 
       {stage === "racing" && run && (
-        <div className="race-gameplay">
+        <div ref={gameplayViewportRef} className="race-gameplay-viewport">
+        <div ref={gameplayRef} className="race-gameplay">
           <section className="race-scoreboard" aria-label={tr("RaceTo10.PROGRESS_LABEL")}>
-            <div className="race-rail-header">
-              <h1 id="race-title">{tr("RaceTo10.TITLE")}</h1>
-              {coinBalance}
-              <button className="race-close" onClick={requestClose} aria-label={tr("RaceTo10.CLOSE")}>
-                ×
-              </button>
-            </div>
+            {raceRailHeader}
             <div className="race-header-clock" aria-live="polite">
               <span>{tr("RaceTo10.ADJUSTED_TIME")}</span>
               <strong>{formatTime(adjustedNow)}</strong>
@@ -656,11 +780,6 @@ export function RaceTo10Game({
               />
             </>
           )}
-          {penaltyFlash && (
-            <div className="race-penalty-flash" role="status">
-              {penaltyFlash}
-            </div>
-          )}
           <div className="game-input-actions race-actions" aria-describedby="race-attempts">
             <button onClick={requestHint} disabled={Boolean(pending) || !run.currentRiddle?.hintAvailable}>
               <HintIcon />
@@ -678,6 +797,13 @@ export function RaceTo10Game({
               <span>{tr("RaceTo10.SKIP_BUTTON")} <small>+45s</small></span>
             </button>
           </div>
+        </div>
+        </div>
+      )}
+
+      {stage === "racing" && penaltyFlash && (
+        <div className="race-penalty-flash" role="status">
+          {penaltyFlash}
         </div>
       )}
 

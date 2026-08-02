@@ -118,6 +118,9 @@ export function useGameMessageRouter({
           type: "completionReward",
           reward: {
             coinsEarned: reward ?? 0,
+            totalCoins: getNumber(data.rewardBreakdown && typeof data.rewardBreakdown === "object"
+              ? (data.rewardBreakdown as Record<string, unknown>).newBalance
+              : undefined),
             newXp: getNumber(data.newXp),
             newLevel: getNumber(data.newLevel),
             leveledUp: data.leveledUp === true,
