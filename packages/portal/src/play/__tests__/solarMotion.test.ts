@@ -2,6 +2,7 @@ import {
   advanceFrameBasedAngle,
   advanceSolarOrbitAngle,
   advanceSolarRotationAngle,
+  getCoronaAnimationState,
   getFrameDeltaSeconds,
   getShootingStarProgress,
   MAX_FRAME_DELTA_SECONDS,
@@ -41,6 +42,17 @@ describe("solar-system motion", () => {
     expect(advanceSolarRotationAngle(0, speed, 1)).toBeCloseTo(
       speed * REFERENCE_FRAMES_PER_SECOND * SOLAR_ROTATION_SPEED_SCALE,
     );
+  });
+
+  it("gives the corona visible rotation, scale, opacity, and limb-glow movement", () => {
+    const initial = getCoronaAnimationState(0);
+    const later = getCoronaAnimationState(2);
+
+    expect(later.rotation - initial.rotation).toBeCloseTo(0.24);
+    expect(Math.abs(later.scaleX - initial.scaleX)).toBeGreaterThan(3);
+    expect(Math.abs(later.scaleY - initial.scaleY)).toBeGreaterThan(2);
+    expect(Math.abs(later.opacity - initial.opacity)).toBeGreaterThan(0.08);
+    expect(Math.abs(later.limbGlowStrength - initial.limbGlowStrength)).toBeGreaterThan(0.11);
   });
 
   it("stages shooting stars with a visible flight followed by an idle interval", () => {

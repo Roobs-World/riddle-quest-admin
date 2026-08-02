@@ -51,7 +51,7 @@
     "PENALTIES": "दंड: {time}",
     "PROGRESS_LABEL": "रेस की प्रगति",
     "YOU": "आप",
-    "RIDDLE_NUMBER": "15 में से पहेली {number}",
+    "RIDDLES_REMAINING": "{count} पहेलियाँ बाकी",
     "ANSWER_LABEL": "आपका जवाब",
     "GUESSES_REMAINING": "{count} कोशिशें बाकी",
     "HINT_BUTTON": "संकेत",

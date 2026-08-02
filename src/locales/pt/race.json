@@ -51,7 +51,7 @@
     "PENALTIES": "Penalidades: {time}",
     "PROGRESS_LABEL": "Progresso da corrida",
     "YOU": "Você",
-    "RIDDLE_NUMBER": "Enigma {number} de 15",
+    "RIDDLES_REMAINING": "{count} enigmas restantes",
     "ANSWER_LABEL": "Sua resposta",
     "GUESSES_REMAINING": "{count} tentativas restantes",
     "HINT_BUTTON": "Dica",

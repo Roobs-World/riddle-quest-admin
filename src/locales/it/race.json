@@ -51,7 +51,7 @@
     "PENALTIES": "Penalità: {time}",
     "PROGRESS_LABEL": "Progresso della corsa",
     "YOU": "Tu",
-    "RIDDLE_NUMBER": "Indovinello {number} di 15",
+    "RIDDLES_REMAINING": "{count} indovinelli rimasti",
     "ANSWER_LABEL": "La tua risposta",
     "GUESSES_REMAINING": "{count} tentativi rimasti",
     "HINT_BUTTON": "Aiuto",

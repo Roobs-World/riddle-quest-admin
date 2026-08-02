@@ -51,7 +51,7 @@
     "PENALTIES": "Strafzeit: {time}",
     "PROGRESS_LABEL": "Rennfortschritt",
     "YOU": "Du",
-    "RIDDLE_NUMBER": "Rätsel {number} von 15",
+    "RIDDLES_REMAINING": "Noch {count} Rätsel",
     "ANSWER_LABEL": "Deine Antwort",
     "GUESSES_REMAINING": "Noch {count} Versuche",
     "HINT_BUTTON": "Hinweis",

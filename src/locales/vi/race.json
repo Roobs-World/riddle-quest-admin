@@ -51,7 +51,7 @@
     "PENALTIES": "Thời gian phạt: {time}",
     "PROGRESS_LABEL": "Tiến độ cuộc đua",
     "YOU": "Bạn",
-    "RIDDLE_NUMBER": "Câu đố {number}/15",
+    "RIDDLES_REMAINING": "Còn {count} câu đố",
     "ANSWER_LABEL": "Câu trả lời",
     "GUESSES_REMAINING": "Còn {count} lần đoán",
     "HINT_BUTTON": "Gợi ý",

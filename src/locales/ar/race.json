@@ -51,7 +51,7 @@
     "PENALTIES": "العقوبات: {time}",
     "PROGRESS_LABEL": "تقدم السباق",
     "YOU": "أنت",
-    "RIDDLE_NUMBER": "اللغز {number} من 15",
+    "RIDDLES_REMAINING": "{count} ألغاز متبقية",
     "ANSWER_LABEL": "إجابتك",
     "GUESSES_REMAINING": "تبقت {count} محاولات",
     "HINT_BUTTON": "تلميح",

@@ -7,6 +7,7 @@ import {
   ListRaceCategoriesResponseSchema,
   ListRaceInboxResponseSchema,
   PublishRaceChallengeResponseSchema,
+  RACE_TARGET_CORRECT,
   RaceChallengePreviewSchema,
   RaceOutcomeSchema,
   RaceRunResponseSchema,
@@ -27,6 +28,7 @@ import {ControlledGuessBoard, ControlledKeyboard, ForwardIcon, HintIcon} from ".
 import {HOST_TO_GAME_EVENT} from "../localBridge";
 import {createRequestId} from "../requestIds";
 import {createRaceAnalyticsMessage} from "./raceAnalytics";
+import {getRaceCountdownStep, RACE_COUNTDOWN_START} from "./raceCountdown";
 import {getGhostCorrectCount} from "./racePlayback";
 import {trackEvent, trackScreen} from "../../analytics/googleAnalytics";
 import coinUrl from "../../../../../assets/images/coin.svg";
@@ -93,11 +95,11 @@ export function RaceTo10Game({
   const [inboxItems, setInboxItems] = useState<RaceInboxItem[]>([]);
   const [run, setRun] = useState<RaceRunView | null>(null);
   const [outcome, setOutcome] = useState<RaceOutcome | null>(null);
-  const [countdown, setCountdown] = useState(3);
+  const [countdown, setCountdown] = useState(RACE_COUNTDOWN_START);
   const [currentLetters, setCurrentLetters] = useState<string[]>([]);
   const [activeSlotIndex, setActiveSlotIndex] = useState(0);
   const [raceGuesses, setRaceGuesses] = useState<ScoredGuess[]>([]);
-  const [feedback, setFeedback] = useState<string | null>(null);
+  const [feedback, setFeedback] = useState<"correct" | "incorrect" | null>(null);
   const [penaltyFlash, setPenaltyFlash] = useState<string | null>(null);
   const [quitConfirmationOpen, setQuitConfirmationOpen] = useState(false);
   const [pending, setPending] = useState<RaceOperation | null>(null);
@@ -107,7 +109,6 @@ export function RaceTo10Game({
   const [, setTick] = useState(0);
   const expectedRequestRef = useRef<string | null>(null);
   const rivalryChallengeIdRef = useRef<string | undefined>(undefined);
-  const countdownFinishedRef = useRef(false);
   const dialogRef = useRef<HTMLElement | null>(null);
   const gameplayViewportRef = useRef<HTMLDivElement | null>(null);
   const gameplayRef = useRef<HTMLDivElement | null>(null);
@@ -254,6 +255,10 @@ export function RaceTo10Game({
       setPending(null);
       if (!message.payload.ok) {
         setError(message.payload.error ?? tr("RaceTo10.ERROR_GENERIC"));
+        if (operation === "raceStart") {
+          setRun(null);
+          setStage(activeChallengeId ? "challenge" : "categories");
+        }
         return;
       }
       try {
@@ -273,7 +278,6 @@ export function RaceTo10Game({
           const nextRun = RaceRunResponseSchema.parse(message.payload.data).run;
           updateRun(nextRun);
           resetAttempt(nextRun);
-          if (countdownFinishedRef.current) setStage("racing");
           analytics("race_started", {kind: activeChallengeId ? "challenge" : "creator"});
           if (operation === "raceStart") analytics("race_attempt_started", {categoryId: nextRun.categoryId});
         } else if (operation === "raceAbandon") {
@@ -287,7 +291,6 @@ export function RaceTo10Game({
           const result = SubmitRaceGuessResponseSchema.parse(message.payload.data);
           const previousRiddle = run?.currentRiddle?.riddleId;
           updateRun(result.run);
-          setFeedback(result.isCorrect ? tr("RaceTo10.CORRECT") : tr("RaceTo10.TRY_AGAIN"));
           if (result.autoSkipped) setPenaltyFlash(tr("RaceTo10.SKIP_PENALTY"));
           if (previousRiddle !== result.run.currentRiddle?.riddleId) {
             resetAttempt(result.run);
@@ -299,6 +302,7 @@ export function RaceTo10Game({
             setCurrentLetters(createAttempt(result.run.currentRiddle));
             setActiveSlotIndex(firstEditableSlot(result.run.currentRiddle));
           }
+          setFeedback(result.isCorrect ? "correct" : "incorrect");
         } else if (operation === "raceHint") {
           const result = RequestRaceHintResponseSchema.parse(message.payload.data);
           updateRun(result.run);
@@ -348,12 +352,12 @@ export function RaceTo10Game({
 
   useEffect(() => {
     if (stage !== "countdown") return;
-    if (countdown <= 0) {
-      countdownFinishedRef.current = true;
-      if (run) setStage("racing");
-      return;
-    }
-    const timer = window.setTimeout(() => setCountdown((value) => value - 1), 1_000);
+    const step = getRaceCountdownStep(countdown, Boolean(run));
+    if (step.kind === "wait") return;
+    const timer = window.setTimeout(() => {
+      if (step.kind === "start") setStage("racing");
+      else setCountdown(step.nextValue);
+    }, step.delayMs);
     return () => window.clearTimeout(timer);
   }, [countdown, run, stage]);
 
@@ -409,6 +413,12 @@ export function RaceTo10Game({
     return () => window.clearTimeout(timer);
   }, [penaltyFlash]);
 
+  useEffect(() => {
+    if (!feedback) return;
+    const timer = window.setTimeout(() => setFeedback(null), 1_600);
+    return () => window.clearTimeout(timer);
+  }, [feedback]);
+
   const adjustedNow = run
     ? Math.min(
         run.rules.maxAdjustedTimeMs,
@@ -443,8 +453,7 @@ export function RaceTo10Game({
     analytics("race_category_selected", {categoryId});
     if (rivalryChallengeIdRef.current) analytics("race_counter_challenge_started", {categoryId});
     setSelectedCategory(categoryId);
-    setCountdown(3);
-    countdownFinishedRef.current = false;
+    setCountdown(RACE_COUNTDOWN_START);
     setStage("countdown");
     send(
       "raceStart",
@@ -707,7 +716,7 @@ export function RaceTo10Game({
           <div className="race-countdown" aria-live="assertive">
             <span>{countdown > 0 ? countdown : tr("RaceTo10.GO")}</span>
             <p>
-              {countdown <= 0 && pending === "raceStart"
+              {pending === "raceStart"
                 ? tr("Accessibility.LOADING")
                 : tr("RaceTo10.FIRST_TO_TEN")}
             </p>
@@ -730,6 +739,11 @@ export function RaceTo10Game({
                 +{formatTime(run.totalPenaltyMs)}
               </small>
             </div>
+            {feedback && (
+              <div className={`race-feedback ${feedback}`} role="status" aria-live="polite">
+                {tr(feedback === "correct" ? "RaceTo10.CORRECT" : "RaceTo10.TRY_AGAIN")}
+              </div>
+            )}
             <div className="race-progress">
               <div style={{"--race-progress": `${run.correctCount * 10}%`} as React.CSSProperties}>
                 <span title={tr("RaceTo10.YOU")}>{tr("RaceTo10.YOU")}</span>
@@ -755,12 +769,17 @@ export function RaceTo10Game({
             <>
               <section className="riddle-surface race-riddle-surface">
                 <div className="riddle-card">
-                  <small>{tr("RaceTo10.RIDDLE_NUMBER", {number: run.currentRiddle.position + 1})}</small>
                   <h2>{run.currentRiddle.text}</h2>
-                  <p id="race-attempts">
-                    {tr("RaceTo10.GUESSES_REMAINING", {count: run.currentRiddle.guessesRemaining})}
-                  </p>
-                  {feedback && <p className="game-notice" aria-live="polite">{feedback}</p>}
+                  <div className="race-riddle-status">
+                    <span>
+                      {tr("RaceTo10.RIDDLES_REMAINING", {
+                        count: Math.max(0, RACE_TARGET_CORRECT - run.correctCount),
+                      })}
+                    </span>
+                    <span id="race-attempts">
+                      {tr("RaceTo10.GUESSES_REMAINING", {count: run.currentRiddle.guessesRemaining})}
+                    </span>
+                  </div>
                 </div>
                 <ControlledGuessBoard
                   answerLength={run.currentRiddle.answerLength}

@@ -51,7 +51,7 @@
     "PENALTIES": "Straftijd: {time}",
     "PROGRESS_LABEL": "Racevoortgang",
     "YOU": "Jij",
-    "RIDDLE_NUMBER": "Raadsel {number} van 15",
+    "RIDDLES_REMAINING": "Nog {count} raadsels",
     "ANSWER_LABEL": "Jouw antwoord",
     "GUESSES_REMAINING": "Nog {count} pogingen",
     "HINT_BUTTON": "Hint",

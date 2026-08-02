@@ -2433,6 +2433,23 @@ p {
   font-size: 0.68rem;
   font-weight: 800;
 }
+.race-feedback {
+  width: 100%;
+  padding: 8px 5px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 11px;
+  color: #fff;
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 900;
+  line-height: 1.15;
+}
+.race-feedback.correct {
+  background: #2e8b57;
+}
+.race-feedback.incorrect {
+  background: #a43b4d;
+}
 .race-gameplay {
   width: min(900px, 100%);
   margin: 0 auto;
@@ -2568,7 +2585,10 @@ p {
 }
 .race-riddle-surface .riddle-card {
   min-height: 190px;
-  padding-block: 34px 22px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  place-items: center stretch;
+  column-gap: 28px;
+  padding: 34px 32px 22px;
 }
 .race-riddle-surface .riddle-card h2 {
   max-width: 760px;
@@ -2577,10 +2597,17 @@ p {
   color: #171717;
   font: 400 36px/1.22 "Poetsen One", "Poppins", sans-serif;
 }
-.race-riddle-surface .riddle-card > small,
-.race-riddle-surface .riddle-card > p:not(.game-notice) {
+.race-riddle-status {
+  min-width: 160px;
+  display: grid;
+  gap: 8px;
+  justify-items: end;
   color: #516066;
+  text-align: right;
   font-weight: 700;
+}
+.race-riddle-status span {
+  display: block;
 }
 .race-riddle-surface .riddle-card > p {
   margin: 5px 0 0;
@@ -2738,6 +2765,10 @@ p {
     padding: 2px 4px;
     font-size: 0.52rem;
   }
+  .race-feedback {
+    padding: 6px 3px;
+    font-size: 0.6rem;
+  }
   .race-gameplay {
     grid-template-columns: minmax(0, 1fr) 76px;
     column-gap: 6px;
@@ -2779,11 +2810,19 @@ p {
   }
   .race-riddle-surface .riddle-card {
     min-height: 156px;
-    padding: 24px 12px 14px;
+    grid-template-columns: minmax(0, 1fr) 104px;
+    column-gap: 10px;
+    padding: 24px 14px 14px;
     border-radius: 24px;
   }
   .race-riddle-surface .riddle-card h2 {
     font-size: clamp(20px, 6vw, 27px);
+  }
+  .race-riddle-status {
+    min-width: 0;
+    gap: 5px;
+    font-size: 12px;
+    line-height: 1.25;
   }
   .race-riddle-surface .guess-board {
     max-width: min(250px, 100%);

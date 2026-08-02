@@ -51,7 +51,7 @@
     "PENALTIES": "페널티: {time}",
     "PROGRESS_LABEL": "레이스 진행",
     "YOU": "나",
-    "RIDDLE_NUMBER": "15개 중 {number}번 문제",
+    "RIDDLES_REMAINING": "남은 문제 {count}개",
     "ANSWER_LABEL": "정답",
     "GUESSES_REMAINING": "남은 시도 {count}회",
     "HINT_BUTTON": "힌트",

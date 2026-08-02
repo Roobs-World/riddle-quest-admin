@@ -18,10 +18,12 @@ import moonHTextureUrl from "../../../../assets/3d-web/tex_moon_h.webp";
 import ringATextureUrl from "../../../../assets/3d-web/tex_ring_a.webp";
 import ringBTextureUrl from "../../../../assets/3d-web/tex_ring_b.webp";
 import {runWhenLayoutReady} from "./game/layoutReady";
+import {PLANET_ATMOSPHERES, type PlanetAtmosphere} from "./solarAtmospheres";
 import {
   advanceFrameBasedAngle,
   advanceSolarOrbitAngle,
   advanceSolarRotationAngle,
+  getCoronaAnimationState,
   getFrameDeltaSeconds,
   getShootingStarProgress,
 } from "./solarMotion";
@@ -44,6 +46,7 @@ type PlanetConfig = {
   startAngle: number;
   yPosition: number;
   moons: MoonConfig[];
+  atmosphere: PlanetAtmosphere;
   ring?: {innerRadius: number; outerRadius: number; texture: string; tiltRadians: number};
 };
 
@@ -58,6 +61,7 @@ export const SOLAR_SYSTEM_CONFIG: readonly PlanetConfig[] = [
     startAngle: 0,
     yPosition: 30,
     moons: [],
+    atmosphere: PLANET_ATMOSPHERES.Mercury,
   },
   {
     name: "Venus",
@@ -69,6 +73,7 @@ export const SOLAR_SYSTEM_CONFIG: readonly PlanetConfig[] = [
     startAngle: Math.PI / 3,
     yPosition: 30,
     moons: [],
+    atmosphere: PLANET_ATMOSPHERES.Venus,
   },
   {
     name: "Earth",
@@ -80,6 +85,7 @@ export const SOLAR_SYSTEM_CONFIG: readonly PlanetConfig[] = [
     startAngle: (Math.PI * 2) / 3,
     yPosition: 30,
     moons: [{size: 1, distance: 7, orbitSpeed: 0.06, texture: moonDTextureUrl, startAngle: 0}],
+    atmosphere: PLANET_ATMOSPHERES.Earth,
     ring: {innerRadius: 4.5, outerRadius: 6.1, texture: ringATextureUrl, tiltRadians: Math.PI / 2.45},
   },
   {
@@ -92,6 +98,7 @@ export const SOLAR_SYSTEM_CONFIG: readonly PlanetConfig[] = [
     startAngle: Math.PI,
     yPosition: 28,
     moons: [{size: 0.8, distance: 7, orbitSpeed: 0.08, texture: moonGTextureUrl, startAngle: 0}],
+    atmosphere: PLANET_ATMOSPHERES.Mars,
   },
   {
     name: "Jupiter",
@@ -106,6 +113,7 @@ export const SOLAR_SYSTEM_CONFIG: readonly PlanetConfig[] = [
       {size: 1.3, distance: 13, orbitSpeed: 0.03, texture: moonHTextureUrl, startAngle: 0},
       {size: 1, distance: 11.5, orbitSpeed: 0.032, texture: moonCTextureUrl, startAngle: Math.PI / 3},
     ],
+    atmosphere: PLANET_ATMOSPHERES.Jupiter,
   },
   {
     name: "Saturn",
@@ -120,6 +128,7 @@ export const SOLAR_SYSTEM_CONFIG: readonly PlanetConfig[] = [
       {size: 2, distance: 12, orbitSpeed: 0.038, texture: moonFTextureUrl, startAngle: 0},
       {size: 1.6, distance: 12, orbitSpeed: 0.03, texture: moonDTextureUrl, startAngle: Math.PI / 2},
     ],
+    atmosphere: PLANET_ATMOSPHERES.Saturn,
     ring: {innerRadius: 11.5, outerRadius: 16.5, texture: ringBTextureUrl, tiltRadians: Math.PI / 2.25},
   },
   {
@@ -132,8 +141,34 @@ export const SOLAR_SYSTEM_CONFIG: readonly PlanetConfig[] = [
     startAngle: Math.PI * 0.3,
     yPosition: 30,
     moons: [],
+    atmosphere: PLANET_ATMOSPHERES.Uranus,
   },
 ] as const;
+
+const ATMOSPHERE_VERTEX_SHADER = `
+  varying float viewFacing;
+  void main() {
+    vec4 viewPosition = modelViewMatrix * vec4(position, 1.0);
+    vec3 viewNormal = normalize(normalMatrix * normal);
+    vec3 viewDirection = normalize(-viewPosition.xyz);
+    viewFacing = max(dot(viewNormal, viewDirection), 0.0);
+    gl_Position = projectionMatrix * viewPosition;
+  }
+`;
+
+const ATMOSPHERE_FRAGMENT_SHADER = `
+  uniform vec3 atmosphereColour;
+  uniform float atmosphereOpacity;
+  uniform float atmosphereFalloff;
+  uniform float surfaceHaze;
+  varying float viewFacing;
+  void main() {
+    float rim = pow(1.0 - viewFacing, atmosphereFalloff);
+    float haze = pow(viewFacing, 0.7) * surfaceHaze;
+    float glow = clamp((smoothstep(0.03, 1.0, rim) + haze) * atmosphereOpacity, 0.0, 1.0);
+    gl_FragColor = vec4(atmosphereColour, glow);
+  }
+`;
 
 type PlanetRuntime = {
   config: PlanetConfig;
@@ -206,8 +241,12 @@ export function SolarSystem({paused}: {paused: boolean}) {
     sun.position.set(0, 30, 0);
     scene.add(sun);
 
+    const sunLimbUniforms = {
+      glowColour: {value: new THREE.Color(0xffd45a)},
+      glowStrength: {value: 0.82},
+    };
     const sunLimbMaterial = new THREE.ShaderMaterial({
-      uniforms: {glowColour: {value: new THREE.Color(0xffd45a)}},
+      uniforms: sunLimbUniforms,
       vertexShader: `
         varying float limbIntensity;
         void main() {
@@ -220,9 +259,10 @@ export function SolarSystem({paused}: {paused: boolean}) {
       `,
       fragmentShader: `
         uniform vec3 glowColour;
+        uniform float glowStrength;
         varying float limbIntensity;
         void main() {
-          float glow = smoothstep(0.12, 1.0, limbIntensity) * 0.82;
+          float glow = smoothstep(0.12, 1.0, limbIntensity) * glowStrength;
           gl_FragColor = vec4(glowColour * glow, glow);
         }
       `,
@@ -325,6 +365,27 @@ export function SolarSystem({paused}: {paused: boolean}) {
       planet.name = config.name;
       orbit.add(planet);
 
+      const atmosphere = new THREE.Mesh(
+        new THREE.SphereGeometry(config.size * config.atmosphere.scale, 28, 20),
+        new THREE.ShaderMaterial({
+          uniforms: {
+            atmosphereColour: {value: new THREE.Color(config.atmosphere.color)},
+            atmosphereOpacity: {value: config.atmosphere.opacity},
+            atmosphereFalloff: {value: config.atmosphere.falloff},
+            surfaceHaze: {value: config.atmosphere.surfaceHaze},
+          },
+          vertexShader: ATMOSPHERE_VERTEX_SHADER,
+          fragmentShader: ATMOSPHERE_FRAGMENT_SHADER,
+          transparent: true,
+          blending: THREE.AdditiveBlending,
+          depthTest: true,
+          depthWrite: false,
+        }),
+      );
+      atmosphere.name = `${config.name} atmosphere`;
+      atmosphere.renderOrder = 1;
+      planet.add(atmosphere);
+
       if (config.ring) {
         const ring = new THREE.Mesh(
           new THREE.RingGeometry(config.ring.innerRadius, config.ring.outerRadius, 64),
@@ -391,6 +452,11 @@ export function SolarSystem({paused}: {paused: boolean}) {
       if (renderingReady && !pausedRef.current && !document.hidden) {
         animationElapsed += deltaSeconds;
         sun.rotation.y = advanceSolarRotationAngle(sun.rotation.y, 0.0018, deltaSeconds);
+        const coronaAnimation = getCoronaAnimationState(animationElapsed);
+        corona.scale.set(coronaAnimation.scaleX, coronaAnimation.scaleY, 1);
+        coronaMaterial.rotation = coronaAnimation.rotation;
+        coronaMaterial.opacity = coronaAnimation.opacity;
+        sunLimbUniforms.glowStrength.value = coronaAnimation.limbGlowStrength;
         for (const {config, material, sprite} of shootingStars) {
           const progress = getShootingStarProgress(animationElapsed, config.phaseOffsetSeconds);
           sprite.visible = progress !== null;

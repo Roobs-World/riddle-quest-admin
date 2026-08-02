@@ -51,7 +51,7 @@
     "PENALTIES": "Штрафы: {time}",
     "PROGRESS_LABEL": "Ход гонки",
     "YOU": "Вы",
-    "RIDDLE_NUMBER": "Загадка {number} из 15",
+    "RIDDLES_REMAINING": "Осталось загадок: {count}",
     "ANSWER_LABEL": "Ваш ответ",
     "GUESSES_REMAINING": "Осталось попыток: {count}",
     "HINT_BUTTON": "Подсказка",

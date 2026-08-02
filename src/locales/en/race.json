@@ -51,7 +51,7 @@
     "PENALTIES": "Penalties: {time}",
     "PROGRESS_LABEL": "Race progress",
     "YOU": "You",
-    "RIDDLE_NUMBER": "Riddle {number} of 15",
+    "RIDDLES_REMAINING": "{count} riddles remaining",
     "ANSWER_LABEL": "Your answer",
     "GUESSES_REMAINING": "{count} guesses remaining",
     "HINT_BUTTON": "Hint",

@@ -51,7 +51,7 @@
     "PENALTIES": "Penalizaciones: {time}",
     "PROGRESS_LABEL": "Progreso de la carrera",
     "YOU": "Tú",
-    "RIDDLE_NUMBER": "Acertijo {number} de 15",
+    "RIDDLES_REMAINING": "Quedan {count} acertijos",
     "ANSWER_LABEL": "Tu respuesta",
     "GUESSES_REMAINING": "Quedan {count} intentos",
     "HINT_BUTTON": "Pista",

@@ -51,7 +51,7 @@
     "PENALTIES": "Penalti: {time}",
     "PROGRESS_LABEL": "Kemajuan balapan",
     "YOU": "Kamu",
-    "RIDDLE_NUMBER": "Teka-teki {number} dari 15",
+    "RIDDLES_REMAINING": "{count} teka-teki tersisa",
     "ANSWER_LABEL": "Jawabanmu",
     "GUESSES_REMAINING": "Tersisa {count} tebakan",
     "HINT_BUTTON": "Petunjuk",

@@ -51,7 +51,7 @@
     "PENALTIES": "ペナルティ：{time}",
     "PROGRESS_LABEL": "レース進行",
     "YOU": "あなた",
-    "RIDDLE_NUMBER": "15問中 {number}問目",
+    "RIDDLES_REMAINING": "残り{count}問",
     "ANSWER_LABEL": "答え",
     "GUESSES_REMAINING": "残り{count}回",
     "HINT_BUTTON": "ヒント",

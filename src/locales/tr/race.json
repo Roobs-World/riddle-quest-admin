@@ -51,7 +51,7 @@
     "PENALTIES": "Cezalar: {time}",
     "PROGRESS_LABEL": "Yarış ilerlemesi",
     "YOU": "Sen",
-    "RIDDLE_NUMBER": "15 bilmeceden {number}.",
+    "RIDDLES_REMAINING": "{count} bilmece kaldı",
     "ANSWER_LABEL": "Cevabın",
     "GUESSES_REMAINING": "{count} tahmin kaldı",
     "HINT_BUTTON": "İpucu",

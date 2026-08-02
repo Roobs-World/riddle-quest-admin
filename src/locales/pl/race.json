@@ -51,7 +51,7 @@
     "PENALTIES": "Kary: {time}",
     "PROGRESS_LABEL": "Postęp wyścigu",
     "YOU": "Ty",
-    "RIDDLE_NUMBER": "Zagadka {number} z 15",
+    "RIDDLES_REMAINING": "Pozostało zagadek: {count}",
     "ANSWER_LABEL": "Twoja odpowiedź",
     "GUESSES_REMAINING": "Pozostało prób: {count}",
     "HINT_BUTTON": "Podpowiedź",
