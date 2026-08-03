@@ -5,6 +5,7 @@ import {logger} from "firebase-functions/v2";
 import {updateUserProfile} from "../gameplay/firestoreService";
 import {validateUsernameForProfanity} from "../utils/profanityFilter";
 import {captureException} from "../shared/sentry";
+import {browserCallableSecurityOptions} from "../shared/callableSecurity";
 import {
   BasicSuccessMessageResponseSchema,
   UpdateAvatarRequestSchema,
@@ -13,11 +14,6 @@ import {
 } from "../validation/requestSchemas";
 import {validateCallableRequest, validateCallableResponse} from "../validation/callableValidation";
 import {avatarDownloadUrl, decodeAvatarDataUrl} from "./avatarUpload";
-const jestWebCallableOptions = {
-  enforceAppCheck: process.env.JEST_ALLOW_WEB_CALLABLES !== "true",
-  // Cloud Run must accept the request before Firebase callable auth can validate it.
-  invoker: "public" as const,
-};
 
 async function syncLeaderboardProfileFields(
   userId: string,
@@ -51,7 +47,7 @@ async function syncLeaderboardProfileFields(
  * Updates the authenticated user's username in Firestore.
  * Validates for profanity and uniqueness before saving.
  */
-export const updateUsername = onCall(jestWebCallableOptions, async (request: CallableRequest<unknown>) => {
+export const updateUsername = onCall(browserCallableSecurityOptions, async (request: CallableRequest<unknown>) => {
   if (!request.auth) {
     throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
   }
@@ -76,7 +72,7 @@ export const updateUsername = onCall(jestWebCallableOptions, async (request: Cal
   try {
     await updateUserProfile(userId, {username: trimmed});
     await syncLeaderboardProfileFields(userId, {username: trimmed});
-    logger.info(`User ${userId} username updated to: ${trimmed}`);
+    logger.info("Authenticated user updated their username.");
     return validateCallableResponse(
       BasicSuccessMessageResponseSchema,
       {success: true, message: "Username updated successfully."},
@@ -89,7 +85,7 @@ export const updateUsername = onCall(jestWebCallableOptions, async (request: Cal
   }
 });
 
-export const updateAvatar = onCall(jestWebCallableOptions, async (request: CallableRequest<unknown>) => {
+export const updateAvatar = onCall(browserCallableSecurityOptions, async (request: CallableRequest<unknown>) => {
   if (!request.auth) {
     throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
   }

@@ -27,8 +27,8 @@ import {
 } from "../validation/requestSchemas";
 import {evaluateAchievements} from "./achievements";
 import {validateCallableRequest, validateCallableResponse} from "../validation/callableValidation";
+import {browserCallableSecurityOptions} from "../shared/callableSecurity";
 
-const jestWebCallableOptions = {enforceAppCheck: process.env.JEST_ALLOW_WEB_CALLABLES !== "true"};
 import {splitGraphemes, lowerCaseGraphemes} from "@qwordly/core/game";
 
 /**
@@ -40,7 +40,7 @@ import {splitGraphemes, lowerCaseGraphemes} from "@qwordly/core/game";
  * @return An object containing success status and new progress information.
  */
 export const skipRiddle = onCall(
-  jestWebCallableOptions,
+  browserCallableSecurityOptions,
   async (request: CallableRequest<SkipRiddleRequest>): Promise<SkipRiddleResponse> => {
     try {
       if (!request.auth) {
@@ -195,7 +195,7 @@ export const skipRiddle = onCall(
  * @return {Promise<{ newCoins: number }>} A Promise resolving to the new coin balance.
  */
 export const spendCoins = onCall(
-  jestWebCallableOptions,
+  browserCallableSecurityOptions,
   async (request: CallableRequest<SpendCoinsRequest>): Promise<{newCoins: number}> => {
     if (!request.auth) {
       throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
@@ -289,7 +289,7 @@ export const spendCoins = onCall(
  * evaluates hint-related achievements, and returns the revealed letter index and costs.
  */
 export const getHint = onCall(
-  jestWebCallableOptions,
+  browserCallableSecurityOptions,
   async (request: CallableRequest<z.infer<typeof GetHintRequestSchema>>) => {
     try {
       if (!request.auth) {

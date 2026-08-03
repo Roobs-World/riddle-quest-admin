@@ -9,12 +9,10 @@ import {
   GetCurrentDailyChallengeResponseSchema,
 } from "../validation/requestSchemas";
 import {validateCallableResponse} from "../validation/callableValidation";
+import {browserCallableSecurityOptions} from "../shared/callableSecurity";
 
 const DAILY_CHALLENGE_QUESTION_COUNT = 1;
 const CURRENT_DAILY_RIDDLE_DOC_ID = "current";
-const jestWebCallableOptions = {
-  enforceAppCheck: process.env.JEST_ALLOW_WEB_CALLABLES !== "true",
-};
 
 /**
  * Converts unknown date-like input to an ISO UTC day string (`YYYY-MM-DD`).
@@ -127,7 +125,7 @@ async function getFreshDailyChallengeDoc(locale: string = "en"): Promise<{
  */
 export const getCurrentDailyChallenge = onCall(
   {
-    ...jestWebCallableOptions,
+    ...browserCallableSecurityOptions,
     secrets: ["OPENAI_API_KEY"],
   },
   async (request: CallableRequest<unknown>): Promise<GetCurrentDailyChallengeResponse> => {
@@ -239,7 +237,7 @@ export const getCurrentDailyChallenge = onCall(
  * collection directly when Firestore rules or App Check prevent it.
  */
 export const getCurrentClassicRiddle = onCall(
-  jestWebCallableOptions,
+  browserCallableSecurityOptions,
   async (request: CallableRequest<{classicIndex?: number; locale?: string}>): Promise<GetCurrentDailyChallengeResponse> => {
     try {
       if (!request.auth) {

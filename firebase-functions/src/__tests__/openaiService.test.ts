@@ -143,9 +143,7 @@ describe("OpenAI Service", () => {
           type: "json_schema",
         }),
       });
-      expect(mockLogger.info).toHaveBeenCalledWith(
-        'Generated and quality-approved riddle: "What flies without wings?" -> "time" (4 chars)',
-      );
+      expect(mockLogger.info).toHaveBeenCalledWith("Generated and quality-approved a riddle.", {answerLength: 4});
     });
 
     test("requires an independent structured quality review before accepting a riddle", async () => {
@@ -236,9 +234,7 @@ describe("OpenAI Service", () => {
       const result = await generateUniqueRiddle();
 
       expect(result).toBeNull();
-      expect(mockLogger.warn).toHaveBeenCalledWith(
-        'Answer contains invalid characters: "word!". Must be only lowercase letters.',
-      );
+      expect(mockLogger.warn).toHaveBeenCalledWith("Generated answer contained invalid characters and was rejected.");
     });
 
     test("rejects a question that reveals the literal answer", async () => {
@@ -247,9 +243,7 @@ describe("OpenAI Service", () => {
       const result = await generateUniqueRiddle();
 
       expect(result).toBeNull();
-      expect(mockLogger.warn).toHaveBeenCalledWith(
-        'Question reveals the literal answer: "A joke makes people laugh." -> "joke".',
-      );
+      expect(mockLogger.warn).toHaveBeenCalledWith("Generated question revealed its answer and was rejected.");
     });
 
     test("normalizes smart punctuation before validation", async () => {
@@ -283,10 +277,9 @@ describe("OpenAI Service", () => {
 
       expect(result).toBeNull();
       expect(mockParse).toHaveBeenCalledTimes(2);
-      expect(mockLogger.warn).toHaveBeenCalledWith(
-        'Riddle rejected by quality review: "I can be bright and fill a room. What am I?" -> "light": ' +
-          "The clue also fits colour, music, or laughter.",
-      );
+      expect(mockLogger.warn).toHaveBeenCalledWith("Generated riddle was rejected by quality review.", {
+        issues: "The clue also fits colour, music, or laughter",
+      });
     });
 
     test("rejects a riddle when OpenAI returns an empty quality review", async () => {

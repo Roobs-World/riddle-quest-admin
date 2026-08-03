@@ -7,11 +7,11 @@ import type {CompleteGameRequestData, CompleteGameResponseData} from "../validat
 import {validateCallableRequest, validateCallableResponse} from "../validation/callableValidation";
 import {handleCompleteGameLogic} from "./submitGuessLogic";
 import {runGameCompletionOnce} from "./gameCompletionGuard";
+import {browserCallableSecurityOptions} from "../shared/callableSecurity";
 
 export const completeGame = onCall<CompleteGameRequestData, Promise<CompleteGameResponseData>>(
   {
-    enforceAppCheck: process.env.JEST_ALLOW_WEB_CALLABLES !== "true",
-    invoker: "public",
+    ...browserCallableSecurityOptions,
     secrets: ["OPENAI_API_KEY"],
   } as CallableOptions,
   async (request) => {

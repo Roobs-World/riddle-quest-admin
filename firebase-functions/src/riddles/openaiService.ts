@@ -123,7 +123,7 @@ function validateGeneratedRiddle(generatedRiddle: GeneratedRiddle): [string, str
   }
 
   if (clueContainsLiteralAnswer(question, answer)) {
-    functions.logger.warn(`Question reveals the literal answer: "${question}" -> "${answer}".`);
+    functions.logger.warn("Generated question revealed its answer and was rejected.");
     return null;
   }
 
@@ -135,7 +135,7 @@ function validateGeneratedRiddle(generatedRiddle: GeneratedRiddle): [string, str
   }
 
   if (!/^[\p{L}\p{M}\p{N}\s'-]+$/u.test(answer)) {
-    functions.logger.warn(`Answer contains invalid characters: "${answer}". Must be only lowercase letters.`);
+    functions.logger.warn("Generated answer contained invalid characters and was rejected.");
     return null;
   }
 
@@ -218,7 +218,7 @@ async function reviewGeneratedRiddle(
     const issues = (
       review.issues.length > 0 ? review.issues.join("; ") : "one or more quality checks failed"
     ).replace(/[.!?]+$/u, "");
-    functions.logger.warn(`Riddle rejected by quality review: "${question}" -> "${answer}": ${issues}.`);
+    functions.logger.warn("Generated riddle was rejected by quality review.", {issues});
     return false;
   }
 
@@ -299,7 +299,7 @@ export async function generateUniqueRiddle(
       return null;
     }
 
-    functions.logger.info(`Generated and quality-approved riddle: "${question}" -> "${answer}" (${answer.length} chars)`);
+    functions.logger.info("Generated and quality-approved a riddle.", {answerLength: answer.length});
     return validatedRiddle;
   } catch (error) {
     functions.logger.error(`Error generating riddle with OpenAI (model: ${model}):`, error);

@@ -84,7 +84,11 @@ export async function handleGuessLogic(
 
     // Get riddle from the appropriate collection based on game mode
     const riddle = await getRiddleByGameMode(riddleId, gameMode, locale);
-    functions.logger.debug("handleGuessLogic - Fetched riddle:", JSON.stringify(riddle));
+    functions.logger.debug("Fetched canonical riddle for server-side guess validation.", {
+      gameMode,
+      locale,
+      riddleId,
+    });
 
     if (!riddle || !riddle.answer) {
       const errorMessage = !riddle

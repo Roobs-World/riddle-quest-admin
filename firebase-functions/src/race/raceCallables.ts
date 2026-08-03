@@ -40,12 +40,9 @@ import {
   submitRaceGuessForUser,
 } from "./raceService";
 import {assertRaceAccess, getRaceAccessForUser, recordRaceAnalyticsForUser} from "./raceRollout";
+import {browserCallableSecurityOptions} from "../shared/callableSecurity";
 
-const jestWebCallableOptions = {
-  enforceAppCheck: process.env.JEST_ALLOW_WEB_CALLABLES !== "true",
-  // Cloud Run must accept the request before Firebase callable auth can validate it.
-  invoker: "public" as const,
-};
+const jestWebCallableOptions = browserCallableSecurityOptions;
 
 export const raceHintCallableOptions = {
   ...jestWebCallableOptions,

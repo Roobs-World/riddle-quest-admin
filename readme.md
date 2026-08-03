@@ -113,7 +113,6 @@ Use `firebase-functions/.env.example` as the field reference. Non-secret deploye
 | `JEST_GAME_ORIGIN` | Yes | Comma-separated allowed browser origins, normally `https://jest.com`; localhost is only for hosted-emulator testing |
 | `JEST_PRODUCT_SKUS` | Yes for coin sales | Comma-separated defense-in-depth allowlist of enabled one-off product SKUs |
 | `JEST_SUBSCRIPTION_SKUS` | Yes for premium | Comma-separated enabled subscription SKUs |
-| `JEST_ALLOW_WEB_CALLABLES` | Yes | Keep `false` in production so Firebase App Check is enforced |
 | `OPENAI_MODEL` | No | Riddle generation/review model; defaults to the value in `openaiService.ts` |
 | `SENTRY_DSN` | No | Enables server-side Sentry reporting when present |
 
