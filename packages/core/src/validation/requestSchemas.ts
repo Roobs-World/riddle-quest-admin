@@ -56,7 +56,7 @@ export const CompleteGameRequestDataSchema = z
   .object({
     riddleId: z.string().min(1),
     gameMode: z.enum(["challenge", "classic"]),
-    attempts: z.number().int().positive(),
+    attempts: z.number().int().positive().max(100),
     isCorrect: z.boolean(),
   })
   .strict();

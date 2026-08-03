@@ -1,5 +1,6 @@
 import type {RaceOpponent} from "@qwordly/core/race";
 
+/** Returns the opponent score reached at an authoritative adjusted elapsed time. */
 export const getGhostCorrectCount = (opponent: RaceOpponent | undefined, adjustedElapsedMs: number): number => {
   if (!opponent) return 0;
   if (adjustedElapsedMs >= opponent.adjustedFinishMs) return 10;

@@ -12,7 +12,7 @@ import type {ListRaceCategoriesResponse} from "@qwordly/core/race";
 import {SpinningWheelLoader} from "./SpinningWheelLoader";
 import type {JestPlayerData, JestPlayerDataUpdate} from "../jest/types";
 import {restoreJestProfileWhileServerLoads} from "../jest/playerData";
-import {isRaceTo10Enabled} from "./race/raceFeatureFlag";
+import {isRaceTo10Enabled} from "./race/logic/raceFeatureFlag";
 import {trackEvent} from "../analytics/googleAnalytics";
 type OperationName =
   | "loadRiddle"

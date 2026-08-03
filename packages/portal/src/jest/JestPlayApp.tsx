@@ -5,7 +5,12 @@ import {PlayHostApp} from "../play/PlayHostApp";
 import {JestBackendClient, type JestBackendPort} from "./backend";
 import {JestSdkPlatform} from "./JestSdkPlatform";
 import {JestPurchaseCoordinator} from "./purchases";
-import {markJestPlayable, startJestSession, type JestStartupUpdate} from "./startup";
+import {
+  JEST_SDK_INIT_TIMEOUT_MESSAGE,
+  markJestPlayable,
+  startJestSession,
+  type JestStartupUpdate,
+} from "./startup";
 import type {JestPlayerData, JestPlayerDataUpdate, JestRegistrationOverlayHandle, JestSession} from "./types";
 import {tr, useLocale} from "../play/i18n";
 import {MockJestPlatform} from "./MockJestPlatform";
@@ -17,6 +22,7 @@ import {useJestSharing} from "./sharing/useJestSharing";
 import {createRegistrationEntryPayload, type RegistrationSource} from "./registrationAttribution";
 import {resolveJestRuntimeMode} from "./runtimeMode";
 import {trackEvent, trackPurchase, trackScreen} from "../analytics/googleAnalytics";
+import {hasTrustedTestHarnessMarker} from "../testHarness";
 
 export function JestPlayApp() {
   const locale = useLocale();
@@ -26,6 +32,7 @@ export function JestPlayApp() {
     development: import.meta.env.DEV,
     embedded: window.parent !== window,
     harness,
+    testHarnessEnabled: import.meta.env.DEV || hasTrustedTestHarnessMarker(),
   });
   const {authHarness, mockBackend: mockRuntime} = runtimeMode;
   const mockRegistered = searchParams.get("registered") === "1";
@@ -178,7 +185,14 @@ export function JestPlayApp() {
           utm_term: result.value.entryIntent.utmTerm ?? "none",
           utm_content: result.value.entryIntent.utmContent ?? "none",
         });
-      } else setError("message" in result ? result.message : "Jest startup was cancelled");
+      } else {
+        const message = "message" in result ? result.message : "Jest startup was cancelled";
+        setError(
+          message === JEST_SDK_INIT_TIMEOUT_MESSAGE
+            ? tr("Errors.CHECK_INTERNET_AND_TRY_AGAIN")
+            : message,
+        );
+      }
     });
     return () => {
       active = false;

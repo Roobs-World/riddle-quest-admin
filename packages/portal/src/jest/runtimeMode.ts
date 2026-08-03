@@ -9,13 +9,15 @@ export function resolveJestRuntimeMode({
   development,
   embedded,
   harness,
+  testHarnessEnabled,
 }: {
   development: boolean;
   embedded: boolean;
   harness: string | null;
+  testHarnessEnabled: boolean;
 }): JestRuntimeMode {
-  const authHarness = harness === "jest-auth" || harness === "race-auth";
-  const deterministicHarness = harness === "jest" || harness === "dev" || harness === "race";
+  const authHarness = testHarnessEnabled && (harness === "jest-auth" || harness === "race-auth");
+  const deterministicHarness = testHarnessEnabled && (harness === "jest" || harness === "dev" || harness === "race");
   const localSdkMock = development && !embedded && !authHarness && !deterministicHarness;
   return {
     authHarness,

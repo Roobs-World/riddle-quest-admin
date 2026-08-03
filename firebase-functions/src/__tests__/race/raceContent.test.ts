@@ -5,8 +5,8 @@ import {
   inferCanonicalRiddleId,
   inferRaceDifficulty,
   type ExistingRaceContentRecord,
-} from "../race/raceContentMigration";
-import {validateRacePool} from "../race/raceContentValidation";
+} from "../../race/raceContentMigration";
+import {validateRacePool} from "../../race/raceContentValidation";
 
 const record = ({
   locale = "en",

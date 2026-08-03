@@ -47,6 +47,16 @@ const jestWebCallableOptions = {
   invoker: "public" as const,
 };
 
+export const raceHintCallableOptions = {
+  ...jestWebCallableOptions,
+  minInstances: 1,
+};
+
+export const raceStartCallableOptions = {
+  ...jestWebCallableOptions,
+  minInstances: 1,
+};
+
 const requireUserId = (request: CallableRequest<unknown>): string => {
   if (!request.auth) {
     throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
@@ -85,7 +95,7 @@ export const listRaceCategories = onCall(jestWebCallableOptions, async (request:
   return validateCallableResponse(ListRaceCategoriesResponseSchema, response, "listRaceCategories");
 });
 
-export const startRaceRun = onCall(jestWebCallableOptions, async (request: CallableRequest<unknown>) => {
+export const startRaceRun = onCall(raceStartCallableOptions, async (request: CallableRequest<unknown>) => {
   const input = validateCallableRequest(StartRaceRunRequestSchema, request.data, "startRaceRun");
   const userId = requireUserId(request);
   await assertRaceAccess(userId, input.locale);
@@ -100,10 +110,10 @@ export const submitRaceGuess = onCall(jestWebCallableOptions, async (request: Ca
   return validateCallableResponse(SubmitRaceGuessResponseSchema, response, "submitRaceGuess");
 });
 
-export const requestRaceHint = onCall(jestWebCallableOptions, async (request: CallableRequest<unknown>) => {
-  const userId = await requireRaceUser(request);
+export const requestRaceHint = onCall(raceHintCallableOptions, async (request: CallableRequest<unknown>) => {
+  const userId = requireUserId(request);
   const input = validateCallableRequest(RequestRaceHintRequestSchema, request.data, "requestRaceHint");
-  const response = await requestRaceHintForUser(userId, input);
+  const response = await requestRaceHintForUser(userId, input, {enforceAccess: true});
   return validateCallableResponse(RequestRaceHintResponseSchema, response, "requestRaceHint");
 });
 

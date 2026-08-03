@@ -58,6 +58,7 @@ describeSoak("low-end mobile stability", () => {
     });
     page.on("pageerror", (error) => runtimeErrors.push(error.message));
     await page.addInitScript(() => {
+      Object.assign(window, {__RIDDLE_QUEST_BROWSER_TEST__: true});
       Object.defineProperty(navigator, "hardwareConcurrency", {configurable: true, value: 4});
       Object.defineProperty(navigator, "deviceMemory", {configurable: true, value: 4});
       localStorage.setItem("riddleQuest:onboarding:jest-guest", "seen");

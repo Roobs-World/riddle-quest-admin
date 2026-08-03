@@ -1039,17 +1039,17 @@ p {
   top: calc(12px - var(--modal-border-width));
   right: calc(12px - var(--modal-border-width));
   z-index: 2;
-  width: 48px;
-  height: 48px;
+  width: 60px;
+  height: 60px;
   display: grid;
   place-items: center;
   margin: 0;
   border: 1px solid transparent;
-  border-radius: 12px;
+  border-radius: 15px;
   background: #fffdf7;
   color: #607672;
   padding: 0;
-  font-size: 30px;
+  font-size: 40px;
   line-height: 1;
   font-weight: 900;
 }
@@ -2229,6 +2229,10 @@ p {
     linear-gradient(155deg, #0e2731, #153a45 58%, #13362c);
 }
 
+.race-operation-loader {
+  z-index: 125;
+}
+
 .race-topbar {
   width: min(900px, 100%);
   margin: 0 auto 20px;
@@ -2433,6 +2437,19 @@ p {
   font-size: 0.68rem;
   font-weight: 800;
 }
+.race-rail-status {
+  width: 100%;
+  display: grid;
+  gap: 6px;
+  color: #d3e1e6;
+  text-align: center;
+  font-size: 0.68rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+.race-rail-status span {
+  display: block;
+}
 .race-feedback {
   width: 100%;
   padding: 8px 5px;
@@ -2526,6 +2543,14 @@ p {
   width: 25px;
   height: 20px;
 }
+.race-rail-game-info {
+  width: 100%;
+  min-width: 0;
+  padding-top: 12px;
+  display: grid;
+  gap: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+}
 .race-progress {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2585,9 +2610,8 @@ p {
 }
 .race-riddle-surface .riddle-card {
   min-height: 190px;
-  grid-template-columns: minmax(0, 1fr) auto;
-  place-items: center stretch;
-  column-gap: 28px;
+  grid-template-columns: minmax(0, 1fr);
+  place-items: center;
   padding: 34px 32px 22px;
 }
 .race-riddle-surface .riddle-card h2 {
@@ -2596,18 +2620,6 @@ p {
   text-align: center;
   color: #171717;
   font: 400 36px/1.22 "Poetsen One", "Poppins", sans-serif;
-}
-.race-riddle-status {
-  min-width: 160px;
-  display: grid;
-  gap: 8px;
-  justify-items: end;
-  color: #516066;
-  text-align: right;
-  font-weight: 700;
-}
-.race-riddle-status span {
-  display: block;
 }
 .race-riddle-surface .riddle-card > p {
   margin: 5px 0 0;
@@ -2765,6 +2777,11 @@ p {
     padding: 2px 4px;
     font-size: 0.52rem;
   }
+  .race-rail-status {
+    gap: 4px;
+    font-size: 0.56rem;
+    line-height: 1.15;
+  }
   .race-feedback {
     padding: 6px 3px;
     font-size: 0.6rem;
@@ -2785,6 +2802,10 @@ p {
   }
   .race-rail-header {
     gap: 4px;
+  }
+  .race-rail-game-info {
+    padding-top: 7px;
+    gap: 7px;
   }
   .race-rail-header h1 {
     font-size: 0.68rem;
@@ -2810,19 +2831,12 @@ p {
   }
   .race-riddle-surface .riddle-card {
     min-height: 156px;
-    grid-template-columns: minmax(0, 1fr) 104px;
-    column-gap: 10px;
+    grid-template-columns: minmax(0, 1fr);
     padding: 24px 14px 14px;
     border-radius: 24px;
   }
   .race-riddle-surface .riddle-card h2 {
     font-size: clamp(20px, 6vw, 27px);
-  }
-  .race-riddle-status {
-    min-width: 0;
-    gap: 5px;
-    font-size: 12px;
-    line-height: 1.25;
   }
   .race-riddle-surface .guess-board {
     max-width: min(250px, 100%);

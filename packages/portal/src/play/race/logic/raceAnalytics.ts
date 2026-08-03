@@ -1,11 +1,13 @@
 import type {GameToHostMessage} from "@qwordly/core/bridge";
 import {RACE_ANALYTICS_FIELDS, type RaceAnalyticsEventName} from "@qwordly/core/race";
-import {createRequestId} from "../requestIds";
+import {createRequestId} from "../../requestIds";
 
+/** Builds a host analytics message containing only fields allowed for the race event. */
 export const createRaceAnalyticsMessage = (
   eventName: RaceAnalyticsEventName,
   params: Record<string, string | number | boolean> = {},
 ): Extract<GameToHostMessage, {type: "game:analytics"}> => {
+  /** Field names accepted by the shared schema for this event. */
   const allowed = new Set<string>(RACE_ANALYTICS_FIELDS[eventName]);
   return {
     type: "game:analytics",

@@ -145,7 +145,7 @@ export const GameCompleteGameMessageSchema = envelope(
   z.object({
     riddleId: z.string().min(1),
     gameMode: GameModeSchema,
-    attempts: z.number().int().positive(),
+    attempts: z.number().int().positive().max(100),
     isCorrect: z.boolean(),
   }),
 );

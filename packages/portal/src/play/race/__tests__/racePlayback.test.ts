@@ -1,6 +1,6 @@
 import {describe, expect, it} from "@jest/globals";
 import type {RaceOpponent} from "@qwordly/core/race";
-import {getGhostCorrectCount} from "../racePlayback";
+import {getGhostCorrectCount} from "../logic/racePlayback";
 
 const opponent: RaceOpponent = {
   displayName: "Recorded Rival",

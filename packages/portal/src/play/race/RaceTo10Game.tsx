@@ -7,7 +7,6 @@ import {
   ListRaceCategoriesResponseSchema,
   ListRaceInboxResponseSchema,
   PublishRaceChallengeResponseSchema,
-  RACE_TARGET_CORRECT,
   RaceChallengePreviewSchema,
   RaceOutcomeSchema,
   RaceRunResponseSchema,
@@ -24,16 +23,24 @@ import {
   type RaceRunView,
 } from "@qwordly/core/race";
 import {tr} from "../i18n";
-import {ControlledGuessBoard, ControlledKeyboard, ForwardIcon, HintIcon} from "../GameFrameControls";
 import {HOST_TO_GAME_EVENT} from "../localBridge";
 import {createRequestId} from "../requestIds";
-import {createRaceAnalyticsMessage} from "./raceAnalytics";
-import {getRaceCountdownStep, RACE_COUNTDOWN_START} from "./raceCountdown";
-import {getGhostCorrectCount} from "./racePlayback";
+import {createRaceAnalyticsMessage} from "./logic/raceAnalytics";
+import {getRaceCountdownStep, RACE_COUNTDOWN_START} from "./logic/raceCountdown";
+import {getGhostCorrectCount} from "./logic/racePlayback";
+import {createRaceAttempt, findFirstEditableRaceSlot} from "./logic/racePresentation";
+import {RaceTopbar} from "./components/RaceHeader";
+import {RaceGameplay} from "./components/RaceGameplay";
+import {RaceCategoriesPanel, RaceChallengePanel, RaceInboxPanel} from "./components/RaceLobbyPanels";
+import {RaceCountdown} from "./components/RaceCountdown";
+import {RaceResultPanel} from "./components/RaceResultPanel";
+import {RaceQuitDialog} from "./components/RaceQuitDialog";
 import {trackEvent, trackScreen} from "../../analytics/googleAnalytics";
-import coinUrl from "../../../../../assets/images/coin.svg";
+import {SpinningWheelLoader} from "../SpinningWheelLoader";
 
+/** Screens controlled by the Race to 10 client state machine. */
 type Stage = "categories" | "challenge" | "inbox" | "countdown" | "racing" | "result";
+/** Host operations that can be pending during the multiplayer flow. */
 type RaceOperation =
   | "raceCategories"
   | "raceStart"
@@ -46,29 +53,15 @@ type RaceOperation =
   | "raceOutcome"
   | "raceInbox";
 
+/** Stable empty category list used as the default prop value. */
 const EMPTY_CATEGORIES: ListRaceCategoriesResponse["categories"] = [];
 
+/** Local-storage key used to remember the currently active race run. */
 const ACTIVE_RACE_KEY = "riddleQuest:activeRaceRun";
+/** Minimum duration of the answer-submission loader to prevent visual flicker. */
+const RACE_GUESS_LOADER_MIN_VISIBLE_MS = 180;
 
-const formatTime = (milliseconds: number) => {
-  const seconds = Math.max(0, milliseconds) / 1_000;
-  return `${Math.floor(seconds / 60)}:${(seconds % 60).toFixed(1).padStart(4, "0")}`;
-};
-
-const createAttempt = (riddle: NonNullable<RaceRunView["currentRiddle"]> | null) => {
-  if (!riddle) return [];
-  const revealed = new Map(riddle.revealedLetters.map(({index, letter}) => [index, letter]));
-  return Array.from({length: riddle.answerLength}, (_, index) => revealed.get(index) ?? "");
-};
-
-const firstEditableSlot = (riddle: NonNullable<RaceRunView["currentRiddle"]> | null) => {
-  if (!riddle) return 0;
-  const revealed = new Set(riddle.revealedLetters.map(({index}) => index));
-  const index = Array.from({length: riddle.answerLength}, (_, position) => position)
-    .find((position) => !revealed.has(position));
-  return index ?? 0;
-};
-
+/** Coordinates the complete server-authoritative Race to 10 multiplayer experience. */
 export function RaceTo10Game({
   locale,
   challengeId,
@@ -86,45 +79,68 @@ export function RaceTo10Game({
   onClose: () => void;
   initialCategories?: ListRaceCategoriesResponse["categories"];
 }) {
+  /** Currently visible multiplayer screen. */
   const [stage, setStage] = useState<Stage>(openInbox ? "inbox" : challengeId ? "challenge" : "categories");
+  /** Challenge being loaded or accepted by this client. */
   const [activeChallengeId, setActiveChallengeId] = useState(openInbox ? undefined : challengeId);
+  /** Challenge used to establish a rematch rivalry. */
   const [rivalryChallengeId, setRivalryChallengeId] = useState<string>();
+  /** Server-provided categories available to the player. */
   const [categories, setCategories] = useState<ListRaceCategoriesResponse["categories"]>(initialCategories);
-  const [selectedCategory, setSelectedCategory] = useState<RaceCategoryId | null>(null);
+  /** Preview of an incoming multiplayer challenge. */
   const [challenge, setChallenge] = useState<RaceChallengePreview | null>(null);
+  /** Completed race results available in the multiplayer inbox. */
   const [inboxItems, setInboxItems] = useState<RaceInboxItem[]>([]);
+  /** Latest authoritative view of the active or completed run. */
   const [run, setRun] = useState<RaceRunView | null>(null);
+  /** Authoritative outcome returned after a run finishes. */
   const [outcome, setOutcome] = useState<RaceOutcome | null>(null);
+  /** Number currently displayed by the pre-race countdown. */
   const [countdown, setCountdown] = useState(RACE_COUNTDOWN_START);
+  /** Letters currently entered for the active riddle. */
   const [currentLetters, setCurrentLetters] = useState<string[]>([]);
+  /** Answer slot that receives the next keyboard input. */
   const [activeSlotIndex, setActiveSlotIndex] = useState(0);
+  /** Locally rendered history of guesses scored by the server. */
   const [raceGuesses, setRaceGuesses] = useState<ScoredGuess[]>([]);
+  /** Temporary correctness feedback for the latest submitted guess. */
   const [feedback, setFeedback] = useState<"correct" | "incorrect" | null>(null);
+  /** Temporary text describing a server-applied time penalty. */
   const [penaltyFlash, setPenaltyFlash] = useState<string | null>(null);
+  /** Whether the active-race abandonment confirmation is visible. */
   const [quitConfirmationOpen, setQuitConfirmationOpen] = useState(false);
+  /** Host operation currently awaiting a matching response. */
   const [pending, setPending] = useState<RaceOperation | null>(null);
+  /** Whether the answer-submission loading overlay is visible. */
+  const [raceGuessLoading, setRaceGuessLoading] = useState(false);
+  /** Latest recoverable multiplayer error shown to the player. */
   const [error, setError] = useState<string | null>(null);
+  /** Published challenge created from the completed run. */
   const [published, setPublished] = useState<ReturnType<typeof PublishRaceChallengeResponseSchema.parse> | null>(null);
+  /** Local receipt time used to advance the displayed authoritative clock. */
   const [receivedAtMs, setReceivedAtMs] = useState(Date.now());
+  /** Render trigger used to refresh the displayed race clock. */
   const [, setTick] = useState(0);
+  /** Request identifier expected by the next host-operation response. */
   const expectedRequestRef = useRef<string | null>(null);
+  /** High-resolution time at which the guess loader became visible. */
+  const raceGuessLoadingStartedAtRef = useRef(0);
+  /** Timer responsible for hiding the guess loader after its minimum duration. */
+  const raceGuessLoadingTimerRef = useRef<number | undefined>(undefined);
+  /** Whether a guess loader lifecycle is currently active. */
+  const raceGuessLoadingActiveRef = useRef(false);
+  /** Whether the loader must remain visible until a separate outcome response arrives. */
+  const raceGuessAwaitingOutcomeRef = useRef(false);
+  /** Latest rivalry identifier available synchronously to rematch callbacks. */
   const rivalryChallengeIdRef = useRef<string | undefined>(undefined);
+  /** Root race dialog used for focus containment and viewport measurement. */
   const dialogRef = useRef<HTMLElement | null>(null);
+  /** Viewport whose height is adjusted when gameplay is scaled. */
   const gameplayViewportRef = useRef<HTMLDivElement | null>(null);
+  /** Natural gameplay surface measured for responsive scaling. */
   const gameplayRef = useRef<HTMLDivElement | null>(null);
+  /** Quit dialog used for focus management while abandonment is confirmed. */
   const quitDialogRef = useRef<HTMLDivElement | null>(null);
-  const formattedCoins = coins.toLocaleString();
-
-  const coinBalance = (
-    <div
-      className="race-coin-balance"
-      aria-label={`${tr("Profile.TOTAL_COINS_LABEL")} ${formattedCoins}`}
-    >
-      <strong>{formattedCoins}</strong>
-      <img src={coinUrl} alt="" />
-    </div>
-  );
-
   useEffect(() => {
     trackScreen(`multiplayer_${stage}`);
   }, [stage]);
@@ -133,19 +149,33 @@ export function RaceTo10Game({
     if (!challengeId) trackEvent("race_mode_viewed");
   }, [challengeId]);
 
+  /** Resets local answer input from the latest authoritative riddle. */
   const resetAttempt = useCallback((nextRun: RaceRunView) => {
-    setCurrentLetters(createAttempt(nextRun.currentRiddle));
-    setActiveSlotIndex(firstEditableSlot(nextRun.currentRiddle));
+    setCurrentLetters(createRaceAttempt(nextRun.currentRiddle));
+    setActiveSlotIndex(findFirstEditableRaceSlot(nextRun.currentRiddle));
     setRaceGuesses([]);
     setFeedback(null);
   }, []);
 
+  /** Sends one correlated multiplayer operation to the host bridge. */
   const send = useCallback(
     (operation: RaceOperation, type: GameToHostMessage["type"], payload: Record<string, unknown>) => {
+      /** Correlation identifier shared by the bridge message and server receipt. */
       const requestId = createRequestId(operation);
+      /** Whether the operation requires an idempotency receipt in its payload. */
       const requiresReceipt = ["raceStart", "raceGuess", "raceHint", "raceSkip", "raceAbandon", "racePublish"].includes(operation);
       expectedRequestRef.current = requestId;
       setPending(operation);
+      if (operation === "raceGuess") {
+        if (raceGuessLoadingTimerRef.current !== undefined) {
+          window.clearTimeout(raceGuessLoadingTimerRef.current);
+          raceGuessLoadingTimerRef.current = undefined;
+        }
+        raceGuessLoadingStartedAtRef.current = performance.now();
+        raceGuessLoadingActiveRef.current = true;
+        raceGuessAwaitingOutcomeRef.current = false;
+        setRaceGuessLoading(true);
+      }
       setError(null);
       postToHost({
         type,
@@ -155,16 +185,47 @@ export function RaceTo10Game({
     },
     [postToHost],
   );
+  /** Ends the current guess-loader lifecycle after its minimum visible duration. */
+  const finishRaceGuessLoading = useCallback(() => {
+    /** Time for which the loader has already remained visible. */
+    const elapsedMs = performance.now() - raceGuessLoadingStartedAtRef.current;
+    /** Additional delay required to meet the minimum visible duration. */
+    const remainingMs = Math.max(0, RACE_GUESS_LOADER_MIN_VISIBLE_MS - elapsedMs);
+    raceGuessLoadingTimerRef.current = window.setTimeout(() => {
+      raceGuessLoadingActiveRef.current = false;
+      raceGuessAwaitingOutcomeRef.current = false;
+      setRaceGuessLoading(false);
+      raceGuessLoadingTimerRef.current = undefined;
+    }, remainingMs);
+  }, []);
+  /** Clears pending UI for a completed host operation and coordinates loader state. */
+  const finishOperation = useCallback((operation: RaceOperation) => {
+    setPending((current) => current === operation ? null : current);
+    if (operation === "raceGuess" && !raceGuessAwaitingOutcomeRef.current) {
+      finishRaceGuessLoading();
+    } else if (operation === "raceOutcome" && raceGuessLoadingActiveRef.current) {
+      finishRaceGuessLoading();
+    }
+  }, [finishRaceGuessLoading]);
+
+  useEffect(() => () => {
+    if (raceGuessLoadingTimerRef.current !== undefined) {
+      window.clearTimeout(raceGuessLoadingTimerRef.current);
+    }
+  }, []);
+  /** Emits a schema-constrained multiplayer analytics event through the host. */
   const analytics = useCallback(
     (eventName: RaceAnalyticsEventName, params: Record<string, string | number | boolean> = {}) =>
       postToHost(createRaceAnalyticsMessage(eventName, params)),
     [postToHost],
   );
+  /** Opens and refreshes the multiplayer results inbox. */
   const showInbox = useCallback(() => {
     setStage("inbox");
     send("raceInbox", "game:listRaceInbox", {limit: 20});
   }, [send]);
 
+  /** Closes the race or opens confirmation when an active run would be abandoned. */
   const requestClose = useCallback(() => {
     if (stage === "racing" && run?.status === "active") {
       setQuitConfirmationOpen(true);
@@ -173,6 +234,7 @@ export function RaceTo10Game({
     onClose();
   }, [onClose, run?.status, stage]);
 
+  /** Stores a new authoritative run view and requests its outcome when complete. */
   const updateRun = useCallback(
     (next: RaceRunView) => {
       setRun(next);
@@ -185,8 +247,10 @@ export function RaceTo10Game({
   );
 
   useEffect(() => {
+    /** Element focused before the modal race experience opened. */
     const previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     dialogRef.current?.focus();
+    /** Handles escape-to-close and keyboard focus containment. */
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         event.preventDefault();
@@ -227,6 +291,7 @@ export function RaceTo10Game({
   }, [quitConfirmationOpen]);
 
   useEffect(() => {
+    /** Deferred request used to avoid issuing host messages during render. */
     const timer = window.setTimeout(() => {
       if (openInbox) send("raceInbox", "game:listRaceInbox", {limit: 20});
       else if (challengeId) send("raceChallenge", "game:getRaceChallenge", {challengeId});
@@ -242,6 +307,7 @@ export function RaceTo10Game({
   }, [analytics, challengeId, initialCategories, locale, openInbox, send]);
 
   useEffect(() => {
+    /** Processes correlated race-operation responses emitted by the host bridge. */
     const handle = (event: Event) => {
       let message;
       try {
@@ -252,13 +318,13 @@ export function RaceTo10Game({
       if (message.type !== "host:operationResult" || !message.payload.operation.startsWith("race")) return;
       if (message.requestId !== expectedRequestRef.current) return;
       const operation = message.payload.operation as RaceOperation;
-      setPending(null);
       if (!message.payload.ok) {
         setError(message.payload.error ?? tr("RaceTo10.ERROR_GENERIC"));
         if (operation === "raceStart") {
           setRun(null);
           setStage(activeChallengeId ? "challenge" : "categories");
         }
+        finishOperation(operation);
         return;
       }
       try {
@@ -272,7 +338,6 @@ export function RaceTo10Game({
         } else if (operation === "raceChallenge") {
           const preview = RaceChallengePreviewSchema.parse(message.payload.data);
           setChallenge(preview);
-          setSelectedCategory(preview.categoryId);
           analytics("race_link_entered");
         } else if (operation === "raceStart") {
           const nextRun = RaceRunResponseSchema.parse(message.payload.data).run;
@@ -290,6 +355,7 @@ export function RaceTo10Game({
         } else if (operation === "raceGuess") {
           const result = SubmitRaceGuessResponseSchema.parse(message.payload.data);
           const previousRiddle = run?.currentRiddle?.riddleId;
+          raceGuessAwaitingOutcomeRef.current = result.run.status !== "active";
           updateRun(result.run);
           if (result.autoSkipped) setPenaltyFlash(tr("RaceTo10.SKIP_PENALTY"));
           if (previousRiddle !== result.run.currentRiddle?.riddleId) {
@@ -299,8 +365,8 @@ export function RaceTo10Game({
               ...guesses,
               {guess: currentLetters, feedback: result.feedback.map(({status}) => status)},
             ]);
-            setCurrentLetters(createAttempt(result.run.currentRiddle));
-            setActiveSlotIndex(firstEditableSlot(result.run.currentRiddle));
+            setCurrentLetters(createRaceAttempt(result.run.currentRiddle));
+            setActiveSlotIndex(findFirstEditableRaceSlot(result.run.currentRiddle));
           }
           setFeedback(result.isCorrect ? "correct" : "incorrect");
         } else if (operation === "raceHint") {
@@ -311,7 +377,7 @@ export function RaceTo10Game({
             next[result.index] = result.revealedLetter;
             return next;
           });
-          if (activeSlotIndex === result.index) setActiveSlotIndex(firstEditableSlot(result.run.currentRiddle));
+          if (activeSlotIndex === result.index) setActiveSlotIndex(findFirstEditableRaceSlot(result.run.currentRiddle));
           setPenaltyFlash(tr("RaceTo10.HINT_PENALTY"));
           analytics("race_hint_used", {penaltyMs: 15_000});
         } else if (operation === "raceSkip") {
@@ -344,14 +410,17 @@ export function RaceTo10Game({
         }
       } catch {
         setError(tr("RaceTo10.ERROR_INVALID_RESPONSE"));
+      } finally {
+        finishOperation(operation);
       }
     };
     window.addEventListener(HOST_TO_GAME_EVENT, handle);
     return () => window.removeEventListener(HOST_TO_GAME_EVENT, handle);
-  }, [activeChallengeId, activeSlotIndex, analytics, currentLetters, locale, onClose, resetAttempt, run?.currentRiddle?.riddleId, send, updateRun]);
+  }, [activeChallengeId, activeSlotIndex, analytics, currentLetters, finishOperation, locale, onClose, resetAttempt, run?.currentRiddle?.riddleId, send, updateRun]);
 
   useEffect(() => {
     if (stage !== "countdown") return;
+    /** Next deterministic transition for the synchronized countdown. */
     const step = getRaceCountdownStep(countdown, Boolean(run));
     if (step.kind === "wait") return;
     const timer = window.setTimeout(() => {
@@ -374,7 +443,9 @@ export function RaceTo10Game({
     const gameplay = gameplayRef.current;
     if (!screen || !viewport || !gameplay) return;
 
+    /** Most recently scheduled gameplay-layout animation frame. */
     let frame = 0;
+    /** Scales gameplay to fit the available race dialog height. */
     const fitGameplay = () => {
       window.cancelAnimationFrame(frame);
       frame = window.requestAnimationFrame(() => {
@@ -393,6 +464,7 @@ export function RaceTo10Game({
     };
 
     fitGameplay();
+    /** Observes layout changes that require gameplay rescaling. */
     const observer = new ResizeObserver(fitGameplay);
     observer.observe(screen);
     observer.observe(gameplay);
@@ -419,6 +491,7 @@ export function RaceTo10Game({
     return () => window.clearTimeout(timer);
   }, [feedback]);
 
+  /** Authoritative adjusted elapsed time advanced locally since the last response. */
   const adjustedNow = run
     ? Math.min(
         run.rules.maxAdjustedTimeMs,
@@ -431,8 +504,11 @@ export function RaceTo10Game({
     if (run.status === "active") window.localStorage.setItem(ACTIVE_RACE_KEY, run.runId);
     else window.localStorage.removeItem(ACTIVE_RACE_KEY);
   }, [run]);
+  /** Opponent score replayed against the adjusted race clock. */
   const ghostCorrect = useMemo(() => getGhostCorrectCount(run?.opponent, adjustedNow), [adjustedNow, run?.opponent]);
+  /** Best server-scored feedback seen for each keyboard letter. */
   const letterStates = useMemo(() => {
+    /** Highest-priority feedback status accumulated for each letter. */
     const states: Record<string, Feedback> = {};
     for (const scoredGuess of raceGuesses) {
       scoredGuess.guess.forEach((letter, index) => {
@@ -444,6 +520,7 @@ export function RaceTo10Game({
     return states;
   }, [raceGuesses]);
 
+  /** Starts an authoritative run and displays its synchronized countdown. */
   const begin = (
     categoryId: RaceCategoryId,
     startContext?: {challengeId?: string; rivalryChallengeId?: string},
@@ -452,7 +529,6 @@ export function RaceTo10Game({
     const rivalryIdForStart = startContext ? startContext.rivalryChallengeId : rivalryChallengeId;
     analytics("race_category_selected", {categoryId});
     if (rivalryChallengeIdRef.current) analytics("race_counter_challenge_started", {categoryId});
-    setSelectedCategory(categoryId);
     setCountdown(RACE_COUNTDOWN_START);
     setStage("countdown");
     send(
@@ -463,6 +539,7 @@ export function RaceTo10Game({
         : {locale, categoryId, ...(rivalryIdForStart ? {rivalryChallengeId: rivalryIdForStart} : {})},
     );
   };
+  /** Submits the complete current answer attempt to the server. */
   const submit = () => {
     if (
       !run?.currentRiddle ||
@@ -476,40 +553,52 @@ export function RaceTo10Game({
       guess: currentLetters.join(""),
     });
   };
+  /** Requests the next server-selected hint for the active riddle. */
   const requestHint = () => {
     if (!run?.currentRiddle || pending) return;
     send("raceHint", "game:requestRaceHint", {
       runId: run.runId,
       riddleId: run.currentRiddle.riddleId,
-      currentAttempt: currentLetters,
     });
   };
+  /** Requests a server-authoritative skip after the first guess. */
   const skip = () => {
     if (!run?.currentRiddle || pending) return;
     send("raceSkip", "game:skipRaceRiddle", {runId: run.runId, riddleId: run.currentRiddle.riddleId});
   };
+  /** Selects an editable answer position. */
   const selectSlot = (index: number) => {
     if (run?.currentRiddle?.revealedLetters.some((letter) => letter.index === index)) return;
     setActiveSlotIndex(index);
   };
+  /** Writes a keyboard letter into the active editable answer position. */
   const typeLetter = (letter: string) => {
+    /** Current authoritative riddle accepting the letter. */
     const riddle = run?.currentRiddle;
     if (!riddle || pending) return;
+    /** Positions protected from local editing by server hints. */
     const revealed = new Set(riddle.revealedLetters.map(({index}) => index));
     if (revealed.has(activeSlotIndex)) return;
+    /** Updated answer attempt after inserting the supplied letter. */
     const nextLetters = Array.from({length: riddle.answerLength}, (_, index) => currentLetters[index] ?? "");
     nextLetters[activeSlotIndex] = letter;
     setCurrentLetters(nextLetters);
+    /** Next empty editable slot selected after insertion. */
     const nextSlot = Array.from({length: riddle.answerLength}, (_, offset) =>
       (activeSlotIndex + offset + 1) % riddle.answerLength)
       .find((index) => !revealed.has(index) && !nextLetters[index]);
     if (nextSlot !== undefined) setActiveSlotIndex(nextSlot);
   };
+  /** Clears the active or nearest previous editable answer position. */
   const backspace = () => {
+    /** Current authoritative riddle accepting deletion. */
     const riddle = run?.currentRiddle;
     if (!riddle || pending) return;
+    /** Positions protected from local deletion by server hints. */
     const revealed = new Set(riddle.revealedLetters.map(({index}) => index));
+    /** Mutable copy of the answer attempt used for deletion. */
     const nextLetters = Array.from({length: riddle.answerLength}, (_, index) => currentLetters[index] ?? "");
+    /** Editable position selected for deletion. */
     let target = activeSlotIndex;
     if (!nextLetters[target] || revealed.has(target)) {
       target = Array.from({length: riddle.answerLength}, (_, offset) =>
@@ -524,6 +613,7 @@ export function RaceTo10Game({
 
   useEffect(() => {
     if (stage !== "racing") return;
+    /** Maps physical keyboard input to the controlled race input actions. */
     const handleGameplayKey = (event: KeyboardEvent) => {
       if (event.metaKey || event.ctrlKey || event.altKey) return;
       if (/^[a-z]$/i.test(event.key)) {
@@ -541,10 +631,12 @@ export function RaceTo10Game({
     return () => document.removeEventListener("keydown", handleGameplayKey);
   });
 
+  /** Publishes a completed creator run as a shareable challenge. */
   const publish = () => {
     if (!run || pending) return;
     send("racePublish", "game:publishRace", {runId: run.runId});
   };
+  /** Opens the host share flow for a published race challenge. */
   const share = () => {
     if (!published || !outcome) return;
     analytics("race_share_dialog_opened", {categoryId: published.preview.categoryId});
@@ -554,7 +646,9 @@ export function RaceTo10Game({
       }),
     );
   };
+  /** Clears completed-run presentation state and optionally starts a rematch. */
   const resetForNewRace = (categoryId?: RaceCategoryId, rivalryId?: string) => {
+    /** Challenge identifier carried into the next rivalry attempt. */
     const nextRivalryChallengeId = rivalryId ?? run?.challengeId ?? run?.rivalryChallengeId ?? challenge?.challengeId;
     rivalryChallengeIdRef.current = nextRivalryChallengeId;
     setRivalryChallengeId(nextRivalryChallengeId);
@@ -569,26 +663,15 @@ export function RaceTo10Game({
     setPenaltyFlash(null);
     if (categoryId) begin(categoryId, {rivalryChallengeId: nextRivalryChallengeId});
     else {
-      setSelectedCategory(null);
       setStage("categories");
       if (categories.length === 0) send("raceCategories", "game:listRaceCategories", {locale});
     }
   };
+  /** Starts a rivalry rematch from a multiplayer inbox item. */
   const startInboxRematch = (item: RaceInboxItem) => {
     analytics("race_rematch_started", {categoryId: item.categoryId, result: item.result});
     resetForNewRace(item.categoryId, item.challengeId);
   };
-  const raceRailHeader = (
-    <div className="race-rail-header">
-      <span className="race-kicker">{tr("RaceTo10.MODE_LABEL")}</span>
-      <h1 id="race-title">{tr("RaceTo10.TITLE")}</h1>
-      {coinBalance}
-      <button className="race-close" onClick={requestClose} aria-label={tr("RaceTo10.CLOSE")}>
-        ×
-      </button>
-    </div>
-  );
-
   return (
     <section
       ref={dialogRef}
@@ -600,18 +683,7 @@ export function RaceTo10Game({
       tabIndex={-1}
     >
       {stage !== "racing" && stage !== "countdown" && (
-        <header className="race-topbar">
-          <div>
-            <span className="race-kicker">{tr("RaceTo10.MODE_LABEL")}</span>
-            <h1 id="race-title">{tr("RaceTo10.TITLE")}</h1>
-          </div>
-          <div className="race-topbar-actions">
-            {coinBalance}
-            <button className="race-close" onClick={requestClose} aria-label={tr("RaceTo10.CLOSE")}>
-              ×
-            </button>
-          </div>
-        </header>
+        <RaceTopbar coins={coins} onClose={requestClose} />
       )}
       {error && (
         <div className="race-error" role="alert">
@@ -631,193 +703,58 @@ export function RaceTo10Game({
       )}
 
       {stage === "categories" && (
-        <div className="race-panel">
-          <h2>{tr("RaceTo10.CHOOSE_CATEGORY")}</h2>
-          <p>{tr("RaceTo10.RULES_SUMMARY")}</p>
-          <div className="race-category-grid">
-            {categories.map((category) => (
-              <button
-                key={category.categoryId}
-                style={{"--race-color": category.colorToken} as React.CSSProperties}
-                onClick={() => begin(category.categoryId)}
-              >
-                <strong>{tr(category.nameKey)}</strong>
-                <span>{tr(category.descriptionKey)}</span>
-                <small>
-                  {category.availableRiddleCount} {tr("RaceTo10.RIDDLES")}
-                </small>
-              </button>
-            ))}
-          </div>
-          {pending === "raceCategories" && <p aria-live="polite">{tr("RaceTo10.LOADING_CATEGORIES")}</p>}
-          <button className="race-secondary" onClick={showInbox}>
-            {tr("RaceTo10.CHECK_RESULTS")}
-          </button>
-        </div>
+        <RaceCategoriesPanel
+          categories={categories}
+          loading={pending === "raceCategories"}
+          onSelect={begin}
+          onShowInbox={showInbox}
+        />
       )}
 
       {stage === "inbox" && (
-        <div className="race-panel race-inbox">
-          <h2>{tr("RaceTo10.RESULTS_TITLE")}</h2>
-          {pending === "raceInbox" ? (
-            <p aria-live="polite">{tr("RaceTo10.RESULTS_LOADING")}</p>
-          ) : inboxItems.length === 0 ? (
-            <p>{tr("RaceTo10.RESULTS_EMPTY")}</p>
-          ) : (
-            <ul>
-              {inboxItems.map((item) => (
-                <li key={item.itemId}>
-                  {item.opponentAvatarUrl ? <img src={item.opponentAvatarUrl} alt="" /> : <span aria-hidden="true">⚔️</span>}
-                  <div>
-                    <strong>{tr(
-                      item.result === "win"
-                        ? "RaceTo10.RESULT_PLAYER_WIN"
-                        : item.result === "loss"
-                          ? "RaceTo10.RESULT_GHOST_WIN"
-                          : "RaceTo10.RESULT_TIE",
-                    )}</strong>
-                    <span>{item.opponentDisplayName}</span>
-                    <small>{tr("RaceTo10.RESULT_MARGIN", {time: formatTime(Math.abs(item.adjustedDeltaMs))})}</small>
-                  </div>
-                  <button className="race-primary" onClick={() => startInboxRematch(item)}>
-                    {tr("RaceTo10.REMATCH")}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )}
-          <button onClick={() => setStage("categories")}>{tr("RaceTo10.CHOOSE_CATEGORY")}</button>
-        </div>
+        <RaceInboxPanel
+          items={inboxItems}
+          loading={pending === "raceInbox"}
+          onRematch={startInboxRematch}
+          onChooseCategory={() => setStage("categories")}
+        />
       )}
 
       {stage === "challenge" && (
-        <div className="race-panel race-challenge-card">
-          {challenge ? (
-            <>
-              <h2>{tr("RaceTo10.CHALLENGED_BY", {name: challenge.creator.displayName})}</h2>
-              <p>{tr("RaceTo10.TIME_TO_BEAT", {time: formatTime(challenge.adjustedTimeToBeatMs)})}</p>
-              <p>{tr("RaceTo10.RULES_SUMMARY")}</p>
-              {challenge.status === "active" ? (
-                <button className="race-primary" onClick={() => begin(challenge.categoryId)}>
-                  {tr("RaceTo10.ACCEPT_CHALLENGE")}
-                </button>
-              ) : (
-                <p role="alert">{tr("RaceTo10.ERROR_GENERIC")}</p>
-              )}
-            </>
-          ) : (
-            <p>{tr("RaceTo10.LOADING_CHALLENGE")}</p>
-          )}
-        </div>
+        <RaceChallengePanel challenge={challenge} onAccept={begin} />
       )}
 
       {stage === "countdown" && (
-        <div className="race-countdown-layout">
-          <div className="race-countdown" aria-live="assertive">
-            <span>{countdown > 0 ? countdown : tr("RaceTo10.GO")}</span>
-            <p>
-              {pending === "raceStart"
-                ? tr("Accessibility.LOADING")
-                : tr("RaceTo10.FIRST_TO_TEN")}
-            </p>
-          </div>
-          <aside className="race-scoreboard race-countdown-rail">
-            {raceRailHeader}
-          </aside>
-        </div>
+        <RaceCountdown
+          countdown={countdown}
+          loading={pending === "raceStart"}
+          coins={coins}
+          onClose={requestClose}
+        />
       )}
 
       {stage === "racing" && run && (
-        <div ref={gameplayViewportRef} className="race-gameplay-viewport">
-        <div ref={gameplayRef} className="race-gameplay">
-          <section className="race-scoreboard" aria-label={tr("RaceTo10.PROGRESS_LABEL")}>
-            {raceRailHeader}
-            <div className="race-header-clock" aria-live="polite">
-              <span>{tr("RaceTo10.ADJUSTED_TIME")}</span>
-              <strong>{formatTime(adjustedNow)}</strong>
-              <small aria-label={tr("RaceTo10.PENALTIES", {time: formatTime(run.totalPenaltyMs)})}>
-                +{formatTime(run.totalPenaltyMs)}
-              </small>
-            </div>
-            {feedback && (
-              <div className={`race-feedback ${feedback}`} role="status" aria-live="polite">
-                {tr(feedback === "correct" ? "RaceTo10.CORRECT" : "RaceTo10.TRY_AGAIN")}
-              </div>
-            )}
-            <div className="race-progress">
-              <div style={{"--race-progress": `${run.correctCount * 10}%`} as React.CSSProperties}>
-                <span title={tr("RaceTo10.YOU")}>{tr("RaceTo10.YOU")}</span>
-                <strong>{run.correctCount}</strong>
-                <div className="race-progress-track" aria-hidden="true"><i /></div>
-                <progress className="sr-only" max="10" value={run.correctCount}>
-                  {run.correctCount}/10
-                </progress>
-              </div>
-              {run.opponent && (
-                <div style={{"--race-progress": `${ghostCorrect * 10}%`} as React.CSSProperties}>
-                  <span title={run.opponent.displayName}>{run.opponent.displayName}</span>
-                  <strong>{ghostCorrect}</strong>
-                  <div className="race-progress-track" aria-hidden="true"><i /></div>
-                  <progress className="sr-only" max="10" value={ghostCorrect}>
-                    {ghostCorrect}/10
-                  </progress>
-                </div>
-              )}
-            </div>
-          </section>
-          {run.currentRiddle && (
-            <>
-              <section className="riddle-surface race-riddle-surface">
-                <div className="riddle-card">
-                  <h2>{run.currentRiddle.text}</h2>
-                  <div className="race-riddle-status">
-                    <span>
-                      {tr("RaceTo10.RIDDLES_REMAINING", {
-                        count: Math.max(0, RACE_TARGET_CORRECT - run.correctCount),
-                      })}
-                    </span>
-                    <span id="race-attempts">
-                      {tr("RaceTo10.GUESSES_REMAINING", {count: run.currentRiddle.guessesRemaining})}
-                    </span>
-                  </div>
-                </div>
-                <ControlledGuessBoard
-                  answerLength={run.currentRiddle.answerLength}
-                  currentLetters={currentLetters}
-                  activeSlotIndex={activeSlotIndex}
-                  hintRevealedIndices={run.currentRiddle.revealedLetters.map(({index}) => index)}
-                  guesses={raceGuesses}
-                  onSelectSlot={selectSlot}
-                  disabled={Boolean(pending)}
-                />
-              </section>
-              <ControlledKeyboard
-                letterStates={letterStates}
-                onLetter={typeLetter}
-                onBackspace={backspace}
-                disabled={Boolean(pending)}
-              />
-            </>
-          )}
-          <div className="game-input-actions race-actions" aria-describedby="race-attempts">
-            <button onClick={requestHint} disabled={Boolean(pending) || !run.currentRiddle?.hintAvailable}>
-              <HintIcon />
-              <span>{tr("RaceTo10.HINT_BUTTON")} <small>+15s</small></span>
-            </button>
-            <button
-              className="submit-action"
-              onClick={submit}
-              disabled={Boolean(pending) || currentLetters.length !== run.currentRiddle?.answerLength || currentLetters.some((letter) => !letter)}
-            >
-              {tr("RaceTo10.SUBMIT")}
-            </button>
-            <button onClick={skip} disabled={Boolean(pending) || (run.currentRiddle?.guessesUsed ?? 0) < 1}>
-              <ForwardIcon />
-              <span>{tr("RaceTo10.SKIP_BUTTON")} <small>+45s</small></span>
-            </button>
-          </div>
-        </div>
-        </div>
+        <RaceGameplay
+          viewportRef={gameplayViewportRef}
+          gameplayRef={gameplayRef}
+          run={run}
+          adjustedNow={adjustedNow}
+          ghostCorrect={ghostCorrect}
+          feedback={feedback}
+          coins={coins}
+          currentLetters={currentLetters}
+          activeSlotIndex={activeSlotIndex}
+          guesses={raceGuesses}
+          letterStates={letterStates}
+          pending={Boolean(pending)}
+          onClose={requestClose}
+          onSelectSlot={selectSlot}
+          onLetter={typeLetter}
+          onBackspace={backspace}
+          onHint={requestHint}
+          onSubmit={submit}
+          onSkip={skip}
+        />
       )}
 
       {stage === "racing" && penaltyFlash && (
@@ -827,79 +764,30 @@ export function RaceTo10Game({
       )}
 
       {stage === "result" && outcome && (
-        <div className="race-panel race-result" aria-live="polite">
-          <h2>{tr(`RaceTo10.RESULT_${outcome.result.toUpperCase()}`)}</h2>
-          <div className="race-result-grid">
-            <span>
-              {tr("RaceTo10.WALL_TIME")}
-              <strong>{formatTime(outcome.wallFinishMs)}</strong>
-            </span>
-            <span>
-              {tr("RaceTo10.HINT_TIME")}
-              <strong>+{formatTime(outcome.hintPenaltyMs)}</strong>
-            </span>
-            <span>
-              {tr("RaceTo10.SKIP_TIME")}
-              <strong>+{formatTime(outcome.skipPenaltyMs)}</strong>
-            </span>
-            <span>
-              {tr("RaceTo10.FINAL_TIME")}
-              <strong>{formatTime(outcome.adjustedFinishMs)}</strong>
-            </span>
-          </div>
-          {outcome.publishable && !published && (
-            <button className="race-primary" onClick={publish} disabled={Boolean(pending)}>
-              {tr("RaceTo10.CREATE_CHALLENGE")}
-            </button>
-          )}
-          {published && (
-            <>
-              <p>{tr("RaceTo10.CHALLENGE_READY")}</p>
-              <button className="race-primary" onClick={share}>
-                {tr("RaceTo10.SHARE_CHALLENGE")}
-              </button>
-            </>
-          )}
-          {outcome.rematchEligible && run && (
-            <div className="race-rematch-actions">
-              <button className="race-primary" onClick={() => resetForNewRace(run.categoryId)}>
-                {tr("RaceTo10.TITLE")} · {tr(`RaceTo10.CATEGORY_${run.categoryId.toUpperCase()}_NAME`)}
-              </button>
-              <button onClick={() => resetForNewRace()}>{tr("RaceTo10.CHOOSE_CATEGORY")}</button>
-            </div>
-          )}
-          <button onClick={onClose}>{tr("RaceTo10.BACK_TO_GAME")}</button>
-        </div>
+        <RaceResultPanel
+          outcome={outcome}
+          run={run}
+          publication={published}
+          publishing={Boolean(pending)}
+          onPublish={publish}
+          onShare={share}
+          onRematch={resetForNewRace}
+          onChooseCategory={() => resetForNewRace()}
+          onClose={onClose}
+        />
       )}
 
       {quitConfirmationOpen && run?.status === "active" && (
-        <div className="race-quit-backdrop">
-          <div
-            ref={quitDialogRef}
-            className="race-quit-dialog"
-            role="alertdialog"
-            aria-modal="true"
-            aria-labelledby="race-quit-title"
-            aria-describedby="race-quit-message"
-            tabIndex={-1}
-          >
-            <h2 id="race-quit-title">{tr("RaceTo10.QUIT_TITLE")}</h2>
-            <p id="race-quit-message">{tr("RaceTo10.QUIT_MESSAGE")}</p>
-            {error && <p className="race-quit-error" role="alert">{error}</p>}
-            <div className="race-quit-actions">
-              <button onClick={() => setQuitConfirmationOpen(false)} disabled={pending === "raceAbandon"}>
-                {tr("RaceTo10.KEEP_PLAYING")}
-              </button>
-              <button
-                className="race-quit-confirm"
-                onClick={() => send("raceAbandon", "game:abandonRace", {runId: run.runId})}
-                disabled={pending === "raceAbandon"}
-              >
-                {pending === "raceAbandon" ? tr("RaceTo10.QUITTING") : tr("RaceTo10.QUIT_RACE")}
-              </button>
-            </div>
-          </div>
-        </div>
+        <RaceQuitDialog
+          dialogRef={quitDialogRef}
+          error={error}
+          abandoning={pending === "raceAbandon"}
+          onCancel={() => setQuitConfirmationOpen(false)}
+          onConfirm={() => send("raceAbandon", "game:abandonRace", {runId: run.runId})}
+        />
+      )}
+      {raceGuessLoading && (
+        <SpinningWheelLoader overlay className="race-operation-loader" />
       )}
     </section>
   );

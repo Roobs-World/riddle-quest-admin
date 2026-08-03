@@ -8,8 +8,9 @@ import {
   type RaceOutcome,
   type RaceRunView,
 } from "@qwordly/core/race";
-import type {HostServices} from "../types";
+import type {HostServices} from "../../types";
 
+/** Multiplayer host methods implemented by the deterministic browser harness. */
 type RaceMethods = Pick<
   HostServices,
   | "listRaceCategories"
@@ -25,6 +26,7 @@ type RaceMethods = Pick<
   | "listRaceInbox"
 >;
 
+/** Mutable harness record backing one simulated authoritative race run. */
 type FakeRun = {
   view: RaceRunView;
   startedAtMs: number;
@@ -36,17 +38,21 @@ type FakeRun = {
   responses: Map<string, unknown>;
 };
 
+/** Persisted challenge data shared between creator and recipient harnesses. */
 type FakeChallenge = {
   preview: Awaited<ReturnType<RaceMethods["getRaceChallenge"]>>;
   runId: string;
   events: RaceGhostEvent[];
 };
 
+/** Storage namespace for deterministic browser-harness challenges. */
 const FAKE_CHALLENGE_PREFIX = "riddleQuest:fakeRaceChallenge:";
 
+/** Returns whether cross-page harness challenge sharing is enabled. */
 const sharedHarnessEnabled = () =>
   typeof location !== "undefined" && new URLSearchParams(location.search).get("sharedRace") === "1";
 
+/** Loads a challenge from local storage or the shared browser harness endpoint. */
 const loadPersistedChallenge = async (challengeId: string): Promise<FakeChallenge | undefined> => {
   try {
     const raw = globalThis.localStorage?.getItem(`${FAKE_CHALLENGE_PREFIX}${challengeId}`);
@@ -61,6 +67,7 @@ const loadPersistedChallenge = async (challengeId: string): Promise<FakeChalleng
   }
 };
 
+/** Persists a challenge for recipient-browser test flows. */
 const persistChallenge = async (challengeId: string, challenge: FakeChallenge) => {
   try {
     globalThis.localStorage?.setItem(`${FAKE_CHALLENGE_PREFIX}${challengeId}`, JSON.stringify(challenge));
@@ -76,6 +83,7 @@ const persistChallenge = async (challengeId: string, challenge: FakeChallenge) =
   }
 };
 
+/** Visual metadata used by the fake category listing. */
 const categoryPresentation: Record<
   RaceCategoryId,
   {icon: "history" | "geography" | "music" | "film" | "science" | "shuffle"; colorToken: string}
@@ -88,6 +96,7 @@ const categoryPresentation: Record<
   mixed: {icon: "shuffle", colorToken: "#A43B4D"},
 };
 
+/** Deterministic riddle prompts served by the browser harness. */
 const clues = [
   "What has keys but cannot open a door?",
   "What has hands and a face but no arms?",
@@ -105,6 +114,7 @@ const clues = [
   "What can fill a room but takes no space?",
   "What has a ring but no finger?",
 ];
+/** Answers corresponding by position to the deterministic harness clues. */
 const answers = [
   "piano",
   "clock",
@@ -123,12 +133,34 @@ const answers = [
   "phone",
 ];
 
+/** Returns the bounded outcome delay requested by the browser-test URL. */
+const getRaceOutcomeDelayMs = () => {
+  if (typeof location === "undefined") return 0;
+  /** Requested artificial outcome latency in milliseconds. */
+  const requestedDelay = Number(new URLSearchParams(location.search).get("raceOutcomeDelayMs"));
+  return Number.isFinite(requestedDelay) ? Math.max(0, Math.min(2_000, requestedDelay)) : 0;
+};
+
+/** Returns the bounded race-start delay requested by the browser-test URL. */
+const getRaceStartDelayMs = () => {
+  if (typeof location === "undefined") return 0;
+  /** Requested artificial start latency in milliseconds. */
+  const requestedDelay = Number(new URLSearchParams(location.search).get("raceStartDelayMs"));
+  return Number.isFinite(requestedDelay) ? Math.max(0, Math.min(5_000, requestedDelay)) : 0;
+};
+
+/** Creates deterministic in-memory race services for browser and component harnesses. */
 export const createFakeRaceServices = (): RaceMethods => {
+  /** Mutable runs indexed by their opaque harness run identifier. */
   const runs = new Map<string, FakeRun>();
+  /** Published challenges indexed by their opaque harness challenge identifier. */
   const challenges = new Map<string, FakeChallenge>();
+  /** Monotonic identifier sequence for harness runs and challenges. */
   let sequence = 0;
 
+  /** Produces the current externally visible run view from mutable harness state. */
   const syncView = (run: FakeRun): RaceRunView => {
+    /** Wall-clock duration captured or advanced for the run. */
     const wallElapsedMs =
       run.view.status === "active" ? Math.max(0, Date.now() - run.startedAtMs) : run.view.wallElapsedMs;
     return {
@@ -147,12 +179,14 @@ export const createFakeRaceServices = (): RaceMethods => {
     };
   };
 
+  /** Returns a harness run or throws the same not-found failure as the host service. */
   const getRun = (runId: string): FakeRun => {
     const run = runs.get(runId);
     if (!run) throw new Error("Race run not found.");
     return run;
   };
 
+  /** Advances a run to its next deterministic riddle. */
   const advance = (run: FakeRun) => {
     const currentPosition = (run.view.currentRiddle?.position ?? 0) + 1;
     run.guessesUsed = 0;
@@ -175,6 +209,7 @@ export const createFakeRaceServices = (): RaceMethods => {
     };
   };
 
+  /** Appends one authoritative ghost-playback event to a harness run. */
   const addEvent = (run: FakeRun, type: RaceGhostEvent["type"], penaltyAddedMs: number) => {
     const view = syncView(run);
     run.view = {
@@ -196,6 +231,7 @@ export const createFakeRaceServices = (): RaceMethods => {
   };
 
   return {
+    /** Lists deterministic categories using the production race rules. */
     async listRaceCategories() {
       return {
         categories: RACE_CATEGORY_IDS.map((categoryId) => ({
@@ -208,7 +244,10 @@ export const createFakeRaceServices = (): RaceMethods => {
         rules: RACE_RULES,
       };
     },
+    /** Starts a creator or challenger harness run. */
     async startRace(input) {
+      const delayMs = getRaceStartDelayMs();
+      if (delayMs > 0) await new Promise((resolve) => window.setTimeout(resolve, delayMs));
       const challenge = input.challengeId
         ? (challenges.get(input.challengeId) ?? (await loadPersistedChallenge(input.challengeId)))
         : undefined;
@@ -260,6 +299,7 @@ export const createFakeRaceServices = (): RaceMethods => {
       runs.set(runId, run);
       return {run: syncView(run)};
     },
+    /** Scores and idempotently records a guess against the active harness riddle. */
     async submitRaceGuess(input) {
       const run = getRun(input.runId);
       const cached = run.responses.get(input.requestId);
@@ -295,29 +335,31 @@ export const createFakeRaceServices = (): RaceMethods => {
       run.responses.set(input.requestId, response);
       return response;
     },
+    /** Reveals the next server-selected letter and applies the hint penalty. */
     async requestRaceHint(input) {
       const run = getRun(input.runId);
       const cached = run.responses.get(input.requestId);
       if (cached) return cached as Awaited<ReturnType<RaceMethods["requestRaceHint"]>>;
       if (run.hintUsed || !run.view.currentRiddle) throw new Error("The hint is already used.");
-      const index = input.currentAttempt.findIndex(
-        (letter, position) => letter.toLocaleLowerCase() !== run.answers[run.view.currentRiddle!.position][position],
-      );
-      const revealedLetter = run.answers[run.view.currentRiddle.position][Math.max(0, index)];
+      const revealed = new Set(run.view.currentRiddle.revealedLetters.map((letter) => letter.index));
+      const index = [...run.answers[run.view.currentRiddle.position]].findIndex((_, position) => !revealed.has(position));
+      if (index < 0) throw new Error("No server-selected hint is available.");
+      const revealedLetter = run.answers[run.view.currentRiddle.position][index];
       run.hintUsed = true;
       run.hintPenaltyMs += RACE_HINT_PENALTY_MS;
       run.view = {
         ...run.view,
         currentRiddle: {
           ...run.view.currentRiddle,
-          revealedLetters: [{index: Math.max(0, index), letter: revealedLetter}],
+          revealedLetters: [...run.view.currentRiddle.revealedLetters, {index, letter: revealedLetter}],
         },
       };
       addEvent(run, "hint", RACE_HINT_PENALTY_MS);
-      const response = {run: syncView(run), revealedLetter, index: Math.max(0, index)};
+      const response = {run: syncView(run), revealedLetter, index};
       run.responses.set(input.requestId, response);
       return response;
     },
+    /** Skips the current riddle and applies the authoritative skip penalty. */
     async skipRaceRiddle(input) {
       const run = getRun(input.runId);
       const cached = run.responses.get(input.requestId);
@@ -330,9 +372,11 @@ export const createFakeRaceServices = (): RaceMethods => {
       run.responses.set(input.requestId, response);
       return response;
     },
+    /** Returns the latest authoritative view for an existing harness run. */
     async resumeRace(runId) {
       return {run: syncView(getRun(runId))};
     },
+    /** Idempotently abandons an active harness run. */
     async abandonRace(input) {
       const run = getRun(input.runId);
       const cached = run.responses.get(input.requestId);
@@ -345,6 +389,7 @@ export const createFakeRaceServices = (): RaceMethods => {
       run.responses.set(input.requestId, response);
       return response;
     },
+    /** Publishes a completed creator run as a persisted harness challenge. */
     async publishRace(input) {
       const run = getRun(input.runId);
       if (run.view.status !== "completed" || run.view.role !== "creator") throw new Error("Complete the race first.");
@@ -373,12 +418,16 @@ export const createFakeRaceServices = (): RaceMethods => {
       run.responses.set(input.requestId, response);
       return response;
     },
+    /** Loads a published harness challenge preview. */
     async getRaceChallenge(challengeId) {
       const challenge = challenges.get(challengeId) ?? (await loadPersistedChallenge(challengeId));
       if (!challenge) throw new Error("Race challenge not found.");
       return challenge.preview;
     },
+    /** Calculates the final authoritative outcome for a harness run. */
     async getRaceOutcome(runId): Promise<RaceOutcome> {
+      const delayMs = getRaceOutcomeDelayMs();
+      if (delayMs > 0) await new Promise((resolve) => setTimeout(resolve, delayMs));
       const run = getRun(runId);
       const view = syncView(run);
       const result: RaceOutcome["result"] =
@@ -408,6 +457,7 @@ export const createFakeRaceServices = (): RaceMethods => {
         achievementCoinsAwarded: 0,
       };
     },
+    /** Lists deterministic inbox content for browser navigation tests. */
     async listRaceInbox() {
       return {
         items: [{

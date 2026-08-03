@@ -22,4 +22,6 @@ describe("Jest signed verification", () => {
   it("creates stable scoped Firebase UIDs", () => expect(jestFirebaseUid("p1")).toBe(jestFirebaseUid("p1")));
   it("accepts signed referral payloads without iat when freshness is not requested", () =>
     expect(verifyJestSigned(sign({aud: "game", sub: "p1", referrals: {campaign: []}}), secret, "game", "p1")).toMatchObject({sub: "p1"}));
+  it("rejects oversized signed payloads before decoding them", () =>
+    expect(() => verifyJestSigned(`a.${"a".repeat(256_001)}.a`, secret, "game")).toThrow("malformed-token"));
 });

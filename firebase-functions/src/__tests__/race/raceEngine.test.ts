@@ -9,7 +9,7 @@ import {
   refreshRaceRun,
   toRaceRunView,
   type RaceRunRecord,
-} from "../race/raceEngine";
+} from "../../race/raceEngine";
 
 const STARTED_AT = 1_000_000;
 
@@ -55,7 +55,7 @@ describe("Race to 10 authoritative engine", () => {
   it("adds a server-owned 15-second hint penalty without coins", () => {
     const result = applyRaceHint(
       createRun(),
-      {riddleId: "riddle-1", currentAttempt: ["", "", "", "", ""]},
+      {riddleId: "riddle-1"},
       STARTED_AT + 5_000,
     );
     expect(result).toMatchObject({revealedLetter: "p", index: 0});
@@ -67,8 +67,17 @@ describe("Race to 10 authoritative engine", () => {
     });
     expect(result.run.events[0]).toMatchObject({type: "hint", penaltyAddedMs: 15_000, adjustedElapsedMs: 20_000});
     expect(() =>
-      applyRaceHint(result.run, {riddleId: "riddle-1", currentAttempt: ["", "", "", "", ""]}, STARTED_AT + 6_000),
+      applyRaceHint(result.run, {riddleId: "riddle-1"}, STARTED_AT + 6_000),
     ).toThrow("already used");
+  });
+
+  it("selects multiplayer hint positions from server-owned state", () => {
+    const result = applyRaceHint(
+      createRun({revealedLetters: [{index: 0, letter: "p"}]}),
+      {riddleId: "riddle-1"},
+      STARTED_AT + 5_000,
+    );
+    expect(result).toMatchObject({revealedLetter: "i", index: 1});
   });
 
   it("requires a guess before a manual skip and then adds the heavy 45-second penalty", () => {

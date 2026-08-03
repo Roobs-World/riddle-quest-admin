@@ -10,6 +10,8 @@
     "deploy": "pnpm dlx firebase-tools deploy --only functions",
     "format": "prettier --write \"src/**/*.ts\"",
     "test": "cross-env NODE_OPTIONS=\"--experimental-vm-modules\" FIRESTORE_EMULATOR_HOST=127.0.0.1:8099 pnpm jest --config jest.config.js",
+    "test:coverage": "cross-env NODE_OPTIONS=\"--experimental-vm-modules\" FIRESTORE_EMULATOR_HOST=127.0.0.1:8099 pnpm jest --config jest.config.js --runInBand --coverage",
+    "test:race:coverage": "cross-env NODE_OPTIONS=\"--experimental-vm-modules\" FIRESTORE_EMULATOR_HOST=127.0.0.1:8099 pnpm jest --config jest.race-coverage.config.js --runInBand",
     "emulators:start": "pnpm dlx firebase-tools emulators:start --only firestore,auth",
     "emulators:kill": "pnpm dlx firebase-tools emulators:exec --only firestore,auth \"echo 'Stopping emulators'\"",
     "race:content:dry-run": "node scripts/prepare-deploy.js && pnpm build && node scripts/run-with-functions-node.js scripts/race-content-dry-run.js",
@@ -17,7 +19,7 @@
     "race:content:validate-live": "node scripts/prepare-deploy.js && pnpm build && node scripts/run-with-functions-node.js scripts/race-content-validate-live.js",
     "race:rollout:configure": "node scripts/run-with-functions-node.js scripts/race-rollout-configure.js",
     "notifications:configure": "node scripts/run-with-functions-node.js scripts/notification-copy-configure.js",
-    "test:race:rules": "node scripts/prepare-deploy.js && pnpm dlx firebase-tools emulators:exec --only firestore \"pnpm jest --config jest.rules.config.js --runInBand\""
+    "test:race:rules": "node scripts/prepare-deploy.js && pnpm dlx firebase-tools emulators:exec --only firestore,storage \"pnpm jest --config jest.rules.config.js --runInBand\""
   },
   "engines": {
     "node": "22"

@@ -71,3 +71,23 @@ it("initializes the SDK before reporting manual loading progress", async () => {
   expect(result.status).toBe("success");
   expect(platform.progress[0]).toBe(5);
 });
+
+it("returns a retryable failure when SDK initialization never settles", async () => {
+  const platform = new MockJestPlatform();
+  platform.init = () => new Promise(() => undefined);
+  const backend = {exchangeIdentity: async () => ({customToken: "firebase", uid: "uid"})};
+  const purchases = {reconcile: async () => ({status: "success", value: 0})};
+
+  const result = await startJestSession(
+    platform,
+    backend as never,
+    purchases as never,
+    async () => {},
+    undefined,
+    {initializationTimeoutMs: 5},
+  );
+
+  expect(result).toEqual({status: "retryable-failure", message: "Jest SDK initialization timed out."});
+  expect(platform.progress).toEqual([]);
+  expect(platform.loaded).toBe(false);
+});

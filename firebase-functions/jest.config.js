@@ -17,6 +17,9 @@ module.exports = {
   clearMocks: true,
   coverageDirectory: "coverage",
   collectCoverageFrom: ["src/**/*.{ts,tsx}", "!src/**/*.d.ts"],
+  coverageThreshold: {
+    global: {statements: 68, branches: 58, functions: 65, lines: 70},
+  },
   moduleNameMapper: {
     "^jose$": "<rootDir>/__mocks__/jose.js",
     "^jwks-rsa$": "<rootDir>/__mocks__/jwks-rsa.js",

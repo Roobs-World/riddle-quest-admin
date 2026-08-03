@@ -56,6 +56,7 @@ import {
 import {RACE_POOL_SIZE, validateRacePool} from "./raceContentValidation";
 import type {ExistingRaceContentRecord} from "./raceContentMigration";
 import {evaluateRaceAchievementEvent, type RaceAchievementEvent} from "./raceAchievements";
+import {evaluateRaceRollout} from "./raceRollout";
 
 type Firestore = FirebaseFirestore.Firestore;
 
@@ -511,13 +512,24 @@ async function mutateRaceRun<T>(
   nowMs: number,
   db: Firestore,
   mutate: (run: RaceRunRecord) => {run: RaceRunRecord; response: T},
+  options: {enforceRaceAccess?: boolean} = {},
 ): Promise<T> {
   const runRef = db.collection("raceRuns").doc(runId);
   const requestRef = runRef.collection("requests").doc(requestDocumentId(userId, requestId));
   return db.runTransaction(async (transaction) => {
-    const [requestSnapshot, runSnapshot] = await Promise.all([transaction.get(requestRef), transaction.get(runRef)]);
+    const [requestSnapshot, runSnapshot, rolloutSnapshot] = await Promise.all([
+      transaction.get(requestRef),
+      transaction.get(runRef),
+      options.enforceRaceAccess ? transaction.get(db.doc("raceConfig/rollout")) : Promise.resolve(null),
+    ]);
     if (requestSnapshot.exists) return requestSnapshot.data()?.response as T;
     if (!runSnapshot.exists) throw new HttpsError("not-found", "Race to 10 run not found.");
+    if (
+      options.enforceRaceAccess &&
+      !evaluateRaceRollout(rolloutSnapshot?.exists ? rolloutSnapshot.data() : undefined, userId).enabled
+    ) {
+      throw new HttpsError("permission-denied", "Race to 10 is not enabled for this player.");
+    }
     const run = parseRunRecord(runSnapshot.data());
     if (run.userId !== userId) throw new HttpsError("permission-denied", "This race run belongs to another player.");
     const result = mutate(applyActionRateLimit(run, userId, nowMs));
@@ -619,21 +631,29 @@ export async function submitRaceGuessForUser(
 export async function requestRaceHintForUser(
   userId: string,
   input: RequestRaceHintRequest,
-  options: {db?: Firestore; nowMs?: number} = {},
+  options: {db?: Firestore; nowMs?: number; enforceAccess?: boolean} = {},
 ): Promise<RequestRaceHintResponse> {
   const db = dbOrDefault(options.db);
   const nowMs = options.nowMs ?? Date.now();
-  const response = await mutateRaceRun(userId, input.runId, input.requestId, nowMs, db, (run) => {
-    const result = applyRaceHint(run, input, nowMs);
-    return {
-      run: result.run,
-      response: {
-        run: toRaceRunView(result.run, nowMs),
-        revealedLetter: result.revealedLetter,
-        index: result.index,
-      },
-    };
-  });
+  const response = await mutateRaceRun(
+    userId,
+    input.runId,
+    input.requestId,
+    nowMs,
+    db,
+    (run) => {
+      const result = applyRaceHint(run, input, nowMs);
+      return {
+        run: result.run,
+        response: {
+          run: toRaceRunView(result.run, nowMs),
+          revealedLetter: result.revealedLetter,
+          index: result.index,
+        },
+      };
+    },
+    {enforceRaceAccess: options.enforceAccess},
+  );
   return RequestRaceHintResponseSchema.parse(response);
 }
 

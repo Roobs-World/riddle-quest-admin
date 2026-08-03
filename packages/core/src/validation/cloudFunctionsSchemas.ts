@@ -5,7 +5,7 @@ export const BackendGameModeSchema = z.enum(["challenge", "classic"]);
 export const CompleteGameInputSchema = z.object({
   riddleId: z.string().min(1, "Riddle ID is required"),
   gameMode: BackendGameModeSchema,
-  attempts: z.number().int().positive("Attempts must be a positive integer"),
+  attempts: z.number().int().positive("Attempts must be a positive integer").max(100),
   isCorrect: z.boolean(),
 });
 

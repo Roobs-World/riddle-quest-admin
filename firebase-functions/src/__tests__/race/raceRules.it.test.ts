@@ -14,7 +14,7 @@ let testEnvironment: RulesTestEnvironment;
 beforeAll(async () => {
   testEnvironment = await initializeTestEnvironment({
     projectId: PROJECT_ID,
-    firestore: {rules: readFileSync(join(__dirname, "../../firestore.rules"), "utf8")},
+    firestore: {rules: readFileSync(join(__dirname, "../../../firestore.rules"), "utf8")},
   });
   await testEnvironment.withSecurityRulesDisabled(async (context) => {
     const db = context.firestore();
@@ -28,6 +28,8 @@ beforeAll(async () => {
       setDoc(doc(db, "raceConfig/rollout"), {enabled: false, percentage: 0}),
       setDoc(doc(db, "raceAnalytics/event-1"), {eventName: "race_mode_viewed"}),
       setDoc(doc(db, "users/player-1/raceInbox/item-1"), {challengeId: "challenge-1"}),
+      setDoc(doc(db, "users/player-1"), {userId: "player-1", username: "Player", coins: 300}),
+      setDoc(doc(db, "tutorialProgress/player-1"), {completed: false}),
     ]);
   });
 });
@@ -66,5 +68,17 @@ describe("Race to 10 Firestore trust boundary", () => {
     const db = testEnvironment.unauthenticatedContext().firestore();
     await assertFails(getDoc(doc(db, "raceChallenges/challenge-1")));
     await assertFails(setDoc(doc(db, "raceRuns/run-2"), {userId: "attacker"}));
+  });
+
+  it("allows a player to read but never directly mutate their authoritative profile", async () => {
+    const db = testEnvironment.authenticatedContext("player-1").firestore();
+    await assertSucceeds(getDoc(doc(db, "users/player-1")));
+    await assertFails(setDoc(doc(db, "users/player-1"), {userId: "player-1", username: "Forged"}, {merge: true}));
+    await assertFails(setDoc(doc(db, "tutorialProgress/player-1"), {completed: true}, {merge: true}));
+  });
+
+  it("prevents one authenticated player from reading another player's profile", async () => {
+    const db = testEnvironment.authenticatedContext("attacker").firestore();
+    await assertFails(getDoc(doc(db, "users/player-1")));
   });
 });

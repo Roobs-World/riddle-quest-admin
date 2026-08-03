@@ -1,0 +1,11 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Avatar uploads and token generation are performed by the validated
+    // updateAvatar callable through the Admin SDK. No client SDK access is
+    // required, so deny every direct Storage operation by default.
+    match /{object=**} {
+      allow read, write: if false;
+    }
+  }
+}

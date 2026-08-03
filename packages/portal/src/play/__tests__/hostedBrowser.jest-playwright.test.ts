@@ -79,6 +79,7 @@ describeBrowser("standalone Jest browser game", () => {
         }
       });
       await page.addInitScript(() => {
+        Object.assign(window, {__RIDDLE_QUEST_BROWSER_TEST__: true});
         localStorage.setItem("riddleQuest:tooltipSequenceSeen:gameTour:jest-guest", "seen");
         localStorage.setItem("riddleQuest:tooltipSequenceSeen:profileTour:jest-guest", "seen");
       });
@@ -197,6 +198,7 @@ describeBrowser("standalone Jest browser game", () => {
 
       const dailyPage = await browser.newPage({viewport: {width: 390, height: 844}});
       await dailyPage.addInitScript(() => {
+        Object.assign(window, {__RIDDLE_QUEST_BROWSER_TEST__: true});
         localStorage.setItem("riddleQuest:onboarding:jest-guest", "seen");
         localStorage.setItem("riddleQuest:tooltipSequenceSeen:gameTour:v2:jest-guest", "seen");
         sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
@@ -305,8 +307,8 @@ describeBrowser("standalone Jest browser game", () => {
       await page.getByRole("button", {name: /^settings$/i}).first().click();
       await page.getByRole("heading", {name: /^settings$/i}).waitFor();
       const modalCloseBox = await page.locator(".modal-x").boundingBox();
-      expect(modalCloseBox?.width).toBeGreaterThanOrEqual(48);
-      expect(modalCloseBox?.height).toBeGreaterThanOrEqual(48);
+      expect(modalCloseBox?.width).toBeGreaterThanOrEqual(60);
+      expect(modalCloseBox?.height).toBeGreaterThanOrEqual(60);
       for (const text of [/sound/i, /language/i, /help/i, /credits/i, /about/i, /buy coins/i]) {
         expect(await page.getByText(text).first().isVisible()).toBe(true);
       }
@@ -395,6 +397,7 @@ describeBrowser("standalone Jest browser game", () => {
           "(KHTML, like Gecko) Chrome/124.0 Mobile Safari/537.36",
       });
       await lowEndPage.addInitScript(() => {
+        Object.assign(window, {__RIDDLE_QUEST_BROWSER_TEST__: true});
         Object.defineProperty(navigator, "hardwareConcurrency", {configurable: true, value: 4});
         Object.defineProperty(navigator, "deviceMemory", {configurable: true, value: 4});
         Object.defineProperty(navigator, "connection", {
@@ -417,6 +420,7 @@ describeBrowser("standalone Jest browser game", () => {
       await lowEndPage.close();
 
       const iframePage = await browser.newPage({viewport: {width: 390, height: 844}});
+      await iframePage.addInitScript(() => Object.assign(window, {__RIDDLE_QUEST_BROWSER_TEST__: true}));
       await iframePage.setContent(
         '<iframe title="Jest host" style="width:390px;height:844px;border:0" src="http://127.0.0.1:4178/?harness=jest"></iframe>',
       );
@@ -427,6 +431,7 @@ describeBrowser("standalone Jest browser game", () => {
       await iframePage.close();
 
       const registeredPage = await browser.newPage({viewport: {width: 390, height: 844}});
+      await registeredPage.addInitScript(() => Object.assign(window, {__RIDDLE_QUEST_BROWSER_TEST__: true}));
       await registeredPage.goto("http://127.0.0.1:4178/?harness=jest&registered=1");
       await registeredPage.getByRole("button", {name: /let's play/i}).waitFor({timeout: 15000});
       await completeOnboardingAndTours(registeredPage);

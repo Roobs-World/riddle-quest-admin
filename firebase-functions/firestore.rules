@@ -11,63 +11,10 @@ service cloud.firestore {
       return isAuthenticated() && request.auth.uid == userId;
     }
 
-    function isValidUser(userId) {
-      return userId is string && userId.size() > 0 && userId == request.auth.uid;
-    }
-
-    // Check if the request is from a Firebase Cloud Function (admin SDK)
+    // Admin SDK requests bypass Firestore rules. Keeping this helper false
+    // prevents clients from spoofing a privileged "server" request.
     function isServerRequest() {
       return false;
-    }
-
-    function isOwnedStorageAvatarUrl(userId, avatarUrl) {
-      return avatarUrl is string &&
-             avatarUrl.matches('^https://firebasestorage.googleapis.com/v0/b/[^/]+/o/avatars%2F' + userId + '%2F[^?]+\\?.*$');
-    }
-
-    function hasOnlyClientEditableUserFields() {
-      return !request.resource.data.diff(resource.data).affectedKeys().hasAny([
-        'coins',
-        'stats',
-        'progress',
-        'hasPurchasedApp',
-        'unlockedAchievements',
-        'lastDailyChallengeCompletedAt',
-        'lastStreakReminderSentAt'
-      ]);
-    }
-
-    // Validate user document updates without forcing unchanged legacy data to pass
-    // strict validation every time.
-    function isValidUserDocumentUpdate(userId) {
-      let optionalFields = ['displayName', 'avatarUrl', 'hasPurchasedApp', 'createdAt', 'registeredAt', 'lastLogin', 'lastDailyChallengeCompletedAt', 'stats', 'progress', 'unlockedAchievements', 'fcmToken', 'fcmTokenUpdatedAt', 'lastStreakReminderSentAt'];
-      let allFields = ['userId', 'username', 'email', 'coins'].concat(optionalFields);
-      let changedKeys = request.resource.data.diff(resource.data).affectedKeys();
-
-      return request.resource.data.keys().hasOnly(allFields) &&
-             request.resource.data.userId is string &&
-             request.resource.data.userId == userId &&
-             request.resource.data.userId == request.auth.uid &&
-             (!changedKeys.hasAny(['username']) ||
-               (request.resource.data.username is string &&
-                request.resource.data.username.size() >= 1 &&
-                request.resource.data.username.size() <= 50)) &&
-             (!changedKeys.hasAny(['email']) ||
-               (request.resource.data.email is string &&
-                request.resource.data.email.matches('.*@.*\\..*'))) &&
-             (!changedKeys.hasAny(['coins']) ||
-               (request.resource.data.coins is number &&
-                request.resource.data.coins >= 0)) &&
-             (!changedKeys.hasAny(['displayName']) ||
-               !('displayName' in request.resource.data) ||
-               (request.resource.data.displayName is string &&
-                request.resource.data.displayName.size() <= 100)) &&
-             (!changedKeys.hasAny(['avatarUrl']) ||
-               !('avatarUrl' in request.resource.data) ||
-               isOwnedStorageAvatarUrl(userId, request.resource.data.avatarUrl)) &&
-             (!changedKeys.hasAny(['hasPurchasedApp']) ||
-               !('hasPurchasedApp' in request.resource.data) ||
-               request.resource.data.hasPurchasedApp is bool);
     }
 
     // Users collection - strict privacy controls
@@ -79,11 +26,9 @@ service cloud.firestore {
       // progress, stats, and achievements cannot be forged by clients.
       allow create: if false;
       
-      // Users can update their own document with validation
-      allow update: if isOwner(userId) && 
-                      isValidUser(userId) && 
-                      isValidUserDocumentUpdate(userId) &&
-                      hasOnlyClientEditableUserFields();
+      // Profile, entitlement, currency, progress, and notification fields are
+      // updated only by validated Cloud Functions through the Admin SDK.
+      allow update: if false;
       
       // Prevent client-side deletion - only allow server deletion
       allow delete: if false;
@@ -137,8 +82,8 @@ service cloud.firestore {
       // Users can read their own tutorial progress
       allow read: if isOwner(userId);
       
-      // Users and server can update tutorial progress
-      allow write: if isOwner(userId) || isServerRequest();
+      // Tutorial state is local UX state; clients do not need a database write.
+      allow write: if false;
     }
 
     // App configuration - read-only for all authenticated users
@@ -214,6 +159,11 @@ service cloud.firestore {
     }
 
     match /users/{userId}/raceInbox/{itemId} {
+      allow read, write: if false;
+    }
+
+    // Idempotency receipts prevent replaying game-completion rewards.
+    match /gameCompletionReceipts/{receiptId} {
       allow read, write: if false;
     }
 

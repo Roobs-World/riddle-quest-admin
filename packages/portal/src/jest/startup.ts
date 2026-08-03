@@ -3,6 +3,8 @@ import type {JestPurchaseCoordinator} from "./purchases";
 import type {JestPlatformPort, JestSession, PlatformResult} from "./types";
 
 const phaseProgress = [5, 15, 28, 42, 58, 72, 88] as const;
+export const JEST_SDK_INIT_TIMEOUT_MS = 12_000;
+export const JEST_SDK_INIT_TIMEOUT_MESSAGE = "Jest SDK initialization timed out.";
 
 export type JestStartupUpdate = {
   stage: "connecting" | "player" | "progress" | "game";
@@ -15,10 +17,23 @@ export async function startJestSession(
   purchases: JestPurchaseCoordinator,
   authenticateFirebase: (customToken: string) => Promise<void>,
   onProgress?: (update: JestStartupUpdate) => void,
+  options: {initializationTimeoutMs?: number} = {},
 ): Promise<PlatformResult<JestSession>> {
   let heartbeat: ReturnType<typeof setInterval> | undefined;
   try {
-    const initialized = await platform.init();
+    const initializationTimeoutMs = options.initializationTimeoutMs ?? JEST_SDK_INIT_TIMEOUT_MS;
+    let initializationTimeout: ReturnType<typeof setTimeout> | undefined;
+    const initialized = await Promise.race([
+      platform.init(),
+      new Promise<never>((_, reject) => {
+        initializationTimeout = setTimeout(
+          () => reject(new Error(JEST_SDK_INIT_TIMEOUT_MESSAGE)),
+          initializationTimeoutMs,
+        );
+      }),
+    ]).finally(() => {
+      if (initializationTimeout) clearTimeout(initializationTimeout);
+    });
     if (initialized.status !== "success") return initialized;
     platform.setLoadingProgress(phaseProgress[0]);
     onProgress?.({stage: "player", progress: phaseProgress[1]});

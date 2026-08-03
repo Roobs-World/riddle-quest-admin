@@ -1,5 +1,8 @@
 import {createHmac, timingSafeEqual} from "node:crypto";
 
+const MAX_SIGNED_TOKEN_CHARACTERS = 256_000;
+const MAX_SIGNED_PART_BYTES = 128_000;
+
 export type JestSignedPayload = {
   aud: string;
   sub: string;
@@ -8,7 +11,12 @@ export type JestSignedPayload = {
   [key: string]: unknown;
 };
 
-const decodePart = (part: string): unknown => JSON.parse(Buffer.from(part, "base64url").toString("utf8"));
+const decodePart = (part: string): unknown => {
+  if (!part || part.length > MAX_SIGNED_TOKEN_CHARACTERS) throw new Error("malformed-token");
+  const decoded = Buffer.from(part, "base64url");
+  if (decoded.length === 0 || decoded.length > MAX_SIGNED_PART_BYTES) throw new Error("malformed-token");
+  return JSON.parse(decoded.toString("utf8"));
+};
 
 export function verifyJestSigned(
   token: string,
@@ -18,6 +26,7 @@ export function verifyJestSigned(
   nowSeconds = Math.floor(Date.now() / 1000),
   maxAgeSeconds: number | null = null,
 ): JestSignedPayload {
+  if (token.length === 0 || token.length > MAX_SIGNED_TOKEN_CHARACTERS) throw new Error("malformed-token");
   const parts = token.split(".");
   if (parts.length !== 3) throw new Error("malformed-token");
   const header = decodePart(parts[0]) as {alg?: unknown; typ?: unknown};

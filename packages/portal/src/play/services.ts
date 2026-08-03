@@ -2,6 +2,7 @@ import {cloneProductPricingCatalog} from "@qwordly/core/pricing/catalog";
 import {createFakeHostServices} from "./fakeServices";
 import type {HostServices} from "./types";
 import {toProductSummaries} from "./types";
+import {hasTrustedTestHarnessMarker, shouldUseFakeHostServices} from "../testHarness";
 
 export type HostServicesMode = "firebase" | "fake";
 
@@ -120,17 +121,13 @@ const createLazyFirebaseHostServices = (): HostServices => ({
   },
 });
 
-export const resolveHostServicesMode = (search = window.location.search): HostServicesMode => {
-  const params = new URLSearchParams(search);
-  const harness = params.get("harness");
-  return import.meta.env.DEV ||
-    harness === "jest" ||
-    harness === "jest-auth" ||
-    harness === "race-auth" ||
-    harness === "dev" ||
-    harness === "race"
-    ? "fake"
-    : "firebase";
+export const resolveHostServicesMode = (
+  search = window.location.search,
+  options: {development?: boolean; testHarnessEnabled?: boolean} = {},
+): HostServicesMode => {
+  const development = options.development ?? import.meta.env.DEV;
+  const harnessAllowed = options.testHarnessEnabled ?? (development || hasTrustedTestHarnessMarker());
+  return shouldUseFakeHostServices({search, development, testHarnessEnabled: harnessAllowed}) ? "fake" : "firebase";
 };
 
 export const createHostServices = (mode: HostServicesMode = resolveHostServicesMode()): HostServices => {

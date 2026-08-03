@@ -1,0 +1,193 @@
+const serviceMocks = {
+  abandonRaceRunForUser: jest.fn(),
+  getRaceChallengePreview: jest.fn(),
+  getRaceOutcomeForUser: jest.fn(),
+  listRaceCategoriesForLocale: jest.fn(),
+  listRaceInboxForUser: jest.fn(),
+  publishRaceChallengeForUser: jest.fn(),
+  requestRaceHintForUser: jest.fn(),
+  resumeRaceRunForUser: jest.fn(),
+  skipRaceRiddleForUser: jest.fn(),
+  startRaceRunForUser: jest.fn(),
+  submitRaceGuessForUser: jest.fn(),
+  getRaceAccessForUser: jest.fn(),
+  recordRaceAnalyticsForUser: jest.fn(),
+};
+const mockAssertRaceAccess = jest.fn();
+
+jest.mock("firebase-functions/v2/https", () => {
+  const actual = jest.requireActual("firebase-functions/v2/https") as {HttpsError: unknown};
+  return {
+    HttpsError: actual.HttpsError,
+    onCall: jest.fn((_options: unknown, handler: unknown) => handler),
+  };
+});
+
+jest.mock("../../race/raceService", () => ({
+  abandonRaceRunForUser: serviceMocks.abandonRaceRunForUser,
+  getRaceChallengePreview: serviceMocks.getRaceChallengePreview,
+  getRaceOutcomeForUser: serviceMocks.getRaceOutcomeForUser,
+  listRaceCategoriesForLocale: serviceMocks.listRaceCategoriesForLocale,
+  listRaceInboxForUser: serviceMocks.listRaceInboxForUser,
+  publishRaceChallengeForUser: serviceMocks.publishRaceChallengeForUser,
+  requestRaceHintForUser: serviceMocks.requestRaceHintForUser,
+  resumeRaceRunForUser: serviceMocks.resumeRaceRunForUser,
+  skipRaceRiddleForUser: serviceMocks.skipRaceRiddleForUser,
+  startRaceRunForUser: serviceMocks.startRaceRunForUser,
+  submitRaceGuessForUser: serviceMocks.submitRaceGuessForUser,
+}));
+
+jest.mock("../../race/raceRollout", () => ({
+  assertRaceAccess: mockAssertRaceAccess,
+  getRaceAccessForUser: serviceMocks.getRaceAccessForUser,
+  recordRaceAnalyticsForUser: serviceMocks.recordRaceAnalyticsForUser,
+}));
+
+import type {CallableRequest} from "firebase-functions/v2/https";
+import {
+  abandonRaceRun,
+  getRaceAccess,
+  getRaceChallenge,
+  getRaceOutcome,
+  listRaceCategories,
+  listRaceInbox,
+  publishRaceChallenge,
+  raceHintCallableOptions,
+  raceStartCallableOptions,
+  recordRaceAnalytics,
+  requestRaceHint,
+  resumeRaceRun,
+  skipRaceRiddle,
+  startRaceRun,
+  submitRaceGuess,
+} from "../../race/raceCallables";
+import {createRaceCallableCases, type RaceCallableHandlers} from "./callableCases";
+import {raceCallableUserId} from "./callableFixtures";
+
+const handlers = {
+  abandonRaceRun,
+  getRaceAccess,
+  getRaceChallenge,
+  getRaceOutcome,
+  listRaceCategories,
+  listRaceInbox,
+  publishRaceChallenge,
+  recordRaceAnalytics,
+  requestRaceHint,
+  resumeRaceRun,
+  skipRaceRiddle,
+  startRaceRun,
+  submitRaceGuess,
+} as unknown as RaceCallableHandlers;
+const callableCases = createRaceCallableCases(handlers, serviceMocks);
+
+const authenticatedRequest = (data: unknown): CallableRequest<unknown> =>
+  ({auth: {uid: raceCallableUserId}, data}) as CallableRequest<unknown>;
+
+describe("Race callable deployment options", () => {
+  it("keeps the latency-sensitive hint callable warm", () => {
+    expect(raceHintCallableOptions).toMatchObject({minInstances: 1, invoker: "public"});
+  });
+
+  it("keeps the countdown-critical start callable warm", () => {
+    expect(raceStartCallableOptions).toMatchObject({minInstances: 1, invoker: "public"});
+  });
+});
+
+describe("Race callable methods", () => {
+  beforeEach(() => {
+    mockAssertRaceAccess.mockResolvedValue(undefined);
+  });
+
+  it.each(callableCases)("$name rejects unauthenticated requests", async ({handler, input}) => {
+    await expect(handler({auth: undefined, data: input} as CallableRequest<unknown>)).rejects.toMatchObject({
+      code: "unauthenticated",
+    });
+  });
+
+  it.each(callableCases)("$name rejects invalid request payloads", async ({handler, serviceMock}) => {
+    await expect(handler(authenticatedRequest({unexpected: true}))).rejects.toMatchObject({code: "invalid-argument"});
+    expect(serviceMock).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    {
+      name: "startRaceRun",
+      handler: startRaceRun,
+      serviceMock: serviceMocks.startRaceRunForUser,
+      input: {
+        locale: "en",
+        categoryId: "history",
+        requestId: "request-0001",
+        startedAtMs: 1,
+        deckId: "client-deck",
+      },
+    },
+    {
+      name: "submitRaceGuess",
+      handler: submitRaceGuess,
+      serviceMock: serviceMocks.submitRaceGuessForUser,
+      input: {
+        runId: "run-1",
+        riddleId: "riddle-1",
+        guess: "piano",
+        requestId: "request-0001",
+        isCorrect: true,
+        elapsedMs: 1,
+      },
+    },
+    {
+      name: "requestRaceHint",
+      handler: requestRaceHint,
+      serviceMock: serviceMocks.requestRaceHintForUser,
+      input: {
+        runId: "run-1",
+        riddleId: "riddle-1",
+        requestId: "request-0001",
+        currentAttempt: ["p", "", "", "", ""],
+        revealedLetter: "p",
+      },
+    },
+    {
+      name: "skipRaceRiddle",
+      handler: skipRaceRiddle,
+      serviceMock: serviceMocks.skipRaceRiddleForUser,
+      input: {
+        runId: "run-1",
+        riddleId: "riddle-1",
+        requestId: "request-0001",
+        penaltyAddedMs: 0,
+      },
+    },
+    {
+      name: "publishRaceChallenge",
+      handler: publishRaceChallenge,
+      serviceMock: serviceMocks.publishRaceChallengeForUser,
+      input: {
+        runId: "run-1",
+        requestId: "request-0001",
+        adjustedFinishMs: 1,
+        achievementCoinsAwarded: 999_999,
+      },
+    },
+  ])("$name rejects client-authored multiplayer state", async ({handler, input, serviceMock}) => {
+    await expect(handler(authenticatedRequest(input))).rejects.toMatchObject({code: "invalid-argument"});
+    expect(serviceMock).not.toHaveBeenCalled();
+  });
+
+  it.each(callableCases)(
+    "$name validates and delegates a successful request",
+    async ({handler, input, serviceMock, response, expectedCall, accessCall}) => {
+      serviceMock.mockResolvedValueOnce(response);
+
+      await expect(handler(authenticatedRequest(input))).resolves.toEqual(response);
+      expect(serviceMock).toHaveBeenCalledWith(...expectedCall);
+      if (accessCall) expect(mockAssertRaceAccess).toHaveBeenCalledWith(...accessCall);
+    },
+  );
+
+  it.each(callableCases)("$name rejects invalid service responses", async ({handler, input, serviceMock}) => {
+    serviceMock.mockResolvedValueOnce({unexpected: true});
+    await expect(handler(authenticatedRequest(input))).rejects.toMatchObject({code: "internal"});
+  });
+});

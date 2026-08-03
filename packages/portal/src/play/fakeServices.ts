@@ -3,7 +3,7 @@ import {cloneProductPricingCatalog} from "@qwordly/core/pricing/catalog";
 import type {BridgeLeaderboardEntry, BridgeProfile, BridgeRiddle, BridgeUser} from "@qwordly/core/bridge";
 import type {AuthSnapshot, HostServices, LeaderboardType, ProductSummary} from "./types";
 import {toProductSummaries} from "./types";
-import {createFakeRaceServices} from "./race/fakeRaceServices";
+import {createFakeRaceServices} from "./race/testing/fakeRaceServices";
 
 const fakeRiddles: BridgeRiddle[] = [
   {

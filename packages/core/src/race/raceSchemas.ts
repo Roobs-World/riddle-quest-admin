@@ -369,7 +369,6 @@ export const RequestRaceHintRequestSchema = z
   .object({
     runId: OpaqueIdSchema,
     riddleId: OpaqueIdSchema,
-    currentAttempt: z.array(z.string().max(8)).max(MAX_RIDDLE_ANSWER_CHARACTERS),
     requestId: RequestIdSchema,
   })
   .strict();

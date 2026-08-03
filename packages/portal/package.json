@@ -20,7 +20,8 @@
     "test:jest-deployed:playwright": "PORTAL_DEPLOYED_TESTS=1 jest --config jest.config.cjs --runInBand src/jest/__tests__/deployedJest.jest-playwright.test.ts",
     "test:mobile-soak": "PORTAL_SOAK_TESTS=1 jest --config jest.config.cjs --runInBand src/play/__tests__/mobileSoak.jest-playwright.test.ts",
     "preview": "vite preview",
-    "test": "jest --config jest.config.cjs"
+    "test": "jest --config jest.config.cjs",
+    "test:race:coverage": "jest --config jest.race-coverage.config.cjs --runInBand"
   },
   "dependencies": {
     "@qwordly/core": "workspace:*",

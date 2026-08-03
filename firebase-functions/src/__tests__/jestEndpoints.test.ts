@@ -1,5 +1,6 @@
 import {
   applyJestCors,
+  isAllowedJestOrigin,
   resolveConflictingSubscriptionSkus,
   resolveSignedPurchase,
   resolveSignedSubscriptions,
@@ -20,6 +21,15 @@ describe("Jest endpoint CORS", () => {
       "Access-Control-Allow-Methods": "POST, OPTIONS",
       "Access-Control-Allow-Headers": "Content-Type",
     });
+  });
+
+  it("rejects unconfigured browser origins", () => {
+    const previousOrigin = process.env.JEST_GAME_ORIGIN;
+    process.env.JEST_GAME_ORIGIN = "https://jest.com";
+    expect(isAllowedJestOrigin("https://attacker.example")).toBe(false);
+    expect(isAllowedJestOrigin(undefined)).toBe(false);
+    if (previousOrigin === undefined) delete process.env.JEST_GAME_ORIGIN;
+    else process.env.JEST_GAME_ORIGIN = previousOrigin;
   });
 
   it("allows the exact Jest build host derived from the configured game ID", () => {

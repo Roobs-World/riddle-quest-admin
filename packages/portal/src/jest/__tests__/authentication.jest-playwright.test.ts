@@ -272,6 +272,8 @@ const openHarness = async (
     harness?: "jest-auth" | "race-auth";
     playerId?: string;
     sharedRace?: boolean;
+    raceStartDelayMs?: number;
+    raceOutcomeDelayMs?: number;
   } = {},
 ) => {
   const context = await browser.newContext({viewport: {width: 390, height: 844}});
@@ -285,6 +287,8 @@ const openHarness = async (
   if (options.challengeDestination) query.set("challengeDestination", options.challengeDestination);
   if (options.playerId) query.set("playerId", options.playerId);
   if (options.sharedRace) query.set("sharedRace", "1");
+  if (options.raceStartDelayMs) query.set("raceStartDelayMs", String(options.raceStartDelayMs));
+  if (options.raceOutcomeDelayMs) query.set("raceOutcomeDelayMs", String(options.raceOutcomeDelayMs));
   await page.goto(`${baseUrl}/?${query}`);
   return {context, page};
 };
@@ -331,7 +335,7 @@ const enterRegisteredGame = async (page: Page) => {
   await page.locator(".tooltip-backdrop").waitFor({state: "detached", timeout: 5_000});
 };
 
-const solveFakeRace = async (page: Page) => {
+const solveFakeRace = async (page: Page, options: {expectChainedSubmitLoader?: boolean} = {}) => {
   for (const answer of ["piano", "clock", "towel", "bottle", "stamp", "needle", "name", "comb", "water", "book"]) {
     const board = page.locator(".race-gameplay .guess-board");
     const heading = page.locator(".race-riddle-surface .riddle-card h2");
@@ -363,14 +367,23 @@ const solveFakeRace = async (page: Page) => {
       throw new Error(`Race solver could not submit ${answer}: ${JSON.stringify(state)}`);
     }
     await submit.click({timeout: 5_000});
+    const submitLoader = page.locator(".race-operation-loader");
+    await submitLoader.waitFor({state: "visible"});
     if (answer !== "book") {
-      await page.waitForFunction(
-        (previous) => document.querySelector(".race-riddle-surface .riddle-card h2")?.textContent !== previous,
-        previousRiddle,
-      );
+      await Promise.all([
+        page.waitForFunction(
+          (previous) => document.querySelector(".race-riddle-surface .riddle-card h2")?.textContent !== previous,
+          previousRiddle,
+        ),
+        submitLoader.waitFor({state: "detached"}),
+      ]);
+    } else if (options.expectChainedSubmitLoader) {
+      await page.waitForTimeout(250);
+      expect(await submitLoader.isVisible()).toBe(true);
     }
   }
   await page.getByRole("heading", {name: /run recorded|you win|opponent wins|tie/i}).waitFor({timeout: 15_000});
+  await page.locator(".race-operation-loader").waitFor({state: "detached"});
 };
 
 describeBrowser("Jest authentication integration", () => {
@@ -679,6 +692,8 @@ describeBrowser("Jest authentication integration", () => {
       harness: "race-auth",
       playerId: "race-creator",
       sharedRace: true,
+      raceStartDelayMs: 2_500,
+      raceOutcomeDelayMs: 500,
     });
     await enterRegisteredGame(creator.page);
     const multiplayerButton = creator.page.getByRole("button", {name: /^multiplayer$/i});
@@ -694,9 +709,32 @@ describeBrowser("Jest authentication integration", () => {
     await multiplayerButton.click();
     await creator.page.getByRole("button", {name: /^History /}).waitFor();
     expect(await creator.page.locator('[data-testid="server-activity-loader"]').count()).toBe(0);
+    await creator.page.evaluate(() => {
+      const timingWindow = window as typeof window & {
+        __RIDDLE_QUEST_RACE_START_TIMING__?: {goAt?: number; gameplayAt?: number};
+      };
+      const timing = {} as {goAt?: number; gameplayAt?: number};
+      timingWindow.__RIDDLE_QUEST_RACE_START_TIMING__ = timing;
+      const observer = new MutationObserver(() => {
+        if (
+          timing.goAt === undefined &&
+          document.querySelector(".race-countdown > span")?.textContent?.trim() === "GO!"
+        ) {
+          timing.goAt = performance.now();
+        }
+        if (timing.goAt !== undefined && document.querySelector(".race-gameplay")) {
+          timing.gameplayAt = performance.now();
+          observer.disconnect();
+        }
+      });
+      observer.observe(document.body, {subtree: true, childList: true, characterData: true});
+    });
     await creator.page.getByRole("button", {name: /^History /}).click();
     const countdownRail = creator.page.locator(".race-countdown-rail");
     await countdownRail.waitFor();
+    await creator.page.waitForTimeout(1_200);
+    expect(await creator.page.locator(".race-countdown > span").innerText()).toBe("3");
+    expect(await creator.page.locator(".race-countdown > p").innerText()).toMatch(/loading/i);
     expect(await creator.page.locator(".race-topbar").count()).toBe(0);
     expect(await countdownRail.getByText(/recorded head-to-head/i).isVisible()).toBe(true);
     expect(await countdownRail.locator(".race-coin-balance").isVisible()).toBe(true);
@@ -707,13 +745,48 @@ describeBrowser("Jest authentication integration", () => {
     });
     expect(countdownCenterOffset).toBeLessThanOrEqual(0.5);
     await creator.page.locator(".race-gameplay .guess-board").waitFor({state: "visible", timeout: 10_000});
+    const raceStartTiming = await creator.page.evaluate(
+      () =>
+        (
+          window as typeof window & {
+            __RIDDLE_QUEST_RACE_START_TIMING__?: {goAt?: number; gameplayAt?: number};
+          }
+        ).__RIDDLE_QUEST_RACE_START_TIMING__,
+    );
+    expect(raceStartTiming?.goAt).toBeDefined();
+    expect(raceStartTiming?.gameplayAt).toBeDefined();
+    expect((raceStartTiming?.gameplayAt ?? Infinity) - (raceStartTiming?.goAt ?? 0)).toBeLessThan(600);
+    const getMultiplayerLayout = () => creator.page.locator(".race-gameplay").evaluate((gameplay) => {
+      const rail = gameplay.querySelector(".race-scoreboard")?.getBoundingClientRect();
+      const riddle = gameplay.querySelector(".race-riddle-surface")?.getBoundingClientRect();
+      const status = gameplay.querySelector(".race-rail-status")?.getBoundingClientRect();
+      return {
+        statusInRail: Boolean(gameplay.querySelector(".race-scoreboard .race-rail-status")),
+        statusInGameInfo: Boolean(gameplay.querySelector(".race-rail-game-info > .race-rail-status")),
+        statusInRiddle: Boolean(gameplay.querySelector(".race-riddle-surface .race-rail-status")),
+        statusIsRightOfRiddle: Boolean(status && riddle && status.left >= riddle.right),
+        railIsRightOfRiddle: Boolean(rail && riddle && rail.left >= riddle.right),
+      };
+    });
+    const expectedMultiplayerLayout = {
+      statusInRail: true,
+      statusInGameInfo: true,
+      statusInRiddle: false,
+      statusIsRightOfRiddle: true,
+      railIsRightOfRiddle: true,
+    };
+    expect(await getMultiplayerLayout()).toEqual(expectedMultiplayerLayout);
+    await creator.page.setViewportSize({width: 900, height: 844});
+    expect(await getMultiplayerLayout()).toEqual(expectedMultiplayerLayout);
+    await creator.page.setViewportSize({width: 390, height: 667});
     await creator.page.waitForFunction(() =>
       Boolean(document.querySelector(".race-gameplay-viewport")?.getAttribute("data-viewport-scale")),
     );
-    expect(
-      await creator.page.locator(".race-screen").evaluate((screen) => screen.scrollHeight <= screen.clientHeight + 1),
-    ).toBe(true);
-    await solveFakeRace(creator.page);
+    await creator.page.waitForFunction(() => {
+      const screen = document.querySelector(".race-screen");
+      return Boolean(screen && screen.scrollHeight <= screen.clientHeight + 1);
+    });
+    await solveFakeRace(creator.page, {expectChainedSubmitLoader: true});
     await creator.page.getByRole("button", {name: /create challenge/i}).click();
     await creator.page.getByRole("button", {name: /challenge a friend/i}).waitFor({timeout: 10_000});
     expect(sharedRaceChallenges.has("fake-challenge-2")).toBe(true);
@@ -750,6 +823,12 @@ describeBrowser("Jest authentication integration", () => {
     await page.getByRole("button", {name: /^multiplayer$/i}).click();
     await page.getByRole("button", {name: /^History /}).click();
     await page.locator(".race-gameplay").waitFor({state: "visible", timeout: 10_000});
+
+    await page.locator(".race-actions").getByRole("button", {name: /^hint/i}).click();
+    const serverSelectedHint = page.locator(".race-gameplay .guess-row .cell.green").first();
+    await serverSelectedHint.waitFor({state: "visible", timeout: 5_000});
+    expect((await serverSelectedHint.innerText()).trim()).not.toBe("");
+    expect(await page.locator(".race-header-clock small").innerText()).toContain("0:15.0");
 
     await page.getByRole("button", {name: /close race to 10/i}).click();
     const confirmation = page.getByRole("alertdialog", {name: /quit this race/i});

@@ -1,6 +1,6 @@
 import {admin} from "../shared/firebaseAdmin";
 import {defineSecret} from "firebase-functions/params";
-import {onRequest} from "firebase-functions/v2/https";
+import {onRequest, type Request} from "firebase-functions/v2/https";
 import {logger} from "firebase-functions";
 import {jestFirebaseUid, verifyJestSigned} from "./jestSecurity";
 import {JEST_COIN_PRODUCTS, JEST_SUBSCRIPTIONS} from "./jestProductCatalog";
@@ -21,37 +21,87 @@ const subscriptionSkus = configuredSubscriptionSkus.size > 0
 const REFERRAL_REFERENCE = "riddle_quest_friend_challenge_v2";
 const REFERRAL_REWARD_COINS = 100;
 const attempts = new Map<string, {count: number; resetAt: number}>();
+const MAX_RATE_LIMIT_KEYS = 10_000;
+
+type JestHttpResponse = {
+  set(name: string, value: string): unknown;
+  status(code: number): JestHttpResponse;
+  json(body: unknown): unknown;
+  send(body: string): unknown;
+};
 
 function allowRequest(ip: string): boolean {
   const now = Date.now();
+  if (attempts.size >= MAX_RATE_LIMIT_KEYS) {
+    for (const [key, value] of attempts) {
+      if (value.resetAt <= now) attempts.delete(key);
+    }
+  }
   const current = attempts.get(ip);
   if (!current || current.resetAt <= now) { attempts.set(ip, {count: 1, resetAt: now + 60_000}); return true; }
   current.count += 1;
   return current.count <= 30;
 }
 
+function allowedJestOrigins(): Set<string> {
+  const origins = new Set(
+    (process.env.JEST_GAME_ORIGIN ?? "").split(",").map((value) => value.trim()).filter(Boolean),
+  );
+  const gameId = process.env.JEST_GAME_ID ?? JEST_GAME_ID;
+  if (gameId) origins.add(`https://${gameId}.builds.jest.com`);
+  return origins;
+}
+
+/** Returns whether a browser origin is explicitly trusted for Jest backend calls. */
+export function isAllowedJestOrigin(origin: string | undefined): boolean {
+  return typeof origin === "string" && allowedJestOrigins().has(origin);
+}
+
 export function applyJestCors(response: {set(name: string, value: string): unknown}, origin?: string) {
-  const allowedOrigins = new Set((process.env.JEST_GAME_ORIGIN ?? "").split(",").map((value) => value.trim()).filter(Boolean));
-  const corsGameId = process.env.JEST_GAME_ID ?? JEST_GAME_ID;
-  if (corsGameId) allowedOrigins.add(`https://${corsGameId}.builds.jest.com`);
-  if (origin && allowedOrigins.has(origin)) response.set("Access-Control-Allow-Origin", origin);
+  if (isAllowedJestOrigin(origin)) response.set("Access-Control-Allow-Origin", origin!);
   response.set("Access-Control-Allow-Methods", "POST, OPTIONS");
   response.set("Access-Control-Allow-Headers", "Content-Type");
   response.set("Access-Control-Max-Age", "3600");
   response.set("Vary", "Origin");
   response.set("Cache-Control", "no-store");
+  response.set("Referrer-Policy", "no-referrer");
+  response.set("X-Content-Type-Options", "nosniff");
 }
 
 function rejection(error: unknown) {
   const reason = error instanceof Error ? error.message : "invalid-request";
   logger.warn("Rejected Jest platform request", {reason});
-  return reason;
+  return "invalid-request";
+}
+
+function acceptJestRequest(request: Request, response: JestHttpResponse): boolean {
+  const origin = request.get("origin");
+  applyJestCors(response, origin);
+  if (!isAllowedJestOrigin(origin)) {
+    response.status(403).json({error: "forbidden-origin"});
+    return false;
+  }
+  if (request.method === "OPTIONS") {
+    response.status(204).send("");
+    return false;
+  }
+  if (request.method !== "POST") {
+    response.status(405).json({error: "method-not-allowed"});
+    return false;
+  }
+  if (!request.is("application/json")) {
+    response.status(415).json({error: "unsupported-media-type"});
+    return false;
+  }
+  if (!allowRequest(request.ip ?? "unknown")) {
+    response.status(429).json({error: "rate-limited"});
+    return false;
+  }
+  return true;
 }
 
 export const exchangeJestIdentity = onRequest({secrets: [jestSharedSecret]}, async (request, response) => {
-  applyJestCors(response, request.get("origin"));
-  if (request.method === "OPTIONS") { response.status(204).send(""); return; }
-  if (request.method !== "POST" || !allowRequest(request.ip ?? "unknown")) { response.status(429).json({error: "rate-limited"}); return; }
+  if (!acceptJestRequest(request, response)) return;
   try {
     const {playerSigned} = request.body as {playerSigned?: unknown};
     if (typeof playerSigned !== "string") throw new Error("missing-player-signed");
@@ -70,9 +120,7 @@ export const exchangeJestIdentity = onRequest({secrets: [jestSharedSecret]}, asy
 });
 
 export const grantJestPurchase = onRequest({secrets: [jestSharedSecret]}, async (request, response) => {
-  applyJestCors(response, request.get("origin"));
-  if (request.method === "OPTIONS") { response.status(204).send(""); return; }
-  if (request.method !== "POST" || !allowRequest(request.ip ?? "unknown")) { response.status(429).json({error: "rate-limited"}); return; }
+  if (!acceptJestRequest(request, response)) return;
   try {
     const {purchaseSigned, playerId, purchaseToken: requestedToken} = request.body as {purchaseSigned?: unknown; playerId?: unknown; purchaseToken?: unknown};
     if (typeof purchaseSigned !== "string" || typeof playerId !== "string" || typeof requestedToken !== "string") throw new Error("invalid-request");
@@ -135,12 +183,7 @@ export const grantJestPurchase = onRequest({secrets: [jestSharedSecret]}, async 
 });
 
 export const syncJestSubscriptions = onRequest({secrets: [jestSharedSecret]}, async (request, response) => {
-  applyJestCors(response, request.get("origin"));
-  if (request.method === "OPTIONS") { response.status(204).send(""); return; }
-  if (request.method !== "POST" || !allowRequest(request.ip ?? "unknown")) {
-    response.status(429).json({error: "rate-limited"});
-    return;
-  }
+  if (!acceptJestRequest(request, response)) return;
   try {
     const {subscriptionsSigned, playerId} = request.body as {
       subscriptionsSigned?: unknown;
@@ -176,9 +219,7 @@ export const syncJestSubscriptions = onRequest({secrets: [jestSharedSecret]}, as
 });
 
 export const verifyJestReferrals = onRequest({secrets: [jestSharedSecret]}, async (request, response) => {
-  applyJestCors(response, request.get("origin"));
-  if (request.method === "OPTIONS") { response.status(204).send(""); return; }
-  if (request.method !== "POST" || !allowRequest(request.ip ?? "unknown")) { response.status(429).json({error: "rate-limited"}); return; }
+  if (!acceptJestRequest(request, response)) return;
   try {
     const {referralsSigned, playerId} = request.body as {referralsSigned?: unknown; playerId?: unknown};
     if (typeof referralsSigned !== "string" || typeof playerId !== "string") throw new Error("invalid-request");

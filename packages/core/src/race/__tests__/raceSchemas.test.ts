@@ -2,12 +2,16 @@ import {
   AbandonRaceRunRequestSchema,
   AbandonRaceRunResponseSchema,
   ListRaceCategoriesResponseSchema,
+  PublishRaceChallengeRequestSchema,
   RACE_HINT_PENALTY_MS,
   RACE_RULES,
   RACE_SKIP_PENALTY_MS,
   RaceGhostEventSchema,
   RaceRunViewSchema,
+  RequestRaceHintRequestSchema,
+  SkipRaceRiddleRequestSchema,
   StartRaceRunRequestSchema,
+  SubmitRaceGuessRequestSchema,
 } from "../raceSchemas";
 import {ENGLISH_RACE_DECK_FIXTURE, GHOST_TIMELINE_FIXTURE} from "./raceFixtures";
 
@@ -192,6 +196,70 @@ describe("Race to 10 contracts", () => {
         categoryId: "history",
         requestId: "request-0001",
         elapsedMs: 0,
+      }).success,
+    ).toBe(false);
+  });
+
+  it("accepts only player intent and rejects forged multiplayer mechanics", () => {
+    const requestId = "request-0001";
+    expect(RequestRaceHintRequestSchema.safeParse({runId: "run-1", riddleId: "riddle-1", requestId}).success).toBe(
+      true,
+    );
+    expect(
+      RequestRaceHintRequestSchema.safeParse({
+        runId: "run-1",
+        riddleId: "riddle-1",
+        requestId,
+        currentAttempt: ["P", "", "", "", ""],
+      }).success,
+    ).toBe(false);
+    expect(
+      SubmitRaceGuessRequestSchema.safeParse({
+        runId: "run-1",
+        riddleId: "riddle-1",
+        guess: "piano",
+        requestId,
+        isCorrect: true,
+        penaltyMs: 0,
+        elapsedMs: 1,
+      }).success,
+    ).toBe(false);
+    expect(
+      StartRaceRunRequestSchema.safeParse({
+        locale: "en",
+        categoryId: "history",
+        requestId,
+        startedAtMs: 1,
+        deckId: "client-deck",
+        rulesVersion: "race10_v1",
+      }).success,
+    ).toBe(false);
+    expect(
+      RequestRaceHintRequestSchema.safeParse({
+        runId: "run-1",
+        riddleId: "riddle-1",
+        requestId,
+        index: 0,
+        revealedLetter: "p",
+        penaltyMs: 0,
+      }).success,
+    ).toBe(false);
+    expect(
+      SkipRaceRiddleRequestSchema.safeParse({
+        runId: "run-1",
+        riddleId: "riddle-1",
+        requestId,
+        penaltyAddedMs: 0,
+        nextRiddleId: "riddle-2",
+      }).success,
+    ).toBe(false);
+    expect(
+      PublishRaceChallengeRequestSchema.safeParse({
+        runId: "run-1",
+        requestId,
+        correctCount: 10,
+        adjustedFinishMs: 1,
+        achievementCoinsAwarded: 999_999,
       }).success,
     ).toBe(false);
   });

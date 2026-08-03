@@ -1,4 +1,4 @@
-import {evaluateRaceRollout, hashRaceCohortUser} from "../race/raceRollout";
+import {evaluateRaceRollout, hashRaceCohortUser} from "../../race/raceRollout";
 
 describe("Race rollout cohort evaluation", () => {
   it("defaults off for missing or malformed configuration", () => {

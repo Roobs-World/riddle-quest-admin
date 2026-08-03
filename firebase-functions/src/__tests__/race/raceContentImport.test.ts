@@ -1,5 +1,5 @@
 import {RACE_CATEGORY_IDS, type RaceCategoryId, type RaceDifficultyBand} from "@qwordly/core/race";
-import {createRaceContentImportPlan} from "../race/raceContentImport";
+import {createRaceContentImportPlan} from "../../race/raceContentImport";
 
 const validFile = () => ({
   locale: "en" as const,

@@ -24,7 +24,7 @@ import {
 import {GameModalView} from "./GameModalView";
 import {useGameMessageRouter} from "./useGameMessageRouter";
 import {useOnlineStatus} from "./useOnlineStatus";
-import {isRaceHarness} from "./race/raceFeatureFlag";
+import {isRaceHarness} from "./race/logic/raceFeatureFlag";
 import {useGameAudio, useGameMessageListener, useGameReadyReporter, useViewportFit} from "./game/hooks";
 import {getMobileCapabilities, shouldLoadDecorativeWebGl} from "./performance/mobileCapabilities";
 import {trackScreen} from "../analytics/googleAnalytics";

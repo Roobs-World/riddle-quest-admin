@@ -1,5 +1,5 @@
 import {describe, expect, it} from "@jest/globals";
-import {createRaceAnalyticsMessage} from "../raceAnalytics";
+import {createRaceAnalyticsMessage} from "../logic/raceAnalytics";
 
 describe("race analytics privacy", () => {
   it("keeps only the metric fields allowlisted for each event", () => {

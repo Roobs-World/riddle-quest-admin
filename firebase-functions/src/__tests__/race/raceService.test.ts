@@ -1,6 +1,6 @@
 import type {RaceDifficultyBand, RaceLocale} from "@qwordly/core/race";
-import type {ExistingRaceContentRecord} from "../race/raceContentMigration";
-import {buildDeterministicRaceDeck} from "../race/raceService";
+import type {ExistingRaceContentRecord} from "../../race/raceContentMigration";
+import {buildDeterministicRaceDeck} from "../../race/raceService";
 
 const makePool = (locale: RaceLocale): ExistingRaceContentRecord[] =>
   Array.from({length: 30}, (_, index) => {

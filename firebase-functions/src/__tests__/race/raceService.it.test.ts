@@ -11,7 +11,7 @@ import {
   skipRaceRiddleForUser,
   startRaceRunForUser,
   submitRaceGuessForUser,
-} from "../race/raceService";
+} from "../../race/raceService";
 
 const PROJECT_ID = process.env.GCLOUD_PROJECT ?? "riddle-quest-ec2b2";
 const NOW = 1_800_000_000_000;
@@ -46,6 +46,7 @@ beforeAll(async () => {
   }
   batch.set(db.doc("users/creator-1"), {displayName: "Ada"});
   batch.set(db.doc("users/challenger-1"), {displayName: "Grace"});
+  batch.set(db.doc("raceConfig/rollout"), {enabled: true, percentage: 100, allowlistHashes: []});
   await batch.commit();
 });
 
@@ -91,11 +92,18 @@ describe("Race to 10 transactional service", () => {
     const hintInput = {
       runId: first.run.runId,
       riddleId,
-      currentAttempt: Array(resumed.run.currentRiddle!.answerLength).fill(""),
       requestId: "hint-request-0001",
     };
-    const hint = await requestRaceHintForUser("creator-1", hintInput, {db, nowMs: NOW + 11_000});
-    const duplicateHint = await requestRaceHintForUser("creator-1", hintInput, {db, nowMs: NOW + 12_000});
+    const hint = await requestRaceHintForUser("creator-1", hintInput, {
+      db,
+      nowMs: NOW + 11_000,
+      enforceAccess: true,
+    });
+    const duplicateHint = await requestRaceHintForUser("creator-1", hintInput, {
+      db,
+      nowMs: NOW + 12_000,
+      enforceAccess: true,
+    });
     expect(duplicateHint).toEqual(hint);
     expect(hint.run.totalPenaltyMs).toBe(15_000);
 
@@ -335,6 +343,18 @@ describe("Race to 10 transactional service", () => {
       {db, nowMs: NOW + 100_000},
     );
     const firstRiddle = concurrent.run.currentRiddle!;
+    await expect(
+      submitRaceGuessForUser(
+        "different-user",
+        {
+          runId: concurrent.run.runId,
+          riddleId: firstRiddle.riddleId,
+          guess: "xxxxxxx",
+          requestId: "cross-player-guess-0001",
+        },
+        {db, nowMs: NOW + 100_500},
+      ),
+    ).rejects.toMatchObject({code: "permission-denied"});
     const request = {
       runId: concurrent.run.runId,
       riddleId: firstRiddle.riddleId,

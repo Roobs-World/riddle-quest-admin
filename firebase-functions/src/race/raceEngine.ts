@@ -208,7 +208,7 @@ export function applyRaceGuess(
 
 export function applyRaceHint(
   input: RaceRunRecord,
-  inputData: {riddleId: string; currentAttempt: string[]},
+  inputData: {riddleId: string},
   nowMs: number,
 ): {run: RaceRunRecord; revealedLetter: string; index: number} {
   const run = refreshRaceRun(input, nowMs);
@@ -217,12 +217,7 @@ export function applyRaceHint(
 
   const answer = splitGraphemes(riddle.answer, run.locale);
   const revealed = new Set(run.revealedLetters.map((letter) => letter.index));
-  const index = answer.findIndex(
-    (letter, candidateIndex) =>
-      !revealed.has(candidateIndex) &&
-      normalizeAnswer(inputData.currentAttempt[candidateIndex] ?? "", run.locale) !==
-        normalizeAnswer(letter, run.locale),
-  );
+  const index = answer.findIndex((_, candidateIndex) => !revealed.has(candidateIndex));
   if (index < 0) throw new HttpsError("failed-precondition", "No unrevealed race hint is available.");
 
   run.hintUsed = true;

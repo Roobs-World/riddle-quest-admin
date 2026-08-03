@@ -1,5 +1,5 @@
-import {ACHIEVEMENT_UNLOCK_COIN_REWARD} from "../shared/constants";
-import {evaluateRaceAchievementEvent} from "../race/raceAchievements";
+import {ACHIEVEMENT_UNLOCK_COIN_REWARD} from "../../shared/constants";
+import {evaluateRaceAchievementEvent} from "../../race/raceAchievements";
 
 describe("multiplayer achievements", () => {
   it("unlocks the debut and clean-run achievements on a first clean completion", () => {
