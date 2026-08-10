@@ -127,6 +127,19 @@ pnpm --filter @qwordly/portal test:jest-payments:live
 
 This checks the live Jest/Stripe product and subscription catalogs, completes a sandbox checkout, verifies the signed receipt through `grantJestPurchase`, replays the receipt to prove the grant is idempotent, calls `completePurchase`, and confirms the token has left the recovery queue. Jest owns the Stripe customer, wallet, checkout, and charge lifecycle; no Stripe secret or direct Stripe client belongs in the game artifact.
 
+Run the separate subscription activation, restoration, and cancellation gate with an exact SKU confirmation:
+
+```bash
+JEST_SANDBOX_SUBSCRIPTION_CONFIRM=com.roobsworld.riddlequest.premium.monthly \
+pnpm --filter @qwordly/portal test:jest-subscription:live
+```
+
+The gate requires Jest's **Sandbox User** checkout marker before it clicks Subscribe, verifies the signed active entitlement through
+`syncJestSubscriptions`, reloads the active game to prove restoration, and confirms platform cancellation. As of 2026-08-10,
+the live sandbox modal receives the Subscribe click but Jest emits no checkout request and does not settle `beginSubscription`;
+the wallet remains inactive. Subscriptions are a Jest beta feature, so contact Jest support with this reproduction before enabling
+the offer for production players. The game applies its own 30-second retryable timeout so a platform stall cannot block the UI.
+
 `build:jest` validates TypeScript, every imported locale JSON file, the production build, and the standalone artifact. The artifact audit enforces the 5 MB limit, local relative assets, the single approved Jest SDK script, and the absence of native modules, external authentication, ads, install prompts, secrets, and source maps.
 
 ## Jest testing modes

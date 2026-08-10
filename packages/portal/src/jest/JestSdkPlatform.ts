@@ -13,6 +13,8 @@ import {captureBrowserException} from "../observability/sentry";
 type Sdk = Record<string, any>;
 /** Defines the player data key value. */
 const PLAYER_DATA_KEY = "riddleQuestPlayerState";
+/** Defines the longest a platform subscription checkout may block the game UI. */
+const SUBSCRIPTION_CHECKOUT_TIMEOUT_MS = 30_000;
 /** Provides success behavior. */
 const success = <T>(value: T): PlatformResult<T> => ({status: "success", value});
 /** Provides failure behavior. */
@@ -27,6 +29,21 @@ const failure = (error: unknown): PlatformResult<never> => {
 /** Indicates whether is record. */
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
+
+/** Rejects an SDK operation that does not settle before its UI timeout. */
+const withTimeout = async <T>(operation: Promise<T>, timeoutMs: number, message: string): Promise<T> => {
+  let timeoutId: ReturnType<typeof setTimeout> | undefined;
+  try {
+    return await Promise.race([
+      operation,
+      new Promise<never>((_resolve, reject) => {
+        timeoutId = setTimeout(() => reject(new Error(message)), timeoutMs);
+      }),
+    ]);
+  } finally {
+    clearTimeout(timeoutId);
+  }
+};
 
 /** Parses saved game. */
 const parseSavedGame = (value: unknown): JestSavedGame | null => {
@@ -54,10 +71,16 @@ const parseSavedGame = (value: unknown): JestSavedGame | null => {
 export class JestSdkPlatform implements JestPlatformPort {
   /** Stores sdk. */
   private readonly sdk: Sdk;
+  /** Stores the subscription checkout timeout. */
+  private readonly subscriptionCheckoutTimeoutMs: number;
 
   /** Creates a jest sdk platform instance. */
-  constructor(sdk: Sdk = (globalThis as typeof globalThis & {JestSDK?: Sdk}).JestSDK ?? {}) {
+  constructor(
+    sdk: Sdk = (globalThis as typeof globalThis & {JestSDK?: Sdk}).JestSDK ?? {},
+    subscriptionCheckoutTimeoutMs = SUBSCRIPTION_CHECKOUT_TIMEOUT_MS,
+  ) {
     this.sdk = sdk;
+    this.subscriptionCheckoutTimeoutMs = subscriptionCheckoutTimeoutMs;
   }
 
   /** Provides init behavior. */
@@ -195,7 +218,11 @@ export class JestSdkPlatform implements JestPlatformPort {
   /** Provides begin subscription behavior. */
   async beginSubscription(subscriptionSku: string) {
     try {
-      const result = await this.sdk.payments.beginSubscription({subscriptionSku});
+      const result: any = await withTimeout<any>(
+        this.sdk.payments.beginSubscription({subscriptionSku}),
+        this.subscriptionCheckoutTimeoutMs,
+        "Jest subscription checkout timed out",
+      );
       if (result?.result === "cancel") return {status: "cancelled"} as const;
       if (result?.result === "error") {
         captureBrowserException(new Error(String(result.error)), {component: "jest_sdk", operation: "begin_subscription"});

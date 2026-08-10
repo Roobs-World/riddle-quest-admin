@@ -498,6 +498,15 @@ it("handles empty and failed subscription catalogs and checkout failures", async
   await expect(platform.beginSubscription("premium")).resolves.toEqual({status: "retryable-failure", message: "offline"});
 });
 
+it("times out a subscription checkout that never settles", async () => {
+  const mock = sdk();
+  mock.payments.beginSubscription.mockImplementation(() => new Promise(() => undefined));
+  await expect(new JestSdkPlatform(mock, 1).beginSubscription("premium")).resolves.toEqual({
+    status: "retryable-failure",
+    message: "Jest subscription checkout timed out",
+  });
+});
+
 it("marks the first milestone and contains milestone failures", async () => {
   const mock = sdk();
   const platform = new JestSdkPlatform(mock);
