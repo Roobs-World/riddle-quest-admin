@@ -328,6 +328,13 @@ pnpm --dir firebase-functions test:race:rules
 
 The mobile soak defaults to ten minutes. Override it only for diagnosis with `PORTAL_SOAK_DURATION_MS`; the release check should use the full duration.
 
+Run the fail-closed release gate before every upload. It includes production dependency, type, lint, coverage, security-rules emulator, build, W3C, browser, and exact archive checks. Use the extended gate before launches and major gameplay releases to append the full mobile soak:
+
+```bash
+pnpm verify:production
+pnpm verify:production:extended
+```
+
 ### Uploaded sandbox build
 
 Generate a short-lived login URL under Developer Console → Sandbox Users, then run:

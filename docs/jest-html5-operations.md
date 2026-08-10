@@ -65,7 +65,13 @@ Run the complete fail-closed release gate:
 pnpm verify:production
 ```
 
-This checks production dependency advisories, all TypeScript projects, backend lint, full coverage thresholds, security and scalability policies, package-feature adoption, TSDoc and file-size limits, the standalone Jest build, W3C validity, both local browser suites, and the exact ZIP packaging preflight. Any failed stage stops the release.
+This checks production dependency advisories, all TypeScript projects, backend lint, full coverage thresholds, Firestore and Storage rules in their emulators, security and scalability policies, package-feature adoption, TSDoc and file-size limits, the standalone Jest build, W3C validity, both local browser suites, and the exact ZIP packaging preflight. Any failed stage stops the release.
+
+Before a production launch or major gameplay release, run the extended gate. It includes the complete gate above followed by the full ten-minute low-end mobile stability and memory soak:
+
+```bash
+pnpm verify:production:extended
+```
 
 The individual commands remain useful while diagnosing a failed gate:
 
