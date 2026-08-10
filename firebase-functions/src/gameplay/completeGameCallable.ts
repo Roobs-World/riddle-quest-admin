@@ -1,4 +1,4 @@
-import {onCall, HttpsError, type CallableOptions} from "firebase-functions/v2/https";
+import {HttpsError, type CallableOptions} from "firebase-functions/v2/https";
 import {
   CompleteGameRequestDataSchema,
   CompleteGameResponseDataSchema,
@@ -8,9 +8,11 @@ import {validateCallableRequest, validateCallableResponse} from "../validation/c
 import {handleCompleteGameLogic} from "./submitGuessLogic";
 import {runGameCompletionOnce} from "./gameCompletionGuard";
 import {browserCallableSecurityOptions} from "../shared/callableSecurity";
+import {onCallWithSentry} from "../shared/sentryHandlers";
 
 /** Completes game. */
-export const completeGame = onCall<CompleteGameRequestData, Promise<CompleteGameResponseData>>(
+export const completeGame = onCallWithSentry<CompleteGameRequestData, CompleteGameResponseData>(
+  "completeGame",
   {
     ...browserCallableSecurityOptions,
     secrets: ["OPENAI_API_KEY"],

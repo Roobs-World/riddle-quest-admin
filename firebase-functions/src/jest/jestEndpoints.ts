@@ -1,6 +1,6 @@
 import {admin} from "../shared/firebaseAdmin";
 import {defineSecret} from "firebase-functions/params";
-import {onRequest, type Request} from "firebase-functions/v2/https";
+import {type Request} from "firebase-functions/v2/https";
 import {logger} from "firebase-functions";
 import {jestFirebaseUid, verifyJestSigned} from "./jestSecurity";
 import {JEST_COIN_PRODUCTS, JEST_SUBSCRIPTIONS} from "./jestProductCatalog";
@@ -12,6 +12,8 @@ import {
   JEST_REWARDED_REFERRAL_REFERENCES,
   type JestReferralReference,
 } from "@qwordly/core/referrals";
+import {captureException, flushSentry} from "../shared/sentry";
+import {onRequestWithSentry} from "../shared/sentryHandlers";
 
 /** Provides jest shared secret behavior. */
 const jestSharedSecret = defineSecret("JEST_SHARED_SECRET");
@@ -130,7 +132,7 @@ export function acceptJestRequest(request: Request, response: JestHttpResponse):
 }
 
 /** Provides exchange jest identity behavior. */
-export const exchangeJestIdentity = onRequest({secrets: [jestSharedSecret]}, async (request, response) => {
+export const exchangeJestIdentity = onRequestWithSentry("exchangeJestIdentity", {secrets: [jestSharedSecret]}, async (request, response) => {
   if (!acceptJestRequest(request, response)) return;
   try {
     const {playerSigned} = request.body as {playerSigned?: unknown};
@@ -146,11 +148,15 @@ export const exchangeJestIdentity = onRequest({secrets: [jestSharedSecret]}, asy
     });
     const customToken = await admin.auth().createCustomToken(uid, {jestPlayerId: player.playerId, jestRegistered: player.registered});
     response.json({customToken, uid});
-  } catch (error) { response.status(401).json({error: rejection(error)}); }
+  } catch (error) {
+    captureException(error, {firebaseFunction: "exchangeJestIdentity"});
+    await flushSentry();
+    response.status(401).json({error: rejection(error)});
+  }
 });
 
 /** Provides grant jest purchase behavior. */
-export const grantJestPurchase = onRequest({secrets: [jestSharedSecret]}, async (request, response) => {
+export const grantJestPurchase = onRequestWithSentry("grantJestPurchase", {secrets: [jestSharedSecret]}, async (request, response) => {
   if (!acceptJestRequest(request, response)) return;
   try {
     const {purchaseSigned, playerId, purchaseToken: requestedToken} = request.body as {purchaseSigned?: unknown; playerId?: unknown; purchaseToken?: unknown};
@@ -210,11 +216,15 @@ export const grantJestPurchase = onRequest({secrets: [jestSharedSecret]}, async 
       newCoins,
       newlyUnlockedAchievementIds,
     });
-  } catch (error) { response.status(400).json({error: rejection(error)}); }
+  } catch (error) {
+    captureException(error, {firebaseFunction: "grantJestPurchase"});
+    await flushSentry();
+    response.status(400).json({error: rejection(error)});
+  }
 });
 
 /** Provides sync jest subscriptions behavior. */
-export const syncJestSubscriptions = onRequest({secrets: [jestSharedSecret]}, async (request, response) => {
+export const syncJestSubscriptions = onRequestWithSentry("syncJestSubscriptions", {secrets: [jestSharedSecret]}, async (request, response) => {
   if (!acceptJestRequest(request, response)) return;
   try {
     const {subscriptionsSigned, playerId} = request.body as {
@@ -246,12 +256,14 @@ export const syncJestSubscriptions = onRequest({secrets: [jestSharedSecret]}, as
     }, {merge: true});
     response.json({verified: true, activeSkus, blockedSkus});
   } catch (error) {
+    captureException(error, {firebaseFunction: "syncJestSubscriptions"});
+    await flushSentry();
     response.status(400).json({error: rejection(error)});
   }
 });
 
 /** Provides verify jest referrals behavior. */
-export const verifyJestReferrals = onRequest({secrets: [jestSharedSecret]}, async (request, response) => {
+export const verifyJestReferrals = onRequestWithSentry("verifyJestReferrals", {secrets: [jestSharedSecret]}, async (request, response) => {
   if (!acceptJestRequest(request, response)) return;
   try {
     const {referralsSigned, playerId} = request.body as {referralsSigned?: unknown; playerId?: unknown};
@@ -336,7 +348,11 @@ export const verifyJestReferrals = onRequest({secrets: [jestSharedSecret]}, asyn
       coinsPerPlayer: JEST_REFERRAL_REWARD_COINS,
       newCoins,
     });
-  } catch (error) { response.status(400).json({error: rejection(error)}); }
+  } catch (error) {
+    captureException(error, {firebaseFunction: "verifyJestReferrals"});
+    await flushSentry();
+    response.status(400).json({error: rejection(error)});
+  }
 });
 
 /** Creates referral key. */

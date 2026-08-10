@@ -1,11 +1,12 @@
 import {logger} from "firebase-functions/v2";
-import {CallableRequest, HttpsError, onCall} from "firebase-functions/v2/https";
+import {CallableRequest, HttpsError} from "firebase-functions/v2/https";
 import {browserCallableSecurityOptions} from "../../shared/callableSecurity";
 import {captureException} from "../../shared/sentry";
 import {deleteAccountForUser} from "./deleteAccountData";
+import {onCallWithSentry} from "../../shared/sentryHandlers";
 
 /** Callable boundary for permanent Riddle Quest account deletion. */
-export const deleteAccount = onCall(browserCallableSecurityOptions, async (request: CallableRequest<unknown>) => {
+export const deleteAccount = onCallWithSentry("deleteAccount", browserCallableSecurityOptions, async (request: CallableRequest<unknown>) => {
   if (!request.auth) throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
   try {
     await deleteAccountForUser(request.auth.uid);

@@ -21,7 +21,7 @@ jest.mock("firebase-functions/v2/https", () => {
 });
 jest.mock("firebase-functions/v2", () => ({logger: {error: jest.fn()}}));
 jest.mock("../shared/callableSecurity", () => ({browserCallableSecurityOptions: {enforceAppCheck: true}}));
-jest.mock("../shared/sentry", () => ({captureException: jest.fn()}));
+jest.mock("../shared/sentry", () => ({captureException: jest.fn(), flushSentry: jest.fn().mockResolvedValue(true)}));
 jest.mock("../shared/firebaseAdmin", () => ({
   admin: {
     firestore: () => ({

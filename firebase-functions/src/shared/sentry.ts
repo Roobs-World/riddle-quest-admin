@@ -78,10 +78,15 @@ export function redactSensitiveTelemetry(
 if (dsn) {
   Sentry.init({
     dsn,
+    environment: process.env.SENTRY_ENVIRONMENT?.trim() || process.env.GCLOUD_PROJECT || "production",
+    release: process.env.SENTRY_RELEASE?.trim() || process.env.K_REVISION,
+    sampleRate: 1,
     sendDefaultPii: false,
-    tracesSampleRate: 0.1,
+    tracesSampleRate: 0.05,
     beforeSend: (event) => redactSensitiveTelemetry(event) as typeof event,
+    beforeSendTransaction: (event) => redactSensitiveTelemetry(event) as typeof event,
   });
+  Sentry.setTag("runtime", "firebase-functions");
 }
 
 /**
@@ -100,6 +105,17 @@ export function captureException(error: unknown, context?: Record<string, unknow
   } else {
     Sentry.captureException(error);
   }
+}
+
+/**
+ * Flushes queued server events before a short-lived function invocation exits.
+ *
+ * @param timeout Maximum time in milliseconds to wait for delivery.
+ * @returns Whether the SDK queue drained before the timeout.
+ */
+export async function flushSentry(timeout = 2_000): Promise<boolean> {
+  if (!dsn) return false;
+  return Sentry.flush(timeout);
 }
 
 /** Runs sentry span. */

@@ -15,6 +15,7 @@ import {restoreJestProfileWhileServerLoads} from "../jest/playerData";
 import {isRaceTo10Enabled} from "./race/logic/raceFeatureFlag";
 import {trackEvent} from "../analytics/googleAnalytics";
 import {createPlayHostMessageHandlers, getHostErrorMessage, type HostOperationName} from "./hostMessageHandlers";
+import {captureBrowserException} from "../observability/sentry";
 
 /** Creates host message. */
 const createHostMessage = <Message extends HostToGameMessage>(message: Message): Message => ({
@@ -222,6 +223,7 @@ export function PlayHostApp({
           slow: durationMs >= 2_000,
         });
       } catch (error) {
+        captureBrowserException(error, {component: "play_host", operation});
         postOperation(requestId, operation, false, undefined, getHostErrorMessage(error));
         console.warn("[riddle-quest-race-latency]", operation, {
           ok: false,
@@ -281,6 +283,7 @@ export function PlayHostApp({
         });
         setStartupComplete(true);
       } catch (error) {
+        captureBrowserException(error, {component: "play_host", operation: "loadRiddle"});
         const message = getHostErrorMessage(error);
         setNotice(message);
         postOperation(requestId, "loadRiddle", false, undefined, message);
@@ -344,7 +347,10 @@ export function PlayHostApp({
 
   useEffect(() => {
     const handleLocalMessage = (event: Event) => {
-      void router((event as CustomEvent<unknown>).detail).catch((error) => setNotice(getHostErrorMessage(error)));
+      void router((event as CustomEvent<unknown>).detail).catch((error) => {
+        captureBrowserException(error, {component: "play_host", operation: "route_local_message"});
+        setNotice(getHostErrorMessage(error));
+      });
     };
     window.addEventListener(GAME_TO_HOST_EVENT, handleLocalMessage);
     return () => {

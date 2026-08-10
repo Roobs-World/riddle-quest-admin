@@ -2,6 +2,7 @@ import type {JestBackendPort} from "./backend";
 import type {JestPlatformPort, PlatformResult} from "./types";
 import {DEFAULT_PRODUCT_PRICING} from "@qwordly/core/pricing/catalog";
 import type {ProductSummary} from "../play/types";
+import {captureBrowserException} from "../observability/sentry";
 
 /** Indicates whether is currency. */
 const isCurrency = (value: string) => /^[A-Z]{3}$/.test(value);
@@ -60,6 +61,7 @@ export class JestPurchaseCoordinator {
       activeSkus = new Set(verified.activeSkus);
       blockedSkus = new Set(verified.blockedSkus ?? []);
     } catch (error) {
+      captureBrowserException(error, {component: "jest_purchases", operation: "sync_subscriptions"});
       return {status: "retryable-failure", message: error instanceof Error ? error.message : String(error)};
     }
     return {
@@ -109,6 +111,7 @@ export class JestPurchaseCoordinator {
           ? {status: "success", value: {activeSku: subscriptionSku, blockedSkus: verified.blockedSkus ?? []}}
           : started;
       } catch (error) {
+        captureBrowserException(error, {component: "jest_purchases", operation: "refresh_subscription"});
         return {status: "retryable-failure", message: error instanceof Error ? error.message : String(error)};
       }
     }
@@ -122,6 +125,7 @@ export class JestPurchaseCoordinator {
         value: {activeSku: subscriptionSku, blockedSkus: verified.blockedSkus ?? []},
       };
     } catch (error) {
+      captureBrowserException(error, {component: "jest_purchases", operation: "subscribe"});
       return {status: "retryable-failure", message: error instanceof Error ? error.message : String(error)};
     }
   }
@@ -152,6 +156,7 @@ export class JestPurchaseCoordinator {
           }
         : completed;
     } catch (error) {
+      captureBrowserException(error, {component: "jest_purchases", operation: "purchase"});
       return {status: "retryable-failure", message: error instanceof Error ? error.message : String(error)};
     }
   }

@@ -1,0 +1,71 @@
+import * as Sentry from "@sentry/browser";
+import {redactBrowserTelemetry, resolveSecureBrowserSentryDsn} from "./sentryPrivacy";
+
+/** Describes the build-time settings used to initialize browser telemetry. */
+type BrowserSentryConfiguration = {
+  /** Public HTTPS endpoint for the Sentry project. */
+  dsn?: string;
+  /** Deployment environment attached to every event. */
+  environment?: string;
+  /** Indicates whether this is a production build. */
+  production: boolean;
+  /** Immutable application release identifier. */
+  release?: string;
+};
+
+/** Tracks whether the browser SDK has been initialized by this application. */
+let initialized = false;
+
+/**
+ * Initializes privacy-safe browser error reporting once for production builds.
+ *
+ * Sentry's default browser integrations collect uncaught exceptions and
+ * unhandled promise rejections. The console integration additionally routes
+ * caught application failures that are deliberately logged as warnings or
+ * errors while preserving their normal console output.
+ *
+ * @param configuration Build-time Sentry settings.
+ * @returns Whether Sentry is configured and available for event capture.
+ */
+export function initializeBrowserSentry(configuration: BrowserSentryConfiguration): boolean {
+  if (initialized) return true;
+  const dsn = resolveSecureBrowserSentryDsn(configuration.dsn);
+  if (!configuration.production || !dsn) return false;
+
+  Sentry.init({
+    dsn,
+    enabled: true,
+    environment: configuration.environment?.trim() || "production",
+    release: configuration.release?.trim() || undefined,
+    sampleRate: 1,
+    sendDefaultPii: false,
+    integrations: (defaults) => [
+      ...defaults,
+      Sentry.captureConsoleIntegration({levels: ["warn", "error"]}),
+    ],
+    beforeSend: (event) => redactBrowserTelemetry(event) as typeof event,
+    beforeSendTransaction: (event) => redactBrowserTelemetry(event) as typeof event,
+  });
+  Sentry.setTag("runtime", "jest-html5");
+  initialized = true;
+  return true;
+}
+
+/**
+ * Reports a caught browser exception with privacy-safe diagnostic context.
+ *
+ * @param error Caught exception or rejected value.
+ * @param context Non-sensitive diagnostic fields describing the failed operation.
+ */
+export function captureBrowserException(error: unknown, context?: Record<string, unknown>): void {
+  if (!initialized) return;
+  Sentry.withScope((scope) => {
+    if (context) scope.setExtras(redactBrowserTelemetry(context) as Record<string, unknown>);
+    Sentry.captureException(error);
+  });
+}
+
+/** Resets module state for deterministic unit tests. */
+export function resetBrowserSentryForTests(): void {
+  initialized = false;
+}

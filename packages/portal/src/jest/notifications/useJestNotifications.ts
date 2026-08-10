@@ -7,6 +7,7 @@ import {
   type NotificationCopy,
 } from "./copy";
 import {notificationRotationSeed, replaceEngagementReminders} from "./engagement";
+import {captureBrowserException} from "../../observability/sentry";
 
 /** Describes with platform activity. */
 type WithPlatformActivity = <Result>(operation: () => Promise<Result>) => Promise<Result>;
@@ -49,7 +50,8 @@ export function useJestNotifications({
         : import("../../firebase").then((module) => module.loadNotificationCopy(locale)),
     ).then((loadedCopy) => {
       if (active) setCopy(loadedCopy);
-    }).catch(() => {
+    }).catch((error) => {
+      captureBrowserException(error, {component: "jest_notifications", operation: "load_copy"});
       if (active) {
         setCopy(null);
         trackFunnel("notification_copy_load_failed", {locale});
@@ -89,7 +91,10 @@ export function useJestNotifications({
           trackFunnel("notification_schedule_failed", {index, status: result.status});
         }
       });
-    }).catch(() => trackFunnel("notification_schedule_failed", {index: -1, status: "invalid-copy"}));
+    }).catch((error) => {
+      captureBrowserException(error, {component: "jest_notifications", operation: "schedule_reminders"});
+      trackFunnel("notification_schedule_failed", {index: -1, status: "invalid-copy"});
+    });
   }, [
     assetReference,
     copy,

@@ -1,6 +1,9 @@
 import type {ReactElement} from "react";
 import {FatalErrorBoundary} from "../FatalErrorBoundary";
 import {configureAnalytics, resetAnalyticsForTests} from "../analytics/googleAnalytics";
+import {captureBrowserException} from "../observability/sentry";
+
+jest.mock("../observability/sentry", () => ({captureBrowserException: jest.fn()}));
 
 describe("FatalErrorBoundary", () => {
   const originalWindow = globalThis.window;
@@ -28,6 +31,10 @@ describe("FatalErrorBoundary", () => {
 
     expect(report).toHaveBeenCalledWith("[riddle-quest] fatal render error", "render failed", "\n at Game");
     expect(analytics).toHaveBeenCalledWith("client_error", {error_kind: "react_render"});
+    expect(captureBrowserException).toHaveBeenCalledWith(error, {
+      componentStack: "\n at Game",
+      errorKind: "react_render",
+    });
   });
 
   it("renders a retry action that reloads the page", () => {

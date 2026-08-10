@@ -4,6 +4,7 @@ import {createRequestId} from "../../requestIds";
 import {HOST_TO_GAME_EVENT} from "../../localBridge";
 import {tr} from "../../i18n";
 import {runWhenLayoutReady} from "../layoutReady";
+import {captureBrowserException} from "../../../observability/sentry";
 
 /** Describes message router. */
 type MessageRouter = (message: unknown) => Promise<unknown>;
@@ -14,6 +15,7 @@ function reportBridgeError(
   requestPrefix: string,
   postToHost: (message: GameToHostMessage) => void,
 ) {
+  captureBrowserException(error, {component: "game_bridge", operation: requestPrefix});
   postToHost({
     type: "game:error",
     requestId: createRequestId(requestPrefix),

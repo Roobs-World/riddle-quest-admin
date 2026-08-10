@@ -1,5 +1,5 @@
 import {randomUUID} from "node:crypto";
-import {CallableRequest, HttpsError, onCall} from "firebase-functions/v2/https";
+import {CallableRequest, HttpsError} from "firebase-functions/v2/https";
 import {logger} from "firebase-functions/v2";
 import {updateUserProfile} from "../gameplay/firestoreService";
 import {browserCallableSecurityOptions} from "../shared/callableSecurity";
@@ -9,9 +9,10 @@ import {validateCallableRequest, validateCallableResponse} from "../validation/c
 import {UpdateAvatarRequestSchema, UpdateAvatarResponseSchema} from "../validation/requestSchemas";
 import {avatarDownloadUrl, decodeAvatarDataUrl} from "./avatarUpload";
 import {syncLeaderboardProfileFields} from "./leaderboardProfile";
+import {onCallWithSentry} from "../shared/sentryHandlers";
 
 /** Uploads an authenticated registered player's avatar and updates its public URL. */
-export const updateAvatar = onCall(browserCallableSecurityOptions, async (request: CallableRequest<unknown>) => {
+export const updateAvatar = onCallWithSentry("updateAvatar", browserCallableSecurityOptions, async (request: CallableRequest<unknown>) => {
   if (!request.auth) {
     throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
   }

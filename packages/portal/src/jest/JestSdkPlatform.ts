@@ -7,6 +7,7 @@ import type {
   PlatformResult,
   ScreenshotProvider,
 } from "./types";
+import {captureBrowserException} from "../observability/sentry";
 
 /** Describes sdk. */
 type Sdk = Record<string, any>;
@@ -16,6 +17,7 @@ const PLAYER_DATA_KEY = "riddleQuestPlayerState";
 const success = <T>(value: T): PlatformResult<T> => ({status: "success", value});
 /** Provides failure behavior. */
 const failure = (error: unknown): PlatformResult<never> => {
+  captureBrowserException(error, {component: "jest_sdk"});
   const message = error instanceof Error ? error.message : String(error);
   return /INVALID_ARGUMENTS|BAD_REQUEST|invalid sku/i.test(message)
     ? {status: "terminal-failure", message}
@@ -157,6 +159,7 @@ export class JestSdkPlatform implements JestPlatformPort {
       const result = await this.sdk.payments.beginPurchase({productSku});
       if (result?.result === "cancel") return {status: "cancelled"} as const;
       if (result?.result === "error") {
+        captureBrowserException(new Error(String(result.error)), {component: "jest_sdk", operation: "begin_purchase"});
         return result.error === "invalid_product"
           ? {status: "terminal-failure", message: result.error} as const
           : {status: "retryable-failure", message: String(result.error)} as const;
@@ -171,6 +174,7 @@ export class JestSdkPlatform implements JestPlatformPort {
     try {
       const result = await this.sdk.payments.completePurchase({purchaseToken});
       if (result?.result === "error") {
+        captureBrowserException(new Error(String(result.error)), {component: "jest_sdk", operation: "complete_purchase"});
         return result.error === "invalid_token"
           ? {status: "terminal-failure", message: result.error} as const
           : {status: "retryable-failure", message: String(result.error)} as const;
@@ -194,6 +198,7 @@ export class JestSdkPlatform implements JestPlatformPort {
       const result = await this.sdk.payments.beginSubscription({subscriptionSku});
       if (result?.result === "cancel") return {status: "cancelled"} as const;
       if (result?.result === "error") {
+        captureBrowserException(new Error(String(result.error)), {component: "jest_sdk", operation: "begin_subscription"});
         return result.error === "invalid_subscription"
           ? {status: "terminal-failure", message: result.error} as const
           : result.error === "guest_not_allowed" || result.error === "already_subscribed"

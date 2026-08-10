@@ -1,5 +1,5 @@
 import {logger} from "firebase-functions/v2";
-import {CallableRequest, HttpsError, onCall} from "firebase-functions/v2/https";
+import {CallableRequest, HttpsError} from "firebase-functions/v2/https";
 import {browserCallableSecurityOptions} from "../shared/callableSecurity";
 import {admin} from "../shared/firebaseAdmin";
 import {captureException} from "../shared/sentry";
@@ -7,12 +7,13 @@ import {validateUsernameForProfanity} from "../utils/profanityFilter";
 import {validateCallableRequest, validateCallableResponse} from "../validation/callableValidation";
 import {BasicSuccessMessageResponseSchema, UpdateUsernameRequestSchema} from "../validation/requestSchemas";
 import {updateUsernameRecords} from "./leaderboardProfile";
+import {onCallWithSentry} from "../shared/sentryHandlers";
 
 /**
  * Updates the authenticated user's username in their profile and leaderboard.
  * Validates for profanity and uniqueness before saving both records atomically.
  */
-export const updateUsername = onCall(browserCallableSecurityOptions, async (request: CallableRequest<unknown>) => {
+export const updateUsername = onCallWithSentry("updateUsername", browserCallableSecurityOptions, async (request: CallableRequest<unknown>) => {
   if (!request.auth) {
     throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
   }

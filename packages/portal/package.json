@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "@qwordly/core": "workspace:*",
+    "@sentry/browser": "^10.69.0",
     "firebase": "^12.17.1",
     "react": "19.2.8",
     "react-dom": "19.2.8",

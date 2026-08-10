@@ -1,6 +1,7 @@
 import type {JestBackendPort} from "./backend";
 import type {JestPurchaseCoordinator} from "./purchases";
 import type {JestPlatformPort, JestSession, PlatformResult} from "./types";
+import {captureBrowserException} from "../observability/sentry";
 
 /** Provides phase progress behavior. */
 const phaseProgress = [5, 15, 28, 42, 58, 72, 88] as const;
@@ -74,6 +75,7 @@ export async function startJestSession(
       value: {player: signed.player, profile, entryIntent, preferences, playerData, firebaseAuthenticated: true},
     };
   } catch (error) {
+    captureBrowserException(error, {component: "jest_startup"});
     return {status: "retryable-failure", message: error instanceof Error ? error.message : String(error)};
   } finally {
     if (heartbeat) clearInterval(heartbeat);

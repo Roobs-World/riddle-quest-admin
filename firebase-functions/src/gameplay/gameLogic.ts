@@ -1,6 +1,6 @@
 import {logger} from "firebase-functions/v2";
 import {admin} from "../shared/firebaseAdmin";
-import {onCall, HttpsError, CallableRequest} from "firebase-functions/v2/https";
+import {HttpsError, CallableRequest} from "firebase-functions/v2/https";
 import {updateUserCoins, getUser, getRiddleByGameMode, updateUserStats} from "./firestoreService";
 import {
   SKIP_COST_CLASSIC,
@@ -26,6 +26,7 @@ import {
 import {evaluateAchievements} from "./achievements";
 import {validateCallableRequest, validateCallableResponse} from "../validation/callableValidation";
 import {browserCallableSecurityOptions} from "../shared/callableSecurity";
+import {onCallWithSentry} from "../shared/sentryHandlers";
 
 import {splitGraphemes, lowerCaseGraphemes} from "@qwordly/core/game";
 
@@ -37,7 +38,8 @@ import {splitGraphemes, lowerCaseGraphemes} from "@qwordly/core/game";
  * @param context - The context object representing the request context.
  * @return An object containing success status and new progress information.
  */
-export const skipRiddle = onCall(
+export const skipRiddle = onCallWithSentry(
+  "skipRiddle",
   browserCallableSecurityOptions,
   async (request: CallableRequest<SkipRiddleRequest>): Promise<SkipRiddleResponse> => {
     try {
@@ -174,7 +176,8 @@ export const skipRiddle = onCall(
  * @param context - The CallableContext object.
  * @return {Promise<{ newCoins: number }>} A Promise resolving to the new coin balance.
  */
-export const spendCoins = onCall(
+export const spendCoins = onCallWithSentry(
+  "spendCoins",
   browserCallableSecurityOptions,
   async (request: CallableRequest<SpendCoinsRequest>): Promise<{newCoins: number}> => {
     if (!request.auth) {
@@ -268,7 +271,8 @@ export const spendCoins = onCall(
  * Charges `HINT_COST_COINS`, updates riddle state, increments `stats.totalHintsUsed`,
  * evaluates hint-related achievements, and returns the revealed letter index and costs.
  */
-export const getHint = onCall(
+export const getHint = onCallWithSentry(
+  "getHint",
   browserCallableSecurityOptions,
   async (request: CallableRequest<z.infer<typeof GetHintRequestSchema>>) => {
     try {

@@ -1,10 +1,11 @@
-import {onSchedule, type ScheduledEvent} from "firebase-functions/v2/scheduler";
+import {type ScheduledEvent} from "firebase-functions/v2/scheduler";
 import {
   initializeLocalizedRiddleDatabaseIfEmpty,
 } from "../riddles/riddleGeneration";
 import {generateLocalizedTodaysDailyChallenge as generateTodaysDailyRiddle} from "./dailyRiddleGeneration";
 import * as functions from "firebase-functions";
 import {captureException} from "../shared/sentry";
+import {onScheduleWithSentry} from "../shared/sentryHandlers";
 
 // Export the handler function for testing first
 /** Provides scheduled task handler behavior. */
@@ -45,7 +46,8 @@ export const scheduledTaskHandler = async (context: ScheduledEvent) => {
  * Uses OpenAI to generate fresh riddles for each day.
  * Source of truth target: localizedRiddles/{locale}/riddles/current.
  */
-export const dailyChallengeScheduler = onSchedule(
+export const dailyChallengeScheduler = onScheduleWithSentry(
+  "dailyChallengeScheduler",
   {
     schedule: "0 0 * * *", // Runs once daily at 00:00 UTC
     timeZone: "UTC",

@@ -3,6 +3,7 @@ import {trackEvent} from "../analytics/googleAnalytics";
 import {tr} from "./i18n";
 import {createRequestId} from "./requestIds";
 import type {AuthSnapshot, CompletionResult, HostServices, PurchaseResult, WebGameMode} from "./types";
+import {captureBrowserException} from "../observability/sentry";
 
 /** Describes host operation name. */
 export type HostOperationName =
@@ -34,6 +35,11 @@ export const getHostErrorMessage = (error: unknown): string => {
     return String(error.message).replace(/^Firebase:\s*/i, "");
   }
   return tr("ErrorMessages.GENERIC_UNEXPECTED_ERROR");
+};
+
+/** Reports a failed host operation before its safe message is returned to the game frame. */
+const reportHostOperationError = (error: unknown, operation: HostOperationName): void => {
+  captureBrowserException(error, {component: "play_host", operation});
 };
 
 /** Describes load and post riddle. */
@@ -166,6 +172,7 @@ export const createPlayHostMessageHandlers = ({
         trackEvent("unlock_achievement", {achievement_id: achievementId});
       }
     } catch (error) {
+      reportHostOperationError(error, "completeGame");
       postOperation(message.requestId, "completeGame", false, undefined, getHostErrorMessage(error));
     }
   },
@@ -180,6 +187,7 @@ export const createPlayHostMessageHandlers = ({
         game_mode: message.payload.gameMode,
       });
     } catch (error) {
+      reportHostOperationError(error, "hint");
       postOperation(message.requestId, "hint", false, undefined, getHostErrorMessage(error));
     }
   },
@@ -209,6 +217,7 @@ export const createPlayHostMessageHandlers = ({
         game_mode: message.payload.gameMode,
       });
     } catch (error) {
+      reportHostOperationError(error, message.payload.reason === "skip" ? "skip" : "spendCoins");
       postOperation(
         message.requestId,
         message.payload.reason === "skip" ? "skip" : "spendCoins",
@@ -229,6 +238,7 @@ export const createPlayHostMessageHandlers = ({
       );
       postOperation(message.requestId, "purchase", true, result);
     } catch (error) {
+      reportHostOperationError(error, "purchase");
       postOperation(message.requestId, "purchase", false, undefined, getHostErrorMessage(error));
     }
   },
@@ -240,6 +250,7 @@ export const createPlayHostMessageHandlers = ({
         entries,
       });
     } catch (error) {
+      reportHostOperationError(error, "leaderboard");
       postOperation(message.requestId, "leaderboard", false, undefined, getHostErrorMessage(error));
     }
   },
@@ -248,6 +259,7 @@ export const createPlayHostMessageHandlers = ({
       const profile = await withServerActivity(() => services.updateUsername(message.payload.username));
       postOperation(message.requestId, "profile", true, {profile});
     } catch (error) {
+      reportHostOperationError(error, "profile");
       postOperation(message.requestId, "profile", false, undefined, getHostErrorMessage(error));
     }
   },
@@ -256,6 +268,7 @@ export const createPlayHostMessageHandlers = ({
       const profile = await withServerActivity(() => services.updateAvatar(message.payload.imageDataUrl));
       postOperation(message.requestId, "profile", true, {profile});
     } catch (error) {
+      reportHostOperationError(error, "avatar");
       postOperation(message.requestId, "avatar", false, undefined, getHostErrorMessage(error));
     }
   },
@@ -265,6 +278,7 @@ export const createPlayHostMessageHandlers = ({
       await onAccountDeleted?.();
       postOperation(message.requestId, "accountDeletion", true, {success: true});
     } catch (error) {
+      reportHostOperationError(error, "accountDeletion");
       postOperation(message.requestId, "accountDeletion", false, undefined, getHostErrorMessage(error));
     }
   },

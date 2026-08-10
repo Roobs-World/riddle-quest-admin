@@ -13,9 +13,10 @@
 
 import {admin} from "../shared/firebaseAdmin";
 import * as functions from "firebase-functions";
-import {onCall, HttpsError} from "firebase-functions/v2/https";
+import {HttpsError} from "firebase-functions/v2/https";
 import {captureException} from "../shared/sentry";
 import {browserCallableSecurityOptions} from "../shared/callableSecurity";
+import {onCallWithSentry} from "../shared/sentryHandlers";
 import {
   GetLeaderboardRequest,
   GetLeaderboardRequestSchema,
@@ -403,7 +404,7 @@ export async function updateLeaderboardEntry(
  * Request: `{ type: LeaderboardType, limit?: number }` (limit capped at 100)
  * Response: `{ entries: LeaderboardEntry[], requestingUserId: string }`
  */
-export const getLeaderboard = onCall(browserCallableSecurityOptions, async (request) => {
+export const getLeaderboard = onCallWithSentry("getLeaderboard", browserCallableSecurityOptions, async (request) => {
   if (!request.auth) {
     throw new HttpsError("unauthenticated", "Must be authenticated to view the leaderboard.");
   }

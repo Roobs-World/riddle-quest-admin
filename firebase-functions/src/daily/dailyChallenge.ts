@@ -1,6 +1,6 @@
 import * as functions from "firebase-functions";
 import {admin} from "../shared/firebaseAdmin";
-import {onCall, HttpsError, CallableRequest} from "firebase-functions/v2/https";
+import {HttpsError, CallableRequest} from "firebase-functions/v2/https";
 import {getUser, getClassicRiddleByIndex} from "../gameplay/firestoreService";
 import {captureException} from "../shared/sentry";
 import {SUPPORTED_LOCALES} from "@qwordly/core/validation";
@@ -8,6 +8,7 @@ import {GetCurrentDailyChallengeResponse, GetCurrentDailyChallengeResponseSchema
 import {validateCallableResponse} from "../validation/callableValidation";
 import {browserCallableSecurityOptions} from "../shared/callableSecurity";
 import {resolveDailyChallengeProgress} from "./dailyChallengeProgress";
+import {onCallWithSentry} from "../shared/sentryHandlers";
 
 /** Defines the daily challenge question count value. */
 const DAILY_CHALLENGE_QUESTION_COUNT = 1;
@@ -58,7 +59,8 @@ async function getFreshDailyChallengeDoc(locale: string = "en"): Promise<{
  * Returns the daily challenge and the user's progress.
  * Optionally includes the user's completion status if authenticated.
  */
-export const getCurrentDailyChallenge = onCall(
+export const getCurrentDailyChallenge = onCallWithSentry(
+  "getCurrentDailyChallenge",
   {
     ...browserCallableSecurityOptions,
     secrets: ["OPENAI_API_KEY"],
@@ -175,7 +177,8 @@ export const getCurrentDailyChallenge = onCall(
  * This is a server-backed fallback so the client can avoid reading the classic
  * collection directly when Firestore rules or App Check prevent it.
  */
-export const getCurrentClassicRiddle = onCall(
+export const getCurrentClassicRiddle = onCallWithSentry(
+  "getCurrentClassicRiddle",
   browserCallableSecurityOptions,
   async (
     request: CallableRequest<{classicIndex?: number; locale?: string}>,

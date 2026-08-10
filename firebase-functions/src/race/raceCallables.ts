@@ -24,7 +24,7 @@ import {
   SubmitRaceGuessRequestSchema,
   SubmitRaceGuessResponseSchema,
 } from "@qwordly/core/race";
-import {HttpsError, onCall, type CallableRequest} from "firebase-functions/v2/https";
+import {HttpsError, type CallableRequest} from "firebase-functions/v2/https";
 import {validateCallableRequest, validateCallableResponse} from "../validation/callableValidation";
 import {
   abandonRaceRunForUser,
@@ -41,6 +41,7 @@ import {
 } from "./raceService";
 import {assertRaceAccess, getRaceAccessForUser, recordRaceAnalyticsForUser} from "./raceRollout";
 import {browserCallableSecurityOptions} from "../shared/callableSecurity";
+import {onCallWithSentry} from "../shared/sentryHandlers";
 
 /** Provides jest web callable options behavior. */
 const jestWebCallableOptions = browserCallableSecurityOptions;
@@ -73,7 +74,7 @@ const requireRaceUser = async (request: CallableRequest<unknown>): Promise<strin
 };
 
 /** Returns whether the authenticated player can access multiplayer. */
-export const getRaceAccess = onCall(jestWebCallableOptions, async (request: CallableRequest<unknown>) => {
+export const getRaceAccess = onCallWithSentry("getRaceAccess", jestWebCallableOptions, async (request: CallableRequest<unknown>) => {
   const userId = requireUserId(request);
   const input = validateCallableRequest(RaceAccessRequestSchema, request.data, "getRaceAccess");
   return validateCallableResponse(
@@ -84,7 +85,7 @@ export const getRaceAccess = onCall(jestWebCallableOptions, async (request: Call
 });
 
 /** Records a schema-validated multiplayer analytics event for the player. */
-export const recordRaceAnalytics = onCall(jestWebCallableOptions, async (request: CallableRequest<unknown>) => {
+export const recordRaceAnalytics = onCallWithSentry("recordRaceAnalytics", jestWebCallableOptions, async (request: CallableRequest<unknown>) => {
   const userId = requireUserId(request);
   const input = validateCallableRequest(RaceAnalyticsEventRequestSchema, request.data, "recordRaceAnalytics");
   const response = await recordRaceAnalyticsForUser(userId, input);
@@ -92,7 +93,7 @@ export const recordRaceAnalytics = onCall(jestWebCallableOptions, async (request
 });
 
 /** Lists server-approved race categories for the requested locale. */
-export const listRaceCategories = onCall(jestWebCallableOptions, async (request: CallableRequest<unknown>) => {
+export const listRaceCategories = onCallWithSentry("listRaceCategories", jestWebCallableOptions, async (request: CallableRequest<unknown>) => {
   const input = validateCallableRequest(ListRaceCategoriesRequestSchema, request.data, "listRaceCategories");
   const userId = requireUserId(request);
   await assertRaceAccess(userId, input.locale);
@@ -101,7 +102,7 @@ export const listRaceCategories = onCall(jestWebCallableOptions, async (request:
 });
 
 /** Starts or idempotently resumes creation of an authoritative race run. */
-export const startRaceRun = onCall(raceStartCallableOptions, async (request: CallableRequest<unknown>) => {
+export const startRaceRun = onCallWithSentry("startRaceRun", raceStartCallableOptions, async (request: CallableRequest<unknown>) => {
   const input = validateCallableRequest(StartRaceRunRequestSchema, request.data, "startRaceRun");
   const userId = requireUserId(request);
   await assertRaceAccess(userId, input.locale);
@@ -110,7 +111,7 @@ export const startRaceRun = onCall(raceStartCallableOptions, async (request: Cal
 });
 
 /** Applies a guess to the authenticated player's authoritative active run. */
-export const submitRaceGuess = onCall(jestWebCallableOptions, async (request: CallableRequest<unknown>) => {
+export const submitRaceGuess = onCallWithSentry("submitRaceGuess", jestWebCallableOptions, async (request: CallableRequest<unknown>) => {
   const userId = await requireRaceUser(request);
   const input = validateCallableRequest(SubmitRaceGuessRequestSchema, request.data, "submitRaceGuess");
   const response = await submitRaceGuessForUser(userId, input);
@@ -118,7 +119,7 @@ export const submitRaceGuess = onCall(jestWebCallableOptions, async (request: Ca
 });
 
 /** Reveals a server-selected hint and applies its authoritative penalty. */
-export const requestRaceHint = onCall(raceHintCallableOptions, async (request: CallableRequest<unknown>) => {
+export const requestRaceHint = onCallWithSentry("requestRaceHint", raceHintCallableOptions, async (request: CallableRequest<unknown>) => {
   const userId = requireUserId(request);
   const input = validateCallableRequest(RequestRaceHintRequestSchema, request.data, "requestRaceHint");
   const response = await requestRaceHintForUser(userId, input, {enforceAccess: true});
@@ -126,7 +127,7 @@ export const requestRaceHint = onCall(raceHintCallableOptions, async (request: C
 });
 
 /** Skips the active race riddle and applies the authoritative skip penalty. */
-export const skipRaceRiddle = onCall(jestWebCallableOptions, async (request: CallableRequest<unknown>) => {
+export const skipRaceRiddle = onCallWithSentry("skipRaceRiddle", jestWebCallableOptions, async (request: CallableRequest<unknown>) => {
   const userId = await requireRaceUser(request);
   const input = validateCallableRequest(SkipRaceRiddleRequestSchema, request.data, "skipRaceRiddle");
   const response = await skipRaceRiddleForUser(userId, input);
@@ -134,7 +135,7 @@ export const skipRaceRiddle = onCall(jestWebCallableOptions, async (request: Cal
 });
 
 /** Restores the authenticated player's current view of an existing run. */
-export const resumeRaceRun = onCall(jestWebCallableOptions, async (request: CallableRequest<unknown>) => {
+export const resumeRaceRun = onCallWithSentry("resumeRaceRun", jestWebCallableOptions, async (request: CallableRequest<unknown>) => {
   const userId = await requireRaceUser(request);
   const input = validateCallableRequest(RaceRunIdRequestSchema, request.data, "resumeRaceRun");
   const response = await resumeRaceRunForUser(userId, input.runId);
@@ -142,7 +143,7 @@ export const resumeRaceRun = onCall(jestWebCallableOptions, async (request: Call
 });
 
 /** Abandons the authenticated player's active run without granting a result. */
-export const abandonRaceRun = onCall(jestWebCallableOptions, async (request: CallableRequest<unknown>) => {
+export const abandonRaceRun = onCallWithSentry("abandonRaceRun", jestWebCallableOptions, async (request: CallableRequest<unknown>) => {
   const userId = await requireRaceUser(request);
   const input = validateCallableRequest(AbandonRaceRunRequestSchema, request.data, "abandonRaceRun");
   const response = await abandonRaceRunForUser(userId, input);
@@ -150,7 +151,7 @@ export const abandonRaceRun = onCall(jestWebCallableOptions, async (request: Cal
 });
 
 /** Publishes a verified completed creator run as a multiplayer challenge. */
-export const publishRaceChallenge = onCall(jestWebCallableOptions, async (request: CallableRequest<unknown>) => {
+export const publishRaceChallenge = onCallWithSentry("publishRaceChallenge", jestWebCallableOptions, async (request: CallableRequest<unknown>) => {
   const userId = await requireRaceUser(request);
   const input = validateCallableRequest(PublishRaceChallengeRequestSchema, request.data, "publishRaceChallenge");
   const response = await publishRaceChallengeForUser(userId, input);
@@ -158,7 +159,7 @@ export const publishRaceChallenge = onCall(jestWebCallableOptions, async (reques
 });
 
 /** Returns the answer-safe public preview of a multiplayer challenge. */
-export const getRaceChallenge = onCall(jestWebCallableOptions, async (request: CallableRequest<unknown>) => {
+export const getRaceChallenge = onCallWithSentry("getRaceChallenge", jestWebCallableOptions, async (request: CallableRequest<unknown>) => {
   await requireRaceUser(request);
   const input = validateCallableRequest(RaceChallengeIdRequestSchema, request.data, "getRaceChallenge");
   const response = await getRaceChallengePreview(input.challengeId);
@@ -166,7 +167,7 @@ export const getRaceChallenge = onCall(jestWebCallableOptions, async (request: C
 });
 
 /** Returns the final outcome for a run owned by the authenticated player. */
-export const getRaceOutcome = onCall(jestWebCallableOptions, async (request: CallableRequest<unknown>) => {
+export const getRaceOutcome = onCallWithSentry("getRaceOutcome", jestWebCallableOptions, async (request: CallableRequest<unknown>) => {
   const userId = await requireRaceUser(request);
   const input = validateCallableRequest(RaceRunIdRequestSchema, request.data, "getRaceOutcome");
   const response = await getRaceOutcomeForUser(userId, input.runId);
@@ -174,7 +175,7 @@ export const getRaceOutcome = onCall(jestWebCallableOptions, async (request: Cal
 });
 
 /** Lists paginated challenge inbox items for the authenticated player. */
-export const listRaceInbox = onCall(jestWebCallableOptions, async (request: CallableRequest<unknown>) => {
+export const listRaceInbox = onCallWithSentry("listRaceInbox", jestWebCallableOptions, async (request: CallableRequest<unknown>) => {
   const userId = await requireRaceUser(request);
   const input = validateCallableRequest(ListRaceInboxRequestSchema, request.data, "listRaceInbox");
   const response = await listRaceInboxForUser(userId, input);
