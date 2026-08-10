@@ -59,6 +59,22 @@ try {
     }
   }, undefined, {timeout: 30_000});
 
+  const playableContent = game.locator(".onboarding-card-welcome, .riddle-card h1").first();
+  const startupError = game.locator(".route-missing");
+  await playableContent.or(startupError).first().waitFor({timeout: 30_000});
+  if (await startupError.isVisible()) {
+    const message = (await startupError.innerText()).replace(/\s+/g, " ").trim();
+    throw new Error(`The deployed Jest game did not finish startup: ${message}`);
+  }
+
+  const letsPlay = game.getByRole("button", {name: /let's play/i});
+  if (await letsPlay.isVisible()) {
+    await letsPlay.click();
+    const onboardingContinue = game.getByRole("button", {name: /got it/i});
+    if (await onboardingContinue.isVisible()) await onboardingContinue.click();
+  }
+  await game.locator(".riddle-card h1").waitFor({timeout: 30_000});
+
   const catalog = await game.evaluate(async ({expectedProductSku, expectedSubscriptionSku}) => {
     const [products, subscriptions, incomplete] = await Promise.all([
       globalThis.JestSDK.payments.getProducts(),
@@ -70,6 +86,7 @@ try {
       subscription: subscriptions.subscriptions.find(({sku}) => sku === expectedSubscriptionSku),
       incomplete: {
         hasMore: incomplete.hasMore,
+        count: incomplete.purchases.length,
         signed: typeof incomplete.purchasesSigned === "string",
       },
     };
@@ -87,6 +104,9 @@ try {
     throw new Error(`Jest subscription ${subscriptionSku} is missing valid monthly USD billing.`);
   }
   if (!catalog.incomplete.signed) throw new Error("Jest returned an unsigned purchase recovery queue.");
+  if (catalog.incomplete.hasMore || catalog.incomplete.count !== 0) {
+    throw new Error("The application did not drain the Jest purchase recovery queue before becoming playable.");
+  }
 
   await game.evaluate((sku) => {
     globalThis.__RIDDLE_QUEST_PAYMENT_TEST__ = globalThis.JestSDK.payments.beginPurchase({productSku: sku});

@@ -226,13 +226,12 @@ JEST_CONFIRM_ACTIVATION=019faa68-f3ec-755d-9ab5-c887fb426801 \
 pnpm jest:build-upload
 ```
 
-The latest current-game upload was:
+The latest verified active build is:
 
-- Build: `1.0.0-dev.20260731231001`
-- Jest version: `019fba71-2c3b-72fd-937d-8cdc67b845cb`
-- Upload result: accepted for asynchronous processing with automatic activation requested
-- Publication status: the unauthenticated route still returns Jest's private-app 403; owner review and Public visibility
-  remain required in the Developer Console
+- Build: `1.0.0-dev.20260810110401`
+- Release: `riddle-quest@1.0.0-dev.20260810110401`
+- Publication status: active at `https://jest.com/g/riddle-q`; the public route returned HTTP 200 and the authenticated
+  sandbox acceptance test passed on 2026-08-10
 
 ## Developer Console setup
 
