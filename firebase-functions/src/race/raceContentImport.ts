@@ -9,6 +9,7 @@ import {z} from "zod";
 import type {ExistingRaceContentRecord} from "./raceContentMigration";
 import {RACE_POOL_SIZE, validateRacePool, type RacePoolIssue} from "./raceContentValidation";
 
+/** Validates the reviewed quality version data shape. */
 const ReviewedQualityVersionSchema = z
   .string()
   .trim()
@@ -18,6 +19,7 @@ const ReviewedQualityVersionSchema = z
     message: "qualityVersion must identify reviewed content",
   });
 
+/** Schema for one reviewed riddle in an authoritative race import. */
 export const RaceContentImportItemSchema = z
   .object({
     canonicalRiddleId: z.string().trim().min(1).max(160),
@@ -29,6 +31,7 @@ export const RaceContentImportItemSchema = z
   })
   .strict();
 
+/** Schema for a complete English race content import file. */
 export const RaceContentImportFileSchema = z
   .object({
     locale: z.literal("en"),
@@ -36,22 +39,33 @@ export const RaceContentImportFileSchema = z
   })
   .strict();
 
+/** Validated shape of a complete race content import file. */
 export type RaceContentImportFile = z.infer<typeof RaceContentImportFileSchema>;
 
+/** Non-mutating import plan containing records, counts, and validation issues. */
 export type RaceContentImportPlan = {
+  /** Stores valid. */
   valid: boolean;
+  /** Stores locale. */
   locale: "en";
+  /** Stores total riddles. */
   totalRiddles: number;
+  /** Stores records. */
   records: ExistingRaceContentRecord[];
+  /** Stores category counts. */
   categoryCounts: Record<RaceCategoryId, number>;
+  /** Stores issues. */
   issues: RacePoolIssue[];
 };
 
+/** Normalizes d. */
 const normalized = (value: string) => value.normalize("NFC").trim().toLocaleLowerCase("en").replace(/\s+/gu, " ");
 
+/** Provides document id for behavior. */
 const documentIdFor = (canonicalRiddleId: string) =>
   `race-en-${createHash("sha256").update(canonicalRiddleId).digest("hex").slice(0, 24)}`;
 
+/** Provides duplicate issues behavior. */
 const duplicateIssues = (
   records: ExistingRaceContentRecord[],
   field: "canonicalRiddleId" | "text" | "answer",
@@ -59,8 +73,9 @@ const duplicateIssues = (
 ): RacePoolIssue[] => {
   const pathsByValue = new Map<string, string[]>();
   for (const record of records) {
-    const raw = record.data[field];
-    if (typeof raw !== "string") continue;
+    // Records in an import plan are constructed only after the strict import
+    // schema has validated all three duplicate-comparison fields as strings.
+    const raw = record.data[field] as string;
     const value = field === "canonicalRiddleId" ? raw : normalized(raw);
     pathsByValue.set(value, [...(pathsByValue.get(value) ?? []), record.documentPath]);
   }
@@ -69,6 +84,7 @@ const duplicateIssues = (
     .map(([value, documentPaths]) => ({code, message: `Duplicate ${field}: ${value}`, documentPaths}));
 };
 
+/** Parses content and creates a deterministic, validated import plan. */
 export function createRaceContentImportPlan(input: unknown): RaceContentImportPlan {
   const file = RaceContentImportFileSchema.parse(input);
   const records = file.riddles.map((riddle): ExistingRaceContentRecord => {

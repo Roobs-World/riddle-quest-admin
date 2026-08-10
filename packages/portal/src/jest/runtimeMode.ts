@@ -1,10 +1,16 @@
+/** Describes jest runtime mode. */
 export type JestRuntimeMode = {
+  /** Stores auth harness. */
   authHarness: boolean;
+  /** Stores deterministic harness. */
   deterministicHarness: boolean;
+  /** Stores mock backend. */
   mockBackend: boolean;
+  /** Stores use sdk platform. */
   useSdkPlatform: boolean;
 };
 
+/** Resolves jest runtime mode. */
 export function resolveJestRuntimeMode({
   development,
   embedded,

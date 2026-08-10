@@ -47,7 +47,22 @@ const sdk = () => ({
     beginSubscription: jest.fn(),
   },
   markFirstMilestone: jest.fn(),
+  setLoadingProgress: jest.fn(),
+  markGameLoaded: jest.fn(),
 });
+
+const savedGame = {
+  schemaVersion: 1,
+  savedAt: 10,
+  riddleId: "riddle-1",
+  gameMode: "classic",
+  currentLetters: ["A", ""],
+  activeSlotIndex: 1,
+  hintRevealedIndices: [0],
+  guesses: [],
+  engineSnapshot: {attemptsRemaining: 5},
+  letterStates: {},
+};
 
 it("stores only low-integrity preferences", () => expect(new JestSdkPlatform(sdk()).readPreferences()).toEqual({
   locale: "en",
@@ -58,7 +73,7 @@ it("stores only low-integrity preferences", () => expect(new JestSdkPlatform(sdk
   registrationPromptDismissedAt: undefined,
   firstMilestoneMarked: undefined,
 }));
-it("loads a versioned player snapshot from the Jest player store", () => {
+it("loads a versioned player snapshot from the Jest player store", async () => {
   const mock = sdk();
   mock.getPlayer.mockReturnValue({playerId: "p1", registered: true});
   const activeGame = {
@@ -82,14 +97,14 @@ it("loads a versioned player snapshot from the Jest player store", () => {
     },
   });
 
-  expect(new JestSdkPlatform(mock).readPlayerData()).toEqual({
+  expect(await new JestSdkPlatform(mock).readPlayerData()).toEqual({
     schemaVersion: 1,
     updatedAt: 11,
     profile: completeProfile,
     activeGame,
   });
 });
-it("discards an incomplete Jest profile instead of restoring partial statistics", () => {
+it("discards an incomplete Jest profile instead of restoring partial statistics", async () => {
   const mock = sdk();
   mock.getPlayer.mockReturnValue({playerId: "p1", registered: true});
   mock.data.getAll.mockReturnValue({
@@ -100,7 +115,7 @@ it("discards an incomplete Jest profile instead of restoring partial statistics"
     },
   });
 
-  expect(new JestSdkPlatform(mock).readPlayerData()).toEqual({
+  expect(await new JestSdkPlatform(mock).readPlayerData()).toEqual({
     schemaVersion: 1,
     updatedAt: 11,
   });
@@ -139,13 +154,13 @@ it("passes entry attribution to guest login and skips the dialog for registered 
   expect(registeredSdk.login).not.toHaveBeenCalled();
   expect(registeredResult).toEqual({status: "success", value: {playerId: "p1", registered: true}});
 });
-it("rejects unknown player snapshot versions", () => {
+it("rejects unknown player snapshot versions", async () => {
   const mock = sdk();
   mock.getPlayer.mockReturnValue({playerId: "p1", registered: true});
   mock.data.getAll.mockReturnValue({
     riddleQuestPlayerState: {schemaVersion: 2, updatedAt: 11},
   });
-  expect(new JestSdkPlatform(mock).readPlayerData()).toBeNull();
+  expect(await new JestSdkPlatform(mock).readPlayerData()).toBeNull();
 });
 it("flushes player snapshot writes to Jest", async () => {
   const mock = sdk();
@@ -161,7 +176,7 @@ it("preserves player snapshots for guests using their stable Jest player store",
   const playerData = {schemaVersion: 1 as const, updatedAt: 11};
   mock.data.getAll.mockReturnValue({riddleQuestPlayerState: playerData});
 
-  expect(platform.readPlayerData()).toEqual(playerData);
+  expect(await platform.readPlayerData()).toEqual(playerData);
   await platform.writePlayerData(playerData);
 
   expect(mock.data.set).toHaveBeenCalledWith("riddleQuestPlayerState", playerData);
@@ -284,4 +299,209 @@ it("forwards acquisition events to Jest analytics", () => {
   const mock = sdk();
   new JestSdkPlatform(mock).captureEvent("registration_prompt_shown", {utmCampaign: "launch"});
   expect(mock.captureEvent).toHaveBeenCalledWith("registration_prompt_shown", {utmCampaign: "launch"});
+});
+
+it("uses the global SDK by default and initializes it safely", async () => {
+  const original = (globalThis as typeof globalThis & {JestSDK?: unknown}).JestSDK;
+  const mock = sdk();
+  (globalThis as typeof globalThis & {JestSDK?: unknown}).JestSDK = mock;
+
+  const platform = new JestSdkPlatform();
+  await expect(platform.init()).resolves.toEqual({status: "success", value: undefined});
+  expect(mock.init).toHaveBeenCalledWith({autoLoginReminders: false});
+  expect(platform.getPlayer()).toEqual({playerId: "p1", registered: false});
+  platform.getPlayerSigned();
+  expect(mock.getPlayerSigned).toHaveBeenCalled();
+
+  (globalThis as typeof globalThis & {JestSDK?: unknown}).JestSDK = original;
+});
+
+it("maps initialization and login failures", async () => {
+  const mock = sdk();
+  mock.init.mockRejectedValue("offline");
+  mock.login.mockRejectedValue(new Error("BAD_REQUEST"));
+  const platform = new JestSdkPlatform(mock);
+
+  await expect(platform.init()).resolves.toEqual({status: "retryable-failure", message: "offline"});
+  await expect(platform.login()).resolves.toEqual({status: "terminal-failure", message: "BAD_REQUEST"});
+  expect(mock.login).toHaveBeenCalledWith(undefined);
+});
+
+it("runs both registration overlay actions and contains overlay errors", () => {
+  const mock = sdk();
+  const loginButtonAction = jest.fn();
+  const closeButtonAction = jest.fn();
+  mock.showRegistrationOverlay.mockReturnValue({loginButtonAction, closeButtonAction});
+  const platform = new JestSdkPlatform(mock);
+  const result = platform.showRegistrationOverlay({theme: "dark", onClose: jest.fn()});
+  expect(result.status).toBe("success");
+  if (result.status === "success") {
+    result.value.loginButtonAction();
+    result.value.closeButtonAction();
+  }
+  expect(loginButtonAction).toHaveBeenCalled();
+  expect(closeButtonAction).toHaveBeenCalled();
+
+  mock.showRegistrationOverlay.mockImplementation(() => { throw new Error("overlay unavailable"); });
+  expect(platform.showRegistrationOverlay({theme: "dark", onClose: jest.fn()})).toEqual({
+    status: "retryable-failure",
+    message: "overlay unavailable",
+  });
+});
+
+it("round-trips every supported preference", async () => {
+  const mock = sdk();
+  const preferences = {
+    locale: "fr",
+    muted: true,
+    reducedMotion: false,
+    highContrast: true,
+    onboardingComplete: true,
+    registrationPromptDismissedAt: 123,
+    firstMilestoneMarked: false,
+  };
+  mock.data.getAll.mockReturnValue(preferences);
+  const platform = new JestSdkPlatform(mock);
+  expect(platform.readPreferences()).toEqual(preferences);
+  await platform.writePreferences(preferences);
+  expect(mock.data.set).toHaveBeenCalledWith(preferences);
+  expect(mock.data.flush).toHaveBeenCalled();
+});
+
+it.each([
+  [],
+  {...savedGame, schemaVersion: 2},
+  {...savedGame, savedAt: "10"},
+  {...savedGame, riddleId: 1},
+  {...savedGame, gameMode: "race"},
+  {...savedGame, currentLetters: "A"},
+  {...savedGame, currentLetters: [1]},
+  {...savedGame, activeSlotIndex: "1"},
+  {...savedGame, hintRevealedIndices: "0"},
+  {...savedGame, hintRevealedIndices: ["0"]},
+  {...savedGame, guesses: null},
+  {...savedGame, engineSnapshot: []},
+  {...savedGame, letterStates: null},
+])("discards malformed active-game snapshots", async (activeGame) => {
+  const mock = sdk();
+  mock.data.getAll.mockReturnValue({riddleQuestPlayerState: {schemaVersion: 1, updatedAt: 11, activeGame}});
+  expect(await new JestSdkPlatform(mock).readPlayerData()).toEqual({schemaVersion: 1, updatedAt: 11});
+});
+
+it("supports explicitly cleared active games and missing SDK data", async () => {
+  const mock = sdk();
+  mock.data.getAll.mockReturnValue({riddleQuestPlayerState: {schemaVersion: 1, updatedAt: 11, activeGame: null}});
+  expect(await new JestSdkPlatform(mock).readPlayerData()).toEqual({schemaVersion: 1, updatedAt: 11, activeGame: null});
+  expect(new JestSdkPlatform({}).readPreferences()).toEqual({
+    locale: undefined,
+    muted: undefined,
+    reducedMotion: undefined,
+    highContrast: undefined,
+    onboardingComplete: undefined,
+    registrationPromptDismissedAt: undefined,
+    firstMilestoneMarked: undefined,
+  });
+  expect(new JestSdkPlatform({}).getEntryIntent()).toEqual({});
+});
+
+it("constructs safely when the global SDK is absent", () => {
+  const target = globalThis as typeof globalThis & {JestSDK?: unknown};
+  const original = target.JestSDK;
+  delete target.JestSDK;
+  expect(new JestSdkPlatform()).toBeInstanceOf(JestSdkPlatform);
+  target.JestSDK = original;
+});
+
+it("reads entry intent, configures screenshots, and forwards lifecycle state", () => {
+  const mock = sdk();
+  const platform = new JestSdkPlatform(mock);
+  expect(platform.getEntryIntent()).toMatchObject({gameMode: "classic"});
+  const provider = jest.fn();
+  platform.setScreenshotProvider(provider);
+  platform.setLoadingProgress(72);
+  platform.markGameLoaded();
+  expect(mock.social.setScreenshotProvider).toHaveBeenCalledWith(provider);
+  expect(mock.setLoadingProgress).toHaveBeenCalledWith(72);
+  expect(mock.markGameLoaded).toHaveBeenCalled();
+});
+
+it("handles registered notification removal and notification failures", async () => {
+  const mock = sdk();
+  mock.getPlayer.mockReturnValue({playerId: "p1", registered: true});
+  const platform = new JestSdkPlatform(mock);
+  await expect(platform.removeNotification("daily")).resolves.toEqual({status: "success", value: undefined});
+  expect(mock.notifications.unscheduleNotification).toHaveBeenCalledWith({identifier: "daily"});
+  mock.notifications.unscheduleNotification.mockRejectedValue(new Error("timeout"));
+  await expect(platform.removeNotification("daily")).resolves.toEqual({status: "retryable-failure", message: "timeout"});
+  mock.notifications.scheduleNotification.mockRejectedValue(new Error("timeout"));
+  await expect(platform.scheduleNotification({identifier: "daily", scheduledInDays: 1, body: "Play", ctaText: "Open"}))
+    .resolves.toEqual({status: "retryable-failure", message: "timeout"});
+});
+
+it("handles referrals, product catalogs, and incomplete purchases", async () => {
+  const mock = sdk();
+  const platform = new JestSdkPlatform(mock);
+  mock.referrals.shareReferralLink.mockResolvedValue({canceled: false});
+  mock.referrals.listReferrals.mockResolvedValue({referralsSigned: "signed"});
+  mock.payments.getProducts.mockResolvedValue({products: []});
+  mock.payments.getIncompletePurchases.mockResolvedValue({purchases: []});
+  await expect(platform.shareReferral({reference: "campaign"} as never)).resolves.toEqual({status: "success", value: undefined});
+  await expect(platform.listReferralsSigned()).resolves.toEqual({status: "success", value: "signed"});
+  await expect(platform.getProducts()).resolves.toEqual({status: "success", value: {products: []}});
+  await expect(platform.getIncompletePurchases()).resolves.toEqual({status: "success", value: {purchases: []}});
+
+  mock.referrals.shareReferralLink.mockRejectedValue(new Error("offline"));
+  mock.referrals.listReferrals.mockRejectedValue(new Error("offline"));
+  mock.payments.getProducts.mockRejectedValue(new Error("offline"));
+  mock.payments.getIncompletePurchases.mockRejectedValue(new Error("offline"));
+  await expect(platform.shareReferral({reference: "campaign"} as never)).resolves.toMatchObject({status: "retryable-failure"});
+  await expect(platform.listReferralsSigned()).resolves.toMatchObject({status: "retryable-failure"});
+  await expect(platform.getProducts()).resolves.toMatchObject({status: "retryable-failure"});
+  await expect(platform.getIncompletePurchases()).resolves.toMatchObject({status: "retryable-failure"});
+});
+
+it("maps every purchase completion result", async () => {
+  const mock = sdk();
+  const platform = new JestSdkPlatform(mock);
+  mock.payments.beginPurchase
+    .mockResolvedValueOnce({result: "success", purchase: {sku: "coins"}, purchaseSigned: "signed"})
+    .mockResolvedValueOnce({result: "error", error: "gateway"});
+  await expect(platform.beginPurchase("coins")).resolves.toEqual({
+    status: "success",
+    value: {purchase: {sku: "coins"}, purchaseSigned: "signed"},
+  });
+  await expect(platform.beginPurchase("coins")).resolves.toEqual({status: "retryable-failure", message: "gateway"});
+
+  mock.payments.completePurchase
+    .mockResolvedValueOnce({result: "success"})
+    .mockResolvedValueOnce({result: "error", error: "gateway"})
+    .mockRejectedValueOnce(new Error("offline"));
+  await expect(platform.completePurchase("token")).resolves.toEqual({status: "success", value: undefined});
+  await expect(platform.completePurchase("token")).resolves.toEqual({status: "retryable-failure", message: "gateway"});
+  await expect(platform.completePurchase("token")).resolves.toEqual({status: "retryable-failure", message: "offline"});
+});
+
+it("handles empty and failed subscription catalogs and checkout failures", async () => {
+  const mock = sdk();
+  const platform = new JestSdkPlatform(mock);
+  mock.payments.getSubscriptions.mockResolvedValue({});
+  await expect(platform.getSubscriptions()).resolves.toEqual({
+    status: "success",
+    value: {subscriptions: [], subscriptionsSigned: undefined},
+  });
+  mock.payments.getSubscriptions.mockRejectedValue(new Error("offline"));
+  await expect(platform.getSubscriptions()).resolves.toEqual({status: "retryable-failure", message: "offline"});
+  mock.payments.beginSubscription
+    .mockResolvedValueOnce({result: "error", error: "gateway"})
+    .mockRejectedValueOnce(new Error("offline"));
+  await expect(platform.beginSubscription("premium")).resolves.toEqual({status: "retryable-failure", message: "gateway"});
+  await expect(platform.beginSubscription("premium")).resolves.toEqual({status: "retryable-failure", message: "offline"});
+});
+
+it("marks the first milestone and contains milestone failures", async () => {
+  const mock = sdk();
+  const platform = new JestSdkPlatform(mock);
+  await expect(platform.markFirstMilestone()).resolves.toEqual({status: "success", value: undefined});
+  mock.markFirstMilestone.mockRejectedValue(new Error("offline"));
+  await expect(platform.markFirstMilestone()).resolves.toEqual({status: "retryable-failure", message: "offline"});
 });

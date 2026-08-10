@@ -1,5 +1,5 @@
 import {MockJestPlatform} from "../MockJestPlatform";
-import {startJestSession} from "../startup";
+import {markJestPlayable, startJestSession} from "../startup";
 
 it("runs identity, Firebase auth and recovery in startup order", async () => {
   const order: string[] = [];
@@ -90,4 +90,67 @@ it("returns a retryable failure when SDK initialization never settles", async ()
   expect(result).toEqual({status: "retryable-failure", message: "Jest SDK initialization timed out."});
   expect(platform.progress).toEqual([]);
   expect(platform.loaded).toBe(false);
+});
+
+it("returns platform initialization and purchase reconciliation failures unchanged", async () => {
+  const initializationFailure = new MockJestPlatform();
+  initializationFailure.init = async () => ({status: "error", error: new Error("sdk unavailable")});
+  const unusedBackend = {exchangeIdentity: jest.fn()};
+  const unusedPurchases = {reconcile: jest.fn()};
+
+  await expect(startJestSession(
+    initializationFailure,
+    unusedBackend as never,
+    unusedPurchases as never,
+    jest.fn(),
+  )).resolves.toEqual({status: "error", error: expect.any(Error)});
+  expect(unusedBackend.exchangeIdentity).not.toHaveBeenCalled();
+
+  const platform = new MockJestPlatform();
+  const recoveryFailure = {status: "cancelled", message: "purchase cancelled"} as const;
+  await expect(startJestSession(
+    platform,
+    {exchangeIdentity: async () => ({customToken: "firebase", uid: "uid"})} as never,
+    {reconcile: async () => recoveryFailure} as never,
+    async () => {},
+  )).resolves.toEqual(recoveryFailure);
+});
+
+it("normalizes non-Error startup failures", async () => {
+  const platform = new MockJestPlatform();
+  await expect(startJestSession(
+    platform,
+    {exchangeIdentity: async () => { throw "network unavailable"; }} as never,
+    {} as never,
+    async () => {},
+  )).resolves.toEqual({status: "retryable-failure", message: "network unavailable"});
+});
+
+it("keeps the platform loading heartbeat alive while player identity is pending", async () => {
+  jest.useFakeTimers();
+  try {
+    const platform = new MockJestPlatform();
+    let resolveSigned!: (value: Awaited<ReturnType<typeof platform.getPlayerSigned>>) => void;
+    platform.getPlayerSigned = () => new Promise((resolve) => { resolveSigned = resolve; });
+    const pending = startJestSession(
+      platform,
+      {exchangeIdentity: async () => ({customToken: "firebase", uid: "uid"})} as never,
+      {reconcile: async () => ({status: "success", value: 0})} as never,
+      async () => {},
+    );
+    await Promise.resolve();
+    await jest.advanceTimersByTimeAsync(10_000);
+    resolveSigned({player: platform.player, playerSigned: "signed"});
+    await pending;
+    expect(platform.progress.filter((progress) => progress === 5)).toHaveLength(2);
+  } finally {
+    jest.useRealTimers();
+  }
+});
+
+it("marks the initialized platform playable", () => {
+  const platform = new MockJestPlatform();
+  markJestPlayable(platform);
+  expect(platform.progress.at(-1)).toBe(100);
+  expect(platform.loaded).toBe(true);
 });

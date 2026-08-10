@@ -15,57 +15,101 @@ import {
 } from "@qwordly/core/race";
 import {HttpsError} from "firebase-functions/v2/https";
 
+/** Immutable riddle content captured when an authoritative race run starts. */
 export type RaceRiddleSnapshot = {
+  /** Stores riddle id. */
   riddleId: string;
+  /** Stores canonical riddle id. */
   canonicalRiddleId: string;
+  /** Stores text. */
   text: string;
+  /** Stores answer. */
   answer: string;
+  /** Stores position. */
   position: number;
 };
 
+/** Opponent ghost data attached to a challenger run. */
 export type RaceOpponentRecord = {
+  /** Stores display name. */
   displayName: string;
+  /** Stores avatar url. */
   avatarUrl?: string | null;
+  /** Stores adjusted finish ms. */
   adjustedFinishMs: number;
+  /** Stores events. */
   events: RaceGhostEvent[];
 };
 
+/** Complete server-only state for an authoritative Race to 10 run. */
 export type RaceRunRecord = {
+  /** Stores run id. */
   runId: string;
+  /** Stores user id. */
   userId: string;
+  /** Stores challenge id. */
   challengeId?: string;
+  /** Stores rivalry challenge id. */
   rivalryChallengeId?: string;
+  /** Stores role. */
   role: "creator" | "challenger";
+  /** Stores status. */
   status: RaceRunStatus;
+  /** Stores result. */
   result?: RaceOutcome["result"] | null;
+  /** Stores category id. */
   categoryId: RaceCategoryId;
+  /** Stores locale. */
   locale: RaceLocale;
+  /** Stores rules version. */
   rulesVersion: typeof RACE_RULES.version;
+  /** Stores deck id. */
   deckId: string;
+  /** Stores riddles. */
   riddles: RaceRiddleSnapshot[];
+  /** Stores current position. */
   currentPosition: number;
+  /** Stores correct count. */
   correctCount: number;
+  /** Stores guesses used. */
   guessesUsed: number;
+  /** Stores hint used. */
   hintUsed: boolean;
+  /** Stores revealed letters. */
   revealedLetters: Array<{index: number; letter: string}>;
+  /** Stores started at ms. */
   startedAtMs: number;
+  /** Stores finished at ms. */
   finishedAtMs?: number;
+  /** Stores wall finish ms. */
   wallFinishMs?: number;
+  /** Stores hint penalty ms. */
   hintPenaltyMs: number;
+  /** Stores skip penalty ms. */
   skipPenaltyMs: number;
+  /** Stores events. */
   events: RaceGhostEvent[];
+  /** Stores opponent. */
   opponent?: RaceOpponentRecord;
+  /** Stores rate limit window started at ms. */
   rateLimitWindowStartedAtMs?: number;
+  /** Stores rate limit action count. */
   rateLimitActionCount?: number;
+  /** Stores achievement progress recorded at ms. */
   achievementProgressRecordedAtMs?: number;
 };
 
+/** Derived wall-clock, penalty, and adjusted race durations. */
 export type RaceClock = {
+  /** Stores wall elapsed ms. */
   wallElapsedMs: number;
+  /** Stores total penalty ms. */
   totalPenaltyMs: number;
+  /** Stores adjusted elapsed ms. */
   adjustedElapsedMs: number;
 };
 
+/** Provides copy run behavior. */
 const copyRun = (run: RaceRunRecord): RaceRunRecord => ({
   ...run,
   riddles: run.riddles.map((riddle) => ({...riddle})),
@@ -74,12 +118,14 @@ const copyRun = (run: RaceRunRecord): RaceRunRecord => ({
   opponent: run.opponent ? {...run.opponent, events: run.opponent.events.map((event) => ({...event}))} : undefined,
 });
 
+/** Calculates authoritative elapsed and penalty time for a race run. */
 export function raceClock(run: RaceRunRecord, nowMs: number): RaceClock {
   const totalPenaltyMs = run.hintPenaltyMs + run.skipPenaltyMs;
   const wallElapsedMs = run.wallFinishMs ?? Math.max(0, nowMs - run.startedAtMs);
   return {wallElapsedMs, totalPenaltyMs, adjustedElapsedMs: wallElapsedMs + totalPenaltyMs};
 }
 
+/** Provides finish run behavior. */
 const finishRun = (
   run: RaceRunRecord,
   result: NonNullable<RaceRunRecord["result"]>,
@@ -96,6 +142,7 @@ const finishRun = (
   };
 };
 
+/** Refreshes time-dependent run state, including timeout and ghost completion. */
 export function refreshRaceRun(input: RaceRunRecord, nowMs: number): RaceRunRecord {
   const run = copyRun(input);
   if (run.status !== "active") return run;
@@ -109,6 +156,7 @@ export function refreshRaceRun(input: RaceRunRecord, nowMs: number): RaceRunReco
   return run;
 }
 
+/** Provides require active riddle behavior. */
 const requireActiveRiddle = (run: RaceRunRecord, riddleId: string): RaceRiddleSnapshot => {
   if (run.status !== "active") {
     throw new HttpsError("failed-precondition", "This Race to 10 run is no longer active.");
@@ -120,6 +168,7 @@ const requireActiveRiddle = (run: RaceRunRecord, riddleId: string): RaceRiddleSn
   return riddle;
 };
 
+/** Provides append event behavior. */
 const appendEvent = (
   run: RaceRunRecord,
   type: RaceGhostEvent["type"],
@@ -139,6 +188,7 @@ const appendEvent = (
   });
 };
 
+/** Provides advance riddle behavior. */
 const advanceRiddle = (run: RaceRunRecord, nowMs: number): void => {
   run.currentPosition += 1;
   run.guessesUsed = 0;
@@ -150,11 +200,14 @@ const advanceRiddle = (run: RaceRunRecord, nowMs: number): void => {
   }
 };
 
+/** Provides finalize after penalty behavior. */
 const finalizeAfterPenalty = (run: RaceRunRecord, nowMs: number): RaceRunRecord => refreshRaceRun(run, nowMs);
 
+/** Normalizes answer. */
 const normalizeAnswer = (value: string, locale: RaceLocale): string =>
   lowerCaseGraphemes(value.trim(), locale).join("");
 
+/** Applies and validates one guess against the current authoritative riddle. */
 export function applyRaceGuess(
   input: RaceRunRecord,
   inputData: {riddleId: string; guess: string},
@@ -186,9 +239,7 @@ export function applyRaceGuess(
       const result: RaceOutcome["result"] = run.opponent
         ? adjustedFinishMs < run.opponent.adjustedFinishMs
           ? "player_win"
-          : adjustedFinishMs === run.opponent.adjustedFinishMs
-            ? "tie"
-            : "ghost_win"
+          : "tie"
         : "recorded";
       return {run: finishRun(run, result, adjustedFinishMs), feedback, isCorrect, autoSkipped: false};
     }
@@ -206,6 +257,7 @@ export function applyRaceGuess(
   return {run, feedback, isCorrect, autoSkipped: false};
 }
 
+/** Reveals one server-selected letter and applies the configured hint penalty. */
 export function applyRaceHint(
   input: RaceRunRecord,
   inputData: {riddleId: string},
@@ -228,6 +280,7 @@ export function applyRaceHint(
   return {run: finalizeAfterPenalty(run, nowMs), revealedLetter, index};
 }
 
+/** Skips the current riddle after a guess and applies the configured penalty. */
 export function applyRaceSkip(input: RaceRunRecord, inputData: {riddleId: string}, nowMs: number): RaceRunRecord {
   const run = refreshRaceRun(input, nowMs);
   requireActiveRiddle(run, inputData.riddleId);
@@ -240,6 +293,7 @@ export function applyRaceSkip(input: RaceRunRecord, inputData: {riddleId: string
   return finalizeAfterPenalty(run, nowMs);
 }
 
+/** Marks an active run abandoned without producing a competitive result. */
 export function abandonRaceRun(input: RaceRunRecord, nowMs: number): RaceRunRecord {
   const run = refreshRaceRun(input, nowMs);
   if (run.status === "abandoned") return run;
@@ -256,6 +310,7 @@ export function abandonRaceRun(input: RaceRunRecord, nowMs: number): RaceRunReco
   };
 }
 
+/** Projects server-only run state into the answer-safe client response. */
 export function toRaceRunView(input: RaceRunRecord, nowMs: number): RaceRunView {
   const run = refreshRaceRun(input, nowMs);
   const clock = raceClock(run, nowMs);
@@ -297,6 +352,7 @@ export function toRaceRunView(input: RaceRunRecord, nowMs: number): RaceRunView 
   };
 }
 
+/** Produces the final public outcome for a completed authoritative run. */
 export function raceOutcome(run: RaceRunRecord, nowMs: number): RaceOutcome {
   const refreshed = refreshRaceRun(run, nowMs);
   const clock = raceClock(refreshed, nowMs);

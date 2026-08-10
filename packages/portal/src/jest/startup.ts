@@ -2,15 +2,22 @@ import type {JestBackendPort} from "./backend";
 import type {JestPurchaseCoordinator} from "./purchases";
 import type {JestPlatformPort, JestSession, PlatformResult} from "./types";
 
+/** Provides phase progress behavior. */
 const phaseProgress = [5, 15, 28, 42, 58, 72, 88] as const;
+/** Defines the jest sdk init timeout ms value. */
 export const JEST_SDK_INIT_TIMEOUT_MS = 12_000;
+/** Defines the jest sdk init timeout message value. */
 export const JEST_SDK_INIT_TIMEOUT_MESSAGE = "Jest SDK initialization timed out.";
 
+/** Describes jest startup update. */
 export type JestStartupUpdate = {
+  /** Stores stage. */
   stage: "connecting" | "player" | "progress" | "game";
+  /** Stores progress. */
   progress: number;
 };
 
+/** Starts jest session. */
 export async function startJestSession(
   platform: JestPlatformPort,
   backend: JestBackendPort,
@@ -22,7 +29,7 @@ export async function startJestSession(
   let heartbeat: ReturnType<typeof setInterval> | undefined;
   try {
     const initializationTimeoutMs = options.initializationTimeoutMs ?? JEST_SDK_INIT_TIMEOUT_MS;
-    let initializationTimeout: ReturnType<typeof setTimeout> | undefined;
+    let initializationTimeout: ReturnType<typeof setTimeout>;
     const initialized = await Promise.race([
       platform.init(),
       new Promise<never>((_, reject) => {
@@ -32,17 +39,18 @@ export async function startJestSession(
         );
       }),
     ]).finally(() => {
-      if (initializationTimeout) clearTimeout(initializationTimeout);
+      clearTimeout(initializationTimeout);
     });
     if (initialized.status !== "success") return initialized;
     platform.setLoadingProgress(phaseProgress[0]);
     onProgress?.({stage: "player", progress: phaseProgress[1]});
     heartbeat = setInterval(() => platform.setLoadingProgress(phaseProgress[0]), 10_000);
     platform.setLoadingProgress(phaseProgress[1]);
-    const signed = await platform.getPlayerSigned();
+    const signedPromise = platform.getPlayerSigned();
     const entryIntent = platform.getEntryIntent();
     const preferences = platform.readPreferences();
-    const playerData = platform.readPlayerData();
+    const playerDataPromise = platform.readPlayerData();
+    const [signed, playerData] = await Promise.all([signedPromise, playerDataPromise]);
     let profile: JestSession["profile"] = null;
 
     if (signed.player.registered) {
@@ -72,6 +80,7 @@ export async function startJestSession(
   }
 }
 
+/** Provides mark jest playable behavior. */
 export function markJestPlayable(platform: JestPlatformPort) {
   platform.setLoadingProgress(100);
   platform.markGameLoaded();

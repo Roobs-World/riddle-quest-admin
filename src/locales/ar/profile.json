@@ -55,6 +55,7 @@
     "GUEST_MODE_TITLE": "اللعب كضيف",
     "JEST_REGISTRATION_TITLE": "احفظ تقدمك",
     "JEST_REGISTRATION_GREETING": "مرحبًا، {name}.",
+    "JEST_INVITED_BY": "دعاك {name} للعب.",
     "JEST_REGISTRATION_DESCRIPTION": "سجّل في Jest لحماية تقدمك وتلقي ألغاز يومية جديدة عبر الرسائل.",
     "JEST_REGISTER_BUTTON": "التسجيل",
     "JEST_LOGIN_BUTTON": "تسجيل الدخول",

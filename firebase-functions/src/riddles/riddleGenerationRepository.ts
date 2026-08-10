@@ -7,6 +7,7 @@ import {RiddleCollections} from "../validation/firestoreSchemas";
 import {clueContainsLiteralAnswer} from "./riddleQuality";
 import {SUPPORTED_LOCALES, type SupportedLocale} from "@qwordly/core/validation";
 
+/** Provides riddle exists behavior. */
 export function riddleExists(
   riddle: {question: string; answer: string},
   existingQuestions: string[],
@@ -18,25 +19,33 @@ export function riddleExists(
   return existingQuestions.includes(normalizedQuestion) || existingAnswers.includes(normalizedAnswer);
 }
 
+/** Provides riddle has playable clue behavior. */
 export function riddleHasPlayableClue(riddle: {question: string; answer: string}): boolean {
   return !clueContainsLiteralAnswer(riddle.question, riddle.answer);
 }
 
+/** Defines the localized riddles collection value. */
 const LOCALIZED_RIDDLES_COLLECTION = "localizedRiddles";
+/** Defines the localized riddle subcollection value. */
 const LOCALIZED_RIDDLE_SUBCOLLECTION = "riddles";
 
+/** Gets localized riddle collection. */
 const getLocalizedRiddleCollection = (locale: SupportedLocale): string =>
   `${LOCALIZED_RIDDLES_COLLECTION}/${locale}/${LOCALIZED_RIDDLE_SUBCOLLECTION}`;
 
+/** Gets localized daily doc ref. */
 export const getLocalizedDailyDocRef = (locale: SupportedLocale): DocumentReference =>
   admin.firestore().collection(getLocalizedRiddleCollection(locale)).doc("current");
 
+/** Gets localized classic doc ref. */
 export const getLocalizedClassicDocRef = (locale: SupportedLocale, riddleId: string): DocumentReference =>
   admin.firestore().collection(getLocalizedRiddleCollection(locale)).doc(riddleId);
 
+/** Gets localized canonical key. */
 export const getLocalizedCanonicalKey = (category: "classic" | "daily", index: number, locale: SupportedLocale): string =>
   `${category}:${index}:${locale}`;
 
+/** Provides are localized classic riddles seeded behavior. */
 export async function areLocalizedClassicRiddlesSeeded(): Promise<boolean> {
   for (const locale of SUPPORTED_LOCALES) {
     if (!(await areLocalizedClassicRiddlesSeededForLocale(locale))) {
@@ -46,6 +55,7 @@ export async function areLocalizedClassicRiddlesSeeded(): Promise<boolean> {
 
   return true;
 }
+/** Provides are localized classic riddles seeded for locale behavior. */
 export async function areLocalizedClassicRiddlesSeededForLocale(locale: SupportedLocale): Promise<boolean> {
   const snapshot = await admin
     .firestore()
@@ -102,6 +112,7 @@ export async function getExistingRiddlesFromFirestore(): Promise<{questions: str
   }
 }
 
+/** Gets localized existing riddles from firestore for locale. */
 export async function getLocalizedExistingRiddlesFromFirestoreForLocale(
   locale: SupportedLocale,
 ): Promise<{questions: string[]; answers: string[]}> {
@@ -188,6 +199,7 @@ export async function storeClassicRiddlesInFirestore(
   }
 }
 
+/** Stores localized classic riddles in firestore. */
 export async function storeLocalizedClassicRiddlesInFirestore(
   locale: SupportedLocale,
   riddles: {question: string; answer: string}[],

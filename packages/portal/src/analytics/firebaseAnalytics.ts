@@ -1,17 +1,29 @@
-import {firebaseApp} from "../firebase";
+import {firebaseEnvironment} from "../firebaseEnvironment";
 import {configureAnalytics} from "./googleAnalytics";
 
+/** Schedules non-critical analytics initialization after the playable shell has loaded. */
+const scheduleWhenIdle = (task: () => void) => {
+  if (typeof window.requestIdleCallback === "function") {
+    window.requestIdleCallback(task, {timeout: 2_000});
+    return;
+  }
+  globalThis.queueMicrotask(task);
+};
+
+/** Provides initialize google analytics behavior. */
 export const initializeGoogleAnalytics = () => {
-  const measurementId = import.meta.env.VITE_GOOGLE_ANALYTICS_MEASUREMENT_ID?.trim();
+  const measurementId = firebaseEnvironment.measurementId?.trim();
   if (!measurementId || typeof window === "undefined") return;
 
-  void import("firebase/analytics")
-    .then(async (module) => {
-      if (!(await module.isSupported())) return;
-      const client = module.getAnalytics(firebaseApp);
-      configureAnalytics((eventName, params) => module.logEvent(client, eventName, params));
-    })
-    .catch((error) => {
-      console.warn("[riddle-quest-analytics] Google Analytics is unavailable", error);
-    });
+  scheduleWhenIdle(() => {
+    void Promise.all([import("firebase/analytics"), import("../firebase")])
+      .then(async ([module, {firebaseApp}]) => {
+        if (!(await module.isSupported())) return;
+        const client = module.getAnalytics(firebaseApp);
+        configureAnalytics((eventName, params) => module.logEvent(client, eventName, params));
+      })
+      .catch((error) => {
+        console.warn("[riddle-quest-analytics] Google Analytics is unavailable", error);
+      });
+  });
 };

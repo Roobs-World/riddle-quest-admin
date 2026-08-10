@@ -4,6 +4,14 @@ import {afterEach, beforeEach, describe, expect, it, jest} from "@jest/globals";
 const mockUpdateUserProfile = jest.fn<(userId: string, profileData: Record<string, unknown>) => Promise<void>>();
 const mockAdminFirestoreUpdate = jest.fn<() => Promise<void>>();
 const mockAdminFirestoreSet = jest.fn<() => Promise<void>>();
+const mockBatchUpdate = jest.fn();
+const mockBatchSet = jest.fn();
+const mockBatchCommit = jest.fn<() => Promise<void>>();
+const mockAdminFirestoreBatch = jest.fn(() => ({
+  update: mockBatchUpdate,
+  set: mockBatchSet,
+  commit: mockBatchCommit,
+}));
 const mockAdminFirestoreDoc = jest.fn((_id?: string) => ({
   update: mockAdminFirestoreUpdate,
   set: mockAdminFirestoreSet,
@@ -55,6 +63,7 @@ jest.mock("firebase-admin", () => ({
   initializeApp: jest.fn(),
   firestore: () => ({
     collection: (path: string) => mockAdminFirestoreCollection(path),
+    batch: mockAdminFirestoreBatch,
   }),
   storage: () => ({
     bucket: () => ({
@@ -79,7 +88,8 @@ jest.mock("firebase-functions/v2/https", () => {
 });
 
 // 4. Import the module under test
-import {updateAvatar, updateUsername} from "../profile/profile";
+import {updateAvatar, updateUsername} from "../profile";
+import {syncLeaderboardProfileFields} from "../profile/leaderboardProfile";
 
 // 5. Describe block
 describe("Profile Cloud Functions", () => {
@@ -93,6 +103,7 @@ describe("Profile Cloud Functions", () => {
 
   it("enables App Check and public Cloud Run ingress on profile update callables", () => {
     expect(mockOnCallInvocations).toEqual([
+      [{enforceAppCheck: true, invoker: "public"}, expect.any(Function)],
       [{enforceAppCheck: true, invoker: "public"}, expect.any(Function)],
       [{enforceAppCheck: true, invoker: "public"}, expect.any(Function)],
     ]);
@@ -110,7 +121,7 @@ describe("Profile Cloud Functions", () => {
     });
 
     it("should successfully update username", async () => {
-      mockUpdateUserProfile.mockResolvedValue(undefined);
+      mockBatchCommit.mockResolvedValue(undefined);
       const request = {
         auth: mockAuth,
         data: {username: validUsername},
@@ -119,8 +130,25 @@ describe("Profile Cloud Functions", () => {
       const result = await (updateUsername as any)(request);
 
       expect(mockExistingUsersGet).toHaveBeenCalled();
-      expect(mockUpdateUserProfile).toHaveBeenCalledWith(mockAuth.uid, {username: validUsername});
+      expect(mockBatchUpdate).toHaveBeenCalledWith(expect.any(Object), {username: validUsername});
+      expect(mockBatchSet).toHaveBeenCalledWith(
+        expect.any(Object),
+        expect.objectContaining({username: validUsername, updatedAt: expect.any(Number)}),
+        {merge: true},
+      );
+      expect(mockBatchCommit).toHaveBeenCalledTimes(1);
       expect(result).toEqual({success: true, message: "Username updated successfully."});
+    });
+
+    it("does not report success when the atomic leaderboard update fails", async () => {
+      mockBatchCommit.mockRejectedValue(new Error("leaderboard unavailable"));
+      const request = {
+        auth: mockAuth,
+        data: {username: validUsername},
+      } as CallableRequest<{username: string}>;
+
+      await expect((updateUsername as any)(request)).rejects.toMatchObject({code: "internal"});
+      expect(mockBatchCommit).toHaveBeenCalledTimes(1);
     });
 
     it("should throw HttpsError if not authenticated", async () => {
@@ -148,6 +176,47 @@ describe("Profile Cloud Functions", () => {
       await expect((updateUsername as any)(request)).rejects.toThrow(
         new HttpsError("already-exists", "Username already taken."),
       );
+    });
+
+    it("allows a user to keep their current username", async () => {
+      mockExistingUsersGet.mockResolvedValue({empty: false, docs: [{id: mockAuth.uid}]});
+      mockBatchCommit.mockResolvedValue(undefined);
+
+      await expect((updateUsername as any)({auth: mockAuth, data: {username: validUsername}})).resolves.toEqual({
+        success: true,
+        message: "Username updated successfully.",
+      });
+    });
+
+    it("rejects profanity before querying username availability", async () => {
+      await expect((updateUsername as any)({auth: mockAuth, data: {username: "damn-player"}})).rejects.toMatchObject({
+        code: "invalid-argument",
+      });
+      expect(mockExistingUsersGet).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("leaderboard profile synchronization", () => {
+    it("does nothing when no display fields are supplied", async () => {
+      await syncLeaderboardProfileFields("user-1", {});
+      expect(mockAdminFirestoreSet).not.toHaveBeenCalled();
+    });
+
+    it("merges username and avatar display fields", async () => {
+      mockAdminFirestoreSet.mockResolvedValue(undefined);
+
+      await syncLeaderboardProfileFields("user-1", {username: "Ada", avatarUrl: "https://example.test/avatar"});
+
+      expect(mockAdminFirestoreSet).toHaveBeenCalledWith(
+        expect.objectContaining({username: "Ada", avatarUrl: "https://example.test/avatar", updatedAt: expect.any(Number)}),
+        {merge: true},
+      );
+    });
+
+    it("contains best-effort leaderboard failures", async () => {
+      mockAdminFirestoreSet.mockRejectedValue(new Error("offline"));
+
+      await expect(syncLeaderboardProfileFields("user-1", {username: "Ada"})).resolves.toBeUndefined();
     });
   });
 
@@ -189,6 +258,52 @@ describe("Profile Cloud Functions", () => {
         new HttpsError("failed-precondition", "Register with Jest before uploading a profile photo."),
       );
       expect(mockStorageSave).not.toHaveBeenCalled();
+    });
+
+    it("rejects unauthenticated avatar uploads", async () => {
+      await expect((updateAvatar as any)({auth: undefined, data: {imageDataUrl: pngDataUrl}})).rejects.toMatchObject({
+        code: "unauthenticated",
+      });
+    });
+
+    it("maps invalid encoded images to a client-safe error", async () => {
+      const invalidPng = `data:image/png;base64,${Buffer.from("not a png").toString("base64")}`;
+
+      await expect((updateAvatar as any)({
+        auth: {uid: "jest_user", token: {jestRegistered: true}},
+        data: {imageDataUrl: invalidPng},
+      })).rejects.toMatchObject({code: "invalid-argument"});
+      expect(mockStorageSave).not.toHaveBeenCalled();
+    });
+
+    it("maps storage failures to an internal error", async () => {
+      mockStorageSave.mockRejectedValue(new Error("storage unavailable"));
+
+      await expect((updateAvatar as any)({
+        auth: {uid: "jest_user", token: {jestRegistered: true}},
+        data: {imageDataUrl: pngDataUrl},
+      })).rejects.toMatchObject({code: "internal"});
+      expect(mockLoggerError).toHaveBeenCalled();
+    });
+
+    it("preserves explicit HTTPS errors from downstream services", async () => {
+      const error = new HttpsError("resource-exhausted", "Try again later.");
+      mockStorageSave.mockResolvedValue(undefined);
+      mockUpdateUserProfile.mockRejectedValue(error);
+
+      await expect((updateAvatar as any)({
+        auth: {uid: "jest_user", token: {jestRegistered: true}},
+        data: {imageDataUrl: pngDataUrl},
+      })).rejects.toBe(error);
+    });
+
+    it("handles non-Error failures without exposing their value", async () => {
+      mockStorageSave.mockRejectedValue("offline");
+
+      await expect((updateAvatar as any)({
+        auth: {uid: "jest_user", token: {jestRegistered: true}},
+        data: {imageDataUrl: pngDataUrl},
+      })).rejects.toMatchObject({code: "internal"});
     });
   });
 });

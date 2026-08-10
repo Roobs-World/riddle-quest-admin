@@ -1,5 +1,6 @@
 import type {RankIconName} from "./ranks";
 
+/** Provides rank icon behavior. */
 export function RankIcon({name}: {name: RankIconName}) {
   const commonProps = {
     "aria-hidden": true,

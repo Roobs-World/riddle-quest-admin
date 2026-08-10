@@ -15,7 +15,7 @@ if (getApps().length === 0) initializeApp();
 
 import {getHint, spendCoins, skipRiddle} from "./gameplay/gameLogic";
 import {getCurrentDailyChallenge, getCurrentClassicRiddle} from "./daily/dailyChallenge";
-import {updateAvatar, updateUsername} from "./profile/profile";
+import {deleteAccount, updateAvatar, updateUsername} from "./profile";
 import {completeGame} from "./gameplay/completeGameCallable";
 import {dailyChallengeScheduler} from "./daily/dailyScheduler";
 import {getLeaderboard} from "./gameplay/leaderboard";
@@ -48,6 +48,7 @@ export {
   getCurrentClassicRiddle,
   updateUsername,
   updateAvatar,
+  deleteAccount,
   completeGame,
   dailyChallengeScheduler,
   getLeaderboard,

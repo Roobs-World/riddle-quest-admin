@@ -26,11 +26,9 @@ import {
 } from "../validation/requestSchemas";
 import {validateCallableRequest, validateCallableResponse} from "../validation/callableValidation";
 
-//
-// Types
-//
-
+/** Defines the level weight value. */
 const LEVEL_WEIGHT = 1_000_000_000;
+/** Defines the default username value. */
 const DEFAULT_USERNAME = "Player";
 
 /**
@@ -114,10 +112,15 @@ function toSafeLeaderboardEntry(raw: Partial<LeaderboardEntry>, fallbackUserId: 
   return entry;
 }
 
+/** Defines the contract for user doc for leaderboard. */
 interface UserDocForLeaderboard {
+  /** Stores username. */
   username?: string;
+  /** Stores display name. */
   displayName?: string;
+  /** Stores avatar url. */
   avatarUrl?: string;
+  /** Stores stats. */
   stats?: {
     level?: number;
     xp?: number;
@@ -350,7 +353,6 @@ async function backfillLeaderboard(entries: LeaderboardEntry[]): Promise<void> {
 }
 
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-// Server-side helper (not a callable â€” called from submitGuessLogic)
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 /**
@@ -393,7 +395,6 @@ export async function updateLeaderboardEntry(
 }
 
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-// Callable
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 /**

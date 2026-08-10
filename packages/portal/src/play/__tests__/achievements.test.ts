@@ -1,6 +1,7 @@
 import {describe, expect, it} from "@jest/globals";
 import {RACE_ACHIEVEMENT_IDS} from "@qwordly/core/race";
-import {ACHIEVEMENT_DEFINITIONS} from "../achievements";
+import {PlayerProgressSchema, PlayerStatsSchema} from "@qwordly/core/validation";
+import {ACHIEVEMENT_DEFINITIONS, getAchievementProgress} from "../achievements";
 
 describe("multiplayer achievement presentation", () => {
   it("defines every authoritative multiplayer achievement with localized copy", () => {
@@ -20,5 +21,56 @@ describe("multiplayer achievement presentation", () => {
 
     expect(wins?.getProgress({stats: {multiplayerWins: 12} as never})).toBe(12);
     expect(hosts?.getProgress({stats: {multiplayerChallengesCreated: 3} as never})).toBe(3);
+  });
+});
+
+describe("achievement progress", () => {
+  const stats = PlayerStatsSchema.parse({
+    totalWins: 100,
+    averageGuesses: 2.5,
+    gamesPlayed: 100,
+    winRate: 85,
+    bestStreak: 30,
+    highestLevelClassic: 100,
+    dailyPuzzlesCompleted: 100,
+    challengeWins: 50,
+    totalHintsUsed: 25,
+    level: 20,
+    xp: 5_000,
+    multiplayerGamesPlayed: 10,
+    multiplayerWins: 25,
+    multiplayerChallengesCreated: 5,
+  });
+  const progress = PlayerProgressSchema.parse({classicIndex: 100});
+
+  it("has unique, complete definitions whose progress functions handle a full profile", () => {
+    expect(new Set(ACHIEVEMENT_DEFINITIONS.map(({id}) => id)).size).toBe(ACHIEVEMENT_DEFINITIONS.length);
+    for (const definition of ACHIEVEMENT_DEFINITIONS) {
+      expect(definition.threshold).toBeGreaterThan(0);
+      expect(definition.icon).not.toBe("");
+      expect(definition.getProgress({stats, progress, coins: 2_500, hasPurchasedApp: true})).toEqual(
+        expect.any(Number),
+      );
+    }
+  });
+
+  it("returns safe defaults for incomplete player profiles", () => {
+    for (const definition of ACHIEVEMENT_DEFINITIONS) {
+      expect(definition.getProgress({})).toBeGreaterThanOrEqual(0);
+    }
+  });
+
+  it("covers every efficient-solver outcome", () => {
+    const efficient = ACHIEVEMENT_DEFINITIONS.find(({id}) => id === "efficient_10")!;
+    expect(efficient.getProgress({stats: PlayerStatsSchema.parse({totalWins: 4})})).toBe(4);
+    expect(efficient.getProgress({stats: PlayerStatsSchema.parse({totalWins: 10, averageGuesses: 4})})).toBe(10);
+    expect(efficient.getProgress({stats: PlayerStatsSchema.parse({totalWins: 10, averageGuesses: 3})})).toBe(10);
+    expect(efficient.getProgress({stats: {totalWins: 10} as never})).toBe(10);
+  });
+
+  it("supports the deprecated criteria lookup and unknown runtime values", () => {
+    expect(getAchievementProgress("wins_5", stats, progress)).toBe(100);
+    expect(getAchievementProgress("missing" as never, stats, progress)).toBe(0);
+    expect(getAchievementProgress("first_purchase", stats, progress, true)).toBe(1);
   });
 });

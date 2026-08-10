@@ -1,14 +1,20 @@
+/** Defines the accepted avatar types value. */
 const ACCEPTED_AVATAR_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
+/** Defines the max source bytes value. */
 const MAX_SOURCE_BYTES = 5 * 1024 * 1024;
+/** Defines the max output bytes value. */
 const MAX_OUTPUT_BYTES = 512 * 1024;
+/** Defines the avatar size value. */
 const AVATAR_SIZE = 256;
 
+/** Validates avatar file. */
 export const validateAvatarFile = (file: Pick<File, "size" | "type">) => {
   if (!ACCEPTED_AVATAR_TYPES.has(file.type) || file.size <= 0 || file.size > MAX_SOURCE_BYTES) {
     throw new Error("invalid-avatar-file");
   }
 };
 
+/** Provides canvas to blob behavior. */
 const canvasToBlob = (canvas: HTMLCanvasElement) =>
   new Promise<Blob>((resolve, reject) => {
     canvas.toBlob(
@@ -18,6 +24,7 @@ const canvasToBlob = (canvas: HTMLCanvasElement) =>
     );
   });
 
+/** Provides blob to data url behavior. */
 const blobToDataUrl = (blob: Blob) =>
   new Promise<string>((resolve, reject) => {
     const reader = new FileReader();
@@ -29,6 +36,7 @@ const blobToDataUrl = (blob: Blob) =>
     reader.readAsDataURL(blob);
   });
 
+/** Provides prepare avatar image behavior. */
 export async function prepareAvatarImage(file: File): Promise<string> {
   validateAvatarFile(file);
   const bitmap = await createImageBitmap(file);

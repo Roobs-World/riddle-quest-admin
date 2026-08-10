@@ -41,7 +41,13 @@ async function waitForDeployedGame(page: Page): Promise<Frame> {
         return false;
       }
     });
-    if (frame) return frame;
+    if (frame && !frame.isDetached()) {
+      // Jest briefly attaches a bootstrap iframe and replaces it with the
+      // playable build. Require the same frame to remain attached before
+      // handing it to assertions, without assuming first-run UI state.
+      await page.waitForTimeout(750);
+      if (!frame.isDetached() && page.frames().includes(frame)) return frame;
+    }
     // The iframe element can be present just before Playwright observes the
     // cross-origin frame attachment. Poll the frame tree instead of treating
     // that normal hand-off as a missing deployment.
@@ -73,23 +79,38 @@ describeDeployed("deployed Jest sandbox game", () => {
     const consoleErrors: string[] = [];
     const failedRequests: string[] = [];
     const successfulFunctions = new Set<string>();
+    const referralVerifications: Array<Record<string, unknown>> = [];
 
     page.on("console", (message) => {
       if (message.type() === "error") consoleErrors.push(message.text());
     });
     page.on("requestfailed", (request) => failedRequests.push(request.url()));
     page.on("response", (response) => {
+      const functionName = new URL(response.url()).pathname.split("/").filter(Boolean).at(-1) ?? "";
       if (
         response.ok() &&
         response.url().includes("cloudfunctions.net")
       ) {
-        successfulFunctions.add(new URL(response.url()).pathname.split("/").filter(Boolean).at(-1) ?? "");
+        successfulFunctions.add(functionName);
+        if (functionName === "verifyJestReferrals") {
+          void response.json().then((value: unknown) => {
+            if (value && typeof value === "object" && !Array.isArray(value)) {
+              referralVerifications.push(value as Record<string, unknown>);
+            }
+          });
+        }
       }
     });
 
     if (sandboxLoginUrl) {
       await page.goto(sandboxLoginUrl, {waitUntil: "domcontentloaded"});
-      await page.waitForURL((url) => url.hostname === "jest.com", {timeout: 30_000});
+      await Promise.race([
+        page.waitForURL(
+          (url) => url.hostname === "jest.com" && !url.searchParams.has("l"),
+          {timeout: 30_000},
+        ),
+        page.getByText(/the link has expired/i).waitFor({timeout: 30_000}),
+      ]);
       expect(await page.getByText(/the link has expired/i).count()).toBe(0);
       await context.storageState({path: sandboxStatePath});
     }
@@ -99,9 +120,13 @@ describeDeployed("deployed Jest sandbox game", () => {
     expect(new URL(game.url()).hostname).toBe(`${expectedGameId}.builds.jest.com`);
     expect(game.url()).not.toContain("harness=");
 
-    await game.getByRole("button", {name: /let's play/i}).waitFor({timeout: 30_000});
-    await game.getByRole("button", {name: /let's play/i}).click();
-    await game.getByRole("button", {name: /got it/i}).click();
+    const letsPlay = game.getByRole("button", {name: /let's play/i});
+    await game.locator(".onboarding-card-welcome, .riddle-card h1").first().waitFor({timeout: 30_000});
+    if (await letsPlay.isVisible()) {
+      await letsPlay.click();
+      const onboardingContinue = game.getByRole("button", {name: /got it/i});
+      if (await onboardingContinue.isVisible()) await onboardingContinue.click();
+    }
     await game.locator(".riddle-card h1").waitFor({timeout: 30_000});
     for (let step = 0; step < 12; step += 1) {
       const tooltipContinue = game.locator(".tooltip-card").getByRole("button", {name: /got it/i});
@@ -180,11 +205,25 @@ describeDeployed("deployed Jest sandbox game", () => {
     await game.getByRole("heading", {name: /coin shop/i}).waitFor();
     expect(await game.locator(".game-shop-grid article").count()).toBeGreaterThan(0);
 
+    const referralDeadline = Date.now() + 10_000;
+    while (referralVerifications.length === 0 && Date.now() < referralDeadline) {
+      await page.waitForTimeout(100);
+    }
     expect([...successfulFunctions]).toEqual(expect.arrayContaining([
       "exchangeJestIdentity",
       "getCurrentClassicRiddle",
       "startRaceRun",
+      "verifyJestReferrals",
     ]));
+    expect(referralVerifications).not.toHaveLength(0);
+    expect(referralVerifications.at(-1)).toEqual(expect.objectContaining({
+      verified: true,
+      conversionCount: expect.any(Number),
+      rewardsGranted: expect.any(Number),
+      referredRewardsGranted: expect.any(Number),
+      coinsPerPlayer: 100,
+      newCoins: expect.any(Number),
+    }));
     expect(failedRequests.filter((url) => url.includes("cloudfunctions.net"))).toEqual([]);
     expect(consoleErrors).toEqual([]);
 

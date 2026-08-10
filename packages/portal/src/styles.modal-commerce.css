@@ -1,0 +1,160 @@
+.shop-balance {
+  display: grid;
+  grid-template-columns: 58px 1fr auto;
+  align-items: center;
+  margin-bottom: 16px;
+  padding: 12px 18px;
+  border: 2px solid #e2e4ea;
+  border-radius: 32px;
+  background: rgba(255, 255, 255, 0.78);
+  color: #18252d;
+}
+.shop-balance img {
+  width: 48px;
+  height: 48px;
+}
+.shop-balance span {
+  font:
+    400 20px/1.1 "Poetsen One",
+    "Poppins",
+    sans-serif;
+}
+.shop-balance strong {
+  font:
+    400 22px/1 "Poetsen One",
+    "Poppins",
+    sans-serif;
+}
+.game-shop-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.game-shop-grid article {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto auto auto 1fr auto;
+  justify-items: center;
+  gap: 3px;
+  min-width: 0;
+  padding: 14px 10px 10px;
+  overflow: hidden;
+  border: 3px solid var(--feedback-absent);
+  border-radius: 20px;
+  background: rgba(247, 239, 203, 0.92);
+}
+.game-shop-grid article em {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 5px 12px;
+  border-radius: 0 0 14px;
+  background: var(--feedback-absent);
+  color: #171717;
+  font:
+    400 12px/1 "Poetsen One",
+    "Poppins",
+    sans-serif;
+  font-style: normal;
+}
+.shop-product-coins {
+  width: 70px;
+  height: 54px;
+  margin-top: 7px;
+  object-fit: contain;
+  filter: drop-shadow(0 3px 0 rgba(160, 94, 0, 0.18));
+}
+.game-shop-grid article.shop-subscription-card {
+  grid-column: 1 / -1;
+  border-color: #8c5dbe;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(236, 218, 255, 0.94));
+}
+.shop-subscription-icon {
+  display: grid;
+  width: 64px;
+  height: 64px;
+  margin-top: 4px;
+  place-items: center;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #f7d970, #f29a4a);
+  color: #5b2d65;
+  font-size: 34px;
+  box-shadow: 0 5px 0 rgba(91, 45, 101, 0.2);
+}
+.shop-subscription-card .shop-product-description {
+  max-width: 34rem;
+  text-align: center;
+}
+.shop-product-name {
+  max-width: 100%;
+  overflow: hidden;
+  color: #401f40;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.shop-product-amount {
+  color: #0e171d;
+  font:
+    400 20px/1.05 "Poetsen One",
+    "Poppins",
+    sans-serif;
+  white-space: nowrap;
+}
+.game-shop-grid article .shop-product-description {
+  display: -webkit-box;
+  overflow: hidden;
+  color: #607672;
+  font-size: 10px;
+  line-height: 1.2;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+.game-shop-grid article .play-primary {
+  width: 100%;
+  min-height: 38px;
+  padding: 7px 5px;
+  border-color: #fec880;
+  border-radius: 10px;
+  background: #401f40;
+  color: #fff;
+  font:
+    400 16px/1 "Poetsen One",
+    "Poppins",
+    sans-serif;
+}
+.shop-purchase-label {
+  display: none;
+}
+.game-modal.modal-profile {
+  --modal-border-width: 0px;
+  width: 100%;
+  min-width: 0;
+  max-width: 100vw;
+  max-width: 100dvw;
+  height: 100%;
+  max-height: none;
+  justify-self: stretch;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 0;
+  padding: 0 0 24px;
+  overflow: hidden;
+  overflow-x: clip;
+  border: 0;
+  border-radius: 0;
+  background: #fcfaf4;
+}
+.game-modal-backdrop:has(.modal-profile) {
+  place-items: stretch;
+  padding: 0;
+  overflow: hidden;
+}
+.modal-profile .profile-page {
+  width: 100%;
+  min-height: 0;
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}

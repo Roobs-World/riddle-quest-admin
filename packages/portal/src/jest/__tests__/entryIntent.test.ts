@@ -1,6 +1,9 @@
 import {parseEntryIntent} from "../entryIntent";
 
 describe("parseEntryIntent", () => {
+  it.each([undefined, null, "challenge", []])("rejects a non-record root value", (value) => {
+    expect(parseEntryIntent(value)).toEqual({});
+  });
   it("allowlists supported fields", () => expect(parseEntryIntent({
     gameMode: "challenge",
     campaign: "summer",
@@ -8,6 +11,7 @@ describe("parseEntryIntent", () => {
     challengeId: "daily-42",
     evil: "no",
   })).toEqual({
+    inviteKind: undefined,
     gameMode: "challenge",
     campaign: "summer",
     reference: undefined,
@@ -15,6 +19,7 @@ describe("parseEntryIntent", () => {
     customName: undefined,
     inviterName: "Sam",
     challengeId: "daily-42",
+    riddleId: undefined,
     notificationTemplate: undefined,
     notificationOffset: undefined,
     callback: undefined,
@@ -25,6 +30,7 @@ describe("parseEntryIntent", () => {
     utmContent: undefined,
   }));
   it("rejects malformed values", () => expect(parseEntryIntent({gameMode: "admin", campaign: {}})).toEqual({
+    inviteKind: undefined,
     gameMode: undefined,
     campaign: undefined,
     reference: undefined,
@@ -32,6 +38,7 @@ describe("parseEntryIntent", () => {
     customName: undefined,
     inviterName: undefined,
     challengeId: undefined,
+    riddleId: undefined,
     notificationTemplate: undefined,
     notificationOffset: undefined,
     callback: undefined,
@@ -49,6 +56,7 @@ describe("parseEntryIntent", () => {
     callback: "daily_streak",
     redirect: "https://malicious.invalid",
   })).toEqual({
+    inviteKind: undefined,
     gameMode: "challenge",
     campaign: undefined,
     reference: "notification_d3_v3",
@@ -56,6 +64,7 @@ describe("parseEntryIntent", () => {
     customName: undefined,
     inviterName: undefined,
     challengeId: undefined,
+    riddleId: undefined,
     notificationTemplate: "streak_progress_v3",
     notificationOffset: "D3",
     callback: "daily_streak",
@@ -88,5 +97,29 @@ describe("parseEntryIntent", () => {
         utmCampaign: "launch",
       }),
     );
+  });
+
+  it("distinguishes a result share from a Race-to-10 invite", async () => {
+    const {resolveRaceChallengeId} = await import("../entryIntent");
+    expect(resolveRaceChallengeId(parseEntryIntent({
+      inviteKind: "result",
+      campaign: "friend_challenge_v2",
+      challengeId: "legacy-riddle-id",
+    }))).toBeUndefined();
+    expect(resolveRaceChallengeId(parseEntryIntent({
+      inviteKind: "race",
+      challengeId: "race-42",
+    }))).toBe("race-42");
+    expect(resolveRaceChallengeId(parseEntryIntent({
+      campaign: "race_to_10_v1",
+      challengeId: "legacy-race-42",
+    }))).toBe("legacy-race-42");
+  });
+
+  it("rejects empty and oversized acquisition values", () => {
+    expect(parseEntryIntent({utm_source: "", utm_medium: "x".repeat(161)})).toEqual(expect.objectContaining({
+      utmSource: undefined,
+      utmMedium: undefined,
+    }));
   });
 });

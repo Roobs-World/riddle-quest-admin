@@ -31,7 +31,11 @@ describe("Firestore notification copy", () => {
 
   it("rejects missing or incomplete Firestore copy", () => {
     expect(() => parseNotificationCopyDocument({}, "en")).toThrow(/unavailable/i);
+    expect(() => parseNotificationCopyDocument(null, "en")).toThrow(/unavailable/i);
+    expect(() => parseNotificationCopyDocument([], "en")).toThrow(/unavailable/i);
     expect(() => parseNotificationCopyDocument({locales: {en: {...english, raceBody: ""}}}, "en"))
+      .toThrow(/raceBody/);
+    expect(() => parseNotificationCopyDocument({locales: {en: {...english, raceBody: 42}}}, "en"))
       .toThrow(/raceBody/);
   });
 
@@ -42,17 +46,27 @@ describe("Firestore notification copy", () => {
     expect(() => parseNotificationCopyDocument({
       locales: {en: {...english, dailyBody: "A prize is ready 🎁"}},
     }, "en")).toThrow(/dailyBody/);
+    expect(() => parseNotificationCopyDocument({
+      locales: {en: {...english, dailyCta: "x".repeat(51)}},
+    }, "en")).toThrow(/dailyCta/);
+    expect(() => parseNotificationCopyDocument({
+      locales: {en: {...english, raceTitle: "x".repeat(201)}},
+    }, "en")).toThrow(/raceTitle/);
     expect(() => renderNotificationBody("Hello {name}", {name: "x".repeat(100)}))
       .toThrow(/safe/i);
+    expect(() => renderNotificationBody("Hello {name}", {name: "🎁"})).toThrow(/safe/i);
   });
 
   it("renders known personalization tokens without removing unknown tokens", () => {
     expect(renderNotificationTemplate("Hi {name}: {coins} {unknown}", {name: "Nova", coins: 75}))
       .toBe("Hi Nova: 75 {unknown}");
+    expect(renderNotificationBody(" Hello {name} ", {name: "Nova"})).toBe("Hello Nova");
   });
 
   it("removes messaging-unsafe characters from personalized names and uses a fallback", () => {
     expect(notificationPlayerName("  Nova 🚀  Star  ", "Solver")).toBe("Nova Star");
     expect(notificationPlayerName("🎁", "Solver")).toBe("Solver");
+    expect(notificationPlayerName(undefined, "🎁")).toBe("Solver");
+    expect(notificationPlayerName("x".repeat(30), "Solver")).toBe("x".repeat(24));
   });
 });

@@ -9,6 +9,7 @@ import {handleCompleteGameLogic} from "./submitGuessLogic";
 import {runGameCompletionOnce} from "./gameCompletionGuard";
 import {browserCallableSecurityOptions} from "../shared/callableSecurity";
 
+/** Completes game. */
 export const completeGame = onCall<CompleteGameRequestData, Promise<CompleteGameResponseData>>(
   {
     ...browserCallableSecurityOptions,

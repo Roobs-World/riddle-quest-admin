@@ -1,6 +1,12 @@
 import {describe, expect, it} from "@jest/globals";
-import type {RaceRiddlePrompt} from "@qwordly/core/race";
-import {createRaceAttempt, findFirstEditableRaceSlot, formatRaceTime} from "../logic/racePresentation";
+import type {RaceRiddlePrompt, RaceRunView} from "@qwordly/core/race";
+import {
+  createRaceAttempt,
+  findFirstEditableRaceSlot,
+  formatRaceTime,
+  getAdjustedRaceTime,
+  getRaceLetterStates,
+} from "../logic/racePresentation";
 
 const riddle = (revealedLetters: RaceRiddlePrompt["revealedLetters"] = []): RaceRiddlePrompt => ({
   riddleId: "riddle-1",
@@ -33,5 +39,25 @@ describe("race presentation helpers", () => {
       {index: 3, letter: "T"},
     ]))).toBe(0);
     expect(findFirstEditableRaceSlot(null)).toBe(0);
+  });
+
+  it("advances only active authoritative clocks and clamps them to the race limit", () => {
+    const run = {
+      status: "active",
+      adjustedElapsedMs: 4_000,
+      rules: {maxAdjustedTimeMs: 10_000},
+    } as RaceRunView;
+    expect(getAdjustedRaceTime(null, 1_000, 5_000)).toBe(0);
+    expect(getAdjustedRaceTime(run, 1_000, 5_000)).toBe(8_000);
+    expect(getAdjustedRaceTime(run, 1_000, 20_000)).toBe(10_000);
+    expect(getAdjustedRaceTime({...run, status: "completed"}, 1_000, 20_000)).toBe(4_000);
+  });
+
+  it("retains green keyboard feedback and ignores empty scoring cells", () => {
+    expect(getRaceLetterStates([
+      {guess: ["A", "B", "", "C"], feedback: ["yellow", "gray", "green"]},
+      {guess: ["a", "B", "D"], feedback: ["green", "yellow", "gray"]},
+      {guess: ["A"], feedback: ["gray"]},
+    ])).toEqual({a: "green", b: "yellow", d: "gray"});
   });
 });

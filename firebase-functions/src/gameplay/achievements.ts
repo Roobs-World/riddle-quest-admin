@@ -14,9 +14,13 @@ import type {Player, UnlockedAchievement} from "../validation/firestoreSchemas";
 
 /** Context passed from submitGuess (or other callers) for achievement evaluation. */
 export interface AchievementContext {
+  /** Stores game mode. */
   gameMode: "challenge" | "classic";
+  /** Stores is correct. */
   isCorrect: boolean;
+  /** Stores attempts. */
   attempts: number;
+  /** Stores game over. */
   gameOver: boolean;
 }
 

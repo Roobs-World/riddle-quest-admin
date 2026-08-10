@@ -6,11 +6,9 @@ import {
   SKIP_COST_CLASSIC,
   HINT_COST_COINS,
   CONTINUE_COST_COINS,
-  RIDDLE_GENERATION_THRESHOLD,
-  RIDDLE_GENERATION_BATCH_SIZE,
   ACHIEVEMENT_UNLOCK_COIN_REWARD,
 } from "../shared/constants";
-import {generateAndAppendRiddles} from "../riddles/riddleGeneration";
+import {triggerClassicRiddleGenerationIfNeeded} from "../riddles/riddleSupply";
 import {captureException} from "../shared/sentry";
 import type {PlayerProgress} from "../validation/firestoreSchemas";
 import {z} from "zod";
@@ -131,25 +129,7 @@ export const skipRiddle = onCall(
           "progress.classicIndex": newClassicIndex,
         });
 
-        try {
-          const classicRiddlesSnapshot = await admin
-            .firestore()
-            .collection("riddles")
-            .where("classicIndex", ">=", 0)
-            .get();
-          const totalClassicRiddles = classicRiddlesSnapshot.size;
-          const remainingClassicRiddles = totalClassicRiddles - newClassicIndex;
-
-          if (remainingClassicRiddles <= RIDDLE_GENERATION_THRESHOLD) {
-            logger.info(
-              `User ${currentUserId} has <= ${RIDDLE_GENERATION_THRESHOLD} classic riddles remaining after skip. Triggering generation of ${RIDDLE_GENERATION_BATCH_SIZE} new riddles.`,
-            );
-            await generateAndAppendRiddles(RIDDLE_GENERATION_BATCH_SIZE);
-          }
-        } catch (error) {
-          logger.error("Error checking/generating classic riddles after skip:", error);
-          captureException(error);
-        }
+        await triggerClassicRiddleGenerationIfNeeded(currentUserId, newClassicIndex, "en");
 
         // Update stats
         await userRef.update({

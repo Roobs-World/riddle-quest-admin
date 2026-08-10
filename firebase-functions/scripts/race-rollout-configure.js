@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 "use strict";
 
-const admin = require("firebase-admin");
+const {initializeApp} = require("firebase-admin/app");
+const {getFirestore} = require("firebase-admin/firestore");
 const {createHash} = require("node:crypto");
 const {mkdir, writeFile} = require("node:fs/promises");
 const path = require("node:path");
@@ -37,8 +38,8 @@ else {
       throw new Error("--percentage must be between 0 and 100.");
     }
 
-    admin.initializeApp({projectId});
-    const db = admin.firestore();
+    const app = initializeApp({projectId});
+    const db = getFirestore(app);
     const reference = db.doc("raceConfig/rollout");
     const snapshot = await reference.get();
     const current = snapshot.exists ? snapshot.data() : {enabled: false, percentage: 0, allowlistHashes: []};

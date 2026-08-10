@@ -1,3 +1,4 @@
+/** Defines the supported locales value. */
 export const SUPPORTED_LOCALES = [
   "en",
   "es",
@@ -18,4 +19,5 @@ export const SUPPORTED_LOCALES = [
   "vi",
 ] as const;
 
+/** Describes supported locale. */
 export type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];

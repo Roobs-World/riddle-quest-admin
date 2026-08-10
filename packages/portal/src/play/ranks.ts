@@ -1,3 +1,4 @@
+/** Describes rank icon name. */
 export type RankIconName =
   | "telescope"
   | "compass-rose"
@@ -8,16 +9,25 @@ export type RankIconName =
   | "weather-night"
   | "crown";
 
+/** Defines the contract for player rank. */
 export interface PlayerRank {
+  /** Stores id. */
   id: string;
+  /** Stores minimum level. */
   minimumLevel: number;
+  /** Stores name key. */
   nameKey: TranslationKey;
+  /** Stores description key. */
   descriptionKey: TranslationKey;
+  /** Stores icon. */
   icon: RankIconName;
+  /** Stores color. */
   color: string;
+  /** Stores glow color. */
   glowColor: string;
 }
 
+/** Defines the player ranks value. */
 export const PLAYER_RANKS: readonly PlayerRank[] = [
   {
     id: "stargazer",
@@ -93,13 +103,16 @@ export const PLAYER_RANKS: readonly PlayerRank[] = [
   },
 ] as const;
 
+/** Gets rank for level. */
 export const getRankForLevel = (level: number): PlayerRank => {
   const normalizedLevel = Math.max(1, Math.floor(level));
   return [...PLAYER_RANKS].reverse().find((rank) => normalizedLevel >= rank.minimumLevel) ?? PLAYER_RANKS[0];
 };
 
+/** Gets next rank for level. */
 export const getNextRankForLevel = (level: number): PlayerRank | null => {
   const normalizedLevel = Math.max(1, Math.floor(level));
   return PLAYER_RANKS.find((rank) => rank.minimumLevel > normalizedLevel) ?? null;
 };
+/** Describes translation key. */
 type TranslationKey = string;

@@ -3,7 +3,7 @@ import path from "node:path";
 
 const root = path.resolve(process.cwd(), process.argv[2] || "dist-jest");
 const maximumArtifactBytes = 5 * 1024 * 1024;
-const maximumInitialResourceBytes = 1.5 * 1024 * 1024;
+const maximumInitialResourceBytes = 0.55 * 1024 * 1024;
 const allowedExternalEntryResources = new Set(["https://cdn.jest.com/sdk/latest/jestsdk.js"]);
 const files = [];
 async function walk(directory) {
@@ -39,6 +39,16 @@ for (const [label, pattern] of forbidden) if (pattern.test(content)) throw new E
 if (files.some((file) => file.endsWith(".map"))) throw new Error("Source maps must not ship in the Jest artifact");
 
 const html = await readFile(path.join(root, "index.html"), "utf8");
+if (!/^<!doctype html>/i.test(html)) throw new Error("Entry document must declare the HTML5 doctype");
+if (!/<html\s[^>]*\blang=["'][^"']+["']/i.test(html)) {
+  throw new Error("Entry document must declare its natural language");
+}
+if (!/<meta\s[^>]*\bcharset=["']?utf-8["']?/i.test(html)) {
+  throw new Error("Entry document must declare UTF-8 encoding");
+}
+if (/<(?:area|base|br|col|embed|hr|img|input|link|meta|source|track|wbr)\b[^>]*\/>/i.test(html)) {
+  throw new Error("HTML5 void elements must not use XHTML-style trailing slashes");
+}
 const initialResources = new Set();
 for (const match of html.matchAll(/(?:src|href)=["']([^"']+)["']/g)) {
   const reference = match[1];

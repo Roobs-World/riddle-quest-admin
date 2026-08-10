@@ -59,6 +59,16 @@ After upload, use the version's preview link with the developer account for a fi
 
 ## Local release verification
 
+Run the complete fail-closed release gate:
+
+```bash
+pnpm verify:production
+```
+
+This checks production dependency advisories, all TypeScript projects, backend lint, full coverage thresholds, security and scalability policies, package-feature adoption, TSDoc and file-size limits, the standalone Jest build, W3C validity, both local browser suites, and the exact ZIP packaging preflight. Any failed stage stops the release.
+
+The individual commands remain useful while diagnosing a failed gate:
+
 ```bash
 pnpm --filter @qwordly/portal build:jest
 PORTAL_BROWSER_TESTS=1 pnpm --filter @qwordly/portal exec jest \
@@ -81,9 +91,9 @@ pnpm --filter @qwordly/portal test:jest-deployed:playwright
 
 Generate the short-lived login URL from **Developer Console → Sandbox Users**. The test opens the deployed Riddle Quest route after sandbox authentication; `JEST_DEPLOYED_GAME_URL` can override the default `https://jest.com/g/riddle-q` route. The test rejects direct storage-origin access, local servers, and `harness=` mock mode; it requires the game iframe at the configured `*.builds.jest.com` origin and verifies real identity and riddle Function traffic.
 
-The authenticated browser state is cached only in `/tmp/riddle-quest-jest-sandbox-state.json` so a consumed one-time link can be reused while diagnosing a failed run. Set `JEST_SANDBOX_STORAGE_STATE` to override that ephemeral path.
+The authenticated browser state is cached only in `/tmp/riddle-quest-jest-sandbox-state.json` so a consumed one-time link can be reused while diagnosing a failed run. Set `JEST_SANDBOX_STORAGE_STATE` to override that ephemeral path. The deployed gate also requires a successful signed `verifyJestReferrals` response and validates its conversion, two-sided reward, reward amount, and balance fields; a sandbox smoke test cannot pass if referral reconciliation is unavailable.
 
-`build:jest` validates the canonical progress tracker, TypeScript, every imported locale JSON file, the production build, and the standalone artifact. The artifact audit enforces the 5 MB limit, local relative assets, the single approved Jest SDK script, and the absence of native modules, external authentication, ads, install prompts, secrets, and source maps.
+`build:jest` validates TypeScript, every imported locale JSON file, the production build, and the standalone artifact. The artifact audit enforces the 5 MB limit, local relative assets, the single approved Jest SDK script, and the absence of native modules, external authentication, ads, install prompts, secrets, and source maps.
 
 ## Jest testing modes
 
@@ -149,7 +159,21 @@ Copy `packages/portal/.env.jest-upload.example` to the ignored `packages/portal/
 pnpm jest:build-upload
 ```
 
-The command creates a timestamped version, builds and audits `dist-jest`, creates the ignored `packages/portal/build.zip`, uploads it to the current game, and requests Draft activation after processing. It does not publish the game or submit it for review.
+The command creates a timestamped version, builds and audits `dist-jest`, revalidates the exact files immediately before packaging, creates the ignored `packages/portal/build.zip`, records its SHA-256 checksum, and uploads it as an inactive Draft version. It does not publish the game, activate the build, or submit it for review.
+
+To exercise the complete packaging preflight without transmitting anything:
+
+```bash
+pnpm --filter @qwordly/portal preflight:jest-upload
+```
+
+After verifying the exact Draft version through its preview URL and sandbox acceptance checks, activation can be requested deliberately by setting both values below. The game-ID confirmation prevents a stale shell environment from activating the wrong game:
+
+```bash
+JEST_UPLOAD_IS_ACTIVE=true \
+JEST_CONFIRM_ACTIVATION=019faa68-f3ec-755d-9ab5-c887fb426801 \
+pnpm jest:build-upload
+```
 
 The latest current-game upload was:
 
@@ -171,7 +195,8 @@ Owner access to `https://jest.com/developers` is required:
    - hero: `docs/jest-assets/riddle-quest-hero.png`
 5. If a dedicated notification image is approved, set its reference as `VITE_JEST_NOTIFICATION_ASSET_REFERENCE`. Without one, Jest uses the configured Hero image.
 6. Create at least two sandbox players.
-7. Activate the audited Draft build and run the acceptance matrix below.
+7. Configure and publish the `friend-challenge` and `race-to-10` onboarding slugs used by referral shares.
+8. Activate the audited Draft build and run the acceptance matrix below.
 
 ## Sandbox acceptance matrix
 
@@ -180,21 +205,17 @@ Owner access to `https://jest.com/developers` is required:
 - Analytics: the first authoritative win marks the first milestone once; registration and attribution events contain no personal data.
 - Notifications: D1/D3/D7 replacement and removal; registered-only behavior; Daily Cosmic Riddle payload return.
 - Payments: success, cancellation, internal error, invalid SKU/token, timeout, interruption before completion, and multi-page recovery.
-- Referrals: canceled share; specific-riddle first entry; two-sided reward; duplicate, tampered, and unrelated-reference rejection.
+- Referrals: canceled victory, profile, and Race-to-10 shares; result links remain in the normal game; race links open the exact challenge; first-entry attribution; both players receive 100 coins; duplicate, cross-campaign duplicate, self, tampered, and unrelated-reference rejection.
 - Layout/input: keyboard, pointer, and touch in portrait and landscape; background/foreground; audio unlock; offline restart.
 - Stability: lower-end iOS Safari and Android Chrome cold/warm launch plus a 10-minute foreground/background soak.
 
-Attach screenshots, recordings, event IDs, and device traces to the matching rows in `docs/html5-riddle-quest-progress.html`, then run:
-
-```bash
-pnpm --filter @qwordly/portal check:progress
-```
+Retain screenshots, recordings, event IDs, and device traces with the relevant release or incident evidence. Do not commit authenticated browser state, private player data, or secrets.
 
 ## Jest Games Fund readiness
 
 - **User acquisition:** guests see the custom registration step immediately after the instructions and again after an authoritative win when the cooldown permits. Jest onboarding `customName`, campaign, source, and reference values are preserved through the native registration overlay.
 - **Notifications:** registered players receive fuzzy D1, D3, and D7 schedules early in the session. Stable identifiers replace the existing schedule whenever level, wins, streak, name, or locale changes. Each localized message has distinct reward-focused copy and carries template, offset, campaign, and callback attribution back into the Daily Cosmic Riddle.
-- **Virality:** the victory modal creates an outside-network Jest referral share containing the exact challenge destination, a spoiler-free result image, and localized result text. Referral grants are verified and applied server-side with stable campaign and player idempotency keys.
+- **Virality:** victory, profile, and Race-to-10 surfaces create outside-network Jest referral shares with localized benefit-led copy and branded spoiler-free images. Result invites enter normal play, race invites open the exact race, and contextual registration names the inviter. Both supported referral references grant 100 coins to each player from signed conversion data, with one idempotency key per inviter/invitee pair across campaigns. A visible reward fanfare closes the loop when the inviter returns.
 - **Monetization:** consumables and the monthly subscription use the Jest payment APIs. Signed receipts and subscription state are verified server-side; SKU grants are idempotent; canceled or failed transactions do not mutate balances; and incomplete purchases are recovered page-by-page before normal play.
 
 Automated coverage proves the integration contract and failure handling. Before a Fund submission, repeat the Notifications, Payments, and Referrals rows above with real Jest sandbox players and retain the Developer Console evidence; local mocks cannot prove catalog configuration, delivery by the messaging network, or live payment settlement.
@@ -206,3 +227,16 @@ Automated coverage proves the integration contract and failure handling. Before 
 3. Use structured `entryPayload` values for referrals, onboardings, and notifications. Riddle Quest validates these values before routing and carries `customName`, campaign, and reference into registration.
 4. Compare `session_started`, `registration_prompt_shown`, `registration_prompt_dismissed`, and `registration_completed` in Jest analytics by campaign. Events contain attribution labels and booleans only, never player names or other personal data.
 5. Preserve both registration moments: the early post-instructions choice and the post-win prompt after the core-value milestone. The dismissal cooldown prevents repeated interruptions.
+
+## Viral funnel scorecard
+
+Review by `campaign` and `surface` at least weekly:
+
+1. Share intent rate: `viral_share_intent` / authoritative wins or profile visits.
+2. Share-dialog non-cancel rate: successful `viral_share_dialog_result` / `viral_share_intent`. This is a dialog outcome, not proof that a message was delivered.
+3. Invite open rate: `viral_invite_opened` / non-canceled share dialogs, interpreted directionally because the platform does not expose delivery.
+4. Attributed registration rate: `viral_invite_registered` / `viral_invite_opened`.
+5. Signed conversion and reward rate: rewarded registrations from `viral_referrals_reconciled` / invite opens.
+6. Viral coefficient proxy: distinct signed registrations / players who opened a share dialog, split between `friend_challenge_v2`, `open_invite_v1`, and `race_to_10_v1`.
+
+Do not rename stable Jest share references after launch. Campaign and surface labels may evolve for experiments, but the backend allowlist and per-pair reward key must remain migration-compatible. Validate any reward-copy or amount experiment against the server-owned `JEST_REFERRAL_REWARD_COINS` constant before release.

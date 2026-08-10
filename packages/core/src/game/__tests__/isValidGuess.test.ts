@@ -20,6 +20,11 @@ describe("isValidGuess", () => {
   it("rejects empty or whitespace-only input", () => {
     expect(isValidGuess("", 5)).toBe(false);
     expect(isValidGuess("   ", 5)).toBe(false);
+    expect(isValidGuess(null as never, 5)).toBe(false);
+  });
+
+  it("uses five letters as the default expected length", () => {
+    expect(isValidGuess("hello")).toBe(true);
   });
 
   it("accepts composed letters as a single grapheme", () => {

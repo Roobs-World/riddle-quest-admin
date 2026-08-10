@@ -92,3 +92,22 @@ it("changes the rotation on the next UTC day for the same player", () => {
   expect(notificationRotationSeed("player-1", today + 86_400_000))
     .toBe((notificationRotationSeed("player-1", today) + 1) % 3);
 });
+
+it("attaches approved assets and supports the current-day rotation default", async () => {
+  const platform = new MockJestPlatform();
+  platform.player.registered = true;
+  platform.scheduleNotification = jest.fn(platform.scheduleNotification);
+
+  await scheduleEngagementReminders(platform, {...copy, assetReference: "notification-hero"});
+
+  expect(platform.scheduleNotification).toHaveBeenCalledTimes(7);
+  expect(platform.scheduleNotification).toHaveBeenNthCalledWith(1, expect.objectContaining({
+    assetReference: "notification-hero",
+    priority: "medium",
+  }));
+  expect(platform.scheduleNotification).toHaveBeenNthCalledWith(3, expect.objectContaining({
+    priority: "high",
+  }));
+  expect(notificationRotationSeed("player-1")).toBeGreaterThanOrEqual(0);
+  expect(notificationRotationSeed("player-1")).toBeLessThan(3);
+});

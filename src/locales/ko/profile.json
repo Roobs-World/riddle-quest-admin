@@ -55,6 +55,7 @@
     "GUEST_MODE_TITLE": "게스트로 플레이하기",
     "JEST_REGISTRATION_TITLE": "진행 상황 저장",
     "JEST_REGISTRATION_GREETING": "{name}님, 환영합니다.",
+    "JEST_INVITED_BY": "{name}님이 게임에 초대했어요.",
     "JEST_REGISTRATION_DESCRIPTION": "Jest에 등록하여 진행 상황을 보호하고 새로운 일일 수수께끼를 메시지로 받아 보세요.",
     "JEST_REGISTER_BUTTON": "가입하기",
     "JEST_LOGIN_BUTTON": "로그인",

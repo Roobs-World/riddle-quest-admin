@@ -1,0 +1,185 @@
+.race-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  overflow: auto;
+  padding: max(18px, env(safe-area-inset-top)) max(18px, env(safe-area-inset-right))
+    max(24px, env(safe-area-inset-bottom)) max(18px, env(safe-area-inset-left));
+  color: #f6fbf9;
+  background:
+    radial-gradient(circle at 85% 10%, rgba(74, 207, 135, 0.22), transparent 30%),
+    linear-gradient(155deg, #0e2731, #153a45 58%, #13362c);
+}
+
+.race-operation-loader {
+  z-index: 125;
+}
+
+.race-topbar {
+  width: min(900px, 100%);
+  margin: 0 auto 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.race-topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.race-coin-balance {
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 4px 9px 4px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 999px;
+  color: #fff;
+  background: rgba(2, 14, 20, 0.48);
+  font: 400 1.2rem/1 "Poetsen One", "Poppins", sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+.race-coin-balance img {
+  width: 32px;
+  height: 26px;
+}
+
+.race-topbar h1 {
+  margin: 0;
+  font-size: clamp(1.8rem, 6vw, 3.3rem);
+}
+.race-kicker {
+  color: #8be0ad;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.race-close {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  font-size: 30px;
+}
+.race-panel {
+  width: min(900px, 100%);
+  margin: 0 auto;
+  padding: clamp(18px, 4vw, 34px);
+  color: #17252c;
+  background: rgba(255, 255, 255, 0.97);
+  border-radius: 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.26);
+}
+
+.race-category-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+.race-category-grid button {
+  min-height: 126px;
+  padding: 18px;
+  display: grid;
+  gap: 5px;
+  text-align: start;
+  background: color-mix(in srgb, var(--race-color) 12%, white);
+  border: 2px solid var(--race-color);
+  border-radius: 18px;
+}
+.race-category-grid strong {
+  font-size: 1.22rem;
+  color: var(--race-color);
+}
+.race-category-grid small {
+  opacity: 0.65;
+}
+.race-panel > .race-secondary {
+  width: 100%;
+  margin-top: 14px;
+}
+.race-inbox {
+  max-width: 700px;
+}
+.race-inbox > ul {
+  display: grid;
+  gap: 12px;
+  padding: 0;
+  list-style: none;
+}
+.race-inbox > ul > li {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid #c7d8d3;
+  border-radius: 16px;
+  background: #f5fbf8;
+}
+.race-inbox li > img,
+.race-inbox li > span {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #dcefe6;
+  font-size: 1.4rem;
+}
+.race-inbox li > div {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+.race-inbox li > div > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.race-inbox li small {
+  color: #52676f;
+}
+.race-primary {
+  color: #fff;
+  background: #2e8b57;
+  border-color: #2e8b57;
+}
+.race-challenge-card,
+.race-result {
+  max-width: 660px;
+  text-align: center;
+}
+.race-countdown {
+  min-height: 60vh;
+  display: grid;
+  place-content: center;
+  text-align: center;
+}
+.race-countdown-layout {
+  width: min(900px, 100%);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 118px minmax(0, 1fr) 118px;
+  align-items: start;
+  gap: 10px;
+}
+.race-countdown-layout .race-countdown {
+  grid-column: 2;
+}
+.race-countdown-rail {
+  grid-column: 3;
+  position: sticky;
+  top: max(8px, env(safe-area-inset-top));
+}
+.race-countdown span {
+  font-size: clamp(7rem, 35vw, 18rem);
+  font-weight: 950;
+  line-height: 0.9;
+  color: #8be0ad;
+}
+.race-countdown p {
+  font-size: 1.4rem;
+  font-weight: 800;
+}

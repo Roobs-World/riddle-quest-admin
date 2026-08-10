@@ -6,30 +6,49 @@ import {jestFirebaseUid, verifyJestSigned} from "./jestSecurity";
 import {JEST_COIN_PRODUCTS, JEST_SUBSCRIPTIONS} from "./jestProductCatalog";
 import {createHash} from "node:crypto";
 import {ACHIEVEMENT_UNLOCK_COIN_REWARD} from "../shared/constants";
+import {
+  JEST_REFERRAL_REWARD_COINS,
+  JEST_REFERRAL_REFERENCES,
+  JEST_REWARDED_REFERRAL_REFERENCES,
+  type JestReferralReference,
+} from "@qwordly/core/referrals";
 
+/** Provides jest shared secret behavior. */
 const jestSharedSecret = defineSecret("JEST_SHARED_SECRET");
+/** Defines the jest game id value. */
 const JEST_GAME_ID = process.env.JEST_GAME_ID ?? "riddle-quest";
+/** Provides configured skus behavior. */
 const configuredSkus = new Set((process.env.JEST_PRODUCT_SKUS ?? "").split(",").filter(Boolean));
+/** Provides configured subscription skus behavior. */
 const configuredSubscriptionSkus = new Set(
   (process.env.JEST_SUBSCRIPTION_SKUS ?? "").split(",").map((value) => value.trim()).filter(Boolean),
 );
+/** Provides coin grants behavior. */
 const coinGrants = new Map(Object.entries(JEST_COIN_PRODUCTS));
+/** Provides trusted subscription skus behavior. */
 const trustedSubscriptionSkus = new Set(Object.keys(JEST_SUBSCRIPTIONS));
+/** Provides subscription skus behavior. */
 const subscriptionSkus = configuredSubscriptionSkus.size > 0
   ? new Set([...configuredSubscriptionSkus].filter((sku) => trustedSubscriptionSkus.has(sku)))
   : trustedSubscriptionSkus;
-const REFERRAL_REFERENCE = "riddle_quest_friend_challenge_v2";
-const REFERRAL_REWARD_COINS = 100;
+/** Provides attempts behavior. */
 const attempts = new Map<string, {count: number; resetAt: number}>();
+/** Defines the max rate limit keys value. */
 const MAX_RATE_LIMIT_KEYS = 10_000;
 
+/** Describes jest http response. */
 type JestHttpResponse = {
+  /** Provides set behavior. */
   set(name: string, value: string): unknown;
+  /** Provides status behavior. */
   status(code: number): JestHttpResponse;
+  /** Provides json behavior. */
   json(body: unknown): unknown;
+  /** Provides send behavior. */
   send(body: string): unknown;
 };
 
+/** Provides allow request behavior. */
 function allowRequest(ip: string): boolean {
   const now = Date.now();
   if (attempts.size >= MAX_RATE_LIMIT_KEYS) {
@@ -43,6 +62,7 @@ function allowRequest(ip: string): boolean {
   return current.count <= 30;
 }
 
+/** Provides allowed jest origins behavior. */
 function allowedJestOrigins(): Set<string> {
   const origins = new Set(
     (process.env.JEST_GAME_ORIGIN ?? "").split(",").map((value) => value.trim()).filter(Boolean),
@@ -57,6 +77,7 @@ export function isAllowedJestOrigin(origin: string | undefined): boolean {
   return typeof origin === "string" && allowedJestOrigins().has(origin);
 }
 
+/** Applies jest cors. */
 export function applyJestCors(response: {set(name: string, value: string): unknown}, origin?: string) {
   if (isAllowedJestOrigin(origin)) response.set("Access-Control-Allow-Origin", origin!);
   response.set("Access-Control-Allow-Methods", "POST, OPTIONS");
@@ -68,13 +89,21 @@ export function applyJestCors(response: {set(name: string, value: string): unkno
   response.set("X-Content-Type-Options", "nosniff");
 }
 
+/** Provides rejection behavior. */
 function rejection(error: unknown) {
   const reason = error instanceof Error ? error.message : "invalid-request";
   logger.warn("Rejected Jest platform request", {reason});
   return "invalid-request";
 }
 
-function acceptJestRequest(request: Request, response: JestHttpResponse): boolean {
+/**
+ * Applies the HTTP boundary policy shared by all signed Jest endpoints.
+ *
+ * @param request Incoming Firebase HTTP request.
+ * @param response Response adapter used to emit boundary failures.
+ * @returns `true` only for trusted, rate-limited JSON POST requests.
+ */
+export function acceptJestRequest(request: Request, response: JestHttpResponse): boolean {
   const origin = request.get("origin");
   applyJestCors(response, origin);
   if (!isAllowedJestOrigin(origin)) {
@@ -100,6 +129,7 @@ function acceptJestRequest(request: Request, response: JestHttpResponse): boolea
   return true;
 }
 
+/** Provides exchange jest identity behavior. */
 export const exchangeJestIdentity = onRequest({secrets: [jestSharedSecret]}, async (request, response) => {
   if (!acceptJestRequest(request, response)) return;
   try {
@@ -119,6 +149,7 @@ export const exchangeJestIdentity = onRequest({secrets: [jestSharedSecret]}, asy
   } catch (error) { response.status(401).json({error: rejection(error)}); }
 });
 
+/** Provides grant jest purchase behavior. */
 export const grantJestPurchase = onRequest({secrets: [jestSharedSecret]}, async (request, response) => {
   if (!acceptJestRequest(request, response)) return;
   try {
@@ -182,6 +213,7 @@ export const grantJestPurchase = onRequest({secrets: [jestSharedSecret]}, async 
   } catch (error) { response.status(400).json({error: rejection(error)}); }
 });
 
+/** Provides sync jest subscriptions behavior. */
 export const syncJestSubscriptions = onRequest({secrets: [jestSharedSecret]}, async (request, response) => {
   if (!acceptJestRequest(request, response)) return;
   try {
@@ -218,6 +250,7 @@ export const syncJestSubscriptions = onRequest({secrets: [jestSharedSecret]}, as
   }
 });
 
+/** Provides verify jest referrals behavior. */
 export const verifyJestReferrals = onRequest({secrets: [jestSharedSecret]}, async (request, response) => {
   if (!acceptJestRequest(request, response)) return;
   try {
@@ -233,7 +266,9 @@ export const verifyJestReferrals = onRequest({secrets: [jestSharedSecret]}, asyn
       admin.firestore().collection("users").doc(jestFirebaseUid(conversion.playerId)));
     const rewardRefs = uniqueConversions.map((conversion) =>
       admin.firestore().collection("jestReferralRewards").doc(
-        createReferralKey(`${playerId}:${REFERRAL_REFERENCE}:${conversion.playerId}`),
+        // Preserve the original campaign-independent key shape so one friend can
+        // never be rewarded twice after appearing under multiple share references.
+        createReferralKey(`${playerId}:${JEST_REFERRAL_REFERENCES.friendChallenge}:${conversion.playerId}`),
       ));
     let rewardsGranted = 0;
     let newCoins = 0;
@@ -248,7 +283,7 @@ export const verifyJestReferrals = onRequest({secrets: [jestSharedSecret]}, asyn
       rewardsGranted = ungranted.length;
       const user = userSnapshot.exists ? userSnapshot.data()! : createJestUser(uid, playerId);
       const currentCoins = typeof user.coins === "number" ? user.coins : 0;
-      newCoins = currentCoins + rewardsGranted * REFERRAL_REWARD_COINS;
+      newCoins = currentCoins + rewardsGranted * JEST_REFERRAL_REWARD_COINS;
       if (rewardsGranted > 0) {
         if (userSnapshot.exists) transaction.update(userRef, {coins: newCoins, lastLogin: Date.now()});
         else transaction.create(userRef, {...user, coins: newCoins});
@@ -263,60 +298,73 @@ export const verifyJestReferrals = onRequest({secrets: [jestSharedSecret]}, asyn
           const referredCoins = typeof referredUser.coins === "number" ? referredUser.coins : 0;
           if (referredSnapshot.exists) {
             transaction.update(referredUserRef, {
-              coins: referredCoins + REFERRAL_REWARD_COINS,
+              coins: referredCoins + JEST_REFERRAL_REWARD_COINS,
               lastLogin: Date.now(),
             });
           } else {
             transaction.create(referredUserRef, {
               ...referredUser,
-              coins: referredCoins + REFERRAL_REWARD_COINS,
+              coins: referredCoins + JEST_REFERRAL_REWARD_COINS,
             });
           }
           transaction.create(rewardRefs[index], {
             playerId,
             referredPlayerId: conversion.playerId,
-            reference: REFERRAL_REFERENCE,
-            inviterCoins: REFERRAL_REWARD_COINS,
-            referredCoins: REFERRAL_REWARD_COINS,
+            reference: conversion.reference,
+            inviterCoins: JEST_REFERRAL_REWARD_COINS,
+            referredCoins: JEST_REFERRAL_REWARD_COINS,
             joinedAt: conversion.joinedAt,
             grantedAt: admin.firestore.FieldValue.serverTimestamp(),
           });
         });
       }
-      if (!verificationSnapshot.exists) transaction.create(ref, {playerId, reference: REFERRAL_REFERENCE, conversionCount: uniqueConversions.length, verifiedAt: admin.firestore.FieldValue.serverTimestamp()});
+      if (!verificationSnapshot.exists) {
+        transaction.create(ref, {
+          playerId,
+          references: [...new Set(uniqueConversions.map((conversion) => conversion.reference))],
+          conversionCount: uniqueConversions.length,
+          verifiedAt: admin.firestore.FieldValue.serverTimestamp(),
+        });
+      }
     });
     response.json({
       verified: true,
-      reference: REFERRAL_REFERENCE,
+      references: [...new Set(uniqueConversions.map((conversion) => conversion.reference))],
       conversionCount: uniqueConversions.length,
       rewardsGranted,
       referredRewardsGranted: rewardsGranted,
-      coinsPerPlayer: REFERRAL_REWARD_COINS,
+      coinsPerPlayer: JEST_REFERRAL_REWARD_COINS,
       newCoins,
     });
   } catch (error) { response.status(400).json({error: rejection(error)}); }
 });
 
+/** Creates referral key. */
 function createReferralKey(value: string): string {
   return createHash("sha256").update(value).digest("hex");
 }
 
+/** Indicates whether is record. */
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
+/** Indicates whether is referral conversion. */
 function isReferralConversion(value: unknown): value is {playerId: string; joinedAt: string} {
   return isRecord(value) && typeof value.playerId === "string" && value.playerId.length > 0 && typeof value.joinedAt === "string" && !Number.isNaN(Date.parse(value.joinedAt));
 }
 
+/** Provides select referral conversions behavior. */
 export function selectReferralConversions(
   payload: Record<string, unknown>,
   inviterPlayerId: string,
-): Array<{playerId: string; joinedAt: string}> {
+): Array<{playerId: string; joinedAt: string; reference: JestReferralReference}> {
   const referrals = isRecord(payload.referrals) ? payload.referrals : {};
-  const conversions = Array.isArray(referrals[REFERRAL_REFERENCE])
-    ? referrals[REFERRAL_REFERENCE].filter(isReferralConversion)
-    : [];
+  const conversions = JEST_REWARDED_REFERRAL_REFERENCES.flatMap((reference) =>
+    Array.isArray(referrals[reference])
+      ? referrals[reference].filter(isReferralConversion).map((entry) => ({...entry, reference}))
+      : [],
+  );
   return [...new Map(
     conversions
       .filter((entry) => entry.playerId !== inviterPlayerId)
@@ -324,6 +372,7 @@ export function selectReferralConversions(
   ).values()].slice(0, 20);
 }
 
+/** Resolves signed purchase. */
 export function resolveSignedPurchase(payload: Record<string, unknown>, requestedToken: string, allowedSkus: ReadonlySet<string> = configuredSkus) {
   const candidates = Array.isArray(payload.purchases) ? payload.purchases : payload.purchase ? [payload.purchase] : [];
   const purchase = candidates.find((entry) => isRecord(entry) && entry.purchaseToken === requestedToken);
@@ -337,11 +386,15 @@ export function resolveSignedPurchase(payload: Record<string, unknown>, requeste
   return {purchaseToken, productSku, coins};
 }
 
+/** Describes verified subscription. */
 type VerifiedSubscription = {
+  /** Stores sku. */
   sku: string;
+  /** Stores status. */
   status: "active" | "inactive";
 };
 
+/** Resolves signed subscriptions. */
 export function resolveSignedSubscriptions(
   payload: Record<string, unknown>,
   allowedSkus: ReadonlySet<string> = subscriptionSkus,
@@ -365,6 +418,7 @@ export function resolveSignedSubscriptions(
   });
 }
 
+/** Resolves conflicting subscription skus. */
 export function resolveConflictingSubscriptionSkus(
   activeSkus: readonly string[],
   allowedSkus: ReadonlySet<string> = subscriptionSkus,
@@ -378,6 +432,7 @@ export function resolveConflictingSubscriptionSkus(
   );
 }
 
+/** Creates jest user. */
 function createJestUser(uid: string, playerId: string): Record<string, unknown> {
   const now = Date.now();
   return {

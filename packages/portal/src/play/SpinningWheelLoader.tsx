@@ -1,11 +1,14 @@
 import {tr} from "./i18n";
 
+/** Defines the spinner dot count value. */
 const SPINNER_DOT_COUNT = 8;
 
+/** Provides spinning wheel behavior. */
 export function SpinningWheel() {
   return <span className="spinning-wheel-graphic" aria-hidden="true" />;
 }
 
+/** Provides pulsing spinner behavior. */
 export function PulsingSpinner() {
   return (
     <span className="pulsing-spinner" aria-hidden="true">
@@ -20,6 +23,7 @@ export function PulsingSpinner() {
   );
 }
 
+/** Provides spinning wheel loader behavior. */
 export function SpinningWheelLoader({
   overlay = false,
   className = "",

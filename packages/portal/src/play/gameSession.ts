@@ -4,133 +4,14 @@ import {
   lowerCaseGraphemes,
   splitGraphemes,
   type Feedback,
-  type GameEngineSnapshot,
   type ScoredGuess,
 } from "@qwordly/core/game";
-import type {BridgeLeaderboardEntry, BridgeProfile, BridgeRiddle, BridgeUser} from "@qwordly/core/bridge";
-import type {ProductSummary} from "./types";
+import type {BridgeProfile} from "@qwordly/core/bridge";
+import type {GameSessionAction, GameSessionState} from "./gameSessionTypes";
 
-export type GameModal =
-  | "victory"
-  | "continue"
-  | "shop"
-  | "profile"
-  | "settings"
-  | "leaderboard"
-  | "achievements"
-  | "statistics"
-  | "ranks"
-  | "instructions"
-  | "credits"
-  | "about"
-  | "hint"
-  | "skip"
-  | "username"
-  | "treasure"
-  | "reward"
-  | null;
+export type {GameModal, GameSessionAction, GameSessionState} from "./gameSessionTypes";
 
-export type GameSessionState = {
-  initialized: boolean;
-  paused: boolean;
-  locale: string;
-  gameMode: "classic" | "challenge";
-  user: BridgeUser | null;
-  profile: BridgeProfile | null;
-  products: ProductSummary[];
-  leaderboard: BridgeLeaderboardEntry[];
-  leaderboardType: "xp" | "totalWins" | "bestStreak";
-  leaderboardLoading: boolean;
-  riddle: BridgeRiddle | null;
-  currentLetters: string[];
-  activeSlotIndex: number;
-  hintRevealedIndices: number[];
-  guesses: ScoredGuess[];
-  engineSnapshot: GameEngineSnapshot | null;
-  modal: GameModal;
-  muted: boolean;
-  notice: string | null;
-  lastRewards: {
-    coinsEarned: number;
-    totalCoins?: number;
-    newXp?: number;
-    newLevel?: number;
-    leveledUp?: boolean;
-    newWinStreak?: number;
-    newlyUnlockedAchievementIds: string[];
-  } | null;
-  auxiliaryFanfare: {
-    id: string;
-    kind: "purchase" | "achievement";
-    coinsAwarded: number;
-    totalCoins: number;
-    achievementIds: string[];
-  } | null;
-  lastOutcome: {
-    id: string;
-    kind: "win" | "loss";
-    riddleId: string;
-    gameMode: "classic" | "challenge";
-    attempts: number;
-    isCorrect: boolean;
-  } | null;
-  letterStates: Record<string, Feedback>;
-};
-
-export type GameSessionAction =
-  | {
-      type: "hostInit";
-      locale: string;
-      gameMode: "classic" | "challenge";
-      user: BridgeUser | null;
-      profile: BridgeProfile | null;
-      products: ProductSummary[];
-    }
-  | {type: "authState"; user: BridgeUser | null; profile: BridgeProfile | null}
-  | {type: "loadRiddle"; riddle: BridgeRiddle; profile?: BridgeProfile | null}
-  | {type: "typeLetter"; letter: string}
-  | {type: "backspace"}
-  | {type: "selectSlot"; index: number}
-  | {type: "submitGuess"}
-  | {type: "applyHint"; index: number; letter: string; newCoins?: number}
-  | {type: "coinsUpdated"; newCoins: number}
-  | {
-      type: "leaderboardLoaded";
-      leaderboardType: "xp" | "totalWins" | "bestStreak";
-      entries: BridgeLeaderboardEntry[];
-    }
-  | {
-      type: "leaderboardRequested";
-      leaderboardType: "xp" | "totalWins" | "bestStreak";
-    }
-  | {type: "leaderboardLoadFailed"}
-  | {type: "profileUpdated"; profile: BridgeProfile}
-  | {
-      type: "completionReward";
-      reward: NonNullable<GameSessionState["lastRewards"]>;
-    }
-  | {
-      type: "showAuxiliaryFanfare";
-      fanfare: NonNullable<GameSessionState["auxiliaryFanfare"]>;
-    }
-  | {
-      type: "restoreSession";
-      currentLetters: string[];
-      activeSlotIndex: number;
-      hintRevealedIndices: number[];
-      guesses: ScoredGuess[];
-      engineSnapshot: GameEngineSnapshot;
-      letterStates: Record<string, Feedback>;
-    }
-  | {type: "continueGranted"}
-  | {type: "declineContinue"}
-  | {type: "openModal"; modal: Exclude<GameModal, null>}
-  | {type: "closeModal"}
-  | {type: "setNotice"; notice: string | null}
-  | {type: "toggleMute"}
-  | {type: "pause"}
-  | {type: "resume"};
-
+/** Creates initial game session. */
 export const createInitialGameSession = (): GameSessionState => ({
   initialized: false,
   paused: false,
@@ -160,6 +41,7 @@ export const createInitialGameSession = (): GameSessionState => ({
   letterStates: {},
 });
 
+/** Creates engine. */
 const createEngine = (state: GameSessionState): GameEngine | null => {
   if (!state.riddle || !state.engineSnapshot) {
     return null;
@@ -177,11 +59,13 @@ const createEngine = (state: GameSessionState): GameEngine | null => {
   return engine;
 };
 
+/** Normalizes input letter. */
 const normalizeInputLetter = (letter: string): string | null => {
   const graphemes = splitGraphemes(letter.trim());
   return graphemes[0]?.toUpperCase() ?? null;
 };
 
+/** Runs profile coins. */
 const withProfileCoins = (profile: BridgeProfile | null, coins?: number): BridgeProfile | null => {
   if (coins === undefined || !profile) {
     return profile;
@@ -190,10 +74,12 @@ const withProfileCoins = (profile: BridgeProfile | null, coins?: number): Bridge
   return {...profile, coins};
 };
 
+/** Computes states. */
 const computeStates = (guesses: ScoredGuess[]): Record<string, Feedback> => {
   return computeLetterStates(guesses);
 };
 
+/** Provides first editable slot behavior. */
 const firstEditableSlot = (letters: string[], locked: number[], start = 0): number => {
   for (let offset = 0; offset < letters.length; offset += 1) {
     const index = (start + offset) % letters.length;
@@ -204,6 +90,7 @@ const firstEditableSlot = (letters: string[], locked: number[], start = 0): numb
   return Math.max(0, Math.min(start, letters.length - 1));
 };
 
+/** Provides previous editable slot behavior. */
 const previousEditableSlot = (letters: string[], locked: number[], start: number): number | null => {
   for (let index = Math.min(start, letters.length - 1); index >= 0; index -= 1) {
     if (!locked.includes(index) && letters[index]) {
@@ -218,6 +105,7 @@ const previousEditableSlot = (letters: string[], locked: number[], start: number
   return null;
 };
 
+/** Resets attempt letters. */
 const resetAttemptLetters = (state: GameSessionState): string[] =>
   state.riddle
     ? Array.from({length: state.riddle.answerLength}, (_, index) =>
@@ -225,6 +113,7 @@ const resetAttemptLetters = (state: GameSessionState): string[] =>
       )
     : [];
 
+/** Provides game session reducer behavior. */
 export const gameSessionReducer = (
   state: GameSessionState,
   action: GameSessionAction,
@@ -474,6 +363,7 @@ export const gameSessionReducer = (
   }
 };
 
+/** Gets current guess value. */
 export const getCurrentGuessValue = (state: GameSessionState): string => {
   return lowerCaseGraphemes(state.currentLetters.join("")).join("");
 };

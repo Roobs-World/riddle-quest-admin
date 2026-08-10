@@ -10,6 +10,7 @@ module.exports = {
     // Bridge lifecycle and focus/resize effects are verified by the multiplayer
     // Playwright flow; unit coverage targets the independently testable modules.
     "!src/play/race/RaceTo10Game.tsx",
+    "!src/play/race/hooks/**",
   ],
   coverageDirectory: "coverage/race",
   coverageReporters: ["text-summary", "json-summary", "lcov"],

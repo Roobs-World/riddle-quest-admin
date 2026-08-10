@@ -29,6 +29,8 @@ const mockAdminFirestoreUpdate = jest.fn().mockResolvedValue(undefined);
 const mockAdminFirestoreGet = jest.fn();
 const mockAdminFirestoreWhere = jest.fn();
 const mockAdminFirestoreCollection = jest.fn();
+const mockAdminFirestoreCreate = jest.fn().mockResolvedValue(undefined);
+const mockAdminFirestoreDelete = jest.fn().mockResolvedValue(undefined);
 const mockIncrement = jest.fn();
 const mockServerTimestamp = jest.fn();
 
@@ -41,6 +43,8 @@ jest.mock("firebase-admin", () => ({
     update: mockAdminFirestoreUpdate,
     get: mockAdminFirestoreGet,
     where: mockAdminFirestoreWhere.mockReturnThis(),
+    create: mockAdminFirestoreCreate,
+    delete: mockAdminFirestoreDelete,
     runTransaction: jest.fn(),
   })),
 }));
@@ -64,6 +68,7 @@ jest.mock("../gameplay/firestoreService", () => ({
 // Mock riddleGeneration
 jest.mock("../riddles/riddleGeneration", () => ({
   generateAndAppendRiddles: jest.fn(),
+  generateLocalizedClassicRiddlesForLocale: jest.fn(),
   initializeRiddleDatabaseIfEmpty: jest.fn(),
 }));
 
@@ -328,13 +333,17 @@ describe("handleGuessLogic", () => {
         });
 
         mockAdminFirestoreWhere.mockImplementationOnce(() => ({
-          get: jest.fn().mockResolvedValue({size: 100}),
+          orderBy: jest.fn().mockReturnValue({
+            limit: jest.fn().mockReturnValue({
+              get: jest.fn().mockResolvedValue({empty: false, docs: [{data: () => ({classicIndex: 100})}]}),
+            }),
+          }),
         }));
-        (riddleGeneration.generateAndAppendRiddles as jest.Mock).mockResolvedValue(undefined);
+        (riddleGeneration.generateLocalizedClassicRiddlesForLocale as jest.Mock).mockResolvedValue(undefined);
 
         await handleGuessLogic(baseClassicCorrectRequest, authContext);
 
-        expect(riddleGeneration.generateAndAppendRiddles).toHaveBeenCalledWith(5);
+        expect(riddleGeneration.generateLocalizedClassicRiddlesForLocale).toHaveBeenCalledWith("en", 5);
         expect(functions.logger.info).toHaveBeenCalledWith(
           expect.stringContaining(
             "User test-user-id has <= 1 classic riddles remaining. Triggering generation of 5 new riddles.",
@@ -352,13 +361,17 @@ describe("handleGuessLogic", () => {
           data: () => ({...userNotNearEnd, progress: {...userNotNearEnd.progress, classicIndex: 51}}),
         });
         mockAdminFirestoreWhere.mockImplementationOnce(() => ({
-          get: jest.fn().mockResolvedValue({size: 100}),
+          orderBy: jest.fn().mockReturnValue({
+            limit: jest.fn().mockReturnValue({
+              get: jest.fn().mockResolvedValue({empty: false, docs: [{data: () => ({classicIndex: 100})}]}),
+            }),
+          }),
         }));
-        (riddleGeneration.generateAndAppendRiddles as jest.Mock).mockClear();
+        (riddleGeneration.generateLocalizedClassicRiddlesForLocale as jest.Mock).mockClear();
 
         await handleGuessLogic(baseClassicCorrectRequest, authContext);
 
-        expect(riddleGeneration.generateAndAppendRiddles).not.toHaveBeenCalled();
+        expect(riddleGeneration.generateLocalizedClassicRiddlesForLocale).not.toHaveBeenCalled();
       });
 
       test("should handle errors during riddle count check gracefully", async () => {
@@ -371,14 +384,18 @@ describe("handleGuessLogic", () => {
           data: () => ({...userNearEnd, progress: {...userNearEnd.progress, classicIndex: 99}}),
         });
         mockAdminFirestoreWhere.mockImplementationOnce(() => ({
-          get: jest.fn().mockRejectedValue(new Error("Firestore count error")),
+          orderBy: jest.fn().mockReturnValue({
+            limit: jest.fn().mockReturnValue({
+              get: jest.fn().mockRejectedValue(new Error("Firestore count error")),
+            }),
+          }),
         }));
-        (riddleGeneration.generateAndAppendRiddles as jest.Mock).mockClear();
+        (riddleGeneration.generateLocalizedClassicRiddlesForLocale as jest.Mock).mockClear();
 
         await handleGuessLogic(baseClassicCorrectRequest, authContext);
 
         expect(functions.logger.error).toHaveBeenCalledWith("Error checking classic riddle count:", expect.any(Error));
-        expect(riddleGeneration.generateAndAppendRiddles).not.toHaveBeenCalled();
+        expect(riddleGeneration.generateLocalizedClassicRiddlesForLocale).not.toHaveBeenCalled();
       });
 
       test("should handle errors during generateAndAppendRiddles call gracefully", async () => {
@@ -391,9 +408,15 @@ describe("handleGuessLogic", () => {
           data: () => ({...userNearEnd, progress: {...userNearEnd.progress, classicIndex: 99}}),
         });
         mockAdminFirestoreWhere.mockImplementationOnce(() => ({
-          get: jest.fn().mockResolvedValue({size: 100}),
+          orderBy: jest.fn().mockReturnValue({
+            limit: jest.fn().mockReturnValue({
+              get: jest.fn().mockResolvedValue({empty: false, docs: [{data: () => ({classicIndex: 100})}]}),
+            }),
+          }),
         }));
-        (riddleGeneration.generateAndAppendRiddles as jest.Mock).mockRejectedValue(new Error("Generation failed"));
+        (riddleGeneration.generateLocalizedClassicRiddlesForLocale as jest.Mock).mockRejectedValue(
+          new Error("Generation failed"),
+        );
 
         await handleGuessLogic(baseClassicCorrectRequest, authContext);
 
@@ -701,11 +724,17 @@ describe("handleGuessLogic", () => {
 
       // Mock that we're near the end of riddles
       mockAdminFirestoreWhere.mockImplementationOnce(() => ({
-        get: jest.fn().mockResolvedValue({size: 100}),
+        orderBy: jest.fn().mockReturnValue({
+          limit: jest.fn().mockReturnValue({
+            get: jest.fn().mockResolvedValue({empty: false, docs: [{data: () => ({classicIndex: 100})}]}),
+          }),
+        }),
       }));
 
       // Make riddle generation throw an error to hit lines 186-188
-      (riddleGeneration.generateAndAppendRiddles as jest.Mock).mockRejectedValue(new Error("Generation service down"));
+      (riddleGeneration.generateLocalizedClassicRiddlesForLocale as jest.Mock).mockRejectedValue(
+        new Error("Generation service down"),
+      );
 
       const requestData: SubmitGuessRequestData = {
         guess: "keyboard",
@@ -962,11 +991,7 @@ describe("handleGuessLogic", () => {
       expect(result.newWinStreak).toBe(7);
       expect(result.rewardBreakdown?.dailyStreakBonus).toBe(expectedStreakBonus);
       expect(result.coinsEarned).toBe(COINS_REWARD_CHALLENGE + expectedStreakBonus);
-      expect(firestoreService.updateUserCoins).toHaveBeenNthCalledWith(
-        2,
-        authContext.uid,
-        expectedStreakBonus,
-      );
+      expect(firestoreService.updateUserCoins).toHaveBeenNthCalledWith(2, authContext.uid, expectedStreakBonus);
     });
 
     test("increases the streak bonus at later seven-day milestones", async () => {
@@ -1129,13 +1154,17 @@ describe("handleGuessLogic", () => {
         data: () => ({...userNearEnd, progress: {...userNearEnd.progress, classicIndex: 99}}),
       });
       mockAdminFirestoreWhere.mockImplementationOnce(() => ({
-        get: jest.fn().mockResolvedValue({size: 100}),
+        orderBy: jest.fn().mockReturnValue({
+          limit: jest.fn().mockReturnValue({
+            get: jest.fn().mockResolvedValue({empty: false, docs: [{data: () => ({classicIndex: 100})}]}),
+          }),
+        }),
       }));
-      (riddleGeneration.generateAndAppendRiddles as jest.Mock).mockResolvedValue(undefined);
+      (riddleGeneration.generateLocalizedClassicRiddlesForLocale as jest.Mock).mockResolvedValue(undefined);
 
       await handleCompleteGameLogic(requestData, authContext);
 
-      expect(riddleGeneration.generateAndAppendRiddles).toHaveBeenCalledWith(5);
+      expect(riddleGeneration.generateLocalizedClassicRiddlesForLocale).toHaveBeenCalledWith("en", 5);
     });
   });
 });

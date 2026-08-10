@@ -21,24 +21,47 @@ import {
   SettingsIcon,
   SoundIcon,
 } from "./GameFrameControls";
-import {GameModalView} from "./GameModalView";
 import {useGameMessageRouter} from "./useGameMessageRouter";
 import {useOnlineStatus} from "./useOnlineStatus";
 import {isRaceHarness} from "./race/logic/raceFeatureFlag";
-import {useGameAudio, useGameMessageListener, useGameReadyReporter, useViewportFit} from "./game/hooks";
+import {
+  useGameAudio,
+  useAnswerKeyboard,
+  useGameMessageListener,
+  useGameReadyReporter,
+  useGameSessionPersistence,
+  useViewportFit,
+} from "./game/hooks";
 import {getMobileCapabilities, shouldLoadDecorativeWebGl} from "./performance/mobileCapabilities";
 import {trackScreen} from "../analytics/googleAnalytics";
 import type {ListRaceCategoriesResponse} from "@qwordly/core/race";
-import {RaceTo10Game} from "./race/RaceTo10Game";
 
+/** Stores the shared modal bundle request so preloading also resolves React.lazy. */
+let gameModalViewPromise: Promise<{default: typeof import("./GameModalView").GameModalView}> | null = null;
+/** Loads modal-only UI outside the initial gameplay dependency graph. */
+const loadGameModalView = () => gameModalViewPromise ??=
+  import("./GameModalView").then((module) => ({default: module.GameModalView}));
+/** Renders modal-only UI after its asynchronous bundle is available. */
+const GameModalView = lazy(loadGameModalView);
+/** Stores the shared multiplayer bundle request so preloading also resolves React.lazy. */
+let raceTo10GamePromise: Promise<{default: typeof import("./race/RaceTo10Game").RaceTo10Game}> | null = null;
+/** Loads multiplayer UI outside the initial single-player dependency graph. */
+const loadRaceTo10Game = () => raceTo10GamePromise ??=
+  import("./race/RaceTo10Game").then((module) => ({default: module.RaceTo10Game}));
+/** Renders multiplayer UI after its asynchronous bundle is available. */
+const RaceTo10Game = lazy(loadRaceTo10Game);
+
+/** Renders the solar system interface. */
 const SolarSystem = lazy(() => import("./SolarSystem").then((module) => ({default: module.SolarSystem})));
 
+/** Provides game frame app behavior. */
 export function GameFrameApp({
   localBridge = false,
   interactionBlocked = false,
   restoredGame,
   onSaveGame,
   registrationName,
+  registrationInviterName,
   initialRaceChallengeId,
   initialRaceInbox = false,
   raceFeatureEnabled = false,
@@ -49,6 +72,7 @@ export function GameFrameApp({
   restoredGame?: JestSavedGame | null;
   onSaveGame?: (game: JestSavedGame | null) => void;
   registrationName?: string;
+  registrationInviterName?: string;
   initialRaceChallengeId?: string;
   initialRaceInbox?: boolean;
   raceFeatureEnabled?: boolean;
@@ -65,11 +89,41 @@ export function GameFrameApp({
     state.locale === "en" &&
     (raceFeatureEnabled || isRaceHarness(typeof window === "undefined" ? "" : window.location.search));
   const [raceOpen, setRaceOpen] = useState(Boolean((initialRaceChallengeId || initialRaceInbox) && raceEnabled));
+  /** Stores the resolved multiplayer component after its post-load preload completes. */
+  const [preloadedRaceTo10Game, setPreloadedRaceTo10Game] = useState<
+    typeof import("./race/RaceTo10Game").RaceTo10Game | null
+  >(null);
   const [completedIds] = useState(() => new Set<string>());
   const stateRef = useRef(state);
-  const lastClearedOutcomeRef = useRef<string | null>(null);
-  const lastServerCheckpointRef = useRef<{riddleId: string; signature: string} | null>(null);
   stateRef.current = state;
+
+  useEffect(() => {
+    let requestId: number | undefined;
+    let timeoutId: number | undefined;
+    const preloadAfterPageLoad = () => {
+      if (raceEnabled) {
+        void loadRaceTo10Game().then(({default: component}) => setPreloadedRaceTo10Game(() => component));
+      }
+      if (typeof window.requestIdleCallback === "function") {
+        requestId = window.requestIdleCallback(() => void loadGameModalView(), {timeout: 2_000});
+      } else {
+        timeoutId = window.setTimeout(() => void loadGameModalView(), 250);
+      }
+    };
+    if (document.readyState === "complete") {
+      preloadAfterPageLoad();
+    } else {
+      window.addEventListener("load", preloadAfterPageLoad, {once: true});
+    }
+    return () => {
+      window.removeEventListener("load", preloadAfterPageLoad);
+      if (requestId !== undefined) window.cancelIdleCallback(requestId);
+      if (timeoutId !== undefined) window.clearTimeout(timeoutId);
+    };
+  }, [raceEnabled]);
+
+  /** Uses the resolved component directly to avoid a Suspense reveal delay after preloading. */
+  const ActiveRaceTo10Game = preloadedRaceTo10Game ?? RaceTo10Game;
 
   useEffect(() => {
     const screen = raceOpen
@@ -92,25 +146,6 @@ export function GameFrameApp({
   useEffect(() => {
     if (state.modal === null) setAnimatedCoinBalance(null);
   }, [state.modal]);
-
-  const getSavedGame = useCallback((): JestSavedGame | null => {
-    const current = stateRef.current;
-    if (!current.riddle || !current.engineSnapshot || current.lastOutcome) {
-      return null;
-    }
-    return {
-      schemaVersion: 1,
-      savedAt: Date.now(),
-      riddleId: current.riddle.riddleId,
-      gameMode: current.gameMode,
-      currentLetters: current.currentLetters,
-      activeSlotIndex: current.activeSlotIndex,
-      hintRevealedIndices: current.hintRevealedIndices,
-      guesses: current.guesses,
-      engineSnapshot: current.engineSnapshot,
-      letterStates: current.letterStates,
-    };
-  }, []);
 
   const postToHost = useCallback(
     (message: GameToHostMessage) => {
@@ -164,7 +199,51 @@ export function GameFrameApp({
 
   const router = useGameMessageRouter({dispatch, stateRef, postToHost, requestRiddle});
 
+  useEffect(() => {
+    type ReferralRewardDetail = {
+      coinsAwarded?: unknown;
+      newCoins?: unknown;
+      conversions?: unknown;
+    };
+    const rewardWindow = window as Window & {
+      __RIDDLE_QUEST_PENDING_REFERRAL_REWARD__?: ReferralRewardDetail;
+    };
+    const showReferralReward = (event: Event) => {
+      const detail = (event as CustomEvent<ReferralRewardDetail>).detail;
+      // Host initialization replaces the bootstrap session snapshot. Keep the
+      // reward queued until that authoritative profile has been applied.
+      if (!stateRef.current.initialized) return;
+      delete rewardWindow.__RIDDLE_QUEST_PENDING_REFERRAL_REWARD__;
+      const coinsAwarded = detail?.coinsAwarded;
+      const newCoins = detail?.newCoins;
+      if (
+        typeof coinsAwarded !== "number" || !Number.isFinite(coinsAwarded) || coinsAwarded <= 0 ||
+        typeof newCoins !== "number" || !Number.isFinite(newCoins) || newCoins < 0
+      ) return;
+      dispatch({type: "coinsUpdated", newCoins});
+      dispatch({
+        type: "showAuxiliaryFanfare",
+        fanfare: {
+          id: `referral-${Date.now()}`,
+          kind: "referral",
+          coinsAwarded,
+          totalCoins: newCoins,
+          achievementIds: [],
+        },
+      });
+    };
+    window.addEventListener("riddle-quest:referral-reward", showReferralReward);
+    if (rewardWindow.__RIDDLE_QUEST_PENDING_REFERRAL_REWARD__) {
+      showReferralReward(new CustomEvent("riddle-quest:referral-reward", {
+        detail: rewardWindow.__RIDDLE_QUEST_PENDING_REFERRAL_REWARD__,
+      }));
+    }
+    return () => window.removeEventListener("riddle-quest:referral-reward", showReferralReward);
+  }, [state.initialized]);
+
   useGameMessageListener({router, postToHost});
+
+  useGameSessionPersistence({state, stateRef, restoredGame, dispatch, onSaveGame});
 
   useEffect(() => {
     const outcome = state.lastOutcome;
@@ -185,68 +264,6 @@ export function GameFrameApp({
     });
   }, [completedIds, state.lastOutcome]);
 
-  useEffect(() => {
-    if (!state.riddle || restoredGame?.riddleId !== state.riddle.riddleId) {
-      return;
-    }
-    dispatch({
-      type: "restoreSession",
-      currentLetters: restoredGame.currentLetters,
-      activeSlotIndex: restoredGame.activeSlotIndex,
-      hintRevealedIndices: restoredGame.hintRevealedIndices,
-      guesses: restoredGame.guesses,
-      engineSnapshot: restoredGame.engineSnapshot,
-      letterStates: restoredGame.letterStates,
-    });
-  }, [restoredGame, state.riddle?.riddleId]);
-
-  useEffect(() => {
-    if (state.lastOutcome) {
-      if (lastClearedOutcomeRef.current !== state.lastOutcome.id) {
-        lastClearedOutcomeRef.current = state.lastOutcome.id;
-        onSaveGame?.(null);
-      }
-      return;
-    }
-    const savedGame = getSavedGame();
-    if (!savedGame) return;
-    const signature = JSON.stringify({
-      currentLetters: savedGame.currentLetters,
-      activeSlotIndex: savedGame.activeSlotIndex,
-      guesses: savedGame.guesses.length,
-      hints: savedGame.hintRevealedIndices,
-      attemptsUsed: savedGame.engineSnapshot.attemptsUsed,
-      hasUsedContinue: savedGame.engineSnapshot.hasUsedContinue,
-    });
-    if (lastServerCheckpointRef.current?.riddleId !== savedGame.riddleId) {
-      lastServerCheckpointRef.current = {riddleId: savedGame.riddleId, signature};
-      return;
-    }
-    if (lastServerCheckpointRef.current.signature === signature) return;
-    lastServerCheckpointRef.current = {riddleId: savedGame.riddleId, signature};
-    onSaveGame?.(savedGame);
-  }, [
-    getSavedGame,
-    onSaveGame,
-    state.activeSlotIndex,
-    state.currentLetters,
-    state.engineSnapshot,
-    state.guesses,
-    state.hintRevealedIndices,
-    state.lastOutcome,
-    state.riddle?.riddleId,
-  ]);
-
-  useEffect(() => {
-    const saveBeforeBackgrounding = () => {
-      if (document.visibilityState !== "hidden") return;
-      const savedGame = getSavedGame();
-      if (savedGame) onSaveGame?.(savedGame);
-    };
-    document.addEventListener("visibilitychange", saveBeforeBackgrounding);
-    return () => document.removeEventListener("visibilitychange", saveBeforeBackgrounding);
-  }, [getSavedGame, onSaveGame]);
-
   const currentAttempt = state.riddle
     ? Array.from({length: state.riddle.answerLength}, (_, index) => state.currentLetters[index] ?? "")
     : [];
@@ -259,39 +276,23 @@ export function GameFrameApp({
     dispatch({type: "submitGuess"});
   }, [canSubmit, playFeedback]);
 
-  useEffect(() => {
-    const onKeyDown = (event: KeyboardEvent) => {
-      const target = event.target;
-      const editing =
-        target instanceof HTMLElement &&
-        (target.isContentEditable || target.matches("input, textarea, select, [role='textbox']"));
-      if (
-        event.ctrlKey ||
-        event.metaKey ||
-        event.altKey ||
-        state.paused ||
-        state.modal ||
-        guidanceActive ||
-        raceOpen ||
-        editing
-      )
-        return;
-      if (/^[a-z]$/i.test(event.key)) {
-        event.preventDefault();
-        playFeedback("key");
-        dispatch({type: "typeLetter", letter: event.key.toUpperCase()});
-      } else if (event.key === "Backspace") {
-        event.preventDefault();
-        playFeedback("delete");
-        dispatch({type: "backspace"});
-      } else if (event.key === "Enter") {
-        event.preventDefault();
-        submitGuess();
-      }
-    };
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [guidanceActive, playFeedback, raceOpen, state.modal, state.paused, submitGuess]);
+  const typeKeyboardLetter = useCallback(
+    (letter: string) => {
+      playFeedback("key");
+      dispatch({type: "typeLetter", letter});
+    },
+    [playFeedback],
+  );
+  const deleteKeyboardLetter = useCallback(() => {
+    playFeedback("delete");
+    dispatch({type: "backspace"});
+  }, [playFeedback]);
+  useAnswerKeyboard({
+    active: !state.paused && !state.modal && !guidanceActive && !raceOpen,
+    onLetter: typeKeyboardLetter,
+    onBackspace: deleteKeyboardLetter,
+    onSubmit: submitGuess,
+  });
 
   const requestHint = () => {
     if (!state.riddle) return;
@@ -373,6 +374,15 @@ export function GameFrameApp({
     },
     [postToHost],
   );
+
+  /** Requests permanent deletion of the authenticated Riddle Quest account. */
+  const deleteAccount = useCallback(() => {
+    postToHost({
+      type: "game:deleteAccount",
+      requestId: createRequestId("delete-account"),
+      payload: {},
+    });
+  }, [postToHost]);
 
   return (
     <main
@@ -473,37 +483,43 @@ export function GameFrameApp({
 
         {state.paused && <div className="pause-banner">{tr("WebPortal.PAUSED")}</div>}
       </div>
-      <GameModalView
-        state={state}
-        onCoinBalancePreview={setAnimatedCoinBalance}
-        onClose={() => dispatch(state.modal === "continue" ? {type: "declineContinue"} : {type: "closeModal"})}
-        onContinue={requestContinue}
-        onPurchase={requestPurchase}
-        onNext={requestRiddle}
-        onOpenModal={(modal) => dispatch({type: "openModal", modal})}
-        onToggleMute={() => dispatch({type: "toggleMute"})}
-        onRequestHint={requestHint}
-        onRequestSkip={requestSkip}
-        onRequestLeaderboard={requestLeaderboard}
-        onUpdateUsername={updateUsername}
-        onUpdateAvatar={updateAvatar}
-      />
+      <Suspense fallback={null}>
+        <GameModalView
+          state={state}
+          onCoinBalancePreview={setAnimatedCoinBalance}
+          onClose={() => dispatch(state.modal === "continue" ? {type: "declineContinue"} : {type: "closeModal"})}
+          onContinue={requestContinue}
+          onPurchase={requestPurchase}
+          onNext={requestRiddle}
+          onOpenModal={(modal) => dispatch({type: "openModal", modal})}
+          onToggleMute={() => dispatch({type: "toggleMute"})}
+          onRequestHint={requestHint}
+          onRequestSkip={requestSkip}
+          onRequestLeaderboard={requestLeaderboard}
+          onUpdateUsername={updateUsername}
+          onUpdateAvatar={updateAvatar}
+          onDeleteAccount={deleteAccount}
+        />
+      </Suspense>
       <GuidanceOverlay
         state={state}
         modal={state.modal}
         onActiveChange={setGuidanceActive}
         registrationName={registrationName}
+        registrationInviterName={registrationInviterName}
       />
       {raceOpen && raceEnabled && (
-        <RaceTo10Game
-          locale="en"
-          challengeId={initialRaceChallengeId}
-          openInbox={initialRaceInbox}
-          initialCategories={prefetchedRaceCategories}
-          coins={state.profile?.coins ?? 0}
-          postToHost={postToHost}
-          onClose={() => setRaceOpen(false)}
-        />
+        <Suspense fallback={<SpinningWheel />}>
+          <ActiveRaceTo10Game
+            locale="en"
+            challengeId={initialRaceChallengeId}
+            openInbox={initialRaceInbox}
+            initialCategories={prefetchedRaceCategories}
+            coins={state.profile?.coins ?? 0}
+            postToHost={postToHost}
+            onClose={() => setRaceOpen(false)}
+          />
+        </Suspense>
       )}
       {!online && (
         <div className="offline-backdrop" role="alertdialog" aria-modal="true">

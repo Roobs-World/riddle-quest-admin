@@ -4,82 +4,17 @@ import {onCall, HttpsError, CallableRequest} from "firebase-functions/v2/https";
 import {getUser, getClassicRiddleByIndex} from "../gameplay/firestoreService";
 import {captureException} from "../shared/sentry";
 import {SUPPORTED_LOCALES} from "@qwordly/core/validation";
-import {
-  GetCurrentDailyChallengeResponse,
-  GetCurrentDailyChallengeResponseSchema,
-} from "../validation/requestSchemas";
+import {GetCurrentDailyChallengeResponse, GetCurrentDailyChallengeResponseSchema} from "../validation/requestSchemas";
 import {validateCallableResponse} from "../validation/callableValidation";
 import {browserCallableSecurityOptions} from "../shared/callableSecurity";
+import {resolveDailyChallengeProgress} from "./dailyChallengeProgress";
 
+/** Defines the daily challenge question count value. */
 const DAILY_CHALLENGE_QUESTION_COUNT = 1;
+/** Defines the current daily riddle doc id value. */
 const CURRENT_DAILY_RIDDLE_DOC_ID = "current";
 
-/**
- * Converts unknown date-like input to an ISO UTC day string (`YYYY-MM-DD`).
- *
- * @param value Candidate date value.
- * @returns UTC date string or `null` when parsing fails.
- */
-function toUtcDateString(value: unknown): string | null {
-  if (!value) return null;
-
-  if (typeof value === "object") {
-    const timestampLike = value as {
-      toDate?: () => Date;
-      toMillis?: () => number;
-      seconds?: number;
-      _seconds?: number;
-      nanoseconds?: number;
-      _nanoseconds?: number;
-    };
-
-    if (typeof timestampLike.toDate === "function") {
-      const date = timestampLike.toDate();
-      return Number.isNaN(date.getTime()) ? null : date.toISOString().split("T")[0];
-    }
-
-    if (typeof timestampLike.toMillis === "function") {
-      const date = new Date(timestampLike.toMillis());
-      return Number.isNaN(date.getTime()) ? null : date.toISOString().split("T")[0];
-    }
-
-    const secondsValue =
-      typeof timestampLike.seconds === "number"
-        ? timestampLike.seconds
-        : typeof timestampLike._seconds === "number"
-          ? timestampLike._seconds
-          : undefined;
-    if (typeof secondsValue === "number") {
-      const nanosValue =
-        typeof timestampLike.nanoseconds === "number"
-          ? timestampLike.nanoseconds
-          : typeof timestampLike._nanoseconds === "number"
-            ? timestampLike._nanoseconds
-            : 0;
-      const millis = secondsValue * 1000 + Math.floor(nanosValue / 1_000_000);
-      const date = new Date(millis);
-      return Number.isNaN(date.getTime()) ? null : date.toISOString().split("T")[0];
-    }
-  }
-
-  const date = new Date(value as string | number | Date);
-  if (Number.isNaN(date.getTime())) return null;
-  return date.toISOString().split("T")[0];
-}
-
-/**
- * Checks whether a completion timestamp belongs to the current UTC day.
- *
- * @param lastCompletedAt Last completion timestamp/value.
- * @returns True when the value falls on today's UTC date.
- */
-function isCompletedToday(lastCompletedAt: unknown): boolean {
-  const lastCompletedDay = toUtcDateString(lastCompletedAt);
-  if (!lastCompletedDay) return false;
-  const today = new Date().toISOString().split("T")[0];
-  return lastCompletedDay === today;
-}
-
+/** Builds challenge response. */
 function buildChallengeResponse(
   riddle: {riddleId: string; text: string; answer: string},
   date: string | undefined,
@@ -131,10 +66,14 @@ export const getCurrentDailyChallenge = onCall(
   async (request: CallableRequest<unknown>): Promise<GetCurrentDailyChallengeResponse> => {
     try {
       let locale = "en";
+      let authenticatedUser: Awaited<ReturnType<typeof getUser>>;
       if (request.auth) {
-        const user = await getUser(request.auth.uid);
-        if (user?.preferredLanguage && SUPPORTED_LOCALES.includes(user.preferredLanguage as (typeof SUPPORTED_LOCALES)[number])) {
-          locale = user.preferredLanguage;
+        authenticatedUser = await getUser(request.auth.uid);
+        if (
+          authenticatedUser?.preferredLanguage &&
+          SUPPORTED_LOCALES.includes(authenticatedUser.preferredLanguage as (typeof SUPPORTED_LOCALES)[number])
+        ) {
+          locale = authenticatedUser.preferredLanguage;
         }
       }
 
@@ -188,13 +127,13 @@ export const getCurrentDailyChallenge = onCall(
       let questionsCompleted: number | undefined = undefined;
 
       if (request.auth) {
-        const userId = request.auth.uid;
-        const user = await getUser(userId);
+        const user = authenticatedUser;
 
         if (user) {
-          currentQuestion = Math.min(user.progress?.dailyChallengeCurrentQuestion || 0, DAILY_CHALLENGE_QUESTION_COUNT);
-          hasCompletedToday = isCompletedToday(user.lastDailyChallengeCompletedAt);
-          questionsCompleted = hasCompletedToday ? DAILY_CHALLENGE_QUESTION_COUNT : currentQuestion;
+          ({currentQuestion, hasCompletedToday, questionsCompleted} = resolveDailyChallengeProgress(
+            user,
+            DAILY_CHALLENGE_QUESTION_COUNT,
+          ));
         } else {
           currentQuestion = 0;
           questionsCompleted = 0;
@@ -238,23 +177,25 @@ export const getCurrentDailyChallenge = onCall(
  */
 export const getCurrentClassicRiddle = onCall(
   browserCallableSecurityOptions,
-  async (request: CallableRequest<{classicIndex?: number; locale?: string}>): Promise<GetCurrentDailyChallengeResponse> => {
+  async (
+    request: CallableRequest<{classicIndex?: number; locale?: string}>,
+  ): Promise<GetCurrentDailyChallengeResponse> => {
     try {
       if (!request.auth) {
         throw new HttpsError("unauthenticated", "The user must be authenticated to load a classic riddle.");
       }
 
-      const classicIndex =
-        typeof request.data?.classicIndex === "number"
-          ? request.data.classicIndex
-          : undefined;
+      const classicIndex = typeof request.data?.classicIndex === "number" ? request.data.classicIndex : undefined;
       if (classicIndex === undefined || !Number.isInteger(classicIndex) || classicIndex < 0) {
         throw new HttpsError("invalid-argument", "A non-negative classicIndex is required.");
       }
 
       let locale = "en";
       const user = await getUser(request.auth.uid);
-      if (user?.preferredLanguage && SUPPORTED_LOCALES.includes(user.preferredLanguage as (typeof SUPPORTED_LOCALES)[number])) {
+      if (
+        user?.preferredLanguage &&
+        SUPPORTED_LOCALES.includes(user.preferredLanguage as (typeof SUPPORTED_LOCALES)[number])
+      ) {
         locale = user.preferredLanguage;
       } else if (
         typeof request.data?.locale === "string" &&

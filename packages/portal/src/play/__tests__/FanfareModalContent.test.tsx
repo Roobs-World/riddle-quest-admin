@@ -1,0 +1,77 @@
+import {describe, expect, it} from "@jest/globals";
+import {renderToString} from "react-dom/server";
+import {createInitialGameSession} from "../gameSession";
+import {CoinAwardSequence} from "../modalPages/fanfare/CoinAwardSequence";
+import {
+  AchievementFanfare,
+  RewardFanfareContent,
+  VictoryFanfareContent,
+} from "../modalPages/fanfare/FanfareModalContent";
+
+/** No-op callback shared by server-rendering tests. */
+const noop = () => undefined;
+
+describe("fanfare modal content", () => {
+  it("renders known and fallback achievements", () => {
+    expect(renderToString(<AchievementFanfare achievementId="first_win" />)).toContain("achievement-unlock");
+    expect(renderToString(<AchievementFanfare achievementId="unknown-achievement" />))
+      .toContain("unknown-achievement");
+  });
+
+  it("renders each victory presentation without owning sequence state", () => {
+    const state = {
+      ...createInitialGameSession(),
+      lastRewards: {
+        coinsEarned: 0,
+        newXp: 25,
+        newLevel: 3,
+        newWinStreak: 2,
+        newlyUnlockedAchievementIds: [],
+      },
+    };
+    const sharedProps = {
+      activeCoinAward: null,
+      coinCollectionPending: false,
+      onAdvance: noop,
+      onBalancePreview: noop,
+      onCoinCollected: noop,
+      state,
+      stepCount: 1,
+      stepIndex: 0,
+    };
+
+    expect(renderToString(<VictoryFanfareContent {...sharedProps} activeStep={undefined} />))
+      .toContain('aria-live="polite"');
+    expect(renderToString(<VictoryFanfareContent
+      {...sharedProps}
+      activeStep={{kind: "achievement", achievementId: "first_win"}}
+    />)).toContain("achievement-unlock");
+    expect(renderToString(<VictoryFanfareContent {...sharedProps} activeStep={{kind: "level"}} />))
+      .toContain("3");
+    expect(renderToString(<VictoryFanfareContent {...sharedProps} activeStep={{kind: "rank"}} />))
+      .toContain("rank-emblem");
+    expect(renderToString(<VictoryFanfareContent {...sharedProps} activeStep={{kind: "victory"}} />))
+      .toContain("reward-details");
+  });
+
+  it("renders reward steps and normalized coin amounts", () => {
+    const sharedProps = {
+      activeCoinAward: null,
+      coinCollectionPending: false,
+      onAdvance: noop,
+      onBalancePreview: noop,
+      onCoinCollected: noop,
+      stepCount: 2,
+      stepIndex: 0,
+    };
+    expect(renderToString(<RewardFanfareContent
+      {...sharedProps}
+      activeStep={{kind: "achievement", achievementId: "first_win"}}
+    />)).toContain("achievement-unlock");
+    expect(renderToString(<RewardFanfareContent {...sharedProps} activeStep={undefined} />))
+      .toContain("sequence-progress");
+    expect(renderToString(
+      <CoinAwardSequence amount={10.6} total={30.4} onBalancePreview={noop} onCollected={noop} />,
+    ).replaceAll("<!-- -->", "")).toContain("+11 Coins");
+  });
+});

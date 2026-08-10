@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 "use strict";
 
-const admin = require("firebase-admin");
+const {initializeApp} = require("firebase-admin/app");
+const {getFirestore} = require("firebase-admin/firestore");
 const {RACE_SUPPORTED_LOCALES} = require("@qwordly/core/race");
 const {createRaceContentDryRun} = require("../lib/race/raceContentMigration.js");
 
@@ -10,8 +11,8 @@ if (!projectId) {
   process.stderr.write("Set GCLOUD_PROJECT or GOOGLE_CLOUD_PROJECT before running the dry-run report.\n");
   process.exitCode = 1;
 } else {
-  admin.initializeApp({projectId});
-  const db = admin.firestore();
+  const app = initializeApp({projectId});
+  const db = getFirestore(app);
 
   Promise.all(
     RACE_SUPPORTED_LOCALES.map(async (locale) => {

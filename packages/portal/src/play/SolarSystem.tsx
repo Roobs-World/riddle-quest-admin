@@ -3,22 +3,8 @@ import * as THREE from "three/src/Three.js";
 import sunTextureUrl from "../../../../assets/3d-web/tex_sun_spots_02.webp";
 // Corona plate derived from NASA's 2017 total solar eclipse imagery.
 import sunCoronaTextureUrl from "../../../../assets/3d-web/tex_sun_corona-v2.webp";
-import mercuryTextureUrl from "../../../../assets/3d-web/tex_planet_a.webp";
-import venusTextureUrl from "../../../../assets/3d-web/tex_planet_d.webp";
-import earthTextureUrl from "../../../../assets/3d-web/tex_planet_v.webp";
-import marsTextureUrl from "../../../../assets/3d-web/tex_planet_r.webp";
-import jupiterTextureUrl from "../../../../assets/3d-web/tex_planet_k.webp";
-import saturnTextureUrl from "../../../../assets/3d-web/tex_planet_s.webp";
-import uranusTextureUrl from "../../../../assets/3d-web/tex_planet_u.webp";
-import moonCTextureUrl from "../../../../assets/3d-web/tex_moon_c.webp";
-import moonDTextureUrl from "../../../../assets/3d-web/tex_moon_d.webp";
-import moonFTextureUrl from "../../../../assets/3d-web/tex_moon_f.webp";
-import moonGTextureUrl from "../../../../assets/3d-web/tex_moon_g.webp";
-import moonHTextureUrl from "../../../../assets/3d-web/tex_moon_h.webp";
-import ringATextureUrl from "../../../../assets/3d-web/tex_ring_a.webp";
-import ringBTextureUrl from "../../../../assets/3d-web/tex_ring_b.webp";
 import {runWhenLayoutReady} from "./game/layoutReady";
-import {PLANET_ATMOSPHERES, type PlanetAtmosphere} from "./solarAtmospheres";
+import {SOLAR_SYSTEM_CONFIG, type MoonConfig, type PlanetConfig} from "./solarConfig";
 import {
   advanceFrameBasedAngle,
   advanceSolarOrbitAngle,
@@ -28,123 +14,7 @@ import {
   getShootingStarProgress,
 } from "./solarMotion";
 
-type MoonConfig = {
-  size: number;
-  distance: number;
-  orbitSpeed: number;
-  texture: string;
-  startAngle: number;
-};
-
-type PlanetConfig = {
-  name: string;
-  size: number;
-  distance: number;
-  orbitSpeed: number;
-  rotationSpeed: number;
-  texture: string;
-  startAngle: number;
-  yPosition: number;
-  moons: MoonConfig[];
-  atmosphere: PlanetAtmosphere;
-  ring?: {innerRadius: number; outerRadius: number; texture: string; tiltRadians: number};
-};
-
-export const SOLAR_SYSTEM_CONFIG: readonly PlanetConfig[] = [
-  {
-    name: "Mercury",
-    size: 2.2,
-    distance: 18,
-    orbitSpeed: 0.02,
-    rotationSpeed: 0.01,
-    texture: mercuryTextureUrl,
-    startAngle: 0,
-    yPosition: 30,
-    moons: [],
-    atmosphere: PLANET_ATMOSPHERES.Mercury,
-  },
-  {
-    name: "Venus",
-    size: 3,
-    distance: 26,
-    orbitSpeed: 0.018,
-    rotationSpeed: 0.008,
-    texture: venusTextureUrl,
-    startAngle: Math.PI / 3,
-    yPosition: 30,
-    moons: [],
-    atmosphere: PLANET_ATMOSPHERES.Venus,
-  },
-  {
-    name: "Earth",
-    size: 3.5,
-    distance: 30,
-    orbitSpeed: 0.015,
-    rotationSpeed: 0.02,
-    texture: earthTextureUrl,
-    startAngle: (Math.PI * 2) / 3,
-    yPosition: 30,
-    moons: [{size: 1, distance: 7, orbitSpeed: 0.06, texture: moonDTextureUrl, startAngle: 0}],
-    atmosphere: PLANET_ATMOSPHERES.Earth,
-    ring: {innerRadius: 4.5, outerRadius: 6.1, texture: ringATextureUrl, tiltRadians: Math.PI / 2.45},
-  },
-  {
-    name: "Mars",
-    size: 2.6,
-    distance: 35,
-    orbitSpeed: 0.015,
-    rotationSpeed: 0.015,
-    texture: marsTextureUrl,
-    startAngle: Math.PI,
-    yPosition: 28,
-    moons: [{size: 0.8, distance: 7, orbitSpeed: 0.08, texture: moonGTextureUrl, startAngle: 0}],
-    atmosphere: PLANET_ATMOSPHERES.Mars,
-  },
-  {
-    name: "Jupiter",
-    size: 10,
-    distance: 70,
-    orbitSpeed: 0.004,
-    rotationSpeed: 0.025,
-    texture: jupiterTextureUrl,
-    startAngle: Math.PI * 1.2,
-    yPosition: 30,
-    moons: [
-      {size: 1.3, distance: 13, orbitSpeed: 0.03, texture: moonHTextureUrl, startAngle: 0},
-      {size: 1, distance: 11.5, orbitSpeed: 0.032, texture: moonCTextureUrl, startAngle: Math.PI / 3},
-    ],
-    atmosphere: PLANET_ATMOSPHERES.Jupiter,
-  },
-  {
-    name: "Saturn",
-    size: 8.5,
-    distance: 90,
-    orbitSpeed: 0.005,
-    rotationSpeed: 0.022,
-    texture: saturnTextureUrl,
-    startAngle: Math.PI * 1.7,
-    yPosition: 30,
-    moons: [
-      {size: 2, distance: 12, orbitSpeed: 0.038, texture: moonFTextureUrl, startAngle: 0},
-      {size: 1.6, distance: 12, orbitSpeed: 0.03, texture: moonDTextureUrl, startAngle: Math.PI / 2},
-    ],
-    atmosphere: PLANET_ATMOSPHERES.Saturn,
-    ring: {innerRadius: 11.5, outerRadius: 16.5, texture: ringBTextureUrl, tiltRadians: Math.PI / 2.25},
-  },
-  {
-    name: "Uranus",
-    size: 7,
-    distance: 150,
-    orbitSpeed: 0.004,
-    rotationSpeed: 0.018,
-    texture: uranusTextureUrl,
-    startAngle: Math.PI * 0.3,
-    yPosition: 30,
-    moons: [],
-    atmosphere: PLANET_ATMOSPHERES.Uranus,
-  },
-] as const;
-
+/** Defines the atmosphere vertex shader value. */
 const ATMOSPHERE_VERTEX_SHADER = `
   varying float viewFacing;
   void main() {
@@ -156,6 +26,7 @@ const ATMOSPHERE_VERTEX_SHADER = `
   }
 `;
 
+/** Defines the atmosphere fragment shader value. */
 const ATMOSPHERE_FRAGMENT_SHADER = `
   uniform vec3 atmosphereColour;
   uniform float atmosphereOpacity;
@@ -170,13 +41,19 @@ const ATMOSPHERE_FRAGMENT_SHADER = `
   }
 `;
 
+/** Describes planet runtime. */
 type PlanetRuntime = {
+  /** Stores config. */
   config: PlanetConfig;
+  /** Stores orbit. */
   orbit: THREE.Group;
+  /** Stores planet. */
   planet: THREE.Mesh;
+  /** Stores moons. */
   moons: {config: MoonConfig; mesh: THREE.Mesh}[];
 };
 
+/** Defines the shooting star config value. */
 const SHOOTING_STAR_CONFIG = [
   {phaseOffsetSeconds: 0, startX: -185, startY: 105, endX: 185, endY: 33, scale: 86},
   {phaseOffsetSeconds: 4, startX: 185, startY: 118, endX: -185, endY: 38, scale: 78},
@@ -186,6 +63,7 @@ const SHOOTING_STAR_CONFIG = [
   {phaseOffsetSeconds: 20, startX: 170, startY: 142, endX: -115, endY: -16, scale: 84},
 ] as const;
 
+/** Defines the shooting star background depth value. */
 const SHOOTING_STAR_BACKGROUND_DEPTH =
   -Math.max(
     ...SOLAR_SYSTEM_CONFIG.map((planet) =>
@@ -196,6 +74,7 @@ const SHOOTING_STAR_BACKGROUND_DEPTH =
     ),
   ) - 24;
 
+/** Provides solar system behavior. */
 export function SolarSystem({paused}: {paused: boolean}) {
   const mountRef = useRef<HTMLDivElement>(null);
   const pausedRef = useRef(paused);

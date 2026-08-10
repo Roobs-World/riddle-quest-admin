@@ -5,6 +5,7 @@ import type {
   RaceRunView,
 } from "@qwordly/core/race";
 import {tr} from "../../i18n";
+import {JEST_REFERRAL_REWARD_COINS} from "@qwordly/core/referrals";
 import {formatRaceTime} from "../logic/racePresentation";
 
 /** Displays authoritative race timing, publication, and rematch actions. */
@@ -59,7 +60,7 @@ export function RaceResultPanel({
         <>
           <p>{tr("RaceTo10.CHALLENGE_READY")}</p>
           <button className="race-primary" onClick={onShare}>
-            {tr("RaceTo10.SHARE_CHALLENGE")}
+            {tr("RaceTo10.SHARE_CHALLENGE", {coins: JEST_REFERRAL_REWARD_COINS})}
           </button>
         </>
       )}

@@ -2,11 +2,16 @@ import {createHash, randomUUID} from "node:crypto";
 import {HttpsError} from "firebase-functions/v2/https";
 import {admin} from "../shared/firebaseAdmin";
 
+/** Describes completion mode. */
 type CompletionMode = "classic" | "challenge";
 
+/** Describes completion receipt. */
 type CompletionReceipt<Result> = {
+  /** Stores status. */
   status?: unknown;
+  /** Stores operation id. */
   operationId?: unknown;
+  /** Stores result. */
   result?: Result;
 };
 

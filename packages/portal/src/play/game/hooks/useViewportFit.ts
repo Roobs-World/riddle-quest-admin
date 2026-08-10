@@ -1,6 +1,7 @@
 import {useEffect, useRef} from "react";
 import {runWhenLayoutReady} from "../layoutReady";
 
+/** Provides viewport fit. */
 export function useViewportFit() {
   const shellRef = useRef<HTMLElement | null>(null);
   const contentRef = useRef<HTMLDivElement | null>(null);

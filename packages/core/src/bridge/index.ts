@@ -16,13 +16,17 @@ import {
 
 export {BRIDGE_PROTOCOL_VERSION} from "./constants";
 
+/** Validates the empty payload data shape. */
 const EmptyPayloadSchema = z.object({}).strict();
+/** Validates the metadata data shape. */
 const MetadataSchema = z.object({
   requestId: z.string().min(1).optional(),
   sentAt: z.number().int().nonnegative().optional(),
 });
 
+/** Validates the game mode data shape. */
 const GameModeSchema = z.enum(["classic", "challenge"]);
+/** Validates the operation data shape. */
 const OperationSchema = z.enum([
   "auth",
   "loadRiddle",
@@ -33,6 +37,7 @@ const OperationSchema = z.enum([
   "skip",
   "profile",
   "avatar",
+  "accountDeletion",
   "leaderboard",
   "raceCategories",
   "raceStart",
@@ -47,6 +52,7 @@ const OperationSchema = z.enum([
   "raceInbox",
 ]);
 
+/** Validates the bridge user data shape. */
 export const BridgeUserSchema = z.object({
   uid: z.string().min(1),
   displayName: z.string().optional(),
@@ -55,8 +61,10 @@ export const BridgeUserSchema = z.object({
   isAnonymous: z.boolean(),
   platformRegistered: z.boolean().optional(),
 });
+/** Describes bridge user. */
 export type BridgeUser = z.infer<typeof BridgeUserSchema>;
 
+/** Validates the bridge profile data shape. */
 export const BridgeProfileSchema = z.object({
   username: z.string().min(1),
   coins: z.number().int().nonnegative(),
@@ -86,8 +94,10 @@ export const BridgeProfileSchema = z.object({
   multiplayerChallengesCreated: z.number().int().nonnegative().optional(),
   hasPurchasedApp: z.boolean().optional(),
 });
+/** Describes bridge profile. */
 export type BridgeProfile = z.infer<typeof BridgeProfileSchema>;
 
+/** Validates the bridge riddle data shape. */
 export const BridgeRiddleSchema = z.object({
   riddleId: z.string().min(1),
   text: z.string().min(1),
@@ -96,8 +106,10 @@ export const BridgeRiddleSchema = z.object({
   gameMode: GameModeSchema,
   index: z.number().int().nonnegative().optional(),
 });
+/** Describes bridge riddle. */
 export type BridgeRiddle = z.infer<typeof BridgeRiddleSchema>;
 
+/** Validates the bridge leaderboard entry data shape. */
 export const BridgeLeaderboardEntrySchema = z.object({
   userId: z.string().min(1),
   username: z.string().min(1),
@@ -107,14 +119,17 @@ export const BridgeLeaderboardEntrySchema = z.object({
   totalWins: z.number().int().nonnegative(),
   bestStreak: z.number().int().nonnegative(),
 });
+/** Describes bridge leaderboard entry. */
 export type BridgeLeaderboardEntry = z.infer<typeof BridgeLeaderboardEntrySchema>;
 
+/** Provides envelope behavior. */
 const envelope = <Type extends string, Payload extends z.ZodTypeAny>(type: Type, payload: Payload) =>
   MetadataSchema.extend({
     type: z.literal(type),
     payload,
   });
 
+/** Validates the game ready message data shape. */
 export const GameReadyMessageSchema = envelope(
   "game:ready",
   z.object({
@@ -123,6 +138,7 @@ export const GameReadyMessageSchema = envelope(
   }),
 );
 
+/** Validates the game resize message data shape. */
 export const GameResizeMessageSchema = envelope(
   "game:resize",
   z.object({
@@ -131,6 +147,7 @@ export const GameResizeMessageSchema = envelope(
   }),
 );
 
+/** Validates the game load riddle message data shape. */
 export const GameLoadRiddleMessageSchema = envelope(
   "game:loadRiddle",
   z.object({
@@ -140,6 +157,7 @@ export const GameLoadRiddleMessageSchema = envelope(
   }),
 );
 
+/** Validates the game complete game message data shape. */
 export const GameCompleteGameMessageSchema = envelope(
   "game:completeGame",
   z.object({
@@ -150,6 +168,7 @@ export const GameCompleteGameMessageSchema = envelope(
   }),
 );
 
+/** Validates the game request hint message data shape. */
 export const GameRequestHintMessageSchema = envelope(
   "game:requestHint",
   z.object({
@@ -159,6 +178,7 @@ export const GameRequestHintMessageSchema = envelope(
   }),
 );
 
+/** Validates the game spend coins message data shape. */
 export const GameSpendCoinsMessageSchema = envelope(
   "game:spendCoins",
   z.object({
@@ -169,6 +189,7 @@ export const GameSpendCoinsMessageSchema = envelope(
   }),
 );
 
+/** Validates the game request purchase message data shape. */
 export const GameRequestPurchaseMessageSchema = envelope(
   "game:requestPurchase",
   z.object({
@@ -176,6 +197,7 @@ export const GameRequestPurchaseMessageSchema = envelope(
   }),
 );
 
+/** Validates the game load leaderboard message data shape. */
 export const GameLoadLeaderboardMessageSchema = envelope(
   "game:loadLeaderboard",
   z.object({
@@ -183,6 +205,7 @@ export const GameLoadLeaderboardMessageSchema = envelope(
   }),
 );
 
+/** Validates the game update username message data shape. */
 export const GameUpdateUsernameMessageSchema = envelope(
   "game:updateUsername",
   z.object({
@@ -190,6 +213,7 @@ export const GameUpdateUsernameMessageSchema = envelope(
   }),
 );
 
+/** Validates the game update avatar message data shape. */
 export const GameUpdateAvatarMessageSchema = envelope(
   "game:updateAvatar",
   z.object({
@@ -200,23 +224,39 @@ export const GameUpdateAvatarMessageSchema = envelope(
   }),
 );
 
+/** Validates the game delete account message data shape. */
+export const GameDeleteAccountMessageSchema = envelope("game:deleteAccount", EmptyPayloadSchema);
+
+/** Validates the game list race categories message data shape. */
 export const GameListRaceCategoriesMessageSchema = envelope("game:listRaceCategories", ListRaceCategoriesRequestSchema);
+/** Validates the game start race message data shape. */
 export const GameStartRaceMessageSchema = envelope("game:startRace", StartRaceRunRequestSchema);
+/** Validates the game submit race guess message data shape. */
 export const GameSubmitRaceGuessMessageSchema = envelope("game:submitRaceGuess", SubmitRaceGuessRequestSchema);
+/** Validates the game request race hint message data shape. */
 export const GameRequestRaceHintMessageSchema = envelope("game:requestRaceHint", RequestRaceHintRequestSchema);
+/** Validates the game skip race riddle message data shape. */
 export const GameSkipRaceRiddleMessageSchema = envelope("game:skipRaceRiddle", SkipRaceRiddleRequestSchema);
+/** Validates the game resume race message data shape. */
 export const GameResumeRaceMessageSchema = envelope("game:resumeRace", RaceRunIdRequestSchema);
+/** Validates the game abandon race message data shape. */
 export const GameAbandonRaceMessageSchema = envelope("game:abandonRace", AbandonRaceRunRequestSchema);
+/** Validates the game publish race message data shape. */
 export const GamePublishRaceMessageSchema = envelope("game:publishRace", PublishRaceChallengeRequestSchema);
+/** Validates the game get race challenge message data shape. */
 export const GameGetRaceChallengeMessageSchema = envelope("game:getRaceChallenge", RaceChallengeIdRequestSchema);
+/** Validates the game get race outcome message data shape. */
 export const GameGetRaceOutcomeMessageSchema = envelope("game:getRaceOutcome", RaceRunIdRequestSchema);
+/** Validates the game list race inbox message data shape. */
 export const GameListRaceInboxMessageSchema = envelope("game:listRaceInbox", ListRaceInboxRequestSchema);
 
+/** Validates the game analytics message data shape. */
 export const GameAnalyticsMessageSchema = envelope(
   "game:analytics",
   RaceAnalyticsEventRequestSchema.omit({eventId: true}),
 );
 
+/** Validates the game error message data shape. */
 export const GameErrorMessageSchema = envelope(
   "game:error",
   z.object({
@@ -225,6 +265,7 @@ export const GameErrorMessageSchema = envelope(
   }),
 );
 
+/** Validates the game to host message data shape. */
 export const GameToHostMessageSchema = z.discriminatedUnion("type", [
   GameReadyMessageSchema,
   GameResizeMessageSchema,
@@ -236,6 +277,7 @@ export const GameToHostMessageSchema = z.discriminatedUnion("type", [
   GameLoadLeaderboardMessageSchema,
   GameUpdateUsernameMessageSchema,
   GameUpdateAvatarMessageSchema,
+  GameDeleteAccountMessageSchema,
   GameListRaceCategoriesMessageSchema,
   GameStartRaceMessageSchema,
   GameSubmitRaceGuessMessageSchema,
@@ -250,8 +292,10 @@ export const GameToHostMessageSchema = z.discriminatedUnion("type", [
   GameAnalyticsMessageSchema,
   GameErrorMessageSchema,
 ]);
+/** Describes game to host message. */
 export type GameToHostMessage = z.infer<typeof GameToHostMessageSchema>;
 
+/** Validates the host init message data shape. */
 export const HostInitMessageSchema = envelope(
   "host:init",
   z.object({
@@ -280,6 +324,7 @@ export const HostInitMessageSchema = envelope(
   }),
 );
 
+/** Validates the host auth state message data shape. */
 export const HostAuthStateMessageSchema = envelope(
   "host:authState",
   z.object({
@@ -288,6 +333,7 @@ export const HostAuthStateMessageSchema = envelope(
   }),
 );
 
+/** Validates the host riddle loaded message data shape. */
 export const HostRiddleLoadedMessageSchema = envelope(
   "host:riddleLoaded",
   z.object({
@@ -296,6 +342,7 @@ export const HostRiddleLoadedMessageSchema = envelope(
   }),
 );
 
+/** Validates the host operation result message data shape. */
 export const HostOperationResultMessageSchema = envelope(
   "host:operationResult",
   z.object({
@@ -306,9 +353,12 @@ export const HostOperationResultMessageSchema = envelope(
   }),
 );
 
+/** Validates the host pause message data shape. */
 export const HostPauseMessageSchema = envelope("host:pause", EmptyPayloadSchema);
+/** Validates the host resume message data shape. */
 export const HostResumeMessageSchema = envelope("host:resume", EmptyPayloadSchema);
 
+/** Validates the host to game message data shape. */
 export const HostToGameMessageSchema = z.discriminatedUnion("type", [
   HostInitMessageSchema,
   HostAuthStateMessageSchema,
@@ -317,22 +367,28 @@ export const HostToGameMessageSchema = z.discriminatedUnion("type", [
   HostPauseMessageSchema,
   HostResumeMessageSchema,
 ]);
+/** Describes host to game message. */
 export type HostToGameMessage = z.infer<typeof HostToGameMessageSchema>;
 
+/** Describes bridge message. */
 export type BridgeMessage = GameToHostMessage | HostToGameMessage;
 
+/** Parses game to host message. */
 export const parseGameToHostMessage = (value: unknown): GameToHostMessage => {
   return GameToHostMessageSchema.parse(value);
 };
 
+/** Parses host to game message. */
 export const parseHostToGameMessage = (value: unknown): HostToGameMessage => {
   return HostToGameMessageSchema.parse(value);
 };
 
+/** Indicates whether is game to host message. */
 export const isGameToHostMessage = (value: unknown): value is GameToHostMessage => {
   return GameToHostMessageSchema.safeParse(value).success;
 };
 
+/** Indicates whether is host to game message. */
 export const isHostToGameMessage = (value: unknown): value is HostToGameMessage => {
   return HostToGameMessageSchema.safeParse(value).success;
 };

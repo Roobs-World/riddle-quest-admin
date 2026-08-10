@@ -1,7 +1,6 @@
 import {logger} from "firebase-functions/v2";
 import {admin} from "../shared/firebaseAdmin";
 import {generateUniqueRiddle} from "../riddles/openaiService";
-import {captureException} from "../shared/sentry";
 import type {DailyRiddle} from "../validation/firestoreSchemas";
 import {RiddleCollections} from "../validation/firestoreSchemas";
 import {SUPPORTED_LOCALES, type SupportedLocale} from "@qwordly/core/validation";
@@ -14,6 +13,7 @@ import {
   riddleExists,
 } from "../riddles/riddleGenerationRepository";
 
+/** Provides generate todays daily challenge behavior. */
 export async function generateTodaysDailyChallenge(forceGenerate: boolean = false): Promise<void> {
   const dailyChallengeQuestionCount = 1;
   logger.info(`Generating today's ${dailyChallengeQuestionCount}-question daily challenge...`);
@@ -126,15 +126,13 @@ export async function generateTodaysDailyChallenge(forceGenerate: boolean = fals
   }
 
   if (selectedDailyChallengeRiddle) {
-    // Reset all users' daily challenge progress for the new day
-    await resetAllUsersDailyChallengeProgress();
-
     logger.info(`Successfully generated and stored the current daily challenge for ${todayDateString}.`);
   } else {
     throw new Error("Failed to generate any daily challenge questions.");
   }
 }
 
+/** Provides generate localized todays daily challenge behavior. */
 export async function generateLocalizedTodaysDailyChallenge(forceGenerate: boolean = false): Promise<void> {
   const todayDateString = new Date().toISOString().split("T")[0];
 
@@ -228,46 +226,5 @@ export async function generateLocalizedTodaysDailyChallenge(forceGenerate: boole
   const localeConcurrency = 3;
   for (let index = 0; index < SUPPORTED_LOCALES.length; index += localeConcurrency) {
     await Promise.all(SUPPORTED_LOCALES.slice(index, index + localeConcurrency).map(generateForLocale));
-  }
-
-  await resetAllUsersDailyChallengeProgress();
-}
-
-/**
- * Resets all users' daily challenge progress to 0 for the new day.
- * This is called when a new daily challenge is generated.
- */
-async function resetAllUsersDailyChallengeProgress(): Promise<void> {
-  logger.info("Resetting all users' daily challenge progress for new day...");
-
-  try {
-    // Get all user documents
-    const usersSnapshot = await admin.firestore().collection("users").get();
-
-    if (usersSnapshot.empty) {
-      logger.info("No users found to reset progress.");
-      return;
-    }
-
-    // Create batch to update all users
-    const batch = admin.firestore().batch();
-    let userCount = 0;
-
-    usersSnapshot.forEach((userDoc) => {
-      const userRef = userDoc.ref;
-      batch.update(userRef, {
-        "progress.dailyChallengeCurrentQuestion": 0,
-      });
-      userCount++;
-    });
-
-    // Commit the batch update
-    await batch.commit();
-
-    logger.info(`Reset daily challenge progress for ${userCount} users.`);
-  } catch (error) {
-    logger.error("Error resetting users' daily challenge progress:", error);
-    captureException(error);
-    throw new Error("Failed to reset users' daily challenge progress.");
   }
 }

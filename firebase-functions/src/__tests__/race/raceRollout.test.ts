@@ -1,4 +1,11 @@
-import {evaluateRaceRollout, hashRaceCohortUser} from "../../race/raceRollout";
+import {
+  assertRaceAccess,
+  evaluateRaceRollout,
+  getRaceAccessForUser,
+  hashRaceCohortUser,
+  recordRaceAnalyticsForUser,
+} from "../../race/raceRollout";
+import {admin} from "../../shared/firebaseAdmin";
 
 describe("Race rollout cohort evaluation", () => {
   it("defaults off for missing or malformed configuration", () => {
@@ -22,5 +29,88 @@ describe("Race rollout cohort evaluation", () => {
     const hash = hashRaceCohortUser("player-1");
     expect(hash).toMatch(/^[a-f0-9]{64}$/);
     expect(evaluateRaceRollout({enabled: true, percentage: 0, allowlistHashes: [hash]}, "player-1").enabled).toBe(true);
+  });
+
+  const createDb = ({rollout = {enabled: true, percentage: 100, allowlistHashes: []}, duplicate = false} = {}) => {
+    const create = jest.fn();
+    const analyticsReference = {path: "raceAnalytics/event"};
+    const transaction = {
+      get: jest.fn(async () => ({exists: duplicate})),
+      create,
+    };
+    const db = {
+      doc: jest.fn(() => ({get: jest.fn(async () => ({exists: rollout !== null, data: () => rollout}))})),
+      collection: jest.fn(() => ({doc: jest.fn(() => analyticsReference)})),
+      runTransaction: jest.fn(async (callback: (value: typeof transaction) => Promise<void>) => callback(transaction)),
+    };
+    return {db, create, transaction};
+  };
+
+  it("rejects unsupported locales before reading rollout configuration", async () => {
+    const {db} = createDb();
+    await expect(getRaceAccessForUser("player-1", "fr", db as never)).resolves.toMatchObject({enabled: false});
+    expect(db.doc).not.toHaveBeenCalled();
+  });
+
+  it("loads existing and missing authoritative rollout documents", async () => {
+    const enabled = createDb();
+    await expect(getRaceAccessForUser("player-1", "en", enabled.db as never)).resolves.toMatchObject({enabled: true});
+
+    const missing = createDb({rollout: null as never});
+    await expect(getRaceAccessForUser("player-1", "en", missing.db as never)).resolves.toMatchObject({enabled: false});
+  });
+
+  it("asserts cohort access", async () => {
+    await expect(assertRaceAccess("player-1", "en", createDb().db as never)).resolves.toBeUndefined();
+    await expect(assertRaceAccess(
+      "player-1",
+      "en",
+      createDb({rollout: {enabled: false, percentage: 0, allowlistHashes: []}}).db as never,
+    )).rejects.toMatchObject({code: "permission-denied"});
+  });
+
+  it("records allowlisted analytics fields once", async () => {
+    const {db, create} = createDb();
+
+    await expect(recordRaceAnalyticsForUser("player-1", {
+      eventId: "event-1",
+      eventName: "race_category_selected",
+      params: {categoryId: "history", secret: "discarded"},
+    }, {db: db as never, nowMs: 1000})).resolves.toEqual({accepted: true});
+
+    expect(create).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({
+      eventName: "race_category_selected",
+      params: {categoryId: "history"},
+      createdAtMs: 1000,
+    }));
+  });
+
+  it("treats repeated analytics event IDs as idempotent", async () => {
+    const {db, create} = createDb({duplicate: true});
+
+    await expect(recordRaceAnalyticsForUser("player-1", {
+      eventId: "event-1",
+      eventName: "race_mode_viewed",
+      params: {},
+    }, {db: db as never})).resolves.toEqual({accepted: true});
+
+    expect(create).not.toHaveBeenCalled();
+  });
+
+  it("uses Firebase and clock defaults when adapters are omitted", async () => {
+    const {db, create} = createDb();
+    const firestore = jest.spyOn(admin, "firestore").mockReturnValue(db as never);
+    Object.assign(admin.firestore, {Timestamp: {fromMillis: (value: number) => ({value})}});
+
+    await expect(getRaceAccessForUser("player-1", "en")).resolves.toMatchObject({enabled: true});
+    await expect(assertRaceAccess("player-1")).resolves.toBeUndefined();
+    await expect(recordRaceAnalyticsForUser("player-1", {
+      eventId: "event-defaults",
+      eventName: "race_mode_viewed",
+      params: {},
+    })).resolves.toEqual({accepted: true});
+
+    expect(create).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({createdAtMs: expect.any(Number)}));
+    firestore.mockRestore();
   });
 });

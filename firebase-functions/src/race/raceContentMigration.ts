@@ -6,9 +6,13 @@ import {
 } from "@qwordly/core/race";
 import {type SupportedLocale} from "@qwordly/core/validation";
 
+/** Existing localized riddle document considered by the race migration. */
 export type ExistingRaceContentRecord = {
+  /** Stores locale. */
   locale: SupportedLocale;
+  /** Stores document path. */
   documentPath: string;
+  /** Stores data. */
   data: {
     riddleId?: unknown;
     canonicalRiddleId?: unknown;
@@ -24,29 +28,45 @@ export type ExistingRaceContentRecord = {
   };
 };
 
+/** Metadata changes proposed for one existing riddle document. */
 export type RaceContentPatch = {
+  /** Stores canonical riddle id. */
   canonicalRiddleId: string;
+  /** Stores category id. */
   categoryId: RaceCategoryId;
+  /** Stores difficulty band. */
   difficultyBand: RaceDifficultyBand;
+  /** Stores race eligible. */
   raceEligible: boolean;
+  /** Stores quality version. */
   qualityVersion: string;
 };
 
+/** Deterministic, non-mutating report produced by a migration dry run. */
 export type RaceContentDryRunReport = {
+  /** Stores scanned. */
   scanned: number;
+  /** Stores proposed writes. */
   proposedWrites: Array<{documentPath: string; patch: RaceContentPatch}>;
+  /** Stores unchanged. */
   unchanged: string[];
+  /** Stores unclassifiable. */
   unclassifiable: Array<{documentPath: string; reason: string}>;
+  /** Stores collisions. */
   collisions: Array<{locale: SupportedLocale; canonicalRiddleId: string; documentPaths: string[]}>;
+  /** Stores missing translations. */
   missingTranslations: Array<{canonicalRiddleId: string; locales: SupportedLocale[]}>;
 };
 
+/** Indicates whether is race category id. */
 const isRaceCategoryId = (value: unknown): value is RaceCategoryId =>
   typeof value === "string" && (RACE_CATEGORY_IDS as readonly string[]).includes(value);
 
+/** Indicates whether is difficulty band. */
 const isDifficultyBand = (value: unknown): value is RaceDifficultyBand =>
   value === "easy" || value === "medium" || value === "hard";
 
+/** Infers a race difficulty band from the trimmed answer length. */
 export function inferRaceDifficulty(answer: string): RaceDifficultyBand {
   const length = Array.from(answer.trim()).length;
   if (length <= 3) return "easy";
@@ -54,6 +74,7 @@ export function inferRaceDifficulty(answer: string): RaceDifficultyBand {
   return "hard";
 }
 
+/** Derives a stable canonical identifier from supported legacy metadata. */
 export function inferCanonicalRiddleId(record: ExistingRaceContentRecord): string | null {
   const {data} = record;
   if (typeof data.canonicalRiddleId === "string" && data.canonicalRiddleId.trim()) {
@@ -71,6 +92,7 @@ export function inferCanonicalRiddleId(record: ExistingRaceContentRecord): strin
   return null;
 }
 
+/** Proposes normalized race metadata without modifying the source record. */
 export function proposeRaceContentPatch(record: ExistingRaceContentRecord): RaceContentPatch | null {
   const canonicalRiddleId = inferCanonicalRiddleId(record);
   const answer = typeof record.data.answer === "string" ? record.data.answer.trim() : "";
@@ -90,6 +112,7 @@ export function proposeRaceContentPatch(record: ExistingRaceContentRecord): Race
   };
 }
 
+/** Provides patch already applied behavior. */
 const patchAlreadyApplied = (record: ExistingRaceContentRecord, patch: RaceContentPatch): boolean =>
   record.data.canonicalRiddleId === patch.canonicalRiddleId &&
   record.data.categoryId === patch.categoryId &&
@@ -97,6 +120,7 @@ const patchAlreadyApplied = (record: ExistingRaceContentRecord, patch: RaceConte
   record.data.raceEligible === patch.raceEligible &&
   record.data.qualityVersion === patch.qualityVersion;
 
+/** Audits proposed migration changes, collisions, and missing translations. */
 export function createRaceContentDryRun(records: ExistingRaceContentRecord[]): RaceContentDryRunReport {
   const report: RaceContentDryRunReport = {
     scanned: records.length,

@@ -1,40 +1,70 @@
 import type {GameToHostMessage, HostToGameMessage} from "@qwordly/core/bridge";
 
+/** Describes bridge parsers. */
 type BridgeParsers = Pick<typeof import("@qwordly/core/bridge"), "parseGameToHostMessage" | "parseHostToGameMessage">;
 
+/** Provides bridge parsers promise behavior. */
 let bridgeParsersPromise: Promise<BridgeParsers> | null = null;
 
+/** Loads bridge parsers. */
 const loadBridgeParsers = (): Promise<BridgeParsers> => {
   bridgeParsersPromise ??= import("@qwordly/core/bridge");
   return bridgeParsersPromise;
 };
 
+/** Describes host message handlers. */
 export type HostMessageHandlers = {
+  /** Reads y. */
   ready(message: Extract<GameToHostMessage, {type: "game:ready"}>): void | Promise<void>;
+  /** Provides resize behavior. */
   resize(message: Extract<GameToHostMessage, {type: "game:resize"}>): void | Promise<void>;
+  /** Loads riddle. */
   loadRiddle(message: Extract<GameToHostMessage, {type: "game:loadRiddle"}>): void | Promise<void>;
+  /** Completes game. */
   completeGame(message: Extract<GameToHostMessage, {type: "game:completeGame"}>): void | Promise<void>;
+  /** Requests hint. */
   requestHint(message: Extract<GameToHostMessage, {type: "game:requestHint"}>): void | Promise<void>;
+  /** Provides spend coins behavior. */
   spendCoins(message: Extract<GameToHostMessage, {type: "game:spendCoins"}>): void | Promise<void>;
+  /** Requests purchase. */
   requestPurchase(message: Extract<GameToHostMessage, {type: "game:requestPurchase"}>): void | Promise<void>;
+  /** Loads leaderboard. */
   loadLeaderboard(message: Extract<GameToHostMessage, {type: "game:loadLeaderboard"}>): void | Promise<void>;
+  /** Updates username. */
   updateUsername(message: Extract<GameToHostMessage, {type: "game:updateUsername"}>): void | Promise<void>;
+  /** Updates avatar. */
   updateAvatar(message: Extract<GameToHostMessage, {type: "game:updateAvatar"}>): void | Promise<void>;
+  /** Deletes account. */
+  deleteAccount(message: Extract<GameToHostMessage, {type: "game:deleteAccount"}>): void | Promise<void>;
+  /** Lists race categories. */
   listRaceCategories(message: Extract<GameToHostMessage, {type: "game:listRaceCategories"}>): void | Promise<void>;
+  /** Starts race. */
   startRace(message: Extract<GameToHostMessage, {type: "game:startRace"}>): void | Promise<void>;
+  /** Submits race guess. */
   submitRaceGuess(message: Extract<GameToHostMessage, {type: "game:submitRaceGuess"}>): void | Promise<void>;
+  /** Requests race hint. */
   requestRaceHint(message: Extract<GameToHostMessage, {type: "game:requestRaceHint"}>): void | Promise<void>;
+  /** Provides skip race riddle behavior. */
   skipRaceRiddle(message: Extract<GameToHostMessage, {type: "game:skipRaceRiddle"}>): void | Promise<void>;
+  /** Provides resume race behavior. */
   resumeRace(message: Extract<GameToHostMessage, {type: "game:resumeRace"}>): void | Promise<void>;
+  /** Provides abandon race behavior. */
   abandonRace(message: Extract<GameToHostMessage, {type: "game:abandonRace"}>): void | Promise<void>;
+  /** Publishes race. */
   publishRace(message: Extract<GameToHostMessage, {type: "game:publishRace"}>): void | Promise<void>;
+  /** Gets race challenge. */
   getRaceChallenge(message: Extract<GameToHostMessage, {type: "game:getRaceChallenge"}>): void | Promise<void>;
+  /** Gets race outcome. */
   getRaceOutcome(message: Extract<GameToHostMessage, {type: "game:getRaceOutcome"}>): void | Promise<void>;
+  /** Lists race inbox. */
   listRaceInbox(message: Extract<GameToHostMessage, {type: "game:listRaceInbox"}>): void | Promise<void>;
+  /** Provides analytics behavior. */
   analytics(message: Extract<GameToHostMessage, {type: "game:analytics"}>): void | Promise<void>;
+  /** Provides error behavior. */
   error(message: Extract<GameToHostMessage, {type: "game:error"}>): void | Promise<void>;
 };
 
+/** Creates host message router. */
 export const createHostMessageRouter = (handlers: HostMessageHandlers) => {
   return async (value: unknown): Promise<GameToHostMessage> => {
     const {parseGameToHostMessage} = await loadBridgeParsers();
@@ -70,6 +100,9 @@ export const createHostMessageRouter = (handlers: HostMessageHandlers) => {
         break;
       case "game:updateAvatar":
         await handlers.updateAvatar(message);
+        break;
+      case "game:deleteAccount":
+        await handlers.deleteAccount(message);
         break;
       case "game:listRaceCategories":
         await handlers.listRaceCategories(message);
@@ -118,15 +151,23 @@ export const createHostMessageRouter = (handlers: HostMessageHandlers) => {
   };
 };
 
+/** Describes game message handlers. */
 export type GameMessageHandlers = {
-  init(message: Extract<HostToGameMessage, {type: "host:init"}>): void;
-  authState(message: Extract<HostToGameMessage, {type: "host:authState"}>): void;
-  riddleLoaded(message: Extract<HostToGameMessage, {type: "host:riddleLoaded"}>): void;
-  operationResult(message: Extract<HostToGameMessage, {type: "host:operationResult"}>): void;
-  pause(message: Extract<HostToGameMessage, {type: "host:pause"}>): void;
-  resume(message: Extract<HostToGameMessage, {type: "host:resume"}>): void;
+  /** Provides init behavior. */
+  init(message: Extract<HostToGameMessage, {type: "host:init"}>): void | Promise<void>;
+  /** Provides auth state behavior. */
+  authState(message: Extract<HostToGameMessage, {type: "host:authState"}>): void | Promise<void>;
+  /** Provides riddle loaded behavior. */
+  riddleLoaded(message: Extract<HostToGameMessage, {type: "host:riddleLoaded"}>): void | Promise<void>;
+  /** Provides operation result behavior. */
+  operationResult(message: Extract<HostToGameMessage, {type: "host:operationResult"}>): void | Promise<void>;
+  /** Provides pause behavior. */
+  pause(message: Extract<HostToGameMessage, {type: "host:pause"}>): void | Promise<void>;
+  /** Provides resume behavior. */
+  resume(message: Extract<HostToGameMessage, {type: "host:resume"}>): void | Promise<void>;
 };
 
+/** Creates game message router. */
 export const createGameMessageRouter = (handlers: GameMessageHandlers) => {
   return async (value: unknown): Promise<HostToGameMessage> => {
     const {parseHostToGameMessage} = await loadBridgeParsers();
@@ -134,22 +175,22 @@ export const createGameMessageRouter = (handlers: GameMessageHandlers) => {
 
     switch (message.type) {
       case "host:init":
-        handlers.init(message);
+        await handlers.init(message);
         break;
       case "host:authState":
-        handlers.authState(message);
+        await handlers.authState(message);
         break;
       case "host:riddleLoaded":
-        handlers.riddleLoaded(message);
+        await handlers.riddleLoaded(message);
         break;
       case "host:operationResult":
-        handlers.operationResult(message);
+        await handlers.operationResult(message);
         break;
       case "host:pause":
-        handlers.pause(message);
+        await handlers.pause(message);
         break;
       case "host:resume":
-        handlers.resume(message);
+        await handlers.resume(message);
         break;
       default:
         message satisfies never;

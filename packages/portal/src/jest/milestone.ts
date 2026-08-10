@@ -1,13 +1,19 @@
 import type {JestPlatformPort, JestPreferences, JestSession, PlatformResult} from "./types";
 
+/** Defines the registration prompt cooldown ms value. */
 export const REGISTRATION_PROMPT_COOLDOWN_MS = 7 * 24 * 60 * 60 * 1000;
 
+/** Describes authoritative completion. */
 export type AuthoritativeCompletion = {
+  /** Stores is correct. */
   isCorrect: boolean;
+  /** Stores game mode. */
   gameMode: "classic" | "challenge";
+  /** Stores new win streak. */
   newWinStreak?: number;
 };
 
+/** Records authoritative completion. */
 export async function recordAuthoritativeCompletion(
   platform: JestPlatformPort,
   session: JestSession,

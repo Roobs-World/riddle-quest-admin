@@ -1,22 +1,30 @@
 import type {JestPlatformPort, PlatformResult} from "../types";
 
+/** Defines the legacy reminder ids value. */
 export const LEGACY_REMINDER_IDS = [
   "riddle-quest-d1-v2",
   "riddle-quest-d3-v2",
   "riddle-quest-d7-v2",
 ] as const;
+/** Defines the engagement reminder ids value. */
 export const ENGAGEMENT_REMINDER_IDS = Array.from(
   {length: 7},
   (_, index) => `riddle-quest-d${index + 1}-v3`,
 );
 
+/** Describes reminder variant. */
 type ReminderVariant = {
+  /** Stores body. */
   body: string;
+  /** Stores cta. */
   cta: string;
+  /** Stores template. */
   template: string;
+  /** Stores callback. */
   callback: string;
 };
 
+/** Provides schedule engagement reminders behavior. */
 export async function scheduleEngagementReminders(
   platform: JestPlatformPort,
   copy: {
@@ -80,6 +88,7 @@ export async function scheduleEngagementReminders(
   }));
 }
 
+/** Removes engagement reminders. */
 export async function removeEngagementReminders(platform: JestPlatformPort) {
   return Promise.all(
     [...LEGACY_REMINDER_IDS, ...ENGAGEMENT_REMINDER_IDS]
@@ -87,6 +96,7 @@ export async function removeEngagementReminders(platform: JestPlatformPort) {
   );
 }
 
+/** Provides replace engagement reminders behavior. */
 export async function replaceEngagementReminders(
   platform: JestPlatformPort,
   copy: Parameters<typeof scheduleEngagementReminders>[1],
@@ -97,6 +107,7 @@ export async function replaceEngagementReminders(
   return {removed, scheduled};
 }
 
+/** Provides notification rotation seed behavior. */
 export function notificationRotationSeed(playerId: string, now = Date.now()) {
   const playerHash = [...playerId].reduce((hash, character) => ((hash * 31) + character.charCodeAt(0)) | 0, 0);
   const utcDay = Math.floor(now / 86_400_000);

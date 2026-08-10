@@ -11,8 +11,10 @@ import {
 import {HttpsError} from "firebase-functions/v2/https";
 import {z} from "zod";
 
+/** Describes firestore. */
 type Firestore = FirebaseFirestore.Firestore;
 
+/** Validates the race rollout config data shape. */
 const RaceRolloutConfigSchema = z
   .object({
     enabled: z.boolean().default(false),
@@ -24,13 +26,18 @@ const RaceRolloutConfigSchema = z
   })
   .strict();
 
+/** Validated configuration controlling multiplayer cohort access. */
 export type RaceRolloutConfig = z.infer<typeof RaceRolloutConfigSchema>;
+/** Defines the default config value. */
 const DEFAULT_CONFIG: RaceRolloutConfig = {enabled: false, percentage: 0, allowlistHashes: []};
+/** Defines the analytics retention ms value. */
 const ANALYTICS_RETENTION_MS = 30 * 24 * 60 * 60 * 1_000;
 
+/** Hashes a player identifier into the stable, non-reversible rollout key. */
 export const hashRaceCohortUser = (userId: string): string =>
   createHash("sha256").update(`riddle-quest-race-cohort-v1:${userId}`).digest("hex");
 
+/** Evaluates rollout configuration for a stable player cohort. */
 export function evaluateRaceRollout(configInput: unknown, userId: string): RaceAccessResponse {
   const config = RaceRolloutConfigSchema.catch(DEFAULT_CONFIG).parse(configInput);
   if (!config.enabled) return {enabled: false, locale: "en", reason: "rollout_disabled"};
@@ -44,6 +51,7 @@ export function evaluateRaceRollout(configInput: unknown, userId: string): RaceA
   });
 }
 
+/** Loads and evaluates authoritative multiplayer access for a player. */
 export async function getRaceAccessForUser(
   userId: string,
   locale: RaceLocale,
@@ -55,11 +63,13 @@ export async function getRaceAccessForUser(
   return evaluateRaceRollout(snapshot.exists ? snapshot.data() : DEFAULT_CONFIG, userId);
 }
 
+/** Throws unless the player currently belongs to the enabled race cohort. */
 export async function assertRaceAccess(userId: string, locale: RaceLocale = "en", dbInput?: Firestore): Promise<void> {
   const access = await getRaceAccessForUser(userId, locale, dbInput);
   if (!access.enabled) throw new HttpsError("permission-denied", "Race to 10 is not enabled for this player.");
 }
 
+/** Records one allowlisted, idempotent multiplayer analytics event. */
 export async function recordRaceAnalyticsForUser(
   userId: string,
   input: RaceAnalyticsEventRequest,

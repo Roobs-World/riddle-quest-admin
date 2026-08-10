@@ -3,6 +3,8 @@ export type Feedback = "green" | "yellow" | "red";
 
 /** A guess that was submitted and scored by the game engine. */
 export interface ScoredGuess {
+  /** Stores guess. */
   guess: string[];
+  /** Stores feedback. */
   feedback: Feedback[];
 }

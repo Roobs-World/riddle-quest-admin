@@ -3,10 +3,14 @@ import {tr} from "../../play/i18n";
 import type {JestBackendPort} from "../backend";
 import type {JestPlatformPort, JestSession} from "../types";
 import {captureGameScreenshot, captureVictoryShareImage, sizeCheckedScreenshotProvider} from "./screenshots";
+import {JEST_REFERRAL_REFERENCES, JEST_REFERRAL_REWARD_COINS} from "@qwordly/core/referrals";
 
+/** Describes with platform activity. */
 type WithPlatformActivity = <Result>(operation: () => Promise<Result>) => Promise<Result>;
+/** Describes track funnel. */
 type TrackFunnel = (eventName: string, params?: Record<string, string | number | boolean>) => void;
 
+/** Provides jest sharing. */
 export function useJestSharing({
   locale,
   session,
@@ -33,10 +37,31 @@ export function useJestSharing({
     void withPlatformActivity(async () => {
       const result = await platform.listReferralsSigned();
       if (result.status === "success") {
-        await backend.verifyReferrals(result.value, session.player.playerId);
+        const verification = await backend.verifyReferrals(result.value, session.player.playerId);
+        trackFunnel("viral_referrals_reconciled", {
+          conversions: verification.conversionCount ?? 0,
+          rewardsGranted: verification.rewardsGranted ?? 0,
+        });
+        if (
+          (verification.rewardsGranted ?? 0) > 0 &&
+          typeof verification.newCoins === "number" &&
+          typeof verification.coinsPerPlayer === "number"
+        ) {
+          const detail = {
+            coinsAwarded: verification.rewardsGranted! * verification.coinsPerPlayer,
+            newCoins: verification.newCoins,
+            conversions: verification.rewardsGranted,
+          };
+          (window as Window & {__RIDDLE_QUEST_PENDING_REFERRAL_REWARD__?: typeof detail})
+            .__RIDDLE_QUEST_PENDING_REFERRAL_REWARD__ = detail;
+          window.dispatchEvent(new CustomEvent("riddle-quest:referral-reward", {detail}));
+        }
       }
+    }).catch((error) => {
+      console.warn("[riddle-quest] Jest referral reconciliation failed", error);
+      trackFunnel("viral_referrals_reconcile_failed");
     });
-  }, [backend, platform, session?.player.playerId, session?.player.registered, withPlatformActivity]);
+  }, [backend, platform, session?.player.playerId, session?.player.registered, trackFunnel, withPlatformActivity]);
 
   useEffect(() => {
     if (!session) return;
@@ -45,14 +70,16 @@ export function useJestSharing({
         (
           event as CustomEvent<{
             gameMode?: "classic" | "challenge";
-            challengeId?: string;
+            riddleId?: string;
             attempts?: number;
             emojiGrid?: string;
           }>
         ).detail ?? {};
-      const inviterName = session.profile?.username ?? "Riddle Quest player";
+      const inviterName = session.profile?.username ?? tr("WebPortal.NOTIFICATION_PLAYER_FALLBACK");
       const gameMode = detail.gameMode === "challenge" ? "challenge" : "classic";
-      const attempts = Math.max(1, detail.attempts ?? 1);
+      const attempts = typeof detail.attempts === "number" && Number.isFinite(detail.attempts)
+        ? Math.min(99, Math.max(1, Math.round(detail.attempts)))
+        : 1;
       const gameType = tr(
         gameMode === "challenge" ? "VictoryModal.SHARE_DAILY_CHALLENGE_LABEL" : "VictoryModal.SHARE_CLASSIC_MODE_LABEL",
       );
@@ -60,7 +87,9 @@ export function useJestSharing({
         attempts === 1 ? "VictoryModal.SHARE_ATTEMPT_SINGULAR" : "VictoryModal.SHARE_ATTEMPT_PLURAL",
       );
       const emojiGrid = detail.emojiGrid?.slice(0, 500) || "🟩";
-      const shareText = tr("VictoryModal.SHARE_MESSAGE_TEMPLATE", {gameType, attempts, attemptLabel, emojiGrid});
+      const rewardMessage = tr("VictoryModal.REFERRAL_REWARD_MESSAGE", {coins: JEST_REFERRAL_REWARD_COINS});
+      const shareText = `${tr("VictoryModal.SHARE_MESSAGE_TEMPLATE", {gameType, attempts, attemptLabel, emojiGrid})}\n\n${rewardMessage}`;
+      trackFunnel("viral_share_intent", {surface: "victory", campaign: "friend_challenge_v2", gameMode});
       void withPlatformActivity(async () => {
         const shareImage = await sizeCheckedScreenshotProvider(() =>
           captureVictoryShareImage({
@@ -70,7 +99,7 @@ export function useJestSharing({
           }),
         )();
         return platform.shareReferral({
-          reference: "riddle_quest_friend_challenge_v2",
+          reference: JEST_REFERRAL_REFERENCES.friendChallenge,
           shareTitle: tr("VictoryModal.SHARE_RESULT_TITLE"),
           shareText,
           ...(shareImage ? {shareImage} : {}),
@@ -78,16 +107,30 @@ export function useJestSharing({
           entryPayload: {
             campaign: "friend_challenge_v2",
             reference: "victory_friend_challenge_v2",
+            inviteKind: "result",
             gameMode,
-            challengeDestination: detail.challengeId ?? gameMode,
-            challengeId: detail.challengeId ?? gameMode,
+            challengeDestination: gameMode,
+            ...(typeof detail.riddleId === "string" && detail.riddleId.length <= 160
+              ? {riddleId: detail.riddleId}
+              : {}),
             inviterName,
-            customName: tr("WebPortal.APP_TITLE"),
           },
         });
-      }).then((result) =>
-        trackFunnel("friend_challenge_share_dialog", {status: result.status, gameMode, attempts}),
-      );
+      }).then((result) => {
+        trackFunnel("friend_challenge_share_dialog", {status: result.status, gameMode, attempts});
+        trackFunnel("viral_share_dialog_result", {
+          status: result.status,
+          surface: "victory",
+          campaign: "friend_challenge_v2",
+        });
+      }).catch((error) => {
+        console.warn("[riddle-quest] Jest victory share failed", error);
+        trackFunnel("viral_share_dialog_result", {
+          status: "retryable-failure",
+          surface: "victory",
+          campaign: "friend_challenge_v2",
+        });
+      });
     };
     window.addEventListener("riddle-quest:share-referral", share);
     return () => window.removeEventListener("riddle-quest:share-referral", share);
@@ -102,38 +145,101 @@ export function useJestSharing({
           preview?: {adjustedTimeToBeatMs?: number; categoryId?: string};
         }>
       ).detail;
-      if (!detail?.challengeId || typeof detail.preview?.adjustedTimeToBeatMs !== "number") return;
+      if (
+        !detail?.challengeId || detail.challengeId.length > 160 ||
+        typeof detail.preview?.adjustedTimeToBeatMs !== "number" ||
+        !Number.isFinite(detail.preview.adjustedTimeToBeatMs) ||
+        detail.preview.adjustedTimeToBeatMs <= 0
+      ) return;
       const challengeId = detail.challengeId;
       const inviterName = session.profile?.username ?? tr("WebPortal.NOTIFICATION_PLAYER_FALLBACK");
       const seconds = (detail.preview.adjustedTimeToBeatMs / 1_000).toFixed(1);
       const summary = `${inviterName} · ${seconds}s · ${tr("RaceTo10.FIRST_TO_TEN")}`;
+      trackFunnel("viral_share_intent", {surface: "race", campaign: "race_to_10_v1"});
       void withPlatformActivity(async () => {
         const shareImage = await sizeCheckedScreenshotProvider(() =>
           captureVictoryShareImage({title: tr("RaceTo10.TITLE"), summary, emojiGrid: "🏁 10/10"}),
         )();
         return platform.shareReferral({
-          reference: "riddle_quest_race_to_10_v1",
+          reference: JEST_REFERRAL_REFERENCES.raceTo10,
           shareTitle: tr("RaceTo10.TITLE"),
-          shareText: `${tr("RaceTo10.CHALLENGED_BY", {name: inviterName})} · ${tr("RaceTo10.TIME_TO_BEAT", {time: `${seconds}s`})}`,
+          shareText: `${tr("RaceTo10.CHALLENGED_BY", {name: inviterName})} · ${tr("RaceTo10.TIME_TO_BEAT", {time: `${seconds}s`})}\n\n${tr("VictoryModal.REFERRAL_REWARD_MESSAGE", {coins: JEST_REFERRAL_REWARD_COINS})}`,
           ...(shareImage ? {shareImage} : {}),
           onboardingSlug: "race-to-10",
           entryPayload: {
             campaign: "race_to_10_v1",
             reference: "race_to_10_share_v1",
+            inviteKind: "race",
             challengeDestination: challengeId,
             challengeId,
             inviterName,
-            customName: tr("WebPortal.APP_TITLE"),
           },
         });
-      }).then((result) =>
+      }).then((result) => {
         trackFunnel("race_challenge_share_dialog", {
           status: result.status,
           categoryId: detail.preview?.categoryId ?? "unknown",
-        }),
-      );
+        });
+        trackFunnel("viral_share_dialog_result", {
+          status: result.status,
+          surface: "race",
+          campaign: "race_to_10_v1",
+        });
+      }).catch((error) => {
+        console.warn("[riddle-quest] Jest race share failed", error);
+        trackFunnel("viral_share_dialog_result", {
+          status: "retryable-failure",
+          surface: "race",
+          campaign: "race_to_10_v1",
+        });
+      });
     };
     window.addEventListener("riddle-quest:share-race", shareRace);
     return () => window.removeEventListener("riddle-quest:share-race", shareRace);
+  }, [locale, platform, session, trackFunnel, withPlatformActivity]);
+
+  useEffect(() => {
+    if (!session) return;
+    const shareInvite = () => {
+      const inviterName = session.profile?.username ?? tr("WebPortal.NOTIFICATION_PLAYER_FALLBACK");
+      const rewardMessage = tr("VictoryModal.REFERRAL_REWARD_MESSAGE", {coins: JEST_REFERRAL_REWARD_COINS});
+      trackFunnel("viral_share_intent", {surface: "profile", campaign: "open_invite_v1"});
+      void withPlatformActivity(async () => {
+        const shareImage = await sizeCheckedScreenshotProvider(() => captureVictoryShareImage({
+          title: tr("WebPortal.APP_TITLE"),
+          summary: rewardMessage,
+          emojiGrid: "🧩  🤝  🪙",
+        }))();
+        return platform.shareReferral({
+          reference: JEST_REFERRAL_REFERENCES.friendChallenge,
+          shareTitle: tr("WebPortal.APP_TITLE"),
+          shareText: tr("VictoryModal.OPEN_INVITE_MESSAGE", {
+            name: inviterName,
+            coins: JEST_REFERRAL_REWARD_COINS,
+          }),
+          ...(shareImage ? {shareImage} : {}),
+          onboardingSlug: "friend-challenge",
+          entryPayload: {
+            campaign: "open_invite_v1",
+            reference: "profile_invite_v1",
+            inviteKind: "open",
+            inviterName,
+          },
+        });
+      }).then((result) => trackFunnel("viral_share_dialog_result", {
+        status: result.status,
+        surface: "profile",
+        campaign: "open_invite_v1",
+      })).catch((error) => {
+        console.warn("[riddle-quest] Jest profile invite failed", error);
+        trackFunnel("viral_share_dialog_result", {
+          status: "retryable-failure",
+          surface: "profile",
+          campaign: "open_invite_v1",
+        });
+      });
+    };
+    window.addEventListener("riddle-quest:share-invite", shareInvite);
+    return () => window.removeEventListener("riddle-quest:share-invite", shareInvite);
   }, [locale, platform, session, trackFunnel, withPlatformActivity]);
 }

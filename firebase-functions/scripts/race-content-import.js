@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 "use strict";
 
-const admin = require("firebase-admin");
+const {initializeApp} = require("firebase-admin/app");
+const {getFirestore} = require("firebase-admin/firestore");
 const {readFile, mkdir, writeFile} = require("node:fs/promises");
 const path = require("node:path");
 const {createRaceContentImportPlan} = require("../lib/race/raceContentImport.js");
@@ -38,8 +39,8 @@ else if (apply && confirmedProject !== projectId) {
       throw new Error("Content validation failed; no writes were attempted.");
     }
 
-    admin.initializeApp({projectId});
-    const db = admin.firestore();
+    const app = initializeApp({projectId});
+    const db = getFirestore(app);
     const currentSnapshot = await db.collection("localizedRiddles/en/riddles").where("raceEligible", "==", true).get();
     const targetPaths = new Set(plan.records.map((record) => record.documentPath));
     const existingEligible = currentSnapshot.docs.map((document) => ({path: document.ref.path, data: document.data()}));

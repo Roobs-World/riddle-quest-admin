@@ -1,24 +1,57 @@
-import {useEffect, useLayoutEffect, useRef, useState, type CSSProperties} from "react";
-import {createPortal} from "react-dom";
-import coinUrl from "../../../../assets/images/coin.svg";
-import treasureChestClosedUrl from "../../../../assets/images-web/chest-closed.png";
-import treasureChestUrl from "../../../../assets/images-web/chest-open.webp";
-import {ACHIEVEMENT_DEFINITIONS} from "./achievements";
+import {useEffect, useRef, useState} from "react";
+import "../styles.modal-shell.css";
+import "../styles.modal-rewards.css";
+import "../styles.modal-commerce.css";
+import "../styles.account.css";
 import type {GameModal, GameSessionState} from "./gameSession";
 import {tr} from "./i18n";
-import {getRankForLevel} from "./ranks";
-import {RankIcon} from "./RankIcon";
-import {SpinningWheel, SpinningWheelLoader} from "./SpinningWheelLoader";
+import {SpinningWheel} from "./SpinningWheelLoader";
 import {GameModalPages} from "./GameModalPages";
+import {
+  RewardFanfareContent,
+  VictoryFanfareContent,
+} from "./modalPages/fanfare/FanfareModalContent";
+import {
+  createRewardFanfareSteps,
+  createVictoryFanfareSteps,
+  getActiveCoinAward,
+  getActiveFanfareStep,
+  isCoinCollectionPending,
+} from "./modalPages/fanfare/fanfareSequence";
 
-type FanfareStep =
-  | {kind: "achievement"; achievementId: string}
-  | {kind: "victory"}
-  | {kind: "level"}
-  | {kind: "rank"}
-  | {kind: "purchase"}
-  | {kind: "coins"};
+/** Event handlers and state required by the game modal shell. */
+export type GameModalViewProps = {
+  /** Stores state. */
+  state: GameSessionState;
+  /** Stores on close. */
+  onClose: () => void;
+  /** Stores on continue. */
+  onContinue: (amount?: number) => void;
+  /** Stores on purchase. */
+  onPurchase: (productId: string) => void;
+  /** Stores on next. */
+  onNext: () => void;
+  /** Stores on open modal. */
+  onOpenModal: (modal: Exclude<GameModal, null>) => void;
+  /** Stores on toggle mute. */
+  onToggleMute: () => void;
+  /** Stores on request hint. */
+  onRequestHint: () => void;
+  /** Stores on request skip. */
+  onRequestSkip: () => void;
+  /** Stores on request leaderboard. */
+  onRequestLeaderboard: (type: "xp" | "totalWins" | "bestStreak") => void;
+  /** Stores on update username. */
+  onUpdateUsername: (username: string) => void;
+  /** Stores on update avatar. */
+  onUpdateAvatar: (file: File) => Promise<void>;
+  /** Stores on delete account. */
+  onDeleteAccount: () => void;
+  /** Stores on coin balance preview. */
+  onCoinBalancePreview: (balance: number | null) => void;
+};
 
+/** Coordinates the accessible modal shell and delegates modal-specific content. */
 export function GameModalView({
   state,
   onClose,
@@ -32,22 +65,9 @@ export function GameModalView({
   onRequestLeaderboard,
   onUpdateUsername,
   onUpdateAvatar,
+  onDeleteAccount,
   onCoinBalancePreview,
-}: {
-  state: GameSessionState;
-  onClose: () => void;
-  onContinue: (amount?: number) => void;
-  onPurchase: (productId: string) => void;
-  onNext: () => void;
-  onOpenModal: (modal: Exclude<GameModal, null>) => void;
-  onToggleMute: () => void;
-  onRequestHint: () => void;
-  onRequestSkip: () => void;
-  onRequestLeaderboard: (type: "xp" | "totalWins" | "bestStreak") => void;
-  onUpdateUsername: (username: string) => void;
-  onUpdateAvatar: (file: File) => Promise<void>;
-  onCoinBalancePreview: (balance: number | null) => void;
-}) {
+}: GameModalViewProps) {
   const [victoryStepIndex, setVictoryStepIndex] = useState(0);
   const [rewardStepIndex, setRewardStepIndex] = useState(0);
   const [collectedCoinStep, setCollectedCoinStep] = useState<string | null>(null);
@@ -127,50 +147,12 @@ export function GameModalView({
     return null;
   }
 
-  const victoryLevel = state.lastRewards?.newLevel;
-  const reachedNewRank =
-    state.lastRewards?.leveledUp === true &&
-    victoryLevel !== undefined &&
-    getRankForLevel(Math.max(1, victoryLevel - 1)).id !== getRankForLevel(victoryLevel).id;
-  const victorySteps: FanfareStep[] = state.lastRewards
-    ? [
-        ...state.lastRewards.newlyUnlockedAchievementIds.map(
-          (achievementId): FanfareStep => ({kind: "achievement", achievementId}),
-        ),
-        {kind: "victory"},
-        ...(state.lastRewards.leveledUp ? ([{kind: "level"}] as FanfareStep[]) : []),
-        ...(reachedNewRank ? ([{kind: "rank"}] as FanfareStep[]) : []),
-      ]
-    : [];
-  const auxiliarySteps: FanfareStep[] = state.auxiliaryFanfare
-    ? [
-        ...(state.auxiliaryFanfare.kind === "purchase" ? ([{kind: "purchase"}] as FanfareStep[]) : []),
-        ...state.auxiliaryFanfare.achievementIds.map(
-          (achievementId): FanfareStep => ({kind: "achievement", achievementId}),
-        ),
-        ...(state.auxiliaryFanfare.kind === "achievement" && state.auxiliaryFanfare.coinsAwarded > 0
-          ? ([{kind: "coins"}] as FanfareStep[])
-          : []),
-      ]
-    : [];
-  const activeVictoryStep = victorySteps[Math.min(victoryStepIndex, Math.max(0, victorySteps.length - 1))];
-  const activeRewardStep = auxiliarySteps[Math.min(rewardStepIndex, Math.max(0, auxiliarySteps.length - 1))];
-  const activeCoinAward = state.modal === "victory" && activeVictoryStep?.kind === "victory"
-    ? {
-        id: `victory-${state.lastOutcome?.id ?? "current"}`,
-        amount: state.lastRewards?.coinsEarned ?? 0,
-        total: state.lastRewards?.totalCoins ?? state.profile?.coins ?? 0,
-      }
-    : state.modal === "reward" && (activeRewardStep?.kind === "purchase" || activeRewardStep?.kind === "coins")
-      ? {
-          id: `${state.auxiliaryFanfare?.id ?? "reward"}-${activeRewardStep.kind}`,
-          amount: state.auxiliaryFanfare?.coinsAwarded ?? 0,
-          total: state.auxiliaryFanfare?.totalCoins ?? state.profile?.coins ?? 0,
-        }
-      : null;
-  const coinCollectionPending = Boolean(
-    activeCoinAward && activeCoinAward.amount > 0 && collectedCoinStep !== activeCoinAward.id,
-  );
+  const victorySteps = createVictoryFanfareSteps(state.lastRewards);
+  const auxiliarySteps = createRewardFanfareSteps(state.auxiliaryFanfare);
+  const activeVictoryStep = getActiveFanfareStep(victorySteps, victoryStepIndex);
+  const activeRewardStep = getActiveFanfareStep(auxiliarySteps, rewardStepIndex);
+  const activeCoinAward = getActiveCoinAward(state, activeVictoryStep, activeRewardStep);
+  const coinCollectionPending = isCoinCollectionPending(activeCoinAward, collectedCoinStep);
   const titles: Record<Exclude<GameModal, null>, string> = {
     victory: tr("VictoryModal.TITLE"),
     continue: tr("LossModal.OUT_OF_ATTEMPTS"),
@@ -197,6 +179,8 @@ export function GameModalView({
     titles.victory = tr("LevelUpFanfare.TITLE");
   } else if (activeFanfareStep?.kind === "rank") {
     titles.victory = tr("RankUpFanfare.TITLE");
+  } else if (activeFanfareStep?.kind === "referral") {
+    titles.reward = tr("VictoryModal.REFERRAL_REWARD_TITLE");
   }
 
   const isMandatoryOutcome = state.modal === "victory" || coinCollectionPending;
@@ -240,104 +224,30 @@ export function GameModalView({
         <h2 id="game-modal-title">{titles[state.modal]}</h2>
 
         {state.modal === "victory" && (
-          <div className="fanfare-content">
-            <div className="fanfare-burst" aria-hidden="true">✦</div>
-            {!activeVictoryStep ? (
-              <p aria-live="polite">{tr("WebPortal.HOST_STATUS_WAITING")}</p>
-            ) : activeVictoryStep.kind === "achievement" ? (
-              <AchievementFanfare achievementId={activeVictoryStep.achievementId} />
-            ) : activeVictoryStep.kind === "level" ? (
-              <div className="reward-summary">
-                <span className="fanfare-emblem">✦</span>
-                <strong>{tr("LevelUpFanfare.LEVEL_PREFIX")}{victoryLevel}</strong>
-                <span>{tr("LevelUpFanfare.PROFILE_GUIDANCE")}</span>
-              </div>
-            ) : activeVictoryStep.kind === "rank" ? (
-              <div className="reward-summary">
-                <span
-                  className="rank-emblem large"
-                  style={{background: getRankForLevel(victoryLevel ?? 1).color}}
-                >
-                  <RankIcon name={getRankForLevel(victoryLevel ?? 1).icon} />
-                </span>
-                <strong>{tr(getRankForLevel(victoryLevel ?? 1).nameKey)}</strong>
-                <span>{tr("RankUpFanfare.SUBTITLE")}</span>
-              </div>
-            ) : (
-              <>
-                <strong className="fanfare-title">{tr("VictoryModal.YOU_WON_TITLE")}</strong>
-                {activeCoinAward && activeCoinAward.amount > 0 ? (
-                  <CoinAwardSequence
-                    key={activeCoinAward.id}
-                    amount={activeCoinAward.amount}
-                    total={activeCoinAward.total}
-                    onBalancePreview={onCoinBalancePreview}
-                    onCollected={() => setCollectedCoinStep(activeCoinAward.id)}
-                  />
-                ) : null}
-                <div className="reward-summary reward-details">
-                  {state.lastRewards?.newXp !== undefined && <span>{state.lastRewards.newXp} {tr("StatsModal.XP")}</span>}
-                  {state.lastRewards?.newWinStreak !== undefined && <span>🔥 {state.lastRewards.newWinStreak}</span>}
-                </div>
-                <button
-                  className="play-secondary"
-                  onClick={() => window.dispatchEvent(new CustomEvent("riddle-quest:share-referral", {
-                    detail: {
-                      gameMode: state.riddle?.gameMode,
-                      challengeId: state.riddle?.riddleId,
-                      attempts: state.guesses.length,
-                      emojiGrid: state.guesses
-                        .map((guess) => guess.feedback.map((feedback) =>
-                          feedback === "green" ? "🟩" : feedback === "yellow" ? "🟨" : "⬛",
-                        ).join(""))
-                        .join("\n"),
-                    },
-                  }))}
-                >
-                  {tr("VictoryModal.SHARE_TEXT")}
-                </button>
-              </>
-            )}
-            {activeVictoryStep && (
-              <>
-                <small className="sequence-progress">
-                  {victoryStepIndex + 1}/{victorySteps.length}
-                </small>
-                <button className="play-primary reward-continue" disabled={coinCollectionPending} onClick={advanceVictoryFanfare}>
-                  {victoryStepIndex + 1 < victorySteps.length
-                    ? tr("GameScreenAlerts.NEXT_BUTTON")
-                    : tr("VictoryModal.NEXT_LEVEL_BUTTON")}
-                </button>
-              </>
-            )}
-          </div>
+          <VictoryFanfareContent
+            activeCoinAward={activeCoinAward}
+            activeStep={activeVictoryStep}
+            coinCollectionPending={coinCollectionPending}
+            onAdvance={advanceVictoryFanfare}
+            onBalancePreview={onCoinBalancePreview}
+            onCoinCollected={() => setCollectedCoinStep(activeCoinAward?.id ?? null)}
+            state={state}
+            stepCount={victorySteps.length}
+            stepIndex={victoryStepIndex}
+          />
         )}
 
         {state.modal === "reward" && state.auxiliaryFanfare && (
-          <div className="fanfare-content">
-            <div className="fanfare-burst" aria-hidden="true">✦</div>
-            {activeRewardStep?.kind === "purchase" || activeRewardStep?.kind === "coins" ? (
-              activeCoinAward && activeCoinAward.amount > 0 ? (
-                <CoinAwardSequence
-                  key={activeCoinAward.id}
-                  amount={activeCoinAward.amount}
-                  total={activeCoinAward.total}
-                  onBalancePreview={onCoinBalancePreview}
-                  onCollected={() => setCollectedCoinStep(activeCoinAward.id)}
-                />
-              ) : null
-            ) : activeRewardStep?.kind === "achievement" ? (
-              <AchievementFanfare achievementId={activeRewardStep.achievementId} />
-            ) : null}
-            <small className="sequence-progress">
-              {rewardStepIndex + 1}/{Math.max(1, auxiliarySteps.length)}
-            </small>
-            <button className="play-primary reward-continue" disabled={coinCollectionPending} onClick={advanceRewardFanfare}>
-              {rewardStepIndex + 1 < auxiliarySteps.length
-                ? tr("GameScreenAlerts.NEXT_BUTTON")
-                : tr("CoinPurchase.AWESOME_BUTTON")}
-            </button>
-          </div>
+          <RewardFanfareContent
+            activeCoinAward={activeCoinAward}
+            activeStep={activeRewardStep}
+            coinCollectionPending={coinCollectionPending}
+            onAdvance={advanceRewardFanfare}
+            onBalancePreview={onCoinBalancePreview}
+            onCoinCollected={() => setCollectedCoinStep(activeCoinAward?.id ?? null)}
+            stepCount={auxiliarySteps.length}
+            stepIndex={rewardStepIndex}
+          />
         )}
 
         <GameModalPages
@@ -352,172 +262,9 @@ export function GameModalView({
           onRequestLeaderboard={onRequestLeaderboard}
           onUpdateUsername={onUpdateUsername}
           onUpdateAvatar={onUpdateAvatar}
+          onDeleteAccount={onDeleteAccount}
         />
       </section>
-    </div>
-  );
-}
-
-function AchievementFanfare({achievementId}: {achievementId: string}) {
-  const achievement = ACHIEVEMENT_DEFINITIONS.find((item) => item.id === achievementId);
-  return (
-    <div className="achievement-unlock">
-      <span className="achievement-icon large" aria-hidden="true">{achievement?.icon ?? "🏆"}</span>
-      <strong>{achievement ? (achievement.nameKey ? tr(achievement.nameKey) : achievement.name) : achievementId}</strong>
-      {achievement && <p>{achievement.descriptionKey ? tr(achievement.descriptionKey) : achievement.description}</p>}
-    </div>
-  );
-}
-
-type CoinParticle = {
-  id: number;
-  startX: number;
-  startY: number;
-  travelX: number;
-  travelY: number;
-  burstX: number;
-  burstY: number;
-  delayMs: number;
-  durationMs: number;
-};
-
-type CoinParticleStyle = CSSProperties & {
-  "--coin-travel-x": string;
-  "--coin-travel-y": string;
-  "--coin-burst-x": string;
-  "--coin-burst-y": string;
-  "--coin-delay": string;
-  "--coin-duration": string;
-};
-
-function CoinAwardSequence({amount, total, onBalancePreview, onCollected}: {
-  amount: number;
-  total: number;
-  onBalancePreview: (balance: number | null) => void;
-  onCollected: () => void;
-}) {
-  const [phase, setPhase] = useState<"waiting" | "collecting" | "collected">("waiting");
-  const [particles, setParticles] = useState<CoinParticle[]>([]);
-  const chestRef = useRef<HTMLButtonElement | null>(null);
-  const timersRef = useRef<number[]>([]);
-  const safeAmount = Math.max(0, Math.round(amount));
-  const finalBalance = Math.max(0, Math.round(total));
-  const startingBalance = Math.max(0, finalBalance - safeAmount);
-
-  useLayoutEffect(() => {
-    onBalancePreview(startingBalance);
-    return () => {
-      for (const timer of timersRef.current) window.clearTimeout(timer);
-      timersRef.current = [];
-    };
-  }, [onBalancePreview, startingBalance]);
-
-  const collectCoins = () => {
-    if (phase !== "waiting" || safeAmount <= 0) return;
-    const chestRect = chestRef.current?.getBoundingClientRect();
-    const meter = document.querySelector<HTMLElement>("[data-coin-meter]");
-    const meterRect = meter?.getBoundingClientRect();
-    if (!chestRect || !meter || !meterRect) {
-      onBalancePreview(finalBalance);
-      setPhase("collected");
-      onCollected();
-      return;
-    }
-
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const particleCount = Math.min(12, Math.max(1, safeAmount));
-    const baseValue = Math.floor(safeAmount / particleCount);
-    const remainder = safeAmount % particleCount;
-    const sourceX = chestRect.left + chestRect.width / 2;
-    const sourceY = chestRect.top + chestRect.height * 0.42;
-    const targetX = meterRect.left + meterRect.width * 0.72;
-    const targetY = meterRect.top + meterRect.height / 2;
-    const durationMs = reducedMotion ? 180 : 620;
-    const delayStepMs = reducedMotion ? 35 : 95;
-    const nextParticles = Array.from({length: particleCount}, (_, index): CoinParticle => {
-      const angle = (-150 + (index * 300) / Math.max(1, particleCount - 1)) * (Math.PI / 180);
-      const burstDistance = 36 + (index % 3) * 10;
-      return {
-        id: index,
-        startX: sourceX,
-        startY: sourceY,
-        travelX: targetX - sourceX,
-        travelY: targetY - sourceY,
-        burstX: Math.cos(angle) * burstDistance,
-        burstY: Math.sin(angle) * burstDistance - 24,
-        delayMs: index * delayStepMs,
-        durationMs,
-      };
-    });
-
-    setPhase("collecting");
-    setParticles(nextParticles);
-    let displayedBalance = startingBalance;
-    nextParticles.forEach((particle, index) => {
-      const particleValue = baseValue + (index < remainder ? 1 : 0);
-      const timer = window.setTimeout(() => {
-        displayedBalance += particleValue;
-        onBalancePreview(index === nextParticles.length - 1 ? finalBalance : displayedBalance);
-        meter.animate(
-          [
-            {transform: "scale(1)"},
-            {transform: "scale(1.24)"},
-            {transform: "scale(0.94)"},
-            {transform: "scale(1)"},
-          ],
-          {duration: reducedMotion ? 120 : 260, easing: "ease-out"},
-        );
-        if (index === nextParticles.length - 1) {
-          setParticles([]);
-          setPhase("collected");
-          onCollected();
-        }
-      }, particle.delayMs + particle.durationMs);
-      timersRef.current.push(timer);
-    });
-  };
-
-  return (
-    <div className="coin-award" data-coin-collection={phase === "collected" ? "complete" : "pending"}>
-      <button
-        ref={chestRef}
-        type="button"
-        className={`reward-chest ${phase}`}
-        disabled={phase !== "waiting"}
-        onClick={collectCoins}
-        aria-label={tr("CoinPurchase.TAP_CHEST_TO_COLLECT")}
-      >
-        <img src={phase === "waiting" ? treasureChestClosedUrl : treasureChestUrl} alt="" />
-      </button>
-      <strong>+{safeAmount.toLocaleString()}{tr("CoinPurchase.COINS_SUFFIX")}</strong>
-      <span aria-live="polite">
-        {phase === "collected"
-          ? `${finalBalance.toLocaleString()} ${tr("CoinShop.COINS_SUFFIX")}`
-          : tr("CoinPurchase.TAP_CHEST_TO_COLLECT")}
-      </span>
-      {particles.length > 0 && createPortal(
-        <div className="reward-coin-particles" aria-hidden="true">
-          {particles.map((particle) => (
-            <img
-              key={particle.id}
-              className="reward-coin-particle"
-              src={coinUrl}
-              alt=""
-              style={{
-                left: particle.startX,
-                top: particle.startY,
-                "--coin-travel-x": `${particle.travelX}px`,
-                "--coin-travel-y": `${particle.travelY}px`,
-                "--coin-burst-x": `${particle.burstX}px`,
-                "--coin-burst-y": `${particle.burstY}px`,
-                "--coin-delay": `${particle.delayMs}ms`,
-                "--coin-duration": `${particle.durationMs}ms`,
-              } as CoinParticleStyle}
-            />
-          ))}
-        </div>,
-        document.body,
-      )}
     </div>
   );
 }

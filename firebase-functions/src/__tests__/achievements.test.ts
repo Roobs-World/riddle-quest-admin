@@ -91,6 +91,13 @@ describe("evaluateAchievements", () => {
     expect(mockAppendUnlockedAchievements).not.toHaveBeenCalled();
   });
 
+  it("contains persistence failures so achievement evaluation cannot fail gameplay", async () => {
+    mockGetUser.mockRejectedValue(new Error("Firestore unavailable"));
+
+    await expect(evaluateAchievements("user-1", baseContext)).resolves.toEqual([]);
+    expect(mockAppendUnlockedAchievements).not.toHaveBeenCalled();
+  });
+
   it("returns [] when user has no new achievements to unlock", async () => {
     const user = makeUser({
       stats: {totalWins: 0, bestStreak: 0, highestLevelClassic: 0, dailyPuzzlesCompleted: 0, totalHintsUsed: 0} as any,
@@ -99,6 +106,33 @@ describe("evaluateAchievements", () => {
     const result = await evaluateAchievements("user-1", baseContext);
     expect(result).toEqual([]);
     expect(mockAppendUnlockedAchievements).not.toHaveBeenCalled();
+  });
+
+  it("uses safe defaults when legacy player counters are absent", async () => {
+    mockGetUser.mockResolvedValue({
+      ...makeUser(),
+      stats: undefined,
+      coins: undefined,
+      unlockedAchievements: undefined,
+    } as unknown as Player);
+
+    await expect(evaluateAchievements("user-1", baseContext)).resolves.toEqual([]);
+    expect(mockAppendUnlockedAchievements).not.toHaveBeenCalled();
+  });
+
+  it("requires both minimum activity and quality thresholds", async () => {
+    mockGetUser.mockResolvedValue(makeUser({
+      stats: {gamesPlayed: 10, winRate: 79, totalWins: 10} as Player["stats"],
+    }));
+
+    const result = await evaluateAchievements("user-1", baseContext);
+    expect(result).not.toContain("win_rate_80");
+    expect(result).not.toContain("efficient_10");
+
+    mockGetUser.mockResolvedValue(makeUser({
+      stats: {gamesPlayed: 10} as Player["stats"],
+    }));
+    await expect(evaluateAchievements("user-1", baseContext)).resolves.not.toContain("win_rate_80");
   });
 
   it("unlocks first_win when totalWins >= 1 and not already unlocked", async () => {

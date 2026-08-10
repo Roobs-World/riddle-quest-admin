@@ -5,11 +5,7 @@ jest.mock("firebase-functions", () => ({logger: mockLogger}));
 
 const mockParse = jest.fn();
 const mockOpenAI = jest.fn().mockImplementation(() => ({
-  chat: {
-    completions: {
-      parse: mockParse,
-    },
-  },
+  responses: {parse: mockParse},
 }));
 
 jest.mock("openai", () => ({
@@ -22,53 +18,35 @@ import {MAX_RIDDLE_ANSWER_CHARACTERS} from "../shared/constants";
 
 function parsedRiddleResponse(question: string, answer: string) {
   return {
-    choices: [
-      {
-        message: {
-          parsed: {question, answer},
-        },
-      },
-    ],
+    output_parsed: {question, answer},
   };
 }
 
 function approvedReviewResponse() {
   return {
-    choices: [
-      {
-        message: {
-          parsed: {
-            clueSupportsAnswer: true,
-            singleBestAnswer: true,
-            factuallySound: true,
-            naturalLanguage: true,
-            fairForCasualPlayers: true,
-            noAnswerSpoiler: true,
-            issues: [],
-          },
-        },
-      },
-    ],
+    output_parsed: {
+      clueSupportsAnswer: true,
+      singleBestAnswer: true,
+      factuallySound: true,
+      naturalLanguage: true,
+      fairForCasualPlayers: true,
+      noAnswerSpoiler: true,
+      issues: [],
+    },
   };
 }
 
 function rejectedReviewResponse(issues: string[]) {
   return {
-    choices: [
-      {
-        message: {
-          parsed: {
-            clueSupportsAnswer: false,
-            singleBestAnswer: false,
-            factuallySound: true,
-            naturalLanguage: true,
-            fairForCasualPlayers: true,
-            noAnswerSpoiler: true,
-            issues,
-          },
-        },
-      },
-    ],
+    output_parsed: {
+      clueSupportsAnswer: false,
+      singleBestAnswer: false,
+      factuallySound: true,
+      naturalLanguage: true,
+      fairForCasualPlayers: true,
+      noAnswerSpoiler: true,
+      issues,
+    },
   };
 }
 
@@ -134,42 +112,41 @@ describe("OpenAI Service", () => {
       expect(mockOpenAI).toHaveBeenCalledWith({apiKey: "test-api-key"});
       expect(mockParse).toHaveBeenCalledWith({
         model: "gpt-5.6-sol",
-        reasoning_effort: "medium",
-        messages: expect.arrayContaining([
-          expect.objectContaining({role: "system"}),
-          expect.objectContaining({role: "user"}),
-        ]),
-        response_format: expect.objectContaining({
-          type: "json_schema",
-        }),
+        reasoning: {effort: "medium"},
+        instructions: expect.any(String),
+        input: expect.any(String),
+        prompt_cache_key: "riddlequest-riddle-generation-v1",
+        store: false,
+        text: {
+          format: expect.objectContaining({type: "json_schema"}),
+          verbosity: "low",
+        },
       });
       expect(mockLogger.info).toHaveBeenCalledWith("Generated and quality-approved a riddle.", {answerLength: 4});
     });
 
     test("requires an independent structured quality review before accepting a riddle", async () => {
-      mockApprovedRiddle(
-        "I reflect your face but keep no memory; find me on walls and in bathrooms.",
-        "mirror",
-      );
+      mockApprovedRiddle("I reflect your face but keep no memory; find me on walls and in bathrooms.", "mirror");
 
       await generateUniqueRiddle();
 
       const reviewRequest = mockParse.mock.calls[1][0] as {
         model: string;
-        reasoning_effort?: string;
-        messages: {role: string; content: string}[];
-        response_format: {json_schema?: {name?: string}};
+        reasoning?: {effort?: string};
+        instructions: string;
+        input: string;
+        store: boolean;
+        text: {format: {name?: string}};
       };
-      const reviewSystemPrompt = reviewRequest.messages.find((message) => message.role === "system")?.content;
-      const reviewInput = reviewRequest.messages.find((message) => message.role === "user")?.content;
 
       expect(reviewRequest.model).toBe("gpt-5.6-sol");
-      expect(reviewRequest.reasoning_effort).toBe("medium");
-      expect(reviewRequest.response_format.json_schema?.name).toBe("riddle_review");
-      expect(reviewSystemPrompt).toContain("logically and factually support");
-      expect(reviewSystemPrompt).toContain("clearly better than other plausible answers");
-      expect(reviewSystemPrompt).toContain("translation-like wording");
-      expect(reviewInput).toContain('"answer":"mirror"');
+      expect(reviewRequest.reasoning?.effort).toBe("medium");
+      expect(reviewRequest.text.format.name).toBe("riddle_review");
+      expect(reviewRequest.instructions).toContain("logically and factually support");
+      expect(reviewRequest.instructions).toContain("clearly better than other plausible answers");
+      expect(reviewRequest.instructions).toContain("translation-like wording");
+      expect(reviewRequest.input).toContain('"answer":"mirror"');
+      expect(reviewRequest.store).toBe(false);
     });
 
     test("includes riddle rules, broad pub quiz guidance, and structured output in the prompt", async () => {
@@ -178,22 +155,21 @@ describe("OpenAI Service", () => {
       await generateUniqueRiddle();
 
       const request = mockParse.mock.calls[0][0] as {
-        messages: {role: string; content: string}[];
-        response_format: unknown;
+        instructions: string;
+        input: string;
+        text: {format: unknown};
       };
-      const userPrompt = request.messages.find((message) => message.role === "user")?.content;
-      const systemPrompt = request.messages.find((message) => message.role === "system")?.content;
 
-      expect(userPrompt).toContain(`Answer: 1-${MAX_RIDDLE_ANSWER_CHARACTERS} characters`);
-      expect(userPrompt).toContain("two or more compatible clue details");
-      expect(userPrompt).toContain("plural, close variant, or obvious word stem");
-      expect(userPrompt).toContain("strained interpretation");
-      expect(userPrompt).toContain("another common answer");
-      expect(systemPrompt).toContain("exactly one natural answer");
-      expect(systemPrompt).toContain("factually correct");
-      expect(systemPrompt).toContain("mutually reinforcing details");
-      expect(systemPrompt).toContain("typical player would give");
-      expect(request.response_format).toEqual(
+      expect(request.input).toContain(`Answer: 1-${MAX_RIDDLE_ANSWER_CHARACTERS} characters`);
+      expect(request.input).toContain("two or more compatible clue details");
+      expect(request.input).toContain("plural, close variant, or obvious word stem");
+      expect(request.input).toContain("strained interpretation");
+      expect(request.input).toContain("another common answer");
+      expect(request.instructions).toContain("exactly one natural answer");
+      expect(request.instructions).toContain("factually correct");
+      expect(request.instructions).toContain("mutually reinforcing details");
+      expect(request.instructions).toContain("typical player would give");
+      expect(request.text.format).toEqual(
         expect.objectContaining({
           type: "json_schema",
         }),
@@ -213,7 +189,7 @@ describe("OpenAI Service", () => {
             model: "gpt-4.1-mini",
           }),
         );
-        expect(request).not.toHaveProperty("reasoning_effort");
+        expect(request).not.toHaveProperty("reasoning");
       }
     });
 
@@ -252,9 +228,7 @@ describe("OpenAI Service", () => {
       const result = await generateUniqueRiddle();
 
       expect(result).toEqual(["I'm Earth's bright neighbor after sunset.", "venus"]);
-      expect(mockLogger.warn).not.toHaveBeenCalledWith(
-        expect.stringContaining("Question contains invalid characters"),
-      );
+      expect(mockLogger.warn).not.toHaveBeenCalledWith(expect.stringContaining("Question contains invalid characters"));
     });
 
     test("accepts native-script punctuation in localized questions", async () => {
@@ -263,9 +237,7 @@ describe("OpenAI Service", () => {
       const result = await generateUniqueRiddle("ja");
 
       expect(result).toEqual(["銭湯の壁でよく主役、標高3776メートルの日本一といえば？", "ふじさん"]);
-      expect(mockLogger.warn).not.toHaveBeenCalledWith(
-        expect.stringContaining("Question contains invalid characters"),
-      );
+      expect(mockLogger.warn).not.toHaveBeenCalledWith(expect.stringContaining("Question contains invalid characters"));
     });
 
     test("rejects a semantically weak or ambiguous riddle after independent review", async () => {
@@ -284,8 +256,10 @@ describe("OpenAI Service", () => {
 
     test("rejects a riddle when OpenAI returns an empty quality review", async () => {
       mockParse
-        .mockResolvedValueOnce(parsedRiddleResponse("Seen after rain when sunlight returns, I arc in many colours.", "rainbow"))
-        .mockResolvedValueOnce({choices: [{message: {parsed: null}}]});
+        .mockResolvedValueOnce(
+          parsedRiddleResponse("Seen after rain when sunlight returns, I arc in many colours.", "rainbow"),
+        )
+        .mockResolvedValueOnce({output_parsed: null});
 
       const result = await generateUniqueRiddle();
 
@@ -295,13 +269,7 @@ describe("OpenAI Service", () => {
 
     test("returns null when OpenAI returns empty structured content", async () => {
       mockParse.mockResolvedValue({
-        choices: [
-          {
-            message: {
-              parsed: null,
-            },
-          },
-        ],
+        output_parsed: null,
       });
 
       const result = await generateUniqueRiddle();

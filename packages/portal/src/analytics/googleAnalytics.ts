@@ -1,13 +1,24 @@
+/** Describes analytics value. */
 export type AnalyticsValue = string | number | boolean;
+/** Describes analytics item. */
 export type AnalyticsItem = Record<string, AnalyticsValue>;
+/** Describes analytics params. */
 export type AnalyticsParams = Record<string, AnalyticsValue | AnalyticsItem[] | undefined>;
+/** Describes sanitized analytics params. */
 export type SanitizedAnalyticsParams = Record<string, AnalyticsValue | AnalyticsItem[]>;
+/** Describes analytics sink. */
 export type AnalyticsSink = (eventName: string, params: SanitizedAnalyticsParams) => void;
 
+/** Provides sink behavior. */
 let sink: AnalyticsSink | null = null;
+/** Provides pending events behavior. */
 let pendingEvents: Array<{eventName: string; params: SanitizedAnalyticsParams}> = [];
+/** Provides last screen behavior. */
 let lastScreen = "";
+/** Limits generic client-error signals to prevent recursive telemetry floods. */
+const CLIENT_ERROR_REPORT_LIMIT = 5;
 
+/** Provides compact behavior. */
 const compact = (value: string, fallback: string) => {
   const normalized = value
     .normalize("NFKD")
@@ -18,6 +29,7 @@ const compact = (value: string, fallback: string) => {
   return normalized || fallback;
 };
 
+/** Provides sanitize analytics params behavior. */
 export const sanitizeAnalyticsParams = (params: AnalyticsParams = {}): SanitizedAnalyticsParams =>
   Object.entries(params).reduce<SanitizedAnalyticsParams>((result, [key, value]) => {
     const safeKey = compact(key, "param");
@@ -30,6 +42,7 @@ export const sanitizeAnalyticsParams = (params: AnalyticsParams = {}): Sanitized
     return result;
   }, {});
 
+/** Provides configure analytics behavior. */
 export const configureAnalytics = (nextSink: AnalyticsSink | null) => {
   sink = nextSink;
   if (!sink) return;
@@ -37,6 +50,7 @@ export const configureAnalytics = (nextSink: AnalyticsSink | null) => {
   pendingEvents = [];
 };
 
+/** Tracks event. */
 export const trackEvent = (eventName: string, params: AnalyticsParams = {}) => {
   const safeName = compact(eventName, "game_event").slice(0, 40);
   const safeParams = sanitizeAnalyticsParams(params);
@@ -44,6 +58,7 @@ export const trackEvent = (eventName: string, params: AnalyticsParams = {}) => {
   else pendingEvents = [...pendingEvents.slice(-99), {eventName: safeName, params: safeParams}];
 };
 
+/** Tracks screen. */
 export const trackScreen = (screenName: string, params: AnalyticsParams = {}) => {
   const safeScreen = compact(screenName, "unknown_screen");
   if (safeScreen === lastScreen) return;
@@ -55,6 +70,7 @@ export const trackScreen = (screenName: string, params: AnalyticsParams = {}) =>
   });
 };
 
+/** Gets button id. */
 const getButtonId = (button: HTMLElement) => {
   const explicit = button.dataset.analyticsId || button.dataset.tooltip;
   if (explicit) return compact(explicit, "button");
@@ -66,6 +82,7 @@ const getButtonId = (button: HTMLElement) => {
   return label ? compact(label, "button") : "button";
 };
 
+/** Provides install button analytics behavior. */
 export const installButtonAnalytics = (root: Document = document) => {
   const onClick = (event: MouseEvent) => {
     const target = event.target;
@@ -82,6 +99,28 @@ export const installButtonAnalytics = (root: Document = document) => {
   return () => root.removeEventListener("click", onClick, true);
 };
 
+/**
+ * Reports bounded, privacy-safe browser failures without transmitting messages,
+ * stack traces, URLs, player identifiers, or rejected values.
+ */
+export const installGlobalErrorAnalytics = (target: Window = window) => {
+  let remainingReports = CLIENT_ERROR_REPORT_LIMIT;
+  const report = (errorKind: "uncaught_error" | "unhandled_rejection") => {
+    if (remainingReports <= 0) return;
+    remainingReports -= 1;
+    trackEvent("client_error", {error_kind: errorKind});
+  };
+  const onError = () => report("uncaught_error");
+  const onUnhandledRejection = () => report("unhandled_rejection");
+  target.addEventListener("error", onError);
+  target.addEventListener("unhandledrejection", onUnhandledRejection);
+  return () => {
+    target.removeEventListener("error", onError);
+    target.removeEventListener("unhandledrejection", onUnhandledRejection);
+  };
+};
+
+/** Tracks purchase. */
 export const trackPurchase = (input: {
   productId: string;
   purchaseType: "consumable" | "subscription";
@@ -103,6 +142,7 @@ export const trackPurchase = (input: {
   });
 };
 
+/** Resets analytics for tests. */
 export const resetAnalyticsForTests = () => {
   lastScreen = "";
   sink = null;

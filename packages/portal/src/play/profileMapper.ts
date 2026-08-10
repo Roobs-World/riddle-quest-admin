@@ -1,8 +1,10 @@
 import type {BridgeProfile, BridgeUser} from "@qwordly/core/bridge";
 
+/** Provides to number behavior. */
 const toNumber = (value: unknown, fallback: number): number =>
   typeof value === "number" && Number.isFinite(value) ? value : fallback;
 
+/** Provides to achievement ids behavior. */
 const toAchievementIds = (value: unknown): string[] => {
   if (!Array.isArray(value)) {
     return [];
@@ -22,6 +24,7 @@ const toAchievementIds = (value: unknown): string[] => {
   });
 };
 
+/** Provides to bridge profile behavior. */
 export const toBridgeProfile = (user: BridgeUser, data: Record<string, unknown> | null): BridgeProfile => {
   const stats = typeof data?.stats === "object" && data.stats ? (data.stats as Record<string, unknown>) : {};
   const progress = typeof data?.progress === "object" && data.progress ? (data.progress as Record<string, unknown>) : {};

@@ -1,9 +1,26 @@
 import {describe, expect, it} from "@jest/globals";
+import AxeBuilder from "@axe-core/playwright";
 import {chromium, type Page} from "@playwright/test";
 
 const describeBrowser = process.env.PORTAL_BROWSER_TESTS === "1" ? describe : describe.skip;
 
+const wcagTags = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
+
+const expectAccessible = async (page: Page, state: string) => {
+  const {violations} = await new AxeBuilder({page}).withTags(wcagTags).analyze();
+  expect(
+    violations.map(({help, id, impact, nodes}) => ({
+      help,
+      id,
+      impact,
+      state,
+      targets: nodes.map(({target}) => target),
+    })),
+  ).toEqual([]);
+};
+
 const completeOnboardingAndTours = async (page: Page) => {
+  await page.getByTestId("server-activity-loader").waitFor({state: "hidden"});
   await page.getByRole("button", {name: /let's play/i}).click();
   await page.getByRole("button", {name: /got it/i}).click();
   const guestContinue = page.getByRole("button", {name: /play as guest/i});
@@ -69,7 +86,8 @@ describeBrowser("standalone Jest browser game", () => {
     await new Promise<void>((resolve) => server.listen(4178, "127.0.0.1", resolve));
     const browser = await chromium.launch({headless: true});
     try {
-      const page = await browser.newPage({viewport: {width: 390, height: 844}});
+      const context = await browser.newContext({viewport: {width: 390, height: 844}});
+      const page = await context.newPage();
       const consoleErrors: string[] = [];
       const layoutWarnings: string[] = [];
       page.on("console", (message) => {
@@ -85,12 +103,16 @@ describeBrowser("standalone Jest browser game", () => {
       });
       await page.goto("http://127.0.0.1:4178/?harness=jest");
       await page.getByRole("button", {name: /let's play/i}).waitFor({timeout: 15000});
+      expect(await page.locator("main").count()).toBe(1);
+      expect(await page.locator("main main").count()).toBe(0);
+      await expectAccessible(page, "onboarding");
       const welcomeCard = await page.locator(".onboarding-card-welcome").boundingBox();
       const welcomeLogo = await page.locator(".onboarding-card-welcome .onboarding-logo").boundingBox();
       expect(welcomeCard).not.toBeNull();
       expect(welcomeLogo).not.toBeNull();
       expect(welcomeLogo!.width / welcomeCard!.width).toBeGreaterThan(0.85);
       await completeOnboardingAndTours(page);
+      await expectAccessible(page, "game");
 
       expect(await page.locator(".solar-system").count()).toBe(1);
       await page.locator(".solar-system canvas").waitFor();
@@ -135,6 +157,7 @@ describeBrowser("standalone Jest browser game", () => {
       expect(await page.evaluate(() => localStorage.getItem("riddleQuest:activeRaceRun"))).toBeNull();
       expect((await page.locator(".race-coin-balance strong").innerText()).trim()).toBe(mainGameCoinBalance);
       expect(await page.locator(".race-coin-balance").isVisible()).toBe(true);
+      await expectAccessible(page, "multiplayer category selection");
       const penaltyCenterOffset = await page.locator(".race-screen").evaluate((screen) => {
         const penalty = document.createElement("div");
         penalty.className = "race-penalty-flash";
@@ -171,6 +194,7 @@ describeBrowser("standalone Jest browser game", () => {
       });
       const multiplayerAchievementPopup = page.locator(".modal-reward");
       await multiplayerAchievementPopup.getByRole("heading", {name: /achievement unlocked/i}).waitFor();
+      await expectAccessible(page, "achievement reward");
       expect(await multiplayerAchievementPopup.getByText("Race Debut", {exact: true}).isVisible()).toBe(true);
       const [popupZIndex, raceZIndex] = await Promise.all([
         page.locator(".game-modal-backdrop").evaluate((element) => Number(getComputedStyle(element).zIndex)),
@@ -215,8 +239,17 @@ describeBrowser("standalone Jest browser game", () => {
             document.documentElement.scrollHeight <= innerHeight + 1,
         ),
       ).toBe(true);
+      await page.getByRole("button", {name: /^hint$/i}).click();
+      await page.locator(".modal-hint").waitFor();
+      await expectAccessible(page, "hint confirmation");
+      await page.keyboard.press("Escape");
+      await page.getByRole("button", {name: /^skip$/i}).click();
+      await page.locator(".modal-skip").waitFor();
+      await expectAccessible(page, "skip confirmation");
+      await page.keyboard.press("Escape");
       await page.getByRole("button", {name: /buy coins/i}).first().click();
       await page.getByRole("heading", {name: /coin shop/i}).waitFor();
+      await expectAccessible(page, "coin shop");
       await page.keyboard.press("Escape");
       await page.setViewportSize({width: 390, height: 667});
       await page.waitForFunction(
@@ -243,11 +276,25 @@ describeBrowser("standalone Jest browser game", () => {
       }
       expect(profileTourHeadings).toContain("Your Treasure Chest");
       await page.locator(".tooltip-card").waitFor({state: "detached"});
+      await expectAccessible(page, "profile");
       for (const name of [/statistics/i, /achievements/i, /ranks/i, /leaderboard/i, /treasure/i]) {
         expect(await page.getByRole("button", {name}).isVisible()).toBe(true);
       }
+      await page.getByRole("button", {name: /^statistics$/i}).click();
+      await page.locator(".modal-statistics").waitFor();
+      await expectAccessible(page, "statistics");
+      await page.keyboard.press("Escape");
+      await page.getByRole("button", {name: /^profile$/i}).first().click();
+      await page.locator(".modal-profile").waitFor();
+      await page.getByRole("button", {name: /treasure/i}).click();
+      await page.locator(".modal-treasure").waitFor();
+      await expectAccessible(page, "treasure");
+      await page.keyboard.press("Escape");
+      await page.getByRole("button", {name: /^profile$/i}).first().click();
+      await page.locator(".modal-profile").waitFor();
       await page.getByRole("button", {name: /^achievements$/i}).click();
       await page.locator(".modal-achievements").waitFor();
+      await expectAccessible(page, "achievements");
       await page.getByText("Race Debut", {exact: true}).waitFor();
       await page.getByText("Challenge Issued", {exact: true}).waitFor();
       await page.getByText("Clean Run", {exact: true}).waitFor();
@@ -256,6 +303,7 @@ describeBrowser("standalone Jest browser game", () => {
       await page.locator(".modal-profile").waitFor();
       await page.getByRole("button", {name: /^ranks$/i}).evaluate((button) => (button as HTMLButtonElement).click());
       await page.locator(".modal-ranks").waitFor();
+      await expectAccessible(page, "ranks");
       const rankIconNames = await page.locator(".modal-ranks [data-rank-icon]").evaluateAll(
         (icons) => icons.map((icon) => icon.getAttribute("data-rank-icon")),
       );
@@ -290,6 +338,7 @@ describeBrowser("standalone Jest browser game", () => {
       await page.waitForFunction(
         () => document.querySelector(".leaderboard-list")?.getAttribute("aria-busy") === "false",
       );
+      await expectAccessible(page, "leaderboard");
       expect((await leaderboardList.innerText()).trim()).not.toBe("");
       expect(await leaderboardList.locator("li").count()).toBe(10);
       expect(await leaderboardList.locator(".leaderboard-avatar").count()).toBeGreaterThan(0);
@@ -312,6 +361,7 @@ describeBrowser("standalone Jest browser game", () => {
       for (const text of [/sound/i, /language/i, /help/i, /credits/i, /about/i, /buy coins/i]) {
         expect(await page.getByText(text).first().isVisible()).toBe(true);
       }
+      await expectAccessible(page, "settings");
       await page.keyboard.press("Escape");
 
       await page.locator(".keyboard").getByRole("button", {name: /^P$/}).click();
@@ -335,6 +385,7 @@ describeBrowser("standalone Jest browser game", () => {
       expect(await page.locator(".game-content").evaluate((element) => (element as HTMLElement).inert)).toBe(true);
       await page.getByRole("button", {name: /^next$/i}).click();
       await page.getByRole("heading", {name: /nice job/i}).waitFor();
+      await expectAccessible(page, "victory reward");
       const victoryChest = page.getByRole("button", {name: /tap the chest/i});
       const victoryContinue = page.getByRole("button", {name: /next level/i});
       await victoryChest.waitFor();
@@ -357,7 +408,7 @@ describeBrowser("standalone Jest browser game", () => {
       await page.waitForFunction(() => !(document.querySelector(".reward-continue") as HTMLButtonElement)?.disabled);
       expect(Number((await page.locator(".game-header .coin-pill strong").innerText()).replace(/,/g, "")))
         .toBe(balanceBeforeVictoryCollection + 50);
-      await page.getByRole("button", {name: /share your victory/i}).click();
+      await page.getByRole("button", {name: /invite a friend/i}).click();
       await page.locator('[data-testid="server-activity-loader"]').waitFor({state: "detached"});
       expect(await page.locator(".modal-victory").count()).toBe(1);
       await page.waitForTimeout(2800);

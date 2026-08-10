@@ -5,6 +5,7 @@ import type {AuthSnapshot, HostServices, LeaderboardType, ProductSummary} from "
 import {toProductSummaries} from "./types";
 import {createFakeRaceServices} from "./race/testing/fakeRaceServices";
 
+/** Provides fake riddles behavior. */
 const fakeRiddles: BridgeRiddle[] = [
   {
     riddleId: "classic-fake-1",
@@ -32,6 +33,7 @@ const fakeRiddles: BridgeRiddle[] = [
   },
 ];
 
+/** Creates fake user. */
 const createFakeUser = (): BridgeUser => ({
   uid: "jest-guest",
   displayName: "Guest Solver",
@@ -40,6 +42,7 @@ const createFakeUser = (): BridgeUser => ({
   isAnonymous: true,
 });
 
+/** Creates fake profile. */
 const createFakeProfile = (): BridgeProfile => ({
   username: "Guest Solver",
   coins: 180,
@@ -52,6 +55,7 @@ const createFakeProfile = (): BridgeProfile => ({
   classicIndex: 1,
 });
 
+/** Provides leaderboard rows behavior. */
 const leaderboardRows: BridgeLeaderboardEntry[] = [
   {userId: "jest-guest", username: "Guest Solver", level: 3, xp: 420, totalWins: 5, bestStreak: 2},
   {
@@ -75,6 +79,7 @@ const leaderboardRows: BridgeLeaderboardEntry[] = [
   })),
 ];
 
+/** Creates fake host services. */
 export const createFakeHostServices = ({
   initiallyAuthenticated = true,
 }: {
@@ -260,6 +265,10 @@ export const createFakeHostServices = ({
     },
     async updateAvatar(imageDataUrl) {
       return updateProfile({avatarUrl: imageDataUrl});
+    },
+    async deleteAccount() {
+      snapshot = {user: null, profile: null};
+      emit();
     },
   };
 };

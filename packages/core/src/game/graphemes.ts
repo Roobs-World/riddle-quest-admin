@@ -1,5 +1,7 @@
+/** Provides segmenter cache behavior. */
 const segmenterCache = new Map<string, Intl.Segmenter>();
 
+/** Gets segmenter. */
 function getSegmenter(locale: string): Intl.Segmenter | null {
   if (typeof Intl === "undefined" || typeof Intl.Segmenter !== "function") {
     return null;
@@ -16,6 +18,7 @@ function getSegmenter(locale: string): Intl.Segmenter | null {
   return segmenter;
 }
 
+/** Provides split graphemes behavior. */
 export function splitGraphemes(value: string, locale: string = "en"): string[] {
   if (!value) {
     return [];
@@ -30,10 +33,12 @@ export function splitGraphemes(value: string, locale: string = "en"): string[] {
   return Array.from(normalizedValue);
 }
 
+/** Provides lower case graphemes behavior. */
 export function lowerCaseGraphemes(value: string, locale: string = "en"): string[] {
   return splitGraphemes(value, locale).map((grapheme) => grapheme.toLocaleLowerCase(locale));
 }
 
+/** Provides grapheme length behavior. */
 export function graphemeLength(value: string, locale: string = "en"): number {
   return splitGraphemes(value, locale).length;
 }

@@ -10,6 +10,18 @@
     }
   ],
   "fieldOverrides": [
+    {"collectionGroup": "users", "fieldPath": "lastLogin", "indexes": []},
+    {"collectionGroup": "users", "fieldPath": "createdAt", "indexes": []},
+    {"collectionGroup": "users", "fieldPath": "registeredAt", "indexes": []},
+    {"collectionGroup": "users", "fieldPath": "lastDailyChallengeCompletedAt", "indexes": []},
+    {"collectionGroup": "users", "fieldPath": "progress", "indexes": []},
+    {"collectionGroup": "users", "fieldPath": "stats", "indexes": []},
+    {"collectionGroup": "users", "fieldPath": "unlockedAchievements", "indexes": []},
+    {"collectionGroup": "leaderboard", "fieldPath": "updatedAt", "indexes": []},
+    {"collectionGroup": "jestPurchaseGrants", "fieldPath": "grantedAt", "indexes": []},
+    {"collectionGroup": "jestReferralRewards", "fieldPath": "grantedAt", "indexes": []},
+    {"collectionGroup": "jestReferralVerifications", "fieldPath": "verifiedAt", "indexes": []},
+    {"collectionGroup": "riddleSupplyRequests", "fieldPath": "requestedAt", "indexes": []},
     {"collectionGroup": "raceDecks", "fieldPath": "expiresAt", "ttl": true, "indexes": []},
     {"collectionGroup": "raceRuns", "fieldPath": "expiresAt", "ttl": true, "indexes": []},
     {"collectionGroup": "raceChallenges", "fieldPath": "expiresAt", "ttl": true, "indexes": []},

@@ -1,0 +1,48 @@
+import {useState, type FormEvent} from "react";
+import {tr} from "../../i18n";
+import {
+  canSubmitUsername,
+  normalizeUsernameInput,
+  USERNAME_MAX_LENGTH,
+  USERNAME_MIN_LENGTH,
+} from "./usernameForm";
+
+/** Props required to submit a profile username change. */
+export type UsernameModalPageProps = {
+  /** Stores on update username. */
+  onUpdateUsername: (username: string) => void;
+};
+
+/** Renders and owns the transient username editing form state. */
+export function UsernameModalPage({onUpdateUsername}: UsernameModalPageProps) {
+  const [username, setUsername] = useState("");
+  const normalizedUsername = normalizeUsernameInput(username);
+  const canSubmit = canSubmitUsername(username);
+
+  /** Normalizes and submits a valid username to the authoritative profile handler. */
+  const submitUsername = (event: FormEvent) => {
+    event.preventDefault();
+    if (!canSubmit) return;
+    onUpdateUsername(normalizedUsername);
+    setUsername("");
+  };
+
+  return (
+    <form className="username-form" onSubmit={submitUsername}>
+      <label>
+        {tr("Profile.USERNAME_LABEL")}
+        <input
+          autoFocus
+          minLength={USERNAME_MIN_LENGTH}
+          maxLength={USERNAME_MAX_LENGTH}
+          value={username}
+          placeholder={tr("Profile.ENTER_NEW_USERNAME_PLACEHOLDER")}
+          onChange={(event) => setUsername(event.target.value)}
+        />
+      </label>
+      <button className="play-primary" disabled={!canSubmit}>
+        {tr("Profile.SAVE_BUTTON")}
+      </button>
+    </form>
+  );
+}

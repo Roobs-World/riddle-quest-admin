@@ -170,6 +170,17 @@ describe("race presentation components", () => {
         onConfirm={noop}
       />,
     )).toContain("Quitting");
+    const idleQuitDialog = renderToString(
+      <RaceQuitDialog
+        dialogRef={{current: null}}
+        error={null}
+        abandoning={false}
+        onCancel={noop}
+        onConfirm={noop}
+      />,
+    );
+    expect(idleQuitDialog).toContain("Quit race");
+    expect(idleQuitDialog).not.toContain("race-quit-error");
   });
 
   it("server-renders each initial controller route", async () => {

@@ -2,14 +2,21 @@ import {z} from "zod";
 import {validateUsernameForProfanity} from "./profanity";
 import {SUPPORTED_LOCALES} from "./locales";
 import {RaceCategoryIdSchema, RaceContentQualityVersionSchema, RaceDifficultyBandSchema} from "../race/raceSchemas";
+export type {ProductPricing, RegionalPrice, SpecialOffer} from "../pricing/types";
 
+/** Describes timestamp like. */
 type TimestampLike = {
+  /** Stores to millis. */
   toMillis?: () => number;
+  /** Stores to date. */
   toDate?: () => Date;
+  /** Stores seconds. */
   seconds?: number;
+  /** Stores nanoseconds. */
   nanoseconds?: number;
 };
 
+/** Provides coerce timestamp to millis behavior. */
 const coerceTimestampToMillis = (value: unknown): unknown => {
   if (value == null || typeof value === "number") {
     return value;
@@ -37,14 +44,17 @@ const coerceTimestampToMillis = (value: unknown): unknown => {
   return value;
 };
 
+/** Validates the timestamp as millis data shape. */
 const TimestampAsMillisSchema = z.preprocess(coerceTimestampToMillis, z.number());
 
+/** Validates the player progress data shape. */
 export const PlayerProgressSchema = z.object({
   classicIndex: z.number().int().nonnegative().default(1),
   dailyChallengeIndex: z.number().int().nonnegative().default(0),
   dailyChallengeCurrentQuestion: z.number().int().nonnegative().default(0),
 });
 
+/** Validates the player stats data shape. */
 export const PlayerStatsSchema = z.object({
   xp: z.number().int().nonnegative().default(0),
   level: z.number().int().positive().default(1),
@@ -67,12 +77,15 @@ export const PlayerStatsSchema = z.object({
   multiplayerChallengesCreated: z.number().int().nonnegative().default(0),
 });
 
+/** Validates the unlocked achievement data shape. */
 export const UnlockedAchievementSchema = z.object({
   achievementId: z.string(),
   unlockedAt: z.number(),
 });
+/** Describes unlocked achievement. */
 export type UnlockedAchievement = z.infer<typeof UnlockedAchievementSchema>;
 
+/** Validates the player data shape. */
 export const PlayerSchema = z.object({
   userId: z.string(),
   email: z.string().email(),
@@ -120,8 +133,10 @@ export const PlayerSchema = z.object({
   fcmTokenUpdatedAt: TimestampAsMillisSchema.optional(),
   lastStreakReminderSentAt: TimestampAsMillisSchema.optional(),
 });
+/** Describes player. */
 export type Player = z.infer<typeof PlayerSchema>;
 
+/** Validates the firestore riddle data shape. */
 export const FirestoreRiddleSchema = z.object({
   riddleId: z.string(),
   canonicalRiddleId: z.string().min(1).max(160).optional(),
@@ -139,8 +154,10 @@ export const FirestoreRiddleSchema = z.object({
   qualityVersion: RaceContentQualityVersionSchema.optional(),
   timestamp: z.unknown().optional(),
 });
+/** Describes firestore riddle. */
 export type FirestoreRiddle = z.infer<typeof FirestoreRiddleSchema>;
 
+/** Validates the classic riddle data shape. */
 export const ClassicRiddleSchema = z.object({
   riddleId: z.string(),
   canonicalRiddleId: z.string().min(1).max(160).optional(),
@@ -155,8 +172,10 @@ export const ClassicRiddleSchema = z.object({
   raceEligible: z.boolean().optional(),
   qualityVersion: RaceContentQualityVersionSchema.optional(),
 });
+/** Describes classic riddle. */
 export type ClassicRiddle = z.infer<typeof ClassicRiddleSchema>;
 
+/** Validates the daily riddle data shape. */
 export const DailyRiddleSchema = z.object({
   riddleId: z.string(),
   canonicalRiddleId: z.string().min(1).max(160).optional(),
@@ -173,13 +192,16 @@ export const DailyRiddleSchema = z.object({
   qualityVersion: RaceContentQualityVersionSchema.optional(),
   timestamp: z.unknown(),
 });
+/** Describes daily riddle. */
 export type DailyRiddle = z.infer<typeof DailyRiddleSchema>;
 
+/** Renders the riddle collections interface. */
 export const RiddleCollections = {
   RIDDLES: "riddles",
   DAILY_RIDDLES: "dailyRiddles",
 } as const;
 
+/** Validates the regional price data shape. */
 export const RegionalPriceSchema = z
   .object({
     amount: z.number().nonnegative(),
@@ -189,6 +211,7 @@ export const RegionalPriceSchema = z
   })
   .passthrough();
 
+/** Validates the special offer data shape. */
 export const SpecialOfferSchema = z
   .object({
     badgeText: z.string().min(1),
@@ -200,6 +223,7 @@ export const SpecialOfferSchema = z
   })
   .passthrough();
 
+/** Validates the product pricing data shape. */
 export const ProductPricingSchema = z
   .object({
     productId: z.string().min(1),
@@ -216,8 +240,7 @@ export const ProductPricingSchema = z
   })
   .passthrough();
 
-export type RegionalPrice = z.infer<typeof RegionalPriceSchema>;
-export type SpecialOffer = z.infer<typeof SpecialOfferSchema>;
-export type ProductPricing = z.infer<typeof ProductPricingSchema>;
+/** Describes player progress. */
 export type PlayerProgress = z.infer<typeof PlayerProgressSchema>;
+/** Describes player stats. */
 export type PlayerStats = z.infer<typeof PlayerStatsSchema>;

@@ -1,4 +1,18 @@
-import {redactSensitiveTelemetry} from "../shared/sentry";
+import {redactSensitiveTelemetry, resolveSecureSentryDsn} from "../shared/sentry";
+
+describe("telemetry transport security", () => {
+  it("accepts only encrypted HTTPS DSNs", () => {
+    expect(resolveSecureSentryDsn(" https://public@example.ingest.sentry.io/1 "))
+      .toBe("https://public@example.ingest.sentry.io/1");
+    expect(resolveSecureSentryDsn(undefined)).toBeUndefined();
+    expect(resolveSecureSentryDsn("   ")).toBeUndefined();
+  });
+
+  it.each(["http://example.test/1", "ws://example.test/1", "not-a-url"])(
+    "rejects an insecure or malformed DSN: %s",
+    (dsn) => expect(() => resolveSecureSentryDsn(dsn)).toThrow(/HTTPS/),
+  );
+});
 
 describe("telemetry redaction", () => {
   it("redacts identity, credentials, guesses, answers, and image payloads", () => {

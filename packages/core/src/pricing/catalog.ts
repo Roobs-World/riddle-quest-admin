@@ -1,7 +1,8 @@
-import type {ProductPricing, RegionalPrice, SpecialOffer} from "../validation/firestoreSchemas";
+import type {ProductPricing, RegionalPrice, SpecialOffer} from "./types";
 
 export type {ProductPricing, RegionalPrice, SpecialOffer};
 
+/** Defines the default product pricing value. */
 export const DEFAULT_PRODUCT_PRICING: ProductPricing[] = [
   {
     productId: "com.roobsworld.riddlequest.coinpack1",
@@ -71,6 +72,7 @@ export const DEFAULT_PRODUCT_PRICING: ProductPricing[] = [
   },
 ];
 
+/** Provides clone product pricing catalog behavior. */
 export const cloneProductPricingCatalog = (products: ProductPricing[] = DEFAULT_PRODUCT_PRICING): ProductPricing[] => {
   return products.map((product) => ({
     ...product,

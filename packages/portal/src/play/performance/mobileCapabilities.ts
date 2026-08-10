@@ -1,12 +1,20 @@
+/** Describes mobile capabilities. */
 export type MobileCapabilities = {
+  /** Stores device memory. */
   deviceMemory?: number;
+  /** Stores hardware concurrency. */
   hardwareConcurrency?: number;
+  /** Stores save data. */
   saveData?: boolean;
+  /** Stores effective type. */
   effectiveType?: string;
+  /** Stores reduced motion. */
   reducedMotion: boolean;
+  /** Stores web gl available. */
   webGlAvailable: boolean;
 };
 
+/** Indicates whether should load decorative web gl. */
 export function shouldLoadDecorativeWebGl(capabilities: MobileCapabilities): boolean {
   if (!capabilities.webGlAvailable || capabilities.reducedMotion || capabilities.saveData) return false;
   if (capabilities.deviceMemory !== undefined && capabilities.deviceMemory <= 4) return false;
@@ -14,6 +22,7 @@ export function shouldLoadDecorativeWebGl(capabilities: MobileCapabilities): boo
   return capabilities.effectiveType !== "slow-2g" && capabilities.effectiveType !== "2g";
 }
 
+/** Gets mobile capabilities. */
 export function getMobileCapabilities(): MobileCapabilities {
   const runtimeNavigator = navigator as Navigator & {
     deviceMemory?: number;

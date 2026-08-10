@@ -1,15 +1,26 @@
+/** Describes notification copy. */
 export type NotificationCopy = {
+  /** Stores daily body. */
   dailyBody: string;
+  /** Stores daily cta. */
   dailyCta: string;
+  /** Stores streak body. */
   streakBody: string;
+  /** Stores streak cta. */
   streakCta: string;
+  /** Stores weekly body. */
   weeklyBody: string;
+  /** Stores weekly cta. */
   weeklyCta: string;
+  /** Stores race title. */
   raceTitle: string;
+  /** Stores race body. */
   raceBody: string;
+  /** Stores race cta. */
   raceCta: string;
 };
 
+/** Defines the copy fields value. */
 const COPY_FIELDS: Array<keyof NotificationCopy> = [
   "dailyBody",
   "dailyCta",
@@ -22,22 +33,29 @@ const COPY_FIELDS: Array<keyof NotificationCopy> = [
   "raceCta",
 ];
 
+/** Defines the body fields value. */
 const BODY_FIELDS = new Set<keyof NotificationCopy>(["dailyBody", "streakBody", "weeklyBody", "raceBody"]);
+/** Defines the cta fields value. */
 const CTA_FIELDS = new Set<keyof NotificationCopy>(["dailyCta", "streakCta", "weeklyCta", "raceCta"]);
+/** Defines the emoji pattern value. */
 const EMOJI_PATTERN = /\p{Extended_Pictographic}/u;
+/** Defines the unsafe name characters value. */
 const UNSAFE_NAME_CHARACTERS = /[\p{Extended_Pictographic}\p{Regional_Indicator}\u200D\uFE0F]/gu;
 
+/** Provides max length for behavior. */
 const maxLengthFor = (field: keyof NotificationCopy) => {
   if (BODY_FIELDS.has(field)) return 100;
   if (CTA_FIELDS.has(field)) return 50;
   return 200;
 };
 
+/** Provides as record behavior. */
 const asRecord = (value: unknown): Record<string, unknown> | null =>
   value !== null && typeof value === "object" && !Array.isArray(value)
     ? value as Record<string, unknown>
     : null;
 
+/** Parses notification copy document. */
 export const parseNotificationCopyDocument = (data: unknown, locale: string): NotificationCopy => {
   const document = asRecord(data);
   const locales = asRecord(document?.locales);
@@ -59,12 +77,14 @@ export const parseNotificationCopyDocument = (data: unknown, locale: string): No
   })) as NotificationCopy;
 };
 
+/** Renders notification template. */
 export const renderNotificationTemplate = (
   template: string,
   values: Record<string, string | number>,
 ) => template.replace(/\{([a-zA-Z0-9_]+)\}/g, (token, key: string) =>
   Object.prototype.hasOwnProperty.call(values, key) ? String(values[key]) : token);
 
+/** Renders notification body. */
 export const renderNotificationBody = (
   template: string,
   values: Record<string, string | number>,
@@ -76,6 +96,7 @@ export const renderNotificationBody = (
   return body;
 };
 
+/** Provides notification player name behavior. */
 export const notificationPlayerName = (value: string | undefined, fallback: string) => {
   const clean = (candidate: string) => candidate
     .replace(UNSAFE_NAME_CHARACTERS, "")
@@ -85,6 +106,7 @@ export const notificationPlayerName = (value: string | undefined, fallback: stri
   return [...selected].slice(0, 24).join("");
 };
 
+/** Defines the mock notification copy value. */
 export const MOCK_NOTIFICATION_COPY: NotificationCopy = {
   dailyBody: "{name}, today's Cosmic Riddle is live. Solve it for {coins}+ coins.",
   dailyCta: "Solve it",

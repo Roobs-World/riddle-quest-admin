@@ -1,7 +1,9 @@
 import {z} from "zod";
 
+/** Validates the backend game mode data shape. */
 export const BackendGameModeSchema = z.enum(["challenge", "classic"]);
 
+/** Validates the complete game input data shape. */
 export const CompleteGameInputSchema = z.object({
   riddleId: z.string().min(1, "Riddle ID is required"),
   gameMode: BackendGameModeSchema,
@@ -9,6 +11,7 @@ export const CompleteGameInputSchema = z.object({
   isCorrect: z.boolean(),
 });
 
+/** Validates the complete game output data shape. */
 export const CompleteGameOutputSchema = z.object({
   coinsEarned: z.number().nonnegative(),
   newlyUnlockedAchievementIds: z.array(z.string()),
@@ -30,9 +33,12 @@ export const CompleteGameOutputSchema = z.object({
     .optional(),
 });
 
+/** Describes complete game input. */
 export type CompleteGameInput = z.infer<typeof CompleteGameInputSchema>;
+/** Describes complete game output. */
 export type CompleteGameOutput = z.infer<typeof CompleteGameOutputSchema>;
 
+/** Validates the daily challenge question data shape. */
 export const DailyChallengeQuestionSchema = z.object({
   riddleId: z.string(),
   text: z.string(),

@@ -5,8 +5,10 @@ import {HOST_TO_GAME_EVENT} from "../../localBridge";
 import {tr} from "../../i18n";
 import {runWhenLayoutReady} from "../layoutReady";
 
+/** Describes message router. */
 type MessageRouter = (message: unknown) => Promise<unknown>;
 
+/** Provides report bridge error behavior. */
 function reportBridgeError(
   error: unknown,
   requestPrefix: string,
@@ -19,6 +21,7 @@ function reportBridgeError(
   });
 }
 
+/** Provides game ready reporter. */
 export function useGameReadyReporter({
   initialized,
   sendReady,
@@ -63,6 +66,7 @@ export function useGameReadyReporter({
   }, [postToHost, sendReady]);
 }
 
+/** Provides game message listener. */
 export function useGameMessageListener({
   router,
   postToHost,

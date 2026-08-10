@@ -1,5 +1,4 @@
 import {useEffect, useState} from "react";
-import {loadNotificationCopy} from "../../firebase";
 import type {JestPlatformPort, JestSession} from "../types";
 import {
   MOCK_NOTIFICATION_COPY,
@@ -9,9 +8,12 @@ import {
 } from "./copy";
 import {notificationRotationSeed, replaceEngagementReminders} from "./engagement";
 
+/** Describes with platform activity. */
 type WithPlatformActivity = <Result>(operation: () => Promise<Result>) => Promise<Result>;
+/** Describes track funnel. */
 type TrackFunnel = (eventName: string, params?: Record<string, string | number | boolean>) => void;
 
+/** Provides jest notifications. */
 export function useJestNotifications({
   locale,
   mockRuntime,
@@ -42,7 +44,9 @@ export function useJestNotifications({
     }
     let active = true;
     void withPlatformActivity(() =>
-      mockRuntime ? Promise.resolve(MOCK_NOTIFICATION_COPY) : loadNotificationCopy(locale),
+      mockRuntime
+        ? Promise.resolve(MOCK_NOTIFICATION_COPY)
+        : import("../../firebase").then((module) => module.loadNotificationCopy(locale)),
     ).then((loadedCopy) => {
       if (active) setCopy(loadedCopy);
     }).catch(() => {

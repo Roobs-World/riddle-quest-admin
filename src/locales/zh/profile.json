@@ -55,6 +55,7 @@
     "GUEST_MODE_TITLE": "以访客身份玩",
     "JEST_REGISTRATION_TITLE": "保存你的进度",
     "JEST_REGISTRATION_GREETING": "欢迎，{name}。",
+    "JEST_INVITED_BY": "{name}邀请你来玩。",
     "JEST_REGISTRATION_DESCRIPTION": "注册 Jest 以保护你的进度，并通过消息接收新的每日谜题。",
     "JEST_REGISTER_BUTTON": "注册",
     "JEST_LOGIN_BUTTON": "登录",

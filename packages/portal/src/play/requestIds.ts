@@ -1,3 +1,4 @@
+/** Creates request id. */
 export const createRequestId = (prefix: string): string => {
   if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
     return `${prefix}-${crypto.randomUUID()}`;

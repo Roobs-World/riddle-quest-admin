@@ -3,17 +3,23 @@ import type {JestPlatformPort, PlatformResult} from "./types";
 import {DEFAULT_PRODUCT_PRICING} from "@qwordly/core/pricing/catalog";
 import type {ProductSummary} from "../play/types";
 
+/** Indicates whether is currency. */
 const isCurrency = (value: string) => /^[A-Z]{3}$/.test(value);
 
+/** Provides jest purchase coordinator behavior. */
 export class JestPurchaseCoordinator {
+  /** Stores platform. */
   private readonly platform: JestPlatformPort;
+  /** Stores backend. */
   private readonly backend: JestBackendPort;
 
+  /** Creates a jest purchase coordinator instance. */
   constructor(platform: JestPlatformPort, backend: JestBackendPort) {
     this.platform = platform;
     this.backend = backend;
   }
 
+  /** Gets products. */
   async getProducts(locale?: string): Promise<PlatformResult<ProductSummary[]>> {
     const result = await this.platform.getProducts();
     if (result.status !== "success") return result;
@@ -40,6 +46,7 @@ export class JestPurchaseCoordinator {
     };
   }
 
+  /** Gets subscriptions. */
   async getSubscriptions(playerId: string, locale?: string): Promise<PlatformResult<ProductSummary[]>> {
     const result = await this.platform.getSubscriptions();
     if (result.status !== "success") return result;
@@ -86,6 +93,7 @@ export class JestPurchaseCoordinator {
     };
   }
 
+  /** Provides subscribe behavior. */
   async subscribe(subscriptionSku: string, playerId: string): Promise<PlatformResult<{
     activeSku: string;
     blockedSkus: string[];
@@ -118,6 +126,7 @@ export class JestPurchaseCoordinator {
     }
   }
 
+  /** Provides purchase behavior. */
   async purchase(productSku: string, playerId: string): Promise<PlatformResult<{
     coinsAwarded: number;
     newCoins: number;
@@ -147,6 +156,7 @@ export class JestPurchaseCoordinator {
     }
   }
 
+  /** Provides reconcile behavior. */
   async reconcile(playerId: string): Promise<PlatformResult<number>> {
     let count = 0;
     for (let page = 0; page < 100; page += 1) {

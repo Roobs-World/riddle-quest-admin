@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 "use strict";
 
-const admin = require("firebase-admin");
+const {initializeApp} = require("firebase-admin/app");
+const {getFirestore} = require("firebase-admin/firestore");
 const {RACE_CATEGORY_IDS} = require("@qwordly/core/race");
 const {validateRacePool} = require("../lib/race/raceContentValidation.js");
 
@@ -16,8 +17,8 @@ if (!projectId) {
   process.stderr.write("Provide --project or set GCLOUD_PROJECT/GOOGLE_CLOUD_PROJECT.\n");
   process.exitCode = 1;
 } else {
-  admin.initializeApp({projectId});
-  const db = admin.firestore();
+  const app = initializeApp({projectId});
+  const db = getFirestore(app);
   db.collection("localizedRiddles/en/riddles")
     .where("raceEligible", "==", true)
     .get()

@@ -1,16 +1,25 @@
 import {createHmac, timingSafeEqual} from "node:crypto";
 
+/** Defines the max signed token characters value. */
 const MAX_SIGNED_TOKEN_CHARACTERS = 256_000;
+/** Defines the max signed part bytes value. */
 const MAX_SIGNED_PART_BYTES = 128_000;
 
+/** Describes jest signed payload. */
 export type JestSignedPayload = {
+  /** Stores aud. */
   aud: string;
+  /** Stores sub. */
   sub: string;
+  /** Stores iat. */
   iat?: number;
+  /** Stores player. */
   player?: {playerId: string; registered: boolean};
+  /** Documents default export. */
   [key: string]: unknown;
 };
 
+/** Provides decode part behavior. */
 const decodePart = (part: string): unknown => {
   if (!part || part.length > MAX_SIGNED_TOKEN_CHARACTERS) throw new Error("malformed-token");
   const decoded = Buffer.from(part, "base64url");
@@ -18,6 +27,7 @@ const decodePart = (part: string): unknown => {
   return JSON.parse(decoded.toString("utf8"));
 };
 
+/** Provides verify jest signed behavior. */
 export function verifyJestSigned(
   token: string,
   secretBase64: string,
@@ -52,5 +62,6 @@ export function verifyJestSigned(
   return payload;
 }
 
+/** Provides jest firebase uid behavior. */
 export const jestFirebaseUid = (playerId: string): string =>
   `jest_${createHmac("sha256", "riddle-quest-jest-uid-v1").update(playerId).digest("hex").slice(0, 40)}`;

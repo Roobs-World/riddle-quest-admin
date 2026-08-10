@@ -6,13 +6,14 @@
   "scripts": {
     "dev": "vite",
     "dev:jest-hosted": "vite --mode jest --host 0.0.0.0 --port 3000 --strictPort",
-    "build:jest": "pnpm check:progress && pnpm check:locales && NODE_ENV=production tsc -b && JEST_BUILD=1 VITE_JEST_RUNTIME=1 NODE_ENV=production vite build --mode jest --outDir dist-jest && pnpm audit:jest-artifact",
+    "build:jest": "pnpm check:locales && NODE_ENV=production tsc -b && JEST_BUILD=1 VITE_JEST_RUNTIME=1 NODE_ENV=production vite build --mode jest --outDir dist-jest && pnpm audit:jest-artifact",
     "upload:jest": "node scripts/upload-jest-build.mjs",
+    "preflight:jest-upload": "JEST_UPLOAD_DRY_RUN=true node scripts/upload-jest-build.mjs",
     "release:jest": "pnpm build:jest && pnpm upload:jest",
     "release:jest:timestamped": "node scripts/release-jest-timestamped.mjs",
     "audit:jest-artifact": "node scripts/audit-jest-artifact.mjs dist-jest",
+    "validate:w3c": "node scripts/validate-w3c.mjs dist-jest/index.html",
     "check:types": "tsc -p tsconfig.json --noEmit",
-    "check:progress": "node scripts/progress-tracker.mjs --check",
     "check:locales": "node scripts/audit-locales.mjs",
     "test:game-browser:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/play/__tests__/hostedBrowser.jest-playwright.test.ts",
     "test:jest-auth:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/jest/__tests__/authentication.jest-playwright.test.ts",
@@ -21,27 +22,37 @@
     "test:mobile-soak": "PORTAL_SOAK_TESTS=1 jest --config jest.config.cjs --runInBand src/play/__tests__/mobileSoak.jest-playwright.test.ts",
     "preview": "vite preview",
     "test": "jest --config jest.config.cjs",
+    "test:coverage": "jest --config jest.config.cjs --runInBand --coverage",
     "test:race:coverage": "jest --config jest.race-coverage.config.cjs --runInBand"
   },
   "dependencies": {
     "@qwordly/core": "workspace:*",
-    "firebase": "^12.17.0",
+    "firebase": "^12.17.1",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "three": "^0.185.1"
   },
   "devDependencies": {
+    "@axe-core/playwright": "4.12.1",
+    "@babel/core": "7.29.0",
+    "@babel/plugin-transform-runtime": "7.29.0",
+    "@babel/runtime": "7.29.7",
     "@jest/globals": "30.4.1",
     "@playwright/test": "^1.62.1",
+    "@rolldown/plugin-babel": "0.2.3",
+    "@types/babel__core": "7.20.5",
     "@types/jest": "30.0.0",
     "@types/react": "~19.2.18",
     "@types/react-dom": "^19.2.4",
-    "@types/three": "^0.185.1",
+    "@types/three": "^0.185.4",
+    "@typescript/native": "npm:typescript@7.0.2",
+    "@vitejs/devtools": "0.4.12",
     "@vitejs/plugin-react": "^6.0.5",
+    "babel-plugin-react-compiler": "1.0.0",
     "jest": "30.4.2",
     "ts-jest": "29.4.12",
-    "@typescript/native": "npm:typescript@7.0.2",
     "typescript": "npm:@typescript/typescript6@6.0.2",
-    "vite": "^8.2.0"
+    "valibot": "1.4.2",
+    "vite": "^8.2.1"
   }
 }

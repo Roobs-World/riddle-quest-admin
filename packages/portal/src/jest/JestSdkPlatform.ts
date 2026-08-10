@@ -1,5 +1,4 @@
 import {parseEntryIntent} from "./entryIntent";
-import {BridgeProfileSchema} from "@qwordly/core/bridge";
 import type {
   JestPlatformPort,
   JestPlayerData,
@@ -9,9 +8,13 @@ import type {
   ScreenshotProvider,
 } from "./types";
 
+/** Describes sdk. */
 type Sdk = Record<string, any>;
+/** Defines the player data key value. */
 const PLAYER_DATA_KEY = "riddleQuestPlayerState";
+/** Provides success behavior. */
 const success = <T>(value: T): PlatformResult<T> => ({status: "success", value});
+/** Provides failure behavior. */
 const failure = (error: unknown): PlatformResult<never> => {
   const message = error instanceof Error ? error.message : String(error);
   return /INVALID_ARGUMENTS|BAD_REQUEST|invalid sku/i.test(message)
@@ -19,9 +22,11 @@ const failure = (error: unknown): PlatformResult<never> => {
     : {status: "retryable-failure", message};
 };
 
+/** Indicates whether is record. */
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
 
+/** Parses saved game. */
 const parseSavedGame = (value: unknown): JestSavedGame | null => {
   if (!isRecord(value)) return null;
   if (
@@ -43,16 +48,23 @@ const parseSavedGame = (value: unknown): JestSavedGame | null => {
   return value as JestSavedGame;
 };
 
+/** Provides jest sdk platform behavior. */
 export class JestSdkPlatform implements JestPlatformPort {
+  /** Stores sdk. */
   private readonly sdk: Sdk;
 
+  /** Creates a jest sdk platform instance. */
   constructor(sdk: Sdk = (globalThis as typeof globalThis & {JestSDK?: Sdk}).JestSDK ?? {}) {
     this.sdk = sdk;
   }
 
+  /** Provides init behavior. */
   async init() { try { await this.sdk.init({autoLoginReminders: false}); return success(undefined); } catch (e) { return failure(e); } }
+  /** Gets player. */
   getPlayer() { return this.sdk.getPlayer(); }
+  /** Gets player signed. */
   getPlayerSigned() { return this.sdk.getPlayerSigned(); }
+  /** Provides login behavior. */
   async login(entryPayload?: Record<string, string>) {
     try {
       const player = this.getPlayer();
@@ -61,6 +73,7 @@ export class JestSdkPlatform implements JestPlatformPort {
       return success(this.getPlayer());
     } catch (e) { return failure(e); }
   }
+  /** Provides show registration overlay behavior. */
   showRegistrationOverlay(options: Parameters<JestPlatformPort["showRegistrationOverlay"]>[0]) {
     try {
       const handle = this.sdk.showRegistrationOverlay(options);
@@ -72,6 +85,7 @@ export class JestSdkPlatform implements JestPlatformPort {
       return failure(e);
     }
   }
+  /** Reads preferences. */
   readPreferences(): JestPreferences {
     const data = this.sdk.data?.getAll?.() ?? {};
     return {
@@ -85,11 +99,14 @@ export class JestSdkPlatform implements JestPlatformPort {
       firstMilestoneMarked: typeof data.firstMilestoneMarked === "boolean" ? data.firstMilestoneMarked : undefined,
     };
   }
+  /** Provides write preferences behavior. */
   async writePreferences(value: JestPreferences) { this.sdk.data.set(value); await this.sdk.data.flush(); }
-  readPlayerData(): JestPlayerData | null {
+  /** Reads player data. */
+  async readPlayerData(): Promise<JestPlayerData | null> {
     const value: unknown = this.sdk.data?.getAll?.()?.[PLAYER_DATA_KEY];
     if (!isRecord(value) || value.schemaVersion !== 1 || typeof value.updatedAt !== "number") return null;
     const activeGame = value.activeGame === null ? null : parseSavedGame(value.activeGame);
+    const {BridgeProfileSchema} = await import("@qwordly/core/bridge");
     const profile = BridgeProfileSchema.safeParse(value.profile);
     return {
       schemaVersion: 1,
@@ -98,33 +115,43 @@ export class JestSdkPlatform implements JestPlatformPort {
       ...(value.activeGame === null || activeGame ? {activeGame} : {}),
     };
   }
+  /** Provides write player data behavior. */
   async writePlayerData(value: JestPlayerData) {
     this.sdk.data.set(PLAYER_DATA_KEY, value);
     await this.sdk.data.flush();
   }
+  /** Gets entry intent. */
   getEntryIntent() {
     return parseEntryIntent(this.sdk.getEntryPayload?.() ?? {}, globalThis.location?.search ?? "");
   }
+  /** Gets profile. */
   async getProfile() { return this.sdk.social.getProfile({avatarSize: 128}) ?? null; }
+  /** Provides schedule notification behavior. */
   async scheduleNotification(input: Parameters<JestPlatformPort["scheduleNotification"]>[0]) {
     if (!this.getPlayer().registered) return {status: "unavailable", message: "Registration is required"} as const;
     try { await this.sdk.notifications.scheduleNotification(input); return success(undefined); } catch (e) { return failure(e); }
   }
+  /** Removes notification. */
   async removeNotification(identifier: string) {
     if (!this.getPlayer().registered) return {status: "unavailable", message: "Registration is required"} as const;
     try { await this.sdk.notifications.unscheduleNotification({identifier}); return success(undefined); } catch (e) { return failure(e); }
   }
+  /** Provides share referral behavior. */
   async shareReferral(input: Parameters<JestPlatformPort["shareReferral"]>[0]) {
     try {
       const result = await this.sdk.referrals.shareReferralLink(input);
       return result?.canceled ? {status: "cancelled"} as const : success(undefined);
     } catch (e) { return failure(e); }
   }
+  /** Lists referrals signed. */
   async listReferralsSigned() {
     try { const result = await this.sdk.referrals.listReferrals(); return success(result.referralsSigned); } catch (e) { return failure(e); }
   }
+  /** Sets screenshot provider. */
   setScreenshotProvider(provider: ScreenshotProvider | null) { this.sdk.social.setScreenshotProvider(provider); }
+  /** Gets products. */
   async getProducts() { try { return success(await this.sdk.payments.getProducts()); } catch (e) { return failure(e); } }
+  /** Provides begin purchase behavior. */
   async beginPurchase(productSku: string) {
     try {
       const result = await this.sdk.payments.beginPurchase({productSku});
@@ -137,7 +164,9 @@ export class JestSdkPlatform implements JestPlatformPort {
       return success({purchase: result.purchase, purchaseSigned: result.purchaseSigned});
     } catch (e) { return failure(e); }
   }
+  /** Gets incomplete purchases. */
   async getIncompletePurchases() { try { return success(await this.sdk.payments.getIncompletePurchases()); } catch (e) { return failure(e); } }
+  /** Completes purchase. */
   async completePurchase(purchaseToken: string) {
     try {
       const result = await this.sdk.payments.completePurchase({purchaseToken});
@@ -149,6 +178,7 @@ export class JestSdkPlatform implements JestPlatformPort {
       return success(undefined);
     } catch (e) { return failure(e); }
   }
+  /** Gets subscriptions. */
   async getSubscriptions() {
     try {
       const result = await this.sdk.payments.getSubscriptions();
@@ -158,6 +188,7 @@ export class JestSdkPlatform implements JestPlatformPort {
       });
     } catch (e) { return failure(e); }
   }
+  /** Provides begin subscription behavior. */
   async beginSubscription(subscriptionSku: string) {
     try {
       const result = await this.sdk.payments.beginSubscription({subscriptionSku});
@@ -175,12 +206,16 @@ export class JestSdkPlatform implements JestPlatformPort {
       });
     } catch (e) { return failure(e); }
   }
+  /** Captures event. */
   captureEvent(name: string, properties?: Record<string, string | number | boolean>) {
     this.sdk.captureEvent?.(name, properties);
   }
+  /** Provides mark first milestone behavior. */
   async markFirstMilestone() {
     try { await this.sdk.markFirstMilestone(); return success(undefined); } catch (e) { return failure(e); }
   }
+  /** Sets loading progress. */
   setLoadingProgress(progress: number) { this.sdk.setLoadingProgress(progress); }
+  /** Provides mark game loaded behavior. */
   markGameLoaded() { this.sdk.markGameLoaded(); }
 }

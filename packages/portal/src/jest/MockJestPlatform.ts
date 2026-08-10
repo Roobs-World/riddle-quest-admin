@@ -1,27 +1,44 @@
 import type {JestEntryIntent, JestPlatformPort, JestPlayerData, JestPreferences, PlatformResult, ScreenshotProvider} from "./types";
 import {parseEntryIntent} from "./entryIntent";
 
+/** Provides ok behavior. */
 const ok = <T>(value: T): PlatformResult<T> => ({status: "success", value});
+/** Defines the mock player data key value. */
 const MOCK_PLAYER_DATA_KEY = "riddleQuest:mockJestPlayerData";
+/** Defines the premium subscription sku value. */
 const PREMIUM_SUBSCRIPTION_SKU = "com.roobsworld.riddlequest.premium.monthly";
+/** Provides mock jest platform behavior. */
 export class MockJestPlatform implements JestPlatformPort {
+  /** Stores player. */
   player: {playerId: string; registered: boolean};
+  /** Stores preferences. */
   preferences: JestPreferences = {};
+  /** Stores progress. */
   progress: number[] = [];
+  /** Stores loaded. */
   loaded = false;
+  /** Stores first milestone marked. */
   firstMilestoneMarked = false;
+  /** Stores captured events. */
   capturedEvents: Array<{name: string; properties?: Record<string, string | number | boolean>}> = [];
+  /** Stores subscription active. */
   subscriptionActive = false;
+  /** Creates a mock jest platform instance. */
   constructor(registered = false) {
     this.player = {playerId: "jest-mock-player", registered};
   }
+  /** Provides init behavior. */
   init = async () => ok(undefined);
+  /** Gets player. */
   getPlayer = () => this.player;
+  /** Gets player signed. */
   getPlayerSigned = async () => ({player: this.player, playerSigned: "mock.signed.player"});
+  /** Provides login behavior. */
   login = async () => {
     this.player.registered = true;
     return ok(this.player);
   };
+  /** Provides show registration overlay behavior. */
   showRegistrationOverlay = (options: Parameters<JestPlatformPort["showRegistrationOverlay"]>[0]) => {
     let closed = false;
     const close = () => {
@@ -37,10 +54,13 @@ export class MockJestPlatform implements JestPlatformPort {
       closeButtonAction: close,
     });
   };
+  /** Reads preferences. */
   readPreferences = () => ({...this.preferences});
+  /** Provides write preferences behavior. */
   writePreferences = async (value: JestPreferences) => {
     this.preferences = {...this.preferences, ...value};
   };
+  /** Reads player data. */
   readPlayerData = (): JestPlayerData | null => {
     try {
       const raw = globalThis.localStorage?.getItem(MOCK_PLAYER_DATA_KEY);
@@ -49,29 +69,39 @@ export class MockJestPlatform implements JestPlatformPort {
       return null;
     }
   };
+  /** Provides write player data behavior. */
   writePlayerData = async (value: JestPlayerData) => {
     globalThis.localStorage?.setItem(MOCK_PLAYER_DATA_KEY, JSON.stringify(value));
   };
+  /** Gets entry intent. */
   getEntryIntent = (): JestEntryIntent => {
     if (typeof location === "undefined") return {};
     const params = new URLSearchParams(location.search);
     const gameMode = params.get("gameMode");
+    const challengeId = params.get("challengeId");
     return {
       ...parseEntryIntent({}, location.search),
-      ...(params.get("harness") === "race" && params.get("challengeId")
-        ? {challengeId: params.get("challengeId") ?? undefined}
+      ...(params.get("harness") === "race" && challengeId
+        ? {challengeId, inviteKind: "race" as const, campaign: "race_to_10_v1"}
         : {}),
       ...(gameMode === "classic" || gameMode === "challenge" ? {gameMode} : {}),
     };
   };
+  /** Gets profile. */
   getProfile = async () => null;
+  /** Provides schedule notification behavior. */
   scheduleNotification = async () =>
     this.player.registered ? ok(undefined) : ({status: "unavailable", message: "Registration is required"} as const);
+  /** Removes notification. */
   removeNotification = async () =>
     this.player.registered ? ok(undefined) : ({status: "unavailable", message: "Registration is required"} as const);
+  /** Provides share referral behavior. */
   shareReferral = async (_input: Parameters<JestPlatformPort["shareReferral"]>[0]) => ok(undefined);
+  /** Lists referrals signed. */
   listReferralsSigned = async () => ok("mock.referrals.signed");
+  /** Sets screenshot provider. */
   setScreenshotProvider = (_provider: ScreenshotProvider | null) => {};
+  /** Gets products. */
   getProducts = async () =>
     ok([
       {
@@ -117,10 +147,14 @@ export class MockJestPlatform implements JestPlatformPort {
         currency: "USD",
       },
     ]);
+  /** Provides begin purchase behavior. */
   beginPurchase = async (sku: string) =>
     ok({purchase: {purchaseToken: `mock-${sku}`, productSku: sku}, purchaseSigned: "mock.purchase.signed"});
+  /** Gets incomplete purchases. */
   getIncompletePurchases = async () => ok({purchases: [], purchasesSigned: "mock.purchases.signed", hasMore: false});
+  /** Completes purchase. */
   completePurchase = async () => ok(undefined);
+  /** Gets subscriptions. */
   getSubscriptions = async () =>
     ok({
       subscriptions: this.player.registered
@@ -141,6 +175,7 @@ export class MockJestPlatform implements JestPlatformPort {
         ? "mock.subscriptions.active.signed"
         : "mock.subscriptions.inactive.signed",
     });
+  /** Provides begin subscription behavior. */
   beginSubscription = async (subscriptionSku: string) => {
     if (!this.player.registered) {
       return {status: "unavailable", message: "guest_not_allowed"} as const;
@@ -160,16 +195,20 @@ export class MockJestPlatform implements JestPlatformPort {
       subscriptionSigned: "mock.subscription.signed",
     });
   };
+  /** Captures event. */
   captureEvent = (name: string, properties?: Record<string, string | number | boolean>) => {
     this.capturedEvents.push({name, properties});
   };
+  /** Provides mark first milestone behavior. */
   markFirstMilestone = async () => {
     this.firstMilestoneMarked = true;
     return ok(undefined);
   };
+  /** Sets loading progress. */
   setLoadingProgress = (value: number) => {
     this.progress.push(value);
   };
+  /** Provides mark game loaded behavior. */
   markGameLoaded = () => {
     this.loaded = true;
   };

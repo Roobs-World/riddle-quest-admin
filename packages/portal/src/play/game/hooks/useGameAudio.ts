@@ -1,8 +1,10 @@
 import {useCallback, useEffect, useRef} from "react";
 import type {GameSessionState} from "../../gameSession";
 
+/** Describes game feedback kind. */
 export type GameFeedbackKind = "key" | "delete" | "submit" | "wrong" | "win" | "loss";
 
+/** Provides game audio. */
 export function useGameAudio(state: GameSessionState) {
   const musicRef = useRef<HTMLAudioElement | null>(null);
   const stateRef = useRef(state);

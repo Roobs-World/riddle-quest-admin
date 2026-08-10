@@ -1,7 +1,9 @@
 import type {ScreenshotProvider} from "../types";
 
+/** Defines the max screenshot bytes value. */
 const MAX_SCREENSHOT_BYTES = 2 * 1024 * 1024;
 
+/** Provides size checked screenshot provider behavior. */
 export function sizeCheckedScreenshotProvider(provider: ScreenshotProvider): ScreenshotProvider {
   return async () => {
     const result = await provider();
@@ -13,6 +15,7 @@ export function sizeCheckedScreenshotProvider(provider: ScreenshotProvider): Scr
   };
 }
 
+/** Captures game screenshot. */
 export function captureGameScreenshot(): string | null {
   const game = document.querySelector<HTMLElement>(".game-app");
   if (!game || !game.textContent?.trim()) return null;
@@ -47,6 +50,7 @@ export function captureGameScreenshot(): string | null {
   return canvas.toDataURL("image/png");
 }
 
+/** Captures victory share image. */
 export function captureVictoryShareImage(input: {
   title: string;
   summary: string;

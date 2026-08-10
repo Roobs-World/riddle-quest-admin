@@ -1,8 +1,5 @@
 import {useCallback, useEffect, useMemo, useRef, useState} from "react";
-import {signInWithCustomToken} from "firebase/auth";
-import {auth} from "../firebase";
 import {PlayHostApp} from "../play/PlayHostApp";
-import {JestBackendClient, type JestBackendPort} from "./backend";
 import {JestSdkPlatform} from "./JestSdkPlatform";
 import {JestPurchaseCoordinator} from "./purchases";
 import {
@@ -15,15 +12,19 @@ import type {JestPlayerData, JestPlayerDataUpdate, JestRegistrationOverlayHandle
 import {tr, useLocale} from "../play/i18n";
 import {MockJestPlatform} from "./MockJestPlatform";
 import {recordAuthoritativeCompletion} from "./milestone";
-import type {ProductSummary, PurchaseResult} from "../play/types";
-import {SpinningWheelLoader} from "../play/SpinningWheelLoader";
 import {useJestNotifications} from "./notifications/useJestNotifications";
 import {useJestSharing} from "./sharing/useJestSharing";
 import {createRegistrationEntryPayload, type RegistrationSource} from "./registrationAttribution";
 import {resolveJestRuntimeMode} from "./runtimeMode";
-import {trackEvent, trackPurchase, trackScreen} from "../analytics/googleAnalytics";
+import {trackEvent, trackScreen} from "../analytics/googleAnalytics";
 import {hasTrustedTestHarnessMarker} from "../testHarness";
+import {resolveRaceChallengeId} from "./entryIntent";
+import {createJestBackend} from "./createJestBackend";
+import {JestRegistrationAlert, JestStartupError, JestStartupProgress} from "./JestSessionViews";
+import {useJestProductCatalog} from "./useJestProductCatalog";
+import {useJestPurchase} from "./useJestPurchase";
 
+/** Provides jest play app behavior. */
 export function JestPlayApp() {
   const locale = useLocale();
   const searchParams = new URLSearchParams(window.location.search);
@@ -41,57 +42,12 @@ export function JestPlayApp() {
       runtimeMode.useSdkPlatform ? new JestSdkPlatform() : new MockJestPlatform(mockRegistered),
     [mockRegistered, runtimeMode.useSdkPlatform],
   );
-  const backend = useMemo(
-    () =>
-      mockRuntime
-        ? ({
-            exchangeIdentity: async (playerSigned: string) => {
-              const testState = authHarness
-                ? (
-                    window as typeof window & {
-                      __RIDDLE_QUEST_JEST_AUTH_TEST__?: {
-                        scenario?: string;
-                        backendExchanges: string[];
-                        firebaseTokens: string[];
-                      };
-                    }
-                  ).__RIDDLE_QUEST_JEST_AUTH_TEST__
-                : undefined;
-              testState?.backendExchanges.push(playerSigned);
-              const onceKey = "riddleQuest:jestAuthHarness:identityFailed";
-              const shouldFailOnce =
-                testState?.scenario === "identity-once-failure" && sessionStorage.getItem(onceKey) !== "1";
-              if (shouldFailOnce) sessionStorage.setItem(onceKey, "1");
-              if (testState?.scenario === "identity-failure" || shouldFailOnce) {
-                throw new Error("Mock Jest identity exchange failed");
-              }
-              return {customToken: "mock", uid: "jest-mock-player"};
-            },
-            grantPurchase: async (_signed: string, _playerId: string, purchaseToken: string) => ({
-              granted: true,
-              purchaseToken,
-              coinsAwarded: 250,
-              newCoins: 550,
-            }),
-            verifyReferrals: async () => ({verified: true}),
-            syncSubscriptions: async (subscriptionsSigned: string) => ({
-              verified: true,
-              activeSkus:
-                subscriptionsSigned.includes(".active.") || subscriptionsSigned.includes(".subscription.")
-                  ? ["com.roobsworld.riddlequest.premium.monthly"]
-                  : [],
-              blockedSkus: [],
-            }),
-          } satisfies JestBackendPort)
-        : new JestBackendClient(import.meta.env.VITE_JEST_FUNCTIONS_BASE_URL || "/"),
-    [authHarness, mockRuntime],
-  );
+  const backend = useMemo(() => createJestBackend({authHarness, mockRuntime}), [authHarness, mockRuntime]);
   const purchases = useMemo(() => new JestPurchaseCoordinator(platform, backend), [backend, platform]);
   const [session, setSession] = useState<JestSession | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [showRegistration, setShowRegistration] = useState(false);
   const [registrationPending, setRegistrationPending] = useState(false);
-  const [jestProducts, setJestProducts] = useState<ProductSummary[]>([]);
   const [pendingPlatformOperations, setPendingPlatformOperations] = useState(0);
   const [startup, setStartup] = useState<JestStartupUpdate>({stage: "connecting", progress: 5});
   const [engagementProgress, setEngagementProgress] = useState({
@@ -146,6 +102,19 @@ export function JestPlayApp() {
     trackFunnel,
   });
   useJestSharing({locale, session, platform, backend, withPlatformActivity, trackFunnel});
+  const [jestProducts, setJestProducts] = useJestProductCatalog({
+    purchases,
+    session,
+    trackFunnel,
+    withPlatformActivity,
+  });
+  const purchaseProduct = useJestPurchase({
+    products: jestProducts,
+    purchases,
+    session,
+    setProducts: setJestProducts,
+    trackFunnel,
+  });
   const authenticateJestIdentity = useCallback(
     async (token: string) => {
       if (authHarness) {
@@ -155,7 +124,12 @@ export function JestPlayApp() {
           }
         ).__RIDDLE_QUEST_JEST_AUTH_TEST__?.firebaseTokens.push(token);
       } else if (!mockRuntime) {
+        const [{signInWithCustomToken}, {auth, ensureFirebaseAppCheckReady}] = await Promise.all([
+          import("firebase/auth"),
+          import("../firebase"),
+        ]);
         await signInWithCustomToken(auth, token);
+        await ensureFirebaseAppCheckReady();
       }
     },
     [authHarness, mockRuntime],
@@ -185,6 +159,13 @@ export function JestPlayApp() {
           utm_term: result.value.entryIntent.utmTerm ?? "none",
           utm_content: result.value.entryIntent.utmContent ?? "none",
         });
+        if (result.value.entryIntent.inviteKind) {
+          trackFunnel("viral_invite_opened", {
+            inviteKind: result.value.entryIntent.inviteKind,
+            campaign: result.value.entryIntent.campaign ?? "unknown",
+            hasInviterName: Boolean(result.value.entryIntent.inviterName),
+          });
+        }
       } else {
         const message = "message" in result ? result.message : "Jest startup was cancelled";
         setError(
@@ -228,24 +209,13 @@ export function JestPlayApp() {
     [platform, trackFunnel],
   );
 
-  useEffect(() => {
-    if (!session) return;
-    void withPlatformActivity(async () => {
-      const products = await purchases.getProducts(navigator.language);
-      const subscriptions = session.player.registered
-        ? await purchases.getSubscriptions(session.player.playerId, navigator.language)
-        : ({status: "success", value: []} as const);
-      return {products, subscriptions};
-    }).then(({products, subscriptions}) => {
-      const nextProducts = products.status === "success" ? products.value : [];
-      const nextSubscriptions = subscriptions.status === "success" ? subscriptions.value : [];
-      setJestProducts([...nextSubscriptions, ...nextProducts]);
-      if (products.status !== "success") trackFunnel("products_load_failed", {status: products.status});
-      if (subscriptions.status !== "success") {
-        trackFunnel("subscriptions_load_failed", {status: subscriptions.status});
-      }
-    });
-  }, [purchases, session?.player.playerId, session?.player.registered, trackFunnel, withPlatformActivity]);
+  /** Clears client-writable Jest storage after server-side account deletion. */
+  const clearPlayerData = useCallback(async () => {
+    /** Empty versioned player-data snapshot replacing saved profile and game state. */
+    const empty: JestPlayerData = {schemaVersion: 1, updatedAt: Date.now(), activeGame: null};
+    playerDataRef.current = empty;
+    await platform.writePlayerData(empty);
+  }, [platform]);
 
   const completeRegistrationPrompt = useCallback(() => {
     if (registrationCompletingRef.current) return;
@@ -271,6 +241,12 @@ export function JestPlayApp() {
             playerContinuity: player.playerId === previousSession?.player.playerId,
             source: registrationSourceRef.current,
           });
+          if (previousSession?.entryIntent.inviteKind) {
+            trackFunnel("viral_invite_registered", {
+              inviteKind: previousSession.entryIntent.inviteKind,
+              campaign: previousSession.entryIntent.campaign ?? "unknown",
+            });
+          }
         } else if (previousSession) {
           const preferences = {
             ...previousSession.preferences,
@@ -442,74 +418,6 @@ export function JestPlayApp() {
     };
   }, [dismissRegistration, login, openRegistrationPrompt, register]);
 
-  const purchaseProduct = useCallback(
-    async (productId: string): Promise<PurchaseResult> => {
-      if (!session) throw new Error("Jest session is not ready.");
-      const product = jestProducts.find((candidate) => candidate.productId === productId);
-      trackEvent("begin_checkout", {
-        value: product?.price,
-        currency: product?.currency,
-        items: [{
-          item_id: productId,
-          item_category: product?.productType ?? "consumable",
-          price: product?.price ?? 0,
-          quantity: 1,
-        }],
-      });
-      if (product?.productType === "subscription") {
-        if (!session.player.registered) throw new Error("Registration is required to subscribe.");
-        if (product.subscriptionStatus === "active") {
-          return {success: true, productId, purchaseType: "subscription"};
-        }
-        const subscribed = await purchases.subscribe(productId, session.player.playerId);
-        if (subscribed.status !== "success") {
-          throw new Error("message" in subscribed ? subscribed.message : "Subscription cancelled.");
-        }
-        setJestProducts((current) =>
-          current
-            .filter((candidate) => !subscribed.value.blockedSkus.includes(candidate.productId))
-            .map((candidate) =>
-              candidate.productType === "subscription"
-                ? {
-                    ...candidate,
-                    subscriptionStatus: candidate.productId === productId ? "active" : candidate.subscriptionStatus,
-                    trialEligible: false,
-                  }
-                : candidate,
-            ),
-        );
-        trackFunnel("subscription_completed", {productId});
-        trackPurchase({
-          productId,
-          purchaseType: "subscription",
-          price: product.price,
-          currency: product.currency,
-        });
-        return {success: true, productId, purchaseType: "subscription"};
-      }
-      const result = await purchases.purchase(productId, session.player.playerId);
-      if (result.status !== "success") {
-        throw new Error("message" in result ? result.message : "Purchase cancelled.");
-      }
-      trackFunnel("purchase_completed", {productId});
-      trackPurchase({
-        productId,
-        purchaseType: "consumable",
-        price: product?.price,
-        currency: product?.currency,
-      });
-      return {
-        success: true,
-        productId,
-        purchaseType: "consumable",
-        coinsAwarded: result.value.coinsAwarded,
-        newCoins: result.value.newCoins,
-        newlyUnlockedAchievementIds: result.value.newlyUnlockedAchievementIds,
-      };
-    },
-    [jestProducts, purchases, session, trackFunnel],
-  );
-
   useEffect(() => {
     trackScreen(error ? "startup_error" : !session ? "startup_loading" : !session.player.registered && showRegistration
       ? "registration_prompt"
@@ -517,62 +425,28 @@ export function JestPlayApp() {
   }, [error, session, showRegistration]);
 
   if (error) {
-    return (
-      <main className="route-missing">
-        <div>
-          <h1>Riddle Quest could not start</h1>
-          <p>{error}</p>
-          <button onClick={() => window.location.reload()}>Retry</button>
-        </div>
-      </main>
-    );
+    return <JestStartupError message={error} />;
   }
   if (!session) {
-    const startupMessageKey = {
-      connecting: "WebPortal.STARTUP_CONNECTING",
-      player: "WebPortal.STARTUP_PLAYER",
-      progress: "WebPortal.STARTUP_PROGRESS",
-      game: "WebPortal.STARTUP_GAME",
-    }[startup.stage];
-    return (
-      <main className="route-loading">
-        <SpinningWheelLoader message={tr(startupMessageKey)} progress={startup.progress} />
-      </main>
-    );
+    return <JestStartupProgress startup={startup} />;
   }
   return (
     <>
       {!session.player.registered && showRegistration ? (
-        <aside
-          className="play-alert jest-registration-alert"
-          data-analytics-screen="registration_prompt"
-          inert={pendingPlatformOperations > 0 || registrationPending ? true : undefined}
-        >
-          <strong>{tr("Profile.JEST_REGISTRATION_TITLE")}</strong>
-          {session.entryIntent.customName ? (
-            <p>
-              {tr("Profile.JEST_REGISTRATION_GREETING", {
-                name: session.entryIntent.customName,
-              })}
-            </p>
-          ) : null}
-          <p>{tr("Profile.JEST_REGISTRATION_DESCRIPTION")}</p>
-          <button className="play-primary compact" onClick={register}>
-            {tr("Profile.JEST_REGISTER_BUTTON")}
-          </button>
-          <button className="play-secondary compact" onClick={login}>
-            {tr("Profile.JEST_LOGIN_BUTTON")}
-          </button>
-          <button className="play-text-button" onClick={dismissRegistration}>
-            {tr("Profile.JEST_PLAY_AS_GUEST_BUTTON")}
-          </button>
-        </aside>
+        <JestRegistrationAlert
+          blocked={pendingPlatformOperations > 0 || registrationPending}
+          session={session}
+          onRegister={register}
+          onLogin={login}
+          onDismiss={dismissRegistration}
+        />
       ) : null}
       <PlayHostApp
         initialGameMode={session.entryIntent.gameMode}
-        initialRaceChallengeId={session.entryIntent.challengeId}
+        initialRaceChallengeId={resolveRaceChallengeId(session.entryIntent)}
         initialRaceInbox={session.entryIntent.challengeDestination === "inbox"}
         registrationName={session.entryIntent.customName}
+        registrationInviterName={session.entryIntent.inviterName}
         onPlayable={() => markJestPlayable(platform)}
         onAuthoritativeComplete={handleAuthoritativeComplete}
         platformProducts={jestProducts}
@@ -581,6 +455,7 @@ export function JestPlayApp() {
         externalInteractionBlocked={pendingPlatformOperations > 0}
         initialPlayerData={session.playerData}
         onPlayerDataChange={savePlayerData}
+        onAccountDeleted={clearPlayerData}
       />
     </>
   );

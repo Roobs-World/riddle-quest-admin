@@ -7,6 +7,7 @@ import * as functions from "firebase-functions";
 import {captureException} from "../shared/sentry";
 
 // Export the handler function for testing first
+/** Provides scheduled task handler behavior. */
 export const scheduledTaskHandler = async (context: ScheduledEvent) => {
   void context;
   functions.logger.info("Daily scheduler started (target: localizedRiddles/{locale}/riddles/current).");

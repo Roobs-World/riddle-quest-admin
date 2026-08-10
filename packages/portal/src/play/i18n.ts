@@ -21,11 +21,12 @@ import enStreakFanfare from "../../../../src/locales/en/streakFanfare.json";
 import enTooltips from "../../../../src/locales/en/tooltips.json";
 import enVictory from "../../../../src/locales/en/victory.json";
 import enRace from "../../../../src/locales/en/race.json";
-import {loadNonEnglishNamespace} from "./localeModules";
 
+/** Describes locale. */
 export type Locale =
   "en" | "es" | "pt" | "fr" | "de" | "ja" | "ko" | "zh" | "hi" | "ru" | "tr" | "ar" | "id" | "it" | "nl" | "pl" | "vi";
 
+/** Describes namespace. */
 export type Namespace =
   | "aboutLegal"
   | "accessibility"
@@ -50,9 +51,12 @@ export type Namespace =
   | "victory"
   | "race";
 
+/** Describes namespace catalog. */
 export type NamespaceCatalog = Record<string, unknown>;
+/** Describes root catalog. */
 type RootCatalog = Record<string, unknown>;
 
+/** Defines the supported locales value. */
 const SUPPORTED_LOCALES = [
   "en",
   "es",
@@ -73,6 +77,7 @@ const SUPPORTED_LOCALES = [
   "vi",
 ] as const satisfies readonly Locale[];
 
+/** Defines the language labels value. */
 const LANGUAGE_LABELS: Record<Locale, string> = {
   en: "English",
   es: "Español",
@@ -93,6 +98,7 @@ const LANGUAGE_LABELS: Record<Locale, string> = {
   vi: "Tiếng Việt",
 };
 
+/** Defines the required namespaces value. */
 const REQUIRED_NAMESPACES = [
   "aboutLegal",
   "accessibility",
@@ -118,6 +124,7 @@ const REQUIRED_NAMESPACES = [
   "race",
 ] as const satisfies readonly Namespace[];
 
+/** Defines the english namespaces value. */
 const ENGLISH_NAMESPACES: NamespaceCatalog[] = [
   enAboutLegal,
   enAccessibility,
@@ -143,6 +150,7 @@ const ENGLISH_NAMESPACES: NamespaceCatalog[] = [
   enRace,
 ];
 
+/** Defines the english namespace by name value. */
 const ENGLISH_NAMESPACE_BY_NAME: Record<Namespace, NamespaceCatalog> = {
   aboutLegal: enAboutLegal,
   accessibility: enAccessibility,
@@ -168,10 +176,15 @@ const ENGLISH_NAMESPACE_BY_NAME: Record<Namespace, NamespaceCatalog> = {
   race: enRace,
 };
 
+/** Provides locale subscribers behavior. */
 const localeSubscribers = new Set<() => void>();
+/** Provides catalog cache behavior. */
 const catalogCache = new Map<Locale, RootCatalog>();
+/** Loads ing locales. */
 const loadingLocales = new Map<Locale, Promise<RootCatalog>>();
+/** Provides supported language set behavior. */
 const supportedLanguageSet = new Set<string>(SUPPORTED_LOCALES);
+/** Defines the locale aliases value. */
 const LOCALE_ALIASES: Record<string, Locale> = {
   es: "es",
   pt: "pt",
@@ -190,12 +203,15 @@ const LOCALE_ALIASES: Record<string, Locale> = {
   vi: "vi",
 };
 
+/** Provides current locale behavior. */
 let currentLocale: Locale = "en";
 
+/** Indicates whether is plain object. */
 const isPlainObject = (value: unknown): value is Record<string, unknown> => {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 };
 
+/** Provides merge namespaces behavior. */
 const mergeNamespaces = (namespaces: readonly NamespaceCatalog[]): RootCatalog => {
   return namespaces.reduce<RootCatalog>((acc, namespaceValue) => {
     if (!isPlainObject(namespaceValue)) {
@@ -207,18 +223,22 @@ const mergeNamespaces = (namespaces: readonly NamespaceCatalog[]): RootCatalog =
 
 catalogCache.set("en", mergeNamespaces(ENGLISH_NAMESPACES));
 
+/** Provides import namespace behavior. */
 const importNamespace = async (locale: Locale, namespace: Namespace): Promise<NamespaceCatalog> => {
   if (locale === "en") {
     return ENGLISH_NAMESPACE_BY_NAME[namespace];
   }
 
+  const {loadNonEnglishNamespace} = await import("./localeModules");
   return loadNonEnglishNamespace(locale, namespace);
 };
 
+/** Provides emit locale change behavior. */
 const emitLocaleChange = (): void => {
   localeSubscribers.forEach((listener) => listener());
 };
 
+/** Loads locale catalog. */
 const loadLocaleCatalog = async (locale: Locale): Promise<RootCatalog> => {
   const cached = catalogCache.get(locale);
   if (cached) {
@@ -246,10 +266,12 @@ const loadLocaleCatalog = async (locale: Locale): Promise<RootCatalog> => {
   return nextLoad;
 };
 
+/** Gets catalog for render. */
 const getCatalogForRender = (locale: Locale): RootCatalog => {
   return catalogCache.get(locale) ?? catalogCache.get("en")!;
 };
 
+/** Gets value at path. */
 const getValueAtPath = (catalog: RootCatalog, key: string): string | undefined => {
   const resolved = key.split(".").reduce<unknown>((current, segment) => {
     if (!isPlainObject(current)) {
@@ -261,6 +283,7 @@ const getValueAtPath = (catalog: RootCatalog, key: string): string | undefined =
   return typeof resolved === "string" ? resolved : undefined;
 };
 
+/** Formats message. */
 const formatMessage = (message: string, params?: Record<string, string | number>): string => {
   if (!params) {
     return message;
@@ -271,6 +294,7 @@ const formatMessage = (message: string, params?: Record<string, string | number>
   }, message);
 };
 
+/** Normalizes locale. */
 const normalizeLocale = (input?: string): Locale => {
   const value = (input ?? "en").toLowerCase();
 
@@ -287,17 +311,21 @@ const normalizeLocale = (input?: string): Locale => {
   return "en";
 };
 
+/** Defines the language options value. */
 export const LANGUAGE_OPTIONS: readonly {code: Locale; label: string}[] = SUPPORTED_LOCALES.map((code) => ({
   code,
   label: LANGUAGE_LABELS[code],
 }));
 
+/** Gets language label. */
 export const getLanguageLabel = (language: Locale): string => {
   return LANGUAGE_LABELS[language] ?? LANGUAGE_LABELS.en;
 };
 
+/** Gets locale. */
 const getLocale = (): Locale => currentLocale;
 
+/** Sets locale. */
 export const setLocale = (locale: Locale): void => {
   currentLocale = locale;
   if (typeof document !== "undefined") {
@@ -312,12 +340,14 @@ export const setLocale = (locale: Locale): void => {
     });
 };
 
+/** Provides detect device language behavior. */
 export const detectDeviceLanguage = (locale?: string): Locale => {
   const resolved = normalizeLocale(locale ?? Intl.DateTimeFormat().resolvedOptions().locale ?? "en");
   setLocale(resolved);
   return resolved;
 };
 
+/** Provides tr behavior. */
 export const tr = (key: string, params?: Record<string, string | number>): string => {
   const activeMessage = getValueAtPath(getCatalogForRender(currentLocale), key);
   const fallbackMessage = getValueAtPath(getCatalogForRender("en"), key);
@@ -327,6 +357,7 @@ export const tr = (key: string, params?: Record<string, string | number>): strin
   return formatMessage(activeMessage ?? fallbackMessage!, params);
 };
 
+/** Provides subscribe behavior. */
 const subscribe = (listener: () => void): (() => void) => {
   localeSubscribers.add(listener);
   return () => {
@@ -334,6 +365,7 @@ const subscribe = (listener: () => void): (() => void) => {
   };
 };
 
+/** Provides locale. */
 export const useLocale = (): Locale => {
   return useSyncExternalStore(subscribe, getLocale, getLocale);
 };

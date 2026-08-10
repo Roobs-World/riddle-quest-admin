@@ -1,8 +1,11 @@
+/** Defines the max avatar bytes value. */
 const MAX_AVATAR_BYTES = 512 * 1024;
 
+/** Indicates whether has prefix. */
 const hasPrefix = (value: Buffer, prefix: readonly number[]) =>
   prefix.every((byte, index) => value[index] === byte);
 
+/** Provides decode avatar data url behavior. */
 export function decodeAvatarDataUrl(imageDataUrl: string): {
   bytes: Buffer;
   contentType: "image/jpeg" | "image/png" | "image/webp";
@@ -25,6 +28,7 @@ export function decodeAvatarDataUrl(imageDataUrl: string): {
   return {bytes, contentType};
 }
 
+/** Provides avatar download url behavior. */
 export const avatarDownloadUrl = (bucketName: string, objectPath: string, downloadToken: string) =>
   `https://firebasestorage.googleapis.com/v0/b/${encodeURIComponent(bucketName)}/o/` +
   `${encodeURIComponent(objectPath)}?alt=media&token=${encodeURIComponent(downloadToken)}`;

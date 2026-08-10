@@ -1,0 +1,173 @@
+import {ACHIEVEMENT_DEFINITIONS} from "../../achievements";
+import type {GameSessionState} from "../../gameSession";
+import {tr} from "../../i18n";
+import {getRankForLevel} from "../../ranks";
+import {RankIcon} from "../../RankIcon";
+import {CoinAwardSequence} from "./CoinAwardSequence";
+import type {FanfareCoinAward, FanfareStep} from "./fanfareSequence";
+import {JEST_REFERRAL_REWARD_COINS} from "@qwordly/core/referrals";
+
+/** Props shared by the two fanfare modal content variants. */
+type SharedFanfareProps = {
+  /** Stores active coin award. */
+  activeCoinAward: FanfareCoinAward | null;
+  /** Stores coin collection pending. */
+  coinCollectionPending: boolean;
+  /** Stores on balance preview. */
+  onBalancePreview: (balance: number | null) => void;
+  /** Stores on coin collected. */
+  onCoinCollected: () => void;
+  /** Stores on advance. */
+  onAdvance: () => void;
+};
+
+/** Props for the victory fanfare content. */
+export type VictoryFanfareContentProps = SharedFanfareProps & {
+  activeStep: FanfareStep | undefined;
+  state: GameSessionState;
+  stepIndex: number;
+  stepCount: number;
+};
+
+/** Props for an auxiliary purchase or achievement fanfare. */
+export type RewardFanfareContentProps = SharedFanfareProps & {
+  activeStep: FanfareStep | undefined;
+  stepIndex: number;
+  stepCount: number;
+};
+
+/** Renders an achievement unlocked during a fanfare sequence. */
+export function AchievementFanfare({achievementId}: {achievementId: string}) {
+  const achievement = ACHIEVEMENT_DEFINITIONS.find((item) => item.id === achievementId);
+  return (
+    <div className="achievement-unlock">
+      <span className="achievement-icon large" aria-hidden="true">{achievement?.icon ?? "🏆"}</span>
+      <strong>{achievement ? (achievement.nameKey ? tr(achievement.nameKey) : achievement.name) : achievementId}</strong>
+      {achievement && <p>{achievement.descriptionKey ? tr(achievement.descriptionKey) : achievement.description}</p>}
+    </div>
+  );
+}
+
+/** Renders the active server-authoritative victory reward step. */
+export function VictoryFanfareContent({
+  activeCoinAward,
+  activeStep,
+  coinCollectionPending,
+  onAdvance,
+  onBalancePreview,
+  onCoinCollected,
+  state,
+  stepCount,
+  stepIndex,
+}: VictoryFanfareContentProps) {
+  const victoryLevel = state.lastRewards?.newLevel;
+  const victoryRank = getRankForLevel(victoryLevel ?? 1);
+
+  return (
+    <div className="fanfare-content">
+      <div className="fanfare-burst" aria-hidden="true">✦</div>
+      {!activeStep ? (
+        <p aria-live="polite">{tr("WebPortal.HOST_STATUS_WAITING")}</p>
+      ) : activeStep.kind === "achievement" ? (
+        <AchievementFanfare achievementId={activeStep.achievementId} />
+      ) : activeStep.kind === "level" ? (
+        <div className="reward-summary">
+          <span className="fanfare-emblem">✦</span>
+          <strong>{tr("LevelUpFanfare.LEVEL_PREFIX")}{victoryLevel}</strong>
+          <span>{tr("LevelUpFanfare.PROFILE_GUIDANCE")}</span>
+        </div>
+      ) : activeStep.kind === "rank" ? (
+        <div className="reward-summary">
+          <span className="rank-emblem large" style={{background: victoryRank.color}}>
+            <RankIcon name={victoryRank.icon} />
+          </span>
+          <strong>{tr(victoryRank.nameKey)}</strong>
+          <span>{tr("RankUpFanfare.SUBTITLE")}</span>
+        </div>
+      ) : (
+        <>
+          <strong className="fanfare-title">{tr("VictoryModal.YOU_WON_TITLE")}</strong>
+          {activeCoinAward && activeCoinAward.amount > 0 ? (
+            <CoinAwardSequence
+              key={activeCoinAward.id}
+              amount={activeCoinAward.amount}
+              total={activeCoinAward.total}
+              onBalancePreview={onBalancePreview}
+              onCollected={onCoinCollected}
+            />
+          ) : null}
+          <div className="reward-summary reward-details">
+            {state.lastRewards?.newXp !== undefined && (
+              <span>{state.lastRewards.newXp} {tr("StatsModal.XP")}</span>
+            )}
+            {state.lastRewards?.newWinStreak !== undefined && <span>🔥 {state.lastRewards.newWinStreak}</span>}
+          </div>
+          <button
+            className="play-secondary"
+            onClick={() => window.dispatchEvent(new CustomEvent("riddle-quest:share-referral", {
+              detail: {
+                gameMode: state.riddle?.gameMode,
+                riddleId: state.riddle?.riddleId,
+                attempts: state.guesses.length,
+                emojiGrid: state.guesses
+                  .map((guess) => guess.feedback.map((feedback) =>
+                    feedback === "green" ? "🟩" : feedback === "yellow" ? "🟨" : "⬛",
+                  ).join(""))
+                  .join("\n"),
+              },
+            }))}
+          >
+            {tr("VictoryModal.SHARE_TEXT", {coins: JEST_REFERRAL_REWARD_COINS})}
+          </button>
+        </>
+      )}
+      {activeStep ? (
+        <>
+          <small className="sequence-progress">{stepIndex + 1}/{stepCount}</small>
+          <button className="play-primary reward-continue" disabled={coinCollectionPending} onClick={onAdvance}>
+            {stepIndex + 1 < stepCount
+              ? tr("GameScreenAlerts.NEXT_BUTTON")
+              : tr("VictoryModal.NEXT_LEVEL_BUTTON")}
+          </button>
+        </>
+      ) : null}
+    </div>
+  );
+}
+
+/** Renders the active purchase or achievement reward step. */
+export function RewardFanfareContent({
+  activeCoinAward,
+  activeStep,
+  coinCollectionPending,
+  onAdvance,
+  onBalancePreview,
+  onCoinCollected,
+  stepCount,
+  stepIndex,
+}: RewardFanfareContentProps) {
+  return (
+    <div className="fanfare-content">
+      <div className="fanfare-burst" aria-hidden="true">✦</div>
+      {activeStep?.kind === "purchase" || activeStep?.kind === "referral" || activeStep?.kind === "coins" ? (
+        activeCoinAward && activeCoinAward.amount > 0 ? (
+          <CoinAwardSequence
+            key={activeCoinAward.id}
+            amount={activeCoinAward.amount}
+            total={activeCoinAward.total}
+            onBalancePreview={onBalancePreview}
+            onCollected={onCoinCollected}
+          />
+        ) : null
+      ) : activeStep?.kind === "achievement" ? (
+        <AchievementFanfare achievementId={activeStep.achievementId} />
+      ) : null}
+      <small className="sequence-progress">{stepIndex + 1}/{Math.max(1, stepCount)}</small>
+      <button className="play-primary reward-continue" disabled={coinCollectionPending} onClick={onAdvance}>
+        {stepIndex + 1 < stepCount
+          ? tr("GameScreenAlerts.NEXT_BUTTON")
+          : tr("CoinPurchase.AWESOME_BUTTON")}
+      </button>
+    </div>
+  );
+}

@@ -1,5 +1,7 @@
+/** Describes browser storage. */
 type BrowserStorage = Pick<Storage, "key" | "length" | "removeItem">;
 
+/** Removes matching keys. */
 const removeMatchingKeys = (
   storage: BrowserStorage,
   shouldRemove: (key: string) => boolean,
@@ -12,6 +14,7 @@ const removeMatchingKeys = (
   }
 };
 
+/** Resets development first run state. */
 export const resetDevelopmentFirstRunState = (
   localStorage: BrowserStorage,
   sessionStorage: BrowserStorage,

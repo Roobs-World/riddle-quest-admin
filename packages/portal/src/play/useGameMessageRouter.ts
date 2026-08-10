@@ -1,20 +1,25 @@
 import {useMemo} from "react";
 import type {Dispatch, MutableRefObject} from "react";
 import type {GameToHostMessage} from "@qwordly/core/bridge";
-import {BridgeLeaderboardEntrySchema, BridgeProfileSchema} from "@qwordly/core/bridge";
 import {createGameMessageRouter} from "./bridgeRouter";
 import {gameSessionReducer, type GameSessionState} from "./gameSession";
 import {tr} from "./i18n";
 
+/** Gets object. */
 const getObject = (data: unknown): Record<string, unknown> =>
   typeof data === "object" && data !== null ? data as Record<string, unknown> : {};
+/** Gets string. */
 const getString = (value: unknown) => typeof value === "string" ? value : undefined;
+/** Gets number. */
 const getNumber = (value: unknown) => typeof value === "number" ? value : undefined;
+/** Gets string array. */
 const getStringArray = (value: unknown): string[] =>
   Array.isArray(value) ? value.filter((item): item is string => typeof item === "string") : [];
 
+/** Describes game dispatch. */
 type GameDispatch = Dispatch<Parameters<typeof gameSessionReducer>[1]>;
 
+/** Provides game message router. */
 export function useGameMessageRouter({
   dispatch,
   stateRef,
@@ -37,7 +42,7 @@ export function useGameMessageRouter({
     }),
     authState: (message) => dispatch({type: "authState", user: message.payload.user, profile: message.payload.profile}),
     riddleLoaded: (message) => dispatch({type: "loadRiddle", riddle: message.payload.riddle, profile: message.payload.profile}),
-    operationResult: (message) => {
+    operationResult: async (message) => {
       if (!message.payload.ok) {
         if (message.payload.operation === "leaderboard") dispatch({type: "leaderboardLoadFailed"});
         dispatch({type: "setNotice", notice: message.payload.error ?? "ErrorMessages.GENERIC_UNEXPECTED_ERROR"});
@@ -69,6 +74,11 @@ export function useGameMessageRouter({
         const newCoins = getNumber(data.newCoins);
         if (newCoins !== undefined) dispatch({type: "coinsUpdated", newCoins});
         if (stateRef.current.modal === "continue") dispatch({type: "continueGranted"});
+        return;
+      }
+      if (message.payload.operation === "accountDeletion") {
+        dispatch({type: "closeModal"});
+        dispatch({type: "setNotice", notice: tr("Profile.DELETE_ACCOUNT_SUCCESS_MESSAGE")});
         return;
       }
       if (message.payload.operation === "skip") {
@@ -135,6 +145,7 @@ export function useGameMessageRouter({
         return;
       }
       if (message.payload.operation === "leaderboard") {
+        const {BridgeLeaderboardEntrySchema} = await import("@qwordly/core/bridge");
         const entries = Array.isArray(data.entries) ? data.entries.flatMap((entry) => {
           const parsed = BridgeLeaderboardEntrySchema.safeParse(entry);
           return parsed.success ? [parsed.data] : [];
@@ -144,6 +155,7 @@ export function useGameMessageRouter({
         return;
       }
       if (message.payload.operation === "profile") {
+        const {BridgeProfileSchema} = await import("@qwordly/core/bridge");
         const parsed = BridgeProfileSchema.safeParse(data.profile);
         if (parsed.success) {
           dispatch({type: "profileUpdated", profile: parsed.data});

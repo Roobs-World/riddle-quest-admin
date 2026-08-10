@@ -55,6 +55,7 @@
     "GUEST_MODE_TITLE": "Gioca come ospite",
     "JEST_REGISTRATION_TITLE": "Conserva i tuoi progressi",
     "JEST_REGISTRATION_GREETING": "Benvenuto, {name}.",
+    "JEST_INVITED_BY": "{name} ti ha invitato a giocare.",
     "JEST_REGISTRATION_DESCRIPTION": "Registrati con Jest per proteggere i tuoi progressi e ricevere nuovi Enigmi Giornalieri via messaggio.",
     "JEST_REGISTER_BUTTON": "Registrati",
     "JEST_LOGIN_BUTTON": "Accedi",

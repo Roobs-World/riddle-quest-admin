@@ -20,7 +20,8 @@ import {
 
 export {generateLocalizedTodaysDailyChallenge, generateTodaysDailyChallenge} from "../daily/dailyRiddleGeneration";
 
-async function generateLocalizedClassicRiddlesForLocale(
+/** Provides generate localized classic riddles for locale behavior. */
+export async function generateLocalizedClassicRiddlesForLocale(
   locale: SupportedLocale,
   numberOfRiddles: number,
 ): Promise<void> {
@@ -99,6 +100,7 @@ async function generateLocalizedClassicRiddlesForLocale(
   }
 }
 
+/** Provides generate localized classic riddles behavior. */
 export async function generateLocalizedClassicRiddles(numberOfRiddles: number): Promise<void> {
   const localeConcurrency = 3;
   for (let index = 0; index < SUPPORTED_LOCALES.length; index += localeConcurrency) {
@@ -331,6 +333,7 @@ export async function initializeRiddleDatabaseIfEmpty(initialRiddleCount: number
   }
 }
 
+/** Provides initialize localized riddle database if empty behavior. */
 export async function initializeLocalizedRiddleDatabaseIfEmpty(initialRiddleCount: number = 20): Promise<void> {
   logger.info("Checking if localized riddle database needs initialization...");
 

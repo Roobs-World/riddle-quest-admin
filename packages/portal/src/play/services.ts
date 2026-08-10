@@ -4,28 +4,35 @@ import type {HostServices} from "./types";
 import {toProductSummaries} from "./types";
 import {hasTrustedTestHarnessMarker, shouldUseFakeHostServices} from "../testHarness";
 
+/** Describes host services mode. */
 export type HostServicesMode = "firebase" | "fake";
 
+/** Provides required firebase config behavior. */
 const requiredFirebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
   projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
 };
 
+/** Provides missing firebase config behavior. */
 const missingFirebaseConfig = Object.entries(requiredFirebaseConfig)
   .filter(([, value]) => !value)
   .map(([key]) => key);
 
+/** Provides firebase configuration error behavior. */
 const firebaseConfigurationError =
   missingFirebaseConfig.length > 0 ? `Missing Firebase configuration: ${missingFirebaseConfig.join(", ")}` : null;
 
+/** Provides firebase services promise behavior. */
 let firebaseServicesPromise: Promise<HostServices> | null = null;
 
+/** Gets firebase services. */
 const getFirebaseServices = async (): Promise<HostServices> => {
   firebaseServicesPromise ??= import("./firebaseServices").then((module) => module.createFirebaseHostServices());
   return firebaseServicesPromise;
 };
 
+/** Creates lazy firebase host services. */
 const createLazyFirebaseHostServices = (): HostServices => ({
   products: toProductSummaries(cloneProductPricingCatalog()),
   auth: {
@@ -80,6 +87,9 @@ const createLazyFirebaseHostServices = (): HostServices => ({
   async updateAvatar(imageDataUrl) {
     return (await getFirebaseServices()).updateAvatar(imageDataUrl);
   },
+  async deleteAccount() {
+    return (await getFirebaseServices()).deleteAccount();
+  },
   async listRaceCategories(locale) {
     return (await getFirebaseServices()).listRaceCategories(locale);
   },
@@ -121,6 +131,7 @@ const createLazyFirebaseHostServices = (): HostServices => ({
   },
 });
 
+/** Resolves host services mode. */
 export const resolveHostServicesMode = (
   search = window.location.search,
   options: {development?: boolean; testHarnessEnabled?: boolean} = {},
@@ -130,6 +141,7 @@ export const resolveHostServicesMode = (
   return shouldUseFakeHostServices({search, development, testHarnessEnabled: harnessAllowed}) ? "fake" : "firebase";
 };
 
+/** Creates host services. */
 export const createHostServices = (mode: HostServicesMode = resolveHostServicesMode()): HostServices => {
   if (mode === "fake") {
     return createFakeHostServices({initiallyAuthenticated: true});
@@ -138,6 +150,7 @@ export const createHostServices = (mode: HostServicesMode = resolveHostServicesM
   return createLazyFirebaseHostServices();
 };
 
+/** Gets host configuration warning. */
 export const getHostConfigurationWarning = (mode: HostServicesMode): string | null => {
   if (mode === "fake") {
     return null;

@@ -4,7 +4,7 @@ import {resetDevelopmentFirstRunState} from "./developmentFirstRun";
 import {FatalErrorBoundary} from "./FatalErrorBoundary";
 import {JestPlayApp} from "./jest/JestPlayApp";
 import "./styles.css";
-import {installButtonAnalytics, trackScreen} from "./analytics/googleAnalytics";
+import {installButtonAnalytics, installGlobalErrorAnalytics, trackScreen} from "./analytics/googleAnalytics";
 import {initializeGoogleAnalytics} from "./analytics/firebaseAnalytics";
 
 if (import.meta.env.DEV) {
@@ -12,6 +12,7 @@ if (import.meta.env.DEV) {
 }
 
 installButtonAnalytics();
+installGlobalErrorAnalytics();
 initializeGoogleAnalytics();
 trackScreen("startup");
 

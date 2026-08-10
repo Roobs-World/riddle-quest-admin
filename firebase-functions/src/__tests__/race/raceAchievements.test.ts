@@ -63,4 +63,46 @@ describe("multiplayer achievements", () => {
     expect(update.stats.multiplayerWins).toBe(1);
     expect(update.newlyUnlockedAchievementIds).toEqual(["race_debut", "race_first_win"]);
   });
+
+  it("does not credit a creator win after an opponent loss", () => {
+    const update = evaluateRaceAchievementEvent(
+      {stats: {multiplayerGamesPlayed: 2, multiplayerWins: 0}},
+      {kind: "opponent_resolved", won: false},
+      5_000,
+    );
+    expect(update.stats).toMatchObject({multiplayerGamesPlayed: 3, multiplayerWins: 0});
+  });
+
+  it("unlocks the twenty-five-win and first-host milestones", () => {
+    const win = evaluateRaceAchievementEvent(
+      {stats: {multiplayerGamesPlayed: 30, multiplayerWins: 24}, unlockedAchievements: ["race_debut"]},
+      {kind: "completed", won: true, cleanRun: false},
+      6_000,
+    );
+    expect(win.newlyUnlockedAchievementIds).toEqual(expect.arrayContaining(["race_first_win", "race_wins_5", "race_wins_25"]));
+
+    const host = evaluateRaceAchievementEvent({}, {kind: "challenge_published"}, 6_001);
+    expect(host.newlyUnlockedAchievementIds).toEqual(["race_host"]);
+  });
+
+  it("normalizes malformed stored counters, coins and achievement entries", () => {
+    const update = evaluateRaceAchievementEvent(
+      {
+        coins: -1,
+        stats: {multiplayerGamesPlayed: 1.5, multiplayerWins: "4", multiplayerChallengesCreated: -2},
+        unlockedAchievements: [null, [], {achievementId: 4}, "race_debut"],
+      },
+      {kind: "completed", won: false, cleanRun: false},
+      7_000,
+    );
+    expect(update.stats).toEqual({multiplayerGamesPlayed: 1, multiplayerWins: 0, multiplayerChallengesCreated: 0});
+    expect(update.newCoins).toBeGreaterThanOrEqual(0);
+
+    const noList = evaluateRaceAchievementEvent(
+      {stats: null, unlockedAchievements: "race_debut", coins: "100"},
+      {kind: "challenge_published"},
+      7_001,
+    );
+    expect(noList.stats.multiplayerChallengesCreated).toBe(1);
+  });
 });

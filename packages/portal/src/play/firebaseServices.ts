@@ -1,6 +1,6 @@
 import {splitGraphemes} from "@qwordly/core/game";
 import type {BridgeProfile, BridgeRiddle, BridgeUser} from "@qwordly/core/bridge";
-import {onAuthStateChanged} from "firebase/auth";
+import {onAuthStateChanged, signOut} from "firebase/auth";
 import {
   auth,
   completeGame,
@@ -26,11 +26,13 @@ import {
   spendCoins,
   updateAvatar as updateAvatarCallable,
   updateUsername as updateUsernameCallable,
+  deleteAccount as deleteAccountCallable,
   type CurrentRiddleResponse,
 } from "../firebase";
 import type {AuthSnapshot, HostServices} from "./types";
 import {toBridgeProfile} from "./profileMapper";
 
+/** Provides to bridge user behavior. */
 const toBridgeUser = (user: typeof auth.currentUser): BridgeUser | null => {
   if (!user) {
     return null;
@@ -45,6 +47,7 @@ const toBridgeUser = (user: typeof auth.currentUser): BridgeUser | null => {
   };
 };
 
+/** Maps riddle response. */
 const mapRiddleResponse = (response: CurrentRiddleResponse, gameMode: "classic" | "challenge"): BridgeRiddle => {
   const question = response.challenge?.questions[0];
   if (!question || response.error) {
@@ -61,6 +64,7 @@ const mapRiddleResponse = (response: CurrentRiddleResponse, gameMode: "classic" 
   };
 };
 
+/** Creates firebase host services. */
 export const createFirebaseHostServices = (): HostServices => {
   let latestSnapshot: AuthSnapshot = {user: toBridgeUser(auth.currentUser), profile: null};
   const subscribers = new Set<(snapshot: AuthSnapshot) => void>();
@@ -161,6 +165,11 @@ export const createFirebaseHostServices = (): HostServices => {
       const profile = await reloadProfile(latestSnapshot.user);
       emit({user: latestSnapshot.user, profile});
       return profile;
+    },
+    async deleteAccount() {
+      await deleteAccountCallable({});
+      await signOut(auth);
+      emit({user: null, profile: null});
     },
     async listRaceCategories(locale) {
       return (await listRaceCategories({locale})).data;

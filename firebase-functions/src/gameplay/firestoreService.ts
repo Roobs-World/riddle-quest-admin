@@ -4,34 +4,26 @@ import {captureException} from "../shared/sentry";
 import type {
   Player,
   PlayerStatsUpdate,
-  FirestoreRiddle,
-  ClassicRiddle,
-  DailyRiddle,
   UnlockedAchievement,
 } from "../validation/firestoreSchemas";
 import {PlayerSchema} from "../validation/firestoreSchemas";
 import * as functions from "firebase-functions";
-import {type SupportedLocale, SUPPORTED_LOCALES} from "@qwordly/core/validation";
+import {type SupportedLocale} from "@qwordly/core/validation";
 
+/** Defines the initial coins value. */
 const INITIAL_COINS: number = 300;
-const LOCALIZED_RIDDLES_COLLECTION = "localizedRiddles";
-const LOCALIZED_RIDDLE_SUBCOLLECTION = "riddles";
 
 // const db = admin.firestore(); // Replaced with lazy initialization
+/** Provides db instance behavior. */
 let dbInstance: Firestore;
 
+/** Gets db. */
 function getDb(): Firestore {
   if (!dbInstance) {
     dbInstance = admin.firestore();
   }
   return dbInstance;
 }
-
-const getLocalizedRiddleCollectionPath = (locale: SupportedLocale): string =>
-  `${LOCALIZED_RIDDLES_COLLECTION}/${locale}/${LOCALIZED_RIDDLE_SUBCOLLECTION}`;
-
-const resolveLocale = (locale?: string): SupportedLocale =>
-  (SUPPORTED_LOCALES.find((entry) => entry === locale) ?? "en") as SupportedLocale;
 
 /**
  * Fetches a user document by ID.
@@ -426,146 +418,4 @@ export async function appendUnlockedAchievements(userId: string, newEntries: Unl
   functions.logger.info(`Appended ${toAdd.length} achievements for user ${userId}`);
 }
 
-/**
- * Fetches a riddle document by ID from the classic riddles collection.
- *
- * @param riddleId - The ID of the riddle.
- * @return A promise that resolves with the riddle document data, or undefined if not found.
- */
-async function getClassicRiddle(riddleId: string, locale?: string): Promise<ClassicRiddle | undefined> {
-  const resolvedLocale = resolveLocale(locale);
-  const localizedRef = getDb().collection(getLocalizedRiddleCollectionPath(resolvedLocale)).doc(riddleId);
-  const localizedDoc = await localizedRef.get();
-
-  if (!localizedDoc.exists) {
-    functions.logger.info(`Classic riddle document not found for ID ${riddleId} in locale ${resolvedLocale}`);
-    return undefined;
-  }
-
-  const data = localizedDoc.data();
-  if (!data) {
-    functions.logger.info(`Classic riddle data is null for ID ${riddleId} in locale ${resolvedLocale}`);
-    return undefined;
-  }
-
-  const riddleData = data as ClassicRiddle;
-  return {
-    ...riddleData,
-    riddleId: riddleData.riddleId || riddleId,
-    locale: riddleData.locale || resolvedLocale,
-  };
-}
-
-/**
- * Fetches a classic riddle document by its classic index from the localized collection.
- *
- * @param classicIndex - The classic progression index for the riddle.
- * @param locale - Optional locale override.
- * @return A promise that resolves with the riddle document data, or undefined if not found.
- */
-export async function getClassicRiddleByIndex(
-  classicIndex: number,
-  locale?: string,
-): Promise<ClassicRiddle | undefined> {
-  const resolvedLocale = resolveLocale(locale);
-  const snapshot = await getDb()
-    .collection(getLocalizedRiddleCollectionPath(resolvedLocale))
-    .where("classicIndex", "==", classicIndex)
-    .limit(1)
-    .get();
-
-  if (snapshot.empty) {
-    functions.logger.info(`Classic riddle document not found for index ${classicIndex} in locale ${resolvedLocale}`);
-    return undefined;
-  }
-
-  const doc = snapshot.docs[0];
-  const data = doc.data();
-  if (!data) {
-    functions.logger.info(`Classic riddle data is null for index ${classicIndex} in locale ${resolvedLocale}`);
-    return undefined;
-  }
-
-  const riddleData = data as ClassicRiddle;
-  return {
-    ...riddleData,
-    riddleId: riddleData.riddleId || doc.id,
-    locale: riddleData.locale || resolvedLocale,
-  };
-}
-
-/**
- * Fetches a riddle document by ID from the daily riddles collection.
- *
- * @param riddleId - The ID of the riddle.
- * @return A promise that resolves with the riddle document data, or undefined if not found.
- */
-export async function getDailyRiddle(riddleId: string, locale?: string): Promise<DailyRiddle | undefined> {
-  const resolvedLocale = resolveLocale(locale);
-  const localizedRef = getDb().collection(getLocalizedRiddleCollectionPath(resolvedLocale)).doc(riddleId);
-  const localizedDoc = await localizedRef.get();
-
-  if (!localizedDoc.exists) {
-    functions.logger.info(`Daily riddle document not found for ID ${riddleId} in locale ${resolvedLocale}`);
-    return undefined;
-  }
-
-  const data = localizedDoc.data();
-  if (!data) {
-    functions.logger.info(`Daily riddle data is null for ID ${riddleId} in locale ${resolvedLocale}`);
-    return undefined;
-  }
-
-  const riddleData = data as DailyRiddle;
-  return {
-    ...riddleData,
-    riddleId: riddleData.riddleId || riddleId,
-    locale: riddleData.locale || resolvedLocale,
-  };
-}
-
-/**
- * Fetches a riddle document by ID, searching across all riddle collections.
- *
- * @param riddleId - The ID of the riddle.
- * @return A promise that resolves with the riddle document data, or undefined if not found.
- */
-export async function getRiddle(riddleId: string): Promise<FirestoreRiddle | undefined> {
-  // First try the classic riddles collection
-  const classicRiddle = await getClassicRiddle(riddleId);
-  if (classicRiddle) {
-    return classicRiddle;
-  }
-
-  // Then try the daily riddles collection
-  const dailyRiddle = await getDailyRiddle(riddleId);
-  if (dailyRiddle) {
-    return dailyRiddle;
-  }
-
-  functions.logger.info(`Riddle document not found for ID ${riddleId} in any collection`);
-  return undefined;
-}
-
-/**
- * Fetches a riddle document by ID based on the game mode.
- *
- * @param riddleId - The ID of the riddle.
- * @param gameMode - The game mode ('classic', 'challenge').
- * @return A promise that resolves with the riddle document data, or undefined if not found.
- */
-export async function getRiddleByGameMode(
-  riddleId: string,
-  gameMode: "classic" | "challenge",
-  locale?: string,
-): Promise<FirestoreRiddle | undefined> {
-  switch (gameMode) {
-    case "classic":
-      return await getClassicRiddle(riddleId, locale);
-    case "challenge":
-      return await getDailyRiddle(riddleId, locale);
-    default:
-      functions.logger.warn(`Unknown game mode: ${gameMode}`);
-      return undefined;
-  }
-}
+export {getClassicRiddleByIndex, getDailyRiddle, getRiddle, getRiddleByGameMode} from "./riddleRepository";

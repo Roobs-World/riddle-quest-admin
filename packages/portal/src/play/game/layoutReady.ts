@@ -1,3 +1,4 @@
+/** Provides run when layout ready behavior. */
 export function runWhenLayoutReady(callback: () => void) {
   let cancelled = false;
   let animationFrame = 0;

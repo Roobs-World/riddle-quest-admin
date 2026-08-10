@@ -30,4 +30,9 @@ describe("race analytics privacy", () => {
       },
     });
   });
+
+  it("supports empty metrics and rejects oversized allowlisted strings", () => {
+    expect(createRaceAnalyticsMessage("race_started").payload.params).toEqual({});
+    expect(createRaceAnalyticsMessage("race_completed", {result: "x".repeat(81)}).payload.params).toEqual({});
+  });
 });

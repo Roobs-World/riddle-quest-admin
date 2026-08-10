@@ -3,6 +3,7 @@ import {
   AbandonRaceRunResponseSchema,
   ListRaceCategoriesResponseSchema,
   PublishRaceChallengeRequestSchema,
+  RaceAnalyticsEventRequestSchema,
   RACE_HINT_PENALTY_MS,
   RACE_RULES,
   RACE_SKIP_PENALTY_MS,
@@ -262,5 +263,13 @@ describe("Race to 10 contracts", () => {
         achievementCoinsAwarded: 999_999,
       }).success,
     ).toBe(false);
+  });
+
+  it("limits analytics payloads to ten bounded fields", () => {
+    expect(RaceAnalyticsEventRequestSchema.safeParse({
+      eventId: "analytics-0001",
+      eventName: "race_mode_viewed",
+      params: Object.fromEntries(Array.from({length: 11}, (_, index) => [`field${index}`, index])),
+    }).success).toBe(false);
   });
 });

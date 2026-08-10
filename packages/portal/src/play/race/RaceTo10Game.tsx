@@ -1,7 +1,9 @@
 import {useCallback, useEffect, useMemo, useRef, useState} from "react";
+import "../../styles.race-lobby.css";
+import "../../styles.race-gameplay.css";
 import type {GameToHostMessage} from "@qwordly/core/bridge";
 import {parseHostToGameMessage} from "@qwordly/core/bridge";
-import type {Feedback, ScoredGuess} from "@qwordly/core/game";
+import type {ScoredGuess} from "@qwordly/core/game";
 import {
   AbandonRaceRunResponseSchema,
   ListRaceCategoriesResponseSchema,
@@ -24,43 +26,22 @@ import {
 } from "@qwordly/core/race";
 import {tr} from "../i18n";
 import {HOST_TO_GAME_EVENT} from "../localBridge";
-import {createRequestId} from "../requestIds";
 import {createRaceAnalyticsMessage} from "./logic/raceAnalytics";
 import {getRaceCountdownStep, RACE_COUNTDOWN_START} from "./logic/raceCountdown";
+import {deleteRaceLetter, insertRaceLetter, isRaceSlotEditable} from "./logic/raceInput";
+import type {RaceOperation} from "./logic/raceOperations";
 import {getGhostCorrectCount} from "./logic/racePlayback";
-import {createRaceAttempt, findFirstEditableRaceSlot} from "./logic/racePresentation";
-import {RaceTopbar} from "./components/RaceHeader";
-import {RaceGameplay} from "./components/RaceGameplay";
-import {RaceCategoriesPanel, RaceChallengePanel, RaceInboxPanel} from "./components/RaceLobbyPanels";
-import {RaceCountdown} from "./components/RaceCountdown";
-import {RaceResultPanel} from "./components/RaceResultPanel";
-import {RaceQuitDialog} from "./components/RaceQuitDialog";
+import {createRaceAttempt, findFirstEditableRaceSlot, getAdjustedRaceTime, getRaceLetterStates} from "./logic/racePresentation";
+import {useRaceDialogFocus, useRaceGameplayFit, useRaceGameplayKeyboard, useRaceOperationLifecycle} from "./hooks";
 import {trackEvent, trackScreen} from "../../analytics/googleAnalytics";
-import {SpinningWheelLoader} from "../SpinningWheelLoader";
+import {RaceTo10View, type RaceStage} from "./RaceTo10View";
 
 /** Screens controlled by the Race to 10 client state machine. */
-type Stage = "categories" | "challenge" | "inbox" | "countdown" | "racing" | "result";
-/** Host operations that can be pending during the multiplayer flow. */
-type RaceOperation =
-  | "raceCategories"
-  | "raceStart"
-  | "raceGuess"
-  | "raceHint"
-  | "raceSkip"
-  | "raceAbandon"
-  | "racePublish"
-  | "raceChallenge"
-  | "raceOutcome"
-  | "raceInbox";
-
 /** Stable empty category list used as the default prop value. */
 const EMPTY_CATEGORIES: ListRaceCategoriesResponse["categories"] = [];
 
 /** Local-storage key used to remember the currently active race run. */
 const ACTIVE_RACE_KEY = "riddleQuest:activeRaceRun";
-/** Minimum duration of the answer-submission loader to prevent visual flicker. */
-const RACE_GUESS_LOADER_MIN_VISIBLE_MS = 180;
-
 /** Coordinates the complete server-authoritative Race to 10 multiplayer experience. */
 export function RaceTo10Game({
   locale,
@@ -80,7 +61,7 @@ export function RaceTo10Game({
   initialCategories?: ListRaceCategoriesResponse["categories"];
 }) {
   /** Currently visible multiplayer screen. */
-  const [stage, setStage] = useState<Stage>(openInbox ? "inbox" : challengeId ? "challenge" : "categories");
+  const [stage, setStage] = useState<RaceStage>(openInbox ? "inbox" : challengeId ? "challenge" : "categories");
   /** Challenge being loaded or accepted by this client. */
   const [activeChallengeId, setActiveChallengeId] = useState(openInbox ? undefined : challengeId);
   /** Challenge used to establish a rematch rivalry. */
@@ -109,10 +90,6 @@ export function RaceTo10Game({
   const [penaltyFlash, setPenaltyFlash] = useState<string | null>(null);
   /** Whether the active-race abandonment confirmation is visible. */
   const [quitConfirmationOpen, setQuitConfirmationOpen] = useState(false);
-  /** Host operation currently awaiting a matching response. */
-  const [pending, setPending] = useState<RaceOperation | null>(null);
-  /** Whether the answer-submission loading overlay is visible. */
-  const [raceGuessLoading, setRaceGuessLoading] = useState(false);
   /** Latest recoverable multiplayer error shown to the player. */
   const [error, setError] = useState<string | null>(null);
   /** Published challenge created from the completed run. */
@@ -121,16 +98,14 @@ export function RaceTo10Game({
   const [receivedAtMs, setReceivedAtMs] = useState(Date.now());
   /** Render trigger used to refresh the displayed race clock. */
   const [, setTick] = useState(0);
-  /** Request identifier expected by the next host-operation response. */
-  const expectedRequestRef = useRef<string | null>(null);
-  /** High-resolution time at which the guess loader became visible. */
-  const raceGuessLoadingStartedAtRef = useRef(0);
-  /** Timer responsible for hiding the guess loader after its minimum duration. */
-  const raceGuessLoadingTimerRef = useRef<number | undefined>(undefined);
-  /** Whether a guess loader lifecycle is currently active. */
-  const raceGuessLoadingActiveRef = useRef(false);
-  /** Whether the loader must remain visible until a separate outcome response arrives. */
-  const raceGuessAwaitingOutcomeRef = useRef(false);
+  const {
+    expectedRequestRef,
+    finishOperation,
+    pending,
+    raceGuessLoading,
+    send,
+    setRaceGuessAwaitingOutcome,
+  } = useRaceOperationLifecycle({postToHost, setError});
   /** Latest rivalry identifier available synchronously to rematch callbacks. */
   const rivalryChallengeIdRef = useRef<string | undefined>(undefined);
   /** Root race dialog used for focus containment and viewport measurement. */
@@ -157,62 +132,6 @@ export function RaceTo10Game({
     setFeedback(null);
   }, []);
 
-  /** Sends one correlated multiplayer operation to the host bridge. */
-  const send = useCallback(
-    (operation: RaceOperation, type: GameToHostMessage["type"], payload: Record<string, unknown>) => {
-      /** Correlation identifier shared by the bridge message and server receipt. */
-      const requestId = createRequestId(operation);
-      /** Whether the operation requires an idempotency receipt in its payload. */
-      const requiresReceipt = ["raceStart", "raceGuess", "raceHint", "raceSkip", "raceAbandon", "racePublish"].includes(operation);
-      expectedRequestRef.current = requestId;
-      setPending(operation);
-      if (operation === "raceGuess") {
-        if (raceGuessLoadingTimerRef.current !== undefined) {
-          window.clearTimeout(raceGuessLoadingTimerRef.current);
-          raceGuessLoadingTimerRef.current = undefined;
-        }
-        raceGuessLoadingStartedAtRef.current = performance.now();
-        raceGuessLoadingActiveRef.current = true;
-        raceGuessAwaitingOutcomeRef.current = false;
-        setRaceGuessLoading(true);
-      }
-      setError(null);
-      postToHost({
-        type,
-        requestId,
-        payload: requiresReceipt ? {...payload, requestId} : payload,
-      } as GameToHostMessage);
-    },
-    [postToHost],
-  );
-  /** Ends the current guess-loader lifecycle after its minimum visible duration. */
-  const finishRaceGuessLoading = useCallback(() => {
-    /** Time for which the loader has already remained visible. */
-    const elapsedMs = performance.now() - raceGuessLoadingStartedAtRef.current;
-    /** Additional delay required to meet the minimum visible duration. */
-    const remainingMs = Math.max(0, RACE_GUESS_LOADER_MIN_VISIBLE_MS - elapsedMs);
-    raceGuessLoadingTimerRef.current = window.setTimeout(() => {
-      raceGuessLoadingActiveRef.current = false;
-      raceGuessAwaitingOutcomeRef.current = false;
-      setRaceGuessLoading(false);
-      raceGuessLoadingTimerRef.current = undefined;
-    }, remainingMs);
-  }, []);
-  /** Clears pending UI for a completed host operation and coordinates loader state. */
-  const finishOperation = useCallback((operation: RaceOperation) => {
-    setPending((current) => current === operation ? null : current);
-    if (operation === "raceGuess" && !raceGuessAwaitingOutcomeRef.current) {
-      finishRaceGuessLoading();
-    } else if (operation === "raceOutcome" && raceGuessLoadingActiveRef.current) {
-      finishRaceGuessLoading();
-    }
-  }, [finishRaceGuessLoading]);
-
-  useEffect(() => () => {
-    if (raceGuessLoadingTimerRef.current !== undefined) {
-      window.clearTimeout(raceGuessLoadingTimerRef.current);
-    }
-  }, []);
   /** Emits a schema-constrained multiplayer analytics event through the host. */
   const analytics = useCallback(
     (eventName: RaceAnalyticsEventName, params: Record<string, string | number | boolean> = {}) =>
@@ -234,6 +153,16 @@ export function RaceTo10Game({
     onClose();
   }, [onClose, run?.status, stage]);
 
+  /** Hides the active-race abandonment confirmation. */
+  const dismissQuitConfirmation = useCallback(() => setQuitConfirmationOpen(false), []);
+  useRaceDialogFocus({
+    dialogRef,
+    quitDialogRef,
+    quitConfirmationOpen,
+    dismissQuitConfirmation,
+    requestClose,
+  });
+
   /** Stores a new authoritative run view and requests its outcome when complete. */
   const updateRun = useCallback(
     (next: RaceRunView) => {
@@ -245,50 +174,6 @@ export function RaceTo10Game({
     },
     [send],
   );
-
-  useEffect(() => {
-    /** Element focused before the modal race experience opened. */
-    const previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
-    dialogRef.current?.focus();
-    /** Handles escape-to-close and keyboard focus containment. */
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        event.preventDefault();
-        if (quitConfirmationOpen) setQuitConfirmationOpen(false);
-        else requestClose();
-        return;
-      }
-      if (event.key !== "Tab" || !dialogRef.current) return;
-      const activeDialog = quitConfirmationOpen ? quitDialogRef.current : dialogRef.current;
-      if (!activeDialog) return;
-      const focusable = Array.from(
-        activeDialog.querySelectorAll<HTMLElement>(
-          'button:not([disabled]), input:not([disabled]), [href], [tabindex]:not([tabindex="-1"])',
-        ),
-      );
-      if (focusable.length === 0) return;
-      const first = focusable[0];
-      const last = focusable.at(-1)!;
-      if (event.shiftKey && document.activeElement === first) {
-        event.preventDefault();
-        last.focus();
-      } else if (!event.shiftKey && document.activeElement === last) {
-        event.preventDefault();
-        first.focus();
-      }
-    };
-    document.addEventListener("keydown", handleKeyDown);
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-      previousFocus?.focus();
-    };
-  }, [quitConfirmationOpen, requestClose]);
-
-  useEffect(() => {
-    if (!quitConfirmationOpen) return;
-    const frame = window.requestAnimationFrame(() => quitDialogRef.current?.focus());
-    return () => window.cancelAnimationFrame(frame);
-  }, [quitConfirmationOpen]);
 
   useEffect(() => {
     /** Deferred request used to avoid issuing host messages during render. */
@@ -355,7 +240,7 @@ export function RaceTo10Game({
         } else if (operation === "raceGuess") {
           const result = SubmitRaceGuessResponseSchema.parse(message.payload.data);
           const previousRiddle = run?.currentRiddle?.riddleId;
-          raceGuessAwaitingOutcomeRef.current = result.run.status !== "active";
+          setRaceGuessAwaitingOutcome(result.run.status !== "active");
           updateRun(result.run);
           if (result.autoSkipped) setPenaltyFlash(tr("RaceTo10.SKIP_PENALTY"));
           if (previousRiddle !== result.run.currentRiddle?.riddleId) {
@@ -416,7 +301,7 @@ export function RaceTo10Game({
     };
     window.addEventListener(HOST_TO_GAME_EVENT, handle);
     return () => window.removeEventListener(HOST_TO_GAME_EVENT, handle);
-  }, [activeChallengeId, activeSlotIndex, analytics, currentLetters, finishOperation, locale, onClose, resetAttempt, run?.currentRiddle?.riddleId, send, updateRun]);
+  }, [activeChallengeId, activeSlotIndex, analytics, currentLetters, finishOperation, locale, onClose, resetAttempt, run?.currentRiddle?.riddleId, send, setRaceGuessAwaitingOutcome, updateRun]);
 
   useEffect(() => {
     if (stage !== "countdown") return;
@@ -436,48 +321,12 @@ export function RaceTo10Game({
     return () => window.clearInterval(timer);
   }, [stage]);
 
-  useEffect(() => {
-    if (stage !== "racing") return;
-    const screen = dialogRef.current;
-    const viewport = gameplayViewportRef.current;
-    const gameplay = gameplayRef.current;
-    if (!screen || !viewport || !gameplay) return;
-
-    /** Most recently scheduled gameplay-layout animation frame. */
-    let frame = 0;
-    /** Scales gameplay to fit the available race dialog height. */
-    const fitGameplay = () => {
-      window.cancelAnimationFrame(frame);
-      frame = window.requestAnimationFrame(() => {
-        gameplay.style.transform = "none";
-        viewport.style.height = "auto";
-        const screenRect = screen.getBoundingClientRect();
-        const viewportRect = viewport.getBoundingClientRect();
-        const paddingBottom = Number.parseFloat(getComputedStyle(screen).paddingBottom) || 0;
-        const availableHeight = Math.max(1, screenRect.bottom - paddingBottom - viewportRect.top);
-        const naturalHeight = gameplay.offsetHeight;
-        const scale = naturalHeight > availableHeight ? availableHeight / naturalHeight : 1;
-        gameplay.style.transform = `scale(${scale})`;
-        viewport.style.height = `${naturalHeight * scale}px`;
-        viewport.dataset.viewportScale = scale.toFixed(4);
-      });
-    };
-
-    fitGameplay();
-    /** Observes layout changes that require gameplay rescaling. */
-    const observer = new ResizeObserver(fitGameplay);
-    observer.observe(screen);
-    observer.observe(gameplay);
-    window.addEventListener("resize", fitGameplay);
-    return () => {
-      window.cancelAnimationFrame(frame);
-      observer.disconnect();
-      window.removeEventListener("resize", fitGameplay);
-      gameplay.style.transform = "";
-      viewport.style.height = "";
-      delete viewport.dataset.viewportScale;
-    };
-  }, [stage]);
+  useRaceGameplayFit({
+    active: stage === "racing",
+    screenRef: dialogRef,
+    viewportRef: gameplayViewportRef,
+    gameplayRef,
+  });
 
   useEffect(() => {
     if (!penaltyFlash) return;
@@ -492,12 +341,7 @@ export function RaceTo10Game({
   }, [feedback]);
 
   /** Authoritative adjusted elapsed time advanced locally since the last response. */
-  const adjustedNow = run
-    ? Math.min(
-        run.rules.maxAdjustedTimeMs,
-        run.adjustedElapsedMs + (run.status === "active" ? Date.now() - receivedAtMs : 0),
-      )
-    : 0;
+  const adjustedNow = getAdjustedRaceTime(run, receivedAtMs);
 
   useEffect(() => {
     if (!run) return;
@@ -507,18 +351,7 @@ export function RaceTo10Game({
   /** Opponent score replayed against the adjusted race clock. */
   const ghostCorrect = useMemo(() => getGhostCorrectCount(run?.opponent, adjustedNow), [adjustedNow, run?.opponent]);
   /** Best server-scored feedback seen for each keyboard letter. */
-  const letterStates = useMemo(() => {
-    /** Highest-priority feedback status accumulated for each letter. */
-    const states: Record<string, Feedback> = {};
-    for (const scoredGuess of raceGuesses) {
-      scoredGuess.guess.forEach((letter, index) => {
-        const status = scoredGuess.feedback[index];
-        if (!letter || !status || states[letter.toLowerCase()] === "green") return;
-        states[letter.toLowerCase()] = status;
-      });
-    }
-    return states;
-  }, [raceGuesses]);
+  const letterStates = useMemo(() => getRaceLetterStates(raceGuesses), [raceGuesses]);
 
   /** Starts an authoritative run and displays its synchronized countdown. */
   const begin = (
@@ -568,7 +401,7 @@ export function RaceTo10Game({
   };
   /** Selects an editable answer position. */
   const selectSlot = (index: number) => {
-    if (run?.currentRiddle?.revealedLetters.some((letter) => letter.index === index)) return;
+    if (!run?.currentRiddle || !isRaceSlotEditable(run.currentRiddle, index)) return;
     setActiveSlotIndex(index);
   };
   /** Writes a keyboard letter into the active editable answer position. */
@@ -576,59 +409,29 @@ export function RaceTo10Game({
     /** Current authoritative riddle accepting the letter. */
     const riddle = run?.currentRiddle;
     if (!riddle || pending) return;
-    /** Positions protected from local editing by server hints. */
-    const revealed = new Set(riddle.revealedLetters.map(({index}) => index));
-    if (revealed.has(activeSlotIndex)) return;
-    /** Updated answer attempt after inserting the supplied letter. */
-    const nextLetters = Array.from({length: riddle.answerLength}, (_, index) => currentLetters[index] ?? "");
-    nextLetters[activeSlotIndex] = letter;
-    setCurrentLetters(nextLetters);
-    /** Next empty editable slot selected after insertion. */
-    const nextSlot = Array.from({length: riddle.answerLength}, (_, offset) =>
-      (activeSlotIndex + offset + 1) % riddle.answerLength)
-      .find((index) => !revealed.has(index) && !nextLetters[index]);
-    if (nextSlot !== undefined) setActiveSlotIndex(nextSlot);
+    /** Input state produced by the pure multiplayer editing rules. */
+    const nextState = insertRaceLetter(riddle, {letters: currentLetters, activeSlotIndex}, letter);
+    if (nextState.letters === currentLetters) return;
+    setCurrentLetters(nextState.letters);
+    setActiveSlotIndex(nextState.activeSlotIndex);
   };
   /** Clears the active or nearest previous editable answer position. */
   const backspace = () => {
     /** Current authoritative riddle accepting deletion. */
     const riddle = run?.currentRiddle;
     if (!riddle || pending) return;
-    /** Positions protected from local deletion by server hints. */
-    const revealed = new Set(riddle.revealedLetters.map(({index}) => index));
-    /** Mutable copy of the answer attempt used for deletion. */
-    const nextLetters = Array.from({length: riddle.answerLength}, (_, index) => currentLetters[index] ?? "");
-    /** Editable position selected for deletion. */
-    let target = activeSlotIndex;
-    if (!nextLetters[target] || revealed.has(target)) {
-      target = Array.from({length: riddle.answerLength}, (_, offset) =>
-        (activeSlotIndex - offset - 1 + riddle.answerLength) % riddle.answerLength)
-        .find((index) => !revealed.has(index) && Boolean(nextLetters[index])) ?? activeSlotIndex;
-    }
-    if (revealed.has(target)) return;
-    nextLetters[target] = "";
-    setCurrentLetters(nextLetters);
-    setActiveSlotIndex(target);
+    /** Input state produced by the pure multiplayer deletion rules. */
+    const nextState = deleteRaceLetter(riddle, {letters: currentLetters, activeSlotIndex});
+    if (nextState.letters === currentLetters) return;
+    setCurrentLetters(nextState.letters);
+    setActiveSlotIndex(nextState.activeSlotIndex);
   };
 
-  useEffect(() => {
-    if (stage !== "racing") return;
-    /** Maps physical keyboard input to the controlled race input actions. */
-    const handleGameplayKey = (event: KeyboardEvent) => {
-      if (event.metaKey || event.ctrlKey || event.altKey) return;
-      if (/^[a-z]$/i.test(event.key)) {
-        event.preventDefault();
-        typeLetter(event.key.toUpperCase());
-      } else if (event.key === "Backspace") {
-        event.preventDefault();
-        backspace();
-      } else if (event.key === "Enter") {
-        event.preventDefault();
-        submit();
-      }
-    };
-    document.addEventListener("keydown", handleGameplayKey);
-    return () => document.removeEventListener("keydown", handleGameplayKey);
+  useRaceGameplayKeyboard({
+    active: stage === "racing",
+    onLetter: typeLetter,
+    onBackspace: backspace,
+    onSubmit: submit,
   });
 
   /** Publishes a completed creator run as a shareable challenge. */
@@ -672,123 +475,24 @@ export function RaceTo10Game({
     analytics("race_rematch_started", {categoryId: item.categoryId, result: item.result});
     resetForNewRace(item.categoryId, item.challengeId);
   };
+  const retry = () => {
+    if (stage === "inbox") send("raceInbox", "game:listRaceInbox", {limit: 20});
+    else if (activeChallengeId) send("raceChallenge", "game:getRaceChallenge", {challengeId: activeChallengeId});
+    else send("raceCategories", "game:listRaceCategories", {locale});
+  };
   return (
-    <section
-      ref={dialogRef}
-      className={stage === "racing" ? "race-screen race-screen-gameplay" : "race-screen"}
-      data-analytics-screen={`multiplayer_${stage}`}
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="race-title"
-      tabIndex={-1}
-    >
-      {stage !== "racing" && stage !== "countdown" && (
-        <RaceTopbar coins={coins} onClose={requestClose} />
-      )}
-      {error && (
-        <div className="race-error" role="alert">
-          {error}
-          <button
-            onClick={() =>
-              stage === "inbox"
-                ? send("raceInbox", "game:listRaceInbox", {limit: 20})
-                : activeChallengeId
-                ? send("raceChallenge", "game:getRaceChallenge", {challengeId: activeChallengeId})
-                : send("raceCategories", "game:listRaceCategories", {locale})
-            }
-          >
-            {tr("RaceTo10.RETRY")}
-          </button>
-        </div>
-      )}
-
-      {stage === "categories" && (
-        <RaceCategoriesPanel
-          categories={categories}
-          loading={pending === "raceCategories"}
-          onSelect={begin}
-          onShowInbox={showInbox}
-        />
-      )}
-
-      {stage === "inbox" && (
-        <RaceInboxPanel
-          items={inboxItems}
-          loading={pending === "raceInbox"}
-          onRematch={startInboxRematch}
-          onChooseCategory={() => setStage("categories")}
-        />
-      )}
-
-      {stage === "challenge" && (
-        <RaceChallengePanel challenge={challenge} onAccept={begin} />
-      )}
-
-      {stage === "countdown" && (
-        <RaceCountdown
-          countdown={countdown}
-          loading={pending === "raceStart"}
-          coins={coins}
-          onClose={requestClose}
-        />
-      )}
-
-      {stage === "racing" && run && (
-        <RaceGameplay
-          viewportRef={gameplayViewportRef}
-          gameplayRef={gameplayRef}
-          run={run}
-          adjustedNow={adjustedNow}
-          ghostCorrect={ghostCorrect}
-          feedback={feedback}
-          coins={coins}
-          currentLetters={currentLetters}
-          activeSlotIndex={activeSlotIndex}
-          guesses={raceGuesses}
-          letterStates={letterStates}
-          pending={Boolean(pending)}
-          onClose={requestClose}
-          onSelectSlot={selectSlot}
-          onLetter={typeLetter}
-          onBackspace={backspace}
-          onHint={requestHint}
-          onSubmit={submit}
-          onSkip={skip}
-        />
-      )}
-
-      {stage === "racing" && penaltyFlash && (
-        <div className="race-penalty-flash" role="status">
-          {penaltyFlash}
-        </div>
-      )}
-
-      {stage === "result" && outcome && (
-        <RaceResultPanel
-          outcome={outcome}
-          run={run}
-          publication={published}
-          publishing={Boolean(pending)}
-          onPublish={publish}
-          onShare={share}
-          onRematch={resetForNewRace}
-          onChooseCategory={() => resetForNewRace()}
-          onClose={onClose}
-        />
-      )}
-
-      {quitConfirmationOpen && run?.status === "active" && (
-        <RaceQuitDialog
-          dialogRef={quitDialogRef}
-          error={error}
-          abandoning={pending === "raceAbandon"}
-          onCancel={() => setQuitConfirmationOpen(false)}
-          onConfirm={() => send("raceAbandon", "game:abandonRace", {runId: run.runId})}
-        />
-      )}
-      {raceGuessLoading && (
-        <SpinningWheelLoader overlay className="race-operation-loader" />
-      )}
-    </section>
+    <RaceTo10View
+      {...{
+        stage, coins, error, categories, inboxItems, challenge, countdown, run, outcome, pending, adjustedNow,
+        ghostCorrect, feedback, penaltyFlash, currentLetters, activeSlotIndex, raceGuesses, letterStates,
+        quitConfirmationOpen, raceGuessLoading, published, dialogRef, gameplayViewportRef, gameplayRef, quitDialogRef,
+      }}
+      onClose={onClose} onRetry={retry} onRequestClose={requestClose} onShowInbox={showInbox}
+      onChooseCategory={() => setStage("categories")} onSelectCategory={begin} onInboxRematch={startInboxRematch}
+      onSelectSlot={selectSlot} onLetter={typeLetter} onBackspace={backspace} onHint={requestHint}
+      onSubmit={submit} onSkip={skip} onPublish={publish} onShare={share} onRematch={resetForNewRace}
+      onDismissQuit={dismissQuitConfirmation}
+      onAbandon={() => run && send("raceAbandon", "game:abandonRace", {runId: run.runId})}
+    />
   );
 }

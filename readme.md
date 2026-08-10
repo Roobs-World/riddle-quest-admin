@@ -13,11 +13,13 @@ This repository contains only the web game and its Firebase backend. Do not add 
 | `firebase-functions` | Authoritative gameplay, player profiles, riddle generation, Jest identity exchange, payment grants, subscriptions, referrals, leaderboards, and multiplayer |
 | `src/locales` | All user-facing translations: 17 locales across 22 namespaces |
 | `assets` | Source images, audio, fonts, and 3D assets |
-| `docs` | Operations, architecture decisions, review evidence, assets, runbooks, and the release-readiness tracker |
+| `docs` | Operations, architecture decisions, review evidence, assets, and runbooks |
 
 The browser treats the Jest SDK as the platform boundary. `getPlayer()` supplies the stable guest or registered player ID, Jest player data preserves low-integrity client progress, and signed identity/payment/referral payloads are verified by Firebase before any valuable grant is made. Purchases and referral rewards are server-authoritative and idempotent.
 
-The main implementation tracker is `docs/html5-riddle-quest-progress.html`. Production and sandbox procedures live in `docs/jest-html5-operations.md`.
+Race to 10 is fully server-authoritative. The browser sends player intent only; Firebase selects decks and hints, validates guesses, advances runs, calculates clocks and penalties, resolves outcomes, and grants achievements. Direct browser access to race collections is denied by Firestore rules, and client responses contain answer-safe run projections rather than canonical answers.
+
+Production and sandbox procedures live in `docs/jest-html5-operations.md`.
 
 ## Requirements
 
@@ -92,7 +94,7 @@ The dedicated Jest build loads `packages/portal/.env.jest`. Use `packages/portal
 | `VITE_FIREBASE_PROJECT_ID` | Yes | Firebase project ID |
 | `VITE_GOOGLE_ANALYTICS_MEASUREMENT_ID` | Production analytics | Public GA4 web stream ID from the Firebase web app configuration. When absent, analytics is disabled without blocking gameplay |
 | `VITE_FIREBASE_FUNCTIONS_REGION` | No | Functions region; defaults to `us-central1` |
-| `VITE_FIREBASE_APP_CHECK_SITE_KEY` | Production | reCAPTCHA Enterprise site key used by Firebase App Check |
+| `VITE_FIREBASE_APP_CHECK_SITE_KEY` | Yes | Public reCAPTCHA Enterprise site key used by Firebase App Check; the production security audit rejects an empty value |
 | `VITE_JEST_FUNCTIONS_BASE_URL` | Production | Base URL for the authoritative Jest HTTP endpoints |
 | `VITE_JEST_NOTIFICATION_ASSET_REFERENCE` | No | Approved Jest notification asset reference; the Hero image is the fallback |
 | `VITE_RACE_TO_10_ENABLED` | No | Set to `1` to expose multiplayer in the normal game; rollout rules still apply server-side |
@@ -102,6 +104,18 @@ After changing browser values, rebuild the game. Vite values are compile-time se
 Google Analytics is loaded asynchronously after the essential game bundle. It records privacy-safe button presses, screen views, progression, registration and retention events, multiplayer events, checkout starts, and completed purchases. Do not add player names, riddle answers, guesses, email addresses, Jest player IDs, or purchase tokens to event parameters. Use GA4 DebugView with a sandbox player to verify new events before release; keep event names stable and extend the centralized helpers under `packages/portal/src/analytics/` when adding new screens or progression mechanics.
 
 Never place `JEST_SHARED_SECRET`, `OPENAI_API_KEY`, a service-account key, or `JEST_GAME_UPLOAD_TOKEN` in a `VITE_` variable.
+
+### Encryption and transport security
+
+Production browser-to-backend traffic must use HTTPS. The Jest backend client rejects plaintext production endpoint URLs, Firebase Hosting sends a one-year HSTS policy, and the Content Security Policy upgrades insecure requests and blocks mixed content. Plain HTTP is permitted only for explicitly enabled loopback development endpoints.
+
+Firebase Authentication identifies players, App Check protects production browser-facing callables, and Firebase-managed Firestore, Storage, Functions, logging, and secrets are encrypted at rest by Google Cloud. Run the committed configuration audit after changing hosting headers or endpoint policy:
+
+```bash
+pnpm check:security
+```
+
+The game does not claim zero-knowledge end-to-end encryption where Firebase cannot decrypt gameplay. That model is incompatible with an authoritative server validating guesses and granting rewards. See `SECURITY.md` for the complete trust model and private vulnerability-reporting guidance.
 
 ### Firebase Functions values
 
@@ -114,7 +128,7 @@ Use `firebase-functions/.env.example` as the field reference. Non-secret deploye
 | `JEST_PRODUCT_SKUS` | Yes for coin sales | Comma-separated defense-in-depth allowlist of enabled one-off product SKUs |
 | `JEST_SUBSCRIPTION_SKUS` | Yes for premium | Comma-separated enabled subscription SKUs |
 | `OPENAI_MODEL` | No | Riddle generation/review model; defaults to the value in `openaiService.ts` |
-| `SENTRY_DSN` | No | Enables server-side Sentry reporting when present |
+| `SENTRY_DSN` | No | Enables server-side Sentry reporting when present; non-HTTPS DSNs are rejected at startup |
 
 The production project currently targets `riddle-quest-ec2b2`, as selected in `.firebaserc`. Always pass `--project` for scripts that can mutate Firestore so the target is visible in shell history.
 
@@ -288,6 +302,20 @@ pnpm test
 pnpm test:functions
 ```
 
+Run whole-source coverage for Core, Portal, and Functions:
+
+```bash
+pnpm test:coverage
+```
+
+Coverage is collected across each package's source tree instead of a handpicked module list. Declaration files are excluded, and Portal excludes the Playwright test files themselves. Do not improve reported coverage by excluding untested production modules. Core currently enforces 100% statements, branches, functions, and lines. Portal and Functions use honest global ratchets that must be raised as real tests are added; browser-only behavior is additionally verified by the Playwright suites.
+
+For the authoritative multiplayer slice, run the focused cross-package coverage suites:
+
+```bash
+pnpm test:race:coverage
+```
+
 Useful focused checks:
 
 ```bash
@@ -347,6 +375,13 @@ pnpm --dir firebase-functions deploy --project riddle-quest-ec2b2
 
 When Firestore rules or indexes change, deploy those explicitly and test the rules emulator first.
 
+```bash
+pnpm --dir firebase-functions test:race:rules
+pnpm dlx firebase-tools deploy \
+  --only firestore:rules,firestore:indexes,storage \
+  --project riddle-quest-ec2b2
+```
+
 ## Maintenance workflow
 
 Before merging a change:
@@ -358,8 +393,9 @@ Before merging a change:
 5. Update all locales for visible copy and republish Firestore notification copy when applicable.
 6. Test cancellation, retryable failure, terminal failure, reload recovery, guest state, and registered state for SDK changes.
 7. Verify UI changes in a mobile browser and run the standalone Jest build.
-8. Update `docs/html5-riddle-quest-progress.html` with evidence for release-readiness work.
-9. Review `git diff` and `git status` to ensure no `.env`, secret, credential, generated archive, or browser state is included.
+8. Retain release evidence with the relevant operational runbook or acceptance test.
+9. Keep exported contracts, public methods, and security-sensitive variables documented with accurate TSDoc; update this README when commands, architecture, configuration, coverage gates, or deployment steps change.
+10. Review `git diff` and `git status` to ensure no `.env`, secret, credential, generated archive, or browser state is included.
 
 When updating dependencies:
 
@@ -376,7 +412,6 @@ Review release notes for Vite, React, Firebase, Jest, Three.js, TypeScript, and 
 ## Operational references
 
 - `docs/jest-html5-operations.md` — hosted emulator, sandbox, Simulator, upload, and acceptance matrix
-- `docs/html5-riddle-quest-progress.html` — canonical readiness tracker and evidence
 - `firebase-functions/.env.example` — backend environment field reference
 - `packages/portal/.env.jest-upload.example` — ignored upload-credential template
 - [Jest HTML5 SDK documentation](https://docs.jest.com/sdk/html5)

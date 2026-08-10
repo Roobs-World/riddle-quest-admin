@@ -20,6 +20,9 @@ type AuthHarnessState = {
     source?: string;
     campaign?: string;
     reference?: string;
+    acquisitionReference?: string;
+    inviteKind?: string;
+    inviterName?: string;
     customName?: string;
   }>;
   playerDataReads: number;
@@ -105,6 +108,9 @@ const installJestSdkHarness = async (page: Page, scenario = "success") => {
           source?: string;
           campaign?: string;
           reference?: string;
+          acquisition_reference?: string;
+          inviteKind?: string;
+          inviterName?: string;
           customName?: string;
         };
         onClose: () => void;
@@ -115,6 +121,11 @@ const installJestSdkHarness = async (page: Page, scenario = "success") => {
           source: options.entryPayload?.source,
           campaign: options.entryPayload?.campaign,
           reference: options.entryPayload?.reference,
+          ...(options.entryPayload?.acquisition_reference
+            ? {acquisitionReference: options.entryPayload.acquisition_reference}
+            : {}),
+          ...(options.entryPayload?.inviteKind ? {inviteKind: options.entryPayload.inviteKind} : {}),
+          ...(options.entryPayload?.inviterName ? {inviterName: options.entryPayload.inviterName} : {}),
           customName: options.entryPayload?.customName,
         });
         if (selectedScenario === "overlay-failure") {
@@ -162,6 +173,12 @@ const installJestSdkHarness = async (page: Page, scenario = "success") => {
       },
       getEntryPayload: () => ({
         ...(params.get("customName") ? {customName: params.get("customName"), campaign: "jest_onboarding"} : {}),
+        ...(params.get("inviteKind") ? {inviteKind: params.get("inviteKind")} : {}),
+        ...(params.get("campaign") ? {campaign: params.get("campaign")} : {}),
+        ...(params.get("reference") ? {reference: params.get("reference")} : {}),
+        ...(params.get("inviterName") ? {inviterName: params.get("inviterName")} : {}),
+        ...(params.get("gameMode") ? {gameMode: params.get("gameMode")} : {}),
+        ...(params.get("riddleId") ? {riddleId: params.get("riddleId")} : {}),
         ...(params.get("challengeId") ? {challengeId: params.get("challengeId")} : {}),
         ...(params.get("challengeDestination") ? {challengeDestination: params.get("challengeDestination")} : {}),
       }),
@@ -267,6 +284,12 @@ const openHarness = async (
     registered?: boolean;
     scenario?: string;
     customName?: string;
+    inviteKind?: string;
+    campaign?: string;
+    reference?: string;
+    inviterName?: string;
+    gameMode?: string;
+    riddleId?: string;
     challengeId?: string;
     challengeDestination?: string;
     harness?: "jest-auth" | "race-auth";
@@ -283,6 +306,12 @@ const openHarness = async (
   const query = new URLSearchParams({harness: options.harness ?? "jest-auth"});
   if (options.registered) query.set("registered", "1");
   if (options.customName) query.set("customName", options.customName);
+  if (options.inviteKind) query.set("inviteKind", options.inviteKind);
+  if (options.campaign) query.set("campaign", options.campaign);
+  if (options.reference) query.set("reference", options.reference);
+  if (options.inviterName) query.set("inviterName", options.inviterName);
+  if (options.gameMode) query.set("gameMode", options.gameMode);
+  if (options.riddleId) query.set("riddleId", options.riddleId);
   if (options.challengeId) query.set("challengeId", options.challengeId);
   if (options.challengeDestination) query.set("challengeDestination", options.challengeDestination);
   if (options.playerId) query.set("playerId", options.playerId);
@@ -548,7 +577,7 @@ describeBrowser("Jest authentication integration", () => {
         new CustomEvent("riddle-quest:share-referral", {
           detail: {
             gameMode: "challenge",
-            challengeId: "daily-riddle-1",
+            riddleId: "daily-riddle-1",
             attempts: 2,
             emojiGrid: "⬛🟨⬛⬛⬛\n🟩🟩🟩🟩🟩",
           },
@@ -572,14 +601,33 @@ describeBrowser("Jest authentication integration", () => {
         entryPayload: expect.objectContaining({
           campaign: "friend_challenge_v2",
           reference: "victory_friend_challenge_v2",
+          inviteKind: "result",
           gameMode: "challenge",
-          challengeId: "daily-riddle-1",
+          riddleId: "daily-riddle-1",
         }),
       }),
     );
     expect(share.shareText).toContain("2 attempts");
     expect(share.shareText).toContain("🟩🟩🟩🟩🟩");
+    expect(share.shareText).toContain("both earn 100 coins");
     expect(share.shareImage).toMatch(/^data:image\/png;base64,/);
+
+    await page.evaluate(() => window.dispatchEvent(new CustomEvent("riddle-quest:share-invite")));
+    await page.waitForFunction(
+      () => (window as typeof window & {__RIDDLE_QUEST_JEST_AUTH_TEST__: AuthHarnessState})
+        .__RIDDLE_QUEST_JEST_AUTH_TEST__.referralShares.length === 2,
+    );
+    const genericInvite = (await getHarnessState(page)).referralShares[1];
+    expect(genericInvite).toEqual(expect.objectContaining({
+      reference: "riddle_quest_friend_challenge_v2",
+      onboardingSlug: "friend-challenge",
+      entryPayload: expect.objectContaining({
+        inviteKind: "open",
+        campaign: "open_invite_v1",
+        reference: "profile_invite_v1",
+      }),
+    }));
+    expect(genericInvite.shareText).toContain("both earn 100 coins");
 
     await page.reload();
     await page.getByText(/what has keys/i).waitFor({timeout: 15_000});
@@ -587,6 +635,73 @@ describeBrowser("Jest authentication integration", () => {
     expect(state.backendExchanges).toEqual(["signed:jest-auth-player-stable:true"]);
     expect(state.profileReads).toBe(1);
     await context.close();
+  });
+
+  it("runs the complete profile invite, attributed registration, and inviter reward journey", async () => {
+    const creator = await openHarness(browser, {
+      registered: true,
+      playerId: "viral-creator",
+    });
+    await enterRegisteredGame(creator.page);
+    await creator.page.getByRole("button", {name: /^profile$/i}).click();
+    const inviteButton = creator.page.getByRole("button", {name: /invite a friend/i});
+    await inviteButton.waitFor({state: "visible"});
+    await inviteButton.click();
+    await creator.page.waitForFunction(
+      () => (window as typeof window & {__RIDDLE_QUEST_JEST_AUTH_TEST__: AuthHarnessState})
+        .__RIDDLE_QUEST_JEST_AUTH_TEST__.referralShares.length === 1,
+    );
+    const [share] = (await getHarnessState(creator.page)).referralShares;
+    expect(share).toEqual(expect.objectContaining({
+      reference: "riddle_quest_friend_challenge_v2",
+      onboardingSlug: "friend-challenge",
+      entryPayload: expect.objectContaining({
+        campaign: "open_invite_v1",
+        reference: "profile_invite_v1",
+        inviteKind: "open",
+        inviterName: "Authenticated Solver",
+      }),
+    }));
+
+    const entryPayload = share.entryPayload!;
+    const recipient = await openHarness(browser, {
+      playerId: "viral-recipient",
+      inviteKind: entryPayload.inviteKind,
+      campaign: entryPayload.campaign,
+      reference: entryPayload.reference,
+      inviterName: entryPayload.inviterName,
+    });
+    await recipient.page.getByRole("button", {name: /let's play/i}).waitFor({timeout: 15_000});
+    await advanceToRegistration(recipient.page);
+    await recipient.page.getByText("Authenticated Solver invited you to play.", {exact: true}).waitFor();
+    expect((await getHarnessState(recipient.page)).overlayOptions).toContainEqual(expect.objectContaining({
+      source: "post_instructions",
+      campaign: "open_invite_v1",
+      reference: "registration_post_instructions_v1",
+      acquisitionReference: "profile_invite_v1",
+      inviteKind: "open",
+      inviterName: "Authenticated Solver",
+    }));
+    await recipient.page.getByRole("button", {name: /^register$/i}).click();
+    await recipient.page.getByText(/what has keys/i).waitFor({timeout: 15_000});
+    expect((await getHarnessState(recipient.page)).backendExchanges).toEqual([
+      "signed:viral-recipient:false",
+      "signed:viral-recipient:true",
+    ]);
+
+    const rewardedCreator = await openHarness(browser, {
+      registered: true,
+      scenario: "referral-reward",
+      playerId: "viral-creator",
+    });
+    await rewardedCreator.page.getByRole("heading", {name: /a friend joined/i}).waitFor({timeout: 15_000});
+    expect(await rewardedCreator.page.locator(".game-modal").innerText()).toContain("+100");
+
+    await Promise.all([
+      creator.context.close(),
+      recipient.context.close(),
+      rewardedCreator.context.close(),
+    ]);
   });
 
   it("logs an existing Jest player in from the onboarding choice", async () => {
@@ -614,6 +729,13 @@ describeBrowser("Jest authentication integration", () => {
     expect(state.backendExchanges).toEqual(["signed:jest-auth-player-stable:true"]);
     expect(state.profileReads).toBe(1);
     expect(state.calls.filter((call) => call === "sdk.data.getAll").length).toBeGreaterThan(1);
+    await context.close();
+  });
+
+  it("surfaces a server-authoritative referral reward in the game", async () => {
+    const {context, page} = await openHarness(browser, {registered: true, scenario: "referral-reward"});
+    await page.getByRole("heading", {name: /a friend joined/i}).waitFor({timeout: 15_000});
+    expect(await page.locator(".game-modal").innerText()).toContain("+100");
     await context.close();
   });
 
@@ -660,6 +782,7 @@ describeBrowser("Jest authentication integration", () => {
         entryPayload: expect.objectContaining({
           challengeId: "race-challenge-42",
           campaign: "race_to_10_v1",
+          inviteKind: "race",
         }),
       }),
     );
@@ -796,6 +919,8 @@ describeBrowser("Jest authentication integration", () => {
       harness: "race-auth",
       playerId: "race-recipient",
       challengeId: "fake-challenge-2",
+      inviteKind: "race",
+      campaign: "race_to_10_v1",
       sharedRace: true,
     });
     await recipient.page

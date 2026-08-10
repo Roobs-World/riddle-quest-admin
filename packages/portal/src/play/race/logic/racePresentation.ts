@@ -1,3 +1,4 @@
+import type {Feedback, ScoredGuess} from "@qwordly/core/game";
 import type {RaceRunView} from "@qwordly/core/race";
 
 /** Non-null riddle prompt presented during an active race. */
@@ -25,4 +26,29 @@ export const findFirstEditableRaceSlot = (riddle: RaceRiddle | null): number => 
   const revealed = new Set(riddle.revealedLetters.map(({index}) => index));
   return Array.from({length: riddle.answerLength}, (_, position) => position)
     .find((position) => !revealed.has(position)) ?? 0;
+};
+
+/** Advances the latest server clock locally without exceeding the race limit. */
+export const getAdjustedRaceTime = (
+  run: RaceRunView | null,
+  receivedAtMs: number,
+  nowMs = Date.now(),
+): number => run
+  ? Math.min(
+      run.rules.maxAdjustedTimeMs,
+      run.adjustedElapsedMs + (run.status === "active" ? nowMs - receivedAtMs : 0),
+    )
+  : 0;
+
+/** Keeps the strongest server-scored feedback observed for each keyboard letter. */
+export const getRaceLetterStates = (guesses: readonly ScoredGuess[]): Record<string, Feedback> => {
+  const states: Record<string, Feedback> = {};
+  for (const scoredGuess of guesses) {
+    scoredGuess.guess.forEach((letter, index) => {
+      const status = scoredGuess.feedback[index];
+      if (!letter || !status || states[letter.toLowerCase()] === "green") return;
+      states[letter.toLowerCase()] = status;
+    });
+  }
+  return states;
 };

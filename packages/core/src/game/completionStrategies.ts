@@ -1,7 +1,10 @@
 import type {GameEngineMode} from "./GameEngine";
 
+/** Defines the contract for local completion rewards. */
 export interface LocalCompletionRewards {
+  /** Stores coins. */
   coins: number;
+  /** Stores score. */
   score: number;
 }
 

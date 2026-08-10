@@ -5,6 +5,16 @@ import {RIDDLE_GENERATION_BATCH_SIZE, RIDDLE_GENERATION_THRESHOLD} from "../shar
 import * as riddleGeneration from "./riddleGeneration";
 import {captureException} from "../shared/sentry";
 
+/** Defines the riddle supply requests collection value. */
+const RIDDLE_SUPPLY_REQUESTS_COLLECTION = "riddleSupplyRequests";
+
+/** Indicates whether is already exists error. */
+function isAlreadyExistsError(error: unknown): boolean {
+  if (!error || typeof error !== "object") return false;
+  const code = (error as {code?: string | number}).code;
+  return code === 6 || code === "already-exists" || code === "6";
+}
+
 /** Replenishes localized classic riddles when a player nears the end of supply. */
 export async function triggerClassicRiddleGenerationIfNeeded(
   userId: string,
@@ -13,26 +23,53 @@ export async function triggerClassicRiddleGenerationIfNeeded(
 ): Promise<void> {
   try {
     const collection = `localizedRiddles/${locale}/riddles`;
-    const snapshot = await admin.firestore().collection(collection).where("classicIndex", ">=", 0).get();
-    const remaining = snapshot.size - currentClassicIndex;
+    const snapshot = await admin
+      .firestore()
+      .collection(collection)
+      .where("classicIndex", ">=", 0)
+      .orderBy("classicIndex", "desc")
+      .limit(1)
+      .get();
+    const highestClassicIndex = snapshot.empty ? -1 : Number(snapshot.docs[0]?.data().classicIndex ?? -1);
+    const remaining = highestClassicIndex - currentClassicIndex;
 
     functions.logger.info(
-      `User ${userId} currentClassicIndex: ${currentClassicIndex}, totalClassicRiddles: ${snapshot.size}, remainingClassicRiddles: ${remaining}`,
+      `User ${userId} currentClassicIndex: ${currentClassicIndex}, highestClassicIndex: ${highestClassicIndex}, remainingClassicRiddles: ${remaining}`,
     );
 
     if (remaining > RIDDLE_GENERATION_THRESHOLD) return;
+
+    const requestRef = admin
+      .firestore()
+      .collection(RIDDLE_SUPPLY_REQUESTS_COLLECTION)
+      .doc(`${locale}_${highestClassicIndex}`);
+    try {
+      await requestRef.create({
+        locale,
+        highestClassicIndex,
+        requestedAt: admin.firestore.FieldValue.serverTimestamp(),
+      });
+    } catch (error) {
+      if (isAlreadyExistsError(error)) {
+        functions.logger.info(`Riddle replenishment is already claimed for ${locale} at ${highestClassicIndex}.`);
+        return;
+      }
+      throw error;
+    }
 
     functions.logger.info(
       `User ${userId} has <= ${RIDDLE_GENERATION_THRESHOLD} classic riddles remaining. Triggering generation of ${RIDDLE_GENERATION_BATCH_SIZE} new riddles.`,
     );
     try {
-      await (riddleGeneration.generateLocalizedClassicRiddles ?? riddleGeneration.generateAndAppendRiddles)(
-        RIDDLE_GENERATION_BATCH_SIZE,
-      );
+      await riddleGeneration.generateLocalizedClassicRiddlesForLocale(locale, RIDDLE_GENERATION_BATCH_SIZE);
       functions.logger.info(
         `Successfully triggered generation of ${RIDDLE_GENERATION_BATCH_SIZE} new classic riddles.`,
       );
     } catch (error) {
+      await requestRef.delete().catch((cleanupError) => {
+        functions.logger.error("Error releasing failed riddle replenishment claim:", cleanupError);
+        captureException(cleanupError);
+      });
       functions.logger.error("Error triggering generation of new classic riddles:", error);
       captureException(error);
     }

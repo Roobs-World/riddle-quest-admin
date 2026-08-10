@@ -1,9 +1,11 @@
 import {HttpsError} from "firebase-functions/v2/https";
 import {ZodError, ZodType} from "zod";
 
+/** Provides summarize zod issues behavior. */
 const summarizeZodIssues = (error: ZodError): string =>
   error.issues.map((issue) => `${issue.path.join(".") || "root"}: ${issue.message}`).join("; ");
 
+/** Provides omit undefined fields behavior. */
 const omitUndefinedFields = (value: unknown): unknown => {
   if (Array.isArray(value)) return value.map(omitUndefinedFields);
   if (!value || typeof value !== "object" || Object.getPrototypeOf(value) !== Object.prototype) return value;
@@ -14,8 +16,10 @@ const omitUndefinedFields = (value: unknown): unknown => {
   );
 };
 
+/** Describes invalid request message. */
 type InvalidRequestMessage = string | ((error: ZodError) => string);
 
+/** Gets invalid request message. */
 const getInvalidRequestMessage = (
   error: ZodError,
   functionName: string,
@@ -30,6 +34,7 @@ const getInvalidRequestMessage = (
   return `Invalid request payload for ${functionName}: ${summarizeZodIssues(error)}`;
 };
 
+/** Validates callable request. */
 export function validateCallableRequest<T>(
   schema: ZodType<T>,
   data: unknown,
@@ -44,6 +49,7 @@ export function validateCallableRequest<T>(
   throw new HttpsError("invalid-argument", getInvalidRequestMessage(result.error, functionName, invalidMessage));
 }
 
+/** Validates callable response. */
 export function validateCallableResponse<T>(schema: ZodType<T>, data: unknown, functionName: string): T {
   const result = schema.safeParse(data);
   if (result.success) {

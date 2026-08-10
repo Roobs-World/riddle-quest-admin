@@ -1,11 +1,18 @@
+/** Describes planet atmosphere. */
 export type PlanetAtmosphere = {
+  /** Stores color. */
   color: number;
+  /** Stores scale. */
   scale: number;
+  /** Stores opacity. */
   opacity: number;
+  /** Stores falloff. */
   falloff: number;
+  /** Stores surface haze. */
   surfaceHaze: number;
 };
 
+/** Defines the planet atmospheres value. */
 export const PLANET_ATMOSPHERES = {
   Mercury: {color: 0xb8c6d1, scale: 1.055, opacity: 0.2, falloff: 3.4, surfaceHaze: 0.015},
   Venus: {color: 0xffbd5e, scale: 1.13, opacity: 0.55, falloff: 1.45, surfaceHaze: 0.22},

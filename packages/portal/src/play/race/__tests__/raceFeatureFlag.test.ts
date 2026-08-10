@@ -5,6 +5,7 @@ describe("Race to 10 feature flag", () => {
     expect(isRaceTo10Enabled()).toBe(false);
     expect(isRaceTo10Enabled({search: "?harness=jest"})).toBe(false);
     expect(isRaceTo10Enabled({search: "?harness=dev"})).toBe(false);
+    expect(isRaceHarness()).toBe(false);
   });
 
   it("enables the deterministic race harness", () => {

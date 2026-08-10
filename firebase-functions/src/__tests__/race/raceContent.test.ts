@@ -48,6 +48,15 @@ describe("race content migration dry run", () => {
     expect(inferRaceDifficulty("empire")).toBe("hard");
   });
 
+  it("infers daily identifiers and rejects unsupported legacy metadata", () => {
+    const base = record();
+    expect(inferCanonicalRiddleId({...base, data: {challengeKey: " 2026-08-04:1 "}})).toBe(
+      "daily:2026-08-04:1",
+    );
+    expect(inferCanonicalRiddleId({...base, data: {dailyIndex: 3}})).toBe("daily:3");
+    expect(inferCanonicalRiddleId({...base, data: {classicIndex: -1, dailyIndex: 1.5}})).toBeNull();
+  });
+
   it("proposes conservative metadata without enabling unreviewed content", () => {
     const legacy: ExistingRaceContentRecord = {
       locale: "en",
@@ -85,6 +94,43 @@ describe("race content migration dry run", () => {
     expect(report.unclassifiable).toEqual([
       {documentPath: invalid.documentPath, reason: "A canonical index/key and non-empty answer are required"},
     ]);
+  });
+
+  it("sorts multiple collision groups deterministically", () => {
+    const first = record({index: 2});
+    const firstDuplicate = {...record({index: 2}), documentPath: `${first.documentPath}-z`};
+    const second = record({index: 1});
+    const secondDuplicate = {...record({index: 1}), documentPath: `${second.documentPath}-z`};
+
+    const report = createRaceContentDryRun([first, firstDuplicate, second, secondDuplicate]);
+
+    expect(report.collisions.map((collision) => collision.canonicalRiddleId)).toEqual(["classic:1", "classic:2"]);
+  });
+
+  it("sorts proposed writes, invalid records, and missing translations", () => {
+    const legacy = (index: number, path: string, locale: SupportedLocale = "en"): ExistingRaceContentRecord => ({
+      locale,
+      documentPath: path,
+      data: {classicIndex: index, answer: "piano"},
+    });
+    const invalid = (path: string): ExistingRaceContentRecord => ({
+      locale: "en",
+      documentPath: path,
+      data: {},
+    });
+
+    const report = createRaceContentDryRun([
+      legacy(2, "z-write"),
+      legacy(1, "a-write"),
+      invalid("z-invalid"),
+      invalid("a-invalid"),
+      legacy(4, "z-ja", "ja"),
+      legacy(3, "a-ja", "ja"),
+    ]);
+
+    expect(report.proposedWrites.map((write) => write.documentPath)).toEqual(["a-ja", "a-write", "z-ja", "z-write"]);
+    expect(report.unclassifiable.map((item) => item.documentPath)).toEqual(["a-invalid", "z-invalid"]);
+    expect(report.missingTranslations.map((item) => item.canonicalRiddleId)).toEqual(["classic:3", "classic:4"]);
   });
 });
 
@@ -136,5 +182,36 @@ describe("race content pool validation", () => {
         "difficulty_imbalance",
       ]),
     );
+  });
+
+  it("rejects oversized pools", () => {
+    const result = validateRacePool([record({index: 1}), record({index: 2})], {
+      locale: "en",
+      categoryId: "history",
+      poolSize: 1,
+    });
+    expect(result.issues).toEqual(expect.arrayContaining([expect.objectContaining({code: "oversized_pool"})]));
+  });
+
+  it.each([
+    ["canonical", {canonicalRiddleId: null}],
+    ["difficulty", {difficultyBand: "unknown"}],
+    ["quality", {qualityVersion: null}],
+    ["question type", {text: 4}],
+    ["question empty", {text: " "}],
+    ["answer type", {answer: 4}],
+    ["answer empty", {answer: " "}],
+  ])("rejects missing %s metadata", (_label, change) => {
+    const invalid = record();
+    Object.assign(invalid.data, change);
+    const result = validateRacePool([invalid], {locale: "en", categoryId: "history", poolSize: 1});
+    expect(result.issues).toEqual(expect.arrayContaining([expect.objectContaining({code: "missing_metadata"})]));
+  });
+
+  it.each([4, "unknown"])("excludes content with invalid category %p", (categoryId) => {
+    const invalid = record();
+    invalid.data.categoryId = categoryId;
+    const result = validateRacePool([invalid], {locale: "en", categoryId: "history", poolSize: 1});
+    expect(result.issues).toEqual(expect.arrayContaining([expect.objectContaining({code: "insufficient_pool"})]));
   });
 });

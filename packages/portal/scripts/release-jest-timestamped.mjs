@@ -1,5 +1,5 @@
 import {spawnSync} from "node:child_process";
-import {existsSync} from "node:fs";
+import {existsSync, readFileSync} from "node:fs";
 
 const localEnvironmentPath = ".env.jest-upload.local";
 const legacyEnvironmentPath = ".env";
@@ -26,10 +26,18 @@ const stamp = [
   String(now.getUTCMinutes()).padStart(2, "0"),
   String(now.getUTCSeconds()).padStart(2, "0"),
 ].join("");
-const buildVersion = `1.0.0-dev.${stamp}`;
-const environment = {...process.env, JEST_BUILD_VERSION: buildVersion, JEST_UPLOAD_IS_ACTIVE: "true"};
+const packageVersion = JSON.parse(readFileSync("package.json", "utf8")).version;
+const buildVersion = `${packageVersion}-dev.${stamp}`;
+const environment = {...process.env, JEST_BUILD_VERSION: buildVersion};
+const activationRequested = environment.JEST_UPLOAD_IS_ACTIVE === "true";
+const gameId = environment.JEST_GAME_ID || "019faa68-f3ec-755d-9ab5-c887fb426801";
+if (activationRequested && environment.JEST_CONFIRM_ACTIVATION !== gameId) {
+  throw new Error(`Set JEST_CONFIRM_ACTIVATION=${gameId} to confirm activation before building`);
+}
 
-console.log(`Creating Jest build ${buildVersion} and requesting activation after processing`);
+console.log(
+  `Creating Jest build ${buildVersion} as ${activationRequested ? "an explicit activation request" : "an inactive draft"}`,
+);
 
 for (const command of [["build:jest"], ["upload:jest"]]) {
   const result = spawnSync("pnpm", command, {env: environment, stdio: "inherit"});
@@ -37,4 +45,6 @@ for (const command of [["build:jest"], ["upload:jest"]]) {
   if (result.status !== 0) process.exit(result.status ?? 1);
 }
 
-console.log(`Jest build ${buildVersion} uploaded successfully; Jest will activate it after processing.`);
+console.log(
+  `Jest build ${buildVersion} uploaded successfully as ${activationRequested ? "an activation request" : "an inactive draft"}.`,
+);

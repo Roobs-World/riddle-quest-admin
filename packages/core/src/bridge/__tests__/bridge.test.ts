@@ -3,6 +3,8 @@ import {
   BRIDGE_PROTOCOL_VERSION,
   GameToHostMessageSchema,
   HostToGameMessageSchema,
+  isGameToHostMessage,
+  isHostToGameMessage,
   parseGameToHostMessage,
   parseHostToGameMessage,
 } from "../index";
@@ -87,5 +89,14 @@ describe("bridge protocol", () => {
         payload: {locale: "en", categoryId: "history", challengeId: "also-present", requestId: "backend-start-2"},
       }).success,
     ).toBe(false);
+  });
+
+  it("provides non-throwing message type guards", () => {
+    const gameMessage = {type: "game:ready", payload: {protocolVersion: BRIDGE_PROTOCOL_VERSION}};
+    const hostMessage = {type: "host:pause", payload: {}};
+    expect(isGameToHostMessage(gameMessage)).toBe(true);
+    expect(isGameToHostMessage(hostMessage)).toBe(false);
+    expect(isHostToGameMessage(hostMessage)).toBe(true);
+    expect(isHostToGameMessage(gameMessage)).toBe(false);
   });
 });

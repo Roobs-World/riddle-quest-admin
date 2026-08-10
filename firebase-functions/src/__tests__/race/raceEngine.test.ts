@@ -42,6 +42,43 @@ const createRun = (overrides: Partial<RaceRunRecord> = {}): RaceRunRecord => ({
 });
 
 describe("Race to 10 authoritative engine", () => {
+  it("uses fixed finish time and clamps a pre-start live clock", () => {
+    expect(raceClock(createRun({wallFinishMs: 9_000}), STARTED_AT + 50_000).wallElapsedMs).toBe(9_000);
+    expect(raceClock(createRun(), STARTED_AT - 1).wallElapsedMs).toBe(0);
+  });
+
+  it("returns defensive copies for inactive runs including opponent ghost events", () => {
+    const ghostEvent = {
+      sequence: 0,
+      type: "correct" as const,
+      riddlePosition: 0,
+      wallElapsedMs: 1_000,
+      penaltyAddedMs: 0,
+      totalPenaltyMs: 0,
+      adjustedElapsedMs: 1_000,
+      correctCount: 1,
+    };
+    const original = createRun({
+      status: "completed",
+      result: "ghost_win",
+      revealedLetters: [{index: 0, letter: "p"}],
+      events: [ghostEvent],
+      opponent: {displayName: "Ava", adjustedFinishMs: 10_000, events: [ghostEvent]},
+    });
+    const refreshed = refreshRaceRun(original, STARTED_AT + 2_000);
+    expect(refreshed).toEqual(original);
+    expect(refreshed).not.toBe(original);
+    expect(refreshed.riddles[0]).not.toBe(original.riddles[0]);
+    expect(refreshed.revealedLetters[0]).not.toBe(original.revealedLetters[0]);
+    expect(refreshed.events[0]).not.toBe(original.events[0]);
+    expect(refreshed.opponent?.events[0]).not.toBe(original.opponent?.events[0]);
+  });
+
+  it("keeps an active challenger running before the ghost finish", () => {
+    const run = createRun({opponent: {displayName: "Ava", adjustedFinishMs: 20_000, events: []}});
+    expect(refreshRaceRun(run, STARTED_AT + 19_000).status).toBe("active");
+  });
+
   it("abandons an active run with a null result", () => {
     const abandoned = abandonRaceRun(createRun(), STARTED_AT + 12_000);
     expect(abandoned).toMatchObject({
@@ -51,6 +88,15 @@ describe("Race to 10 authoritative engine", () => {
       finishedAtMs: STARTED_AT + 12_000,
     });
     expect(() => raceOutcome(abandoned, STARTED_AT + 13_000)).toThrow(/does not have a final outcome/i);
+  });
+
+  it("makes abandonment idempotent and rejects finalized competitive runs", () => {
+    const abandoned = createRun({status: "abandoned"});
+    expect(abandonRaceRun(abandoned, STARTED_AT + 1_000)).toEqual(abandoned);
+    expect(() => abandonRaceRun(
+      createRun({status: "completed", result: "recorded"}),
+      STARTED_AT + 1_000,
+    )).toThrow("already has a final result");
   });
   it("adds a server-owned 15-second hint penalty without coins", () => {
     const result = applyRaceHint(
@@ -80,6 +126,37 @@ describe("Race to 10 authoritative engine", () => {
     expect(result).toMatchObject({revealedLetter: "i", index: 1});
   });
 
+  it("rejects actions against inactive, missing, or mismatched riddles", () => {
+    expect(() => applyRaceGuess(
+      createRun({status: "completed", result: "recorded"}),
+      {riddleId: "riddle-1", guess: "piano"},
+      STARTED_AT + 1_000,
+    )).toThrow("no longer active");
+    expect(() => applyRaceGuess(
+      createRun({riddles: []}),
+      {riddleId: "riddle-1", guess: "piano"},
+      STARTED_AT + 1_000,
+    )).toThrow("not the active race riddle");
+    expect(() => applyRaceGuess(
+      createRun(),
+      {riddleId: "riddle-2", guess: "piano"},
+      STARTED_AT + 1_000,
+    )).toThrow("not the active race riddle");
+    expect(() => applyRaceGuess(
+      createRun(),
+      {riddleId: "riddle-1", guess: "shorter"},
+      STARTED_AT + 1_000,
+    )).toThrow("exactly 5 characters");
+  });
+
+  it("rejects a hint when every answer position is already revealed", () => {
+    expect(() => applyRaceHint(
+      createRun({revealedLetters: Array.from("piano", (letter, index) => ({index, letter}))}),
+      {riddleId: "riddle-1"},
+      STARTED_AT + 1_000,
+    )).toThrow("No unrevealed race hint");
+  });
+
   it("requires a guess before a manual skip and then adds the heavy 45-second penalty", () => {
     expect(() => applyRaceSkip(createRun(), {riddleId: "riddle-1"}, STARTED_AT + 2_000)).toThrow(
       "Submit at least one guess",
@@ -104,11 +181,53 @@ describe("Race to 10 authoritative engine", () => {
     expect(run.events.filter((event) => event.type === "skip")).toHaveLength(1);
   });
 
+  it("times out when the final available riddle is skipped without ten solves", () => {
+    const finalRiddleRun = createRun({currentPosition: 14, guessesUsed: 1});
+    const result = applyRaceSkip(finalRiddleRun, {riddleId: "riddle-15"}, STARTED_AT + 2_000);
+    expect(result).toMatchObject({status: "timed_out", result: "timed_out", currentPosition: 15});
+  });
+
   it("redacts answers from run views", () => {
-    const view = toRaceRunView(createRun(), STARTED_AT + 3_000);
-    expect(view.currentRiddle).toMatchObject({riddleId: "riddle-1", answerLength: 5});
+    const run = createRun({revealedLetters: [{index: 0, letter: "p"}]});
+    const view = toRaceRunView(run, STARTED_AT + 3_000);
+    expect(view.currentRiddle).toMatchObject({
+      riddleId: "riddle-1",
+      answerLength: 5,
+      revealedLetters: [{index: 0, letter: "p"}],
+    });
+    expect(view.currentRiddle?.revealedLetters[0]).not.toBe(run.revealedLetters[0]);
     expect(view.currentRiddle).not.toHaveProperty("answer");
     expect(JSON.stringify(view)).not.toContain("piano");
+  });
+
+  it("projects completed state and copies public opponent and event data", () => {
+    const ghostEvent = {
+      sequence: 0,
+      type: "hint" as const,
+      riddlePosition: 0,
+      wallElapsedMs: 1_000,
+      penaltyAddedMs: RACE_HINT_PENALTY_MS,
+      totalPenaltyMs: RACE_HINT_PENALTY_MS,
+      adjustedElapsedMs: 16_000,
+      correctCount: 0,
+    };
+    const run = createRun({
+      status: "completed",
+      result: "ghost_win",
+      wallFinishMs: 1_000,
+      events: [ghostEvent],
+      opponent: {displayName: "Ava", avatarUrl: null, adjustedFinishMs: 16_000, events: [ghostEvent]},
+    });
+    const view = toRaceRunView(run, STARTED_AT + 20_000);
+    expect(view.currentRiddle).toBeNull();
+    expect(view.opponent).toEqual({
+      displayName: "Ava",
+      avatarUrl: null,
+      adjustedFinishMs: 16_000,
+      events: [ghostEvent],
+    });
+    expect(view.events[0]).not.toBe(run.events[0]);
+    expect(view.opponent?.events[0]).not.toBe(run.opponent?.events[0]);
   });
 
   it("records ten correct milestones and produces a publishable creator outcome", () => {
@@ -157,5 +276,28 @@ describe("Race to 10 authoritative engine", () => {
       ).run;
     }
     expect(winningRun).toMatchObject({status: "completed", result: "player_win", wallFinishMs: 90_000});
+  });
+
+  it("records a tie when the challenger matches the ghost adjusted finish", () => {
+    const opponent = {displayName: "Ava", adjustedFinishMs: 90_000, events: []};
+    let run = createRun({role: "challenger", challengeId: "challenge-1", opponent});
+    for (let solve = 1; solve <= 10; solve += 1) {
+      run = applyRaceGuess(
+        run,
+        {riddleId: `riddle-${solve}`, guess: " PIANO "},
+        STARTED_AT + solve * 9_000,
+      ).run;
+    }
+    expect(run).toMatchObject({status: "completed", result: "tie", wallFinishMs: 90_000});
+    expect(raceOutcome(run, STARTED_AT + 90_000)).toMatchObject({
+      publishable: false,
+      rematchEligible: true,
+      opponentAdjustedFinishMs: 90_000,
+    });
+  });
+
+  it("rejects malformed active outcomes", () => {
+    expect(() => raceOutcome(createRun({result: "recorded"}), STARTED_AT + 1_000))
+      .toThrow("does not have a final outcome");
   });
 });

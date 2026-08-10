@@ -1,9 +1,16 @@
+/** Describes timestamp like. */
 type TimestampLike = {
+  /** Stores to date. */
   toDate?: () => Date;
+  /** Stores to millis. */
   toMillis?: () => number;
+  /** Stores seconds. */
   seconds?: number;
+  /** Stores nanoseconds. */
   nanoseconds?: number;
+  /** Stores seconds. */
   _seconds?: number;
+  /** Stores nanoseconds. */
   _nanoseconds?: number;
 };
 
@@ -45,17 +52,20 @@ export function coerceToDate(value: unknown): Date | null {
   return Number.isNaN(parsed.getTime()) ? null : parsed;
 }
 
+/** Gets utc day string. */
 export function getUtcDayString(value: unknown): string | null {
   const date = coerceToDate(value);
   return date ? date.toISOString().split("T")[0] : null;
 }
 
+/** Gets yesterday utc day string. */
 export function getYesterdayUtcDayString(now: Date = new Date()): string {
   const yesterday = new Date(now);
   yesterday.setUTCDate(yesterday.getUTCDate() - 1);
   return yesterday.toISOString().split("T")[0];
 }
 
+/** Computes next daily win streak. */
 export function computeNextDailyWinStreak(
   currentWinStreak: number,
   lastDailyChallengeCompletedAt: unknown,

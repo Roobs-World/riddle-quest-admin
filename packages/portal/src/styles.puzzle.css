@@ -1,0 +1,261 @@
+.riddle-surface {
+  width: min(900px, 100%);
+  justify-self: center;
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  gap: 12px;
+}
+.riddle-card {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  min-height: 210px;
+  align-self: start;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  padding: 48px 70px 32px;
+  border: 4px solid #ff9e2c;
+  border-radius: 38px;
+  background: #fff3cd;
+  color: #171717;
+}
+.riddle-card::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -8%;
+  background: url("../../../assets/images/home-bg.svg") center / 112% 112% no-repeat;
+  opacity: 0.38;
+}
+.riddle-sound-button {
+  position: absolute;
+  z-index: 2;
+  top: 16px;
+  right: 16px;
+  width: 54px;
+  height: 54px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+}
+.riddle-sound-button svg {
+  width: 31px;
+  height: 31px;
+  fill: currentColor;
+}
+.riddle-surface h1 {
+  max-width: 760px;
+  margin: 0;
+  text-align: center;
+  color: #171717;
+  font:
+    400 36px/1.22 "Poetsen One",
+    "Poppins",
+    sans-serif;
+}
+.guess-board {
+  width: min(100%, var(--board-max-width));
+  display: grid;
+  gap: 8px;
+  margin-top: 8px;
+}
+.guess-row {
+  display: grid;
+  grid-template-columns: repeat(var(--answer-length), minmax(0, 1fr));
+  gap: 8px;
+}
+.cell {
+  width: 100%;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 3px solid #777;
+  background: rgba(0, 0, 0, 0.18);
+  color: #fff;
+  font:
+    400 28px/1 "Poetsen One",
+    "Poppins",
+    sans-serif;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.cell:disabled {
+  cursor: default;
+  opacity: 1;
+}
+.cell.active {
+  border-color: #fff;
+  outline: 0;
+  outline-offset: 1px;
+  animation: active-slot-pulse 1.2s ease-in-out infinite;
+}
+@keyframes active-slot-pulse {
+  50% {
+    transform: scale(1.04);
+  }
+}
+.cell.green,
+.key.green {
+  background: var(--feedback-correct);
+  color: #fff;
+  border-color: var(--feedback-correct);
+}
+.cell.yellow,
+.key.yellow {
+  background: var(--feedback-present);
+  color: #17150f;
+  border-color: var(--feedback-present);
+}
+.cell.red,
+.key.red {
+  background: var(--feedback-absent);
+  color: #fff;
+  border-color: var(--feedback-absent);
+}
+.game-input-actions {
+  width: min(760px, 100%);
+  justify-self: center;
+  display: grid;
+  grid-template-columns: 1fr 1.15fr 1fr;
+  align-items: center;
+  gap: 8px;
+  padding: 0 16px;
+}
+.game-input-actions button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  min-height: 64px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--play-panel);
+  color: var(--play-ink);
+  padding: 0 14px;
+  font:
+    400 22px/1 "Poetsen One",
+    "Poppins",
+    sans-serif;
+}
+.game-input-actions .submit-action {
+  background: var(--play-gold);
+  transition:
+    background-color 160ms ease,
+    color 160ms ease;
+}
+.game-input-actions .submit-action:disabled {
+  cursor: default;
+  opacity: 1;
+  background: #d9dee4;
+  color: #707780;
+}
+.game-input-actions img,
+.native-control-icon {
+  width: 22px;
+  height: 22px;
+  flex: 0 0 auto;
+  fill: #292d32;
+}
+.game-bottom-navigation {
+  width: min(760px, 100%);
+  min-height: 94px;
+  justify-self: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-inline: -18px;
+  padding: 0 64px;
+  background: #fff;
+}
+.game-bottom-navigation button {
+  display: grid;
+  place-items: center;
+  min-width: 48px;
+  min-height: 48px;
+  padding: 8px;
+  border: 0;
+  background: transparent;
+}
+.game-bottom-navigation .multiplayer-navigation-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  padding-inline: 14px;
+  color: #fff;
+  background: linear-gradient(120deg, #173e4c, #2e8b57);
+  border-radius: 999px;
+  font:
+    400 clamp(13px, 2.4vw, 18px)/1 "Poetsen One",
+    "Poppins",
+    sans-serif;
+}
+.game-bottom-navigation .multiplayer-navigation-action .native-control-icon {
+  width: 21px;
+  height: 21px;
+  fill: currentColor;
+}
+.game-bottom-navigation img,
+.game-bottom-navigation .native-navigation-icon {
+  width: 24px;
+  height: 24px;
+}
+.native-navigation-icon {
+  display: block;
+  width: 24px;
+  height: 24px;
+  flex: 0 0 auto;
+  fill: #401f40;
+}
+.keyboard {
+  width: min(760px, 100%);
+  justify-self: center;
+  display: grid;
+  gap: 5px;
+  padding-bottom: 8px;
+}
+.keyboard > div {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+.key {
+  width: min(52px, 8vw);
+  height: 43px;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  box-shadow: none;
+  font:
+    400 22px/1 "Poetsen One",
+    "Poppins",
+    sans-serif;
+}
+.key.utility {
+  width: 62px;
+  border-radius: 7px;
+  background: #fff;
+}
+.key.utility img {
+  width: 24px;
+  height: 24px;
+}
+.pause-banner {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: #10232bcc;
+  color: #fff;
+  font:
+    900 28px "Manrope",
+    sans-serif;
+  z-index: 20;
+}

@@ -5,8 +5,10 @@ import {clueContainsLiteralAnswer} from "../riddles/riddleQuality";
 import {MAX_RIDDLE_ANSWER_CHARACTERS} from "../shared/constants";
 import type {ExistingRaceContentRecord} from "./raceContentMigration";
 
+/** Required number of eligible riddles in each locale and race category pool. */
 export const RACE_POOL_SIZE = 30;
 
+/** Stable machine-readable reason for a race content validation failure. */
 export type RacePoolIssueCode =
   | "insufficient_pool"
   | "oversized_pool"
@@ -19,32 +21,48 @@ export type RacePoolIssueCode =
   | "missing_translation"
   | "difficulty_imbalance";
 
+/** One actionable issue found while validating a race content pool. */
 export type RacePoolIssue = {
+  /** Stores code. */
   code: RacePoolIssueCode;
+  /** Stores message. */
   message: string;
+  /** Stores document paths. */
   documentPaths: string[];
 };
 
+/** Full validation result for one locale and race category. */
 export type RacePoolValidation = {
+  /** Stores valid. */
   valid: boolean;
+  /** Stores locale. */
   locale: SupportedLocale;
+  /** Stores category id. */
   categoryId: RaceCategoryId;
+  /** Stores eligible count. */
   eligibleCount: number;
+  /** Stores difficulty counts. */
   difficultyCounts: Record<RaceDifficultyBand, number>;
+  /** Stores issues. */
   issues: RacePoolIssue[];
 };
 
+/** Provides normalize behavior. */
 const normalize = (value: string): string => value.normalize("NFC").trim().toLocaleLowerCase().replace(/\s+/gu, " ");
 
+/** Indicates whether is category. */
 const isCategory = (value: unknown): value is RaceCategoryId =>
   typeof value === "string" && (RACE_CATEGORY_IDS as readonly string[]).includes(value);
 
+/** Indicates whether is difficulty. */
 const isDifficulty = (value: unknown): value is RaceDifficultyBand =>
   value === "easy" || value === "medium" || value === "hard";
 
+/** Provides belongs to category behavior. */
 const belongsToCategory = (record: ExistingRaceContentRecord, categoryId: RaceCategoryId): boolean =>
   record.data.categoryId === categoryId;
 
+/** Validates pool size, metadata, uniqueness, translations, and difficulty balance. */
 export function validateRacePool(
   records: ExistingRaceContentRecord[],
   options: {

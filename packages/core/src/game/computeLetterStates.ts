@@ -1,5 +1,6 @@
 import type {Feedback, ScoredGuess} from "./types";
 
+/** Renders the priority interface. */
 const PRIORITY: Record<Feedback, number> = {green: 3, yellow: 2, red: 1};
 
 /**

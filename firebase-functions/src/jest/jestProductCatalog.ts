@@ -1,3 +1,4 @@
+/** Defines the jest coin products value. */
 export const JEST_COIN_PRODUCTS: Readonly<Record<string, number>> = Object.freeze({
   "com.roobsworld.riddlequest.coinpack1": 250,
   "com.roobsworld.riddlequest.coinpack2": 550,
@@ -7,6 +8,7 @@ export const JEST_COIN_PRODUCTS: Readonly<Record<string, number>> = Object.freez
   "com.roobsworld.riddlequest.coinpack6": 7000,
 });
 
+/** Defines the jest subscriptions value. */
 export const JEST_SUBSCRIPTIONS = Object.freeze({
   "com.roobsworld.riddlequest.premium.monthly": "premium",
   "com.roobsworld.riddlequest.premium.yearly": "premium",

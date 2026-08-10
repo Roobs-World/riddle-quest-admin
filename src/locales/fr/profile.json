@@ -55,6 +55,7 @@
     "GUEST_MODE_TITLE": "Jouer en tant qu'invité",
     "JEST_REGISTRATION_TITLE": "Gardez votre progression",
     "JEST_REGISTRATION_GREETING": "Bienvenue, {name}.",
+    "JEST_INVITED_BY": "{name} vous invite à jouer.",
     "JEST_REGISTRATION_DESCRIPTION": "Inscrivez-vous avec Jest pour protéger votre progression et recevoir de nouvelles énigmes quotidiennes par message.",
     "JEST_REGISTER_BUTTON": "S’inscrire",
     "JEST_LOGIN_BUTTON": "Se connecter",

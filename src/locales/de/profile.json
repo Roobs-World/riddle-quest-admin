@@ -55,6 +55,7 @@
     "GUEST_MODE_TITLE": "Als Gast spielen",
     "JEST_REGISTRATION_TITLE": "Sichere deinen Fortschritt",
     "JEST_REGISTRATION_GREETING": "Willkommen, {name}.",
+    "JEST_INVITED_BY": "{name} hat dich zum Spielen eingeladen.",
     "JEST_REGISTRATION_DESCRIPTION": "Registriere dich bei Jest, um deinen Fortschritt zu schützen und neue Tagesrätsel per Nachricht zu erhalten.",
     "JEST_REGISTER_BUTTON": "Registrieren",
     "JEST_LOGIN_BUTTON": "Anmelden",

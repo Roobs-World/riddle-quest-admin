@@ -57,4 +57,32 @@ describe("authoritative first milestone", () => {
     }));
     expect(mark).not.toHaveBeenCalled();
   });
+
+  test("propagates a platform milestone failure without writing preferences", async () => {
+    const platform = new MockJestPlatform();
+    jest.spyOn(platform, "markFirstMilestone").mockResolvedValue({status: "error", error: new Error("offline")});
+    const write = jest.spyOn(platform, "writePreferences");
+
+    await expect(recordAuthoritativeCompletion(
+      platform,
+      session(),
+      {gameMode: "classic", isCorrect: true},
+    )).resolves.toEqual({status: "error", error: expect.any(Error)});
+    expect(write).not.toHaveBeenCalled();
+  });
+
+  test("does not prompt an already registered player after a prior milestone", async () => {
+    const platform = new MockJestPlatform();
+    const result = await recordAuthoritativeCompletion(
+      platform,
+      session({player: {playerId: "stable-player", registered: true}, preferences: {firstMilestoneMarked: true}}),
+      {gameMode: "challenge", isCorrect: true},
+      REGISTRATION_PROMPT_COOLDOWN_MS,
+    );
+
+    expect(result).toEqual(expect.objectContaining({
+      status: "success",
+      value: expect.objectContaining({milestoneMarked: false, shouldPromptRegistration: false}),
+    }));
+  });
 });

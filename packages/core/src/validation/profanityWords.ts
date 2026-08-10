@@ -126,4 +126,5 @@ export const PROFANE_WORDS = [
   "badword",
 ] as const;
 
+/** Describes profane word. */
 export type ProfaneWord = (typeof PROFANE_WORDS)[number];

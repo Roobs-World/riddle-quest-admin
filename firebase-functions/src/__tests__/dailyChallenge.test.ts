@@ -289,6 +289,32 @@ describe("Daily Challenge Functions", () => {
       expect(result.hasCompletedToday).toBe(false); // Player has no lastDailyChallengeCompletedAt
       expect(result.currentQuestion).toBe(0);
       expect(result.questionsCompleted).toBe(0);
+      expect(mockGetUser).toHaveBeenCalledTimes(1);
+    });
+
+    it("should lazily reset stale daily progress without updating every user", async () => {
+      const mockUserId = "testUserStaleProgress";
+      const mockPlayer = getDefaultPlayer(mockUserId, {
+        lastDailyChallengeCompletedAt: new Date("2022-12-31T23:59:59.000Z").getTime(),
+        progress: {
+          classicIndex: 0,
+          dailyChallengeIndex: 0,
+          dailyChallengeCurrentQuestion: 1,
+        },
+      });
+
+      mockGetUser.mockResolvedValue(mockPlayer);
+      mockAdminFirestoreGet.mockResolvedValue({
+        exists: true,
+        data: () => createCurrentDailyRiddleDoc(),
+      } as MockDocumentSnapshot<any>);
+
+      const result = await getCurrentDailyChallenge({auth: {uid: mockUserId}} as CallableRequest<unknown>);
+
+      expect(result.hasCompletedToday).toBe(false);
+      expect(result.currentQuestion).toBe(0);
+      expect(result.questionsCompleted).toBe(0);
+      expect(mockGetUser).toHaveBeenCalledTimes(1);
     });
 
     it("should return challenge and completion if user completed challenge today", async () => {
@@ -526,7 +552,6 @@ describe("Daily Challenge Functions", () => {
       expect(result.error).toBe("No classic riddle available at index 10.");
     });
   });
-
 });
 
 // Helper function to create a CallableRequest mock
