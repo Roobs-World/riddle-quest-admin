@@ -130,7 +130,12 @@ describeDeployed("deployed Jest sandbox game", () => {
     expect(game.url()).not.toContain("harness=");
 
     const letsPlay = game.getByRole("button", {name: /let's play/i});
-    await game.locator(".onboarding-card-welcome, .riddle-card h1").first().waitFor({timeout: 30_000});
+    const playableContent = game.locator(".onboarding-card-welcome, .riddle-card h1").first();
+    const startupError = game.locator(".route-missing");
+    await playableContent.or(startupError).first().waitFor({timeout: 30_000});
+    if (await startupError.isVisible()) {
+      throw new Error(`Deployed Jest startup failed: ${(await startupError.innerText()).replace(/\s+/g, " ").trim()}`);
+    }
     if (await letsPlay.isVisible()) {
       await letsPlay.click();
       const onboardingContinue = game.getByRole("button", {name: /got it/i});
