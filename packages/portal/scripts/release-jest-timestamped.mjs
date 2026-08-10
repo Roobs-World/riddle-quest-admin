@@ -28,7 +28,13 @@ const stamp = [
 ].join("");
 const packageVersion = JSON.parse(readFileSync("package.json", "utf8")).version;
 const buildVersion = `${packageVersion}-dev.${stamp}`;
-const environment = {...process.env, JEST_BUILD_VERSION: buildVersion};
+const sentryRelease = `riddle-quest@${buildVersion}`;
+const environment = {
+  ...process.env,
+  JEST_BUILD_VERSION: buildVersion,
+  SENTRY_RELEASE: sentryRelease,
+  VITE_SENTRY_RELEASE: sentryRelease,
+};
 const activationRequested = environment.JEST_UPLOAD_IS_ACTIVE === "true";
 const gameId = environment.JEST_GAME_ID || "019faa68-f3ec-755d-9ab5-c887fb426801";
 if (activationRequested && environment.JEST_CONFIRM_ACTIVATION !== gameId) {

@@ -195,6 +195,23 @@ pnpm jest:build-upload
 
 The command creates a timestamped version, builds and audits `dist-jest`, revalidates the exact files immediately before packaging, creates the ignored `packages/portal/build.zip`, records its SHA-256 checksum, and uploads it as an inactive Draft version. It does not publish the game, activate the build, or submit it for review.
 
+For readable browser stack traces, create a dedicated Sentry organization token
+with the minimum release/project permissions required for artifact upload and set
+the following values only in the ignored `.env.jest-upload.local` file:
+
+```bash
+SENTRY_UPLOAD_SOURCEMAPS=1
+SENTRY_AUTH_TOKEN=your-dedicated-build-token
+SENTRY_ORG=roobs-world-limited
+SENTRY_PROJECT=riddle-quest
+```
+
+The timestamped release command supplies the same immutable release identifier to
+the browser SDK and Sentry build plugin. It generates hidden source maps, uploads
+them privately, finalizes the production release, and deletes every `.map` file
+before the artifact audit and Jest packaging steps. A requested upload with any
+missing Sentry value fails the build; ordinary builds never generate source maps.
+
 To exercise the complete packaging preflight without transmitting anything:
 
 ```bash
