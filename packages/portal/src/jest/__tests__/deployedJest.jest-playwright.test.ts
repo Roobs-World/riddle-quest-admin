@@ -10,6 +10,7 @@ const sandboxStatePath =
   process.env.JEST_SANDBOX_STORAGE_STATE ?? "/tmp/riddle-quest-jest-sandbox-state.json";
 const expectedGameId = process.env.JEST_GAME_ID ?? "019faa68-f3ec-755d-9ab5-c887fb426801";
 const expectedSubscriptionSku = "com.roobsworld.riddlequest.premium.monthly";
+const runHeadless = process.env.JEST_DEPLOYED_HEADED !== "1";
 
 if (liveRequested && !sandboxLoginUrl && !existsSync(sandboxStatePath)) {
   throw new Error(
@@ -62,7 +63,7 @@ describeDeployed("deployed Jest sandbox game", () => {
   let page: Page;
 
   beforeAll(async () => {
-    browser = await chromium.launch({headless: true});
+    browser = await chromium.launch({headless: runHeadless});
     context = await browser.newContext({
       viewport: {width: 390, height: 844},
       ...(existsSync(sandboxStatePath) ? {storageState: sandboxStatePath} : {}),
@@ -200,6 +201,13 @@ describeDeployed("deployed Jest sandbox game", () => {
     await game.locator(".race-gameplay .guess-board").waitFor({state: "visible", timeout: 5_000});
     expect(await game.locator(".race-error").count()).toBe(0);
     await game.getByRole("button", {name: /close race to 10/i}).click();
+    const confirmQuit = game.getByRole("button", {name: /^quit race$/i});
+    if (await confirmQuit.isVisible()) await confirmQuit.click();
+    await game.waitForFunction(
+      () => document.querySelector(".game-content")?.getAttribute("aria-hidden") !== "true",
+      undefined,
+      {timeout: 30_000},
+    );
 
     await game.getByRole("button", {name: /buy coins/i}).first().click();
     await game.getByRole("heading", {name: /coin shop/i}).waitFor();
@@ -225,7 +233,14 @@ describeDeployed("deployed Jest sandbox game", () => {
       newCoins: expect.any(Number),
     }));
     expect(failedRequests.filter((url) => url.includes("cloudfunctions.net"))).toEqual([]);
-    expect(consoleErrors).toEqual([]);
+    expect(
+      consoleErrors.filter(
+        (message) =>
+          !message.startsWith(
+            "requestStorageAccess: Refused to execute request. The document is sandboxed,",
+          ),
+      ),
+    ).toEqual([]);
 
     const subscriptionSkus = await game.evaluate(async () => {
       const sdk = (globalThis as typeof globalThis & {

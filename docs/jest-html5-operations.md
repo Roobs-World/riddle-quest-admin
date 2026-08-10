@@ -49,6 +49,14 @@ JEST_SANDBOX_LOGIN_URL='https://jest.com/...' \
 pnpm --filter @qwordly/portal test:jest-deployed:playwright
 ```
 
+If Firebase App Check rejects the automated Chromium session, rerun the deployed gate in a visible browser. This preserves production attestation instead of weakening App Check or introducing a production debug token:
+
+```bash
+JEST_DEPLOYED_HEADED=1 \
+JEST_SANDBOX_LOGIN_URL='https://jest.com/...' \
+pnpm --filter @qwordly/portal test:jest-deployed:playwright
+```
+
 Use two sandbox users for referral attribution. Reset the invitee's player state between referral runs because attribution happens on first entry. Sandbox checkout uses the real platform UI at a zero charge; also inspect scheduled notifications and persisted player state in the Developer Console.
 
 ### 4. Developer Console Simulator
