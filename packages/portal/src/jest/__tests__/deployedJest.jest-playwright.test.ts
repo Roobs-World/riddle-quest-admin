@@ -11,6 +11,7 @@ const sandboxStatePath =
 const expectedGameId = process.env.JEST_GAME_ID ?? "019faa68-f3ec-755d-9ab5-c887fb426801";
 const expectedSubscriptionSku = "com.roobsworld.riddlequest.premium.monthly";
 const runHeadless = process.env.JEST_DEPLOYED_HEADED !== "1";
+const appCheckDebugToken = process.env.FIREBASE_APPCHECK_DEBUG_TOKEN;
 
 if (liveRequested && !sandboxLoginUrl && !existsSync(sandboxStatePath)) {
   throw new Error(
@@ -68,6 +69,13 @@ describeDeployed("deployed Jest sandbox game", () => {
       viewport: {width: 390, height: 844},
       ...(existsSync(sandboxStatePath) ? {storageState: sandboxStatePath} : {}),
     });
+    if (appCheckDebugToken) {
+      await context.addInitScript((token) => {
+        (
+          globalThis as typeof globalThis & {FIREBASE_APPCHECK_DEBUG_TOKEN?: string}
+        ).FIREBASE_APPCHECK_DEBUG_TOKEN = token;
+      }, appCheckDebugToken);
+    }
     page = await context.newPage();
   });
 

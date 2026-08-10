@@ -1,0 +1,3 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>App Check CI reference</title><link rel="stylesheet" href="../assets/lesson.css"></head>
+<body><main><h1>App Check CI reference</h1><ol><li>Create a named debug token for the Riddle Quest web app in Firebase App Check.</li><li>Store it only in a secret manager or temporary shell variable.</li><li>Expose it as <code>FIREBASE_APPCHECK_DEBUG_TOKEN</code> to the test process.</li><li>Inject it before browser page and iframe scripts execute.</li><li>Revoke it immediately if disclosed.</li></ol><p class="warning">Never commit the token, put it in a Vite variable, or add it to the Jest artifact.</p></main></body></html>

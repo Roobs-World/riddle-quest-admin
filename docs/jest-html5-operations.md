@@ -107,6 +107,26 @@ Generate the short-lived login URL from **Developer Console → Sandbox Users**.
 
 The authenticated browser state is cached only in `/tmp/riddle-quest-jest-sandbox-state.json` so a consumed one-time link can be reused while diagnosing a failed run. Set `JEST_SANDBOX_STORAGE_STATE` to override that ephemeral path. The deployed gate also requires a successful signed `verifyJestReferrals` response and validates its conversion, two-sided reward, reward amount, and balance fields; a sandbox smoke test cannot pass if referral reconciliation is unavailable.
 
+Headless browsers can be rejected by reCAPTCHA Enterprise even when the hosted build is healthy. Create a dedicated token under **Firebase Console → App Check → Apps → Riddle Quest web app → Manage debug tokens**, keep it out of files and shell history, and inject it only into the test process:
+
+```bash
+read -rsp 'App Check debug token: ' RQ_APP_CHECK_DEBUG_TOKEN; echo
+FIREBASE_APPCHECK_DEBUG_TOKEN="$RQ_APP_CHECK_DEBUG_TOKEN" \
+pnpm --filter @qwordly/portal test:jest-deployed:playwright
+unset RQ_APP_CHECK_DEBUG_TOKEN
+```
+
+The Playwright context installs this value before any page or iframe JavaScript executes. Production visitors continue using reCAPTCHA Enterprise; the token is never bundled. Revoke the debug token immediately in Firebase if it is disclosed.
+
+Run the destructive-but-zero-dollar payment smoke test separately. It refuses to click checkout unless the hosted dialog explicitly identifies the account as a sandbox user and the confirmation value exactly matches the requested SKU:
+
+```bash
+JEST_SANDBOX_PAYMENT_CONFIRM=com.roobsworld.riddlequest.coinpack1 \
+pnpm --filter @qwordly/portal test:jest-payments:live
+```
+
+This checks the live Jest/Stripe product and subscription catalogs, completes a sandbox checkout, verifies the signed receipt through `grantJestPurchase`, replays the receipt to prove the grant is idempotent, calls `completePurchase`, and confirms the token has left the recovery queue. Jest owns the Stripe customer, wallet, checkout, and charge lifecycle; no Stripe secret or direct Stripe client belongs in the game artifact.
+
 `build:jest` validates TypeScript, every imported locale JSON file, the production build, and the standalone artifact. The artifact audit enforces the 5 MB limit, local relative assets, the single approved Jest SDK script, and the absence of native modules, external authentication, ads, install prompts, secrets, and source maps.
 
 ## Jest testing modes
