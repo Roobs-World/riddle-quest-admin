@@ -573,6 +573,11 @@ describeBrowser("standalone Jest browser game", () => {
       expect(consoleErrors).toEqual([]);
       expect(layoutWarnings).toEqual([]);
 
+      // The primary journey retains a broad DOM and WebGL history. Release it
+      // before isolated low-end/iframe checks so a constrained release host
+      // cannot starve a later renderer process.
+      await context.close();
+
       const lowEndPage = await browser.newPage({
         viewport: {width: 360, height: 740},
         deviceScaleFactor: 2,
