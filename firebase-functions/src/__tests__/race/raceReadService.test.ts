@@ -12,6 +12,7 @@ jest.mock("../../shared/firebaseAdmin", () => ({
   admin: {
     firestore: {
       FieldPath: {documentId: jest.fn(() => "__name__")},
+      FieldValue: {delete: jest.fn(() => "field-delete")},
     },
   },
 }));
@@ -68,11 +69,22 @@ const documentSnapshot = (exists: boolean, data?: unknown) => ({
   data: () => data,
 });
 
-const createChallengeDb = (snapshot: ReturnType<typeof documentSnapshot>) => {
-  const get = jest.fn(async () => snapshot);
-  const doc = jest.fn(() => ({get}));
+const createChallengeDb = (snapshot: ReturnType<typeof documentSnapshot>, creatorDeleted = false) => {
+  const challengeRef = {path: "raceChallenges/challenge-1"};
+  const doc = jest.fn((id: string) => ({
+    path: id === "challenge-1" ? challengeRef.path : `jestAccountDeletionTombstones/${id}`,
+    id,
+  }));
   const collection = jest.fn(() => ({doc}));
-  return {db: {collection}, collection, doc, get};
+  const transaction = {
+    get: jest.fn(async (ref: {path: string}) => ref.path === challengeRef.path
+      ? snapshot
+      : documentSnapshot(creatorDeleted)),
+    update: jest.fn(),
+  };
+  const runTransaction = jest.fn(async (callback: (value: typeof transaction) => Promise<unknown>) =>
+    callback(transaction));
+  return {db: {collection, runTransaction}, collection, doc, transaction};
 };
 
 const createOutcomeDb = (
@@ -107,11 +119,18 @@ const inboxItem = (itemId: string, createdAtMs: number, read: boolean) => ({
 });
 
 const inboxDocument = (itemId: string, createdAtMs: number, read: boolean) => {
-  const data = inboxItem(itemId, createdAtMs, read);
+  const data = {
+    ...inboxItem(itemId, createdAtMs, read),
+    opponentUserId: "server-only-opponent",
+    expiresAt: {toMillis: () => createdAtMs + 1_000},
+  };
   return {id: itemId, ref: {path: `inbox/${itemId}`}, data: () => data};
 };
 
-const createInboxDb = (documents: ReturnType<typeof inboxDocument>[]) => {
+const createInboxDb = (
+  documents: Array<ReturnType<typeof inboxDocument> | {id: string; ref: {path: string}; data(): unknown}>,
+  deletedOpponentIds: string[] = [],
+) => {
   const query = {
     orderBy: jest.fn(),
     limit: jest.fn(),
@@ -122,8 +141,13 @@ const createInboxDb = (documents: ReturnType<typeof inboxDocument>[]) => {
   query.limit.mockReturnValue(query);
   query.startAfter.mockReturnValue(query);
   const batch = {update: jest.fn(), commit: jest.fn(async () => undefined)};
+  const deletionIds = new Set(deletedOpponentIds);
   const db = {
-    collection: jest.fn(() => query),
+    collection: jest.fn((name: string) => name === "jestAccountDeletionTombstones"
+      ? {doc: (id: string) => ({id, path: `${name}/${id}`})}
+      : query),
+    getAll: jest.fn(async (...refs: Array<{id: string}>) =>
+      refs.map((ref) => ({id: ref.id, exists: deletionIds.has(ref.id)}))),
     batch: jest.fn(() => batch),
   };
   return {db, query, batch};
@@ -152,7 +176,7 @@ describe("getRaceChallengePreview", () => {
 
   it("parses and projects an existing challenge using the requested clock", async () => {
     const stored = {challengeId: "challenge-1"};
-    const parsed = {...stored, parsed: true};
+    const parsed = {...stored, creatorId: "creator-1", parsed: true};
     const preview = {challengeId: "challenge-1", status: "active"};
     const {db, collection, doc} = createChallengeDb(documentSnapshot(true, stored));
     mockParseChallengeRecord.mockReturnValue(parsed);
@@ -166,15 +190,41 @@ describe("getRaceChallengePreview", () => {
     expect(mockChallengePreview).toHaveBeenCalledWith(parsed, 123);
   });
 
+  it("scrubs a tombstoned creator before projecting or retaining a challenge snapshot", async () => {
+    const stored = {challengeId: "challenge-1"};
+    const parsed = {
+      ...stored,
+      creatorId: "creator-1",
+      creatorSnapshot: {displayName: "Ada", avatarUrl: "https://example.test/ada.png"},
+    };
+    const fixture = createChallengeDb(documentSnapshot(true, stored), true);
+    mockParseChallengeRecord.mockReturnValue(parsed);
+    mockChallengePreview.mockImplementation((challenge: unknown) => challenge);
+
+    await expect(getRaceChallengePreview("challenge-1", {db: fixture.db as never}))
+      .resolves.toMatchObject({creatorSnapshot: {displayName: "Riddle Quest player"}});
+    expect(mockChallengePreview).toHaveBeenCalledWith(
+      expect.objectContaining({creatorSnapshot: {displayName: "Riddle Quest player"}}),
+      expect.any(Number),
+    );
+    expect(fixture.transaction.update).toHaveBeenCalledWith(
+      expect.objectContaining({path: "raceChallenges/challenge-1"}),
+      {creatorSnapshot: {displayName: "Riddle Quest player"}},
+    );
+  });
+
   it("uses the default database and current clock when options are omitted", async () => {
     const {db} = createChallengeDb(documentSnapshot(true, {}));
     mockDefaultDb = db;
-    mockParseChallengeRecord.mockReturnValue({challengeId: "challenge-1"});
+    mockParseChallengeRecord.mockReturnValue({challengeId: "challenge-1", creatorId: "creator-1"});
     mockChallengePreview.mockReturnValue({challengeId: "challenge-1"});
 
     await getRaceChallengePreview("challenge-1");
 
-    expect(mockChallengePreview).toHaveBeenCalledWith({challengeId: "challenge-1"}, expect.any(Number));
+    expect(mockChallengePreview).toHaveBeenCalledWith(
+      {challengeId: "challenge-1", creatorId: "creator-1"},
+      expect.any(Number),
+    );
   });
 });
 
@@ -282,6 +332,8 @@ describe("listRaceInboxForUser", () => {
     const response = await listRaceInboxForUser("player-1", {limit: 1}, db as never);
 
     expect(response.items).toEqual([inboxItem("item-1", 200, false)]);
+    expect(response.items[0]).not.toHaveProperty("opponentUserId");
+    expect(response.items[0]).not.toHaveProperty("expiresAt");
     expect(response.nextCursor).toBeDefined();
     expect(query.orderBy).toHaveBeenNthCalledWith(1, "createdAtMs", "desc");
     expect(query.orderBy).toHaveBeenNthCalledWith(2, "__name__", "desc");
@@ -302,5 +354,43 @@ describe("listRaceInboxForUser", () => {
     expect(response).toEqual({items: [inboxItem("item-2", 100, true)]});
     expect(batch.update).not.toHaveBeenCalled();
     expect(batch.commit).not.toHaveBeenCalled();
+  });
+
+  it("suppresses identity in legacy inbox records that lack a server-only subject link", async () => {
+    const legacyData = {
+      ...inboxItem("legacy-item", 100, true),
+      opponentDisplayName: "Legacy player name",
+      opponentAvatarUrl: "https://example.test/legacy-avatar.png",
+    };
+    const legacyDocument = {
+      id: "legacy-item",
+      ref: {path: "inbox/legacy-item"},
+      data: () => legacyData,
+    };
+    const {db} = createInboxDb([legacyDocument]);
+
+    const response = await listRaceInboxForUser("player-1", {limit: 2}, db as never);
+
+    expect(response.items[0]).toMatchObject({
+      itemId: "legacy-item",
+      opponentDisplayName: "Riddle Quest player",
+      createdAtMs: 100,
+      read: true,
+    });
+    expect(response.items[0]).not.toHaveProperty("opponentAvatarUrl");
+  });
+
+  it("scrubs a tombstoned linked opponent in the response and stored inbox row", async () => {
+    const document = inboxDocument("item-1", 200, true);
+    const {db, batch} = createInboxDb([document], ["server-only-opponent"]);
+
+    const response = await listRaceInboxForUser("player-1", {limit: 1}, db as never);
+
+    expect(response.items[0]).toMatchObject({opponentDisplayName: "Riddle Quest player"});
+    expect(response.items[0]).not.toHaveProperty("opponentAvatarUrl");
+    expect(batch.update).toHaveBeenCalledWith(document.ref, {
+      opponentDisplayName: "Riddle Quest player",
+      opponentAvatarUrl: "field-delete",
+    });
   });
 });

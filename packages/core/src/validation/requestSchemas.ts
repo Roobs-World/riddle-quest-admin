@@ -1,8 +1,42 @@
 import {z} from "zod";
 import {DailyChallengeQuestionSchema} from "./cloudFunctionsSchemas";
 
+/** Minimum number of Unicode code points accepted in a normalized username. */
+export const USERNAME_MIN_LENGTH = 3;
+/** Maximum number of Unicode code points accepted in a normalized username. */
+export const USERNAME_MAX_LENGTH = 24;
+/** Maximum untrusted UTF-16 input units processed before Unicode normalization. */
+export const USERNAME_RAW_MAX_LENGTH = 96;
+
+/** Normalizes a display username without applying its uniqueness case fold. */
+export function normalizeUsernameDisplay(username: string): string {
+  return username.trim().normalize("NFKC");
+}
+
+/** Validates the shared browser/bridge/callable username boundary. */
+export const UsernameSchema = z.string()
+  .max(USERNAME_RAW_MAX_LENGTH, "Username input is too large.")
+  .refine((username) => !/[\p{Cc}\p{Cf}]/u.test(username), {
+    message: "Username must not contain control or formatting characters.",
+  })
+  .transform(normalizeUsernameDisplay)
+  .refine((username) => {
+    const length = [...username].length;
+    return length >= USERNAME_MIN_LENGTH && length <= USERNAME_MAX_LENGTH;
+  }, {message: `Username must be ${USERNAME_MIN_LENGTH}-${USERNAME_MAX_LENGTH} characters.`})
+  .refine((username) => /^[\p{L}\p{M}\p{N} ._'’-]+$/u.test(username), {
+    message: "Username contains unsupported characters.",
+  })
+  .refine((username) => /[\p{L}\p{N}]/u.test(username), {
+    message: "Username must contain a letter or number.",
+  });
+
 /** Validates the function game mode data shape. */
 const FunctionGameModeSchema = z.enum(["challenge", "classic"]);
+/** Bounds canonical riddle identifiers accepted by gameplay callables. */
+const RiddleIdSchema = z.string().min(1).max(160);
+/** Bounds guesses to the shipped seven-keyboard-slot policy. */
+const PlayableGuessSchema = z.string().min(1).max(7).regex(/^[a-z]+$/i);
 
 /** Validates the basic success message response data shape. */
 export const BasicSuccessMessageResponseSchema = z
@@ -30,10 +64,10 @@ export type FeedbackItem = z.infer<typeof FeedbackItemSchema>;
 /** Validates the submit guess request data data shape. */
 export const SubmitGuessRequestDataSchema = z
   .object({
-    guess: z.string().min(1),
-    riddleId: z.string().min(1),
+    guess: PlayableGuessSchema,
+    riddleId: RiddleIdSchema,
     gameMode: z.enum(["challenge", "classic"]),
-    attempts: z.number().int().positive(),
+    attempts: z.number().int().positive().max(6),
   })
   .strict();
 /** Describes submit guess request data. */
@@ -52,10 +86,9 @@ export type SubmitGuessAuthContext = z.infer<typeof SubmitGuessAuthContextSchema
 /** Validates the submit guess response data data shape. */
 export const SubmitGuessResponseDataSchema = z
   .object({
-    feedback: z.array(FeedbackItemSchema),
+    feedback: z.array(FeedbackItemSchema).max(7),
     isCorrect: z.boolean(),
     gameOver: z.boolean(),
-    correctAnswer: z.string().optional(),
     coinsEarned: z.number().nonnegative().optional(),
     newlyUnlockedAchievementIds: z.array(z.string()).optional(),
     newWinStreak: z.number().int().nonnegative().optional(),
@@ -64,13 +97,38 @@ export const SubmitGuessResponseDataSchema = z
 /** Describes submit guess response data. */
 export type SubmitGuessResponseData = z.infer<typeof SubmitGuessResponseDataSchema>;
 
+/** Validates a server-authoritative single-player guess request. */
+export const SubmitSinglePlayerGuessRequestDataSchema = z
+  .object({
+    riddleId: RiddleIdSchema,
+    gameMode: FunctionGameModeSchema,
+    sessionToken: z.string().min(20).max(128),
+    guess: PlayableGuessSchema,
+    requestId: z.string().min(8).max(128),
+  })
+  .strict();
+/** Describes a server-authoritative single-player guess request. */
+export type SubmitSinglePlayerGuessRequestData = z.infer<typeof SubmitSinglePlayerGuessRequestDataSchema>;
+
+/** Validates a server-authoritative single-player guess response. */
+export const SubmitSinglePlayerGuessResponseDataSchema = z
+  .object({
+    feedback: z.array(FeedbackItemSchema).max(7),
+    attempts: z.number().int().positive().max(6),
+    isCorrect: z.boolean(),
+    gameOver: z.boolean(),
+    canContinue: z.boolean().optional(),
+  })
+  .strict();
+/** Describes a server-authoritative single-player guess response. */
+export type SubmitSinglePlayerGuessResponseData = z.infer<typeof SubmitSinglePlayerGuessResponseDataSchema>;
+
 /** Validates the complete game request data data shape. */
 export const CompleteGameRequestDataSchema = z
   .object({
-    riddleId: z.string().min(1),
+    riddleId: RiddleIdSchema,
     gameMode: z.enum(["challenge", "classic"]),
-    attempts: z.number().int().positive().max(100),
-    isCorrect: z.boolean(),
+    sessionToken: z.string().min(20).max(128),
   })
   .strict();
 /** Describes complete game request data. */
@@ -79,6 +137,8 @@ export type CompleteGameRequestData = z.infer<typeof CompleteGameRequestDataSche
 /** Validates the complete game response data data shape. */
 export const CompleteGameResponseDataSchema = z
   .object({
+    attempts: z.number().int().positive().max(6),
+    isCorrect: z.boolean(),
     coinsEarned: z.number().nonnegative(),
     newlyUnlockedAchievementIds: z.array(z.string()),
     scoreEarned: z.number().nonnegative(),
@@ -106,8 +166,8 @@ export type CompleteGameResponseData = z.infer<typeof CompleteGameResponseDataSc
 export const DailyChallengeDataSchema = z
   .object({
     date: z.string().optional(),
-    questions: z.array(DailyChallengeQuestionSchema),
-    totalQuestions: z.number().int().positive(),
+    questions: z.array(DailyChallengeQuestionSchema).max(1),
+    totalQuestions: z.number().int().positive().max(1),
   })
   .strict();
 
@@ -127,8 +187,10 @@ export type GetCurrentDailyChallengeResponse = z.infer<typeof GetCurrentDailyCha
 /** Validates the skip riddle request data shape. */
 export const SkipRiddleRequestSchema = z
   .object({
-    riddleId: z.string().min(1),
+    riddleId: RiddleIdSchema,
     gameMode: FunctionGameModeSchema,
+    sessionToken: z.string().min(20).max(128),
+    requestId: z.string().min(8).max(128),
   })
   .strict();
 /** Describes skip riddle request. */
@@ -158,8 +220,11 @@ export type SkipRiddleResponse = z.infer<typeof SkipRiddleResponseSchema>;
 /** Validates the spend coins request data shape. */
 export const SpendCoinsRequestSchema = z
   .object({
-    reason: z.enum(["hint", "skip", "continue"]),
-    gameMode: z.enum(["classic", "challenge"]).optional(),
+    reason: z.literal("continue"),
+    gameMode: z.enum(["classic", "challenge"]),
+    riddleId: RiddleIdSchema,
+    sessionToken: z.string().min(20).max(128),
+    requestId: z.string().min(8).max(128),
     amount: z.number().positive().optional(),
   })
   .strict();
@@ -176,9 +241,11 @@ export const SpendCoinsResponseSchema = z
 /** Validates the get hint request data shape. */
 export const GetHintRequestSchema = z
   .object({
-    currentAttempt: z.array(z.string().length(1)),
-    riddleId: z.string().min(1),
+    currentAttempt: z.array(z.string().max(1).regex(/^[a-z]?$/i)).max(7),
+    riddleId: RiddleIdSchema,
     gameMode: FunctionGameModeSchema,
+    sessionToken: z.string().min(20).max(128),
+    requestId: z.string().min(8).max(128),
   })
   .strict();
 
@@ -196,7 +263,7 @@ export const GetHintResponseSchema = z
 /** Validates the update username request data shape. */
 export const UpdateUsernameRequestSchema = z
   .object({
-    username: z.string().min(3),
+    username: UsernameSchema,
   })
   .strict();
 
@@ -228,7 +295,7 @@ export type LeaderboardType = z.infer<typeof LeaderboardTypeSchema>;
 export const GetLeaderboardRequestSchema = z
   .object({
     type: LeaderboardTypeSchema.default("xp"),
-    limit: z.number().int().positive().optional(),
+    limit: z.number().int().positive().max(100).optional(),
   })
   .strict()
   .default({type: "xp"});

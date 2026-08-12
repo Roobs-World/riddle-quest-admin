@@ -11,7 +11,9 @@ import {
 } from "@qwordly/core/race";
 import {HttpsError} from "firebase-functions/v2/https";
 import {validateCallableResponse} from "../validation/callableValidation";
+import {getJestAccountDeletionRef} from "../jest/jestAccountDeletion";
 import {raceOutcome} from "./raceEngine";
+import {PRIVATE_RACE_PLAYER_NAME} from "./raceOpponentPrivacy";
 import {
   challengePreview,
   dbOrDefault,
@@ -27,9 +29,17 @@ export async function getRaceChallengePreview(
   options: {db?: Firestore; nowMs?: number} = {},
 ): Promise<RaceChallengePreview> {
   const db = dbOrDefault(options.db);
-  const snapshot = await db.collection("raceChallenges").doc(challengeId).get();
-  if (!snapshot.exists) throw new HttpsError("not-found", "Race to 10 challenge not found.");
-  return challengePreview(parseChallengeRecord(snapshot.data()), options.nowMs ?? Date.now());
+  const challengeRef = db.collection("raceChallenges").doc(challengeId);
+  return db.runTransaction(async (transaction) => {
+    const snapshot = await transaction.get(challengeRef);
+    if (!snapshot.exists) throw new HttpsError("not-found", "Race to 10 challenge not found.");
+    const challenge = parseChallengeRecord(snapshot.data());
+    const deletion = await transaction.get(getJestAccountDeletionRef(db, challenge.creatorId));
+    if (!deletion.exists) return challengePreview(challenge, options.nowMs ?? Date.now());
+    const scrubbed = {...challenge, creatorSnapshot: {displayName: PRIVATE_RACE_PLAYER_NAME}};
+    transaction.update(challengeRef, {creatorSnapshot: scrubbed.creatorSnapshot});
+    return challengePreview(scrubbed, options.nowMs ?? Date.now());
+  });
 }
 /** Gets race outcome for user. */
 export async function getRaceOutcomeForUser(
@@ -87,6 +97,25 @@ const decodeInboxCursor = (cursor: string): {createdAtMs: number; itemId: string
   }
 };
 
+/** Projects a stored inbox record without leaking server-only or unlinked legacy identity fields. */
+const projectRaceInboxItem = (value: FirebaseFirestore.DocumentData, subjectDeleted: boolean) => {
+  const linkedOpponentIdentity = !subjectDeleted &&
+    typeof value.opponentUserId === "string" && value.opponentUserId.length > 0;
+  return RaceInboxItemSchema.parse({
+    itemId: value.itemId,
+    challengeId: value.challengeId,
+    opponentDisplayName: linkedOpponentIdentity ? value.opponentDisplayName : "Riddle Quest player",
+    ...(linkedOpponentIdentity && value.opponentAvatarUrl !== undefined
+      ? {opponentAvatarUrl: value.opponentAvatarUrl}
+      : {}),
+    categoryId: value.categoryId,
+    result: value.result,
+    adjustedDeltaMs: value.adjustedDeltaMs,
+    read: value.read,
+    createdAtMs: value.createdAtMs,
+  });
+};
+
 /** Lists race inbox for user. */
 export async function listRaceInboxForUser(
   userId: string,
@@ -105,7 +134,17 @@ export async function listRaceInboxForUser(
   }
   const snapshot = await query.get();
   const visible = snapshot.docs.slice(0, input.limit);
-  const items = visible.map((document) => RaceInboxItemSchema.parse(document.data()));
+  const opponentIds = [...new Set(visible.flatMap((document) => {
+    const opponentUserId = document.data().opponentUserId;
+    return typeof opponentUserId === "string" && opponentUserId.length > 0 ? [opponentUserId] : [];
+  }))];
+  const deletionSnapshots = opponentIds.length > 0
+    ? await db.getAll(...opponentIds.map((opponentId) => getJestAccountDeletionRef(db, opponentId)))
+    : [];
+  const deletedOpponentIds = new Set(deletionSnapshots.filter((item) => item.exists).map((item) => item.id));
+  const subjectDeleted = (value: FirebaseFirestore.DocumentData) =>
+    typeof value.opponentUserId === "string" && deletedOpponentIds.has(value.opponentUserId);
+  const items = visible.map((document) => projectRaceInboxItem(document.data(), subjectDeleted(document.data())));
   const last = visible.at(-1);
   const response = ListRaceInboxResponseSchema.parse({
     items,
@@ -114,10 +153,18 @@ export async function listRaceInboxForUser(
         ? encodeInboxCursor(Number(last.data().createdAtMs), last.id)
         : undefined,
   });
-  const unread = visible.filter((document) => document.data().read !== true);
-  if (unread.length > 0) {
+  const updates = visible.filter((document) => document.data().read !== true || subjectDeleted(document.data()));
+  if (updates.length > 0) {
     const batch = db.batch();
-    unread.forEach((document) => batch.update(document.ref, {read: true}));
+    updates.forEach((document) => {
+      const fields: Record<string, unknown> = {};
+      if (document.data().read !== true) fields.read = true;
+      if (subjectDeleted(document.data())) {
+        fields.opponentDisplayName = PRIVATE_RACE_PLAYER_NAME;
+        fields.opponentAvatarUrl = admin.firestore.FieldValue.delete();
+      }
+      batch.update(document.ref, fields);
+    });
     await batch.commit();
   }
   return response;

@@ -1,262 +1,62 @@
-import {ScheduledEvent} from "firebase-functions/v2/scheduler";
-// Import the function to test directly
-import {scheduledTaskHandler} from "../daily/dailyScheduler";
-// Mock dependencies
+import {beforeEach, describe, expect, it, jest} from "@jest/globals";
+import type {ScheduledEvent} from "firebase-functions/v2/scheduler";
 
-// Define a simple mock interface for a Firestore DocumentSnapshot
-interface MockFirestoreDocumentSnapshot<T> {
-  exists: boolean;
-  data(): T | undefined;
-  // Add other DocumentSnapshot properties/methods if needed by tests
-}
-
-interface MockFirestoreQuerySnapshot<T> {
-  empty: boolean;
-  size: number;
-  docs: MockFirestoreDocumentSnapshot<T>[];
-  // Add other QuerySnapshot properties/methods if needed by tests
-}
-
-// Declare and initialize mock functions for firebase-admin
-// Correctly type the mocks to accept the expected resolved/rejected values
-const mockFirestoreSet: jest.Mock<Promise<void>, any[]> = jest.fn();
-const mockFirestoreGet: jest.Mock<Promise<MockFirestoreDocumentSnapshot<any>>, any[]> = jest.fn();
-
-// Mock for collection().get() - used by getExistingRiddlesFromFirestore
-const mockCollectionGet = jest.fn().mockResolvedValue({
-  empty: true,
-  forEach: () => {},
-  docs: [],
-  size: 0,
-} as MockFirestoreQuerySnapshot<any>);
-
-// Mock for dailyRiddles.doc().set() - each riddle is stored separately
-const mockRiddleDocSet = jest.fn().mockResolvedValue(undefined);
-
-jest.mock("firebase-admin", () => {
-  const mockFirestore = jest.fn(() => ({
-    collection: jest.fn((collectionPath: string) => {
-      if (collectionPath === "riddles" || collectionPath === "dailyRiddles" || collectionPath === "users") {
-        return {
-          get: mockCollectionGet,
-          doc: jest.fn((docPath?: string) => {
-            if (docPath === "current") {
-              return {
-                id: "current",
-                get: mockFirestoreGet,
-                set: mockFirestoreSet,
-              };
-            }
-            return {
-              id: "mock-riddle-id",
-              set: mockRiddleDocSet,
-            };
-          }),
-          where: jest.fn(() => ({
-            get: jest.fn().mockResolvedValue({docs: [], empty: true, size: 0} as MockFirestoreQuerySnapshot<any>),
-          })),
-        };
-      }
-      return {doc: jest.fn(), get: mockCollectionGet};
-    }),
-  })) as jest.Mock & {
-    FieldValue: {
-      serverTimestamp: jest.Mock;
-    };
-  };
-
-  (mockFirestore as any).FieldValue = {
-    serverTimestamp: jest.fn(() => new Date()),
-  };
-
-  return {
-    initializeApp: jest.fn(),
-    firestore: mockFirestore,
-  };
-});
-
-jest.mock("../riddles/riddleGeneration", () => ({
-  initializeLocalizedRiddleDatabaseIfEmpty: jest.fn(),
-}));
-jest.mock("../daily/dailyRiddleGeneration", () => ({
-  generateLocalizedTodaysDailyChallenge: jest.fn(),
-}));
-const mockGenerateTodaysDailyChallenge = jest.mocked(
-  require("../daily/dailyRiddleGeneration").generateLocalizedTodaysDailyChallenge,
-);
-const mockInitializeLocalizedRiddleDatabase = jest.mocked(
-  require("../riddles/riddleGeneration").initializeLocalizedRiddleDatabaseIfEmpty,
-);
-
-// Mock firebase-functions/v2/scheduler (partially, we are testing the handler function directly)
-// The main utility of onSchedule is to wrap the function and define schedule/retry config.
-// For unit testing the logic *inside* the scheduled function, we call it directly.
-
-// Mock firebase-functions logger
-jest.mock("firebase-functions", () => ({
-  logger: {
-    info: jest.fn(),
-    warn: jest.fn(),
-    error: jest.fn(),
-    debug: jest.fn(),
-  },
-}));
-
-// Get reference to the mocked logger functions after the mock is set up
-const mockLogger = jest.mocked(require("firebase-functions").logger);
-
-// Helper to create a mock ScheduledEvent context
-const mockScheduledEvent = (data?: unknown): ScheduledEvent => {
-  return {
-    id: "test-event-id",
-    data: data || {},
-    source: "//firebase.googleapis.com/projects/test-project/triggers/test-trigger",
-    specversion: "1.0",
-    type: "google.cloud.scheduler.job.v1.executed",
-    time: new Date().toISOString(),
-    // Add other properties as required by ScheduledEvent type or your function's usage
-    scheduleTime: new Date().toISOString(),
-    timeZone: "UTC",
-    retryCount: 0,
-    // Cast to satisfy the type, ensure all used fields are present
-  } as ScheduledEvent;
+const mockGenerateForDate = jest.fn();
+const mockLogger = {
+  info: jest.fn(),
+  warn: jest.fn(),
+  error: jest.fn(),
+  debug: jest.fn(),
 };
 
+jest.mock("../daily/dailyRiddleGeneration", () => ({
+  generateLocalizedDailyChallengeForDate: (...args: unknown[]) => mockGenerateForDate(...args),
+}));
+
+jest.mock("firebase-functions", () => ({logger: mockLogger}));
+
+import {scheduledTaskHandler} from "../daily/dailyScheduler";
+
+const scheduledEvent = {} as ScheduledEvent;
+
 describe("dailyChallengeScheduler", () => {
-  let originalEnv: NodeJS.ProcessEnv;
-
   beforeEach(() => {
-    originalEnv = {...process.env};
-
-    // Reset mocks before each test
-    mockFirestoreSet.mockReset();
-    mockFirestoreGet.mockReset();
-    mockCollectionGet.mockReset();
-    mockRiddleDocSet.mockReset();
-    mockGenerateTodaysDailyChallenge.mockReset();
-    mockInitializeLocalizedRiddleDatabase.mockReset();
-    mockLogger.info.mockReset();
-    mockLogger.warn.mockReset();
-    mockLogger.error.mockReset();
-    mockLogger.debug.mockReset();
-
-    // Set default mock behavior (can be overridden in individual tests)
-    mockFirestoreGet.mockResolvedValue({exists: false, data: () => undefined} as MockFirestoreDocumentSnapshot<any>);
-    mockFirestoreSet.mockResolvedValue(undefined);
-    mockRiddleDocSet.mockResolvedValue(undefined);
-    mockInitializeLocalizedRiddleDatabase.mockResolvedValue(undefined);
-    mockCollectionGet.mockResolvedValue({
-      empty: true,
-      forEach: () => {},
-      docs: [],
-      size: 0,
-    } as MockFirestoreQuerySnapshot<any>);
+    jest.useFakeTimers().setSystemTime(new Date("2026-08-11T21:00:00.000Z"));
+    jest.clearAllMocks();
+    mockGenerateForDate.mockResolvedValue(undefined);
   });
 
-  afterEach(() => {
-    process.env = originalEnv;
-  });
+  it("pre-generates tomorrow's immutable locale set without running Classic bootstrap", async () => {
+    await scheduledTaskHandler(scheduledEvent);
 
-  // Initial test to ensure handler can be called
-  test("handler function can be invoked", async () => {
-    process.env.OPENAI_API_KEY = "test-key";
-    mockGenerateTodaysDailyChallenge.mockResolvedValue(undefined);
-
-    await scheduledTaskHandler(mockScheduledEvent());
-
+    expect(mockGenerateForDate).toHaveBeenCalledWith("2026-08-12", false);
     expect(mockLogger.info).toHaveBeenCalledWith(
-      "Daily scheduler started (target: localizedRiddles/{locale}/riddles/current).",
+      "Daily scheduler finished successfully (localized daily set ready).",
+      {challengeDate: "2026-08-12"},
     );
-    expect(mockGenerateTodaysDailyChallenge).toHaveBeenCalledWith(false);
-    expect(mockInitializeLocalizedRiddleDatabase).toHaveBeenCalledWith(20);
   });
 
-  describe("Successful execution", () => {
-    beforeEach(() => {
-      process.env.OPENAI_API_KEY = "a-valid-key";
-    });
+  it("self-heals today's missing immutable locale slots during early UTC retries", async () => {
+    jest.setSystemTime(new Date("2026-08-12T01:00:00.000Z"));
 
-    test("should generate and set a new daily challenge if none exists for the current date", async () => {
-      mockGenerateTodaysDailyChallenge.mockResolvedValue(undefined);
+    await scheduledTaskHandler(scheduledEvent);
 
-      await scheduledTaskHandler(mockScheduledEvent());
-
-      expect(mockLogger.info).toHaveBeenCalledWith(
-        "Daily scheduler started (target: localizedRiddles/{locale}/riddles/current).",
-      );
-      expect(mockGenerateTodaysDailyChallenge).toHaveBeenCalledWith(false);
-      expect(mockLogger.info).toHaveBeenCalledWith("Daily scheduler finished successfully (localized daily riddles updated).");
-      expect(mockLogger.error).not.toHaveBeenCalled();
-    });
-
-    test("should skip generation if a challenge for the current date already exists", async () => {
-      mockGenerateTodaysDailyChallenge.mockResolvedValue(undefined);
-
-      await scheduledTaskHandler(mockScheduledEvent());
-
-      expect(mockLogger.info).toHaveBeenCalledWith(
-        "Daily scheduler started (target: localizedRiddles/{locale}/riddles/current).",
-      );
-      expect(mockGenerateTodaysDailyChallenge).toHaveBeenCalledWith(false);
-      expect(mockLogger.error).not.toHaveBeenCalled();
-      expect(mockLogger.info).toHaveBeenCalledWith("Daily scheduler finished successfully (localized daily riddles updated).");
-    });
+    expect(mockGenerateForDate).toHaveBeenCalledWith("2026-08-12", false);
   });
 
-  describe("Input and Configuration Issues", () => {
-    test("should handle missing OPENAI_API_KEY gracefully", async () => {
-      delete process.env.OPENAI_API_KEY;
-      mockGenerateTodaysDailyChallenge.mockRejectedValue(new Error("OPENAI_API_KEY environment variable is required"));
+  it("rethrows generation failures with bounded Cloud-log metadata", async () => {
+    const failure = Object.assign(new Error("candidate content must stay private"), {code: "rate_limit"});
+    mockGenerateForDate.mockRejectedValue(failure);
 
-      await expect(scheduledTaskHandler(mockScheduledEvent())).rejects.toThrow(
-        "OPENAI_API_KEY environment variable is required",
-      );
-
-      expect(mockGenerateTodaysDailyChallenge).toHaveBeenCalledWith(false);
-      expect(mockLogger.info).toHaveBeenCalledWith(
-        "Daily scheduler started (target: localizedRiddles/{locale}/riddles/current).",
-      );
-      expect(mockLogger.info).not.toHaveBeenCalledWith("Daily scheduler finished successfully (localized daily riddles updated).");
-    });
-
-    test("should log an error and return if riddle generation fails", async () => {
-      process.env.OPENAI_API_KEY = "a-valid-key";
-      mockGenerateTodaysDailyChallenge.mockRejectedValue(new Error("Riddle generation failed"));
-
-      await expect(scheduledTaskHandler(mockScheduledEvent())).rejects.toThrow("Riddle generation failed");
-
-      expect(mockGenerateTodaysDailyChallenge).toHaveBeenCalled();
-      expect(mockLogger.info).not.toHaveBeenCalledWith("Daily scheduler finished successfully (localized daily riddles updated).");
-    });
-  });
-
-  describe("Firestore Operation Failures", () => {
-    beforeEach(() => {
-      process.env.OPENAI_API_KEY = "a-valid-key";
-    });
-
-    test("should log an error if Firestore 'get' operation fails", async () => {
-      mockGenerateTodaysDailyChallenge.mockRejectedValue(new Error("Firestore get failed!"));
-
-      await expect(scheduledTaskHandler(mockScheduledEvent())).rejects.toThrow("Firestore get failed!");
-
-      expect(mockGenerateTodaysDailyChallenge).toHaveBeenCalled();
-      expect(mockLogger.info).toHaveBeenCalledWith(
-        "Daily scheduler started (target: localizedRiddles/{locale}/riddles/current).",
-      );
-      expect(mockLogger.info).not.toHaveBeenCalledWith("Daily scheduler finished successfully (localized daily riddles updated).");
-    });
-
-    test("should log an error if Firestore 'set' operation fails", async () => {
-      mockGenerateTodaysDailyChallenge.mockRejectedValue(new Error("Firestore set failed!"));
-
-      await expect(scheduledTaskHandler(mockScheduledEvent())).rejects.toThrow("Firestore set failed!");
-
-      expect(mockGenerateTodaysDailyChallenge).toHaveBeenCalled();
-      expect(mockLogger.info).toHaveBeenCalledWith(
-        "Daily scheduler started (target: localizedRiddles/{locale}/riddles/current).",
-      );
-      expect(mockLogger.info).not.toHaveBeenCalledWith("Daily scheduler finished successfully (localized daily riddles updated).");
-    });
+    await expect(scheduledTaskHandler(scheduledEvent)).rejects.toBe(failure);
+    expect(mockLogger.error).toHaveBeenCalledWith(
+      "Daily scheduler failed while preparing immutable daily riddles.",
+      {
+        challengeDate: "2026-08-12",
+        errorClass: "Error",
+        code: "rate_limit",
+      },
+    );
+    expect(mockLogger.error).not.toHaveBeenCalledWith(expect.anything(), failure);
   });
 });

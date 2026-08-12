@@ -1,24 +1,40 @@
 import {
   applyJestCors,
   acceptJestRequest,
+  allowJestRequest,
   isAllowedJestOrigin,
+  JEST_HTTP_INPUT_LIMITS,
+  MAX_JEST_HTTP_BODY_BYTES,
+  parseJestStringBody,
   resolveConflictingSubscriptionSkus,
   resolveSignedPurchase,
   resolveSignedSubscriptions,
   selectReferralConversions,
+  selectUngrantedReferralConversions,
 } from "../jest/jestEndpoints";
 import type {Request} from "firebase-functions/v2/https";
+import {
+  createJestPurchaseGrantId,
+  currentJestCoinBalance,
+  isSafeLegacyJestPurchaseGrantId,
+} from "../jest/jestPurchaseReceipts";
+import {
+  createJestReferralRewardId,
+  createJestReferralVerificationId,
+} from "../jest/jestReferralReceipts";
 
 const request = (input: {
   origin?: string;
   method?: string;
   json?: boolean;
   ip?: string;
+  rawBodyBytes?: number;
 }): Request => ({
   get: (name: string) => name.toLowerCase() === "origin" ? input.origin : undefined,
   method: input.method ?? "POST",
   is: (type: string) => input.json !== false && type === "application/json",
   ip: input.ip ?? "endpoint-test",
+  rawBody: input.rawBodyBytes === undefined ? undefined : Buffer.alloc(input.rawBodyBytes),
 } as Request);
 
 const response = () => {
@@ -105,6 +121,7 @@ describe("Jest endpoint HTTP boundary", () => {
     ["untrusted origin", request({origin: "https://attacker.example"}), 403, {error: "forbidden-origin"}],
     ["wrong method", request({origin: "https://jest.com", method: "GET"}), 405, {error: "method-not-allowed"}],
     ["wrong media type", request({origin: "https://jest.com", json: false}), 415, {error: "unsupported-media-type"}],
+    ["oversized body", request({origin: "https://jest.com", rawBodyBytes: MAX_JEST_HTTP_BODY_BYTES + 1}), 413, {error: "payload-too-large"}],
   ])("rejects %s", (_name, candidate, status, body) => {
     const output = response();
     expect(acceptJestRequest(candidate, output)).toBe(false);
@@ -133,14 +150,88 @@ describe("Jest endpoint HTTP boundary", () => {
     expect(acceptJestRequest(candidate, output)).toBe(false);
     expect(output).toMatchObject({statusCode: 429, body: {error: "rate-limited"}});
   });
+
+  it("rejects unseen addresses once the bounded rate-limit map remains full", () => {
+    expect(allowJestRequest("capacity-0")).toBe(true);
+    let rejected = false;
+    for (let index = 1; index <= 10_000; index += 1) {
+      if (!allowJestRequest(`capacity-${index}`)) {
+        rejected = true;
+        break;
+      }
+    }
+
+    expect(rejected).toBe(true);
+    expect(allowJestRequest("capacity-overflow")).toBe(false);
+    expect(allowJestRequest("capacity-0")).toBe(true);
+  });
+
+  it("does not retain an unbounded address key", () => {
+    expect(allowJestRequest("x".repeat(257))).toBe(false);
+  });
+});
+
+describe("Jest HTTP input bounds", () => {
+  it("accepts only the exact expected string fields within their UTF-8 byte limits", () => {
+    expect(parseJestStringBody(
+      {playerId: "player-1", purchaseToken: "token"},
+      {playerId: JEST_HTTP_INPUT_LIMITS.playerId, purchaseToken: JEST_HTTP_INPUT_LIMITS.purchaseToken},
+    )).toEqual({playerId: "player-1", purchaseToken: "token"});
+  });
+
+  it.each([
+    [null],
+    [[]],
+    [{playerId: "player-1"}],
+    [{playerId: "player-1", purchaseToken: "token", unexpected: true}],
+    [{playerId: 123, purchaseToken: "token"}],
+    [{playerId: "", purchaseToken: "token"}],
+    [{playerId: "éé", purchaseToken: "token"}],
+  ])("rejects malformed, unknown, empty, or oversized request body %p", (body) => {
+    expect(() => parseJestStringBody(body, {playerId: 3, purchaseToken: 10})).toThrow("invalid-request");
+  });
 });
 
 describe("signed Jest purchase selection", () => {
   const sku = "com.roobsworld.riddlequest.coinpack1";
-  it("selects a requested token from a signed recovery array", () => expect(resolveSignedPurchase({purchases: [{purchaseToken: "one", productSku: sku}, {purchaseToken: "two", productSku: sku}]}, "two")).toEqual({purchaseToken: "two", productSku: sku, coins: 250}));
+  it("selects a requested token from a signed recovery array", () => expect(resolveSignedPurchase({purchases: [{purchaseToken: "one", productSku: sku}, {purchaseToken: "two", productSku: sku}]}, "two", new Set([sku]))).toEqual({purchaseToken: "two", productSku: sku, coins: 250}));
   it("rejects unsigned selectors and disallowed SKUs", () => {
     expect(() => resolveSignedPurchase({purchases: []}, "missing")).toThrow("purchase-not-signed");
     expect(() => resolveSignedPurchase({purchase: {purchaseToken: "one", productSku: sku}}, "one", new Set(["different"]))).toThrow("invalid-sku");
+  });
+  it("fails closed when no product SKU configuration is present", () => {
+    expect(() => resolveSignedPurchase(
+      {purchase: {purchaseToken: "one", productSku: sku}},
+      "one",
+      new Set(),
+    )).toThrow("invalid-sku");
+  });
+});
+
+describe("Jest purchase receipt storage", () => {
+  it("uses a bounded opaque key even when the signed token is not a safe Firestore path", () => {
+    const token = `purchase/with/path/${"x".repeat(2_000)}`;
+    const receiptId = createJestPurchaseGrantId(token);
+
+    expect(receiptId).toMatch(/^[0-9a-f]{64}$/);
+    expect(receiptId).toBe(createJestPurchaseGrantId(token));
+    expect(receiptId).not.toContain(token);
+  });
+
+  it.each(["", ".", "..", "token/segment", "x".repeat(1_501)])(
+    "never sends unsafe legacy token %p to Firestore doc lookup",
+    (token) => expect(isSafeLegacyJestPurchaseGrantId(token)).toBe(false),
+  );
+
+  it("permits one-document legacy receipt IDs within Firestore's byte limit", () => {
+    expect(isSafeLegacyJestPurchaseGrantId("legacy-token_123")).toBe(true);
+    expect(isSafeLegacyJestPurchaseGrantId("é".repeat(751))).toBe(false);
+  });
+
+  it("returns the user's current balance for replay instead of a historical receipt balance", () => {
+    expect(currentJestCoinBalance({coins: 73, newCoins: 550})).toBe(73);
+    expect(currentJestCoinBalance({coins: Number.NaN})).toBe(0);
+    expect(currentJestCoinBalance(undefined)).toBe(0);
   });
 });
 
@@ -183,6 +274,20 @@ describe("signed Jest subscription selection", () => {
 describe("signed Jest referral conversion selection", () => {
   const joinedAt = "2026-07-28T12:00:00.000Z";
 
+  it("uses one opaque latest-verification key per player instead of one key per signed snapshot", () => {
+    const verificationId = createJestReferralVerificationId("player-1");
+    expect(verificationId).toMatch(/^[0-9a-f]{64}$/);
+    expect(createJestReferralVerificationId("player-1")).toBe(verificationId);
+    expect(createJestReferralVerificationId("player-2")).not.toBe(verificationId);
+  });
+
+  it("preserves the legacy campaign-independent reward receipt key", () => {
+    expect(createJestReferralRewardId("inviter", "friend"))
+      .toBe("cd83785a457bda7bd4121686bcc7638f721b67632c687d49e7e09501de5cca7b");
+    expect(createJestReferralRewardId("inviter", "other-friend"))
+      .not.toBe(createJestReferralRewardId("inviter", "friend"));
+  });
+
   it("accepts rewarded campaigns, excludes self-referrals, and deduplicates recipients", () => {
     expect(selectReferralConversions({
       referrals: {
@@ -212,13 +317,79 @@ describe("signed Jest referral conversion selection", () => {
     ]);
   });
 
-  it("caps a signed batch at twenty distinct recipients", () => {
+  it("accepts strict personalized share references and ignores malformed lookalikes", () => {
+    expect(selectReferralConversions({
+      referrals: {
+        riddle_quest_friend_challenge_v2_result_0123456789abcdef: [{playerId: "result-friend", joinedAt}],
+        riddle_quest_race_to_10_v1_share_fedcba9876543210: [{playerId: "race-friend", joinedAt}],
+        riddle_quest_race_to_10_v1_share_not_hex: [{playerId: "invalid-friend", joinedAt}],
+        riddle_quest_friend_challenge_v2: [{playerId: "x".repeat(513), joinedAt}],
+      },
+    }, "inviter")).toEqual([
+      expect.objectContaining({playerId: "result-friend"}),
+      expect.objectContaining({playerId: "race-friend"}),
+    ]);
+  });
+
+  it("retains every signed distinct recipient so existing receipts can be skipped", () => {
     const conversions = Array.from({length: 25}, (_, index) => ({
       playerId: `friend-${index}`,
       joinedAt,
     }));
     expect(selectReferralConversions({
       referrals: {riddle_quest_friend_challenge_v2: conversions},
-    }, "inviter")).toHaveLength(20);
+    }, "inviter")).toHaveLength(25);
+  });
+
+  it("caps one grant batch at twenty ungranted recipients", async () => {
+    const conversions = selectReferralConversions({
+      referrals: {
+        riddle_quest_friend_challenge_v2: Array.from({length: 25}, (_, index) => ({
+          playerId: `friend-${index}`,
+          joinedAt,
+        })),
+      },
+    }, "inviter");
+    await expect(selectUngrantedReferralConversions(
+      conversions,
+      async (batch) => batch.map(() => false),
+    )).resolves.toHaveLength(20);
+  });
+
+  it("selects conversion twenty-one when the first twenty receipts already exist", async () => {
+    const conversions = selectReferralConversions({
+      referrals: {
+        riddle_quest_friend_challenge_v2: Array.from({length: 21}, (_, index) => ({
+          playerId: `friend-${index}`,
+          joinedAt,
+        })),
+      },
+    }, "inviter");
+    const grantedPlayerIds = new Set(conversions.slice(0, 20).map(({playerId}) => playerId));
+    await expect(selectUngrantedReferralConversions(
+      conversions,
+      async (batch) => batch.map(({playerId}) => grantedPlayerIds.has(playerId)),
+    )).resolves.toEqual([expect.objectContaining({playerId: "friend-20"})]);
+  });
+
+  it("pages beyond five hundred existing receipts without enlarging the grant transaction", async () => {
+    const conversions = selectReferralConversions({
+      referrals: {
+        riddle_quest_friend_challenge_v2: Array.from({length: 522}, (_, index) => ({
+          playerId: `friend-${index}`,
+          joinedAt,
+        })),
+      },
+    }, "inviter");
+    const grantedPlayerIds = new Set(conversions.slice(0, 521).map(({playerId}) => playerId));
+    const readReceiptStates = jest.fn(async (batch: ReadonlyArray<(typeof conversions)[number]>) =>
+      batch.map(({playerId}) => grantedPlayerIds.has(playerId)));
+
+    await expect(selectUngrantedReferralConversions(
+      conversions,
+      readReceiptStates,
+    )).resolves.toEqual([expect.objectContaining({playerId: "friend-521"})]);
+    expect(readReceiptStates).toHaveBeenCalledTimes(6);
+    expect(readReceiptStates.mock.calls.every(([batch]) => batch.length <= 100)).toBe(true);
   });
 });

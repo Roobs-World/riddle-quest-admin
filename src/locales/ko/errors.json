@@ -26,8 +26,8 @@
     "SIGN_IN_TO_CONTINUE": "계속하려면 로그인하십시오.",
     "TOO_MANY_FAILED_ATTEMPTS": "실패 횟수가 너무 많습니다. 나중에 다시 시도해 주세요.",
     "WRONG_PASSWORD_TRY_AGAIN": "비밀번호가 잘못되었습니다. 다시 시도해 주세요.",
-    "UNKNOWN_ERROR": "? ? ?? ??? ??????.",
-    "FATAL_STARTUP_TITLE": "??? ??????",
-    "FATAL_STARTUP_MESSAGE": "??? ??? ???? ?????. ?? ?? ??? ???."
+    "UNKNOWN_ERROR": "알 수 없는 오류가 발생했습니다.",
+    "FATAL_STARTUP_TITLE": "시작 실패",
+    "FATAL_STARTUP_MESSAGE": "태양계 배경을 불러오지 못했습니다. 앱을 다시 시작해 주세요."
   }
 }

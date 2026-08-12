@@ -2,6 +2,9 @@ import {
   ENGAGEMENT_REMINDER_IDS,
   LEGACY_REMINDER_IDS,
   notificationRotationSeed,
+  PLAYER_NOTIFICATION_IDS,
+  RACE_REMINDER_IDS,
+  RACE_RESULTS_REMINDER_ID,
   removeEngagementReminders,
   replaceEngagementReminders,
   scheduleEngagementReminders,
@@ -16,6 +19,16 @@ const copy = {
   streakCta: "Start streak",
   weeklyCta: "Claim coins",
 };
+
+it("keeps one unique cleanup inventory for every engagement and race notification identifier", () => {
+  expect(PLAYER_NOTIFICATION_IDS).toEqual([
+    ...LEGACY_REMINDER_IDS,
+    ...ENGAGEMENT_REMINDER_IDS,
+    ...RACE_REMINDER_IDS,
+  ]);
+  expect(new Set(PLAYER_NOTIFICATION_IDS).size).toBe(PLAYER_NOTIFICATION_IDS.length);
+  expect(RACE_REMINDER_IDS).toContain(RACE_RESULTS_REMINDER_ID);
+});
 
 it("schedules a rotating, attributed D1-D7 series with stable identifiers", async () => {
   const platform = new MockJestPlatform();

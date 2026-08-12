@@ -11,9 +11,10 @@ describe("GameFrameApp", () => {
     expect(html).toContain('<section class="game-loading" aria-hidden="true"></section>');
     expect(html).not.toContain('data-testid="preloader"');
     expect(html).not.toContain('data-testid="spinner-dot"');
-    expect(html).toContain(
-      'class="offline-backdrop" role="alertdialog" aria-modal="true"><span class="spinning-wheel-graphic"',
-    );
+    expect(html).toContain('class="offline-backdrop" role="alertdialog" aria-modal="true"');
+    expect(html).toContain('aria-labelledby="offline-dialog-title"');
+    expect(html).toContain('aria-describedby="offline-dialog-message"');
+    expect(html).toContain('tabindex="-1"');
   });
 
   it("renders one progress-aware startup preloader", () => {

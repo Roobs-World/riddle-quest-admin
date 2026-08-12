@@ -26,3 +26,5 @@ firebase-functions/.runtimeconfig.json
 firebase-functions/artifacts/notification-copy-backups/
 
 packages/portal/build.zip
+packages/portal/.jest-upload-receipts/
+packages/portal/.jest-release-workspaces/

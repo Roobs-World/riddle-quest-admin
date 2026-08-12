@@ -1,5 +1,5 @@
 import {createHmac} from "node:crypto";
-import {jestFirebaseUid, verifyJestSigned} from "../jest/jestSecurity";
+import {isJestFirebaseUid, jestFirebaseUid, verifyJestSigned} from "../jest/jestSecurity";
 
 const secret = Buffer.alloc(32, 7).toString("base64");
 const sign = (payload: object, alg = "HS256") => {
@@ -20,6 +20,12 @@ describe("Jest signed verification", () => {
     ["freshness", () => verifyJestSigned(sign(payload), secret, "game", "p1", 3000, 900)],
   ])("rejects invalid %s", (_name, verify) => expect(verify).toThrow());
   it("creates stable scoped Firebase UIDs", () => expect(jestFirebaseUid("p1")).toBe(jestFirebaseUid("p1")));
+
+  it("recognizes only canonical deterministic Jest Firebase UIDs", () => {
+    expect(isJestFirebaseUid(jestFirebaseUid("p1"))).toBe(true);
+    expect(isJestFirebaseUid("firebase-user")).toBe(false);
+    expect(isJestFirebaseUid(`jest_${"A".repeat(40)}`)).toBe(false);
+  });
   it("accepts signed referral payloads without iat when freshness is not requested", () =>
     expect(verifyJestSigned(sign({aud: "game", sub: "p1", referrals: {campaign: []}}), secret, "game", "p1")).toMatchObject({sub: "p1"}));
   it("rejects oversized signed payloads before decoding them", () =>

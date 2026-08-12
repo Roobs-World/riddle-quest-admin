@@ -4,6 +4,7 @@ import {
   installGlobalErrorAnalytics,
   resetAnalyticsForTests,
   sanitizeAnalyticsParams,
+  setAnalyticsCollectionEnabled,
   trackEvent,
   trackPurchase,
   trackScreen,
@@ -13,6 +14,7 @@ afterEach(resetAnalyticsForTests);
 
 it("queues early events and flushes them when analytics becomes ready", () => {
   const sink = jest.fn();
+  setAnalyticsCollectionEnabled(true);
   trackEvent("Session Started", {registered: true});
 
   configureAnalytics(sink);
@@ -20,8 +22,39 @@ it("queues early events and flushes them when analytics becomes ready", () => {
   expect(sink).toHaveBeenCalledWith("session_started", {registered: true});
 });
 
+it("drops events while nonessential analytics collection is disabled", () => {
+  const sink = jest.fn();
+  trackEvent("Session Started", {registered: true});
+
+  configureAnalytics(sink);
+  trackEvent("Session Still Disabled", {registered: true});
+
+  expect(sink).not.toHaveBeenCalled();
+});
+
+it("revokes collection, clears queued events, and disconnects the active sink", () => {
+  const firstSink = jest.fn();
+  const nextSink = jest.fn();
+  setAnalyticsCollectionEnabled(true);
+  trackEvent("Queued Before Revocation");
+  setAnalyticsCollectionEnabled(false);
+  configureAnalytics(nextSink);
+
+  expect(nextSink).not.toHaveBeenCalled();
+  setAnalyticsCollectionEnabled(true);
+  configureAnalytics(nextSink);
+  trackEvent("Delivered After Explicit Re-enable");
+  expect(nextSink).toHaveBeenCalledWith("delivered_after_explicit_re_enable", {});
+
+  configureAnalytics(firstSink);
+  configureAnalytics(null);
+  trackEvent("Dropped After Revocation");
+  expect(firstSink).not.toHaveBeenCalled();
+});
+
 it("deduplicates consecutive screen views", () => {
   const sink = jest.fn();
+  setAnalyticsCollectionEnabled(true);
   configureAnalytics(sink);
 
   trackScreen("Game Classic");
@@ -47,8 +80,18 @@ it("drops unsupported values and bounds strings", () => {
   });
 });
 
+it("drops sensitive fields recursively before they reach an analytics sink", () => {
+  expect(sanitizeAnalyticsParams({
+    userId: "player-1",
+    purchaseToken: "signed-token",
+    answer: "secret",
+    safe: "kept",
+    items: [{item_id: "coins", email: "player@example.test"}],
+  })).toEqual({safe: "kept", items: [{item_id: "coins"}]});
+});
+
 it("uses safe fallbacks and bounds queued event history", () => {
-  configureAnalytics(null);
+  setAnalyticsCollectionEnabled(true);
   for (let index = 0; index < 105; index += 1) {
     trackEvent(index === 104 ? "---" : `Event ${index}`, {"---": "value"});
   }
@@ -161,6 +204,7 @@ it.each([
     removeEventListener: jest.fn(),
   };
   const sink = jest.fn();
+  setAnalyticsCollectionEnabled(true);
   configureAnalytics(sink);
 
   const uninstall = installButtonAnalytics(root as unknown as Document);
@@ -217,6 +261,7 @@ it("reports bounded client failures without including sensitive error details", 
     removeEventListener: jest.fn(),
   };
   const sink = jest.fn();
+  setAnalyticsCollectionEnabled(true);
   configureAnalytics(sink);
 
   const uninstall = installGlobalErrorAnalytics(target as unknown as Window);
@@ -250,6 +295,7 @@ it("installs global error analytics on the default window", () => {
 
 it("tracks purchases with generated transaction identifiers and default prices", () => {
   const sink = jest.fn();
+  setAnalyticsCollectionEnabled(true);
   configureAnalytics(sink);
 
   trackPurchase({productId: "coins-100", purchaseType: "consumable", currency: "GBP"});
@@ -266,6 +312,7 @@ it("falls back to a web transaction identifier where randomUUID is unavailable",
   jest.spyOn(Date, "now").mockReturnValue(1234);
   jest.spyOn(Math, "random").mockReturnValue(0.5);
   const sink = jest.fn();
+  setAnalyticsCollectionEnabled(true);
   configureAnalytics(sink);
 
   trackPurchase({productId: "membership", purchaseType: "subscription", price: 3.99});

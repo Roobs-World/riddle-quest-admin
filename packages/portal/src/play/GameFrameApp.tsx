@@ -7,7 +7,7 @@ import {tr} from "./i18n";
 import {createRequestId} from "./requestIds";
 import {dispatchLocalBridge, GAME_TO_HOST_EVENT} from "./localBridge";
 import {GuidanceOverlay} from "./GuidanceOverlay";
-import {SpinningWheel} from "./SpinningWheelLoader";
+import {SpinningWheel, SpinningWheelLoader} from "./SpinningWheelLoader";
 import {prepareAvatarImage} from "./avatarImage";
 import type {JestSavedGame} from "../jest/types";
 import {
@@ -35,6 +35,8 @@ import {
 import {getMobileCapabilities, shouldLoadDecorativeWebGl} from "./performance/mobileCapabilities";
 import {trackScreen} from "../analytics/googleAnalytics";
 import type {ListRaceCategoriesResponse} from "@qwordly/core/race";
+import {useCompletionDelivery} from "./game/hooks/useCompletionDelivery";
+import {useOfflineDialog} from "./game/hooks/useOfflineDialog";
 
 /** Stores the shared modal bundle request so preloading also resolves React.lazy. */
 let gameModalViewPromise: Promise<{default: typeof import("./GameModalView").GameModalView}> | null = null;
@@ -93,9 +95,15 @@ export function GameFrameApp({
   const [preloadedRaceTo10Game, setPreloadedRaceTo10Game] = useState<
     typeof import("./race/RaceTo10Game").RaceTo10Game | null
   >(null);
-  const [completedIds] = useState(() => new Set<string>());
+  const guessRetryRef = useRef<{riddleId: string; guess: string; requestId: string} | null>(null);
+  const hintRetryRef = useRef<{sessionToken: string; attempt: string; requestId: string} | null>(null);
+  const continueRetryRef = useRef<{sessionToken: string; requestId: string} | null>(null);
+  const skipRetryRef = useRef<{sessionToken: string; requestId: string} | null>(null);
+  const offlineDialogRef = useRef<HTMLDivElement | null>(null);
   const stateRef = useRef(state);
   stateRef.current = state;
+
+  useOfflineDialog(online, offlineDialogRef);
 
   useEffect(() => {
     let requestId: number | undefined;
@@ -177,9 +185,11 @@ export function GameFrameApp({
         gameMode: stateRef.current.gameMode,
         locale: stateRef.current.locale,
         classicIndex: stateRef.current.profile?.classicIndex,
+        sessionToken: stateRef.current.riddle?.sessionToken ?? restoredGame?.sessionToken,
+        riddleId: stateRef.current.riddle?.riddleId ?? restoredGame?.riddleId,
       },
     });
-  }, [postToHost]);
+  }, [postToHost, restoredGame?.sessionToken]);
 
   useEffect(() => {
     if (!state.initialized || !shouldLoadDecorativeWebGl(getMobileCapabilities())) return;
@@ -197,7 +207,19 @@ export function GameFrameApp({
 
   useGameReadyReporter({initialized: state.initialized, sendReady, postToHost});
 
-  const router = useGameMessageRouter({dispatch, stateRef, postToHost, requestRiddle});
+  const handleCompletionResult = useCompletionDelivery({
+    outcome: state.lastOutcome,
+    dispatch,
+    postToHost,
+  });
+
+  const router = useGameMessageRouter({
+    dispatch,
+    stateRef,
+    postToHost,
+    requestRiddle,
+    onCompletionResult: handleCompletionResult,
+  });
 
   useEffect(() => {
     type ReferralRewardDetail = {
@@ -212,7 +234,7 @@ export function GameFrameApp({
       const detail = (event as CustomEvent<ReferralRewardDetail>).detail;
       // Host initialization replaces the bootstrap session snapshot. Keep the
       // reward queued until that authoritative profile has been applied.
-      if (!stateRef.current.initialized) return;
+      if (!stateRef.current.initialized || !stateRef.current.riddle) return;
       delete rewardWindow.__RIDDLE_QUEST_PENDING_REFERRAL_REWARD__;
       const coinsAwarded = detail?.coinsAwarded;
       const newCoins = detail?.newCoins;
@@ -239,42 +261,44 @@ export function GameFrameApp({
       }));
     }
     return () => window.removeEventListener("riddle-quest:referral-reward", showReferralReward);
-  }, [state.initialized]);
+  }, [state.initialized, state.riddle?.riddleId]);
 
   useGameMessageListener({router, postToHost});
 
   useGameSessionPersistence({state, stateRef, restoredGame, dispatch, onSaveGame});
 
-  useEffect(() => {
-    const outcome = state.lastOutcome;
-    if (!outcome || completedIds.has(outcome.id)) {
-      return;
-    }
-
-    completedIds.add(outcome.id);
-    postToHost({
-      type: "game:completeGame",
-      requestId: createRequestId("complete"),
-      payload: {
-        riddleId: outcome.riddleId,
-        gameMode: outcome.gameMode,
-        attempts: outcome.attempts,
-        isCorrect: outcome.isCorrect,
-      },
-    });
-  }, [completedIds, state.lastOutcome]);
-
   const currentAttempt = state.riddle
     ? Array.from({length: state.riddle.answerLength}, (_, index) => state.currentLetters[index] ?? "")
     : [];
-  const canSubmit = currentAttempt.length > 0 && currentAttempt.every(Boolean);
+  const canSubmit = !state.guessPending && currentAttempt.length > 0 && currentAttempt.every(Boolean);
   const submitGuess = useCallback(() => {
-    if (!canSubmit) {
+    if (!canSubmit || !state.riddle) {
       return;
     }
+    const guess = currentAttempt.join("");
+    const retry = guessRetryRef.current;
+    const requestId = retry?.riddleId === state.riddle.riddleId && retry.guess === guess
+      ? retry.requestId
+      : createRequestId("guess");
+    guessRetryRef.current = {riddleId: state.riddle.riddleId, guess, requestId};
     playFeedback("submit");
-    dispatch({type: "submitGuess"});
-  }, [canSubmit, playFeedback]);
+    dispatch({type: "guessRequested"});
+    postToHost({
+      type: "game:submitGuess",
+      requestId,
+      payload: {
+        riddleId: state.riddle.riddleId,
+        gameMode: state.riddle.gameMode,
+        sessionToken: state.riddle.sessionToken,
+        guess,
+        requestId,
+      },
+    });
+  }, [canSubmit, currentAttempt, playFeedback, postToHost, state.riddle]);
+
+  useEffect(() => {
+    guessRetryRef.current = null;
+  }, [state.guesses.length]);
 
   const typeKeyboardLetter = useCallback(
     (letter: string) => {
@@ -288,7 +312,7 @@ export function GameFrameApp({
     dispatch({type: "backspace"});
   }, [playFeedback]);
   useAnswerKeyboard({
-    active: !state.paused && !state.modal && !guidanceActive && !raceOpen,
+    active: online && !state.paused && !state.modal && !state.guessPending && !guidanceActive && !raceOpen,
     onLetter: typeKeyboardLetter,
     onBackspace: deleteKeyboardLetter,
     onSubmit: submitGuess,
@@ -296,24 +320,44 @@ export function GameFrameApp({
 
   const requestHint = () => {
     if (!state.riddle) return;
+    const attempt = currentAttempt.join("");
+    const retry = hintRetryRef.current;
+    const requestId = retry?.sessionToken === state.riddle.sessionToken && retry.attempt === attempt
+      ? retry.requestId
+      : createRequestId("hint");
+    hintRetryRef.current = {sessionToken: state.riddle.sessionToken, attempt, requestId};
     postToHost({
       type: "game:requestHint",
-      requestId: createRequestId("hint"),
+      requestId,
       payload: {
         riddleId: state.riddle.riddleId,
         gameMode: state.riddle.gameMode,
+        sessionToken: state.riddle.sessionToken,
+        requestId,
         currentAttempt,
       },
     });
   };
 
+  useEffect(() => {
+    hintRetryRef.current = null;
+  }, [state.hintRevealedIndices.length]);
+
   const requestContinue = (amount?: number) => {
+    if (!state.riddle) return;
+    const retry = continueRetryRef.current;
+    const requestId = retry?.sessionToken === state.riddle.sessionToken
+      ? retry.requestId
+      : createRequestId("continue");
+    continueRetryRef.current = {sessionToken: state.riddle.sessionToken, requestId};
     postToHost({
       type: "game:spendCoins",
-      requestId: createRequestId("continue"),
+      requestId,
       payload: {
         reason: "continue",
-        gameMode: state.riddle?.gameMode,
+        gameMode: state.riddle.gameMode,
+        riddleId: state.riddle.riddleId,
+        sessionToken: state.riddle.sessionToken,
         amount,
       },
     });
@@ -321,13 +365,18 @@ export function GameFrameApp({
 
   const requestSkip = () => {
     if (!state.riddle || state.riddle.gameMode !== "classic") return;
+    const retry = skipRetryRef.current;
+    const requestId = retry?.sessionToken === state.riddle.sessionToken
+      ? retry.requestId
+      : createRequestId("skip");
+    skipRetryRef.current = {sessionToken: state.riddle.sessionToken, requestId};
     postToHost({
-      type: "game:spendCoins",
-      requestId: createRequestId("skip"),
+      type: "game:skipRiddle",
+      requestId,
       payload: {
-        reason: "skip",
         riddleId: state.riddle.riddleId,
         gameMode: state.riddle.gameMode,
+        sessionToken: state.riddle.sessionToken,
       },
     });
   };
@@ -388,7 +437,7 @@ export function GameFrameApp({
     <main
       ref={shellRef}
       className={state.paused ? "game-app paused" : "game-app"}
-      inert={interactionBlocked ? true : undefined}
+      inert={interactionBlocked && online !== false ? true : undefined}
       data-analytics-screen={raceOpen ? "multiplayer" : state.modal ? `modal_${state.modal}` : `game_${state.gameMode}`}
     >
       {solarReady && (
@@ -402,8 +451,8 @@ export function GameFrameApp({
       <div
         ref={contentRef}
         className="game-content"
-        inert={state.modal !== null || guidanceActive || raceOpen ? true : undefined}
-        aria-hidden={state.modal !== null || guidanceActive || raceOpen ? true : undefined}
+        inert={state.modal !== null || guidanceActive || raceOpen || !online ? true : undefined}
+        aria-hidden={state.modal !== null || guidanceActive || raceOpen || !online ? true : undefined}
       >
         <GameHeader
           state={state}
@@ -483,50 +532,63 @@ export function GameFrameApp({
 
         {state.paused && <div className="pause-banner">{tr("WebPortal.PAUSED")}</div>}
       </div>
-      <Suspense fallback={null}>
-        <GameModalView
+      <div className="game-overlay-surfaces" inert={!online ? true : undefined}>
+        {state.modal && (
+          <Suspense fallback={<SpinningWheelLoader overlay className="game-modal-loading" />}>
+            <GameModalView
+              state={state}
+              onCoinBalancePreview={setAnimatedCoinBalance}
+              onClose={() => dispatch(state.modal === "continue" ? {type: "declineContinue"} : {type: "closeModal"})}
+              onContinue={requestContinue}
+              onPurchase={requestPurchase}
+              onNext={requestRiddle}
+              onOpenModal={(modal) => dispatch({type: "openModal", modal})}
+              onToggleMute={() => dispatch({type: "toggleMute"})}
+              onRequestHint={requestHint}
+              onRequestSkip={requestSkip}
+              onRequestLeaderboard={requestLeaderboard}
+              onUpdateUsername={updateUsername}
+              onUpdateAvatar={updateAvatar}
+              onDeleteAccount={deleteAccount}
+            />
+          </Suspense>
+        )}
+        <GuidanceOverlay
           state={state}
-          onCoinBalancePreview={setAnimatedCoinBalance}
-          onClose={() => dispatch(state.modal === "continue" ? {type: "declineContinue"} : {type: "closeModal"})}
-          onContinue={requestContinue}
-          onPurchase={requestPurchase}
-          onNext={requestRiddle}
-          onOpenModal={(modal) => dispatch({type: "openModal", modal})}
-          onToggleMute={() => dispatch({type: "toggleMute"})}
-          onRequestHint={requestHint}
-          onRequestSkip={requestSkip}
-          onRequestLeaderboard={requestLeaderboard}
-          onUpdateUsername={updateUsername}
-          onUpdateAvatar={updateAvatar}
-          onDeleteAccount={deleteAccount}
+          modal={state.modal}
+          onActiveChange={setGuidanceActive}
+          registrationName={registrationName}
+          registrationInviterName={registrationInviterName}
+          interactionBlocked={interactionBlocked || !online}
         />
-      </Suspense>
-      <GuidanceOverlay
-        state={state}
-        modal={state.modal}
-        onActiveChange={setGuidanceActive}
-        registrationName={registrationName}
-        registrationInviterName={registrationInviterName}
-      />
-      {raceOpen && raceEnabled && (
-        <Suspense fallback={<SpinningWheel />}>
-          <ActiveRaceTo10Game
-            locale="en"
-            challengeId={initialRaceChallengeId}
-            openInbox={initialRaceInbox}
-            initialCategories={prefetchedRaceCategories}
-            coins={state.profile?.coins ?? 0}
-            postToHost={postToHost}
-            onClose={() => setRaceOpen(false)}
-          />
-        </Suspense>
-      )}
+        {raceOpen && raceEnabled && (
+          <Suspense fallback={<SpinningWheel />}>
+            <ActiveRaceTo10Game
+              locale="en"
+              challengeId={initialRaceChallengeId}
+              openInbox={initialRaceInbox}
+              initialCategories={prefetchedRaceCategories}
+              coins={state.profile?.coins ?? 0}
+              postToHost={postToHost}
+              onClose={() => setRaceOpen(false)}
+            />
+          </Suspense>
+        )}
+      </div>
       {!online && (
-        <div className="offline-backdrop" role="alertdialog" aria-modal="true">
+        <div
+          ref={offlineDialogRef}
+          className="offline-backdrop"
+          role="alertdialog"
+          aria-modal="true"
+          aria-labelledby="offline-dialog-title"
+          aria-describedby="offline-dialog-message"
+          tabIndex={-1}
+        >
           <SpinningWheel />
           <section>
-            <strong>{tr("CommonAlerts.OFFLINE_TITLE")}</strong>
-            <p>{tr("CommonAlerts.OFFLINE_MESSAGE")}</p>
+            <strong id="offline-dialog-title">{tr("CommonAlerts.OFFLINE_TITLE")}</strong>
+            <p id="offline-dialog-message">{tr("CommonAlerts.OFFLINE_MESSAGE")}</p>
           </section>
         </div>
       )}

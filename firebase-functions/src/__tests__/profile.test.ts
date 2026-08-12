@@ -4,31 +4,68 @@ import {afterEach, beforeEach, describe, expect, it, jest} from "@jest/globals";
 const mockUpdateUserProfile = jest.fn<(userId: string, profileData: Record<string, unknown>) => Promise<void>>();
 const mockAdminFirestoreUpdate = jest.fn<() => Promise<void>>();
 const mockAdminFirestoreSet = jest.fn<() => Promise<void>>();
-const mockBatchUpdate = jest.fn();
-const mockBatchSet = jest.fn();
-const mockBatchCommit = jest.fn<() => Promise<void>>();
-const mockAdminFirestoreBatch = jest.fn(() => ({
-  update: mockBatchUpdate,
-  set: mockBatchSet,
-  commit: mockBatchCommit,
-}));
-const mockAdminFirestoreDoc = jest.fn((_id?: string) => ({
+type MockDocumentRef = {kind: "document"; collection: string; id: string; path: string};
+type MockQueryRef = {kind: "query"; collection: string; field: string; value: unknown};
+const mockFirestoreDocuments = new Map<string, Record<string, unknown>>();
+const mockTransactionGet = jest.fn(async (ref: MockDocumentRef | MockQueryRef) => {
+  if (ref.kind === "query") {
+    const prefix = `${ref.collection}/`;
+    const docs = [...mockFirestoreDocuments.entries()]
+      .filter(([path, data]) => path.startsWith(prefix) && !path.slice(prefix.length).includes("/")
+        && data[ref.field] === ref.value)
+      .map(([path, data]) => ({id: path.slice(prefix.length), data: () => data}));
+    return {empty: docs.length === 0, docs};
+  }
+  const data = mockFirestoreDocuments.get(ref.path);
+  return {exists: data !== undefined, data: () => data};
+});
+const mockTransactionUpdate = jest.fn((ref: MockDocumentRef, data: Record<string, unknown>) => {
+  const current = mockFirestoreDocuments.get(ref.path);
+  if (!current) throw new Error(`Missing document ${ref.path}`);
+  mockFirestoreDocuments.set(ref.path, {...current, ...data});
+});
+const mockTransactionSet = jest.fn((ref: MockDocumentRef, data: Record<string, unknown>) => {
+  mockFirestoreDocuments.set(ref.path, {...mockFirestoreDocuments.get(ref.path), ...data});
+});
+const mockTransactionDelete = jest.fn((ref: MockDocumentRef) => {
+  mockFirestoreDocuments.delete(ref.path);
+});
+const mockTransaction = {
+  get: mockTransactionGet,
+  update: mockTransactionUpdate,
+  set: mockTransactionSet,
+  delete: mockTransactionDelete,
+};
+let mockTransactionTail: Promise<unknown> = Promise.resolve();
+const runQueuedTransaction = (callback: (transaction: typeof mockTransaction) => unknown) => {
+  const result = mockTransactionTail.then(() => callback(mockTransaction));
+  mockTransactionTail = result.then(() => undefined, () => undefined);
+  return result;
+};
+const mockRunTransaction = jest.fn(runQueuedTransaction);
+const mockAdminFirestoreDoc = jest.fn((collection: string, id = "") => ({
+  kind: "document" as const,
+  collection,
+  id,
+  path: `${collection}/${id}`,
   update: mockAdminFirestoreUpdate,
   set: mockAdminFirestoreSet,
 }));
-const mockExistingUsersGet = jest.fn();
-const mockAdminFirestoreCollection = jest.fn((_path?: string) => ({
-  doc: mockAdminFirestoreDoc,
-  where: jest.fn(() => ({
-    limit: jest.fn(() => ({
-      get: mockExistingUsersGet,
-    })),
-  })),
+const mockAdminFirestoreCollection = jest.fn((path: string) => ({
+  doc: (id?: string) => mockAdminFirestoreDoc(path, id),
+  where: (field: string, _operator: string, value: unknown) => ({
+    limit: () => ({kind: "query" as const, collection: path, field, value}),
+  }),
 }));
 
 const mockLoggerInfo = jest.fn<(...args: unknown[]) => void>();
 const mockLoggerError = jest.fn<(...args: unknown[]) => void>();
 const mockStorageSave = jest.fn<() => Promise<void>>();
+const mockRunWithJestAccountOperationLease = jest.fn(async (
+  _userId: string,
+  _timeoutSeconds: number,
+  operation: () => Promise<unknown>,
+) => operation());
 const mockStorageFile = jest.fn((_path?: string) => ({
   save: mockStorageSave,
 }));
@@ -50,6 +87,11 @@ jest.mock("../gameplay/firestoreService", () => ({
   updateUserProfile: (...args: [string, Record<string, unknown>]) => mockUpdateUserProfile(...args),
 }));
 
+jest.mock("../jest/jestAccountDeletion", () => ({
+  ...jest.requireActual<typeof import("../jest/jestAccountDeletion")>("../jest/jestAccountDeletion"),
+  runWithJestAccountOperationLease: mockRunWithJestAccountOperationLease,
+}));
+
 jest.mock("firebase-functions/v2", () => ({
   logger: {
     info: (...args: unknown[]) => mockLoggerInfo(...args),
@@ -63,7 +105,7 @@ jest.mock("firebase-admin", () => ({
   initializeApp: jest.fn(),
   firestore: () => ({
     collection: (path: string) => mockAdminFirestoreCollection(path),
-    batch: mockAdminFirestoreBatch,
+    runTransaction: mockRunTransaction,
   }),
   storage: () => ({
     bucket: () => ({
@@ -90,11 +132,16 @@ jest.mock("firebase-functions/v2/https", () => {
 // 4. Import the module under test
 import {updateAvatar, updateUsername} from "../profile";
 import {syncLeaderboardProfileFields} from "../profile/leaderboardProfile";
+import {createUsernameReservationId} from "../profile/usernameReservations";
 
 // 5. Describe block
 describe("Profile Cloud Functions", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockFirestoreDocuments.clear();
+    mockFirestoreDocuments.set("usernameReservationMigrations/v1", {complete: true});
+    mockTransactionTail = Promise.resolve();
+    mockRunTransaction.mockImplementation(runQueuedTransaction);
   });
 
   afterEach(() => {
@@ -103,9 +150,9 @@ describe("Profile Cloud Functions", () => {
 
   it("enables App Check and public Cloud Run ingress on profile update callables", () => {
     expect(mockOnCallInvocations).toEqual([
-      [{enforceAppCheck: true, invoker: "public"}, expect.any(Function)],
-      [{enforceAppCheck: true, invoker: "public"}, expect.any(Function)],
-      [{enforceAppCheck: true, invoker: "public"}, expect.any(Function)],
+      [{enforceAppCheck: true, invoker: "public", timeoutSeconds: 60}, expect.any(Function)],
+      [{enforceAppCheck: true, invoker: "public", timeoutSeconds: 60}, expect.any(Function)],
+      [{enforceAppCheck: true, invoker: "public", timeoutSeconds: 540}, expect.any(Function)],
     ]);
   });
 
@@ -114,14 +161,10 @@ describe("Profile Cloud Functions", () => {
     const validUsername = "newplayer";
 
     beforeEach(() => {
-      mockExistingUsersGet.mockResolvedValue({
-        empty: true,
-        docs: [],
-      });
+      mockFirestoreDocuments.set(`users/${mockAuth.uid}`, {username: validUsername});
     });
 
     it("should successfully update username", async () => {
-      mockBatchCommit.mockResolvedValue(undefined);
       const request = {
         auth: mockAuth,
         data: {username: validUsername},
@@ -129,26 +172,40 @@ describe("Profile Cloud Functions", () => {
 
       const result = await (updateUsername as any)(request);
 
-      expect(mockExistingUsersGet).toHaveBeenCalled();
-      expect(mockBatchUpdate).toHaveBeenCalledWith(expect.any(Object), {username: validUsername});
-      expect(mockBatchSet).toHaveBeenCalledWith(
-        expect.any(Object),
-        expect.objectContaining({username: validUsername, updatedAt: expect.any(Number)}),
+      expect(mockTransactionUpdate).toHaveBeenCalledWith(
+        expect.objectContaining({path: `users/${mockAuth.uid}`}),
+        expect.objectContaining({
+          username: validUsername,
+          usernameNormalized: validUsername,
+          usernameReservationId: expect.stringMatching(/^[0-9a-f]{64}$/),
+        }),
+      );
+      expect(mockTransactionSet).toHaveBeenCalledWith(
+        expect.objectContaining({path: expect.stringMatching(/^usernameReservations\/[0-9a-f]{64}$/)}),
+        expect.objectContaining({username: validUsername, userId: mockAuth.uid}),
+      );
+      expect(mockTransactionSet).toHaveBeenCalledWith(
+        expect.objectContaining({path: `leaderboard/${mockAuth.uid}`}),
+        expect.objectContaining({
+          userId: mockAuth.uid,
+          subjectUserId: mockAuth.uid,
+          username: validUsername,
+          updatedAt: expect.any(Number),
+        }),
         {merge: true},
       );
-      expect(mockBatchCommit).toHaveBeenCalledTimes(1);
       expect(result).toEqual({success: true, message: "Username updated successfully."});
     });
 
     it("does not report success when the atomic leaderboard update fails", async () => {
-      mockBatchCommit.mockRejectedValue(new Error("leaderboard unavailable"));
+      mockRunTransaction.mockRejectedValueOnce(new Error("leaderboard unavailable"));
       const request = {
         auth: mockAuth,
         data: {username: validUsername},
       } as CallableRequest<{username: string}>;
 
       await expect((updateUsername as any)(request)).rejects.toMatchObject({code: "internal"});
-      expect(mockBatchCommit).toHaveBeenCalledTimes(1);
+      expect(mockRunTransaction).toHaveBeenCalledTimes(1);
     });
 
     it("should throw HttpsError if not authenticated", async () => {
@@ -163,10 +220,7 @@ describe("Profile Cloud Functions", () => {
     });
 
     it("should throw HttpsError for a taken username", async () => {
-      mockExistingUsersGet.mockResolvedValue({
-        empty: false,
-        docs: [{id: "another-user"}],
-      });
+      mockFirestoreDocuments.set("users/another-user", {username: validUsername});
 
       const request = {
         auth: mockAuth,
@@ -178,13 +232,59 @@ describe("Profile Cloud Functions", () => {
       );
     });
 
-    it("allows a user to keep their current username", async () => {
-      mockExistingUsersGet.mockResolvedValue({empty: false, docs: [{id: mockAuth.uid}]});
-      mockBatchCommit.mockResolvedValue(undefined);
+    it("rejects a missing profile before writing a reservation", async () => {
+      mockFirestoreDocuments.delete(`users/${mockAuth.uid}`);
 
+      await expect((updateUsername as any)({auth: mockAuth, data: {username: validUsername}})).rejects.toMatchObject({
+        code: "not-found",
+      });
+      expect(mockTransactionSet).not.toHaveBeenCalled();
+    });
+
+    it("allows a user to keep their current username", async () => {
       await expect((updateUsername as any)({auth: mockAuth, data: {username: validUsername}})).resolves.toEqual({
         success: true,
         message: "Username updated successfully.",
+      });
+    });
+
+    it("cleans up an owned previous reservation when a user renames", async () => {
+      const previousId = createUsernameReservationId("Old Player");
+      mockFirestoreDocuments.set(`users/${mockAuth.uid}`, {
+        username: "Old Player",
+        usernameNormalized: "old player",
+        usernameReservationId: previousId,
+      });
+      mockFirestoreDocuments.set(`usernameReservations/${previousId}`, {userId: mockAuth.uid});
+
+      await expect((updateUsername as any)({auth: mockAuth, data: {username: validUsername}})).resolves.toBeDefined();
+
+      expect(mockTransactionDelete).toHaveBeenCalledWith(
+        expect.objectContaining({path: `usernameReservations/${previousId}`}),
+      );
+      expect(mockFirestoreDocuments.has(`usernameReservations/${previousId}`)).toBe(false);
+    });
+
+    it("serializes concurrent NFKC/case-equivalent claims", async () => {
+      mockFirestoreDocuments.set("users/player-two", {username: "Player Two"});
+      const claims = await Promise.allSettled([
+        (updateUsername as any)({auth: mockAuth, data: {username: "Nova"}}),
+        (updateUsername as any)({auth: {uid: "player-two"}, data: {username: "ＮＯＶＡ"}}),
+      ]);
+
+      expect(claims.filter(({status}) => status === "fulfilled")).toHaveLength(1);
+      expect(claims.filter(({status}) => status === "rejected")).toHaveLength(1);
+      expect(claims.find(({status}) => status === "rejected")).toMatchObject({
+        reason: {code: "already-exists"},
+      });
+    });
+
+    it("fails closed before legacy case variants have been migrated", async () => {
+      mockFirestoreDocuments.delete("usernameReservationMigrations/v1");
+      mockFirestoreDocuments.set("users/legacy-user", {username: "Ada"});
+
+      await expect((updateUsername as any)({auth: mockAuth, data: {username: "ada"}})).rejects.toMatchObject({
+        code: "failed-precondition",
       });
     });
 
@@ -192,7 +292,7 @@ describe("Profile Cloud Functions", () => {
       await expect((updateUsername as any)({auth: mockAuth, data: {username: "damn-player"}})).rejects.toMatchObject({
         code: "invalid-argument",
       });
-      expect(mockExistingUsersGet).not.toHaveBeenCalled();
+      expect(mockRunTransaction).not.toHaveBeenCalled();
     });
   });
 
@@ -208,7 +308,13 @@ describe("Profile Cloud Functions", () => {
       await syncLeaderboardProfileFields("user-1", {username: "Ada", avatarUrl: "https://example.test/avatar"});
 
       expect(mockAdminFirestoreSet).toHaveBeenCalledWith(
-        expect.objectContaining({username: "Ada", avatarUrl: "https://example.test/avatar", updatedAt: expect.any(Number)}),
+        expect.objectContaining({
+          userId: "user-1",
+          subjectUserId: "user-1",
+          username: "Ada",
+          avatarUrl: "https://example.test/avatar",
+          updatedAt: expect.any(Number),
+        }),
         {merge: true},
       );
     });

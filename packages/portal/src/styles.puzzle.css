@@ -171,7 +171,8 @@
   justify-content: space-between;
   align-items: center;
   margin-inline: -18px;
-  padding: 0 64px;
+  padding: 0 max(64px, env(safe-area-inset-right)) env(safe-area-inset-bottom)
+    max(64px, env(safe-area-inset-left));
   background: #fff;
 }
 .game-bottom-navigation button {
@@ -228,7 +229,7 @@
 }
 .key {
   width: min(52px, 8vw);
-  height: 43px;
+  height: 48px;
   border: 0;
   background: transparent;
   color: #fff;

@@ -456,11 +456,24 @@
   color: #607672;
   text-align: right;
 }
-.about-list div {
+.about-list-row {
+  width: 100%;
   padding: 13px;
   border: 1px solid #e4ddd2;
   border-radius: 10px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
   font-weight: 800;
+  text-align: start;
+  text-decoration: none;
+}
+.about-list-action {
+  cursor: pointer;
+}
+.about-list-action:hover {
+  border-color: #bcae9b;
+  background: #f4f1eb;
 }
 .treasure-chest {
   display: grid;

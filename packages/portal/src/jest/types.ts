@@ -83,6 +83,8 @@ export type JestSavedGame = {
   riddleId: string;
   /** Stores game mode. */
   gameMode: "classic" | "challenge";
+  /** Stores the opaque server session identity needed to resume safely. */
+  sessionToken: string;
   /** Stores current letters. */
   currentLetters: string[];
   /** Stores active slot index. */
@@ -93,8 +95,20 @@ export type JestSavedGame = {
   guesses: ScoredGuess[];
   /** Stores engine snapshot. */
   engineSnapshot: GameEngineSnapshot;
+  /** Stores whether Continue or decline must be chosen before another guess. */
+  awaitingContinue: boolean;
   /** Stores letter states. */
   letterStates: Record<string, Feedback>;
+  /** Stores an unacknowledged terminal outcome for retry after reload. */
+  pendingOutcome?: {
+    id: string;
+    kind: "win" | "loss";
+    riddleId: string;
+    gameMode: "classic" | "challenge";
+    sessionToken: string;
+    attempts: number;
+    isCorrect: boolean;
+  };
 };
 
 /** Describes jest player data. */
@@ -111,6 +125,16 @@ export type JestPlayerData = {
 
 /** Describes jest player data update. */
 export type JestPlayerDataUpdate = Pick<JestPlayerData, "profile" | "activeGame">;
+
+/** Counters used to schedule engagement notifications and update player progress. */
+export type JestEngagementProgress = {
+  /** Current player level. */
+  level: number;
+  /** Current consecutive-win count. */
+  winStreak: number;
+  /** Total completed-win count. */
+  wins: number;
+};
 
 /** Describes platform result. */
 export type PlatformResult<T> =
@@ -247,6 +271,8 @@ export interface JestPlatformPort {
   readPlayerData(): JestPlayerData | null | Promise<JestPlayerData | null>;
   /** Provides write player data behavior. */
   writePlayerData(playerData: JestPlayerData): Promise<void>;
+  /** Clears all client-writable state after authoritative account deletion. */
+  clearPlayerState(): Promise<void>;
   /** Gets entry intent. */
   getEntryIntent(): JestEntryIntent;
   /** Gets profile. */

@@ -1,15 +1,18 @@
-/** Minimum number of non-whitespace characters accepted by the username form. */
-export const USERNAME_MIN_LENGTH = 3;
+import {
+  normalizeUsernameDisplay,
+  USERNAME_MAX_LENGTH,
+  USERNAME_MIN_LENGTH,
+  UsernameSchema,
+} from "@qwordly/core/validation";
 
-/** Maximum number of characters accepted by the username input. */
-export const USERNAME_MAX_LENGTH = 24;
+export {USERNAME_MAX_LENGTH, USERNAME_MIN_LENGTH};
 
 /** Trims surrounding whitespace before a username is submitted. */
 export function normalizeUsernameInput(username: string): string {
-  return username.trim();
+  return normalizeUsernameDisplay(username);
 }
 
-/** Reports whether normalized username input is long enough to submit. */
+/** Reports whether username input passes the shared bridge/callable boundary. */
 export function canSubmitUsername(username: string): boolean {
-  return normalizeUsernameInput(username).length >= USERNAME_MIN_LENGTH;
+  return UsernameSchema.safeParse(username).success;
 }

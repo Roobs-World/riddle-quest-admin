@@ -1,6 +1,7 @@
 import {Component, type ErrorInfo, type ReactNode} from "react";
 import {trackEvent} from "./analytics/googleAnalytics";
 import {captureBrowserException} from "./observability/sentry";
+import {tr} from "./play/i18n";
 
 /** Provides fatal error boundary behavior. */
 export class FatalErrorBoundary extends Component<{children: ReactNode}, {error: Error | null}> {
@@ -16,7 +17,17 @@ export class FatalErrorBoundary extends Component<{children: ReactNode}, {error:
   }
   /** Provides render behavior. */
   override render() {
-    if (this.state.error) return <main className="route-missing"><div role="alert"><h1>Riddle Quest stopped unexpectedly</h1><button onClick={() => window.location.reload()}>Retry</button></div></main>;
+    if (this.state.error) {
+      return (
+        <main className="route-missing">
+          <div role="alert">
+            <h1>{tr("ErrorMessages.FATAL_STARTUP_TITLE")}</h1>
+            <p>{tr("ErrorMessages.GENERIC_UNEXPECTED_ERROR")}</p>
+            <button onClick={() => window.location.reload()}>{tr("CommonButtons.RETRY")}</button>
+          </div>
+        </main>
+      );
+    }
     return this.props.children;
   }
 }

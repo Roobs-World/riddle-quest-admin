@@ -1,6 +1,7 @@
 /** Host operations that can be pending during the multiplayer flow. */
 export type RaceOperation =
   | "raceCategories"
+  | "raceResume"
   | "raceStart"
   | "raceGuess"
   | "raceHint"

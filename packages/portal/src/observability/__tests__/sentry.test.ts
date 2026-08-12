@@ -3,10 +3,8 @@ const setTag = jest.fn();
 const captureException = jest.fn();
 const setExtras = jest.fn();
 const withScope = jest.fn((callback: (scope: {setExtras: typeof setExtras}) => void) => callback({setExtras}));
-const captureConsoleIntegration = jest.fn(() => ({name: "CaptureConsole"}));
 
 jest.mock("@sentry/browser", () => ({
-  captureConsoleIntegration,
   captureException,
   init,
   setTag,
@@ -49,19 +47,24 @@ describe("browser Sentry lifecycle", () => {
       release: "release-1",
       sampleRate: 1,
       sendDefaultPii: false,
+      tracesSampleRate: 0,
     }));
     expect(setTag).toHaveBeenCalledWith("runtime", "jest-html5");
 
     const options = init.mock.calls[0][0];
-    const defaults = [{name: "Default"}];
-    expect(options.integrations(defaults)).toEqual([...defaults, {name: "CaptureConsole"}]);
-    expect(captureConsoleIntegration).toHaveBeenCalledWith({levels: ["warn", "error"]});
+    const defaults = [
+      {name: "GlobalHandlers"},
+      {name: "Breadcrumbs"},
+      {name: "BrowserSession"},
+      {name: "ConversationId"},
+      {name: "CultureContext"},
+      {name: "HttpContext"},
+    ];
+    expect(options.integrations(defaults)).toEqual([{name: "GlobalHandlers"}]);
     expect(options.beforeSend({extra: {token: "secret", safe: true}})).toEqual({
       extra: {token: "[REDACTED]", safe: true},
     });
-    expect(options.beforeSendTransaction({contexts: {answer: "hidden"}})).toEqual({
-      contexts: {answer: "[REDACTED]"},
-    });
+    expect(options.beforeSendTransaction({contexts: {answer: "hidden"}})).toEqual({});
   });
 
   it("captures exceptions with redacted context", () => {

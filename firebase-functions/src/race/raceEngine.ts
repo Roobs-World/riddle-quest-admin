@@ -31,6 +31,8 @@ export type RaceRiddleSnapshot = {
 
 /** Opponent ghost data attached to a challenger run. */
 export type RaceOpponentRecord = {
+  /** Server-only subject used to remove identity snapshots after account deletion. */
+  subjectUserId?: string;
   /** Stores display name. */
   displayName: string;
   /** Stores avatar url. */
@@ -315,6 +317,8 @@ export function toRaceRunView(input: RaceRunRecord, nowMs: number): RaceRunView 
   const run = refreshRaceRun(input, nowMs);
   const clock = raceClock(run, nowMs);
   const current = run.status === "active" ? run.riddles[run.currentPosition] : undefined;
+  const linkedOpponentIdentity = typeof run.opponent?.subjectUserId === "string" &&
+    run.opponent.subjectUserId.length > 0;
   return {
     runId: run.runId,
     challengeId: run.challengeId,
@@ -343,8 +347,8 @@ export function toRaceRunView(input: RaceRunRecord, nowMs: number): RaceRunView 
     events: run.events.map((event) => ({...event})),
     opponent: run.opponent
       ? {
-          displayName: run.opponent.displayName,
-          avatarUrl: run.opponent.avatarUrl,
+          displayName: linkedOpponentIdentity ? run.opponent.displayName : "Riddle Quest player",
+          ...(linkedOpponentIdentity ? {avatarUrl: run.opponent.avatarUrl} : {}),
           adjustedFinishMs: run.opponent.adjustedFinishMs,
           events: run.opponent.events.map((event) => ({...event})),
         }

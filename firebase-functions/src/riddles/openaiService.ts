@@ -6,6 +6,7 @@ import {captureException, withSentrySpan} from "../shared/sentry";
 import {clueContainsLiteralAnswer} from "./riddleQuality";
 import {MAX_RIDDLE_ANSWER_CHARACTERS} from "../shared/constants";
 import {type SupportedLocale} from "@qwordly/core/validation";
+import {getSafeErrorMetadata} from "../shared/errorMetadata";
 
 // Lazy initialization variable
 /** Provides openai client behavior. */
@@ -44,7 +45,7 @@ export const GeneratedRiddleSchema = z
       .string()
       .min(1)
       .max(MAX_RIDDLE_ANSWER_CHARACTERS)
-      .regex(/^[\p{L}\p{M}\p{N}\s'-]+$/u),
+      .regex(/^[a-z]+$/),
   })
   .strict();
 
@@ -72,11 +73,11 @@ const getLocaleSpecificPrompt = (locale: SupportedLocale): string => {
   }
 
   return (
-    `Write the question and answer naturally in ${locale}, using that locale's native script and everyday vocabulary. ` +
+    `Write the question naturally in ${locale}, using that locale's native script and everyday vocabulary. ` +
     "Adapt the clue, imagery, and references so they feel native to the locale rather than translated from English. " +
     "Prefer widely understood local concepts, idioms, foods, places, customs, and everyday objects that a native speaker would recognize immediately. " +
     "Avoid culture-specific references that only make sense in English or in a different country, and avoid obscure local trivia that would be unfair to a broad audience. " +
-    "Keep the answer concise, culturally appropriate, and playable on a mobile word game keyboard."
+    "Return the answer as its standard unaccented lowercase Latin transliteration, using only letters a-z, and make the expected romanized spelling unambiguous."
   );
 };
 
@@ -97,7 +98,7 @@ function initializeOpenAIClient(): OpenAI {
     throw new Error("Missing required environment variable: OPENAI_API_KEY");
   }
 
-  openaiClient = new OpenAI({apiKey: openAIKey});
+  openaiClient = new OpenAI({apiKey: openAIKey, timeout: 15_000, maxRetries: 0});
   return openaiClient;
 }
 
@@ -140,21 +141,20 @@ function validateGeneratedRiddle(generatedRiddle: GeneratedRiddle): [string, str
   }
 
   if (answer.length > MAX_RIDDLE_ANSWER_CHARACTERS) {
-    functions.logger.warn(
-      `Answer too long: "${answer}" (${answer.length} characters). Must be ${MAX_RIDDLE_ANSWER_CHARACTERS} or fewer.`,
-    );
+    functions.logger.warn("Generated answer exceeded the maximum playable length and was rejected.", {
+      answerLength: answer.length,
+      maximumLength: MAX_RIDDLE_ANSWER_CHARACTERS,
+    });
     return null;
   }
 
-  if (!/^[\p{L}\p{M}\p{N}\s'-]+$/u.test(answer)) {
-    functions.logger.warn("Generated answer contained invalid characters and was rejected.");
+  if (!/^[a-z]+$/.test(answer)) {
+    functions.logger.warn("Generated answer was not compatible with the in-game keyboard and was rejected.");
     return null;
   }
 
   if (!/^[\p{L}\p{M}\p{N}\p{P}\s]+$/u.test(question)) {
-    functions.logger.warn(
-      `Question contains invalid characters: "${question}". Must contain only letters, numbers, spaces, and punctuation.`,
-    );
+    functions.logger.warn("Generated question contained invalid characters and was rejected.");
     return null;
   }
 
@@ -223,11 +223,17 @@ async function reviewGeneratedRiddle(
   }
 
   if (!reviewPassed(review)) {
-    const issues = (review.issues.length > 0 ? review.issues.join("; ") : "one or more quality checks failed").replace(
-      /[.!?]+$/u,
-      "",
-    );
-    functions.logger.warn("Generated riddle was rejected by quality review.", {issues});
+    functions.logger.warn("Generated riddle was rejected by quality review.", {
+      issueCount: review.issues.length,
+      failedChecks: {
+        clueSupportsAnswer: !review.clueSupportsAnswer,
+        singleBestAnswer: !review.singleBestAnswer,
+        factuallySound: !review.factuallySound,
+        naturalLanguage: !review.naturalLanguage,
+        fairForCasualPlayers: !review.fairForCasualPlayers,
+        noAnswerSpoiler: !review.noAnswerSpoiler,
+      },
+    });
     return false;
   }
 
@@ -271,7 +277,7 @@ export async function generateUniqueRiddle(
           input:
             `Return one riddle for locale "${locale}" as question and answer fields.\n` +
             "- Question: 10-120 characters; grammatical, natural, and specific.\n" +
-            `- Answer: 1-${MAX_RIDDLE_ANSWER_CHARACTERS} characters; easy to type; lowercase where the script has case.\n` +
+            `- Answer: 1-${MAX_RIDDLE_ANSWER_CHARACTERS} lowercase characters using only a-z; no accents, spaces, digits, apostrophes, or hyphens.\n` +
             "- Use two or more compatible clue details that converge on one answer.\n" +
             "- Do not include the answer, a plural, close variant, or obvious word stem in the clue.\n" +
             "- Reject your own candidate and create another if the answer needs a strained interpretation, a disputed fact, or could be replaced by another common answer.\n" +
@@ -305,7 +311,7 @@ export async function generateUniqueRiddle(
     functions.logger.info("Generated and quality-approved a riddle.", {answerLength: answer.length});
     return validatedRiddle;
   } catch (error) {
-    functions.logger.error(`Error generating riddle with OpenAI (model: ${model}):`, error);
+    functions.logger.error("OpenAI riddle generation failed.", {model, ...getSafeErrorMetadata(error)});
     captureException(error);
     return null; // Return null on error to prevent breaking the loop
   }

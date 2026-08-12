@@ -1,7 +1,7 @@
 import * as functions from "firebase-functions";
 import {admin} from "../shared/firebaseAdmin";
 import {HttpsError, CallableRequest} from "firebase-functions/v2/https";
-import {getUser, getClassicRiddleByIndex} from "../gameplay/firestoreService";
+import {getUser} from "../gameplay/firestoreService";
 import {captureException} from "../shared/sentry";
 import {SUPPORTED_LOCALES} from "@qwordly/core/validation";
 import {GetCurrentDailyChallengeResponse, GetCurrentDailyChallengeResponseSchema} from "../validation/requestSchemas";
@@ -9,30 +9,35 @@ import {validateCallableResponse} from "../validation/callableValidation";
 import {browserCallableSecurityOptions} from "../shared/callableSecurity";
 import {resolveDailyChallengeProgress} from "./dailyChallengeProgress";
 import {onCallWithSentry} from "../shared/sentryHandlers";
+import {getSinglePlayerCompletionKey, getSinglePlayerContentKey} from "../gameplay/singlePlayerAnswerPolicy";
+import {
+  ensureAuthoritativeSession,
+  getIssuedAuthoritativeSession,
+} from "../gameplay/singlePlayerSession";
+import {
+  completeAuthoritativeGame,
+  isDailyCompletionDateEligible,
+} from "../gameplay/completeGameLogic";
+import {getSafeErrorMetadata} from "../shared/errorMetadata";
+import {getPlayableClassicRiddle, isPlayableRiddleContent} from "../gameplay/classicRiddleFallback";
+import {parseClassicLoadIndex, parseSinglePlayerResumeFields} from "../gameplay/singlePlayerLoadRequest";
+import {reconcilePreviousDailyBinding} from "./dailyRolloverRecovery";
+import {recoverPendingAuthoritativeCompletion} from "../gameplay/singlePlayerTerminalRecovery";
+import {buildSinglePlayerChallengeResponse} from "../gameplay/singlePlayerRiddleResponse";
 
 /** Defines the daily challenge question count value. */
 const DAILY_CHALLENGE_QUESTION_COUNT = 1;
 /** Defines the current daily riddle doc id value. */
 const CURRENT_DAILY_RIDDLE_DOC_ID = "current";
 
-/** Builds challenge response. */
-function buildChallengeResponse(
-  riddle: {riddleId: string; text: string; answer: string},
-  date: string | undefined,
-): GetCurrentDailyChallengeResponse["challenge"] {
-  return {
-    date,
-    questions: [
-      {
-        riddleId: riddle.riddleId,
-        text: riddle.text,
-        answer: riddle.answer,
-        questionNumber: 1,
-      },
-    ],
-    totalQuestions: DAILY_CHALLENGE_QUESTION_COUNT,
-  };
-}
+/** Parses only trusted Firestore session timestamps. */
+const trustedSessionDate = (value: unknown): Date | undefined => {
+  if (typeof value === "object" && value !== null && "toDate" in value && typeof value.toDate === "function") {
+    const parsed = value.toDate();
+    return parsed instanceof Date && !Number.isNaN(parsed.getTime()) ? parsed : undefined;
+  }
+  return undefined;
+};
 
 /**
  * Ensures a usable "current" daily challenge document exists for today.
@@ -45,11 +50,13 @@ async function getFreshDailyChallengeDoc(locale: string = "en"): Promise<{
 }> {
   const todayDateString = new Date().toISOString().split("T")[0];
   const safeLocale = locale || "en";
-  const localizedDailyChallengeRef = admin
+  const localizedRiddleCollection = admin
     .firestore()
-    .collection(`localizedRiddles/${safeLocale}/riddles`)
-    .doc(CURRENT_DAILY_RIDDLE_DOC_ID);
-  const dailyChallengeDoc = await localizedDailyChallengeRef.get();
+    .collection(`localizedRiddles/${safeLocale}/riddles`);
+  const datedDailyChallengeDoc = await localizedRiddleCollection.doc(`daily-${todayDateString}`).get();
+  const dailyChallengeDoc = datedDailyChallengeDoc.exists
+    ? datedDailyChallengeDoc
+    : await localizedRiddleCollection.doc(CURRENT_DAILY_RIDDLE_DOC_ID).get();
 
   return {dailyChallengeDoc, todayDateString};
 }
@@ -61,25 +68,72 @@ async function getFreshDailyChallengeDoc(locale: string = "en"): Promise<{
  */
 export const getCurrentDailyChallenge = onCallWithSentry(
   "getCurrentDailyChallenge",
-  {
-    ...browserCallableSecurityOptions,
-    secrets: ["OPENAI_API_KEY"],
-  },
-  async (request: CallableRequest<unknown>): Promise<GetCurrentDailyChallengeResponse> => {
+  browserCallableSecurityOptions,
+  async (request: CallableRequest<{
+    locale?: unknown;
+    sessionToken?: unknown;
+    riddleId?: unknown;
+  }>): Promise<GetCurrentDailyChallengeResponse> => {
     try {
+      if (!request.auth) {
+        throw new HttpsError("unauthenticated", "The user must be authenticated to load the daily challenge.");
+      }
       let locale = "en";
       let authenticatedUser: Awaited<ReturnType<typeof getUser>>;
-      if (request.auth) {
-        authenticatedUser = await getUser(request.auth.uid);
+      authenticatedUser = await getUser(request.auth.uid);
+      if (!authenticatedUser) throw new HttpsError("not-found", "User data not found.");
+      if (request.data?.locale !== undefined) {
         if (
-          authenticatedUser?.preferredLanguage &&
-          SUPPORTED_LOCALES.includes(authenticatedUser.preferredLanguage as (typeof SUPPORTED_LOCALES)[number])
+          typeof request.data.locale !== "string" ||
+          !SUPPORTED_LOCALES.includes(request.data.locale as (typeof SUPPORTED_LOCALES)[number])
         ) {
-          locale = authenticatedUser.preferredLanguage;
+          throw new HttpsError("invalid-argument", "A supported locale is required.");
         }
+        locale = request.data.locale;
+      } else if (
+        authenticatedUser.preferredLanguage &&
+        SUPPORTED_LOCALES.includes(authenticatedUser.preferredLanguage as (typeof SUPPORTED_LOCALES)[number])
+      ) {
+        locale = authenticatedUser.preferredLanguage;
       }
 
-      const {dailyChallengeDoc, todayDateString} = await getFreshDailyChallengeDoc(locale);
+      const resume = parseSinglePlayerResumeFields(request.data);
+      const todayDateString = new Date().toISOString().slice(0, 10);
+      if (resume) {
+        const resumed = await getIssuedAuthoritativeSession(
+          request.auth.uid,
+          resume.sessionToken,
+          "challenge",
+          resume.riddleId,
+        );
+        if (
+          resumed.terminal &&
+          !resumed.isSkipped &&
+          isDailyCompletionDateEligible(
+            resumed.challengeDate,
+            resumed.isCorrect,
+            trustedSessionDate(resumed.terminalAt),
+          )
+        ) {
+          await completeAuthoritativeGame(
+            {riddleId: resume.riddleId, gameMode: "challenge", sessionToken: resume.sessionToken},
+            {
+              uid: request.auth.uid,
+              isAnonymous: request.auth.token?.firebase?.sign_in_provider === "anonymous",
+            },
+          );
+          authenticatedUser = await getUser(request.auth.uid);
+          if (!authenticatedUser) throw new HttpsError("not-found", "User data not found.");
+        }
+      } else {
+        authenticatedUser = await reconcilePreviousDailyBinding(
+          request.auth.uid,
+          authenticatedUser,
+          request.auth.token?.firebase?.sign_in_provider === "anonymous",
+        );
+      }
+
+      const {dailyChallengeDoc} = await getFreshDailyChallengeDoc(locale);
 
       if (!dailyChallengeDoc.exists) {
         functions.logger.warn("No daily challenge document found.");
@@ -93,12 +147,9 @@ export const getCurrentDailyChallenge = onCallWithSentry(
       const allData = dailyChallengeDoc.data();
       if (
         !allData ||
-        typeof allData.text !== "string" ||
-        allData.text.length === 0 ||
-        typeof allData.answer !== "string" ||
-        allData.answer.length === 0
+        !isPlayableRiddleContent(allData)
       ) {
-        functions.logger.error("Daily challenge document is missing required question data.", allData);
+        functions.logger.error("Daily challenge document is missing required playable question data.");
         return validateCallableResponse(
           GetCurrentDailyChallengeResponseSchema,
           {error: "Daily challenge data is incomplete. Expected 1 question."},
@@ -110,38 +161,120 @@ export const getCurrentDailyChallenge = onCallWithSentry(
       if (allData.timestamp && typeof allData.timestamp === "object" && "toDate" in allData.timestamp) {
         challengeDate = allData.timestamp.toDate().toISOString().split("T")[0];
       }
+      const canonicalChallengeDate = typeof allData.challengeKey === "string"
+        ? allData.challengeKey
+        : challengeDate;
+      if (canonicalChallengeDate !== todayDateString) {
+        return validateCallableResponse(
+          GetCurrentDailyChallengeResponseSchema,
+          {error: "Today's daily challenge is not available yet."},
+          "getCurrentDailyChallenge",
+        );
+      }
+      challengeDate = canonicalChallengeDate;
 
-      const challengeData = {
-        date: challengeDate,
-        questions: [
-          {
-            riddleId: allData.riddleId || CURRENT_DAILY_RIDDLE_DOC_ID,
-            text: allData.text,
-            answer: allData.answer,
-            questionNumber: 1,
-          },
-        ],
-        totalQuestions: DAILY_CHALLENGE_QUESTION_COUNT,
+      const completionKey = getSinglePlayerCompletionKey("challenge", todayDateString);
+      let progress = resolveDailyChallengeProgress(authenticatedUser, DAILY_CHALLENGE_QUESTION_COUNT);
+      if (!progress.hasCompletedToday && await recoverPendingAuthoritativeCompletion(
+        request.auth.uid,
+        "challenge",
+        completionKey,
+        request.auth.token?.firebase?.sign_in_provider === "anonymous",
+      )) {
+        authenticatedUser = await getUser(request.auth.uid);
+        if (!authenticatedUser) throw new HttpsError("not-found", "User data not found.");
+        progress = resolveDailyChallengeProgress(authenticatedUser, DAILY_CHALLENGE_QUESTION_COUNT);
+      }
+      if (progress.hasCompletedToday) {
+        return validateCallableResponse(
+          GetCurrentDailyChallengeResponseSchema,
+          {...progress, error: "Today's daily challenge is already complete."},
+          "getCurrentDailyChallenge",
+        );
+      }
+      const riddleId = allData.riddleId || CURRENT_DAILY_RIDDLE_DOC_ID;
+      const canonicalRiddle = {
+        ...allData,
+        riddleId,
+        answer: allData.answer as string,
       };
+      const contentKey = getSinglePlayerContentKey(canonicalRiddle, "challenge", locale);
+      let sessionToken = await ensureAuthoritativeSession(
+        request.auth.uid,
+        "challenge",
+        riddleId,
+        locale,
+        contentKey,
+        completionKey,
+        canonicalRiddle.answer,
+        {challengeDate: todayDateString},
+      );
+      const boundSession = await getIssuedAuthoritativeSession(
+        request.auth.uid,
+        sessionToken,
+        "challenge",
+        riddleId,
+      );
+      if (
+        boundSession.terminal &&
+        !boundSession.isSkipped &&
+        isDailyCompletionDateEligible(
+          boundSession.challengeDate,
+          boundSession.isCorrect,
+          trustedSessionDate(boundSession.terminalAt),
+        )
+      ) {
+        await completeAuthoritativeGame(
+          {riddleId, gameMode: "challenge", sessionToken},
+          {
+            uid: request.auth.uid,
+            isAnonymous: request.auth.token?.firebase?.sign_in_provider === "anonymous",
+          },
+        );
+        authenticatedUser = await getUser(request.auth.uid);
+        if (!authenticatedUser) throw new HttpsError("not-found", "User data not found.");
+        const reconciledProgress = resolveDailyChallengeProgress(
+          authenticatedUser,
+          DAILY_CHALLENGE_QUESTION_COUNT,
+        );
+        if (reconciledProgress.hasCompletedToday) {
+          return validateCallableResponse(
+            GetCurrentDailyChallengeResponseSchema,
+            {...reconciledProgress, error: "Today's daily challenge is already complete."},
+            "getCurrentDailyChallenge",
+          );
+        }
+        // A recorded loss remains retryable for the same Daily entitlement.
+        sessionToken = await ensureAuthoritativeSession(
+          request.auth.uid,
+          "challenge",
+          riddleId,
+          locale,
+          contentKey,
+          completionKey,
+          canonicalRiddle.answer,
+          {challengeDate: todayDateString},
+        );
+      }
+
+      const activeSession = await getIssuedAuthoritativeSession(
+        request.auth.uid,
+        sessionToken,
+        "challenge",
+        riddleId,
+      );
+      const challengeData = buildSinglePlayerChallengeResponse(
+        {...canonicalRiddle, locale},
+        challengeDate,
+        sessionToken,
+        activeSession,
+      );
 
       let currentQuestion: number | undefined = undefined;
       let hasCompletedToday: boolean | undefined = undefined;
       let questionsCompleted: number | undefined = undefined;
 
-      if (request.auth) {
-        const user = authenticatedUser;
-
-        if (user) {
-          ({currentQuestion, hasCompletedToday, questionsCompleted} = resolveDailyChallengeProgress(
-            user,
-            DAILY_CHALLENGE_QUESTION_COUNT,
-          ));
-        } else {
-          currentQuestion = 0;
-          questionsCompleted = 0;
-          hasCompletedToday = false;
-        }
-      }
+      ({currentQuestion, hasCompletedToday, questionsCompleted} = progress);
 
       functions.logger.info(
         `Returning daily challenge for ${challengeData.date}: ${DAILY_CHALLENGE_QUESTION_COUNT} question, user progress: ${questionsCompleted}/${DAILY_CHALLENGE_QUESTION_COUNT}`,
@@ -157,7 +290,8 @@ export const getCurrentDailyChallenge = onCallWithSentry(
         "getCurrentDailyChallenge",
       );
     } catch (error) {
-      functions.logger.error("Error getting current daily challenge:", error);
+      if (error instanceof HttpsError) throw error;
+      functions.logger.error("Error getting current daily challenge.", getSafeErrorMetadata(error));
       captureException(error, {
         functionName: "getCurrentDailyChallenge",
         isAuthenticated: !!request.auth,
@@ -181,45 +315,156 @@ export const getCurrentClassicRiddle = onCallWithSentry(
   "getCurrentClassicRiddle",
   browserCallableSecurityOptions,
   async (
-    request: CallableRequest<{classicIndex?: number; locale?: string}>,
+    request: CallableRequest<{
+      classicIndex?: number;
+      locale?: string;
+      sessionToken?: unknown;
+      riddleId?: unknown;
+    }>,
   ): Promise<GetCurrentDailyChallengeResponse> => {
     try {
       if (!request.auth) {
         throw new HttpsError("unauthenticated", "The user must be authenticated to load a classic riddle.");
       }
 
-      const classicIndex = typeof request.data?.classicIndex === "number" ? request.data.classicIndex : undefined;
-      if (classicIndex === undefined || !Number.isInteger(classicIndex) || classicIndex < 0) {
-        throw new HttpsError("invalid-argument", "A non-negative classicIndex is required.");
-      }
+      let classicIndex = parseClassicLoadIndex(request.data?.classicIndex);
 
       let locale = "en";
-      const user = await getUser(request.auth.uid);
+      let user = await getUser(request.auth.uid);
+      if (!user) throw new HttpsError("not-found", "User data not found.");
       if (
-        user?.preferredLanguage &&
-        SUPPORTED_LOCALES.includes(user.preferredLanguage as (typeof SUPPORTED_LOCALES)[number])
-      ) {
-        locale = user.preferredLanguage;
-      } else if (
         typeof request.data?.locale === "string" &&
         SUPPORTED_LOCALES.includes(request.data.locale as (typeof SUPPORTED_LOCALES)[number])
       ) {
         locale = request.data.locale;
+      } else if (request.data?.locale !== undefined) {
+        throw new HttpsError("invalid-argument", "A supported locale is required.");
+      } else if (
+        user?.preferredLanguage &&
+        SUPPORTED_LOCALES.includes(user.preferredLanguage as (typeof SUPPORTED_LOCALES)[number])
+      ) {
+        locale = user.preferredLanguage;
       }
 
-      const riddle = await getClassicRiddleByIndex(classicIndex, locale);
-      if (!riddle) {
+      const resume = parseSinglePlayerResumeFields(request.data);
+      let reconciledTerminalSession = false;
+      if (resume) {
+        const resumed = await getIssuedAuthoritativeSession(
+          request.auth.uid,
+          resume.sessionToken,
+          "classic",
+          resume.riddleId,
+        );
+        if (resumed.terminal) {
+          if (!resumed.isSkipped) {
+            await completeAuthoritativeGame(
+              {riddleId: resume.riddleId, gameMode: "classic", sessionToken: resume.sessionToken},
+              {
+                uid: request.auth.uid,
+                isAnonymous: request.auth.token?.firebase?.sign_in_provider === "anonymous",
+              },
+            );
+          }
+          user = await getUser(request.auth.uid);
+          if (!user) throw new HttpsError("not-found", "User data not found.");
+          reconciledTerminalSession = true;
+        }
+      }
+
+      let expectedClassicIndex = user.progress?.classicIndex ?? 1;
+      if (await recoverPendingAuthoritativeCompletion(
+        request.auth.uid,
+        "classic",
+        getSinglePlayerCompletionKey("classic", expectedClassicIndex),
+        request.auth.token?.firebase?.sign_in_provider === "anonymous",
+      )) {
+        user = await getUser(request.auth.uid);
+        if (!user) throw new HttpsError("not-found", "User data not found.");
+        expectedClassicIndex = user.progress?.classicIndex ?? 1;
+        reconciledTerminalSession = true;
+      }
+      if (classicIndex !== expectedClassicIndex && !reconciledTerminalSession) {
+        throw new HttpsError("permission-denied", "Only the current classic riddle can be loaded.");
+      }
+      classicIndex = expectedClassicIndex;
+
+      let playable = await getPlayableClassicRiddle(classicIndex, locale);
+      if (!playable) {
         return validateCallableResponse(
           GetCurrentDailyChallengeResponseSchema,
           {error: `No classic riddle available at index ${classicIndex}.`},
           "getCurrentClassicRiddle",
         );
       }
+      let {riddle, contentLocale} = playable;
+      if (riddle.classicIndex !== undefined && riddle.classicIndex !== expectedClassicIndex) {
+        throw new HttpsError("failed-precondition", "The classic riddle does not match current progression.");
+      }
+      const contentKey = getSinglePlayerContentKey(riddle, "classic", contentLocale);
+      let sessionToken = await ensureAuthoritativeSession(
+        request.auth.uid,
+        "classic",
+        riddle.riddleId,
+        contentLocale,
+        contentKey,
+        getSinglePlayerCompletionKey("classic", expectedClassicIndex),
+        riddle.answer,
+        {classicIndex: expectedClassicIndex},
+      );
+      const boundSession = await getIssuedAuthoritativeSession(
+        request.auth.uid,
+        sessionToken,
+        "classic",
+        riddle.riddleId,
+      );
+      if (boundSession.terminal) {
+        if (!boundSession.isSkipped) {
+          await completeAuthoritativeGame(
+            {riddleId: riddle.riddleId, gameMode: "classic", sessionToken},
+            {
+              uid: request.auth.uid,
+              isAnonymous: request.auth.token?.firebase?.sign_in_provider === "anonymous",
+            },
+          );
+        }
+        user = await getUser(request.auth.uid);
+        if (!user) throw new HttpsError("not-found", "User data not found.");
+        const reconciledIndex = user.progress?.classicIndex ?? 1;
+        if (reconciledIndex !== expectedClassicIndex) {
+          classicIndex = reconciledIndex;
+          playable = await getPlayableClassicRiddle(classicIndex, locale);
+          if (!playable) {
+            return validateCallableResponse(
+              GetCurrentDailyChallengeResponseSchema,
+              {error: `No classic riddle available at index ${classicIndex}.`},
+              "getCurrentClassicRiddle",
+            );
+          }
+          ({riddle, contentLocale} = playable);
+        }
+        const reconciledContentKey = getSinglePlayerContentKey(riddle, "classic", contentLocale);
+        sessionToken = await ensureAuthoritativeSession(
+          request.auth.uid,
+          "classic",
+          riddle.riddleId,
+          contentLocale,
+          reconciledContentKey,
+          getSinglePlayerCompletionKey("classic", classicIndex),
+          riddle.answer,
+          {classicIndex},
+        );
+      }
 
+      const activeSession = await getIssuedAuthoritativeSession(
+        request.auth.uid,
+        sessionToken,
+        "classic",
+        riddle.riddleId,
+      );
       return validateCallableResponse(
         GetCurrentDailyChallengeResponseSchema,
         {
-          challenge: buildChallengeResponse(riddle, undefined),
+          challenge: buildSinglePlayerChallengeResponse(riddle, undefined, sessionToken, activeSession),
         },
         "getCurrentClassicRiddle",
       );
@@ -227,9 +472,9 @@ export const getCurrentClassicRiddle = onCallWithSentry(
       if (error instanceof HttpsError) {
         throw error;
       }
-      functions.logger.error("Error getting current classic riddle:", error);
+      functions.logger.error("Error getting current classic riddle.", getSafeErrorMetadata(error));
       captureException(error);
-      throw new HttpsError("internal", "An error occurred while loading the current classic riddle.", error);
+      throw new HttpsError("internal", "An error occurred while loading the current classic riddle.");
     }
   },
 );

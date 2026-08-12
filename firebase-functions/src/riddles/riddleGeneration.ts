@@ -18,7 +18,7 @@ import {
   storeLocalizedClassicRiddlesInFirestore,
 } from "./riddleGenerationRepository";
 
-export {generateLocalizedTodaysDailyChallenge, generateTodaysDailyChallenge} from "../daily/dailyRiddleGeneration";
+export {generateLocalizedTodaysDailyChallenge} from "../daily/dailyRiddleGeneration";
 
 /** Provides generate localized classic riddles for locale behavior. */
 export async function generateLocalizedClassicRiddlesForLocale(

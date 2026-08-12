@@ -1,5 +1,10 @@
 {
   "Credits": {
+    "ROLE_DESIGN": "Projekt",
+    "ROLE_GAME_DESIGNER_PUBLISHER_HERO": "Projektant gry, wydawca i bohater od wszystkiego",
+    "ROLE_INSPIRATION": "Inspiracja",
+    "ROLE_LEAD_DEVELOPER_GAME_DESIGN": "Główny programista i projektant gry",
+    "ROLE_SOUND_DESIGN": "Projekt dźwięku",
     "SUBTITLE": "Poznaj niesamowity zespół stojący za Riddle Quest",
     "THANK_YOU_TEXT": "Specjalne podziękowania dla wszystkich naszych współpracowników, dzięki którym Riddle Quest był możliwy. Twoja kreatywność, poświęcenie i pasja ożywiły ten projekt.",
     "THANK_YOU_TITLE": "Dziękujemy!",

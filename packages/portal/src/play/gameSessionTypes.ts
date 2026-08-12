@@ -25,6 +25,7 @@ export type GameSessionState = {
   /** Slot that receives the next keyboard input. */ activeSlotIndex: number;
   /** Answer positions locked by purchased hints. */ hintRevealedIndices: number[];
   /** Scored guesses already submitted for the current riddle. */ guesses: ScoredGuess[];
+  /** Indicates that an authoritative guess request is in flight. */ guessPending: boolean;
   /** Serializable snapshot of the deterministic game engine. */ engineSnapshot: GameEngineSnapshot | null;
   /** Modal currently presented above the game. */ modal: GameModal;
   /** Indicates whether game audio is muted. */ muted: boolean;
@@ -34,7 +35,17 @@ export type GameSessionState = {
   /** Optional non-completion reward animation queued for display. */
   auxiliaryFanfare: {id: string; kind: "purchase" | "achievement" | "referral"; coinsAwarded: number; totalCoins: number; achievementIds: string[]} | null;
   /** Immutable identity and result of the most recently completed riddle. */
-  lastOutcome: {id: string; kind: "win" | "loss"; riddleId: string; gameMode: "classic" | "challenge"; attempts: number; isCorrect: boolean} | null;
+  lastOutcome: {
+    id: string;
+    kind: "win" | "loss";
+    riddleId: string;
+    gameMode: "classic" | "challenge";
+    sessionToken: string;
+    attempts: number;
+    isCorrect: boolean;
+  } | null;
+  /** Indicates the authoritative completion response was received and persisted. */
+  completionAcknowledged: boolean;
   /** Best keyboard feedback accumulated from scored guesses. */ letterStates: Record<string, Feedback>;
 };
 
@@ -44,14 +55,17 @@ export type GameSessionAction =
   | {type: "authState"; user: BridgeUser | null; profile: BridgeProfile | null}
   | {type: "loadRiddle"; riddle: BridgeRiddle; profile?: BridgeProfile | null}
   | {type: "typeLetter"; letter: string} | {type: "backspace"} | {type: "selectSlot"; index: number}
-  | {type: "submitGuess"} | {type: "applyHint"; index: number; letter: string; newCoins?: number}
+  | {type: "guessRequested"} | {type: "guessFailed"}
+  | {type: "guessResolved"; feedback: ScoredGuess; attempts: number; isCorrect: boolean; gameOver: boolean; canContinue: boolean}
+  | {type: "applyHint"; index: number; letter: string; newCoins?: number}
   | {type: "coinsUpdated"; newCoins: number}
   | {type: "leaderboardLoaded"; leaderboardType: "xp" | "totalWins" | "bestStreak"; entries: BridgeLeaderboardEntry[]}
   | {type: "leaderboardRequested"; leaderboardType: "xp" | "totalWins" | "bestStreak"}
   | {type: "leaderboardLoadFailed"} | {type: "profileUpdated"; profile: BridgeProfile}
   | {type: "completionReward"; reward: NonNullable<GameSessionState["lastRewards"]>}
+  | {type: "completionAcknowledged"}
   | {type: "showAuxiliaryFanfare"; fanfare: NonNullable<GameSessionState["auxiliaryFanfare"]>}
-  | {type: "restoreSession"; currentLetters: string[]; activeSlotIndex: number; hintRevealedIndices: number[]; guesses: ScoredGuess[]; engineSnapshot: GameEngineSnapshot; letterStates: Record<string, Feedback>}
+  | {type: "restoreSession"; currentLetters: string[]; activeSlotIndex: number; hintRevealedIndices: number[]; guesses: ScoredGuess[]; engineSnapshot: GameEngineSnapshot; letterStates: Record<string, Feedback>; awaitingContinue: boolean; pendingOutcome?: GameSessionState["lastOutcome"]}
   | {type: "continueGranted"} | {type: "declineContinue"} | {type: "openModal"; modal: Exclude<GameModal, null>}
   | {type: "closeModal"} | {type: "setNotice"; notice: string | null} | {type: "toggleMute"}
   | {type: "pause"} | {type: "resume"};

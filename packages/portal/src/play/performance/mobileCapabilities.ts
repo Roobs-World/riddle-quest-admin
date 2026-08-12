@@ -1,3 +1,5 @@
+import {isPlayerReducedMotionEnabled} from "../playerPreferences";
+
 /** Describes mobile capabilities. */
 export type MobileCapabilities = {
   /** Stores device memory. */
@@ -28,12 +30,25 @@ export function getMobileCapabilities(): MobileCapabilities {
     deviceMemory?: number;
     connection?: {saveData?: boolean; effectiveType?: string};
   };
+  let webGlAvailable = false;
+  if (typeof WebGLRenderingContext !== "undefined") {
+    if (typeof document === "undefined") {
+      webGlAvailable = true;
+    } else {
+      try {
+        const canvas = document.createElement("canvas");
+        webGlAvailable = Boolean(canvas.getContext("webgl2") || canvas.getContext("webgl"));
+      } catch {
+        webGlAvailable = false;
+      }
+    }
+  }
   return {
     deviceMemory: runtimeNavigator.deviceMemory,
     hardwareConcurrency: runtimeNavigator.hardwareConcurrency,
     saveData: runtimeNavigator.connection?.saveData,
     effectiveType: runtimeNavigator.connection?.effectiveType,
-    reducedMotion: window.matchMedia("(prefers-reduced-motion: reduce)").matches,
-    webGlAvailable: typeof WebGLRenderingContext !== "undefined",
+    reducedMotion: isPlayerReducedMotionEnabled(),
+    webGlAvailable,
   };
 }

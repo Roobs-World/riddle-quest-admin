@@ -14,10 +14,17 @@ describe("username form", () => {
 
   it("normalizes surrounding whitespace", () => {
     expect(normalizeUsernameInput("  Nova  ")).toBe("Nova");
+    expect(normalizeUsernameInput("  Ｎóva  ")).toBe("Nóva");
   });
 
-  it("validates the normalized username length", () => {
+  it("uses the shared Unicode-safe username boundary", () => {
     expect(canSubmitUsername("  ab  ")).toBe(false);
     expect(canSubmitUsername("  abc  ")).toBe(true);
+    expect(canSubmitUsername("Łukasz O’Neil")).toBe(true);
+    expect(canSubmitUsername("Ali\nce")).toBe(false);
+    expect(canSubmitUsername("Ali\u0000ce")).toBe(false);
+    expect(canSubmitUsername("<b>")).toBe(false);
+    expect(canSubmitUsername("___")).toBe(false);
+    expect(canSubmitUsername("x".repeat(97))).toBe(false);
   });
 });

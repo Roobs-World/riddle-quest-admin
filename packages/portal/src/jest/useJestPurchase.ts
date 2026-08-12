@@ -13,17 +13,23 @@ export function useJestPurchase({
   purchases,
   session,
   setProducts,
+  subscriptionsEnabled = false,
   trackFunnel,
 }: {
   products: ProductSummary[];
   purchases: JestPurchaseCoordinator;
   session: JestSession | null;
   setProducts: Dispatch<SetStateAction<ProductSummary[]>>;
+  /** Enables the beta subscription checkout only in trusted test runtimes. */
+  subscriptionsEnabled?: boolean;
   trackFunnel: TrackFunnel;
 }) {
   return useCallback(async (productId: string): Promise<PurchaseResult> => {
     if (!session) throw new Error("Jest session is not ready.");
     const product = products.find((candidate) => candidate.productId === productId);
+    if (product?.productType === "subscription" && !subscriptionsEnabled) {
+      throw new Error("Subscriptions are not available.");
+    }
     trackEvent("begin_checkout", {
       value: product?.price,
       currency: product?.currency,
@@ -40,8 +46,12 @@ export function useJestPurchase({
         return {success: true, productId, purchaseType: "subscription"};
       }
       const subscribed = await purchases.subscribe(productId, session.player.playerId);
+      if (subscribed.status === "cancelled") {
+        trackFunnel("subscription_cancelled", {productId});
+        return {success: false, cancelled: true, productId, purchaseType: "subscription"};
+      }
       if (subscribed.status !== "success") {
-        throw new Error("message" in subscribed ? subscribed.message : "Subscription cancelled.");
+        throw new Error(subscribed.message);
       }
       setProducts((current) => current
         .filter((candidate) => !subscribed.value.blockedSkus.includes(candidate.productId))
@@ -62,8 +72,12 @@ export function useJestPurchase({
       return {success: true, productId, purchaseType: "subscription"};
     }
     const result = await purchases.purchase(productId, session.player.playerId);
+    if (result.status === "cancelled") {
+      trackFunnel("purchase_cancelled", {productId});
+      return {success: false, cancelled: true, productId, purchaseType: "consumable"};
+    }
     if (result.status !== "success") {
-      throw new Error("message" in result ? result.message : "Purchase cancelled.");
+      throw new Error(result.message);
     }
     trackFunnel("purchase_completed", {productId});
     trackPurchase({
@@ -80,5 +94,5 @@ export function useJestPurchase({
       newCoins: result.value.newCoins,
       newlyUnlockedAchievementIds: result.value.newlyUnlockedAchievementIds,
     };
-  }, [products, purchases, session, setProducts, trackFunnel]);
+  }, [products, purchases, session, setProducts, subscriptionsEnabled, trackFunnel]);
 }

@@ -17,7 +17,7 @@ describe("race operation policy", () => {
 
   it("does not add receipts to read-only operations", () => {
     /** Multiplayer reads that only need bridge-level correlation. */
-    const reads: RaceOperation[] = ["raceCategories", "raceChallenge", "raceOutcome", "raceInbox"];
+    const reads: RaceOperation[] = ["raceCategories", "raceResume", "raceChallenge", "raceOutcome", "raceInbox"];
     expect(reads.some(raceOperationRequiresReceipt)).toBe(false);
   });
 });

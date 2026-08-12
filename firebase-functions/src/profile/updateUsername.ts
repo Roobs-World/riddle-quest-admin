@@ -1,7 +1,6 @@
 import {logger} from "firebase-functions/v2";
 import {CallableRequest, HttpsError} from "firebase-functions/v2/https";
 import {browserCallableSecurityOptions} from "../shared/callableSecurity";
-import {admin} from "../shared/firebaseAdmin";
 import {captureException} from "../shared/sentry";
 import {validateUsernameForProfanity} from "../utils/profanityFilter";
 import {validateCallableRequest, validateCallableResponse} from "../validation/callableValidation";
@@ -20,21 +19,14 @@ export const updateUsername = onCallWithSentry("updateUsername", browserCallable
 
   const userId = request.auth.uid;
   const {username} = validateCallableRequest(UpdateUsernameRequestSchema, request.data, "updateUsername");
-  const trimmed = username.trim();
-  const profanityError = validateUsernameForProfanity(trimmed);
+  const profanityError = validateUsernameForProfanity(username);
 
   if (profanityError) {
     throw new HttpsError("invalid-argument", profanityError);
   }
 
-  const existing = await admin.firestore().collection("users").where("username", "==", trimmed).limit(1).get();
-
-  if (!existing.empty && existing.docs[0].id !== userId) {
-    throw new HttpsError("already-exists", "Username already taken.");
-  }
-
   try {
-    await updateUsernameRecords(userId, trimmed);
+    await updateUsernameRecords(userId, username);
     logger.info("Authenticated user updated their username.");
     return validateCallableResponse(
       BasicSuccessMessageResponseSchema,
@@ -42,8 +34,9 @@ export const updateUsername = onCallWithSentry("updateUsername", browserCallable
       "updateUsername",
     );
   } catch (error) {
+    if (error instanceof HttpsError) throw error;
     logger.error(`Error updating username for user ${userId}:`, error);
     captureException(error);
-    throw new HttpsError("internal", "An error occurred while updating username.", error);
+    throw new HttpsError("internal", "An error occurred while updating username.");
   }
 });

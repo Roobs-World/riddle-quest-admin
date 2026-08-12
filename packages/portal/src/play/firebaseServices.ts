@@ -1,4 +1,3 @@
-import {splitGraphemes} from "@qwordly/core/game";
 import type {BridgeProfile, BridgeRiddle, BridgeUser} from "@qwordly/core/bridge";
 import {onAuthStateChanged, signOut} from "firebase/auth";
 import {
@@ -23,6 +22,7 @@ import {
   getRaceAccess,
   recordRaceAnalytics,
   skipRiddle,
+  submitSinglePlayerGuess,
   spendCoins,
   updateAvatar as updateAvatarCallable,
   updateUsername as updateUsernameCallable,
@@ -57,10 +57,13 @@ const mapRiddleResponse = (response: CurrentRiddleResponse, gameMode: "classic" 
   return {
     riddleId: question.riddleId,
     text: question.text,
-    answer: question.answer,
-    answerLength: splitGraphemes(question.answer).length,
+    answerLength: question.answerLength,
+    sessionToken: question.sessionToken,
     gameMode,
     index: question.questionNumber,
+    attemptsUsed: question.attemptsUsed,
+    hasUsedContinue: question.hasUsedContinue,
+    awaitingContinue: question.awaitingContinue,
   };
 };
 
@@ -97,15 +100,17 @@ export const createFirebaseHostServices = (): HostServices => {
         };
       },
     },
-    async loadRiddle({gameMode, locale, classicIndex}) {
+    async loadRiddle({gameMode, locale, classicIndex, sessionToken, riddleId}) {
       if (gameMode === "challenge") {
-        const result = await getCurrentDailyChallenge({});
+        const result = await getCurrentDailyChallenge({locale, sessionToken, riddleId});
         return mapRiddleResponse(result.data, "challenge");
       }
 
       const result = await getCurrentClassicRiddle({
         classicIndex: classicIndex ?? latestSnapshot.profile?.classicIndex ?? 1,
         locale,
+        sessionToken,
+        riddleId,
       });
       return mapRiddleResponse(result.data, "classic");
     },
@@ -119,6 +124,9 @@ export const createFirebaseHostServices = (): HostServices => {
         emit({user: latestSnapshot.user, profile: await reloadProfile(latestSnapshot.user)});
       }
       return result.data;
+    },
+    async submitGuess(input) {
+      return (await submitSinglePlayerGuess(input)).data;
     },
     async requestHint(input) {
       const result = await getHint(input);

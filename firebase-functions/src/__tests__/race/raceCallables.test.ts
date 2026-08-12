@@ -14,6 +14,16 @@ const serviceMocks = {
   recordRaceAnalyticsForUser: jest.fn(),
 };
 const mockAssertRaceAccess = jest.fn();
+const mockRunWithJestAccountOperationLease = jest.fn(async (
+  _userId: string,
+  _timeoutSeconds: number,
+  operation: () => Promise<unknown>,
+) => operation());
+
+jest.mock("../../jest/jestAccountDeletion", () => ({
+  ...jest.requireActual<typeof import("../../jest/jestAccountDeletion")>("../../jest/jestAccountDeletion"),
+  runWithJestAccountOperationLease: mockRunWithJestAccountOperationLease,
+}));
 
 jest.mock("firebase-functions/v2/https", () => {
   const actual = jest.requireActual("firebase-functions/v2/https") as {HttpsError: unknown};

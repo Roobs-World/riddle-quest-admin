@@ -1,6 +1,7 @@
 import {z} from "zod";
 import {validateUsernameForProfanity} from "./profanity";
 import {SUPPORTED_LOCALES} from "./locales";
+import {UsernameSchema} from "./requestSchemas";
 import {RaceCategoryIdSchema, RaceContentQualityVersionSchema, RaceDifficultyBandSchema} from "../race/raceSchemas";
 export type {ProductPricing, RegionalPrice, SpecialOffer} from "../pricing/types";
 
@@ -89,7 +90,7 @@ export type UnlockedAchievement = z.infer<typeof UnlockedAchievementSchema>;
 export const PlayerSchema = z.object({
   userId: z.string(),
   email: z.string().email(),
-  username: z.string().refine((username) => validateUsernameForProfanity(username) === "", {
+  username: UsernameSchema.refine((username) => validateUsernameForProfanity(username) === "", {
     message: "Username contains inappropriate language. Please choose a different username.",
   }),
   displayName: z.string().optional(),
@@ -101,6 +102,7 @@ export const PlayerSchema = z.object({
   lastLogin: TimestampAsMillisSchema.optional(),
   lastDailyChallengeCompletedAt: TimestampAsMillisSchema.optional(),
   lastCompletedDailyChallengeKey: z.string().optional(),
+  lastDailyChallengeAttemptedKey: z.string().optional(),
   stats: PlayerStatsSchema.default(() => ({
     xp: 0,
     level: 1,

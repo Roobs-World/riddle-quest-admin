@@ -17,7 +17,11 @@ describe("browser callable security", () => {
   it("enforces App Check by default and exposes only the callable ingress", () => {
     delete process.env.FUNCTIONS_EMULATOR;
     const browserCallableSecurityOptions = loadOptions();
-    expect(browserCallableSecurityOptions).toEqual({enforceAppCheck: true, invoker: "public"});
+    expect(browserCallableSecurityOptions).toEqual({
+      enforceAppCheck: true,
+      invoker: "public",
+      timeoutSeconds: 60,
+    });
     expect(Object.isFrozen(browserCallableSecurityOptions)).toBe(true);
   });
 

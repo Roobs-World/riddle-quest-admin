@@ -14,6 +14,8 @@ import type {
   CompleteGameOutput,
   SkipRiddleResponse,
   SpendCoinsRequest,
+  SubmitSinglePlayerGuessInput,
+  SubmitSinglePlayerGuessOutput,
 } from "@qwordly/core/validation";
 import type {
   AbandonRaceRunRequest,
@@ -41,6 +43,7 @@ import type {
 } from "@qwordly/core/race";
 import {parseNotificationCopyDocument, type NotificationCopy} from "./jest/notifications/copy";
 import {firebaseEnvironment} from "./firebaseEnvironment";
+import {hasTrustedTestHarnessMarker} from "./testHarness";
 
 /** Provides raw firebase config behavior. */
 const rawFirebaseConfig = {
@@ -66,8 +69,10 @@ const firebaseConfig = {
 export const firebaseApp = initializeApp(firebaseConfig);
 /** Provides app check site key behavior. */
 const appCheckSiteKey = firebaseEnvironment.appCheckSiteKey;
-/** Indicates whether is harness route. */
-const isHarnessRoute = typeof window !== "undefined" && new URLSearchParams(window.location.search).has("harness");
+/** Indicates whether a harness route is authorized to bypass browser attestation. */
+const isHarnessRoute = typeof window !== "undefined" &&
+  new URLSearchParams(window.location.search).has("harness") &&
+  (!firebaseEnvironment.production || hasTrustedTestHarnessMarker());
 /** Provides app check behavior. */
 let appCheck: AppCheck | null = null;
 
@@ -103,19 +108,34 @@ const firestore = getFirestore(firebaseApp);
 const functions = getFunctions(firebaseApp, firebaseEnvironment.functionsRegion || "us-central1");
 
 /** Gets current daily challenge. */
-export const getCurrentDailyChallenge = httpsCallable<object | undefined, CurrentRiddleResponse>(
+export const getCurrentDailyChallenge = httpsCallable<{
+  locale?: string;
+  sessionToken?: string;
+  riddleId?: string;
+} | undefined, CurrentRiddleResponse>(
   functions,
   "getCurrentDailyChallenge",
 );
 
 /** Gets current classic riddle. */
-export const getCurrentClassicRiddle = httpsCallable<{classicIndex: number; locale?: string}, CurrentRiddleResponse>(
+export const getCurrentClassicRiddle = httpsCallable<{
+  classicIndex: number;
+  locale?: string;
+  sessionToken?: string;
+  riddleId?: string;
+}, CurrentRiddleResponse>(
   functions,
   "getCurrentClassicRiddle",
 );
 
 /** Completes game. */
 export const completeGame = httpsCallable<CompleteGameInput, CompleteGameOutput>(functions, "completeGame");
+
+/** Submits one server-authoritative single-player guess. */
+export const submitSinglePlayerGuess = httpsCallable<SubmitSinglePlayerGuessInput, SubmitSinglePlayerGuessOutput>(
+  functions,
+  "submitSinglePlayerGuess",
+);
 
 /** Gets hint. */
 export const getHint = httpsCallable<GetHintInput, GetHintOutput>(functions, "getHint");
@@ -124,7 +144,12 @@ export const getHint = httpsCallable<GetHintInput, GetHintOutput>(functions, "ge
 export const spendCoins = httpsCallable<SpendCoinsRequest, SpendCoinsOutput>(functions, "spendCoins");
 
 /** Provides skip riddle behavior. */
-export const skipRiddle = httpsCallable<{riddleId: string; gameMode: "classic" | "challenge"}, SkipRiddleResponse>(
+export const skipRiddle = httpsCallable<{
+  riddleId: string;
+  gameMode: "classic" | "challenge";
+  sessionToken: string;
+  requestId: string;
+}, SkipRiddleResponse>(
   functions,
   "skipRiddle",
 );
@@ -232,8 +257,12 @@ export type CurrentRiddleResponse = {
     questions: Array<{
       riddleId: string;
       text: string;
-      answer: string;
+      answerLength: number;
+      sessionToken: string;
       questionNumber: number;
+      attemptsUsed: number;
+      hasUsedContinue: boolean;
+      awaitingContinue: boolean;
     }>;
     totalQuestions: number;
   };
@@ -259,6 +288,10 @@ type GetHintInput = {
   currentAttempt: string[];
   /** Stores riddle id. */
   riddleId: string;
+  /** Stores opaque authoritative session token. */
+  sessionToken: string;
+  /** Stores the replay-safe request identity. */
+  requestId: string;
   /** Stores game mode. */
   gameMode: "classic" | "challenge";
 };

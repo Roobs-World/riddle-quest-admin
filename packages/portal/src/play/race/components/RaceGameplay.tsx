@@ -85,7 +85,7 @@ export function RaceGameplay({
         <div className="game-input-actions race-actions" aria-describedby="race-attempts">
           <button onClick={onHint} disabled={pending || !run.currentRiddle?.hintAvailable}>
             <HintIcon />
-            <span>{tr("RaceTo10.HINT_BUTTON")} <small>+15s</small></span>
+            <span>{tr("RaceTo10.HINT_BUTTON")} <small>{tr("RaceTo10.HINT_PENALTY")}</small></span>
           </button>
           <button
             className="submit-action"
@@ -96,7 +96,7 @@ export function RaceGameplay({
           </button>
           <button onClick={onSkip} disabled={pending || (run.currentRiddle?.guessesUsed ?? 0) < 1}>
             <ForwardIcon />
-            <span>{tr("RaceTo10.SKIP_BUTTON")} <small>+45s</small></span>
+            <span>{tr("RaceTo10.SKIP_BUTTON")} <small>{tr("RaceTo10.SKIP_PENALTY")}</small></span>
           </button>
         </div>
       </div>

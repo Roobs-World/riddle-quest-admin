@@ -58,17 +58,6 @@ function normalizeKey(value: unknown): string | null {
 }
 
 /**
- * Normalizes usernames for case-insensitive comparisons.
- *
- * @param value Raw username value.
- * @returns Lowercase normalized username, or null when invalid.
- */
-function normalizeUsernameKey(value: unknown): string | null {
-  const normalized = normalizeKey(value);
-  return normalized ? normalized.toLowerCase() : null;
-}
-
-/**
  * Safely parses numeric leaderboard values.
  *
  * @param value Candidate numeric value.
@@ -182,137 +171,32 @@ function sortEntries(entries: LeaderboardEntry[], type: LeaderboardType): Leader
   return sorted;
 }
 
-/**
- * Reads the sortable value for a leaderboard row by ranking type.
- *
- * @param entry Entry to evaluate.
- * @param type Ranking type.
- * @returns Numeric sort value.
- */
-function getSortValue(entry: LeaderboardEntry, type: LeaderboardType): number {
-  if (type === "xp") {
-    return entry.progressScore;
-  }
-  if (type === "totalWins") {
-    return entry.totalWins;
-  }
-  return entry.bestStreak;
+/** Raw leaderboard document paired with the canonical document identifier. */
+interface LeaderboardDocument {
+  /** Canonical Firebase UID used as the document ID. */
+  id: string;
+  /** Returns the stored server-owned leaderboard fields. */
+  data(): Partial<LeaderboardEntry> & {subjectUserId?: unknown};
 }
 
 /**
- * Chooses which entry should represent a deduped row.
+ * Returns only canonical leaderboard rows backed by a currently live user.
  *
- * Preference order:
- * 1) entry with requesting user id
- * 2) higher score for current leaderboard type
- * 3) newer updatedAt
- *
- * @param current Current retained entry.
- * @param candidate Candidate entry to compare.
- * @param type Active leaderboard type.
- * @param requestingUserId Requesting user uid.
- * @returns Preferred entry.
+ * Legacy rows under another identifier, rows whose embedded subject differs,
+ * and rows left after user deletion all fail closed. Name/avatar matching is
+ * deliberately excluded because those fields cannot prove ownership.
  */
-function preferEntry(
-  current: LeaderboardEntry,
-  candidate: LeaderboardEntry,
-  type: LeaderboardType,
-  requestingUserId: string,
-): LeaderboardEntry {
-  const normalizedRequestingUserId = normalizeKey(requestingUserId);
-  const currentIsRequestingUser = normalizedRequestingUserId != null && current.userId === normalizedRequestingUserId;
-  const candidateIsRequestingUser =
-    normalizedRequestingUserId != null && candidate.userId === normalizedRequestingUserId;
-
-  if (currentIsRequestingUser !== candidateIsRequestingUser) {
-    return candidateIsRequestingUser ? candidate : current;
-  }
-
-  const currentSortValue = getSortValue(current, type);
-  const candidateSortValue = getSortValue(candidate, type);
-  if (currentSortValue !== candidateSortValue) {
-    return candidateSortValue > currentSortValue ? candidate : current;
-  }
-
-  if (current.updatedAt !== candidate.updatedAt) {
-    return candidate.updatedAt > current.updatedAt ? candidate : current;
-  }
-
-  return current;
-}
-
-/**
- * Removes duplicated leaderboard rows that represent the same user.
- *
- * Handles:
- *  - duplicate userIds
- *  - legacy duplicate ids that share requesting user's username/avatar
- *
- * @param entries Raw leaderboard entries.
- * @param type Active leaderboard type.
- * @param requestingUserId Auth uid from callable request.
- * @param requestingUsername Optional username lookup from users/{uid}.
- * @param requestingAvatarUrl Optional avatar lookup from users/{uid}.
- * @returns Deduped and sorted entries.
- */
-function dedupeEntries(
-  entries: LeaderboardEntry[],
-  type: LeaderboardType,
-  requestingUserId: string,
-  requestingUsername: string | null,
-  requestingAvatarUrl: string | null,
-): LeaderboardEntry[] {
-  const byUserId = new Map<string, LeaderboardEntry>();
-  for (const entry of entries) {
-    const normalizedUserId = normalizeKey(entry.userId);
-    if (!normalizedUserId) {
-      continue;
-    }
-
-    const normalizedEntry = {...entry, userId: normalizedUserId};
-    const existing = byUserId.get(normalizedUserId);
-    if (!existing) {
-      byUserId.set(normalizedUserId, normalizedEntry);
-      continue;
-    }
-
-    byUserId.set(normalizedUserId, preferEntry(existing, normalizedEntry, type, requestingUserId));
-  }
-
-  const normalizedRequestingUserId = normalizeKey(requestingUserId);
-  if (!normalizedRequestingUserId) {
-    return sortEntries([...byUserId.values()], type);
-  }
-
-  let canonicalRequestingEntry = byUserId.get(normalizedRequestingUserId) ?? null;
-  const requestingUsernameKey = normalizeUsernameKey(canonicalRequestingEntry?.username ?? requestingUsername);
-  const requestingAvatarKey = normalizeKey(canonicalRequestingEntry?.avatarUrl ?? requestingAvatarUrl);
-
-  for (const [userId, entry] of [...byUserId.entries()]) {
-    if (userId === normalizedRequestingUserId) {
-      continue;
-    }
-
-    const usernameMatches =
-      requestingUsernameKey != null && normalizeUsernameKey(entry.username) === requestingUsernameKey;
-    const avatarMatches = requestingAvatarKey != null && normalizeKey(entry.avatarUrl) === requestingAvatarKey;
-
-    if (!usernameMatches && !avatarMatches) {
-      continue;
-    }
-
-    canonicalRequestingEntry = canonicalRequestingEntry
-      ? preferEntry(canonicalRequestingEntry, entry, type, normalizedRequestingUserId)
-      : {...entry, userId: normalizedRequestingUserId};
-    canonicalRequestingEntry = {...canonicalRequestingEntry, userId: normalizedRequestingUserId};
-    byUserId.delete(userId);
-  }
-
-  if (canonicalRequestingEntry) {
-    byUserId.set(normalizedRequestingUserId, canonicalRequestingEntry);
-  }
-
-  return sortEntries([...byUserId.values()], type);
+async function liveCanonicalLeaderboardEntries(documents: LeaderboardDocument[]): Promise<LeaderboardEntry[]> {
+  const db = admin.firestore();
+  const candidates = documents.flatMap((document) => {
+    const data = document.data();
+    if (normalizeKey(data.userId) !== document.id) return [];
+    if (data.subjectUserId !== undefined && normalizeKey(data.subjectUserId) !== document.id) return [];
+    return [{entry: toSafeLeaderboardEntry(data, document.id), userRef: db.collection("users").doc(document.id)}];
+  });
+  if (candidates.length === 0) return [];
+  const users = await db.getAll(...candidates.map(({userRef}) => userRef));
+  return candidates.flatMap(({entry}, index) => users[index]?.exists ? [entry] : []);
 }
 
 /**
@@ -333,31 +217,11 @@ async function buildLeaderboardFromUsers(type: LeaderboardType, limit: number): 
   return sortEntries(derived, type).slice(0, limit);
 }
 
-/**
- * Best-effort self-heal for older projects: backfill leaderboard documents from
- * derived entries so future reads can use indexed leaderboard queries.
- *
- * @param entries Entries to upsert into leaderboard collection.
- */
-async function backfillLeaderboard(entries: LeaderboardEntry[]): Promise<void> {
-  if (entries.length === 0) {
-    return;
-  }
-
-  const db = admin.firestore();
-  const batch = db.batch();
-  for (const entry of entries) {
-    const ref = db.collection("leaderboard").doc(entry.userId);
-    batch.set(ref, entry, {merge: true});
-  }
-  await batch.commit();
-}
-
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 /**
- * Write (or merge) a user's leaderboard entry. Called by submitGuessLogic
+ * Write (or merge) a user's leaderboard entry. Called by completeGameLogic
  * after a win so the leaderboard always reflects the latest stats.
  *
  * @param userId    Firebase Auth UID.
@@ -371,8 +235,9 @@ export async function updateLeaderboardEntry(
   stats: {level: number; xp: number; totalWins: number; bestStreak: number},
   avatarUrl?: string | null,
 ): Promise<void> {
-  const entry: LeaderboardEntry = {
+  const entry: LeaderboardEntry & {subjectUserId: string} = {
     userId,
+    subjectUserId: userId,
     username,
     level: stats.level,
     xp: stats.xp,
@@ -425,63 +290,19 @@ export const getLeaderboard = onCallWithSentry("getLeaderboard", browserCallable
 
   try {
     const baseRef = admin.firestore().collection("leaderboard");
+    const candidateLimit = Math.min(Math.max(limit * 2, limit), 200);
     const snapshot = await (type === "xp"
-      ? baseRef.orderBy("progressScore", "desc").limit(limit).get()
-      : baseRef.orderBy(type, "desc").limit(limit).get());
+      ? baseRef.orderBy("progressScore", "desc").limit(candidateLimit).get()
+      : baseRef.orderBy(type, "desc").limit(candidateLimit).get());
 
-    let entries: LeaderboardEntry[] = snapshot.docs.map((doc) => {
-      const data = doc.data() as Partial<LeaderboardEntry>;
-      return toSafeLeaderboardEntry(data, doc.id);
-    });
+    let entries = await liveCanonicalLeaderboardEntries(snapshot.docs);
 
     if (entries.length === 0) {
       functions.logger.info(`[Leaderboard] No leaderboard docs for type=${type}; deriving from users collection.`);
       entries = await buildLeaderboardFromUsers(type, limit);
-      try {
-        await backfillLeaderboard(entries);
-        functions.logger.info(`[Leaderboard] Backfilled ${entries.length} leaderboard docs from users.`);
-      } catch (backfillError) {
-        functions.logger.warn("[Leaderboard] Failed to backfill derived leaderboard docs:", backfillError);
-        captureException(backfillError, {type, limit, userId: requestingUserId, stage: "backfillLeaderboard"});
-      }
     }
 
-    let requestingUsername: string | null = null;
-    let requestingAvatarUrl: string | null = null;
-    const hasRequestingUserEntry = entries.some((entry) => entry.userId === requestingUserId);
-    if (hasRequestingUserEntry) {
-      const requestingUserEntry = entries.find((entry) => entry.userId === requestingUserId) ?? null;
-      requestingUsername = requestingUserEntry?.username ?? null;
-      requestingAvatarUrl = requestingUserEntry?.avatarUrl ?? null;
-    } else {
-      try {
-        const requestingUserDoc = await admin.firestore().collection("users").doc(requestingUserId).get();
-        if (requestingUserDoc.exists) {
-          const requestingUserData = requestingUserDoc.data() as UserDocForLeaderboard;
-          requestingUsername = requestingUserData.username ?? requestingUserData.displayName ?? null;
-          requestingAvatarUrl = requestingUserData.avatarUrl ?? null;
-        }
-      } catch (lookupError) {
-        functions.logger.warn(
-          `[Leaderboard] Failed to read users/${requestingUserId} for dedupe fallback:`,
-          lookupError,
-        );
-        captureException(lookupError, {
-          type,
-          limit,
-          userId: requestingUserId,
-          stage: "requestingUserLookupForDedupe",
-        });
-      }
-    }
-
-    const dedupedEntries = dedupeEntries(entries, type, requestingUserId, requestingUsername, requestingAvatarUrl);
-    if (dedupedEntries.length !== entries.length) {
-      functions.logger.info(
-        `[Leaderboard] Deduped ${entries.length - dedupedEntries.length} duplicate entries for user ${requestingUserId}.`,
-      );
-    }
-    entries = dedupedEntries.slice(0, limit);
+    entries = entries.slice(0, limit);
 
     functions.logger.info(`[Leaderboard] Fetched ${entries.length} entries for type=${type}`);
 

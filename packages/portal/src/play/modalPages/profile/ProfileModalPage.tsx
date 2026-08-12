@@ -1,5 +1,5 @@
 import {useRef, useState} from "react";
-import type {ChangeEvent} from "react";
+import type {ChangeEvent, KeyboardEvent} from "react";
 import type {GameModal, GameSessionState} from "../../gameSession";
 import {tr} from "../../i18n";
 import {getNextRankForLevel, getRankForLevel} from "../../ranks";
@@ -35,6 +35,10 @@ export function ProfileModalPage({
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
   /** Hidden file input opened by the custom avatar button. */
   const avatarInputRef = useRef<HTMLInputElement | null>(null);
+  /** Nested destructive dialog used to keep keyboard focus inside confirmation. */
+  const deleteDialogRef = useRef<HTMLElement | null>(null);
+  /** Trigger restored after the destructive confirmation is dismissed. */
+  const deleteTriggerRef = useRef<HTMLButtonElement | null>(null);
   /** Derived level and experience values for the current profile. */
   const progress = getProfileProgress(profile);
   /** Rank associated with the current level. */
@@ -64,6 +68,39 @@ export function ProfileModalPage({
     } catch (error) {
       console.warn("[riddle-quest] Avatar selection failed", error);
       setAvatarError(tr("Profile.ALERT_AVATAR_SELECT_FAIL"));
+    }
+  };
+
+  /** Dismisses the confirmation and restores focus to its trigger. */
+  const dismissDeleteConfirmation = () => {
+    setDeleteConfirmationOpen(false);
+    window.requestAnimationFrame(() => deleteTriggerRef.current?.focus());
+  };
+
+  /** Contains Escape and Tab navigation within the destructive confirmation. */
+  const handleDeleteDialogKeyDown = (event: KeyboardEvent<HTMLElement>) => {
+    if (event.key === "Escape") {
+      event.preventDefault();
+      event.stopPropagation();
+      dismissDeleteConfirmation();
+      return;
+    }
+    if (event.key !== "Tab") return;
+    const buttons = Array.from(
+      deleteDialogRef.current?.querySelectorAll<HTMLButtonElement>("button:not(:disabled)") ?? [],
+    );
+    if (buttons.length === 0) {
+      event.preventDefault();
+      return;
+    }
+    const first = buttons[0];
+    const last = buttons[buttons.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
     }
   };
 
@@ -159,6 +196,7 @@ export function ProfileModalPage({
       </div>
       <div className="profile-danger-zone">
         <button
+          ref={deleteTriggerRef}
           type="button"
           className="profile-delete-account-button"
           onClick={() => setDeleteConfirmationOpen(true)}
@@ -169,16 +207,18 @@ export function ProfileModalPage({
       {deleteConfirmationOpen ? (
         <div className="profile-delete-backdrop">
           <section
+            ref={deleteDialogRef}
             className="profile-delete-dialog"
             role="alertdialog"
             aria-modal="true"
             aria-labelledby="profile-delete-title"
             aria-describedby="profile-delete-message"
+            onKeyDown={handleDeleteDialogKeyDown}
           >
             <h2 id="profile-delete-title">{tr("Profile.DELETE_ACCOUNT_CONFIRM_TITLE")}</h2>
             <p id="profile-delete-message">{tr("Profile.DELETE_ACCOUNT_CONFIRM_MESSAGE")}</p>
             <div className="profile-delete-actions">
-              <button type="button" onClick={() => setDeleteConfirmationOpen(false)}>
+              <button type="button" autoFocus onClick={dismissDeleteConfirmation}>
                 {tr("Profile.DELETE_ACCOUNT_CANCEL_BUTTON")}
               </button>
               <button

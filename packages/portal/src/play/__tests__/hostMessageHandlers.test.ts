@@ -1,7 +1,13 @@
 import {describe, expect, it, jest} from "@jest/globals";
 import type {AuthSnapshot, HostServices} from "../types";
 import {createFakeHostServices} from "../fakeServices";
-import {createPlayHostMessageHandlers, getHostErrorMessage, type HostOperationName} from "../hostMessageHandlers";
+import {
+  createPlayHostMessageHandlers,
+  getHostErrorMessage,
+  getHostNoticeMessage,
+  type HostOperationName,
+} from "../hostMessageHandlers";
+import * as sentry from "../../observability/sentry";
 
 const readAuthSnapshot = (services: HostServices): AuthSnapshot => {
   let snapshot: AuthSnapshot = {user: null, profile: null};
@@ -12,7 +18,11 @@ const readAuthSnapshot = (services: HostServices): AuthSnapshot => {
   return snapshot;
 };
 
-const createHarness = (services = createFakeHostServices()) => {
+const createHarness = (
+  services = createFakeHostServices(),
+  onAccountDeleted?: () => void | Promise<void>,
+  onAccountDeletionRequested?: () => void | Promise<void>,
+) => {
   const postOperation = jest.fn(
     (_requestId: string | undefined, _operation: HostOperationName, _ok: boolean, _data?: unknown, _error?: string) =>
       undefined,
@@ -22,7 +32,7 @@ const createHarness = (services = createFakeHostServices()) => {
       await action();
     },
   );
-  const loadAndPostRiddle = jest.fn(async () => undefined);
+  const loadAndPostRiddle = jest.fn(async () => true);
   const syncRaceAchievementProgress = jest.fn(async () => undefined);
   const setFrameReady = jest.fn((_ready: boolean) => undefined);
   const setNotice = jest.fn((_notice: string) => undefined);
@@ -31,6 +41,7 @@ const createHarness = (services = createFakeHostServices()) => {
   const applyPurchaseBalance = jest.fn(() => undefined);
   const loadedUserIdRef = {current: null as string | null};
   const playableReportedRef = {current: false};
+  const accountDeletionCompletedRef = {current: false};
   const withServerActivity = async <Result>(operation: () => Promise<Result>): Promise<Result> => operation();
   const handlers = createPlayHostMessageHandlers({
     authSnapshot: readAuthSnapshot(services),
@@ -49,6 +60,9 @@ const createHarness = (services = createFakeHostServices()) => {
     applyPurchaseBalance,
     syncRaceAchievementProgress,
     onPlayable,
+    onAccountDeleted,
+    onAccountDeletionRequested,
+    accountDeletionCompletedRef,
   });
   return {
     handlers,
@@ -63,6 +77,7 @@ const createHarness = (services = createFakeHostServices()) => {
     applyPurchaseBalance,
     loadedUserIdRef,
     playableReportedRef,
+    accountDeletionCompletedRef,
   };
 };
 
@@ -70,6 +85,9 @@ describe("play host message handlers", () => {
   it("normalizes Firebase errors and unknown failures", () => {
     expect(getHostErrorMessage(new Error("Firebase: unavailable"))).toBe("unavailable");
     expect(getHostErrorMessage("unavailable")).toBe("An unexpected error occurred. Please try again.");
+    expect(getHostNoticeMessage("ErrorMessages.SERVICE_TEMPORARILY_UNAVAILABLE"))
+      .toBe("Service temporarily unavailable. Please try again.");
+    expect(getHostNoticeMessage("Already rendered")).toBe("Already rendered");
   });
 
   it("initializes an authenticated frame and reports playability once", async () => {
@@ -93,6 +111,20 @@ describe("play host message handlers", () => {
     expect(harness.onPlayable).toHaveBeenCalledTimes(1);
   });
 
+  it("does not report playability when the first riddle fails to load", async () => {
+    const harness = createHarness();
+    harness.loadAndPostRiddle.mockResolvedValue(false);
+
+    await harness.handlers.ready({
+      type: "game:ready",
+      requestId: "ready-failed-load",
+      payload: {protocolVersion: 1, surface: "html5"},
+    });
+
+    expect(harness.onPlayable).not.toHaveBeenCalled();
+    expect(harness.playableReportedRef.current).toBe(false);
+  });
+
   it("posts authoritative hint success and sanitized failure outcomes", async () => {
     const services = createFakeHostServices();
     const requestHint = jest.spyOn(services, "requestHint");
@@ -111,18 +143,27 @@ describe("play host message handlers", () => {
     expect(harness.postOperation).toHaveBeenLastCalledWith("hint-1", "hint", false, undefined, "hint unavailable");
   });
 
-  it("rejects daily-riddle skips before invoking the skip service", async () => {
+  it("reports a daily-riddle rejection through the dedicated skip service path", async () => {
     const services = createFakeHostServices();
     const skipRiddle = jest.spyOn(services, "skipRiddle");
     const harness = createHarness(services);
 
-    await harness.handlers.spendCoins({
-      type: "game:spendCoins",
+    await harness.handlers.skipRiddle({
+      type: "game:skipRiddle",
       requestId: "skip-1",
-      payload: {reason: "skip", riddleId: "daily-fake-1", gameMode: "challenge"},
-    });
+      payload: {
+        riddleId: "daily-fake-1",
+        gameMode: "challenge",
+        sessionToken: "00000000-0000-4000-8000-000000000003",
+      },
+    } as unknown as Parameters<typeof harness.handlers.skipRiddle>[0]);
 
-    expect(skipRiddle).not.toHaveBeenCalled();
+    expect(skipRiddle).toHaveBeenCalledWith({
+      riddleId: "daily-fake-1",
+      gameMode: "challenge",
+      sessionToken: "00000000-0000-4000-8000-000000000003",
+      requestId: "skip-1",
+    });
     expect(harness.postOperation).toHaveBeenCalledWith(
       "skip-1",
       "skip",
@@ -159,5 +200,135 @@ describe("play host message handlers", () => {
 
     expect(harness.runRaceOperation).toHaveBeenCalledWith("publish-message-1", "racePublish", expect.any(Function));
     expect(harness.syncRaceAchievementProgress).toHaveBeenCalledTimes(1);
+  });
+
+  it("resolves a cancelled checkout without errors, notices, grants, or balance changes", async () => {
+    const services = createFakeHostServices();
+    jest.spyOn(services, "requestPurchase").mockResolvedValue({
+      success: false,
+      cancelled: true,
+      productId: "coin-pack-1",
+      purchaseType: "consumable",
+    });
+    const captureBrowserException = jest.spyOn(sentry, "captureBrowserException").mockImplementation(() => undefined);
+    const harness = createHarness(services);
+
+    await harness.handlers.requestPurchase({
+      type: "game:requestPurchase",
+      requestId: "purchase-cancelled-1",
+      payload: {productId: "coin-pack-1"},
+    });
+
+    expect(harness.postOperation).toHaveBeenCalledWith(
+      "purchase-cancelled-1",
+      "purchase",
+      true,
+      {
+        success: false,
+        cancelled: true,
+        productId: "coin-pack-1",
+        purchaseType: "consumable",
+      },
+    );
+    expect(harness.applyPurchaseBalance).not.toHaveBeenCalled();
+    expect(harness.setNotice).not.toHaveBeenCalled();
+    expect(captureBrowserException).not.toHaveBeenCalled();
+    captureBrowserException.mockRestore();
+  });
+
+  it("reports account deletion as failed when post-server client cleanup must be retried", async () => {
+    const services = createFakeHostServices();
+    const deleteAccount = jest.spyOn(services, "deleteAccount").mockResolvedValue(undefined);
+    const clientCleanup = jest.fn()
+      .mockRejectedValueOnce(new Error("Client cleanup unavailable"))
+      .mockResolvedValueOnce(undefined);
+    const harness = createHarness(services, clientCleanup);
+
+    await harness.handlers.deleteAccount({
+      type: "game:deleteAccount",
+      requestId: "delete-account-1",
+      payload: {},
+    });
+
+    expect(deleteAccount).toHaveBeenCalledTimes(1);
+    expect(clientCleanup).toHaveBeenCalledTimes(1);
+    expect(harness.postOperation).toHaveBeenCalledWith(
+      "delete-account-1",
+      "accountDeletion",
+      false,
+      undefined,
+      "Client cleanup unavailable",
+    );
+    expect(harness.postOperation).not.toHaveBeenCalledWith(
+      "delete-account-1",
+      "accountDeletion",
+      true,
+      expect.anything(),
+    );
+
+    await harness.handlers.deleteAccount({
+      type: "game:deleteAccount",
+      requestId: "delete-account-retry",
+      payload: {},
+    });
+    expect(deleteAccount).toHaveBeenCalledTimes(1);
+    expect(clientCleanup).toHaveBeenCalledTimes(2);
+    expect(harness.postOperation).toHaveBeenLastCalledWith(
+      "delete-account-retry",
+      "accountDeletion",
+      true,
+      {success: true},
+    );
+  });
+
+  it("durably records deletion intent before invoking the authoritative service", async () => {
+    const order: string[] = [];
+    const services = createFakeHostServices();
+    const deleteAccount = jest.spyOn(services, "deleteAccount").mockImplementation(async () => {
+      order.push("server");
+    });
+    const requested = jest.fn(() => { order.push("marker"); });
+    const cleanup = jest.fn(() => { order.push("cleanup"); });
+    const harness = createHarness(services, cleanup, requested);
+
+    await harness.handlers.deleteAccount({
+      type: "game:deleteAccount",
+      requestId: "delete-account-ordered",
+      payload: {},
+    });
+
+    expect(order).toEqual(["marker", "server", "cleanup"]);
+    expect(deleteAccount).toHaveBeenCalledTimes(1);
+    expect(harness.postOperation).toHaveBeenLastCalledWith(
+      "delete-account-ordered",
+      "accountDeletion",
+      true,
+      {success: true},
+    );
+  });
+
+  it("never starts server deletion when the durable intent marker cannot be verified", async () => {
+    const services = createFakeHostServices();
+    const deleteAccount = jest.spyOn(services, "deleteAccount");
+    const harness = createHarness(
+      services,
+      jest.fn(),
+      async () => { throw new Error("deletion marker unavailable"); },
+    );
+
+    await harness.handlers.deleteAccount({
+      type: "game:deleteAccount",
+      requestId: "delete-account-unmarked",
+      payload: {},
+    });
+
+    expect(deleteAccount).not.toHaveBeenCalled();
+    expect(harness.postOperation).toHaveBeenLastCalledWith(
+      "delete-account-unmarked",
+      "accountDeletion",
+      false,
+      undefined,
+      "deletion marker unavailable",
+    );
   });
 });

@@ -56,6 +56,6 @@ export const updateAvatar = onCallWithSentry("updateAvatar", browserCallableSecu
     if (reason.startsWith("invalid-avatar-")) {
       throw new HttpsError("invalid-argument", "The selected image is invalid.");
     }
-    throw new HttpsError("internal", "An error occurred while updating the avatar.", error);
+    throw new HttpsError("internal", "An error occurred while updating the avatar.");
   }
 });

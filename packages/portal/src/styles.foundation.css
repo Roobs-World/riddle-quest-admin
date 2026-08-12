@@ -41,6 +41,36 @@
   --feedback-absent: #f54160;
 }
 
+:root[data-riddle-quest-high-contrast="true"] {
+  color: #fff;
+  background: #000;
+  --play-ink: #000;
+  --play-panel: #fff;
+  --play-line: #000;
+  --play-teal: #005f57;
+  --play-blue: #003f6b;
+  --play-gold: #ffd800;
+  --play-rose: #8f002d;
+  --play-green: #006b35;
+  --feedback-correct: #00743a;
+  --feedback-present: #ffcc00;
+  --feedback-absent: #b00020;
+}
+
+:root[data-riddle-quest-high-contrast="true"] :focus-visible {
+  outline: 3px solid #ffd800;
+  outline-offset: 3px;
+}
+
+:root[data-riddle-quest-reduced-motion="true"] *,
+:root[data-riddle-quest-reduced-motion="true"] *::before,
+:root[data-riddle-quest-reduced-motion="true"] *::after {
+  scroll-behavior: auto !important;
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+}
+
 * {
   box-sizing: border-box;
 }

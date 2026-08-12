@@ -8,7 +8,7 @@ Riddle Quest is built for players who love Wordle, crosswords, riddles, daily pu
 
 We're now looking for beta testers to help us shape the game before launch.
 
-If you'd like early access, email us at **support@adspeq.com** with the subject line:
+If you'd like early access, email us at **grindheadgames@gmail.com** with the subject line:
 
 **Riddle Quest Beta**
 
@@ -18,4 +18,4 @@ Your feedback will help us tune the difficulty, improve the onboarding, polish t
 
 If you enjoy word games with a twist, we'd love to have you in the beta.
 
-Email **support@adspeq.com** and come help us build Riddle Quest.
+Email **grindheadgames@gmail.com** and come help us build Riddle Quest.

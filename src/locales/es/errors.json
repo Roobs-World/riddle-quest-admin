@@ -28,6 +28,6 @@
     "WRONG_PASSWORD_TRY_AGAIN": "Contraseña incorrecta. Por favor inténtalo de nuevo.",
     "UNKNOWN_ERROR": "Se produjo un error desconocido.",
     "FATAL_STARTUP_TITLE": "Error al iniciar",
-    "FATAL_STARTUP_MESSAGE": "No se pudo cargar el fondo del sistema solar. Reinicia la aplicaci?n."
+    "FATAL_STARTUP_MESSAGE": "No se pudo cargar el fondo del sistema solar. Reinicia la aplicación."
   }
 }

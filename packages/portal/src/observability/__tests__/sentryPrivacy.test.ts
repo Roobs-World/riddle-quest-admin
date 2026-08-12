@@ -1,4 +1,8 @@
-import {redactBrowserTelemetry, resolveSecureBrowserSentryDsn} from "../sentryPrivacy";
+import {
+  redactBrowserSentryEvent,
+  redactBrowserTelemetry,
+  resolveSecureBrowserSentryDsn,
+} from "../sentryPrivacy";
 
 describe("browser telemetry transport security", () => {
   it("accepts only encrypted HTTPS DSNs", () => {
@@ -54,5 +58,33 @@ describe("browser telemetry redaction", () => {
     expect(redacted.values).toEqual(["request Bearer [REDACTED] and [REDACTED_TOKEN]", null, true]);
     expect(redacted.self).toBe("[CIRCULAR]");
     expect(redacted.child).toBeDefined();
+  });
+
+  it("removes query strings and fragments from diagnostic URLs", () => {
+    expect(redactBrowserTelemetry({
+      message: "Request failed at https://game.example/play?token=secret&email=a%40b.test#player",
+      endpoint: new URL("https://api.example/functions?uid=player-1"),
+    })).toEqual({
+      message: "Request failed at https://game.example/play",
+      endpoint: "https://api.example/functions",
+    });
+  });
+
+  it("removes free-form Sentry messages while retaining structured diagnostics", () => {
+    expect(redactBrowserSentryEvent({
+      message: "Player guessed secret",
+      exception: {values: [{type: "Error", value: "Invalid answer secret", stacktrace: {frames: []}}]},
+      logentry: {formatted: "Request contained player@example.test"},
+      breadcrumbs: [{category: "console", message: "username was Craig"}],
+      request: {data: {displayName: "Craig"}, headers: {"x-forwarded-for": "203.0.113.4"}},
+      user: {username: "Craig", ip_address: "203.0.113.4"},
+      contexts: {device: {name: "Craig's phone"}},
+      tags: {operation: "submit_guess"},
+    })).toEqual({
+      message: "[REDACTED_MESSAGE]",
+      exception: {values: [{type: "Error", value: "[REDACTED_MESSAGE]", stacktrace: {frames: []}}]},
+      logentry: {formatted: "[REDACTED_MESSAGE]"},
+      tags: {operation: "submit_guess"},
+    });
   });
 });

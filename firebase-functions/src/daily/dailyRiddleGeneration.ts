@@ -2,229 +2,144 @@ import {logger} from "firebase-functions/v2";
 import {admin} from "../shared/firebaseAdmin";
 import {generateUniqueRiddle} from "../riddles/openaiService";
 import type {DailyRiddle} from "../validation/firestoreSchemas";
-import {RiddleCollections} from "../validation/firestoreSchemas";
 import {SUPPORTED_LOCALES, type SupportedLocale} from "@qwordly/core/validation";
 import {
-  getExistingRiddlesFromFirestore,
   getLocalizedCanonicalKey,
   getLocalizedDailyDocRef,
   getLocalizedExistingRiddlesFromFirestoreForLocale,
-  getNextDailyIndex,
   riddleExists,
+  riddleHasPlayableClue,
 } from "../riddles/riddleGenerationRepository";
+import {isPlayableSinglePlayerAnswer} from "../gameplay/singlePlayerAnswerPolicy";
 
-/** Provides generate todays daily challenge behavior. */
-export async function generateTodaysDailyChallenge(forceGenerate: boolean = false): Promise<void> {
-  const dailyChallengeQuestionCount = 1;
-  logger.info(`Generating today's ${dailyChallengeQuestionCount}-question daily challenge...`);
+/** Maximum model calls spent on one locale in one scheduled run. */
+const MAX_DAILY_ATTEMPTS_PER_LOCALE = 3;
+/** Maximum model calls spent across all locales in one scheduled run. */
+const MAX_DAILY_ATTEMPTS_PER_RUN = 51;
+/** Locale generation concurrency keeps OpenAI and Firestore pressure bounded. */
+const DAILY_LOCALE_CONCURRENCY = 3;
 
-  const today = new Date();
-  const todayDateString = today.toISOString().split("T")[0]; // YYYY-MM-DD format
-
-  const currentDailyRiddleRef = admin.firestore().collection(RiddleCollections.DAILY_RIDDLES).doc("current");
-  const existingChallenge = await currentDailyRiddleRef.get();
-
-  const getUtcDateFromStoredTimestamp = (value: unknown): string | null => {
-    if (!value) return null;
-    if (typeof value === "object" && value !== null && "toDate" in (value as object)) {
-      const ts = value as {toDate: () => Date};
-      const parsed = ts.toDate();
-      return Number.isNaN(parsed.getTime()) ? null : parsed.toISOString().split("T")[0];
-    }
-    const parsed = new Date(value as string | number | Date);
-    return Number.isNaN(parsed.getTime()) ? null : parsed.toISOString().split("T")[0];
-  };
-
-  if (existingChallenge.exists && !forceGenerate) {
-    const existingData = existingChallenge.data();
-    const existingChallengeDate = getUtcDateFromStoredTimestamp(existingData?.timestamp);
-    if (existingChallengeDate === todayDateString && existingData?.text && existingData?.answer) {
-      logger.info(`Today's daily challenge already exists with ${dailyChallengeQuestionCount} question.`);
-      return;
-    }
+/** Validates and normalizes an immutable UTC daily-content key. */
+function assertUtcDateKey(value: string): string {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) throw new Error("A YYYY-MM-DD UTC challenge date is required.");
+  const parsed = new Date(`${value}T00:00:00.000Z`);
+  if (Number.isNaN(parsed.getTime()) || parsed.toISOString().slice(0, 10) !== value) {
+    throw new Error("A valid UTC challenge date is required.");
   }
-
-  logger.info(`Generating ${dailyChallengeQuestionCount} new riddle for daily challenge on ${todayDateString}...`);
-
-  // Check for required environment variables
-  const openAIKey = process.env.OPENAI_API_KEY;
-  if (!openAIKey) {
-    throw new Error("OPENAI_API_KEY environment variable is required");
-  }
-
-  // Get existing riddles for duplicate checking
-  const existing = await getExistingRiddlesFromFirestore();
-  const startingDailyIndex = await getNextDailyIndex();
-
-  let selectedDailyChallengeRiddle: {text: string; answer: string} | null = null;
-
-  const generatedAttempts: {question: string; answer: string}[] = [];
-
-  // Circuit breaker: Maximum attempts to prevent infinite loops
-  const maxAttempts = dailyChallengeQuestionCount * 10;
-  let attemptCount = 0;
-
-  while (!selectedDailyChallengeRiddle && attemptCount < maxAttempts) {
-    attemptCount++;
-
-    // Generate a riddle using the OpenAI service
-    const riddle = await generateUniqueRiddle("en", [
-      ...existing.answers,
-      ...generatedAttempts.map((item) => item.answer),
-    ]);
-
-    if (riddle) {
-      const newRiddle = {
-        question: riddle[0],
-        answer: riddle[1],
-      };
-
-      // Check for duplicates against existing and newly generated riddles
-      if (
-        !riddleExists(newRiddle, existing.questions, existing.answers) &&
-        !riddleExists(
-          newRiddle,
-          generatedAttempts.map((r) => r.question),
-          generatedAttempts.map((r) => r.answer),
-        )
-      ) {
-        const riddleData: DailyRiddle = {
-          riddleId: "current",
-          text: newRiddle.question,
-          answer: newRiddle.answer,
-          dailyIndex: startingDailyIndex,
-          category: "daily",
-          timestamp: admin.firestore.FieldValue.serverTimestamp(),
-        };
-
-        await currentDailyRiddleRef.set(riddleData);
-        selectedDailyChallengeRiddle = {
-          text: newRiddle.question,
-          answer: newRiddle.answer,
-        };
-
-        // Add to existing for subsequent duplicate checks within this run
-        existing.questions.push(newRiddle.question.toLowerCase());
-        existing.answers.push(newRiddle.answer.toLowerCase());
-
-        logger.info(`Generated daily challenge question 1/${dailyChallengeQuestionCount} (attempt ${attemptCount})`);
-      } else {
-        logger.warn(`Generated riddle is a duplicate, trying again... (attempt ${attemptCount}/${maxAttempts})`);
-      }
-      generatedAttempts.push(newRiddle);
-    } else {
-      logger.warn(`Failed to generate unique riddle, retrying... (attempt ${attemptCount}/${maxAttempts})`);
-    }
-  }
-
-  // Check if we hit the circuit breaker
-  if (!selectedDailyChallengeRiddle && attemptCount >= maxAttempts) {
-    logger.warn(
-      `Circuit breaker activated: Only generated 0/${dailyChallengeQuestionCount} daily challenge questions after ${maxAttempts} attempts`,
-    );
-    throw new Error(`Failed to generate any unique daily challenge questions after ${maxAttempts} attempts`);
-  }
-
-  if (selectedDailyChallengeRiddle) {
-    logger.info(`Successfully generated and stored the current daily challenge for ${todayDateString}.`);
-  } else {
-    throw new Error("Failed to generate any daily challenge questions.");
-  }
+  return value;
 }
 
-/** Provides generate localized todays daily challenge behavior. */
-export async function generateLocalizedTodaysDailyChallenge(forceGenerate: boolean = false): Promise<void> {
-  const todayDateString = new Date().toISOString().split("T")[0];
+/**
+ * Generates immutable localized daily documents for one UTC date.
+ *
+ * The scheduler runs this before rollover. A failure never overwrites playable
+ * content for another date, and later scheduled retries only fill missing or
+ * invalid locale documents.
+ */
+export async function generateLocalizedDailyChallengeForDate(
+  targetDate: string,
+  forceGenerate: boolean = false,
+): Promise<void> {
+  const challengeDate = assertUtcDateKey(targetDate);
+  const dailyIndex = Math.floor(new Date(`${challengeDate}T00:00:00.000Z`).getTime() / 86_400_000);
+  if (!process.env.OPENAI_API_KEY) throw new Error("OPENAI_API_KEY environment variable is required");
+
+  let totalAttemptCount = 0;
+  const failures: {locale: SupportedLocale; reason: string}[] = [];
 
   const generateForLocale = async (locale: SupportedLocale): Promise<void> => {
-    const currentDailyRiddleRef = getLocalizedDailyDocRef(locale);
-    const existingChallenge = await currentDailyRiddleRef.get();
-
-    const getUtcDateFromStoredTimestamp = (value: unknown): string | null => {
-      if (!value) return null;
-      if (typeof value === "object" && value !== null && "toDate" in (value as object)) {
-        const ts = value as {toDate: () => Date};
-        const parsed = ts.toDate();
-        return Number.isNaN(parsed.getTime()) ? null : parsed.toISOString().split("T")[0];
-      }
-      const parsed = new Date(value as string | number | Date);
-      return Number.isNaN(parsed.getTime()) ? null : parsed.toISOString().split("T")[0];
-    };
-
-    if (existingChallenge.exists && !forceGenerate) {
-      const existingData = existingChallenge.data();
-      const existingChallengeDate = getUtcDateFromStoredTimestamp(existingData?.timestamp);
-      if (existingChallengeDate === todayDateString && existingData?.text && existingData?.answer) {
-        logger.info(`Today's daily challenge already exists for locale ${locale}.`);
-        return;
-      }
-    }
-
-    logger.info(`Generating today's daily challenge for locale ${locale} on ${todayDateString}...`);
-
-    const openAIKey = process.env.OPENAI_API_KEY;
-    if (!openAIKey) {
-      throw new Error("OPENAI_API_KEY environment variable is required");
+    const dailyRiddleRef = getLocalizedDailyDocRef(locale, challengeDate);
+    const existingChallenge = await dailyRiddleRef.get();
+    const existingData = existingChallenge.data();
+    if (
+      existingChallenge.exists &&
+      !forceGenerate &&
+      existingData?.challengeKey === challengeDate &&
+      typeof existingData.text === "string" &&
+      existingData.text.length > 0 &&
+      isPlayableSinglePlayerAnswer(existingData.answer) &&
+      riddleHasPlayableClue({question: existingData.text, answer: existingData.answer})
+    ) {
+      logger.info("Immutable daily challenge already exists.", {locale, challengeDate});
+      return;
     }
 
     const existing = await getLocalizedExistingRiddlesFromFirestoreForLocale(locale);
-    const startingDailyIndex = await getNextDailyIndex();
-    const maxAttempts = 50;
-    let attemptCount = 0;
-    let selectedDailyChallengeRiddle: {text: string; answer: string} | null = null;
     const generatedAttempts: {question: string; answer: string}[] = [];
 
-    while (!selectedDailyChallengeRiddle && attemptCount < maxAttempts) {
-      attemptCount++;
+    for (let localeAttempt = 1; localeAttempt <= MAX_DAILY_ATTEMPTS_PER_LOCALE; localeAttempt++) {
+      if (totalAttemptCount >= MAX_DAILY_ATTEMPTS_PER_RUN) break;
+      totalAttemptCount += 1;
       const riddle = await generateUniqueRiddle(locale, [
         ...existing.answers,
         ...generatedAttempts.map((item) => item.answer),
       ]);
-      if (!riddle) {
+      if (!riddle) continue;
+
+      const candidate = {question: riddle[0], answer: riddle[1]};
+      generatedAttempts.push(candidate);
+      if (
+        !isPlayableSinglePlayerAnswer(candidate.answer) ||
+        !riddleHasPlayableClue(candidate) ||
+        riddleExists(candidate, existing.questions, existing.answers) ||
+        riddleExists(
+          candidate,
+          generatedAttempts.slice(0, -1).map((item) => item.question),
+          generatedAttempts.slice(0, -1).map((item) => item.answer),
+        )
+      ) {
         continue;
       }
 
-      const newRiddle = {question: riddle[0], answer: riddle[1]};
-      if (
-        !riddleExists(newRiddle, existing.questions, existing.answers) &&
-        !riddleExists(
-          newRiddle,
-          generatedAttempts.map((item) => item.question),
-          generatedAttempts.map((item) => item.answer),
-        )
-      ) {
-        const riddleData: DailyRiddle = {
-          riddleId: "current",
-          canonicalKey: getLocalizedCanonicalKey("daily", startingDailyIndex, locale),
-          challengeKey: todayDateString,
-          locale,
-          text: newRiddle.question,
-          answer: newRiddle.answer,
-          dailyIndex: startingDailyIndex,
-          category: "daily",
-          timestamp: admin.firestore.FieldValue.serverTimestamp(),
-        };
-
-        await currentDailyRiddleRef.set(riddleData);
-        selectedDailyChallengeRiddle = {
-          text: newRiddle.question,
-          answer: newRiddle.answer,
-        };
-        existing.questions.push(newRiddle.question.toLowerCase());
-        existing.answers.push(newRiddle.answer.toLowerCase());
-        logger.info(`Generated daily challenge question for locale ${locale} (attempt ${attemptCount})`);
-      }
-
-      generatedAttempts.push(newRiddle);
+      const riddleId = `daily-${challengeDate}`;
+      const riddleData: DailyRiddle = {
+        riddleId,
+        canonicalKey: getLocalizedCanonicalKey("daily", dailyIndex, locale),
+        challengeKey: challengeDate,
+        locale,
+        text: candidate.question,
+        answer: candidate.answer,
+        dailyIndex,
+        category: "daily",
+        timestamp: admin.firestore.FieldValue.serverTimestamp(),
+      };
+      await dailyRiddleRef.set(riddleData);
+      logger.info("Generated immutable daily challenge.", {locale, challengeDate, localeAttempt});
+      return;
     }
 
-    if (!selectedDailyChallengeRiddle) {
-      throw new Error(`Failed to generate any daily challenge questions for locale ${locale}.`);
-    }
+    throw new Error("Locale generation attempt budget exhausted.");
   };
 
-  const localeConcurrency = 3;
-  for (let index = 0; index < SUPPORTED_LOCALES.length; index += localeConcurrency) {
-    await Promise.all(SUPPORTED_LOCALES.slice(index, index + localeConcurrency).map(generateForLocale));
+  for (let index = 0; index < SUPPORTED_LOCALES.length; index += DAILY_LOCALE_CONCURRENCY) {
+    const localeBatch = SUPPORTED_LOCALES.slice(index, index + DAILY_LOCALE_CONCURRENCY);
+    const settled = await Promise.allSettled(localeBatch.map(generateForLocale));
+    settled.forEach((result, resultIndex) => {
+      if (result.status === "rejected") {
+        const reason = result.reason instanceof Error ? result.reason.name : typeof result.reason;
+        failures.push({locale: localeBatch[resultIndex], reason});
+      }
+    });
   }
+
+  if (failures.length > 0) {
+    logger.error("Immutable daily generation finished with missing locales.", {
+      challengeDate,
+      generatedLocaleCount: SUPPORTED_LOCALES.length - failures.length,
+      failedLocaleCount: failures.length,
+      failedLocales: failures.map((entry) => entry.locale),
+      attemptCount: totalAttemptCount,
+    });
+    throw new Error(`Daily generation incomplete for ${failures.length} locale(s).`);
+  }
+  logger.info("Immutable localized daily generation completed.", {
+    challengeDate,
+    localeCount: SUPPORTED_LOCALES.length,
+    attemptCount: totalAttemptCount,
+  });
+}
+
+/** Backwards-compatible wrapper used by manual tooling and older tests. */
+export async function generateLocalizedTodaysDailyChallenge(forceGenerate: boolean = false): Promise<void> {
+  return generateLocalizedDailyChallengeForDate(new Date().toISOString().slice(0, 10), forceGenerate);
 }

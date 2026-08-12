@@ -1,27 +1,27 @@
 import {tr} from "../../i18n";
 
 /** One displayed project credit. */
-type Credit = readonly [name: string, role: string];
+type Credit = readonly [name: string, roleKey: string];
 
 /** Stable project credits displayed in the credits modal. */
 const PROJECT_CREDITS: readonly Credit[] = [
-  ["Craig Beswetherick", "Lead Developer & Game Design"],
-  ["Reuben Beswetherick", "Inspiration"],
-  ["Mike Hawkyard", "Game Designer, Publisher, Overall Hero"],
-  ["Gavin Harrison", "Sound Design"],
-  ["Nathalia", "Design"],
-  ["Mr Ben", "Design"],
+  ["Craig Beswetherick", "Credits.ROLE_LEAD_DEVELOPER_GAME_DESIGN"],
+  ["Reuben Beswetherick", "Credits.ROLE_INSPIRATION"],
+  ["Mike Hawkyard", "Credits.ROLE_GAME_DESIGNER_PUBLISHER_HERO"],
+  ["Gavin Harrison", "Credits.ROLE_SOUND_DESIGN"],
+  ["Nathalia", "Credits.ROLE_DESIGN"],
+  ["Mr Ben", "Credits.ROLE_DESIGN"],
 ];
 
-/** Stable legal and support rows displayed in the about modal. */
-const ABOUT_LEGAL_KEYS = [
-  "RIDDLE_QUEST_WEBSITE",
-  "PRIVACY_POLICY",
-  "TERMS_OF_USE",
-  "ACCOUNT_DELETION",
-  "DATA_EXPORT",
-  "THIRD_PARTY_LICENSES",
-  "SUPPORT",
+/** Verified Riddle Quest support mailbox. */
+const SUPPORT_EMAIL = "grindheadgames@gmail.com";
+
+/** Stable legal/support row order and the verified action, if one exists. */
+const ABOUT_LEGAL_ROWS = [
+  ["ACCOUNT_DELETION", "profile"],
+  ["DATA_EXPORT", "contact"],
+  ["THIRD_PARTY_LICENSES", "licenses"],
+  ["SUPPORT", "contact"],
 ] as const;
 
 /** Renders gameplay instructions and color-clue guidance. */
@@ -45,8 +45,8 @@ export function CreditsModalPage() {
   return (
     <div className="credits-list">
       <p>{tr("Credits.SUBTITLE")}</p>
-      {PROJECT_CREDITS.map(([name, role]) => (
-        <article key={name}><strong>{name}</strong><span>{role}</span></article>
+      {PROJECT_CREDITS.map(([name, roleKey]) => (
+        <article key={name}><strong>{name}</strong><span>{tr(roleKey)}</span></article>
       ))}
       <h3>{tr("Credits.THANK_YOU_TITLE")}</h3>
       <p>{tr("Credits.THANK_YOU_TEXT")}</p>
@@ -54,11 +54,23 @@ export function CreditsModalPage() {
   );
 }
 
-/** Renders translated website, legal, privacy, and support information. */
-export function AboutModalPage() {
+/** Renders translated account, data-contact, license, and support information. */
+export function AboutModalPage({onOpenModal}: {onOpenModal: (modal: "profile") => void}) {
   return (
     <div className="about-list">
-      {ABOUT_LEGAL_KEYS.map((key) => <div key={key}>{tr(`AboutLegal.${key}`)}</div>)}
+      {ABOUT_LEGAL_ROWS.map(([key, action]) => {
+        if (action === "profile") {
+          return <button className="about-list-row about-list-action" type="button" key={key}
+            onClick={() => onOpenModal("profile")}>{tr(`AboutLegal.${key}`)}</button>;
+        }
+        if (action === "contact") {
+          return <div className="about-list-row" key={key}>
+            {tr(`AboutLegal.${key}`)} <span dir="ltr">{SUPPORT_EMAIL}</span>
+          </div>;
+        }
+        return <a className="about-list-row about-list-action" href="./third-party-licenses.txt"
+          key={key}>{tr(`AboutLegal.${key}`)}</a>;
+      })}
     </div>
   );
 }

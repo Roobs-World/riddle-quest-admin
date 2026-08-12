@@ -14,8 +14,15 @@ import type {JestPlayerData, JestPlayerDataUpdate} from "../jest/types";
 import {restoreJestProfileWhileServerLoads} from "../jest/playerData";
 import {isRaceTo10Enabled} from "./race/logic/raceFeatureFlag";
 import {trackEvent} from "../analytics/googleAnalytics";
-import {createPlayHostMessageHandlers, getHostErrorMessage, type HostOperationName} from "./hostMessageHandlers";
+import {
+  createPlayHostMessageHandlers,
+  getHostErrorMessage,
+  getHostNoticeMessage,
+  type HostOperationName,
+} from "./hostMessageHandlers";
 import {captureBrowserException} from "../observability/sentry";
+import {safeBrowserStorageGet} from "./playerPreferences";
+import {coordinateHostServices, type AccountDeletionServiceGate} from "./accountDeletionServiceGate";
 
 /** Creates host message. */
 const createHostMessage = <Message extends HostToGameMessage>(message: Message): Message => ({
@@ -35,6 +42,8 @@ export function PlayHostApp({
   initialPlayerData,
   onPlayerDataChange,
   onAccountDeleted,
+  onAccountDeletionRequested,
+  accountDeletionServiceGate,
   registrationName,
   registrationInviterName,
   initialRaceChallengeId,
@@ -43,7 +52,7 @@ export function PlayHostApp({
   initialGameMode?: WebGameMode;
   onPlayable?: () => void;
   onAuthoritativeComplete?: (
-    input: {riddleId: string; gameMode: WebGameMode; attempts: number; isCorrect: boolean},
+    input: {riddleId: string; gameMode: WebGameMode},
     result: CompletionResult,
   ) => void | Promise<void>;
   platformProducts?: ProductSummary[];
@@ -53,6 +62,8 @@ export function PlayHostApp({
   initialPlayerData?: JestPlayerData | null;
   onPlayerDataChange?: (update: JestPlayerDataUpdate) => void;
   onAccountDeleted?: () => void | Promise<void>;
+  onAccountDeletionRequested?: () => void | Promise<void>;
+  accountDeletionServiceGate?: AccountDeletionServiceGate;
   registrationName?: string;
   registrationInviterName?: string;
   initialRaceChallengeId?: string;
@@ -62,14 +73,16 @@ export function PlayHostApp({
   const sessionIdRef = useRef(createRequestId("session"));
   const servicesMode = useMemo(() => resolveHostServicesMode(), []);
   const baseServices = useMemo<HostServices>(() => createHostServices(servicesMode), [servicesMode]);
-  const services = useMemo<HostServices>(
-    () => ({
+  const services = useMemo<HostServices>(() => {
+    const configuredServices: HostServices = {
       ...baseServices,
       products: platformProducts ?? baseServices.products,
       requestPurchase: platformPurchase ?? baseServices.requestPurchase,
-    }),
-    [baseServices, platformProducts, platformPurchase],
-  );
+    };
+    return accountDeletionServiceGate
+      ? coordinateHostServices(configuredServices, accountDeletionServiceGate)
+      : configuredServices;
+  }, [accountDeletionServiceGate, baseServices, platformProducts, platformPurchase]);
   const configurationWarning = getHostConfigurationWarning(servicesMode);
   const raceBuildEnabled = useMemo(
     () =>
@@ -92,7 +105,11 @@ export function PlayHostApp({
   const serverInteractionActive = pendingServerOperations > 0 || externalInteractionBlocked || !startupComplete;
   const loadedUserIdRef = useRef<string | null>(null);
   const riddleLoadedRef = useRef(false);
+  const riddleLoadInFlightRef = useRef<Promise<boolean> | null>(null);
+  const riddleContextVersionRef = useRef(0);
+  const scheduleRiddleRecoveryRef = useRef<() => void>(() => undefined);
   const playableReportedRef = useRef(false);
+  const accountDeletionCompletedRef = useRef(false);
   const gameModeRef = useRef(gameMode);
   const classicIndexRef = useRef(authSnapshot.profile?.classicIndex);
   gameModeRef.current = gameMode;
@@ -121,7 +138,7 @@ export function PlayHostApp({
   );
 
   useEffect(() => {
-    detectDeviceLanguage(localStorage.getItem("appLanguage") ?? navigator.language);
+    detectDeviceLanguage(safeBrowserStorageGet("local", "appLanguage") ?? navigator.language);
   }, []);
 
   useEffect(
@@ -263,33 +280,53 @@ export function PlayHostApp({
 
   const loadAndPostRiddle = useCallback(
     async (input: {gameMode: WebGameMode; locale: string; classicIndex?: number}, requestId?: string) => {
-      try {
-        setGameMode(input.gameMode);
-        const riddle = await withServerActivity(() => services.loadRiddle(input));
-        riddleLoadedRef.current = true;
-        postToGame({
-          type: "host:riddleLoaded",
-          requestId,
-          payload: {
-            riddle,
-            profile: authSnapshot.profile,
-          },
-        });
-        postOperation(requestId, "loadRiddle", true, {riddleId: riddle.riddleId});
-        trackEvent("level_start", {
-          game_mode: riddle.gameMode,
-          level_name: riddle.index === undefined ? riddle.gameMode : `${riddle.gameMode}_${riddle.index}`,
-          level_number: riddle.index,
-        });
-        setStartupComplete(true);
-      } catch (error) {
-        captureBrowserException(error, {component: "play_host", operation: "loadRiddle"});
-        const message = getHostErrorMessage(error);
-        setNotice(message);
-        postOperation(requestId, "loadRiddle", false, undefined, message);
-      }
+      // Automatic ready/recovery calls may share one request. Correlated game
+      // requests must run independently so their requestId always receives a response.
+      if (!requestId && riddleLoadInFlightRef.current) return riddleLoadInFlightRef.current;
+      const contextVersion = riddleContextVersionRef.current;
+      const pending = (async () => {
+        try {
+          setGameMode(input.gameMode);
+          const riddle = await withServerActivity(() => services.loadRiddle(input));
+          if (contextVersion !== riddleContextVersionRef.current) return false;
+          riddleLoadedRef.current = true;
+          postToGame({
+            type: "host:riddleLoaded",
+            requestId,
+            payload: {
+              riddle,
+              profile: authSnapshot.profile,
+            },
+          });
+          postOperation(requestId, "loadRiddle", true, {riddleId: riddle.riddleId});
+          trackEvent("level_start", {
+            game_mode: riddle.gameMode,
+            level_name: riddle.index === undefined ? riddle.gameMode : `${riddle.gameMode}_${riddle.index}`,
+            level_number: riddle.index,
+          });
+          setNotice(configurationWarning);
+          setStartupComplete(true);
+          if (!playableReportedRef.current) {
+            playableReportedRef.current = true;
+            onPlayable?.();
+          }
+          return true;
+        } catch (error) {
+          riddleLoadedRef.current = false;
+          captureBrowserException(error, {component: "play_host", operation: "loadRiddle"});
+          const message = getHostErrorMessage(error);
+          setNotice(message);
+          postOperation(requestId, "loadRiddle", false, undefined, message);
+          scheduleRiddleRecoveryRef.current();
+          return false;
+        }
+      })();
+      riddleLoadInFlightRef.current = pending;
+      return pending.finally(() => {
+        if (riddleLoadInFlightRef.current === pending) riddleLoadInFlightRef.current = null;
+      });
     },
-    [authSnapshot.profile, postOperation, postToGame, services, withServerActivity],
+    [authSnapshot.profile, configurationWarning, onPlayable, postOperation, postToGame, services, withServerActivity],
   );
   const loadAndPostRiddleRef = useRef(loadAndPostRiddle);
   loadAndPostRiddleRef.current = loadAndPostRiddle;
@@ -324,12 +361,15 @@ export function PlayHostApp({
           onPlayable,
           onAuthoritativeComplete,
           onAccountDeleted,
+          onAccountDeletionRequested,
+          accountDeletionCompletedRef,
         }),
       ),
     [
       applyPurchaseBalance,
       authSnapshot.profile,
       onAccountDeleted,
+      onAccountDeletionRequested,
       authSnapshot.user,
       gameMode,
       loadAndPostRiddle,
@@ -378,25 +418,38 @@ export function PlayHostApp({
   }, [authSnapshot.profile?.classicIndex, authSnapshot.user, frameReady, gameMode, loadAndPostRiddle, locale]);
 
   useEffect(() => {
+    riddleContextVersionRef.current += 1;
+    riddleLoadInFlightRef.current = null;
     riddleLoadedRef.current = false;
     const user = authSnapshot.user;
     if (!user) return;
-
-    const recoverHostAndRiddle = () => {
-      sendInitRef.current();
-      if (!riddleLoadedRef.current) {
-        void loadAndPostRiddleRef.current({
-          gameMode: gameModeRef.current,
-          locale,
-          classicIndex: classicIndexRef.current,
-        });
-      }
+    let cancelled = false;
+    let recoveryTimer: number | undefined;
+    let failedAttempts = 0;
+    const scheduleRecovery = (delayMs: number) => {
+      if (cancelled) return;
+      if (recoveryTimer !== undefined) window.clearTimeout(recoveryTimer);
+      recoveryTimer = window.setTimeout(() => void recoverHostAndRiddle(), delayMs);
     };
-    const initialTimer = window.setTimeout(recoverHostAndRiddle, 250);
-    const recoveryTimer = window.setInterval(recoverHostAndRiddle, 2500);
+    const recoverHostAndRiddle = async () => {
+      sendInitRef.current();
+      if (riddleLoadedRef.current || cancelled) return;
+      const loaded = await loadAndPostRiddleRef.current({
+        gameMode: gameModeRef.current,
+        locale,
+        classicIndex: classicIndexRef.current,
+      });
+      if (loaded || cancelled) return;
+      failedAttempts += 1;
+      const retryDelayMs = Math.min(30_000, 500 * (2 ** Math.min(failedAttempts, 6)));
+      scheduleRecovery(retryDelayMs);
+    };
+    scheduleRiddleRecoveryRef.current = () => scheduleRecovery(250);
+    scheduleRecovery(250);
     return () => {
-      window.clearTimeout(initialTimer);
-      window.clearInterval(recoveryTimer);
+      cancelled = true;
+      scheduleRiddleRecoveryRef.current = () => undefined;
+      if (recoveryTimer !== undefined) window.clearTimeout(recoveryTimer);
     };
   }, [authSnapshot.user?.uid, locale]);
 
@@ -422,7 +475,7 @@ export function PlayHostApp({
 
   return (
     <div className="play-game-shell">
-      {notice && <div className="play-alert game-shell-alert">{notice}</div>}
+      {notice && <div className="play-alert game-shell-alert">{getHostNoticeMessage(notice)}</div>}
       <GameFrameApp
         localBridge
         interactionBlocked={serverInteractionActive}

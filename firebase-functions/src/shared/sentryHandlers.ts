@@ -1,8 +1,19 @@
 import type {CallableFunction, CallableOptions, CallableRequest, CallableResponse, HttpsFunction, HttpsOptions, Request} from "firebase-functions/v2/https";
-import {onCall, onRequest} from "firebase-functions/v2/https";
+import {HttpsError, onCall, onRequest} from "firebase-functions/v2/https";
 import type {ScheduleFunction, ScheduleOptions, ScheduledEvent} from "firebase-functions/v2/scheduler";
 import {onSchedule} from "firebase-functions/v2/scheduler";
+import {BROWSER_CALLABLE_TIMEOUT_SECONDS} from "./callableSecurity";
+import {
+  isJestAccountDeletedError,
+  runWithJestAccountOperationLease,
+} from "../jest/jestAccountDeletion";
 import {captureException, flushSentry} from "./sentry";
+
+/** Internal controls that are never forwarded to the Firebase runtime. */
+interface CallableBoundaryOptions {
+  /** Deletion itself writes the guard and must not acquire a shared lease. */
+  skipJestAccountOperationLease?: boolean;
+}
 
 /**
  * Executes a deployed handler and reports every thrown or rejected value.
@@ -38,9 +49,25 @@ export function onCallWithSentry<T = unknown, Result = unknown, Stream = unknown
   functionName: string,
   options: CallableOptions<T>,
   handler: (request: CallableRequest<T>, response?: CallableResponse<Stream>) => Result | Promise<Result>,
+  boundaryOptions: CallableBoundaryOptions = {},
 ): CallableFunction<T, Promise<Result>, Stream> {
-  return onCall<T, Promise<Result>, Stream>(options, (request, response) =>
-    invokeWithSentry(functionName, handler, [request, response]));
+  return onCall<T, Promise<Result>, Stream>(options, async (request, response) => {
+    const invoke = () => invokeWithSentry(functionName, handler, [request, response]);
+    if (boundaryOptions.skipJestAccountOperationLease || !request.auth) {
+      return invoke();
+    }
+    const timeoutSeconds = typeof options.timeoutSeconds === "number"
+      ? options.timeoutSeconds
+      : BROWSER_CALLABLE_TIMEOUT_SECONDS;
+    try {
+      return await runWithJestAccountOperationLease(request.auth.uid, timeoutSeconds, invoke);
+    } catch (error) {
+      if (isJestAccountDeletedError(error)) {
+        throw new HttpsError("failed-precondition", "This account was permanently deleted.");
+      }
+      throw error;
+    }
+  });
 }
 
 /**

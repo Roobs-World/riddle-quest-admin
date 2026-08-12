@@ -46,7 +46,6 @@ module.exports = {
     "src/play/guidance/guidanceConfig.ts": {statements: 100, branches: 100, functions: 100, lines: 100},
     "src/FatalErrorBoundary.tsx": {statements: 100, branches: 100, functions: 100, lines: 100},
     "src/play/avatarImage.ts": {statements: 100, branches: 100, functions: 100, lines: 100},
-    "src/analytics/firebaseAnalytics.ts": {statements: 100, branches: 100, functions: 100, lines: 100},
     "src/jest/JestSdkPlatform.ts": {statements: 100, branches: 100, functions: 100, lines: 100},
     "src/jest/MockJestPlatform.ts": {statements: 100, branches: 100, functions: 100, lines: 100},
     "src/jest/entryIntent.ts": {statements: 100, branches: 100, functions: 100, lines: 100},

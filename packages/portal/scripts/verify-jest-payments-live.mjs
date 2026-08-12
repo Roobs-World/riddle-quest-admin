@@ -1,4 +1,4 @@
-import {existsSync} from "node:fs";
+import {existsSync, lstatSync} from "node:fs";
 import {chromium} from "@playwright/test";
 
 const gameId = process.env.JEST_GAME_ID || "019faa68-f3ec-755d-9ab5-c887fb426801";
@@ -14,6 +14,13 @@ const functionsBaseUrl = process.env.JEST_FUNCTIONS_BASE_URL ||
 
 if (!existsSync(statePath)) {
   throw new Error(`Missing Jest sandbox browser state: ${statePath}`);
+}
+const stateMetadata = lstatSync(statePath);
+if (!stateMetadata.isFile() || stateMetadata.isSymbolicLink() || (stateMetadata.mode & 0o777) !== 0o600) {
+  throw new Error(`Jest sandbox browser state must be a regular owner-only 0600 file: ${statePath}`);
+}
+if (typeof process.getuid === "function" && stateMetadata.uid !== process.getuid()) {
+  throw new Error(`Jest sandbox browser state must be owned by the current user: ${statePath}`);
 }
 if (process.env.JEST_SANDBOX_PAYMENT_CONFIRM !== productSku) {
   throw new Error(`Set JEST_SANDBOX_PAYMENT_CONFIRM=${productSku} to authorize the zero-dollar sandbox purchase.`);

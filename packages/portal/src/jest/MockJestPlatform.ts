@@ -73,6 +73,11 @@ export class MockJestPlatform implements JestPlatformPort {
   writePlayerData = async (value: JestPlayerData) => {
     globalThis.localStorage?.setItem(MOCK_PLAYER_DATA_KEY, JSON.stringify(value));
   };
+  /** Clears mock client state after authoritative account deletion. */
+  clearPlayerState = async () => {
+    this.preferences = {};
+    globalThis.localStorage?.removeItem(MOCK_PLAYER_DATA_KEY);
+  };
   /** Gets entry intent. */
   getEntryIntent = (): JestEntryIntent => {
     if (typeof location === "undefined") return {};

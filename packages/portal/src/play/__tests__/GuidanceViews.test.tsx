@@ -49,6 +49,7 @@ describe("guidance views", () => {
 
     expect(welcomeHtml).toContain("onboarding-logo");
     expect(welcomeHtml).toContain("Let&#x27;s Play");
+    expect(welcomeHtml).toContain('tabindex="-1"');
     expect(instructionsHtml).toContain("onboarding-clues");
     expect(instructionsHtml).toContain("Got It!");
   });
@@ -90,6 +91,7 @@ describe("guidance views", () => {
   it("renders centered and targeted tooltip presentations", () => {
     const centeredHtml = renderToString(
       <TooltipOverlay
+        cardRef={createRef<HTMLElement>()}
         activeTooltip="profileStats"
         content={{title: "Profile stats", body: "Review your progress"}}
         sequenceIndex={0}
@@ -100,6 +102,7 @@ describe("guidance views", () => {
     );
     const targetedHtml = renderToString(
       <TooltipOverlay
+        cardRef={createRef<HTMLElement>()}
         activeTooltip="profileStats"
         content={{title: "Profile stats", body: "Review your progress"}}
         sequenceIndex={1}
@@ -110,6 +113,9 @@ describe("guidance views", () => {
     );
 
     expect(centeredHtml).toContain("Profile stats");
+    expect(centeredHtml).toContain('aria-labelledby="guidance-tooltip-profileStats-title"');
+    expect(centeredHtml).toContain('aria-describedby="guidance-tooltip-profileStats-body"');
+    expect(centeredHtml).toContain('tabindex="-1"');
     expect(centeredHtml).toContain("1<!-- -->/<!-- -->2");
     expect(targetedHtml).toContain("tooltip-spotlight");
     expect(targetedHtml).toContain("2<!-- -->/<!-- -->2");

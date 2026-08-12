@@ -1,5 +1,10 @@
 {
   "Credits": {
+    "ROLE_DESIGN": "Desain",
+    "ROLE_GAME_DESIGNER_PUBLISHER_HERO": "Desainer Game, Penerbit, dan Pahlawan Segala Hal",
+    "ROLE_INSPIRATION": "Inspirasi",
+    "ROLE_LEAD_DEVELOPER_GAME_DESIGN": "Pengembang Utama & Desain Game",
+    "ROLE_SOUND_DESIGN": "Desain Suara",
     "SUBTITLE": "Temui tim luar biasa di balik Riddle Quest",
     "THANK_YOU_TEXT": "Terima kasih khusus kepada semua kontributor kami yang membuat Riddle Quest menjadi mungkin. Kreativitas, dedikasi, dan semangat Anda menghidupkan proyek ini.",
     "THANK_YOU_TITLE": "Terima kasih!",

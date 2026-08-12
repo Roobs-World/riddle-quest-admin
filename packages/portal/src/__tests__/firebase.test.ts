@@ -56,6 +56,7 @@ describe("Firebase browser adapter", () => {
       "getCurrentDailyChallenge",
       "getCurrentClassicRiddle",
       "completeGame",
+      "submitSinglePlayerGuess",
       "getHint",
       "spendCoins",
       "skipRiddle",
@@ -190,6 +191,19 @@ describe("Firebase environment variants", () => {
     mockInitializeAppCheck.mockClear();
     mockGetToken.mockResolvedValue({token: "attested"});
     const module = await loadWithEnvironment({...completeEnvironment, appCheckSiteKey: "site-key"}, "?source=jest");
+    expect(mockInitializeAppCheck).toHaveBeenCalledTimes(1);
+    await expect(module.ensureFirebaseAppCheckReady()).resolves.toBeUndefined();
+  });
+
+  it("does not let an untrusted production query disable App Check", async () => {
+    mockInitializeAppCheck.mockClear();
+    mockGetToken.mockResolvedValue({token: "attested"});
+    const module = await loadWithEnvironment({
+      ...completeEnvironment,
+      appCheckSiteKey: "site-key",
+      jestRuntime: "1",
+      production: true,
+    }, "?harness=race");
     expect(mockInitializeAppCheck).toHaveBeenCalledTimes(1);
     await expect(module.ensureFirebaseAppCheckReady()).resolves.toBeUndefined();
   });

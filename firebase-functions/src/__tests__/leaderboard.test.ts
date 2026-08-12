@@ -9,9 +9,19 @@
 
 const mockLoggerInfo = jest.fn();
 const mockLoggerError = jest.fn();
+const mockRunWithJestAccountOperationLease = jest.fn(async (
+  _userId: string,
+  _timeoutSeconds: number,
+  operation: () => Promise<unknown>,
+) => operation());
 
 jest.mock("firebase-functions", () => ({
   logger: {info: mockLoggerInfo, warn: jest.fn(), error: mockLoggerError, debug: jest.fn()},
+}));
+
+jest.mock("../jest/jestAccountDeletion", () => ({
+  ...jest.requireActual<typeof import("../jest/jestAccountDeletion")>("../jest/jestAccountDeletion"),
+  runWithJestAccountOperationLease: mockRunWithJestAccountOperationLease,
 }));
 
 // â”€â”€ firebase-admin mock â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -24,6 +34,7 @@ const mockUsersLimit = jest.fn();
 const mockUsersGet = jest.fn();
 const mockUsersDoc = jest.fn();
 const mockUsersDocGet = jest.fn();
+const mockGetAll = jest.fn();
 const mockBatchSet = jest.fn();
 const mockBatchCommit = jest.fn().mockResolvedValue(undefined);
 const mockBatch = jest.fn(() => ({
@@ -44,14 +55,10 @@ const mockUsersQuery = {
   get: mockUsersGet,
 };
 
-const mockUsersDocRef = {
-  get: mockUsersDocGet,
-};
-
 mockOrderBy.mockReturnValue(mockLeaderboardQuery);
 mockLeaderboardLimit.mockReturnValue(mockLeaderboardQuery);
 mockUsersLimit.mockReturnValue(mockUsersQuery);
-mockUsersDoc.mockReturnValue(mockUsersDocRef);
+mockUsersDoc.mockImplementation((id: string) => ({id, path: `users/${id}`, get: mockUsersDocGet}));
 
 const mockCollection = jest.fn((collectionName: string) => {
   if (collectionName === "leaderboard") {
@@ -72,7 +79,7 @@ const mockCollection = jest.fn((collectionName: string) => {
 jest.mock("firebase-admin", () => ({
   initializeApp: jest.fn(),
   apps: [],
-  firestore: jest.fn(() => ({collection: mockCollection, batch: mockBatch})),
+  firestore: jest.fn(() => ({collection: mockCollection, batch: mockBatch, getAll: mockGetAll})),
 }));
 
 // â”€â”€ firebase-functions/v2/https mock â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -143,6 +150,7 @@ describe("updateLeaderboardEntry", () => {
     expect(mockSet).toHaveBeenCalledWith(
       expect.objectContaining({
         userId: "uid-1",
+        subjectUserId: "uid-1",
         username: "Alice",
         level: 2,
         xp: 300,
@@ -205,11 +213,17 @@ describe("updateLeaderboardEntry", () => {
 describe("getLeaderboard callable", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockLeaderboardGet.mockReset();
+    mockUsersGet.mockReset();
+    mockUsersDocGet.mockReset();
+    mockGetAll.mockReset();
     // Re-apply chain because clearAllMocks resets return values
     mockOrderBy.mockReturnValue(mockLeaderboardQuery);
     mockLeaderboardLimit.mockReturnValue(mockLeaderboardQuery);
     mockUsersLimit.mockReturnValue(mockUsersQuery);
-    mockUsersDoc.mockReturnValue(mockUsersDocRef);
+    mockUsersDoc.mockImplementation((id: string) => ({id, path: `users/${id}`, get: mockUsersDocGet}));
+    mockGetAll.mockImplementation(async (...refs: Array<{id: string}>) =>
+      refs.map((ref) => ({exists: true, id: ref.id})));
     mockUsersDocGet.mockResolvedValue({
       exists: false,
       data: () => ({}),
@@ -284,16 +298,15 @@ describe("getLeaderboard callable", () => {
 
     await callGetLeaderboard({uid: "u1"}, {type: "xp", limit: 10});
 
-    expect(mockLeaderboardLimit).toHaveBeenCalledWith(10);
+    expect(mockLeaderboardLimit).toHaveBeenCalledWith(20);
   });
 
-  it("caps limit at 100", async () => {
-    mockLeaderboardGet.mockResolvedValueOnce(makeSnapshot([]));
-    mockUsersGet.mockResolvedValueOnce(makeSnapshot([]));
-
-    await callGetLeaderboard({uid: "u1"}, {type: "xp", limit: 9999});
-
-    expect(mockLeaderboardLimit).toHaveBeenCalledWith(100);
+  it("rejects limits above 100 before querying Firestore", async () => {
+    await expect(callGetLeaderboard({uid: "u1"}, {type: "xp", limit: 101})).rejects.toMatchObject({
+      code: "invalid-argument",
+    });
+    expect(mockLeaderboardGet).not.toHaveBeenCalled();
+    expect(mockUsersGet).not.toHaveBeenCalled();
   });
 
   it("defaults limit to 50 when not provided", async () => {
@@ -302,7 +315,7 @@ describe("getLeaderboard callable", () => {
 
     await callGetLeaderboard({uid: "u1"}, {type: "xp"});
 
-    expect(mockLeaderboardLimit).toHaveBeenCalledWith(50);
+    expect(mockLeaderboardLimit).toHaveBeenCalledWith(100);
   });
 
   it("returns empty entries array when no data", async () => {
@@ -322,7 +335,7 @@ describe("getLeaderboard callable", () => {
     expect((result as {requestingUserId: string}).requestingUserId).toBe("my-uid");
   });
 
-  it("falls back to users collection when leaderboard docs are empty", async () => {
+  it("derives from live users without backfilling a snapshot that could race deletion", async () => {
     mockLeaderboardGet.mockResolvedValueOnce(makeSnapshot([]));
     mockUsersGet.mockResolvedValueOnce({
       docs: [
@@ -350,17 +363,19 @@ describe("getLeaderboard callable", () => {
     expect(typedResult.entries[0].userId).toBe("u1");
     expect(typedResult.entries[1].userId).toBe("u2");
     expect(mockUsersLimit).toHaveBeenCalledWith(1000);
-    expect(mockBatchSet).toHaveBeenCalledTimes(2);
-    expect(mockBatchCommit).toHaveBeenCalledTimes(1);
+    expect(mockBatchSet).not.toHaveBeenCalled();
+    expect(mockBatchCommit).not.toHaveBeenCalled();
   });
 
-  it("dedupes requesting user when legacy duplicate ids share username", async () => {
+  it("suppresses orphan legacy rows without matching on username or avatar", async () => {
     const entries = [
       makeEntry({userId: "u1", username: "Me", xp: 700, progressScore: 2_000_000_700}),
       makeEntry({userId: "legacy-u1", username: "Me", xp: 650, progressScore: 2_000_000_650}),
       makeEntry({userId: "u2", username: "Other", xp: 600, progressScore: 2_000_000_600}),
     ];
     mockLeaderboardGet.mockResolvedValueOnce(makeSnapshot(entries));
+    mockGetAll.mockImplementationOnce(async (...refs: Array<{id: string}>) =>
+      refs.map((ref) => ({exists: ref.id !== "legacy-u1", id: ref.id})));
 
     const result = await callGetLeaderboard({uid: "u1"}, {type: "xp"});
     const typedResult = result as {entries: LeaderboardEntry[]};
@@ -369,23 +384,21 @@ describe("getLeaderboard callable", () => {
     expect(typedResult.entries.find((entry) => entry.username === "Me")?.userId).toBe("u1");
   });
 
-  it("dedupes requesting user via users/{uid} fallback when canonical uid row is missing", async () => {
-    const entries = [
-      makeEntry({userId: "legacy-1", username: "Me", xp: 820, progressScore: 2_000_000_820}),
-      makeEntry({userId: "legacy-2", username: "Me", xp: 700, progressScore: 2_000_000_700}),
-      makeEntry({userId: "u2", username: "Other", xp: 600, progressScore: 2_000_000_600}),
-    ];
-    mockLeaderboardGet.mockResolvedValueOnce(makeSnapshot(entries));
-    mockUsersDocGet.mockResolvedValueOnce({
-      exists: true,
-      data: () => ({username: "Me"}),
+  it("suppresses a noncanonical row even when its embedded user is live", async () => {
+    mockLeaderboardGet.mockResolvedValueOnce({
+      docs: [{
+        id: "legacy-u1",
+        data: () => makeEntry({userId: "u1", username: "Me"}),
+      }, {
+        id: "u2",
+        data: () => makeEntry({userId: "u2", username: "Other"}),
+      }],
     });
 
     const result = await callGetLeaderboard({uid: "u1"}, {type: "xp"});
     const typedResult = result as {entries: LeaderboardEntry[]};
 
-    expect(mockUsersDoc).toHaveBeenCalledWith("u1");
-    expect(typedResult.entries.filter((entry) => entry.username === "Me")).toHaveLength(1);
-    expect(typedResult.entries.find((entry) => entry.username === "Me")?.userId).toBe("u1");
+    expect(typedResult.entries).toEqual([expect.objectContaining({userId: "u2", username: "Other"})]);
+    expect(mockGetAll).toHaveBeenCalledWith(expect.objectContaining({id: "u2"}));
   });
 });

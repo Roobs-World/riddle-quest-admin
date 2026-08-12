@@ -1,0 +1,119 @@
+/** Whether the permanent deletion guard exists in the current test. */
+let deletionGuardExists = false;
+/** Lease documents returned by the current deletion-drain query. */
+let leaseDocuments: Array<{
+  ref: {path: string};
+  data(): unknown;
+}> = [];
+/** Observable ordering across lease acquisition, work, and release. */
+const events: string[] = [];
+/** Creates the permanent deletion guard. */
+const mockDeletionSet = jest.fn(async () => { events.push("guard"); });
+/** Occupies and disables the deterministic Auth UID after guard creation. */
+const mockPreserveDeletedJestAuthUser = jest.fn(async () => { events.push("disable-auth"); });
+/** Releases one active operation lease. */
+const mockLeaseDelete = jest.fn(async () => { events.push("release"); });
+/** Creates one active operation lease transactionally. */
+const mockTransactionCreate = jest.fn(() => { events.push("acquire"); });
+
+/** Permanent guard document used by the Firestore mock. */
+const deletionRef = {
+  path: "jestAccountDeletionTombstones/jest-user",
+  set: mockDeletionSet,
+  collection: () => ({
+    doc: () => ({
+      path: "jestAccountDeletionTombstones/jest-user/activeOperations/lease",
+      delete: mockLeaseDelete,
+    }),
+    limit: () => ({
+      get: async () => ({
+        empty: leaseDocuments.length === 0,
+        docs: leaseDocuments,
+      }),
+    }),
+  }),
+};
+
+/** Firestore surface used by the deletion guard and operation lease. */
+const firestore = Object.assign(() => ({
+  collection: () => ({doc: () => deletionRef}),
+  runTransaction: async (operation: (transaction: unknown) => Promise<unknown>) => operation({
+    get: async () => ({exists: deletionGuardExists}),
+    create: mockTransactionCreate,
+  }),
+}), {FieldValue: {serverTimestamp: () => "server-timestamp"}});
+
+jest.mock("../shared/firebaseAdmin", () => ({admin: {firestore}}));
+jest.mock("../jest/jestDeletedAuthUser", () => ({preserveDeletedJestAuthUser: mockPreserveDeletedJestAuthUser}));
+
+import {
+  JestAccountDeletedError,
+  JestAccountDeletionBusyError,
+  recordJestAccountDeletion,
+  runWithJestAccountOperationLease,
+} from "../jest/jestAccountDeletion";
+
+describe("Jest account operation lease", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    deletionGuardExists = false;
+    leaseDocuments = [];
+    events.length = 0;
+  });
+
+  it("acquires before authenticated work and always releases afterward", async () => {
+    await expect(runWithJestAccountOperationLease("jest-user", 60, async () => {
+      events.push("operation");
+      return "result";
+    })).resolves.toBe("result");
+
+    expect(events).toEqual(["acquire", "operation", "release"]);
+    expect(mockTransactionCreate).toHaveBeenCalledWith(
+      expect.objectContaining({path: expect.stringContaining("/activeOperations/")}),
+      {expiresAt: expect.any(Date)},
+    );
+  });
+
+  it("does not start work after the permanent deletion guard exists", async () => {
+    deletionGuardExists = true;
+    const operation = jest.fn();
+
+    await expect(runWithJestAccountOperationLease("jest-user", 60, operation))
+      .rejects.toBeInstanceOf(JestAccountDeletedError);
+    expect(operation).not.toHaveBeenCalled();
+    expect(mockTransactionCreate).not.toHaveBeenCalled();
+  });
+
+  it("writes the guard first and refuses to sweep while an older lease is active", async () => {
+    const deterministicJestUid = `jest_${"a".repeat(40)}`;
+    leaseDocuments = [{
+      ref: {path: "active-lease"},
+      data: () => ({expiresAt: new Date(Date.now() + 60_000)}),
+    }];
+
+    await expect(recordJestAccountDeletion(deterministicJestUid))
+      .rejects.toBeInstanceOf(JestAccountDeletionBusyError);
+    expect(mockDeletionSet).toHaveBeenCalledWith({
+      schemaVersion: 1,
+      recreationBlocked: true,
+      deletedAt: "server-timestamp",
+    }, {merge: true});
+    expect(mockPreserveDeletedJestAuthUser).toHaveBeenCalledWith(deterministicJestUid);
+    expect(events).toEqual(["guard", "disable-auth"]);
+  });
+
+  it.each([
+    ["past its diagnostic deadline", {expiresAt: new Date(Date.now() - 1)}],
+    ["malformed", {}],
+  ])("keeps legacy deletion fail-closed when a remaining lease is %s", async (_label, leaseData) => {
+    leaseDocuments = [{
+      ref: {path: "orphaned-lease"},
+      data: () => leaseData,
+    }];
+
+    await expect(recordJestAccountDeletion("legacy-firebase-user"))
+      .rejects.toBeInstanceOf(JestAccountDeletionBusyError);
+    expect(mockDeletionSet).toHaveBeenCalledTimes(1);
+    expect(mockPreserveDeletedJestAuthUser).not.toHaveBeenCalled();
+  });
+});

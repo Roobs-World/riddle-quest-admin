@@ -11,12 +11,16 @@ describeSoak("low-end mobile stability", () => {
     const {readFile} = await import("node:fs/promises");
     const path = await import("node:path");
     const packageRoot = path.resolve(__dirname, "../../..");
-    execFileSync("pnpm", ["--filter", "@qwordly/portal", "build:jest"], {
-      cwd: path.resolve(packageRoot, "../.."),
-      stdio: "inherit",
-    });
+    if (process.env.PORTAL_USE_EXISTING_BUILD !== "1") {
+      execFileSync("pnpm", ["--filter", "@qwordly/portal", "build:jest"], {
+        cwd: path.resolve(packageRoot, "../.."),
+        stdio: "inherit",
+      });
+    }
 
-    const distDir = path.join(packageRoot, "dist-jest");
+    const distDir = process.env.PORTAL_JEST_BUILD_DIR
+      ? path.resolve(process.env.PORTAL_JEST_BUILD_DIR)
+      : path.join(packageRoot, "dist-jest");
     const server = createServer(async (request, response) => {
       const requestUrl = new URL(request.url ?? "/", "http://127.0.0.1");
       const candidate = path.join(distDir, requestUrl.pathname === "/" ? "index.html" : requestUrl.pathname);
@@ -69,6 +73,20 @@ describeSoak("low-end mobile stability", () => {
     try {
       await page.goto("http://127.0.0.1:4180/?harness=jest");
       await page.getByText(/what has keys/i).waitFor({timeout: 15_000});
+      const letterA = page.locator(".keyboard").getByRole("button", {name: /^A$/});
+      try {
+        await letterA.waitFor({state: "visible", timeout: 5_000});
+      } catch (error) {
+        const state = await page.evaluate(() => ({
+          activeDialogs: Array.from(document.querySelectorAll("[role='dialog'], [role='alertdialog']"),
+            (dialog) => ({className: dialog.className, text: dialog.textContent?.slice(0, 120)})),
+          gameInert: document.querySelector(".game-app")?.hasAttribute("inert"),
+          keyboardButtons: document.querySelectorAll(".keyboard button").length,
+          onboardingSeen: localStorage.getItem("riddleQuest:onboarding:jest-guest"),
+          tourSeen: localStorage.getItem("riddleQuest:tooltipSequenceSeen:gameTour:v2:jest-guest"),
+        }));
+        throw new Error(`Mobile soak did not reach an interactive keyboard: ${JSON.stringify(state)}`, {cause: error});
+      }
       const cdp = await context.newCDPSession(page);
       await cdp.send("HeapProfiler.collectGarbage");
       const heapSize = () => page.evaluate(() => {
@@ -79,11 +97,14 @@ describeSoak("low-end mobile stability", () => {
       const startedAt = Date.now();
       let cycle = 0;
       while (Date.now() - startedAt < durationMs) {
-        await page.locator(".keyboard").getByRole("button", {name: /^A$/}).click();
+        await letterA.click();
         await page.locator(".keyboard").getByRole("button", {name: /backspace/i}).click();
         if (cycle % 10 === 0) {
           await page.getByRole("button", {name: /^settings$/i}).first().click();
+          const settingsDialog = page.getByRole("dialog", {name: /^settings$/i});
+          await settingsDialog.waitFor({state: "visible"});
           await page.keyboard.press("Escape");
+          await settingsDialog.waitFor({state: "detached"});
         }
         if (cycle % 20 === 0) {
           await page.setViewportSize(cycle % 40 === 0 ? {width: 740, height: 360} : {width: 360, height: 740});

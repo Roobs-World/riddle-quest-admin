@@ -1,3 +1,4 @@
+import type {RefObject} from "react";
 import {tr} from "../i18n";
 import {getTooltipPanelStyle, type TooltipId} from "./guidanceConfig";
 
@@ -11,6 +12,8 @@ export type TooltipContent = {
 
 /** Props required to position and render a guided tooltip. */
 export type TooltipOverlayProps = {
+  /** Stores the active dialog element for focus containment. */
+  cardRef: RefObject<HTMLElement | null>;
   /** Stores active tooltip. */
   activeTooltip: TooltipId;
   /** Stores content. */
@@ -27,6 +30,7 @@ export type TooltipOverlayProps = {
 
 /** Renders a tooltip with an optional spotlight around its target control. */
 export function TooltipOverlay({
+  cardRef,
   activeTooltip,
   content,
   sequenceIndex,
@@ -35,6 +39,8 @@ export function TooltipOverlay({
   onAdvance,
 }: TooltipOverlayProps) {
   const panelStyle = getTooltipPanelStyle(activeTooltip, targetRect, window.innerHeight);
+  const titleId = `guidance-tooltip-${activeTooltip}-title`;
+  const bodyId = `guidance-tooltip-${activeTooltip}-body`;
 
   return (
     <div className="tooltip-backdrop" role="presentation">
@@ -50,15 +56,19 @@ export function TooltipOverlay({
         />
       ) : null}
       <section
+        ref={cardRef}
         className="tooltip-card"
         role="dialog"
         aria-modal="true"
+        aria-labelledby={titleId}
+        aria-describedby={bodyId}
+        tabIndex={-1}
         style={panelStyle}
         data-analytics-screen="tooltip"
       >
         <small>{sequenceIndex + 1}/{sequenceLength}</small>
-        <h3>{content.title}</h3>
-        <p>{content.body}</p>
+        <h3 id={titleId}>{content.title}</h3>
+        <p id={bodyId}>{content.body}</p>
         <button className="play-primary compact" onClick={onAdvance}>
           {tr("Tooltips.GOT_IT_BUTTON")}
         </button>

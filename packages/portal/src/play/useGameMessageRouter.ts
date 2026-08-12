@@ -15,6 +15,20 @@ const getNumber = (value: unknown) => typeof value === "number" ? value : undefi
 /** Gets string array. */
 const getStringArray = (value: unknown): string[] =>
   Array.isArray(value) ? value.filter((item): item is string => typeof item === "string") : [];
+/** Parses canonical guess feedback returned by the backend. */
+const getGuessFeedback = (value: unknown): Array<{
+  letter: string[];
+  feedback: Array<"green" | "yellow" | "red">;
+}> => Array.isArray(value)
+  ? value.flatMap((item) => {
+      const entry = getObject(item);
+      const letter = getString(entry.letter);
+      const status = entry.status;
+      return letter && (status === "green" || status === "yellow" || status === "red")
+        ? [{letter: [letter.toUpperCase()], feedback: [status]}]
+        : [];
+    })
+  : [];
 
 /** Describes game dispatch. */
 type GameDispatch = Dispatch<Parameters<typeof gameSessionReducer>[1]>;
@@ -25,11 +39,13 @@ export function useGameMessageRouter({
   stateRef,
   postToHost,
   requestRiddle,
+  onCompletionResult,
 }: {
   dispatch: GameDispatch;
   stateRef: MutableRefObject<GameSessionState>;
   postToHost: (message: GameToHostMessage) => void;
   requestRiddle: () => void;
+  onCompletionResult?: (ok: boolean) => void;
 }) {
   return useMemo(() => createGameMessageRouter({
     init: (message) => dispatch({
@@ -45,11 +61,34 @@ export function useGameMessageRouter({
     operationResult: async (message) => {
       if (!message.payload.ok) {
         if (message.payload.operation === "leaderboard") dispatch({type: "leaderboardLoadFailed"});
+        if (message.payload.operation === "guess") dispatch({type: "guessFailed"});
+        if (message.payload.operation === "completeGame") onCompletionResult?.(false);
         dispatch({type: "setNotice", notice: message.payload.error ?? "ErrorMessages.GENERIC_UNEXPECTED_ERROR"});
         return;
       }
 
       const data = getObject(message.payload.data);
+      if (message.payload.operation === "guess") {
+        const feedbackItems = getGuessFeedback(data.feedback);
+        const attempts = getNumber(data.attempts);
+        if (attempts === undefined || feedbackItems.length === 0) {
+          dispatch({type: "guessFailed"});
+          dispatch({type: "setNotice", notice: "ErrorMessages.GENERIC_UNEXPECTED_ERROR"});
+          return;
+        }
+        dispatch({
+          type: "guessResolved",
+          feedback: {
+            guess: feedbackItems.flatMap((item) => item.letter),
+            feedback: feedbackItems.flatMap((item) => item.feedback),
+          },
+          attempts,
+          isCorrect: data.isCorrect === true,
+          gameOver: data.gameOver === true,
+          canContinue: data.canContinue === true,
+        });
+        return;
+      }
       if (message.payload.operation === "hint") {
         const index = getNumber(data.index);
         const revealedLetter = getString(data.revealedLetter);
@@ -86,6 +125,7 @@ export function useGameMessageRouter({
         return;
       }
       if (message.payload.operation === "purchase") {
+        if (data.cancelled === true) return;
         if (data.purchaseType === "subscription") {
           dispatch({type: "closeModal"});
           return;
@@ -138,6 +178,7 @@ export function useGameMessageRouter({
             newlyUnlockedAchievementIds: getStringArray(data.newlyUnlockedAchievementIds),
           },
         });
+        onCompletionResult?.(true);
         if (reward && stateRef.current.profile) {
           dispatch({type: "setNotice", notice: tr("GameMessages.COINS_EARNED") + reward});
         }
@@ -165,5 +206,5 @@ export function useGameMessageRouter({
     },
     pause: () => dispatch({type: "pause"}),
     resume: () => dispatch({type: "resume"}),
-  }), [dispatch, postToHost, requestRiddle, stateRef]);
+  }), [dispatch, onCompletionResult, postToHost, requestRiddle, stateRef]);
 }

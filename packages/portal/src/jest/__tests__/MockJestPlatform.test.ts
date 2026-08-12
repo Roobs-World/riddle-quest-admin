@@ -43,6 +43,7 @@ describe("MockJestPlatform", () => {
       value: {
         getItem: (key: string) => values.get(key) ?? null,
         setItem: (key: string, value: string) => values.set(key, value),
+        removeItem: (key: string) => values.delete(key),
       },
     });
     const platform = new MockJestPlatform();
@@ -53,6 +54,9 @@ describe("MockJestPlatform", () => {
     expect(platform.readPlayerData()).toBeNull();
     await platform.writePlayerData(playerData);
     expect(platform.readPlayerData()).toEqual(playerData);
+    await platform.clearPlayerState();
+    expect(platform.readPreferences()).toEqual({});
+    expect(platform.readPlayerData()).toBeNull();
   });
 
   it("contains unavailable and malformed browser storage", async () => {

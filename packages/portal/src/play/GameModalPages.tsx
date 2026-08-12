@@ -153,7 +153,7 @@ export function GameModalPages({
         )}
 
         {state.modal === "about" && (
-          <AboutModalPage />
+          <AboutModalPage onOpenModal={onOpenModal} />
         )}
 
         {state.modal === "treasure" && (

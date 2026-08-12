@@ -28,6 +28,7 @@ describe("runtime mobile capability detection", () => {
   afterEach(() => {
     Reflect.deleteProperty(globalThis, "navigator");
     Reflect.deleteProperty(globalThis, "window");
+    Reflect.deleteProperty(globalThis, "document");
     Reflect.deleteProperty(globalThis, "WebGLRenderingContext");
   });
 
@@ -70,5 +71,35 @@ describe("runtime mobile capability detection", () => {
       reducedMotion: false,
       webGlAvailable: false,
     });
+  });
+
+  it("treats an unavailable WebGL context as unsupported even when the API exists", () => {
+    Object.defineProperty(globalThis, "navigator", {configurable: true, value: {hardwareConcurrency: 8}});
+    Object.defineProperty(globalThis, "window", {
+      configurable: true,
+      value: {matchMedia: jest.fn(() => ({matches: false}))},
+    });
+    Object.defineProperty(globalThis, "document", {
+      configurable: true,
+      value: {createElement: jest.fn(() => ({getContext: jest.fn(() => null)}))},
+    });
+    Object.defineProperty(globalThis, "WebGLRenderingContext", {configurable: true, value: class {}});
+
+    expect(getMobileCapabilities().webGlAvailable).toBe(false);
+  });
+
+  it("contains browser WebGL probing failures", () => {
+    Object.defineProperty(globalThis, "navigator", {configurable: true, value: {hardwareConcurrency: 8}});
+    Object.defineProperty(globalThis, "window", {
+      configurable: true,
+      value: {matchMedia: jest.fn(() => ({matches: false}))},
+    });
+    Object.defineProperty(globalThis, "document", {
+      configurable: true,
+      value: {createElement: jest.fn(() => { throw new Error("canvas blocked"); })},
+    });
+    Object.defineProperty(globalThis, "WebGLRenderingContext", {configurable: true, value: class {}});
+
+    expect(getMobileCapabilities().webGlAvailable).toBe(false);
   });
 });

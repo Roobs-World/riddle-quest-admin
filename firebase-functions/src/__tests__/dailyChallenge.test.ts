@@ -1,5 +1,16 @@
 // Placed at the VERY TOP of the file, before any imports or other jest.mock calls
 const mockAdminFirestoreGet: jest.Mock<() => Promise<MockDocumentSnapshot<any>>> = jest.fn();
+const SESSION_TOKEN = "00000000-0000-4000-8000-000000000001";
+const ROTATED_SESSION_TOKEN = "00000000-0000-4000-8000-000000000002";
+const mockEnsureAuthoritativeSession = jest.fn().mockResolvedValue(SESSION_TOKEN);
+const mockGetIssuedAuthoritativeSession = jest.fn();
+const mockCompleteAuthoritativeGame = jest.fn();
+const mockRecoverPendingAuthoritativeCompletion = jest.fn().mockResolvedValue(false);
+const mockRunWithJestAccountOperationLease = jest.fn(async (
+  _userId: string,
+  _timeoutSeconds: number,
+  operation: () => Promise<unknown>,
+) => operation());
 
 import {afterEach, beforeEach, describe, expect, it, jest, afterAll} from "@jest/globals";
 
@@ -30,6 +41,25 @@ jest.mock("../gameplay/firestoreService", () => ({
 
 jest.mock("../riddles/riddleGeneration", () => ({
   generateTodaysDailyChallenge: jest.fn().mockResolvedValue(undefined),
+}));
+
+jest.mock("../gameplay/singlePlayerSession", () => ({
+  ensureAuthoritativeSession: (...args: unknown[]) => mockEnsureAuthoritativeSession(...args),
+  getIssuedAuthoritativeSession: (...args: unknown[]) => mockGetIssuedAuthoritativeSession(...args),
+}));
+
+jest.mock("../gameplay/completeGameLogic", () => ({
+  completeAuthoritativeGame: (...args: unknown[]) => mockCompleteAuthoritativeGame(...args),
+  isDailyCompletionDateEligible: jest.fn().mockReturnValue(true),
+}));
+
+jest.mock("../gameplay/singlePlayerTerminalRecovery", () => ({
+  recoverPendingAuthoritativeCompletion: (...args: unknown[]) => mockRecoverPendingAuthoritativeCompletion(...args),
+}));
+
+jest.mock("../jest/jestAccountDeletion", () => ({
+  ...jest.requireActual<typeof import("../jest/jestAccountDeletion")>("../jest/jestAccountDeletion"),
+  runWithJestAccountOperationLease: mockRunWithJestAccountOperationLease,
 }));
 
 // Define types for mocked Firestore objects to improve type checking
@@ -82,7 +112,7 @@ jest.mock("firebase-admin", () => {
           (documentPath?: string): MockDocumentReference<T> =>
             ({
               get:
-                collectionPath === "localizedRiddles/en/riddles" && documentPath === "current"
+                /^localizedRiddles\/[^/]+\/riddles$/.test(collectionPath) && documentPath === "current"
                   ? mockAdminFirestoreGet
                   : jest
                       .fn<() => Promise<MockDocumentSnapshot<T>>>()
@@ -154,7 +184,7 @@ const getDefaultPlayer = (userId: string, overrides: Partial<Player> = {}): Play
   return PlayerSchema.parse({
     userId,
     email: `${userId}@example.com`,
-    username: userId,
+    username: userId.slice(0, 24),
     displayName: userId,
     avatarUrl: `http://example.com/avatar/${userId}.png`,
     xp: 0,
@@ -196,6 +226,10 @@ describe("Daily Challenge Functions", () => {
   beforeEach(() => {
     jest.resetModules();
     mockAdminFirestoreGet.mockReset();
+    mockEnsureAuthoritativeSession.mockReset().mockResolvedValue(SESSION_TOKEN);
+    mockGetIssuedAuthoritativeSession.mockReset();
+    mockCompleteAuthoritativeGame.mockReset();
+    mockRecoverPendingAuthoritativeCompletion.mockReset().mockResolvedValue(false);
 
     // Mock Date.now globally and Date constructor
     const mockDate = new Date("2023-01-01T10:00:00.000Z");
@@ -233,6 +267,16 @@ describe("Daily Challenge Functions", () => {
     };
 
     jest.clearAllMocks();
+    mockEnsureAuthoritativeSession.mockResolvedValue(SESSION_TOKEN);
+    mockGetIssuedAuthoritativeSession.mockResolvedValue({
+      gameMode: "classic",
+      attempts: 0,
+      hasUsedContinue: false,
+      awaitingContinue: false,
+      terminal: false,
+      isCorrect: false,
+    });
+    mockCompleteAuthoritativeGame.mockResolvedValue(undefined);
     Object.values(mockLogger).forEach((mock) => mock.mockClear());
   });
 
@@ -260,7 +304,11 @@ describe("Daily Challenge Functions", () => {
         exists: false,
         data: () => undefined,
       } as MockDocumentSnapshot<any>);
-      const mockRequest = {auth: undefined} as CallableRequest<unknown>;
+      const mockUserId = "missingDailyUser";
+      mockGetUser.mockResolvedValue(getDefaultPlayer(mockUserId, {
+        progress: {classicIndex: 10, dailyChallengeIndex: 0, dailyChallengeCurrentQuestion: 0},
+      }));
+      const mockRequest = {auth: {uid: mockUserId}} as CallableRequest<unknown>;
 
       const result = await getCurrentDailyChallenge(mockRequest);
       expect(result.error).toBe("No daily challenge available at the moment.");
@@ -283,7 +331,16 @@ describe("Daily Challenge Functions", () => {
 
       expect(result.challenge).toEqual({
         date: "2023-01-01",
-        questions: [{riddleId: "current", text: "Question 1?", answer: "answer", questionNumber: 1}],
+        questions: [{
+          riddleId: "current",
+          text: "Question 1?",
+          answerLength: 6,
+          sessionToken: SESSION_TOKEN,
+          questionNumber: 1,
+          attemptsUsed: 0,
+          hasUsedContinue: false,
+          awaitingContinue: false,
+        }],
         totalQuestions: 1,
       });
       expect(result.hasCompletedToday).toBe(false); // Player has no lastDailyChallengeCompletedAt
@@ -317,7 +374,7 @@ describe("Daily Challenge Functions", () => {
       expect(mockGetUser).toHaveBeenCalledTimes(1);
     });
 
-    it("should return challenge and completion if user completed challenge today", async () => {
+    it("should reject loading a daily challenge already completed today", async () => {
       const mockUserId = "testUserToday";
       const todayTimestamp = Date.now(); // Use the mocked Date.now
       const mockPlayer = getDefaultPlayer(mockUserId, {
@@ -340,11 +397,8 @@ describe("Daily Challenge Functions", () => {
       const mockRequest = {auth: {uid: mockUserId}} as CallableRequest<unknown>;
       const result = await getCurrentDailyChallenge(mockRequest);
 
-      expect(result.challenge).toEqual({
-        date: "2023-01-01",
-        questions: [{riddleId: "current", text: "Question 1?", answer: "answer", questionNumber: 1}],
-        totalQuestions: 1,
-      });
+      expect(result.challenge).toBeUndefined();
+      expect(result.error).toBe("Today's daily challenge is already complete.");
       expect(result.hasCompletedToday).toBe(true); // Player completed today
       expect(result.currentQuestion).toBe(1);
       expect(result.questionsCompleted).toBe(1);
@@ -396,7 +450,7 @@ describe("Daily Challenge Functions", () => {
       expect(result.error).toBe("An error occurred while fetching the daily challenge.");
     });
 
-    it("should return challenge and false completion if user not authenticated", async () => {
+    it("should require authentication before returning answer-derived metadata", async () => {
       const mockDailyChallenge = createCurrentDailyRiddleDoc();
       mockAdminFirestoreGet.mockResolvedValue({
         exists: true,
@@ -404,14 +458,7 @@ describe("Daily Challenge Functions", () => {
       } as MockDocumentSnapshot<any>);
 
       const mockRequest = {auth: undefined} as CallableRequest<unknown>;
-      const result = await getCurrentDailyChallenge(mockRequest);
-
-      expect(result.challenge).toEqual({
-        date: "2023-01-01",
-        questions: [{riddleId: "current", text: "Question 1?", answer: "answer", questionNumber: 1}],
-        totalQuestions: 1,
-      });
-      expect(result.hasCompletedToday).toBeUndefined(); // Not authenticated means no completion status
+      await expect(getCurrentDailyChallenge(mockRequest)).rejects.toMatchObject({code: "unauthenticated"});
       expect(mockGetUser).not.toHaveBeenCalled();
     });
 
@@ -432,12 +479,8 @@ describe("Daily Challenge Functions", () => {
       const mockRequest = {auth: {uid: mockUserId}} as CallableRequest<unknown>;
       const result = await getCurrentDailyChallenge(mockRequest);
 
-      expect(result.challenge).toEqual({
-        date: "2023-01-02",
-        questions: [{riddleId: "current", text: "Question 1?", answer: "answer", questionNumber: 1}],
-        totalQuestions: 1,
-      });
-      expect(result.hasCompletedToday).toBe(false); // Challenge is not for today
+      expect(result.challenge).toBeUndefined();
+      expect(result.error).toBe("Today's daily challenge is not available yet.");
     });
 
     it("should return error if daily challenge document is missing required fields", async () => {
@@ -451,13 +494,16 @@ describe("Daily Challenge Functions", () => {
         data: () => mockDailyChallengeIncomplete,
       } as MockDocumentSnapshot<any>);
 
-      const mockRequest = {auth: undefined} as CallableRequest<unknown>;
+      const mockUserId = "incompleteDailyUser";
+      mockGetUser.mockResolvedValue(getDefaultPlayer(mockUserId, {
+        progress: {classicIndex: 10, dailyChallengeIndex: 0, dailyChallengeCurrentQuestion: 0},
+      }));
+      const mockRequest = {auth: {uid: mockUserId}} as CallableRequest<unknown>;
       const result = await getCurrentDailyChallenge(mockRequest);
 
       expect(result.error).toBe("Daily challenge data is incomplete. Expected 1 question.");
       expect(mockFirebaseFunctionsV1.logger.error).toHaveBeenCalledWith(
-        "Daily challenge document is missing required question data.",
-        mockDailyChallengeIncomplete,
+        "Daily challenge document is missing required playable question data.",
       );
     });
 
@@ -468,17 +514,33 @@ describe("Daily Challenge Functions", () => {
         data: () => null,
       } as MockDocumentSnapshot<any>);
 
-      const mockRequest = {auth: undefined} as CallableRequest<unknown>;
+      const mockUserId = "nullDailyUser";
+      mockGetUser.mockResolvedValue(getDefaultPlayer(mockUserId));
+      const mockRequest = {auth: {uid: mockUserId}} as CallableRequest<unknown>;
       const result = await getCurrentDailyChallenge(mockRequest);
 
       expect(result.error).toBe("Daily challenge data is incomplete. Expected 1 question.");
       expect(mockFirebaseFunctionsV1.logger.error).toHaveBeenCalledWith(
-        "Daily challenge document is missing required question data.",
-        null,
+        "Daily challenge document is missing required playable question data.",
       );
     });
 
-    it("should set defaults when authenticated user exists but getUser returns null", async () => {
+    it("fails closed when legacy Daily content reveals its answer in the clue", async () => {
+      const mockUserId = "spoiledDailyUser";
+      mockGetUser.mockResolvedValue(getDefaultPlayer(mockUserId));
+      mockAdminFirestoreGet.mockResolvedValue({
+        exists: true,
+        data: () => createCurrentDailyRiddleDoc({text: "The answer is piano.", answer: "piano"}),
+      } as MockDocumentSnapshot<any>);
+
+      const result = await getCurrentDailyChallenge({auth: {uid: mockUserId}} as CallableRequest<unknown>);
+
+      expect(result.challenge).toBeUndefined();
+      expect(result.error).toBe("Daily challenge data is incomplete. Expected 1 question.");
+      expect(mockEnsureAuthoritativeSession).not.toHaveBeenCalled();
+    });
+
+    it("should reject when the authenticated user profile is missing", async () => {
       const mockUserId = "testUserNotFound";
       mockGetUser.mockResolvedValue(undefined);
 
@@ -489,12 +551,163 @@ describe("Daily Challenge Functions", () => {
       } as MockDocumentSnapshot<any>);
 
       const mockRequest = {auth: {uid: mockUserId}} as CallableRequest<unknown>;
-      const result = await getCurrentDailyChallenge(mockRequest);
+      await expect(getCurrentDailyChallenge(mockRequest)).rejects.toMatchObject({code: "not-found"});
+    });
 
-      expect(result.currentQuestion).toBe(0);
-      expect(result.questionsCompleted).toBe(0);
+    it("binds a requested non-English locale into the private play session", async () => {
+      const mockUserId = "frenchDailyUser";
+      mockGetUser.mockResolvedValue(getDefaultPlayer(mockUserId, {preferredLanguage: "en"}));
+      mockAdminFirestoreGet.mockResolvedValue({
+        exists: true,
+        data: () => createCurrentDailyRiddleDoc({answer: "piano"}),
+      } as MockDocumentSnapshot<any>);
+
+      const result = await getCurrentDailyChallenge({
+        auth: {uid: mockUserId},
+        data: {locale: "fr"},
+      } as CallableRequest<{locale?: string}>);
+
+      expect(result.challenge?.questions[0]).toMatchObject({
+        answerLength: 5,
+        sessionToken: SESSION_TOKEN,
+      });
+      expect(mockEnsureAuthoritativeSession).toHaveBeenCalledWith(
+        mockUserId,
+        "challenge",
+        "current",
+        "fr",
+        expect.any(String),
+        "challenge:2023-01-01",
+        "piano",
+        {challengeDate: "2023-01-01"},
+      );
+    });
+
+    it("returns authoritative Continue state when the client has no saved session", async () => {
+      const mockUserId = "awaitingContinueRecovery";
+      mockGetUser.mockResolvedValue(getDefaultPlayer(mockUserId, {lastDailyChallengeCompletedAt: undefined}));
+      mockAdminFirestoreGet.mockResolvedValue({
+        exists: true,
+        data: () => createCurrentDailyRiddleDoc({answer: "piano"}),
+      } as MockDocumentSnapshot<any>);
+      mockGetIssuedAuthoritativeSession.mockResolvedValue({
+        gameMode: "challenge",
+        attempts: 5,
+        hasUsedContinue: false,
+        awaitingContinue: true,
+        terminal: false,
+        isCorrect: false,
+      });
+
+      const result = await getCurrentDailyChallenge({auth: {uid: mockUserId}} as CallableRequest<unknown>);
+
+      expect(result.challenge?.questions[0]).toMatchObject({
+        attemptsUsed: 5,
+        hasUsedContinue: false,
+        awaitingContinue: true,
+      });
+    });
+
+    it("reconciles a locale-independent pending terminal before issuing another locale", async () => {
+      const mockUserId = "parallelLocaleTerminal";
+      const initial = getDefaultPlayer(mockUserId, {
+        lastDailyChallengeCompletedAt: undefined,
+        lastDailyChallengeAttemptedKey: "2023-01-01",
+      });
+      const completed = getDefaultPlayer(mockUserId, {
+        lastDailyChallengeCompletedAt: Date.now(),
+        progress: {classicIndex: 1, dailyChallengeIndex: 1, dailyChallengeCurrentQuestion: 1},
+      });
+      mockGetUser.mockResolvedValueOnce(initial).mockResolvedValueOnce(completed);
+      mockRecoverPendingAuthoritativeCompletion.mockResolvedValueOnce(true);
+      mockAdminFirestoreGet.mockResolvedValue({
+        exists: true,
+        data: () => createCurrentDailyRiddleDoc(),
+      } as MockDocumentSnapshot<any>);
+
+      const result = await getCurrentDailyChallenge({
+        auth: {uid: mockUserId},
+        data: {locale: "de"},
+      } as CallableRequest<{locale?: string}>);
+
+      expect(mockRecoverPendingAuthoritativeCompletion).toHaveBeenCalledWith(
+        mockUserId,
+        "challenge",
+        "challenge:2023-01-01",
+        false,
+      );
+      expect(result).toMatchObject({hasCompletedToday: true, error: "Today's daily challenge is already complete."});
+      expect(mockEnsureAuthoritativeSession).not.toHaveBeenCalled();
+    });
+
+    it("auto-reconciles a terminal bound win when no client resume token survived", async () => {
+      const mockUserId = "lostTerminalWinResponse";
+      const initial = getDefaultPlayer(mockUserId, {lastDailyChallengeCompletedAt: undefined});
+      const completed = getDefaultPlayer(mockUserId, {
+        lastDailyChallengeCompletedAt: Date.now(),
+        progress: {classicIndex: 1, dailyChallengeIndex: 1, dailyChallengeCurrentQuestion: 1},
+      });
+      mockGetUser.mockResolvedValueOnce(initial).mockResolvedValueOnce(completed);
+      mockAdminFirestoreGet.mockResolvedValue({
+        exists: true,
+        data: () => createCurrentDailyRiddleDoc(),
+      } as MockDocumentSnapshot<any>);
+      mockGetIssuedAuthoritativeSession.mockResolvedValue({
+        gameMode: "challenge",
+        attempts: 1,
+        hasUsedContinue: false,
+        awaitingContinue: false,
+        terminal: true,
+        isCorrect: true,
+        challengeDate: "2023-01-01",
+        terminalAt: createTimestampMock("2023-01-01T09:59:00.000Z"),
+      });
+
+      const result = await getCurrentDailyChallenge({auth: {uid: mockUserId}} as CallableRequest<unknown>);
+
+      expect(mockCompleteAuthoritativeGame).toHaveBeenCalledWith(
+        {riddleId: "current", gameMode: "challenge", sessionToken: SESSION_TOKEN},
+        expect.objectContaining({uid: mockUserId}),
+      );
+      expect(result).toMatchObject({hasCompletedToday: true, error: "Today's daily challenge is already complete."});
+    });
+
+    it("records and rotates a terminal bound loss when no client resume token survived", async () => {
+      const mockUserId = "lostTerminalLossResponse";
+      const player = getDefaultPlayer(mockUserId, {lastDailyChallengeCompletedAt: undefined});
+      mockGetUser.mockResolvedValue(player);
+      mockAdminFirestoreGet.mockResolvedValue({
+        exists: true,
+        data: () => createCurrentDailyRiddleDoc(),
+      } as MockDocumentSnapshot<any>);
+      mockEnsureAuthoritativeSession
+        .mockResolvedValueOnce(SESSION_TOKEN)
+        .mockResolvedValueOnce(ROTATED_SESSION_TOKEN);
+      mockGetIssuedAuthoritativeSession
+        .mockResolvedValueOnce({
+          gameMode: "challenge",
+          attempts: 5,
+          hasUsedContinue: false,
+          awaitingContinue: false,
+          terminal: true,
+          isCorrect: false,
+          challengeDate: "2023-01-01",
+          terminalAt: createTimestampMock("2023-01-01T09:59:00.000Z"),
+        })
+        .mockResolvedValueOnce({
+          gameMode: "challenge",
+          attempts: 0,
+          hasUsedContinue: false,
+          awaitingContinue: false,
+          terminal: false,
+          isCorrect: false,
+        });
+
+      const result = await getCurrentDailyChallenge({auth: {uid: mockUserId}} as CallableRequest<unknown>);
+
+      expect(mockCompleteAuthoritativeGame).toHaveBeenCalledTimes(1);
+      expect(result.challenge?.questions[0].sessionToken).toBe(ROTATED_SESSION_TOKEN);
       expect(result.hasCompletedToday).toBe(false);
-      expect(result.challenge).toBeDefined();
     });
   });
 
@@ -514,7 +727,9 @@ describe("Daily Challenge Functions", () => {
 
     it("should return classic challenge payload for authenticated user", async () => {
       const mockUserId = "classicUser";
-      mockGetUser.mockResolvedValue(getDefaultPlayer(mockUserId));
+      mockGetUser.mockResolvedValue(getDefaultPlayer(mockUserId, {
+        progress: {classicIndex: 10, dailyChallengeIndex: 0, dailyChallengeCurrentQuestion: 0},
+      }));
       mockGetClassicRiddleByIndex.mockResolvedValue({
         riddleId: "classic-10",
         text: "Classic question?",
@@ -530,8 +745,16 @@ describe("Daily Challenge Functions", () => {
       const result = await getCurrentClassicRiddle(mockRequest);
 
       expect(result.challenge).toEqual({
-        date: undefined,
-        questions: [{riddleId: "classic-10", text: "Classic question?", answer: "ANSWER", questionNumber: 1}],
+        questions: [{
+          riddleId: "classic-10",
+          text: "Classic question?",
+          answerLength: 6,
+          sessionToken: SESSION_TOKEN,
+          questionNumber: 1,
+          attemptsUsed: 0,
+          hasUsedContinue: false,
+          awaitingContinue: false,
+        }],
         totalQuestions: 1,
       });
       expect(mockGetClassicRiddleByIndex).toHaveBeenCalledWith(10, "en");
@@ -539,7 +762,9 @@ describe("Daily Challenge Functions", () => {
 
     it("should return error when the requested classic riddle is unavailable", async () => {
       const mockUserId = "classicMissingUser";
-      mockGetUser.mockResolvedValue(getDefaultPlayer(mockUserId));
+      mockGetUser.mockResolvedValue(getDefaultPlayer(mockUserId, {
+        progress: {classicIndex: 10, dailyChallengeIndex: 0, dailyChallengeCurrentQuestion: 0},
+      }));
       mockGetClassicRiddleByIndex.mockResolvedValue(undefined);
 
       const mockRequest = {auth: {uid: mockUserId}, data: {classicIndex: 10}} as CallableRequest<{
@@ -550,6 +775,48 @@ describe("Daily Challenge Functions", () => {
       const result = await getCurrentClassicRiddle(mockRequest);
 
       expect(result.error).toBe("No classic riddle available at index 10.");
+    });
+
+    it("falls back to the same playable English index for invalid legacy localized content", async () => {
+      const mockUserId = "legacyLocalizedClassicUser";
+      mockGetUser.mockResolvedValue(getDefaultPlayer(mockUserId, {
+        progress: {classicIndex: 10, dailyChallengeIndex: 0, dailyChallengeCurrentQuestion: 0},
+      }));
+      mockGetClassicRiddleByIndex
+        .mockResolvedValueOnce({riddleId: "classic-10", text: "Indice local", answer: "deux mots", locale: "fr"})
+        .mockResolvedValueOnce({riddleId: "classic-10", text: "English fallback clue?", answer: "clock", locale: "en"});
+
+      const result = await getCurrentClassicRiddle({
+        auth: {uid: mockUserId},
+        data: {classicIndex: 10, locale: "fr"},
+      });
+
+      expect(result.challenge?.questions[0]).toMatchObject({text: "English fallback clue?", answerLength: 5});
+      expect(mockGetClassicRiddleByIndex).toHaveBeenNthCalledWith(1, 10, "fr");
+      expect(mockGetClassicRiddleByIndex).toHaveBeenNthCalledWith(2, 10, "en");
+      expect(mockEnsureAuthoritativeSession).toHaveBeenCalledWith(
+        mockUserId,
+        "classic",
+        "classic-10",
+        "en",
+        expect.any(String),
+        "classic:10",
+        "clock",
+        {classicIndex: 10},
+      );
+    });
+
+    it("rejects loading a Classic riddle out of sequence", async () => {
+      const mockUserId = "classicOutOfOrderUser";
+      mockGetUser.mockResolvedValue(getDefaultPlayer(mockUserId, {
+        progress: {classicIndex: 10, dailyChallengeIndex: 0, dailyChallengeCurrentQuestion: 0},
+      }));
+
+      await expect(getCurrentClassicRiddle({
+        auth: {uid: mockUserId},
+        data: {classicIndex: 11, locale: "en"},
+      })).rejects.toMatchObject({code: "permission-denied"});
+      expect(mockGetClassicRiddleByIndex).not.toHaveBeenCalled();
     });
   });
 });

@@ -79,18 +79,18 @@ describe("Request Schemas", () => {
         CompleteGameRequestDataSchema.parse({
           riddleId: "daily_2026-05-27",
           gameMode: "challenge",
-          attempts: 3,
-          isCorrect: true,
+          sessionToken: "00000000-0000-4000-8000-000000000001",
         }),
       ).toEqual({
         riddleId: "daily_2026-05-27",
         gameMode: "challenge",
-        attempts: 3,
-        isCorrect: true,
+        sessionToken: "00000000-0000-4000-8000-000000000001",
       });
 
       expect(
         CompleteGameResponseDataSchema.parse({
+          attempts: 3,
+          isCorrect: true,
           coinsEarned: 20,
           newlyUnlockedAchievementIds: ["first_win"],
           scoreEarned: 80,
@@ -101,6 +101,8 @@ describe("Request Schemas", () => {
           newWinStreak: 1,
         }),
       ).toEqual({
+        attempts: 3,
+        isCorrect: true,
         coinsEarned: 20,
         newlyUnlockedAchievementIds: ["first_win"],
         scoreEarned: 80,
@@ -375,11 +377,11 @@ describe("Request Schemas", () => {
 
       expect(incorrectResponse.isCorrect).toBe(false);
       expect(incorrectResponse.coinsEarned).toBeUndefined();
-      expect(incorrectResponse.correctAnswer).toBeUndefined();
+      expect(incorrectResponse).not.toHaveProperty("correctAnswer");
     });
 
-    test("should handle game over response with correct answer", () => {
-      const gameOverResponse: SubmitGuessResponseData = {
+    test("rejects answer disclosure in a game-over response", () => {
+      expect(SubmitGuessResponseDataSchema.safeParse({
         feedback: [
           {letter: "F", status: "red"},
           {letter: "A", status: "yellow"},
@@ -387,12 +389,9 @@ describe("Request Schemas", () => {
           {letter: "L", status: "red"},
         ],
         isCorrect: false,
+        gameOver: true,
         correctAnswer: "WORD",
-      };
-
-      expect(gameOverResponse.isCorrect).toBe(false);
-      expect(gameOverResponse.correctAnswer).toBe("WORD");
-      expect(gameOverResponse.coinsEarned).toBeUndefined();
+      }).success).toBe(false);
     });
 
     test("should handle optional properties correctly", () => {
@@ -409,32 +408,20 @@ describe("Request Schemas", () => {
         coinsEarned: 15,
       };
 
-      // Response with correctAnswer
-      const responseWithAnswer: SubmitGuessResponseData = {
-        feedback: [{letter: "C", status: "red"}],
-        isCorrect: false,
-        correctAnswer: "TEST",
-      };
-
-      // Response with both optional properties
-      const responseWithBoth: SubmitGuessResponseData = {
+      const responseWithCoinsAndAchievements: SubmitGuessResponseData = {
         feedback: [{letter: "D", status: "green"}],
         isCorrect: true,
         coinsEarned: 10,
-        correctAnswer: "BONUS", // Could be provided even when correct for logging
+        newlyUnlockedAchievementIds: ["first_win"],
       };
 
       expect(basicResponse.coinsEarned).toBeUndefined();
-      expect(basicResponse.correctAnswer).toBeUndefined();
+      expect(basicResponse).not.toHaveProperty("correctAnswer");
 
       expect(responseWithCoins.coinsEarned).toBe(15);
-      expect(responseWithCoins.correctAnswer).toBeUndefined();
-
-      expect(responseWithAnswer.coinsEarned).toBeUndefined();
-      expect(responseWithAnswer.correctAnswer).toBe("TEST");
-
-      expect(responseWithBoth.coinsEarned).toBe(10);
-      expect(responseWithBoth.correctAnswer).toBe("BONUS");
+      expect(responseWithCoins).not.toHaveProperty("correctAnswer");
+      expect(responseWithCoinsAndAchievements.coinsEarned).toBe(10);
+      expect(responseWithCoinsAndAchievements.newlyUnlockedAchievementIds).toEqual(["first_win"]);
     });
 
     test("should handle empty feedback array", () => {
@@ -532,7 +519,6 @@ describe("Request Schemas", () => {
           status: "red" as FeedbackColorValue,
         })),
         isCorrect: false,
-        correctAnswer: "DICTIONARY",
       };
 
       expect(shortRequest.guess.length).toBe(1);

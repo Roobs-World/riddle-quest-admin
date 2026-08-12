@@ -1,6 +1,10 @@
 import type {ReactElement} from "react";
 import {FatalErrorBoundary} from "../FatalErrorBoundary";
-import {configureAnalytics, resetAnalyticsForTests} from "../analytics/googleAnalytics";
+import {
+  configureAnalytics,
+  resetAnalyticsForTests,
+  setAnalyticsCollectionEnabled,
+} from "../analytics/googleAnalytics";
 import {captureBrowserException} from "../observability/sentry";
 
 jest.mock("../observability/sentry", () => ({captureBrowserException: jest.fn()}));
@@ -24,6 +28,7 @@ describe("FatalErrorBoundary", () => {
     expect(FatalErrorBoundary.getDerivedStateFromError(error)).toEqual({error});
     const report = jest.spyOn(console, "error").mockImplementation(() => undefined);
     const analytics = jest.fn();
+    setAnalyticsCollectionEnabled(true);
     configureAnalytics(analytics);
     const boundary = new FatalErrorBoundary({children: "game"});
 
@@ -46,10 +51,12 @@ describe("FatalErrorBoundary", () => {
     const fallback = boundary.render() as ReactElement<{children: ReactElement<{children: ReactElement[]}>}>;
     const panel = fallback.props.children;
     const children = panel.props.children;
-    expect(children[0].props.children).toBe("Riddle Quest stopped unexpectedly");
+    expect(children[0].props.children).toBe("Startup failed");
+    expect(children[1].props.children).toBe("An unexpected error occurred. Please try again.");
     expect(panel.props.role).toBe("alert");
-    expect(children).toHaveLength(2);
-    children[1].props.onClick();
+    expect(children).toHaveLength(3);
+    expect(children[2].props.children).toBe("Retry");
+    children[2].props.onClick();
     expect(reload).toHaveBeenCalledTimes(1);
   });
 });

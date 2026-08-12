@@ -26,8 +26,8 @@
     "SIGN_IN_TO_CONTINUE": "Zaloguj się, aby kontynuować.",
     "TOO_MANY_FAILED_ATTEMPTS": "Zbyt wiele nieudanych prób. Spróbuj ponownie później.",
     "WRONG_PASSWORD_TRY_AGAIN": "Nieprawidłowe hasło. Spróbuj ponownie.",
-    "UNKNOWN_ERROR": "Wyst?pi? nieznany b??d.",
-    "FATAL_STARTUP_TITLE": "Uruchamianie nie powiod?o si?",
-    "FATAL_STARTUP_MESSAGE": "Nie uda?o si? wczyta? t?a uk?adu s?onecznego. Uruchom ponownie aplikacj?."
+    "UNKNOWN_ERROR": "Wystąpił nieznany błąd.",
+    "FATAL_STARTUP_TITLE": "Uruchamianie nie powiodło się",
+    "FATAL_STARTUP_MESSAGE": "Nie udało się wczytać tła układu słonecznego. Uruchom ponownie aplikację."
   }
 }

@@ -1,5 +1,6 @@
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
+import {RACE_CHALLENGE_TTL_MS} from "@qwordly/core/race";
 import {
   abandonRaceRunForUser,
   getRaceOutcomeForUser,
@@ -12,10 +13,58 @@ import {
   startRaceRunForUser,
   submitRaceGuessForUser,
 } from "../../race/raceService";
+import {removeCrossUserRaceIdentitySnapshots} from "../../profile/accountDeletion/deleteAccountData";
+import {requestDocumentId} from "../../race/raceSetupService";
 
 const PROJECT_ID = process.env.GCLOUD_PROJECT ?? "riddle-quest-ec2b2";
 const NOW = 1_800_000_000_000;
 let db: FirebaseFirestore.Firestore;
+
+/** Creates a manually released promise for deterministic transaction interleavings. */
+function deferred(): {promise: Promise<void>; resolve(): void} {
+  let resolvePromise: (() => void) | undefined;
+  const promise = new Promise<void>((resolve) => { resolvePromise = resolve; });
+  return {promise, resolve: () => resolvePromise?.()};
+}
+
+/** Pauses the first transaction after it reads one selected document. */
+function pauseAfterDocumentRead(
+  firestore: FirebaseFirestore.Firestore,
+  runPath: string,
+  parentRead: ReturnType<typeof deferred>,
+  release: ReturnType<typeof deferred>,
+): FirebaseFirestore.Firestore {
+  let shouldPause = true;
+  return new Proxy(firestore, {
+    get(target, property) {
+      if (property === "runTransaction") {
+        return <T>(operation: (transaction: FirebaseFirestore.Transaction) => Promise<T>) =>
+          target.runTransaction(async (transaction) => operation(new Proxy(transaction, {
+            get(transactionTarget, transactionProperty) {
+              if (transactionProperty === "get") {
+                return async (reference: unknown) => {
+                  const snapshot = await Reflect.apply(transactionTarget.get, transactionTarget, [reference]);
+                  const referencePath = typeof reference === "object" && reference !== null && "path" in reference
+                    ? (reference as {path?: unknown}).path
+                    : undefined;
+                  if (shouldPause && referencePath === runPath) {
+                    shouldPause = false;
+                    parentRead.resolve();
+                    await release.promise;
+                  }
+                  return snapshot;
+                };
+              }
+              const value = Reflect.get(transactionTarget, transactionProperty, transactionTarget);
+              return typeof value === "function" ? value.bind(transactionTarget) : value;
+            },
+          })));
+      }
+      const value = Reflect.get(target, property, target);
+      return typeof value === "function" ? value.bind(target) : value;
+    },
+  });
+}
 
 const clearCollection = async (name: string) => {
   await db.recursiveDelete(db.collection(name));
@@ -25,7 +74,16 @@ beforeAll(async () => {
   if (getApps().length === 0) initializeApp({projectId: PROJECT_ID});
   db = getFirestore();
   await Promise.all(
-    ["localizedRiddles", "raceRuns", "raceDecks", "raceChallenges", "raceAttempts", "raceStartRequests", "users"].map(
+    [
+      "localizedRiddles",
+      "raceRuns",
+      "raceDecks",
+      "raceChallenges",
+      "raceAttempts",
+      "raceStartRequests",
+      "jestAccountDeletionTombstones",
+      "users",
+    ].map(
       clearCollection,
     ),
   );
@@ -44,15 +102,25 @@ beforeAll(async () => {
       qualityVersion: "human_review_v1",
     });
   }
-  batch.set(db.doc("users/creator-1"), {displayName: "Ada"});
+  batch.set(db.doc("users/creator-1"), {displayName: "Ada", avatarUrl: "https://example.test/ada.png"});
   batch.set(db.doc("users/challenger-1"), {displayName: "Grace"});
+  batch.set(db.doc("users/challenger-interleave"), {displayName: "Lin"});
+  batch.set(db.doc("users/tombstone-challenger"), {displayName: "Katherine"});
   batch.set(db.doc("raceConfig/rollout"), {enabled: true, percentage: 100, allowlistHashes: []});
   await batch.commit();
 });
 
 afterAll(async () => {
   await Promise.all(
-    ["raceRuns", "raceDecks", "raceChallenges", "raceAttempts", "raceStartRequests", "users"].map(clearCollection),
+    [
+      "raceRuns",
+      "raceDecks",
+      "raceChallenges",
+      "raceAttempts",
+      "raceStartRequests",
+      "jestAccountDeletionTombstones",
+      "users",
+    ].map(clearCollection),
   );
 });
 
@@ -69,13 +137,22 @@ describe("Race to 10 transactional service", () => {
 
     expect(duplicate).toEqual(first);
     expect(first).toMatchObject({run: {status: "abandoned", currentRiddle: null}, result: null});
-    expect((await db.doc(`raceRuns/${started.run.runId}`).get()).data()).toMatchObject({
+    const runRef = db.doc(`raceRuns/${started.run.runId}`);
+    const storedRun = (await runRef.get()).data()!;
+    expect(storedRun).toMatchObject({
       status: "abandoned",
       result: null,
     });
+    const receiptRef = runRef.collection("requests").doc(requestDocumentId("creator-1", input.requestId));
+    const receipt = (await receiptRef.get()).data()!;
+    expect(receipt.expiresAt.toMillis()).toBe(storedRun.expiresAt.toMillis());
     await expect(getRaceOutcomeForUser("creator-1", started.run.runId, {db, nowMs: NOW + 7_000})).rejects.toMatchObject(
       {code: "failed-precondition"},
     );
+    await runRef.delete();
+    await expect(abandonRaceRunForUser("creator-1", input, {db, nowMs: NOW + 8_000})).rejects.toMatchObject({
+      code: "not-found",
+    });
   });
 
   it("keeps starts and penalties idempotent and preserves elapsed time on resume", async () => {
@@ -175,6 +252,109 @@ describe("Race to 10 transactional service", () => {
     expect(JSON.stringify(await getRaceChallengePreview(published.challengeId, {db, nowMs: NOW + 82_000}))).not.toMatch(
       /answer|riddles|ghostEvents/,
     );
+
+    const guardedChallenger = await startRaceRunForUser(
+      "tombstone-challenger",
+      {locale: "en", challengeId: published.challengeId, requestId: "guarded-start-0001"},
+      {db, nowMs: NOW + 83_000},
+    );
+    const guardedRunRef = db.doc(`raceRuns/${guardedChallenger.run.runId}`);
+    const guardedRecord = (await guardedRunRef.get()).data()!;
+    const guardedCreatorDeletionRef = db.doc("jestAccountDeletionTombstones/creator-1");
+    const guardedRunRead = deferred();
+    const releaseGuardedMutation = deferred();
+    const guardedDb = pauseAfterDocumentRead(
+      db,
+      guardedRunRef.path,
+      guardedRunRead,
+      releaseGuardedMutation,
+    );
+    const guardedInput = {
+      runId: guardedChallenger.run.runId,
+      riddleId: guardedRecord.riddles[0].riddleId,
+      guess: "xxxxxxx",
+      requestId: "guarded-guess-0001",
+    };
+    const guardedMutation = submitRaceGuessForUser(
+      "tombstone-challenger",
+      guardedInput,
+      {db: guardedDb, nowMs: NOW + 84_000},
+    );
+    try {
+      await guardedRunRead.promise;
+      await guardedCreatorDeletionRef.set({schemaVersion: 1, recreationBlocked: true});
+      releaseGuardedMutation.resolve();
+      const guardedResponse = await guardedMutation;
+      expect(guardedResponse.run.opponent).toEqual(expect.objectContaining({displayName: "Riddle Quest player"}));
+      expect(guardedResponse.run.opponent).not.toHaveProperty("avatarUrl");
+      const persistedGuardedRun = (await guardedRunRef.get()).data()!;
+      expect(persistedGuardedRun.opponent).not.toHaveProperty("subjectUserId");
+      expect(persistedGuardedRun.opponent).not.toHaveProperty("avatarUrl");
+      const guardedReceipt = (await guardedRunRef.collection("requests")
+        .doc(requestDocumentId("tombstone-challenger", guardedInput.requestId)).get()).data()!;
+      expect(guardedReceipt.response.run.opponent).toEqual(expect.objectContaining({
+        displayName: "Riddle Quest player",
+      }));
+      expect(guardedReceipt.response.run.opponent).not.toHaveProperty("avatarUrl");
+
+      const challengeData = (await db.doc(`raceChallenges/${published.challengeId}`).get()).data()!;
+      const privacyChallengeId = "privacy-preview-challenge";
+      const privacyChallengeRef = db.doc(`raceChallenges/${privacyChallengeId}`);
+      await privacyChallengeRef.set({...challengeData, challengeId: privacyChallengeId});
+      const privatePreview = await getRaceChallengePreview(privacyChallengeId, {db, nowMs: NOW + 85_000});
+      expect(privatePreview.creator).toEqual({displayName: "Riddle Quest player"});
+      expect((await privacyChallengeRef.get()).data()?.creatorSnapshot).toEqual({
+        displayName: "Riddle Quest player",
+      });
+
+      const privacyInboxRef = db.doc("users/inbox-owner/raceInbox/privacy-inbox-item");
+      await privacyInboxRef.set({
+        itemId: "privacy-inbox-item",
+        challengeId: published.challengeId,
+        opponentUserId: "creator-1",
+        opponentDisplayName: "Ada",
+        opponentAvatarUrl: "https://example.test/ada.png",
+        categoryId: "history",
+        result: "loss",
+        adjustedDeltaMs: 1,
+        read: false,
+        createdAtMs: NOW + 85_000,
+      });
+      const privateInbox = await listRaceInboxForUser("inbox-owner", {limit: 20}, db);
+      expect(privateInbox.items[0]).toEqual(expect.objectContaining({
+        opponentDisplayName: "Riddle Quest player",
+      }));
+      expect(privateInbox.items[0]).not.toHaveProperty("opponentAvatarUrl");
+      expect((await privacyInboxRef.get()).data()).toMatchObject({
+        opponentUserId: "creator-1",
+        opponentDisplayName: "Riddle Quest player",
+      });
+      expect((await privacyInboxRef.get()).data()).not.toHaveProperty("opponentAvatarUrl");
+
+      await guardedRunRef.update({currentPosition: 9, correctCount: 9, guessesUsed: 0});
+      const finishingRecord = (await guardedRunRef.get()).data()!;
+      const creatorStatsBefore = (await db.doc("users/creator-1").get()).data()?.stats;
+      const guardedFinish = await submitRaceGuessForUser(
+        "tombstone-challenger",
+        {
+          runId: guardedChallenger.run.runId,
+          riddleId: finishingRecord.riddles[9].riddleId,
+          guess: finishingRecord.riddles[9].answer,
+          requestId: "guarded-finish-0001",
+        },
+        {db, nowMs: NOW + 86_000},
+      );
+      expect(guardedFinish.run.opponent).toEqual(expect.objectContaining({displayName: "Riddle Quest player"}));
+      expect((await db.doc(
+        `users/creator-1/raceInbox/${requestDocumentId(published.challengeId, "tombstone-challenger")}`,
+      ).get()).exists).toBe(false);
+      expect((await db.doc("users/creator-1").get()).data()?.stats).toEqual(creatorStatsBefore);
+      await privacyChallengeRef.delete();
+    } finally {
+      releaseGuardedMutation.resolve();
+      await guardedCreatorDeletionRef.delete();
+    }
+
     await expect(
       startRaceRunForUser(
         "creator-1",
@@ -182,6 +362,31 @@ describe("Race to 10 transactional service", () => {
         {db, nowMs: NOW + 85_000},
       ),
     ).rejects.toMatchObject({code: "failed-precondition"});
+
+    const creatorDeletionRef = db.doc("jestAccountDeletionTombstones/creator-1");
+    let injectedCreatorDeletion = false;
+    const interleavingDb = {
+      collection: db.collection.bind(db),
+      doc: db.doc.bind(db),
+      runTransaction: async <T>(operation: (transaction: FirebaseFirestore.Transaction) => Promise<T>) => {
+        if (!injectedCreatorDeletion) {
+          injectedCreatorDeletion = true;
+          await creatorDeletionRef.set({recreationBlocked: true});
+        }
+        return db.runTransaction(operation);
+      },
+    } as unknown as FirebaseFirestore.Firestore;
+    try {
+      await expect(startRaceRunForUser(
+        "challenger-1",
+        {locale: "en", challengeId: published.challengeId, requestId: "deletion-race-start-0001"},
+        {db: interleavingDb, nowMs: NOW + 89_000},
+      )).rejects.toThrow("account-deleted");
+    } finally {
+      await creatorDeletionRef.delete();
+    }
+    expect(injectedCreatorDeletion).toBe(true);
+    expect((await db.collection("raceStartRequests").where("userId", "==", "challenger-1").get()).empty).toBe(true);
 
     const challenger = await startRaceRunForUser(
       "challenger-1",
@@ -193,6 +398,13 @@ describe("Race to 10 transactional service", () => {
     expect(challengerRecord.riddles.map((riddle: {canonicalRiddleId: string}) => riddle.canonicalRiddleId)).toEqual(
       creatorRecord.riddles.map((riddle: {canonicalRiddleId: string}) => riddle.canonicalRiddleId),
     );
+    expect(challengerRecord.opponent).toMatchObject({subjectUserId: "creator-1", displayName: "Ada"});
+    expect(challenger.run.opponent).not.toHaveProperty("subjectUserId");
+    const interleavingChallenger = await startRaceRunForUser(
+      "challenger-interleave",
+      {locale: "en", challengeId: published.challengeId, requestId: "interleave-start-0001"},
+      {db, nowMs: NOW + 90_500},
+    );
     await expect(
       startRaceRunForUser(
         "challenger-1",
@@ -201,12 +413,18 @@ describe("Race to 10 transactional service", () => {
       ),
     ).rejects.toMatchObject({code: "already-exists"});
 
+    const firstChallengerRequest = {
+      runId: challenger.run.runId,
+      riddleId: challengerRecord.riddles[0].riddleId,
+      guess: challengerRecord.riddles[0].answer,
+      requestId: "challenger-solve-0000",
+    };
     for (let solved = 0; solved < 10; solved += 1) {
       const stored = (await db.doc(`raceRuns/${challenger.run.runId}`).get()).data()!;
       const riddle = stored.riddles[stored.currentPosition];
       await submitRaceGuessForUser(
         "challenger-1",
-        {
+        solved === 0 ? firstChallengerRequest : {
           runId: challenger.run.runId,
           riddleId: riddle.riddleId,
           guess: riddle.answer,
@@ -215,6 +433,22 @@ describe("Race to 10 transactional service", () => {
         {db, nowMs: NOW + 94_000 + solved * 4_000},
       );
     }
+    const firstChallengerReceipt = (await db.doc(
+      `raceRuns/${challenger.run.runId}/requests/${requestDocumentId("challenger-1", firstChallengerRequest.requestId)}`,
+    ).get()).data()!;
+    expect(firstChallengerReceipt.response.run.opponent).toEqual(expect.objectContaining({
+      displayName: "Riddle Quest player",
+    }));
+    expect(firstChallengerReceipt.response.run.opponent).not.toHaveProperty("avatarUrl");
+    const hydratedReplay = await submitRaceGuessForUser(
+      "challenger-1",
+      firstChallengerRequest,
+      {db, nowMs: NOW + 134_000},
+    );
+    expect(hydratedReplay.run.opponent).toEqual(expect.objectContaining({
+      displayName: "Ada",
+      avatarUrl: "https://example.test/ada.png",
+    }));
     const challengerOutcome = await getRaceOutcomeForUser("challenger-1", challenger.run.runId, {
       db,
       nowMs: NOW + 135_000,
@@ -241,10 +475,14 @@ describe("Race to 10 transactional service", () => {
         read: false,
       }),
     ]);
+    expect(firstInbox.items[0]).not.toHaveProperty("opponentUserId");
+    expect(firstInbox.items[0]).not.toHaveProperty("expiresAt");
     const reopenedInbox = await listRaceInboxForUser("creator-1", {limit: 20}, db);
     expect(reopenedInbox.items[0]).toMatchObject({read: true});
 
     const template = (await db.collection("users/creator-1/raceInbox").limit(1).get()).docs[0].data();
+    expect(template).toMatchObject({opponentUserId: "challenger-1"});
+    expect(template.expiresAt.toMillis() - template.createdAtMs).toBe(RACE_CHALLENGE_TTL_MS);
     await db.doc("users/creator-1/raceInbox/page-item-a").set({
       ...template,
       itemId: "page-item-a",
@@ -334,7 +572,84 @@ describe("Race to 10 transactional service", () => {
         {db, nowMs: NOW + 220_000},
       ),
     ).rejects.toMatchObject({code: "failed-precondition"});
-  });
+
+    const interleavingRequest = {
+      runId: interleavingChallenger.run.runId,
+      riddleId: interleavingChallenger.run.currentRiddle!.riddleId,
+      guess: "xxxxxxx",
+      requestId: "interleave-guess-0001",
+    };
+    const parentRead = deferred();
+    const releaseMutation = deferred();
+    const phaseOneCommitStarted = deferred();
+    const originalBatch = db.batch.bind(db);
+    let signalFirstDeletionBatch = true;
+    const batchSpy = jest.spyOn(db, "batch").mockImplementation(() => {
+      const batch = originalBatch();
+      return new Proxy(batch, {
+        get(target, property) {
+          if (property === "commit") {
+            return async () => {
+              if (signalFirstDeletionBatch) {
+                signalFirstDeletionBatch = false;
+                phaseOneCommitStarted.resolve();
+              }
+              return target.commit();
+            };
+          }
+          const value = Reflect.get(target, property, target);
+          return typeof value === "function" ? value.bind(target) : value;
+        },
+      });
+    });
+    const receiptInterleavingDb = pauseAfterDocumentRead(
+      db,
+      `raceRuns/${interleavingChallenger.run.runId}`,
+      parentRead,
+      releaseMutation,
+    );
+    const mutation = submitRaceGuessForUser(
+      "challenger-interleave",
+      interleavingRequest,
+      {db: receiptInterleavingDb, nowMs: NOW + 100_000},
+    );
+    try {
+      await parentRead.promise;
+      const deletion = removeCrossUserRaceIdentitySnapshots("creator-1");
+      await phaseOneCommitStarted.promise;
+      releaseMutation.resolve();
+      await Promise.all([mutation, deletion]);
+    } finally {
+      releaseMutation.resolve();
+      batchSpy.mockRestore();
+    }
+
+    const replayAfterCreatorDeletion = await submitRaceGuessForUser(
+      "challenger-1",
+      firstChallengerRequest,
+      {db, nowMs: NOW + 221_000},
+    );
+    expect(replayAfterCreatorDeletion.run.opponent).toEqual(expect.objectContaining({
+      displayName: "Riddle Quest player",
+    }));
+    expect(replayAfterCreatorDeletion.run.opponent).not.toHaveProperty("avatarUrl");
+
+    const interleavingReplay = await submitRaceGuessForUser(
+      "challenger-interleave",
+      interleavingRequest,
+      {db, nowMs: NOW + 101_000},
+    );
+    expect(interleavingReplay.run.opponent).toEqual(expect.objectContaining({
+      displayName: "Riddle Quest player",
+    }));
+    expect(interleavingReplay.run.opponent).not.toHaveProperty("avatarUrl");
+    const persistedInterleavingRun = (await db.doc(`raceRuns/${interleavingChallenger.run.runId}`).get()).data();
+    expect(persistedInterleavingRun?.opponent).toEqual(expect.objectContaining({
+      displayName: "Riddle Quest player",
+    }));
+    expect(persistedInterleavingRun?.opponent).not.toHaveProperty("avatarUrl");
+    expect(persistedInterleavingRun?.opponent).not.toHaveProperty("subjectUserId");
+  }, 60_000);
 
   it("serializes concurrent receipts and rejects stale, expired, and rate-exhausted actions", async () => {
     const concurrent = await startRaceRunForUser(

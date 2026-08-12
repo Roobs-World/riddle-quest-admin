@@ -8,6 +8,7 @@ import {captureBrowserException} from "../observability/sentry";
 /** Describes host operation name. */
 export type HostOperationName =
   | "loadRiddle"
+  | "guess"
   | "completeGame"
   | "hint"
   | "spendCoins"
@@ -37,6 +38,10 @@ export const getHostErrorMessage = (error: unknown): string => {
   return tr("ErrorMessages.GENERIC_UNEXPECTED_ERROR");
 };
 
+/** Translates server-provided locale keys while preserving already rendered notices. */
+export const getHostNoticeMessage = (notice: string): string =>
+  notice.startsWith("WebPortal.") || notice.startsWith("ErrorMessages.") ? tr(notice) : notice;
+
 /** Reports a failed host operation before its safe message is returned to the game frame. */
 const reportHostOperationError = (error: unknown, operation: HostOperationName): void => {
   captureBrowserException(error, {component: "play_host", operation});
@@ -44,9 +49,15 @@ const reportHostOperationError = (error: unknown, operation: HostOperationName):
 
 /** Describes load and post riddle. */
 type LoadAndPostRiddle = (
-  input: {gameMode: WebGameMode; locale: string; classicIndex?: number},
+  input: {
+    gameMode: WebGameMode;
+    locale: string;
+    classicIndex?: number;
+    sessionToken?: string;
+    riddleId?: string;
+  },
   requestId?: string,
-) => Promise<void>;
+) => Promise<boolean>;
 
 /** Describes post operation. */
 type PostOperation = (
@@ -103,11 +114,15 @@ type CreateHostMessageHandlersOptions = {
   onPlayable?: () => void;
   /** Stores on authoritative complete. */
   onAuthoritativeComplete?: (
-    input: {riddleId: string; gameMode: WebGameMode; attempts: number; isCorrect: boolean},
+    input: {riddleId: string; gameMode: WebGameMode},
     result: CompletionResult,
   ) => void | Promise<void>;
   /** Stores on account deleted. */
   onAccountDeleted?: () => void | Promise<void>;
+  /** Persists account-deletion intent before the authoritative request starts. */
+  onAccountDeletionRequested?: () => void | Promise<void>;
+  /** Remembers authoritative deletion across handler recreation and client-cleanup retries. */
+  accountDeletionCompletedRef: {current: boolean};
 };
 
 /** Builds the schema-routed commands that connect the game frame to authoritative host services. */
@@ -130,6 +145,8 @@ export const createPlayHostMessageHandlers = ({
   onPlayable,
   onAuthoritativeComplete,
   onAccountDeleted,
+  onAccountDeletionRequested,
+  accountDeletionCompletedRef,
 }: CreateHostMessageHandlersOptions): HostMessageHandlers => ({
   ready: async () => {
     setFrameReady(true);
@@ -137,12 +154,12 @@ export const createPlayHostMessageHandlers = ({
     if (!authSnapshot.user) return;
 
     loadedUserIdRef.current = authSnapshot.user.uid;
-    await loadAndPostRiddle({
+    const loaded = await loadAndPostRiddle({
       gameMode,
       locale,
       classicIndex: authSnapshot.profile?.classicIndex,
     });
-    if (!playableReportedRef.current) {
+    if (loaded && !playableReportedRef.current) {
       playableReportedRef.current = true;
       onPlayable?.();
     }
@@ -150,6 +167,20 @@ export const createPlayHostMessageHandlers = ({
   resize: () => undefined,
   loadRiddle: async (message) => {
     await loadAndPostRiddle({...message.payload, gameMode}, message.requestId);
+  },
+  submitGuess: async (message) => {
+    try {
+      const result = await withServerActivity(() => services.submitGuess(message.payload));
+      postOperation(message.requestId, "guess", true, result);
+      trackEvent("guess_submitted", {
+        game_mode: message.payload.gameMode,
+        success: result.isCorrect,
+        attempts: result.attempts,
+      });
+    } catch (error) {
+      reportHostOperationError(error, "guess");
+      postOperation(message.requestId, "guess", false, undefined, getHostErrorMessage(error));
+    }
   },
   completeGame: async (message) => {
     try {
@@ -161,8 +192,8 @@ export const createPlayHostMessageHandlers = ({
       postOperation(message.requestId, "completeGame", true, result);
       trackEvent("level_end", {
         game_mode: message.payload.gameMode,
-        success: message.payload.isCorrect,
-        attempts: message.payload.attempts,
+        success: result.isCorrect,
+        attempts: result.attempts,
         level: result.newLevel,
         xp: result.newXp,
         win_streak: result.newWinStreak,
@@ -193,22 +224,10 @@ export const createPlayHostMessageHandlers = ({
   },
   spendCoins: async (message) => {
     try {
-      if (message.payload.reason === "skip" && message.payload.riddleId && message.payload.gameMode) {
-        const {riddleId, gameMode: skipGameMode} = message.payload;
-        if (skipGameMode === "challenge") throw new Error("Daily riddles cannot be skipped.");
-
-        const result = await withServerActivity(() => services.skipRiddle({riddleId, gameMode: skipGameMode}));
-        postOperation(message.requestId, "skip", true, result);
-        trackEvent("riddle_skipped", {game_mode: skipGameMode, value: result.costDeducted});
-        await loadAndPostRiddle({
-          gameMode: skipGameMode,
-          locale,
-          classicIndex: result.newProgress?.classicIndex ?? authSnapshot.profile?.classicIndex,
-        });
-        return;
-      }
-
-      const result = await withServerActivity(() => services.spendCoins(message.payload));
+      const result = await withServerActivity(() => services.spendCoins({
+        ...message.payload,
+        requestId: message.requestId ?? createRequestId("continue"),
+      }));
       postOperation(message.requestId, "spendCoins", true, result);
       trackEvent("spend_virtual_currency", {
         virtual_currency_name: "coins",
@@ -217,19 +236,38 @@ export const createPlayHostMessageHandlers = ({
         game_mode: message.payload.gameMode,
       });
     } catch (error) {
-      reportHostOperationError(error, message.payload.reason === "skip" ? "skip" : "spendCoins");
-      postOperation(
-        message.requestId,
-        message.payload.reason === "skip" ? "skip" : "spendCoins",
-        false,
-        undefined,
-        getHostErrorMessage(error),
-      );
+      reportHostOperationError(error, "spendCoins");
+      postOperation(message.requestId, "spendCoins", false, undefined, getHostErrorMessage(error));
+    }
+  },
+  skipRiddle: async (message) => {
+    try {
+      const {riddleId, gameMode: skipGameMode, sessionToken} = message.payload;
+      const result = await withServerActivity(() => services.skipRiddle({
+        riddleId,
+        gameMode: skipGameMode,
+        sessionToken,
+        requestId: message.requestId ?? createRequestId("skip"),
+      }));
+      postOperation(message.requestId, "skip", true, result);
+      trackEvent("riddle_skipped", {game_mode: skipGameMode, value: result.costDeducted});
+      await loadAndPostRiddle({
+        gameMode: skipGameMode,
+        locale,
+        classicIndex: result.newProgress?.classicIndex ?? authSnapshot.profile?.classicIndex,
+      });
+    } catch (error) {
+      reportHostOperationError(error, "skip");
+      postOperation(message.requestId, "skip", false, undefined, getHostErrorMessage(error));
     }
   },
   requestPurchase: async (message) => {
     try {
       const result = await withServerActivity(() => services.requestPurchase(message.payload.productId));
+      if (!result.success) {
+        postOperation(message.requestId, "purchase", true, result);
+        return;
+      }
       applyPurchaseBalance(result);
       setNotice(
         result.purchaseType === "subscription"
@@ -274,11 +312,19 @@ export const createPlayHostMessageHandlers = ({
   },
   deleteAccount: async (message) => {
     try {
-      await withServerActivity(() => services.deleteAccount());
+      if (!accountDeletionCompletedRef.current) {
+        await onAccountDeletionRequested?.();
+        await withServerActivity(() => services.deleteAccount());
+        accountDeletionCompletedRef.current = true;
+      }
       await onAccountDeleted?.();
       postOperation(message.requestId, "accountDeletion", true, {success: true});
     } catch (error) {
-      reportHostOperationError(error, "accountDeletion");
+      captureBrowserException(error, {
+        component: "play_host",
+        operation: "accountDeletion",
+        phase: accountDeletionCompletedRef.current ? "client_cleanup" : "server_deletion",
+      });
       postOperation(message.requestId, "accountDeletion", false, undefined, getHostErrorMessage(error));
     }
   },

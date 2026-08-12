@@ -9,6 +9,7 @@ import type {
 import {PlayerSchema} from "../validation/firestoreSchemas";
 import * as functions from "firebase-functions";
 import {type SupportedLocale} from "@qwordly/core/validation";
+import {reserveUsernameForNewUser} from "../profile/usernameReservations";
 
 /** Defines the initial coins value. */
 const INITIAL_COINS: number = 300;
@@ -243,7 +244,17 @@ export async function initializeNewUser(
     }
 
     const validatedUserData = PlayerSchema.parse(defaultUserData);
-    await getDb().collection("users").doc(userId).set(validatedUserData);
+    const db = getDb();
+    const userRef = db.collection("users").doc(userId);
+    await db.runTransaction(async (transaction) => {
+      const reservationFields = reserveUsernameForNewUser(
+        transaction,
+        db,
+        userId,
+        validatedUserData.username,
+      );
+      transaction.create(userRef, {...validatedUserData, ...reservationFields});
+    });
     functions.logger.info(`Initialized new user document for ${userId} with default stats and progress`);
   } catch (error) {
     functions.logger.error(`Error initializing new user ${userId}:`, error);

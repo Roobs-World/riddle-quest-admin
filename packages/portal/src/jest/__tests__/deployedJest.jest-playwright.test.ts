@@ -3,6 +3,11 @@ import {chromium, type Browser, type BrowserContext, type Frame, type Page} from
 import {existsSync} from "node:fs";
 import {RaceRunResponseSchema} from "@qwordly/core/race";
 
+import {
+  assertPrivateJestStorageState,
+  persistPrivateJestStorageState,
+} from "./deployedJestStorageState";
+
 const liveRequested = process.env.PORTAL_DEPLOYED_TESTS === "1";
 const sandboxLoginUrl = process.env.JEST_SANDBOX_LOGIN_URL;
 const gameLaunchUrl = process.env.JEST_DEPLOYED_GAME_URL ?? "https://jest.com/g/riddle-q";
@@ -64,6 +69,9 @@ describeDeployed("deployed Jest sandbox game", () => {
   let page: Page;
 
   beforeAll(async () => {
+    if (existsSync(sandboxStatePath)) {
+      await assertPrivateJestStorageState(sandboxStatePath);
+    }
     browser = await chromium.launch({headless: runHeadless});
     context = await browser.newContext({
       viewport: {width: 390, height: 844},
@@ -121,7 +129,7 @@ describeDeployed("deployed Jest sandbox game", () => {
         page.getByText(/the link has expired/i).waitFor({timeout: 30_000}),
       ]);
       expect(await page.getByText(/the link has expired/i).count()).toBe(0);
-      await context.storageState({path: sandboxStatePath});
+      await persistPrivateJestStorageState(context, sandboxStatePath);
     }
     await page.goto(gameLaunchUrl, {waitUntil: "domcontentloaded"});
 
@@ -267,7 +275,10 @@ describeDeployed("deployed Jest sandbox game", () => {
       return result.subscriptions.map(({sku}) => sku);
     });
     expect(subscriptionSkus).toContain(expectedSubscriptionSku);
-    expect(await game.locator(".shop-subscription-card").count()).toBe(1);
+    // Keep the SKU configured for explicit sandbox lifecycle tests, but never
+    // expose the beta offer in the active production player's shop.
+    expect(await game.locator(".shop-subscription-card").count()).toBe(0);
+    expect([...successfulFunctions]).not.toContain("syncJestSubscriptions");
   });
 });
 

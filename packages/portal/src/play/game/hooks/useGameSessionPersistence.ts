@@ -4,18 +4,23 @@ import type {GameSessionAction, GameSessionState} from "../../gameSession";
 
 /** Projects an active game session into the versioned low-integrity Jest player-data snapshot. */
 export const createSavedGame = (state: GameSessionState, savedAt = Date.now()): JestSavedGame | null => {
-  if (!state.riddle || !state.engineSnapshot || state.lastOutcome) return null;
+  if (!state.riddle || !state.engineSnapshot || (state.lastOutcome && state.completionAcknowledged)) return null;
   return {
     schemaVersion: 1,
     savedAt,
     riddleId: state.riddle.riddleId,
     gameMode: state.gameMode,
+    sessionToken: state.riddle.sessionToken,
     currentLetters: state.currentLetters,
     activeSlotIndex: state.activeSlotIndex,
     hintRevealedIndices: state.hintRevealedIndices,
     guesses: state.guesses,
     engineSnapshot: state.engineSnapshot,
+    awaitingContinue: !state.engineSnapshot.gameOver &&
+      !state.engineSnapshot.hasUsedContinue &&
+      state.engineSnapshot.attemptsUsed === 5,
     letterStates: state.letterStates,
+    ...(state.lastOutcome ? {pendingOutcome: state.lastOutcome} : {}),
   };
 };
 
@@ -38,7 +43,11 @@ export const useGameSessionPersistence = ({
   const getSavedGame = useCallback(() => createSavedGame(stateRef.current), [stateRef]);
 
   useEffect(() => {
-    if (!state.riddle || restoredGame?.riddleId !== state.riddle.riddleId) return;
+    if (
+      !state.riddle ||
+      restoredGame?.riddleId !== state.riddle.riddleId ||
+      restoredGame.sessionToken !== state.riddle.sessionToken
+    ) return;
     dispatch({
       type: "restoreSession",
       currentLetters: restoredGame.currentLetters,
@@ -46,12 +55,14 @@ export const useGameSessionPersistence = ({
       hintRevealedIndices: restoredGame.hintRevealedIndices,
       guesses: restoredGame.guesses,
       engineSnapshot: restoredGame.engineSnapshot,
+      awaitingContinue: restoredGame.awaitingContinue,
       letterStates: restoredGame.letterStates,
+      pendingOutcome: restoredGame.pendingOutcome,
     });
-  }, [dispatch, restoredGame, state.riddle?.riddleId]);
+  }, [dispatch, restoredGame, state.riddle?.riddleId, state.riddle?.sessionToken]);
 
   useEffect(() => {
-    if (state.lastOutcome) {
+    if (state.lastOutcome && state.completionAcknowledged) {
       if (lastClearedOutcomeRef.current !== state.lastOutcome.id) {
         lastClearedOutcomeRef.current = state.lastOutcome.id;
         onSaveGame?.(null);
@@ -67,6 +78,8 @@ export const useGameSessionPersistence = ({
       hints: savedGame.hintRevealedIndices,
       attemptsUsed: savedGame.engineSnapshot.attemptsUsed,
       hasUsedContinue: savedGame.engineSnapshot.hasUsedContinue,
+      awaitingContinue: savedGame.awaitingContinue,
+      pendingOutcome: savedGame.pendingOutcome?.id,
     });
     if (lastServerCheckpointRef.current?.riddleId !== savedGame.riddleId) {
       lastServerCheckpointRef.current = {riddleId: savedGame.riddleId, signature};
@@ -84,6 +97,7 @@ export const useGameSessionPersistence = ({
     state.guesses,
     state.hintRevealedIndices,
     state.lastOutcome,
+    state.completionAcknowledged,
     state.riddle?.riddleId,
   ]);
 

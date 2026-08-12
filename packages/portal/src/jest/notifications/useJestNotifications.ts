@@ -6,7 +6,12 @@ import {
   renderNotificationBody,
   type NotificationCopy,
 } from "./copy";
-import {notificationRotationSeed, replaceEngagementReminders} from "./engagement";
+import {
+  LEGACY_RACE_REMINDER_ID,
+  notificationRotationSeed,
+  RACE_RESULTS_REMINDER_ID,
+  replaceEngagementReminders,
+} from "./engagement";
 import {captureBrowserException} from "../../observability/sentry";
 
 /** Describes with platform activity. */
@@ -23,6 +28,7 @@ export function useJestNotifications({
   playerFallback,
   assetReference,
   platform,
+  notificationsEnabled,
   withPlatformActivity,
   trackFunnel,
 }: {
@@ -33,13 +39,14 @@ export function useJestNotifications({
   playerFallback: string;
   assetReference?: string;
   platform: JestPlatformPort;
+  notificationsEnabled: () => boolean;
   withPlatformActivity: WithPlatformActivity;
   trackFunnel: TrackFunnel;
 }) {
   const [copy, setCopy] = useState<NotificationCopy | null>(null);
 
   useEffect(() => {
-    if (!session?.player.registered) {
+    if (!session?.player.registered || !notificationsEnabled()) {
       setCopy(null);
       return;
     }
@@ -49,7 +56,7 @@ export function useJestNotifications({
         ? Promise.resolve(MOCK_NOTIFICATION_COPY)
         : import("../../firebase").then((module) => module.loadNotificationCopy(locale)),
     ).then((loadedCopy) => {
-      if (active) setCopy(loadedCopy);
+      if (active && notificationsEnabled()) setCopy(loadedCopy);
     }).catch((error) => {
       captureBrowserException(error, {component: "jest_notifications", operation: "load_copy"});
       if (active) {
@@ -60,10 +67,10 @@ export function useJestNotifications({
     return () => {
       active = false;
     };
-  }, [locale, mockRuntime, session?.player.registered, trackFunnel, withPlatformActivity]);
+  }, [locale, mockRuntime, notificationsEnabled, session?.player.registered, trackFunnel, withPlatformActivity]);
 
   useEffect(() => {
-    if (!session?.player.registered || !copy) return;
+    if (!session?.player.registered || !copy || !notificationsEnabled()) return;
     const playerName = notificationPlayerName(
       session.profile?.username ?? session.entryIntent.customName,
       playerFallback,
@@ -103,6 +110,7 @@ export function useJestNotifications({
     engagementProgress.wins,
     platform,
     playerFallback,
+    notificationsEnabled,
     session?.entryIntent.customName,
     session?.player.playerId,
     session?.player.registered,
@@ -112,15 +120,16 @@ export function useJestNotifications({
   ]);
 
   useEffect(() => {
-    if (!session?.player.registered || !copy) return;
+    if (!session?.player.registered || !copy || !notificationsEnabled()) return;
     const scheduleRaceReturn = (event: Event) => {
+      if (!notificationsEnabled()) return;
       const detail = (event as CustomEvent<{challengeId?: string}>).detail;
       if (!detail?.challengeId) return;
       const challengeId = detail.challengeId;
       void withPlatformActivity(async () => {
-        await platform.removeNotification("race_to_10_return_v1");
+        await platform.removeNotification(LEGACY_RACE_REMINDER_ID);
         return platform.scheduleNotification({
-          identifier: "race_to_10_results_v1",
+          identifier: RACE_RESULTS_REMINDER_ID,
           scheduledInDays: 1,
           title: copy.raceTitle,
           body: copy.raceBody,
@@ -139,11 +148,13 @@ export function useJestNotifications({
     };
     window.addEventListener("riddle-quest:race-challenge-published", scheduleRaceReturn);
     return () => window.removeEventListener("riddle-quest:race-challenge-published", scheduleRaceReturn);
-  }, [copy, platform, session?.player.registered, trackFunnel, withPlatformActivity]);
+  }, [copy, notificationsEnabled, platform, session?.player.registered, trackFunnel, withPlatformActivity]);
 
   useEffect(() => {
-    if (!session?.player.registered || session.entryIntent.challengeDestination !== "inbox") return;
-    void withPlatformActivity(() => platform.removeNotification("race_to_10_results_v1"))
+    if (!session?.player.registered || !notificationsEnabled() ||
+        session.entryIntent.challengeDestination !== "inbox") return;
+    void withPlatformActivity(() => platform.removeNotification(RACE_RESULTS_REMINDER_ID))
       .then((result) => trackFunnel("race_results_reminder_opened", {status: result.status}));
-  }, [platform, session?.entryIntent.challengeDestination, session?.player.registered, trackFunnel, withPlatformActivity]);
+  }, [notificationsEnabled, platform, session?.entryIntent.challengeDestination,
+    session?.player.registered, trackFunnel, withPlatformActivity]);
 }

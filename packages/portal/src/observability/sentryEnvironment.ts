@@ -1,11 +1,14 @@
+import {firebaseEnvironment} from "../firebaseEnvironment";
 import {initializeBrowserSentry} from "./sentry";
+import {isBrowserTelemetryRuntimeAllowed} from "./telemetryRuntime";
 
 /** Initializes browser telemetry from Vite's production environment. */
 export function initializeBrowserSentryFromEnvironment(): boolean {
+  if (!isBrowserTelemetryRuntimeAllowed()) return false;
   return initializeBrowserSentry({
-    dsn: import.meta.env.VITE_SENTRY_DSN,
-    environment: import.meta.env.VITE_SENTRY_ENVIRONMENT,
-    production: import.meta.env.PROD,
-    release: import.meta.env.VITE_SENTRY_RELEASE,
+    dsn: firebaseEnvironment.sentryDsn,
+    environment: firebaseEnvironment.sentryEnvironment,
+    production: firebaseEnvironment.production,
+    release: firebaseEnvironment.sentryRelease,
   });
 }

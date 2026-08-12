@@ -6,6 +6,7 @@ import type {ClassicRiddle, DailyRiddle} from "../validation/firestoreSchemas";
 import {RiddleCollections} from "../validation/firestoreSchemas";
 import {clueContainsLiteralAnswer} from "./riddleQuality";
 import {SUPPORTED_LOCALES, type SupportedLocale} from "@qwordly/core/validation";
+import {getSafeErrorMetadata} from "../shared/errorMetadata";
 
 /** Provides riddle exists behavior. */
 export function riddleExists(
@@ -34,8 +35,10 @@ const getLocalizedRiddleCollection = (locale: SupportedLocale): string =>
   `${LOCALIZED_RIDDLES_COLLECTION}/${locale}/${LOCALIZED_RIDDLE_SUBCOLLECTION}`;
 
 /** Gets localized daily doc ref. */
-export const getLocalizedDailyDocRef = (locale: SupportedLocale): DocumentReference =>
-  admin.firestore().collection(getLocalizedRiddleCollection(locale)).doc("current");
+export const getLocalizedDailyDocRef = (locale: SupportedLocale, challengeDate?: string): DocumentReference =>
+  admin.firestore().collection(getLocalizedRiddleCollection(locale)).doc(
+    challengeDate ? `daily-${challengeDate}` : "current",
+  );
 
 /** Gets localized classic doc ref. */
 export const getLocalizedClassicDocRef = (locale: SupportedLocale, riddleId: string): DocumentReference =>
@@ -106,7 +109,7 @@ export async function getExistingRiddlesFromFirestore(): Promise<{questions: str
     );
     return {questions, answers};
   } catch (error) {
-    logger.error("Error fetching existing riddles from Firestore:", error);
+    logger.error("Error fetching existing riddles from Firestore.", getSafeErrorMetadata(error));
     captureException(error);
     throw new Error("Failed to fetch existing riddles from Firestore.");
   }
@@ -158,7 +161,7 @@ export async function getNextClassicIndex(): Promise<number> {
     const highestIndex = highestIndexDoc.data().classicIndex || 0;
     return highestIndex + 1;
   } catch (error) {
-    logger.error("Error getting next classic index:", error);
+    logger.error("Error getting next classic index.", getSafeErrorMetadata(error));
     captureException(error);
     throw new Error("Failed to get next classic index.");
   }
@@ -193,7 +196,7 @@ export async function storeClassicRiddlesInFirestore(
     await batch.commit();
     logger.info(`Successfully stored ${riddles.length} new classic riddles in Firestore.`);
   } catch (error) {
-    logger.error("Error storing classic riddles in Firestore:", error);
+    logger.error("Error storing classic riddles in Firestore.", getSafeErrorMetadata(error));
     captureException(error);
     throw new Error("Failed to store classic riddles in Firestore.");
   }
@@ -227,7 +230,7 @@ export async function storeLocalizedClassicRiddlesInFirestore(
     await batch.commit();
     logger.info(`Successfully stored ${riddles.length} new classic riddles in Firestore for locale ${locale}.`);
   } catch (error) {
-    logger.error(`Error storing classic riddles in Firestore for locale ${locale}:`, error);
+    logger.error(`Error storing classic riddles in Firestore for locale ${locale}.`, getSafeErrorMetadata(error));
     captureException(error);
     throw new Error(`Failed to store classic riddles in Firestore for locale ${locale}.`);
   }
@@ -248,7 +251,7 @@ export async function getNextDailyIndex(): Promise<number> {
     const highestIndex = currentDoc.data()?.dailyIndex || 0;
     return highestIndex + 1;
   } catch (error) {
-    logger.error("Error getting next daily index:", error);
+    logger.error("Error getting next daily index.", getSafeErrorMetadata(error));
     captureException(error);
     throw new Error("Failed to get next daily index.");
   }
@@ -289,7 +292,7 @@ export async function storeDailyRiddlesInFirestore(
     await riddleRef.set(riddleData);
     logger.info("Successfully stored daily riddle in dailyRiddles/current.");
   } catch (error) {
-    logger.error("Error storing daily riddles in Firestore:", error);
+    logger.error("Error storing daily riddles in Firestore.", getSafeErrorMetadata(error));
     captureException(error);
     throw new Error("Failed to store daily riddles in Firestore.");
   }

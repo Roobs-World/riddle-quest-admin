@@ -33,7 +33,12 @@ const sdk = () => ({
     loginButtonAction: jest.fn(),
     closeButtonAction: () => options.onClose(),
   })),
-  data: {getAll: jest.fn(() => ({locale: "en", coins: 999})), set: jest.fn(), flush: jest.fn().mockResolvedValue(undefined)},
+  data: {
+    getAll: jest.fn(() => ({locale: "en", coins: 999})),
+    set: jest.fn(),
+    delete: jest.fn(),
+    flush: jest.fn().mockResolvedValue(undefined),
+  },
   notifications: {scheduleNotification: jest.fn(), unscheduleNotification: jest.fn()},
   social: {getProfile: jest.fn(() => null), setScreenshotProvider: jest.fn()},
   referrals: {shareReferralLink: jest.fn(), listReferrals: jest.fn()},
@@ -55,12 +60,14 @@ const savedGame = {
   schemaVersion: 1,
   savedAt: 10,
   riddleId: "riddle-1",
+  sessionToken: "00000000-0000-4000-8000-000000000001",
   gameMode: "classic",
   currentLetters: ["A", ""],
   activeSlotIndex: 1,
   hintRevealedIndices: [0],
   guesses: [],
-  engineSnapshot: {attemptsRemaining: 5},
+  engineSnapshot: {guesses: [], attemptsUsed: 0, hasUsedContinue: false, gameOver: false},
+  awaitingContinue: false,
   letterStates: {},
 };
 
@@ -80,12 +87,14 @@ it("loads a versioned player snapshot from the Jest player store", async () => {
     schemaVersion: 1,
     savedAt: 10,
     riddleId: "riddle-1",
+    sessionToken: "00000000-0000-4000-8000-000000000001",
     gameMode: "classic",
     currentLetters: ["A", ""],
     activeSlotIndex: 1,
     hintRevealedIndices: [0],
     guesses: [],
-    engineSnapshot: {attemptsRemaining: 5},
+    engineSnapshot: {guesses: [], attemptsUsed: 0, hasUsedContinue: false, gameOver: false},
+    awaitingContinue: false,
     letterStates: {},
   };
   mock.data.getAll.mockReturnValue({
@@ -162,6 +171,14 @@ it("rejects unknown player snapshot versions", async () => {
   });
   expect(await new JestSdkPlatform(mock).readPlayerData()).toBeNull();
 });
+it.each([Number.NaN, -1, 1.5, Number.MAX_SAFE_INTEGER + 1])(
+  "rejects an invalid player snapshot timestamp (%s)",
+  async (updatedAt) => {
+    const mock = sdk();
+    mock.data.getAll.mockReturnValue({riddleQuestPlayerState: {schemaVersion: 1, updatedAt}});
+    expect(await new JestSdkPlatform(mock).readPlayerData()).toBeNull();
+  },
+);
 it("flushes player snapshot writes to Jest", async () => {
   const mock = sdk();
   mock.getPlayer.mockReturnValue({playerId: "p1", registered: true});
@@ -316,6 +333,38 @@ it("uses the global SDK by default and initializes it safely", async () => {
   (globalThis as typeof globalThis & {JestSDK?: unknown}).JestSDK = original;
 });
 
+it("resolves the global SDK lazily when it appears after construction", async () => {
+  const target = globalThis as typeof globalThis & {JestSDK?: unknown};
+  const original = target.JestSDK;
+  const mock = sdk();
+  delete target.JestSDK;
+  const platform = new JestSdkPlatform();
+  target.JestSDK = mock;
+
+  await expect(platform.init()).resolves.toEqual({status: "success", value: undefined});
+  expect(mock.init).toHaveBeenCalledWith({autoLoginReminders: false});
+  target.JestSDK = original;
+});
+
+it("waits for a delayed global SDK and contains a load timeout", async () => {
+  const target = globalThis as typeof globalThis & {JestSDK?: unknown};
+  const original = target.JestSDK;
+  const mock = sdk();
+  delete target.JestSDK;
+  const delayedPlatform = new JestSdkPlatform(undefined, 30_000, 100);
+  setTimeout(() => {
+    target.JestSDK = mock;
+  }, 0);
+
+  await expect(delayedPlatform.init()).resolves.toEqual({status: "success", value: undefined});
+  delete target.JestSDK;
+  await expect(new JestSdkPlatform(undefined, 30_000, 0).init()).resolves.toEqual({
+    status: "retryable-failure",
+    message: "Jest SDK failed to load.",
+  });
+  target.JestSDK = original;
+});
+
 it("maps initialization and login failures", async () => {
   const mock = sdk();
   mock.init.mockRejectedValue("offline");
@@ -368,24 +417,145 @@ it("round-trips every supported preference", async () => {
   expect(mock.data.flush).toHaveBeenCalled();
 });
 
+it("deletes every client-writable key and flushes once after authoritative account deletion", async () => {
+  const mock = sdk();
+  await new JestSdkPlatform(mock).clearPlayerState();
+
+  expect(mock.data.delete.mock.calls.map(([key]) => key)).toEqual([
+    "locale",
+    "muted",
+    "reducedMotion",
+    "highContrast",
+    "onboardingComplete",
+    "registrationPromptDismissedAt",
+    "firstMilestoneMarked",
+    "riddleQuestPlayerState",
+  ]);
+  expect(mock.data.flush).toHaveBeenCalledTimes(1);
+});
+
+it("propagates a failed SDK flush so account deletion cannot report false client cleanup", async () => {
+  const mock = sdk();
+  mock.data.flush.mockRejectedValue(new Error("platform data unavailable"));
+
+  await expect(new JestSdkPlatform(mock).clearPlayerState()).rejects.toThrow("platform data unavailable");
+});
+
 it.each([
   [],
   {...savedGame, schemaVersion: 2},
   {...savedGame, savedAt: "10"},
+  {...savedGame, savedAt: Number.NaN},
   {...savedGame, riddleId: 1},
+  {...savedGame, riddleId: "x".repeat(129)},
+  {...savedGame, sessionToken: "short"},
+  {...savedGame, sessionToken: "x".repeat(129)},
   {...savedGame, gameMode: "race"},
   {...savedGame, currentLetters: "A"},
   {...savedGame, currentLetters: [1]},
+  {...savedGame, currentLetters: Array.from({length: 8}, () => "A")},
+  {...savedGame, currentLetters: ["x".repeat(17), ""]},
   {...savedGame, activeSlotIndex: "1"},
+  {...savedGame, activeSlotIndex: 2},
   {...savedGame, hintRevealedIndices: "0"},
   {...savedGame, hintRevealedIndices: ["0"]},
+  {...savedGame, hintRevealedIndices: [0, 0]},
+  {...savedGame, hintRevealedIndices: [2]},
   {...savedGame, guesses: null},
+  {...savedGame, guesses: Array.from({length: 21}, () => ({guess: ["A", "B"], feedback: ["red", "red"]}))},
+  {...savedGame, guesses: [{}]},
+  {...savedGame, guesses: [{guess: [1, "B"], feedback: ["red", "red"]}]},
+  {...savedGame, guesses: [{guess: ["A", "B"], feedback: ["blue", "red"]}]},
+  {...savedGame, guesses: [{guess: ["A"], feedback: ["green"]}]},
   {...savedGame, engineSnapshot: []},
+  {...savedGame, engineSnapshot: {guesses: [], attemptsUsed: 7, hasUsedContinue: false, gameOver: false}},
+  {...savedGame, awaitingContinue: true},
   {...savedGame, letterStates: null},
+  {...savedGame, letterStates: Object.fromEntries(Array.from({length: 65}, (_, index) => [`K${index}`, "red"]))},
+  {...savedGame, letterStates: {A: "blue"}},
+  {...savedGame, pendingOutcome: []},
+  {...savedGame, pendingOutcome: {...savedGame, id: "result", kind: "draw", attempts: 1, isCorrect: false}},
+  {...savedGame, pendingOutcome: {...savedGame, id: "result", kind: "win", attempts: 1, isCorrect: false}},
 ])("discards malformed active-game snapshots", async (activeGame) => {
   const mock = sdk();
   mock.data.getAll.mockReturnValue({riddleQuestPlayerState: {schemaVersion: 1, updatedAt: 11, activeGame}});
   expect(await new JestSdkPlatform(mock).readPlayerData()).toEqual({schemaVersion: 1, updatedAt: 11});
+});
+
+it("reconstructs a valid saved game without retaining unknown low-integrity fields", async () => {
+  const mock = sdk();
+  mock.data.getAll.mockReturnValue({
+    riddleQuestPlayerState: {
+      schemaVersion: 1,
+      updatedAt: 11,
+      activeGame: {
+        ...savedGame,
+        ignored: "x".repeat(10_000),
+        engineSnapshot: {...savedGame.engineSnapshot, ignored: "x".repeat(10_000)},
+      },
+    },
+  });
+
+  expect(await new JestSdkPlatform(mock).readPlayerData()).toEqual({
+    schemaVersion: 1,
+    updatedAt: 11,
+    activeGame: savedGame,
+  });
+});
+
+it("restores authoritative-attempt recovery even when visual guess history was not saved", async () => {
+  const mock = sdk();
+  const awaitingGame = {
+    ...savedGame,
+    guesses: [],
+    engineSnapshot: {guesses: [], attemptsUsed: 5, hasUsedContinue: false, gameOver: false},
+    awaitingContinue: true,
+  };
+  mock.data.getAll.mockReturnValue({
+    riddleQuestPlayerState: {schemaVersion: 1, updatedAt: 11, activeGame: awaitingGame},
+  });
+
+  expect(await new JestSdkPlatform(mock).readPlayerData()).toEqual({
+    schemaVersion: 1,
+    updatedAt: 11,
+    activeGame: awaitingGame,
+  });
+});
+
+it("reconstructs bounded scored guesses and a pending terminal outcome", async () => {
+  const mock = sdk();
+  const scoredGuess = {guess: ["A", "B"], feedback: ["green", "red"]};
+  const completedGame = {
+    ...savedGame,
+    currentLetters: ["A", "B"],
+    activeSlotIndex: 0,
+    guesses: [scoredGuess],
+    engineSnapshot: {
+      guesses: [scoredGuess],
+      attemptsUsed: 1,
+      hasUsedContinue: false,
+      gameOver: true,
+    },
+    letterStates: {A: "green", B: "red"},
+    pendingOutcome: {
+      id: "riddle-1-win-1",
+      kind: "win",
+      riddleId: savedGame.riddleId,
+      gameMode: savedGame.gameMode,
+      sessionToken: savedGame.sessionToken,
+      attempts: 1,
+      isCorrect: true,
+    },
+  };
+  mock.data.getAll.mockReturnValue({
+    riddleQuestPlayerState: {schemaVersion: 1, updatedAt: 11, activeGame: completedGame},
+  });
+
+  expect(await new JestSdkPlatform(mock).readPlayerData()).toEqual({
+    schemaVersion: 1,
+    updatedAt: 11,
+    activeGame: completedGame,
+  });
 });
 
 it("supports explicitly cleared active games and missing SDK data", async () => {

@@ -216,7 +216,13 @@ describe("Race to 10 authoritative engine", () => {
       result: "ghost_win",
       wallFinishMs: 1_000,
       events: [ghostEvent],
-      opponent: {displayName: "Ava", avatarUrl: null, adjustedFinishMs: 16_000, events: [ghostEvent]},
+      opponent: {
+        subjectUserId: "opponent-1",
+        displayName: "Ava",
+        avatarUrl: null,
+        adjustedFinishMs: 16_000,
+        events: [ghostEvent],
+      },
     });
     const view = toRaceRunView(run, STARTED_AT + 20_000);
     expect(view.currentRiddle).toBeNull();
@@ -228,6 +234,23 @@ describe("Race to 10 authoritative engine", () => {
     });
     expect(view.events[0]).not.toBe(run.events[0]);
     expect(view.opponent?.events[0]).not.toBe(run.opponent?.events[0]);
+  });
+
+  it("suppresses unlinked legacy opponent identity while preserving ghost timing", () => {
+    const view = toRaceRunView(createRun({
+      opponent: {
+        displayName: "Legacy player name",
+        avatarUrl: "https://example.test/legacy-avatar.png",
+        adjustedFinishMs: 16_000,
+        events: [],
+      },
+    }), STARTED_AT + 1_000);
+
+    expect(view.opponent).toEqual({
+      displayName: "Riddle Quest player",
+      adjustedFinishMs: 16_000,
+      events: [],
+    });
   });
 
   it("records ten correct milestones and produces a publishable creator outcome", () => {

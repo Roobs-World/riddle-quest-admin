@@ -6,24 +6,46 @@ import {
   JEST_SDK_INIT_TIMEOUT_MESSAGE,
   markJestPlayable,
   startJestSession,
+  stopJestLoadingHeartbeat,
   type JestStartupUpdate,
 } from "./startup";
-import type {JestPlayerData, JestPlayerDataUpdate, JestRegistrationOverlayHandle, JestSession} from "./types";
+import type {JestRegistrationOverlayHandle, JestSession} from "./types";
 import {tr, useLocale} from "../play/i18n";
 import {MockJestPlatform} from "./MockJestPlatform";
 import {recordAuthoritativeCompletion} from "./milestone";
 import {useJestNotifications} from "./notifications/useJestNotifications";
+import {createNotificationOperationGate} from "./notifications/operationGate";
 import {useJestSharing} from "./sharing/useJestSharing";
 import {createRegistrationEntryPayload, type RegistrationSource} from "./registrationAttribution";
-import {resolveJestRuntimeMode} from "./runtimeMode";
-import {trackEvent, trackScreen} from "../analytics/googleAnalytics";
+import {resolveJestRuntimeMode, shouldEnableJestSubscriptions} from "./runtimeMode";
+import {sanitizeAnalyticsParams, trackEvent, trackScreen} from "../analytics/googleAnalytics";
 import {hasTrustedTestHarnessMarker} from "../testHarness";
 import {resolveRaceChallengeId} from "./entryIntent";
 import {createJestBackend} from "./createJestBackend";
-import {JestRegistrationAlert, JestStartupError, JestStartupProgress} from "./JestSessionViews";
+import {
+  JestAccountDeleted,
+  JestRegistrationAlert,
+  JestStartupError,
+  JestStartupProgress,
+} from "./JestSessionViews";
 import {useJestProductCatalog} from "./useJestProductCatalog";
 import {useJestPurchase} from "./useJestPurchase";
-
+import {captureBrowserException} from "../observability/sentry";
+import {
+  ACCOUNT_DELETION_PENDING_PHASE,
+  AccountDeletionCleanupError,
+  completeTombstonedAccountDeletion,
+  getAccountDeletionPendingPhase,
+  isAccountDeletionCleanupPending,
+  markAccountDeletionRequested,
+  purgeDeletedPlayerState,
+  recoverPendingAccountDeletion,
+  runAccountDeletionAwareIdentityOperation,
+} from "./accountDeletionCleanup";
+import {useJestPlayerStateWrites} from "./useJestPlayerStateWrites";
+import {useAccountDeletionQuiescence} from "./useAccountDeletionQuiescence";
+import {commitJestStartupSession} from "./commitJestStartupSession";
+import {clearJestFirebaseAuthentication} from "./clearJestFirebaseAuthentication";
 /** Provides jest play app behavior. */
 export function JestPlayApp() {
   const locale = useLocale();
@@ -36,6 +58,10 @@ export function JestPlayApp() {
     testHarnessEnabled: import.meta.env.DEV || hasTrustedTestHarnessMarker(),
   });
   const {authHarness, mockBackend: mockRuntime} = runtimeMode;
+  // Subscription checkout is beta and currently stalls in Jest's live sandbox.
+  // Keep the UI available in local development, but never expose it from an
+  // uploaded production artifact until the release gate is deliberately changed.
+  const subscriptionsEnabled = shouldEnableJestSubscriptions(import.meta.env.DEV);
   const mockRegistered = searchParams.get("registered") === "1";
   const platform = useMemo(
     () =>
@@ -48,15 +74,21 @@ export function JestPlayApp() {
   const [error, setError] = useState<string | null>(null);
   const [showRegistration, setShowRegistration] = useState(false);
   const [registrationPending, setRegistrationPending] = useState(false);
+  const [registrationFailure, setRegistrationFailure] = useState<string | null>(null);
   const [pendingPlatformOperations, setPendingPlatformOperations] = useState(0);
+  const [accountDeleted, setAccountDeleted] = useState(false);
   const [startup, setStartup] = useState<JestStartupUpdate>({stage: "connecting", progress: 5});
   const [engagementProgress, setEngagementProgress] = useState({
     level: 1,
     winStreak: 0,
     wins: 0,
   });
-  const playerDataRef = useRef<JestPlayerData | null>(null);
-  const playerDataWriteQueueRef = useRef<Promise<void>>(Promise.resolve());
+  const [notificationOperationGate] = useState(createNotificationOperationGate);
+  const deletionCleanupOptions = useMemo(() => ({
+    clearFirebaseAuthentication: authHarness || mockRuntime ? undefined : clearJestFirebaseAuthentication,
+    waitForPendingNotificationOperations: notificationOperationGate.waitForPending,
+    withExclusiveNotificationAccess: notificationOperationGate.runExclusive,
+  }), [authHarness, mockRuntime, notificationOperationGate]);
   const sessionRef = useRef<JestSession | null>(null);
   const registrationHandleRef = useRef<JestRegistrationOverlayHandle | null>(null);
   const registrationCompletingRef = useRef(false);
@@ -66,15 +98,20 @@ export function JestPlayApp() {
     const startedAt = Date.now();
     setPendingPlatformOperations((current) => current + 1);
     try {
-      return await operation();
+      return await notificationOperationGate.run(operation);
     } finally {
       const remainingTime = Math.max(0, 180 - (Date.now() - startedAt));
       window.setTimeout(() => {
         setPendingPlatformOperations((current) => Math.max(0, current - 1));
       }, remainingTime);
     }
-  }, []);
+  }, [notificationOperationGate]);
+  const withBackgroundPlatformActivity = useCallback(
+    async <Result,>(operation: () => Promise<Result>): Promise<Result> => notificationOperationGate.run(operation),
+    [notificationOperationGate],
+  );
   const trackFunnel = useCallback((eventName: string, params: Record<string, string | number | boolean> = {}) => {
+    if (!notificationOperationGate.isOpen()) return;
     const intent = sessionRef.current?.entryIntent;
     const attributedParams = {
       ...(intent?.campaign ? {campaign: intent.campaign} : {}),
@@ -86,10 +123,25 @@ export function JestPlayApp() {
       ...(intent?.utmContent ? {utm_content: intent.utmContent} : {}),
       ...params,
     };
-    console.info("[riddle-quest-funnel]", eventName, attributedParams);
-    trackEvent(eventName, attributedParams);
-    platform.captureEvent(eventName, attributedParams);
-  }, [platform]);
+    const safeParams = sanitizeAnalyticsParams(attributedParams);
+    console.info("[riddle-quest-funnel]", eventName, safeParams);
+    trackEvent(eventName, safeParams);
+    const safePlatformParams = Object.fromEntries(
+      Object.entries(safeParams).filter(
+        (entry): entry is [string, string | number | boolean] => !Array.isArray(entry[1]),
+      ),
+    );
+    platform.captureEvent(eventName, safePlatformParams);
+  }, [notificationOperationGate, platform]);
+  const playerStateWrites = useJestPlayerStateWrites({
+    platform,
+    gate: notificationOperationGate,
+    sessionRef,
+    setSession,
+    setEngagementProgress,
+    trackFailure: trackFunnel,
+  });
+  const accountDeletionQuiesced = useAccountDeletionQuiescence(notificationOperationGate);
   useJestNotifications({
     locale,
     mockRuntime,
@@ -98,21 +150,32 @@ export function JestPlayApp() {
     playerFallback: tr("WebPortal.NOTIFICATION_PLAYER_FALLBACK"),
     assetReference: import.meta.env.VITE_JEST_NOTIFICATION_ASSET_REFERENCE || undefined,
     platform,
-    withPlatformActivity,
+    notificationsEnabled: notificationOperationGate.isOpen,
+    withPlatformActivity: notificationOperationGate.run,
     trackFunnel,
   });
-  useJestSharing({locale, session, platform, backend, withPlatformActivity, trackFunnel});
+  useJestSharing({
+    locale,
+    session,
+    platform,
+    backend,
+    withPlatformActivity,
+    withBackgroundPlatformActivity,
+    trackFunnel,
+  });
   const [jestProducts, setJestProducts] = useJestProductCatalog({
     purchases,
     session,
+    subscriptionsEnabled,
     trackFunnel,
-    withPlatformActivity,
+    withPlatformActivity: withBackgroundPlatformActivity,
   });
   const purchaseProduct = useJestPurchase({
     products: jestProducts,
     purchases,
     session,
     setProducts: setJestProducts,
+    subscriptionsEnabled,
     trackFunnel,
   });
   const authenticateJestIdentity = useCallback(
@@ -134,40 +197,76 @@ export function JestPlayApp() {
     },
     [authHarness, mockRuntime],
   );
+  const completeTombstonedPlayerCleanup = useCallback(async (playerSigned: string) => {
+    await completeTombstonedAccountDeletion(
+      platform,
+      playerSigned,
+        notificationOperationGate,
+        async (signed) => {
+          const result = await backend.retryAccountDeletion(signed);
+          if (!result.accountDeleted) throw new Error("account-deletion-recovery-rejected");
+        },
+        deletionCleanupOptions.clearFirebaseAuthentication,
+      );
+    notificationOperationGate.close();
+    playerStateWrites.disable();
+    sessionRef.current = null;
+    setSession(null);
+    setAccountDeleted(true);
+  }, [backend, deletionCleanupOptions, notificationOperationGate, platform, playerStateWrites]);
   useEffect(() => {
     let active = true;
-    void startJestSession(platform, backend, purchases, authenticateJestIdentity, setStartup).then((result) => {
+    playerStateWrites.disable();
+    const deletionRecovery = getAccountDeletionPendingPhase() === ACCOUNT_DELETION_PENDING_PHASE.authoritativeDeletion;
+    void startJestSession(platform, backend, purchases, authenticateJestIdentity, setStartup, {
+      onInitialized: () => recoverPendingAccountDeletion(platform, "initialized", deletionCleanupOptions),
+      onAuthenticated: isAccountDeletionCleanupPending,
+      onIdentityDeleted: completeTombstonedPlayerCleanup,
+      deletionRecovery,
+      recoverAccountDeletion: (playerSigned) => recoverPendingAccountDeletion(platform, "signed", {
+        clearFirebaseAuthentication: deletionCleanupOptions.clearFirebaseAuthentication,
+        retryAuthoritativeDeletion: async () => {
+          const result = await backend.retryAccountDeletion(playerSigned);
+          if (!result.accountDeleted) throw new Error("account-deletion-recovery-rejected");
+        },
+        waitForPendingNotificationOperations: notificationOperationGate.waitForPending,
+      }).then((recovered) => {
+        if (!recovered) throw new Error("account-deletion-recovery-state-changed");
+      }),
+      // Recovery owns the exclusive lock through identity, authority, and client purge.
+      // Ordinary identity is shared work and is rechecked immediately after lock release.
+      withIdentityOperation: (operation) => runAccountDeletionAwareIdentityOperation(
+        deletionRecovery,
+        notificationOperationGate,
+        operation,
+      ),
+      withAccountOperation: notificationOperationGate.run,
+    }).then(async (result) => {
       if (!active) return;
+      if (result.status === "account-deleted") {
+        notificationOperationGate.close();
+        setAccountDeleted(true);
+        return;
+      }
       if (result.status === "success") {
-        playerDataRef.current = result.value.playerData;
-        const savedProfile = result.value.playerData?.profile;
-        setEngagementProgress({
-          level: savedProfile?.level ?? 1,
-          winStreak: savedProfile?.winStreak ?? 0,
-          wins: savedProfile?.wins ?? 0,
-        });
-        setSession(result.value);
-        trackFunnel("session_started", {
-          registered: result.value.player.registered,
-          campaign: result.value.entryIntent.campaign ?? "direct",
-          reference: result.value.entryIntent.reference ?? "none",
-          notificationTemplate: result.value.entryIntent.notificationTemplate ?? "none",
-          notificationOffset: result.value.entryIntent.notificationOffset ?? "none",
-          utm_source: result.value.entryIntent.utmSource ?? "none",
-          utm_medium: result.value.entryIntent.utmMedium ?? "none",
-          utm_campaign: result.value.entryIntent.utmCampaign ?? "none",
-          utm_term: result.value.entryIntent.utmTerm ?? "none",
-          utm_content: result.value.entryIntent.utmContent ?? "none",
-        });
-        if (result.value.entryIntent.inviteKind) {
-          trackFunnel("viral_invite_opened", {
-            inviteKind: result.value.entryIntent.inviteKind,
-            campaign: result.value.entryIntent.campaign ?? "unknown",
-            hasInviterName: Boolean(result.value.entryIntent.inviterName),
+        try {
+          await commitJestStartupSession({
+            gate: notificationOperationGate,
+            isActive: () => active,
+            session: result.value,
+            enablePlayerStateWrites: playerStateWrites.enable,
+            setEngagementProgress,
+            setSession,
+            trackFunnel,
           });
+        } catch (commitError) {
+          captureBrowserException(commitError, {component: "jest_startup_commit"});
+          setError(tr("ErrorMessages.GENERIC_UNEXPECTED_ERROR"));
         }
       } else {
-        const message = "message" in result ? result.message : "Jest startup was cancelled";
+        const message = "message" in result
+          ? result.message
+          : tr("ErrorMessages.CHECK_INTERNET_AND_TRY_AGAIN");
         setError(
           message === JEST_SDK_INIT_TIMEOUT_MESSAGE
             ? tr("Errors.CHECK_INTERNET_AND_TRY_AGAIN")
@@ -177,58 +276,48 @@ export function JestPlayApp() {
     });
     return () => {
       active = false;
+      playerStateWrites.disable();
+      stopJestLoadingHeartbeat(platform);
     };
-  }, [authenticateJestIdentity, backend, platform, purchases, trackFunnel]);
-
-  const savePlayerData = useCallback(
-    (update: JestPlayerDataUpdate) => {
-      if (!sessionRef.current) return;
-      if (update.profile) {
-        setEngagementProgress({
-          level: update.profile.level,
-          winStreak: update.profile.winStreak,
-          wins: update.profile.wins,
-        });
-      }
-      const next: JestPlayerData = {
-        ...(playerDataRef.current ?? {}),
-        schemaVersion: 1,
-        updatedAt: Date.now(),
-        ...update,
-      };
-      playerDataRef.current = next;
-      const write = playerDataWriteQueueRef.current
-        .catch(() => undefined)
-        .then(() => platform.writePlayerData(next));
-      playerDataWriteQueueRef.current = write;
-      void write.catch((writeError) => {
-        console.warn("[riddle-quest] Jest player data save failed", writeError);
-        trackFunnel("player_data_save_failed");
+  }, [authenticateJestIdentity, backend, completeTombstonedPlayerCleanup, deletionCleanupOptions, notificationOperationGate, platform, playerStateWrites, purchases, trackFunnel]);
+  /** Clears app-owned browser and Jest state only after server-side account deletion succeeds. */
+  const clearPlayerState = useCallback(async () => {
+    notificationOperationGate.close();
+    await playerStateWrites.drainAndClear();
+    try {
+      await purgeDeletedPlayerState(platform, deletionCleanupOptions);
+    } catch (clearError) {
+      console.warn("[riddle-quest] Player-state clear failed after account deletion", clearError);
+      const cleanupError = clearError instanceof AccountDeletionCleanupError ? clearError : undefined;
+      trackFunnel("player_state_clear_failed", {
+        notifications: cleanupError?.notificationsFailed ?? true,
+        platform: cleanupError?.platformFailed ?? true,
+        browser: cleanupError?.browserFailed ?? true,
       });
-    },
-    [platform, trackFunnel],
-  );
-
-  /** Clears client-writable Jest storage after server-side account deletion. */
-  const clearPlayerData = useCallback(async () => {
-    /** Empty versioned player-data snapshot replacing saved profile and game state. */
-    const empty: JestPlayerData = {schemaVersion: 1, updatedAt: Date.now(), activeGame: null};
-    playerDataRef.current = empty;
-    await platform.writePlayerData(empty);
-  }, [platform]);
-
+      throw clearError;
+    }
+    sessionRef.current = null;
+    setSession(null);
+    setAccountDeleted(true);
+  }, [deletionCleanupOptions, notificationOperationGate, platform, playerStateWrites, trackFunnel]);
   const completeRegistrationPrompt = useCallback(() => {
     if (registrationCompletingRef.current) return;
     registrationCompletingRef.current = true;
+    let authoritativeDeletedPlayerSigned: string | null = null;
     void withPlatformActivity(async () => {
       const previousSession = sessionRef.current;
       let registered = false;
+      let completionSucceeded = false;
       try {
         const player = platform.getPlayer();
         registered = player.registered;
         if (registered) {
           const signed = await platform.getPlayerSigned();
           const identity = await backend.exchangeIdentity(signed.playerSigned);
+          if (identity.status === "account-deleted") {
+            authoritativeDeletedPlayerSigned = signed.playerSigned;
+            return;
+          }
           await authenticateJestIdentity(identity.customToken);
           let profile = previousSession?.profile ?? null;
           try {
@@ -247,6 +336,7 @@ export function JestPlayApp() {
               campaign: previousSession.entryIntent.campaign ?? "unknown",
             });
           }
+          completionSucceeded = true;
         } else if (previousSession) {
           const preferences = {
             ...previousSession.preferences,
@@ -255,10 +345,16 @@ export function JestPlayApp() {
           await platform.writePreferences(preferences);
           setSession((current) => (current ? {...current, preferences} : current));
           trackFunnel("registration_prompt_dismissed", {source: registrationSourceRef.current});
+          completionSucceeded = true;
         }
       } catch (registrationError) {
         console.warn("[riddle-quest] Jest registration completion failed", registrationError);
+        captureBrowserException(registrationError, {
+          component: "jest_registration",
+          operation: "synchronize_registered_identity",
+        });
         trackFunnel("registration_completion_failed", {source: registrationSourceRef.current});
+        setError(tr("ErrorMessages.GENERIC_UNEXPECTED_ERROR"));
       } finally {
         registrationHandleRef.current = null;
         registrationCompletingRef.current = false;
@@ -266,13 +362,29 @@ export function JestPlayApp() {
         setShowRegistration(false);
         window.dispatchEvent(
           new CustomEvent("riddle-quest:registration-prompt-closed", {
-            detail: {registered},
+            detail: {registered: completionSucceeded && registered},
           }),
         );
       }
+    }).then(async () => {
+      if (authoritativeDeletedPlayerSigned) {
+        await completeTombstonedPlayerCleanup(authoritativeDeletedPlayerSigned);
+      }
+    }).catch((registrationError) => {
+      captureBrowserException(registrationError, {
+        component: "jest_registration",
+        operation: "deleted_identity_cleanup",
+      });
+      setError(tr("ErrorMessages.GENERIC_UNEXPECTED_ERROR"));
     });
-  }, [authenticateJestIdentity, backend, platform, trackFunnel, withPlatformActivity]);
-
+  }, [
+    authenticateJestIdentity,
+    backend,
+    completeTombstonedPlayerCleanup,
+    platform,
+    trackFunnel,
+    withPlatformActivity,
+  ]);
   const openRegistrationPrompt = useCallback(
     (source: RegistrationSource, showGamePrompt: boolean) => {
       const currentSession = sessionRef.current;
@@ -302,8 +414,8 @@ export function JestPlayApp() {
     },
     [completeRegistrationPrompt, platform, trackFunnel],
   );
-
   const dismissRegistration = useCallback(() => {
+    setRegistrationFailure(null);
     setRegistrationPending(true);
     const handle = registrationHandleRef.current;
     if (handle) {
@@ -317,8 +429,8 @@ export function JestPlayApp() {
     }
     completeRegistrationPrompt();
   }, [completeRegistrationPrompt]);
-
   const register = useCallback(() => {
+    setRegistrationFailure(null);
     setRegistrationPending(true);
     const handle = registrationHandleRef.current;
     if (handle) {
@@ -326,20 +438,35 @@ export function JestPlayApp() {
         handle.loginButtonAction();
       } catch (registrationError) {
         console.warn("[riddle-quest] Jest registration login action failed", registrationError);
-        completeRegistrationPrompt();
+        setRegistrationPending(false);
+        setRegistrationFailure(tr("ErrorMessages.CHECK_INTERNET_AND_TRY_AGAIN"));
+        trackFunnel("registration_login_failed", {
+          source: registrationSourceRef.current,
+          status: "failure",
+        });
       }
       return;
     }
-    void withPlatformActivity(async () => {
-      const currentSession = sessionRef.current;
-      await platform.login(
+    const currentSession = sessionRef.current;
+    void withPlatformActivity(() =>
+      platform.login(
         createRegistrationEntryPayload(registrationSourceRef.current, currentSession?.entryIntent ?? {}),
-      );
+      ),
+    ).then((result) => {
+      if (result.status !== "success") {
+        setRegistrationPending(false);
+        setRegistrationFailure(tr("ErrorMessages.CHECK_INTERNET_AND_TRY_AGAIN"));
+        trackFunnel("registration_login_failed", {
+          source: registrationSourceRef.current,
+          status: result.status,
+        });
+        return;
+      }
       completeRegistrationPrompt();
     });
-  }, [completeRegistrationPrompt, platform, withPlatformActivity]);
-
+  }, [completeRegistrationPrompt, platform, trackFunnel, withPlatformActivity]);
   const login = useCallback(() => {
+    setRegistrationFailure(null);
     setRegistrationPending(true);
     const currentSession = sessionRef.current;
     const entryPayload = createRegistrationEntryPayload(
@@ -365,13 +492,12 @@ export function JestPlayApp() {
       completeRegistrationPrompt();
     });
   }, [completeRegistrationPrompt, platform, trackFunnel, withPlatformActivity]);
-
   const handleAuthoritativeComplete = useCallback(
     async (
-      input: {gameMode: "classic" | "challenge"; isCorrect: boolean},
-      result: {newLevel?: number; newWinStreak?: number},
+      input: {gameMode: "classic" | "challenge"},
+      result: {isCorrect: boolean; newLevel?: number; newWinStreak?: number},
     ) => {
-      if (!session || !input.isCorrect) return;
+      if (!session || !result.isCorrect) return;
       trackFunnel("authoritative_puzzle_won", {
         gameMode: input.gameMode,
         winStreak: result.newWinStreak ?? 0,
@@ -381,11 +507,11 @@ export function JestPlayApp() {
         winStreak: result.newWinStreak ?? current.winStreak,
         wins: current.wins + 1,
       }));
-      const recorded = await recordAuthoritativeCompletion(platform, session, {
-        gameMode: input.gameMode,
-        isCorrect: input.isCorrect,
-        newWinStreak: result.newWinStreak,
-      });
+      const recorded = await notificationOperationGate.run(() => recordAuthoritativeCompletion(platform, session, {
+          gameMode: input.gameMode,
+          isCorrect: result.isCorrect,
+          newWinStreak: result.newWinStreak,
+        }));
       if (recorded.status !== "success") {
         trackFunnel("first_milestone_failed", {status: recorded.status});
         return;
@@ -396,9 +522,8 @@ export function JestPlayApp() {
         openRegistrationPrompt("authoritative_win", true);
       }
     },
-    [openRegistrationPrompt, platform, session, trackFunnel],
+    [notificationOperationGate, openRegistrationPrompt, platform, session, trackFunnel],
   );
-
   useEffect(() => {
     const showPostInstructionsRegistration = () => {
       openRegistrationPrompt("post_instructions", false);
@@ -417,21 +542,31 @@ export function JestPlayApp() {
       window.removeEventListener("riddle-quest:dismiss-registration", dismissRegistrationPrompt);
     };
   }, [dismissRegistration, login, openRegistrationPrompt, register]);
-
   useEffect(() => {
-    trackScreen(error ? "startup_error" : !session ? "startup_loading" : !session.player.registered && showRegistration
+    trackScreen(error ? "startup_error" : accountDeleted ? "account_deleted" : !session ? "startup_loading" : !session.player.registered && showRegistration
       ? "registration_prompt"
       : "game");
-  }, [error, session, showRegistration]);
-
+  }, [accountDeleted, error, session, showRegistration]);
   if (error) {
     return <JestStartupError message={error} />;
   }
-  if (!session) {
+  if (accountDeleted) {
+    return <JestAccountDeleted />;
+  }
+  if (!session || accountDeletionQuiesced) {
     return <JestStartupProgress startup={startup} />;
   }
   return (
     <>
+      {registrationFailure ? (
+        <div
+          className="play-alert game-shell-alert"
+          role="alert"
+          style={{top: "auto", bottom: "max(12px, env(safe-area-inset-bottom))"}}
+        >
+          {registrationFailure}
+        </div>
+      ) : null}
       {!session.player.registered && showRegistration ? (
         <JestRegistrationAlert
           blocked={pendingPlatformOperations > 0 || registrationPending}
@@ -454,8 +589,10 @@ export function JestPlayApp() {
         platformPlayerRegistered={session.player.registered}
         externalInteractionBlocked={pendingPlatformOperations > 0}
         initialPlayerData={session.playerData}
-        onPlayerDataChange={savePlayerData}
-        onAccountDeleted={clearPlayerData}
+        onPlayerDataChange={playerStateWrites.savePlayerData}
+        accountDeletionServiceGate={notificationOperationGate}
+        onAccountDeletionRequested={markAccountDeletionRequested}
+        onAccountDeleted={clearPlayerState}
       />
     </>
   );

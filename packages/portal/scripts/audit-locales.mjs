@@ -1,6 +1,10 @@
 import {readdir, readFile, stat} from "node:fs/promises";
 import path from "node:path";
 import {fileURLToPath} from "node:url";
+import {
+  hasQuestionMarkReplacementText,
+  isUnsupportedJestLocaleKey,
+} from "./locale-audit-rules.mjs";
 
 const packageRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const localeRoot = path.resolve(packageRoot, "../../src/locales");
@@ -63,6 +67,10 @@ const flatten = (value, prefix = "", output = new Map()) => {
 const placeholders = (value) =>
   typeof value === "string" ? [...value.matchAll(/\{([A-Za-z0-9_]+)\}/g)].map((match) => match[1]).sort() : [];
 
+/** Detects unreplaced protected tokens left behind by translation tooling. */
+const hasProtectedTranslationToken = (value) =>
+  typeof value === "string" && /__[^\r\n]{1,80}?__/u.test(value);
+
 const actualLocales = (
   await Promise.all(
     (await readdir(localeRoot)).map(async (entry) => ({
@@ -99,13 +107,29 @@ for (const locale of expectedLocales) {
   for (const namespace of expectedNamespaces) {
     const translated = flatten(JSON.parse(await readFile(path.join(localeRoot, locale, `${namespace}.json`), "utf8")));
     const english = englishCatalogs.get(namespace);
+    for (const key of translated.keys()) {
+      if (isUnsupportedJestLocaleKey(key)) {
+        errors.push(`${locale}/${namespace}.${key}: removed Jest-incompatible feature key must not ship`);
+      }
+    }
     for (const [key, englishValue] of english) {
       if (!translated.has(key)) {
         errors.push(`${locale}/${namespace}: missing ${key}`);
         continue;
       }
       const expectedPlaceholders = placeholders(englishValue);
-      const translatedPlaceholders = placeholders(translated.get(key));
+      const translatedValue = translated.get(key);
+      if (typeof translatedValue !== "string" || translatedValue.trim().length === 0) {
+        errors.push(`${locale}/${namespace}.${key}: translation must be a non-empty string`);
+        continue;
+      }
+      if (hasProtectedTranslationToken(translatedValue)) {
+        errors.push(`${locale}/${namespace}.${key}: contains an unreplaced protected translation token`);
+      }
+      if (hasQuestionMarkReplacementText(translatedValue)) {
+        errors.push(`${locale}/${namespace}.${key}: contains question-mark replacement text`);
+      }
+      const translatedPlaceholders = placeholders(translatedValue);
       if (JSON.stringify(expectedPlaceholders) !== JSON.stringify(translatedPlaceholders)) {
         errors.push(`${locale}/${namespace}.${key}: interpolation placeholders differ`);
       }
@@ -118,6 +142,6 @@ if (errors.length > 0) {
   process.exitCode = 1;
 } else {
   console.log(
-    `Locale audit passed: ${expectedLocales.length} locales × ${expectedNamespaces.length} namespaces, complete keys and placeholders`,
+    `Locale audit passed: ${expectedLocales.length} locales × ${expectedNamespaces.length} namespaces, complete keys/placeholders, no translation-token debris, and no removed Jest-incompatible feature keys`,
   );
 }

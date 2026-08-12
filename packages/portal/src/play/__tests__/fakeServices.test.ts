@@ -1,6 +1,9 @@
 import {createFakeHostServices} from "../fakeServices";
 
 describe("fake host services", () => {
+  const classicSessionToken = "00000000-0000-4000-8000-000000000001";
+  const dailySessionToken = "00000000-0000-4000-8000-000000000003";
+
   beforeAll(() => {
     Object.defineProperty(globalThis, "window", {configurable: true, value: {setTimeout}});
   });
@@ -15,24 +18,61 @@ describe("fake host services", () => {
     const unsubscribe = services.auth.subscribe((snapshot) => snapshots.push(snapshot));
     expect((await services.loadRiddle({gameMode: "classic", locale: "en", classicIndex: 2})).riddleId)
       .toBe("classic-fake-2");
-    expect((await services.loadRiddle({gameMode: "challenge", locale: "en"})).answer).toBe("echo");
+    expect(await services.loadRiddle({gameMode: "challenge", locale: "en"}))
+      .toMatchObject({riddleId: "daily-fake-1", answerLength: 4});
+    expect(await services.loadRiddle({gameMode: "challenge", locale: "en"})).not.toHaveProperty("answer");
     expect(await services.loadProfile("jest-guest")).toMatchObject({coins: 180});
 
-    await expect(services.requestHint({riddleId: "unknown", gameMode: "classic", currentAttempt: []}))
+    await expect(services.requestHint({
+      riddleId: "unknown",
+      gameMode: "classic",
+      sessionToken: classicSessionToken,
+      requestId: "hint-request-1",
+      currentAttempt: [],
+    }))
       .resolves.toMatchObject({index: 0, coinsCost: 50, newCoins: 130});
     await expect(services.requestHint({
       riddleId: "classic-fake-1",
       gameMode: "classic",
+      sessionToken: classicSessionToken,
+      requestId: "hint-request-2",
       currentAttempt: ["P", "I", "A", "N", "O"],
     })).resolves.toBeNull();
-    await expect(services.spendCoins({reason: "hint"})).resolves.toEqual({newCoins: 80});
-    await expect(services.spendCoins({reason: "skip", gameMode: "challenge"})).rejects.toThrow(/cannot be skipped/i);
+    await expect(services.spendCoins({
+      reason: "continue",
+      riddleId: "classic-fake-1",
+      gameMode: "classic",
+      sessionToken: classicSessionToken,
+      requestId: "continue-request-1",
+      amount: 50,
+    })).resolves.toEqual({newCoins: 80});
 
-    await expect(services.completeGame({riddleId: "classic-fake-1", gameMode: "classic", attempts: 2, isCorrect: true}))
+    await services.submitGuess({
+      riddleId: "classic-fake-1",
+      gameMode: "classic",
+      sessionToken: classicSessionToken,
+      guess: "piano",
+      requestId: "guess-request-1",
+    });
+    await expect(services.completeGame({
+      riddleId: "classic-fake-1",
+      gameMode: "classic",
+      sessionToken: classicSessionToken,
+    }))
       .resolves.toMatchObject({coinsEarned: 50});
-    await expect(services.skipRiddle({riddleId: "classic-fake-1", gameMode: "classic"}))
+    await expect(services.skipRiddle({
+      riddleId: "classic-fake-1",
+      gameMode: "classic",
+      sessionToken: classicSessionToken,
+      requestId: "skip-request-1",
+    }))
       .resolves.toMatchObject({success: true, costDeducted: 100});
-    await expect(services.skipRiddle({riddleId: "daily-fake-1", gameMode: "challenge"}))
+    await expect(services.skipRiddle({
+      riddleId: "daily-fake-1",
+      gameMode: "challenge",
+      sessionToken: dailySessionToken,
+      requestId: "skip-request-2",
+    }))
       .rejects.toThrow(/cannot be skipped/i);
 
     const product = services.products[0];
@@ -54,7 +94,13 @@ describe("fake host services", () => {
   it("handles unauthenticated local state and insufficient currency", async () => {
     const services = createFakeHostServices({initiallyAuthenticated: false});
     expect(await services.loadProfile("guest")).toBeNull();
-    await expect(services.spendCoins({reason: "continue"})).rejects.toThrow(/not enough coins/i);
+    await expect(services.spendCoins({
+      reason: "continue",
+      riddleId: "classic-fake-1",
+      gameMode: "classic",
+      sessionToken: classicSessionToken,
+      requestId: "continue-request-2",
+    })).rejects.toThrow(/not enough coins/i);
     expect(await services.updateUsername("Nobody")).toBeNull();
   });
 });

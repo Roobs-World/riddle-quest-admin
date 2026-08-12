@@ -20,12 +20,16 @@ export type HostMessageHandlers = {
   resize(message: Extract<GameToHostMessage, {type: "game:resize"}>): void | Promise<void>;
   /** Loads riddle. */
   loadRiddle(message: Extract<GameToHostMessage, {type: "game:loadRiddle"}>): void | Promise<void>;
+  /** Submits one authoritative single-player guess. */
+  submitGuess(message: Extract<GameToHostMessage, {type: "game:submitGuess"}>): void | Promise<void>;
   /** Completes game. */
   completeGame(message: Extract<GameToHostMessage, {type: "game:completeGame"}>): void | Promise<void>;
   /** Requests hint. */
   requestHint(message: Extract<GameToHostMessage, {type: "game:requestHint"}>): void | Promise<void>;
   /** Provides spend coins behavior. */
   spendCoins(message: Extract<GameToHostMessage, {type: "game:spendCoins"}>): void | Promise<void>;
+  /** Skips one authoritative Classic riddle. */
+  skipRiddle(message: Extract<GameToHostMessage, {type: "game:skipRiddle"}>): void | Promise<void>;
   /** Requests purchase. */
   requestPurchase(message: Extract<GameToHostMessage, {type: "game:requestPurchase"}>): void | Promise<void>;
   /** Loads leaderboard. */
@@ -80,6 +84,9 @@ export const createHostMessageRouter = (handlers: HostMessageHandlers) => {
       case "game:loadRiddle":
         await handlers.loadRiddle(message);
         break;
+      case "game:submitGuess":
+        await handlers.submitGuess(message);
+        break;
       case "game:completeGame":
         await handlers.completeGame(message);
         break;
@@ -88,6 +95,9 @@ export const createHostMessageRouter = (handlers: HostMessageHandlers) => {
         break;
       case "game:spendCoins":
         await handlers.spendCoins(message);
+        break;
+      case "game:skipRiddle":
+        await handlers.skipRiddle(message);
         break;
       case "game:requestPurchase":
         await handlers.requestPurchase(message);

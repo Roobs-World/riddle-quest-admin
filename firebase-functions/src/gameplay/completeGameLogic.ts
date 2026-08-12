@@ -1,11 +1,11 @@
 import * as functions from "firebase-functions";
+import {createHash} from "node:crypto";
 import {admin} from "../shared/firebaseAdmin";
-import type {FieldValue} from "firebase-admin/firestore";
 import {HttpsError} from "firebase-functions/v2/https";
-import {getUser, updateUserCoins, updateUserStats, ensureUserDocumentComplete} from "./firestoreService";
-import type {PlayerStats, PlayerStatsUpdate} from "../validation/firestoreSchemas";
+import {getUser, ensureUserDocumentComplete} from "./firestoreService";
+import type {Player, PlayerStats} from "../validation/firestoreSchemas";
 import type {CompleteGameRequestData, CompleteGameResponseData} from "../validation/requestSchemas";
-import {evaluateAchievements} from "./achievements";
+import {findNewAchievements} from "./achievements";
 import {updateLeaderboardEntry} from "./leaderboard";
 import {captureException} from "../shared/sentry";
 import {
@@ -21,275 +21,399 @@ import {
   getLevelFromXp,
 } from "../shared/constants";
 import {SUPPORTED_LOCALES, type SupportedLocale} from "@qwordly/core/validation";
-import {computeNextDailyWinStreak} from "../daily/dailyStreak";
+import {computeNextDailyWinStreak, getUtcDayString} from "../daily/dailyStreak";
 import {triggerClassicRiddleGenerationIfNeeded} from "../riddles/riddleSupply";
+import {lowerCaseGraphemes} from "@qwordly/core/game";
+import {finalizeAuthoritativeSession} from "./singlePlayerSession";
+import {assertPlayableSinglePlayerAnswer} from "./singlePlayerAnswerPolicy";
+import {getSafeErrorMetadata} from "../shared/errorMetadata";
+import {
+  completionBindingMatches,
+  getSinglePlayerCompletionBindingRef,
+} from "./singlePlayerCompletionBinding";
 
-/** Describes player top level update. */
-type PlayerTopLevelUpdate = {
-  /** Stores last daily challenge completed at. */
-  lastDailyChallengeCompletedAt?: number | FieldValue;
+// ---------------------------------------------------------------------------
+// completeGame - called once when a server-validated game truly ends.
+// This function handles all server-side side effects: coins, stats, progress
+// advancement, and achievements.
+// ---------------------------------------------------------------------------
+
+/** Describes a completion derived exclusively from trusted backend state. */
+export type AuthoritativeCompleteGameData = CompleteGameRequestData & {
+  /** Server-counted number of accepted guesses. */
+  attempts: number;
+  /** Correctness derived from the canonical riddle and persisted final guess. */
+  isCorrect: boolean;
+  /** Rollover-safe key used only by the completion receipt. */
+  completionKey: string;
+  /** Locale-independent entitlement key used by pending terminal recovery. */
+  entitlementCompletionKey: string;
+  /** Locale immutably bound to the private play session. */
+  locale: SupportedLocale;
+  /** Classic entitlement index immutably bound to the session. */
+  classicIndex?: number;
+  /** Daily UTC entitlement date immutably bound to the session. */
+  challengeDate?: string;
+  /** Server-committed terminal time used only for bounded UTC rollover recovery. */
+  terminalAt?: Date;
 };
 
-// ---------------------------------------------------------------------------
-// completeGame â€” called once when a game truly ends (win or final loss).
-// Feedback is computed client-side; this function handles all server-side
-// side-effects: coins, stats, progress advancement, and achievements.
-// ---------------------------------------------------------------------------
+/** Narrow recovery window around UTC midnight for a committed terminal win. */
+export const DAILY_COMPLETION_ROLLOVER_GRACE_MS = 15 * 60 * 1_000;
+/** Retains loss replay receipts beyond the longest valid private session. */
+export const LOSS_COMPLETION_RECEIPT_TTL_MS = 45 * 24 * 60 * 60 * 1_000;
+
+/** Parses a server timestamp without trusting caller-provided time. */
+function toTrustedDate(value: unknown): Date | undefined {
+  if (typeof value === "object" && value !== null && "toDate" in value && typeof value.toDate === "function") {
+    const parsed = value.toDate();
+    return parsed instanceof Date && !Number.isNaN(parsed.getTime()) ? parsed : undefined;
+  }
+  return value instanceof Date && !Number.isNaN(value.getTime()) ? value : undefined;
+}
 
 /**
- * Finalizes server-side game side effects for a completed win/loss.
- *
- * @param data Completion payload.
- * @param auth Auth context (uid).
- * @returns Rewards and progression snapshot.
+ * Accepts today's challenge, or yesterday's server-proven terminal win within
+ * a small rollover window. Older/out-of-order challenge sessions fail closed.
  */
-export async function handleCompleteGameLogic(
+export function isDailyCompletionDateEligible(
+  challengeDate: string | undefined,
+  isCorrect: boolean,
+  terminalAt: Date | undefined,
+  now = new Date(),
+): boolean {
+  if (!challengeDate) return false;
+  const today = now.toISOString().slice(0, 10);
+  if (challengeDate === today) return true;
+  if (!isCorrect || !terminalAt) return false;
+  const rollover = new Date(`${challengeDate}T00:00:00.000Z`);
+  if (Number.isNaN(rollover.getTime())) return false;
+  rollover.setUTCDate(rollover.getUTCDate() + 1);
+  const rolloverMs = rollover.getTime();
+  return terminalAt.getTime() >= rolloverMs - DAILY_COMPLETION_ROLLOVER_GRACE_MS &&
+    terminalAt.getTime() <= rolloverMs + DAILY_COMPLETION_ROLLOVER_GRACE_MS &&
+    now.getTime() >= rolloverMs &&
+    now.getTime() <= rolloverMs + DAILY_COMPLETION_ROLLOVER_GRACE_MS;
+}
+
+/** Resolves the canonical locale used by authoritative riddle validation. */
+const resolveUserLocale = (preferredLanguage: string | undefined): SupportedLocale =>
+  SUPPORTED_LOCALES.includes(preferredLanguage as SupportedLocale)
+    ? preferredLanguage as SupportedLocale
+    : "en";
+
+/**
+ * Loads the canonical riddle and derives the terminal outcome from server-owned
+ * attempt state. No client-provided correctness or attempt count is accepted.
+ */
+export async function deriveAuthoritativeCompletion(
+  data: CompleteGameRequestData,
+  auth: {uid: string; isAnonymous?: boolean},
+): Promise<AuthoritativeCompleteGameData> {
+  const state = await finalizeAuthoritativeSession(
+    auth.uid,
+    data.gameMode,
+    data.riddleId,
+    data.sessionToken,
+  );
+  if (!state.lastGuess || state.attempts < 1 || state.attempts > 6) {
+    throw new HttpsError("failed-precondition", "The authoritative game state is incomplete.");
+  }
+  assertPlayableSinglePlayerAnswer(state.answer);
+  const locale = resolveUserLocale(state.locale);
+  const normalizedAnswer = lowerCaseGraphemes(state.answer.trim(), locale).join("");
+  const normalizedGuess = lowerCaseGraphemes(state.lastGuess.trim(), locale).join("");
+  return {
+    ...data,
+    attempts: state.attempts,
+    isCorrect: normalizedGuess === normalizedAnswer,
+    completionKey: normalizedGuess === normalizedAnswer
+      ? state.completionKey
+      : `${state.completionKey}:loss:${data.sessionToken}`,
+    entitlementCompletionKey: state.completionKey,
+    locale,
+    ...(state.classicIndex !== undefined ? {classicIndex: state.classicIndex} : {}),
+    ...(state.challengeDate ? {challengeDate: state.challengeDate} : {}),
+    ...(toTrustedDate(state.terminalAt) ? {terminalAt: toTrustedDate(state.terminalAt)} : {}),
+  };
+}
+
+/** Resolves and executes one replay-safe authoritative completion. */
+export async function completeAuthoritativeGame(
   data: CompleteGameRequestData,
   auth: {uid: string; isAnonymous?: boolean},
 ): Promise<CompleteGameResponseData> {
-  const {riddleId, gameMode, attempts, isCorrect} = data;
-  const userId = auth.uid;
+  const outcome = await deriveAuthoritativeCompletion(data, auth);
+  return commitAuthoritativeCompletion(outcome, auth);
+}
 
-  if (!riddleId || !gameMode || attempts === undefined || isCorrect === undefined) {
-    throw new HttpsError("invalid-argument", "Missing required parameters: riddleId, gameMode, attempts, isCorrect.");
-  }
+/** Fully populated numeric stats used by the atomic completion transaction. */
+const defaultPlayerStats = (): PlayerStats => ({
+  xp: 0,
+  level: 1,
+  dailyPuzzlesCompleted: 0,
+  bestStreak: 0,
+  totalWordsGuessed: 0,
+  winRate: 0,
+  averageGuesses: 0,
+  totalScore: 0,
+  highestLevelClassic: 0,
+  gamesPlayed: 0,
+  wins: 0,
+  challengeWins: 0,
+  winStreak: 0,
+  totalWins: 0,
+  totalGuessesInWins: 0,
+  totalHintsUsed: 0,
+  multiplayerGamesPlayed: 0,
+  multiplayerWins: 0,
+  multiplayerChallengesCreated: 0,
+});
 
-  try {
-    await ensureUserDocumentComplete(userId);
+/** Atomically applies progression, rewards, achievements, and the replay receipt. */
+async function commitAuthoritativeCompletion(
+  data: AuthoritativeCompleteGameData,
+  auth: {uid: string; isAnonymous?: boolean},
+): Promise<CompleteGameResponseData> {
+  await ensureUserDocumentComplete(auth.uid);
+  const receiptId = createHash("sha256")
+    .update(`${auth.uid}\0${data.gameMode}\0${data.completionKey}`)
+    .digest("hex");
+  const db = admin.firestore();
+  const userRef = db.collection("users").doc(auth.uid);
+  const receiptRef = db.collection("gameCompletionReceipts").doc(receiptId);
+  const completionBindingRef = getSinglePlayerCompletionBindingRef(
+    auth.uid,
+    data.gameMode,
+    data.entitlementCompletionKey,
+  );
 
-    const user = await getUser(userId);
-    if (!user) {
-      throw new HttpsError("internal", "User not found while trying to update stats.");
+  const result = await db.runTransaction(async (transaction) => {
+    const [receiptSnapshot, userSnapshot, completionBindingSnapshot] = await Promise.all([
+      transaction.get(receiptRef),
+      transaction.get(userRef),
+      transaction.get(completionBindingRef),
+    ]);
+    const clearMatchingCompletionBinding = () => {
+      if (completionBindingSnapshot.exists && completionBindingMatches(completionBindingSnapshot.data(), {
+        sessionToken: data.sessionToken,
+        gameMode: data.gameMode,
+        completionKey: data.entitlementCompletionKey,
+        riddleId: data.riddleId,
+      })) transaction.delete(completionBindingRef);
+    };
+    const createCompletionReceipt = (response: CompleteGameResponseData) => transaction.create(receiptRef, {
+      userId: auth.uid,
+      gameMode: data.gameMode,
+      completionKey: data.completionKey,
+      status: "completed",
+      result: response,
+      completedAt: admin.firestore.FieldValue.serverTimestamp(),
+      ...(!data.isCorrect ? {
+        expiresAt: admin.firestore.Timestamp.fromMillis(Date.now() + LOSS_COMPLETION_RECEIPT_TTL_MS),
+      } : {}),
+    });
+    if (receiptSnapshot.exists) {
+      const cached = receiptSnapshot.data()?.result;
+      if (receiptSnapshot.data()?.status === "completed" && cached) {
+        clearMatchingCompletionBinding();
+        return cached as CompleteGameResponseData;
+      }
+      throw new HttpsError("data-loss", "The game completion receipt is invalid.");
     }
-    const preferredLanguage = user.preferredLanguage ?? "en";
-    const locale = SUPPORTED_LOCALES.includes(preferredLanguage as SupportedLocale)
-      ? (preferredLanguage as SupportedLocale)
-      : "en";
+    if (!userSnapshot.exists) throw new HttpsError("not-found", "User data not found.");
 
-    const currentStats: PlayerStats = user.stats || {
-      xp: 0,
-      level: 1,
-      dailyPuzzlesCompleted: 0,
-      bestStreak: 0,
-      totalWordsGuessed: 0,
-      winRate: 0,
-      averageGuesses: 0,
-      totalScore: 0,
-      highestLevelClassic: 0,
-      gamesPlayed: 0,
-      wins: 0,
-      challengeWins: 0,
-      winStreak: 0,
-      totalWins: 0,
-      totalGuessesInWins: 0,
-      totalHintsUsed: 0,
-      multiplayerGamesPlayed: 0,
-      multiplayerWins: 0,
-      multiplayerChallengesCreated: 0,
+    const user = userSnapshot.data() as Player;
+    const currentStats: PlayerStats = {...defaultPlayerStats(), ...(user.stats ?? {})};
+    const progress = {
+      classicIndex: user.progress?.classicIndex ?? 1,
+      dailyChallengeIndex: user.progress?.dailyChallengeIndex ?? 0,
+      dailyChallengeCurrentQuestion: user.progress?.dailyChallengeCurrentQuestion ?? 0,
     };
-
-    // Batch all guesses (attempts) into totalWordsGuessed at game end
-    const statsUpdate: PlayerStatsUpdate = {
-      totalWordsGuessed: admin.firestore.FieldValue.increment(attempts),
-      gamesPlayed: admin.firestore.FieldValue.increment(1),
-    };
-
-    let baseWinCoins = 0;
-    let levelUpBonus = 0;
-    let dailyStreakBonus = 0;
-    let achievementBonus = 0;
-    let coinsEarned = 0;
-    let xpEarned = 0;
-    let newXp = currentStats.xp ?? 0;
-    let newLevel = currentStats.level ?? getLevelFromXp(newXp);
-    let leveledUp = false;
-
-    let updatedDailyWinStreak: number | undefined;
-
-    if (isCorrect) {
-      statsUpdate.wins = admin.firestore.FieldValue.increment(1);
-      statsUpdate.totalWins = admin.firestore.FieldValue.increment(1);
-      statsUpdate.totalGuessesInWins = admin.firestore.FieldValue.increment(attempts);
-
-      const playerProfileUpdate: PlayerTopLevelUpdate = {};
-
-      const maxAttempts = gameMode === "challenge" ? MAX_ATTEMPTS_CHALLENGE : MAX_ATTEMPTS_CLASSIC;
-
-      if (gameMode === "challenge") {
-        updatedDailyWinStreak = computeNextDailyWinStreak(
-          currentStats.winStreak || 0,
-          user.lastDailyChallengeCompletedAt,
-        );
-        statsUpdate.winStreak = updatedDailyWinStreak;
-        statsUpdate.challengeWins = admin.firestore.FieldValue.increment(1);
-        statsUpdate.dailyPuzzlesCompleted = admin.firestore.FieldValue.increment(1);
-        baseWinCoins = COINS_REWARD_CHALLENGE;
-
-        // Award the current streak tier every day while the streak is active.
-        dailyStreakBonus = getStreakRewardBonus(updatedDailyWinStreak ?? 0);
-
-        playerProfileUpdate.lastDailyChallengeCompletedAt = admin.firestore.FieldValue.serverTimestamp();
-
-        await admin
-          .firestore()
-          .collection("users")
-          .doc(userId)
-          .update({
-            "progress.dailyChallengeIndex": admin.firestore.FieldValue.increment(1),
-          });
-        functions.logger.info(`User ${userId} completed daily challenge. Incremented dailyChallengeIndex.`);
+    let supersededCompletion = false;
+    if (data.gameMode === "classic") {
+      if (typeof data.classicIndex !== "number" || !Number.isInteger(data.classicIndex)) {
+        throw new HttpsError("permission-denied", "Classic progression no longer matches this completion.");
+      }
+      if (data.classicIndex !== progress.classicIndex) {
+        if (data.classicIndex < progress.classicIndex) supersededCompletion = true;
+        else throw new HttpsError("permission-denied", "Classic progression no longer matches this completion.");
+      }
+    }
+    if (data.gameMode === "challenge") {
+      const now = new Date();
+      const lastCompletedKey = typeof user.lastCompletedDailyChallengeKey === "string"
+        ? user.lastCompletedDailyChallengeKey
+        : getUtcDayString(user.lastDailyChallengeCompletedAt);
+      const lastAttemptedKey = typeof user.lastDailyChallengeAttemptedKey === "string"
+        ? user.lastDailyChallengeAttemptedKey
+        : undefined;
+      if (!data.isCorrect && lastCompletedKey && data.challengeDate && lastCompletedKey >= data.challengeDate) {
+        supersededCompletion = true;
       } else {
-        // classic
+        if (!isDailyCompletionDateEligible(data.challengeDate, data.isCorrect, data.terminalAt, now)) {
+          throw new HttpsError("permission-denied", "This daily challenge is no longer current.");
+        }
+        if (data.challengeDate !== now.toISOString().slice(0, 10) && lastAttemptedKey &&
+          lastAttemptedKey > data.challengeDate!) {
+          throw new HttpsError("permission-denied", "A newer daily challenge was already attempted.");
+        }
+        if (lastCompletedKey && lastCompletedKey >= data.challengeDate!) {
+          throw new HttpsError("failed-precondition", "This daily challenge is already complete or out of order.");
+        }
+      }
+    }
+    if (supersededCompletion) {
+      const response: CompleteGameResponseData = {
+        attempts: data.attempts,
+        isCorrect: data.isCorrect,
+        coinsEarned: 0,
+        newlyUnlockedAchievementIds: [],
+        scoreEarned: 0,
+        xpEarned: 0,
+        newXp: currentStats.xp,
+        newLevel: currentStats.level,
+        leveledUp: false,
+        ...(data.gameMode === "challenge" ? {newWinStreak: currentStats.winStreak} : {}),
+      };
+      createCompletionReceipt(response);
+      clearMatchingCompletionBinding();
+      return response;
+    }
+    const stats: PlayerStats = {...currentStats};
+
+    stats.totalWordsGuessed += data.attempts;
+    stats.gamesPlayed += 1;
+    let baseWinCoins = 0;
+    let dailyStreakBonus = 0;
+    let levelUpBonus = 0;
+    let xpEarned = 0;
+    let newWinStreak: number | undefined;
+
+    if (data.isCorrect) {
+      stats.wins += 1;
+      stats.totalWins += 1;
+      stats.totalGuessesInWins += data.attempts;
+      const maxAttempts = data.gameMode === "challenge" ? MAX_ATTEMPTS_CHALLENGE : MAX_ATTEMPTS_CLASSIC;
+      xpEarned = (data.gameMode === "challenge" ? BASE_SCORE_CHALLENGE : BASE_SCORE_CLASSIC) +
+        Math.max(0, (maxAttempts - data.attempts + 1) * 10);
+      stats.xp += xpEarned;
+      stats.totalScore += xpEarned;
+      const previousLevel = currentStats.level ?? getLevelFromXp(currentStats.xp);
+      stats.level = getLevelFromXp(stats.xp);
+      if (stats.level > previousLevel) levelUpBonus = LEVEL_UP_COIN_BONUS;
+
+      if (data.gameMode === "challenge") {
+        newWinStreak = computeNextDailyWinStreak(
+          currentStats.winStreak,
+          user.lastDailyChallengeCompletedAt,
+          new Date(`${data.challengeDate}T12:00:00.000Z`),
+        );
+        stats.winStreak = newWinStreak;
+        stats.bestStreak = Math.max(stats.bestStreak, newWinStreak);
+        stats.challengeWins += 1;
+        stats.dailyPuzzlesCompleted += 1;
+        progress.dailyChallengeIndex += 1;
+        progress.dailyChallengeCurrentQuestion = 1;
+        baseWinCoins = COINS_REWARD_CHALLENGE;
+        dailyStreakBonus = getStreakRewardBonus(newWinStreak);
+      } else {
+        progress.classicIndex += 1;
+        stats.highestLevelClassic = Math.max(stats.highestLevelClassic, progress.classicIndex);
         baseWinCoins = COINS_REWARD_CLASSIC;
       }
-
-      const baseScore = gameMode === "challenge" ? BASE_SCORE_CHALLENGE : BASE_SCORE_CLASSIC;
-      const attemptsBonus = Math.max(0, (maxAttempts - attempts + 1) * 10);
-      xpEarned = baseScore + attemptsBonus;
-      statsUpdate.xp = admin.firestore.FieldValue.increment(xpEarned);
-      statsUpdate.totalScore = admin.firestore.FieldValue.increment(xpEarned);
-      newXp = (currentStats.xp ?? 0) + xpEarned;
-      const previousLevel = currentStats.level ?? getLevelFromXp(currentStats.xp ?? 0);
-      newLevel = getLevelFromXp(newXp);
-      leveledUp = newLevel > previousLevel;
-      if (newLevel !== previousLevel) {
-        statsUpdate.level = newLevel;
-      }
-
-      // Award base win coins
-      await updateUserCoins(userId, baseWinCoins);
-      coinsEarned = baseWinCoins;
-
-      // Award daily streak bonus if applicable
-      if (dailyStreakBonus > 0) {
-        await updateUserCoins(userId, dailyStreakBonus);
-        coinsEarned += dailyStreakBonus;
-      }
-
-      // Award level-up bonus if applicable
-      if (leveledUp) {
-        levelUpBonus = LEVEL_UP_COIN_BONUS;
-        await updateUserCoins(userId, levelUpBonus);
-        coinsEarned += levelUpBonus;
-      }
-
-      if (Object.keys(playerProfileUpdate).length > 0) {
-        await admin.firestore().collection("users").doc(userId).update(playerProfileUpdate);
-      }
-
-      const bestStreakCandidate =
-        gameMode === "challenge"
-          ? (updatedDailyWinStreak ?? (currentStats.winStreak || 0))
-          : currentStats.bestStreak || 0;
-      if (bestStreakCandidate > (currentStats.bestStreak || 0)) {
-        statsUpdate.bestStreak = bestStreakCandidate;
-      }
-
-      if (!auth.isAnonymous) {
-        // Update leaderboard entry with computed post-win stats (non-blocking)
-        try {
-          const scoreEarned = xpEarned;
-          const newTotalXp = (currentStats.xp ?? 0) + scoreEarned;
-          const newTotalWins = (currentStats.totalWins ?? 0) + 1;
-          const newBestStreak = Math.max(
-            currentStats.bestStreak ?? 0,
-            gameMode === "challenge" ? (updatedDailyWinStreak ?? 0) : (currentStats.bestStreak ?? 0),
-          );
-          await updateLeaderboardEntry(
-            userId,
-            user.username,
-            {level: newLevel, xp: newTotalXp, totalWins: newTotalWins, bestStreak: newBestStreak},
-            user.avatarUrl ?? null,
-          );
-        } catch (error) {
-          functions.logger.error("Error updating leaderboard entry:", error);
-          captureException(error);
-        }
-      }
-
-      if (gameMode === "classic") {
-        const userRef = admin.firestore().collection("users").doc(userId);
-        await userRef.update({"progress.classicIndex": admin.firestore.FieldValue.increment(1)});
-        functions.logger.info(`User ${userId} solved Classic riddle ${riddleId}. Incremented classicIndex.`);
-
-        const newClassicLevel = (user.progress?.classicIndex || 0) + 1;
-        if (newClassicLevel > (currentStats.highestLevelClassic || 0)) {
-          await updateUserStats(userId, {highestLevelClassic: newClassicLevel});
-        }
-
-        const updatedUserDoc = await userRef.get();
-        const updatedUserData = updatedUserDoc.data() as {progress?: {classicIndex?: number}} | undefined;
-        const currentClassicIndex = updatedUserData?.progress?.classicIndex || 0;
-        await triggerClassicRiddleGenerationIfNeeded(userId, currentClassicIndex, locale);
-      }
-    } else if (gameMode === "challenge") {
-      updatedDailyWinStreak = 0;
-      statsUpdate.winStreak = 0;
+    } else if (data.gameMode === "challenge") {
+      newWinStreak = 0;
+      stats.winStreak = 0;
     }
 
-    const newTotalWins = (currentStats.totalWins || 0) + (isCorrect ? 1 : 0);
-    const newGamesPlayed = (currentStats.gamesPlayed || 0) + 1;
-    const newTotalGuessesInWins = (currentStats.totalGuessesInWins || 0) + (isCorrect ? attempts : 0);
+    stats.averageGuesses = stats.totalWins > 0
+      ? Number((stats.totalGuessesInWins / stats.totalWins).toFixed(2))
+      : 0;
+    stats.winRate = stats.gamesPlayed > 0
+      ? Number(((stats.totalWins / stats.gamesPlayed) * 100).toFixed(2))
+      : 0;
 
-    if (newTotalWins > 0 && newTotalGuessesInWins > 0) {
-      statsUpdate.averageGuesses = parseFloat((newTotalGuessesInWins / newTotalWins).toFixed(2));
-    }
-    if (newGamesPlayed > 0) {
-      statsUpdate.winRate = parseFloat(((newTotalWins / newGamesPlayed) * 100).toFixed(2));
-    }
-
-    await updateUserStats(userId, statsUpdate);
-
-    let newlyUnlockedAchievementIds: string[] = [];
-    try {
-      newlyUnlockedAchievementIds = await evaluateAchievements(userId, {
-        gameMode,
-        isCorrect,
-        attempts,
-        gameOver: true,
-      });
-
-      if (isCorrect && newlyUnlockedAchievementIds.length > 0) {
-        achievementBonus = newlyUnlockedAchievementIds.length * ACHIEVEMENT_UNLOCK_COIN_REWARD;
-        await updateUserCoins(userId, achievementBonus);
-        coinsEarned += achievementBonus;
-      }
-    } catch (error) {
-      functions.logger.error("Error evaluating achievements:", error);
-      captureException(error);
-    }
-
-    const scoreEarned = xpEarned;
-
-    // Get final user balance for reward breakdown
-    const finalUser = await getUser(userId);
-    const newBalance = finalUser?.coins ?? 0;
-    const totalAwarded = isCorrect ? coinsEarned : 0;
-
-    return {
+    const preAchievementCoins = Number(user.coins ?? 0) + baseWinCoins + dailyStreakBonus + levelUpBonus;
+    const projectedUser: Player = {...user, coins: preAchievementCoins, stats, progress};
+    const newAchievements = findNewAchievements(projectedUser, {
+      gameMode: data.gameMode,
+      isCorrect: data.isCorrect,
+      attempts: data.attempts,
+      gameOver: true,
+    });
+    const newlyUnlockedAchievementIds = newAchievements.map((entry) => entry.achievementId);
+    const achievementBonus = data.isCorrect
+      ? newlyUnlockedAchievementIds.length * ACHIEVEMENT_UNLOCK_COIN_REWARD
+      : 0;
+    const coinsEarned = data.isCorrect
+      ? baseWinCoins + dailyStreakBonus + levelUpBonus + achievementBonus
+      : 0;
+    const newBalance = Number(user.coins ?? 0) + coinsEarned;
+    const response: CompleteGameResponseData = {
+      attempts: data.attempts,
+      isCorrect: data.isCorrect,
       coinsEarned,
       newlyUnlockedAchievementIds,
-      scoreEarned,
+      scoreEarned: xpEarned,
       xpEarned,
-      newXp,
-      newLevel,
-      leveledUp,
-      newWinStreak: updatedDailyWinStreak,
-      rewardBreakdown: isCorrect
-        ? {
-            baseWinCoins,
-            levelUpBonus,
-            dailyStreakBonus,
-            achievementBonus,
-            totalAwarded,
-            newBalance,
-          }
-        : undefined,
+      newXp: stats.xp,
+      newLevel: stats.level,
+      leveledUp: stats.level > currentStats.level,
+      ...(newWinStreak !== undefined ? {newWinStreak} : {}),
+      ...(data.isCorrect ? {
+        rewardBreakdown: {
+          baseWinCoins,
+          levelUpBonus,
+          dailyStreakBonus,
+          achievementBonus,
+          totalAwarded: coinsEarned,
+          newBalance,
+        },
+      } : {}),
     };
-  } catch (error: unknown) {
-    functions.logger.error("Error in handleCompleteGameLogic:", error);
+
+    transaction.update(userRef, {
+      coins: newBalance,
+      stats,
+      progress,
+      unlockedAchievements: [...(user.unlockedAchievements ?? []), ...newAchievements],
+      ...(data.gameMode === "challenge" && data.isCorrect ? {
+        lastDailyChallengeCompletedAt: data.challengeDate === new Date().toISOString().slice(0, 10)
+          ? admin.firestore.FieldValue.serverTimestamp()
+          : admin.firestore.Timestamp.fromDate(new Date(`${data.challengeDate}T12:00:00.000Z`)),
+        lastCompletedDailyChallengeKey: data.challengeDate ?? data.completionKey,
+      } : {}),
+      ...(data.gameMode === "challenge" ? {lastDailyChallengeAttemptedKey: data.challengeDate} : {}),
+    });
+    createCompletionReceipt(response);
+    clearMatchingCompletionBinding();
+    return response;
+  });
+
+  // These effects are derived, overwrite-safe, and retried on receipt replay;
+  // they cannot make the already-committed player reward partial.
+  try {
+    const user = await getUser(auth.uid);
+    if (data.isCorrect && user && !auth.isAnonymous) {
+      await updateLeaderboardEntry(
+        auth.uid,
+        user.username,
+        {
+          level: user.stats.level,
+          xp: user.stats.xp,
+          totalWins: user.stats.totalWins,
+          bestStreak: user.stats.bestStreak,
+        },
+        user.avatarUrl ?? null,
+      );
+    }
+    if (data.isCorrect && data.gameMode === "classic" && user) {
+      await triggerClassicRiddleGenerationIfNeeded(auth.uid, user.progress.classicIndex, data.locale);
+    }
+  } catch (error) {
+    functions.logger.error("Recoverable post-completion projection failed.", getSafeErrorMetadata(error));
     captureException(error);
-    if (error instanceof HttpsError) throw error;
-    throw new HttpsError("internal", "An unexpected error occurred in handleCompleteGameLogic.", error);
   }
+  return result;
 }

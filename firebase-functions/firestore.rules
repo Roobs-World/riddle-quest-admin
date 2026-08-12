@@ -34,6 +34,16 @@ service cloud.firestore {
       allow delete: if false;
     }
 
+    // Normalized username ownership is an internal serialization boundary.
+    // Clients must not enumerate, claim, change, or release reservations.
+    match /usernameReservations/{reservationId} {
+      allow read, write: if false;
+    }
+
+    match /usernameReservationMigrations/{migrationId} {
+      allow read, write: if false;
+    }
+
     // Riddle answers are only returned through authoritative callable functions.
     match /riddles/{riddleId} {
       allow read, write: if false;
@@ -110,13 +120,11 @@ service cloud.firestore {
       allow read, write: if isServerRequest();
     }
 
-    // Leaderboard collection - read for all authenticated users, write for server only
+    // Leaderboard rows are exposed only through the authenticated callable,
+    // which verifies a canonical row is still backed by a live user. Direct
+    // reads could expose orphaned legacy identity snapshots.
     match /leaderboard/{userId} {
-      // Any authenticated user can read leaderboard entries
-      allow read: if isAuthenticated();
-
-      // Only Cloud Functions (admin SDK) may create or update entries
-      allow write: if isServerRequest();
+      allow read, write: if false;
     }
 
     // Race to 10 state is exclusively exposed through validated callable

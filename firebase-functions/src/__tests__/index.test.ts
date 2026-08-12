@@ -117,6 +117,7 @@ describe("Firebase Functions", () => {
       "updateUsername",
       "exchangeJestIdentity",
       "grantJestPurchase",
+      "retryJestAccountDeletion",
       "verifyJestReferrals",
     ];
 

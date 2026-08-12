@@ -38,6 +38,10 @@ import {
 } from "./raceEngine";
 import {evaluateRaceAchievementEvent} from "./raceAchievements";
 import {evaluateRaceRollout} from "./raceRollout";
+import {hydrateRaceReceiptResponse, minimizeRaceReceiptResponse, raceReceiptExpiresAt} from "./raceReceiptPrivacy";
+import {raceRunPrivacyWrite, resolveRaceOpponentPrivacy} from "./raceOpponentPrivacy";
+import {applyRaceCompletionPrivacy} from "./raceCompletionPrivacy";
+import {assertJestAccountActive, getJestAccountDeletionRef} from "../jest/jestAccountDeletion";
 import {
   applyActionRateLimit,
   buildDeterministicRaceDeck,
@@ -54,9 +58,7 @@ import {
   type RaceChallengeRecord,
   type RaceDeckRecord,
 } from "./raceSetupService";
-
 export {buildDeterministicRaceDeck, listRaceCategoriesForLocale} from "./raceSetupService";
-
 /** Starts race run for user. */
 export async function startRaceRunForUser(
   userId: string,
@@ -70,9 +72,7 @@ export async function startRaceRunForUser(
   if (existingStart.exists) {
     const runId = existingStart.data()?.runId;
     if (typeof runId !== "string") throw new HttpsError("internal", "Stored race start request is invalid.");
-    const runSnapshot = await db.collection("raceRuns").doc(runId).get();
-    if (!runSnapshot.exists) throw new HttpsError("internal", "Stored race run is missing.");
-    return RaceRunResponseSchema.parse({run: toRaceRunView(parseRunRecord(runSnapshot.data()), nowMs)});
+    return resumeRaceRunForUser(userId, runId, {db, nowMs});
   }
 
   const runRef = db.collection("raceRuns").doc();
@@ -109,6 +109,7 @@ export async function startRaceRunForUser(
     riddles = await resolveChallengeRiddles(db, input.locale, challenge);
     contentVersion = challenge.contentVersion;
     opponent = {
+      subjectUserId: challenge.creatorId,
       displayName: challenge.creatorSnapshot.displayName,
       avatarUrl: challenge.creatorSnapshot.avatarUrl,
       adjustedFinishMs: challenge.creatorAdjustedFinishMs,
@@ -160,13 +161,21 @@ export async function startRaceRunForUser(
   };
 
   await db.runTransaction(async (transaction) => {
-    const [duplicateStart, challengeAttempt] = await Promise.all([
+    const [duplicateStart, challengeAttempt, committedChallengeSnapshot] = await Promise.all([
       transaction.get(startRequestRef),
-      input.challengeId
-        ? transaction.get(db.collection("raceAttempts").doc(requestDocumentId(input.challengeId, userId)))
-        : Promise.resolve(null),
+      input.challengeId ? transaction.get(db.collection("raceAttempts")
+        .doc(requestDocumentId(input.challengeId, userId))) : Promise.resolve(null),
+      input.challengeId ? transaction.get(db.collection("raceChallenges").doc(input.challengeId)) : Promise.resolve(null),
     ]);
     if (duplicateStart.exists) return;
+    if (input.challengeId) {
+      if (!committedChallengeSnapshot?.exists) throw new HttpsError("not-found", "Race to 10 challenge not found.");
+      const committedChallenge = parseChallengeRecord(committedChallengeSnapshot.data());
+      const creatorDeletionSnapshot = await transaction.get(getJestAccountDeletionRef(db, committedChallenge.creatorId));
+      assertJestAccountActive(creatorDeletionSnapshot);
+      if (challengePreview(committedChallenge, nowMs).status !== "active")
+        throw new HttpsError("failed-precondition", "Race to 10 challenge is no longer active.");
+    }
     if (challengeAttempt?.exists) {
       throw new HttpsError("already-exists", "This player already has a ranked attempt for the challenge.");
     }
@@ -187,13 +196,8 @@ export async function startRaceRunForUser(
   const committedStart = await startRequestRef.get();
   const committedRunId = committedStart.data()?.runId;
   if (typeof committedRunId !== "string") throw new HttpsError("internal", "Race start was not committed.");
-  const committedRun =
-    committedRunId === runRef.id
-      ? run
-      : parseRunRecord((await db.collection("raceRuns").doc(committedRunId).get()).data());
-  return RaceRunResponseSchema.parse({run: toRaceRunView(committedRun, nowMs)});
+  return resumeRaceRunForUser(userId, committedRunId, {db, nowMs});
 }
-
 /** Provides mutate race run behavior. */
 async function mutateRaceRun<T>(
   userId: string,
@@ -212,65 +216,41 @@ async function mutateRaceRun<T>(
       transaction.get(runRef),
       options.enforceRaceAccess ? transaction.get(db.doc("raceConfig/rollout")) : Promise.resolve(null),
     ]);
-    if (requestSnapshot.exists) return requestSnapshot.data()?.response as T;
     if (!runSnapshot.exists) throw new HttpsError("not-found", "Race to 10 run not found.");
+    const storedRun = parseRunRecord(runSnapshot.data());
+    if (storedRun.userId !== userId) throw new HttpsError("permission-denied", "This race run belongs to another player.");
+    const privacy = await resolveRaceOpponentPrivacy(transaction, db, storedRun);
+    const run = privacy.run;
+    if (requestSnapshot.exists) {
+      const response = hydrateRaceReceiptResponse(requestSnapshot.data()?.response as T, run);
+      if (privacy.scrubbed) {
+        transaction.set(runRef, raceRunPrivacyWrite(run, true), {merge: true});
+        transaction.update(requestRef, {response: stripUndefined(minimizeRaceReceiptResponse(response))});
+      }
+      return response;
+    }
     if (
       options.enforceRaceAccess &&
       !evaluateRaceRollout(rolloutSnapshot?.exists ? rolloutSnapshot.data() : undefined, userId).enabled
     ) {
       throw new HttpsError("permission-denied", "Race to 10 is not enabled for this player.");
     }
-    const run = parseRunRecord(runSnapshot.data());
-    if (run.userId !== userId) throw new HttpsError("permission-denied", "This race run belongs to another player.");
-    const result = mutate(applyActionRateLimit(run, userId, nowMs));
-    if (
-      run.status === "active" &&
-      result.run.status !== "active" &&
-      result.run.status !== "abandoned" &&
-      result.run.challengeId
-    ) {
-      const challengeRef = db.collection("raceChallenges").doc(result.run.challengeId);
-      const challengeSnapshot = await transaction.get(challengeRef);
-      const challenge = parseChallengeRecord(challengeSnapshot.data());
-      const creatorRef = db.collection("users").doc(challenge.creatorId);
-      const [challengerSnapshot, creatorSnapshot] = await Promise.all([
-        transaction.get(db.collection("users").doc(userId)),
-        transaction.get(creatorRef),
-      ]);
-      const outcome = raceOutcome(result.run, nowMs);
-      const adjustedDeltaMs = outcome.adjustedFinishMs - challenge.creatorAdjustedFinishMs;
-      const creatorResult = adjustedDeltaMs < 0 ? "loss" : adjustedDeltaMs > 0 ? "win" : "tie";
-      const challenger = challengerSnapshot.data() ?? {};
-      const itemId = requestDocumentId(result.run.challengeId, userId);
-      transaction.set(db.doc(`users/${challenge.creatorId}/raceInbox/${itemId}`), {
-        itemId,
-        challengeId: result.run.challengeId,
-        opponentDisplayName: String(challenger.displayName || challenger.username || "Riddle Quest player")
-          .trim()
-          .slice(0, 80),
-        ...(typeof challenger.avatarUrl === "string" ? {opponentAvatarUrl: challenger.avatarUrl} : {}),
-        categoryId: result.run.categoryId,
-        result: creatorResult,
-        adjustedDeltaMs,
-        read: false,
-        createdAtMs: nowMs,
-      });
-      if (creatorSnapshot.exists) {
-        persistRaceAchievementEvent(
-          transaction,
-          creatorRef,
-          creatorSnapshot.data() ?? {},
-          {kind: "opponent_resolved", won: creatorResult === "win"},
-          nowMs,
-        );
-      }
-    }
-    transaction.set(runRef, stripUndefined(result.run), {merge: true});
+    const completed = await applyRaceCompletionPrivacy(
+      transaction,
+      db,
+      userId,
+      run,
+      mutate(applyActionRateLimit(run, userId, nowMs)),
+      nowMs,
+      privacy.scrubbed,
+    );
+    const {result} = completed;
+    transaction.set(runRef, raceRunPrivacyWrite(result.run, completed.scrubbed), {merge: true});
     transaction.create(requestRef, {
       userId,
       createdAtMs: nowMs,
-      response: stripUndefined(result.response),
-      expiresAt: admin.firestore.Timestamp.fromMillis(nowMs + RACE_CHALLENGE_TTL_MS),
+      response: stripUndefined(minimizeRaceReceiptResponse(result.response)),
+      expiresAt: raceReceiptExpiresAt(runSnapshot.data()?.expiresAt, nowMs + RACE_CHALLENGE_TTL_MS),
     });
     return result.response;
   });
@@ -385,9 +365,10 @@ export async function resumeRaceRunForUser(
     if (!snapshot.exists) throw new HttpsError("not-found", "Race to 10 run not found.");
     const stored = parseRunRecord(snapshot.data());
     if (stored.userId !== userId) throw new HttpsError("permission-denied", "This race run belongs to another player.");
-    const refreshed = refreshRaceRun(stored, nowMs);
+    const privacy = await resolveRaceOpponentPrivacy(transaction, db, stored);
+    const refreshed = refreshRaceRun(privacy.run, nowMs);
     if (JSON.stringify(refreshed) !== JSON.stringify(stored)) {
-      transaction.set(runRef, stripUndefined(refreshed), {merge: true});
+      transaction.set(runRef, raceRunPrivacyWrite(refreshed, privacy.scrubbed), {merge: true});
     }
     return refreshed;
   });
@@ -411,10 +392,15 @@ export async function publishRaceChallengeForUser(
       transaction.get(runRef),
       transaction.get(db.collection("users").doc(userId)),
     ]);
-    if (requestSnapshot.exists) return requestSnapshot.data()?.response as PublishRaceChallengeResponse;
     if (!runSnapshot.exists) throw new HttpsError("not-found", "Race to 10 run not found.");
-    const run = parseRunRecord(runSnapshot.data());
-    if (run.userId !== userId) throw new HttpsError("permission-denied", "This race run belongs to another player.");
+    const storedRun = parseRunRecord(runSnapshot.data());
+    if (storedRun.userId !== userId) throw new HttpsError("permission-denied", "This race run belongs to another player.");
+    const privacy = await resolveRaceOpponentPrivacy(transaction, db, storedRun);
+    const run = privacy.run;
+    if (requestSnapshot.exists) {
+      if (privacy.scrubbed) transaction.set(runRef, raceRunPrivacyWrite(run, true), {merge: true});
+      return requestSnapshot.data()?.response as PublishRaceChallengeResponse;
+    }
     const outcome = raceOutcome(run, nowMs);
     if (!outcome.publishable) {
       throw new HttpsError("failed-precondition", "Only a verified completed creator run can be published.");
@@ -465,7 +451,10 @@ export async function publishRaceChallengeForUser(
       })(),
     });
     transaction.create(challengeRef, stripUndefined(challenge));
-    transaction.set(runRef, {...stripUndefined(run), publishedChallengeId: challengeRef.id}, {merge: true});
+    transaction.set(runRef, {
+      ...raceRunPrivacyWrite(run, privacy.scrubbed),
+      publishedChallengeId: challengeRef.id,
+    }, {merge: true});
     if (userSnapshot.exists) {
       persistRaceAchievementEvent(
         transaction,
@@ -479,11 +468,10 @@ export async function publishRaceChallengeForUser(
       userId,
       createdAtMs: nowMs,
       response: stripUndefined(result),
-      expiresAt: admin.firestore.Timestamp.fromMillis(expiresAtMs),
+      expiresAt: raceReceiptExpiresAt(runSnapshot.data()?.expiresAt, expiresAtMs),
     });
     return result;
   });
   return PublishRaceChallengeResponseSchema.parse(response);
 }
-
 export {getRaceChallengePreview, getRaceOutcomeForUser, listRaceInboxForUser} from "./raceReadService";

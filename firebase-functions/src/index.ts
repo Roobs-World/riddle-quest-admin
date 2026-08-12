@@ -17,6 +17,7 @@ import {getHint, spendCoins, skipRiddle} from "./gameplay/gameLogic";
 import {getCurrentDailyChallenge, getCurrentClassicRiddle} from "./daily/dailyChallenge";
 import {deleteAccount, updateAvatar, updateUsername} from "./profile";
 import {completeGame} from "./gameplay/completeGameCallable";
+import {submitSinglePlayerGuess} from "./gameplay/submitSinglePlayerGuessCallable";
 import {dailyChallengeScheduler} from "./daily/dailyScheduler";
 import {getLeaderboard} from "./gameplay/leaderboard";
 import {
@@ -37,6 +38,7 @@ import {
 import {
   exchangeJestIdentity,
   grantJestPurchase,
+  retryJestAccountDeletion,
   syncJestSubscriptions,
   verifyJestReferrals,
 } from "./jest/jestEndpoints";
@@ -50,6 +52,7 @@ export {
   updateAvatar,
   deleteAccount,
   completeGame,
+  submitSinglePlayerGuess,
   dailyChallengeScheduler,
   getLeaderboard,
   listRaceCategories,
@@ -67,6 +70,7 @@ export {
   recordRaceAnalytics,
   exchangeJestIdentity,
   grantJestPurchase,
+  retryJestAccountDeletion,
   syncJestSubscriptions,
   verifyJestReferrals,
 };

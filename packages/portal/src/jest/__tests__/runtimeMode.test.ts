@@ -1,4 +1,4 @@
-import {resolveJestRuntimeMode} from "../runtimeMode";
+import {resolveJestRuntimeMode, shouldEnableJestSubscriptions} from "../runtimeMode";
 
 it("uses Jest's SDK and a local backend mock for standalone development", () => {
   expect(resolveJestRuntimeMode({development: true, embedded: false, harness: null, testHarnessEnabled: true})).toEqual({
@@ -48,4 +48,12 @@ it("does not let production query parameters enable a mock backend", () => {
     mockBackend: false,
     useSdkPlatform: true,
   });
+});
+
+it("keeps subscriptions disabled in the normal uploaded production runtime", () => {
+  expect(shouldEnableJestSubscriptions(false)).toBe(false);
+});
+
+it("retains subscription coverage in local development", () => {
+  expect(shouldEnableJestSubscriptions(true)).toBe(true);
 });

@@ -22,6 +22,7 @@ const mockDoc = {
 const mockTransaction = {
   get: jest.fn() as jest.MockedFunction<any>,
   update: jest.fn() as jest.MockedFunction<any>,
+  create: jest.fn() as jest.MockedFunction<any>,
 };
 
 // Mock Firebase Functions logger
@@ -63,6 +64,7 @@ describe("FirestoreService", () => {
     (mockDoc.set as jest.MockedFunction<any>).mockReset();
     (mockTransaction.get as jest.MockedFunction<any>).mockReset();
     (mockTransaction.update as jest.MockedFunction<any>).mockReset();
+    (mockTransaction.create as jest.MockedFunction<any>).mockReset();
 
     // Setup default mock implementations
     mockFirestore.collection.mockReturnValue(mockCollection);
@@ -566,17 +568,18 @@ describe("FirestoreService", () => {
     };
 
     test("should create user document with default stats and progress", async () => {
-      (mockDoc.set as jest.MockedFunction<any>).mockResolvedValue(undefined);
-
       await initializeNewUser(testUserId, testUserData);
 
       expect(mockFirestore.collection).toHaveBeenCalledWith("users");
       expect(mockCollection.doc).toHaveBeenCalledWith(testUserId);
-      expect(mockDoc.set).toHaveBeenCalledWith(
+      expect(mockTransaction.create).toHaveBeenCalledWith(
+        expect.any(Object),
         expect.objectContaining({
           userId: testUserId,
           email: testUserData.email,
           username: testUserData.username,
+          usernameNormalized: "newplayer",
+          usernameReservationId: expect.stringMatching(/^[0-9a-f]{64}$/),
           coins: 300,
           hasPurchasedApp: false,
           stats: expect.objectContaining({
@@ -599,15 +602,14 @@ describe("FirestoreService", () => {
     });
 
     test("should include optional displayName and avatarUrl when provided", async () => {
-      (mockDoc.set as jest.MockedFunction<any>).mockResolvedValue(undefined);
-
       await initializeNewUser(testUserId, {
         ...testUserData,
         displayName: "New Player",
         avatarUrl: "https://example.com/avatar.png",
       });
 
-      expect(mockDoc.set).toHaveBeenCalledWith(
+      expect(mockTransaction.create).toHaveBeenCalledWith(
+        expect.any(Object),
         expect.objectContaining({
           displayName: "New Player",
           avatarUrl: "https://example.com/avatar.png",
@@ -617,7 +619,9 @@ describe("FirestoreService", () => {
 
     test("should throw and log error when Firestore set fails", async () => {
       const testError = new Error("Firestore write failed");
-      (mockDoc.set as jest.MockedFunction<any>).mockRejectedValue(testError);
+      (mockTransaction.create as jest.MockedFunction<any>).mockImplementationOnce(() => {
+        throw testError;
+      });
 
       await expect(initializeNewUser(testUserId, testUserData)).rejects.toThrow("Firestore write failed");
       expect(mockLogger.error).toHaveBeenCalledWith(`Error initializing new user ${testUserId}:`, testError);

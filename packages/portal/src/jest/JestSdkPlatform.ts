@@ -8,13 +8,34 @@ import type {
   ScreenshotProvider,
 } from "./types";
 import {captureBrowserException} from "../observability/sentry";
+import {
+  MAX_RIDDLE_ANSWER_CHARACTERS,
+  type Feedback,
+  type GameEngineSnapshot,
+  type ScoredGuess,
+} from "@qwordly/core/game";
 
 /** Describes sdk. */
 type Sdk = Record<string, any>;
 /** Defines the player data key value. */
 const PLAYER_DATA_KEY = "riddleQuestPlayerState";
+/** Maximum guesses restored from low-integrity Jest player data. */
+const MAX_SAVED_GUESSES = 6;
+/** Exact client-writable SDK keys removed after authoritative account deletion. */
+const PLAYER_STATE_KEYS = [
+  "locale",
+  "muted",
+  "reducedMotion",
+  "highContrast",
+  "onboardingComplete",
+  "registrationPromptDismissedAt",
+  "firstMilestoneMarked",
+  PLAYER_DATA_KEY,
+] as const;
 /** Defines the longest a platform subscription checkout may block the game UI. */
 const SUBSCRIPTION_CHECKOUT_TIMEOUT_MS = 30_000;
+/** Leaves enough time for a slow CDN while resolving before the outer startup watchdog. */
+const JEST_SDK_LOAD_TIMEOUT_MS = 10_000;
 /** Provides success behavior. */
 const success = <T>(value: T): PlatformResult<T> => ({status: "success", value});
 /** Provides failure behavior. */
@@ -26,9 +47,88 @@ const failure = (error: unknown): PlatformResult<never> => {
     : {status: "retryable-failure", message};
 };
 
+/** Waits for the independently loaded Jest SDK without delaying the React startup shell. */
+const waitForGlobalJestSdk = (timeoutMs: number): Promise<Sdk> => {
+  const target = globalThis as typeof globalThis & {JestSDK?: Sdk};
+  if (typeof target.JestSDK?.init === "function") return Promise.resolve(target.JestSDK);
+
+  return new Promise((resolve, reject) => {
+    const startedAt = Date.now();
+    const check = () => {
+      if (typeof target.JestSDK?.init === "function") {
+        resolve(target.JestSDK);
+        return;
+      }
+      if (Date.now() - startedAt >= timeoutMs) {
+        reject(new Error("Jest SDK failed to load."));
+        return;
+      }
+      setTimeout(check, 25);
+    };
+    check();
+  });
+};
+
 /** Indicates whether is record. */
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
+
+/** Returns whether a value is a bounded non-empty string. */
+const isBoundedString = (value: unknown, maxLength: number): value is string =>
+  typeof value === "string" && value.length > 0 && value.length <= maxLength;
+
+/** Returns whether a value is one supported per-letter feedback state. */
+const isFeedback = (value: unknown): value is Feedback =>
+  value === "green" || value === "yellow" || value === "red";
+
+/** Parses bounded scored guesses for one known answer width. */
+const parseScoredGuesses = (value: unknown, answerLength: number): ScoredGuess[] | null => {
+  if (!Array.isArray(value) || value.length > MAX_SAVED_GUESSES) return null;
+  const guesses: ScoredGuess[] = [];
+  for (const candidate of value) {
+    if (!isRecord(candidate) || !Array.isArray(candidate.guess) || !Array.isArray(candidate.feedback)) return null;
+    if (candidate.guess.length !== answerLength || candidate.feedback.length !== answerLength) return null;
+    if (!candidate.guess.every((letter) => typeof letter === "string" && letter.length <= 16)) return null;
+    if (!candidate.feedback.every(isFeedback)) return null;
+    guesses.push({guess: [...candidate.guess], feedback: [...candidate.feedback]});
+  }
+  return guesses;
+};
+
+/** Parses a bounded deterministic engine snapshot consistent with the restored guesses. */
+const parseEngineSnapshot = (
+  value: unknown,
+  answerLength: number,
+  restoredGuesses: ScoredGuess[],
+): GameEngineSnapshot | null => {
+  if (!isRecord(value)) return null;
+  const guesses = parseScoredGuesses(value.guesses, answerLength);
+  if (
+    !guesses ||
+    JSON.stringify(guesses) !== JSON.stringify(restoredGuesses) ||
+    !Number.isInteger(value.attemptsUsed) ||
+    (value.attemptsUsed as number) < 0 ||
+    (value.attemptsUsed as number) > MAX_SAVED_GUESSES ||
+    (value.attemptsUsed as number) < guesses.length ||
+    typeof value.hasUsedContinue !== "boolean" ||
+    typeof value.gameOver !== "boolean"
+  ) return null;
+  return {
+    guesses,
+    attemptsUsed: value.attemptsUsed as number,
+    hasUsedContinue: value.hasUsedContinue,
+    gameOver: value.gameOver,
+  };
+};
+
+/** Parses a bounded keyboard-state map while discarding unknown object fields. */
+const parseLetterStates = (value: unknown): Record<string, Feedback> | null => {
+  if (!isRecord(value)) return null;
+  const entries = Object.entries(value);
+  if (entries.length > 64) return null;
+  if (!entries.every(([letter, feedback]) => isBoundedString(letter, 16) && isFeedback(feedback))) return null;
+  return Object.fromEntries(entries) as Record<string, Feedback>;
+};
 
 /** Rejects an SDK operation that does not settle before its UI timeout. */
 const withTimeout = async <T>(operation: Promise<T>, timeoutMs: number, message: string): Promise<T> => {
@@ -50,41 +150,117 @@ const parseSavedGame = (value: unknown): JestSavedGame | null => {
   if (!isRecord(value)) return null;
   if (
     value.schemaVersion !== 1 ||
-    typeof value.savedAt !== "number" ||
-    typeof value.riddleId !== "string" ||
+    !Number.isSafeInteger(value.savedAt) ||
+    (value.savedAt as number) < 0 ||
+    !isBoundedString(value.riddleId, 128) ||
+    !isBoundedString(value.sessionToken, 128) ||
+    value.sessionToken.length < 20 ||
     (value.gameMode !== "classic" && value.gameMode !== "challenge") ||
     !Array.isArray(value.currentLetters) ||
-    !value.currentLetters.every((letter) => typeof letter === "string") ||
-    typeof value.activeSlotIndex !== "number" ||
+    value.currentLetters.length < 1 ||
+    value.currentLetters.length > MAX_RIDDLE_ANSWER_CHARACTERS ||
+    !value.currentLetters.every((letter) => typeof letter === "string" && letter.length <= 16) ||
+    !Number.isInteger(value.activeSlotIndex) ||
+    (value.activeSlotIndex as number) < 0 ||
+    (value.activeSlotIndex as number) >= value.currentLetters.length ||
     !Array.isArray(value.hintRevealedIndices) ||
-    !value.hintRevealedIndices.every((index) => typeof index === "number") ||
-    !Array.isArray(value.guesses) ||
-    !isRecord(value.engineSnapshot) ||
-    !isRecord(value.letterStates)
+    value.hintRevealedIndices.length > value.currentLetters.length ||
+    !value.hintRevealedIndices.every(
+      (index) => Number.isInteger(index) && index >= 0 && index < (value.currentLetters as unknown[]).length,
+    ) ||
+    new Set(value.hintRevealedIndices).size !== value.hintRevealedIndices.length
   ) {
     return null;
   }
-  return value as JestSavedGame;
+  const guesses = parseScoredGuesses(value.guesses, value.currentLetters.length);
+  const engineSnapshot = guesses
+    ? parseEngineSnapshot(value.engineSnapshot, value.currentLetters.length, guesses)
+    : null;
+  const letterStates = parseLetterStates(value.letterStates);
+  if (!guesses || !engineSnapshot || !letterStates) return null;
+  const inferredAwaitingContinue = !engineSnapshot.gameOver &&
+    !engineSnapshot.hasUsedContinue &&
+    engineSnapshot.attemptsUsed === 5;
+  if (
+    value.awaitingContinue !== undefined &&
+    (typeof value.awaitingContinue !== "boolean" || value.awaitingContinue !== inferredAwaitingContinue)
+  ) return null;
+  let pendingOutcome: JestSavedGame["pendingOutcome"];
+  if (value.pendingOutcome !== undefined) {
+    const outcome = value.pendingOutcome;
+    if (
+      !isRecord(outcome) ||
+      !isBoundedString(outcome.id, 256) ||
+      (outcome.kind !== "win" && outcome.kind !== "loss") ||
+      outcome.riddleId !== value.riddleId ||
+      outcome.gameMode !== value.gameMode ||
+      outcome.sessionToken !== value.sessionToken ||
+      !Number.isInteger(outcome.attempts) ||
+      (outcome.attempts as number) < 1 ||
+      (outcome.attempts as number) > MAX_SAVED_GUESSES ||
+      typeof outcome.isCorrect !== "boolean" ||
+      (outcome.kind === "win") !== outcome.isCorrect
+    ) return null;
+    pendingOutcome = {
+      id: outcome.id,
+      kind: outcome.kind,
+      riddleId: outcome.riddleId,
+      gameMode: outcome.gameMode as "classic" | "challenge",
+      sessionToken: outcome.sessionToken,
+      attempts: outcome.attempts as number,
+      isCorrect: outcome.isCorrect,
+    };
+  }
+  return {
+    schemaVersion: 1,
+    savedAt: value.savedAt as number,
+    riddleId: value.riddleId,
+    sessionToken: value.sessionToken,
+    gameMode: value.gameMode,
+    currentLetters: [...value.currentLetters],
+    activeSlotIndex: value.activeSlotIndex as number,
+    hintRevealedIndices: [...value.hintRevealedIndices] as number[],
+    guesses,
+    engineSnapshot,
+    awaitingContinue: inferredAwaitingContinue,
+    letterStates,
+    ...(pendingOutcome ? {pendingOutcome} : {}),
+  };
 };
 
 /** Provides jest sdk platform behavior. */
 export class JestSdkPlatform implements JestPlatformPort {
   /** Stores sdk. */
-  private readonly sdk: Sdk;
+  private sdk: Sdk;
+  /** Indicates that initialization must resolve the asynchronously loaded global SDK. */
+  private readonly usesGlobalSdk: boolean;
   /** Stores the subscription checkout timeout. */
   private readonly subscriptionCheckoutTimeoutMs: number;
+  /** Stores the SDK load timeout. */
+  private readonly sdkLoadTimeoutMs: number;
 
   /** Creates a jest sdk platform instance. */
   constructor(
-    sdk: Sdk = (globalThis as typeof globalThis & {JestSDK?: Sdk}).JestSDK ?? {},
+    sdk?: Sdk,
     subscriptionCheckoutTimeoutMs = SUBSCRIPTION_CHECKOUT_TIMEOUT_MS,
+    sdkLoadTimeoutMs = JEST_SDK_LOAD_TIMEOUT_MS,
   ) {
-    this.sdk = sdk;
+    this.usesGlobalSdk = sdk === undefined;
+    this.sdk = sdk ?? {};
     this.subscriptionCheckoutTimeoutMs = subscriptionCheckoutTimeoutMs;
+    this.sdkLoadTimeoutMs = sdkLoadTimeoutMs;
   }
 
   /** Provides init behavior. */
-  async init() { try { await this.sdk.init({autoLoginReminders: false}); return success(undefined); } catch (e) { return failure(e); } }
+  async init() {
+    try {
+      if (this.usesGlobalSdk) this.sdk = await waitForGlobalJestSdk(this.sdkLoadTimeoutMs);
+      await this.sdk.init({autoLoginReminders: false});
+      return success(undefined);
+    } catch (error) {
+      return failure(error);
+    }
+  }
   /** Gets player. */
   getPlayer() { return this.sdk.getPlayer(); }
   /** Gets player signed. */
@@ -129,13 +305,18 @@ export class JestSdkPlatform implements JestPlatformPort {
   /** Reads player data. */
   async readPlayerData(): Promise<JestPlayerData | null> {
     const value: unknown = this.sdk.data?.getAll?.()?.[PLAYER_DATA_KEY];
-    if (!isRecord(value) || value.schemaVersion !== 1 || typeof value.updatedAt !== "number") return null;
+    if (
+      !isRecord(value) ||
+      value.schemaVersion !== 1 ||
+      !Number.isSafeInteger(value.updatedAt) ||
+      (value.updatedAt as number) < 0
+    ) return null;
     const activeGame = value.activeGame === null ? null : parseSavedGame(value.activeGame);
     const {BridgeProfileSchema} = await import("@qwordly/core/bridge");
     const profile = BridgeProfileSchema.safeParse(value.profile);
     return {
       schemaVersion: 1,
-      updatedAt: value.updatedAt,
+      updatedAt: value.updatedAt as number,
       ...(profile.success ? {profile: profile.data} : {}),
       ...(value.activeGame === null || activeGame ? {activeGame} : {}),
     };
@@ -143,6 +324,11 @@ export class JestSdkPlatform implements JestPlatformPort {
   /** Provides write player data behavior. */
   async writePlayerData(value: JestPlayerData) {
     this.sdk.data.set(PLAYER_DATA_KEY, value);
+    await this.sdk.data.flush();
+  }
+  /** Clears client-writable state after the authoritative backend deletes the account. */
+  async clearPlayerState() {
+    PLAYER_STATE_KEYS.forEach((key) => this.sdk.data.delete(key));
     await this.sdk.data.flush();
   }
   /** Gets entry intent. */

@@ -1,7 +1,12 @@
 {
   "Credits": {
-    "SUBTITLE": "来认识一下 Riddle Quest",
-    "THANK_YOU_TEXT": " 背后的出色团队吧。特别感谢所有使 Riddle Quest 成为可能的贡献者。您的创造力、奉献精神和热情使这个项目成为现实。",
+    "ROLE_DESIGN": "设计",
+    "ROLE_GAME_DESIGNER_PUBLISHER_HERO": "游戏设计师、发行人、全能英雄",
+    "ROLE_INSPIRATION": "灵感来源",
+    "ROLE_LEAD_DEVELOPER_GAME_DESIGN": "首席开发者与游戏设计",
+    "ROLE_SOUND_DESIGN": "音效设计",
+    "SUBTITLE": "来认识一下 Riddle Quest 背后的出色团队吧",
+    "THANK_YOU_TEXT": "特别感谢所有让 Riddle Quest 成为可能的贡献者。你们的创造力、奉献和热情让这个项目焕发生机。",
     "THANK_YOU_TITLE": "谢谢！",
     "TITLE": "积分"
   }

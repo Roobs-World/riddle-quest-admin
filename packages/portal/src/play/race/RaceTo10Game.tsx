@@ -35,6 +35,7 @@ import {createRaceAttempt, findFirstEditableRaceSlot, getAdjustedRaceTime, getRa
 import {useRaceDialogFocus, useRaceGameplayFit, useRaceGameplayKeyboard, useRaceOperationLifecycle} from "./hooks";
 import {trackEvent, trackScreen} from "../../analytics/googleAnalytics";
 import {RaceTo10View, type RaceStage} from "./RaceTo10View";
+import {safeBrowserStorageGet, safeBrowserStorageRemove, safeBrowserStorageSet} from "../playerPreferences";
 
 /** Screens controlled by the Race to 10 client state machine. */
 /** Stable empty category list used as the default prop value. */
@@ -181,11 +182,9 @@ export function RaceTo10Game({
       if (openInbox) send("raceInbox", "game:listRaceInbox", {limit: 20});
       else if (challengeId) send("raceChallenge", "game:getRaceChallenge", {challengeId});
       else {
-        // Opening multiplayer from the main game always starts at a fresh lobby.
-        // A previous browser session must never jump the player into an expired
-        // run or its time-up result screen.
-        window.localStorage.removeItem(ACTIVE_RACE_KEY);
-        if (initialCategories.length === 0) send("raceCategories", "game:listRaceCategories", {locale});
+        const activeRunId = safeBrowserStorageGet("local", ACTIVE_RACE_KEY)?.trim();
+        if (activeRunId) send("raceResume", "game:resumeRace", {runId: activeRunId});
+        else if (initialCategories.length === 0) send("raceCategories", "game:listRaceCategories", {locale});
       }
     }, 0);
     return () => window.clearTimeout(timer);
@@ -208,6 +207,11 @@ export function RaceTo10Game({
         if (operation === "raceStart") {
           setRun(null);
           setStage(activeChallengeId ? "challenge" : "categories");
+        } else if (operation === "raceResume") {
+          safeBrowserStorageRemove("local", ACTIVE_RACE_KEY);
+          setRun(null);
+          setStage("categories");
+          if (initialCategories.length === 0) send("raceCategories", "game:listRaceCategories", {locale});
         }
         finishOperation(operation);
         return;
@@ -215,6 +219,11 @@ export function RaceTo10Game({
       try {
         if (operation === "raceCategories") {
           setCategories(ListRaceCategoriesResponseSchema.parse(message.payload.data).categories);
+        } else if (operation === "raceResume") {
+          const nextRun = RaceRunResponseSchema.parse(message.payload.data).run;
+          setStage("racing");
+          updateRun(nextRun);
+          if (nextRun.status === "active") resetAttempt(nextRun);
         } else if (operation === "raceInbox") {
           const inbox = ListRaceInboxResponseSchema.parse(message.payload.data);
           setInboxItems(inbox.items);
@@ -233,7 +242,7 @@ export function RaceTo10Game({
         } else if (operation === "raceAbandon") {
           const abandoned = AbandonRaceRunResponseSchema.parse(message.payload.data);
           if (abandoned.run.status !== "abandoned" || abandoned.result !== null) throw new Error("Invalid abandon response");
-          window.localStorage.removeItem(ACTIVE_RACE_KEY);
+          safeBrowserStorageRemove("local", ACTIVE_RACE_KEY);
           setRun(abandoned.run);
           setQuitConfirmationOpen(false);
           onClose();
@@ -301,7 +310,7 @@ export function RaceTo10Game({
     };
     window.addEventListener(HOST_TO_GAME_EVENT, handle);
     return () => window.removeEventListener(HOST_TO_GAME_EVENT, handle);
-  }, [activeChallengeId, activeSlotIndex, analytics, currentLetters, finishOperation, locale, onClose, resetAttempt, run?.currentRiddle?.riddleId, send, setRaceGuessAwaitingOutcome, updateRun]);
+  }, [activeChallengeId, activeSlotIndex, analytics, currentLetters, finishOperation, initialCategories.length, locale, onClose, resetAttempt, run?.currentRiddle?.riddleId, send, setRaceGuessAwaitingOutcome, updateRun]);
 
   useEffect(() => {
     if (stage !== "countdown") return;
@@ -345,8 +354,8 @@ export function RaceTo10Game({
 
   useEffect(() => {
     if (!run) return;
-    if (run.status === "active") window.localStorage.setItem(ACTIVE_RACE_KEY, run.runId);
-    else window.localStorage.removeItem(ACTIVE_RACE_KEY);
+    if (run.status === "active") safeBrowserStorageSet("local", ACTIVE_RACE_KEY, run.runId);
+    else safeBrowserStorageRemove("local", ACTIVE_RACE_KEY);
   }, [run]);
   /** Opponent score replayed against the adjusted race clock. */
   const ghostCorrect = useMemo(() => getGhostCorrectCount(run?.opponent, adjustedNow), [adjustedNow, run?.opponent]);
@@ -428,7 +437,7 @@ export function RaceTo10Game({
   };
 
   useRaceGameplayKeyboard({
-    active: stage === "racing",
+    active: stage === "racing" && !quitConfirmationOpen && !pending,
     onLetter: typeLetter,
     onBackspace: backspace,
     onSubmit: submit,

@@ -99,6 +99,12 @@ describe("OpenAI Service", () => {
           answer: "word!",
         }),
       ).toThrow();
+      expect(() =>
+        GeneratedRiddleSchema.parse({
+          question: "Which mountain is Japan's tallest?",
+          answer: "ふじさん",
+        }),
+      ).toThrow();
     });
   });
 
@@ -109,7 +115,7 @@ describe("OpenAI Service", () => {
       const result = await generateUniqueRiddle();
 
       expect(result).toEqual(["What flies without wings?", "time"]);
-      expect(mockOpenAI).toHaveBeenCalledWith({apiKey: "test-api-key"});
+      expect(mockOpenAI).toHaveBeenCalledWith({apiKey: "test-api-key", timeout: 15_000, maxRetries: 0});
       expect(mockParse).toHaveBeenCalledWith({
         model: "gpt-5.6-sol",
         reasoning: {effort: "medium"},
@@ -160,7 +166,7 @@ describe("OpenAI Service", () => {
         text: {format: unknown};
       };
 
-      expect(request.input).toContain(`Answer: 1-${MAX_RIDDLE_ANSWER_CHARACTERS} characters`);
+      expect(request.input).toContain(`Answer: 1-${MAX_RIDDLE_ANSWER_CHARACTERS} lowercase characters using only a-z`);
       expect(request.input).toContain("two or more compatible clue details");
       expect(request.input).toContain("plural, close variant, or obvious word stem");
       expect(request.input).toContain("strained interpretation");
@@ -200,7 +206,8 @@ describe("OpenAI Service", () => {
 
       expect(result).toBeNull();
       expect(mockLogger.warn).toHaveBeenCalledWith(
-        'Answer too long: "verylongword" (12 characters). Must be 7 or fewer.',
+        "Generated answer exceeded the maximum playable length and was rejected.",
+        {answerLength: 12, maximumLength: 7},
       );
     });
 
@@ -210,7 +217,9 @@ describe("OpenAI Service", () => {
       const result = await generateUniqueRiddle();
 
       expect(result).toBeNull();
-      expect(mockLogger.warn).toHaveBeenCalledWith("Generated answer contained invalid characters and was rejected.");
+      expect(mockLogger.warn).toHaveBeenCalledWith(
+        "Generated answer was not compatible with the in-game keyboard and was rejected.",
+      );
     });
 
     test("rejects a question that reveals the literal answer", async () => {
@@ -231,13 +240,24 @@ describe("OpenAI Service", () => {
       expect(mockLogger.warn).not.toHaveBeenCalledWith(expect.stringContaining("Question contains invalid characters"));
     });
 
-    test("accepts native-script punctuation in localized questions", async () => {
-      mockApprovedRiddle("銭湯の壁でよく主役、標高3776メートルの日本一といえば？", "ふじさん");
+    test("accepts native-script punctuation with a keyboard-compatible localized answer", async () => {
+      mockApprovedRiddle("銭湯の壁でよく主役、標高3776メートルの日本一といえば？", "fujisan");
 
       const result = await generateUniqueRiddle("ja");
 
-      expect(result).toEqual(["銭湯の壁でよく主役、標高3776メートルの日本一といえば？", "ふじさん"]);
+      expect(result).toEqual(["銭湯の壁でよく主役、標高3776メートルの日本一といえば？", "fujisan"]);
       expect(mockLogger.warn).not.toHaveBeenCalledWith(expect.stringContaining("Question contains invalid characters"));
+    });
+
+    test("rejects native-script answers that the current keyboard cannot enter", async () => {
+      mockParse.mockResolvedValue(parsedRiddleResponse("日本一高い山は？", "ふじ"));
+
+      await expect(generateUniqueRiddle("ja")).resolves.toBeNull();
+
+      expect(mockLogger.warn).toHaveBeenCalledWith(
+        "Generated answer was not compatible with the in-game keyboard and was rejected.",
+      );
+      expect(mockParse).toHaveBeenCalledTimes(1);
     });
 
     test("rejects a semantically weak or ambiguous riddle after independent review", async () => {
@@ -250,7 +270,15 @@ describe("OpenAI Service", () => {
       expect(result).toBeNull();
       expect(mockParse).toHaveBeenCalledTimes(2);
       expect(mockLogger.warn).toHaveBeenCalledWith("Generated riddle was rejected by quality review.", {
-        issues: "The clue also fits colour, music, or laughter",
+        issueCount: 1,
+        failedChecks: {
+          clueSupportsAnswer: true,
+          singleBestAnswer: true,
+          factuallySound: false,
+          naturalLanguage: false,
+          fairForCasualPlayers: false,
+          noAnswerSpoiler: false,
+        },
       });
     });
 
@@ -285,10 +313,11 @@ describe("OpenAI Service", () => {
       const result = await generateUniqueRiddle();
 
       expect(result).toBeNull();
-      expect(mockLogger.error).toHaveBeenCalledWith(
-        "Error generating riddle with OpenAI (model: gpt-5.6-sol):",
-        apiError,
-      );
+      expect(mockLogger.error).toHaveBeenCalledWith("OpenAI riddle generation failed.", {
+        model: "gpt-5.6-sol",
+        errorClass: "Error",
+      });
+      expect(mockLogger.error).not.toHaveBeenCalledWith(expect.anything(), apiError);
     });
 
     test("throws error when OPENAI_API_KEY is missing", async () => {

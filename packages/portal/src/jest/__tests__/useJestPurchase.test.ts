@@ -42,9 +42,11 @@ const session = (registered = true): JestSession => ({
 const createHarness = ({
   products = [product()],
   currentSession = session(),
+  subscriptionsEnabled,
 }: {
   products?: ProductSummary[];
   currentSession?: JestSession | null;
+    subscriptionsEnabled?: boolean;
 } = {}) => {
   const purchase = jest.fn<JestPurchaseCoordinator["purchase"]>();
   const subscribe = jest.fn<JestPurchaseCoordinator["subscribe"]>();
@@ -55,6 +57,7 @@ const createHarness = ({
     purchases: {purchase, subscribe} as unknown as JestPurchaseCoordinator,
     session: currentSession,
     setProducts,
+    ...(subscriptionsEnabled === undefined ? {} : {subscriptionsEnabled}),
     trackFunnel,
   });
   return {purchase, purchaseProduct, setProducts, subscribe, trackFunnel};
@@ -125,14 +128,26 @@ describe("useJestPurchase", () => {
     });
   });
 
-  it.each([
-    [{status: "cancelled"} as const, "Purchase cancelled."],
-    [{status: "retryable-failure", message: "Checkout timed out"} as const, "Checkout timed out"],
-  ])("normalizes unsuccessful consumable outcomes", async (outcome, message) => {
+  it("returns a typed consumable cancellation without purchase telemetry", async () => {
     const {purchase, purchaseProduct, trackFunnel} = createHarness();
-    purchase.mockResolvedValue(outcome);
+    purchase.mockResolvedValue({status: "cancelled"});
 
-    await expect(purchaseProduct("coins-250")).rejects.toThrow(message);
+    await expect(purchaseProduct("coins-250")).resolves.toEqual({
+      success: false,
+      cancelled: true,
+      productId: "coins-250",
+      purchaseType: "consumable",
+    });
+    expect(trackFunnel).toHaveBeenCalledWith("purchase_cancelled", {productId: "coins-250"});
+    expect(trackFunnel).not.toHaveBeenCalledWith("purchase_completed", expect.anything());
+    expect(mockTrackPurchase).not.toHaveBeenCalled();
+  });
+
+  it("keeps consumable checkout failures on the error path", async () => {
+    const {purchase, purchaseProduct, trackFunnel} = createHarness();
+    purchase.mockResolvedValue({status: "retryable-failure", message: "Checkout timed out"});
+
+    await expect(purchaseProduct("coins-250")).rejects.toThrow("Checkout timed out");
     expect(trackFunnel).not.toHaveBeenCalledWith("purchase_completed", expect.anything());
     expect(mockTrackPurchase).not.toHaveBeenCalled();
   });
@@ -143,7 +158,11 @@ describe("useJestPurchase", () => {
       productType: "subscription",
       subscriptionStatus: "inactive",
     });
-    const {purchaseProduct, subscribe} = createHarness({products: [subscription], currentSession: session(false)});
+    const {purchaseProduct, subscribe} = createHarness({
+      products: [subscription],
+      currentSession: session(false),
+      subscriptionsEnabled: true,
+    });
 
     await expect(purchaseProduct("premium-monthly")).rejects.toThrow(
       "Registration is required to subscribe.",
@@ -152,13 +171,27 @@ describe("useJestPurchase", () => {
     expect(mockTrackEvent).toHaveBeenCalledTimes(1);
   });
 
+  it("rejects a production subscription before analytics or platform checkout", async () => {
+    const subscription = product({
+      productId: "premium-monthly",
+      productType: "subscription",
+      subscriptionStatus: "inactive",
+    });
+    const {purchaseProduct, subscribe} = createHarness({products: [subscription]});
+
+    await expect(purchaseProduct("premium-monthly")).rejects.toThrow("Subscriptions are not available.");
+    expect(subscribe).not.toHaveBeenCalled();
+    expect(mockTrackEvent).not.toHaveBeenCalled();
+    expect(mockTrackPurchase).not.toHaveBeenCalled();
+  });
+
   it("returns immediately for an already-active subscription", async () => {
     const subscription = product({
       productId: "premium-monthly",
       productType: "subscription",
       subscriptionStatus: "active",
     });
-    const {purchaseProduct, subscribe} = createHarness({products: [subscription]});
+    const {purchaseProduct, subscribe} = createHarness({products: [subscription], subscriptionsEnabled: true});
 
     await expect(purchaseProduct("premium-monthly")).resolves.toEqual({
       success: true,
@@ -169,19 +202,39 @@ describe("useJestPurchase", () => {
     expect(mockTrackPurchase).not.toHaveBeenCalled();
   });
 
-  it.each([
-    [{status: "cancelled"} as const, "Subscription cancelled."],
-    [{status: "terminal-failure", message: "Entitlement inactive"} as const, "Entitlement inactive"],
-  ])("normalizes unsuccessful subscription outcomes", async (outcome, message) => {
+  it("returns a typed subscription cancellation without activating the product", async () => {
     const subscription = product({
       productId: "premium-monthly",
       productType: "subscription",
       subscriptionStatus: "inactive",
     });
-    const {purchaseProduct, subscribe} = createHarness({products: [subscription]});
-    subscribe.mockResolvedValue(outcome);
+    const {purchaseProduct, setProducts, subscribe, trackFunnel} = createHarness({
+      products: [subscription],
+      subscriptionsEnabled: true,
+    });
+    subscribe.mockResolvedValue({status: "cancelled"});
 
-    await expect(purchaseProduct("premium-monthly")).rejects.toThrow(message);
+    await expect(purchaseProduct("premium-monthly")).resolves.toEqual({
+      success: false,
+      cancelled: true,
+      productId: "premium-monthly",
+      purchaseType: "subscription",
+    });
+    expect(trackFunnel).toHaveBeenCalledWith("subscription_cancelled", {productId: "premium-monthly"});
+    expect(setProducts).not.toHaveBeenCalled();
+    expect(mockTrackPurchase).not.toHaveBeenCalled();
+  });
+
+  it("keeps subscription checkout failures on the error path", async () => {
+    const subscription = product({
+      productId: "premium-monthly",
+      productType: "subscription",
+      subscriptionStatus: "inactive",
+    });
+    const {purchaseProduct, subscribe} = createHarness({products: [subscription], subscriptionsEnabled: true});
+    subscribe.mockResolvedValue({status: "terminal-failure", message: "Entitlement inactive"});
+
+    await expect(purchaseProduct("premium-monthly")).rejects.toThrow("Entitlement inactive");
     expect(mockTrackPurchase).not.toHaveBeenCalled();
   });
 
@@ -207,7 +260,10 @@ describe("useJestPurchase", () => {
     });
     const consumable = product();
     const products = [monthly, yearly, supporter, consumable];
-    const {purchaseProduct, setProducts, subscribe, trackFunnel} = createHarness({products});
+    const {purchaseProduct, setProducts, subscribe, trackFunnel} = createHarness({
+      products,
+      subscriptionsEnabled: true,
+    });
     subscribe.mockResolvedValue({
       status: "success",
       value: {activeSku: "premium-monthly", blockedSkus: ["premium-yearly"]},

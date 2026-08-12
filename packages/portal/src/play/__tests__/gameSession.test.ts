@@ -9,14 +9,34 @@ import {
 
 const riddle = {
   riddleId: "classic-1",
+  sessionToken: "00000000-0000-4000-8000-000000000001",
   text: "What has keys but cannot open doors?",
-  answer: "piano",
   answerLength: 5,
   gameMode: "classic" as const,
   index: 1,
+  attemptsUsed: 0,
+  hasUsedContinue: false,
+  awaitingContinue: false,
 };
 
 const reduce = (state: GameSessionState, action: GameSessionAction) => gameSessionReducer(state, action);
+
+const resolveGuess = (
+  state: GameSessionState,
+  guess: string,
+  attempts: number,
+  {isCorrect = false, gameOver = false, canContinue = false} = {},
+) => reduce(reduce(state, {type: "guessRequested"}), {
+  type: "guessResolved",
+  feedback: {
+    guess: [...guess.toUpperCase()],
+    feedback: [...guess].map(() => isCorrect ? "green" as const : "red" as const),
+  },
+  attempts,
+  isCorrect,
+  gameOver,
+  canContinue,
+});
 
 describe("game session reducer", () => {
   it("does not open the skip modal for a daily riddle", () => {
@@ -31,7 +51,7 @@ describe("game session reducer", () => {
     state = reduce(state, {type: "typeLetter", letter: "P"});
 
     const beforeSubmit = state;
-    state = reduce(state, {type: "submitGuess"});
+    state = reduce(state, {type: "guessRequested"});
 
     expect(state).toBe(beforeSubmit);
     expect(state.notice).toBeNull();
@@ -46,7 +66,7 @@ describe("game session reducer", () => {
     }
     expect(getCurrentGuessValue(state)).toBe("piano");
 
-    state = reduce(state, {type: "submitGuess"});
+    state = resolveGuess(state, "piano", 1, {isCorrect: true, gameOver: true});
 
     expect(state.modal).toBe("victory");
     expect(state.lastOutcome).toEqual(
@@ -57,6 +77,20 @@ describe("game session reducer", () => {
       }),
     );
     expect(state.letterStates.p).toBe("green");
+  });
+
+  it("does not append duplicate rows for an authoritative semantic replay", () => {
+    let state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle});
+    for (const letter of ["C", "R", "A", "N", "E"]) state = reduce(state, {type: "typeLetter", letter});
+    state = resolveGuess(state, "crane", 1);
+    expect(state.guesses).toHaveLength(1);
+
+    for (const letter of ["C", "R", "A", "N", "E"]) state = reduce(state, {type: "typeLetter", letter});
+    state = resolveGuess(state, "crane", 1);
+
+    expect(state.guesses).toHaveLength(1);
+    expect(state.engineSnapshot?.attemptsUsed).toBe(1);
+    expect(state.guessPending).toBe(false);
   });
 
   it("can reveal a hinted letter and update coins", () => {
@@ -92,7 +126,7 @@ describe("game session reducer", () => {
       for (const letter of ["C", "L", "O", "C", "K"]) {
         state = reduce(state, {type: "typeLetter", letter});
       }
-      state = reduce(state, {type: "submitGuess"});
+      state = resolveGuess(state, "clock", attempt + 1, {canContinue: attempt === 4});
     }
 
     expect(state.modal).toBe("continue");
@@ -104,7 +138,7 @@ describe("game session reducer", () => {
     for (const letter of ["C", "L", "O", "C", "K"]) {
       state = reduce(state, {type: "typeLetter", letter});
     }
-    state = reduce(state, {type: "submitGuess"});
+    state = resolveGuess(state, "clock", 6, {gameOver: true});
 
     expect(state.modal).toBeNull();
     expect(state.lastOutcome).toEqual(expect.objectContaining({kind: "loss", attempts: 6}));
@@ -117,13 +151,54 @@ describe("game session reducer", () => {
       for (const letter of ["C", "L", "O", "C", "K"]) {
         state = reduce(state, {type: "typeLetter", letter});
       }
-      state = reduce(state, {type: "submitGuess"});
+      state = resolveGuess(state, "clock", attempt + 1, {canContinue: attempt === 4});
     }
 
     state = reduce(state, {type: "declineContinue"});
 
     expect(state.modal).toBeNull();
     expect(state.lastOutcome).toEqual(expect.objectContaining({kind: "loss", attempts: 5}));
+  });
+
+  it("reopens Continue from authoritative load state when no client save survived", () => {
+    const awaitingRiddle = {
+      ...riddle,
+      attemptsUsed: 5,
+      awaitingContinue: true,
+    };
+    const state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle: awaitingRiddle});
+
+    expect(state.modal).toBe("continue");
+    expect(state.engineSnapshot).toMatchObject({attemptsUsed: 5, hasUsedContinue: false, gameOver: false});
+  });
+
+  it("keeps a restored declined outcome retryable without reopening Continue", () => {
+    const awaitingRiddle = {...riddle, attemptsUsed: 5, awaitingContinue: true};
+    let state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle: awaitingRiddle});
+    const pendingOutcome = {
+      id: `${riddle.sessionToken}-loss-5`,
+      kind: "loss" as const,
+      riddleId: riddle.riddleId,
+      gameMode: riddle.gameMode,
+      sessionToken: riddle.sessionToken,
+      attempts: 5,
+      isCorrect: false,
+    };
+    state = reduce(state, {
+      type: "restoreSession",
+      currentLetters: ["", "", "", "", ""],
+      activeSlotIndex: 0,
+      hintRevealedIndices: [],
+      guesses: [],
+      engineSnapshot: {guesses: [], attemptsUsed: 5, hasUsedContinue: false, gameOver: true},
+      awaitingContinue: false,
+      letterStates: {},
+      pendingOutcome,
+    });
+
+    expect(state.modal).toBeNull();
+    expect(state.lastOutcome).toEqual(pendingOutcome);
+    expect(state.engineSnapshot?.gameOver).toBe(true);
   });
 
   it("locks hinted slots while allowing non-sequential editing", () => {

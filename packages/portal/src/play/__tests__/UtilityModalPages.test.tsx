@@ -27,9 +27,21 @@ describe("utility modal pages", () => {
   });
 
   it("renders instructions, credits, and legal information", () => {
+    const creditsHtml = renderToString(<CreditsModalPage />);
+    const aboutHtml = renderToString(<AboutModalPage onOpenModal={noop} />);
+
     expect(renderToString(<InstructionsModalPage onClose={noop} />)).toContain("instructions-page");
-    expect(renderToString(<CreditsModalPage />)).toContain("Craig Beswetherick");
-    expect(renderToString(<AboutModalPage />)).toContain("Privacy Policy");
+    expect(creditsHtml).toContain("Craig Beswetherick");
+    expect(creditsHtml).toContain("Lead Developer &amp; Game Design");
+    expect(creditsHtml).toContain("Game Designer, Publisher, Overall Hero");
+    expect(aboutHtml).toContain('<button class="about-list-row about-list-action" type="button">Account Deletion</button>');
+    expect(aboutHtml.match(/grindheadgames@gmail\.com/g)).toHaveLength(2);
+    expect(aboutHtml).toContain('href="./third-party-licenses.txt"');
+    expect(aboutHtml.match(/href=/g)).toHaveLength(1);
+    expect(aboutHtml).not.toMatch(/href="(?:https?:|mailto:)/i);
+    expect(aboutHtml).not.toContain("target=");
+    expect(aboutHtml).not.toMatch(/Riddle Quest Website|Privacy Policy|Terms of Use/);
+    expect(aboutHtml.match(/about-list-row/g)).toHaveLength(4);
   });
 
   it("renders an initially disabled username editor with shared limits", () => {

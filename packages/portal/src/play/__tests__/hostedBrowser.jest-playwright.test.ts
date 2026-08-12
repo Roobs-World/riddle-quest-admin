@@ -19,9 +19,13 @@ const expectAccessible = async (page: Page, state: string) => {
   ).toEqual([]);
 };
 
-const completeOnboardingAndTours = async (page: Page) => {
+const completeOnboardingAndTours = async (page: Page, checkTooltipAccessibility = false) => {
   await page.getByTestId("server-activity-loader").waitFor({state: "hidden"});
-  await page.getByRole("button", {name: /let's play/i}).click();
+  const letsPlay = page.getByRole("button", {name: /let's play/i});
+  await letsPlay.waitFor();
+  await page.waitForFunction(() => document.activeElement?.matches(".onboarding-card .play-primary"));
+  expect(await letsPlay.evaluate((button) => document.activeElement === button)).toBe(true);
+  await letsPlay.click();
   await page.getByRole("button", {name: /got it/i}).click();
   const guestContinue = page.getByRole("button", {name: /play as guest/i});
   if (await guestContinue.isVisible()) {
@@ -29,6 +33,15 @@ const completeOnboardingAndTours = async (page: Page) => {
   }
   const coinTooltip = page.locator(".tooltip-card");
   await coinTooltip.getByRole("heading", {name: /open the coin shop/i}).waitFor();
+  expect(await coinTooltip.getAttribute("aria-labelledby")).toBe("guidance-tooltip-gameCoins-title");
+  const tooltipContinue = coinTooltip.getByRole("button", {name: /got it/i});
+  await page.waitForFunction(() => document.activeElement?.matches(".tooltip-card .play-primary"));
+  expect(await tooltipContinue.evaluate((button) => document.activeElement === button)).toBe(true);
+  await page.keyboard.press("Tab");
+  expect(await tooltipContinue.evaluate((button) => document.activeElement === button)).toBe(true);
+  await page.keyboard.press("Escape");
+  expect(await coinTooltip.isVisible()).toBe(true);
+  if (checkTooltipAccessibility) await expectAccessible(page, "guided tooltip");
   expect(await coinTooltip.getByText(/tap this button to buy coins to fuel your adventure/i).isVisible()).toBe(true);
   const [coinButtonBox, spotlightBox] = await Promise.all([
     page.locator(".coin-pill[data-tooltip='gameCoins']").boundingBox(),
@@ -51,12 +64,16 @@ describeBrowser("standalone Jest browser game", () => {
     const path = await import("node:path");
 
     const packageRoot = path.resolve(__dirname, "../../..");
-    execFileSync("pnpm", ["--filter", "@qwordly/portal", "build:jest"], {
-      cwd: path.resolve(packageRoot, "../.."),
-      stdio: "inherit",
-    });
+    if (process.env.PORTAL_USE_EXISTING_BUILD !== "1") {
+      execFileSync("pnpm", ["--filter", "@qwordly/portal", "build:jest"], {
+        cwd: path.resolve(packageRoot, "../.."),
+        stdio: "inherit",
+      });
+    }
 
-    const distDir = path.join(packageRoot, "dist-jest");
+    const distDir = process.env.PORTAL_JEST_BUILD_DIR
+      ? path.resolve(process.env.PORTAL_JEST_BUILD_DIR)
+      : path.join(packageRoot, "dist-jest");
     const contentTypes: Record<string, string> = {
       ".css": "text/css; charset=utf-8",
       ".html": "text/html; charset=utf-8",
@@ -111,8 +128,24 @@ describeBrowser("standalone Jest browser game", () => {
       expect(welcomeCard).not.toBeNull();
       expect(welcomeLogo).not.toBeNull();
       expect(welcomeLogo!.width / welcomeCard!.width).toBeGreaterThan(0.85);
-      await completeOnboardingAndTours(page);
+      await completeOnboardingAndTours(page, true);
       await expectAccessible(page, "game");
+
+      const firstGuessCell = page.locator(".guess-row .cell").first();
+      const guessBeforeOffline = await firstGuessCell.textContent();
+      await page.evaluate(() => window.dispatchEvent(new Event("offline")));
+      const offlineDialog = page.getByRole("alertdialog", {name: /no internet connection/i});
+      await offlineDialog.waitFor();
+      expect(await page.locator(".game-content").evaluate((element) => (element as HTMLElement).inert)).toBe(true);
+      await page.waitForFunction(() => document.activeElement?.matches(".offline-backdrop"));
+      expect(await offlineDialog.evaluate((dialog) => document.activeElement === dialog)).toBe(true);
+      await expectAccessible(page, "offline recovery");
+      await page.keyboard.press("A");
+      expect(await firstGuessCell.textContent()).toBe(guessBeforeOffline);
+      await page.keyboard.press("Tab");
+      expect(await offlineDialog.evaluate((dialog) => document.activeElement === dialog)).toBe(true);
+      await page.evaluate(() => window.dispatchEvent(new Event("online")));
+      await offlineDialog.waitFor({state: "detached"});
 
       expect(await page.locator(".solar-system").count()).toBe(1);
       await page.locator(".solar-system canvas").waitFor();
@@ -232,6 +265,77 @@ describeBrowser("standalone Jest browser game", () => {
       expect(await dailyPage.locator("[data-tooltip='gameSkip']").count()).toBe(0);
       await dailyPage.close();
 
+      let releaseModalChunk: () => void = () => undefined;
+      const modalChunkGate = new Promise<void>((resolve) => {
+        releaseModalChunk = () => resolve();
+      });
+      let modalChunkRequested = false;
+      const compactPage = await browser.newPage({viewport: {width: 320, height: 568}});
+      await compactPage.route("**/assets/GameModalView-*.js", async (route) => {
+        modalChunkRequested = true;
+        await modalChunkGate;
+        await route.continue();
+      });
+      await compactPage.addInitScript(() => {
+        Object.assign(window, {__RIDDLE_QUEST_BROWSER_TEST__: true});
+        localStorage.setItem("riddleQuest:onboarding:jest-guest", "seen");
+        localStorage.setItem("riddleQuest:tooltipSequenceSeen:gameTour:v2:jest-guest", "seen");
+        localStorage.setItem("riddleQuest:tooltipSequenceSeen:profileTour:v2:jest-guest", "seen");
+        sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
+      });
+      await compactPage.goto("http://127.0.0.1:4178/?harness=jest");
+      await compactPage.locator(".game-bottom-navigation").waitFor({timeout: 15_000});
+      await compactPage.waitForFunction(
+        () => (document.querySelector(".game-bottom-navigation")?.getBoundingClientRect().bottom ?? Infinity) <= innerHeight + 1,
+      );
+      const compactLayout = await compactPage.evaluate(() => {
+        const navigation = document.querySelector(".game-bottom-navigation")?.getBoundingClientRect();
+        const keyboardKey = document.querySelector(".keyboard .key")?.getBoundingClientRect();
+        const content = document.querySelector<HTMLElement>(".game-content");
+        return {
+          documentHeight: document.documentElement.scrollHeight,
+          keyHeight: keyboardKey?.height ?? 0,
+          navigationBottom: navigation?.bottom ?? Infinity,
+          scale: Number(content?.dataset.viewportScale ?? 0),
+        };
+      });
+      expect(compactLayout.documentHeight).toBeLessThanOrEqual(569);
+      expect(compactLayout.navigationBottom).toBeLessThanOrEqual(569);
+      expect(compactLayout.keyHeight).toBeGreaterThanOrEqual(44);
+      expect(compactLayout.scale).toBeGreaterThanOrEqual(0.92);
+      expect(await compactPage.getByRole("region", {name: /virtual keyboard/i}).isVisible()).toBe(true);
+
+      await compactPage.getByRole("button", {name: /^settings$/i}).click();
+      const modalLoadingFallback = compactPage.getByRole("status", {name: /^loading$/i});
+      await modalLoadingFallback.waitFor();
+      expect(modalChunkRequested).toBe(true);
+      releaseModalChunk();
+      await compactPage.getByRole("heading", {name: /^settings$/i}).waitFor();
+      await compactPage.getByRole("button", {name: /^about/i}).click();
+      await compactPage.getByRole("heading", {name: /about \/ legal/i}).waitFor();
+      const aboutList = compactPage.locator(".about-list");
+      const aboutRows = aboutList.locator(".about-list-row");
+      expect(await aboutList.locator("a[href^='http'], a[href^='mailto:']").count()).toBe(0);
+      expect(await aboutList.getByRole("link").count()).toBe(1);
+      expect(await aboutList.innerText()).not.toMatch(/riddle quest website|privacy policy|terms of use/i);
+      for (const label of [/support/i, /data export/i]) {
+        expect(await aboutList.locator("div.about-list-row").filter({hasText: label})
+          .getByText(/grindheadgames@gmail\.com/i).isVisible()).toBe(true);
+      }
+      expect(await aboutRows.count()).toBe(4);
+      const licensesLink = compactPage.getByRole("link", {name: /third-party licenses/i});
+      expect(await licensesLink.getAttribute("href")).toBe("./third-party-licenses.txt");
+      expect(await licensesLink.getAttribute("target")).toBeNull();
+      const licensesResponse = await compactPage.request.get(new URL(
+        await licensesLink.getAttribute("href") ?? "",
+        compactPage.url(),
+      ).toString());
+      expect(licensesResponse.status()).toBe(200);
+      expect(await licensesResponse.text()).toContain("react@19.2.8");
+      await compactPage.getByRole("button", {name: /account deletion/i}).click();
+      await compactPage.locator(".modal-profile").waitFor();
+      await compactPage.close();
+
       expect(
         await page.evaluate(
           () =>
@@ -265,6 +369,13 @@ describeBrowser("standalone Jest browser game", () => {
           );
         }),
       ).toBe(true);
+      for (const height of [701, 736]) {
+        await page.setViewportSize({width: 390, height});
+        await page.waitForFunction(
+          () => (document.querySelector(".game-bottom-navigation")?.getBoundingClientRect().bottom ?? Infinity) <= innerHeight + 1,
+        );
+      }
+      await page.setViewportSize({width: 390, height: 667});
 
       await page.getByRole("button", {name: /^profile$/i}).first().click();
       await page.getByRole("heading", {name: /^profile$/i}).waitFor();
@@ -276,6 +387,7 @@ describeBrowser("standalone Jest browser game", () => {
       }
       expect(profileTourHeadings).toContain("Your Treasure Chest");
       await page.locator(".tooltip-card").waitFor({state: "detached"});
+      await page.waitForFunction(() => document.querySelector(".game-modal")?.contains(document.activeElement));
       await expectAccessible(page, "profile");
       for (const name of [/statistics/i, /achievements/i, /ranks/i, /leaderboard/i, /treasure/i]) {
         expect(await page.getByRole("button", {name}).isVisible()).toBe(true);
@@ -367,6 +479,22 @@ describeBrowser("standalone Jest browser game", () => {
       await page.locator(".keyboard").getByRole("button", {name: /^P$/}).click();
       await page.locator(".guess-row").first().getByRole("button", {name: /^letter 3$/i}).click();
       await page.locator(".keyboard").getByRole("button", {name: /^A$/}).click();
+      // Jest player-data writes are queued and durable only after the adapter flushes.
+      // Wait for the mock platform's persisted snapshot rather than racing reload
+      // against React's passive checkpoint effect or relying on a fixed delay.
+      await page.waitForFunction(() => {
+        const raw = localStorage.getItem("riddleQuest:mockJestPlayerData");
+        if (!raw) return false;
+        try {
+          const value = JSON.parse(raw) as {activeGame?: {currentLetters?: unknown[]}};
+          const letters = value.activeGame?.currentLetters;
+          return Array.isArray(letters) &&
+            String(letters[0] ?? "").toLowerCase() === "p" &&
+            String(letters[2] ?? "").toLowerCase() === "a";
+        } catch {
+          return false;
+        }
+      });
       await page.reload();
       await page.getByText(/what has keys/i).waitFor({timeout: 15000});
       const activeGuessRow = page.locator(".guess-row").first();
@@ -375,7 +503,8 @@ describeBrowser("standalone Jest browser game", () => {
 
       await activeGuessRow.getByRole("button", {name: /^letter 2$/i}).click();
       await page.locator(".keyboard").getByRole("button", {name: /^I$/}).click();
-      await activeGuessRow.getByRole("button", {name: /^letter 4$/i}).click();
+      await activeGuessRow.getByRole("button", {name: /^letter 4$/i})
+        .evaluate((button) => (button as HTMLButtonElement).click());
       await page.locator(".keyboard").getByRole("button", {name: /^N$/}).click();
       await page.locator(".keyboard").getByRole("button", {name: /^O$/}).click();
       await page.locator(".game-input-actions").getByRole("button", {name: /submit/i}).click();
@@ -429,6 +558,12 @@ describeBrowser("standalone Jest browser game", () => {
           );
         }),
       ).toBe(true);
+      for (const viewport of [{width: 844, height: 501}, {width: 1024, height: 600}]) {
+        await page.setViewportSize(viewport);
+        await page.waitForFunction(
+          () => (document.querySelector(".game-bottom-navigation")?.getBoundingClientRect().bottom ?? Infinity) <= innerHeight + 1,
+        );
+      }
       await page.setViewportSize({width: 1280, height: 800});
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
 
@@ -487,8 +622,8 @@ describeBrowser("standalone Jest browser game", () => {
       await registeredPage.getByRole("button", {name: /let's play/i}).waitFor({timeout: 15000});
       await completeOnboardingAndTours(registeredPage);
       await registeredPage.getByRole("button", {name: /buy coins/i}).first().click();
-      const subscriptionCard = registeredPage.locator(".shop-subscription-card");
-      await subscriptionCard.getByText(/riddle quest premium/i).waitFor();
+      expect(await registeredPage.locator(".shop-subscription-card").count()).toBe(0);
+      expect(await registeredPage.locator(".game-shop-grid").innerText()).not.toMatch(/riddle quest premium/i);
       await registeredPage
         .locator(".game-shop-grid article:not(.shop-subscription-card)")
         .first()
@@ -504,15 +639,6 @@ describeBrowser("standalone Jest browser game", () => {
       expect(await registeredPage.locator(".reward-coin-particle").count()).toBeGreaterThan(0);
       await registeredPage.waitForFunction(() => !(document.querySelector(".reward-continue") as HTMLButtonElement)?.disabled);
       await purchaseContinue.click();
-      await registeredPage.getByRole("button", {name: /buy coins/i}).first().click();
-      await subscriptionCard.getByRole("button", {name: /start free trial/i}).click();
-      await subscriptionCard.waitFor({state: "detached"});
-      await registeredPage.getByRole("button", {name: /buy coins/i}).first().click();
-      await registeredPage.locator(".shop-subscription-card").getByRole("button", {name: /subscribed/i}).waitFor();
-      expect(
-        await registeredPage.locator(".shop-subscription-card").getByRole("button", {name: /subscribed/i}).isDisabled(),
-      ).toBe(true);
-      await registeredPage.keyboard.press("Escape");
       await registeredPage.getByRole("button", {name: /^profile$/i}).first().click();
       const avatarButton = registeredPage.getByRole("button", {name: /upload from photo library/i});
       await avatarButton.waitFor();

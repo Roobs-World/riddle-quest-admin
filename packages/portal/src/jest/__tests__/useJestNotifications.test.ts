@@ -21,7 +21,9 @@ jest.mock("../../firebase", () => ({
 }));
 
 jest.mock("../notifications/engagement", () => ({
+  LEGACY_RACE_REMINDER_ID: "race_to_10_return_v1",
   notificationRotationSeed: mockNotificationRotationSeed,
+  RACE_RESULTS_REMINDER_ID: "race_to_10_results_v1",
   replaceEngagementReminders: mockReplaceEngagementReminders,
 }));
 
@@ -53,12 +55,15 @@ const flushPromises = async () => {
 const createHarness = ({
   currentSession = session(),
   mockRuntime = true,
+  notificationsActive = true,
   assetReference,
 }: {
   currentSession?: JestSession | null;
   mockRuntime?: boolean;
+  notificationsActive?: boolean;
   assetReference?: string;
 } = {}) => {
+  let notificationsEnabledState = notificationsActive;
   const removeNotification = jest.fn<JestPlatformPort["removeNotification"]>();
   const scheduleNotification = jest.fn<JestPlatformPort["scheduleNotification"]>();
   const trackFunnel = jest.fn();
@@ -72,11 +77,19 @@ const createHarness = ({
     playerFallback: "Player",
     assetReference,
     platform,
+    notificationsEnabled: () => notificationsEnabledState,
     withPlatformActivity: withPlatformActivity as never,
     trackFunnel,
   });
   expect(mockEffects).toHaveLength(4);
-  return {platform, removeNotification, scheduleNotification, trackFunnel, withPlatformActivity};
+  return {
+    platform,
+    removeNotification,
+    scheduleNotification,
+    setNotificationsActive: (active: boolean) => { notificationsEnabledState = active; },
+    trackFunnel,
+    withPlatformActivity,
+  };
 };
 
 beforeEach(() => {
@@ -98,6 +111,36 @@ describe("useJestNotifications", () => {
 
     expect(mockSetCopy).toHaveBeenCalledWith(null);
     expect(withPlatformActivity).not.toHaveBeenCalled();
+  });
+
+  it("performs no new platform work after notification cleanup starts", async () => {
+    mockCopyState = MOCK_NOTIFICATION_COPY;
+    const {scheduleNotification, withPlatformActivity} = createHarness({notificationsActive: false});
+
+    mockEffects.forEach((effect) => effect());
+    window.dispatchEvent(new CustomEvent("riddle-quest:race-challenge-published", {
+      detail: {challengeId: "challenge-after-deletion"},
+    }));
+    await flushPromises();
+
+    expect(withPlatformActivity).not.toHaveBeenCalled();
+    expect(scheduleNotification).not.toHaveBeenCalled();
+  });
+
+  it("stops a registered race listener when deletion quiescence begins", async () => {
+    mockCopyState = MOCK_NOTIFICATION_COPY;
+    const {scheduleNotification, setNotificationsActive, withPlatformActivity} = createHarness();
+    const cleanup = mockEffects[2]() as () => void;
+    setNotificationsActive(false);
+
+    window.dispatchEvent(new CustomEvent("riddle-quest:race-challenge-published", {
+      detail: {challengeId: "challenge-after-deletion"},
+    }));
+    await flushPromises();
+
+    expect(withPlatformActivity).not.toHaveBeenCalled();
+    expect(scheduleNotification).not.toHaveBeenCalled();
+    cleanup();
   });
 
   it("loads bundled copy in the mock runtime", async () => {

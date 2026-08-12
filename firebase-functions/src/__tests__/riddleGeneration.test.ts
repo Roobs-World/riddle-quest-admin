@@ -700,82 +700,25 @@ describe("riddleGeneration", () => {
     });
   });
 
-  describe("generateTodaysDailyChallenge", () => {
-    test("should skip generation when today's challenge already exists with 1 question", async () => {
-      mockGet.mockResolvedValue({
-        exists: true,
-        data: () => ({
-          riddleId: "current",
-          text: "Existing daily question?",
-          answer: "answer",
-          timestamp: {toDate: () => new Date()},
-          dailyIndex: 7,
-          category: "daily",
-        }),
-      });
-
-      await riddleGeneration.generateTodaysDailyChallenge(false);
-
-      expect(mockGenerateUniqueRiddle).not.toHaveBeenCalled();
-    });
-
-    test("should throw when OPENAI_API_KEY is missing and generation is needed", async () => {
-      delete process.env.OPENAI_API_KEY;
-      (mockFirestoreCollection as any).mockReturnValueOnce({
-        doc: () => ({
-          get: jest.fn().mockResolvedValue({exists: false}),
-        }),
-      } as any);
-
-      await expect(riddleGeneration.generateTodaysDailyChallenge(true)).rejects.toThrow(
-        "OPENAI_API_KEY environment variable is required",
-      );
-    });
-
-    test("should generate when forceGenerate is true even if doc exists", async () => {
-      mockGet.mockResolvedValue({
-        exists: true,
-        data: () => ({
-          riddleId: "current",
-          text: "Existing daily question?",
-          answer: "answer",
-          timestamp: {toDate: () => new Date()},
-          dailyIndex: 1,
-          category: "daily",
-        }),
-      });
-      (mockGenerateUniqueRiddle as any).mockResolvedValueOnce(["Q1?", "a1"]);
-
-      await riddleGeneration.generateTodaysDailyChallenge(true);
-
-      expect(mockGenerateUniqueRiddle).toHaveBeenCalledTimes(1);
-      expect(mockSet).toHaveBeenCalledWith(
-        expect.objectContaining({
-          riddleId: "current",
-          text: "Q1?",
-          answer: "a1",
-          timestamp: {},
-        }),
-      );
-    });
-  });
-
   describe("Module Structure and Type Safety", () => {
     test("should export all required functions", () => {
       expect(typeof riddleGeneration.generateAndAppendRiddles).toBe("function");
       expect(typeof riddleGeneration.generateAndAppendDailyRiddles).toBe("function");
       expect(typeof riddleGeneration.initializeRiddleDatabaseIfEmpty).toBe("function");
-      expect(typeof riddleGeneration.generateTodaysDailyChallenge).toBe("function");
+      expect(typeof riddleGeneration.generateLocalizedTodaysDailyChallenge).toBe("function");
     });
 
     test("functions should have proper TypeScript types", () => {
       const func1: (count: number) => Promise<void> = riddleGeneration.generateAndAppendRiddles;
       const func2: (count: number) => Promise<void> = riddleGeneration.generateAndAppendDailyRiddles;
       const func3: (count?: number) => Promise<void> = riddleGeneration.initializeRiddleDatabaseIfEmpty;
+      const func4: (forceGenerate?: boolean) => Promise<void> =
+        riddleGeneration.generateLocalizedTodaysDailyChallenge;
 
       expect(func1).toBeDefined();
       expect(func2).toBeDefined();
       expect(func3).toBeDefined();
+      expect(func4).toBeDefined();
     });
   });
 

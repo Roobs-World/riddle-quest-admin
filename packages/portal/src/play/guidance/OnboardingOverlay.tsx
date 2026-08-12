@@ -43,6 +43,7 @@ export function OnboardingOverlay({
         role="dialog"
         aria-modal="true"
         aria-labelledby="onboarding-title"
+        tabIndex={-1}
         data-analytics-screen={`onboarding_${onboardingStep + 1}`}
       >
         {!welcomeOnly ? (

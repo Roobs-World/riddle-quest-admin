@@ -13,10 +13,16 @@ export type AnalyticsSink = (eventName: string, params: SanitizedAnalyticsParams
 let sink: AnalyticsSink | null = null;
 /** Provides pending events behavior. */
 let pendingEvents: Array<{eventName: string; params: SanitizedAnalyticsParams}> = [];
+/** Nonessential analytics is disabled until an explicit consent flow enables collection. */
+let collectionEnabled = false;
 /** Provides last screen behavior. */
 let lastScreen = "";
 /** Limits generic client-error signals to prevent recursive telemetry floods. */
 const CLIENT_ERROR_REPORT_LIMIT = 5;
+
+/** Fields that must never be forwarded to either GA4 or Jest analytics. */
+const sensitiveAnalyticsFieldPattern =
+  /(?:answer|authorization|cookie|email|guess|imageDataUrl|password|playerId|secret|token|uid|userId)/i;
 
 /** Provides compact behavior. */
 const compact = (value: string, fallback: string) => {
@@ -32,6 +38,7 @@ const compact = (value: string, fallback: string) => {
 /** Provides sanitize analytics params behavior. */
 export const sanitizeAnalyticsParams = (params: AnalyticsParams = {}): SanitizedAnalyticsParams =>
   Object.entries(params).reduce<SanitizedAnalyticsParams>((result, [key, value]) => {
+    if (sensitiveAnalyticsFieldPattern.test(key)) return result;
     const safeKey = compact(key, "param");
     if (Array.isArray(value)) {
       result[safeKey] = value.slice(0, 10).map((item) => sanitizeAnalyticsParams(item) as AnalyticsItem);
@@ -44,14 +51,35 @@ export const sanitizeAnalyticsParams = (params: AnalyticsParams = {}): Sanitized
 
 /** Provides configure analytics behavior. */
 export const configureAnalytics = (nextSink: AnalyticsSink | null) => {
+  if (!nextSink) {
+    sink = null;
+    collectionEnabled = false;
+    pendingEvents = [];
+    return;
+  }
+  // Sink readiness is not consent. A late async SDK initialization must not
+  // reconnect collection after the affirmative decision has been revoked.
+  if (!collectionEnabled) {
+    sink = null;
+    pendingEvents = [];
+    return;
+  }
   sink = nextSink;
-  if (!sink) return;
   for (const event of pendingEvents) sink(event.eventName, event.params);
+  pendingEvents = [];
+};
+
+/** Enables or revokes nonessential analytics collection before a remote sink is configured. */
+export const setAnalyticsCollectionEnabled = (enabled: boolean) => {
+  collectionEnabled = enabled;
+  if (enabled) return;
+  sink = null;
   pendingEvents = [];
 };
 
 /** Tracks event. */
 export const trackEvent = (eventName: string, params: AnalyticsParams = {}) => {
+  if (!collectionEnabled) return;
   const safeName = compact(eventName, "game_event").slice(0, 40);
   const safeParams = sanitizeAnalyticsParams(params);
   if (sink) sink(safeName, safeParams);
@@ -147,4 +175,5 @@ export const resetAnalyticsForTests = () => {
   lastScreen = "";
   sink = null;
   pendingEvents = [];
+  collectionEnabled = false;
 };

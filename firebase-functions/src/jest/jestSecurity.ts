@@ -65,3 +65,6 @@ export function verifyJestSigned(
 /** Provides jest firebase uid behavior. */
 export const jestFirebaseUid = (playerId: string): string =>
   `jest_${createHmac("sha256", "riddle-quest-jest-uid-v1").update(playerId).digest("hex").slice(0, 40)}`;
+
+/** Returns whether a Firebase UID belongs to the deterministic Jest identity namespace. */
+export const isJestFirebaseUid = (userId: string): boolean => /^jest_[0-9a-f]{40}$/.test(userId);

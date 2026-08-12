@@ -202,6 +202,22 @@ const ACHIEVEMENT_RULES: Array<{id: string; rule: AchievementRule}> = [
   },
 ];
 
+/** Computes new achievement records without performing any writes. */
+export function findNewAchievements(
+  user: Player,
+  context: AchievementContext,
+  unlockedAt = Date.now(),
+): UnlockedAchievement[] {
+  const existingIds = new Set((user.unlockedAchievements ?? []).map((entry) => entry.achievementId));
+  const newEntries: UnlockedAchievement[] = [];
+  for (const {id, rule} of ACHIEVEMENT_RULES) {
+    if (existingIds.has(id) || !rule(user, context)) continue;
+    newEntries.push({achievementId: id, unlockedAt});
+    existingIds.add(id);
+  }
+  return newEntries;
+}
+
 /**
  * Evaluates all achievement rules against the current user document and appends
  * any newly unlocked achievements. Call after stats/progress have been updated.
@@ -218,17 +234,7 @@ export async function evaluateAchievements(userId: string, context: AchievementC
       return [];
     }
 
-    const existingIds = new Set((user.unlockedAchievements ?? []).map((e) => e.achievementId));
-    const now = Date.now();
-    const newEntries: UnlockedAchievement[] = [];
-
-    for (const {id, rule} of ACHIEVEMENT_RULES) {
-      if (existingIds.has(id)) continue;
-      if (rule(user, context)) {
-        newEntries.push({achievementId: id, unlockedAt: now});
-        existingIds.add(id);
-      }
-    }
+    const newEntries = findNewAchievements(user, context);
 
     if (newEntries.length === 0) return [];
 

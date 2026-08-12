@@ -39,7 +39,7 @@ const flushCatalogLoad = async () => {
   await Promise.resolve();
 };
 
-const createHarness = (currentSession: JestSession | null) => {
+const createHarness = (currentSession: JestSession | null, subscriptionsEnabled?: boolean) => {
   const getProducts = jest.fn<JestPurchaseCoordinator["getProducts"]>();
   const getSubscriptions = jest.fn<JestPurchaseCoordinator["getSubscriptions"]>();
   const trackFunnel = jest.fn();
@@ -47,6 +47,7 @@ const createHarness = (currentSession: JestSession | null) => {
   const state = useJestProductCatalog({
     purchases: {getProducts, getSubscriptions} as unknown as JestPurchaseCoordinator,
     session: currentSession,
+    ...(subscriptionsEnabled === undefined ? {} : {subscriptionsEnabled}),
     trackFunnel,
     withPlatformActivity: withPlatformActivity as never,
   });
@@ -72,7 +73,7 @@ describe("useJestProductCatalog", () => {
   it("loads subscriptions before consumables for a registered player", async () => {
     const consumable = product("coins-250", "consumable");
     const subscription = product("premium-monthly", "subscription");
-    const {getProducts, getSubscriptions, trackFunnel, withPlatformActivity} = createHarness(session(true));
+    const {getProducts, getSubscriptions, trackFunnel, withPlatformActivity} = createHarness(session(true), true);
     getProducts.mockResolvedValue({status: "success", value: [consumable]});
     getSubscriptions.mockResolvedValue({status: "success", value: [subscription]});
 
@@ -83,6 +84,17 @@ describe("useJestProductCatalog", () => {
     expect(getSubscriptions).toHaveBeenCalledWith("player-1", expect.any(String));
     expect(mockSetProducts).toHaveBeenCalledWith([subscription, consumable]);
     expect(trackFunnel).not.toHaveBeenCalled();
+  });
+
+  it("keeps subscription offers fail-closed for a production registered player", async () => {
+    const consumable = product("coins-250", "consumable");
+    const {getProducts, getSubscriptions} = createHarness(session(true));
+    getProducts.mockResolvedValue({status: "success", value: [consumable]});
+
+    await flushCatalogLoad();
+
+    expect(getSubscriptions).not.toHaveBeenCalled();
+    expect(mockSetProducts).toHaveBeenCalledWith([consumable]);
   });
 
   it("does not request subscription data for a guest", async () => {
@@ -97,7 +109,7 @@ describe("useJestProductCatalog", () => {
   });
 
   it("reports product and subscription failures independently", async () => {
-    const {getProducts, getSubscriptions, trackFunnel} = createHarness(session(true));
+    const {getProducts, getSubscriptions, trackFunnel} = createHarness(session(true), true);
     getProducts.mockResolvedValue({status: "retryable-failure", message: "offline"});
     getSubscriptions.mockResolvedValue({status: "cancelled"});
 

@@ -10,6 +10,8 @@ import {
 } from "../index";
 
 describe("bridge protocol", () => {
+  const sessionToken = "00000000-0000-4000-8000-000000000001";
+
   it("accepts a ready message from the game iframe", () => {
     const message = parseGameToHostMessage({
       type: "game:ready",
@@ -44,10 +46,13 @@ describe("bridge protocol", () => {
         riddle: {
           riddleId: "classic-1",
           text: "What has keys but cannot open doors?",
-          answer: "piano",
           answerLength: 5,
+          sessionToken,
           gameMode: "classic",
           index: 1,
+          attemptsUsed: 0,
+          hasUsedContinue: false,
+          awaitingContinue: false,
         },
         profile: null,
       },
@@ -55,6 +60,77 @@ describe("bridge protocol", () => {
 
     if (message.type !== "host:riddleLoaded") throw new Error("Expected a riddle-loaded message");
     expect(message.payload.riddle.answerLength).toBe(5);
+    expect(message.payload.riddle).not.toHaveProperty("answer");
+  });
+
+  it("rejects impossible authoritative attempt recovery state", () => {
+    for (const continueState of [
+      {attemptsUsed: 6, hasUsedContinue: false, awaitingContinue: false},
+      {attemptsUsed: 5, hasUsedContinue: false, awaitingContinue: false},
+      {attemptsUsed: 4, hasUsedContinue: true, awaitingContinue: false},
+    ] as const) {
+      expect(HostToGameMessageSchema.safeParse({
+        type: "host:riddleLoaded",
+        payload: {
+          riddle: {
+            riddleId: "classic-1",
+            text: "Clue",
+            answerLength: 5,
+            sessionToken,
+            gameMode: "classic",
+            ...continueState,
+          },
+          profile: null,
+        },
+      }).success).toBe(false);
+    }
+  });
+
+  it("accepts guesses but rejects client-authored completion outcomes", () => {
+    expect(GameToHostMessageSchema.safeParse({
+      type: "game:submitGuess",
+      requestId: "bridge-guess-1",
+      payload: {
+        riddleId: "classic-1",
+        gameMode: "classic",
+        sessionToken,
+        guess: "piano",
+        requestId: "backend-guess-1",
+      },
+    }).success).toBe(true);
+    expect(GameToHostMessageSchema.safeParse({
+      type: "game:completeGame",
+      payload: {riddleId: "classic-1", gameMode: "classic", attempts: 1, isCorrect: true},
+    }).success).toBe(false);
+  });
+
+  it("rejects non-keyboard guess content at the bridge boundary", () => {
+    for (const guess of ["pi ano", "pi\nno", "pïano", "🎹"] as const) {
+      expect(GameToHostMessageSchema.safeParse({
+        type: "game:submitGuess",
+        requestId: "bridge-guess-1",
+        payload: {
+          riddleId: "classic-1",
+          gameMode: "classic",
+          sessionToken,
+          guess,
+          requestId: "backend-guess-1",
+        },
+      }).success).toBe(false);
+    }
+  });
+
+  it("shares the Unicode-safe username boundary with the callable schema", () => {
+    expect(GameToHostMessageSchema.safeParse({
+      type: "game:updateUsername",
+      payload: {username: "  Łukasz O’Neil  "},
+    }).success).toBe(true);
+    for (const username of ["Ali\nce", "Ali\u0000ce", "Ali\u202Ece", "<b>", "___", "x".repeat(97)]) {
+      expect(GameToHostMessageSchema.safeParse({
+        type: "game:updateUsername",
+        payload: {username},
+      }).success).toBe(false);
+    }
   });
 
   it("validates operation results with request correlation", () => {

@@ -27,7 +27,7 @@
     "TOO_MANY_FAILED_ATTEMPTS": "Muitas tentativas falhadas. Tente novamente mais tarde.",
     "WRONG_PASSWORD_TRY_AGAIN": "Senha incorreta. Por favor, tente novamente.",
     "UNKNOWN_ERROR": "Ocorreu um erro desconhecido.",
-    "FATAL_STARTUP_TITLE": "Falha na inicializa??o",
-    "FATAL_STARTUP_MESSAGE": "O fundo do sistema solar n?o p?de ser carregado. Reinicie o aplicativo."
+    "FATAL_STARTUP_TITLE": "Falha na inicialização",
+    "FATAL_STARTUP_MESSAGE": "O fundo do sistema solar não pôde ser carregado. Reinicie o aplicativo."
   }
 }

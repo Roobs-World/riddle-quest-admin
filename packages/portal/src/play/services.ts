@@ -1,5 +1,4 @@
 import {cloneProductPricingCatalog} from "@qwordly/core/pricing/catalog";
-import {createFakeHostServices} from "./fakeServices";
 import type {HostServices} from "./types";
 import {toProductSummaries} from "./types";
 import {hasTrustedTestHarnessMarker, shouldUseFakeHostServices} from "../testHarness";
@@ -32,15 +31,18 @@ const getFirebaseServices = async (): Promise<HostServices> => {
   return firebaseServicesPromise;
 };
 
-/** Creates lazy firebase host services. */
-const createLazyFirebaseHostServices = (): HostServices => ({
+/** Creates a synchronous HostServices proxy backed by one lazily imported implementation. */
+const createLazyHostServices = (
+  loadServices: () => Promise<HostServices>,
+  implementationName: "Firebase" | "fake",
+): HostServices => ({
   products: toProductSummaries(cloneProductPricingCatalog()),
   auth: {
     subscribe(listener) {
       let unsubscribe: (() => void) | null = null;
       let cancelled = false;
 
-      void getFirebaseServices()
+      void loadServices()
         .then((services) => {
           if (cancelled) {
             return;
@@ -48,7 +50,7 @@ const createLazyFirebaseHostServices = (): HostServices => ({
           unsubscribe = services.auth.subscribe(listener);
         })
         .catch((error) => {
-          console.error("[riddle-quest-web] Firebase services failed to load", error);
+          console.error(`[riddle-quest-web] ${implementationName} services failed to load`, error);
         });
 
       return () => {
@@ -58,78 +60,96 @@ const createLazyFirebaseHostServices = (): HostServices => ({
     },
   },
   async loadRiddle(input) {
-    return (await getFirebaseServices()).loadRiddle(input);
+    return (await loadServices()).loadRiddle(input);
   },
   async loadProfile(userId) {
-    return (await getFirebaseServices()).loadProfile(userId);
+    return (await loadServices()).loadProfile(userId);
   },
   async completeGame(input) {
-    return (await getFirebaseServices()).completeGame(input);
+    return (await loadServices()).completeGame(input);
+  },
+  async submitGuess(input) {
+    return (await loadServices()).submitGuess(input);
   },
   async requestHint(input) {
-    return (await getFirebaseServices()).requestHint(input);
+    return (await loadServices()).requestHint(input);
   },
   async spendCoins(input) {
-    return (await getFirebaseServices()).spendCoins(input);
+    return (await loadServices()).spendCoins(input);
   },
   async skipRiddle(input) {
-    return (await getFirebaseServices()).skipRiddle(input);
+    return (await loadServices()).skipRiddle(input);
   },
   async requestPurchase(productId) {
-    return (await getFirebaseServices()).requestPurchase(productId);
+    return (await loadServices()).requestPurchase(productId);
   },
   async loadLeaderboard(type) {
-    return (await getFirebaseServices()).loadLeaderboard(type);
+    return (await loadServices()).loadLeaderboard(type);
   },
   async updateUsername(username) {
-    return (await getFirebaseServices()).updateUsername(username);
+    return (await loadServices()).updateUsername(username);
   },
   async updateAvatar(imageDataUrl) {
-    return (await getFirebaseServices()).updateAvatar(imageDataUrl);
+    return (await loadServices()).updateAvatar(imageDataUrl);
   },
   async deleteAccount() {
-    return (await getFirebaseServices()).deleteAccount();
+    return (await loadServices()).deleteAccount();
   },
   async listRaceCategories(locale) {
-    return (await getFirebaseServices()).listRaceCategories(locale);
+    return (await loadServices()).listRaceCategories(locale);
   },
   async startRace(input) {
-    return (await getFirebaseServices()).startRace(input);
+    return (await loadServices()).startRace(input);
   },
   async submitRaceGuess(input) {
-    return (await getFirebaseServices()).submitRaceGuess(input);
+    return (await loadServices()).submitRaceGuess(input);
   },
   async requestRaceHint(input) {
-    return (await getFirebaseServices()).requestRaceHint(input);
+    return (await loadServices()).requestRaceHint(input);
   },
   async skipRaceRiddle(input) {
-    return (await getFirebaseServices()).skipRaceRiddle(input);
+    return (await loadServices()).skipRaceRiddle(input);
   },
   async resumeRace(runId) {
-    return (await getFirebaseServices()).resumeRace(runId);
+    return (await loadServices()).resumeRace(runId);
   },
   async abandonRace(input) {
-    return (await getFirebaseServices()).abandonRace(input);
+    return (await loadServices()).abandonRace(input);
   },
   async publishRace(input) {
-    return (await getFirebaseServices()).publishRace(input);
+    return (await loadServices()).publishRace(input);
   },
   async getRaceChallenge(challengeId) {
-    return (await getFirebaseServices()).getRaceChallenge(challengeId);
+    return (await loadServices()).getRaceChallenge(challengeId);
   },
   async getRaceOutcome(runId) {
-    return (await getFirebaseServices()).getRaceOutcome(runId);
+    return (await loadServices()).getRaceOutcome(runId);
   },
   async listRaceInbox(input) {
-    return (await getFirebaseServices()).listRaceInbox(input);
+    return (await loadServices()).listRaceInbox(input);
   },
   async getRaceAccess() {
-    return (await getFirebaseServices()).getRaceAccess();
+    return (await loadServices()).getRaceAccess();
   },
   async recordRaceAnalytics(input) {
-    return (await getFirebaseServices()).recordRaceAnalytics(input);
+    return (await loadServices()).recordRaceAnalytics(input);
   },
 });
+
+/** Creates the production proxy while retaining one Firebase service instance. */
+const createLazyFirebaseHostServices = (): HostServices =>
+  createLazyHostServices(getFirebaseServices, "Firebase");
+
+/** Creates an isolated trusted-harness proxy without loading fake riddles in the production startup chunk. */
+const createLazyFakeHostServices = (): HostServices => {
+  let fakeServicesPromise: Promise<HostServices> | null = null;
+  const getFakeServices = (): Promise<HostServices> => {
+    fakeServicesPromise ??= import("./fakeServices")
+      .then((module) => module.createFakeHostServices({initiallyAuthenticated: true}));
+    return fakeServicesPromise;
+  };
+  return createLazyHostServices(getFakeServices, "fake");
+};
 
 /** Resolves host services mode. */
 export const resolveHostServicesMode = (
@@ -144,7 +164,7 @@ export const resolveHostServicesMode = (
 /** Creates host services. */
 export const createHostServices = (mode: HostServicesMode = resolveHostServicesMode()): HostServices => {
   if (mode === "fake") {
-    return createFakeHostServices({initiallyAuthenticated: true});
+    return createLazyFakeHostServices();
   }
 
   return createLazyFirebaseHostServices();

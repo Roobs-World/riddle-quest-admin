@@ -1,4 +1,4 @@
-import {readdirSync, readFileSync, statSync} from "node:fs";
+import {existsSync, readdirSync, readFileSync, statSync} from "node:fs";
 import {fileURLToPath} from "node:url";
 
 const repositoryRoot = fileURLToPath(new URL("../", import.meta.url));
@@ -27,10 +27,15 @@ const plaintextNetworkReferences = productionFiles.flatMap((path) => {
     : [];
 });
 
-const jestEnvironment = readFileSync(`${repositoryRoot}/packages/portal/.env.jest`, "utf8");
+const portalEnvironmentDirectory = `${repositoryRoot}/config/vite/portal`;
+const jestEnvironment = readFileSync(`${portalEnvironmentDirectory}/.env.jest`, "utf8");
+const legacyPortalEnvironmentFiles = readdirSync(`${repositoryRoot}/packages/portal`)
+  .filter((name) => name === ".env" || name.startsWith(".env."));
 const jestBackendUrl = /^VITE_JEST_FUNCTIONS_BASE_URL=(.+)$/mu.exec(jestEnvironment)?.[1]?.trim();
 const appCheckSiteKey = /^VITE_FIREBASE_APP_CHECK_SITE_KEY=(.+)$/mu.exec(jestEnvironment)?.[1]?.trim();
 const sentryDsn = /^VITE_SENTRY_DSN=(.+)$/mu.exec(jestEnvironment)?.[1]?.trim();
+const googleAnalyticsMeasurementId = /^VITE_GOOGLE_ANALYTICS_MEASUREMENT_ID=(.+)$/mu
+  .exec(jestEnvironment)?.[1]?.trim();
 const encryptedJestBackend = (() => {
   if (!jestBackendUrl) return false;
   try {
@@ -50,6 +55,10 @@ const encryptedSentryDsn = (() => {
 })();
 
 const viteConfiguration = readFileSync(`${repositoryRoot}/packages/portal/vite.config.ts`, "utf8");
+const portalEntry = readFileSync(`${repositoryRoot}/packages/portal/src/main.tsx`, "utf8");
+const analyticsAdapterPath = `${repositoryRoot}/packages/portal/src/analytics/firebaseAnalytics.ts`;
+const browserSentry = readFileSync(`${repositoryRoot}/packages/portal/src/observability/sentry.ts`, "utf8");
+const functionSentry = readFileSync(`${repositoryRoot}/firebase-functions/src/shared/sentry.ts`, "utf8");
 const jestReleaseScript = readFileSync(
   `${repositoryRoot}/packages/portal/scripts/release-jest-timestamped.mjs`,
   "utf8",
@@ -62,6 +71,11 @@ const hsts = headerValues.get("strict-transport-security") ?? "";
 const contentSecurityPolicy = headerValues.get("content-security-policy") ?? "";
 
 const requirements = [
+  [legacyPortalEnvironmentFiles.length === 0,
+    `Legacy portal-root environment files must be removed: ${legacyPortalEnvironmentFiles.join(", ")}`],
+  [/new URL\("\.\.\/\.\.\/config\/vite\/portal\/", import\.meta\.url\)/u.test(viteConfiguration) &&
+    /envDir:\s*portalEnvironmentDirectory/u.test(viteConfiguration),
+  "Vite must load browser configuration only from the dedicated repository-level env directory."],
   [Number(/max-age=(\d+)/i.exec(hsts)?.[1] ?? 0) >= 31_536_000,
     "HSTS must remain enabled for at least one year."],
   [/\bincludesubdomains\b/i.test(hsts), "HSTS must cover subdomains."],
@@ -73,14 +87,27 @@ const requirements = [
     "CSP must not allow plaintext HTTP or WebSocket origins."],
   [encryptedJestBackend, "The production Jest backend URL must use HTTPS."],
   [encryptedSentryDsn, "The production Sentry DSN must use an official encrypted Sentry endpoint."],
+  [!googleAnalyticsMeasurementId,
+    "The Jest production environment must not configure Google Analytics before a consent/opt-out design exists."],
+  [!/(?:google-analytics|googletagmanager)\.com/iu.test(contentSecurityPolicy),
+    "The production CSP must not authorize Google Analytics or Tag Manager endpoints."],
+  [!portalEntry.includes("initializeGoogleAnalytics") && !existsSync(analyticsAdapterPath),
+  "The unused Firebase Analytics adapter must remain absent until an affirmative consent design exists."],
+  [/tracesSampleRate:\s*0/u.test(browserSentry) && /tracesSampleRate:\s*0/u.test(functionSentry) &&
+    !/captureConsoleIntegration/u.test(browserSentry),
+  "Sentry must remain essential errors-only without performance tracing or console-event capture."],
   [/https:\/\/\*\.sentry\.io/u.test(contentSecurityPolicy),
     "CSP must allow encrypted Sentry event ingestion."],
   [/^[\w-]{30,}$/u.test(appCheckSiteKey ?? ""),
     "The production Jest build must include a Firebase App Check site key."],
   [/sourcemap:\s*uploadSentrySourceMaps\s*\?\s*"hidden"\s*:\s*false/u.test(viteConfiguration),
     "Production source maps must be hidden and generated only for private Sentry upload."],
-  [/filesToDeleteAfterUpload:\s*"\.\/dist-jest\/\*\*\/\*\.map"/u.test(viteConfiguration),
-    "Private source maps must be deleted before Jest artifact packaging."],
+  [/const jestBuildOutDir\s*=\s*process\.env\.JEST_BUILD_OUT_DIR\?\.trim\(\)\s*\|\|\s*"dist-jest"/u
+    .test(viteConfiguration) &&
+    viteConfiguration.includes("assets: `${jestBuildOutDir}/**`") &&
+    viteConfiguration.includes("filesToDeleteAfterUpload: `${jestBuildOutDir}/**/*.map`") &&
+    /JEST_BUILD_OUT_DIR:\s*releaseBuildDirectory/u.test(jestReleaseScript),
+  "Private source maps must be deleted from the selected Jest build directory before artifact packaging."],
   [/Private Sentry source-map upload requires:/u.test(viteConfiguration),
     "Requested Sentry source-map uploads must fail closed when configuration is missing."],
   [/VITE_SENTRY_RELEASE:\s*sentryRelease/u.test(jestReleaseScript),

@@ -5,6 +5,12 @@ require("dotenv").config({path: __dirname + "/.env", override: true});
 process.env.JEST_WORKER_ID = process.env.JEST_WORKER_ID || "1";
 process.env.NODE_ENV = "test";
 
+// Unit tests that exercise the real purchase handler must opt in to the same
+// trusted SKU boundary required in deployed environments.
+if (!process.env.JEST_PRODUCT_SKUS) {
+  process.env.JEST_PRODUCT_SKUS = "com.roobsworld.riddlequest.coinpack1";
+}
+
 // Set up Firebase credentials for integration tests
 if (!process.env.GOOGLE_APPLICATION_CREDENTIALS) {
   // Use the existing service account file for integration tests

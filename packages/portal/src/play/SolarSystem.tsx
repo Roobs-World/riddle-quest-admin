@@ -91,11 +91,18 @@ export function SolarSystem({paused}: {paused: boolean}) {
     camera.position.set(0, 45, 350);
     camera.lookAt(0, 0, 0);
 
-    const renderer = new THREE.WebGLRenderer({
-      alpha: true,
-      antialias: window.devicePixelRatio <= 1.5 && navigator.hardwareConcurrency > 4,
-      powerPreference: "high-performance",
-    });
+    let renderer: THREE.WebGLRenderer;
+    try {
+      renderer = new THREE.WebGLRenderer({
+        alpha: true,
+        antialias: window.devicePixelRatio <= 1.5 && navigator.hardwareConcurrency > 4,
+        powerPreference: "high-performance",
+      });
+    } catch {
+      // The solar system is decorative. Context exhaustion, driver blocks, or
+      // privacy modes must never prevent the puzzle itself from rendering.
+      return;
+    }
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     mount.append(renderer.domElement);

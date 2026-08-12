@@ -6,6 +6,8 @@ type AuthHarnessState = {
   scenario?: string;
   /** Stores backend exchanges. */
   backendExchanges?: string[];
+  /** Stores signed deletion retries. */
+  backendDeletionRetries?: string[];
 };
 
 /** Gets harness state. */
@@ -32,13 +34,34 @@ export function createJestBackend({
       const testState = authHarness ? getHarnessState() : undefined;
       testState?.backendExchanges?.push(playerSigned);
       const onceKey = "riddleQuest:jestAuthHarness:identityFailed";
+      const registrationOnceKey = "riddleQuest:jestAuthHarness:registrationIdentityFailed";
       const shouldFailOnce =
         testState?.scenario === "identity-once-failure" && sessionStorage.getItem(onceKey) !== "1";
+      const shouldFailAfterRegistration =
+        testState?.scenario === "registration-identity-failure" && playerSigned.endsWith(":true");
+      const shouldFailAfterRegistrationOnce =
+        testState?.scenario === "registration-identity-once-failure" &&
+        playerSigned.endsWith(":true") &&
+        sessionStorage.getItem(registrationOnceKey) !== "1";
       if (shouldFailOnce) sessionStorage.setItem(onceKey, "1");
-      if (testState?.scenario === "identity-failure" || shouldFailOnce) {
+      if (shouldFailAfterRegistrationOnce) sessionStorage.setItem(registrationOnceKey, "1");
+      if (
+        testState?.scenario === "identity-failure" ||
+        shouldFailOnce ||
+        shouldFailAfterRegistration ||
+        shouldFailAfterRegistrationOnce
+      ) {
         throw new Error("Mock Jest identity exchange failed");
       }
-      return {customToken: "mock", uid: "jest-mock-player"};
+      if (
+        testState?.scenario === "registration-account-deleted" &&
+        playerSigned.endsWith(":true")
+      ) return {status: "account-deleted"};
+      return {status: "success", customToken: "mock", uid: "jest-mock-player"};
+    },
+    retryAccountDeletion: async (playerSigned) => {
+      if (authHarness) getHarnessState()?.backendDeletionRetries?.push(playerSigned);
+      return {accountDeleted: true};
     },
     grantPurchase: async (_signed: string, _playerId: string, purchaseToken: string) => ({
       granted: true,

@@ -2,17 +2,31 @@ import {z} from "zod";
 
 /** Validates the backend game mode data shape. */
 export const BackendGameModeSchema = z.enum(["challenge", "classic"]);
+/** Bounds canonical riddle identifiers accepted by Cloud Functions. */
+const RiddleIdSchema = z.string().min(1, "Riddle ID is required").max(160);
+/** Bounds guesses to the shipped seven-keyboard-slot policy. */
+const PlayableGuessSchema = z.string().min(1).max(7).regex(/^[a-z]+$/i);
 
 /** Validates the complete game input data shape. */
 export const CompleteGameInputSchema = z.object({
-  riddleId: z.string().min(1, "Riddle ID is required"),
+  riddleId: RiddleIdSchema,
   gameMode: BackendGameModeSchema,
-  attempts: z.number().int().positive("Attempts must be a positive integer").max(100),
-  isCorrect: z.boolean(),
-});
+  sessionToken: z.string().min(20).max(128),
+}).strict();
+
+/** Validates a server-authoritative single-player guess input. */
+export const SubmitSinglePlayerGuessInputSchema = z.object({
+  riddleId: RiddleIdSchema,
+  gameMode: BackendGameModeSchema,
+  sessionToken: z.string().min(20).max(128),
+  guess: PlayableGuessSchema,
+  requestId: z.string().min(8).max(128),
+}).strict();
 
 /** Validates the complete game output data shape. */
 export const CompleteGameOutputSchema = z.object({
+  attempts: z.number().int().positive().max(6),
+  isCorrect: z.boolean(),
   coinsEarned: z.number().nonnegative(),
   newlyUnlockedAchievementIds: z.array(z.string()),
   scoreEarned: z.number().nonnegative().optional(),
@@ -37,11 +51,42 @@ export const CompleteGameOutputSchema = z.object({
 export type CompleteGameInput = z.infer<typeof CompleteGameInputSchema>;
 /** Describes complete game output. */
 export type CompleteGameOutput = z.infer<typeof CompleteGameOutputSchema>;
+/** Describes a server-authoritative single-player guess input. */
+export type SubmitSinglePlayerGuessInput = z.infer<typeof SubmitSinglePlayerGuessInputSchema>;
+
+/** Validates a server-authoritative single-player guess output. */
+export const SubmitSinglePlayerGuessOutputSchema = z.object({
+  feedback: z.array(z.object({
+    letter: z.string().length(1),
+    status: z.enum(["green", "yellow", "red"]),
+  })).max(7),
+  attempts: z.number().int().positive().max(6),
+  isCorrect: z.boolean(),
+  gameOver: z.boolean(),
+  canContinue: z.boolean().optional(),
+}).strict();
+/** Describes a server-authoritative single-player guess output. */
+export type SubmitSinglePlayerGuessOutput = z.infer<typeof SubmitSinglePlayerGuessOutputSchema>;
 
 /** Validates the daily challenge question data shape. */
 export const DailyChallengeQuestionSchema = z.object({
-  riddleId: z.string(),
-  text: z.string(),
-  answer: z.string().min(1),
-  questionNumber: z.number().int().positive(),
+  riddleId: RiddleIdSchema,
+  text: z.string().min(1).max(120),
+  answerLength: z.number().int().positive().max(7),
+  sessionToken: z.string().min(20).max(128),
+  questionNumber: z.number().int().positive().max(1),
+  attemptsUsed: z.number().int().nonnegative().max(6),
+  hasUsedContinue: z.boolean(),
+  awaitingContinue: z.boolean(),
+}).strict().superRefine((question, context) => {
+  const expectedAwaiting = question.attemptsUsed === 5 && !question.hasUsedContinue;
+  if (question.awaitingContinue !== expectedAwaiting) {
+    context.addIssue({code: z.ZodIssueCode.custom, message: "Continue recovery state is inconsistent."});
+  }
+  if (question.hasUsedContinue && question.attemptsUsed < 5) {
+    context.addIssue({code: z.ZodIssueCode.custom, message: "Continue cannot precede the base attempt cap."});
+  }
+  if (question.attemptsUsed > 5 + (question.hasUsedContinue ? 1 : 0)) {
+    context.addIssue({code: z.ZodIssueCode.custom, message: "Attempt count exceeds the available limit."});
+  }
 });

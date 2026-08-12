@@ -1,4 +1,4 @@
-import {splitGraphemes} from "@qwordly/core/game";
+import {computeFeedback, splitGraphemes} from "@qwordly/core/game";
 import {cloneProductPricingCatalog} from "@qwordly/core/pricing/catalog";
 import type {BridgeLeaderboardEntry, BridgeProfile, BridgeRiddle, BridgeUser} from "@qwordly/core/bridge";
 import type {AuthSnapshot, HostServices, LeaderboardType, ProductSummary} from "./types";
@@ -6,30 +6,42 @@ import {toProductSummaries} from "./types";
 import {createFakeRaceServices} from "./race/testing/fakeRaceServices";
 
 /** Provides fake riddles behavior. */
-const fakeRiddles: BridgeRiddle[] = [
+const fakeRiddles: Array<BridgeRiddle & {answer: string}> = [
   {
     riddleId: "classic-fake-1",
     text: "What has keys but cannot open doors?",
     answer: "piano",
     answerLength: 5,
+    sessionToken: "00000000-0000-4000-8000-000000000001",
     gameMode: "classic",
     index: 1,
+    attemptsUsed: 0,
+    hasUsedContinue: false,
+    awaitingContinue: false,
   },
   {
     riddleId: "classic-fake-2",
     text: "What has a face and hands but no arms?",
     answer: "clock",
     answerLength: 5,
+    sessionToken: "00000000-0000-4000-8000-000000000002",
     gameMode: "classic",
     index: 2,
+    attemptsUsed: 0,
+    hasUsedContinue: false,
+    awaitingContinue: false,
   },
   {
     riddleId: "daily-fake-1",
     text: "I speak without a mouth and hear without ears. What am I?",
     answer: "echo",
     answerLength: 4,
+    sessionToken: "00000000-0000-4000-8000-000000000003",
     gameMode: "challenge",
     index: 0,
+    attemptsUsed: 0,
+    hasUsedContinue: false,
+    awaitingContinue: false,
   },
 ];
 
@@ -91,6 +103,13 @@ export const createFakeHostServices = ({
     : {user: null, profile: null};
   const subscribers = new Set<(nextSnapshot: AuthSnapshot) => void>();
   const raceServices = createFakeRaceServices();
+  const singlePlayerResults = new Map<string, {
+    attempts: number;
+    isCorrect: boolean;
+    gameOver: boolean;
+    hasUsedContinue: boolean;
+    awaitingContinue: boolean;
+  }>();
 
   const emit = () => {
     subscribers.forEach((subscriber) => subscriber(snapshot));
@@ -139,16 +158,54 @@ export const createFakeHostServices = ({
       const modeRiddles = fakeRiddles.filter((entry) => entry.gameMode === gameMode);
       const index = gameMode === "classic" ? Math.max(0, (classicIndex ?? snapshot.profile?.classicIndex ?? 1) - 1) : 0;
       const riddle = modeRiddles[index % modeRiddles.length];
+      const {answer: _serverOnlyAnswer, ...publicRiddle} = riddle;
+      const prior = singlePlayerResults.get(riddle.riddleId);
       return {
-        ...riddle,
+        ...publicRiddle,
         gameMode,
         answerLength: splitGraphemes(riddle.answer).length,
+        attemptsUsed: prior?.attempts ?? 0,
+        hasUsedContinue: prior?.hasUsedContinue ?? false,
+        awaitingContinue: prior?.awaitingContinue ?? false,
       };
     },
     async loadProfile() {
       return snapshot.profile;
     },
-    async completeGame({isCorrect, gameMode, attempts}) {
+    async submitGuess({riddleId, gameMode, guess}) {
+      const riddle = fakeRiddles.find((entry) => entry.riddleId === riddleId && entry.gameMode === gameMode);
+      if (!riddle) throw new Error("Riddle not found.");
+      const prior = singlePlayerResults.get(riddleId);
+      if (prior?.awaitingContinue && !prior.hasUsedContinue) {
+        throw new Error("Choose whether to continue before submitting another guess.");
+      }
+      const attempts = (prior?.attempts ?? 0) + 1;
+      const normalizedGuess = guess.toLocaleLowerCase();
+      const isCorrect = normalizedGuess === riddle.answer.toLocaleLowerCase();
+      const hasUsedContinue = prior?.hasUsedContinue ?? false;
+      const canContinue = !isCorrect && attempts === 5 && !hasUsedContinue;
+      const gameOver = isCorrect || attempts >= 6;
+      singlePlayerResults.set(riddleId, {
+        attempts,
+        isCorrect,
+        gameOver,
+        hasUsedContinue,
+        awaitingContinue: canContinue,
+      });
+      const letters = splitGraphemes(normalizedGuess);
+      const statuses = computeFeedback(normalizedGuess, riddle.answer);
+      return {
+        feedback: letters.map((letter, index) => ({letter, status: statuses[index] ?? "red"})),
+        attempts,
+        isCorrect,
+        gameOver,
+        ...(canContinue ? {canContinue: true} : {}),
+      };
+    },
+    async completeGame({riddleId, gameMode}) {
+      const authoritative = singlePlayerResults.get(riddleId);
+      if (!authoritative) throw new Error("No authoritative guesses exist.");
+      const {attempts, isCorrect} = authoritative;
       const profile = snapshot.profile;
       const coinsEarned = isCorrect ? (gameMode === "challenge" ? 75 : 50) : 0;
       const nextClassicIndex =
@@ -182,6 +239,8 @@ export const createFakeHostServices = ({
       });
 
       return {
+        attempts,
+        isCorrect,
         coinsEarned,
         newlyUnlockedAchievementIds: isCorrect ? ["first_win"] : [],
         newXp: nextProfile?.xp,
@@ -211,11 +270,12 @@ export const createFakeHostServices = ({
         newCoins,
       };
     },
-    async spendCoins({reason, amount, gameMode}) {
-      if (reason === "skip" && gameMode === "challenge") {
-        throw new Error("Daily riddles cannot be skipped.");
+    async spendCoins({amount, riddleId}) {
+      const cost = amount ?? 100;
+      const prior = singlePlayerResults.get(riddleId);
+      if (prior?.awaitingContinue) {
+        singlePlayerResults.set(riddleId, {...prior, hasUsedContinue: true, awaitingContinue: false});
       }
-      const cost = amount ?? (reason === "continue" ? 100 : reason === "skip" ? 100 : 50);
       return {newCoins: spend(cost)};
     },
     async skipRiddle({gameMode}) {

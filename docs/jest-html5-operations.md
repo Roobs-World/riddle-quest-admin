@@ -2,6 +2,8 @@
 
 Riddle Quest is a standard React HTML5 game. It has no React Native, Expo, Android, iOS, admin-panel, external-auth, ad, or native-purchase release path.
 
+For the source-audited map of player data, system boundaries, deletion, export, retention, and unresolved owner/counsel decisions, see the [privacy data inventory](privacy-data-inventory.md).
+
 ## Testing modes
 
 ### 1. Local Jest SDK mock
@@ -36,9 +38,9 @@ While logged in to Jest, open:
 https://jest.com/g/riddle-q?host=http://localhost:3000
 ```
 
-The embedded-development check selects the real `JestSDK` adapter and real Firebase backend, not the deterministic local harness. The deployed Functions CORS configuration must include `http://localhost:3000` in `JEST_GAME_ORIGIN` while hosted-emulator testing is enabled. Do not add `harness=` to this URL.
+The embedded-development check selects the real `JestSDK` adapter, not the deterministic local harness. The production deploy validator deliberately rejects localhost origins, so never add `http://localhost:3000` to the deployed `JEST_GAME_ORIGIN` allowlist. Backend-authoritative checks in this mode require a local Functions emulator selected through the ignored `config/vite/portal/.env.jest.local`; otherwise use an uploaded sandbox build for real backend flows. Do not add `harness=` to this URL.
 
-Validate player identity, registration dismissal/completion, player-data persistence, entry payloads, catalog reads, cancellation, and retryable SDK errors here. Payment settlement, notification delivery, and referral attribution still require sandbox users.
+Validate Jest SDK loading, player identity payloads, registration dismissal/completion, entry payloads, cancellation, and retryable SDK errors here. Validate player-data persistence and catalog reads through a local Functions emulator or uploaded sandbox build. Payment settlement, notification delivery, and referral attribution require sandbox users.
 
 ### 3. Uploaded build with sandbox users
 
@@ -61,7 +63,7 @@ Use two sandbox users for referral attribution. Reset the invitee's player state
 
 ### 4. Developer Console Simulator
 
-Open the uploaded version—or provide the `pnpm jest:hosted` local URL—in the Simulator. Complete its quality checklist and record a self-review that covers onboarding, guest play, registration, one complete riddle, the shop, a canceled checkout, a successful sandbox checkout, subscription state, notifications, sharing, portrait/landscape layout, audio, and background/foreground recovery. Attach the recording to the exact version being submitted for moderation.
+Use the `pnpm jest:hosted` local URL in the Simulator for SDK embedding and lifecycle checks only. Open the uploaded version for the complete quality checklist and record a self-review that covers onboarding, guest play, registration, one complete riddle, the shop, a canceled checkout, a successful sandbox checkout, subscription state, notifications, sharing, portrait/landscape layout, audio, and background/foreground recovery. Attach the recording to the exact version being submitted for moderation.
 
 After upload, use the version's preview link with the developer account for a final smoke test before activation. A preview is not a substitute for sandbox payment, notification, persistence, or referral validation.
 
@@ -105,7 +107,7 @@ pnpm --filter @qwordly/portal test:jest-deployed:playwright
 
 Generate the short-lived login URL from **Developer Console → Sandbox Users**. The test opens the deployed Riddle Quest route after sandbox authentication; `JEST_DEPLOYED_GAME_URL` can override the default `https://jest.com/g/riddle-q` route. The test rejects direct storage-origin access, local servers, and `harness=` mock mode; it requires the game iframe at the configured `*.builds.jest.com` origin and verifies real identity and riddle Function traffic.
 
-The authenticated browser state is cached only in `/tmp/riddle-quest-jest-sandbox-state.json` so a consumed one-time link can be reused while diagnosing a failed run. Set `JEST_SANDBOX_STORAGE_STATE` to override that ephemeral path. The deployed gate also requires a successful signed `verifyJestReferrals` response and validates its conversion, two-sided reward, reward amount, and balance fields; a sandbox smoke test cannot pass if referral reconciliation is unavailable.
+The authenticated browser state is cached only in `/tmp/riddle-quest-jest-sandbox-state.json` so a consumed one-time link can be reused while diagnosing a failed run. The writer pre-creates and revalidates it as a regular current-user `0600` file; the payment and subscription gates fail closed on permissive, linked, or foreign-owned state. Set `JEST_SANDBOX_STORAGE_STATE` to override that ephemeral path, keep the custom file owner-only, and remove it after the acceptance evidence is complete. The deployed gate also requires a successful signed `verifyJestReferrals` response and validates its conversion, two-sided reward, reward amount, and balance fields; a sandbox smoke test cannot pass if referral reconciliation is unavailable.
 
 Headless browsers can be rejected by reCAPTCHA Enterprise even when the hosted build is healthy. Create a dedicated token under **Firebase Console → App Check → Apps → Riddle Quest web app → Manage debug tokens**, keep it out of files and shell history, and inject it only into the test process:
 
@@ -125,7 +127,7 @@ JEST_SANDBOX_PAYMENT_CONFIRM=com.roobsworld.riddlequest.coinpack1 \
 pnpm --filter @qwordly/portal test:jest-payments:live
 ```
 
-This checks the live Jest/Stripe product and subscription catalogs, completes a sandbox checkout, verifies the signed receipt through `grantJestPurchase`, replays the receipt to prove the grant is idempotent, calls `completePurchase`, and confirms the token has left the recovery queue. Jest owns the Stripe customer, wallet, checkout, and charge lifecycle; no Stripe secret or direct Stripe client belongs in the game artifact.
+This checks the live Jest/Stripe product and subscription catalogs, completes a sandbox checkout, verifies the signed receipt through `grantJestPurchase`, replays the receipt to prove the grant is idempotent, calls `completePurchase`, and confirms the token has left the recovery queue. The backend hashes the signed purchase token before using it as a Firestore receipt ID, and a replay returns the user's current balance rather than the historical post-grant balance. Account deletion removes receipt identity fields but retains the opaque hash as a minimal anti-replay tombstone; older raw-token receipts are migrated when read or deleted. Jest owns the Stripe customer, wallet, checkout, and charge lifecycle; no Stripe secret or direct Stripe client belongs in the game artifact.
 
 Run the separate subscription activation, restoration, and cancellation gate with an exact SKU confirmation:
 
@@ -134,13 +136,15 @@ JEST_SANDBOX_SUBSCRIPTION_CONFIRM=com.roobsworld.riddlequest.premium.monthly \
 pnpm --filter @qwordly/portal test:jest-subscription:live
 ```
 
-The gate requires Jest's **Sandbox User** checkout marker before it clicks Subscribe, verifies the signed active entitlement through
-`syncJestSubscriptions`, reloads the active game to prove restoration, and confirms platform cancellation. As of 2026-08-10,
+This is a direct SDK sandbox gate; the production player-facing catalog and checkout remain disabled. The gate requires Jest's
+**Sandbox User** checkout marker before it clicks Subscribe, verifies the signed active entitlement through `syncJestSubscriptions`,
+reloads the active game to prove restoration, and confirms platform cancellation. As of 2026-08-10,
 the live sandbox modal receives the Subscribe click but Jest emits no checkout request and does not settle `beginSubscription`;
 the wallet remains inactive. Subscriptions are a Jest beta feature, so contact Jest support with this reproduction before enabling
-the offer for production players. The game applies its own 30-second retryable timeout so a platform stall cannot block the UI.
+the offer for production players. The adapter's 30-second retryable timeout is defense in depth for tests; it does not cancel an
+unsettled platform transaction and is not sufficient justification to expose the offer.
 
-`build:jest` validates TypeScript, every imported locale JSON file, the production build, and the standalone artifact. The artifact audit enforces the 5 MB limit, local relative assets, the single approved Jest SDK script, and the absence of native modules, external authentication, ads, install prompts, secrets, and source maps.
+`build:jest` validates TypeScript, every imported locale JSON file, the production build, and the standalone artifact. The artifact audit enforces a 4.5 MB internal release budget beneath the 5 MB platform limit, local relative assets, the single approved Jest SDK script, and the absence of native modules, external authentication, ads, install prompts, secrets, and source maps.
 
 ## Jest testing modes
 
@@ -162,7 +166,7 @@ Start the local server on the port expected by Jest:
 pnpm jest:hosted
 ```
 
-While logged into the developer account, open `https://jest.com/g/riddle-q?host=http://localhost:3000`. The game detects that it is embedded and uses the live Jest SDK and configured backend rather than either local mock adapter. Exercise registration dismissal/completion, stable player identity, entry payloads, platform overlays, and mobile iframe sizing here.
+While logged into the developer account, open `https://jest.com/g/riddle-q?host=http://localhost:3000`. The game detects that it is embedded and uses the live Jest SDK rather than either local mock adapter. The production backend remains unavailable to the localhost iframe by design. Exercise registration dismissal/completion, stable player identity, entry payloads, platform overlays, and mobile iframe sizing here; use a locally configured Functions emulator or an uploaded sandbox build for backend-authoritative behavior.
 
 ### Uploaded build and sandbox users
 
@@ -184,7 +188,7 @@ These environments are complementary: local mocks prove application branches, th
 - Jest build origin: `https://019faa68-f3ec-755d-9ab5-c887fb426801.builds.jest.com`
 - Functions base URL: `https://us-central1-riddle-quest-ec2b2.cloudfunctions.net`
 
-The committed `packages/portal/.env.jest` contains public Firebase client configuration. `JEST_SHARED_SECRET` remains in Firebase Secret Manager. The only deployed Functions are the authoritative Jest identity, purchase, referral, profile, leaderboard, riddle, and gameplay boundaries; the obsolete legacy-migration Functions have been deleted.
+The committed `config/vite/portal/.env.jest` contains public Firebase client configuration. Vite loads only that dedicated repository-level directory; any legacy `packages/portal/.env*` file blocks the production audit and timestamped release. `JEST_SHARED_SECRET` remains in Firebase Secret Manager. The only deployed Functions are the authoritative Jest identity, purchase, referral, profile, leaderboard, riddle, and gameplay boundaries; the obsolete legacy-migration Functions have been deleted.
 
 ### Google Cloud runtime health
 
@@ -198,19 +202,66 @@ identity, Jest platform endpoints verify signed Jest payloads, and Firestore com
 After creating a new HTTP/callable Function, verify that its Cloud Run service has `allUsers` bound to
 `roles/run.invoker`; a missing binding appears as a Google HTML 403 rather than a structured Firebase error.
 
-## Build and upload
+### Username reservation rollout
 
-Copy `packages/portal/.env.jest-upload.example` to the ignored `packages/portal/.env.jest-upload.local`, then set the game upload token and notification email. The release tooling also accepts the legacy ignored `packages/portal/.env` file:
+Username changes fail closed until the versioned `usernameReservationMigrations/v1` document is complete. Deploy the
+Functions that create deterministic reservations first, wait for traffic to move off the previous revision, and then
+process existing users in bounded pages. Preview never writes; apply requires the exact project ID twice:
 
 ```bash
+pnpm --dir firebase-functions usernames:migrate -- --project riddle-quest-ec2b2 --page-size 100
+pnpm --dir firebase-functions usernames:migrate -- --project riddle-quest-ec2b2 --page-size 100 --apply --confirm-project riddle-quest-ec2b2
+```
+
+Repeat preview then apply until an apply invocation reports `complete: true`; the final empty page is what opens the
+username-change gate. Each successful user advances a persisted cursor, so rerunning after interruption is idempotent.
+If preview or apply reports an invalid username or case/NFKC collision, stop. The owner whose reservation was already
+committed deterministically keeps the name; correct only the reported, not-yet-migrated legacy
+`users/{uid}.username` value to a valid unclaimed display name. Leave the migration gate closed and rerun the same page;
+the migration transaction will claim the corrected name and synchronize its leaderboard copy. Never move the cursor or
+set `complete` manually.
+
+## Build and upload
+
+Install the credential template outside the repository with owner-only permissions, then set the game upload token and notification email. The release rejects repository-local, linked, group-readable, or world-readable credential files:
+
+```bash
+install -D -m 600 packages/portal/jest-release.credentials.example \
+  "${XDG_CONFIG_HOME:-$HOME/.config}/riddle-quest/jest-release.env"
 pnpm jest:build-upload
 ```
 
-The command creates a timestamped version, builds and audits `dist-jest`, revalidates the exact files immediately before packaging, creates the ignored `packages/portal/build.zip`, records its SHA-256 checksum, and uploads it as an inactive Draft version. It does not publish the game, activate the build, or submit it for review.
+Keep `JEST_UPLOAD_IS_ACTIVE` and `JEST_CONFIRM_ACTIVATION` out of that persistent file; the credential parser rejects
+both so a stale file can never request activation. The inactive Draft default changes only when both values are supplied
+to one deliberate command invocation as documented below.
+
+The command refuses a dirty worktree, acquires an exclusive release lock, adds the source commit and a random attempt ID
+to its timestamped version, and runs `verify:production:extended` before reading credential-file contents. Timestamped
+releases require Linux and functional `/usr/bin/bwrap`; the command probes the boundary first and refuses an unsandboxed
+fallback. Every gate, build, validator, browser, and uploader child receives a minimal environment and runs with the
+operator home hidden, isolated home/temp/PID/proc state, a read-only host filesystem, and required runtime/browser caches
+rebound read-only. During the credential-free gate, only the repository and isolated release workspace are writable;
+`.git`, ignored `.env*` files, receipt state, other known secret-bearing paths, and the exact configured credential path
+are overmounted. Before reading credentials, the repository, committed snapshot, and copied trusted release scripts are
+switched to read-only mounts. Network remains shared because dependency/W3C audits, emulator setup, and browser tests
+require it. The command fingerprints the pnpm/npm lock and workspace manifests
+plus the installed root/core/portal/Functions dependency trees when it acquires the lock, then
+requires the same fingerprint immediately before upload. It materializes the committed Git snapshot in a unique
+`/tmp` workspace, builds there with the Sentry token scoped to the direct Vite process, packages a version-specific
+archive, extracts it into a fresh read-only directory, and reruns the artifact, W3C, and both browser gates against those
+extracted bytes. Parent-held pre/post fingerprints and the trusted uploader independently bind the Git commit and clean
+state, ZIP size, SHA-256, version, game, receipt, and activation intent before the unchanged ZIP is uploaded as an inactive
+Draft. It does not publish the game, activate the build, or submit it for review.
+
+The sandbox prevents release children from opening the configured credential path or inspecting the parent through the
+host PID namespace. It does not isolate the release from other same-user or privileged host processes, a compromised
+parent release process/runtime, backups, hard links, or alternate copies. The Vite process and its loaded dependencies
+intentionally receive the Sentry token when source-map upload is enabled; the uploader process intentionally receives the
+Jest token, and both retain network access. Use a dedicated trusted release host and reviewed locked dependencies.
 
 For readable browser stack traces, create a dedicated Sentry organization token
 with the minimum release/project permissions required for artifact upload and set
-the following values only in the ignored `.env.jest-upload.local` file:
+the following values only in the external owner-only credential file:
 
 ```bash
 SENTRY_UPLOAD_SOURCEMAPS=1
@@ -231,13 +282,74 @@ To exercise the complete packaging preflight without transmitting anything:
 pnpm --filter @qwordly/portal preflight:jest-upload
 ```
 
-After verifying the exact Draft version through its preview URL and sandbox acceptance checks, activation can be requested deliberately by setting both values below. The game-ID confirmation prevents a stale shell environment from activating the wrong game:
+The direct preflight overwrites `build.zip` and its default gate receipt together; the timestamped release instead uses
+version-specific workspace paths. There is deliberately no direct live-upload package command. Only the sandboxed
+timestamped release may transmit: it binds the source commit and clean state, ZIP bytes, build version, game ID, and
+activation intent to the receipt, then frames the token through an anonymous pipe. The uploader consumes and closes that
+pipe before starting any child and sends the token only as an in-process HTTPS header, never in an exec-time environment
+or command-line argument.
+
+Before sending bytes, the uploader stores atomic mode-`0600` barriers for both the exact game/build version and the
+game/source commit. The documented upload API returns HTTP `202` with a `versionId` and `buildStatus: "processing"`; that
+means accepted for background processing, not ready or active. A timeout, termination, or crash leaves the source barrier
+blocked as transmitting/ambiguous, so generating a new timestamped build version from the same source cannot bypass the
+uncertain attempt. Reconcile it through the [Developer Console build status and build-completion email](https://docs.jest.com/dev-console/builds).
+After a documented `202`, both receipts transition to accepted-pending and record the version ID and exact ZIP checksum;
+the source-wide barrier deliberately remains. Only after the Console or completion email reports an authoritative final
+status may an owner manually remove the corresponding `<game-id>.<source-commit>.unresolved-upload.json` file from
+`packages/portal/.jest-upload-receipts`; retain the accepted build-specific receipt as the audit record, or reconcile it
+before ever retrying that exact version. Do not delete either barrier and retry blindly: Jest may already have accepted
+the first request. Jest does not currently document an authoritative build-status polling endpoint, so the tooling
+deliberately does not infer readiness from elapsed time or poll an unofficial URL.
+
+Prefer activating the already verified Draft version in the Developer Console. If an owner deliberately chooses to request activation as part of a **new** timestamped upload, both values below are required. The game-ID confirmation prevents a stale shell environment from activating the wrong game, but this command creates a new version; it does not activate the previously previewed Draft:
 
 ```bash
 JEST_UPLOAD_IS_ACTIVE=true \
 JEST_CONFIRM_ACTIVATION=019faa68-f3ec-755d-9ab5-c887fb426801 \
 pnpm jest:build-upload
 ```
+
+### Coordinated gameplay protocol cutover
+
+The authoritative single-player rewrite is deliberately fail-closed and is not rolling-compatible with the currently
+active legacy artifact. The legacy client expects an answer-bearing response and client-side completion; the hardened
+backend omits that answer, and the new client requires the new session endpoints and public status fields. Treat this as
+a maintenance-window cutover, not a zero-downtime Functions deploy.
+
+1. Run `pnpm verify:production:extended`, upload the resulting ZIP with `isActive=false`, wait for the build-completion
+   email/Developer Console `ready` status, and record its version ID and the gated ZIP SHA-256. Never use asynchronous
+   `isActive=true` for this cutover.
+2. Before changing production, arrange a player-blocking maintenance window with Jest. Hiding the game is only a
+   secondary discovery control: Jest documents that Hidden removes a game from Explore and Library, while an Active
+   version is still served. Use a Jest-operator-confirmed launch block or a separately audited, already-previewed
+   maintenance-only version. If neither is available, stop; the protocol cutover is blocked.
+3. Enter maintenance, optionally hide the listing as defense in depth, and verify both the public route and a sandbox
+   login cannot begin gameplay or checkout. Allow in-flight requests to quiesce. Version activation cannot terminate
+   already-open legacy tabs, so keep the hardened backend fail-closed and require those tabs to reload. The deletion
+   generation and Web Lock coordinate only current-build tabs on the same origin; older or cross-origin contexts cannot
+   join that drain protocol and are an explicit reason this cutover cannot be rolling.
+4. While maintenance remains active, deploy the tested Firestore rules/indexes and the complete Functions revision.
+   Verify every new/changed callable is present, its Cloud Run invoker binding is correct, logs contain no rollout
+   errors, and the deployed runtime is Node 22. Do not expose an answer again to make an old client work.
+   Confirm the committed Firestore TTL policies are enabled: each private single-player session and its content binding
+   share one fixed expiry 30 days after session issue (mutations never slide it), while terminal-recovery bindings have a
+   fixed 30-day expiry from terminal commit and cannot extend the session. Expired sessions are rejected logically at
+   every server boundary even if asynchronous deletion lags. Loss-only completion receipts expire after 45 days so they
+   outlive every valid session replay; canonical win receipts deliberately have no `expiresAt` and remain permanent
+   progression/reward guards.
+5. Complete the username-reservation migration below until the final empty page reports `complete: true`. Then preview
+   the exact inactive gameplay Draft against the new backend with sandbox users. At minimum verify identity, a normal
+   guess/win, paid-continue reload recovery, Daily terminal-loss replay resistance, locale-switch Daily recovery,
+   purchase recovery, and account reload.
+6. Manually activate that exact verified Draft by version ID. Confirm the active version matches the pending upload
+   receipt, rerun the deployed sandbox smoke, and only then remove the maintenance control and unhide the listing.
+7. Monitor Functions errors, purchase/referral reconciliation, and gameplay completion after reopening. Retain the
+   maintenance timestamps, backend revision, version ID, ZIP checksum, sandbox evidence, and operator identity.
+
+If any check fails after backend cutover begins, keep the game in maintenance and fix forward. Do not reactivate the
+legacy artifact against the hardened backend, roll back only one side of the protocol, or restore the answer-bearing
+backend behavior. Those are not safe rollback paths.
 
 The latest verified active build is:
 
@@ -250,24 +362,39 @@ The latest verified active build is:
 
 Owner access to `https://jest.com/developers` is required:
 
-1. Select Manual loading mode.
-2. Create the six consumable SKUs listed in `JEST_PRODUCT_SKUS` in `firebase-functions/.env.example`.
-3. Create a monthly subscription with the exact SKU `com.roobsworld.riddlequest.premium.monthly`, matching `JEST_SUBSCRIPTION_SKUS`. The deployed acceptance test deliberately fails if this subscription is absent from Jest's live catalog.
-4. Upload the showcase assets and select:
-   - logo: `assets/images/icon.png`
-   - hero: `docs/jest-assets/riddle-quest-hero.png`
-5. If a dedicated notification image is approved, set its reference as `VITE_JEST_NOTIFICATION_ASSET_REFERENCE`. Without one, Jest uses the configured Hero image.
-6. Create at least two sandbox players.
-7. Configure and publish the `friend-challenge` and `race-to-10` onboarding slugs used by referral shares.
-8. Activate the audited Draft build and run the acceptance matrix below.
+1. Treat [the desired Developer Console manifest](jest-developer-console.json) as the source of truth for the game ID,
+   public listing, loading mode, exact asset bytes, catalog SKUs, and onboarding slugs. Validate all known values and assets:
+
+   ```bash
+   pnpm --filter @qwordly/portal check:jest-console
+   ```
+
+2. The owner-approved publisher is `Jest`, and the approved Console privacy-policy URL is
+   `https://roobsworld.com/privacy`. Keep both values exact; the privacy URL is Console metadata and must not be added to
+   the in-game About page because Jest requires external links to be removed. The stricter check binds both decisions:
+
+   ```bash
+   pnpm --filter @qwordly/portal check:jest-console:release
+   ```
+
+3. Copy the manifest's exact listing values into the Console, select its logo and hero from the Asset Library, select Manual
+   loading mode, and confirm the game is Approved and Public. The validator is read-only and never changes Console state.
+4. Create the six consumable SKUs and keep the monthly subscription SKU in the manifest configured for sandbox use only.
+   The deployed acceptance test deliberately fails if the SDK catalog is absent, and also fails if the active production
+   shop exposes the subscription offer.
+5. If a dedicated notification image is approved, set its reference as `VITE_JEST_NOTIFICATION_ASSET_REFERENCE`. Without
+   one, Jest uses the configured Hero image.
+6. Create at least two sandbox players and configure and publish both onboarding slugs from the manifest.
+7. Activate the audited Draft build and run the acceptance matrix below.
 
 ## Sandbox acceptance matrix
 
 - Identity: guest and registered startup; dismissal and cancellation; stable player ID; invalid and stale token rejection.
 - Loading: every manual phase advances; no 15-second timeout; retry works; overlay closes only when input is enabled.
 - Analytics: the first authoritative win marks the first milestone once; registration and attribution events contain no personal data.
-- Notifications: D1/D3/D7 replacement and removal; registered-only behavior; Daily Cosmic Riddle payload return.
+- Notifications: D1-D7 engagement and Race-to-10 reminder replacement/removal; registered-only behavior; Daily Cosmic Riddle and race-inbox payload return.
 - Payments: success, cancellation, internal error, invalid SKU/token, timeout, interruption before completion, and multi-page recovery.
+- Subscriptions: the SDK catalog remains available to the direct sandbox lifecycle gate, while the active production shop contains no subscription card and makes no entitlement-sync request.
 - Referrals: canceled victory, profile, and Race-to-10 shares; result links remain in the normal game; race links open the exact challenge; first-entry attribution; both players receive 100 coins; duplicate, cross-campaign duplicate, self, tampered, and unrelated-reference rejection.
 - Layout/input: keyboard, pointer, and touch in portrait and landscape; background/foreground; audio unlock; offline restart.
 - Stability: lower-end iOS Safari and Android Chrome cold/warm launch plus a 10-minute foreground/background soak.
@@ -277,9 +404,13 @@ Retain screenshots, recordings, event IDs, and device traces with the relevant r
 ## Jest Games Fund readiness
 
 - **User acquisition:** guests see the custom registration step immediately after the instructions and again after an authoritative win when the cooldown permits. Jest onboarding `customName`, campaign, source, and reference values are preserved through the native registration overlay.
-- **Notifications:** registered players receive fuzzy D1, D3, and D7 schedules early in the session. Stable identifiers replace the existing schedule whenever level, wins, streak, name, or locale changes. Each localized message has distinct reward-focused copy and carries template, offset, campaign, and callback attribution back into the Daily Cosmic Riddle.
-- **Virality:** victory, profile, and Race-to-10 surfaces create outside-network Jest referral shares with localized benefit-led copy and branded spoiler-free images. Result invites enter normal play, race invites open the exact race, and contextual registration names the inviter. Both supported referral references grant 100 coins to each player from signed conversion data, with one idempotency key per inviter/invitee pair across campaigns. A visible reward fanfare closes the loop when the inviter returns.
-- **Monetization:** consumables and the monthly subscription use the Jest payment APIs. Signed receipts and subscription state are verified server-side; SKU grants are idempotent; canceled or failed transactions do not mutate balances; and incomplete purchases are recovered page-by-page before normal play.
+- **Notifications:** registered players receive a fuzzy D1-D7 series early in the session. Stable identifiers replace the existing schedule whenever level, wins, streak, name, or locale changes. Each localized message has distinct reward-focused copy and carries template, offset, campaign, and callback attribution back into the Daily Cosmic Riddle.
+- **Virality:** victory, profile, and Race-to-10 surfaces create outside-network Jest referral shares with localized benefit-led copy and branded spoiler-free images. Jest upserts a player's link when `shareReferralLink` receives the same `reference`, so the generic profile invite keeps one stable campaign reference while every personalized victory or race share receives a bounded opaque reference; a later share cannot mutate an older riddle or challenge link. Result invites enter normal play, race invites open the exact race, and contextual registration names the inviter. Strict backend reference families remain reward-eligible and grant 100 coins to each player from signed conversion data, with one idempotency key per inviter/invitee pair across campaigns. Reconciliation overwrites one non-identifying latest-verification checkpoint per Jest player rather than retaining every fresh signed snapshot; the pair reward receipts remain permanent replay-prevention tombstones. A visible reward fanfare closes the loop when the inviter returns.
+- **Monetization:** production exposes only consumable Jest products. Signed receipts are verified server-side; SKU grants are idempotent; canceled or failed transactions do not mutate balances; and incomplete purchases are recovered page-by-page before normal play. The monthly beta subscription remains sandbox-only until Jest approves production use and the activation, restoration, cancellation, and entitlement-benefit gates pass.
+
+Account deletion is authoritative for Riddle Quest data, deletes the player's latest referral-verification checkpoint, and anonymizes referral and purchase anti-replay receipts. Before calling the server, the client verifies an authoritative-pending marker and rotates a same-origin deletion generation. Current-build tabs dynamically reject later SDK/server/browser-state work, while a shared Web Lock drains in-flight work before deletion runs exclusively. An ambiguous response remains authoritative-pending; reload obtains a fresh signed Jest assertion and calls the dedicated idempotent deletion-retry endpoint without minting Firebase identity. A tombstone discovered on another device is treated as deletion intent, not proof that the sweep finished: the client first performs the same signed idempotent retry, then runs local notification, SDK, and browser cleanup before the terminal view. Confirmed deletion advances to client-cleanup-pending, unschedules every current and legacy app-owned engagement or race identifier, clears every app-owned Jest SDK/browser key, and stops startup so it cannot recreate the account. All notification removals are attempted even if one fails, and no marker, notification, SDK, browser, or retry failure may display false success. The Jest HTML5 SDK does not expose deletion of the platform-owned Jest player identity or profile, so players must use Jest's own account controls for that separate platform record.
+
+Every authenticated non-deletion callable holds a Firestore `activeOperations` lease until its handler settles. Deletion writes the permanent guard first and refuses to sweep while any lease remains. The lease `expiresAt` is diagnostic only: an HTTP/callable timeout does not prove the underlying Cloud Run execution stopped, so runtime code never auto-deletes a past-deadline or malformed lease. If an orphan lease blocks deletion, keep the account tombstoned and the deletion retry pending. Remove that lease only through an audited operator reconciliation after proving the originating execution and old deployed revision cannot write; then retry the idempotent deletion endpoint and retain the incident evidence.
 
 Automated coverage proves the integration contract and failure handling. Before a Fund submission, repeat the Notifications, Payments, and Referrals rows above with real Jest sandbox players and retain the Developer Console evidence; local mocks cannot prove catalog configuration, delivery by the messaging network, or live payment settlement.
 

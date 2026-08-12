@@ -1,6 +1,7 @@
 import type {ChangeEvent} from "react";
 import type {GameModal} from "../../gameSession";
-import {LANGUAGE_OPTIONS, setLocale, tr, type Locale} from "../../i18n";
+import {LANGUAGE_OPTIONS, tr, type Locale} from "../../i18n";
+import {setPlayerLocale} from "../../playerPreferences";
 
 /** Props required by the settings modal page. */
 export type SettingsModalPageProps = {
@@ -24,8 +25,7 @@ export function SettingsModalPage({
   /** Persists and immediately activates the selected locale. */
   const changeLocale = (event: ChangeEvent<HTMLSelectElement>) => {
     const nextLocale = event.target.value as Locale;
-    localStorage.setItem("appLanguage", nextLocale);
-    setLocale(nextLocale);
+    setPlayerLocale(nextLocale);
   };
 
   return (

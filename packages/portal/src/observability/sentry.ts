@@ -1,5 +1,9 @@
 import * as Sentry from "@sentry/browser";
-import {redactBrowserTelemetry, resolveSecureBrowserSentryDsn} from "./sentryPrivacy";
+import {
+  redactBrowserSentryEvent,
+  redactBrowserTelemetry,
+  resolveSecureBrowserSentryDsn,
+} from "./sentryPrivacy";
 
 /** Describes the build-time settings used to initialize browser telemetry. */
 type BrowserSentryConfiguration = {
@@ -16,13 +20,21 @@ type BrowserSentryConfiguration = {
 /** Tracks whether the browser SDK has been initialized by this application. */
 let initialized = false;
 
+/** Sentry defaults that collect product/session context beyond an error itself. */
+const nonEssentialBrowserIntegrations = new Set([
+  "Breadcrumbs",
+  "BrowserSession",
+  "ConversationId",
+  "CultureContext",
+  "HttpContext",
+]);
+
 /**
  * Initializes privacy-safe browser error reporting once for production builds.
  *
- * Sentry's default browser integrations collect uncaught exceptions and
- * unhandled promise rejections. The console integration additionally routes
- * caught application failures that are deliberately logged as warnings or
- * errors while preserving their normal console output.
+ * Sentry's error integrations collect uncaught exceptions and unhandled
+ * promise rejections. Product/session context and console-capture integrations
+ * are deliberately excluded so this remains essential errors-only telemetry.
  *
  * @param configuration Build-time Sentry settings.
  * @returns Whether Sentry is configured and available for event capture.
@@ -39,12 +51,10 @@ export function initializeBrowserSentry(configuration: BrowserSentryConfiguratio
     release: configuration.release?.trim() || undefined,
     sampleRate: 1,
     sendDefaultPii: false,
-    integrations: (defaults) => [
-      ...defaults,
-      Sentry.captureConsoleIntegration({levels: ["warn", "error"]}),
-    ],
-    beforeSend: (event) => redactBrowserTelemetry(event) as typeof event,
-    beforeSendTransaction: (event) => redactBrowserTelemetry(event) as typeof event,
+    tracesSampleRate: 0,
+    integrations: (defaults) => defaults.filter(({name}) => !nonEssentialBrowserIntegrations.has(name)),
+    beforeSend: (event) => redactBrowserSentryEvent(event),
+    beforeSendTransaction: (event) => redactBrowserSentryEvent(event),
   });
   Sentry.setTag("runtime", "jest-html5");
   initialized = true;

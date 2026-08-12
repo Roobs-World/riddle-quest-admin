@@ -1,4 +1,5 @@
 import {useLayoutEffect, useRef, useState, type CSSProperties} from "react";
+import {isPlayerReducedMotionEnabled} from "../../playerPreferences";
 import {createPortal} from "react-dom";
 import coinUrl from "../../../../../../assets/images/coin.svg";
 import treasureChestClosedUrl from "../../../../../../assets/images-web/chest-closed.png";
@@ -85,7 +86,7 @@ export function CoinAwardSequence({
       return;
     }
 
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reducedMotion = isPlayerReducedMotionEnabled();
     const particleCount = Math.min(12, Math.max(1, safeAmount));
     const baseValue = Math.floor(safeAmount / particleCount);
     const remainder = safeAmount % particleCount;

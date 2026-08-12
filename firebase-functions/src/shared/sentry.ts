@@ -27,6 +27,18 @@ export function resolveSecureSentryDsn(value: string | undefined): string | unde
   return parsed.toString();
 }
 
+/**
+ * Resolves the immutable runtime release attached to backend telemetry.
+ *
+ * @param environment Function runtime environment variables.
+ * @returns The Cloud Run revision when available, otherwise the configured release.
+ */
+export function resolveSentryRelease(
+  environment: Readonly<Record<string, string | undefined>>,
+): string | undefined {
+  return environment.K_REVISION?.trim() || environment.SENTRY_RELEASE?.trim() || undefined;
+}
+
 /** Provides dsn behavior. */
 const dsn = resolveSecureSentryDsn(process.env.SENTRY_DSN);
 /** Describes span attributes. */
@@ -40,6 +52,18 @@ const bearerPattern = /Bearer\s+[A-Za-z0-9._~+/=-]+/gi;
 const compactTokenPattern = /\b[A-Za-z0-9_-]{16,}\.[A-Za-z0-9_-]{16,}\.[A-Za-z0-9_-]{16,}\b/g;
 /** Provides data image pattern behavior. */
 const dataImagePattern = /data:image\/[a-z0-9.+-]+;base64,[A-Za-z0-9+/=]+/gi;
+
+/** Removes query strings and fragments from URLs embedded in diagnostics. */
+const redactUrlDetails = (value: string): string => value.replace(/https?:\/\/[^\s"'<>]+/gi, (match) => {
+  try {
+    const parsed = new URL(match);
+    parsed.search = "";
+    parsed.hash = "";
+    return parsed.toString();
+  } catch {
+    return "[REDACTED_URL]";
+  }
+});
 
 /**
  * Removes credentials, player identifiers, guesses, and answer material from
@@ -56,11 +80,12 @@ export function redactSensitiveTelemetry(
   seen: WeakSet<object> = new WeakSet<object>(),
 ): unknown {
   if (typeof value === "string") {
-    return value
+    return redactUrlDetails(value
       .replace(bearerPattern, "Bearer [REDACTED]")
       .replace(compactTokenPattern, "[REDACTED_TOKEN]")
-      .replace(dataImagePattern, "[REDACTED_IMAGE]");
+      .replace(dataImagePattern, "[REDACTED_IMAGE]"));
   }
+  if (value instanceof URL) return redactUrlDetails(value.toString());
   if (value === null || typeof value !== "object" || depth >= 8) return value;
   if (seen.has(value)) return "[CIRCULAR]";
   seen.add(value);
@@ -75,16 +100,56 @@ export function redactSensitiveTelemetry(
   );
 }
 
+/**
+ * Removes Sentry's free-form exception and log messages while preserving
+ * stack frames and privacy-safe structured context.
+ */
+export function redactSentryEvent<T>(event: T): T {
+  const redacted = redactSensitiveTelemetry(event) as Record<string, unknown>;
+  if (!redacted || typeof redacted !== "object") return redacted as T;
+
+  // SDK integrations can attach these fields without going through the
+  // application's explicit, already-redacted diagnostic context. Error-only
+  // reporting does not need them, and request/user context can identify a
+  // player even when sendDefaultPii is disabled.
+  delete redacted.user;
+  delete redacted.request;
+  delete redacted.contexts;
+  delete redacted.breadcrumbs;
+
+  if (typeof redacted.message === "string") redacted.message = "[REDACTED_MESSAGE]";
+  const logentry = redacted.logentry;
+  if (logentry && typeof logentry === "object") {
+    const safeLogentry = logentry as Record<string, unknown>;
+    if (typeof safeLogentry.message === "string") safeLogentry.message = "[REDACTED_MESSAGE]";
+    if (typeof safeLogentry.formatted === "string") safeLogentry.formatted = "[REDACTED_MESSAGE]";
+  }
+  const exception = redacted.exception;
+  if (exception && typeof exception === "object") {
+    const values = (exception as {values?: unknown}).values;
+    if (Array.isArray(values)) {
+      for (const value of values) {
+        if (value && typeof value === "object" && typeof (value as {value?: unknown}).value === "string") {
+          (value as {value: string}).value = "[REDACTED_MESSAGE]";
+        }
+      }
+    }
+  }
+  return redacted as T;
+}
+
 if (dsn) {
   Sentry.init({
     dsn,
     environment: process.env.SENTRY_ENVIRONMENT?.trim() || process.env.GCLOUD_PROJECT || "production",
-    release: process.env.SENTRY_RELEASE?.trim() || process.env.K_REVISION,
+    release: resolveSentryRelease(process.env),
     sampleRate: 1,
     sendDefaultPii: false,
-    tracesSampleRate: 0.05,
-    beforeSend: (event) => redactSensitiveTelemetry(event) as typeof event,
-    beforeSendTransaction: (event) => redactSensitiveTelemetry(event) as typeof event,
+    // Keep operational reporting errors-only; performance traces are
+    // nonessential and require a separate, owner-approved telemetry decision.
+    tracesSampleRate: 0,
+    beforeSend: (event) => redactSentryEvent(event),
+    beforeSendTransaction: (event) => redactSentryEvent(event),
   });
   Sentry.setTag("runtime", "firebase-functions");
 }

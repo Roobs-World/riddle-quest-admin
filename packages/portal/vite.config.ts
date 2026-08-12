@@ -4,8 +4,11 @@ import babel from "@rolldown/plugin-babel";
 import {sentryVitePlugin} from "@sentry/vite-plugin";
 import {fileURLToPath, URL} from "node:url";
 
+const portalEnvironmentDirectory = fileURLToPath(new URL("../../config/vite/portal/", import.meta.url));
+
 export default defineConfig(({command}) => {
   const uploadSentrySourceMaps = process.env.SENTRY_UPLOAD_SOURCEMAPS === "1";
+  const jestBuildOutDir = process.env.JEST_BUILD_OUT_DIR?.trim() || "dist-jest";
   const sentryBuildEnvironment = {
     authToken: process.env.SENTRY_AUTH_TOKEN,
     org: process.env.SENTRY_ORG,
@@ -29,8 +32,8 @@ export default defineConfig(({command}) => {
       project: sentryBuildEnvironment.project,
       telemetry: false,
       sourcemaps: {
-        assets: "./dist-jest/**",
-        filesToDeleteAfterUpload: "./dist-jest/**/*.map",
+        assets: `${jestBuildOutDir}/**`,
+        filesToDeleteAfterUpload: `${jestBuildOutDir}/**/*.map`,
       },
       release: {
         name: sentryBuildEnvironment.release,
@@ -53,6 +56,7 @@ export default defineConfig(({command}) => {
   return {
     base: process.env.JEST_BUILD === "1" ? "./" : "/riddle-quest/",
     devtools: command === "serve",
+    envDir: portalEnvironmentDirectory,
     envPrefix: "VITE_",
     plugins,
     server: {

@@ -1,5 +1,6 @@
 import {useCallback, useEffect, useRef} from "react";
 import type {GameSessionState} from "../../gameSession";
+import {setPlayerMuted} from "../../playerPreferences";
 
 /** Describes game feedback kind. */
 export type GameFeedbackKind = "key" | "delete" | "submit" | "wrong" | "win" | "loss";
@@ -72,7 +73,7 @@ export function useGameAudio(state: GameSessionState) {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("riddleQuest:soundEnabled", state.muted ? "false" : "true");
+    setPlayerMuted(state.muted);
     const music = musicRef.current;
     if (!music) return;
     if (state.muted || state.paused || document.hidden) {

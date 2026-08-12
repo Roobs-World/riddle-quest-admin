@@ -9,7 +9,7 @@
   background: #091319cc;
   overflow: auto;
 }
-.game-app:has(> .race-screen) > .game-modal-backdrop:has(.modal-reward) {
+.game-app > .game-overlay-surfaces:has(> .race-screen) > .game-modal-backdrop:has(.modal-reward) {
   z-index: 130;
 }
 .game-modal {

@@ -1,57 +1,57 @@
 import {type ScheduledEvent} from "firebase-functions/v2/scheduler";
-import {
-  initializeLocalizedRiddleDatabaseIfEmpty,
-} from "../riddles/riddleGeneration";
-import {generateLocalizedTodaysDailyChallenge as generateTodaysDailyRiddle} from "./dailyRiddleGeneration";
+import {generateLocalizedDailyChallengeForDate} from "./dailyRiddleGeneration";
 import * as functions from "firebase-functions";
 import {captureException} from "../shared/sentry";
 import {onScheduleWithSentry} from "../shared/sentryHandlers";
+import {getSafeErrorMetadata} from "../shared/errorMetadata";
 
 // Export the handler function for testing first
 /** Provides scheduled task handler behavior. */
 export const scheduledTaskHandler = async (context: ScheduledEvent) => {
   void context;
-  functions.logger.info("Daily scheduler started (target: localizedRiddles/{locale}/riddles/current).");
+  functions.logger.info("Daily scheduler started (target: immutable localized documents).");
   const currentDate = new Date();
-  const todayDateString = currentDate.toISOString().split("T")[0]; // YYYY-MM-DD format
+  const targetDate = new Date(currentDate);
+  if (currentDate.getUTCHours() >= 21) targetDate.setUTCDate(targetDate.getUTCDate() + 1);
+  const targetDateString = targetDate.toISOString().slice(0, 10);
 
   try {
     functions.logger.info(
-      `Starting localized daily riddle generation for ${todayDateString} into localizedRiddles/{locale}/riddles/current...`,
+      `Starting immutable localized daily riddle generation for ${targetDateString}.`,
     );
 
-    // Keep the localized classic catalog recoverable after an intentional
-    // reset or an empty-database deployment.
-    await initializeLocalizedRiddleDatabaseIfEmpty(20);
+    // Generate or validate the selected day's localized riddle set. Repeated
+    // schedules safely retry only missing or invalid immutable documents.
+    await generateLocalizedDailyChallengeForDate(targetDateString, false);
 
-    // Generate (or validate) today's single localized daily riddle for each supported locale.
-    await generateTodaysDailyRiddle(false); // forceGenerate = false
-
-    functions.logger.info("Daily scheduler finished successfully (localized daily riddles updated).");
+    functions.logger.info("Daily scheduler finished successfully (localized daily set ready).", {
+      challengeDate: targetDateString,
+    });
   } catch (error) {
-    functions.logger.error("Daily scheduler failed while updating localized daily riddles:", error);
+    functions.logger.error("Daily scheduler failed while preparing immutable daily riddles.", {
+      challengeDate: targetDateString,
+      ...getSafeErrorMetadata(error),
+    });
     captureException(error, {
       functionName: "dailyChallengeScheduler",
       phase: "scheduled_generation",
-      challengeDate: todayDateString,
+      challengeDate: targetDateString,
     });
     throw error; // Re-throw to ensure proper error reporting
   }
 };
 
 /**
- * Scheduled function to update the current daily riddle.
- * Runs once per day at 00:00 UTC.
- * Creates exactly 1 daily riddle per day based on the current date.
- * Uses OpenAI to generate fresh riddles for each day.
- * Source of truth target: localizedRiddles/{locale}/riddles/current.
+ * Scheduled function to prepare immutable daily riddles. It pre-generates the
+ * next day before rollover, then retries today's missing locale slots during
+ * the first UTC hours. Existing playable dated documents are never overwritten.
  */
 export const dailyChallengeScheduler = onScheduleWithSentry(
   "dailyChallengeScheduler",
   {
-    schedule: "0 0 * * *", // Runs once daily at 00:00 UTC
+    schedule: "0 0-2,21-23 * * *",
     timeZone: "UTC",
-    timeoutSeconds: 1800,
+    timeoutSeconds: 900,
     memory: "512MiB",
     secrets: ["OPENAI_API_KEY"],
   },

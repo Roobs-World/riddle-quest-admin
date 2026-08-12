@@ -1,13 +1,7 @@
-import {
-  GameEngine,
-  computeLetterStates,
-  lowerCaseGraphemes,
-  splitGraphemes,
-  type Feedback,
-  type ScoredGuess,
-} from "@qwordly/core/game";
+import {computeLetterStates, lowerCaseGraphemes, splitGraphemes, type Feedback, type ScoredGuess} from "@qwordly/core/game";
 import type {BridgeProfile} from "@qwordly/core/bridge";
 import type {GameSessionAction, GameSessionState} from "./gameSessionTypes";
+import {safeBrowserStorageGet} from "./playerPreferences";
 
 export type {GameModal, GameSessionAction, GameSessionState} from "./gameSessionTypes";
 
@@ -28,36 +22,17 @@ export const createInitialGameSession = (): GameSessionState => ({
   activeSlotIndex: 0,
   hintRevealedIndices: [],
   guesses: [],
+  guessPending: false,
   engineSnapshot: null,
   modal: null,
-  muted:
-    typeof localStorage !== "undefined"
-      ? localStorage.getItem("riddleQuest:soundEnabled") === "false"
-      : false,
+  muted: safeBrowserStorageGet("local", "riddleQuest:soundEnabled") === "false",
   notice: null,
   lastRewards: null,
   auxiliaryFanfare: null,
   lastOutcome: null,
+  completionAcknowledged: false,
   letterStates: {},
 });
-
-/** Creates engine. */
-const createEngine = (state: GameSessionState): GameEngine | null => {
-  if (!state.riddle || !state.engineSnapshot) {
-    return null;
-  }
-
-  const engine = new GameEngine(
-    {
-      answer: state.riddle.answer,
-      initialAttempts: 5,
-      continueAttempts: 1,
-    },
-    state.riddle.answer,
-  );
-  engine.restore(state.engineSnapshot);
-  return engine;
-};
 
 /** Normalizes input letter. */
 const normalizeInputLetter = (letter: string): string | null => {
@@ -132,8 +107,12 @@ export const gameSessionReducer = (
     case "authState":
       return {...state, user: action.user, profile: action.profile};
     case "loadRiddle": {
-      const engine = new GameEngine({answer: action.riddle.answer, initialAttempts: 5, continueAttempts: 1});
-      const snapshot = engine.getSnapshot();
+      const snapshot = {
+        guesses: [],
+        attemptsUsed: action.riddle.attemptsUsed,
+        hasUsedContinue: action.riddle.hasUsedContinue,
+        gameOver: false,
+      };
       return {
         ...state,
         riddle: action.riddle,
@@ -143,17 +122,19 @@ export const gameSessionReducer = (
         activeSlotIndex: 0,
         hintRevealedIndices: [],
         guesses: snapshot.guesses,
+        guessPending: false,
         engineSnapshot: snapshot,
-        modal: null,
+        modal: action.riddle.awaitingContinue ? "continue" : null,
         notice: null,
         lastOutcome: null,
+        completionAcknowledged: false,
         lastRewards: null,
         auxiliaryFanfare: null,
         letterStates: {},
       };
     }
     case "typeLetter": {
-      if (!state.riddle || state.modal) {
+      if (!state.riddle || state.modal || state.guessPending) {
         return state;
       }
       const letter = normalizeInputLetter(action.letter);
@@ -174,6 +155,7 @@ export const gameSessionReducer = (
       };
     }
     case "backspace": {
+      if (state.guessPending) return state;
       const target =
         !state.hintRevealedIndices.includes(state.activeSlotIndex) && state.currentLetters[state.activeSlotIndex]
           ? state.activeSlotIndex
@@ -187,6 +169,7 @@ export const gameSessionReducer = (
     }
     case "selectSlot":
       if (
+        state.guessPending ||
         !state.riddle ||
         action.index < 0 ||
         action.index >= state.riddle.answerLength ||
@@ -195,51 +178,48 @@ export const gameSessionReducer = (
         return state;
       }
       return {...state, activeSlotIndex: action.index};
-    case "submitGuess": {
-      if (!state.riddle) {
-        return state;
+    case "guessRequested":
+      if (!state.riddle || state.guessPending || state.currentLetters.some((letter) => !letter)) return state;
+      return {...state, guessPending: true, notice: null};
+    case "guessFailed":
+      return {...state, guessPending: false};
+    case "guessResolved": {
+      if (!state.riddle) return state;
+      if (action.attempts <= (state.engineSnapshot?.attemptsUsed ?? 0)) {
+        return {...state, guessPending: false, notice: null};
       }
-      if (state.currentLetters.some((letter) => !letter)) {
-        return state;
-      }
-
-      const engine = createEngine(state);
-      const outcome = engine?.submitGuess(state.currentLetters);
-      if (!engine || !outcome) {
-        return state;
-      }
-
-      const snapshot = engine.getSnapshot();
-      const guesses = snapshot.guesses;
-      const isTerminal = outcome.kind === "win" || outcome.kind === "loss";
-      const modal =
-        outcome.kind === "win"
-          ? "victory"
-          : outcome.kind === "attemptLimitReached"
-            ? "continue"
-            : outcome.kind === "loss"
-              ? null
-              : state.modal;
+      const guesses = [...state.guesses, action.feedback];
+      const isTerminal = action.gameOver;
+      const modal = action.isCorrect ? "victory" : action.canContinue ? "continue" : state.modal;
       const nextLetters = resetAttemptLetters(state);
+      const snapshot = {
+        guesses,
+        attemptsUsed: action.attempts,
+        hasUsedContinue: state.engineSnapshot?.hasUsedContinue ?? false,
+        gameOver: isTerminal,
+      };
 
       return {
         ...state,
         currentLetters: nextLetters,
         activeSlotIndex: firstEditableSlot(nextLetters, state.hintRevealedIndices),
         guesses,
+        guessPending: false,
         engineSnapshot: snapshot,
         modal,
         notice: null,
         lastOutcome: isTerminal
           ? {
-              id: `${state.riddle.riddleId}-${outcome.kind}-${outcome.attempts}`,
-              kind: outcome.kind,
+              id: `${state.riddle.sessionToken}-${action.isCorrect ? "win" : "loss"}-${action.attempts}`,
+              kind: action.isCorrect ? "win" : "loss",
               riddleId: state.riddle.riddleId,
               gameMode: state.riddle.gameMode,
-              attempts: outcome.attempts,
-              isCorrect: outcome.kind === "win",
+              sessionToken: state.riddle.sessionToken,
+              attempts: action.attempts,
+              isCorrect: action.isCorrect,
             }
           : state.lastOutcome,
+        completionAcknowledged: isTerminal ? false : state.completionAcknowledged,
         letterStates: computeStates(guesses),
       };
     }
@@ -286,32 +266,59 @@ export const gameSessionReducer = (
       return {...state, profile: action.profile};
     case "completionReward":
       return {...state, lastRewards: action.reward};
+    case "completionAcknowledged":
+      return {...state, completionAcknowledged: true};
     case "showAuxiliaryFanfare":
       return {...state, auxiliaryFanfare: action.fanfare, modal: "reward"};
     case "restoreSession":
       if (!state.riddle || action.currentLetters.length !== state.riddle.answerLength) {
         return state;
       }
-      return {
-        ...state,
-        currentLetters: action.currentLetters,
-        activeSlotIndex: action.activeSlotIndex,
-        hintRevealedIndices: action.hintRevealedIndices,
-        guesses: action.guesses,
-        engineSnapshot: action.engineSnapshot,
-        letterStates: action.letterStates,
-      };
-    case "continueGranted": {
-      const engine = createEngine(state);
-      if (!engine) {
-        return state;
+      {
+        const guesses = action.guesses.slice(0, state.riddle.attemptsUsed);
+        const pendingOutcome = action.pendingOutcome?.kind === "loss" &&
+          !action.pendingOutcome.isCorrect &&
+          action.pendingOutcome.attempts === state.riddle.attemptsUsed &&
+          state.riddle.awaitingContinue &&
+          !state.riddle.hasUsedContinue
+          ? action.pendingOutcome
+          : null;
+        const awaitingContinue = state.riddle.awaitingContinue && !pendingOutcome;
+        const currentLetters = awaitingContinue
+          ? Array.from({length: state.riddle.answerLength}, () => "")
+          : action.currentLetters;
+        return {
+          ...state,
+          currentLetters,
+          activeSlotIndex: awaitingContinue ? 0 : action.activeSlotIndex,
+          hintRevealedIndices: action.hintRevealedIndices,
+          guesses,
+          guessPending: false,
+          engineSnapshot: {
+            guesses,
+            attemptsUsed: state.riddle.attemptsUsed,
+            hasUsedContinue: state.riddle.hasUsedContinue,
+            gameOver: Boolean(pendingOutcome),
+          },
+          modal: pendingOutcome ? null : awaitingContinue ? "continue" : state.modal,
+          lastOutcome: pendingOutcome,
+          completionAcknowledged: false,
+          letterStates: computeStates(guesses),
+        };
       }
-      engine.continueAfterLimit();
-      const snapshot = engine.getSnapshot();
+    case "continueGranted": {
+      if (!state.engineSnapshot) return state;
+      const snapshot = {
+        ...state.engineSnapshot,
+        guesses: [],
+        hasUsedContinue: true,
+        gameOver: false,
+      };
       const nextLetters = resetAttemptLetters(state);
       return {
         ...state,
         guesses: snapshot.guesses,
+        guessPending: false,
         engineSnapshot: snapshot,
         currentLetters: nextLetters,
         activeSlotIndex: firstEditableSlot(nextLetters, state.hintRevealedIndices),
@@ -327,14 +334,17 @@ export const gameSessionReducer = (
       return {
         ...state,
         modal: null,
+        engineSnapshot: {...state.engineSnapshot, gameOver: true},
         lastOutcome: {
-          id: `${state.riddle.riddleId}-loss-${state.engineSnapshot.attemptsUsed}`,
+          id: `${state.riddle.sessionToken}-loss-${state.engineSnapshot.attemptsUsed}`,
           kind: "loss",
           riddleId: state.riddle.riddleId,
           gameMode: state.riddle.gameMode,
+          sessionToken: state.riddle.sessionToken,
           attempts: state.engineSnapshot.attemptsUsed,
           isCorrect: false,
         },
+        completionAcknowledged: false,
       };
     case "openModal":
       if (action.modal === "skip" && state.gameMode === "challenge") {

@@ -205,6 +205,8 @@ const LOCALE_ALIASES: Record<string, Locale> = {
 
 /** Provides current locale behavior. */
 let currentLocale: Locale = "en";
+/** Identifies the newest locale request so stale asynchronous loads cannot commit. */
+let localeRequestVersion = 0;
 
 /** Indicates whether is plain object. */
 const isPlainObject = (value: unknown): value is Record<string, unknown> => {
@@ -325,17 +327,33 @@ export const getLanguageLabel = (language: Locale): string => {
 /** Gets locale. */
 const getLocale = (): Locale => currentLocale;
 
-/** Sets locale. */
-export const setLocale = (locale: Locale): void => {
+/** Commits a locale whose catalog is ready to render. */
+const commitLocale = (locale: Locale): void => {
   currentLocale = locale;
   if (typeof document !== "undefined") {
     document.documentElement.lang = locale;
     document.documentElement.dir = locale === "ar" ? "rtl" : "ltr";
   }
   emitLocaleChange();
+};
+
+/** Sets locale. */
+export const setLocale = (locale: Locale): void => {
+  const requestVersion = ++localeRequestVersion;
+  const previousLocale = currentLocale;
+  if (catalogCache.has(locale)) {
+    commitLocale(locale);
+    return;
+  }
+
   void loadLocaleCatalog(locale)
-    .then(() => emitLocaleChange())
+    .then(() => {
+      if (requestVersion !== localeRequestVersion) return;
+      commitLocale(locale);
+    })
     .catch((error) => {
+      if (requestVersion !== localeRequestVersion) return;
+      commitLocale(previousLocale);
       console.warn("[riddle-quest-web] Failed to load locale", locale, error);
     });
 };

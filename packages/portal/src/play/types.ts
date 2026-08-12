@@ -79,6 +79,10 @@ type HintResult = {
 
 /** Describes completion result. */
 export type CompletionResult = {
+  /** Stores server-counted attempts. */
+  attempts: number;
+  /** Stores canonical server-derived correctness. */
+  isCorrect: boolean;
   /** Stores coins earned. */
   coinsEarned: number;
   /** Stores newly unlocked achievement ids. */
@@ -104,6 +108,20 @@ type SpendCoinsResult = {
   newCoins: number;
 };
 
+/** Describes one server-authoritative single-player guess result. */
+export type SinglePlayerGuessResult = {
+  /** Per-letter canonical feedback. */
+  feedback: Array<{letter: string; status: "green" | "yellow" | "red"}>;
+  /** Server-counted attempts. */
+  attempts: number;
+  /** Canonical correctness. */
+  isCorrect: boolean;
+  /** Indicates a terminal outcome. */
+  gameOver: boolean;
+  /** Indicates that the paid extra attempt can be offered. */
+  canContinue?: boolean;
+};
+
 /** Describes skip result. */
 type SkipResult = {
   /** Stores success. */
@@ -120,21 +138,40 @@ type SkipResult = {
   } | null;
 };
 
-/** Describes purchase result. */
-export type PurchaseResult = {
-  /** Stores success. */
-  success: boolean;
-  /** Stores product id. */
-  productId: string;
-  /** Stores purchase type. */
-  purchaseType?: "consumable" | "subscription";
-  /** Stores coins awarded. */
-  coinsAwarded?: number;
-  /** Stores new coins. */
-  newCoins?: number;
-  /** Stores newly unlocked achievement ids. */
-  newlyUnlockedAchievementIds?: string[];
-};
+/** Describes a completed or player-cancelled checkout. */
+export type PurchaseResult =
+  | {
+      /** Indicates that the checkout completed. */
+      success: true;
+      /** Prevents a completed checkout from being mistaken for a cancellation. */
+      cancelled?: never;
+      /** Stores product id. */
+      productId: string;
+      /** Stores purchase type. */
+      purchaseType?: "consumable" | "subscription";
+      /** Stores coins awarded. */
+      coinsAwarded?: number;
+      /** Stores new coins. */
+      newCoins?: number;
+      /** Stores newly unlocked achievement ids. */
+      newlyUnlockedAchievementIds?: string[];
+    }
+  | {
+      /** Indicates that no purchase completed. */
+      success: false;
+      /** Identifies an expected player cancellation. */
+      cancelled: true;
+      /** Stores product id. */
+      productId: string;
+      /** Stores purchase type. */
+      purchaseType: "consumable" | "subscription";
+      /** Prevents cancelled checkouts from carrying a coin grant. */
+      coinsAwarded?: never;
+      /** Prevents cancelled checkouts from carrying a new balance. */
+      newCoins?: never;
+      /** Prevents cancelled checkouts from carrying achievements. */
+      newlyUnlockedAchievementIds?: never;
+    };
 
 /** Describes host services. */
 export type HostServices = {
@@ -143,26 +180,53 @@ export type HostServices = {
   /** Stores auth. */
   readonly auth: AuthAdapter;
   /** Loads riddle. */
-  loadRiddle(input: {gameMode: WebGameMode; locale: string; classicIndex?: number}): Promise<BridgeRiddle>;
+  loadRiddle(input: {
+    gameMode: WebGameMode;
+    locale: string;
+    classicIndex?: number;
+    sessionToken?: string;
+    riddleId?: string;
+  }): Promise<BridgeRiddle>;
   /** Loads profile. */
   loadProfile(userId: string): Promise<BridgeProfile | null>;
   /** Completes game. */
   completeGame(input: {
     riddleId: string;
     gameMode: WebGameMode;
-    attempts: number;
-    isCorrect: boolean;
+    sessionToken: string;
   }): Promise<CompletionResult>;
+  /** Submits one authoritative single-player guess. */
+  submitGuess(input: {
+    riddleId: string;
+    gameMode: WebGameMode;
+    sessionToken: string;
+    guess: string;
+    requestId: string;
+  }): Promise<SinglePlayerGuessResult>;
   /** Requests hint. */
-  requestHint(input: {riddleId: string; gameMode: WebGameMode; currentAttempt: string[]}): Promise<HintResult>;
+  requestHint(input: {
+    riddleId: string;
+    gameMode: WebGameMode;
+    sessionToken: string;
+    requestId: string;
+    currentAttempt: string[];
+  }): Promise<HintResult>;
   /** Provides spend coins behavior. */
   spendCoins(input: {
-    reason: "hint" | "skip" | "continue";
-    gameMode?: WebGameMode;
+    reason: "continue";
+    gameMode: WebGameMode;
+    riddleId: string;
+    sessionToken: string;
+    requestId: string;
     amount?: number;
   }): Promise<SpendCoinsResult>;
   /** Provides skip riddle behavior. */
-  skipRiddle(input: {riddleId: string; gameMode: WebGameMode}): Promise<SkipResult>;
+  skipRiddle(input: {
+    riddleId: string;
+    gameMode: WebGameMode;
+    sessionToken: string;
+    requestId: string;
+  }): Promise<SkipResult>;
   /** Requests purchase. */
   requestPurchase(productId: string): Promise<PurchaseResult>;
   /** Loads leaderboard. */

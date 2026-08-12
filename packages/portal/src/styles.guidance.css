@@ -365,6 +365,205 @@
   }
 }
 
+@media (max-width: 540px) and (max-height: 780px) {
+  .game-content {
+    padding-top: max(4px, env(safe-area-inset-top));
+  }
+  .game-header {
+    min-height: 52px;
+    grid-template-columns: 52px 1fr 76px;
+    gap: 4px;
+  }
+  .game-logo {
+    width: 48px;
+    height: 48px;
+  }
+  .game-mode-label {
+    font-size: 24px;
+  }
+  .coin-pill {
+    font-size: 22px;
+  }
+  .coin-pill img {
+    width: 40px;
+    height: 32px;
+  }
+  .riddle-surface {
+    gap: 2px;
+  }
+  .riddle-card {
+    min-height: 112px;
+    padding: 36px 18px 10px;
+    border-radius: 24px;
+  }
+  .riddle-sound-button {
+    top: 6px;
+    right: 6px;
+    width: 48px;
+    height: 48px;
+  }
+  .riddle-surface h1 {
+    font-size: 22px;
+  }
+  .guess-board {
+    max-width: min(230px, 94vw);
+    gap: 2px;
+    margin-top: 0;
+  }
+  .guess-row {
+    gap: 4px;
+  }
+  .cell {
+    font-size: 22px;
+  }
+  .keyboard {
+    gap: 2px;
+    padding-bottom: 0;
+  }
+  .keyboard > div {
+    gap: 4px;
+  }
+  .key {
+    height: 48px;
+  }
+  .game-input-actions button {
+    min-height: 48px;
+    font-size: 18px;
+  }
+  .game-bottom-navigation {
+    min-height: 52px;
+  }
+}
+
+@media (max-width: 360px) and (max-height: 600px) {
+  .game-content {
+    gap: 0;
+  }
+  .game-header {
+    min-height: 48px;
+  }
+  .riddle-surface {
+    gap: 0;
+  }
+  .riddle-card {
+    min-height: 105px;
+    padding: 32px 18px 6px;
+  }
+  .guess-board,
+  .keyboard {
+    gap: 1px;
+  }
+  .game-bottom-navigation {
+    min-height: 48px;
+  }
+}
+
+@media (orientation: landscape) and (max-height: 920px) {
+  .game-content {
+    grid-template-columns: minmax(0, 3fr) minmax(300px, 2fr);
+    grid-template-rows: 52px minmax(0, 1fr) 52px;
+    align-content: stretch;
+    gap: 4px 8px;
+    padding: max(4px, env(safe-area-inset-top)) max(8px, env(safe-area-inset-right))
+      env(safe-area-inset-bottom) max(8px, env(safe-area-inset-left));
+  }
+  .game-header {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    min-height: 52px;
+    grid-template-columns: 52px 1fr 76px;
+  }
+  .game-logo {
+    width: 48px;
+    height: 48px;
+  }
+  .game-mode-label {
+    font-size: 24px;
+  }
+  .coin-pill {
+    font-size: 22px;
+  }
+  .coin-pill img {
+    width: 40px;
+    height: 32px;
+  }
+  .riddle-surface {
+    grid-column: 1;
+    grid-row: 2;
+    width: 100%;
+    height: 100%;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    align-items: stretch;
+    gap: 8px;
+  }
+  .riddle-card {
+    min-height: 0;
+    height: 100%;
+    padding: 44px 18px 12px;
+    border-radius: 24px;
+  }
+  .riddle-sound-button {
+    top: 6px;
+    right: 6px;
+    width: 48px;
+    height: 48px;
+  }
+  .riddle-surface h1 {
+    font-size: 22px;
+  }
+  .guess-board {
+    width: min(100%, 220px);
+    align-self: center;
+    gap: 2px;
+    margin-top: 0;
+  }
+  .guess-row {
+    gap: 4px;
+  }
+  .cell {
+    font-size: 22px;
+  }
+  .keyboard {
+    grid-column: 2;
+    grid-row: 2;
+    align-self: center;
+    gap: 2px;
+    padding-bottom: 0;
+  }
+  .keyboard > div {
+    gap: 4px;
+  }
+  .key {
+    width: min(43px, 4vw);
+    height: 48px;
+    font-size: 20px;
+  }
+  .key.utility {
+    width: 54px;
+  }
+  .game-input-actions {
+    grid-column: 2;
+    grid-row: 3;
+    width: 100%;
+    gap: 6px;
+    padding: 0;
+  }
+  .game-input-actions button {
+    min-height: 48px;
+    padding-inline: 8px;
+    font-size: 18px;
+  }
+  .game-bottom-navigation {
+    grid-column: 1;
+    grid-row: 3;
+    width: 100%;
+    min-height: 52px;
+    margin-inline: 0;
+    padding: 0 max(48px, env(safe-area-inset-right)) env(safe-area-inset-bottom)
+      max(48px, env(safe-area-inset-left));
+  }
+}
+
 .sr-only {
   position: absolute;
   width: 1px;

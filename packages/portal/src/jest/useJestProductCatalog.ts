@@ -12,11 +12,14 @@ type TrackFunnel = (eventName: string, params?: Record<string, string | number |
 export function useJestProductCatalog({
   purchases,
   session,
+  subscriptionsEnabled = false,
   trackFunnel,
   withPlatformActivity,
 }: {
   purchases: JestPurchaseCoordinator;
   session: JestSession | null;
+  /** Enables the beta subscription offer only in trusted test runtimes. */
+  subscriptionsEnabled?: boolean;
   trackFunnel: TrackFunnel;
   withPlatformActivity: WithPlatformActivity;
 }) {
@@ -26,7 +29,7 @@ export function useJestProductCatalog({
     if (!session) return;
     void withPlatformActivity(async () => {
       const products = await purchases.getProducts(navigator.language);
-      const subscriptions = session.player.registered
+      const subscriptions = subscriptionsEnabled && session.player.registered
         ? await purchases.getSubscriptions(session.player.playerId, navigator.language)
         : ({status: "success", value: []} as const);
       return {products, subscriptions};
@@ -39,6 +42,14 @@ export function useJestProductCatalog({
         trackFunnel("subscriptions_load_failed", {status: subscriptions.status});
       }
     });
-  }, [purchases, session?.player.playerId, session?.player.registered, setProducts, trackFunnel, withPlatformActivity]);
+  }, [
+    purchases,
+    session?.player.playerId,
+    session?.player.registered,
+    setProducts,
+    subscriptionsEnabled,
+    trackFunnel,
+    withPlatformActivity,
+  ]);
   return catalog;
 }

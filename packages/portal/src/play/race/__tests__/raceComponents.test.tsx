@@ -79,7 +79,7 @@ describe("race presentation components", () => {
     expect(renderToString(
       <RaceScoreboard run={run} adjustedNow={12_500} ghostCorrect={0} feedback="correct" coins={50} onClose={noop} />,
     )).toContain("race-rail-status");
-    expect(renderToString(
+    const gameplayHtml = renderToString(
       <RaceGameplay
         viewportRef={{current: null}}
         gameplayRef={{current: null}}
@@ -101,7 +101,12 @@ describe("race presentation components", () => {
         onSubmit={noop}
         onSkip={noop}
       />,
-    )).toContain('class="keyboard"');
+    );
+    expect(gameplayHtml).toContain('class="keyboard"');
+    expect(gameplayHtml).toContain("+15 seconds");
+    expect(gameplayHtml).toContain("+45 seconds");
+    expect(gameplayHtml).not.toContain("+15s");
+    expect(gameplayHtml).not.toContain("+45s");
 
     /** Completed outcome fixture used by result variants. */
     const outcome: RaceOutcome = {

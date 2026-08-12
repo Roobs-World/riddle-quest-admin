@@ -70,6 +70,14 @@ export function ProfileIcon() {
 /** Describes game dispatch. */
 type GameDispatch = Dispatch<Parameters<typeof gameSessionReducer>[1]>;
 
+/** Returns the translated non-color meaning of one scored letter. */
+const feedbackLabel = (feedback: Feedback | undefined): string | undefined => {
+  if (feedback === "green") return tr("Instructions.COLOR_CORRECT");
+  if (feedback === "yellow") return tr("Instructions.COLOR_MISPLACED");
+  if (feedback === "red") return tr("Instructions.COLOR_WRONG");
+  return undefined;
+};
+
 /** Provides controlled guess board behavior. */
 export function ControlledGuessBoard({
   answerLength,
@@ -93,13 +101,18 @@ export function ControlledGuessBoard({
   return <div className="guess-board" style={{"--answer-length": answerLength,
     "--board-max-width": `${answerLength * 66 - 8}px`} as CSSProperties}>
     {rows.map((row, rowIndex) => <div className="guess-row" key={rowIndex}>
-      {Array.from({length: answerLength}, (_, cellIndex) => <button type="button"
-        disabled={disabled || rowIndex !== guesses.length || hintRevealedIndices.includes(cellIndex)}
-        aria-label={`${tr("Accessibility.LETTER_PREFIX")}${cellIndex + 1}${row.guess[cellIndex] ? `: ${row.guess[cellIndex]}` : ""}`}
-        aria-current={rowIndex === guesses.length && cellIndex === activeSlotIndex ? "true" : undefined}
-        onClick={() => onSelectSlot(cellIndex)}
-        className={["cell", row.feedback[cellIndex] ?? (rowIndex === guesses.length && hintRevealedIndices.includes(cellIndex) ? "green" : ""), rowIndex === guesses.length && cellIndex === activeSlotIndex ? "active" : ""].filter(Boolean).join(" ")}
-        key={cellIndex}>{row.guess[cellIndex] ?? ""}</button>)}
+      {Array.from({length: answerLength}, (_, cellIndex) => {
+        const feedback = row.feedback[cellIndex] ??
+          (rowIndex === guesses.length && hintRevealedIndices.includes(cellIndex) ? "green" : undefined);
+        const meaning = feedbackLabel(feedback);
+        return <button type="button"
+          disabled={disabled || rowIndex !== guesses.length || hintRevealedIndices.includes(cellIndex)}
+          aria-label={`${tr("Accessibility.LETTER_PREFIX")}${cellIndex + 1}${row.guess[cellIndex] ? `: ${row.guess[cellIndex]}` : ""}${meaning ? `. ${meaning}` : ""}`}
+          aria-current={rowIndex === guesses.length && cellIndex === activeSlotIndex ? "true" : undefined}
+          onClick={() => onSelectSlot(cellIndex)}
+          className={["cell", feedback ?? "", rowIndex === guesses.length && cellIndex === activeSlotIndex ? "active" : ""].filter(Boolean).join(" ")}
+          key={cellIndex}>{row.guess[cellIndex] ?? ""}</button>;
+      })}
     </div>)}
   </div>;
 }
@@ -113,6 +126,7 @@ export function GuessBoard({state, dispatch}: {state: GameSessionState; dispatch
     activeSlotIndex={state.activeSlotIndex}
     hintRevealedIndices={state.hintRevealedIndices}
     guesses={state.guesses}
+    disabled={state.guessPending}
     onSelectSlot={(index) => dispatch({type: "selectSlot", index})}
   />;
 }
@@ -131,7 +145,7 @@ export function ControlledKeyboard({
 }) {
   const keyClass = (letter: string) => letterStates[letter.toLowerCase()]
     ? `key ${letterStates[letter.toLowerCase()]}` : "key";
-  return <section className="keyboard" aria-label={tr("Accessibility.SUBMIT_GUESS")}>
+  return <section className="keyboard" aria-label={tr("Accessibility.VIRTUAL_KEYBOARD")}>
     {KEYBOARD_ROWS.map((row) => <div key={row}>
       {splitGraphemes(row).map((letter) => <button className={keyClass(letter)} key={letter}
         disabled={disabled} onClick={() => onLetter(letter)}>{letter}</button>)}
@@ -146,6 +160,7 @@ export function Keyboard({state, dispatch, playFeedback}: {state: GameSessionSta
   playFeedback: (kind: "key" | "delete" | "submit" | "win" | "loss") => void}) {
   return <ControlledKeyboard
     letterStates={state.letterStates}
+    disabled={state.guessPending}
     onLetter={(letter) => { playFeedback("key"); dispatch({type: "typeLetter", letter}); }}
     onBackspace={() => { playFeedback("delete"); dispatch({type: "backspace"}); }}
   />;

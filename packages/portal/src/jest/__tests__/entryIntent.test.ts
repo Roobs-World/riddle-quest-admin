@@ -122,4 +122,20 @@ describe("parseEntryIntent", () => {
       utmMedium: undefined,
     }));
   });
+
+  it("rejects URL, email, and free-form text in telemetry-bound attribution fields", () => {
+    expect(parseEntryIntent({
+      campaign: "https://malicious.invalid/?email=player@example.com",
+      reference: "player@example.com",
+      challengeId: "race id with spaces",
+      utm_source: "creator<script>",
+      customName: "A Player",
+    })).toEqual(expect.objectContaining({
+      campaign: undefined,
+      reference: undefined,
+      challengeId: undefined,
+      utmSource: undefined,
+      customName: "A Player",
+    }));
+  });
 });

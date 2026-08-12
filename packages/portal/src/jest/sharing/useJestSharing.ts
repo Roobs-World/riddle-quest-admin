@@ -4,6 +4,7 @@ import type {JestBackendPort} from "../backend";
 import type {JestPlatformPort, JestSession} from "../types";
 import {captureGameScreenshot, captureVictoryShareImage, sizeCheckedScreenshotProvider} from "./screenshots";
 import {JEST_REFERRAL_REFERENCES, JEST_REFERRAL_REWARD_COINS} from "@qwordly/core/referrals";
+import {createUniqueJestReferralReference} from "./referralReferences";
 
 /** Describes with platform activity. */
 type WithPlatformActivity = <Result>(operation: () => Promise<Result>) => Promise<Result>;
@@ -17,6 +18,7 @@ export function useJestSharing({
   platform,
   backend,
   withPlatformActivity,
+  withBackgroundPlatformActivity,
   trackFunnel,
 }: {
   locale: string;
@@ -24,6 +26,7 @@ export function useJestSharing({
   platform: JestPlatformPort;
   backend: JestBackendPort;
   withPlatformActivity: WithPlatformActivity;
+  withBackgroundPlatformActivity: WithPlatformActivity;
   trackFunnel: TrackFunnel;
 }) {
   useEffect(() => {
@@ -34,7 +37,7 @@ export function useJestSharing({
 
   useEffect(() => {
     if (!session?.player.registered) return;
-    void withPlatformActivity(async () => {
+    void withBackgroundPlatformActivity(async () => {
       const result = await platform.listReferralsSigned();
       if (result.status === "success") {
         const verification = await backend.verifyReferrals(result.value, session.player.playerId);
@@ -61,7 +64,14 @@ export function useJestSharing({
       console.warn("[riddle-quest] Jest referral reconciliation failed", error);
       trackFunnel("viral_referrals_reconcile_failed");
     });
-  }, [backend, platform, session?.player.playerId, session?.player.registered, trackFunnel, withPlatformActivity]);
+  }, [
+    backend,
+    platform,
+    session?.player.playerId,
+    session?.player.registered,
+    trackFunnel,
+    withBackgroundPlatformActivity,
+  ]);
 
   useEffect(() => {
     if (!session) return;
@@ -89,6 +99,7 @@ export function useJestSharing({
       const emojiGrid = detail.emojiGrid?.slice(0, 500) || "🟩";
       const rewardMessage = tr("VictoryModal.REFERRAL_REWARD_MESSAGE", {coins: JEST_REFERRAL_REWARD_COINS});
       const shareText = `${tr("VictoryModal.SHARE_MESSAGE_TEMPLATE", {gameType, attempts, attemptLabel, emojiGrid})}\n\n${rewardMessage}`;
+      const referralReference = createUniqueJestReferralReference("result");
       trackFunnel("viral_share_intent", {surface: "victory", campaign: "friend_challenge_v2", gameMode});
       void withPlatformActivity(async () => {
         const shareImage = await sizeCheckedScreenshotProvider(() =>
@@ -99,7 +110,7 @@ export function useJestSharing({
           }),
         )();
         return platform.shareReferral({
-          reference: JEST_REFERRAL_REFERENCES.friendChallenge,
+          reference: referralReference,
           shareTitle: tr("VictoryModal.SHARE_RESULT_TITLE"),
           shareText,
           ...(shareImage ? {shareImage} : {}),
@@ -155,13 +166,14 @@ export function useJestSharing({
       const inviterName = session.profile?.username ?? tr("WebPortal.NOTIFICATION_PLAYER_FALLBACK");
       const seconds = (detail.preview.adjustedTimeToBeatMs / 1_000).toFixed(1);
       const summary = `${inviterName} · ${seconds}s · ${tr("RaceTo10.FIRST_TO_TEN")}`;
+      const referralReference = createUniqueJestReferralReference("race");
       trackFunnel("viral_share_intent", {surface: "race", campaign: "race_to_10_v1"});
       void withPlatformActivity(async () => {
         const shareImage = await sizeCheckedScreenshotProvider(() =>
           captureVictoryShareImage({title: tr("RaceTo10.TITLE"), summary, emojiGrid: "🏁 10/10"}),
         )();
         return platform.shareReferral({
-          reference: JEST_REFERRAL_REFERENCES.raceTo10,
+          reference: referralReference,
           shareTitle: tr("RaceTo10.TITLE"),
           shareText: `${tr("RaceTo10.CHALLENGED_BY", {name: inviterName})} · ${tr("RaceTo10.TIME_TO_BEAT", {time: `${seconds}s`})}\n\n${tr("VictoryModal.REFERRAL_REWARD_MESSAGE", {coins: JEST_REFERRAL_REWARD_COINS})}`,
           ...(shareImage ? {shareImage} : {}),

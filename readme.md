@@ -1,6 +1,6 @@
 # Riddle Quest
 
-Riddle Quest is a mobile-first React HTML5 word game built for the Jest gaming platform. Players can solve classic and daily riddles, earn and spend coins, build streaks, compete in Race to 10 multiplayer challenges, register through Jest, receive return notifications, share referrals, and buy coin packs or premium access.
+Riddle Quest is a mobile-first React HTML5 word game built for the Jest gaming platform. Players can solve classic and daily riddles, earn and spend coins, build streaks, compete in Race to 10 multiplayer challenges, register through Jest, receive return notifications, share referrals, and buy coin packs. Premium subscriptions remain sandbox-only until the Jest beta lifecycle is approved and verified.
 
 This repository contains only the web game and its Firebase backend. Do not add React Native, Expo, Android, iOS, native in-app purchases, external authentication, ads, or app-install prompts.
 
@@ -25,11 +25,15 @@ Production and sandbox procedures live in `docs/jest-html5-operations.md`.
 
 - Node.js `>=24.17.0` for the workspace and frontend tooling
 - Node.js 22 for the deployed Firebase Functions runtime
-- pnpm `11.18.0` through Corepack
-- Java for the Firebase emulators
-- `zip` and `curl` for Jest build uploads
+- pnpm `11.21.0` through Corepack
+- Java 21 for the Firebase emulators
+- `zip` and `unzip` for Jest build packaging
+- Linux with functional `/usr/bin/bwrap` (bubblewrap and user namespaces) for timestamped Jest releases
 - Firebase and Jest Developer Console access for production operations
 - Application Default Credentials for scripts that read or write live Firestore
+
+The root `.nvmrc` pins the Node.js 24 workspace toolchain. Run `nvm use` from `firebase-functions/`
+when working directly on the separately pinned Node.js 22 runtime.
 
 Enable the pinned package manager and install dependencies from the repository root:
 
@@ -75,7 +79,7 @@ While signed into Jest, open:
 https://jest.com/g/riddle-q?host=http://localhost:3000
 ```
 
-This uses the real Jest SDK and configured Firebase backend. Temporarily include `http://localhost:3000` in `JEST_GAME_ORIGIN` while this workflow is required, then remove it from production configuration when it is no longer needed.
+This uses the real Jest SDK inside the Jest shell. The production Firebase backend deliberately rejects the localhost iframe origin, so this workflow is limited to SDK, overlay, entry-payload, and responsive-shell checks. Never add localhost to the deployed `JEST_GAME_ORIGIN`; use the deterministic local harness for application branches and an uploaded Draft with sandbox users for live backend, payment, notification, persistence, and referral verification.
 
 ## Configuration
 
@@ -83,7 +87,10 @@ Configuration is split by trust level. Values prefixed with `VITE_` are compiled
 
 ### Browser and Jest build values
 
-The dedicated Jest build loads `packages/portal/.env.jest`. Use `packages/portal/.env.jest.local` for ignored machine-specific overrides.
+The dedicated Jest build loads `config/vite/portal/.env.jest`. Use
+`config/vite/portal/.env.jest.local` for ignored machine-specific public overrides. Vite's `envDir` points outside the
+portal source root, so legacy `packages/portal/.env*` files are never loaded and the production security audit rejects
+them.
 
 | Variable | Required | Meaning |
 | --- | --- | --- |
@@ -92,7 +99,7 @@ The dedicated Jest build loads `packages/portal/.env.jest`. Use `packages/portal
 | `VITE_FIREBASE_AUTH_DOMAIN` | Yes | Firebase Auth domain |
 | `VITE_FIREBASE_MESSAGING_SENDER_ID` | Yes | Firebase messaging sender ID |
 | `VITE_FIREBASE_PROJECT_ID` | Yes | Firebase project ID |
-| `VITE_GOOGLE_ANALYTICS_MEASUREMENT_ID` | Production analytics | Public GA4 web stream ID from the Firebase web app configuration. When absent, analytics is disabled without blocking gameplay |
+| `VITE_GOOGLE_ANALYTICS_MEASUREMENT_ID` | No | Reserved public GA4 web stream ID. The committed Jest environment deliberately omits it, and runtime collection remains disabled until a future owner-approved consent/opt-out design supplies an affirmative decision |
 | `VITE_FIREBASE_FUNCTIONS_REGION` | No | Functions region; defaults to `us-central1` |
 | `VITE_FIREBASE_APP_CHECK_SITE_KEY` | Yes | Public reCAPTCHA Enterprise site key used by Firebase App Check; the production security audit rejects an empty value |
 | `VITE_JEST_FUNCTIONS_BASE_URL` | Production | Base URL for the authoritative Jest HTTP endpoints |
@@ -101,7 +108,14 @@ The dedicated Jest build loads `packages/portal/.env.jest`. Use `packages/portal
 
 After changing browser values, rebuild the game. Vite values are compile-time settings and do not change an already uploaded artifact.
 
-Google Analytics is loaded asynchronously after the essential game bundle. It records privacy-safe button presses, screen views, progression, registration and retention events, multiplayer events, checkout starts, and completed purchases. Do not add player names, riddle answers, guesses, email addresses, Jest player IDs, or purchase tokens to event parameters. Use GA4 DebugView with a sandbox player to verify new events before release; keep event names stable and extend the centralized helpers under `packages/portal/src/analytics/` when adding new screens or progression mechanics.
+Recurring subscriptions are intentionally fail-closed in every uploaded production build. Local development and focused unit tests
+retain the subscription UI, while the direct live sandbox script exercises the configured SDK SKU. Do not expose the offer
+to production players until Jest approves beta production use and the full activation, restoration, cancellation, and entitlement
+benefit lifecycle passes.
+
+Google Analytics is disabled in uploaded Jest builds: the dedicated environment has no measurement ID, startup does not import the Firebase Analytics adapter, the event sink defaults closed, pre-consent events are discarded, and the production CSP does not authorize GA or Tag Manager endpoints. Do not add a measurement ID or initialize collection until an owner-approved consent/opt-out design has been implemented and tested for every supported audience. If that work is later authorized, do not add player names, riddle answers, guesses, email addresses, Jest player IDs, or purchase tokens to event parameters.
+
+Sentry remains optional essential error reporting. Browser reporting excludes product/session-context integrations, console capture, performance traces, default PII, and free-form messages. Firebase Functions also use zero performance-trace sampling. Provider retention, access, and production envelope review remain deployment-owner responsibilities.
 
 Never place `JEST_SHARED_SECRET`, `OPENAI_API_KEY`, a service-account key, or `JEST_GAME_UPLOAD_TOKEN` in a `VITE_` variable.
 
@@ -124,7 +138,7 @@ Use `firebase-functions/.env.example` as the field reference. Non-secret deploye
 | Variable | Required | Meaning |
 | --- | --- | --- |
 | `JEST_GAME_ID` | Yes | Jest game UUID used for signed-token audience validation and the build-origin CORS entry |
-| `JEST_GAME_ORIGIN` | Yes | Comma-separated allowed browser origins, normally `https://jest.com`; localhost is only for hosted-emulator testing |
+| `JEST_GAME_ORIGIN` | Yes | Exact comma-separated HTTPS Jest origins accepted by the production backend. Localhost is prohibited; the backend derives the game's trusted `*.builds.jest.com` origin from the validated game ID. |
 | `JEST_PRODUCT_SKUS` | Yes for coin sales | Comma-separated defense-in-depth allowlist of enabled one-off product SKUs |
 | `JEST_SUBSCRIPTION_SKUS` | Yes for premium | Comma-separated enabled subscription SKUs |
 | `OPENAI_MODEL` | No | Riddle generation/review model; defaults to the value in `openaiService.ts` |
@@ -137,8 +151,8 @@ The production project currently targets `riddle-quest-ec2b2`, as selected in `.
 Store production secrets in Google Cloud Secret Manager through Firebase:
 
 ```bash
-pnpm dlx firebase-tools functions:secrets:set JEST_SHARED_SECRET --project riddle-quest-ec2b2
-pnpm dlx firebase-tools functions:secrets:set OPENAI_API_KEY --project riddle-quest-ec2b2
+pnpm dlx firebase-tools@15.25.1 functions:secrets:set JEST_SHARED_SECRET --project riddle-quest-ec2b2
+pnpm dlx firebase-tools@15.25.1 functions:secrets:set OPENAI_API_KEY --project riddle-quest-ec2b2
 ```
 
 - `JEST_SHARED_SECRET` is the base64 value from the Jest Developer Console. It verifies signed identity, purchase, subscription, and referral payloads.
@@ -148,11 +162,14 @@ pnpm dlx firebase-tools functions:secrets:set OPENAI_API_KEY --project riddle-qu
 
 ### Jest upload values
 
-Copy the committed template to the ignored local file:
+Install the committed template outside the repository as an owner-only file. Keeping it outside Vite's environment directory and normal build inputs reduces credential exposure:
 
 ```bash
-cp packages/portal/.env.jest-upload.example packages/portal/.env.jest-upload.local
+install -D -m 600 packages/portal/jest-release.credentials.example \
+  "${XDG_CONFIG_HOME:-$HOME/.config}/riddle-quest/jest-release.env"
 ```
+
+To use another location, set `JEST_RELEASE_CREDENTIALS_FILE` to an absolute path outside the repository. The release command rejects links, non-owner files, and group/world permissions.
 
 Set:
 
@@ -160,11 +177,14 @@ Set:
 | --- | --- | --- |
 | `JEST_GAME_UPLOAD_TOKEN` | Yes | Private upload token from the Jest Developer Console |
 | `JEST_NOTIFICATION_EMAIL` | Yes | Address notified when build processing completes |
-| `JEST_GAME_ID` | No | Overrides the repository's current game UUID |
-| `JEST_BUILD_VERSION` | Direct upload only | Build version header; defaults to `1.0.0` |
-| `JEST_UPLOAD_IS_ACTIVE` | Direct upload only | `true` requests activation after processing; defaults to `false` |
+| `JEST_GAME_ID` | No | Optional identity binding; when set it must exactly match Riddle Quest's committed game UUID |
+| `JEST_BUILD_VERSION` | Direct preflight/upload only | Build version bound to the gated archive; defaults to `1.0.0` |
 
-The timestamped release command generates its own `1.0.0-dev.YYYYMMDDHHMMSS` version and requests activation. It does not make a private game public or submit it for moderation.
+The release command requires a clean committed worktree, binds the build to that full Git commit, generates a unique
+`1.0.0-dev.YYYYMMDDHHMMSS.<commit>.<attempt>` version, and uploads an inactive Draft by default. It does not make a
+private game public or submit it for moderation. Never persist `JEST_UPLOAD_IS_ACTIVE` or
+`JEST_CONFIRM_ACTIVATION` in the credential file; the parser rejects both. A deliberate new activation-request upload
+must supply both values in that invocation's process environment as shown in the operations runbook.
 
 ## Jest Developer Console setup
 
@@ -172,7 +192,7 @@ Repository values and Developer Console values must agree.
 
 1. Select Manual loading mode. The game reports meaningful progress and calls `markGameLoaded()` when input is available.
 2. Configure the game ID and copy its shared secret into Firebase Secret Manager.
-3. Create each enabled product and subscription with the exact SKU used by the backend catalog.
+3. Create each enabled consumable with the exact SKU used by the backend catalog. Keep the beta subscription SKU configured only for the direct sandbox gate; normal uploaded builds hide it from the player-facing catalog.
 4. Upload and approve the logo, Hero image, and any notification asset. Notification imagery should use the current Jest-recommended ratio.
 5. Create at least two sandbox users for purchases and referral conversion testing.
 6. Keep direct-to-game registration and onboarding payloads compatible with `customName`, campaign, reference, challenge, and UTM entry fields.
@@ -186,7 +206,7 @@ Monetization configuration has three locks, and all three must be changed togeth
 2. Add its trusted grant or entitlement in `firebase-functions/src/jest/jestProductCatalog.ts`.
 3. Add it to `JEST_PRODUCT_SKUS` or `JEST_SUBSCRIPTION_SKUS` in the deployed Functions environment.
 
-Coin-pack values are granted only from the server catalog. Never accept a coin amount from the client. A purchase is granted transactionally using `purchaseToken` as the idempotency key before the client calls `completePurchase()`.
+Coin-pack values are granted only from the server catalog. Never accept a coin amount from the client. A purchase is granted transactionally using a SHA-256 digest of the signed `purchaseToken` as the idempotency receipt key before the client calls `completePurchase()`; the raw token is never a Firestore document path.
 
 Monthly and yearly premium SKUs grant the same entitlement. If either is active, the UI must hide the equivalent offer so a player cannot subscribe twice. Verify the catalog, successful checkout, cancellation, interruption, incomplete-purchase recovery, and entitlement refresh with a Jest sandbox user before release.
 
@@ -335,6 +355,8 @@ pnpm verify:production
 pnpm verify:production:extended
 ```
 
+The gate prepares the ignored `@qwordly/core` deploy package before any Functions check, then runs the Functions type, lint, and unit suites through pinned Node.js 22.23.1 in addition to the Node.js 24 workspace checks. GitHub Actions mirrors these checks on clean runners without production secrets; deployed Jest sandbox purchases, subscriptions, activation, and moderation remain explicit owner-run checks.
+
 ### Uploaded sandbox build
 
 Generate a short-lived login URL under Developer Console → Sandbox Users, then run:
@@ -362,7 +384,7 @@ Build only the standalone Jest artifact:
 pnpm build:web
 ```
 
-The uploadable game is written to `packages/portal/dist-jest`. The build checks TypeScript, the implementation tracker, every locale, chunked production output, and the artifact audit. The audit enforces the 5 MB HTML5 limit, relative local assets, the approved Jest SDK script, and the absence of native modules, external authentication, ads, install prompts, secrets, source maps, and missing entry assets.
+The uploadable game is written to `packages/portal/dist-jest`. The build checks TypeScript, the implementation tracker, every locale, chunked production output, and the artifact audit. The audit enforces an internal 4.5 MB release budget beneath Jest's 5 MB HTML5 limit, relative local assets, the approved Jest SDK script, and the absence of native modules, external authentication, ads, install prompts, secrets, source maps, and missing entry assets.
 
 After all tests and sandbox checks pass, upload a timestamped build:
 
@@ -370,21 +392,48 @@ After all tests and sandbox checks pass, upload a timestamped build:
 pnpm jest:build-upload
 ```
 
-The command builds, audits, creates the ignored `packages/portal/build.zip`, uploads it, and requests activation after Jest finishes processing. Confirm processing, activation, catalog visibility, and the version preview in the Developer Console. Publication and moderation submission remain manual owner actions.
+The command takes an exclusive release lock and runs the full extended production gate before reading credential-file
+contents. It first probes a Linux bubblewrap boundary and refuses to run any child if that boundary is unavailable; there
+is no unsandboxed fallback. Gate, build, validator, browser, and uploader children see a read-only host filesystem, a
+masked operator home, isolated `HOME`/temporary/PID/proc state, and only the required read-only runtime/browser caches.
+Before credentials are read, the gate may write only to the repository and isolated release workspace; `.git`, the
+external credential file, ignored `.env*` files, receipt state, and other known secret-bearing paths are overmounted.
+The command then materializes the committed Git snapshot in an isolated `/tmp` workspace and switches the repository,
+snapshot, and copied trusted release scripts to read-only mounts. It builds the Sentry-tagged artifact there, creates a
+version-specific ZIP and receipt, extracts that ZIP into a fresh read-only directory, and runs both browser suites against
+the extracted bytes. The parent fingerprints the archive and gate receipt before and after those checks. The Sentry token
+is intentionally available to the Vite source-map process and its loaded build dependencies. The game upload token is
+framed through an anonymous pipe to the read-only trusted uploader, consumed and closed before it starts any child, and
+then sent as an in-process HTTP header rather than an environment variable or command-line argument. The unchanged,
+digest-bound archive is uploaded only if the worktree still points to the same clean commit.
+
+This child sandbox protects the configured credential file from release children; it is not an OS-wide secret vault. It
+cannot protect against another same-user or privileged host process, a compromised parent release process or runtime,
+backups, hard links, or alternate secret copies. Run releases on a dedicated trusted host, keep dependencies reviewed and
+locked, and do not place other credentials in readable paths outside the masked home.
+
+Jest responds to a successful submission with HTTP `202`: the build is accepted for background processing, not ready or active. Before transmission, the command writes an owner-private attempt receipt under `packages/portal/.jest-upload-receipts/`. A timeout, interruption, or crash leaves that version blocked as transmitting/ambiguous until an owner reconciles it in the Developer Console or completion email; blindly retrying could duplicate an accepted build. After a documented `202`, the receipt records the version ID and exact archive checksum. The documented API has no authoritative build-status polling endpoint, so the release tool does not invent one. Publication and moderation submission remain manual owner actions.
 
 Deploy backend changes separately:
 
 ```bash
 pnpm --dir firebase-functions build
 pnpm --dir firebase-functions test
-pnpm --dir firebase-functions deploy --project riddle-quest-ec2b2
+pnpm --dir firebase-functions run deploy --project riddle-quest-ec2b2
 ```
+
+The authoritative single-player protocol is not rolling-compatible with the currently active legacy build: the hardened
+backend no longer returns answers for client-side scoring, while the new client depends on the new session endpoints and
+status fields. Do not deploy either side while the other is serving normal play, and do not describe this release as
+zero-downtime. Use the player-blocking maintenance and staged-activation procedure in
+[`docs/jest-html5-operations.md`](docs/jest-html5-operations.md#coordinated-gameplay-protocol-cutover). A failed cutover
+stays in maintenance and rolls forward; it must never restore an answer-bearing backend contract.
 
 When Firestore rules or indexes change, deploy those explicitly and test the rules emulator first.
 
 ```bash
 pnpm --dir firebase-functions test:race:rules
-pnpm dlx firebase-tools deploy \
+pnpm dlx firebase-tools@15.25.1 deploy \
   --only firestore:rules,firestore:indexes,storage \
   --project riddle-quest-ec2b2
 ```
@@ -420,7 +469,7 @@ Review release notes for Vite, React, Firebase, Jest, Three.js, TypeScript, and 
 
 - `docs/jest-html5-operations.md` — hosted emulator, sandbox, Simulator, upload, and acceptance matrix
 - `firebase-functions/.env.example` — backend environment field reference
-- `packages/portal/.env.jest-upload.example` — ignored upload-credential template
+- `packages/portal/jest-release.credentials.example` — external owner-only release-credential template
 - [Jest HTML5 SDK documentation](https://docs.jest.com/sdk/html5)
 - [Jest sandbox testing](https://docs.jest.com/testing/sandbox)
 - [Firebase Functions environment and secrets](https://firebase.google.com/docs/functions/config-env)

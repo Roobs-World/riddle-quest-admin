@@ -1,5 +1,6 @@
 import {z} from "zod";
 import {BRIDGE_PROTOCOL_VERSION} from "./constants";
+import {UsernameSchema} from "../validation/requestSchemas";
 import {
   AbandonRaceRunRequestSchema,
   ListRaceCategoriesRequestSchema,
@@ -26,10 +27,13 @@ const MetadataSchema = z.object({
 
 /** Validates the game mode data shape. */
 const GameModeSchema = z.enum(["classic", "challenge"]);
+/** Bounds canonical riddle identifiers crossing the iframe bridge. */
+const RiddleIdSchema = z.string().min(1).max(160);
 /** Validates the operation data shape. */
 const OperationSchema = z.enum([
   "auth",
   "loadRiddle",
+  "guess",
   "completeGame",
   "hint",
   "spendCoins",
@@ -99,12 +103,26 @@ export type BridgeProfile = z.infer<typeof BridgeProfileSchema>;
 
 /** Validates the bridge riddle data shape. */
 export const BridgeRiddleSchema = z.object({
-  riddleId: z.string().min(1),
+  riddleId: RiddleIdSchema,
   text: z.string().min(1),
-  answer: z.string().min(1),
   answerLength: z.number().int().positive(),
+  sessionToken: z.string().min(20).max(128),
   gameMode: GameModeSchema,
   index: z.number().int().nonnegative().optional(),
+  attemptsUsed: z.number().int().nonnegative().max(6),
+  hasUsedContinue: z.boolean(),
+  awaitingContinue: z.boolean(),
+}).strict().superRefine((riddle, context) => {
+  const expectedAwaiting = riddle.attemptsUsed === 5 && !riddle.hasUsedContinue;
+  if (riddle.awaitingContinue !== expectedAwaiting) {
+    context.addIssue({code: z.ZodIssueCode.custom, message: "Continue recovery state is inconsistent."});
+  }
+  if (riddle.hasUsedContinue && riddle.attemptsUsed < 5) {
+    context.addIssue({code: z.ZodIssueCode.custom, message: "Continue cannot precede the base attempt cap."});
+  }
+  if (riddle.attemptsUsed > 5 + (riddle.hasUsedContinue ? 1 : 0)) {
+    context.addIssue({code: z.ZodIssueCode.custom, message: "Attempt count exceeds the available limit."});
+  }
 });
 /** Describes bridge riddle. */
 export type BridgeRiddle = z.infer<typeof BridgeRiddleSchema>;
@@ -154,6 +172,8 @@ export const GameLoadRiddleMessageSchema = envelope(
     gameMode: GameModeSchema,
     locale: z.string().min(2),
     classicIndex: z.number().int().nonnegative().optional(),
+    sessionToken: z.string().min(20).max(128).optional(),
+    riddleId: RiddleIdSchema.optional(),
   }),
 );
 
@@ -161,20 +181,33 @@ export const GameLoadRiddleMessageSchema = envelope(
 export const GameCompleteGameMessageSchema = envelope(
   "game:completeGame",
   z.object({
-    riddleId: z.string().min(1),
+    riddleId: RiddleIdSchema,
     gameMode: GameModeSchema,
-    attempts: z.number().int().positive().max(100),
-    isCorrect: z.boolean(),
-  }),
+    sessionToken: z.string().min(20).max(128),
+  }).strict(),
+);
+
+/** Validates a server-authoritative single-player guess message. */
+export const GameSubmitGuessMessageSchema = envelope(
+  "game:submitGuess",
+  z.object({
+    riddleId: RiddleIdSchema,
+    gameMode: GameModeSchema,
+    sessionToken: z.string().min(20).max(128),
+    guess: z.string().min(1).max(7).regex(/^[a-z]+$/i),
+    requestId: z.string().min(8).max(128),
+  }).strict(),
 );
 
 /** Validates the game request hint message data shape. */
 export const GameRequestHintMessageSchema = envelope(
   "game:requestHint",
   z.object({
-    riddleId: z.string().min(1),
+    riddleId: RiddleIdSchema,
     gameMode: GameModeSchema,
-    currentAttempt: z.array(z.string()),
+    sessionToken: z.string().min(20).max(128),
+    requestId: z.string().min(8).max(128),
+    currentAttempt: z.array(z.string().max(1).regex(/^[a-z]?$/i)).max(7),
   }),
 );
 
@@ -182,11 +215,22 @@ export const GameRequestHintMessageSchema = envelope(
 export const GameSpendCoinsMessageSchema = envelope(
   "game:spendCoins",
   z.object({
-    reason: z.enum(["hint", "skip", "continue"]),
-    gameMode: GameModeSchema.optional(),
-    riddleId: z.string().min(1).optional(),
+    reason: z.literal("continue"),
+    gameMode: GameModeSchema,
+    riddleId: RiddleIdSchema,
+    sessionToken: z.string().min(20).max(128),
     amount: z.number().int().positive().optional(),
-  }),
+  }).strict(),
+);
+
+/** Validates a dedicated authoritative Classic skip message. */
+export const GameSkipRiddleMessageSchema = envelope(
+  "game:skipRiddle",
+  z.object({
+    gameMode: z.literal("classic"),
+    riddleId: RiddleIdSchema,
+    sessionToken: z.string().min(20).max(128),
+  }).strict(),
 );
 
 /** Validates the game request purchase message data shape. */
@@ -209,7 +253,7 @@ export const GameLoadLeaderboardMessageSchema = envelope(
 export const GameUpdateUsernameMessageSchema = envelope(
   "game:updateUsername",
   z.object({
-    username: z.string().trim().min(3).max(24),
+    username: UsernameSchema,
   }),
 );
 
@@ -270,9 +314,11 @@ export const GameToHostMessageSchema = z.discriminatedUnion("type", [
   GameReadyMessageSchema,
   GameResizeMessageSchema,
   GameLoadRiddleMessageSchema,
+  GameSubmitGuessMessageSchema,
   GameCompleteGameMessageSchema,
   GameRequestHintMessageSchema,
   GameSpendCoinsMessageSchema,
+  GameSkipRiddleMessageSchema,
   GameRequestPurchaseMessageSchema,
   GameLoadLeaderboardMessageSchema,
   GameUpdateUsernameMessageSchema,

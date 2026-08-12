@@ -14,6 +14,12 @@ import {
 } from "./guidanceConfig";
 import {OnboardingOverlay} from "./OnboardingOverlay";
 import {TooltipOverlay} from "./TooltipOverlay";
+import {
+  completePlayerOnboarding,
+  hasCompletedPlayerOnboarding,
+  safeBrowserStorageGet,
+  safeBrowserStorageSet,
+} from "../playerPreferences";
 
 export {getOnboardingTotalSteps} from "./guidanceConfig";
 
@@ -29,6 +35,8 @@ export type GuidanceOverlayProps = {
   registrationName?: string;
   /** Stores registration inviter name. */
   registrationInviterName?: string;
+  /** Prevents an obscured guidance surface from taking or handling focus. */
+  interactionBlocked?: boolean;
 };
 
 /** Coordinates onboarding, feature tours, and contextual guidance tooltips. */
@@ -38,6 +46,7 @@ export function GuidanceOverlay({
   onActiveChange,
   registrationName,
   registrationInviterName,
+  interactionBlocked = false,
 }: GuidanceOverlayProps) {
   useLocale();
   const userId = state.user?.uid;
@@ -48,7 +57,62 @@ export function GuidanceOverlay({
   const [sequenceIndex, setSequenceIndex] = useState(0);
   const [targetRect, setTargetRect] = useState<DOMRect | null>(null);
   const onboardingCardRef = useRef<HTMLDivElement | null>(null);
+  const tooltipCardRef = useRef<HTMLElement | null>(null);
   const activeTooltip = sequence[sequenceIndex];
+  const guidanceActive = onboardingStep !== null || Boolean(activeTooltip);
+
+  useEffect(() => {
+    if (!guidanceActive) return;
+    const previouslyFocused = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    return () => {
+      window.requestAnimationFrame(() => {
+        if (previouslyFocused?.isConnected) previouslyFocused.focus();
+      });
+    };
+  }, [guidanceActive]);
+
+  useEffect(() => {
+    if (!guidanceActive || interactionBlocked) return;
+    const dialog = onboardingStep !== null ? onboardingCardRef.current : tooltipCardRef.current;
+    if (!dialog) return;
+    const getFocusable = () => Array.from(
+      dialog.querySelectorAll<HTMLElement>(
+        "button:not(:disabled), a[href], input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex='-1'])",
+      ),
+    );
+    const focusFrame = window.requestAnimationFrame(() => (getFocusable()[0] ?? dialog).focus());
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        return;
+      }
+      if (event.key !== "Tab") return;
+      const focusable = getFocusable();
+      if (focusable.length === 0) {
+        event.preventDefault();
+        dialog.focus();
+        return;
+      }
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (!dialog.contains(document.activeElement)) {
+        event.preventDefault();
+        (event.shiftKey ? last : first).focus();
+      } else if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown, true);
+    return () => {
+      window.cancelAnimationFrame(focusFrame);
+      document.removeEventListener("keydown", handleKeyDown, true);
+    };
+  }, [activeTooltip, guidanceActive, interactionBlocked, onboardingStep]);
 
   useEffect(() => {
     onboardingCardRef.current?.scrollTo({top: 0});
@@ -57,7 +121,7 @@ export function GuidanceOverlay({
   useEffect(() => {
     if (onboardingStep !== 2) return;
     const closePrompt = () => {
-      localStorage.setItem(createGuidanceStorageKey("onboarding", userId), "seen");
+      completePlayerOnboarding(createGuidanceStorageKey("onboarding", userId));
       setOnboardingStep(null);
     };
     window.addEventListener("riddle-quest:registration-prompt-closed", closePrompt);
@@ -70,8 +134,7 @@ export function GuidanceOverlay({
   }, [onboardingStep, state.user?.platformRegistered]);
 
   useEffect(() => {
-    const active = onboardingStep !== null || Boolean(activeTooltip);
-    onActiveChange?.(active);
+    onActiveChange?.(guidanceActive);
     const modalElement = document.querySelector<HTMLElement>(".game-modal");
     if (modalElement && activeTooltip) {
       modalElement.inert = true;
@@ -84,15 +147,16 @@ export function GuidanceOverlay({
         modalElement.removeAttribute("aria-hidden");
       }
     };
-  }, [activeTooltip, onActiveChange, onboardingStep]);
+  }, [activeTooltip, guidanceActive, onActiveChange, onboardingStep]);
 
   useEffect(() => {
     if (!state.riddle || onboardingStep !== null || sequence.length > 0) {
       return;
     }
-    const hasCompletedOnboarding =
-      localStorage.getItem(createGuidanceStorageKey("onboarding", userId)) === "seen";
-    if (sessionStorage.getItem(createGuidanceStorageKey("welcomeSession", userId)) !== "seen") {
+    const hasCompletedOnboarding = hasCompletedPlayerOnboarding(
+      createGuidanceStorageKey("onboarding", userId),
+    );
+    if (safeBrowserStorageGet("session", createGuidanceStorageKey("welcomeSession", userId)) !== "seen") {
       setWelcomeOnly(hasCompletedOnboarding);
       setOnboardingStep(0);
       return;
@@ -102,7 +166,7 @@ export function GuidanceOverlay({
       setOnboardingStep(0);
       return;
     }
-    if (localStorage.getItem(createTooltipTourStorageKey("gameTour", userId)) !== "seen") {
+    if (safeBrowserStorageGet("local", createTooltipTourStorageKey("gameTour", userId)) !== "seen") {
       setSequence(getGameTour(state.gameMode));
       setSequenceName("gameTour");
       setSequenceIndex(0);
@@ -114,7 +178,7 @@ export function GuidanceOverlay({
       modal === "profile" &&
       onboardingStep === null &&
       sequence.length === 0 &&
-      localStorage.getItem(createTooltipTourStorageKey("profileTour", userId)) !== "seen"
+      safeBrowserStorageGet("local", createTooltipTourStorageKey("profileTour", userId)) !== "seen"
     ) {
       const timer = window.setTimeout(() => {
         setSequence([...PROFILE_TOUR]);
@@ -130,15 +194,15 @@ export function GuidanceOverlay({
     if (
       onboardingStep !== null ||
       sequence.length > 0 ||
-      localStorage.getItem(createGuidanceStorageKey("onboarding", userId)) !== "seen" ||
-      localStorage.getItem(createTooltipTourStorageKey("gameTour", userId)) !== "seen"
+      !hasCompletedPlayerOnboarding(createGuidanceStorageKey("onboarding", userId)) ||
+      safeBrowserStorageGet("local", createTooltipTourStorageKey("gameTour", userId)) !== "seen"
     ) {
       return;
     }
     const candidates = getContextualTooltipCandidates(state, modal);
     const candidate = candidates.find(
       ({id, when}) =>
-        when && localStorage.getItem(createGuidanceStorageKey(`tooltipSeen:${id}`, userId)) !== "seen",
+        when && safeBrowserStorageGet("local", createGuidanceStorageKey(`tooltipSeen:${id}`, userId)) !== "seen",
     );
     if (!candidate) {
       return;
@@ -193,12 +257,13 @@ export function GuidanceOverlay({
 
   const finishSequence = () => {
     if (sequenceName?.startsWith("contextual:")) {
-      localStorage.setItem(
+      safeBrowserStorageSet(
+        "local",
         createGuidanceStorageKey(`tooltipSeen:${sequenceName.slice("contextual:".length)}`, userId),
         "seen",
       );
     } else if (sequenceName) {
-      localStorage.setItem(createTooltipTourStorageKey(sequenceName, userId), "seen");
+      safeBrowserStorageSet("local", createTooltipTourStorageKey(sequenceName, userId), "seen");
     }
     setSequence([]);
     setSequenceName(null);
@@ -218,7 +283,7 @@ export function GuidanceOverlay({
         welcomeOnly={welcomeOnly}
         onAdvance={() => {
           if (isWelcome) {
-            sessionStorage.setItem(createGuidanceStorageKey("welcomeSession", userId), "seen");
+            safeBrowserStorageSet("session", createGuidanceStorageKey("welcomeSession", userId), "seen");
             if (welcomeOnly) {
               setOnboardingStep(null);
               return;
@@ -230,7 +295,7 @@ export function GuidanceOverlay({
             setOnboardingStep(2);
             return;
           }
-          localStorage.setItem(createGuidanceStorageKey("onboarding", userId), "seen");
+          completePlayerOnboarding(createGuidanceStorageKey("onboarding", userId));
           setOnboardingStep(null);
         }}
       />
@@ -243,6 +308,7 @@ export function GuidanceOverlay({
 
   return (
     <TooltipOverlay
+      cardRef={tooltipCardRef}
       activeTooltip={activeTooltip}
       content={tooltipContent}
       sequenceIndex={sequenceIndex}

@@ -7,10 +7,10 @@ import type {JestStartupUpdate} from "./startup";
 export function JestStartupError({message}: {message: string}) {
   return (
     <main className="route-missing">
-      <div>
-        <h1>Riddle Quest could not start</h1>
+      <div role="alert">
+        <h1>{tr("ErrorMessages.FATAL_STARTUP_TITLE")}</h1>
         <p>{message}</p>
-        <button onClick={() => window.location.reload()}>Retry</button>
+        <button onClick={() => window.location.reload()}>{tr("CommonButtons.RETRY")}</button>
       </div>
     </main>
   );
@@ -27,6 +27,19 @@ export function JestStartupProgress({startup}: {startup: JestStartupUpdate}) {
   return (
     <main className="route-loading">
       <SpinningWheelLoader message={tr(messageKey)} progress={startup.progress} />
+    </main>
+  );
+}
+
+/** Shows a terminal state after authoritative account deletion and local cleanup succeed. */
+export function JestAccountDeleted() {
+  return (
+    <main className="route-missing">
+      <div role="status">
+        <h1>{tr("Profile.DELETE_ACCOUNT_SUCCESS_TITLE")}</h1>
+        <p>{tr("Profile.DELETE_ACCOUNT_SUCCESS_MESSAGE")}</p>
+        <button onClick={() => window.location.reload()}>{tr("Navigation.PLAY_BUTTON")}</button>
+      </div>
     </main>
   );
 }

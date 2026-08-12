@@ -26,8 +26,8 @@
     "SIGN_IN_TO_CONTINUE": "请登录才能继续。",
     "TOO_MANY_FAILED_ATTEMPTS": "失败的尝试次数过多。请稍后重试。",
     "WRONG_PASSWORD_TRY_AGAIN": "密码错误。请再试一次。",
-    "UNKNOWN_ERROR": "???????",
-    "FATAL_STARTUP_TITLE": "????",
-    "FATAL_STARTUP_MESSAGE": "??????????????????"
+    "UNKNOWN_ERROR": "发生了未知错误。",
+    "FATAL_STARTUP_TITLE": "启动失败",
+    "FATAL_STARTUP_MESSAGE": "太阳系背景加载失败。请重新启动应用。"
   }
 }

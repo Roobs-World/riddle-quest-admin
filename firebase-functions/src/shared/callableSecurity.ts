@@ -1,5 +1,8 @@
 import type {CallableOptions} from "firebase-functions/v2/https";
 
+/** Hard upper bound used by the account-deletion operation lease. */
+export const BROWSER_CALLABLE_TIMEOUT_SECONDS = 60;
+
 /**
  * Fail-closed security options for every browser-facing callable.
  *
@@ -9,4 +12,5 @@ import type {CallableOptions} from "firebase-functions/v2/https";
 export const browserCallableSecurityOptions = Object.freeze({
   enforceAppCheck: process.env.FUNCTIONS_EMULATOR !== "true",
   invoker: "public",
+  timeoutSeconds: BROWSER_CALLABLE_TIMEOUT_SECONDS,
 } satisfies CallableOptions);
