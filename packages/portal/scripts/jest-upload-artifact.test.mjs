@@ -923,7 +923,7 @@ test("the release sequence gates, packages, verifies, and uploads one immutable 
   assert.match(releaseSource, /additionalMaskedFilePaths:\s*ignoredSensitiveFilePaths/);
   assert.match(
     releaseSource,
-    /operatorFirebaseEmulatorCache[\s\S]*\.cache["'],\s*["']firebase["'],\s*["']emulators["'][\s\S]*addReadOnlyDirectoryBind\(operatorFirebaseEmulatorCache, isolatedFirebaseEmulatorCache\)/,
+    /operatorFirebaseEmulatorCache[\s\S]*\.cache["'],\s*["']firebase["'],\s*["']emulators["'][\s\S]*cpSync\(operatorFirebaseEmulatorCache, isolatedFirebaseEmulatorCache, \{recursive: true\}\)/,
   );
   assert.doesNotMatch(
     releaseSource,

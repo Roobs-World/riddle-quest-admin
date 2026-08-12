@@ -4,6 +4,7 @@ import {
   chmodSync,
   closeSync,
   copyFileSync,
+  cpSync,
   existsSync,
   lstatSync,
   mkdtempSync,
@@ -254,13 +255,14 @@ mkdirSync(isolatedCorepackCache, {mode: 0o700, recursive: true});
 addReadOnlyDirectoryBind(operatorCorepackCache, isolatedCorepackCache);
 
 // Firebase's Firestore and Storage rules emulators are large runtime artifacts
-// installed outside node_modules. Reuse only their dedicated cache read-only;
-// otherwise the hermetic HOME forces pnpm/firebase-tools to download and build
-// transient executables during the release gate itself.
+// installed outside node_modules. Freeze a private copy inside the isolated
+// writable HOME: firebase-tools may update cache metadata during startup, so a
+// read-only bind fails even when the required runtimes are already installed.
 const operatorFirebaseEmulatorCache = join(operatorHomeDirectory, ".cache", "firebase", "emulators");
 const isolatedFirebaseEmulatorCache = join(isolatedHomeDirectory, ".cache", "firebase", "emulators");
-mkdirSync(isolatedFirebaseEmulatorCache, {mode: 0o700, recursive: true});
-addReadOnlyDirectoryBind(operatorFirebaseEmulatorCache, isolatedFirebaseEmulatorCache);
+if (existsSync(operatorFirebaseEmulatorCache)) {
+  cpSync(operatorFirebaseEmulatorCache, isolatedFirebaseEmulatorCache, {recursive: true});
+}
 
 if (!process.env.PLAYWRIGHT_BROWSERS_PATH) {
   const operatorPlaywrightCache = join(operatorHomeDirectory, ".cache", "ms-playwright");
