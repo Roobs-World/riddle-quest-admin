@@ -30,7 +30,7 @@
     "leaderboard:privacy:purge-orphans": "pnpm build && node scripts/run-with-functions-node.js scripts/purge-orphan-leaderboard-rows.js",
     "notifications:configure": "node scripts/run-with-functions-node.js scripts/notification-copy-configure.js",
     "usernames:migrate": "node scripts/prepare-deploy.js && pnpm build && node scripts/run-with-functions-node.js scripts/migrate-username-reservations.js",
-    "test:race:rules": "node scripts/prepare-deploy.js && firebase emulators:exec --only firestore,storage \"pnpm jest --config jest.rules.config.js --runInBand\""
+    "test:race:rules": "node scripts/prepare-deploy.js && firebase --debug emulators:exec --only firestore,storage \"pnpm jest --config jest.rules.config.js --runInBand\""
   },
   "engines": {
     "node": "22"

@@ -84,7 +84,20 @@ for (const directory of [
 }
 const releaseDebugLogDirectory = join(releaseSandboxDirectory, "firebase-debug-logs");
 mkdirSync(releaseDebugLogDirectory, {mode: 0o700});
+const releaseCreatedDebugLogDestinations = [];
 const releaseDebugLogWritableBinds = releaseDebugLogDestinationPaths.map((destination, index) => {
+  if (!existsSync(destination)) {
+    writeFileSync(destination, "", {mode: 0o600});
+    releaseCreatedDebugLogDestinations.push(destination);
+  }
+  const destinationFile = lstatSync(destination);
+  if (!destinationFile.isFile() || destinationFile.isSymbolicLink()) {
+    throw new Error(`Firebase release debug log must be a regular file: ${destination}`);
+  }
+  if (typeof process.getuid === "function" && destinationFile.uid !== process.getuid()) {
+    throw new Error(`Firebase release debug log must be owned by the current user: ${destination}`);
+  }
+  chmodSync(destination, 0o600);
   const source = join(releaseDebugLogDirectory, `${index}.log`);
   writeFileSync(source, "", {mode: 0o600});
   return {source, destination};
@@ -95,6 +108,9 @@ let releaseSandboxOwned = true;
 const cleanupReleaseSandbox = () => {
   if (!releaseSandboxOwned) return;
   releaseSandboxOwned = false;
+  for (const destination of releaseCreatedDebugLogDestinations) {
+    rmSync(destination, {force: true});
+  }
   rmSync(releaseSandboxDirectory, {force: true, recursive: true});
 };
 process.on("exit", cleanupReleaseSandbox);

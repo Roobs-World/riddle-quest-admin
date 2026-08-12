@@ -922,6 +922,11 @@ test("the release sequence gates, packages, verifies, and uploads one immutable 
   assert.match(releaseSource, /gitMetadataPaths:\s*uniqueGitMetadataPaths/);
   assert.match(releaseSource, /additionalMaskedFilePaths:\s*ignoredSensitiveFilePaths/);
   assert.match(releaseSource, /writableBinds:\s*releaseDebugLogWritableBinds/);
+  assert.match(releaseSource, /releaseCreatedDebugLogDestinations\.push\(destination\)/);
+  assert.match(
+    releaseSource,
+    /for \(const destination of releaseCreatedDebugLogDestinations\)[\s\S]*rmSync\(destination, \{force: true\}\)/,
+  );
   assert.match(
     releaseSource,
     /runPnpm\(\["verify:production:extended"\][\s\S]*releaseSandboxConfiguration\.writableBinds = \[\]/,
