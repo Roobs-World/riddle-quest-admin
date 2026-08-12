@@ -936,6 +936,12 @@ test("the release sequence gates, packages, verifies, and uploads one immutable 
     releaseSource,
     /operatorFirebaseEmulatorCache[\s\S]*\.cache["'],\s*["']firebase["'],\s*["']emulators["'][\s\S]*cpSync\(operatorFirebaseEmulatorCache, isolatedFirebaseEmulatorCache, \{recursive: true\}\)/,
   );
+  assert.match(
+    releaseSource,
+    /node_modules["'],\s*["']\.modules\.yaml["'][\s\S]*operatorPnpmStoreDirectory[\s\S]*addReadOnlyDirectoryBind\(operatorPnpmStoreDirectory, operatorPnpmStoreDirectory\)/,
+  );
+  assert.match(releaseSource, /pnpm_config_store_dir:\s*operatorPnpmStoreDirectory/);
+  assert.match(releaseSource, /delete gateEnvironment\.pnpm_config_store_dir/);
   assert.doesNotMatch(
     releaseSource,
     /additionalMaskedFilePaths:\s*\[\.\.\.legacyViteEnvironmentPaths/,

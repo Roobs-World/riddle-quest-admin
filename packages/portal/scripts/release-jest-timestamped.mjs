@@ -274,6 +274,19 @@ if (process.env.JAVA_HOME) {
   }
 }
 
+// `pnpm licenses list` reads package metadata from the content-addressed store
+// recorded by the installed workspace. Expose that exact store read-only only
+// during the credential-free production gate; an isolated empty HOME otherwise
+// makes the license consistency check fail despite a frozen installation.
+const pnpmModulesMetadata = JSON.parse(
+  readFileSync(join(repositoryDirectory, "node_modules", ".modules.yaml"), "utf8"),
+);
+const operatorPnpmStoreDirectory = pnpmModulesMetadata.storeDir;
+if (typeof operatorPnpmStoreDirectory !== "string" || !isAbsolute(operatorPnpmStoreDirectory)) {
+  throw new Error("The installed pnpm package store must be an absolute path for a secure release");
+}
+addReadOnlyDirectoryBind(operatorPnpmStoreDirectory, operatorPnpmStoreDirectory);
+
 const isolatedCorepackCache = join(isolatedHomeDirectory, ".cache", "node", "corepack");
 const operatorCorepackCache = process.env.COREPACK_HOME ||
   join(operatorHomeDirectory, ".cache", "node", "corepack");
@@ -473,6 +486,7 @@ const gateEnvironment = {
   SENTRY_RELEASE: sentryRelease,
   SENTRY_UPLOAD_SOURCEMAPS: "0",
   VITE_SENTRY_RELEASE: sentryRelease,
+  pnpm_config_store_dir: operatorPnpmStoreDirectory,
 };
 const gatePreflightDirectory = join(releaseSandboxDirectory, "gate-preflight");
 mkdirSync(gatePreflightDirectory, {mode: 0o700});
@@ -600,6 +614,9 @@ try {
   // The remaining credential-bearing phase never invokes Firebase emulators.
   // Close the narrow debug-log write overlays before credentials are loaded.
   releaseSandboxConfiguration.writableBinds = [];
+  delete gateEnvironment.pnpm_config_store_dir;
+  releaseSandboxConfiguration.readOnlyBinds = releaseSandboxConfiguration.readOnlyBinds
+    .filter(({destination}) => destination !== operatorPnpmStoreDirectory);
 
   // Snapshot the exact committed source and token-bearing release leaf before
   // private credential contents enter this process.
