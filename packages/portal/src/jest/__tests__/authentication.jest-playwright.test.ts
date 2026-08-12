@@ -682,6 +682,7 @@ describeBrowser("Jest authentication integration", () => {
       "signed:viral-recipient:false",
       "signed:viral-recipient:true",
     ]);
+    await Promise.all([creator.context.close(), recipient.context.close()]);
 
     const rewardedCreator = await openHarness(browser, {
       registered: true,
@@ -690,12 +691,7 @@ describeBrowser("Jest authentication integration", () => {
     });
     await rewardedCreator.page.getByRole("heading", {name: /a friend joined/i}).waitFor({timeout: 15_000});
     expect(await rewardedCreator.page.locator(".game-modal").innerText()).toContain("+100");
-
-    await Promise.all([
-      creator.context.close(),
-      recipient.context.close(),
-      rewardedCreator.context.close(),
-    ]);
+    await rewardedCreator.context.close();
   });
 
   it("logs an existing Jest player in from the onboarding choice", async () => {
