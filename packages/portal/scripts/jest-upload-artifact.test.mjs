@@ -866,7 +866,10 @@ test("the release sequence gates, packages, verifies, and uploads one immutable 
   assert.match(releaseSource, /JEST_EXPECTED_ARCHIVE_BYTES = String\(verifiedArchiveFingerprint\.bytes\)/);
   assert.match(releaseSource, /trustedScript\(["']upload-jest-build\.mjs["']\)/);
   assert.match(releaseSource, /["']--configLoader["']\s*,\s*["']runner["']/);
-  assert.match(releaseSource, /"ls-files",\s*"--others",\s*"--ignored",\s*"--exclude-standard",\s*"-z"/);
+  assert.match(
+    releaseSource,
+    /"ls-files",\s*"--others",\s*"--ignored",\s*"--exclude-standard",\s*"-z",\s*"--",\s*":\(glob\)\*\*\/\.env",\s*":\(glob\)\*\*\/\.env\.\*"/,
+  );
   assert.match(releaseSource, /additionalMaskedFilePaths\.push\(\.\.\.ignoredEnvironmentPaths\)/);
   assert.match(releaseSource, /additionalMaskedDirectoryPaths:\s*ignoredSensitiveDirectoryPaths/);
 

@@ -327,6 +327,9 @@ const ignoredEnvironmentPaths = readGit([
   "--ignored",
   "--exclude-standard",
   "-z",
+  "--",
+  ":(glob)**/.env",
+  ":(glob)**/.env.*",
 ]).split("\0").filter(Boolean).filter((relativePath) => {
   const name = relativePath.split("/").at(-1);
   return name !== ".env.example" && (name === ".env" || name?.startsWith(".env."));
