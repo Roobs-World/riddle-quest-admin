@@ -1,4 +1,4 @@
-import {afterAll, beforeAll, describe, expect, it, jest} from "@jest/globals";
+import {afterAll, afterEach, beforeAll, describe, expect, it, jest} from "@jest/globals";
 import {chromium, type Browser, type Page} from "@playwright/test";
 import {execFileSync} from "node:child_process";
 import {createServer, type Server} from "node:http";
@@ -414,8 +414,10 @@ describeBrowser("Jest authentication integration", () => {
       }
     });
     await new Promise<void>((resolve) => server.listen(4179, "127.0.0.1", resolve));
-    browser = await chromium.launch({headless: true});
+    browser = await chromium.launch({headless: true, args: ["--renderer-process-limit=4"]});
   });
+
+  afterEach(async () => Promise.all(browser?.contexts().map((context) => context.close().catch(() => undefined)) ?? []));
 
   afterAll(async () => {
     await browser?.close();
