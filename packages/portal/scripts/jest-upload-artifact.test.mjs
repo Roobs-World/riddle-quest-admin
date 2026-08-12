@@ -921,6 +921,10 @@ test("the release sequence gates, packages, verifies, and uploads one immutable 
   assert.match(releaseSource, /credentialPath:\s*canonicalCredentialPath/);
   assert.match(releaseSource, /gitMetadataPaths:\s*uniqueGitMetadataPaths/);
   assert.match(releaseSource, /additionalMaskedFilePaths:\s*ignoredSensitiveFilePaths/);
+  assert.match(
+    releaseSource,
+    /operatorFirebaseEmulatorCache[\s\S]*\.cache["'],\s*["']firebase["'],\s*["']emulators["'][\s\S]*addReadOnlyDirectoryBind\(operatorFirebaseEmulatorCache, isolatedFirebaseEmulatorCache\)/,
+  );
   assert.doesNotMatch(
     releaseSource,
     /additionalMaskedFilePaths:\s*\[\.\.\.legacyViteEnvironmentPaths/,
