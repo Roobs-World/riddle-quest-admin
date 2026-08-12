@@ -940,8 +940,17 @@ test("the release sequence gates, packages, verifies, and uploads one immutable 
     releaseSource,
     /node_modules["'],\s*["']\.modules\.yaml["'][\s\S]*operatorPnpmStoreDirectory[\s\S]*addReadOnlyDirectoryBind\(operatorPnpmStoreDirectory, operatorPnpmStoreDirectory\)/,
   );
-  assert.match(releaseSource, /pnpm_config_store_dir:\s*operatorPnpmStoreDirectory/);
-  assert.match(releaseSource, /delete gateEnvironment\.pnpm_config_store_dir/);
+  assert.doesNotMatch(releaseSource, /pnpm_config_store_dir:\s*operatorPnpmStoreDirectory/);
+  assert.match(
+    releaseSource,
+    /pathIsWithin\(operatorHomeDirectory, operatorPnpmStoreDirectory\)[\s\S]*pathIsWithin\(repositoryDirectory, operatorPnpmStoreDirectory\)/,
+  );
+  const licenseGeneratorSource = await readFile(
+    new URL("./generate-third-party-licenses.mjs", import.meta.url),
+    "utf8",
+  );
+  assert.match(licenseGeneratorSource, /node_modules\/\.modules\.yaml/);
+  assert.match(licenseGeneratorSource, /pnpm_config_store_dir:\s*pnpmStoreDirectory/);
   assert.doesNotMatch(
     releaseSource,
     /additionalMaskedFilePaths:\s*\[\.\.\.legacyViteEnvironmentPaths/,

@@ -1,6 +1,6 @@
 import {execFileSync} from "node:child_process";
 import {readFileSync, readdirSync, statSync, writeFileSync} from "node:fs";
-import {resolve} from "node:path";
+import {isAbsolute, resolve} from "node:path";
 import {fileURLToPath} from "node:url";
 
 const portalDirectory = fileURLToPath(new URL("../", import.meta.url));
@@ -8,6 +8,13 @@ const repositoryDirectory = resolve(portalDirectory, "../..");
 const outputFile = resolve(portalDirectory, "public/third-party-licenses.txt");
 const firebaseLicenseFile = resolve(portalDirectory, "licenses/firebase-js-sdk.LICENSE");
 const mode = process.argv[2] ?? "--check";
+const pnpmModulesMetadata = JSON.parse(
+  readFileSync(resolve(repositoryDirectory, "node_modules/.modules.yaml"), "utf8"),
+);
+const pnpmStoreDirectory = pnpmModulesMetadata.storeDir;
+if (typeof pnpmStoreDirectory !== "string" || !isAbsolute(pnpmStoreDirectory)) {
+  throw new Error("The installed pnpm package store must be an absolute path");
+}
 
 const normalizeNoticeText = (text) => text
   .replaceAll("\r\n", "\n")
@@ -29,6 +36,7 @@ function readLicenseInventory() {
     {
       cwd: repositoryDirectory,
       encoding: "utf8",
+      env: {...process.env, pnpm_config_store_dir: pnpmStoreDirectory},
       maxBuffer: 32 * 1024 * 1024,
       stdio: ["ignore", "pipe", "inherit"],
     },

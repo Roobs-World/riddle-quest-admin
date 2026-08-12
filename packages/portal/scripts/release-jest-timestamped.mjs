@@ -285,6 +285,12 @@ const operatorPnpmStoreDirectory = pnpmModulesMetadata.storeDir;
 if (typeof operatorPnpmStoreDirectory !== "string" || !isAbsolute(operatorPnpmStoreDirectory)) {
   throw new Error("The installed pnpm package store must be an absolute path for a secure release");
 }
+if (
+  !pathIsWithin(operatorHomeDirectory, operatorPnpmStoreDirectory) ||
+  pathIsWithin(repositoryDirectory, operatorPnpmStoreDirectory)
+) {
+  throw new Error("The installed pnpm package store must be outside the repository and inside the operator home");
+}
 addReadOnlyDirectoryBind(operatorPnpmStoreDirectory, operatorPnpmStoreDirectory);
 
 const isolatedCorepackCache = join(isolatedHomeDirectory, ".cache", "node", "corepack");
@@ -486,7 +492,6 @@ const gateEnvironment = {
   SENTRY_RELEASE: sentryRelease,
   SENTRY_UPLOAD_SOURCEMAPS: "0",
   VITE_SENTRY_RELEASE: sentryRelease,
-  pnpm_config_store_dir: operatorPnpmStoreDirectory,
 };
 const gatePreflightDirectory = join(releaseSandboxDirectory, "gate-preflight");
 mkdirSync(gatePreflightDirectory, {mode: 0o700});
@@ -614,7 +619,6 @@ try {
   // The remaining credential-bearing phase never invokes Firebase emulators.
   // Close the narrow debug-log write overlays before credentials are loaded.
   releaseSandboxConfiguration.writableBinds = [];
-  delete gateEnvironment.pnpm_config_store_dir;
   releaseSandboxConfiguration.readOnlyBinds = releaseSandboxConfiguration.readOnlyBinds
     .filter(({destination}) => destination !== operatorPnpmStoreDirectory);
 
