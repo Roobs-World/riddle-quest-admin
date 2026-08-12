@@ -1,4 +1,4 @@
-import {closeSync, existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync} from "node:fs";
+import {existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync} from "node:fs";
 import {tmpdir} from "node:os";
 import {join} from "node:path";
 import {fileURLToPath} from "node:url";
@@ -78,7 +78,9 @@ const activationRequested = process.env.JEST_UPLOAD_IS_ACTIVE === "true";
 // A live uploader must never receive its token in the exec-time environment:
 // on Linux those original bytes can remain readable to descendants through
 // /proc even after unsetenv. The sandboxed release parent supplies one framed
-// value through stdin; consume and close that pipe before spawning any child.
+// value through stdin. Reading the pipe to EOF consumes the framed value and
+// the parent closes its write end. Do not explicitly close fd 0: Node owns
+// that descriptor and may assert while cleaning it up after a manual close.
 const ambientUploadToken = process.env.JEST_GAME_UPLOAD_TOKEN;
 const readsUploadTokenFromStdin = process.env.JEST_UPLOAD_TOKEN_STDIN === "1";
 delete process.env.JEST_GAME_UPLOAD_TOKEN;
@@ -92,12 +94,7 @@ if (!dryRun && !readsUploadTokenFromStdin) {
   throw new Error("Live Jest uploads are available only through the sandboxed timestamped release command");
 }
 const uploadToken = dryRun ? undefined : (() => {
-  let input;
-  try {
-    input = readFileSync(0, "utf8");
-  } finally {
-    closeSync(0);
-  }
+  const input = readFileSync(0, "utf8");
   let parsed;
   try {
     parsed = JSON.parse(input);

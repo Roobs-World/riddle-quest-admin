@@ -928,7 +928,7 @@ test("the release sequence gates, packages, verifies, and uploads one immutable 
   assert.doesNotMatch(uploaderGitReader, /spawnSync\(["']git["']/);
   assert.doesNotMatch(uploaderGitReader, /env:\s*process\.env/);
   assert.match(uploadSource, /readFileSync\(0,\s*["']utf8["']\)/);
-  assert.match(uploadSource, /closeSync\(0\)/);
+  assert.doesNotMatch(uploadSource, /closeSync\(0\)/);
   assert.match(uploadSource, /ambientUploadToken !== undefined/);
   assert.match(uploadSource, /JEST_GAME_UPLOAD_TOKEN must be delivered through the sandboxed release pipe/);
   assert.match(uploadSource, /spawnSync\(["']\/usr\/bin\/unzip["']/);
