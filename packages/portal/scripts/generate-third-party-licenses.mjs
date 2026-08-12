@@ -11,7 +11,7 @@ const mode = process.argv[2] ?? "--check";
 const pnpmModulesMetadata = JSON.parse(
   readFileSync(resolve(repositoryDirectory, "node_modules/.modules.yaml"), "utf8"),
 );
-const pnpmStoreDirectory = pnpmModulesMetadata.storeDir;
+const pnpmStoreDirectory = process.env.RIDDLE_QUEST_LICENSE_STORE_DIR ?? pnpmModulesMetadata.storeDir;
 if (typeof pnpmStoreDirectory !== "string" || !isAbsolute(pnpmStoreDirectory)) {
   throw new Error("The installed pnpm package store must be an absolute path");
 }

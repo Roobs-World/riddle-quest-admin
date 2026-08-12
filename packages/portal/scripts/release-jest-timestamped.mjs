@@ -18,7 +18,7 @@ import {
   writeFileSync,
 } from "node:fs";
 import {homedir} from "node:os";
-import {dirname, isAbsolute, join, relative, sep} from "node:path";
+import {basename, dirname, isAbsolute, join, relative, sep} from "node:path";
 import {parseEnv} from "node:util";
 import {fileURLToPath} from "node:url";
 
@@ -291,7 +291,23 @@ if (
 ) {
   throw new Error("The installed pnpm package store must be outside the repository and inside the operator home");
 }
-addReadOnlyDirectoryBind(operatorPnpmStoreDirectory, operatorPnpmStoreDirectory);
+const operatorPnpmStoreIndexPath = join(operatorPnpmStoreDirectory, "index.db");
+const operatorPnpmStoreFilesDirectory = join(operatorPnpmStoreDirectory, "files");
+if (!lstatSync(operatorPnpmStoreIndexPath).isFile()) {
+  throw new Error("The installed pnpm package store index must be a regular file");
+}
+const isolatedPnpmLicenseStoreDirectory = join(
+  releaseSandboxDirectory,
+  "pnpm-license-store",
+  basename(operatorPnpmStoreDirectory),
+);
+mkdirSync(isolatedPnpmLicenseStoreDirectory, {mode: 0o700, recursive: true});
+copyFileSync(operatorPnpmStoreIndexPath, join(isolatedPnpmLicenseStoreDirectory, "index.db"));
+chmodSync(join(isolatedPnpmLicenseStoreDirectory, "index.db"), 0o600);
+addReadOnlyDirectoryBind(
+  operatorPnpmStoreFilesDirectory,
+  join(isolatedPnpmLicenseStoreDirectory, "files"),
+);
 
 const isolatedCorepackCache = join(isolatedHomeDirectory, ".cache", "node", "corepack");
 const operatorCorepackCache = process.env.COREPACK_HOME ||
@@ -492,6 +508,7 @@ const gateEnvironment = {
   SENTRY_RELEASE: sentryRelease,
   SENTRY_UPLOAD_SOURCEMAPS: "0",
   VITE_SENTRY_RELEASE: sentryRelease,
+  RIDDLE_QUEST_LICENSE_STORE_DIR: isolatedPnpmLicenseStoreDirectory,
 };
 const gatePreflightDirectory = join(releaseSandboxDirectory, "gate-preflight");
 mkdirSync(gatePreflightDirectory, {mode: 0o700});
@@ -619,8 +636,9 @@ try {
   // The remaining credential-bearing phase never invokes Firebase emulators.
   // Close the narrow debug-log write overlays before credentials are loaded.
   releaseSandboxConfiguration.writableBinds = [];
+  delete gateEnvironment.RIDDLE_QUEST_LICENSE_STORE_DIR;
   releaseSandboxConfiguration.readOnlyBinds = releaseSandboxConfiguration.readOnlyBinds
-    .filter(({destination}) => destination !== operatorPnpmStoreDirectory);
+    .filter(({destination}) => destination !== join(isolatedPnpmLicenseStoreDirectory, "files"));
 
   // Snapshot the exact committed source and token-bearing release leaf before
   // private credential contents enter this process.
