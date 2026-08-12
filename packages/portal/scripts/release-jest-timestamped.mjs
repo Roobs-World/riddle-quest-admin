@@ -616,6 +616,16 @@ const resolveTypeScriptCli = () => {
   return join(packageDirectory, "node_modules", "typescript", executable);
 };
 
+const resolveJestCli = () => {
+  const jestPackageJson = JSON.parse(
+    readFileSync(join(packageDirectory, "node_modules", "jest", "package.json"), "utf8"),
+  );
+  if (typeof jestPackageJson.bin !== "string") {
+    throw new Error("The installed Jest package does not expose a CLI executable");
+  }
+  return join(packageDirectory, "node_modules", "jest", jestPackageJson.bin);
+};
+
 const makeReadOnly = (directory) => {
   for (const entry of readdirSync(directory, {withFileTypes: true})) {
     const entryPath = join(directory, entry.name);
@@ -792,15 +802,23 @@ try {
     immutableEnvironment,
     immutablePackageDirectory,
   );
-  runPnpm(
-    ["test:jest-local:playwright"],
-    {
-      ...immutableEnvironment,
-      PORTAL_JEST_BUILD_DIR: verifiedBuildDirectory,
-      PORTAL_USE_EXISTING_BUILD: "1",
-    },
-    immutablePackageDirectory,
-  );
+  const verifiedBrowserEnvironment = {
+    ...immutableEnvironment,
+    PORTAL_BROWSER_TESTS: "1",
+    PORTAL_JEST_BUILD_DIR: verifiedBuildDirectory,
+    PORTAL_USE_EXISTING_BUILD: "1",
+  };
+  for (const testPath of [
+    "src/play/__tests__/hostedBrowser.jest-playwright.test.ts",
+    "src/jest/__tests__/authentication.jest-playwright.test.ts",
+  ]) {
+    runNode(
+      resolveJestCli(),
+      ["--config", "jest.config.cjs", "--runInBand", testPath],
+      verifiedBrowserEnvironment,
+      immutablePackageDirectory,
+    );
+  }
   assertSourceClean();
   const finalDependencyFingerprint = fingerprintReleaseDependencies({repositoryDirectory});
   if (finalDependencyFingerprint !== dependencyFingerprint) {

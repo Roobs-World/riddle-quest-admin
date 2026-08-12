@@ -813,7 +813,7 @@ test("the release sequence gates, packages, verifies, and uploads one immutable 
   const readOnlyIndex = findAfter(/makeReadOnly\s*\(\s*verifiedBuildDirectory\s*\)\s*;/, unzipIndex);
   const extractedAuditIndex = findAfter(/trustedScript\(["']audit-jest-artifact\.mjs["']\)/, readOnlyIndex);
   const extractedW3cIndex = findAfter(/trustedScript\(["']validate-w3c\.mjs["']\)/, extractedAuditIndex);
-  const browserIndex = findAfter(/["']test:jest-local:playwright["']/, extractedW3cIndex);
+  const browserIndex = findAfter(/resolveJestCli\(\)/, extractedW3cIndex);
   const dependencyVerifyIndex = findAfter(
     /const finalDependencyFingerprint\s*=\s*fingerprintReleaseDependencies/,
     browserIndex,
@@ -876,6 +876,11 @@ test("the release sequence gates, packages, verifies, and uploads one immutable 
   assert.match(releaseSource, /const resolveTypeScriptCli\s*=\s*\(\)\s*=>/);
   assert.match(releaseSource, /runNode\(\s*resolveTypeScriptCli\(\),\s*\[["']-p["']/);
   assert.doesNotMatch(releaseSource, /runPnpm\(\[["']exec["'],\s*["']tsc["']/);
+  assert.match(releaseSource, /const resolveJestCli\s*=\s*\(\)\s*=>/);
+  assert.match(releaseSource, /PORTAL_BROWSER_TESTS:\s*["']1["']/);
+  assert.match(releaseSource, /hostedBrowser\.jest-playwright\.test\.ts/);
+  assert.match(releaseSource, /authentication\.jest-playwright\.test\.ts/);
+  assert.doesNotMatch(releaseSource, /runPnpm\(\s*\[["']test:jest-local:playwright["']/);
   assert.match(
     releaseSource,
     /"ls-files",\s*"--others",\s*"--ignored",\s*"--exclude-standard",\s*"-z",\s*"--",\s*":\(glob\)\*\*\/\.env",\s*":\(glob\)\*\*\/\.env\.\*"/,
