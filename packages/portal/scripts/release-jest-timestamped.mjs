@@ -752,7 +752,7 @@ try {
   runNode(
     trustedScript("audit-jest-artifact.mjs"),
     [releaseBuildDirectory],
-    immutableEnvironment,
+    artifactEnvironment,
     immutablePackageDirectory,
   );
 
@@ -783,7 +783,7 @@ try {
   runNode(
     trustedScript("audit-jest-artifact.mjs"),
     [verifiedBuildDirectory],
-    immutableEnvironment,
+    artifactEnvironment,
     immutablePackageDirectory,
   );
   runNode(

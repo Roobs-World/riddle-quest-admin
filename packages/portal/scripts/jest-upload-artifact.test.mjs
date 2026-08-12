@@ -866,6 +866,13 @@ test("the release sequence gates, packages, verifies, and uploads one immutable 
   assert.match(releaseSource, /JEST_EXPECTED_ARCHIVE_BYTES = String\(verifiedArchiveFingerprint\.bytes\)/);
   assert.match(releaseSource, /trustedScript\(["']upload-jest-build\.mjs["']\)/);
   assert.match(releaseSource, /["']--configLoader["']\s*,\s*["']runner["']/);
+  assert.equal(
+    [...releaseSource.matchAll(
+      /trustedScript\(["']audit-jest-artifact\.mjs["']\),\s*\[[^\]]+\],\s*artifactEnvironment/g,
+    )].length,
+    2,
+    "both immutable artifact audits must receive the absolute Console manifest binding",
+  );
   assert.match(releaseSource, /const resolveTypeScriptCli\s*=\s*\(\)\s*=>/);
   assert.match(releaseSource, /runNode\(\s*resolveTypeScriptCli\(\),\s*\[["']-p["']/);
   assert.doesNotMatch(releaseSource, /runPnpm\(\[["']exec["'],\s*["']tsc["']/);
