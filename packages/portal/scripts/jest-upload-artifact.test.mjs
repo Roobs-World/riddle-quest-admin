@@ -921,6 +921,12 @@ test("the release sequence gates, packages, verifies, and uploads one immutable 
   assert.match(releaseSource, /credentialPath:\s*canonicalCredentialPath/);
   assert.match(releaseSource, /gitMetadataPaths:\s*uniqueGitMetadataPaths/);
   assert.match(releaseSource, /additionalMaskedFilePaths:\s*ignoredSensitiveFilePaths/);
+  assert.match(releaseSource, /writableBinds:\s*releaseDebugLogWritableBinds/);
+  assert.match(
+    releaseSource,
+    /runPnpm\(\["verify:production:extended"\][\s\S]*releaseSandboxConfiguration\.writableBinds = \[\]/,
+  );
+  assert.match(releaseSource, /firebase\|firestore\)-debug\(\?:\\\.\\d\+\)\?\\\.log/);
   assert.match(
     releaseSource,
     /operatorFirebaseEmulatorCache[\s\S]*\.cache["'],\s*["']firebase["'],\s*["']emulators["'][\s\S]*cpSync\(operatorFirebaseEmulatorCache, isolatedFirebaseEmulatorCache, \{recursive: true\}\)/,

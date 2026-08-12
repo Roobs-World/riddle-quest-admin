@@ -45,12 +45,18 @@ const ignoredSensitiveDirectoryPaths = [
   join(repositoryDirectory, "firebase-functions", "artifacts", "notification-copy-backups"),
   receiptDirectory,
 ].filter((path) => existsSync(path));
-const ignoredSensitiveFilePaths = [
+const releaseDebugLogDestinationPaths = [
   join(repositoryDirectory, "firebase-debug.log"),
   join(repositoryDirectory, "firestore-debug.log"),
   join(repositoryDirectory, "firebase-functions", "firebase-debug.log"),
   join(repositoryDirectory, "firebase-functions", "firestore-debug.log"),
-].filter((path) => existsSync(path));
+];
+const releaseDebugLogDestinationSet = new Set(releaseDebugLogDestinationPaths);
+const ignoredSensitiveFilePaths = [repositoryDirectory, join(repositoryDirectory, "firebase-functions")]
+  .flatMap((directory) => readdirSync(directory)
+    .filter((name) => /^(?:firebase|firestore)-debug(?:\.\d+)?\.log$/u.test(name))
+    .map((name) => join(directory, name)))
+  .filter((path) => !releaseDebugLogDestinationSet.has(path));
 const legacyViteEnvironmentPaths = [...new Set([
   ".env",
   ".env.local",
@@ -76,6 +82,13 @@ for (const directory of [
 ]) {
   mkdirSync(directory, {mode: 0o700});
 }
+const releaseDebugLogDirectory = join(releaseSandboxDirectory, "firebase-debug-logs");
+mkdirSync(releaseDebugLogDirectory, {mode: 0o700});
+const releaseDebugLogWritableBinds = releaseDebugLogDestinationPaths.map((destination, index) => {
+  const source = join(releaseDebugLogDirectory, `${index}.log`);
+  writeFileSync(source, "", {mode: 0o600});
+  return {source, destination};
+});
 chmodSync(releaseSandboxDirectory, 0o700);
 
 let releaseSandboxOwned = true;
@@ -294,6 +307,10 @@ releaseSandboxConfiguration = {
   readOnlyBinds: releaseSandboxReadOnlyBinds,
   repositoryDirectory,
   sandboxDirectory: releaseSandboxDirectory,
+  // Firebase CLI and the Firestore emulator require seekable log files in
+  // their working directory. Overlay private sandbox files so prior logs stay
+  // unreadable without mounting /dev/null, which breaks emulator startup.
+  writableBinds: releaseDebugLogWritableBinds,
 };
 
 const assertReleaseSandboxAvailable = () => {
@@ -564,6 +581,9 @@ try {
   // are read only after it passes.
   runPnpm(["verify:production:extended"], gateEnvironment);
   assertSourceClean();
+  // The remaining credential-bearing phase never invokes Firebase emulators.
+  // Close the narrow debug-log write overlays before credentials are loaded.
+  releaseSandboxConfiguration.writableBinds = [];
 
   // Snapshot the exact committed source and token-bearing release leaf before
   // private credential contents enter this process.
