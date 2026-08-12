@@ -272,7 +272,11 @@ if (!process.env.PLAYWRIGHT_BROWSERS_PATH) {
 
 releaseSandboxConfiguration = {
   additionalMaskedDirectoryPaths: ignoredSensitiveDirectoryPaths,
-  additionalMaskedFilePaths: [...legacyViteEnvironmentPaths, ...ignoredSensitiveFilePaths],
+  // Package-root .env files are rejected above, before bubblewrap runs. Do not
+  // ask bubblewrap to mask nonexistent destinations inside the writable
+  // repository: creating those mount points dirties the host worktree and
+  // makes every otherwise-valid release fail its post-probe clean check.
+  additionalMaskedFilePaths: ignoredSensitiveFilePaths,
   credentialPath: canonicalCredentialPath,
   gitMetadataPaths: uniqueGitMetadataPaths,
   operatorHomeDirectory,

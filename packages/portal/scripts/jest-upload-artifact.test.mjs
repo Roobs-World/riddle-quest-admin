@@ -917,9 +917,10 @@ test("the release sequence gates, packages, verifies, and uploads one immutable 
   assert.match(uploadSource, /spawnSync\(["']\/usr\/bin\/zip["']/);
   assert.match(releaseSource, /credentialPath:\s*canonicalCredentialPath/);
   assert.match(releaseSource, /gitMetadataPaths:\s*uniqueGitMetadataPaths/);
-  assert.match(
+  assert.match(releaseSource, /additionalMaskedFilePaths:\s*ignoredSensitiveFilePaths/);
+  assert.doesNotMatch(
     releaseSource,
-    /additionalMaskedFilePaths:\s*\[\.\.\.legacyViteEnvironmentPaths,\s*\.\.\.ignoredSensitiveFilePaths\]/,
+    /additionalMaskedFilePaths:\s*\[\.\.\.legacyViteEnvironmentPaths/,
   );
   assert.match(releaseSource, /presentLegacyEnvironmentPaths\.length > 0/);
   assert.match(releaseSource, /refusing an unsandboxed fallback/);
