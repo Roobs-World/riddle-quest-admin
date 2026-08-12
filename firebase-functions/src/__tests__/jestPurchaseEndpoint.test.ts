@@ -82,7 +82,9 @@ import {createJestPurchaseGrantId} from "../jest/jestPurchaseReceipts";
 /** Creates a trusted JSON request for one signed purchase token. */
 const request = (purchaseToken: string, ip: string) => ({
   body: {purchaseSigned: "signed", playerId: "player-1", purchaseToken},
-  get: (name: string) => name.toLowerCase() === "origin" ? "https://riddle-quest.builds.jest.com" : undefined,
+  get: (name: string) => name.toLowerCase() === "origin"
+    ? "https://019faa68-f3ec-755d-9ab5-c887fb426801.builds.jest.com"
+    : undefined,
   method: "POST",
   is: (type: string) => type === "application/json",
   ip,
