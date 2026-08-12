@@ -101,7 +101,7 @@ describeBrowser("standalone Jest browser game", () => {
     });
 
     await new Promise<void>((resolve) => server.listen(4178, "127.0.0.1", resolve));
-    const browser = await chromium.launch({headless: true});
+    const browser = await chromium.launch({headless: true, args: ["--renderer-process-limit=4"]});
     try {
       const context = await browser.newContext({viewport: {width: 390, height: 844}});
       const page = await context.newPage();
