@@ -111,6 +111,17 @@ const cleanupReleaseSandbox = () => {
   for (const destination of releaseCreatedDebugLogDestinations) {
     rmSync(destination, {force: true});
   }
+  // Immutable release inputs are deliberately chmod 0555. Restore owner
+  // write permission on sandbox directories only so recursive cleanup can
+  // unlink their contents without weakening files while the release runs.
+  const makeSandboxDirectoriesWritable = (directory) => {
+    if (!existsSync(directory)) return;
+    chmodSync(directory, 0o700);
+    for (const entry of readdirSync(directory, {withFileTypes: true})) {
+      if (entry.isDirectory()) makeSandboxDirectoriesWritable(join(directory, entry.name));
+    }
+  };
+  makeSandboxDirectoriesWritable(releaseSandboxDirectory);
   rmSync(releaseSandboxDirectory, {force: true, recursive: true});
 };
 process.on("exit", cleanupReleaseSandbox);
@@ -594,6 +605,17 @@ const resolveViteCli = () => {
   return join(vitePackageDirectory, vitePackageJson.bin.vite);
 };
 
+const resolveTypeScriptCli = () => {
+  const typescriptPackageJson = JSON.parse(
+    readFileSync(join(packageDirectory, "node_modules", "typescript", "package.json"), "utf8"),
+  );
+  const executable = typescriptPackageJson.bin?.tsc6 ?? typescriptPackageJson.bin?.tsc;
+  if (typeof executable !== "string") {
+    throw new Error("The installed TypeScript package does not expose a tsc executable");
+  }
+  return join(packageDirectory, "node_modules", "typescript", executable);
+};
+
 const makeReadOnly = (directory) => {
   for (const entry of readdirSync(directory, {withFileTypes: true})) {
     const entryPath = join(directory, entry.name);
@@ -705,7 +727,15 @@ try {
   };
 
   runNode(join(immutablePackageDirectory, "scripts", "audit-locales.mjs"), [], immutableEnvironment, immutablePackageDirectory);
-  runPnpm(["exec", "tsc", "-p", "tsconfig.json", "--noEmit"], immutableEnvironment, immutablePackageDirectory);
+  // Invoke the resolved committed tool directly. `pnpm exec` performs a
+  // dependency-state check that writes beside node_modules and is incompatible
+  // with the intentionally read-only immutable release tree.
+  runNode(
+    resolveTypeScriptCli(),
+    ["-p", "tsconfig.json", "--noEmit"],
+    immutableEnvironment,
+    immutablePackageDirectory,
+  );
   runNode(
     resolveViteCli(),
     [

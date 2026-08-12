@@ -866,6 +866,9 @@ test("the release sequence gates, packages, verifies, and uploads one immutable 
   assert.match(releaseSource, /JEST_EXPECTED_ARCHIVE_BYTES = String\(verifiedArchiveFingerprint\.bytes\)/);
   assert.match(releaseSource, /trustedScript\(["']upload-jest-build\.mjs["']\)/);
   assert.match(releaseSource, /["']--configLoader["']\s*,\s*["']runner["']/);
+  assert.match(releaseSource, /const resolveTypeScriptCli\s*=\s*\(\)\s*=>/);
+  assert.match(releaseSource, /runNode\(\s*resolveTypeScriptCli\(\),\s*\[["']-p["']/);
+  assert.doesNotMatch(releaseSource, /runPnpm\(\[["']exec["'],\s*["']tsc["']/);
   assert.match(
     releaseSource,
     /"ls-files",\s*"--others",\s*"--ignored",\s*"--exclude-standard",\s*"-z",\s*"--",\s*":\(glob\)\*\*\/\.env",\s*":\(glob\)\*\*\/\.env\.\*"/,
@@ -926,6 +929,10 @@ test("the release sequence gates, packages, verifies, and uploads one immutable 
   assert.match(
     releaseSource,
     /for \(const destination of releaseCreatedDebugLogDestinations\)[\s\S]*rmSync\(destination, \{force: true\}\)/,
+  );
+  assert.match(
+    releaseSource,
+    /makeSandboxDirectoriesWritable\(releaseSandboxDirectory\);[\s\S]*rmSync\(releaseSandboxDirectory, \{force: true, recursive: true\}\)/,
   );
   assert.match(
     releaseSource,
