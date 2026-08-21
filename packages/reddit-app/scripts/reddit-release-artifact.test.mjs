@@ -32,7 +32,8 @@ test("gate binds clean source provenance and exact package bytes", async (contex
 
 test("release preparation checks clean source before building and requires both entrypoints", async () => {
   const source = await readFile(new URL("./prepare-reddit-release.mjs", import.meta.url), "utf8");
-  assert.ok(source.indexOf("if (sourceDirty)") < source.indexOf('["build:package"]'));
+  assert.ok(source.indexOf("assertSourceUnchanged()") < source.indexOf('["build:package"]'));
+  assert.ok(source.lastIndexOf("assertSourceUnchanged()") > source.indexOf("createRedditHandoff"));
   for (const required of ["devvit.json", "dist/server/index.cjs", "dist/client/splash.html", "dist/client/game.html"]) {
     assert.match(source, new RegExp(required.replaceAll(".", "\\."), "u"));
   }

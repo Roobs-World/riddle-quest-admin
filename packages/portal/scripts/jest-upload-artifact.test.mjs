@@ -886,6 +886,9 @@ test("the release sequence gates, packages, verifies, and uploads one immutable 
     /"ls-files",\s*"--others",\s*"--ignored",\s*"--exclude-standard",\s*"-z",\s*"--",\s*":\(glob\)\*\*\/\.env",\s*":\(glob\)\*\*\/\.env\.\*"/,
   );
   assert.match(releaseSource, /additionalMaskedFilePaths\.push\(\.\.\.ignoredEnvironmentPaths\)/);
+  assert.match(releaseSource, /timestamped Jest releases are inactive-only/);
+  assert.match(releaseSource, /const activationRequested = false/);
+  assert.doesNotMatch(releaseSource, /credentials\.JEST_UPLOAD_IS_ACTIVE === ["']true["']/);
   assert.match(releaseSource, /additionalMaskedDirectoryPaths:\s*ignoredSensitiveDirectoryPaths/);
 
   const gateEnvironment = releaseSource.slice(

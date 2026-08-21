@@ -44,10 +44,10 @@ Run the complete hash-bound preflight from the repository root:
 
 ```sh
 pnpm check:youtube-progress
-pnpm youtube:preflight
+pnpm release:youtube
 ```
 
-`youtube:preflight` runs the content tests, YouTube runtime unit tests, isolated builds and reciprocal artifact audits for all four targets, release-boundary tests, and injected browser suites for all four targets. It then writes the exact test report and packages only if every repository-owned gate passed. To recapture only the verification report use `pnpm youtube:evidence`; to repackage an unchanged, already verified candidate use `pnpm youtube:package`. Packaging fails closed when the report is missing or no longer matches the Git snapshot, expanded artifact, or content/model audit.
+`release:youtube` runs the content tests, YouTube runtime unit tests, isolated builds and reciprocal artifact audits for all four targets, release-boundary tests, and injected browser suites for all four targets. It then writes the exact test report and packages only if every repository-owned gate passed. It has no remote upload action. To recapture only the verification report use `pnpm youtube:evidence`; to repackage an unchanged, already verified candidate use `pnpm youtube:package`. Packaging fails closed when the report is missing or no longer matches the Git snapshot, expanded artifact, or content/model audit. The legacy `pnpm youtube:preflight` alias delegates to the same canonical command for one migration cycle.
 
 The expected outputs are:
 

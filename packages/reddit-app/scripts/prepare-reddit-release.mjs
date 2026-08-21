@@ -18,10 +18,18 @@ const run = (command, args, options = {}) => {
 };
 
 const sourceCommit = run("git", ["rev-parse", "HEAD"], {capture: true});
-const sourceDirty = run("git", ["status", "--porcelain", "--untracked-files=normal"], {capture: true}).length > 0;
-if (sourceDirty) throw new Error("Reddit release gating requires a clean source worktree");
+const assertSourceUnchanged = () => {
+  const currentCommit = run("git", ["rev-parse", "HEAD"], {capture: true});
+  const sourceDirty = run("git", ["status", "--porcelain", "--untracked-files=normal"], {capture: true}).length > 0;
+  if (sourceDirty || currentCommit !== sourceCommit) {
+    throw new Error("Reddit release gating requires the same clean source commit throughout the build");
+  }
+  return sourceDirty;
+};
+const sourceDirty = assertSourceUnchanged();
 
 run("pnpm", ["build:package"], {cwd: packageDirectory});
+assertSourceUnchanged();
 const staging = await mkdtemp(path.join(tmpdir(), "riddle-quest-reddit-package-"));
 try {
   await Promise.all([
@@ -47,6 +55,7 @@ const archiveSha256 = redditArtifactSha256(contents);
 await writePrivateRedditJson(receiptPath, createRedditArtifactRecord({archivePath, archiveBytes: contents.byteLength, archiveEntries: entries.length, archiveSha256, sourceCommit, sourceDirty}));
 await verifyGatedRedditArtifact({archivePath, receiptPath, sourceCommit, sourceDirty});
 const handoffPath = await createRedditHandoff(receipts, archiveSha256, contents);
+assertSourceUnchanged();
 console.log(`Gated Reddit package: ${contents.byteLength} bytes, ${entries.length} entries, sha256 ${archiveSha256}`);
 console.log(`Immutable handoff: ${handoffPath}`);
 console.log(`Receipt: ${receiptPath}`);

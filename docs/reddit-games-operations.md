@@ -1,14 +1,16 @@
 # Reddit Games operations
 
-For first-time app/community provisioning, secrets, private playtest, complete
-Firebase deployment, and unchanged-byte promotion, run the resumable guarded wizard:
+For first-time app/community provisioning, secrets, a non-promotable private
+playtest, and the sandbox Firebase deployment, run the resumable guarded wizard:
 
 ```bash
 ./scripts/setup-reddit-games.sh
 ```
 
 It requires confirmation before external mutations and never writes either Reddit
-Firebase secret to an environment file or repository.
+Firebase secret to an environment file or repository. Its `playtest:upload` is a
+bootstrap artifact only; it is not an immutable production candidate or promotion
+receipt.
 
 Last updated: 2026-08-20
 
@@ -94,12 +96,24 @@ records a source digest and timestamp. Run
 `pnpm --filter @qwordly/reddit-app validate:contracts`; the immutable release gate
 will fail until all six provenance-bound fixture types pass validation.
 
-Populate `docs/evidence/reddit-hosted-evidence.json` from the adjacent example only
-after the exact receipts exist. `pnpm --filter @qwordly/reddit-app validate:hosted`
-requires the immutable artifact hash/version/commit, the complete four-Function and
-four-rules Firebase deployment, fetch/payment/policy/security approvals, all four
-roles, all six critical journeys, and passing Reddit web plus physical iOS and
-Android evidence. The release gate validates this manifest before packaging.
+Create the immutable candidate only after the contract fixtures pass:
+
+```bash
+pnpm release:reddit
+```
+
+The command always rebuilds the Reddit client and server from the same clean commit;
+it never stages an older ignored client artifact. Remote ingestion is currently
+blocked because the installed Devvit CLI rebuilds and has no documented prebuilt
+archive input. Do not treat the bootstrap playtest upload as release evidence.
+
+After an approved exact-byte ingestion path exists and the retained candidate has
+been reviewed, populate `docs/evidence/reddit-hosted-evidence.json` from the adjacent
+example. `pnpm --filter @qwordly/reddit-app release:promotion` requires the immutable
+artifact hash/version/commit, proves the hash and commit match the gated receipt and
+read-only handoff, validates the complete four-Function and four-rules Firebase
+deployment, fetch/payment/policy/security approvals, all four roles, all six critical
+journeys, and passing Reddit web plus physical iOS and Android evidence.
 
 ## Deletion and privacy
 
@@ -113,14 +127,20 @@ Reddit image hosts. See `privacy-data-inventory.md` for retention caveats.
 
 ## Release and retry barrier
 
-Run `pnpm --filter @qwordly/reddit-app release:gate` only from a clean committed
-worktree. It creates a SHA-256/commit-bound receipt and read-only handoff. Once an
-upload begins, retain the transmitting/ambiguous barrier until Reddit gives an
-authoritative result; never retry uncertain bytes blindly. Upload the exact verified
-package as an unlisted version in the dedicated Riddle Quest community. Publication
-uses stable SemVer and `devvit publish`; a human requests public listing only after
-review and all tracker gates pass. Roll back by disabling affected Reddit features
-and selecting a previously verified version, never by editing accepted bytes.
+Run `pnpm release:reddit` only from a clean committed worktree. It creates a
+SHA-256/commit-bound receipt and read-only candidate handoff, then stops. The legacy
+package `release:gate` delegates to the same candidate command for one migration
+cycle. Package-level `release:upload` and `release:publish` commands fail closed: the
+installed Devvit upload builds again, and `devvit publish` creates and uploads a new
+version rather than proving promotion of reviewed bytes.
+
+No production transmission command is currently approved. Before adding one, it must
+verify the exact read-only handoff, create the existing transmitting barrier before
+calling Devvit, and preserve ambiguous outcomes until Reddit gives an authoritative
+result. Publication must promote the already reviewed exact version rather than
+create another version. Until those capabilities are proven, Reddit remote release is
+blocked. Roll back a future release by disabling affected features and selecting a
+previously verified version, never by editing accepted bytes.
 
 ## Monitoring and incidents
 

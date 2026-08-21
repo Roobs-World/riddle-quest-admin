@@ -24,7 +24,7 @@
     "facebook:setup": "bash ../../scripts/setup-facebook-instant-games.sh",
     "release:jest": "node scripts/release-jest-timestamped.mjs",
     "release:jest:timestamped": "node scripts/release-jest-timestamped.mjs",
-    "test:release-scripts": "node --test --test-isolation=none scripts/jest-console-manifest.test.mjs scripts/jest-upload-artifact.test.mjs scripts/facebook-release-artifact.test.mjs scripts/locale-audit-rules.test.mjs scripts/platform-artifact-audits.test.mjs scripts/youtube-release-artifact.test.mjs",
+    "test:release-scripts": "node --test --test-isolation=none scripts/jest-console-manifest.test.mjs scripts/jest-upload-artifact.test.mjs scripts/facebook-release-artifact.test.mjs scripts/locale-audit-rules.test.mjs scripts/platform-artifact-audits.test.mjs scripts/youtube-release-artifact.test.mjs ../../scripts/release/platform-releases.test.mjs",
     "audit:jest-artifact": "node scripts/audit-jest-artifact.mjs dist-jest",
     "audit:facebook-artifact": "node scripts/audit-facebook-artifact.mjs dist-facebook",
     "audit:reddit-artifact": "node scripts/audit-reddit-artifact.mjs dist-reddit",

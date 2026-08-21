@@ -218,6 +218,7 @@ write_env REDDIT_COMMERCE_SANDBOX_ENABLED "1"
 pause "Confirm the app slug in packages/reddit-app/devvit.json is owned by this Reddit account."
 
 stage "Prepare platform prerequisites"
+say "Open https://developers.reddit.com/ in the authenticated owner account."
 say "Reddit submits the exact HTTP domain and products automatically during playtest/upload."
 step "Verify README.md explains why the Devvit server needs the single Firebase Functions host."
 step "Keep production commerce and notifications disabled until their separate approval evidence exists."
@@ -231,8 +232,9 @@ if [[ -n "$(git status --porcelain --untracked-files=normal)" ]]; then
 fi
 pnpm --filter @qwordly/reddit-app build:package
 pnpm --filter @qwordly/reddit-app audit:performance
+warn "This bootstrap playtest upload is non-promotable and is not a production release receipt."
 confirm "Upload a private prerelease?" || exit 1
-env -u DEBUG -u FIREBASE_DEBUG_MODE pnpm --filter @qwordly/reddit-app exec devvit upload --bump prerelease
+env -u DEBUG -u FIREBASE_DEBUG_MODE pnpm --filter @qwordly/reddit-app playtest:upload
 say "Run this in a second terminal and wait for Playtest ready before continuing:"
 say "env -u DEBUG -u FIREBASE_DEBUG_MODE pnpm --filter @qwordly/reddit-app exec devvit playtest $REDDIT_TEST_SUBREDDIT --show-timestamps"
 pause "Confirm the private version is installed and its exact version identifier is recorded."
@@ -282,27 +284,26 @@ say 'Pipe each raw JSON payload through: pnpm --filter @qwordly/reddit-app captu
 say 'Store only sanitized output under docs/evidence/reddit-contracts, then run: pnpm --filter @qwordly/reddit-app validate:contracts'
 step "Run inline/expanded, login reload, visibility, deletion, recovery, race, referral, and payment journeys."
 step "Repeat the required matrix on Reddit web and physical iOS and Android devices."
-step "Copy reddit-hosted-evidence.example.json to reddit-hosted-evidence.json and replace every placeholder with reviewed receipts."
-say 'Validate the deployment, artifact, approvals, roles, and device matrix with: pnpm --filter @qwordly/reddit-app validate:hosted'
 warn "Never save raw secrets, session tokens, Reddit IDs, or unsanitized payment records in the repository."
-pause "Confirm failures have been fixed and redacted evidence paths are ready for tracker updates."
+pause "Confirm bootstrap failures have been fixed and sanitized contract fixtures are ready for review."
 
-stage "Submit and promote unchanged reviewed bytes"
+stage "Prepare the immutable production candidate"
 say "Record external approvals before enabling their production feature names."
 say "Commerce/notifications must remain absent from REDDIT_APPROVED_FEATURES until approval evidence exists."
 pause "Confirm approved features and production kill switches are recorded in the Firebase environment."
 pnpm --dir firebase-functions preflight:reddit-backend
 confirm "Deploy the final approved Firebase configuration as one complete release unit?" || exit 1
 pnpm --dir firebase-functions deploy:reddit-backend
-pnpm --filter @qwordly/reddit-app release:gate
-say "Submit the gated unlisted version for review and record its source commit and SHA-256."
-warn "Do not rebuild between review and promotion. Do not use a command that creates a different version."
-pause "Confirm fetch, payment/product, policy, security, role, and physical-device reviews all passed."
-node scripts/assert-reddit-promotion-ready.mjs
-confirm "Promote the exact reviewed version now?" || exit 1
-say "Open https://developers.reddit.com/ in the authenticated browser."
-step "Promote the already reviewed version in the Reddit developer dashboard without changing its bytes."
-step "Record the matching version, hash, global launch smoke test, and monitoring evidence."
-pause "Confirm the unchanged reviewed version is globally available and healthy."
+pause "Commit the reviewed contract fixtures and release configuration before creating the candidate."
+if [[ -n "$(git status --porcelain --untracked-files=normal)" ]]; then
+  warn "The worktree is dirty. The immutable production candidate requires one reviewed commit."
+  exit 1
+fi
+pnpm release:reddit
+say "Record the candidate source commit, SHA-256, receipt, and read-only handoff path."
+warn "Production ingestion is blocked until an exact-byte Devvit adapter or equivalent authoritative proof exists."
+step "Do not run devvit upload or devvit publish for this candidate; both create unproven bytes or a new version."
+step "After an approved ingestion path exists, bind hosted evidence to this candidate and run: pnpm --filter @qwordly/reddit-app release:promotion"
+pause "Confirm the candidate and its remote-release blocker are recorded without claiming upload or publication."
 
 finish

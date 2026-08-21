@@ -189,8 +189,8 @@ Set:
 The release command requires a clean committed worktree, binds the build to that full Git commit, generates a unique
 `1.0.0-dev.YYYYMMDDHHMMSS.<commit>.<attempt>` version, and uploads an inactive Draft by default. It does not make a
 private game public or submit it for moderation. Never persist `JEST_UPLOAD_IS_ACTIVE` or
-`JEST_CONFIRM_ACTIVATION` in the credential file; the parser rejects both. A deliberate new activation-request upload
-must supply both values in that invocation's process environment as shown in the operations runbook.
+`JEST_CONFIRM_ACTIVATION` in the credential file; the parser rejects both, and the canonical release interface rejects
+either value in its process environment. Activate the already verified Draft manually in the Developer Console.
 
 ## Jest Developer Console setup
 
@@ -378,6 +378,20 @@ Use two sandbox players for referral tests. Reset the invitee before rerunning a
 
 ## Build and release
 
+The canonical per-platform interface is documented in [`docs/release-operations.md`](docs/release-operations.md). Inspect every target without running its build or external adapter:
+
+```bash
+pnpm release:plan
+```
+
+Build one isolated shipping target:
+
+```bash
+pnpm build:jest
+pnpm build:youtube
+pnpm build:reddit
+```
+
 Build the established backend and non-YouTube production path:
 
 ```bash
@@ -402,7 +416,7 @@ This uses the committed English YouTube fixture solely for repository verificati
 
 ```bash
 pnpm --filter @qwordly/portal build:youtube
-pnpm youtube:preflight
+pnpm release:youtube
 ```
 
 The release build writes `packages/portal/dist-youtube`; a successful preflight writes `build-youtube.zip`, `build-youtube.manifest.json`, and `build-youtube.test-report.json` at the repository root. The fixture artifact and synthetic packaging tests are not upload evidence. See [`docs/youtube-playables-operations.md`](docs/youtube-playables-operations.md) for content authoring, exact-hash evidence, and the manual Portal workflow.
@@ -410,7 +424,7 @@ The release build writes `packages/portal/dist-youtube`; a successful preflight 
 After all tests and sandbox checks pass, upload a timestamped build:
 
 ```bash
-pnpm jest:build-upload
+pnpm release:jest
 ```
 
 The command takes an exclusive release lock and runs the full extended production gate before reading credential-file
@@ -434,6 +448,14 @@ backups, hard links, or alternate secret copies. Run releases on a dedicated tru
 locked, and do not place other credentials in readable paths outside the masked home.
 
 Jest responds to a successful submission with HTTP `202`: the build is accepted for background processing, not ready or active. Before transmission, the command writes an owner-private attempt receipt under `packages/portal/.jest-upload-receipts/`. A timeout, interruption, or crash leaves that version blocked as transmitting/ambiguous until an owner reconciles it in the Developer Console or completion email; blindly retrying could duplicate an accepted build. After a documented `202`, the receipt records the version ID and exact archive checksum. The documented API has no authoritative build-status polling endpoint, so the release tool does not invent one. Publication and moderation submission remain manual owner actions.
+
+Prepare the Reddit release handoff separately after its hosted prerequisites are complete:
+
+```bash
+pnpm release:reddit
+```
+
+This command creates a commit/hash-bound immutable candidate and does not call Devvit. Package-level `release:upload` and `release:publish` shortcuts fail closed because the installed Devvit commands rebuild or create a new version. Remote ingestion remains blocked until it can be proven to preserve the candidate bytes; follow [`docs/reddit-games-operations.md`](docs/reddit-games-operations.md).
 
 Deploy backend changes separately:
 

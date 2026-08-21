@@ -51,7 +51,8 @@ pnpm dlx firebase-tools@15.25.1 functions:secrets:set REDDIT_UID_SECRET --projec
    - Store the replacement only in the owner-only external credential file
      documented in `docs/jest-html5-operations.md`; require mode `0600`.
    - Keep `JEST_UPLOAD_IS_ACTIVE` and `JEST_CONFIRM_ACTIVATION` out of that
-     persistent file. Activation intent belongs only on one deliberate command.
+     persistent file. The canonical release interface rejects both variables;
+     activate the already verified Draft manually in the Developer Console.
 
 4. Sentry and sandbox credentials
    - Revoke any exposed Sentry organization token and replace it with a dedicated

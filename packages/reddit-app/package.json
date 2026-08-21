@@ -11,7 +11,7 @@
     "stage:client": "node scripts/stage-client.mjs",
     "build:server": "vite build",
     "build": "pnpm build:client && pnpm build:server",
-    "build:package": "pnpm stage:client && pnpm build:server && pnpm validate",
+    "build:package": "pnpm build:client && pnpm build:server && pnpm validate",
     "licenses:generate": "RIDDLE_QUEST_LICENSE_PACKAGE=@qwordly/reddit-app RIDDLE_QUEST_LICENSE_OUTPUT=$PWD/third-party-licenses.reddit.txt node ../portal/scripts/generate-third-party-licenses.mjs --write",
     "licenses:check": "RIDDLE_QUEST_LICENSE_PACKAGE=@qwordly/reddit-app RIDDLE_QUEST_LICENSE_OUTPUT=$PWD/third-party-licenses.reddit.txt node ../portal/scripts/generate-third-party-licenses.mjs --check",
     "audit:performance": "node scripts/audit-performance.mjs",
@@ -21,11 +21,15 @@
     "validate:contracts": "node scripts/validate-reddit-contract-fixtures.mjs ../../docs/evidence/reddit-contracts",
     "validate:hosted": "node scripts/validate-reddit-hosted-evidence.mjs ../../docs/evidence/reddit-hosted-evidence.json",
     "test:release": "node --test scripts/reddit-release-artifact.test.mjs",
-    "release:gate": "pnpm validate:contracts && pnpm validate:hosted && node scripts/prepare-reddit-release.mjs",
+    "release:candidate": "pnpm validate:contracts && node scripts/prepare-reddit-release.mjs",
+    "release:gate": "pnpm release:candidate",
+    "release:promotion": "pnpm validate:hosted && node scripts/verify-reddit-promotion.mjs && node ../../scripts/assert-reddit-promotion-ready.mjs",
     "validate": "pnpm check:types && pnpm test && node scripts/validate-package.mjs",
     "playtest": "devvit playtest",
-    "upload": "pnpm build && devvit upload",
-    "publish": "devvit publish"
+    "playtest:upload": "pnpm build && devvit upload --bump prerelease",
+    "release:upload": "node scripts/direct-release-guard.mjs upload",
+    "release:publish": "node scripts/direct-release-guard.mjs publish",
+    "prepublishOnly": "node scripts/direct-release-guard.mjs publish"
   },
   "dependencies": {
     "@devvit/web": "0.14.1",

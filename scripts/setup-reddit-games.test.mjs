@@ -13,17 +13,21 @@ test("Reddit setup wizard covers every human gate without persisting secrets", a
     "devvit whoami", "devvit login", "https://www.reddit.com/subreddits/create", "https://developers.reddit.com/",
     "functions:secrets:set REDDIT_GATEWAY_SECRET", "functions:secrets:set REDDIT_UID_SECRET",
     "settings set redditGatewaySecret", "settings set redditEnvironment", "build:package",
-    "audit:performance", "devvit upload --bump prerelease", "preflight:reddit-backend",
-    "deploy:reddit-backend", "capture:contract", "validate:contracts", "validate:hosted", "release:gate", "physical iOS and Android",
+    "audit:performance", "playtest:upload", "preflight:reddit-backend",
+    "deploy:reddit-backend", "capture:contract", "validate:contracts", "release:reddit", "release:promotion", "physical iOS and Android",
   ]) assert.ok(source.includes(required), `missing ${required}`);
   assert.doesNotMatch(source, /write_env REDDIT_(?:GATEWAY|UID)_SECRET/u);
   assert.doesNotMatch(source, /set_secret REDDIT_(?:GATEWAY|UID)_SECRET/u);
   assert.match(source, /write_env REDDIT_COMMERCE_SANDBOX_ENABLED "1"/u);
   assert.ok(source.indexOf("preflight:reddit-backend") < source.indexOf("deploy:reddit-backend"));
-  assert.ok(source.indexOf("devvit upload --bump prerelease") < source.indexOf("settings set redditGatewaySecret"));
+  assert.ok(source.indexOf("playtest:upload") < source.indexOf("settings set redditGatewaySecret"));
+  assert.match(source, /bootstrap playtest upload is non-promotable/u);
   assert.ok(source.indexOf("settings set redditGatewaySecret") < source.indexOf("deploy:reddit-backend"));
+  assert.ok((source.match(/git status --porcelain/gmu) ?? []).length >= 2);
+  assert.match(source, /immutable production candidate requires one reviewed commit/u);
   assert.match(source, /env -u DEBUG -u FIREBASE_DEBUG_MODE/u);
   assert.match(source, /settings set redditGatewaySecret >\/dev\/null 2>&1/u);
   assert.match(source, /git status --porcelain/u);
-  assert.match(source, /Do not rebuild between review and promotion/u);
+  assert.match(source, /exact-byte Devvit adapter/u);
+  assert.match(source, /without claiming upload or publication/u);
 });

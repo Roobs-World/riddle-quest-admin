@@ -228,12 +228,12 @@ Install the credential template outside the repository with owner-only permissio
 ```bash
 install -D -m 600 packages/portal/jest-release.credentials.example \
   "${XDG_CONFIG_HOME:-$HOME/.config}/riddle-quest/jest-release.env"
-pnpm jest:build-upload
+pnpm release:jest
 ```
 
 Keep `JEST_UPLOAD_IS_ACTIVE` and `JEST_CONFIRM_ACTIVATION` out of that persistent file; the credential parser rejects
-both so a stale file can never request activation. The inactive Draft default changes only when both values are supplied
-to one deliberate command invocation as documented below.
+both so a stale file can never request activation. The canonical `release:jest` interface also rejects either variable
+in its process environment, so every automated release through that interface remains an inactive Draft.
 
 The command refuses a dirty worktree, acquires an exclusive release lock, adds the source commit and a random attempt ID
 to its timestamped version, and runs `verify:production:extended` before reading credential-file contents. Timestamped
@@ -302,13 +302,9 @@ before ever retrying that exact version. Do not delete either barrier and retry 
 the first request. Jest does not currently document an authoritative build-status polling endpoint, so the tooling
 deliberately does not infer readiness from elapsed time or poll an unofficial URL.
 
-Prefer activating the already verified Draft version in the Developer Console. If an owner deliberately chooses to request activation as part of a **new** timestamped upload, both values below are required. The game-ID confirmation prevents a stale shell environment from activating the wrong game, but this command creates a new version; it does not activate the previously previewed Draft:
-
-```bash
-JEST_UPLOAD_IS_ACTIVE=true \
-JEST_CONFIRM_ACTIVATION=019faa68-f3ec-755d-9ab5-c887fb426801 \
-pnpm jest:build-upload
-```
+Activate only the already verified Draft version in the Developer Console. The canonical release interface has no
+activation action: it creates a new inactive version, never activates an upload, and cannot activate a previously
+previewed Draft.
 
 ### Coordinated gameplay protocol cutover
 

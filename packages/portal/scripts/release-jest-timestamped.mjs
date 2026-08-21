@@ -658,6 +658,11 @@ const makeReadOnly = (directory) => {
   chmodSync(directory, 0o555);
 };
 
+for (const key of ["JEST_UPLOAD_IS_ACTIVE", "JEST_CONFIRM_ACTIVATION"]) {
+  if (process.env[key] !== undefined) {
+    throw new Error(`${key} is unsupported; timestamped Jest releases are inactive-only`);
+  }
+}
 console.log(`Gating immutable Jest build ${buildVersion} from ${sourceCommit}`);
 
 try {
@@ -710,21 +715,13 @@ try {
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(notificationEmail)) {
     throw new Error("JEST_NOTIFICATION_EMAIL must be a valid email address");
   }
-  const activationRequested = credentials.JEST_UPLOAD_IS_ACTIVE === "true";
-  if (activationRequested && credentials.JEST_CONFIRM_ACTIVATION?.toLowerCase() !== gameId) {
-    throw new Error(`Set JEST_CONFIRM_ACTIVATION=${gameId} to confirm activation before building`);
-  }
-  console.log(
-    `Creating ${activationRequested ? "an explicit activation request" : "an inactive draft"} in ${workspaceDirectory}`,
-  );
+  const activationRequested = false;
+  console.log(`Creating an inactive draft in ${workspaceDirectory}`);
 
   const immutableEnvironment = {
     ...gateEnvironment,
     JEST_GAME_ID: gameId,
-    JEST_UPLOAD_IS_ACTIVE: String(activationRequested),
-    ...(credentials.JEST_CONFIRM_ACTIVATION
-      ? {JEST_CONFIRM_ACTIVATION: credentials.JEST_CONFIRM_ACTIVATION}
-      : {}),
+    JEST_UPLOAD_IS_ACTIVE: "false",
   };
   const sentryBuildEnvironment = {
     ...immutableEnvironment,
