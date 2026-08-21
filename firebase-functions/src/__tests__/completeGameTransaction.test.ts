@@ -16,6 +16,9 @@ const mockTransaction = {
     mockDocuments.set(ref.path, {...(mockDocuments.get(ref.path) ?? {}), ...value});
   }),
   create: jest.fn((ref: {path: string}, value: Stored) => mockDocuments.set(ref.path, {...value})),
+  set: jest.fn((ref: {path: string}, value: Stored) => {
+    mockDocuments.set(ref.path, {...(mockDocuments.get(ref.path) ?? {}), ...value});
+  }),
   delete: jest.fn((ref: {path: string}) => mockDocuments.delete(ref.path)),
 };
 const mockFirestore = Object.assign(
@@ -150,6 +153,32 @@ describe("atomic authoritative completion", () => {
     expect(afterFirst).toMatchObject({coins: 325, progress: {classicIndex: 2}, stats: {gamesPlayed: 1, wins: 1}});
     expect(mockDocuments.get(completionBindingPath("classic:1"))).toEqual(newerPointer);
     expect(mockDocuments.get(completionReceiptPath("classic:1"))).not.toHaveProperty("expiresAt");
+  });
+
+  it("adds the idempotent Facebook first-win referral to the returned authoritative balance", async () => {
+    const facebookUid = `facebook_${"a".repeat(40)}`;
+    const inviterUid = `facebook_${"b".repeat(40)}`;
+    mockDocuments.set(`users/${facebookUid}`, {...user(), userId: facebookUid});
+    mockDocuments.set(`users/${inviterUid}`, {...user(), userId: inviterUid, coins: 500});
+    mockDocuments.set(`facebookReferralBindings/${facebookUid}`, {
+      provider: "facebook",
+      inviteeUid: facebookUid,
+      inviterUid,
+      tokenId: "c".repeat(64),
+      boundAtMs: Date.now() - 1,
+      settledAtMs: null,
+    });
+    const request = {riddleId: "classic-1", gameMode: "classic" as const, sessionToken: TOKEN_A};
+    const first = await completeAuthoritativeGame(request, {uid: facebookUid});
+    const replay = await completeAuthoritativeGame(request, {uid: facebookUid});
+
+    expect(first).toMatchObject({
+      coinsEarned: 125,
+      rewardBreakdown: {referralBonus: 100, totalAwarded: 125, newBalance: 425},
+    });
+    expect(replay).toEqual(first);
+    expect(mockDocuments.get(`users/${facebookUid}`)?.coins).toBe(425);
+    expect(mockDocuments.get(`users/${inviterUid}`)?.coins).toBe(600);
   });
 
   it("expires loss-only receipts after the session horizon and replays them idempotently", async () => {

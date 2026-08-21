@@ -18,7 +18,7 @@ import {createNotificationOperationGate} from "./notifications/operationGate";
 import {useJestSharing} from "./sharing/useJestSharing";
 import {createRegistrationEntryPayload, type RegistrationSource} from "./registrationAttribution";
 import {resolveJestRuntimeMode, shouldEnableJestSubscriptions} from "./runtimeMode";
-import {sanitizeAnalyticsParams, trackEvent, trackScreen} from "../analytics/googleAnalytics";
+import {trackScreen} from "../analytics/googleAnalytics";
 import {hasTrustedTestHarnessMarker} from "../testHarness";
 import {resolveRaceChallengeId} from "./entryIntent";
 import {createJestBackend} from "./createJestBackend";
@@ -46,9 +46,15 @@ import {useJestPlayerStateWrites} from "./useJestPlayerStateWrites";
 import {useAccountDeletionQuiescence} from "./useAccountDeletionQuiescence";
 import {commitJestStartupSession} from "./commitJestStartupSession";
 import {clearJestFirebaseAuthentication} from "./clearJestFirebaseAuthentication";
+import {createHostServices, getHostConfigurationWarning, resolveHostServicesMode} from "../play/services";
+import {useJestFunnelTracking, useJestPlatformActivity} from "./useJestPlatformOperations";
+import {useJestPresence} from "./useJestPresence";
 /** Provides jest play app behavior. */
 export function JestPlayApp() {
   const locale = useLocale();
+  const hostServicesMode = useMemo(() => resolveHostServicesMode(), []);
+  const hostServices = useMemo(() => createHostServices(hostServicesMode), [hostServicesMode]);
+  const hostConfigurationWarning = getHostConfigurationWarning(hostServicesMode);
   const searchParams = new URLSearchParams(window.location.search);
   const harness = searchParams.get("harness");
   const runtimeMode = resolveJestRuntimeMode({
@@ -75,7 +81,6 @@ export function JestPlayApp() {
   const [showRegistration, setShowRegistration] = useState(false);
   const [registrationPending, setRegistrationPending] = useState(false);
   const [registrationFailure, setRegistrationFailure] = useState<string | null>(null);
-  const [pendingPlatformOperations, setPendingPlatformOperations] = useState(0);
   const [accountDeleted, setAccountDeleted] = useState(false);
   const [startup, setStartup] = useState<JestStartupUpdate>({stage: "connecting", progress: 5});
   const [engagementProgress, setEngagementProgress] = useState({
@@ -94,45 +99,13 @@ export function JestPlayApp() {
   const registrationCompletingRef = useRef(false);
   const registrationSourceRef = useRef<RegistrationSource>("post_instructions");
   sessionRef.current = session;
-  const withPlatformActivity = useCallback(async <Result,>(operation: () => Promise<Result>): Promise<Result> => {
-    const startedAt = Date.now();
-    setPendingPlatformOperations((current) => current + 1);
-    try {
-      return await notificationOperationGate.run(operation);
-    } finally {
-      const remainingTime = Math.max(0, 180 - (Date.now() - startedAt));
-      window.setTimeout(() => {
-        setPendingPlatformOperations((current) => Math.max(0, current - 1));
-      }, remainingTime);
-    }
-  }, [notificationOperationGate]);
-  const withBackgroundPlatformActivity = useCallback(
-    async <Result,>(operation: () => Promise<Result>): Promise<Result> => notificationOperationGate.run(operation),
-    [notificationOperationGate],
-  );
-  const trackFunnel = useCallback((eventName: string, params: Record<string, string | number | boolean> = {}) => {
-    if (!notificationOperationGate.isOpen()) return;
-    const intent = sessionRef.current?.entryIntent;
-    const attributedParams = {
-      ...(intent?.campaign ? {campaign: intent.campaign} : {}),
-      ...(intent?.reference ? {reference: intent.reference} : {}),
-      ...(intent?.utmSource ? {utm_source: intent.utmSource} : {}),
-      ...(intent?.utmMedium ? {utm_medium: intent.utmMedium} : {}),
-      ...(intent?.utmCampaign ? {utm_campaign: intent.utmCampaign} : {}),
-      ...(intent?.utmTerm ? {utm_term: intent.utmTerm} : {}),
-      ...(intent?.utmContent ? {utm_content: intent.utmContent} : {}),
-      ...params,
-    };
-    const safeParams = sanitizeAnalyticsParams(attributedParams);
-    console.info("[riddle-quest-funnel]", eventName, safeParams);
-    trackEvent(eventName, safeParams);
-    const safePlatformParams = Object.fromEntries(
-      Object.entries(safeParams).filter(
-        (entry): entry is [string, string | number | boolean] => !Array.isArray(entry[1]),
-      ),
-    );
-    platform.captureEvent(eventName, safePlatformParams);
-  }, [notificationOperationGate, platform]);
+  const {pendingPlatformOperations, withPlatformActivity, withBackgroundPlatformActivity} =
+    useJestPlatformActivity(notificationOperationGate);
+  const trackFunnel = useJestFunnelTracking({
+    gate: notificationOperationGate,
+    platform,
+    sessionRef,
+  });
   const playerStateWrites = useJestPlayerStateWrites({
     platform,
     gate: notificationOperationGate,
@@ -325,7 +298,7 @@ export function JestPlayApp() {
           } catch (profileError) {
             console.warn("[riddle-quest] Jest profile refresh after registration failed", profileError);
           }
-          setSession((current) => (current ? {...current, player, profile} : current));
+          setSession((current) => (current ? {...current, firebaseUid: identity.uid, player, profile} : current));
           trackFunnel("registration_completed", {
             playerContinuity: player.playerId === previousSession?.player.playerId,
             source: registrationSourceRef.current,
@@ -542,6 +515,14 @@ export function JestPlayApp() {
       window.removeEventListener("riddle-quest:dismiss-registration", dismissRegistrationPrompt);
     };
   }, [dismissRegistration, login, openRegistrationPrompt, register]);
+  const {setPresenceState, togglePresence} = useJestPresence({
+    gate: notificationOperationGate,
+    platform,
+    session,
+    sessionRef,
+    setSession,
+    trackFailure: trackFunnel,
+  });
   useEffect(() => {
     trackScreen(error ? "startup_error" : accountDeleted ? "account_deleted" : !session ? "startup_loading" : !session.player.registered && showRegistration
       ? "registration_prompt"
@@ -577,6 +558,8 @@ export function JestPlayApp() {
         />
       ) : null}
       <PlayHostApp
+        hostServices={hostServices}
+        hostConfigurationWarning={hostConfigurationWarning}
         initialGameMode={session.entryIntent.gameMode}
         initialRaceChallengeId={resolveRaceChallengeId(session.entryIntent)}
         initialRaceInbox={session.entryIntent.challengeDestination === "inbox"}
@@ -586,13 +569,21 @@ export function JestPlayApp() {
         onAuthoritativeComplete={handleAuthoritativeComplete}
         platformProducts={jestProducts}
         platformPurchase={purchaseProduct}
-        platformPlayerRegistered={session.player.registered}
+        platformCapabilities={{
+          accountUpgrade: {
+            state: session.player.registered ? "complete" : "available",
+            begin: async () => ({status: "unavailable", message: "Use the Jest registration controls."}),
+          },
+        }}
         externalInteractionBlocked={pendingPlatformOperations > 0}
         initialPlayerData={session.playerData}
         onPlayerDataChange={playerStateWrites.savePlayerData}
         accountDeletionServiceGate={notificationOperationGate}
         onAccountDeletionRequested={markAccountDeletionRequested}
         onAccountDeleted={clearPlayerState}
+        presenceEnabled={session.preferences.presenceEnabled === true}
+        onTogglePresence={togglePresence}
+        onPresenceStateChange={setPresenceState}
       />
     </>
   );

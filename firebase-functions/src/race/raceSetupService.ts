@@ -5,6 +5,7 @@ import {
   RACE_CATEGORY_IDS,
   RACE_DECK_SIZE,
   RACE_RULES,
+  RACE_SUPPORTED_LOCALES,
   RACE_TARGET_CORRECT,
   RaceChallengePreviewSchema,
   type ListRaceCategoriesResponse,
@@ -40,6 +41,8 @@ export type RaceChallengeRecord = {
   creatorSnapshot: {displayName: string; avatarUrl?: string | null};
   /** Stores category id. */
   categoryId: RaceCategoryId;
+  /** Locale boundary for matching, rematches, and challenge acceptance. */
+  locale: RaceLocale;
   /** Stores deck id. */
   deckId: string;
   /** Stores canonical riddle ids. */
@@ -230,7 +233,18 @@ export const parseChallengeRecord = (value: FirebaseFirestore.DocumentData | und
   ) {
     throw new HttpsError("internal", "Stored Race to 10 challenge is invalid.");
   }
-  return value as RaceChallengeRecord;
+  const locale = value.locale === undefined ? "en" : value.locale;
+  if (!(RACE_SUPPORTED_LOCALES as readonly unknown[]).includes(locale)) {
+    throw new HttpsError("internal", "Stored Race to 10 challenge locale is invalid.");
+  }
+  return {...value, locale} as RaceChallengeRecord;
+};
+
+/** Rejects challenge, rematch, and rivalry entry across locale boundaries. */
+export const assertRaceLocaleCompatible = (challenge: RaceChallengeRecord, locale: RaceLocale): void => {
+  if (challenge.locale !== locale) {
+    throw new HttpsError("failed-precondition", "RaceTo10.ERROR_LOCALE_MISMATCH");
+  }
 };
 
 /** Gets localized collection. */
@@ -363,6 +377,7 @@ export const challengePreview = (challenge: RaceChallengeRecord, nowMs: number):
     rivalryChallengeId: challenge.rivalryChallengeId,
     creator: challenge.creatorSnapshot,
     categoryId: challenge.categoryId,
+    locale: challenge.locale,
     targetCorrect: challenge.targetCorrect,
     adjustedTimeToBeatMs: challenge.creatorAdjustedFinishMs,
     rulesVersion: challenge.rules.version,

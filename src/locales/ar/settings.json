@@ -12,6 +12,7 @@
     "LOGOUT_BUTTON": "تسجيل الخروج",
     "LOGOUT_ERROR_MESSAGE": "تعذر تسجيل الخروج. يرجى المحاولة مرة أخرى.",
     "LOGOUT_ERROR_TITLE": "خطأ",
+    "PRESENCE_TOGGLE": "إظهار نشاطي للمنافسين",
     "SOUND_TOGGLE": "صوت",
     "TERMS_BUTTON": "شروط الاستخدام",
     "TITLE": "الإعدادات",

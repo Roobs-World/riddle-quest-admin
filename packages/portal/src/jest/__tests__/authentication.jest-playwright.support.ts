@@ -45,7 +45,7 @@ export const enterRegisteredGame = async (page: Page) => {
 
 export const openProfileAfterGuidance = async (page: Page) => {
   await page.getByRole("button", {name: /^profile$/i}).click();
-  await page.getByRole("heading", {name: /^profile$/i}).waitFor();
+  await page.locator("#game-modal-title").getByText(/^profile$/i).waitFor();
   const tooltip = page.locator(".tooltip-card");
   await tooltip.waitFor({state: "visible", timeout: 1_000}).catch(() => undefined);
   for (let step = 0; step < 8 && await tooltip.isVisible(); step += 1) {
@@ -89,7 +89,9 @@ export const solveFakeRace = async (page: Page, options: {expectChainedSubmitLoa
     }
     await submit.click({timeout: 5_000});
     const submitLoader = page.locator(".race-operation-loader");
-    await submitLoader.waitFor({state: "visible"});
+    const loaderVisible = submitLoader.waitFor({state: "visible", timeout: 1_000});
+    if (answer === "book" && options.expectChainedSubmitLoader) await loaderVisible;
+    else await loaderVisible.catch(() => undefined);
     if (answer !== "book") {
       await Promise.all([
         page.waitForFunction(

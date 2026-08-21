@@ -1,9 +1,9 @@
 import {useCallback, useEffect, useRef, type Dispatch} from "react";
-import type {JestSavedGame} from "../../../jest/types";
+import type {SavedGame} from "../../../platform/types";
 import type {GameSessionAction, GameSessionState} from "../../gameSession";
 
 /** Projects an active game session into the versioned low-integrity Jest player-data snapshot. */
-export const createSavedGame = (state: GameSessionState, savedAt = Date.now()): JestSavedGame | null => {
+export const createSavedGame = (state: GameSessionState, savedAt = Date.now()): SavedGame | null => {
   if (!state.riddle || !state.engineSnapshot || (state.lastOutcome && state.completionAcknowledged)) return null;
   return {
     schemaVersion: 1,
@@ -34,9 +34,9 @@ export const useGameSessionPersistence = ({
 }: {
   state: GameSessionState;
   stateRef: {current: GameSessionState};
-  restoredGame?: JestSavedGame | null;
+  restoredGame?: SavedGame | null;
   dispatch: Dispatch<GameSessionAction>;
-  onSaveGame?: (game: JestSavedGame | null) => void;
+  onSaveGame?: (game: SavedGame | null) => void;
 }) => {
   const lastClearedOutcomeRef = useRef<string | null>(null);
   const lastServerCheckpointRef = useRef<{riddleId: string; signature: string} | null>(null);

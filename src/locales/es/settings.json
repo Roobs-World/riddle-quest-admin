@@ -12,6 +12,7 @@
     "LOGOUT_BUTTON": "Cerrar sesión",
     "LOGOUT_ERROR_MESSAGE": "No se pudo cerrar sesión. Inténtelo de nuevo.",
     "LOGOUT_ERROR_TITLE": "¡Error!",
+    "PRESENCE_TOGGLE": "Mostrar actividad a rivales",
     "SOUND_TOGGLE": "Sonido",
     "TERMS_BUTTON": "Términos de uso",
     "TITLE": "Configuración",

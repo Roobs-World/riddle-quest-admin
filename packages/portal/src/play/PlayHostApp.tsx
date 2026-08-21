@@ -6,12 +6,11 @@ import {detectDeviceLanguage, tr, useLocale} from "./i18n";
 import {createRequestId} from "./requestIds";
 import {GameFrameApp} from "./GameFrameApp";
 import {dispatchLocalBridge, GAME_TO_HOST_EVENT, HOST_TO_GAME_EVENT} from "./localBridge";
-import {createHostServices, getHostConfigurationWarning, resolveHostServicesMode} from "./services";
 import type {AuthSnapshot, CompletionResult, HostServices, ProductSummary, WebGameMode} from "./types";
-import type {ListRaceCategoriesResponse} from "@qwordly/core/race";
+import type {ListRaceCategoriesResponse, RaceOutcome} from "@qwordly/core/race";
 import {SpinningWheelLoader} from "./SpinningWheelLoader";
-import type {JestPlayerData, JestPlayerDataUpdate} from "../jest/types";
-import {restoreJestProfileWhileServerLoads} from "../jest/playerData";
+import type {PlatformCapabilities, PlayerData, PlayerDataUpdate} from "../platform/types";
+import {restoreProfileWhileServerLoads} from "../platform/playerData";
 import {isRaceTo10Enabled} from "./race/logic/raceFeatureFlag";
 import {trackEvent} from "../analytics/googleAnalytics";
 import {
@@ -23,6 +22,7 @@ import {
 import {captureBrowserException} from "../observability/sentry";
 import {safeBrowserStorageGet} from "./playerPreferences";
 import {coordinateHostServices, type AccountDeletionServiceGate} from "./accountDeletionServiceGate";
+import type {ActivePresenceState} from "../presence/PlatformPresenceSession";
 
 /** Creates host message. */
 const createHostMessage = <Message extends HostToGameMessage>(message: Message): Message => ({
@@ -32,12 +32,17 @@ const createHostMessage = <Message extends HostToGameMessage>(message: Message):
 
 /** Provides play host app behavior. */
 export function PlayHostApp({
+  hostServices,
+  hostConfigurationWarning = null,
   initialGameMode,
   onPlayable,
   onAuthoritativeComplete,
+  onResultScreen,
+  onAuthoritativeRaceResult,
   platformProducts,
   platformPurchase,
-  platformPlayerRegistered,
+  platformCapabilities,
+  platformPlayerId,
   externalInteractionBlocked = false,
   initialPlayerData,
   onPlayerDataChange,
@@ -48,19 +53,30 @@ export function PlayHostApp({
   registrationInviterName,
   initialRaceChallengeId,
   initialRaceInbox = false,
+  presenceEnabled,
+  onTogglePresence,
+  raceLocalePolicy = "english-only",
+  onPresenceStateChange,
 }: {
+  hostServices: HostServices;
+  hostConfigurationWarning?: string | null;
   initialGameMode?: WebGameMode;
   onPlayable?: () => void;
   onAuthoritativeComplete?: (
     input: {riddleId: string; gameMode: WebGameMode},
     result: CompletionResult,
   ) => void | Promise<void>;
+  /** Runs only after an authoritative single-player or multiplayer result is available. */
+  onResultScreen?: () => void | Promise<void>;
+  /** Runs after the server returns one authoritative multiplayer outcome. */
+  onAuthoritativeRaceResult?: (result: RaceOutcome) => void | Promise<void>;
   platformProducts?: ProductSummary[];
   platformPurchase?: (productId: string) => Promise<import("./types").PurchaseResult>;
-  platformPlayerRegistered?: boolean;
+  platformCapabilities?: PlatformCapabilities;
+  platformPlayerId?: string;
   externalInteractionBlocked?: boolean;
-  initialPlayerData?: JestPlayerData | null;
-  onPlayerDataChange?: (update: JestPlayerDataUpdate) => void;
+  initialPlayerData?: PlayerData | null;
+  onPlayerDataChange?: (update: PlayerDataUpdate) => void;
   onAccountDeleted?: () => void | Promise<void>;
   onAccountDeletionRequested?: () => void | Promise<void>;
   accountDeletionServiceGate?: AccountDeletionServiceGate;
@@ -68,22 +84,24 @@ export function PlayHostApp({
   registrationInviterName?: string;
   initialRaceChallengeId?: string;
   initialRaceInbox?: boolean;
-} = {}) {
+  presenceEnabled?: boolean;
+  onTogglePresence?: () => void;
+  raceLocalePolicy?: "english-only" | "all";
+  onPresenceStateChange?: (state: ActivePresenceState) => void;
+}) {
   const locale = useLocale();
   const sessionIdRef = useRef(createRequestId("session"));
-  const servicesMode = useMemo(() => resolveHostServicesMode(), []);
-  const baseServices = useMemo<HostServices>(() => createHostServices(servicesMode), [servicesMode]);
   const services = useMemo<HostServices>(() => {
     const configuredServices: HostServices = {
-      ...baseServices,
-      products: platformProducts ?? baseServices.products,
-      requestPurchase: platformPurchase ?? baseServices.requestPurchase,
+      ...hostServices,
+      products: platformProducts ?? hostServices.products,
+      requestPurchase: platformPurchase ?? hostServices.requestPurchase,
     };
     return accountDeletionServiceGate
       ? coordinateHostServices(configuredServices, accountDeletionServiceGate)
       : configuredServices;
-  }, [accountDeletionServiceGate, baseServices, platformProducts, platformPurchase]);
-  const configurationWarning = getHostConfigurationWarning(servicesMode);
+  }, [accountDeletionServiceGate, hostServices, platformProducts, platformPurchase]);
+  const configurationWarning = hostConfigurationWarning;
   const raceBuildEnabled = useMemo(
     () =>
       isRaceTo10Enabled({
@@ -115,8 +133,10 @@ export function PlayHostApp({
   gameModeRef.current = gameMode;
   classicIndexRef.current = authSnapshot.profile?.classicIndex;
   const bridgeUser = useMemo(
-    () => (authSnapshot.user ? {...authSnapshot.user, platformRegistered: platformPlayerRegistered} : null),
-    [authSnapshot.user, platformPlayerRegistered],
+    () => (authSnapshot.user
+      ? {...authSnapshot.user, platformRegistered: platformCapabilities?.accountUpgrade?.state === "complete"}
+      : null),
+    [authSnapshot.user, platformCapabilities?.accountUpgrade?.state],
   );
 
   const withServerActivity = useCallback(async <Result,>(operation: () => Promise<Result>): Promise<Result> => {
@@ -133,7 +153,7 @@ export function PlayHostApp({
     }
   }, []);
   const saveActiveGame = useCallback(
-    (activeGame: NonNullable<JestPlayerData["activeGame"]> | null) => onPlayerDataChange?.({activeGame}),
+    (activeGame: NonNullable<PlayerData["activeGame"]> | null) => onPlayerDataChange?.({activeGame}),
     [onPlayerDataChange],
   );
 
@@ -144,7 +164,7 @@ export function PlayHostApp({
   useEffect(
     () =>
       services.auth.subscribe((snapshot) => {
-        setAuthSnapshot(restoreJestProfileWhileServerLoads(snapshot, initialPlayerData?.profile));
+        setAuthSnapshot(restoreProfileWhileServerLoads(snapshot, initialPlayerData?.profile));
       }),
     [initialPlayerData?.profile, services],
   );
@@ -158,14 +178,14 @@ export function PlayHostApp({
   useEffect(() => {
     let cancelled = false;
     setPrefetchedRaceCategories([]);
-    if (!raceBuildEnabled || !authSnapshot.user || locale !== "en") return;
+    if (!raceBuildEnabled || !authSnapshot.user || (raceLocalePolicy === "english-only" && locale !== "en")) return;
     void services
       .getRaceAccess()
       .then(async (access) => {
         if (!access.enabled || cancelled) return;
         if (initialRaceChallengeId) return;
         try {
-          const categories = await services.listRaceCategories("en");
+          const categories = await services.listRaceCategories(locale);
           if (!cancelled) setPrefetchedRaceCategories(categories.categories);
         } catch (error) {
           console.warn("[riddle-quest-race-prefetch] Unable to preload categories", error);
@@ -177,7 +197,7 @@ export function PlayHostApp({
     return () => {
       cancelled = true;
     };
-  }, [authSnapshot.user, initialRaceChallengeId, locale, raceBuildEnabled, services]);
+  }, [authSnapshot.user, initialRaceChallengeId, locale, raceBuildEnabled, raceLocalePolicy, services]);
 
   const postToGame = useCallback((message: HostToGameMessage) => {
     dispatchLocalBridge(HOST_TO_GAME_EVENT, createHostMessage(message));
@@ -278,6 +298,19 @@ export function PlayHostApp({
     [authSnapshot.user, bridgeUser, postToGame, services],
   );
 
+  const handleAuthoritativeComplete = useCallback(async (
+    input: {riddleId: string; gameMode: WebGameMode},
+    result: CompletionResult,
+  ) => {
+    await onAuthoritativeComplete?.(input, result);
+    await onResultScreen?.();
+  }, [onAuthoritativeComplete, onResultScreen]);
+
+  const handleAuthoritativeRaceResult = useCallback(async (result: RaceOutcome) => {
+    await onAuthoritativeRaceResult?.(result);
+    await onResultScreen?.();
+  }, [onAuthoritativeRaceResult, onResultScreen]);
+
   const loadAndPostRiddle = useCallback(
     async (input: {gameMode: WebGameMode; locale: string; classicIndex?: number}, requestId?: string) => {
       // Automatic ready/recovery calls may share one request. Correlated game
@@ -359,7 +392,8 @@ export function PlayHostApp({
           applyPurchaseBalance,
           syncRaceAchievementProgress,
           onPlayable,
-          onAuthoritativeComplete,
+          onAuthoritativeComplete: handleAuthoritativeComplete,
+          onAuthoritativeRaceResult: handleAuthoritativeRaceResult,
           onAccountDeleted,
           onAccountDeletionRequested,
           accountDeletionCompletedRef,
@@ -374,7 +408,9 @@ export function PlayHostApp({
       gameMode,
       loadAndPostRiddle,
       locale,
-      onAuthoritativeComplete,
+      handleAuthoritativeComplete,
+      handleAuthoritativeRaceResult,
+      onResultScreen,
       onPlayable,
       postOperation,
       runRaceOperation,
@@ -487,6 +523,16 @@ export function PlayHostApp({
         initialRaceInbox={initialRaceInbox}
         raceFeatureEnabled={raceBuildEnabled}
         prefetchedRaceCategories={prefetchedRaceCategories}
+        presenceEnabled={presenceEnabled}
+        onTogglePresence={onTogglePresence}
+        nativeSocial={platformCapabilities?.nativeSocial}
+        matchmaking={platformCapabilities?.matchmaking}
+        playerOverlay={platformCapabilities?.overlay}
+        platformPlayerId={platformCapabilities?.overlay ? platformPlayerId : undefined}
+        tournaments={platformCapabilities?.tournaments}
+        contextBoard={platformCapabilities?.contextBoard}
+        raceLocalePolicy={raceLocalePolicy}
+        onPresenceStateChange={onPresenceStateChange}
       />
       {serverInteractionActive ? (
         <SpinningWheelLoader

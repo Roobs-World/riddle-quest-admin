@@ -2,6 +2,7 @@ import type {BridgeProfile, BridgeRiddle, BridgeUser} from "@qwordly/core/bridge
 import {onAuthStateChanged, signOut} from "firebase/auth";
 import {
   auth,
+  blockRival,
   completeGame,
   getCurrentClassicRiddle,
   getCurrentDailyChallenge,
@@ -21,6 +22,7 @@ import {
   getRaceOutcome,
   getRaceAccess,
   recordRaceAnalytics,
+  reportRival,
   skipRiddle,
   submitSinglePlayerGuess,
   spendCoins,
@@ -203,14 +205,20 @@ export const createFirebaseHostServices = (): HostServices => {
     async publishRace(input) {
       return (await publishRaceChallenge(input)).data;
     },
-    async getRaceChallenge(challengeId) {
-      return (await getRaceChallenge({challengeId})).data;
+    async getRaceChallenge(challengeId, locale) {
+      return (await getRaceChallenge({challengeId, locale})).data;
     },
     async getRaceOutcome(runId) {
       return (await getRaceOutcome({runId})).data;
     },
     async listRaceInbox(input) {
       return (await listRaceInbox({...input, limit: input?.limit ?? 20})).data;
+    },
+    async blockRival(targetUserId) {
+      return (await blockRival({targetUserId})).data;
+    },
+    async reportRival(input) {
+      return (await reportRival(input)).data;
     },
     async getRaceAccess() {
       return (await getRaceAccess({locale: "en"})).data;

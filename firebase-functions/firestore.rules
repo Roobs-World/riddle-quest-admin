@@ -170,6 +170,114 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    // Social relationships and moderation are callable-only. Direct reads
+    // would reveal another player's actions; direct writes could forge trust.
+    match /users/{userId}/knownRivals/{rivalId} {
+      allow read, write: if false;
+    }
+
+    match /users/{userId}/blockedRivals/{rivalId} {
+      allow read, write: if false;
+    }
+
+    match /socialModerationQueue/{reportId} {
+      allow read, write: if false;
+    }
+
+    match /socialReportRateLimits/{limitId} {
+      allow read, write: if false;
+    }
+
+    match /facebookTournaments/{tournamentId} {
+      allow read, write: if false;
+
+      match /entries/{entryId} {
+        allow read, write: if false;
+      }
+    }
+
+    match /redditTournaments/{tournamentId} {
+      allow read, write: if false;
+
+      match /entries/{entryId} {
+        allow read, write: if false;
+      }
+    }
+
+    match /facebookContextCompetitions/{contextKey} {
+      allow read, write: if false;
+
+      match /entries/{entryId} {
+        allow read, write: if false;
+      }
+    }
+
+    match /facebookContextCompetitionHistory/{contextKey} {
+      allow read, write: if false;
+    }
+
+    // Commerce balances, entitlements, and replay receipts are server-only.
+    match /facebookCommerceAccounts/{userId} {
+      allow read, write: if false;
+    }
+
+    match /facebookCommerceReceipts/{receiptId} {
+      allow read, write: if false;
+    }
+
+    match /facebookCommerceRefunds/{refundId} {
+      allow read, write: if false;
+    }
+
+    match /redditCommerceAccounts/{userId} {
+      allow read, write: if false;
+    }
+
+    match /redditCommerceReceipts/{receiptId} {
+      allow read, write: if false;
+    }
+
+    match /redditCommerceRefunds/{refundId} {
+      allow read, write: if false;
+    }
+
+    // Cross-device notification prompt timing and acceptance are server-owned.
+    match /facebookNotificationPromptLeases/{userId} {
+      allow read, write: if false;
+    }
+
+    match /facebookReferralTokens/{tokenId} {
+      allow read, write: if false;
+    }
+
+    match /facebookReferralBindings/{inviteeId} {
+      allow read, write: if false;
+    }
+
+    match /facebookReferralDailyCaps/{capId} {
+      allow read, write: if false;
+    }
+
+    match /facebookReferralSettlements/{settlementId} {
+      allow read, write: if false;
+    }
+
+    match /redditReferralTokens/{tokenId} {
+      allow read, write: if false;
+    }
+
+    match /redditReferralBindings/{inviteeId} {
+      allow read, write: if false;
+    }
+
+    match /redditReferralDailyCaps/{capId} {
+      allow read, write: if false;
+    }
+
+    match /redditReferralSettlements/{settlementId} {
+      allow read, write: if false;
+    }
+
     // Idempotency receipts prevent replaying game-completion rewards.
     match /gameCompletionReceipts/{receiptId} {
       allow read, write: if false;

@@ -167,6 +167,26 @@ describe("bridge protocol", () => {
     ).toBe(false);
   });
 
+  it("accepts only bounded categorized social-safety requests", () => {
+    expect(GameToHostMessageSchema.safeParse({
+      type: "game:blockRival",
+      requestId: "block-rival-1",
+      payload: {targetUserId: "facebook_1111111111111111111111111111111111111111"},
+    }).success).toBe(true);
+    expect(GameToHostMessageSchema.safeParse({
+      type: "game:reportRival",
+      requestId: "report-rival-1",
+      payload: {targetUserId: "jest_1111111111111111111111111111111111111111", category: "cheating"},
+    }).success).toBe(true);
+    for (const payload of [
+      {targetUserId: "", category: "cheating"},
+      {targetUserId: "rival", category: "violence"},
+      {targetUserId: "rival", category: "spam", narrative: "unbounded user text"},
+    ]) {
+      expect(GameToHostMessageSchema.safeParse({type: "game:reportRival", payload}).success).toBe(false);
+    }
+  });
+
   it("provides non-throwing message type guards", () => {
     const gameMessage = {type: "game:ready", payload: {protocolVersion: BRIDGE_PROTOCOL_VERSION}};
     const hostMessage = {type: "host:pause", payload: {}};

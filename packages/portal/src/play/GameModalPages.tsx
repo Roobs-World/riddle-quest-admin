@@ -6,7 +6,7 @@ import {
   SkipModalPage,
   TreasureModalPage,
 } from "./modalPages/commerce/CoinActionModalPages";
-import {ShopModalPage} from "./modalPages/commerce/ShopModalPage";
+import {ShopModalPage} from "#shop-modal-page";
 import {
   AboutModalPage,
   CreditsModalPage,
@@ -36,6 +36,12 @@ export type GameModalPagesProps = {
   onOpenModal: (modal: Exclude<GameModal, null>) => void;
   /** Stores on toggle mute. */
   onToggleMute: () => void;
+  /** Stores presence enabled. */
+  presenceEnabled?: boolean;
+  /** Stores on toggle presence. */
+  onTogglePresence?: () => void;
+  /** Stores commerce available. */
+  commerceAvailable?: boolean;
   /** Stores on request hint. */
   onRequestHint: () => void;
   /** Stores on request skip. */
@@ -58,6 +64,9 @@ export function GameModalPages({
   onPurchase,
   onOpenModal,
   onToggleMute,
+  presenceEnabled,
+  onTogglePresence,
+  commerceAvailable = true,
   onRequestHint,
   onRequestSkip,
   onRequestLeaderboard,
@@ -74,7 +83,7 @@ export function GameModalPages({
 
   return <>
         {state.modal === "continue" && (
-          <ContinueModalPage balance={balance} onContinue={onContinue} onOpenModal={onOpenModal} />
+          <ContinueModalPage balance={balance} onContinue={onContinue} onOpenModal={onOpenModal} commerceAvailable={commerceAvailable} />
         )}
 
         {state.modal === "shop" && (
@@ -97,6 +106,9 @@ export function GameModalPages({
             muted={state.muted}
             onOpenModal={onOpenModal}
             onToggleMute={onToggleMute}
+            presenceEnabled={presenceEnabled}
+            onTogglePresence={onTogglePresence}
+            commerceAvailable={commerceAvailable}
           />
         )}
 
@@ -132,6 +144,7 @@ export function GameModalPages({
             onClose={onClose}
             onOpenModal={onOpenModal}
             onRequestAction={onRequestHint}
+            commerceAvailable={commerceAvailable}
           />
         )}
 
@@ -141,6 +154,7 @@ export function GameModalPages({
             onClose={onClose}
             onOpenModal={onOpenModal}
             onRequestAction={onRequestSkip}
+            commerceAvailable={commerceAvailable}
           />
         )}
 
@@ -157,7 +171,7 @@ export function GameModalPages({
         )}
 
         {state.modal === "treasure" && (
-          <TreasureModalPage balance={balance} onOpenModal={onOpenModal} />
+          <TreasureModalPage balance={balance} onOpenModal={onOpenModal} commerceAvailable={commerceAvailable} />
         )}
   </>;
 }

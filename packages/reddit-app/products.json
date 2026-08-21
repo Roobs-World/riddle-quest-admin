@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developers.reddit.com/schema/products.json",
+  "products": [
+    {"sku":"riddle_quest_coins_250","displayName":"250 Riddle Quest Coins","description":"Adds 250 coins to your Riddle Quest account.","price":50,"accountingType":"CONSUMABLE"},
+    {"sku":"riddle_quest_coins_550","displayName":"550 Riddle Quest Coins","description":"Adds 550 coins to your Riddle Quest account.","price":100,"accountingType":"CONSUMABLE"},
+    {"sku":"riddle_quest_coins_900","displayName":"900 Riddle Quest Coins","description":"Adds 900 coins to your Riddle Quest account.","price":150,"accountingType":"CONSUMABLE"},
+    {"sku":"riddle_quest_coins_1600","displayName":"1,600 Riddle Quest Coins","description":"Adds 1,600 coins to your Riddle Quest account.","price":250,"accountingType":"CONSUMABLE"},
+    {"sku":"riddle_quest_coins_3400","displayName":"3,400 Riddle Quest Coins","description":"Adds 3,400 coins to your Riddle Quest account.","price":500,"accountingType":"CONSUMABLE"},
+    {"sku":"riddle_quest_coins_7000","displayName":"7,000 Riddle Quest Coins","description":"Adds 7,000 coins to your Riddle Quest account.","price":1000,"accountingType":"CONSUMABLE"}
+  ]
+}

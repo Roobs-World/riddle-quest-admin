@@ -2,6 +2,7 @@ import * as app from "firebase-admin";
 import {getAuth} from "firebase-admin/auth";
 import {FieldPath, FieldValue, getFirestore, Timestamp} from "firebase-admin/firestore";
 import {getStorage} from "firebase-admin/storage";
+import {getDatabase} from "firebase-admin/database";
 
 /** Describes firestore factory. */
 type FirestoreFactory = typeof getFirestore & {
@@ -15,6 +16,7 @@ type LegacyAdmin = typeof app & {
   auth?: typeof getAuth;
   firestore?: FirestoreFactory;
   storage?: typeof getStorage;
+  database?: typeof getDatabase;
 };
 
 /** Provides legacy behavior. */
@@ -32,4 +34,5 @@ export const admin = {
   auth: legacy.auth ?? getAuth,
   firestore,
   storage: legacy.storage ?? getStorage,
+  database: legacy.database ?? getDatabase,
 };

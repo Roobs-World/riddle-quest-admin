@@ -12,6 +12,7 @@
     "LOGOUT_BUTTON": "退出",
     "LOGOUT_ERROR_MESSAGE": "无法注销。请重试。",
     "LOGOUT_ERROR_TITLE": "错误",
+    "PRESENCE_TOGGLE": "向对手显示活动",
     "SOUND_TOGGLE": "声音",
     "TERMS_BUTTON": "使用条款",
     "TITLE": "设置",

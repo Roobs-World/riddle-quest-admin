@@ -5,6 +5,7 @@ export const firebaseEnvironment = {
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
   projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  databaseUrl: import.meta.env.VITE_FIREBASE_DATABASE_URL,
   measurementId: import.meta.env.VITE_GOOGLE_ANALYTICS_MEASUREMENT_ID,
   sentryDsn: import.meta.env.VITE_SENTRY_DSN,
   sentryEnvironment: import.meta.env.VITE_SENTRY_ENVIRONMENT,
@@ -12,5 +13,6 @@ export const firebaseEnvironment = {
   appCheckSiteKey: import.meta.env.VITE_FIREBASE_APP_CHECK_SITE_KEY,
   functionsRegion: import.meta.env.VITE_FIREBASE_FUNCTIONS_REGION,
   jestRuntime: import.meta.env.VITE_JEST_RUNTIME,
+  platformTarget: import.meta.env.VITE_PLATFORM_TARGET,
   production: import.meta.env.PROD,
 } as const;

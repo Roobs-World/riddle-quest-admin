@@ -1,0 +1,65 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "presenceConnections": {
+      "$userId": {
+        "$sessionId": {
+          ".read": false,
+          ".write": "auth != null && auth.uid === $userId && (!newData.exists() || (root.child('presenceConsent').child($userId).val() === true && (newData.child('platform').val() !== 'facebook' || root.child('featureGates').child('facebookPresence').val() === true)))",
+          ".validate": "!newData.exists() || (newData.hasChildren(['platform', 'state', 'updatedAt']) && ((newData.child('platform').val() === 'facebook' && auth.token.provider === 'facebook' && $userId.matches(/^facebook_[0-9a-f]{40}$/)) || (newData.child('platform').val() === 'jest' && auth.token.jestPlayerId != null && $userId.matches(/^jest_[0-9a-f]{40}$/))))",
+          "platform": {
+            ".validate": "newData.val() === 'jest' || newData.val() === 'facebook'"
+          },
+          "state": {
+            ".validate": "newData.val() === 'online' || newData.val() === 'playing' || newData.val() === 'racing'"
+          },
+          "updatedAt": {
+            ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= now + 60000"
+          },
+          "$other": {
+            ".validate": false
+          }
+        }
+      }
+    },
+    "presenceConsent": {
+      "$userId": {
+        ".read": false,
+        ".write": false
+      }
+    },
+    "presenceStatus": {
+      "$targetUserId": {
+        ".read": "auth != null && (!$targetUserId.matches(/^facebook_[0-9a-f]{40}$/) || root.child('featureGates').child('facebookPresence').val() === true) && (auth.uid === $targetUserId || (root.child('presenceOptIn').child($targetUserId).val() === true && root.child('presenceVisibility').child(auth.uid).child($targetUserId).val() === true))",
+        ".write": false
+      }
+    },
+    "presenceOptIn": {
+      "$userId": {
+        ".read": false,
+        ".write": false
+      }
+    },
+    "presenceVisibility": {
+      "$viewerUserId": {
+        "$targetUserId": {
+          ".read": false,
+          ".write": false
+        }
+      }
+    },
+    "presenceViewers": {
+      "$targetUserId": {
+        "$viewerUserId": {
+          ".read": false,
+          ".write": false
+        }
+      }
+    },
+    "featureGates": {
+      ".read": false,
+      ".write": false
+    }
+  }
+}

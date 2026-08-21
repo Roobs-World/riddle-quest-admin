@@ -5,8 +5,16 @@ import {fileURLToPath} from "node:url";
 
 const portalDirectory = fileURLToPath(new URL("../", import.meta.url));
 const repositoryDirectory = resolve(portalDirectory, "../..");
-const outputFile = resolve(portalDirectory, "public/third-party-licenses.txt");
+const licensePackage = process.env.RIDDLE_QUEST_LICENSE_PACKAGE ?? "@qwordly/portal";
+const configuredOutputFile = process.env.RIDDLE_QUEST_LICENSE_OUTPUT;
+if (configuredOutputFile !== undefined && !isAbsolute(configuredOutputFile)) {
+  throw new Error("RIDDLE_QUEST_LICENSE_OUTPUT must be absolute when provided");
+}
+const outputFile = configuredOutputFile ?? resolve(portalDirectory, "public/third-party-licenses.txt");
 const firebaseLicenseFile = resolve(portalDirectory, "licenses/firebase-js-sdk.LICENSE");
+const bundledLicenseFiles = new Map([
+  ["twirp-ts", resolve(portalDirectory, "licenses/twirp-ts.LICENSE")],
+]);
 const mode = process.argv[2] ?? "--check";
 const pnpmModulesMetadata = JSON.parse(
   readFileSync(resolve(repositoryDirectory, "node_modules/.modules.yaml"), "utf8"),
@@ -21,6 +29,31 @@ const normalizeNoticeText = (text) => text
   .replace(/[ \t]+$/gm, "")
   .trim();
 
+const permissiveLicenseText = (license, manifest) => {
+  const holder = typeof manifest.author === "string"
+    ? manifest.author
+    : typeof manifest.author?.name === "string" ? manifest.author.name : `${manifest.name} contributors`;
+  if (/^MIT(?:\s|$|\()/i.test(license)) return `Copyright (c) ${holder}
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.`;
+  if (license === "ISC") return `Copyright (c) ${holder}
+
+Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby granted, provided that the above copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.`;
+  if (license === "0BSD") return `Copyright (C) ${holder}
+
+Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby granted.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.`;
+  if (license === "Apache-2.0") return normalizeNoticeText(readFileSync(firebaseLicenseFile, "utf8"));
+  return undefined;
+};
+
 if (!new Set(["--check", "--write"]).has(mode)) {
   throw new Error("Usage: node scripts/generate-third-party-licenses.mjs [--check|--write]");
 }
@@ -32,7 +65,7 @@ function readLicenseInventory() {
   const prefixArguments = npmExecutable ? [npmExecutable] : [];
   const output = execFileSync(
     command,
-    [...prefixArguments, "--filter", "@qwordly/portal", "licenses", "list", "--prod", "--json"],
+    [...prefixArguments, "--filter", licensePackage, "licenses", "list", "--prod", "--json"],
     {
       cwd: repositoryDirectory,
       encoding: "utf8",
@@ -47,7 +80,7 @@ function readLicenseInventory() {
 /** Returns license and notice files shipped by a dependency package. */
 function readNoticeFiles(packageDirectory) {
   return readdirSync(packageDirectory)
-    .filter((name) => /^(?:licen[cs]e|copying|notice)(?:[._-].*)?$/i.test(name))
+    .filter((name) => /^(?:(?:licen[cs]e|copying|notice)(?:[._-].*)?|mit-license)$/i.test(name))
     .map((name) => ({name, path: resolve(packageDirectory, name)}))
     .filter(({path}) => statSync(path).isFile())
     .sort((left, right) => left.name.localeCompare(right.name))
@@ -80,9 +113,19 @@ function createNotice() {
               name: "firebase-js-sdk.LICENSE",
               text: normalizeNoticeText(readFileSync(firebaseLicenseFile, "utf8")),
             }];
+          } else if (bundledLicenseFiles.has(manifest.name)) {
+            const fallback = bundledLicenseFiles.get(manifest.name);
+            noticeFiles = [{
+              name: fallback.split("/").at(-1),
+              text: normalizeNoticeText(readFileSync(fallback, "utf8")),
+            }];
           } else {
-            missingNotices.push(`${id} (${license})`);
-            continue;
+            const fallbackText = permissiveLicenseText(license, manifest);
+            if (fallbackText) noticeFiles = [{name: `${license}.SPDX`, text: fallbackText}];
+            else {
+              missingNotices.push(`${id} (${license})`);
+              continue;
+            }
           }
         }
         const homepage = typeof manifest.homepage === "string" ? manifest.homepage : record.homepage;

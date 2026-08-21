@@ -38,6 +38,7 @@ export const raceChallengePreviewFixture = {
   challengeId: "challenge-1",
   creator: {displayName: "Ada", avatarUrl: null},
   categoryId: "history" as const,
+  locale: "en" as const,
   targetCorrect: 10 as const,
   adjustedTimeToBeatMs: 75_000,
   rulesVersion: "race10_v1" as const,

@@ -119,14 +119,20 @@ const createLazyHostServices = (
   async publishRace(input) {
     return (await loadServices()).publishRace(input);
   },
-  async getRaceChallenge(challengeId) {
-    return (await loadServices()).getRaceChallenge(challengeId);
+  async getRaceChallenge(challengeId, locale) {
+    return (await loadServices()).getRaceChallenge(challengeId, locale);
   },
   async getRaceOutcome(runId) {
     return (await loadServices()).getRaceOutcome(runId);
   },
   async listRaceInbox(input) {
     return (await loadServices()).listRaceInbox(input);
+  },
+  async blockRival(targetUserId) {
+    return (await loadServices()).blockRival(targetUserId);
+  },
+  async reportRival(input) {
+    return (await loadServices()).reportRival(input);
   },
   async getRaceAccess() {
     return (await loadServices()).getRaceAccess();

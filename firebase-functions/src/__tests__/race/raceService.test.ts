@@ -1,6 +1,7 @@
 import type {RaceDifficultyBand, RaceLocale} from "@qwordly/core/race";
 import type {ExistingRaceContentRecord} from "../../race/raceContentMigration";
 import {buildDeterministicRaceDeck} from "../../race/raceService";
+import {assertRaceLocaleCompatible, type RaceChallengeRecord} from "../../race/raceSetupService";
 
 const makePool = (locale: RaceLocale): ExistingRaceContentRecord[] =>
   Array.from({length: 30}, (_, index) => {
@@ -23,6 +24,12 @@ const makePool = (locale: RaceLocale): ExistingRaceContentRecord[] =>
   });
 
 describe("Race to 10 deterministic deck service", () => {
+  it("rejects challenge, rematch, and rivalry entry across locale boundaries", () => {
+    const challenge = {locale: "ja"} as RaceChallengeRecord;
+    expect(() => assertRaceLocaleCompatible(challenge, "ja")).not.toThrow();
+    expect(() => assertRaceLocaleCompatible(challenge, "en"))
+      .toThrow("RaceTo10.ERROR_LOCALE_MISMATCH");
+  });
   it("selects a deterministic balanced 15-riddle deck", () => {
     const first = buildDeterministicRaceDeck(makePool("en"), {
       locale: "en",

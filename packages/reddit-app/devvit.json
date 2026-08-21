@@ -1,0 +1,72 @@
+{
+  "$schema": "https://developers.reddit.com/schema/config-file.v1.json",
+  "name": "riddle-quest",
+  "post": {
+    "dir": "dist/client",
+    "entrypoints": {
+      "default": {
+        "inline": true,
+        "entry": "splash.html"
+      },
+      "game": {
+        "entry": "game.html"
+      }
+    }
+  },
+  "server": {
+    "dir": "dist/server",
+    "entry": "index.cjs"
+  },
+  "permissions": {
+    "http": {
+      "enable": true,
+      "domains": [
+        "us-central1-riddle-quest-ec2b2.cloudfunctions.net"
+      ]
+    },
+    "redis": true,
+    "payments": true
+  },
+  "payments": {
+    "productsFile": "products.json",
+    "endpoints": {
+      "fulfillOrder": "/internal/payments/fulfill",
+      "refundOrder": "/internal/payments/refund"
+    }
+  },
+  "settings": {
+    "global": {
+      "redditGatewaySecret": {
+        "type": "string",
+        "label": "Firebase gateway signing secret",
+        "isSecret": true
+      },
+      "redditEnvironment": {
+        "type": "string",
+        "label": "Deployment environment: sandbox or production"
+      }
+    }
+  },
+  "menu": {
+    "items": [
+      {
+        "label": "Create Riddle Quest game",
+        "description": "Create the interactive Riddle Quest playtest post",
+        "location": "subreddit",
+        "forUserType": "moderator",
+        "endpoint": "/internal/menu/post-create"
+      }
+    ]
+  },
+  "triggers": {
+    "onAppInstall": "/internal/triggers/app-install",
+    "onAppUpgrade": "/internal/triggers/app-upgrade"
+  },
+  "scripts": {
+    "build": "pnpm build",
+    "dev": "pnpm build:client && vite build --watch"
+  },
+  "dev": {
+    "subreddit": "riddle_quest_dev"
+  }
+}

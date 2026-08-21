@@ -24,6 +24,8 @@ type RaceMethods = Pick<
   | "getRaceChallenge"
   | "getRaceOutcome"
   | "listRaceInbox"
+  | "blockRival"
+  | "reportRival"
 >;
 
 /** Mutable harness record backing one simulated authoritative race run. */
@@ -400,6 +402,7 @@ export const createFakeRaceServices = (): RaceMethods => {
         challengeId,
         creator: {displayName: "Guest Solver"},
         categoryId: run.view.categoryId,
+        locale: run.view.locale,
         targetCorrect: 10 as const,
         adjustedTimeToBeatMs: syncView(run).adjustedElapsedMs,
         rulesVersion: "race10_v1" as const,
@@ -419,9 +422,10 @@ export const createFakeRaceServices = (): RaceMethods => {
       return response;
     },
     /** Loads a published harness challenge preview. */
-    async getRaceChallenge(challengeId) {
+    async getRaceChallenge(challengeId, locale) {
       const challenge = challenges.get(challengeId) ?? (await loadPersistedChallenge(challengeId));
       if (!challenge) throw new Error("Race challenge not found.");
+      if (challenge.preview.locale !== locale) throw new Error("RaceTo10.ERROR_LOCALE_MISMATCH");
       return challenge.preview;
     },
     /** Calculates the final authoritative outcome for a harness run. */
@@ -463,6 +467,7 @@ export const createFakeRaceServices = (): RaceMethods => {
         items: [{
           itemId: "fake-race-result-1",
           challengeId: "fake-challenge-1",
+          opponentUserId: "jest_1111111111111111111111111111111111111111",
           opponentDisplayName: "Nova",
           categoryId: "history" as const,
           result: "win" as const,
@@ -471,6 +476,12 @@ export const createFakeRaceServices = (): RaceMethods => {
           createdAtMs: Date.now(),
         }],
       };
+    },
+    async blockRival() {
+      return {blocked: true as const};
+    },
+    async reportRival(input) {
+      return {reportId: `fake-report-${input.requestId}`, queued: true as const};
     },
   };
 };

@@ -1,11 +1,13 @@
 # Credential Rotation Runbook
 
-Last updated: 2026-08-12
+Last updated: 2026-08-20
 
 ## Scope
 
-This repository is a Jest HTML5 game and Firebase backend. It has no Apple,
-Facebook, native-store, or external-auth production credential path.
+This repository has isolated Jest, Facebook Instant Games, Reddit Devvit Web, and
+YouTube Playables targets plus a shared Firebase backend. It has no Apple or
+native-store credential path. The YouTube runtime has no private credential; its
+content-authoring command uses an owner-private OpenAI key before release.
 
 Rotate every private credential that appeared in tracked local configuration or
 was exposed outside its intended owner-only boundary:
@@ -15,6 +17,8 @@ was exposed outside its intended owner-only boundary:
 - Values from `firebase-functions/.env.default.backup`
 - Values from `firebase-functions/.runtimeconfig.json`
 - The Jest shared secret and game-upload token
+- Historical Facebook app credentials; never reuse them for the Instant Games app
+- The Reddit Devvit-to-Firebase gateway secret and independent Reddit UID HMAC secret
 - The OpenAI API key
 - Any Sentry source-map upload token
 - Any Firebase App Check debug token used for sandbox automation
@@ -31,11 +35,15 @@ Treat all historical values as compromised.
    - Store any replacement key outside the repository.
 
 2. Firebase Functions secrets
-   - Rotate and set the two server-only values used by this release:
+   - Rotate and set the server-only values used by each enabled target:
 
 ```sh
 pnpm dlx firebase-tools@15.25.1 functions:secrets:set JEST_SHARED_SECRET --project riddle-quest-ec2b2
 pnpm dlx firebase-tools@15.25.1 functions:secrets:set OPENAI_API_KEY --project riddle-quest-ec2b2
+pnpm dlx firebase-tools@15.25.1 functions:secrets:set FACEBOOK_APP_SECRET --project riddle-quest-ec2b2
+pnpm dlx firebase-tools@15.25.1 functions:secrets:set FACEBOOK_UID_SECRET --project riddle-quest-ec2b2
+pnpm dlx firebase-tools@15.25.1 functions:secrets:set REDDIT_GATEWAY_SECRET --project riddle-quest-ec2b2
+pnpm dlx firebase-tools@15.25.1 functions:secrets:set REDDIT_UID_SECRET --project riddle-quest-ec2b2
 ```
 
 3. Jest release credentials
@@ -55,6 +63,10 @@ pnpm dlx firebase-tools@15.25.1 functions:secrets:set OPENAI_API_KEY --project r
 5. Client/public config
    - Keep only non-secret client config in Vite `VITE_*` variables.
    - Never put OpenAI keys, the Jest shared secret, or service-account JSON in browser configuration.
+   - Run `pnpm check:facebook-secrets`. This fails if a Meta server-secret
+     identifier reaches browser source/configuration, a workflow references a
+     Meta secret value directly, or a consuming Function loses or widens its
+     exact Secret Manager binding.
    - Firebase web configuration, the App Check site key, and the browser Sentry
      DSN are public identifiers; rotate them only when their provider-side
      configuration or abuse response requires it.
@@ -63,6 +75,13 @@ pnpm dlx firebase-tools@15.25.1 functions:secrets:set OPENAI_API_KEY --project r
    - OpenAI: create a new API key, deploy it as a Functions secret, then revoke the old key.
    - Jest: rotate the shared secret and upload token independently, then verify
      signed identity/purchase/referral payloads and inactive Draft upload.
+   - Meta: create a new app secret, keep it server-only, rotate the independent
+     UID HMAC key, and verify signed identity and deletion fixtures before
+     revoking superseded versions.
+   - Reddit: generate new independent gateway and UID HMAC values. Put the UID
+     secret only in Firebase Secret Manager. Put the gateway value in both
+     Firebase Secret Manager and the Devvit global secret setting
+     `redditGatewaySecret`; never expose either value to the webview.
    - Google/Firebase: disable exposed service-account keys, revoke sandbox debug
      tokens, and verify Secret Manager access and Cloud Run invoker policy.
    - Sentry: verify the replacement token can upload source maps but has no wider
@@ -73,8 +92,16 @@ pnpm dlx firebase-tools@15.25.1 functions:secrets:set OPENAI_API_KEY --project r
    - Confirm Jest identity exchange, purchase/referral verification and recovery,
      riddle generation, App Check, notifications, profile/avatar, deletion retry,
      and Sentry error reporting.
-   - Build and inspect the exact Jest artifact again; it must contain no private
+   - Confirm Facebook nonce/exchange, App Check, generation-based deletion and
+     signed deletion callback before enabling any additional capability.
+   - Confirm the Reddit gateway rejects signature, operation, app, subject,
+     account-generation, timestamp, and nonce mismatches; then verify identity,
+     storage, gameplay, and deletion through the same-origin Devvit route.
+   - Build and inspect all four exact artifacts again; none may contain a private
      token, service-account material, debug token, or source map.
+   - Retain the `pnpm check:facebook-secrets` result with the deployment receipt;
+     it proves source bindings and absence from browser inputs, not the age,
+     uniqueness, IAM policy, or value of the deployed secret versions.
 
 ## Completion Evidence
 

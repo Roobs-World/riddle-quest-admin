@@ -170,10 +170,10 @@ export const createRaceCallableCases = (
     {
       name: "getRaceChallenge",
       handler: handlers.getRaceChallenge,
-      input: {challengeId: "challenge-1"},
+      input: {challengeId: "challenge-1", locale: "en"},
       serviceMock: mocks.getRaceChallengePreview,
       response: raceChallengePreviewFixture,
-      expectedCall: ["challenge-1"],
+      expectedCall: ["challenge-1", "en"],
       accessCall: [userId],
     },
     {

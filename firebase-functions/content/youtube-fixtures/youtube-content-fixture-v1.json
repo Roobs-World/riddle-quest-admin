@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "contentVersion": "youtube-content-v1-fixture-643b893f7ed0c15d",
+  "releaseReady": false,
+  "fixture": true,
+  "locales": [
+    "en"
+  ],
+  "classicOrder": [
+    "race:history:01",
+    "race:geography:01",
+    "race:music:01"
+  ],
+  "dailySchedule": {
+    "scheduleVersion": 1,
+    "segments": [
+      {
+        "startsOn": "2026-01-01",
+        "canonicalIds": [
+          "race:science:17",
+          "race:mixed:22",
+          "race:geography:09"
+        ]
+      }
+    ]
+  },
+  "packs": {
+    "en": {
+      "race:history:01": {
+        "text": "Which ancient city was the centre of an empire ruled by emperors such as Augustus?",
+        "answer": "rome",
+        "categoryId": "history",
+        "difficultyBand": "easy",
+        "contentFingerprint": "248f8b4719af643c4d0714da081554ed968edd4ec730d9b6b42f6fdaa2a36fb6"
+      },
+      "race:geography:01": {
+        "text": "Which river flows north through Egypt into the Mediterranean Sea?",
+        "answer": "nile",
+        "categoryId": "geography",
+        "difficultyBand": "easy",
+        "contentFingerprint": "72cb837b7edb82920deed111752e628909afabbcd0cdf9a9db09d53539f7eb9a"
+      },
+      "race:music:01": {
+        "text": "Which keyboard instrument usually has 88 keys?",
+        "answer": "piano",
+        "categoryId": "music",
+        "difficultyBand": "easy",
+        "contentFingerprint": "6cde34e2f5bdb34956a805a4fc7981799611748ed8d7057d453a7ce0ffeb3c98"
+      },
+      "race:geography:09": {
+        "text": "Which European mountain range includes Mont Blanc?",
+        "answer": "alps",
+        "categoryId": "geography",
+        "difficultyBand": "easy",
+        "contentFingerprint": "8b8cd5808aba585b13ef1df7797e38f3c50afd05ce2f8aa8ea09f850c6502b78"
+      },
+      "race:science:17": {
+        "text": "What powdery material carries male reproductive cells in seed plants?",
+        "answer": "pollen",
+        "categoryId": "science",
+        "difficultyBand": "medium",
+        "contentFingerprint": "afa473dc52ac187d64f867ca5780ea2fc828700b0100ab1d961db5f224763e1a"
+      },
+      "race:mixed:22": {
+        "text": "I have five fingers but no bones or skin. What am I?",
+        "answer": "glove",
+        "categoryId": "mixed",
+        "difficultyBand": "hard",
+        "contentFingerprint": "b274d14a1a3c3f46ffb154232ed81422a9135922087c5f92bc85a486690ac653"
+      }
+    }
+  }
+}

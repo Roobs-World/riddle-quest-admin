@@ -5,6 +5,7 @@ export const firebaseEnvironment = {
   authDomain: undefined,
   messagingSenderId: undefined,
   projectId: undefined,
+  databaseUrl: undefined,
   measurementId: "G-UNIT-TEST",
   sentryDsn: undefined,
   sentryEnvironment: undefined,

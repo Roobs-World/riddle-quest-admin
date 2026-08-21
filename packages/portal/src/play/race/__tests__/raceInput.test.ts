@@ -1,6 +1,6 @@
 import {describe, expect, it} from "@jest/globals";
 import type {RaceRiddlePrompt} from "@qwordly/core/race";
-import {deleteRaceLetter, insertRaceLetter, isRaceSlotEditable} from "../logic/raceInput";
+import {deleteRaceLetter, insertRaceLetter, insertRaceText, isRaceSlotEditable} from "../logic/raceInput";
 
 /** Creates a deterministic riddle for answer-input tests. */
 const createRiddle = (revealedLetters: RaceRiddlePrompt["revealedLetters"] = []): RaceRiddlePrompt => ({
@@ -53,6 +53,35 @@ describe("race input helpers", () => {
     /** Existing state returned unchanged when the active slot is protected. */
     const state = {letters: ["", "E", "", ""], activeSlotIndex: 1};
     expect(insertRaceLetter(createRiddle([{index: 1, letter: "E"}]), state, "X")).toBe(state);
+  });
+
+  it("stores one NFC grapheme and rejects multi-grapheme insertions", () => {
+    expect(insertRaceLetter(createRiddle(), {letters: [], activeSlotIndex: 0}, "نَ")).toMatchObject({
+      letters: ["نَ", "", "", ""],
+    });
+    const state = {letters: ["", "", "", ""], activeSlotIndex: 0};
+    expect(insertRaceLetter(createRiddle(), state, "日本")).toBe(state);
+    expect(insertRaceLetter(createRiddle(), state, " ")).toBe(state);
+  });
+
+  it("atomically fills editable slots from IME or pasted text without overwriting on overflow", () => {
+    expect(insertRaceText(createRiddle(), {letters: [], activeSlotIndex: 0}, "日本語版追加")).toEqual({
+      letters: ["日", "本", "語", "版"],
+      activeSlotIndex: 3,
+    });
+    expect(insertRaceText(
+      createRiddle([{index: 1, letter: "E"}]),
+      {letters: ["", "E", "", ""], activeSlotIndex: 0},
+      "क्ष한中extra",
+    )).toEqual({
+      letters: ["क्ष", "E", "한", "中"],
+      activeSlotIndex: 3,
+    });
+    expect(insertRaceText(
+      createRiddle(),
+      {letters: ["A", "B", "C", "D"], activeSlotIndex: 2},
+      "ЖЯ",
+    )).toEqual({letters: ["A", "B", "Ж", "D"], activeSlotIndex: 2});
   });
 
   it("deletes the active letter or searches backward with wraparound", () => {

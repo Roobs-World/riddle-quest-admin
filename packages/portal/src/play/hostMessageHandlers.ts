@@ -2,6 +2,7 @@ import type {HostMessageHandlers} from "./bridgeRouter";
 import {trackEvent} from "../analytics/googleAnalytics";
 import {tr} from "./i18n";
 import {createRequestId} from "./requestIds";
+import type {RaceOutcome} from "@qwordly/core/race";
 import type {AuthSnapshot, CompletionResult, HostServices, PurchaseResult, WebGameMode} from "./types";
 import {captureBrowserException} from "../observability/sentry";
 
@@ -28,7 +29,9 @@ export type HostOperationName =
   | "racePublish"
   | "raceChallenge"
   | "raceOutcome"
-  | "raceInbox";
+  | "raceInbox"
+  | "raceBlock"
+  | "raceReport";
 
 /** Gets host error message. */
 export const getHostErrorMessage = (error: unknown): string => {
@@ -117,6 +120,8 @@ type CreateHostMessageHandlersOptions = {
     input: {riddleId: string; gameMode: WebGameMode},
     result: CompletionResult,
   ) => void | Promise<void>;
+  /** Notifies the platform after an authoritative race result has loaded. */
+  onAuthoritativeRaceResult?: (result: RaceOutcome) => void | Promise<void>;
   /** Stores on account deleted. */
   onAccountDeleted?: () => void | Promise<void>;
   /** Persists account-deletion intent before the authoritative request starts. */
@@ -144,6 +149,7 @@ export const createPlayHostMessageHandlers = ({
   syncRaceAchievementProgress,
   onPlayable,
   onAuthoritativeComplete,
+  onAuthoritativeRaceResult,
   onAccountDeleted,
   onAccountDeletionRequested,
   accountDeletionCompletedRef,
@@ -348,15 +354,24 @@ export const createPlayHostMessageHandlers = ({
       return result;
     }),
   getRaceChallenge: (message) =>
-    runRaceOperation(message.requestId, "raceChallenge", () => services.getRaceChallenge(message.payload.challengeId)),
+    runRaceOperation(message.requestId, "raceChallenge", () =>
+      services.getRaceChallenge(message.payload.challengeId, message.payload.locale)),
   getRaceOutcome: (message) =>
     runRaceOperation(message.requestId, "raceOutcome", async () => {
       const result = await services.getRaceOutcome(message.payload.runId);
       await syncRaceAchievementProgress(result);
+      await onAuthoritativeRaceResult?.(result);
       return result;
     }),
   listRaceInbox: (message) =>
     runRaceOperation(message.requestId, "raceInbox", () => services.listRaceInbox(message.payload)),
+  blockRival: (message) =>
+    runRaceOperation(message.requestId, "raceBlock", () => services.blockRival(message.payload.targetUserId)),
+  reportRival: (message) =>
+    runRaceOperation(message.requestId, "raceReport", () => services.reportRival({
+      ...message.payload,
+      requestId: message.requestId ?? createRequestId("race-report"),
+    })),
   analytics: (message) => {
     console.info("[riddle-quest-web]", message.payload.eventName, message.payload.params ?? {});
     trackEvent(message.payload.eventName, message.payload.params);

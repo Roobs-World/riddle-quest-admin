@@ -1,4 +1,5 @@
 import type {RaceRiddlePrompt} from "@qwordly/core/race";
+import {splitGraphemes} from "@qwordly/core/game";
 
 /** Editable answer state controlled by the multiplayer race screen. */
 export type RaceInputState = {
@@ -19,10 +20,12 @@ export const insertRaceLetter = (
   letter: string,
 ): RaceInputState => {
   if (!isRaceSlotEditable(riddle, state.activeSlotIndex)) return state;
+  const graphemes = splitGraphemes(letter.normalize("NFC"));
+  if (graphemes.length !== 1 || !graphemes[0].trim()) return state;
 
   /** Updated answer attempt after inserting the supplied letter. */
   const letters = Array.from({length: riddle.answerLength}, (_, index) => state.letters[index] ?? "");
-  letters[state.activeSlotIndex] = letter;
+  letters[state.activeSlotIndex] = graphemes[0];
   /** Server-revealed positions excluded from automatic selection. */
   const revealedIndexes = new Set(riddle.revealedLetters.map(({index}) => index));
   /** Next empty editable slot after the current position, with wraparound. */
@@ -35,6 +38,25 @@ export const insertRaceLetter = (
     letters,
     activeSlotIndex: nextSlotIndex ?? state.activeSlotIndex,
   };
+};
+
+/** Inserts one committed IME/paste unit atomically, ignoring text beyond the initially editable capacity. */
+export const insertRaceText = (
+  riddle: RaceRiddlePrompt,
+  state: RaceInputState,
+  text: string,
+): RaceInputState => {
+  const graphemes = splitGraphemes(text.normalize("NFC")).filter((grapheme) => Boolean(grapheme.trim()));
+  if (graphemes.length === 0 || !isRaceSlotEditable(riddle, state.activeSlotIndex)) return state;
+  const revealedIndexes = new Set(riddle.revealedLetters.map(({index}) => index));
+  const initialLetters = Array.from({length: riddle.answerLength}, (_, index) => state.letters[index] ?? "");
+  const capacity = initialLetters.reduce((count, letter, index) =>
+    count + (!revealedIndexes.has(index) && !letter ? 1 : 0), 0) +
+    (initialLetters[state.activeSlotIndex] ? 1 : 0);
+  return graphemes.slice(0, capacity).reduce(
+    (current, grapheme) => insertRaceLetter(riddle, current, grapheme),
+    state,
+  );
 };
 
 /** Deletes the active letter or the nearest previous editable letter. */

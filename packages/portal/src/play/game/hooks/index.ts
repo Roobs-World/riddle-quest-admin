@@ -1,5 +1,10 @@
 export {useGameAudio, type GameFeedbackKind} from "./useGameAudio";
 export {useAnswerKeyboard, type AnswerKeyboardOptions} from "./useAnswerKeyboard";
+export {useCompletionDelivery} from "./useCompletionDelivery";
 export {useGameMessageListener, useGameReadyReporter} from "./useGameBridgeLifecycle";
 export {createSavedGame, useGameSessionPersistence} from "./useGameSessionPersistence";
+export {useGameOperations} from "./useGameOperations";
+export {useGameSurfaces} from "./useGameSurfaces";
+export {useOfflineDialog} from "./useOfflineDialog";
+export {useReferralReward} from "./useReferralReward";
 export {useViewportFit} from "./useViewportFit";

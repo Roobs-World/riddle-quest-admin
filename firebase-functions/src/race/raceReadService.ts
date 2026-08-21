@@ -4,6 +4,7 @@ import {
   RACE_TARGET_CORRECT,
   RaceInboxItemSchema,
   RaceOutcomeSchema,
+  type RaceLocale,
   type ListRaceInboxRequest,
   type ListRaceInboxResponse,
   type RaceChallengePreview,
@@ -26,6 +27,7 @@ import {
 /** Gets race challenge preview. */
 export async function getRaceChallengePreview(
   challengeId: string,
+  locale: RaceLocale,
   options: {db?: Firestore; nowMs?: number} = {},
 ): Promise<RaceChallengePreview> {
   const db = dbOrDefault(options.db);
@@ -34,6 +36,9 @@ export async function getRaceChallengePreview(
     const snapshot = await transaction.get(challengeRef);
     if (!snapshot.exists) throw new HttpsError("not-found", "Race to 10 challenge not found.");
     const challenge = parseChallengeRecord(snapshot.data());
+    if (challenge.locale !== locale) {
+      throw new HttpsError("failed-precondition", "RaceTo10.ERROR_LOCALE_MISMATCH");
+    }
     const deletion = await transaction.get(getJestAccountDeletionRef(db, challenge.creatorId));
     if (!deletion.exists) return challengePreview(challenge, options.nowMs ?? Date.now());
     const scrubbed = {...challenge, creatorSnapshot: {displayName: PRIVATE_RACE_PLAYER_NAME}};
@@ -104,6 +109,7 @@ const projectRaceInboxItem = (value: FirebaseFirestore.DocumentData, subjectDele
   return RaceInboxItemSchema.parse({
     itemId: value.itemId,
     challengeId: value.challengeId,
+    ...(linkedOpponentIdentity ? {opponentUserId: value.opponentUserId} : {}),
     opponentDisplayName: linkedOpponentIdentity ? value.opponentDisplayName : "Riddle Quest player",
     ...(linkedOpponentIdentity && value.opponentAvatarUrl !== undefined
       ? {opponentAvatarUrl: value.opponentAvatarUrl}

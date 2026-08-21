@@ -1,165 +1,32 @@
 import {z} from "zod";
 import {MAX_RIDDLE_ANSWER_CHARACTERS} from "../game/limits";
-/** Version identifier for the current authoritative multiplayer rules. */
-export const RACE_RULES_VERSION = "race10_v1" as const;
-/** Correct answers required to complete a Race to 10 run. */
-export const RACE_TARGET_CORRECT = 10;
-/** Riddles captured in each authoritative race deck. */
-export const RACE_DECK_SIZE = 15;
-/** Incorrect guesses allowed before a riddle is automatically skipped. */
-export const RACE_MAX_GUESSES_PER_RIDDLE = 5;
-/** Hints allowed for each race riddle. */
-export const RACE_MAX_HINTS_PER_RIDDLE = 1;
-/** Adjusted-time penalty added for using a hint. */
-export const RACE_HINT_PENALTY_MS = 15_000;
-/** Adjusted-time penalty added for skipping a riddle. */
-export const RACE_SKIP_PENALTY_MS = 45_000;
-/** Maximum adjusted duration of an active race run. */
-export const RACE_MAX_ADJUSTED_TIME_MS = 300_000;
-/** Duration for which a published race challenge remains active. */
-export const RACE_CHALLENGE_TTL_MS = 7 * 24 * 60 * 60 * 1_000;
-/** Stable identifiers for achievements granted by authoritative race events. */
-export const RACE_ACHIEVEMENT_IDS = [
-  "race_debut",
-  "race_first_win",
-  "race_wins_5",
-  "race_wins_25",
-  "race_host",
-  "race_hosts_5",
-  "race_clean_run",
-] as const;
-/** Schema for a supported multiplayer achievement identifier. */
-export const RaceAchievementIdSchema = z.enum(RACE_ACHIEVEMENT_IDS);
-/** Supported multiplayer achievement identifier. */
-export type RaceAchievementId = z.infer<typeof RaceAchievementIdSchema>;
-/** Stable identifiers for selectable multiplayer content categories. */
-export const RACE_CATEGORY_IDS = ["history", "geography", "music", "film", "science", "mixed"] as const;
-/** Locales currently supported by authoritative multiplayer content. */
-export const RACE_SUPPORTED_LOCALES = ["en"] as const;
+import {
+  RACE_DECK_SIZE,
+  RACE_HINT_PENALTY_MS,
+  RACE_MAX_ADJUSTED_TIME_MS,
+  RACE_MAX_GUESSES_PER_RIDDLE,
+  RACE_RULES_VERSION,
+  RACE_SKIP_PENALTY_MS,
+  RACE_TARGET_CORRECT,
+  RaceAchievementIdSchema,
+  RaceCategoryIdSchema,
+  RaceCategorySchema,
+  RaceLocaleSchema,
+  RaceRulesSchema,
+} from "./raceDefinitionSchemas";
+import {RaceGhostEventSchema} from "./raceGhostSchemas";
 
-/** Schema for a supported multiplayer category identifier. */
-export const RaceCategoryIdSchema = z.enum(RACE_CATEGORY_IDS);
-/** Supported multiplayer category identifier. */
-export type RaceCategoryId = z.infer<typeof RaceCategoryIdSchema>;
-/** Schema for a locale supported by authoritative multiplayer. */
-export const RaceLocaleSchema = z.enum(RACE_SUPPORTED_LOCALES);
-/** Locale supported by authoritative multiplayer. */
-export type RaceLocale = z.infer<typeof RaceLocaleSchema>;
+export * from "./raceAnalyticsSchemas";
+export * from "./raceDefinitionSchemas";
+export * from "./raceGhostSchemas";
+
 /** Validates the request id data shape. */
 const RequestIdSchema = z.string().trim().min(8).max(160);
-/** Schema for a player's evaluated multiplayer rollout access. */
-export const RaceAccessResponseSchema = z
-  .object({
-    enabled: z.boolean(),
-    locale: RaceLocaleSchema,
-    reason: z.enum(["enabled", "rollout_disabled", "not_in_cohort"]),
-  })
-  .strict();
-/** Evaluated multiplayer rollout access returned to a player. */
-export type RaceAccessResponse = z.infer<typeof RaceAccessResponseSchema>;
-export * from "./raceAnalyticsSchemas";
-
-/** Schema for a locale-specific multiplayer access request. */
-export const RaceAccessRequestSchema = z.object({locale: RaceLocaleSchema}).strict();
-/** Validated multiplayer access request. */
-export type RaceAccessRequest = z.infer<typeof RaceAccessRequestSchema>;
-
-/** Schema for the content difficulty bands used to balance race decks. */
-export const RaceDifficultyBandSchema = z.enum(["easy", "medium", "hard"]);
-/** Content difficulty band used to balance race decks. */
-export type RaceDifficultyBand = z.infer<typeof RaceDifficultyBandSchema>;
-
-/** Schema for the review/version marker attached to race content. */
-export const RaceContentQualityVersionSchema = z.string().trim().min(1).max(80);
-
-/** Schema for the immutable rules included in race responses. */
-export const RaceRulesSchema = z
-  .object({
-    version: z.literal(RACE_RULES_VERSION),
-    targetCorrect: z.literal(RACE_TARGET_CORRECT),
-    deckSize: z.literal(RACE_DECK_SIZE),
-    maxGuessesPerRiddle: z.literal(RACE_MAX_GUESSES_PER_RIDDLE),
-    maxHintsPerRiddle: z.literal(RACE_MAX_HINTS_PER_RIDDLE),
-    hintPenaltyMs: z.literal(RACE_HINT_PENALTY_MS),
-    skipPenaltyMs: z.literal(RACE_SKIP_PENALTY_MS),
-    maxAdjustedTimeMs: z.literal(RACE_MAX_ADJUSTED_TIME_MS),
-  })
-  .strict();
-/** Immutable rules governing an authoritative race run. */
-export type RaceRules = z.infer<typeof RaceRulesSchema>;
-
-/** Frozen canonical rules used by the client and server. */
-export const RACE_RULES: RaceRules = Object.freeze({
-  version: RACE_RULES_VERSION,
-  targetCorrect: RACE_TARGET_CORRECT,
-  deckSize: RACE_DECK_SIZE,
-  maxGuessesPerRiddle: RACE_MAX_GUESSES_PER_RIDDLE,
-  maxHintsPerRiddle: RACE_MAX_HINTS_PER_RIDDLE,
-  hintPenaltyMs: RACE_HINT_PENALTY_MS,
-  skipPenaltyMs: RACE_SKIP_PENALTY_MS,
-  maxAdjustedTimeMs: RACE_MAX_ADJUSTED_TIME_MS,
-});
 
 /** Validates the opaque id data shape. */
 const OpaqueIdSchema = z.string().trim().min(1).max(160);
 /** Validates the milliseconds data shape. */
 const MillisecondsSchema = z.number().int().nonnegative();
-
-/** Schema for events recorded in an opponent ghost timeline. */
-export const RaceEventTypeSchema = z.enum(["correct", "hint", "skip"]);
-/** Event recorded in an opponent ghost timeline. */
-export type RaceEventType = z.infer<typeof RaceEventTypeSchema>;
-
-/** Schema for one internally consistent authoritative ghost event. */
-export const RaceGhostEventSchema = z
-  .object({
-    sequence: z.number().int().nonnegative(),
-    type: RaceEventTypeSchema,
-    riddlePosition: z.number().int().nonnegative().max(RACE_DECK_SIZE - 1),
-    wallElapsedMs: MillisecondsSchema,
-    penaltyAddedMs: z.union([z.literal(0), z.literal(RACE_HINT_PENALTY_MS), z.literal(RACE_SKIP_PENALTY_MS)]),
-    totalPenaltyMs: MillisecondsSchema,
-    adjustedElapsedMs: MillisecondsSchema,
-    correctCount: z.number().int().nonnegative().max(RACE_TARGET_CORRECT),
-  })
-  .strict()
-  .check((context) => {
-    const event = context.value;
-    const expectedPenalty =
-      event.type === "hint" ? RACE_HINT_PENALTY_MS : event.type === "skip" ? RACE_SKIP_PENALTY_MS : 0;
-    if (event.penaltyAddedMs !== expectedPenalty) {
-      context.issues.push({
-        code: "custom",
-        message: `${event.type} events require a ${expectedPenalty}ms penalty`,
-        path: ["penaltyAddedMs"],
-        input: event,
-      });
-    }
-    if (event.adjustedElapsedMs !== event.wallElapsedMs + event.totalPenaltyMs) {
-      context.issues.push({
-        code: "custom",
-        message: "adjustedElapsedMs must equal wallElapsedMs + totalPenaltyMs",
-        path: ["adjustedElapsedMs"],
-        input: event,
-      });
-    }
-  });
-/** One authoritative event in a multiplayer ghost timeline. */
-export type RaceGhostEvent = z.infer<typeof RaceGhostEventSchema>;
-
-/** Schema for an answer-free multiplayer category summary. */
-export const RaceCategorySchema = z
-  .object({
-    categoryId: RaceCategoryIdSchema,
-    nameKey: z.string().min(1).max(120),
-    descriptionKey: z.string().min(1).max(120),
-    icon: z.enum(["history", "geography", "music", "film", "science", "shuffle"]),
-    colorToken: z.string().regex(/^#[0-9a-fA-F]{6}$/),
-    availableRiddleCount: z.number().int().nonnegative(),
-  })
-  .strict();
-/** Answer-free multiplayer category summary displayed by the client. */
-export type RaceCategory = z.infer<typeof RaceCategorySchema>;
 
 /** Schema for the answer-safe current riddle presented to the client. */
 export const RaceRiddlePromptSchema = z
@@ -313,6 +180,7 @@ export const RaceChallengePreviewSchema = z
       })
       .strict(),
     categoryId: RaceCategoryIdSchema,
+    locale: RaceLocaleSchema,
     targetCorrect: z.literal(RACE_TARGET_CORRECT),
     adjustedTimeToBeatMs: MillisecondsSchema,
     rulesVersion: z.literal(RACE_RULES_VERSION),
@@ -428,14 +296,27 @@ export const PublishRaceChallengeResponseSchema = z
 export const RaceChallengeIdRequestSchema = z
   .object({
     challengeId: OpaqueIdSchema,
+    locale: RaceLocaleSchema,
   })
   .strict();
+
+/** Requests one active provider-wide offline opponent in the exact locale. */
+export const FindRedditRaceMatchRequestSchema = z.object({locale: RaceLocaleSchema}).strict();
+/** Answer-safe result of Reddit's Firebase-global offline matchmaking lookup. */
+export const FindRedditRaceMatchResponseSchema = z.discriminatedUnion("status", [
+  z.object({status: z.literal("matched"), challenge: RaceChallengePreviewSchema}).strict(),
+  z.object({status: z.literal("empty"), locale: RaceLocaleSchema}).strict(),
+]);
+/** Describes find reddit race match response. */
+export type FindRedditRaceMatchResponse = z.infer<typeof FindRedditRaceMatchResponseSchema>;
 
 /** Schema for one answer-free multiplayer result inbox item. */
 export const RaceInboxItemSchema = z
   .object({
     itemId: OpaqueIdSchema,
     challengeId: OpaqueIdSchema,
+    /** Provider-neutral account identifier used only by server-authorized safety actions. */
+    opponentUserId: z.string().trim().min(1).max(128).optional(),
     opponentDisplayName: z.string().trim().min(1).max(80),
     opponentAvatarUrl: z.string().url().nullable().optional(),
     categoryId: RaceCategoryIdSchema,
@@ -445,6 +326,17 @@ export const RaceInboxItemSchema = z
     createdAtMs: MillisecondsSchema,
   })
   .strict();
+
+/** Bounded moderation categories accepted by the social-safety queue. */
+export const SocialReportCategorySchema = z.enum([
+  "harassment",
+  "cheating",
+  "inappropriate_identity",
+  "spam",
+  "other",
+]);
+/** One categorized social-safety report reason. */
+export type SocialReportCategory = z.infer<typeof SocialReportCategorySchema>;
 
 /** Schema for a bounded, cursor-paginated race inbox request. */
 export const ListRaceInboxRequestSchema = z
@@ -462,6 +354,94 @@ export const ListRaceInboxResponseSchema = z
     nextCursor: z.string().min(1).max(500).optional(),
   })
   .strict();
+
+/** Facebook tournament submissions identify an authoritative run, never a client score. */
+export const RecordFacebookTournamentRunRequestSchema = z
+  .object({
+    runId: OpaqueIdSchema,
+    locale: RaceLocaleSchema,
+  })
+  .strict();
+
+/** Answer- and economy-free result of recording an official Facebook tournament run. */
+export const RecordFacebookTournamentRunResponseSchema = z
+  .object({
+    tournamentId: OpaqueIdSchema,
+    locale: RaceLocaleSchema,
+    runId: OpaqueIdSchema,
+    adjustedTimeMs: MillisecondsSchema.max(RACE_MAX_ADJUSTED_TIME_MS),
+    completedAtMs: MillisecondsSchema,
+    improved: z.boolean(),
+    sortOrder: z.literal("LOWER_IS_BETTER"),
+    rewardsEnabled: z.literal(false),
+  })
+  .strict();
+
+/** Requests the active 24-hour Facebook tournament for one exact locale. */
+export const ListFacebookTournamentRequestSchema = z
+  .object({locale: RaceLocaleSchema})
+  .strict();
+
+/** One identity-free row in the server-authoritative tournament presentation. */
+export const FacebookTournamentStandingSchema = z
+  .object({
+    rank: z.number().int().positive(),
+    adjustedTimeMs: MillisecondsSchema.max(RACE_MAX_ADJUSTED_TIME_MS),
+    isCurrentPlayer: z.boolean(),
+  })
+  .strict();
+
+/** Active tournament metadata and its bounded, economy-free standings. */
+export const ListFacebookTournamentResponseSchema = z
+  .object({
+    tournamentId: OpaqueIdSchema,
+    locale: RaceLocaleSchema,
+    startsAtMs: MillisecondsSchema,
+    endsAtMs: MillisecondsSchema,
+    sortOrder: z.literal("LOWER_IS_BETTER"),
+    rewardsEnabled: z.literal(false),
+    standings: z.array(FacebookTournamentStandingSchema).max(50),
+    currentPlayer: FacebookTournamentStandingSchema.optional(),
+  })
+  .strict();
+
+/** Validates the facebook context id data shape. */
+const FacebookContextIdSchema = z.string().min(1).max(256).regex(/^[A-Za-z0-9._:-]+$/);
+
+/** Records one authoritative run into the player's current Facebook context board. */
+export const RecordFacebookContextRunRequestSchema = z.object({
+  contextId: FacebookContextIdSchema,
+  locale: RaceLocaleSchema,
+  runId: OpaqueIdSchema,
+}).strict();
+
+/** Economy- and identity-free result of recording a context-board run. */
+export const RecordFacebookContextRunResponseSchema = z.object({
+  locale: RaceLocaleSchema,
+  runId: OpaqueIdSchema,
+  adjustedTimeMs: MillisecondsSchema.max(RACE_MAX_ADJUSTED_TIME_MS),
+  completedAtMs: MillisecondsSchema,
+  improved: z.boolean(),
+  sortOrder: z.literal("LOWER_IS_BETTER"),
+  rewardsEnabled: z.literal(false),
+}).strict();
+
+/** Requests the active seven-day board for an exact Facebook context and locale. */
+export const ListFacebookContextBoardRequestSchema = z.object({
+  contextId: FacebookContextIdSchema,
+  locale: RaceLocaleSchema,
+}).strict();
+
+/** Bounded identity-free Facebook context board. */
+export const ListFacebookContextBoardResponseSchema = z.object({
+  locale: RaceLocaleSchema,
+  startsAtMs: MillisecondsSchema,
+  endsAtMs: MillisecondsSchema,
+  sortOrder: z.literal("LOWER_IS_BETTER"),
+  rewardsEnabled: z.literal(false),
+  standings: z.array(FacebookTournamentStandingSchema).max(50),
+  currentPlayer: FacebookTournamentStandingSchema.optional(),
+}).strict();
 
 /** Validated request for listing multiplayer categories. */
 export type ListRaceCategoriesRequest = z.infer<typeof ListRaceCategoriesRequestSchema>;
@@ -497,3 +477,19 @@ export type RaceInboxItem = z.infer<typeof RaceInboxItemSchema>;
 export type ListRaceInboxRequest = z.infer<typeof ListRaceInboxRequestSchema>;
 /** Validated page of multiplayer result inbox items. */
 export type ListRaceInboxResponse = z.infer<typeof ListRaceInboxResponseSchema>;
+/** Validated request to derive a Facebook tournament score from a completed run. */
+export type RecordFacebookTournamentRunRequest = z.infer<typeof RecordFacebookTournamentRunRequestSchema>;
+/** Validated economy-free official Facebook tournament result. */
+export type RecordFacebookTournamentRunResponse = z.infer<typeof RecordFacebookTournamentRunResponseSchema>;
+/** Validated request for the active locale-isolated Facebook tournament. */
+export type ListFacebookTournamentRequest = z.infer<typeof ListFacebookTournamentRequestSchema>;
+/** Validated identity-free active Facebook tournament presentation. */
+export type ListFacebookTournamentResponse = z.infer<typeof ListFacebookTournamentResponseSchema>;
+/** Validated context-board authoritative run request. */
+export type RecordFacebookContextRunRequest = z.infer<typeof RecordFacebookContextRunRequestSchema>;
+/** Validated context-board authoritative record response. */
+export type RecordFacebookContextRunResponse = z.infer<typeof RecordFacebookContextRunResponseSchema>;
+/** Validated active Facebook context-board request. */
+export type ListFacebookContextBoardRequest = z.infer<typeof ListFacebookContextBoardRequestSchema>;
+/** Validated identity-free Facebook context-board response. */
+export type ListFacebookContextBoardResponse = z.infer<typeof ListFacebookContextBoardResponseSchema>;

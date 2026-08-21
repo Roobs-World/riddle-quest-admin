@@ -86,6 +86,19 @@ describe("commerce modal pages", () => {
     expect(fundedHtml).not.toContain("not have enough coins");
   });
 
+  it("removes every shop route when platform commerce is unavailable", () => {
+    const continueHtml = renderToString(
+      <ContinueModalPage balance={0} onContinue={noop} onOpenModal={noop} commerceAvailable={false} />,
+    );
+    const hintHtml = renderToString(
+      <HintModalPage balance={0} onClose={noop} onOpenModal={noop} onRequestAction={noop} commerceAvailable={false} />,
+    );
+    const treasureHtml = renderToString(
+      <TreasureModalPage balance={0} onOpenModal={noop} commerceAvailable={false} />,
+    );
+    expect(`${continueHtml}${hintHtml}${treasureHtml}`).not.toMatch(/Open Shop|Buy coins/u);
+  });
+
   it("renders hint and skip prompts from the same coin action component", () => {
     const poorHintHtml = renderToString(
       <HintModalPage balance={0} onClose={noop} onOpenModal={noop} onRequestAction={noop} />,

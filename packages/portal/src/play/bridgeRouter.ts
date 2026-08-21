@@ -62,6 +62,10 @@ export type HostMessageHandlers = {
   getRaceOutcome(message: Extract<GameToHostMessage, {type: "game:getRaceOutcome"}>): void | Promise<void>;
   /** Lists race inbox. */
   listRaceInbox(message: Extract<GameToHostMessage, {type: "game:listRaceInbox"}>): void | Promise<void>;
+  /** Blocks one server-established rival. */
+  blockRival(message: Extract<GameToHostMessage, {type: "game:blockRival"}>): void | Promise<void>;
+  /** Reports one server-established rival. */
+  reportRival(message: Extract<GameToHostMessage, {type: "game:reportRival"}>): void | Promise<void>;
   /** Provides analytics behavior. */
   analytics(message: Extract<GameToHostMessage, {type: "game:analytics"}>): void | Promise<void>;
   /** Provides error behavior. */
@@ -146,6 +150,12 @@ export const createHostMessageRouter = (handlers: HostMessageHandlers) => {
         break;
       case "game:listRaceInbox":
         await handlers.listRaceInbox(message);
+        break;
+      case "game:blockRival":
+        await handlers.blockRival(message);
+        break;
+      case "game:reportRival":
+        await handlers.reportRival(message);
         break;
       case "game:analytics":
         await handlers.analytics(message);

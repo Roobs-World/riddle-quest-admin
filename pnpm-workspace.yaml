@@ -4,6 +4,14 @@ packages:
 
 autoInstallPeers: false
 
+# Upstream image-size is archived with no fixed release. These advisories are
+# ignored only because the exact transitive package is patched and regression
+# tested by scripts/image-size-security-patch.test.mjs.
+audit:
+  ignore:
+    - GHSA-5p2g-fcmc-qvqq
+    - GHSA-w3rx-r6r6-pgpr
+
 peerDependencyRules:
   allowedVersions:
     eslint: "10"
@@ -22,6 +30,7 @@ overrides:
   fast-xml-parser: "5.10.1"
   graphql: "16.14.2"
   "@istanbuljs/load-nyc-config>js-yaml": "3.15.1"
+  "external-editor>tmp": "0.2.7"
   jest-environment-jsdom: "30.4.1"
   jest-environment-node: "30.4.1"
   jest-mock: "30.4.1"
@@ -51,4 +60,8 @@ allowBuilds:
   esbuild: false
   geckodriver: false
   protobufjs: true
+  re2: false
   unrs-resolver: false
+
+patchedDependencies:
+  image-size@2.0.2: patches/image-size@2.0.2.patch

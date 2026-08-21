@@ -134,6 +134,7 @@ export async function startJestSession(
     reportJestLoadingProgress(platform, phaseProgress[3]);
     onProgress?.({stage: "game", progress: phaseProgress[3]});
     let identityTombstoned = false;
+    let firebaseUid: string | undefined;
     const authenticateIdentity = async (): Promise<boolean> => {
       if (options.deletionRecovery) {
         if (!options.recoverAccountDeletion) throw new Error("account-deletion-recovery-unavailable");
@@ -145,6 +146,7 @@ export async function startJestSession(
         identityTombstoned = true;
         return true;
       }
+      firebaseUid = identity.uid;
       await authenticateFirebase(identity.customToken);
       return Boolean(await options.onAuthenticated?.());
     };
@@ -164,10 +166,19 @@ export async function startJestSession(
     if (recovered.status !== "success") return recovered;
 
     reportJestLoadingProgress(platform, phaseProgress[5]);
+    if (!firebaseUid) throw new Error("jest-firebase-uid-missing");
     keepHeartbeatAlive = true;
     return {
       status: "success",
-      value: {player: signed.player, profile, entryIntent, preferences, playerData, firebaseAuthenticated: true},
+      value: {
+        firebaseUid,
+        player: signed.player,
+        profile,
+        entryIntent,
+        preferences,
+        playerData,
+        firebaseAuthenticated: true,
+      },
     };
   } catch (error) {
     captureBrowserException(error, {component: "jest_startup"});

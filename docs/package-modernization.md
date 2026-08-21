@@ -1,6 +1,6 @@
 # Package modernization
 
-Last reviewed: 2026-08-09.
+Last reviewed: 2026-08-21.
 
 The workspace uses current direct releases from the npm registry, with one compatibility family documented below. New package capabilities are adopted when they improve production behavior, development feedback, security, or maintainability without changing game semantics.
 
@@ -18,6 +18,8 @@ The workspace uses current direct releases from the npm registry, with one compa
 ## Compatibility constraint
 
 The React Compiler pipeline uses Babel 7.29 rather than Babel 8. Babel 8 is the registry's newest major, but `ts-jest` 29—the current TypeScript transformer compatible with Jest 30—declares Babel `<8`. Babel 7.29 is also explicitly supported by `@rolldown/plugin-babel`. Keeping this compatible set avoids unresolved peers and preserves the repository's mock-hoisting semantics. Revisit when the Jest TypeScript transformer supports Babel 8 or Vite provides a non-Babel React Compiler path.
+
+The archived `image-size` 2.0.2 package remains a transitive dependency of the current Devvit CLI and has no upstream release for GHSA-5p2g-fcmc-qvqq or GHSA-w3rx-r6r6-pgpr. The workspace applies a minimal `pnpm` patch that rejects undersized HEIF/JXL boxes and zero/truncated ICNS entries. The two advisory exceptions are permitted only while `scripts/image-size-security-patch.test.mjs` verifies both the exact patch wiring and bounded malformed-input behavior. Remove the patch and exceptions together when Devvit replaces the dependency.
 
 ## Deliberate non-adoptions
 

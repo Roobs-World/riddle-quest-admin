@@ -12,6 +12,7 @@
     "LOGOUT_BUTTON": "ログアウト",
     "LOGOUT_ERROR_MESSAGE": "ログアウトできませんでした。もう一度お試しください。",
     "LOGOUT_ERROR_TITLE": "エラー",
+    "PRESENCE_TOGGLE": "ライバルにアクティビティを表示",
     "SOUND_TOGGLE": "音",
     "TERMS_BUTTON": "利用規約",
     "TITLE": "設定",

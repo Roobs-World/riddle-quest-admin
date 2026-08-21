@@ -45,6 +45,15 @@ describe("callable request and response schemas", () => {
       newXp: 20,
       newLevel: 2,
       leveledUp: true,
+      rewardBreakdown: {
+        baseWinCoins: 5,
+        levelUpBonus: 0,
+        dailyStreakBonus: 0,
+        achievementBonus: 0,
+        referralBonus: 100,
+        totalAwarded: 105,
+        newBalance: 405,
+      },
     })).toBeDefined();
   });
 

@@ -1,0 +1,103 @@
+import {SOCIAL_REPORT_DAILY_LIMIT, blockKnownRival, reportKnownRival} from "../social/socialSafety";
+
+const REPORTER = `facebook_${"a".repeat(40)}`;
+const TARGET = `facebook_${"b".repeat(40)}`;
+const NOW = Date.UTC(2026, 7, 19);
+
+const fakeDb = (known = true) => {
+  const values = new Map<string, Record<string, unknown>>();
+  if (known) values.set(`users/${REPORTER}/knownRivals/${TARGET}`, {
+    targetUserId: TARGET, source: "completed_race", establishedAtMs: NOW,
+  });
+  const ref = (path: string) => ({path});
+  const transaction = {
+    get: jest.fn(async ({path}: {path: string}) => ({exists: values.has(path), data: () => values.get(path)})),
+    set: jest.fn(({path}: {path: string}, value: Record<string, unknown>) => values.set(path, value)),
+    create: jest.fn(({path}: {path: string}, value: Record<string, unknown>) => {
+      if (values.has(path)) throw new Error("already-exists");
+      values.set(path, value);
+    }),
+  };
+  const db = {
+    doc: ref,
+    collection: (name: string) => ({doc: (id: string) => ref(`${name}/${id}`)}),
+    runTransaction: async <T>(callback: (value: typeof transaction) => Promise<T>) => callback(transaction),
+  } as unknown as FirebaseFirestore.Firestore;
+  return {db, values};
+};
+
+describe("social safety service", () => {
+  it("blocks only an established rival and stores no display identity", async () => {
+    const {db, values} = fakeDb();
+    await expect(blockKnownRival(REPORTER, TARGET, {db, nowMs: NOW})).resolves.toEqual({blocked: true});
+    expect(values.get(`users/${REPORTER}/blockedRivals/${TARGET}`)).toEqual({targetUserId: TARGET, blockedAtMs: NOW});
+    const unknown = fakeDb(false);
+    await expect(blockKnownRival(REPORTER, TARGET, {db: unknown.db, nowMs: NOW}))
+      .rejects.toMatchObject({code: "permission-denied"});
+  });
+
+  it("queues categorized reports idempotently without free-form content", async () => {
+    const {db, values} = fakeDb();
+    const input = {targetUserId: TARGET, category: "cheating" as const, requestId: "request-0001"};
+    const first = await reportKnownRival(REPORTER, input, {db, nowMs: NOW});
+    const second = await reportKnownRival(REPORTER, input, {db, nowMs: NOW + 1});
+    expect(second).toEqual(first);
+    const report = values.get(`socialModerationQueue/${first.reportId}`);
+    expect(report).toMatchObject({reporterId: REPORTER, targetUserId: TARGET, category: "cheating", status: "queued"});
+    expect(JSON.stringify(report)).not.toMatch(/message|chat|detail|name|photo/i);
+    await expect(reportKnownRival(REPORTER, {...input, category: "spam"}, {db, nowMs: NOW + 2}))
+      .rejects.toMatchObject({code: "failed-precondition"});
+  });
+
+  it("enforces five unique reports per UTC day", async () => {
+    const {db} = fakeDb();
+    for (let index = 0; index < SOCIAL_REPORT_DAILY_LIMIT; index += 1) {
+      await reportKnownRival(REPORTER, {
+        targetUserId: TARGET,
+        category: "spam",
+        requestId: `request-${String(index).padStart(4, "0")}`,
+      }, {db, nowMs: NOW});
+    }
+    await expect(reportKnownRival(REPORTER, {
+      targetUserId: TARGET,
+      category: "spam",
+      requestId: "request-over-limit",
+    }, {db, nowMs: NOW})).rejects.toMatchObject({code: "resource-exhausted"});
+  });
+
+  it("rejects self-targets, unknown categories, and short idempotency keys", async () => {
+    const {db} = fakeDb();
+    await expect(reportKnownRival(REPORTER, {
+      targetUserId: REPORTER, category: "spam", requestId: "request-0001",
+    }, {db, nowMs: NOW})).rejects.toMatchObject({code: "invalid-argument"});
+    await expect(reportKnownRival(REPORTER, {
+      targetUserId: TARGET, category: "unsafe" as "spam", requestId: "request-0001",
+    }, {db, nowMs: NOW})).rejects.toMatchObject({code: "invalid-argument"});
+    await expect(reportKnownRival(REPORTER, {
+      targetUserId: TARGET, category: "spam", requestId: "short",
+    }, {db, nowMs: NOW})).rejects.toMatchObject({code: "invalid-argument"});
+  });
+
+  it("rejects unsafe clocks and malformed rivalry or rate-limit state", async () => {
+    const invalidKnown = fakeDb();
+    invalidKnown.values.set(`users/${REPORTER}/knownRivals/${TARGET}`, {
+      targetUserId: TARGET, source: "untrusted", establishedAtMs: NOW,
+    });
+    await expect(blockKnownRival(REPORTER, TARGET, {db: invalidKnown.db, nowMs: NOW}))
+      .rejects.toMatchObject({code: "permission-denied"});
+    await expect(reportKnownRival(REPORTER, {
+      targetUserId: TARGET, category: "spam", requestId: "request-clock",
+    }, {db: invalidKnown.db, nowMs: Number.NaN})).rejects.toMatchObject({code: "invalid-argument"});
+
+    const corruptedLimit = fakeDb();
+    await reportKnownRival(REPORTER, {
+      targetUserId: TARGET, category: "spam", requestId: "request-first",
+    }, {db: corruptedLimit.db, nowMs: NOW});
+    const limitPath = [...corruptedLimit.values.keys()].find((path) => path.startsWith("socialReportRateLimits/"));
+    expect(limitPath).toBeDefined();
+    corruptedLimit.values.set(limitPath!, {reporterId: REPORTER, day: "wrong", count: 0, updatedAtMs: NOW});
+    await expect(reportKnownRival(REPORTER, {
+      targetUserId: TARGET, category: "spam", requestId: "request-second",
+    }, {db: corruptedLimit.db, nowMs: NOW})).rejects.toMatchObject({code: "data-loss"});
+  });
+});

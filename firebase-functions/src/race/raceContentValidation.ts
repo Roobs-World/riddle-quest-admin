@@ -48,7 +48,8 @@ export type RacePoolValidation = {
 };
 
 /** Provides normalize behavior. */
-const normalize = (value: string): string => value.normalize("NFC").trim().toLocaleLowerCase().replace(/\s+/gu, " ");
+const normalize = (value: string, locale: SupportedLocale): string =>
+  value.normalize("NFKC").trim().toLocaleLowerCase(locale).replace(/\s+/gu, " ");
 
 /** Indicates whether is category. */
 const isCategory = (value: unknown): value is RaceCategoryId =>
@@ -118,13 +119,13 @@ export function validateRacePool(
     }
 
     difficultyCounts[data.difficultyBand] += 1;
-    const normalizedQuestion = normalize(question);
-    const normalizedAnswer = normalize(answer);
+    const normalizedQuestion = normalize(question, options.locale);
+    const normalizedAnswer = normalize(answer, options.locale);
     canonicals.set(data.canonicalRiddleId, [...(canonicals.get(data.canonicalRiddleId) ?? []), record.documentPath]);
     questions.set(normalizedQuestion, [...(questions.get(normalizedQuestion) ?? []), record.documentPath]);
     answers.set(normalizedAnswer, [...(answers.get(normalizedAnswer) ?? []), record.documentPath]);
 
-    if (clueContainsLiteralAnswer(question, answer)) {
+    if (clueContainsLiteralAnswer(question, answer, options.locale)) {
       issues.push({
         code: "clue_leaks_answer",
         message: "Clue contains its literal answer",

@@ -59,7 +59,7 @@ export type RaceContentImportPlan = {
 };
 
 /** Normalizes d. */
-const normalized = (value: string) => value.normalize("NFC").trim().toLocaleLowerCase("en").replace(/\s+/gu, " ");
+const normalized = (value: string) => value.normalize("NFKC").trim().toLocaleLowerCase("en").replace(/\s+/gu, " ");
 
 /** Provides document id for behavior. */
 const documentIdFor = (canonicalRiddleId: string) =>

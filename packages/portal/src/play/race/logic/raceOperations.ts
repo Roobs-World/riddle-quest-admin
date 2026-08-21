@@ -10,7 +10,9 @@ export type RaceOperation =
   | "racePublish"
   | "raceChallenge"
   | "raceOutcome"
-  | "raceInbox";
+  | "raceInbox"
+  | "raceBlock"
+  | "raceReport";
 
 /** Operations whose server mutations require an idempotency receipt. */
 const RECEIPT_OPERATIONS: ReadonlySet<RaceOperation> = new Set([

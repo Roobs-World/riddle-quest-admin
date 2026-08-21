@@ -14,6 +14,8 @@ export type ContinueModalPageProps = {
   onContinue: (amount?: number) => void;
   /** Stores on open modal. */
   onOpenModal: OpenModalHandler;
+  /** Stores commerce available. */
+  commerceAvailable?: boolean;
 };
 
 /** Props for a coin-funded gameplay action prompt. */
@@ -26,6 +28,8 @@ export type CoinActionModalPageProps = {
   onOpenModal: OpenModalHandler;
   /** Stores on request action. */
   onRequestAction: () => void;
+  /** Stores commerce available. */
+  commerceAvailable?: boolean;
 };
 
 /** Props for the profile treasure balance page. */
@@ -34,10 +38,12 @@ export type TreasureModalPageProps = {
   balance: number;
   /** Stores on open modal. */
   onOpenModal: OpenModalHandler;
+  /** Stores commerce available. */
+  commerceAvailable?: boolean;
 };
 
 /** Renders the server-authoritative extra-attempt prompt. */
-export function ContinueModalPage({balance, onContinue, onOpenModal}: ContinueModalPageProps) {
+export function ContinueModalPage({balance, onContinue, onOpenModal, commerceAvailable = true}: ContinueModalPageProps) {
   const canAfford = balance >= CONTINUE_COIN_COST;
   return (
     <div className="modal-actions continue-actions">
@@ -55,9 +61,9 @@ export function ContinueModalPage({balance, onContinue, onOpenModal}: ContinueMo
         {tr("LossModal.USE_COINS_PREFIX")}{CONTINUE_COIN_COST}{tr("LossModal.USE_COINS_SUFFIX")}
       </button>
       {!canAfford ? <p>{tr("GameScreenAlerts.CONTINUE_NOT_ENOUGH_COINS_MESSAGE")}</p> : null}
-      <button className="play-primary" onClick={() => onOpenModal("shop")}>
+      {commerceAvailable && <button className="play-primary" onClick={() => onOpenModal("shop")}>
         {tr("LossModal.OPEN_SHOP_BUTTON")}
-      </button>
+      </button>}
       <button className="play-primary" onClick={() => onOpenModal("skip")}>
         {tr("LossModal.SKIP_PUZZLE_BUTTON")}
       </button>
@@ -71,6 +77,7 @@ export function HintModalPage({
   onClose,
   onOpenModal,
   onRequestAction,
+  commerceAvailable,
 }: CoinActionModalPageProps) {
   return (
     <CoinActionPrompt
@@ -81,6 +88,7 @@ export function HintModalPage({
       onClose={onClose}
       onOpenModal={onOpenModal}
       onRequestAction={onRequestAction}
+      commerceAvailable={commerceAvailable}
     />
   );
 }
@@ -91,6 +99,7 @@ export function SkipModalPage({
   onClose,
   onOpenModal,
   onRequestAction,
+  commerceAvailable,
 }: CoinActionModalPageProps) {
   return (
     <CoinActionPrompt
@@ -101,19 +110,20 @@ export function SkipModalPage({
       onClose={onClose}
       onOpenModal={onOpenModal}
       onRequestAction={onRequestAction}
+      commerceAvailable={commerceAvailable}
     />
   );
 }
 
 /** Renders the current coin balance and a route to the platform shop. */
-export function TreasureModalPage({balance, onOpenModal}: TreasureModalPageProps) {
+export function TreasureModalPage({balance, onOpenModal, commerceAvailable = true}: TreasureModalPageProps) {
   return (
     <div className="treasure-chest">
       <img src={treasureChestUrl} alt="" />
       <strong>{balance.toLocaleString()} {tr("CoinShop.COINS_SUFFIX")}</strong>
-      <button className="play-primary" onClick={() => onOpenModal("shop")}>
+      {commerceAvailable && <button className="play-primary" onClick={() => onOpenModal("shop")}>
         {tr("Navigation.BUY_COINS_BUTTON")}
-      </button>
+      </button>}
     </div>
   );
 }
@@ -134,6 +144,7 @@ function CoinActionPrompt({
   onClose,
   onOpenModal,
   onRequestAction,
+  commerceAvailable = true,
 }: CoinActionPromptProps) {
   const canAfford = balance >= cost;
 
@@ -151,9 +162,9 @@ function CoinActionPrompt({
       ) : (
         <>
           <p>{tr(insufficientFundsKey)}</p>
-          <button className="play-primary" onClick={() => onOpenModal("shop")}>
+          {commerceAvailable && <button className="play-primary" onClick={() => onOpenModal("shop")}>
             {tr("LossModal.OPEN_SHOP_BUTTON")}
-          </button>
+          </button>}
         </>
       )}
     </div>

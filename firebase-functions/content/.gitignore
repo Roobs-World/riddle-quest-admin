@@ -1,0 +1,5 @@
+race-translations/*.checkpoint.json
+race-translations/*.tmp
+youtube-authoring/
+youtube-translations/*.checkpoint.json
+youtube-translations/*.tmp

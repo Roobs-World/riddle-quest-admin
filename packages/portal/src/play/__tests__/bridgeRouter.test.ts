@@ -29,6 +29,8 @@ describe("portal bridge routers", () => {
       getRaceChallenge: jest.fn(),
       getRaceOutcome: jest.fn(),
       listRaceInbox: jest.fn(),
+      blockRival: jest.fn(),
+      reportRival: jest.fn(),
       analytics: jest.fn(),
       error: jest.fn(),
     });
@@ -104,6 +106,8 @@ describe("portal bridge routers", () => {
       getRaceChallenge: jest.fn(),
       getRaceOutcome: jest.fn(),
       listRaceInbox: jest.fn(),
+      blockRival: jest.fn(),
+      reportRival: jest.fn(),
       analytics: jest.fn(),
       error: jest.fn(),
     });
@@ -113,6 +117,7 @@ describe("portal bridge routers", () => {
 
   it("routes schema-validated race requests with correlation IDs", async () => {
     const submitRaceGuess = jest.fn();
+    const getRaceChallenge = jest.fn();
     const router = createHostMessageRouter({
       ready: jest.fn(),
       resize: jest.fn(),
@@ -134,9 +139,11 @@ describe("portal bridge routers", () => {
       resumeRace: jest.fn(),
       abandonRace: jest.fn(),
       publishRace: jest.fn(),
-      getRaceChallenge: jest.fn(),
+      getRaceChallenge,
       getRaceOutcome: jest.fn(),
       listRaceInbox: jest.fn(),
+      blockRival: jest.fn(),
+      reportRival: jest.fn(),
       analytics: jest.fn(),
       error: jest.fn(),
     });
@@ -146,6 +153,20 @@ describe("portal bridge routers", () => {
       payload: {runId: "run-1", riddleId: "riddle-1", guess: "piano", requestId: "guess-request-1"},
     });
     expect(submitRaceGuess).toHaveBeenCalledWith(expect.objectContaining({requestId: "guess-message-1"}));
+    await router({
+      type: "game:getRaceChallenge",
+      requestId: "challenge-message-1",
+      payload: {challengeId: "challenge-1", locale: "ja"},
+    });
+    expect(getRaceChallenge).toHaveBeenCalledWith(expect.objectContaining({
+      requestId: "challenge-message-1",
+      payload: {challengeId: "challenge-1", locale: "ja"},
+    }));
+    await expect(router({
+      type: "game:getRaceChallenge",
+      requestId: "missing-locale",
+      payload: {challengeId: "challenge-1"},
+    })).rejects.toThrow();
     await expect(
       router({
         type: "game:submitRaceGuess",

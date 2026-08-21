@@ -1,4 +1,9 @@
-import {RACE_CATEGORY_IDS, type RaceCategoryId, type RaceDifficultyBand} from "@qwordly/core/race";
+import {
+  RACE_CATEGORY_IDS,
+  RACE_SUPPORTED_LOCALES,
+  type RaceCategoryId,
+  type RaceDifficultyBand,
+} from "@qwordly/core/race";
 import type {SupportedLocale} from "@qwordly/core/validation";
 import {
   createRaceContentDryRun,
@@ -76,7 +81,10 @@ describe("race content migration dry run", () => {
         },
       },
     ]);
-    expect(report.missingTranslations).toEqual([]);
+    expect(report.missingTranslations).toEqual([{
+      canonicalRiddleId: "classic:1",
+      locales: RACE_SUPPORTED_LOCALES.filter((locale) => locale !== "en"),
+    }]);
   });
 
   it("reports canonical collisions and unclassifiable documents without writes", () => {
@@ -130,7 +138,20 @@ describe("race content migration dry run", () => {
 
     expect(report.proposedWrites.map((write) => write.documentPath)).toEqual(["a-ja", "a-write", "z-ja", "z-write"]);
     expect(report.unclassifiable.map((item) => item.documentPath)).toEqual(["a-invalid", "z-invalid"]);
-    expect(report.missingTranslations.map((item) => item.canonicalRiddleId)).toEqual(["classic:3", "classic:4"]);
+    expect(report.missingTranslations.map((item) => item.canonicalRiddleId)).toEqual([
+      "classic:1",
+      "classic:2",
+      "classic:3",
+      "classic:4",
+    ]);
+  });
+
+  it("does not report a canonical riddle translated into every supported locale", () => {
+    const report = createRaceContentDryRun(
+      RACE_SUPPORTED_LOCALES.map((locale) => record({locale, index: 5})),
+    );
+
+    expect(report.missingTranslations).toEqual([]);
   });
 });
 
@@ -182,6 +203,22 @@ describe("race content pool validation", () => {
         "difficulty_imbalance",
       ]),
     );
+  });
+
+  it("detects locale-cased and compatibility-normalized duplicate clues", () => {
+    const turkish = validateRacePool([
+      record({locale: "tr", index: 1, text: "IŞIK hakkında soru", answer: "bir"}),
+      record({locale: "tr", index: 2, text: "ışık hakkında soru", answer: "iki"}),
+    ], {locale: "tr", categoryId: "history", poolSize: 2});
+    expect(turkish.issues).toEqual(expect.arrayContaining([expect.objectContaining({code: "duplicate_question"})]));
+
+    const compatibility = validateRacePool([
+      record({index: 1, text: "ＡＢＣ follows this trail", answer: "first"}),
+      record({index: 2, text: "ABC follows this trail", answer: "second"}),
+    ], {locale: "en", categoryId: "history", poolSize: 2});
+    expect(compatibility.issues).toEqual(expect.arrayContaining([
+      expect.objectContaining({code: "duplicate_question"}),
+    ]));
   });
 
   it("rejects oversized pools", () => {

@@ -1,0 +1,45 @@
+{
+  "name": "@qwordly/reddit-app",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.0.0 <25.0.0"
+  },
+  "scripts": {
+    "build:client": "pnpm --filter @qwordly/portal build:reddit && node scripts/stage-client.mjs",
+    "stage:client": "node scripts/stage-client.mjs",
+    "build:server": "vite build",
+    "build": "pnpm build:client && pnpm build:server",
+    "build:package": "pnpm stage:client && pnpm build:server && pnpm validate",
+    "licenses:generate": "RIDDLE_QUEST_LICENSE_PACKAGE=@qwordly/reddit-app RIDDLE_QUEST_LICENSE_OUTPUT=$PWD/third-party-licenses.reddit.txt node ../portal/scripts/generate-third-party-licenses.mjs --write",
+    "licenses:check": "RIDDLE_QUEST_LICENSE_PACKAGE=@qwordly/reddit-app RIDDLE_QUEST_LICENSE_OUTPUT=$PWD/third-party-licenses.reddit.txt node ../portal/scripts/generate-third-party-licenses.mjs --check",
+    "audit:performance": "node scripts/audit-performance.mjs",
+    "check:types": "tsc6 -p tsconfig.json --noEmit",
+    "test": "node --experimental-strip-types --test src/server/*.test.ts scripts/*.test.mjs",
+    "capture:contract": "node scripts/capture-reddit-contract-fixture.mjs",
+    "validate:contracts": "node scripts/validate-reddit-contract-fixtures.mjs ../../docs/evidence/reddit-contracts",
+    "validate:hosted": "node scripts/validate-reddit-hosted-evidence.mjs ../../docs/evidence/reddit-hosted-evidence.json",
+    "test:release": "node --test scripts/reddit-release-artifact.test.mjs",
+    "release:gate": "pnpm validate:contracts && pnpm validate:hosted && node scripts/prepare-reddit-release.mjs",
+    "validate": "pnpm check:types && pnpm test && node scripts/validate-package.mjs",
+    "playtest": "devvit playtest",
+    "upload": "pnpm build && devvit upload",
+    "publish": "devvit publish"
+  },
+  "dependencies": {
+    "@devvit/web": "0.14.1",
+    "@hono/node-server": "2.1.1",
+    "@qwordly/core": "workspace:*",
+    "devvit": "0.14.1",
+    "hono": "4.13.3"
+  },
+  "devDependencies": {
+    "@types/node": "^24.13.3",
+    "chrome-launcher": "1.2.1",
+    "google-protobuf": "3.21.4",
+    "lighthouse": "13.4.1",
+    "typescript": "npm:@typescript/typescript6@6.0.2",
+    "vite": "8.2.2"
+  }
+}

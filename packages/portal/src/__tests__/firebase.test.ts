@@ -11,6 +11,12 @@ const mockSetTokenAutoRefreshEnabled = jest.fn();
 
 jest.mock("firebase/app", () => ({initializeApp: (...args: unknown[]) => mockInitializeApp(...args)}));
 jest.mock("firebase/app-check", () => ({
+  CustomProvider: class CustomProvider {
+    public readonly getToken: () => Promise<{token: string; expireTimeMillis: number}>;
+    public constructor(options: {getToken: () => Promise<{token: string; expireTimeMillis: number}>}) {
+      this.getToken = options.getToken;
+    }
+  },
   getToken: (...args: unknown[]) => mockGetToken(...args),
   initializeAppCheck: (...args: unknown[]) => mockInitializeAppCheck(...args),
   ReCaptchaEnterpriseProvider: class ReCaptchaEnterpriseProvider {
@@ -64,6 +70,7 @@ describe("Firebase browser adapter", () => {
       "updateUsername",
       "updateAvatar",
       "deleteAccount",
+      "setPresenceConsent",
       "listRaceCategories",
       "startRaceRun",
       "submitRaceGuess",
@@ -75,6 +82,8 @@ describe("Firebase browser adapter", () => {
       "getRaceChallenge",
       "getRaceOutcome",
       "listRaceInbox",
+      "blockRival",
+      "reportRival",
       "getRaceAccess",
       "recordRaceAnalytics",
     ]);
@@ -135,6 +144,7 @@ describe("Firebase environment variants", () => {
     functionsRegion: "europe-west2",
     jestRuntime: "0",
     production: false,
+    platformTarget: "jest",
   } as const;
 
   const loadWithEnvironment = async (
@@ -216,5 +226,25 @@ describe("Firebase environment variants", () => {
       production: true,
     });
     await expect(module.ensureFirebaseAppCheckReady()).rejects.toThrow("not configured for the Jest build");
+  });
+
+  it("replaces the Facebook token callback and forces attestation after reauthentication", async () => {
+    mockInitializeAppCheck.mockClear();
+    mockGetToken.mockClear();
+    mockGetToken.mockResolvedValue({token: "attested"});
+    const module = await loadWithEnvironment({...completeEnvironment, platformTarget: "facebook"});
+    const first = jest.fn(async () => ({token: "generation-1", expireTimeMillis: 1_000}));
+    const second = jest.fn(async () => ({token: "generation-2", expireTimeMillis: 2_000}));
+
+    await module.initializeFacebookAppCheck(first);
+    const provider = mockInitializeAppCheck.mock.calls[0]?.[1]?.provider as {getToken: () => Promise<unknown>};
+    await expect(provider.getToken()).resolves.toMatchObject({token: "generation-1"});
+
+    await module.initializeFacebookAppCheck(second);
+    await expect(provider.getToken()).resolves.toMatchObject({token: "generation-2"});
+
+    expect(mockInitializeAppCheck).toHaveBeenCalledTimes(1);
+    expect(mockGetToken).toHaveBeenNthCalledWith(1, {name: "app-check"}, true);
+    expect(mockGetToken).toHaveBeenNthCalledWith(2, {name: "app-check"}, true);
   });
 });

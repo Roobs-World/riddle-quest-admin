@@ -44,6 +44,7 @@ const expectedNamespaces = [
   "onboarding",
   "profile",
   "race",
+  "redditPlatform",
   "settings",
   "shop",
   "stats",

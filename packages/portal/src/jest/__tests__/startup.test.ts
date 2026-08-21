@@ -25,7 +25,10 @@ it("runs identity, Firebase auth and recovery in startup order", async () => {
     undefined,
     {withAccountOperation: async (operation) => { order.push("gate"); return operation(); }},
   );
-  expect(result).toMatchObject({status: "success", value: {firebaseAuthenticated: true, playerData: savedPlayerData}});
+  expect(result).toMatchObject({
+    status: "success",
+    value: {firebaseAuthenticated: true, firebaseUid: "uid", playerData: savedPlayerData},
+  });
   expect(order).toEqual([
     "init", "signed", "preferences", "playerData", "profile", "exchange", "firebase", "gate", "recover",
   ]);
@@ -215,6 +218,24 @@ it("initializes the SDK before reporting manual loading progress", async () => {
 
   expect(result.status).toBe("success");
   expect(platform.progress[0]).toBe(5);
+});
+
+it("fails closed when identity exchange omits the authoritative Firebase uid", async () => {
+  const platform = new MockJestPlatform();
+  const authenticateFirebase = jest.fn(async () => undefined);
+  const reconcile = jest.fn(async () => ({status: "success", value: 0} as const));
+
+  await expect(startJestSession(
+    platform,
+    {exchangeIdentity: async () => ({customToken: "firebase", uid: ""})} as never,
+    {reconcile} as never,
+    authenticateFirebase,
+  )).resolves.toEqual({status: "retryable-failure", message: "jest-firebase-uid-missing"});
+
+  expect(authenticateFirebase).toHaveBeenCalledWith("firebase");
+  expect(reconcile).toHaveBeenCalled();
+  expect(platform.progress.at(-1)).toBe(100);
+  expect(platform.loaded).toBe(true);
 });
 
 it("returns a retryable failure when SDK initialization never settles", async () => {

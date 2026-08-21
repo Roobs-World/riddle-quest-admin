@@ -21,6 +21,7 @@ import enStreakFanfare from "../../../../src/locales/en/streakFanfare.json";
 import enTooltips from "../../../../src/locales/en/tooltips.json";
 import enVictory from "../../../../src/locales/en/victory.json";
 import enRace from "../../../../src/locales/en/race.json";
+import enRedditPlatform from "../../../../src/locales/en/redditPlatform.json";
 
 /** Describes locale. */
 export type Locale =
@@ -49,7 +50,8 @@ export type Namespace =
   | "streakFanfare"
   | "tooltips"
   | "victory"
-  | "race";
+  | "race"
+  | "redditPlatform";
 
 /** Describes namespace catalog. */
 export type NamespaceCatalog = Record<string, unknown>;
@@ -122,6 +124,7 @@ const REQUIRED_NAMESPACES = [
   "tooltips",
   "victory",
   "race",
+  "redditPlatform",
 ] as const satisfies readonly Namespace[];
 
 /** Defines the english namespaces value. */
@@ -148,6 +151,7 @@ const ENGLISH_NAMESPACES: NamespaceCatalog[] = [
   enTooltips,
   enVictory,
   enRace,
+  enRedditPlatform,
 ];
 
 /** Defines the english namespace by name value. */
@@ -174,6 +178,7 @@ const ENGLISH_NAMESPACE_BY_NAME: Record<Namespace, NamespaceCatalog> = {
   tooltips: enTooltips,
   victory: enVictory,
   race: enRace,
+  redditPlatform: enRedditPlatform,
 };
 
 /** Provides locale subscribers behavior. */
@@ -184,6 +189,9 @@ const catalogCache = new Map<Locale, RootCatalog>();
 const loadingLocales = new Map<Locale, Promise<RootCatalog>>();
 /** Provides supported language set behavior. */
 const supportedLanguageSet = new Set<string>(SUPPORTED_LOCALES);
+
+/** Narrows untrusted language values without importing schema libraries into startup. */
+export const isSupportedLocale = (value: string): value is Locale => supportedLanguageSet.has(value);
 /** Defines the locale aliases value. */
 const LOCALE_ALIASES: Record<string, Locale> = {
   es: "es",
@@ -326,6 +334,9 @@ export const getLanguageLabel = (language: Locale): string => {
 
 /** Gets locale. */
 const getLocale = (): Locale => currentLocale;
+
+/** Returns the active locale for non-React platform capability coordinators. */
+export const getCurrentLocale = (): Locale => getLocale();
 
 /** Commits a locale whose catalog is ready to render. */
 const commitLocale = (locale: Locale): void => {

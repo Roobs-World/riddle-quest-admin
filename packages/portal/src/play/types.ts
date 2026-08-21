@@ -12,6 +12,7 @@ import type {
   RaceChallengePreview,
   RaceOutcome,
   RaceRunResponse,
+  SocialReportCategory,
   RequestRaceHintRequest,
   RequestRaceHintResponse,
   SkipRaceRiddleRequest,
@@ -254,11 +255,18 @@ export type HostServices = {
   /** Publishes race. */
   publishRace(input: PublishRaceChallengeRequest): Promise<PublishRaceChallengeResponse>;
   /** Gets race challenge. */
-  getRaceChallenge(challengeId: string): Promise<RaceChallengePreview>;
+  getRaceChallenge(challengeId: string, locale: StartRaceRunRequest["locale"]): Promise<RaceChallengePreview>;
   /** Gets race outcome. */
   getRaceOutcome(runId: string): Promise<RaceOutcome>;
   /** Lists race inbox. */
   listRaceInbox(input?: {cursor?: string; limit?: number}): Promise<ListRaceInboxResponse>;
+  /** Blocks a server-established rival immediately. */
+  blockRival(targetUserId: string): Promise<{blocked: true}>;
+  /** Queues an idempotent categorized rival report. */
+  reportRival(input: {targetUserId: string; category: SocialReportCategory; requestId: string}): Promise<{
+    reportId: string;
+    queued: true;
+  }>;
   /** Gets race access. */
   getRaceAccess(): Promise<RaceAccessResponse>;
   /** Records race analytics. */

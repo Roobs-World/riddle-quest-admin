@@ -153,6 +153,7 @@ export const CompleteGameResponseDataSchema = z
         levelUpBonus: z.number().nonnegative(),
         dailyStreakBonus: z.number().nonnegative(),
         achievementBonus: z.number().nonnegative(),
+        referralBonus: z.number().nonnegative().optional(),
         totalAwarded: z.number().nonnegative(),
         newBalance: z.number().nonnegative(),
       })

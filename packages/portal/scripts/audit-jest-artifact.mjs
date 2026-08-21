@@ -11,6 +11,9 @@ const files = [];
 async function walk(directory) {
   for (const entry of await readdir(directory, {withFileTypes: true})) {
     const absolute = path.join(directory, entry.name);
+    if (entry.isSymbolicLink() || (!entry.isDirectory() && !entry.isFile())) {
+      throw new Error(`Jest artifact contains a non-regular entry: ${absolute}`);
+    }
     if (entry.isDirectory()) await walk(absolute); else files.push(absolute);
   }
 }
@@ -39,6 +42,16 @@ const consoleManifest = JSON.parse(await readFile(
   "utf8",
 ));
 const forbidden = [
+  [
+    "YouTube Playables integration",
+    /www\.youtube\.com\/game_api\/v1|\bytgame\b|youtube-sdk-unavailable|youtube-content-envelope-invalid|youtube-content-manifest\.json/i,
+  ],
+  ["Reddit Devvit integration", /\bdevvit(?:-internal)?\b|redditGatewaySecret|requestExpandedMode/i],
+  ["Facebook Instant Games integration", /connect\.facebook\.net|\bFBInstant\b|fbapp-config\.json/i],
+  [
+    "Facebook callable endpoint",
+    /\b(?:getFacebookClientConfiguration|listFacebookTournament|recordFacebookTournament|listFacebookContextBoard|recordFacebookContextRun|exchangeFacebookIdentity|issueFacebookIdentityNonce|bindFacebookReferral|createFacebookReferral|joinFacebookContext|leaveFacebookContext)\b/,
+  ],
   ["Expo module", /(?:from|require\()\s*["'](?:expo|expo-[^"']+)/],
   ["React Native module", /(?:from|require\()\s*["']react-native(?:[\/"'])/],
   ["Metro runtime", /metro-runtime|__METRO_GLOBAL_PREFIX__/],
@@ -67,7 +80,9 @@ const forbidden = [
   ["External in-game hyperlink", /\bhref\s*:\s*["'](?:https?:|mailto:)/i],
   ["Native app-install copy", /\b(?:install|download)\s+(?:the|our|this)\s+(?:mobile\s+)?app\b/i],
   ["Firebase private key", /-----BEGIN PRIVATE KEY-----/],
-  ["Jest shared secret", /JEST_SHARED_SECRET\s*[:=]\s*["'][^"']+/],
+  ["Firebase service account", /["']type["']\s*:\s*["']service_account["']|["']private_key_id["']\s*:/i],
+  ["Server-only secret", /\b(?:JEST_SHARED_SECRET|FACEBOOK_APP_SECRET|FACEBOOK_UID_SECRET|META_APP_SECRET)\b/i],
+  ["Server-only API key", /\b(?:OPENAI_API_KEY|GOOGLE_APPLICATION_CREDENTIALS)\b/],
 ];
 for (const [label, pattern] of forbidden) if (pattern.test(content)) throw new Error(`${label} found in Jest artifact`);
 if (!content.includes("grindheadgames@gmail.com")) {

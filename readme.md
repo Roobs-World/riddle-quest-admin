@@ -1,17 +1,18 @@
 # Riddle Quest
 
-Riddle Quest is a mobile-first React HTML5 word game built for the Jest gaming platform. Players can solve classic and daily riddles, earn and spend coins, build streaks, compete in Race to 10 multiplayer challenges, register through Jest, receive return notifications, share referrals, and buy coin packs. Premium subscriptions remain sandbox-only until the Jest beta lifecycle is approved and verified.
+Riddle Quest is a mobile-first React HTML5 word game with isolated builds for Jest, Facebook Instant Games, Reddit Devvit Web, and YouTube Playables. Shared gameplay remains server-authoritative where a trusted backend contract exists; YouTube deliberately uses platform-local solo authority because its Playable is self-contained. Provider identity, storage, commerce, social, notification, and lifecycle capabilities are exposed only where their platform contracts support them.
 
-This repository contains only the web game and its Firebase backend. Do not add React Native, Expo, Android, iOS, native in-app purchases, external authentication, ads, or app-install prompts.
+This repository contains only the web game, its Firebase backend, and the Reddit Devvit gateway package. Do not add React Native, Expo, Android, iOS, native-store authentication, or app-install prompts. Ads are permitted only in the Facebook artifact.
 
 ## Architecture
 
 | Path | Responsibility |
 | --- | --- |
-| `packages/portal` | Vite, React, game UI, Jest SDK adapter, Firebase browser client, browser tests, and standalone Jest build tooling |
+| `packages/portal` | Vite, React, game UI, isolated platform adapters, browser tests, and standalone Jest/Facebook/Reddit/YouTube client build tooling |
+| `packages/reddit-app` | Devvit Web package, same-origin `/api/*` gateway, package validation, and immutable release receipts |
 | `packages/core` | Browser-safe game rules, validation schemas, bridge types, Race to 10 contracts, and pricing metadata |
-| `firebase-functions` | Authoritative gameplay, player profiles, riddle generation, Jest identity exchange, payment grants, subscriptions, referrals, leaderboards, and multiplayer |
-| `src/locales` | All user-facing translations: 17 locales across 22 namespaces |
+| `firebase-functions` | Authoritative gameplay, provider identity exchanges, player profiles/storage/deletion, payment grants, referrals, leaderboards, and multiplayer |
+| `src/locales` | All user-facing translations: 17 locales across target-specific namespaces |
 | `assets` | Source images, audio, fonts, and 3D assets |
 | `docs` | Operations, architecture decisions, review evidence, assets, and runbooks |
 
@@ -19,7 +20,11 @@ The browser treats the Jest SDK as the platform boundary. `getPlayer()` supplies
 
 Race to 10 is fully server-authoritative. The browser sends player intent only; Firebase selects decks and hints, validates guesses, advances runs, calculates clocks and penalties, resolves outcomes, and grants achievements. Direct browser access to race collections is denied by Firestore rules, and client responses contain answer-safe run projections rather than canonical answers.
 
-Production and sandbox procedures live in `docs/jest-html5-operations.md`.
+Production procedures live in `docs/jest-html5-operations.md`, `docs/facebook-instant-games-operations.md`, `docs/reddit-games-operations.md`, and `docs/youtube-playables-operations.md`.
+
+The Reddit webview may call only its own `/api/*` routes. The request-scoped Devvit server authenticates Reddit context and signs narrowly scoped calls to one approved Firebase Functions host. Firebase remains the global authority; Devvit Redis is limited to installation/post cache state. Reddit ads, push notifications, and commerce remain hidden until an official API and the required approvals are proven.
+
+The YouTube artifact contains its own versioned riddle catalog and uses only the Playables SDK for lifecycle, language, audio, and cloud save. Its local balance and progress never join the global account, and Firebase, analytics, identity, purchases, ads, sharing, and multiplayer are excluded from that artifact.
 
 ## Requirements
 
@@ -99,6 +104,7 @@ them.
 | `VITE_FIREBASE_AUTH_DOMAIN` | Yes | Firebase Auth domain |
 | `VITE_FIREBASE_MESSAGING_SENDER_ID` | Yes | Firebase messaging sender ID |
 | `VITE_FIREBASE_PROJECT_ID` | Yes | Firebase project ID |
+| `VITE_FIREBASE_DATABASE_URL` | For presence | Realtime Database URL used by opt-in rival presence |
 | `VITE_GOOGLE_ANALYTICS_MEASUREMENT_ID` | No | Reserved public GA4 web stream ID. The committed Jest environment deliberately omits it, and runtime collection remains disabled until a future owner-approved consent/opt-out design supplies an affirmative decision |
 | `VITE_FIREBASE_FUNCTIONS_REGION` | No | Functions region; defaults to `us-central1` |
 | `VITE_FIREBASE_APP_CHECK_SITE_KEY` | Yes | Public reCAPTCHA Enterprise site key used by Firebase App Check; the production security audit rejects an empty value |
@@ -372,19 +378,34 @@ Use two sandbox players for referral tests. Reset the invitee before rerunning a
 
 ## Build and release
 
-Build the complete workspace:
+Build the established backend and non-YouTube production path:
 
 ```bash
 pnpm build
 ```
 
-Build only the standalone Jest artifact:
+Build the established Jest, Facebook, and Reddit web targets plus the Reddit App package:
 
 ```bash
 pnpm build:web
 ```
 
-The uploadable game is written to `packages/portal/dist-jest`. The build checks TypeScript, the implementation tracker, every locale, chunked production output, and the artifact audit. The audit enforces an internal 4.5 MB release budget beneath Jest's 5 MB HTML5 limit, relative local assets, the approved Jest SDK script, and the absence of native modules, external authentication, ads, install prompts, secrets, source maps, and missing entry assets.
+This preserves the existing deployment path and writes isolated artifacts to `packages/portal/dist-jest`, `packages/portal/dist-facebook`, and `packages/portal/dist-reddit`. It does not build or package YouTube. Each target keeps its own SDK, resource, and forbidden-code audit; the Jest audit additionally enforces an internal 4.5 MB release budget beneath Jest's 5 MB HTML5 limit.
+
+Verify all four isolated client targets without requiring release translations:
+
+```bash
+pnpm verify:all-targets
+```
+
+This uses the committed English YouTube fixture solely for repository verification. Build and package a release candidate through the separate fail-closed path after all 17 audited content bundles exist:
+
+```bash
+pnpm --filter @qwordly/portal build:youtube
+pnpm youtube:preflight
+```
+
+The release build writes `packages/portal/dist-youtube`; a successful preflight writes `build-youtube.zip`, `build-youtube.manifest.json`, and `build-youtube.test-report.json` at the repository root. The fixture artifact and synthetic packaging tests are not upload evidence. See [`docs/youtube-playables-operations.md`](docs/youtube-playables-operations.md) for content authoring, exact-hash evidence, and the manual Portal workflow.
 
 After all tests and sandbox checks pass, upload a timestamped build:
 
@@ -448,7 +469,7 @@ Before merging a change:
 4. Keep purchase grants, subscription entitlements, and referral rewards signed, server-authoritative, and idempotent.
 5. Update all locales for visible copy and republish Firestore notification copy when applicable.
 6. Test cancellation, retryable failure, terminal failure, reload recovery, guest state, and registered state for SDK changes.
-7. Verify UI changes in a mobile browser and run the standalone Jest build.
+7. Verify UI changes in the affected injected browser harness and run `pnpm verify:all-targets` so all four isolated client artifacts are rebuilt and checked.
 8. Retain release evidence with the relevant operational runbook or acceptance test.
 9. Keep exported contracts, public methods, and security-sensitive variables documented with accurate TSDoc; update this README when commands, architecture, configuration, coverage gates, or deployment steps change.
 10. Review `git diff` and `git status` to ensure no `.env`, secret, credential, generated archive, or browser state is included.

@@ -67,6 +67,18 @@ export async function applyRaceCompletionPrivacy<T>(
     createdAtMs: nowMs,
     expiresAt: admin.firestore.Timestamp.fromMillis(nowMs + RACE_CHALLENGE_TTL_MS),
   });
+  transaction.set(db.doc(`users/${userId}/knownRivals/${challenge.creatorId}`), {
+    targetUserId: challenge.creatorId,
+    source: "completed_race",
+    challengeId: result.run.challengeId,
+    establishedAtMs: nowMs,
+  }, {merge: true});
+  transaction.set(db.doc(`users/${challenge.creatorId}/knownRivals/${userId}`), {
+    targetUserId: userId,
+    source: "completed_race",
+    challengeId: result.run.challengeId,
+    establishedAtMs: nowMs,
+  }, {merge: true});
   if (creatorSnapshot.exists) {
     persistRaceAchievementEvent(
       transaction,

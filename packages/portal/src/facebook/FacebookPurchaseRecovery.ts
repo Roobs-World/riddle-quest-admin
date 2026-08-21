@@ -1,0 +1,104 @@
+import type {PlatformResult} from "../platform/types";
+import type {FacebookInstantPayments, FacebookInstantPurchase} from "./fbinstant";
+
+/** Defines the max purchases value. */
+const MAX_PURCHASES = 100;
+/** Provides bounded behavior. */
+const bounded = (value: unknown, max: number): value is string =>
+  typeof value === "string" && value.length > 0 && new TextEncoder().encode(value).length <= max;
+/** Indicates whether is record. */
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === "object" && value !== null && !Array.isArray(value);
+
+/** Parses facebook unconsumed purchases. */
+export function parseFacebookUnconsumedPurchases(value: unknown): FacebookInstantPurchase[] {
+  if (!Array.isArray(value) || value.length > MAX_PURCHASES) throw new Error("facebook-purchases-invalid");
+  const purchases = value.map((item) => {
+    if (!isRecord(item)) throw new Error("facebook-purchase-invalid");
+    const keys = Object.keys(item);
+    const required = [
+      "isConsumed", "paymentActionType", "paymentID", "productID", "purchasePlatform",
+      "purchasePrice", "purchaseTime", "purchaseToken", "signedRequest",
+    ];
+    if (!required.every((key) => keys.includes(key)) ||
+      keys.some((key) => ![...required, "developerPayload"].includes(key)) ||
+      item.isConsumed !== false ||
+      item.paymentActionType !== "charge" ||
+      !bounded(item.paymentID, 1_024) ||
+      !bounded(item.productID, 256) ||
+      !bounded(item.purchasePlatform, 32) ||
+      !bounded(item.purchaseTime, 64) ||
+      !/^\d+$/u.test(item.purchaseTime) ||
+      !bounded(item.purchaseToken, 8_192) ||
+      !bounded(item.signedRequest, 8_192) ||
+      (item.developerPayload !== undefined && !bounded(item.developerPayload, 1_024))) {
+      throw new Error("facebook-purchase-invalid");
+    }
+    return item as unknown as FacebookInstantPurchase;
+  });
+  for (const key of ["paymentID", "purchaseToken"] as const) {
+    if (new Set(purchases.map((purchase) => purchase[key])).size !== purchases.length) {
+      throw new Error("facebook-purchases-duplicate");
+    }
+  }
+  return purchases;
+}
+
+/** Describes facebook signed purchase grant. */
+export type FacebookSignedPurchaseGrant = (input: {signedRequest: string}) => Promise<{
+  granted: true;
+  providerReceiptId: string;
+  consume: boolean;
+}>;
+
+/** Recovers unconsumed SDK purchases while preserving authoritative grant-before-consume ordering. */
+export class FacebookPurchaseRecovery {
+  /** Stores payments. */
+  private readonly payments: FacebookInstantPayments;
+  /** Stores grant. */
+  private readonly grant: FacebookSignedPurchaseGrant;
+  /** Stores active recovery. */
+  private activeRecovery?: Promise<PlatformResult<void>>;
+
+  /** Creates a facebook purchase recovery instance. */
+  constructor(
+    payments: FacebookInstantPayments,
+    grant: FacebookSignedPurchaseGrant,
+  ) {
+    this.payments = payments;
+    this.grant = grant;
+  }
+
+  /** Provides recover behavior. */
+  async recover(): Promise<PlatformResult<void>> {
+    if (this.activeRecovery) return this.activeRecovery;
+    const recovery = this.runRecovery();
+    this.activeRecovery = recovery;
+    try {
+      return await recovery;
+    } finally {
+      if (this.activeRecovery === recovery) this.activeRecovery = undefined;
+    }
+  }
+
+  /** Provides run recovery behavior. */
+  private async runRecovery(): Promise<PlatformResult<void>> {
+    try {
+      const purchases = parseFacebookUnconsumedPurchases(await this.payments.getPurchasesAsync());
+      for (const purchase of purchases) {
+        const result = await this.grant({signedRequest: purchase.signedRequest});
+        if (result.granted !== true || !bounded(result.providerReceiptId, 1_024) ||
+          typeof result.consume !== "boolean") {
+          return {status: "terminal-failure", message: "facebook-purchase-grant-invalid"};
+        }
+        if (result.consume) await this.payments.consumePurchaseAsync(purchase.purchaseToken);
+      }
+      return {status: "success", value: undefined};
+    } catch (error) {
+      return {
+        status: "retryable-failure",
+        message: error instanceof Error ? error.message : "facebook-purchase-recovery-failed",
+      };
+    }
+  }
+}

@@ -162,7 +162,7 @@ export const publishRaceChallenge = onCallWithSentry("publishRaceChallenge", jes
 export const getRaceChallenge = onCallWithSentry("getRaceChallenge", jestWebCallableOptions, async (request: CallableRequest<unknown>) => {
   await requireRaceUser(request);
   const input = validateCallableRequest(RaceChallengeIdRequestSchema, request.data, "getRaceChallenge");
-  const response = await getRaceChallengePreview(input.challengeId);
+  const response = await getRaceChallengePreview(input.challengeId, input.locale);
   return validateCallableResponse(RaceChallengePreviewSchema, response, "getRaceChallenge");
 });
 

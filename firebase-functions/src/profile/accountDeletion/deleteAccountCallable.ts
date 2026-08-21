@@ -7,9 +7,19 @@ import {deleteAccountForUser} from "./deleteAccountData";
 import {onCallWithSentry} from "../../shared/sentryHandlers";
 import {isJestAccountDeletionBusyError} from "../../jest/jestAccountDeletion";
 import {isJestFirebaseUid, jestFirebaseUid} from "../../jest/jestSecurity";
+import {isFacebookFirebaseUid} from "../../facebook/facebookSecurity";
+import {deleteFacebookAccountGeneration} from "../../facebook/facebookAccountDeletion";
+import {defineSecret} from "firebase-functions/params";
+
+/** Provides facebook uid secret behavior. */
+const facebookUidSecret = defineSecret("FACEBOOK_UID_SECRET");
 
 /** Callable boundary for permanent Riddle Quest account deletion. */
-export const deleteAccount = onCallWithSentry("deleteAccount", {...browserCallableSecurityOptions, timeoutSeconds: 540}, async (request: CallableRequest<unknown>) => {
+export const deleteAccount = onCallWithSentry("deleteAccount", {
+  ...browserCallableSecurityOptions,
+  timeoutSeconds: 540,
+  secrets: [facebookUidSecret],
+}, async (request: CallableRequest<unknown>) => {
   if (!request.auth) throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
   const jestPlayerId = typeof request.auth.token?.jestPlayerId === "string" &&
     request.auth.token.jestPlayerId.length > 0
@@ -21,8 +31,25 @@ export const deleteAccount = onCallWithSentry("deleteAccount", {...browserCallab
   if (jestPlayerId && jestFirebaseUid(jestPlayerId) !== request.auth.uid) {
     throw new HttpsError("failed-precondition", "The authenticated Jest identity is inconsistent.");
   }
+  const facebookGeneration = request.auth.token?.provider === "facebook" &&
+    Number.isSafeInteger(request.auth.token.accountGeneration)
+    ? request.auth.token.accountGeneration as number
+    : undefined;
+  if (isFacebookFirebaseUid(request.auth.uid) && facebookGeneration === undefined) {
+    throw new HttpsError("failed-precondition", "Refresh the Facebook session before deleting this account.");
+  }
+  if (facebookGeneration !== undefined && !isFacebookFirebaseUid(request.auth.uid)) {
+    throw new HttpsError("failed-precondition", "The authenticated Facebook identity is inconsistent.");
+  }
   try {
-    await deleteAccountForUser(request.auth.uid, jestPlayerId);
+    if (facebookGeneration !== undefined) {
+      await deleteFacebookAccountGeneration(
+        {uid: request.auth.uid, accountGeneration: facebookGeneration},
+        {uidSecret: facebookUidSecret.value()},
+      );
+    } else {
+      await deleteAccountForUser(request.auth.uid, jestPlayerId);
+    }
     return {success: true as const};
   } catch (error) {
     if (isJestAccountDeletionBusyError(error)) {

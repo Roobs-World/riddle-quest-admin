@@ -2,6 +2,7 @@ import {initializeApp} from "firebase/app";
 import {
   getToken,
   initializeAppCheck,
+  CustomProvider,
   ReCaptchaEnterpriseProvider,
   setTokenAutoRefreshEnabled,
   type AppCheck,
@@ -52,6 +53,7 @@ const rawFirebaseConfig = {
   authDomain: firebaseEnvironment.authDomain,
   messagingSenderId: firebaseEnvironment.messagingSenderId,
   projectId: firebaseEnvironment.projectId,
+  databaseURL: firebaseEnvironment.databaseUrl || undefined,
   measurementId: firebaseEnvironment.measurementId,
 };
 
@@ -75,12 +77,41 @@ const isHarnessRoute = typeof window !== "undefined" &&
   (!firebaseEnvironment.production || hasTrustedTestHarnessMarker());
 /** Provides app check behavior. */
 let appCheck: AppCheck | null = null;
+/** Provides facebook app check token provider behavior. */
+let facebookAppCheckTokenProvider:
+  | (() => Promise<{token: string; expireTimeMillis: number}>)
+  | null = null;
 
-if (appCheckSiteKey && !isHarnessRoute) {
+if (appCheckSiteKey && firebaseEnvironment.platformTarget !== "facebook" && !isHarnessRoute) {
   appCheck = initializeAppCheck(firebaseApp, {
     provider: new ReCaptchaEnterpriseProvider(appCheckSiteKey),
     isTokenAutoRefreshEnabled: false,
   });
+}
+
+/** Installs the Facebook custom attestation provider before protected calls begin. */
+export async function initializeFacebookAppCheck(
+  getCustomToken: () => Promise<{token: string; expireTimeMillis: number}>,
+): Promise<void> {
+  if (firebaseEnvironment.platformTarget !== "facebook") {
+    throw new Error("Facebook App Check can only initialize in the Facebook build.");
+  }
+  facebookAppCheckTokenProvider = getCustomToken;
+  if (!appCheck) {
+    appCheck = initializeAppCheck(firebaseApp, {
+      provider: new CustomProvider({getToken: async () => {
+        if (!facebookAppCheckTokenProvider) {
+          throw new Error("Facebook App Check token provider is unavailable.");
+        }
+        return facebookAppCheckTokenProvider();
+      }}),
+      isTokenAutoRefreshEnabled: false,
+    });
+  }
+  // Reauthentication may follow account deletion and generation rollover. Force
+  // attestation so a cached token from the prior Firebase account is never reused.
+  await getToken(appCheck, true);
+  setTokenAutoRefreshEnabled(appCheck, true);
 }
 
 /**
@@ -106,6 +137,8 @@ export const auth = getAuth(firebaseApp);
 const firestore = getFirestore(firebaseApp);
 /** Provides functions behavior. */
 const functions = getFunctions(firebaseApp, firebaseEnvironment.functionsRegion || "us-central1");
+/** Shared Functions instance used by target-specific lazy adapters. */
+export const firebaseFunctions = functions;
 
 /** Gets current daily challenge. */
 export const getCurrentDailyChallenge = httpsCallable<{
@@ -184,6 +217,11 @@ export const updateAvatar = httpsCallable<{imageDataUrl: string}, {success: true
 );
 /** Deletes account. */
 export const deleteAccount = httpsCallable<Record<string, never>, {success: true}>(functions, "deleteAccount");
+/** Changes server-owned presence consent for the current authenticated account. */
+export const setPresenceConsent = httpsCallable<{enabled: boolean}, {success: true; enabled: boolean}>(
+  functions,
+  "setPresenceConsent",
+);
 
 /** Lists race categories. */
 export const listRaceCategories = httpsCallable<ListRaceCategoriesRequest, ListRaceCategoriesResponse>(
@@ -214,7 +252,10 @@ export const publishRaceChallenge = httpsCallable<PublishRaceChallengeRequest, P
   "publishRaceChallenge",
 );
 /** Gets race challenge. */
-export const getRaceChallenge = httpsCallable<{challengeId: string}, RaceChallengePreview>(
+export const getRaceChallenge = httpsCallable<{
+  challengeId: string;
+  locale: import("@qwordly/core/race").RaceLocale;
+}, RaceChallengePreview>(
   functions,
   "getRaceChallenge",
 );
@@ -225,6 +266,13 @@ export const listRaceInbox = httpsCallable<ListRaceInboxRequest | undefined, Lis
   functions,
   "listRaceInbox",
 );
+/** Immediately blocks an established social rival. */
+export const blockRival = httpsCallable<{targetUserId: string}, {blocked: true}>(functions, "blockRival");
+/** Queues an idempotent categorized report for an established social rival. */
+export const reportRival = httpsCallable<
+  {targetUserId: string; category: import("@qwordly/core/race").SocialReportCategory; requestId: string},
+  {reportId: string; queued: true}
+>(functions, "reportRival");
 /** Gets race access. */
 export const getRaceAccess = httpsCallable<RaceAccessRequest | undefined, RaceAccessResponse>(
   functions,

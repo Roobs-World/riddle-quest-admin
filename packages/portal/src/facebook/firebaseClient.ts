@@ -1,0 +1,94 @@
+import {httpsCallable} from "firebase/functions";
+import type {
+  ListFacebookTournamentRequest,
+  RecordFacebookTournamentRunRequest,
+  ListFacebookContextBoardRequest,
+  RecordFacebookContextRunRequest,
+} from "@qwordly/core/race";
+import {firebaseFunctions} from "../firebase";
+import {
+  parseFacebookClientConfiguration,
+  parseFacebookNotificationPromptAcceptance,
+  parseFacebookNotificationPromptClaim,
+  parseFacebookContextBoardResponse,
+  parseFacebookContextRecordResponse,
+  parseFacebookTournamentRecordResponse,
+  parseFacebookTournamentResponse,
+} from "./facebookCallableResponses";
+
+/** Provides claim facebook notification permission prompt raw behavior. */
+const claimFacebookNotificationPermissionPromptRaw = httpsCallable<undefined, unknown>(
+  firebaseFunctions,
+  "claimFacebookNotificationPermissionPrompt",
+);
+/** Provides claim facebook notification permission prompt behavior. */
+export const claimFacebookNotificationPermissionPrompt = async () => {
+  const result = await claimFacebookNotificationPermissionPromptRaw();
+  return {...result, data: parseFacebookNotificationPromptClaim(result.data)};
+};
+
+/** Provides accept facebook notification permission prompt raw behavior. */
+const acceptFacebookNotificationPermissionPromptRaw = httpsCallable<undefined, unknown>(
+  firebaseFunctions,
+  "acceptFacebookNotificationPermissionPrompt",
+);
+/** Provides accept facebook notification permission prompt behavior. */
+export const acceptFacebookNotificationPermissionPrompt = async (): Promise<void> => {
+  const result = await acceptFacebookNotificationPermissionPromptRaw();
+  parseFacebookNotificationPromptAcceptance(result.data);
+};
+
+/** Reads fail-closed Facebook feature switches and durable ad suppression. */
+const getFacebookClientConfigurationRaw = httpsCallable<undefined, unknown>(
+  firebaseFunctions,
+  "getFacebookClientConfiguration",
+);
+/** Gets facebook client configuration. */
+export const getFacebookClientConfiguration = async () => {
+  const result = await getFacebookClientConfigurationRaw();
+  return {...result, data: parseFacebookClientConfiguration(result.data)};
+};
+
+/** Lists identity-free authoritative Facebook tournament standings. */
+const listFacebookTournamentRaw = httpsCallable<
+  ListFacebookTournamentRequest,
+  unknown
+>(firebaseFunctions, "listFacebookTournament");
+/** Lists facebook tournament. */
+export const listFacebookTournament = async (input: ListFacebookTournamentRequest) => {
+  const result = await listFacebookTournamentRaw(input);
+  return {...result, data: parseFacebookTournamentResponse(result.data)};
+};
+
+/** Derives and records a tournament score from an authoritative completed run. */
+const recordFacebookTournamentRaw = httpsCallable<
+  RecordFacebookTournamentRunRequest,
+  unknown
+>(firebaseFunctions, "recordFacebookTournament");
+/** Records facebook tournament. */
+export const recordFacebookTournament = async (input: RecordFacebookTournamentRunRequest) => {
+  const result = await recordFacebookTournamentRaw(input);
+  return {...result, data: parseFacebookTournamentRecordResponse(result.data)};
+};
+
+/** Lists an identity-free active Facebook context board. */
+const listFacebookContextBoardRaw = httpsCallable<
+  ListFacebookContextBoardRequest,
+  unknown
+>(firebaseFunctions, "listFacebookContextBoard");
+/** Lists facebook context board. */
+export const listFacebookContextBoard = async (input: ListFacebookContextBoardRequest) => {
+  const result = await listFacebookContextBoardRaw(input);
+  return {...result, data: parseFacebookContextBoardResponse(result.data)};
+};
+
+/** Records one authoritative completed run into an active Facebook context board. */
+const recordFacebookContextRunRaw = httpsCallable<
+  RecordFacebookContextRunRequest,
+  unknown
+>(firebaseFunctions, "recordFacebookContextRun");
+/** Records facebook context run. */
+export const recordFacebookContextRun = async (input: RecordFacebookContextRunRequest) => {
+  const result = await recordFacebookContextRunRaw(input);
+  return {...result, data: parseFacebookContextRecordResponse(result.data)};
+};

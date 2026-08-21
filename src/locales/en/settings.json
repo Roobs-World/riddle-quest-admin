@@ -12,6 +12,7 @@
     "LOGOUT_BUTTON": "Logout",
     "LOGOUT_ERROR_MESSAGE": "Could not log out. Please try again.",
     "LOGOUT_ERROR_TITLE": "Error",
+    "PRESENCE_TOGGLE": "Show activity to rivals",
     "SOUND_TOGGLE": "Sound",
     "TERMS_BUTTON": "Terms of Use",
     "TITLE": "Settings",

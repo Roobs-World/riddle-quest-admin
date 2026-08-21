@@ -46,10 +46,27 @@ describe("Race rollout cohort evaluation", () => {
     return {db, create, transaction};
   };
 
-  it("rejects unsupported locales before reading rollout configuration", async () => {
+  it("keeps non-English race disabled for Jest identities", async () => {
     const {db} = createDb();
     await expect(getRaceAccessForUser("player-1", "fr", db as never)).resolves.toMatchObject({enabled: false});
     expect(db.doc).not.toHaveBeenCalled();
+  });
+
+  it("allows rollout-gated non-English race for Facebook and Reddit identities", async () => {
+    const {db} = createDb();
+    const facebookUid = `facebook_${"a".repeat(40)}`;
+    await expect(getRaceAccessForUser(facebookUid, "fr", db as never)).resolves.toEqual({
+      enabled: true,
+      locale: "fr",
+      reason: "enabled",
+    });
+    const redditUid = `reddit_${"b".repeat(40)}`;
+    await expect(getRaceAccessForUser(redditUid, "ar", db as never)).resolves.toEqual({
+      enabled: true,
+      locale: "ar",
+      reason: "enabled",
+    });
+    expect(db.doc).toHaveBeenCalledWith("raceConfig/rollout");
   });
 
   it("loads existing and missing authoritative rollout documents", async () => {

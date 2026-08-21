@@ -9,6 +9,7 @@ import {
   RaceChallengeIdRequestSchema,
   RaceAnalyticsEventRequestSchema,
   RaceRunIdRequestSchema,
+  SocialReportCategorySchema,
   RequestRaceHintRequestSchema,
   SkipRaceRiddleRequestSchema,
   StartRaceRunRequestSchema,
@@ -54,6 +55,8 @@ const OperationSchema = z.enum([
   "raceChallenge",
   "raceOutcome",
   "raceInbox",
+  "raceBlock",
+  "raceReport",
 ]);
 
 /** Validates the bridge user data shape. */
@@ -293,6 +296,19 @@ export const GameGetRaceChallengeMessageSchema = envelope("game:getRaceChallenge
 export const GameGetRaceOutcomeMessageSchema = envelope("game:getRaceOutcome", RaceRunIdRequestSchema);
 /** Validates the game list race inbox message data shape. */
 export const GameListRaceInboxMessageSchema = envelope("game:listRaceInbox", ListRaceInboxRequestSchema);
+/** Validates an immediate known-rival block request. */
+export const GameBlockRivalMessageSchema = envelope(
+  "game:blockRival",
+  z.object({targetUserId: z.string().trim().min(1).max(128)}).strict(),
+);
+/** Validates a categorized known-rival report request. */
+export const GameReportRivalMessageSchema = envelope(
+  "game:reportRival",
+  z.object({
+    targetUserId: z.string().trim().min(1).max(128),
+    category: SocialReportCategorySchema,
+  }).strict(),
+);
 
 /** Validates the game analytics message data shape. */
 export const GameAnalyticsMessageSchema = envelope(
@@ -335,6 +351,8 @@ export const GameToHostMessageSchema = z.discriminatedUnion("type", [
   GameGetRaceChallengeMessageSchema,
   GameGetRaceOutcomeMessageSchema,
   GameListRaceInboxMessageSchema,
+  GameBlockRivalMessageSchema,
+  GameReportRivalMessageSchema,
   GameAnalyticsMessageSchema,
   GameErrorMessageSchema,
 ]);

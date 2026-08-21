@@ -12,6 +12,7 @@
     "LOGOUT_BUTTON": "Abmelden",
     "LOGOUT_ERROR_MESSAGE": "Abmeldung konnte nicht durchgeführt werden. Bitte versuchen Sie es erneut.",
     "LOGOUT_ERROR_TITLE": "Fehler",
+    "PRESENCE_TOGGLE": "Aktivität Rivalen zeigen",
     "SOUND_TOGGLE": "Klang",
     "TERMS_BUTTON": "Nutzungsbedingungen",
     "TITLE": "Einstellungen",

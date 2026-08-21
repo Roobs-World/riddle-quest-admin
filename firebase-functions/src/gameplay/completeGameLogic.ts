@@ -31,6 +31,8 @@ import {
   completionBindingMatches,
   getSinglePlayerCompletionBindingRef,
 } from "./singlePlayerCompletionBinding";
+import {settleFacebookReferralAfterAuthoritativeWin} from "../facebook/facebookReferrals";
+import {settleRedditReferralAfterAuthoritativeWin} from "../reddit/redditReferrals";
 
 // ---------------------------------------------------------------------------
 // completeGame - called once when a server-validated game truly ends.
@@ -188,7 +190,7 @@ async function commitAuthoritativeCompletion(
     data.entitlementCompletionKey,
   );
 
-  const result = await db.runTransaction(async (transaction) => {
+  let result = await db.runTransaction(async (transaction) => {
     const [receiptSnapshot, userSnapshot, completionBindingSnapshot] = await Promise.all([
       transaction.get(receiptRef),
       transaction.get(userRef),
@@ -390,6 +392,28 @@ async function commitAuthoritativeCompletion(
     clearMatchingCompletionBinding();
     return response;
   });
+
+  // A failed settlement makes the callable retryable. On retry the completion
+  // receipt replays safely and the referral transaction resumes idempotently.
+  if (data.isCorrect) {
+    const facebookReferral = await settleFacebookReferralAfterAuthoritativeWin(auth.uid);
+    const redditReferral = await settleRedditReferralAfterAuthoritativeWin(auth.uid);
+    const referral = {
+      inviteeCoins: facebookReferral.inviteeCoins + redditReferral.inviteeCoins,
+    };
+    if (referral.inviteeCoins > 0 && result.rewardBreakdown) {
+      result = {
+        ...result,
+        coinsEarned: result.coinsEarned + referral.inviteeCoins,
+        rewardBreakdown: {
+          ...result.rewardBreakdown,
+          referralBonus: referral.inviteeCoins,
+          totalAwarded: result.rewardBreakdown.totalAwarded + referral.inviteeCoins,
+          newBalance: result.rewardBreakdown.newBalance + referral.inviteeCoins,
+        },
+      };
+    }
+  }
 
   // These effects are derived, overwrite-safe, and retried on receipt replay;
   // they cannot make the already-committed player reward partial.

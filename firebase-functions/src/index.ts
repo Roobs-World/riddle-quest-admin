@@ -42,6 +42,34 @@ import {
   syncJestSubscriptions,
   verifyJestReferrals,
 } from "./jest/jestEndpoints";
+import {exchangeFacebookIdentity, issueFacebookIdentityNonce} from "./facebook/facebookEndpoints";
+import {
+  facebookDataDeletionCallback,
+  facebookDataDeletionStatus,
+} from "./facebook/facebookDataDeletionEndpoints";
+import {listFacebookTournament, recordFacebookTournament} from "./race/facebookTournamentCallable";
+import {blockRival, reportRival} from "./social/socialSafetyCallables";
+import {aggregatePresenceStatus} from "./presence/presenceAggregation";
+import {setPresenceConsent} from "./presence/presenceConsentCallable";
+import {bindFacebookReferral, createFacebookReferral} from "./facebook/facebookReferralCallables";
+import {
+  syncBlockedRivalPresenceVisibility,
+  syncKnownRivalPresenceVisibility,
+} from "./presence/presenceVisibility";
+import {
+  joinFacebookContext,
+  leaveFacebookContext,
+  listFacebookContextBoard,
+  recordFacebookContextRun,
+} from "./race/facebookContextCallables";
+import {getFacebookClientConfiguration} from "./facebook/facebookClientConfigurationCallable";
+import {
+  acceptFacebookNotificationPermissionPrompt,
+  claimFacebookNotificationPermissionPrompt,
+} from "./facebook/facebookNotificationPromptCallables";
+import {deleteRedditAccount, exchangeRedditIdentity} from "./reddit/redditEndpoints";
+import {redditStorage} from "./reddit/redditStorageEndpoint";
+import {redditGameplay} from "./reddit/redditGameplayEndpoint";
 export {
   spendCoins,
   skipRiddle,
@@ -73,4 +101,29 @@ export {
   retryJestAccountDeletion,
   syncJestSubscriptions,
   verifyJestReferrals,
+  issueFacebookIdentityNonce,
+  exchangeFacebookIdentity,
+  facebookDataDeletionCallback,
+  facebookDataDeletionStatus,
+  recordFacebookTournament,
+  listFacebookTournament,
+  blockRival,
+  reportRival,
+  aggregatePresenceStatus,
+  setPresenceConsent,
+  createFacebookReferral,
+  bindFacebookReferral,
+  syncKnownRivalPresenceVisibility,
+  syncBlockedRivalPresenceVisibility,
+  joinFacebookContext,
+  leaveFacebookContext,
+  listFacebookContextBoard,
+  recordFacebookContextRun,
+  getFacebookClientConfiguration,
+  claimFacebookNotificationPermissionPrompt,
+  acceptFacebookNotificationPermissionPrompt,
+  exchangeRedditIdentity,
+  deleteRedditAccount,
+  redditStorage,
+  redditGameplay,
 };

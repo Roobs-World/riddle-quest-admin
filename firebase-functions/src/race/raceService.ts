@@ -37,13 +37,11 @@ import {
   type RaceRunRecord,
 } from "./raceEngine";
 import {evaluateRaceAchievementEvent} from "./raceAchievements";
-import {evaluateRaceRollout} from "./raceRollout";
-import {hydrateRaceReceiptResponse, minimizeRaceReceiptResponse, raceReceiptExpiresAt} from "./raceReceiptPrivacy";
+import {raceReceiptExpiresAt} from "./raceReceiptPrivacy";
 import {raceRunPrivacyWrite, resolveRaceOpponentPrivacy} from "./raceOpponentPrivacy";
-import {applyRaceCompletionPrivacy} from "./raceCompletionPrivacy";
 import {assertJestAccountActive, getJestAccountDeletionRef} from "../jest/jestAccountDeletion";
 import {
-  applyActionRateLimit,
+  assertRaceLocaleCompatible,
   buildDeterministicRaceDeck,
   challengePreview,
   dbOrDefault,
@@ -58,6 +56,7 @@ import {
   type RaceChallengeRecord,
   type RaceDeckRecord,
 } from "./raceSetupService";
+import {assertRaceInteractionAllowed, mutateRaceRun} from "./raceRunMutation";
 export {buildDeterministicRaceDeck, listRaceCategoriesForLocale} from "./raceSetupService";
 /** Starts race run for user. */
 export async function startRaceRunForUser(
@@ -87,6 +86,7 @@ export async function startRaceRunForUser(
     const rivalrySnapshot = await db.collection("raceChallenges").doc(input.rivalryChallengeId).get();
     if (!rivalrySnapshot.exists) throw new HttpsError("not-found", "Race rivalry not found.");
     const rivalry = parseChallengeRecord(rivalrySnapshot.data());
+    assertRaceLocaleCompatible(rivalry, input.locale);
     if (rivalry.creatorId !== userId) {
       const attempt = await db
         .collection("raceAttempts")
@@ -100,6 +100,7 @@ export async function startRaceRunForUser(
     const challengeSnapshot = await db.collection("raceChallenges").doc(input.challengeId).get();
     if (!challengeSnapshot.exists) throw new HttpsError("not-found", "Race to 10 challenge not found.");
     challenge = parseChallengeRecord(challengeSnapshot.data());
+    assertRaceLocaleCompatible(challenge, input.locale);
     if (challenge.creatorId === userId) {
       throw new HttpsError("failed-precondition", "You cannot compete against your own challenge.");
     }
@@ -173,8 +174,10 @@ export async function startRaceRunForUser(
       const committedChallenge = parseChallengeRecord(committedChallengeSnapshot.data());
       const creatorDeletionSnapshot = await transaction.get(getJestAccountDeletionRef(db, committedChallenge.creatorId));
       assertJestAccountActive(creatorDeletionSnapshot);
+      await assertRaceInteractionAllowed(transaction, db, userId, committedChallenge.creatorId);
       if (challengePreview(committedChallenge, nowMs).status !== "active")
         throw new HttpsError("failed-precondition", "Race to 10 challenge is no longer active.");
+      assertRaceLocaleCompatible(committedChallenge, input.locale);
     }
     if (challengeAttempt?.exists) {
       throw new HttpsError("already-exists", "This player already has a ranked attempt for the challenge.");
@@ -198,64 +201,6 @@ export async function startRaceRunForUser(
   if (typeof committedRunId !== "string") throw new HttpsError("internal", "Race start was not committed.");
   return resumeRaceRunForUser(userId, committedRunId, {db, nowMs});
 }
-/** Provides mutate race run behavior. */
-async function mutateRaceRun<T>(
-  userId: string,
-  runId: string,
-  requestId: string,
-  nowMs: number,
-  db: Firestore,
-  mutate: (run: RaceRunRecord) => {run: RaceRunRecord; response: T},
-  options: {enforceRaceAccess?: boolean} = {},
-): Promise<T> {
-  const runRef = db.collection("raceRuns").doc(runId);
-  const requestRef = runRef.collection("requests").doc(requestDocumentId(userId, requestId));
-  return db.runTransaction(async (transaction) => {
-    const [requestSnapshot, runSnapshot, rolloutSnapshot] = await Promise.all([
-      transaction.get(requestRef),
-      transaction.get(runRef),
-      options.enforceRaceAccess ? transaction.get(db.doc("raceConfig/rollout")) : Promise.resolve(null),
-    ]);
-    if (!runSnapshot.exists) throw new HttpsError("not-found", "Race to 10 run not found.");
-    const storedRun = parseRunRecord(runSnapshot.data());
-    if (storedRun.userId !== userId) throw new HttpsError("permission-denied", "This race run belongs to another player.");
-    const privacy = await resolveRaceOpponentPrivacy(transaction, db, storedRun);
-    const run = privacy.run;
-    if (requestSnapshot.exists) {
-      const response = hydrateRaceReceiptResponse(requestSnapshot.data()?.response as T, run);
-      if (privacy.scrubbed) {
-        transaction.set(runRef, raceRunPrivacyWrite(run, true), {merge: true});
-        transaction.update(requestRef, {response: stripUndefined(minimizeRaceReceiptResponse(response))});
-      }
-      return response;
-    }
-    if (
-      options.enforceRaceAccess &&
-      !evaluateRaceRollout(rolloutSnapshot?.exists ? rolloutSnapshot.data() : undefined, userId).enabled
-    ) {
-      throw new HttpsError("permission-denied", "Race to 10 is not enabled for this player.");
-    }
-    const completed = await applyRaceCompletionPrivacy(
-      transaction,
-      db,
-      userId,
-      run,
-      mutate(applyActionRateLimit(run, userId, nowMs)),
-      nowMs,
-      privacy.scrubbed,
-    );
-    const {result} = completed;
-    transaction.set(runRef, raceRunPrivacyWrite(result.run, completed.scrubbed), {merge: true});
-    transaction.create(requestRef, {
-      userId,
-      createdAtMs: nowMs,
-      response: stripUndefined(minimizeRaceReceiptResponse(result.response)),
-      expiresAt: raceReceiptExpiresAt(runSnapshot.data()?.expiresAt, nowMs + RACE_CHALLENGE_TTL_MS),
-    });
-    return result.response;
-  });
-}
-
 /** Provides abandon race run for user behavior. */
 export async function abandonRaceRunForUser(
   userId: string,
@@ -421,6 +366,7 @@ export async function publishRaceChallengeForUser(
       rivalryChallengeId: run.rivalryChallengeId ?? run.challengeId,
       creatorSnapshot: {displayName, avatarUrl},
       categoryId: run.categoryId,
+      locale: run.locale,
       deckId: run.deckId,
       canonicalRiddleIds: deck.canonicalRiddleIds,
       targetCorrect: RACE_TARGET_CORRECT,

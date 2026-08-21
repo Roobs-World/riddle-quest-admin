@@ -152,7 +152,12 @@ describe("Profile Cloud Functions", () => {
     expect(mockOnCallInvocations).toEqual([
       [{enforceAppCheck: true, invoker: "public", timeoutSeconds: 60}, expect.any(Function)],
       [{enforceAppCheck: true, invoker: "public", timeoutSeconds: 60}, expect.any(Function)],
-      [{enforceAppCheck: true, invoker: "public", timeoutSeconds: 540}, expect.any(Function)],
+      [{
+        enforceAppCheck: true,
+        invoker: "public",
+        timeoutSeconds: 540,
+        secrets: [expect.objectContaining({name: "FACEBOOK_UID_SECRET"})],
+      }, expect.any(Function)],
     ]);
   });
 

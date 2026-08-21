@@ -1,24 +1,24 @@
 @font-face {
   font-family: "Poppins";
-  src: url("../../../assets/fonts/Poppins-Regular.ttf") format("truetype");
+  src: url("../../../assets/fonts/Poppins-Regular.woff2") format("woff2");
   font-weight: 400;
   font-display: swap;
 }
 @font-face {
   font-family: "Poppins";
-  src: url("../../../assets/fonts/Poppins-SemiBold.ttf") format("truetype");
+  src: url("../../../assets/fonts/Poppins-SemiBold.woff2") format("woff2");
   font-weight: 600;
   font-display: swap;
 }
 @font-face {
   font-family: "Poppins";
-  src: url("../../../assets/fonts/Poppins-Bold.ttf") format("truetype");
+  src: url("../../../assets/fonts/Poppins-Bold.woff2") format("woff2");
   font-weight: 700 900;
   font-display: swap;
 }
 @font-face {
   font-family: "Poetsen One";
-  src: url("../../../assets/fonts/PoetsenOne-Regular.ttf") format("truetype");
+  src: url("../../../assets/fonts/PoetsenOne-Regular.woff2") format("woff2");
   font-weight: 400;
   font-display: swap;
 }
@@ -26,7 +26,9 @@
 :root {
   color: #f6f1e8;
   background: #101820;
-  font-family: "Poppins", ui-sans-serif, system-ui, sans-serif;
+  --rq-font-body: "Poppins", ui-sans-serif, system-ui, sans-serif;
+  --rq-font-display: "Poetsen One", "Poppins", ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--rq-font-body);
   font-synthesis: none;
   --play-ink: #132026;
   --play-panel: #fffdf7;
@@ -39,6 +41,60 @@
   --feedback-correct: #10b981;
   --feedback-present: #f59e0b;
   --feedback-absent: #f54160;
+}
+
+/*
+ * The bundled display/body subsets are intentionally small. Select a complete
+ * native system face before them for scripts those subsets do not cover, so a
+ * word is shaped by one font instead of falling back one missing glyph at a
+ * time. These stacks add no bytes to either platform artifact.
+ */
+:root:lang(ar) {
+  --rq-font-body: "Noto Sans Arabic", "Geeza Pro", Tahoma, Arial, sans-serif;
+  --rq-font-display: var(--rq-font-body);
+}
+
+:root:lang(hi) {
+  --rq-font-body: "Noto Sans Devanagari", "Kohinoor Devanagari", Mangal, sans-serif;
+  --rq-font-display: var(--rq-font-body);
+}
+
+:root:lang(ja) {
+  --rq-font-body: "Hiragino Sans", "Yu Gothic", "Noto Sans JP", system-ui, sans-serif;
+  --rq-font-display: var(--rq-font-body);
+}
+
+:root:lang(ko) {
+  --rq-font-body: "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", system-ui, sans-serif;
+  --rq-font-display: var(--rq-font-body);
+}
+
+:root:lang(ru) {
+  --rq-font-body: "Noto Sans", system-ui, Arial, sans-serif;
+  --rq-font-display: var(--rq-font-body);
+}
+
+:root:lang(zh) {
+  --rq-font-body: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", system-ui, sans-serif;
+  --rq-font-display: var(--rq-font-body);
+}
+
+.reddit-guest-banner {
+  position: fixed;
+  inset: max(.35rem, env(safe-area-inset-top)) .5rem auto;
+  z-index: 90;
+  margin: 0 auto;
+  max-width: 52rem;
+  padding: .55rem .75rem;
+  border: 1px solid rgb(255 255 255 / 24%);
+  border-radius: .75rem;
+  background: rgb(21 19 15 / 94%);
+  color: #fff;
+  text-align: center;
+}
+
+.reddit-guest-banner button {
+  margin-inline-start: .65rem;
 }
 
 :root[data-riddle-quest-high-contrast="true"] {

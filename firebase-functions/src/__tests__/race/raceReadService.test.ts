@@ -169,20 +169,20 @@ describe("getRaceChallengePreview", () => {
   it("rejects a missing challenge without attempting to parse it", async () => {
     const {db} = createChallengeDb(documentSnapshot(false));
 
-    await expect(getRaceChallengePreview("missing", {db: db as never, nowMs: 10}))
+    await expect(getRaceChallengePreview("missing", "en", {db: db as never, nowMs: 10}))
       .rejects.toMatchObject({code: "not-found"});
     expect(mockParseChallengeRecord).not.toHaveBeenCalled();
   });
 
   it("parses and projects an existing challenge using the requested clock", async () => {
     const stored = {challengeId: "challenge-1"};
-    const parsed = {...stored, creatorId: "creator-1", parsed: true};
+    const parsed = {...stored, creatorId: "creator-1", locale: "en", parsed: true};
     const preview = {challengeId: "challenge-1", status: "active"};
     const {db, collection, doc} = createChallengeDb(documentSnapshot(true, stored));
     mockParseChallengeRecord.mockReturnValue(parsed);
     mockChallengePreview.mockReturnValue(preview);
 
-    await expect(getRaceChallengePreview("challenge-1", {db: db as never, nowMs: 123}))
+    await expect(getRaceChallengePreview("challenge-1", "en", {db: db as never, nowMs: 123}))
       .resolves.toBe(preview);
     expect(collection).toHaveBeenCalledWith("raceChallenges");
     expect(doc).toHaveBeenCalledWith("challenge-1");
@@ -195,13 +195,14 @@ describe("getRaceChallengePreview", () => {
     const parsed = {
       ...stored,
       creatorId: "creator-1",
+      locale: "en",
       creatorSnapshot: {displayName: "Ada", avatarUrl: "https://example.test/ada.png"},
     };
     const fixture = createChallengeDb(documentSnapshot(true, stored), true);
     mockParseChallengeRecord.mockReturnValue(parsed);
     mockChallengePreview.mockImplementation((challenge: unknown) => challenge);
 
-    await expect(getRaceChallengePreview("challenge-1", {db: fixture.db as never}))
+    await expect(getRaceChallengePreview("challenge-1", "en", {db: fixture.db as never}))
       .resolves.toMatchObject({creatorSnapshot: {displayName: "Riddle Quest player"}});
     expect(mockChallengePreview).toHaveBeenCalledWith(
       expect.objectContaining({creatorSnapshot: {displayName: "Riddle Quest player"}}),
@@ -216,15 +217,30 @@ describe("getRaceChallengePreview", () => {
   it("uses the default database and current clock when options are omitted", async () => {
     const {db} = createChallengeDb(documentSnapshot(true, {}));
     mockDefaultDb = db;
-    mockParseChallengeRecord.mockReturnValue({challengeId: "challenge-1", creatorId: "creator-1"});
+    mockParseChallengeRecord.mockReturnValue({challengeId: "challenge-1", creatorId: "creator-1", locale: "en"});
     mockChallengePreview.mockReturnValue({challengeId: "challenge-1"});
 
-    await getRaceChallengePreview("challenge-1");
+    await getRaceChallengePreview("challenge-1", "en");
 
     expect(mockChallengePreview).toHaveBeenCalledWith(
-      {challengeId: "challenge-1", creatorId: "creator-1"},
+      {challengeId: "challenge-1", creatorId: "creator-1", locale: "en"},
       expect.any(Number),
     );
+  });
+
+  it("rejects a cross-locale preview before returning sender identity", async () => {
+    const stored = {challengeId: "challenge-1"};
+    const fixture = createChallengeDb(documentSnapshot(true, stored));
+    mockParseChallengeRecord.mockReturnValue({
+      challengeId: "challenge-1",
+      creatorId: "creator-1",
+      locale: "ja",
+      creatorSnapshot: {displayName: "Sender identity"},
+    });
+
+    await expect(getRaceChallengePreview("challenge-1", "fr", {db: fixture.db as never}))
+      .rejects.toMatchObject({code: "failed-precondition", message: "RaceTo10.ERROR_LOCALE_MISMATCH"});
+    expect(mockChallengePreview).not.toHaveBeenCalled();
   });
 });
 
@@ -331,8 +347,10 @@ describe("listRaceInboxForUser", () => {
 
     const response = await listRaceInboxForUser("player-1", {limit: 1}, db as never);
 
-    expect(response.items).toEqual([inboxItem("item-1", 200, false)]);
-    expect(response.items[0]).not.toHaveProperty("opponentUserId");
+    expect(response.items).toEqual([{
+      ...inboxItem("item-1", 200, false),
+      opponentUserId: "server-only-opponent",
+    }]);
     expect(response.items[0]).not.toHaveProperty("expiresAt");
     expect(response.nextCursor).toBeDefined();
     expect(query.orderBy).toHaveBeenNthCalledWith(1, "createdAtMs", "desc");
@@ -351,7 +369,10 @@ describe("listRaceInboxForUser", () => {
     const response = await listRaceInboxForUser("player-1", {limit: 2, cursor}, db as never);
 
     expect(query.startAfter).toHaveBeenCalledWith(200, "item-1");
-    expect(response).toEqual({items: [inboxItem("item-2", 100, true)]});
+    expect(response).toEqual({
+      items: [{...inboxItem("item-2", 100, true), opponentUserId: "server-only-opponent"}],
+      nextCursor: undefined,
+    });
     expect(batch.update).not.toHaveBeenCalled();
     expect(batch.commit).not.toHaveBeenCalled();
   });

@@ -249,9 +249,22 @@ describe("Race to 10 transactional service", () => {
       achievementCoinsAwarded: 25,
       newCoins: 75,
     });
-    expect(JSON.stringify(await getRaceChallengePreview(published.challengeId, {db, nowMs: NOW + 82_000}))).not.toMatch(
+    expect(JSON.stringify(await getRaceChallengePreview(published.challengeId, "en", {db, nowMs: NOW + 82_000}))).not.toMatch(
       /answer|riddles|ghostEvents/,
     );
+    await expect(getRaceChallengePreview(published.challengeId, "ja", {db, nowMs: NOW + 82_100}))
+      .rejects.toMatchObject({
+        code: "failed-precondition",
+        message: "RaceTo10.ERROR_LOCALE_MISMATCH",
+      });
+    await expect(startRaceRunForUser(
+      "locale-mismatch-challenger",
+      {locale: "ja", challengeId: published.challengeId, requestId: "locale-mismatch-start-0001"},
+      {db, nowMs: NOW + 82_200},
+    )).rejects.toMatchObject({
+      code: "failed-precondition",
+      message: "RaceTo10.ERROR_LOCALE_MISMATCH",
+    });
 
     const guardedChallenger = await startRaceRunForUser(
       "tombstone-challenger",
@@ -301,7 +314,7 @@ describe("Race to 10 transactional service", () => {
       const privacyChallengeId = "privacy-preview-challenge";
       const privacyChallengeRef = db.doc(`raceChallenges/${privacyChallengeId}`);
       await privacyChallengeRef.set({...challengeData, challengeId: privacyChallengeId});
-      const privatePreview = await getRaceChallengePreview(privacyChallengeId, {db, nowMs: NOW + 85_000});
+      const privatePreview = await getRaceChallengePreview(privacyChallengeId, "en", {db, nowMs: NOW + 85_000});
       expect(privatePreview.creator).toEqual({displayName: "Riddle Quest player"});
       expect((await privacyChallengeRef.get()).data()?.creatorSnapshot).toEqual({
         displayName: "Riddle Quest player",
@@ -325,6 +338,7 @@ describe("Race to 10 transactional service", () => {
         opponentDisplayName: "Riddle Quest player",
       }));
       expect(privateInbox.items[0]).not.toHaveProperty("opponentAvatarUrl");
+      expect(privateInbox.items[0]).not.toHaveProperty("opponentUserId");
       expect((await privacyInboxRef.get()).data()).toMatchObject({
         opponentUserId: "creator-1",
         opponentDisplayName: "Riddle Quest player",
@@ -388,6 +402,15 @@ describe("Race to 10 transactional service", () => {
     expect(injectedCreatorDeletion).toBe(true);
     expect((await db.collection("raceStartRequests").where("userId", "==", "challenger-1").get()).empty).toBe(true);
 
+    const creatorBlockRef = db.doc("users/creator-1/blockedRivals/blocked-challenger");
+    await creatorBlockRef.set({targetUserId: "blocked-challenger", blockedAtMs: NOW + 89_500});
+    await expect(startRaceRunForUser(
+      "blocked-challenger",
+      {locale: "en", challengeId: published.challengeId, requestId: "blocked-start-0001"},
+      {db, nowMs: NOW + 89_600},
+    )).rejects.toMatchObject({code: "permission-denied"});
+    await creatorBlockRef.delete();
+
     const challenger = await startRaceRunForUser(
       "challenger-1",
       {locale: "en", challengeId: published.challengeId, requestId: "challenge-start-0001"},
@@ -405,6 +428,16 @@ describe("Race to 10 transactional service", () => {
       {locale: "en", challengeId: published.challengeId, requestId: "interleave-start-0001"},
       {db, nowMs: NOW + 90_500},
     );
+    const activeBlockRef = db.doc("users/challenger-interleave/blockedRivals/creator-1");
+    await activeBlockRef.set({targetUserId: "creator-1", blockedAtMs: NOW + 90_600});
+    const interleavingRecord = (await db.doc(`raceRuns/${interleavingChallenger.run.runId}`).get()).data()!;
+    await expect(submitRaceGuessForUser("challenger-interleave", {
+      runId: interleavingChallenger.run.runId,
+      riddleId: interleavingRecord.riddles[0].riddleId,
+      guess: interleavingRecord.riddles[0].answer,
+      requestId: "blocked-active-guess-0001",
+    }, {db, nowMs: NOW + 90_700})).rejects.toMatchObject({code: "permission-denied"});
+    await activeBlockRef.delete();
     await expect(
       startRaceRunForUser(
         "challenger-1",
@@ -466,16 +499,18 @@ describe("Race to 10 transactional service", () => {
       coins: 75,
       stats: {multiplayerGamesPlayed: 2, multiplayerWins: 0, multiplayerChallengesCreated: 1},
     });
+    await expect(db.doc("users/challenger-1/knownRivals/creator-1").get()).resolves.toMatchObject({exists: true});
+    await expect(db.doc("users/creator-1/knownRivals/challenger-1").get()).resolves.toMatchObject({exists: true});
     const firstInbox = await listRaceInboxForUser("creator-1", {limit: 20}, db);
     expect(firstInbox.items).toEqual([
       expect.objectContaining({
         challengeId: published.challengeId,
+        opponentUserId: "challenger-1",
         opponentDisplayName: "Grace",
         result: "loss",
         read: false,
       }),
     ]);
-    expect(firstInbox.items[0]).not.toHaveProperty("opponentUserId");
     expect(firstInbox.items[0]).not.toHaveProperty("expiresAt");
     const reopenedInbox = await listRaceInboxForUser("creator-1", {limit: 20}, db);
     expect(reopenedInbox.items[0]).toMatchObject({read: true});
@@ -551,7 +586,7 @@ describe("Race to 10 transactional service", () => {
 
     const challengeRef = db.doc(`raceChallenges/${published.challengeId}`);
     await challengeRef.update({status: "revoked"});
-    expect(await getRaceChallengePreview(published.challengeId, {db, nowMs: NOW + 210_000})).toMatchObject({
+    expect(await getRaceChallengePreview(published.challengeId, "en", {db, nowMs: NOW + 210_000})).toMatchObject({
       status: "revoked",
     });
     await expect(
@@ -562,7 +597,7 @@ describe("Race to 10 transactional service", () => {
       ),
     ).rejects.toMatchObject({code: "failed-precondition"});
     await challengeRef.update({status: "active", expiresAtMs: NOW + 215_000});
-    expect(await getRaceChallengePreview(published.challengeId, {db, nowMs: NOW + 220_000})).toMatchObject({
+    expect(await getRaceChallengePreview(published.challengeId, "en", {db, nowMs: NOW + 220_000})).toMatchObject({
       status: "expired",
     });
     await expect(

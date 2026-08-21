@@ -1,5 +1,7 @@
-import type {BridgeProfile} from "@qwordly/core/bridge";
-import type {Feedback, GameEngineSnapshot, ScoredGuess} from "@qwordly/core/game";
+import type {PlayerData, PlayerDataUpdate, PlatformPreferences, SavedGame} from "../platform/types";
+import type {PlatformResult} from "../platform/types";
+
+export type {PlatformResult} from "../platform/types";
 
 /** Describes the stable identity fields returned for a Jest player. */
 type JestPlayer = {
@@ -56,75 +58,16 @@ export type JestEntryIntent = {
 };
 
 /** Describes jest preferences. */
-export type JestPreferences = {
-  /** Stores locale. */
-  locale?: string;
-  /** Stores muted. */
-  muted?: boolean;
-  /** Stores reduced motion. */
-  reducedMotion?: boolean;
-  /** Stores high contrast. */
-  highContrast?: boolean;
-  /** Stores onboarding complete. */
-  onboardingComplete?: boolean;
-  /** Stores registration prompt dismissed at. */
-  registrationPromptDismissedAt?: number;
-  /** Stores first milestone marked. */
-  firstMilestoneMarked?: boolean;
-};
+export type JestPreferences = PlatformPreferences;
 
 /** Describes jest saved game. */
-export type JestSavedGame = {
-  /** Stores schema version. */
-  schemaVersion: 1;
-  /** Stores saved at. */
-  savedAt: number;
-  /** Stores riddle id. */
-  riddleId: string;
-  /** Stores game mode. */
-  gameMode: "classic" | "challenge";
-  /** Stores the opaque server session identity needed to resume safely. */
-  sessionToken: string;
-  /** Stores current letters. */
-  currentLetters: string[];
-  /** Stores active slot index. */
-  activeSlotIndex: number;
-  /** Stores hint revealed indices. */
-  hintRevealedIndices: number[];
-  /** Stores guesses. */
-  guesses: ScoredGuess[];
-  /** Stores engine snapshot. */
-  engineSnapshot: GameEngineSnapshot;
-  /** Stores whether Continue or decline must be chosen before another guess. */
-  awaitingContinue: boolean;
-  /** Stores letter states. */
-  letterStates: Record<string, Feedback>;
-  /** Stores an unacknowledged terminal outcome for retry after reload. */
-  pendingOutcome?: {
-    id: string;
-    kind: "win" | "loss";
-    riddleId: string;
-    gameMode: "classic" | "challenge";
-    sessionToken: string;
-    attempts: number;
-    isCorrect: boolean;
-  };
-};
+export type JestSavedGame = SavedGame;
 
 /** Describes jest player data. */
-export type JestPlayerData = {
-  /** Stores schema version. */
-  schemaVersion: 1;
-  /** Stores updated at. */
-  updatedAt: number;
-  /** Stores profile. */
-  profile?: BridgeProfile;
-  /** Stores active game. */
-  activeGame?: JestSavedGame | null;
-};
+export type JestPlayerData = PlayerData;
 
 /** Describes jest player data update. */
-export type JestPlayerDataUpdate = Pick<JestPlayerData, "profile" | "activeGame">;
+export type JestPlayerDataUpdate = PlayerDataUpdate;
 
 /** Counters used to schedule engagement notifications and update player progress. */
 export type JestEngagementProgress = {
@@ -135,14 +78,6 @@ export type JestEngagementProgress = {
   /** Total completed-win count. */
   wins: number;
 };
-
-/** Describes platform result. */
-export type PlatformResult<T> =
-  | {status: "success"; value: T}
-  | {status: "cancelled"}
-  | {status: "retryable-failure"; message: string}
-  | {status: "terminal-failure"; message: string}
-  | {status: "unavailable"; message: string};
 
 /** Describes jest product. */
 type JestProduct = {
@@ -190,6 +125,8 @@ export type JestSubscription = {
 
 /** Describes jest session. */
 export type JestSession = {
+  /** Firebase UID returned by the verified Jest identity exchange. */
+  firebaseUid: string;
   /** Stores player. */
   player: JestPlayer;
   /** Stores profile. */

@@ -1,9 +1,12 @@
-import type {CSSProperties} from "react";
+import {useState, type CSSProperties} from "react";
 import type {
   ListRaceCategoriesResponse,
   RaceCategoryId,
   RaceChallengePreview,
   RaceInboxItem,
+  SocialReportCategory,
+  ListFacebookTournamentResponse,
+  ListFacebookContextBoardResponse,
 } from "@qwordly/core/race";
 import {tr} from "../../i18n";
 import {formatRaceTime} from "../logic/racePresentation";
@@ -47,21 +50,73 @@ export function RaceCategoriesPanel({
   );
 }
 
+/** Displays identity-free server-authoritative tournament standings. */
+export function RaceTournamentPanel({
+  tournament,
+  loading,
+}: {
+  tournament: ListFacebookTournamentResponse | null;
+  loading: boolean;
+}) {
+  return (
+    <div className="race-panel race-tournaments" data-rewards-enabled="false">
+      <h2>{tr("RaceTo10.HUB_TOURNAMENTS")}</h2>
+      {loading ? (
+        <p aria-live="polite">{tr("RaceTo10.RESULTS_LOADING")}</p>
+      ) : !tournament || tournament.standings.length === 0 ? (
+        <p>{tr("RaceTo10.RESULTS_EMPTY")}</p>
+      ) : (
+        <ol>
+          {tournament.standings.map((standing, index) => (
+            <li key={`${standing.rank}-${standing.adjustedTimeMs}-${index}`} aria-current={standing.isCurrentPlayer || undefined}>
+              <strong>#{standing.rank}</strong>
+              <span>{formatRaceTime(standing.adjustedTimeMs)}</span>
+            </li>
+          ))}
+        </ol>
+      )}
+    </div>
+  );
+}
+
 /** Displays completed multiplayer results and rematch controls. */
 export function RaceInboxPanel({
   items,
   loading,
+  safetyPending,
+  contextBoard,
+  contextBoardLoading,
   onRematch,
+  onBlock,
+  onReport,
   onChooseCategory,
 }: {
   items: RaceInboxItem[];
   loading: boolean;
+  safetyPending: boolean;
+  contextBoard?: ListFacebookContextBoardResponse | null;
+  contextBoardLoading?: boolean;
   onRematch: (item: RaceInboxItem) => void;
+  onBlock: (item: RaceInboxItem) => void;
+  onReport: (item: RaceInboxItem, category: SocialReportCategory) => void;
   onChooseCategory: () => void;
 }) {
+  const [reportCategories, setReportCategories] = useState<Record<string, SocialReportCategory>>({});
   return (
     <div className="race-panel race-inbox">
       <h2>{tr("RaceTo10.RESULTS_TITLE")}</h2>
+      {contextBoardLoading ? (
+        <p aria-live="polite">{tr("RaceTo10.RESULTS_LOADING")}</p>
+      ) : contextBoard && contextBoard.standings.length > 0 ? (
+        <ol className="race-context-board" aria-label={tr("RaceTo10.HUB_ACTIVITY")} data-rewards-enabled="false">
+          {contextBoard.standings.map((standing, index) => (
+            <li key={`${standing.rank}-${standing.adjustedTimeMs}-${index}`} aria-current={standing.isCurrentPlayer || undefined}>
+              <strong>#{standing.rank}</strong>
+              <span>{formatRaceTime(standing.adjustedTimeMs)}</span>
+            </li>
+          ))}
+        </ol>
+      ) : null}
       {loading ? (
         <p aria-live="polite">{tr("RaceTo10.RESULTS_LOADING")}</p>
       ) : items.length === 0 ? (
@@ -85,6 +140,37 @@ export function RaceInboxPanel({
               <button className="race-primary" onClick={() => onRematch(item)}>
                 {tr("RaceTo10.REMATCH")}
               </button>
+              {item.opponentUserId ? (
+                <details className="race-safety-actions">
+                  <summary>{tr("RaceTo10.SAFETY_ACTIONS")}</summary>
+                  <button type="button" disabled={safetyPending} onClick={() => onBlock(item)}>
+                    {tr("RaceTo10.BLOCK_RIVAL")}
+                  </button>
+                  <label>
+                    <span>{tr("RaceTo10.REPORT_REASON")}</span>
+                    <select
+                      value={reportCategories[item.itemId] ?? "harassment"}
+                      disabled={safetyPending}
+                      onChange={(event) => setReportCategories((current) => ({
+                        ...current,
+                        [item.itemId]: event.target.value as SocialReportCategory,
+                      }))}
+                    >
+                      <option value="harassment">{tr("RaceTo10.REPORT_HARASSMENT")}</option>
+                      <option value="cheating">{tr("RaceTo10.REPORT_CHEATING")}</option>
+                      <option value="inappropriate_identity">{tr("RaceTo10.REPORT_IDENTITY")}</option>
+                      <option value="spam">{tr("RaceTo10.REPORT_SPAM")}</option>
+                      <option value="other">{tr("RaceTo10.REPORT_OTHER")}</option>
+                    </select>
+                  </label>
+                  <button type="button" disabled={safetyPending} onClick={() => onReport(
+                    item,
+                    reportCategories[item.itemId] ?? "harassment",
+                  )}>
+                    {tr("RaceTo10.REPORT_RIVAL")}
+                  </button>
+                </details>
+              ) : null}
             </li>
           ))}
         </ul>

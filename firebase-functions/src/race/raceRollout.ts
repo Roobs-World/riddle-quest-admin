@@ -10,6 +10,8 @@ import {
 } from "@qwordly/core/race";
 import {HttpsError} from "firebase-functions/v2/https";
 import {z} from "zod";
+import {isFacebookFirebaseUid} from "../facebook/facebookSecurity";
+import {isRedditFirebaseUid} from "../reddit/redditSecurity";
 
 /** Describes firestore. */
 type Firestore = FirebaseFirestore.Firestore;
@@ -38,15 +40,19 @@ export const hashRaceCohortUser = (userId: string): string =>
   createHash("sha256").update(`riddle-quest-race-cohort-v1:${userId}`).digest("hex");
 
 /** Evaluates rollout configuration for a stable player cohort. */
-export function evaluateRaceRollout(configInput: unknown, userId: string): RaceAccessResponse {
+export function evaluateRaceRollout(
+  configInput: unknown,
+  userId: string,
+  locale: RaceLocale = "en",
+): RaceAccessResponse {
   const config = RaceRolloutConfigSchema.catch(DEFAULT_CONFIG).parse(configInput);
-  if (!config.enabled) return {enabled: false, locale: "en", reason: "rollout_disabled"};
+  if (!config.enabled) return {enabled: false, locale, reason: "rollout_disabled"};
   const hash = hashRaceCohortUser(userId);
   const bucket = Number.parseInt(hash.slice(0, 8), 16) / 0x1_0000_0000;
   const enabled = config.allowlistHashes.includes(hash) || bucket * 100 < config.percentage;
   return RaceAccessResponseSchema.parse({
     enabled,
-    locale: "en",
+    locale,
     reason: enabled ? "enabled" : "not_in_cohort",
   });
 }
@@ -57,10 +63,12 @@ export async function getRaceAccessForUser(
   locale: RaceLocale,
   dbInput?: Firestore,
 ): Promise<RaceAccessResponse> {
-  if (locale !== "en") return {enabled: false, locale: "en", reason: "rollout_disabled"};
+  if (locale !== "en" && !isFacebookFirebaseUid(userId) && !isRedditFirebaseUid(userId)) {
+    return {enabled: false, locale, reason: "rollout_disabled"};
+  }
   const db = dbInput ?? admin.firestore();
   const snapshot = await db.doc("raceConfig/rollout").get();
-  return evaluateRaceRollout(snapshot.exists ? snapshot.data() : DEFAULT_CONFIG, userId);
+  return evaluateRaceRollout(snapshot.exists ? snapshot.data() : DEFAULT_CONFIG, userId, locale);
 }
 
 /** Throws unless the player currently belongs to the enabled race cohort. */

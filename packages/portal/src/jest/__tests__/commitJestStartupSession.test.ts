@@ -6,6 +6,7 @@ import {
 import type {JestSession} from "../types";
 
 const session: JestSession = {
+  firebaseUid: "jest_fixture_uid",
   player: {playerId: "player-1", registered: true},
   profile: null,
   entryIntent: {},

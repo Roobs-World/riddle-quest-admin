@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "seed": {
+    "file": "race-en-reviewed-v1.json",
+    "sha256": "fc6d4f936b8f7f697bdc5e5c43483478eb0d40ced52cdc45bfcff25ece859844"
+  },
+  "appendedRiddles": [],
+  "appendReceipts": []
+}

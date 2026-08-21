@@ -10,10 +10,11 @@ import {gameSessionReducer, type GameSessionState} from "./gameSession";
 const KEYBOARD_ROWS = ["QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM"];
 
 /** Provides game header behavior. */
-export function GameHeader({state, displayedCoins, onOpenShop}: {
+export function GameHeader({state, displayedCoins, onOpenShop, commerceAvailable = true}: {
   state: GameSessionState;
   displayedCoins?: number;
   onOpenShop: () => void;
+  commerceAvailable?: boolean;
 }) {
   const coinBalance = displayedCoins ?? state.profile?.coins ?? 0;
   return (
@@ -22,11 +23,18 @@ export function GameHeader({state, displayedCoins, onOpenShop}: {
       <div className="game-mode-label">
         {state.gameMode === "challenge" ? tr("WebPortal.PLAY_DAILY") : tr("WebPortal.PLAY_CLASSIC")}
       </div>
-      <button type="button" className="coin-pill" data-tooltip="gameCoins" data-coin-meter
-        aria-label={tr("Navigation.BUY_COINS_BUTTON")} onClick={onOpenShop}>
-        <strong>{coinBalance.toLocaleString()}</strong>
-        <img src={coinUrl} alt="" />
-      </button>
+      {commerceAvailable ? (
+        <button type="button" className="coin-pill" data-tooltip="gameCoins" data-coin-meter
+          aria-label={tr("Navigation.BUY_COINS_BUTTON")} onClick={onOpenShop}>
+          <strong>{coinBalance.toLocaleString()}</strong>
+          <img src={coinUrl} alt="" />
+        </button>
+      ) : (
+        <div className="coin-pill" data-coin-meter aria-label={`${coinBalance.toLocaleString()} ${tr("CoinShop.COINS_SUFFIX")}`}>
+          <strong>{coinBalance.toLocaleString()}</strong>
+          <img src={coinUrl} alt="" />
+        </div>
+      )}
     </header>
   );
 }

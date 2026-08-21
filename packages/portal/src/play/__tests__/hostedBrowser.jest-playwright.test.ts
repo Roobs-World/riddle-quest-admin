@@ -208,6 +208,101 @@ describeBrowser("standalone Jest browser game", () => {
       expect(penaltyCenterOffset.horizontal).toBeLessThanOrEqual(0.5);
       expect(penaltyCenterOffset.vertical).toBeLessThanOrEqual(0.5);
 
+      await page.locator(".race-category-grid button").first().click();
+      const nativeAnswerInput = page.locator(".race-native-answer-input");
+      await nativeAnswerInput.waitFor({state: "attached"});
+      for (const {committed, rendered} of [
+        {committed: "e\u0301", rendered: "é"},
+        {committed: "نَ", rendered: "نَ"},
+        {committed: "Ж", rendered: "Ж"},
+        {committed: "क्ष", rendered: "क्ष"},
+        {committed: "日", rendered: "日"},
+        {committed: "한", rendered: "한"},
+        {committed: "中", rendered: "中"},
+      ]) {
+        await nativeAnswerInput.evaluate((element, value) => {
+          const input = element as HTMLInputElement;
+          input.focus({preventScroll: true});
+          input.dispatchEvent(new CompositionEvent("compositionstart", {bubbles: true, data: value}));
+          input.value = value;
+          input.dispatchEvent(new InputEvent("input", {
+            bubbles: true,
+            data: value,
+            inputType: "insertCompositionText",
+            isComposing: true,
+          }));
+          input.dispatchEvent(new CompositionEvent("compositionend", {bubbles: true, data: value}));
+        }, committed);
+        await page.locator(".race-gameplay .guess-row .cell", {hasText: rendered}).waitFor();
+        expect(await page.locator(".race-riddle-surface .guess-board").evaluate((element) =>
+          getComputedStyle(element).outlineStyle)).not.toBe("none");
+        await nativeAnswerInput.press("Backspace");
+        await page.waitForFunction((value) =>
+          !Array.from(document.querySelectorAll(".race-gameplay .guess-row .cell"))
+            .some((cell) => cell.textContent === value), rendered);
+      }
+      await nativeAnswerInput.fill("日本語");
+      await page.waitForFunction(() => {
+        const values = Array.from(document.querySelectorAll(".race-gameplay .guess-row .cell"))
+          .map((cell) => cell.textContent);
+        return values.includes("日") && values.includes("本") && values.includes("語");
+      });
+      for (let index = 0; index < 3; index += 1) await nativeAnswerInput.press("Backspace");
+      await page.waitForFunction(() =>
+        !Array.from(document.querySelectorAll(".race-gameplay .guess-row .cell"))
+          .some((cell) => ["日", "本", "語"].includes(cell.textContent ?? "")));
+      await nativeAnswerInput.evaluate((element) => {
+        const input = element as HTMLInputElement;
+        input.dispatchEvent(new CompositionEvent("compositionstart", {bubbles: true, data: "한"}));
+        input.value = "한";
+        input.dispatchEvent(new InputEvent("input", {
+          bubbles: true,
+          data: "한",
+          inputType: "insertCompositionText",
+          isComposing: true,
+        }));
+        input.dispatchEvent(new CompositionEvent("compositionend", {bubbles: true, data: "한"}));
+        input.value = "한";
+        input.dispatchEvent(new InputEvent("input", {
+          bubbles: true,
+          data: "한",
+          inputType: "insertCompositionText",
+          isComposing: false,
+        }));
+      });
+      await page.waitForFunction(() =>
+        Array.from(document.querySelectorAll(".race-gameplay .guess-row .cell"))
+          .filter((cell) => cell.textContent === "한").length === 1);
+      await nativeAnswerInput.press("Backspace");
+      await page.locator(".race-close").click();
+      await page.getByRole("button", {name: /^quit race$/i}).click();
+      await page.locator(".race-screen").waitFor({state: "detached"});
+      await page.getByRole("button", {name: /^multiplayer$/i}).click();
+      await page.locator(".race-category-grid button").first().waitFor();
+      const hubTablist = page.locator('.race-hub-tabs [role="tablist"]');
+      const playHubTab = hubTablist.getByRole("tab", {name: /^play$/i});
+      const activityHubTab = hubTablist.getByRole("tab", {name: /^activity$/i});
+      expect(await hubTablist.getByRole("tab").count()).toBe(2);
+      await playHubTab.focus();
+      await playHubTab.press("End");
+      await page.waitForFunction(() => document.querySelector('[role="tab"][aria-selected="true"]')?.textContent?.trim() === "Activity");
+      expect(await activityHubTab.getAttribute("aria-selected")).toBe("true");
+      expect(await activityHubTab.evaluate((element) => element === document.activeElement)).toBe(true);
+      await playHubTab.click();
+      await playHubTab.focus();
+      await playHubTab.press("ArrowRight");
+      await page.waitForFunction(() => document.querySelector('[role="tab"][aria-selected="true"]')?.textContent?.trim() === "Activity");
+      expect(await activityHubTab.getAttribute("aria-selected")).toBe("true");
+      await page.getByText("Nova", {exact: true}).waitFor();
+      await page.getByText("Safety options", {exact: true}).click();
+      await expectAccessible(page, "multiplayer safety actions");
+      await page.getByLabel("Reason for report").selectOption("spam");
+      await page.getByRole("button", {name: /^report opponent$/i}).click();
+      await page.getByRole("status").getByText("Report sent.", {exact: true}).waitFor();
+      await page.getByRole("button", {name: /^block opponent$/i}).click();
+      await page.getByRole("status").getByText("Opponent blocked.", {exact: true}).waitFor();
+      expect(await page.getByText(/no results yet/i).isVisible()).toBe(true);
+
       await page.evaluate(() => {
         window.dispatchEvent(new CustomEvent("riddle-quest:host-to-game", {
           detail: {

@@ -119,6 +119,7 @@ describe("Firebase Functions", () => {
       "grantJestPurchase",
       "retryJestAccountDeletion",
       "verifyJestReferrals",
+      "redditGameplay",
     ];
 
     expectedFunctions.forEach((funcName) => {

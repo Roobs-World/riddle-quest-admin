@@ -3,8 +3,14 @@ import {
   AbandonRaceRunResponseSchema,
   ListRaceCategoriesResponseSchema,
   PublishRaceChallengeRequestSchema,
+  RecordFacebookTournamentRunRequestSchema,
+  RecordFacebookTournamentRunResponseSchema,
+  RecordFacebookContextRunRequestSchema,
+  RecordFacebookContextRunResponseSchema,
+  ListFacebookContextBoardResponseSchema,
   RaceAnalyticsEventRequestSchema,
   RACE_HINT_PENALTY_MS,
+  RACE_MAX_ADJUSTED_TIME_MS,
   RACE_RULES,
   RACE_SKIP_PENALTY_MS,
   RaceGhostEventSchema,
@@ -176,7 +182,7 @@ describe("Race to 10 contracts", () => {
     expect(GHOST_TIMELINE_FIXTURE.every((event) => RaceGhostEventSchema.safeParse(event).success)).toBe(true);
   });
 
-  it("rejects extra fields and unsupported locales", () => {
+  it("accepts supported race locales and rejects extra fields or unknown locales", () => {
     expect(
       StartRaceRunRequestSchema.safeParse({
         locale: "xx",
@@ -190,7 +196,7 @@ describe("Race to 10 contracts", () => {
         categoryId: "history",
         requestId: "request-0001",
       }).success,
-    ).toBe(false);
+    ).toBe(true);
     expect(
       StartRaceRunRequestSchema.safeParse({
         locale: "en",
@@ -270,6 +276,70 @@ describe("Race to 10 contracts", () => {
       eventId: "analytics-0001",
       eventName: "race_mode_viewed",
       params: Object.fromEntries(Array.from({length: 11}, (_, index) => [`field${index}`, index])),
+    }).success).toBe(false);
+  });
+
+  it("keeps Facebook tournament input score-free and output economy-free", () => {
+    expect(RecordFacebookTournamentRunRequestSchema.safeParse({runId: "run-1", locale: "ja"}).success).toBe(true);
+    expect(RecordFacebookTournamentRunRequestSchema.safeParse({
+      runId: "run-1",
+      locale: "ja",
+      score: 1,
+    }).success).toBe(false);
+    expect(RecordFacebookTournamentRunResponseSchema.safeParse({
+      tournamentId: "facebook-race10-ja-2026-08-19",
+      locale: "ja",
+      runId: "run-1",
+      adjustedTimeMs: 45_000,
+      completedAtMs: 1_000_000,
+      improved: true,
+      sortOrder: "LOWER_IS_BETTER",
+      rewardsEnabled: false,
+      coins: 100,
+    }).success).toBe(false);
+    expect(RecordFacebookTournamentRunResponseSchema.safeParse({
+      tournamentId: "facebook-race10-ja-2026-08-19",
+      locale: "ja",
+      runId: "run-1",
+      adjustedTimeMs: RACE_MAX_ADJUSTED_TIME_MS + 1,
+      completedAtMs: 1_000_000,
+      improved: true,
+      sortOrder: "LOWER_IS_BETTER",
+      rewardsEnabled: false,
+    }).success).toBe(false);
+  });
+
+  it("keeps Facebook context-board input bounded and standings identity-free", () => {
+    expect(RecordFacebookContextRunRequestSchema.safeParse({
+      contextId: "thread-1", locale: "ar", runId: "run-1",
+    }).success).toBe(true);
+    expect(RecordFacebookContextRunRequestSchema.safeParse({
+      contextId: "../escape", locale: "ar", runId: "run-1", score: 1,
+    }).success).toBe(false);
+    expect(ListFacebookContextBoardResponseSchema.safeParse({
+      locale: "ar",
+      startsAtMs: 1,
+      endsAtMs: 2,
+      sortOrder: "LOWER_IS_BETTER",
+      rewardsEnabled: false,
+      standings: [{rank: 1, adjustedTimeMs: 30_000, isCurrentPlayer: true, userId: "facebook_secret"}],
+    }).success).toBe(false);
+    expect(RecordFacebookContextRunResponseSchema.safeParse({
+      locale: "ar",
+      runId: "run-1",
+      adjustedTimeMs: RACE_MAX_ADJUSTED_TIME_MS + 1,
+      completedAtMs: 1_000_000,
+      improved: true,
+      sortOrder: "LOWER_IS_BETTER",
+      rewardsEnabled: false,
+    }).success).toBe(false);
+    expect(ListFacebookContextBoardResponseSchema.safeParse({
+      locale: "ar",
+      startsAtMs: 1,
+      endsAtMs: 2,
+      sortOrder: "LOWER_IS_BETTER",
+      rewardsEnabled: false,
+      standings: [{rank: 1, adjustedTimeMs: RACE_MAX_ADJUSTED_TIME_MS + 1, isCurrentPlayer: false}],
     }).success).toBe(false);
   });
 });

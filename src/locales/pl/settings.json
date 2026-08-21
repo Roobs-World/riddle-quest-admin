@@ -12,6 +12,7 @@
     "LOGOUT_BUTTON": "Wyloguj",
     "LOGOUT_ERROR_MESSAGE": "Nie można się wylogować. Spróbuj ponownie.",
     "LOGOUT_ERROR_TITLE": "Błąd",
+    "PRESENCE_TOGGLE": "Pokazuj aktywność rywalom",
     "SOUND_TOGGLE": "Dźwięk",
     "TERMS_BUTTON": "Warunki korzystania",
     "TITLE": "Ustawienia",

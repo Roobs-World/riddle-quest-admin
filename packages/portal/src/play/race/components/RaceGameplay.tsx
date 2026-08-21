@@ -1,9 +1,10 @@
 import type {Feedback, ScoredGuess} from "@qwordly/core/game";
 import type {RaceRunView} from "@qwordly/core/race";
-import type {RefObject} from "react";
+import {useRef, type RefObject} from "react";
 import {tr} from "../../i18n";
 import {ControlledGuessBoard, ControlledKeyboard, ForwardIcon, HintIcon} from "../../GameFrameControls";
 import {RaceScoreboard} from "./RaceScoreboard";
+import {NativeAnswerInput} from "./NativeAnswerInput";
 
 /** Renders the active riddle, controlled input, actions, and multiplayer rail. */
 export function RaceGameplay({
@@ -22,6 +23,7 @@ export function RaceGameplay({
   onClose,
   onSelectSlot,
   onLetter,
+  onText,
   onBackspace,
   onHint,
   onSubmit,
@@ -42,11 +44,13 @@ export function RaceGameplay({
   onClose: () => void;
   onSelectSlot: (index: number) => void;
   onLetter: (letter: string) => void;
+  onText: (text: string) => void;
   onBackspace: () => void;
   onHint: () => void;
   onSubmit: () => void;
   onSkip: () => void;
 }) {
+  const nativeInputRef = useRef<HTMLInputElement>(null);
   return (
     <div ref={viewportRef} className="race-gameplay-viewport">
       <div ref={gameplayRef} className="race-gameplay">
@@ -70,8 +74,19 @@ export function RaceGameplay({
                 activeSlotIndex={activeSlotIndex}
                 hintRevealedIndices={run.currentRiddle.revealedLetters.map(({index}) => index)}
                 guesses={guesses}
-                onSelectSlot={onSelectSlot}
+                onSelectSlot={(index) => {
+                  onSelectSlot(index);
+                  nativeInputRef.current?.focus({preventScroll: true});
+                }}
                 disabled={pending}
+              />
+              <NativeAnswerInput
+                ref={nativeInputRef}
+                disabled={pending}
+                locale={run.locale}
+                onText={onText}
+                onBackspace={onBackspace}
+                onSubmit={onSubmit}
               />
             </section>
             <ControlledKeyboard

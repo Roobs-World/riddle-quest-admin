@@ -8,6 +8,8 @@ const mockRecursiveDelete = jest.fn();
 const mockReferralVerificationDelete = jest.fn();
 /** Direct deletion mock for legacy document-ID-owned records. */
 const mockDirectDocumentDelete = jest.fn();
+/** Direct deletion mock for the provider-neutral Reddit player snapshot. */
+const mockRedditPlayerStorageDelete = jest.fn();
 /** Permanent pseudonymous Jest account-deletion guard write mock. */
 const mockJestDeletionSet = jest.fn();
 /** Active-operation drain query run after the permanent guard is written. */
@@ -45,6 +47,8 @@ const mockDeleteFiles = jest.fn();
 const mockDeleteUser = jest.fn();
 /** Disabled Auth sentinel retained for a deleted deterministic Jest UID. */
 const mockPreserveDeletedJestAuthUser = jest.fn();
+/** Provider-aware Facebook generation deletion mock. */
+const mockDeleteFacebookAccountGeneration = jest.fn();
 /** Number of query pages requested for each owned collection. */
 const queryPages = new Map<string, number>();
 /** First-page documents returned for a specific collection query. */
@@ -117,6 +121,9 @@ jest.mock("firebase-functions/v2/https", () => {
 jest.mock("firebase-functions/v2", () => ({logger: {error: mockLoggerError}}));
 jest.mock("../shared/callableSecurity", () => ({browserCallableSecurityOptions: {enforceAppCheck: true}}));
 jest.mock("../jest/jestDeletedAuthUser", () => ({preserveDeletedJestAuthUser: mockPreserveDeletedJestAuthUser}));
+jest.mock("../facebook/facebookAccountDeletion", () => ({
+  deleteFacebookAccountGeneration: mockDeleteFacebookAccountGeneration,
+}));
 jest.mock("../shared/sentry", () => ({captureException: jest.fn(), flushSentry: jest.fn().mockResolvedValue(true)}));
 jest.mock("../shared/firebaseAdmin", () => ({
   admin: {
@@ -124,7 +131,12 @@ jest.mock("../shared/firebaseAdmin", () => ({
       collection: (collection: string) => ({
         doc: (id = "user-1") => collection === "jestReferralVerifications"
             ? {delete: mockReferralVerificationDelete, path: `${collection}/${id}`}
-            : collection === "tutorialProgress"
+            : collection === "redditPlayerStorage"
+              ? {delete: mockRedditPlayerStorageDelete, path: `${collection}/${id}`}
+            : collection === "tutorialProgress" || collection === "facebookCommerceAccounts" ||
+              collection === "redditCommerceAccounts" ||
+              collection === "facebookNotificationPromptLeases" ||
+              collection === "facebookReferralBindings" || collection === "redditReferralBindings"
               ? {delete: mockDirectDocumentDelete, path: `${collection}/${id}`}
               : collection === "jestAccountDeletionTombstones"
                 ? {
@@ -153,6 +165,11 @@ jest.mock("../shared/firebaseAdmin", () => ({
       FieldValue: {delete: () => "field-delete", serverTimestamp: () => "server-timestamp"},
     }),
     storage: () => ({bucket: () => ({deleteFiles: mockDeleteFiles})}),
+    database: () => ({
+      ref: (path?: string) => path
+        ? {get: async () => ({val: () => null})}
+        : {update: async () => undefined},
+    }),
     auth: () => ({deleteUser: mockDeleteUser}),
   },
 }));
@@ -272,13 +289,45 @@ describe("deleteAccount", () => {
       `raceAnalytics:cohortUserHash:${hashRaceCohortUser("user-1")}`,
       [queryDocument("raceAnalytics/event-1", {cohortUserHash: hashRaceCohortUser("user-1")})],
     );
+    queryDocuments.set(
+      "socialModerationQueue:reporterId:user-1",
+      [queryDocument("socialModerationQueue/reported-by-user", {
+        reporterId: "user-1", targetUserId: "other-user", status: "queued",
+      })],
+    );
+    queryDocuments.set(
+      "socialModerationQueue:targetUserId:user-1",
+      [queryDocument("socialModerationQueue/report-targeting-user", {
+        reporterId: "other-user", targetUserId: "user-1", status: "queued",
+      })],
+    );
+    queryDocuments.set(
+      "socialReportRateLimits:reporterId:user-1",
+      [queryDocument("socialReportRateLimits/user-day", {reporterId: "user-1", count: 1})],
+    );
+    queryDocuments.set(
+      "redditCommerceReceipts:uid:user-1",
+      [queryDocument("redditCommerceReceipts/order-hash", {
+        provider: "reddit", uid: "user-1", orderIdHash: "order-hash", environment: "sandbox",
+        productId: "riddle_quest_coins_250", purchasedAtMs: 123, grossCoins: 250,
+      })],
+    );
+    queryDocuments.set(
+      "redditCommerceRefunds:uid:user-1",
+      [queryDocument("redditCommerceRefunds/order-hash", {
+        provider: "reddit", uid: "user-1", orderIdHash: "order-hash", environment: "sandbox",
+        productId: "riddle_quest_coins_250", refundedAtMs: 456, coinsRemoved: 200,
+      })],
+    );
     mockBatchCommit.mockResolvedValue(undefined);
     mockRecursiveDelete.mockResolvedValue(undefined);
     mockReferralVerificationDelete.mockResolvedValue(undefined);
+    mockRedditPlayerStorageDelete.mockResolvedValue(undefined);
     mockJestDeletionSet.mockResolvedValue(undefined);
     mockDeleteFiles.mockResolvedValue([]);
     mockDeleteUser.mockResolvedValue(undefined);
     mockPreserveDeletedJestAuthUser.mockResolvedValue(undefined);
+    mockDeleteFacebookAccountGeneration.mockResolvedValue(2);
     mockReservationOwner = "user-1";
   });
 
@@ -301,6 +350,31 @@ describe("deleteAccount", () => {
     expect(mockActiveOperationsGet).toHaveBeenCalledTimes(1);
     expect(mockPreserveDeletedJestAuthUser).not.toHaveBeenCalled();
     expect(mockDeleteUser).toHaveBeenCalledWith("user-1");
+  });
+
+  it("routes a claimed Facebook identity through generation-aware deletion", async () => {
+    const uid = `facebook_${"a".repeat(40)}`;
+    await expect((deleteAccount as unknown as (request: unknown) => Promise<unknown>)({
+      auth: {uid, token: {provider: "facebook", accountGeneration: 3}},
+      data: {},
+    })).resolves.toEqual({success: true});
+    expect(mockDeleteFacebookAccountGeneration).toHaveBeenCalledWith(
+      {uid, accountGeneration: 3},
+      {uidSecret: expect.any(String)},
+    );
+    expect(mockJestDeletionSet).not.toHaveBeenCalled();
+  });
+
+  it("rejects Facebook-shaped UIDs without matching provider-generation claims", async () => {
+    const uid = `facebook_${"b".repeat(40)}`;
+    await expect((deleteAccount as unknown as (request: unknown) => Promise<unknown>)({
+      auth: {uid, token: {}},
+      data: {},
+    })).rejects.toMatchObject({code: "failed-precondition"});
+    await expect((deleteAccount as unknown as (request: unknown) => Promise<unknown>)({
+      auth: {uid: "user-1", token: {provider: "facebook", accountGeneration: 1}},
+      data: {},
+    })).rejects.toMatchObject({code: "failed-precondition"});
   });
 
   it("deletes only resources owned by the authenticated player", async () => {
@@ -363,7 +437,21 @@ describe("deleteAccount", () => {
     expect(mockBatchDelete).toHaveBeenCalledWith({path: "userClassicProgress/classic-1"});
     expect(mockBatchDelete).toHaveBeenCalledWith({path: "userDailyChallengeAttempts/daily-1"});
     expect(mockBatchDelete).toHaveBeenCalledWith({path: "raceAnalytics/event-1"});
+    expect(mockBatchDelete).toHaveBeenCalledWith({path: "socialModerationQueue/reported-by-user"});
+    expect(mockBatchDelete).toHaveBeenCalledWith({path: "socialModerationQueue/report-targeting-user"});
+    expect(mockBatchDelete).toHaveBeenCalledWith({path: "socialReportRateLimits/user-day"});
     expect(mockDirectDocumentDelete).toHaveBeenCalledWith();
+    expect(mockRedditPlayerStorageDelete).toHaveBeenCalledTimes(1);
+    expect(mockBatchSet).toHaveBeenCalledWith(
+      {path: "redditCommerceReceipts/order-hash"},
+      {provider: "reddit", replayProtection: true, orderIdHash: "order-hash", environment: "sandbox",
+        productId: "riddle_quest_coins_250", purchasedAtMs: 123},
+    );
+    expect(mockBatchSet).toHaveBeenCalledWith(
+      {path: "redditCommerceRefunds/order-hash"},
+      {provider: "reddit", replayProtection: true, orderIdHash: "order-hash", environment: "sandbox",
+        productId: "riddle_quest_coins_250", refundedAtMs: 456},
+    );
     expect(mockRecursiveDelete).toHaveBeenCalledWith({path: "users/user-1"});
     expect(mockTransactionDelete).toHaveBeenCalledWith({path: "users/user-1"});
     expect(mockTransactionDelete).toHaveBeenCalledWith({path: "leaderboard/user-1"});

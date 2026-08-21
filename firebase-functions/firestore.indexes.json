@@ -1,6 +1,15 @@
 {
   "indexes": [
     {
+      "collectionGroup": "raceChallenges",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {"fieldPath": "locale", "order": "ASCENDING"},
+        {"fieldPath": "status", "order": "ASCENDING"},
+        {"fieldPath": "expiresAtMs", "order": "ASCENDING"}
+      ]
+    },
+    {
       "collectionGroup": "riddles",
       "queryScope": "COLLECTION",
       "fields": [
@@ -10,6 +19,7 @@
     }
   ],
   "fieldOverrides": [
+    {"collectionGroup": "facebookIdentityRateLimits", "fieldPath": "expiresAt", "ttl": true, "indexes": []},
     {"collectionGroup": "users", "fieldPath": "lastLogin", "indexes": []},
     {"collectionGroup": "users", "fieldPath": "createdAt", "indexes": []},
     {"collectionGroup": "users", "fieldPath": "registeredAt", "indexes": []},
@@ -35,6 +45,10 @@
     },
     {"collectionGroup": "raceAnalytics", "fieldPath": "expiresAt", "ttl": true, "indexes": []},
     {"collectionGroup": "raceInbox", "fieldPath": "expiresAt", "ttl": true, "indexes": []},
+    {"collectionGroup": "facebookContextCompetitionHistory", "fieldPath": "expiresAt", "ttl": true, "indexes": []},
+    {"collectionGroup": "entries", "fieldPath": "expiresAt", "ttl": true, "indexes": []},
+    {"collectionGroup": "facebookTournaments", "fieldPath": "expiresAt", "ttl": true, "indexes": []},
+    {"collectionGroup": "redditTournaments", "fieldPath": "expiresAt", "ttl": true, "indexes": []},
     {
       "collectionGroup": "raceInbox",
       "fieldPath": "opponentUserId",

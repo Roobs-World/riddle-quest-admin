@@ -1,5 +1,6 @@
 import {describe, expect, it, jest} from "@jest/globals";
 import type {AuthSnapshot, HostServices} from "../types";
+import type {RaceOutcome} from "@qwordly/core/race";
 import {createFakeHostServices} from "../fakeServices";
 import {
   createPlayHostMessageHandlers,
@@ -22,6 +23,8 @@ const createHarness = (
   services = createFakeHostServices(),
   onAccountDeleted?: () => void | Promise<void>,
   onAccountDeletionRequested?: () => void | Promise<void>,
+  onAuthoritativeComplete?: () => void | Promise<void>,
+  onAuthoritativeRaceResult?: (result: RaceOutcome) => void | Promise<void>,
 ) => {
   const postOperation = jest.fn(
     (_requestId: string | undefined, _operation: HostOperationName, _ok: boolean, _data?: unknown, _error?: string) =>
@@ -60,6 +63,8 @@ const createHarness = (
     applyPurchaseBalance,
     syncRaceAchievementProgress,
     onPlayable,
+    onAuthoritativeComplete,
+    onAuthoritativeRaceResult,
     onAccountDeleted,
     onAccountDeletionRequested,
     accountDeletionCompletedRef,
@@ -143,6 +148,52 @@ describe("play host message handlers", () => {
     expect(harness.postOperation).toHaveBeenLastCalledWith("hint-1", "hint", false, undefined, "hint unavailable");
   });
 
+  it("notifies the platform only after authoritative single-player and race results", async () => {
+    const services = createFakeHostServices();
+    jest.spyOn(services, "completeGame").mockResolvedValue({
+      attempts: 2,
+      isCorrect: true,
+      coinsEarned: 50,
+      newlyUnlockedAchievementIds: [],
+    });
+    jest.spyOn(services, "getRaceOutcome").mockResolvedValue({
+      runId: "run-1",
+      result: "player_win",
+      correctCount: 10,
+      wallFinishMs: 40_000,
+      hintPenaltyMs: 0,
+      skipPenaltyMs: 0,
+      totalPenaltyMs: 0,
+      adjustedFinishMs: 40_000,
+      opponentAdjustedFinishMs: 50_000,
+      publishable: false,
+      rematchEligible: true,
+      newlyUnlockedAchievementIds: [],
+      achievementCoinsAwarded: 0,
+    });
+    const singlePlayerResult = jest.fn(async () => undefined);
+    const raceResult = jest.fn(async () => undefined);
+    const harness = createHarness(services, undefined, undefined, singlePlayerResult, raceResult);
+
+    await harness.handlers.completeGame({
+      type: "game:completeGame",
+      requestId: "complete-1",
+      payload: {
+        riddleId: "classic-fake-1",
+        gameMode: "classic",
+        sessionToken: "00000000-0000-4000-8000-000000000003",
+      },
+    });
+    await harness.handlers.getRaceOutcome({
+      type: "game:getRaceOutcome",
+      requestId: "race-outcome-1",
+      payload: {runId: "run-1"},
+    });
+
+    expect(singlePlayerResult).toHaveBeenCalledTimes(1);
+    expect(raceResult).toHaveBeenCalledWith(expect.objectContaining({result: "player_win", runId: "run-1"}));
+  });
+
   it("reports a daily-riddle rejection through the dedicated skip service path", async () => {
     const services = createFakeHostServices();
     const skipRiddle = jest.spyOn(services, "skipRiddle");
@@ -181,6 +232,7 @@ describe("play host message handlers", () => {
         challengeId: "challenge-1",
         creator: {displayName: "Guest Solver"},
         categoryId: "mixed",
+        locale: "en",
         targetCorrect: 10,
         adjustedTimeToBeatMs: 60_000,
         rulesVersion: "race10_v1",
@@ -200,6 +252,62 @@ describe("play host message handlers", () => {
 
     expect(harness.runRaceOperation).toHaveBeenCalledWith("publish-message-1", "racePublish", expect.any(Function));
     expect(harness.syncRaceAchievementProgress).toHaveBeenCalledTimes(1);
+  });
+
+  it("forwards the locale boundary when loading a public challenge preview", async () => {
+    const services = createFakeHostServices();
+    const getRaceChallenge = jest.spyOn(services, "getRaceChallenge").mockResolvedValue({
+      challengeId: "challenge-1",
+      creator: {displayName: "Joueur invité"},
+      categoryId: "mixed",
+      locale: "fr",
+      targetCorrect: 10,
+      adjustedTimeToBeatMs: 60_000,
+      rulesVersion: "race10_v1",
+      expiresAtMs: Date.now() + 60_000,
+      status: "active",
+    });
+    const harness = createHarness(services);
+
+    await harness.handlers.getRaceChallenge({
+      type: "game:getRaceChallenge",
+      requestId: "challenge-message-1",
+      payload: {challengeId: "challenge-1", locale: "fr"},
+    });
+
+    expect(getRaceChallenge).toHaveBeenCalledWith("challenge-1", "fr");
+    expect(harness.runRaceOperation).toHaveBeenCalledWith(
+      "challenge-message-1",
+      "raceChallenge",
+      expect.any(Function),
+    );
+  });
+
+  it("routes block and categorized report actions through authenticated host services", async () => {
+    const services = createFakeHostServices();
+    const blockRival = jest.spyOn(services, "blockRival");
+    const reportRival = jest.spyOn(services, "reportRival");
+    const harness = createHarness(services);
+
+    await harness.handlers.blockRival({
+      type: "game:blockRival",
+      requestId: "block-message-1",
+      payload: {targetUserId: "facebook_1111111111111111111111111111111111111111"},
+    });
+    expect(blockRival).toHaveBeenCalledWith("facebook_1111111111111111111111111111111111111111");
+    expect(harness.runRaceOperation).toHaveBeenCalledWith("block-message-1", "raceBlock", expect.any(Function));
+
+    await harness.handlers.reportRival({
+      type: "game:reportRival",
+      requestId: "report-message-1",
+      payload: {targetUserId: "jest_1111111111111111111111111111111111111111", category: "spam"},
+    });
+    expect(reportRival).toHaveBeenCalledWith({
+      targetUserId: "jest_1111111111111111111111111111111111111111",
+      category: "spam",
+      requestId: "report-message-1",
+    });
+    expect(harness.runRaceOperation).toHaveBeenCalledWith("report-message-1", "raceReport", expect.any(Function));
   });
 
   it("resolves a cancelled checkout without errors, notices, grants, or balance changes", async () => {

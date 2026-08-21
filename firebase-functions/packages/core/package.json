@@ -30,6 +30,14 @@
       "types": "./dist/pricing/catalog.d.ts",
       "default": "./dist/pricing/catalog.js"
     },
+    "./pricing/facebookCatalog": {
+      "types": "./dist/pricing/facebookCatalog.d.ts",
+      "default": "./dist/pricing/facebookCatalog.js"
+    },
+    "./pricing/redditCatalog": {
+      "types": "./dist/pricing/redditCatalog.d.ts",
+      "default": "./dist/pricing/redditCatalog.js"
+    },
     "./race": {
       "types": "./dist/race/index.d.ts",
       "default": "./dist/race/index.js"
