@@ -936,11 +936,12 @@ test("the release sequence gates, packages, verifies, and uploads one immutable 
   assert.match(releaseSource, /credentialPath:\s*canonicalCredentialPath/);
   assert.match(releaseSource, /gitMetadataPaths:\s*uniqueGitMetadataPaths/);
   assert.match(releaseSource, /additionalMaskedFilePaths:\s*ignoredSensitiveFilePaths/);
-  assert.match(releaseSource, /writableBinds:\s*releaseDebugLogWritableBinds/);
-  assert.match(releaseSource, /releaseCreatedDebugLogDestinations\.push\(destination\)/);
+  assert.match(releaseSource, /const releaseDebugLogQuarantineDirectory = join\(/);
+  assert.match(releaseSource, /renameSync\(destination, quarantinePath\)/);
+  assert.match(releaseSource, /writableBinds:\s*\[\]/);
   assert.match(
     releaseSource,
-    /for \(const destination of releaseCreatedDebugLogDestinations\)[\s\S]*rmSync\(destination, \{force: true\}\)/,
+    /const restoreQuarantinedReleaseDebugLogs = \(\) => \{[\s\S]*renameSync\(quarantinePath, destination\)/,
   );
   assert.match(
     releaseSource,
@@ -948,7 +949,7 @@ test("the release sequence gates, packages, verifies, and uploads one immutable 
   );
   assert.match(
     releaseSource,
-    /runPnpm\(\["verify:production:extended"\][\s\S]*releaseSandboxConfiguration\.writableBinds = \[\]/,
+    /runPnpm\(\["verify:production:extended"\][\s\S]*clearFreshReleaseDebugLogs\(\)/,
   );
   assert.match(releaseSource, /firebase\|firestore\)-debug\(\?:\\\.\\d\+\)\?\\\.log/);
   assert.match(

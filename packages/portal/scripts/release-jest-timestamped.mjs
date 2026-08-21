@@ -13,6 +13,7 @@ import {
   readFileSync,
   realpathSync,
   readdirSync,
+  renameSync,
   rmSync,
   symlinkSync,
   writeFileSync,
@@ -71,6 +72,12 @@ if (process.platform !== "linux") {
   throw new Error("Secure Jest releases require Linux and functional bubblewrap; refusing an unsandboxed fallback");
 }
 const releaseSandboxDirectory = mkdtempSync("/tmp/riddle-quest-release-sandbox-");
+const releaseDebugLogQuarantineDirectory = join(
+  repositoryDirectory,
+  ".firebase",
+  `jest-release-debug-log-quarantine-${process.pid}-${randomUUID()}`,
+);
+const quarantinedReleaseDebugLogs = [];
 const workspaceRoot = join(releaseSandboxDirectory, "workspaces");
 const isolatedHomeDirectory = join(releaseSandboxDirectory, "home");
 const isolatedTemporaryDirectory = join(releaseSandboxDirectory, "tmp");
@@ -82,35 +89,29 @@ for (const directory of [
 ]) {
   mkdirSync(directory, {mode: 0o700});
 }
-const releaseDebugLogDirectory = join(releaseSandboxDirectory, "firebase-debug-logs");
-mkdirSync(releaseDebugLogDirectory, {mode: 0o700});
-const releaseCreatedDebugLogDestinations = [];
-const releaseDebugLogWritableBinds = releaseDebugLogDestinationPaths.map((destination, index) => {
-  if (!existsSync(destination)) {
-    writeFileSync(destination, "", {mode: 0o600});
-    releaseCreatedDebugLogDestinations.push(destination);
-  }
-  const destinationFile = lstatSync(destination);
-  if (!destinationFile.isFile() || destinationFile.isSymbolicLink()) {
-    throw new Error(`Firebase release debug log must be a regular file: ${destination}`);
-  }
-  if (typeof process.getuid === "function" && destinationFile.uid !== process.getuid()) {
-    throw new Error(`Firebase release debug log must be owned by the current user: ${destination}`);
-  }
-  chmodSync(destination, 0o600);
-  const source = join(releaseDebugLogDirectory, `${index}.log`);
-  writeFileSync(source, "", {mode: 0o600});
-  return {source, destination};
-});
 chmodSync(releaseSandboxDirectory, 0o700);
+
+const clearFreshReleaseDebugLogs = () => {
+  for (const destination of releaseDebugLogDestinationPaths) {
+    if (existsSync(destination)) rmSync(destination, {force: true});
+  }
+};
+
+const restoreQuarantinedReleaseDebugLogs = () => {
+  clearFreshReleaseDebugLogs();
+  for (const {destination, quarantinePath} of quarantinedReleaseDebugLogs) {
+    if (existsSync(quarantinePath)) renameSync(quarantinePath, destination);
+  }
+  if (existsSync(releaseDebugLogQuarantineDirectory)) {
+    rmSync(releaseDebugLogQuarantineDirectory, {force: true, recursive: true});
+  }
+};
 
 let releaseSandboxOwned = true;
 const cleanupReleaseSandbox = () => {
   if (!releaseSandboxOwned) return;
   releaseSandboxOwned = false;
-  for (const destination of releaseCreatedDebugLogDestinations) {
-    rmSync(destination, {force: true});
-  }
+  restoreQuarantinedReleaseDebugLogs();
   // Immutable release inputs are deliberately chmod 0555. Restore owner
   // write permission on sandbox directories only so recursive cleanup can
   // unlink their contents without weakening files while the release runs.
@@ -125,6 +126,27 @@ const cleanupReleaseSandbox = () => {
   rmSync(releaseSandboxDirectory, {force: true, recursive: true});
 };
 process.on("exit", cleanupReleaseSandbox);
+
+// Keep any prior Firebase logs unavailable to network-enabled release children
+// without bind-mounting the filenames themselves. firebase-tools removes its
+// successful-run log during process exit, and Linux rejects unlinking a file
+// mount with EBUSY. Atomic same-filesystem renames let the CLI use disposable
+// regular files while the ignored .firebase directory remains masked.
+mkdirSync(releaseDebugLogQuarantineDirectory, {mode: 0o700, recursive: true});
+for (const [index, destination] of releaseDebugLogDestinationPaths.entries()) {
+  if (!existsSync(destination)) continue;
+  const destinationFile = lstatSync(destination);
+  if (!destinationFile.isFile() || destinationFile.isSymbolicLink()) {
+    throw new Error(`Firebase release debug log must be a regular file: ${destination}`);
+  }
+  if (typeof process.getuid === "function" && destinationFile.uid !== process.getuid()) {
+    throw new Error(`Firebase release debug log must be owned by the current user: ${destination}`);
+  }
+  chmodSync(destination, 0o600);
+  const quarantinePath = join(releaseDebugLogQuarantineDirectory, `${index}.log`);
+  renameSync(destination, quarantinePath);
+  quarantinedReleaseDebugLogs.push({destination, quarantinePath});
+}
 
 const releaseChildEnvironment = createReleaseChildEnvironment(process.env, {
   isolatedHomeDirectory,
@@ -369,10 +391,7 @@ releaseSandboxConfiguration = {
   readOnlyBinds: releaseSandboxReadOnlyBinds,
   repositoryDirectory,
   sandboxDirectory: releaseSandboxDirectory,
-  // Firebase CLI and the Firestore emulator require seekable log files in
-  // their working directory. Overlay private sandbox files so prior logs stay
-  // unreadable without mounting /dev/null, which breaks emulator startup.
-  writableBinds: releaseDebugLogWritableBinds,
+  writableBinds: [],
 };
 
 const assertReleaseSandboxAvailable = () => {
@@ -666,8 +685,9 @@ try {
   runPnpm(["verify:production:extended"], gateEnvironment);
   assertSourceClean();
   // The remaining credential-bearing phase never invokes Firebase emulators.
-  // Close the narrow debug-log write overlays before credentials are loaded.
-  releaseSandboxConfiguration.writableBinds = [];
+  // Remove disposable gate logs before credentials are loaded; prior logs stay
+  // quarantined until every sandboxed release child has exited.
+  clearFreshReleaseDebugLogs();
   delete gateEnvironment.RIDDLE_QUEST_LICENSE_STORE_DIR;
   releaseSandboxConfiguration.readOnlyBinds = releaseSandboxConfiguration.readOnlyBinds
     .filter(({destination}) => destination !== join(isolatedPnpmLicenseStoreDirectory, "files"));
