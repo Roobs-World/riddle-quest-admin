@@ -4,7 +4,7 @@ import {
   configureAnalytics,
   resetAnalyticsForTests,
   setAnalyticsCollectionEnabled,
-} from "../analytics/googleAnalytics";
+} from "../analytics/events";
 import {captureBrowserException} from "../observability/sentry";
 
 jest.mock("../observability/sentry", () => ({captureBrowserException: jest.fn()}));

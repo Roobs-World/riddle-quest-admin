@@ -54,7 +54,7 @@ export function useJestNotifications({
     void withPlatformActivity(() =>
       mockRuntime
         ? Promise.resolve(MOCK_NOTIFICATION_COPY)
-        : import("../../firebase").then((module) => module.loadNotificationCopy(locale)),
+        : import("./firebaseCopy").then((module) => module.loadNotificationCopy(locale)),
     ).then((loadedCopy) => {
       if (active && notificationsEnabled()) setCopy(loadedCopy);
     }).catch((error) => {

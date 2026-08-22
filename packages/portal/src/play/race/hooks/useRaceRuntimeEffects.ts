@@ -1,6 +1,6 @@
 import {useEffect, type Dispatch, type SetStateAction} from "react";
 import type {RaceRunView} from "@qwordly/core/race";
-import {trackEvent, trackScreen} from "../../../analytics/googleAnalytics";
+import {trackEvent, trackScreen} from "../../../analytics/events";
 import {safeBrowserStorageRemove, safeBrowserStorageSet} from "../../playerPreferences";
 import {getRaceCountdownStep} from "../logic/raceCountdown";
 import type {RaceStage} from "../RaceTo10View";

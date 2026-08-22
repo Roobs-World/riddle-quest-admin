@@ -39,7 +39,6 @@ import {
   auth,
   ensureFirebaseAppCheckReady,
   firebaseApp,
-  loadNotificationCopy,
   loadUserDocument,
 } from "../firebase";
 
@@ -106,30 +105,6 @@ describe("Firebase browser adapter", () => {
     expect(mockDoc).toHaveBeenCalledWith(expect.anything(), "users", "user-1");
   });
 
-  it("requires notification configuration", async () => {
-    mockGetDoc.mockResolvedValue({exists: () => false});
-    await expect(loadNotificationCopy("en")).rejects.toThrow("Firestore notification copy is not configured.");
-  });
-
-  it("parses localized notification configuration", async () => {
-    mockGetDoc.mockResolvedValue({
-      exists: () => true,
-      data: () => ({locales: {en: {
-        dailyBody: "A new puzzle is ready",
-        dailyCta: "Play",
-        streakBody: "Keep your streak alive",
-        streakCta: "Continue",
-        weeklyBody: "A weekly puzzle is ready",
-        weeklyCta: "Solve",
-        raceTitle: "Race to 10",
-        raceBody: "A race result is ready",
-        raceCta: "View",
-      }}}),
-    });
-
-    await expect(loadNotificationCopy("en")).resolves.toEqual(expect.any(Object));
-    expect(mockDoc).toHaveBeenCalledWith(expect.anything(), "config", "notifications");
-  });
 });
 
 describe("Firebase environment variants", () => {
@@ -232,10 +207,15 @@ describe("Firebase environment variants", () => {
     mockInitializeAppCheck.mockClear();
     mockGetToken.mockClear();
     mockGetToken.mockResolvedValue({token: "attested"});
-    const module = await loadWithEnvironment({...completeEnvironment, platformTarget: "facebook"});
+    const module = await loadWithEnvironment({
+      ...completeEnvironment,
+      appCheckSiteKey: "jest-only-site-key",
+      platformTarget: "facebook",
+    });
     const first = jest.fn(async () => ({token: "generation-1", expireTimeMillis: 1_000}));
     const second = jest.fn(async () => ({token: "generation-2", expireTimeMillis: 2_000}));
 
+    expect(mockInitializeAppCheck).not.toHaveBeenCalled();
     await module.initializeFacebookAppCheck(first);
     const provider = mockInitializeAppCheck.mock.calls[0]?.[1]?.provider as {getToken: () => Promise<unknown>};
     await expect(provider.getToken()).resolves.toMatchObject({token: "generation-1"});

@@ -17,16 +17,23 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
   it("runs failure recovery plus authenticated restore/pause/reload lifecycle", async () => {
     const {execFileSync} = await import("node:child_process");
     const {createServer} = await import("node:http");
-    const {readFile} = await import("node:fs/promises");
+    const {mkdtemp, readFile, rm} = await import("node:fs/promises");
+    const {tmpdir} = await import("node:os");
     const path = await import("node:path");
     const packageRoot = path.resolve(__dirname, "../../..");
-    if (process.env.PORTAL_USE_EXISTING_BUILD !== "1") {
-      execFileSync("pnpm", ["--filter", "@qwordly/portal", "build:facebook"], {
-        cwd: path.resolve(packageRoot, "../.."),
-        stdio: "inherit",
-      });
-    }
-    const distDirectory = path.join(packageRoot, "dist-facebook");
+    // The canonical artifact deliberately fails age-gated capabilities closed.
+    // This harness owns a separate 13+ fixture so reusing release builds cannot
+    // silently disable the profile-overlay lifecycle under test.
+    const distDirectory = await mkdtemp(path.join(tmpdir(), "riddle-quest-facebook-browser-"));
+    execFileSync("pnpm", ["--filter", "@qwordly/portal", "build:facebook"], {
+      cwd: path.resolve(packageRoot, "../.."),
+      env: {
+        ...process.env,
+        FACEBOOK_BUILD_OUT_DIR: distDirectory,
+        VITE_FACEBOOK_AGE_CATEGORY: "13_plus",
+      },
+      stdio: "inherit",
+    });
     const server = createServer(async (request, response) => {
       const requestUrl = new URL(request.url ?? "/", "http://127.0.0.1");
       const requested = requestUrl.pathname === "/" ? "index.html" : requestUrl.pathname.replace(/^\//u, "");
@@ -186,7 +193,7 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
             rewardedAdsEnabled: false,
             referralsEnabled: false,
             matchmakingEnabled: false,
-            tournamentsEnabled: true,
+            tournamentsEnabled: false,
             presenceEnabled: false,
             removeInterstitialAds: false,
           }}),
@@ -349,7 +356,19 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       await facebookHubTabs.first().press("ArrowRight");
       expect(await facebookHubTabs.nth(1).getAttribute("aria-selected")).toBe("true");
       expect(await facebookHubTabs.nth(1).evaluate((element) => element === document.activeElement)).toBe(true);
-      await successPage.waitForFunction(() => window.__facebookEvents.includes("overlay:name:show"));
+      try {
+        await successPage.waitForFunction(
+          () => window.__facebookEvents.includes("overlay:name:show"),
+          undefined,
+          {timeout: 5_000},
+        );
+      } catch (error) {
+        const events = await successPage.evaluate(() => window.__facebookEvents);
+        throw new Error(
+          `Facebook profile overlay did not render: ${error instanceof Error ? error.message : String(error)} ` +
+          JSON.stringify({events}),
+        );
+      }
       expect(await successPage.evaluate(() => window.__facebookEvents)).toEqual(expect.arrayContaining([
         "overlay:picture:true",
         "overlay:name:true",
@@ -380,7 +399,11 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
         event === "read:riddleQuestPreferences").length)).toBe(2);
     } finally {
       await browser.close();
-      await new Promise<void>((resolve, reject) => server.close((error) => error ? reject(error) : resolve()));
+      try {
+        await new Promise<void>((resolve, reject) => server.close((error) => error ? reject(error) : resolve()));
+      } finally {
+        await rm(distDirectory, {force: true, recursive: true});
+      }
     }
   }, 30_000);
 });

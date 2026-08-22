@@ -1,6 +1,7 @@
-import {lstat, readFile, readdir, stat} from "node:fs/promises";
+import {readFile} from "node:fs/promises";
 import {fileURLToPath} from "node:url";
 import path from "node:path";
+import {inspectWebTargetArtifact} from "./web-target-artifact-inventory.mjs";
 
 export const youtubeSdkEntryResource = "https://www.youtube.com/game_api/v1";
 export const youtubeArtifactLimits = Object.freeze({
@@ -29,11 +30,8 @@ const benignMarkupNamespaceLiterals = new Set([
   "http://www.w3.org/XML/1998/namespace",
 ]);
 const vendorReactChunk = /^assets\/vendor-react-[A-Za-z0-9_.-]+\.js$/u;
-const inspectableTextExtension = /\.(?:css|html?|js|mjs|cjs|json|svg|xml|txt|webmanifest)$/iu;
 
 const isWithin = (root, candidate) => candidate.startsWith(`${root}${path.sep}`);
-const isInspectableTextFile = (file) =>
-  inspectableTextExtension.test(file) || /^\.env(?:\.|$)/iu.test(path.basename(file));
 
 function assertNoUnapprovedExternalUrls({root, file, source, indexPath, sdkUrlIndex}) {
   const relativeFile = path.relative(root, file).split(path.sep).join("/");
@@ -79,25 +77,6 @@ function assertNoRootRelativeResources({root, file, source}) {
   if (patterns.some((pattern) => pattern.test(source))) {
     throw new Error(`YouTube artifact contains a root-relative resource in ${relativeFile}`);
   }
-}
-
-async function collectRegularFiles(root) {
-  const files = [];
-  async function walk(directory) {
-    const entries = await readdir(directory, {withFileTypes: true});
-    for (const entry of entries) {
-      if (!validPathComponent.test(entry.name)) {
-        throw new Error(`YouTube artifact path uses a forbidden filename: ${path.relative(root, path.join(directory, entry.name))}`);
-      }
-      const absolute = path.join(directory, entry.name);
-      if (entry.isSymbolicLink() || (!entry.isDirectory() && !entry.isFile())) {
-        throw new Error(`YouTube artifact contains a non-regular entry: ${absolute}`);
-      }
-      if (entry.isDirectory()) await walk(absolute); else files.push(absolute);
-    }
-  }
-  await walk(root);
-  return files.sort((left, right) => left.localeCompare(right, "en"));
 }
 
 function validateContentManifest(value, allowIncompleteFixture) {
@@ -149,23 +128,21 @@ function validateContentManifest(value, allowIncompleteFixture) {
 }
 
 export async function auditYouTubeArtifact(rootDirectory, {allowIncompleteFixture = false} = {}) {
-  const root = path.resolve(rootDirectory);
-  const rootMetadata = await lstat(root);
-  if (rootMetadata.isSymbolicLink() || !rootMetadata.isDirectory()) {
-    throw new Error("YouTube artifact root must be a real directory, not a link");
+  const inventory = await inspectWebTargetArtifact({rootDirectory, target: "youtube"});
+  const {directories, files, root, sizedFiles, textFiles: inspectedParts, totalBytes} = inventory;
+  for (const entry of [...directories, ...files]) {
+    if (!validPathComponent.test(path.basename(entry))) {
+      throw new Error(`YouTube artifact path uses a forbidden filename: ${path.relative(root, entry)}`);
+    }
   }
-  const files = await collectRegularFiles(root);
-  if (files.length === 0) throw new Error("YouTube artifact is empty");
   if (files.length > youtubeArtifactLimits.maximumFiles) {
     throw new Error(`YouTube artifact has ${files.length} files; limit is ${youtubeArtifactLimits.maximumFiles}`);
   }
 
-  const sizedFiles = await Promise.all(files.map(async (file) => ({file, bytes: (await stat(file)).size})));
   const oversized = sizedFiles.find(({bytes}) => bytes >= youtubeArtifactLimits.maximumFileBytesExclusive);
   if (oversized) {
     throw new Error(`YouTube artifact file must be strictly below 30 MiB: ${path.relative(root, oversized.file)}`);
   }
-  const totalBytes = sizedFiles.reduce((sum, {bytes}) => sum + bytes, 0);
   if (totalBytes >= youtubeArtifactLimits.maximumTotalBytesExclusive) {
     throw new Error("YouTube artifact total must be strictly below 250 MiB");
   }
@@ -204,18 +181,13 @@ export async function auditYouTubeArtifact(rootDirectory, {allowIncompleteFixtur
     }
   }
 
-  const inspectable = files.filter(isInspectableTextFile);
-  const inspectedParts = await Promise.all(inspectable.map(async (file) => ({
-    file,
-    source: await readFile(file, "utf8"),
-  })));
   const content = inspectedParts.map(({file, source}) =>
     file === indexPath ? source.replaceAll(youtubeSdkEntryResource, "") : source
   ).join("\n");
   const forbidden = [
     ["Jest SDK", /cdn\.jest\.com|\bJestSDK\b/iu],
     ["Facebook Instant Games SDK", /connect\.facebook\.net|\bFBInstant\b|fbapp-config/iu],
-    ["Reddit Devvit integration", /\bdevvit(?:-internal)?\b|redditGatewaySecret|requestExpandedMode/iu],
+    ["Reddit Devvit integration", /\bdevvit(?:-internal)?\b|redditGatewaySecret|requestExpandedMode|RedditPlatform/iu],
     ["Firebase integration", /\bfirebase(?:app|auth|database|firestore|functions|storage)?\b|firebaseio\.com|googleapis\.com|cloudfunctions\.net/iu],
     ["external observability or analytics", /\bSentry\b|sentry\.io|google-analytics\.com|googletagmanager\.com|\bgtag\s*\(|\b(?:mixpanel|amplitude)\b|analytics\.segment\.(?:com|io)/iu],
     ["browser network API", /\bfetch\s*\(|\bXMLHttpRequest\b|\bWebSocket\b|\bEventSource\b|\bsendBeacon\s*\(/u],
@@ -246,9 +218,7 @@ export async function auditYouTubeArtifact(rootDirectory, {allowIncompleteFixtur
     ["WebAssembly integration", /\bWebAssembly\b|\.wasm\b/u],
     ["dynamic code evaluation", /\beval\s*\(|\bnew\s+Function\s*\(/u],
     ["obfuscator signature", /\b_0x[0-9a-f]{4,}\b/iu],
-    ["private key", /-----BEGIN PRIVATE KEY-----|["']type["']\s*:\s*["']service_account/iu],
     ["embedded credential", /\b(?:AIza[0-9A-Za-z_-]{30,}|sk-[0-9A-Za-z_-]{20,})\b/u],
-    ["server secret", /\b(?:OPENAI_API_KEY|GOOGLE_APPLICATION_CREDENTIALS|JEST_SHARED_SECRET|FACEBOOK_APP_SECRET|FACEBOOK_UID_SECRET|REDDIT_CLIENT_SECRET|REDDIT_UID_SECRET)\b/u],
   ];
   for (const [label, pattern] of forbidden) {
     if (pattern.test(content)) throw new Error(`${label} found in YouTube artifact`);
@@ -309,7 +279,8 @@ async function runCli() {
   if (unknownFlags.length > 0 || positional.length > 1) {
     throw new Error("Usage: audit-youtube-artifact.mjs [artifact-directory] [--allow-incomplete-fixture]");
   }
-  const result = await auditYouTubeArtifact(positional[0] ?? "dist-youtube", {allowIncompleteFixture});
+  const rootDirectory = positional[0] ?? (process.env.YOUTUBE_BUILD_OUT_DIR?.trim() || "dist-youtube");
+  const result = await auditYouTubeArtifact(rootDirectory, {allowIncompleteFixture});
   console.log(
     `YouTube artifact audit passed: ${result.files.length} files, ` +
       `${(result.totalBytes / 1024 / 1024).toFixed(2)} MiB total and conservative initial transfer, ` +

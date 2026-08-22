@@ -1,5 +1,5 @@
 import {useCallback, useState, type MutableRefObject} from "react";
-import {sanitizeAnalyticsParams, trackEvent} from "../analytics/googleAnalytics";
+import {sanitizeAnalyticsParams, trackEvent} from "../analytics/events";
 import type {NotificationOperationGate} from "./notifications/operationGate";
 import type {JestPlatformPort, JestSession} from "./types";
 

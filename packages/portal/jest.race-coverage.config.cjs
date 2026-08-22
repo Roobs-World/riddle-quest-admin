@@ -11,6 +11,10 @@ module.exports = {
     // Playwright flow; unit coverage targets the independently testable modules.
     "!src/play/race/RaceTo10Game.tsx",
     "!src/play/race/hooks/**",
+    // Native input event normalization and provider-owned player overlays require
+    // real DOM/provider lifecycles; target browser flows own those two seams.
+    "!src/play/race/components/NativeAnswerInput.tsx",
+    "!src/play/race/components/PlatformPlayerOverlay.tsx",
   ],
   coverageDirectory: "coverage/race",
   coverageReporters: ["text-summary", "json-summary", "lcov"],

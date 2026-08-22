@@ -2,6 +2,19 @@ import {existsSync, readdirSync, readFileSync, statSync} from "node:fs";
 import {fileURLToPath} from "node:url";
 
 const repositoryRoot = fileURLToPath(new URL("../", import.meta.url));
+const portalTargetHtmlPaths = [
+  `${repositoryRoot}/packages/portal/targets/jest/index.html`,
+  `${repositoryRoot}/packages/portal/targets/facebook/index.html`,
+  `${repositoryRoot}/packages/portal/targets/reddit/index.html`,
+  `${repositoryRoot}/packages/portal/targets/reddit/reddit-inline.html`,
+  `${repositoryRoot}/packages/portal/targets/youtube/index.html`,
+];
+const portalTargetSourceEntryPaths = [
+  `${repositoryRoot}/packages/portal/src/jest/main.tsx`,
+  `${repositoryRoot}/packages/portal/src/facebook/main.tsx`,
+  `${repositoryRoot}/packages/portal/src/reddit/main.tsx`,
+  `${repositoryRoot}/packages/portal/src/youtube/main.tsx`,
+];
 
 const productionFiles = [];
 const collectProductionFiles = (directory) => {
@@ -18,7 +31,7 @@ const collectProductionFiles = (directory) => {
 
 collectProductionFiles(`${repositoryRoot}/packages/portal/src`);
 collectProductionFiles(`${repositoryRoot}/firebase-functions/src`);
-productionFiles.push(`${repositoryRoot}/packages/portal/index.html`);
+productionFiles.push(...portalTargetHtmlPaths);
 
 const plaintextNetworkReferences = productionFiles.flatMap((path) => {
   const source = readFileSync(path, "utf8");
@@ -54,8 +67,13 @@ const encryptedSentryDsn = (() => {
   }
 })();
 
-const viteConfiguration = readFileSync(`${repositoryRoot}/packages/portal/vite.config.ts`, "utf8");
-const portalEntry = readFileSync(`${repositoryRoot}/packages/portal/src/main.tsx`, "utf8");
+const viteConfiguration = [
+  readFileSync(`${repositoryRoot}/packages/portal/vite.config.ts`, "utf8"),
+  readFileSync(`${repositoryRoot}/packages/portal/webTargetViteConfig.ts`, "utf8"),
+].join("\n");
+const portalTargetSourceEntries = portalTargetSourceEntryPaths
+  .map((path) => readFileSync(path, "utf8"))
+  .join("\n");
 const analyticsAdapterPath = `${repositoryRoot}/packages/portal/src/analytics/firebaseAnalytics.ts`;
 const browserSentry = readFileSync(`${repositoryRoot}/packages/portal/src/observability/sentry.ts`, "utf8");
 const functionSentry = readFileSync(`${repositoryRoot}/firebase-functions/src/shared/sentry.ts`, "utf8");
@@ -91,7 +109,7 @@ const requirements = [
     "The Jest production environment must not configure Google Analytics before a consent/opt-out design exists."],
   [!/(?:google-analytics|googletagmanager)\.com/iu.test(contentSecurityPolicy),
     "The production CSP must not authorize Google Analytics or Tag Manager endpoints."],
-  [!portalEntry.includes("initializeGoogleAnalytics") && !existsSync(analyticsAdapterPath),
+  [!portalTargetSourceEntries.includes("initializeGoogleAnalytics") && !existsSync(analyticsAdapterPath),
   "The unused Firebase Analytics adapter must remain absent until an affirmative consent design exists."],
   [/tracesSampleRate:\s*0/u.test(browserSentry) && /tracesSampleRate:\s*0/u.test(functionSentry) &&
     !/captureConsoleIntegration/u.test(browserSentry),
@@ -102,12 +120,20 @@ const requirements = [
     "The production Jest build must include a Firebase App Check site key."],
   [/sourcemap:\s*uploadSentrySourceMaps\s*\?\s*"hidden"\s*:\s*false/u.test(viteConfiguration),
     "Production source maps must be hidden and generated only for private Sentry upload."],
-  [/const jestBuildOutDir\s*=\s*process\.env\.JEST_BUILD_OUT_DIR\?\.trim\(\)\s*\|\|\s*"dist-jest"/u
+  [/const jestBuildOutDir\s*=\s*environment\.JEST_BUILD_OUT_DIR\?\.trim\(\)\s*\|\|\s*canonicalBuildOutputDirectories\.jest/u
     .test(viteConfiguration) &&
-    viteConfiguration.includes("assets: `${jestBuildOutDir}/**`") &&
-    viteConfiguration.includes("filesToDeleteAfterUpload: `${jestBuildOutDir}/**/*.map`") &&
+    /jest:\s*jestBuildOutDir/u.test(viteConfiguration) &&
+    /const selectedBuildOutDir\s*=\s*buildOutputDirectories\[profile\.id\]/u.test(viteConfiguration) &&
+    viteConfiguration.includes("assets: `${selectedBuildOutDir}/**`") &&
+    viteConfiguration.includes("filesToDeleteAfterUpload: `${selectedBuildOutDir}/**/*.map`") &&
     /JEST_BUILD_OUT_DIR:\s*releaseBuildDirectory/u.test(jestReleaseScript),
   "Private source maps must be deleted from the selected Jest build directory before artifact packaging."],
+  [/"import\.meta\.env\.VITE_PLATFORM_TARGET":\s*JSON\.stringify\(profile\.id\)/u.test(viteConfiguration),
+    "The resolved Web Target must be the sole compile-time source of runtime platform identity."],
+  [/function webTargetBuildContractPlugin/u.test(viteConfiguration) &&
+    /configResolved\(config\)/u.test(viteConfiguration) &&
+    /resolved !== expected/u.test(viteConfiguration),
+  "The final Vite output directory must match the directory selected for artifact auditing."],
   [/Private Sentry source-map upload requires:/u.test(viteConfiguration),
     "Requested Sentry source-map uploads must fail closed when configuration is missing."],
   [/VITE_SENTRY_RELEASE:\s*sentryRelease/u.test(jestReleaseScript),

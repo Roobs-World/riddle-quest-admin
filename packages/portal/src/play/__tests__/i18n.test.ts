@@ -3,7 +3,7 @@ jest.mock("../../test/localeModulesMock", () => ({
 }));
 
 import {loadNonEnglishNamespace} from "../../test/localeModulesMock";
-import {setLocale, tr, type Locale, type Namespace, type NamespaceCatalog} from "../i18n";
+import {setLocale, tr, type Locale, type NamespaceCatalog, type SharedNamespace} from "../i18n";
 
 type Deferred = {
   promise: Promise<void>;
@@ -32,7 +32,7 @@ const settleLocaleLoad = async (): Promise<void> => {
 beforeEach(() => {
   localeLoads.clear();
   mockedLoadNamespace.mockReset();
-  mockedLoadNamespace.mockImplementation(async (locale: Exclude<Locale, "en">, namespace: Namespace) => {
+  mockedLoadNamespace.mockImplementation(async (locale: Exclude<Locale, "en">, namespace: SharedNamespace) => {
     await localeLoads.get(locale)?.promise;
     return (namespace === "game" ? {WebPortal: {APP_TITLE: `${locale} title`}} : {}) as NamespaceCatalog;
   });

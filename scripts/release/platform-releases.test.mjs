@@ -14,18 +14,20 @@ import {
 
 const expectedCommands = new Map([
   ["jest", ["--filter", "@qwordly/portal", "release:jest:timestamped"]],
+  ["facebook", ["--filter", "@qwordly/portal", "release:facebook"]],
   ["youtube", ["--filter", "@qwordly/portal", "preflight:youtube-upload"]],
   ["reddit", ["--filter", "@qwordly/reddit-app", "release:candidate"]],
 ]);
 const expectedRunbooks = new Map([
   ["jest", "docs/jest-html5-operations.md"],
+  ["facebook", "docs/facebook-instant-games-operations.md"],
   ["youtube", "docs/youtube-playables-operations.md"],
   ["reddit", "docs/reddit-games-operations.md"],
 ]);
 
 test("the public interface exposes one isolated canonical command per release target", () => {
   const plans = listPlatformReleasePlans();
-  assert.deepEqual(plans.map(({target}) => target), ["jest", "youtube", "reddit"]);
+  assert.deepEqual(plans.map(({target}) => target), ["jest", "facebook", "youtube", "reddit"]);
   for (const plan of plans) {
     assert.equal(plan.publicCommand, `pnpm release:${plan.target}`);
     assert.equal("command" in plan, false);
@@ -36,7 +38,7 @@ test("the public interface exposes one isolated canonical command per release ta
 
 test("the root package exposes separate build and release commands without release:all", async () => {
   const packageJson = JSON.parse(await readFile(new URL("../../package.json", import.meta.url), "utf8"));
-  for (const target of ["jest", "youtube", "reddit"]) {
+  for (const target of ["jest", "facebook", "youtube", "reddit"]) {
     assert.equal(typeof packageJson.scripts[`build:${target}`], "string");
     assert.equal(
       packageJson.scripts[`release:${target}`],
@@ -49,11 +51,44 @@ test("the root package exposes separate build and release commands without relea
 test("target plans preserve distinct external effects", () => {
   assert.equal(getPlatformReleasePlan("jest").boundary, "remote-inactive-draft");
   assert.match(getPlatformReleasePlan("jest").externalEffect, /inactive/u);
+  assert.equal(getPlatformReleasePlan("facebook").boundary, "local-immutable-handoff");
+  assert.match(getPlatformReleasePlan("facebook").externalEffect, /^None;/u);
   assert.equal(getPlatformReleasePlan("youtube").boundary, "local-manual-handoff");
   assert.match(getPlatformReleasePlan("youtube").externalEffect, /^None;/u);
   assert.equal(getPlatformReleasePlan("reddit").boundary, "local-immutable-handoff");
   assert.match(getPlatformReleasePlan("reddit").externalEffect, /^None;/u);
-  assert.throws(() => getPlatformReleasePlan("facebook"), /Unknown release target/u);
+  assert.throws(() => getPlatformReleasePlan("all"), /Unknown release target/u);
+});
+
+test("the Facebook adapter performs only the local preflight and immutable handoff", async () => {
+  const portalPackage = JSON.parse(await readFile(
+    new URL("../../packages/portal/package.json", import.meta.url),
+    "utf8",
+  ));
+  assert.equal(
+    portalPackage.scripts["release:facebook"],
+    "pnpm preflight:facebook-upload && pnpm facebook:draft begin",
+  );
+  assert.equal(
+    portalPackage.scripts["preflight:facebook-upload"],
+    "pnpm build:facebook && node scripts/prepare-facebook-draft.mjs",
+  );
+  assert.equal(portalPackage.scripts["facebook:draft"], "node scripts/facebook-draft-evidence.mjs");
+
+  const invocations = [];
+  const result = await runPlatformRelease("facebook", {
+    commandRunner: async (command) => invocations.push(command),
+    log: () => {},
+  });
+  assert.equal(invocations.length, 1);
+  assert.equal(invocations[0].executable, "pnpm");
+  assert.deepEqual(invocations[0].args, expectedCommands.get("facebook"));
+  assert.deepEqual(result, {
+    target: "facebook",
+    status: "handoff-ready",
+    boundary: "local-immutable-handoff",
+  });
+  assert.match(getPlatformReleasePlan("facebook").externalEffect, /^None;/u);
 });
 
 test("dry runs describe a target without invoking its adapter", async () => {
@@ -154,6 +189,10 @@ test("the process adapter forwards termination and awaits child teardown", {time
     let stdout = "";
     let stderr = "";
     let signalled = false;
+    const timeout = setTimeout(() => {
+      runner.kill("SIGKILL");
+      reject(new Error(`release runner did not stop after SIGTERM; stdout=${stdout} stderr=${stderr}`));
+    }, 3_000);
     runner.stdout.on("data", (chunk) => {
       stdout += chunk;
       if (!signalled && stdout.includes("release-child-ready")) {
@@ -162,8 +201,14 @@ test("the process adapter forwards termination and awaits child teardown", {time
       }
     });
     runner.stderr.on("data", (chunk) => { stderr += chunk; });
-    runner.once("error", reject);
-    runner.once("close", (code, signal) => resolve({code, signal, stdout, stderr, signalled}));
+    runner.once("error", (error) => {
+      clearTimeout(timeout);
+      reject(error);
+    });
+    runner.once("close", (code, signal) => {
+      clearTimeout(timeout);
+      resolve({code, signal, stdout, stderr, signalled});
+    });
   });
   assert.equal(result.signalled, true, result.stderr);
   assert.deepEqual({code: result.code, signal: result.signal}, {code: 143, signal: null});

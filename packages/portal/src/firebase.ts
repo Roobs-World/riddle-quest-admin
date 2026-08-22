@@ -42,7 +42,6 @@ import type {
   SubmitRaceGuessRequest,
   SubmitRaceGuessResponse,
 } from "@qwordly/core/race";
-import {parseNotificationCopyDocument, type NotificationCopy} from "./jest/notifications/copy";
 import {firebaseEnvironment} from "./firebaseEnvironment";
 import {hasTrustedTestHarnessMarker} from "./testHarness";
 
@@ -134,7 +133,7 @@ export async function ensureFirebaseAppCheckReady(): Promise<void> {
 /** Provides auth behavior. */
 export const auth = getAuth(firebaseApp);
 /** Provides firestore behavior. */
-const firestore = getFirestore(firebaseApp);
+export const firebaseFirestore = getFirestore(firebaseApp);
 /** Provides functions behavior. */
 const functions = getFunctions(firebaseApp, firebaseEnvironment.functionsRegion || "us-central1");
 /** Shared Functions instance used by target-specific lazy adapters. */
@@ -286,15 +285,8 @@ export const recordRaceAnalytics = httpsCallable<RaceAnalyticsEventRequest, Race
 
 /** Loads user document. */
 export const loadUserDocument = async (userId: string): Promise<Record<string, unknown> | null> => {
-  const snapshot = await getDoc(doc(firestore, "users", userId));
+  const snapshot = await getDoc(doc(firebaseFirestore, "users", userId));
   return snapshot.exists() ? snapshot.data() : null;
-};
-
-/** Loads notification copy. */
-export const loadNotificationCopy = async (locale: string): Promise<NotificationCopy> => {
-  const snapshot = await getDoc(doc(firestore, "config", "notifications"));
-  if (!snapshot.exists()) throw new Error("Firestore notification copy is not configured.");
-  return parseNotificationCopyDocument(snapshot.data(), locale);
 };
 
 /** Describes current riddle response. */

@@ -1,25 +1,17 @@
-import {readFile, readdir, stat} from "node:fs/promises";
+import {readFile} from "node:fs/promises";
 import path from "node:path";
+import {inspectWebTargetArtifact} from "./web-target-artifact-inventory.mjs";
 
-const root = path.resolve(process.cwd(), process.argv[2] || "dist-jest");
+const inventory = await inspectWebTargetArtifact({
+  rootDirectory: process.argv[2] || process.env.JEST_BUILD_OUT_DIR?.trim() || "dist-jest",
+  target: "jest",
+});
+const {files, root, sizedFiles, totalBytes: artifactBytes} = inventory;
 const maximumArtifactBytes = 5 * 1024 * 1024;
 const maximumReleaseBudgetBytes = 4.5 * 1024 * 1024;
 const maximumInitialResourceBytes = 0.55 * 1024 * 1024;
 const jestSdkEntryResource = "https://cdn.jest.com/sdk/latest/jestsdk.js";
 const allowedExternalEntryResources = new Set([jestSdkEntryResource]);
-const files = [];
-async function walk(directory) {
-  for (const entry of await readdir(directory, {withFileTypes: true})) {
-    const absolute = path.join(directory, entry.name);
-    if (entry.isSymbolicLink() || (!entry.isDirectory() && !entry.isFile())) {
-      throw new Error(`Jest artifact contains a non-regular entry: ${absolute}`);
-    }
-    if (entry.isDirectory()) await walk(absolute); else files.push(absolute);
-  }
-}
-await walk(root);
-const sizes = await Promise.all(files.map(async (file) => (await stat(file)).size));
-const artifactBytes = sizes.reduce((total, size) => total + size, 0);
 if (artifactBytes > maximumArtifactBytes) {
   throw new Error(`Jest artifact is ${(artifactBytes / 1024 / 1024).toFixed(2)} MB; limit is 5 MB`);
 }
@@ -46,7 +38,7 @@ const forbidden = [
     "YouTube Playables integration",
     /www\.youtube\.com\/game_api\/v1|\bytgame\b|youtube-sdk-unavailable|youtube-content-envelope-invalid|youtube-content-manifest\.json/i,
   ],
-  ["Reddit Devvit integration", /\bdevvit(?:-internal)?\b|redditGatewaySecret|requestExpandedMode/i],
+  ["Reddit Devvit integration", /\bdevvit(?:-internal)?\b|redditGatewaySecret|requestExpandedMode|RedditPlatform/i],
   ["Facebook Instant Games integration", /connect\.facebook\.net|\bFBInstant\b|fbapp-config\.json/i],
   [
     "Facebook callable endpoint",
@@ -79,10 +71,6 @@ const forbidden = [
   ],
   ["External in-game hyperlink", /\bhref\s*:\s*["'](?:https?:|mailto:)/i],
   ["Native app-install copy", /\b(?:install|download)\s+(?:the|our|this)\s+(?:mobile\s+)?app\b/i],
-  ["Firebase private key", /-----BEGIN PRIVATE KEY-----/],
-  ["Firebase service account", /["']type["']\s*:\s*["']service_account["']|["']private_key_id["']\s*:/i],
-  ["Server-only secret", /\b(?:JEST_SHARED_SECRET|FACEBOOK_APP_SECRET|FACEBOOK_UID_SECRET|META_APP_SECRET)\b/i],
-  ["Server-only API key", /\b(?:OPENAI_API_KEY|GOOGLE_APPLICATION_CREDENTIALS)\b/],
 ];
 for (const [label, pattern] of forbidden) if (pattern.test(content)) throw new Error(`${label} found in Jest artifact`);
 if (!content.includes("grindheadgames@gmail.com")) {
@@ -144,9 +132,9 @@ for (const match of html.matchAll(/(?:src|href)=["']([^"']+)["']/g)) {
   initialResources.add(asset);
 }
 
-const initialResourceBytes = (
-  await Promise.all([...initialResources].map(async (file) => (await stat(file)).size))
-).reduce((total, size) => total + size, 0);
+const bytesByFile = new Map(sizedFiles.map(({file, bytes}) => [file, bytes]));
+const initialResourceBytes = [...initialResources]
+  .reduce((total, file) => total + bytesByFile.get(file), 0);
 if (initialResourceBytes > maximumInitialResourceBytes) {
   throw new Error(
     `Initial Jest resources are ${(initialResourceBytes / 1024 / 1024).toFixed(2)} MB; ` +

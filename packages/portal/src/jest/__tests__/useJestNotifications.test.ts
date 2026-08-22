@@ -16,7 +16,7 @@ jest.mock("react", () => ({
   useState: () => [mockCopyState, mockSetCopy],
 }));
 
-jest.mock("../../firebase", () => ({
+jest.mock("../notifications/firebaseCopy", () => ({
   loadNotificationCopy: mockLoadNotificationCopy,
 }));
 

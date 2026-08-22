@@ -11,6 +11,7 @@ const usage = () => [
   "Riddle Quest platform releases",
   "",
   "  pnpm release:jest [--dry-run]",
+  "  pnpm release:facebook [--dry-run]",
   "  pnpm release:youtube [--dry-run]",
   "  pnpm release:reddit [--dry-run]",
   "  pnpm release:plan",

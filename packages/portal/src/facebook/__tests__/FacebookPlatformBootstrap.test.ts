@@ -195,6 +195,28 @@ describe("FacebookPlatformBootstrap", () => {
     expect(result.value.storage).toBeDefined();
   });
 
+  test("exposes profile overlays only for a verified 13+ configuration", async () => {
+    const harness = createSdk();
+    harness.sdk.getSupportedAPIs = () => [
+      "overlayViews.createProfilePictureOverlayViewAsync",
+      "overlayViews.createProfileNameOverlayViewAsync",
+    ];
+    harness.sdk.overlayViews = {
+      createProfilePictureOverlayViewAsync: jest.fn(),
+      createProfileNameOverlayViewAsync: jest.fn(),
+    } as never;
+
+    const unknown = await new FacebookPlatformBootstrap(() => harness.sdk, "unknown").initialize(() => undefined);
+    expect(unknown.status).toBe("success");
+    if (unknown.status !== "success") return;
+    expect(unknown.value.capabilities.overlay).toBeUndefined();
+
+    const adult = await new FacebookPlatformBootstrap(() => harness.sdk, "13_plus").initialize(() => undefined);
+    expect(adult.status).toBe("success");
+    if (adult.status !== "success") return;
+    expect(adult.value.capabilities.overlay).toBeDefined();
+  });
+
   test("pause handlers can be revoked", async () => {
     const harness = createSdk();
     const result = await new FacebookPlatformBootstrap(() => harness.sdk).initialize(() => undefined);

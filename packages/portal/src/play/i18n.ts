@@ -21,14 +21,13 @@ import enStreakFanfare from "../../../../src/locales/en/streakFanfare.json";
 import enTooltips from "../../../../src/locales/en/tooltips.json";
 import enVictory from "../../../../src/locales/en/victory.json";
 import enRace from "../../../../src/locales/en/race.json";
-import enRedditPlatform from "../../../../src/locales/en/redditPlatform.json";
 
 /** Describes locale. */
 export type Locale =
   "en" | "es" | "pt" | "fr" | "de" | "ja" | "ko" | "zh" | "hi" | "ru" | "tr" | "ar" | "id" | "it" | "nl" | "pl" | "vi";
 
 /** Describes namespace. */
-export type Namespace =
+export type SharedNamespace =
   | "aboutLegal"
   | "accessibility"
   | "achievements"
@@ -50,8 +49,9 @@ export type Namespace =
   | "streakFanfare"
   | "tooltips"
   | "victory"
-  | "race"
-  | "redditPlatform";
+  | "race";
+/** Describes every namespace known to the translation contract. */
+export type Namespace = SharedNamespace | "redditPlatform";
 
 /** Describes namespace catalog. */
 export type NamespaceCatalog = Record<string, unknown>;
@@ -101,7 +101,7 @@ const LANGUAGE_LABELS: Record<Locale, string> = {
 };
 
 /** Defines the required namespaces value. */
-const REQUIRED_NAMESPACES = [
+const SHARED_NAMESPACES = [
   "aboutLegal",
   "accessibility",
   "achievements",
@@ -124,8 +124,7 @@ const REQUIRED_NAMESPACES = [
   "tooltips",
   "victory",
   "race",
-  "redditPlatform",
-] as const satisfies readonly Namespace[];
+] as const satisfies readonly SharedNamespace[];
 
 /** Defines the english namespaces value. */
 const ENGLISH_NAMESPACES: NamespaceCatalog[] = [
@@ -151,11 +150,10 @@ const ENGLISH_NAMESPACES: NamespaceCatalog[] = [
   enTooltips,
   enVictory,
   enRace,
-  enRedditPlatform,
 ];
 
 /** Defines the english namespace by name value. */
-const ENGLISH_NAMESPACE_BY_NAME: Record<Namespace, NamespaceCatalog> = {
+const ENGLISH_NAMESPACE_BY_NAME: Record<SharedNamespace, NamespaceCatalog> = {
   aboutLegal: enAboutLegal,
   accessibility: enAccessibility,
   achievements: enAchievements,
@@ -178,8 +176,13 @@ const ENGLISH_NAMESPACE_BY_NAME: Record<Namespace, NamespaceCatalog> = {
   tooltips: enTooltips,
   victory: enVictory,
   race: enRace,
-  redditPlatform: enRedditPlatform,
 };
+
+type TargetLocaleNamespaceRegistration = Readonly<{
+  namespace: Exclude<Namespace, SharedNamespace>;
+  english: NamespaceCatalog;
+  load(locale: Exclude<Locale, "en">): Promise<NamespaceCatalog>;
+}>;
 
 /** Provides locale subscribers behavior. */
 const localeSubscribers = new Set<() => void>();
@@ -187,6 +190,8 @@ const localeSubscribers = new Set<() => void>();
 const catalogCache = new Map<Locale, RootCatalog>();
 /** Loads ing locales. */
 const loadingLocales = new Map<Locale, Promise<RootCatalog>>();
+/** Target-owned namespaces installed by an explicit target composition root. */
+const targetLocaleNamespaces = new Map<Namespace, TargetLocaleNamespaceRegistration>();
 /** Provides supported language set behavior. */
 const supportedLanguageSet = new Set<string>(SUPPORTED_LOCALES);
 
@@ -231,10 +236,29 @@ const mergeNamespaces = (namespaces: readonly NamespaceCatalog[]): RootCatalog =
   }, {});
 };
 
-catalogCache.set("en", mergeNamespaces(ENGLISH_NAMESPACES));
+const rebuildEnglishCatalog = (): void => {
+  catalogCache.set("en", mergeNamespaces([
+    ...ENGLISH_NAMESPACES,
+    ...[...targetLocaleNamespaces.values()].map(({english}) => english),
+  ]));
+};
+
+rebuildEnglishCatalog();
+
+/** Installs copy owned by the active target before locale loading begins. */
+export function registerTargetLocaleNamespace(registration: TargetLocaleNamespaceRegistration): void {
+  if (loadingLocales.size > 0 || [...catalogCache.keys()].some((locale) => locale !== "en")) {
+    throw new Error("target-locale-namespace-registration-late");
+  }
+  if (!isPlainObject(registration.english)) {
+    throw new Error("target-locale-namespace-invalid");
+  }
+  targetLocaleNamespaces.set(registration.namespace, registration);
+  rebuildEnglishCatalog();
+}
 
 /** Provides import namespace behavior. */
-const importNamespace = async (locale: Locale, namespace: Namespace): Promise<NamespaceCatalog> => {
+const importSharedNamespace = async (locale: Locale, namespace: SharedNamespace): Promise<NamespaceCatalog> => {
   if (locale === "en") {
     return ENGLISH_NAMESPACE_BY_NAME[namespace];
   }
@@ -260,7 +284,12 @@ const loadLocaleCatalog = async (locale: Locale): Promise<RootCatalog> => {
     return inFlight;
   }
 
-  const nextLoad = Promise.all(REQUIRED_NAMESPACES.map((namespace) => importNamespace(locale, namespace)))
+  const nextLoad = Promise.all([
+    ...SHARED_NAMESPACES.map((namespace) => importSharedNamespace(locale, namespace)),
+    ...[...targetLocaleNamespaces.values()].map((registration) =>
+      locale === "en" ? registration.english : registration.load(locale)
+    ),
+  ])
     .then((namespaces) => {
       const catalog = mergeNamespaces(namespaces);
       catalogCache.set(locale, catalog);

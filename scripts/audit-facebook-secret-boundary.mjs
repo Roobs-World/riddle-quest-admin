@@ -73,7 +73,14 @@ if (isMain) {
     source: readFileSync(path, "utf8"),
   }));
   const browserPaths = collectFiles(`${root}/packages/portal/src`, (name) => /\.(?:ts|tsx|js|jsx)$/u.test(name));
-  browserPaths.push(`${root}/packages/portal/index.html`, `${root}/packages/portal/vite.config.ts`);
+  browserPaths.push(
+    `${root}/packages/portal/targets/jest/index.html`,
+    `${root}/packages/portal/targets/facebook/index.html`,
+    `${root}/packages/portal/targets/reddit/index.html`,
+    `${root}/packages/portal/targets/reddit/reddit-inline.html`,
+    `${root}/packages/portal/targets/youtube/index.html`,
+    `${root}/packages/portal/vite.config.ts`,
+  );
   const envPaths = collectFiles(`${root}/config/vite/portal`, () => true);
   const workflowPaths = collectFiles(`${root}/.github/workflows`, (name) => /\.ya?ml$/u.test(name));
   const failures = auditFacebookSecretBoundary({

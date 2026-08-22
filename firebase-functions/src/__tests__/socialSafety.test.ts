@@ -1,3 +1,4 @@
+import type {Database} from "firebase-admin/database";
 import {SOCIAL_REPORT_DAILY_LIMIT, blockKnownRival, reportKnownRival} from "../social/socialSafety";
 
 const REPORTER = `facebook_${"a".repeat(40)}`;
@@ -9,9 +10,10 @@ const fakeDb = (known = true) => {
   if (known) values.set(`users/${REPORTER}/knownRivals/${TARGET}`, {
     targetUserId: TARGET, source: "completed_race", establishedAtMs: NOW,
   });
-  const ref = (path: string) => ({path});
+  const snapshot = (path: string) => ({exists: values.has(path), data: () => values.get(path)});
+  const ref = (path: string) => ({path, get: async () => snapshot(path)});
   const transaction = {
-    get: jest.fn(async ({path}: {path: string}) => ({exists: values.has(path), data: () => values.get(path)})),
+    get: jest.fn(async ({path}: {path: string}) => snapshot(path)),
     set: jest.fn(({path}: {path: string}, value: Record<string, unknown>) => values.set(path, value)),
     create: jest.fn(({path}: {path: string}, value: Record<string, unknown>) => {
       if (values.has(path)) throw new Error("already-exists");
@@ -23,16 +25,28 @@ const fakeDb = (known = true) => {
     collection: (name: string) => ({doc: (id: string) => ref(`${name}/${id}`)}),
     runTransaction: async <T>(callback: (value: typeof transaction) => Promise<T>) => callback(transaction),
   } as unknown as FirebaseFirestore.Firestore;
-  return {db, values};
+  const presenceUpdates: Record<string, unknown> = {};
+  const database = {
+    ref: () => ({
+      update: jest.fn(async (value: Record<string, unknown>) => Object.assign(presenceUpdates, value)),
+    }),
+  } as unknown as Database;
+  return {database, db, presenceUpdates, values};
 };
 
 describe("social safety service", () => {
   it("blocks only an established rival and stores no display identity", async () => {
-    const {db, values} = fakeDb();
-    await expect(blockKnownRival(REPORTER, TARGET, {db, nowMs: NOW})).resolves.toEqual({blocked: true});
+    const {database, db, presenceUpdates, values} = fakeDb();
+    await expect(blockKnownRival(REPORTER, TARGET, {database, db, nowMs: NOW})).resolves.toEqual({blocked: true});
     expect(values.get(`users/${REPORTER}/blockedRivals/${TARGET}`)).toEqual({targetUserId: TARGET, blockedAtMs: NOW});
+    expect(presenceUpdates).toMatchObject({
+      [`presenceVisibility/${REPORTER}/${TARGET}`]: null,
+      [`presenceViewers/${TARGET}/${REPORTER}`]: null,
+      [`presenceVisibility/${TARGET}/${REPORTER}`]: null,
+      [`presenceViewers/${REPORTER}/${TARGET}`]: null,
+    });
     const unknown = fakeDb(false);
-    await expect(blockKnownRival(REPORTER, TARGET, {db: unknown.db, nowMs: NOW}))
+    await expect(blockKnownRival(REPORTER, TARGET, {database: unknown.database, db: unknown.db, nowMs: NOW}))
       .rejects.toMatchObject({code: "permission-denied"});
   });
 

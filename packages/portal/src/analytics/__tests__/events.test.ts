@@ -8,7 +8,7 @@ import {
   trackEvent,
   trackPurchase,
   trackScreen,
-} from "../googleAnalytics";
+} from "../events";
 
 afterEach(resetAnalyticsForTests);
 
@@ -62,7 +62,7 @@ it("deduplicates consecutive screen views", () => {
   trackScreen("Shop");
 
   expect(sink).toHaveBeenCalledTimes(2);
-  expect(sink).toHaveBeenLastCalledWith("screen_view", expect.objectContaining({firebase_screen: "shop"}));
+  expect(sink).toHaveBeenLastCalledWith("screen_view", expect.objectContaining({screen_name: "shop"}));
 });
 
 it("drops unsupported values and bounds strings", () => {

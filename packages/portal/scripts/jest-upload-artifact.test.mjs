@@ -217,7 +217,7 @@ test("release child processes receive only the allowlist and isolated runtime pa
 
 test("Vite loads public browser values outside the portal root", async () => {
   const [viteConfiguration, publicEnvironment] = await Promise.all([
-    readFile(new URL("../vite.config.ts", import.meta.url), "utf8"),
+    readFile(new URL("../webTargetViteConfig.ts", import.meta.url), "utf8"),
     readFile(new URL("../../../config/vite/portal/.env.jest", import.meta.url), "utf8"),
   ]);
   assert.match(
@@ -778,7 +778,7 @@ test("the release sequence gates, packages, verifies, and uploads one immutable 
     readFile(new URL("./jest-release-safety.mjs", import.meta.url), "utf8"),
     readFile(new URL("./release-jest-timestamped.mjs", import.meta.url), "utf8"),
     readFile(new URL("./upload-jest-build.mjs", import.meta.url), "utf8"),
-    readFile(new URL("../vite.config.ts", import.meta.url), "utf8"),
+    readFile(new URL("../webTargetViteConfig.ts", import.meta.url), "utf8"),
   ]);
 
   const findAfter = (pattern, start = 0) => {
@@ -858,6 +858,7 @@ test("the release sequence gates, packages, verifies, and uploads one immutable 
   assert.match(releaseSource, /finally\s*\{\s*releaseLock\(\);/);
   assert.match(releaseSource, /finalDependencyFingerprint !== dependencyFingerprint/);
   assert.match(releaseSource, /snapshotTrustedReleaseScripts\(\);/);
+  assert.match(releaseSource, /["']web-target-artifact-inventory\.mjs["']/);
   assert.match(releaseSource, /releaseSandboxConfiguration\.repositoryReadOnly = true/);
   assert.match(releaseSource, /protectedReadOnlyBinds\.push\([\s\S]*archivePath[\s\S]*gateReceiptPath/);
   assert.match(releaseSource, /assertFileFingerprint\(archivePath, verifiedArchiveFingerprint/);
@@ -1022,8 +1023,9 @@ test("the release sequence gates, packages, verifies, and uploads one immutable 
   assert.match(uploadSource, /name:\s*["']JEST_ARTIFACT_AUDIT_SCRIPT["']/);
   assert.match(uploadSource, /name:\s*["']JEST_W3C_VALIDATOR_SCRIPT["']/);
   assert.match(uploadSource, /The trusted release parent did not authorize these exact Jest archive bytes/);
-  assert.match(viteSource, /process\.env\.JEST_BUILD_OUT_DIR/);
-  assert.match(viteSource, /filesToDeleteAfterUpload:\s*`\$\{jestBuildOutDir\}\/\*\*\/\*\.map`/);
+  assert.match(viteSource, /environment\.JEST_BUILD_OUT_DIR/);
+  assert.match(viteSource, /jest:\s*jestBuildOutDir/);
+  assert.match(viteSource, /filesToDeleteAfterUpload:\s*`\$\{selectedBuildOutDir\}\/\*\*\/\*\.map`/);
   assert.match(releaseSource, /Refusing to release from a dirty worktree/);
 
   assert.match(uploadSource, /inspectArchiveEntries\(gatedArchive\)/);

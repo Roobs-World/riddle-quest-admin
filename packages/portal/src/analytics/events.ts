@@ -20,7 +20,7 @@ let lastScreen = "";
 /** Limits generic client-error signals to prevent recursive telemetry floods. */
 const CLIENT_ERROR_REPORT_LIMIT = 5;
 
-/** Fields that must never be forwarded to either GA4 or Jest analytics. */
+/** Fields that must never be forwarded to a target-owned analytics sink. */
 const sensitiveAnalyticsFieldPattern =
   /(?:answer|authorization|cookie|email|guess|imageDataUrl|password|playerId|secret|token|uid|userId)/i;
 
@@ -92,8 +92,8 @@ export const trackScreen = (screenName: string, params: AnalyticsParams = {}) =>
   if (safeScreen === lastScreen) return;
   lastScreen = safeScreen;
   trackEvent("screen_view", {
-    firebase_screen: safeScreen,
-    firebase_screen_class: "RiddleQuestWeb",
+    screen_name: safeScreen,
+    screen_class: "RiddleQuestWeb",
     ...params,
   });
 };

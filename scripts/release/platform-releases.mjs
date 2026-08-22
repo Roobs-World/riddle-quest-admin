@@ -21,6 +21,20 @@ const releasePlans = Object.freeze([
     runbook: "docs/jest-html5-operations.md",
   }),
   Object.freeze({
+    target: "facebook",
+    title: "Facebook",
+    boundary: "local-immutable-handoff",
+    publicCommand: "pnpm release:facebook",
+    summary: "Verify the Facebook artifact and create its immutable manual-upload handoff.",
+    externalEffect: "None; Meta Dashboard upload and production promotion remain manual.",
+    command: Object.freeze({
+      executable: "pnpm",
+      args: Object.freeze(["--filter", "@qwordly/portal", "release:facebook"]),
+    }),
+    handoff: "Upload only the printed read-only archive to Meta as a non-production Draft.",
+    runbook: "docs/facebook-instant-games-operations.md",
+  }),
+  Object.freeze({
     target: "youtube",
     title: "YouTube",
     boundary: "local-manual-handoff",
@@ -68,7 +82,7 @@ export function listPlatformReleasePlans() {
 export function getPlatformReleasePlan(target) {
   const plan = plansByTarget.get(target);
   if (!plan) {
-    throw new Error(`Unknown release target ${JSON.stringify(target)}; expected jest, youtube, or reddit`);
+    throw new Error(`Unknown release target ${JSON.stringify(target)}; expected jest, facebook, youtube, or reddit`);
   }
   return clonePlan(plan);
 }

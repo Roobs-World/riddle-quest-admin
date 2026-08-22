@@ -9,6 +9,8 @@ This repository contains only the web game, its Firebase backend, and the Reddit
 | Path | Responsibility |
 | --- | --- |
 | `packages/portal` | Vite, React, game UI, isolated platform adapters, browser tests, and standalone Jest/Facebook/Reddit/YouTube client build tooling |
+| `packages/portal/targets/{jest,facebook,reddit,youtube}` | Target-owned HTML documents; each loads only its own source main and approved host SDK |
+| `packages/portal/src/{jest,facebook,reddit,youtube}` | Target composition roots and provider adapters; cross-target imports are rejected before every build |
 | `packages/reddit-app` | Devvit Web package, same-origin `/api/*` gateway, package validation, and immutable release receipts |
 | `packages/core` | Browser-safe game rules, validation schemas, bridge types, Race to 10 contracts, and pricing metadata |
 | `firebase-functions` | Authoritative gameplay, provider identity exchanges, player profiles/storage/deletion, payment grants, referrals, leaderboards, and multiplayer |
@@ -54,10 +56,10 @@ Do not use npm or Yarn to update this workspace. Commit `pnpm-lock.yaml` wheneve
 Start the normal Vite development server:
 
 ```bash
-pnpm dev
+pnpm --filter @qwordly/portal dev:jest
 ```
 
-Open `http://localhost:5173/riddle-quest/`. Standalone development uses JestSDK's interactive local mock and a mocked authoritative backend. Use the JestSDK debug menu to change player registration, entry payloads, and SDK outcomes.
+Open `http://localhost:5173/targets/jest/`. Standalone development uses JestSDK's interactive local mock and a mocked authoritative backend. Use the JestSDK debug menu to change player registration, entry payloads, and SDK outcomes.
 
 Deterministic harness routes are intended for development and automated tests:
 
@@ -388,9 +390,12 @@ Build one isolated shipping target:
 
 ```bash
 pnpm build:jest
+pnpm build:facebook
 pnpm build:youtube
 pnpm build:reddit
 ```
+
+Every target command starts from its own HTML document and composition root, writes only its own `dist-*` directory, runs the source import firewall, and then runs an independent byte-level artifact audit. There is no generic Vite target fallback. Run the source boundary by itself with `pnpm check:target-boundaries`.
 
 Build the established backend and non-YouTube production path:
 
@@ -412,7 +417,17 @@ Verify all four isolated client targets without requiring release translations:
 pnpm verify:all-targets
 ```
 
-This uses the committed English YouTube fixture solely for repository verification. Build and package a release candidate through the separate fail-closed path after all 17 audited content bundles exist:
+This uses the committed English YouTube fixture solely for repository verification.
+
+Prepare the immutable Facebook handoff for manual upload from a clean reviewed commit:
+
+```bash
+pnpm release:facebook
+```
+
+The command rebuilds and audits Facebook, creates the source/hash-bound ZIP receipt, then snapshots those exact bytes to an owner-private, read-only, hash-named archive and opens that hash's retry barrier. It does not contact Meta. Upload only the printed archive path as a non-production Draft. Before beginning, inspect all retained barriers and never start another hash while an older attempt is transmitting or ambiguous; follow [`docs/facebook-instant-games-operations.md`](docs/facebook-instant-games-operations.md) for the current preflight, acceptance, ambiguity, and promotion constraints.
+
+Build and package a YouTube release candidate through the separate fail-closed path after all 17 audited content bundles exist:
 
 ```bash
 pnpm --filter @qwordly/portal build:youtube

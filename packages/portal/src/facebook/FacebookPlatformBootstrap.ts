@@ -230,7 +230,7 @@ export class FacebookPlatformBootstrap implements PlatformBootstrap {
             },
           }
         : undefined;
-      const overlay = createFacebookOverlayCapability(sdk);
+      const overlay = this.ageCategory === "13_plus" ? createFacebookOverlayCapability(sdk) : undefined;
       return success({
         platform: "facebook",
         playerId,

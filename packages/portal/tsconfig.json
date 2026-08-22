@@ -7,6 +7,7 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
+    "allowImportingTsExtensions": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "erasableSyntaxOnly": true,
@@ -20,7 +21,6 @@
     "moduleResolution": "Bundler",
     "customConditions": ["browser"],
     "paths": {
-      "#platform-entry": ["./src/platform/PlatformEntry.tsx"],
       "#shop-modal-page": ["./src/play/modalPages/commerce/ShopModalPage.tsx"],
       "#youtube-content": ["../../firebase-functions/content/youtube-fixtures/youtube-content-fixture-v1.json"],
       "@qwordly/core": ["../core/src/index.ts"],

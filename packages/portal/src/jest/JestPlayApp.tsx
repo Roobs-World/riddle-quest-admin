@@ -18,7 +18,7 @@ import {createNotificationOperationGate} from "./notifications/operationGate";
 import {useJestSharing} from "./sharing/useJestSharing";
 import {createRegistrationEntryPayload, type RegistrationSource} from "./registrationAttribution";
 import {resolveJestRuntimeMode, shouldEnableJestSubscriptions} from "./runtimeMode";
-import {trackScreen} from "../analytics/googleAnalytics";
+import {trackScreen} from "../analytics/events";
 import {hasTrustedTestHarnessMarker} from "../testHarness";
 import {resolveRaceChallengeId} from "./entryIntent";
 import {createJestBackend} from "./createJestBackend";

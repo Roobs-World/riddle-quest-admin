@@ -580,6 +580,7 @@ const materializeCommittedSource = () => {
 const trustedScriptsDirectory = join(releaseSandboxDirectory, "trusted-scripts");
 const trustedScriptNames = [
   "audit-jest-artifact.mjs",
+  "web-target-artifact-inventory.mjs",
   "jest-release-safety.mjs",
   "jest-upload-artifact.mjs",
   "upload-jest-build.mjs",

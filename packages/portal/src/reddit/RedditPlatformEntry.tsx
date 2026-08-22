@@ -17,8 +17,8 @@ type StartupState =
   | {state: "ready"; session: PlatformSession; playerData: PlayerData | null}
   | {state: "error"};
 
-/** Reddit-only entry point. Devvit supplies authenticated services through same-origin /api routes. */
-export function PlatformEntry() {
+/** Reddit-only application. Devvit supplies authenticated services through same-origin /api routes. */
+export function RedditPlatformEntry() {
   useLocale();
   const [expanded] = useState(() => getWebViewMode() === "expanded");
   const [startup, setStartup] = useState<StartupState>({state: "loading", progress: 5});

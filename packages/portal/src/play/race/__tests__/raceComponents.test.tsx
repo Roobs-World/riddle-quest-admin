@@ -1,4 +1,5 @@
-import {describe, expect, it} from "@jest/globals";
+import {describe, expect, it, jest} from "@jest/globals";
+import {Children, isValidElement, type ReactElement, type ReactNode} from "react";
 import {renderToString} from "react-dom/server";
 import type {PublishRaceChallengeResponse, RaceChallengePreview, RaceOutcome} from "@qwordly/core/race";
 import {RaceTo10Game} from "../RaceTo10Game";
@@ -18,6 +19,26 @@ import {createFakeRaceServices} from "../testing/fakeRaceServices";
 
 /** No-op callback used by server-rendered presentation components. */
 const noop = () => undefined;
+
+type TestElementProps = {
+  children?: ReactNode;
+  className?: string;
+  onClick?: () => void;
+};
+
+/** Finds a server-renderable element so its presentation callback can be verified directly. */
+function findElement(
+  node: ReactNode,
+  predicate: (props: TestElementProps) => boolean,
+): ReactElement<TestElementProps> | null {
+  if (!isValidElement<TestElementProps>(node)) return null;
+  if (predicate(node.props)) return node;
+  for (const child of Children.toArray(node.props.children)) {
+    const match = findElement(child, predicate);
+    if (match) return match;
+  }
+  return null;
+}
 
 describe("race presentation components", () => {
   it("renders capability-appropriate accessible hub tabs", () => {
@@ -161,6 +182,58 @@ describe("race presentation components", () => {
     expect(renderToString(
       <RaceChallengePanel challenge={{...challenge, status: "expired"}} onAccept={noop} />,
     )).toContain('role="alert"');
+  });
+
+  it("binds selected category ids to lobby and result actions", async () => {
+    const categories = (await createFakeRaceServices().listRaceCategories("en")).categories;
+    const onSelect = jest.fn();
+    const categoryPanel = RaceCategoriesPanel({
+      categories,
+      loading: false,
+      onSelect,
+      onShowInbox: noop,
+    });
+    const categoryGrid = findElement(categoryPanel, ({className}) => className === "race-category-grid");
+    const categoryButton = findElement(categoryGrid, ({onClick}) => Boolean(onClick));
+    expect(categoryButton).not.toBeNull();
+    categoryButton?.props.onClick?.();
+    expect(onSelect).toHaveBeenCalledWith(categories[0]?.categoryId);
+
+    const {run} = await createFakeRaceServices().startRace({
+      locale: "en",
+      categoryId: "science",
+      requestId: "request-presentation-actions",
+    });
+    const onRematch = jest.fn();
+    const resultPanel = RaceResultPanel({
+      outcome: {
+        runId: run.runId,
+        result: "recorded",
+        correctCount: 10,
+        wallFinishMs: 40_000,
+        hintPenaltyMs: 0,
+        skipPenaltyMs: 0,
+        totalPenaltyMs: 0,
+        adjustedFinishMs: 40_000,
+        publishable: false,
+        rematchEligible: true,
+        newlyUnlockedAchievementIds: [],
+        achievementCoinsAwarded: 0,
+      },
+      run,
+      publication: null,
+      publishing: false,
+      onPublish: noop,
+      onShare: noop,
+      onRematch,
+      onChooseCategory: noop,
+      onClose: noop,
+    });
+    const rematchActions = findElement(resultPanel, ({className}) => className === "race-rematch-actions");
+    const rematchButton = findElement(rematchActions, ({className}) => className === "race-primary");
+    expect(rematchButton).not.toBeNull();
+    rematchButton?.props.onClick?.();
+    expect(onRematch).toHaveBeenCalledWith("science");
   });
 
   it("renders countdown, scoreboard, result, and quit variants", async () => {

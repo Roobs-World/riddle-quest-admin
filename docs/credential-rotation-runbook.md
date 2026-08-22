@@ -1,6 +1,6 @@
 # Credential Rotation Runbook
 
-Last updated: 2026-08-20
+Last updated: 2026-08-22
 
 ## Scope
 
@@ -41,10 +41,19 @@ Treat all historical values as compromised.
 pnpm dlx firebase-tools@15.25.1 functions:secrets:set JEST_SHARED_SECRET --project riddle-quest-ec2b2
 pnpm dlx firebase-tools@15.25.1 functions:secrets:set OPENAI_API_KEY --project riddle-quest-ec2b2
 pnpm dlx firebase-tools@15.25.1 functions:secrets:set FACEBOOK_APP_SECRET --project riddle-quest-ec2b2
-pnpm dlx firebase-tools@15.25.1 functions:secrets:set FACEBOOK_UID_SECRET --project riddle-quest-ec2b2
 pnpm dlx firebase-tools@15.25.1 functions:secrets:set REDDIT_GATEWAY_SECRET --project riddle-quest-ec2b2
 pnpm dlx firebase-tools@15.25.1 functions:secrets:set REDDIT_UID_SECRET --project riddle-quest-ec2b2
 ```
+
+   - Do **not** replace `FACEBOOK_UID_SECRET` in place for an app with existing
+     provider records. The current implementation accepts one key only and has
+     no key version, previous-key fallback, or UID migration. Changing the key
+     makes existing Facebook identity exchange and deletion fail their persisted
+     UID/provider-scope checks. If this key is exposed, disable Facebook identity,
+     preserve the existing value only inside the controlled incident boundary,
+     and keep the target disabled until a reviewed dual-key or migration release
+     has moved every provider mapping and deletion path. Initial provisioning for
+     a genuinely new app is separate from rotation.
 
 3. Jest release credentials
    - Rotate the Riddle Quest upload token in the Jest Developer Console.
@@ -76,9 +85,10 @@ pnpm dlx firebase-tools@15.25.1 functions:secrets:set REDDIT_UID_SECRET --projec
    - OpenAI: create a new API key, deploy it as a Functions secret, then revoke the old key.
    - Jest: rotate the shared secret and upload token independently, then verify
      signed identity/purchase/referral payloads and inactive Draft upload.
-   - Meta: create a new app secret, keep it server-only, rotate the independent
-     UID HMAC key, and verify signed identity and deletion fixtures before
-     revoking superseded versions.
+   - Meta: create a new app secret, keep it server-only, verify signed identity
+     and deletion fixtures, then revoke the superseded app-secret version. Do not
+     rotate the independent UID HMAC key in place; use the disabled-identity
+     migration procedure above if that key is exposed.
    - Reddit: generate new independent gateway and UID HMAC values. Put the UID
      secret only in Firebase Secret Manager. Put the gateway value in both
      Firebase Secret Manager and the Devvit global secret setting
@@ -95,6 +105,10 @@ pnpm dlx firebase-tools@15.25.1 functions:secrets:set REDDIT_UID_SECRET --projec
      and Sentry error reporting.
    - Confirm Facebook nonce/exchange, App Check, generation-based deletion and
      signed deletion callback before enabling any additional capability.
+   - When a Facebook UID-key migration is required, also verify an existing
+     account, a fresh account, in-game deletion, signed callback deletion, lost-
+     response retry, and post-deletion fresh generation against the migrated
+     provider records before re-enabling identity.
    - Confirm the Reddit gateway rejects signature, operation, app, subject,
      account-generation, timestamp, and nonce mismatches; then verify identity,
      storage, gameplay, and deletion through the same-origin Devvit route.

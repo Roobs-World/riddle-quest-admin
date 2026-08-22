@@ -12,7 +12,7 @@ import {SpinningWheelLoader} from "./SpinningWheelLoader";
 import type {PlatformCapabilities, PlayerData, PlayerDataUpdate} from "../platform/types";
 import {restoreProfileWhileServerLoads} from "../platform/playerData";
 import {isRaceTo10Enabled} from "./race/logic/raceFeatureFlag";
-import {trackEvent} from "../analytics/googleAnalytics";
+import {trackEvent} from "../analytics/events";
 import {
   createPlayHostMessageHandlers,
   getHostErrorMessage,

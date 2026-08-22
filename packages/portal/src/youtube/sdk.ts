@@ -24,7 +24,7 @@ type YouTubeSdkGlobal = Readonly<{
 
 /** Documents global. */
 declare global {
-  // Loaded synchronously by youtube.html before the module entry.
+  // Loaded synchronously by the YouTube target document before its module entry.
   var ytgame: YouTubeSdkGlobal | undefined;
 }
 

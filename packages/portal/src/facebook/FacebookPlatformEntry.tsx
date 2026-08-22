@@ -29,8 +29,8 @@ type StartupState =
   | {status: "ready"; session: PlatformSession; playerData: PlayerData | null}
   | {status: "error"};
 
-/** Facebook-only platform entry, selected at compile time by Vite. */
-export function PlatformEntry() {
+/** Facebook-only application composed by the Facebook target entry. */
+export function FacebookPlatformEntry() {
   const hostServicesMode = useMemo(() => resolveHostServicesMode(), []);
   const hostServices = useMemo(() => createHostServices(hostServicesMode), [hostServicesMode]);
   const hostConfigurationWarning = getHostConfigurationWarning(hostServicesMode);
@@ -70,6 +70,7 @@ export function PlatformEntry() {
         let referralsEnabled = false;
         let matchmakingEnabled = false;
         let presenceCapabilityEnabled = false;
+        let configurationLoaded = false;
         let notificationLeaseApi: import("./FacebookNotificationPromptCoordinator").FacebookNotificationPromptLease |
           undefined;
         let contextBoardApi: undefined | {
@@ -87,6 +88,7 @@ export function PlatformEntry() {
             acceptFacebookNotificationPermissionPrompt,
           } = await import("./firebaseClient");
           const clientConfiguration = (await getFacebookClientConfiguration()).data;
+          configurationLoaded = true;
           notificationsEnabled = ageCategory === "13_plus" && clientConfiguration.notificationsEnabled;
           if (notificationsEnabled) {
             notificationLeaseApi = {
@@ -174,9 +176,11 @@ export function PlatformEntry() {
             },
           }
           : undefined;
-        const baseCapabilities = matchmakingEnabled
-          ? session.capabilities
-          : {...session.capabilities, nativeSocial: undefined};
+        const baseCapabilities = {
+          ...session.capabilities,
+          ...(matchmakingEnabled ? {} : {nativeSocial: undefined}),
+          ...(configurationLoaded ? {} : {overlay: undefined}),
+        };
         const synchronizedSession = contextCoordinator
           ? {...session, capabilities: {
             ...baseCapabilities,

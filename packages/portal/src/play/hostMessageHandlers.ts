@@ -1,5 +1,5 @@
 import type {HostMessageHandlers} from "./bridgeRouter";
-import {trackEvent} from "../analytics/googleAnalytics";
+import {trackEvent} from "../analytics/events";
 import {tr} from "./i18n";
 import {createRequestId} from "./requestIds";
 import type {RaceOutcome} from "@qwordly/core/race";

@@ -11,7 +11,7 @@ jest.mock("react", () => ({
   useCallback: (callback: unknown) => callback,
 }));
 
-jest.mock("../../analytics/googleAnalytics", () => ({
+jest.mock("../../analytics/events", () => ({
   trackEvent: mockTrackEvent,
   trackPurchase: mockTrackPurchase,
 }));

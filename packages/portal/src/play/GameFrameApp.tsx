@@ -44,7 +44,7 @@ import {
   useViewportFit,
 } from "./game/hooks";
 import {getMobileCapabilities, shouldLoadDecorativeWebGl} from "./performance/mobileCapabilities";
-import {trackScreen} from "../analytics/googleAnalytics";
+import {trackScreen} from "../analytics/events";
 import type {ListRaceCategoriesResponse} from "@qwordly/core/race";
 import type {ActivePresenceState} from "../presence/PlatformPresenceSession";
 import {resolveActivityPresence} from "../presence/activityPresence";

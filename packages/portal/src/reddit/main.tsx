@@ -1,6 +1,7 @@
 import {StrictMode} from "react";
 import {createRoot} from "react-dom/client";
-import {PlatformEntry} from "./RedditPlatformEntry";
+import "./localeNamespace";
+import {RedditPlatformEntry} from "./RedditPlatformEntry";
 import "../styles.css";
 
 /** Provides root behavior. */
@@ -9,6 +10,6 @@ if (!root) throw new Error("reddit-root-missing");
 
 createRoot(root).render(
   <StrictMode>
-    <PlatformEntry />
+    <RedditPlatformEntry />
   </StrictMode>,
 );

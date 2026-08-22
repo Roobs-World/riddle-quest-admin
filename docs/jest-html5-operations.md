@@ -11,10 +11,10 @@ For the source-audited map of player data, system boundaries, deletion, export, 
 Start the normal development server:
 
 ```bash
-pnpm dev
+pnpm --filter @qwordly/portal dev:jest
 ```
 
-Open `http://localhost:5173/riddle-quest/`. The game uses Jest's SDK adapter and the SDK's built-in local mock host, while keeping authoritative Firebase operations mocked. Use the **JestSDK** debug menu to switch guest/registered state, set entry payloads, and simulate SDK success, cancellation, and error responses.
+Open `http://localhost:5173/targets/jest/`. The game uses Jest's SDK adapter and the SDK's built-in local mock host, while keeping authoritative Firebase operations mocked. Use the **JestSDK** debug menu to switch guest/registered state, set entry payloads, and simulate SDK success, cancellation, and error responses.
 
 For repeatable automated regression tests, use the project's deterministic harness and Playwright suite:
 
@@ -150,7 +150,7 @@ unsettled platform transaction and is not sufficient justification to expose the
 
 ### Local SDK mock
 
-Run `pnpm dev` and open `http://localhost:5173/riddle-quest/`. Standalone development uses JestSDK's built-in mock host; use the **JestSDK** debug menu to switch guest/registered state, inspect calls and entry payloads, and simulate success, cancellation, and error responses. Add `?harness=jest` only when you need the repository's deterministic browser-test adapter instead.
+Run `pnpm --filter @qwordly/portal dev:jest` and open `http://localhost:5173/targets/jest/`. Standalone development uses JestSDK's built-in mock host; use the **JestSDK** debug menu to switch guest/registered state, inspect calls and entry payloads, and simulate success, cancellation, and error responses. Add `?harness=jest` only when you need the repository's deterministic browser-test adapter instead.
 
 Run both deterministic browser suites with:
 

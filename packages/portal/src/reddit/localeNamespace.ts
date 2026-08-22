@@ -1,0 +1,22 @@
+import enRedditPlatform from "../../../../src/locales/en/redditPlatform.json";
+import {
+  registerTargetLocaleNamespace,
+  type Locale,
+  type NamespaceCatalog,
+} from "../play/i18n";
+
+const nonEnglishRedditPlatformModules = import.meta.glob<NamespaceCatalog>(
+  "../../../../src/locales/{ar,de,es,fr,hi,id,it,ja,ko,nl,pl,pt,ru,tr,vi,zh}/redditPlatform.json",
+  {import: "default"},
+);
+
+registerTargetLocaleNamespace({
+  namespace: "redditPlatform",
+  english: enRedditPlatform,
+  async load(locale: Exclude<Locale, "en">): Promise<NamespaceCatalog> {
+    const modulePath = `../../../../src/locales/${locale}/redditPlatform.json`;
+    const loadNamespace = nonEnglishRedditPlatformModules[modulePath];
+    if (!loadNamespace) throw new Error(`Missing Reddit locale namespace: ${locale}/redditPlatform`);
+    return loadNamespace();
+  },
+});

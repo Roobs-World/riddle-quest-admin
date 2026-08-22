@@ -1,26 +1,16 @@
-import {readFile, readdir, stat} from "node:fs/promises";
+import {readFile} from "node:fs/promises";
 import path from "node:path";
+import {inspectWebTargetArtifact} from "./web-target-artifact-inventory.mjs";
 
-const root = path.resolve(process.cwd(), process.argv[2] || "dist-facebook");
+const inventory = await inspectWebTargetArtifact({
+  rootDirectory: process.argv[2] || process.env.FACEBOOK_BUILD_OUT_DIR?.trim() || "dist-facebook",
+  target: "facebook",
+});
+const {files, root, sizedFiles, totalBytes: artifactBytes} = inventory;
 const maximumArtifactBytes = 200 * 1024 * 1024;
 const maximumInitialResourceBytes = 5 * 1024 * 1024;
 const facebookSdkEntryResource = "https://connect.facebook.net/en_US/fbinstant.8.0.js";
 const allowedExternalEntryResources = new Set([facebookSdkEntryResource]);
-const files = [];
-
-async function walk(directory) {
-  for (const entry of await readdir(directory, {withFileTypes: true})) {
-    const absolute = path.join(directory, entry.name);
-    if (entry.isSymbolicLink() || (!entry.isDirectory() && !entry.isFile())) {
-      throw new Error(`Facebook artifact contains a non-regular entry: ${absolute}`);
-    }
-    if (entry.isDirectory()) await walk(absolute); else files.push(absolute);
-  }
-}
-
-await walk(root);
-const sizes = await Promise.all(files.map(async (file) => (await stat(file)).size));
-const artifactBytes = sizes.reduce((total, size) => total + size, 0);
 if (artifactBytes > maximumArtifactBytes) {
   throw new Error(`Facebook artifact is ${(artifactBytes / 1024 / 1024).toFixed(2)} MB; limit is 200 MB`);
 }
@@ -32,17 +22,13 @@ const forbidden = [
     "YouTube Playables integration",
     /www\.youtube\.com\/game_api\/v1|\bytgame\b|youtube-sdk-unavailable|youtube-content-envelope-invalid|youtube-content-manifest\.json/i,
   ],
-  ["Reddit Devvit integration", /\bdevvit(?:-internal)?\b|redditGatewaySecret|requestExpandedMode/i],
+  ["Reddit Devvit integration", /\bdevvit(?:-internal)?\b|redditGatewaySecret|requestExpandedMode|RedditPlatform/i],
   ["Jest SDK", /cdn\.jest\.com|\bJestSDK\b/],
-  ["Jest runtime configuration", /VITE_JEST_RUNTIME|JEST_SHARED_SECRET/],
+  ["Jest runtime configuration", /VITE_JEST_RUNTIME/],
   ["Expo module", /(?:from|require\()\s*["'](?:expo|expo-[^"']+)/],
   ["React Native module", /(?:from|require\()\s*["']react-native(?:[\/"'])/],
   ["External authentication provider", /\b(?:Clerk|Auth0|accounts\.google\.com|appleid\.apple\.com)\b/i],
   ["Native advertising integration", /\b(?:AdMob|adsbygoogle)\b|(?:googlesyndication|doubleclick)\.net/i],
-  ["Firebase private key", /-----BEGIN PRIVATE KEY-----/],
-  ["Firebase service account", /["']type["']\s*:\s*["']service_account["']|["']private_key_id["']\s*:/i],
-  ["Server-only Meta secret", /\b(?:FACEBOOK_APP_SECRET|FACEBOOK_UID_SECRET|META_APP_SECRET)\b/i],
-  ["Server-only API key", /\b(?:OPENAI_API_KEY|GOOGLE_APPLICATION_CREDENTIALS)\b/],
 ];
 for (const [label, pattern] of forbidden) {
   if (pattern.test(content)) throw new Error(`${label} found in Facebook artifact`);
@@ -101,9 +87,9 @@ for (const match of html.matchAll(/(?:src|href)=["']([^"']+)["']/g)) {
   }
   initialResources.add(asset);
 }
-const initialResourceBytes = (
-  await Promise.all([...initialResources].map(async (file) => (await stat(file)).size))
-).reduce((total, size) => total + size, 0);
+const bytesByFile = new Map(sizedFiles.map(({file, bytes}) => [file, bytes]));
+const initialResourceBytes = [...initialResources]
+  .reduce((total, file) => total + bytesByFile.get(file), 0);
 if (initialResourceBytes > maximumInitialResourceBytes) {
   throw new Error(
     `Initial Facebook resources are ${(initialResourceBytes / 1024 / 1024).toFixed(2)} MB; budget is 5 MB`,

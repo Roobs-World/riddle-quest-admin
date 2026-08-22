@@ -1,5 +1,5 @@
 import {useCallback, type Dispatch, type SetStateAction} from "react";
-import {trackEvent, trackPurchase} from "../analytics/googleAnalytics";
+import {trackEvent, trackPurchase} from "../analytics/events";
 import type {ProductSummary, PurchaseResult} from "../play/types";
 import type {JestPurchaseCoordinator} from "./purchases";
 import type {JestSession} from "./types";

@@ -1,6 +1,6 @@
 # Facebook social moderation runbook
 
-Last source audit: 2026-08-19
+Last source audit: 2026-08-22
 
 This runbook describes the moderation intake that exists in source. It does not claim that an operator roster, response-time promise, sanction system, or production retention policy exists. Those items require owner/counsel approval before release. No chat or moderation admin panel is implemented or permitted by the product plan.
 
@@ -10,9 +10,9 @@ An authenticated player can report only a server-established known rival. The ca
 
 - `targetUserId`: the provider-neutral Firebase UID already projected by the server for that rival;
 - `category`: `harassment`, `cheating`, `inappropriate_identity`, `spam`, or `other`; and
-- `requestId`: an opaque 8–160 character idempotency key.
+- `requestId`: an opaque 8–160 character idempotency key using only ASCII letters, digits, `_`, and `-`.
 
-The client cannot submit narrative text, a Meta/Jest player ID, platform name, photo, evidence URL, sanction, or reward. The server writes `socialModerationQueue/{reportId}` with `reportId`, `reporterId`, `targetUserId`, the fixed category, `status: queued`, and `createdAtMs`. The report ID is a SHA-256 derivation of the reporter and request ID. Replaying the same request is balance- and count-stable. Each reporter can create at most five unique reports per UTC day; the server-only rate record contains reporter UID, UTC day, count, and update time.
+The client cannot submit narrative text, a Meta/Jest player ID, platform name, photo, evidence URL, sanction, or reward. The server writes `socialModerationQueue/{reportId}` with `reportId`, `reporterId`, `targetUserId`, the fixed category, `status: queued`, and `createdAtMs`. The report ID is a SHA-256 derivation of the reporter and request ID. An exact replay is queue- and count-stable; reusing the key with a different target or category fails closed. Each reporter can create at most five unique reports per UTC day; the server-only rate record contains reporter UID, UTC day, count, and update time.
 
 Firestore rules deny every client read and write to the queue and rate records. Treat Firebase/GCP administrative access as privileged production access: use an individually attributable account, least privilege, MFA, and the normal access-review process. Never export the queue to chat, issue comments, analytics, spreadsheets, personal storage, or a local fixture.
 
@@ -42,8 +42,9 @@ The queue and rate-limit collections currently have no TTL policy. Before public
 ```sh
 pnpm --dir firebase-functions exec jest --config jest.config.js --runInBand \
   src/__tests__/socialSafety.test.ts \
-  src/__tests__/socialSafetyCallables.test.ts
+  src/__tests__/socialSafetyCallables.test.ts \
+  src/__tests__/deleteAccount.test.ts
 pnpm --dir firebase-functions test:race:rules
 ```
 
-Required pre-release evidence still includes the production access roster, second-person review, approved disposition and appeal policy, approved retention, deployed rules/index verification, sample audit record, and an end-to-end role-account report/block exercise on Facebook web, iOS, and Android.
+The independent repository source review was repeated on 2026-08-22 against the service, callable schema, rules, deletion cleanup, and presence revocation paths. Required pre-release evidence still includes the production access roster, approved disposition and appeal policy, approved retention, deployed rules/index verification, sample audit record, and an end-to-end role-account report/block exercise on Facebook web, iOS, and Android.

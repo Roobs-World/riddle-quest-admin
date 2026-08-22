@@ -1,5 +1,7 @@
 import {createHash} from "node:crypto";
+import type {Database} from "firebase-admin/database";
 import {HttpsError} from "firebase-functions/v2/https";
+import {refreshBlockedRivalPresenceVisibility} from "../presence/presenceVisibility";
 import {admin} from "../shared/firebaseAdmin";
 
 /** Defines the social report categories value. */
@@ -59,7 +61,7 @@ const utcDay = (nowMs: number): string => new Date(nowMs).toISOString().slice(0,
 export async function blockKnownRival(
   reporterId: string,
   targetUserId: string,
-  options: {db?: FirebaseFirestore.Firestore; nowMs?: number} = {},
+  options: {db?: FirebaseFirestore.Firestore; database?: Database; nowMs?: number} = {},
 ): Promise<{blocked: true}> {
   validateIdentityPair(reporterId, targetUserId);
   const db = options.db ?? admin.firestore();
@@ -72,6 +74,10 @@ export async function blockKnownRival(
     requireKnownRival(known, targetUserId);
     transaction.set(blockRef, {targetUserId, blockedAtMs: nowMs}, {merge: false});
   });
+  // Do not report a successful block while an existing RTDB ACL can still
+  // expose either player's presence. The Firestore trigger repeats this work
+  // as reconciliation if the callable loses its response after this point.
+  await refreshBlockedRivalPresenceVisibility(reporterId, targetUserId, db, options.database);
   return {blocked: true};
 }
 

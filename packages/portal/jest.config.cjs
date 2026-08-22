@@ -40,7 +40,7 @@ module.exports = {
     global: {statements: 36, branches: 36, functions: 32, lines: 37},
     "src/developmentFirstRun.ts": {statements: 100, branches: 100, functions: 100, lines: 100},
     "src/testHarness.ts": {statements: 100, branches: 100, functions: 100, lines: 100},
-    "src/analytics/googleAnalytics.ts": {statements: 100, branches: 100, functions: 100, lines: 100},
+    "src/analytics/events.ts": {statements: 100, branches: 100, functions: 100, lines: 100},
     "src/play/localBridge.ts": {statements: 100, branches: 100, functions: 100, lines: 100},
     "src/play/profileMapper.ts": {statements: 100, branches: 100, functions: 100, lines: 100},
     "src/play/requestIds.ts": {statements: 100, branches: 100, functions: 100, lines: 100},
