@@ -178,6 +178,7 @@ const ENGLISH_NAMESPACE_BY_NAME: Record<SharedNamespace, NamespaceCatalog> = {
   race: enRace,
 };
 
+/** Describes a locale namespace installed by one explicit target composition root. */
 type TargetLocaleNamespaceRegistration = Readonly<{
   namespace: Exclude<Namespace, SharedNamespace>;
   english: NamespaceCatalog;
@@ -236,6 +237,7 @@ const mergeNamespaces = (namespaces: readonly NamespaceCatalog[]): RootCatalog =
   }, {});
 };
 
+/** Rebuilds the cached English catalog after target namespace registration. */
 const rebuildEnglishCatalog = (): void => {
   catalogCache.set("en", mergeNamespaces([
     ...ENGLISH_NAMESPACES,

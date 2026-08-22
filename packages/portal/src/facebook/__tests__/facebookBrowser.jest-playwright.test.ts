@@ -356,6 +356,8 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       await facebookHubTabs.first().press("ArrowRight");
       expect(await facebookHubTabs.nth(1).getAttribute("aria-selected")).toBe("true");
       expect(await facebookHubTabs.nth(1).evaluate((element) => element === document.activeElement)).toBe(true);
+      await successPage.locator(".riddle-sound-button").evaluate((element: HTMLElement) => element.click());
+      expect(await facebookHubTabs.nth(1).evaluate((element) => element === document.activeElement)).toBe(true);
       try {
         await successPage.waitForFunction(
           () => window.__facebookEvents.includes("overlay:name:show"),

@@ -1,4 +1,4 @@
-import {useEffect, type RefObject} from "react";
+import {useEffect, useEffectEvent, type RefObject} from "react";
 
 /** Parameters used to manage focus within the multiplayer dialogs. */
 export type RaceDialogFocusOptions = {
@@ -25,47 +25,48 @@ export function useRaceDialogFocus({
   dismissQuitConfirmation,
   requestClose,
 }: RaceDialogFocusOptions): void {
+  /** Handles keys using the latest dialog state without restarting the focus lifecycle. */
+  const handleKeyDown = useEffectEvent((event: KeyboardEvent) => {
+    if (event.key === "Escape") {
+      event.preventDefault();
+      if (quitConfirmationOpen) dismissQuitConfirmation();
+      else requestClose();
+      return;
+    }
+    if (event.key !== "Tab" || !dialogRef.current) return;
+    /** Dialog that currently owns keyboard focus. */
+    const activeDialog = quitConfirmationOpen ? quitDialogRef.current : dialogRef.current;
+    if (!activeDialog) return;
+    /** Interactive elements participating in the focus loop. */
+    const focusable = Array.from(
+      activeDialog.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), input:not([disabled]), [href], [tabindex]:not([tabindex="-1"])',
+      ),
+    );
+    if (focusable.length === 0) return;
+    /** First focusable element in the active dialog. */
+    const first = focusable[0];
+    /** Last focusable element in the active dialog. */
+    const last = focusable.at(-1)!;
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  });
+
   useEffect(() => {
     /** Element focused before the modal race experience opened. */
     const previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     dialogRef.current?.focus();
-    /** Handles escape-to-close and keyboard focus containment. */
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        event.preventDefault();
-        if (quitConfirmationOpen) dismissQuitConfirmation();
-        else requestClose();
-        return;
-      }
-      if (event.key !== "Tab" || !dialogRef.current) return;
-      /** Dialog that currently owns keyboard focus. */
-      const activeDialog = quitConfirmationOpen ? quitDialogRef.current : dialogRef.current;
-      if (!activeDialog) return;
-      /** Interactive elements participating in the focus loop. */
-      const focusable = Array.from(
-        activeDialog.querySelectorAll<HTMLElement>(
-          'button:not([disabled]), input:not([disabled]), [href], [tabindex]:not([tabindex="-1"])',
-        ),
-      );
-      if (focusable.length === 0) return;
-      /** First focusable element in the active dialog. */
-      const first = focusable[0];
-      /** Last focusable element in the active dialog. */
-      const last = focusable.at(-1)!;
-      if (event.shiftKey && document.activeElement === first) {
-        event.preventDefault();
-        last.focus();
-      } else if (!event.shiftKey && document.activeElement === last) {
-        event.preventDefault();
-        first.focus();
-      }
-    };
     document.addEventListener("keydown", handleKeyDown);
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
       previousFocus?.focus();
     };
-  }, [dialogRef, dismissQuitConfirmation, quitConfirmationOpen, quitDialogRef, requestClose]);
+  }, [dialogRef]);
 
   useEffect(() => {
     if (!quitConfirmationOpen) return;

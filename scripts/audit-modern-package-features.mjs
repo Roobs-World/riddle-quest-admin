@@ -1,9 +1,11 @@
 import {readFile} from "node:fs/promises";
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
-const [viteConfig, portalPackage, portalJest, coreJest, functionsJest, functionsPackage, openAIService, raceSchemas] =
+const [viteEntry, webTargetViteConfig, portalPackage, portalJest, coreJest, functionsJest, functionsPackage,
+  openAIService, raceSchemas] =
   await Promise.all([
     read("packages/portal/vite.config.ts"),
+    read("packages/portal/webTargetViteConfig.ts"),
     read("packages/portal/package.json"),
     read("packages/portal/jest.config.cjs"),
     read("packages/core/jest.config.js"),
@@ -18,11 +20,28 @@ const requireText = (source, expected, message) => {
   if (!source.includes(expected)) failures.push(message);
 };
 
-requireText(viteConfig, "reactCompilerPreset", "React Compiler must remain enabled through Vite's official preset.");
-requireText(viteConfig, "tsconfigPaths: true", "Vite 8 native tsconfig path resolution must remain enabled.");
-requireText(viteConfig, "forwardConsole", "Vite 8 browser console forwarding must remain enabled for development.");
 requireText(
-  viteConfig,
+  viteEntry,
+  "createWebTargetViteConfig({command, mode, environment: process.env})",
+  "The Vite entry must delegate to the isolated Web Target configuration.",
+);
+requireText(
+  webTargetViteConfig,
+  "reactCompilerPreset",
+  "React Compiler must remain enabled through Vite's official preset.",
+);
+requireText(
+  webTargetViteConfig,
+  "tsconfigPaths: true",
+  "Vite 8 native tsconfig path resolution must remain enabled.",
+);
+requireText(
+  webTargetViteConfig,
+  "forwardConsole",
+  "Vite 8 browser console forwarding must remain enabled for development.",
+);
+requireText(
+  webTargetViteConfig,
   'devtools: command === "serve"',
   "Vite 8 integrated development tools must remain enabled for development without affecting production builds.",
 );

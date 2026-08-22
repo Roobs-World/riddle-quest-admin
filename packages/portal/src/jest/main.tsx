@@ -17,6 +17,7 @@ installButtonAnalytics();
 installGlobalErrorAnalytics();
 trackScreen("startup");
 
+/** Resolves the Jest application mount point. */
 const root = document.getElementById("root");
 if (!root) throw new Error("jest-root-missing");
 

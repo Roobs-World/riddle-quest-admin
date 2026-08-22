@@ -6,6 +6,7 @@ const effects: Effect[] = [];
 
 jest.mock("react", () => ({
   useEffect: (effect: Effect) => effects.push(effect),
+  useEffectEvent: <Callback extends (...args: never[]) => unknown>(callback: Callback) => callback,
 }));
 
 import {useRaceDialogFocus} from "../hooks/useRaceDialogFocus";
