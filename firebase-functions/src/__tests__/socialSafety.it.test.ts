@@ -1,4 +1,5 @@
-import {getApps, initializeApp} from "firebase-admin/app";
+import {deleteApp, initializeApp, type App} from "firebase-admin/app";
+import {getDatabase, type Database} from "firebase-admin/database";
 import {getFirestore} from "firebase-admin/firestore";
 import {blockKnownRival, reportKnownRival} from "../social/socialSafety";
 
@@ -7,13 +8,25 @@ const REPORTER = `facebook_${"c".repeat(40)}`;
 const TARGET = `jest_${"d".repeat(40)}`;
 const NOW = Date.parse("2026-08-19T12:00:00.000Z");
 let db: FirebaseFirestore.Firestore;
+let database: Database;
+let app: App;
 
 const collections = ["users", "socialModerationQueue", "socialReportRateLimits"];
 
 beforeAll(async () => {
-  if (getApps().length === 0) initializeApp({projectId: PROJECT_ID});
-  db = getFirestore();
-  await Promise.all(collections.map((name) => db.recursiveDelete(db.collection(name))));
+  app = initializeApp({
+    projectId: PROJECT_ID,
+    databaseURL: `http://${process.env.FIREBASE_DATABASE_EMULATOR_HOST ?? "127.0.0.1:9000"}?ns=${PROJECT_ID}`,
+  }, "social-safety-integration");
+  db = getFirestore(app);
+  database = getDatabase(app);
+  await Promise.all([
+    ...collections.map((name) => db.recursiveDelete(db.collection(name))),
+    database.ref(`presenceVisibility/${REPORTER}/${TARGET}`).remove(),
+    database.ref(`presenceVisibility/${TARGET}/${REPORTER}`).remove(),
+    database.ref(`presenceViewers/${REPORTER}/${TARGET}`).remove(),
+    database.ref(`presenceViewers/${TARGET}/${REPORTER}`).remove(),
+  ]);
   await db.doc(`users/${REPORTER}/knownRivals/${TARGET}`).set({
     targetUserId: TARGET,
     source: "completed_race",
@@ -21,7 +34,16 @@ beforeAll(async () => {
   });
 });
 
-afterAll(async () => Promise.all(collections.map((name) => db.recursiveDelete(db.collection(name)))));
+afterAll(async () => {
+  await Promise.all([
+    ...collections.map((name) => db.recursiveDelete(db.collection(name))),
+    database.ref(`presenceVisibility/${REPORTER}/${TARGET}`).remove(),
+    database.ref(`presenceVisibility/${TARGET}/${REPORTER}`).remove(),
+    database.ref(`presenceViewers/${REPORTER}/${TARGET}`).remove(),
+    database.ref(`presenceViewers/${TARGET}/${REPORTER}`).remove(),
+  ]);
+  await deleteApp(app);
+});
 
 it("serializes report idempotency and the daily cap under concurrency", async () => {
   const replayed = await Promise.all(Array.from({length: 8}, () => reportKnownRival(REPORTER, {
@@ -46,8 +68,21 @@ it("serializes report idempotency and the daily cap under concurrency", async ()
 });
 
 it("writes an immediate block only for the established rival", async () => {
-  await expect(blockKnownRival(REPORTER, TARGET, {db, nowMs: NOW})).resolves.toEqual({blocked: true});
+  await database.ref().update({
+    [`presenceVisibility/${REPORTER}/${TARGET}`]: true,
+    [`presenceVisibility/${TARGET}/${REPORTER}`]: true,
+    [`presenceViewers/${REPORTER}/${TARGET}`]: true,
+    [`presenceViewers/${TARGET}/${REPORTER}`]: true,
+  });
+  await expect(blockKnownRival(REPORTER, TARGET, {database, db, nowMs: NOW})).resolves.toEqual({blocked: true});
   await expect(db.doc(`users/${REPORTER}/blockedRivals/${TARGET}`).get()).resolves.toMatchObject({exists: true});
+  const revokedPresence = await Promise.all([
+    database.ref(`presenceVisibility/${REPORTER}/${TARGET}`).get(),
+    database.ref(`presenceVisibility/${TARGET}/${REPORTER}`).get(),
+    database.ref(`presenceViewers/${REPORTER}/${TARGET}`).get(),
+    database.ref(`presenceViewers/${TARGET}/${REPORTER}`).get(),
+  ]);
+  expect(revokedPresence.every((snapshot) => !snapshot.exists())).toBe(true);
   await expect(blockKnownRival(REPORTER, `facebook_${"e".repeat(40)}`, {db, nowMs: NOW}))
     .rejects.toMatchObject({code: "permission-denied"});
 });
