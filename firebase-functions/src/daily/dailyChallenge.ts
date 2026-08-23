@@ -327,7 +327,9 @@ export const getCurrentClassicRiddle = onCallWithSentry(
         throw new HttpsError("unauthenticated", "The user must be authenticated to load a classic riddle.");
       }
 
-      let classicIndex = parseClassicLoadIndex(request.data?.classicIndex);
+      const requestedClassicIndex = request.data?.classicIndex === undefined
+        ? undefined
+        : parseClassicLoadIndex(request.data.classicIndex);
 
       let locale = "en";
       let user = await getUser(request.auth.uid);
@@ -337,8 +339,6 @@ export const getCurrentClassicRiddle = onCallWithSentry(
         SUPPORTED_LOCALES.includes(request.data.locale as (typeof SUPPORTED_LOCALES)[number])
       ) {
         locale = request.data.locale;
-      } else if (request.data?.locale !== undefined) {
-        throw new HttpsError("invalid-argument", "A supported locale is required.");
       } else if (
         user?.preferredLanguage &&
         SUPPORTED_LOCALES.includes(user.preferredLanguage as (typeof SUPPORTED_LOCALES)[number])
@@ -346,7 +346,16 @@ export const getCurrentClassicRiddle = onCallWithSentry(
         locale = user.preferredLanguage;
       }
 
-      const resume = parseSinglePlayerResumeFields(request.data);
+      let resume: ReturnType<typeof parseSinglePlayerResumeFields>;
+      try {
+        resume = parseSinglePlayerResumeFields(request.data);
+      } catch (error) {
+        if (!(error instanceof HttpsError) || error.code !== "invalid-argument") throw error;
+        functions.logger.warn("Ignoring malformed optional Classic resume fields.", {
+          hasSessionToken: request.data?.sessionToken !== undefined,
+          hasRiddleId: request.data?.riddleId !== undefined,
+        });
+      }
       let reconciledTerminalSession = false;
       if (resume) {
         const resumed = await getIssuedAuthoritativeSession(
@@ -383,10 +392,10 @@ export const getCurrentClassicRiddle = onCallWithSentry(
         expectedClassicIndex = user.progress?.classicIndex ?? 1;
         reconciledTerminalSession = true;
       }
-      if (classicIndex !== expectedClassicIndex && !reconciledTerminalSession) {
+      if (requestedClassicIndex !== undefined && requestedClassicIndex !== expectedClassicIndex && !reconciledTerminalSession) {
         throw new HttpsError("permission-denied", "Only the current classic riddle can be loaded.");
       }
-      classicIndex = expectedClassicIndex;
+      let classicIndex = expectedClassicIndex;
 
       let playable = await getPlayableClassicRiddle(classicIndex, locale);
       if (!playable) {

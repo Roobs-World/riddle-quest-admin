@@ -760,6 +760,31 @@ describe("Daily Challenge Functions", () => {
       expect(mockGetClassicRiddleByIndex).toHaveBeenCalledWith(10, "en");
     });
 
+    it("recovers from malformed optional legacy load hints using server-authoritative state", async () => {
+      const mockUserId = "classicLegacyHintUser";
+      mockGetUser.mockResolvedValue(getDefaultPlayer(mockUserId, {
+        progress: {classicIndex: 10, dailyChallengeIndex: 0, dailyChallengeCurrentQuestion: 0},
+      }));
+      mockGetClassicRiddleByIndex.mockResolvedValue({
+        riddleId: "classic-10",
+        text: "Classic question?",
+        answer: "ANSWER",
+        locale: "en",
+      });
+
+      const result = await getCurrentClassicRiddle({
+        auth: {uid: mockUserId},
+        data: {locale: "en-GB", sessionToken: "legacy-token-without-riddle"},
+      });
+
+      expect(result.challenge?.questions[0]).toMatchObject({
+        riddleId: "classic-10",
+        answerLength: 6,
+        sessionToken: SESSION_TOKEN,
+      });
+      expect(mockGetClassicRiddleByIndex).toHaveBeenCalledWith(10, "en");
+    });
+
     it("should return error when the requested classic riddle is unavailable", async () => {
       const mockUserId = "classicMissingUser";
       mockGetUser.mockResolvedValue(getDefaultPlayer(mockUserId, {
