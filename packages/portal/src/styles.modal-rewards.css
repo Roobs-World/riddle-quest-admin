@@ -20,7 +20,7 @@
   background: var(--play-panel) url("../../../assets/images/home-bg.svg") center / 118% 118% no-repeat;
 }
 .modal-settings > h2 {
-  justify-self: center;
+  justify-self: stretch;
   font-size: 36px;
 }
 .modal-x {

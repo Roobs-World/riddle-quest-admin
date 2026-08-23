@@ -125,9 +125,20 @@ describeBrowser("standalone Jest browser game", () => {
       await expectAccessible(page, "onboarding");
       const welcomeCard = await page.locator(".onboarding-card-welcome").boundingBox();
       const welcomeLogo = await page.locator(".onboarding-card-welcome .onboarding-logo").boundingBox();
+      const welcomeAction = await page.getByRole("button", {name: /let's play/i}).boundingBox();
       expect(welcomeCard).not.toBeNull();
       expect(welcomeLogo).not.toBeNull();
+      expect(welcomeAction).not.toBeNull();
       expect(welcomeLogo!.width / welcomeCard!.width).toBeGreaterThan(0.85);
+      expect(await page.locator(".onboarding-card-welcome p").first().evaluate((element) => (
+        getComputedStyle(element).textAlign
+      ))).toBe("left");
+      expect(welcomeAction!.width).toBeGreaterThanOrEqual(200);
+      expect(welcomeAction!.y + welcomeAction!.height).toBeLessThanOrEqual(welcomeCard!.y + welcomeCard!.height);
+      await page.keyboard.press("Tab");
+      const focusedOnboardingAction = page.locator(":focus");
+      await expect(focusedOnboardingAction.getAttribute("class")).resolves.toContain("play-primary");
+      expect(await focusedOnboardingAction.evaluate((element) => getComputedStyle(element).outlineWidth)).toBe("3px");
       await completeOnboardingAndTours(page, true);
       await expectAccessible(page, "game");
 

@@ -27,6 +27,11 @@
   background: var(--play-panel);
   color: var(--play-ink);
 }
+.game-modal:has(> .modal-x) > h2 {
+  width: 100%;
+  padding-inline-end: 72px;
+  text-align: left;
+}
 .game-modal.modal-achievements,
 .game-modal.modal-profile,
 .game-modal.modal-statistics,

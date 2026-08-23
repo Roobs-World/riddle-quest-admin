@@ -74,6 +74,14 @@
   max-width: none;
   max-height: none;
 }
+.onboarding-card-welcome p {
+  width: min(390px, 100%);
+  text-align: left;
+}
+.onboarding-card-welcome > .play-primary {
+  width: min(240px, 100%);
+  margin-top: 6px;
+}
 .onboarding-card p {
   max-width: 390px;
   margin: 0;
@@ -167,6 +175,9 @@
     gap: 8px;
     padding: 28px 20px 16px;
     border-radius: 32px;
+  }
+  .onboarding-card-registration {
+    align-content: center;
   }
   .onboarding-logo {
     width: min(260px, 76%);
