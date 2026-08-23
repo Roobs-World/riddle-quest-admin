@@ -86,7 +86,7 @@ While signed into Jest, open:
 https://jest.com/g/riddle-q?host=http://localhost:3000
 ```
 
-This uses the real Jest SDK inside the Jest shell. The production Firebase backend deliberately rejects the localhost iframe origin, so this workflow is limited to SDK, overlay, entry-payload, and responsive-shell checks. Never add localhost to the deployed `JEST_GAME_ORIGIN`; use the deterministic local harness for application branches and an uploaded Draft with sandbox users for live backend, payment, notification, persistence, and referral verification.
+This uses the real Jest SDK inside the Jest shell. The production Firebase backend deliberately rejects the localhost iframe origin, so this workflow is limited to SDK, overlay, entry-payload, and responsive-shell checks. Never add localhost to the deployed `JEST_GAME_ORIGIN`; use the deterministic local harness for application branches and an uploaded sandbox build for live backend, payment, notification, persistence, and referral verification.
 
 ## Configuration
 
@@ -364,18 +364,19 @@ pnpm verify:production
 pnpm verify:production:extended
 ```
 
-The gate prepares the ignored `@qwordly/core` deploy package before any Functions check, then runs the Functions type, lint, and unit suites through pinned Node.js 22.23.1 in addition to the Node.js 24 workspace checks. GitHub Actions mirrors these checks on clean runners without production secrets; deployed Jest sandbox purchases, subscriptions, activation, and moderation remain explicit owner-run checks.
+The gate prepares the ignored `@qwordly/core` deploy package before any Functions check, then runs the Functions type, lint, and unit suites through pinned Node.js 22.23.1 in addition to the Node.js 24 workspace checks. GitHub Actions mirrors these checks on clean runners without production secrets; deployed Jest sandbox purchases, subscriptions, active-version verification, and moderation remain explicit owner-run checks.
 
 ### Uploaded sandbox build
 
-Generate a short-lived login URL under Developer Console → Sandbox Users, then run:
+Generate a short-lived login URL under Developer Console → Sandbox Users, copy `buildVersion` from the accepted-pending upload receipt, then run:
 
 ```bash
 JEST_SANDBOX_LOGIN_URL='https://jest.com/...' \
+JEST_EXPECTED_BUILD_VERSION='1.0.0-dev.YYYYMMDDHHMMSS.commit.attempt' \
 pnpm --filter @qwordly/portal test:jest-deployed:playwright
 ```
 
-Optional deployed-test values are `JEST_DEPLOYED_GAME_URL`, `JEST_SANDBOX_STORAGE_STATE`, and `JEST_GAME_ID`. The default storage-state file lives under `/tmp`; do not commit authenticated browser state.
+`JEST_EXPECTED_BUILD_VERSION` is required. Optional deployed-test values are `JEST_DEPLOYED_GAME_URL`, `JEST_SANDBOX_STORAGE_STATE`, and `JEST_GAME_ID`. The default storage-state file lives under `/tmp`; do not commit authenticated browser state.
 
 Use two sandbox players for referral tests. Reset the invitee before rerunning attribution because Jest attributes the first entry. Local mocks cannot prove real notification delivery, catalog configuration, payment settlement, persistence, or referral conversion.
 
@@ -488,11 +489,13 @@ pnpm --dir firebase-functions test
 pnpm --dir firebase-functions run deploy --project riddle-quest-ec2b2
 ```
 
-The historical answer-bearing single-player cutover is complete and does not describe the currently selected Jest build.
-Before enabling automatic activation for this release, the selected `ef53cce7` client was compared with the release source:
-the core gameplay, Jest backend adapter, Functions gameplay/Race contracts, and rules trees are unchanged, so this client
-release is rolling-compatible and requires no coordinated backend cutover. Future releases that change those contracts
-must stop before `pnpm release:jest` and follow the guarded inactive workflow requirement in
+The historical answer-bearing single-player cutover is complete. A client-only comparison against the previously selected
+`ef53cce7` build was not sufficient: production still ran the `67384b8` Functions cohort, which predated the
+server-authoritative session response required by the client. On 2026-08-23, `getCurrentClassicRiddle`,
+`getCurrentDailyChallenge`, `submitSinglePlayerGuess`, `completeGame`, `getHint`, `spendCoins`, and `skipRiddle` were
+deployed together and verified `ACTIVE` on one Firebase source hash. Before future automatic activation, verify the live
+Function cohort as well as client compatibility. Releases that change those contracts must stop before
+`pnpm release:jest` and follow the guarded inactive workflow requirement in
 [`docs/jest-html5-operations.md`](docs/jest-html5-operations.md#automatic-activation-compatibility).
 
 When Firestore rules or indexes change, deploy those explicitly and test the rules emulator first.

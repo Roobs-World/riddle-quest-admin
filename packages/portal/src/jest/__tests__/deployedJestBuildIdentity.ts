@@ -17,12 +17,16 @@ export function assertExactDeployedJestBuildUrl({
   if (!gameIdPattern.test(gameId)) {
     throw new Error("The expected Jest game ID is invalid");
   }
+  const canonicalGameId = gameId.toLowerCase();
   const parsed = new URL(url);
-  if (parsed.hostname !== `${gameId.toLowerCase()}.builds.jest.com`) {
+  if (parsed.protocol !== "https:" || parsed.username || parsed.password || parsed.port) {
+    throw new Error("The deployed Jest build URL must use canonical credential-free HTTPS");
+  }
+  if (parsed.hostname !== `${canonicalGameId}.builds.jest.com`) {
     throw new Error(`Expected the Riddle Quest Jest build host; received ${parsed.hostname}`);
   }
-  const pathSegments = parsed.pathname.split("/").filter(Boolean);
-  if (!pathSegments.includes(buildVersion)) {
+  const expectedPathname = `/${canonicalGameId}/${buildVersion}/index.html`;
+  if (parsed.pathname !== expectedPathname) {
     throw new Error(`Expected active Jest build ${buildVersion}; received ${parsed.pathname}`);
   }
   return parsed;

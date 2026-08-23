@@ -1,4 +1,5 @@
 import {describe, expect, it, jest} from "@jest/globals";
+import {HostToGameMessageSchema} from "@qwordly/core/bridge";
 import type {AuthSnapshot, HostServices} from "../types";
 import type {RaceOutcome} from "@qwordly/core/race";
 import {createFakeHostServices} from "../fakeServices";
@@ -93,6 +94,21 @@ describe("play host message handlers", () => {
     expect(getHostNoticeMessage("ErrorMessages.SERVICE_TEMPORARILY_UNAVAILABLE"))
       .toBe("Service temporarily unavailable. Please try again.");
     expect(getHostNoticeMessage("Already rendered")).toBe("Already rendered");
+  });
+
+  it("does not expose bridge validation details from an incompatible backend response", () => {
+    let validationError: unknown;
+    try {
+      HostToGameMessageSchema.parse({
+        type: "host:riddleLoaded",
+        payload: {riddle: {riddleId: "classic-1", text: "A clue", gameMode: "classic"}},
+      });
+    } catch (error) {
+      validationError = error;
+    }
+
+    expect(validationError).toBeDefined();
+    expect(getHostErrorMessage(validationError)).toBe("An unexpected error occurred. Please try again.");
   });
 
   it("initializes an authenticated frame and reports playability once", async () => {

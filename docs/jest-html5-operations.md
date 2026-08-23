@@ -324,9 +324,12 @@ email to confirm that the receipt's exact version became active, then run the de
 ### Automatic activation compatibility
 
 The canonical command is a production promotion, not a preview workflow. Run it only when the client is rolling-compatible
-with the deployed backend and rules. If a future release introduces an incompatible client/server protocol, migration, or
-maintenance-window requirement, stop before running `pnpm release:jest` and add a separately reviewed inactive-Draft
-workflow. Do not attempt to override the canonical policy with ambient or persistent activation variables.
+with the deployed backend and rules. Do not infer backend compatibility from the previously active client alone. Before
+automatic activation, verify that `getCurrentClassicRiddle`, `getCurrentDailyChallenge`, `submitSinglePlayerGuess`,
+`completeGame`, `getHint`, `spendCoins`, and `skipRiddle` are all `ACTIVE` and belong to one reviewed Firebase deployment
+cohort. If a future release introduces an incompatible client/server protocol, migration, or maintenance-window
+requirement, stop before running `pnpm release:jest` and add a separately reviewed inactive-Draft workflow. Do not attempt
+to override the canonical policy with ambient or persistent activation variables.
 
 Automatic build activation is separate from publication. The upload token cannot approve the game, complete Simulator or
 moderation requirements, or change a private listing to Public; those remain owner actions in the Developer Console.

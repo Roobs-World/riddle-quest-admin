@@ -35,6 +35,13 @@ export type HostOperationName =
 
 /** Gets host error message. */
 export const getHostErrorMessage = (error: unknown): string => {
+  if (
+    typeof error === "object" &&
+    error !== null &&
+    (("name" in error && error.name === "ZodError") || ("issues" in error && Array.isArray(error.issues)))
+  ) {
+    return tr("ErrorMessages.GENERIC_UNEXPECTED_ERROR");
+  }
   if (typeof error === "object" && error && "message" in error) {
     return String(error.message).replace(/^Firebase:\s*/i, "");
   }
