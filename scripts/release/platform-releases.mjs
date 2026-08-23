@@ -9,15 +9,15 @@ const releasePlans = Object.freeze([
   Object.freeze({
     target: "jest",
     title: "Jest",
-    boundary: "remote-inactive-draft",
+    boundary: "remote-active-on-ready",
     publicCommand: "pnpm release:jest",
-    summary: "Run the hardened production gate and upload one immutable inactive Draft.",
-    externalEffect: "Uploads to Jest as inactive; it never activates or submits the game.",
+    summary: "Run the hardened production gate and upload one immutable build for automatic activation.",
+    externalEffect: "Uploads to Jest and activates the exact build automatically after processing succeeds; it never submits the game for review or makes a private game public.",
     command: Object.freeze({
       executable: "pnpm",
       args: Object.freeze(["--filter", "@qwordly/portal", "release:jest:timestamped"]),
     }),
-    handoff: "Wait for authoritative build readiness, then preview and activate the exact version manually.",
+    handoff: "Wait for authoritative completion, verify the exact version is active, then run the deployed sandbox smoke.",
     runbook: "docs/jest-html5-operations.md",
   }),
   Object.freeze({
@@ -188,8 +188,8 @@ export async function runPlatformRelease(
     (environment.JEST_UPLOAD_IS_ACTIVE !== undefined || environment.JEST_CONFIRM_ACTIVATION !== undefined)
   ) {
     throw new Error(
-      "release:jest is inactive-only; remove JEST_UPLOAD_IS_ACTIVE and JEST_CONFIRM_ACTIVATION, " +
-      "then activate the verified Draft manually",
+      "release:jest has a fixed automatic-activation contract; remove JEST_UPLOAD_IS_ACTIVE and " +
+      "JEST_CONFIRM_ACTIVATION instead of overriding the committed release policy",
     );
   }
   await commandRunner({...definition.command, cwd: repositoryDirectory, environment});

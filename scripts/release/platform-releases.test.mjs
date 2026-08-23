@@ -49,8 +49,8 @@ test("the root package exposes separate build and release commands without relea
 });
 
 test("target plans preserve distinct external effects", () => {
-  assert.equal(getPlatformReleasePlan("jest").boundary, "remote-inactive-draft");
-  assert.match(getPlatformReleasePlan("jest").externalEffect, /inactive/u);
+  assert.equal(getPlatformReleasePlan("jest").boundary, "remote-active-on-ready");
+  assert.match(getPlatformReleasePlan("jest").externalEffect, /activates the exact build automatically/u);
   assert.equal(getPlatformReleasePlan("facebook").boundary, "local-immutable-handoff");
   assert.match(getPlatformReleasePlan("facebook").externalEffect, /^None;/u);
   assert.equal(getPlatformReleasePlan("youtube").boundary, "local-manual-handoff");
@@ -118,7 +118,7 @@ test("execution delegates exactly once and reports the platform handoff", async 
   assert.match(lines.join("\n"), /immutable Reddit handoff|Release handoff ready/u);
 });
 
-test("the canonical Jest adapter refuses every automated activation request", async () => {
+test("the canonical Jest adapter refuses ambient overrides of its fixed activation policy", async () => {
   for (const environment of [
     {JEST_UPLOAD_IS_ACTIVE: "true", JEST_CONFIRM_ACTIVATION: "game-id"},
     {JEST_UPLOAD_IS_ACTIVE: "false"},
@@ -129,7 +129,7 @@ test("the canonical Jest adapter refuses every automated activation request", as
       environment,
       commandRunner: async () => { invoked = true; },
       log: () => {},
-    }), /release:jest is inactive-only/u);
+    }), /fixed automatic-activation contract/u);
     assert.equal(invoked, false);
   }
 });
@@ -140,7 +140,7 @@ test("the CLI rejects extra stages and supports a read-only plan", () => {
   delete environment.NODE_TEST_CONTEXT;
   const plan = spawnSync(process.execPath, [cli, "jest", "--dry-run"], {encoding: "utf8", env: environment});
   assert.equal(plan.status, 0, plan.stderr);
-  assert.match(plan.stdout, /remote-inactive-draft/u);
+  assert.match(plan.stdout, /remote-active-on-ready/u);
   assert.match(plan.stdout, /no build, upload, package, or publish action/u);
 
   const rejected = spawnSync(process.execPath, [cli, "reddit", "publish"], {encoding: "utf8", env: environment});

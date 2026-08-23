@@ -419,7 +419,15 @@ console.log(`Jest accepted build ${buildVersion} as version ${accepted.versionId
 console.log(`Accepted attempt receipt: ${attemptReceiptPath}`);
 console.log(`Accepted source barrier: ${unresolvedReceiptPath}`);
 console.log(`Pending receipt: ${pendingReceiptPath}`);
-console.log(
-  "HTTP 202 does not mean the build is ready or active. Verify completion in the Jest Developer Console or " +
-  `build-completion email before manually removing ${unresolvedReceiptPath}, previewing, or activating it.`,
-);
+if (activationRequested) {
+  console.log(
+    "HTTP 202 means the automatic activation request was accepted, not that the build is active yet. " +
+    "Jest will activate this exact version after processing succeeds. Verify authoritative completion in the " +
+    `Developer Console or build-completion email before removing ${unresolvedReceiptPath} or treating it as live.`,
+  );
+} else {
+  console.log(
+    "HTTP 202 does not mean the build is ready or active. Verify completion in the Jest Developer Console or " +
+    `build-completion email before manually removing ${unresolvedReceiptPath}, previewing, or activating it.`,
+  );
+}

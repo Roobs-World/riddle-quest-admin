@@ -59,7 +59,7 @@ test("the upload gate binds the exact archive bytes, version, game and activatio
   const contents = Buffer.from("deterministic gated archive");
   await writeFile(archivePath, contents);
   const record = createGatedArtifactRecord({
-    activationRequested: false,
+    activationRequested: true,
     archiveBytes: contents.byteLength,
     archiveEntries: 2,
     archivePath,
@@ -73,7 +73,7 @@ test("the upload gate binds the exact archive bytes, version, game and activatio
   await writePrivateJson(gateReceiptPath, record);
 
   const verified = await loadAndVerifyGatedArtifact({
-    activationRequested: false,
+    activationRequested: true,
     archivePath,
     buildVersion: "1.0.0-test.1",
     gameId,
@@ -85,7 +85,7 @@ test("the upload gate binds the exact archive bytes, version, game and activatio
 
   await assert.rejects(
     loadAndVerifyGatedArtifact({
-      activationRequested: true,
+      activationRequested: false,
       archivePath,
       buildVersion: "1.0.0-test.1",
       gameId,
@@ -99,7 +99,7 @@ test("the upload gate binds the exact archive bytes, version, game and activatio
   await writeFile(archivePath, Buffer.from("archive changed after its gate"));
   await assert.rejects(
     loadAndVerifyGatedArtifact({
-      activationRequested: false,
+      activationRequested: true,
       archivePath,
       buildVersion: "1.0.0-test.1",
       gameId,
@@ -756,7 +756,7 @@ test("the persisted 202 receipt remains pending until an authoritative Jest conf
   const receiptPath = path.join(directory, "pending.json");
   const receipt = createPendingUploadReceipt({
     acceptedAt: new Date("2026-08-11T12:00:00.000Z"),
-    activationRequested: false,
+    activationRequested: true,
     artifact: {archive: {file: "build.zip", bytes: 42, sha256: "a".repeat(64)}},
     buildStatus: "processing",
     buildVersion: "1.0.0-test.1",
@@ -767,6 +767,7 @@ test("the persisted 202 receipt remains pending until an authoritative Jest conf
   await writePrivateJson(receiptPath, receipt);
 
   assert.deepEqual(JSON.parse(await readFile(receiptPath, "utf8")), receipt);
+  assert.equal(receipt.activationRequested, true);
   assert.equal(receipt.readiness, "pending");
   assert.deepEqual(receipt.source, {commit: sourceCommit, dirty: false});
   assert.equal(receipt.verification.automatedPolling, false);
@@ -887,8 +888,10 @@ test("the release sequence gates, packages, verifies, and uploads one immutable 
     /"ls-files",\s*"--others",\s*"--ignored",\s*"--exclude-standard",\s*"-z",\s*"--",\s*":\(glob\)\*\*\/\.env",\s*":\(glob\)\*\*\/\.env\.\*"/,
   );
   assert.match(releaseSource, /additionalMaskedFilePaths\.push\(\.\.\.ignoredEnvironmentPaths\)/);
-  assert.match(releaseSource, /timestamped Jest releases are inactive-only/);
-  assert.match(releaseSource, /const activationRequested = false/);
+  assert.match(releaseSource, /timestamped Jest releases always request automatic activation/);
+  assert.match(releaseSource, /const activationRequested = true/);
+  assert.match(releaseSource, /JEST_CONFIRM_ACTIVATION:\s*RIDDLE_QUEST_JEST_GAME_ID/);
+  assert.match(releaseSource, /JEST_UPLOAD_IS_ACTIVE:\s*String\(activationRequested\)/);
   assert.doesNotMatch(releaseSource, /credentials\.JEST_UPLOAD_IS_ACTIVE === ["']true["']/);
   assert.match(releaseSource, /additionalMaskedDirectoryPaths:\s*ignoredSensitiveDirectoryPaths/);
 
@@ -1030,6 +1033,11 @@ test("the release sequence gates, packages, verifies, and uploads one immutable 
 
   assert.match(uploadSource, /inspectArchiveEntries\(gatedArchive\)/);
   assert.match(uploadSource, /new Blob\(\[gatedArchive\]/);
+  assert.match(
+    uploadSource,
+    /activationRequested && process\.env\.JEST_CONFIRM_ACTIVATION\?\.toLowerCase\(\) !== gameId/,
+  );
+  assert.match(uploadSource, /form\.append\(["']isActive["'],\s*String\(activationRequested\)\)/);
   assert.doesNotMatch(uploadSource, /inspectArchiveEntries\(archivePath\)/);
   assert.match(artifactSource, /contents\.byteLength !== record\.archive\.bytes/);
   assert.doesNotMatch(artifactSource, /stat\(archivePath\)/);

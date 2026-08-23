@@ -7,6 +7,7 @@ import {
   assertPrivateJestStorageState,
   persistPrivateJestStorageState,
 } from "./deployedJestStorageState";
+import {assertExactDeployedJestBuildUrl} from "./deployedJestBuildIdentity";
 
 const liveRequested = process.env.PORTAL_DEPLOYED_TESTS === "1";
 const sandboxLoginUrl = process.env.JEST_SANDBOX_LOGIN_URL;
@@ -14,6 +15,7 @@ const gameLaunchUrl = process.env.JEST_DEPLOYED_GAME_URL ?? "https://jest.com/g/
 const sandboxStatePath =
   process.env.JEST_SANDBOX_STORAGE_STATE ?? "/tmp/riddle-quest-jest-sandbox-state.json";
 const expectedGameId = process.env.JEST_GAME_ID ?? "019faa68-f3ec-755d-9ab5-c887fb426801";
+const expectedBuildVersion = process.env.JEST_EXPECTED_BUILD_VERSION ?? "";
 const expectedSubscriptionSku = "com.roobsworld.riddlequest.premium.monthly";
 const runHeadless = process.env.JEST_DEPLOYED_HEADED !== "1";
 const appCheckDebugToken = process.env.FIREBASE_APPCHECK_DEBUG_TOKEN;
@@ -22,6 +24,9 @@ if (liveRequested && !sandboxLoginUrl && !existsSync(sandboxStatePath)) {
   throw new Error(
     "JEST_SANDBOX_LOGIN_URL or JEST_SANDBOX_STORAGE_STATE is required for deployed Jest tests",
   );
+}
+if (liveRequested && !expectedBuildVersion) {
+  throw new Error("JEST_EXPECTED_BUILD_VERSION is required to prove the exact active Jest artifact");
 }
 
 const describeDeployed = liveRequested ? describe : describe.skip;
@@ -134,7 +139,12 @@ describeDeployed("deployed Jest sandbox game", () => {
     await page.goto(gameLaunchUrl, {waitUntil: "domcontentloaded"});
 
     const game = await waitForDeployedGame(page);
-    expect(new URL(game.url()).hostname).toBe(`${expectedGameId}.builds.jest.com`);
+    const deployedBuildUrl = assertExactDeployedJestBuildUrl({
+      buildVersion: expectedBuildVersion,
+      gameId: expectedGameId,
+      url: game.url(),
+    });
+    expect(deployedBuildUrl.hostname).toBe(`${expectedGameId}.builds.jest.com`);
     expect(game.url()).not.toContain("harness=");
 
     const letsPlay = game.getByRole("button", {name: /let's play/i});

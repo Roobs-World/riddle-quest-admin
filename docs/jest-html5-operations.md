@@ -44,10 +44,12 @@ Validate Jest SDK loading, player identity payloads, registration dismissal/comp
 
 ### 3. Uploaded build with sandbox users
 
-Create a sandbox user in **Developer Console → Sandbox Users**, upload and activate a build, generate a login URL, then run:
+Create a sandbox user in **Developer Console → Sandbox Users**, deploy the automatically activating build, generate a
+login URL, then run with the exact build version from its accepted receipt:
 
 ```bash
 JEST_SANDBOX_LOGIN_URL='https://jest.com/...' \
+JEST_EXPECTED_BUILD_VERSION='1.0.0-dev.YYYYMMDDHHMMSS.commit.attempt' \
 pnpm --filter @qwordly/portal test:jest-deployed:playwright
 ```
 
@@ -56,6 +58,7 @@ If Firebase App Check rejects the automated Chromium session, rerun the deployed
 ```bash
 JEST_DEPLOYED_HEADED=1 \
 JEST_SANDBOX_LOGIN_URL='https://jest.com/...' \
+JEST_EXPECTED_BUILD_VERSION='1.0.0-dev.YYYYMMDDHHMMSS.commit.attempt' \
 pnpm --filter @qwordly/portal test:jest-deployed:playwright
 ```
 
@@ -65,7 +68,8 @@ Use two sandbox users for referral attribution. Reset the invitee's player state
 
 Use the `pnpm jest:hosted` local URL in the Simulator for SDK embedding and lifecycle checks only. Open the uploaded version for the complete quality checklist and record a self-review that covers onboarding, guest play, registration, one complete riddle, the shop, a canceled checkout, a successful sandbox checkout, subscription state, notifications, sharing, portrait/landscape layout, audio, and background/foreground recovery. Attach the recording to the exact version being submitted for moderation.
 
-After upload, use the version's preview link with the developer account for a final smoke test before activation. A preview is not a substitute for sandbox payment, notification, persistence, or referral validation.
+After automatic activation, open that exact version in the Simulator and run the sandbox acceptance gate immediately. A
+Simulator run is not a substitute for sandbox payment, notification, persistence, or referral validation.
 
 ## Local release verification
 
@@ -102,10 +106,15 @@ The Fund-facing end-to-end check must target the active uploaded build through a
 
 ```bash
 JEST_SANDBOX_LOGIN_URL='https://jest.com/...' \
+JEST_EXPECTED_BUILD_VERSION='1.0.0-dev.YYYYMMDDHHMMSS.commit.attempt' \
 pnpm --filter @qwordly/portal test:jest-deployed:playwright
 ```
 
-Generate the short-lived login URL from **Developer Console → Sandbox Users**. The test opens the deployed Riddle Quest route after sandbox authentication; `JEST_DEPLOYED_GAME_URL` can override the default `https://jest.com/g/riddle-q` route. The test rejects direct storage-origin access, local servers, and `harness=` mock mode; it requires the game iframe at the configured `*.builds.jest.com` origin and verifies real identity and riddle Function traffic.
+Generate the short-lived login URL from **Developer Console → Sandbox Users**. The test opens the deployed Riddle Quest
+route after sandbox authentication; `JEST_DEPLOYED_GAME_URL` can override the default `https://jest.com/g/riddle-q` route.
+It requires `JEST_EXPECTED_BUILD_VERSION` from the accepted upload receipt and rejects an older active iframe before feature
+assertions. It also rejects direct storage-origin access, local servers, and `harness=` mock mode; the exact build must run
+at the configured `*.builds.jest.com` origin and produce real identity and riddle Function traffic.
 
 The authenticated browser state is cached only in `/tmp/riddle-quest-jest-sandbox-state.json` so a consumed one-time link can be reused while diagnosing a failed run. The writer pre-creates and revalidates it as a regular current-user `0600` file; the payment and subscription gates fail closed on permissive, linked, or foreign-owned state. Set `JEST_SANDBOX_STORAGE_STATE` to override that ephemeral path, keep the custom file owner-only, and remove it after the acceptance evidence is complete. The deployed gate also requires a successful signed `verifyJestReferrals` response and validates its conversion, two-sided reward, reward amount, and balance fields; a sandbox smoke test cannot pass if referral reconciliation is unavailable.
 
@@ -114,6 +123,7 @@ Headless browsers can be rejected by reCAPTCHA Enterprise even when the hosted b
 ```bash
 read -rsp 'App Check debug token: ' RQ_APP_CHECK_DEBUG_TOKEN; echo
 FIREBASE_APPCHECK_DEBUG_TOKEN="$RQ_APP_CHECK_DEBUG_TOKEN" \
+JEST_EXPECTED_BUILD_VERSION='1.0.0-dev.YYYYMMDDHHMMSS.commit.attempt' \
 pnpm --filter @qwordly/portal test:jest-deployed:playwright
 unset RQ_APP_CHECK_DEBUG_TOKEN
 ```
@@ -170,11 +180,17 @@ While logged into the developer account, open `https://jest.com/g/riddle-q?host=
 
 ### Uploaded build and sandbox users
 
-Upload an audited draft, generate a login link under **Developer Console → Sandbox Users**, then run `test:jest-deployed:playwright` using the command above. Manually exercise notifications, purchase success/cancel/error/recovery, subscriptions, persistence, and two-player referrals. Sandbox checkout shows the real checkout UI but charges zero.
+Deploy the audited automatically activating build, generate a login link under **Developer Console → Sandbox Users**, then
+run `test:jest-deployed:playwright` with its exact receipt build version using the command above. Manually exercise
+notifications, purchase success/cancel/error/recovery, subscriptions, persistence, and two-player referrals. Sandbox
+checkout shows the real checkout UI but charges zero.
 
 ### Simulator and version preview
 
-Before review, select the uploaded version in the Developer Console Simulator, complete its quality checklist, and record a self-review covering onboarding, guest play, registration, the first solved riddle, shop entry, and multiplayer entry. Use the version preview link with the developer account for a final check of that exact uploaded build before activation.
+Before review, select the exact active version in the Developer Console Simulator, complete its quality checklist, and
+record a self-review covering onboarding, guest play, registration, the first solved riddle, shop entry, and multiplayer
+entry. The canonical production command activates after processing, so perform this check and the sandbox gate immediately
+after the Console or completion email confirms the version.
 
 These environments are complementary: local mocks prove application branches, the hosted emulator proves the live SDK boundary, sandbox users prove platform-backed state, and the Simulator produces moderator evidence.
 
@@ -232,8 +248,8 @@ pnpm release:jest
 ```
 
 Keep `JEST_UPLOAD_IS_ACTIVE` and `JEST_CONFIRM_ACTIVATION` out of that persistent file; the credential parser rejects
-both so a stale file can never request activation. The canonical `release:jest` interface also rejects either variable
-in its process environment, so every automated release through that interface remains an inactive Draft.
+both so a stale file cannot change release behavior. The canonical `release:jest` interface also rejects either variable
+in its process environment. Automatic activation is a fixed, reviewed property of the canonical release code.
 
 The command refuses a dirty worktree, acquires an exclusive release lock, adds the source commit and a random attempt ID
 to its timestamped version, and runs `verify:production:extended` before reading credential-file contents. Timestamped
@@ -250,8 +266,9 @@ requires the same fingerprint immediately before upload. It materializes the com
 `/tmp` workspace, builds there with the Sentry token scoped to the direct Vite process, packages a version-specific
 archive, extracts it into a fresh read-only directory, and reruns the artifact, W3C, and both browser gates against those
 extracted bytes. Parent-held pre/post fingerprints and the trusted uploader independently bind the Git commit and clean
-state, ZIP size, SHA-256, version, game, receipt, and activation intent before the unchanged ZIP is uploaded as an inactive
-Draft. It does not publish the game, activate the build, or submit it for review.
+state, ZIP size, SHA-256, version, game, receipt, and activation intent before the unchanged ZIP is uploaded with
+`isActive=true`. Jest activates that exact version only after background processing succeeds. This does not make a private
+game public or submit it for review.
 
 The sandbox prevents release children from opening the configured credential path or inspecting the parent through the
 host PID namespace. It does not isolate the release from other same-user or privileged host processes, a compromised
@@ -291,7 +308,8 @@ or command-line argument.
 
 Before sending bytes, the uploader stores atomic mode-`0600` barriers for both the exact game/build version and the
 game/source commit. The documented upload API returns HTTP `202` with a `versionId` and `buildStatus: "processing"`; that
-means accepted for background processing, not ready or active. A timeout, termination, or crash leaves the source barrier
+means the upload and automatic-activation request were accepted for background processing, not that the build is already
+ready or active. A timeout, termination, or crash leaves the source barrier
 blocked as transmitting/ambiguous, so generating a new timestamped build version from the same source cannot bypass the
 uncertain attempt. Reconcile it through the [Developer Console build status and build-completion email](https://docs.jest.com/dev-console/builds).
 After a documented `202`, both receipts transition to accepted-pending and record the version ID and exact ZIP checksum;
@@ -300,59 +318,18 @@ status may an owner manually remove the corresponding `<game-id>.<source-commit>
 `packages/portal/.jest-upload-receipts`; retain the accepted build-specific receipt as the audit record, or reconcile it
 before ever retrying that exact version. Do not delete either barrier and retry blindly: Jest may already have accepted
 the first request. Jest does not currently document an authoritative build-status polling endpoint, so the tooling
-deliberately does not infer readiness from elapsed time or poll an unofficial URL.
+deliberately does not infer readiness from elapsed time or poll an unofficial URL. Use the Developer Console or completion
+email to confirm that the receipt's exact version became active, then run the deployed sandbox smoke.
 
-Activate only the already verified Draft version in the Developer Console. The canonical release interface has no
-activation action: it creates a new inactive version, never activates an upload, and cannot activate a previously
-previewed Draft.
+### Automatic activation compatibility
 
-### Coordinated gameplay protocol cutover
+The canonical command is a production promotion, not a preview workflow. Run it only when the client is rolling-compatible
+with the deployed backend and rules. If a future release introduces an incompatible client/server protocol, migration, or
+maintenance-window requirement, stop before running `pnpm release:jest` and add a separately reviewed inactive-Draft
+workflow. Do not attempt to override the canonical policy with ambient or persistent activation variables.
 
-The authoritative single-player rewrite is deliberately fail-closed and is not rolling-compatible with the currently
-active legacy artifact. The legacy client expects an answer-bearing response and client-side completion; the hardened
-backend omits that answer, and the new client requires the new session endpoints and public status fields. Treat this as
-a maintenance-window cutover, not a zero-downtime Functions deploy.
-
-1. Run `pnpm verify:production:extended`, upload the resulting ZIP with `isActive=false`, wait for the build-completion
-   email/Developer Console `ready` status, and record its version ID and the gated ZIP SHA-256. Never use asynchronous
-   `isActive=true` for this cutover.
-2. Before changing production, arrange a player-blocking maintenance window with Jest. Hiding the game is only a
-   secondary discovery control: Jest documents that Hidden removes a game from Explore and Library, while an Active
-   version is still served. Use a Jest-operator-confirmed launch block or a separately audited, already-previewed
-   maintenance-only version. If neither is available, stop; the protocol cutover is blocked.
-3. Enter maintenance, optionally hide the listing as defense in depth, and verify both the public route and a sandbox
-   login cannot begin gameplay or checkout. Allow in-flight requests to quiesce. Version activation cannot terminate
-   already-open legacy tabs, so keep the hardened backend fail-closed and require those tabs to reload. The deletion
-   generation and Web Lock coordinate only current-build tabs on the same origin; older or cross-origin contexts cannot
-   join that drain protocol and are an explicit reason this cutover cannot be rolling.
-4. While maintenance remains active, deploy the tested Firestore rules/indexes and the complete Functions revision.
-   Verify every new/changed callable is present, its Cloud Run invoker binding is correct, logs contain no rollout
-   errors, and the deployed runtime is Node 22. Do not expose an answer again to make an old client work.
-   Confirm the committed Firestore TTL policies are enabled: each private single-player session and its content binding
-   share one fixed expiry 30 days after session issue (mutations never slide it), while terminal-recovery bindings have a
-   fixed 30-day expiry from terminal commit and cannot extend the session. Expired sessions are rejected logically at
-   every server boundary even if asynchronous deletion lags. Loss-only completion receipts expire after 45 days so they
-   outlive every valid session replay; canonical win receipts deliberately have no `expiresAt` and remain permanent
-   progression/reward guards.
-5. Complete the username-reservation migration below until the final empty page reports `complete: true`. Then preview
-   the exact inactive gameplay Draft against the new backend with sandbox users. At minimum verify identity, a normal
-   guess/win, paid-continue reload recovery, Daily terminal-loss replay resistance, locale-switch Daily recovery,
-   purchase recovery, and account reload.
-6. Manually activate that exact verified Draft by version ID. Confirm the active version matches the pending upload
-   receipt, rerun the deployed sandbox smoke, and only then remove the maintenance control and unhide the listing.
-7. Monitor Functions errors, purchase/referral reconciliation, and gameplay completion after reopening. Retain the
-   maintenance timestamps, backend revision, version ID, ZIP checksum, sandbox evidence, and operator identity.
-
-If any check fails after backend cutover begins, keep the game in maintenance and fix forward. Do not reactivate the
-legacy artifact against the hardened backend, roll back only one side of the protocol, or restore the answer-bearing
-backend behavior. Those are not safe rollback paths.
-
-The latest verified active build is:
-
-- Build: `1.0.0-dev.20260810110401`
-- Release: `riddle-quest@1.0.0-dev.20260810110401`
-- Publication status: active at `https://jest.com/g/riddle-q`; the public route returned HTTP 200 and the authenticated
-  sandbox acceptance test passed on 2026-08-10
+Automatic build activation is separate from publication. The upload token cannot approve the game, complete Simulator or
+moderation requirements, or change a private listing to Public; those remain owner actions in the Developer Console.
 
 ## Developer Console setup
 
@@ -381,7 +358,8 @@ Owner access to `https://jest.com/developers` is required:
 5. If a dedicated notification image is approved, set its reference as `VITE_JEST_NOTIFICATION_ASSET_REFERENCE`. Without
    one, Jest uses the configured Hero image.
 6. Create at least two sandbox players and configure and publish both onboarding slugs from the manifest.
-7. Activate the audited Draft build and run the acceptance matrix below.
+7. Verify that the automatically activated build matches the receipt's exact version ID and build version, then run the
+   acceptance matrix below.
 
 ## Sandbox acceptance matrix
 

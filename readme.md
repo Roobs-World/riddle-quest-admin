@@ -189,10 +189,11 @@ Set:
 | `JEST_BUILD_VERSION` | Direct preflight/upload only | Build version bound to the gated archive; defaults to `1.0.0` |
 
 The release command requires a clean committed worktree, binds the build to that full Git commit, generates a unique
-`1.0.0-dev.YYYYMMDDHHMMSS.<commit>.<attempt>` version, and uploads an inactive Draft by default. It does not make a
-private game public or submit it for moderation. Never persist `JEST_UPLOAD_IS_ACTIVE` or
+`1.0.0-dev.YYYYMMDDHHMMSS.<commit>.<attempt>` version, and uploads it with automatic activation bound to the exact gated
+archive. Jest makes the version active only after background processing succeeds. This does not make a private game
+public or submit it for moderation. Never persist `JEST_UPLOAD_IS_ACTIVE` or
 `JEST_CONFIRM_ACTIVATION` in the credential file; the parser rejects both, and the canonical release interface rejects
-either value in its process environment. Activate the already verified Draft manually in the Developer Console.
+either value in its process environment because activation policy is fixed in reviewed release code.
 
 ## Jest Developer Console setup
 
@@ -462,7 +463,14 @@ cannot protect against another same-user or privileged host process, a compromis
 backups, hard links, or alternate secret copies. Run releases on a dedicated trusted host, keep dependencies reviewed and
 locked, and do not place other credentials in readable paths outside the masked home.
 
-Jest responds to a successful submission with HTTP `202`: the build is accepted for background processing, not ready or active. Before transmission, the command writes an owner-private attempt receipt under `packages/portal/.jest-upload-receipts/`. A timeout, interruption, or crash leaves that version blocked as transmitting/ambiguous until an owner reconciles it in the Developer Console or completion email; blindly retrying could duplicate an accepted build. After a documented `202`, the receipt records the version ID and exact archive checksum. The documented API has no authoritative build-status polling endpoint, so the release tool does not invent one. Publication and moderation submission remain manual owner actions.
+Jest responds to a successful submission with HTTP `202`: the build and automatic-activation request are accepted for
+background processing, not ready or active yet. Before transmission, the command writes an owner-private attempt receipt
+under `packages/portal/.jest-upload-receipts/`. A timeout, interruption, or crash leaves that version blocked as
+transmitting/ambiguous until an owner reconciles it in the Developer Console or completion email; blindly retrying could
+duplicate an accepted build. After a documented `202`, the receipt records the version ID, exact archive checksum, and
+activation intent. The documented API has no authoritative build-status polling endpoint, so the release tool does not
+invent one. Jest activates the exact version after processing succeeds; publication and moderation submission remain
+manual owner actions.
 
 Prepare the Reddit release handoff separately after its hosted prerequisites are complete:
 
@@ -480,12 +488,12 @@ pnpm --dir firebase-functions test
 pnpm --dir firebase-functions run deploy --project riddle-quest-ec2b2
 ```
 
-The authoritative single-player protocol is not rolling-compatible with the currently active legacy build: the hardened
-backend no longer returns answers for client-side scoring, while the new client depends on the new session endpoints and
-status fields. Do not deploy either side while the other is serving normal play, and do not describe this release as
-zero-downtime. Use the player-blocking maintenance and staged-activation procedure in
-[`docs/jest-html5-operations.md`](docs/jest-html5-operations.md#coordinated-gameplay-protocol-cutover). A failed cutover
-stays in maintenance and rolls forward; it must never restore an answer-bearing backend contract.
+The historical answer-bearing single-player cutover is complete and does not describe the currently selected Jest build.
+Before enabling automatic activation for this release, the selected `ef53cce7` client was compared with the release source:
+the core gameplay, Jest backend adapter, Functions gameplay/Race contracts, and rules trees are unchanged, so this client
+release is rolling-compatible and requires no coordinated backend cutover. Future releases that change those contracts
+must stop before `pnpm release:jest` and follow the guarded inactive workflow requirement in
+[`docs/jest-html5-operations.md`](docs/jest-html5-operations.md#automatic-activation-compatibility).
 
 When Firestore rules or indexes change, deploy those explicitly and test the rules emulator first.
 

@@ -60,8 +60,9 @@ pnpm dlx firebase-tools@15.25.1 functions:secrets:set REDDIT_UID_SECRET --projec
    - Store the replacement only in the owner-only external credential file
      documented in `docs/jest-html5-operations.md`; require mode `0600`.
    - Keep `JEST_UPLOAD_IS_ACTIVE` and `JEST_CONFIRM_ACTIVATION` out of that
-     persistent file. The canonical release interface rejects both variables;
-     activate the already verified Draft manually in the Developer Console.
+     persistent file. The canonical release interface rejects both variables
+     because automatic activation is fixed in reviewed release code and bound
+     to the exact gated artifact.
 
 4. Sentry and sandbox credentials
    - Revoke any exposed Sentry organization token and replace it with a dedicated
@@ -84,7 +85,7 @@ pnpm dlx firebase-tools@15.25.1 functions:secrets:set REDDIT_UID_SECRET --projec
 6. Provider dashboards
    - OpenAI: create a new API key, deploy it as a Functions secret, then revoke the old key.
    - Jest: rotate the shared secret and upload token independently, then verify
-     signed identity/purchase/referral payloads and inactive Draft upload.
+     signed identity/purchase/referral payloads and the exact automatically activated upload.
    - Meta: create a new app secret, keep it server-only, verify signed identity
      and deletion fixtures, then revoke the superseded app-secret version. Do not
      rotate the independent UID HMAC key in place; use the disabled-identity
@@ -127,5 +128,5 @@ Record the following before release:
 - Confirmation that old keys are revoked or disabled.
 - Confirmation that local `.env`, release credential, sandbox-state, and service
   account files remain untracked and have owner-only permissions where retained.
-- The deployed Functions revision and inactive Jest Draft version used for
+- The deployed Functions revision and active Jest version used for
   post-rotation sandbox verification.

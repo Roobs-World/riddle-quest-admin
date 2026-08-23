@@ -480,6 +480,11 @@ const attemptId = randomUUID().replaceAll("-", "").slice(0, 8);
 const packageVersion = JSON.parse(readFileSync(join(packageDirectory, "package.json"), "utf8")).version;
 const buildVersion = `${packageVersion}-dev.${stamp}.${sourceCommit.slice(0, 12)}.${attemptId}`;
 const sentryRelease = `riddle-quest@${buildVersion}`;
+// The canonical Jest release is a production deployment. Keep this intent
+// fixed in reviewed source rather than accepting a stale credential or ambient
+// environment override. The uploader binds it to the exact gated archive and
+// Jest activates that version only after background processing succeeds.
+const activationRequested = true;
 const workspaceDirectory = join(workspaceRoot, buildVersion);
 const immutableSourceDirectory = join(workspaceDirectory, "source");
 const immutablePackageDirectory = join(immutableSourceDirectory, "packages", "portal");
@@ -531,9 +536,10 @@ const gateEnvironment = {
   ...releaseChildEnvironment,
   JEST_BUILD_COMMIT: sourceCommit,
   JEST_BUILD_VERSION: buildVersion,
+  JEST_CONFIRM_ACTIVATION: RIDDLE_QUEST_JEST_GAME_ID,
   JEST_GAME_ID: RIDDLE_QUEST_JEST_GAME_ID,
   JEST_RELEASE_ATTEMPT_ID: attemptId,
-  JEST_UPLOAD_IS_ACTIVE: "false",
+  JEST_UPLOAD_IS_ACTIVE: String(activationRequested),
   JEST_UPLOAD_DRY_RUN: "false",
   SENTRY_RELEASE: sentryRelease,
   SENTRY_UPLOAD_SOURCEMAPS: "0",
@@ -548,7 +554,6 @@ Object.assign(gateEnvironment, {
   JEST_GATE_RECEIPT_PATH: join(gatePreflightDirectory, "gated-artifact.json"),
   JEST_RECEIPT_DIRECTORY: gatePreflightDirectory,
 });
-delete gateEnvironment.JEST_CONFIRM_ACTIVATION;
 
 const runPnpm = (args, environment, cwd = repositoryDirectory) => run("pnpm", args, {cwd, env: environment});
 const runNode = (script, args, environment, cwd, input, sandboxOverrides) =>
@@ -661,10 +666,10 @@ const makeReadOnly = (directory) => {
 
 for (const key of ["JEST_UPLOAD_IS_ACTIVE", "JEST_CONFIRM_ACTIVATION"]) {
   if (process.env[key] !== undefined) {
-    throw new Error(`${key} is unsupported; timestamped Jest releases are inactive-only`);
+    throw new Error(`${key} is unsupported; timestamped Jest releases always request automatic activation`);
   }
 }
-console.log(`Gating immutable Jest build ${buildVersion} from ${sourceCommit}`);
+console.log(`Gating immutable Jest build ${buildVersion} from ${sourceCommit} for automatic activation`);
 
 try {
   const unresolvedUploadBarriers = findUnresolvedUploadBarriers({
@@ -716,13 +721,13 @@ try {
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(notificationEmail)) {
     throw new Error("JEST_NOTIFICATION_EMAIL must be a valid email address");
   }
-  const activationRequested = false;
-  console.log(`Creating an inactive draft in ${workspaceDirectory}`);
+  console.log(`Creating an automatically activating Jest build in ${workspaceDirectory}`);
 
   const immutableEnvironment = {
     ...gateEnvironment,
+    JEST_CONFIRM_ACTIVATION: gameId,
     JEST_GAME_ID: gameId,
-    JEST_UPLOAD_IS_ACTIVE: "false",
+    JEST_UPLOAD_IS_ACTIVE: String(activationRequested),
   };
   const sentryBuildEnvironment = {
     ...immutableEnvironment,

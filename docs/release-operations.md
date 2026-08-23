@@ -25,7 +25,7 @@ pnpm release:reddit --dry-run
 
 | Command | Repository work | External effect | Successful handoff |
 | --- | --- | --- | --- |
-| `pnpm release:jest` | Clean committed snapshot, full extended production verification, isolated build, exact-byte browser checks, receipt barriers | Uploads one inactive Jest Draft | Version ID, ZIP hash, and accepted-pending receipts; readiness, preview, activation, and submission remain manual |
+| `pnpm release:jest` | Clean committed snapshot, full extended production verification, isolated build, exact-byte browser checks, receipt barriers | Uploads one Jest build with automatic activation | Version ID, ZIP hash, and accepted-pending receipts; authoritative completion and active-version verification remain required |
 | `pnpm release:facebook` | Clean-source Facebook build and artifact audits, root-content ZIP, source/hash receipt, read-only hash-named archive, hash-scoped retry barrier | None | Printed immutable archive path for manual upload as a non-production Meta Draft |
 | `pnpm release:youtube` | Content audit, all isolated target builds and browser gates, deterministic package and evidence | None | `build-youtube.zip`, manifest, and test report for manual Portal ingestion and certification |
 | `pnpm release:reddit` | Contract validation, fresh isolated Devvit package build, commit/hash-bound receipt and read-only candidate handoff | None | Immutable package under `packages/reddit-app/.reddit-release-receipts`; remote ingestion remains blocked pending exact-byte proof |
@@ -71,7 +71,7 @@ pnpm build:reddit
 
 ### Jest
 
-`release:jest` delegates intact to the timestamped release module. It refuses a dirty tree, preserves Bubblewrap and credential isolation, uploads inactive by default, and leaves accepted-pending or ambiguous barriers in place. It never activates a version or submits it for review.
+`release:jest` delegates intact to the timestamped release module. It refuses a dirty tree, preserves Bubblewrap and credential isolation, binds automatic activation to the exact gated artifact, and leaves accepted-pending or ambiguous barriers in place. Jest activates that exact version only after processing succeeds. The command does not make a private game public or submit it for review.
 
 ### Facebook
 
