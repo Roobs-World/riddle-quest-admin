@@ -456,14 +456,24 @@ describeBrowser("standalone Jest browser game", () => {
       );
       expect(
         await page.evaluate(() => {
+          const shell = document.querySelector<HTMLElement>(".game-app");
+          const content = document.querySelector<HTMLElement>(".game-content");
           const navigation = document.querySelector(".game-bottom-navigation")?.getBoundingClientRect();
-          return (
-            document.documentElement.scrollWidth <= innerWidth + 1 &&
-            document.documentElement.scrollHeight <= innerHeight + 1 &&
-            Boolean(navigation && navigation.bottom <= innerHeight + 1)
-          );
+          return {
+            documentWidthFits: document.documentElement.scrollWidth <= innerWidth + 1,
+            documentHeightFits: document.documentElement.scrollHeight <= innerHeight + 1,
+            shellOverflowHidden: getComputedStyle(shell!).overflowY === "hidden",
+            contentFits: Boolean(content && content.getBoundingClientRect().bottom <= innerHeight + 1),
+            navigationFits: Boolean(navigation && navigation.bottom <= innerHeight + 1),
+          };
         }),
-      ).toBe(true);
+      ).toEqual({
+        documentWidthFits: true,
+        documentHeightFits: true,
+        shellOverflowHidden: true,
+        contentFits: true,
+        navigationFits: true,
+      });
       for (const height of [701, 736]) {
         await page.setViewportSize({width: 390, height});
         await page.waitForFunction(
@@ -645,10 +655,14 @@ describeBrowser("standalone Jest browser game", () => {
       );
       expect(
         await page.evaluate(() => {
+          const shell = document.querySelector<HTMLElement>(".game-app");
+          const content = document.querySelector<HTMLElement>(".game-content");
           const navigation = document.querySelector(".game-bottom-navigation")?.getBoundingClientRect();
           return (
             document.documentElement.scrollWidth <= innerWidth + 1 &&
             document.documentElement.scrollHeight <= innerHeight + 1 &&
+            getComputedStyle(shell!).overflowY === "hidden" &&
+            Boolean(content && content.getBoundingClientRect().bottom <= innerHeight + 1) &&
             Boolean(navigation && navigation.bottom <= innerHeight + 1)
           );
         }),
