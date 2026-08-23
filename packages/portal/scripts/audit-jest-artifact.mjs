@@ -40,6 +40,7 @@ const forbidden = [
   ],
   ["Reddit Devvit integration", /\bdevvit(?:-internal)?\b|redditGatewaySecret|requestExpandedMode|RedditPlatform/i],
   ["Facebook Instant Games integration", /connect\.facebook\.net|\bFBInstant\b|fbapp-config\.json/i],
+  ["Facebook App Check adapter", /Facebook App Check|facebook-app-check-(?:expiry-invalid|token-provider)/i],
   [
     "Facebook callable endpoint",
     /\b(?:getFacebookClientConfiguration|listFacebookTournament|recordFacebookTournament|listFacebookContextBoard|recordFacebookContextRun|exchangeFacebookIdentity|issueFacebookIdentityNonce|bindFacebookReferral|createFacebookReferral|joinFacebookContext|leaveFacebookContext)\b/,

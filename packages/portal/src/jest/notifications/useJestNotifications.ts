@@ -12,7 +12,7 @@ import {
   RACE_RESULTS_REMINDER_ID,
   replaceEngagementReminders,
 } from "./engagement";
-import {captureBrowserException} from "../../observability/sentry";
+import {captureBrowserException} from "../../observability/browserErrorReporter";
 
 /** Describes with platform activity. */
 type WithPlatformActivity = <Result>(operation: () => Promise<Result>) => Promise<Result>;

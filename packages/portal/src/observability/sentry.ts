@@ -15,6 +15,8 @@ type BrowserSentryConfiguration = {
   production: boolean;
   /** Immutable application release identifier. */
   release?: string;
+  /** Web Target that owns this Sentry adapter. */
+  runtime: "jest" | "facebook";
 };
 
 /** Tracks whether the browser SDK has been initialized by this application. */
@@ -56,7 +58,7 @@ export function initializeBrowserSentry(configuration: BrowserSentryConfiguratio
     beforeSend: (event) => redactBrowserSentryEvent(event),
     beforeSendTransaction: (event) => redactBrowserSentryEvent(event),
   });
-  Sentry.setTag("runtime", "jest-html5");
+  Sentry.setTag("runtime", `${configuration.runtime}-html5`);
   initialized = true;
   return true;
 }

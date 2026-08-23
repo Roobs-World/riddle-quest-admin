@@ -82,6 +82,7 @@ jobs:
       - run: pnpm --filter @qwordly/portal build:jest
       - run: pnpm --filter @qwordly/portal build:facebook
       - run: pnpm --filter @qwordly/portal build:reddit
+      - run: pnpm --filter @qwordly/reddit-app build:package:from-client
       - run: pnpm --filter @qwordly/portal build:youtube:fixture
       - run: pnpm --filter @qwordly/portal exec playwright install --with-deps chromium
       - run: pnpm --dir firebase-functions test:race:rules

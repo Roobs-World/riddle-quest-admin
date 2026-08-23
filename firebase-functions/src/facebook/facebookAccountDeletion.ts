@@ -1,7 +1,7 @@
 import {createHash} from "node:crypto";
 import {admin} from "../shared/firebaseAdmin";
 import {facebookFirebaseUid, isFacebookFirebaseUid, MAX_FACEBOOK_ACCOUNT_GENERATION} from "./facebookSecurity";
-import {deleteAccountForUser} from "../profile/accountDeletion";
+import {deleteAccountForUser} from "../profile/accountDeletion/deleteAccountData";
 
 /** Defines the identity collection value. */
 const IDENTITY_COLLECTION = "providerIdentities";

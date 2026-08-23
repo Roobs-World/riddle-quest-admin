@@ -1,6 +1,6 @@
 import {createHash} from "node:crypto";
 import {admin} from "../shared/firebaseAdmin";
-import {deleteAccountForUser} from "../profile/accountDeletion";
+import {deleteAccountForUser} from "../profile/accountDeletion/deleteAccountData";
 import {MAX_REDDIT_ACCOUNT_GENERATION, redditFirebaseUid} from "./redditSecurity";
 
 /** Provides provider identity id behavior. */

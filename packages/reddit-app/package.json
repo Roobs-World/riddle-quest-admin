@@ -9,9 +9,11 @@
   "scripts": {
     "build:client": "pnpm --filter @qwordly/portal build:reddit && node scripts/stage-client.mjs",
     "stage:client": "node scripts/stage-client.mjs",
+    "prebuild:server": "pnpm --filter @qwordly/core build",
     "build:server": "vite build",
     "build": "pnpm build:client && pnpm build:server",
     "build:package": "pnpm build:client && pnpm build:server && pnpm validate",
+    "build:package:from-client": "pnpm stage:client && pnpm build:server && pnpm validate",
     "licenses:generate": "RIDDLE_QUEST_LICENSE_PACKAGE=@qwordly/reddit-app RIDDLE_QUEST_LICENSE_OUTPUT=$PWD/third-party-licenses.reddit.txt node ../portal/scripts/generate-third-party-licenses.mjs --write",
     "licenses:check": "RIDDLE_QUEST_LICENSE_PACKAGE=@qwordly/reddit-app RIDDLE_QUEST_LICENSE_OUTPUT=$PWD/third-party-licenses.reddit.txt node ../portal/scripts/generate-third-party-licenses.mjs --check",
     "audit:performance": "node scripts/audit-performance.mjs",

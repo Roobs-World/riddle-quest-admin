@@ -2,12 +2,24 @@ import {describe, expect, it} from "@jest/globals";
 import {renderToString} from "react-dom/server";
 import type {BridgeProfile} from "@qwordly/core/bridge";
 import {ProfileModalPage} from "../modalPages/profile/ProfileModalPage";
+import {
+  ReferralSharingProvider,
+  type ReferralSharingCapability,
+} from "../sharing/ReferralSharingCapability";
 
 /** No-op callback used by server-rendered profile fixtures. */
 const noop = () => undefined;
 
 /** Resolving avatar callback used by server-rendered profile fixtures. */
 const updateAvatar = async () => undefined;
+
+/** Fake target capability used to expose referral UI in server-rendered tests. */
+const referralSharing: ReferralSharingCapability = {
+  rewardCoins: 100,
+  shareInvite: noop,
+  shareRace: noop,
+  shareResult: noop,
+};
 
 /** Complete profile fixture displayed by the registered-player variant. */
 const profile: BridgeProfile = {
@@ -57,7 +69,23 @@ describe("ProfileModalPage", () => {
     expect(html).toContain("avatar.webp");
     expect(html).toContain("width:50%");
     expect(html).toContain("Leaderboard");
-    expect(html).toContain("Invite a friend");
+    expect(html).not.toContain("Invite a friend");
     expect(html).toContain("Delete Account");
+  });
+
+  it("renders an invite only when the active target supplies sharing", () => {
+    const html = renderToString(
+      <ReferralSharingProvider capability={referralSharing}>
+        <ProfileModalPage
+          profile={profile}
+          platformRegistered
+          onOpenModal={noop}
+          onUpdateAvatar={updateAvatar}
+          onDeleteAccount={noop}
+        />
+      </ReferralSharingProvider>,
+    );
+    expect(html).toContain("Invite a friend");
+    expect(html).toContain("100");
   });
 });

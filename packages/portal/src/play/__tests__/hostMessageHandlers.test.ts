@@ -8,7 +8,7 @@ import {
   getHostNoticeMessage,
   type HostOperationName,
 } from "../hostMessageHandlers";
-import * as sentry from "../../observability/sentry";
+import * as browserErrorReporter from "../../observability/browserErrorReporter";
 
 const readAuthSnapshot = (services: HostServices): AuthSnapshot => {
   let snapshot: AuthSnapshot = {user: null, profile: null};
@@ -318,7 +318,8 @@ describe("play host message handlers", () => {
       productId: "coin-pack-1",
       purchaseType: "consumable",
     });
-    const captureBrowserException = jest.spyOn(sentry, "captureBrowserException").mockImplementation(() => undefined);
+    const captureBrowserException = jest.spyOn(browserErrorReporter, "captureBrowserException")
+      .mockImplementation(() => undefined);
     const harness = createHarness(services);
 
     await harness.handlers.requestPurchase({

@@ -5,9 +5,9 @@ import {
   resetAnalyticsForTests,
   setAnalyticsCollectionEnabled,
 } from "../analytics/events";
-import {captureBrowserException} from "../observability/sentry";
+import {captureBrowserException} from "../observability/browserErrorReporter";
 
-jest.mock("../observability/sentry", () => ({captureBrowserException: jest.fn()}));
+jest.mock("../observability/browserErrorReporter", () => ({captureBrowserException: jest.fn()}));
 
 describe("FatalErrorBoundary", () => {
   const originalWindow = globalThis.window;

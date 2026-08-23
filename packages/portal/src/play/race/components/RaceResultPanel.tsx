@@ -5,7 +5,6 @@ import type {
   RaceRunView,
 } from "@qwordly/core/race";
 import {tr} from "../../i18n";
-import {JEST_REFERRAL_REWARD_COINS} from "@qwordly/core/referrals";
 import {formatRaceTime} from "../logic/racePresentation";
 
 /** Displays authoritative race timing, publication, and rematch actions. */
@@ -14,6 +13,7 @@ export function RaceResultPanel({
   run,
   publication,
   publishing,
+  sharingRewardCoins,
   onPublish,
   onShare,
   onRematch,
@@ -24,6 +24,7 @@ export function RaceResultPanel({
   run: RaceRunView | null;
   publication: PublishRaceChallengeResponse | null;
   publishing: boolean;
+  sharingRewardCoins?: number;
   onPublish: () => void;
   onShare: () => void;
   onRematch: (categoryId: RaceCategoryId) => void;
@@ -51,19 +52,19 @@ export function RaceResultPanel({
           <strong>{formatRaceTime(outcome.adjustedFinishMs)}</strong>
         </span>
       </div>
-      {outcome.publishable && !publication && (
+      {sharingRewardCoins !== undefined && outcome.publishable && !publication ? (
         <button className="race-primary" onClick={onPublish} disabled={publishing}>
           {tr("RaceTo10.CREATE_CHALLENGE")}
         </button>
-      )}
-      {publication && (
+      ) : null}
+      {sharingRewardCoins !== undefined && publication ? (
         <>
           <p>{tr("RaceTo10.CHALLENGE_READY")}</p>
           <button className="race-primary" onClick={onShare}>
-            {tr("RaceTo10.SHARE_CHALLENGE", {coins: JEST_REFERRAL_REWARD_COINS})}
+            {tr("RaceTo10.SHARE_CHALLENGE", {coins: sharingRewardCoins})}
           </button>
         </>
-      )}
+      ) : null}
       {outcome.rematchEligible && run && (
         <div className="race-rematch-actions">
           <button className="race-primary" onClick={() => onRematch(run.categoryId)}>

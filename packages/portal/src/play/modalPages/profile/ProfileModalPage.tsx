@@ -5,7 +5,7 @@ import {tr} from "../../i18n";
 import {getNextRankForLevel, getRankForLevel} from "../../ranks";
 import {RankIcon} from "../../RankIcon";
 import {getProfileProgress} from "./profileProgress";
-import {JEST_REFERRAL_REWARD_COINS} from "@qwordly/core/referrals";
+import {useReferralSharing} from "../../sharing/ReferralSharingCapability";
 
 /** Properties required by the profile modal page. */
 export type ProfileModalPageProps = {
@@ -29,6 +29,8 @@ export function ProfileModalPage({
   onUpdateAvatar,
   onDeleteAccount,
 }: ProfileModalPageProps) {
+  /** Optional outbound sharing supplied by the active release target. */
+  const referralSharing = useReferralSharing();
   /** Recoverable avatar-selection error shown within the profile page. */
   const [avatarError, setAvatarError] = useState<string | null>(null);
   /** Whether the destructive account-deletion confirmation is visible. */
@@ -174,12 +176,11 @@ export function ProfileModalPage({
         </div>
       </dl>
       <div className="profile-links">
-        <button
-          className="profile-invite-button"
-          onClick={() => window.dispatchEvent(new CustomEvent("riddle-quest:share-invite"))}
-        >
-          {tr("VictoryModal.SHARE_TEXT", {coins: JEST_REFERRAL_REWARD_COINS})}
-        </button>
+        {referralSharing ? (
+          <button className="profile-invite-button" onClick={referralSharing.shareInvite}>
+            {tr("VictoryModal.SHARE_TEXT", {coins: referralSharing.rewardCoins})}
+          </button>
+        ) : null}
         <button data-tooltip="profileStatistics" onClick={() => onOpenModal("statistics")}>{tr("StatsModal.TITLE")}</button>
         <button data-tooltip="profileAchievements" onClick={() => onOpenModal("achievements")}>{tr("Achievements.MODAL_TITLE")}</button>
         <button

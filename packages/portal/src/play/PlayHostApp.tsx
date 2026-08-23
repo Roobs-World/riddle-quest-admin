@@ -19,10 +19,14 @@ import {
   getHostNoticeMessage,
   type HostOperationName,
 } from "./hostMessageHandlers";
-import {captureBrowserException} from "../observability/sentry";
+import {captureBrowserException} from "../observability/browserErrorReporter";
 import {safeBrowserStorageGet} from "./playerPreferences";
 import {coordinateHostServices, type AccountDeletionServiceGate} from "./accountDeletionServiceGate";
 import type {ActivePresenceState} from "../presence/PlatformPresenceSession";
+import {
+  ReferralSharingProvider,
+  type ReferralSharingCapability,
+} from "./sharing/ReferralSharingCapability";
 
 /** Creates host message. */
 const createHostMessage = <Message extends HostToGameMessage>(message: Message): Message => ({
@@ -57,6 +61,7 @@ export function PlayHostApp({
   onTogglePresence,
   raceLocalePolicy = "english-only",
   onPresenceStateChange,
+  referralSharing,
 }: {
   hostServices: HostServices;
   hostConfigurationWarning?: string | null;
@@ -88,6 +93,8 @@ export function PlayHostApp({
   onTogglePresence?: () => void;
   raceLocalePolicy?: "english-only" | "all";
   onPresenceStateChange?: (state: ActivePresenceState) => void;
+  /** Optional outbound referral sharing supplied by the active release target. */
+  referralSharing?: ReferralSharingCapability | null;
 }) {
   const locale = useLocale();
   const sessionIdRef = useRef(createRequestId("session"));
@@ -510,37 +517,39 @@ export function PlayHostApp({
   }
 
   return (
-    <div className="play-game-shell">
-      {notice && <div className="play-alert game-shell-alert">{getHostNoticeMessage(notice)}</div>}
-      <GameFrameApp
-        localBridge
-        interactionBlocked={serverInteractionActive}
-        restoredGame={initialPlayerData?.activeGame}
-        onSaveGame={saveActiveGame}
-        registrationName={registrationName}
-        registrationInviterName={registrationInviterName}
-        initialRaceChallengeId={initialRaceChallengeId}
-        initialRaceInbox={initialRaceInbox}
-        raceFeatureEnabled={raceBuildEnabled}
-        prefetchedRaceCategories={prefetchedRaceCategories}
-        presenceEnabled={presenceEnabled}
-        onTogglePresence={onTogglePresence}
-        nativeSocial={platformCapabilities?.nativeSocial}
-        matchmaking={platformCapabilities?.matchmaking}
-        playerOverlay={platformCapabilities?.overlay}
-        platformPlayerId={platformCapabilities?.overlay ? platformPlayerId : undefined}
-        tournaments={platformCapabilities?.tournaments}
-        contextBoard={platformCapabilities?.contextBoard}
-        raceLocalePolicy={raceLocalePolicy}
-        onPresenceStateChange={onPresenceStateChange}
-      />
-      {serverInteractionActive ? (
-        <SpinningWheelLoader
-          overlay
-          message={!startupComplete ? tr("WebPortal.STARTUP_GAME") : undefined}
-          progress={!startupComplete ? 88 : undefined}
+    <ReferralSharingProvider capability={referralSharing}>
+      <div className="play-game-shell">
+        {notice && <div className="play-alert game-shell-alert">{getHostNoticeMessage(notice)}</div>}
+        <GameFrameApp
+          localBridge
+          interactionBlocked={serverInteractionActive}
+          restoredGame={initialPlayerData?.activeGame}
+          onSaveGame={saveActiveGame}
+          registrationName={registrationName}
+          registrationInviterName={registrationInviterName}
+          initialRaceChallengeId={initialRaceChallengeId}
+          initialRaceInbox={initialRaceInbox}
+          raceFeatureEnabled={raceBuildEnabled}
+          prefetchedRaceCategories={prefetchedRaceCategories}
+          presenceEnabled={presenceEnabled}
+          onTogglePresence={onTogglePresence}
+          nativeSocial={platformCapabilities?.nativeSocial}
+          matchmaking={platformCapabilities?.matchmaking}
+          playerOverlay={platformCapabilities?.overlay}
+          platformPlayerId={platformCapabilities?.overlay ? platformPlayerId : undefined}
+          tournaments={platformCapabilities?.tournaments}
+          contextBoard={platformCapabilities?.contextBoard}
+          raceLocalePolicy={raceLocalePolicy}
+          onPresenceStateChange={onPresenceStateChange}
         />
-      ) : null}
-    </div>
+        {serverInteractionActive ? (
+          <SpinningWheelLoader
+            overlay
+            message={!startupComplete ? tr("WebPortal.STARTUP_GAME") : undefined}
+            progress={!startupComplete ? 88 : undefined}
+          />
+        ) : null}
+      </div>
+    </ReferralSharingProvider>
   );
 }

@@ -6,7 +6,7 @@ import type {
   PlatformStorage,
   PlayerData,
 } from "../platform/types";
-import {parseSavedGame} from "../platform/playerDataValidation";
+import {parsePlayerData} from "../platform/playerDataValidation";
 import {requireFacebookInstant, type FacebookInstantSdk} from "./fbinstant";
 import {
   resolveFacebookCapabilityVisibility,
@@ -49,25 +49,6 @@ const parsePreferences = (value: unknown): PlatformPreferences => {
       (value.facebookNotificationLastPromptAtMs as number) >= 0
       ? {facebookNotificationLastPromptAtMs: value.facebookNotificationLastPromptAtMs as number}
       : {}),
-  };
-};
-
-/** Parses player data. */
-const parsePlayerData = async (value: unknown): Promise<PlayerData | null> => {
-  if (
-    !isRecord(value) ||
-    value.schemaVersion !== 1 ||
-    !Number.isSafeInteger(value.updatedAt) ||
-    (value.updatedAt as number) < 0
-  ) return null;
-  const {BridgeProfileSchema} = await import("@qwordly/core/bridge");
-  const profile = BridgeProfileSchema.safeParse(value.profile);
-  const activeGame = value.activeGame === null ? null : parseSavedGame(value.activeGame);
-  return {
-    schemaVersion: 1,
-    updatedAt: value.updatedAt as number,
-    ...(profile.success ? {profile: profile.data} : {}),
-    ...(value.activeGame === null || activeGame ? {activeGame} : {}),
   };
 };
 

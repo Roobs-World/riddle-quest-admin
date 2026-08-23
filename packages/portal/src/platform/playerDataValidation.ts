@@ -4,7 +4,7 @@ import {
   type GameEngineSnapshot,
   type ScoredGuess,
 } from "@qwordly/core/game";
-import type {SavedGame} from "./types";
+import type {PlayerData, SavedGame} from "./types";
 
 /** Defines the max saved guesses value. */
 const MAX_SAVED_GUESSES = 6;
@@ -147,3 +147,30 @@ export const parseSavedGame = (value: unknown): SavedGame | null => {
     ...(pendingOutcome ? {pendingOutcome} : {}),
   };
 };
+
+/**
+ * Parses low-integrity provider storage into the single shared player-data contract.
+ *
+ * Profile and active-game fields are independently discarded when malformed so
+ * one stale optional field cannot prevent the bounded envelope from restoring.
+ *
+ * @param value Untrusted value read from provider-owned browser storage.
+ * @returns A bounded player-data snapshot, or null when the envelope is invalid.
+ */
+export async function parsePlayerData(value: unknown): Promise<PlayerData | null> {
+  if (
+    !isRecord(value) ||
+    value.schemaVersion !== 1 ||
+    !Number.isSafeInteger(value.updatedAt) ||
+    (value.updatedAt as number) < 0
+  ) return null;
+  const {BridgeProfileSchema} = await import("@qwordly/core/bridge");
+  const profile = BridgeProfileSchema.safeParse(value.profile);
+  const activeGame = value.activeGame === null ? null : parseSavedGame(value.activeGame);
+  return {
+    schemaVersion: 1,
+    updatedAt: value.updatedAt as number,
+    ...(profile.success ? {profile: profile.data} : {}),
+    ...(value.activeGame === null || activeGame ? {activeGame} : {}),
+  };
+}

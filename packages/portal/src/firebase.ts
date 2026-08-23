@@ -1,12 +1,4 @@
 import {initializeApp} from "firebase/app";
-import {
-  getToken,
-  initializeAppCheck,
-  CustomProvider,
-  ReCaptchaEnterpriseProvider,
-  setTokenAutoRefreshEnabled,
-  type AppCheck,
-} from "firebase/app-check";
 import {getAuth} from "firebase/auth";
 import {doc, getDoc, getFirestore} from "firebase/firestore/lite";
 import {getFunctions, httpsCallable} from "firebase/functions";
@@ -43,7 +35,6 @@ import type {
   SubmitRaceGuessResponse,
 } from "@qwordly/core/race";
 import {firebaseEnvironment} from "./firebaseEnvironment";
-import {hasTrustedTestHarnessMarker} from "./testHarness";
 
 /** Provides raw firebase config behavior. */
 const rawFirebaseConfig = {
@@ -68,67 +59,6 @@ const firebaseConfig = {
 
 /** Provides firebase app behavior. */
 export const firebaseApp = initializeApp(firebaseConfig);
-/** Provides app check site key behavior. */
-const appCheckSiteKey = firebaseEnvironment.appCheckSiteKey;
-/** Indicates whether a harness route is authorized to bypass browser attestation. */
-const isHarnessRoute = typeof window !== "undefined" &&
-  new URLSearchParams(window.location.search).has("harness") &&
-  (!firebaseEnvironment.production || hasTrustedTestHarnessMarker());
-/** Provides app check behavior. */
-let appCheck: AppCheck | null = null;
-/** Provides facebook app check token provider behavior. */
-let facebookAppCheckTokenProvider:
-  | (() => Promise<{token: string; expireTimeMillis: number}>)
-  | null = null;
-
-if (appCheckSiteKey && firebaseEnvironment.platformTarget !== "facebook" && !isHarnessRoute) {
-  appCheck = initializeAppCheck(firebaseApp, {
-    provider: new ReCaptchaEnterpriseProvider(appCheckSiteKey),
-    isTokenAutoRefreshEnabled: false,
-  });
-}
-
-/** Installs the Facebook custom attestation provider before protected calls begin. */
-export async function initializeFacebookAppCheck(
-  getCustomToken: () => Promise<{token: string; expireTimeMillis: number}>,
-): Promise<void> {
-  if (firebaseEnvironment.platformTarget !== "facebook") {
-    throw new Error("Facebook App Check can only initialize in the Facebook build.");
-  }
-  facebookAppCheckTokenProvider = getCustomToken;
-  if (!appCheck) {
-    appCheck = initializeAppCheck(firebaseApp, {
-      provider: new CustomProvider({getToken: async () => {
-        if (!facebookAppCheckTokenProvider) {
-          throw new Error("Facebook App Check token provider is unavailable.");
-        }
-        return facebookAppCheckTokenProvider();
-      }}),
-      isTokenAutoRefreshEnabled: false,
-    });
-  }
-  // Reauthentication may follow account deletion and generation rollover. Force
-  // attestation so a cached token from the prior Firebase account is never reused.
-  await getToken(appCheck, true);
-  setTokenAutoRefreshEnabled(appCheck, true);
-}
-
-/**
- * Waits for browser attestation before protected Firebase resources are used.
- *
- * Firebase Functions reject requests without App Check in production, so Jest
- * startup must not expose the playable game until an attestation token exists.
- */
-export async function ensureFirebaseAppCheckReady(): Promise<void> {
-  if (!appCheck) {
-    if (firebaseEnvironment.production && firebaseEnvironment.jestRuntime === "1" && !isHarnessRoute) {
-      throw new Error("Firebase App Check is not configured for the Jest build.");
-    }
-    return;
-  }
-  await getToken(appCheck);
-  setTokenAutoRefreshEnabled(appCheck, true);
-}
 
 /** Provides auth behavior. */
 export const auth = getAuth(firebaseApp);

@@ -18,9 +18,10 @@ const forbidden = [
     /www\.youtube\.com\/game_api\/v1|\bytgame\b|youtube-sdk-unavailable|youtube-content-envelope-invalid|youtube-content-manifest\.json/i,
   ],
   ["Jest SDK", /cdn\.jest\.com|\bJestSDK\b/],
+  ["Jest sharing event bridge", /riddle-quest:share-(?:referral|invite|race)/i],
   ["Facebook SDK", /fbinstant|connect\.facebook\.net|fbapp-config/i],
   ["Firebase browser SDK", /firebase(?:app|auth|firestore|database|storage)|googleapis\.com|firebaseio\.com/i],
-  ["external analytics", /googletagmanager\.com|google-analytics\.com|sentry\.io/i],
+  ["external analytics", /googletagmanager\.com|google-analytics\.com|sentry\.io|__SENTRY__|Sentry Logger/i],
   ["advertising", /admob|adsbygoogle|googlesyndication|doubleclick\.net|rewarded.?ad|interstitial/i],
 ];
 for (const [label, pattern] of forbidden) if (pattern.test(content)) throw new Error(`${label} found in Reddit artifact`);
@@ -33,20 +34,33 @@ for (const [label, pattern] of [
   ["Remove Ads product", /remove[ _-]?(?:interstitial[ _-]?)?ads|ad[ _-]?free/iu],
 ]) if (pattern.test(commerceContent)) throw new Error(`${label} found in Reddit commerce chunks`);
 if (files.some((file) => file.endsWith(".map"))) throw new Error("Source maps must not ship in the Reddit artifact");
-const html = await readFile(path.join(root, "index.html"), "utf8");
-if (/\bsrc=["']https?:|\bhref=["']https?:/i.test(html)) throw new Error("Reddit entry document contains an external resource");
-if (!/^<!doctype html>/i.test(html) || !/<html\s[^>]*\blang=/i.test(html) || !/<meta\s[^>]*\bcharset=/i.test(html)) {
-  throw new Error("Reddit entry document is missing required HTML metadata");
-}
 const initialResources = new Set();
-for (const match of html.matchAll(/(?:src|href)=["']([^"']+)["']/g)) {
-  const reference = match[1];
-  if (/^(?:data:|#)/i.test(reference)) continue;
-  if (/^https?:|^\/\//i.test(reference)) throw new Error(`Reddit entry document contains an external resource: ${reference}`);
-  if (reference.startsWith("/")) throw new Error(`Reddit entry resources must use relative paths: ${reference}`);
-  const asset = path.resolve(root, reference.split(/[?#]/, 1)[0]);
-  if (!asset.startsWith(`${root}${path.sep}`) || !files.includes(asset)) throw new Error(`Missing or unsafe Reddit entry asset: ${reference}`);
-  initialResources.add(asset);
+const entryDocuments = ["index.html", "reddit-inline.html"];
+for (const entryDocument of entryDocuments) {
+  const entryPath = path.join(root, entryDocument);
+  if (!files.includes(entryPath)) throw new Error(`Reddit artifact is missing ${entryDocument}`);
+  const html = await readFile(entryPath, "utf8");
+  if (/\bsrc=["']https?:|\bhref=["']https?:/i.test(html)) {
+    throw new Error(`${entryDocument} contains an external resource`);
+  }
+  if (!/^<!doctype html>/i.test(html) || !/<html\s[^>]*\blang=/i.test(html) || !/<meta\s[^>]*\bcharset=/i.test(html)) {
+    throw new Error(`${entryDocument} is missing required HTML metadata`);
+  }
+  for (const match of html.matchAll(/(?:src|href)=["']([^"']+)["']/g)) {
+    const reference = match[1];
+    if (/^(?:data:|#)/i.test(reference)) continue;
+    if (/^https?:|^\/\//i.test(reference)) {
+      throw new Error(`${entryDocument} contains an external resource: ${reference}`);
+    }
+    if (reference.startsWith("/")) {
+      throw new Error(`${entryDocument} resources must use relative paths: ${reference}`);
+    }
+    const asset = path.resolve(root, reference.split(/[?#]/, 1)[0]);
+    if (!asset.startsWith(`${root}${path.sep}`) || !files.includes(asset)) {
+      throw new Error(`Missing or unsafe ${entryDocument} asset: ${reference}`);
+    }
+    initialResources.add(asset);
+  }
 }
 const oversized = sizedFiles.find(({bytes}) => bytes > 100 * 1024 * 1024);
 if (oversized) throw new Error(`Reddit artifact file exceeds 100 MB: ${oversized.file}`);
@@ -56,4 +70,4 @@ const initialResourceBytes = sizedFiles
 if (initialResourceBytes > maximumInitialResourceBytes) {
   throw new Error(`Initial Reddit resources are ${(initialResourceBytes / 1024 / 1024).toFixed(2)} MB; budget is 5 MB`);
 }
-console.log(`Reddit artifact audit passed: ${files.length} regular files, ${(totalBytes / 1024 / 1024).toFixed(2)} MB, ${(initialResourceBytes / 1024 / 1024).toFixed(2)} MB initial resources, isolated and same-origin only`);
+console.log(`Reddit artifact audit passed: ${files.length} regular files, ${entryDocuments.length} entry documents, ${(totalBytes / 1024 / 1024).toFixed(2)} MB, ${(initialResourceBytes / 1024 / 1024).toFixed(2)} MB initial resources, isolated and same-origin only`);

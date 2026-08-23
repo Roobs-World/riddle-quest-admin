@@ -24,8 +24,9 @@ describe("browser Sentry lifecycle", () => {
   });
 
   it("stays disabled outside production or without a DSN", () => {
-    expect(initializeBrowserSentry({production: false, dsn: "https://public@example.test/1"})).toBe(false);
-    expect(initializeBrowserSentry({production: true})).toBe(false);
+    expect(initializeBrowserSentry({production: false, dsn: "https://public@example.test/1", runtime: "jest"}))
+      .toBe(false);
+    expect(initializeBrowserSentry({production: true, runtime: "jest"})).toBe(false);
     captureBrowserException(new Error("ignored"));
     expect(init).not.toHaveBeenCalled();
     expect(captureException).not.toHaveBeenCalled();
@@ -37,6 +38,7 @@ describe("browser Sentry lifecycle", () => {
       dsn: "https://public@example.test/1",
       environment: " production-eu ",
       release: " release-1 ",
+      runtime: "facebook" as const,
     };
     expect(initializeBrowserSentry(configuration)).toBe(true);
     expect(initializeBrowserSentry(configuration)).toBe(true);
@@ -49,7 +51,7 @@ describe("browser Sentry lifecycle", () => {
       sendDefaultPii: false,
       tracesSampleRate: 0,
     }));
-    expect(setTag).toHaveBeenCalledWith("runtime", "jest-html5");
+    expect(setTag).toHaveBeenCalledWith("runtime", "facebook-html5");
 
     const options = init.mock.calls[0][0];
     const defaults = [
@@ -68,7 +70,7 @@ describe("browser Sentry lifecycle", () => {
   });
 
   it("captures exceptions with redacted context", () => {
-    initializeBrowserSentry({production: true, dsn: "https://public@example.test/1"});
+    initializeBrowserSentry({production: true, dsn: "https://public@example.test/1", runtime: "jest"});
     const error = new Error("failed");
     captureBrowserException(error, {userId: "player", operation: "startup"});
     captureBrowserException(error);

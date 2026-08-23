@@ -7,9 +7,21 @@ import {
   RewardFanfareContent,
   VictoryFanfareContent,
 } from "../modalPages/fanfare/FanfareModalContent";
+import {
+  ReferralSharingProvider,
+  type ReferralSharingCapability,
+} from "../sharing/ReferralSharingCapability";
 
 /** No-op callback shared by server-rendering tests. */
 const noop = () => undefined;
+
+/** Fake target capability used to expose referral UI in server-rendered tests. */
+const referralSharing: ReferralSharingCapability = {
+  rewardCoins: 100,
+  shareInvite: noop,
+  shareRace: noop,
+  shareResult: noop,
+};
 
 describe("fanfare modal content", () => {
   it("renders known and fallback achievements", () => {
@@ -50,8 +62,16 @@ describe("fanfare modal content", () => {
       .toContain("3");
     expect(renderToString(<VictoryFanfareContent {...sharedProps} activeStep={{kind: "rank"}} />))
       .toContain("rank-emblem");
-    expect(renderToString(<VictoryFanfareContent {...sharedProps} activeStep={{kind: "victory"}} />))
-      .toContain("reward-details");
+    const victoryWithoutSharing = renderToString(
+      <VictoryFanfareContent {...sharedProps} activeStep={{kind: "victory"}} />,
+    );
+    expect(victoryWithoutSharing).toContain("reward-details");
+    expect(victoryWithoutSharing).not.toContain("Invite a friend");
+    expect(renderToString(
+      <ReferralSharingProvider capability={referralSharing}>
+        <VictoryFanfareContent {...sharedProps} activeStep={{kind: "victory"}} />
+      </ReferralSharingProvider>,
+    )).toContain("Invite a friend");
   });
 
   it("renders reward steps and normalized coin amounts", () => {

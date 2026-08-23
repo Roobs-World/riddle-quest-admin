@@ -30,7 +30,7 @@ import {
 } from "./JestSessionViews";
 import {useJestProductCatalog} from "./useJestProductCatalog";
 import {useJestPurchase} from "./useJestPurchase";
-import {captureBrowserException} from "../observability/sentry";
+import {captureBrowserException} from "../observability/browserErrorReporter";
 import {
   ACCOUNT_DELETION_PENDING_PHASE,
   AccountDeletionCleanupError,
@@ -127,7 +127,7 @@ export function JestPlayApp() {
     withPlatformActivity: notificationOperationGate.run,
     trackFunnel,
   });
-  useJestSharing({
+  const referralSharing = useJestSharing({
     locale,
     session,
     platform,
@@ -135,6 +135,7 @@ export function JestPlayApp() {
     withPlatformActivity,
     withBackgroundPlatformActivity,
     trackFunnel,
+    authHarness,
   });
   const [jestProducts, setJestProducts] = useJestProductCatalog({
     purchases,
@@ -160,12 +161,13 @@ export function JestPlayApp() {
           }
         ).__RIDDLE_QUEST_JEST_AUTH_TEST__?.firebaseTokens.push(token);
       } else if (!mockRuntime) {
-        const [{signInWithCustomToken}, {auth, ensureFirebaseAppCheckReady}] = await Promise.all([
+        const [{signInWithCustomToken}, {auth}, {ensureJestFirebaseAppCheckReady}] = await Promise.all([
           import("firebase/auth"),
           import("../firebase"),
+          import("./JestFirebaseAppCheck"),
         ]);
         await signInWithCustomToken(auth, token);
-        await ensureFirebaseAppCheckReady();
+        await ensureJestFirebaseAppCheckReady();
       }
     },
     [authHarness, mockRuntime],
@@ -584,6 +586,7 @@ export function JestPlayApp() {
         presenceEnabled={session.preferences.presenceEnabled === true}
         onTogglePresence={togglePresence}
         onPresenceStateChange={setPresenceState}
+        referralSharing={referralSharing}
       />
     </>
   );

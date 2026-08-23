@@ -5,7 +5,7 @@ import {getRankForLevel} from "../../ranks";
 import {RankIcon} from "../../RankIcon";
 import {CoinAwardSequence} from "./CoinAwardSequence";
 import type {FanfareCoinAward, FanfareStep} from "./fanfareSequence";
-import {JEST_REFERRAL_REWARD_COINS} from "@qwordly/core/referrals";
+import {useReferralSharing} from "../../sharing/ReferralSharingCapability";
 
 /** Props shared by the two fanfare modal content variants. */
 type SharedFanfareProps = {
@@ -60,6 +60,8 @@ export function VictoryFanfareContent({
   stepCount,
   stepIndex,
 }: VictoryFanfareContentProps) {
+  /** Optional outbound sharing supplied by the active release target. */
+  const referralSharing = useReferralSharing();
   const victoryLevel = state.lastRewards?.newLevel;
   const victoryRank = getRankForLevel(victoryLevel ?? 1);
 
@@ -102,10 +104,10 @@ export function VictoryFanfareContent({
             )}
             {state.lastRewards?.newWinStreak !== undefined && <span>🔥 {state.lastRewards.newWinStreak}</span>}
           </div>
-          <button
-            className="play-secondary"
-            onClick={() => window.dispatchEvent(new CustomEvent("riddle-quest:share-referral", {
-              detail: {
+          {referralSharing ? (
+            <button
+              className="play-secondary"
+              onClick={() => referralSharing.shareResult({
                 gameMode: state.riddle?.gameMode,
                 riddleId: state.riddle?.riddleId,
                 attempts: state.guesses.length,
@@ -114,11 +116,11 @@ export function VictoryFanfareContent({
                     feedback === "green" ? "🟩" : feedback === "yellow" ? "🟨" : "⬛",
                   ).join(""))
                   .join("\n"),
-              },
-            }))}
-          >
-            {tr("VictoryModal.SHARE_TEXT", {coins: JEST_REFERRAL_REWARD_COINS})}
-          </button>
+              })}
+            >
+              {tr("VictoryModal.SHARE_TEXT", {coins: referralSharing.rewardCoins})}
+            </button>
+          ) : null}
         </>
       )}
       {activeStep ? (

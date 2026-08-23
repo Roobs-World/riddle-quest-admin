@@ -1,6 +1,6 @@
 import {Component, type ErrorInfo, type ReactNode} from "react";
 import {trackEvent} from "./analytics/events";
-import {captureBrowserException} from "./observability/sentry";
+import {captureBrowserException} from "./observability/browserErrorReporter";
 import {tr} from "./play/i18n";
 
 /** Provides fatal error boundary behavior. */

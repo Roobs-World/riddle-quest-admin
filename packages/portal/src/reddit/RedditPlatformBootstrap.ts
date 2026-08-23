@@ -6,7 +6,7 @@ import type {
   PlatformStorage,
   PlayerData,
 } from "../platform/types";
-import {parseSavedGame} from "../platform/playerDataValidation";
+import {parsePlayerData} from "../platform/playerDataValidation";
 import {
   FindRedditRaceMatchResponseSchema, ListFacebookTournamentResponseSchema,
   RecordFacebookTournamentRunResponseSchema, type RaceLocale,
@@ -42,20 +42,6 @@ export const selectMigratableGuestPreferences = (preferences: PlatformPreference
   ...(preferences.highContrast === undefined ? {} : {highContrast: preferences.highContrast}),
   ...(preferences.onboardingComplete === undefined ? {} : {onboardingComplete: preferences.onboardingComplete}),
 });
-
-/** Parses player data. */
-const parsePlayerData = async (value: unknown): Promise<PlayerData | null> => {
-  if (!isRecord(value) || value.schemaVersion !== 1 || !Number.isSafeInteger(value.updatedAt) || (value.updatedAt as number) < 0) return null;
-  const {BridgeProfileSchema} = await import("@qwordly/core/bridge");
-  const profile = BridgeProfileSchema.safeParse(value.profile);
-  const activeGame = value.activeGame === null ? null : parseSavedGame(value.activeGame);
-  return {
-    schemaVersion: 1,
-    updatedAt: value.updatedAt as number,
-    ...(profile.success ? {profile: profile.data} : {}),
-    ...(value.activeGame === null || activeGame ? {activeGame} : {}),
-  };
-};
 
 /** Provides post reddit gateway behavior. */
 export const postRedditGateway = async (path: string, body: unknown = {}): Promise<Record<string, unknown>> => {

@@ -1,8 +1,14 @@
 const mockInitializeBrowserSentry = jest.fn(() => true);
 const mockIsBrowserTelemetryRuntimeAllowed = jest.fn(() => true);
+const mockConfigureBrowserErrorReporter = jest.fn();
+const mockCaptureBrowserException = jest.fn();
 
 jest.mock("../sentry", () => ({
+  captureBrowserException: (...args: unknown[]) => mockCaptureBrowserException(...args),
   initializeBrowserSentry: (...args: unknown[]) => mockInitializeBrowserSentry(...args),
+}));
+jest.mock("../browserErrorReporter", () => ({
+  configureBrowserErrorReporter: (...args: unknown[]) => mockConfigureBrowserErrorReporter(...args),
 }));
 jest.mock("../telemetryRuntime", () => ({
   isBrowserTelemetryRuntimeAllowed: () => mockIsBrowserTelemetryRuntimeAllowed(),
@@ -20,6 +26,7 @@ describe("browser Sentry environment adapter", () => {
     mockIsBrowserTelemetryRuntimeAllowed.mockReturnValue(false);
     expect(initializeBrowserSentryFromEnvironment()).toBe(false);
     expect(mockInitializeBrowserSentry).not.toHaveBeenCalled();
+    expect(mockConfigureBrowserErrorReporter).toHaveBeenCalledWith(null);
   });
 
   it("forwards build configuration only when the runtime policy allows telemetry", () => {
@@ -29,6 +36,8 @@ describe("browser Sentry environment adapter", () => {
       environment: undefined,
       production: false,
       release: undefined,
+      runtime: "jest",
     });
+    expect(mockConfigureBrowserErrorReporter).toHaveBeenCalledWith(expect.any(Function));
   });
 });

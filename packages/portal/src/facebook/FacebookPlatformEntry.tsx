@@ -6,7 +6,7 @@ import type {PlatformSession, PlayerData, PlayerDataUpdate} from "../platform/ty
 import {FacebookPlatformBootstrap} from "./FacebookPlatformBootstrap";
 import {authenticateFacebook} from "./authenticate";
 import {requireFacebookInstant} from "./fbinstant";
-import {captureBrowserException} from "../observability/sentry";
+import {captureBrowserException} from "../observability/browserErrorReporter";
 import {bindFacebookEntryReferral} from "./referrals";
 import {FacebookContextCoordinator} from "./contexts";
 import {parseFacebookAgeCategory} from "./FacebookCapabilityPolicy";

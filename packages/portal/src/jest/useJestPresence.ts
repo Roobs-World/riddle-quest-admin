@@ -6,7 +6,7 @@ import {
   type MutableRefObject,
   type SetStateAction,
 } from "react";
-import {captureBrowserException} from "../observability/sentry";
+import {captureBrowserException} from "../observability/browserErrorReporter";
 import type {ActivePresenceState, PlatformPresenceSession} from "../presence/PlatformPresenceSession";
 import {reconcilePresenceOptIn} from "../presence/reconcilePresenceOptIn";
 import {startOptionalPresence} from "../presence/startOptionalPresence";

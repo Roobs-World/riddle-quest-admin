@@ -6,8 +6,8 @@ import type {
   PlatformResult,
   ScreenshotProvider,
 } from "./types";
-import {captureBrowserException} from "../observability/sentry";
-import {parseSavedGame} from "../platform/playerDataValidation";
+import {captureBrowserException} from "../observability/browserErrorReporter";
+import {parsePlayerData} from "../platform/playerDataValidation";
 
 /** Describes sdk. */
 type Sdk = Record<string, any>;
@@ -61,10 +61,6 @@ const waitForGlobalJestSdk = (timeoutMs: number): Promise<Sdk> => {
     check();
   });
 };
-
-/** Indicates whether is record. */
-const isRecord = (value: unknown): value is Record<string, unknown> =>
-  typeof value === "object" && value !== null && !Array.isArray(value);
 
 /** Rejects an SDK operation that does not settle before its UI timeout. */
 const withTimeout = async <T>(operation: Promise<T>, timeoutMs: number, message: string): Promise<T> => {
@@ -159,21 +155,7 @@ export class JestSdkPlatform implements JestPlatformPort {
   /** Reads player data. */
   async readPlayerData(): Promise<JestPlayerData | null> {
     const value: unknown = this.sdk.data?.getAll?.()?.[PLAYER_DATA_KEY];
-    if (
-      !isRecord(value) ||
-      value.schemaVersion !== 1 ||
-      !Number.isSafeInteger(value.updatedAt) ||
-      (value.updatedAt as number) < 0
-    ) return null;
-    const activeGame = value.activeGame === null ? null : parseSavedGame(value.activeGame);
-    const {BridgeProfileSchema} = await import("@qwordly/core/bridge");
-    const profile = BridgeProfileSchema.safeParse(value.profile);
-    return {
-      schemaVersion: 1,
-      updatedAt: value.updatedAt as number,
-      ...(profile.success ? {profile: profile.data} : {}),
-      ...(value.activeGame === null || activeGame ? {activeGame} : {}),
-    };
+    return parsePlayerData(value);
   }
   /** Provides write player data behavior. */
   async writePlayerData(value: JestPlayerData) {

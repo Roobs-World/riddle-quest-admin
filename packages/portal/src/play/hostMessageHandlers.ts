@@ -4,7 +4,7 @@ import {tr} from "./i18n";
 import {createRequestId} from "./requestIds";
 import type {RaceOutcome} from "@qwordly/core/race";
 import type {AuthSnapshot, CompletionResult, HostServices, PurchaseResult, WebGameMode} from "./types";
-import {captureBrowserException} from "../observability/sentry";
+import {captureBrowserException} from "../observability/browserErrorReporter";
 
 /** Describes host operation name. */
 export type HostOperationName =

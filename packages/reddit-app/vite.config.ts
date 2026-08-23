@@ -9,7 +9,9 @@ export default defineConfig({
   build: {
     ssr: "src/server/index.ts",
     outDir: "dist/server",
-    emptyOutDir: false,
+    // The client is staged in dist/client, so the server build can and must
+    // replace its own directory without retaining files from an older release.
+    emptyOutDir: true,
     rolldownOptions: {
       output: {format: "cjs", entryFileNames: "index.cjs"},
     },

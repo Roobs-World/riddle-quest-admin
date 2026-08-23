@@ -1,7 +1,7 @@
 import type {JestBackendPort} from "./backend";
 import type {JestPurchaseCoordinator} from "./purchases";
 import type {JestPlatformPort, JestSession, PlatformResult} from "./types";
-import {captureBrowserException} from "../observability/sentry";
+import {captureBrowserException} from "../observability/browserErrorReporter";
 
 /** Provides phase progress behavior. */
 const phaseProgress = [5, 15, 28, 42, 58, 72, 88] as const;

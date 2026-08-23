@@ -4,7 +4,7 @@ import {createRequestId} from "../../requestIds";
 import {HOST_TO_GAME_EVENT} from "../../localBridge";
 import {tr} from "../../i18n";
 import {runWhenLayoutReady} from "../layoutReady";
-import {captureBrowserException} from "../../../observability/sentry";
+import {captureBrowserException} from "../../../observability/browserErrorReporter";
 
 /** Describes message router. */
 type MessageRouter = (message: unknown) => Promise<unknown>;

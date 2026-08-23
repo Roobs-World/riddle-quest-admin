@@ -305,6 +305,20 @@ describe("race presentation components", () => {
         onChooseCategory={noop}
         onClose={noop}
       />,
+    )).not.toContain("Create challenge");
+    expect(renderToString(
+      <RaceResultPanel
+        outcome={outcome}
+        run={{...run, status: "completed"}}
+        publication={null}
+        publishing={false}
+        sharingRewardCoins={100}
+        onPublish={noop}
+        onShare={noop}
+        onRematch={noop}
+        onChooseCategory={noop}
+        onClose={noop}
+      />,
     )).toContain("Create challenge");
 
     /** Published challenge fixture used by the share-ready result variant. */
@@ -329,6 +343,7 @@ describe("race presentation components", () => {
         run={null}
         publication={publication}
         publishing={false}
+        sharingRewardCoins={100}
         onPublish={noop}
         onShare={noop}
         onRematch={noop}

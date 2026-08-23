@@ -8,8 +8,8 @@
     "dev:reddit": "pnpm --filter @qwordly/portal dev:reddit",
     "dev:youtube": "pnpm --filter @qwordly/portal dev:youtube",
     "prepare:functions": "pnpm --dir firebase-functions prepare:deploy",
-    "build": "pnpm prepare:functions && pnpm check:security && pnpm check:facebook-secrets && pnpm check:scalability && pnpm check:modern-packages && pnpm check:tsdoc && pnpm --dir firebase-functions test:scalability:coverage && pnpm check:file-sizes && pnpm --filter @qwordly/core build && pnpm --filter @qwordly/portal build:web && pnpm --dir firebase-functions build",
-    "build:web": "pnpm check:security && pnpm check:facebook-secrets && pnpm check:facebook-profile-boundary && pnpm check:facebook-commerce-activation && pnpm --filter @qwordly/portal build:web && pnpm --filter @qwordly/reddit-app build:package",
+    "build": "pnpm prepare:functions && pnpm check:security && pnpm check:facebook-secrets && pnpm check:scalability && pnpm check:modern-packages && pnpm check:tsdoc && pnpm --dir firebase-functions test:scalability:coverage && pnpm check:file-sizes && pnpm --filter @qwordly/core build && pnpm --filter @qwordly/portal build:web && pnpm --filter @qwordly/reddit-app build:package:from-client && pnpm --dir firebase-functions build",
+    "build:web": "pnpm check:security && pnpm check:facebook-secrets && pnpm check:facebook-profile-boundary && pnpm check:facebook-commerce-activation && pnpm --filter @qwordly/portal build:web && pnpm --filter @qwordly/reddit-app build:package:from-client",
     "check:security": "node --test scripts/image-size-security-patch.test.mjs && node scripts/audit-security-config.mjs",
     "check:scalability": "node scripts/audit-backend-scalability.mjs",
     "check:modern-packages": "node scripts/audit-modern-package-features.mjs",
@@ -58,7 +58,7 @@
     "youtube:evidence": "pnpm --filter @qwordly/portal evidence:youtube",
     "youtube:preflight": "pnpm release:youtube",
     "youtube:package": "pnpm --filter @qwordly/portal package:youtube",
-    "verify:all-targets": "pnpm --dir firebase-functions test:youtube-content && pnpm --filter @qwordly/portal verify:all-targets"
+    "verify:all-targets": "pnpm --dir firebase-functions test:youtube-content && pnpm --filter @qwordly/portal verify:all-targets && pnpm --filter @qwordly/reddit-app build:package:from-client"
   },
   "engines": {
     "node": ">=24.17.0"

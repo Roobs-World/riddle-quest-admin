@@ -69,6 +69,8 @@ export type RaceTo10ViewProps = {
   outcome: RaceOutcome | null;
   /** Stores published. */
   published: PublishRaceChallengeResponse | null;
+  /** Referral reward displayed only when this target can share a published challenge. */
+  sharingRewardCoins?: number;
   /** Stores pending. */
   pending: RaceOperation | null;
   /** Stores adjusted now. */
@@ -155,7 +157,7 @@ export type RaceTo10ViewProps = {
 export function RaceTo10View(props: RaceTo10ViewProps) {
   const {
     stage, coins, error, safetyNotice, categories, inboxItems, tournament, tournamentLoading,
-    contextBoard, contextBoardLoading, challenge, countdown, run, outcome, published, pending,
+    contextBoard, contextBoardLoading, challenge, countdown, run, outcome, published, sharingRewardCoins, pending,
     adjustedNow, ghostCorrect, feedback, penaltyFlash, currentLetters, activeSlotIndex, raceGuesses,
     letterStates, quitConfirmationOpen, raceGuessLoading, socialPending, dialogRef, gameplayViewportRef, gameplayRef,
     quitDialogRef, onClose, onRetry, onRequestClose, onShowInbox, onShowTournaments, onChooseCategory, onSelectCategory,
@@ -198,7 +200,8 @@ export function RaceTo10View(props: RaceTo10ViewProps) {
         onLetter={onLetter} onText={onText} onBackspace={onBackspace} onHint={onHint} onSubmit={onSubmit} onSkip={onSkip} />}
       {stage === "racing" && penaltyFlash && <div className="race-penalty-flash" role="status">{penaltyFlash}</div>}
       {stage === "result" && outcome && <RaceResultPanel outcome={outcome} run={run} publication={published}
-        publishing={Boolean(pending)} onPublish={onPublish} onShare={onShare} onRematch={onRematch}
+        publishing={Boolean(pending)} sharingRewardCoins={sharingRewardCoins}
+        onPublish={onPublish} onShare={onShare} onRematch={onRematch}
         onChooseCategory={() => onRematch()} onClose={onClose} />}
       {quitConfirmationOpen && run?.status === "active" && <RaceQuitDialog dialogRef={quitDialogRef} error={error}
         abandoning={pending === "raceAbandon"} onCancel={onDismissQuit} onConfirm={onAbandon} />}

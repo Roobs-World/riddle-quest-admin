@@ -380,6 +380,9 @@ async function withFixture(platform, operation) {
       await writeFile(path.join(directory, "index.html"), `<!doctype html>
 <html lang="en"><head><meta charset="UTF-8"></head>
 <body><script type="module" src="./app.js"></script></body></html>\n`);
+      await writeFile(path.join(directory, "reddit-inline.html"), `<!doctype html>
+<html lang="en"><head><meta charset="UTF-8"></head>
+<body><script type="module" src="./app.js"></script></body></html>\n`);
     } else {
       await writeFile(path.join(directory, "index.html"), `<!doctype html>
 <html lang="en"><head><meta charset="UTF-8"><script src="https://www.youtube.com/game_api/v1"></script></head>
@@ -442,19 +445,79 @@ test("Facebook audit accepts its fixture and rejects Jest contamination", async 
   });
 });
 
-test("Reddit audit accepts its fixture and rejects both platform SDKs", async () => {
+test("Jest and Facebook audits reject the other target's App Check adapter", async () => {
+  await withFixture("jest", async (directory) => {
+    await writeFile(
+      path.join(directory, "app.js"),
+      "throw new Error('Facebook App Check token provider is unavailable.');\n",
+    );
+    const result = runAudit(jestAudit, directory);
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /Facebook App Check adapter/u);
+  });
+  await withFixture("facebook", async (directory) => {
+    await writeFile(
+      path.join(directory, "app.js"),
+      "throw new Error('Firebase App Check is not configured for the Jest build.');\n",
+    );
+    const result = runAudit(facebookAudit, directory);
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /Jest App Check adapter/u);
+  });
+});
+
+test("Facebook and Reddit audits reject the Jest-only sharing event bridge", async () => {
+  await withFixture("facebook", async (directory) => {
+    await writeFile(
+      path.join(directory, "app.js"),
+      'window.dispatchEvent(new CustomEvent("riddle-quest:share-invite"));\n',
+    );
+    const result = runAudit(facebookAudit, directory);
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /Jest sharing event bridge/u);
+  });
+  await withFixture("reddit", async (directory) => {
+    await writeFile(
+      path.join(directory, "app.js"),
+      'window.dispatchEvent(new CustomEvent("riddle-quest:share-race"));\n',
+    );
+    const result = runAudit(redditAudit, directory);
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /Jest sharing event bridge/u);
+  });
+});
+
+test("Reddit audit accepts both entry documents and rejects platform SDKs and telemetry", async () => {
   await withFixture("reddit", async (directory) => {
     const clean = runAudit(redditAudit, directory);
     assert.equal(clean.status, 0, clean.stderr);
     for (const [contamination, expected] of [
       ["window.JestSDK.init();\n", /Jest SDK/],
       ["window.FBInstant.initializeAsync();\n", /Facebook SDK/],
+      ["globalThis.__SENTRY__ = {version: 'fixture'};\n", /external analytics/],
     ]) {
       await writeFile(path.join(directory, "app.js"), contamination);
       const result = runAudit(redditAudit, directory);
       assert.notEqual(result.status, 0);
       assert.match(result.stderr, expected);
     }
+  });
+});
+
+test("Reddit audit requires and validates the shipped inline entry document", async () => {
+  await withFixture("reddit", async (directory) => {
+    await rm(path.join(directory, "reddit-inline.html"));
+    const missing = runAudit(redditAudit, directory);
+    assert.notEqual(missing.status, 0);
+    assert.match(missing.stderr, /missing reddit-inline\.html/u);
+  });
+  await withFixture("reddit", async (directory) => {
+    await writeFile(path.join(directory, "reddit-inline.html"), `<!doctype html>
+<html lang="en"><head><meta charset="UTF-8"></head>
+<body><script src="https://example.test/remote.js"></script></body></html>\n`);
+    const external = runAudit(redditAudit, directory);
+    assert.notEqual(external.status, 0);
+    assert.match(external.stderr, /reddit-inline\.html contains an external resource/u);
   });
 });
 

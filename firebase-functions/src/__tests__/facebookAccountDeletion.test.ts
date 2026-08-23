@@ -27,7 +27,7 @@ const querySnapshot = (field: string, value: unknown) => {
   return {size: matches ? 1 : 0, docs: matches ? [{ref: providerRef, data: () => ({...provider})}] : []};
 };
 
-jest.mock("../profile/accountDeletion", () => ({deleteAccountForUser: mockDeleteAccountForUser}));
+jest.mock("../profile/accountDeletion/deleteAccountData", () => ({deleteAccountForUser: mockDeleteAccountForUser}));
 jest.mock("../shared/firebaseAdmin", () => ({
   admin: {
     firestore: Object.assign(() => ({

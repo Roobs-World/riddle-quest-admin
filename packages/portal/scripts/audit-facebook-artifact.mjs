@@ -25,6 +25,8 @@ const forbidden = [
   ["Reddit Devvit integration", /\bdevvit(?:-internal)?\b|redditGatewaySecret|requestExpandedMode|RedditPlatform/i],
   ["Jest SDK", /cdn\.jest\.com|\bJestSDK\b/],
   ["Jest runtime configuration", /VITE_JEST_RUNTIME/],
+  ["Jest App Check adapter", /not configured for the Jest build|Jest App Check can only initialize/i],
+  ["Jest sharing event bridge", /riddle-quest:share-(?:referral|invite|race)/i],
   ["Expo module", /(?:from|require\()\s*["'](?:expo|expo-[^"']+)/],
   ["React Native module", /(?:from|require\()\s*["']react-native(?:[\/"'])/],
   ["External authentication provider", /\b(?:Clerk|Auth0|accounts\.google\.com|appleid\.apple\.com)\b/i],

@@ -43,6 +43,7 @@ import {
   useRaceEntryTracking,
   useRaceFeedbackTimers,
 } from "./hooks/useRaceRuntimeEffects";
+import {useReferralSharing} from "../sharing/ReferralSharingCapability";
 
 /** Coordinates the complete server-authoritative Race to 10 multiplayer experience. */
 export function RaceTo10Game({
@@ -60,6 +61,8 @@ export function RaceTo10Game({
   tournaments,
   contextBoard,
 }: RaceTo10GameProps) {
+  /** Optional outbound sharing supplied by the active release target. */
+  const referralSharing = useReferralSharing();
   /** Currently visible multiplayer screen. */
   const [stage, setStage] = useState<RaceStage>(openInbox ? "inbox" : challengeId ? "challenge" : "categories");
   /** Challenge being loaded or accepted by this client. */
@@ -477,18 +480,14 @@ export function RaceTo10Game({
 
   /** Publishes a completed creator run as a shareable challenge. */
   const publish = () => {
-    if (!run || pending) return;
+    if (!referralSharing || !run || pending) return;
     send("racePublish", "game:publishRace", {runId: run.runId});
   };
   /** Opens the host share flow for a published race challenge. */
   const share = () => {
-    if (!published || !outcome) return;
+    if (!referralSharing || !published) return;
     analytics("race_share_dialog_opened", {categoryId: published.preview.categoryId});
-    window.dispatchEvent(
-      new CustomEvent("riddle-quest:share-race", {
-        detail: {challengeId: published.challengeId, preview: published.preview, outcome},
-      }),
-    );
+    referralSharing.shareRace({challengeId: published.challengeId, preview: published.preview});
   };
   /** Clears completed-run presentation state and optionally starts a rematch. */
   const resetForNewRace = (categoryId?: RaceCategoryId, rivalryId?: string) => {
@@ -581,6 +580,7 @@ export function RaceTo10Game({
         quitConfirmationOpen, raceGuessLoading, published, dialogRef, gameplayViewportRef, gameplayRef, quitDialogRef,
         socialPending,
         playerOverlay, platformPlayerId,
+        sharingRewardCoins: referralSharing?.rewardCoins,
       }}
       onClose={onClose} onRetry={retry} onRequestClose={requestClose} onShowInbox={showInbox}
       onShowTournaments={tournaments ? showTournaments : undefined}

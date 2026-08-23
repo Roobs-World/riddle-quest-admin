@@ -19,10 +19,13 @@ export interface FacebookFirebaseAuthRuntime {
 
 /** Provides default firebase runtime behavior. */
 const defaultFirebaseRuntime = async (): Promise<FacebookFirebaseAuthRuntime> => {
-  const firebase = await import("../firebase");
-  const {signInWithCustomToken} = await import("firebase/auth");
+  const [firebase, {initializeFacebookAppCheck}, {signInWithCustomToken}] = await Promise.all([
+    import("../firebase"),
+    import("./FacebookFirebaseAppCheck"),
+    import("firebase/auth"),
+  ]);
   return {
-    initializeAppCheck: (getToken) => firebase.initializeFacebookAppCheck(getToken),
+    initializeAppCheck: (getToken) => initializeFacebookAppCheck(getToken),
     signIn: async (customToken) => {
       await signInWithCustomToken(firebase.auth, customToken);
     },
