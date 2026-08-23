@@ -5,18 +5,30 @@ import type {JestBackendPort} from "./backend";
 import {createRegistrationEntryPayload, type RegistrationSource} from "./registrationAttribution";
 import type {JestPlatformPort, JestRegistrationOverlayHandle, JestSession} from "./types";
 
+/** Records one registration-funnel event with optional low-cardinality context. */
 type TrackFunnel = (eventName: string, params?: Record<string, string | number | boolean>) => void;
+/** Runs an asynchronous operation while the shared platform activity indicator is active. */
 type WithPlatformActivity = <Result>(operation: () => Promise<Result>) => Promise<Result>;
 
+/** Collaborators required by the Jest registration flow. */
 type UseJestRegistrationOptions = {
+  /** Jest SDK boundary used for player identity, profile, preferences, and registration UI. */
   platform: JestPlatformPort;
+  /** Server-authoritative identity exchange boundary. */
   backend: JestBackendPort;
+  /** Current session reference used by asynchronous SDK callbacks. */
   sessionRef: MutableRefObject<JestSession | null>;
+  /** Updates the active Jest session after registration or preference changes. */
   setSession: Dispatch<SetStateAction<JestSession | null>>;
+  /** Publishes a user-facing error when registration recovery fails. */
   setError: Dispatch<SetStateAction<string | null>>;
+  /** Authenticates Firebase with a server-issued custom token. */
   authenticateIdentity: (token: string) => Promise<void>;
+  /** Completes cleanup when identity exchange reports a deleted player. */
   completeDeletedPlayerCleanup: (playerSigned: string) => Promise<void>;
+  /** Wraps SDK work in the shared platform activity lifecycle. */
   withPlatformActivity: WithPlatformActivity;
+  /** Records registration and login funnel outcomes. */
   trackFunnel: TrackFunnel;
 };
 
