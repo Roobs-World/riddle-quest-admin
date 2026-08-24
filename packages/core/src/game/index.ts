@@ -1,3 +1,13 @@
+/**
+ * Deterministic game rules shared by browser targets and authoritative services.
+ *
+ * @remarks
+ * This entry point contains only provider-independent state transitions, scoring,
+ * Unicode grapheme helpers, and shared types. It does not perform identity,
+ * persistence, economy, analytics, or platform SDK operations.
+ *
+ * @packageDocumentation
+ */
 export type {Feedback, ScoredGuess} from "./types";
 export {computeFeedback} from "./computeFeedback";
 export {isValidGuess} from "./isValidGuess";

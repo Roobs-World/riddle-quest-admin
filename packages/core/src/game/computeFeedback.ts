@@ -2,12 +2,22 @@ import type {Feedback} from "./types";
 import {lowerCaseGraphemes} from "./graphemes";
 
 /**
- * Computes green/yellow/red feedback for a guess against the correct answer.
+ * Scores a guess against an answer using Wordle-style positional feedback.
  *
  * 1. First pass marks exact-position matches as green and decrements their char count.
  * 2. Second pass marks in-word-but-wrong-position letters as yellow (only while the
  *    char count > 0 to handle duplicate letters correctly).
  * 3. Everything else stays red.
+ *
+ * @param guess - Submitted guess. It is NFC-normalized and lowercased with the
+ * default `en` locale before comparison.
+ * @param answer - Correct answer, normalized in the same way as `guess`.
+ * @returns One feedback value for each grapheme in `guess`, in input order.
+ *
+ * @remarks
+ * Callers are expected to enforce equal grapheme lengths before scoring. If the
+ * lengths differ, the function still returns one value per guess grapheme and
+ * applies the same finite duplicate-letter counts from the supplied answer.
  */
 export function computeFeedback(guess: string, answer: string): Feedback[] {
   const guessChars = lowerCaseGraphemes(guess);

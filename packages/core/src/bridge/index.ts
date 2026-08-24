@@ -1,3 +1,10 @@
+/**
+ * Runtime-validated messages exchanged between the game iframe and its host.
+ * @remarks Treat every value as untrusted. Exported schemas define the wire
+ * contract; `parse*` helpers throw on invalid messages, while `is*` helpers
+ * support non-throwing routing by the `type` discriminant.
+ * @packageDocumentation
+ */
 import {z} from "zod";
 import {BRIDGE_PROTOCOL_VERSION} from "./constants";
 import {UsernameSchema} from "../validation/requestSchemas";
@@ -17,16 +24,15 @@ import {
 } from "../race";
 
 export {BRIDGE_PROTOCOL_VERSION} from "./constants";
-
-/** Validates the empty payload data shape. */
+/** Rejects any property on a message whose payload is intentionally empty. */
 const EmptyPayloadSchema = z.object({}).strict();
-/** Validates the metadata data shape. */
+/** Validates optional correlation metadata shared by every bridge envelope. */
 const MetadataSchema = z.object({
   requestId: z.string().min(1).optional(),
   sentAt: z.number().int().nonnegative().optional(),
 });
 
-/** Validates the game mode data shape. */
+/** Restricts bridge game modes to the two modes implemented by the host. */
 const GameModeSchema = z.enum(["classic", "challenge"]);
 /** Bounds canonical riddle identifiers crossing the iframe bridge. */
 const RiddleIdSchema = z.string().min(1).max(160);
@@ -59,7 +65,11 @@ const OperationSchema = z.enum([
   "raceReport",
 ]);
 
-/** Validates the bridge user data shape. */
+/**
+ * Validates the bounded identity projection that the host may expose to the game.
+ * @remarks Provider credentials and signed identity assertions must never be
+ * sent through this client-facing shape.
+ */
 export const BridgeUserSchema = z.object({
   uid: z.string().min(1),
   displayName: z.string().optional(),
@@ -68,10 +78,10 @@ export const BridgeUserSchema = z.object({
   isAnonymous: z.boolean(),
   platformRegistered: z.boolean().optional(),
 });
-/** Describes bridge user. */
+/** A validated, provider-neutral player identity visible inside the game iframe. */
 export type BridgeUser = z.infer<typeof BridgeUserSchema>;
 
-/** Validates the bridge profile data shape. */
+/** Validates the player profile and aggregate progress snapshot sent by the host. */
 export const BridgeProfileSchema = z.object({
   username: z.string().min(1),
   coins: z.number().int().nonnegative(),
@@ -101,10 +111,15 @@ export const BridgeProfileSchema = z.object({
   multiplayerChallengesCreated: z.number().int().nonnegative().optional(),
   hasPurchasedApp: z.boolean().optional(),
 });
-/** Describes bridge profile. */
+/** The normalized profile shape consumed by game presentation code. */
 export type BridgeProfile = z.infer<typeof BridgeProfileSchema>;
 
-/** Validates the bridge riddle data shape. */
+/**
+ * Validates a server-issued riddle session before the game restores it.
+ * @remarks Enforces the five-attempt base limit, one-attempt continue, and the
+ * corresponding `awaitingContinue` state. This strict object rejects unknown
+ * fields rather than reinterpreting authoritative session state.
+ */
 export const BridgeRiddleSchema = z.object({
   riddleId: RiddleIdSchema,
   text: z.string().min(1),
@@ -127,10 +142,10 @@ export const BridgeRiddleSchema = z.object({
     context.addIssue({code: z.ZodIssueCode.custom, message: "Attempt count exceeds the available limit."});
   }
 });
-/** Describes bridge riddle. */
+/** A validated authoritative riddle-session snapshot delivered to the game. */
 export type BridgeRiddle = z.infer<typeof BridgeRiddleSchema>;
 
-/** Validates the bridge leaderboard entry data shape. */
+/** Validates the display-safe subset of a server-authoritative leaderboard row. */
 export const BridgeLeaderboardEntrySchema = z.object({
   userId: z.string().min(1),
   username: z.string().min(1),
@@ -140,17 +155,22 @@ export const BridgeLeaderboardEntrySchema = z.object({
   totalWins: z.number().int().nonnegative(),
   bestStreak: z.number().int().nonnegative(),
 });
-/** Describes bridge leaderboard entry. */
+/** A normalized leaderboard row suitable for rendering in the game iframe. */
 export type BridgeLeaderboardEntry = z.infer<typeof BridgeLeaderboardEntrySchema>;
 
-/** Provides envelope behavior. */
+/**
+ * Adds a literal message discriminant and optional correlation metadata to a payload schema.
+ * @param type - Stable wire-level message name.
+ * @param payload - Zod schema used to validate the message payload.
+ * @returns A schema for the complete bridge envelope.
+ */
 const envelope = <Type extends string, Payload extends z.ZodTypeAny>(type: Type, payload: Payload) =>
   MetadataSchema.extend({
     type: z.literal(type),
     payload,
   });
 
-/** Validates the game ready message data shape. */
+/** Validates the game's protocol-version handshake after the iframe is ready. */
 export const GameReadyMessageSchema = envelope(
   "game:ready",
   z.object({
@@ -159,7 +179,7 @@ export const GameReadyMessageSchema = envelope(
   }),
 );
 
-/** Validates the game resize message data shape. */
+/** Validates positive pixel dimensions reported by the embedded game surface. */
 export const GameResizeMessageSchema = envelope(
   "game:resize",
   z.object({
@@ -168,7 +188,7 @@ export const GameResizeMessageSchema = envelope(
   }),
 );
 
-/** Validates the game load riddle message data shape. */
+/** Validates an initial riddle request or a resume with optional session identifiers. */
 export const GameLoadRiddleMessageSchema = envelope(
   "game:loadRiddle",
   z.object({
@@ -180,7 +200,7 @@ export const GameLoadRiddleMessageSchema = envelope(
   }),
 );
 
-/** Validates the game complete game message data shape. */
+/** Validates the identifiers required to complete a server-owned game session. */
 export const GameCompleteGameMessageSchema = envelope(
   "game:completeGame",
   z.object({
@@ -190,7 +210,7 @@ export const GameCompleteGameMessageSchema = envelope(
   }).strict(),
 );
 
-/** Validates a server-authoritative single-player guess message. */
+/** Validates an authoritative guess bound to a session and replay-safe `requestId`. */
 export const GameSubmitGuessMessageSchema = envelope(
   "game:submitGuess",
   z.object({
@@ -202,7 +222,10 @@ export const GameSubmitGuessMessageSchema = envelope(
   }).strict(),
 );
 
-/** Validates the game request hint message data shape. */
+/**
+ * Validates a replay-safe hint request and the player's current partial attempt.
+ * The backend owns coin spending and revealed positions.
+ */
 export const GameRequestHintMessageSchema = envelope(
   "game:requestHint",
   z.object({
@@ -214,7 +237,7 @@ export const GameRequestHintMessageSchema = envelope(
   }),
 );
 
-/** Validates the game spend coins message data shape. */
+/** Validates the dedicated continue purchase for an authoritative game session. */
 export const GameSpendCoinsMessageSchema = envelope(
   "game:spendCoins",
   z.object({
@@ -236,7 +259,7 @@ export const GameSkipRiddleMessageSchema = envelope(
   }).strict(),
 );
 
-/** Validates the game request purchase message data shape. */
+/** Validates a request to begin a provider purchase for a catalog product. */
 export const GameRequestPurchaseMessageSchema = envelope(
   "game:requestPurchase",
   z.object({
@@ -244,7 +267,7 @@ export const GameRequestPurchaseMessageSchema = envelope(
   }),
 );
 
-/** Validates the game load leaderboard message data shape. */
+/** Restricts leaderboard requests to the three supported ranking projections. */
 export const GameLoadLeaderboardMessageSchema = envelope(
   "game:loadLeaderboard",
   z.object({
@@ -252,7 +275,7 @@ export const GameLoadLeaderboardMessageSchema = envelope(
   }),
 );
 
-/** Validates the game update username message data shape. */
+/** Validates a username update using the shared normalization and length policy. */
 export const GameUpdateUsernameMessageSchema = envelope(
   "game:updateUsername",
   z.object({
@@ -260,7 +283,7 @@ export const GameUpdateUsernameMessageSchema = envelope(
   }),
 );
 
-/** Validates the game update avatar message data shape. */
+/** Validates a JPEG, PNG, or WebP data URL capped at 700,000 characters. */
 export const GameUpdateAvatarMessageSchema = envelope(
   "game:updateAvatar",
   z.object({
@@ -271,7 +294,7 @@ export const GameUpdateAvatarMessageSchema = envelope(
   }),
 );
 
-/** Validates the game delete account message data shape. */
+/** Validates an account-deletion request with no client-controlled payload. */
 export const GameDeleteAccountMessageSchema = envelope("game:deleteAccount", EmptyPayloadSchema);
 
 /** Validates the game list race categories message data shape. */
@@ -310,13 +333,13 @@ export const GameReportRivalMessageSchema = envelope(
   }).strict(),
 );
 
-/** Validates the game analytics message data shape. */
+/** Validates a bounded race analytics event; the host assigns its durable event identifier. */
 export const GameAnalyticsMessageSchema = envelope(
   "game:analytics",
   RaceAnalyticsEventRequestSchema.omit({eventId: true}),
 );
 
-/** Validates the game error message data shape. */
+/** Validates a client error report forwarded to the host's observability adapter. */
 export const GameErrorMessageSchema = envelope(
   "game:error",
   z.object({
@@ -325,7 +348,7 @@ export const GameErrorMessageSchema = envelope(
   }),
 );
 
-/** Validates the game to host message data shape. */
+/** Validates every game-to-host message using its `type` discriminant. */
 export const GameToHostMessageSchema = z.discriminatedUnion("type", [
   GameReadyMessageSchema,
   GameResizeMessageSchema,
@@ -356,10 +379,10 @@ export const GameToHostMessageSchema = z.discriminatedUnion("type", [
   GameAnalyticsMessageSchema,
   GameErrorMessageSchema,
 ]);
-/** Describes game to host message. */
+/** A game-to-host message after runtime validation by {@link GameToHostMessageSchema}. */
 export type GameToHostMessage = z.infer<typeof GameToHostMessageSchema>;
 
-/** Validates the host init message data shape. */
+/** Validates initial host state and requires the literal bridge protocol version. */
 export const HostInitMessageSchema = envelope(
   "host:init",
   z.object({
@@ -388,7 +411,7 @@ export const HostInitMessageSchema = envelope(
   }),
 );
 
-/** Validates the host auth state message data shape. */
+/** Validates a later provider-neutral identity/profile transition from the host. */
 export const HostAuthStateMessageSchema = envelope(
   "host:authState",
   z.object({
@@ -397,7 +420,7 @@ export const HostAuthStateMessageSchema = envelope(
   }),
 );
 
-/** Validates the host riddle loaded message data shape. */
+/** Validates an authoritative riddle load result and optional refreshed profile. */
 export const HostRiddleLoadedMessageSchema = envelope(
   "host:riddleLoaded",
   z.object({
@@ -406,7 +429,7 @@ export const HostRiddleLoadedMessageSchema = envelope(
   }),
 );
 
-/** Validates the host operation result message data shape. */
+/** Validates operation status; operation-specific consumers must validate `data`. */
 export const HostOperationResultMessageSchema = envelope(
   "host:operationResult",
   z.object({
@@ -417,12 +440,12 @@ export const HostOperationResultMessageSchema = envelope(
   }),
 );
 
-/** Validates the host pause message data shape. */
+/** Validates a host lifecycle pause signal with an empty payload. */
 export const HostPauseMessageSchema = envelope("host:pause", EmptyPayloadSchema);
-/** Validates the host resume message data shape. */
+/** Validates a host lifecycle resume signal with an empty payload. */
 export const HostResumeMessageSchema = envelope("host:resume", EmptyPayloadSchema);
 
-/** Validates the host to game message data shape. */
+/** Validates every lifecycle, identity, content, and operation message sent by the host. */
 export const HostToGameMessageSchema = z.discriminatedUnion("type", [
   HostInitMessageSchema,
   HostAuthStateMessageSchema,
@@ -431,28 +454,46 @@ export const HostToGameMessageSchema = z.discriminatedUnion("type", [
   HostPauseMessageSchema,
   HostResumeMessageSchema,
 ]);
-/** Describes host to game message. */
+/** A host-to-game message after runtime validation by {@link HostToGameMessageSchema}. */
 export type HostToGameMessage = z.infer<typeof HostToGameMessageSchema>;
 
-/** Describes bridge message. */
+/** Any validated message traveling in either direction across the iframe bridge. */
 export type BridgeMessage = GameToHostMessage | HostToGameMessage;
 
-/** Parses game to host message. */
+/**
+ * Parses an untrusted value received from the game iframe.
+ * @param value - Candidate bridge value, commonly a `MessageEvent.data` payload.
+ * @returns The parsed game-to-host message with schema defaults applied.
+ * @throws {@link z.ZodError} when the envelope, discriminant, metadata, or payload is invalid.
+ */
 export const parseGameToHostMessage = (value: unknown): GameToHostMessage => {
   return GameToHostMessageSchema.parse(value);
 };
 
-/** Parses host to game message. */
+/**
+ * Parses an untrusted value received from the host page.
+ * @param value - Candidate bridge value, commonly a `MessageEvent.data` payload.
+ * @returns The parsed host-to-game message with schema defaults applied.
+ * @throws {@link z.ZodError} when the envelope, discriminant, metadata, or payload is invalid.
+ */
 export const parseHostToGameMessage = (value: unknown): HostToGameMessage => {
   return HostToGameMessageSchema.parse(value);
 };
 
-/** Indicates whether is game to host message. */
+/**
+ * Tests a candidate game-to-host value without throwing or returning parsed defaults.
+ * @param value - Value to validate.
+ * @returns Whether the complete game-to-host schema accepts the value.
+ */
 export const isGameToHostMessage = (value: unknown): value is GameToHostMessage => {
   return GameToHostMessageSchema.safeParse(value).success;
 };
 
-/** Indicates whether is host to game message. */
+/**
+ * Tests a candidate host-to-game value without throwing or returning parsed defaults.
+ * @param value - Value to validate.
+ * @returns Whether the complete host-to-game schema accepts the value.
+ */
 export const isHostToGameMessage = (value: unknown): value is HostToGameMessage => {
   return HostToGameMessageSchema.safeParse(value).success;
 };

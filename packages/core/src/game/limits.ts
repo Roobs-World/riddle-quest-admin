@@ -1,2 +1,5 @@
-/** Defines the max riddle answer characters value. */
+/**
+ * Maximum answer slots supported by the shipped game keyboard and bounded
+ * gameplay request schemas.
+ */
 export const MAX_RIDDLE_ANSWER_CHARACTERS = 7;

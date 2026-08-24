@@ -1,24 +1,40 @@
 import type {GameEngineMode} from "./GameEngine";
 
-/** Defines the contract for local completion rewards. */
+/** Provider-independent rewards calculated for a completed guest/local game. */
 export interface LocalCompletionRewards {
-  /** Stores coins. */
+  /** Coin grant selected directly from the completed game mode's configuration. */
   coins: number;
-  /** Stores score. */
+  /** Base score plus the non-negative attempt-efficiency bonus. */
   score: number;
 }
 
 /**
- * Guest/local reward calculation (mirrors client `getLocalRewards`).
+ * Calculates deterministic guest/local completion rewards without mutating economy state.
+ *
+ * @param gameMode - Selects the challenge or classic coin and base-score values.
+ * @param attempts - Cumulative attempts used to complete the game.
+ * @param options - Mode-specific coin grants and optional score-model overrides.
+ * @returns The selected coin grant and calculated score.
+ *
+ * @remarks
+ * The attempt bonus is `max(0, (scoreMaxAttempts - attempts + 1) * 10)`.
+ * `scoreMaxAttempts` defaults to `5`; challenge and classic base scores default
+ * to `100` and `50` respectively. Inputs are trusted, so this helper does not
+ * reject fractional, negative, or otherwise invalid numeric configuration.
  */
 export function computeGuestCompletionRewards(
   gameMode: GameEngineMode,
   attempts: number,
   options: {
+    /** Coins awarded for a completed challenge game. */
     challengeCoinReward: number;
+    /** Coins awarded for a completed classic game. */
     classicCoinReward: number;
+    /** Attempt count used as the full-bonus scoring reference. Defaults to `5`. */
     scoreMaxAttempts?: number;
+    /** Challenge score before the attempt bonus. Defaults to `100`. */
     challengeBaseScore?: number;
+    /** Classic score before the attempt bonus. Defaults to `50`. */
     classicBaseScore?: number;
   },
 ): LocalCompletionRewards {

@@ -1,10 +1,20 @@
 import type {Feedback, ScoredGuess} from "./types";
 
-/** Renders the priority interface. */
+/** Keyboard-state precedence: a stronger observation never regresses. */
 const PRIORITY: Record<Feedback, number> = {green: 3, yellow: 2, red: 1};
 
 /**
- * Derives the highest-priority feedback state for every letter in submitted guesses.
+ * Collapses scored guesses into the strongest known feedback for each keyboard key.
+ *
+ * @param guesses - Submitted guesses and their positionally aligned feedback.
+ * @returns A new record keyed by JavaScript-lowercased guess symbols. When a symbol
+ * appears more than once, `green` takes precedence over `yellow`, which takes
+ * precedence over `red`.
+ *
+ * @remarks
+ * The function does not mutate its inputs. Each `guess` element is expected to
+ * have a corresponding `feedback` element; malformed, unaligned arrays are not
+ * validated at runtime.
  */
 export function computeLetterStates(guesses: ScoredGuess[]): Record<string, Feedback> {
   const states: Record<string, Feedback> = {};
