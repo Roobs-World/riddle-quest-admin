@@ -251,6 +251,12 @@ Keep `JEST_UPLOAD_IS_ACTIVE` and `JEST_CONFIRM_ACTIVATION` out of that persisten
 both so a stale file cannot change release behavior. The canonical `release:jest` interface also rejects either variable
 in its process environment. Automatic activation is a fixed, reviewed property of the canonical release code.
 
+For GitHub Actions CD, create a protected `jest-production` environment, require the desired reviewers, restrict it to
+the `jest` branch, and add `JEST_GAME_UPLOAD_TOKEN` plus `JEST_NOTIFICATION_EMAIL` as environment secrets. Dispatch
+`Deploy Jest production` from the `jest` branch. The workflow uses the same canonical release command and a
+non-cancellable production concurrency lock; it does not provide a shorter CI-only upload path. Facebook, Reddit, and
+YouTube retain their separately documented manual handoff boundaries.
+
 The command refuses a dirty worktree, acquires an exclusive release lock, adds the source commit and a random attempt ID
 to its timestamped version, and runs `verify:production:extended` before reading credential-file contents. Timestamped
 releases require Linux and functional `/usr/bin/bwrap`; the command probes the boundary first and refuses an unsandboxed
