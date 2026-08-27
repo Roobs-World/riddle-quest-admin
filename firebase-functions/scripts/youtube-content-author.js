@@ -5,6 +5,7 @@ const OpenAI = require("openai").default;
 const {zodTextFormat} = require("openai/helpers/zod");
 const {z} = require("zod");
 const path = require("node:path");
+const {writeSync} = require("node:fs");
 const {mkdir, readFile, rename, rm, unlink, writeFile} = require("node:fs/promises");
 const {
   SUPPORTED_LOCALES,
@@ -145,7 +146,7 @@ const resumePreparedCommit = async ({
     if (error?.code !== "ENOENT") throw error;
   }
   await unlink(journalPath);
-  process.stdout.write("Recovered and completed the prepared YouTube content commit.\n");
+  writeSync(process.stdout.fd, "Recovered and completed the prepared YouTube content commit.\n");
   return true;
 };
 
