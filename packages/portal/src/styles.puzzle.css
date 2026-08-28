@@ -147,7 +147,10 @@
     "Poppins",
     sans-serif;
   box-shadow: 0 8px 22px rgba(0, 0, 0, 0.2);
-  transition: transform 130ms ease, filter 130ms ease, box-shadow 130ms ease;
+  transition:
+    transform 130ms ease,
+    filter 130ms ease,
+    box-shadow 130ms ease;
 }
 .game-input-actions button:hover:not(:disabled) {
   filter: brightness(1.05);
@@ -204,7 +207,9 @@
   border: 0;
   border-radius: 50%;
   background: transparent;
-  transition: background-color 130ms ease, transform 130ms ease;
+  transition:
+    background-color 130ms ease,
+    transform 130ms ease;
 }
 .game-bottom-navigation button:hover {
   background: rgba(64, 31, 64, 0.08);
@@ -265,7 +270,9 @@
     400 22px/1 "Poetsen One",
     "Poppins",
     sans-serif;
-  transition: transform 90ms ease, background-color 120ms ease;
+  transition:
+    transform 90ms ease,
+    background-color 120ms ease;
 }
 .key:hover:not(:disabled) {
   transform: translateY(-2px);

@@ -14,11 +14,11 @@ import {
 
 describe("solar-system motion", () => {
   it("advances by elapsed time rather than rendered frame count", () => {
+    /** Provides speed behavior. */
     const speed = 0.02;
-    const at60Hz = Array.from({length: 60}).reduce<number>(
-      (angle) => advanceFrameBasedAngle(angle, speed, 1 / 60),
-      0,
-    );
+    /** Provides at60 hz behavior. */
+    const at60Hz = Array.from({length: 60}).reduce<number>((angle) => advanceFrameBasedAngle(angle, speed, 1 / 60), 0);
+    /** Provides at120 hz behavior. */
     const at120Hz = Array.from({length: 120}).reduce<number>(
       (angle) => advanceFrameBasedAngle(angle, speed, 1 / 120),
       0,
@@ -34,6 +34,7 @@ describe("solar-system motion", () => {
   });
 
   it("keeps decorative movement clearly visible without depending on refresh rate", () => {
+    /** Provides speed behavior. */
     const speed = 0.004;
 
     expect(advanceSolarOrbitAngle(0, speed, 1)).toBeCloseTo(
@@ -45,7 +46,9 @@ describe("solar-system motion", () => {
   });
 
   it("gives the corona visible rotation, scale, opacity, and limb-glow movement", () => {
+    /** Provides initial behavior. */
     const initial = getCoronaAnimationState(0);
+    /** Provides later behavior. */
     const later = getCoronaAnimationState(2);
 
     expect(later.rotation - initial.rotation).toBeCloseTo(0.24);

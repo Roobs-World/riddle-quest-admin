@@ -8,10 +8,14 @@ export function AchievementIcon({
   id,
   text,
 }: {
+  /** Stores id. */
   id: string;
+  /** Stores text. */
   text: (key: YouTubeCopyKey) => string;
 }) {
+  /** Provides numeric behavior. */
   const numeric = Number(id.match(/\d+/u)?.[0]);
+  /** Provides label behavior. */
   let label: string;
   if (id === "first_win") label = `${text("wins")}: 1`;
   else if (id.startsWith("wins_")) label = `${text("wins")}: ${numeric}`;
@@ -28,22 +32,46 @@ export function AchievementIcon({
   else if (id === "efficient_10") label = `${text("wins")}: 10 · ${text("attempts")}: 3`;
   else if (id === "lesson_learned") label = text("loss");
   else label = `${text("achievements")}: ${text("attempts")} ${id.includes("last_chance") ? 5 : 1}`;
-  return <span role="img" aria-label={label}>{getYouTubeAchievementIcon(id)}</span>;
+  return (
+    <span role="img" aria-label={label}>
+      {getYouTubeAchievementIcon(id)}
+    </span>
+  );
 }
 
 /** Renders the persistent YouTube player economy and save status. */
-export function StatusHeader({snapshot, locale}: {snapshot: YouTubeAuthoritySnapshot; locale: YouTubeLocale}) {
-  return <header className="yt-status">
-    <strong>{youtubeText(locale, "title")}</strong>
-    <span>🪙 {snapshot.save.progression.coins}</span>
-    {snapshot.busy && <span role="status">{youtubeText(locale, "saving")}</span>}
-  </header>;
+export function StatusHeader({
+  snapshot,
+  locale,
+}: {
+  /** Stores snapshot. */
+  snapshot: YouTubeAuthoritySnapshot; /** Stores locale. */
+  /** Stores locale. */
+  locale: YouTubeLocale;
+}) {
+  return (
+    <header className="yt-status">
+      <strong>{youtubeText(locale, "title")}</strong>
+      <span>🪙 {snapshot.save.progression.coins}</span>
+      {snapshot.busy && <span role="status">{youtubeText(locale, "saving")}</span>}
+    </header>
+  );
 }
 
 /** Renders the recoverable YouTube save failure action. */
-export function SaveBanner({text, retry}: {text: (key: YouTubeCopyKey) => string; retry: () => void}) {
-  return <div className="yt-banner error" role="alert">
-    <span>{text("saveFailed")}</span>
-    <button onClick={retry}>{text("retry")}</button>
-  </div>;
+export function SaveBanner({
+  text,
+  retry,
+}: {
+  /** Stores text. */
+  text: (key: YouTubeCopyKey) => string; /** Stores retry. */
+  /** Stores retry. */
+  retry: () => void;
+}) {
+  return (
+    <div className="yt-banner error" role="alert">
+      <span>{text("saveFailed")}</span>
+      <button onClick={retry}>{text("retry")}</button>
+    </div>
+  );
 }

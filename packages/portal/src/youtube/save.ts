@@ -29,6 +29,7 @@ const isRecord = (value: unknown): value is Record<string, unknown> =>
 
 /** Indicates whether has only keys. */
 const hasOnlyKeys = (value: Record<string, unknown>, keys: readonly string[]): boolean => {
+  /** Provides allowed behavior. */
   const allowed = new Set(keys);
   return Object.keys(value).every((key) => allowed.has(key));
 };
@@ -47,6 +48,7 @@ const isBoundedId = (value: unknown, maximum = 200): value is string =>
 /** Indicates whether is day. */
 const isDay = (value: unknown): value is string => {
   if (typeof value !== "string" || !DAY_PATTERN.test(value)) return false;
+  /** Parses d. */
   const parsed = new Date(`${value}T00:00:00.000Z`);
   return !Number.isNaN(parsed.getTime()) && parsed.toISOString().slice(0, 10) === value;
 };
@@ -65,26 +67,60 @@ const parseStringArray = (
 
 /** Parses progression. */
 const parseProgression = (value: unknown): YouTubeProgress | null => {
-  if (!isRecord(value) || !hasOnlyKeys(value, [
-    "coins", "xp", "level", "classicIndex", "gamesPlayed", "totalWins", "challengeWins",
-    "dailyPuzzlesCompleted", "currentDailyStreak", "bestDailyStreak", "lastDailyCompletedDate",
-    "totalGuesses", "totalGuessesInWins", "totalHintsUsed", "highestClassicLevel",
-    "unlockedAchievementIds",
-  ])) return null;
+  if (
+    !isRecord(value) ||
+    !hasOnlyKeys(value, [
+      "coins",
+      "xp",
+      "level",
+      "classicIndex",
+      "gamesPlayed",
+      "totalWins",
+      "challengeWins",
+      "dailyPuzzlesCompleted",
+      "currentDailyStreak",
+      "bestDailyStreak",
+      "lastDailyCompletedDate",
+      "totalGuesses",
+      "totalGuessesInWins",
+      "totalHintsUsed",
+      "highestClassicLevel",
+      "unlockedAchievementIds",
+    ])
+  )
+    return null;
 
+  /** Provides integer keys behavior. */
   const integerKeys = [
-    "coins", "xp", "classicIndex", "gamesPlayed", "totalWins", "challengeWins",
-    "dailyPuzzlesCompleted", "currentDailyStreak", "bestDailyStreak", "totalGuesses",
-    "totalGuessesInWins", "totalHintsUsed", "highestClassicLevel",
+    "coins",
+    "xp",
+    "classicIndex",
+    "gamesPlayed",
+    "totalWins",
+    "challengeWins",
+    "dailyPuzzlesCompleted",
+    "currentDailyStreak",
+    "bestDailyStreak",
+    "totalGuesses",
+    "totalGuessesInWins",
+    "totalHintsUsed",
+    "highestClassicLevel",
   ] as const;
   if (!integerKeys.every((key) => isSafeNonNegativeInteger(value[key], 1_000_000_000))) return null;
   if (!isSafeNonNegativeInteger(value.level, 1_000_000) || value.level < 1) return null;
   if (value.lastDailyCompletedDate !== undefined && !isDay(value.lastDailyCompletedDate)) return null;
+  /** Provides unlocked achievement ids behavior. */
   const unlockedAchievementIds = parseStringArray(value.unlockedAchievementIds, 64, isBoundedId);
   if (!unlockedAchievementIds || new Set(unlockedAchievementIds).size !== unlockedAchievementIds.length) return null;
+  /** Provides numbers behavior. */
   const numbers = value as Record<(typeof integerKeys)[number] | "level", number>;
-  if (numbers.totalWins > numbers.gamesPlayed || numbers.challengeWins > numbers.totalWins ||
-    numbers.totalGuessesInWins > numbers.totalGuesses || numbers.bestDailyStreak < numbers.currentDailyStreak) return null;
+  if (
+    numbers.totalWins > numbers.gamesPlayed ||
+    numbers.challengeWins > numbers.totalWins ||
+    numbers.totalGuessesInWins > numbers.totalGuesses ||
+    numbers.bestDailyStreak < numbers.currentDailyStreak
+  )
+    return null;
 
   return {
     coins: numbers.coins,
@@ -108,16 +144,16 @@ const parseProgression = (value: unknown): YouTubeProgress | null => {
 
 /** Parses letters. */
 const parseLetters = (value: unknown): string[] | null => {
+  /** Provides letters behavior. */
   const letters = parseStringArray(
     value,
     7,
-    (entry): entry is string => typeof entry === "string" && (
-      entry === "" || (
-        entry === entry.normalize("NFC") &&
-        splitGraphemes(entry).length === 1 &&
-        ANSWER_GRAPHEME_PATTERN.test(entry)
-      )
-    ),
+    (entry): entry is string =>
+      typeof entry === "string" &&
+      (entry === "" ||
+        (entry === entry.normalize("NFC") &&
+          splitGraphemes(entry).length === 1 &&
+          ANSWER_GRAPHEME_PATTERN.test(entry))),
   );
   return letters;
 };
@@ -125,28 +161,50 @@ const parseLetters = (value: unknown): string[] | null => {
 /** Parses guess. */
 const parseGuess = (value: unknown): YouTubeSavedGuess | null => {
   if (!isRecord(value) || !hasOnlyKeys(value, ["letters", "feedback"])) return null;
+  /** Provides letters behavior. */
   const letters = parseLetters(value.letters);
   if (!letters || letters.some((letter) => !letter)) return null;
-  if (!Array.isArray(value.feedback) || value.feedback.length !== letters.length ||
-    !value.feedback.every((entry) => typeof entry === "string" && FEEDBACK.has(entry))) return null;
+  if (
+    !Array.isArray(value.feedback) ||
+    value.feedback.length !== letters.length ||
+    !value.feedback.every((entry) => typeof entry === "string" && FEEDBACK.has(entry))
+  )
+    return null;
   return {letters, feedback: value.feedback as YouTubeSavedGuess["feedback"]};
 };
 
 /** Parses active game. */
 const parseActiveGame = (value: unknown, envelopeRevision: number): YouTubeActiveGame | null => {
-  if (!isRecord(value) || !hasOnlyKeys(value, [
-    "sessionRevision", "mode", "riddleId", "contentFingerprint", "dailyDate", "hintRevealedIndices", "guesses",
-    "attemptsUsed", "hasUsedContinue", "awaitingContinue",
-  ])) return null;
+  if (
+    !isRecord(value) ||
+    !hasOnlyKeys(value, [
+      "sessionRevision",
+      "mode",
+      "riddleId",
+      "contentFingerprint",
+      "dailyDate",
+      "hintRevealedIndices",
+      "guesses",
+      "attemptsUsed",
+      "hasUsedContinue",
+      "awaitingContinue",
+    ])
+  )
+    return null;
   if (value.mode !== "classic" && value.mode !== "daily") return null;
   if (!isSafeNonNegativeInteger(value.sessionRevision, envelopeRevision) || value.sessionRevision < 1) return null;
   if (!isBoundedId(value.riddleId, 160) || !isBoundedId(value.contentFingerprint, 160)) return null;
   if (value.dailyDate !== undefined && !isDay(value.dailyDate)) return null;
   if ((value.mode === "daily") !== (typeof value.dailyDate === "string")) return null;
-  if (!Array.isArray(value.hintRevealedIndices) || value.hintRevealedIndices.length > 7 ||
+  if (
+    !Array.isArray(value.hintRevealedIndices) ||
+    value.hintRevealedIndices.length > 7 ||
     !value.hintRevealedIndices.every((index) => isSafeNonNegativeInteger(index, 6)) ||
-    new Set(value.hintRevealedIndices).size !== value.hintRevealedIndices.length) return null;
+    new Set(value.hintRevealedIndices).size !== value.hintRevealedIndices.length
+  )
+    return null;
   if (!Array.isArray(value.guesses) || value.guesses.length > 6) return null;
+  /** Provides guesses behavior. */
   const guesses = value.guesses.map(parseGuess);
   // Each row is self-validating. Historical rows may have a different length
   // after the SDK locale changes the localized answer for the same canonical
@@ -154,6 +212,7 @@ const parseActiveGame = (value: unknown, envelopeRevision: number): YouTubeActiv
   if (guesses.some((guess) => guess === null)) return null;
   if (!isSafeNonNegativeInteger(value.attemptsUsed, 6) || value.attemptsUsed !== guesses.length) return null;
   if (!isBoolean(value.hasUsedContinue) || !isBoolean(value.awaitingContinue)) return null;
+  /** Provides valid attempt state behavior. */
   const validAttemptState = value.awaitingContinue
     ? value.attemptsUsed === 5 && value.hasUsedContinue === false
     : value.hasUsedContinue
@@ -178,10 +237,16 @@ const parseActiveGame = (value: unknown, envelopeRevision: number): YouTubeActiv
 /** Parses receipts. */
 const parseReceipts = (value: unknown, revision: number): YouTubeOperationReceipt[] | null => {
   if (!Array.isArray(value) || value.length > YOUTUBE_RECEIPT_LIMIT) return null;
+  /** Provides receipts behavior. */
   const receipts: YouTubeOperationReceipt[] = [];
   for (const entry of value) {
-    if (!isRecord(entry) || !hasOnlyKeys(entry, ["id", "revision"]) ||
-      !isBoundedId(entry.id) || !isSafeNonNegativeInteger(entry.revision, revision)) return null;
+    if (
+      !isRecord(entry) ||
+      !hasOnlyKeys(entry, ["id", "revision"]) ||
+      !isBoundedId(entry.id) ||
+      !isSafeNonNegativeInteger(entry.revision, revision)
+    )
+      return null;
     receipts.push({id: entry.id, revision: entry.revision});
   }
   return new Set(receipts.map(({id}) => id)).size === receipts.length ? receipts : null;
@@ -189,8 +254,14 @@ const parseReceipts = (value: unknown, revision: number): YouTubeOperationReceip
 
 /** Parses preferences. */
 const parsePreferences = (value: unknown): YouTubeSaveV1["preferences"] | null => {
-  if (!isRecord(value) || !hasOnlyKeys(value, ["reducedMotion", "highContrast", "guidanceComplete"]) ||
-    !isBoolean(value.reducedMotion) || !isBoolean(value.highContrast) || !isBoolean(value.guidanceComplete)) return null;
+  if (
+    !isRecord(value) ||
+    !hasOnlyKeys(value, ["reducedMotion", "highContrast", "guidanceComplete"]) ||
+    !isBoolean(value.reducedMotion) ||
+    !isBoolean(value.highContrast) ||
+    !isBoolean(value.guidanceComplete)
+  )
+    return null;
   return {
     reducedMotion: value.reducedMotion,
     highContrast: value.highContrast,
@@ -200,10 +271,38 @@ const parsePreferences = (value: unknown): YouTubeSaveV1["preferences"] | null =
 
 /** Describes you tube save parse result. */
 export type YouTubeSaveParseResult =
-  | {kind: "empty"; save: YouTubeSaveV1}
-  | {kind: "valid"; save: YouTubeSaveV1; recoveredActiveGame?: true; migratedFromSchemaVersion?: 0}
-  | {kind: "invalid"; reason: string; raw: string}
-  | {kind: "future-version"; schemaVersion: number; raw: string};
+  | {
+      /** Stores kind. */
+      kind: "empty"; /** Stores save. */
+      /** Stores save. */
+      save: YouTubeSaveV1;
+    }
+  | {
+      /** Stores kind. */
+      kind: "valid"; /** Stores save. */
+      /** Stores save. */
+      save: YouTubeSaveV1; /** Stores recovered active game. */
+      /** Stores recovered active game. */
+      recoveredActiveGame?: true; /** Stores migrated from schema version. */
+      /** Stores migrated from schema version. */
+      migratedFromSchemaVersion?: 0;
+    }
+  | {
+      /** Stores kind. */
+      kind: "invalid"; /** Stores reason. */
+      /** Stores reason. */
+      reason: string; /** Stores raw. */
+      /** Stores raw. */
+      raw: string;
+    }
+  | {
+      /** Stores kind. */
+      kind: "future-version"; /** Stores schema version. */
+      /** Stores schema version. */
+      schemaVersion: number; /** Stores raw. */
+      /** Stores raw. */
+      raw: string;
+    };
 
 /** Creates the target-scoped initial state after an empty, successful SDK load. */
 export function createEmptyYouTubeSave(contentVersion: string): YouTubeSaveV1 {
@@ -242,6 +341,7 @@ export function parseYouTubeSave(raw: string, contentVersion: string): YouTubeSa
     return {kind: "invalid", reason: "save-too-large", raw};
   }
 
+  /** Provides value behavior. */
   let value: unknown;
   try {
     value = JSON.parse(raw);
@@ -249,15 +349,25 @@ export function parseYouTubeSave(raw: string, contentVersion: string): YouTubeSa
     return {kind: "invalid", reason: "save-json-invalid", raw};
   }
   if (!isRecord(value)) return {kind: "invalid", reason: "save-envelope-invalid", raw};
+  /** Provides envelope behavior. */
   let envelope: Record<string, unknown> = value;
   if (typeof envelope.schemaVersion === "number" && envelope.schemaVersion > YOUTUBE_SAVE_SCHEMA_VERSION) {
     return {kind: "future-version", schemaVersion: envelope.schemaVersion, raw};
   }
+  /** Provides migrated from schema version behavior. */
   let migratedFromSchemaVersion: 0 | undefined;
   if (envelope.schemaVersion === 0) {
-    if (!hasOnlyKeys(envelope, [
-      "schemaVersion", "revision", "contentVersion", "progression", "activeGame", "operationReceipts",
-    ])) return {kind: "invalid", reason: "save-envelope-invalid", raw};
+    if (
+      !hasOnlyKeys(envelope, [
+        "schemaVersion",
+        "revision",
+        "contentVersion",
+        "progression",
+        "activeGame",
+        "operationReceipts",
+      ])
+    )
+      return {kind: "invalid", reason: "save-envelope-invalid", raw};
     envelope = {
       ...envelope,
       schemaVersion: 1,
@@ -265,15 +375,29 @@ export function parseYouTubeSave(raw: string, contentVersion: string): YouTubeSa
     };
     migratedFromSchemaVersion = 0;
   }
-  if (envelope.schemaVersion !== YOUTUBE_SAVE_SCHEMA_VERSION || !hasOnlyKeys(envelope, [
-    "schemaVersion", "revision", "contentVersion", "progression", "activeGame", "operationReceipts", "preferences",
-  ])) return {kind: "invalid", reason: "save-envelope-invalid", raw};
+  if (
+    envelope.schemaVersion !== YOUTUBE_SAVE_SCHEMA_VERSION ||
+    !hasOnlyKeys(envelope, [
+      "schemaVersion",
+      "revision",
+      "contentVersion",
+      "progression",
+      "activeGame",
+      "operationReceipts",
+      "preferences",
+    ])
+  )
+    return {kind: "invalid", reason: "save-envelope-invalid", raw};
   if (!isSafeNonNegativeInteger(envelope.revision) || !isBoundedId(envelope.contentVersion, 160)) {
     return {kind: "invalid", reason: "save-metadata-invalid", raw};
   }
+  /** Provides progression behavior. */
   const progression = parseProgression(envelope.progression);
+  /** Provides active game behavior. */
   const activeGame = envelope.activeGame === null ? null : parseActiveGame(envelope.activeGame, envelope.revision);
+  /** Provides operation receipts behavior. */
   const operationReceipts = parseReceipts(envelope.operationReceipts, envelope.revision);
+  /** Provides preferences behavior. */
   const preferences = parsePreferences(envelope.preferences);
   if (!progression || !operationReceipts || !preferences) {
     return {kind: "invalid", reason: "save-state-invalid", raw};
@@ -281,6 +405,7 @@ export function parseYouTubeSave(raw: string, contentVersion: string): YouTubeSa
   // Active-puzzle state is a disposable resume cache. Preserve valid durable
   // progression when only that nested record is corrupt, then save a sanitized
   // document before gameplay becomes interactive.
+  /** Provides recovered active game behavior. */
   const recoveredActiveGame = envelope.activeGame !== null && activeGame === null;
 
   return {
@@ -306,6 +431,7 @@ export function cloneYouTubeSave(save: YouTubeSaveV1): YouTubeSaveV1 {
 
 /** Serializes within the deliberately conservative Playables save budget. */
 export function serializeYouTubeSave(save: YouTubeSaveV1): string {
+  /** Serializes d. */
   const serialized = JSON.stringify(save);
   if (serialized.length * 2 >= YOUTUBE_SAVE_BUDGET_BYTES) {
     throw new Error("youtube-save-budget-exceeded");

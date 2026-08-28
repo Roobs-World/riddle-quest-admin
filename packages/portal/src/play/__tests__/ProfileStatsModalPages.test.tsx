@@ -1,11 +1,7 @@
 import {describe, expect, it} from "@jest/globals";
 import {renderToString} from "react-dom/server";
 import type {BridgeProfile} from "@qwordly/core/bridge";
-import {
-  AchievementsModalPage,
-  RanksModalPage,
-  StatisticsModalPage,
-} from "../modalPages/profile/ProfileStatsModalPages";
+import {AchievementsModalPage, RanksModalPage, StatisticsModalPage} from "../modalPages/profile/ProfileStatsModalPages";
 
 /** Profile fixture shared by profile-detail rendering tests. */
 const profile: BridgeProfile = {

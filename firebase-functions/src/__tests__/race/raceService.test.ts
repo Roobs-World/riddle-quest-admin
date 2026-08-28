@@ -3,9 +3,12 @@ import type {ExistingRaceContentRecord} from "../../race/raceContentMigration";
 import {buildDeterministicRaceDeck} from "../../race/raceService";
 import {assertRaceLocaleCompatible, type RaceChallengeRecord} from "../../race/raceSetupService";
 
+/** Creates pool. */
 const makePool = (locale: RaceLocale): ExistingRaceContentRecord[] =>
   Array.from({length: 30}, (_, index) => {
+    /** Provides difficulty band behavior. */
     const difficultyBand: RaceDifficultyBand = (["easy", "medium", "hard"] as const)[index % 3];
+    /** Provides canonical riddle id behavior. */
     const canonicalRiddleId = `history:${index + 1}`;
     return {
       locale,
@@ -25,17 +28,19 @@ const makePool = (locale: RaceLocale): ExistingRaceContentRecord[] =>
 
 describe("Race to 10 deterministic deck service", () => {
   it("rejects challenge, rematch, and rivalry entry across locale boundaries", () => {
+    /** Provides challenge behavior. */
     const challenge = {locale: "ja"} as RaceChallengeRecord;
     expect(() => assertRaceLocaleCompatible(challenge, "ja")).not.toThrow();
-    expect(() => assertRaceLocaleCompatible(challenge, "en"))
-      .toThrow("RaceTo10.ERROR_LOCALE_MISMATCH");
+    expect(() => assertRaceLocaleCompatible(challenge, "en")).toThrow("RaceTo10.ERROR_LOCALE_MISMATCH");
   });
   it("selects a deterministic balanced 15-riddle deck", () => {
+    /** Provides first behavior. */
     const first = buildDeterministicRaceDeck(makePool("en"), {
       locale: "en",
       categoryId: "history",
       seed: "run-123",
     });
+    /** Provides second behavior. */
     const second = buildDeterministicRaceDeck(makePool("en"), {
       locale: "en",
       categoryId: "history",
@@ -44,6 +49,7 @@ describe("Race to 10 deterministic deck service", () => {
 
     expect(second).toEqual(first);
     expect(first.riddles).toHaveLength(15);
+    /** Provides by difficulty behavior. */
     const byDifficulty = new Map(
       makePool("en").map((record) => [record.data.canonicalRiddleId, record.data.difficultyBand]),
     );

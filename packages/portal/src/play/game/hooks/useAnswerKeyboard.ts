@@ -16,8 +16,11 @@ export type AnswerKeyboardOptions = {
 export const useAnswerKeyboard = ({active, onLetter, onBackspace, onSubmit}: AnswerKeyboardOptions): void => {
   useEffect(() => {
     if (!active) return;
+    /** Handles key down. */
     const handleKeyDown = (event: KeyboardEvent) => {
+      /** Provides target behavior. */
       const target = event.target;
+      /** Provides editing behavior. */
       const editing =
         target instanceof HTMLElement &&
         (target.isContentEditable || target.matches("input, textarea, select, [role='textbox']"));

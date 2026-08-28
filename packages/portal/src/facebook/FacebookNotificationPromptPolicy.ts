@@ -3,7 +3,9 @@ const REPROMPT_INTERVAL_MS = 7 * 24 * 60 * 60 * 1_000;
 
 /** Describes facebook notification prompt state. */
 export type FacebookNotificationPromptState = Readonly<{
+  /** Stores permission. */
   permission: "unknown" | "declined" | "accepted";
+  /** Stores last prompt at ms. */
   lastPromptAtMs?: number;
 }>;
 
@@ -14,9 +16,13 @@ export function shouldPromptForFacebookNotifications({
   state,
   nowMs,
 }: {
+  /** Stores authoritative wins. */
   authoritativeWins: number;
+  /** Stores capability available. */
   capabilityAvailable: boolean;
+  /** Stores state. */
   state: FacebookNotificationPromptState;
+  /** Stores now ms. */
   nowMs: number;
 }): boolean {
   if (
@@ -26,7 +32,8 @@ export function shouldPromptForFacebookNotifications({
     !Number.isSafeInteger(nowMs) ||
     nowMs < 0 ||
     state.permission === "accepted"
-  ) return false;
+  )
+    return false;
   if (state.lastPromptAtMs === undefined) return true;
   if (!Number.isSafeInteger(state.lastPromptAtMs) || state.lastPromptAtMs < 0) return false;
   return nowMs - state.lastPromptAtMs >= REPROMPT_INTERVAL_MS;

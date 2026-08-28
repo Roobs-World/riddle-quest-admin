@@ -6,6 +6,7 @@ import {
   type RaceRiddlePrompt,
 } from "../raceSchemas";
 
+/** Creates prompt. */
 const createPrompt = (position: number): RaceRiddlePrompt => ({
   riddleId: `history-en-${String(position + 1).padStart(2, "0")}`,
   text: `Deterministic history fixture ${position + 1}`,
@@ -17,10 +18,10 @@ const createPrompt = (position: number): RaceRiddlePrompt => ({
   revealedLetters: [],
 });
 
-export const ENGLISH_RACE_DECK_FIXTURE = Array.from({length: RACE_DECK_SIZE}, (_, position) =>
-  createPrompt(position),
-);
+/** Defines the english race deck fixture value. */
+export const ENGLISH_RACE_DECK_FIXTURE = Array.from({length: RACE_DECK_SIZE}, (_, position) => createPrompt(position));
 
+/** Defines the ghost timeline fixture value. */
 export const GHOST_TIMELINE_FIXTURE: RaceGhostEvent[] = [
   {
     sequence: 0,
@@ -63,7 +64,9 @@ export const GHOST_TIMELINE_FIXTURE: RaceGhostEvent[] = [
     correctCount: 2,
   },
   ...Array.from({length: 8}, (_, index): RaceGhostEvent => {
+    /** Provides correct count behavior. */
     const correctCount = index + 3;
+    /** Provides wall elapsed ms behavior. */
     const wallElapsedMs = 40_000 + index * 10_000;
     return {
       sequence: index + 4,

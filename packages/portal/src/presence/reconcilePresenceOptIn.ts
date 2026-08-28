@@ -6,10 +6,15 @@ export async function reconcilePresenceOptIn({
   stop,
   setConsent,
 }: {
+  /** Stores enabled. */
   enabled: boolean;
+  /** Stores can start. */
   canStart: boolean;
+  /** Stores start. */
   start: () => Promise<void>;
+  /** Stores stop. */
   stop: () => Promise<void>;
+  /** Stores set consent. */
   setConsent: (enabled: boolean) => Promise<void>;
 }): Promise<void> {
   if (enabled) {

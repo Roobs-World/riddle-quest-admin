@@ -42,20 +42,32 @@ const jestHttpOptions = {secrets: [jestSharedSecret], invoker: "public" as const
 const JEST_GAME_ID = process.env.JEST_GAME_ID ?? "riddle-quest";
 /** Provides configured skus behavior. */
 const configuredSkus = new Set(
-  (process.env.JEST_PRODUCT_SKUS ?? "").split(",").map((value) => value.trim()).filter(Boolean),
+  (process.env.JEST_PRODUCT_SKUS ?? "")
+    .split(",")
+    .map((value) => value.trim())
+    .filter(Boolean),
 );
 /** Provides configured subscription skus behavior. */
 const configuredSubscriptionSkus = new Set(
-  (process.env.JEST_SUBSCRIPTION_SKUS ?? "").split(",").map((value) => value.trim()).filter(Boolean),
+  (process.env.JEST_SUBSCRIPTION_SKUS ?? "")
+    .split(",")
+    .map((value) => value.trim())
+    .filter(Boolean),
 );
 /** Provides trusted subscription skus behavior. */
 const trustedSubscriptionSkus = new Set(Object.keys(JEST_SUBSCRIPTIONS));
 /** Provides subscription skus behavior. */
-const subscriptionSkus = new Set(
-  [...configuredSubscriptionSkus].filter((sku) => trustedSubscriptionSkus.has(sku)),
-);
+const subscriptionSkus = new Set([...configuredSubscriptionSkus].filter((sku) => trustedSubscriptionSkus.has(sku)));
 /** Provides attempts behavior. */
-const attempts = new Map<string, {count: number; resetAt: number}>();
+const attempts = new Map<
+  string,
+  {
+    /** Stores count. */
+    count: number; /** Stores reset at. */
+    /** Stores reset at. */
+    resetAt: number;
+  }
+>();
 /** Defines the max rate limit keys value. */
 const MAX_RATE_LIMIT_KEYS = 10_000;
 /** Maximum UTF-8 byte lengths accepted before any signed payload verification. */
@@ -83,7 +95,9 @@ type JestHttpResponse = {
 /** Provides allow request behavior. */
 export function allowJestRequest(ip: string): boolean {
   if (!isBoundedString(ip, 256)) return false;
+  /** Provides now behavior. */
   const now = Date.now();
+  /** Provides current behavior. */
   const current = attempts.get(ip);
   if (current && current.resetAt > now) {
     current.count += 1;
@@ -106,7 +120,9 @@ export function parseJestStringBody<Field extends string>(
   limits: Readonly<Record<Field, number>>,
 ): Record<Field, string> {
   if (!isRecord(body)) throw new Error("invalid-request");
+  /** Provides expected fields behavior. */
   const expectedFields = Object.keys(limits) as Field[];
+  /** Provides actual fields behavior. */
   const actualFields = Object.keys(body);
   if (
     actualFields.length !== expectedFields.length ||
@@ -114,14 +130,12 @@ export function parseJestStringBody<Field extends string>(
   ) {
     throw new Error("invalid-request");
   }
+  /** Parses d. */
   const parsed = {} as Record<Field, string>;
   expectedFields.forEach((field) => {
+    /** Provides value behavior. */
     const value = body[field];
-    if (
-      typeof value !== "string" ||
-      value.length === 0 ||
-      Buffer.byteLength(value, "utf8") > limits[field]
-    ) {
+    if (typeof value !== "string" || value.length === 0 || Buffer.byteLength(value, "utf8") > limits[field]) {
       throw new Error("invalid-request");
     }
     parsed[field] = value;
@@ -134,9 +148,14 @@ function isBoundedString(value: unknown, maxBytes: number): value is string {
 }
 /** Provides allowed jest origins behavior. */
 function allowedJestOrigins(): Set<string> {
+  /** Provides origins behavior. */
   const origins = new Set(
-    (process.env.JEST_GAME_ORIGIN ?? "").split(",").map((value) => value.trim()).filter(Boolean),
+    (process.env.JEST_GAME_ORIGIN ?? "")
+      .split(",")
+      .map((value) => value.trim())
+      .filter(Boolean),
   );
+  /** Provides game id behavior. */
   const gameId = process.env.JEST_GAME_ID ?? JEST_GAME_ID;
   if (gameId) origins.add(`https://${gameId}.builds.jest.com`);
   return origins;
@@ -146,7 +165,13 @@ export function isAllowedJestOrigin(origin: string | undefined): boolean {
   return typeof origin === "string" && allowedJestOrigins().has(origin);
 }
 /** Applies jest cors. */
-export function applyJestCors(response: {set(name: string, value: string): unknown}, origin?: string) {
+export function applyJestCors(
+  response: {
+    /** Provides set behavior. */
+    set(name: string, value: string): unknown;
+  },
+  origin?: string,
+) {
   if (isAllowedJestOrigin(origin)) response.set("Access-Control-Allow-Origin", origin!);
   response.set("Access-Control-Allow-Methods", "POST, OPTIONS");
   response.set("Access-Control-Allow-Headers", "Content-Type");
@@ -159,6 +184,7 @@ export function applyJestCors(response: {set(name: string, value: string): unkno
 
 /** Provides rejection behavior. */
 function rejection(error: unknown) {
+  /** Provides reason behavior. */
   const reason = error instanceof Error ? error.message : "invalid-request";
   logger.warn("Rejected Jest platform request", {reason});
   return "invalid-request";
@@ -172,6 +198,7 @@ function rejection(error: unknown) {
  * @returns `true` only for trusted, rate-limited JSON POST requests.
  */
 export function acceptJestRequest(request: Request, response: JestHttpResponse): boolean {
+  /** Provides origin behavior. */
   const origin = request.get("origin");
   applyJestCors(response, origin);
   if (!isAllowedJestOrigin(origin)) {
@@ -190,6 +217,7 @@ export function acceptJestRequest(request: Request, response: JestHttpResponse):
     response.status(415).json({error: "unsupported-media-type"});
     return false;
   }
+  /** Provides raw body behavior. */
   const rawBody = request.rawBody;
   if (rawBody && rawBody.byteLength > MAX_JEST_HTTP_BODY_BYTES) {
     response.status(413).json({error: "payload-too-large"});
@@ -204,6 +232,7 @@ export function acceptJestRequest(request: Request, response: JestHttpResponse):
 
 /** Verifies and returns the bounded player identity carried by a fresh signed assertion. */
 const resolveSignedJestPlayer = (playerSigned: string) => {
+  /** Provides payload behavior. */
   const payload = verifyJestSigned(playerSigned, jestSharedSecret.value(), JEST_GAME_ID, undefined, undefined, 15 * 60);
   if (
     !payload.player ||
@@ -211,41 +240,55 @@ const resolveSignedJestPlayer = (playerSigned: string) => {
     !isBoundedString(payload.player.playerId, JEST_HTTP_INPUT_LIMITS.playerId) ||
     payload.player.playerId !== payload.sub ||
     typeof payload.player.registered !== "boolean"
-  ) throw new Error("invalid-player");
+  )
+    throw new Error("invalid-player");
   return payload.player;
 };
 
 /** Provides exchange jest identity behavior. */
-export const exchangeJestIdentity = onRequestWithSentry("exchangeJestIdentity", jestHttpOptions, async (request, response) => {
-  if (!acceptJestRequest(request, response)) return;
-  try {
-    const {playerSigned} = parseJestStringBody(request.body, {playerSigned: JEST_HTTP_INPUT_LIMITS.playerSigned});
-    const player = resolveSignedJestPlayer(playerSigned);
-    const uid = jestFirebaseUid(player.playerId);
-    const firestore = admin.firestore();
-    const userRef = firestore.collection("users").doc(uid);
-    await firestore.runTransaction(async (transaction) => {
-      const [userSnapshot, deletionSnapshot] = await Promise.all([
-        transaction.get(userRef),
-        transaction.get(getJestAccountDeletionRef(firestore, uid)),
-      ]);
-      assertJestAccountActive(deletionSnapshot);
-      if (userSnapshot.exists) return;
-      transaction.create(userRef, createReservedJestUser(transaction, firestore, uid, player.playerId));
-    });
-    const customToken = await admin.auth().createCustomToken(uid, {jestPlayerId: player.playerId, jestRegistered: player.registered});
-    // Token creation is outside Firestore. Recheck the permanent guard before
-    // returning it; the retained disabled Auth sentinel covers the remaining
-    // response/redemption race after this read.
-    assertJestAccountActive(await getJestAccountDeletionRef(firestore, uid).get());
-    response.json({customToken, uid});
-  } catch (error) {
-    if (respondToDeletedJestAccount(error, response)) return;
-    captureException(error, {firebaseFunction: "exchangeJestIdentity"});
-    await flushSentry();
-    response.status(401).json({error: rejection(error)});
-  }
-});
+export const exchangeJestIdentity = onRequestWithSentry(
+  "exchangeJestIdentity",
+  jestHttpOptions,
+  async (request, response) => {
+    if (!acceptJestRequest(request, response)) return;
+    try {
+      /** Provides {player signed} behavior. */
+      const {playerSigned} = parseJestStringBody(request.body, {playerSigned: JEST_HTTP_INPUT_LIMITS.playerSigned});
+      /** Provides player behavior. */
+      const player = resolveSignedJestPlayer(playerSigned);
+      /** Provides uid behavior. */
+      const uid = jestFirebaseUid(player.playerId);
+      /** Provides firestore behavior. */
+      const firestore = admin.firestore();
+      /** Provides r ref. */
+      const userRef = firestore.collection("users").doc(uid);
+      await firestore.runTransaction(async (transaction) => {
+        /** Provides [user snapshot, deletion snapshot] behavior. */
+        const [userSnapshot, deletionSnapshot] = await Promise.all([
+          transaction.get(userRef),
+          transaction.get(getJestAccountDeletionRef(firestore, uid)),
+        ]);
+        assertJestAccountActive(deletionSnapshot);
+        if (userSnapshot.exists) return;
+        transaction.create(userRef, createReservedJestUser(transaction, firestore, uid, player.playerId));
+      });
+      /** Provides custom token behavior. */
+      const customToken = await admin
+        .auth()
+        .createCustomToken(uid, {jestPlayerId: player.playerId, jestRegistered: player.registered});
+      // Token creation is outside Firestore. Recheck the permanent guard before
+      // returning it; the retained disabled Auth sentinel covers the remaining
+      // response/redemption race after this read.
+      assertJestAccountActive(await getJestAccountDeletionRef(firestore, uid).get());
+      response.json({customToken, uid});
+    } catch (error) {
+      if (respondToDeletedJestAccount(error, response)) return;
+      captureException(error, {firebaseFunction: "exchangeJestIdentity"});
+      await flushSentry();
+      response.status(401).json({error: rejection(error)});
+    }
+  },
+);
 
 /** Retries authoritative deletion from a fresh signed platform assertion without minting Firebase credentials. */
 export const retryJestAccountDeletion = onRequestWithSentry(
@@ -254,7 +297,9 @@ export const retryJestAccountDeletion = onRequestWithSentry(
   async (request, response) => {
     if (!acceptJestRequest(request, response)) return;
     try {
+      /** Provides {player signed} behavior. */
       const {playerSigned} = parseJestStringBody(request.body, {playerSigned: JEST_HTTP_INPUT_LIMITS.playerSigned});
+      /** Provides player behavior. */
       const player = resolveSignedJestPlayer(playerSigned);
       await deleteAccountForUser(jestFirebaseUid(player.playerId), player.playerId);
       response.json({accountDeleted: true});
@@ -271,192 +316,245 @@ export const retryJestAccountDeletion = onRequestWithSentry(
 );
 
 /** Provides grant jest purchase behavior. */
-export const grantJestPurchase = onRequestWithSentry("grantJestPurchase", jestHttpOptions, async (request, response) => {
-  if (!acceptJestRequest(request, response)) return;
-  try {
-    const {purchaseSigned, playerId, purchaseToken: requestedToken} = parseJestStringBody(request.body, {
-      purchaseSigned: JEST_HTTP_INPUT_LIMITS.purchaseSigned,
-      playerId: JEST_HTTP_INPUT_LIMITS.playerId,
-      purchaseToken: JEST_HTTP_INPUT_LIMITS.purchaseToken,
-    });
-    const payload = verifyJestSigned(purchaseSigned, jestSharedSecret.value(), JEST_GAME_ID, playerId);
-    const {purchaseToken, productSku, coins} = resolveSignedPurchase(payload, requestedToken, configuredSkus);
-    const uid = jestFirebaseUid(playerId);
-    const firestore = admin.firestore();
-    const grantCollection = firestore.collection("jestPurchaseGrants");
-    const purchaseTokenHash = createJestPurchaseGrantId(purchaseToken);
-    const ref = grantCollection.doc(purchaseTokenHash);
-    const legacyRef = isSafeLegacyJestPurchaseGrantId(purchaseToken) && purchaseToken !== purchaseTokenHash
-      ? grantCollection.doc(purchaseToken)
-      : undefined;
-    const userRef = firestore.collection("users").doc(uid);
-    const deletionRef = getJestAccountDeletionRef(firestore, uid);
-    let alreadyProcessed = false;
-    let newCoins = 0;
-    let newlyUnlockedAchievementIds: string[] = [];
-    await firestore.runTransaction(async (transaction) => {
-      const [grantSnapshot, legacyGrantSnapshot, userSnapshot, deletionSnapshot] = await Promise.all([
-        transaction.get(ref),
-        legacyRef ? transaction.get(legacyRef) : Promise.resolve(undefined),
-        transaction.get(userRef),
-        transaction.get(deletionRef),
-      ]);
-      assertJestAccountActive(deletionSnapshot);
-      if (grantSnapshot.exists || legacyGrantSnapshot?.exists) {
-        alreadyProcessed = true;
-        newCoins = currentJestCoinBalance(userSnapshot.exists ? userSnapshot.data() : undefined);
-        if (!grantSnapshot.exists && legacyGrantSnapshot?.exists && legacyRef) {
-          const legacyGrant = legacyGrantSnapshot.data();
-          transaction.create(ref, {
-            purchaseTokenHash,
-            replayProtection: true,
-            productSku: typeof legacyGrant?.productSku === "string" ? legacyGrant.productSku : productSku,
-            coins: typeof legacyGrant?.coins === "number" ? legacyGrant.coins : coins,
-            grantedAt: legacyGrant?.grantedAt ?? admin.firestore.FieldValue.serverTimestamp(),
-          });
-          transaction.delete(legacyRef);
-        }
-        return;
-      }
-      const user = userSnapshot.exists
-        ? userSnapshot.data()!
-        : createReservedJestUser(transaction, firestore, uid, playerId);
-      const currentCoins = typeof user.coins === "number" ? user.coins : 0;
-      const unlockedAchievements = Array.isArray(user.unlockedAchievements) ? user.unlockedAchievements : [];
-      const firstPurchaseUnlocked = unlockedAchievements.some(
-        (achievement) =>
-          typeof achievement === "object" &&
-          achievement !== null &&
-          achievement.achievementId === "first_purchase",
-      );
-      newlyUnlockedAchievementIds = firstPurchaseUnlocked ? [] : ["first_purchase"];
-      const achievementBonus = newlyUnlockedAchievementIds.length * ACHIEVEMENT_UNLOCK_COIN_REWARD;
-      newCoins = currentCoins + coins + achievementBonus;
-      const updates = {
-        coins: newCoins,
-        hasPurchasedApp: true,
-        lastLogin: Date.now(),
-        unlockedAchievements: firstPurchaseUnlocked
-          ? unlockedAchievements
-          : [...unlockedAchievements, {achievementId: "first_purchase", unlockedAt: Date.now()}],
-      };
-      if (userSnapshot.exists) transaction.update(userRef, updates);
-      else transaction.create(userRef, {...user, ...updates});
-      transaction.create(ref, {
-        purchaseTokenHash,
-        replayProtection: true,
-        productSku,
-        coins,
-        grantedAt: admin.firestore.FieldValue.serverTimestamp(),
+export const grantJestPurchase = onRequestWithSentry(
+  "grantJestPurchase",
+  jestHttpOptions,
+  async (request, response) => {
+    if (!acceptJestRequest(request, response)) return;
+    try {
+      /** Provides {purchase signed, player id, purchase token: requested token} behavior. */
+      const {
+        purchaseSigned,
+        playerId,
+        purchaseToken: requestedToken,
+      } = parseJestStringBody(request.body, {
+        purchaseSigned: JEST_HTTP_INPUT_LIMITS.purchaseSigned,
+        playerId: JEST_HTTP_INPUT_LIMITS.playerId,
+        purchaseToken: JEST_HTTP_INPUT_LIMITS.purchaseToken,
       });
-    });
-    response.json({
-      granted: true,
-      alreadyProcessed,
-      purchaseToken,
-      coinsAwarded: coins,
-      newCoins,
-      newlyUnlockedAchievementIds,
-    });
-  } catch (error) {
-    if (respondToDeletedJestAccount(error, response)) return;
-    captureException(error, {firebaseFunction: "grantJestPurchase"});
-    await flushSentry();
-    response.status(400).json({error: rejection(error)});
-  }
-});
+      /** Provides payload behavior. */
+      const payload = verifyJestSigned(purchaseSigned, jestSharedSecret.value(), JEST_GAME_ID, playerId);
+      /** Provides {purchase token, product sku, coins} behavior. */
+      const {purchaseToken, productSku, coins} = resolveSignedPurchase(payload, requestedToken, configuredSkus);
+      /** Provides uid behavior. */
+      const uid = jestFirebaseUid(playerId);
+      /** Provides firestore behavior. */
+      const firestore = admin.firestore();
+      /** Provides grant collection behavior. */
+      const grantCollection = firestore.collection("jestPurchaseGrants");
+      /** Provides purchase token hash behavior. */
+      const purchaseTokenHash = createJestPurchaseGrantId(purchaseToken);
+      /** Provides ref behavior. */
+      const ref = grantCollection.doc(purchaseTokenHash);
+      /** Provides legacy ref behavior. */
+      const legacyRef =
+        isSafeLegacyJestPurchaseGrantId(purchaseToken) && purchaseToken !== purchaseTokenHash
+          ? grantCollection.doc(purchaseToken)
+          : undefined;
+      /** Provides r ref. */
+      const userRef = firestore.collection("users").doc(uid);
+      /** Provides deletion ref behavior. */
+      const deletionRef = getJestAccountDeletionRef(firestore, uid);
+      /** Provides already processed behavior. */
+      let alreadyProcessed = false;
+      /** Provides new coins behavior. */
+      let newCoins = 0;
+      /** Provides newly unlocked achievement ids behavior. */
+      let newlyUnlockedAchievementIds: string[] = [];
+      await firestore.runTransaction(async (transaction) => {
+        /** Provides [grant snapshot, legacy grant snapshot, user snapshot, deletion snapshot] behavior. */
+        const [grantSnapshot, legacyGrantSnapshot, userSnapshot, deletionSnapshot] = await Promise.all([
+          transaction.get(ref),
+          legacyRef ? transaction.get(legacyRef) : Promise.resolve(undefined),
+          transaction.get(userRef),
+          transaction.get(deletionRef),
+        ]);
+        assertJestAccountActive(deletionSnapshot);
+        if (grantSnapshot.exists || legacyGrantSnapshot?.exists) {
+          alreadyProcessed = true;
+          newCoins = currentJestCoinBalance(userSnapshot.exists ? userSnapshot.data() : undefined);
+          if (!grantSnapshot.exists && legacyGrantSnapshot?.exists && legacyRef) {
+            /** Provides legacy grant behavior. */
+            const legacyGrant = legacyGrantSnapshot.data();
+            transaction.create(ref, {
+              purchaseTokenHash,
+              replayProtection: true,
+              productSku: typeof legacyGrant?.productSku === "string" ? legacyGrant.productSku : productSku,
+              coins: typeof legacyGrant?.coins === "number" ? legacyGrant.coins : coins,
+              grantedAt: legacyGrant?.grantedAt ?? admin.firestore.FieldValue.serverTimestamp(),
+            });
+            transaction.delete(legacyRef);
+          }
+          return;
+        }
+        /** Provides r. */
+        const user = userSnapshot.exists
+          ? userSnapshot.data()!
+          : createReservedJestUser(transaction, firestore, uid, playerId);
+        /** Provides current coins behavior. */
+        const currentCoins = typeof user.coins === "number" ? user.coins : 0;
+        /** Provides unlocked achievements behavior. */
+        const unlockedAchievements = Array.isArray(user.unlockedAchievements) ? user.unlockedAchievements : [];
+        /** Provides first purchase unlocked behavior. */
+        const firstPurchaseUnlocked = unlockedAchievements.some(
+          (achievement) =>
+            typeof achievement === "object" && achievement !== null && achievement.achievementId === "first_purchase",
+        );
+        newlyUnlockedAchievementIds = firstPurchaseUnlocked ? [] : ["first_purchase"];
+        /** Provides achievement bonus behavior. */
+        const achievementBonus = newlyUnlockedAchievementIds.length * ACHIEVEMENT_UNLOCK_COIN_REWARD;
+        newCoins = currentCoins + coins + achievementBonus;
+        /** Updates s. */
+        const updates = {
+          coins: newCoins,
+          hasPurchasedApp: true,
+          lastLogin: Date.now(),
+          unlockedAchievements: firstPurchaseUnlocked
+            ? unlockedAchievements
+            : [...unlockedAchievements, {achievementId: "first_purchase", unlockedAt: Date.now()}],
+        };
+        if (userSnapshot.exists) transaction.update(userRef, updates);
+        else transaction.create(userRef, {...user, ...updates});
+        transaction.create(ref, {
+          purchaseTokenHash,
+          replayProtection: true,
+          productSku,
+          coins,
+          grantedAt: admin.firestore.FieldValue.serverTimestamp(),
+        });
+      });
+      response.json({
+        granted: true,
+        alreadyProcessed,
+        purchaseToken,
+        coinsAwarded: coins,
+        newCoins,
+        newlyUnlockedAchievementIds,
+      });
+    } catch (error) {
+      if (respondToDeletedJestAccount(error, response)) return;
+      captureException(error, {firebaseFunction: "grantJestPurchase"});
+      await flushSentry();
+      response.status(400).json({error: rejection(error)});
+    }
+  },
+);
 
 /** Provides sync jest subscriptions behavior. */
-export const syncJestSubscriptions = onRequestWithSentry("syncJestSubscriptions", jestHttpOptions, async (request, response) => {
-  if (!acceptJestRequest(request, response)) return;
-  try {
-    const {subscriptionsSigned, playerId} = parseJestStringBody(request.body, {
-      subscriptionsSigned: JEST_HTTP_INPUT_LIMITS.subscriptionsSigned,
-      playerId: JEST_HTTP_INPUT_LIMITS.playerId,
-    });
-    const payload = verifyJestSigned(
-      subscriptionsSigned,
-      jestSharedSecret.value(),
-      JEST_GAME_ID,
-      playerId,
-    );
-    const subscriptions = resolveSignedSubscriptions(payload, subscriptionSkus);
-    const activeSkus = subscriptions
-      .filter((subscription) => subscription.status === "active")
-      .map((subscription) => subscription.sku);
-    const blockedSkus = resolveConflictingSubscriptionSkus(activeSkus, subscriptionSkus);
-    const uid = jestFirebaseUid(playerId);
-    const firestore = admin.firestore();
-    const userRef = firestore.collection("users").doc(uid);
-    const deletionRef = getJestAccountDeletionRef(firestore, uid);
-    const updates = {
-      hasActiveSubscription: activeSkus.length > 0,
-      jestSubscriptions: {
-        activeSkus,
-        verifiedAt: admin.firestore.FieldValue.serverTimestamp(),
-      },
-      lastLogin: Date.now(),
-    };
-    await firestore.runTransaction(async (transaction) => {
-      const [userSnapshot, deletionSnapshot] = await Promise.all([
-        transaction.get(userRef),
-        transaction.get(deletionRef),
-      ]);
-      assertJestAccountActive(deletionSnapshot);
-      if (userSnapshot.exists) transaction.update(userRef, updates);
-      else transaction.create(userRef, {...createReservedJestUser(transaction, firestore, uid, playerId), ...updates});
-    });
-    response.json({verified: true, activeSkus, blockedSkus});
-  } catch (error) {
-    if (respondToDeletedJestAccount(error, response)) return;
-    captureException(error, {firebaseFunction: "syncJestSubscriptions"});
-    await flushSentry();
-    response.status(400).json({error: rejection(error)});
-  }
-});
+export const syncJestSubscriptions = onRequestWithSentry(
+  "syncJestSubscriptions",
+  jestHttpOptions,
+  async (request, response) => {
+    if (!acceptJestRequest(request, response)) return;
+    try {
+      /** Provides {subscriptions signed, player id} behavior. */
+      const {subscriptionsSigned, playerId} = parseJestStringBody(request.body, {
+        subscriptionsSigned: JEST_HTTP_INPUT_LIMITS.subscriptionsSigned,
+        playerId: JEST_HTTP_INPUT_LIMITS.playerId,
+      });
+      /** Provides payload behavior. */
+      const payload = verifyJestSigned(subscriptionsSigned, jestSharedSecret.value(), JEST_GAME_ID, playerId);
+      /** Provides subscriptions behavior. */
+      const subscriptions = resolveSignedSubscriptions(payload, subscriptionSkus);
+      /** Provides active skus behavior. */
+      const activeSkus = subscriptions
+        .filter((subscription) => subscription.status === "active")
+        .map((subscription) => subscription.sku);
+      /** Provides blocked skus behavior. */
+      const blockedSkus = resolveConflictingSubscriptionSkus(activeSkus, subscriptionSkus);
+      /** Provides uid behavior. */
+      const uid = jestFirebaseUid(playerId);
+      /** Provides firestore behavior. */
+      const firestore = admin.firestore();
+      /** Provides r ref. */
+      const userRef = firestore.collection("users").doc(uid);
+      /** Provides deletion ref behavior. */
+      const deletionRef = getJestAccountDeletionRef(firestore, uid);
+      /** Updates s. */
+      const updates = {
+        hasActiveSubscription: activeSkus.length > 0,
+        jestSubscriptions: {
+          activeSkus,
+          verifiedAt: admin.firestore.FieldValue.serverTimestamp(),
+        },
+        lastLogin: Date.now(),
+      };
+      await firestore.runTransaction(async (transaction) => {
+        /** Provides [user snapshot, deletion snapshot] behavior. */
+        const [userSnapshot, deletionSnapshot] = await Promise.all([
+          transaction.get(userRef),
+          transaction.get(deletionRef),
+        ]);
+        assertJestAccountActive(deletionSnapshot);
+        if (userSnapshot.exists) transaction.update(userRef, updates);
+        else
+          transaction.create(userRef, {...createReservedJestUser(transaction, firestore, uid, playerId), ...updates});
+      });
+      response.json({verified: true, activeSkus, blockedSkus});
+    } catch (error) {
+      if (respondToDeletedJestAccount(error, response)) return;
+      captureException(error, {firebaseFunction: "syncJestSubscriptions"});
+      await flushSentry();
+      response.status(400).json({error: rejection(error)});
+    }
+  },
+);
 
 /** Provides verify jest referrals behavior. */
-export const verifyJestReferrals = onRequestWithSentry("verifyJestReferrals", jestHttpOptions, async (request, response) => {
-  if (!acceptJestRequest(request, response)) return;
-  try {
-    const {referralsSigned, playerId} = parseJestStringBody(request.body, {
-      referralsSigned: JEST_HTTP_INPUT_LIMITS.referralsSigned,
-      playerId: JEST_HTTP_INPUT_LIMITS.playerId,
-    });
-    const payload = verifyJestSigned(referralsSigned, jestSharedSecret.value(), JEST_GAME_ID, playerId);
-    const uniqueConversions = selectReferralConversions(payload, playerId);
-    const firestore = admin.firestore();
-    const ungrantedCandidates = await selectUngrantedReferralConversions(
-      uniqueConversions,
-      async (batch) => (await firestore.getAll(...batch.map((conversion) =>
-        firestore.collection("jestReferralRewards").doc(
-          // Preserve the campaign-independent receipt identity.
-          createJestReferralRewardId(playerId, conversion.playerId),
-        ))))
-        .map((snapshot) => snapshot.exists),
-    );
-    const {rewardsGranted, newCoins} = await grantJestReferralRewards(
-      firestore,
-      playerId,
-      uniqueConversions,
-      ungrantedCandidates,
-    );
-    response.json({
-      verified: true,
-      references: [...new Set(uniqueConversions.map((conversion) => conversion.reference))],
-      conversionCount: uniqueConversions.length,
-      rewardsGranted,
-      referredRewardsGranted: rewardsGranted,
-      coinsPerPlayer: JEST_REFERRAL_REWARD_COINS,
-      newCoins,
-    });
-  } catch (error) {
-    if (respondToDeletedJestAccount(error, response)) return;
-    captureException(error, {firebaseFunction: "verifyJestReferrals"});
-    await flushSentry();
-    response.status(400).json({error: rejection(error)});
-  }
-});
+export const verifyJestReferrals = onRequestWithSentry(
+  "verifyJestReferrals",
+  jestHttpOptions,
+  async (request, response) => {
+    if (!acceptJestRequest(request, response)) return;
+    try {
+      /** Provides {referrals signed, player id} behavior. */
+      const {referralsSigned, playerId} = parseJestStringBody(request.body, {
+        referralsSigned: JEST_HTTP_INPUT_LIMITS.referralsSigned,
+        playerId: JEST_HTTP_INPUT_LIMITS.playerId,
+      });
+      /** Provides payload behavior. */
+      const payload = verifyJestSigned(referralsSigned, jestSharedSecret.value(), JEST_GAME_ID, playerId);
+      /** Provides unique conversions behavior. */
+      const uniqueConversions = selectReferralConversions(payload, playerId);
+      /** Provides firestore behavior. */
+      const firestore = admin.firestore();
+      /** Provides ungranted candidates behavior. */
+      const ungrantedCandidates = await selectUngrantedReferralConversions(uniqueConversions, async (batch) =>
+        (
+          await firestore.getAll(
+            ...batch.map((conversion) =>
+              firestore.collection("jestReferralRewards").doc(
+                // Preserve the campaign-independent receipt identity.
+                createJestReferralRewardId(playerId, conversion.playerId),
+              ),
+            ),
+          )
+        ).map((snapshot) => snapshot.exists),
+      );
+      /** Provides {rewards granted, new coins} behavior. */
+      const {rewardsGranted, newCoins} = await grantJestReferralRewards(
+        firestore,
+        playerId,
+        uniqueConversions,
+        ungrantedCandidates,
+      );
+      response.json({
+        verified: true,
+        references: [...new Set(uniqueConversions.map((conversion) => conversion.reference))],
+        conversionCount: uniqueConversions.length,
+        rewardsGranted,
+        referredRewardsGranted: rewardsGranted,
+        coinsPerPlayer: JEST_REFERRAL_REWARD_COINS,
+        newCoins,
+      });
+    } catch (error) {
+      if (respondToDeletedJestAccount(error, response)) return;
+      captureException(error, {firebaseFunction: "verifyJestReferrals"});
+      await flushSentry();
+      response.status(400).json({error: rejection(error)});
+    }
+  },
+);
 
 /** Indicates whether is record. */
 function isRecord(value: unknown): value is Record<string, unknown> {

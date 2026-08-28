@@ -1,12 +1,13 @@
 import {HttpsError} from "firebase-functions/v2/https";
 
+/** Provides mock complete authoritative game behavior. */
 const mockCompleteAuthoritativeGame = jest.fn();
+/** Provides mock on call behavior. */
 const mockOnCall = jest.fn((_options: unknown, handler: unknown) => handler);
-const mockRunWithJestAccountOperationLease = jest.fn(async (
-  _userId: string,
-  _timeoutSeconds: number,
-  operation: () => Promise<unknown>,
-) => operation());
+/** Provides mock run with jest account operation lease behavior. */
+const mockRunWithJestAccountOperationLease = jest.fn(
+  async (_userId: string, _timeoutSeconds: number, operation: () => Promise<unknown>) => operation(),
+);
 
 jest.mock("../jest/jestAccountDeletion", () => ({
   ...jest.requireActual<typeof import("../jest/jestAccountDeletion")>("../jest/jestAccountDeletion"),
@@ -14,6 +15,7 @@ jest.mock("../jest/jestAccountDeletion", () => ({
 }));
 
 jest.mock("firebase-functions/v2/https", () => {
+  /** Provides actual behavior. */
   const actual = jest.requireActual("firebase-functions/v2/https") as typeof import("firebase-functions/v2/https");
   return {HttpsError: actual.HttpsError, onCall: (...args: [unknown, unknown]) => mockOnCall(...args)};
 });
@@ -23,6 +25,7 @@ jest.mock("../gameplay/completeGameLogic", () => ({
 
 import {completeGame} from "../gameplay/completeGameCallable";
 
+/** Provides response behavior. */
 const response = {
   attempts: 2,
   isCorrect: true,
@@ -52,45 +55,52 @@ describe("completeGame callable", () => {
     ["anonymous", true],
     [undefined, false],
   ])("runs one validated completion for %s identities", async (provider, isAnonymous) => {
+    /** Provides data behavior. */
     const data = {
       riddleId: "riddle-1",
       gameMode: "classic",
       sessionToken: "00000000-0000-4000-8000-000000000001",
     };
 
-    await expect((completeGame as any)({
-      auth: {uid: "user-1", token: provider === undefined ? {} : {firebase: {sign_in_provider: provider}}},
-      data,
-    })).resolves.toEqual(response);
+    await expect(
+      (completeGame as any)({
+        auth: {uid: "user-1", token: provider === undefined ? {} : {firebase: {sign_in_provider: provider}}},
+        data,
+      }),
+    ).resolves.toEqual(response);
 
     expect(mockCompleteAuthoritativeGame).toHaveBeenCalledWith(data, {uid: "user-1", isAnonymous});
   });
 
   it("rejects malformed completion payloads before persistence", async () => {
-    await expect((completeGame as any)({
-      auth: {uid: "user-1", token: {}},
-      data: {
-        riddleId: "",
-        gameMode: "classic",
-        sessionToken: "00000000-0000-4000-8000-000000000001",
-        attempts: 1,
-        isCorrect: true,
-      },
-    })).rejects.toMatchObject({code: "invalid-argument"});
+    await expect(
+      (completeGame as any)({
+        auth: {uid: "user-1", token: {}},
+        data: {
+          riddleId: "",
+          gameMode: "classic",
+          sessionToken: "00000000-0000-4000-8000-000000000001",
+          attempts: 1,
+          isCorrect: true,
+        },
+      }),
+    ).rejects.toMatchObject({code: "invalid-argument"});
     expect(mockCompleteAuthoritativeGame).not.toHaveBeenCalled();
   });
 
   it("rejects forged client correctness and attempt fields", async () => {
-    await expect((completeGame as any)({
-      auth: {uid: "user-1", token: {}},
-      data: {
-        riddleId: "riddle-1",
-        gameMode: "classic",
-        sessionToken: "00000000-0000-4000-8000-000000000001",
-        attempts: 1,
-        isCorrect: true,
-      },
-    })).rejects.toMatchObject({code: "invalid-argument"});
+    await expect(
+      (completeGame as any)({
+        auth: {uid: "user-1", token: {}},
+        data: {
+          riddleId: "riddle-1",
+          gameMode: "classic",
+          sessionToken: "00000000-0000-4000-8000-000000000001",
+          attempts: 1,
+          isCorrect: true,
+        },
+      }),
+    ).rejects.toMatchObject({code: "invalid-argument"});
     expect(mockCompleteAuthoritativeGame).not.toHaveBeenCalled();
   });
 });

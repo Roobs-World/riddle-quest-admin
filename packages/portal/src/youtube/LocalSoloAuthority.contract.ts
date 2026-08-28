@@ -29,15 +29,24 @@ export class YouTubeAuthorityRestoreSaveError extends Error {
 
 /** Immutable UI projection of the local YouTube authority state. */
 export type YouTubeAuthoritySnapshot = Readonly<{
+  /** Stores save. */
   save: YouTubeSaveV1;
+  /** Stores active riddle. */
   activeRiddle: YouTubeRiddle | null;
   /** Hint letters come from bundled content and are never serialized. */
   displayLetters: readonly string[] | null;
+  /** Stores active slot index. */
   activeSlotIndex: number;
+  /** Stores paused. */
   paused: boolean;
+  /** Stores busy. */
   busy: boolean;
+  /** Stores save blocked. */
   saveBlocked: boolean;
+  /** Stores pending save revision. */
   pendingSaveRevision: number | null;
+  /** Stores recovery notice. */
   recoveryNotice: boolean;
+  /** Stores last result. */
   lastResult: YouTubeResult | null;
 }>;

@@ -81,20 +81,20 @@
 
 .reddit-guest-banner {
   position: fixed;
-  inset: max(.35rem, env(safe-area-inset-top)) .5rem auto;
+  inset: max(0.35rem, env(safe-area-inset-top)) 0.5rem auto;
   z-index: 90;
   margin: 0 auto;
   max-width: 52rem;
-  padding: .55rem .75rem;
+  padding: 0.55rem 0.75rem;
   border: 1px solid rgb(255 255 255 / 24%);
-  border-radius: .75rem;
+  border-radius: 0.75rem;
   background: rgb(21 19 15 / 94%);
   color: #fff;
   text-align: center;
 }
 
 .reddit-guest-banner button {
-  margin-inline-start: .65rem;
+  margin-inline-start: 0.65rem;
 }
 
 :where(button, a, input, select, textarea, [role="button"], [tabindex]):focus-visible {

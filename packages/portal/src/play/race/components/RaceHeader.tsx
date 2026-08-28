@@ -3,14 +3,17 @@ import {tr} from "../../i18n";
 import coinUrl from "../../../../../../assets/images/coin.svg";
 
 /** Displays the player’s current coin balance in race chrome. */
-function RaceCoinBalance({coins}: {coins: number}) {
+function RaceCoinBalance({
+  coins,
+}: {
+  /** Stores coins. */ /** Stores coins. */ /** Stores coins. */ /** Stores coins. */
+  /** Stores coins. */
+  coins: number;
+}) {
   /** Locale-formatted coin amount shown to the player and assistive technology. */
   const formattedCoins = coins.toLocaleString();
   return (
-    <div
-      className="race-coin-balance"
-      aria-label={`${tr("Profile.TOTAL_COINS_LABEL")} ${formattedCoins}`}
-    >
+    <div className="race-coin-balance" aria-label={`${tr("Profile.TOTAL_COINS_LABEL")} ${formattedCoins}`}>
       <strong>{formattedCoins}</strong>
       <img src={coinUrl} alt="" />
     </div>
@@ -18,7 +21,12 @@ function RaceCoinBalance({coins}: {coins: number}) {
 }
 
 /** Closes the current race screen through its owning controller. */
-function RaceCloseButton({onClose}: {onClose: () => void}) {
+function RaceCloseButton({
+  onClose,
+}: {
+  /** Stores on close. */ /** Stores on close. */ /** Stores on close. */
+  onClose: () => void;
+}) {
   return (
     <button className="race-close" onClick={onClose} aria-label={tr("RaceTo10.CLOSE")}>
       ×
@@ -37,7 +45,15 @@ function RaceTitle() {
 }
 
 /** Header used by non-gameplay multiplayer screens. */
-export const RaceTopbar = memo(function RaceTopbar({coins, onClose}: {coins: number; onClose: () => void}) {
+export const RaceTopbar = memo(function RaceTopbar({
+  coins,
+  onClose,
+}: {
+  /** Stores coins. */
+  coins: number; /** Stores on close. */
+  /** Stores on close. */
+  onClose: () => void;
+}) {
   return (
     <header className="race-topbar">
       <div>
@@ -52,7 +68,15 @@ export const RaceTopbar = memo(function RaceTopbar({coins, onClose}: {coins: num
 });
 
 /** Compact header placed inside the right-hand multiplayer rail. */
-export const RaceRailHeader = memo(function RaceRailHeader({coins, onClose}: {coins: number; onClose: () => void}) {
+export const RaceRailHeader = memo(function RaceRailHeader({
+  coins,
+  onClose,
+}: {
+  /** Stores coins. */
+  coins: number; /** Stores on close. */
+  /** Stores on close. */
+  onClose: () => void;
+}) {
   return (
     <div className="race-rail-header">
       <RaceTitle />

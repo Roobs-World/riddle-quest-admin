@@ -1,24 +1,29 @@
 import {describe, expect, test, beforeEach, jest} from "@jest/globals";
 
 // Mock Firebase Admin SDK
+/** Provides mock firestore behavior. */
 const mockFirestore = {
   collection: jest.fn(),
   runTransaction: jest.fn(),
 };
+/** Provides firestore with field value behavior. */
 const firestoreWithFieldValue = Object.assign(() => mockFirestore, {
   FieldValue: {arrayUnion: (...args: any[]) => args},
 });
 
+/** Provides mock collection behavior. */
 const mockCollection = {
   doc: jest.fn(),
 };
 
+/** Provides mock doc behavior. */
 const mockDoc = {
   get: jest.fn() as jest.MockedFunction<any>,
   update: jest.fn() as jest.MockedFunction<any>,
   set: jest.fn() as jest.MockedFunction<any>,
 };
 
+/** Provides mock transaction behavior. */
 const mockTransaction = {
   get: jest.fn() as jest.MockedFunction<any>,
   update: jest.fn() as jest.MockedFunction<any>,
@@ -26,6 +31,7 @@ const mockTransaction = {
 };
 
 // Mock Firebase Functions logger
+/** Provides mock logger behavior. */
 const mockLogger = {
   info: jest.fn(),
   error: jest.fn(),
@@ -73,7 +79,9 @@ describe("FirestoreService", () => {
   });
 
   describe("getUser", () => {
+    /** Provides test user id behavior. */
     const testUserId = "testUser123";
+    /** Provides test user data behavior. */
     const testUserData = {
       userId: testUserId,
       email: "test@example.com",
@@ -88,6 +96,7 @@ describe("FirestoreService", () => {
     };
 
     test("should return user data when user exists", async () => {
+      /** Provides mock user doc behavior. */
       const mockUserDoc = {
         exists: true,
         data: () => testUserData,
@@ -95,6 +104,7 @@ describe("FirestoreService", () => {
 
       (mockDoc.get as jest.MockedFunction<any>).mockResolvedValue(mockUserDoc);
 
+      /** Provides result behavior. */
       const result = await getUser(testUserId);
 
       expect(mockFirestore.collection).toHaveBeenCalledWith("users");
@@ -104,12 +114,14 @@ describe("FirestoreService", () => {
     });
 
     test("should return undefined when user does not exist", async () => {
+      /** Provides mock user doc behavior. */
       const mockUserDoc = {
         exists: false,
       };
 
       (mockDoc.get as jest.MockedFunction<any>).mockResolvedValue(mockUserDoc);
 
+      /** Provides result behavior. */
       const result = await getUser(testUserId);
 
       expect(mockFirestore.collection).toHaveBeenCalledWith("users");
@@ -120,6 +132,7 @@ describe("FirestoreService", () => {
     });
 
     test("should handle Firestore errors", async () => {
+      /** Provides test error behavior. */
       const testError = new Error("Firestore connection failed");
       (mockDoc.get as jest.MockedFunction<any>).mockRejectedValue(testError);
 
@@ -128,7 +141,9 @@ describe("FirestoreService", () => {
   });
 
   describe("updateUserLastCompletedDailyChallengeDate", () => {
+    /** Provides test user id behavior. */
     const testUserId = "testUser123";
+    /** Provides test date behavior. */
     const testDate = "2024-01-15";
 
     test("should update user's last completed daily challenge date", async () => {
@@ -144,6 +159,7 @@ describe("FirestoreService", () => {
     });
 
     test("should handle Firestore errors and rethrow", async () => {
+      /** Provides test error behavior. */
       const testError = new Error("Update failed");
       (mockDoc.update as jest.MockedFunction<any>).mockRejectedValue(testError);
 
@@ -156,13 +172,17 @@ describe("FirestoreService", () => {
   });
 
   describe("updateUserCoins", () => {
+    /** Provides test user id behavior. */
     const testUserId = "testUser123";
+    /** Provides test user data behavior. */
     const testUserData = {
       coins: 100,
     };
 
     test("should update user coins with positive amount", async () => {
+      /** Provides coins to add behavior. */
       const coinsToAdd = 50;
+      /** Provides mock user doc behavior. */
       const mockUserDoc = {
         exists: true,
         data: () => testUserData,
@@ -182,7 +202,9 @@ describe("FirestoreService", () => {
     });
 
     test("should update user coins with negative amount", async () => {
+      /** Provides coins to spend behavior. */
       const coinsToSpend = -30;
+      /** Provides mock user doc behavior. */
       const mockUserDoc = {
         exists: true,
         data: () => testUserData,
@@ -200,7 +222,9 @@ describe("FirestoreService", () => {
     });
 
     test("should throw error when user does not exist", async () => {
+      /** Provides coins to add behavior. */
       const coinsToAdd = 50;
+      /** Provides mock user doc behavior. */
       const mockUserDoc = {
         exists: false,
       };
@@ -212,7 +236,9 @@ describe("FirestoreService", () => {
     });
 
     test("should throw error when insufficient coins", async () => {
+      /** Provides coins to spend behavior. */
       const coinsToSpend = -150;
+      /** Provides mock user doc behavior. */
       const mockUserDoc = {
         exists: true,
         data: () => testUserData,
@@ -227,8 +253,11 @@ describe("FirestoreService", () => {
     });
 
     test("should handle missing coins property", async () => {
+      /** Provides r without coins. */
       const userWithoutCoins = {};
+      /** Provides coins to add behavior. */
       const coinsToAdd = 10;
+      /** Provides mock user doc behavior. */
       const mockUserDoc = {
         exists: true,
         data: () => userWithoutCoins,
@@ -237,6 +266,7 @@ describe("FirestoreService", () => {
       (mockTransaction.get as jest.MockedFunction<any>).mockResolvedValue(mockUserDoc);
       (mockTransaction.update as jest.MockedFunction<any>).mockResolvedValue(undefined);
 
+      /** Provides console spy behavior. */
       const consoleSpy = jest.spyOn(console, "log").mockImplementation(() => {});
 
       await updateUserCoins(testUserId, coinsToAdd);
@@ -250,7 +280,9 @@ describe("FirestoreService", () => {
   });
 
   describe("updateUserStats", () => {
+    /** Provides test user id behavior. */
     const testUserId = "testUser123";
+    /** Provides current user data behavior. */
     const currentUserData = {
       stats: {
         gamesPlayed: 10,
@@ -260,12 +292,14 @@ describe("FirestoreService", () => {
     };
 
     test("should update user stats", async () => {
+      /** Provides stats update behavior. */
       const statsUpdate = {
         gamesPlayed: 11,
         wins: 6,
         winRate: 0.55,
       };
 
+      /** Provides mock user doc behavior. */
       const mockUserDoc = {
         exists: true,
         data: () => currentUserData,
@@ -287,12 +321,15 @@ describe("FirestoreService", () => {
     });
 
     test("should handle missing stats property", async () => {
+      /** Provides r without stats. */
       const userWithoutStats = {};
+      /** Provides stats update behavior. */
       const statsUpdate = {
         gamesPlayed: 1,
         wins: 1,
       };
 
+      /** Provides mock user doc behavior. */
       const mockUserDoc = {
         exists: true,
         data: () => userWithoutStats,
@@ -310,7 +347,9 @@ describe("FirestoreService", () => {
     });
 
     test("should throw error when user does not exist", async () => {
+      /** Provides stats update behavior. */
       const statsUpdate = {gamesPlayed: 1};
+      /** Provides mock user doc behavior. */
       const mockUserDoc = {
         exists: false,
       };
@@ -323,9 +362,11 @@ describe("FirestoreService", () => {
   });
 
   describe("updateUserProfile", () => {
+    /** Provides test user id behavior. */
     const testUserId = "testUser123";
 
     test("should update user profile successfully", async () => {
+      /** Provides profile update behavior. */
       const profileUpdate = {
         username: "NewUsername",
         email: "newemail@example.com",
@@ -342,7 +383,9 @@ describe("FirestoreService", () => {
     });
 
     test("should handle Firestore errors and rethrow", async () => {
+      /** Provides profile update behavior. */
       const profileUpdate = {username: "NewUsername"};
+      /** Provides test error behavior. */
       const testError = new Error("Profile update failed");
 
       (mockDoc.update as jest.MockedFunction<any>).mockRejectedValue(testError);
@@ -353,7 +396,9 @@ describe("FirestoreService", () => {
   });
 
   describe("getRiddle", () => {
+    /** Provides test riddle id behavior. */
     const testRiddleId = "riddle123";
+    /** Provides test riddle data behavior. */
     const testRiddleData = {
       riddleId: testRiddleId,
       text: "What has keys but no locks?",
@@ -361,6 +406,7 @@ describe("FirestoreService", () => {
     };
 
     test("should return riddle data when riddle exists", async () => {
+      /** Provides mock riddle doc behavior. */
       const mockRiddleDoc = {
         exists: true,
         data: () => testRiddleData,
@@ -368,6 +414,7 @@ describe("FirestoreService", () => {
 
       (mockDoc.get as jest.MockedFunction<any>).mockResolvedValue(mockRiddleDoc);
 
+      /** Provides result behavior. */
       const result = await getRiddle(testRiddleId);
 
       expect(mockFirestore.collection).toHaveBeenCalledWith("localizedRiddles/en/riddles");
@@ -380,12 +427,14 @@ describe("FirestoreService", () => {
     });
 
     test("should return undefined when riddle does not exist", async () => {
+      /** Provides mock riddle doc behavior. */
       const mockRiddleDoc = {
         exists: false,
       };
 
       (mockDoc.get as jest.MockedFunction<any>).mockResolvedValue(mockRiddleDoc);
 
+      /** Provides result behavior. */
       const result = await getRiddle(testRiddleId);
 
       expect(result).toBeUndefined();
@@ -395,6 +444,7 @@ describe("FirestoreService", () => {
     });
 
     test("should return undefined when riddle data is null", async () => {
+      /** Provides mock riddle doc behavior. */
       const mockRiddleDoc = {
         exists: true,
         data: () => null,
@@ -402,6 +452,7 @@ describe("FirestoreService", () => {
 
       (mockDoc.get as jest.MockedFunction<any>).mockResolvedValue(mockRiddleDoc);
 
+      /** Provides result behavior. */
       const result = await getRiddle(testRiddleId);
 
       expect(result).toBeUndefined();
@@ -409,11 +460,13 @@ describe("FirestoreService", () => {
     });
 
     test("should add riddleId to data if missing", async () => {
+      /** Provides riddle data without id behavior. */
       const riddleDataWithoutId = {
         text: "What has keys but no locks?",
         answer: "KEYBOARD",
       };
 
+      /** Provides mock riddle doc behavior. */
       const mockRiddleDoc = {
         exists: true,
         data: () => riddleDataWithoutId,
@@ -421,6 +474,7 @@ describe("FirestoreService", () => {
 
       (mockDoc.get as jest.MockedFunction<any>).mockResolvedValue(mockRiddleDoc);
 
+      /** Provides result behavior. */
       const result = await getRiddle(testRiddleId);
 
       expect(result).toEqual({
@@ -431,6 +485,7 @@ describe("FirestoreService", () => {
     });
 
     test("should handle Firestore errors", async () => {
+      /** Provides test error behavior. */
       const testError = new Error("Firestore connection failed");
       (mockDoc.get as jest.MockedFunction<any>).mockRejectedValue(testError);
 
@@ -440,9 +495,13 @@ describe("FirestoreService", () => {
 
   describe("Edge Cases", () => {
     test("should handle zero coins case", async () => {
+      /** Provides test user id behavior. */
       const testUserId = "testUser123";
+      /** Provides r with zero coins. */
       const userWithZeroCoins = {coins: 0};
+      /** Provides coins to add behavior. */
       const coinsToAdd = 10;
+      /** Provides mock user doc behavior. */
       const mockUserDoc = {
         exists: true,
         data: () => userWithZeroCoins,
@@ -459,7 +518,9 @@ describe("FirestoreService", () => {
     });
 
     test("should handle empty stats updates", async () => {
+      /** Provides test user id behavior. */
       const testUserId = "testUser123";
+      /** Provides mock user doc behavior. */
       const mockUserDoc = {
         exists: true,
         data: () => ({stats: {gamesPlayed: 5}}),
@@ -474,9 +535,13 @@ describe("FirestoreService", () => {
     });
 
     test("should log specific error for insufficient coins with exact error message", async () => {
+      /** Provides test user id behavior. */
       const testUserId = "testUser123";
+      /** Provides current coins behavior. */
       const currentCoins = 50;
+      /** Provides coins to spend behavior. */
       const coinsToSpend = -75; // More than available
+      /** Provides mock user doc behavior. */
       const mockUserDoc = {
         exists: true,
         data: () => ({coins: currentCoins}),
@@ -484,6 +549,7 @@ describe("FirestoreService", () => {
 
       (mockTransaction.get as jest.MockedFunction<any>).mockResolvedValue(mockUserDoc);
 
+      /** Provides expected error message behavior. */
       const expectedErrorMessage = `Insufficient coins for user ${testUserId}. Current: ${currentCoins}, Attempted to spend: ${-coinsToSpend}.`;
 
       await expect(updateUserCoins(testUserId, coinsToSpend)).rejects.toThrow(expectedErrorMessage);
@@ -493,14 +559,18 @@ describe("FirestoreService", () => {
     });
 
     test("should log specific error for user not found in stats with exact error message", async () => {
+      /** Provides test user id behavior. */
       const testUserId = "testUser123";
+      /** Provides stats update behavior. */
       const statsUpdate = {gamesPlayed: 1};
+      /** Provides mock user doc behavior. */
       const mockUserDoc = {
         exists: false,
       };
 
       (mockTransaction.get as jest.MockedFunction<any>).mockResolvedValue(mockUserDoc);
 
+      /** Provides expected error message behavior. */
       const expectedErrorMessage = `User with ID ${testUserId} not found during transaction for updateUserStats.`;
 
       await expect(updateUserStats(testUserId, statsUpdate)).rejects.toThrow(`User with ID ${testUserId} not found.`);
@@ -511,14 +581,17 @@ describe("FirestoreService", () => {
   });
 
   describe("updateUserCoins - external transaction path", () => {
+    /** Provides test user id behavior. */
     const testUserId = "testUser123";
 
     test("should use provided transaction instead of creating a new one", async () => {
+      /** Provides external transaction behavior. */
       const externalTransaction = {
         get: jest.fn() as jest.MockedFunction<any>,
         update: jest.fn() as jest.MockedFunction<any>,
       };
 
+      /** Provides mock user doc behavior. */
       const mockUserDoc = {
         exists: true,
         data: () => ({coins: 100}),
@@ -535,14 +608,17 @@ describe("FirestoreService", () => {
   });
 
   describe("updateUserStats - external transaction path", () => {
+    /** Provides test user id behavior. */
     const testUserId = "testUser123";
 
     test("should use provided transaction instead of creating a new one", async () => {
+      /** Provides external transaction behavior. */
       const externalTransaction = {
         get: jest.fn() as jest.MockedFunction<any>,
         update: jest.fn() as jest.MockedFunction<any>,
       };
 
+      /** Provides mock user doc behavior. */
       const mockUserDoc = {
         exists: true,
         data: () => ({stats: {gamesPlayed: 5, wins: 2}}),
@@ -561,7 +637,9 @@ describe("FirestoreService", () => {
   });
 
   describe("initializeNewUser", () => {
+    /** Provides test user id behavior. */
     const testUserId = "newUser123";
+    /** Provides test user data behavior. */
     const testUserData = {
       email: "new@example.com",
       username: "NewPlayer",
@@ -618,6 +696,7 @@ describe("FirestoreService", () => {
     });
 
     test("should throw and log error when Firestore set fails", async () => {
+      /** Provides test error behavior. */
       const testError = new Error("Firestore write failed");
       (mockTransaction.create as jest.MockedFunction<any>).mockImplementationOnce(() => {
         throw testError;
@@ -629,9 +708,11 @@ describe("FirestoreService", () => {
   });
 
   describe("ensureUserDocumentComplete", () => {
+    /** Provides test user id behavior. */
     const testUserId = "existingUser123";
 
     test("should return early when user document does not exist", async () => {
+      /** Provides mock user doc behavior. */
       const mockUserDoc = {
         exists: false,
       };
@@ -646,6 +727,7 @@ describe("FirestoreService", () => {
     });
 
     test("should not update when user has all required fields", async () => {
+      /** Completes user. */
       const completeUser = {
         stats: {
           xp: 0,
@@ -678,6 +760,7 @@ describe("FirestoreService", () => {
         unlockedAchievements: [],
       };
 
+      /** Provides mock user doc behavior. */
       const mockUserDoc = {
         exists: true,
         data: () => completeUser,
@@ -690,6 +773,7 @@ describe("FirestoreService", () => {
     });
 
     test("should add default stats when stats object is missing", async () => {
+      /** Provides r without stats. */
       const userWithoutStats = {
         progress: {
           classicIndex: 0,
@@ -700,6 +784,7 @@ describe("FirestoreService", () => {
         hasPurchasedApp: false,
       };
 
+      /** Provides mock user doc behavior. */
       const mockUserDoc = {
         exists: true,
         data: () => userWithoutStats,
@@ -723,6 +808,7 @@ describe("FirestoreService", () => {
     });
 
     test("should add default progress when progress object is missing", async () => {
+      /** Provides r without progress. */
       const userWithoutProgress = {
         stats: {
           dailyPuzzlesCompleted: 0,
@@ -743,6 +829,7 @@ describe("FirestoreService", () => {
         hasPurchasedApp: false,
       };
 
+      /** Provides mock user doc behavior. */
       const mockUserDoc = {
         exists: true,
         data: () => userWithoutProgress,
@@ -764,6 +851,7 @@ describe("FirestoreService", () => {
     });
 
     test("should merge missing stat fields into existing partial stats", async () => {
+      /** Provides r with partial stats. */
       const userWithPartialStats = {
         stats: {
           gamesPlayed: 10,
@@ -778,6 +866,7 @@ describe("FirestoreService", () => {
         hasPurchasedApp: false,
       };
 
+      /** Provides mock user doc behavior. */
       const mockUserDoc = {
         exists: true,
         data: () => userWithPartialStats,
@@ -801,6 +890,7 @@ describe("FirestoreService", () => {
     });
 
     test("should merge missing progress fields into existing partial progress", async () => {
+      /** Provides r with partial progress. */
       const userWithPartialProgress = {
         stats: {
           dailyPuzzlesCompleted: 0,
@@ -826,6 +916,7 @@ describe("FirestoreService", () => {
         hasPurchasedApp: false,
       };
 
+      /** Provides mock user doc behavior. */
       const mockUserDoc = {
         exists: true,
         data: () => userWithPartialProgress,
@@ -847,6 +938,7 @@ describe("FirestoreService", () => {
     });
 
     test("should add default coins when coins is undefined", async () => {
+      /** Provides r without coins. */
       const userWithoutCoins = {
         stats: {
           dailyPuzzlesCompleted: 0,
@@ -871,6 +963,7 @@ describe("FirestoreService", () => {
         hasPurchasedApp: false,
       };
 
+      /** Provides mock user doc behavior. */
       const mockUserDoc = {
         exists: true,
         data: () => userWithoutCoins,
@@ -888,6 +981,7 @@ describe("FirestoreService", () => {
     });
 
     test("should add default hasPurchasedApp when it is undefined", async () => {
+      /** Provides r without purchase flag. */
       const userWithoutPurchaseFlag = {
         stats: {
           dailyPuzzlesCompleted: 0,
@@ -912,6 +1006,7 @@ describe("FirestoreService", () => {
         coins: 100,
       };
 
+      /** Provides mock user doc behavior. */
       const mockUserDoc = {
         exists: true,
         data: () => userWithoutPurchaseFlag,
@@ -929,6 +1024,7 @@ describe("FirestoreService", () => {
     });
 
     test("should throw and log error when Firestore fails", async () => {
+      /** Provides test error behavior. */
       const testError = new Error("Firestore read failed");
       (mockDoc.get as jest.MockedFunction<any>).mockRejectedValue(testError);
 
@@ -941,6 +1037,7 @@ describe("FirestoreService", () => {
   });
 
   describe("appendUnlockedAchievements", () => {
+    /** Provides test user id behavior. */
     const testUserId = "user-achievements-1";
 
     test("should do nothing when newEntries is empty", async () => {
@@ -960,6 +1057,7 @@ describe("FirestoreService", () => {
     });
 
     test("should append new achievements when user exists and has no existing unlocks", async () => {
+      /** Provides r data. */
       const userData = {unlockedAchievements: []};
       (mockDoc.get as jest.MockedFunction<any>).mockResolvedValue({
         exists: true,
@@ -967,6 +1065,7 @@ describe("FirestoreService", () => {
       });
       (mockDoc.update as jest.MockedFunction<any>).mockResolvedValue(undefined);
 
+      /** Provides new entries behavior. */
       const newEntries = [
         {achievementId: "first_win", unlockedAt: 1000},
         {achievementId: "wins_5", unlockedAt: 1001},
@@ -984,6 +1083,7 @@ describe("FirestoreService", () => {
     });
 
     test("should not duplicate already unlocked achievement ids", async () => {
+      /** Provides r data. */
       const userData = {
         unlockedAchievements: [{achievementId: "first_win", unlockedAt: 999}],
       };
@@ -1000,15 +1100,18 @@ describe("FirestoreService", () => {
   });
 
   describe("getDailyRiddle", () => {
+    /** Provides test riddle id behavior. */
     const testRiddleId = "daily123";
 
     test("should return undefined when data is null", async () => {
+      /** Provides mock riddle doc behavior. */
       const mockRiddleDoc = {
         exists: true,
         data: () => null,
       };
       (mockDoc.get as jest.MockedFunction<any>).mockResolvedValue(mockRiddleDoc);
 
+      /** Provides result behavior. */
       const result = await getDailyRiddle(testRiddleId);
 
       expect(result).toBeUndefined();
@@ -1016,6 +1119,7 @@ describe("FirestoreService", () => {
     });
 
     test("should return riddle data when daily riddle exists", async () => {
+      /** Provides daily riddle data behavior. */
       const dailyRiddleData = {
         riddleId: testRiddleId,
         text: "A daily challenge",
@@ -1023,12 +1127,14 @@ describe("FirestoreService", () => {
         dailyIndex: 1,
       };
 
+      /** Provides mock riddle doc behavior. */
       const mockRiddleDoc = {
         exists: true,
         data: () => dailyRiddleData,
       };
       (mockDoc.get as jest.MockedFunction<any>).mockResolvedValue(mockRiddleDoc);
 
+      /** Provides result behavior. */
       const result = await getDailyRiddle(testRiddleId);
 
       expect(mockFirestore.collection).toHaveBeenCalledWith("localizedRiddles/en/riddles");
@@ -1040,9 +1146,11 @@ describe("FirestoreService", () => {
   });
 
   describe("getRiddle - localized lookup", () => {
+    /** Provides test riddle id behavior. */
     const testRiddleId = "search123";
 
     test("should return classic riddle from the localized classic collection", async () => {
+      /** Provides classic riddle data behavior. */
       const classicRiddleData = {
         riddleId: testRiddleId,
         text: "Classic riddle",
@@ -1050,12 +1158,14 @@ describe("FirestoreService", () => {
         classicIndex: 0,
       };
 
+      /** Provides mock riddle doc behavior. */
       const mockRiddleDoc = {
         exists: true,
         data: () => classicRiddleData,
       };
       (mockDoc.get as jest.MockedFunction<any>).mockResolvedValue(mockRiddleDoc);
 
+      /** Provides result behavior. */
       const result = await getRiddle(testRiddleId);
 
       expect(mockFirestore.collection).toHaveBeenCalledWith("localizedRiddles/en/riddles");
@@ -1068,6 +1178,7 @@ describe("FirestoreService", () => {
     test("should return undefined when riddle not found in the localized collection", async () => {
       (mockDoc.get as jest.MockedFunction<any>).mockResolvedValue({exists: false});
 
+      /** Provides result behavior. */
       const result = await getRiddle(testRiddleId);
 
       expect(result).toBeUndefined();
@@ -1078,9 +1189,11 @@ describe("FirestoreService", () => {
   });
 
   describe("getRiddleByGameMode", () => {
+    /** Provides test riddle id behavior. */
     const testRiddleId = "mode123";
 
     test("should fetch from classic collection for 'classic' game mode", async () => {
+      /** Provides classic riddle data behavior. */
       const classicRiddleData = {
         riddleId: testRiddleId,
         text: "Classic riddle",
@@ -1088,12 +1201,14 @@ describe("FirestoreService", () => {
         classicIndex: 5,
       };
 
+      /** Provides mock riddle doc behavior. */
       const mockRiddleDoc = {
         exists: true,
         data: () => classicRiddleData,
       };
       (mockDoc.get as jest.MockedFunction<any>).mockResolvedValue(mockRiddleDoc);
 
+      /** Provides result behavior. */
       const result = await getRiddleByGameMode(testRiddleId, "classic");
 
       expect(mockFirestore.collection).toHaveBeenCalledWith("localizedRiddles/en/riddles");
@@ -1104,6 +1219,7 @@ describe("FirestoreService", () => {
     });
 
     test("should fetch from daily collection for 'challenge' game mode", async () => {
+      /** Provides daily riddle data behavior. */
       const dailyRiddleData = {
         riddleId: testRiddleId,
         text: "Daily riddle",
@@ -1111,12 +1227,14 @@ describe("FirestoreService", () => {
         dailyIndex: 2,
       };
 
+      /** Provides mock riddle doc behavior. */
       const mockRiddleDoc = {
         exists: true,
         data: () => dailyRiddleData,
       };
       (mockDoc.get as jest.MockedFunction<any>).mockResolvedValue(mockRiddleDoc);
 
+      /** Provides result behavior. */
       const result = await getRiddleByGameMode(testRiddleId, "challenge");
 
       expect(mockFirestore.collection).toHaveBeenCalledWith("localizedRiddles/en/riddles");
@@ -1127,6 +1245,7 @@ describe("FirestoreService", () => {
     });
 
     test("should return undefined and warn for unknown game mode", async () => {
+      /** Provides result behavior. */
       const result = await getRiddleByGameMode(testRiddleId, "unknown" as any);
 
       expect(result).toBeUndefined();

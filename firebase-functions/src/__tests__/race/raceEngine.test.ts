@@ -11,8 +11,10 @@ import {
   type RaceRunRecord,
 } from "../../race/raceEngine";
 
+/** Defines the started at value. */
 const STARTED_AT = 1_000_000;
 
+/** Creates run. */
 const createRun = (overrides: Partial<RaceRunRecord> = {}): RaceRunRecord => ({
   runId: "run-1",
   userId: "user-1",
@@ -48,6 +50,7 @@ describe("Race to 10 authoritative engine", () => {
   });
 
   it("returns defensive copies for inactive runs including opponent ghost events", () => {
+    /** Provides ghost event behavior. */
     const ghostEvent = {
       sequence: 0,
       type: "correct" as const,
@@ -58,6 +61,7 @@ describe("Race to 10 authoritative engine", () => {
       adjustedElapsedMs: 1_000,
       correctCount: 1,
     };
+    /** Provides original behavior. */
     const original = createRun({
       status: "completed",
       result: "ghost_win",
@@ -65,6 +69,7 @@ describe("Race to 10 authoritative engine", () => {
       events: [ghostEvent],
       opponent: {displayName: "Ava", adjustedFinishMs: 10_000, events: [ghostEvent]},
     });
+    /** Provides refreshed behavior. */
     const refreshed = refreshRaceRun(original, STARTED_AT + 2_000);
     expect(refreshed).toEqual(original);
     expect(refreshed).not.toBe(original);
@@ -75,11 +80,13 @@ describe("Race to 10 authoritative engine", () => {
   });
 
   it("keeps an active challenger running before the ghost finish", () => {
+    /** Provides run behavior. */
     const run = createRun({opponent: {displayName: "Ava", adjustedFinishMs: 20_000, events: []}});
     expect(refreshRaceRun(run, STARTED_AT + 19_000).status).toBe("active");
   });
 
   it("abandons an active run with a null result", () => {
+    /** Provides abandoned behavior. */
     const abandoned = abandonRaceRun(createRun(), STARTED_AT + 12_000);
     expect(abandoned).toMatchObject({
       status: "abandoned",
@@ -91,19 +98,16 @@ describe("Race to 10 authoritative engine", () => {
   });
 
   it("makes abandonment idempotent and rejects finalized competitive runs", () => {
+    /** Provides abandoned behavior. */
     const abandoned = createRun({status: "abandoned"});
     expect(abandonRaceRun(abandoned, STARTED_AT + 1_000)).toEqual(abandoned);
-    expect(() => abandonRaceRun(
-      createRun({status: "completed", result: "recorded"}),
-      STARTED_AT + 1_000,
-    )).toThrow("already has a final result");
+    expect(() => abandonRaceRun(createRun({status: "completed", result: "recorded"}), STARTED_AT + 1_000)).toThrow(
+      "already has a final result",
+    );
   });
   it("adds a server-owned 15-second hint penalty without coins", () => {
-    const result = applyRaceHint(
-      createRun(),
-      {riddleId: "riddle-1"},
-      STARTED_AT + 5_000,
-    );
+    /** Provides result behavior. */
+    const result = applyRaceHint(createRun(), {riddleId: "riddle-1"}, STARTED_AT + 5_000);
     expect(result).toMatchObject({revealedLetter: "p", index: 0});
     expect(result.run.hintPenaltyMs).toBe(RACE_HINT_PENALTY_MS);
     expect(raceClock(result.run, STARTED_AT + 5_000)).toEqual({
@@ -112,12 +116,11 @@ describe("Race to 10 authoritative engine", () => {
       adjustedElapsedMs: 20_000,
     });
     expect(result.run.events[0]).toMatchObject({type: "hint", penaltyAddedMs: 15_000, adjustedElapsedMs: 20_000});
-    expect(() =>
-      applyRaceHint(result.run, {riddleId: "riddle-1"}, STARTED_AT + 6_000),
-    ).toThrow("already used");
+    expect(() => applyRaceHint(result.run, {riddleId: "riddle-1"}, STARTED_AT + 6_000)).toThrow("already used");
   });
 
   it("selects multiplayer hint positions from server-owned state", () => {
+    /** Provides result behavior. */
     const result = applyRaceHint(
       createRun({revealedLetters: [{index: 0, letter: "p"}]}),
       {riddleId: "riddle-1"},
@@ -127,41 +130,41 @@ describe("Race to 10 authoritative engine", () => {
   });
 
   it("rejects actions against inactive, missing, or mismatched riddles", () => {
-    expect(() => applyRaceGuess(
-      createRun({status: "completed", result: "recorded"}),
-      {riddleId: "riddle-1", guess: "piano"},
-      STARTED_AT + 1_000,
-    )).toThrow("no longer active");
-    expect(() => applyRaceGuess(
-      createRun({riddles: []}),
-      {riddleId: "riddle-1", guess: "piano"},
-      STARTED_AT + 1_000,
-    )).toThrow("not the active race riddle");
-    expect(() => applyRaceGuess(
-      createRun(),
-      {riddleId: "riddle-2", guess: "piano"},
-      STARTED_AT + 1_000,
-    )).toThrow("not the active race riddle");
-    expect(() => applyRaceGuess(
-      createRun(),
-      {riddleId: "riddle-1", guess: "shorter"},
-      STARTED_AT + 1_000,
-    )).toThrow("exactly 5 characters");
+    expect(() =>
+      applyRaceGuess(
+        createRun({status: "completed", result: "recorded"}),
+        {riddleId: "riddle-1", guess: "piano"},
+        STARTED_AT + 1_000,
+      ),
+    ).toThrow("no longer active");
+    expect(() =>
+      applyRaceGuess(createRun({riddles: []}), {riddleId: "riddle-1", guess: "piano"}, STARTED_AT + 1_000),
+    ).toThrow("not the active race riddle");
+    expect(() => applyRaceGuess(createRun(), {riddleId: "riddle-2", guess: "piano"}, STARTED_AT + 1_000)).toThrow(
+      "not the active race riddle",
+    );
+    expect(() => applyRaceGuess(createRun(), {riddleId: "riddle-1", guess: "shorter"}, STARTED_AT + 1_000)).toThrow(
+      "exactly 5 characters",
+    );
   });
 
   it("rejects a hint when every answer position is already revealed", () => {
-    expect(() => applyRaceHint(
-      createRun({revealedLetters: Array.from("piano", (letter, index) => ({index, letter}))}),
-      {riddleId: "riddle-1"},
-      STARTED_AT + 1_000,
-    )).toThrow("No unrevealed race hint");
+    expect(() =>
+      applyRaceHint(
+        createRun({revealedLetters: Array.from("piano", (letter, index) => ({index, letter}))}),
+        {riddleId: "riddle-1"},
+        STARTED_AT + 1_000,
+      ),
+    ).toThrow("No unrevealed race hint");
   });
 
   it("requires a guess before a manual skip and then adds the heavy 45-second penalty", () => {
     expect(() => applyRaceSkip(createRun(), {riddleId: "riddle-1"}, STARTED_AT + 2_000)).toThrow(
       "Submit at least one guess",
     );
+    /** Provides wrong behavior. */
     const wrong = applyRaceGuess(createRun(), {riddleId: "riddle-1", guess: "xxxxx"}, STARTED_AT + 2_000);
+    /** Provides skipped behavior. */
     const skipped = applyRaceSkip(wrong.run, {riddleId: "riddle-1"}, STARTED_AT + 4_000);
     expect(skipped.skipPenaltyMs).toBe(RACE_SKIP_PENALTY_MS);
     expect(skipped.currentPosition).toBe(1);
@@ -170,8 +173,10 @@ describe("Race to 10 authoritative engine", () => {
   });
 
   it("automatically skips after the fifth wrong guess and applies the penalty once", () => {
+    /** Provides run behavior. */
     let run = createRun();
     for (let attempt = 1; attempt <= 5; attempt += 1) {
+      /** Provides result behavior. */
       const result = applyRaceGuess(run, {riddleId: "riddle-1", guess: "xxxxx"}, STARTED_AT + attempt * 1_000);
       run = result.run;
       expect(result.autoSkipped).toBe(attempt === 5);
@@ -182,13 +187,17 @@ describe("Race to 10 authoritative engine", () => {
   });
 
   it("times out when the final available riddle is skipped without ten solves", () => {
+    /** Provides final riddle run behavior. */
     const finalRiddleRun = createRun({currentPosition: 14, guessesUsed: 1});
+    /** Provides result behavior. */
     const result = applyRaceSkip(finalRiddleRun, {riddleId: "riddle-15"}, STARTED_AT + 2_000);
     expect(result).toMatchObject({status: "timed_out", result: "timed_out", currentPosition: 15});
   });
 
   it("redacts answers from run views", () => {
+    /** Provides run behavior. */
     const run = createRun({revealedLetters: [{index: 0, letter: "p"}]});
+    /** Provides view behavior. */
     const view = toRaceRunView(run, STARTED_AT + 3_000);
     expect(view.currentRiddle).toMatchObject({
       riddleId: "riddle-1",
@@ -201,6 +210,7 @@ describe("Race to 10 authoritative engine", () => {
   });
 
   it("projects completed state and copies public opponent and event data", () => {
+    /** Provides ghost event behavior. */
     const ghostEvent = {
       sequence: 0,
       type: "hint" as const,
@@ -211,6 +221,7 @@ describe("Race to 10 authoritative engine", () => {
       adjustedElapsedMs: 16_000,
       correctCount: 0,
     };
+    /** Provides run behavior. */
     const run = createRun({
       status: "completed",
       result: "ghost_win",
@@ -224,6 +235,7 @@ describe("Race to 10 authoritative engine", () => {
         events: [ghostEvent],
       },
     });
+    /** Provides view behavior. */
     const view = toRaceRunView(run, STARTED_AT + 20_000);
     expect(view.currentRiddle).toBeNull();
     expect(view.opponent).toEqual({
@@ -237,14 +249,18 @@ describe("Race to 10 authoritative engine", () => {
   });
 
   it("suppresses unlinked legacy opponent identity while preserving ghost timing", () => {
-    const view = toRaceRunView(createRun({
-      opponent: {
-        displayName: "Legacy player name",
-        avatarUrl: "https://example.test/legacy-avatar.png",
-        adjustedFinishMs: 16_000,
-        events: [],
-      },
-    }), STARTED_AT + 1_000);
+    /** Provides view behavior. */
+    const view = toRaceRunView(
+      createRun({
+        opponent: {
+          displayName: "Legacy player name",
+          avatarUrl: "https://example.test/legacy-avatar.png",
+          adjustedFinishMs: 16_000,
+          events: [],
+        },
+      }),
+      STARTED_AT + 1_000,
+    );
 
     expect(view.opponent).toEqual({
       displayName: "Riddle Quest player",
@@ -254,6 +270,7 @@ describe("Race to 10 authoritative engine", () => {
   });
 
   it("records ten correct milestones and produces a publishable creator outcome", () => {
+    /** Provides run behavior. */
     let run = createRun();
     for (let solve = 1; solve <= 10; solve += 1) {
       run = applyRaceGuess(run, {riddleId: `riddle-${solve}`, guess: "piano"}, STARTED_AT + solve * 7_000).run;
@@ -272,24 +289,29 @@ describe("Race to 10 authoritative engine", () => {
   });
 
   it("lets accumulated penalties trigger the five-minute adjusted cap", () => {
+    /** Provides run behavior. */
     const run = createRun({hintPenaltyMs: 15_000, skipPenaltyMs: 45_000});
+    /** Provides timed out behavior. */
     const timedOut = refreshRaceRun(run, STARTED_AT + 240_000);
     expect(timedOut).toMatchObject({status: "timed_out", result: "timed_out", wallFinishMs: 240_000});
     expect(raceOutcome(timedOut, STARTED_AT + 500_000).adjustedFinishMs).toBe(300_000);
   });
 
   it("fast-forwards to a ghost loss and supports a faster challenger win", () => {
+    /** Provides opponent behavior. */
     const opponent = {
       displayName: "Ava",
       adjustedFinishMs: 100_000,
       events: [],
     };
+    /** Provides lost behavior. */
     const lost = refreshRaceRun(
       createRun({role: "challenger", challengeId: "challenge-1", opponent}),
       STARTED_AT + 100_001,
     );
     expect(lost).toMatchObject({status: "completed", result: "ghost_win", wallFinishMs: 100_000});
 
+    /** Provides winning run behavior. */
     let winningRun = createRun({role: "challenger", challengeId: "challenge-1", opponent});
     for (let solve = 1; solve <= 10; solve += 1) {
       winningRun = applyRaceGuess(
@@ -302,14 +324,12 @@ describe("Race to 10 authoritative engine", () => {
   });
 
   it("records a tie when the challenger matches the ghost adjusted finish", () => {
+    /** Provides opponent behavior. */
     const opponent = {displayName: "Ava", adjustedFinishMs: 90_000, events: []};
+    /** Provides run behavior. */
     let run = createRun({role: "challenger", challengeId: "challenge-1", opponent});
     for (let solve = 1; solve <= 10; solve += 1) {
-      run = applyRaceGuess(
-        run,
-        {riddleId: `riddle-${solve}`, guess: " PIANO "},
-        STARTED_AT + solve * 9_000,
-      ).run;
+      run = applyRaceGuess(run, {riddleId: `riddle-${solve}`, guess: " PIANO "}, STARTED_AT + solve * 9_000).run;
     }
     expect(run).toMatchObject({status: "completed", result: "tie", wallFinishMs: 90_000});
     expect(raceOutcome(run, STARTED_AT + 90_000)).toMatchObject({
@@ -320,7 +340,8 @@ describe("Race to 10 authoritative engine", () => {
   });
 
   it("rejects malformed active outcomes", () => {
-    expect(() => raceOutcome(createRun({result: "recorded"}), STARTED_AT + 1_000))
-      .toThrow("does not have a final outcome");
+    expect(() => raceOutcome(createRun({result: "recorded"}), STARTED_AT + 1_000)).toThrow(
+      "does not have a final outcome",
+    );
   });
 });

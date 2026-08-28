@@ -15,8 +15,10 @@ import * as Sentry from "@sentry/node";
  * @throws When a configured DSN is malformed or uses plaintext transport.
  */
 export function resolveSecureSentryDsn(value: string | undefined): string | undefined {
+  /** Provides candidate behavior. */
   const candidate = value?.trim();
   if (!candidate) return undefined;
+  /** Parses d. */
   let parsed: URL;
   try {
     parsed = new URL(candidate);
@@ -33,9 +35,7 @@ export function resolveSecureSentryDsn(value: string | undefined): string | unde
  * @param environment Function runtime environment variables.
  * @returns The Cloud Run revision when available, otherwise the configured release.
  */
-export function resolveSentryRelease(
-  environment: Readonly<Record<string, string | undefined>>,
-): string | undefined {
+export function resolveSentryRelease(environment: Readonly<Record<string, string | undefined>>): string | undefined {
   return environment.K_REVISION?.trim() || environment.SENTRY_RELEASE?.trim() || undefined;
 }
 
@@ -45,7 +45,8 @@ const dsn = resolveSecureSentryDsn(process.env.SENTRY_DSN);
 type SpanAttributes = Record<string, string | number | boolean | undefined>;
 
 /** Provides sensitive field pattern behavior. */
-const sensitiveFieldPattern = /(?:answer|authorization|cookie|email|guess|imageDataUrl|password|secret|token|uid|userId)/i;
+const sensitiveFieldPattern =
+  /(?:answer|authorization|cookie|email|guess|imageDataUrl|password|secret|token|uid|userId)/i;
 /** Provides bearer pattern behavior. */
 const bearerPattern = /Bearer\s+[A-Za-z0-9._~+/=-]+/gi;
 /** Provides compact token pattern behavior. */
@@ -54,16 +55,18 @@ const compactTokenPattern = /\b[A-Za-z0-9_-]{16,}\.[A-Za-z0-9_-]{16,}\.[A-Za-z0-
 const dataImagePattern = /data:image\/[a-z0-9.+-]+;base64,[A-Za-z0-9+/=]+/gi;
 
 /** Removes query strings and fragments from URLs embedded in diagnostics. */
-const redactUrlDetails = (value: string): string => value.replace(/https?:\/\/[^\s"'<>]+/gi, (match) => {
-  try {
-    const parsed = new URL(match);
-    parsed.search = "";
-    parsed.hash = "";
-    return parsed.toString();
-  } catch {
-    return "[REDACTED_URL]";
-  }
-});
+const redactUrlDetails = (value: string): string =>
+  value.replace(/https?:\/\/[^\s"'<>]+/gi, (match) => {
+    try {
+      /** Parses d. */
+      const parsed = new URL(match);
+      parsed.search = "";
+      parsed.hash = "";
+      return parsed.toString();
+    } catch {
+      return "[REDACTED_URL]";
+    }
+  });
 
 /**
  * Removes credentials, player identifiers, guesses, and answer material from
@@ -80,10 +83,12 @@ export function redactSensitiveTelemetry(
   seen: WeakSet<object> = new WeakSet<object>(),
 ): unknown {
   if (typeof value === "string") {
-    return redactUrlDetails(value
-      .replace(bearerPattern, "Bearer [REDACTED]")
-      .replace(compactTokenPattern, "[REDACTED_TOKEN]")
-      .replace(dataImagePattern, "[REDACTED_IMAGE]"));
+    return redactUrlDetails(
+      value
+        .replace(bearerPattern, "Bearer [REDACTED]")
+        .replace(compactTokenPattern, "[REDACTED_TOKEN]")
+        .replace(dataImagePattern, "[REDACTED_IMAGE]"),
+    );
   }
   if (value instanceof URL) return redactUrlDetails(value.toString());
   if (value === null || typeof value !== "object" || depth >= 8) return value;
@@ -105,6 +110,7 @@ export function redactSensitiveTelemetry(
  * stack frames and privacy-safe structured context.
  */
 export function redactSentryEvent<T>(event: T): T {
+  /** Provides redacted behavior. */
   const redacted = redactSensitiveTelemetry(event) as Record<string, unknown>;
   if (!redacted || typeof redacted !== "object") return redacted as T;
 
@@ -118,19 +124,42 @@ export function redactSentryEvent<T>(event: T): T {
   delete redacted.breadcrumbs;
 
   if (typeof redacted.message === "string") redacted.message = "[REDACTED_MESSAGE]";
+  /** Provides logentry behavior. */
   const logentry = redacted.logentry;
   if (logentry && typeof logentry === "object") {
+    /** Provides safe logentry behavior. */
     const safeLogentry = logentry as Record<string, unknown>;
     if (typeof safeLogentry.message === "string") safeLogentry.message = "[REDACTED_MESSAGE]";
     if (typeof safeLogentry.formatted === "string") safeLogentry.formatted = "[REDACTED_MESSAGE]";
   }
+  /** Provides exception behavior. */
   const exception = redacted.exception;
   if (exception && typeof exception === "object") {
-    const values = (exception as {values?: unknown}).values;
+    /** Provides values behavior. */
+    const values = (
+      exception as {
+        /** Stores values. */
+        values?: unknown;
+      }
+    ).values;
     if (Array.isArray(values)) {
       for (const value of values) {
-        if (value && typeof value === "object" && typeof (value as {value?: unknown}).value === "string") {
-          (value as {value: string}).value = "[REDACTED_MESSAGE]";
+        if (
+          value &&
+          typeof value === "object" &&
+          typeof (
+            value as {
+              /** Stores value. */
+              value?: unknown;
+            }
+          ).value === "string"
+        ) {
+          (
+            value as {
+              /** Stores value. */
+              value: string;
+            }
+          ).value = "[REDACTED_MESSAGE]";
         }
       }
     }

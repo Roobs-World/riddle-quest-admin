@@ -1,11 +1,7 @@
-import {
-  coerceToDate,
-  computeNextDailyWinStreak,
-  getUtcDayString,
-  getYesterdayUtcDayString,
-} from "../daily/dailyStreak";
+import {coerceToDate, computeNextDailyWinStreak, getUtcDayString, getYesterdayUtcDayString} from "../daily/dailyStreak";
 
 describe("daily streak date normalization", () => {
+  /** Provides date behavior. */
   const date = new Date("2026-08-04T12:30:00.000Z");
 
   it.each([
@@ -43,6 +39,7 @@ describe("daily streak date normalization", () => {
   });
 
   it("increments only for a completion on the previous UTC day", () => {
+    /** Provides now behavior. */
     const now = new Date("2026-08-04T01:00:00Z");
     expect(computeNextDailyWinStreak(4, "2026-08-03T23:59:00Z", now)).toBe(5);
     expect(computeNextDailyWinStreak(4, "2026-08-02T23:59:00Z", now)).toBe(1);

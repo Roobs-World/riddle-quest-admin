@@ -3,9 +3,11 @@ import {resolve} from "node:path";
 import {describe, expect, it} from "@jest/globals";
 
 /** Reads the deployed Firestore index and TTL policy. */
-const readIndexConfig = () => JSON.parse(
-  readFileSync(resolve(__dirname, "../../firestore.indexes.json"), "utf8"),
-) as {fieldOverrides?: Array<Record<string, unknown>>};
+const readIndexConfig = () =>
+  JSON.parse(readFileSync(resolve(__dirname, "../../firestore.indexes.json"), "utf8")) as {
+    /** Stores field overrides. */
+    fieldOverrides?: Array<Record<string, unknown>>;
+  };
 
 describe("Firestore index policy", () => {
   it("enables TTL without indexing loss completion receipt expiries", () => {
@@ -18,6 +20,7 @@ describe("Firestore index policy", () => {
   });
 
   it("bounds race inbox retention and indexes server-only deletion links", () => {
+    /** Provides overrides behavior. */
     const overrides = readIndexConfig().fieldOverrides;
     expect(overrides).toContainEqual({
       collectionGroup: "raceInbox",

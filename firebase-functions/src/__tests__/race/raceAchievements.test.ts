@@ -3,6 +3,7 @@ import {evaluateRaceAchievementEvent} from "../../race/raceAchievements";
 
 describe("multiplayer achievements", () => {
   it("unlocks the debut and clean-run achievements on a first clean completion", () => {
+    /** Provides update behavior. */
     const update = evaluateRaceAchievementEvent(
       {coins: 100, stats: {}, unlockedAchievements: []},
       {kind: "completed", won: false, cleanRun: true},
@@ -16,10 +17,11 @@ describe("multiplayer achievements", () => {
     });
     expect(update.newlyUnlockedAchievementIds).toEqual(["race_debut", "race_clean_run"]);
     expect(update.achievementCoinsAwarded).toBe(2 * ACHIEVEMENT_UNLOCK_COIN_REWARD);
-    expect(update.newCoins).toBe(100 + (2 * ACHIEVEMENT_UNLOCK_COIN_REWARD));
+    expect(update.newCoins).toBe(100 + 2 * ACHIEVEMENT_UNLOCK_COIN_REWARD);
   });
 
   it("unlocks cumulative win milestones without duplicating existing achievements", () => {
+    /** Provides update behavior. */
     const update = evaluateRaceAchievementEvent(
       {
         coins: 250,
@@ -39,6 +41,7 @@ describe("multiplayer achievements", () => {
   });
 
   it("tracks hosted challenges and grants the fifth-host milestone", () => {
+    /** Provides update behavior. */
     const update = evaluateRaceAchievementEvent(
       {
         stats: {multiplayerChallengesCreated: 4},
@@ -53,6 +56,7 @@ describe("multiplayer achievements", () => {
   });
 
   it("credits a creator win when an opponent resolves a challenge", () => {
+    /** Provides update behavior. */
     const update = evaluateRaceAchievementEvent(
       {stats: {multiplayerWins: 0}, unlockedAchievements: []},
       {kind: "opponent_resolved", won: true},
@@ -65,6 +69,7 @@ describe("multiplayer achievements", () => {
   });
 
   it("does not credit a creator win after an opponent loss", () => {
+    /** Provides update behavior. */
     const update = evaluateRaceAchievementEvent(
       {stats: {multiplayerGamesPlayed: 2, multiplayerWins: 0}},
       {kind: "opponent_resolved", won: false},
@@ -74,18 +79,23 @@ describe("multiplayer achievements", () => {
   });
 
   it("unlocks the twenty-five-win and first-host milestones", () => {
+    /** Provides win behavior. */
     const win = evaluateRaceAchievementEvent(
       {stats: {multiplayerGamesPlayed: 30, multiplayerWins: 24}, unlockedAchievements: ["race_debut"]},
       {kind: "completed", won: true, cleanRun: false},
       6_000,
     );
-    expect(win.newlyUnlockedAchievementIds).toEqual(expect.arrayContaining(["race_first_win", "race_wins_5", "race_wins_25"]));
+    expect(win.newlyUnlockedAchievementIds).toEqual(
+      expect.arrayContaining(["race_first_win", "race_wins_5", "race_wins_25"]),
+    );
 
+    /** Provides host behavior. */
     const host = evaluateRaceAchievementEvent({}, {kind: "challenge_published"}, 6_001);
     expect(host.newlyUnlockedAchievementIds).toEqual(["race_host"]);
   });
 
   it("normalizes malformed stored counters, coins and achievement entries", () => {
+    /** Provides update behavior. */
     const update = evaluateRaceAchievementEvent(
       {
         coins: -1,
@@ -98,6 +108,7 @@ describe("multiplayer achievements", () => {
     expect(update.stats).toEqual({multiplayerGamesPlayed: 1, multiplayerWins: 0, multiplayerChallengesCreated: 0});
     expect(update.newCoins).toBeGreaterThanOrEqual(0);
 
+    /** Provides no list behavior. */
     const noList = evaluateRaceAchievementEvent(
       {stats: null, unlockedAchievements: "race_debut", coins: "100"},
       {kind: "challenge_published"},

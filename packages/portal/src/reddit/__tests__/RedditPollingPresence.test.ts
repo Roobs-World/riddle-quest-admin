@@ -6,10 +6,15 @@ describe("Reddit bounded polling presence", () => {
   afterEach(() => jest.useRealTimers());
 
   it("polls every 10s in the hub and every 2s while racing", async () => {
+    /** Provides poll behavior. */
     const poll = jest.fn(async () => ({rivals: []}));
+    /** Provides disconnect behavior. */
     const disconnect = jest.fn(async () => undefined);
-    const presence = new RedditPollingPresence({poll, disconnect} as PresenceCapability,
-      {sessionId: "session_123456789", visibility: () => "visible"});
+    /** Provides presence behavior. */
+    const presence = new RedditPollingPresence({poll, disconnect} as PresenceCapability, {
+      sessionId: "session_123456789",
+      visibility: () => "visible",
+    });
     await presence.setEnabled(true);
     expect(poll).toHaveBeenLastCalledWith({sessionId: "session_123456789", state: "online", enabled: true});
     await jest.advanceTimersByTimeAsync(REDDIT_HUB_POLL_MS);
@@ -21,12 +26,21 @@ describe("Reddit bounded polling presence", () => {
   });
 
   it("disconnects while hidden, resumes visibly, and clears rivals on opt-out", async () => {
+    /** Provides visibility behavior. */
     let visibility: DocumentVisibilityState = "visible";
+    /** Provides on rivals behavior. */
     const onRivals = jest.fn();
-    const capability = {poll: jest.fn(async () => ({rivals: [{userId: `reddit_${"b".repeat(40)}`, state: "playing" as const}]})),
-      disconnect: jest.fn(async () => undefined)};
-    const presence = new RedditPollingPresence(capability, {sessionId: "session_123456789", onRivals,
-      visibility: () => visibility});
+    /** Provides capability behavior. */
+    const capability = {
+      poll: jest.fn(async () => ({rivals: [{userId: `reddit_${"b".repeat(40)}`, state: "playing" as const}]})),
+      disconnect: jest.fn(async () => undefined),
+    };
+    /** Provides presence behavior. */
+    const presence = new RedditPollingPresence(capability, {
+      sessionId: "session_123456789",
+      onRivals,
+      visibility: () => visibility,
+    });
     await presence.setEnabled(true);
     visibility = "hidden";
     await presence.visibilityChanged();

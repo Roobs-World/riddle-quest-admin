@@ -11,8 +11,11 @@ export function isRaceTo10Enabled({
   envValue,
   testHarnessEnabled = hasTrustedTestHarnessMarker(),
 }: {
+  /** Stores search. */
   search?: string;
+  /** Stores env value. */
   envValue?: string;
+  /** Stores test harness enabled. */
   testHarnessEnabled?: boolean;
 } = {}): boolean {
   /** Parsed query parameters used to inspect trusted harness selection. */
@@ -25,10 +28,7 @@ export function isRaceTo10Enabled({
 }
 
 /** Returns whether the URL selects a trusted Race to 10 browser harness. */
-export function isRaceHarness(
-  search = "",
-  testHarnessEnabled = hasTrustedTestHarnessMarker(),
-): boolean {
+export function isRaceHarness(search = "", testHarnessEnabled = hasTrustedTestHarnessMarker()): boolean {
   if (!testHarnessEnabled) return false;
   /** Harness name requested by the current URL. */
   const harness = new URLSearchParams(search).get("harness");

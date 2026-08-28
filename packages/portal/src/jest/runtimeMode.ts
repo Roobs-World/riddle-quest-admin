@@ -20,13 +20,20 @@ export function resolveJestRuntimeMode({
   harness,
   testHarnessEnabled,
 }: {
+  /** Stores development. */
   development: boolean;
+  /** Stores embedded. */
   embedded: boolean;
+  /** Stores harness. */
   harness: string | null;
+  /** Stores test harness enabled. */
   testHarnessEnabled: boolean;
 }): JestRuntimeMode {
+  /** Provides auth harness behavior. */
   const authHarness = testHarnessEnabled && (harness === "jest-auth" || harness === "race-auth");
+  /** Provides deterministic harness behavior. */
   const deterministicHarness = testHarnessEnabled && (harness === "jest" || harness === "dev" || harness === "race");
+  /** Provides local sdk mock behavior. */
   const localSdkMock = development && !embedded && !authHarness && !deterministicHarness;
   return {
     authHarness,

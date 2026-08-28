@@ -33,6 +33,7 @@ export const claimFacebookNotificationPermissionPrompt = onCallWithSentry(
   "claimFacebookNotificationPermissionPrompt",
   browserCallableSecurityOptions,
   async (request: CallableRequest<unknown>) => {
+    /** Provides uid behavior. */
     const uid = requireFacebookNotifications(request);
     validateCallableRequest(EmptyRequestSchema, request.data, "claimFacebookNotificationPermissionPrompt");
     return validateCallableResponse(
@@ -48,6 +49,7 @@ export const acceptFacebookNotificationPermissionPrompt = onCallWithSentry(
   "acceptFacebookNotificationPermissionPrompt",
   browserCallableSecurityOptions,
   async (request: CallableRequest<unknown>) => {
+    /** Provides uid behavior. */
     const uid = requireFacebookNotifications(request);
     validateCallableRequest(EmptyRequestSchema, request.data, "acceptFacebookNotificationPermissionPrompt");
     await acceptFacebookNotificationPrompt(uid);

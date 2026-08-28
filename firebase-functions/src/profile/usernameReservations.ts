@@ -53,7 +53,9 @@ export function reserveUsernameForNewUser(
   userId: string,
   username: string,
 ): UsernameReservationFields {
+  /** Provides fields behavior. */
   const fields = createUsernameReservationFields(username);
+  /** Provides reservation ref behavior. */
   const reservationRef = db.collection(USERNAME_RESERVATIONS_COLLECTION).doc(fields.usernameReservationId);
   transaction.create(reservationRef, {
     normalizedUsername: fields.usernameNormalized,
@@ -66,8 +68,10 @@ export function reserveUsernameForNewUser(
 
 /** Resolves the reservation ID recorded by a migrated or legacy user profile. */
 export function reservationIdForUserData(data: FirebaseFirestore.DocumentData | undefined): string | undefined {
+  /** Stores d id. */
   const storedId = data?.usernameReservationId;
   if (typeof storedId === "string" && /^[0-9a-f]{64}$/.test(storedId)) return storedId;
+  /** Parses d username. */
   const parsedUsername = UsernameSchema.safeParse(data?.username);
   return parsedUsername.success ? createUsernameReservationId(parsedUsername.data) : undefined;
 }
@@ -79,15 +83,22 @@ export function reservationIdForUserData(data: FirebaseFirestore.DocumentData | 
  * rename from committing a new reservation after account deletion wins.
  */
 export async function deleteUsernameReservationAndProfiles(userId: string): Promise<void> {
+  /** Provides db behavior. */
   const db = admin.firestore();
+  /** Provides r ref. */
   const userRef = db.collection("users").doc(userId);
+  /** Provides leaderboard ref behavior. */
   const leaderboardRef = db.collection("leaderboard").doc(userId);
   await db.runTransaction(async (transaction) => {
+    /** Provides r snapshot. */
     const userSnapshot = await transaction.get(userRef);
+    /** Provides reservation id behavior. */
     const reservationId = reservationIdForUserData(userSnapshot.exists ? userSnapshot.data() : undefined);
+    /** Provides reservation ref behavior. */
     const reservationRef = reservationId
       ? db.collection(USERNAME_RESERVATIONS_COLLECTION).doc(reservationId)
       : undefined;
+    /** Provides reservation snapshot behavior. */
     const reservationSnapshot = reservationRef ? await transaction.get(reservationRef) : undefined;
 
     if (reservationRef && reservationSnapshot?.exists && reservationSnapshot.data()?.userId === userId) {

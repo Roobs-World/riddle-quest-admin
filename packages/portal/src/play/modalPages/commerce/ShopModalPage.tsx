@@ -29,9 +29,13 @@ export function ShopModalPage({balance, products, onPurchase}: ShopModalPageProp
             className={product.productType === "subscription" ? "shop-subscription-card" : undefined}
           >
             {product.featuredBadge ? <em>{product.featuredBadge}</em> : null}
-            {product.productType === "subscription"
-              ? <span className="shop-subscription-icon" aria-hidden="true">★</span>
-              : <img className="shop-product-coins" src={coinUrl} alt="" />}
+            {product.productType === "subscription" ? (
+              <span className="shop-subscription-icon" aria-hidden="true">
+                ★
+              </span>
+            ) : (
+              <img className="shop-product-coins" src={coinUrl} alt="" />
+            )}
             <strong className="shop-product-name">{product.name}</strong>
             {product.productType === "subscription" ? (
               <span className="shop-product-amount">
@@ -51,11 +55,13 @@ export function ShopModalPage({balance, products, onPurchase}: ShopModalPageProp
               onClick={() => onPurchase(product.productId)}
             >
               {product.productType === "subscription" ? (
-                product.subscriptionStatus === "active"
-                  ? tr("CoinShop.SUBSCRIBED_BUTTON")
-                  : product.trialEligible
-                    ? tr("CoinShop.START_TRIAL_BUTTON")
-                    : tr("CoinShop.SUBSCRIBE_BUTTON")
+                product.subscriptionStatus === "active" ? (
+                  tr("CoinShop.SUBSCRIBED_BUTTON")
+                ) : product.trialEligible ? (
+                  tr("CoinShop.START_TRIAL_BUTTON")
+                ) : (
+                  tr("CoinShop.SUBSCRIBE_BUTTON")
+                )
               ) : (
                 <>
                   <span className="shop-purchase-label">{tr("CoinShop.PURCHASE_BUTTON")} </span>

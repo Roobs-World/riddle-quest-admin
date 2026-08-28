@@ -1,8 +1,12 @@
 /** Describes reddit gold product. */
 export type RedditGoldProduct = Readonly<{
+  /** Stores product id. */
   productId: string;
+  /** Stores kind. */
   kind: "consumable";
+  /** Stores gold cost. */
   goldCost: number;
+  /** Stores coins. */
   coins: number;
 }>;
 
@@ -17,8 +21,10 @@ const products = [
 ] as const satisfies readonly RedditGoldProduct[];
 
 /* istanbul ignore next -- the in-module literal cannot vary at runtime; public tests assert its exact uniqueness. */
-if (new Set(products.map(({productId}) => productId)).size !== products.length ||
-  new Set(products.map(({goldCost}) => goldCost)).size !== products.length) {
+if (
+  new Set(products.map(({productId}) => productId)).size !== products.length ||
+  new Set(products.map(({goldCost}) => goldCost)).size !== products.length
+) {
   throw new Error("invalid-reddit-product-catalog");
 }
 
@@ -29,6 +35,7 @@ export const REDDIT_GOLD_PRODUCTS: readonly RedditGoldProduct[] = Object.freeze(
 
 /** Resolves reddit gold product. */
 export function resolveRedditGoldProduct(productId: string): RedditGoldProduct {
+  /** Provides product behavior. */
   const product = REDDIT_GOLD_PRODUCTS.find((candidate) => candidate.productId === productId);
   if (!product) throw new Error("invalid-reddit-product");
   return product;

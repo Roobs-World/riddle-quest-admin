@@ -1,7 +1,4 @@
-import {
-  parseRedditGameplayOperation,
-  REDDIT_GAMEPLAY_OPERATIONS,
-} from "../reddit/redditGameplayEndpoint";
+import {parseRedditGameplayOperation, REDDIT_GAMEPLAY_OPERATIONS} from "../reddit/redditGameplayEndpoint";
 
 describe("Reddit gameplay operation allowlist", () => {
   it("accepts every exact supported operation", () => {

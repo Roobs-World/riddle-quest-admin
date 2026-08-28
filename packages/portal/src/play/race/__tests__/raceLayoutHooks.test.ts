@@ -1,7 +1,9 @@
 import {beforeEach, describe, expect, it, jest} from "@jest/globals";
 
+/** Describes effect. */
 type Effect = () => void | (() => void);
 
+/** Provides effects behavior. */
 const effects: Effect[] = [];
 
 jest.mock("react", () => ({
@@ -12,29 +14,43 @@ jest.mock("react", () => ({
 import {useRaceDialogFocus} from "../hooks/useRaceDialogFocus";
 import {useRaceGameplayFit} from "../hooks/useRaceGameplayFit";
 
+/** Provides test element behavior. */
 class TestElement {
+  /** Stores dataset. */
   public readonly dataset: Record<string, string | undefined> = {};
+  /** Stores style. */
   public readonly style: Record<string, string> = {};
+  /** Stores focus. */
   public focus = jest.fn(() => {
     testDocument.activeElement = this;
   });
+  /** Stores focusable. */
   public focusable: TestElement[] = [];
+  /** Stores offset height. */
   public offsetHeight = 0;
+  /** Stores rect. */
   public rect = {bottom: 0, top: 0};
 
+  /** Provides query selector all behavior. */
   public querySelectorAll(): TestElement[] {
     return this.focusable;
   }
 
+  /** Gets bounding client rect. */
   public getBoundingClientRect() {
     return this.rect;
   }
 }
 
+/** Provides keydown handler behavior. */
 let keydownHandler: ((event: KeyboardEvent) => void) | undefined;
+/** Provides resize handler behavior. */
 let resizeHandler: (() => void) | undefined;
+/** Provides next frame behavior. */
 let nextFrame = 1;
+/** Provides frames behavior. */
 const frames = new Map<number, FrameRequestCallback>();
+/** Provides test document behavior. */
 const testDocument = {
   activeElement: null as TestElement | null,
   addEventListener: jest.fn((_name: string, handler: (event: KeyboardEvent) => void) => {
@@ -42,8 +58,10 @@ const testDocument = {
   }),
   removeEventListener: jest.fn(),
 };
+/** Provides test window behavior. */
 const testWindow = {
   requestAnimationFrame: jest.fn((callback: FrameRequestCallback) => {
+    /** Provides frame behavior. */
     const frame = nextFrame;
     nextFrame += 1;
     frames.set(frame, callback);
@@ -56,30 +74,41 @@ const testWindow = {
   removeEventListener: jest.fn(),
 };
 
+/** Provides resize callback behavior. */
 let resizeCallback: (() => void) | undefined;
+/** Provides observe behavior. */
 const observe = jest.fn();
+/** Provides disconnect behavior. */
 const disconnect = jest.fn();
+/** Provides test resize observer behavior. */
 class TestResizeObserver {
+  /** Creates a test resize observer instance. */
   public constructor(callback: () => void) {
     resizeCallback = callback;
   }
 
+  /** Stores observe. */
   public observe = observe;
+  /** Stores disconnect. */
   public disconnect = disconnect;
 }
 
+/** Provides run latest frame behavior. */
 const runLatestFrame = () => {
+  /** Provides entry behavior. */
   const entry = [...frames.entries()].at(-1);
   expect(entry).toBeDefined();
   frames.delete(entry![0]);
   entry![1](0);
 };
 
-const keyboardEvent = (key: string, shiftKey = false) => ({
-  key,
-  shiftKey,
-  preventDefault: jest.fn(),
-}) as unknown as KeyboardEvent;
+/** Provides keyboard event behavior. */
+const keyboardEvent = (key: string, shiftKey = false) =>
+  ({
+    key,
+    shiftKey,
+    preventDefault: jest.fn(),
+  }) as unknown as KeyboardEvent;
 
 beforeEach(() => {
   effects.length = 0;
@@ -101,11 +130,17 @@ beforeEach(() => {
 });
 
 describe("useRaceDialogFocus", () => {
+  /** Provides install behavior. */
   const install = (quitConfirmationOpen = false) => {
+    /** Provides previous behavior. */
     const previous = new TestElement();
+    /** Provides dialog behavior. */
     const dialog = new TestElement();
+    /** Provides quit dialog behavior. */
     const quitDialog = new TestElement();
+    /** Provides dismiss quit confirmation behavior. */
     const dismissQuitConfirmation = jest.fn();
+    /** Requests close. */
     const requestClose = jest.fn();
     testDocument.activeElement = previous;
     useRaceDialogFocus({
@@ -119,8 +154,11 @@ describe("useRaceDialogFocus", () => {
   };
 
   it("focuses the race dialog, handles Escape, and restores previous focus", () => {
+    /** Provides harness behavior. */
     const harness = install();
+    /** Provides cleanup behavior. */
     const cleanup = effects[0]() as () => void;
+    /** Provides escape behavior. */
     const escape = keyboardEvent("Escape");
 
     keydownHandler?.(escape);
@@ -135,9 +173,12 @@ describe("useRaceDialogFocus", () => {
   });
 
   it("dismisses an open confirmation and focuses it on the next frame", () => {
+    /** Provides harness behavior. */
     const harness = install(true);
     effects[0]();
+    /** Provides cancel focus behavior. */
     const cancelFocus = effects[1]() as () => void;
+    /** Provides escape behavior. */
     const escape = keyboardEvent("Escape");
 
     keydownHandler?.(escape);
@@ -151,20 +192,27 @@ describe("useRaceDialogFocus", () => {
   });
 
   it("wraps Tab focus in both directions within the active dialog", () => {
+    /** Provides harness behavior. */
     const harness = install();
+    /** Provides first behavior. */
     const first = new TestElement();
+    /** Provides middle behavior. */
     const middle = new TestElement();
+    /** Provides last behavior. */
     const last = new TestElement();
     harness.dialog.focusable = [first, middle, last];
     effects[0]();
 
     testDocument.activeElement = first;
+    /** Provides reverse tab behavior. */
     const reverseTab = keyboardEvent("Tab", true);
     keydownHandler?.(reverseTab);
     testDocument.activeElement = last;
+    /** Provides forward tab behavior. */
     const forwardTab = keyboardEvent("Tab");
     keydownHandler?.(forwardTab);
     testDocument.activeElement = middle;
+    /** Provides middle tab behavior. */
     const middleTab = keyboardEvent("Tab");
     keydownHandler?.(middleTab);
 
@@ -176,6 +224,7 @@ describe("useRaceDialogFocus", () => {
   });
 
   it("ignores unrelated keys and dialogs without focusable controls", () => {
+    /** Provides harness behavior. */
     const harness = install();
     effects[0]();
 
@@ -194,12 +243,14 @@ describe("useRaceDialogFocus", () => {
       dismissQuitConfirmation: jest.fn(),
       requestClose: jest.fn(),
     });
+    /** Provides cleanup missing dialog behavior. */
     const cleanupMissingDialog = effects[0]() as () => void;
     keydownHandler?.(keyboardEvent("Tab"));
     cleanupMissingDialog();
     expect(effects[1]()).toBeUndefined();
 
     effects.length = 0;
+    /** Provides mounted dialog behavior. */
     const mountedDialog = new TestElement();
     useRaceDialogFocus({
       dialogRef: {current: mountedDialog},
@@ -209,6 +260,7 @@ describe("useRaceDialogFocus", () => {
       requestClose: jest.fn(),
     });
     effects[0]();
+    /** Provides tab before confirmation mount behavior. */
     const tabBeforeConfirmationMount = keyboardEvent("Tab");
     keydownHandler?.(tabBeforeConfirmationMount);
     expect(tabBeforeConfirmationMount.preventDefault).not.toHaveBeenCalled();
@@ -216,9 +268,21 @@ describe("useRaceDialogFocus", () => {
 });
 
 describe("useRaceGameplayFit", () => {
-  const install = ({active = true, naturalHeight = 760}: {active?: boolean; naturalHeight?: number} = {}) => {
+  /** Provides install behavior. */
+  const install = ({
+    active = true,
+    naturalHeight = 760,
+  }: {
+    /** Stores active. */
+    active?: boolean; /** Stores natural height. */
+    /** Stores natural height. */
+    naturalHeight?: number;
+  } = {}) => {
+    /** Provides screen behavior. */
     const screen = new TestElement();
+    /** Provides viewport behavior. */
     const viewport = new TestElement();
+    /** Provides gameplay behavior. */
     const gameplay = new TestElement();
     screen.rect = {bottom: 500, top: 0};
     viewport.rect = {bottom: 0, top: 100};
@@ -233,7 +297,9 @@ describe("useRaceGameplayFit", () => {
   };
 
   it("scales gameplay to the available height and clears all mutations on cleanup", () => {
+    /** Provides harness behavior. */
     const harness = install();
+    /** Provides cleanup behavior. */
     const cleanup = effects[0]() as () => void;
     runLatestFrame();
 
@@ -257,6 +323,7 @@ describe("useRaceGameplayFit", () => {
   });
 
   it("keeps naturally fitting gameplay at full scale", () => {
+    /** Provides harness behavior. */
     const harness = install({naturalHeight: 200});
     effects[0]();
     runLatestFrame();
@@ -272,6 +339,7 @@ describe("useRaceGameplayFit", () => {
 
     for (const missing of ["screen", "viewport", "gameplay"] as const) {
       effects.length = 0;
+      /** Provides refs behavior. */
       const refs = {
         screen: {current: new TestElement() as TestElement | null},
         viewport: {current: new TestElement() as TestElement | null},
@@ -294,6 +362,7 @@ describe("useRaceGameplayFit", () => {
       configurable: true,
       value: () => ({paddingBottom: "invalid"}),
     });
+    /** Provides harness behavior. */
     const harness = install({naturalHeight: 100});
     harness.screen.rect.bottom = 0;
     effects[0]();

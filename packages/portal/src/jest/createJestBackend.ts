@@ -11,16 +11,22 @@ type AuthHarnessState = {
 };
 
 /** Gets harness state. */
-const getHarnessState = () => (
-  window as typeof window & {__RIDDLE_QUEST_JEST_AUTH_TEST__?: AuthHarnessState}
-).__RIDDLE_QUEST_JEST_AUTH_TEST__;
+const getHarnessState = () =>
+  (
+    window as typeof window & {
+      /** Stores riddle quest jest auth test. */
+      __RIDDLE_QUEST_JEST_AUTH_TEST__?: AuthHarnessState;
+    }
+  ).__RIDDLE_QUEST_JEST_AUTH_TEST__;
 
 /** Creates either the deterministic test backend or the production HTTPS client. */
 export function createJestBackend({
   authHarness,
   mockRuntime,
 }: {
+  /** Stores auth harness. */
   authHarness: boolean;
+  /** Stores mock runtime. */
   mockRuntime: boolean;
 }): JestBackendPort {
   if (!mockRuntime) {
@@ -31,14 +37,19 @@ export function createJestBackend({
 
   return {
     exchangeIdentity: async (playerSigned: string) => {
+      /** Provides test state behavior. */
       const testState = authHarness ? getHarnessState() : undefined;
       testState?.backendExchanges?.push(playerSigned);
+      /** Provides once key behavior. */
       const onceKey = "riddleQuest:jestAuthHarness:identityFailed";
+      /** Provides registration once key behavior. */
       const registrationOnceKey = "riddleQuest:jestAuthHarness:registrationIdentityFailed";
-      const shouldFailOnce =
-        testState?.scenario === "identity-once-failure" && sessionStorage.getItem(onceKey) !== "1";
+      /** Indicates whether should fail once. */
+      const shouldFailOnce = testState?.scenario === "identity-once-failure" && sessionStorage.getItem(onceKey) !== "1";
+      /** Indicates whether should fail after registration. */
       const shouldFailAfterRegistration =
         testState?.scenario === "registration-identity-failure" && playerSigned.endsWith(":true");
+      /** Indicates whether should fail after registration once. */
       const shouldFailAfterRegistrationOnce =
         testState?.scenario === "registration-identity-once-failure" &&
         playerSigned.endsWith(":true") &&
@@ -53,10 +64,8 @@ export function createJestBackend({
       ) {
         throw new Error("Mock Jest identity exchange failed");
       }
-      if (
-        testState?.scenario === "registration-account-deleted" &&
-        playerSigned.endsWith(":true")
-      ) return {status: "account-deleted"};
+      if (testState?.scenario === "registration-account-deleted" && playerSigned.endsWith(":true"))
+        return {status: "account-deleted"};
       return {status: "success", customToken: "mock", uid: "jest-mock-player"};
     },
     retryAccountDeletion: async (playerSigned) => {
@@ -69,16 +78,17 @@ export function createJestBackend({
       coinsAwarded: 250,
       newCoins: 550,
     }),
-    verifyReferrals: async () => getHarnessState()?.scenario === "referral-reward"
-      ? {
-          verified: true,
-          conversionCount: 1,
-          rewardsGranted: 1,
-          referredRewardsGranted: 1,
-          coinsPerPlayer: 100,
-          newCoins: 400,
-        }
-      : {verified: true},
+    verifyReferrals: async () =>
+      getHarnessState()?.scenario === "referral-reward"
+        ? {
+            verified: true,
+            conversionCount: 1,
+            rewardsGranted: 1,
+            referredRewardsGranted: 1,
+            coinsPerPlayer: 100,
+            newCoins: 400,
+          }
+        : {verified: true},
     syncSubscriptions: async (subscriptionsSigned: string) => ({
       verified: true,
       activeSkus:

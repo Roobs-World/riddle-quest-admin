@@ -4,14 +4,7 @@ import {raceOperationRequiresReceipt, type RaceOperation} from "../logic/raceOpe
 describe("race operation policy", () => {
   it("requires receipts for every server mutation", () => {
     /** Multiplayer mutations protected by idempotency receipts. */
-    const mutations: RaceOperation[] = [
-      "raceStart",
-      "raceGuess",
-      "raceHint",
-      "raceSkip",
-      "raceAbandon",
-      "racePublish",
-    ];
+    const mutations: RaceOperation[] = ["raceStart", "raceGuess", "raceHint", "raceSkip", "raceAbandon", "racePublish"];
     expect(mutations.every(raceOperationRequiresReceipt)).toBe(true);
   });
 

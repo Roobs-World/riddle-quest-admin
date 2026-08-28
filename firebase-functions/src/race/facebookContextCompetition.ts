@@ -53,18 +53,25 @@ export function facebookContextKey(contextId: string): string {
 
 /** Provides elect host behavior. */
 const electHost = (members: FacebookContextMember[]): string => {
-  const eligible = members.filter(({active}) => active).sort((left, right) =>
-    left.joinedAtMs - right.joinedAtMs || left.userId.localeCompare(right.userId));
+  /** Provides eligible behavior. */
+  const eligible = members
+    .filter(({active}) => active)
+    .sort((left, right) => left.joinedAtMs - right.joinedAtMs || left.userId.localeCompare(right.userId));
   if (eligible.length === 0) throw new HttpsError("failed-precondition", "Context has no eligible host.");
   return eligible[0].userId;
 };
 
 /** Creates a locale-isolated context record containing only game-owned identities. */
 export function createFacebookContextCompetition(input: {
+  /** Stores context id. */
   contextId: string;
+  /** Stores context type. */
   contextType: FacebookContextType;
+  /** Stores locale. */
   locale: RaceLocale;
+  /** Stores user id. */
   userId: string;
+  /** Stores now ms. */
   nowMs: number;
 }): FacebookContextCompetition {
   if (!isFacebookFirebaseUid(input.userId)) {
@@ -73,12 +80,12 @@ export function createFacebookContextCompetition(input: {
   if (
     !Number.isSafeInteger(input.nowMs) ||
     input.nowMs < 0 ||
-    input.nowMs > FACEBOOK_FIRESTORE_TIMESTAMP_MAX_MS -
-      FACEBOOK_CONTEXT_BOARD_DURATION_MS -
-      FACEBOOK_CONTEXT_HISTORY_RETENTION_MS
+    input.nowMs >
+      FACEBOOK_FIRESTORE_TIMESTAMP_MAX_MS - FACEBOOK_CONTEXT_BOARD_DURATION_MS - FACEBOOK_CONTEXT_HISTORY_RETENTION_MS
   ) {
     throw new HttpsError("invalid-argument", "Facebook context time is invalid.");
   }
+  /** Provides members behavior. */
   const members = [{userId: input.userId, joinedAtMs: input.nowMs, active: true}];
   return {
     contextKey: facebookContextKey(input.contextId),
@@ -95,8 +102,24 @@ export function createFacebookContextCompetition(input: {
 export function updateFacebookContextCompetition(
   current: FacebookContextCompetition,
   action:
-    | {kind: "join"; userId: string; locale: RaceLocale; nowMs: number}
-    | {kind: "leave"; userId: string; nowMs: number},
+    | {
+        /** Stores kind. */
+        kind: "join"; /** Stores user id. */
+        /** Stores user id. */
+        userId: string; /** Stores locale. */
+        /** Stores locale. */
+        locale: RaceLocale; /** Stores now ms. */
+        /** Stores now ms. */
+        nowMs: number;
+      }
+    | {
+        /** Stores kind. */
+        kind: "leave"; /** Stores user id. */
+        /** Stores user id. */
+        userId: string; /** Stores now ms. */
+        /** Stores now ms. */
+        nowMs: number;
+      },
 ): FacebookContextCompetition {
   if (!isFacebookFirebaseUid(action.userId)) {
     throw new HttpsError("permission-denied", "Facebook identity is required.");
@@ -110,11 +133,13 @@ export function updateFacebookContextCompetition(
   if (action.nowMs >= current.expiresAtMs) {
     throw new HttpsError("failed-precondition", "Facebook context competition has expired.");
   }
+  /** Provides members behavior. */
   const members = current.members.map((member) => ({...member}));
   if (action.kind === "join") {
     if (action.locale !== current.locale) {
       throw new HttpsError("failed-precondition", "Facebook context locale does not match the player locale.");
     }
+    /** Provides existing behavior. */
     const existing = members.find(({userId}) => userId === action.userId);
     if (existing) {
       if (!existing.active) existing.joinedAtMs = action.nowMs;
@@ -123,6 +148,7 @@ export function updateFacebookContextCompetition(
       members.push({userId: action.userId, joinedAtMs: action.nowMs, active: true});
     }
   } else {
+    /** Provides leaving behavior. */
     const leaving = members.find(({userId}) => userId === action.userId);
     if (!leaving?.active) throw new HttpsError("failed-precondition", "Player is not active in this context.");
     leaving.active = false;

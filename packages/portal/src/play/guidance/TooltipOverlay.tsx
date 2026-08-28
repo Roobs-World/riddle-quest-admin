@@ -38,8 +38,11 @@ export function TooltipOverlay({
   targetRect,
   onAdvance,
 }: TooltipOverlayProps) {
+  /** Provides panel style behavior. */
   const panelStyle = getTooltipPanelStyle(activeTooltip, targetRect, window.innerHeight);
+  /** Provides title id behavior. */
   const titleId = `guidance-tooltip-${activeTooltip}-title`;
+  /** Provides body id behavior. */
   const bodyId = `guidance-tooltip-${activeTooltip}-body`;
 
   return (
@@ -66,7 +69,9 @@ export function TooltipOverlay({
         style={panelStyle}
         data-analytics-screen="tooltip"
       >
-        <small>{sequenceIndex + 1}/{sequenceLength}</small>
+        <small>
+          {sequenceIndex + 1}/{sequenceLength}
+        </small>
         <h3 id={titleId}>{content.title}</h3>
         <p id={bodyId}>{content.body}</p>
         <button className="play-primary compact" onClick={onAdvance}>

@@ -105,12 +105,14 @@ export const PLAYER_RANKS: readonly PlayerRank[] = [
 
 /** Gets rank for level. */
 export const getRankForLevel = (level: number): PlayerRank => {
+  /** Normalizes d level. */
   const normalizedLevel = Math.max(1, Math.floor(level));
   return [...PLAYER_RANKS].reverse().find((rank) => normalizedLevel >= rank.minimumLevel) ?? PLAYER_RANKS[0];
 };
 
 /** Gets next rank for level. */
 export const getNextRankForLevel = (level: number): PlayerRank | null => {
+  /** Normalizes d level. */
   const normalizedLevel = Math.max(1, Math.floor(level));
   return PLAYER_RANKS.find((rank) => rank.minimumLevel > normalizedLevel) ?? null;
 };

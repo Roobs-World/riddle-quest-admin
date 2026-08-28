@@ -72,10 +72,13 @@ describe("createFakeRaceServices", () => {
 
     /** Published challenge generated from the completed creator run. */
     const publication = await services.publishRace({runId: run.runId, requestId: "request-publish-1"});
-    await expect(services.publishRace({runId: run.runId, requestId: "request-publish-1"})).resolves.toEqual(publication);
+    await expect(services.publishRace({runId: run.runId, requestId: "request-publish-1"})).resolves.toEqual(
+      publication,
+    );
     await expect(services.getRaceChallenge(publication.challengeId, "en")).resolves.toEqual(publication.preview);
-    await expect(services.getRaceChallenge(publication.challengeId, "ja"))
-      .rejects.toThrow("RaceTo10.ERROR_LOCALE_MISMATCH");
+    await expect(services.getRaceChallenge(publication.challengeId, "ja")).rejects.toThrow(
+      "RaceTo10.ERROR_LOCALE_MISMATCH",
+    );
     await expect(services.getRaceOutcome(run.runId)).resolves.toMatchObject({
       result: "recorded",
       correctCount: 10,

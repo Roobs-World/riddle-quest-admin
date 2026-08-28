@@ -13,6 +13,7 @@ import {
 afterEach(resetAnalyticsForTests);
 
 it("queues early events and flushes them when analytics becomes ready", () => {
+  /** Provides sink behavior. */
   const sink = jest.fn();
   setAnalyticsCollectionEnabled(true);
   trackEvent("Session Started", {registered: true});
@@ -23,6 +24,7 @@ it("queues early events and flushes them when analytics becomes ready", () => {
 });
 
 it("drops events while nonessential analytics collection is disabled", () => {
+  /** Provides sink behavior. */
   const sink = jest.fn();
   trackEvent("Session Started", {registered: true});
 
@@ -33,7 +35,9 @@ it("drops events while nonessential analytics collection is disabled", () => {
 });
 
 it("revokes collection, clears queued events, and disconnects the active sink", () => {
+  /** Provides first sink behavior. */
   const firstSink = jest.fn();
+  /** Provides next sink behavior. */
   const nextSink = jest.fn();
   setAnalyticsCollectionEnabled(true);
   trackEvent("Queued Before Revocation");
@@ -53,6 +57,7 @@ it("revokes collection, clears queued events, and disconnects the active sink", 
 });
 
 it("deduplicates consecutive screen views", () => {
+  /** Provides sink behavior. */
   const sink = jest.fn();
   setAnalyticsCollectionEnabled(true);
   configureAnalytics(sink);
@@ -66,13 +71,15 @@ it("deduplicates consecutive screen views", () => {
 });
 
 it("drops unsupported values and bounds strings", () => {
-  expect(sanitizeAnalyticsParams({
-    "Product ID": "x".repeat(120),
-    count: 3,
-    available: false,
-    missing: undefined,
-    items: [{item_id: "coins", quantity: 1}],
-  })).toEqual({
+  expect(
+    sanitizeAnalyticsParams({
+      "Product ID": "x".repeat(120),
+      count: 3,
+      available: false,
+      missing: undefined,
+      items: [{item_id: "coins", quantity: 1}],
+    }),
+  ).toEqual({
     product_id: "x".repeat(100),
     count: 3,
     available: false,
@@ -81,13 +88,15 @@ it("drops unsupported values and bounds strings", () => {
 });
 
 it("drops sensitive fields recursively before they reach an analytics sink", () => {
-  expect(sanitizeAnalyticsParams({
-    userId: "player-1",
-    purchaseToken: "signed-token",
-    answer: "secret",
-    safe: "kept",
-    items: [{item_id: "coins", email: "player@example.test"}],
-  })).toEqual({safe: "kept", items: [{item_id: "coins"}]});
+  expect(
+    sanitizeAnalyticsParams({
+      userId: "player-1",
+      purchaseToken: "signed-token",
+      answer: "secret",
+      safe: "kept",
+      items: [{item_id: "coins", email: "player@example.test"}],
+    }),
+  ).toEqual({safe: "kept", items: [{item_id: "coins"}]});
 });
 
 it("uses safe fallbacks and bounds queued event history", () => {
@@ -95,6 +104,7 @@ it("uses safe fallbacks and bounds queued event history", () => {
   for (let index = 0; index < 105; index += 1) {
     trackEvent(index === 104 ? "---" : `Event ${index}`, {"---": "value"});
   }
+  /** Provides sink behavior. */
   const sink = jest.fn();
 
   configureAnalytics(sink);
@@ -106,6 +116,7 @@ it("uses safe fallbacks and bounds queued event history", () => {
 });
 
 it("sanitizes nested item arrays and limits them to ten entries", () => {
+  /** Provides items behavior. */
   const items = Array.from({length: 12}, (_, index) => ({"Item ID": `item-${index}`}));
 
   expect(sanitizeAnalyticsParams({items}).items).toEqual(
@@ -114,36 +125,53 @@ it("sanitizes nested item arrays and limits them to ten entries", () => {
   expect(sanitizeAnalyticsParams()).toEqual({});
 });
 
-type ClickHandler = (event: {target: unknown}) => void;
+/** Describes click handler. */
+type ClickHandler = (event: {
+  /** Stores target. */
+  /** Stores target. */
+  target: unknown;
+}) => void;
 
+/** Provides test element behavior. */
 class TestElement {
+  /** Creates a test element instance. */
   public constructor(private readonly button: TestButton | null) {}
 
+  /** Provides closest behavior. */
   public closest(): TestButton | null {
     return this.button;
   }
 }
 
+/** Provides test class list behavior. */
 class TestClassList implements Iterable<string> {
+  /** Stores values. */
   private readonly values: Set<string>;
 
+  /** Creates a test class list instance. */
   public constructor(values: string[]) {
     this.values = new Set(values);
   }
 
+  /** Provides contains behavior. */
   public contains(value: string): boolean {
     return this.values.has(value);
   }
 
+  /** Provides [symbol.iterator] behavior. */
   public [Symbol.iterator](): Iterator<string> {
     return this.values[Symbol.iterator]();
   }
 }
 
+/** Provides test button behavior. */
 class TestButton {
+  /** Stores dataset. */
   public readonly dataset: Record<string, string | undefined>;
+  /** Stores class list. */
   public readonly classList: TestClassList;
 
+  /** Creates a test button instance. */
   public constructor({
     classes = [],
     dataset = {},
@@ -151,10 +179,15 @@ class TestButton {
     label = null,
     screen = null,
   }: {
+    /** Stores classes. */
     classes?: string[];
+    /** Stores dataset. */
     dataset?: Record<string, string | undefined>;
+    /** Stores disabled. */
     disabled?: boolean;
+    /** Stores label. */
     label?: string | null;
+    /** Stores screen. */
     screen?: string | null;
   }) {
     this.classList = new TestClassList(classes);
@@ -164,21 +197,38 @@ class TestButton {
     this.screen = screen;
   }
 
+  /** Stores disabled. */
   private readonly disabled: boolean;
+  /** Stores label. */
   private readonly label: string | null;
+  /** Stores screen. */
   private readonly screen: string | null;
 
+  /** Provides matches behavior. */
   public matches(): boolean {
     return this.disabled;
   }
 
-  public closest(selector: string): TestButton | {dataset: {analyticsScreen: string}} | null {
+  /** Provides closest behavior. */
+  public closest(selector: string):
+    | TestButton
+    | {
+        /** Stores dataset. */
+        /** Stores dataset. */
+        dataset: {
+          /** Stores analytics screen. */
+          /** Stores analytics screen. */
+          analyticsScreen: string;
+        };
+      }
+    | null {
     if (selector === "[data-analytics-screen]") {
       return this.screen === null ? null : {dataset: {analyticsScreen: this.screen}};
     }
     return this;
   }
 
+  /** Gets attribute. */
   public getAttribute(name: string): string | null {
     return name === "aria-label" ? this.label : null;
   }
@@ -194,19 +244,24 @@ it.each([
   [new TestButton({label: "Open Profile"}), "open_profile", "unknown_screen"],
   [new TestButton({}), "button", "unknown_screen"],
 ])("tracks delegated button identifiers", (button, buttonId, screenName) => {
+  /** Provides original element behavior. */
   const originalElement = globalThis.Element;
   Object.defineProperty(globalThis, "Element", {configurable: true, value: TestElement});
+  /** Provides click handler behavior. */
   let clickHandler: ClickHandler | undefined;
+  /** Provides root behavior. */
   const root = {
     addEventListener: jest.fn((_name: string, handler: ClickHandler) => {
       clickHandler = handler;
     }),
     removeEventListener: jest.fn(),
   };
+  /** Provides sink behavior. */
   const sink = jest.fn();
   setAnalyticsCollectionEnabled(true);
   configureAnalytics(sink);
 
+  /** Provides uninstall behavior. */
   const uninstall = installButtonAnalytics(root as unknown as Document);
   clickHandler?.({target: new TestElement(button)});
   uninstall();
@@ -217,15 +272,19 @@ it.each([
 });
 
 it("ignores non-elements, missing buttons, and disabled controls", () => {
+  /** Provides original element behavior. */
   const originalElement = globalThis.Element;
   Object.defineProperty(globalThis, "Element", {configurable: true, value: TestElement});
+  /** Provides click handler behavior. */
   let clickHandler: ClickHandler | undefined;
+  /** Provides root behavior. */
   const root = {
     addEventListener: (_name: string, handler: ClickHandler) => {
       clickHandler = handler;
     },
     removeEventListener: jest.fn(),
   };
+  /** Provides sink behavior. */
   const sink = jest.fn();
   configureAnalytics(sink);
   installButtonAnalytics(root as unknown as Document);
@@ -239,13 +298,16 @@ it("ignores non-elements, missing buttons, and disabled controls", () => {
 });
 
 it("installs on the default document when no root is supplied", () => {
+  /** Provides original document behavior. */
   const originalDocument = globalThis.document;
+  /** Provides document root behavior. */
   const documentRoot = {
     addEventListener: jest.fn(),
     removeEventListener: jest.fn(),
   };
   Object.defineProperty(globalThis, "document", {configurable: true, value: documentRoot});
 
+  /** Provides uninstall behavior. */
   const uninstall = installButtonAnalytics();
   uninstall();
 
@@ -255,15 +317,19 @@ it("installs on the default document when no root is supplied", () => {
 });
 
 it("reports bounded client failures without including sensitive error details", () => {
+  /** Handles rs. */
   const handlers = new Map<string, () => void>();
+  /** Provides target behavior. */
   const target = {
     addEventListener: jest.fn((name: string, handler: () => void) => handlers.set(name, handler)),
     removeEventListener: jest.fn(),
   };
+  /** Provides sink behavior. */
   const sink = jest.fn();
   setAnalyticsCollectionEnabled(true);
   configureAnalytics(sink);
 
+  /** Provides uninstall behavior. */
   const uninstall = installGlobalErrorAnalytics(target as unknown as Window);
   handlers.get("error")?.();
   for (let index = 0; index < 6; index += 1) handlers.get("unhandledrejection")?.();
@@ -277,13 +343,16 @@ it("reports bounded client failures without including sensitive error details", 
 });
 
 it("installs global error analytics on the default window", () => {
+  /** Provides original window behavior. */
   const originalWindow = globalThis.window;
+  /** Provides browser window behavior. */
   const browserWindow = {
     addEventListener: jest.fn(),
     removeEventListener: jest.fn(),
   };
   Object.defineProperty(globalThis, "window", {configurable: true, value: browserWindow});
 
+  /** Provides uninstall behavior. */
   const uninstall = installGlobalErrorAnalytics();
   uninstall();
 
@@ -294,33 +363,42 @@ it("installs global error analytics on the default window", () => {
 });
 
 it("tracks purchases with generated transaction identifiers and default prices", () => {
+  /** Provides sink behavior. */
   const sink = jest.fn();
   setAnalyticsCollectionEnabled(true);
   configureAnalytics(sink);
 
   trackPurchase({productId: "coins-100", purchaseType: "consumable", currency: "GBP"});
 
-  expect(sink).toHaveBeenCalledWith("purchase", expect.objectContaining({
-    transaction_id: expect.any(String),
-    items: [{item_id: "coins-100", item_category: "consumable", price: 0, quantity: 1}],
-  }));
+  expect(sink).toHaveBeenCalledWith(
+    "purchase",
+    expect.objectContaining({
+      transaction_id: expect.any(String),
+      items: [{item_id: "coins-100", item_category: "consumable", price: 0, quantity: 1}],
+    }),
+  );
 });
 
 it("falls back to a web transaction identifier where randomUUID is unavailable", () => {
+  /** Provides original crypto behavior. */
   const originalCrypto = globalThis.crypto;
   Object.defineProperty(globalThis, "crypto", {configurable: true, value: {}});
   jest.spyOn(Date, "now").mockReturnValue(1234);
   jest.spyOn(Math, "random").mockReturnValue(0.5);
+  /** Provides sink behavior. */
   const sink = jest.fn();
   setAnalyticsCollectionEnabled(true);
   configureAnalytics(sink);
 
   trackPurchase({productId: "membership", purchaseType: "subscription", price: 3.99});
 
-  expect(sink).toHaveBeenCalledWith("purchase", expect.objectContaining({
-    transaction_id: expect.stringMatching(/^web-1234-/),
-    value: 3.99,
-  }));
+  expect(sink).toHaveBeenCalledWith(
+    "purchase",
+    expect.objectContaining({
+      transaction_id: expect.stringMatching(/^web-1234-/),
+      value: 3.99,
+    }),
+  );
   Object.defineProperty(globalThis, "crypto", {configurable: true, value: originalCrypto});
   jest.restoreAllMocks();
 });

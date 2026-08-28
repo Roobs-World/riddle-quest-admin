@@ -2,8 +2,7 @@ import type {OverlayCapability, PlatformResult} from "../platform/types";
 import type {FacebookInstantSdk, FacebookOverlayView} from "./fbinstant";
 
 /** Defines the profile picture style value. */
-const PROFILE_PICTURE_STYLE =
-  "border:0;width:48px;height:48px;overflow:hidden;background:transparent;";
+const PROFILE_PICTURE_STYLE = "border:0;width:48px;height:48px;overflow:hidden;background:transparent;";
 /** Defines the profile name style value. */
 const PROFILE_NAME_STYLE =
   "border:0;max-width:240px;overflow:hidden;background:transparent;white-space:nowrap;text-overflow:ellipsis;";
@@ -19,23 +18,29 @@ const failure = (error: unknown): PlatformResult<never> => ({
 
 /** Provides destroy views behavior. */
 const destroyViews = async (views: FacebookOverlayView[]): Promise<void> => {
-  await Promise.allSettled(views.map(async (view) => {
-    await view.dismissAsync?.();
-    await view.destroyOverlayView();
-  }));
+  await Promise.allSettled(
+    views.map(async (view) => {
+      await view.dismissAsync?.();
+      await view.destroyOverlayView();
+    }),
+  );
 };
 
 /** Renders provider-owned current-player identity without returning Meta profile data to game code. */
 export function createFacebookOverlayCapability(sdk: FacebookInstantSdk): OverlayCapability | undefined {
+  /** Provides overlays behavior. */
   const overlays = sdk.overlayViews;
   if (!overlays) return undefined;
+  /** Provides supported behavior. */
   const supported = new Set(sdk.getSupportedAPIs());
   if (
     !supported.has("overlayViews.createProfilePictureOverlayViewAsync") ||
     !supported.has("overlayViews.createProfileNameOverlayViewAsync")
-  ) return undefined;
+  )
+    return undefined;
 
   return {
+    /** Renders player. */
     async renderPlayer({playerId, surface}) {
       if (playerId !== sdk.player.getID()) {
         return {status: "terminal-failure", message: "facebook-overlay-player-mismatch"};
@@ -43,22 +48,21 @@ export function createFacebookOverlayCapability(sdk: FacebookInstantSdk): Overla
       if (!surface.isConnected) {
         return {status: "terminal-failure", message: "facebook-overlay-surface-detached"};
       }
+      /** Creates d. */
       const created: FacebookOverlayView[] = [];
       try {
+        /** Provides picture behavior. */
         const picture = await overlays.createProfilePictureOverlayViewAsync(
           surface,
           PROFILE_PICTURE_STYLE,
           IFRAME_STYLE,
         );
         created.push(picture);
-        const name = await overlays.createProfileNameOverlayViewAsync(
-          surface,
-          PROFILE_NAME_STYLE,
-          IFRAME_STYLE,
-          "",
-        );
+        /** Provides name behavior. */
+        const name = await overlays.createProfileNameOverlayViewAsync(surface, PROFILE_NAME_STYLE, IFRAME_STYLE, "");
         created.push(name);
         await Promise.all(created.map((view) => view.showAsync()));
+        /** Provides destroyed behavior. */
         let destroyed = false;
         return {
           status: "success",

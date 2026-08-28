@@ -2,31 +2,63 @@ import {describe, expect, test} from "@jest/globals";
 import type {FacebookInstantSdk} from "../fbinstant";
 import {FacebookPlatformBootstrap} from "../FacebookPlatformBootstrap";
 
+/** Creates sdk. */
 const createSdk = () => {
+  /** Provides events behavior. */
   const events: string[] = [];
+  /** Provides data behavior. */
   const data: Record<string, unknown> = {
     riddleQuestPreferences: {locale: "fr", muted: true, presenceEnabled: true, ignored: "discarded"},
     riddleQuestPlayerState: {schemaVersion: 1, updatedAt: 42},
   };
+  /** Provides pause behavior. */
   let pause: (() => void) | undefined;
+  /** Provides sdk behavior. */
   const sdk: FacebookInstantSdk = {
-    async initializeAsync() { events.push("initialize"); },
-    setLoadingProgress(progress) { events.push(`progress:${progress}`); },
-    async startGameAsync() { events.push("start"); },
-    getSupportedAPIs() { return []; },
-    onPause(callback) { pause = callback; },
+    /** Provides initialize async behavior. */
+    async initializeAsync() {
+      events.push("initialize");
+    },
+    /** Sets loading progress. */
+    setLoadingProgress(progress) {
+      events.push(`progress:${progress}`);
+    },
+    /** Starts game async. */
+    async startGameAsync() {
+      events.push("start");
+    },
+    /** Gets supported ap is. */
+    getSupportedAPIs() {
+      return [];
+    },
+    /** Provides on pause behavior. */
+    onPause(callback) {
+      pause = callback;
+    },
     player: {
-      getID() { events.push("player"); return "facebook-player-1"; },
-      async getSignedPlayerInfoAsync() { throw new Error("not-used"); },
+      /** Gets id. */
+      getID() {
+        events.push("player");
+        return "facebook-player-1";
+      },
+      /** Gets signed player info async. */
+      async getSignedPlayerInfoAsync() {
+        throw new Error("not-used");
+      },
+      /** Gets data async. */
       async getDataAsync(keys) {
         events.push(`read:${keys.join(",")}`);
         return Object.fromEntries(keys.map((key) => [key, data[key]]));
       },
+      /** Sets data async. */
       async setDataAsync(update) {
         events.push(`write:${Object.keys(update).sort().join(",")}`);
         Object.assign(data, update);
       },
-      async flushDataAsync() { events.push("flush"); },
+      /** Provides flush data async behavior. */
+      async flushDataAsync() {
+        events.push("flush");
+      },
     },
   };
   return {sdk, events, data, pause: () => pause?.()};
@@ -34,8 +66,11 @@ const createSdk = () => {
 
 describe("FacebookPlatformBootstrap", () => {
   test("owns initialization ordering and exposes only supported capabilities", async () => {
+    /** Provides harness behavior. */
     const harness = createSdk();
+    /** Provides reported behavior. */
     const reported: number[] = [];
+    /** Provides result behavior. */
     const result = await new FacebookPlatformBootstrap(() => harness.sdk).initialize((value) => reported.push(value));
     expect(result.status).toBe("success");
     if (result.status !== "success") return;
@@ -61,12 +96,16 @@ describe("FacebookPlatformBootstrap", () => {
   });
 
   test("normalizes asynchronous storage and flushes critical clears", async () => {
+    /** Provides harness behavior. */
     const harness = createSdk();
+    /** Provides result behavior. */
     const result = await new FacebookPlatformBootstrap(() => harness.sdk, "13_plus").initialize(() => undefined);
     expect(result.status).toBe("success");
     if (result.status !== "success") return;
     await expect(result.value.storage.readPreferences()).resolves.toEqual({
-      locale: "fr", muted: true, presenceEnabled: true,
+      locale: "fr",
+      muted: true,
+      presenceEnabled: true,
     });
     await expect(result.value.storage.readPlayerData()).resolves.toEqual({schemaVersion: 1, updatedAt: 42});
     await result.value.storage.writePreferences({locale: "ar"});
@@ -77,44 +116,52 @@ describe("FacebookPlatformBootstrap", () => {
   });
 
   test("orders pause-time flushes after in-flight writes and preserves recovery after failure", async () => {
+    /** Provides harness behavior. */
     const harness = createSdk();
+    /** Provides release write behavior. */
     let releaseWrite!: () => void;
     harness.sdk.player.setDataAsync = jest.fn(async (update) => {
       harness.events.push(`write-start:${Object.keys(update).join(",")}`);
-      await new Promise<void>((resolve) => { releaseWrite = resolve; });
+      await new Promise<void>((resolve) => {
+        releaseWrite = resolve;
+      });
       Object.assign(harness.data, update);
       harness.events.push("write-end");
     });
+    /** Provides result behavior. */
     const result = await new FacebookPlatformBootstrap(() => harness.sdk).initialize(() => undefined);
     expect(result.status).toBe("success");
     if (result.status !== "success") return;
 
+    /** Provides write behavior. */
     const write = result.value.storage.writePreferences({locale: "ja"});
     await Promise.resolve();
+    /** Provides flush behavior. */
     const flush = result.value.storage.flush();
     expect(harness.events).not.toContain("flush");
     releaseWrite();
     await Promise.all([write, flush]);
-    expect(harness.events.slice(-3)).toEqual([
-      "write-start:riddleQuestPreferences",
-      "write-end",
-      "flush",
-    ]);
+    expect(harness.events.slice(-3)).toEqual(["write-start:riddleQuestPreferences", "write-end", "flush"]);
 
-    harness.sdk.player.setDataAsync = jest.fn(async () => { throw new Error("cloud-write-failed"); });
+    harness.sdk.player.setDataAsync = jest.fn(async () => {
+      throw new Error("cloud-write-failed");
+    });
     await expect(result.value.storage.writePreferences({locale: "ko"})).rejects.toThrow("cloud-write-failed");
     await expect(result.value.storage.flush()).resolves.toBeUndefined();
     expect(harness.events.at(-1)).toBe("flush");
   });
 
   test("rejects invalid player-state clocks and strips untrusted cloud fields", async () => {
+    /** Provides invalid behavior. */
     const invalid = createSdk();
     invalid.data.riddleQuestPlayerState = {schemaVersion: 1, updatedAt: -1, coins: 9_999};
+    /** Provides invalid result behavior. */
     const invalidResult = await new FacebookPlatformBootstrap(() => invalid.sdk).initialize(() => undefined);
     expect(invalidResult.status).toBe("success");
     if (invalidResult.status !== "success") return;
     await expect(invalidResult.value.storage.readPlayerData()).resolves.toBeNull();
 
+    /** Provides bounded behavior. */
     const bounded = createSdk();
     bounded.data.riddleQuestPlayerState = {
       schemaVersion: 1,
@@ -130,6 +177,7 @@ describe("FacebookPlatformBootstrap", () => {
         currentLetters: [],
       },
     };
+    /** Provides bounded result behavior. */
     const boundedResult = await new FacebookPlatformBootstrap(() => bounded.sdk).initialize(() => undefined);
     expect(boundedResult.status).toBe("success");
     if (boundedResult.status !== "success") return;
@@ -137,8 +185,11 @@ describe("FacebookPlatformBootstrap", () => {
   });
 
   test("exposes native social only with both SDK APIs and returns validated context metadata", async () => {
+    /** Provides harness behavior. */
     const harness = createSdk();
+    /** Provides context id behavior. */
     let contextId: string | null = "thread-1";
+    /** Provides context type behavior. */
     let contextType: "SOLO" | "THREAD" | "GROUP" = "THREAD";
     harness.sdk.getSupportedAPIs = () => ["context.chooseAsync", "context.matchPlayerAsync"];
     harness.sdk.context = {
@@ -147,39 +198,48 @@ describe("FacebookPlatformBootstrap", () => {
       chooseAsync: jest.fn(async () => undefined),
       matchPlayerAsync: jest.fn(async () => undefined),
     };
+    /** Provides result behavior. */
     const result = await new FacebookPlatformBootstrap(() => harness.sdk, "13_plus").initialize(() => undefined);
     expect(result.status).toBe("success");
     if (result.status !== "success") return;
+    /** Provides social behavior. */
     const social = result.value.capabilities.nativeSocial;
     expect(social?.currentContext()).toEqual({
-      status: "success", value: {contextId: "thread-1", contextType: "THREAD"},
+      status: "success",
+      value: {contextId: "thread-1", contextType: "THREAD"},
     });
     await expect(social?.chooseContext()).resolves.toEqual({
-      status: "success", value: {contextId: "thread-1", contextType: "THREAD"},
+      status: "success",
+      value: {contextId: "thread-1", contextType: "THREAD"},
     });
     expect(harness.sdk.context.chooseAsync).toHaveBeenCalledWith({minSize: 2, maxSize: 50});
     contextId = "group-1";
     contextType = "GROUP";
     await expect(social?.matchPlayer("race10_v1:en")).resolves.toEqual({
-      status: "success", value: {contextId: "group-1", contextType: "GROUP"},
+      status: "success",
+      value: {contextId: "group-1", contextType: "GROUP"},
     });
     expect(harness.sdk.context.matchPlayerAsync).toHaveBeenCalledWith("race10_v1:en", true, true);
 
     contextType = "SOLO";
     await expect(social?.chooseContext()).resolves.toEqual({
-      status: "unavailable", message: "facebook-context-unavailable",
+      status: "unavailable",
+      message: "facebook-context-unavailable",
     });
     contextType = "THREAD";
     contextId = "invalid context/id";
     expect(social?.currentContext()).toEqual({
-      status: "unavailable", message: "facebook-context-unavailable",
+      status: "unavailable",
+      message: "facebook-context-unavailable",
     });
     await expect(social?.matchPlayer("x".repeat(101))).resolves.toEqual({
-      status: "terminal-failure", message: "facebook-match-tag-invalid",
+      status: "terminal-failure",
+      message: "facebook-match-tag-invalid",
     });
   });
 
   test("keeps core play but hides native social when age configuration is unknown", async () => {
+    /** Provides harness behavior. */
     const harness = createSdk();
     harness.sdk.getSupportedAPIs = () => ["context.chooseAsync", "context.matchPlayerAsync"];
     harness.sdk.context = {
@@ -188,6 +248,7 @@ describe("FacebookPlatformBootstrap", () => {
       chooseAsync: jest.fn(async () => undefined),
       matchPlayerAsync: jest.fn(async () => undefined),
     };
+    /** Provides result behavior. */
     const result = await new FacebookPlatformBootstrap(() => harness.sdk, "unknown").initialize(() => undefined);
     expect(result.status).toBe("success");
     if (result.status !== "success") return;
@@ -196,6 +257,7 @@ describe("FacebookPlatformBootstrap", () => {
   });
 
   test("exposes profile overlays only for a verified 13+ configuration", async () => {
+    /** Provides harness behavior. */
     const harness = createSdk();
     harness.sdk.getSupportedAPIs = () => [
       "overlayViews.createProfilePictureOverlayViewAsync",
@@ -206,11 +268,13 @@ describe("FacebookPlatformBootstrap", () => {
       createProfileNameOverlayViewAsync: jest.fn(),
     } as never;
 
+    /** Provides unknown behavior. */
     const unknown = await new FacebookPlatformBootstrap(() => harness.sdk, "unknown").initialize(() => undefined);
     expect(unknown.status).toBe("success");
     if (unknown.status !== "success") return;
     expect(unknown.value.capabilities.overlay).toBeUndefined();
 
+    /** Provides adult behavior. */
     const adult = await new FacebookPlatformBootstrap(() => harness.sdk, "13_plus").initialize(() => undefined);
     expect(adult.status).toBe("success");
     if (adult.status !== "success") return;
@@ -218,12 +282,18 @@ describe("FacebookPlatformBootstrap", () => {
   });
 
   test("pause handlers can be revoked", async () => {
+    /** Provides harness behavior. */
     const harness = createSdk();
+    /** Provides result behavior. */
     const result = await new FacebookPlatformBootstrap(() => harness.sdk).initialize(() => undefined);
     expect(result.status).toBe("success");
     if (result.status !== "success") return;
+    /** Provides calls behavior. */
     let calls = 0;
-    const unsubscribe = result.value.capabilities.lifecycle?.onPause(() => { calls += 1; });
+    /** Provides unsubscribe behavior. */
+    const unsubscribe = result.value.capabilities.lifecycle?.onPause(() => {
+      calls += 1;
+    });
     harness.pause();
     unsubscribe?.();
     harness.pause();
@@ -231,14 +301,21 @@ describe("FacebookPlatformBootstrap", () => {
   });
 
   test("resume handlers respond only while subscribed and visible", async () => {
+    /** Provides harness behavior. */
     const harness = createSdk();
+    /** Provides result behavior. */
     const result = await new FacebookPlatformBootstrap(() => harness.sdk).initialize(() => undefined);
     expect(result.status).toBe("success");
     if (result.status !== "success") return;
+    /** Provides calls behavior. */
     let calls = 0;
+    /** Provides fake document behavior. */
     const fakeDocument = Object.assign(new EventTarget(), {visibilityState: "visible"});
     Object.defineProperty(globalThis, "document", {configurable: true, value: fakeDocument});
-    const unsubscribe = result.value.capabilities.lifecycle?.onResume?.(() => { calls += 1; });
+    /** Provides unsubscribe behavior. */
+    const unsubscribe = result.value.capabilities.lifecycle?.onResume?.(() => {
+      calls += 1;
+    });
     fakeDocument.dispatchEvent(new Event("visibilitychange"));
     unsubscribe?.();
     fakeDocument.dispatchEvent(new Event("visibilitychange"));
@@ -247,6 +324,7 @@ describe("FacebookPlatformBootstrap", () => {
   });
 
   test("fails closed for invalid identity and retryably for SDK failures", async () => {
+    /** Provides invalid behavior. */
     const invalid = createSdk();
     invalid.sdk.player.getID = () => "";
     await expect(new FacebookPlatformBootstrap(() => invalid.sdk).initialize(() => undefined)).resolves.toEqual({
@@ -254,8 +332,11 @@ describe("FacebookPlatformBootstrap", () => {
       message: "facebook-player-id-invalid",
     });
 
+    /** Provides broken behavior. */
     const broken = createSdk();
-    broken.sdk.initializeAsync = async () => { throw new Error("sdk-down"); };
+    broken.sdk.initializeAsync = async () => {
+      throw new Error("sdk-down");
+    };
     await expect(new FacebookPlatformBootstrap(() => broken.sdk).initialize(() => undefined)).resolves.toEqual({
       status: "retryable-failure",
       message: "sdk-down",

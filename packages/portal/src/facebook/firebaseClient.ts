@@ -23,6 +23,7 @@ const claimFacebookNotificationPermissionPromptRaw = httpsCallable<undefined, un
 );
 /** Provides claim facebook notification permission prompt behavior. */
 export const claimFacebookNotificationPermissionPrompt = async () => {
+  /** Provides result behavior. */
   const result = await claimFacebookNotificationPermissionPromptRaw();
   return {...result, data: parseFacebookNotificationPromptClaim(result.data)};
 };
@@ -34,6 +35,7 @@ const acceptFacebookNotificationPermissionPromptRaw = httpsCallable<undefined, u
 );
 /** Provides accept facebook notification permission prompt behavior. */
 export const acceptFacebookNotificationPermissionPrompt = async (): Promise<void> => {
+  /** Provides result behavior. */
   const result = await acceptFacebookNotificationPermissionPromptRaw();
   parseFacebookNotificationPromptAcceptance(result.data);
 };
@@ -45,50 +47,55 @@ const getFacebookClientConfigurationRaw = httpsCallable<undefined, unknown>(
 );
 /** Gets facebook client configuration. */
 export const getFacebookClientConfiguration = async () => {
+  /** Provides result behavior. */
   const result = await getFacebookClientConfigurationRaw();
   return {...result, data: parseFacebookClientConfiguration(result.data)};
 };
 
 /** Lists identity-free authoritative Facebook tournament standings. */
-const listFacebookTournamentRaw = httpsCallable<
-  ListFacebookTournamentRequest,
-  unknown
->(firebaseFunctions, "listFacebookTournament");
+const listFacebookTournamentRaw = httpsCallable<ListFacebookTournamentRequest, unknown>(
+  firebaseFunctions,
+  "listFacebookTournament",
+);
 /** Lists facebook tournament. */
 export const listFacebookTournament = async (input: ListFacebookTournamentRequest) => {
+  /** Provides result behavior. */
   const result = await listFacebookTournamentRaw(input);
   return {...result, data: parseFacebookTournamentResponse(result.data)};
 };
 
 /** Derives and records a tournament score from an authoritative completed run. */
-const recordFacebookTournamentRaw = httpsCallable<
-  RecordFacebookTournamentRunRequest,
-  unknown
->(firebaseFunctions, "recordFacebookTournament");
+const recordFacebookTournamentRaw = httpsCallable<RecordFacebookTournamentRunRequest, unknown>(
+  firebaseFunctions,
+  "recordFacebookTournament",
+);
 /** Records facebook tournament. */
 export const recordFacebookTournament = async (input: RecordFacebookTournamentRunRequest) => {
+  /** Provides result behavior. */
   const result = await recordFacebookTournamentRaw(input);
   return {...result, data: parseFacebookTournamentRecordResponse(result.data)};
 };
 
 /** Lists an identity-free active Facebook context board. */
-const listFacebookContextBoardRaw = httpsCallable<
-  ListFacebookContextBoardRequest,
-  unknown
->(firebaseFunctions, "listFacebookContextBoard");
+const listFacebookContextBoardRaw = httpsCallable<ListFacebookContextBoardRequest, unknown>(
+  firebaseFunctions,
+  "listFacebookContextBoard",
+);
 /** Lists facebook context board. */
 export const listFacebookContextBoard = async (input: ListFacebookContextBoardRequest) => {
+  /** Provides result behavior. */
   const result = await listFacebookContextBoardRaw(input);
   return {...result, data: parseFacebookContextBoardResponse(result.data)};
 };
 
 /** Records one authoritative completed run into an active Facebook context board. */
-const recordFacebookContextRunRaw = httpsCallable<
-  RecordFacebookContextRunRequest,
-  unknown
->(firebaseFunctions, "recordFacebookContextRun");
+const recordFacebookContextRunRaw = httpsCallable<RecordFacebookContextRunRequest, unknown>(
+  firebaseFunctions,
+  "recordFacebookContextRun",
+);
 /** Records facebook context run. */
 export const recordFacebookContextRun = async (input: RecordFacebookContextRunRequest) => {
+  /** Provides result behavior. */
   const result = await recordFacebookContextRunRaw(input);
   return {...result, data: parseFacebookContextRecordResponse(result.data)};
 };

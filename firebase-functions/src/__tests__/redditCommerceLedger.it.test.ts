@@ -2,10 +2,20 @@ import {deleteApp, getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
 import {grantVerifiedRedditOrder, refundVerifiedRedditOrder} from "../reddit/redditCommerceLedger";
 
+/** Defines the project id value. */
 const PROJECT_ID = process.env.GCLOUD_PROJECT ?? "riddle-quest-ec2b2";
+/** Renders the uid interface. */
 const UID = `reddit_${"c".repeat(40)}`;
+/** Provides db behavior. */
 let db: FirebaseFirestore.Firestore;
-const collections = ["users", "redditCommerceAccounts", "redditCommerceReceipts", "redditCommerceRefunds", "accountDeletionOperations"];
+/** Provides collections behavior. */
+const collections = [
+  "users",
+  "redditCommerceAccounts",
+  "redditCommerceReceipts",
+  "redditCommerceRefunds",
+  "accountDeletionOperations",
+];
 
 beforeAll(async () => {
   process.env.REDDIT_APPROVED_FEATURES = "commerce";
@@ -23,24 +33,42 @@ afterAll(async () => {
 
 it("converges receipt and refund contention without double grant and repays hidden debt", async () => {
   await db.doc(`users/${UID}`).set({coins: 300});
-  const order = {uid: UID, orderId: "contended-order", productId: "riddle_quest_coins_250" as const,
-    environment: "sandbox" as const, purchasedAtMs: 1_000};
+  /** Provides order behavior. */
+  const order = {
+    uid: UID,
+    orderId: "contended-order",
+    productId: "riddle_quest_coins_250" as const,
+    environment: "sandbox" as const,
+    purchasedAtMs: 1_000,
+  };
+  /** Provides grants behavior. */
   const grants = await Promise.all(Array.from({length: 16}, () => grantVerifiedRedditOrder(db, order)));
   expect(grants.filter(({alreadyProcessed}) => !alreadyProcessed)).toHaveLength(1);
   expect((await db.doc(`users/${UID}`).get()).data()?.coins).toBe(550);
   expect((await db.collection("redditCommerceReceipts").get()).size).toBe(1);
 
   await db.doc(`users/${UID}`).update({coins: 50});
-  const refund = {orderId: order.orderId, productId: order.productId,
-    environment: order.environment, refundedAtMs: 2_000};
+  /** Provides refund behavior. */
+  const refund = {
+    orderId: order.orderId,
+    productId: order.productId,
+    environment: order.environment,
+    refundedAtMs: 2_000,
+  };
+  /** Provides refunds behavior. */
   const refunds = await Promise.all(Array.from({length: 12}, () => refundVerifiedRedditOrder(db, refund)));
   expect(refunds.filter(({alreadyProcessed}) => !alreadyProcessed)).toHaveLength(1);
   expect((await db.doc(`users/${UID}`).get()).data()?.coins).toBe(0);
   expect((await db.doc(`redditCommerceAccounts/${UID}`).get()).data()?.coinDebt).toBe(200);
   expect((await db.collection("redditCommerceRefunds").get()).size).toBe(1);
 
-  await grantVerifiedRedditOrder(db, {uid: UID, orderId: "future-order",
-    productId: "riddle_quest_coins_550", environment: "sandbox", purchasedAtMs: 3_000});
+  await grantVerifiedRedditOrder(db, {
+    uid: UID,
+    orderId: "future-order",
+    productId: "riddle_quest_coins_550",
+    environment: "sandbox",
+    purchasedAtMs: 3_000,
+  });
   expect((await db.doc(`users/${UID}`).get()).data()?.coins).toBe(350);
   expect((await db.doc(`redditCommerceAccounts/${UID}`).get()).data()?.coinDebt).toBe(0);
 });

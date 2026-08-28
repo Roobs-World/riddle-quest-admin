@@ -11,18 +11,28 @@ import {
   raceRunResponseFixture,
 } from "./callableFixtures";
 
+/** Describes race handler. */
 export type RaceHandler = (request: CallableRequest<unknown>) => Promise<unknown>;
 
+/** Defines the contract for race callable case. */
 export interface RaceCallableCase {
+  /** Stores name. */
   name: string;
+  /** Stores handler. */
   handler: RaceHandler;
+  /** Stores input. */
   input: unknown;
+  /** Stores service mock. */
   serviceMock: jest.Mock;
+  /** Stores response. */
   response: unknown;
+  /** Stores expected call. */
   expectedCall: unknown[];
+  /** Stores access call. */
   accessCall?: unknown[];
 }
 
+/** Describes handler name. */
 type HandlerName =
   | "getRaceAccess"
   | "recordRaceAnalytics"
@@ -38,6 +48,7 @@ type HandlerName =
   | "getRaceOutcome"
   | "listRaceInbox";
 
+/** Describes service name. */
 type ServiceName =
   | "getRaceAccessForUser"
   | "recordRaceAnalyticsForUser"
@@ -53,14 +64,19 @@ type ServiceName =
   | "getRaceOutcomeForUser"
   | "listRaceInboxForUser";
 
+/** Describes race callable handlers. */
 export type RaceCallableHandlers = Record<HandlerName, RaceHandler>;
+/** Describes race callable service mocks. */
 export type RaceCallableServiceMocks = Record<ServiceName, jest.Mock>;
 
+/** Creates race callable cases. */
 export const createRaceCallableCases = (
   handlers: RaceCallableHandlers,
   mocks: RaceCallableServiceMocks,
 ): RaceCallableCase[] => {
+  /** Provides r id. */
   const userId = raceCallableUserId;
+  /** Requests id. */
   const requestId = raceCallableRequestId;
   return [
     {

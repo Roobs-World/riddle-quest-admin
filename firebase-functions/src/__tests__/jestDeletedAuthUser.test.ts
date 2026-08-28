@@ -1,5 +1,13 @@
 /** Existing Auth profile returned by the deletion sentinel helper. */
-let existingUser: {providerData: Array<{providerId: string}>} | undefined;
+let existingUser:
+  | {
+      /** Stores provider data. */
+      providerData: Array<{
+        /** Stores provider id. */
+        providerId: string;
+      }>;
+    }
+  | undefined;
 /** Reads the deterministic Auth UID. */
 const mockGetUser = jest.fn(async () => {
   if (!existingUser) throw {code: "auth/user-not-found"};
@@ -87,8 +95,11 @@ describe("deleted Jest Auth sentinel", () => {
   it("recreates the disabled sentinel if a concurrent legacy deletion removes it", async () => {
     mockSetCustomUserClaims.mockRejectedValueOnce({code: "auth/user-not-found"});
     existingUser = {providerData: []};
-    mockGetUser.mockImplementationOnce(async () => existingUser!)
-      .mockImplementationOnce(async () => { throw {code: "auth/user-not-found"}; });
+    mockGetUser
+      .mockImplementationOnce(async () => existingUser!)
+      .mockImplementationOnce(async () => {
+        throw {code: "auth/user-not-found"};
+      });
 
     await preserveDeletedJestAuthUser("jest-retry");
 

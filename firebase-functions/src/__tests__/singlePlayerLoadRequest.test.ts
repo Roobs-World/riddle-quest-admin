@@ -5,6 +5,7 @@ import {
   parseSinglePlayerResumeFields,
 } from "../gameplay/singlePlayerLoadRequest";
 
+/** Renders the token interface. */
 const TOKEN = "00000000-0000-4000-8000-000000000001";
 
 describe("single-player load request parsing", () => {

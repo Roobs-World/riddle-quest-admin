@@ -117,9 +117,11 @@ describe("Request Schemas", () => {
 
   describe("FeedbackColorValue", () => {
     test("should accept valid color values", () => {
+      /** Provides valid colors behavior. */
       const validColors: FeedbackColorValue[] = ["green", "yellow", "red"];
 
       validColors.forEach((color) => {
+        /** Provides feedback behavior. */
         const feedback: FeedbackItem = {
           letter: "A",
           status: color,
@@ -129,16 +131,19 @@ describe("Request Schemas", () => {
     });
 
     test("should be used in FeedbackItem correctly", () => {
+      /** Provides green feedback behavior. */
       const greenFeedback: FeedbackItem = {
         letter: "A",
         status: "green",
       };
 
+      /** Provides yellow feedback behavior. */
       const yellowFeedback: FeedbackItem = {
         letter: "B",
         status: "yellow",
       };
 
+      /** Provides red feedback behavior. */
       const redFeedback: FeedbackItem = {
         letter: "C",
         status: "red",
@@ -152,6 +157,7 @@ describe("Request Schemas", () => {
 
   describe("FeedbackItem", () => {
     test("should have correct structure with letter and status", () => {
+      /** Provides feedback behavior. */
       const feedback: FeedbackItem = {
         letter: "T",
         status: "green",
@@ -164,6 +170,7 @@ describe("Request Schemas", () => {
     });
 
     test("should work with different letters and statuses", () => {
+      /** Provides feedback items behavior. */
       const feedbackItems: FeedbackItem[] = [
         {letter: "H", status: "green"},
         {letter: "E", status: "yellow"},
@@ -180,6 +187,7 @@ describe("Request Schemas", () => {
     });
 
     test("should support both uppercase and lowercase letters", () => {
+      /** Provides feedback items behavior. */
       const feedbackItems: FeedbackItem[] = [
         {letter: "a", status: "green"},
         {letter: "A", status: "yellow"},
@@ -196,6 +204,7 @@ describe("Request Schemas", () => {
 
   describe("SubmitGuessRequestData", () => {
     test("should have correct structure", () => {
+      /** Requests data. */
       const requestData: SubmitGuessRequestData = {
         guess: "HELLO",
         riddleId: "riddle123",
@@ -210,6 +219,7 @@ describe("Request Schemas", () => {
     });
 
     test("should accept challenge game mode", () => {
+      /** Provides challenge request behavior. */
       const challengeRequest: SubmitGuessRequestData = {
         guess: "WORLD",
         riddleId: "daily_2024-01-15",
@@ -221,6 +231,7 @@ describe("Request Schemas", () => {
     });
 
     test("should accept classic game mode", () => {
+      /** Provides classic request behavior. */
       const classicRequest: SubmitGuessRequestData = {
         guess: "ANSWER",
         riddleId: "classic_level_5",
@@ -232,6 +243,7 @@ describe("Request Schemas", () => {
     });
 
     test("should handle different guess lengths", () => {
+      /** Requests s. */
       const requests: SubmitGuessRequestData[] = [
         {guess: "CAT", riddleId: "riddle1", gameMode: "classic", attempts: 1},
         {guess: "WORD", riddleId: "riddle2", gameMode: "challenge", attempts: 2},
@@ -249,9 +261,11 @@ describe("Request Schemas", () => {
     });
 
     test("should handle various riddle ID formats", () => {
+      /** Provides riddle ids behavior. */
       const riddleIds = ["daily_2024-01-15", "classic_level_1", "custom_riddle_abc123", "riddle_12345"];
 
       riddleIds.forEach((riddleId) => {
+        /** Provides request behavior. */
         const request: SubmitGuessRequestData = {
           guess: "TEST",
           riddleId: riddleId,
@@ -265,9 +279,11 @@ describe("Request Schemas", () => {
     });
 
     test("should handle different attempt counts", () => {
+      /** Provides attempt counts behavior. */
       const attemptCounts = [1, 2, 3, 4, 5, 10, 100];
 
       attemptCounts.forEach((attempts) => {
+        /** Provides request behavior. */
         const request: SubmitGuessRequestData = {
           guess: "GUESS",
           riddleId: "test_riddle",
@@ -283,6 +299,7 @@ describe("Request Schemas", () => {
 
   describe("SubmitGuessAuthContext", () => {
     test("should have correct structure with uid", () => {
+      /** Provides auth context behavior. */
       const authContext: SubmitGuessAuthContext = {
         uid: "user123",
       };
@@ -292,6 +309,7 @@ describe("Request Schemas", () => {
     });
 
     test("should handle different UID formats", () => {
+      /** Provides uids behavior. */
       const uids = [
         "user123",
         "firebase_auth_uid_abc123def456",
@@ -301,6 +319,7 @@ describe("Request Schemas", () => {
       ];
 
       uids.forEach((uid) => {
+        /** Provides auth context behavior. */
         const authContext: SubmitGuessAuthContext = {
           uid: uid,
         };
@@ -312,11 +331,15 @@ describe("Request Schemas", () => {
 
     test("should be extensible for additional auth properties", () => {
       // Test that the interface can be extended (compile-time test)
+      /** Defines the contract for extended auth context. */
       interface ExtendedAuthContext extends SubmitGuessAuthContext {
+        /** Stores token. */
         token?: string;
+        /** Stores role. */
         role?: string;
       }
 
+      /** Provides extended auth behavior. */
       const extendedAuth: ExtendedAuthContext = {
         uid: "user123",
         token: "auth_token_abc",
@@ -331,6 +354,7 @@ describe("Request Schemas", () => {
 
   describe("SubmitGuessResponseData", () => {
     test("should have correct structure with feedback and isCorrect", () => {
+      /** Provides response behavior. */
       const response: SubmitGuessResponseData = {
         feedback: [
           {letter: "H", status: "green"},
@@ -347,6 +371,7 @@ describe("Request Schemas", () => {
     });
 
     test("should handle correct guess response", () => {
+      /** Provides correct response behavior. */
       const correctResponse: SubmitGuessResponseData = {
         feedback: [
           {letter: "W", status: "green"},
@@ -364,6 +389,7 @@ describe("Request Schemas", () => {
     });
 
     test("should handle incorrect guess response", () => {
+      /** Provides incorrect response behavior. */
       const incorrectResponse: SubmitGuessResponseData = {
         feedback: [
           {letter: "W", status: "red"},
@@ -381,33 +407,38 @@ describe("Request Schemas", () => {
     });
 
     test("rejects answer disclosure in a game-over response", () => {
-      expect(SubmitGuessResponseDataSchema.safeParse({
-        feedback: [
-          {letter: "F", status: "red"},
-          {letter: "A", status: "yellow"},
-          {letter: "I", status: "red"},
-          {letter: "L", status: "red"},
-        ],
-        isCorrect: false,
-        gameOver: true,
-        correctAnswer: "WORD",
-      }).success).toBe(false);
+      expect(
+        SubmitGuessResponseDataSchema.safeParse({
+          feedback: [
+            {letter: "F", status: "red"},
+            {letter: "A", status: "yellow"},
+            {letter: "I", status: "red"},
+            {letter: "L", status: "red"},
+          ],
+          isCorrect: false,
+          gameOver: true,
+          correctAnswer: "WORD",
+        }).success,
+      ).toBe(false);
     });
 
     test("should handle optional properties correctly", () => {
       // Response with no optional properties
+      /** Provides basic response behavior. */
       const basicResponse: SubmitGuessResponseData = {
         feedback: [{letter: "A", status: "green"}],
         isCorrect: true,
       };
 
       // Response with coinsEarned
+      /** Provides response with coins behavior. */
       const responseWithCoins: SubmitGuessResponseData = {
         feedback: [{letter: "B", status: "green"}],
         isCorrect: true,
         coinsEarned: 15,
       };
 
+      /** Provides response with coins and achievements behavior. */
       const responseWithCoinsAndAchievements: SubmitGuessResponseData = {
         feedback: [{letter: "D", status: "green"}],
         isCorrect: true,
@@ -425,6 +456,7 @@ describe("Request Schemas", () => {
     });
 
     test("should handle empty feedback array", () => {
+      /** Provides empty feedback response behavior. */
       const emptyFeedbackResponse: SubmitGuessResponseData = {
         feedback: [],
         isCorrect: false,
@@ -436,6 +468,7 @@ describe("Request Schemas", () => {
     });
 
     test("should handle various feedback combinations", () => {
+      /** Provides mixed feedback behavior. */
       const mixedFeedback: FeedbackItem[] = [
         {letter: "T", status: "green"}, // Correct position
         {letter: "E", status: "yellow"}, // Wrong position
@@ -443,6 +476,7 @@ describe("Request Schemas", () => {
         {letter: "T", status: "green"}, // Correct position (repeated letter)
       ];
 
+      /** Provides response behavior. */
       const response: SubmitGuessResponseData = {
         feedback: mixedFeedback,
         isCorrect: false,
@@ -459,6 +493,7 @@ describe("Request Schemas", () => {
   describe("Type Integration", () => {
     test("should work together in a complete request-response flow", () => {
       // Mock request data
+      /** Requests data. */
       const requestData: SubmitGuessRequestData = {
         guess: "HELLO",
         riddleId: "daily_2024-01-15",
@@ -467,11 +502,13 @@ describe("Request Schemas", () => {
       };
 
       // Mock auth context
+      /** Provides auth context behavior. */
       const authContext: SubmitGuessAuthContext = {
         uid: "user123",
       };
 
       // Mock response data
+      /** Provides response data behavior. */
       const responseData: SubmitGuessResponseData = {
         feedback: [
           {letter: "H", status: "green"},
@@ -492,6 +529,7 @@ describe("Request Schemas", () => {
 
     test("should handle edge cases consistently", () => {
       // Very short guess
+      /** Provides short request behavior. */
       const shortRequest: SubmitGuessRequestData = {
         guess: "I",
         riddleId: "short_riddle",
@@ -499,6 +537,7 @@ describe("Request Schemas", () => {
         attempts: 1,
       };
 
+      /** Provides short response behavior. */
       const shortResponse: SubmitGuessResponseData = {
         feedback: [{letter: "I", status: "green"}],
         isCorrect: true,
@@ -506,6 +545,7 @@ describe("Request Schemas", () => {
       };
 
       // Very long guess
+      /** Provides long request behavior. */
       const longRequest: SubmitGuessRequestData = {
         guess: "ENCYCLOPEDIA",
         riddleId: "long_riddle",
@@ -513,6 +553,7 @@ describe("Request Schemas", () => {
         attempts: 5,
       };
 
+      /** Provides long response behavior. */
       const longResponse: SubmitGuessResponseData = {
         feedback: "ENCYCLOPEDIA".split("").map((letter) => ({
           letter: letter,

@@ -5,14 +5,34 @@ export const MAX_CLASSIC_LOAD_INDEX = 1_000_000;
 
 /** Parses the optional opaque session/riddle pair used for reload recovery. */
 export function parseSinglePlayerResumeFields(
-  data: {sessionToken?: unknown; riddleId?: unknown} | undefined,
-): {sessionToken: string; riddleId: string} | undefined {
+  data:
+    | {
+        /** Stores session token. */
+        sessionToken?: unknown; /** Stores riddle id. */
+        /** Stores riddle id. */
+        riddleId?: unknown;
+      }
+    | undefined,
+):
+  | {
+      /** Stores session token. */
+      sessionToken: string; /** Stores riddle id. */
+      /** Stores riddle id. */
+      riddleId: string;
+    }
+  | undefined {
+  /** Provides session token behavior. */
   const sessionToken = data?.sessionToken;
+  /** Provides riddle id behavior. */
   const riddleId = data?.riddleId;
   if (sessionToken === undefined && riddleId === undefined) return undefined;
   if (
-    typeof sessionToken !== "string" || sessionToken.length < 20 || sessionToken.length > 128 ||
-    typeof riddleId !== "string" || riddleId.length < 1 || riddleId.length > 160
+    typeof sessionToken !== "string" ||
+    sessionToken.length < 20 ||
+    sessionToken.length > 128 ||
+    typeof riddleId !== "string" ||
+    riddleId.length < 1 ||
+    riddleId.length > 160
   ) {
     throw new HttpsError("invalid-argument", "A valid resume token and riddle id must be supplied together.");
   }

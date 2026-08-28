@@ -31,7 +31,9 @@ export function OnboardingOverlay({
   welcomeOnly,
   onAdvance,
 }: OnboardingOverlayProps) {
+  /** Indicates whether is welcome. */
   const isWelcome = onboardingStep === 0;
+  /** Indicates whether is guest notice. */
   const isGuestNotice = onboardingStep === 2;
 
   return (
@@ -49,7 +51,9 @@ export function OnboardingOverlay({
         data-analytics-screen={`onboarding_${onboardingStep + 1}`}
       >
         {!welcomeOnly ? (
-          <span className="onboarding-progress">{onboardingStep + 1}/{totalSteps}</span>
+          <span className="onboarding-progress">
+            {onboardingStep + 1}/{totalSteps}
+          </span>
         ) : null}
         {isWelcome ? (
           <img id="onboarding-title" className="onboarding-logo" src={logoUrl} alt={tr("WebPortal.APP_TITLE")} />
@@ -96,9 +100,18 @@ export function OnboardingOverlay({
           <>
             <p>{tr("Instructions.GOAL_DESCRIPTION")}</p>
             <div className="onboarding-clues">
-              <span><i className="clue green">A</i>{tr("Instructions.COLOR_CORRECT")}</span>
-              <span><i className="clue yellow">B</i>{tr("Instructions.COLOR_MISPLACED")}</span>
-              <span><i className="clue red">C</i>{tr("Instructions.COLOR_WRONG")}</span>
+              <span>
+                <i className="clue green">A</i>
+                {tr("Instructions.COLOR_CORRECT")}
+              </span>
+              <span>
+                <i className="clue yellow">B</i>
+                {tr("Instructions.COLOR_MISPLACED")}
+              </span>
+              <span>
+                <i className="clue red">C</i>
+                {tr("Instructions.COLOR_WRONG")}
+              </span>
             </div>
             <p>{tr("Instructions.TIPS_DESCRIPTION")}</p>
           </>

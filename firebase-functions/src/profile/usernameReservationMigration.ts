@@ -23,22 +23,33 @@ export interface UsernameReservationMigrationResult {
 
 /** Atomically claims and annotates one legacy user's current username. */
 async function migrateUsernameDocument(db: Firestore, document: QueryDocumentSnapshot): Promise<void> {
+  /** Provides r ref. */
   const userRef = document.ref;
   await db.runTransaction(async (transaction) => {
+    /** Provides r snapshot. */
     const userSnapshot = await transaction.get(userRef);
     if (!userSnapshot.exists) return;
+    /** Parses d username. */
     const parsedUsername = UsernameSchema.safeParse(userSnapshot.data()?.username);
     if (!parsedUsername.success) {
       throw new HttpsError("failed-precondition", `Legacy user ${JSON.stringify(userRef.id)} has an invalid username.`);
     }
+    /** Provides rname. */
     const username = parsedUsername.data;
+    /** Provides fields behavior. */
     const fields = createUsernameReservationFields(username);
+    /** Provides reservation ref behavior. */
     const reservationRef = db.collection(USERNAME_RESERVATIONS_COLLECTION).doc(fields.usernameReservationId);
+    /** Provides previous reservation id behavior. */
     const previousReservationId = reservationIdForUserData(userSnapshot.data());
-    const previousReservationRef = previousReservationId && previousReservationId !== fields.usernameReservationId
-      ? db.collection(USERNAME_RESERVATIONS_COLLECTION).doc(previousReservationId)
-      : undefined;
+    /** Provides previous reservation ref behavior. */
+    const previousReservationRef =
+      previousReservationId && previousReservationId !== fields.usernameReservationId
+        ? db.collection(USERNAME_RESERVATIONS_COLLECTION).doc(previousReservationId)
+        : undefined;
+    /** Provides reservation snapshot behavior. */
     const reservationSnapshot = await transaction.get(reservationRef);
+    /** Provides previous reservation snapshot behavior. */
     const previousReservationSnapshot = previousReservationRef
       ? await transaction.get(previousReservationRef)
       : undefined;
@@ -59,12 +70,16 @@ async function migrateUsernameDocument(db: Firestore, document: QueryDocumentSna
       updatedAt: Date.now(),
     });
     transaction.update(userRef, {username, ...fields});
-    transaction.set(db.collection("leaderboard").doc(userRef.id), {
-      userId: userRef.id,
-      subjectUserId: userRef.id,
-      username,
-      updatedAt: Date.now(),
-    }, {merge: true});
+    transaction.set(
+      db.collection("leaderboard").doc(userRef.id),
+      {
+        userId: userRef.id,
+        subjectUserId: userRef.id,
+        username,
+        updatedAt: Date.now(),
+      },
+      {merge: true},
+    );
   });
 }
 
@@ -81,21 +96,29 @@ export async function migrateUsernameReservationPage(
   if (!Number.isInteger(pageSize) || pageSize < 1 || pageSize > MAX_USERNAME_MIGRATION_PAGE_SIZE) {
     throw new Error(`pageSize must be an integer from 1 to ${MAX_USERNAME_MIGRATION_PAGE_SIZE}.`);
   }
+  /** Provides state ref behavior. */
   const stateRef = usernameReservationMigrationRef(db);
+  /** Provides state snapshot behavior. */
   const stateSnapshot = await stateRef.get();
+  /** Provides state behavior. */
   const state = stateSnapshot.data();
   if (stateSnapshot.exists && state?.complete === true) return {complete: true, processed: 0};
 
+  /** Provides query behavior. */
   let query: Query = db.collection("users").orderBy(FieldPath.documentId()).limit(pageSize);
+  /** Provides last user id behavior. */
   const lastUserId = typeof state?.lastUserId === "string" ? state.lastUserId : undefined;
   if (lastUserId) query = query.startAfter(lastUserId);
+  /** Provides rs. */
   const users = await query.get();
   if (users.empty) {
     await stateRef.set({complete: true, completedAt: Date.now(), updatedAt: Date.now()}, {merge: true});
     return {complete: true, lastUserId, processed: 0};
   }
 
+  /** Provides processed behavior. */
   let processed = 0;
+  /** Provides next cursor behavior. */
   let nextCursor = lastUserId;
   for (const document of users.docs) {
     await migrateUsernameDocument(db, document);

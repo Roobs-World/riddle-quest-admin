@@ -20,19 +20,29 @@ export function createFacebookAdsCapability({
   adFree,
   now = Date.now,
 }: {
+  /** Stores sdk. */
   sdk: FacebookInstantSdk;
+  /** Stores placement id. */
   placementId: string;
+  /** Stores ad free. */
   adFree: boolean;
+  /** Stores now. */
   now?: () => number;
 }): AdsCapability | undefined {
+  /** Normalizes d placement. */
   const normalizedPlacement = placementId.trim();
   if (!normalizedPlacement || normalizedPlacement.length > 256 || !sdk.getInterstitialAdAsync) return undefined;
+  /** Provides state behavior. */
   let state: FacebookInterstitialState = createFacebookInterstitialState(adFree);
+  /** Provides showing interstitial behavior. */
   let showingInterstitial = false;
+  /** Provides interstitials disabled behavior. */
   let interstitialsDisabled = false;
 
   return {
+    /** Provides show interstitial behavior. */
     async showInterstitial(placement) {
+      /** Starts ed at ms. */
       let startedAtMs: number;
       try {
         startedAtMs = now();
@@ -48,12 +58,15 @@ export function createFacebookAdsCapability({
         return {status: "unavailable", message: "facebook-interstitial-suppressed"};
       }
       showingInterstitial = true;
+      /** Provides impression displayed behavior. */
       let impressionDisplayed = false;
       try {
+        /** Provides ad behavior. */
         const ad = await sdk.getInterstitialAdAsync!(normalizedPlacement);
         await ad.loadAsync();
         await ad.showAsync();
         impressionDisplayed = true;
+        /** Completes d at ms. */
         const completedAtMs = now();
         if (!Number.isSafeInteger(completedAtMs) || completedAtMs < startedAtMs) {
           throw new Error("facebook-interstitial-clock-invalid");
@@ -69,6 +82,7 @@ export function createFacebookAdsCapability({
         showingInterstitial = false;
       }
     },
+    /** Provides show rewarded behavior. */
     async showRewarded() {
       return {status: "unavailable", message: "facebook-rewarded-unavailable"};
     },

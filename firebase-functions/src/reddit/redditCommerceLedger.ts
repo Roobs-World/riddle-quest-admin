@@ -57,6 +57,7 @@ const nonNegative = (value: unknown, name: string): number => {
 
 /** Adds ledger amounts without permitting overflow or a negative result. */
 const safeAdd = (left: number, right: number) => {
+  /** Provides value behavior. */
   const value = left + right;
   if (!Number.isSafeInteger(value) || value < 0) throw new Error("invalid-reddit-commerce-balance");
   return value;
@@ -99,39 +100,72 @@ export async function grantVerifiedRedditOrder(db: Firestore, input: VerifiedRed
   requireCommerce(input.environment);
   if (!isRedditFirebaseUid(input.uid)) throw new Error("invalid-reddit-commerce-uid");
   bounded(input.orderId);
-  if (!Number.isSafeInteger(input.purchasedAtMs) || input.purchasedAtMs <= 0) throw new Error("invalid-reddit-purchase-time");
+  if (!Number.isSafeInteger(input.purchasedAtMs) || input.purchasedAtMs <= 0)
+    throw new Error("invalid-reddit-purchase-time");
+  /** Provides product behavior. */
   const product = resolveRedditGoldProduct(input.productId);
+  /** Provides receipt id behavior. */
   const receiptId = redditCommerceReceiptId(input.environment, input.orderId);
+  /** Provides r ref. */
   const userRef = db.collection("users").doc(input.uid);
+  /** Provides account ref behavior. */
   const accountRef = db.collection("redditCommerceAccounts").doc(input.uid);
+  /** Provides receipt ref behavior. */
   const receiptRef = db.collection("redditCommerceReceipts").doc(receiptId);
   return db.runTransaction(async (transaction) => {
+    /** Provides [user, account, receipt, deletion] behavior. */
     const [user, account, receipt, deletion] = await Promise.all([
-      transaction.get(userRef), transaction.get(accountRef), transaction.get(receiptRef),
+      transaction.get(userRef),
+      transaction.get(accountRef),
+      transaction.get(receiptRef),
       transaction.get(getJestAccountDeletionRef(db, input.uid)),
     ]);
     assertJestAccountActive(deletion);
     if (!user.exists) throw new Error("reddit-commerce-user-not-found");
+    /** Provides coins behavior. */
     const coins = nonNegative(user.data()?.coins, "coins");
+    /** Provides debt behavior. */
     const debt = account.exists ? nonNegative(account.data()?.coinDebt, "debt") : 0;
     if (receipt.exists) {
+      /** Provides value behavior. */
       const value = receipt.data();
-      if (value?.provider !== PROVIDER || value.environment !== input.environment || value.uid !== input.uid ||
-        value.orderIdHash !== receiptId || value.productId !== input.productId || value.grossCoins !== product.coins ||
-        value.goldCost !== product.goldCost || value.purchasedAtMs !== input.purchasedAtMs) {
+      if (
+        value?.provider !== PROVIDER ||
+        value.environment !== input.environment ||
+        value.uid !== input.uid ||
+        value.orderIdHash !== receiptId ||
+        value.productId !== input.productId ||
+        value.grossCoins !== product.coins ||
+        value.goldCost !== product.goldCost ||
+        value.purchasedAtMs !== input.purchasedAtMs
+      ) {
         throw new Error("reddit-purchase-receipt-conflict");
       }
       return {alreadyProcessed: true, coins, coinDebt: debt};
     }
+    /** Provides debt repaid behavior. */
     const debtRepaid = Math.min(debt, product.coins);
+    /** Provides coins granted behavior. */
     const coinsGranted = product.coins - debtRepaid;
+    /** Provides next coins behavior. */
     const nextCoins = safeAdd(coins, coinsGranted);
+    /** Provides next debt behavior. */
     const nextDebt = debt - debtRepaid;
     transaction.update(userRef, {coins: nextCoins, hasPurchasedApp: true});
     transaction.set(accountRef, {coinDebt: nextDebt, updatedAtMs: input.purchasedAtMs}, {merge: true});
-    transaction.create(receiptRef, {provider: PROVIDER, environment: input.environment, uid: input.uid,
-      orderIdHash: receiptId, productId: input.productId, grossCoins: product.coins, goldCost: product.goldCost,
-      coinsGranted, debtRepaid, purchasedAtMs: input.purchasedAtMs, refundedAtMs: null});
+    transaction.create(receiptRef, {
+      provider: PROVIDER,
+      environment: input.environment,
+      uid: input.uid,
+      orderIdHash: receiptId,
+      productId: input.productId,
+      grossCoins: product.coins,
+      goldCost: product.goldCost,
+      coinsGranted,
+      debtRepaid,
+      purchasedAtMs: input.purchasedAtMs,
+      refundedAtMs: null,
+    });
     return {alreadyProcessed: false, coins: nextCoins, coinDebt: nextDebt};
   });
 }
@@ -155,45 +189,83 @@ export async function grantVerifiedRedditOrder(db: Firestore, input: VerifiedRed
 export async function refundVerifiedRedditOrder(db: Firestore, input: VerifiedRedditRefund) {
   requireCommerce(input.environment);
   bounded(input.orderId);
-  if (!Number.isSafeInteger(input.refundedAtMs) || input.refundedAtMs <= 0) throw new Error("invalid-reddit-refund-time");
+  if (!Number.isSafeInteger(input.refundedAtMs) || input.refundedAtMs <= 0)
+    throw new Error("invalid-reddit-refund-time");
+  /** Provides product behavior. */
   const product = resolveRedditGoldProduct(input.productId);
+  /** Provides receipt id behavior. */
   const receiptId = redditCommerceReceiptId(input.environment, input.orderId);
+  /** Provides receipt ref behavior. */
   const receiptRef = db.collection("redditCommerceReceipts").doc(receiptId);
+  /** Provides refund ref behavior. */
   const refundRef = db.collection("redditCommerceRefunds").doc(receiptId);
   return db.runTransaction(async (transaction) => {
+    /** Provides [receipt, refund] behavior. */
     const [receipt, refund] = await Promise.all([transaction.get(receiptRef), transaction.get(refundRef)]);
     if (!receipt.exists) throw new Error("reddit-purchase-not-found");
+    /** Provides value behavior. */
     const value = receipt.data();
+    /** Provides uid behavior. */
     const uid = typeof value?.uid === "string" ? value.uid : "";
-    if (!isRedditFirebaseUid(uid) || value?.provider !== PROVIDER || value.environment !== input.environment ||
-      value.orderIdHash !== receiptId || value.productId !== input.productId || value.grossCoins !== product.coins ||
-      value.goldCost !== product.goldCost || !Number.isSafeInteger(value.purchasedAtMs) ||
-      input.refundedAtMs < value.purchasedAtMs) throw new Error("reddit-refund-receipt-conflict");
+    if (
+      !isRedditFirebaseUid(uid) ||
+      value?.provider !== PROVIDER ||
+      value.environment !== input.environment ||
+      value.orderIdHash !== receiptId ||
+      value.productId !== input.productId ||
+      value.grossCoins !== product.coins ||
+      value.goldCost !== product.goldCost ||
+      !Number.isSafeInteger(value.purchasedAtMs) ||
+      input.refundedAtMs < value.purchasedAtMs
+    )
+      throw new Error("reddit-refund-receipt-conflict");
+    /** Provides r ref. */
     const userRef = db.collection("users").doc(uid);
+    /** Provides account ref behavior. */
     const accountRef = db.collection("redditCommerceAccounts").doc(uid);
+    /** Provides [user, account] behavior. */
     const [user, account] = await Promise.all([transaction.get(userRef), transaction.get(accountRef)]);
     if (!user.exists) throw new Error("reddit-commerce-user-not-found");
+    /** Provides coins behavior. */
     const coins = nonNegative(user.data()?.coins, "coins");
+    /** Provides debt behavior. */
     const debt = account.exists ? nonNegative(account.data()?.coinDebt, "debt") : 0;
     if (refund.exists) {
+      /** Provides prior behavior. */
       const prior = refund.data();
-      if (prior?.provider !== PROVIDER || prior.environment !== input.environment || prior.uid !== uid ||
-        prior.productId !== input.productId || prior.refundedAtMs !== input.refundedAtMs) {
+      if (
+        prior?.provider !== PROVIDER ||
+        prior.environment !== input.environment ||
+        prior.uid !== uid ||
+        prior.productId !== input.productId ||
+        prior.refundedAtMs !== input.refundedAtMs
+      ) {
         throw new Error("reddit-refund-event-conflict");
       }
       return {alreadyProcessed: true, uid, coins, coinsRemoved: 0, coinDebt: debt};
     }
     if (value.refundedAtMs !== null) throw new Error("reddit-refund-event-conflict");
+    /** Provides coins removed behavior. */
     const coinsRemoved = Math.min(coins, product.coins);
+    /** Provides debt added behavior. */
     const debtAdded = product.coins - coinsRemoved;
+    /** Provides next coins behavior. */
     const nextCoins = coins - coinsRemoved;
+    /** Provides next debt behavior. */
     const nextDebt = safeAdd(debt, debtAdded);
     transaction.update(userRef, {coins: nextCoins});
     transaction.set(accountRef, {coinDebt: nextDebt, updatedAtMs: input.refundedAtMs}, {merge: true});
     transaction.update(receiptRef, {refundedAtMs: input.refundedAtMs});
-    transaction.create(refundRef, {provider: PROVIDER, environment: input.environment, uid,
-      orderIdHash: receiptId, productId: input.productId, coinsRemoved, debtAdded,
-      refundedAtMs: input.refundedAtMs});
+    transaction.create(refundRef, {
+      provider: PROVIDER,
+      environment: input.environment,
+      uid,
+      orderIdHash: receiptId,
+      productId: input.productId,
+      coinsRemoved,
+      debtAdded,
+      refundedAtMs: input.refundedAtMs,
+    });
     return {alreadyProcessed: false, uid, coins: nextCoins, coinsRemoved, coinDebt: nextDebt};
   });
 }

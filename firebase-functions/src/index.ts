@@ -43,19 +43,13 @@ import {
   verifyJestReferrals,
 } from "./jest/jestEndpoints";
 import {exchangeFacebookIdentity, issueFacebookIdentityNonce} from "./facebook/facebookEndpoints";
-import {
-  facebookDataDeletionCallback,
-  facebookDataDeletionStatus,
-} from "./facebook/facebookDataDeletionEndpoints";
+import {facebookDataDeletionCallback, facebookDataDeletionStatus} from "./facebook/facebookDataDeletionEndpoints";
 import {listFacebookTournament, recordFacebookTournament} from "./race/facebookTournamentCallable";
 import {blockRival, reportRival} from "./social/socialSafetyCallables";
 import {aggregatePresenceStatus} from "./presence/presenceAggregation";
 import {setPresenceConsent} from "./presence/presenceConsentCallable";
 import {bindFacebookReferral, createFacebookReferral} from "./facebook/facebookReferralCallables";
-import {
-  syncBlockedRivalPresenceVisibility,
-  syncKnownRivalPresenceVisibility,
-} from "./presence/presenceVisibility";
+import {syncBlockedRivalPresenceVisibility, syncKnownRivalPresenceVisibility} from "./presence/presenceVisibility";
 import {
   joinFacebookContext,
   leaveFacebookContext,

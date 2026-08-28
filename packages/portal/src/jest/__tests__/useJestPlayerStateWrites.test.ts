@@ -2,7 +2,9 @@ import {beforeEach, expect, it, jest} from "@jest/globals";
 import type {JestPlatformPort, JestSession} from "../types";
 import type {NotificationCrossContextLock} from "../notifications/operationGate";
 
+/** Describes effect. */
 type Effect = () => void | (() => void);
+/** Provides effects behavior. */
 const effects: Effect[] = [];
 
 jest.mock("react", () => ({
@@ -15,6 +17,7 @@ jest.mock("react", () => ({
 import {createNotificationOperationGate} from "../notifications/operationGate";
 import {useJestPlayerStateWrites} from "../useJestPlayerStateWrites";
 
+/** Provides session behavior. */
 const session = (): JestSession => ({
   player: {playerId: "player-1", registered: true},
   profile: null,
@@ -30,24 +33,35 @@ beforeEach(() => {
 });
 
 it("blocks a queued SDK write after deletion and suppresses later local state mutation", async () => {
+  /** Provides epoch behavior. */
   let epoch = "before";
+  /** Provides enter shared behavior. */
   let enterShared: (() => Promise<unknown>) | undefined;
+  /** Provides cross context lock behavior. */
   const crossContextLock: NotificationCrossContextLock = {
-    runShared: (operation) => new Promise((resolve, reject) => {
-      enterShared = () => operation().then(resolve, reject);
-    }),
+    runShared: (operation) =>
+      new Promise((resolve, reject) => {
+        enterShared = () => operation().then(resolve, reject);
+      }),
     runExclusive: (operation) => operation(),
   };
+  /** Provides gate behavior. */
   const gate = createNotificationOperationGate({
     crossContextLock,
     deletionEpoch: () => epoch,
     deletionPending: () => false,
   });
+  /** Provides write player data behavior. */
   const writePlayerData = jest.fn(async () => undefined);
+  /** Sets engagement progress. */
   const setEngagementProgress = jest.fn();
+  /** Tracks failure. */
   const trackFailure = jest.fn();
+  /** Provides warn behavior. */
   const warn = jest.spyOn(console, "warn").mockImplementation(() => undefined);
+  /** Provides current session behavior. */
   const currentSession = session();
+  /** Provides writes behavior. */
   const writes = useJestPlayerStateWrites({
     platform: {writePlayerData} as unknown as JestPlatformPort,
     gate,
@@ -72,18 +86,27 @@ it("blocks a queued SDK write after deletion and suppresses later local state mu
 });
 
 it("serializes rapid checkpoints and eventually flushes the newest snapshot", async () => {
+  /** Provides gate behavior. */
   const gate = createNotificationOperationGate({
     crossContextLock: null,
     deletionEpoch: () => null,
     deletionPending: () => false,
     requireCrossContextLock: false,
   });
+  /** Provides release first write behavior. */
   let releaseFirstWrite: () => void = () => undefined;
-  const firstWritePending = new Promise<void>((resolve) => { releaseFirstWrite = resolve; });
-  const writePlayerData = jest.fn()
+  /** Provides first write pending behavior. */
+  const firstWritePending = new Promise<void>((resolve) => {
+    releaseFirstWrite = resolve;
+  });
+  /** Provides write player data behavior. */
+  const writePlayerData = jest
+    .fn()
     .mockImplementationOnce(() => firstWritePending)
     .mockResolvedValue(undefined);
+  /** Provides current session behavior. */
   const currentSession = session();
+  /** Provides writes behavior. */
   const writes = useJestPlayerStateWrites({
     platform: {writePlayerData} as unknown as JestPlatformPort,
     gate,

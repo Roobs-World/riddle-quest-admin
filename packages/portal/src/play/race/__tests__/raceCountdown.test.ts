@@ -1,8 +1,4 @@
-import {
-  getRaceCountdownStep,
-  RACE_COUNTDOWN_TICK_MS,
-  RACE_GO_DISPLAY_MS,
-} from "../logic/raceCountdown";
+import {getRaceCountdownStep, RACE_COUNTDOWN_TICK_MS, RACE_GO_DISPLAY_MS} from "../logic/raceCountdown";
 
 describe("race countdown", () => {
   it("holds at the start until the authoritative run is ready", () => {

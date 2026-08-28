@@ -22,10 +22,42 @@ export type GameEngineMode = "challenge" | "classic";
  * session.
  */
 export type GuessOutcome =
-  | {kind: "win"; feedback: Feedback[]; attempts: number}
-  | {kind: "loss"; feedback: Feedback[]; attempts: number}
-  | {kind: "attemptLimitReached"; feedback: Feedback[]; attempts: number; canOfferContinue: true}
-  | {kind: "continue"; feedback: Feedback[]; attempts: number; attemptsRemaining: number};
+  | {
+      /** Stores kind. */
+      kind: "win"; /** Stores feedback. */
+      /** Stores feedback. */
+      feedback: Feedback[]; /** Stores attempts. */
+      /** Stores attempts. */
+      attempts: number;
+    }
+  | {
+      /** Stores kind. */
+      kind: "loss"; /** Stores feedback. */
+      /** Stores feedback. */
+      feedback: Feedback[]; /** Stores attempts. */
+      /** Stores attempts. */
+      attempts: number;
+    }
+  | {
+      /** Stores kind. */
+      kind: "attemptLimitReached"; /** Stores feedback. */
+      /** Stores feedback. */
+      feedback: Feedback[]; /** Stores attempts. */
+      /** Stores attempts. */
+      attempts: number; /** Stores can offer continue. */
+      /** Stores can offer continue. */
+      canOfferContinue: true;
+    }
+  | {
+      /** Stores kind. */
+      kind: "continue"; /** Stores feedback. */
+      /** Stores feedback. */
+      feedback: Feedback[]; /** Stores attempts. */
+      /** Stores attempts. */
+      attempts: number; /** Stores attempts remaining. */
+      /** Stores attempts remaining. */
+      attemptsRemaining: number;
+    };
 
 /** Configures the answer and attempt budgets for a {@link GameEngine}. */
 export interface GameEngineConfig {
@@ -181,11 +213,17 @@ export class GameEngine {
       return null;
     }
 
+    /** Provides guess string behavior. */
     const guessString = guessLetters.join("");
+    /** Normalizes d guess. */
     const normalizedGuess = lowerCaseGraphemes(guessString).join("");
+    /** Provides max attempts behavior. */
     const maxAttempts = this.getMaxAttempts();
+    /** Provides current attempt behavior. */
     const currentAttempt = this.attemptsUsed + 1;
+    /** Provides feedback behavior. */
     const feedback = computeFeedback(normalizedGuess, this.normalizedAnswer);
+    /** Indicates whether is correct. */
     const isCorrect = normalizedGuess === this.normalizedAnswer;
 
     this.guesses.push({guess: guessLetters, feedback});

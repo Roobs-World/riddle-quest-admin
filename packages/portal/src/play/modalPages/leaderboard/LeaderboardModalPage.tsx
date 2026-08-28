@@ -42,7 +42,13 @@ export function LeaderboardModalPage({
             key={type}
             onClick={() => onRequestLeaderboard(type)}
           >
-            {tr(type === "xp" ? "Leaderboard.TAB_XP" : type === "totalWins" ? "Leaderboard.TAB_WINS" : "Leaderboard.TAB_STREAK")}
+            {tr(
+              type === "xp"
+                ? "Leaderboard.TAB_XP"
+                : type === "totalWins"
+                  ? "Leaderboard.TAB_WINS"
+                  : "Leaderboard.TAB_STREAK",
+            )}
           </button>
         ))}
       </div>
@@ -53,12 +59,7 @@ export function LeaderboardModalPage({
               <li key={entry.userId}>
                 <b>{pageStart + index + 1}</b>
                 {entry.avatarUrl ? (
-                  <img
-                    className="leaderboard-avatar"
-                    src={entry.avatarUrl}
-                    alt=""
-                    referrerPolicy="no-referrer"
-                  />
+                  <img className="leaderboard-avatar" src={entry.avatarUrl} alt="" referrerPolicy="no-referrer" />
                 ) : (
                   <span className="leaderboard-avatar-fallback" aria-hidden="true">
                     {entry.username.slice(0, 1).toUpperCase()}
@@ -85,7 +86,9 @@ export function LeaderboardModalPage({
           >
             {tr("Leaderboard.PREVIOUS_PAGE")}
           </button>
-          <span>{activePage + 1} / {pageCount}</span>
+          <span>
+            {activePage + 1} / {pageCount}
+          </span>
           <button
             className="play-secondary compact"
             disabled={activePage === pageCount - 1}

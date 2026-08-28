@@ -49,20 +49,32 @@ export function GuidanceOverlay({
   interactionBlocked = false,
 }: GuidanceOverlayProps) {
   useLocale();
+  /** Provides r id. */
   const userId = state.user?.uid;
+  /** Provides [onboarding step, set onboarding step] behavior. */
   const [onboardingStep, setOnboardingStep] = useState<number | null>(null);
+  /** Provides [welcome only, set welcome only] behavior. */
   const [welcomeOnly, setWelcomeOnly] = useState(false);
+  /** Provides [sequence, set sequence] behavior. */
   const [sequence, setSequence] = useState<TooltipId[]>([]);
+  /** Provides [sequence name, set sequence name] behavior. */
   const [sequenceName, setSequenceName] = useState<string | null>(null);
+  /** Provides [sequence index, set sequence index] behavior. */
   const [sequenceIndex, setSequenceIndex] = useState(0);
+  /** Provides [target rect, set target rect] behavior. */
   const [targetRect, setTargetRect] = useState<DOMRect | null>(null);
+  /** Provides onboarding card ref behavior. */
   const onboardingCardRef = useRef<HTMLDivElement | null>(null);
+  /** Provides tooltip card ref behavior. */
   const tooltipCardRef = useRef<HTMLElement | null>(null);
+  /** Provides active tooltip behavior. */
   const activeTooltip = sequence[sequenceIndex];
+  /** Provides guidance active behavior. */
   const guidanceActive = onboardingStep !== null || Boolean(activeTooltip);
 
   useEffect(() => {
     if (!guidanceActive) return;
+    /** Provides previously focused behavior. */
     const previouslyFocused = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     return () => {
       window.requestAnimationFrame(() => {
@@ -73,14 +85,19 @@ export function GuidanceOverlay({
 
   useEffect(() => {
     if (!guidanceActive || interactionBlocked) return;
+    /** Provides dialog behavior. */
     const dialog = onboardingStep !== null ? onboardingCardRef.current : tooltipCardRef.current;
     if (!dialog) return;
-    const getFocusable = () => Array.from(
-      dialog.querySelectorAll<HTMLElement>(
-        "button:not(:disabled), a[href], input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex='-1'])",
-      ),
-    );
+    /** Gets focusable. */
+    const getFocusable = () =>
+      Array.from(
+        dialog.querySelectorAll<HTMLElement>(
+          "button:not(:disabled), a[href], input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex='-1'])",
+        ),
+      );
+    /** Provides focus frame behavior. */
     const focusFrame = window.requestAnimationFrame(() => (getFocusable()[0] ?? dialog).focus());
+    /** Handles key down. */
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         event.preventDefault();
@@ -88,13 +105,16 @@ export function GuidanceOverlay({
         return;
       }
       if (event.key !== "Tab") return;
+      /** Provides focusable behavior. */
       const focusable = getFocusable();
       if (focusable.length === 0) {
         event.preventDefault();
         dialog.focus();
         return;
       }
+      /** Provides first behavior. */
       const first = focusable[0];
+      /** Provides last behavior. */
       const last = focusable[focusable.length - 1];
       if (!dialog.contains(document.activeElement)) {
         event.preventDefault();
@@ -120,6 +140,7 @@ export function GuidanceOverlay({
 
   useEffect(() => {
     if (onboardingStep !== 2) return;
+    /** Provides close prompt behavior. */
     const closePrompt = () => {
       completePlayerOnboarding(createGuidanceStorageKey("onboarding", userId));
       setOnboardingStep(null);
@@ -135,6 +156,7 @@ export function GuidanceOverlay({
 
   useEffect(() => {
     onActiveChange?.(guidanceActive);
+    /** Provides modal element behavior. */
     const modalElement = document.querySelector<HTMLElement>(".game-modal");
     if (modalElement && activeTooltip) {
       modalElement.inert = true;
@@ -153,9 +175,8 @@ export function GuidanceOverlay({
     if (!state.riddle || onboardingStep !== null || sequence.length > 0) {
       return;
     }
-    const hasCompletedOnboarding = hasCompletedPlayerOnboarding(
-      createGuidanceStorageKey("onboarding", userId),
-    );
+    /** Indicates whether has completed onboarding. */
+    const hasCompletedOnboarding = hasCompletedPlayerOnboarding(createGuidanceStorageKey("onboarding", userId));
     if (safeBrowserStorageGet("session", createGuidanceStorageKey("welcomeSession", userId)) !== "seen") {
       setWelcomeOnly(hasCompletedOnboarding);
       setOnboardingStep(0);
@@ -180,6 +201,7 @@ export function GuidanceOverlay({
       sequence.length === 0 &&
       safeBrowserStorageGet("local", createTooltipTourStorageKey("profileTour", userId)) !== "seen"
     ) {
+      /** Provides timer behavior. */
       const timer = window.setTimeout(() => {
         setSequence([...PROFILE_TOUR]);
         setSequenceName("profileTour");
@@ -199,7 +221,9 @@ export function GuidanceOverlay({
     ) {
       return;
     }
+    /** Provides candidates behavior. */
     const candidates = getContextualTooltipCandidates(state, modal);
+    /** Provides candidate behavior. */
     const candidate = candidates.find(
       ({id, when}) =>
         when && safeBrowserStorageGet("local", createGuidanceStorageKey(`tooltipSeen:${id}`, userId)) !== "seen",
@@ -227,8 +251,11 @@ export function GuidanceOverlay({
       setTargetRect(null);
       return;
     }
+    /** Updates rect. */
     const updateRect = () => {
+      /** Provides selector behavior. */
       const selector = TOOLTIP_SELECTORS[activeTooltip];
+      /** Provides element behavior. */
       const element = selector ? document.querySelector(selector) : null;
       if (!element) {
         setTargetRect(null);
@@ -239,6 +266,7 @@ export function GuidanceOverlay({
         setTargetRect(element.getBoundingClientRect());
       });
     };
+    /** Provides timer behavior. */
     const timer = window.setTimeout(updateRect, 80);
     window.addEventListener("resize", updateRect);
     return () => {
@@ -247,14 +275,17 @@ export function GuidanceOverlay({
     };
   }, [activeTooltip]);
 
+  /** Provides tooltip content behavior. */
   const tooltipContent = useMemo(() => {
     if (!activeTooltip) {
       return null;
     }
+    /** Provides [title, body] behavior. */
     const [title, body] = TOOLTIP_KEYS[activeTooltip];
     return {title: tr(title), body: tr(body)};
   }, [activeTooltip]);
 
+  /** Provides finish sequence behavior. */
   const finishSequence = () => {
     if (sequenceName?.startsWith("contextual:")) {
       safeBrowserStorageSet(
@@ -271,7 +302,9 @@ export function GuidanceOverlay({
   };
 
   if (onboardingStep !== null) {
+    /** Indicates whether is welcome. */
     const isWelcome = onboardingStep === 0;
+    /** Provides total steps behavior. */
     const totalSteps = getOnboardingTotalSteps(onboardingStep, state.user?.platformRegistered);
     return (
       <OnboardingOverlay

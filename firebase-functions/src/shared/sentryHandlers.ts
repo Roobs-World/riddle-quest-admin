@@ -1,12 +1,17 @@
-import type {CallableFunction, CallableOptions, CallableRequest, CallableResponse, HttpsFunction, HttpsOptions, Request} from "firebase-functions/v2/https";
+import type {
+  CallableFunction,
+  CallableOptions,
+  CallableRequest,
+  CallableResponse,
+  HttpsFunction,
+  HttpsOptions,
+  Request,
+} from "firebase-functions/v2/https";
 import {HttpsError, onCall, onRequest} from "firebase-functions/v2/https";
 import type {ScheduleFunction, ScheduleOptions, ScheduledEvent} from "firebase-functions/v2/scheduler";
 import {onSchedule} from "firebase-functions/v2/scheduler";
 import {BROWSER_CALLABLE_TIMEOUT_SECONDS} from "./callableSecurity";
-import {
-  isJestAccountDeletedError,
-  runWithJestAccountOperationLease,
-} from "../jest/jestAccountDeletion";
+import {isJestAccountDeletedError, runWithJestAccountOperationLease} from "../jest/jestAccountDeletion";
 import {captureException, flushSentry} from "./sentry";
 
 /** Internal controls that are never forwarded to the Firebase runtime. */
@@ -52,13 +57,14 @@ export function onCallWithSentry<T = unknown, Result = unknown, Stream = unknown
   boundaryOptions: CallableBoundaryOptions = {},
 ): CallableFunction<T, Promise<Result>, Stream> {
   return onCall<T, Promise<Result>, Stream>(options, async (request, response) => {
+    /** Provides invoke behavior. */
     const invoke = () => invokeWithSentry(functionName, handler, [request, response]);
     if (boundaryOptions.skipJestAccountOperationLease || !request.auth) {
       return invoke();
     }
-    const timeoutSeconds = typeof options.timeoutSeconds === "number"
-      ? options.timeoutSeconds
-      : BROWSER_CALLABLE_TIMEOUT_SECONDS;
+    /** Provides timeout seconds behavior. */
+    const timeoutSeconds =
+      typeof options.timeoutSeconds === "number" ? options.timeoutSeconds : BROWSER_CALLABLE_TIMEOUT_SECONDS;
     try {
       return await runWithJestAccountOperationLease(request.auth.uid, timeoutSeconds, invoke);
     } catch (error) {

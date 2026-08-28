@@ -9,10 +9,15 @@ export function RaceQuitDialog({
   onCancel,
   onConfirm,
 }: {
+  /** Stores dialog ref. */
   dialogRef: RefObject<HTMLDivElement | null>;
+  /** Stores error. */
   error: string | null;
+  /** Stores abandoning. */
   abandoning: boolean;
+  /** Stores on cancel. */
   onCancel: () => void;
+  /** Stores on confirm. */
   onConfirm: () => void;
 }) {
   return (
@@ -28,7 +33,11 @@ export function RaceQuitDialog({
       >
         <h2 id="race-quit-title">{tr("RaceTo10.QUIT_TITLE")}</h2>
         <p id="race-quit-message">{tr("RaceTo10.QUIT_MESSAGE")}</p>
-        {error && <p className="race-quit-error" role="alert">{error}</p>}
+        {error && (
+          <p className="race-quit-error" role="alert">
+            {error}
+          </p>
+        )}
         <div className="race-quit-actions">
           <button onClick={onCancel} disabled={abandoning}>
             {tr("RaceTo10.KEEP_PLAYING")}

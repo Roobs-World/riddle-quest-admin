@@ -15,12 +15,16 @@ const boundedToken = (value: unknown): string | undefined =>
 /** Extracts only bounded classification fields from an unknown exception. */
 export function getSafeErrorMetadata(error: unknown): SafeErrorMetadata {
   if (typeof error !== "object" || error === null) return {errorClass: typeof error};
+  /** Provides record behavior. */
   const record = error as Record<string, unknown>;
+  /** Provides error class behavior. */
   const errorClass = boundedToken(error instanceof Error ? error.name : undefined) ?? "Error";
+  /** Provides code behavior. */
   const code = boundedToken(record.code);
-  const status = typeof record.status === "number" && Number.isInteger(record.status) &&
-    record.status >= 100 && record.status <= 599
-    ? record.status
-    : undefined;
+  /** Provides status behavior. */
+  const status =
+    typeof record.status === "number" && Number.isInteger(record.status) && record.status >= 100 && record.status <= 599
+      ? record.status
+      : undefined;
   return {errorClass, ...(code ? {code} : {}), ...(status ? {status} : {})};
 }

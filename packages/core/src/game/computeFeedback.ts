@@ -20,14 +20,18 @@ import {lowerCaseGraphemes} from "./graphemes";
  * applies the same finite duplicate-letter counts from the supplied answer.
  */
 export function computeFeedback(guess: string, answer: string): Feedback[] {
+  /** Provides guess chars behavior. */
   const guessChars = lowerCaseGraphemes(guess);
+  /** Provides answer chars behavior. */
   const answerChars = lowerCaseGraphemes(answer);
 
+  /** Provides char counts behavior. */
   const charCounts: Record<string, number> = {};
   for (const ch of answerChars) {
     charCounts[ch] = (charCounts[ch] || 0) + 1;
   }
 
+  /** Provides feedback behavior. */
   const feedback: Feedback[] = guessChars.map(() => "red");
 
   for (let i = 0; i < guessChars.length; i++) {

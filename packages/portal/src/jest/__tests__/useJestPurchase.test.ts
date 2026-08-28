@@ -4,7 +4,9 @@ import type {ProductSummary} from "../../play/types";
 import type {JestPurchaseCoordinator} from "../purchases";
 import type {JestSession} from "../types";
 
+/** Provides mock track event behavior. */
 const mockTrackEvent = jest.fn();
+/** Provides mock track purchase behavior. */
 const mockTrackPurchase = jest.fn();
 
 jest.mock("react", () => ({
@@ -18,6 +20,7 @@ jest.mock("../../analytics/events", () => ({
 
 import {useJestPurchase} from "../useJestPurchase";
 
+/** Provides product behavior. */
 const product = (overrides: Partial<ProductSummary> = {}): ProductSummary => ({
   productId: "coins-250",
   productType: "consumable",
@@ -30,6 +33,7 @@ const product = (overrides: Partial<ProductSummary> = {}): ProductSummary => ({
   ...overrides,
 });
 
+/** Provides session behavior. */
 const session = (registered = true): JestSession => ({
   player: {playerId: "player-1", registered},
   profile: null,
@@ -39,19 +43,28 @@ const session = (registered = true): JestSession => ({
   firebaseAuthenticated: true,
 });
 
+/** Creates harness. */
 const createHarness = ({
   products = [product()],
   currentSession = session(),
   subscriptionsEnabled,
 }: {
+  /** Stores products. */
   products?: ProductSummary[];
+  /** Stores current session. */
   currentSession?: JestSession | null;
-    subscriptionsEnabled?: boolean;
+  /** Stores subscriptions enabled. */
+  subscriptionsEnabled?: boolean;
 } = {}) => {
+  /** Provides purchase behavior. */
   const purchase = jest.fn<JestPurchaseCoordinator["purchase"]>();
+  /** Provides subscribe behavior. */
   const subscribe = jest.fn<JestPurchaseCoordinator["subscribe"]>();
+  /** Sets products. */
   const setProducts = jest.fn<Dispatch<SetStateAction<ProductSummary[]>>>();
+  /** Tracks funnel. */
   const trackFunnel = jest.fn();
+  /** Provides purchase product behavior. */
   const purchaseProduct = useJestPurchase({
     products,
     purchases: {purchase, subscribe} as unknown as JestPurchaseCoordinator,
@@ -69,6 +82,7 @@ beforeEach(() => {
 
 describe("useJestPurchase", () => {
   it("rejects checkout before the Jest session is ready", async () => {
+    /** Provides {purchase, purchase product} behavior. */
     const {purchase, purchaseProduct} = createHarness({currentSession: null});
 
     await expect(purchaseProduct("coins-250")).rejects.toThrow("Jest session is not ready.");
@@ -77,6 +91,7 @@ describe("useJestPurchase", () => {
   });
 
   it("completes a consumable purchase and reports its authoritative grant", async () => {
+    /** Provides {purchase, purchase product, track funnel} behavior. */
     const {purchase, purchaseProduct, trackFunnel} = createHarness();
     purchase.mockResolvedValue({
       status: "success",
@@ -113,6 +128,7 @@ describe("useJestPurchase", () => {
   });
 
   it("uses safe analytics defaults when a product is absent from the current catalog", async () => {
+    /** Provides {purchase, purchase product} behavior. */
     const {purchase, purchaseProduct} = createHarness({products: []});
     purchase.mockResolvedValue({
       status: "success",
@@ -129,6 +145,7 @@ describe("useJestPurchase", () => {
   });
 
   it("returns a typed consumable cancellation without purchase telemetry", async () => {
+    /** Provides {purchase, purchase product, track funnel} behavior. */
     const {purchase, purchaseProduct, trackFunnel} = createHarness();
     purchase.mockResolvedValue({status: "cancelled"});
 
@@ -144,6 +161,7 @@ describe("useJestPurchase", () => {
   });
 
   it("keeps consumable checkout failures on the error path", async () => {
+    /** Provides {purchase, purchase product, track funnel} behavior. */
     const {purchase, purchaseProduct, trackFunnel} = createHarness();
     purchase.mockResolvedValue({status: "retryable-failure", message: "Checkout timed out"});
 
@@ -153,30 +171,32 @@ describe("useJestPurchase", () => {
   });
 
   it("requires a registered player before beginning a subscription", async () => {
+    /** Provides subscription behavior. */
     const subscription = product({
       productId: "premium-monthly",
       productType: "subscription",
       subscriptionStatus: "inactive",
     });
+    /** Provides {purchase product, subscribe} behavior. */
     const {purchaseProduct, subscribe} = createHarness({
       products: [subscription],
       currentSession: session(false),
       subscriptionsEnabled: true,
     });
 
-    await expect(purchaseProduct("premium-monthly")).rejects.toThrow(
-      "Registration is required to subscribe.",
-    );
+    await expect(purchaseProduct("premium-monthly")).rejects.toThrow("Registration is required to subscribe.");
     expect(subscribe).not.toHaveBeenCalled();
     expect(mockTrackEvent).toHaveBeenCalledTimes(1);
   });
 
   it("rejects a production subscription before analytics or platform checkout", async () => {
+    /** Provides subscription behavior. */
     const subscription = product({
       productId: "premium-monthly",
       productType: "subscription",
       subscriptionStatus: "inactive",
     });
+    /** Provides {purchase product, subscribe} behavior. */
     const {purchaseProduct, subscribe} = createHarness({products: [subscription]});
 
     await expect(purchaseProduct("premium-monthly")).rejects.toThrow("Subscriptions are not available.");
@@ -186,11 +206,13 @@ describe("useJestPurchase", () => {
   });
 
   it("returns immediately for an already-active subscription", async () => {
+    /** Provides subscription behavior. */
     const subscription = product({
       productId: "premium-monthly",
       productType: "subscription",
       subscriptionStatus: "active",
     });
+    /** Provides {purchase product, subscribe} behavior. */
     const {purchaseProduct, subscribe} = createHarness({products: [subscription], subscriptionsEnabled: true});
 
     await expect(purchaseProduct("premium-monthly")).resolves.toEqual({
@@ -203,11 +225,13 @@ describe("useJestPurchase", () => {
   });
 
   it("returns a typed subscription cancellation without activating the product", async () => {
+    /** Provides subscription behavior. */
     const subscription = product({
       productId: "premium-monthly",
       productType: "subscription",
       subscriptionStatus: "inactive",
     });
+    /** Provides {purchase product, set products, subscribe, track funnel} behavior. */
     const {purchaseProduct, setProducts, subscribe, trackFunnel} = createHarness({
       products: [subscription],
       subscriptionsEnabled: true,
@@ -226,11 +250,13 @@ describe("useJestPurchase", () => {
   });
 
   it("keeps subscription checkout failures on the error path", async () => {
+    /** Provides subscription behavior. */
     const subscription = product({
       productId: "premium-monthly",
       productType: "subscription",
       subscriptionStatus: "inactive",
     });
+    /** Provides {purchase product, subscribe} behavior. */
     const {purchaseProduct, subscribe} = createHarness({products: [subscription], subscriptionsEnabled: true});
     subscribe.mockResolvedValue({status: "terminal-failure", message: "Entitlement inactive"});
 
@@ -239,6 +265,7 @@ describe("useJestPurchase", () => {
   });
 
   it("activates a verified subscription and removes conflicting billing cadences", async () => {
+    /** Provides monthly behavior. */
     const monthly = product({
       productId: "premium-monthly",
       productType: "subscription",
@@ -246,20 +273,25 @@ describe("useJestPurchase", () => {
       trialEligible: true,
       price: 2.99,
     });
+    /** Provides yearly behavior. */
     const yearly = product({
       productId: "premium-yearly",
       productType: "subscription",
       subscriptionStatus: "inactive",
       trialEligible: true,
     });
+    /** Provides supporter behavior. */
     const supporter = product({
       productId: "supporter-monthly",
       productType: "subscription",
       subscriptionStatus: "inactive",
       trialEligible: true,
     });
+    /** Provides consumable behavior. */
     const consumable = product();
+    /** Provides products behavior. */
     const products = [monthly, yearly, supporter, consumable];
+    /** Provides {purchase product, set products, subscribe, track funnel} behavior. */
     const {purchaseProduct, setProducts, subscribe, trackFunnel} = createHarness({
       products,
       subscriptionsEnabled: true,
@@ -275,6 +307,7 @@ describe("useJestPurchase", () => {
       purchaseType: "subscription",
     });
 
+    /** Provides update behavior. */
     const update = setProducts.mock.calls[0][0] as (current: ProductSummary[]) => ProductSummary[];
     expect(update(products)).toEqual([
       {...monthly, subscriptionStatus: "active", trialEligible: false},

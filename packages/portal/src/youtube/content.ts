@@ -4,7 +4,23 @@ import type {YouTubeContent, YouTubeLocale, YouTubeRiddle} from "./types";
 
 /** Defines the youtube locales value. */
 export const YOUTUBE_LOCALES = [
-  "en", "es", "pt", "fr", "de", "ja", "ko", "zh", "hi", "ru", "tr", "ar", "id", "it", "nl", "pl", "vi",
+  "en",
+  "es",
+  "pt",
+  "fr",
+  "de",
+  "ja",
+  "ko",
+  "zh",
+  "hi",
+  "ru",
+  "tr",
+  "ar",
+  "id",
+  "it",
+  "nl",
+  "pl",
+  "vi",
 ] as const satisfies readonly YouTubeLocale[];
 
 /** Provides locale set behavior. */
@@ -18,25 +34,45 @@ const ANSWER_PATTERN = /^[\p{L}\p{M}]+$/u;
 
 /** Describes content riddle record. */
 type ContentRiddleRecord = Readonly<{
+  /** Stores text. */
   text: string;
+  /** Stores answer. */
   answer: string;
+  /** Stores category id. */
   categoryId: string;
+  /** Stores difficulty band. */
   difficultyBand: "easy" | "medium" | "hard";
+  /** Stores content fingerprint. */
   contentFingerprint: string;
 }>;
 
 /** Describes you tube content document. */
 type YouTubeContentDocument = Readonly<{
+  /** Stores schema version. */
   schemaVersion: 1;
+  /** Stores content version. */
   contentVersion: string;
+  /** Stores release ready. */
   releaseReady: boolean;
+  /** Stores fixture. */
   fixture: boolean;
+  /** Stores locales. */
   locales: YouTubeLocale[];
+  /** Stores classic order. */
   classicOrder: string[];
+  /** Stores daily schedule. */
   dailySchedule: {
+    /** Stores schedule version. */
     scheduleVersion: number;
-    segments: Array<{startsOn: string; canonicalIds: string[]}>;
+    /** Stores segments. */
+    segments: Array<{
+      /** Stores starts on. */
+      startsOn: string; /** Stores canonical ids. */
+      /** Stores canonical ids. */
+      canonicalIds: string[];
+    }>;
   };
+  /** Stores packs. */
   packs: Record<YouTubeLocale, Record<string, ContentRiddleRecord>>;
 }>;
 
@@ -51,18 +87,28 @@ const isId = (value: unknown, max = 200): value is string =>
 /** Indicates whether is utc day. */
 const isUtcDay = (value: unknown): value is string => {
   if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/u.test(value)) return false;
+  /** Parses d. */
   const parsed = new Date(`${value}T00:00:00.000Z`);
   return !Number.isNaN(parsed.getTime()) && parsed.toISOString().slice(0, 10) === value;
 };
 
 /** Parses riddle. */
 const parseRiddle = (id: string, value: unknown, locale: YouTubeLocale): YouTubeRiddle => {
-  if (!isRecord(value) || typeof value.text !== "string" || value.text.trim().length < 1 || value.text.length > 500 ||
-    typeof value.answer !== "string" || value.answer !== value.answer.normalize("NFC") ||
-    !ANSWER_PATTERN.test(value.answer) || splitGraphemes(value.answer, locale).length < 1 ||
-    splitGraphemes(value.answer, locale).length > 7 || !isId(value.categoryId, 80) ||
+  if (
+    !isRecord(value) ||
+    typeof value.text !== "string" ||
+    value.text.trim().length < 1 ||
+    value.text.length > 500 ||
+    typeof value.answer !== "string" ||
+    value.answer !== value.answer.normalize("NFC") ||
+    !ANSWER_PATTERN.test(value.answer) ||
+    splitGraphemes(value.answer, locale).length < 1 ||
+    splitGraphemes(value.answer, locale).length > 7 ||
+    !isId(value.categoryId, 80) ||
     (value.difficultyBand !== "easy" && value.difficultyBand !== "medium" && value.difficultyBand !== "hard") ||
-    typeof value.contentFingerprint !== "string" || !FINGERPRINT_PATTERN.test(value.contentFingerprint)) {
+    typeof value.contentFingerprint !== "string" ||
+    !FINGERPRINT_PATTERN.test(value.contentFingerprint)
+  ) {
     throw new Error(`youtube-content-riddle-invalid:${locale}:${id}`);
   }
   return {
@@ -77,42 +123,82 @@ const parseRiddle = (id: string, value: unknown, locale: YouTubeLocale): YouTube
 
 /** Maps a YouTube BCP-47 language to a bundled primary-language pack. */
 export function resolveYouTubeLocale(languageTag: string): YouTubeLocale {
+  /** Provides primary behavior. */
   const primary = languageTag.trim().toLocaleLowerCase("en").split(/[-_]/u)[0];
-  return localeSet.has(primary) ? primary as YouTubeLocale : "en";
+  return localeSet.has(primary) ? (primary as YouTubeLocale) : "en";
 }
 
 /** Validates the compiled content boundary before exposing answer-bearing data to the app. */
 export function parseYouTubeContentDocument(value: unknown, locale: YouTubeLocale): YouTubeContent {
-  if (!isRecord(value) || value.schemaVersion !== 1 || typeof value.releaseReady !== "boolean" ||
-    !isId(value.contentVersion, 160) || !Array.isArray(value.locales) || !value.locales.every((entry) => localeSet.has(String(entry))) ||
-    new Set(value.locales).size !== value.locales.length || !value.locales.includes(locale)) {
+  if (
+    !isRecord(value) ||
+    value.schemaVersion !== 1 ||
+    typeof value.releaseReady !== "boolean" ||
+    !isId(value.contentVersion, 160) ||
+    !Array.isArray(value.locales) ||
+    !value.locales.every((entry) => localeSet.has(String(entry))) ||
+    new Set(value.locales).size !== value.locales.length ||
+    !value.locales.includes(locale)
+  ) {
     throw new Error("youtube-content-envelope-invalid");
   }
-  if (!Array.isArray(value.classicOrder) || value.classicOrder.length === 0 ||
+  if (
+    !Array.isArray(value.classicOrder) ||
+    value.classicOrder.length === 0 ||
     !value.classicOrder.every((entry) => isId(entry, 160)) ||
-    new Set(value.classicOrder).size !== value.classicOrder.length) {
+    new Set(value.classicOrder).size !== value.classicOrder.length
+  ) {
     throw new Error("youtube-content-classic-order-invalid");
   }
-  if (!isRecord(value.dailySchedule) || !Number.isSafeInteger(value.dailySchedule.scheduleVersion) ||
-    Number(value.dailySchedule.scheduleVersion) < 1 || !Array.isArray(value.dailySchedule.segments) ||
-    value.dailySchedule.segments.length < 1 || value.dailySchedule.scheduleVersion !== value.dailySchedule.segments.length) {
+  if (
+    !isRecord(value.dailySchedule) ||
+    !Number.isSafeInteger(value.dailySchedule.scheduleVersion) ||
+    Number(value.dailySchedule.scheduleVersion) < 1 ||
+    !Array.isArray(value.dailySchedule.segments) ||
+    value.dailySchedule.segments.length < 1 ||
+    value.dailySchedule.scheduleVersion !== value.dailySchedule.segments.length
+  ) {
     throw new Error("youtube-content-daily-schedule-invalid");
   }
+  /** Provides daily segments behavior. */
   const dailySegments = value.dailySchedule.segments.map((segment, index) => {
-    if (!isRecord(segment) || Object.keys(segment).sort().join(",") !== "canonicalIds,startsOn" ||
-      !isUtcDay(segment.startsOn) || !Array.isArray(segment.canonicalIds) || segment.canonicalIds.length < 1 ||
+    if (
+      !isRecord(segment) ||
+      Object.keys(segment).sort().join(",") !== "canonicalIds,startsOn" ||
+      !isUtcDay(segment.startsOn) ||
+      !Array.isArray(segment.canonicalIds) ||
+      segment.canonicalIds.length < 1 ||
       !segment.canonicalIds.every((entry) => isId(entry, 160)) ||
-      new Set(segment.canonicalIds).size !== segment.canonicalIds.length) {
+      new Set(segment.canonicalIds).size !== segment.canonicalIds.length
+    ) {
       throw new Error(`youtube-content-daily-segment-invalid:${index}`);
     }
-    if (index > 0 && segment.startsOn <= String((value.dailySchedule as {segments: Array<{startsOn: string}>}).segments[index - 1]?.startsOn)) {
+    if (
+      index > 0 &&
+      segment.startsOn <=
+        String(
+          (
+            value.dailySchedule as {
+              /** Stores segments. */
+              segments: Array<{
+                /** Stores starts on. */
+                startsOn: string;
+              }>;
+            }
+          ).segments[index - 1]?.startsOn,
+        )
+    ) {
       throw new Error(`youtube-content-daily-segment-order-invalid:${index}`);
     }
     return {startsOn: segment.startsOn, canonicalIds: [...segment.canonicalIds] as string[]};
   });
-  if (!isRecord(value.packs) || !isRecord(value.packs[locale])) throw new Error(`youtube-content-pack-missing:${locale}`);
+  if (!isRecord(value.packs) || !isRecord(value.packs[locale]))
+    throw new Error(`youtube-content-pack-missing:${locale}`);
+  /** Provides raw pack behavior. */
   const rawPack = value.packs[locale];
+  /** Provides required ids behavior. */
   const requiredIds = new Set([...value.classicOrder, ...dailySegments.flatMap(({canonicalIds}) => canonicalIds)]);
+  /** Provides riddles behavior. */
   const riddles = new Map<string, YouTubeRiddle>();
   for (const id of requiredIds) {
     if (!isId(id, 160)) throw new Error(`youtube-content-id-invalid:${String(id)}`);
@@ -132,11 +218,26 @@ export function parseYouTubeContentDocument(value: unknown, locale: YouTubeLocal
 
 /** Loads you tube content. */
 export function loadYouTubeContent(locale: YouTubeLocale): YouTubeContent {
-  const document = contentDocument as unknown as {fixture?: unknown; locales?: unknown};
+  /** Provides document behavior. */
+  const document = contentDocument as unknown as {
+    /** Stores fixture. */
+    fixture?: unknown; /** Stores locales. */
+    /** Stores locales. */
+    locales?: unknown;
+  };
+  /** Provides available behavior. */
   const available = Array.isArray(document.locales) && document.locales.includes(locale);
+  /** Provides selected behavior. */
   const selected = available ? locale : document.fixture === true ? "en" : locale;
   return parseYouTubeContentDocument(contentDocument, selected);
 }
 
 /** Provides youtube content release ready behavior. */
-export const youtubeContentReleaseReady = Boolean((contentDocument as {releaseReady?: unknown}).releaseReady);
+export const youtubeContentReleaseReady = Boolean(
+  (
+    contentDocument as {
+      /** Stores release ready. */
+      releaseReady?: unknown;
+    }
+  ).releaseReady,
+);

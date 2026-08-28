@@ -5,15 +5,23 @@ jest.mock("../../test/localeModulesMock", () => ({
 import {loadNonEnglishNamespace} from "../../test/localeModulesMock";
 import {setLocale, tr, type Locale, type NamespaceCatalog, type SharedNamespace} from "../i18n";
 
+/** Describes deferred. */
 type Deferred = {
+  /** Stores promise. */
   promise: Promise<void>;
+  /** Stores reject. */
   reject: (error: Error) => void;
+  /** Stores resolve. */
   resolve: () => void;
 };
 
+/** Provides deferred behavior. */
 const deferred = (): Deferred => {
+  /** Provides reject behavior. */
   let reject!: (error: Error) => void;
+  /** Provides resolve behavior. */
   let resolve!: () => void;
+  /** Provides promise behavior. */
   const promise = new Promise<void>((resolvePromise, rejectPromise) => {
     resolve = resolvePromise;
     reject = rejectPromise;
@@ -21,10 +29,14 @@ const deferred = (): Deferred => {
   return {promise, reject, resolve};
 };
 
+/** Provides locale loads behavior. */
 const localeLoads = new Map<Locale, Deferred>();
+/** Provides mocked load namespace behavior. */
 const mockedLoadNamespace = jest.mocked(loadNonEnglishNamespace);
+/** Provides original document behavior. */
 const originalDocument = Object.getOwnPropertyDescriptor(globalThis, "document");
 
+/** Sets tle locale load. */
 const settleLocaleLoad = async (): Promise<void> => {
   await new Promise<void>((resolve) => setTimeout(resolve, 0));
 };
@@ -45,10 +57,17 @@ beforeEach(() => {
 
 afterAll(() => {
   if (originalDocument) Object.defineProperty(globalThis, "document", originalDocument);
-  else delete (globalThis as {document?: unknown}).document;
+  else
+    delete (
+      globalThis as {
+        /** Stores document. */
+        document?: unknown;
+      }
+    ).document;
 });
 
 it("commits document language and translations only after the catalog loads", async () => {
+  /** Provides arabic load behavior. */
   const arabicLoad = deferred();
   localeLoads.set("ar", arabicLoad);
 
@@ -65,8 +84,10 @@ it("commits document language and translations only after the catalog loads", as
 });
 
 it("retains the last committed locale when a catalog load fails", async () => {
+  /** Provides german load behavior. */
   const germanLoad = deferred();
   localeLoads.set("de", germanLoad);
+  /** Provides warning behavior. */
   const warning = jest.spyOn(console, "warn").mockImplementation(() => undefined);
 
   setLocale("de");
@@ -75,16 +96,14 @@ it("retains the last committed locale when a catalog load fails", async () => {
 
   expect(document.documentElement).toMatchObject({lang: "en", dir: "ltr"});
   expect(tr("WebPortal.APP_TITLE")).toBe("Riddle Quest");
-  expect(warning).toHaveBeenCalledWith(
-    "[riddle-quest-web] Failed to load locale",
-    "de",
-    expect.any(Error),
-  );
+  expect(warning).toHaveBeenCalledWith("[riddle-quest-web] Failed to load locale", "de", expect.any(Error));
   warning.mockRestore();
 });
 
 it("ignores a stale catalog that resolves after a newer locale request", async () => {
+  /** Provides french load behavior. */
   const frenchLoad = deferred();
+  /** Provides spanish load behavior. */
   const spanishLoad = deferred();
   localeLoads.set("fr", frenchLoad);
   localeLoads.set("es", spanishLoad);

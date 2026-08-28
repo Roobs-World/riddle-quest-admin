@@ -1,7 +1,9 @@
 import {beforeEach, describe, expect, it, jest} from "@jest/globals";
 import type {ScheduledEvent} from "firebase-functions/v2/scheduler";
 
+/** Provides mock generate for date behavior. */
 const mockGenerateForDate = jest.fn();
+/** Provides mock logger behavior. */
 const mockLogger = {
   info: jest.fn(),
   warn: jest.fn(),
@@ -17,6 +19,7 @@ jest.mock("firebase-functions", () => ({logger: mockLogger}));
 
 import {scheduledTaskHandler} from "../daily/dailyScheduler";
 
+/** Provides scheduled event behavior. */
 const scheduledEvent = {} as ScheduledEvent;
 
 describe("dailyChallengeScheduler", () => {
@@ -30,10 +33,9 @@ describe("dailyChallengeScheduler", () => {
     await scheduledTaskHandler(scheduledEvent);
 
     expect(mockGenerateForDate).toHaveBeenCalledWith("2026-08-12", false);
-    expect(mockLogger.info).toHaveBeenCalledWith(
-      "Daily scheduler finished successfully (localized daily set ready).",
-      {challengeDate: "2026-08-12"},
-    );
+    expect(mockLogger.info).toHaveBeenCalledWith("Daily scheduler finished successfully (localized daily set ready).", {
+      challengeDate: "2026-08-12",
+    });
   });
 
   it("self-heals today's missing immutable locale slots during early UTC retries", async () => {
@@ -45,18 +47,16 @@ describe("dailyChallengeScheduler", () => {
   });
 
   it("rethrows generation failures with bounded Cloud-log metadata", async () => {
+    /** Provides failure behavior. */
     const failure = Object.assign(new Error("candidate content must stay private"), {code: "rate_limit"});
     mockGenerateForDate.mockRejectedValue(failure);
 
     await expect(scheduledTaskHandler(scheduledEvent)).rejects.toBe(failure);
-    expect(mockLogger.error).toHaveBeenCalledWith(
-      "Daily scheduler failed while preparing immutable daily riddles.",
-      {
-        challengeDate: "2026-08-12",
-        errorClass: "Error",
-        code: "rate_limit",
-      },
-    );
+    expect(mockLogger.error).toHaveBeenCalledWith("Daily scheduler failed while preparing immutable daily riddles.", {
+      challengeDate: "2026-08-12",
+      errorClass: "Error",
+      code: "rate_limit",
+    });
     expect(mockLogger.error).not.toHaveBeenCalledWith(expect.anything(), failure);
   });
 });

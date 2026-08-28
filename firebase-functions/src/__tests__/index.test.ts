@@ -1,33 +1,61 @@
 import {describe, test, expect, jest, afterAll} from "@jest/globals";
 
 // Define types for Firebase Functions v2 mocking
+/** Describes callable options. */
 type CallableOptions = {
+  /** Stores cors. */
   cors?: boolean | string | string[];
+  /** Stores enforce app check. */
   enforceAppCheck?: boolean;
+  /** Stores memory. */
   memory?: string;
+  /** Stores timeout seconds. */
   timeoutSeconds?: number;
+  /** Stores max instances. */
   maxInstances?: number;
+  /** Stores min instances. */
   minInstances?: number;
+  /** Stores concurrency. */
   concurrency?: number;
+  /** Stores labels. */
   labels?: Record<string, string>;
+  /** Stores secrets. */
   secrets?: string[];
+  /** Stores invoker. */
   invoker?: string | string[];
 };
 
+/** Describes callable handler. */
 type CallableHandler<T = unknown, R = unknown> = (request: {
+  /** Stores data. */
   data: T;
-  auth?: {uid: string} | null;
-  rawRequest: {headers: Record<string, string>; body: Record<string, unknown>};
+  /** Stores auth. */
+  auth?: {
+    /** Stores uid. */
+    uid: string;
+  } | null;
+  /** Stores raw request. */
+  rawRequest: {
+    /** Stores headers. */
+    headers: Record<string, string>; /** Stores body. */
+    /** Stores body. */
+    body: Record<string, unknown>;
+  };
 }) => Promise<R>;
 
+/** Describes cloud function. */
 type CloudFunction = {
+  /** Stores run. */
   run: jest.MockedFunction<CallableHandler>;
 };
 
 // Mocking firebase-functions config and logger
 jest.mock("firebase-functions", () => {
+  /** Provides original behavior. */
   const original = jest.requireActual("firebase-functions") as typeof import("firebase-functions");
+  /** Provides original v1 module behavior. */
   const originalV1Module = jest.requireActual("firebase-functions/v1") as typeof import("firebase-functions/v1"); // Cast to more specific type
+  /** Provides original v1 https behavior. */
   const originalV1Https = originalV1Module.https; // Access https property
 
   return {
@@ -61,6 +89,7 @@ jest.mock("firebase-functions", () => {
 
 // Add mock for firebase-functions/v2
 jest.mock("firebase-functions/v2", () => {
+  /** Provides actual v2 behavior. */
   const actualV2 = jest.requireActual("firebase-functions/v2") as typeof import("firebase-functions/v2");
 
   return {
@@ -78,6 +107,7 @@ jest.mock("firebase-functions/v2", () => {
       ...(actualV2.https as object),
       // Mock onCall to return a function that can be wrapped by testEnv.wrap
       onCall: jest.fn((optsOrHandler: CallableOptions | CallableHandler, handler?: CallableHandler): CloudFunction => {
+        /** Provides actual handler behavior. */
         let actualHandler: CallableHandler;
         if (typeof optsOrHandler === "function") {
           actualHandler = optsOrHandler;
@@ -109,6 +139,7 @@ import * as myFunctions from "../index";
 
 describe("Firebase Functions", () => {
   describe("Exported Functions Existence", () => {
+    /** Provides expected functions behavior. */
     const expectedFunctions = [
       "spendCoins",
       "getCurrentDailyChallenge",

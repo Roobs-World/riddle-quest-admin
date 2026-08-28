@@ -328,13 +328,7 @@ export const RaceInboxItemSchema = z
   .strict();
 
 /** Bounded moderation categories accepted by the social-safety queue. */
-export const SocialReportCategorySchema = z.enum([
-  "harassment",
-  "cheating",
-  "inappropriate_identity",
-  "spam",
-  "other",
-]);
+export const SocialReportCategorySchema = z.enum(["harassment", "cheating", "inappropriate_identity", "spam", "other"]);
 /** One categorized social-safety report reason. */
 export type SocialReportCategory = z.infer<typeof SocialReportCategorySchema>;
 
@@ -378,9 +372,7 @@ export const RecordFacebookTournamentRunResponseSchema = z
   .strict();
 
 /** Requests the active 24-hour Facebook tournament for one exact locale. */
-export const ListFacebookTournamentRequestSchema = z
-  .object({locale: RaceLocaleSchema})
-  .strict();
+export const ListFacebookTournamentRequestSchema = z.object({locale: RaceLocaleSchema}).strict();
 
 /** One identity-free row in the server-authoritative tournament presentation. */
 export const FacebookTournamentStandingSchema = z
@@ -406,42 +398,54 @@ export const ListFacebookTournamentResponseSchema = z
   .strict();
 
 /** Validates the facebook context id data shape. */
-const FacebookContextIdSchema = z.string().min(1).max(256).regex(/^[A-Za-z0-9._:-]+$/);
+const FacebookContextIdSchema = z
+  .string()
+  .min(1)
+  .max(256)
+  .regex(/^[A-Za-z0-9._:-]+$/);
 
 /** Records one authoritative run into the player's current Facebook context board. */
-export const RecordFacebookContextRunRequestSchema = z.object({
-  contextId: FacebookContextIdSchema,
-  locale: RaceLocaleSchema,
-  runId: OpaqueIdSchema,
-}).strict();
+export const RecordFacebookContextRunRequestSchema = z
+  .object({
+    contextId: FacebookContextIdSchema,
+    locale: RaceLocaleSchema,
+    runId: OpaqueIdSchema,
+  })
+  .strict();
 
 /** Economy- and identity-free result of recording a context-board run. */
-export const RecordFacebookContextRunResponseSchema = z.object({
-  locale: RaceLocaleSchema,
-  runId: OpaqueIdSchema,
-  adjustedTimeMs: MillisecondsSchema.max(RACE_MAX_ADJUSTED_TIME_MS),
-  completedAtMs: MillisecondsSchema,
-  improved: z.boolean(),
-  sortOrder: z.literal("LOWER_IS_BETTER"),
-  rewardsEnabled: z.literal(false),
-}).strict();
+export const RecordFacebookContextRunResponseSchema = z
+  .object({
+    locale: RaceLocaleSchema,
+    runId: OpaqueIdSchema,
+    adjustedTimeMs: MillisecondsSchema.max(RACE_MAX_ADJUSTED_TIME_MS),
+    completedAtMs: MillisecondsSchema,
+    improved: z.boolean(),
+    sortOrder: z.literal("LOWER_IS_BETTER"),
+    rewardsEnabled: z.literal(false),
+  })
+  .strict();
 
 /** Requests the active seven-day board for an exact Facebook context and locale. */
-export const ListFacebookContextBoardRequestSchema = z.object({
-  contextId: FacebookContextIdSchema,
-  locale: RaceLocaleSchema,
-}).strict();
+export const ListFacebookContextBoardRequestSchema = z
+  .object({
+    contextId: FacebookContextIdSchema,
+    locale: RaceLocaleSchema,
+  })
+  .strict();
 
 /** Bounded identity-free Facebook context board. */
-export const ListFacebookContextBoardResponseSchema = z.object({
-  locale: RaceLocaleSchema,
-  startsAtMs: MillisecondsSchema,
-  endsAtMs: MillisecondsSchema,
-  sortOrder: z.literal("LOWER_IS_BETTER"),
-  rewardsEnabled: z.literal(false),
-  standings: z.array(FacebookTournamentStandingSchema).max(50),
-  currentPlayer: FacebookTournamentStandingSchema.optional(),
-}).strict();
+export const ListFacebookContextBoardResponseSchema = z
+  .object({
+    locale: RaceLocaleSchema,
+    startsAtMs: MillisecondsSchema,
+    endsAtMs: MillisecondsSchema,
+    sortOrder: z.literal("LOWER_IS_BETTER"),
+    rewardsEnabled: z.literal(false),
+    standings: z.array(FacebookTournamentStandingSchema).max(50),
+    currentPlayer: FacebookTournamentStandingSchema.optional(),
+  })
+  .strict();
 
 /** Validated request for listing multiplayer categories. */
 export type ListRaceCategoriesRequest = z.infer<typeof ListRaceCategoriesRequestSchema>;

@@ -1,12 +1,12 @@
 import {beforeEach, describe, expect, it, jest} from "@jest/globals";
 import {HttpsError} from "firebase-functions/v2/https";
 
+/** Provides mock purchase authoritative hint behavior. */
 const mockPurchaseAuthoritativeHint = jest.fn();
-const mockRunWithJestAccountOperationLease = jest.fn(async (
-  _userId: string,
-  _timeoutSeconds: number,
-  operation: () => Promise<unknown>,
-) => operation());
+/** Provides mock run with jest account operation lease behavior. */
+const mockRunWithJestAccountOperationLease = jest.fn(
+  async (_userId: string, _timeoutSeconds: number, operation: () => Promise<unknown>) => operation(),
+);
 
 jest.mock("../jest/jestAccountDeletion", () => ({
   ...jest.requireActual<typeof import("../jest/jestAccountDeletion")>("../jest/jestAccountDeletion"),
@@ -14,6 +14,7 @@ jest.mock("../jest/jestAccountDeletion", () => ({
 }));
 
 jest.mock("firebase-functions/v2/https", () => {
+  /** Provides actual behavior. */
   const actual = jest.requireActual("firebase-functions/v2/https") as typeof import("firebase-functions/v2/https");
   return {
     HttpsError: actual.HttpsError,
@@ -34,6 +35,7 @@ jest.mock("../riddles/riddleSupply", () => ({triggerClassicRiddleGenerationIfNee
 
 import {getHint} from "../gameplay/gameLogic";
 
+/** Provides data behavior. */
 const data = {
   riddleId: "rid-1",
   gameMode: "classic" as const,
@@ -63,10 +65,12 @@ describe("getHint callable", () => {
   });
 
   it("rejects missing session and request identities before charging", async () => {
-    await expect((getHint as any)({
-      auth: {uid: "user123"},
-      data: {riddleId: "rid-1", gameMode: "classic", currentAttempt: []},
-    })).rejects.toMatchObject({code: "invalid-argument"});
+    await expect(
+      (getHint as any)({
+        auth: {uid: "user123"},
+        data: {riddleId: "rid-1", gameMode: "classic", currentAttempt: []},
+      }),
+    ).rejects.toMatchObject({code: "invalid-argument"});
     expect(mockPurchaseAuthoritativeHint).not.toHaveBeenCalled();
   });
 

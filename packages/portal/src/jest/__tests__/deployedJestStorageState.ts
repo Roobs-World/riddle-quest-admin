@@ -2,9 +2,12 @@ import type {BrowserContext} from "@playwright/test";
 import {chmod, lstat, mkdir, open} from "node:fs/promises";
 import {dirname} from "node:path";
 
+/** Provides private file mode behavior. */
 const privateFileMode = 0o600;
 
+/** Asserts regular owner file. */
 const assertRegularOwnerFile = async (statePath: string): Promise<void> => {
+  /** Provides metadata behavior. */
   const metadata = await lstat(statePath);
   if (!metadata.isFile() || metadata.isSymbolicLink()) {
     throw new Error(`Jest sandbox browser state must be a regular file: ${statePath}`);
@@ -17,6 +20,7 @@ const assertRegularOwnerFile = async (statePath: string): Promise<void> => {
 /** Rejects reusable authenticated browser state unless it is an owner-only file. */
 export const assertPrivateJestStorageState = async (statePath: string): Promise<void> => {
   await assertRegularOwnerFile(statePath);
+  /** Provides metadata behavior. */
   const metadata = await lstat(statePath);
   if ((metadata.mode & 0o777) !== privateFileMode) {
     throw new Error(`Jest sandbox browser state must have mode 0600: ${statePath}`);
@@ -33,6 +37,7 @@ export const persistPrivateJestStorageState = async (
     await assertRegularOwnerFile(statePath);
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+    /** Provides handle behavior. */
     const handle = await open(statePath, "wx", privateFileMode);
     await handle.close();
   }

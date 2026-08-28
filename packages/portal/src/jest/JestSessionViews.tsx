@@ -4,7 +4,12 @@ import type {JestSession} from "./types";
 import type {JestStartupUpdate} from "./startup";
 
 /** Provides jest startup error behavior. */
-export function JestStartupError({message}: {message: string}) {
+export function JestStartupError({
+  message,
+}: {
+  /** Stores message. */ /** Stores message. */ /** Stores message. */
+  message: string;
+}) {
   return (
     <main className="route-missing">
       <div role="alert">
@@ -17,7 +22,13 @@ export function JestStartupError({message}: {message: string}) {
 }
 
 /** Provides jest startup progress behavior. */
-export function JestStartupProgress({startup}: {startup: JestStartupUpdate}) {
+export function JestStartupProgress({
+  startup,
+}: {
+  /** Stores startup. */ /** Stores startup. */
+  startup: JestStartupUpdate;
+}) {
+  /** Provides message key behavior. */
   const messageKey = {
     connecting: "WebPortal.STARTUP_CONNECTING",
     player: "WebPortal.STARTUP_PLAYER",
@@ -52,10 +63,15 @@ export function JestRegistrationAlert({
   onLogin,
   onDismiss,
 }: {
+  /** Stores blocked. */
   blocked: boolean;
+  /** Stores session. */
   session: JestSession;
+  /** Stores on register. */
   onRegister: () => void;
+  /** Stores on login. */
   onLogin: () => void;
+  /** Stores on dismiss. */
   onDismiss: () => void;
 }) {
   return (
@@ -71,9 +87,15 @@ export function JestRegistrationAlert({
         <p>{tr("Profile.JEST_REGISTRATION_GREETING", {name: session.entryIntent.customName})}</p>
       ) : null}
       <p>{tr("Profile.JEST_REGISTRATION_DESCRIPTION")}</p>
-      <button className="play-primary compact" onClick={onRegister}>{tr("Profile.JEST_REGISTER_BUTTON")}</button>
-      <button className="play-secondary compact" onClick={onLogin}>{tr("Profile.JEST_LOGIN_BUTTON")}</button>
-      <button className="play-text-button" onClick={onDismiss}>{tr("Profile.JEST_PLAY_AS_GUEST_BUTTON")}</button>
+      <button className="play-primary compact" onClick={onRegister}>
+        {tr("Profile.JEST_REGISTER_BUTTON")}
+      </button>
+      <button className="play-secondary compact" onClick={onLogin}>
+        {tr("Profile.JEST_LOGIN_BUTTON")}
+      </button>
+      <button className="play-text-button" onClick={onDismiss}>
+        {tr("Profile.JEST_PLAY_AS_GUEST_BUTTON")}
+      </button>
     </aside>
   );
 }

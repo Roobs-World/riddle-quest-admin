@@ -5,9 +5,11 @@ import {ACHIEVEMENT_DEFINITIONS, getAchievementProgress} from "../achievements";
 
 describe("multiplayer achievement presentation", () => {
   it("defines every authoritative multiplayer achievement with localized copy", () => {
+    /** Provides definitions behavior. */
     const definitions = new Map(ACHIEVEMENT_DEFINITIONS.map((achievement) => [achievement.id, achievement]));
 
     for (const achievementId of RACE_ACHIEVEMENT_IDS) {
+      /** Provides achievement behavior. */
       const achievement = definitions.get(achievementId);
       expect(achievement).toBeDefined();
       expect(achievement?.nameKey).toMatch(/^RaceTo10\.ACHIEVEMENT_/);
@@ -16,7 +18,9 @@ describe("multiplayer achievement presentation", () => {
   });
 
   it("calculates multiplayer progress from authoritative profile statistics", () => {
+    /** Provides wins behavior. */
     const wins = ACHIEVEMENT_DEFINITIONS.find((achievement) => achievement.id === "race_wins_25");
+    /** Provides hosts behavior. */
     const hosts = ACHIEVEMENT_DEFINITIONS.find((achievement) => achievement.id === "race_hosts_5");
 
     expect(wins?.getProgress({stats: {multiplayerWins: 12} as never})).toBe(12);
@@ -25,6 +29,7 @@ describe("multiplayer achievement presentation", () => {
 });
 
 describe("achievement progress", () => {
+  /** Provides stats behavior. */
   const stats = PlayerStatsSchema.parse({
     totalWins: 100,
     averageGuesses: 2.5,
@@ -41,6 +46,7 @@ describe("achievement progress", () => {
     multiplayerWins: 25,
     multiplayerChallengesCreated: 5,
   });
+  /** Provides progress behavior. */
   const progress = PlayerProgressSchema.parse({classicIndex: 100});
 
   it("has unique, complete definitions whose progress functions handle a full profile", () => {
@@ -61,6 +67,7 @@ describe("achievement progress", () => {
   });
 
   it("covers every efficient-solver outcome", () => {
+    /** Provides efficient behavior. */
     const efficient = ACHIEVEMENT_DEFINITIONS.find(({id}) => id === "efficient_10")!;
     expect(efficient.getProgress({stats: PlayerStatsSchema.parse({totalWins: 4})})).toBe(4);
     expect(efficient.getProgress({stats: PlayerStatsSchema.parse({totalWins: 10, averageGuesses: 4})})).toBe(10);

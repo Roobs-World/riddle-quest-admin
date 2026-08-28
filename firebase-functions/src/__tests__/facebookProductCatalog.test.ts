@@ -1,10 +1,8 @@
-import {
-  FACEBOOK_PRODUCTS,
-  resolveFacebookProduct,
-} from "../facebook/facebookProductCatalog";
+import {FACEBOOK_PRODUCTS, resolveFacebookProduct} from "../facebook/facebookProductCatalog";
 
 describe("Facebook product catalog", () => {
   it("owns the exact six consumable coin grants and base prices", () => {
+    /** Provides consumables behavior. */
     const consumables = Object.values(FACEBOOK_PRODUCTS).filter(({kind}) => kind === "consumable");
     expect(consumables.map(({coins}) => coins)).toEqual([250, 550, 900, 1_600, 3_400, 7_000]);
     expect(consumables.map(({basePriceUsdCents}) => basePriceUsdCents)).toEqual([99, 199, 299, 499, 999, 1_999]);

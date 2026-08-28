@@ -14,12 +14,9 @@ export const isRaceSlotEditable = (riddle: RaceRiddlePrompt, index: number): boo
   !riddle.revealedLetters.some((revealedLetter) => revealedLetter.index === index);
 
 /** Inserts a letter and advances to the next empty, editable answer slot. */
-export const insertRaceLetter = (
-  riddle: RaceRiddlePrompt,
-  state: RaceInputState,
-  letter: string,
-): RaceInputState => {
+export const insertRaceLetter = (riddle: RaceRiddlePrompt, state: RaceInputState, letter: string): RaceInputState => {
   if (!isRaceSlotEditable(riddle, state.activeSlotIndex)) return state;
+  /** Provides graphemes behavior. */
   const graphemes = splitGraphemes(letter.normalize("NFC"));
   if (graphemes.length !== 1 || !graphemes[0].trim()) return state;
 
@@ -41,22 +38,19 @@ export const insertRaceLetter = (
 };
 
 /** Inserts one committed IME/paste unit atomically, ignoring text beyond the initially editable capacity. */
-export const insertRaceText = (
-  riddle: RaceRiddlePrompt,
-  state: RaceInputState,
-  text: string,
-): RaceInputState => {
+export const insertRaceText = (riddle: RaceRiddlePrompt, state: RaceInputState, text: string): RaceInputState => {
+  /** Provides graphemes behavior. */
   const graphemes = splitGraphemes(text.normalize("NFC")).filter((grapheme) => Boolean(grapheme.trim()));
   if (graphemes.length === 0 || !isRaceSlotEditable(riddle, state.activeSlotIndex)) return state;
+  /** Provides revealed indexes behavior. */
   const revealedIndexes = new Set(riddle.revealedLetters.map(({index}) => index));
+  /** Provides initial letters behavior. */
   const initialLetters = Array.from({length: riddle.answerLength}, (_, index) => state.letters[index] ?? "");
-  const capacity = initialLetters.reduce((count, letter, index) =>
-    count + (!revealedIndexes.has(index) && !letter ? 1 : 0), 0) +
+  /** Provides capacity behavior. */
+  const capacity =
+    initialLetters.reduce((count, letter, index) => count + (!revealedIndexes.has(index) && !letter ? 1 : 0), 0) +
     (initialLetters[state.activeSlotIndex] ? 1 : 0);
-  return graphemes.slice(0, capacity).reduce(
-    (current, grapheme) => insertRaceLetter(riddle, current, grapheme),
-    state,
-  );
+  return graphemes.slice(0, capacity).reduce((current, grapheme) => insertRaceLetter(riddle, current, grapheme), state);
 };
 
 /** Deletes the active letter or the nearest previous editable letter. */
@@ -69,10 +63,11 @@ export const deleteRaceLetter = (riddle: RaceRiddlePrompt, state: RaceInputState
   let targetIndex = state.activeSlotIndex;
 
   if (!letters[targetIndex] || revealedIndexes.has(targetIndex)) {
-    targetIndex = Array.from(
-      {length: riddle.answerLength},
-      (_, offset) => (state.activeSlotIndex - offset - 1 + riddle.answerLength) % riddle.answerLength,
-    ).find((index) => !revealedIndexes.has(index) && Boolean(letters[index])) ?? state.activeSlotIndex;
+    targetIndex =
+      Array.from(
+        {length: riddle.answerLength},
+        (_, offset) => (state.activeSlotIndex - offset - 1 + riddle.answerLength) % riddle.answerLength,
+      ).find((index) => !revealedIndexes.has(index) && Boolean(letters[index])) ?? state.activeSlotIndex;
   }
   if (revealedIndexes.has(targetIndex)) return state;
 

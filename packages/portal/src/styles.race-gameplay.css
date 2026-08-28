@@ -3,9 +3,12 @@
   background:
     radial-gradient(circle at 18% 22%, #fff 0 1px, transparent 1.5px),
     radial-gradient(circle at 72% 36%, #fff 0 1px, transparent 1.5px),
-    radial-gradient(circle at 46% 78%, #f1d700 0 1.5px, transparent 2px),
-    linear-gradient(180deg, #02070d, #071722);
-  background-size: 83px 83px, 127px 127px, 173px 173px, 100% 100%;
+    radial-gradient(circle at 46% 78%, #f1d700 0 1.5px, transparent 2px), linear-gradient(180deg, #02070d, #071722);
+  background-size:
+    83px 83px,
+    127px 127px,
+    173px 173px,
+    100% 100%;
 }
 .race-header-clock {
   width: 100%;
@@ -234,7 +237,10 @@
   margin: 0;
   text-align: center;
   color: #171717;
-  font: 400 36px/1.22 "Poetsen One", "Poppins", sans-serif;
+  font:
+    400 36px/1.22 "Poetsen One",
+    "Poppins",
+    sans-serif;
 }
 .race-riddle-surface .riddle-card > p {
   margin: 5px 0 0;

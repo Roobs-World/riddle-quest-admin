@@ -9,17 +9,19 @@ import {isFacebookFirebaseUid} from "./facebookSecurity";
 import {syncFacebookPresenceFeatureGate} from "../presence/presenceFeatureGate";
 
 /** Validates the facebook client configuration response data shape. */
-const FacebookClientConfigurationResponseSchema = z.object({
-  interstitialsEnabled: z.boolean(),
-  notificationsEnabled: z.boolean(),
-  commerceEnabled: z.boolean(),
-  rewardedAdsEnabled: z.boolean(),
-  referralsEnabled: z.boolean(),
-  matchmakingEnabled: z.boolean(),
-  tournamentsEnabled: z.boolean(),
-  presenceEnabled: z.boolean(),
-  removeInterstitialAds: z.boolean(),
-}).strict();
+const FacebookClientConfigurationResponseSchema = z
+  .object({
+    interstitialsEnabled: z.boolean(),
+    notificationsEnabled: z.boolean(),
+    commerceEnabled: z.boolean(),
+    rewardedAdsEnabled: z.boolean(),
+    referralsEnabled: z.boolean(),
+    matchmakingEnabled: z.boolean(),
+    tournamentsEnabled: z.boolean(),
+    presenceEnabled: z.boolean(),
+    removeInterstitialAds: z.boolean(),
+  })
+  .strict();
 
 /** Projects the server switch set and durable entitlement without exposing commerce debt or receipts. */
 export function resolveFacebookClientConfiguration(
@@ -54,9 +56,12 @@ export const getFacebookClientConfiguration = onCallWithSentry(
       throw new HttpsError("unauthenticated", "Facebook authentication is required.");
     }
     validateCallableRequest(z.object({}).strict(), request.data, "getFacebookClientConfiguration");
+    /** Provides presence enabled behavior. */
     const presenceEnabled = isFacebookFeatureEnabled("presence");
     await syncFacebookPresenceFeatureGate(presenceEnabled);
+    /** Provides commerce account behavior. */
     const commerceAccount = await getFirestore().collection("facebookCommerceAccounts").doc(request.auth.uid).get();
+    /** Provides configuration behavior. */
     const configuration = resolveFacebookClientConfiguration(commerceAccount.data());
     if (configuration.presenceEnabled !== presenceEnabled) {
       throw new Error("facebook-presence-feature-gate-drift");

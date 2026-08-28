@@ -45,10 +45,14 @@ export function evaluateRaceRollout(
   userId: string,
   locale: RaceLocale = "en",
 ): RaceAccessResponse {
+  /** Provides config behavior. */
   const config = RaceRolloutConfigSchema.catch(DEFAULT_CONFIG).parse(configInput);
   if (!config.enabled) return {enabled: false, locale, reason: "rollout_disabled"};
+  /** Provides hash behavior. */
   const hash = hashRaceCohortUser(userId);
+  /** Provides bucket behavior. */
   const bucket = Number.parseInt(hash.slice(0, 8), 16) / 0x1_0000_0000;
+  /** Provides enabled behavior. */
   const enabled = config.allowlistHashes.includes(hash) || bucket * 100 < config.percentage;
   return RaceAccessResponseSchema.parse({
     enabled,
@@ -66,13 +70,16 @@ export async function getRaceAccessForUser(
   if (locale !== "en" && !isFacebookFirebaseUid(userId) && !isRedditFirebaseUid(userId)) {
     return {enabled: false, locale, reason: "rollout_disabled"};
   }
+  /** Provides db behavior. */
   const db = dbInput ?? admin.firestore();
+  /** Provides snapshot behavior. */
   const snapshot = await db.doc("raceConfig/rollout").get();
   return evaluateRaceRollout(snapshot.exists ? snapshot.data() : DEFAULT_CONFIG, userId, locale);
 }
 
 /** Throws unless the player currently belongs to the enabled race cohort. */
 export async function assertRaceAccess(userId: string, locale: RaceLocale = "en", dbInput?: Firestore): Promise<void> {
+  /** Provides access behavior. */
   const access = await getRaceAccessForUser(userId, locale, dbInput);
   if (!access.enabled) throw new HttpsError("permission-denied", "Race to 10 is not enabled for this player.");
 }
@@ -81,14 +88,28 @@ export async function assertRaceAccess(userId: string, locale: RaceLocale = "en"
 export async function recordRaceAnalyticsForUser(
   userId: string,
   input: RaceAnalyticsEventRequest,
-  options: {db?: Firestore; nowMs?: number} = {},
-): Promise<{accepted: true}> {
+  options: {
+    /** Stores db. */
+    db?: Firestore; /** Stores now ms. */
+    /** Stores now ms. */
+    nowMs?: number;
+  } = {},
+): Promise<{
+  /** Stores accepted. */
+  accepted: true;
+}> {
+  /** Provides db behavior. */
   const db = options.db ?? admin.firestore();
   await assertRaceAccess(userId, "en", db);
+  /** Provides now ms behavior. */
   const nowMs = options.nowMs ?? Date.now();
+  /** Provides allowed behavior. */
   const allowed = new Set<string>(RACE_ANALYTICS_FIELDS[input.eventName]);
+  /** Provides params behavior. */
   const params = Object.fromEntries(Object.entries(input.params).filter(([key]) => allowed.has(key)));
+  /** Provides document id behavior. */
   const documentId = createHash("sha256").update(`${userId}\u0000${input.eventId}`).digest("hex");
+  /** Provides reference behavior. */
   const reference = db.collection("raceAnalytics").doc(documentId);
   await db.runTransaction(async (transaction) => {
     if ((await transaction.get(reference)).exists) return;

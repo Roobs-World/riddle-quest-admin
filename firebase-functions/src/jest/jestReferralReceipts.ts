@@ -60,17 +60,19 @@ export function selectReferralConversions(
   payload: Record<string, unknown>,
   inviterPlayerId: string,
 ): JestReferralConversion[] {
+  /** Provides referrals behavior. */
   const referrals = isRecord(payload.referrals) ? payload.referrals : {};
+  /** Provides conversions behavior. */
   const conversions = Object.entries(referrals).flatMap(([reference, entries]) =>
     isJestRewardedReferralReference(reference) && Array.isArray(entries)
       ? entries.filter(isReferralConversion).map((entry) => ({...entry, reference}))
       : [],
   );
-  return [...new Map(
-    conversions
-      .filter((entry) => entry.playerId !== inviterPlayerId)
-      .map((entry) => [entry.playerId, entry]),
-  ).values()];
+  return [
+    ...new Map(
+      conversions.filter((entry) => entry.playerId !== inviterPlayerId).map((entry) => [entry.playerId, entry]),
+    ).values(),
+  ];
 }
 
 /**
@@ -83,9 +85,12 @@ export async function selectUngrantedReferralConversions(
   conversions: readonly JestReferralConversion[],
   readReceiptStates: (batch: readonly JestReferralConversion[]) => Promise<readonly boolean[]>,
 ): Promise<JestReferralConversion[]> {
+  /** Provides selected behavior. */
   const selected: JestReferralConversion[] = [];
   for (let offset = 0; offset < conversions.length; offset += REFERRAL_RECEIPT_SCAN_BATCH_SIZE) {
+    /** Provides batch behavior. */
     const batch = conversions.slice(offset, offset + REFERRAL_RECEIPT_SCAN_BATCH_SIZE);
+    /** Provides receipt states behavior. */
     const receiptStates = await readReceiptStates(batch);
     if (receiptStates.length !== batch.length) throw new Error("invalid-referral-receipt-scan");
     for (let index = 0; index < batch.length; index += 1) {

@@ -55,11 +55,10 @@ export const getCoronaAnimationState = (elapsedSeconds: number): CoronaAnimation
 });
 
 /** Gets shooting star progress. */
-export const getShootingStarProgress = (
-  elapsedSeconds: number,
-  phaseOffsetSeconds: number,
-): number | null => {
-  const phase = ((elapsedSeconds + phaseOffsetSeconds) % SHOOTING_STAR_CYCLE_SECONDS +
-    SHOOTING_STAR_CYCLE_SECONDS) % SHOOTING_STAR_CYCLE_SECONDS;
+export const getShootingStarProgress = (elapsedSeconds: number, phaseOffsetSeconds: number): number | null => {
+  /** Provides phase behavior. */
+  const phase =
+    (((elapsedSeconds + phaseOffsetSeconds) % SHOOTING_STAR_CYCLE_SECONDS) + SHOOTING_STAR_CYCLE_SECONDS) %
+    SHOOTING_STAR_CYCLE_SECONDS;
   return phase <= SHOOTING_STAR_DURATION_SECONDS ? phase / SHOOTING_STAR_DURATION_SECONDS : null;
 };

@@ -1,7 +1,10 @@
 import {runWhenLayoutReady} from "../game/layoutReady";
 
+/** Provides install browser behavior. */
 const installBrowser = (readyState: DocumentReadyState) => {
+  /** Provides frame callback behavior. */
   let frameCallback: FrameRequestCallback | undefined;
+  /** Lists eners. */
   const listeners = new Map<string, EventListenerOrEventListenerObject>();
   Object.defineProperty(globalThis, "document", {
     configurable: true,
@@ -23,6 +26,7 @@ const installBrowser = (readyState: DocumentReadyState) => {
   });
   return {
     fireLoad: () => {
+      /** Lists ener. */
       const listener = listeners.get("load");
       if (typeof listener === "function") listener(new Event("load"));
       else listener?.handleEvent(new Event("load"));
@@ -38,8 +42,11 @@ describe("layout readiness", () => {
   });
 
   it("runs on the next animation frame when the document is complete", () => {
+    /** Provides browser behavior. */
     const browser = installBrowser("complete");
+    /** Provides callback behavior. */
     const callback = jest.fn();
+    /** Provides cancel behavior. */
     const cancel = runWhenLayoutReady(callback);
     browser.fireFrame();
     expect(callback).toHaveBeenCalledTimes(1);
@@ -49,8 +56,11 @@ describe("layout readiness", () => {
   });
 
   it("waits for load and suppresses a frame callback after cancellation", () => {
+    /** Provides browser behavior. */
     const browser = installBrowser("loading");
+    /** Provides callback behavior. */
     const callback = jest.fn();
+    /** Provides cancel behavior. */
     const cancel = runWhenLayoutReady(callback);
     expect(window.addEventListener).toHaveBeenCalledWith("load", expect.any(Function), {once: true});
     browser.fireLoad();

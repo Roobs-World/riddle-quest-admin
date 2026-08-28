@@ -3,7 +3,12 @@ import {REDDIT_GOLD_PRODUCTS, resolveRedditGoldProduct} from "../redditCatalog";
 describe("Reddit Gold product catalog", () => {
   it("defines exactly the six approved coin-to-Gold grants", () => {
     expect(REDDIT_GOLD_PRODUCTS.map(({coins, goldCost}) => [coins, goldCost])).toEqual([
-      [250, 50], [550, 100], [900, 150], [1600, 250], [3400, 500], [7000, 1000],
+      [250, 50],
+      [550, 100],
+      [900, 150],
+      [1600, 250],
+      [3400, 500],
+      [7000, 1000],
     ]);
     expect(new Set(REDDIT_GOLD_PRODUCTS.map(({productId}) => productId)).size).toBe(6);
   });

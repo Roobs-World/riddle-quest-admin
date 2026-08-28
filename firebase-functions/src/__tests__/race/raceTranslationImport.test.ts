@@ -4,9 +4,12 @@ import {
   assertRaceTranslationImportSnapshotStable,
   createRaceTranslationImportPlan,
 } from "../../race/raceTranslationImport";
-import {AUTOMATED_TRANSLATION_QUALITY_VERSION, raceTranslationCanonicalHash} from
-  "../../race/raceTranslationValidation";
+import {
+  AUTOMATED_TRANSLATION_QUALITY_VERSION,
+  raceTranslationCanonicalHash,
+} from "../../race/raceTranslationValidation";
 
+/** Provides bundle behavior. */
 const bundle = () => ({
   locale: "ja",
   provenance: AUTOMATED_TRANSLATION_QUALITY_VERSION,
@@ -34,41 +37,49 @@ const bundle = () => ({
 
 describe("race translation import boundary", () => {
   it("rejects concurrent target or eligible-set changes after backup", () => {
+    /** Provides expected behavior. */
     const expected = [
       {path: "localizedRiddles/ja/riddles/a", version: "10:1"},
       {path: "localizedRiddles/ja/riddles/b", version: null},
     ];
-    expect(() => assertRaceTranslationImportSnapshotStable(
-      expected, [...expected].reverse(), "targets",
-    )).not.toThrow();
-    expect(() => assertRaceTranslationImportSnapshotStable(
-      expected, [{...expected[0], version: "10:2"}, expected[1]], "targets",
-    )).toThrow("translation-import-state-changed:targets");
-    expect(() => assertRaceTranslationImportSnapshotStable(
-      expected, [...expected, {path: "localizedRiddles/ja/riddles/c", version: "1:0"}], "eligible",
-    )).toThrow("translation-import-state-changed:eligible");
+    expect(() => assertRaceTranslationImportSnapshotStable(expected, [...expected].reverse(), "targets")).not.toThrow();
+    expect(() =>
+      assertRaceTranslationImportSnapshotStable(expected, [{...expected[0], version: "10:2"}, expected[1]], "targets"),
+    ).toThrow("translation-import-state-changed:targets");
+    expect(() =>
+      assertRaceTranslationImportSnapshotStable(
+        expected,
+        [...expected, {path: "localizedRiddles/ja/riddles/c", version: "1:0"}],
+        "eligible",
+      ),
+    ).toThrow("translation-import-state-changed:eligible");
   });
 
   it("permits one complete batch and rejects partial or invalid write counts", () => {
     expect(assertRaceTranslationAtomicWriteCount(180, 320)).toBe(500);
-    expect(() => assertRaceTranslationAtomicWriteCount(180, 321))
-      .toThrow("translation-import-atomic-limit:501");
-    expect(() => assertRaceTranslationAtomicWriteCount(-1, 0))
-      .toThrow("translation-import-write-count-invalid");
-    expect(() => assertRaceTranslationAtomicWriteCount(Number.MAX_SAFE_INTEGER, 1))
-      .toThrow("translation-import-atomic-limit");
+    expect(() => assertRaceTranslationAtomicWriteCount(180, 321)).toThrow("translation-import-atomic-limit:501");
+    expect(() => assertRaceTranslationAtomicWriteCount(-1, 0)).toThrow("translation-import-write-count-invalid");
+    expect(() => assertRaceTranslationAtomicWriteCount(Number.MAX_SAFE_INTEGER, 1)).toThrow(
+      "translation-import-atomic-limit",
+    );
   });
 
   it("accepts only the exact locale/provenance filename and produces 180 exact writes", () => {
+    /** Provides plan behavior. */
     const plan = createRaceTranslationImportPlan(
-      bundle(), reviewedEnglish, "/private/race-ja-automated-translation-v1.json",
+      bundle(),
+      reviewedEnglish,
+      "/private/race-ja-automated-translation-v1.json",
     );
     expect(plan.valid).toBe(true);
     expect(plan.records).toHaveLength(180);
-    expect(plan.records.every(({locale, data}) =>
-      locale === "ja" && data.qualityVersion === AUTOMATED_TRANSLATION_QUALITY_VERSION)).toBe(true);
-    expect(() => createRaceTranslationImportPlan(
-      bundle(), reviewedEnglish, "/private/race-fr-automated-translation-v1.json",
-    )).toThrow("translation-input-filename-mismatch:race-ja-automated-translation-v1.json");
+    expect(
+      plan.records.every(
+        ({locale, data}) => locale === "ja" && data.qualityVersion === AUTOMATED_TRANSLATION_QUALITY_VERSION,
+      ),
+    ).toBe(true);
+    expect(() =>
+      createRaceTranslationImportPlan(bundle(), reviewedEnglish, "/private/race-fr-automated-translation-v1.json"),
+    ).toThrow("translation-input-filename-mismatch:race-ja-automated-translation-v1.json");
   });
 });

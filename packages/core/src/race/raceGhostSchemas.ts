@@ -1,10 +1,5 @@
 import {z} from "zod";
-import {
-  RACE_DECK_SIZE,
-  RACE_HINT_PENALTY_MS,
-  RACE_SKIP_PENALTY_MS,
-  RACE_TARGET_CORRECT,
-} from "./raceDefinitionSchemas";
+import {RACE_DECK_SIZE, RACE_HINT_PENALTY_MS, RACE_SKIP_PENALTY_MS, RACE_TARGET_CORRECT} from "./raceDefinitionSchemas";
 
 /** Validates a non-negative millisecond duration. */
 const MillisecondsSchema = z.number().int().nonnegative();
@@ -19,7 +14,11 @@ export const RaceGhostEventSchema = z
   .object({
     sequence: z.number().int().nonnegative(),
     type: RaceEventTypeSchema,
-    riddlePosition: z.number().int().nonnegative().max(RACE_DECK_SIZE - 1),
+    riddlePosition: z
+      .number()
+      .int()
+      .nonnegative()
+      .max(RACE_DECK_SIZE - 1),
     wallElapsedMs: MillisecondsSchema,
     penaltyAddedMs: z.union([z.literal(0), z.literal(RACE_HINT_PENALTY_MS), z.literal(RACE_SKIP_PENALTY_MS)]),
     totalPenaltyMs: MillisecondsSchema,
@@ -28,7 +27,9 @@ export const RaceGhostEventSchema = z
   })
   .strict()
   .check((context) => {
+    /** Provides event behavior. */
     const event = context.value;
+    /** Provides expected penalty behavior. */
     const expectedPenalty =
       event.type === "hint" ? RACE_HINT_PENALTY_MS : event.type === "skip" ? RACE_SKIP_PENALTY_MS : 0;
     if (event.penaltyAddedMs !== expectedPenalty) {

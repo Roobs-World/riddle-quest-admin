@@ -2,26 +2,35 @@ import {beforeEach, describe, expect, it, jest} from "@jest/globals";
 import type {GameToHostMessage} from "@qwordly/core/bridge";
 import type {RaceOperation} from "../logic/raceOperations";
 
+/** Describes effect. */
 type Effect = () => void | (() => void);
 
+/** Provides mock effects behavior. */
 const mockEffects: Effect[] = [];
-const mockRefs: Array<{current: unknown}> = [];
+/** Provides mock refs behavior. */
+const mockRefs: Array<{
+  /** Stores current. */
+  current: unknown;
+}> = [];
+/** Provides mock set pending behavior. */
 const mockSetPending = jest.fn();
+/** Provides mock set race guess loading behavior. */
 const mockSetRaceGuessLoading = jest.fn();
+/** Provides mock create request id behavior. */
 const mockCreateRequestId = jest.fn((operation: string) => `request-${operation}`);
+/** Provides mock state call behavior. */
 let mockStateCall = 0;
 
 jest.mock("react", () => ({
   useCallback: (callback: unknown) => callback,
   useEffect: (effect: Effect) => mockEffects.push(effect),
   useRef: (initialValue: unknown) => {
+    /** Provides ref behavior. */
     const ref = {current: initialValue};
     mockRefs.push(ref);
     return ref;
   },
-  useState: () => mockStateCall++ === 0
-    ? [null, mockSetPending]
-    : [false, mockSetRaceGuessLoading],
+  useState: () => (mockStateCall++ === 0 ? [null, mockSetPending] : [false, mockSetRaceGuessLoading]),
 }));
 
 jest.mock("../../requestIds", () => ({
@@ -30,9 +39,13 @@ jest.mock("../../requestIds", () => ({
 
 import {useRaceOperationLifecycle} from "../hooks/useRaceOperationLifecycle";
 
+/** Creates harness. */
 const createHarness = () => {
+  /** Provides post to host behavior. */
   const postToHost = jest.fn<(message: GameToHostMessage) => void>();
+  /** Sets error. */
   const setError = jest.fn();
+  /** Provides lifecycle behavior. */
   const lifecycle = useRaceOperationLifecycle({postToHost, setError: setError as never});
   expect(mockRefs).toHaveLength(5);
   expect(mockEffects).toHaveLength(1);
@@ -59,6 +72,7 @@ beforeEach(() => {
 
 describe("useRaceOperationLifecycle", () => {
   it("correlates read operations without adding mutation receipts", () => {
+    /** Provides {lifecycle, post to host, set error} behavior. */
     const {lifecycle, postToHost, setError} = createHarness();
 
     lifecycle.send("raceInbox", "game:listRaceInbox", {limit: 20});
@@ -71,12 +85,14 @@ describe("useRaceOperationLifecycle", () => {
       requestId: "request-raceInbox",
       payload: {limit: 20},
     });
+    /** Provides cleanup behavior. */
     const cleanup = mockEffects[0]() as () => void;
     cleanup();
     expect(window.clearTimeout).not.toHaveBeenCalled();
   });
 
   it("adds the same idempotency receipt used for bridge correlation to mutations", () => {
+    /** Provides {lifecycle, post to host} behavior. */
     const {lifecycle, postToHost} = createHarness();
 
     lifecycle.send("raceHint", "game:requestRaceHint", {runId: "run-1", riddleId: "riddle-1"});
@@ -93,24 +109,28 @@ describe("useRaceOperationLifecycle", () => {
   });
 
   it("keeps the answer loader visible for its minimum duration", () => {
+    /** Provides {lifecycle} behavior. */
     const {lifecycle} = createHarness();
     lifecycle.send("raceGuess", "game:submitRaceGuess", {});
 
     expect(mockSetRaceGuessLoading).toHaveBeenCalledWith(true);
     lifecycle.finishOperation("raceGuess");
 
+    /** Provides pending updater behavior. */
     const pendingUpdater = mockSetPending.mock.calls.at(-1)?.[0] as (
       current: RaceOperation | null,
     ) => RaceOperation | null;
     expect(pendingUpdater("raceGuess")).toBeNull();
     expect(pendingUpdater("raceHint")).toBe("raceHint");
     expect(window.setTimeout).toHaveBeenCalledWith(expect.any(Function), 180);
+    /** Provides finish loader behavior. */
     const finishLoader = (window.setTimeout as jest.Mock).mock.calls[0][0] as () => void;
     finishLoader();
     expect(mockSetRaceGuessLoading).toHaveBeenLastCalledWith(false);
   });
 
   it("hands a completed guess loader over to the outcome request", () => {
+    /** Provides {lifecycle} behavior. */
     const {lifecycle} = createHarness();
     lifecycle.send("raceGuess", "game:submitRaceGuess", {});
     lifecycle.setRaceGuessAwaitingOutcome(true);
@@ -122,6 +142,7 @@ describe("useRaceOperationLifecycle", () => {
   });
 
   it("cancels stale loader timers on a new guess and during unmount", () => {
+    /** Provides {lifecycle} behavior. */
     const {lifecycle} = createHarness();
     lifecycle.send("raceGuess", "game:submitRaceGuess", {});
     lifecycle.finishOperation("raceGuess");
@@ -129,6 +150,7 @@ describe("useRaceOperationLifecycle", () => {
     lifecycle.send("raceGuess", "game:submitRaceGuess", {});
     expect(window.clearTimeout).toHaveBeenCalledWith(17);
     lifecycle.finishOperation("raceGuess");
+    /** Provides cleanup behavior. */
     const cleanup = mockEffects[0]() as () => void;
     cleanup();
     expect(window.clearTimeout).toHaveBeenLastCalledWith(17);

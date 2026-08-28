@@ -87,6 +87,7 @@ export const safeBrowserStorageRemove = (area: BrowserStorageArea, key: string):
 
 /** Installs a Jest-runtime-only guard around app-owned browser-state mutations. */
 export function installBrowserPlayerStateMutationGuard(guard: () => boolean): () => void {
+  /** Provides previous guard behavior. */
   const previousGuard = browserPlayerStateMutationGuard;
   browserPlayerStateMutationGuard = guard;
   return () => {
@@ -101,6 +102,7 @@ const parseLocale = (value: unknown): Locale | undefined => {
 
 /** Reads a boolean serialized by this module. */
 const readStoredBoolean = (key: string): boolean | undefined => {
+  /** Provides value behavior. */
   const value = safeBrowserStorageGet("local", key);
   if (value === "true") return true;
   if (value === "false") return false;
@@ -114,6 +116,7 @@ const matchesMedia = (query: string): boolean => {
 
 /** Applies accessibility flags to the document before the game surface mounts. */
 const applyAccessibilityPreferences = (reducedMotion: boolean, highContrast: boolean): void => {
+  /** Provides root behavior. */
   const root = typeof document === "undefined" ? undefined : document.documentElement;
   if (!root) return;
   root.dataset.riddleQuestReducedMotion = String(reducedMotion);
@@ -127,18 +130,26 @@ const emitPreferenceChange = (change: PlayerPreferenceChange): void => {
 
 /** Applies persisted platform preferences before hosted play initializes. */
 export function applyPlayerPreferences(preferences: PlayerPreferences): Required<PlayerPreferences> {
+  /** Stores d locale. */
   const storedLocale = parseLocale(safeBrowserStorageGet("local", PLAYER_PREFERENCE_STORAGE_KEYS.locale));
-  const locale = parseLocale(preferences.locale) ?? storedLocale ?? detectDeviceLanguage(globalThis.navigator?.language);
+  /** Provides locale behavior. */
+  const locale =
+    parseLocale(preferences.locale) ?? storedLocale ?? detectDeviceLanguage(globalThis.navigator?.language);
+  /** Stores d sound enabled. */
   const storedSoundEnabled = readStoredBoolean(PLAYER_PREFERENCE_STORAGE_KEYS.soundEnabled);
+  /** Provides muted behavior. */
   const muted = preferences.muted ?? (storedSoundEnabled === undefined ? false : !storedSoundEnabled);
+  /** Provides reduced motion behavior. */
   const reducedMotion =
     preferences.reducedMotion ??
     readStoredBoolean(PLAYER_PREFERENCE_STORAGE_KEYS.reducedMotion) ??
     matchesMedia("(prefers-reduced-motion: reduce)");
+  /** Provides high contrast behavior. */
   const highContrast =
     preferences.highContrast ??
     readStoredBoolean(PLAYER_PREFERENCE_STORAGE_KEYS.highContrast) ??
     (matchesMedia("(prefers-contrast: more)") || matchesMedia("(forced-colors: active)"));
+  /** Provides onboarding complete behavior. */
   const onboardingComplete = preferences.onboardingComplete ?? false;
 
   safeBrowserStorageSet("local", PLAYER_PREFERENCE_STORAGE_KEYS.locale, locale);
@@ -161,6 +172,7 @@ export function setPlayerLocale(locale: Locale): void {
 
 /** Persists a sound preference when game state changes it. */
 export function setPlayerMuted(muted: boolean): void {
+  /** Provides next sound enabled behavior. */
   const nextSoundEnabled = String(!muted);
   if (safeBrowserStorageGet("local", PLAYER_PREFERENCE_STORAGE_KEYS.soundEnabled) === nextSoundEnabled) return;
   safeBrowserStorageSet("local", PLAYER_PREFERENCE_STORAGE_KEYS.soundEnabled, nextSoundEnabled);
@@ -183,24 +195,31 @@ export function setPlayerHighContrast(highContrast: boolean): void {
 
 /** Returns the effective reduced-motion choice currently applied to play. */
 export function isPlayerReducedMotionEnabled(): boolean {
+  /** Provides root behavior. */
   const root = typeof document === "undefined" ? undefined : document.documentElement;
   if (root) {
+    /** Provides applied behavior. */
     const applied = root.dataset.riddleQuestReducedMotion;
     if (applied === "true" || applied === "false") return applied === "true";
   }
-  return readStoredBoolean(PLAYER_PREFERENCE_STORAGE_KEYS.reducedMotion) ??
-    matchesMedia("(prefers-reduced-motion: reduce)");
+  return (
+    readStoredBoolean(PLAYER_PREFERENCE_STORAGE_KEYS.reducedMotion) ?? matchesMedia("(prefers-reduced-motion: reduce)")
+  );
 }
 
 /** Returns the effective high-contrast choice currently applied to play. */
 export function isPlayerHighContrastEnabled(): boolean {
+  /** Provides root behavior. */
   const root = typeof document === "undefined" ? undefined : document.documentElement;
   if (root) {
+    /** Provides applied behavior. */
     const applied = root.dataset.riddleQuestHighContrast;
     if (applied === "true" || applied === "false") return applied === "true";
   }
-  return readStoredBoolean(PLAYER_PREFERENCE_STORAGE_KEYS.highContrast) ??
-    (matchesMedia("(prefers-contrast: more)") || matchesMedia("(forced-colors: active)"));
+  return (
+    readStoredBoolean(PLAYER_PREFERENCE_STORAGE_KEYS.highContrast) ??
+    (matchesMedia("(prefers-contrast: more)") || matchesMedia("(forced-colors: active)"))
+  );
 }
 
 /** Returns onboarding completion with the platform value taking precedence over browser fallback. */
@@ -210,6 +229,7 @@ export function hasCompletedPlayerOnboarding(storageKey: string): boolean {
 
 /** Persists completion of the current player's onboarding flow. */
 export function completePlayerOnboarding(storageKey: string): void {
+  /** Provides changed behavior. */
   const changed = onboardingCompleteOverride !== true || safeBrowserStorageGet("local", storageKey) !== "seen";
   onboardingCompleteOverride = true;
   safeBrowserStorageSet("local", storageKey, "seen");
@@ -217,24 +237,26 @@ export function completePlayerOnboarding(storageKey: string): void {
 }
 
 /** Subscribes the active platform adapter to user-initiated preference changes. */
-export function subscribeToPlayerPreferenceChanges(
-  subscriber: (change: PlayerPreferenceChange) => void,
-): () => void {
+export function subscribeToPlayerPreferenceChanges(subscriber: (change: PlayerPreferenceChange) => void): () => void {
   preferenceSubscribers.add(subscriber);
   return () => preferenceSubscribers.delete(subscriber);
 }
 
 /** Removes exact app-owned browser state after authoritative account deletion. */
 export function clearBrowserPlayerState(): void {
+  /** Removes keys. */
   const removeKeys = (storage: Storage | undefined, exactKeys: readonly string[], prefixes: readonly string[]) => {
     if (!storage) return;
+    /** Provides keys behavior. */
     const keys = Array.from({length: storage.length}, (_, index) => storage.key(index)).filter(
       (key): key is string => key !== null,
     );
+    /** Provides player keys behavior. */
     const playerKeys = keys.filter(
       (key) => exactKeys.includes(key) || prefixes.some((prefix) => key.startsWith(prefix)),
     );
     playerKeys.forEach((key) => storage.removeItem(key));
+    /** Provides remaining keys behavior. */
     const remainingKeys = Array.from({length: storage.length}, (_, index) => storage.key(index)).filter(
       (key): key is string => key !== null,
     );
@@ -243,6 +265,7 @@ export function clearBrowserPlayerState(): void {
     }
   };
 
+  /** Provides failures behavior. */
   const failures: unknown[] = [];
   try {
     removeKeys(
@@ -259,6 +282,7 @@ export function clearBrowserPlayerState(): void {
     failures.push(error);
   } finally {
     onboardingCompleteOverride = undefined;
+    /** Provides root behavior. */
     const root = typeof document === "undefined" ? undefined : document.documentElement;
     if (root) {
       delete root.dataset.riddleQuestReducedMotion;

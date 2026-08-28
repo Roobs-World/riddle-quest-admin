@@ -1,4 +1,6 @@
+/** Provides mock get user behavior. */
 const mockGetUser = jest.fn();
+/** Provides mock finalize authoritative session behavior. */
 const mockFinalizeAuthoritativeSession = jest.fn();
 
 jest.mock("../gameplay/firestoreService", () => ({
@@ -34,14 +36,16 @@ describe("secure game completion derivation", () => {
       classicIndex: 1,
     });
 
-    await expect(deriveAuthoritativeCompletion(
-      {
-        riddleId: "riddle-1",
-        gameMode: "classic",
-        sessionToken: "00000000-0000-4000-8000-000000000001",
-      },
-      {uid: "user-1"},
-    )).resolves.toEqual({
+    await expect(
+      deriveAuthoritativeCompletion(
+        {
+          riddleId: "riddle-1",
+          gameMode: "classic",
+          sessionToken: "00000000-0000-4000-8000-000000000001",
+        },
+        {uid: "user-1"},
+      ),
+    ).resolves.toEqual({
       riddleId: "riddle-1",
       gameMode: "classic",
       sessionToken: "00000000-0000-4000-8000-000000000001",
@@ -66,13 +70,15 @@ describe("secure game completion derivation", () => {
       challengeDate: "2026-08-11",
     });
 
-    await expect(deriveAuthoritativeCompletion(
-      {
-        riddleId: "riddle-1",
-        gameMode: "challenge",
-        sessionToken: "00000000-0000-4000-8000-000000000001",
-      },
-      {uid: "user-1"},
-    )).resolves.toMatchObject({attempts: 5, isCorrect: false});
+    await expect(
+      deriveAuthoritativeCompletion(
+        {
+          riddleId: "riddle-1",
+          gameMode: "challenge",
+          sessionToken: "00000000-0000-4000-8000-000000000001",
+        },
+        {uid: "user-1"},
+      ),
+    ).resolves.toMatchObject({attempts: 5, isCorrect: false});
   });
 });

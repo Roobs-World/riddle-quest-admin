@@ -17,16 +17,21 @@ export async function refreshPresenceVisibility(
   if (!validUserId(viewerUserId) || !validUserId(targetUserId) || viewerUserId === targetUserId) {
     throw new Error("invalid-presence-visibility-pair");
   }
+  /** Provides [known, viewer block, target block] behavior. */
   const [known, viewerBlock, targetBlock] = await Promise.all([
     firestore.doc(`users/${viewerUserId}/knownRivals/${targetUserId}`).get(),
     firestore.doc(`users/${viewerUserId}/blockedRivals/${targetUserId}`).get(),
     firestore.doc(`users/${targetUserId}/blockedRivals/${viewerUserId}`).get(),
   ]);
+  /** Provides relationship behavior. */
   const relationship = known.data();
-  const validRelationship = known.exists &&
+  /** Provides valid relationship behavior. */
+  const validRelationship =
+    known.exists &&
     relationship?.targetUserId === targetUserId &&
     typeof relationship.source === "string" &&
     KNOWN_RIVAL_SOURCES.has(relationship.source);
+  /** Provides visible behavior. */
   const visible = validRelationship && !viewerBlock.exists && !targetBlock.exists;
   await database.ref().update({
     [`presenceVisibility/${viewerUserId}/${targetUserId}`]: visible ? true : null,
@@ -36,17 +41,18 @@ export async function refreshPresenceVisibility(
 }
 
 /** Removes all live presence and both ACL directions during account deletion. */
-export async function deletePresenceForUser(
-  userId: string,
-  database: Database = getDatabase(),
-): Promise<void> {
+export async function deletePresenceForUser(userId: string, database: Database = getDatabase()): Promise<void> {
   if (!validUserId(userId)) throw new Error("invalid-presence-user");
+  /** Provides [viewers snapshot, targets snapshot] behavior. */
   const [viewersSnapshot, targetsSnapshot] = await Promise.all([
     database.ref(`presenceViewers/${userId}`).get(),
     database.ref(`presenceVisibility/${userId}`).get(),
   ]);
+  /** Provides viewers behavior. */
   const viewers = viewersSnapshot.val();
+  /** Provides targets behavior. */
   const targets = targetsSnapshot.val();
+  /** Provides update behavior. */
   const update: Record<string, null> = {
     [`presenceConnections/${userId}`]: null,
     [`presenceConsent/${userId}`]: null,

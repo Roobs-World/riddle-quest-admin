@@ -144,7 +144,12 @@ export type JestSession = {
   /** Current player identity reported by the Jest SDK. */
   player: JestPlayer;
   /** Optional provider profile used only for display. */
-  profile: {username?: string; avatarUrl?: string | null} | null;
+  profile: {
+    /** Stores username. */
+    username?: string; /** Stores avatar url. */
+    /** Stores avatar url. */
+    avatarUrl?: string | null;
+  } | null;
   /** Sanitized launch attribution and initial routing hints. */
   entryIntent: JestEntryIntent;
   /** Client-writable preferences restored from Jest SDK storage. */
@@ -203,10 +208,21 @@ type JestNotificationContent = {
  * The mutually exclusive fields prevent ambiguous provider scheduling. Eligibility
  * and registration checks still occur at the {@link JestPlatformPort} boundary.
  */
-export type JestNotificationSchedule = JestNotificationContent & (
-  | {scheduledInDays: number; scheduledAt?: never}
-  | {scheduledAt: Date; scheduledInDays?: never}
-);
+export type JestNotificationSchedule = JestNotificationContent &
+  (
+    | {
+        /** Stores scheduled in days. */
+        scheduledInDays: number; /** Stores scheduled at. */
+        /** Stores scheduled at. */
+        scheduledAt?: never;
+      }
+    | {
+        /** Stores scheduled at. */
+        scheduledAt: Date; /** Stores scheduled in days. */
+        /** Stores scheduled in days. */
+        scheduledInDays?: never;
+      }
+  );
 
 /**
  * Narrow Jest SDK adapter consumed by startup, storage, sharing, notification,
@@ -231,7 +247,12 @@ export interface JestPlatformPort {
    *
    * @returns The current player projection and opaque signed payload.
    */
-  getPlayerSigned(): Promise<{player: JestPlayer; playerSigned: string}>;
+  getPlayerSigned(): Promise<{
+    /** Stores player. */
+    player: JestPlayer; /** Stores player signed. */
+    /** Stores player signed. */
+    playerSigned: string;
+  }>;
   /**
    * Opens Jest login/registration when the player is still a guest.
    *
@@ -246,8 +267,11 @@ export interface JestPlatformPort {
    * @returns Imperative overlay controls or a normalized synchronous failure.
    */
   showRegistrationOverlay(options: {
+    /** Stores theme. */
     theme: "dark" | "light";
+    /** Stores entry payload. */
     entryPayload?: Record<string, string>;
+    /** Stores on close. */
     onClose: () => void;
   }): PlatformResult<JestRegistrationOverlayHandle>;
   /** @returns Validated app-owned preference fields from synchronous SDK storage. */
@@ -267,7 +291,12 @@ export interface JestPlatformPort {
   /** @returns Sanitized launch attribution from provider entry data and approved query fields. */
   getEntryIntent(): JestEntryIntent;
   /** @returns Optional provider display profile; it is not used for authorization. */
-  getProfile(): Promise<{username?: string; avatarUrl?: string | null} | null>;
+  getProfile(): Promise<{
+    /** Stores username. */
+    username?: string; /** Stores avatar url. */
+    /** Stores avatar url. */
+    avatarUrl?: string | null;
+  } | null>;
   /**
    * Schedules a notification for a registered player.
    *
@@ -298,14 +327,28 @@ export interface JestPlatformPort {
    * @param productSku - Exact SKU returned by {@link getProducts}.
    * @returns Provider purchase data and its opaque signature for backend granting.
    */
-  beginPurchase(productSku: string): Promise<PlatformResult<{purchase: JestPurchase; purchaseSigned: string}>>;
+  beginPurchase(productSku: string): Promise<
+    PlatformResult<{
+      /** Stores purchase. */
+      purchase: JestPurchase; /** Stores purchase signed. */
+      /** Stores purchase signed. */
+      purchaseSigned: string;
+    }>
+  >;
   /**
    * Lists purchases that still require authoritative grant or provider completion.
    *
    * @returns Bounded provider purchases, their aggregate signature, and pagination state.
    */
   getIncompletePurchases(): Promise<
-    PlatformResult<{purchases: JestPurchase[]; purchasesSigned: string; hasMore: boolean}>
+    PlatformResult<{
+      /** Stores purchases. */
+      purchases: JestPurchase[]; /** Stores purchases signed. */
+      /** Stores purchases signed. */
+      purchasesSigned: string; /** Stores has more. */
+      /** Stores has more. */
+      hasMore: boolean;
+    }>
   >;
   /**
    * Marks a provider purchase complete after the backend grant succeeds idempotently.
@@ -315,7 +358,12 @@ export interface JestPlatformPort {
   completePurchase(purchaseToken: string): Promise<PlatformResult<void>>;
   /** @returns Provider subscription state and an opaque signature for backend entitlement sync. */
   getSubscriptions(): Promise<
-    PlatformResult<{subscriptions: JestSubscription[]; subscriptionsSigned: string}>
+    PlatformResult<{
+      /** Stores subscriptions. */
+      subscriptions: JestSubscription[]; /** Stores subscriptions signed. */
+      /** Stores subscriptions signed. */
+      subscriptionsSigned: string;
+    }>
   >;
   /**
    * Opens a bounded subscription checkout.
@@ -324,7 +372,12 @@ export interface JestPlatformPort {
    * @returns The resulting subscription and signed entitlement envelope.
    */
   beginSubscription(subscriptionSku: string): Promise<
-    PlatformResult<{subscription: JestSubscription; subscriptionSigned: string}>
+    PlatformResult<{
+      /** Stores subscription. */
+      subscription: JestSubscription; /** Stores subscription signed. */
+      /** Stores subscription signed. */
+      subscriptionSigned: string;
+    }>
   >;
   /** Sends one low-cardinality event through the optional Jest analytics surface. */
   captureEvent(name: string, properties?: Record<string, string | number | boolean>): void;

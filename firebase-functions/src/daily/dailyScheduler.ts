@@ -10,15 +10,16 @@ import {getSafeErrorMetadata} from "../shared/errorMetadata";
 export const scheduledTaskHandler = async (context: ScheduledEvent) => {
   void context;
   functions.logger.info("Daily scheduler started (target: immutable localized documents).");
+  /** Provides current date behavior. */
   const currentDate = new Date();
+  /** Provides target date behavior. */
   const targetDate = new Date(currentDate);
   if (currentDate.getUTCHours() >= 21) targetDate.setUTCDate(targetDate.getUTCDate() + 1);
+  /** Provides target date string behavior. */
   const targetDateString = targetDate.toISOString().slice(0, 10);
 
   try {
-    functions.logger.info(
-      `Starting immutable localized daily riddle generation for ${targetDateString}.`,
-    );
+    functions.logger.info(`Starting immutable localized daily riddle generation for ${targetDateString}.`);
 
     // Generate or validate the selected day's localized riddle set. Repeated
     // schedules safely retry only missing or invalid immutable documents.

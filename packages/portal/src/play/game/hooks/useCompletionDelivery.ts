@@ -17,21 +17,39 @@ export function useCompletionDelivery({
   /** Game-session reducer dispatcher. */ dispatch: Dispatch<GameSessionAction>;
   /** Sends a validated command to the host. */ postToHost: (message: GameToHostMessage) => void;
 }): (ok: boolean) => void {
+  /** Completes d ids ref. */
   const completedIdsRef = useRef(new Set<string>());
-  const deliveryRef = useRef<{outcomeId: string; requestId: string; attempts: number; timer?: number} | null>(null);
+  /** Provides delivery ref behavior. */
+  const deliveryRef = useRef<{
+    /** Stores outcome id. */
+    outcomeId: string; /** Stores request id. */
+    /** Stores request id. */
+    requestId: string; /** Stores attempts. */
+    /** Stores attempts. */
+    attempts: number; /** Stores timer. */
+    /** Stores timer. */
+    timer?: number;
+  } | null>(null);
+  /** Provides [retry signal, set retry signal] behavior. */
   const [retrySignal, setRetrySignal] = useState(0);
 
-  const handleResult = useCallback((ok: boolean) => {
-    const delivery = deliveryRef.current;
-    if (!ok || !delivery) return;
-    if (delivery.timer !== undefined) window.clearTimeout(delivery.timer);
-    completedIdsRef.current.add(delivery.outcomeId);
-    deliveryRef.current = null;
-    dispatch({type: "completionAcknowledged"});
-  }, [dispatch]);
+  /** Handles result. */
+  const handleResult = useCallback(
+    (ok: boolean) => {
+      /** Provides delivery behavior. */
+      const delivery = deliveryRef.current;
+      if (!ok || !delivery) return;
+      if (delivery.timer !== undefined) window.clearTimeout(delivery.timer);
+      completedIdsRef.current.add(delivery.outcomeId);
+      deliveryRef.current = null;
+      dispatch({type: "completionAcknowledged"});
+    },
+    [dispatch],
+  );
 
   useEffect(() => {
     if (!outcome || completedIdsRef.current.has(outcome.id)) return;
+    /** Provides delivery behavior. */
     let delivery = deliveryRef.current;
     if (!delivery || delivery.outcomeId !== outcome.id) {
       if (delivery?.timer !== undefined) window.clearTimeout(delivery.timer);
@@ -55,10 +73,14 @@ export function useCompletionDelivery({
     );
   }, [outcome, postToHost, retrySignal]);
 
-  useEffect(() => () => {
-    const timer = deliveryRef.current?.timer;
-    if (timer !== undefined) window.clearTimeout(timer);
-  }, []);
+  useEffect(
+    () => () => {
+      /** Provides timer behavior. */
+      const timer = deliveryRef.current?.timer;
+      if (timer !== undefined) window.clearTimeout(timer);
+    },
+    [],
+  );
 
   return handleResult;
 }

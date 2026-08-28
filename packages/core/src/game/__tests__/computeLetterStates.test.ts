@@ -1,6 +1,7 @@
 import {computeLetterStates} from "../computeLetterStates";
 import type {ScoredGuess} from "../types";
 
+/** Creates guess. */
 function makeGuess(word: string, feedbacks: ("green" | "yellow" | "red")[]): ScoredGuess {
   return {guess: word.split(""), feedback: feedbacks};
 }
@@ -11,7 +12,9 @@ describe("computeLetterStates", () => {
   });
 
   it("maps each letter to its feedback state from a single guess", () => {
+    /** Provides guesses behavior. */
     const guesses = [makeGuess("hello", ["green", "red", "yellow", "red", "green"])];
+    /** Provides states behavior. */
     const states = computeLetterStates(guesses);
     expect(states.h).toBe("green");
     expect(states.e).toBe("red");
@@ -20,6 +23,7 @@ describe("computeLetterStates", () => {
   });
 
   it("green beats yellow and red across guesses", () => {
+    /** Provides guesses behavior. */
     const guesses = [
       makeGuess("apple", ["yellow", "red", "red", "red", "red"]),
       makeGuess("avail", ["green", "red", "red", "red", "red"]),

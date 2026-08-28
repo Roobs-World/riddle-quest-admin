@@ -1,17 +1,24 @@
 import {createHmac} from "node:crypto";
 import {isJestFirebaseUid, jestFirebaseUid, verifyJestSigned} from "../jest/jestSecurity";
 
+/** Provides secret behavior. */
 const secret = Buffer.alloc(32, 7).toString("base64");
+/** Provides sign behavior. */
 const sign = (payload: object, alg = "HS256") => {
+  /** Provides header behavior. */
   const header = Buffer.from(JSON.stringify({alg, typ: "JWT"})).toString("base64url");
+  /** Provides body behavior. */
   const body = Buffer.from(JSON.stringify(payload)).toString("base64url");
+  /** Provides signature behavior. */
   const signature = createHmac("sha256", Buffer.from(secret, "base64")).update(`${header}.${body}`).digest("base64url");
   return `${header}.${body}.${signature}`;
 };
 
 describe("Jest signed verification", () => {
+  /** Provides payload behavior. */
   const payload = {aud: "game", sub: "p1", iat: 1000, player: {playerId: "p1", registered: false}};
-  it("accepts a valid fresh HS256 token", () => expect(verifyJestSigned(sign(payload), secret, "game", "p1", 1100, 900)).toMatchObject(payload));
+  it("accepts a valid fresh HS256 token", () =>
+    expect(verifyJestSigned(sign(payload), secret, "game", "p1", 1100, 900)).toMatchObject(payload));
   it.each([
     ["algorithm", () => verifyJestSigned(sign(payload, "none"), secret, "game", "p1", 1100)],
     ["signature", () => verifyJestSigned(`${sign(payload).slice(0, -1)}x`, secret, "game", "p1", 1100)],
@@ -27,30 +34,29 @@ describe("Jest signed verification", () => {
     expect(isJestFirebaseUid(`jest_${"A".repeat(40)}`)).toBe(false);
   });
   it("accepts signed referral payloads without iat when freshness is not requested", () =>
-    expect(verifyJestSigned(sign({aud: "game", sub: "p1", referrals: {campaign: []}}), secret, "game", "p1")).toMatchObject({sub: "p1"}));
+    expect(
+      verifyJestSigned(sign({aud: "game", sub: "p1", referrals: {campaign: []}}), secret, "game", "p1"),
+    ).toMatchObject({sub: "p1"}));
   it("rejects oversized signed payloads before decoding them", () =>
     expect(() => verifyJestSigned(`a.${"a".repeat(256_001)}.a`, secret, "game")).toThrow("malformed-token"));
 
-  it.each(["", "a.b", "a.b.c.d", "x".repeat(256_001)])(
-    "rejects malformed token structure",
-    (token) => expect(() => verifyJestSigned(token, secret, "game")).toThrow("malformed-token"),
+  it.each(["", "a.b", "a.b.c.d", "x".repeat(256_001)])("rejects malformed token structure", (token) =>
+    expect(() => verifyJestSigned(token, secret, "game")).toThrow("malformed-token"),
   );
 
   it("rejects malformed, empty, and oversized encoded parts", () => {
-    expect(() => verifyJestSigned(`.${sign(payload).split(".")[1]}.x`, secret, "game"))
-      .toThrow("malformed-token");
-    expect(() => verifyJestSigned(`${Buffer.from("not-json").toString("base64url")}.x.x`, secret, "game"))
-      .toThrow();
-    expect(() => verifyJestSigned(`${"A".repeat(170_668)}.x.x`, secret, "game"))
-      .toThrow("malformed-token");
+    expect(() => verifyJestSigned(`.${sign(payload).split(".")[1]}.x`, secret, "game")).toThrow("malformed-token");
+    expect(() => verifyJestSigned(`${Buffer.from("not-json").toString("base64url")}.x.x`, secret, "game")).toThrow();
+    expect(() => verifyJestSigned(`${"A".repeat(170_668)}.x.x`, secret, "game")).toThrow("malformed-token");
   });
 
   it("rejects short secrets and signatures with the wrong byte length", () => {
-    expect(() => verifyJestSigned(sign(payload), Buffer.from("short").toString("base64"), "game"))
-      .toThrow("invalid-secret");
+    expect(() => verifyJestSigned(sign(payload), Buffer.from("short").toString("base64"), "game")).toThrow(
+      "invalid-secret",
+    );
+    /** Provides [header, body] behavior. */
     const [header, body] = sign(payload).split(".");
-    expect(() => verifyJestSigned(`${header}.${body}.eA`, secret, "game"))
-      .toThrow("invalid-signature");
+    expect(() => verifyJestSigned(`${header}.${body}.eA`, secret, "game")).toThrow("invalid-signature");
   });
 
   it.each([

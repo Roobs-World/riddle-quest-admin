@@ -2,17 +2,28 @@
 // @ts-nocheck
 import {beforeEach, describe, expect, it, jest} from "@jest/globals";
 
+/** Provides mock get behavior. */
 const mockGet = jest.fn();
+/** Provides mock create behavior. */
 const mockCreate = jest.fn();
+/** Provides mock delete behavior. */
 const mockDelete = jest.fn();
+/** Provides mock generate for locale behavior. */
 const mockGenerateForLocale = jest.fn();
+/** Provides mock limit behavior. */
 const mockLimit = jest.fn();
+/** Provides mock order by behavior. */
 const mockOrderBy = jest.fn();
+/** Provides mock where behavior. */
 const mockWhere = jest.fn();
+/** Provides mock doc behavior. */
 const mockDoc = jest.fn();
+/** Provides mock collection behavior. */
 const mockCollection = jest.fn();
+/** Provides mock capture exception behavior. */
 const mockCaptureException = jest.fn();
 
+/** Provides query behavior. */
 const query = {
   where: mockWhere,
   orderBy: mockOrderBy,
@@ -120,7 +131,9 @@ describe("riddle supply", () => {
   });
 
   it("reports a failed claim cleanup", async () => {
+    /** Provides generation error behavior. */
     const generationError = new Error("generation failed");
+    /** Provides cleanup error behavior. */
     const cleanupError = new Error("cleanup failed");
     mockGet.mockResolvedValue({empty: false, docs: [{data: () => ({classicIndex: undefined})}]});
     mockGenerateForLocale.mockRejectedValue(generationError);
@@ -133,6 +146,7 @@ describe("riddle supply", () => {
   });
 
   it("reports a failed highest-index query", async () => {
+    /** Provides query error behavior. */
     const queryError = new Error("query failed");
     mockGet.mockRejectedValue(queryError);
 

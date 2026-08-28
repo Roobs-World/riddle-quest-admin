@@ -2,13 +2,20 @@ import {beforeEach, describe, expect, it, jest} from "@jest/globals";
 import type {JestPlatformPort, JestSession} from "../types";
 import {MOCK_NOTIFICATION_COPY, type NotificationCopy} from "../notifications/copy";
 
+/** Describes effect. */
 type Effect = () => void | (() => void);
 
+/** Provides mock effects behavior. */
 const mockEffects: Effect[] = [];
+/** Provides mock set copy behavior. */
 const mockSetCopy = jest.fn();
+/** Provides mock load notification copy behavior. */
 const mockLoadNotificationCopy = jest.fn<() => Promise<NotificationCopy>>();
+/** Provides mock replace engagement reminders behavior. */
 const mockReplaceEngagementReminders = jest.fn();
+/** Provides mock notification rotation seed behavior. */
 const mockNotificationRotationSeed = jest.fn(() => 4);
+/** Provides mock copy state behavior. */
 let mockCopyState: NotificationCopy | null = null;
 
 jest.mock("react", () => ({
@@ -29,15 +36,20 @@ jest.mock("../notifications/engagement", () => ({
 
 import {useJestNotifications} from "../notifications/useJestNotifications";
 
+/** Provides session behavior. */
 const session = ({
   registered = true,
   username = "Ada",
   customName,
   challengeDestination,
 }: {
+  /** Stores registered. */
   registered?: boolean;
+  /** Stores username. */
   username?: string | null;
+  /** Stores custom name. */
   customName?: string;
+  /** Stores challenge destination. */
   challengeDestination?: string;
 } = {}): JestSession => ({
   player: {playerId: "player-1", registered},
@@ -48,26 +60,38 @@ const session = ({
   firebaseAuthenticated: true,
 });
 
+/** Provides flush promises behavior. */
 const flushPromises = async () => {
   await new Promise<void>((resolve) => setImmediate(resolve));
 };
 
+/** Creates harness. */
 const createHarness = ({
   currentSession = session(),
   mockRuntime = true,
   notificationsActive = true,
   assetReference,
 }: {
+  /** Stores current session. */
   currentSession?: JestSession | null;
+  /** Stores mock runtime. */
   mockRuntime?: boolean;
+  /** Stores notifications active. */
   notificationsActive?: boolean;
+  /** Stores asset reference. */
   assetReference?: string;
 } = {}) => {
+  /** Provides notifications enabled state behavior. */
   let notificationsEnabledState = notificationsActive;
+  /** Removes notification. */
   const removeNotification = jest.fn<JestPlatformPort["removeNotification"]>();
+  /** Provides schedule notification behavior. */
   const scheduleNotification = jest.fn<JestPlatformPort["scheduleNotification"]>();
+  /** Tracks funnel. */
   const trackFunnel = jest.fn();
+  /** Runs platform activity. */
   const withPlatformActivity = jest.fn(async (operation: () => Promise<unknown>) => operation());
+  /** Provides platform behavior. */
   const platform = {removeNotification, scheduleNotification} as unknown as JestPlatformPort;
   useJestNotifications({
     locale: "en-GB",
@@ -86,7 +110,9 @@ const createHarness = ({
     platform,
     removeNotification,
     scheduleNotification,
-    setNotificationsActive: (active: boolean) => { notificationsEnabledState = active; },
+    setNotificationsActive: (active: boolean) => {
+      notificationsEnabledState = active;
+    },
     trackFunnel,
     withPlatformActivity,
   };
@@ -104,6 +130,7 @@ beforeEach(() => {
 
 describe("useJestNotifications", () => {
   it("clears notification copy and performs no platform work for guests", async () => {
+    /** Provides {with platform activity} behavior. */
     const {withPlatformActivity} = createHarness({currentSession: session({registered: false})});
 
     mockEffects.forEach((effect) => effect());
@@ -115,12 +142,15 @@ describe("useJestNotifications", () => {
 
   it("performs no new platform work after notification cleanup starts", async () => {
     mockCopyState = MOCK_NOTIFICATION_COPY;
+    /** Provides {schedule notification, with platform activity} behavior. */
     const {scheduleNotification, withPlatformActivity} = createHarness({notificationsActive: false});
 
     mockEffects.forEach((effect) => effect());
-    window.dispatchEvent(new CustomEvent("riddle-quest:race-challenge-published", {
-      detail: {challengeId: "challenge-after-deletion"},
-    }));
+    window.dispatchEvent(
+      new CustomEvent("riddle-quest:race-challenge-published", {
+        detail: {challengeId: "challenge-after-deletion"},
+      }),
+    );
     await flushPromises();
 
     expect(withPlatformActivity).not.toHaveBeenCalled();
@@ -129,13 +159,17 @@ describe("useJestNotifications", () => {
 
   it("stops a registered race listener when deletion quiescence begins", async () => {
     mockCopyState = MOCK_NOTIFICATION_COPY;
+    /** Provides {schedule notification, set notifications active, with platform activity} behavior. */
     const {scheduleNotification, setNotificationsActive, withPlatformActivity} = createHarness();
+    /** Provides cleanup behavior. */
     const cleanup = mockEffects[2]() as () => void;
     setNotificationsActive(false);
 
-    window.dispatchEvent(new CustomEvent("riddle-quest:race-challenge-published", {
-      detail: {challengeId: "challenge-after-deletion"},
-    }));
+    window.dispatchEvent(
+      new CustomEvent("riddle-quest:race-challenge-published", {
+        detail: {challengeId: "challenge-after-deletion"},
+      }),
+    );
     await flushPromises();
 
     expect(withPlatformActivity).not.toHaveBeenCalled();
@@ -146,6 +180,7 @@ describe("useJestNotifications", () => {
   it("loads bundled copy in the mock runtime", async () => {
     createHarness();
 
+    /** Provides cleanup behavior. */
     const cleanup = mockEffects[0]();
     await flushPromises();
 
@@ -167,6 +202,7 @@ describe("useJestNotifications", () => {
 
   it("reports active copy-load failures and ignores results after cleanup", async () => {
     mockLoadNotificationCopy.mockRejectedValueOnce(new Error("offline"));
+    /** Provides failed behavior. */
     const failed = createHarness({mockRuntime: false});
     mockEffects[0]();
     await flushPromises();
@@ -175,11 +211,16 @@ describe("useJestNotifications", () => {
 
     jest.clearAllMocks();
     mockEffects.length = 0;
+    /** Resolves copy. */
     let resolveCopy: (copy: NotificationCopy) => void = () => undefined;
-    mockLoadNotificationCopy.mockImplementation(() => new Promise((resolve) => {
-      resolveCopy = resolve;
-    }));
+    mockLoadNotificationCopy.mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          resolveCopy = resolve;
+        }),
+    );
     createHarness({mockRuntime: false});
+    /** Provides cleanup behavior. */
     const cleanup = mockEffects[0]() as () => void;
     await flushPromises();
     cleanup();
@@ -190,11 +231,17 @@ describe("useJestNotifications", () => {
 
     jest.clearAllMocks();
     mockEffects.length = 0;
+    /** Provides reject copy behavior. */
     let rejectCopy: (error: Error) => void = () => undefined;
-    mockLoadNotificationCopy.mockImplementation(() => new Promise((_resolve, reject) => {
-      rejectCopy = reject;
-    }));
+    mockLoadNotificationCopy.mockImplementation(
+      () =>
+        new Promise((_resolve, reject) => {
+          rejectCopy = reject;
+        }),
+    );
+    /** Provides cleaned up behavior. */
     const cleanedUp = createHarness({mockRuntime: false});
+    /** Provides cleanup rejected load behavior. */
     const cleanupRejectedLoad = mockEffects[0]() as () => void;
     await flushPromises();
     cleanupRejectedLoad();
@@ -211,6 +258,7 @@ describe("useJestNotifications", () => {
       removed: [{status: "success"}, {status: "retryable-failure"}],
       scheduled: [{status: "success"}, {status: "terminal-failure"}],
     });
+    /** Provides {platform, track funnel} behavior. */
     const {platform, trackFunnel} = createHarness({assetReference: "notification-hero"});
 
     mockEffects[1]();
@@ -240,6 +288,7 @@ describe("useJestNotifications", () => {
   it("uses entry attribution as the name fallback and reports invalid reminder copy", async () => {
     mockCopyState = MOCK_NOTIFICATION_COPY;
     mockReplaceEngagementReminders.mockRejectedValue(new Error("invalid copy"));
+    /** Provides {track funnel} behavior. */
     const {trackFunnel} = createHarness({
       currentSession: session({username: null, customName: "Grace"}),
     });
@@ -260,34 +309,43 @@ describe("useJestNotifications", () => {
 
   it("schedules a race-results reminder only for a valid published challenge", async () => {
     mockCopyState = MOCK_NOTIFICATION_COPY;
+    /** Provides {remove notification, schedule notification, track funnel} behavior. */
     const {removeNotification, scheduleNotification, trackFunnel} = createHarness();
     removeNotification.mockResolvedValue({status: "success", value: undefined});
     scheduleNotification.mockResolvedValue({status: "success", value: undefined});
 
+    /** Provides cleanup behavior. */
     const cleanup = mockEffects[2]() as () => void;
     window.dispatchEvent(new CustomEvent("riddle-quest:race-challenge-published", {detail: {}}));
-    window.dispatchEvent(new CustomEvent("riddle-quest:race-challenge-published", {
-      detail: {challengeId: "challenge-1"},
-    }));
+    window.dispatchEvent(
+      new CustomEvent("riddle-quest:race-challenge-published", {
+        detail: {challengeId: "challenge-1"},
+      }),
+    );
     await flushPromises();
 
     expect(removeNotification).toHaveBeenCalledWith("race_to_10_return_v1");
-    expect(scheduleNotification).toHaveBeenCalledWith(expect.objectContaining({
-      identifier: "race_to_10_results_v1",
-      scheduledInDays: 1,
-      priority: "high",
-      entryPayload: expect.objectContaining({challengeId: "challenge-1"}),
-    }));
+    expect(scheduleNotification).toHaveBeenCalledWith(
+      expect.objectContaining({
+        identifier: "race_to_10_results_v1",
+        scheduledInDays: 1,
+        priority: "high",
+        entryPayload: expect.objectContaining({challengeId: "challenge-1"}),
+      }),
+    );
     expect(trackFunnel).toHaveBeenCalledWith("race_results_reminder_scheduled", {status: "success"});
     cleanup();
-    window.dispatchEvent(new CustomEvent("riddle-quest:race-challenge-published", {
-      detail: {challengeId: "challenge-2"},
-    }));
+    window.dispatchEvent(
+      new CustomEvent("riddle-quest:race-challenge-published", {
+        detail: {challengeId: "challenge-2"},
+      }),
+    );
     expect(scheduleNotification).toHaveBeenCalledTimes(1);
   });
 
   it("removes the race reminder when a registered player opens the inbox", async () => {
     mockCopyState = MOCK_NOTIFICATION_COPY;
+    /** Provides {remove notification, track funnel} behavior. */
     const {removeNotification, trackFunnel} = createHarness({
       currentSession: session({challengeDestination: "inbox"}),
     });

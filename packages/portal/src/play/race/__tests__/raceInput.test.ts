@@ -59,6 +59,7 @@ describe("race input helpers", () => {
     expect(insertRaceLetter(createRiddle(), {letters: [], activeSlotIndex: 0}, "نَ")).toMatchObject({
       letters: ["نَ", "", "", ""],
     });
+    /** Provides state behavior. */
     const state = {letters: ["", "", "", ""], activeSlotIndex: 0};
     expect(insertRaceLetter(createRiddle(), state, "日本")).toBe(state);
     expect(insertRaceLetter(createRiddle(), state, " ")).toBe(state);
@@ -69,19 +70,20 @@ describe("race input helpers", () => {
       letters: ["日", "本", "語", "版"],
       activeSlotIndex: 3,
     });
-    expect(insertRaceText(
-      createRiddle([{index: 1, letter: "E"}]),
-      {letters: ["", "E", "", ""], activeSlotIndex: 0},
-      "क्ष한中extra",
-    )).toEqual({
+    expect(
+      insertRaceText(
+        createRiddle([{index: 1, letter: "E"}]),
+        {letters: ["", "E", "", ""], activeSlotIndex: 0},
+        "क्ष한中extra",
+      ),
+    ).toEqual({
       letters: ["क्ष", "E", "한", "中"],
       activeSlotIndex: 3,
     });
-    expect(insertRaceText(
-      createRiddle(),
-      {letters: ["A", "B", "C", "D"], activeSlotIndex: 2},
-      "ЖЯ",
-    )).toEqual({letters: ["A", "B", "Ж", "D"], activeSlotIndex: 2});
+    expect(insertRaceText(createRiddle(), {letters: ["A", "B", "C", "D"], activeSlotIndex: 2}, "ЖЯ")).toEqual({
+      letters: ["A", "B", "Ж", "D"],
+      activeSlotIndex: 2,
+    });
   });
 
   it("deletes the active letter or searches backward with wraparound", () => {

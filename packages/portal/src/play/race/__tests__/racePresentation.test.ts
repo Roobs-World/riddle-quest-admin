@@ -8,6 +8,7 @@ import {
   getRaceLetterStates,
 } from "../logic/racePresentation";
 
+/** Provides riddle behavior. */
 const riddle = (revealedLetters: RaceRiddlePrompt["revealedLetters"] = []): RaceRiddlePrompt => ({
   riddleId: "riddle-1",
   text: "What has four letters?",
@@ -32,16 +33,21 @@ describe("race presentation helpers", () => {
 
   it("selects the first editable slot and safely handles a fully revealed answer", () => {
     expect(findFirstEditableRaceSlot(riddle([{index: 0, letter: "T"}]))).toBe(1);
-    expect(findFirstEditableRaceSlot(riddle([
-      {index: 0, letter: "T"},
-      {index: 1, letter: "E"},
-      {index: 2, letter: "S"},
-      {index: 3, letter: "T"},
-    ]))).toBe(0);
+    expect(
+      findFirstEditableRaceSlot(
+        riddle([
+          {index: 0, letter: "T"},
+          {index: 1, letter: "E"},
+          {index: 2, letter: "S"},
+          {index: 3, letter: "T"},
+        ]),
+      ),
+    ).toBe(0);
     expect(findFirstEditableRaceSlot(null)).toBe(0);
   });
 
   it("advances only active authoritative clocks and clamps them to the race limit", () => {
+    /** Provides run behavior. */
     const run = {
       status: "active",
       adjustedElapsedMs: 4_000,
@@ -54,10 +60,12 @@ describe("race presentation helpers", () => {
   });
 
   it("retains green keyboard feedback and ignores empty scoring cells", () => {
-    expect(getRaceLetterStates([
-      {guess: ["A", "B", "", "C"], feedback: ["yellow", "gray", "green"]},
-      {guess: ["a", "B", "D"], feedback: ["green", "yellow", "gray"]},
-      {guess: ["A"], feedback: ["gray"]},
-    ])).toEqual({a: "green", b: "yellow", d: "gray"});
+    expect(
+      getRaceLetterStates([
+        {guess: ["A", "B", "", "C"], feedback: ["yellow", "gray", "green"]},
+        {guess: ["a", "B", "D"], feedback: ["green", "yellow", "gray"]},
+        {guess: ["A"], feedback: ["gray"]},
+      ]),
+    ).toEqual({a: "green", b: "yellow", d: "gray"});
   });
 });

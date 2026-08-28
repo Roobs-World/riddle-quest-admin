@@ -7,10 +7,12 @@ import {
   RiddleCollections,
 } from "../firestoreSchemas";
 
+/** Provides base player behavior. */
 const basePlayer = {userId: "user-1", email: "player@example.com", username: "Solver"};
 
 describe("Firestore schemas", () => {
   it("applies complete player defaults", () => {
+    /** Provides player behavior. */
     const player = PlayerSchema.parse(basePlayer);
     expect(player).toMatchObject({
       coins: 0,
@@ -46,7 +48,9 @@ describe("Firestore schemas", () => {
     expect(ClassicRiddleSchema.parse({riddleId: "c1", text: "Clue", answer: "time", classicIndex: 0})).toMatchObject({
       category: "classic",
     });
-    expect(DailyRiddleSchema.parse({riddleId: "d1", text: "Clue", answer: "time", dailyIndex: 0, timestamp: 1})).toMatchObject({
+    expect(
+      DailyRiddleSchema.parse({riddleId: "d1", text: "Clue", answer: "time", dailyIndex: 0, timestamp: 1}),
+    ).toMatchObject({
       category: "daily",
     });
     expect(FirestoreRiddleSchema.parse({riddleId: "r1", text: "Clue", answer: "time"}).answer).toBe("time");
@@ -54,15 +58,17 @@ describe("Firestore schemas", () => {
   });
 
   it("defaults pricing arrays and preserves provider extensions", () => {
-    expect(ProductPricingSchema.parse({
-      productId: "sku",
-      productKey: "PACK",
-      name: "Pack",
-      description: "Coins",
-      coins: 10,
-      isActive: true,
-      sortOrder: 1,
-      providerField: "kept",
-    })).toMatchObject({regionalPrices: [], providerField: "kept"});
+    expect(
+      ProductPricingSchema.parse({
+        productId: "sku",
+        productKey: "PACK",
+        name: "Pack",
+        description: "Coins",
+        coins: 10,
+        isActive: true,
+        sortOrder: 1,
+        providerField: "kept",
+      }),
+    ).toMatchObject({regionalPrices: [], providerField: "kept"});
   });
 });

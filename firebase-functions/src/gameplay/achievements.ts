@@ -28,7 +28,12 @@ export interface AchievementContext {
 type AchievementRule = (user: Player, context: AchievementContext) => boolean;
 
 /** Achievement ID and its unlock rule. Server does not store name/description; client has definitions. */
-const ACHIEVEMENT_RULES: Array<{id: string; rule: AchievementRule}> = [
+const ACHIEVEMENT_RULES: Array<{
+  /** Stores id. */
+  id: string; /** Stores rule. */
+  /** Stores rule. */
+  rule: AchievementRule;
+}> = [
   {
     id: "first_win",
     rule: (user) => (user.stats?.totalWins ?? 0) >= 1,
@@ -140,6 +145,7 @@ const ACHIEVEMENT_RULES: Array<{id: string; rule: AchievementRule}> = [
   {
     id: "last_chance",
     rule: (user, ctx) => {
+      /** Provides max attempts behavior. */
       const maxAttempts = ctx.gameMode === "challenge" ? MAX_ATTEMPTS_CHALLENGE : MAX_ATTEMPTS_CLASSIC;
       return ctx.isCorrect && ctx.attempts === maxAttempts;
     },
@@ -208,7 +214,9 @@ export function findNewAchievements(
   context: AchievementContext,
   unlockedAt = Date.now(),
 ): UnlockedAchievement[] {
+  /** Provides existing ids behavior. */
   const existingIds = new Set((user.unlockedAchievements ?? []).map((entry) => entry.achievementId));
+  /** Provides new entries behavior. */
   const newEntries: UnlockedAchievement[] = [];
   for (const {id, rule} of ACHIEVEMENT_RULES) {
     if (existingIds.has(id) || !rule(user, context)) continue;
@@ -228,12 +236,14 @@ export function findNewAchievements(
  */
 export async function evaluateAchievements(userId: string, context: AchievementContext): Promise<string[]> {
   try {
+    /** Provides r. */
     const user = await getUser(userId);
     if (!user) {
       functions.logger.warn(`evaluateAchievements: user ${userId} not found`);
       return [];
     }
 
+    /** Provides new entries behavior. */
     const newEntries = findNewAchievements(user, context);
 
     if (newEntries.length === 0) return [];

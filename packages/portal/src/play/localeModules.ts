@@ -11,7 +11,9 @@ export const loadNonEnglishNamespace = async (
   locale: Exclude<Locale, "en">,
   namespace: SharedNamespace,
 ): Promise<NamespaceCatalog> => {
+  /** Provides module path behavior. */
   const modulePath = `../../../../src/locales/${locale}/${namespace}.json`;
+  /** Loads namespace. */
   const loadNamespace = NON_ENGLISH_NAMESPACE_MODULES[modulePath];
   if (!loadNamespace) {
     throw new Error(`Missing locale namespace: ${locale}/${namespace}`);

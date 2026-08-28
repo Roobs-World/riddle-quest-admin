@@ -14,7 +14,12 @@ export type JestSignedPayload = {
   /** Stores iat. */
   iat?: number;
   /** Stores player. */
-  player?: {playerId: string; registered: boolean};
+  player?: {
+    /** Stores player id. */
+    playerId: string; /** Stores registered. */
+    /** Stores registered. */
+    registered: boolean;
+  };
   /** Documents default export. */
   [key: string]: unknown;
 };
@@ -22,6 +27,7 @@ export type JestSignedPayload = {
 /** Provides decode part behavior. */
 const decodePart = (part: string): unknown => {
   if (!part || part.length > MAX_SIGNED_TOKEN_CHARACTERS) throw new Error("malformed-token");
+  /** Provides decoded behavior. */
   const decoded = Buffer.from(part, "base64url");
   if (decoded.length === 0 || decoded.length > MAX_SIGNED_PART_BYTES) throw new Error("malformed-token");
   return JSON.parse(decoded.toString("utf8"));
@@ -37,24 +43,41 @@ export function verifyJestSigned(
   maxAgeSeconds: number | null = null,
 ): JestSignedPayload {
   if (token.length === 0 || token.length > MAX_SIGNED_TOKEN_CHARACTERS) throw new Error("malformed-token");
+  /** Provides parts behavior. */
   const parts = token.split(".");
   if (parts.length !== 3) throw new Error("malformed-token");
-  const header = decodePart(parts[0]) as {alg?: unknown; typ?: unknown};
+  /** Provides header behavior. */
+  const header = decodePart(parts[0]) as {
+    /** Stores alg. */
+    alg?: unknown; /** Stores typ. */
+    /** Stores typ. */
+    typ?: unknown;
+  };
   if (header.alg !== "HS256") throw new Error("invalid-algorithm");
 
+  /** Provides secret behavior. */
   const secret = Buffer.from(secretBase64, "base64");
   if (secret.length < 32) throw new Error("invalid-secret");
+  /** Provides expected behavior. */
   const expected = createHmac("sha256", secret).update(`${parts[0]}.${parts[1]}`).digest();
+  /** Provides actual behavior. */
   const actual = Buffer.from(parts[2], "base64url");
   if (actual.length !== expected.length || !timingSafeEqual(actual, expected)) throw new Error("invalid-signature");
 
+  /** Provides payload behavior. */
   const payload = decodePart(parts[1]) as JestSignedPayload;
   if (payload.aud !== expectedGameId) throw new Error("invalid-audience");
   if (typeof payload.sub !== "string" || !payload.sub) throw new Error("invalid-subject");
   if (expectedPlayerId && payload.sub !== expectedPlayerId) throw new Error("invalid-subject");
   if (maxAgeSeconds !== null) {
+    /** Provides issued at behavior. */
     const issuedAt = payload.iat;
-    if (typeof issuedAt !== "number" || !Number.isInteger(issuedAt) || issuedAt > nowSeconds + 60 || nowSeconds - issuedAt > maxAgeSeconds) {
+    if (
+      typeof issuedAt !== "number" ||
+      !Number.isInteger(issuedAt) ||
+      issuedAt > nowSeconds + 60 ||
+      nowSeconds - issuedAt > maxAgeSeconds
+    ) {
       throw new Error("stale-token");
     }
   }

@@ -74,11 +74,34 @@ export const LEGACY_PLATFORM_RUNTIME_POLICY: PlatformRuntimePolicy = Object.free
  * value; callers should branch on `status` instead of catching provider errors.
  */
 export type PlatformResult<T> =
-  | {status: "success"; value: T}
-  | {status: "cancelled"}
-  | {status: "retryable-failure"; message: string}
-  | {status: "terminal-failure"; message: string}
-  | {status: "unavailable"; message: string};
+  | {
+      /** Stores status. */
+      status: "success"; /** Stores value. */
+      /** Stores value. */
+      value: T;
+    }
+  | {
+      /** Stores status. */
+      status: "cancelled";
+    }
+  | {
+      /** Stores status. */
+      status: "retryable-failure"; /** Stores message. */
+      /** Stores message. */
+      message: string;
+    }
+  | {
+      /** Stores status. */
+      status: "terminal-failure"; /** Stores message. */
+      /** Stores message. */
+      message: string;
+    }
+  | {
+      /** Stores status. */
+      status: "unavailable"; /** Stores message. */
+      /** Stores message. */
+      message: string;
+    };
 
 /**
  * Portable, client-writable preferences restored before the shared game mounts.
@@ -266,7 +289,12 @@ export type CommerceCapability = {
    * @param productId - Exact identifier returned by {@link listProducts}.
    * @returns A normalized outcome whose success carries the provider receipt used for reconciliation.
    */
-  purchase(productId: string): Promise<PlatformResult<{providerReceiptId: string}>>;
+  purchase(productId: string): Promise<
+    PlatformResult<{
+      /** Stores provider receipt id. */
+      providerReceiptId: string;
+    }>
+  >;
   /** Reconciles unfinished provider purchases idempotently after startup. */
   recover(): Promise<PlatformResult<void>>;
 };
@@ -317,21 +345,47 @@ export type SharingCapability = {
    *
    * @param payload - Text, optional image, and target-owned entry metadata.
    */
-  share(payload: {text: string; image?: string; data?: Record<string, string>}): Promise<PlatformResult<void>>;
+  share(payload: {
+    /** Stores text. */
+    text: string; /** Stores image. */
+    /** Stores image. */
+    image?: string; /** Stores data. */
+    /** Stores data. */
+    data?: Record<string, string>;
+  }): Promise<PlatformResult<void>>;
 };
 
 /** Optional provider context selection that never exposes a social graph to game code. */
 export type NativeSocialCapability = {
   /** @returns The active provider thread/group, or `unavailable` outside one. */
-  currentContext(): PlatformResult<{contextId: string; contextType: "THREAD" | "GROUP"}>;
+  currentContext(): PlatformResult<{
+    /** Stores context id. */
+    contextId: string; /** Stores context type. */
+    /** Stores context type. */
+    contextType: "THREAD" | "GROUP";
+  }>;
   /** Opens the provider's context chooser and returns the selected context. */
-  chooseContext(): Promise<PlatformResult<{contextId: string; contextType: "THREAD" | "GROUP"}>>;
+  chooseContext(): Promise<
+    PlatformResult<{
+      /** Stores context id. */
+      contextId: string; /** Stores context type. */
+      /** Stores context type. */
+      contextType: "THREAD" | "GROUP";
+    }>
+  >;
   /**
    * Asks the provider to match the player into a context.
    *
    * @param tag - Optional bounded provider matchmaking hint.
    */
-  matchPlayer(tag?: string): Promise<PlatformResult<{contextId: string; contextType: "THREAD" | "GROUP"}>>;
+  matchPlayer(tag?: string): Promise<
+    PlatformResult<{
+      /** Stores context id. */
+      contextId: string; /** Stores context type. */
+      /** Stores context type. */
+      contextType: "THREAD" | "GROUP";
+    }>
+  >;
 };
 
 /** Provider-wide, server-authoritative offline opponent selection. */
@@ -349,8 +403,22 @@ export type PresenceState = "offline" | "online" | "playing" | "racing";
 /** Lease-backed presence polling used by targets that cannot open browser sockets. */
 export type PresenceCapability = {
   /** Publishes the current lease state and returns visible rivals in one round trip. */
-  poll(input: {sessionId: string; state: Exclude<PresenceState, "offline">; enabled: boolean}):
-    Promise<{rivals: Array<{userId: string; state: PresenceState}>}>;
+  poll(input: {
+    /** Stores session id. */
+    sessionId: string; /** Stores state. */
+    /** Stores state. */
+    state: Exclude<PresenceState, "offline">; /** Stores enabled. */
+    /** Stores enabled. */
+    enabled: boolean;
+  }): Promise<{
+    /** Stores rivals. */
+    rivals: Array<{
+      /** Stores user id. */
+      userId: string; /** Stores state. */
+      /** Stores state. */
+      state: PresenceState;
+    }>;
+  }>;
   /** Ends one session lease and removes it from aggregate presence. */
   disconnect(sessionId: string): Promise<void>;
 };
@@ -362,7 +430,12 @@ export type OverlayCapability = {
    *
    * @returns A successful async disposer that must be called when the surface unmounts.
    */
-  renderPlayer(options: {playerId: string; surface: HTMLElement}): Promise<PlatformResult<() => Promise<void>>>;
+  renderPlayer(options: {
+    /** Stores player id. */
+    playerId: string; /** Stores surface. */
+    /** Stores surface. */
+    surface: HTMLElement;
+  }): Promise<PlatformResult<() => Promise<void>>>;
 };
 
 /** Server-authoritative Facebook tournament access; Meta standings remain presentation-only. */

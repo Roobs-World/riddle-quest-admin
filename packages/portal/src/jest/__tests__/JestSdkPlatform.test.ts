@@ -1,6 +1,7 @@
 import {JestSdkPlatform} from "../JestSdkPlatform";
 import type {BridgeProfile} from "@qwordly/core/bridge";
 
+/** Completes profile. */
 const completeProfile: BridgeProfile = {
   username: "Nova",
   coins: 425,
@@ -26,9 +27,13 @@ const completeProfile: BridgeProfile = {
   totalHintsUsed: 2,
 };
 
+/** Provides sdk behavior. */
 const sdk = () => ({
-  init: jest.fn().mockResolvedValue(undefined), getPlayer: jest.fn(() => ({playerId: "p1", registered: false})),
-  getPlayerSigned: jest.fn(), login: jest.fn().mockResolvedValue(undefined), getEntryPayload: jest.fn(() => ({gameMode: "classic"})),
+  init: jest.fn().mockResolvedValue(undefined),
+  getPlayer: jest.fn(() => ({playerId: "p1", registered: false})),
+  getPlayerSigned: jest.fn(),
+  login: jest.fn().mockResolvedValue(undefined),
+  getEntryPayload: jest.fn(() => ({gameMode: "classic"})),
   showRegistrationOverlay: jest.fn((options) => ({
     loginButtonAction: jest.fn(),
     closeButtonAction: () => options.onClose(),
@@ -56,6 +61,7 @@ const sdk = () => ({
   markGameLoaded: jest.fn(),
 });
 
+/** Saves d game. */
 const savedGame = {
   schemaVersion: 1,
   savedAt: 10,
@@ -71,19 +77,22 @@ const savedGame = {
   letterStates: {},
 };
 
-it("stores only low-integrity preferences", () => expect(new JestSdkPlatform(sdk()).readPreferences()).toEqual({
-  locale: "en",
-  muted: undefined,
-  reducedMotion: undefined,
-  highContrast: undefined,
-  presenceEnabled: undefined,
-  onboardingComplete: undefined,
-  registrationPromptDismissedAt: undefined,
-  firstMilestoneMarked: undefined,
-}));
+it("stores only low-integrity preferences", () =>
+  expect(new JestSdkPlatform(sdk()).readPreferences()).toEqual({
+    locale: "en",
+    muted: undefined,
+    reducedMotion: undefined,
+    highContrast: undefined,
+    presenceEnabled: undefined,
+    onboardingComplete: undefined,
+    registrationPromptDismissedAt: undefined,
+    firstMilestoneMarked: undefined,
+  }));
 it("loads a versioned player snapshot from the Jest player store", async () => {
+  /** Provides mock behavior. */
   const mock = sdk();
   mock.getPlayer.mockReturnValue({playerId: "p1", registered: true});
+  /** Provides active game behavior. */
   const activeGame = {
     schemaVersion: 1,
     savedAt: 10,
@@ -115,6 +124,7 @@ it("loads a versioned player snapshot from the Jest player store", async () => {
   });
 });
 it("discards an incomplete Jest profile instead of restoring partial statistics", async () => {
+  /** Provides mock behavior. */
   const mock = sdk();
   mock.getPlayer.mockReturnValue({playerId: "p1", registered: true});
   mock.data.getAll.mockReturnValue({
@@ -131,8 +141,11 @@ it("discards an incomplete Jest profile instead of restoring partial statistics"
   });
 });
 it("wires the custom registration overlay actions and options", () => {
+  /** Provides mock behavior. */
   const mock = sdk();
+  /** Provides on close behavior. */
   const onClose = jest.fn();
+  /** Provides result behavior. */
   const result = new JestSdkPlatform(mock).showRegistrationOverlay({
     theme: "dark",
     entryPayload: {source: "post_instructions"},
@@ -150,21 +163,26 @@ it("wires the custom registration overlay actions and options", () => {
   expect(onClose).toHaveBeenCalledTimes(1);
 });
 it("passes entry attribution to guest login and skips the dialog for registered players", async () => {
+  /** Provides guest sdk behavior. */
   const guestSdk = sdk();
   guestSdk.getPlayer
     .mockReturnValueOnce({playerId: "p1", registered: false})
     .mockReturnValue({playerId: "p1", registered: true});
+  /** Provides guest result behavior. */
   const guestResult = await new JestSdkPlatform(guestSdk).login({source: "authoritative_win"});
   expect(guestSdk.login).toHaveBeenCalledWith({entryPayload: {source: "authoritative_win"}});
   expect(guestResult).toEqual({status: "success", value: {playerId: "p1", registered: true}});
 
+  /** Provides registered sdk behavior. */
   const registeredSdk = sdk();
   registeredSdk.getPlayer.mockReturnValue({playerId: "p1", registered: true});
+  /** Provides registered result behavior. */
   const registeredResult = await new JestSdkPlatform(registeredSdk).login({source: "post_instructions"});
   expect(registeredSdk.login).not.toHaveBeenCalled();
   expect(registeredResult).toEqual({status: "success", value: {playerId: "p1", registered: true}});
 });
 it("rejects unknown player snapshot versions", async () => {
+  /** Provides mock behavior. */
   const mock = sdk();
   mock.getPlayer.mockReturnValue({playerId: "p1", registered: true});
   mock.data.getAll.mockReturnValue({
@@ -175,22 +193,28 @@ it("rejects unknown player snapshot versions", async () => {
 it.each([Number.NaN, -1, 1.5, Number.MAX_SAFE_INTEGER + 1])(
   "rejects an invalid player snapshot timestamp (%s)",
   async (updatedAt) => {
+    /** Provides mock behavior. */
     const mock = sdk();
     mock.data.getAll.mockReturnValue({riddleQuestPlayerState: {schemaVersion: 1, updatedAt}});
     expect(await new JestSdkPlatform(mock).readPlayerData()).toBeNull();
   },
 );
 it("flushes player snapshot writes to Jest", async () => {
+  /** Provides mock behavior. */
   const mock = sdk();
   mock.getPlayer.mockReturnValue({playerId: "p1", registered: true});
+  /** Provides player data behavior. */
   const playerData = {schemaVersion: 1 as const, updatedAt: 11, profile: completeProfile};
   await new JestSdkPlatform(mock).writePlayerData(playerData);
   expect(mock.data.set).toHaveBeenCalledWith("riddleQuestPlayerState", playerData);
   expect(mock.data.flush).toHaveBeenCalledTimes(1);
 });
 it("preserves player snapshots for guests using their stable Jest player store", async () => {
+  /** Provides mock behavior. */
   const mock = sdk();
+  /** Provides platform behavior. */
   const platform = new JestSdkPlatform(mock);
+  /** Provides player data behavior. */
   const playerData = {schemaVersion: 1 as const, updatedAt: 11};
   mock.data.getAll.mockReturnValue({riddleQuestPlayerState: playerData});
 
@@ -201,37 +225,59 @@ it("preserves player snapshots for guests using their stable Jest player store",
   expect(mock.data.flush).toHaveBeenCalledTimes(1);
 });
 it("does not schedule or remove notifications for guests", async () => {
+  /** Provides platform behavior. */
   const platform = new JestSdkPlatform(sdk());
-  await expect(platform.scheduleNotification({
-    identifier: "daily",
-    scheduledInDays: 1,
-    body: "Play",
-    ctaText: "Open",
-  })).resolves.toEqual({status: "unavailable", message: "Registration is required"});
-  await expect(platform.removeNotification("daily"))
-    .resolves.toEqual({status: "unavailable", message: "Registration is required"});
+  await expect(
+    platform.scheduleNotification({
+      identifier: "daily",
+      scheduledInDays: 1,
+      body: "Play",
+      ctaText: "Open",
+    }),
+  ).resolves.toEqual({status: "unavailable", message: "Registration is required"});
+  await expect(platform.removeNotification("daily")).resolves.toEqual({
+    status: "unavailable",
+    message: "Registration is required",
+  });
 });
 it("treats invalid notification arguments as terminal", async () => {
+  /** Provides mock behavior. */
   const mock = sdk();
   mock.getPlayer.mockReturnValue({playerId: "p1", registered: true});
   mock.notifications.scheduleNotification.mockRejectedValue(new Error("INVALID_ARGUMENTS"));
-  await expect(new JestSdkPlatform(mock).scheduleNotification({
-    identifier: "daily",
-    scheduledInDays: 1,
-    body: "Play",
-    ctaText: "Open",
-  })).resolves.toEqual({status: "terminal-failure", message: "INVALID_ARGUMENTS"});
+  await expect(
+    new JestSdkPlatform(mock).scheduleNotification({
+      identifier: "daily",
+      scheduledInDays: 1,
+      body: "Play",
+      ctaText: "Open",
+    }),
+  ).resolves.toEqual({status: "terminal-failure", message: "INVALID_ARGUMENTS"});
 });
-it("distinguishes purchase cancellation", async () => { const mock = sdk(); mock.payments.beginPurchase.mockResolvedValue({result: "cancel"}); expect(await new JestSdkPlatform(mock).beginPurchase("coins")).toEqual({status: "cancelled"}); });
+it("distinguishes purchase cancellation", async () => {
+  /** Provides mock behavior. */
+  const mock = sdk();
+  mock.payments.beginPurchase.mockResolvedValue({result: "cancel"});
+  expect(await new JestSdkPlatform(mock).beginPurchase("coins")).toEqual({status: "cancelled"});
+});
 it("treats invalid products and tokens as terminal", async () => {
+  /** Provides mock behavior. */
   const mock = sdk();
   mock.payments.beginPurchase.mockResolvedValue({result: "error", error: "invalid_product"});
   mock.payments.completePurchase.mockResolvedValue({result: "error", error: "invalid_token"});
-  expect(await new JestSdkPlatform(mock).beginPurchase("bad")).toEqual({status: "terminal-failure", message: "invalid_product"});
-  expect(await new JestSdkPlatform(mock).completePurchase("bad")).toEqual({status: "terminal-failure", message: "invalid_token"});
+  expect(await new JestSdkPlatform(mock).beginPurchase("bad")).toEqual({
+    status: "terminal-failure",
+    message: "invalid_product",
+  });
+  expect(await new JestSdkPlatform(mock).completePurchase("bad")).toEqual({
+    status: "terminal-failure",
+    message: "invalid_token",
+  });
 });
 it("normalizes subscription catalogs and successful checkout", async () => {
+  /** Provides mock behavior. */
   const mock = sdk();
+  /** Provides subscription behavior. */
   const subscription = {
     sku: "premium",
     displayName: "Premium",
@@ -250,6 +296,7 @@ it("normalizes subscription catalogs and successful checkout", async () => {
     subscription: {...subscription, status: "active"},
     subscriptionSigned: "subscription.signed",
   });
+  /** Provides platform behavior. */
   const platform = new JestSdkPlatform(mock);
   expect(await platform.getSubscriptions()).toEqual({
     status: "success",
@@ -265,12 +312,14 @@ it("normalizes subscription catalogs and successful checkout", async () => {
   expect(mock.payments.beginSubscription).toHaveBeenCalledWith({subscriptionSku: "premium"});
 });
 it("maps subscription cancellation and non-retryable errors", async () => {
+  /** Provides mock behavior. */
   const mock = sdk();
   mock.payments.beginSubscription
     .mockResolvedValueOnce({result: "cancel"})
     .mockResolvedValueOnce({result: "error", error: "invalid_subscription"})
     .mockResolvedValueOnce({result: "error", error: "guest_not_allowed"})
     .mockResolvedValueOnce({result: "error", error: "already_subscribed"});
+  /** Provides platform behavior. */
   const platform = new JestSdkPlatform(mock);
   expect(await platform.beginSubscription("premium")).toEqual({status: "cancelled"});
   expect(await platform.beginSubscription("premium")).toEqual({
@@ -287,18 +336,28 @@ it("maps subscription cancellation and non-retryable errors", async () => {
   });
 });
 it("handles registered notifications, nullable profiles and referral cancellation", async () => {
+  /** Provides mock behavior. */
   const mock = sdk();
   mock.getPlayer.mockReturnValue({playerId: "p1", registered: true});
   mock.referrals.shareReferralLink.mockResolvedValue({canceled: true});
   expect(await new JestSdkPlatform(mock).getProfile()).toBeNull();
-  expect(await new JestSdkPlatform(mock).scheduleNotification({identifier: "daily", scheduledInDays: 1, body: "Play", ctaText: "Open"})).toEqual({status: "success", value: undefined});
-  expect(await new JestSdkPlatform(mock).shareReferral({
-    reference: "campaign",
-    shareTitle: "Challenge",
-    shareText: "Can you beat me?",
-    shareImage: "data:image/png;base64,YQ==",
-    entryPayload: {gameMode: "classic"},
-  })).toEqual({status: "cancelled"});
+  expect(
+    await new JestSdkPlatform(mock).scheduleNotification({
+      identifier: "daily",
+      scheduledInDays: 1,
+      body: "Play",
+      ctaText: "Open",
+    }),
+  ).toEqual({status: "success", value: undefined});
+  expect(
+    await new JestSdkPlatform(mock).shareReferral({
+      reference: "campaign",
+      shareTitle: "Challenge",
+      shareText: "Can you beat me?",
+      shareImage: "data:image/png;base64,YQ==",
+      entryPayload: {gameMode: "classic"},
+    }),
+  ).toEqual({status: "cancelled"});
   expect(mock.referrals.shareReferralLink).toHaveBeenCalledWith({
     reference: "campaign",
     shareTitle: "Challenge",
@@ -308,22 +367,40 @@ it("handles registered notifications, nullable profiles and referral cancellatio
   });
 });
 it("maps thrown timeouts to retryable failures", async () => {
+  /** Provides mock behavior. */
   const mock = sdk();
   mock.payments.beginPurchase.mockRejectedValue(new Error("timeout"));
-  expect(await new JestSdkPlatform(mock).beginPurchase("coins")).toEqual({status: "retryable-failure", message: "timeout"});
+  expect(await new JestSdkPlatform(mock).beginPurchase("coins")).toEqual({
+    status: "retryable-failure",
+    message: "timeout",
+  });
 });
 
 it("forwards acquisition events to Jest analytics", () => {
+  /** Provides mock behavior. */
   const mock = sdk();
   new JestSdkPlatform(mock).captureEvent("registration_prompt_shown", {utmCampaign: "launch"});
   expect(mock.captureEvent).toHaveBeenCalledWith("registration_prompt_shown", {utmCampaign: "launch"});
 });
 
 it("uses the global SDK by default and initializes it safely", async () => {
-  const original = (globalThis as typeof globalThis & {JestSDK?: unknown}).JestSDK;
+  /** Provides original behavior. */
+  const original = (
+    globalThis as typeof globalThis & {
+      /** Stores jest sdk. */
+      JestSDK?: unknown;
+    }
+  ).JestSDK;
+  /** Provides mock behavior. */
   const mock = sdk();
-  (globalThis as typeof globalThis & {JestSDK?: unknown}).JestSDK = mock;
+  (
+    globalThis as typeof globalThis & {
+      /** Stores jest sdk. */
+      JestSDK?: unknown;
+    }
+  ).JestSDK = mock;
 
+  /** Provides platform behavior. */
   const platform = new JestSdkPlatform();
   await expect(platform.init()).resolves.toEqual({status: "success", value: undefined});
   expect(mock.init).toHaveBeenCalledWith({autoLoginReminders: false});
@@ -331,14 +408,26 @@ it("uses the global SDK by default and initializes it safely", async () => {
   platform.getPlayerSigned();
   expect(mock.getPlayerSigned).toHaveBeenCalled();
 
-  (globalThis as typeof globalThis & {JestSDK?: unknown}).JestSDK = original;
+  (
+    globalThis as typeof globalThis & {
+      /** Stores jest sdk. */
+      JestSDK?: unknown;
+    }
+  ).JestSDK = original;
 });
 
 it("resolves the global SDK lazily when it appears after construction", async () => {
-  const target = globalThis as typeof globalThis & {JestSDK?: unknown};
+  /** Provides target behavior. */
+  const target = globalThis as typeof globalThis & {
+    /** Stores jest sdk. */
+    JestSDK?: unknown;
+  };
+  /** Provides original behavior. */
   const original = target.JestSDK;
+  /** Provides mock behavior. */
   const mock = sdk();
   delete target.JestSDK;
+  /** Provides platform behavior. */
   const platform = new JestSdkPlatform();
   target.JestSDK = mock;
 
@@ -348,10 +437,17 @@ it("resolves the global SDK lazily when it appears after construction", async ()
 });
 
 it("waits for a delayed global SDK and contains a load timeout", async () => {
-  const target = globalThis as typeof globalThis & {JestSDK?: unknown};
+  /** Provides target behavior. */
+  const target = globalThis as typeof globalThis & {
+    /** Stores jest sdk. */
+    JestSDK?: unknown;
+  };
+  /** Provides original behavior. */
   const original = target.JestSDK;
+  /** Provides mock behavior. */
   const mock = sdk();
   delete target.JestSDK;
+  /** Provides delayed platform behavior. */
   const delayedPlatform = new JestSdkPlatform(undefined, 30_000, 100);
   setTimeout(() => {
     target.JestSDK = mock;
@@ -367,9 +463,11 @@ it("waits for a delayed global SDK and contains a load timeout", async () => {
 });
 
 it("maps initialization and login failures", async () => {
+  /** Provides mock behavior. */
   const mock = sdk();
   mock.init.mockRejectedValue("offline");
   mock.login.mockRejectedValue(new Error("BAD_REQUEST"));
+  /** Provides platform behavior. */
   const platform = new JestSdkPlatform(mock);
 
   await expect(platform.init()).resolves.toEqual({status: "retryable-failure", message: "offline"});
@@ -378,11 +476,16 @@ it("maps initialization and login failures", async () => {
 });
 
 it("runs both registration overlay actions and contains overlay errors", () => {
+  /** Provides mock behavior. */
   const mock = sdk();
+  /** Provides login button action behavior. */
   const loginButtonAction = jest.fn();
+  /** Provides close button action behavior. */
   const closeButtonAction = jest.fn();
   mock.showRegistrationOverlay.mockReturnValue({loginButtonAction, closeButtonAction});
+  /** Provides platform behavior. */
   const platform = new JestSdkPlatform(mock);
+  /** Provides result behavior. */
   const result = platform.showRegistrationOverlay({theme: "dark", onClose: jest.fn()});
   expect(result.status).toBe("success");
   if (result.status === "success") {
@@ -392,7 +495,9 @@ it("runs both registration overlay actions and contains overlay errors", () => {
   expect(loginButtonAction).toHaveBeenCalled();
   expect(closeButtonAction).toHaveBeenCalled();
 
-  mock.showRegistrationOverlay.mockImplementation(() => { throw new Error("overlay unavailable"); });
+  mock.showRegistrationOverlay.mockImplementation(() => {
+    throw new Error("overlay unavailable");
+  });
   expect(platform.showRegistrationOverlay({theme: "dark", onClose: jest.fn()})).toEqual({
     status: "retryable-failure",
     message: "overlay unavailable",
@@ -400,7 +505,9 @@ it("runs both registration overlay actions and contains overlay errors", () => {
 });
 
 it("round-trips every supported preference", async () => {
+  /** Provides mock behavior. */
   const mock = sdk();
+  /** Provides preferences behavior. */
   const preferences = {
     locale: "fr",
     muted: true,
@@ -412,6 +519,7 @@ it("round-trips every supported preference", async () => {
     firstMilestoneMarked: false,
   };
   mock.data.getAll.mockReturnValue(preferences);
+  /** Provides platform behavior. */
   const platform = new JestSdkPlatform(mock);
   expect(platform.readPreferences()).toEqual(preferences);
   await platform.writePreferences(preferences);
@@ -420,6 +528,7 @@ it("round-trips every supported preference", async () => {
 });
 
 it("deletes every client-writable key and flushes once after authoritative account deletion", async () => {
+  /** Provides mock behavior. */
   const mock = sdk();
   await new JestSdkPlatform(mock).clearPlayerState();
 
@@ -438,6 +547,7 @@ it("deletes every client-writable key and flushes once after authoritative accou
 });
 
 it("propagates a failed SDK flush so account deletion cannot report false client cleanup", async () => {
+  /** Provides mock behavior. */
   const mock = sdk();
   mock.data.flush.mockRejectedValue(new Error("platform data unavailable"));
 
@@ -480,12 +590,14 @@ it.each([
   {...savedGame, pendingOutcome: {...savedGame, id: "result", kind: "draw", attempts: 1, isCorrect: false}},
   {...savedGame, pendingOutcome: {...savedGame, id: "result", kind: "win", attempts: 1, isCorrect: false}},
 ])("discards malformed active-game snapshots", async (activeGame) => {
+  /** Provides mock behavior. */
   const mock = sdk();
   mock.data.getAll.mockReturnValue({riddleQuestPlayerState: {schemaVersion: 1, updatedAt: 11, activeGame}});
   expect(await new JestSdkPlatform(mock).readPlayerData()).toEqual({schemaVersion: 1, updatedAt: 11});
 });
 
 it("reconstructs a valid saved game without retaining unknown low-integrity fields", async () => {
+  /** Provides mock behavior. */
   const mock = sdk();
   mock.data.getAll.mockReturnValue({
     riddleQuestPlayerState: {
@@ -507,7 +619,9 @@ it("reconstructs a valid saved game without retaining unknown low-integrity fiel
 });
 
 it("restores authoritative-attempt recovery even when visual guess history was not saved", async () => {
+  /** Provides mock behavior. */
   const mock = sdk();
+  /** Provides awaiting game behavior. */
   const awaitingGame = {
     ...savedGame,
     guesses: [],
@@ -526,8 +640,11 @@ it("restores authoritative-attempt recovery even when visual guess history was n
 });
 
 it("reconstructs bounded scored guesses and a pending terminal outcome", async () => {
+  /** Provides mock behavior. */
   const mock = sdk();
+  /** Provides scored guess behavior. */
   const scoredGuess = {guess: ["A", "B"], feedback: ["green", "red"]};
+  /** Completes d game. */
   const completedGame = {
     ...savedGame,
     currentLetters: ["A", "B"],
@@ -562,6 +679,7 @@ it("reconstructs bounded scored guesses and a pending terminal outcome", async (
 });
 
 it("supports explicitly cleared active games and missing SDK data", async () => {
+  /** Provides mock behavior. */
   const mock = sdk();
   mock.data.getAll.mockReturnValue({riddleQuestPlayerState: {schemaVersion: 1, updatedAt: 11, activeGame: null}});
   expect(await new JestSdkPlatform(mock).readPlayerData()).toEqual({schemaVersion: 1, updatedAt: 11, activeGame: null});
@@ -579,7 +697,12 @@ it("supports explicitly cleared active games and missing SDK data", async () => 
 });
 
 it("constructs safely when the global SDK is absent", () => {
-  const target = globalThis as typeof globalThis & {JestSDK?: unknown};
+  /** Provides target behavior. */
+  const target = globalThis as typeof globalThis & {
+    /** Stores jest sdk. */
+    JestSDK?: unknown;
+  };
+  /** Provides original behavior. */
   const original = target.JestSDK;
   delete target.JestSDK;
   expect(new JestSdkPlatform()).toBeInstanceOf(JestSdkPlatform);
@@ -587,9 +710,12 @@ it("constructs safely when the global SDK is absent", () => {
 });
 
 it("reads entry intent, configures screenshots, and forwards lifecycle state", () => {
+  /** Provides mock behavior. */
   const mock = sdk();
+  /** Provides platform behavior. */
   const platform = new JestSdkPlatform(mock);
   expect(platform.getEntryIntent()).toMatchObject({gameMode: "classic"});
+  /** Provides provider behavior. */
   const provider = jest.fn();
   platform.setScreenshotProvider(provider);
   platform.setLoadingProgress(72);
@@ -600,26 +726,37 @@ it("reads entry intent, configures screenshots, and forwards lifecycle state", (
 });
 
 it("handles registered notification removal and notification failures", async () => {
+  /** Provides mock behavior. */
   const mock = sdk();
   mock.getPlayer.mockReturnValue({playerId: "p1", registered: true});
+  /** Provides platform behavior. */
   const platform = new JestSdkPlatform(mock);
   await expect(platform.removeNotification("daily")).resolves.toEqual({status: "success", value: undefined});
   expect(mock.notifications.unscheduleNotification).toHaveBeenCalledWith({identifier: "daily"});
   mock.notifications.unscheduleNotification.mockRejectedValue(new Error("timeout"));
-  await expect(platform.removeNotification("daily")).resolves.toEqual({status: "retryable-failure", message: "timeout"});
+  await expect(platform.removeNotification("daily")).resolves.toEqual({
+    status: "retryable-failure",
+    message: "timeout",
+  });
   mock.notifications.scheduleNotification.mockRejectedValue(new Error("timeout"));
-  await expect(platform.scheduleNotification({identifier: "daily", scheduledInDays: 1, body: "Play", ctaText: "Open"}))
-    .resolves.toEqual({status: "retryable-failure", message: "timeout"});
+  await expect(
+    platform.scheduleNotification({identifier: "daily", scheduledInDays: 1, body: "Play", ctaText: "Open"}),
+  ).resolves.toEqual({status: "retryable-failure", message: "timeout"});
 });
 
 it("handles referrals, product catalogs, and incomplete purchases", async () => {
+  /** Provides mock behavior. */
   const mock = sdk();
+  /** Provides platform behavior. */
   const platform = new JestSdkPlatform(mock);
   mock.referrals.shareReferralLink.mockResolvedValue({canceled: false});
   mock.referrals.listReferrals.mockResolvedValue({referralsSigned: "signed"});
   mock.payments.getProducts.mockResolvedValue({products: []});
   mock.payments.getIncompletePurchases.mockResolvedValue({purchases: []});
-  await expect(platform.shareReferral({reference: "campaign"} as never)).resolves.toEqual({status: "success", value: undefined});
+  await expect(platform.shareReferral({reference: "campaign"} as never)).resolves.toEqual({
+    status: "success",
+    value: undefined,
+  });
   await expect(platform.listReferralsSigned()).resolves.toEqual({status: "success", value: "signed"});
   await expect(platform.getProducts()).resolves.toEqual({status: "success", value: {products: []}});
   await expect(platform.getIncompletePurchases()).resolves.toEqual({status: "success", value: {purchases: []}});
@@ -628,14 +765,18 @@ it("handles referrals, product catalogs, and incomplete purchases", async () => 
   mock.referrals.listReferrals.mockRejectedValue(new Error("offline"));
   mock.payments.getProducts.mockRejectedValue(new Error("offline"));
   mock.payments.getIncompletePurchases.mockRejectedValue(new Error("offline"));
-  await expect(platform.shareReferral({reference: "campaign"} as never)).resolves.toMatchObject({status: "retryable-failure"});
+  await expect(platform.shareReferral({reference: "campaign"} as never)).resolves.toMatchObject({
+    status: "retryable-failure",
+  });
   await expect(platform.listReferralsSigned()).resolves.toMatchObject({status: "retryable-failure"});
   await expect(platform.getProducts()).resolves.toMatchObject({status: "retryable-failure"});
   await expect(platform.getIncompletePurchases()).resolves.toMatchObject({status: "retryable-failure"});
 });
 
 it("maps every purchase completion result", async () => {
+  /** Provides mock behavior. */
   const mock = sdk();
+  /** Provides platform behavior. */
   const platform = new JestSdkPlatform(mock);
   mock.payments.beginPurchase
     .mockResolvedValueOnce({result: "success", purchase: {sku: "coins"}, purchaseSigned: "signed"})
@@ -656,7 +797,9 @@ it("maps every purchase completion result", async () => {
 });
 
 it("handles empty and failed subscription catalogs and checkout failures", async () => {
+  /** Provides mock behavior. */
   const mock = sdk();
+  /** Provides platform behavior. */
   const platform = new JestSdkPlatform(mock);
   mock.payments.getSubscriptions.mockResolvedValue({});
   await expect(platform.getSubscriptions()).resolves.toEqual({
@@ -668,11 +811,18 @@ it("handles empty and failed subscription catalogs and checkout failures", async
   mock.payments.beginSubscription
     .mockResolvedValueOnce({result: "error", error: "gateway"})
     .mockRejectedValueOnce(new Error("offline"));
-  await expect(platform.beginSubscription("premium")).resolves.toEqual({status: "retryable-failure", message: "gateway"});
-  await expect(platform.beginSubscription("premium")).resolves.toEqual({status: "retryable-failure", message: "offline"});
+  await expect(platform.beginSubscription("premium")).resolves.toEqual({
+    status: "retryable-failure",
+    message: "gateway",
+  });
+  await expect(platform.beginSubscription("premium")).resolves.toEqual({
+    status: "retryable-failure",
+    message: "offline",
+  });
 });
 
 it("times out a subscription checkout that never settles", async () => {
+  /** Provides mock behavior. */
   const mock = sdk();
   mock.payments.beginSubscription.mockImplementation(() => new Promise(() => undefined));
   await expect(new JestSdkPlatform(mock, 1).beginSubscription("premium")).resolves.toEqual({
@@ -682,7 +832,9 @@ it("times out a subscription checkout that never settles", async () => {
 });
 
 it("marks the first milestone and contains milestone failures", async () => {
+  /** Provides mock behavior. */
   const mock = sdk();
+  /** Provides platform behavior. */
   const platform = new JestSdkPlatform(mock);
   await expect(platform.markFirstMilestone()).resolves.toEqual({status: "success", value: undefined});
   mock.markFirstMilestone.mockRejectedValue(new Error("offline"));

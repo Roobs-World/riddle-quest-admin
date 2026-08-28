@@ -23,10 +23,7 @@ import {captureBrowserException} from "../observability/browserErrorReporter";
 import {safeBrowserStorageGet} from "./playerPreferences";
 import {coordinateHostServices, type AccountDeletionServiceGate} from "./accountDeletionServiceGate";
 import type {ActivePresenceState} from "../presence/PlatformPresenceSession";
-import {
-  ReferralSharingProvider,
-  type ReferralSharingCapability,
-} from "./sharing/ReferralSharingCapability";
+import {ReferralSharingProvider, type ReferralSharingCapability} from "./sharing/ReferralSharingCapability";
 
 /** Creates host message. */
 const createHostMessage = <Message extends HostToGameMessage>(message: Message): Message => ({
@@ -63,42 +60,74 @@ export function PlayHostApp({
   onPresenceStateChange,
   referralSharing,
 }: {
+  /** Stores host services. */
   hostServices: HostServices;
+  /** Stores host configuration warning. */
   hostConfigurationWarning?: string | null;
+  /** Stores initial game mode. */
   initialGameMode?: WebGameMode;
+  /** Stores on playable. */
   onPlayable?: () => void;
+  /** Stores on authoritative complete. */
   onAuthoritativeComplete?: (
-    input: {riddleId: string; gameMode: WebGameMode},
+    input: {
+      /** Stores riddle id. */
+      riddleId: string; /** Stores game mode. */
+      /** Stores game mode. */
+      gameMode: WebGameMode;
+    },
     result: CompletionResult,
   ) => void | Promise<void>;
   /** Runs only after an authoritative single-player or multiplayer result is available. */
   onResultScreen?: () => void | Promise<void>;
   /** Runs after the server returns one authoritative multiplayer outcome. */
   onAuthoritativeRaceResult?: (result: RaceOutcome) => void | Promise<void>;
+  /** Stores platform products. */
   platformProducts?: ProductSummary[];
+  /** Stores platform purchase. */
   platformPurchase?: (productId: string) => Promise<import("./types").PurchaseResult>;
+  /** Stores platform capabilities. */
   platformCapabilities?: PlatformCapabilities;
+  /** Stores platform player id. */
   platformPlayerId?: string;
+  /** Stores external interaction blocked. */
   externalInteractionBlocked?: boolean;
+  /** Stores initial player data. */
   initialPlayerData?: PlayerData | null;
+  /** Stores on player data change. */
   onPlayerDataChange?: (update: PlayerDataUpdate) => void;
+  /** Stores on account deleted. */
   onAccountDeleted?: () => void | Promise<void>;
+  /** Stores on account deletion requested. */
   onAccountDeletionRequested?: () => void | Promise<void>;
+  /** Stores account deletion service gate. */
   accountDeletionServiceGate?: AccountDeletionServiceGate;
+  /** Stores registration name. */
   registrationName?: string;
+  /** Stores registration inviter name. */
   registrationInviterName?: string;
+  /** Stores initial race challenge id. */
   initialRaceChallengeId?: string;
+  /** Stores initial race inbox. */
   initialRaceInbox?: boolean;
+  /** Stores presence enabled. */
   presenceEnabled?: boolean;
+  /** Stores on toggle presence. */
   onTogglePresence?: () => void;
+  /** Stores race locale policy. */
   raceLocalePolicy?: "english-only" | "all";
+  /** Stores on presence state change. */
   onPresenceStateChange?: (state: ActivePresenceState) => void;
   /** Optional outbound referral sharing supplied by the active release target. */
   referralSharing?: ReferralSharingCapability | null;
 }) {
+  /** Provides locale behavior. */
   const locale = useLocale();
+  /** Provides session id ref behavior. */
   const sessionIdRef = useRef(createRequestId("session"));
+  /** Provides services behavior. */
   const services = useMemo<HostServices>(() => {
+    /** Provides configured services behavior. */
     const configuredServices: HostServices = {
       ...hostServices,
       products: platformProducts ?? hostServices.products,
@@ -108,7 +137,9 @@ export function PlayHostApp({
       ? coordinateHostServices(configuredServices, accountDeletionServiceGate)
       : configuredServices;
   }, [accountDeletionServiceGate, hostServices, platformProducts, platformPurchase]);
+  /** Provides configuration warning behavior. */
   const configurationWarning = hostConfigurationWarning;
+  /** Provides race build enabled behavior. */
   const raceBuildEnabled = useMemo(
     () =>
       isRaceTo10Enabled({
@@ -118,47 +149,71 @@ export function PlayHostApp({
     [],
   );
 
+  /** Provides [auth snapshot, set auth snapshot] behavior. */
   const [authSnapshot, setAuthSnapshot] = useState<AuthSnapshot>({user: null, profile: null});
+  /** Provides [prefetched race categories, set prefetched race categories] behavior. */
   const [prefetchedRaceCategories, setPrefetchedRaceCategories] = useState<ListRaceCategoriesResponse["categories"]>(
     [],
   );
+  /** Provides [frame ready, set frame ready] behavior. */
   const [frameReady, setFrameReady] = useState(false);
+  /** Provides [game mode, set game mode] behavior. */
   const [gameMode, setGameMode] = useState<WebGameMode>(initialGameMode ?? "classic");
+  /** Provides [notice, set notice] behavior. */
   const [notice, setNotice] = useState<string | null>(configurationWarning);
+  /** Provides [pending server operations, set pending server operations] behavior. */
   const [pendingServerOperations, setPendingServerOperations] = useState(0);
+  /** Provides [startup complete, set startup complete] behavior. */
   const [startupComplete, setStartupComplete] = useState(false);
+  /** Provides server interaction active behavior. */
   const serverInteractionActive = pendingServerOperations > 0 || externalInteractionBlocked || !startupComplete;
+  /** Loads ed user id ref. */
   const loadedUserIdRef = useRef<string | null>(null);
+  /** Provides riddle loaded ref behavior. */
   const riddleLoadedRef = useRef(false);
+  /** Provides riddle load in flight ref behavior. */
   const riddleLoadInFlightRef = useRef<Promise<boolean> | null>(null);
+  /** Provides riddle context version ref behavior. */
   const riddleContextVersionRef = useRef(0);
+  /** Provides schedule riddle recovery ref behavior. */
   const scheduleRiddleRecoveryRef = useRef<() => void>(() => undefined);
+  /** Provides playable reported ref behavior. */
   const playableReportedRef = useRef(false);
+  /** Provides account deletion completed ref behavior. */
   const accountDeletionCompletedRef = useRef(false);
+  /** Provides game mode ref behavior. */
   const gameModeRef = useRef(gameMode);
+  /** Provides classic index ref behavior. */
   const classicIndexRef = useRef(authSnapshot.profile?.classicIndex);
   gameModeRef.current = gameMode;
   classicIndexRef.current = authSnapshot.profile?.classicIndex;
+  /** Provides bridge user behavior. */
   const bridgeUser = useMemo(
-    () => (authSnapshot.user
-      ? {...authSnapshot.user, platformRegistered: platformCapabilities?.accountUpgrade?.state === "complete"}
-      : null),
+    () =>
+      authSnapshot.user
+        ? {...authSnapshot.user, platformRegistered: platformCapabilities?.accountUpgrade?.state === "complete"}
+        : null,
     [authSnapshot.user, platformCapabilities?.accountUpgrade?.state],
   );
 
+  /** Runs server activity. */
   const withServerActivity = useCallback(async <Result,>(operation: () => Promise<Result>): Promise<Result> => {
+    /** Starts ed at. */
     const startedAt = Date.now();
     setPendingServerOperations((current) => current + 1);
     try {
       return await operation();
     } finally {
+      /** Provides minimum visible time behavior. */
       const minimumVisibleTime = 180;
+      /** Provides remaining time behavior. */
       const remainingTime = Math.max(0, minimumVisibleTime - (Date.now() - startedAt));
       window.setTimeout(() => {
         setPendingServerOperations((current) => Math.max(0, current - 1));
       }, remainingTime);
     }
   }, []);
+  /** Saves active game. */
   const saveActiveGame = useCallback(
     (activeGame: NonNullable<PlayerData["activeGame"]> | null) => onPlayerDataChange?.({activeGame}),
     [onPlayerDataChange],
@@ -183,6 +238,7 @@ export function PlayHostApp({
   }, [authSnapshot.profile, onPlayerDataChange]);
 
   useEffect(() => {
+    /** Provides cancelled behavior. */
     let cancelled = false;
     setPrefetchedRaceCategories([]);
     if (!raceBuildEnabled || !authSnapshot.user || (raceLocalePolicy === "english-only" && locale !== "en")) return;
@@ -192,6 +248,7 @@ export function PlayHostApp({
         if (!access.enabled || cancelled) return;
         if (initialRaceChallengeId) return;
         try {
+          /** Provides categories behavior. */
           const categories = await services.listRaceCategories(locale);
           if (!cancelled) setPrefetchedRaceCategories(categories.categories);
         } catch (error) {
@@ -206,10 +263,12 @@ export function PlayHostApp({
     };
   }, [authSnapshot.user, initialRaceChallengeId, locale, raceBuildEnabled, raceLocalePolicy, services]);
 
+  /** Provides post to game behavior. */
   const postToGame = useCallback((message: HostToGameMessage) => {
     dispatchLocalBridge(HOST_TO_GAME_EVENT, createHostMessage(message));
   }, []);
 
+  /** Sends init. */
   const sendInit = useCallback(() => {
     postToGame({
       type: "host:init",
@@ -225,9 +284,11 @@ export function PlayHostApp({
       },
     });
   }, [authSnapshot.profile, bridgeUser, gameMode, locale, postToGame, services.products]);
+  /** Sends init ref. */
   const sendInitRef = useRef(sendInit);
   sendInitRef.current = sendInit;
 
+  /** Provides post operation behavior. */
   const postOperation = useCallback(
     (requestId: string | undefined, operation: HostOperationName, ok: boolean, data?: unknown, error?: string) => {
       postToGame({
@@ -244,6 +305,7 @@ export function PlayHostApp({
     [postToGame],
   );
 
+  /** Applies purchase balance. */
   const applyPurchaseBalance = useCallback((result: import("./types").PurchaseResult) => {
     if (typeof result.newCoins !== "number") return;
     setAuthSnapshot((current) =>
@@ -251,15 +313,19 @@ export function PlayHostApp({
     );
   }, []);
 
+  /** Provides run race operation behavior. */
   const runRaceOperation = useCallback(
     async (requestId: string | undefined, operation: HostOperationName, action: () => Promise<unknown>) => {
+      /** Starts ed at. */
       const startedAt = performance.now();
       try {
         // The multiplayer surface owns its pending states. Using the global
         // server-activity wrapper here blocks the entire game behind an overlay
         // while a race request is in flight, including the initial screen open.
         postOperation(requestId, operation, true, await action());
+        /** Provides duration ms behavior. */
         const durationMs = Math.round(performance.now() - startedAt);
+        /** Provides report behavior. */
         const report = durationMs >= 2_000 ? console.warn : console.info;
         report("[riddle-quest-race-latency]", operation, {
           ok: true,
@@ -278,8 +344,14 @@ export function PlayHostApp({
     [postOperation],
   );
 
+  /** Provides sync race achievement progress behavior. */
   const syncRaceAchievementProgress = useCallback(
-    async (result: {newlyUnlockedAchievementIds?: string[]; newCoins?: number}) => {
+    async (result: {
+      /** Stores newly unlocked achievement ids. */
+      newlyUnlockedAchievementIds?: string[]; /** Stores new coins. */
+      /** Stores new coins. */
+      newCoins?: number;
+    }) => {
       if (typeof result.newCoins === "number") {
         setAuthSnapshot((current) =>
           current.profile ? {...current, profile: {...current.profile, coins: result.newCoins!}} : current,
@@ -288,9 +360,11 @@ export function PlayHostApp({
       for (const achievementId of result.newlyUnlockedAchievementIds ?? []) {
         trackEvent("unlock_achievement", {achievement_id: achievementId, source: "multiplayer"});
       }
+      /** Provides r. */
       const user = authSnapshot.user;
       if (!user) return;
       try {
+        /** Provides profile behavior. */
         const profile = await services.loadProfile(user.uid);
         setAuthSnapshot((current) => ({...current, profile}));
         postToGame({
@@ -305,28 +379,55 @@ export function PlayHostApp({
     [authSnapshot.user, bridgeUser, postToGame, services],
   );
 
-  const handleAuthoritativeComplete = useCallback(async (
-    input: {riddleId: string; gameMode: WebGameMode},
-    result: CompletionResult,
-  ) => {
-    await onAuthoritativeComplete?.(input, result);
-    await onResultScreen?.();
-  }, [onAuthoritativeComplete, onResultScreen]);
+  /** Handles authoritative complete. */
+  const handleAuthoritativeComplete = useCallback(
+    async (
+      input: {
+        /** Stores riddle id. */
+        riddleId: string; /** Stores game mode. */
+        /** Stores game mode. */
+        gameMode: WebGameMode;
+      },
+      result: CompletionResult,
+    ) => {
+      await onAuthoritativeComplete?.(input, result);
+      await onResultScreen?.();
+    },
+    [onAuthoritativeComplete, onResultScreen],
+  );
 
-  const handleAuthoritativeRaceResult = useCallback(async (result: RaceOutcome) => {
-    await onAuthoritativeRaceResult?.(result);
-    await onResultScreen?.();
-  }, [onAuthoritativeRaceResult, onResultScreen]);
+  /** Handles authoritative race result. */
+  const handleAuthoritativeRaceResult = useCallback(
+    async (result: RaceOutcome) => {
+      await onAuthoritativeRaceResult?.(result);
+      await onResultScreen?.();
+    },
+    [onAuthoritativeRaceResult, onResultScreen],
+  );
 
+  /** Loads and post riddle. */
   const loadAndPostRiddle = useCallback(
-    async (input: {gameMode: WebGameMode; locale: string; classicIndex?: number}, requestId?: string) => {
+    async (
+      input: {
+        /** Stores game mode. */
+        gameMode: WebGameMode; /** Stores locale. */
+        /** Stores locale. */
+        locale: string; /** Stores classic index. */
+        /** Stores classic index. */
+        classicIndex?: number;
+      },
+      requestId?: string,
+    ) => {
       // Automatic ready/recovery calls may share one request. Correlated game
       // requests must run independently so their requestId always receives a response.
       if (!requestId && riddleLoadInFlightRef.current) return riddleLoadInFlightRef.current;
+      /** Provides context version behavior. */
       const contextVersion = riddleContextVersionRef.current;
+      /** Provides pending behavior. */
       const pending = (async () => {
         try {
           setGameMode(input.gameMode);
+          /** Provides riddle behavior. */
           const riddle = await withServerActivity(() => services.loadRiddle(input));
           if (contextVersion !== riddleContextVersionRef.current) return false;
           riddleLoadedRef.current = true;
@@ -354,6 +455,7 @@ export function PlayHostApp({
         } catch (error) {
           riddleLoadedRef.current = false;
           captureBrowserException(error, {component: "play_host", operation: "loadRiddle"});
+          /** Provides message behavior. */
           const message = getHostErrorMessage(error);
           setNotice(message);
           postOperation(requestId, "loadRiddle", false, undefined, message);
@@ -368,6 +470,7 @@ export function PlayHostApp({
     },
     [authSnapshot.profile, configurationWarning, onPlayable, postOperation, postToGame, services, withServerActivity],
   );
+  /** Loads and post riddle ref. */
   const loadAndPostRiddleRef = useRef(loadAndPostRiddle);
   loadAndPostRiddleRef.current = loadAndPostRiddle;
 
@@ -379,6 +482,7 @@ export function PlayHostApp({
     });
   }, [authSnapshot, bridgeUser, postToGame]);
 
+  /** Provides router behavior. */
   const router = useMemo(
     () =>
       createHostMessageRouter(
@@ -429,6 +533,7 @@ export function PlayHostApp({
   );
 
   useEffect(() => {
+    /** Handles local message. */
     const handleLocalMessage = (event: Event) => {
       void router((event as CustomEvent<unknown>).detail).catch((error) => {
         captureBrowserException(error, {component: "play_host", operation: "route_local_message"});
@@ -464,19 +569,26 @@ export function PlayHostApp({
     riddleContextVersionRef.current += 1;
     riddleLoadInFlightRef.current = null;
     riddleLoadedRef.current = false;
+    /** Provides r. */
     const user = authSnapshot.user;
     if (!user) return;
+    /** Provides cancelled behavior. */
     let cancelled = false;
+    /** Provides recovery timer behavior. */
     let recoveryTimer: number | undefined;
+    /** Provides failed attempts behavior. */
     let failedAttempts = 0;
+    /** Provides schedule recovery behavior. */
     const scheduleRecovery = (delayMs: number) => {
       if (cancelled) return;
       if (recoveryTimer !== undefined) window.clearTimeout(recoveryTimer);
       recoveryTimer = window.setTimeout(() => void recoverHostAndRiddle(), delayMs);
     };
+    /** Provides recover host and riddle behavior. */
     const recoverHostAndRiddle = async () => {
       sendInitRef.current();
       if (riddleLoadedRef.current || cancelled) return;
+      /** Loads ed. */
       const loaded = await loadAndPostRiddleRef.current({
         gameMode: gameModeRef.current,
         locale,
@@ -484,7 +596,8 @@ export function PlayHostApp({
       });
       if (loaded || cancelled) return;
       failedAttempts += 1;
-      const retryDelayMs = Math.min(30_000, 500 * (2 ** Math.min(failedAttempts, 6)));
+      /** Provides retry delay ms behavior. */
+      const retryDelayMs = Math.min(30_000, 500 * 2 ** Math.min(failedAttempts, 6));
       scheduleRecovery(retryDelayMs);
     };
     scheduleRiddleRecoveryRef.current = () => scheduleRecovery(250);
@@ -497,6 +610,7 @@ export function PlayHostApp({
   }, [authSnapshot.user?.uid, locale]);
 
   useEffect(() => {
+    /** Provides on visibility change behavior. */
     const onVisibilityChange = () => {
       postToGame({
         type: document.visibilityState === "hidden" ? "host:pause" : "host:resume",

@@ -78,7 +78,12 @@ export type RaceRunRecord = {
   /** Stores hint used. */
   hintUsed: boolean;
   /** Stores revealed letters. */
-  revealedLetters: Array<{index: number; letter: string}>;
+  revealedLetters: Array<{
+    /** Stores index. */
+    index: number; /** Stores letter. */
+    /** Stores letter. */
+    letter: string;
+  }>;
   /** Stores started at ms. */
   startedAtMs: number;
   /** Stores finished at ms. */
@@ -122,7 +127,9 @@ const copyRun = (run: RaceRunRecord): RaceRunRecord => ({
 
 /** Calculates authoritative elapsed and penalty time for a race run. */
 export function raceClock(run: RaceRunRecord, nowMs: number): RaceClock {
+  /** Provides total penalty ms behavior. */
   const totalPenaltyMs = run.hintPenaltyMs + run.skipPenaltyMs;
+  /** Provides wall elapsed ms behavior. */
   const wallElapsedMs = run.wallFinishMs ?? Math.max(0, nowMs - run.startedAtMs);
   return {wallElapsedMs, totalPenaltyMs, adjustedElapsedMs: wallElapsedMs + totalPenaltyMs};
 }
@@ -133,7 +140,9 @@ const finishRun = (
   result: NonNullable<RaceRunRecord["result"]>,
   adjustedFinishMs: number,
 ): RaceRunRecord => {
+  /** Provides total penalty ms behavior. */
   const totalPenaltyMs = run.hintPenaltyMs + run.skipPenaltyMs;
+  /** Provides wall finish ms behavior. */
   const wallFinishMs = Math.max(0, adjustedFinishMs - totalPenaltyMs);
   return {
     ...run,
@@ -146,8 +155,10 @@ const finishRun = (
 
 /** Refreshes time-dependent run state, including timeout and ghost completion. */
 export function refreshRaceRun(input: RaceRunRecord, nowMs: number): RaceRunRecord {
+  /** Provides run behavior. */
   const run = copyRun(input);
   if (run.status !== "active") return run;
+  /** Provides clock behavior. */
   const clock = raceClock(run, nowMs);
   if (clock.adjustedElapsedMs >= RACE_MAX_ADJUSTED_TIME_MS) {
     return finishRun(run, "timed_out", RACE_MAX_ADJUSTED_TIME_MS);
@@ -163,6 +174,7 @@ const requireActiveRiddle = (run: RaceRunRecord, riddleId: string): RaceRiddleSn
   if (run.status !== "active") {
     throw new HttpsError("failed-precondition", "This Race to 10 run is no longer active.");
   }
+  /** Provides riddle behavior. */
   const riddle = run.riddles[run.currentPosition];
   if (!riddle || riddle.riddleId !== riddleId) {
     throw new HttpsError("failed-precondition", "The submitted riddle is not the active race riddle.");
@@ -177,6 +189,7 @@ const appendEvent = (
   nowMs: number,
   penaltyAddedMs: RaceGhostEvent["penaltyAddedMs"],
 ): void => {
+  /** Provides clock behavior. */
   const clock = raceClock(run, nowMs);
   run.events.push({
     sequence: run.events.length,
@@ -197,6 +210,7 @@ const advanceRiddle = (run: RaceRunRecord, nowMs: number): void => {
   run.hintUsed = false;
   run.revealedLetters = [];
   if (run.currentPosition >= run.riddles.length && run.correctCount < RACE_TARGET_CORRECT) {
+    /** Provides clock behavior. */
     const clock = raceClock(run, nowMs);
     Object.assign(run, finishRun(run, "timed_out", Math.min(clock.adjustedElapsedMs, RACE_MAX_ADJUSTED_TIME_MS)));
   }
@@ -212,24 +226,45 @@ const normalizeAnswer = (value: string, locale: RaceLocale): string =>
 /** Applies and validates one guess against the current authoritative riddle. */
 export function applyRaceGuess(
   input: RaceRunRecord,
-  inputData: {riddleId: string; guess: string},
+  inputData: {
+    /** Stores riddle id. */
+    riddleId: string; /** Stores guess. */
+    /** Stores guess. */
+    guess: string;
+  },
   nowMs: number,
 ): {
+  /** Stores run. */
   run: RaceRunRecord;
-  feedback: Array<{letter: string; status: "green" | "yellow" | "red"}>;
+  /** Stores feedback. */
+  feedback: Array<{
+    /** Stores letter. */
+    letter: string; /** Stores status. */
+    /** Stores status. */
+    status: "green" | "yellow" | "red";
+  }>;
+  /** Stores is correct. */
   isCorrect: boolean;
+  /** Stores auto skipped. */
   autoSkipped: boolean;
 } {
+  /** Provides run behavior. */
   const run = refreshRaceRun(input, nowMs);
+  /** Provides riddle behavior. */
   const riddle = requireActiveRiddle(run, inputData.riddleId);
+  /** Provides guess letters behavior. */
   const guessLetters = splitGraphemes(inputData.guess.trim(), run.locale);
+  /** Provides answer letters behavior. */
   const answerLetters = splitGraphemes(riddle.answer, run.locale);
   if (guessLetters.length !== answerLetters.length) {
     throw new HttpsError("invalid-argument", `Guess must contain exactly ${answerLetters.length} characters.`);
   }
 
+  /** Provides statuses behavior. */
   const statuses = computeFeedback(inputData.guess, riddle.answer);
+  /** Provides feedback behavior. */
   const feedback = guessLetters.map((letter, index) => ({letter, status: statuses[index]}));
+  /** Indicates whether is correct. */
   const isCorrect = normalizeAnswer(inputData.guess, run.locale) === normalizeAnswer(riddle.answer, run.locale);
   run.guessesUsed += 1;
 
@@ -237,7 +272,9 @@ export function applyRaceGuess(
     run.correctCount += 1;
     appendEvent(run, "correct", nowMs, 0);
     if (run.correctCount >= RACE_TARGET_CORRECT) {
+      /** Provides adjusted finish ms behavior. */
       const adjustedFinishMs = raceClock(run, nowMs).adjustedElapsedMs;
+      /** Provides result behavior. */
       const result: RaceOutcome["result"] = run.opponent
         ? adjustedFinishMs < run.opponent.adjustedFinishMs
           ? "player_win"
@@ -262,20 +299,36 @@ export function applyRaceGuess(
 /** Reveals one server-selected letter and applies the configured hint penalty. */
 export function applyRaceHint(
   input: RaceRunRecord,
-  inputData: {riddleId: string},
+  inputData: {
+    /** Stores riddle id. */
+    riddleId: string;
+  },
   nowMs: number,
-): {run: RaceRunRecord; revealedLetter: string; index: number} {
+): {
+  /** Stores run. */
+  run: RaceRunRecord; /** Stores revealed letter. */
+  /** Stores revealed letter. */
+  revealedLetter: string; /** Stores index. */
+  /** Stores index. */
+  index: number;
+} {
+  /** Provides run behavior. */
   const run = refreshRaceRun(input, nowMs);
+  /** Provides riddle behavior. */
   const riddle = requireActiveRiddle(run, inputData.riddleId);
   if (run.hintUsed) throw new HttpsError("failed-precondition", "The race hint for this riddle is already used.");
 
+  /** Provides answer behavior. */
   const answer = splitGraphemes(riddle.answer, run.locale);
+  /** Provides revealed behavior. */
   const revealed = new Set(run.revealedLetters.map((letter) => letter.index));
+  /** Provides index behavior. */
   const index = answer.findIndex((_, candidateIndex) => !revealed.has(candidateIndex));
   if (index < 0) throw new HttpsError("failed-precondition", "No unrevealed race hint is available.");
 
   run.hintUsed = true;
   run.hintPenaltyMs += RACE_HINT_PENALTY_MS;
+  /** Provides revealed letter behavior. */
   const revealedLetter = answer[index];
   run.revealedLetters.push({index, letter: revealedLetter});
   appendEvent(run, "hint", nowMs, RACE_HINT_PENALTY_MS);
@@ -283,7 +336,15 @@ export function applyRaceHint(
 }
 
 /** Skips the current riddle after a guess and applies the configured penalty. */
-export function applyRaceSkip(input: RaceRunRecord, inputData: {riddleId: string}, nowMs: number): RaceRunRecord {
+export function applyRaceSkip(
+  input: RaceRunRecord,
+  inputData: {
+    /** Stores riddle id. */
+    riddleId: string;
+  },
+  nowMs: number,
+): RaceRunRecord {
+  /** Provides run behavior. */
   const run = refreshRaceRun(input, nowMs);
   requireActiveRiddle(run, inputData.riddleId);
   if (run.guessesUsed < 1) {
@@ -297,11 +358,13 @@ export function applyRaceSkip(input: RaceRunRecord, inputData: {riddleId: string
 
 /** Marks an active run abandoned without producing a competitive result. */
 export function abandonRaceRun(input: RaceRunRecord, nowMs: number): RaceRunRecord {
+  /** Provides run behavior. */
   const run = refreshRaceRun(input, nowMs);
   if (run.status === "abandoned") return run;
   if (run.status !== "active") {
     throw new HttpsError("failed-precondition", "This Race to 10 run already has a final result.");
   }
+  /** Provides clock behavior. */
   const clock = raceClock(run, nowMs);
   return {
     ...run,
@@ -314,11 +377,15 @@ export function abandonRaceRun(input: RaceRunRecord, nowMs: number): RaceRunReco
 
 /** Projects server-only run state into the answer-safe client response. */
 export function toRaceRunView(input: RaceRunRecord, nowMs: number): RaceRunView {
+  /** Provides run behavior. */
   const run = refreshRaceRun(input, nowMs);
+  /** Provides clock behavior. */
   const clock = raceClock(run, nowMs);
+  /** Provides current behavior. */
   const current = run.status === "active" ? run.riddles[run.currentPosition] : undefined;
-  const linkedOpponentIdentity = typeof run.opponent?.subjectUserId === "string" &&
-    run.opponent.subjectUserId.length > 0;
+  /** Provides linked opponent identity behavior. */
+  const linkedOpponentIdentity =
+    typeof run.opponent?.subjectUserId === "string" && run.opponent.subjectUserId.length > 0;
   return {
     runId: run.runId,
     challengeId: run.challengeId,
@@ -358,8 +425,11 @@ export function toRaceRunView(input: RaceRunRecord, nowMs: number): RaceRunView 
 
 /** Produces the final public outcome for a completed authoritative run. */
 export function raceOutcome(run: RaceRunRecord, nowMs: number): RaceOutcome {
+  /** Provides refreshed behavior. */
   const refreshed = refreshRaceRun(run, nowMs);
+  /** Provides clock behavior. */
   const clock = raceClock(refreshed, nowMs);
+  /** Provides total penalty ms behavior. */
   const totalPenaltyMs = refreshed.hintPenaltyMs + refreshed.skipPenaltyMs;
   if (!refreshed.result || refreshed.status === "active") {
     throw new HttpsError("failed-precondition", "The Race to 10 run does not have a final outcome yet.");

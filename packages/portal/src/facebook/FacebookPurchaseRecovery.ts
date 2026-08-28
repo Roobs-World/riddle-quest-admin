@@ -13,14 +13,25 @@ const isRecord = (value: unknown): value is Record<string, unknown> =>
 /** Parses facebook unconsumed purchases. */
 export function parseFacebookUnconsumedPurchases(value: unknown): FacebookInstantPurchase[] {
   if (!Array.isArray(value) || value.length > MAX_PURCHASES) throw new Error("facebook-purchases-invalid");
+  /** Provides purchases behavior. */
   const purchases = value.map((item) => {
     if (!isRecord(item)) throw new Error("facebook-purchase-invalid");
+    /** Provides keys behavior. */
     const keys = Object.keys(item);
+    /** Provides required behavior. */
     const required = [
-      "isConsumed", "paymentActionType", "paymentID", "productID", "purchasePlatform",
-      "purchasePrice", "purchaseTime", "purchaseToken", "signedRequest",
+      "isConsumed",
+      "paymentActionType",
+      "paymentID",
+      "productID",
+      "purchasePlatform",
+      "purchasePrice",
+      "purchaseTime",
+      "purchaseToken",
+      "signedRequest",
     ];
-    if (!required.every((key) => keys.includes(key)) ||
+    if (
+      !required.every((key) => keys.includes(key)) ||
       keys.some((key) => ![...required, "developerPayload"].includes(key)) ||
       item.isConsumed !== false ||
       item.paymentActionType !== "charge" ||
@@ -31,7 +42,8 @@ export function parseFacebookUnconsumedPurchases(value: unknown): FacebookInstan
       !/^\d+$/u.test(item.purchaseTime) ||
       !bounded(item.purchaseToken, 8_192) ||
       !bounded(item.signedRequest, 8_192) ||
-      (item.developerPayload !== undefined && !bounded(item.developerPayload, 1_024))) {
+      (item.developerPayload !== undefined && !bounded(item.developerPayload, 1_024))
+    ) {
       throw new Error("facebook-purchase-invalid");
     }
     return item as unknown as FacebookInstantPurchase;
@@ -45,9 +57,16 @@ export function parseFacebookUnconsumedPurchases(value: unknown): FacebookInstan
 }
 
 /** Describes facebook signed purchase grant. */
-export type FacebookSignedPurchaseGrant = (input: {signedRequest: string}) => Promise<{
+export type FacebookSignedPurchaseGrant = (input: {
+  /** Stores signed request. */ /** Stores signed request. */
+  /** Stores signed request. */
+  signedRequest: string;
+}) => Promise<{
+  /** Stores granted. */
   granted: true;
+  /** Stores provider receipt id. */
   providerReceiptId: string;
+  /** Stores consume. */
   consume: boolean;
 }>;
 
@@ -61,10 +80,7 @@ export class FacebookPurchaseRecovery {
   private activeRecovery?: Promise<PlatformResult<void>>;
 
   /** Creates a facebook purchase recovery instance. */
-  constructor(
-    payments: FacebookInstantPayments,
-    grant: FacebookSignedPurchaseGrant,
-  ) {
+  constructor(payments: FacebookInstantPayments, grant: FacebookSignedPurchaseGrant) {
     this.payments = payments;
     this.grant = grant;
   }
@@ -72,6 +88,7 @@ export class FacebookPurchaseRecovery {
   /** Provides recover behavior. */
   async recover(): Promise<PlatformResult<void>> {
     if (this.activeRecovery) return this.activeRecovery;
+    /** Provides recovery behavior. */
     const recovery = this.runRecovery();
     this.activeRecovery = recovery;
     try {
@@ -84,11 +101,16 @@ export class FacebookPurchaseRecovery {
   /** Provides run recovery behavior. */
   private async runRecovery(): Promise<PlatformResult<void>> {
     try {
+      /** Provides purchases behavior. */
       const purchases = parseFacebookUnconsumedPurchases(await this.payments.getPurchasesAsync());
       for (const purchase of purchases) {
+        /** Provides result behavior. */
         const result = await this.grant({signedRequest: purchase.signedRequest});
-        if (result.granted !== true || !bounded(result.providerReceiptId, 1_024) ||
-          typeof result.consume !== "boolean") {
+        if (
+          result.granted !== true ||
+          !bounded(result.providerReceiptId, 1_024) ||
+          typeof result.consume !== "boolean"
+        ) {
           return {status: "terminal-failure", message: "facebook-purchase-grant-invalid"};
         }
         if (result.consume) await this.payments.consumePurchaseAsync(purchase.purchaseToken);

@@ -3,6 +3,7 @@ import {toBridgeProfile} from "../profileMapper";
 
 describe("Firebase profile mapping", () => {
   it("maps authoritative achievement objects and all gameplay statistics", () => {
+    /** Provides profile behavior. */
     const profile = toBridgeProfile(
       {uid: "player-1", displayName: "Nova", isAnonymous: false},
       {
@@ -58,6 +59,7 @@ describe("Firebase profile mapping", () => {
   });
 
   it("normalizes malformed, fractional, and negative profile values", () => {
+    /** Provides profile behavior. */
     const profile = toBridgeProfile(
       {uid: "player-2", email: "ada@example.test", photoURL: "fallback.png", isAnonymous: false},
       {
@@ -77,35 +79,40 @@ describe("Firebase profile mapping", () => {
       },
     );
 
-    expect(profile).toEqual(expect.objectContaining({
-      username: "ada",
-      avatarUrl: "fallback.png",
-      achievements: ["first_win", "wins_5"],
-      coins: 0,
-      level: 1,
-      xp: 0,
-      wins: 3,
-      totalWins: 3,
-      gamesPlayed: 0,
-      winStreak: 0,
-      classicIndex: 2,
-      dailyChallengeIndex: 0,
-      dailyChallengeCurrentQuestion: 0,
-      hasPurchasedApp: true,
-    }));
+    expect(profile).toEqual(
+      expect.objectContaining({
+        username: "ada",
+        avatarUrl: "fallback.png",
+        achievements: ["first_win", "wins_5"],
+        coins: 0,
+        level: 1,
+        xp: 0,
+        wins: 3,
+        totalWins: 3,
+        gamesPlayed: 0,
+        winStreak: 0,
+        classicIndex: 2,
+        dailyChallengeIndex: 0,
+        dailyChallengeCurrentQuestion: 0,
+        hasPurchasedApp: true,
+      }),
+    );
   });
 
   it("uses safe defaults when profile data is absent", () => {
+    /** Provides profile behavior. */
     const profile = toBridgeProfile({uid: "guest", displayName: "", email: null, isAnonymous: true}, null);
 
-    expect(profile).toEqual(expect.objectContaining({
-      username: "Player",
-      achievements: [],
-      avatarUrl: undefined,
-      coins: 0,
-      level: 1,
-      classicIndex: 1,
-      hasPurchasedApp: false,
-    }));
+    expect(profile).toEqual(
+      expect.objectContaining({
+        username: "Player",
+        achievements: [],
+        avatarUrl: undefined,
+        coins: 0,
+        level: 1,
+        classicIndex: 1,
+        hasPurchasedApp: false,
+      }),
+    );
   });
 });

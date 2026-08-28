@@ -1,9 +1,5 @@
 import * as Sentry from "@sentry/browser";
-import {
-  redactBrowserSentryEvent,
-  redactBrowserTelemetry,
-  resolveSecureBrowserSentryDsn,
-} from "./sentryPrivacy";
+import {redactBrowserSentryEvent, redactBrowserTelemetry, resolveSecureBrowserSentryDsn} from "./sentryPrivacy";
 
 /** Describes the build-time settings used to initialize browser telemetry. */
 type BrowserSentryConfiguration = {
@@ -43,6 +39,7 @@ const nonEssentialBrowserIntegrations = new Set([
  */
 export function initializeBrowserSentry(configuration: BrowserSentryConfiguration): boolean {
   if (initialized) return true;
+  /** Provides dsn behavior. */
   const dsn = resolveSecureBrowserSentryDsn(configuration.dsn);
   if (!configuration.production || !dsn) return false;
 

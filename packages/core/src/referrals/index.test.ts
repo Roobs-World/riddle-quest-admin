@@ -1,8 +1,4 @@
-import {
-  JEST_REFERRAL_REFERENCES,
-  createJestReferralShareReference,
-  isJestRewardedReferralReference,
-} from "./index";
+import {JEST_REFERRAL_REFERENCES, createJestReferralShareReference, isJestRewardedReferralReference} from "./index";
 
 describe("Jest referral references", () => {
   it("keeps generic and legacy campaign references reward eligible", () => {
@@ -11,7 +7,9 @@ describe("Jest referral references", () => {
   });
 
   it("creates bounded personalized references for result and race shares", () => {
+    /** Provides result behavior. */
     const result = createJestReferralShareReference("result", "0123456789abcdef");
+    /** Provides race behavior. */
     const race = createJestReferralShareReference("race", "fedcba9876543210");
 
     expect(result).toBe("riddle_quest_friend_challenge_v2_result_0123456789abcdef");
@@ -32,8 +30,6 @@ describe("Jest referral references", () => {
   });
 
   it.each(["", "0123456789abcdeg", "0123456789abcdef00"])("rejects invalid share token %p", (token) => {
-    expect(() => createJestReferralShareReference("result", token)).toThrow(
-      "invalid-jest-referral-share-token",
-    );
+    expect(() => createJestReferralShareReference("result", token)).toThrow("invalid-jest-referral-share-token");
   });
 });

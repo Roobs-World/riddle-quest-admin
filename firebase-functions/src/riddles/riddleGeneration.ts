@@ -27,20 +27,38 @@ export async function generateLocalizedClassicRiddlesForLocale(
 ): Promise<void> {
   logger.info(`Generating ${numberOfRiddles} new classic riddles for locale ${locale}...`);
 
+  /** Provides open ai key behavior. */
   const openAIKey = process.env.OPENAI_API_KEY;
   if (!openAIKey) {
     throw new Error("OPENAI_API_KEY environment variable is required");
   }
 
+  /** Provides existing behavior. */
   const existing = await getLocalizedExistingRiddlesFromFirestoreForLocale(locale);
+  /** Starts ing index. */
   const startingIndex = await getNextClassicIndex();
-  const newRiddles: {question: string; answer: string}[] = [];
-  const generatedAttempts: {question: string; answer: string}[] = [];
+  /** Provides new riddles behavior. */
+  const newRiddles: {
+    /** Stores question. */
+    question: string; /** Stores answer. */
+    /** Stores answer. */
+    answer: string;
+  }[] = [];
+  /** Provides generated attempts behavior. */
+  const generatedAttempts: {
+    /** Stores question. */
+    question: string; /** Stores answer. */
+    /** Stores answer. */
+    answer: string;
+  }[] = [];
+  /** Provides max attempts behavior. */
   const maxAttempts = numberOfRiddles * 10;
+  /** Provides attempt count behavior. */
   let attemptCount = 0;
 
   while (newRiddles.length < numberOfRiddles && attemptCount < maxAttempts) {
     attemptCount++;
+    /** Provides riddle behavior. */
     const riddle = await generateUniqueRiddle(locale, [
       ...existing.answers,
       ...generatedAttempts.map((item) => item.answer),
@@ -52,6 +70,7 @@ export async function generateLocalizedClassicRiddlesForLocale(
       continue;
     }
 
+    /** Provides new riddle behavior. */
     const newRiddle = {question: riddle[0], answer: riddle[1]};
     if (!riddleHasPlayableClue(newRiddle)) {
       logger.warn(
@@ -102,8 +121,10 @@ export async function generateLocalizedClassicRiddlesForLocale(
 
 /** Provides generate localized classic riddles behavior. */
 export async function generateLocalizedClassicRiddles(numberOfRiddles: number): Promise<void> {
+  /** Provides locale concurrency behavior. */
   const localeConcurrency = 3;
   for (let index = 0; index < SUPPORTED_LOCALES.length; index += localeConcurrency) {
+    /** Provides locale batch behavior. */
     const localeBatch = SUPPORTED_LOCALES.slice(index, index + localeConcurrency);
     await Promise.all(
       localeBatch.map(async (locale) => {
@@ -128,34 +149,53 @@ export async function generateAndAppendRiddles(numberOfRiddles: number): Promise
   logger.info(`Generating ${numberOfRiddles} new riddles...`);
 
   // Check for required environment variables
+  /** Provides open ai key behavior. */
   const openAIKey = process.env.OPENAI_API_KEY;
   if (!openAIKey) {
     throw new Error("OPENAI_API_KEY environment variable is required");
   }
 
   // Get existing riddles for duplicate checking
+  /** Provides existing behavior. */
   const existing = await getExistingRiddlesFromFirestore();
 
   // Get the next available classic index
+  /** Starts ing index. */
   const startingIndex = await getNextClassicIndex();
 
-  const newRiddles: {question: string; answer: string}[] = [];
-  const generatedAttempts: {question: string; answer: string}[] = [];
+  /** Provides new riddles behavior. */
+  const newRiddles: {
+    /** Stores question. */
+    question: string; /** Stores answer. */
+    /** Stores answer. */
+    answer: string;
+  }[] = [];
+  /** Provides generated attempts behavior. */
+  const generatedAttempts: {
+    /** Stores question. */
+    question: string; /** Stores answer. */
+    /** Stores answer. */
+    answer: string;
+  }[] = [];
 
   // Circuit breaker: Maximum attempts to prevent infinite loops
+  /** Provides max attempts behavior. */
   const maxAttempts = numberOfRiddles * 10; // Allow 10x attempts for retries
+  /** Provides attempt count behavior. */
   let attemptCount = 0;
 
   while (newRiddles.length < numberOfRiddles && attemptCount < maxAttempts) {
     attemptCount++;
 
     // Generate a riddle using the OpenAI service
+    /** Provides riddle behavior. */
     const riddle = await generateUniqueRiddle("en", [
       ...existing.answers,
       ...generatedAttempts.map((item) => item.answer),
     ]);
 
     if (riddle) {
+      /** Provides new riddle behavior. */
       const newRiddle = {
         question: riddle[0],
         answer: riddle[1],
@@ -218,34 +258,53 @@ export async function generateAndAppendDailyRiddles(numberOfRiddles: number): Pr
   logger.info(`Generating ${numberOfRiddles} new daily riddles...`);
 
   // Check for required environment variables
+  /** Provides open ai key behavior. */
   const openAIKey = process.env.OPENAI_API_KEY;
   if (!openAIKey) {
     throw new Error("OPENAI_API_KEY environment variable is required");
   }
 
   // Get existing riddles for duplicate checking (includes both classic and daily)
+  /** Provides existing behavior. */
   const existing = await getExistingRiddlesFromFirestore();
 
   // Get the next available daily index
+  /** Starts ing index. */
   const startingIndex = await getNextDailyIndex();
 
-  const newRiddles: {question: string; answer: string}[] = [];
-  const generatedAttempts: {question: string; answer: string}[] = [];
+  /** Provides new riddles behavior. */
+  const newRiddles: {
+    /** Stores question. */
+    question: string; /** Stores answer. */
+    /** Stores answer. */
+    answer: string;
+  }[] = [];
+  /** Provides generated attempts behavior. */
+  const generatedAttempts: {
+    /** Stores question. */
+    question: string; /** Stores answer. */
+    /** Stores answer. */
+    answer: string;
+  }[] = [];
 
   // Circuit breaker: Maximum attempts to prevent infinite loops
+  /** Provides max attempts behavior. */
   const maxAttempts = numberOfRiddles * 10; // Allow 10x attempts for retries
+  /** Provides attempt count behavior. */
   let attemptCount = 0;
 
   while (newRiddles.length < numberOfRiddles && attemptCount < maxAttempts) {
     attemptCount++;
 
     // Generate a riddle using the OpenAI service
+    /** Provides riddle behavior. */
     const riddle = await generateUniqueRiddle("en", [
       ...existing.answers,
       ...generatedAttempts.map((item) => item.answer),
     ]);
 
     if (riddle) {
+      /** Provides new riddle behavior. */
       const newRiddle = {
         question: riddle[0],
         answer: riddle[1],
@@ -310,6 +369,7 @@ export async function initializeRiddleDatabaseIfEmpty(initialRiddleCount: number
 
   try {
     // Check if any classic riddles already exist
+    /** Provides existing riddles snapshot behavior. */
     const existingRiddlesSnapshot = await admin
       .firestore()
       .collection(RiddleCollections.RIDDLES)

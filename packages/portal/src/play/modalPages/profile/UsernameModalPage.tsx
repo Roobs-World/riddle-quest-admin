@@ -1,11 +1,6 @@
 import {useState, type FormEvent} from "react";
 import {tr} from "../../i18n";
-import {
-  canSubmitUsername,
-  normalizeUsernameInput,
-  USERNAME_MAX_LENGTH,
-  USERNAME_MIN_LENGTH,
-} from "./usernameForm";
+import {canSubmitUsername, normalizeUsernameInput, USERNAME_MAX_LENGTH, USERNAME_MIN_LENGTH} from "./usernameForm";
 
 /** Props required to submit a profile username change. */
 export type UsernameModalPageProps = {
@@ -15,8 +10,11 @@ export type UsernameModalPageProps = {
 
 /** Renders and owns the transient username editing form state. */
 export function UsernameModalPage({onUpdateUsername}: UsernameModalPageProps) {
+  /** Provides [username, set username] behavior. */
   const [username, setUsername] = useState("");
+  /** Normalizes d username. */
   const normalizedUsername = normalizeUsernameInput(username);
+  /** Indicates whether can submit. */
   const canSubmit = canSubmitUsername(username);
 
   /** Normalizes and submits a valid username to the authoritative profile handler. */

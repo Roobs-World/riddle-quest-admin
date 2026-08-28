@@ -35,15 +35,19 @@ export const MAX_STREAK_REWARD_BONUS = 300;
 /** Bonus coins awarded for the first active daily streak day. */
 /** Returns true when a daily streak has reached a weekly reward milestone. */
 export function isStreakRewardMilestone(streakValue: number): boolean {
+  /** Normalizes d streak. */
   const normalizedStreak = Math.max(0, Math.floor(streakValue));
   return normalizedStreak > 0 && normalizedStreak % STREAK_REWARD_INTERVAL_DAYS === 0;
 }
 /** Returns the daily-streak bonus for the active streak day. */
 export function getStreakRewardBonus(streakValue: number): number {
+  /** Normalizes d streak. */
   const normalizedStreak = Math.max(0, Math.floor(streakValue));
   if (normalizedStreak === 0) return 0;
 
+  /** Completes d milestones. */
   const completedMilestones = Math.floor(normalizedStreak / STREAK_REWARD_INTERVAL_DAYS);
+  /** Provides bonus behavior. */
   const bonus = INITIAL_STREAK_REWARD_BONUS + completedMilestones * STREAK_REWARD_BONUS_STEP;
   return Math.min(bonus, MAX_STREAK_REWARD_BONUS);
 }
@@ -71,7 +75,9 @@ export const XP_LEVEL_THRESHOLDS = {
  */
 export function getXpThresholdForLevel(level: number): number {
   if (level <= 1) return 0;
+  /** Completes d level ups. */
   const completedLevelUps = level - 1;
+  /** Provides {base per level, growth per level} behavior. */
   const {basePerLevel, growthPerLevel} = XP_LEVEL_THRESHOLDS;
   return completedLevelUps * basePerLevel + ((completedLevelUps - 1) * completedLevelUps * growthPerLevel) / 2;
 }
@@ -80,11 +86,17 @@ export function getXpThresholdForLevel(level: number): number {
  * Converts cumulative XP into a 1-based level.
  */
 export function getLevelFromXp(totalXp: number): number {
+  /** Provides xp behavior. */
   const xp = Math.max(totalXp, 0);
+  /** Provides {base per level, growth per level} behavior. */
   const {basePerLevel, growthPerLevel} = XP_LEVEL_THRESHOLDS;
+  /** Provides a behavior. */
   const a = growthPerLevel / 2;
+  /** Provides b behavior. */
   const b = basePerLevel - growthPerLevel / 2;
+  /** Provides discriminant behavior. */
   const discriminant = b * b + 4 * a * xp;
+  /** Completes d level ups. */
   const completedLevelUps = Math.floor((-b + Math.sqrt(discriminant)) / (2 * a));
 
   return completedLevelUps + 1;

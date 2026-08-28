@@ -1,6 +1,8 @@
 import {afterEach, beforeEach, describe, expect, it, jest} from "@jest/globals";
 
+/** Provides mock recover pending completion behavior. */
 const mockRecoverPendingCompletion = jest.fn();
+/** Provides mock get user behavior. */
 const mockGetUser = jest.fn();
 
 jest.mock("../gameplay/firestoreService", () => ({getUser: (...args: unknown[]) => mockGetUser(...args)}));
@@ -10,7 +12,9 @@ jest.mock("../gameplay/singlePlayerTerminalRecovery", () => ({
 
 import {reconcilePreviousDailyBinding} from "../daily/dailyRolloverRecovery";
 
+/** Provides initial user behavior. */
 const initialUser = {lastDailyChallengeAttemptedKey: "2026-08-10"} as never;
+/** Provides refreshed user behavior. */
 const refreshedUser = {lastCompletedDailyChallengeKey: "2026-08-11"} as never;
 
 describe("Daily rollover binding recovery", () => {
@@ -24,8 +28,7 @@ describe("Daily rollover binding recovery", () => {
   afterEach(() => jest.useRealTimers());
 
   it("recovers yesterday's terminal win independently of the newly selected locale", async () => {
-    await expect(reconcilePreviousDailyBinding("player-1", initialUser, false))
-      .resolves.toBe(refreshedUser);
+    await expect(reconcilePreviousDailyBinding("player-1", initialUser, false)).resolves.toBe(refreshedUser);
     expect(mockRecoverPendingCompletion).toHaveBeenCalledWith(
       "player-1",
       "challenge",
@@ -37,8 +40,7 @@ describe("Daily rollover binding recovery", () => {
 
   it("does no recovery work outside the narrow rollover window", async () => {
     jest.setSystemTime(new Date("2026-08-12T00:16:00.000Z"));
-    await expect(reconcilePreviousDailyBinding("player-1", initialUser, false))
-      .resolves.toBe(initialUser);
+    await expect(reconcilePreviousDailyBinding("player-1", initialUser, false)).resolves.toBe(initialUser);
     expect(mockRecoverPendingCompletion).not.toHaveBeenCalled();
   });
 });

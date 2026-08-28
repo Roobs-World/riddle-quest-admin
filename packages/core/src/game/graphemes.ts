@@ -12,12 +12,15 @@ function getSegmenter(locale: string): Intl.Segmenter | null {
     return null;
   }
 
+  /** Provides cache key behavior. */
   const cacheKey = locale || "en";
+  /** Provides cached behavior. */
   const cached = segmenterCache.get(cacheKey);
   if (cached) {
     return cached;
   }
 
+  /** Provides segmenter behavior. */
   const segmenter = new Intl.Segmenter(cacheKey, {granularity: "grapheme"});
   segmenterCache.set(cacheKey, segmenter);
   return segmenter;
@@ -41,7 +44,9 @@ export function splitGraphemes(value: string, locale: string = "en"): string[] {
     return [];
   }
 
+  /** Normalizes d value. */
   const normalizedValue = value.normalize("NFC");
+  /** Provides segmenter behavior. */
   const segmenter = getSegmenter(locale);
   if (segmenter) {
     return Array.from(segmenter.segment(normalizedValue), (segment) => segment.segment);

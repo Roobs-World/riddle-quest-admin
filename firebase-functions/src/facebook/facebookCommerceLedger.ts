@@ -54,10 +54,25 @@ export type FacebookPurchaseResult = {
 };
 
 /** Describes facebook refund result. */
-export type FacebookRefundResult = FacebookPurchaseResult & (
-  | {uid: string; coinsRemoved: number; accountDeleted: false}
-  | {uid: null; coinsRemoved: 0; accountDeleted: true}
-);
+export type FacebookRefundResult = FacebookPurchaseResult &
+  (
+    | {
+        /** Stores uid. */
+        uid: string; /** Stores coins removed. */
+        /** Stores coins removed. */
+        coinsRemoved: number; /** Stores account deleted. */
+        /** Stores account deleted. */
+        accountDeleted: false;
+      }
+    | {
+        /** Stores uid. */
+        uid: null; /** Stores coins removed. */
+        /** Stores coins removed. */
+        coinsRemoved: 0; /** Stores account deleted. */
+        /** Stores account deleted. */
+        accountDeleted: true;
+      }
+  );
 
 /** Provides require non negative integer behavior. */
 const requireNonNegativeInteger = (name: string, value: unknown): number => {
@@ -73,6 +88,7 @@ const optionalNonNegativeInteger = (name: string, value: unknown): number =>
 
 /** Provides safe add behavior. */
 const safeAdd = (name: string, left: number, right: number): number => {
+  /** Provides result behavior. */
   const result = left + right;
   if (!Number.isSafeInteger(result) || result < 0) throw new Error(`invalid-facebook-commerce-${name}`);
   return result;
@@ -90,21 +106,29 @@ const accountFrom = (value: Record<string, unknown> | undefined): CommerceAccoun
 };
 
 /** Provides r coins. */
-const userCoins = (user: Snapshot): number =>
-  requireNonNegativeInteger("coins", user.data()?.coins);
+const userCoins = (user: Snapshot): number => requireNonNegativeInteger("coins", user.data()?.coins);
 
 /** Validates purchase accounting. */
 const validatePurchaseAccounting = (
   receipt: Record<string, unknown>,
   grossCoins: number,
-): {coinsGranted: number; debtRepaid: number} => {
+): {
+  /** Stores coins granted. */
+  coinsGranted: number; /** Stores debt repaid. */
+  /** Stores debt repaid. */
+  debtRepaid: number;
+} => {
+  /** Provides coins granted behavior. */
   const coinsGranted = requireNonNegativeInteger("coins-granted", receipt.coinsGranted);
+  /** Provides debt repaid behavior. */
   const debtRepaid = requireNonNegativeInteger("debt-repaid", receipt.debtRepaid);
   if (safeAdd("purchase-accounting", coinsGranted, debtRepaid) !== grossCoins) {
     throw new Error("facebook-purchase-receipt-conflict");
   }
+  /** Provides purchased at ms behavior. */
   const purchasedAtMs = requireNonNegativeInteger("purchased-at", receipt.purchasedAtMs);
   if (receipt.refundedAtMs !== null) {
+    /** Provides refunded at ms behavior. */
     const refundedAtMs = requireNonNegativeInteger("refunded-at", receipt.refundedAtMs);
     if (refundedAtMs < purchasedAtMs) throw new Error("facebook-purchase-receipt-conflict");
   }
@@ -117,7 +141,9 @@ const validateActiveRefundReplay = (
   receipt: Record<string, unknown>,
   grossCoins: number,
 ): void => {
+  /** Provides coins removed behavior. */
   const coinsRemoved = requireNonNegativeInteger("refund-coins-removed", refund.coinsRemoved);
+  /** Provides debt added behavior. */
   const debtAdded = requireNonNegativeInteger("refund-debt-added", refund.debtAdded);
   if (refund.alreadyApplied === true) {
     if (coinsRemoved !== 0 || debtAdded !== 0) throw new Error("facebook-refund-event-conflict");
@@ -127,7 +153,8 @@ const validateActiveRefundReplay = (
   if (
     safeAdd("refund-accounting", coinsRemoved, debtAdded) !== grossCoins ||
     refund.refundedAtMs !== receipt.refundedAtMs
-  ) throw new Error("facebook-refund-event-conflict");
+  )
+    throw new Error("facebook-refund-event-conflict");
 };
 
 /** Asserts bounded. */
@@ -158,18 +185,26 @@ const assertCommerceEnabled = (): void => {
 };
 
 /** Describes snapshot. */
-type Snapshot = {/** Stores exists. */
-/** Stores exists. */
-exists: boolean; /** Provides data behavior. */
-/** Provides data behavior. */
-data(): Record<string, unknown> | undefined};
+type Snapshot = {
+  /** Stores exists. */
+  /** Stores exists. */
+  exists: boolean; /** Provides data behavior. */
+  /** Provides data behavior. */
+  data(): Record<string, unknown> | undefined;
+};
 
 /** Reads commerce state. */
 async function readCommerceState(
   transaction: Transaction,
   userRef: DocumentReference,
   accountRef: DocumentReference,
-): Promise<{user: Snapshot; account: CommerceAccount}> {
+): Promise<{
+  /** Stores user. */
+  user: Snapshot; /** Stores account. */
+  /** Stores account. */
+  account: CommerceAccount;
+}> {
+  /** Provides [user, account] behavior. */
   const [user, account] = await Promise.all([transaction.get(userRef), transaction.get(accountRef)]);
   if (!user.exists) throw new Error("facebook-user-not-found");
   return {user, account: accountFrom(account.exists ? account.data() : undefined)};
@@ -187,23 +222,33 @@ export async function grantVerifiedFacebookPurchase(
   requireUid(input.uid);
   assertBounded("payment-id", input.paymentId, 1_024);
   if (!Number.isSafeInteger(input.purchasedAtMs) || input.purchasedAtMs <= 0) throw new Error("invalid-purchase-time");
+  /** Provides product behavior. */
   const product = resolveFacebookProduct(input.productId);
+  /** Provides receipt id behavior. */
   const receiptId = facebookCommerceReceiptId("purchase", input.paymentId);
+  /** Provides purchase token hash behavior. */
   const purchaseTokenHash = tokenHash(input.purchaseToken);
+  /** Provides r ref. */
   const userRef = db.collection("users").doc(input.uid);
+  /** Provides account ref behavior. */
   const accountRef = db.collection("facebookCommerceAccounts").doc(input.uid);
+  /** Provides receipt ref behavior. */
   const receiptRef = db.collection("facebookCommerceReceipts").doc(receiptId);
+  /** Provides deletion ref behavior. */
   const deletionRef = getJestAccountDeletionRef(db, input.uid);
 
   return db.runTransaction(async (transaction) => {
+    /** Provides [receipt, deletion, state] behavior. */
     const [receipt, deletion, state] = await Promise.all([
       transaction.get(receiptRef),
       transaction.get(deletionRef),
       readCommerceState(transaction, userRef, accountRef),
     ]);
     assertJestAccountActive(deletion);
+    /** Provides current coins behavior. */
     const currentCoins = userCoins(state.user);
     if (receipt.exists) {
+      /** Provides existing behavior. */
       const existing = receipt.data();
       if (
         existing?.provider !== PROVIDER ||
@@ -226,12 +271,16 @@ export async function grantVerifiedFacebookPurchase(
       };
     }
 
+    /** Provides debt repaid behavior. */
     const debtRepaid = product.kind === "consumable" ? Math.min(state.account.coinDebt, product.coins) : 0;
+    /** Provides coins granted behavior. */
     const coinsGranted = product.coins - debtRepaid;
+    /** Provides next account behavior. */
     const nextAccount: CommerceAccount = {
       coinDebt: state.account.coinDebt - debtRepaid,
       removeInterstitialAds: state.account.removeInterstitialAds || product.entitlement === "remove_interstitial_ads",
     };
+    /** Provides coins behavior. */
     const coins = safeAdd("coin-balance", currentCoins, coinsGranted);
     transaction.update(userRef, {coins, hasPurchasedApp: true, lastLogin: Date.now()});
     transaction.set(accountRef, {...nextAccount, updatedAtMs: Date.now()}, {merge: true});
@@ -265,19 +314,22 @@ export async function refundVerifiedFacebookPurchase(
   assertCommerceEnabled();
   assertBounded("refund-event-id", input.eventId, 1_024);
   if (!Number.isSafeInteger(input.refundedAtMs) || input.refundedAtMs <= 0) throw new Error("invalid-refund-time");
+  /** Provides product behavior. */
   const product = resolveFacebookProduct(input.productId);
-  const purchaseRef = db.collection("facebookCommerceReceipts")
+  /** Provides purchase ref behavior. */
+  const purchaseRef = db
+    .collection("facebookCommerceReceipts")
     .doc(facebookCommerceReceiptId("purchase", input.paymentId));
-  const refundRef = db.collection("facebookCommerceRefunds")
-    .doc(facebookCommerceReceiptId("refund", input.eventId));
+  /** Provides refund ref behavior. */
+  const refundRef = db.collection("facebookCommerceRefunds").doc(facebookCommerceReceiptId("refund", input.eventId));
 
   return db.runTransaction(async (transaction) => {
-    const [purchase, priorRefund] = await Promise.all([
-      transaction.get(purchaseRef),
-      transaction.get(refundRef),
-    ]);
+    /** Provides [purchase, prior refund] behavior. */
+    const [purchase, priorRefund] = await Promise.all([transaction.get(purchaseRef), transaction.get(refundRef)]);
     if (!purchase.exists) throw new Error("facebook-purchase-not-found");
+    /** Provides receipt behavior. */
     const receipt = purchase.data()!;
+    /** Provides uid behavior. */
     const uid = typeof receipt.uid === "string" ? receipt.uid : "";
     if (receipt.replayProtection === true && uid === "") {
       if (
@@ -297,6 +349,7 @@ export async function refundVerifiedFacebookPurchase(
         }
       }
       if (priorRefund.exists) {
+        /** Provides existing refund behavior. */
         const existingRefund = priorRefund.data();
         if (
           existingRefund?.provider !== PROVIDER ||
@@ -347,11 +400,16 @@ export async function refundVerifiedFacebookPurchase(
     if (input.refundedAtMs < (receipt.purchasedAtMs as number)) {
       throw new Error("facebook-refund-receipt-mismatch");
     }
+    /** Provides r ref. */
     const userRef = db.collection("users").doc(uid);
+    /** Provides account ref behavior. */
     const accountRef = db.collection("facebookCommerceAccounts").doc(uid);
+    /** Provides state behavior. */
     const state = await readCommerceState(transaction, userRef, accountRef);
+    /** Provides current coins behavior. */
     const currentCoins = userCoins(state.user);
     if (priorRefund.exists) {
+      /** Provides existing refund behavior. */
       const existingRefund = priorRefund.data();
       if (
         existingRefund?.provider !== PROVIDER ||
@@ -399,13 +457,18 @@ export async function refundVerifiedFacebookPurchase(
       };
     }
 
+    /** Provides gross coins behavior. */
     const grossCoins = requireNonNegativeInteger("gross-coins", receipt.grossCoins);
+    /** Provides coins removed behavior. */
     const coinsRemoved = Math.min(currentCoins, grossCoins);
+    /** Provides debt added behavior. */
     const debtAdded = grossCoins - coinsRemoved;
+    /** Provides next account behavior. */
     const nextAccount: CommerceAccount = {
       coinDebt: safeAdd("coin-debt", state.account.coinDebt, debtAdded),
       removeInterstitialAds: receipt.kind === "durable" ? false : state.account.removeInterstitialAds,
     };
+    /** Provides coins behavior. */
     const coins = currentCoins - coinsRemoved;
     transaction.update(userRef, {coins, lastLogin: Date.now()});
     transaction.set(accountRef, {...nextAccount, updatedAtMs: Date.now()}, {merge: true});

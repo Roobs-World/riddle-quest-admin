@@ -2,6 +2,7 @@ import {describe, expect, it} from "@jest/globals";
 import {createInitialGameSession, gameSessionReducer} from "../gameSession";
 import {createSavedGame} from "../game/hooks";
 
+/** Provides riddle behavior. */
 const riddle = {
   riddleId: "classic-persistence-1",
   sessionToken: "00000000-0000-4000-8000-000000000004",
@@ -18,6 +19,7 @@ describe("game session persistence", () => {
   it("persists an unacknowledged terminal outcome and clears it only after acknowledgement", () => {
     expect(createSavedGame(createInitialGameSession(), 100)).toBeNull();
 
+    /** Completes d. */
     let completed = gameSessionReducer(createInitialGameSession(), {type: "loadRiddle", riddle});
     for (const letter of ["P", "I", "A", "N", "O"]) {
       completed = gameSessionReducer(completed, {type: "typeLetter", letter});
@@ -51,6 +53,7 @@ describe("game session persistence", () => {
   });
 
   it("creates a stable versioned snapshot for an active session", () => {
+    /** Provides active behavior. */
     let active = gameSessionReducer(createInitialGameSession(), {type: "loadRiddle", riddle});
     active = gameSessionReducer(active, {type: "typeLetter", letter: "P"});
 
@@ -71,6 +74,7 @@ describe("game session persistence", () => {
   });
 
   it("persists the bounded Continue decision state", () => {
+    /** Provides awaiting behavior. */
     const awaiting = gameSessionReducer(createInitialGameSession(), {
       type: "loadRiddle",
       riddle: {...riddle, attemptsUsed: 5, awaitingContinue: true},
@@ -83,12 +87,16 @@ describe("game session persistence", () => {
   });
 
   it("restores a dropped decline completion without racing a reopened Continue modal", () => {
+    /** Provides awaiting riddle behavior. */
     const awaitingRiddle = {...riddle, attemptsUsed: 5, awaitingContinue: true};
+    /** Provides awaiting behavior. */
     let awaiting = gameSessionReducer(createInitialGameSession(), {type: "loadRiddle", riddle: awaitingRiddle});
     awaiting = gameSessionReducer(awaiting, {type: "declineContinue"});
+    /** Saves d. */
     const saved = createSavedGame(awaiting, 123_456);
     if (!saved) throw new Error("Expected the pending decline to remain retryable.");
 
+    /** Provides reloaded behavior. */
     let reloaded = gameSessionReducer(createInitialGameSession(), {type: "loadRiddle", riddle: awaitingRiddle});
     reloaded = gameSessionReducer(reloaded, {
       type: "restoreSession",
@@ -109,18 +117,23 @@ describe("game session persistence", () => {
   });
 
   it("discards a stale saved decline when another tab already bought Continue", () => {
+    /** Provides awaiting riddle behavior. */
     const awaitingRiddle = {...riddle, attemptsUsed: 5, awaitingContinue: true};
+    /** Provides awaiting behavior. */
     let awaiting = gameSessionReducer(createInitialGameSession(), {type: "loadRiddle", riddle: awaitingRiddle});
     awaiting = gameSessionReducer(awaiting, {type: "declineContinue"});
+    /** Saves d. */
     const saved = createSavedGame(awaiting, 123_456);
     if (!saved) throw new Error("Expected a saved decline race fixture.");
 
+    /** Provides continued riddle behavior. */
     const continuedRiddle = {
       ...riddle,
       attemptsUsed: 5,
       hasUsedContinue: true,
       awaitingContinue: false,
     };
+    /** Provides reloaded behavior. */
     let reloaded = gameSessionReducer(createInitialGameSession(), {type: "loadRiddle", riddle: continuedRiddle});
     reloaded = gameSessionReducer(reloaded, {
       type: "restoreSession",

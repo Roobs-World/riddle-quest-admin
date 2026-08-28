@@ -6,6 +6,7 @@ const clean = (value: unknown, max: number): string | undefined =>
 
 /** Accepts only telemetry-safe campaign, reference, and opaque identifier characters. */
 const cleanCode = (value: unknown, max: number): string | undefined => {
+  /** Provides candidate behavior. */
   const candidate = clean(value, max);
   return candidate && /^[a-zA-Z0-9][a-zA-Z0-9._:~-]*$/.test(candidate) ? candidate : undefined;
 };
@@ -13,15 +14,18 @@ const cleanCode = (value: unknown, max: number): string | undefined => {
 /** Parses entry intent. */
 export function parseEntryIntent(value: unknown, search = ""): JestEntryIntent {
   if (!value || typeof value !== "object" || Array.isArray(value)) return {};
+  /** Provides source behavior. */
   const source = value as Record<string, unknown>;
+  /** Provides query behavior. */
   const query = new URLSearchParams(search);
+  /** Provides acquisition behavior. */
   const acquisition = (key: string) => cleanCode(source[key] ?? query.get(key), 80);
+  /** Provides mode behavior. */
   const mode = source.gameMode;
+  /** Provides invite kind behavior. */
   const inviteKind = source.inviteKind;
   return {
-    inviteKind: inviteKind === "result" || inviteKind === "race" || inviteKind === "open"
-      ? inviteKind
-      : undefined,
+    inviteKind: inviteKind === "result" || inviteKind === "race" || inviteKind === "open" ? inviteKind : undefined,
     gameMode: mode === "classic" || mode === "challenge" ? mode : undefined,
     campaign: cleanCode(source.campaign, 80),
     reference: cleanCode(source.reference, 80),
@@ -43,6 +47,7 @@ export function parseEntryIntent(value: unknown, search = ""): JestEntryIntent {
 
 /** Resolves only challenge IDs that were explicitly attributed to a Race-to-10 invite. */
 export function resolveRaceChallengeId(intent: JestEntryIntent): string | undefined {
+  /** Indicates whether is race invite. */
   const isRaceInvite = intent.inviteKind === "race" || intent.campaign === "race_to_10_v1";
   return isRaceInvite ? intent.challengeId : undefined;
 }

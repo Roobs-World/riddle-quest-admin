@@ -1,9 +1,12 @@
 import {describe, expect, test, beforeEach, afterEach, jest} from "@jest/globals";
 
+/** Provides mock logger behavior. */
 const mockLogger = {info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn()};
 jest.mock("firebase-functions", () => ({logger: mockLogger}));
 
+/** Provides mock parse behavior. */
 const mockParse = jest.fn();
+/** Provides mock open ai behavior. */
 const mockOpenAI = jest.fn().mockImplementation(() => ({
   responses: {parse: mockParse},
 }));
@@ -16,12 +19,14 @@ jest.mock("openai", () => ({
 import {GeneratedRiddleSchema, generateUniqueRiddle, resetOpenAIClient} from "../riddles/openaiService";
 import {MAX_RIDDLE_ANSWER_CHARACTERS} from "../shared/constants";
 
+/** Parses d riddle response. */
 function parsedRiddleResponse(question: string, answer: string) {
   return {
     output_parsed: {question, answer},
   };
 }
 
+/** Provides approved review response behavior. */
 function approvedReviewResponse() {
   return {
     output_parsed: {
@@ -36,6 +41,7 @@ function approvedReviewResponse() {
   };
 }
 
+/** Provides rejected review response behavior. */
 function rejectedReviewResponse(issues: string[]) {
   return {
     output_parsed: {
@@ -50,6 +56,7 @@ function rejectedReviewResponse(issues: string[]) {
   };
 }
 
+/** Provides mock approved riddle behavior. */
 function mockApprovedRiddle(question: string, answer: string) {
   mockParse
     .mockResolvedValueOnce(parsedRiddleResponse(question, answer))
@@ -57,6 +64,7 @@ function mockApprovedRiddle(question: string, answer: string) {
 }
 
 describe("OpenAI Service", () => {
+  /** Provides original env behavior. */
   const originalEnv = process.env;
 
   beforeEach(() => {
@@ -112,6 +120,7 @@ describe("OpenAI Service", () => {
     test("generates a valid riddle from structured OpenAI output", async () => {
       mockApprovedRiddle("What flies without wings?", "time");
 
+      /** Provides result behavior. */
       const result = await generateUniqueRiddle();
 
       expect(result).toEqual(["What flies without wings?", "time"]);
@@ -136,13 +145,29 @@ describe("OpenAI Service", () => {
 
       await generateUniqueRiddle();
 
+      /** Provides review request behavior. */
       const reviewRequest = mockParse.mock.calls[1][0] as {
+        /** Stores model. */
         model: string;
-        reasoning?: {effort?: string};
+        /** Stores reasoning. */
+        reasoning?: {
+          /** Stores effort. */
+          effort?: string;
+        };
+        /** Stores instructions. */
         instructions: string;
+        /** Stores input. */
         input: string;
+        /** Stores store. */
         store: boolean;
-        text: {format: {name?: string}};
+        /** Stores text. */
+        text: {
+          /** Stores format. */
+          format: {
+            /** Stores name. */
+            name?: string;
+          };
+        };
       };
 
       expect(reviewRequest.model).toBe("gpt-5.6-sol");
@@ -160,10 +185,17 @@ describe("OpenAI Service", () => {
 
       await generateUniqueRiddle();
 
+      /** Provides request behavior. */
       const request = mockParse.mock.calls[0][0] as {
+        /** Stores instructions. */
         instructions: string;
+        /** Stores input. */
         input: string;
-        text: {format: unknown};
+        /** Stores text. */
+        text: {
+          /** Stores format. */
+          format: unknown;
+        };
       };
 
       expect(request.input).toContain(`Answer: 1-${MAX_RIDDLE_ANSWER_CHARACTERS} lowercase characters using only a-z`);
@@ -202,6 +234,7 @@ describe("OpenAI Service", () => {
     test("rejects an answer that is too long", async () => {
       mockParse.mockResolvedValue(parsedRiddleResponse("What is very long?", "verylongword"));
 
+      /** Provides result behavior. */
       const result = await generateUniqueRiddle();
 
       expect(result).toBeNull();
@@ -214,6 +247,7 @@ describe("OpenAI Service", () => {
     test("rejects an answer with invalid characters", async () => {
       mockParse.mockResolvedValue(parsedRiddleResponse("What has punctuation?", "word!"));
 
+      /** Provides result behavior. */
       const result = await generateUniqueRiddle();
 
       expect(result).toBeNull();
@@ -225,6 +259,7 @@ describe("OpenAI Service", () => {
     test("rejects a question that reveals the literal answer", async () => {
       mockParse.mockResolvedValue(parsedRiddleResponse("A joke makes people laugh.", "joke"));
 
+      /** Provides result behavior. */
       const result = await generateUniqueRiddle();
 
       expect(result).toBeNull();
@@ -234,6 +269,7 @@ describe("OpenAI Service", () => {
     test("normalizes smart punctuation before validation", async () => {
       mockApprovedRiddle("I\u2019m Earth\u2019s bright neighbor after sunset.", "venus");
 
+      /** Provides result behavior. */
       const result = await generateUniqueRiddle();
 
       expect(result).toEqual(["I'm Earth's bright neighbor after sunset.", "venus"]);
@@ -243,6 +279,7 @@ describe("OpenAI Service", () => {
     test("accepts native-script punctuation with a keyboard-compatible localized answer", async () => {
       mockApprovedRiddle("銭湯の壁でよく主役、標高3776メートルの日本一といえば？", "fujisan");
 
+      /** Provides result behavior. */
       const result = await generateUniqueRiddle("ja");
 
       expect(result).toEqual(["銭湯の壁でよく主役、標高3776メートルの日本一といえば？", "fujisan"]);
@@ -265,6 +302,7 @@ describe("OpenAI Service", () => {
         .mockResolvedValueOnce(parsedRiddleResponse("I can be bright and fill a room. What am I?", "light"))
         .mockResolvedValueOnce(rejectedReviewResponse(["The clue also fits colour, music, or laughter."]));
 
+      /** Provides result behavior. */
       const result = await generateUniqueRiddle();
 
       expect(result).toBeNull();
@@ -289,6 +327,7 @@ describe("OpenAI Service", () => {
         )
         .mockResolvedValueOnce({output_parsed: null});
 
+      /** Provides result behavior. */
       const result = await generateUniqueRiddle();
 
       expect(result).toBeNull();
@@ -300,6 +339,7 @@ describe("OpenAI Service", () => {
         output_parsed: null,
       });
 
+      /** Provides result behavior. */
       const result = await generateUniqueRiddle();
 
       expect(result).toBeNull();
@@ -307,9 +347,11 @@ describe("OpenAI Service", () => {
     });
 
     test("handles OpenAI API errors gracefully", async () => {
+      /** Provides api error behavior. */
       const apiError = new Error("OpenAI API rate limit exceeded");
       mockParse.mockRejectedValue(apiError);
 
+      /** Provides result behavior. */
       const result = await generateUniqueRiddle();
 
       expect(result).toBeNull();

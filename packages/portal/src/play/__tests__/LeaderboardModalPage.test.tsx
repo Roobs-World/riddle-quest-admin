@@ -20,22 +20,21 @@ const createEntries = (count: number): GameSessionState["leaderboard"] =>
 
 describe("LeaderboardModalPage", () => {
   it("renders loading and empty states", () => {
-    expect(renderToString(
-      <LeaderboardModalPage
-        entries={[]}
-        loading
-        leaderboardType="xp"
-        onRequestLeaderboard={requestLeaderboard}
-      />,
-    )).toContain('aria-busy="true"');
-    expect(renderToString(
-      <LeaderboardModalPage
-        entries={[]}
-        loading={false}
-        leaderboardType="xp"
-        onRequestLeaderboard={requestLeaderboard}
-      />,
-    )).toContain("No scores yet");
+    expect(
+      renderToString(
+        <LeaderboardModalPage entries={[]} loading leaderboardType="xp" onRequestLeaderboard={requestLeaderboard} />,
+      ),
+    ).toContain('aria-busy="true"');
+    expect(
+      renderToString(
+        <LeaderboardModalPage
+          entries={[]}
+          loading={false}
+          leaderboardType="xp"
+          onRequestLeaderboard={requestLeaderboard}
+        />,
+      ),
+    ).toContain("No scores yet");
   });
 
   it("renders ranked entries, avatar fallbacks, and pagination", () => {

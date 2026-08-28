@@ -35,9 +35,8 @@ const PRESENCE_PRIORITY: Record<PresenceState, number> = {offline: 0, online: 1,
 /** Aggregates independent tabs/devices without allowing an idle tab to hide an active race. */
 export function aggregatePresence(connections: readonly PresenceConnection[]): PresenceState {
   return connections.reduce<PresenceState>(
-    (highest, connection) => PRESENCE_PRIORITY[connection.state] > PRESENCE_PRIORITY[highest]
-      ? connection.state
-      : highest,
+    (highest, connection) =>
+      PRESENCE_PRIORITY[connection.state] > PRESENCE_PRIORITY[highest] ? connection.state : highest,
     "offline",
   );
 }
@@ -113,6 +112,7 @@ export class PlatformPresenceSession {
 
   /** Provides enqueue behavior. */
   private enqueue(operation: () => Promise<void>): Promise<void> {
+    /** Provides result behavior. */
     const result = this.operationQueue.then(operation);
     this.operationQueue = result.catch(() => undefined);
     return result;
@@ -121,6 +121,7 @@ export class PlatformPresenceSession {
   /** Ensures registered. */
   private ensureRegistered(): Promise<void> {
     if (this.registration) return this.registration;
+    /** Provides operation behavior. */
     const operation = this.enqueue(async () => {
       if (!this.active) return;
       await this.transport.armDisconnectRemoval(this.connection.sessionId);
@@ -129,8 +130,12 @@ export class PlatformPresenceSession {
     });
     this.registration = operation;
     void operation.then(
-      () => { if (this.registration === operation) this.registration = undefined; },
-      () => { if (this.registration === operation) this.registration = undefined; },
+      () => {
+        if (this.registration === operation) this.registration = undefined;
+      },
+      () => {
+        if (this.registration === operation) this.registration = undefined;
+      },
     );
     return operation;
   }

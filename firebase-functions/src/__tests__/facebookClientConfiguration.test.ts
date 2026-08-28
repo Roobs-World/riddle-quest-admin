@@ -1,4 +1,6 @@
+/** Provides mock get behavior. */
 const mockGet = jest.fn();
+/** Provides mock set feature gate behavior. */
 const mockSetFeatureGate = jest.fn(async () => undefined);
 
 jest.mock("firebase-admin/firestore", () => ({
@@ -19,21 +21,34 @@ import {
   resolveFacebookClientConfiguration,
 } from "../facebook/facebookClientConfigurationCallable";
 
+/** Provides uid behavior. */
 const uid = `facebook_${"a".repeat(40)}`;
-const call = (data: unknown, auth?: {uid: string; token: Record<string, unknown>}) =>
-  (getFacebookClientConfiguration as unknown as (request: CallableRequest<unknown>) => Promise<unknown>)(
-    {data, auth} as CallableRequest<unknown>,
-  );
+/** Provides call behavior. */
+const call = (
+  data: unknown,
+  auth?: {
+    /** Stores uid. */
+    uid: string; /** Stores token. */
+    /** Stores token. */
+    token: Record<string, unknown>;
+  },
+) =>
+  (getFacebookClientConfiguration as unknown as (request: CallableRequest<unknown>) => Promise<unknown>)({
+    data,
+    auth,
+  } as CallableRequest<unknown>);
 
 describe("Facebook client configuration", () => {
   beforeEach(() => jest.clearAllMocks());
 
   it("exposes only enabled booleans and the durable ad-free entitlement", () => {
-    expect(resolveFacebookClientConfiguration({
-      coinDebt: 9_999,
-      removeInterstitialAds: true,
-      internalReceipt: "must-not-leak",
-    })).toEqual({
+    expect(
+      resolveFacebookClientConfiguration({
+        coinDebt: 9_999,
+        removeInterstitialAds: true,
+        internalReceipt: "must-not-leak",
+      }),
+    ).toEqual({
       interstitialsEnabled: true,
       notificationsEnabled: true,
       commerceEnabled: true,
@@ -58,15 +73,15 @@ describe("Facebook client configuration", () => {
       presenceEnabled: true,
       removeInterstitialAds: false,
     });
-    expect(() => resolveFacebookClientConfiguration(undefined, "mystery"))
-      .toThrow("unknown-facebook-feature:mystery");
+    expect(() => resolveFacebookClientConfiguration(undefined, "mystery")).toThrow("unknown-facebook-feature:mystery");
   });
 
   it.each([null, "true", 1, {}, []])(
     "fails closed instead of showing ads for a malformed durable entitlement: %p",
     (removeInterstitialAds) => {
-      expect(() => resolveFacebookClientConfiguration({removeInterstitialAds}))
-        .toThrow("invalid-facebook-commerce-entitlement");
+      expect(() => resolveFacebookClientConfiguration({removeInterstitialAds})).toThrow(
+        "invalid-facebook-commerce-entitlement",
+      );
     },
   );
 
@@ -80,22 +95,27 @@ describe("Facebook client configuration", () => {
     ["tournaments", "tournamentsEnabled"],
     ["presence", "presenceEnabled"],
   ] as const)("projects %s independently through %s", (feature, field) => {
+    /** Provides configuration behavior. */
     const configuration = resolveFacebookClientConfiguration(undefined, feature);
     expect(configuration[field]).toBe(false);
-    expect(Object.entries(configuration).filter(([key, value]) => key.endsWith("Enabled") && value === false))
-      .toEqual([[field, false]]);
+    expect(Object.entries(configuration).filter(([key, value]) => key.endsWith("Enabled") && value === false)).toEqual([
+      [field, false],
+    ]);
   });
 
   it("requires exact Facebook authentication and returns no hidden commerce fields", async () => {
     await expect(call({}, undefined)).rejects.toMatchObject({code: "unauthenticated"});
     await expect(call({}, {uid, token: {provider: "jest"}})).rejects.toMatchObject({code: "unauthenticated"});
-    await expect(call({}, {uid: "facebook_bad", token: {provider: "facebook"}}))
-      .rejects.toMatchObject({code: "unauthenticated"});
-    mockGet.mockResolvedValueOnce({data: () => ({
-      coinDebt: 5_000,
-      receipt: "secret",
-      removeInterstitialAds: true,
-    })});
+    await expect(call({}, {uid: "facebook_bad", token: {provider: "facebook"}})).rejects.toMatchObject({
+      code: "unauthenticated",
+    });
+    mockGet.mockResolvedValueOnce({
+      data: () => ({
+        coinDebt: 5_000,
+        receipt: "secret",
+        removeInterstitialAds: true,
+      }),
+    });
     await expect(call({}, {uid, token: {provider: "facebook"}})).resolves.toEqual({
       interstitialsEnabled: true,
       notificationsEnabled: true,
@@ -108,8 +128,9 @@ describe("Facebook client configuration", () => {
       removeInterstitialAds: true,
     });
     expect(mockSetFeatureGate).toHaveBeenLastCalledWith(true);
-    await expect(call({unexpected: true}, {uid, token: {provider: "facebook"}}))
-      .rejects.toMatchObject({code: "invalid-argument"});
+    await expect(call({unexpected: true}, {uid, token: {provider: "facebook"}})).rejects.toMatchObject({
+      code: "invalid-argument",
+    });
   });
 
   it("synchronizes the presence rules gate before reading optional commerce state", async () => {
@@ -120,6 +141,7 @@ describe("Facebook client configuration", () => {
   });
 
   it("propagates the deployed disabled value to both configuration and RTDB rules", async () => {
+    /** Provides previous behavior. */
     const previous = process.env.FACEBOOK_DISABLED_FEATURES;
     process.env.FACEBOOK_DISABLED_FEATURES = "presence";
     mockGet.mockResolvedValueOnce({data: () => ({removeInterstitialAds: false})});

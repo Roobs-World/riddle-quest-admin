@@ -18,7 +18,9 @@ export type ReferralRaceShareInput = {
   challengeId: string;
   /** Safe challenge summary returned with the publication receipt. */
   preview: {
+    /** Stores adjusted time to beat ms. */
     adjustedTimeToBeatMs: number;
+    /** Stores category id. */
     categoryId?: string;
   };
 };
@@ -43,14 +45,12 @@ export function ReferralSharingProvider({
   capability,
   children,
 }: {
+  /** Stores capability. */
   capability?: ReferralSharingCapability | null;
+  /** Stores children. */
   children: ReactNode;
 }) {
-  return (
-    <ReferralSharingContext.Provider value={capability ?? null}>
-      {children}
-    </ReferralSharingContext.Provider>
-  );
+  return <ReferralSharingContext.Provider value={capability ?? null}>{children}</ReferralSharingContext.Provider>;
 }
 
 /** Returns the active target's referral-sharing capability, or null when unsupported. */

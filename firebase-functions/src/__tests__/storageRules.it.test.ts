@@ -3,7 +3,9 @@ import {join} from "node:path";
 import {assertFails, initializeTestEnvironment, type RulesTestEnvironment} from "@firebase/rules-unit-testing";
 import {getBytes, ref, uploadBytes} from "firebase/storage";
 
+/** Defines the project id value. */
 const PROJECT_ID = process.env.GCLOUD_PROJECT ?? "riddle-quest-ec2b2";
+/** Provides test environment behavior. */
 let testEnvironment: RulesTestEnvironment;
 
 beforeAll(async () => {
@@ -19,13 +21,16 @@ afterAll(async () => {
 
 describe("Cloud Storage trust boundary", () => {
   it("denies authenticated clients direct avatar reads and writes", async () => {
+    /** Provides storage behavior. */
     const storage = testEnvironment.authenticatedContext("player-1").storage();
+    /** Provides avatar behavior. */
     const avatar = ref(storage, "avatars/player-1/profile");
     await assertFails(uploadBytes(avatar, new Uint8Array([1, 2, 3]), {contentType: "image/png"}));
     await assertFails(getBytes(avatar));
   });
 
   it("denies unauthenticated clients direct object access", async () => {
+    /** Provides storage behavior. */
     const storage = testEnvironment.unauthenticatedContext().storage();
     await assertFails(uploadBytes(ref(storage, "arbitrary/file"), new Uint8Array([1])));
   });

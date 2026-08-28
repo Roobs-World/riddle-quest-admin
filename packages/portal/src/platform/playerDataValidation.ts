@@ -15,12 +15,12 @@ const isRecord = (value: unknown): value is Record<string, unknown> =>
 const isBoundedString = (value: unknown, maxLength: number): value is string =>
   typeof value === "string" && value.length > 0 && value.length <= maxLength;
 /** Indicates whether is feedback. */
-const isFeedback = (value: unknown): value is Feedback =>
-  value === "green" || value === "yellow" || value === "red";
+const isFeedback = (value: unknown): value is Feedback => value === "green" || value === "yellow" || value === "red";
 
 /** Parses scored guesses. */
 const parseScoredGuesses = (value: unknown, answerLength: number): ScoredGuess[] | null => {
   if (!Array.isArray(value) || value.length > MAX_SAVED_GUESSES) return null;
+  /** Provides guesses behavior. */
   const guesses: ScoredGuess[] = [];
   for (const candidate of value) {
     if (!isRecord(candidate) || !Array.isArray(candidate.guess) || !Array.isArray(candidate.feedback)) return null;
@@ -39,6 +39,7 @@ const parseEngineSnapshot = (
   restoredGuesses: ScoredGuess[],
 ): GameEngineSnapshot | null => {
   if (!isRecord(value)) return null;
+  /** Provides guesses behavior. */
   const guesses = parseScoredGuesses(value.guesses, answerLength);
   if (
     !guesses ||
@@ -49,7 +50,8 @@ const parseEngineSnapshot = (
     (value.attemptsUsed as number) < guesses.length ||
     typeof value.hasUsedContinue !== "boolean" ||
     typeof value.gameOver !== "boolean"
-  ) return null;
+  )
+    return null;
   return {
     guesses,
     attemptsUsed: value.attemptsUsed as number,
@@ -61,6 +63,7 @@ const parseEngineSnapshot = (
 /** Parses letter states. */
 const parseLetterStates = (value: unknown): Record<string, Feedback> | null => {
   if (!isRecord(value)) return null;
+  /** Provides entries behavior. */
   const entries = Object.entries(value);
   if (entries.length > 64) return null;
   if (!entries.every(([letter, feedback]) => isBoundedString(letter, 16) && isFeedback(feedback))) return null;
@@ -91,22 +94,29 @@ export const parseSavedGame = (value: unknown): SavedGame | null => {
       (index) => Number.isInteger(index) && index >= 0 && index < (value.currentLetters as unknown[]).length,
     ) ||
     new Set(value.hintRevealedIndices).size !== value.hintRevealedIndices.length
-  ) return null;
+  )
+    return null;
+  /** Provides guesses behavior. */
   const guesses = parseScoredGuesses(value.guesses, value.currentLetters.length);
+  /** Provides engine snapshot behavior. */
   const engineSnapshot = guesses
     ? parseEngineSnapshot(value.engineSnapshot, value.currentLetters.length, guesses)
     : null;
+  /** Provides letter states behavior. */
   const letterStates = parseLetterStates(value.letterStates);
   if (!guesses || !engineSnapshot || !letterStates) return null;
-  const inferredAwaitingContinue = !engineSnapshot.gameOver &&
-    !engineSnapshot.hasUsedContinue &&
-    engineSnapshot.attemptsUsed === 5;
+  /** Provides inferred awaiting continue behavior. */
+  const inferredAwaitingContinue =
+    !engineSnapshot.gameOver && !engineSnapshot.hasUsedContinue && engineSnapshot.attemptsUsed === 5;
   if (
     value.awaitingContinue !== undefined &&
     (typeof value.awaitingContinue !== "boolean" || value.awaitingContinue !== inferredAwaitingContinue)
-  ) return null;
+  )
+    return null;
+  /** Provides pending outcome behavior. */
   let pendingOutcome: SavedGame["pendingOutcome"];
   if (value.pendingOutcome !== undefined) {
+    /** Provides outcome behavior. */
     const outcome = value.pendingOutcome;
     if (
       !isRecord(outcome) ||
@@ -120,7 +130,8 @@ export const parseSavedGame = (value: unknown): SavedGame | null => {
       (outcome.attempts as number) > MAX_SAVED_GUESSES ||
       typeof outcome.isCorrect !== "boolean" ||
       (outcome.kind === "win") !== outcome.isCorrect
-    ) return null;
+    )
+      return null;
     pendingOutcome = {
       id: outcome.id,
       kind: outcome.kind,
@@ -163,9 +174,13 @@ export async function parsePlayerData(value: unknown): Promise<PlayerData | null
     value.schemaVersion !== 1 ||
     !Number.isSafeInteger(value.updatedAt) ||
     (value.updatedAt as number) < 0
-  ) return null;
+  )
+    return null;
+  /** Provides {bridge profile schema} behavior. */
   const {BridgeProfileSchema} = await import("@qwordly/core/bridge");
+  /** Provides profile behavior. */
   const profile = BridgeProfileSchema.safeParse(value.profile);
+  /** Provides active game behavior. */
   const activeGame = value.activeGame === null ? null : parseSavedGame(value.activeGame);
   return {
     schemaVersion: 1,

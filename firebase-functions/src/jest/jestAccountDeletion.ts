@@ -46,13 +46,17 @@ export async function runWithJestAccountOperationLease<Result>(
   timeoutSeconds: number,
   operation: () => Result | Promise<Result>,
 ): Promise<Result> {
+  /** Provides db behavior. */
   const db = admin.firestore();
+  /** Provides deletion ref behavior. */
   const deletionRef = getJestAccountDeletionRef(db, userId);
+  /** Provides lease ref behavior. */
   const leaseRef = deletionRef.collection(JEST_ACCOUNT_OPERATION_COLLECTION).doc(randomUUID());
-  const boundedTimeoutSeconds = Number.isFinite(timeoutSeconds) && timeoutSeconds > 0
-    ? timeoutSeconds
-    : BROWSER_CALLABLE_TIMEOUT_SECONDS;
+  /** Provides bounded timeout seconds behavior. */
+  const boundedTimeoutSeconds =
+    Number.isFinite(timeoutSeconds) && timeoutSeconds > 0 ? timeoutSeconds : BROWSER_CALLABLE_TIMEOUT_SECONDS;
   await db.runTransaction(async (transaction) => {
+    /** Provides deletion snapshot behavior. */
     const deletionSnapshot = await transaction.get(deletionRef);
     assertJestAccountActive(deletionSnapshot);
     transaction.create(leaseRef, {
@@ -70,18 +74,23 @@ export async function runWithJestAccountOperationLease<Result>(
 
 /** Refuses deletion while any authenticated Jest operation could still write. */
 async function assertNoActiveJestAccountOperations(deletionRef: ReturnType<typeof getJestAccountDeletionRef>) {
+  /** Provides snapshot behavior. */
   const snapshot = await deletionRef.collection(JEST_ACCOUNT_OPERATION_COLLECTION).limit(1).get();
   if (!snapshot.empty) throw new JestAccountDeletionBusyError();
 }
 
 /** Persists the guard before any identity-linked account data is removed. */
 export async function recordJestAccountDeletion(userId: string): Promise<void> {
+  /** Provides deletion ref behavior. */
   const deletionRef = getJestAccountDeletionRef(admin.firestore(), userId);
-  await deletionRef.set({
-    schemaVersion: 1,
-    recreationBlocked: true,
-    deletedAt: admin.firestore.FieldValue.serverTimestamp(),
-  }, {merge: true});
+  await deletionRef.set(
+    {
+      schemaVersion: 1,
+      recreationBlocked: true,
+      deletedAt: admin.firestore.FieldValue.serverTimestamp(),
+    },
+    {merge: true},
+  );
   // Deterministic Jest UIDs must remain occupied so even a custom token minted
   // just before deletion cannot recreate an enabled Auth identity. Historical
   // Firebase identities instead retain this Firestore guard and delete Auth.
@@ -96,8 +105,7 @@ export function assertJestAccountActive(snapshot: Pick<DocumentSnapshot, "exists
 
 /** Identifies the expected deleted-account error without exposing other failures. */
 export const isJestAccountDeletedError = (error: unknown): error is JestAccountDeletedError =>
-  error instanceof JestAccountDeletedError ||
-  (error instanceof Error && error.message === "account-deleted");
+  error instanceof JestAccountDeletedError || (error instanceof Error && error.message === "account-deleted");
 
 /** Identifies the expected retryable operation-drain condition. */
 export const isJestAccountDeletionBusyError = (error: unknown): error is JestAccountDeletionBusyError =>
@@ -107,7 +115,13 @@ export const isJestAccountDeletionBusyError = (error: unknown): error is JestAcc
 /** Emits the stable browser response for a valid signed identity that was deleted. */
 export function respondToDeletedJestAccount(
   error: unknown,
-  response: {status(code: number): {json(body: unknown): unknown}},
+  response: {
+    /** Provides status behavior. */
+    status(code: number): {
+      /** Provides json behavior. */
+      json(body: unknown): unknown;
+    };
+  },
 ): boolean {
   if (!isJestAccountDeletedError(error)) return false;
   response.status(409).json({error: "account-deleted"});

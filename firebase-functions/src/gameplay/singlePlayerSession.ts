@@ -41,12 +41,7 @@ const opaqueHash = (value: string): string => createHash("sha256").update(value)
 
 /** Resolves the private state document for one player's riddle. */
 const getSessionRef = (userId: string, sessionToken: string) =>
-  admin
-    .firestore()
-    .collection("users")
-    .doc(userId)
-    .collection("singlePlayerSessions")
-    .doc(opaqueHash(sessionToken));
+  admin.firestore().collection("users").doc(userId).collection("singlePlayerSessions").doc(opaqueHash(sessionToken));
 
 /** Resolves the private stable binding for one immutable content identity. */
 const getBindingRef = (userId: string, contentKey: string) =>
@@ -58,13 +53,11 @@ const getBindingRef = (userId: string, contentKey: string) =>
     .doc(opaqueHash(contentKey));
 
 /** Resolves the canonical completion receipt used to decide loss-session rotation. */
-const getCompletionReceiptRef = (
-  userId: string,
-  gameMode: "classic" | "challenge",
-  completionKey: string,
-) => admin.firestore().collection("gameCompletionReceipts").doc(
-  opaqueHash(`${userId}\0${gameMode}\0${completionKey}`),
-);
+const getCompletionReceiptRef = (userId: string, gameMode: "classic" | "challenge", completionKey: string) =>
+  admin
+    .firestore()
+    .collection("gameCompletionReceipts")
+    .doc(opaqueHash(`${userId}\0${gameMode}\0${completionKey}`));
 
 /** Issues or resumes one opaque session token for immutable canonical content. */
 export async function ensureAuthoritativeSession(
@@ -75,17 +68,27 @@ export async function ensureAuthoritativeSession(
   contentKey: string,
   completionKey: string,
   answer: string,
-  entitlement: {classicIndex?: number; challengeDate?: string},
+  entitlement: {
+    /** Stores classic index. */
+    classicIndex?: number; /** Stores challenge date. */
+    /** Stores challenge date. */
+    challengeDate?: string;
+  },
 ): Promise<string> {
+  /** Provides binding ref behavior. */
   const bindingRef = getBindingRef(userId, contentKey);
   return admin.firestore().runTransaction(async (transaction) => {
+    /** Provides binding snapshot behavior. */
     const bindingSnapshot = await transaction.get(bindingRef);
     if (bindingSnapshot.exists) {
+      /** Provides token behavior. */
       const token = bindingSnapshot.data()?.sessionToken;
       if (typeof token !== "string" || token.length < 20) {
         throw new HttpsError("internal", "The authoritative session binding is invalid.");
       }
+      /** Provides existing session behavior. */
       const existingSession = await transaction.get(getSessionRef(userId, token));
+      /** Provides existing state behavior. */
       const existingState = existingSession.data() as SinglePlayerSessionState | undefined;
       if (
         existingSession.exists &&
@@ -98,11 +101,10 @@ export async function ensureAuthoritativeSession(
         !isSinglePlayerSessionExpired(existingState)
       ) {
         if (existingState.terminal && !existingState.isCorrect && !existingState.isSkipped) {
-          const lossReceipt = await transaction.get(getCompletionReceiptRef(
-            userId,
-            gameMode,
-            `${completionKey}:loss:${token}`,
-          ));
+          /** Provides loss receipt behavior. */
+          const lossReceipt = await transaction.get(
+            getCompletionReceiptRef(userId, gameMode, `${completionKey}:loss:${token}`),
+          );
           if (!lossReceipt.exists || lossReceipt.data()?.status !== "completed") return token;
           // A fully recorded loss starts a fresh attempt on the same entitlement.
         } else {
@@ -110,8 +112,11 @@ export async function ensureAuthoritativeSession(
         }
       }
     }
+    /** Provides session token behavior. */
     const sessionToken = randomUUID();
+    /** Provides session ref behavior. */
     const sessionRef = getSessionRef(userId, sessionToken);
+    /** Provides expires at behavior. */
     const expiresAt = sessionExpiry();
     transaction.set(bindingRef, {
       sessionToken,
@@ -155,8 +160,8 @@ function assertSessionBinding(
     !state ||
     state.gameMode !== gameMode ||
     state.riddleId !== riddleId ||
-      state.locale !== locale ||
-      state.contentKey !== contentKey
+    state.locale !== locale ||
+    state.contentKey !== contentKey
   ) {
     throw new HttpsError("permission-denied", "The game session does not match this canonical riddle.");
   }
@@ -169,22 +174,27 @@ function assertCurrentEntitlement(
   now = new Date(),
 ): void {
   if (state.gameMode === "classic") {
+    /** Provides current classic index behavior. */
     const currentClassicIndex = Number(user.progress?.classicIndex ?? 1);
     if (!Number.isInteger(state.classicIndex) || state.classicIndex !== currentClassicIndex) {
       throw new HttpsError("permission-denied", "This is not the player's current Classic riddle.");
     }
     return;
   }
+  /** Provides today behavior. */
   const today = now.toISOString().slice(0, 10);
   if (state.challengeDate !== today) {
     throw new HttpsError("permission-denied", "This daily challenge is no longer current.");
   }
+  /** Provides last completed behavior. */
   const lastCompleted = user.lastDailyChallengeCompletedAt;
-  const completedDate = typeof lastCompleted?.toDate === "function"
-    ? lastCompleted.toDate().toISOString().slice(0, 10)
-    : typeof lastCompleted === "number" || typeof lastCompleted === "string"
-      ? new Date(lastCompleted).toISOString().slice(0, 10)
-      : undefined;
+  /** Completes d date. */
+  const completedDate =
+    typeof lastCompleted?.toDate === "function"
+      ? lastCompleted.toDate().toISOString().slice(0, 10)
+      : typeof lastCompleted === "number" || typeof lastCompleted === "string"
+        ? new Date(lastCompleted).toISOString().slice(0, 10)
+        : undefined;
   if (completedDate === today || user.lastCompletedDailyChallengeKey === today) {
     throw new HttpsError("failed-precondition", "Today's daily challenge is already complete.");
   }
@@ -197,8 +207,10 @@ export async function getIssuedAuthoritativeSession(
   gameMode: "classic" | "challenge",
   riddleId: string,
 ): Promise<SinglePlayerSessionState> {
+  /** Provides snapshot behavior. */
   const snapshot = await getSessionRef(userId, sessionToken).get();
   if (!snapshot.exists) throw new HttpsError("permission-denied", "The game session is not valid.");
+  /** Provides state behavior. */
   const state = snapshot.data() as SinglePlayerSessionState;
   assertSinglePlayerSessionActive(state);
   if (
@@ -219,19 +231,21 @@ export async function submitAuthoritativeGuess(
   userId: string,
   request: SubmitSinglePlayerGuessRequestData,
 ): Promise<SubmitSinglePlayerGuessResponseData> {
+  /** Provides session ref behavior. */
   const sessionRef = getSessionRef(userId, request.sessionToken);
+  /** Provides r ref. */
   const userRef = admin.firestore().collection("users").doc(userId);
   return admin.firestore().runTransaction(async (transaction) => {
-    const [snapshot, userSnapshot] = await Promise.all([
-      transaction.get(sessionRef),
-      transaction.get(userRef),
-    ]);
-    const state = snapshot.exists ? snapshot.data() as SinglePlayerSessionState : undefined;
+    /** Provides [snapshot, user snapshot] behavior. */
+    const [snapshot, userSnapshot] = await Promise.all([transaction.get(sessionRef), transaction.get(userRef)]);
+    /** Provides state behavior. */
+    const state = snapshot.exists ? (snapshot.data() as SinglePlayerSessionState) : undefined;
     if (!userSnapshot.exists) throw new HttpsError("not-found", "User data not found.");
     if (!state) throw new HttpsError("permission-denied", "The game session is not valid.");
     assertSinglePlayerSessionActive(state);
     assertSessionBinding(state, request.gameMode, request.riddleId, state.locale, state.contentKey);
     if (!state.terminal) assertCurrentEntitlement(state, userSnapshot.data() ?? {});
+    /** Provides transition behavior. */
     const transition = transitionSinglePlayerGuess({state, request, answer: state.answer, locale: state.locale});
     if (!transition.replayed) {
       if (transition.state.terminal && !state.terminal) {
@@ -239,9 +253,11 @@ export async function submitAuthoritativeGuess(
       }
       transaction.set(sessionRef, {
         ...transition.state,
-        ...(transition.state.terminal && !state.terminal ? {
-          terminalAt: admin.firestore.FieldValue.serverTimestamp(),
-        } : {}),
+        ...(transition.state.terminal && !state.terminal
+          ? {
+              terminalAt: admin.firestore.FieldValue.serverTimestamp(),
+            }
+          : {}),
         updatedAt: admin.firestore.FieldValue.serverTimestamp(),
       });
     }
@@ -256,12 +272,15 @@ export async function finalizeAuthoritativeSession(
   riddleId: string,
   sessionToken: string,
 ): Promise<SinglePlayerSessionState> {
+  /** Provides session ref behavior. */
   const sessionRef = getSessionRef(userId, sessionToken);
   return admin.firestore().runTransaction(async (transaction) => {
+    /** Provides snapshot behavior. */
     const snapshot = await transaction.get(sessionRef);
     if (!snapshot.exists) {
       throw new HttpsError("failed-precondition", "No authoritative attempts exist for this riddle.");
     }
+    /** Provides state behavior. */
     const state = snapshot.data() as SinglePlayerSessionState;
     assertSinglePlayerSessionActive(state);
     assertSessionBinding(state, gameMode, riddleId, state.locale, state.contentKey);
@@ -272,6 +291,7 @@ export async function finalizeAuthoritativeSession(
     if (!state.awaitingContinue || state.attempts < baseAttemptLimit(gameMode)) {
       throw new HttpsError("failed-precondition", "The game has not reached a terminal outcome.");
     }
+    /** Provides terminal state behavior. */
     const terminalState = {...state, awaitingContinue: false, terminal: true, isCorrect: false};
     await recordTerminalCompletionBinding(transaction, userId, sessionToken, terminalState);
     transaction.set(sessionRef, {
@@ -291,24 +311,27 @@ export async function grantAuthoritativeContinue(
   requestId: string,
   sessionToken: string,
 ): Promise<number> {
+  /** Provides session ref behavior. */
   const sessionRef = getSessionRef(userId, sessionToken);
+  /** Provides r ref. */
   const userRef = admin.firestore().collection("users").doc(userId);
+  /** Requests hash. */
   const requestHash = opaqueHash(requestId);
   return admin.firestore().runTransaction(async (transaction) => {
-    const [sessionSnapshot, userSnapshot] = await Promise.all([
-      transaction.get(sessionRef),
-      transaction.get(userRef),
-    ]);
+    /** Provides [session snapshot, user snapshot] behavior. */
+    const [sessionSnapshot, userSnapshot] = await Promise.all([transaction.get(sessionRef), transaction.get(userRef)]);
     if (!sessionSnapshot.exists) {
       throw new HttpsError("failed-precondition", "No active riddle is awaiting a continue.");
     }
     if (!userSnapshot.exists) {
       throw new HttpsError("not-found", "User data not found.");
     }
+    /** Provides state behavior. */
     const state = sessionSnapshot.data() as SinglePlayerSessionState;
     assertSinglePlayerSessionActive(state);
     assertSessionBinding(state, gameMode, riddleId, state.locale, state.contentKey);
     assertCurrentEntitlement(state, userSnapshot.data() ?? {});
+    /** Provides coins behavior. */
     const coins = Number(userSnapshot.data()?.coins ?? 0);
     if (state.continueRequestHash === requestHash && state.hasUsedContinue) return coins;
     if (
@@ -327,7 +350,9 @@ export async function grantAuthoritativeContinue(
     if (coins < CONTINUE_COST_COINS) {
       throw new HttpsError("failed-precondition", "Insufficient coins to continue.");
     }
+    /** Provides new coins behavior. */
     const newCoins = coins - CONTINUE_COST_COINS;
+    /** Provides continued state behavior. */
     const continuedState = {...state};
     delete continuedState.lastGuess;
     delete continuedState.lastGuessResult;
@@ -348,20 +373,24 @@ export async function purchaseAuthoritativeHint(
   userId: string,
   request: z.infer<typeof GetHintRequestSchema>,
 ): Promise<AuthoritativeHintResult> {
+  /** Provides session ref behavior. */
   const sessionRef = getSessionRef(userId, request.sessionToken);
+  /** Provides r ref. */
   const userRef = admin.firestore().collection("users").doc(userId);
+  /** Requests hash. */
   const requestHash = opaqueHash(request.requestId);
+  /** Provides attempt hash behavior. */
   const attemptHash = opaqueHash(JSON.stringify(request.currentAttempt));
   return admin.firestore().runTransaction(async (transaction) => {
-    const [sessionSnapshot, userSnapshot] = await Promise.all([
-      transaction.get(sessionRef),
-      transaction.get(userRef),
-    ]);
+    /** Provides [session snapshot, user snapshot] behavior. */
+    const [sessionSnapshot, userSnapshot] = await Promise.all([transaction.get(sessionRef), transaction.get(userRef)]);
     if (!sessionSnapshot.exists) throw new HttpsError("permission-denied", "The game session is not valid.");
     if (!userSnapshot.exists) throw new HttpsError("not-found", "User data not found.");
+    /** Provides state behavior. */
     const state = sessionSnapshot.data() as SinglePlayerSessionState;
     assertSinglePlayerSessionActive(state);
     assertSessionBinding(state, request.gameMode, request.riddleId, state.locale, state.contentKey);
+    /** Provides prior receipt behavior. */
     const priorReceipt = state.hintReceipts?.[requestHash];
     if (priorReceipt) {
       if (priorReceipt.attemptHash !== attemptHash) {
@@ -373,34 +402,47 @@ export async function purchaseAuthoritativeHint(
     if (state.terminal) throw new HttpsError("failed-precondition", "Game is already completed.");
     assertCurrentEntitlement(state, userSnapshot.data() ?? {});
 
+    /** Provides answer letters behavior. */
     const answerLetters = splitGraphemes(normalizeAnswerText(state.answer, state.locale), state.locale);
+    /** Provides guessed letters behavior. */
     const guessedLetters = request.currentAttempt.map((letter) => normalizeAnswerText(letter, state.locale));
+    /** Provides revealed behavior. */
     const revealed = state.hintRevealedIndices ?? [];
-    const index = answerLetters.findIndex((letter, candidate) =>
-      !revealed.includes(candidate) && guessedLetters[candidate] !== letter,
+    /** Provides index behavior. */
+    const index = answerLetters.findIndex(
+      (letter, candidate) => !revealed.includes(candidate) && guessedLetters[candidate] !== letter,
     );
     if (index < 0) return null;
 
+    /** Provides r. */
     const user = userSnapshot.data() as Player;
+    /** Provides coins behavior. */
     const coins = Number(user.coins ?? 0);
     if (coins < HINT_COST_COINS) {
       throw new HttpsError("failed-precondition", "Insufficient coins to get a hint.");
     }
+    /** Provides stats behavior. */
     const stats = {...user.stats, totalHintsUsed: Number(user.stats?.totalHintsUsed ?? 0) + 1};
+    /** Provides new achievements behavior. */
     const newAchievements = findNewAchievements(
       {...user, coins: coins - HINT_COST_COINS, stats},
       {gameMode: request.gameMode, isCorrect: false, attempts: state.attempts, gameOver: false},
     );
+    /** Provides achievement coins behavior. */
     const achievementCoins = newAchievements.length * ACHIEVEMENT_UNLOCK_COIN_REWARD;
+    /** Provides new coins behavior. */
     const newCoins = coins - HINT_COST_COINS + achievementCoins;
+    /** Provides result behavior. */
     const result: Exclude<AuthoritativeHintResult, null> = {
       revealedLetter: answerLetters[index].toUpperCase(),
       index,
       coinsCost: HINT_COST_COINS,
       newCoins,
-      ...(newAchievements.length ? {
-        newlyUnlockedAchievementIds: newAchievements.map((entry) => entry.achievementId),
-      } : {}),
+      ...(newAchievements.length
+        ? {
+            newlyUnlockedAchievementIds: newAchievements.map((entry) => entry.achievementId),
+          }
+        : {}),
     };
     transaction.update(userRef, {
       coins: newCoins,
@@ -425,35 +467,51 @@ export async function purchaseAuthoritativeHint(
 /** Atomically charges, advances, and receipts one authorized Classic skip. */
 export async function skipAuthoritativeRiddle(
   userId: string,
-  request: {riddleId: string; gameMode: "classic"; sessionToken: string; requestId: string},
+  request: {
+    /** Stores riddle id. */
+    riddleId: string; /** Stores game mode. */
+    /** Stores game mode. */
+    gameMode: "classic"; /** Stores session token. */
+    /** Stores session token. */
+    sessionToken: string; /** Stores request id. */
+    /** Stores request id. */
+    requestId: string;
+  },
 ): Promise<AuthoritativeSkipResult> {
+  /** Provides session ref behavior. */
   const sessionRef = getSessionRef(userId, request.sessionToken);
+  /** Provides r ref. */
   const userRef = admin.firestore().collection("users").doc(userId);
+  /** Requests hash. */
   const requestHash = opaqueHash(request.requestId);
   return admin.firestore().runTransaction(async (transaction) => {
-    const [sessionSnapshot, userSnapshot] = await Promise.all([
-      transaction.get(sessionRef),
-      transaction.get(userRef),
-    ]);
+    /** Provides [session snapshot, user snapshot] behavior. */
+    const [sessionSnapshot, userSnapshot] = await Promise.all([transaction.get(sessionRef), transaction.get(userRef)]);
     if (!sessionSnapshot.exists) throw new HttpsError("permission-denied", "The game session is not valid.");
     if (!userSnapshot.exists) throw new HttpsError("not-found", "User data not found.");
+    /** Provides state behavior. */
     const state = sessionSnapshot.data() as SinglePlayerSessionState;
     assertSinglePlayerSessionActive(state);
     assertSessionBinding(state, "classic", request.riddleId, state.locale, state.contentKey);
     if (state.skipResult) return state.skipResult;
     if (state.terminal) throw new HttpsError("failed-precondition", "This riddle is already complete.");
+    /** Provides r. */
     const user = userSnapshot.data() as Player;
     assertCurrentEntitlement(state, user);
+    /** Provides coins behavior. */
     const coins = Number(user.coins ?? 0);
     if (coins < SKIP_COST_CLASSIC) {
       throw new HttpsError("failed-precondition", "Insufficient coins to skip this riddle.");
     }
+    /** Provides next classic index behavior. */
     const nextClassicIndex = Number(user.progress?.classicIndex ?? 1) + 1;
+    /** Provides new progress behavior. */
     const newProgress: PlayerProgress = {
       classicIndex: nextClassicIndex,
       dailyChallengeIndex: user.progress?.dailyChallengeIndex ?? 0,
       dailyChallengeCurrentQuestion: user.progress?.dailyChallengeCurrentQuestion ?? 0,
     };
+    /** Provides result behavior. */
     const result: AuthoritativeSkipResult = {
       newCoins: coins - SKIP_COST_CLASSIC,
       newProgress,

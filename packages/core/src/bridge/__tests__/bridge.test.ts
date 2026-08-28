@@ -10,9 +10,11 @@ import {
 } from "../index";
 
 describe("bridge protocol", () => {
+  /** Provides session token behavior. */
   const sessionToken = "00000000-0000-4000-8000-000000000001";
 
   it("accepts a ready message from the game iframe", () => {
+    /** Provides message behavior. */
     const message = parseGameToHostMessage({
       type: "game:ready",
       requestId: "ready-1",
@@ -28,6 +30,7 @@ describe("bridge protocol", () => {
   });
 
   it("rejects malformed game messages", () => {
+    /** Provides result behavior. */
     const result = GameToHostMessageSchema.safeParse({
       type: "game:spendCoins",
       payload: {
@@ -39,6 +42,7 @@ describe("bridge protocol", () => {
   });
 
   it("accepts riddle payloads from the host", () => {
+    /** Provides message behavior. */
     const message = parseHostToGameMessage({
       type: "host:riddleLoaded",
       requestId: "load-1",
@@ -69,71 +73,84 @@ describe("bridge protocol", () => {
       {attemptsUsed: 5, hasUsedContinue: false, awaitingContinue: false},
       {attemptsUsed: 4, hasUsedContinue: true, awaitingContinue: false},
     ] as const) {
-      expect(HostToGameMessageSchema.safeParse({
-        type: "host:riddleLoaded",
-        payload: {
-          riddle: {
-            riddleId: "classic-1",
-            text: "Clue",
-            answerLength: 5,
-            sessionToken,
-            gameMode: "classic",
-            ...continueState,
+      expect(
+        HostToGameMessageSchema.safeParse({
+          type: "host:riddleLoaded",
+          payload: {
+            riddle: {
+              riddleId: "classic-1",
+              text: "Clue",
+              answerLength: 5,
+              sessionToken,
+              gameMode: "classic",
+              ...continueState,
+            },
+            profile: null,
           },
-          profile: null,
-        },
-      }).success).toBe(false);
+        }).success,
+      ).toBe(false);
     }
   });
 
   it("accepts guesses but rejects client-authored completion outcomes", () => {
-    expect(GameToHostMessageSchema.safeParse({
-      type: "game:submitGuess",
-      requestId: "bridge-guess-1",
-      payload: {
-        riddleId: "classic-1",
-        gameMode: "classic",
-        sessionToken,
-        guess: "piano",
-        requestId: "backend-guess-1",
-      },
-    }).success).toBe(true);
-    expect(GameToHostMessageSchema.safeParse({
-      type: "game:completeGame",
-      payload: {riddleId: "classic-1", gameMode: "classic", attempts: 1, isCorrect: true},
-    }).success).toBe(false);
-  });
-
-  it("rejects non-keyboard guess content at the bridge boundary", () => {
-    for (const guess of ["pi ano", "pi\nno", "pïano", "🎹"] as const) {
-      expect(GameToHostMessageSchema.safeParse({
+    expect(
+      GameToHostMessageSchema.safeParse({
         type: "game:submitGuess",
         requestId: "bridge-guess-1",
         payload: {
           riddleId: "classic-1",
           gameMode: "classic",
           sessionToken,
-          guess,
+          guess: "piano",
           requestId: "backend-guess-1",
         },
-      }).success).toBe(false);
+      }).success,
+    ).toBe(true);
+    expect(
+      GameToHostMessageSchema.safeParse({
+        type: "game:completeGame",
+        payload: {riddleId: "classic-1", gameMode: "classic", attempts: 1, isCorrect: true},
+      }).success,
+    ).toBe(false);
+  });
+
+  it("rejects non-keyboard guess content at the bridge boundary", () => {
+    for (const guess of ["pi ano", "pi\nno", "pïano", "🎹"] as const) {
+      expect(
+        GameToHostMessageSchema.safeParse({
+          type: "game:submitGuess",
+          requestId: "bridge-guess-1",
+          payload: {
+            riddleId: "classic-1",
+            gameMode: "classic",
+            sessionToken,
+            guess,
+            requestId: "backend-guess-1",
+          },
+        }).success,
+      ).toBe(false);
     }
   });
 
   it("shares the Unicode-safe username boundary with the callable schema", () => {
-    expect(GameToHostMessageSchema.safeParse({
-      type: "game:updateUsername",
-      payload: {username: "  Łukasz O’Neil  "},
-    }).success).toBe(true);
-    for (const username of ["Ali\nce", "Ali\u0000ce", "Ali\u202Ece", "<b>", "___", "x".repeat(97)]) {
-      expect(GameToHostMessageSchema.safeParse({
+    expect(
+      GameToHostMessageSchema.safeParse({
         type: "game:updateUsername",
-        payload: {username},
-      }).success).toBe(false);
+        payload: {username: "  Łukasz O’Neil  "},
+      }).success,
+    ).toBe(true);
+    for (const username of ["Ali\nce", "Ali\u0000ce", "Ali\u202Ece", "<b>", "___", "x".repeat(97)]) {
+      expect(
+        GameToHostMessageSchema.safeParse({
+          type: "game:updateUsername",
+          payload: {username},
+        }).success,
+      ).toBe(false);
     }
   });
 
   it("validates operation results with request correlation", () => {
+    /** Provides result behavior. */
     const result = HostToGameMessageSchema.safeParse({
       type: "host:operationResult",
       requestId: "hint-1",
@@ -168,16 +185,20 @@ describe("bridge protocol", () => {
   });
 
   it("accepts only bounded categorized social-safety requests", () => {
-    expect(GameToHostMessageSchema.safeParse({
-      type: "game:blockRival",
-      requestId: "block-rival-1",
-      payload: {targetUserId: "facebook_1111111111111111111111111111111111111111"},
-    }).success).toBe(true);
-    expect(GameToHostMessageSchema.safeParse({
-      type: "game:reportRival",
-      requestId: "report-rival-1",
-      payload: {targetUserId: "jest_1111111111111111111111111111111111111111", category: "cheating"},
-    }).success).toBe(true);
+    expect(
+      GameToHostMessageSchema.safeParse({
+        type: "game:blockRival",
+        requestId: "block-rival-1",
+        payload: {targetUserId: "facebook_1111111111111111111111111111111111111111"},
+      }).success,
+    ).toBe(true);
+    expect(
+      GameToHostMessageSchema.safeParse({
+        type: "game:reportRival",
+        requestId: "report-rival-1",
+        payload: {targetUserId: "jest_1111111111111111111111111111111111111111", category: "cheating"},
+      }).success,
+    ).toBe(true);
     for (const payload of [
       {targetUserId: "", category: "cheating"},
       {targetUserId: "rival", category: "violence"},
@@ -188,7 +209,9 @@ describe("bridge protocol", () => {
   });
 
   it("provides non-throwing message type guards", () => {
+    /** Provides game message behavior. */
     const gameMessage = {type: "game:ready", payload: {protocolVersion: BRIDGE_PROTOCOL_VERSION}};
+    /** Provides host message behavior. */
     const hostMessage = {type: "host:pause", payload: {}};
     expect(isGameToHostMessage(gameMessage)).toBe(true);
     expect(isGameToHostMessage(hostMessage)).toBe(false);

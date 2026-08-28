@@ -1,7 +1,9 @@
 import {MockJestPlatform} from "../MockJestPlatform";
 
 describe("MockJestPlatform", () => {
+  /** Provides original storage behavior. */
   const originalStorage = globalThis.localStorage;
+  /** Provides original location behavior. */
   const originalLocation = globalThis.location;
 
   afterEach(() => {
@@ -10,6 +12,7 @@ describe("MockJestPlatform", () => {
   });
 
   it("implements identity, registration, loading and milestone lifecycle", async () => {
+    /** Provides platform behavior. */
     const platform = new MockJestPlatform();
     await expect(platform.init()).resolves.toEqual({status: "success", value: undefined});
     expect(platform.getPlayer()).toEqual({playerId: "jest-mock-player", registered: false});
@@ -25,8 +28,11 @@ describe("MockJestPlatform", () => {
   });
 
   it("closes the registration overlay exactly once", () => {
+    /** Provides on close behavior. */
     const onClose = jest.fn();
+    /** Provides platform behavior. */
     const platform = new MockJestPlatform();
+    /** Provides result behavior. */
     const result = platform.showRegistrationOverlay({theme: "dark", onClose});
     expect(result.status).toBe("success");
     if (result.status !== "success") return;
@@ -37,6 +43,7 @@ describe("MockJestPlatform", () => {
   });
 
   it("merges preferences and persists player data", async () => {
+    /** Provides values behavior. */
     const values = new Map<string, string>();
     Object.defineProperty(globalThis, "localStorage", {
       configurable: true,
@@ -46,10 +53,12 @@ describe("MockJestPlatform", () => {
         removeItem: (key: string) => values.delete(key),
       },
     });
+    /** Provides platform behavior. */
     const platform = new MockJestPlatform();
     platform.preferences = {locale: "en", muted: false};
     await platform.writePreferences({muted: true, highContrast: true});
     expect(platform.readPreferences()).toEqual({locale: "en", muted: true, highContrast: true});
+    /** Provides player data behavior. */
     const playerData = {schemaVersion: 1 as const, updatedAt: 10};
     expect(platform.readPlayerData()).toBeNull();
     await platform.writePlayerData(playerData);
@@ -61,6 +70,7 @@ describe("MockJestPlatform", () => {
 
   it("contains unavailable and malformed browser storage", async () => {
     Object.defineProperty(globalThis, "localStorage", {configurable: true, value: undefined});
+    /** Provides platform behavior. */
     const platform = new MockJestPlatform();
     expect(platform.readPlayerData()).toBeNull();
     await expect(platform.writePlayerData({schemaVersion: 1, updatedAt: 1})).resolves.toBeUndefined();
@@ -88,24 +98,29 @@ describe("MockJestPlatform", () => {
   });
 
   it("maps guest and registered notification availability", async () => {
+    /** Provides guest behavior. */
     const guest = new MockJestPlatform();
     await expect(guest.scheduleNotification({} as never)).resolves.toMatchObject({status: "unavailable"});
     await expect(guest.removeNotification("daily")).resolves.toMatchObject({status: "unavailable"});
+    /** Provides registered behavior. */
     const registered = new MockJestPlatform(true);
     await expect(registered.scheduleNotification({} as never)).resolves.toEqual({status: "success", value: undefined});
     await expect(registered.removeNotification("daily")).resolves.toEqual({status: "success", value: undefined});
   });
 
   it("implements referrals, screenshots and purchase fixtures", async () => {
+    /** Provides platform behavior. */
     const platform = new MockJestPlatform();
     await expect(platform.getProfile()).resolves.toBeNull();
     await expect(platform.shareReferral({} as never)).resolves.toEqual({status: "success", value: undefined});
     await expect(platform.listReferralsSigned()).resolves.toEqual({status: "success", value: "mock.referrals.signed"});
     expect(() => platform.setScreenshotProvider(null)).not.toThrow();
-    await expect(platform.getProducts()).resolves.toEqual(expect.objectContaining({
-      status: "success",
-      value: expect.arrayContaining([expect.objectContaining({sku: "com.roobsworld.riddlequest.coinpack1"})]),
-    }));
+    await expect(platform.getProducts()).resolves.toEqual(
+      expect.objectContaining({
+        status: "success",
+        value: expect.arrayContaining([expect.objectContaining({sku: "com.roobsworld.riddlequest.coinpack1"})]),
+      }),
+    );
     await expect(platform.beginPurchase("coins")).resolves.toEqual({
       status: "success",
       value: {purchase: {purchaseToken: "mock-coins", productSku: "coins"}, purchaseSigned: "mock.purchase.signed"},
@@ -115,6 +130,7 @@ describe("MockJestPlatform", () => {
   });
 
   it("implements guest, inactive and active subscription states", async () => {
+    /** Provides guest behavior. */
     const guest = new MockJestPlatform();
     await expect(guest.getSubscriptions()).resolves.toMatchObject({
       value: {subscriptions: [], subscriptionsSigned: "mock.subscriptions.inactive.signed"},
@@ -124,9 +140,13 @@ describe("MockJestPlatform", () => {
       message: "guest_not_allowed",
     });
 
+    /** Provides registered behavior. */
     const registered = new MockJestPlatform(true);
+    /** Provides inactive behavior. */
     const inactive = await registered.getSubscriptions();
-    expect(inactive).toMatchObject({value: {subscriptions: [expect.objectContaining({status: "inactive", trialEligible: true})]}});
+    expect(inactive).toMatchObject({
+      value: {subscriptions: [expect.objectContaining({status: "inactive", trialEligible: true})]},
+    });
     await expect(registered.beginSubscription("premium")).resolves.toMatchObject({
       value: {subscription: {status: "active", trialEligible: false}, subscriptionSigned: "mock.subscription.signed"},
     });
@@ -139,6 +159,7 @@ describe("MockJestPlatform", () => {
   });
 
   it("captures analytics properties", () => {
+    /** Provides platform behavior. */
     const platform = new MockJestPlatform();
     platform.captureEvent("race_started", {kind: "creator"});
     platform.captureEvent("game_loaded");

@@ -6,6 +6,7 @@ import {
   renderNotificationTemplate,
 } from "../notifications/copy";
 
+/** Provides english behavior. */
 const english = {
   dailyBody: "Hello {name}",
   dailyCta: "Play",
@@ -20,6 +21,7 @@ const english = {
 
 describe("Firestore notification copy", () => {
   it("selects the requested locale and falls back to the configured default", () => {
+    /** Provides document behavior. */
     const document = {
       defaultLocale: "en",
       locales: {en: english, fr: {...english, dailyCta: "Jouer"}},
@@ -33,33 +35,51 @@ describe("Firestore notification copy", () => {
     expect(() => parseNotificationCopyDocument({}, "en")).toThrow(/unavailable/i);
     expect(() => parseNotificationCopyDocument(null, "en")).toThrow(/unavailable/i);
     expect(() => parseNotificationCopyDocument([], "en")).toThrow(/unavailable/i);
-    expect(() => parseNotificationCopyDocument({locales: {en: {...english, raceBody: ""}}}, "en"))
-      .toThrow(/raceBody/);
-    expect(() => parseNotificationCopyDocument({locales: {en: {...english, raceBody: 42}}}, "en"))
-      .toThrow(/raceBody/);
+    expect(() => parseNotificationCopyDocument({locales: {en: {...english, raceBody: ""}}}, "en")).toThrow(/raceBody/);
+    expect(() => parseNotificationCopyDocument({locales: {en: {...english, raceBody: 42}}}, "en")).toThrow(/raceBody/);
   });
 
   it("rejects copy that is unsafe for SMS delivery", () => {
-    expect(() => parseNotificationCopyDocument({
-      locales: {en: {...english, dailyBody: "x".repeat(101)}},
-    }, "en")).toThrow(/dailyBody/);
-    expect(() => parseNotificationCopyDocument({
-      locales: {en: {...english, dailyBody: "A prize is ready 🎁"}},
-    }, "en")).toThrow(/dailyBody/);
-    expect(() => parseNotificationCopyDocument({
-      locales: {en: {...english, dailyCta: "x".repeat(51)}},
-    }, "en")).toThrow(/dailyCta/);
-    expect(() => parseNotificationCopyDocument({
-      locales: {en: {...english, raceTitle: "x".repeat(201)}},
-    }, "en")).toThrow(/raceTitle/);
-    expect(() => renderNotificationBody("Hello {name}", {name: "x".repeat(100)}))
-      .toThrow(/safe/i);
+    expect(() =>
+      parseNotificationCopyDocument(
+        {
+          locales: {en: {...english, dailyBody: "x".repeat(101)}},
+        },
+        "en",
+      ),
+    ).toThrow(/dailyBody/);
+    expect(() =>
+      parseNotificationCopyDocument(
+        {
+          locales: {en: {...english, dailyBody: "A prize is ready 🎁"}},
+        },
+        "en",
+      ),
+    ).toThrow(/dailyBody/);
+    expect(() =>
+      parseNotificationCopyDocument(
+        {
+          locales: {en: {...english, dailyCta: "x".repeat(51)}},
+        },
+        "en",
+      ),
+    ).toThrow(/dailyCta/);
+    expect(() =>
+      parseNotificationCopyDocument(
+        {
+          locales: {en: {...english, raceTitle: "x".repeat(201)}},
+        },
+        "en",
+      ),
+    ).toThrow(/raceTitle/);
+    expect(() => renderNotificationBody("Hello {name}", {name: "x".repeat(100)})).toThrow(/safe/i);
     expect(() => renderNotificationBody("Hello {name}", {name: "🎁"})).toThrow(/safe/i);
   });
 
   it("renders known personalization tokens without removing unknown tokens", () => {
-    expect(renderNotificationTemplate("Hi {name}: {coins} {unknown}", {name: "Nova", coins: 75}))
-      .toBe("Hi Nova: 75 {unknown}");
+    expect(renderNotificationTemplate("Hi {name}: {coins} {unknown}", {name: "Nova", coins: 75})).toBe(
+      "Hi Nova: 75 {unknown}",
+    );
     expect(renderNotificationBody(" Hello {name} ", {name: "Nova"})).toBe("Hello Nova");
   });
 

@@ -54,6 +54,7 @@ export function validateCallableRequest<T>(
   functionName: string,
   invalidMessage?: InvalidRequestMessage,
 ): T {
+  /** Provides result behavior. */
   const result = schema.safeParse(data);
   if (result.success) {
     return result.data;
@@ -79,6 +80,7 @@ export function validateCallableRequest<T>(
  * a response outside its declared schema.
  */
 export function validateCallableResponse<T>(schema: ZodType<T>, data: unknown, functionName: string): T {
+  /** Provides result behavior. */
   const result = schema.safeParse(data);
   if (result.success) {
     // Firebase callable transport converts object properties containing
@@ -88,5 +90,8 @@ export function validateCallableResponse<T>(schema: ZodType<T>, data: unknown, f
     return omitUndefinedFields(result.data) as T;
   }
 
-  throw new HttpsError("internal", `Invalid response payload from ${functionName}: ${summarizeZodIssues(result.error)}`);
+  throw new HttpsError(
+    "internal",
+    `Invalid response payload from ${functionName}: ${summarizeZodIssues(result.error)}`,
+  );
 }

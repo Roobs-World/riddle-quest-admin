@@ -21,12 +21,7 @@ import {trackScreen} from "../analytics/events";
 import {hasTrustedTestHarnessMarker} from "../testHarness";
 import {resolveRaceChallengeId} from "./entryIntent";
 import {createJestBackend} from "./createJestBackend";
-import {
-  JestAccountDeleted,
-  JestRegistrationAlert,
-  JestStartupError,
-  JestStartupProgress,
-} from "./JestSessionViews";
+import {JestAccountDeleted, JestRegistrationAlert, JestStartupError, JestStartupProgress} from "./JestSessionViews";
 import {useJestProductCatalog} from "./useJestProductCatalog";
 import {useJestPurchase} from "./useJestPurchase";
 import {captureBrowserException} from "../observability/browserErrorReporter";
@@ -51,55 +46,81 @@ import {useJestPresence} from "./useJestPresence";
 import {useJestRegistration} from "./useJestRegistration";
 /** Provides jest play app behavior. */
 export function JestPlayApp() {
+  /** Provides locale behavior. */
   const locale = useLocale();
+  /** Provides host services mode behavior. */
   const hostServicesMode = useMemo(() => resolveHostServicesMode(), []);
+  /** Provides host services behavior. */
   const hostServices = useMemo(() => createHostServices(hostServicesMode), [hostServicesMode]);
+  /** Provides host configuration warning behavior. */
   const hostConfigurationWarning = getHostConfigurationWarning(hostServicesMode);
+  /** Provides search params behavior. */
   const searchParams = new URLSearchParams(window.location.search);
+  /** Provides harness behavior. */
   const harness = searchParams.get("harness");
+  /** Provides runtime mode behavior. */
   const runtimeMode = resolveJestRuntimeMode({
     development: import.meta.env.DEV,
     embedded: window.parent !== window,
     harness,
     testHarnessEnabled: import.meta.env.DEV || hasTrustedTestHarnessMarker(),
   });
+  /** Provides {auth harness, mock backend: mock runtime} behavior. */
   const {authHarness, mockBackend: mockRuntime} = runtimeMode;
   // Subscription checkout is beta and currently stalls in Jest's live sandbox.
   // Keep the UI available in local development, but never expose it from an
   // uploaded production artifact until the release gate is deliberately changed.
+  /** Provides subscriptions enabled behavior. */
   const subscriptionsEnabled = shouldEnableJestSubscriptions(import.meta.env.DEV);
+  /** Provides mock registered behavior. */
   const mockRegistered = searchParams.get("registered") === "1";
+  /** Provides platform behavior. */
   const platform = useMemo(
-    () =>
-      runtimeMode.useSdkPlatform ? new JestSdkPlatform() : new MockJestPlatform(mockRegistered),
+    () => (runtimeMode.useSdkPlatform ? new JestSdkPlatform() : new MockJestPlatform(mockRegistered)),
     [mockRegistered, runtimeMode.useSdkPlatform],
   );
+  /** Provides backend behavior. */
   const backend = useMemo(() => createJestBackend({authHarness, mockRuntime}), [authHarness, mockRuntime]);
+  /** Provides purchases behavior. */
   const purchases = useMemo(() => new JestPurchaseCoordinator(platform, backend), [backend, platform]);
+  /** Provides [session, set session] behavior. */
   const [session, setSession] = useState<JestSession | null>(null);
+  /** Provides [error, set error] behavior. */
   const [error, setError] = useState<string | null>(null);
+  /** Provides [account deleted, set account deleted] behavior. */
   const [accountDeleted, setAccountDeleted] = useState(false);
+  /** Provides [startup, set startup] behavior. */
   const [startup, setStartup] = useState<JestStartupUpdate>({stage: "connecting", progress: 5});
+  /** Provides [engagement progress, set engagement progress] behavior. */
   const [engagementProgress, setEngagementProgress] = useState({
     level: 1,
     winStreak: 0,
     wins: 0,
   });
+  /** Provides [notification operation gate] behavior. */
   const [notificationOperationGate] = useState(createNotificationOperationGate);
-  const deletionCleanupOptions = useMemo(() => ({
-    clearFirebaseAuthentication: authHarness || mockRuntime ? undefined : clearJestFirebaseAuthentication,
-    waitForPendingNotificationOperations: notificationOperationGate.waitForPending,
-    withExclusiveNotificationAccess: notificationOperationGate.runExclusive,
-  }), [authHarness, mockRuntime, notificationOperationGate]);
+  /** Provides deletion cleanup options behavior. */
+  const deletionCleanupOptions = useMemo(
+    () => ({
+      clearFirebaseAuthentication: authHarness || mockRuntime ? undefined : clearJestFirebaseAuthentication,
+      waitForPendingNotificationOperations: notificationOperationGate.waitForPending,
+      withExclusiveNotificationAccess: notificationOperationGate.runExclusive,
+    }),
+    [authHarness, mockRuntime, notificationOperationGate],
+  );
+  /** Provides session ref behavior. */
   const sessionRef = useRef<JestSession | null>(null);
   sessionRef.current = session;
+  /** Provides {pending platform operations, with platform activity, with background platform activity} behavior. */
   const {pendingPlatformOperations, withPlatformActivity, withBackgroundPlatformActivity} =
     useJestPlatformActivity(notificationOperationGate);
+  /** Tracks funnel. */
   const trackFunnel = useJestFunnelTracking({
     gate: notificationOperationGate,
     platform,
     sessionRef,
   });
+  /** Provides player state writes behavior. */
   const playerStateWrites = useJestPlayerStateWrites({
     platform,
     gate: notificationOperationGate,
@@ -108,6 +129,7 @@ export function JestPlayApp() {
     setEngagementProgress,
     trackFailure: trackFunnel,
   });
+  /** Provides account deletion quiesced behavior. */
   const accountDeletionQuiesced = useAccountDeletionQuiescence(notificationOperationGate);
   useJestNotifications({
     locale,
@@ -121,6 +143,7 @@ export function JestPlayApp() {
     withPlatformActivity: notificationOperationGate.run,
     trackFunnel,
   });
+  /** Provides referral sharing behavior. */
   const referralSharing = useJestSharing({
     locale,
     session,
@@ -131,6 +154,7 @@ export function JestPlayApp() {
     trackFunnel,
     authHarness,
   });
+  /** Provides [jest products, set jest products] behavior. */
   const [jestProducts, setJestProducts] = useJestProductCatalog({
     purchases,
     session,
@@ -138,6 +162,7 @@ export function JestPlayApp() {
     trackFunnel,
     withPlatformActivity: withBackgroundPlatformActivity,
   });
+  /** Provides purchase product behavior. */
   const purchaseProduct = useJestPurchase({
     products: jestProducts,
     purchases,
@@ -146,15 +171,21 @@ export function JestPlayApp() {
     subscriptionsEnabled,
     trackFunnel,
   });
+  /** Provides authenticate jest identity behavior. */
   const authenticateJestIdentity = useCallback(
     async (token: string) => {
       if (authHarness) {
         (
           window as typeof window & {
-            __RIDDLE_QUEST_JEST_AUTH_TEST__?: {firebaseTokens: string[]};
+            /** Stores riddle quest jest auth test. */
+            __RIDDLE_QUEST_JEST_AUTH_TEST__?: {
+              /** Stores firebase tokens. */
+              firebaseTokens: string[];
+            };
           }
         ).__RIDDLE_QUEST_JEST_AUTH_TEST__?.firebaseTokens.push(token);
       } else if (!mockRuntime) {
+        /** Provides [{sign in with custom token}, {auth}, {ensure jest firebase app check ready}] behavior. */
         const [{signInWithCustomToken}, {auth}, {ensureJestFirebaseAppCheckReady}] = await Promise.all([
           import("firebase/auth"),
           import("../firebase"),
@@ -166,49 +197,55 @@ export function JestPlayApp() {
     },
     [authHarness, mockRuntime],
   );
-  const completeTombstonedPlayerCleanup = useCallback(async (playerSigned: string) => {
-    await completeTombstonedAccountDeletion(
-      platform,
-      playerSigned,
+  /** Completes tombstoned player cleanup. */
+  const completeTombstonedPlayerCleanup = useCallback(
+    async (playerSigned: string) => {
+      await completeTombstonedAccountDeletion(
+        platform,
+        playerSigned,
         notificationOperationGate,
         async (signed) => {
+          /** Provides result behavior. */
           const result = await backend.retryAccountDeletion(signed);
           if (!result.accountDeleted) throw new Error("account-deletion-recovery-rejected");
         },
         deletionCleanupOptions.clearFirebaseAuthentication,
       );
-    notificationOperationGate.close();
-    playerStateWrites.disable();
-    sessionRef.current = null;
-    setSession(null);
-    setAccountDeleted(true);
-  }, [backend, deletionCleanupOptions, notificationOperationGate, platform, playerStateWrites]);
+      notificationOperationGate.close();
+      playerStateWrites.disable();
+      sessionRef.current = null;
+      setSession(null);
+      setAccountDeleted(true);
+    },
+    [backend, deletionCleanupOptions, notificationOperationGate, platform, playerStateWrites],
+  );
   useEffect(() => {
+    /** Provides active behavior. */
     let active = true;
     playerStateWrites.disable();
+    /** Provides deletion recovery behavior. */
     const deletionRecovery = getAccountDeletionPendingPhase() === ACCOUNT_DELETION_PENDING_PHASE.authoritativeDeletion;
     void startJestSession(platform, backend, purchases, authenticateJestIdentity, setStartup, {
       onInitialized: () => recoverPendingAccountDeletion(platform, "initialized", deletionCleanupOptions),
       onAuthenticated: isAccountDeletionCleanupPending,
       onIdentityDeleted: completeTombstonedPlayerCleanup,
       deletionRecovery,
-      recoverAccountDeletion: (playerSigned) => recoverPendingAccountDeletion(platform, "signed", {
-        clearFirebaseAuthentication: deletionCleanupOptions.clearFirebaseAuthentication,
-        retryAuthoritativeDeletion: async () => {
-          const result = await backend.retryAccountDeletion(playerSigned);
-          if (!result.accountDeleted) throw new Error("account-deletion-recovery-rejected");
-        },
-        waitForPendingNotificationOperations: notificationOperationGate.waitForPending,
-      }).then((recovered) => {
-        if (!recovered) throw new Error("account-deletion-recovery-state-changed");
-      }),
+      recoverAccountDeletion: (playerSigned) =>
+        recoverPendingAccountDeletion(platform, "signed", {
+          clearFirebaseAuthentication: deletionCleanupOptions.clearFirebaseAuthentication,
+          retryAuthoritativeDeletion: async () => {
+            /** Provides result behavior. */
+            const result = await backend.retryAccountDeletion(playerSigned);
+            if (!result.accountDeleted) throw new Error("account-deletion-recovery-rejected");
+          },
+          waitForPendingNotificationOperations: notificationOperationGate.waitForPending,
+        }).then((recovered) => {
+          if (!recovered) throw new Error("account-deletion-recovery-state-changed");
+        }),
       // Recovery owns the exclusive lock through identity, authority, and client purge.
       // Ordinary identity is shared work and is rechecked immediately after lock release.
-      withIdentityOperation: (operation) => runAccountDeletionAwareIdentityOperation(
-        deletionRecovery,
-        notificationOperationGate,
-        operation,
-      ),
+      withIdentityOperation: (operation) =>
+        runAccountDeletionAwareIdentityOperation(deletionRecovery, notificationOperationGate, operation),
       withAccountOperation: notificationOperationGate.run,
     }).then(async (result) => {
       if (!active) return;
@@ -233,14 +270,9 @@ export function JestPlayApp() {
           setError(tr("ErrorMessages.GENERIC_UNEXPECTED_ERROR"));
         }
       } else {
-        const message = "message" in result
-          ? result.message
-          : tr("ErrorMessages.CHECK_INTERNET_AND_TRY_AGAIN");
-        setError(
-          message === JEST_SDK_INIT_TIMEOUT_MESSAGE
-            ? tr("Errors.CHECK_INTERNET_AND_TRY_AGAIN")
-            : message,
-        );
+        /** Provides message behavior. */
+        const message = "message" in result ? result.message : tr("ErrorMessages.CHECK_INTERNET_AND_TRY_AGAIN");
+        setError(message === JEST_SDK_INIT_TIMEOUT_MESSAGE ? tr("Errors.CHECK_INTERNET_AND_TRY_AGAIN") : message);
       }
     });
     return () => {
@@ -248,7 +280,17 @@ export function JestPlayApp() {
       playerStateWrites.disable();
       stopJestLoadingHeartbeat(platform);
     };
-  }, [authenticateJestIdentity, backend, completeTombstonedPlayerCleanup, deletionCleanupOptions, notificationOperationGate, platform, playerStateWrites, purchases, trackFunnel]);
+  }, [
+    authenticateJestIdentity,
+    backend,
+    completeTombstonedPlayerCleanup,
+    deletionCleanupOptions,
+    notificationOperationGate,
+    platform,
+    playerStateWrites,
+    purchases,
+    trackFunnel,
+  ]);
   /** Clears app-owned browser and Jest state only after server-side account deletion succeeds. */
   const clearPlayerState = useCallback(async () => {
     notificationOperationGate.close();
@@ -257,6 +299,7 @@ export function JestPlayApp() {
       await purgeDeletedPlayerState(platform, deletionCleanupOptions);
     } catch (clearError) {
       console.warn("[riddle-quest] Player-state clear failed after account deletion", clearError);
+      /** Provides cleanup error behavior. */
       const cleanupError = clearError instanceof AccountDeletionCleanupError ? clearError : undefined;
       trackFunnel("player_state_clear_failed", {
         notifications: cleanupError?.notificationsFailed ?? true,
@@ -269,6 +312,15 @@ export function JestPlayApp() {
     setSession(null);
     setAccountDeleted(true);
   }, [deletionCleanupOptions, notificationOperationGate, platform, playerStateWrites, trackFunnel]);
+  /** Provides {
+    show registration,
+    registration pending,
+    registration failure,
+    open: open registration prompt,
+    dismiss: dismiss registration,
+    register,
+    login,
+  } behavior. */
   const {
     showRegistration,
     registrationPending,
@@ -288,10 +340,21 @@ export function JestPlayApp() {
     withPlatformActivity,
     trackFunnel,
   });
+  /** Handles authoritative complete. */
   const handleAuthoritativeComplete = useCallback(
     async (
-      input: {gameMode: "classic" | "challenge"},
-      result: {isCorrect: boolean; newLevel?: number; newWinStreak?: number},
+      input: {
+        /** Stores game mode. */
+        gameMode: "classic" | "challenge";
+      },
+      result: {
+        /** Stores is correct. */
+        isCorrect: boolean; /** Stores new level. */
+        /** Stores new level. */
+        newLevel?: number; /** Stores new win streak. */
+        /** Stores new win streak. */
+        newWinStreak?: number;
+      },
     ) => {
       if (!session || !result.isCorrect) return;
       trackFunnel("authoritative_puzzle_won", {
@@ -303,11 +366,14 @@ export function JestPlayApp() {
         winStreak: result.newWinStreak ?? current.winStreak,
         wins: current.wins + 1,
       }));
-      const recorded = await notificationOperationGate.run(() => recordAuthoritativeCompletion(platform, session, {
+      /** Records ed. */
+      const recorded = await notificationOperationGate.run(() =>
+        recordAuthoritativeCompletion(platform, session, {
           gameMode: input.gameMode,
           isCorrect: result.isCorrect,
           newWinStreak: result.newWinStreak,
-        }));
+        }),
+      );
       if (recorded.status !== "success") {
         trackFunnel("first_milestone_failed", {status: recorded.status});
         return;
@@ -320,6 +386,7 @@ export function JestPlayApp() {
     },
     [notificationOperationGate, openRegistrationPrompt, platform, session, trackFunnel],
   );
+  /** Provides {set presence state, toggle presence} behavior. */
   const {setPresenceState, togglePresence} = useJestPresence({
     gate: notificationOperationGate,
     platform,
@@ -329,9 +396,17 @@ export function JestPlayApp() {
     trackFailure: trackFunnel,
   });
   useEffect(() => {
-    trackScreen(error ? "startup_error" : accountDeleted ? "account_deleted" : !session ? "startup_loading" : !session.player.registered && showRegistration
-      ? "registration_prompt"
-      : "game");
+    trackScreen(
+      error
+        ? "startup_error"
+        : accountDeleted
+          ? "account_deleted"
+          : !session
+            ? "startup_loading"
+            : !session.player.registered && showRegistration
+              ? "registration_prompt"
+              : "game",
+    );
   }, [accountDeleted, error, session, showRegistration]);
   if (error) {
     return <JestStartupError message={error} />;

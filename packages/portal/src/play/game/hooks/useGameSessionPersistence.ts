@@ -16,7 +16,8 @@ export const createSavedGame = (state: GameSessionState, savedAt = Date.now()): 
     hintRevealedIndices: state.hintRevealedIndices,
     guesses: state.guesses,
     engineSnapshot: state.engineSnapshot,
-    awaitingContinue: !state.engineSnapshot.gameOver &&
+    awaitingContinue:
+      !state.engineSnapshot.gameOver &&
       !state.engineSnapshot.hasUsedContinue &&
       state.engineSnapshot.attemptsUsed === 5,
     letterStates: state.letterStates,
@@ -32,14 +33,30 @@ export const useGameSessionPersistence = ({
   dispatch,
   onSaveGame,
 }: {
+  /** Stores state. */
   state: GameSessionState;
-  stateRef: {current: GameSessionState};
+  /** Stores state ref. */
+  stateRef: {
+    /** Stores current. */
+    current: GameSessionState;
+  };
+  /** Stores restored game. */
   restoredGame?: SavedGame | null;
+  /** Stores dispatch. */
   dispatch: Dispatch<GameSessionAction>;
+  /** Stores on save game. */
   onSaveGame?: (game: SavedGame | null) => void;
 }) => {
+  /** Provides last cleared outcome ref behavior. */
   const lastClearedOutcomeRef = useRef<string | null>(null);
-  const lastServerCheckpointRef = useRef<{riddleId: string; signature: string} | null>(null);
+  /** Provides last server checkpoint ref behavior. */
+  const lastServerCheckpointRef = useRef<{
+    /** Stores riddle id. */
+    riddleId: string; /** Stores signature. */
+    /** Stores signature. */
+    signature: string;
+  } | null>(null);
+  /** Gets saved game. */
   const getSavedGame = useCallback(() => createSavedGame(stateRef.current), [stateRef]);
 
   useEffect(() => {
@@ -47,7 +64,8 @@ export const useGameSessionPersistence = ({
       !state.riddle ||
       restoredGame?.riddleId !== state.riddle.riddleId ||
       restoredGame.sessionToken !== state.riddle.sessionToken
-    ) return;
+    )
+      return;
     dispatch({
       type: "restoreSession",
       currentLetters: restoredGame.currentLetters,
@@ -69,8 +87,10 @@ export const useGameSessionPersistence = ({
       }
       return;
     }
+    /** Saves d game. */
     const savedGame = getSavedGame();
     if (!savedGame) return;
+    /** Provides signature behavior. */
     const signature = JSON.stringify({
       currentLetters: savedGame.currentLetters,
       activeSlotIndex: savedGame.activeSlotIndex,
@@ -102,8 +122,10 @@ export const useGameSessionPersistence = ({
   ]);
 
   useEffect(() => {
+    /** Saves before backgrounding. */
     const saveBeforeBackgrounding = () => {
       if (document.visibilityState !== "hidden") return;
+      /** Saves d game. */
       const savedGame = getSavedGame();
       if (savedGame) onSaveGame?.(savedGame);
     };

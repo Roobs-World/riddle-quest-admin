@@ -4,6 +4,7 @@ import {JestAccountDeleted} from "../JestSessionViews";
 
 describe("JestAccountDeleted", () => {
   it("renders a localized, restartable terminal state", () => {
+    /** Provides html behavior. */
     const html = renderToString(<JestAccountDeleted />);
 
     expect(html).toContain('role="status"');

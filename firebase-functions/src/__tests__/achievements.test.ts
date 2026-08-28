@@ -7,11 +7,14 @@ jest.mock("../gameplay/firestoreService", () => ({
   appendUnlockedAchievements: jest.fn().mockResolvedValue(undefined),
 }));
 
+/** Provides mock get user behavior. */
 const mockGetUser = firestoreService.getUser as jest.MockedFunction<typeof firestoreService.getUser>;
+/** Provides mock append unlocked achievements behavior. */
 const mockAppendUnlockedAchievements = firestoreService.appendUnlockedAchievements as jest.MockedFunction<
   typeof firestoreService.appendUnlockedAchievements
 >;
 
+/** Creates user. */
 function makeUser(overrides: Partial<Player> = {}): Player {
   return {
     userId: "user-1",
@@ -45,6 +48,7 @@ function makeUser(overrides: Partial<Player> = {}): Player {
   };
 }
 
+/** Provides base context behavior. */
 const baseContext = {
   gameMode: "classic" as const,
   isCorrect: true,
@@ -52,6 +56,7 @@ const baseContext = {
   gameOver: true,
 };
 
+/** Tracks ed stat achievement cases. */
 const trackedStatAchievementCases: Array<[string, Partial<NonNullable<Player["stats"]>>]> = [
   ["wins_50", {totalWins: 50}],
   ["wins_100", {totalWins: 100}],
@@ -86,6 +91,7 @@ describe("evaluateAchievements", () => {
 
   it("returns [] when user is not found", async () => {
     mockGetUser.mockResolvedValue(undefined);
+    /** Provides result behavior. */
     const result = await evaluateAchievements("user-1", baseContext);
     expect(result).toEqual([]);
     expect(mockAppendUnlockedAchievements).not.toHaveBeenCalled();
@@ -99,10 +105,12 @@ describe("evaluateAchievements", () => {
   });
 
   it("returns [] when user has no new achievements to unlock", async () => {
+    /** Provides r. */
     const user = makeUser({
       stats: {totalWins: 0, bestStreak: 0, highestLevelClassic: 0, dailyPuzzlesCompleted: 0, totalHintsUsed: 0} as any,
     });
     mockGetUser.mockResolvedValue(user);
+    /** Provides result behavior. */
     const result = await evaluateAchievements("user-1", baseContext);
     expect(result).toEqual([]);
     expect(mockAppendUnlockedAchievements).not.toHaveBeenCalled();
@@ -121,26 +129,33 @@ describe("evaluateAchievements", () => {
   });
 
   it("requires both minimum activity and quality thresholds", async () => {
-    mockGetUser.mockResolvedValue(makeUser({
-      stats: {gamesPlayed: 10, winRate: 79, totalWins: 10} as Player["stats"],
-    }));
+    mockGetUser.mockResolvedValue(
+      makeUser({
+        stats: {gamesPlayed: 10, winRate: 79, totalWins: 10} as Player["stats"],
+      }),
+    );
 
+    /** Provides result behavior. */
     const result = await evaluateAchievements("user-1", baseContext);
     expect(result).not.toContain("win_rate_80");
     expect(result).not.toContain("efficient_10");
 
-    mockGetUser.mockResolvedValue(makeUser({
-      stats: {gamesPlayed: 10} as Player["stats"],
-    }));
+    mockGetUser.mockResolvedValue(
+      makeUser({
+        stats: {gamesPlayed: 10} as Player["stats"],
+      }),
+    );
     await expect(evaluateAchievements("user-1", baseContext)).resolves.not.toContain("win_rate_80");
   });
 
   it("unlocks first_win when totalWins >= 1 and not already unlocked", async () => {
+    /** Provides r. */
     const user = makeUser({
       stats: {...makeUser().stats, totalWins: 1, gamesPlayed: 1} as any,
       unlockedAchievements: [],
     });
     mockGetUser.mockResolvedValue(user);
+    /** Provides result behavior. */
     const result = await evaluateAchievements("user-1", baseContext);
     expect(result).toContain("first_win");
     expect(mockAppendUnlockedAchievements).toHaveBeenCalledWith(
@@ -150,23 +165,36 @@ describe("evaluateAchievements", () => {
   });
 
   it("does not unlock first_win when already in unlockedAchievements", async () => {
+    /** Provides r. */
     const user = makeUser({
       stats: {...makeUser().stats, totalWins: 5} as any,
       unlockedAchievements: [{achievementId: "first_win", unlockedAt: 123}],
     });
     mockGetUser.mockResolvedValue(user);
+    /** Provides result behavior. */
     const result = await evaluateAchievements("user-1", baseContext);
     expect(result).not.toContain("first_win");
+    /** Provides appended behavior. */
     const appended = mockAppendUnlockedAchievements.mock.calls[0]?.[1] ?? [];
-    expect(appended.some((e: {achievementId: string}) => e.achievementId === "first_win")).toBe(false);
+    expect(
+      appended.some(
+        (e: {
+          /** Stores achievement id. */ /** Stores achievement id. */ /** Stores achievement id. */
+          /** Stores achievement id. */
+          achievementId: string;
+        }) => e.achievementId === "first_win",
+      ),
+    ).toBe(false);
   });
 
   it("unlocks perfect_guess when isCorrect and attempts === 1", async () => {
+    /** Provides r. */
     const user = makeUser({
       stats: {...makeUser().stats, totalWins: 0} as any,
       unlockedAchievements: [],
     });
     mockGetUser.mockResolvedValue(user);
+    /** Provides result behavior. */
     const result = await evaluateAchievements("user-1", {
       ...baseContext,
       isCorrect: true,
@@ -176,11 +204,13 @@ describe("evaluateAchievements", () => {
   });
 
   it("unlocks hint_user when totalHintsUsed >= 1", async () => {
+    /** Provides r. */
     const user = makeUser({
       stats: {...makeUser().stats, totalHintsUsed: 1} as any,
       unlockedAchievements: [],
     });
     mockGetUser.mockResolvedValue(user);
+    /** Provides result behavior. */
     const result = await evaluateAchievements("user-1", baseContext);
     expect(result).toContain("hint_user");
   });
@@ -188,12 +218,14 @@ describe("evaluateAchievements", () => {
   it.each(trackedStatAchievementCases)(
     "unlocks %s when its tracked stat reaches the threshold",
     async (achievementId, statsOverride) => {
+      /** Provides r. */
       const user = makeUser({
         stats: {...makeUser().stats, ...statsOverride},
         unlockedAchievements: [],
       });
       mockGetUser.mockResolvedValue(user);
 
+      /** Provides result behavior. */
       const result = await evaluateAchievements("user-1", baseContext);
 
       expect(result).toContain(achievementId);
@@ -201,24 +233,28 @@ describe("evaluateAchievements", () => {
   );
 
   it("unlocks coin_hoarder when the player has at least 1,000 coins", async () => {
+    /** Provides r. */
     const user = makeUser({
       coins: 1000,
       unlockedAchievements: [],
     });
     mockGetUser.mockResolvedValue(user);
 
+    /** Provides result behavior. */
     const result = await evaluateAchievements("user-1", baseContext);
 
     expect(result).toContain("coin_hoarder");
   });
 
   it("unlocks treasure_vault when the player has at least 2,500 coins", async () => {
+    /** Provides r. */
     const user = makeUser({
       coins: 2500,
       unlockedAchievements: [],
     });
     mockGetUser.mockResolvedValue(user);
 
+    /** Provides result behavior. */
     const result = await evaluateAchievements("user-1", baseContext);
 
     expect(result).toContain("treasure_vault");
@@ -232,34 +268,40 @@ describe("evaluateAchievements", () => {
     ["challenge_last_chance", {...baseContext, gameMode: "challenge" as const, attempts: 5}],
     ["lesson_learned", {...baseContext, isCorrect: false, gameOver: true, attempts: 5}],
   ])("unlocks %s from the current solve context", async (achievementId, context) => {
+    /** Provides r. */
     const user = makeUser({
       unlockedAchievements: [],
     });
     mockGetUser.mockResolvedValue(user);
 
+    /** Provides result behavior. */
     const result = await evaluateAchievements("user-1", context);
 
     expect(result).toContain(achievementId);
   });
 
   it("does not unlock efficiency achievement before 10 wins", async () => {
+    /** Provides r. */
     const user = makeUser({
       stats: {...makeUser().stats, totalWins: 9, averageGuesses: 2.5},
       unlockedAchievements: [],
     });
     mockGetUser.mockResolvedValue(user);
 
+    /** Provides result behavior. */
     const result = await evaluateAchievements("user-1", baseContext);
 
     expect(result).not.toContain("efficient_10");
   });
 
   it("unlocks first_purchase when hasPurchasedApp is true", async () => {
+    /** Provides r. */
     const user = makeUser({
       hasPurchasedApp: true,
       unlockedAchievements: [],
     });
     mockGetUser.mockResolvedValue(user);
+    /** Provides result behavior. */
     const result = await evaluateAchievements("user-1", baseContext);
     expect(result).toContain("first_purchase");
   });

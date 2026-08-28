@@ -11,7 +11,13 @@ const RIDDLE_SUPPLY_REQUESTS_COLLECTION = "riddleSupplyRequests";
 /** Indicates whether is already exists error. */
 function isAlreadyExistsError(error: unknown): boolean {
   if (!error || typeof error !== "object") return false;
-  const code = (error as {code?: string | number}).code;
+  /** Provides code behavior. */
+  const code = (
+    error as {
+      /** Stores code. */
+      code?: string | number;
+    }
+  ).code;
   return code === 6 || code === "already-exists" || code === "6";
 }
 
@@ -22,7 +28,9 @@ export async function triggerClassicRiddleGenerationIfNeeded(
   locale: SupportedLocale,
 ): Promise<void> {
   try {
+    /** Provides collection behavior. */
     const collection = `localizedRiddles/${locale}/riddles`;
+    /** Provides snapshot behavior. */
     const snapshot = await admin
       .firestore()
       .collection(collection)
@@ -30,7 +38,9 @@ export async function triggerClassicRiddleGenerationIfNeeded(
       .orderBy("classicIndex", "desc")
       .limit(1)
       .get();
+    /** Provides highest classic index behavior. */
     const highestClassicIndex = snapshot.empty ? -1 : Number(snapshot.docs[0]?.data().classicIndex ?? -1);
+    /** Provides remaining behavior. */
     const remaining = highestClassicIndex - currentClassicIndex;
 
     functions.logger.info(
@@ -39,6 +49,7 @@ export async function triggerClassicRiddleGenerationIfNeeded(
 
     if (remaining > RIDDLE_GENERATION_THRESHOLD) return;
 
+    /** Requests ref. */
     const requestRef = admin
       .firestore()
       .collection(RIDDLE_SUPPLY_REQUESTS_COLLECTION)

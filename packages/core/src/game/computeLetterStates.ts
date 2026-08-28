@@ -17,12 +17,16 @@ const PRIORITY: Record<Feedback, number> = {green: 3, yellow: 2, red: 1};
  * validated at runtime.
  */
 export function computeLetterStates(guesses: ScoredGuess[]): Record<string, Feedback> {
+  /** Provides states behavior. */
   const states: Record<string, Feedback> = {};
 
   for (const {guess, feedback} of guesses) {
     for (let i = 0; i < guess.length; i++) {
+      /** Provides letter behavior. */
       const letter = guess[i].toLowerCase();
+      /** Provides incoming behavior. */
       const incoming = feedback[i];
+      /** Provides existing behavior. */
       const existing = states[letter];
 
       if (!existing || PRIORITY[incoming] > PRIORITY[existing]) {

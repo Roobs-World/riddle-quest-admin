@@ -28,8 +28,6 @@ describe("Facebook emergency kill switches", () => {
   });
 
   it("fails deployment closed on misspelled feature names", () => {
-    expect(() => parseFacebookDisabledFeatures("commerce,tournments")).toThrow(
-      "unknown-facebook-feature:tournments",
-    );
+    expect(() => parseFacebookDisabledFeatures("commerce,tournments")).toThrow("unknown-facebook-feature:tournments");
   });
 });

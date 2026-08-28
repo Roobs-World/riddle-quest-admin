@@ -5,8 +5,8 @@ import path from "node:path";
 const root = process.cwd();
 const requireFromPortal = createRequire(path.join(root, "packages/portal/package.json"));
 const ts = requireFromPortal("typescript");
-const sourceRoots = ["packages/core/src", "packages/portal/src", "firebase-functions/src"];
-const ignoredDirectories = new Set(["__mocks__", "__tests__", "coverage", "dist", "dist-jest", "lib", "node_modules", "testing"]);
+const sourceRoots = ["packages/core/src", "packages/portal/src", "packages/reddit-app/src", "firebase-functions/src"];
+const ignoredDirectories = new Set(["coverage", "dist", "dist-jest", "lib", "node_modules"]);
 const fix = process.argv.includes("--fix");
 
 async function collect(directory) {
@@ -15,8 +15,8 @@ async function collect(directory) {
   for (const entry of entries) {
     if (entry.name.startsWith(".") || ignoredDirectories.has(entry.name)) continue;
     const absolute = path.join(directory, entry.name);
-    if (entry.isDirectory()) files.push(...await collect(absolute));
-    else if (/\.(?:ts|tsx)$/.test(entry.name) && !/\.d\.ts$/.test(entry.name) && !/\.test\.[^.]+$/.test(entry.name)) {
+    if (entry.isDirectory()) files.push(...(await collect(absolute)));
+    else if (/\.(?:ts|tsx)$/.test(entry.name) && !/\.d\.ts$/.test(entry.name)) {
       files.push(absolute);
     }
   }
@@ -47,20 +47,56 @@ function words(identifier) {
 
 function actionSummary(name) {
   const actions = [
-    ["get", "Gets"], ["create", "Creates"], ["build", "Builds"], ["make", "Creates"],
-    ["load", "Loads"], ["read", "Reads"], ["fetch", "Fetches"], ["list", "Lists"],
-    ["find", "Finds"], ["resolve", "Resolves"], ["compute", "Computes"], ["calculate", "Calculates"],
-    ["validate", "Validates"], ["parse", "Parses"], ["format", "Formats"], ["normalize", "Normalizes"],
-    ["serialize", "Serializes"], ["map", "Maps"], ["convert", "Converts"], ["update", "Updates"],
-    ["set", "Sets"], ["save", "Saves"], ["store", "Stores"], ["delete", "Deletes"],
-    ["remove", "Removes"], ["clear", "Clears"], ["reset", "Resets"], ["start", "Starts"],
-    ["stop", "Stops"], ["complete", "Completes"], ["submit", "Submits"], ["request", "Requests"],
-    ["publish", "Publishes"], ["send", "Sends"], ["record", "Records"], ["track", "Tracks"],
-    ["capture", "Captures"], ["handle", "Handles"], ["apply", "Applies"], ["ensure", "Ensures"],
-    ["assert", "Asserts"], ["with", "Runs"], ["use", "Provides"], ["render", "Renders"],
+    ["get", "Gets"],
+    ["create", "Creates"],
+    ["build", "Builds"],
+    ["make", "Creates"],
+    ["load", "Loads"],
+    ["read", "Reads"],
+    ["fetch", "Fetches"],
+    ["list", "Lists"],
+    ["find", "Finds"],
+    ["resolve", "Resolves"],
+    ["compute", "Computes"],
+    ["calculate", "Calculates"],
+    ["validate", "Validates"],
+    ["parse", "Parses"],
+    ["format", "Formats"],
+    ["normalize", "Normalizes"],
+    ["serialize", "Serializes"],
+    ["map", "Maps"],
+    ["convert", "Converts"],
+    ["update", "Updates"],
+    ["set", "Sets"],
+    ["save", "Saves"],
+    ["store", "Stores"],
+    ["delete", "Deletes"],
+    ["remove", "Removes"],
+    ["clear", "Clears"],
+    ["reset", "Resets"],
+    ["start", "Starts"],
+    ["stop", "Stops"],
+    ["complete", "Completes"],
+    ["submit", "Submits"],
+    ["request", "Requests"],
+    ["publish", "Publishes"],
+    ["send", "Sends"],
+    ["record", "Records"],
+    ["track", "Tracks"],
+    ["capture", "Captures"],
+    ["handle", "Handles"],
+    ["apply", "Applies"],
+    ["ensure", "Ensures"],
+    ["assert", "Asserts"],
+    ["with", "Runs"],
+    ["use", "Provides"],
+    ["render", "Renders"],
   ];
   for (const [prefix, verb] of actions) {
-    if (name.startsWith(prefix) && name.length > prefix.length) return `${verb} ${words(name.slice(prefix.length))}.`;
+    const boundary = name[prefix.length];
+    if (name.startsWith(prefix) && boundary && /[A-Z0-9_]/.test(boundary)) {
+      return `${verb} ${words(name.slice(prefix.length))}.`;
+    }
   }
   if (/^(?:is|has|can|should|supports|allows)[A-Z_]/.test(name)) return `Indicates whether ${words(name)}.`;
   return `Provides ${words(name)} behavior.`;
@@ -68,20 +104,25 @@ function actionSummary(name) {
 
 function summary(node, sourceFile, ownerName) {
   const name = declarationName(node, sourceFile);
-  if (ts.isConstructorDeclaration(node)) return `Creates a ${words(ownerName)} instance.`;
-  if (ts.isCallSignatureDeclaration(node)) return `Defines how ${words(ownerName)} is invoked.`;
+  if (ts.isConstructorDeclaration(node)) return `Creates a ${words(ownerName ?? "class")} instance.`;
+  if (ts.isCallSignatureDeclaration(node)) return `Defines how ${words(ownerName ?? "callable")} is invoked.`;
   if (ts.isInterfaceDeclaration(node)) return `Defines the contract for ${words(name)}.`;
   if (ts.isTypeAliasDeclaration(node)) return `Describes ${words(name)}.`;
   if (ts.isEnumDeclaration(node)) return `Enumerates the supported ${words(name)} values.`;
   if (ts.isEnumMember(node)) return `Defines the ${words(name)} option.`;
   if (ts.isClassDeclaration(node)) return `Provides ${words(name)} behavior.`;
-  if (ts.isPropertyDeclaration(node) && node.initializer && (ts.isArrowFunction(node.initializer) || ts.isFunctionExpression(node.initializer))) {
+  if (
+    ts.isPropertyDeclaration(node) &&
+    node.initializer &&
+    (ts.isArrowFunction(node.initializer) || ts.isFunctionExpression(node.initializer))
+  ) {
     return actionSummary(name);
   }
   if (ts.isPropertyDeclaration(node) || ts.isPropertySignature(node)) return `Stores ${words(name)}.`;
   if (ts.isGetAccessorDeclaration(node)) return `Gets ${words(name)}.`;
   if (ts.isSetAccessorDeclaration(node)) return `Sets ${words(name)}.`;
-  if (ts.isMethodDeclaration(node) || ts.isMethodSignature(node) || ts.isFunctionDeclaration(node)) return actionSummary(name);
+  if (ts.isMethodDeclaration(node) || ts.isMethodSignature(node) || ts.isFunctionDeclaration(node))
+    return actionSummary(name);
   if (ts.isVariableStatement(node)) {
     if (name.endsWith("Schema")) return `Validates the ${words(name.slice(0, -6))} data shape.`;
     if (/^[A-Z][A-Za-z0-9]*$/.test(name)) return `Renders the ${words(name)} interface.`;
@@ -91,10 +132,41 @@ function summary(node, sourceFile, ownerName) {
   return `Documents ${words(name)}.`;
 }
 
-function eligibleTopLevel(node) {
-  return ts.isVariableStatement(node) || ts.isFunctionDeclaration(node) || ts.isClassDeclaration(node) ||
-    ts.isInterfaceDeclaration(node) || ts.isTypeAliasDeclaration(node) || ts.isEnumDeclaration(node) ||
-    ts.isModuleDeclaration(node);
+function eligibleDeclaration(node) {
+  return (
+    ts.isVariableStatement(node) ||
+    ts.isFunctionDeclaration(node) ||
+    ts.isClassDeclaration(node) ||
+    ts.isInterfaceDeclaration(node) ||
+    ts.isTypeAliasDeclaration(node) ||
+    ts.isEnumDeclaration(node) ||
+    ts.isModuleDeclaration(node) ||
+    ts.isConstructorDeclaration(node) ||
+    ts.isCallSignatureDeclaration(node) ||
+    ts.isPropertyDeclaration(node) ||
+    ts.isPropertySignature(node) ||
+    ts.isGetAccessorDeclaration(node) ||
+    ts.isSetAccessorDeclaration(node) ||
+    ts.isMethodDeclaration(node) ||
+    ts.isMethodSignature(node) ||
+    ts.isEnumMember(node)
+  );
+}
+
+function declarationOwnerName(node, sourceFile) {
+  let owner = node.parent;
+  while (owner && !ts.isSourceFile(owner)) {
+    if (
+      ts.isClassDeclaration(owner) ||
+      ts.isInterfaceDeclaration(owner) ||
+      ts.isTypeAliasDeclaration(owner) ||
+      ts.isEnumDeclaration(owner)
+    ) {
+      return declarationName(owner, sourceFile);
+    }
+    owner = owner.parent;
+  }
+  return undefined;
 }
 
 const files = (await Promise.all(sourceRoots.map((directory) => collect(path.join(root, directory))))).flat();
@@ -110,39 +182,45 @@ for (const file of files) {
     file.endsWith(".tsx") ? ts.ScriptKind.TSX : ts.ScriptKind.TS,
   );
   const declarations = [];
-  for (const statement of sourceFile.statements) {
-    if (!eligibleTopLevel(statement)) continue;
-    declarations.push({node: statement});
-    if (ts.isClassDeclaration(statement) || ts.isInterfaceDeclaration(statement) || ts.isEnumDeclaration(statement)) {
-      const ownerName = declarationName(statement, sourceFile);
-      for (const member of statement.members) declarations.push({node: member, ownerName});
-    } else if (ts.isTypeAliasDeclaration(statement) && ts.isTypeLiteralNode(statement.type)) {
-      const ownerName = declarationName(statement, sourceFile);
-      for (const member of statement.type.members) declarations.push({node: member, ownerName});
+  const visit = (node) => {
+    if (eligibleDeclaration(node)) {
+      declarations.push({node, ownerName: declarationOwnerName(node, sourceFile)});
     }
-  }
+    ts.forEachChild(node, visit);
+  };
+  visit(sourceFile);
   declarationCount += declarations.length;
   const undocumented = declarations.filter(({node}) => !isDocumented(node, sourceFile));
   if (undocumented.length === 0 && !fix) continue;
-  missing.push(...undocumented.map(({node}) => `${path.relative(root, file)}:${sourceFile.getLineAndCharacterOfPosition(node.getStart(sourceFile)).line + 1} ${declarationName(node, sourceFile)}`));
+  missing.push(
+    ...undocumented.map(
+      ({node}) =>
+        `${path.relative(root, file)}:${sourceFile.getLineAndCharacterOfPosition(node.getStart(sourceFile)).line + 1} ${declarationName(node, sourceFile)}`,
+    ),
+  );
   if (fix) {
     let updated = contents;
     const replacements = [];
     for (const {node} of declarations) {
-      if (!ts.isPropertyDeclaration(node) || !node.initializer || !(ts.isArrowFunction(node.initializer) || ts.isFunctionExpression(node.initializer))) continue;
+      if (
+        !ts.isPropertyDeclaration(node) ||
+        !node.initializer ||
+        !(ts.isArrowFunction(node.initializer) || ts.isFunctionExpression(node.initializer))
+      )
+        continue;
       const name = declarationName(node, sourceFile);
       const oldComment = `/** Stores ${words(name)}. */`;
       const ranges = ts.getLeadingCommentRanges(sourceFile.text, node.getFullStart()) ?? [];
       const oldRange = ranges.find((range) => sourceFile.text.slice(range.pos, range.end) === oldComment);
-      if (oldRange) replacements.push({position: oldRange.pos, end: oldRange.end, text: `/** ${actionSummary(name)} */`});
+      if (oldRange)
+        replacements.push({position: oldRange.pos, end: oldRange.end, text: `/** ${actionSummary(name)} */`});
     }
-    const insertions = undocumented
-      .map(({node, ownerName}) => {
-        const position = node.getStart(sourceFile);
-        const lineStart = contents.lastIndexOf("\n", position - 1) + 1;
-        const indentation = contents.slice(lineStart, position).match(/^\s*/)?.[0] ?? "";
-        return {position, end: position, text: `/** ${summary(node, sourceFile, ownerName)} */\n${indentation}`};
-      });
+    const insertions = undocumented.map(({node, ownerName}) => {
+      const position = node.getStart(sourceFile);
+      const lineStart = contents.lastIndexOf("\n", position - 1) + 1;
+      const indentation = contents.slice(lineStart, position).match(/^\s*/)?.[0] ?? "";
+      return {position, end: position, text: `/** ${summary(node, sourceFile, ownerName)} */\n${indentation}`};
+    });
     const edits = [...replacements, ...insertions].sort((left, right) => right.position - left.position);
     for (const edit of edits) updated = updated.slice(0, edit.position) + edit.text + updated.slice(edit.end);
     await writeFile(file, updated);
@@ -156,5 +234,5 @@ if (missing.length > 0 && !fix) {
 } else if (fix) {
   console.log(`Added TSDoc to ${missing.length} production declarations.`);
 } else {
-  console.log(`TSDoc audit passed: ${declarationCount} module declarations and class members are documented across ${files.length} files.`);
+  console.log(`TSDoc audit passed: ${declarationCount} declarations are documented across ${files.length} files.`);
 }

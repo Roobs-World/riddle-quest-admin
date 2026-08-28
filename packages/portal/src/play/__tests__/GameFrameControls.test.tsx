@@ -3,6 +3,7 @@ import {renderToString} from "react-dom/server";
 import {ControlledGuessBoard, ControlledKeyboard} from "../GameFrameControls";
 
 it("describes scored letter meaning without relying on color", () => {
+  /** Provides html behavior. */
   const html = renderToString(
     <ControlledGuessBoard
       answerLength={3}
@@ -20,12 +21,9 @@ it("describes scored letter meaning without relying on color", () => {
 });
 
 it("names the on-screen letter controls as a virtual keyboard", () => {
+  /** Provides html behavior. */
   const html = renderToString(
-    <ControlledKeyboard
-      letterStates={{}}
-      onLetter={() => undefined}
-      onBackspace={() => undefined}
-    />,
+    <ControlledKeyboard letterStates={{}} onLetter={() => undefined} onBackspace={() => undefined} />,
   );
 
   expect(html).toContain('<section class="keyboard" aria-label="Virtual keyboard">');

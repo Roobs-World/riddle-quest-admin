@@ -4,6 +4,7 @@ import {validateCallableRequest, validateCallableResponse} from "../validation/c
 
 describe("callable response serialization", () => {
   it("recursively omits optional undefined fields before Firebase transport", () => {
+    /** Provides schema behavior. */
     const schema = z.object({
       id: z.string(),
       optional: z.string().optional(),
@@ -26,6 +27,7 @@ describe("callable response serialization", () => {
   });
 
   it("preserves intentional null values", () => {
+    /** Provides schema behavior. */
     const schema = z.object({value: z.string().nullable()});
     expect(validateCallableResponse(schema, {value: null}, "nullableResponse")).toEqual({value: null});
   });
@@ -36,14 +38,21 @@ describe("callable response serialization", () => {
 
   it("reports invalid requests with the schema issue path", () => {
     expect(() => validateCallableRequest(z.object({name: z.string()}), {name: 4}, "rename")).toThrow(
-      new HttpsError("invalid-argument", "Invalid request payload for rename: name: Invalid input: expected string, received number"),
+      new HttpsError(
+        "invalid-argument",
+        "Invalid request payload for rename: name: Invalid input: expected string, received number",
+      ),
     );
     expect(() => validateCallableRequest(z.string(), 4, "rename")).toThrow(
-      new HttpsError("invalid-argument", "Invalid request payload for rename: root: Invalid input: expected string, received number"),
+      new HttpsError(
+        "invalid-argument",
+        "Invalid request payload for rename: root: Invalid input: expected string, received number",
+      ),
     );
   });
 
   it("supports fixed and computed invalid-request messages", () => {
+    /** Provides schema behavior. */
     const schema = z.string();
     expect(() => validateCallableRequest(schema, 1, "fixed", "Choose another value.")).toThrow(
       new HttpsError("invalid-argument", "Choose another value."),
@@ -55,7 +64,10 @@ describe("callable response serialization", () => {
 
   it("reports invalid server responses as internal errors", () => {
     expect(() => validateCallableResponse(z.object({id: z.string()}), {}, "createRace")).toThrow(
-      new HttpsError("internal", "Invalid response payload from createRace: id: Invalid input: expected string, received undefined"),
+      new HttpsError(
+        "internal",
+        "Invalid response payload from createRace: id: Invalid input: expected string, received undefined",
+      ),
     );
   });
 });

@@ -120,28 +120,32 @@ export type BridgeProfile = z.infer<typeof BridgeProfileSchema>;
  * corresponding `awaitingContinue` state. This strict object rejects unknown
  * fields rather than reinterpreting authoritative session state.
  */
-export const BridgeRiddleSchema = z.object({
-  riddleId: RiddleIdSchema,
-  text: z.string().min(1),
-  answerLength: z.number().int().positive(),
-  sessionToken: z.string().min(20).max(128),
-  gameMode: GameModeSchema,
-  index: z.number().int().nonnegative().optional(),
-  attemptsUsed: z.number().int().nonnegative().max(6),
-  hasUsedContinue: z.boolean(),
-  awaitingContinue: z.boolean(),
-}).strict().superRefine((riddle, context) => {
-  const expectedAwaiting = riddle.attemptsUsed === 5 && !riddle.hasUsedContinue;
-  if (riddle.awaitingContinue !== expectedAwaiting) {
-    context.addIssue({code: z.ZodIssueCode.custom, message: "Continue recovery state is inconsistent."});
-  }
-  if (riddle.hasUsedContinue && riddle.attemptsUsed < 5) {
-    context.addIssue({code: z.ZodIssueCode.custom, message: "Continue cannot precede the base attempt cap."});
-  }
-  if (riddle.attemptsUsed > 5 + (riddle.hasUsedContinue ? 1 : 0)) {
-    context.addIssue({code: z.ZodIssueCode.custom, message: "Attempt count exceeds the available limit."});
-  }
-});
+export const BridgeRiddleSchema = z
+  .object({
+    riddleId: RiddleIdSchema,
+    text: z.string().min(1),
+    answerLength: z.number().int().positive(),
+    sessionToken: z.string().min(20).max(128),
+    gameMode: GameModeSchema,
+    index: z.number().int().nonnegative().optional(),
+    attemptsUsed: z.number().int().nonnegative().max(6),
+    hasUsedContinue: z.boolean(),
+    awaitingContinue: z.boolean(),
+  })
+  .strict()
+  .superRefine((riddle, context) => {
+    /** Provides expected awaiting behavior. */
+    const expectedAwaiting = riddle.attemptsUsed === 5 && !riddle.hasUsedContinue;
+    if (riddle.awaitingContinue !== expectedAwaiting) {
+      context.addIssue({code: z.ZodIssueCode.custom, message: "Continue recovery state is inconsistent."});
+    }
+    if (riddle.hasUsedContinue && riddle.attemptsUsed < 5) {
+      context.addIssue({code: z.ZodIssueCode.custom, message: "Continue cannot precede the base attempt cap."});
+    }
+    if (riddle.attemptsUsed > 5 + (riddle.hasUsedContinue ? 1 : 0)) {
+      context.addIssue({code: z.ZodIssueCode.custom, message: "Attempt count exceeds the available limit."});
+    }
+  });
 /** A validated authoritative riddle-session snapshot delivered to the game. */
 export type BridgeRiddle = z.infer<typeof BridgeRiddleSchema>;
 
@@ -203,23 +207,31 @@ export const GameLoadRiddleMessageSchema = envelope(
 /** Validates the identifiers required to complete a server-owned game session. */
 export const GameCompleteGameMessageSchema = envelope(
   "game:completeGame",
-  z.object({
-    riddleId: RiddleIdSchema,
-    gameMode: GameModeSchema,
-    sessionToken: z.string().min(20).max(128),
-  }).strict(),
+  z
+    .object({
+      riddleId: RiddleIdSchema,
+      gameMode: GameModeSchema,
+      sessionToken: z.string().min(20).max(128),
+    })
+    .strict(),
 );
 
 /** Validates an authoritative guess bound to a session and replay-safe `requestId`. */
 export const GameSubmitGuessMessageSchema = envelope(
   "game:submitGuess",
-  z.object({
-    riddleId: RiddleIdSchema,
-    gameMode: GameModeSchema,
-    sessionToken: z.string().min(20).max(128),
-    guess: z.string().min(1).max(7).regex(/^[a-z]+$/i),
-    requestId: z.string().min(8).max(128),
-  }).strict(),
+  z
+    .object({
+      riddleId: RiddleIdSchema,
+      gameMode: GameModeSchema,
+      sessionToken: z.string().min(20).max(128),
+      guess: z
+        .string()
+        .min(1)
+        .max(7)
+        .regex(/^[a-z]+$/i),
+      requestId: z.string().min(8).max(128),
+    })
+    .strict(),
 );
 
 /**
@@ -233,30 +245,41 @@ export const GameRequestHintMessageSchema = envelope(
     gameMode: GameModeSchema,
     sessionToken: z.string().min(20).max(128),
     requestId: z.string().min(8).max(128),
-    currentAttempt: z.array(z.string().max(1).regex(/^[a-z]?$/i)).max(7),
+    currentAttempt: z
+      .array(
+        z
+          .string()
+          .max(1)
+          .regex(/^[a-z]?$/i),
+      )
+      .max(7),
   }),
 );
 
 /** Validates the dedicated continue purchase for an authoritative game session. */
 export const GameSpendCoinsMessageSchema = envelope(
   "game:spendCoins",
-  z.object({
-    reason: z.literal("continue"),
-    gameMode: GameModeSchema,
-    riddleId: RiddleIdSchema,
-    sessionToken: z.string().min(20).max(128),
-    amount: z.number().int().positive().optional(),
-  }).strict(),
+  z
+    .object({
+      reason: z.literal("continue"),
+      gameMode: GameModeSchema,
+      riddleId: RiddleIdSchema,
+      sessionToken: z.string().min(20).max(128),
+      amount: z.number().int().positive().optional(),
+    })
+    .strict(),
 );
 
 /** Validates a dedicated authoritative Classic skip message. */
 export const GameSkipRiddleMessageSchema = envelope(
   "game:skipRiddle",
-  z.object({
-    gameMode: z.literal("classic"),
-    riddleId: RiddleIdSchema,
-    sessionToken: z.string().min(20).max(128),
-  }).strict(),
+  z
+    .object({
+      gameMode: z.literal("classic"),
+      riddleId: RiddleIdSchema,
+      sessionToken: z.string().min(20).max(128),
+    })
+    .strict(),
 );
 
 /** Validates a request to begin a provider purchase for a catalog product. */
@@ -327,10 +350,12 @@ export const GameBlockRivalMessageSchema = envelope(
 /** Validates a categorized known-rival report request. */
 export const GameReportRivalMessageSchema = envelope(
   "game:reportRival",
-  z.object({
-    targetUserId: z.string().trim().min(1).max(128),
-    category: SocialReportCategorySchema,
-  }).strict(),
+  z
+    .object({
+      targetUserId: z.string().trim().min(1).max(128),
+      category: SocialReportCategorySchema,
+    })
+    .strict(),
 );
 
 /** Validates a bounded race analytics event; the host assigns its durable event identifier. */

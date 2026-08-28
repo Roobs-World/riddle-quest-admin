@@ -44,10 +44,8 @@ export type FacebookTournamentDeckBinding = {
 };
 
 /** Ensures the server-owned run still matches its immutable server-owned deck. */
-export function assertFacebookTournamentDeck(
-  run: RaceRunRecord,
-  deck: FacebookTournamentDeckBinding,
-): void {
+export function assertFacebookTournamentDeck(run: RaceRunRecord, deck: FacebookTournamentDeckBinding): void {
+  /** Provides run canonical ids behavior. */
   const runCanonicalIds = run.riddles.map(({canonicalRiddleId}) => canonicalRiddleId);
   if (
     deck.deckId !== run.deckId ||
@@ -63,9 +61,15 @@ export function assertFacebookTournamentDeck(
 }
 
 /** Returns the locale-isolated UTC tournament containing the supplied instant. */
-export function facebookTournamentWindow(locale: RaceLocale, nowMs: number): {
+export function facebookTournamentWindow(
+  locale: RaceLocale,
+  nowMs: number,
+): {
+  /** Stores tournament id. */
   tournamentId: string;
+  /** Stores starts at ms. */
   startsAtMs: number;
+  /** Stores ends at ms. */
   endsAtMs: number;
 } {
   if (
@@ -75,7 +79,9 @@ export function facebookTournamentWindow(locale: RaceLocale, nowMs: number): {
   ) {
     throw new HttpsError("invalid-argument", "Tournament time must be a non-negative safe integer.");
   }
+  /** Starts s at ms. */
   const startsAtMs = Math.floor(nowMs / FACEBOOK_TOURNAMENT_DURATION_MS) * FACEBOOK_TOURNAMENT_DURATION_MS;
+  /** Provides day behavior. */
   const day = new Date(startsAtMs).toISOString().slice(0, 10);
   return {
     tournamentId: `facebook-race10-${locale}-${day}`,
@@ -103,10 +109,12 @@ export function deriveFacebookTournamentEntry(
   if (run.status !== "completed" || run.correctCount !== RACE_TARGET_CORRECT || run.finishedAtMs === undefined) {
     throw new HttpsError("failed-precondition", "Only completed authoritative Race to 10 runs qualify.");
   }
+  /** Provides window behavior. */
   const window = facebookTournamentWindow(locale, nowMs);
   if (run.finishedAtMs < window.startsAtMs || run.finishedAtMs >= window.endsAtMs) {
     throw new HttpsError("failed-precondition", "The race was completed outside this tournament window.");
   }
+  /** Provides adjusted time ms behavior. */
   const adjustedTimeMs = raceClock(run, run.finishedAtMs).adjustedElapsedMs;
   if (!Number.isSafeInteger(adjustedTimeMs) || adjustedTimeMs < 0 || adjustedTimeMs > RACE_MAX_ADJUSTED_TIME_MS) {
     throw new HttpsError("data-loss", "The authoritative race score is invalid.");
@@ -126,11 +134,12 @@ export function selectBestFacebookTournamentEntry(
   existing: FacebookTournamentEntry | undefined,
   candidate: FacebookTournamentEntry,
 ): FacebookTournamentEntry {
-  if (existing && (
-    existing.tournamentId !== candidate.tournamentId ||
-    existing.locale !== candidate.locale ||
-    existing.userId !== candidate.userId
-  )) {
+  if (
+    existing &&
+    (existing.tournamentId !== candidate.tournamentId ||
+      existing.locale !== candidate.locale ||
+      existing.userId !== candidate.userId)
+  ) {
     throw new HttpsError("failed-precondition", "Tournament entry scopes do not match.");
   }
   return !existing || candidate.adjustedTimeMs < existing.adjustedTimeMs ? candidate : existing;
@@ -159,25 +168,50 @@ const parseStoredEntry = (value: FirebaseFirestore.DocumentData | undefined): Fa
 /** Asserts stored entry window. */
 const assertStoredEntryWindow = (
   entry: FacebookTournamentEntry,
-  window: {tournamentId: string; startsAtMs: number; endsAtMs: number},
+  window: {
+    /** Stores tournament id. */
+    tournamentId: string; /** Stores starts at ms. */
+    /** Stores starts at ms. */
+    startsAtMs: number; /** Stores ends at ms. */
+    /** Stores ends at ms. */
+    endsAtMs: number;
+  },
 ): void => {
   if (
     entry.tournamentId !== window.tournamentId ||
     entry.completedAtMs < window.startsAtMs ||
     entry.completedAtMs >= window.endsAtMs
-  ) throw new HttpsError("data-loss", "Stored tournament entry window is invalid.");
+  )
+    throw new HttpsError("data-loss", "Stored tournament entry window is invalid.");
 };
 
 /** Atomically records only the player's best server-derived tournament run. */
 export async function recordFacebookTournamentRun(
   userId: string,
-  input: {runId: string; locale: RaceLocale},
-  options: {db?: FirebaseFirestore.Firestore; nowMs?: number} = {},
-): Promise<{entry: FacebookTournamentEntry; improved: boolean}> {
+  input: {
+    /** Stores run id. */
+    runId: string; /** Stores locale. */
+    /** Stores locale. */
+    locale: RaceLocale;
+  },
+  options: {
+    /** Stores db. */
+    db?: FirebaseFirestore.Firestore; /** Stores now ms. */
+    /** Stores now ms. */
+    nowMs?: number;
+  } = {},
+): Promise<{
+  /** Stores entry. */
+  entry: FacebookTournamentEntry; /** Stores improved. */
+  /** Stores improved. */
+  improved: boolean;
+}> {
   if (!/^[A-Za-z0-9_-]{1,160}$/.test(input.runId)) {
     throw new HttpsError("invalid-argument", "Tournament run ID is invalid.");
   }
+  /** Provides db behavior. */
   const db = options.db ?? admin.firestore();
+  /** Provides now ms behavior. */
   const nowMs = options.nowMs ?? Date.now();
   if (
     !Number.isSafeInteger(nowMs) ||
@@ -186,11 +220,14 @@ export async function recordFacebookTournamentRun(
   ) {
     throw new HttpsError("invalid-argument", "Tournament write time must be a non-negative safe integer.");
   }
+  /** Provides run ref behavior. */
   const runRef = db.collection("raceRuns").doc(input.runId);
 
   return db.runTransaction(async (transaction) => {
+    /** Provides run snapshot behavior. */
     const runSnapshot = await transaction.get(runRef);
     if (!runSnapshot.exists) throw new HttpsError("not-found", "Tournament race run was not found.");
+    /** Provides run behavior. */
     const run = parseRunRecord(runSnapshot.data());
     if (run.finishedAtMs === undefined) {
       throw new HttpsError("failed-precondition", "Only completed authoritative Race to 10 runs qualify.");
@@ -200,35 +237,50 @@ export async function recordFacebookTournamentRun(
     }
     // Bind recovery to the authoritative finish day, not the retry/submission
     // day, so a crash or midnight rollover cannot move or reject a valid run.
+    /** Provides window behavior. */
     const window = facebookTournamentWindow(input.locale, run.finishedAtMs);
+    /** Provides entry ref behavior. */
     const entryRef = db.doc(`facebookTournaments/${window.tournamentId}/entries/${userId}`);
+    /** Provides tournament ref behavior. */
     const tournamentRef = db.collection("facebookTournaments").doc(window.tournamentId);
+    /** Provides deck ref behavior. */
     const deckRef = db.collection("raceDecks").doc(run.deckId);
-    const [deckSnapshot, existingSnapshot] = await Promise.all([
-      transaction.get(deckRef),
-      transaction.get(entryRef),
-    ]);
+    /** Provides [deck snapshot, existing snapshot] behavior. */
+    const [deckSnapshot, existingSnapshot] = await Promise.all([transaction.get(deckRef), transaction.get(entryRef)]);
     if (!deckSnapshot.exists) throw new HttpsError("data-loss", "Tournament race deck was not found.");
     assertFacebookTournamentDeck(run, deckSnapshot.data() as FacebookTournamentDeckBinding);
+    /** Provides candidate behavior. */
     const candidate = deriveFacebookTournamentEntry(userId, input.locale, run, run.finishedAtMs);
+    /** Provides existing behavior. */
     const existing = parseStoredEntry(existingSnapshot.exists ? existingSnapshot.data() : undefined);
     if (existing) assertStoredEntryWindow(existing, window);
+    /** Provides entry behavior. */
     const entry = selectBestFacebookTournamentEntry(existing, candidate);
+    /** Provides improved behavior. */
     const improved = entry === candidate;
-    transaction.set(tournamentRef, {
-      tournamentId: window.tournamentId,
-      locale: input.locale,
-      startsAtMs: window.startsAtMs,
-      endsAtMs: window.endsAtMs,
-      sortOrder: FACEBOOK_TOURNAMENT_SORT_ORDER,
-      rewardsEnabled: false,
-      expiresAt: admin.firestore.Timestamp.fromMillis(window.endsAtMs),
-    }, {merge: false});
-    if (improved) transaction.set(entryRef, {
-      ...entry,
-      updatedAtMs: nowMs,
-      expiresAt: admin.firestore.Timestamp.fromMillis(window.endsAtMs),
-    }, {merge: false});
+    transaction.set(
+      tournamentRef,
+      {
+        tournamentId: window.tournamentId,
+        locale: input.locale,
+        startsAtMs: window.startsAtMs,
+        endsAtMs: window.endsAtMs,
+        sortOrder: FACEBOOK_TOURNAMENT_SORT_ORDER,
+        rewardsEnabled: false,
+        expiresAt: admin.firestore.Timestamp.fromMillis(window.endsAtMs),
+      },
+      {merge: false},
+    );
+    if (improved)
+      transaction.set(
+        entryRef,
+        {
+          ...entry,
+          updatedAtMs: nowMs,
+          expiresAt: admin.firestore.Timestamp.fromMillis(window.endsAtMs),
+        },
+        {merge: false},
+      );
     return {entry, improved};
   });
 }
@@ -237,29 +289,64 @@ export async function recordFacebookTournamentRun(
 export async function listFacebookTournamentStandings(
   userId: string,
   locale: RaceLocale,
-  options: {db?: FirebaseFirestore.Firestore; nowMs?: number} = {},
+  options: {
+    /** Stores db. */
+    db?: FirebaseFirestore.Firestore; /** Stores now ms. */
+    /** Stores now ms. */
+    nowMs?: number;
+  } = {},
 ): Promise<{
+  /** Stores tournament id. */
   tournamentId: string;
+  /** Stores locale. */
   locale: RaceLocale;
+  /** Stores starts at ms. */
   startsAtMs: number;
+  /** Stores ends at ms. */
   endsAtMs: number;
+  /** Stores sort order. */
   sortOrder: typeof FACEBOOK_TOURNAMENT_SORT_ORDER;
+  /** Stores rewards enabled. */
   rewardsEnabled: false;
-  standings: Array<{rank: number; adjustedTimeMs: number; isCurrentPlayer: boolean}>;
-  currentPlayer?: {rank: number; adjustedTimeMs: number; isCurrentPlayer: true};
+  /** Stores standings. */
+  standings: Array<{
+    /** Stores rank. */
+    rank: number; /** Stores adjusted time ms. */
+    /** Stores adjusted time ms. */
+    adjustedTimeMs: number; /** Stores is current player. */
+    /** Stores is current player. */
+    isCurrentPlayer: boolean;
+  }>;
+  /** Stores current player. */
+  currentPlayer?: {
+    /** Stores rank. */
+    rank: number; /** Stores adjusted time ms. */
+    /** Stores adjusted time ms. */
+    adjustedTimeMs: number; /** Stores is current player. */
+    /** Stores is current player. */
+    isCurrentPlayer: true;
+  };
 }> {
   if (!isFacebookFirebaseUid(userId)) {
     throw new HttpsError("permission-denied", "A Facebook player identity is required.");
   }
+  /** Provides db behavior. */
   const db = options.db ?? admin.firestore();
+  /** Provides window behavior. */
   const window = facebookTournamentWindow(locale, options.nowMs ?? Date.now());
-  const snapshot = await db.collection(`facebookTournaments/${window.tournamentId}/entries`)
+  /** Provides snapshot behavior. */
+  const snapshot = await db
+    .collection(`facebookTournaments/${window.tournamentId}/entries`)
     .orderBy("adjustedTimeMs", "asc")
     .limit(50)
     .get();
+  /** Provides previous time behavior. */
   let previousTime: number | undefined;
+  /** Provides previous rank behavior. */
   let previousRank = 0;
+  /** Provides standings behavior. */
   const standings = snapshot.docs.map((document, index) => {
+    /** Provides entry behavior. */
     const entry = parseStoredEntry(document.data());
     if (
       !entry ||
@@ -270,11 +357,13 @@ export async function listFacebookTournamentStandings(
       throw new HttpsError("data-loss", "Stored tournament entry scope is invalid.");
     }
     assertStoredEntryWindow(entry, window);
+    /** Provides rank behavior. */
     const rank = entry.adjustedTimeMs === previousTime ? previousRank : index + 1;
     previousTime = entry.adjustedTimeMs;
     previousRank = rank;
     return {rank, adjustedTimeMs: entry.adjustedTimeMs, isCurrentPlayer: document.id === userId};
   });
+  /** Provides own standing behavior. */
   const ownStanding = standings.find((entry) => entry.isCurrentPlayer);
   return {
     tournamentId: window.tournamentId,
@@ -284,8 +373,6 @@ export async function listFacebookTournamentStandings(
     sortOrder: FACEBOOK_TOURNAMENT_SORT_ORDER,
     rewardsEnabled: false,
     standings,
-    ...(ownStanding
-      ? {currentPlayer: {...ownStanding, isCurrentPlayer: true as const}}
-      : {}),
+    ...(ownStanding ? {currentPlayer: {...ownStanding, isCurrentPlayer: true as const}} : {}),
   };
 }

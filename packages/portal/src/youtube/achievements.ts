@@ -2,33 +2,61 @@ import type {YouTubeGameMode, YouTubeProgress} from "./types";
 
 /** Describes achievement context. */
 type AchievementContext = Readonly<{
+  /** Stores mode. */
   mode: YouTubeGameMode;
+  /** Stores is correct. */
   isCorrect: boolean;
+  /** Stores attempts. */
   attempts: number;
+  /** Stores game over. */
   gameOver: boolean;
 }>;
 
 /** Describes achievement definition. */
 type AchievementDefinition = Readonly<{
+  /** Stores id. */
   id: string;
+  /** Stores icon. */
   icon: string;
+  /** Stores unlocked. */
   unlocked: (progress: YouTubeProgress, context: AchievementContext) => boolean;
 }>;
 
 /** Provides wins behavior. */
-const wins = (threshold: number) => (progress: YouTubeProgress): boolean => progress.totalWins >= threshold;
+const wins =
+  (threshold: number) =>
+  (progress: YouTubeProgress): boolean =>
+    progress.totalWins >= threshold;
 /** Provides games behavior. */
-const games = (threshold: number) => (progress: YouTubeProgress): boolean => progress.gamesPlayed >= threshold;
+const games =
+  (threshold: number) =>
+  (progress: YouTubeProgress): boolean =>
+    progress.gamesPlayed >= threshold;
 /** Provides streak behavior. */
-const streak = (threshold: number) => (progress: YouTubeProgress): boolean => progress.bestDailyStreak >= threshold;
+const streak =
+  (threshold: number) =>
+  (progress: YouTubeProgress): boolean =>
+    progress.bestDailyStreak >= threshold;
 /** Provides classic behavior. */
-const classic = (threshold: number) => (progress: YouTubeProgress): boolean => progress.highestClassicLevel >= threshold;
+const classic =
+  (threshold: number) =>
+  (progress: YouTubeProgress): boolean =>
+    progress.highestClassicLevel >= threshold;
 /** Provides daily behavior. */
-const daily = (threshold: number) => (progress: YouTubeProgress): boolean => progress.dailyPuzzlesCompleted >= threshold;
+const daily =
+  (threshold: number) =>
+  (progress: YouTubeProgress): boolean =>
+    progress.dailyPuzzlesCompleted >= threshold;
 /** Provides challenge wins behavior. */
-const challengeWins = (threshold: number) => (progress: YouTubeProgress): boolean => progress.challengeWins >= threshold;
+const challengeWins =
+  (threshold: number) =>
+  (progress: YouTubeProgress): boolean =>
+    progress.challengeWins >= threshold;
 /** Provides hints behavior. */
-const hints = (threshold: number) => (progress: YouTubeProgress): boolean => progress.totalHintsUsed >= threshold;
+const hints =
+  (threshold: number) =>
+  (progress: YouTubeProgress): boolean =>
+    progress.totalHintsUsed >= threshold;
 
 /** Solo-only subset of the existing achievement catalog. */
 const YOUTUBE_ACHIEVEMENT_LIST: AchievementDefinition[] = [
@@ -79,14 +107,12 @@ const YOUTUBE_ACHIEVEMENT_LIST: AchievementDefinition[] = [
 export const YOUTUBE_ACHIEVEMENTS: readonly AchievementDefinition[] = Object.freeze(YOUTUBE_ACHIEVEMENT_LIST);
 
 /** Finds new you tube achievements. */
-export function findNewYouTubeAchievements(
-  progress: YouTubeProgress,
-  context: AchievementContext,
-): string[] {
+export function findNewYouTubeAchievements(progress: YouTubeProgress, context: AchievementContext): string[] {
+  /** Provides existing behavior. */
   const existing = new Set(progress.unlockedAchievementIds);
-  return YOUTUBE_ACHIEVEMENTS
-    .filter(({id, unlocked}) => !existing.has(id) && unlocked(progress, context))
-    .map(({id}) => id);
+  return YOUTUBE_ACHIEVEMENTS.filter(({id, unlocked}) => !existing.has(id) && unlocked(progress, context)).map(
+    ({id}) => id,
+  );
 }
 
 /** Gets you tube achievement icon. */

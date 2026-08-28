@@ -1,19 +1,45 @@
 import {requestExpandedMode} from "@devvit/client";
 
 /** Describes reddit copy. */
-type RedditCopy = {/** Stores reddit platform. */
-/** Stores reddit platform. */
-RedditPlatform: {TAGLINE: string; PLAY: string}};
+type RedditCopy = {
+  /** Stores reddit platform. */
+  /** Stores reddit platform. */
+  RedditPlatform: {
+    /** Stores tagline. */
+    TAGLINE: string; /** Stores play. */
+    /** Stores play. */
+    PLAY: string;
+  };
+};
 /** Provides catalogs behavior. */
 const catalogs = import.meta.glob<RedditCopy>(
   "../../../../src/locales/{ar,de,en,es,fr,hi,id,it,ja,ko,nl,pl,pt,ru,tr,vi,zh}/redditPlatform.json",
   {import: "default"},
 );
 /** Provides supported behavior. */
-const supported = new Set(["ar", "de", "en", "es", "fr", "hi", "id", "it", "ja", "ko", "nl", "pl", "pt", "ru", "tr", "vi", "zh"]);
+const supported = new Set([
+  "ar",
+  "de",
+  "en",
+  "es",
+  "fr",
+  "hi",
+  "id",
+  "it",
+  "ja",
+  "ko",
+  "nl",
+  "pl",
+  "pt",
+  "ru",
+  "tr",
+  "vi",
+  "zh",
+]);
 /** Requests ed. */
 const requested = (window.localStorage.getItem("appLanguage") ?? navigator.languages?.[0] ?? navigator.language ?? "en")
-  .toLowerCase().split("-")[0];
+  .toLowerCase()
+  .split("-")[0];
 /** Provides locale behavior. */
 const locale = requested === "in" ? "id" : supported.has(requested) ? requested : "en";
 /** Provides catalog path behavior. */

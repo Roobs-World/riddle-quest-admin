@@ -62,32 +62,52 @@ export {buildDeterministicRaceDeck, listRaceCategoriesForLocale} from "./raceSet
 export async function startRaceRunForUser(
   userId: string,
   input: StartRaceRunRequest,
-  options: {db?: Firestore; nowMs?: number} = {},
+  options: {
+    /** Stores db. */
+    db?: Firestore; /** Stores now ms. */
+    /** Stores now ms. */
+    nowMs?: number;
+  } = {},
 ): Promise<RaceRunResponse> {
+  /** Provides db behavior. */
   const db = dbOrDefault(options.db);
+  /** Provides now ms behavior. */
   const nowMs = options.nowMs ?? Date.now();
+  /** Starts request ref. */
   const startRequestRef = db.collection("raceStartRequests").doc(requestDocumentId(userId, input.requestId));
+  /** Provides existing start behavior. */
   const existingStart = await startRequestRef.get();
   if (existingStart.exists) {
+    /** Provides run id behavior. */
     const runId = existingStart.data()?.runId;
     if (typeof runId !== "string") throw new HttpsError("internal", "Stored race start request is invalid.");
     return resumeRaceRunForUser(userId, runId, {db, nowMs});
   }
 
+  /** Provides run ref behavior. */
   const runRef = db.collection("raceRuns").doc();
+  /** Provides deck ref behavior. */
   const deckRef = db.collection("raceDecks").doc();
+  /** Provides category id behavior. */
   let categoryId: RaceCategoryId;
+  /** Provides riddles behavior. */
   let riddles: RaceRiddleSnapshot[];
+  /** Provides content version behavior. */
   let contentVersion: string;
+  /** Provides opponent behavior. */
   let opponent: RaceOpponentRecord | undefined;
+  /** Provides challenge behavior. */
   let challenge: RaceChallengeRecord | undefined;
 
   if (input.rivalryChallengeId) {
+    /** Provides rivalry snapshot behavior. */
     const rivalrySnapshot = await db.collection("raceChallenges").doc(input.rivalryChallengeId).get();
     if (!rivalrySnapshot.exists) throw new HttpsError("not-found", "Race rivalry not found.");
+    /** Provides rivalry behavior. */
     const rivalry = parseChallengeRecord(rivalrySnapshot.data());
     assertRaceLocaleCompatible(rivalry, input.locale);
     if (rivalry.creatorId !== userId) {
+      /** Provides attempt behavior. */
       const attempt = await db
         .collection("raceAttempts")
         .doc(requestDocumentId(input.rivalryChallengeId, userId))
@@ -97,6 +117,7 @@ export async function startRaceRunForUser(
   }
 
   if (input.challengeId) {
+    /** Provides challenge snapshot behavior. */
     const challengeSnapshot = await db.collection("raceChallenges").doc(input.challengeId).get();
     if (!challengeSnapshot.exists) throw new HttpsError("not-found", "Race to 10 challenge not found.");
     challenge = parseChallengeRecord(challengeSnapshot.data());
@@ -104,6 +125,7 @@ export async function startRaceRunForUser(
     if (challenge.creatorId === userId) {
       throw new HttpsError("failed-precondition", "You cannot compete against your own challenge.");
     }
+    /** Provides preview behavior. */
     const preview = challengePreview(challenge, nowMs);
     if (preview.status !== "active") throw new HttpsError("failed-precondition", `Challenge is ${preview.status}.`);
     categoryId = challenge.categoryId;
@@ -118,6 +140,7 @@ export async function startRaceRunForUser(
     };
   } else {
     categoryId = input.categoryId!;
+    /** Provides content behavior. */
     const content = await loadEligibleContent(db, input.locale, categoryId);
     ({riddles, contentVersion} = buildDeterministicRaceDeck(content, {
       locale: input.locale,
@@ -126,6 +149,7 @@ export async function startRaceRunForUser(
     }));
   }
 
+  /** Provides run behavior. */
   const run: RaceRunRecord = {
     runId: runRef.id,
     userId,
@@ -149,7 +173,9 @@ export async function startRaceRunForUser(
     events: [],
     opponent,
   };
+  /** Provides expires at behavior. */
   const expiresAt = admin.firestore.Timestamp.fromMillis(nowMs + RACE_CHALLENGE_TTL_MS);
+  /** Provides deck behavior. */
   const deck: RaceDeckRecord = {
     deckId: deckRef.id,
     categoryId,
@@ -162,17 +188,25 @@ export async function startRaceRunForUser(
   };
 
   await db.runTransaction(async (transaction) => {
+    /** Provides [duplicate start, challenge attempt, committed challenge snapshot] behavior. */
     const [duplicateStart, challengeAttempt, committedChallengeSnapshot] = await Promise.all([
       transaction.get(startRequestRef),
-      input.challengeId ? transaction.get(db.collection("raceAttempts")
-        .doc(requestDocumentId(input.challengeId, userId))) : Promise.resolve(null),
-      input.challengeId ? transaction.get(db.collection("raceChallenges").doc(input.challengeId)) : Promise.resolve(null),
+      input.challengeId
+        ? transaction.get(db.collection("raceAttempts").doc(requestDocumentId(input.challengeId, userId)))
+        : Promise.resolve(null),
+      input.challengeId
+        ? transaction.get(db.collection("raceChallenges").doc(input.challengeId))
+        : Promise.resolve(null),
     ]);
     if (duplicateStart.exists) return;
     if (input.challengeId) {
       if (!committedChallengeSnapshot?.exists) throw new HttpsError("not-found", "Race to 10 challenge not found.");
+      /** Provides committed challenge behavior. */
       const committedChallenge = parseChallengeRecord(committedChallengeSnapshot.data());
-      const creatorDeletionSnapshot = await transaction.get(getJestAccountDeletionRef(db, committedChallenge.creatorId));
+      /** Provides creator deletion snapshot behavior. */
+      const creatorDeletionSnapshot = await transaction.get(
+        getJestAccountDeletionRef(db, committedChallenge.creatorId),
+      );
       assertJestAccountActive(creatorDeletionSnapshot);
       await assertRaceInteractionAllowed(transaction, db, userId, committedChallenge.creatorId);
       if (challengePreview(committedChallenge, nowMs).status !== "active")
@@ -196,7 +230,9 @@ export async function startRaceRunForUser(
     }
   });
 
+  /** Provides committed start behavior. */
   const committedStart = await startRequestRef.get();
+  /** Provides committed run id behavior. */
   const committedRunId = committedStart.data()?.runId;
   if (typeof committedRunId !== "string") throw new HttpsError("internal", "Race start was not committed.");
   return resumeRaceRunForUser(userId, committedRunId, {db, nowMs});
@@ -205,11 +241,20 @@ export async function startRaceRunForUser(
 export async function abandonRaceRunForUser(
   userId: string,
   input: AbandonRaceRunRequest,
-  options: {db?: Firestore; nowMs?: number} = {},
+  options: {
+    /** Stores db. */
+    db?: Firestore; /** Stores now ms. */
+    /** Stores now ms. */
+    nowMs?: number;
+  } = {},
 ): Promise<AbandonRaceRunResponse> {
+  /** Provides db behavior. */
   const db = dbOrDefault(options.db);
+  /** Provides now ms behavior. */
   const nowMs = options.nowMs ?? Date.now();
+  /** Provides response behavior. */
   const response = await mutateRaceRun(userId, input.runId, input.requestId, nowMs, db, (run) => {
+    /** Provides abandoned behavior. */
     const abandoned = abandonRaceRun(run, nowMs);
     return {
       run: abandoned,
@@ -226,11 +271,20 @@ export async function abandonRaceRunForUser(
 export async function submitRaceGuessForUser(
   userId: string,
   input: SubmitRaceGuessRequest,
-  options: {db?: Firestore; nowMs?: number} = {},
+  options: {
+    /** Stores db. */
+    db?: Firestore; /** Stores now ms. */
+    /** Stores now ms. */
+    nowMs?: number;
+  } = {},
 ): Promise<SubmitRaceGuessResponse> {
+  /** Provides db behavior. */
   const db = dbOrDefault(options.db);
+  /** Provides now ms behavior. */
   const nowMs = options.nowMs ?? Date.now();
+  /** Provides response behavior. */
   const response = await mutateRaceRun(userId, input.runId, input.requestId, nowMs, db, (run) => {
+    /** Provides result behavior. */
     const result = applyRaceGuess(run, input, nowMs);
     return {
       run: result.run,
@@ -249,10 +303,20 @@ export async function submitRaceGuessForUser(
 export async function requestRaceHintForUser(
   userId: string,
   input: RequestRaceHintRequest,
-  options: {db?: Firestore; nowMs?: number; enforceAccess?: boolean} = {},
+  options: {
+    /** Stores db. */
+    db?: Firestore; /** Stores now ms. */
+    /** Stores now ms. */
+    nowMs?: number; /** Stores enforce access. */
+    /** Stores enforce access. */
+    enforceAccess?: boolean;
+  } = {},
 ): Promise<RequestRaceHintResponse> {
+  /** Provides db behavior. */
   const db = dbOrDefault(options.db);
+  /** Provides now ms behavior. */
   const nowMs = options.nowMs ?? Date.now();
+  /** Provides response behavior. */
   const response = await mutateRaceRun(
     userId,
     input.runId,
@@ -260,6 +324,7 @@ export async function requestRaceHintForUser(
     nowMs,
     db,
     (run) => {
+      /** Provides result behavior. */
       const result = applyRaceHint(run, input, nowMs);
       return {
         run: result.run,
@@ -279,11 +344,20 @@ export async function requestRaceHintForUser(
 export async function skipRaceRiddleForUser(
   userId: string,
   input: SkipRaceRiddleRequest,
-  options: {db?: Firestore; nowMs?: number} = {},
+  options: {
+    /** Stores db. */
+    db?: Firestore; /** Stores now ms. */
+    /** Stores now ms. */
+    nowMs?: number;
+  } = {},
 ): Promise<SkipRaceRiddleResponse> {
+  /** Provides db behavior. */
   const db = dbOrDefault(options.db);
+  /** Provides now ms behavior. */
   const nowMs = options.nowMs ?? Date.now();
+  /** Provides response behavior. */
   const response = await mutateRaceRun(userId, input.runId, input.requestId, nowMs, db, (run) => {
+    /** Updates d. */
     const updated = applyRaceSkip(run, input, nowMs);
     return {
       run: updated,
@@ -300,17 +374,30 @@ export async function skipRaceRiddleForUser(
 export async function resumeRaceRunForUser(
   userId: string,
   runId: string,
-  options: {db?: Firestore; nowMs?: number} = {},
+  options: {
+    /** Stores db. */
+    db?: Firestore; /** Stores now ms. */
+    /** Stores now ms. */
+    nowMs?: number;
+  } = {},
 ): Promise<RaceRunResponse> {
+  /** Provides db behavior. */
   const db = dbOrDefault(options.db);
+  /** Provides now ms behavior. */
   const nowMs = options.nowMs ?? Date.now();
+  /** Provides run ref behavior. */
   const runRef = db.collection("raceRuns").doc(runId);
+  /** Provides run behavior. */
   const run = await db.runTransaction(async (transaction) => {
+    /** Provides snapshot behavior. */
     const snapshot = await transaction.get(runRef);
     if (!snapshot.exists) throw new HttpsError("not-found", "Race to 10 run not found.");
+    /** Stores d. */
     const stored = parseRunRecord(snapshot.data());
     if (stored.userId !== userId) throw new HttpsError("permission-denied", "This race run belongs to another player.");
+    /** Provides privacy behavior. */
     const privacy = await resolveRaceOpponentPrivacy(transaction, db, stored);
+    /** Provides refreshed behavior. */
     const refreshed = refreshRaceRun(privacy.run, nowMs);
     if (JSON.stringify(refreshed) !== JSON.stringify(stored)) {
       transaction.set(runRef, raceRunPrivacyWrite(refreshed, privacy.scrubbed), {merge: true});
@@ -324,41 +411,65 @@ export async function resumeRaceRunForUser(
 export async function publishRaceChallengeForUser(
   userId: string,
   input: PublishRaceChallengeRequest,
-  options: {db?: Firestore; nowMs?: number} = {},
+  options: {
+    /** Stores db. */
+    db?: Firestore; /** Stores now ms. */
+    /** Stores now ms. */
+    nowMs?: number;
+  } = {},
 ): Promise<PublishRaceChallengeResponse> {
+  /** Provides db behavior. */
   const db = dbOrDefault(options.db);
+  /** Provides now ms behavior. */
   const nowMs = options.nowMs ?? Date.now();
+  /** Provides run ref behavior. */
   const runRef = db.collection("raceRuns").doc(input.runId);
+  /** Requests ref. */
   const requestRef = runRef.collection("requests").doc(requestDocumentId(userId, input.requestId));
+  /** Provides challenge ref behavior. */
   const challengeRef = db.collection("raceChallenges").doc();
+  /** Provides response behavior. */
   const response = await db.runTransaction(async (transaction) => {
+    /** Provides [request snapshot, run snapshot, user snapshot] behavior. */
     const [requestSnapshot, runSnapshot, userSnapshot] = await Promise.all([
       transaction.get(requestRef),
       transaction.get(runRef),
       transaction.get(db.collection("users").doc(userId)),
     ]);
     if (!runSnapshot.exists) throw new HttpsError("not-found", "Race to 10 run not found.");
+    /** Stores d run. */
     const storedRun = parseRunRecord(runSnapshot.data());
-    if (storedRun.userId !== userId) throw new HttpsError("permission-denied", "This race run belongs to another player.");
+    if (storedRun.userId !== userId)
+      throw new HttpsError("permission-denied", "This race run belongs to another player.");
+    /** Provides privacy behavior. */
     const privacy = await resolveRaceOpponentPrivacy(transaction, db, storedRun);
+    /** Provides run behavior. */
     const run = privacy.run;
     if (requestSnapshot.exists) {
       if (privacy.scrubbed) transaction.set(runRef, raceRunPrivacyWrite(run, true), {merge: true});
       return requestSnapshot.data()?.response as PublishRaceChallengeResponse;
     }
+    /** Provides outcome behavior. */
     const outcome = raceOutcome(run, nowMs);
     if (!outcome.publishable) {
       throw new HttpsError("failed-precondition", "Only a verified completed creator run can be published.");
     }
+    /** Provides r. */
     const user = userSnapshot.data() ?? {};
+    /** Provides display name behavior. */
     const displayName = String(user.displayName || user.username || "Riddle Quest player")
       .trim()
       .slice(0, 80);
+    /** Provides avatar url behavior. */
     const avatarUrl = typeof user.avatarUrl === "string" ? user.avatarUrl : undefined;
+    /** Provides expires at ms behavior. */
     const expiresAtMs = nowMs + RACE_CHALLENGE_TTL_MS;
+    /** Provides deck snapshot behavior. */
     const deckSnapshot = await transaction.get(db.collection("raceDecks").doc(run.deckId));
+    /** Provides deck behavior. */
     const deck = deckSnapshot.data() as RaceDeckRecord | undefined;
     if (!deck) throw new HttpsError("internal", "The completed race deck is missing.");
+    /** Provides challenge behavior. */
     const challenge: RaceChallengeRecord = {
       challengeId: challengeRef.id,
       creatorId: userId,
@@ -383,11 +494,13 @@ export async function publishRaceChallengeForUser(
       expiresAtMs,
       expiresAt: admin.firestore.Timestamp.fromMillis(expiresAtMs),
     };
+    /** Provides result behavior. */
     const result = PublishRaceChallengeResponseSchema.parse({
       challengeId: challengeRef.id,
       preview: challengePreview(challenge, nowMs),
       ...(() => {
         if (!userSnapshot.exists) return {};
+        /** Provides update behavior. */
         const update = evaluateRaceAchievementEvent(userSnapshot.data() ?? {}, {kind: "challenge_published"}, nowMs);
         return {
           newlyUnlockedAchievementIds: update.newlyUnlockedAchievementIds,
@@ -397,10 +510,14 @@ export async function publishRaceChallengeForUser(
       })(),
     });
     transaction.create(challengeRef, stripUndefined(challenge));
-    transaction.set(runRef, {
-      ...raceRunPrivacyWrite(run, privacy.scrubbed),
-      publishedChallengeId: challengeRef.id,
-    }, {merge: true});
+    transaction.set(
+      runRef,
+      {
+        ...raceRunPrivacyWrite(run, privacy.scrubbed),
+        publishedChallengeId: challengeRef.id,
+      },
+      {merge: true},
+    );
     if (userSnapshot.exists) {
       persistRaceAchievementEvent(
         transaction,

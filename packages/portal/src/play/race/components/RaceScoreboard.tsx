@@ -13,11 +13,17 @@ export function RaceScoreboard({
   coins,
   onClose,
 }: {
+  /** Stores run. */
   run: RaceRunView;
+  /** Stores adjusted now. */
   adjustedNow: number;
+  /** Stores ghost correct. */
   ghostCorrect: number;
+  /** Stores feedback. */
   feedback: "correct" | "incorrect" | null;
+  /** Stores coins. */
   coins: number;
+  /** Stores on close. */
   onClose: () => void;
 }) {
   return (
@@ -52,7 +58,9 @@ export function RaceScoreboard({
           <div style={{"--race-progress": `${run.correctCount * 10}%`} as CSSProperties}>
             <span title={tr("RaceTo10.YOU")}>{tr("RaceTo10.YOU")}</span>
             <strong>{run.correctCount}</strong>
-            <div className="race-progress-track" aria-hidden="true"><i /></div>
+            <div className="race-progress-track" aria-hidden="true">
+              <i />
+            </div>
             <progress className="sr-only" max="10" value={run.correctCount}>
               {run.correctCount}/10
             </progress>
@@ -61,7 +69,9 @@ export function RaceScoreboard({
             <div style={{"--race-progress": `${ghostCorrect * 10}%`} as CSSProperties}>
               <span title={run.opponent.displayName}>{run.opponent.displayName}</span>
               <strong>{ghostCorrect}</strong>
-              <div className="race-progress-track" aria-hidden="true"><i /></div>
+              <div className="race-progress-track" aria-hidden="true">
+                <i />
+              </div>
               <progress className="sr-only" max="10" value={ghostCorrect}>
                 {ghostCorrect}/10
               </progress>

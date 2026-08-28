@@ -7,17 +7,25 @@ export type GameFeedbackKind = "key" | "delete" | "submit" | "wrong" | "win" | "
 
 /** Provides game audio. */
 export function useGameAudio(state: GameSessionState) {
+  /** Provides music ref behavior. */
   const musicRef = useRef<HTMLAudioElement | null>(null);
+  /** Provides state ref behavior. */
   const stateRef = useRef(state);
+  /** Provides audio unlocked ref behavior. */
   const audioUnlockedRef = useRef(false);
+  /** Provides music fade token ref behavior. */
   const musicFadeTokenRef = useRef(0);
+  /** Provides last outcome ref behavior. */
   const lastOutcomeRef = useRef<string | null>(null);
+  /** Provides last guess count ref behavior. */
   const lastGuessCountRef = useRef(0);
   stateRef.current = state;
 
+  /** Provides unlock music behavior. */
   const unlockMusic = useCallback(() => {
     if (stateRef.current.muted) return;
     audioUnlockedRef.current = true;
+    /** Provides music behavior. */
     const music = musicRef.current;
     if (music && !stateRef.current.paused) {
       music.volume = 1;
@@ -25,18 +33,23 @@ export function useGameAudio(state: GameSessionState) {
     }
   }, []);
 
+  /** Provides play feedback behavior. */
   const playFeedback = useCallback(
     (kind: GameFeedbackKind) => {
       unlockMusic();
       if (kind !== "wrong" && kind !== "loss") return;
 
+      /** Provides music behavior. */
       const music = musicRef.current;
       if (!music || stateRef.current.muted) return;
 
+      /** Provides token behavior. */
       const token = ++musicFadeTokenRef.current;
-      const wait = (milliseconds: number) =>
-        new Promise<void>((resolve) => window.setTimeout(resolve, milliseconds));
+      /** Provides wait behavior. */
+      const wait = (milliseconds: number) => new Promise<void>((resolve) => window.setTimeout(resolve, milliseconds));
+      /** Provides fade behavior. */
       const fade = async (from: number, to: number, duration: number) => {
+        /** Provides steps behavior. */
         const steps = 12;
         for (let step = 0; step <= steps; step += 1) {
           if (musicFadeTokenRef.current !== token || stateRef.current.muted) return false;
@@ -55,6 +68,7 @@ export function useGameAudio(state: GameSessionState) {
   );
 
   useEffect(() => {
+    /** Provides outcome behavior. */
     const outcome = state.lastOutcome;
     if (!outcome || lastOutcomeRef.current === outcome.id) return;
     lastOutcomeRef.current = outcome.id;
@@ -68,12 +82,16 @@ export function useGameAudio(state: GameSessionState) {
     lastGuessCountRef.current = state.guesses.length;
   }, [playFeedback, state.guesses.length, state.lastOutcome]);
 
-  useEffect(() => () => {
-    musicFadeTokenRef.current += 1;
-  }, []);
+  useEffect(
+    () => () => {
+      musicFadeTokenRef.current += 1;
+    },
+    [],
+  );
 
   useEffect(() => {
     setPlayerMuted(state.muted);
+    /** Provides music behavior. */
     const music = musicRef.current;
     if (!music) return;
     if (state.muted || state.paused || document.hidden) {

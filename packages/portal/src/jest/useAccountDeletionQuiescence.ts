@@ -9,10 +9,13 @@ import {installBrowserPlayerStateMutationGuard} from "../play/playerPreferences"
 
 /** Permanently quiesces a live tab when another same-origin tab requests deletion. */
 export function useAccountDeletionQuiescence(gate: NotificationOperationGate): boolean {
+  /** Provides [quiesced, set quiesced] behavior. */
   const [quiesced, setQuiesced] = useState(isAccountDeletionCleanupPending);
   useEffect(() => {
+    /** Removes mutation guard. */
     const removeMutationGuard = installBrowserPlayerStateMutationGuard(gate.isOpen);
     if (quiesced) gate.close();
+    /** Provides on storage behavior. */
     const onStorage = (event: StorageEvent) => {
       if (
         (event.key === ACCOUNT_DELETION_EPOCH_KEY && event.newValue !== null) ||

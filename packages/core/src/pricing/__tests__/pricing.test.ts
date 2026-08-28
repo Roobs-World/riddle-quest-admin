@@ -3,6 +3,7 @@ import {parseProductPricing} from "../productPricing";
 
 describe("product pricing", () => {
   it("clones the default catalog without sharing nested prices", () => {
+    /** Provides clone behavior. */
     const clone = cloneProductPricingCatalog();
     expect(clone).toEqual(DEFAULT_PRODUCT_PRICING);
     expect(clone).not.toBe(DEFAULT_PRODUCT_PRICING);
@@ -11,6 +12,7 @@ describe("product pricing", () => {
   });
 
   it("deep-clones an optional special offer", () => {
+    /** Provides product behavior. */
     const product = {
       ...DEFAULT_PRODUCT_PRICING[0],
       specialOffer: {
@@ -22,6 +24,7 @@ describe("product pricing", () => {
         validTo: 2,
       },
     };
+    /** Provides [clone] behavior. */
     const [clone] = cloneProductPricingCatalog([product]);
     expect(clone.specialOffer).toEqual(product.specialOffer);
     expect(clone.specialOffer).not.toBe(product.specialOffer);

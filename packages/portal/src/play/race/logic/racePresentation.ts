@@ -24,27 +24,28 @@ export const findFirstEditableRaceSlot = (riddle: RaceRiddle | null): number => 
   if (!riddle) return 0;
   /** Answer positions already fixed by server-authoritative hints. */
   const revealed = new Set(riddle.revealedLetters.map(({index}) => index));
-  return Array.from({length: riddle.answerLength}, (_, position) => position)
-    .find((position) => !revealed.has(position)) ?? 0;
+  return (
+    Array.from({length: riddle.answerLength}, (_, position) => position).find((position) => !revealed.has(position)) ??
+    0
+  );
 };
 
 /** Advances the latest server clock locally without exceeding the race limit. */
-export const getAdjustedRaceTime = (
-  run: RaceRunView | null,
-  receivedAtMs: number,
-  nowMs = Date.now(),
-): number => run
-  ? Math.min(
-      run.rules.maxAdjustedTimeMs,
-      run.adjustedElapsedMs + (run.status === "active" ? nowMs - receivedAtMs : 0),
-    )
-  : 0;
+export const getAdjustedRaceTime = (run: RaceRunView | null, receivedAtMs: number, nowMs = Date.now()): number =>
+  run
+    ? Math.min(
+        run.rules.maxAdjustedTimeMs,
+        run.adjustedElapsedMs + (run.status === "active" ? nowMs - receivedAtMs : 0),
+      )
+    : 0;
 
 /** Keeps the strongest server-scored feedback observed for each keyboard letter. */
 export const getRaceLetterStates = (guesses: readonly ScoredGuess[]): Record<string, Feedback> => {
+  /** Provides states behavior. */
   const states: Record<string, Feedback> = {};
   for (const scoredGuess of guesses) {
     scoredGuess.guess.forEach((letter, index) => {
+      /** Provides status behavior. */
       const status = scoredGuess.feedback[index];
       if (!letter || !status || states[letter.toLowerCase()] === "green") return;
       states[letter.toLowerCase()] = status;

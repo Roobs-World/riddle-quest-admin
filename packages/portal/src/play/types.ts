@@ -71,10 +71,15 @@ type AuthAdapter = {
 
 /** Describes hint result. */
 type HintResult = {
+  /** Stores revealed letter. */
   revealedLetter: string;
+  /** Stores index. */
   index: number;
+  /** Stores coins cost. */
   coinsCost: number;
+  /** Stores new coins. */
   newCoins?: number;
+  /** Stores newly unlocked achievement ids. */
   newlyUnlockedAchievementIds?: string[];
 } | null;
 
@@ -98,7 +103,9 @@ export type CompletionResult = {
   newWinStreak?: number;
   /** Stores reward breakdown. */
   rewardBreakdown?: {
+    /** Stores new balance. */
     newBalance: number;
+    /** Stores total awarded. */
     totalAwarded: number;
   };
 };
@@ -112,7 +119,12 @@ type SpendCoinsResult = {
 /** Describes one server-authoritative single-player guess result. */
 export type SinglePlayerGuessResult = {
   /** Per-letter canonical feedback. */
-  feedback: Array<{letter: string; status: "green" | "yellow" | "red"}>;
+  feedback: Array<{
+    /** Stores letter. */
+    letter: string; /** Stores status. */
+    /** Stores status. */
+    status: "green" | "yellow" | "red";
+  }>;
   /** Server-counted attempts. */
   attempts: number;
   /** Canonical correctness. */
@@ -133,8 +145,11 @@ type SkipResult = {
   costDeducted: number;
   /** Stores new progress. */
   newProgress?: {
+    /** Stores classic index. */
     classicIndex?: number;
+    /** Stores daily challenge index. */
     dailyChallengeIndex?: number;
+    /** Stores daily challenge current question. */
     dailyChallengeCurrentQuestion?: number;
   } | null;
 };
@@ -182,50 +197,78 @@ export type HostServices = {
   readonly auth: AuthAdapter;
   /** Loads riddle. */
   loadRiddle(input: {
+    /** Stores game mode. */
     gameMode: WebGameMode;
+    /** Stores locale. */
     locale: string;
+    /** Stores classic index. */
     classicIndex?: number;
+    /** Stores session token. */
     sessionToken?: string;
+    /** Stores riddle id. */
     riddleId?: string;
   }): Promise<BridgeRiddle>;
   /** Loads profile. */
   loadProfile(userId: string): Promise<BridgeProfile | null>;
   /** Completes game. */
   completeGame(input: {
+    /** Stores riddle id. */
     riddleId: string;
+    /** Stores game mode. */
     gameMode: WebGameMode;
+    /** Stores session token. */
     sessionToken: string;
   }): Promise<CompletionResult>;
   /** Submits one authoritative single-player guess. */
   submitGuess(input: {
+    /** Stores riddle id. */
     riddleId: string;
+    /** Stores game mode. */
     gameMode: WebGameMode;
+    /** Stores session token. */
     sessionToken: string;
+    /** Stores guess. */
     guess: string;
+    /** Stores request id. */
     requestId: string;
   }): Promise<SinglePlayerGuessResult>;
   /** Requests hint. */
   requestHint(input: {
+    /** Stores riddle id. */
     riddleId: string;
+    /** Stores game mode. */
     gameMode: WebGameMode;
+    /** Stores session token. */
     sessionToken: string;
+    /** Stores request id. */
     requestId: string;
+    /** Stores current attempt. */
     currentAttempt: string[];
   }): Promise<HintResult>;
   /** Provides spend coins behavior. */
   spendCoins(input: {
+    /** Stores reason. */
     reason: "continue";
+    /** Stores game mode. */
     gameMode: WebGameMode;
+    /** Stores riddle id. */
     riddleId: string;
+    /** Stores session token. */
     sessionToken: string;
+    /** Stores request id. */
     requestId: string;
+    /** Stores amount. */
     amount?: number;
   }): Promise<SpendCoinsResult>;
   /** Provides skip riddle behavior. */
   skipRiddle(input: {
+    /** Stores riddle id. */
     riddleId: string;
+    /** Stores game mode. */
     gameMode: WebGameMode;
+    /** Stores session token. */
     sessionToken: string;
+    /** Stores request id. */
     requestId: string;
   }): Promise<SkipResult>;
   /** Requests purchase. */
@@ -259,18 +302,38 @@ export type HostServices = {
   /** Gets race outcome. */
   getRaceOutcome(runId: string): Promise<RaceOutcome>;
   /** Lists race inbox. */
-  listRaceInbox(input?: {cursor?: string; limit?: number}): Promise<ListRaceInboxResponse>;
+  listRaceInbox(input?: {
+    /** Stores cursor. */
+    cursor?: string; /** Stores limit. */
+    /** Stores limit. */
+    limit?: number;
+  }): Promise<ListRaceInboxResponse>;
   /** Blocks a server-established rival immediately. */
-  blockRival(targetUserId: string): Promise<{blocked: true}>;
+  blockRival(targetUserId: string): Promise<{
+    /** Stores blocked. */
+    blocked: true;
+  }>;
   /** Queues an idempotent categorized rival report. */
-  reportRival(input: {targetUserId: string; category: SocialReportCategory; requestId: string}): Promise<{
+  reportRival(input: {
+    /** Stores target user id. */
+    targetUserId: string; /** Stores category. */
+    /** Stores category. */
+    category: SocialReportCategory; /** Stores request id. */
+    /** Stores request id. */
+    requestId: string;
+  }): Promise<{
+    /** Stores report id. */
     reportId: string;
+    /** Stores queued. */
     queued: true;
   }>;
   /** Gets race access. */
   getRaceAccess(): Promise<RaceAccessResponse>;
   /** Records race analytics. */
-  recordRaceAnalytics(input: RaceAnalyticsEventRequest): Promise<{accepted: true}>;
+  recordRaceAnalytics(input: RaceAnalyticsEventRequest): Promise<{
+    /** Stores accepted. */
+    accepted: true;
+  }>;
 };
 
 /** Provides to product summaries behavior. */

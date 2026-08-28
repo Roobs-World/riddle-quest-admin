@@ -17,8 +17,7 @@ const JEST_REFERRAL_SHARE_TOKEN = /^[0-9a-f]{16}$/;
 export const JEST_REFERRAL_REWARD_COINS = 100;
 
 /** Describes jest referral reference. */
-export type JestLegacyReferralReference =
-  (typeof JEST_REFERRAL_REFERENCES)[keyof typeof JEST_REFERRAL_REFERENCES];
+export type JestLegacyReferralReference = (typeof JEST_REFERRAL_REFERENCES)[keyof typeof JEST_REFERRAL_REFERENCES];
 /** Describes a bounded personalized reference that Jest will never upsert across shares. */
 export type JestPersonalizedReferralReference =
   `${(typeof JEST_REFERRAL_SHARE_PREFIXES)[keyof typeof JEST_REFERRAL_SHARE_PREFIXES]}${string}`;
@@ -46,6 +45,8 @@ export function isJestRewardedReferralReference(value: unknown): value is JestRe
   if (value.startsWith(JEST_REFERRAL_SHARE_PREFIXES.result)) {
     return JEST_REFERRAL_SHARE_TOKEN.test(value.slice(JEST_REFERRAL_SHARE_PREFIXES.result.length));
   }
-  return value.startsWith(JEST_REFERRAL_SHARE_PREFIXES.race) &&
-    JEST_REFERRAL_SHARE_TOKEN.test(value.slice(JEST_REFERRAL_SHARE_PREFIXES.race.length));
+  return (
+    value.startsWith(JEST_REFERRAL_SHARE_PREFIXES.race) &&
+    JEST_REFERRAL_SHARE_TOKEN.test(value.slice(JEST_REFERRAL_SHARE_PREFIXES.race.length))
+  );
 }

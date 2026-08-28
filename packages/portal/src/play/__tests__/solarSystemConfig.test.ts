@@ -2,6 +2,7 @@ import {PLANET_ATMOSPHERES} from "../solarAtmospheres";
 
 describe("solar-system planet atmospheres", () => {
   it("gives every planet a visible, bounded atmosphere shell", () => {
+    /** Provides atmospheres behavior. */
     const atmospheres = Object.values(PLANET_ATMOSPHERES);
     expect(atmospheres).toHaveLength(7);
 

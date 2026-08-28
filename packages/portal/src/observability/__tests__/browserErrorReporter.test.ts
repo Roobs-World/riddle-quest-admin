@@ -12,7 +12,9 @@ describe("browser error reporter seam", () => {
   });
 
   it("delegates to the installed adapter and can restore the no-op adapter", () => {
+    /** Provides reporter behavior. */
     const reporter = jest.fn();
+    /** Provides error behavior. */
     const error = new Error("failed");
     configureBrowserErrorReporter(reporter);
 

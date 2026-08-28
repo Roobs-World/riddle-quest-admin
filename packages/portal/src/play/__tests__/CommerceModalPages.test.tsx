@@ -7,11 +7,7 @@ import {
   TreasureModalPage,
 } from "../modalPages/commerce/CoinActionModalPages";
 import {ShopModalPage} from "../modalPages/commerce/ShopModalPage";
-import {
-  CONTINUE_COIN_COST,
-  HINT_COIN_COST,
-  SKIP_COIN_COST,
-} from "../modalPages/commerce/commerceCosts";
+import {CONTINUE_COIN_COST, HINT_COIN_COST, SKIP_COIN_COST} from "../modalPages/commerce/commerceCosts";
 import type {ProductSummary} from "../types";
 
 /** No-op callback shared by server-rendering tests. */
@@ -60,10 +56,10 @@ describe("commerce modal pages", () => {
   });
 
   it("renders an empty platform catalog and all product variants", () => {
+    /** Provides empty html behavior. */
     const emptyHtml = renderToString(<ShopModalPage balance={0} products={[]} onPurchase={noop} />);
-    const populatedHtml = renderToString(
-      <ShopModalPage balance={1250} products={products} onPurchase={noop} />,
-    );
+    /** Provides populated html behavior. */
+    const populatedHtml = renderToString(<ShopModalPage balance={1250} products={products} onPurchase={noop} />);
 
     expect(emptyHtml).toContain("No coin packs are available right now");
     expect(populatedHtml).toContain("1,250");
@@ -74,12 +70,10 @@ describe("commerce modal pages", () => {
   });
 
   it("renders affordable and insufficient continue prompts", () => {
-    const poorHtml = renderToString(
-      <ContinueModalPage balance={10} onContinue={noop} onOpenModal={noop} />,
-    );
-    const fundedHtml = renderToString(
-      <ContinueModalPage balance={100} onContinue={noop} onOpenModal={noop} />,
-    );
+    /** Provides poor html behavior. */
+    const poorHtml = renderToString(<ContinueModalPage balance={10} onContinue={noop} onOpenModal={noop} />);
+    /** Provides funded html behavior. */
+    const fundedHtml = renderToString(<ContinueModalPage balance={100} onContinue={noop} onOpenModal={noop} />);
 
     expect(poorHtml).toContain("disabled");
     expect(poorHtml).toContain("not have enough coins");
@@ -87,25 +81,29 @@ describe("commerce modal pages", () => {
   });
 
   it("removes every shop route when platform commerce is unavailable", () => {
+    /** Provides continue html behavior. */
     const continueHtml = renderToString(
       <ContinueModalPage balance={0} onContinue={noop} onOpenModal={noop} commerceAvailable={false} />,
     );
+    /** Provides hint html behavior. */
     const hintHtml = renderToString(
       <HintModalPage balance={0} onClose={noop} onOpenModal={noop} onRequestAction={noop} commerceAvailable={false} />,
     );
-    const treasureHtml = renderToString(
-      <TreasureModalPage balance={0} onOpenModal={noop} commerceAvailable={false} />,
-    );
+    /** Provides treasure html behavior. */
+    const treasureHtml = renderToString(<TreasureModalPage balance={0} onOpenModal={noop} commerceAvailable={false} />);
     expect(`${continueHtml}${hintHtml}${treasureHtml}`).not.toMatch(/Open Shop|Buy coins/u);
   });
 
   it("renders hint and skip prompts from the same coin action component", () => {
+    /** Provides poor hint html behavior. */
     const poorHintHtml = renderToString(
       <HintModalPage balance={0} onClose={noop} onOpenModal={noop} onRequestAction={noop} />,
     );
+    /** Provides funded hint html behavior. */
     const fundedHintHtml = renderToString(
       <HintModalPage balance={50} onClose={noop} onOpenModal={noop} onRequestAction={noop} />,
     );
+    /** Provides funded skip html behavior. */
     const fundedSkipHtml = renderToString(
       <SkipModalPage balance={100} onClose={noop} onOpenModal={noop} onRequestAction={noop} />,
     );
@@ -116,6 +114,7 @@ describe("commerce modal pages", () => {
   });
 
   it("renders the treasure balance with a shop action", () => {
+    /** Provides html behavior. */
     const html = renderToString(<TreasureModalPage balance={1234} onOpenModal={noop} />);
     expect(html).toContain("1,234");
     expect(html).toContain("Buy coins");

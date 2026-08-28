@@ -6,16 +6,23 @@ import {getDatabase} from "firebase-admin/database";
 
 /** Describes firestore factory. */
 type FirestoreFactory = typeof getFirestore & {
+  /** Stores field path. */
   FieldPath: typeof FieldPath;
+  /** Stores field value. */
   FieldValue: typeof FieldValue;
+  /** Stores timestamp. */
   Timestamp: typeof Timestamp;
 };
 
 /** Describes legacy admin. */
 type LegacyAdmin = typeof app & {
+  /** Stores auth. */
   auth?: typeof getAuth;
+  /** Stores firestore. */
   firestore?: FirestoreFactory;
+  /** Stores storage. */
   storage?: typeof getStorage;
+  /** Stores database. */
   database?: typeof getDatabase;
 };
 

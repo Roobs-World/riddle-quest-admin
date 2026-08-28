@@ -23,26 +23,43 @@ type SharedFanfareProps = {
 
 /** Props for the victory fanfare content. */
 export type VictoryFanfareContentProps = SharedFanfareProps & {
+  /** Stores active step. */
   activeStep: FanfareStep | undefined;
+  /** Stores state. */
   state: GameSessionState;
+  /** Stores step index. */
   stepIndex: number;
+  /** Stores step count. */
   stepCount: number;
 };
 
 /** Props for an auxiliary purchase or achievement fanfare. */
 export type RewardFanfareContentProps = SharedFanfareProps & {
+  /** Stores active step. */
   activeStep: FanfareStep | undefined;
+  /** Stores step index. */
   stepIndex: number;
+  /** Stores step count. */
   stepCount: number;
 };
 
 /** Renders an achievement unlocked during a fanfare sequence. */
-export function AchievementFanfare({achievementId}: {achievementId: string}) {
+export function AchievementFanfare({
+  achievementId,
+}: {
+  /** Stores achievement id. */ /** Stores achievement id. */
+  achievementId: string;
+}) {
+  /** Provides achievement behavior. */
   const achievement = ACHIEVEMENT_DEFINITIONS.find((item) => item.id === achievementId);
   return (
     <div className="achievement-unlock">
-      <span className="achievement-icon large" aria-hidden="true">{achievement?.icon ?? "🏆"}</span>
-      <strong>{achievement ? (achievement.nameKey ? tr(achievement.nameKey) : achievement.name) : achievementId}</strong>
+      <span className="achievement-icon large" aria-hidden="true">
+        {achievement?.icon ?? "🏆"}
+      </span>
+      <strong>
+        {achievement ? (achievement.nameKey ? tr(achievement.nameKey) : achievement.name) : achievementId}
+      </strong>
       {achievement && <p>{achievement.descriptionKey ? tr(achievement.descriptionKey) : achievement.description}</p>}
     </div>
   );
@@ -62,12 +79,16 @@ export function VictoryFanfareContent({
 }: VictoryFanfareContentProps) {
   /** Optional outbound sharing supplied by the active release target. */
   const referralSharing = useReferralSharing();
+  /** Provides victory level behavior. */
   const victoryLevel = state.lastRewards?.newLevel;
+  /** Provides victory rank behavior. */
   const victoryRank = getRankForLevel(victoryLevel ?? 1);
 
   return (
     <div className="fanfare-content">
-      <div className="fanfare-burst" aria-hidden="true">✦</div>
+      <div className="fanfare-burst" aria-hidden="true">
+        ✦
+      </div>
       {!activeStep ? (
         <p aria-live="polite">{tr("WebPortal.HOST_STATUS_WAITING")}</p>
       ) : activeStep.kind === "achievement" ? (
@@ -75,7 +96,10 @@ export function VictoryFanfareContent({
       ) : activeStep.kind === "level" ? (
         <div className="reward-summary">
           <span className="fanfare-emblem">✦</span>
-          <strong>{tr("LevelUpFanfare.LEVEL_PREFIX")}{victoryLevel}</strong>
+          <strong>
+            {tr("LevelUpFanfare.LEVEL_PREFIX")}
+            {victoryLevel}
+          </strong>
           <span>{tr("LevelUpFanfare.PROFILE_GUIDANCE")}</span>
         </div>
       ) : activeStep.kind === "rank" ? (
@@ -100,23 +124,29 @@ export function VictoryFanfareContent({
           ) : null}
           <div className="reward-summary reward-details">
             {state.lastRewards?.newXp !== undefined && (
-              <span>{state.lastRewards.newXp} {tr("StatsModal.XP")}</span>
+              <span>
+                {state.lastRewards.newXp} {tr("StatsModal.XP")}
+              </span>
             )}
             {state.lastRewards?.newWinStreak !== undefined && <span>🔥 {state.lastRewards.newWinStreak}</span>}
           </div>
           {referralSharing ? (
             <button
               className="play-secondary"
-              onClick={() => referralSharing.shareResult({
-                gameMode: state.riddle?.gameMode,
-                riddleId: state.riddle?.riddleId,
-                attempts: state.guesses.length,
-                emojiGrid: state.guesses
-                  .map((guess) => guess.feedback.map((feedback) =>
-                    feedback === "green" ? "🟩" : feedback === "yellow" ? "🟨" : "⬛",
-                  ).join(""))
-                  .join("\n"),
-              })}
+              onClick={() =>
+                referralSharing.shareResult({
+                  gameMode: state.riddle?.gameMode,
+                  riddleId: state.riddle?.riddleId,
+                  attempts: state.guesses.length,
+                  emojiGrid: state.guesses
+                    .map((guess) =>
+                      guess.feedback
+                        .map((feedback) => (feedback === "green" ? "🟩" : feedback === "yellow" ? "🟨" : "⬛"))
+                        .join(""),
+                    )
+                    .join("\n"),
+                })
+              }
             >
               {tr("VictoryModal.SHARE_TEXT", {coins: referralSharing.rewardCoins})}
             </button>
@@ -125,11 +155,11 @@ export function VictoryFanfareContent({
       )}
       {activeStep ? (
         <>
-          <small className="sequence-progress">{stepIndex + 1}/{stepCount}</small>
+          <small className="sequence-progress">
+            {stepIndex + 1}/{stepCount}
+          </small>
           <button className="play-primary reward-continue" disabled={coinCollectionPending} onClick={onAdvance}>
-            {stepIndex + 1 < stepCount
-              ? tr("GameScreenAlerts.NEXT_BUTTON")
-              : tr("VictoryModal.NEXT_LEVEL_BUTTON")}
+            {stepIndex + 1 < stepCount ? tr("GameScreenAlerts.NEXT_BUTTON") : tr("VictoryModal.NEXT_LEVEL_BUTTON")}
           </button>
         </>
       ) : null}
@@ -150,7 +180,9 @@ export function RewardFanfareContent({
 }: RewardFanfareContentProps) {
   return (
     <div className="fanfare-content">
-      <div className="fanfare-burst" aria-hidden="true">✦</div>
+      <div className="fanfare-burst" aria-hidden="true">
+        ✦
+      </div>
       {activeStep?.kind === "purchase" || activeStep?.kind === "referral" || activeStep?.kind === "coins" ? (
         activeCoinAward && activeCoinAward.amount > 0 ? (
           <CoinAwardSequence
@@ -164,11 +196,11 @@ export function RewardFanfareContent({
       ) : activeStep?.kind === "achievement" ? (
         <AchievementFanfare achievementId={activeStep.achievementId} />
       ) : null}
-      <small className="sequence-progress">{stepIndex + 1}/{Math.max(1, stepCount)}</small>
+      <small className="sequence-progress">
+        {stepIndex + 1}/{Math.max(1, stepCount)}
+      </small>
       <button className="play-primary reward-continue" disabled={coinCollectionPending} onClick={onAdvance}>
-        {stepIndex + 1 < stepCount
-          ? tr("GameScreenAlerts.NEXT_BUTTON")
-          : tr("CoinPurchase.AWESOME_BUTTON")}
+        {stepIndex + 1 < stepCount ? tr("GameScreenAlerts.NEXT_BUTTON") : tr("CoinPurchase.AWESOME_BUTTON")}
       </button>
     </div>
   );

@@ -18,7 +18,14 @@ const toAchievementIds = (value: unknown): string[] => {
       entry !== null &&
       typeof (entry as Record<string, unknown>).achievementId === "string"
     ) {
-      return [(entry as {achievementId: string}).achievementId];
+      return [
+        (
+          entry as {
+            /** Stores achievement id. */
+            achievementId: string;
+          }
+        ).achievementId,
+      ];
     }
     return [];
   });
@@ -26,8 +33,11 @@ const toAchievementIds = (value: unknown): string[] => {
 
 /** Provides to bridge profile behavior. */
 export const toBridgeProfile = (user: BridgeUser, data: Record<string, unknown> | null): BridgeProfile => {
+  /** Provides stats behavior. */
   const stats = typeof data?.stats === "object" && data.stats ? (data.stats as Record<string, unknown>) : {};
-  const progress = typeof data?.progress === "object" && data.progress ? (data.progress as Record<string, unknown>) : {};
+  /** Provides progress behavior. */
+  const progress =
+    typeof data?.progress === "object" && data.progress ? (data.progress as Record<string, unknown>) : {};
 
   return {
     username:
@@ -45,10 +55,7 @@ export const toBridgeProfile = (user: BridgeUser, data: Record<string, unknown> 
     classicIndex: Math.max(1, Math.floor(toNumber(progress.classicIndex, 1))),
     avatarUrl: typeof data?.avatarUrl === "string" ? data.avatarUrl : user.photoURL,
     dailyChallengeIndex: Math.max(0, Math.floor(toNumber(progress.dailyChallengeIndex, 0))),
-    dailyChallengeCurrentQuestion: Math.max(
-      0,
-      Math.floor(toNumber(progress.dailyChallengeCurrentQuestion, 0)),
-    ),
+    dailyChallengeCurrentQuestion: Math.max(0, Math.floor(toNumber(progress.dailyChallengeCurrentQuestion, 0))),
     dailyPuzzlesCompleted: Math.max(0, Math.floor(toNumber(stats.dailyPuzzlesCompleted, 0))),
     bestStreak: Math.max(0, Math.floor(toNumber(stats.bestStreak, 0))),
     totalWordsGuessed: Math.max(0, Math.floor(toNumber(stats.totalWordsGuessed, 0))),

@@ -4,18 +4,14 @@ import {admin} from "../../shared/firebaseAdmin";
 export const SINGLE_WRITE_BATCH_SIZE = 400;
 
 /** Deletes every matching top-level document in bounded batches. */
-export async function deleteMatchingDocuments(
-  collection: string,
-  field: string,
-  userId: string,
-): Promise<void> {
+export async function deleteMatchingDocuments(collection: string, field: string, userId: string): Promise<void> {
+  /** Provides db behavior. */
   const db = admin.firestore();
   while (true) {
-    const snapshot = await db.collection(collection)
-      .where(field, "==", userId)
-      .limit(SINGLE_WRITE_BATCH_SIZE)
-      .get();
+    /** Provides snapshot behavior. */
+    const snapshot = await db.collection(collection).where(field, "==", userId).limit(SINGLE_WRITE_BATCH_SIZE).get();
     if (snapshot.empty) return;
+    /** Provides batch behavior. */
     const batch = db.batch();
     snapshot.docs.forEach((document) => batch.delete(document.ref));
     await batch.commit();
@@ -28,13 +24,17 @@ export async function deleteMatchingCollectionGroupDocuments(
   field: string,
   value: string,
 ): Promise<void> {
+  /** Provides db behavior. */
   const db = admin.firestore();
   while (true) {
-    const snapshot = await db.collectionGroup(collectionGroup)
+    /** Provides snapshot behavior. */
+    const snapshot = await db
+      .collectionGroup(collectionGroup)
       .where(field, "==", value)
       .limit(SINGLE_WRITE_BATCH_SIZE)
       .get();
     if (snapshot.empty) return;
+    /** Provides batch behavior. */
     const batch = db.batch();
     snapshot.docs.forEach((document) => batch.delete(document.ref));
     await batch.commit();

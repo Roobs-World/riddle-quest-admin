@@ -29,27 +29,48 @@ export function RaceGameplay({
   onSubmit,
   onSkip,
 }: {
+  /** Stores viewport ref. */
   viewportRef: RefObject<HTMLDivElement | null>;
+  /** Stores gameplay ref. */
   gameplayRef: RefObject<HTMLDivElement | null>;
+  /** Stores run. */
   run: RaceRunView;
+  /** Stores adjusted now. */
   adjustedNow: number;
+  /** Stores ghost correct. */
   ghostCorrect: number;
+  /** Stores feedback. */
   feedback: "correct" | "incorrect" | null;
+  /** Stores coins. */
   coins: number;
+  /** Stores current letters. */
   currentLetters: string[];
+  /** Stores active slot index. */
   activeSlotIndex: number;
+  /** Stores guesses. */
   guesses: ScoredGuess[];
+  /** Stores letter states. */
   letterStates: Record<string, Feedback>;
+  /** Stores pending. */
   pending: boolean;
+  /** Stores on close. */
   onClose: () => void;
+  /** Stores on select slot. */
   onSelectSlot: (index: number) => void;
+  /** Stores on letter. */
   onLetter: (letter: string) => void;
+  /** Stores on text. */
   onText: (text: string) => void;
+  /** Stores on backspace. */
   onBackspace: () => void;
+  /** Stores on hint. */
   onHint: () => void;
+  /** Stores on submit. */
   onSubmit: () => void;
+  /** Stores on skip. */
   onSkip: () => void;
 }) {
+  /** Provides native input ref behavior. */
   const nativeInputRef = useRef<HTMLInputElement>(null);
   return (
     <div ref={viewportRef} className="race-gameplay-viewport">
@@ -100,18 +121,26 @@ export function RaceGameplay({
         <div className="game-input-actions race-actions" aria-describedby="race-attempts">
           <button onClick={onHint} disabled={pending || !run.currentRiddle?.hintAvailable}>
             <HintIcon />
-            <span>{tr("RaceTo10.HINT_BUTTON")} <small>{tr("RaceTo10.HINT_PENALTY")}</small></span>
+            <span>
+              {tr("RaceTo10.HINT_BUTTON")} <small>{tr("RaceTo10.HINT_PENALTY")}</small>
+            </span>
           </button>
           <button
             className="submit-action"
             onClick={onSubmit}
-            disabled={pending || currentLetters.length !== run.currentRiddle?.answerLength || currentLetters.some((letter) => !letter)}
+            disabled={
+              pending ||
+              currentLetters.length !== run.currentRiddle?.answerLength ||
+              currentLetters.some((letter) => !letter)
+            }
           >
             {tr("RaceTo10.SUBMIT")}
           </button>
           <button onClick={onSkip} disabled={pending || (run.currentRiddle?.guessesUsed ?? 0) < 1}>
             <ForwardIcon />
-            <span>{tr("RaceTo10.SKIP_BUTTON")} <small>{tr("RaceTo10.SKIP_PENALTY")}</small></span>
+            <span>
+              {tr("RaceTo10.SKIP_BUTTON")} <small>{tr("RaceTo10.SKIP_PENALTY")}</small>
+            </span>
           </button>
         </div>
       </div>

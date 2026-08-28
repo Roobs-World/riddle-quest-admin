@@ -28,17 +28,21 @@ const resolveLocale = (locale?: string): SupportedLocale =>
 
 /** Gets classic riddle. */
 async function getClassicRiddle(riddleId: string, locale?: string): Promise<ClassicRiddle | undefined> {
+  /** Resolves d locale. */
   const resolvedLocale = resolveLocale(locale);
+  /** Provides localized doc behavior. */
   const localizedDoc = await getDb().collection(getLocalizedRiddleCollectionPath(resolvedLocale)).doc(riddleId).get();
   if (!localizedDoc.exists) {
     functions.logger.info(`Classic riddle document not found for ID ${riddleId} in locale ${resolvedLocale}`);
     return undefined;
   }
+  /** Provides data behavior. */
   const data = localizedDoc.data();
   if (!data) {
     functions.logger.info(`Classic riddle data is null for ID ${riddleId} in locale ${resolvedLocale}`);
     return undefined;
   }
+  /** Provides riddle data behavior. */
   const riddleData = data as ClassicRiddle;
   return {...riddleData, riddleId: riddleData.riddleId || riddleId, locale: riddleData.locale || resolvedLocale};
 }
@@ -48,7 +52,9 @@ export async function getClassicRiddleByIndex(
   classicIndex: number,
   locale?: string,
 ): Promise<ClassicRiddle | undefined> {
+  /** Resolves d locale. */
   const resolvedLocale = resolveLocale(locale);
+  /** Provides snapshot behavior. */
   const snapshot = await getDb()
     .collection(getLocalizedRiddleCollectionPath(resolvedLocale))
     .where("classicIndex", "==", classicIndex)
@@ -58,37 +64,46 @@ export async function getClassicRiddleByIndex(
     functions.logger.info(`Classic riddle document not found for index ${classicIndex} in locale ${resolvedLocale}`);
     return undefined;
   }
+  /** Provides doc behavior. */
   const doc = snapshot.docs[0];
+  /** Provides data behavior. */
   const data = doc.data();
   if (!data) {
     functions.logger.info(`Classic riddle data is null for index ${classicIndex} in locale ${resolvedLocale}`);
     return undefined;
   }
+  /** Provides riddle data behavior. */
   const riddleData = data as ClassicRiddle;
   return {...riddleData, riddleId: riddleData.riddleId || doc.id, locale: riddleData.locale || resolvedLocale};
 }
 
 /** Gets daily riddle. */
 export async function getDailyRiddle(riddleId: string, locale?: string): Promise<DailyRiddle | undefined> {
+  /** Resolves d locale. */
   const resolvedLocale = resolveLocale(locale);
+  /** Provides localized doc behavior. */
   const localizedDoc = await getDb().collection(getLocalizedRiddleCollectionPath(resolvedLocale)).doc(riddleId).get();
   if (!localizedDoc.exists) {
     functions.logger.info(`Daily riddle document not found for ID ${riddleId} in locale ${resolvedLocale}`);
     return undefined;
   }
+  /** Provides data behavior. */
   const data = localizedDoc.data();
   if (!data) {
     functions.logger.info(`Daily riddle data is null for ID ${riddleId} in locale ${resolvedLocale}`);
     return undefined;
   }
+  /** Provides riddle data behavior. */
   const riddleData = data as DailyRiddle;
   return {...riddleData, riddleId: riddleData.riddleId || riddleId, locale: riddleData.locale || resolvedLocale};
 }
 
 /** Gets riddle. */
 export async function getRiddle(riddleId: string): Promise<FirestoreRiddle | undefined> {
+  /** Provides classic riddle behavior. */
   const classicRiddle = await getClassicRiddle(riddleId);
   if (classicRiddle) return classicRiddle;
+  /** Provides daily riddle behavior. */
   const dailyRiddle = await getDailyRiddle(riddleId);
   if (dailyRiddle) return dailyRiddle;
   functions.logger.info(`Riddle document not found for ID ${riddleId} in any collection`);

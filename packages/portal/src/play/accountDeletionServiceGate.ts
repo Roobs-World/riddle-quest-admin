@@ -9,16 +9,18 @@ export type AccountDeletionServiceGate = {
 };
 
 /** Coordinates all host-service calls with authoritative account deletion. */
-export function coordinateHostServices(
-  services: HostServices,
-  gate: AccountDeletionServiceGate,
-): HostServices {
+export function coordinateHostServices(services: HostServices, gate: AccountDeletionServiceGate): HostServices {
   return new Proxy(services, {
+    /** Provides get behavior. */
     get(target, property, receiver) {
+      /** Provides value behavior. */
       const value = Reflect.get(target, property, receiver);
       if (typeof value !== "function") return value;
       if (property === "deleteAccount") {
-        return () => gate.runExclusive(async () => { await Reflect.apply(value, target, []); });
+        return () =>
+          gate.runExclusive(async () => {
+            await Reflect.apply(value, target, []);
+          });
       }
       return (...args: unknown[]) => gate.run(async () => Reflect.apply(value, target, args));
     },

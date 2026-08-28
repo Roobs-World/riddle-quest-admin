@@ -1,5 +1,6 @@
 import {getMobileCapabilities, shouldLoadDecorativeWebGl} from "../performance/mobileCapabilities";
 
+/** Provides capable device behavior. */
 const capableDevice = {
   deviceMemory: 8,
   hardwareConcurrency: 8,
@@ -96,7 +97,11 @@ describe("runtime mobile capability detection", () => {
     });
     Object.defineProperty(globalThis, "document", {
       configurable: true,
-      value: {createElement: jest.fn(() => { throw new Error("canvas blocked"); })},
+      value: {
+        createElement: jest.fn(() => {
+          throw new Error("canvas blocked");
+        }),
+      },
     });
     Object.defineProperty(globalThis, "WebGLRenderingContext", {configurable: true, value: class {}});
 

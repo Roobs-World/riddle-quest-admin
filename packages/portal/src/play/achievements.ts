@@ -415,6 +415,7 @@ export function getAchievementProgress(
   progress: PlayerProgress | undefined | null,
   hasPurchasedApp?: boolean | null,
 ): number {
+  /** Provides def behavior. */
   const def = ACHIEVEMENT_DEFINITIONS.find((d) => d.criteriaType === criteriaType);
   if (!def) return 0;
   return def.getProgress({stats, progress, hasPurchasedApp});

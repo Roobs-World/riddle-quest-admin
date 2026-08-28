@@ -10,18 +10,31 @@ import type {
 
 /** Inputs required by the server-authoritative Race to 10 coordinator. */
 export type RaceTo10GameProps = Readonly<{
+  /** Stores locale. */
   locale: RaceLocale;
+  /** Stores challenge id. */
   challengeId?: string;
+  /** Stores open inbox. */
   openInbox?: boolean;
+  /** Stores coins. */
   coins: number;
+  /** Stores post to host. */
   postToHost: (message: GameToHostMessage) => void;
+  /** Stores on close. */
   onClose: () => void;
+  /** Stores initial categories. */
   initialCategories?: ListRaceCategoriesResponse["categories"];
+  /** Stores native social. */
   nativeSocial?: NativeSocialCapability;
+  /** Stores matchmaking. */
   matchmaking?: MatchmakingCapability;
+  /** Stores player overlay. */
   playerOverlay?: OverlayCapability;
+  /** Stores platform player id. */
   platformPlayerId?: string;
+  /** Stores tournaments. */
   tournaments?: TournamentCapability;
+  /** Stores context board. */
   contextBoard?: ContextBoardCapability;
 }>;
 

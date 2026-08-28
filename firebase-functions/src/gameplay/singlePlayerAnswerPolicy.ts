@@ -17,21 +17,30 @@ export function assertPlayableSinglePlayerAnswer(answer: unknown): asserts answe
 
 /** Builds a rollover-safe identity for one canonical single-player riddle. */
 export const getSinglePlayerContentKey = (
-  riddle: {riddleId: string; answer: string; canonicalKey?: string; challengeKey?: string},
+  riddle: {
+    /** Stores riddle id. */
+    riddleId: string; /** Stores answer. */
+    /** Stores answer. */
+    answer: string; /** Stores canonical key. */
+    /** Stores canonical key. */
+    canonicalKey?: string; /** Stores challenge key. */
+    /** Stores challenge key. */
+    challengeKey?: string;
+  },
   gameMode: "classic" | "challenge",
   locale: string,
   now = new Date(),
 ): string => {
-  const stableIdentity = gameMode === "challenge"
-    ? riddle.challengeKey ?? riddle.canonicalKey ?? `${riddle.riddleId}:${now.toISOString().slice(0, 10)}`
-    : riddle.canonicalKey ?? riddle.riddleId;
+  /** Provides stable identity behavior. */
+  const stableIdentity =
+    gameMode === "challenge"
+      ? (riddle.challengeKey ?? riddle.canonicalKey ?? `${riddle.riddleId}:${now.toISOString().slice(0, 10)}`)
+      : (riddle.canonicalKey ?? riddle.riddleId);
   return createHash("sha256")
     .update(`${gameMode}\0${locale}\0${stableIdentity}\0${riddle.answer.normalize("NFC").toLocaleLowerCase(locale)}`)
     .digest("hex");
 };
 
 /** Builds the locale-independent entitlement key used to deduplicate rewards. */
-export const getSinglePlayerCompletionKey = (
-  gameMode: "classic" | "challenge",
-  entitlement: number | string,
-): string => `${gameMode}:${String(entitlement)}`;
+export const getSinglePlayerCompletionKey = (gameMode: "classic" | "challenge", entitlement: number | string): string =>
+  `${gameMode}:${String(entitlement)}`;

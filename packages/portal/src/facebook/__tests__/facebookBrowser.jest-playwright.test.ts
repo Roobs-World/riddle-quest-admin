@@ -1,29 +1,44 @@
 import {describe, expect, it} from "@jest/globals";
 import {chromium} from "@playwright/test";
 
+/** Documents global. */
 declare global {
+  /** Defines the contract for window. */
   interface Window {
+    /** Stores facebook events. */
     __facebookEvents: string[];
+    /** Stores facebook pause. */
     __facebookPause?: () => void;
+    /** Stores riddle quest browser test. */
     __RIDDLE_QUEST_BROWSER_TEST__?: boolean;
   }
 }
 
+/** Provides describe browser behavior. */
 const describeBrowser = process.env.PORTAL_BROWSER_TESTS === "1" ? describe : describe.skip;
+/** Defines the failure nonce value. */
 const FAILURE_NONCE = "f".repeat(43);
+/** Defines the success nonce value. */
 const SUCCESS_NONCE = "s".repeat(43);
 
 describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
   it("runs failure recovery plus authenticated restore/pause/reload lifecycle", async () => {
+    /** Provides {exec file sync} behavior. */
     const {execFileSync} = await import("node:child_process");
+    /** Provides {create server} behavior. */
     const {createServer} = await import("node:http");
+    /** Provides {mkdtemp, read file, rm} behavior. */
     const {mkdtemp, readFile, rm} = await import("node:fs/promises");
+    /** Provides {tmpdir} behavior. */
     const {tmpdir} = await import("node:os");
+    /** Provides path behavior. */
     const path = await import("node:path");
+    /** Provides package root behavior. */
     const packageRoot = path.resolve(__dirname, "../../..");
     // The canonical artifact deliberately fails age-gated capabilities closed.
     // This harness owns a separate 13+ fixture so reusing release builds cannot
     // silently disable the profile-overlay lifecycle under test.
+    /** Provides dist directory behavior. */
     const distDirectory = await mkdtemp(path.join(tmpdir(), "riddle-quest-facebook-browser-"));
     execFileSync("pnpm", ["--filter", "@qwordly/portal", "build:facebook"], {
       cwd: path.resolve(packageRoot, "../.."),
@@ -34,65 +49,108 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       },
       stdio: "inherit",
     });
+    /** Provides server behavior. */
     const server = createServer(async (request, response) => {
+      /** Requests url. */
       const requestUrl = new URL(request.url ?? "/", "http://127.0.0.1");
+      /** Requests ed. */
       const requested = requestUrl.pathname === "/" ? "index.html" : requestUrl.pathname.replace(/^\//u, "");
+      /** Provides file path behavior. */
       const filePath = path.resolve(distDirectory, requested);
       if (!filePath.startsWith(`${distDirectory}${path.sep}`) && filePath !== path.join(distDirectory, "index.html")) {
         response.writeHead(404).end();
         return;
       }
       try {
+        /** Provides body behavior. */
         const body = await readFile(filePath);
+        /** Provides extension behavior. */
         const extension = path.extname(filePath);
-        response.writeHead(200, {"content-type": extension === ".html"
-          ? "text/html"
-          : extension === ".js"
-            ? "text/javascript"
-            : extension === ".css"
-              ? "text/css"
-              : "application/octet-stream"});
+        response.writeHead(200, {
+          "content-type":
+            extension === ".html"
+              ? "text/html"
+              : extension === ".js"
+                ? "text/javascript"
+                : extension === ".css"
+                  ? "text/css"
+                  : "application/octet-stream",
+        });
         response.end(body);
       } catch {
         response.writeHead(404).end();
       }
     });
     await new Promise<void>((resolve) => server.listen(4181, "127.0.0.1", resolve));
+    /** Provides browser behavior. */
     const browser = await chromium.launch({headless: true});
     try {
+      /** Provides page behavior. */
       const page = await browser.newPage({viewport: {width: 390, height: 844}});
       await page.route("https://connect.facebook.net/en_US/fbinstant.8.0.js", (route) =>
-        route.fulfill({status: 200, contentType: "text/javascript", body: "/* injected by browser contract test */"}));
-      await page.route("**/issueFacebookIdentityNonce", (route) => route.fulfill({
-        status: 200,
-        contentType: "application/json",
-        body: JSON.stringify({nonce: FAILURE_NONCE, expiresAtMs: Date.now() + 60_000}),
-      }));
-      await page.route("**/exchangeFacebookIdentity", (route) => route.fulfill({
-        status: 503,
-        contentType: "application/json",
-        body: JSON.stringify({error: "temporarily-unavailable"}),
-      }));
+        route.fulfill({status: 200, contentType: "text/javascript", body: "/* injected by browser contract test */"}),
+      );
+      await page.route("**/issueFacebookIdentityNonce", (route) =>
+        route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify({nonce: FAILURE_NONCE, expiresAtMs: Date.now() + 60_000}),
+        }),
+      );
+      await page.route("**/exchangeFacebookIdentity", (route) =>
+        route.fulfill({
+          status: 503,
+          contentType: "application/json",
+          body: JSON.stringify({error: "temporarily-unavailable"}),
+        }),
+      );
       await page.addInitScript(() => {
         window.__facebookEvents = [];
         window.FBInstant = {
-          async initializeAsync() { window.__facebookEvents.push("initialize"); },
-          setLoadingProgress(progress) { window.__facebookEvents.push(`progress:${progress}`); },
-          async startGameAsync() { window.__facebookEvents.push("start"); },
-          getSupportedAPIs() { return []; },
-          onPause(callback) { window.__facebookPause = callback; },
+          /** Provides initialize async behavior. */
+          async initializeAsync() {
+            window.__facebookEvents.push("initialize");
+          },
+          /** Sets loading progress. */
+          setLoadingProgress(progress) {
+            window.__facebookEvents.push(`progress:${progress}`);
+          },
+          /** Starts game async. */
+          async startGameAsync() {
+            window.__facebookEvents.push("start");
+          },
+          /** Gets supported ap is. */
+          getSupportedAPIs() {
+            return [];
+          },
+          /** Provides on pause behavior. */
+          onPause(callback) {
+            window.__facebookPause = callback;
+          },
           player: {
-            getID() { window.__facebookEvents.push("player"); return "facebook-browser-player"; },
+            /** Gets id. */
+            getID() {
+              window.__facebookEvents.push("player");
+              return "facebook-browser-player";
+            },
+            /** Gets signed player info async. */
             async getSignedPlayerInfoAsync(nonce) {
               window.__facebookEvents.push(`signed:${nonce}`);
               return {getSignature: () => "signature.payload", getPlayerID: () => "facebook-browser-player"};
             },
+            /** Gets data async. */
             async getDataAsync(keys) {
               window.__facebookEvents.push(`read:${keys.join(",")}`);
               return {};
             },
-            async setDataAsync() { window.__facebookEvents.push("write"); },
-            async flushDataAsync() { window.__facebookEvents.push("flush"); },
+            /** Sets data async. */
+            async setDataAsync() {
+              window.__facebookEvents.push("write");
+            },
+            /** Provides flush data async behavior. */
+            async flushDataAsync() {
+              window.__facebookEvents.push("flush");
+            },
           },
         };
       });
@@ -113,34 +171,53 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       expect(await page.locator('script[src*="fbinstant.8.0.js"]').count()).toBe(1);
       expect(await page.locator('script[src*="cdn.jest.com"]').count()).toBe(0);
 
+      /** Provides success page behavior. */
       const successPage = await browser.newPage({viewport: {width: 390, height: 844}});
+      /** Provides success requests behavior. */
       const successRequests: string[] = [];
-      let configurationRequest: {authorization?: string; appCheck?: string; body?: string};
+      /** Provides configuration request behavior. */
+      let configurationRequest: {
+        /** Stores authorization. */
+        authorization?: string; /** Stores app check. */
+        /** Stores app check. */
+        appCheck?: string; /** Stores body. */
+        /** Stores body. */
+        body?: string;
+      };
       successPage.on("request", (request) => successRequests.push(request.url()));
       await successPage.route("https://connect.facebook.net/en_US/fbinstant.8.0.js", (route) =>
-        route.fulfill({status: 200, contentType: "text/javascript", body: "/* injected by browser contract test */"}));
-      await successPage.route("**/issueFacebookIdentityNonce", (route) => route.fulfill({
-        status: 200,
-        contentType: "application/json",
-        body: JSON.stringify({nonce: SUCCESS_NONCE, expiresAtMs: Date.now() + 60_000}),
-      }));
+        route.fulfill({status: 200, contentType: "text/javascript", body: "/* injected by browser contract test */"}),
+      );
+      await successPage.route("**/issueFacebookIdentityNonce", (route) =>
+        route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify({nonce: SUCCESS_NONCE, expiresAtMs: Date.now() + 60_000}),
+        }),
+      );
+      /** Provides now seconds behavior. */
       const nowSeconds = Math.floor(Date.now() / 1_000);
+      /** Provides encode behavior. */
       const encode = (value: unknown) => Buffer.from(JSON.stringify(value)).toString("base64url");
+      /** Provides app check token behavior. */
       const appCheckToken = [
         encode({alg: "none", typ: "JWT"}),
         encode({aud: ["projects/329028367192"], exp: nowSeconds + 3_600, iat: nowSeconds, sub: "facebook-browser"}),
         "browser-signature",
       ].join(".");
-      await successPage.route("**/exchangeFacebookIdentity", (route) => route.fulfill({
-        status: 200,
-        contentType: "application/json",
-        body: JSON.stringify({
-          customToken: "browser-custom-token",
-          appCheckToken,
-          appCheckExpiresInMs: 3_600_000,
-          uid: `facebook_${"a".repeat(40)}`,
+      await successPage.route("**/exchangeFacebookIdentity", (route) =>
+        route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify({
+            customToken: "browser-custom-token",
+            appCheckToken,
+            appCheckExpiresInMs: 3_600_000,
+            uid: `facebook_${"a".repeat(40)}`,
+          }),
         }),
-      }));
+      );
+      /** Provides firebase id token behavior. */
       const firebaseIdToken = [
         encode({alg: "none", typ: "JWT"}),
         encode({
@@ -155,28 +232,37 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
         }),
         "browser-signature",
       ].join(".");
-      await successPage.route("**/v1/accounts:signInWithCustomToken**", (route) => route.fulfill({
-        status: 200,
-        contentType: "application/json",
-        body: JSON.stringify({
-          expiresIn: "3600",
-          idToken: firebaseIdToken,
-          isNewUser: false,
-          localId: `facebook_${"a".repeat(40)}`,
-          refreshToken: "browser-refresh-token",
+      await successPage.route("**/v1/accounts:signInWithCustomToken**", (route) =>
+        route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify({
+            expiresIn: "3600",
+            idToken: firebaseIdToken,
+            isNewUser: false,
+            localId: `facebook_${"a".repeat(40)}`,
+            refreshToken: "browser-refresh-token",
+          }),
         }),
-      }));
-      await successPage.route("**/v1/accounts:lookup**", (route) => route.fulfill({
-        status: 200,
-        contentType: "application/json",
-        body: JSON.stringify({users: [{
-          createdAt: String(Date.now() - 1_000),
-          lastLoginAt: String(Date.now()),
-          localId: `facebook_${"a".repeat(40)}`,
-          providerUserInfo: [],
-        }]}),
-      }));
+      );
+      await successPage.route("**/v1/accounts:lookup**", (route) =>
+        route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify({
+            users: [
+              {
+                createdAt: String(Date.now() - 1_000),
+                lastLoginAt: String(Date.now()),
+                localId: `facebook_${"a".repeat(40)}`,
+                providerUserInfo: [],
+              },
+            ],
+          }),
+        }),
+      );
       await successPage.route("**/getFacebookClientConfiguration", async (route) => {
+        /** Provides headers behavior. */
         const headers = await route.request().allHeaders();
         configurationRequest = {
           authorization: headers.authorization,
@@ -186,57 +272,98 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
         await route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify({data: {
-            interstitialsEnabled: false,
-            notificationsEnabled: false,
-            commerceEnabled: false,
-            rewardedAdsEnabled: false,
-            referralsEnabled: false,
-            matchmakingEnabled: false,
-            tournamentsEnabled: false,
-            presenceEnabled: false,
-            removeInterstitialAds: false,
-          }}),
+          body: JSON.stringify({
+            data: {
+              interstitialsEnabled: false,
+              notificationsEnabled: false,
+              commerceEnabled: false,
+              rewardedAdsEnabled: false,
+              referralsEnabled: false,
+              matchmakingEnabled: false,
+              tournamentsEnabled: false,
+              presenceEnabled: false,
+              removeInterstitialAds: false,
+            },
+          }),
         });
       });
       await successPage.addInitScript(() => {
         window.__facebookEvents = [];
         window.__RIDDLE_QUEST_BROWSER_TEST__ = true;
         window.FBInstant = {
-          async initializeAsync() { window.__facebookEvents.push("initialize"); },
-          setLoadingProgress(progress) { window.__facebookEvents.push(`progress:${progress}`); },
-          async startGameAsync() { window.__facebookEvents.push("start"); },
+          /** Provides initialize async behavior. */
+          async initializeAsync() {
+            window.__facebookEvents.push("initialize");
+          },
+          /** Sets loading progress. */
+          setLoadingProgress(progress) {
+            window.__facebookEvents.push(`progress:${progress}`);
+          },
+          /** Starts game async. */
+          async startGameAsync() {
+            window.__facebookEvents.push("start");
+          },
+          /** Gets supported ap is. */
           getSupportedAPIs() {
             return [
               "overlayViews.createProfilePictureOverlayViewAsync",
               "overlayViews.createProfileNameOverlayViewAsync",
             ];
           },
-          onPause(callback) { window.__facebookPause = callback; },
+          /** Provides on pause behavior. */
+          onPause(callback) {
+            window.__facebookPause = callback;
+          },
           overlayViews: {
+            /** Creates profile picture overlay view async. */
             async createProfilePictureOverlayViewAsync(surface) {
               window.__facebookEvents.push(`overlay:picture:${surface.dataset.platformOwnedIdentity !== undefined}`);
               return {
-                async showAsync() { window.__facebookEvents.push("overlay:picture:show"); },
-                async dismissAsync() { window.__facebookEvents.push("overlay:picture:dismiss"); },
-                async destroyOverlayView() { window.__facebookEvents.push("overlay:picture:destroy"); },
+                /** Provides show async behavior. */
+                async showAsync() {
+                  window.__facebookEvents.push("overlay:picture:show");
+                },
+                /** Provides dismiss async behavior. */
+                async dismissAsync() {
+                  window.__facebookEvents.push("overlay:picture:dismiss");
+                },
+                /** Provides destroy overlay view behavior. */
+                async destroyOverlayView() {
+                  window.__facebookEvents.push("overlay:picture:destroy");
+                },
               };
             },
+            /** Creates profile name overlay view async. */
             async createProfileNameOverlayViewAsync(surface) {
               window.__facebookEvents.push(`overlay:name:${surface.dataset.platformOwnedIdentity !== undefined}`);
               return {
-                async showAsync() { window.__facebookEvents.push("overlay:name:show"); },
-                async dismissAsync() { window.__facebookEvents.push("overlay:name:dismiss"); },
-                async destroyOverlayView() { window.__facebookEvents.push("overlay:name:destroy"); },
+                /** Provides show async behavior. */
+                async showAsync() {
+                  window.__facebookEvents.push("overlay:name:show");
+                },
+                /** Provides dismiss async behavior. */
+                async dismissAsync() {
+                  window.__facebookEvents.push("overlay:name:dismiss");
+                },
+                /** Provides destroy overlay view behavior. */
+                async destroyOverlayView() {
+                  window.__facebookEvents.push("overlay:name:destroy");
+                },
               };
             },
           },
           player: {
-            getID() { window.__facebookEvents.push("player"); return "facebook-browser-player"; },
+            /** Gets id. */
+            getID() {
+              window.__facebookEvents.push("player");
+              return "facebook-browser-player";
+            },
+            /** Gets signed player info async. */
             async getSignedPlayerInfoAsync(nonce) {
               window.__facebookEvents.push(`signed:${nonce}`);
               return {getSignature: () => "signature.payload", getPlayerID: () => "facebook-browser-player"};
             },
+            /** Gets data async. */
             async getDataAsync(keys) {
               window.__facebookEvents.push(`read:${keys.join(",")}`);
               return {
@@ -251,69 +378,105 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
                 riddleQuestPlayerState: {schemaVersion: 1, updatedAt: 42, coins: 300},
               };
             },
-            async setDataAsync() { window.__facebookEvents.push("write"); },
-            async flushDataAsync() { window.__facebookEvents.push("flush"); },
+            /** Sets data async. */
+            async setDataAsync() {
+              window.__facebookEvents.push("write");
+            },
+            /** Provides flush data async behavior. */
+            async flushDataAsync() {
+              window.__facebookEvents.push("flush");
+            },
           },
         };
       });
       await successPage.goto("http://127.0.0.1:4181/?harness=race");
       try {
-        await successPage.waitForFunction(() =>
-          window.__facebookEvents.includes("read:riddleQuestPlayerState"), undefined, {timeout: 15_000});
+        await successPage.waitForFunction(
+          () => window.__facebookEvents.includes("read:riddleQuestPlayerState"),
+          undefined,
+          {timeout: 15_000},
+        );
       } catch (error) {
-        const diagnostics = await successPage.evaluate(() => ({events: window.__facebookEvents, body: document.body.innerText}));
-        throw new Error(`${error instanceof Error ? error.message : String(error)} ${JSON.stringify({
-          ...diagnostics,
-          requests: successRequests.filter((url) => !url.startsWith("http://127.0.0.1:4181/assets/")),
-        })}`);
+        /** Provides diagnostics behavior. */
+        const diagnostics = await successPage.evaluate(() => ({
+          events: window.__facebookEvents,
+          body: document.body.innerText,
+        }));
+        throw new Error(
+          `${error instanceof Error ? error.message : String(error)} ${JSON.stringify({
+            ...diagnostics,
+            requests: successRequests.filter((url) => !url.startsWith("http://127.0.0.1:4181/assets/")),
+          })}`,
+        );
       }
       expect(await successPage.getByRole("alert").count()).toBe(0);
-      expect(await successPage.evaluate(() => window.__facebookEvents)).toEqual(expect.arrayContaining([
-        "initialize",
-        "start",
-        `signed:${SUCCESS_NONCE}`,
-        "read:riddleQuestPreferences",
-        "read:riddleQuestPlayerState",
-      ]));
+      expect(await successPage.evaluate(() => window.__facebookEvents)).toEqual(
+        expect.arrayContaining([
+          "initialize",
+          "start",
+          `signed:${SUCCESS_NONCE}`,
+          "read:riddleQuestPreferences",
+          "read:riddleQuestPlayerState",
+        ]),
+      );
       expect(configurationRequest).toEqual({
         authorization: `Bearer ${firebaseIdToken}`,
         appCheck: appCheckToken,
         body: JSON.stringify({data: null}),
       });
-      expect(await successPage.evaluate(() => ({
-        locale: localStorage.getItem("appLanguage"),
-        soundEnabled: localStorage.getItem("riddleQuest:soundEnabled"),
-        reducedMotion: document.documentElement.dataset.riddleQuestReducedMotion,
-        highContrast: document.documentElement.dataset.riddleQuestHighContrast,
-      }))).toEqual({locale: "fr", soundEnabled: "false", reducedMotion: "true", highContrast: "true"});
-      expect(await successPage.evaluate(() => {
-        const originalLanguage = document.documentElement.lang;
-        const expectedFirstFaces = {
+      expect(
+        await successPage.evaluate(() => ({
+          locale: localStorage.getItem("appLanguage"),
+          soundEnabled: localStorage.getItem("riddleQuest:soundEnabled"),
+          reducedMotion: document.documentElement.dataset.riddleQuestReducedMotion,
+          highContrast: document.documentElement.dataset.riddleQuestHighContrast,
+        })),
+      ).toEqual({locale: "fr", soundEnabled: "false", reducedMotion: "true", highContrast: "true"});
+      expect(
+        await successPage.evaluate(() => {
+          /** Provides original language behavior. */
+          const originalLanguage = document.documentElement.lang;
+          /** Provides expected first faces behavior. */
+          const expectedFirstFaces = {
+            ar: '"Noto Sans Arabic"',
+            hi: '"Noto Sans Devanagari"',
+            ja: '"Hiragino Sans"',
+            ko: '"Apple SD Gothic Neo"',
+            ru: '"Noto Sans"',
+            zh: '"PingFang SC"',
+          };
+          /** Provides actual behavior. */
+          const actual = Object.fromEntries(
+            Object.entries(expectedFirstFaces).map(([locale]) => {
+              document.documentElement.lang = locale;
+              return [locale, getComputedStyle(document.documentElement).fontFamily.split(",")[0]];
+            }),
+          );
+          document.documentElement.lang = originalLanguage;
+          return {actual, expectedFirstFaces};
+        }),
+      ).toEqual({
+        actual: {
           ar: '"Noto Sans Arabic"',
           hi: '"Noto Sans Devanagari"',
           ja: '"Hiragino Sans"',
           ko: '"Apple SD Gothic Neo"',
           ru: '"Noto Sans"',
           zh: '"PingFang SC"',
-        };
-        const actual = Object.fromEntries(Object.entries(expectedFirstFaces).map(([locale]) => {
-          document.documentElement.lang = locale;
-          return [locale, getComputedStyle(document.documentElement).fontFamily.split(",")[0]];
-        }));
-        document.documentElement.lang = originalLanguage;
-        return {actual, expectedFirstFaces};
-      })).toEqual({
-        actual: {
-          ar: '"Noto Sans Arabic"', hi: '"Noto Sans Devanagari"', ja: '"Hiragino Sans"',
-          ko: '"Apple SD Gothic Neo"', ru: '"Noto Sans"', zh: '"PingFang SC"',
         },
         expectedFirstFaces: {
-          ar: '"Noto Sans Arabic"', hi: '"Noto Sans Devanagari"', ja: '"Hiragino Sans"',
-          ko: '"Apple SD Gothic Neo"', ru: '"Noto Sans"', zh: '"PingFang SC"',
+          ar: '"Noto Sans Arabic"',
+          hi: '"Noto Sans Devanagari"',
+          ja: '"Hiragino Sans"',
+          ko: '"Apple SD Gothic Neo"',
+          ru: '"Noto Sans"',
+          zh: '"PingFang SC"',
         },
       });
       await successPage.evaluate(() =>
-        localStorage.setItem("riddleQuest:tooltipSequenceSeen:gameTour:v2:jest-guest", "seen"));
+        localStorage.setItem("riddleQuest:tooltipSequenceSeen:gameTour:v2:jest-guest", "seen"),
+      );
+      /** Provides onboarding action behavior. */
       const onboardingAction = successPage.locator(".onboarding-card .play-primary");
       await onboardingAction.waitFor({timeout: 5_000});
       await onboardingAction.evaluate((element: HTMLElement) => element.click());
@@ -323,32 +486,47 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
         await successPage.locator(".multiplayer-navigation-action").click({timeout: 5_000});
         await successPage.locator(".race-hub-tabs").waitFor({timeout: 5_000});
       } catch (error) {
+        /** Provides diagnostics behavior. */
         const diagnostics = await successPage.evaluate(() => ({
           body: document.body.innerText,
           events: window.__facebookEvents,
           route: location.href,
           viewport: {width: innerWidth, height: innerHeight},
           multiplayerBox: (() => {
+            /** Provides box behavior. */
             const box = document.querySelector(".multiplayer-navigation-action")?.getBoundingClientRect();
             return box ? {x: box.x, y: box.y, width: box.width, height: box.height} : null;
           })(),
           content: (() => {
+            /** Provides element behavior. */
             const element = document.querySelector(".game-content") as HTMLElement | null;
+            /** Provides box behavior. */
             const box = element?.getBoundingClientRect();
-            return element && box ? {x: box.x, width: box.width, transform: element.style.transform,
-              direction: getComputedStyle(element).direction} : null;
+            return element && box
+              ? {
+                  x: box.x,
+                  width: box.width,
+                  transform: element.style.transform,
+                  direction: getComputedStyle(element).direction,
+                }
+              : null;
           })(),
           navigation: (() => {
+            /** Provides box behavior. */
             const box = document.querySelector(".game-bottom-navigation")?.getBoundingClientRect();
             return box ? {x: box.x, width: box.width} : null;
           })(),
           ancestors: [".game-app", ".play-game-shell", "#root"].map((selector) => {
+            /** Provides box behavior. */
             const box = document.querySelector(selector)?.getBoundingClientRect();
             return {selector, ...(box ? {x: box.x, width: box.width} : {})};
           }),
         }));
-        throw new Error(`Facebook hub did not open: ${error instanceof Error ? error.message : String(error)} ${JSON.stringify(diagnostics)}`);
+        throw new Error(
+          `Facebook hub did not open: ${error instanceof Error ? error.message : String(error)} ${JSON.stringify(diagnostics)}`,
+        );
       }
+      /** Provides facebook hub tabs behavior. */
       const facebookHubTabs = successPage.getByRole("tab");
       expect(await facebookHubTabs.count()).toBe(2);
       expect(await successPage.getByRole("tab", {name: /^tournois$/i}).count()).toBe(0);
@@ -359,33 +537,37 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       await successPage.locator(".riddle-sound-button").evaluate((element: HTMLElement) => element.click());
       expect(await facebookHubTabs.nth(1).evaluate((element) => element === document.activeElement)).toBe(true);
       try {
-        await successPage.waitForFunction(
-          () => window.__facebookEvents.includes("overlay:name:show"),
-          undefined,
-          {timeout: 5_000},
-        );
+        await successPage.waitForFunction(() => window.__facebookEvents.includes("overlay:name:show"), undefined, {
+          timeout: 5_000,
+        });
       } catch (error) {
+        /** Provides events behavior. */
         const events = await successPage.evaluate(() => window.__facebookEvents);
         throw new Error(
           `Facebook profile overlay did not render: ${error instanceof Error ? error.message : String(error)} ` +
-          JSON.stringify({events}),
+            JSON.stringify({events}),
         );
       }
-      expect(await successPage.evaluate(() => window.__facebookEvents)).toEqual(expect.arrayContaining([
-        "overlay:picture:true",
-        "overlay:name:true",
-        "overlay:picture:show",
-        "overlay:name:show",
-      ]));
+      expect(await successPage.evaluate(() => window.__facebookEvents)).toEqual(
+        expect.arrayContaining([
+          "overlay:picture:true",
+          "overlay:name:true",
+          "overlay:picture:show",
+          "overlay:name:show",
+        ]),
+      );
       await facebookHubTabs.first().click();
       await successPage.waitForFunction(() => window.__facebookEvents.includes("overlay:name:destroy"));
-      expect(await successPage.evaluate(() => window.__facebookEvents.filter((event) =>
-        event.endsWith(":destroy")).sort())).toEqual(["overlay:name:destroy", "overlay:picture:destroy"]);
+      expect(
+        await successPage.evaluate(() => window.__facebookEvents.filter((event) => event.endsWith(":destroy")).sort()),
+      ).toEqual(["overlay:name:destroy", "overlay:picture:destroy"]);
+      /** Provides mobile hub box behavior. */
       const mobileHubBox = await successPage.locator(".race-hub-tabs").boundingBox();
       expect(mobileHubBox).not.toBeNull();
       expect(mobileHubBox!.x).toBeGreaterThanOrEqual(0);
       expect(mobileHubBox!.x + mobileHubBox!.width).toBeLessThanOrEqual(390);
       await successPage.setViewportSize({width: 1280, height: 800});
+      /** Provides desktop hub box behavior. */
       const desktopHubBox = await successPage.locator(".race-hub-tabs").boundingBox();
       expect(desktopHubBox).not.toBeNull();
       expect(desktopHubBox!.x).toBeGreaterThanOrEqual(0);
@@ -394,15 +576,21 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       await successPage.evaluate(() => window.__facebookPause?.());
       await successPage.waitForFunction(() => window.__facebookEvents.includes("flush"));
       await successPage.reload();
-      await successPage.waitForFunction(() =>
-        window.__facebookEvents.includes("read:riddleQuestPlayerState"), undefined, {timeout: 15_000});
+      await successPage.waitForFunction(
+        () => window.__facebookEvents.includes("read:riddleQuestPlayerState"),
+        undefined,
+        {timeout: 15_000},
+      );
       expect(await successPage.getByRole("alert").count()).toBe(0);
-      expect(await successPage.evaluate(() => window.__facebookEvents.filter((event) =>
-        event === "read:riddleQuestPreferences").length)).toBe(2);
+      expect(
+        await successPage.evaluate(
+          () => window.__facebookEvents.filter((event) => event === "read:riddleQuestPreferences").length,
+        ),
+      ).toBe(2);
     } finally {
       await browser.close();
       try {
-        await new Promise<void>((resolve, reject) => server.close((error) => error ? reject(error) : resolve()));
+        await new Promise<void>((resolve, reject) => server.close((error) => (error ? reject(error) : resolve())));
       } finally {
         await rm(distDirectory, {force: true, recursive: true});
       }

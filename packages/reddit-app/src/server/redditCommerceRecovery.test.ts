@@ -3,7 +3,9 @@ import test from "node:test";
 import {redditCommerceRecoveryKey} from "./redditCommerceRecovery.ts";
 
 test("derives stable isolated opaque recovery keys", () => {
+  /** Provides secret behavior. */
   const secret = "s".repeat(32);
+  /** Provides key behavior. */
   const key = redditCommerceRecoveryKey("riddle-quest", "t2_User1", secret);
   assert.match(key, /^[A-Za-z0-9_-]{43}$/);
   assert.equal(key, redditCommerceRecoveryKey("riddle-quest", "t2_User1", secret));

@@ -21,6 +21,7 @@ export async function assertRaceInteractionAllowed(
   opponentUserId: string | undefined,
 ): Promise<void> {
   if (!opponentUserId) return;
+  /** Provides [outgoing block, incoming block] behavior. */
   const [outgoingBlock, incomingBlock] = await Promise.all([
     transaction.get(db.doc(`users/${userId}/blockedRivals/${opponentUserId}`)),
     transaction.get(db.doc(`users/${opponentUserId}/blockedRivals/${userId}`)),
@@ -37,24 +38,40 @@ export async function mutateRaceRun<T>(
   requestId: string,
   nowMs: number,
   db: Firestore,
-  mutate: (run: RaceRunRecord) => {run: RaceRunRecord; response: T},
-  options: {enforceRaceAccess?: boolean} = {},
+  mutate: (run: RaceRunRecord) => {
+    /** Stores run. */
+    run: RaceRunRecord; /** Stores response. */
+    /** Stores response. */
+    response: T;
+  },
+  options: {
+    /** Stores enforce race access. */
+    enforceRaceAccess?: boolean;
+  } = {},
 ): Promise<T> {
+  /** Provides run ref behavior. */
   const runRef = db.collection("raceRuns").doc(runId);
+  /** Requests ref. */
   const requestRef = runRef.collection("requests").doc(requestDocumentId(userId, requestId));
   return db.runTransaction(async (transaction) => {
+    /** Provides [request snapshot, run snapshot, rollout snapshot] behavior. */
     const [requestSnapshot, runSnapshot, rolloutSnapshot] = await Promise.all([
       transaction.get(requestRef),
       transaction.get(runRef),
       options.enforceRaceAccess ? transaction.get(db.doc("raceConfig/rollout")) : Promise.resolve(null),
     ]);
     if (!runSnapshot.exists) throw new HttpsError("not-found", "Race to 10 run not found.");
+    /** Stores d run. */
     const storedRun = parseRunRecord(runSnapshot.data());
-    if (storedRun.userId !== userId) throw new HttpsError("permission-denied", "This race run belongs to another player.");
+    if (storedRun.userId !== userId)
+      throw new HttpsError("permission-denied", "This race run belongs to another player.");
+    /** Provides privacy behavior. */
     const privacy = await resolveRaceOpponentPrivacy(transaction, db, storedRun);
+    /** Provides run behavior. */
     const run = privacy.run;
     await assertRaceInteractionAllowed(transaction, db, userId, run.opponent?.subjectUserId);
     if (requestSnapshot.exists) {
+      /** Provides response behavior. */
       const response = hydrateRaceReceiptResponse(requestSnapshot.data()?.response as T, run);
       if (privacy.scrubbed) {
         transaction.set(runRef, raceRunPrivacyWrite(run, true), {merge: true});
@@ -68,6 +85,7 @@ export async function mutateRaceRun<T>(
     ) {
       throw new HttpsError("permission-denied", "Race to 10 is not enabled for this player.");
     }
+    /** Completes d. */
     const completed = await applyRaceCompletionPrivacy(
       transaction,
       db,
@@ -77,6 +95,7 @@ export async function mutateRaceRun<T>(
       nowMs,
       privacy.scrubbed,
     );
+    /** Provides {result} behavior. */
     const {result} = completed;
     transaction.set(runRef, raceRunPrivacyWrite(result.run, completed.scrubbed), {merge: true});
     transaction.create(requestRef, {

@@ -42,12 +42,16 @@ export function resolveJestSignedPurchase(
   requestedToken: string,
   allowedSkus: ReadonlySet<string>,
 ): ResolvedJestPurchase {
+  /** Provides candidates behavior. */
   const candidates = Array.isArray(payload.purchases) ? payload.purchases : payload.purchase ? [payload.purchase] : [];
+  /** Provides purchase behavior. */
   const purchase = candidates.find((entry) => isRecord(entry) && entry.purchaseToken === requestedToken);
   if (!isRecord(purchase)) throw new Error("purchase-not-signed");
+  /** Provides {purchase token, product sku} behavior. */
   const {purchaseToken, productSku} = purchase;
   if (typeof purchaseToken !== "string" || typeof productSku !== "string") throw new Error("invalid-purchase");
   if (!allowedSkus.has(productSku)) throw new Error("invalid-sku");
+  /** Provides coins behavior. */
   const coins = JEST_COIN_PRODUCTS[productSku];
   if (!coins) throw new Error("invalid-sku");
   return {purchaseToken, productSku, coins};
@@ -58,6 +62,7 @@ export function resolveJestSignedSubscriptions(
   payload: Record<string, unknown>,
   allowedSkus: ReadonlySet<string>,
 ): VerifiedJestSubscription[] {
+  /** Provides candidates behavior. */
   const candidates = Array.isArray(payload.subscriptions)
     ? payload.subscriptions
     : payload.subscription
@@ -65,12 +70,10 @@ export function resolveJestSignedSubscriptions(
       : [];
   return candidates.map((candidate) => {
     if (!isRecord(candidate)) throw new Error("invalid-subscription");
+    /** Provides {sku, status} behavior. */
     const {sku, status} = candidate;
-    if (
-      typeof sku !== "string" ||
-      (status !== "active" && status !== "inactive") ||
-      !allowedSkus.has(sku)
-    ) throw new Error("invalid-subscription");
+    if (typeof sku !== "string" || (status !== "active" && status !== "inactive") || !allowedSkus.has(sku))
+      throw new Error("invalid-subscription");
     return {sku, status};
   });
 }
@@ -81,10 +84,9 @@ export function resolveJestConflictingSubscriptionSkus(
   allowedSkus: ReadonlySet<string>,
   entitlementCatalog: Readonly<Record<string, string>> = JEST_SUBSCRIPTIONS,
 ): string[] {
+  /** Provides active entitlements behavior. */
   const activeEntitlements = new Set(
     activeSkus.map((sku) => entitlementCatalog[sku]).filter((value): value is string => typeof value === "string"),
   );
-  return [...allowedSkus].filter((sku) =>
-    !activeSkus.includes(sku) && activeEntitlements.has(entitlementCatalog[sku]),
-  );
+  return [...allowedSkus].filter((sku) => !activeSkus.includes(sku) && activeEntitlements.has(entitlementCatalog[sku]));
 }

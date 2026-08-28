@@ -18,7 +18,9 @@ describe("server XP curve", () => {
 
   it("adds a slight increase to each next level requirement", () => {
     for (let level = 2; level < 10; level++) {
+      /** Provides previous delta behavior. */
       const previousDelta = getXpThresholdForLevel(level) - getXpThresholdForLevel(level - 1);
+      /** Provides current delta behavior. */
       const currentDelta = getXpThresholdForLevel(level + 1) - getXpThresholdForLevel(level);
 
       expect(currentDelta - previousDelta).toBe(XP_LEVEL_THRESHOLDS.growthPerLevel);
@@ -26,7 +28,9 @@ describe("server XP curve", () => {
   });
 
   it("handles threshold boundaries correctly", () => {
+    /** Provides level behavior. */
     const level = 12;
+    /** Provides threshold behavior. */
     const threshold = getXpThresholdForLevel(level);
 
     expect(getLevelFromXp(threshold)).toBe(level);
@@ -34,7 +38,9 @@ describe("server XP curve", () => {
   });
 
   it("does not cap at a max level", () => {
+    /** Provides very high level behavior. */
     const veryHighLevel = 120;
+    /** Provides threshold behavior. */
     const threshold = getXpThresholdForLevel(veryHighLevel);
 
     expect(getLevelFromXp(threshold)).toBe(veryHighLevel);

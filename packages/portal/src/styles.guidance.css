@@ -3,9 +3,7 @@
   position: fixed;
   inset: 0;
   z-index: 60;
-  background:
-    radial-gradient(circle at 50% 38%, rgba(255, 194, 92, 0.18), transparent 34%),
-    rgba(4, 8, 19, 0.76);
+  background: radial-gradient(circle at 50% 38%, rgba(255, 194, 92, 0.18), transparent 34%), rgba(4, 8, 19, 0.76);
   backdrop-filter: blur(5px) saturate(1.08);
 }
 .guidance-backdrop {
@@ -101,7 +99,10 @@
   box-shadow:
     0 5px 0 #916812,
     0 10px 22px rgba(145, 104, 18, 0.24);
-  transition: transform 140ms ease, box-shadow 140ms ease, filter 140ms ease;
+  transition:
+    transform 140ms ease,
+    box-shadow 140ms ease,
+    filter 140ms ease;
 }
 .onboarding-card .play-primary:hover:not(:disabled) {
   filter: brightness(1.06) saturate(1.08);
@@ -123,13 +124,19 @@
 .onboarding-registration-actions .play-secondary {
   min-height: 48px;
   border-radius: 18px;
-  font: 400 20px/1 "Poetsen One", "Poppins", sans-serif;
+  font:
+    400 20px/1 "Poetsen One",
+    "Poppins",
+    sans-serif;
 }
 .onboarding-registration-actions .play-text-button {
   margin-top: 2px;
   color: #5d420b;
   text-align: center;
-  font: 400 17px/1.2 "Poetsen One", "Poppins", sans-serif;
+  font:
+    400 17px/1.2 "Poetsen One",
+    "Poppins",
+    sans-serif;
 }
 .onboarding-progress {
   position: absolute;
@@ -532,8 +539,8 @@
     grid-template-rows: 52px minmax(0, 1fr) 52px;
     align-content: stretch;
     gap: 4px 8px;
-    padding: max(4px, env(safe-area-inset-top)) max(8px, env(safe-area-inset-right))
-      env(safe-area-inset-bottom) max(8px, env(safe-area-inset-left));
+    padding: max(4px, env(safe-area-inset-top)) max(8px, env(safe-area-inset-right)) env(safe-area-inset-bottom)
+      max(8px, env(safe-area-inset-left));
   }
   .game-header {
     grid-column: 1 / -1;
@@ -627,8 +634,7 @@
     width: 100%;
     min-height: 52px;
     margin-inline: 0;
-    padding: 0 max(48px, env(safe-area-inset-right)) env(safe-area-inset-bottom)
-      max(48px, env(safe-area-inset-left));
+    padding: 0 max(48px, env(safe-area-inset-right)) env(safe-area-inset-bottom) max(48px, env(safe-area-inset-left));
   }
 }
 

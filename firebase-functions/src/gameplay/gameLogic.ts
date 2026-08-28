@@ -44,23 +44,24 @@ export const skipRiddle = onCallWithSentry(
         throw new HttpsError("unauthenticated", "The user must be authenticated to skip a riddle.");
       }
 
+      /** Provides current user id behavior. */
       const currentUserId = request.auth.uid;
-      const data = validateCallableRequest(
-        SkipRiddleRequestSchema,
-        request.data,
-        "skipRiddle",
-        (error) =>
-          error.issues.some((issue) => issue.path[0] === "gameMode")
-            ? "Invalid game mode specified."
-            : "Invalid request payload for skipRiddle.",
+      /** Provides data behavior. */
+      const data = validateCallableRequest(SkipRiddleRequestSchema, request.data, "skipRiddle", (error) =>
+        error.issues.some((issue) => issue.path[0] === "gameMode")
+          ? "Invalid game mode specified."
+          : "Invalid request payload for skipRiddle.",
       );
+      /** Provides {riddle id, game mode, session token, request id} behavior. */
       const {riddleId, gameMode, sessionToken, requestId} = data;
 
       if (gameMode === "challenge") {
         throw new HttpsError("failed-precondition", "Daily riddles cannot be skipped.");
       }
 
+      /** Provides session behavior. */
       const session = await getIssuedAuthoritativeSession(currentUserId, sessionToken, "classic", riddleId);
+      /** Provides result behavior. */
       const result = await skipAuthoritativeRiddle(currentUserId, {
         riddleId,
         gameMode: "classic",
@@ -72,11 +73,10 @@ export const skipRiddle = onCallWithSentry(
         result.newProgress.classicIndex,
         session.locale as SupportedLocale,
       );
+      /** Provides progress message behavior. */
       const progressMessage = `Advanced to classic level ${result.newProgress.classicIndex}`;
 
-      logger.info(
-        `User ${currentUserId} skipped an authorized ${gameMode} riddle. ${progressMessage}`,
-      );
+      logger.info(`User ${currentUserId} skipped an authorized ${gameMode} riddle. ${progressMessage}`);
 
       return validateCallableResponse(
         SkipRiddleResponseSchema,
@@ -109,11 +109,17 @@ export const skipRiddle = onCallWithSentry(
 export const spendCoins = onCallWithSentry(
   "spendCoins",
   browserCallableSecurityOptions,
-  async (request: CallableRequest<SpendCoinsRequest>): Promise<{newCoins: number}> => {
+  async (
+    request: CallableRequest<SpendCoinsRequest>,
+  ): Promise<{
+    /** Stores new coins. */
+    newCoins: number;
+  }> => {
     if (!request.auth) {
       throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
     }
 
+    /** Provides {game mode, riddle id, session token, request id, amount} behavior. */
     const {gameMode, riddleId, sessionToken, requestId, amount} = validateCallableRequest(
       SpendCoinsRequestSchema,
       request.data,
@@ -125,6 +131,7 @@ export const spendCoins = onCallWithSentry(
         return "Invalid request payload for spendCoins.";
       },
     );
+    /** Provides r id. */
     const userId = request.auth.uid;
 
     try {
@@ -134,13 +141,8 @@ export const spendCoins = onCallWithSentry(
           `Supplied amount (${amount}) does not match expected cost (${CONTINUE_COST_COINS}) for continue.`,
         );
       }
-      const newCoins = await grantAuthoritativeContinue(
-        userId,
-        gameMode,
-        riddleId,
-        requestId,
-        sessionToken,
-      );
+      /** Provides new coins behavior. */
+      const newCoins = await grantAuthoritativeContinue(userId, gameMode, riddleId, requestId, sessionToken);
       return validateCallableResponse(SpendCoinsResponseSchema, {newCoins}, "spendCoins");
     } catch (error: unknown) {
       // Only log unexpected errors, not expected business logic errors
@@ -169,8 +171,11 @@ export const getHint = onCallWithSentry(
         throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
       }
 
+      /** Provides data behavior. */
       const data = validateCallableRequest(GetHintRequestSchema, request.data, "getHint");
+      /** Provides current user id behavior. */
       const currentUserId = request.auth.uid;
+      /** Provides result behavior. */
       const result = await purchaseAuthoritativeHint(currentUserId, data);
       logger.info(`User ${currentUserId} completed an authorized hint request for ${data.gameMode}.`);
       return validateCallableResponse(GetHintResponseSchema, result, "getHint");

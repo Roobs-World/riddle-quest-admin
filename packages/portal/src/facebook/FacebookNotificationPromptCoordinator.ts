@@ -12,7 +12,20 @@ export type FacebookNotificationPromptOutcome = "not-eligible" | "accepted" | "d
 type NotificationPromptLock = <Result>(operation: () => Promise<Result>) => Promise<Result>;
 /** Describes facebook notification prompt lease. */
 export type FacebookNotificationPromptLease = Readonly<{
-  claim(): Promise<{granted: false} | {granted: true; claimedAtMs: number}>;
+  /** Provides claim behavior. */
+  claim(): Promise<
+    | {
+        /** Stores granted. */
+        granted: false;
+      }
+    | {
+        /** Stores granted. */
+        granted: true; /** Stores claimed at ms. */
+        /** Stores claimed at ms. */
+        claimedAtMs: number;
+      }
+  >;
+  /** Provides accept behavior. */
   accept(): Promise<void>;
 }>;
 /** Defines the facebook notification prompt lock value. */
@@ -20,10 +33,9 @@ const FACEBOOK_NOTIFICATION_PROMPT_LOCK = "riddleQuest:facebookNotificationPromp
 
 /** Provides run with browser prompt lock behavior. */
 const runWithBrowserPromptLock: NotificationPromptLock = async (operation) => {
+  /** Provides locks behavior. */
   const locks = globalThis.navigator?.locks;
-  return locks
-    ? locks.request(FACEBOOK_NOTIFICATION_PROMPT_LOCK, {mode: "exclusive"}, operation)
-    : operation();
+  return locks ? locks.request(FACEBOOK_NOTIFICATION_PROMPT_LOCK, {mode: "exclusive"}, operation) : operation();
 };
 
 /** Serializes and persists notification permission prompts triggered by authoritative wins. */
@@ -67,26 +79,35 @@ export class FacebookNotificationPromptCoordinator {
 
   /** Provides run behavior. */
   private async run(): Promise<FacebookNotificationPromptOutcome> {
+    /** Provides preferences behavior. */
     const preferences = await this.storage.readPreferences();
+    /** Provides state behavior. */
     const state: FacebookNotificationPromptState = {
       permission: preferences.facebookNotificationPermission ?? "unknown",
       ...(preferences.facebookNotificationLastPromptAtMs === undefined
         ? {}
         : {lastPromptAtMs: preferences.facebookNotificationLastPromptAtMs}),
     };
+    /** Provides now ms behavior. */
     const nowMs = this.now();
-    if (!shouldPromptForFacebookNotifications({
-      authoritativeWins: 1,
-      capabilityAvailable: true,
-      state,
-      nowMs,
-    })) return "not-eligible";
+    if (
+      !shouldPromptForFacebookNotifications({
+        authoritativeWins: 1,
+        capabilityAvailable: true,
+        state,
+        nowMs,
+      })
+    )
+      return "not-eligible";
 
+    /** Provides claim behavior. */
     const claim = this.lease ? await this.lease.claim() : {granted: true as const, claimedAtMs: nowMs};
     if (!claim.granted) return "not-eligible";
     // Persist the server-authorized attempt before opening platform UI so crashes cannot cause prompt loops.
+    /** Provides attempted behavior. */
     const attempted = recordFacebookNotificationPrompt(state, "declined", claim.claimedAtMs);
     await this.persist(attempted);
+    /** Provides result behavior. */
     const result = await this.capability.requestPermission();
     if (result.status !== "success") return "declined";
     await this.lease?.accept();
@@ -95,11 +116,10 @@ export class FacebookNotificationPromptCoordinator {
   }
 
   /** Provides persist behavior. */
-  private async persist(
-    state: FacebookNotificationPromptState,
-  ): Promise<void> {
+  private async persist(state: FacebookNotificationPromptState): Promise<void> {
     // Platform prompts may remain open while another setting is changed. Merge
     // into the latest cloud snapshot so permission persistence cannot roll it back.
+    /** Provides preferences behavior. */
     const preferences = await this.storage.readPreferences();
     await this.storage.writePreferences({
       ...preferences,

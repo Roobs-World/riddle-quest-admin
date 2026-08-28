@@ -8,6 +8,7 @@ import {
 } from "../../race/raceTranslationValidation";
 import {RACE_SUPPORTED_LOCALES} from "@qwordly/core/race";
 
+/** Creates bundle. */
 const createBundle = () => ({
   locale: "ja",
   provenance: AUTOMATED_TRANSLATION_QUALITY_VERSION,
@@ -45,7 +46,9 @@ describe("machine-only race translation validation", () => {
   });
 
   it("binds the source digest to every canonical field with a domain-separated hash", () => {
+    /** Provides canonical behavior. */
     const canonical = reviewedEnglish.riddles[0];
+    /** Provides baseline behavior. */
     const baseline = raceTranslationCanonicalHash(canonical);
     expect(baseline).toMatch(/^[0-9a-f]{64}$/);
     for (const changed of [
@@ -54,10 +57,12 @@ describe("machine-only race translation validation", () => {
       {...canonical, answer: `${canonical.answer}changed`},
       {...canonical, categoryId: canonical.categoryId === "history" ? "science" : "history"},
       {...canonical, difficultyBand: canonical.difficultyBand === "easy" ? "hard" : "easy"},
-    ]) expect(raceTranslationCanonicalHash(changed)).not.toBe(baseline);
+    ])
+      expect(raceTranslationCanonicalHash(changed)).not.toBe(baseline);
   });
 
   it("accepts a complete source-bound, independently critiqued 180-riddle contract", () => {
+    /** Provides plan behavior. */
     const plan = createRaceTranslationPlan(createBundle(), reviewedEnglish);
     expect(plan.valid).toBe(true);
     expect(plan.records).toHaveLength(180);
@@ -66,62 +71,81 @@ describe("machine-only race translation validation", () => {
   });
 
   it("rejects stale source bindings, changed canonical metadata, and critic substitution", () => {
+    /** Provides bundle behavior. */
     const bundle = createBundle();
     bundle.riddles[0].sourceCanonicalHash = "0".repeat(64);
     bundle.riddles[1].categoryId = "science";
     bundle.riddles[2].review.criticModel = "translator-v1";
+    /** Provides plan behavior. */
     const plan = createRaceTranslationPlan(bundle, reviewedEnglish);
-    expect(plan.issues.map(({code}) => code).sort()).toEqual(expect.arrayContaining(
-      ["source_binding", "metadata_mismatch", "critic_mismatch", "pool_invalid"],
-    ));
+    expect(plan.issues.map(({code}) => code).sort()).toEqual(
+      expect.arrayContaining(["source_binding", "metadata_mismatch", "critic_mismatch", "pool_invalid"]),
+    );
   });
 
   it("rejects same-model critique, false safety/equivalence gates, and wrong pool size", () => {
+    /** Provides same model behavior. */
     const sameModel = createBundle();
     sameModel.criticModel = sameModel.translatorModel;
     expect(() => createRaceTranslationPlan(sameModel, reviewedEnglish)).toThrow("independent models");
+    /** Provides unsafe behavior. */
     const unsafe = createBundle();
     unsafe.riddles[0].review.prohibitedContent = true as false;
     expect(() => createRaceTranslationPlan(unsafe, reviewedEnglish)).toThrow();
+    /** Provides short behavior. */
     const short = createBundle();
     short.riddles.pop();
     expect(() => createRaceTranslationPlan(short, reviewedEnglish)).toThrow();
   });
 
   it("rejects untranslated source copies and clues without the locale's required script", () => {
+    /** Provides source copy behavior. */
     const sourceCopy = createBundle();
     sourceCopy.riddles[0].text = reviewedEnglish.riddles[0].text;
     sourceCopy.riddles[0].answer = `translated-${reviewedEnglish.riddles[0].answer}`;
     sourceCopy.riddles[1].text = "Latin characters only";
+    /** Provides plan behavior. */
     const plan = createRaceTranslationPlan(sourceCopy, reviewedEnglish);
-    expect(plan.issues).toEqual(expect.arrayContaining([
-      expect.objectContaining({code: "source_copy", canonicalRiddleId: sourceCopy.riddles[0].canonicalRiddleId}),
-      expect.objectContaining({code: "locale_script", canonicalRiddleId: sourceCopy.riddles[1].canonicalRiddleId}),
-    ]));
+    expect(plan.issues).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({code: "source_copy", canonicalRiddleId: sourceCopy.riddles[0].canonicalRiddleId}),
+        expect.objectContaining({code: "locale_script", canonicalRiddleId: sourceCopy.riddles[1].canonicalRiddleId}),
+      ]),
+    );
   });
 
   it("rejects locale-wide compatibility duplicates across category boundaries", () => {
+    /** Provides bundle behavior. */
     const bundle = createBundle();
+    /** Provides first behavior. */
     const first = bundle.riddles.find((riddle) => riddle.categoryId === "history")!;
+    /** Provides other category behavior. */
     const otherCategory = bundle.riddles.find((riddle) => riddle.categoryId === "geography")!;
+    /** Provides another category behavior. */
     const anotherCategory = bundle.riddles.find((riddle) => riddle.categoryId === "music")!;
     otherCategory.text = first.text.replace("日本語", "日本語　");
     anotherCategory.answer = first.answer;
+    /** Provides issues behavior. */
     const issues = createRaceTranslationPlan(bundle, reviewedEnglish).issues;
-    expect(issues).toEqual(expect.arrayContaining([
-      expect.objectContaining({code: "duplicate_question", canonicalRiddleId: otherCategory.canonicalRiddleId}),
-      expect.objectContaining({code: "duplicate_answer", canonicalRiddleId: anotherCategory.canonicalRiddleId}),
-    ]));
+    expect(issues).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({code: "duplicate_question", canonicalRiddleId: otherCategory.canonicalRiddleId}),
+        expect.objectContaining({code: "duplicate_answer", canonicalRiddleId: anotherCategory.canonicalRiddleId}),
+      ]),
+    );
   });
 
   it("rejects answers that native input cannot represent safely", () => {
+    /** Provides bundle behavior. */
     const bundle = createBundle();
     bundle.riddles[0].answer = "two words";
     bundle.riddles[1].answer = "abcdefgh";
-    expect(createRaceTranslationPlan(bundle, reviewedEnglish).issues).toEqual(expect.arrayContaining([
-      expect.objectContaining({code: "answer_format", canonicalRiddleId: bundle.riddles[0].canonicalRiddleId}),
-      expect.objectContaining({code: "answer_format", canonicalRiddleId: bundle.riddles[1].canonicalRiddleId}),
-    ]));
+    expect(createRaceTranslationPlan(bundle, reviewedEnglish).issues).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({code: "answer_format", canonicalRiddleId: bundle.riddles[0].canonicalRiddleId}),
+        expect.objectContaining({code: "answer_format", canonicalRiddleId: bundle.riddles[1].canonicalRiddleId}),
+      ]),
+    );
   });
 
   it.each([
@@ -132,6 +156,7 @@ describe("machine-only race translation validation", () => {
     ["ru", "Я"],
     ["zh", "中"],
   ] as const)("enforces the expected native script for %s clues", (locale, marker) => {
+    /** Provides bundle behavior. */
     const bundle = createBundle();
     bundle.locale = locale;
     bundle.riddles.forEach((riddle, index) => {
@@ -139,16 +164,26 @@ describe("machine-only race translation validation", () => {
     });
     expect(createRaceTranslationPlan(bundle, reviewedEnglish).valid).toBe(true);
     bundle.riddles[0].text = "Latin characters only";
-    expect(createRaceTranslationPlan(bundle, reviewedEnglish).issues).toEqual(expect.arrayContaining([
-      expect.objectContaining({code: "locale_script", canonicalRiddleId: bundle.riddles[0].canonicalRiddleId}),
-    ]));
+    expect(createRaceTranslationPlan(bundle, reviewedEnglish).issues).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({code: "locale_script", canonicalRiddleId: bundle.riddles[0].canonicalRiddleId}),
+      ]),
+    );
   });
 
   it("proves one complete bundle per non-English locale and exactly 2,880 records", () => {
+    /** Provides script markers behavior. */
     const scriptMarkers: Record<string, string> = {
-      ar: "ع", hi: "ह", ja: "日", ko: "한", ru: "Я", zh: "中",
+      ar: "ع",
+      hi: "ह",
+      ja: "日",
+      ko: "한",
+      ru: "Я",
+      zh: "中",
     };
+    /** Provides bundles behavior. */
     const bundles = RACE_SUPPORTED_LOCALES.filter((locale) => locale !== "en").map((locale) => {
+      /** Provides bundle behavior. */
       const bundle = createBundle();
       bundle.locale = locale;
       bundle.riddles.forEach((riddle, index) => {
@@ -163,29 +198,30 @@ describe("machine-only race translation validation", () => {
       issues: [],
     });
 
+    /** Provides missing behavior. */
     const missing = createRaceTranslationMatrixPlan(bundles.slice(1), reviewedEnglish);
     expect(missing.valid).toBe(false);
-    expect(missing.issues).toEqual(expect.arrayContaining([
-      `${bundles[0].locale}:missing-bundle`,
-      "corpus-count:2700:expected-2880",
-    ]));
+    expect(missing.issues).toEqual(
+      expect.arrayContaining([`${bundles[0].locale}:missing-bundle`, "corpus-count:2700:expected-2880"]),
+    );
 
+    /** Provides duplicate behavior. */
     const duplicate = createRaceTranslationMatrixPlan([...bundles, bundles[0]], reviewedEnglish);
     expect(duplicate.valid).toBe(false);
-    expect(duplicate.issues).toEqual(expect.arrayContaining([
-      `${bundles[0].locale}:duplicate-bundle:2`,
-      "corpus-count:3060:expected-2880",
-    ]));
+    expect(duplicate.issues).toEqual(
+      expect.arrayContaining([`${bundles[0].locale}:duplicate-bundle:2`, "corpus-count:3060:expected-2880"]),
+    );
   });
 
   it("propagates per-locale quality failures into the whole-corpus audit", () => {
+    /** Provides bundle behavior. */
     const bundle = createBundle();
     bundle.riddles[0].text = bundle.riddles[0].answer;
+    /** Provides matrix behavior. */
     const matrix = createRaceTranslationMatrixPlan([bundle], reviewedEnglish);
     expect(matrix.valid).toBe(false);
-    expect(matrix.issues).toEqual(expect.arrayContaining([
-      expect.stringMatching(/^ja:pool_invalid:/u),
-      "corpus-count:180:expected-2880",
-    ]));
+    expect(matrix.issues).toEqual(
+      expect.arrayContaining([expect.stringMatching(/^ja:pool_invalid:/u), "corpus-count:180:expected-2880"]),
+    );
   });
 });

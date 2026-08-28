@@ -12,11 +12,15 @@ export function shouldEnableBrowserTelemetry({
   hostname,
   trustedTestHarness,
 }: {
+  /** Stores production. */
   production: boolean;
+  /** Stores hostname. */
   hostname: string | undefined;
+  /** Stores trusted test harness. */
   trustedTestHarness: boolean;
 }): boolean {
   if (!production || trustedTestHarness) return false;
+  /** Normalizes d hostname. */
   const normalizedHostname = hostname?.trim().toLowerCase().replace(/\.$/, "");
   if (!normalizedHostname) return false;
   if (
@@ -27,7 +31,8 @@ export function shouldEnableBrowserTelemetry({
     normalizedHostname === "[::1]" ||
     /^127(?:\.\d{1,3}){3}$/.test(normalizedHostname) ||
     /^\[?::ffff:127\./.test(normalizedHostname)
-  ) return false;
+  )
+    return false;
   return true;
 }
 

@@ -3,11 +3,13 @@ import {onValueWritten} from "firebase-functions/v2/database";
 import {isFacebookFeatureEnabled} from "../facebook/facebookFeatureFlags";
 
 /** Describes connection value. */
-type ConnectionValue = {/** Stores state. */
-/** Stores state. */
-state?: unknown; /** Stores platform. */
-/** Stores platform. */
-platform?: unknown};
+type ConnectionValue = {
+  /** Stores state. */
+  /** Stores state. */
+  state?: unknown; /** Stores platform. */
+  /** Stores platform. */
+  platform?: unknown;
+};
 /** Provides priority behavior. */
 const priority = {online: 1, playing: 2, racing: 3} as const;
 /** Provides presence user id behavior. */
@@ -19,13 +21,18 @@ export function aggregatePresenceValue(
   facebookPresenceEnabled = true,
 ): "offline" | "online" | "playing" | "racing" {
   if (typeof value !== "object" || value === null || Array.isArray(value)) return "offline";
+  /** Provides highest behavior. */
   let highest: keyof typeof priority | "offline" = "offline";
   for (const connection of Object.values(value as Record<string, ConnectionValue>)) {
     if (connection?.platform !== "facebook" && connection?.platform !== "jest") continue;
     if (!facebookPresenceEnabled && connection?.platform === "facebook") continue;
+    /** Provides state behavior. */
     const state = connection?.state;
-    if (typeof state === "string" && state in priority &&
-      priority[state as keyof typeof priority] > (highest === "offline" ? 0 : priority[highest])) {
+    if (
+      typeof state === "string" &&
+      state in priority &&
+      priority[state as keyof typeof priority] > (highest === "offline" ? 0 : priority[highest])
+    ) {
       highest = state as keyof typeof priority;
     }
   }
@@ -38,7 +45,9 @@ export async function writeAggregatedPresence(
   database = getDatabase(),
   now = Date.now(),
 ): Promise<"offline" | "online" | "playing" | "racing"> {
+  /** Provides connections behavior. */
   const connections = (await database.ref(`presenceConnections/${userId}`).get()).val();
+  /** Provides state behavior. */
   const state = aggregatePresenceValue(connections, isFacebookFeatureEnabled("presence"));
   await database.ref().update({
     [`presenceStatus/${userId}`]: {state, updatedAt: now},
@@ -57,20 +66,25 @@ export async function setPresenceConsentForUser(
   if (!presenceUserId.test(userId) || typeof enabled !== "boolean" || !Number.isSafeInteger(now) || now < 0) {
     throw new Error("invalid-presence-consent");
   }
-  await database.ref().update(enabled ? {
-    [`presenceConsent/${userId}`]: true,
-  } : {
-    [`presenceConsent/${userId}`]: false,
-    [`presenceConnections/${userId}`]: null,
-    [`presenceStatus/${userId}`]: {state: "offline", updatedAt: now},
-    [`presenceOptIn/${userId}`]: false,
-  });
+  await database.ref().update(
+    enabled
+      ? {
+          [`presenceConsent/${userId}`]: true,
+        }
+      : {
+          [`presenceConsent/${userId}`]: false,
+          [`presenceConnections/${userId}`]: null,
+          [`presenceStatus/${userId}`]: {state: "offline", updatedAt: now},
+          [`presenceOptIn/${userId}`]: false,
+        },
+  );
 }
 
 /** Maintains the server-owned aggregate whenever a tab/device connects, changes, or disconnects. */
 export const aggregatePresenceStatus = onValueWritten(
   {ref: "/presenceConnections/{userId}/{sessionId}", region: "us-central1"},
   async (event) => {
+    /** Provides r id. */
     const userId = event.params.userId;
     await writeAggregatedPresence(userId);
   },

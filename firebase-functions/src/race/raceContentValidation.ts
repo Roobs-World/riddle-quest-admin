@@ -67,31 +67,45 @@ const belongsToCategory = (record: ExistingRaceContentRecord, categoryId: RaceCa
 export function validateRacePool(
   records: ExistingRaceContentRecord[],
   options: {
+    /** Stores locale. */
     locale: SupportedLocale;
+    /** Stores category id. */
     categoryId: RaceCategoryId;
+    /** Stores required locales. */
     requiredLocales?: readonly SupportedLocale[];
+    /** Stores pool size. */
     poolSize?: number;
   },
 ): RacePoolValidation {
+  /** Provides pool size behavior. */
   const poolSize = options.poolSize ?? RACE_POOL_SIZE;
+  /** Provides locale records behavior. */
   const localeRecords = records.filter(
     (record) =>
       record.locale === options.locale &&
       record.data.raceEligible === true &&
       belongsToCategory(record, options.categoryId),
   );
+  /** Provides difficulty counts behavior. */
   const difficultyCounts: Record<RaceDifficultyBand, number> = {easy: 0, medium: 0, hard: 0};
+  /** Provides issues behavior. */
   const issues: RacePoolIssue[] = [];
+  /** Provides questions behavior. */
   const questions = new Map<string, string[]>();
+  /** Provides answers behavior. */
   const answers = new Map<string, string[]>();
+  /** Provides canonicals behavior. */
   const canonicals = new Map<string, string[]>();
+  /** Provides locales by canonical behavior. */
   const localesByCanonical = new Map<string, Set<SupportedLocale>>();
 
   for (const record of records.filter(
     (candidate) => candidate.data.raceEligible === true && belongsToCategory(candidate, options.categoryId),
   )) {
+    /** Provides canonical behavior. */
     const canonical = typeof record.data.canonicalRiddleId === "string" ? record.data.canonicalRiddleId : null;
     if (canonical) {
+      /** Provides locales behavior. */
       const locales = localesByCanonical.get(canonical) ?? new Set<SupportedLocale>();
       locales.add(record.locale);
       localesByCanonical.set(canonical, locales);
@@ -99,8 +113,11 @@ export function validateRacePool(
   }
 
   for (const record of localeRecords) {
+    /** Provides {data} behavior. */
     const {data} = record;
+    /** Provides question behavior. */
     const question = typeof data.text === "string" ? data.text.trim() : "";
+    /** Provides answer behavior. */
     const answer = typeof data.answer === "string" ? data.answer.trim() : "";
     if (
       typeof data.canonicalRiddleId !== "string" ||
@@ -119,7 +136,9 @@ export function validateRacePool(
     }
 
     difficultyCounts[data.difficultyBand] += 1;
+    /** Normalizes d question. */
     const normalizedQuestion = normalize(question, options.locale);
+    /** Normalizes d answer. */
     const normalizedAnswer = normalize(answer, options.locale);
     canonicals.set(data.canonicalRiddleId, [...(canonicals.get(data.canonicalRiddleId) ?? []), record.documentPath]);
     questions.set(normalizedQuestion, [...(questions.get(normalizedQuestion) ?? []), record.documentPath]);
@@ -175,8 +194,10 @@ export function validateRacePool(
     });
   }
 
+  /** Provides required locales behavior. */
   const requiredLocales = options.requiredLocales ?? [];
   for (const [canonicalRiddleId, presentLocales] of localesByCanonical.entries()) {
+    /** Provides missing behavior. */
     const missing = requiredLocales.filter((locale) => !presentLocales.has(locale));
     if (missing.length > 0) {
       issues.push({
@@ -187,6 +208,7 @@ export function validateRacePool(
     }
   }
 
+  /** Provides minimum per band behavior. */
   const minimumPerBand = RACE_DECK_SIZE / 3;
   for (const [difficulty, count] of Object.entries(difficultyCounts) as Array<[RaceDifficultyBand, number]>) {
     if (localeRecords.length === poolSize && count < minimumPerBand) {

@@ -5,14 +5,15 @@ const ANSWER_GRAPHEME_PATTERN = /^[\p{L}\p{M}]+$/u;
 
 /** Describes you tube input state. */
 export type YouTubeInputState = Readonly<{
+  /** Stores letters. */
   letters: string[];
+  /** Stores active slot index. */
   activeSlotIndex: number;
 }>;
 
 /** Normalizes you tube answer text. */
 export function normalizeYouTubeAnswerText(value: string, locale: string): string[] {
-  return splitGraphemes(value.normalize("NFC"), locale)
-    .filter((grapheme) => ANSWER_GRAPHEME_PATTERN.test(grapheme));
+  return splitGraphemes(value.normalize("NFC"), locale).filter((grapheme) => ANSWER_GRAPHEME_PATTERN.test(grapheme));
 }
 
 /** Provides insert you tube answer text behavior. */
@@ -23,19 +24,27 @@ export function insertYouTubeAnswerText(
   lockedIndices: readonly number[],
   locale: string,
 ): YouTubeInputState {
+  /** Provides graphemes behavior. */
   const graphemes = normalizeYouTubeAnswerText(text, locale);
   if (graphemes.length === 0 || answerLength < 1) return state;
+  /** Provides locked behavior. */
   const locked = new Set(lockedIndices);
+  /** Provides letters behavior. */
   const letters = Array.from({length: answerLength}, (_, index) => state.letters[index] ?? "");
+  /** Provides active behavior. */
   let active = Math.min(Math.max(0, state.activeSlotIndex), answerLength - 1);
 
   for (const grapheme of graphemes) {
-    const target = Array.from({length: answerLength}, (_, offset) => (active + offset) % answerLength)
-      .find((index) => !locked.has(index) && (!letters[index] || index === active));
+    /** Provides target behavior. */
+    const target = Array.from({length: answerLength}, (_, offset) => (active + offset) % answerLength).find(
+      (index) => !locked.has(index) && (!letters[index] || index === active),
+    );
     if (target === undefined) break;
     letters[target] = grapheme;
-    active = Array.from({length: answerLength}, (_, offset) => (target + offset + 1) % answerLength)
-      .find((index) => !locked.has(index) && !letters[index]) ?? target;
+    active =
+      Array.from({length: answerLength}, (_, offset) => (target + offset + 1) % answerLength).find(
+        (index) => !locked.has(index) && !letters[index],
+      ) ?? target;
   }
   return {letters, activeSlotIndex: active};
 }
@@ -46,12 +55,17 @@ export function deleteYouTubeAnswerLetter(
   answerLength: number,
   lockedIndices: readonly number[],
 ): YouTubeInputState {
+  /** Provides locked behavior. */
   const locked = new Set(lockedIndices);
+  /** Provides letters behavior. */
   const letters = Array.from({length: answerLength}, (_, index) => state.letters[index] ?? "");
+  /** Provides target behavior. */
   let target = Math.min(Math.max(0, state.activeSlotIndex), answerLength - 1);
   if (!letters[target] || locked.has(target)) {
-    target = Array.from({length: answerLength}, (_, offset) => (target - offset - 1 + answerLength) % answerLength)
-      .find((index) => !locked.has(index) && Boolean(letters[index])) ?? target;
+    target =
+      Array.from({length: answerLength}, (_, offset) => (target - offset - 1 + answerLength) % answerLength).find(
+        (index) => !locked.has(index) && Boolean(letters[index]),
+      ) ?? target;
   }
   if (locked.has(target)) return state;
   letters[target] = "";

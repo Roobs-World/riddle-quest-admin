@@ -1,48 +1,91 @@
 import {afterEach, beforeEach, describe, expect, it, jest} from "@jest/globals";
 
 // 1. Mock const declarations
+/** Provides mock update user profile behavior. */
 const mockUpdateUserProfile = jest.fn<(userId: string, profileData: Record<string, unknown>) => Promise<void>>();
+/** Provides mock admin firestore update behavior. */
 const mockAdminFirestoreUpdate = jest.fn<() => Promise<void>>();
+/** Provides mock admin firestore set behavior. */
 const mockAdminFirestoreSet = jest.fn<() => Promise<void>>();
-type MockDocumentRef = {kind: "document"; collection: string; id: string; path: string};
-type MockQueryRef = {kind: "query"; collection: string; field: string; value: unknown};
+/** Describes mock document ref. */
+type MockDocumentRef = {
+  /** Stores kind. */
+  kind: "document"; /** Stores collection. */
+  /** Stores collection. */
+  collection: string; /** Stores id. */
+  /** Stores id. */
+  id: string; /** Stores path. */
+  /** Stores path. */
+  path: string;
+};
+/** Describes mock query ref. */
+type MockQueryRef = {
+  /** Stores kind. */
+  kind: "query"; /** Stores collection. */
+  /** Stores collection. */
+  collection: string; /** Stores field. */
+  /** Stores field. */
+  field: string; /** Stores value. */
+  /** Stores value. */
+  value: unknown;
+};
+/** Provides mock firestore documents behavior. */
 const mockFirestoreDocuments = new Map<string, Record<string, unknown>>();
+/** Provides mock transaction get behavior. */
 const mockTransactionGet = jest.fn(async (ref: MockDocumentRef | MockQueryRef) => {
   if (ref.kind === "query") {
+    /** Provides prefix behavior. */
     const prefix = `${ref.collection}/`;
+    /** Provides docs behavior. */
     const docs = [...mockFirestoreDocuments.entries()]
-      .filter(([path, data]) => path.startsWith(prefix) && !path.slice(prefix.length).includes("/")
-        && data[ref.field] === ref.value)
+      .filter(
+        ([path, data]) =>
+          path.startsWith(prefix) && !path.slice(prefix.length).includes("/") && data[ref.field] === ref.value,
+      )
       .map(([path, data]) => ({id: path.slice(prefix.length), data: () => data}));
     return {empty: docs.length === 0, docs};
   }
+  /** Provides data behavior. */
   const data = mockFirestoreDocuments.get(ref.path);
   return {exists: data !== undefined, data: () => data};
 });
+/** Provides mock transaction update behavior. */
 const mockTransactionUpdate = jest.fn((ref: MockDocumentRef, data: Record<string, unknown>) => {
+  /** Provides current behavior. */
   const current = mockFirestoreDocuments.get(ref.path);
   if (!current) throw new Error(`Missing document ${ref.path}`);
   mockFirestoreDocuments.set(ref.path, {...current, ...data});
 });
+/** Provides mock transaction set behavior. */
 const mockTransactionSet = jest.fn((ref: MockDocumentRef, data: Record<string, unknown>) => {
   mockFirestoreDocuments.set(ref.path, {...mockFirestoreDocuments.get(ref.path), ...data});
 });
+/** Provides mock transaction delete behavior. */
 const mockTransactionDelete = jest.fn((ref: MockDocumentRef) => {
   mockFirestoreDocuments.delete(ref.path);
 });
+/** Provides mock transaction behavior. */
 const mockTransaction = {
   get: mockTransactionGet,
   update: mockTransactionUpdate,
   set: mockTransactionSet,
   delete: mockTransactionDelete,
 };
+/** Provides mock transaction tail behavior. */
 let mockTransactionTail: Promise<unknown> = Promise.resolve();
+/** Provides run queued transaction behavior. */
 const runQueuedTransaction = (callback: (transaction: typeof mockTransaction) => unknown) => {
+  /** Provides result behavior. */
   const result = mockTransactionTail.then(() => callback(mockTransaction));
-  mockTransactionTail = result.then(() => undefined, () => undefined);
+  mockTransactionTail = result.then(
+    () => undefined,
+    () => undefined,
+  );
   return result;
 };
+/** Provides mock run transaction behavior. */
 const mockRunTransaction = jest.fn(runQueuedTransaction);
+/** Provides mock admin firestore doc behavior. */
 const mockAdminFirestoreDoc = jest.fn((collection: string, id = "") => ({
   kind: "document" as const,
   collection,
@@ -51,6 +94,7 @@ const mockAdminFirestoreDoc = jest.fn((collection: string, id = "") => ({
   update: mockAdminFirestoreUpdate,
   set: mockAdminFirestoreSet,
 }));
+/** Provides mock admin firestore collection behavior. */
 const mockAdminFirestoreCollection = jest.fn((path: string) => ({
   doc: (id?: string) => mockAdminFirestoreDoc(path, id),
   where: (field: string, _operator: string, value: unknown) => ({
@@ -58,18 +102,23 @@ const mockAdminFirestoreCollection = jest.fn((path: string) => ({
   }),
 }));
 
+/** Provides mock logger info behavior. */
 const mockLoggerInfo = jest.fn<(...args: unknown[]) => void>();
+/** Provides mock logger error behavior. */
 const mockLoggerError = jest.fn<(...args: unknown[]) => void>();
+/** Provides mock storage save behavior. */
 const mockStorageSave = jest.fn<() => Promise<void>>();
-const mockRunWithJestAccountOperationLease = jest.fn(async (
-  _userId: string,
-  _timeoutSeconds: number,
-  operation: () => Promise<unknown>,
-) => operation());
+/** Provides mock run with jest account operation lease behavior. */
+const mockRunWithJestAccountOperationLease = jest.fn(
+  async (_userId: string, _timeoutSeconds: number, operation: () => Promise<unknown>) => operation(),
+);
+/** Provides mock storage file behavior. */
 const mockStorageFile = jest.fn((_path?: string) => ({
   save: mockStorageSave,
 }));
+/** Provides mock on call invocations behavior. */
 const mockOnCallInvocations: Array<[unknown, unknown?]> = [];
+/** Provides mock on call behavior. */
 const mockOnCall = jest.fn((optionsOrHandler: unknown, handler?: unknown) => {
   mockOnCallInvocations.push([optionsOrHandler, handler]);
   // Handle both signatures: onCall(handler) and onCall(options, handler)
@@ -115,11 +164,14 @@ jest.mock("firebase-admin", () => ({
   }),
 }));
 
+/** Defines the contract for mock on call handler. */
 interface MockOnCallHandler {
+  /** Defines how mock on call handler is invoked. */
   (optionsOrHandler: unknown, handler?: unknown): unknown;
 }
 
 jest.mock("firebase-functions/v2/https", () => {
+  /** Provides actual v2 https behavior. */
   const actualV2Https = jest.requireActual(
     "firebase-functions/v2/https",
   ) as typeof import("firebase-functions/v2/https");
@@ -152,17 +204,22 @@ describe("Profile Cloud Functions", () => {
     expect(mockOnCallInvocations).toEqual([
       [{enforceAppCheck: true, invoker: "public", timeoutSeconds: 60}, expect.any(Function)],
       [{enforceAppCheck: true, invoker: "public", timeoutSeconds: 60}, expect.any(Function)],
-      [{
-        enforceAppCheck: true,
-        invoker: "public",
-        timeoutSeconds: 540,
-        secrets: [expect.objectContaining({name: "FACEBOOK_UID_SECRET"})],
-      }, expect.any(Function)],
+      [
+        {
+          enforceAppCheck: true,
+          invoker: "public",
+          timeoutSeconds: 540,
+          secrets: [expect.objectContaining({name: "FACEBOOK_UID_SECRET"})],
+        },
+        expect.any(Function),
+      ],
     ]);
   });
 
   describe("updateUsername", () => {
+    /** Provides mock auth behavior. */
     const mockAuth = {uid: "testUserId456"};
+    /** Provides valid username behavior. */
     const validUsername = "newplayer";
 
     beforeEach(() => {
@@ -170,11 +227,16 @@ describe("Profile Cloud Functions", () => {
     });
 
     it("should successfully update username", async () => {
+      /** Provides request behavior. */
       const request = {
         auth: mockAuth,
         data: {username: validUsername},
-      } as CallableRequest<{username: string}>;
+      } as CallableRequest<{
+        /** Stores username. */
+        username: string;
+      }>;
 
+      /** Provides result behavior. */
       const result = await (updateUsername as any)(request);
 
       expect(mockTransactionUpdate).toHaveBeenCalledWith(
@@ -204,20 +266,28 @@ describe("Profile Cloud Functions", () => {
 
     it("does not report success when the atomic leaderboard update fails", async () => {
       mockRunTransaction.mockRejectedValueOnce(new Error("leaderboard unavailable"));
+      /** Provides request behavior. */
       const request = {
         auth: mockAuth,
         data: {username: validUsername},
-      } as CallableRequest<{username: string}>;
+      } as CallableRequest<{
+        /** Stores username. */
+        username: string;
+      }>;
 
       await expect((updateUsername as any)(request)).rejects.toMatchObject({code: "internal"});
       expect(mockRunTransaction).toHaveBeenCalledTimes(1);
     });
 
     it("should throw HttpsError if not authenticated", async () => {
+      /** Provides request behavior. */
       const request = {
         auth: undefined,
         data: {username: validUsername},
-      } as CallableRequest<{username: string}>;
+      } as CallableRequest<{
+        /** Stores username. */
+        username: string;
+      }>;
 
       await expect((updateUsername as any)(request)).rejects.toThrow(
         new HttpsError("unauthenticated", "The function must be called while authenticated."),
@@ -227,10 +297,14 @@ describe("Profile Cloud Functions", () => {
     it("should throw HttpsError for a taken username", async () => {
       mockFirestoreDocuments.set("users/another-user", {username: validUsername});
 
+      /** Provides request behavior. */
       const request = {
         auth: mockAuth,
         data: {username: validUsername},
-      } as CallableRequest<{username: string}>;
+      } as CallableRequest<{
+        /** Stores username. */
+        username: string;
+      }>;
 
       await expect((updateUsername as any)(request)).rejects.toThrow(
         new HttpsError("already-exists", "Username already taken."),
@@ -254,6 +328,7 @@ describe("Profile Cloud Functions", () => {
     });
 
     it("cleans up an owned previous reservation when a user renames", async () => {
+      /** Provides previous id behavior. */
       const previousId = createUsernameReservationId("Old Player");
       mockFirestoreDocuments.set(`users/${mockAuth.uid}`, {
         username: "Old Player",
@@ -272,6 +347,7 @@ describe("Profile Cloud Functions", () => {
 
     it("serializes concurrent NFKC/case-equivalent claims", async () => {
       mockFirestoreDocuments.set("users/player-two", {username: "Player Two"});
+      /** Provides claims behavior. */
       const claims = await Promise.allSettled([
         (updateUsername as any)({auth: mockAuth, data: {username: "Nova"}}),
         (updateUsername as any)({auth: {uid: "player-two"}, data: {username: "ＮＯＶＡ"}}),
@@ -332,19 +408,25 @@ describe("Profile Cloud Functions", () => {
   });
 
   describe("updateAvatar", () => {
-    const pngDataUrl = `data:image/png;base64,${Buffer.from([
-      0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a,
-    ]).toString("base64")}`;
+    /** Provides png data url behavior. */
+    const pngDataUrl = `data:image/png;base64,${Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]).toString(
+      "base64",
+    )}`;
 
     it("uploads a registered Jest player's avatar and updates profile records", async () => {
       mockStorageSave.mockResolvedValue(undefined);
       mockUpdateUserProfile.mockResolvedValue(undefined);
       mockAdminFirestoreSet.mockResolvedValue(undefined);
+      /** Provides request behavior. */
       const request = {
         auth: {uid: "jest_user", token: {jestRegistered: true}},
         data: {imageDataUrl: pngDataUrl},
-      } as unknown as CallableRequest<{imageDataUrl: string}>;
+      } as unknown as CallableRequest<{
+        /** Stores image data url. */
+        imageDataUrl: string;
+      }>;
 
+      /** Provides result behavior. */
       const result = await (updateAvatar as any)(request);
 
       expect(mockStorageFile).toHaveBeenCalledWith("avatars/jest_user/profile");
@@ -360,10 +442,14 @@ describe("Profile Cloud Functions", () => {
     });
 
     it("rejects guest players before accepting avatar data", async () => {
+      /** Provides request behavior. */
       const request = {
         auth: {uid: "jest_guest", token: {jestRegistered: false}},
         data: {imageDataUrl: pngDataUrl},
-      } as unknown as CallableRequest<{imageDataUrl: string}>;
+      } as unknown as CallableRequest<{
+        /** Stores image data url. */
+        imageDataUrl: string;
+      }>;
 
       await expect((updateAvatar as any)(request)).rejects.toThrow(
         new HttpsError("failed-precondition", "Register with Jest before uploading a profile photo."),
@@ -378,43 +464,53 @@ describe("Profile Cloud Functions", () => {
     });
 
     it("maps invalid encoded images to a client-safe error", async () => {
+      /** Provides invalid png behavior. */
       const invalidPng = `data:image/png;base64,${Buffer.from("not a png").toString("base64")}`;
 
-      await expect((updateAvatar as any)({
-        auth: {uid: "jest_user", token: {jestRegistered: true}},
-        data: {imageDataUrl: invalidPng},
-      })).rejects.toMatchObject({code: "invalid-argument"});
+      await expect(
+        (updateAvatar as any)({
+          auth: {uid: "jest_user", token: {jestRegistered: true}},
+          data: {imageDataUrl: invalidPng},
+        }),
+      ).rejects.toMatchObject({code: "invalid-argument"});
       expect(mockStorageSave).not.toHaveBeenCalled();
     });
 
     it("maps storage failures to an internal error", async () => {
       mockStorageSave.mockRejectedValue(new Error("storage unavailable"));
 
-      await expect((updateAvatar as any)({
-        auth: {uid: "jest_user", token: {jestRegistered: true}},
-        data: {imageDataUrl: pngDataUrl},
-      })).rejects.toMatchObject({code: "internal"});
+      await expect(
+        (updateAvatar as any)({
+          auth: {uid: "jest_user", token: {jestRegistered: true}},
+          data: {imageDataUrl: pngDataUrl},
+        }),
+      ).rejects.toMatchObject({code: "internal"});
       expect(mockLoggerError).toHaveBeenCalled();
     });
 
     it("preserves explicit HTTPS errors from downstream services", async () => {
+      /** Provides error behavior. */
       const error = new HttpsError("resource-exhausted", "Try again later.");
       mockStorageSave.mockResolvedValue(undefined);
       mockUpdateUserProfile.mockRejectedValue(error);
 
-      await expect((updateAvatar as any)({
-        auth: {uid: "jest_user", token: {jestRegistered: true}},
-        data: {imageDataUrl: pngDataUrl},
-      })).rejects.toBe(error);
+      await expect(
+        (updateAvatar as any)({
+          auth: {uid: "jest_user", token: {jestRegistered: true}},
+          data: {imageDataUrl: pngDataUrl},
+        }),
+      ).rejects.toBe(error);
     });
 
     it("handles non-Error failures without exposing their value", async () => {
       mockStorageSave.mockRejectedValue("offline");
 
-      await expect((updateAvatar as any)({
-        auth: {uid: "jest_user", token: {jestRegistered: true}},
-        data: {imageDataUrl: pngDataUrl},
-      })).rejects.toMatchObject({code: "internal"});
+      await expect(
+        (updateAvatar as any)({
+          auth: {uid: "jest_user", token: {jestRegistered: true}},
+          data: {imageDataUrl: pngDataUrl},
+        }),
+      ).rejects.toMatchObject({code: "internal"});
     });
   });
 });

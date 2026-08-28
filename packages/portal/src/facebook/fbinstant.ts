@@ -9,7 +9,12 @@ export interface FacebookInstantPlayer {
   /** Gets id. */
   getID(): string;
   /** Gets signed player info async. */
-  getSignedPlayerInfoAsync(requestPayload: string): Promise<{getSignature(): string; getPlayerID(): string}>;
+  getSignedPlayerInfoAsync(requestPayload: string): Promise<{
+    /** Gets signature. */
+    getSignature(): string; /** Gets player id. */
+    /** Gets player id. */
+    getPlayerID(): string;
+  }>;
   /** Gets data async. */
   getDataAsync(keys: string[]): Promise<FacebookPlayerData>;
   /** Sets data async. */
@@ -25,7 +30,12 @@ export interface FacebookInstantContext {
   /** Gets type. */
   getType(): "SOLO" | "THREAD" | "GROUP";
   /** Provides choose async behavior. */
-  chooseAsync(options?: {minSize?: number; maxSize?: number}): Promise<void>;
+  chooseAsync(options?: {
+    /** Stores min size. */
+    minSize?: number; /** Stores max size. */
+    /** Stores max size. */
+    maxSize?: number;
+  }): Promise<void>;
   /** Provides match player async behavior. */
   matchPlayerAsync(matchTag?: string, switchContextWhenMatched?: boolean, offlineMatch?: boolean): Promise<void>;
 }
@@ -114,7 +124,10 @@ export interface FacebookInstantPayments {
   /** Gets catalog async. */
   getCatalogAsync(): Promise<unknown>;
   /** Provides purchase async behavior. */
-  purchaseAsync(configuration: {productID: string}): Promise<unknown>;
+  purchaseAsync(configuration: {
+    /** Stores product id. */ /** Stores product id. */
+    productID: string;
+  }): Promise<unknown>;
   /** Gets purchases async. */
   getPurchasesAsync(): Promise<unknown>;
   /** Provides consume purchase async behavior. */
@@ -151,7 +164,9 @@ export interface FacebookInstantSdk {
 
 /** Documents global. */
 declare global {
+  /** Defines the contract for window. */
   interface Window {
+    /** Stores fb instant. */
     FBInstant?: FacebookInstantSdk;
   }
 }

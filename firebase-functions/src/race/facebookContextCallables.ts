@@ -20,13 +20,19 @@ import {
 } from "./facebookContextBoard";
 
 /** Renders the context id interface. */
-const ContextId = z.string().min(1).max(256).regex(/^[A-Za-z0-9._:-]+$/);
+const ContextId = z
+  .string()
+  .min(1)
+  .max(256)
+  .regex(/^[A-Za-z0-9._:-]+$/);
 /** Validates the join data shape. */
-const JoinSchema = z.object({
-  contextId: ContextId,
-  contextType: z.enum(["THREAD", "GROUP"]),
-  locale: z.enum(SUPPORTED_LOCALES),
-}).strict();
+const JoinSchema = z
+  .object({
+    contextId: ContextId,
+    contextType: z.enum(["THREAD", "GROUP"]),
+    locale: z.enum(SUPPORTED_LOCALES),
+  })
+  .strict();
 /** Validates the leave data shape. */
 const LeaveSchema = z.object({contextId: ContextId}).strict();
 
@@ -46,7 +52,9 @@ export const joinFacebookContext = onCallWithSentry(
   "joinFacebookContext",
   browserCallableSecurityOptions,
   async (request: CallableRequest<unknown>) => {
+    /** Provides r id. */
     const userId = requireFacebookUser(request);
+    /** Provides input behavior. */
     const input = validateCallableRequest(JoinSchema, request.data, "joinFacebookContext");
     return joinFacebookContextCompetition({...input, userId});
   },
@@ -57,7 +65,9 @@ export const leaveFacebookContext = onCallWithSentry(
   "leaveFacebookContext",
   browserCallableSecurityOptions,
   async (request: CallableRequest<unknown>) => {
+    /** Provides r id. */
     const userId = requireFacebookUser(request);
+    /** Provides input behavior. */
     const input = validateCallableRequest(LeaveSchema, request.data, "leaveFacebookContext");
     return leaveFacebookContextCompetition({...input, userId});
   },
@@ -68,20 +78,29 @@ export const recordFacebookContextRun = onCallWithSentry(
   "recordFacebookContextRun",
   browserCallableSecurityOptions,
   async (request: CallableRequest<unknown>) => {
+    /** Provides r id. */
     const userId = requireFacebookUser(request);
+    /** Provides input behavior. */
     const input = validateCallableRequest(
-      RecordFacebookContextRunRequestSchema, request.data, "recordFacebookContextRun",
+      RecordFacebookContextRunRequestSchema,
+      request.data,
+      "recordFacebookContextRun",
     );
+    /** Provides result behavior. */
     const result = await recordFacebookContextBoardRun(userId, input);
-    return validateCallableResponse(RecordFacebookContextRunResponseSchema, {
-      locale: result.entry.locale,
-      runId: result.entry.runId,
-      adjustedTimeMs: result.entry.adjustedTimeMs,
-      completedAtMs: result.entry.completedAtMs,
-      improved: result.improved,
-      sortOrder: FACEBOOK_CONTEXT_BOARD_SORT_ORDER,
-      rewardsEnabled: false,
-    }, "recordFacebookContextRun");
+    return validateCallableResponse(
+      RecordFacebookContextRunResponseSchema,
+      {
+        locale: result.entry.locale,
+        runId: result.entry.runId,
+        adjustedTimeMs: result.entry.adjustedTimeMs,
+        completedAtMs: result.entry.completedAtMs,
+        improved: result.improved,
+        sortOrder: FACEBOOK_CONTEXT_BOARD_SORT_ORDER,
+        rewardsEnabled: false,
+      },
+      "recordFacebookContextRun",
+    );
   },
 );
 
@@ -90,9 +109,13 @@ export const listFacebookContextBoard = onCallWithSentry(
   "listFacebookContextBoard",
   browserCallableSecurityOptions,
   async (request: CallableRequest<unknown>) => {
+    /** Provides r id. */
     const userId = requireFacebookUser(request);
+    /** Provides input behavior. */
     const input = validateCallableRequest(
-      ListFacebookContextBoardRequestSchema, request.data, "listFacebookContextBoard",
+      ListFacebookContextBoardRequestSchema,
+      request.data,
+      "listFacebookContextBoard",
     );
     return validateCallableResponse(
       ListFacebookContextBoardResponseSchema,

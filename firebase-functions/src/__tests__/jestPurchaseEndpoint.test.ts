@@ -19,22 +19,36 @@ const deployedOptions = new Map<string, Record<string, unknown>>();
 
 /** Returns one mocked Firestore document snapshot. */
 const snapshot = (path: string) => {
+  /** Provides data behavior. */
   const data = documents.get(path);
   return {exists: data !== undefined, data: () => data};
 };
 
 /** Firestore transaction runner used by the purchase endpoint. */
-const runTransaction = jest.fn(async (operation: (transaction: {
-  get(ref: {path: string}): Promise<ReturnType<typeof snapshot>>;
-  create: typeof mockCreate;
-  update: typeof mockUpdate;
-  delete: typeof mockDelete;
-}) => Promise<void>) => operation({
-  get: async (ref) => snapshot(ref.path),
-  create: mockCreate,
-  update: mockUpdate,
-  delete: mockDelete,
-}));
+const runTransaction = jest.fn(
+  async (
+    operation: (transaction: {
+      /** Provides get behavior. */
+      get(ref: {
+        /** Stores path. */ /** Stores path. */ /** Stores path. */
+        /** Stores path. */
+        path: string;
+      }): Promise<ReturnType<typeof snapshot>>;
+      /** Stores create. */
+      create: typeof mockCreate;
+      /** Stores update. */
+      update: typeof mockUpdate;
+      /** Stores delete. */
+      delete: typeof mockDelete;
+    }) => Promise<void>,
+  ) =>
+    operation({
+      get: async (ref) => snapshot(ref.path),
+      create: mockCreate,
+      update: mockUpdate,
+      delete: mockDelete,
+    }),
+);
 
 /** Mock Firestore factory with the legacy static FieldValue surface used by Admin SDK code. */
 const firestore = Object.assign(
@@ -42,8 +56,15 @@ const firestore = Object.assign(
     collection: (collection: string) => ({
       doc: (id: string) => {
         requestedDocumentIds.push(id);
+        /** Provides path behavior. */
         const path = `${collection}/${id}`;
-        const ref = {path} as {path: string; get(): Promise<ReturnType<typeof snapshot>>};
+        /** Provides ref behavior. */
+        const ref = {path} as {
+          /** Stores path. */
+          path: string; /** Provides get behavior. */
+          /** Provides get behavior. */
+          get(): Promise<ReturnType<typeof snapshot>>;
+        };
         Object.defineProperty(ref, "get", {value: async () => snapshot(path), enumerable: false});
         return ref;
       },
@@ -82,9 +103,8 @@ import {createJestPurchaseGrantId} from "../jest/jestPurchaseReceipts";
 /** Creates a trusted JSON request for one signed purchase token. */
 const request = (purchaseToken: string, ip: string) => ({
   body: {purchaseSigned: "signed", playerId: "player-1", purchaseToken},
-  get: (name: string) => name.toLowerCase() === "origin"
-    ? "https://019faa68-f3ec-755d-9ab5-c887fb426801.builds.jest.com"
-    : undefined,
+  get: (name: string) =>
+    name.toLowerCase() === "origin" ? "https://019faa68-f3ec-755d-9ab5-c887fb426801.builds.jest.com" : undefined,
   method: "POST",
   is: (type: string) => type === "application/json",
   ip,
@@ -92,18 +112,22 @@ const request = (purchaseToken: string, ip: string) => ({
 
 /** Creates a response recorder compatible with the Jest HTTP endpoint. */
 const response = () => {
+  /** Provides output behavior. */
   const output = {
     body: undefined as unknown,
     statusCode: 200,
     set: jest.fn(),
+    /** Provides status behavior. */
     status(code: number) {
       output.statusCode = code;
       return output;
     },
+    /** Provides json behavior. */
     json(body: unknown) {
       output.body = body;
       return output;
     },
+    /** Provides send behavior. */
     send(body: string) {
       output.body = body;
       return output;
@@ -114,41 +138,63 @@ const response = () => {
 
 /** Invokes the unwrapped purchase handler returned by the Sentry boundary mock. */
 const invokePurchase = async (purchaseToken: string, ip: string) => {
+  /** Provides output behavior. */
   const output = response();
-  await (grantJestPurchase as unknown as (
-    input: ReturnType<typeof request>,
-    output: ReturnType<typeof response>,
-  ) => Promise<void>)(request(purchaseToken, ip), output);
+  await (
+    grantJestPurchase as unknown as (
+      input: ReturnType<typeof request>,
+      output: ReturnType<typeof response>,
+    ) => Promise<void>
+  )(request(purchaseToken, ip), output);
   return output;
 };
 
 /** Invokes the signed identity exchange handler. */
 const invokeIdentity = async (body: Record<string, unknown> = {playerSigned: "signed"}) => {
+  /** Provides output behavior. */
   const output = response();
-  await (exchangeJestIdentity as unknown as (
-    input: ReturnType<typeof request> & {body: Record<string, unknown>},
-    output: ReturnType<typeof response>,
-  ) => Promise<void>)({
-    ...request("unused", `identity-${JSON.stringify(body)}`),
-    body,
-  }, output);
+  await (
+    exchangeJestIdentity as unknown as (
+      input: ReturnType<typeof request> & {
+        /** Stores body. */
+        body: Record<string, unknown>;
+      },
+      output: ReturnType<typeof response>,
+    ) => Promise<void>
+  )(
+    {
+      ...request("unused", `identity-${JSON.stringify(body)}`),
+      body,
+    },
+    output,
+  );
   return output;
 };
 
 /** Invokes the dedicated signed deletion-only retry handler. */
 const invokeDeletionRetry = async () => {
+  /** Provides output behavior. */
   const output = response();
-  await (retryJestAccountDeletion as unknown as (
-    input: ReturnType<typeof request> & {body: Record<string, unknown>},
-    output: ReturnType<typeof response>,
-  ) => Promise<void>)({
-    ...request("unused", "deletion-retry"),
-    body: {playerSigned: "signed"},
-  }, output);
+  await (
+    retryJestAccountDeletion as unknown as (
+      input: ReturnType<typeof request> & {
+        /** Stores body. */
+        body: Record<string, unknown>;
+      },
+      output: ReturnType<typeof response>,
+    ) => Promise<void>
+  )(
+    {
+      ...request("unused", "deletion-retry"),
+      body: {playerSigned: "signed"},
+    },
+    output,
+  );
   return output;
 };
 
 describe("grantJestPurchase receipt idempotency", () => {
+  /** Provides product sku behavior. */
   const productSku = "com.roobsworld.riddlequest.coinpack1";
 
   beforeEach(() => {
@@ -183,10 +229,7 @@ describe("grantJestPurchase receipt idempotency", () => {
     });
     expect(mockDeleteAccountForUser).toHaveBeenCalledWith("uid-player-1", "player-1");
     expect(mockCreateCustomToken).not.toHaveBeenCalled();
-    expect(mockCreate).not.toHaveBeenCalledWith(
-      {path: "users/uid-player-1"},
-      expect.anything(),
-    );
+    expect(mockCreate).not.toHaveBeenCalledWith({path: "users/uid-player-1"}, expect.anything());
   });
 
   it("withholds a token when deletion commits during custom-token minting", async () => {
@@ -226,10 +269,12 @@ describe("grantJestPurchase receipt idempotency", () => {
   });
 
   it("never grants a purchase or recreates a user after account deletion", async () => {
+    /** Provides purchase token behavior. */
     const purchaseToken = "post-deletion-purchase";
     verifiedPayload = {purchase: {purchaseToken, productSku}};
     documents.set("jestAccountDeletionTombstones/uid-player-1", {recreationBlocked: true});
 
+    /** Provides output behavior. */
     const output = await invokePurchase(purchaseToken, "purchase-after-deletion");
 
     expect(output).toMatchObject({statusCode: 409, body: {error: "account-deleted"}});
@@ -238,11 +283,14 @@ describe("grantJestPurchase receipt idempotency", () => {
   });
 
   it("never sends an unsafe signed token to Firestore and stores only an opaque tombstone", async () => {
+    /** Provides purchase token behavior. */
     const purchaseToken = `unsafe/token/${"x".repeat(2_000)}`;
+    /** Provides purchase token hash behavior. */
     const purchaseTokenHash = createJestPurchaseGrantId(purchaseToken);
     verifiedPayload = {purchase: {purchaseToken, productSku}};
     documents.set("users/uid-player-1", {coins: 100, unlockedAchievements: []});
 
+    /** Provides output behavior. */
     const output = await invokePurchase(purchaseToken, "purchase-new");
 
     expect(output.statusCode).toBe(200);
@@ -261,9 +309,11 @@ describe("grantJestPurchase receipt idempotency", () => {
   });
 
   it("rejects an oversized token before any Firestore or grant work", async () => {
+    /** Provides purchase token behavior. */
     const purchaseToken = "x".repeat(4_097);
     verifiedPayload = {purchase: {purchaseToken, productSku}};
 
+    /** Provides output behavior. */
     const output = await invokePurchase(purchaseToken, "purchase-oversized");
 
     expect(output).toMatchObject({statusCode: 400, body: {error: "invalid-request"}});
@@ -272,7 +322,9 @@ describe("grantJestPurchase receipt idempotency", () => {
   });
 
   it("returns the user's current balance when a hashed receipt is replayed", async () => {
+    /** Provides purchase token behavior. */
     const purchaseToken = "already-spent";
+    /** Provides purchase token hash behavior. */
     const purchaseTokenHash = createJestPurchaseGrantId(purchaseToken);
     verifiedPayload = {purchase: {purchaseToken, productSku}};
     documents.set(`jestPurchaseGrants/${purchaseTokenHash}`, {
@@ -282,6 +334,7 @@ describe("grantJestPurchase receipt idempotency", () => {
     });
     documents.set("users/uid-player-1", {coins: 73});
 
+    /** Provides output behavior. */
     const output = await invokePurchase(purchaseToken, "purchase-replay");
 
     expect(output.body).toMatchObject({alreadyProcessed: true, newCoins: 73});
@@ -289,7 +342,9 @@ describe("grantJestPurchase receipt idempotency", () => {
   });
 
   it("atomically migrates a safe raw-token receipt without granting it again", async () => {
+    /** Provides purchase token behavior. */
     const purchaseToken = "legacy-token";
+    /** Provides purchase token hash behavior. */
     const purchaseTokenHash = createJestPurchaseGrantId(purchaseToken);
     verifiedPayload = {purchase: {purchaseToken, productSku}};
     documents.set(`jestPurchaseGrants/${purchaseToken}`, {
@@ -302,6 +357,7 @@ describe("grantJestPurchase receipt idempotency", () => {
     });
     documents.set("users/uid-player-1", {coins: 42});
 
+    /** Provides output behavior. */
     const output = await invokePurchase(purchaseToken, "purchase-legacy");
 
     expect(output.body).toMatchObject({alreadyProcessed: true, newCoins: 42});

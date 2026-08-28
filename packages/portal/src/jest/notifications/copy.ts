@@ -51,44 +51,46 @@ const maxLengthFor = (field: keyof NotificationCopy) => {
 
 /** Provides as record behavior. */
 const asRecord = (value: unknown): Record<string, unknown> | null =>
-  value !== null && typeof value === "object" && !Array.isArray(value)
-    ? value as Record<string, unknown>
-    : null;
+  value !== null && typeof value === "object" && !Array.isArray(value) ? (value as Record<string, unknown>) : null;
 
 /** Parses notification copy document. */
 export const parseNotificationCopyDocument = (data: unknown, locale: string): NotificationCopy => {
+  /** Provides document behavior. */
   const document = asRecord(data);
+  /** Provides locales behavior. */
   const locales = asRecord(document?.locales);
+  /** Provides default locale behavior. */
   const defaultLocale = typeof document?.defaultLocale === "string" ? document.defaultLocale : "en";
+  /** Provides selected behavior. */
   const selected = asRecord(locales?.[locale]) ?? asRecord(locales?.[defaultLocale]);
   if (!selected) throw new Error(`Notification copy is unavailable for locale ${locale}.`);
 
-  return Object.fromEntries(COPY_FIELDS.map((field) => {
-    const value = selected[field];
-    if (
-      typeof value !== "string"
-      || value.trim().length === 0
-      || [...value.trim()].length > maxLengthFor(field)
-      || EMOJI_PATTERN.test(value)
-    ) {
-      throw new Error(`Notification copy field ${field} is invalid for locale ${locale}.`);
-    }
-    return [field, value.trim()];
-  })) as NotificationCopy;
+  return Object.fromEntries(
+    COPY_FIELDS.map((field) => {
+      /** Provides value behavior. */
+      const value = selected[field];
+      if (
+        typeof value !== "string" ||
+        value.trim().length === 0 ||
+        [...value.trim()].length > maxLengthFor(field) ||
+        EMOJI_PATTERN.test(value)
+      ) {
+        throw new Error(`Notification copy field ${field} is invalid for locale ${locale}.`);
+      }
+      return [field, value.trim()];
+    }),
+  ) as NotificationCopy;
 };
 
 /** Renders notification template. */
-export const renderNotificationTemplate = (
-  template: string,
-  values: Record<string, string | number>,
-) => template.replace(/\{([a-zA-Z0-9_]+)\}/g, (token, key: string) =>
-  Object.prototype.hasOwnProperty.call(values, key) ? String(values[key]) : token);
+export const renderNotificationTemplate = (template: string, values: Record<string, string | number>) =>
+  template.replace(/\{([a-zA-Z0-9_]+)\}/g, (token, key: string) =>
+    Object.prototype.hasOwnProperty.call(values, key) ? String(values[key]) : token,
+  );
 
 /** Renders notification body. */
-export const renderNotificationBody = (
-  template: string,
-  values: Record<string, string | number>,
-) => {
+export const renderNotificationBody = (template: string, values: Record<string, string | number>) => {
+  /** Provides body behavior. */
   const body = renderNotificationTemplate(template, values).trim();
   if ([...body].length > 100 || EMOJI_PATTERN.test(body)) {
     throw new Error("Rendered notification body is not safe for message delivery.");
@@ -98,10 +100,9 @@ export const renderNotificationBody = (
 
 /** Provides notification player name behavior. */
 export const notificationPlayerName = (value: string | undefined, fallback: string) => {
-  const clean = (candidate: string) => candidate
-    .replace(UNSAFE_NAME_CHARACTERS, "")
-    .replace(/\s+/g, " ")
-    .trim();
+  /** Provides clean behavior. */
+  const clean = (candidate: string) => candidate.replace(UNSAFE_NAME_CHARACTERS, "").replace(/\s+/g, " ").trim();
+  /** Provides selected behavior. */
   const selected = clean(value ?? "") || clean(fallback) || "Solver";
   return [...selected].slice(0, 24).join("");
 };

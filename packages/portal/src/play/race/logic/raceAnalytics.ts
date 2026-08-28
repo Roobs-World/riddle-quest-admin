@@ -6,7 +6,13 @@ import {createRequestId} from "../../requestIds";
 export const createRaceAnalyticsMessage = (
   eventName: RaceAnalyticsEventName,
   params: Record<string, string | number | boolean> = {},
-): Extract<GameToHostMessage, {type: "game:analytics"}> => {
+): Extract<
+  GameToHostMessage,
+  {
+    /** Stores type. */
+    type: "game:analytics";
+  }
+> => {
   /** Field names accepted by the shared schema for this event. */
   const allowed = new Set<string>(RACE_ANALYTICS_FIELDS[eventName]);
   return {

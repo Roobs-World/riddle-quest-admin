@@ -14,16 +14,21 @@ export function normalizeUsernameDisplay(username: string): string {
 }
 
 /** Validates the shared browser/bridge/callable username boundary. */
-export const UsernameSchema = z.string()
+export const UsernameSchema = z
+  .string()
   .max(USERNAME_RAW_MAX_LENGTH, "Username input is too large.")
   .refine((username) => !/[\p{Cc}\p{Cf}]/u.test(username), {
     message: "Username must not contain control or formatting characters.",
   })
   .transform(normalizeUsernameDisplay)
-  .refine((username) => {
-    const length = [...username].length;
-    return length >= USERNAME_MIN_LENGTH && length <= USERNAME_MAX_LENGTH;
-  }, {message: `Username must be ${USERNAME_MIN_LENGTH}-${USERNAME_MAX_LENGTH} characters.`})
+  .refine(
+    (username) => {
+      /** Provides length behavior. */
+      const length = [...username].length;
+      return length >= USERNAME_MIN_LENGTH && length <= USERNAME_MAX_LENGTH;
+    },
+    {message: `Username must be ${USERNAME_MIN_LENGTH}-${USERNAME_MAX_LENGTH} characters.`},
+  )
   .refine((username) => /^[\p{L}\p{M}\p{N} ._'’-]+$/u.test(username), {
     message: "Username contains unsupported characters.",
   })
@@ -36,7 +41,11 @@ const FunctionGameModeSchema = z.enum(["challenge", "classic"]);
 /** Bounds canonical riddle identifiers accepted by gameplay callables. */
 const RiddleIdSchema = z.string().min(1).max(160);
 /** Bounds guesses to the shipped seven-keyboard-slot policy. */
-const PlayableGuessSchema = z.string().min(1).max(7).regex(/^[a-z]+$/i);
+const PlayableGuessSchema = z
+  .string()
+  .min(1)
+  .max(7)
+  .regex(/^[a-z]+$/i);
 
 /** Validates the basic success message response data shape. */
 export const BasicSuccessMessageResponseSchema = z
@@ -242,7 +251,14 @@ export const SpendCoinsResponseSchema = z
 /** Validates the get hint request data shape. */
 export const GetHintRequestSchema = z
   .object({
-    currentAttempt: z.array(z.string().max(1).regex(/^[a-z]?$/i)).max(7),
+    currentAttempt: z
+      .array(
+        z
+          .string()
+          .max(1)
+          .regex(/^[a-z]?$/i),
+      )
+      .max(7),
     riddleId: RiddleIdSchema,
     gameMode: FunctionGameModeSchema,
     sessionToken: z.string().min(20).max(128),

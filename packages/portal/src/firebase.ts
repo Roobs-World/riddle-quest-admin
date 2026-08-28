@@ -70,25 +70,33 @@ const functions = getFunctions(firebaseApp, firebaseEnvironment.functionsRegion 
 export const firebaseFunctions = functions;
 
 /** Gets current daily challenge. */
-export const getCurrentDailyChallenge = httpsCallable<{
-  locale?: string;
-  sessionToken?: string;
-  riddleId?: string;
-} | undefined, CurrentRiddleResponse>(
-  functions,
-  "getCurrentDailyChallenge",
-);
+export const getCurrentDailyChallenge = httpsCallable<
+  | {
+      /** Stores locale. */
+      locale?: string;
+      /** Stores session token. */
+      sessionToken?: string;
+      /** Stores riddle id. */
+      riddleId?: string;
+    }
+  | undefined,
+  CurrentRiddleResponse
+>(functions, "getCurrentDailyChallenge");
 
 /** Gets current classic riddle. */
-export const getCurrentClassicRiddle = httpsCallable<{
-  classicIndex: number;
-  locale?: string;
-  sessionToken?: string;
-  riddleId?: string;
-}, CurrentRiddleResponse>(
-  functions,
-  "getCurrentClassicRiddle",
-);
+export const getCurrentClassicRiddle = httpsCallable<
+  {
+    /** Stores classic index. */
+    classicIndex: number;
+    /** Stores locale. */
+    locale?: string;
+    /** Stores session token. */
+    sessionToken?: string;
+    /** Stores riddle id. */
+    riddleId?: string;
+  },
+  CurrentRiddleResponse
+>(functions, "getCurrentClassicRiddle");
 
 /** Completes game. */
 export const completeGame = httpsCallable<CompleteGameInput, CompleteGameOutput>(functions, "completeGame");
@@ -106,51 +114,101 @@ export const getHint = httpsCallable<GetHintInput, GetHintOutput>(functions, "ge
 export const spendCoins = httpsCallable<SpendCoinsRequest, SpendCoinsOutput>(functions, "spendCoins");
 
 /** Provides skip riddle behavior. */
-export const skipRiddle = httpsCallable<{
-  riddleId: string;
-  gameMode: "classic" | "challenge";
-  sessionToken: string;
-  requestId: string;
-}, SkipRiddleResponse>(
-  functions,
-  "skipRiddle",
-);
+export const skipRiddle = httpsCallable<
+  {
+    /** Stores riddle id. */
+    riddleId: string;
+    /** Stores game mode. */
+    gameMode: "classic" | "challenge";
+    /** Stores session token. */
+    sessionToken: string;
+    /** Stores request id. */
+    requestId: string;
+  },
+  SkipRiddleResponse
+>(functions, "skipRiddle");
 
 /** Gets leaderboard. */
 export const getLeaderboard = httpsCallable<
-  {type: "xp" | "totalWins" | "bestStreak"; limit?: number},
   {
+    /** Stores type. */
+    type: "xp" | "totalWins" | "bestStreak"; /** Stores limit. */
+    /** Stores limit. */
+    limit?: number;
+  },
+  {
+    /** Stores entries. */
     entries: Array<{
+      /** Stores user id. */
       userId: string;
+      /** Stores username. */
       username: string;
+      /** Stores avatar url. */
       avatarUrl?: string;
+      /** Stores level. */
       level: number;
+      /** Stores xp. */
       xp: number;
+      /** Stores total wins. */
       totalWins: number;
+      /** Stores best streak. */
       bestStreak: number;
     }>;
+    /** Stores requesting user id. */
     requestingUserId: string;
   }
 >(functions, "getLeaderboard");
 
 /** Updates username. */
-export const updateUsername = httpsCallable<{username: string}, {success: boolean; message: string}>(
-  functions,
-  "updateUsername",
-);
+export const updateUsername = httpsCallable<
+  {
+    /** Stores username. */
+    username: string;
+  },
+  {
+    /** Stores success. */
+    success: boolean; /** Stores message. */
+    /** Stores message. */
+    message: string;
+  }
+>(functions, "updateUsername");
 
 /** Updates avatar. */
-export const updateAvatar = httpsCallable<{imageDataUrl: string}, {success: true; message: string; avatarUrl: string}>(
-  functions,
-  "updateAvatar",
-);
+export const updateAvatar = httpsCallable<
+  {
+    /** Stores image data url. */
+    imageDataUrl: string;
+  },
+  {
+    /** Stores success. */
+    success: true; /** Stores message. */
+    /** Stores message. */
+    message: string; /** Stores avatar url. */
+    /** Stores avatar url. */
+    avatarUrl: string;
+  }
+>(functions, "updateAvatar");
 /** Deletes account. */
-export const deleteAccount = httpsCallable<Record<string, never>, {success: true}>(functions, "deleteAccount");
+export const deleteAccount = httpsCallable<
+  Record<string, never>,
+  {
+    /** Stores success. */
+    success: true;
+  }
+>(functions, "deleteAccount");
 /** Changes server-owned presence consent for the current authenticated account. */
-export const setPresenceConsent = httpsCallable<{enabled: boolean}, {success: true; enabled: boolean}>(
-  functions,
-  "setPresenceConsent",
-);
+export const setPresenceConsent = httpsCallable<
+  {
+    /** Stores enabled. */
+    enabled: boolean;
+  },
+  {
+    /** Stores success. */
+    success: true; /** Stores enabled. */
+    /** Stores enabled. */
+    enabled: boolean;
+  }
+>(functions, "setPresenceConsent");
 
 /** Lists race categories. */
 export const listRaceCategories = httpsCallable<ListRaceCategoriesRequest, ListRaceCategoriesResponse>(
@@ -172,7 +230,13 @@ export const requestRaceHint = httpsCallable<RequestRaceHintRequest, RequestRace
 /** Provides skip race riddle behavior. */
 export const skipRaceRiddle = httpsCallable<SkipRaceRiddleRequest, SkipRaceRiddleResponse>(functions, "skipRaceRiddle");
 /** Provides resume race run behavior. */
-export const resumeRaceRun = httpsCallable<{runId: string}, RaceRunResponse>(functions, "resumeRaceRun");
+export const resumeRaceRun = httpsCallable<
+  {
+    /** Stores run id. */
+    runId: string;
+  },
+  RaceRunResponse
+>(functions, "resumeRaceRun");
 /** Provides abandon race run behavior. */
 export const abandonRaceRun = httpsCallable<AbandonRaceRunRequest, AbandonRaceRunResponse>(functions, "abandonRaceRun");
 /** Publishes race challenge. */
@@ -181,26 +245,55 @@ export const publishRaceChallenge = httpsCallable<PublishRaceChallengeRequest, P
   "publishRaceChallenge",
 );
 /** Gets race challenge. */
-export const getRaceChallenge = httpsCallable<{
-  challengeId: string;
-  locale: import("@qwordly/core/race").RaceLocale;
-}, RaceChallengePreview>(
-  functions,
-  "getRaceChallenge",
-);
+export const getRaceChallenge = httpsCallable<
+  {
+    /** Stores challenge id. */
+    challengeId: string;
+    /** Stores locale. */
+    locale: import("@qwordly/core/race").RaceLocale;
+  },
+  RaceChallengePreview
+>(functions, "getRaceChallenge");
 /** Gets race outcome. */
-export const getRaceOutcome = httpsCallable<{runId: string}, RaceOutcome>(functions, "getRaceOutcome");
+export const getRaceOutcome = httpsCallable<
+  {
+    /** Stores run id. */
+    runId: string;
+  },
+  RaceOutcome
+>(functions, "getRaceOutcome");
 /** Lists race inbox. */
 export const listRaceInbox = httpsCallable<ListRaceInboxRequest | undefined, ListRaceInboxResponse>(
   functions,
   "listRaceInbox",
 );
 /** Immediately blocks an established social rival. */
-export const blockRival = httpsCallable<{targetUserId: string}, {blocked: true}>(functions, "blockRival");
+export const blockRival = httpsCallable<
+  {
+    /** Stores target user id. */
+    targetUserId: string;
+  },
+  {
+    /** Stores blocked. */
+    blocked: true;
+  }
+>(functions, "blockRival");
 /** Queues an idempotent categorized report for an established social rival. */
 export const reportRival = httpsCallable<
-  {targetUserId: string; category: import("@qwordly/core/race").SocialReportCategory; requestId: string},
-  {reportId: string; queued: true}
+  {
+    /** Stores target user id. */
+    targetUserId: string; /** Stores category. */
+    /** Stores category. */
+    category: import("@qwordly/core/race").SocialReportCategory; /** Stores request id. */
+    /** Stores request id. */
+    requestId: string;
+  },
+  {
+    /** Stores report id. */
+    reportId: string; /** Stores queued. */
+    /** Stores queued. */
+    queued: true;
+  }
 >(functions, "reportRival");
 /** Gets race access. */
 export const getRaceAccess = httpsCallable<RaceAccessRequest | undefined, RaceAccessResponse>(
@@ -215,6 +308,7 @@ export const recordRaceAnalytics = httpsCallable<RaceAnalyticsEventRequest, Race
 
 /** Loads user document. */
 export const loadUserDocument = async (userId: string): Promise<Record<string, unknown> | null> => {
+  /** Provides snapshot behavior. */
   const snapshot = await getDoc(doc(firebaseFirestore, "users", userId));
   return snapshot.exists() ? snapshot.data() : null;
 };
@@ -223,17 +317,28 @@ export const loadUserDocument = async (userId: string): Promise<Record<string, u
 export type CurrentRiddleResponse = {
   /** Stores challenge. */
   challenge?: {
+    /** Stores date. */
     date?: string;
+    /** Stores questions. */
     questions: Array<{
+      /** Stores riddle id. */
       riddleId: string;
+      /** Stores text. */
       text: string;
+      /** Stores answer length. */
       answerLength: number;
+      /** Stores session token. */
       sessionToken: string;
+      /** Stores question number. */
       questionNumber: number;
+      /** Stores attempts used. */
       attemptsUsed: number;
+      /** Stores has used continue. */
       hasUsedContinue: boolean;
+      /** Stores awaiting continue. */
       awaitingContinue: boolean;
     }>;
+    /** Stores total questions. */
     totalQuestions: number;
   };
   /** Stores current question. */
@@ -268,9 +373,14 @@ type GetHintInput = {
 
 /** Describes get hint output. */
 type GetHintOutput = {
+  /** Stores revealed letter. */
   revealedLetter: string;
+  /** Stores index. */
   index: number;
+  /** Stores coins cost. */
   coinsCost: number;
+  /** Stores new coins. */
   newCoins?: number;
+  /** Stores newly unlocked achievement ids. */
   newlyUnlockedAchievementIds?: string[];
 } | null;

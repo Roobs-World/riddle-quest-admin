@@ -18,7 +18,12 @@ export class YouTubeSaveGate {
   /** Stores sdk. */
   private readonly sdk: Pick<YouTubeSdkPort, "saveData">;
   /** Stores pending. */
-  private pending: {revision: number; serialized: string} | null = null;
+  private pending: {
+    /** Stores revision. */
+    revision: number; /** Stores serialized. */
+    /** Stores serialized. */
+    serialized: string;
+  } | null = null;
   /** Stores in flight. */
   private inFlight: Promise<void> | null = null;
   /** Stores failed. */
@@ -53,6 +58,7 @@ export class YouTubeSaveGate {
   /** Serializes and reserves exact bytes before an authority publishes a transition. */
   stage(save: YouTubeSaveV1): void {
     if (this.pending) throw new YouTubeSaveBlockedError();
+    /** Serializes d. */
     const serialized = serializeYouTubeSave(save);
     this.pending = {revision: save.revision, serialized};
     this.failed = false;
@@ -81,6 +87,7 @@ export class YouTubeSaveGate {
   private async writePending(): Promise<void> {
     if (!this.pending) return;
     if (this.inFlight) return this.inFlight;
+    /** Provides exact pending behavior. */
     const exactPending = this.pending;
     // Normalize synchronous SDK failures into the same exact-payload retry path
     // as rejected promises; otherwise a provider throw could wedge the gate.

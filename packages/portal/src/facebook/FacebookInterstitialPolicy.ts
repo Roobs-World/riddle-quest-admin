@@ -7,9 +7,13 @@ const SESSION_CAP = 10;
 
 /** Describes facebook interstitial state. */
 export type FacebookInterstitialState = Readonly<{
+  /** Stores shown this session. */
   shownThisSession: number;
+  /** Stores last interstitial at ms. */
   lastInterstitialAtMs?: number;
+  /** Stores last rewarded at ms. */
   lastRewardedAtMs?: number;
+  /** Stores ad free. */
   adFree: boolean;
 }>;
 

@@ -4,11 +4,22 @@ import {captureBrowserException} from "./observability/browserErrorReporter";
 import {tr} from "./play/i18n";
 
 /** Provides fatal error boundary behavior. */
-export class FatalErrorBoundary extends Component<{children: ReactNode}, {error: Error | null}> {
+export class FatalErrorBoundary extends Component<
+  {
+    /** Stores children. */
+    children: ReactNode;
+  },
+  {
+    /** Stores error. */
+    error: Error | null;
+  }
+> {
   /** Stores state. */
   override state = {error: null as Error | null};
   /** Gets derived state from error. */
-  static getDerivedStateFromError(error: Error) { return {error}; }
+  static getDerivedStateFromError(error: Error) {
+    return {error};
+  }
   /** Provides component did catch behavior. */
   override componentDidCatch(error: Error, info: ErrorInfo) {
     trackEvent("client_error", {error_kind: "react_render"});

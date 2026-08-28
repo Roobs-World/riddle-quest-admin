@@ -2,6 +2,7 @@ import {avatarDownloadUrl, decodeAvatarDataUrl} from "../profile/avatarUpload";
 
 describe("avatar upload validation", () => {
   it("accepts a matching PNG signature", () => {
+    /** Provides bytes behavior. */
     const bytes = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
     expect(decodeAvatarDataUrl(`data:image/png;base64,${bytes.toString("base64")}`)).toEqual({
       bytes,
@@ -21,6 +22,7 @@ describe("avatar upload validation", () => {
 
   it("rejects malformed and oversized payloads", () => {
     expect(() => decodeAvatarDataUrl("not-a-data-url")).toThrow("invalid-avatar-data");
+    /** Provides oversized behavior. */
     const oversized = Buffer.alloc(512 * 1024 + 1, 0x89);
     expect(() => decodeAvatarDataUrl(`data:image/png;base64,${oversized.toString("base64")}`)).toThrow(
       "invalid-avatar-size",
@@ -28,6 +30,7 @@ describe("avatar upload validation", () => {
   });
 
   it("rejects incomplete WebP containers", () => {
+    /** Provides wrong container behavior. */
     const wrongContainer = Buffer.from([0x52, 0x49, 0x46, 0x46, 0, 0, 0, 0, 0x4e, 0x4f, 0x50, 0x45]);
     expect(() => decodeAvatarDataUrl(`data:image/webp;base64,${wrongContainer.toString("base64")}`)).toThrow(
       "invalid-avatar-signature",
@@ -35,6 +38,7 @@ describe("avatar upload validation", () => {
   });
 
   it("rejects content whose signature does not match its declared type", () => {
+    /** Provides bytes behavior. */
     const bytes = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
     expect(() => decodeAvatarDataUrl(`data:image/jpeg;base64,${bytes.toString("base64")}`)).toThrow(
       "invalid-avatar-signature",
@@ -44,7 +48,7 @@ describe("avatar upload validation", () => {
   it("creates a tokenized Firebase Storage download URL", () => {
     expect(avatarDownloadUrl("bucket", "avatars/player one/profile", "token value")).toBe(
       "https://firebasestorage.googleapis.com/v0/b/bucket/o/" +
-      "avatars%2Fplayer%20one%2Fprofile?alt=media&token=token%20value",
+        "avatars%2Fplayer%20one%2Fprofile?alt=media&token=token%20value",
     );
   });
 });

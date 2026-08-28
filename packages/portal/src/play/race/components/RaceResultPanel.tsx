@@ -1,9 +1,4 @@
-import type {
-  PublishRaceChallengeResponse,
-  RaceCategoryId,
-  RaceOutcome,
-  RaceRunView,
-} from "@qwordly/core/race";
+import type {PublishRaceChallengeResponse, RaceCategoryId, RaceOutcome, RaceRunView} from "@qwordly/core/race";
 import {tr} from "../../i18n";
 import {formatRaceTime} from "../logic/racePresentation";
 
@@ -20,15 +15,25 @@ export function RaceResultPanel({
   onChooseCategory,
   onClose,
 }: {
+  /** Stores outcome. */
   outcome: RaceOutcome;
+  /** Stores run. */
   run: RaceRunView | null;
+  /** Stores publication. */
   publication: PublishRaceChallengeResponse | null;
+  /** Stores publishing. */
   publishing: boolean;
+  /** Stores sharing reward coins. */
   sharingRewardCoins?: number;
+  /** Stores on publish. */
   onPublish: () => void;
+  /** Stores on share. */
   onShare: () => void;
+  /** Stores on rematch. */
   onRematch: (categoryId: RaceCategoryId) => void;
+  /** Stores on choose category. */
   onChooseCategory: () => void;
+  /** Stores on close. */
   onClose: () => void;
 }) {
   return (

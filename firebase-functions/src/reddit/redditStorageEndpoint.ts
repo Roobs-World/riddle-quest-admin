@@ -30,9 +30,21 @@ const isRecord = (value: unknown): value is Record<string, unknown> =>
 /** Parses reddit preferences. */
 export function parseRedditPreferences(value: unknown): Record<string, unknown> {
   if (!isRecord(value)) throw new Error("invalid-reddit-preferences");
-  const allowed = new Set(["locale", "muted", "reducedMotion", "highContrast", "onboardingComplete", "firstMilestoneMarked", "presenceEnabled"]);
+  /** Provides allowed behavior. */
+  const allowed = new Set([
+    "locale",
+    "muted",
+    "reducedMotion",
+    "highContrast",
+    "onboardingComplete",
+    "firstMilestoneMarked",
+    "presenceEnabled",
+  ]);
   if (Object.keys(value).some((key) => !allowed.has(key))) throw new Error("invalid-reddit-preferences");
-  if (value.locale !== undefined && (typeof value.locale !== "string" || !/^[a-z]{2}(?:-[A-Z]{2})?$/u.test(value.locale))) {
+  if (
+    value.locale !== undefined &&
+    (typeof value.locale !== "string" || !/^[a-z]{2}(?:-[A-Z]{2})?$/u.test(value.locale))
+  ) {
     throw new Error("invalid-reddit-preferences");
   }
   for (const key of [...allowed].filter((key) => key !== "locale")) {
@@ -44,8 +56,15 @@ export function parseRedditPreferences(value: unknown): Record<string, unknown> 
 /** Parses reddit player data. */
 export function parseRedditPlayerData(value: unknown): Record<string, unknown> | null {
   if (value === null) return null;
-  if (!isRecord(value) || value.schemaVersion !== 1 || !Number.isSafeInteger(value.updatedAt) || (value.updatedAt as number) < 0 ||
-    Buffer.byteLength(JSON.stringify(value), "utf8") > 48 * 1_024) throw new Error("invalid-reddit-player-data");
+  if (
+    !isRecord(value) ||
+    value.schemaVersion !== 1 ||
+    !Number.isSafeInteger(value.updatedAt) ||
+    (value.updatedAt as number) < 0 ||
+    Buffer.byteLength(JSON.stringify(value), "utf8") > 48 * 1_024
+  )
+    throw new Error("invalid-reddit-player-data");
+  /** Provides allowed behavior. */
   const allowed = new Set(["schemaVersion", "updatedAt", "profile", "activeGame"]);
   if (Object.keys(value).some((key) => !allowed.has(key))) throw new Error("invalid-reddit-player-data");
   return value;
@@ -53,7 +72,11 @@ export function parseRedditPlayerData(value: unknown): Record<string, unknown> |
 
 /** Parses write payload. */
 const parseWritePayload = (payload: unknown) => {
-  if (!isRecord(payload) || Object.keys(payload).length < 1 || Object.keys(payload).some((key) => key !== "preferences" && key !== "playerData")) {
+  if (
+    !isRecord(payload) ||
+    Object.keys(payload).length < 1 ||
+    Object.keys(payload).some((key) => key !== "preferences" && key !== "playerData")
+  ) {
     throw new Error("invalid-reddit-storage-write");
   }
   return {
@@ -66,41 +89,76 @@ const parseWritePayload = (payload: unknown) => {
 export const redditStorage = onRequestWithSentry("redditStorage", options, async (request, response) => {
   response.set("Cache-Control", "no-store");
   response.set("X-Content-Type-Options", "nosniff");
-  if (request.method !== "POST") { response.status(405).json({error: "method-not-allowed"}); return; }
-  if (request.rawBody && request.rawBody.byteLength > MAX_BODY_BYTES) { response.status(413).json({error: "payload-too-large"}); return; }
-  if (!isRedditFeatureEnabled("identity")) { response.status(503).json({error: "reddit-feature-disabled:identity"}); return; }
+  if (request.method !== "POST") {
+    response.status(405).json({error: "method-not-allowed"});
+    return;
+  }
+  if (request.rawBody && request.rawBody.byteLength > MAX_BODY_BYTES) {
+    response.status(413).json({error: "payload-too-large"});
+    return;
+  }
+  if (!isRedditFeatureEnabled("identity")) {
+    response.status(503).json({error: "reddit-feature-disabled:identity"});
+    return;
+  }
   try {
+    /** Provides envelope behavior. */
     const envelope = parseRedditGatewayEnvelope(request.body);
-    const operation = isRecord(envelope.assertion) && typeof envelope.assertion.operation === "string"
-      ? envelope.assertion.operation
-      : "";
+    /** Provides operation behavior. */
+    const operation =
+      isRecord(envelope.assertion) && typeof envelope.assertion.operation === "string"
+        ? envelope.assertion.operation
+        : "";
     if (!OPERATIONS.has(operation)) throw new Error("invalid-reddit-storage-operation");
+    /** Asserts ion. */
     const assertion = await verifyRedditGatewayAssertion(
       envelope.assertion,
       request.get("x-riddle-quest-reddit-signature") ?? "",
       {
-        gatewaySecret: gatewaySecret.value(), expectedAppName: REDDIT_APP_NAME, expectedOperation: operation,
-        expectedPayload: envelope.payload, consumeNonce: consumeRedditGatewayNonce,
+        gatewaySecret: gatewaySecret.value(),
+        expectedAppName: REDDIT_APP_NAME,
+        expectedOperation: operation,
+        expectedPayload: envelope.payload,
+        consumeNonce: consumeRedditGatewayNonce,
       },
     );
-    if (!await consumeRedditRequestQuota(
-      `${assertion.appName}\0${assertion.userId}\0${assertion.operation}`,
-      gatewaySecret.value(),
-    )) { response.status(429).json({error: "rate-limited"}); return; }
-    if ((operation === "storage.read" || operation === "storage.clear") && (!isRecord(envelope.payload) || Object.keys(envelope.payload).length !== 0)) {
+    if (
+      !(await consumeRedditRequestQuota(
+        `${assertion.appName}\0${assertion.userId}\0${assertion.operation}`,
+        gatewaySecret.value(),
+      ))
+    ) {
+      response.status(429).json({error: "rate-limited"});
+      return;
+    }
+    if (
+      (operation === "storage.read" || operation === "storage.clear") &&
+      (!isRecord(envelope.payload) || Object.keys(envelope.payload).length !== 0)
+    ) {
       throw new Error("invalid-reddit-storage-payload");
     }
+    /** Provides db behavior. */
     const db = admin.firestore();
-    const provider = await db.collection("providerIdentities")
-      .doc(redditProviderIdentityId(assertion.appName, assertion.userId)).get();
+    /** Provides provider behavior. */
+    const provider = await db
+      .collection("providerIdentities")
+      .doc(redditProviderIdentityId(assertion.appName, assertion.userId))
+      .get();
+    /** Provides identity behavior. */
     const identity = resolveRedditProviderIdentity(provider.data(), {
-      appName: assertion.appName, userId: assertion.userId, uidSecret: uidSecret.value(),
+      appName: assertion.appName,
+      userId: assertion.userId,
+      uidSecret: uidSecret.value(),
     });
     if (identity.needsUidRepair) throw new Error("reddit-session-refresh-required");
+    /** Provides storage ref behavior. */
     const storageRef = db.collection("redditPlayerStorage").doc(identity.uid);
+    /** Provides result behavior. */
     const result = await runWithJestAccountOperationLease(identity.uid, 60, async () => {
       if (operation === "storage.read") {
+        /** Provides snapshot behavior. */
         const snapshot = await storageRef.get();
+        /** Provides value behavior. */
         const value = snapshot.data();
         return {
           preferences: value?.preferences === undefined ? {} : parseRedditPreferences(value.preferences),
@@ -111,6 +169,7 @@ export const redditStorage = onRequestWithSentry("redditStorage", options, async
         await storageRef.delete();
         return {cleared: true};
       }
+      /** Provides update behavior. */
       const update = parseWritePayload(envelope.payload);
       await storageRef.set({...update, updatedAt: admin.firestore.FieldValue.serverTimestamp()}, {merge: true});
       return {written: true};

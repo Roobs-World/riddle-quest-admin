@@ -12,6 +12,7 @@ import {
   raceReceiptExpiresAt,
 } from "../../race/raceReceiptPrivacy";
 
+/** Provides run behavior. */
 const run = (overrides: Partial<RaceRunRecord> = {}): RaceRunRecord => ({
   runId: "run-1",
   userId: "player-1",
@@ -34,6 +35,7 @@ const run = (overrides: Partial<RaceRunRecord> = {}): RaceRunRecord => ({
   ...overrides,
 });
 
+/** Provides opponent behavior. */
 const opponent = (overrides: Partial<NonNullable<RaceRunRecord["opponent"]>> = {}) => ({
   subjectUserId: "creator-1",
   displayName: "Ada",
@@ -45,6 +47,7 @@ const opponent = (overrides: Partial<NonNullable<RaceRunRecord["opponent"]>> = {
 
 describe("race receipt privacy", () => {
   it("stores only a neutral opponent projection without mutating the response", () => {
+    /** Provides response behavior. */
     const response = {
       accepted: true,
       run: {opponent: {...opponent()}, status: "completed"},
@@ -65,22 +68,22 @@ describe("race receipt privacy", () => {
     expect(response.run.opponent).toMatchObject({displayName: "Ada", avatarUrl: "https://example.test/ada.png"});
   });
 
-  it.each([
-    null,
-    "response",
-    {},
-    {run: null},
-    {run: {}},
-    {run: {opponent: null}},
-  ])("leaves responses without an opponent projection unchanged", (response) => {
-    expect(minimizeRaceReceiptResponse(response)).toBe(response);
-  });
+  it.each([null, "response", {}, {run: null}, {run: {}}, {run: {opponent: null}}])(
+    "leaves responses without an opponent projection unchanged",
+    (response) => {
+      expect(minimizeRaceReceiptResponse(response)).toBe(response);
+    },
+  );
 
   it("hydrates a replay from the current linked opponent identity", () => {
+    /** Provides receipt behavior. */
     const receipt = {
       run: {opponent: {displayName: "Stale", avatarUrl: "https://example.test/stale.png", adjustedFinishMs: 9_000}},
     };
-    const currentRun = run({opponent: opponent({displayName: "Current", avatarUrl: "https://example.test/current.png"})});
+    /** Provides current run behavior. */
+    const currentRun = run({
+      opponent: opponent({displayName: "Current", avatarUrl: "https://example.test/current.png"}),
+    });
 
     expect(hydrateRaceReceiptResponse(receipt, currentRun)).toEqual({
       run: {
@@ -95,7 +98,9 @@ describe("race receipt privacy", () => {
   });
 
   it("removes a stale avatar when the linked opponent no longer has one", () => {
+    /** Provides receipt behavior. */
     const receipt = {run: {opponent: {displayName: "Stale", avatarUrl: "https://example.test/stale.png"}}};
+    /** Provides current run behavior. */
     const currentRun = run({opponent: opponent({displayName: "Current", avatarUrl: null})});
 
     expect(hydrateRaceReceiptResponse(receipt, currentRun)).toEqual({
@@ -104,7 +109,9 @@ describe("race receipt privacy", () => {
   });
 
   it("keeps a replay neutral when no privacy-safe subject remains", () => {
+    /** Provides receipt behavior. */
     const receipt = {run: {opponent: {displayName: "Stale", avatarUrl: "https://example.test/stale.png"}}};
+    /** Provides scrubbed run behavior. */
     const scrubbedRun = run({opponent: opponent({subjectUserId: undefined})});
 
     expect(hydrateRaceReceiptResponse(receipt, scrubbedRun)).toEqual({
@@ -117,57 +124,65 @@ describe("race receipt privacy", () => {
     expect(raceReceiptExpiresAt({toMillis: () => 1_200}, 1_000).toMillis()).toBe(1_000);
   });
 
-  it.each([
-    null,
-    {},
-    {toMillis: 1},
-    {toMillis: () => Number.NaN},
-    {toMillis: () => "100"},
-  ])("uses the bounded fallback for an invalid parent expiry", (parentExpiresAt) => {
-    expect(raceReceiptExpiresAt(parentExpiresAt, 1_000).toMillis()).toBe(1_000);
-  });
+  it.each([null, {}, {toMillis: 1}, {toMillis: () => Number.NaN}, {toMillis: () => "100"}])(
+    "uses the bounded fallback for an invalid parent expiry",
+    (parentExpiresAt) => {
+      expect(raceReceiptExpiresAt(parentExpiresAt, 1_000).toMillis()).toBe(1_000);
+    },
+  );
 });
 
 describe("race opponent privacy", () => {
   it("leaves solo runs intact and scrubs identity from opponent ghost data", () => {
+    /** Provides solo behavior. */
     const solo = run();
     expect(scrubRaceOpponent(solo)).toBe(solo);
 
+    /** Provides linked behavior. */
     const linked = run({opponent: opponent()});
-    expect(scrubRaceOpponent(linked)).toEqual(run({
-      opponent: {
-        displayName: PRIVATE_RACE_PLAYER_NAME,
-        adjustedFinishMs: 12_000,
-        events: [],
-        avatarUrl: undefined,
-        subjectUserId: undefined,
-      },
-    }));
+    expect(scrubRaceOpponent(linked)).toEqual(
+      run({
+        opponent: {
+          displayName: PRIVATE_RACE_PLAYER_NAME,
+          adjustedFinishMs: 12_000,
+          events: [],
+          avatarUrl: undefined,
+          subjectUserId: undefined,
+        },
+      }),
+    );
     expect(linked.opponent?.displayName).toBe("Ada");
   });
 
   it("does not read deletion authority for solo or already-unlinked opponents", async () => {
+    /** Provides transaction behavior. */
     const transaction = {get: jest.fn()};
+    /** Provides db behavior. */
     const db = {collection: jest.fn()} as unknown as FirebaseFirestore.Firestore;
 
-    await expect(resolveRaceOpponentPrivacy(transaction as never, db, run()))
-      .resolves.toEqual({run: run(), scrubbed: false});
-    await expect(resolveRaceOpponentPrivacy(
-      transaction as never,
-      db,
-      run({opponent: opponent({subjectUserId: ""})}),
-    )).resolves.toMatchObject({run: {opponent: {displayName: PRIVATE_RACE_PLAYER_NAME}}, scrubbed: true});
+    await expect(resolveRaceOpponentPrivacy(transaction as never, db, run())).resolves.toEqual({
+      run: run(),
+      scrubbed: false,
+    });
+    await expect(
+      resolveRaceOpponentPrivacy(transaction as never, db, run({opponent: opponent({subjectUserId: ""})})),
+    ).resolves.toMatchObject({run: {opponent: {displayName: PRIVATE_RACE_PLAYER_NAME}}, scrubbed: true});
     expect(transaction.get).not.toHaveBeenCalled();
   });
 
   it.each([false, true])("resolves linked identity against the deletion tombstone (exists=%s)", async (deleted) => {
+    /** Provides deletion ref behavior. */
     const deletionRef = {path: "jestAccountDeletionTombstones/creator-1"};
+    /** Provides transaction behavior. */
     const transaction = {get: jest.fn(async () => ({exists: deleted}))};
+    /** Provides db behavior. */
     const db = {
       collection: jest.fn(() => ({doc: jest.fn(() => deletionRef)})),
     } as unknown as FirebaseFirestore.Firestore;
+    /** Provides linked behavior. */
     const linked = run({opponent: opponent()});
 
+    /** Provides result behavior. */
     const result = await resolveRaceOpponentPrivacy(transaction as never, db, linked);
 
     expect(transaction.get).toHaveBeenCalledWith(deletionRef);
@@ -176,10 +191,12 @@ describe("race opponent privacy", () => {
   });
 
   it("uses field deletes only for a scrubbed opponent merge", () => {
+    /** Provides linked behavior. */
     const linked = run({opponent: opponent(), achievementProgressRecordedAtMs: undefined});
     expect(raceRunPrivacyWrite(linked, false)).toEqual(linked);
     expect(raceRunPrivacyWrite(run(), true)).toEqual(run());
 
+    /** Provides write behavior. */
     const write = raceRunPrivacyWrite(scrubRaceOpponent(linked), true);
     expect(write).toMatchObject({opponent: {displayName: PRIVATE_RACE_PLAYER_NAME}});
     expect(write.opponent.avatarUrl).toEqual(admin.firestore.FieldValue.delete());

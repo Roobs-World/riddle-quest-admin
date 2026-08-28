@@ -20,14 +20,16 @@ export function buildSinglePlayerChallengeResponse(
 ): NonNullable<GetCurrentDailyChallengeResponse["challenge"]> {
   return {
     date,
-    questions: [{
-      riddleId: riddle.riddleId,
-      text: riddle.text,
-      answerLength: splitGraphemes(riddle.answer, riddle.locale ?? state.locale).length,
-      sessionToken,
-      questionNumber: 1,
-      ...projectPublicSinglePlayerSession(state),
-    }],
+    questions: [
+      {
+        riddleId: riddle.riddleId,
+        text: riddle.text,
+        answerLength: splitGraphemes(riddle.answer, riddle.locale ?? state.locale).length,
+        sessionToken,
+        questionNumber: 1,
+        ...projectPublicSinglePlayerSession(state),
+      },
+    ],
     totalQuestions: 1,
   };
 }

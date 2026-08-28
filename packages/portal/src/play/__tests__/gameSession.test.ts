@@ -7,6 +7,7 @@ import {
   type GameSessionState,
 } from "../gameSession";
 
+/** Provides riddle behavior. */
 const riddle = {
   riddleId: "classic-1",
   sessionToken: "00000000-0000-4000-8000-000000000001",
@@ -19,37 +20,44 @@ const riddle = {
   awaitingContinue: false,
 };
 
+/** Provides reduce behavior. */
 const reduce = (state: GameSessionState, action: GameSessionAction) => gameSessionReducer(state, action);
 
+/** Resolves guess. */
 const resolveGuess = (
   state: GameSessionState,
   guess: string,
   attempts: number,
   {isCorrect = false, gameOver = false, canContinue = false} = {},
-) => reduce(reduce(state, {type: "guessRequested"}), {
-  type: "guessResolved",
-  feedback: {
-    guess: [...guess.toUpperCase()],
-    feedback: [...guess].map(() => isCorrect ? "green" as const : "red" as const),
-  },
-  attempts,
-  isCorrect,
-  gameOver,
-  canContinue,
-});
+) =>
+  reduce(reduce(state, {type: "guessRequested"}), {
+    type: "guessResolved",
+    feedback: {
+      guess: [...guess.toUpperCase()],
+      feedback: [...guess].map(() => (isCorrect ? ("green" as const) : ("red" as const))),
+    },
+    attempts,
+    isCorrect,
+    gameOver,
+    canContinue,
+  });
 
 describe("game session reducer", () => {
   it("does not open the skip modal for a daily riddle", () => {
+    /** Provides daily riddle behavior. */
     const dailyRiddle = {...riddle, riddleId: "daily-1", gameMode: "challenge" as const};
+    /** Provides state behavior. */
     const state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle: dailyRiddle});
 
     expect(reduce(state, {type: "openModal", modal: "skip"})).toBe(state);
   });
 
   it("ignores incomplete submissions without showing an error", () => {
+    /** Provides state behavior. */
     let state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle});
     state = reduce(state, {type: "typeLetter", letter: "P"});
 
+    /** Provides before submit behavior. */
     const beforeSubmit = state;
     state = reduce(state, {type: "guessRequested"});
 
@@ -59,6 +67,7 @@ describe("game session reducer", () => {
   });
 
   it("loads a riddle and wins with a correct guess", () => {
+    /** Provides state behavior. */
     let state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle});
 
     for (const letter of ["P", "I", "A", "N", "O"]) {
@@ -80,6 +89,7 @@ describe("game session reducer", () => {
   });
 
   it("does not append duplicate rows for an authoritative semantic replay", () => {
+    /** Provides state behavior. */
     let state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle});
     for (const letter of ["C", "R", "A", "N", "E"]) state = reduce(state, {type: "typeLetter", letter});
     state = resolveGuess(state, "crane", 1);
@@ -94,6 +104,7 @@ describe("game session reducer", () => {
   });
 
   it("can reveal a hinted letter and update coins", () => {
+    /** Provides state behavior. */
     let state = reduce(createInitialGameSession(), {
       type: "hostInit",
       locale: "en",
@@ -120,6 +131,7 @@ describe("game session reducer", () => {
   });
 
   it("grants a continue by resetting local attempts", () => {
+    /** Provides state behavior. */
     let state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle});
 
     for (let attempt = 0; attempt < 5; attempt += 1) {
@@ -145,6 +157,7 @@ describe("game session reducer", () => {
   });
 
   it("records a declined continue without opening an answer modal", () => {
+    /** Provides state behavior. */
     let state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle});
 
     for (let attempt = 0; attempt < 5; attempt += 1) {
@@ -161,11 +174,13 @@ describe("game session reducer", () => {
   });
 
   it("reopens Continue from authoritative load state when no client save survived", () => {
+    /** Provides awaiting riddle behavior. */
     const awaitingRiddle = {
       ...riddle,
       attemptsUsed: 5,
       awaitingContinue: true,
     };
+    /** Provides state behavior. */
     const state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle: awaitingRiddle});
 
     expect(state.modal).toBe("continue");
@@ -173,8 +188,11 @@ describe("game session reducer", () => {
   });
 
   it("keeps a restored declined outcome retryable without reopening Continue", () => {
+    /** Provides awaiting riddle behavior. */
     const awaitingRiddle = {...riddle, attemptsUsed: 5, awaitingContinue: true};
+    /** Provides state behavior. */
     let state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle: awaitingRiddle});
+    /** Provides pending outcome behavior. */
     const pendingOutcome = {
       id: `${riddle.sessionToken}-loss-5`,
       kind: "loss" as const,
@@ -202,6 +220,7 @@ describe("game session reducer", () => {
   });
 
   it("locks hinted slots while allowing non-sequential editing", () => {
+    /** Provides state behavior. */
     let state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle});
     state = reduce(state, {type: "applyHint", index: 2, letter: "A"});
     state = reduce(state, {type: "selectSlot", index: 4});
@@ -216,6 +235,7 @@ describe("game session reducer", () => {
   });
 
   it("clears leaderboard rows while a fresh leaderboard request is loading", () => {
+    /** Provides existing entry behavior. */
     const existingEntry = {
       userId: "player-1",
       username: "Previous result",
@@ -224,6 +244,7 @@ describe("game session reducer", () => {
       totalWins: 5,
       bestStreak: 2,
     };
+    /** Provides state behavior. */
     let state: GameSessionState = {
       ...createInitialGameSession(),
       leaderboard: [existingEntry],

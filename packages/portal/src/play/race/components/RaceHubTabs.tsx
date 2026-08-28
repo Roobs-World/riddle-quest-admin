@@ -14,14 +14,22 @@ export function RaceHubTabs({
   onMatchPlayer,
   socialPending = null,
 }: {
+  /** Stores active. */
   active: RaceHubTab;
+  /** Stores on play. */
   onPlay: () => void;
+  /** Stores on activity. */
   onActivity: () => void;
+  /** Stores on tournaments. */
   onTournaments?: () => void;
+  /** Stores on choose context. */
   onChooseContext?: () => void;
+  /** Stores on match player. */
   onMatchPlayer?: () => void;
+  /** Stores social pending. */
   socialPending?: "context" | "match" | null;
 }) {
+  /** Provides tabs behavior. */
   const tabs = [
     {id: "play" as const, label: tr("RaceTo10.HUB_PLAY"), onSelect: onPlay},
     {id: "activity" as const, label: tr("RaceTo10.HUB_ACTIVITY"), onSelect: onActivity},
@@ -29,8 +37,11 @@ export function RaceHubTabs({
       ? [{id: "tournaments" as const, label: tr("RaceTo10.HUB_TOURNAMENTS"), onSelect: onTournaments}]
       : []),
   ];
+  /** Provides tab refs behavior. */
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  /** Handles tab key. */
   const handleTabKey = (event: KeyboardEvent<HTMLButtonElement>, index: number) => {
+    /** Provides next index behavior. */
     let nextIndex: number | undefined;
     if (event.key === "ArrowRight") nextIndex = (index + 1) % tabs.length;
     if (event.key === "ArrowLeft") nextIndex = (index - 1 + tabs.length) % tabs.length;
@@ -48,7 +59,9 @@ export function RaceHubTabs({
         {tabs.map((tab, index) => (
           <button
             key={tab.id}
-            ref={(element) => { tabRefs.current[index] = element; }}
+            ref={(element) => {
+              tabRefs.current[index] = element;
+            }}
             type="button"
             role="tab"
             aria-selected={active === tab.id}
@@ -62,12 +75,16 @@ export function RaceHubTabs({
       </div>
       {onChooseContext || onMatchPlayer ? (
         <div className="race-hub-social-actions" aria-label={tr("RaceTo10.MULTIPLAYER_BUTTON")}>
-          {onMatchPlayer ? <button type="button" onClick={onMatchPlayer} disabled={socialPending !== null}>
+          {onMatchPlayer ? (
+            <button type="button" onClick={onMatchPlayer} disabled={socialPending !== null}>
               {tr("RaceTo10.MATCH_PLAYER")}
-            </button> : null}
-          {onChooseContext ? <button type="button" onClick={onChooseContext} disabled={socialPending !== null}>
+            </button>
+          ) : null}
+          {onChooseContext ? (
+            <button type="button" onClick={onChooseContext} disabled={socialPending !== null}>
               {tr("RaceTo10.CHOOSE_CONTEXT")}
-            </button> : null}
+            </button>
+          ) : null}
         </div>
       ) : null}
     </nav>

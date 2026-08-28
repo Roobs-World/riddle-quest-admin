@@ -22,6 +22,7 @@ const DAILY_LOCALE_CONCURRENCY = 3;
 /** Validates and normalizes an immutable UTC daily-content key. */
 function assertUtcDateKey(value: string): string {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) throw new Error("A YYYY-MM-DD UTC challenge date is required.");
+  /** Parses d. */
   const parsed = new Date(`${value}T00:00:00.000Z`);
   if (Number.isNaN(parsed.getTime()) || parsed.toISOString().slice(0, 10) !== value) {
     throw new Error("A valid UTC challenge date is required.");
@@ -40,16 +41,29 @@ export async function generateLocalizedDailyChallengeForDate(
   targetDate: string,
   forceGenerate: boolean = false,
 ): Promise<void> {
+  /** Provides challenge date behavior. */
   const challengeDate = assertUtcDateKey(targetDate);
+  /** Provides daily index behavior. */
   const dailyIndex = Math.floor(new Date(`${challengeDate}T00:00:00.000Z`).getTime() / 86_400_000);
   if (!process.env.OPENAI_API_KEY) throw new Error("OPENAI_API_KEY environment variable is required");
 
+  /** Provides total attempt count behavior. */
   let totalAttemptCount = 0;
-  const failures: {locale: SupportedLocale; reason: string}[] = [];
+  /** Provides failures behavior. */
+  const failures: {
+    /** Stores locale. */
+    locale: SupportedLocale; /** Stores reason. */
+    /** Stores reason. */
+    reason: string;
+  }[] = [];
 
+  /** Provides generate for locale behavior. */
   const generateForLocale = async (locale: SupportedLocale): Promise<void> => {
+    /** Provides daily riddle ref behavior. */
     const dailyRiddleRef = getLocalizedDailyDocRef(locale, challengeDate);
+    /** Provides existing challenge behavior. */
     const existingChallenge = await dailyRiddleRef.get();
+    /** Provides existing data behavior. */
     const existingData = existingChallenge.data();
     if (
       existingChallenge.exists &&
@@ -64,18 +78,27 @@ export async function generateLocalizedDailyChallengeForDate(
       return;
     }
 
+    /** Provides existing behavior. */
     const existing = await getLocalizedExistingRiddlesFromFirestoreForLocale(locale);
-    const generatedAttempts: {question: string; answer: string}[] = [];
+    /** Provides generated attempts behavior. */
+    const generatedAttempts: {
+      /** Stores question. */
+      question: string; /** Stores answer. */
+      /** Stores answer. */
+      answer: string;
+    }[] = [];
 
     for (let localeAttempt = 1; localeAttempt <= MAX_DAILY_ATTEMPTS_PER_LOCALE; localeAttempt++) {
       if (totalAttemptCount >= MAX_DAILY_ATTEMPTS_PER_RUN) break;
       totalAttemptCount += 1;
+      /** Provides riddle behavior. */
       const riddle = await generateUniqueRiddle(locale, [
         ...existing.answers,
         ...generatedAttempts.map((item) => item.answer),
       ]);
       if (!riddle) continue;
 
+      /** Provides candidate behavior. */
       const candidate = {question: riddle[0], answer: riddle[1]};
       generatedAttempts.push(candidate);
       if (
@@ -91,7 +114,9 @@ export async function generateLocalizedDailyChallengeForDate(
         continue;
       }
 
+      /** Provides riddle id behavior. */
       const riddleId = `daily-${challengeDate}`;
+      /** Provides riddle data behavior. */
       const riddleData: DailyRiddle = {
         riddleId,
         canonicalKey: getLocalizedCanonicalKey("daily", dailyIndex, locale),
@@ -112,10 +137,13 @@ export async function generateLocalizedDailyChallengeForDate(
   };
 
   for (let index = 0; index < SUPPORTED_LOCALES.length; index += DAILY_LOCALE_CONCURRENCY) {
+    /** Provides locale batch behavior. */
     const localeBatch = SUPPORTED_LOCALES.slice(index, index + DAILY_LOCALE_CONCURRENCY);
+    /** Sets tled. */
     const settled = await Promise.allSettled(localeBatch.map(generateForLocale));
     settled.forEach((result, resultIndex) => {
       if (result.status === "rejected") {
+        /** Provides reason behavior. */
         const reason = result.reason instanceof Error ? result.reason.name : typeof result.reason;
         failures.push({locale: localeBatch[resultIndex], reason});
       }

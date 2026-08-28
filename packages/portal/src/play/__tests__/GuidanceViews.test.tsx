@@ -27,24 +27,15 @@ afterAll(() => {
 
 describe("guidance views", () => {
   it("renders welcome and instruction onboarding pages", () => {
+    /** Provides card ref behavior. */
     const cardRef = createRef<HTMLDivElement>();
+    /** Provides welcome html behavior. */
     const welcomeHtml = renderToString(
-      <OnboardingOverlay
-        cardRef={cardRef}
-        onboardingStep={0}
-        totalSteps={2}
-        welcomeOnly={false}
-        onAdvance={noop}
-      />,
+      <OnboardingOverlay cardRef={cardRef} onboardingStep={0} totalSteps={2} welcomeOnly={false} onAdvance={noop} />,
     );
+    /** Provides instructions html behavior. */
     const instructionsHtml = renderToString(
-      <OnboardingOverlay
-        cardRef={cardRef}
-        onboardingStep={1}
-        totalSteps={2}
-        welcomeOnly={false}
-        onAdvance={noop}
-      />,
+      <OnboardingOverlay cardRef={cardRef} onboardingStep={1} totalSteps={2} welcomeOnly={false} onAdvance={noop} />,
     );
 
     expect(welcomeHtml).toContain("onboarding-logo");
@@ -55,6 +46,7 @@ describe("guidance views", () => {
   });
 
   it("renders the Jest registration onboarding page", () => {
+    /** Provides html behavior. */
     const html = renderToString(
       <OnboardingOverlay
         cardRef={createRef<HTMLDivElement>()}
@@ -72,6 +64,7 @@ describe("guidance views", () => {
   });
 
   it("shows the inviter identity on attributed registration", () => {
+    /** Provides html behavior. */
     const html = renderToString(
       <OnboardingOverlay
         cardRef={createRef<HTMLDivElement>()}
@@ -89,6 +82,7 @@ describe("guidance views", () => {
   });
 
   it("renders centered and targeted tooltip presentations", () => {
+    /** Provides centered html behavior. */
     const centeredHtml = renderToString(
       <TooltipOverlay
         cardRef={createRef<HTMLElement>()}
@@ -100,6 +94,7 @@ describe("guidance views", () => {
         onAdvance={noop}
       />,
     );
+    /** Provides targeted html behavior. */
     const targetedHtml = renderToString(
       <TooltipOverlay
         cardRef={createRef<HTMLElement>()}

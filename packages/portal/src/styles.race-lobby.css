@@ -38,7 +38,10 @@
   border-radius: 999px;
   color: #fff;
   background: rgba(2, 14, 20, 0.48);
-  font: 400 1.2rem/1 "Poetsen One", "Poppins", sans-serif;
+  font:
+    400 1.2rem/1 "Poetsen One",
+    "Poppins",
+    sans-serif;
   font-variant-numeric: tabular-nums;
 }
 .race-coin-balance img {

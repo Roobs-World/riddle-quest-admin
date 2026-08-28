@@ -10,13 +10,16 @@ describe("NativeAnswerInput", () => {
   });
 
   it("renders device-keyboard, IME, accessibility, and RTL metadata", () => {
-    const html = renderToString(<NativeAnswerInput
-      disabled={false}
-      locale="ar"
-      onText={() => undefined}
-      onBackspace={() => undefined}
-      onSubmit={() => undefined}
-    />);
+    /** Provides html behavior. */
+    const html = renderToString(
+      <NativeAnswerInput
+        disabled={false}
+        locale="ar"
+        onText={() => undefined}
+        onBackspace={() => undefined}
+        onSubmit={() => undefined}
+      />,
+    );
     expect(html).toContain('inputMode="text"');
     expect(html).toContain('enterKeyHint="done"');
     expect(html).toContain('lang="ar"');

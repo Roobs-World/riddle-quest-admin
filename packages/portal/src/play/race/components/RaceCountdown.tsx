@@ -8,9 +8,13 @@ export function RaceCountdown({
   coins,
   onClose,
 }: {
+  /** Stores countdown. */
   countdown: number;
+  /** Stores loading. */
   loading: boolean;
+  /** Stores coins. */
   coins: number;
+  /** Stores on close. */
   onClose: () => void;
 }) {
   /** Visible countdown number or final localized “Go” label. */

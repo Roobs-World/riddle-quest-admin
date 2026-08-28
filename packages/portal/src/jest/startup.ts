@@ -10,7 +10,12 @@ const JEST_LOADING_HEARTBEAT_MS = 10_000;
 /** Tracks the one live loading heartbeat owned by each initialized platform instance. */
 const loadingHeartbeats = new WeakMap<
   JestPlatformPort,
-  {timer: ReturnType<typeof setInterval>; progress: number}
+  {
+    /** Stores timer. */
+    timer: ReturnType<typeof setInterval>; /** Stores progress. */
+    /** Stores progress. */
+    progress: number;
+  }
 >();
 /** Defines the jest sdk init timeout ms value. */
 export const JEST_SDK_INIT_TIMEOUT_MS = 12_000;
@@ -26,13 +31,19 @@ export type JestStartupUpdate = {
 };
 
 /** Result of session startup, including an intentionally completed deletion recovery. */
-export type JestStartupResult = PlatformResult<JestSession> | {status: "account-deleted"};
+export type JestStartupResult =
+  | PlatformResult<JestSession>
+  | {
+      /** Stores status. */
+      status: "account-deleted";
+    };
 
 /** Stops a platform loading heartbeat without affecting another startup attempt. */
 export function stopJestLoadingHeartbeat(
   platform: JestPlatformPort,
   expectedTimer?: ReturnType<typeof setInterval>,
 ): void {
+  /** Provides heartbeat behavior. */
   const heartbeat = loadingHeartbeats.get(platform);
   if (!heartbeat || (expectedTimer !== undefined && heartbeat.timer !== expectedTimer)) return;
   clearInterval(heartbeat.timer);
@@ -42,6 +53,7 @@ export function stopJestLoadingHeartbeat(
 /** Starts a fresh heartbeat and returns its timer identity for race-safe cleanup. */
 const startJestLoadingHeartbeat = (platform: JestPlatformPort, progress: number): ReturnType<typeof setInterval> => {
   stopJestLoadingHeartbeat(platform);
+  /** Provides heartbeat behavior. */
   const heartbeat = {progress, timer: undefined as unknown as ReturnType<typeof setInterval>};
   heartbeat.timer = setInterval(() => platform.setLoadingProgress(heartbeat.progress), JEST_LOADING_HEARTBEAT_MS);
   // Node test processes should not be kept alive by the browser lifecycle timer.
@@ -79,23 +91,37 @@ export async function startJestSession(
   authenticateFirebase: (customToken: string) => Promise<void>,
   onProgress?: (update: JestStartupUpdate) => void,
   options: {
+    /** Stores initialization timeout ms. */
     initializationTimeoutMs?: number;
+    /** Stores on initialized. */
     onInitialized?: () => boolean | void | Promise<boolean | void>;
+    /** Stores on authenticated. */
     onAuthenticated?: () => boolean | void | Promise<boolean | void>;
+    /** Stores on identity deleted. */
     onIdentityDeleted?: (playerSigned: string) => void | Promise<void>;
+    /** Stores deletion recovery. */
     deletionRecovery?: boolean;
+    /** Stores recover account deletion. */
     recoverAccountDeletion?: (playerSigned: string) => Promise<void>;
+    /** Stores with identity operation. */
     withIdentityOperation?: (operation: () => Promise<boolean>) => Promise<boolean>;
+    /** Stores with account operation. */
     withAccountOperation?: <Result>(operation: () => Promise<Result>) => Promise<Result>;
   } = {},
 ): Promise<JestStartupResult> {
+  /** Provides heartbeat timer behavior. */
   let heartbeatTimer: ReturnType<typeof setInterval> | undefined;
+  /** Provides keep heartbeat alive behavior. */
   let keepHeartbeatAlive = false;
+  /** Provides sdk initialized behavior. */
   let sdkInitialized = false;
   stopJestLoadingHeartbeat(platform);
   try {
+    /** Provides initialization timeout ms behavior. */
     const initializationTimeoutMs = options.initializationTimeoutMs ?? JEST_SDK_INIT_TIMEOUT_MS;
+    /** Provides initialization timeout behavior. */
     let initializationTimeout: ReturnType<typeof setTimeout>;
+    /** Provides initialized behavior. */
     const initialized = await Promise.race([
       platform.init(),
       new Promise<never>((_, reject) => {
@@ -114,11 +140,17 @@ export async function startJestSession(
     if (await options.onInitialized?.()) return {status: "account-deleted"};
     onProgress?.({stage: "player", progress: phaseProgress[1]});
     reportJestLoadingProgress(platform, phaseProgress[1]);
+    /** Provides signed promise behavior. */
     const signedPromise = platform.getPlayerSigned();
+    /** Provides entry intent behavior. */
     const entryIntent = platform.getEntryIntent();
+    /** Provides preferences behavior. */
     const preferences = platform.readPreferences();
+    /** Provides player data promise behavior. */
     const playerDataPromise = platform.readPlayerData();
+    /** Provides [signed, player data] behavior. */
     const [signed, playerData] = await Promise.all([signedPromise, playerDataPromise]);
+    /** Provides profile behavior. */
     let profile: JestSession["profile"] = null;
 
     if (signed.player.registered) {
@@ -133,14 +165,18 @@ export async function startJestSession(
 
     reportJestLoadingProgress(platform, phaseProgress[3]);
     onProgress?.({stage: "game", progress: phaseProgress[3]});
+    /** Provides identity tombstoned behavior. */
     let identityTombstoned = false;
+    /** Provides firebase uid behavior. */
     let firebaseUid: string | undefined;
+    /** Provides authenticate identity behavior. */
     const authenticateIdentity = async (): Promise<boolean> => {
       if (options.deletionRecovery) {
         if (!options.recoverAccountDeletion) throw new Error("account-deletion-recovery-unavailable");
         await options.recoverAccountDeletion(signed.playerSigned);
         return true;
       }
+      /** Provides identity behavior. */
       const identity = await backend.exchangeIdentity(signed.playerSigned);
       if (identity.status === "account-deleted") {
         identityTombstoned = true;
@@ -150,6 +186,7 @@ export async function startJestSession(
       await authenticateFirebase(identity.customToken);
       return Boolean(await options.onAuthenticated?.());
     };
+    /** Provides identity deleted behavior. */
     const identityDeleted = options.withIdentityOperation
       ? await options.withIdentityOperation(authenticateIdentity)
       : await authenticateIdentity();
@@ -159,10 +196,10 @@ export async function startJestSession(
     }
     reportJestLoadingProgress(platform, phaseProgress[4]);
 
+    /** Provides reconcile behavior. */
     const reconcile = () => purchases.reconcile(signed.player.playerId);
-    const recovered = options.withAccountOperation
-      ? await options.withAccountOperation(reconcile)
-      : await reconcile();
+    /** Provides recovered behavior. */
+    const recovered = options.withAccountOperation ? await options.withAccountOperation(reconcile) : await reconcile();
     if (recovered.status !== "success") return recovered;
 
     reportJestLoadingProgress(platform, phaseProgress[5]);

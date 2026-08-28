@@ -5,6 +5,7 @@ export const loadNonEnglishNamespace = async (
   locale: Exclude<Locale, "en">,
   namespace: SharedNamespace,
 ): Promise<NamespaceCatalog> => {
+  /** Provides module behavior. */
   const module = await import(`../../../../src/locales/${locale}/${namespace}.json`);
   return (module.default ?? module) as NamespaceCatalog;
 };

@@ -5,8 +5,7 @@ import {admin} from "../shared/firebaseAdmin";
 const AUTH_SENTINEL_ATTEMPTS = 3;
 
 /** Returns a non-deliverable pseudonymous email for the retained disabled Auth record. */
-export const deletedJestAuthEmail = (userId: string): string =>
-  `deleted-${userId}@players.jest.invalid`;
+export const deletedJestAuthEmail = (userId: string): string => `deleted-${userId}@players.jest.invalid`;
 
 /** Extracts an Admin Auth error code without trusting an arbitrary thrown value. */
 const authErrorCode = (error: unknown): string | undefined =>
@@ -15,11 +14,13 @@ const authErrorCode = (error: unknown): string | undefined =>
     : undefined;
 
 /** Returns the provider identifiers that can be detached from an existing Auth profile. */
-const linkedProviderIds = (user: UserRecord): string[] =>
-  [...new Set(user.providerData.map(({providerId}) => providerId).filter(Boolean))];
+const linkedProviderIds = (user: UserRecord): string[] => [
+  ...new Set(user.providerData.map(({providerId}) => providerId).filter(Boolean)),
+];
 
 /** Disables and minimizes an Auth record that is known to exist. */
 async function minimizeExistingAuthUser(auth: Auth, userId: string): Promise<void> {
+  /** Provides r. */
   const user = await auth.getUser(userId);
   await auth.updateUser(userId, {
     disabled: true,
@@ -64,6 +65,7 @@ async function ensureDisabledAuthUser(auth: Auth, userId: string): Promise<void>
  * previously issued refresh tokens.
  */
 export async function preserveDeletedJestAuthUser(userId: string): Promise<void> {
+  /** Provides auth behavior. */
   const auth = admin.auth();
   for (let attempt = 0; attempt < AUTH_SENTINEL_ATTEMPTS; attempt += 1) {
     try {

@@ -23,21 +23,27 @@ export const YOUTUBE_CONTINUE_ATTEMPTS = 1;
 
 /** Mirrors the established cumulative XP curve without importing backend code. */
 export function getYouTubeLevelFromXp(totalXp: number): number {
+  /** Provides xp behavior. */
   const xp = Math.max(totalXp, 0);
+  /** Provides a behavior. */
   const a = 5;
+  /** Provides b behavior. */
   const b = 95;
+  /** Completes d level ups. */
   const completedLevelUps = Math.floor((-b + Math.sqrt(b * b + 4 * a * xp)) / (2 * a));
   return completedLevelUps + 1;
 }
 
 /** Gets you tube win xp. */
 export function getYouTubeWinXp(mode: YouTubeGameMode, attempts: number): number {
+  /** Provides base behavior. */
   const base = mode === "daily" ? 100 : 50;
   return base + Math.max(0, (YOUTUBE_BASE_ATTEMPTS - attempts + 1) * 10);
 }
 
 /** Gets you tube daily streak bonus. */
 export function getYouTubeDailyStreakBonus(streak: number): number {
+  /** Normalizes d. */
   const normalized = Math.max(0, Math.floor(streak));
   if (normalized === 0) return 0;
   return Math.min(20 + Math.floor(normalized / 7) * 20, 300);
@@ -50,6 +56,7 @@ export function utcDay(date: Date): string {
 
 /** Provides previous utc day behavior. */
 export function previousUtcDay(day: string): string {
+  /** Provides date behavior. */
   const date = new Date(`${day}T12:00:00.000Z`);
   date.setUTCDate(date.getUTCDate() - 1);
   return utcDay(date);

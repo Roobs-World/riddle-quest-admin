@@ -1,26 +1,69 @@
 import {afterEach, beforeEach, describe, expect, it, jest} from "@jest/globals";
 import {createHash} from "node:crypto";
 
+/** Describes stored. */
 type Stored = Record<string, any>;
+/** Provides mock documents behavior. */
 const mockDocuments = new Map<string, Stored>();
+/** Provides snapshot behavior. */
 const snapshot = (path: string) => ({exists: mockDocuments.has(path), data: () => mockDocuments.get(path)});
+/** Provides document ref behavior. */
 const documentRef = (path: string): any => ({
   path,
   get: async () => snapshot(path),
   collection: (name: string) => collectionRef(`${path}/${name}`),
 });
+/** Provides collection ref behavior. */
 const collectionRef = (path: string): any => ({doc: (id: string) => documentRef(`${path}/${id}`)});
+/** Provides mock transaction behavior. */
 const mockTransaction = {
-  get: jest.fn(async (ref: {path: string}) => snapshot(ref.path)),
-  update: jest.fn((ref: {path: string}, value: Stored) => {
-    mockDocuments.set(ref.path, {...(mockDocuments.get(ref.path) ?? {}), ...value});
-  }),
-  create: jest.fn((ref: {path: string}, value: Stored) => mockDocuments.set(ref.path, {...value})),
-  set: jest.fn((ref: {path: string}, value: Stored) => {
-    mockDocuments.set(ref.path, {...(mockDocuments.get(ref.path) ?? {}), ...value});
-  }),
-  delete: jest.fn((ref: {path: string}) => mockDocuments.delete(ref.path)),
+  get: jest.fn(
+    async (ref: {
+      /** Stores path. */ /** Stores path. */ /** Stores path. */
+      /** Stores path. */
+      path: string;
+    }) => snapshot(ref.path),
+  ),
+  update: jest.fn(
+    (
+      ref: {
+        /** Stores path. */
+        path: string;
+      },
+      value: Stored,
+    ) => {
+      mockDocuments.set(ref.path, {...(mockDocuments.get(ref.path) ?? {}), ...value});
+    },
+  ),
+  create: jest.fn(
+    (
+      ref: {
+        /** Stores path. */
+        path: string;
+      },
+      value: Stored,
+    ) => mockDocuments.set(ref.path, {...value}),
+  ),
+  set: jest.fn(
+    (
+      ref: {
+        /** Stores path. */
+        path: string;
+      },
+      value: Stored,
+    ) => {
+      mockDocuments.set(ref.path, {...(mockDocuments.get(ref.path) ?? {}), ...value});
+    },
+  ),
+  delete: jest.fn(
+    (ref: {
+      /** Stores path. */ /** Stores path. */ /** Stores path. */
+      /** Stores path. */
+      path: string;
+    }) => mockDocuments.delete(ref.path),
+  ),
 };
+/** Provides mock firestore behavior. */
 const mockFirestore = Object.assign(
   jest.fn(() => ({
     collection: (name: string) => collectionRef(name),
@@ -34,8 +77,11 @@ const mockFirestore = Object.assign(
     },
   },
 );
+/** Provides mock finalize authoritative session behavior. */
 const mockFinalizeAuthoritativeSession = jest.fn();
+/** Provides mock update leaderboard entry behavior. */
 const mockUpdateLeaderboardEntry = jest.fn();
+/** Provides mock trigger classic riddle generation if needed behavior. */
 const mockTriggerClassicRiddleGenerationIfNeeded = jest.fn();
 
 jest.mock("../shared/firebaseAdmin", () => ({admin: {firestore: mockFirestore}}));
@@ -51,27 +97,26 @@ jest.mock("../gameplay/leaderboard", () => ({
   updateLeaderboardEntry: (...args: unknown[]) => mockUpdateLeaderboardEntry(...args),
 }));
 jest.mock("../riddles/riddleSupply", () => ({
-  triggerClassicRiddleGenerationIfNeeded: (...args: unknown[]) =>
-    mockTriggerClassicRiddleGenerationIfNeeded(...args),
+  triggerClassicRiddleGenerationIfNeeded: (...args: unknown[]) => mockTriggerClassicRiddleGenerationIfNeeded(...args),
 }));
 
-import {
-  completeAuthoritativeGame,
-  LOSS_COMPLETION_RECEIPT_TTL_MS,
-} from "../gameplay/completeGameLogic";
+import {completeAuthoritativeGame, LOSS_COMPLETION_RECEIPT_TTL_MS} from "../gameplay/completeGameLogic";
 
+/** Defines the user id value. */
 const USER_ID = "player-1";
+/** Defines the token a value. */
 const TOKEN_A = "00000000-0000-4000-8000-000000000001";
+/** Defines the token b value. */
 const TOKEN_B = "00000000-0000-4000-8000-000000000002";
+/** Provides hash behavior. */
 const hash = (value: string) => createHash("sha256").update(value).digest("hex");
-const completionBindingPath = (
-  completionKey: string,
-  gameMode: "classic" | "challenge" = "classic",
-) => `users/${USER_ID}/singlePlayerCompletionBindings/${hash(`${gameMode}\0${completionKey}`)}`;
-const completionReceiptPath = (
-  completionKey: string,
-  gameMode: "classic" | "challenge" = "classic",
-) => `gameCompletionReceipts/${hash(`${USER_ID}\0${gameMode}\0${completionKey}`)}`;
+/** Provides completion binding path behavior. */
+const completionBindingPath = (completionKey: string, gameMode: "classic" | "challenge" = "classic") =>
+  `users/${USER_ID}/singlePlayerCompletionBindings/${hash(`${gameMode}\0${completionKey}`)}`;
+/** Provides completion receipt path behavior. */
+const completionReceiptPath = (completionKey: string, gameMode: "classic" | "challenge" = "classic") =>
+  `gameCompletionReceipts/${hash(`${USER_ID}\0${gameMode}\0${completionKey}`)}`;
+/** Provides stats behavior. */
 const stats = () => ({
   xp: 0,
   level: 1,
@@ -93,6 +138,7 @@ const stats = () => ({
   multiplayerWins: 0,
   multiplayerChallengesCreated: 0,
 });
+/** Provides r. */
 const user = () => ({
   userId: USER_ID,
   email: "player@example.com",
@@ -124,6 +170,7 @@ describe("atomic authoritative completion", () => {
   });
 
   it("commits rewards, progression, and receipt once across completion retries", async () => {
+    /** Provides request behavior. */
     const request = {riddleId: "classic-1", gameMode: "classic" as const, sessionToken: TOKEN_A};
     mockDocuments.set(completionBindingPath("classic:1"), {
       sessionToken: TOKEN_A,
@@ -133,9 +180,12 @@ describe("atomic authoritative completion", () => {
       terminal: true,
       isCorrect: true,
     });
+    /** Provides first behavior. */
     const first = await completeAuthoritativeGame(request, {uid: USER_ID});
+    /** Provides after first behavior. */
     const afterFirst = structuredClone(mockDocuments.get(`users/${USER_ID}`));
     expect(mockDocuments.has(completionBindingPath("classic:1"))).toBe(false);
+    /** Provides newer pointer behavior. */
     const newerPointer = {
       sessionToken: TOKEN_B,
       gameMode: "classic",
@@ -145,6 +195,7 @@ describe("atomic authoritative completion", () => {
       isCorrect: true,
     };
     mockDocuments.set(completionBindingPath("classic:1"), newerPointer);
+    /** Provides replay behavior. */
     const replay = await completeAuthoritativeGame(request, {uid: USER_ID});
 
     expect(first).toMatchObject({attempts: 2, isCorrect: true, coinsEarned: 25});
@@ -156,7 +207,9 @@ describe("atomic authoritative completion", () => {
   });
 
   it("adds the idempotent Facebook first-win referral to the returned authoritative balance", async () => {
+    /** Provides facebook uid behavior. */
     const facebookUid = `facebook_${"a".repeat(40)}`;
+    /** Provides inviter uid behavior. */
     const inviterUid = `facebook_${"b".repeat(40)}`;
     mockDocuments.set(`users/${facebookUid}`, {...user(), userId: facebookUid});
     mockDocuments.set(`users/${inviterUid}`, {...user(), userId: inviterUid, coins: 500});
@@ -168,8 +221,11 @@ describe("atomic authoritative completion", () => {
       boundAtMs: Date.now() - 1,
       settledAtMs: null,
     });
+    /** Provides request behavior. */
     const request = {riddleId: "classic-1", gameMode: "classic" as const, sessionToken: TOKEN_A};
+    /** Provides first behavior. */
     const first = await completeAuthoritativeGame(request, {uid: facebookUid});
+    /** Provides replay behavior. */
     const replay = await completeAuthoritativeGame(request, {uid: facebookUid});
 
     expect(first).toMatchObject({
@@ -192,10 +248,14 @@ describe("atomic authoritative completion", () => {
       completionKey: "classic:1",
       classicIndex: 1,
     });
+    /** Provides request behavior. */
     const request = {riddleId: "classic-1", gameMode: "classic" as const, sessionToken: TOKEN_A};
 
+    /** Provides first behavior. */
     const first = await completeAuthoritativeGame(request, {uid: USER_ID});
+    /** Provides replay behavior. */
     const replay = await completeAuthoritativeGame(request, {uid: USER_ID});
+    /** Provides loss key behavior. */
     const lossKey = `classic:1:loss:${TOKEN_A}`;
 
     expect(first).toMatchObject({attempts: 6, isCorrect: false, coinsEarned: 0});
@@ -208,6 +268,7 @@ describe("atomic authoritative completion", () => {
   });
 
   it("deduplicates a win across locale-specific sessions using the canonical entitlement key", async () => {
+    /** Provides first behavior. */
     const first = await completeAuthoritativeGame(
       {riddleId: "classic-en", gameMode: "classic", sessionToken: TOKEN_A},
       {uid: USER_ID},
@@ -221,6 +282,7 @@ describe("atomic authoritative completion", () => {
       completionKey: "classic:1",
       classicIndex: 1,
     });
+    /** Provides second behavior. */
     const second = await completeAuthoritativeGame(
       {riddleId: "classic-fr", gameMode: "classic", sessionToken: TOKEN_B},
       {uid: USER_ID},
@@ -240,7 +302,9 @@ describe("atomic authoritative completion", () => {
       {riddleId: "classic-en", gameMode: "classic", sessionToken: TOKEN_A},
       {uid: USER_ID},
     );
+    /** Provides after win behavior. */
     const afterWin = structuredClone(mockDocuments.get(`users/${USER_ID}`));
+    /** Provides r updates after win. */
     const userUpdatesAfterWin = mockTransaction.update.mock.calls.length;
     mockFinalizeAuthoritativeSession.mockResolvedValue({
       attempts: 6,
@@ -260,10 +324,12 @@ describe("atomic authoritative completion", () => {
       isCorrect: false,
     });
 
+    /** Provides first behavior. */
     const first = await completeAuthoritativeGame(
       {riddleId: "classic-fr", gameMode: "classic", sessionToken: TOKEN_B},
       {uid: USER_ID},
     );
+    /** Provides replay behavior. */
     const replay = await completeAuthoritativeGame(
       {riddleId: "classic-fr", gameMode: "classic", sessionToken: TOKEN_B},
       {uid: USER_ID},
@@ -295,13 +361,17 @@ describe("atomic authoritative completion", () => {
       terminal: true,
       isCorrect: true,
     });
+    /** Provides before behavior. */
     const before = structuredClone(mockDocuments.get(`users/${USER_ID}`));
+    /** Provides r updates before. */
     const userUpdatesBefore = mockTransaction.update.mock.calls.length;
 
+    /** Provides first behavior. */
     const first = await completeAuthoritativeGame(
       {riddleId: "classic-en", gameMode: "classic", sessionToken: TOKEN_A},
       {uid: USER_ID},
     );
+    /** Provides replay behavior. */
     const replay = await completeAuthoritativeGame(
       {riddleId: "classic-en", gameMode: "classic", sessionToken: TOKEN_A},
       {uid: USER_ID},
@@ -339,7 +409,9 @@ describe("atomic authoritative completion", () => {
       {riddleId: "daily-en", gameMode: "challenge", sessionToken: TOKEN_A},
       {uid: USER_ID},
     );
+    /** Provides after win behavior. */
     const afterWin = structuredClone(mockDocuments.get(`users/${USER_ID}`));
+    /** Provides r updates after win. */
     const userUpdatesAfterWin = mockTransaction.update.mock.calls.length;
     mockFinalizeAuthoritativeSession.mockResolvedValue({
       attempts: 6,
@@ -359,10 +431,12 @@ describe("atomic authoritative completion", () => {
       isCorrect: false,
     });
 
+    /** Provides first behavior. */
     const first = await completeAuthoritativeGame(
       {riddleId: "daily-fr", gameMode: "challenge", sessionToken: TOKEN_B},
       {uid: USER_ID},
     );
+    /** Provides replay behavior. */
     const replay = await completeAuthoritativeGame(
       {riddleId: "daily-fr", gameMode: "challenge", sessionToken: TOKEN_B},
       {uid: USER_ID},
@@ -379,13 +453,12 @@ describe("atomic authoritative completion", () => {
     expect(replay).toEqual(first);
     expect(mockDocuments.get(`users/${USER_ID}`)).toEqual(afterWin);
     expect(mockTransaction.update).toHaveBeenCalledTimes(userUpdatesAfterWin);
-    expect(mockDocuments.get(completionReceiptPath(
-      `challenge:2026-08-11:loss:${TOKEN_B}`,
-      "challenge",
-    ))).toMatchObject({
-      status: "completed",
-      expiresAt: {millis: Date.now() + LOSS_COMPLETION_RECEIPT_TTL_MS},
-    });
+    expect(mockDocuments.get(completionReceiptPath(`challenge:2026-08-11:loss:${TOKEN_B}`, "challenge"))).toMatchObject(
+      {
+        status: "completed",
+        expiresAt: {millis: Date.now() + LOSS_COMPLETION_RECEIPT_TTL_MS},
+      },
+    );
     expect(mockDocuments.has(completionBindingPath("challenge:2026-08-11", "challenge"))).toBe(false);
   });
 
@@ -399,12 +472,12 @@ describe("atomic authoritative completion", () => {
       completionKey: "challenge:2020-01-01",
       challengeDate: "2020-01-01",
     });
+    /** Provides before behavior. */
     const before = structuredClone(mockDocuments.get(`users/${USER_ID}`));
 
-    await expect(completeAuthoritativeGame(
-      {riddleId: "current", gameMode: "challenge", sessionToken: TOKEN_A},
-      {uid: USER_ID},
-    )).rejects.toMatchObject({code: "permission-denied"});
+    await expect(
+      completeAuthoritativeGame({riddleId: "current", gameMode: "challenge", sessionToken: TOKEN_A}, {uid: USER_ID}),
+    ).rejects.toMatchObject({code: "permission-denied"});
     expect(mockDocuments.get(`users/${USER_ID}`)).toEqual(before);
   });
 
@@ -427,6 +500,7 @@ describe("atomic authoritative completion", () => {
       challengeDate: "2026-08-11",
     });
 
+    /** Provides result behavior. */
     const result = await completeAuthoritativeGame(
       {riddleId: "daily-2026-08-11", gameMode: "challenge", sessionToken: TOKEN_A},
       {uid: USER_ID},
@@ -457,9 +531,11 @@ describe("atomic authoritative completion", () => {
       challengeDate: "2026-08-11",
     });
 
-    await expect(completeAuthoritativeGame(
-      {riddleId: "daily-2026-08-11", gameMode: "challenge", sessionToken: TOKEN_A},
-      {uid: USER_ID},
-    )).rejects.toMatchObject({code: "permission-denied"});
+    await expect(
+      completeAuthoritativeGame(
+        {riddleId: "daily-2026-08-11", gameMode: "challenge", sessionToken: TOKEN_A},
+        {uid: USER_ID},
+      ),
+    ).rejects.toMatchObject({code: "permission-denied"});
   });
 });

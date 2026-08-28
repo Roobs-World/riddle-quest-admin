@@ -3,11 +3,13 @@ import type {FacebookBackendPort, FacebookIdentityCredentials} from "./backend";
 import {exchangeFacebookCredentials} from "./credentialExchange";
 
 /** Describes app check token. */
-type AppCheckToken = {/** Stores token. */
-/** Stores token. */
-token: string; /** Stores expire time millis. */
-/** Stores expire time millis. */
-expireTimeMillis: number};
+type AppCheckToken = {
+  /** Stores token. */
+  /** Stores token. */
+  token: string; /** Stores expire time millis. */
+  /** Stores expire time millis. */
+  expireTimeMillis: number;
+};
 
 /** Defines the contract for facebook firebase auth runtime. */
 export interface FacebookFirebaseAuthRuntime {
@@ -19,6 +21,7 @@ export interface FacebookFirebaseAuthRuntime {
 
 /** Provides default firebase runtime behavior. */
 const defaultFirebaseRuntime = async (): Promise<FacebookFirebaseAuthRuntime> => {
+  /** Provides [firebase, {initialize facebook app check}, {sign in with custom token}] behavior. */
   const [firebase, {initializeFacebookAppCheck}, {signInWithCustomToken}] = await Promise.all([
     import("../firebase"),
     import("./FacebookFirebaseAppCheck"),
@@ -38,17 +41,24 @@ export async function authenticateFacebook(
   backend?: FacebookBackendPort,
   runtime?: FacebookFirebaseAuthRuntime,
 ): Promise<string> {
+  /** Resolves d backend. */
   const resolvedBackend = backend ?? (await import("./defaultBackend")).createDefaultFacebookBackend();
+  /** Provides initial credentials behavior. */
   const initialCredentials = await exchangeFacebookCredentials(sdk, resolvedBackend);
+  /** Provides next app check credentials behavior. */
   let nextAppCheckCredentials: FacebookIdentityCredentials | undefined = initialCredentials;
+  /** Provides refresh credentials behavior. */
   let refreshCredentials: Promise<FacebookIdentityCredentials> | undefined;
-  const firebaseRuntime = runtime ?? await defaultFirebaseRuntime();
+  /** Provides firebase runtime behavior. */
+  const firebaseRuntime = runtime ?? (await defaultFirebaseRuntime());
   await firebaseRuntime.initializeAppCheck(async () => {
+    /** Provides credentials behavior. */
     let credentials = nextAppCheckCredentials;
     if (credentials) {
       nextAppCheckCredentials = undefined;
     } else {
-      const pending = refreshCredentials ??= exchangeFacebookCredentials(sdk, resolvedBackend);
+      /** Provides pending behavior. */
+      const pending = (refreshCredentials ??= exchangeFacebookCredentials(sdk, resolvedBackend));
       try {
         credentials = await pending;
       } finally {
@@ -58,9 +68,13 @@ export async function authenticateFacebook(
     if (credentials.uid !== initialCredentials.uid) {
       throw new Error("facebook-account-generation-changed");
     }
+    /** Provides issued at ms behavior. */
     const issuedAtMs = Date.now();
-    if (!Number.isSafeInteger(issuedAtMs) || issuedAtMs < 0 ||
-      issuedAtMs > Number.MAX_SAFE_INTEGER - credentials.appCheckExpiresInMs) {
+    if (
+      !Number.isSafeInteger(issuedAtMs) ||
+      issuedAtMs < 0 ||
+      issuedAtMs > Number.MAX_SAFE_INTEGER - credentials.appCheckExpiresInMs
+    ) {
       throw new Error("facebook-app-check-expiry-invalid");
     }
     return {

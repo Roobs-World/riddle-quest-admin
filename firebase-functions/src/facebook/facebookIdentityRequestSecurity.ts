@@ -16,7 +16,15 @@ const MAX_BODY_BYTES = 24 * 1_024;
 const MAX_RATE_LIMIT_KEYS = 10_000;
 
 /** Tracks the fast per-instance request limit. */
-const attempts = new Map<string, {count: number; resetAt: number}>();
+const attempts = new Map<
+  string,
+  {
+    /** Stores count. */
+    count: number; /** Stores reset at. */
+    /** Stores reset at. */
+    resetAt: number;
+  }
+>();
 
 /** Describes the HTTP response operations used by Facebook endpoints. */
 export type FacebookHttpResponse = {
@@ -36,10 +44,26 @@ const isRecord = (value: unknown): value is Record<string, unknown> =>
 
 /** Reads a valid non-negative Firestore timestamp. */
 const timestampMilliseconds = (value: unknown): number | undefined => {
-  if (typeof value !== "object" || value === null || !("toMillis" in value) ||
-    typeof (value as {toMillis?: unknown}).toMillis !== "function") return undefined;
+  if (
+    typeof value !== "object" ||
+    value === null ||
+    !("toMillis" in value) ||
+    typeof (
+      value as {
+        /** Stores to millis. */
+        toMillis?: unknown;
+      }
+    ).toMillis !== "function"
+  )
+    return undefined;
   try {
-    const milliseconds = (value as {toMillis(): unknown}).toMillis();
+    /** Provides milliseconds behavior. */
+    const milliseconds = (
+      value as {
+        /** Provides to millis behavior. */
+        toMillis(): unknown;
+      }
+    ).toMillis();
     return typeof milliseconds === "number" && Number.isSafeInteger(milliseconds) && milliseconds >= 0
       ? milliseconds
       : undefined;
@@ -56,7 +80,9 @@ export function allowFacebookRequest(key: string, now = Date.now()): boolean {
     !Number.isSafeInteger(now) ||
     now < 0 ||
     now > Number.MAX_SAFE_INTEGER - 60_000
-  ) return false;
+  )
+    return false;
+  /** Provides current behavior. */
   const current = attempts.get(key);
   if (current && current.resetAt > now) {
     current.count += 1;
@@ -88,32 +114,43 @@ export async function consumeFacebookRequestQuota(
     !Number.isSafeInteger(now) ||
     now < 0 ||
     now > MAX_FIRESTORE_MILLISECONDS - RATE_LIMIT_RETENTION_MS - RATE_LIMIT_WINDOW_MS
-  ) return false;
+  )
+    return false;
+  /** Provides id behavior. */
   const id = createHmac("sha256", hmacSecret)
     .update("riddle-quest-facebook-identity-rate-v1\0", "utf8")
     .update(key, "utf8")
     .digest("hex");
+  /** Provides ref behavior. */
   const ref = db.collection(RATE_LIMIT_COLLECTION).doc(id);
   return db.runTransaction(async (transaction) => {
+    /** Provides snapshot behavior. */
     const snapshot = await transaction.get(ref);
+    /** Provides value behavior. */
     const value = snapshot.data();
+    /** Provides current count behavior. */
     const currentCount = value?.count;
+    /** Provides current reset at ms behavior. */
     const currentResetAtMs = value?.resetAtMs;
+    /** Provides current expires at ms behavior. */
     const currentExpiresAtMs = timestampMilliseconds(value?.expiresAt);
-    if (snapshot.exists && (
-      !Number.isSafeInteger(currentCount) ||
-      (currentCount as number) < 1 ||
-      (currentCount as number) > 20 ||
-      !Number.isSafeInteger(currentResetAtMs) ||
-      (currentResetAtMs as number) < 1 ||
-      (currentResetAtMs as number) > MAX_FIRESTORE_MILLISECONDS - RATE_LIMIT_RETENTION_MS ||
-      currentExpiresAtMs !== (currentResetAtMs as number) + RATE_LIMIT_RETENTION_MS
-    )) throw new Error("invalid-facebook-rate-limit-record");
+    if (
+      snapshot.exists &&
+      (!Number.isSafeInteger(currentCount) ||
+        (currentCount as number) < 1 ||
+        (currentCount as number) > 20 ||
+        !Number.isSafeInteger(currentResetAtMs) ||
+        (currentResetAtMs as number) < 1 ||
+        (currentResetAtMs as number) > MAX_FIRESTORE_MILLISECONDS - RATE_LIMIT_RETENTION_MS ||
+        currentExpiresAtMs !== (currentResetAtMs as number) + RATE_LIMIT_RETENTION_MS)
+    )
+      throw new Error("invalid-facebook-rate-limit-record");
     if (snapshot.exists && (currentResetAtMs as number) > now) {
       if ((currentCount as number) >= 20) return false;
       transaction.update(ref, {count: (currentCount as number) + 1});
       return true;
     }
+    /** Resets at ms. */
     const resetAtMs = now - (now % RATE_LIMIT_WINDOW_MS) + RATE_LIMIT_WINDOW_MS;
     transaction.set(ref, {
       count: 1,
@@ -127,6 +164,7 @@ export async function consumeFacebookRequestQuota(
 /** Returns a canonical HTTPS origin or rejects non-origin URL forms. */
 const canonicalHttpsOrigin = (value: string): string | undefined => {
   try {
+    /** Parses d. */
     const parsed = new URL(value);
     if (
       parsed.protocol !== "https:" ||
@@ -136,7 +174,8 @@ const canonicalHttpsOrigin = (value: string): string | undefined => {
       parsed.search ||
       parsed.hash ||
       parsed.origin !== value
-    ) return undefined;
+    )
+      return undefined;
     return parsed.origin;
   } catch {
     return undefined;
@@ -144,12 +183,13 @@ const canonicalHttpsOrigin = (value: string): string | undefined => {
 };
 
 /** Reads the exact configured Facebook origin allowlist. */
-const allowedFacebookOrigins = () => new Set(
-  (process.env.FACEBOOK_GAME_ORIGINS ?? "")
-    .split(",")
-    .map((value) => canonicalHttpsOrigin(value.trim()))
-    .filter((value): value is string => value !== undefined),
-);
+const allowedFacebookOrigins = () =>
+  new Set(
+    (process.env.FACEBOOK_GAME_ORIGINS ?? "")
+      .split(",")
+      .map((value) => canonicalHttpsOrigin(value.trim()))
+      .filter((value): value is string => value !== undefined),
+  );
 
 /** Indicates whether an origin exactly matches the Facebook allowlist. */
 export function isAllowedFacebookOrigin(origin: string | undefined): boolean {
@@ -171,6 +211,7 @@ export function applyFacebookCors(response: Pick<FacebookHttpResponse, "set">, o
 
 /** Validates a Facebook identity HTTP request and emits any rejection response. */
 export function acceptFacebookRequest(request: Request, response: FacebookHttpResponse): boolean {
+  /** Provides origin behavior. */
   const origin = request.get("origin");
   applyFacebookCors(response, origin);
   if (!isAllowedFacebookOrigin(origin)) {
@@ -201,15 +242,33 @@ export function acceptFacebookRequest(request: Request, response: FacebookHttpRe
 }
 
 /** Parses the exact bounded Facebook identity-exchange body. */
-export function parseFacebookExchangeBody(body: unknown): {signedPlayer: string; playerId: string; nonce: string} {
+export function parseFacebookExchangeBody(body: unknown): {
+  /** Stores signed player. */
+  signedPlayer: string; /** Stores player id. */
+  /** Stores player id. */
+  playerId: string; /** Stores nonce. */
+  /** Stores nonce. */
+  nonce: string;
+} {
   if (!isRecord(body) || Object.keys(body).length !== 3) throw new Error("invalid-request");
+  /** Provides fields behavior. */
   const fields = ["signedPlayer", "playerId", "nonce"] as const;
-  if (Object.keys(body).some((field) => !fields.includes(field as typeof fields[number]))) {
+  if (Object.keys(body).some((field) => !fields.includes(field as (typeof fields)[number]))) {
     throw new Error("invalid-request");
   }
+  /** Provides limits behavior. */
   const limits = {signedPlayer: 8_192, playerId: 256, nonce: 256};
-  const parsed = {} as {signedPlayer: string; playerId: string; nonce: string};
+  /** Parses d. */
+  const parsed = {} as {
+    /** Stores signed player. */
+    signedPlayer: string; /** Stores player id. */
+    /** Stores player id. */
+    playerId: string; /** Stores nonce. */
+    /** Stores nonce. */
+    nonce: string;
+  };
   fields.forEach((field) => {
+    /** Provides value behavior. */
     const value = body[field];
     if (typeof value !== "string" || !value || Buffer.byteLength(value, "utf8") > limits[field]) {
       throw new Error("invalid-request");

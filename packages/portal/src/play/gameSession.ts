@@ -1,4 +1,10 @@
-import {computeLetterStates, lowerCaseGraphemes, splitGraphemes, type Feedback, type ScoredGuess} from "@qwordly/core/game";
+import {
+  computeLetterStates,
+  lowerCaseGraphemes,
+  splitGraphemes,
+  type Feedback,
+  type ScoredGuess,
+} from "@qwordly/core/game";
 import type {BridgeProfile} from "@qwordly/core/bridge";
 import type {GameSessionAction, GameSessionState} from "./gameSessionTypes";
 import {safeBrowserStorageGet} from "./playerPreferences";
@@ -36,6 +42,7 @@ export const createInitialGameSession = (): GameSessionState => ({
 
 /** Normalizes input letter. */
 const normalizeInputLetter = (letter: string): string | null => {
+  /** Provides graphemes behavior. */
   const graphemes = splitGraphemes(letter.trim());
   return graphemes[0]?.toUpperCase() ?? null;
 };
@@ -57,6 +64,7 @@ const computeStates = (guesses: ScoredGuess[]): Record<string, Feedback> => {
 /** Provides first editable slot behavior. */
 const firstEditableSlot = (letters: string[], locked: number[], start = 0): number => {
   for (let offset = 0; offset < letters.length; offset += 1) {
+    /** Provides index behavior. */
     const index = (start + offset) % letters.length;
     if (!locked.includes(index) && !letters[index]) {
       return index;
@@ -89,10 +97,7 @@ const resetAttemptLetters = (state: GameSessionState): string[] =>
     : [];
 
 /** Provides game session reducer behavior. */
-export const gameSessionReducer = (
-  state: GameSessionState,
-  action: GameSessionAction,
-): GameSessionState => {
+export const gameSessionReducer = (state: GameSessionState, action: GameSessionAction): GameSessionState => {
   switch (action.type) {
     case "hostInit":
       return {
@@ -107,6 +112,7 @@ export const gameSessionReducer = (
     case "authState":
       return {...state, user: action.user, profile: action.profile};
     case "loadRiddle": {
+      /** Provides snapshot behavior. */
       const snapshot = {
         guesses: [],
         attemptsUsed: action.riddle.attemptsUsed,
@@ -137,10 +143,12 @@ export const gameSessionReducer = (
       if (!state.riddle || state.modal || state.guessPending) {
         return state;
       }
+      /** Provides letter behavior. */
       const letter = normalizeInputLetter(action.letter);
       if (!letter || state.hintRevealedIndices.includes(state.activeSlotIndex)) {
         return state;
       }
+      /** Provides current letters behavior. */
       const currentLetters = [...state.currentLetters];
       currentLetters[state.activeSlotIndex] = letter;
       return {
@@ -156,6 +164,7 @@ export const gameSessionReducer = (
     }
     case "backspace": {
       if (state.guessPending) return state;
+      /** Provides target behavior. */
       const target =
         !state.hintRevealedIndices.includes(state.activeSlotIndex) && state.currentLetters[state.activeSlotIndex]
           ? state.activeSlotIndex
@@ -163,6 +172,7 @@ export const gameSessionReducer = (
       if (target === null) {
         return state;
       }
+      /** Provides current letters behavior. */
       const currentLetters = [...state.currentLetters];
       currentLetters[target] = "";
       return {...state, currentLetters, activeSlotIndex: target, notice: null};
@@ -188,10 +198,15 @@ export const gameSessionReducer = (
       if (action.attempts <= (state.engineSnapshot?.attemptsUsed ?? 0)) {
         return {...state, guessPending: false, notice: null};
       }
+      /** Provides guesses behavior. */
       const guesses = [...state.guesses, action.feedback];
+      /** Indicates whether is terminal. */
       const isTerminal = action.gameOver;
+      /** Provides modal behavior. */
       const modal = action.isCorrect ? "victory" : action.canContinue ? "continue" : state.modal;
+      /** Provides next letters behavior. */
       const nextLetters = resetAttemptLetters(state);
+      /** Provides snapshot behavior. */
       const snapshot = {
         guesses,
         attemptsUsed: action.attempts,
@@ -227,11 +242,13 @@ export const gameSessionReducer = (
       if (!state.riddle || action.index >= state.riddle.answerLength) {
         return state;
       }
+      /** Provides next letters behavior. */
       const nextLetters = [...state.currentLetters];
       while (nextLetters.length <= action.index) {
         nextLetters.push("");
       }
       nextLetters[action.index] = action.letter.toUpperCase();
+      /** Provides hint revealed indices behavior. */
       const hintRevealedIndices = [...new Set([...state.hintRevealedIndices, action.index])].sort(
         (left, right) => left - right,
       );
@@ -275,15 +292,20 @@ export const gameSessionReducer = (
         return state;
       }
       {
+        /** Provides guesses behavior. */
         const guesses = action.guesses.slice(0, state.riddle.attemptsUsed);
-        const pendingOutcome = action.pendingOutcome?.kind === "loss" &&
+        /** Provides pending outcome behavior. */
+        const pendingOutcome =
+          action.pendingOutcome?.kind === "loss" &&
           !action.pendingOutcome.isCorrect &&
           action.pendingOutcome.attempts === state.riddle.attemptsUsed &&
           state.riddle.awaitingContinue &&
           !state.riddle.hasUsedContinue
-          ? action.pendingOutcome
-          : null;
+            ? action.pendingOutcome
+            : null;
+        /** Provides awaiting continue behavior. */
         const awaitingContinue = state.riddle.awaitingContinue && !pendingOutcome;
+        /** Provides current letters behavior. */
         const currentLetters = awaitingContinue
           ? Array.from({length: state.riddle.answerLength}, () => "")
           : action.currentLetters;
@@ -308,12 +330,14 @@ export const gameSessionReducer = (
       }
     case "continueGranted": {
       if (!state.engineSnapshot) return state;
+      /** Provides snapshot behavior. */
       const snapshot = {
         ...state.engineSnapshot,
         guesses: [],
         hasUsedContinue: true,
         gameOver: false,
       };
+      /** Provides next letters behavior. */
       const nextLetters = resetAttemptLetters(state);
       return {
         ...state,

@@ -18,9 +18,13 @@ export function RaceCategoriesPanel({
   onSelect,
   onShowInbox,
 }: {
+  /** Stores categories. */
   categories: ListRaceCategoriesResponse["categories"];
+  /** Stores loading. */
   loading: boolean;
+  /** Stores on select. */
   onSelect: (categoryId: RaceCategoryId) => void;
+  /** Stores on show inbox. */
   onShowInbox: () => void;
 }) {
   return (
@@ -55,7 +59,9 @@ export function RaceTournamentPanel({
   tournament,
   loading,
 }: {
+  /** Stores tournament. */
   tournament: ListFacebookTournamentResponse | null;
+  /** Stores loading. */
   loading: boolean;
 }) {
   return (
@@ -68,7 +74,10 @@ export function RaceTournamentPanel({
       ) : (
         <ol>
           {tournament.standings.map((standing, index) => (
-            <li key={`${standing.rank}-${standing.adjustedTimeMs}-${index}`} aria-current={standing.isCurrentPlayer || undefined}>
+            <li
+              key={`${standing.rank}-${standing.adjustedTimeMs}-${index}`}
+              aria-current={standing.isCurrentPlayer || undefined}
+            >
               <strong>#{standing.rank}</strong>
               <span>{formatRaceTime(standing.adjustedTimeMs)}</span>
             </li>
@@ -91,16 +100,26 @@ export function RaceInboxPanel({
   onReport,
   onChooseCategory,
 }: {
+  /** Stores items. */
   items: RaceInboxItem[];
+  /** Stores loading. */
   loading: boolean;
+  /** Stores safety pending. */
   safetyPending: boolean;
+  /** Stores context board. */
   contextBoard?: ListFacebookContextBoardResponse | null;
+  /** Stores context board loading. */
   contextBoardLoading?: boolean;
+  /** Stores on rematch. */
   onRematch: (item: RaceInboxItem) => void;
+  /** Stores on block. */
   onBlock: (item: RaceInboxItem) => void;
+  /** Stores on report. */
   onReport: (item: RaceInboxItem, category: SocialReportCategory) => void;
+  /** Stores on choose category. */
   onChooseCategory: () => void;
 }) {
+  /** Provides [report categories, set report categories] behavior. */
   const [reportCategories, setReportCategories] = useState<Record<string, SocialReportCategory>>({});
   return (
     <div className="race-panel race-inbox">
@@ -110,7 +129,10 @@ export function RaceInboxPanel({
       ) : contextBoard && contextBoard.standings.length > 0 ? (
         <ol className="race-context-board" aria-label={tr("RaceTo10.HUB_ACTIVITY")} data-rewards-enabled="false">
           {contextBoard.standings.map((standing, index) => (
-            <li key={`${standing.rank}-${standing.adjustedTimeMs}-${index}`} aria-current={standing.isCurrentPlayer || undefined}>
+            <li
+              key={`${standing.rank}-${standing.adjustedTimeMs}-${index}`}
+              aria-current={standing.isCurrentPlayer || undefined}
+            >
               <strong>#{standing.rank}</strong>
               <span>{formatRaceTime(standing.adjustedTimeMs)}</span>
             </li>
@@ -125,15 +147,21 @@ export function RaceInboxPanel({
         <ul>
           {items.map((item) => (
             <li key={item.itemId}>
-              {item.opponentAvatarUrl ? <img src={item.opponentAvatarUrl} alt="" /> : <span aria-hidden="true">⚔️</span>}
+              {item.opponentAvatarUrl ? (
+                <img src={item.opponentAvatarUrl} alt="" />
+              ) : (
+                <span aria-hidden="true">⚔️</span>
+              )}
               <div>
-                <strong>{tr(
-                  item.result === "win"
-                    ? "RaceTo10.RESULT_PLAYER_WIN"
-                    : item.result === "loss"
-                      ? "RaceTo10.RESULT_GHOST_WIN"
-                      : "RaceTo10.RESULT_TIE",
-                )}</strong>
+                <strong>
+                  {tr(
+                    item.result === "win"
+                      ? "RaceTo10.RESULT_PLAYER_WIN"
+                      : item.result === "loss"
+                        ? "RaceTo10.RESULT_GHOST_WIN"
+                        : "RaceTo10.RESULT_TIE",
+                  )}
+                </strong>
                 <span>{item.opponentDisplayName}</span>
                 <small>{tr("RaceTo10.RESULT_MARGIN", {time: formatRaceTime(Math.abs(item.adjustedDeltaMs))})}</small>
               </div>
@@ -151,10 +179,12 @@ export function RaceInboxPanel({
                     <select
                       value={reportCategories[item.itemId] ?? "harassment"}
                       disabled={safetyPending}
-                      onChange={(event) => setReportCategories((current) => ({
-                        ...current,
-                        [item.itemId]: event.target.value as SocialReportCategory,
-                      }))}
+                      onChange={(event) =>
+                        setReportCategories((current) => ({
+                          ...current,
+                          [item.itemId]: event.target.value as SocialReportCategory,
+                        }))
+                      }
                     >
                       <option value="harassment">{tr("RaceTo10.REPORT_HARASSMENT")}</option>
                       <option value="cheating">{tr("RaceTo10.REPORT_CHEATING")}</option>
@@ -163,10 +193,11 @@ export function RaceInboxPanel({
                       <option value="other">{tr("RaceTo10.REPORT_OTHER")}</option>
                     </select>
                   </label>
-                  <button type="button" disabled={safetyPending} onClick={() => onReport(
-                    item,
-                    reportCategories[item.itemId] ?? "harassment",
-                  )}>
+                  <button
+                    type="button"
+                    disabled={safetyPending}
+                    onClick={() => onReport(item, reportCategories[item.itemId] ?? "harassment")}
+                  >
                     {tr("RaceTo10.REPORT_RIVAL")}
                   </button>
                 </details>
@@ -185,7 +216,9 @@ export function RaceChallengePanel({
   challenge,
   onAccept,
 }: {
+  /** Stores challenge. */
   challenge: RaceChallengePreview | null;
+  /** Stores on accept. */
   onAccept: (categoryId: RaceCategoryId) => void;
 }) {
   return (

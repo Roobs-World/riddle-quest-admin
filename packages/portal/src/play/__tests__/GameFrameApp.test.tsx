@@ -5,6 +5,7 @@ import {SpinningWheelLoader} from "../SpinningWheelLoader";
 
 describe("GameFrameApp", () => {
   it("server-renders the loading shell before host init", () => {
+    /** Provides html behavior. */
     const html = renderToString(<GameFrameApp />);
 
     expect(html).toContain("game-app");
@@ -18,6 +19,7 @@ describe("GameFrameApp", () => {
   });
 
   it("renders one progress-aware startup preloader", () => {
+    /** Provides html behavior. */
     const html = renderToString(<SpinningWheelLoader message="Loading saved progress…" progress={58} />);
 
     expect(html).toContain('data-testid="preloader"');
@@ -28,6 +30,7 @@ describe("GameFrameApp", () => {
   });
 
   it("makes the game surface inert while a server operation is pending", () => {
+    /** Provides html behavior. */
     const html = renderToString(<GameFrameApp interactionBlocked />);
 
     expect(html).toContain('<main class="game-app" inert="" data-analytics-screen="game_classic">');

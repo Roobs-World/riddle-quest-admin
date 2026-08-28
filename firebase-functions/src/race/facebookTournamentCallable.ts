@@ -33,23 +33,30 @@ export const recordFacebookTournament = onCallWithSentry(
   "recordFacebookTournament",
   browserCallableSecurityOptions,
   async (request: CallableRequest<unknown>) => {
+    /** Provides r id. */
     const userId = requireFacebookTournamentIdentity(request);
+    /** Provides input behavior. */
     const input = validateCallableRequest(
       RecordFacebookTournamentRunRequestSchema,
       request.data,
       "recordFacebookTournament",
     );
+    /** Provides result behavior. */
     const result = await recordFacebookTournamentRun(userId, input);
-    return validateCallableResponse(RecordFacebookTournamentRunResponseSchema, {
-      tournamentId: result.entry.tournamentId,
-      locale: result.entry.locale,
-      runId: result.entry.runId,
-      adjustedTimeMs: result.entry.adjustedTimeMs,
-      completedAtMs: result.entry.completedAtMs,
-      improved: result.improved,
-      sortOrder: FACEBOOK_TOURNAMENT_SORT_ORDER,
-      rewardsEnabled: false,
-    }, "recordFacebookTournament");
+    return validateCallableResponse(
+      RecordFacebookTournamentRunResponseSchema,
+      {
+        tournamentId: result.entry.tournamentId,
+        locale: result.entry.locale,
+        runId: result.entry.runId,
+        adjustedTimeMs: result.entry.adjustedTimeMs,
+        completedAtMs: result.entry.completedAtMs,
+        improved: result.improved,
+        sortOrder: FACEBOOK_TOURNAMENT_SORT_ORDER,
+        rewardsEnabled: false,
+      },
+      "recordFacebookTournament",
+    );
   },
 );
 
@@ -58,12 +65,10 @@ export const listFacebookTournament = onCallWithSentry(
   "listFacebookTournament",
   browserCallableSecurityOptions,
   async (request: CallableRequest<unknown>) => {
+    /** Provides r id. */
     const userId = requireFacebookTournamentIdentity(request);
-    const input = validateCallableRequest(
-      ListFacebookTournamentRequestSchema,
-      request.data,
-      "listFacebookTournament",
-    );
+    /** Provides input behavior. */
+    const input = validateCallableRequest(ListFacebookTournamentRequestSchema, request.data, "listFacebookTournament");
     return validateCallableResponse(
       ListFacebookTournamentResponseSchema,
       await listFacebookTournamentStandings(userId, input.locale),

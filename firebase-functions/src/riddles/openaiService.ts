@@ -91,6 +91,7 @@ function initializeOpenAIClient(): OpenAI {
   }
 
   // Use environment variables for sensitive information
+  /** Provides open ai key behavior. */
   const openAIKey = process.env.OPENAI_API_KEY;
 
   // Ensure environment variables are set
@@ -103,9 +104,17 @@ function initializeOpenAIClient(): OpenAI {
 }
 
 /** Provides summarize zod issues behavior. */
-function summarizeZodIssues(issues: {path: PropertyKey[]; message: string}[]): string {
+function summarizeZodIssues(
+  issues: {
+    /** Stores path. */
+    path: PropertyKey[]; /** Stores message. */
+    /** Stores message. */
+    message: string;
+  }[],
+): string {
   return issues
     .map((issue) => {
+      /** Provides path behavior. */
       const path = issue.path.length > 0 ? issue.path.join(".") : "(root)";
       return `${path}: ${issue.message}`;
     })
@@ -127,7 +136,9 @@ function normalizeGeneratedText(value: string): string {
 
 /** Validates generated riddle. */
 function validateGeneratedRiddle(generatedRiddle: GeneratedRiddle): [string, string] | null {
+  /** Provides question behavior. */
   const question = normalizeGeneratedText(generatedRiddle.question);
+  /** Provides answer behavior. */
   const answer = normalizeGeneratedText(generatedRiddle.answer).toLocaleLowerCase();
 
   if (!question || !answer) {
@@ -158,6 +169,7 @@ function validateGeneratedRiddle(generatedRiddle: GeneratedRiddle): [string, str
     return null;
   }
 
+  /** Provides validation behavior. */
   const validation = GeneratedRiddleSchema.safeParse({question, answer});
   if (!validation.success) {
     functions.logger.warn(`Generated riddle failed schema validation: ${summarizeZodIssues(validation.error.issues)}`);
@@ -168,9 +180,15 @@ function validateGeneratedRiddle(generatedRiddle: GeneratedRiddle): [string, str
 }
 
 /** Gets reasoning settings. */
-function getReasoningSettings(
-  model: string,
-): {reasoning: {effort: typeof RIDDLE_REASONING_EFFORT}} | Record<string, never> {
+function getReasoningSettings(model: string):
+  | {
+      /** Stores reasoning. */
+      reasoning: {
+        /** Stores effort. */
+        effort: typeof RIDDLE_REASONING_EFFORT;
+      };
+    }
+  | Record<string, never> {
   return model.startsWith("gpt-5.6") ? {reasoning: {effort: RIDDLE_REASONING_EFFORT}} : {};
 }
 
@@ -195,6 +213,7 @@ async function reviewGeneratedRiddle(
   question: string,
   answer: string,
 ): Promise<boolean> {
+  /** Provides completion behavior. */
   const completion = await withSentrySpan(
     "openai.reviewGeneratedRiddle",
     "ai.review",
@@ -216,6 +235,7 @@ async function reviewGeneratedRiddle(
     {model, locale},
   );
 
+  /** Provides review behavior. */
   const review = completion.output_parsed;
   if (!review) {
     functions.logger.warn("OpenAI returned empty riddle review content.");
@@ -249,9 +269,13 @@ export async function generateUniqueRiddle(
   locale: SupportedLocale = "en",
   excludedAnswers: string[] = [],
 ): Promise<[string, string] | null> {
+  /** Provides openai behavior. */
   const openai = initializeOpenAIClient();
+  /** Provides model behavior. */
   const model = process.env.OPENAI_MODEL || DEFAULT_OPENAI_MODEL;
+  /** Provides locale prompt behavior. */
   const localePrompt = getLocaleSpecificPrompt(locale);
+  /** Provides answer exclusion prompt behavior. */
   const answerExclusionPrompt =
     excludedAnswers.length > 0
       ? `\n- Do not use any answer in this exclusion list: ${JSON.stringify(
@@ -260,6 +284,7 @@ export async function generateUniqueRiddle(
       : "";
 
   try {
+    /** Provides completion behavior. */
     const completion = await withSentrySpan(
       "openai.generateUniqueRiddle",
       "ai.generate",
@@ -291,18 +316,22 @@ export async function generateUniqueRiddle(
       {model, locale},
     );
 
+    /** Provides generated riddle behavior. */
     const generatedRiddle = completion.output_parsed;
     if (!generatedRiddle) {
       functions.logger.warn("OpenAI returned empty structured riddle content.");
       return null;
     }
 
+    /** Validates d riddle. */
     const validatedRiddle = validateGeneratedRiddle(generatedRiddle);
     if (!validatedRiddle) {
       return null;
     }
 
+    /** Provides [question, answer] behavior. */
     const [question, answer] = validatedRiddle;
+    /** Provides accepted behavior. */
     const accepted = await reviewGeneratedRiddle(openai, model, locale, question, answer);
     if (!accepted) {
       return null;

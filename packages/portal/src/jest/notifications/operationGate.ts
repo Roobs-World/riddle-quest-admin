@@ -27,6 +27,7 @@ const NOTIFICATION_LOCK_NAME = "riddleQuest:jestPlayerOperations:v1";
 
 /** Uses the browser lock manager when the secure embedded runtime exposes it. */
 const createBrowserCrossContextLock = (): NotificationCrossContextLock | null => {
+  /** Provides locks behavior. */
   const locks = globalThis.navigator?.locks;
   if (!locks) return null;
   return {
@@ -42,28 +43,42 @@ export function createNotificationOperationGate({
   deletionEpoch = getAccountDeletionEpoch,
   requireCrossContextLock = typeof window !== "undefined" && globalThis.isSecureContext === true,
 }: {
+  /** Stores cross context lock. */
   crossContextLock?: NotificationCrossContextLock | null;
+  /** Stores deletion pending. */
   deletionPending?: () => boolean;
+  /** Stores deletion epoch. */
   deletionEpoch?: () => string | null;
+  /** Stores require cross context lock. */
   requireCrossContextLock?: boolean;
 } = {}): NotificationOperationGate {
+  /** Provides initial deletion epoch behavior. */
   const initialDeletionEpoch = deletionEpoch();
+  /** Provides open behavior. */
   let open = !deletionPending();
+  /** Provides pending behavior. */
   const pending = new Set<Promise<unknown>>();
+  /** Provides may run behavior. */
   const mayRun = (): boolean =>
-    open && !deletionPending() && deletionEpoch() === initialDeletionEpoch &&
+    open &&
+    !deletionPending() &&
+    deletionEpoch() === initialDeletionEpoch &&
     (!requireCrossContextLock || crossContextLock !== null);
 
   return {
-    close: () => { open = false; },
+    close: () => {
+      open = false;
+    },
     isOpen: mayRun,
-    run: <Result,>(operation: () => Promise<Result>): Promise<Result> => {
+    run: <Result>(operation: () => Promise<Result>): Promise<Result> => {
       if (!mayRun()) return Promise.reject(new Error("notification-operation-gate-closed"));
+      /** Provides guarded operation behavior. */
       const guardedOperation = async (): Promise<Result> => {
         // Recheck after lock acquisition: another tab may have requested deletion while queued.
         if (!mayRun()) throw new Error("notification-operation-gate-closed");
         return operation();
       };
+      /** Provides operation promise behavior. */
       const operationPromise = crossContextLock
         ? crossContextLock.runShared(guardedOperation)
         : Promise.resolve().then(guardedOperation);

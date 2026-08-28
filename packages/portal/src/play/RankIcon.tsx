@@ -1,7 +1,14 @@
 import type {RankIconName} from "./ranks";
 
 /** Provides rank icon behavior. */
-export function RankIcon({name}: {name: RankIconName}) {
+export function RankIcon({
+  name,
+}: {
+  /** Stores name. */ /** Stores name. */ /** Stores name. */ /** Stores name. */
+  /** Stores name. */
+  name: RankIconName;
+}) {
+  /** Provides common props behavior. */
   const commonProps = {
     "aria-hidden": true,
     className: "rank-icon",

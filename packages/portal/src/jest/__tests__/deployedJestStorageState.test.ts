@@ -3,28 +3,36 @@ import {mkdtemp, readFile, rm, stat, symlink, writeFile} from "node:fs/promises"
 import {tmpdir} from "node:os";
 import {join} from "node:path";
 
-import {
-  assertPrivateJestStorageState,
-  persistPrivateJestStorageState,
-} from "./deployedJestStorageState";
+import {assertPrivateJestStorageState, persistPrivateJestStorageState} from "./deployedJestStorageState";
 
+/** Provides temporary directories behavior. */
 const temporaryDirectories: string[] = [];
 
 afterEach(async () => {
-  await Promise.all(temporaryDirectories.splice(0).map((directory) =>
-    rm(directory, {force: true, recursive: true})));
+  await Promise.all(temporaryDirectories.splice(0).map((directory) => rm(directory, {force: true, recursive: true})));
 });
 
 describe("deployed Jest sandbox browser state", () => {
   it("creates and retains authenticated state with owner-only permissions", async () => {
+    /** Provides directory behavior. */
     const directory = await mkdtemp(join(tmpdir(), "riddle-quest-jest-state-"));
     temporaryDirectories.push(directory);
+    /** Provides state path behavior. */
     const statePath = join(directory, "nested", "state.json");
+    /** Provides context behavior. */
     const context = {
-      storageState: jest.fn(async ({path}: {path?: string}) => {
-        await writeFile(path!, JSON.stringify({cookies: [{name: "session"}]}));
-        return {cookies: [], origins: []};
-      }),
+      storageState: jest.fn(
+        async ({
+          path,
+        }: {
+          /** Stores path. */ /** Stores path. */ /** Stores path. */
+          /** Stores path. */
+          path?: string;
+        }) => {
+          await writeFile(path!, JSON.stringify({cookies: [{name: "session"}]}));
+          return {cookies: [], origins: []};
+        },
+      ),
     };
 
     await persistPrivateJestStorageState(context, statePath);
@@ -36,12 +44,16 @@ describe("deployed Jest sandbox browser state", () => {
   });
 
   it("rejects a symbolic-link destination before writing authentication data", async () => {
+    /** Provides directory behavior. */
     const directory = await mkdtemp(join(tmpdir(), "riddle-quest-jest-state-"));
     temporaryDirectories.push(directory);
+    /** Provides target path behavior. */
     const targetPath = join(directory, "target.json");
+    /** Provides state path behavior. */
     const statePath = join(directory, "state.json");
     await writeFile(targetPath, "unchanged", {mode: 0o600});
     await symlink(targetPath, statePath);
+    /** Provides context behavior. */
     const context = {storageState: jest.fn()};
 
     await expect(persistPrivateJestStorageState(context, statePath)).rejects.toThrow(/regular file/);

@@ -11,8 +11,11 @@ import {
 } from "../hostMessageHandlers";
 import * as browserErrorReporter from "../../observability/browserErrorReporter";
 
+/** Reads auth snapshot. */
 const readAuthSnapshot = (services: HostServices): AuthSnapshot => {
+  /** Provides snapshot behavior. */
   let snapshot: AuthSnapshot = {user: null, profile: null};
+  /** Provides unsubscribe behavior. */
   const unsubscribe = services.auth.subscribe((next) => {
     snapshot = next;
   });
@@ -20,6 +23,7 @@ const readAuthSnapshot = (services: HostServices): AuthSnapshot => {
   return snapshot;
 };
 
+/** Creates harness. */
 const createHarness = (
   services = createFakeHostServices(),
   onAccountDeleted?: () => void | Promise<void>,
@@ -27,26 +31,40 @@ const createHarness = (
   onAuthoritativeComplete?: () => void | Promise<void>,
   onAuthoritativeRaceResult?: (result: RaceOutcome) => void | Promise<void>,
 ) => {
+  /** Provides post operation behavior. */
   const postOperation = jest.fn(
     (_requestId: string | undefined, _operation: HostOperationName, _ok: boolean, _data?: unknown, _error?: string) =>
       undefined,
   );
+  /** Provides run race operation behavior. */
   const runRaceOperation = jest.fn(
     async (_requestId: string | undefined, _operation: HostOperationName, action: () => Promise<unknown>) => {
       await action();
     },
   );
+  /** Loads and post riddle. */
   const loadAndPostRiddle = jest.fn(async () => true);
+  /** Provides sync race achievement progress behavior. */
   const syncRaceAchievementProgress = jest.fn(async () => undefined);
+  /** Sets frame ready. */
   const setFrameReady = jest.fn((_ready: boolean) => undefined);
+  /** Sets notice. */
   const setNotice = jest.fn((_notice: string) => undefined);
+  /** Sends init. */
   const sendInit = jest.fn(() => undefined);
+  /** Provides on playable behavior. */
   const onPlayable = jest.fn(() => undefined);
+  /** Applies purchase balance. */
   const applyPurchaseBalance = jest.fn(() => undefined);
+  /** Loads ed user id ref. */
   const loadedUserIdRef = {current: null as string | null};
+  /** Provides playable reported ref behavior. */
   const playableReportedRef = {current: false};
+  /** Provides account deletion completed ref behavior. */
   const accountDeletionCompletedRef = {current: false};
+  /** Runs server activity. */
   const withServerActivity = async <Result>(operation: () => Promise<Result>): Promise<Result> => operation();
+  /** Handles rs. */
   const handlers = createPlayHostMessageHandlers({
     authSnapshot: readAuthSnapshot(services),
     gameMode: "classic",
@@ -91,12 +109,14 @@ describe("play host message handlers", () => {
   it("normalizes Firebase errors and unknown failures", () => {
     expect(getHostErrorMessage(new Error("Firebase: unavailable"))).toBe("unavailable");
     expect(getHostErrorMessage("unavailable")).toBe("An unexpected error occurred. Please try again.");
-    expect(getHostNoticeMessage("ErrorMessages.SERVICE_TEMPORARILY_UNAVAILABLE"))
-      .toBe("Service temporarily unavailable. Please try again.");
+    expect(getHostNoticeMessage("ErrorMessages.SERVICE_TEMPORARILY_UNAVAILABLE")).toBe(
+      "Service temporarily unavailable. Please try again.",
+    );
     expect(getHostNoticeMessage("Already rendered")).toBe("Already rendered");
   });
 
   it("does not expose bridge validation details from an incompatible backend response", () => {
+    /** Provides validation error behavior. */
     let validationError: unknown;
     try {
       HostToGameMessageSchema.parse({
@@ -112,6 +132,7 @@ describe("play host message handlers", () => {
   });
 
   it("initializes an authenticated frame and reports playability once", async () => {
+    /** Provides harness behavior. */
     const harness = createHarness();
 
     await harness.handlers.ready({
@@ -133,6 +154,7 @@ describe("play host message handlers", () => {
   });
 
   it("does not report playability when the first riddle fails to load", async () => {
+    /** Provides harness behavior. */
     const harness = createHarness();
     harness.loadAndPostRiddle.mockResolvedValue(false);
 
@@ -147,9 +169,13 @@ describe("play host message handlers", () => {
   });
 
   it("posts authoritative hint success and sanitized failure outcomes", async () => {
+    /** Provides services behavior. */
     const services = createFakeHostServices();
+    /** Requests hint. */
     const requestHint = jest.spyOn(services, "requestHint");
+    /** Provides harness behavior. */
     const harness = createHarness(services);
+    /** Provides message behavior. */
     const message = {
       type: "game:requestHint" as const,
       requestId: "hint-1",
@@ -165,6 +191,7 @@ describe("play host message handlers", () => {
   });
 
   it("notifies the platform only after authoritative single-player and race results", async () => {
+    /** Provides services behavior. */
     const services = createFakeHostServices();
     jest.spyOn(services, "completeGame").mockResolvedValue({
       attempts: 2,
@@ -187,8 +214,11 @@ describe("play host message handlers", () => {
       newlyUnlockedAchievementIds: [],
       achievementCoinsAwarded: 0,
     });
+    /** Provides single player result behavior. */
     const singlePlayerResult = jest.fn(async () => undefined);
+    /** Provides race result behavior. */
     const raceResult = jest.fn(async () => undefined);
+    /** Provides harness behavior. */
     const harness = createHarness(services, undefined, undefined, singlePlayerResult, raceResult);
 
     await harness.handlers.completeGame({
@@ -211,8 +241,11 @@ describe("play host message handlers", () => {
   });
 
   it("reports a daily-riddle rejection through the dedicated skip service path", async () => {
+    /** Provides services behavior. */
     const services = createFakeHostServices();
+    /** Provides skip riddle behavior. */
     const skipRiddle = jest.spyOn(services, "skipRiddle");
+    /** Provides harness behavior. */
     const harness = createHarness(services);
 
     await harness.handlers.skipRiddle({
@@ -241,6 +274,7 @@ describe("play host message handlers", () => {
   });
 
   it("keeps race publication behind the race-operation and achievement boundaries", async () => {
+    /** Provides services behavior. */
     const services = createFakeHostServices();
     jest.spyOn(services, "publishRace").mockResolvedValue({
       challengeId: "challenge-1",
@@ -258,6 +292,7 @@ describe("play host message handlers", () => {
       newlyUnlockedAchievementIds: [],
       achievementCoinsAwarded: 0,
     });
+    /** Provides harness behavior. */
     const harness = createHarness(services);
 
     await harness.handlers.publishRace({
@@ -271,7 +306,9 @@ describe("play host message handlers", () => {
   });
 
   it("forwards the locale boundary when loading a public challenge preview", async () => {
+    /** Provides services behavior. */
     const services = createFakeHostServices();
+    /** Gets race challenge. */
     const getRaceChallenge = jest.spyOn(services, "getRaceChallenge").mockResolvedValue({
       challengeId: "challenge-1",
       creator: {displayName: "Joueur invité"},
@@ -283,6 +320,7 @@ describe("play host message handlers", () => {
       expiresAtMs: Date.now() + 60_000,
       status: "active",
     });
+    /** Provides harness behavior. */
     const harness = createHarness(services);
 
     await harness.handlers.getRaceChallenge({
@@ -292,17 +330,17 @@ describe("play host message handlers", () => {
     });
 
     expect(getRaceChallenge).toHaveBeenCalledWith("challenge-1", "fr");
-    expect(harness.runRaceOperation).toHaveBeenCalledWith(
-      "challenge-message-1",
-      "raceChallenge",
-      expect.any(Function),
-    );
+    expect(harness.runRaceOperation).toHaveBeenCalledWith("challenge-message-1", "raceChallenge", expect.any(Function));
   });
 
   it("routes block and categorized report actions through authenticated host services", async () => {
+    /** Provides services behavior. */
     const services = createFakeHostServices();
+    /** Provides block rival behavior. */
     const blockRival = jest.spyOn(services, "blockRival");
+    /** Provides report rival behavior. */
     const reportRival = jest.spyOn(services, "reportRival");
+    /** Provides harness behavior. */
     const harness = createHarness(services);
 
     await harness.handlers.blockRival({
@@ -327,6 +365,7 @@ describe("play host message handlers", () => {
   });
 
   it("resolves a cancelled checkout without errors, notices, grants, or balance changes", async () => {
+    /** Provides services behavior. */
     const services = createFakeHostServices();
     jest.spyOn(services, "requestPurchase").mockResolvedValue({
       success: false,
@@ -334,8 +373,11 @@ describe("play host message handlers", () => {
       productId: "coin-pack-1",
       purchaseType: "consumable",
     });
-    const captureBrowserException = jest.spyOn(browserErrorReporter, "captureBrowserException")
+    /** Captures browser exception. */
+    const captureBrowserException = jest
+      .spyOn(browserErrorReporter, "captureBrowserException")
       .mockImplementation(() => undefined);
+    /** Provides harness behavior. */
     const harness = createHarness(services);
 
     await harness.handlers.requestPurchase({
@@ -344,17 +386,12 @@ describe("play host message handlers", () => {
       payload: {productId: "coin-pack-1"},
     });
 
-    expect(harness.postOperation).toHaveBeenCalledWith(
-      "purchase-cancelled-1",
-      "purchase",
-      true,
-      {
-        success: false,
-        cancelled: true,
-        productId: "coin-pack-1",
-        purchaseType: "consumable",
-      },
-    );
+    expect(harness.postOperation).toHaveBeenCalledWith("purchase-cancelled-1", "purchase", true, {
+      success: false,
+      cancelled: true,
+      productId: "coin-pack-1",
+      purchaseType: "consumable",
+    });
     expect(harness.applyPurchaseBalance).not.toHaveBeenCalled();
     expect(harness.setNotice).not.toHaveBeenCalled();
     expect(captureBrowserException).not.toHaveBeenCalled();
@@ -362,11 +399,16 @@ describe("play host message handlers", () => {
   });
 
   it("reports account deletion as failed when post-server client cleanup must be retried", async () => {
+    /** Provides services behavior. */
     const services = createFakeHostServices();
+    /** Deletes account. */
     const deleteAccount = jest.spyOn(services, "deleteAccount").mockResolvedValue(undefined);
-    const clientCleanup = jest.fn()
+    /** Provides client cleanup behavior. */
+    const clientCleanup = jest
+      .fn()
       .mockRejectedValueOnce(new Error("Client cleanup unavailable"))
       .mockResolvedValueOnce(undefined);
+    /** Provides harness behavior. */
     const harness = createHarness(services, clientCleanup);
 
     await harness.handlers.deleteAccount({
@@ -398,22 +440,29 @@ describe("play host message handlers", () => {
     });
     expect(deleteAccount).toHaveBeenCalledTimes(1);
     expect(clientCleanup).toHaveBeenCalledTimes(2);
-    expect(harness.postOperation).toHaveBeenLastCalledWith(
-      "delete-account-retry",
-      "accountDeletion",
-      true,
-      {success: true},
-    );
+    expect(harness.postOperation).toHaveBeenLastCalledWith("delete-account-retry", "accountDeletion", true, {
+      success: true,
+    });
   });
 
   it("durably records deletion intent before invoking the authoritative service", async () => {
+    /** Provides order behavior. */
     const order: string[] = [];
+    /** Provides services behavior. */
     const services = createFakeHostServices();
+    /** Deletes account. */
     const deleteAccount = jest.spyOn(services, "deleteAccount").mockImplementation(async () => {
       order.push("server");
     });
-    const requested = jest.fn(() => { order.push("marker"); });
-    const cleanup = jest.fn(() => { order.push("cleanup"); });
+    /** Requests ed. */
+    const requested = jest.fn(() => {
+      order.push("marker");
+    });
+    /** Provides cleanup behavior. */
+    const cleanup = jest.fn(() => {
+      order.push("cleanup");
+    });
+    /** Provides harness behavior. */
     const harness = createHarness(services, cleanup, requested);
 
     await harness.handlers.deleteAccount({
@@ -424,22 +473,20 @@ describe("play host message handlers", () => {
 
     expect(order).toEqual(["marker", "server", "cleanup"]);
     expect(deleteAccount).toHaveBeenCalledTimes(1);
-    expect(harness.postOperation).toHaveBeenLastCalledWith(
-      "delete-account-ordered",
-      "accountDeletion",
-      true,
-      {success: true},
-    );
+    expect(harness.postOperation).toHaveBeenLastCalledWith("delete-account-ordered", "accountDeletion", true, {
+      success: true,
+    });
   });
 
   it("never starts server deletion when the durable intent marker cannot be verified", async () => {
+    /** Provides services behavior. */
     const services = createFakeHostServices();
+    /** Deletes account. */
     const deleteAccount = jest.spyOn(services, "deleteAccount");
-    const harness = createHarness(
-      services,
-      jest.fn(),
-      async () => { throw new Error("deletion marker unavailable"); },
-    );
+    /** Provides harness behavior. */
+    const harness = createHarness(services, jest.fn(), async () => {
+      throw new Error("deletion marker unavailable");
+    });
 
     await harness.handlers.deleteAccount({
       type: "game:deleteAccount",

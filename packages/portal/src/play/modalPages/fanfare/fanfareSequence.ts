@@ -3,13 +3,36 @@ import {getRankForLevel} from "../../ranks";
 
 /** A single screen in a victory or auxiliary reward celebration. */
 export type FanfareStep =
-  | {kind: "achievement"; achievementId: string}
-  | {kind: "victory"}
-  | {kind: "level"}
-  | {kind: "rank"}
-  | {kind: "purchase"}
-  | {kind: "referral"}
-  | {kind: "coins"};
+  | {
+      /** Stores kind. */
+      kind: "achievement"; /** Stores achievement id. */
+      /** Stores achievement id. */
+      achievementId: string;
+    }
+  | {
+      /** Stores kind. */
+      kind: "victory";
+    }
+  | {
+      /** Stores kind. */
+      kind: "level";
+    }
+  | {
+      /** Stores kind. */
+      kind: "rank";
+    }
+  | {
+      /** Stores kind. */
+      kind: "purchase";
+    }
+  | {
+      /** Stores kind. */
+      kind: "referral";
+    }
+  | {
+      /** Stores kind. */
+      kind: "coins";
+    };
 
 /** Coin award displayed during a fanfare sequence. */
 export type FanfareCoinAward = {
@@ -28,21 +51,19 @@ export type FanfareAwardState = Pick<
 >;
 
 /** Builds the ordered celebration steps for a server-authoritative victory reward. */
-export function createVictoryFanfareSteps(
-  reward: GameSessionState["lastRewards"],
-): FanfareStep[] {
+export function createVictoryFanfareSteps(reward: GameSessionState["lastRewards"]): FanfareStep[] {
   if (!reward) return [];
 
+  /** Provides victory level behavior. */
   const victoryLevel = reward.newLevel;
+  /** Provides reached new rank behavior. */
   const reachedNewRank =
     reward.leveledUp === true &&
     victoryLevel !== undefined &&
     getRankForLevel(Math.max(1, victoryLevel - 1)).id !== getRankForLevel(victoryLevel).id;
 
   return [
-    ...reward.newlyUnlockedAchievementIds.map(
-      (achievementId): FanfareStep => ({kind: "achievement", achievementId}),
-    ),
+    ...reward.newlyUnlockedAchievementIds.map((achievementId): FanfareStep => ({kind: "achievement", achievementId})),
     {kind: "victory"},
     ...(reward.leveledUp ? ([{kind: "level"}] as FanfareStep[]) : []),
     ...(reachedNewRank ? ([{kind: "rank"}] as FanfareStep[]) : []),
@@ -50,28 +71,19 @@ export function createVictoryFanfareSteps(
 }
 
 /** Builds the ordered celebration steps for a purchase or achievement reward. */
-export function createRewardFanfareSteps(
-  fanfare: GameSessionState["auxiliaryFanfare"],
-): FanfareStep[] {
+export function createRewardFanfareSteps(fanfare: GameSessionState["auxiliaryFanfare"]): FanfareStep[] {
   if (!fanfare) return [];
 
   return [
     ...(fanfare.kind === "purchase" ? ([{kind: "purchase"}] as FanfareStep[]) : []),
     ...(fanfare.kind === "referral" ? ([{kind: "referral"}] as FanfareStep[]) : []),
-    ...fanfare.achievementIds.map(
-      (achievementId): FanfareStep => ({kind: "achievement", achievementId}),
-    ),
-    ...(fanfare.kind === "achievement" && fanfare.coinsAwarded > 0
-      ? ([{kind: "coins"}] as FanfareStep[])
-      : []),
+    ...fanfare.achievementIds.map((achievementId): FanfareStep => ({kind: "achievement", achievementId})),
+    ...(fanfare.kind === "achievement" && fanfare.coinsAwarded > 0 ? ([{kind: "coins"}] as FanfareStep[]) : []),
   ];
 }
 
 /** Returns the current step while safely clamping an out-of-range index. */
-export function getActiveFanfareStep(
-  steps: readonly FanfareStep[],
-  index: number,
-): FanfareStep | undefined {
+export function getActiveFanfareStep(steps: readonly FanfareStep[], index: number): FanfareStep | undefined {
   return steps[Math.min(Math.max(0, index), Math.max(0, steps.length - 1))];
 }
 
@@ -104,10 +116,7 @@ export function getActiveCoinAward(
 }
 
 /** Reports whether a positive coin award still requires player collection. */
-export function isCoinCollectionPending(
-  award: FanfareCoinAward | null,
-  collectedAwardId: string | null,
-): boolean {
+export function isCoinCollectionPending(award: FanfareCoinAward | null, collectedAwardId: string | null): boolean {
   return Boolean(award && award.amount > 0 && collectedAwardId !== award.id);
 }
 

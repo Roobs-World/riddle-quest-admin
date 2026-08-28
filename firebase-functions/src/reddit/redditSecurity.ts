@@ -19,26 +19,43 @@ export const MAX_REDDIT_ACCOUNT_GENERATION = 1_000_000;
 
 /** Describes reddit gateway assertion. */
 export type RedditGatewayAssertion = Readonly<{
+  /** Stores version. */
   version: 1;
+  /** Stores app name. */
   appName: string;
+  /** Stores installation id. */
   installationId: string;
+  /** Stores subreddit id. */
   subredditId: string;
+  /** Stores post id. */
   postId: string;
+  /** Stores user id. */
   userId: string;
+  /** Stores operation. */
   operation: string;
+  /** Stores issued at ms. */
   issuedAtMs: number;
+  /** Stores nonce. */
   nonce: string;
+  /** Stores payload hash. */
   payloadHash: string;
 }>;
 
 /** Describes verify reddit gateway assertion options. */
 export type VerifyRedditGatewayAssertionOptions = Readonly<{
+  /** Stores gateway secret. */
   gatewaySecret: string;
+  /** Stores expected app name. */
   expectedAppName: string;
+  /** Stores expected operation. */
   expectedOperation: string;
+  /** Stores now ms. */
   nowMs?: number;
+  /** Stores max age ms. */
   maxAgeMs?: number;
+  /** Stores expected payload. */
   expectedPayload?: unknown;
+  /** Stores consume nonce. */
   consumeNonce?: (assertion: RedditGatewayAssertion) => boolean | Promise<boolean>;
 }>;
 
@@ -68,6 +85,7 @@ export function canonicalRedditGatewayAssertion(assertion: RedditGatewayAssertio
 
 /** Hashes the exact JSON payload transported beside a signed gateway assertion. */
 export function hashRedditGatewayPayload(payload: unknown): string {
+  /** Serializes d. */
   const serialized = JSON.stringify(payload);
   if (serialized === undefined || Buffer.byteLength(serialized, "utf8") > MAX_PAYLOAD_BYTES) {
     throw new Error("invalid-reddit-gateway-payload");
@@ -84,7 +102,19 @@ export async function verifyRedditGatewayAssertion(
   if (!isRecord(body) || Buffer.byteLength(JSON.stringify(body), "utf8") > MAX_ASSERTION_BYTES) {
     throw new Error("invalid-reddit-gateway-assertion");
   }
-  const fields = ["version", "appName", "installationId", "subredditId", "postId", "userId", "operation", "issuedAtMs", "nonce", "payloadHash"];
+  /** Provides fields behavior. */
+  const fields = [
+    "version",
+    "appName",
+    "installationId",
+    "subredditId",
+    "postId",
+    "userId",
+    "operation",
+    "issuedAtMs",
+    "nonce",
+    "payloadHash",
+  ];
   if (Object.keys(body).length !== fields.length || fields.some((field) => !(field in body))) {
     throw new Error("invalid-reddit-gateway-assertion");
   }
@@ -104,7 +134,9 @@ export async function verifyRedditGatewayAssertion(
     !NONCE.test(body.nonce) ||
     typeof body.payloadHash !== "string" ||
     !/^[0-9a-f]{64}$/u.test(body.payloadHash)
-  ) throw new Error("invalid-reddit-gateway-assertion");
+  )
+    throw new Error("invalid-reddit-gateway-assertion");
+  /** Asserts ion. */
   const assertion = body as RedditGatewayAssertion;
   if (assertion.appName !== options.expectedAppName) throw new Error("reddit-gateway-app-mismatch");
   if (assertion.operation !== options.expectedOperation) throw new Error("reddit-gateway-operation-mismatch");
@@ -113,15 +145,19 @@ export async function verifyRedditGatewayAssertion(
   }
   if (Buffer.byteLength(options.gatewaySecret, "utf8") < 32) throw new Error("invalid-reddit-gateway-secret");
   if (!/^[A-Za-z0-9_-]{43}$/u.test(signature)) throw new Error("invalid-reddit-gateway-signature");
+  /** Provides expected behavior. */
   const expected = createHmac("sha256", options.gatewaySecret)
     .update("riddle-quest-reddit-gateway-v1\0", "utf8")
     .update(canonicalRedditGatewayAssertion(assertion), "utf8")
     .digest();
+  /** Provides actual behavior. */
   const actual = Buffer.from(signature, "base64url");
   if (actual.length !== expected.length || !timingSafeEqual(actual, expected)) {
     throw new Error("invalid-reddit-gateway-signature");
   }
+  /** Provides now ms behavior. */
   const nowMs = options.nowMs ?? Date.now();
+  /** Provides max age ms behavior. */
   const maxAgeMs = options.maxAgeMs ?? 60_000;
   if (!Number.isSafeInteger(nowMs) || nowMs < 0 || !Number.isSafeInteger(maxAgeMs) || maxAgeMs < 1) {
     throw new Error("invalid-reddit-gateway-time");
@@ -129,7 +165,7 @@ export async function verifyRedditGatewayAssertion(
   if (assertion.issuedAtMs > nowMs + 5_000 || nowMs - assertion.issuedAtMs > maxAgeMs) {
     throw new Error("stale-reddit-gateway-assertion");
   }
-  if (options.consumeNonce && !await options.consumeNonce(assertion)) throw new Error("reddit-gateway-replay");
+  if (options.consumeNonce && !(await options.consumeNonce(assertion))) throw new Error("reddit-gateway-replay");
   return assertion;
 }
 
@@ -139,11 +175,17 @@ export function redditFirebaseUid(userId: string, uidSecretBase64: string, accou
   if (!/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/u.test(uidSecretBase64)) {
     throw new Error("invalid-reddit-uid-secret");
   }
+  /** Provides secret behavior. */
   const secret = Buffer.from(uidSecretBase64, "base64");
   if (secret.length < 32 || secret.toString("base64") !== uidSecretBase64) throw new Error("invalid-reddit-uid-secret");
-  if (!Number.isSafeInteger(accountGeneration) || accountGeneration < 1 || accountGeneration > MAX_REDDIT_ACCOUNT_GENERATION) {
+  if (
+    !Number.isSafeInteger(accountGeneration) ||
+    accountGeneration < 1 ||
+    accountGeneration > MAX_REDDIT_ACCOUNT_GENERATION
+  ) {
     throw new Error("invalid-reddit-account-generation");
   }
+  /** Provides digest behavior. */
   const digest = createHmac("sha256", secret)
     .update("riddle-quest-reddit-uid-v1\0", "utf8")
     .update(String(accountGeneration), "utf8")

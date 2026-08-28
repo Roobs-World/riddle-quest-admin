@@ -44,6 +44,7 @@ const requireStat = (value: unknown, field: string): number => {
 
 /** Provides safe add behavior. */
 const safeAdd = (name: string, left: number, right: number): number => {
+  /** Provides value behavior. */
   const value = left + right;
   if (!Number.isSafeInteger(value)) throw new Error(`invalid-facebook-referral-${name}`);
   return value;
@@ -58,6 +59,7 @@ const requireClock = (now: number): void => {
 
 /** Provides require stored clock behavior. */
 const requireStoredClock = (name: string, value: unknown): number => {
+  /** Parses d. */
   const parsed = requireNonNegativeInteger(name, value);
   if (parsed > MAX_DATE_MS) throw new Error(`invalid-facebook-referral-${name}`);
   return parsed;
@@ -66,14 +68,34 @@ const requireStoredClock = (name: string, value: unknown): number => {
 /** Provides require binding behavior. */
 const requireBinding = (
   value: FirebaseFirestore.DocumentData | undefined,
-  input: {inviteeUid: string; inviterUid?: string; tokenId?: string; issuedAtMs?: number; expiresAtMs?: number},
-): {inviterUid: string; boundAtMs: number; settledAtMs: number | null} => {
+  input: {
+    /** Stores invitee uid. */
+    inviteeUid: string; /** Stores inviter uid. */
+    /** Stores inviter uid. */
+    inviterUid?: string; /** Stores token id. */
+    /** Stores token id. */
+    tokenId?: string; /** Stores issued at ms. */
+    /** Stores issued at ms. */
+    issuedAtMs?: number; /** Stores expires at ms. */
+    /** Stores expires at ms. */
+    expiresAtMs?: number;
+  },
+): {
+  /** Stores inviter uid. */
+  inviterUid: string; /** Stores bound at ms. */
+  /** Stores bound at ms. */
+  boundAtMs: number; /** Stores settled at ms. */
+  /** Stores settled at ms. */
+  settledAtMs: number | null;
+} => {
+  /** Provides inviter uid behavior. */
   const inviterUid = typeof value?.inviterUid === "string" ? value.inviterUid : "";
+  /** Provides token behavior. */
   const token = typeof value?.tokenId === "string" ? value.tokenId : "";
+  /** Provides bound at ms behavior. */
   const boundAtMs = requireStoredClock("binding-bound-at", value?.boundAtMs);
-  const settledAtMs = value?.settledAtMs === null
-    ? null
-    : requireStoredClock("binding-settled-at", value?.settledAtMs);
+  /** Sets tled at ms. */
+  const settledAtMs = value?.settledAtMs === null ? null : requireStoredClock("binding-settled-at", value?.settledAtMs);
   if (
     value?.provider !== "facebook" ||
     value.inviteeUid !== input.inviteeUid ||
@@ -85,7 +107,8 @@ const requireBinding = (
     (input.issuedAtMs !== undefined && boundAtMs < input.issuedAtMs) ||
     (input.expiresAtMs !== undefined && boundAtMs >= input.expiresAtMs) ||
     (settledAtMs !== null && settledAtMs < boundAtMs)
-  ) throw new Error("facebook-referral-binding-conflict");
+  )
+    throw new Error("facebook-referral-binding-conflict");
   return {inviterUid, boundAtMs, settledAtMs};
 };
 
@@ -116,16 +139,28 @@ export async function issueFacebookReferralToken(
   now = Date.now(),
   randomToken = () => randomBytes(FACEBOOK_REFERRAL_TOKEN_BYTES).toString("base64url"),
   db: Firestore = admin.firestore(),
-): Promise<{token: string; expiresAtMs: number}> {
+): Promise<{
+  /** Stores token. */
+  token: string; /** Stores expires at ms. */
+  /** Stores expires at ms. */
+  expiresAtMs: number;
+}> {
   if (!isFacebookFirebaseUid(inviterUid)) throw new Error("invalid-facebook-referrer");
   requireClock(now);
+  /** Provides token behavior. */
   const token = randomToken();
+  /** Provides id behavior. */
   const id = tokenId(token);
+  /** Provides expires at ms behavior. */
   const expiresAtMs = now + FACEBOOK_REFERRAL_TOKEN_TTL_MS;
+  /** Provides token ref behavior. */
   const tokenRef = db.collection("facebookReferralTokens").doc(id);
+  /** Provides r ref. */
   const userRef = db.collection("users").doc(inviterUid);
+  /** Provides deletion ref behavior. */
   const deletionRef = getJestAccountDeletionRef(db, inviterUid);
   await db.runTransaction(async (transaction) => {
+    /** Provides [user, deletion] behavior. */
     const [user, deletion] = await Promise.all([transaction.get(userRef), transaction.get(deletionRef)]);
     assertJestAccountActive(deletion);
     if (!user.exists) throw new Error("facebook-referrer-not-found");
@@ -148,12 +183,18 @@ export async function bindFacebookReferralToken(
 ): Promise<FacebookReferralBindingResult> {
   if (!isFacebookFirebaseUid(inviteeUid)) throw new Error("invalid-facebook-invitee");
   requireClock(now);
+  /** Provides id behavior. */
   const id = tokenId(token);
+  /** Provides token ref behavior. */
   const tokenRef = db.collection("facebookReferralTokens").doc(id);
+  /** Provides binding ref behavior. */
   const bindingRef = db.collection("facebookReferralBindings").doc(inviteeUid);
+  /** Provides invitee ref behavior. */
   const inviteeRef = db.collection("users").doc(inviteeUid);
+  /** Provides deletion ref behavior. */
   const deletionRef = getJestAccountDeletionRef(db, inviteeUid);
   return db.runTransaction(async (transaction) => {
+    /** Provides [token snapshot, binding, invitee, deletion] behavior. */
     const [tokenSnapshot, binding, invitee, deletion] = await Promise.all([
       transaction.get(tokenRef),
       transaction.get(bindingRef),
@@ -162,12 +203,16 @@ export async function bindFacebookReferralToken(
     ]);
     assertJestAccountActive(deletion);
     if (!tokenSnapshot.exists) throw new Error("facebook-referral-token-not-found");
+    /** Provides token data behavior. */
     const tokenData = tokenSnapshot.data()!;
+    /** Provides inviter uid behavior. */
     const inviterUid = typeof tokenData.inviterUid === "string" ? tokenData.inviterUid : "";
     if (tokenData.provider !== "facebook" || !isFacebookFirebaseUid(inviterUid) || inviterUid === inviteeUid) {
       throw new Error("invalid-facebook-referrer");
     }
+    /** Provides issued at ms behavior. */
     const issuedAtMs = requireStoredClock("token-issued-at", tokenData.issuedAtMs);
+    /** Provides expires at ms behavior. */
     const expiresAtMs = requireStoredClock("token-expires-at", tokenData.expiresAtMs);
     if (expiresAtMs !== issuedAtMs + FACEBOOK_REFERRAL_TOKEN_TTL_MS) {
       throw new Error("invalid-facebook-referral-token-window");
@@ -183,6 +228,7 @@ export async function bindFacebookReferralToken(
     if (expiresAtMs <= now || issuedAtMs > now) {
       throw new Error("facebook-referral-token-expired");
     }
+    /** Provides [inviter, inviter deletion] behavior. */
     const [inviter, inviterDeletion] = await Promise.all([
       transaction.get(db.collection("users").doc(inviterUid)),
       transaction.get(getJestAccountDeletionRef(db, inviterUid)),
@@ -190,8 +236,11 @@ export async function bindFacebookReferralToken(
     assertJestAccountActive(inviterDeletion);
     if (!inviter.exists) throw new Error("facebook-referrer-not-found");
     if (!invitee.exists) throw new Error("facebook-invitee-not-found");
+    /** Provides r. */
     const user = invitee.data()!;
+    /** Provides games played behavior. */
     const gamesPlayed = requireStat(user.stats, "gamesPlayed");
+    /** Provides wins behavior. */
     const wins = requireStat(user.stats, "wins");
     if (typeof user.hasPurchasedApp !== "boolean") throw new Error("invalid-facebook-referral-purchase-state");
     if (gamesPlayed > 0 || wins > 0 || user.hasPurchasedApp) {
@@ -205,18 +254,26 @@ export async function bindFacebookReferralToken(
       boundAtMs: now,
       settledAtMs: null,
     });
-    transaction.set(db.doc(`users/${inviteeUid}/knownRivals/${inviterUid}`), {
-      targetUserId: inviterUid,
-      source: "facebook_invite",
-      referralTokenId: id,
-      establishedAtMs: now,
-    }, {merge: true});
-    transaction.set(db.doc(`users/${inviterUid}/knownRivals/${inviteeUid}`), {
-      targetUserId: inviteeUid,
-      source: "facebook_invite",
-      referralTokenId: id,
-      establishedAtMs: now,
-    }, {merge: true});
+    transaction.set(
+      db.doc(`users/${inviteeUid}/knownRivals/${inviterUid}`),
+      {
+        targetUserId: inviterUid,
+        source: "facebook_invite",
+        referralTokenId: id,
+        establishedAtMs: now,
+      },
+      {merge: true},
+    );
+    transaction.set(
+      db.doc(`users/${inviterUid}/knownRivals/${inviteeUid}`),
+      {
+        targetUserId: inviteeUid,
+        source: "facebook_invite",
+        referralTokenId: id,
+        establishedAtMs: now,
+      },
+      {merge: true},
+    );
     return {alreadyBound: false, expiresAtMs};
   });
 }
@@ -231,26 +288,36 @@ export async function settleFacebookReferralAfterAuthoritativeWin(
     return {alreadySettled: false, inviteeCoins: 0, inviterCoins: 0};
   }
   requireClock(now);
+  /** Provides binding ref behavior. */
   const bindingRef = db.collection("facebookReferralBindings").doc(inviteeUid);
+  /** Sets tlement ref. */
   const settlementRef = db.collection("facebookReferralSettlements").doc(hash("settlement", inviteeUid));
+  /** Provides invitee deletion ref behavior. */
   const inviteeDeletionRef = getJestAccountDeletionRef(db, inviteeUid);
   return db.runTransaction(async (transaction) => {
+    /** Provides [binding, settlement, invitee deletion] behavior. */
     const [binding, settlement, inviteeDeletion] = await Promise.all([
       transaction.get(bindingRef),
       transaction.get(settlementRef),
       transaction.get(inviteeDeletionRef),
     ]);
     if (settlement.exists) {
+      /** Provides data behavior. */
       const data = settlement.data()!;
+      /** Provides replay tombstone behavior. */
       const replayTombstone = data.provider === "facebook" && data.replayProtection === true;
-      const activeReceipt = data.provider === "facebook" &&
+      /** Provides active receipt behavior. */
+      const activeReceipt =
+        data.provider === "facebook" &&
         data.replayProtection !== true &&
         data.inviteeUid === inviteeUid &&
         typeof data.inviterUid === "string" &&
         isFacebookFirebaseUid(data.inviterUid) &&
         data.inviterUid !== inviteeUid;
       if (!replayTombstone && !activeReceipt) throw new Error("facebook-referral-settlement-conflict");
+      /** Provides invitee coins behavior. */
       const inviteeCoins = requireNonNegativeInteger("settlement-invitee-coins", data.inviteeCoins);
+      /** Provides inviter coins behavior. */
       const inviterCoins = requireNonNegativeInteger("settlement-inviter-coins", data.inviterCoins);
       requireStoredClock("settlement-settled-at", data.settledAtMs);
       if (
@@ -267,16 +334,24 @@ export async function settleFacebookReferralAfterAuthoritativeWin(
     }
     assertJestAccountActive(inviteeDeletion);
     if (!binding.exists) return {alreadySettled: false, inviteeCoins: 0, inviterCoins: 0};
+    /** Provides binding data behavior. */
     const bindingData = binding.data()!;
+    /** Parses d binding. */
     const parsedBinding = requireBinding(bindingData, {inviteeUid});
     if (parsedBinding.settledAtMs !== null) {
       throw new Error("facebook-referral-settlement-missing");
     }
+    /** Provides inviter uid behavior. */
     const inviterUid = parsedBinding.inviterUid;
+    /** Provides invitee ref behavior. */
     const inviteeRef = db.collection("users").doc(inviteeUid);
+    /** Provides inviter ref behavior. */
     const inviterRef = db.collection("users").doc(inviterUid);
+    /** Provides cap ref behavior. */
     const capRef = db.collection("facebookReferralDailyCaps").doc(hash("cap", `${inviterUid}\0${utcDay(now)}`));
+    /** Provides inviter deletion ref behavior. */
     const inviterDeletionRef = getJestAccountDeletionRef(db, inviterUid);
+    /** Provides [invitee, inviter, cap, inviter deletion] behavior. */
     const [invitee, inviter, cap, inviterDeletion] = await Promise.all([
       transaction.get(inviteeRef),
       transaction.get(inviterRef),
@@ -286,19 +361,24 @@ export async function settleFacebookReferralAfterAuthoritativeWin(
     if (!invitee.exists || requireStat(invitee.data()?.stats, "wins") < 1) {
       throw new Error("facebook-referral-win-not-established");
     }
+    /** Provides cap count behavior. */
     const capCount = cap.exists ? requireNonNegativeInteger("daily-cap", cap.data()?.count) : 0;
     if (capCount > FACEBOOK_REFERRER_DAILY_REWARD_CAP) throw new Error("facebook-referral-cap-conflict");
     if (cap.exists && (cap.data()?.inviterUid !== inviterUid || cap.data()?.utcDay !== utcDay(now))) {
       throw new Error("facebook-referral-cap-conflict");
     }
+    /** Provides inviter eligible behavior. */
     const inviterEligible = inviter.exists && !inviterDeletion.exists && capCount < FACEBOOK_REFERRER_DAILY_REWARD_CAP;
+    /** Provides inviter coins behavior. */
     const inviterCoins = inviterEligible ? FACEBOOK_REFERRAL_REWARD_COINS : 0;
+    /** Provides invitee balance behavior. */
     const inviteeBalance = requireNonNegativeInteger("invitee-balance", invitee.data()?.coins);
     transaction.update(inviteeRef, {
       coins: safeAdd("invitee-balance", inviteeBalance, FACEBOOK_REFERRAL_REWARD_COINS),
       lastLogin: now,
     });
     if (inviterEligible) {
+      /** Provides inviter balance behavior. */
       const inviterBalance = requireNonNegativeInteger("inviter-balance", inviter.data()?.coins);
       transaction.update(inviterRef, {
         coins: safeAdd("inviter-balance", inviterBalance, inviterCoins),

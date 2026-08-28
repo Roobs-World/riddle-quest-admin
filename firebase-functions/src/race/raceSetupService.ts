@@ -16,10 +16,7 @@ import {
 } from "@qwordly/core/race";
 import {logger} from "firebase-functions";
 import {HttpsError} from "firebase-functions/v2/https";
-import {
-  type RaceRiddleSnapshot,
-  type RaceRunRecord,
-} from "./raceEngine";
+import {type RaceRiddleSnapshot, type RaceRunRecord} from "./raceEngine";
 import {RACE_POOL_SIZE, validateRacePool} from "./raceContentValidation";
 import type {ExistingRaceContentRecord} from "./raceContentMigration";
 import {evaluateRaceAchievementEvent, type RaceAchievementEvent} from "./raceAchievements";
@@ -38,7 +35,12 @@ export type RaceChallengeRecord = {
   /** Stores rivalry challenge id. */
   rivalryChallengeId?: string;
   /** Stores creator snapshot. */
-  creatorSnapshot: {displayName: string; avatarUrl?: string | null};
+  creatorSnapshot: {
+    /** Stores display name. */
+    displayName: string; /** Stores avatar url. */
+    /** Stores avatar url. */
+    avatarUrl?: string | null;
+  };
   /** Stores category id. */
   categoryId: RaceCategoryId;
   /** Locale boundary for matching, rematches, and challenge acceptance. */
@@ -149,14 +151,19 @@ export const persistRaceAchievementEvent = (
   event: RaceAchievementEvent,
   nowMs: number,
 ) => {
+  /** Provides update behavior. */
   const update = evaluateRaceAchievementEvent(userData, event, nowMs);
-  transaction.set(userRef, {
-    stats: update.stats,
-    coins: update.newCoins,
-    ...(update.unlockedAchievementEntries.length > 0
-      ? {unlockedAchievements: admin.firestore.FieldValue.arrayUnion(...update.unlockedAchievementEntries)}
-      : {}),
-  }, {merge: true});
+  transaction.set(
+    userRef,
+    {
+      stats: update.stats,
+      coins: update.newCoins,
+      ...(update.unlockedAchievementEntries.length > 0
+        ? {unlockedAchievements: admin.firestore.FieldValue.arrayUnion(...update.unlockedAchievementEntries)}
+        : {}),
+    },
+    {merge: true},
+  );
   return update;
 };
 
@@ -164,7 +171,8 @@ export const persistRaceAchievementEvent = (
 const stableHash = (value: string): string => createHash("sha256").update(value).digest("hex");
 
 /** Requests document id. */
-export const requestDocumentId = (userId: string, requestId: string): string => stableHash(`${userId}\u0000${requestId}`);
+export const requestDocumentId = (userId: string, requestId: string): string =>
+  stableHash(`${userId}\u0000${requestId}`);
 
 /** Defines the race action window ms value. */
 const RACE_ACTION_WINDOW_MS = 10_000;
@@ -173,8 +181,11 @@ const RACE_ACTION_LIMIT = 30;
 
 /** Applies action rate limit. */
 export const applyActionRateLimit = (run: RaceRunRecord, userId: string, nowMs: number): RaceRunRecord => {
+  /** Provides window started at ms behavior. */
   const windowStartedAtMs = run.rateLimitWindowStartedAtMs ?? nowMs;
+  /** Runs in window. */
   const withinWindow = nowMs - windowStartedAtMs < RACE_ACTION_WINDOW_MS;
+  /** Provides rate limit action count behavior. */
   const rateLimitActionCount = withinWindow ? (run.rateLimitActionCount ?? 0) + 1 : 1;
   if (rateLimitActionCount > RACE_ACTION_LIMIT) {
     logger.warn("Race action rate limit exceeded", {
@@ -195,6 +206,7 @@ export const applyActionRateLimit = (run: RaceRunRecord, userId: string, nowMs: 
 export const stripUndefined = <T>(value: T): T => {
   if (Array.isArray(value)) return value.map((item) => stripUndefined(item)) as T;
   if (value && typeof value === "object") {
+    /** Provides prototype behavior. */
     const prototype = Object.getPrototypeOf(value);
     if (prototype !== Object.prototype && prototype !== null) return value;
     return Object.fromEntries(
@@ -233,6 +245,7 @@ export const parseChallengeRecord = (value: FirebaseFirestore.DocumentData | und
   ) {
     throw new HttpsError("internal", "Stored Race to 10 challenge is invalid.");
   }
+  /** Provides locale behavior. */
   const locale = value.locale === undefined ? "en" : value.locale;
   if (!(RACE_SUPPORTED_LOCALES as readonly unknown[]).includes(locale)) {
     throw new HttpsError("internal", "Stored Race to 10 challenge locale is invalid.");
@@ -267,16 +280,31 @@ export async function loadEligibleContent(
   locale: RaceLocale,
   categoryId?: RaceCategoryId,
 ): Promise<ExistingRaceContentRecord[]> {
+  /** Provides query behavior. */
   let query: FirebaseFirestore.Query = getLocalizedCollection(db, locale).where("raceEligible", "==", true);
   if (categoryId) query = query.where("categoryId", "==", categoryId);
+  /** Provides snapshot behavior. */
   const snapshot = await query.get();
   return snapshot.docs.map((document) => toContentRecord(locale, document));
 }
 
 /** Provides deterministic sort behavior. */
-const deterministicSort = <T extends {data: {canonicalRiddleId?: unknown}}>(records: T[], seed: string): T[] =>
+const deterministicSort = <
+  T extends {
+    /** Stores data. */
+    data: {
+      /** Stores canonical riddle id. */
+      canonicalRiddleId?: unknown;
+    };
+  },
+>(
+  records: T[],
+  seed: string,
+): T[] =>
   [...records].sort((left, right) => {
+    /** Provides left id behavior. */
     const leftId = String(left.data.canonicalRiddleId ?? "");
+    /** Provides right id behavior. */
     const rightId = String(right.data.canonicalRiddleId ?? "");
     return stableHash(`${seed}:${leftId}`).localeCompare(stableHash(`${seed}:${rightId}`));
   });
@@ -284,8 +312,21 @@ const deterministicSort = <T extends {data: {canonicalRiddleId?: unknown}}>(reco
 /** Builds a balanced deterministic deck from a validated category pool. */
 export function buildDeterministicRaceDeck(
   records: ExistingRaceContentRecord[],
-  options: {locale: RaceLocale; categoryId: RaceCategoryId; seed: string},
-): {riddles: RaceRiddleSnapshot[]; contentVersion: string} {
+  options: {
+    /** Stores locale. */
+    locale: RaceLocale; /** Stores category id. */
+    /** Stores category id. */
+    categoryId: RaceCategoryId; /** Stores seed. */
+    /** Stores seed. */
+    seed: string;
+  },
+): {
+  /** Stores riddles. */
+  riddles: RaceRiddleSnapshot[]; /** Stores content version. */
+  /** Stores content version. */
+  contentVersion: string;
+} {
+  /** Provides validation behavior. */
   const validation = validateRacePool(records, {
     locale: options.locale,
     categoryId: options.categoryId,
@@ -298,6 +339,7 @@ export function buildDeterministicRaceDeck(
     );
   }
 
+  /** Provides selected behavior. */
   const selected: ExistingRaceContentRecord[] = [];
   for (const difficultyBand of ["easy", "medium", "hard"] as const) {
     selected.push(
@@ -307,12 +349,15 @@ export function buildDeterministicRaceDeck(
       ).slice(0, RACE_DECK_SIZE / 3),
     );
   }
+  /** Provides ordered behavior. */
   const ordered = deterministicSort(selected, `${options.seed}:order`);
   if (ordered.length !== RACE_DECK_SIZE) {
     throw new HttpsError("failed-precondition", "Race category does not have a balanced 15-riddle deck.");
   }
 
+  /** Provides riddles behavior. */
   const riddles = ordered.map((record, position): RaceRiddleSnapshot => {
+    /** Provides data behavior. */
     const data = record.data;
     if (
       typeof data.riddleId !== "string" ||
@@ -330,9 +375,11 @@ export function buildDeterministicRaceDeck(
       position,
     };
   });
+  /** Provides content version behavior. */
   const contentVersion = stableHash(
     riddles
       .map((riddle) => {
+        /** Provides quality version behavior. */
         const qualityVersion = records.find((record) => record.data.canonicalRiddleId === riddle.canonicalRiddleId)
           ?.data.qualityVersion;
         return `${riddle.canonicalRiddleId}:${String(qualityVersion ?? "unknown")}`;
@@ -348,11 +395,14 @@ export async function resolveChallengeRiddles(
   locale: RaceLocale,
   challenge: RaceChallengeRecord,
 ): Promise<RaceRiddleSnapshot[]> {
+  /** Provides snapshot behavior. */
   const snapshot = await getLocalizedCollection(db, locale)
     .where("canonicalRiddleId", "in", challenge.canonicalRiddleIds)
     .get();
+  /** Provides by canonical behavior. */
   const byCanonical = new Map(snapshot.docs.map((document) => [document.data().canonicalRiddleId, document.data()]));
   return challenge.canonicalRiddleIds.map((canonicalRiddleId, position) => {
+    /** Provides data behavior. */
     const data = byCanonical.get(canonicalRiddleId);
     if (
       !data ||
@@ -390,9 +440,13 @@ export async function listRaceCategoriesForLocale(
   locale: RaceLocale,
   dbInput?: Firestore,
 ): Promise<ListRaceCategoriesResponse> {
+  /** Provides db behavior. */
   const db = dbOrDefault(dbInput);
+  /** Records s. */
   const records = await loadEligibleContent(db, locale);
+  /** Provides categories behavior. */
   const categories = RACE_CATEGORY_IDS.flatMap((categoryId): RaceCategory[] => {
+    /** Provides validation behavior. */
     const validation = validateRacePool(records, {locale, categoryId});
     if (!validation.valid) return [];
     return [{categoryId, ...CATEGORY_PRESENTATION[categoryId], availableRiddleCount: validation.eligibleCount}];

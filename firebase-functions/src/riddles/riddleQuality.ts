@@ -7,7 +7,9 @@ const normalizeForComparison = (value: string, locale?: string): string =>
 
 /** Provides clue contains literal answer behavior. */
 export function clueContainsLiteralAnswer(question: string, answer: string, locale?: string): boolean {
+  /** Normalizes d question. */
   const normalizedQuestion = normalizeForComparison(question, locale);
+  /** Normalizes d answer. */
   const normalizedAnswer = normalizeForComparison(answer, locale);
 
   if (!normalizedQuestion || !normalizedAnswer) {

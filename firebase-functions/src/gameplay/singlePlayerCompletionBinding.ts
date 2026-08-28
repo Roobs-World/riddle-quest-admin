@@ -8,22 +8,21 @@ import {isSinglePlayerSessionExpired, sessionExpiry} from "./singlePlayerSession
 const opaqueHash = (value: string): string => createHash("sha256").update(value).digest("hex");
 
 /** Resolves a private session document owned by one player. */
-const getSessionRef = (userId: string, sessionToken: string) => admin.firestore()
-  .collection("users")
-  .doc(userId)
-  .collection("singlePlayerSessions")
-  .doc(opaqueHash(sessionToken));
+const getSessionRef = (userId: string, sessionToken: string) =>
+  admin.firestore().collection("users").doc(userId).collection("singlePlayerSessions").doc(opaqueHash(sessionToken));
 
 /** Resolves the locale-independent pending terminal pointer for one entitlement. */
 export const getSinglePlayerCompletionBindingRef = (
   userId: string,
   gameMode: "classic" | "challenge",
   completionKey: string,
-) => admin.firestore()
-  .collection("users")
-  .doc(userId)
-  .collection("singlePlayerCompletionBindings")
-  .doc(opaqueHash(`${gameMode}\0${completionKey}`));
+) =>
+  admin
+    .firestore()
+    .collection("users")
+    .doc(userId)
+    .collection("singlePlayerCompletionBindings")
+    .doc(opaqueHash(`${gameMode}\0${completionKey}`));
 
 /** Describes the non-answer-bearing fields stored in a pending terminal pointer. */
 type CompletionBinding = {
@@ -37,6 +36,7 @@ type CompletionBinding = {
 
 /** Returns a validated pending pointer or fails closed on corrupted private state. */
 const parseCompletionBinding = (value: unknown): CompletionBinding => {
+  /** Provides data behavior. */
   const data = value as Partial<CompletionBinding> | undefined;
   if (
     !data ||
@@ -67,9 +67,12 @@ export async function recordTerminalCompletionBinding(
   state: SinglePlayerSessionState,
 ): Promise<void> {
   if (!state.terminal) throw new HttpsError("internal", "Only terminal sessions can be bound for recovery.");
+  /** Provides binding ref behavior. */
   const bindingRef = getSinglePlayerCompletionBindingRef(userId, state.gameMode, state.completionKey);
+  /** Provides snapshot behavior. */
   const snapshot = await transaction.get(bindingRef);
   if (snapshot.exists) {
+    /** Provides existing behavior. */
     const existing = parseCompletionBinding(snapshot.data());
     if (existing.gameMode !== state.gameMode || existing.completionKey !== state.completionKey) {
       throw new HttpsError("internal", "The pending game completion binding does not match its entitlement.");
@@ -93,15 +96,27 @@ export async function getCompletionBoundAuthoritativeSession(
   userId: string,
   gameMode: "classic" | "challenge",
   completionKey: string,
-): Promise<{sessionToken: string; state: SinglePlayerSessionState} | undefined> {
+): Promise<
+  | {
+      /** Stores session token. */
+      sessionToken: string; /** Stores state. */
+      /** Stores state. */
+      state: SinglePlayerSessionState;
+    }
+  | undefined
+> {
+  /** Provides binding snapshot behavior. */
   const bindingSnapshot = await getSinglePlayerCompletionBindingRef(userId, gameMode, completionKey).get();
   if (!bindingSnapshot.exists) return undefined;
+  /** Provides binding behavior. */
   const binding = parseCompletionBinding(bindingSnapshot.data());
   if (binding.gameMode !== gameMode || binding.completionKey !== completionKey) {
     throw new HttpsError("permission-denied", "The pending game completion does not match this entitlement.");
   }
+  /** Provides session snapshot behavior. */
   const sessionSnapshot = await getSessionRef(userId, binding.sessionToken).get();
   if (!sessionSnapshot.exists) return undefined;
+  /** Provides state behavior. */
   const state = sessionSnapshot.data() as SinglePlayerSessionState;
   if (isSinglePlayerSessionExpired(state)) return undefined;
   if (
@@ -122,11 +137,14 @@ export function completionBindingMatches(
   expected: Pick<CompletionBinding, "sessionToken" | "gameMode" | "completionKey" | "riddleId">,
 ): boolean {
   try {
+    /** Provides binding behavior. */
     const binding = parseCompletionBinding(value);
-    return binding.sessionToken === expected.sessionToken &&
+    return (
+      binding.sessionToken === expected.sessionToken &&
       binding.gameMode === expected.gameMode &&
       binding.completionKey === expected.completionKey &&
-      binding.riddleId === expected.riddleId;
+      binding.riddleId === expected.riddleId
+    );
   } catch {
     return false;
   }

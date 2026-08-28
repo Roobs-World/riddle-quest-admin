@@ -3,21 +3,32 @@ import {getDatabase, type Database} from "firebase-admin/database";
 import {getFirestore} from "firebase-admin/firestore";
 import {blockKnownRival, reportKnownRival} from "../social/socialSafety";
 
+/** Defines the project id value. */
 const PROJECT_ID = process.env.GCLOUD_PROJECT ?? "riddle-quest-ec2b2";
+/** Renders the reporter interface. */
 const REPORTER = `facebook_${"c".repeat(40)}`;
+/** Renders the target interface. */
 const TARGET = `jest_${"d".repeat(40)}`;
+/** Renders the now interface. */
 const NOW = Date.parse("2026-08-19T12:00:00.000Z");
+/** Provides db behavior. */
 let db: FirebaseFirestore.Firestore;
+/** Provides database behavior. */
 let database: Database;
+/** Provides app behavior. */
 let app: App;
 
+/** Provides collections behavior. */
 const collections = ["users", "socialModerationQueue", "socialReportRateLimits"];
 
 beforeAll(async () => {
-  app = initializeApp({
-    projectId: PROJECT_ID,
-    databaseURL: `http://${process.env.FIREBASE_DATABASE_EMULATOR_HOST ?? "127.0.0.1:9000"}?ns=${PROJECT_ID}`,
-  }, "social-safety-integration");
+  app = initializeApp(
+    {
+      projectId: PROJECT_ID,
+      databaseURL: `http://${process.env.FIREBASE_DATABASE_EMULATOR_HOST ?? "127.0.0.1:9000"}?ns=${PROJECT_ID}`,
+    },
+    "social-safety-integration",
+  );
   db = getFirestore(app);
   database = getDatabase(app);
   await Promise.all([
@@ -46,20 +57,39 @@ afterAll(async () => {
 });
 
 it("serializes report idempotency and the daily cap under concurrency", async () => {
-  const replayed = await Promise.all(Array.from({length: 8}, () => reportKnownRival(REPORTER, {
-    targetUserId: TARGET,
-    category: "cheating",
-    requestId: "same-request-0001",
-  }, {db, nowMs: NOW})));
+  /** Provides replayed behavior. */
+  const replayed = await Promise.all(
+    Array.from({length: 8}, () =>
+      reportKnownRival(
+        REPORTER,
+        {
+          targetUserId: TARGET,
+          category: "cheating",
+          requestId: "same-request-0001",
+        },
+        {db, nowMs: NOW},
+      ),
+    ),
+  );
   expect(new Set(replayed.map(({reportId}) => reportId)).size).toBe(1);
   expect((await db.collection("socialModerationQueue").get()).size).toBe(1);
 
-  const distinct = await Promise.allSettled(Array.from({length: 5}, (_, index) => reportKnownRival(REPORTER, {
-    targetUserId: TARGET,
-    category: "spam",
-    requestId: `distinct-request-${index}`,
-  }, {db, nowMs: NOW})));
+  /** Provides distinct behavior. */
+  const distinct = await Promise.allSettled(
+    Array.from({length: 5}, (_, index) =>
+      reportKnownRival(
+        REPORTER,
+        {
+          targetUserId: TARGET,
+          category: "spam",
+          requestId: `distinct-request-${index}`,
+        },
+        {db, nowMs: NOW},
+      ),
+    ),
+  );
   expect(distinct.filter(({status}) => status === "fulfilled")).toHaveLength(4);
+  /** Provides rejected behavior. */
   const rejected = distinct.filter((result): result is PromiseRejectedResult => result.status === "rejected");
   expect(rejected).toHaveLength(1);
   expect(rejected[0].reason).toMatchObject({code: "resource-exhausted"});
@@ -76,6 +106,7 @@ it("writes an immediate block only for the established rival", async () => {
   });
   await expect(blockKnownRival(REPORTER, TARGET, {database, db, nowMs: NOW})).resolves.toEqual({blocked: true});
   await expect(db.doc(`users/${REPORTER}/blockedRivals/${TARGET}`).get()).resolves.toMatchObject({exists: true});
+  /** Provides revoked presence behavior. */
   const revokedPresence = await Promise.all([
     database.ref(`presenceVisibility/${REPORTER}/${TARGET}`).get(),
     database.ref(`presenceVisibility/${TARGET}/${REPORTER}`).get(),
@@ -83,6 +114,7 @@ it("writes an immediate block only for the established rival", async () => {
     database.ref(`presenceViewers/${TARGET}/${REPORTER}`).get(),
   ]);
   expect(revokedPresence.every((snapshot) => !snapshot.exists())).toBe(true);
-  await expect(blockKnownRival(REPORTER, `facebook_${"e".repeat(40)}`, {db, nowMs: NOW}))
-    .rejects.toMatchObject({code: "permission-denied"});
+  await expect(blockKnownRival(REPORTER, `facebook_${"e".repeat(40)}`, {db, nowMs: NOW})).rejects.toMatchObject({
+    code: "permission-denied",
+  });
 });

@@ -2,17 +2,28 @@ import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
 import {FACEBOOK_CONTEXT_BOARD_DURATION_MS, facebookContextKey} from "../../race/facebookContextCompetition";
 import {listFacebookContextBoard, recordFacebookContextBoardRun} from "../../race/facebookContextBoard";
-import {joinFacebookContextCompetition, removeUserFromFacebookContextCompetitions} from "../../race/facebookContextService";
+import {
+  joinFacebookContextCompetition,
+  removeUserFromFacebookContextCompetitions,
+} from "../../race/facebookContextService";
 import type {RaceRunRecord} from "../../race/raceEngine";
 
+/** Defines the project id value. */
 const PROJECT_ID = process.env.GCLOUD_PROJECT ?? "riddle-quest-ec2b2";
+/** Renders the start interface. */
 const START = Date.UTC(2026, 7, 19);
+/** Renders the a interface. */
 const A = `facebook_${"7".repeat(40)}`;
+/** Renders the b interface. */
 const B = `facebook_${"8".repeat(40)}`;
+/** Defines the context id value. */
 const CONTEXT_ID = "board-group";
+/** Defines the context key value. */
 const CONTEXT_KEY = facebookContextKey(CONTEXT_ID);
+/** Provides db behavior. */
 let db: FirebaseFirestore.Firestore;
 
+/** Provides run behavior. */
 const run = (userId: string, id: string, wallFinishMs: number): RaceRunRecord => ({
   runId: id,
   userId,
@@ -46,46 +57,80 @@ const run = (userId: string, id: string, wallFinishMs: number): RaceRunRecord =>
 beforeAll(async () => {
   if (getApps().length === 0) initializeApp({projectId: PROJECT_ID});
   db = getFirestore();
-  await Promise.all(["users", "raceRuns", "raceDecks", "facebookContextCompetitions"].map((name) =>
-    db.recursiveDelete(db.collection(name))));
+  await Promise.all(
+    ["users", "raceRuns", "raceDecks", "facebookContextCompetitions"].map((name) =>
+      db.recursiveDelete(db.collection(name)),
+    ),
+  );
 });
 
-afterAll(async () => Promise.all([
-  "users", "raceRuns", "raceDecks", "facebookContextCompetitions",
-].map((name) => db.recursiveDelete(db.collection(name)))));
+afterAll(async () =>
+  Promise.all(
+    ["users", "raceRuns", "raceDecks", "facebookContextCompetitions"].map((name) =>
+      db.recursiveDelete(db.collection(name)),
+    ),
+  ),
+);
 
 it("converges a group board on best authoritative scores and deletes every account entry", async () => {
   await Promise.all([
     db.doc(`users/${A}`).set({coins: 300}),
     db.doc(`users/${B}`).set({coins: 300}),
-    joinFacebookContextCompetition({
-      userId: A, contextId: CONTEXT_ID, contextType: "GROUP", locale: "de", nowMs: START,
-    }, db),
+    joinFacebookContextCompetition(
+      {
+        userId: A,
+        contextId: CONTEXT_ID,
+        contextType: "GROUP",
+        locale: "de",
+        nowMs: START,
+      },
+      db,
+    ),
   ]);
-  await joinFacebookContextCompetition({
-    userId: B, contextId: CONTEXT_ID, contextType: "GROUP", locale: "de", nowMs: START + 1,
-  }, db);
+  await joinFacebookContextCompetition(
+    {
+      userId: B,
+      contextId: CONTEXT_ID,
+      contextType: "GROUP",
+      locale: "de",
+      nowMs: START + 1,
+    },
+    db,
+  );
 
+  /** Provides runs behavior. */
   const runs = [run(A, "a-slow", 50_000), run(A, "a-fast", 25_000), run(B, "b-mid", 35_000)];
-  await Promise.all(runs.flatMap((value) => [
-    db.doc(`raceRuns/${value.runId}`).set(value),
-    db.doc(`raceDecks/${value.deckId}`).set({
-      deckId: value.deckId,
-      locale: value.locale,
-      categoryId: value.categoryId,
-      rulesVersion: value.rulesVersion,
-      canonicalRiddleIds: value.riddles.map(({canonicalRiddleId}) => canonicalRiddleId),
-    }),
-  ]));
-  await Promise.all(runs.map((value) => recordFacebookContextBoardRun(
-    value.userId,
-    {contextId: CONTEXT_ID, locale: "de", runId: value.runId},
-    {db, nowMs: START + 60_000},
-  )));
+  await Promise.all(
+    runs.flatMap((value) => [
+      db.doc(`raceRuns/${value.runId}`).set(value),
+      db.doc(`raceDecks/${value.deckId}`).set({
+        deckId: value.deckId,
+        locale: value.locale,
+        categoryId: value.categoryId,
+        rulesVersion: value.rulesVersion,
+        canonicalRiddleIds: value.riddles.map(({canonicalRiddleId}) => canonicalRiddleId),
+      }),
+    ]),
+  );
+  await Promise.all(
+    runs.map((value) =>
+      recordFacebookContextBoardRun(
+        value.userId,
+        {contextId: CONTEXT_ID, locale: "de", runId: value.runId},
+        {db, nowMs: START + 60_000},
+      ),
+    ),
+  );
 
-  const board = await listFacebookContextBoard(A, {contextId: CONTEXT_ID, locale: "de"}, {
-    db, nowMs: START + 60_000,
-  });
+  /** Provides board behavior. */
+  const board = await listFacebookContextBoard(
+    A,
+    {contextId: CONTEXT_ID, locale: "de"},
+    {
+      db,
+      nowMs: START + 60_000,
+    },
+  );
   expect(board.standings).toEqual([
     {rank: 1, adjustedTimeMs: 25_000, isCurrentPlayer: true},
     {rank: 2, adjustedTimeMs: 35_000, isCurrentPlayer: false},
@@ -96,36 +141,56 @@ it("converges a group board on best authoritative scores and deletes every accou
   expect((await db.doc(`users/${B}`).get()).data()).toEqual({coins: 300});
 
   await removeUserFromFacebookContextCompetitions(A, db);
-  await expect(db.doc(`facebookContextCompetitions/${CONTEXT_KEY}/entries/${A}`).get())
-    .resolves.toMatchObject({exists: false});
-  await expect(db.doc(`facebookContextCompetitions/${CONTEXT_KEY}/entries/${B}`).get())
-    .resolves.toMatchObject({exists: true});
+  await expect(db.doc(`facebookContextCompetitions/${CONTEXT_KEY}/entries/${A}`).get()).resolves.toMatchObject({
+    exists: false,
+  });
+  await expect(db.doc(`facebookContextCompetitions/${CONTEXT_KEY}/entries/${B}`).get()).resolves.toMatchObject({
+    exists: true,
+  });
   await removeUserFromFacebookContextCompetitions(B, db);
-  await expect(db.doc(`facebookContextCompetitions/${CONTEXT_KEY}`).get())
-    .resolves.toMatchObject({exists: false});
-  await expect(db.doc(`facebookContextCompetitions/${CONTEXT_KEY}/entries/${B}`).get())
-    .resolves.toMatchObject({exists: false});
+  await expect(db.doc(`facebookContextCompetitions/${CONTEXT_KEY}`).get()).resolves.toMatchObject({exists: false});
+  await expect(db.doc(`facebookContextCompetitions/${CONTEXT_KEY}/entries/${B}`).get()).resolves.toMatchObject({
+    exists: false,
+  });
 });
 
 it("rolls an expired context transactionally and archives identity-free metadata", async () => {
+  /** Provides context id behavior. */
   const contextId = "rolling-thread";
+  /** Provides key behavior. */
   const key = facebookContextKey(contextId);
-  await joinFacebookContextCompetition({
-    userId: A, contextId, contextType: "GROUP", locale: "de", nowMs: START,
-  }, db);
+  await joinFacebookContextCompetition(
+    {
+      userId: A,
+      contextId,
+      contextType: "GROUP",
+      locale: "de",
+      nowMs: START,
+    },
+    db,
+  );
   await db.doc(`facebookContextCompetitions/${key}/entries/${A}`).set({
     contextKey: key,
     locale: "de",
     userId: A,
     adjustedTimeMs: 10_000,
   });
+  /** Provides now ms behavior. */
   const nowMs = START + FACEBOOK_CONTEXT_BOARD_DURATION_MS;
-  const rolled = await joinFacebookContextCompetition({
-    userId: B, contextId, contextType: "THREAD", locale: "ja", nowMs,
-  }, db);
+  /** Provides rolled behavior. */
+  const rolled = await joinFacebookContextCompetition(
+    {
+      userId: B,
+      contextId,
+      contextType: "THREAD",
+      locale: "ja",
+      nowMs,
+    },
+    db,
+  );
   expect(rolled).toMatchObject({contextType: "THREAD", locale: "ja", hostUserId: B});
-  await expect(db.doc(`facebookContextCompetitions/${key}/entries/${A}`).get())
-    .resolves.toMatchObject({exists: false});
+  await expect(db.doc(`facebookContextCompetitions/${key}/entries/${A}`).get()).resolves.toMatchObject({exists: false});
+  /** Provides history behavior. */
   const history = (await db.doc(`facebookContextCompetitionHistory/${key}_${START}`).get()).data();
   expect(history).toMatchObject({locale: "de", participantCount: 1, rewardsEnabled: false});
   expect(JSON.stringify(history)).not.toMatch(/facebook_|userId|memberIds/);

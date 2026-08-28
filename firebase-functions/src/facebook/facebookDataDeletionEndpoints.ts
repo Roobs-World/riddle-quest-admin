@@ -5,16 +5,9 @@ import {type Request} from "firebase-functions/v2/https";
 import {admin} from "../shared/firebaseAdmin";
 import {captureException, flushSentry} from "../shared/sentry";
 import {onRequestWithSentry} from "../shared/sentryHandlers";
-import {
-  deleteFacebookAccountGeneration,
-  type FacebookDeletionIdentity,
-} from "./facebookAccountDeletion";
+import {deleteFacebookAccountGeneration, type FacebookDeletionIdentity} from "./facebookAccountDeletion";
 import {facebookProviderIdentityId, allowFacebookRequest} from "./facebookEndpoints";
-import {
-  facebookFirebaseUid,
-  MAX_FACEBOOK_ACCOUNT_GENERATION,
-  verifyFacebookDeletionRequest,
-} from "./facebookSecurity";
+import {facebookFirebaseUid, MAX_FACEBOOK_ACCOUNT_GENERATION, verifyFacebookDeletionRequest} from "./facebookSecurity";
 
 /** Provides facebook app secret behavior. */
 const facebookAppSecret = defineSecret("FACEBOOK_APP_SECRET");
@@ -35,6 +28,7 @@ const isRecord = (value: unknown): value is Record<string, unknown> =>
 const validDeletionTimestamp = (value: unknown): boolean => {
   if (!isRecord(value) || typeof value.toMillis !== "function") return false;
   try {
+    /** Provides milliseconds behavior. */
     const milliseconds = value.toMillis();
     return typeof milliseconds === "number" && Number.isSafeInteger(milliseconds) && milliseconds >= 0;
   } catch {
@@ -67,10 +61,12 @@ export function parseFacebookDeletionBody(request: Request): string {
   if (request.method !== "POST") throw new Error("method-not-allowed");
   if (!request.is("application/x-www-form-urlencoded")) throw new Error("unsupported-media-type");
   if (request.rawBody && request.rawBody.byteLength > MAX_BODY_BYTES) throw new Error("payload-too-large");
+  /** Provides body behavior. */
   const body = request.body as unknown;
   if (!body || typeof body !== "object" || Array.isArray(body) || Object.keys(body).length !== 1) {
     throw new Error("invalid-request");
   }
+  /** Provides signed request behavior. */
   const signedRequest = (body as Record<string, unknown>).signed_request;
   if (typeof signedRequest !== "string" || !signedRequest || signedRequest.length > 8_192) {
     throw new Error("invalid-request");
@@ -89,7 +85,9 @@ export function facebookDeletionConfirmationCode(signedRequest: string, appSecre
 
 /** Provides deletion status url behavior. */
 const deletionStatusUrl = (code: string): string => {
+  /** Provides configured behavior. */
   const configured = process.env.FACEBOOK_DELETION_STATUS_BASE_URL ?? "";
+  /** Provides url behavior. */
   const url = new URL(configured);
   if (url.protocol !== "https:" || url.username || url.password || url.hash) {
     throw new Error("facebook-deletion-status-url-invalid");
@@ -104,14 +102,27 @@ const respondWithConfirmation = (response: HttpResponse, code: string): unknown 
 
 /** Describes facebook deletion receipt plan. */
 type FacebookDeletionReceiptPlan = Readonly<{
+  /** Stores complete. */
   complete: boolean;
+  /** Stores identity. */
   identity: FacebookDeletionIdentity | null;
 }>;
 
 /** Validates an existing callback receipt and restores only its originally frozen generation. */
 export function resolveFacebookDeletionReceipt(
   value: unknown,
-  {providerIdentityId, playerId, uidSecret}: {providerIdentityId: string; playerId: string; uidSecret: string},
+  {
+    providerIdentityId,
+    playerId,
+    uidSecret,
+  }: {
+    /** Stores provider identity id. */
+    providerIdentityId: string; /** Stores player id. */
+    /** Stores player id. */
+    playerId: string; /** Stores uid secret. */
+    /** Stores uid secret. */
+    uidSecret: string;
+  },
 ): FacebookDeletionReceiptPlan {
   if (
     !isRecord(value) ||
@@ -119,27 +130,42 @@ export function resolveFacebookDeletionReceipt(
     value.providerIdentityId !== providerIdentityId ||
     (value.status !== "processing" && value.status !== "complete") ||
     !validDeletionTimestamp(value.requestedAt) ||
-    (value.accountGeneration !== null && (
-      !Number.isSafeInteger(value.accountGeneration) ||
-      (value.accountGeneration as number) < 1 ||
-      (value.accountGeneration as number) > MAX_FACEBOOK_ACCOUNT_GENERATION
-    )) ||
+    (value.accountGeneration !== null &&
+      (!Number.isSafeInteger(value.accountGeneration) ||
+        (value.accountGeneration as number) < 1 ||
+        (value.accountGeneration as number) > MAX_FACEBOOK_ACCOUNT_GENERATION)) ||
     (value.status === "complete" && !validDeletionTimestamp(value.completedAt))
-  ) throw new Error("facebook-deletion-receipt-conflict");
+  )
+    throw new Error("facebook-deletion-receipt-conflict");
+  /** Provides account generation behavior. */
   const accountGeneration = value.accountGeneration as number | null;
   return {
     complete: value.status === "complete",
-    identity: accountGeneration === null ? null : {
-      uid: facebookFirebaseUid(playerId, uidSecret, accountGeneration),
-      accountGeneration,
-    },
+    identity:
+      accountGeneration === null
+        ? null
+        : {
+            uid: facebookFirebaseUid(playerId, uidSecret, accountGeneration),
+            accountGeneration,
+          },
   };
 }
 
 /** Resolves only the exact deterministic account generation owned by this Meta identity. */
 export function resolveFacebookCallbackDeletionIdentity(
   value: unknown,
-  {appId, playerId, uidSecret}: {appId: string; playerId: string; uidSecret: string},
+  {
+    appId,
+    playerId,
+    uidSecret,
+  }: {
+    /** Stores app id. */
+    appId: string; /** Stores player id. */
+    /** Stores player id. */
+    playerId: string; /** Stores uid secret. */
+    /** Stores uid secret. */
+    uidSecret: string;
+  },
 ): FacebookDeletionIdentity | null {
   if (
     !isRecord(value) ||
@@ -151,18 +177,21 @@ export function resolveFacebookCallbackDeletionIdentity(
     (value.accountGeneration as number) > MAX_FACEBOOK_ACCOUNT_GENERATION ||
     (value.status !== "active" && value.status !== "deleting" && value.status !== "exhausted") ||
     (value.status === "exhausted" && value.accountGeneration !== MAX_FACEBOOK_ACCOUNT_GENERATION)
-  ) throw new Error("facebook-provider-identity-conflict");
+  )
+    throw new Error("facebook-provider-identity-conflict");
   if (value.uid === null) {
     if (value.status !== "active" && value.status !== "exhausted") {
       throw new Error("facebook-provider-identity-conflict");
     }
-    const deletedGeneration = value.status === "exhausted"
-      ? value.accountGeneration as number
-      : (value.accountGeneration as number) - 1;
+    /** Deletes d generation. */
+    const deletedGeneration =
+      value.status === "exhausted" ? (value.accountGeneration as number) : (value.accountGeneration as number) - 1;
     if (deletedGeneration < 1 || !validDeletionTimestamp(value.lastDeletedAt)) {
       throw new Error("facebook-provider-identity-conflict");
     }
+    /** Deletes d uid. */
     const deletedUid = facebookFirebaseUid(playerId, uidSecret, deletedGeneration);
+    /** Provides expected deleted hash behavior. */
     const expectedDeletedHash = createHash("sha256").update(deletedUid).digest("hex");
     if (value.lastDeletedUidHash !== expectedDeletedHash) {
       throw new Error("facebook-provider-identity-conflict");
@@ -170,7 +199,9 @@ export function resolveFacebookCallbackDeletionIdentity(
     return null;
   }
   if (value.status === "exhausted") throw new Error("facebook-provider-identity-conflict");
+  /** Provides account generation behavior. */
   const accountGeneration = value.accountGeneration as number;
+  /** Provides expected uid behavior. */
   const expectedUid = facebookFirebaseUid(playerId, uidSecret, accountGeneration);
   if (value.uid !== expectedUid) throw new Error("facebook-provider-identity-conflict");
   return {uid: expectedUid, accountGeneration};
@@ -187,27 +218,39 @@ export const facebookDataDeletionCallback = onRequestWithSentry(
         response.status(429).json({error: "rate-limited"});
         return;
       }
+      /** Provides signed request behavior. */
       const signedRequest = parseFacebookDeletionBody(request);
+      /** Provides secret behavior. */
       const secret = facebookAppSecret.value();
+      /** Provides payload behavior. */
       const payload = verifyFacebookDeletionRequest(signedRequest, secret);
+      /** Provides app id behavior. */
       const appId = process.env.FACEBOOK_APP_ID ?? "";
       if (!appId) throw new Error("facebook-identity-not-configured");
+      /** Provides code behavior. */
       const code = facebookDeletionConfirmationCode(signedRequest, secret);
+      /** Provides db behavior. */
       const db = admin.firestore();
+      /** Provides receipt ref behavior. */
       const receiptRef = db.collection(DELETION_COLLECTION).doc(code);
-      const providerRef = db.collection("providerIdentities")
-        .doc(facebookProviderIdentityId(appId, payload.user_id));
+      /** Provides provider ref behavior. */
+      const providerRef = db.collection("providerIdentities").doc(facebookProviderIdentityId(appId, payload.user_id));
+      /** Provides uid secret behavior. */
       const uidSecret = facebookUidSecret.value();
+      /** Provides plan behavior. */
       const plan = await db.runTransaction(async (transaction) => {
+        /** Provides [receipt, provider snapshot] behavior. */
         const [receipt, providerSnapshot] = await Promise.all([
           transaction.get(receiptRef),
           transaction.get(providerRef),
         ]);
-        if (receipt.exists) return resolveFacebookDeletionReceipt(receipt.data(), {
-          providerIdentityId: providerRef.id,
-          playerId: payload.user_id,
-          uidSecret,
-        });
+        if (receipt.exists)
+          return resolveFacebookDeletionReceipt(receipt.data(), {
+            providerIdentityId: providerRef.id,
+            playerId: payload.user_id,
+            uidSecret,
+          });
+        /** Provides identity behavior. */
         const identity = providerSnapshot.exists
           ? resolveFacebookCallbackDeletionIdentity(providerSnapshot.data(), {
               appId,
@@ -229,10 +272,13 @@ export const facebookDataDeletionCallback = onRequestWithSentry(
         return;
       }
       if (plan.identity) await deleteFacebookAccountGeneration(plan.identity, {uidSecret});
-      await receiptRef.set({
-        status: "complete",
-        completedAt: admin.firestore.FieldValue.serverTimestamp(),
-      }, {merge: true});
+      await receiptRef.set(
+        {
+          status: "complete",
+          completedAt: admin.firestore.FieldValue.serverTimestamp(),
+        },
+        {merge: true},
+      );
       respondWithConfirmation(response, code);
     } catch (error) {
       logger.warn("Rejected Facebook data-deletion callback", {
@@ -240,11 +286,17 @@ export const facebookDataDeletionCallback = onRequestWithSentry(
       });
       captureException(error, {firebaseFunction: "facebookDataDeletionCallback"});
       await flushSentry();
+      /** Provides message behavior. */
       const message = error instanceof Error ? error.message : "invalid-request";
-      const status = message === "method-not-allowed" ? 405
-        : message === "unsupported-media-type" ? 415
-          : message === "payload-too-large" ? 413
-            : 400;
+      /** Provides status behavior. */
+      const status =
+        message === "method-not-allowed"
+          ? 405
+          : message === "unsupported-media-type"
+            ? 415
+            : message === "payload-too-large"
+              ? 413
+              : 400;
       response.status(status).json({error: "invalid-request"});
     }
   },
@@ -256,16 +308,23 @@ export const facebookDataDeletionStatus = onRequestWithSentry(
   {invoker: "public"},
   async (request, response) => {
     applyDeletionHeaders(response);
+    /** Provides code behavior. */
     const code = typeof request.query.code === "string" ? request.query.code : "";
     if (request.method !== "GET" || !CODE_PATTERN.test(code)) {
       response.status(400).send("Invalid deletion confirmation code.");
       return;
     }
+    /** Provides receipt behavior. */
     const receipt = await admin.firestore().collection(DELETION_COLLECTION).doc(code).get();
+    /** Provides complete behavior. */
     const complete = receipt.data()?.status === "complete";
     response.set("Content-Type", "text/plain; charset=utf-8");
-    response.status(complete ? 200 : 202).send(complete
-      ? "Riddle Quest account data deletion is complete."
-      : "Riddle Quest account data deletion is still processing.");
+    response
+      .status(complete ? 200 : 202)
+      .send(
+        complete
+          ? "Riddle Quest account data deletion is complete."
+          : "Riddle Quest account data deletion is still processing.",
+      );
   },
 );

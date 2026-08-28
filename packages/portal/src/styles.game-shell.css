@@ -27,8 +27,8 @@
   display: grid;
   grid-template-rows: auto 1fr auto auto;
   gap: 10px;
-  padding: max(18px, env(safe-area-inset-top)) max(18px, env(safe-area-inset-right))
-    env(safe-area-inset-bottom) max(18px, env(safe-area-inset-left));
+  padding: max(18px, env(safe-area-inset-top)) max(18px, env(safe-area-inset-right)) env(safe-area-inset-bottom)
+    max(18px, env(safe-area-inset-left));
   transform: translateX(-50%);
   transform-origin: top left;
 }

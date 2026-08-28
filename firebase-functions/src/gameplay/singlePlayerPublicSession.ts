@@ -10,11 +10,12 @@ export type PublicSinglePlayerSessionStatus = {
 };
 
 /** Projects bounded recovery state while rejecting an internally inconsistent session. */
-export function projectPublicSinglePlayerSession(
-  state: SinglePlayerSessionState,
-): PublicSinglePlayerSessionStatus {
+export function projectPublicSinglePlayerSession(state: SinglePlayerSessionState): PublicSinglePlayerSessionStatus {
+  /** Provides base limit behavior. */
   const baseLimit = baseAttemptLimit(state.gameMode);
+  /** Provides max attempts behavior. */
   const maxAttempts = baseLimit + (state.hasUsedContinue ? 1 : 0);
+  /** Provides awaiting continue behavior. */
   const awaitingContinue = state.attempts === baseLimit && !state.hasUsedContinue && !state.terminal;
   if (
     !Number.isInteger(state.attempts) ||

@@ -2,8 +2,10 @@ import {afterEach, describe, expect, it, jest} from "@jest/globals";
 import type {Player} from "../validation/firestoreSchemas";
 import {resolveDailyChallengeProgress} from "../daily/dailyChallengeProgress";
 
+/** Renders the now interface. */
 const NOW = new Date("2026-08-09T12:00:00.000Z");
 
+/** Provides player behavior. */
 function player(overrides: Partial<Player> = {}): Player {
   return {
     userId: "player-1",

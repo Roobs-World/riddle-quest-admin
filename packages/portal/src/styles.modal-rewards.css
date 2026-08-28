@@ -127,7 +127,9 @@
 }
 .coin-award > strong {
   color: #7b467d;
-  font: 900 29px/1 "Manrope", sans-serif;
+  font:
+    900 29px/1 "Manrope",
+    sans-serif;
 }
 .coin-award > span {
   min-height: 24px;
@@ -191,18 +193,40 @@
   will-change: transform, opacity;
 }
 @keyframes reward-chest-wobble {
-  0%, 38%, 100% { transform: rotate(0deg) translateY(0); }
-  44% { transform: rotate(-5deg) translate(-3px, -2px); }
-  50% { transform: rotate(5deg) translate(3px, 0); }
-  56% { transform: rotate(-4deg) translate(-2px, -3px); }
-  62% { transform: rotate(3deg) translate(2px, 0); }
-  68% { transform: rotate(0deg) translateY(-2px); }
+  0%,
+  38%,
+  100% {
+    transform: rotate(0deg) translateY(0);
+  }
+  44% {
+    transform: rotate(-5deg) translate(-3px, -2px);
+  }
+  50% {
+    transform: rotate(5deg) translate(3px, 0);
+  }
+  56% {
+    transform: rotate(-4deg) translate(-2px, -3px);
+  }
+  62% {
+    transform: rotate(3deg) translate(2px, 0);
+  }
+  68% {
+    transform: rotate(0deg) translateY(-2px);
+  }
 }
 @keyframes reward-chest-open {
-  0% { transform: scale(1) rotate(0); }
-  42% { transform: scale(1.12) rotate(-3deg); }
-  72% { transform: scale(0.96) rotate(2deg); }
-  100% { transform: scale(1) rotate(0); }
+  0% {
+    transform: scale(1) rotate(0);
+  }
+  42% {
+    transform: scale(1.12) rotate(-3deg);
+  }
+  72% {
+    transform: scale(0.96) rotate(2deg);
+  }
+  100% {
+    transform: scale(1) rotate(0);
+  }
 }
 @keyframes reward-coin-flight {
   0% {
@@ -211,17 +235,12 @@
   }
   16% {
     opacity: 1;
-    transform: translate(
-      calc(-50% + var(--coin-burst-x)),
-      calc(-50% + var(--coin-burst-y))
-    ) scale(1.15) rotate(100deg);
+    transform: translate(calc(-50% + var(--coin-burst-x)), calc(-50% + var(--coin-burst-y))) scale(1.15) rotate(100deg);
   }
   100% {
     opacity: 1;
-    transform: translate(
-      calc(-50% + var(--coin-travel-x)),
-      calc(-50% + var(--coin-travel-y))
-    ) scale(0.48) rotate(620deg);
+    transform: translate(calc(-50% + var(--coin-travel-x)), calc(-50% + var(--coin-travel-y))) scale(0.48)
+      rotate(620deg);
   }
 }
 .sequence-progress {
@@ -237,5 +256,7 @@
   }
 }
 @keyframes reward-chest-reduced {
-  50% { transform: scale(1.035); }
+  50% {
+    transform: scale(1.035);
+  }
 }

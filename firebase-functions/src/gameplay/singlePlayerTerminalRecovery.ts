@@ -6,6 +6,7 @@ const trustedTerminalDate = (value: unknown): Date | undefined => {
   if (typeof value !== "object" || value === null || !("toDate" in value) || typeof value.toDate !== "function") {
     return undefined;
   }
+  /** Parses d. */
   const parsed = value.toDate();
   return parsed instanceof Date && !Number.isNaN(parsed.getTime()) ? parsed : undefined;
 };
@@ -18,14 +19,19 @@ export async function recoverPendingAuthoritativeCompletion(
   isAnonymous: boolean,
   now = new Date(),
 ): Promise<boolean> {
+  /** Provides bound behavior. */
   const bound = await getCompletionBoundAuthoritativeSession(userId, gameMode, completionKey);
   if (!bound || !bound.state.terminal || bound.state.isSkipped) return false;
-  if (gameMode === "challenge" && !isDailyCompletionDateEligible(
-    bound.state.challengeDate,
-    bound.state.isCorrect,
-    trustedTerminalDate(bound.state.terminalAt),
-    now,
-  )) return false;
+  if (
+    gameMode === "challenge" &&
+    !isDailyCompletionDateEligible(
+      bound.state.challengeDate,
+      bound.state.isCorrect,
+      trustedTerminalDate(bound.state.terminalAt),
+      now,
+    )
+  )
+    return false;
   await completeAuthoritativeGame(
     {riddleId: bound.state.riddleId, gameMode, sessionToken: bound.sessionToken},
     {uid: userId, isAnonymous},

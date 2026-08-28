@@ -16,25 +16,36 @@ export function useJestProductCatalog({
   trackFunnel,
   withPlatformActivity,
 }: {
+  /** Stores purchases. */
   purchases: JestPurchaseCoordinator;
+  /** Stores session. */
   session: JestSession | null;
   /** Enables the beta subscription offer only in trusted test runtimes. */
   subscriptionsEnabled?: boolean;
+  /** Stores track funnel. */
   trackFunnel: TrackFunnel;
+  /** Stores with platform activity. */
   withPlatformActivity: WithPlatformActivity;
 }) {
+  /** Provides catalog behavior. */
   const catalog = useState<ProductSummary[]>([]);
+  /** Provides [, set products] behavior. */
   const [, setProducts] = catalog;
   useEffect(() => {
     if (!session) return;
     void withPlatformActivity(async () => {
+      /** Provides products behavior. */
       const products = await purchases.getProducts(navigator.language);
-      const subscriptions = subscriptionsEnabled && session.player.registered
-        ? await purchases.getSubscriptions(session.player.playerId, navigator.language)
-        : ({status: "success", value: []} as const);
+      /** Provides subscriptions behavior. */
+      const subscriptions =
+        subscriptionsEnabled && session.player.registered
+          ? await purchases.getSubscriptions(session.player.playerId, navigator.language)
+          : ({status: "success", value: []} as const);
       return {products, subscriptions};
     }).then(({products, subscriptions}) => {
+      /** Provides next products behavior. */
       const nextProducts = products.status === "success" ? products.value : [];
+      /** Provides next subscriptions behavior. */
       const nextSubscriptions = subscriptions.status === "success" ? subscriptions.value : [];
       setProducts([...nextSubscriptions, ...nextProducts]);
       if (products.status !== "success") trackFunnel("products_load_failed", {status: products.status});

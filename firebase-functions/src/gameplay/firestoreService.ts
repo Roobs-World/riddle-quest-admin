@@ -1,11 +1,7 @@
 import {admin} from "../shared/firebaseAdmin";
 import type {Firestore, Transaction, UpdateData} from "firebase-admin/firestore";
 import {captureException} from "../shared/sentry";
-import type {
-  Player,
-  PlayerStatsUpdate,
-  UnlockedAchievement,
-} from "../validation/firestoreSchemas";
+import type {Player, PlayerStatsUpdate, UnlockedAchievement} from "../validation/firestoreSchemas";
 import {PlayerSchema} from "../validation/firestoreSchemas";
 import * as functions from "firebase-functions";
 import {type SupportedLocale} from "@qwordly/core/validation";
@@ -33,7 +29,9 @@ function getDb(): Firestore {
  * @return A promise that resolves with the user document data, or undefined if not found.
  */
 export async function getUser(userId: string): Promise<Player | undefined> {
+  /** Provides r ref. */
   const userRef = getDb().collection("users").doc(userId);
+  /** Provides r doc. */
   const userDoc = await userRef.get();
 
   if (!userDoc.exists) {
@@ -68,26 +66,29 @@ export async function updateUserLastCompletedDailyChallengeDate(userId: string, 
  * @param transaction - Optional. The Firestore transaction to use.
  * @return A promise that resolves when the update is complete.
  */
-export async function updateUserCoins(
-  userId: string,
-  coinsToAdd: number,
-  transaction?: Transaction,
-): Promise<void> {
+export async function updateUserCoins(userId: string, coinsToAdd: number, transaction?: Transaction): Promise<void> {
+  /** Provides r ref. */
   const userRef = getDb().collection("users").doc(userId);
 
+  /** Updates operation. */
   const updateOperation = async (txn: Transaction) => {
+    /** Provides r doc. */
     const userDoc = await txn.get(userRef);
 
     if (!userDoc.exists) {
+      /** Provides error message behavior. */
       const errorMessage = `User with ID ${userId} not found during transaction for updateUserCoins.`;
       functions.logger.error(errorMessage, new Error(errorMessage));
       throw new Error(`User with ID ${userId} not found.`);
     }
 
+    /** Provides current coins behavior. */
     const currentCoins = (userDoc.data()?.coins as number) || 0;
+    /** Provides new coins behavior. */
     const newCoins = currentCoins + coinsToAdd;
 
     if (newCoins < 0) {
+      /** Provides error message behavior. */
       const errorMessage = `Insufficient coins for user ${userId}. Current: ${currentCoins}, Attempted to spend: ${-coinsToAdd}.`;
       functions.logger.error(errorMessage, new Error(errorMessage));
       throw new Error(errorMessage);
@@ -119,15 +120,20 @@ export async function updateUserStats(
   statsUpdate: PlayerStatsUpdate,
   transaction?: Transaction,
 ): Promise<void> {
+  /** Provides r ref. */
   const userRef = getDb().collection("users").doc(userId);
 
+  /** Provides stats field updates behavior. */
   const statsFieldUpdates = Object.fromEntries(
     Object.entries(statsUpdate).flatMap(([key, value]) => (value === undefined ? [] : [[`stats.${key}`, value]])),
   ) as UpdateData<Player>;
 
+  /** Updates operation. */
   const updateOperation = async (txn: Transaction) => {
+    /** Provides r doc. */
     const userDoc = await txn.get(userRef);
     if (!userDoc.exists) {
+      /** Provides error message behavior. */
       const errorMessage = `User with ID ${userId} not found during transaction for updateUserStats.`;
       functions.logger.error(errorMessage, new Error(errorMessage));
       throw new Error(`User with ID ${userId} not found.`);
@@ -176,21 +182,33 @@ export async function updateUserProfile(userId: string, profileUpdate: Partial<P
 export async function initializeNewUser(
   userId: string,
   userData: {
+    /** Stores email. */
     email: string;
+    /** Stores username. */
     username: string;
+    /** Stores display name. */
     displayName?: string;
+    /** Stores avatar url. */
     avatarUrl?: string;
+    /** Stores seed. */
     seed?: Partial<Player>;
   },
 ): Promise<void> {
   try {
+    /** Provides seed behavior. */
     const seed = userData.seed ?? {};
+    /** Provides seed coins behavior. */
     const seedCoins =
       typeof seed.coins === "number" && Number.isInteger(seed.coins) && seed.coins >= 0 ? seed.coins : INITIAL_COINS;
+    /** Provides seed stats behavior. */
     const seedStats = seed.stats && typeof seed.stats === "object" ? seed.stats : {};
+    /** Provides seed progress behavior. */
     const seedProgress = seed.progress && typeof seed.progress === "object" ? seed.progress : {};
+    /** Provides seed achievements behavior. */
     const seedAchievements = Array.isArray(seed.unlockedAchievements) ? seed.unlockedAchievements : [];
+    /** Provides now behavior. */
     const now = Date.now();
+    /** Provides default user data behavior. */
     const defaultUserData: Player = {
       userId,
       email: userData.email,
@@ -243,16 +261,15 @@ export async function initializeNewUser(
       defaultUserData.lastCompletedDailyChallengeKey = seed.lastCompletedDailyChallengeKey;
     }
 
+    /** Validates d user data. */
     const validatedUserData = PlayerSchema.parse(defaultUserData);
+    /** Provides db behavior. */
     const db = getDb();
+    /** Provides r ref. */
     const userRef = db.collection("users").doc(userId);
     await db.runTransaction(async (transaction) => {
-      const reservationFields = reserveUsernameForNewUser(
-        transaction,
-        db,
-        userId,
-        validatedUserData.username,
-      );
+      /** Provides reservation fields behavior. */
+      const reservationFields = reserveUsernameForNewUser(transaction, db, userId, validatedUserData.username);
       transaction.create(userRef, {...validatedUserData, ...reservationFields});
     });
     functions.logger.info(`Initialized new user document for ${userId} with default stats and progress`);
@@ -272,7 +289,9 @@ export async function initializeNewUser(
  */
 export async function ensureUserDocumentComplete(userId: string): Promise<void> {
   try {
+    /** Provides r ref. */
     const userRef = getDb().collection("users").doc(userId);
+    /** Provides r doc. */
     const userDoc = await userRef.get();
 
     if (!userDoc.exists) {
@@ -282,7 +301,9 @@ export async function ensureUserDocumentComplete(userId: string): Promise<void> 
       return;
     }
 
+    /** Provides r data. */
     const userData = userDoc.data() as Partial<Player>;
+    /** Updates s. */
     const updates: Partial<Player> = {};
 
     // Ensure stats object exists with all required fields
@@ -310,7 +331,9 @@ export async function ensureUserDocumentComplete(userId: string): Promise<void> 
       };
     } else {
       // Check for missing stat fields and add defaults
+      /** Provides current stats behavior. */
       const currentStats = userData.stats;
+      /** Provides default stats behavior. */
       const defaultStats = {
         xp: 0,
         level: 1,
@@ -333,7 +356,9 @@ export async function ensureUserDocumentComplete(userId: string): Promise<void> 
         multiplayerChallengesCreated: 0,
       };
 
+      /** Provides needs stats update behavior. */
       let needsStatsUpdate = false;
+      /** Provides merged stats behavior. */
       const mergedStats = {...currentStats};
 
       for (const [key, defaultValue] of Object.entries(defaultStats)) {
@@ -356,14 +381,18 @@ export async function ensureUserDocumentComplete(userId: string): Promise<void> 
         dailyChallengeCurrentQuestion: 0,
       };
     } else {
+      /** Provides current progress behavior. */
       const currentProgress = userData.progress;
+      /** Provides default progress behavior. */
       const defaultProgress = {
         classicIndex: 1,
         dailyChallengeIndex: 0,
         dailyChallengeCurrentQuestion: 0,
       };
 
+      /** Provides needs progress update behavior. */
       let needsProgressUpdate = false;
+      /** Provides merged progress behavior. */
       const mergedProgress = {...currentProgress};
 
       for (const [key, defaultValue] of Object.entries(defaultProgress)) {
@@ -413,14 +442,19 @@ export async function ensureUserDocumentComplete(userId: string): Promise<void> 
  */
 export async function appendUnlockedAchievements(userId: string, newEntries: UnlockedAchievement[]): Promise<void> {
   if (newEntries.length === 0) return;
+  /** Provides r ref. */
   const userRef = getDb().collection("users").doc(userId);
+  /** Provides r doc. */
   const userDoc = await userRef.get();
   if (!userDoc.exists) {
     functions.logger.warn(`Cannot append achievements: user ${userId} not found`);
     return;
   }
+  /** Provides existing behavior. */
   const existing = (userDoc.data()?.unlockedAchievements as UnlockedAchievement[] | undefined) || [];
+  /** Provides existing ids behavior. */
   const existingIds = new Set(existing.map((e) => e.achievementId));
+  /** Provides to add behavior. */
   const toAdd = newEntries.filter((e) => !existingIds.has(e.achievementId));
   if (toAdd.length === 0) return;
   await userRef.update({

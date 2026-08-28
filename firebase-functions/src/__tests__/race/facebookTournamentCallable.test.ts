@@ -1,5 +1,8 @@
+/** Provides mock record behavior. */
 const mockRecord = jest.fn();
+/** Provides mock list behavior. */
 const mockList = jest.fn();
+/** Provides mock feature enabled behavior. */
 const mockFeatureEnabled = jest.fn(() => true);
 
 jest.mock("../../shared/sentryHandlers", () => ({
@@ -17,13 +20,20 @@ jest.mock("../../facebook/facebookFeatureFlags", () => ({
 import type {CallableRequest} from "firebase-functions/v2/https";
 import {listFacebookTournament, recordFacebookTournament} from "../../race/facebookTournamentCallable";
 
+/** Handles r. */
 const handler = recordFacebookTournament as unknown as (request: CallableRequest<unknown>) => Promise<unknown>;
+/** Lists handler. */
 const listHandler = listFacebookTournament as unknown as (request: CallableRequest<unknown>) => Promise<unknown>;
+/** Provides uid behavior. */
 const uid = `facebook_${"a".repeat(40)}`;
-const request = (data: unknown, auth: CallableRequest<unknown>["auth"] = {
-  uid,
-  token: {provider: "facebook"},
-}) => ({auth, data}) as CallableRequest<unknown>;
+/** Provides request behavior. */
+const request = (
+  data: unknown,
+  auth: CallableRequest<unknown>["auth"] = {
+    uid,
+    token: {provider: "facebook"},
+  },
+) => ({auth, data}) as CallableRequest<unknown>;
 
 describe("recordFacebookTournament callable", () => {
   beforeEach(() => {
@@ -82,10 +92,12 @@ describe("recordFacebookTournament callable", () => {
     await expect(handler({auth: undefined, data: {}} as CallableRequest<unknown>)).rejects.toMatchObject({
       code: "unauthenticated",
     });
-    await expect(handler(request({}, {uid: `jest_${"b".repeat(40)}`, token: {provider: "jest"}})))
-      .rejects.toMatchObject({code: "permission-denied"});
-    await expect(handler(request({}, {uid, token: {provider: "jest"}})))
-      .rejects.toMatchObject({code: "permission-denied"});
+    await expect(
+      handler(request({}, {uid: `jest_${"b".repeat(40)}`, token: {provider: "jest"}})),
+    ).rejects.toMatchObject({code: "permission-denied"});
+    await expect(handler(request({}, {uid, token: {provider: "jest"}}))).rejects.toMatchObject({
+      code: "permission-denied",
+    });
     expect(mockRecord).not.toHaveBeenCalled();
   });
 

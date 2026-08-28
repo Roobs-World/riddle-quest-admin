@@ -27,8 +27,10 @@ export const useRaceClockEffects = (
 ): void => {
   useEffect(() => {
     if (stage !== "countdown") return;
+    /** Provides step behavior. */
     const step = getRaceCountdownStep(countdown, Boolean(run));
     if (step.kind === "wait") return;
+    /** Provides timer behavior. */
     const timer = window.setTimeout(() => {
       if (step.kind === "start") setStage("racing");
       else setCountdown(step.nextValue);
@@ -38,6 +40,7 @@ export const useRaceClockEffects = (
 
   useEffect(() => {
     if (stage !== "racing") return;
+    /** Provides timer behavior. */
     const timer = window.setInterval(() => setTick((value) => value + 1), 100);
     return () => window.clearInterval(timer);
   }, [setTick, stage]);
@@ -52,11 +55,13 @@ export const useRaceFeedbackTimers = (
 ): void => {
   useEffect(() => {
     if (!penaltyFlash) return;
+    /** Provides timer behavior. */
     const timer = window.setTimeout(() => setPenaltyFlash(null), 1_600);
     return () => window.clearTimeout(timer);
   }, [penaltyFlash, setPenaltyFlash]);
   useEffect(() => {
     if (!feedback) return;
+    /** Provides timer behavior. */
     const timer = window.setTimeout(() => setFeedback(null), 1_600);
     return () => window.clearTimeout(timer);
   }, [feedback, setFeedback]);

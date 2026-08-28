@@ -17,16 +17,16 @@ export const normalizeAnswerText = (value: string, locale: string): string =>
 const receiptHash = (value: string): string => createHash("sha256").update(value).digest("hex");
 
 /** Applies one guess to canonical server-owned state. */
-export function transitionSinglePlayerGuess({
-  state,
-  request,
-  answer,
-  locale,
-}: GuessTransitionInput): GuessTransition {
+export function transitionSinglePlayerGuess({state, request, answer, locale}: GuessTransitionInput): GuessTransition {
+  /** Normalizes d answer. */
   const normalizedAnswer = normalizeAnswerText(answer, locale);
+  /** Normalizes d guess. */
   const normalizedGuess = normalizeAnswerText(request.guess, locale);
+  /** Requests hash. */
   const requestHash = receiptHash(request.requestId);
+  /** Provides guess hash behavior. */
   const guessHash = receiptHash(normalizedGuess);
+  /** Provides prior receipt behavior. */
   const priorReceipt = state?.guessReceipts?.[requestHash];
   if (priorReceipt) {
     if (priorReceipt.guessHash !== guessHash) {
@@ -34,8 +34,9 @@ export function transitionSinglePlayerGuess({
     }
     return {state: state!, result: priorReceipt.result, replayed: true};
   }
-  const continueWasGrantedAfterLastGuess = state?.hasUsedContinue &&
-    state.attempts === baseAttemptLimit(request.gameMode);
+  /** Provides continue was granted after last guess behavior. */
+  const continueWasGrantedAfterLastGuess =
+    state?.hasUsedContinue && state.attempts === baseAttemptLimit(request.gameMode);
   if (state?.lastGuess === normalizedGuess && state.lastGuessResult && !continueWasGrantedAfterLastGuess) {
     return {state, result: state.lastGuessResult, replayed: true};
   }
@@ -44,19 +45,28 @@ export function transitionSinglePlayerGuess({
     throw new HttpsError("failed-precondition", "Choose whether to continue before submitting another guess.");
   }
 
+  /** Provides answer length behavior. */
   const answerLength = splitGraphemes(normalizedAnswer, locale).length;
+  /** Provides guess letters behavior. */
   const guessLetters = splitGraphemes(normalizedGuess, locale);
   if (guessLetters.length !== answerLength) {
     throw new HttpsError("invalid-argument", `The guess must contain exactly ${answerLength} characters.`);
   }
+  /** Provides attempts behavior. */
   const attempts = (state?.attempts ?? 0) + 1;
+  /** Provides max attempts behavior. */
   const maxAttempts = baseAttemptLimit(request.gameMode) + (state?.hasUsedContinue ? 1 : 0);
   if (attempts > maxAttempts) throw new HttpsError("failed-precondition", "No attempts remain for this riddle.");
 
+  /** Indicates whether is correct. */
   const isCorrect = normalizedGuess === normalizedAnswer;
+  /** Indicates whether can continue. */
   const canContinue = !isCorrect && attempts === baseAttemptLimit(request.gameMode) && !state?.hasUsedContinue;
+  /** Provides game over behavior. */
   const gameOver = isCorrect || (!canContinue && attempts >= maxAttempts);
+  /** Provides feedback states behavior. */
   const feedbackStates = computeFeedback(normalizedGuess, normalizedAnswer);
+  /** Provides result behavior. */
   const result: SubmitSinglePlayerGuessResponseData = {
     feedback: guessLetters.map((letter, index) => ({letter, status: feedbackStates[index] ?? "red"})),
     attempts,
@@ -64,6 +74,7 @@ export function transitionSinglePlayerGuess({
     gameOver,
     ...(canContinue ? {canContinue: true} : {}),
   };
+  /** Provides next state behavior. */
   const nextState: SinglePlayerSessionState = {
     ...(state ?? ({} as SinglePlayerSessionState)),
     gameMode: request.gameMode,

@@ -33,6 +33,7 @@ const writeBrowserEpoch = (epoch: string): void => {
 
 /** Creates browser lock. */
 const createBrowserLock = (): CrossContextLock | null => {
+  /** Provides locks behavior. */
   const locks = globalThis.navigator?.locks;
   if (!locks) return null;
   return {
@@ -69,9 +70,13 @@ export class LocalAccountDeletionGate implements AccountDeletionServiceGate {
     readEpoch = readBrowserEpoch,
     writeEpoch = writeBrowserEpoch,
   }: {
+    /** Stores cross context lock. */
     crossContextLock?: CrossContextLock | null;
+    /** Stores require cross context lock. */
     requireCrossContextLock?: boolean;
+    /** Stores read epoch. */
     readEpoch?: () => string | null;
+    /** Stores write epoch. */
     writeEpoch?: (epoch: string) => void;
   } = {}) {
     this.crossContextLock = crossContextLock;
@@ -96,13 +101,16 @@ export class LocalAccountDeletionGate implements AccountDeletionServiceGate {
   /** Provides run behavior. */
   async run<Result>(operation: () => Promise<Result>): Promise<Result> {
     if (!this.isOpen()) throw new Error("account-deletion-requested");
+    /** Provides previous behavior. */
     const previous = this.tail;
+    /** Provides release behavior. */
     let release: () => void = () => undefined;
     this.tail = new Promise<void>((resolve) => {
       release = resolve;
     });
     await previous;
     try {
+      /** Provides guarded behavior. */
       const guarded = async (): Promise<Result> => {
         if (!this.isOpen()) throw new Error("account-deletion-requested");
         return operation();

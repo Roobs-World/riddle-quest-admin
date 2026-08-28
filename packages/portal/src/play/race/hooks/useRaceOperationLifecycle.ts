@@ -16,17 +16,25 @@ export type RaceOperationLifecycleOptions = {
 
 /** Owns request correlation and the loader lifecycle shared by race operations. */
 export function useRaceOperationLifecycle({postToHost, setError}: RaceOperationLifecycleOptions) {
+  /** Provides [pending, set pending] behavior. */
   const [pending, setPending] = useState<RaceOperation | null>(null);
+  /** Provides [race guess loading, set race guess loading] behavior. */
   const [raceGuessLoading, setRaceGuessLoading] = useState(false);
+  /** Provides expected request ref behavior. */
   const expectedRequestRef = useRef<string | null>(null);
+  /** Loads ing started at ref. */
   const loadingStartedAtRef = useRef(0);
+  /** Loads ing timer ref. */
   const loadingTimerRef = useRef<number | undefined>(undefined);
+  /** Loads ing active ref. */
   const loadingActiveRef = useRef(false);
+  /** Provides awaiting outcome ref behavior. */
   const awaitingOutcomeRef = useRef(false);
 
   /** Sends one correlated operation and injects receipts for server mutations. */
   const send = useCallback(
     (operation: RaceOperation, type: GameToHostMessage["type"], payload: Record<string, unknown>) => {
+      /** Requests id. */
       const requestId = createRequestId(operation);
       expectedRequestRef.current = requestId;
       setPending(operation);
@@ -52,7 +60,9 @@ export function useRaceOperationLifecycle({postToHost, setError}: RaceOperationL
 
   /** Ends the current answer loader after its minimum visible duration. */
   const finishRaceGuessLoading = useCallback(() => {
+    /** Provides elapsed ms behavior. */
     const elapsedMs = performance.now() - loadingStartedAtRef.current;
+    /** Provides remaining ms behavior. */
     const remainingMs = Math.max(0, RACE_GUESS_LOADER_MIN_VISIBLE_MS - elapsedMs);
     loadingTimerRef.current = window.setTimeout(() => {
       loadingActiveRef.current = false;
@@ -63,22 +73,29 @@ export function useRaceOperationLifecycle({postToHost, setError}: RaceOperationL
   }, []);
 
   /** Clears pending state and hands completed guesses over to outcome loading. */
-  const finishOperation = useCallback((operation: RaceOperation) => {
-    setPending((current) => current === operation ? null : current);
-    if (operation === "raceGuess" && !awaitingOutcomeRef.current) {
-      finishRaceGuessLoading();
-    } else if (operation === "raceOutcome" && loadingActiveRef.current) {
-      finishRaceGuessLoading();
-    }
-  }, [finishRaceGuessLoading]);
+  const finishOperation = useCallback(
+    (operation: RaceOperation) => {
+      setPending((current) => (current === operation ? null : current));
+      if (operation === "raceGuess" && !awaitingOutcomeRef.current) {
+        finishRaceGuessLoading();
+      } else if (operation === "raceOutcome" && loadingActiveRef.current) {
+        finishRaceGuessLoading();
+      }
+    },
+    [finishRaceGuessLoading],
+  );
 
+  /** Sets race guess awaiting outcome. */
   const setRaceGuessAwaitingOutcome = useCallback((awaiting: boolean) => {
     awaitingOutcomeRef.current = awaiting;
   }, []);
 
-  useEffect(() => () => {
-    if (loadingTimerRef.current !== undefined) window.clearTimeout(loadingTimerRef.current);
-  }, []);
+  useEffect(
+    () => () => {
+      if (loadingTimerRef.current !== undefined) window.clearTimeout(loadingTimerRef.current);
+    },
+    [],
+  );
 
   return {
     expectedRequestRef,

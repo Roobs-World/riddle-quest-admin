@@ -6,6 +6,4 @@ export const restoreProfileWhileServerLoads = (
   snapshot: AuthSnapshot,
   savedProfile: BridgeProfile | undefined,
 ): AuthSnapshot =>
-  snapshot.user && !snapshot.profile && savedProfile
-    ? {...snapshot, profile: savedProfile}
-    : snapshot;
+  snapshot.user && !snapshot.profile && savedProfile ? {...snapshot, profile: savedProfile} : snapshot;

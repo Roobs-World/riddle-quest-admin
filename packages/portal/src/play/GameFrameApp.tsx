@@ -75,50 +75,87 @@ export function GameFrameApp({
   raceLocalePolicy = "english-only",
   onPresenceStateChange,
 }: {
+  /** Stores local bridge. */
   localBridge?: boolean;
+  /** Stores interaction blocked. */
   interactionBlocked?: boolean;
+  /** Stores restored game. */
   restoredGame?: SavedGame | null;
+  /** Stores on save game. */
   onSaveGame?: (game: SavedGame | null) => void;
+  /** Stores registration name. */
   registrationName?: string;
+  /** Stores registration inviter name. */
   registrationInviterName?: string;
+  /** Stores initial race challenge id. */
   initialRaceChallengeId?: string;
+  /** Stores initial race inbox. */
   initialRaceInbox?: boolean;
+  /** Stores race feature enabled. */
   raceFeatureEnabled?: boolean;
+  /** Stores prefetched race categories. */
   prefetchedRaceCategories?: ListRaceCategoriesResponse["categories"];
+  /** Stores presence enabled. */
   presenceEnabled?: boolean;
+  /** Stores on toggle presence. */
   onTogglePresence?: () => void;
+  /** Stores native social. */
   nativeSocial?: NativeSocialCapability;
+  /** Stores matchmaking. */
   matchmaking?: MatchmakingCapability;
+  /** Stores player overlay. */
   playerOverlay?: OverlayCapability;
+  /** Stores platform player id. */
   platformPlayerId?: string;
+  /** Stores tournaments. */
   tournaments?: TournamentCapability;
+  /** Stores context board. */
   contextBoard?: ContextBoardCapability;
+  /** Stores race locale policy. */
   raceLocalePolicy?: "english-only" | "all";
+  /** Stores on presence state change. */
   onPresenceStateChange?: (state: ActivePresenceState) => void;
 } = {}) {
+  /** Provides [state, dispatch] behavior. */
   const [state, dispatch] = useReducer(gameSessionReducer, undefined, createInitialGameSession);
+  /** Provides {shell ref, content ref} behavior. */
   const {shellRef, contentRef} = useViewportFit();
+  /** Provides {music ref, play feedback} behavior. */
   const {musicRef, playFeedback} = useGameAudio(state);
+  /** Provides online behavior. */
   const online = useOnlineStatus();
+  /** Provides [solar ready, set solar ready] behavior. */
   const [solarReady, setSolarReady] = useState(false);
+  /** Provides [guidance active, set guidance active] behavior. */
   const [guidanceActive, setGuidanceActive] = useState(false);
+  /** Provides [animated coin balance, set animated coin balance] behavior. */
   const [animatedCoinBalance, setAnimatedCoinBalance] = useState<number | null>(null);
+  /** Indicates whether has active riddle. */
   const hasActiveRiddle = Boolean(state.riddle);
+  /** Provides modal open behavior. */
   const modalOpen = Boolean(state.modal);
+  /** Provides race locale behavior. */
   const raceLocale = isSupportedLocale(state.locale) ? state.locale : undefined;
+  /** Provides race enabled behavior. */
   const raceEnabled =
-    raceLocale !== undefined && (raceLocalePolicy === "all" || raceLocale === "en") &&
+    raceLocale !== undefined &&
+    (raceLocalePolicy === "all" || raceLocale === "en") &&
     (raceFeatureEnabled || isRaceHarness(typeof window === "undefined" ? "" : window.location.search));
+  /** Provides [race open, set race open] behavior. */
   const [raceOpen, setRaceOpen] = useState(Boolean((initialRaceChallengeId || initialRaceInbox) && raceEnabled));
+  /** Provides offline dialog ref behavior. */
   const offlineDialogRef = useRef<HTMLDivElement | null>(null);
+  /** Provides state ref behavior. */
   const stateRef = useRef(state);
   stateRef.current = state;
 
   useOfflineDialog(online, offlineDialogRef);
 
+  /** Provides {game modal view, race to10 game} behavior. */
   const {GameModalView, RaceTo10Game} = useGameSurfaces(raceEnabled);
 
   useEffect(() => {
+    /** Provides screen behavior. */
     const screen = raceOpen
       ? "multiplayer"
       : guidanceActive
@@ -132,6 +169,7 @@ export function GameFrameApp({
   }, [guidanceActive, raceOpen, state.gameMode, state.modal, state.riddle]);
 
   useEffect(() => {
+    /** Provides next presence state behavior. */
     const nextPresenceState: ActivePresenceState = resolveActivityPresence({
       raceOpen,
       hasRiddle: hasActiveRiddle,
@@ -149,6 +187,7 @@ export function GameFrameApp({
     if (state.modal === null) setAnimatedCoinBalance(null);
   }, [state.modal]);
 
+  /** Provides post to host behavior. */
   const postToHost = useCallback(
     (message: GameToHostMessage) => {
       if (localBridge || window.parent === window) {
@@ -160,6 +199,7 @@ export function GameFrameApp({
     [localBridge],
   );
 
+  /** Sends ready. */
   const sendReady = useCallback(() => {
     postToHost({
       type: "game:ready",
@@ -171,6 +211,19 @@ export function GameFrameApp({
     });
   }, [postToHost]);
 
+  /** Provides {
+    can submit,
+    submit guess,
+    request riddle,
+    request hint,
+    request continue,
+    request skip,
+    request purchase,
+    request leaderboard,
+    update username,
+    update avatar,
+    delete account,
+  } behavior. */
   const {
     canSubmit,
     submitGuess,
@@ -187,26 +240,39 @@ export function GameFrameApp({
 
   useEffect(() => {
     if (!state.initialized || !shouldLoadDecorativeWebGl(getMobileCapabilities())) return;
+    /** Provides idle window behavior. */
     const idleWindow = window as Window & {
-      requestIdleCallback?: (callback: () => void, options?: {timeout: number}) => number;
+      /** Stores request idle callback. */
+      requestIdleCallback?: (
+        callback: () => void,
+        options?: {
+          /** Stores timeout. */
+          timeout: number;
+        },
+      ) => number;
+      /** Stores cancel idle callback. */
       cancelIdleCallback?: (handle: number) => void;
     };
     if (idleWindow.requestIdleCallback) {
+      /** Provides handle behavior. */
       const handle = idleWindow.requestIdleCallback(() => setSolarReady(true), {timeout: 5_000});
       return () => idleWindow.cancelIdleCallback?.(handle);
     }
+    /** Provides timer behavior. */
     const timer = window.setTimeout(() => setSolarReady(true), 2_500);
     return () => window.clearTimeout(timer);
   }, [state.initialized]);
 
   useGameReadyReporter({initialized: state.initialized, sendReady, postToHost});
 
+  /** Handles completion result. */
   const handleCompletionResult = useCompletionDelivery({
     outcome: state.lastOutcome,
     dispatch,
     postToHost,
   });
 
+  /** Provides router behavior. */
   const router = useGameMessageRouter({
     dispatch,
     stateRef,
@@ -221,6 +287,7 @@ export function GameFrameApp({
 
   useGameSessionPersistence({state, stateRef, restoredGame, dispatch, onSaveGame});
 
+  /** Provides type keyboard letter behavior. */
   const typeKeyboardLetter = useCallback(
     (letter: string) => {
       playFeedback("key");
@@ -228,6 +295,7 @@ export function GameFrameApp({
     },
     [playFeedback],
   );
+  /** Deletes keyboard letter. */
   const deleteKeyboardLetter = useCallback(() => {
     playFeedback("delete");
     dispatch({type: "backspace"});

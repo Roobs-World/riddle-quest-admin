@@ -2,10 +2,7 @@ import {describe, expect, it} from "@jest/globals";
 import {renderToString} from "react-dom/server";
 import type {BridgeProfile} from "@qwordly/core/bridge";
 import {ProfileModalPage} from "../modalPages/profile/ProfileModalPage";
-import {
-  ReferralSharingProvider,
-  type ReferralSharingCapability,
-} from "../sharing/ReferralSharingCapability";
+import {ReferralSharingProvider, type ReferralSharingCapability} from "../sharing/ReferralSharingCapability";
 
 /** No-op callback used by server-rendered profile fixtures. */
 const noop = () => undefined;
@@ -74,6 +71,7 @@ describe("ProfileModalPage", () => {
   });
 
   it("renders an invite only when the active target supplies sharing", () => {
+    /** Provides html behavior. */
     const html = renderToString(
       <ReferralSharingProvider capability={referralSharing}>
         <ProfileModalPage

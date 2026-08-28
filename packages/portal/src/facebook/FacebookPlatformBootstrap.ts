@@ -8,10 +8,7 @@ import type {
 } from "../platform/types";
 import {parsePlayerData} from "../platform/playerDataValidation";
 import {requireFacebookInstant, type FacebookInstantSdk} from "./fbinstant";
-import {
-  resolveFacebookCapabilityVisibility,
-  type FacebookAgeCategory,
-} from "./FacebookCapabilityPolicy";
+import {resolveFacebookCapabilityVisibility, type FacebookAgeCategory} from "./FacebookCapabilityPolicy";
 import {createFacebookOverlayCapability} from "./FacebookOverlayCapability";
 
 /** Defines the preferences key value. */
@@ -36,17 +33,15 @@ const parsePreferences = (value: unknown): PlatformPreferences => {
     ...(Number.isSafeInteger(value.registrationPromptDismissedAt)
       ? {registrationPromptDismissedAt: value.registrationPromptDismissedAt as number}
       : {}),
-    ...(typeof value.firstMilestoneMarked === "boolean"
-      ? {firstMilestoneMarked: value.firstMilestoneMarked}
-      : {}),
+    ...(typeof value.firstMilestoneMarked === "boolean" ? {firstMilestoneMarked: value.firstMilestoneMarked} : {}),
     ...(typeof value.presenceEnabled === "boolean" ? {presenceEnabled: value.presenceEnabled} : {}),
     ...(value.facebookNotificationPermission === "unknown" ||
-      value.facebookNotificationPermission === "declined" ||
-      value.facebookNotificationPermission === "accepted"
+    value.facebookNotificationPermission === "declined" ||
+    value.facebookNotificationPermission === "accepted"
       ? {facebookNotificationPermission: value.facebookNotificationPermission}
       : {}),
     ...(Number.isSafeInteger(value.facebookNotificationLastPromptAtMs) &&
-      (value.facebookNotificationLastPromptAtMs as number) >= 0
+    (value.facebookNotificationLastPromptAtMs as number) >= 0
       ? {facebookNotificationLastPromptAtMs: value.facebookNotificationLastPromptAtMs as number}
       : {}),
   };
@@ -55,11 +50,21 @@ const parsePreferences = (value: unknown): PlatformPreferences => {
 /** Provides facebook context result behavior. */
 const facebookContextResult = (
   sdk: FacebookInstantSdk,
-): PlatformResult<{contextId: string; contextType: "THREAD" | "GROUP"}> => {
+): PlatformResult<{
+  /** Stores context id. */
+  contextId: string; /** Stores context type. */
+  /** Stores context type. */
+  contextType: "THREAD" | "GROUP";
+}> => {
+  /** Provides context id behavior. */
   const contextId = sdk.context?.getID();
+  /** Provides context type behavior. */
   const contextType = sdk.context?.getType();
-  if (!contextId || !/^[A-Za-z0-9._:-]{1,256}$/u.test(contextId) ||
-    (contextType !== "THREAD" && contextType !== "GROUP")) {
+  if (
+    !contextId ||
+    !/^[A-Za-z0-9._:-]{1,256}$/u.test(contextId) ||
+    (contextType !== "THREAD" && contextType !== "GROUP")
+  ) {
     return {status: "unavailable", message: "facebook-context-unavailable"};
   }
   return success({contextId, contextType});
@@ -67,9 +72,18 @@ const facebookContextResult = (
 
 /** Provides facebook social failure behavior. */
 const facebookSocialFailure = (error: unknown): PlatformResult<never> => {
-  const code = typeof error === "object" && error !== null && "code" in error
-    ? String((error as {code: unknown}).code)
-    : "";
+  /** Provides code behavior. */
+  const code =
+    typeof error === "object" && error !== null && "code" in error
+      ? String(
+          (
+            error as {
+              /** Stores code. */
+              code: unknown;
+            }
+          ).code,
+        )
+      : "";
   if (code === "USER_INPUT" || code === "USER_CANCELLED") return {status: "cancelled"};
   return {
     status: "retryable-failure",
@@ -91,8 +105,12 @@ class FacebookStorage implements PlatformStorage {
 
   /** Provides enqueue behavior. */
   private enqueue(operation: () => Promise<void>): Promise<void> {
+    /** Provides result behavior. */
     const result = this.operationTail.then(operation);
-    this.operationTail = result.then(() => undefined, () => undefined);
+    this.operationTail = result.then(
+      () => undefined,
+      () => undefined,
+    );
     return result;
   }
 
@@ -104,6 +122,7 @@ class FacebookStorage implements PlatformStorage {
 
   /** Reads preferences. */
   async readPreferences(): Promise<PlatformPreferences> {
+    /** Provides data behavior. */
     const data = await this.afterPendingOperations(() => this.sdk.player.getDataAsync([PREFERENCES_KEY]));
     return parsePreferences(data[PREFERENCES_KEY]);
   }
@@ -115,6 +134,7 @@ class FacebookStorage implements PlatformStorage {
 
   /** Reads player data. */
   async readPlayerData(): Promise<PlayerData | null> {
+    /** Provides data behavior. */
     const data = await this.afterPendingOperations(() => this.sdk.player.getDataAsync([PLAYER_DATA_KEY]));
     return await parsePlayerData(data[PLAYER_DATA_KEY]);
   }
@@ -146,10 +166,7 @@ export class FacebookPlatformBootstrap implements PlatformBootstrap {
   private readonly ageCategory: FacebookAgeCategory;
 
   /** Creates a facebook platform bootstrap instance. */
-  constructor(
-    getSdk: () => FacebookInstantSdk = requireFacebookInstant,
-    ageCategory: FacebookAgeCategory = "unknown",
-  ) {
+  constructor(getSdk: () => FacebookInstantSdk = requireFacebookInstant, ageCategory: FacebookAgeCategory = "unknown") {
     this.getSdk = getSdk;
     this.ageCategory = ageCategory;
   }
@@ -157,14 +174,17 @@ export class FacebookPlatformBootstrap implements PlatformBootstrap {
   /** Provides initialize behavior. */
   async initialize(reportProgress: (progress: number) => void): Promise<PlatformResult<PlatformSession>> {
     try {
+      /** Provides sdk behavior. */
       const sdk = this.getSdk();
       await sdk.initializeAsync();
       sdk.setLoadingProgress(30);
       reportProgress(30);
+      /** Provides player id behavior. */
       const playerId = sdk.player.getID();
       if (!playerId || playerId.length > 256) {
         return {status: "terminal-failure", message: "facebook-player-id-invalid"};
       }
+      /** Provides storage behavior. */
       const storage = new FacebookStorage(sdk);
       await storage.readPreferences();
       sdk.setLoadingProgress(70);
@@ -172,45 +192,53 @@ export class FacebookPlatformBootstrap implements PlatformBootstrap {
       await sdk.startGameAsync();
       sdk.setLoadingProgress(100);
       reportProgress(100);
+      /** Provides supported apis behavior. */
       const supportedApis = new Set(sdk.getSupportedAPIs());
+      /** Provides visibility behavior. */
       const visibility = resolveFacebookCapabilityVisibility({
         ageCategory: this.ageCategory,
         available: {
           commerce: false,
           ads: false,
           notifications: false,
-          nativeSocial: Boolean(sdk.context) &&
+          nativeSocial:
+            Boolean(sdk.context) &&
             supportedApis.has("context.chooseAsync") &&
             supportedApis.has("context.matchPlayerAsync"),
         },
       });
-      const nativeSocial = sdk.context &&
-        visibility.nativeSocial
-        ? {
-            currentContext() {
-              return facebookContextResult(sdk);
-            },
-            async chooseContext() {
-              try {
-                await sdk.context!.chooseAsync({minSize: 2, maxSize: 50});
+      /** Provides native social behavior. */
+      const nativeSocial =
+        sdk.context && visibility.nativeSocial
+          ? {
+              /** Provides current context behavior. */
+              currentContext() {
                 return facebookContextResult(sdk);
-              } catch (error) {
-                return facebookSocialFailure(error);
-              }
-            },
-            async matchPlayer(tag?: string) {
-              try {
-                if (tag !== undefined && (tag.length === 0 || tag.length > 100)) {
-                  return {status: "terminal-failure" as const, message: "facebook-match-tag-invalid"};
+              },
+              /** Provides choose context behavior. */
+              async chooseContext() {
+                try {
+                  await sdk.context!.chooseAsync({minSize: 2, maxSize: 50});
+                  return facebookContextResult(sdk);
+                } catch (error) {
+                  return facebookSocialFailure(error);
                 }
-                await sdk.context!.matchPlayerAsync(tag, true, true);
-                return facebookContextResult(sdk);
-              } catch (error) {
-                return facebookSocialFailure(error);
-              }
-            },
-          }
-        : undefined;
+              },
+              /** Provides match player behavior. */
+              async matchPlayer(tag?: string) {
+                try {
+                  if (tag !== undefined && (tag.length === 0 || tag.length > 100)) {
+                    return {status: "terminal-failure" as const, message: "facebook-match-tag-invalid"};
+                  }
+                  await sdk.context!.matchPlayerAsync(tag, true, true);
+                  return facebookContextResult(sdk);
+                } catch (error) {
+                  return facebookSocialFailure(error);
+                }
+              },
+            }
+          : undefined;
+      /** Provides overlay behavior. */
       const overlay = this.ageCategory === "13_plus" ? createFacebookOverlayCapability(sdk) : undefined;
       return success({
         platform: "facebook",
@@ -220,7 +248,9 @@ export class FacebookPlatformBootstrap implements PlatformBootstrap {
           ...(nativeSocial ? {nativeSocial} : {}),
           ...(overlay ? {overlay} : {}),
           lifecycle: {
+            /** Provides on pause behavior. */
             onPause(callback) {
+              /** Provides active behavior. */
               let active = true;
               sdk.onPause(() => {
                 if (active) void callback();
@@ -229,8 +259,11 @@ export class FacebookPlatformBootstrap implements PlatformBootstrap {
                 active = false;
               };
             },
+            /** Provides on resume behavior. */
             onResume(callback) {
+              /** Provides active behavior. */
               let active = true;
+              /** Handles visibility. */
               const handleVisibility = () => {
                 if (active && document.visibilityState === "visible") void callback();
               };

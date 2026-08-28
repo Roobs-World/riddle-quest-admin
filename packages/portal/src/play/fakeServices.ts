@@ -6,7 +6,12 @@ import {toProductSummaries} from "./types";
 import {createFakeRaceServices} from "./race/testing/fakeRaceServices";
 
 /** Provides fake riddles behavior. */
-const fakeRiddles: Array<BridgeRiddle & {answer: string}> = [
+const fakeRiddles: Array<
+  BridgeRiddle & {
+    /** Stores answer. */
+    answer: string;
+  }
+> = [
   {
     riddleId: "classic-fake-1",
     text: "What has keys but cannot open doors?",
@@ -95,26 +100,42 @@ const leaderboardRows: BridgeLeaderboardEntry[] = [
 export const createFakeHostServices = ({
   initiallyAuthenticated = true,
 }: {
+  /** Stores initially authenticated. */
   initiallyAuthenticated?: boolean;
 } = {}): HostServices => {
+  /** Provides products behavior. */
   const products = toProductSummaries(cloneProductPricingCatalog());
+  /** Provides snapshot behavior. */
   let snapshot: AuthSnapshot = initiallyAuthenticated
     ? {user: createFakeUser(), profile: createFakeProfile()}
     : {user: null, profile: null};
+  /** Provides subscribers behavior. */
   const subscribers = new Set<(nextSnapshot: AuthSnapshot) => void>();
+  /** Provides race services behavior. */
   const raceServices = createFakeRaceServices();
-  const singlePlayerResults = new Map<string, {
-    attempts: number;
-    isCorrect: boolean;
-    gameOver: boolean;
-    hasUsedContinue: boolean;
-    awaitingContinue: boolean;
-  }>();
+  /** Provides single player results behavior. */
+  const singlePlayerResults = new Map<
+    string,
+    {
+      /** Stores attempts. */
+      attempts: number;
+      /** Stores is correct. */
+      isCorrect: boolean;
+      /** Stores game over. */
+      gameOver: boolean;
+      /** Stores has used continue. */
+      hasUsedContinue: boolean;
+      /** Stores awaiting continue. */
+      awaitingContinue: boolean;
+    }
+  >();
 
+  /** Provides emit behavior. */
   const emit = () => {
     subscribers.forEach((subscriber) => subscriber(snapshot));
   };
 
+  /** Updates profile. */
   const updateProfile = (patch: Partial<BridgeProfile>): BridgeProfile | null => {
     if (!snapshot.profile) {
       return null;
@@ -130,7 +151,9 @@ export const createFakeHostServices = ({
     return snapshot.profile;
   };
 
+  /** Provides spend behavior. */
   const spend = (amount: number): number => {
+    /** Provides current coins behavior. */
     const currentCoins = snapshot.profile?.coins ?? 0;
     if (currentCoins < amount) {
       throw new Error("Not enough coins.");
@@ -140,25 +163,34 @@ export const createFakeHostServices = ({
 
   return {
     ...raceServices,
+    /** Gets race access. */
     async getRaceAccess() {
       return {enabled: true, locale: "en" as const, reason: "enabled" as const};
     },
+    /** Records race analytics. */
     async recordRaceAnalytics() {
       return {accepted: true as const};
     },
     products,
     auth: {
+      /** Provides subscribe behavior. */
       subscribe(listener) {
         subscribers.add(listener);
         listener(snapshot);
         return () => subscribers.delete(listener);
       },
     },
+    /** Loads riddle. */
     async loadRiddle({gameMode, classicIndex}) {
+      /** Provides mode riddles behavior. */
       const modeRiddles = fakeRiddles.filter((entry) => entry.gameMode === gameMode);
+      /** Provides index behavior. */
       const index = gameMode === "classic" ? Math.max(0, (classicIndex ?? snapshot.profile?.classicIndex ?? 1) - 1) : 0;
+      /** Provides riddle behavior. */
       const riddle = modeRiddles[index % modeRiddles.length];
+      /** Provides {answer:  server only answer, ...public riddle} behavior. */
       const {answer: _serverOnlyAnswer, ...publicRiddle} = riddle;
+      /** Provides prior behavior. */
       const prior = singlePlayerResults.get(riddle.riddleId);
       return {
         ...publicRiddle,
@@ -169,21 +201,31 @@ export const createFakeHostServices = ({
         awaitingContinue: prior?.awaitingContinue ?? false,
       };
     },
+    /** Loads profile. */
     async loadProfile() {
       return snapshot.profile;
     },
+    /** Submits guess. */
     async submitGuess({riddleId, gameMode, guess}) {
+      /** Provides riddle behavior. */
       const riddle = fakeRiddles.find((entry) => entry.riddleId === riddleId && entry.gameMode === gameMode);
       if (!riddle) throw new Error("Riddle not found.");
+      /** Provides prior behavior. */
       const prior = singlePlayerResults.get(riddleId);
       if (prior?.awaitingContinue && !prior.hasUsedContinue) {
         throw new Error("Choose whether to continue before submitting another guess.");
       }
+      /** Provides attempts behavior. */
       const attempts = (prior?.attempts ?? 0) + 1;
+      /** Normalizes d guess. */
       const normalizedGuess = guess.toLocaleLowerCase();
+      /** Indicates whether is correct. */
       const isCorrect = normalizedGuess === riddle.answer.toLocaleLowerCase();
+      /** Indicates whether has used continue. */
       const hasUsedContinue = prior?.hasUsedContinue ?? false;
+      /** Indicates whether can continue. */
       const canContinue = !isCorrect && attempts === 5 && !hasUsedContinue;
+      /** Provides game over behavior. */
       const gameOver = isCorrect || attempts >= 6;
       singlePlayerResults.set(riddleId, {
         attempts,
@@ -192,7 +234,9 @@ export const createFakeHostServices = ({
         hasUsedContinue,
         awaitingContinue: canContinue,
       });
+      /** Provides letters behavior. */
       const letters = splitGraphemes(normalizedGuess);
+      /** Provides statuses behavior. */
       const statuses = computeFeedback(normalizedGuess, riddle.answer);
       return {
         feedback: letters.map((letter, index) => ({letter, status: statuses[index] ?? "red"})),
@@ -202,20 +246,32 @@ export const createFakeHostServices = ({
         ...(canContinue ? {canContinue: true} : {}),
       };
     },
+    /** Completes game. */
     async completeGame({riddleId, gameMode}) {
+      /** Provides authoritative behavior. */
       const authoritative = singlePlayerResults.get(riddleId);
       if (!authoritative) throw new Error("No authoritative guesses exist.");
+      /** Provides {attempts, is correct} behavior. */
       const {attempts, isCorrect} = authoritative;
+      /** Provides profile behavior. */
       const profile = snapshot.profile;
+      /** Provides coins earned behavior. */
       const coinsEarned = isCorrect ? (gameMode === "challenge" ? 75 : 50) : 0;
+      /** Provides next classic index behavior. */
       const nextClassicIndex =
         gameMode === "classic" && isCorrect ? (profile?.classicIndex ?? 1) + 1 : profile?.classicIndex;
+      /** Provides games played behavior. */
       const gamesPlayed = (profile?.gamesPlayed ?? 0) + 1;
+      /** Provides total wins behavior. */
       const totalWins = (profile?.totalWins ?? profile?.wins ?? 0) + (isCorrect ? 1 : 0);
+      /** Provides total guesses in wins behavior. */
       const totalGuessesInWins = (profile?.totalGuessesInWins ?? 0) + (isCorrect ? attempts : 0);
+      /** Provides challenge win streak behavior. */
       const challengeWinStreak =
         gameMode === "challenge" ? (isCorrect ? (profile?.winStreak ?? 0) + 1 : 0) : (profile?.winStreak ?? 0);
+      /** Provides score earned behavior. */
       const scoreEarned = isCorrect ? 90 : 0;
+      /** Provides next profile behavior. */
       const nextProfile = updateProfile({
         coins: (profile?.coins ?? 0) + coinsEarned,
         gamesPlayed,
@@ -252,15 +308,20 @@ export const createFakeHostServices = ({
         },
       };
     },
+    /** Requests hint. */
     async requestHint({currentAttempt, riddleId}) {
+      /** Provides riddle behavior. */
       const riddle = fakeRiddles.find((entry) => entry.riddleId === riddleId) ?? fakeRiddles[0];
+      /** Provides answer letters behavior. */
       const answerLetters = splitGraphemes(riddle.answer.toUpperCase());
+      /** Provides reveal index behavior. */
       const revealIndex = answerLetters.findIndex((letter, index) => currentAttempt[index]?.toUpperCase() !== letter);
 
       if (revealIndex < 0) {
         return null;
       }
 
+      /** Provides new coins behavior. */
       const newCoins = spend(50);
       updateProfile({totalHintsUsed: (snapshot.profile?.totalHintsUsed ?? 0) + 1});
       return {
@@ -270,21 +331,29 @@ export const createFakeHostServices = ({
         newCoins,
       };
     },
+    /** Provides spend coins behavior. */
     async spendCoins({amount, riddleId}) {
+      /** Provides cost behavior. */
       const cost = amount ?? 100;
+      /** Provides prior behavior. */
       const prior = singlePlayerResults.get(riddleId);
       if (prior?.awaitingContinue) {
         singlePlayerResults.set(riddleId, {...prior, hasUsedContinue: true, awaitingContinue: false});
       }
       return {newCoins: spend(cost)};
     },
+    /** Provides skip riddle behavior. */
     async skipRiddle({gameMode}) {
       if (gameMode === "challenge") {
         throw new Error("Daily riddles cannot be skipped.");
       }
+      /** Provides profile behavior. */
       const profile = snapshot.profile;
+      /** Provides skip cost behavior. */
       const skipCost = 100;
+      /** Provides new coins behavior. */
       const newCoins = spend(skipCost);
+      /** Provides new classic index behavior. */
       const newClassicIndex = (profile?.classicIndex ?? 1) + 1;
       updateProfile({coins: newCoins, classicIndex: newClassicIndex});
       return {
@@ -294,11 +363,14 @@ export const createFakeHostServices = ({
         newProgress: {classicIndex: newClassicIndex},
       };
     },
+    /** Requests purchase. */
     async requestPurchase(productId) {
+      /** Provides product behavior. */
       const product = products.find((entry) => entry.productId === productId);
       if (!product) {
         throw new Error("Product not found.");
       }
+      /** Provides result behavior. */
       const result = {
         success: true as const,
         productId: product.productId,
@@ -309,8 +381,10 @@ export const createFakeHostServices = ({
       updateProfile({coins: result.newCoins});
       return result;
     },
+    /** Loads leaderboard. */
     async loadLeaderboard(type: LeaderboardType) {
       await new Promise((resolve) => window.setTimeout(resolve, 250));
+      /** Provides rows behavior. */
       const rows = [...leaderboardRows];
       if (type === "totalWins") {
         return rows.sort((left, right) => right.totalWins - left.totalWins);
@@ -320,12 +394,15 @@ export const createFakeHostServices = ({
       }
       return rows.sort((left, right) => right.xp - left.xp);
     },
+    /** Updates username. */
     async updateUsername(username) {
       return updateProfile({username});
     },
+    /** Updates avatar. */
     async updateAvatar(imageDataUrl) {
       return updateProfile({avatarUrl: imageDataUrl});
     },
+    /** Deletes account. */
     async deleteAccount() {
       snapshot = {user: null, profile: null};
       emit();

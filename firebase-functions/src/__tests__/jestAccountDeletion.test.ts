@@ -8,6 +8,7 @@ describe("Jest account-deletion boundary", () => {
   it("maps only the expected tombstone error to the stable HTTP response", () => {
     expect(() => assertJestAccountActive({exists: true} as never)).toThrow(JestAccountDeletedError);
     expect(() => assertJestAccountActive({exists: false} as never)).not.toThrow();
+    /** Provides response behavior. */
     const response = {status: jest.fn(), json: jest.fn()};
     response.status.mockReturnValue(response);
 

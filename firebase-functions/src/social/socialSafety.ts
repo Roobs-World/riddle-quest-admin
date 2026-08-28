@@ -7,7 +7,7 @@ import {admin} from "../shared/firebaseAdmin";
 /** Defines the social report categories value. */
 export const SOCIAL_REPORT_CATEGORIES = ["harassment", "cheating", "inappropriate_identity", "spam", "other"] as const;
 /** Describes social report category. */
-export type SocialReportCategory = typeof SOCIAL_REPORT_CATEGORIES[number];
+export type SocialReportCategory = (typeof SOCIAL_REPORT_CATEGORIES)[number];
 /** Defines the social report daily limit value. */
 export const SOCIAL_REPORT_DAILY_LIMIT = 5;
 /** Defines the max date ms value. */
@@ -34,10 +34,8 @@ const validateIdentityPair = (reporterId: string, targetUserId: string): void =>
 };
 
 /** Provides require known rival behavior. */
-const requireKnownRival = (
-  snapshot: FirebaseFirestore.DocumentSnapshot,
-  targetUserId: string,
-): void => {
+const requireKnownRival = (snapshot: FirebaseFirestore.DocumentSnapshot, targetUserId: string): void => {
+  /** Provides value behavior. */
   const value = snapshot.data();
   if (
     !snapshot.exists ||
@@ -61,15 +59,30 @@ const utcDay = (nowMs: number): string => new Date(nowMs).toISOString().slice(0,
 export async function blockKnownRival(
   reporterId: string,
   targetUserId: string,
-  options: {db?: FirebaseFirestore.Firestore; database?: Database; nowMs?: number} = {},
-): Promise<{blocked: true}> {
+  options: {
+    /** Stores db. */
+    db?: FirebaseFirestore.Firestore; /** Stores database. */
+    /** Stores database. */
+    database?: Database; /** Stores now ms. */
+    /** Stores now ms. */
+    nowMs?: number;
+  } = {},
+): Promise<{
+  /** Stores blocked. */
+  blocked: true;
+}> {
   validateIdentityPair(reporterId, targetUserId);
+  /** Provides db behavior. */
   const db = options.db ?? admin.firestore();
+  /** Provides now ms behavior. */
   const nowMs = options.nowMs ?? Date.now();
   requireSafeTime(nowMs);
+  /** Provides known ref behavior. */
   const knownRef = db.doc(`users/${reporterId}/knownRivals/${targetUserId}`);
+  /** Provides block ref behavior. */
   const blockRef = db.doc(`users/${reporterId}/blockedRivals/${targetUserId}`);
   await db.runTransaction(async (transaction) => {
+    /** Provides known behavior. */
     const known = await transaction.get(knownRef);
     requireKnownRival(known, targetUserId);
     transaction.set(blockRef, {targetUserId, blockedAtMs: nowMs}, {merge: false});
@@ -84,9 +97,26 @@ export async function blockKnownRival(
 /** Queues one idempotent categorized report, capped per reporter and UTC day. */
 export async function reportKnownRival(
   reporterId: string,
-  input: {targetUserId: string; category: SocialReportCategory; requestId: string},
-  options: {db?: FirebaseFirestore.Firestore; nowMs?: number} = {},
-): Promise<{reportId: string; queued: true}> {
+  input: {
+    /** Stores target user id. */
+    targetUserId: string; /** Stores category. */
+    /** Stores category. */
+    category: SocialReportCategory; /** Stores request id. */
+    /** Stores request id. */
+    requestId: string;
+  },
+  options: {
+    /** Stores db. */
+    db?: FirebaseFirestore.Firestore; /** Stores now ms. */
+    /** Stores now ms. */
+    nowMs?: number;
+  } = {},
+): Promise<{
+  /** Stores report id. */
+  reportId: string; /** Stores queued. */
+  /** Stores queued. */
+  queued: true;
+}> {
   validateIdentityPair(reporterId, input.targetUserId);
   if (!(SOCIAL_REPORT_CATEGORIES as readonly string[]).includes(input.category)) {
     throw new HttpsError("invalid-argument", "Social report category is invalid.");
@@ -94,20 +124,31 @@ export async function reportKnownRival(
   if (!/^[A-Za-z0-9_-]{8,160}$/.test(input.requestId)) {
     throw new HttpsError("invalid-argument", "Social report request ID is invalid.");
   }
+  /** Provides db behavior. */
   const db = options.db ?? admin.firestore();
+  /** Provides now ms behavior. */
   const nowMs = options.nowMs ?? Date.now();
   requireSafeTime(nowMs);
+  /** Provides day behavior. */
   const day = utcDay(nowMs);
+  /** Provides report id behavior. */
   const reportId = opaqueId("social-report-v1", reporterId, input.requestId);
+  /** Provides known ref behavior. */
   const knownRef = db.doc(`users/${reporterId}/knownRivals/${input.targetUserId}`);
+  /** Provides report ref behavior. */
   const reportRef = db.collection("socialModerationQueue").doc(reportId);
+  /** Provides limit ref behavior. */
   const limitRef = db.collection("socialReportRateLimits").doc(opaqueId(reporterId, day));
   await db.runTransaction(async (transaction) => {
+    /** Provides [known, existing, limit] behavior. */
     const [known, existing, limit] = await Promise.all([
-      transaction.get(knownRef), transaction.get(reportRef), transaction.get(limitRef),
+      transaction.get(knownRef),
+      transaction.get(reportRef),
+      transaction.get(limitRef),
     ]);
     requireKnownRival(known, input.targetUserId);
     if (existing.exists) {
+      /** Provides value behavior. */
       const value = existing.data();
       if (
         value?.reportId !== reportId ||
@@ -123,19 +164,22 @@ export async function reportKnownRival(
       }
       return;
     }
+    /** Provides limit value behavior. */
     const limitValue = limit.data();
-    if (limit.exists && (
-      limitValue?.reporterId !== reporterId ||
-      limitValue.day !== day ||
-      !Number.isSafeInteger(limitValue.count) ||
-      limitValue.count < 1 ||
-      limitValue.count > SOCIAL_REPORT_DAILY_LIMIT ||
-      !Number.isSafeInteger(limitValue.updatedAtMs) ||
-      limitValue.updatedAtMs < 0 ||
-      limitValue.updatedAtMs > MAX_DATE_MS
-    )) {
+    if (
+      limit.exists &&
+      (limitValue?.reporterId !== reporterId ||
+        limitValue.day !== day ||
+        !Number.isSafeInteger(limitValue.count) ||
+        limitValue.count < 1 ||
+        limitValue.count > SOCIAL_REPORT_DAILY_LIMIT ||
+        !Number.isSafeInteger(limitValue.updatedAtMs) ||
+        limitValue.updatedAtMs < 0 ||
+        limitValue.updatedAtMs > MAX_DATE_MS)
+    ) {
       throw new HttpsError("data-loss", "Social report rate limit is invalid.");
     }
+    /** Provides count behavior. */
     const count = limit.exists ? Number(limitValue!.count) : 0;
     if (count >= SOCIAL_REPORT_DAILY_LIMIT) {
       throw new HttpsError("resource-exhausted", "Daily social report limit reached.");

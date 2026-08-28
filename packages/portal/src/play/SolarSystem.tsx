@@ -50,7 +50,12 @@ type PlanetRuntime = {
   /** Stores planet. */
   planet: THREE.Mesh;
   /** Stores moons. */
-  moons: {config: MoonConfig; mesh: THREE.Mesh}[];
+  moons: {
+    /** Stores config. */
+    config: MoonConfig; /** Stores mesh. */
+    /** Stores mesh. */
+    mesh: THREE.Mesh;
+  }[];
 };
 
 /** Defines the shooting star config value. */
@@ -75,22 +80,33 @@ const SHOOTING_STAR_BACKGROUND_DEPTH =
   ) - 24;
 
 /** Provides solar system behavior. */
-export function SolarSystem({paused}: {paused: boolean}) {
+export function SolarSystem({
+  paused,
+}: {
+  /** Stores paused. */ /** Stores paused. */ /** Stores paused. */
+  paused: boolean;
+}) {
+  /** Provides mount ref behavior. */
   const mountRef = useRef<HTMLDivElement>(null);
+  /** Provides paused ref behavior. */
   const pausedRef = useRef(paused);
   pausedRef.current = paused;
 
   useEffect(() => {
+    /** Provides mount behavior. */
     const mount = mountRef.current;
     if (!mount || typeof WebGLRenderingContext === "undefined") {
       return;
     }
 
+    /** Provides scene behavior. */
     const scene = new THREE.Scene();
+    /** Provides camera behavior. */
     const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 1700);
     camera.position.set(0, 45, 350);
     camera.lookAt(0, 0, 0);
 
+    /** Renders er. */
     let renderer: THREE.WebGLRenderer;
     try {
       renderer = new THREE.WebGLRenderer({
@@ -107,8 +123,11 @@ export function SolarSystem({paused}: {paused: boolean}) {
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     mount.append(renderer.domElement);
 
+    /** Provides texture loader behavior. */
     const textureLoader = new THREE.TextureLoader();
+    /** Loads texture. */
     const loadTexture = (url: string) => {
+      /** Provides texture behavior. */
       const texture = textureLoader.load(url);
       texture.colorSpace = THREE.SRGBColorSpace;
       texture.anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy());
@@ -116,10 +135,12 @@ export function SolarSystem({paused}: {paused: boolean}) {
     };
 
     scene.add(new THREE.AmbientLight(0xb6c6ff, 1.1));
+    /** Provides sunlight behavior. */
     const sunlight = new THREE.PointLight(0xffe0a6, 1100, 260);
     sunlight.position.set(0, 30, 0);
     scene.add(sunlight);
 
+    /** Provides sun behavior. */
     const sun = new THREE.Mesh(
       new THREE.SphereGeometry(12, 40, 28),
       new THREE.MeshBasicMaterial({map: loadTexture(sunTextureUrl), color: 0xfff2c6}),
@@ -127,10 +148,12 @@ export function SolarSystem({paused}: {paused: boolean}) {
     sun.position.set(0, 30, 0);
     scene.add(sun);
 
+    /** Provides sun limb uniforms behavior. */
     const sunLimbUniforms = {
       glowColour: {value: new THREE.Color(0xffd45a)},
       glowStrength: {value: 0.82},
     };
+    /** Provides sun limb material behavior. */
     const sunLimbMaterial = new THREE.ShaderMaterial({
       uniforms: sunLimbUniforms,
       vertexShader: `
@@ -157,12 +180,15 @@ export function SolarSystem({paused}: {paused: boolean}) {
       depthTest: true,
       depthWrite: false,
     });
+    /** Provides sun limb behavior. */
     const sunLimb = new THREE.Mesh(new THREE.SphereGeometry(13, 40, 28), sunLimbMaterial);
     sunLimb.position.copy(sun.position);
     sunLimb.renderOrder = 1;
     scene.add(sunLimb);
 
+    /** Provides corona texture behavior. */
     const coronaTexture = loadTexture(sunCoronaTextureUrl);
+    /** Provides corona material behavior. */
     const coronaMaterial = new THREE.SpriteMaterial({
       map: coronaTexture,
       color: 0xffcf4a,
@@ -172,6 +198,7 @@ export function SolarSystem({paused}: {paused: boolean}) {
       depthTest: true,
       depthWrite: false,
     });
+    /** Provides corona behavior. */
     const corona = new THREE.Sprite(coronaMaterial);
     // Pull the photographed limb more than two world units underneath the
     // sun's silhouette. That overlap prevents depth-buffer antialiasing from
@@ -182,25 +209,31 @@ export function SolarSystem({paused}: {paused: boolean}) {
     corona.renderOrder = 0;
     scene.add(corona);
 
+    /** Provides star positions behavior. */
     const starPositions = new Float32Array(900 * 3);
     for (let index = 0; index < starPositions.length; index += 3) {
       starPositions[index] = (Math.random() - 0.5) * 340;
       starPositions[index + 1] = Math.random() * 170 - 20;
       starPositions[index + 2] = (Math.random() - 0.5) * 260;
     }
+    /** Provides stars geometry behavior. */
     const starsGeometry = new THREE.BufferGeometry();
     starsGeometry.setAttribute("position", new THREE.BufferAttribute(starPositions, 3));
+    /** Provides stars behavior. */
     const stars = new THREE.Points(
       starsGeometry,
       new THREE.PointsMaterial({color: 0xffffff, size: 0.55, transparent: true, opacity: 0.75}),
     );
     scene.add(stars);
 
+    /** Provides shooting star canvas behavior. */
     const shootingStarCanvas = document.createElement("canvas");
     shootingStarCanvas.width = 128;
     shootingStarCanvas.height = 16;
+    /** Provides shooting star context behavior. */
     const shootingStarContext = shootingStarCanvas.getContext("2d");
     if (shootingStarContext) {
+      /** Provides gradient behavior. */
       const gradient = shootingStarContext.createLinearGradient(0, 0, 128, 0);
       gradient.addColorStop(0, "rgba(185, 225, 255, 0)");
       gradient.addColorStop(0.72, "rgba(205, 235, 255, 0.5)");
@@ -208,6 +241,7 @@ export function SolarSystem({paused}: {paused: boolean}) {
       gradient.addColorStop(1, "rgba(255, 255, 255, 0.28)");
       shootingStarContext.fillStyle = gradient;
       shootingStarContext.fillRect(0, 5, 124, 6);
+      /** Provides head behavior. */
       const head = shootingStarContext.createRadialGradient(120, 8, 0, 120, 8, 8);
       head.addColorStop(0, "rgba(255, 255, 255, 1)");
       head.addColorStop(0.28, "rgba(225, 245, 255, 0.95)");
@@ -215,10 +249,14 @@ export function SolarSystem({paused}: {paused: boolean}) {
       shootingStarContext.fillStyle = head;
       shootingStarContext.fillRect(112, 0, 16, 16);
     }
+    /** Provides shooting star texture behavior. */
     const shootingStarTexture = new THREE.CanvasTexture(shootingStarCanvas);
     shootingStarTexture.colorSpace = THREE.SRGBColorSpace;
+    /** Provides shooting stars behavior. */
     const shootingStars = SHOOTING_STAR_CONFIG.map((config) => {
+      /** Provides rotation behavior. */
       const rotation = Math.atan2(config.endY - config.startY, config.endX - config.startX);
+      /** Provides material behavior. */
       const material = new THREE.SpriteMaterial({
         map: shootingStarTexture,
         color: 0xe9f7ff,
@@ -229,6 +267,7 @@ export function SolarSystem({paused}: {paused: boolean}) {
         depthWrite: false,
         rotation,
       });
+      /** Provides sprite behavior. */
       const sprite = new THREE.Sprite(material);
       sprite.scale.set(config.scale, 5, 1);
       sprite.visible = false;
@@ -236,9 +275,12 @@ export function SolarSystem({paused}: {paused: boolean}) {
       return {config, material, sprite};
     });
 
+    /** Provides runtimes behavior. */
     const runtimes: PlanetRuntime[] = SOLAR_SYSTEM_CONFIG.map((config) => {
+      /** Provides orbit behavior. */
       const orbit = new THREE.Group();
       scene.add(orbit);
+      /** Provides planet behavior. */
       const planet = new THREE.Mesh(
         new THREE.SphereGeometry(config.size, 28, 20),
         new THREE.MeshPhongMaterial({map: loadTexture(config.texture), shininess: 28}),
@@ -251,6 +293,7 @@ export function SolarSystem({paused}: {paused: boolean}) {
       planet.name = config.name;
       orbit.add(planet);
 
+      /** Provides atmosphere behavior. */
       const atmosphere = new THREE.Mesh(
         new THREE.SphereGeometry(config.size * config.atmosphere.scale, 28, 20),
         new THREE.ShaderMaterial({
@@ -273,6 +316,7 @@ export function SolarSystem({paused}: {paused: boolean}) {
       planet.add(atmosphere);
 
       if (config.ring) {
+        /** Provides ring behavior. */
         const ring = new THREE.Mesh(
           new THREE.RingGeometry(config.ring.innerRadius, config.ring.outerRadius, 64),
           new THREE.MeshPhongMaterial({
@@ -287,7 +331,9 @@ export function SolarSystem({paused}: {paused: boolean}) {
         planet.add(ring);
       }
 
+      /** Provides moons behavior. */
       const moons = config.moons.map((moonConfig) => {
+        /** Provides mesh behavior. */
         const mesh = new THREE.Mesh(
           new THREE.SphereGeometry(moonConfig.size, 20, 14),
           new THREE.MeshPhongMaterial({map: loadTexture(moonConfig.texture), shininess: 12}),
@@ -298,28 +344,31 @@ export function SolarSystem({paused}: {paused: boolean}) {
       return {config, orbit, planet, moons};
     });
 
+    /** Renders ing ready. */
     let renderingReady = false;
+    /** Provides observer behavior. */
     let observer: ResizeObserver | null = null;
+    /** Provides drawing buffer size behavior. */
     const drawingBufferSize = new THREE.Vector2();
+    /** Provides resize behavior. */
     const resize = ({width, height}: DOMRectReadOnly) => {
       // Keep the WebGL viewport within the integer-sized drawing buffer. Fractional
       // CSS pixels can otherwise make Firefox round the viewport up while the
       // canvas backing store is rounded down.
+      /** Renders width. */
       const renderWidth = Math.max(1, Math.floor(width));
+      /** Renders height. */
       const renderHeight = Math.max(1, Math.floor(height));
       renderer.setSize(renderWidth, renderHeight, false);
       renderer.getDrawingBufferSize(drawingBufferSize);
+      /** Provides pixel ratio behavior. */
       const pixelRatio = renderer.getPixelRatio();
-      renderer.setViewport(
-        0,
-        0,
-        drawingBufferSize.x / pixelRatio,
-        drawingBufferSize.y / pixelRatio,
-      );
+      renderer.setViewport(0, 0, drawingBufferSize.x / pixelRatio, drawingBufferSize.y / pixelRatio);
       camera.aspect = renderWidth / renderHeight;
       camera.updateProjectionMatrix();
       renderingReady = width > 0 && height > 0;
     };
+    /** Stops waiting for layout. */
     const stopWaitingForLayout = runWhenLayoutReady(() => {
       observer = new ResizeObserver(([entry]) => {
         if (entry) resize(entry.contentRect);
@@ -327,23 +376,31 @@ export function SolarSystem({paused}: {paused: boolean}) {
       observer.observe(mount);
     });
 
+    /** Provides last frame at behavior. */
     let lastFrameAt = performance.now();
+    /** Provides animation elapsed behavior. */
     let animationElapsed = 0;
+    /** Provides frame behavior. */
     let frame = 0;
+    /** Provides animate behavior. */
     const animate = () => {
       frame = window.requestAnimationFrame(animate);
+      /** Provides frame at behavior. */
       const frameAt = performance.now();
+      /** Provides delta seconds behavior. */
       const deltaSeconds = getFrameDeltaSeconds(frameAt, lastFrameAt);
       lastFrameAt = frameAt;
       if (renderingReady && !pausedRef.current && !document.hidden) {
         animationElapsed += deltaSeconds;
         sun.rotation.y = advanceSolarRotationAngle(sun.rotation.y, 0.0018, deltaSeconds);
+        /** Provides corona animation behavior. */
         const coronaAnimation = getCoronaAnimationState(animationElapsed);
         corona.scale.set(coronaAnimation.scaleX, coronaAnimation.scaleY, 1);
         coronaMaterial.rotation = coronaAnimation.rotation;
         coronaMaterial.opacity = coronaAnimation.opacity;
         sunLimbUniforms.glowStrength.value = coronaAnimation.limbGlowStrength;
         for (const {config, material, sprite} of shootingStars) {
+          /** Provides progress behavior. */
           const progress = getShootingStarProgress(animationElapsed, config.phaseOffsetSeconds);
           sprite.visible = progress !== null;
           if (progress === null) continue;
@@ -366,6 +423,7 @@ export function SolarSystem({paused}: {paused: boolean}) {
             deltaSeconds,
           );
           runtime.moons.forEach(({config, mesh}) => {
+            /** Provides angle behavior. */
             const angle = advanceFrameBasedAngle(config.startAngle, config.orbitSpeed, animationElapsed);
             mesh.position.set(Math.cos(angle) * config.distance, 0, Math.sin(angle) * config.distance);
           });
@@ -382,6 +440,7 @@ export function SolarSystem({paused}: {paused: boolean}) {
       scene.traverse((object) => {
         if (object instanceof THREE.Mesh || object instanceof THREE.Points) {
           object.geometry.dispose();
+          /** Provides materials behavior. */
           const materials = Array.isArray(object.material) ? object.material : [object.material];
           materials.forEach((material) => {
             if ("map" in material && material.map instanceof THREE.Texture) {

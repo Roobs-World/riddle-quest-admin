@@ -2,15 +2,17 @@ import {parseRedditPlayerData, parseRedditPreferences} from "../reddit/redditSto
 
 describe("Reddit storage validation", () => {
   it("accepts only platform-neutral preferences", () => {
-    expect(parseRedditPreferences({
-      locale: "ar",
-      muted: true,
-      reducedMotion: false,
-      highContrast: true,
-      onboardingComplete: true,
-      firstMilestoneMarked: false,
-      presenceEnabled: true,
-    })).toEqual({
+    expect(
+      parseRedditPreferences({
+        locale: "ar",
+        muted: true,
+        reducedMotion: false,
+        highContrast: true,
+        onboardingComplete: true,
+        firstMilestoneMarked: false,
+        presenceEnabled: true,
+      }),
+    ).toEqual({
       locale: "ar",
       muted: true,
       reducedMotion: false,
@@ -34,6 +36,7 @@ describe("Reddit storage validation", () => {
   });
 
   it("accepts a bounded neutral player snapshot and explicit clearing", () => {
+    /** Provides snapshot behavior. */
     const snapshot = {
       schemaVersion: 1,
       updatedAt: 1_750_000_000_000,

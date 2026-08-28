@@ -4,7 +4,9 @@ import {createGameMessageRouter, createHostMessageRouter} from "../bridgeRouter"
 
 describe("portal bridge routers", () => {
   it("routes game messages to host handlers", async () => {
+    /** Loads riddle. */
     const loadRiddle = jest.fn();
+    /** Provides router behavior. */
     const router = createHostMessageRouter({
       ready: jest.fn(),
       resize: jest.fn(),
@@ -54,7 +56,9 @@ describe("portal bridge routers", () => {
   });
 
   it("routes host messages to the game session", async () => {
+    /** Provides init behavior. */
     const init = jest.fn();
+    /** Provides router behavior. */
     const router = createGameMessageRouter({
       init,
       authState: jest.fn(),
@@ -82,6 +86,7 @@ describe("portal bridge routers", () => {
   });
 
   it("rejects invalid incoming envelopes", async () => {
+    /** Provides router behavior. */
     const router = createHostMessageRouter({
       ready: jest.fn(),
       resize: jest.fn(),
@@ -116,8 +121,11 @@ describe("portal bridge routers", () => {
   });
 
   it("routes schema-validated race requests with correlation IDs", async () => {
+    /** Submits race guess. */
     const submitRaceGuess = jest.fn();
+    /** Gets race challenge. */
     const getRaceChallenge = jest.fn();
+    /** Provides router behavior. */
     const router = createHostMessageRouter({
       ready: jest.fn(),
       resize: jest.fn(),
@@ -158,15 +166,19 @@ describe("portal bridge routers", () => {
       requestId: "challenge-message-1",
       payload: {challengeId: "challenge-1", locale: "ja"},
     });
-    expect(getRaceChallenge).toHaveBeenCalledWith(expect.objectContaining({
-      requestId: "challenge-message-1",
-      payload: {challengeId: "challenge-1", locale: "ja"},
-    }));
-    await expect(router({
-      type: "game:getRaceChallenge",
-      requestId: "missing-locale",
-      payload: {challengeId: "challenge-1"},
-    })).rejects.toThrow();
+    expect(getRaceChallenge).toHaveBeenCalledWith(
+      expect.objectContaining({
+        requestId: "challenge-message-1",
+        payload: {challengeId: "challenge-1", locale: "ja"},
+      }),
+    );
+    await expect(
+      router({
+        type: "game:getRaceChallenge",
+        requestId: "missing-locale",
+        payload: {challengeId: "challenge-1"},
+      }),
+    ).rejects.toThrow();
     await expect(
       router({
         type: "game:submitRaceGuess",

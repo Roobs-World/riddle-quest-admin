@@ -26,6 +26,7 @@ export const createFacebookReferral = onCallWithSentry(
   "createFacebookReferral",
   browserCallableSecurityOptions,
   async (request: CallableRequest<unknown>) => {
+    /** Provides uid behavior. */
     const uid = requireFacebookUid(request);
     validateCallableRequest(z.object({}).strict(), request.data, "createFacebookReferral");
     return issueFacebookReferralToken(uid);
@@ -37,7 +38,9 @@ export const bindFacebookReferral = onCallWithSentry(
   "bindFacebookReferral",
   browserCallableSecurityOptions,
   async (request: CallableRequest<unknown>) => {
+    /** Provides uid behavior. */
     const uid = requireFacebookUid(request);
+    /** Provides input behavior. */
     const input = validateCallableRequest(BindReferralSchema, request.data, "bindFacebookReferral");
     return bindFacebookReferralToken(uid, input.token);
   },

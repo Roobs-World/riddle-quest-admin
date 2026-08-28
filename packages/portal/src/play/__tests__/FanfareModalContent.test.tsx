@@ -7,10 +7,7 @@ import {
   RewardFanfareContent,
   VictoryFanfareContent,
 } from "../modalPages/fanfare/FanfareModalContent";
-import {
-  ReferralSharingProvider,
-  type ReferralSharingCapability,
-} from "../sharing/ReferralSharingCapability";
+import {ReferralSharingProvider, type ReferralSharingCapability} from "../sharing/ReferralSharingCapability";
 
 /** No-op callback shared by server-rendering tests. */
 const noop = () => undefined;
@@ -26,11 +23,11 @@ const referralSharing: ReferralSharingCapability = {
 describe("fanfare modal content", () => {
   it("renders known and fallback achievements", () => {
     expect(renderToString(<AchievementFanfare achievementId="first_win" />)).toContain("achievement-unlock");
-    expect(renderToString(<AchievementFanfare achievementId="unknown-achievement" />))
-      .toContain("unknown-achievement");
+    expect(renderToString(<AchievementFanfare achievementId="unknown-achievement" />)).toContain("unknown-achievement");
   });
 
   it("renders each victory presentation without owning sequence state", () => {
+    /** Provides state behavior. */
     const state = {
       ...createInitialGameSession(),
       lastRewards: {
@@ -41,6 +38,7 @@ describe("fanfare modal content", () => {
         newlyUnlockedAchievementIds: [],
       },
     };
+    /** Provides shared props behavior. */
     const sharedProps = {
       activeCoinAward: null,
       coinCollectionPending: false,
@@ -52,29 +50,35 @@ describe("fanfare modal content", () => {
       stepIndex: 0,
     };
 
-    expect(renderToString(<VictoryFanfareContent {...sharedProps} activeStep={undefined} />))
-      .toContain('aria-live="polite"');
-    expect(renderToString(<VictoryFanfareContent
-      {...sharedProps}
-      activeStep={{kind: "achievement", achievementId: "first_win"}}
-    />)).toContain("achievement-unlock");
-    expect(renderToString(<VictoryFanfareContent {...sharedProps} activeStep={{kind: "level"}} />))
-      .toContain("3");
-    expect(renderToString(<VictoryFanfareContent {...sharedProps} activeStep={{kind: "rank"}} />))
-      .toContain("rank-emblem");
+    expect(renderToString(<VictoryFanfareContent {...sharedProps} activeStep={undefined} />)).toContain(
+      'aria-live="polite"',
+    );
+    expect(
+      renderToString(
+        <VictoryFanfareContent {...sharedProps} activeStep={{kind: "achievement", achievementId: "first_win"}} />,
+      ),
+    ).toContain("achievement-unlock");
+    expect(renderToString(<VictoryFanfareContent {...sharedProps} activeStep={{kind: "level"}} />)).toContain("3");
+    expect(renderToString(<VictoryFanfareContent {...sharedProps} activeStep={{kind: "rank"}} />)).toContain(
+      "rank-emblem",
+    );
+    /** Provides victory without sharing behavior. */
     const victoryWithoutSharing = renderToString(
       <VictoryFanfareContent {...sharedProps} activeStep={{kind: "victory"}} />,
     );
     expect(victoryWithoutSharing).toContain("reward-details");
     expect(victoryWithoutSharing).not.toContain("Invite a friend");
-    expect(renderToString(
-      <ReferralSharingProvider capability={referralSharing}>
-        <VictoryFanfareContent {...sharedProps} activeStep={{kind: "victory"}} />
-      </ReferralSharingProvider>,
-    )).toContain("Invite a friend");
+    expect(
+      renderToString(
+        <ReferralSharingProvider capability={referralSharing}>
+          <VictoryFanfareContent {...sharedProps} activeStep={{kind: "victory"}} />
+        </ReferralSharingProvider>,
+      ),
+    ).toContain("Invite a friend");
   });
 
   it("renders reward steps and normalized coin amounts", () => {
+    /** Provides shared props behavior. */
     const sharedProps = {
       activeCoinAward: null,
       coinCollectionPending: false,
@@ -84,14 +88,18 @@ describe("fanfare modal content", () => {
       stepCount: 2,
       stepIndex: 0,
     };
-    expect(renderToString(<RewardFanfareContent
-      {...sharedProps}
-      activeStep={{kind: "achievement", achievementId: "first_win"}}
-    />)).toContain("achievement-unlock");
-    expect(renderToString(<RewardFanfareContent {...sharedProps} activeStep={undefined} />))
-      .toContain("sequence-progress");
-    expect(renderToString(
-      <CoinAwardSequence amount={10.6} total={30.4} onBalancePreview={noop} onCollected={noop} />,
-    ).replaceAll("<!-- -->", "")).toContain("+11 Coins");
+    expect(
+      renderToString(
+        <RewardFanfareContent {...sharedProps} activeStep={{kind: "achievement", achievementId: "first_win"}} />,
+      ),
+    ).toContain("achievement-unlock");
+    expect(renderToString(<RewardFanfareContent {...sharedProps} activeStep={undefined} />)).toContain(
+      "sequence-progress",
+    );
+    expect(
+      renderToString(
+        <CoinAwardSequence amount={10.6} total={30.4} onBalancePreview={noop} onCollected={noop} />,
+      ).replaceAll("<!-- -->", ""),
+    ).toContain("+11 Coins");
   });
 });

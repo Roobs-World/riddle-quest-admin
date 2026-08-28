@@ -1,5 +1,6 @@
 import {parseYouTubeContentDocument, resolveYouTubeLocale} from "../content";
 
+/** Provides content document behavior. */
 const contentDocument = (startsOn: string) => ({
   schemaVersion: 1,
   contentVersion: "content-v1",
@@ -8,13 +9,17 @@ const contentDocument = (startsOn: string) => ({
   locales: ["en"],
   classicOrder: ["riddle:one"],
   dailySchedule: {scheduleVersion: 1, segments: [{startsOn, canonicalIds: ["riddle:one"]}]},
-  packs: {en: {"riddle:one": {
-    text: "A valid clue?",
-    answer: "word",
-    categoryId: "mixed",
-    difficultyBand: "easy",
-    contentFingerprint: "0123456789abcdef",
-  }}},
+  packs: {
+    en: {
+      "riddle:one": {
+        text: "A valid clue?",
+        answer: "word",
+        categoryId: "mixed",
+        difficultyBand: "easy",
+        contentFingerprint: "0123456789abcdef",
+      },
+    },
+  },
 });
 
 describe("YouTube runtime content boundary", () => {
@@ -24,7 +29,8 @@ describe("YouTube runtime content boundary", () => {
   });
 
   it("rejects regex-shaped invalid UTC dates without throwing a RangeError", () => {
-    expect(() => parseYouTubeContentDocument(contentDocument("2026-99-99"), "en"))
-      .toThrow("youtube-content-daily-segment-invalid:0");
+    expect(() => parseYouTubeContentDocument(contentDocument("2026-99-99"), "en")).toThrow(
+      "youtube-content-daily-segment-invalid:0",
+    );
   });
 });

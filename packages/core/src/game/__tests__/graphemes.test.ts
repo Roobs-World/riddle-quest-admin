@@ -20,9 +20,11 @@ describe("grapheme helpers", () => {
   });
 
   it("falls back to code points when Intl.Segmenter is unavailable", () => {
+    /** Provides original segmenter behavior. */
     const originalSegmenter = Intl.Segmenter;
     Object.defineProperty(Intl, "Segmenter", {configurable: true, value: undefined});
     jest.isolateModules(() => {
+      /** Provides fallback behavior. */
       const fallback = jest.requireActual("../graphemes") as typeof import("../graphemes");
       expect(fallback.splitGraphemes("A😀")).toEqual(["A", "😀"]);
     });

@@ -1,5 +1,6 @@
 /** Defines keys whose values must never leave the browser in telemetry. */
-const sensitiveFieldPattern = /(?:answer|authorization|cookie|email|guess|imageDataUrl|password|secret|token|uid|userId)/i;
+const sensitiveFieldPattern =
+  /(?:answer|authorization|cookie|email|guess|imageDataUrl|password|secret|token|uid|userId)/i;
 
 /** Matches bearer credentials embedded in otherwise harmless strings. */
 const bearerPattern = /Bearer\s+[A-Za-z0-9._~+/=-]+/gi;
@@ -11,16 +12,18 @@ const compactTokenPattern = /\b[A-Za-z0-9_-]{16,}\.[A-Za-z0-9_-]{16,}\.[A-Za-z0-
 const dataImagePattern = /data:image\/[a-z0-9.+-]+;base64,[A-Za-z0-9+/=]+/gi;
 
 /** Removes query strings and fragments from URLs embedded in diagnostic text. */
-const redactUrlDetails = (value: string): string => value.replace(/https?:\/\/[^\s"'<>]+/gi, (match) => {
-  try {
-    const parsed = new URL(match);
-    parsed.search = "";
-    parsed.hash = "";
-    return parsed.toString();
-  } catch {
-    return "[REDACTED_URL]";
-  }
-});
+const redactUrlDetails = (value: string): string =>
+  value.replace(/https?:\/\/[^\s"'<>]+/gi, (match) => {
+    try {
+      /** Parses d. */
+      const parsed = new URL(match);
+      parsed.search = "";
+      parsed.hash = "";
+      return parsed.toString();
+    } catch {
+      return "[REDACTED_URL]";
+    }
+  });
 
 /**
  * Validates that an optional browser telemetry DSN uses encrypted transport.
@@ -30,8 +33,10 @@ const redactUrlDetails = (value: string): string => value.replace(/https?:\/\/[^
  * @throws When a configured DSN is malformed or uses plaintext transport.
  */
 export function resolveSecureBrowserSentryDsn(value: string | undefined): string | undefined {
+  /** Provides candidate behavior. */
   const candidate = value?.trim();
   if (!candidate) return undefined;
+  /** Parses d. */
   let parsed: URL;
   try {
     parsed = new URL(candidate);
@@ -56,10 +61,12 @@ export function redactBrowserTelemetry(
   seen: WeakSet<object> = new WeakSet<object>(),
 ): unknown {
   if (typeof value === "string") {
-    return redactUrlDetails(value
-      .replace(bearerPattern, "Bearer [REDACTED]")
-      .replace(compactTokenPattern, "[REDACTED_TOKEN]")
-      .replace(dataImagePattern, "[REDACTED_IMAGE]"));
+    return redactUrlDetails(
+      value
+        .replace(bearerPattern, "Bearer [REDACTED]")
+        .replace(compactTokenPattern, "[REDACTED_TOKEN]")
+        .replace(dataImagePattern, "[REDACTED_IMAGE]"),
+    );
   }
   if (value instanceof URL) return redactUrlDetails(value.toString());
   if (value === null || typeof value !== "object" || depth >= 8) return value;
@@ -83,6 +90,7 @@ export function redactBrowserTelemetry(
  * player name, or backend response into telemetry.
  */
 export function redactBrowserSentryEvent<T>(event: T): T {
+  /** Provides redacted behavior. */
   const redacted = redactBrowserTelemetry(event) as Record<string, unknown>;
   if (!redacted || typeof redacted !== "object") return redacted as T;
 
@@ -95,19 +103,42 @@ export function redactBrowserSentryEvent<T>(event: T): T {
   delete redacted.breadcrumbs;
 
   if (typeof redacted.message === "string") redacted.message = "[REDACTED_MESSAGE]";
+  /** Provides logentry behavior. */
   const logentry = redacted.logentry;
   if (logentry && typeof logentry === "object") {
+    /** Provides safe logentry behavior. */
     const safeLogentry = logentry as Record<string, unknown>;
     if (typeof safeLogentry.message === "string") safeLogentry.message = "[REDACTED_MESSAGE]";
     if (typeof safeLogentry.formatted === "string") safeLogentry.formatted = "[REDACTED_MESSAGE]";
   }
+  /** Provides exception behavior. */
   const exception = redacted.exception;
   if (exception && typeof exception === "object") {
-    const values = (exception as {values?: unknown}).values;
+    /** Provides values behavior. */
+    const values = (
+      exception as {
+        /** Stores values. */
+        values?: unknown;
+      }
+    ).values;
     if (Array.isArray(values)) {
       for (const value of values) {
-        if (value && typeof value === "object" && typeof (value as {value?: unknown}).value === "string") {
-          (value as {value: string}).value = "[REDACTED_MESSAGE]";
+        if (
+          value &&
+          typeof value === "object" &&
+          typeof (
+            value as {
+              /** Stores value. */
+              value?: unknown;
+            }
+          ).value === "string"
+        ) {
+          (
+            value as {
+              /** Stores value. */
+              value: string;
+            }
+          ).value = "[REDACTED_MESSAGE]";
         }
       }
     }

@@ -180,8 +180,11 @@ const ENGLISH_NAMESPACE_BY_NAME: Record<SharedNamespace, NamespaceCatalog> = {
 
 /** Describes a locale namespace installed by one explicit target composition root. */
 type TargetLocaleNamespaceRegistration = Readonly<{
+  /** Stores namespace. */
   namespace: Exclude<Namespace, SharedNamespace>;
+  /** Stores english. */
   english: NamespaceCatalog;
+  /** Provides load behavior. */
   load(locale: Exclude<Locale, "en">): Promise<NamespaceCatalog>;
 }>;
 
@@ -239,10 +242,10 @@ const mergeNamespaces = (namespaces: readonly NamespaceCatalog[]): RootCatalog =
 
 /** Rebuilds the cached English catalog after target namespace registration. */
 const rebuildEnglishCatalog = (): void => {
-  catalogCache.set("en", mergeNamespaces([
-    ...ENGLISH_NAMESPACES,
-    ...[...targetLocaleNamespaces.values()].map(({english}) => english),
-  ]));
+  catalogCache.set(
+    "en",
+    mergeNamespaces([...ENGLISH_NAMESPACES, ...[...targetLocaleNamespaces.values()].map(({english}) => english)]),
+  );
 };
 
 rebuildEnglishCatalog();
@@ -265,6 +268,7 @@ const importSharedNamespace = async (locale: Locale, namespace: SharedNamespace)
     return ENGLISH_NAMESPACE_BY_NAME[namespace];
   }
 
+  /** Provides {load non english namespace} behavior. */
   const {loadNonEnglishNamespace} = await import("./localeModules");
   return loadNonEnglishNamespace(locale, namespace);
 };
@@ -276,23 +280,27 @@ const emitLocaleChange = (): void => {
 
 /** Loads locale catalog. */
 const loadLocaleCatalog = async (locale: Locale): Promise<RootCatalog> => {
+  /** Provides cached behavior. */
   const cached = catalogCache.get(locale);
   if (cached) {
     return cached;
   }
 
+  /** Provides in flight behavior. */
   const inFlight = loadingLocales.get(locale);
   if (inFlight) {
     return inFlight;
   }
 
+  /** Provides next load behavior. */
   const nextLoad = Promise.all([
     ...SHARED_NAMESPACES.map((namespace) => importSharedNamespace(locale, namespace)),
     ...[...targetLocaleNamespaces.values()].map((registration) =>
-      locale === "en" ? registration.english : registration.load(locale)
+      locale === "en" ? registration.english : registration.load(locale),
     ),
   ])
     .then((namespaces) => {
+      /** Provides catalog behavior. */
       const catalog = mergeNamespaces(namespaces);
       catalogCache.set(locale, catalog);
       loadingLocales.delete(locale);
@@ -314,6 +322,7 @@ const getCatalogForRender = (locale: Locale): RootCatalog => {
 
 /** Gets value at path. */
 const getValueAtPath = (catalog: RootCatalog, key: string): string | undefined => {
+  /** Resolves d. */
   const resolved = key.split(".").reduce<unknown>((current, segment) => {
     if (!isPlainObject(current)) {
       return undefined;
@@ -337,6 +346,7 @@ const formatMessage = (message: string, params?: Record<string, string | number>
 
 /** Normalizes locale. */
 const normalizeLocale = (input?: string): Locale => {
+  /** Provides value behavior. */
   const value = (input ?? "en").toLowerCase();
 
   if (value.startsWith("id") || value.startsWith("in")) {
@@ -353,7 +363,12 @@ const normalizeLocale = (input?: string): Locale => {
 };
 
 /** Defines the language options value. */
-export const LANGUAGE_OPTIONS: readonly {code: Locale; label: string}[] = SUPPORTED_LOCALES.map((code) => ({
+export const LANGUAGE_OPTIONS: readonly {
+  /** Stores code. */
+  code: Locale; /** Stores label. */
+  /** Stores label. */
+  label: string;
+}[] = SUPPORTED_LOCALES.map((code) => ({
   code,
   label: LANGUAGE_LABELS[code],
 }));
@@ -381,7 +396,9 @@ const commitLocale = (locale: Locale): void => {
 
 /** Sets locale. */
 export const setLocale = (locale: Locale): void => {
+  /** Requests version. */
   const requestVersion = ++localeRequestVersion;
+  /** Provides previous locale behavior. */
   const previousLocale = currentLocale;
   if (catalogCache.has(locale)) {
     commitLocale(locale);
@@ -402,6 +419,7 @@ export const setLocale = (locale: Locale): void => {
 
 /** Provides detect device language behavior. */
 export const detectDeviceLanguage = (locale?: string): Locale => {
+  /** Resolves d. */
   const resolved = normalizeLocale(locale ?? Intl.DateTimeFormat().resolvedOptions().locale ?? "en");
   setLocale(resolved);
   return resolved;
@@ -409,7 +427,9 @@ export const detectDeviceLanguage = (locale?: string): Locale => {
 
 /** Provides tr behavior. */
 export const tr = (key: string, params?: Record<string, string | number>): string => {
+  /** Provides active message behavior. */
   const activeMessage = getValueAtPath(getCatalogForRender(currentLocale), key);
+  /** Provides fallback message behavior. */
   const fallbackMessage = getValueAtPath(getCatalogForRender("en"), key);
   if (!activeMessage && !fallbackMessage) {
     throw new Error(`Missing translation for key "${key}" in locale "${currentLocale}"`);

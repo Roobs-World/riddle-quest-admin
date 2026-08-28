@@ -38,9 +38,13 @@ export function computeGuestCompletionRewards(
     classicBaseScore?: number;
   },
 ): LocalCompletionRewards {
+  /** Provides score max attempts behavior. */
   const scoreMaxAttempts = options.scoreMaxAttempts ?? 5;
+  /** Provides base score behavior. */
   const baseScore = gameMode === "challenge" ? (options.challengeBaseScore ?? 100) : (options.classicBaseScore ?? 50);
+  /** Provides attempts bonus behavior. */
   const attemptsBonus = Math.max(0, (scoreMaxAttempts - attempts + 1) * 10);
+  /** Provides coins behavior. */
   const coins = gameMode === "challenge" ? options.challengeCoinReward : options.classicCoinReward;
   return {coins, score: baseScore + attemptsBonus};
 }

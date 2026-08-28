@@ -12,15 +12,29 @@ type Firestore = FirebaseFirestore.Firestore;
 export async function findRedditRaceMatch(
   userId: string,
   locale: RaceLocale,
-  options: {db?: Firestore; nowMs?: number; preview?: typeof getRaceChallengePreview;
-    socialProfile?: typeof readRedditSocialProfile} = {},
+  options: {
+    /** Stores db. */
+    db?: Firestore; /** Stores now ms. */
+    /** Stores now ms. */
+    nowMs?: number; /** Stores preview. */
+    /** Stores preview. */
+    preview?: typeof getRaceChallengePreview;
+    /** Stores social profile. */
+    socialProfile?: typeof readRedditSocialProfile;
+  } = {},
 ): Promise<FindRedditRaceMatchResponse> {
   if (!isRedditFirebaseUid(userId)) throw new Error("reddit-matchmaking-identity-required");
+  /** Provides db behavior. */
   const db = options.db ?? admin.firestore();
+  /** Provides now ms behavior. */
   const nowMs = options.nowMs ?? Date.now();
+  /** Provides preview behavior. */
   const preview = options.preview ?? getRaceChallengePreview;
+  /** Provides social profile behavior. */
   const socialProfile = options.socialProfile ?? readRedditSocialProfile;
-  const snapshot = await db.collection("raceChallenges")
+  /** Provides snapshot behavior. */
+  const snapshot = await db
+    .collection("raceChallenges")
     .where("locale", "==", locale)
     .where("status", "==", "active")
     .where("expiresAtMs", ">", nowMs)
@@ -29,9 +43,12 @@ export async function findRedditRaceMatch(
     .get();
   for (const document of snapshot.docs) {
     try {
+      /** Provides challenge behavior. */
       const challenge = parseChallengeRecord(document.data());
       if (challenge.creatorId === userId || !isRedditFirebaseUid(challenge.creatorId)) continue;
+      /** Provides challenge preview behavior. */
       const challengePreview = await preview(challenge.challengeId, locale, {db, nowMs});
+      /** Provides profile behavior. */
       const profile = await socialProfile(challenge.creatorId, {db, nowMs});
       return FindRedditRaceMatchResponseSchema.parse({
         status: "matched",

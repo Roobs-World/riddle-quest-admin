@@ -12,20 +12,29 @@ export async function commitJestStartupSession({
   setSession,
   trackFunnel,
 }: {
+  /** Stores gate. */
   gate: NotificationOperationGate;
+  /** Stores is active. */
   isActive: () => boolean;
+  /** Stores session. */
   session: JestSession;
+  /** Stores enable player state writes. */
   enablePlayerStateWrites: (playerData: JestPlayerData | null) => void;
+  /** Stores set engagement progress. */
   setEngagementProgress: (progress: JestEngagementProgress) => void;
+  /** Stores set session. */
   setSession: (session: JestSession) => void;
+  /** Stores track funnel. */
   trackFunnel: (eventName: string, params: Record<string, string | number | boolean>) => void;
 }): Promise<boolean> {
+  /** Provides committed behavior. */
   let committed = false;
   try {
     await gate.run(async () => {
       if (!isActive()) return;
       applyPlayerPreferences(session.preferences);
       enablePlayerStateWrites(session.playerData);
+      /** Saves d profile. */
       const savedProfile = session.playerData?.profile;
       setEngagementProgress({
         level: savedProfile?.level ?? 1,

@@ -13,12 +13,7 @@ export type RaceGameplayFitOptions = {
 };
 
 /** Responsively scales the multiplayer gameplay surface to the available height. */
-export function useRaceGameplayFit({
-  active,
-  screenRef,
-  viewportRef,
-  gameplayRef,
-}: RaceGameplayFitOptions): void {
+export function useRaceGameplayFit({active, screenRef, viewportRef, gameplayRef}: RaceGameplayFitOptions): void {
   useEffect(() => {
     if (!active) return;
     /** Outer multiplayer dialog used to calculate the available height. */

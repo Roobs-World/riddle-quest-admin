@@ -7,9 +7,24 @@ export const RACE_GO_DISPLAY_MS = 180;
 
 /** A deterministic transition in the multiplayer countdown state machine. */
 export type RaceCountdownStep =
-  | {kind: "countdown"; nextValue: number; delayMs: number}
-  | {kind: "start"; delayMs: number}
-  | {kind: "wait"};
+  | {
+      /** Stores kind. */
+      kind: "countdown"; /** Stores next value. */
+      /** Stores next value. */
+      nextValue: number; /** Stores delay ms. */
+      /** Stores delay ms. */
+      delayMs: number;
+    }
+  | {
+      /** Stores kind. */
+      kind: "start"; /** Stores delay ms. */
+      /** Stores delay ms. */
+      delayMs: number;
+    }
+  | {
+      /** Stores kind. */
+      kind: "wait";
+    };
 
 /** Returns the next countdown transition once the authoritative run is ready. */
 export const getRaceCountdownStep = (value: number, runReady: boolean): RaceCountdownStep => {

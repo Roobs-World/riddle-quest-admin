@@ -10,14 +10,8 @@ import {browserCallableSecurityOptions} from "../shared/callableSecurity";
 import {resolveDailyChallengeProgress} from "./dailyChallengeProgress";
 import {onCallWithSentry} from "../shared/sentryHandlers";
 import {getSinglePlayerCompletionKey, getSinglePlayerContentKey} from "../gameplay/singlePlayerAnswerPolicy";
-import {
-  ensureAuthoritativeSession,
-  getIssuedAuthoritativeSession,
-} from "../gameplay/singlePlayerSession";
-import {
-  completeAuthoritativeGame,
-  isDailyCompletionDateEligible,
-} from "../gameplay/completeGameLogic";
+import {ensureAuthoritativeSession, getIssuedAuthoritativeSession} from "../gameplay/singlePlayerSession";
+import {completeAuthoritativeGame, isDailyCompletionDateEligible} from "../gameplay/completeGameLogic";
 import {getSafeErrorMetadata} from "../shared/errorMetadata";
 import {getPlayableClassicRiddle, isPlayableRiddleContent} from "../gameplay/classicRiddleFallback";
 import {parseClassicLoadIndex, parseSinglePlayerResumeFields} from "../gameplay/singlePlayerLoadRequest";
@@ -33,6 +27,7 @@ const CURRENT_DAILY_RIDDLE_DOC_ID = "current";
 /** Parses only trusted Firestore session timestamps. */
 const trustedSessionDate = (value: unknown): Date | undefined => {
   if (typeof value === "object" && value !== null && "toDate" in value && typeof value.toDate === "function") {
+    /** Parses d. */
     const parsed = value.toDate();
     return parsed instanceof Date && !Number.isNaN(parsed.getTime()) ? parsed : undefined;
   }
@@ -45,15 +40,20 @@ const trustedSessionDate = (value: unknown): Date | undefined => {
  * @returns Fresh challenge snapshot plus today's UTC date string.
  */
 async function getFreshDailyChallengeDoc(locale: string = "en"): Promise<{
+  /** Stores daily challenge doc. */
   dailyChallengeDoc: FirebaseFirestore.DocumentSnapshot<FirebaseFirestore.DocumentData>;
+  /** Stores today date string. */
   todayDateString: string;
 }> {
+  /** Provides today date string behavior. */
   const todayDateString = new Date().toISOString().split("T")[0];
+  /** Provides safe locale behavior. */
   const safeLocale = locale || "en";
-  const localizedRiddleCollection = admin
-    .firestore()
-    .collection(`localizedRiddles/${safeLocale}/riddles`);
+  /** Provides localized riddle collection behavior. */
+  const localizedRiddleCollection = admin.firestore().collection(`localizedRiddles/${safeLocale}/riddles`);
+  /** Provides dated daily challenge doc behavior. */
   const datedDailyChallengeDoc = await localizedRiddleCollection.doc(`daily-${todayDateString}`).get();
+  /** Provides daily challenge doc behavior. */
   const dailyChallengeDoc = datedDailyChallengeDoc.exists
     ? datedDailyChallengeDoc
     : await localizedRiddleCollection.doc(CURRENT_DAILY_RIDDLE_DOC_ID).get();
@@ -69,16 +69,23 @@ async function getFreshDailyChallengeDoc(locale: string = "en"): Promise<{
 export const getCurrentDailyChallenge = onCallWithSentry(
   "getCurrentDailyChallenge",
   browserCallableSecurityOptions,
-  async (request: CallableRequest<{
-    locale?: unknown;
-    sessionToken?: unknown;
-    riddleId?: unknown;
-  }>): Promise<GetCurrentDailyChallengeResponse> => {
+  async (
+    request: CallableRequest<{
+      /** Stores locale. */
+      locale?: unknown;
+      /** Stores session token. */
+      sessionToken?: unknown;
+      /** Stores riddle id. */
+      riddleId?: unknown;
+    }>,
+  ): Promise<GetCurrentDailyChallengeResponse> => {
     try {
       if (!request.auth) {
         throw new HttpsError("unauthenticated", "The user must be authenticated to load the daily challenge.");
       }
+      /** Provides locale behavior. */
       let locale = "en";
+      /** Provides authenticated user behavior. */
       let authenticatedUser: Awaited<ReturnType<typeof getUser>>;
       authenticatedUser = await getUser(request.auth.uid);
       if (!authenticatedUser) throw new HttpsError("not-found", "User data not found.");
@@ -97,9 +104,12 @@ export const getCurrentDailyChallenge = onCallWithSentry(
         locale = authenticatedUser.preferredLanguage;
       }
 
+      /** Provides resume behavior. */
       const resume = parseSinglePlayerResumeFields(request.data);
+      /** Provides today date string behavior. */
       const todayDateString = new Date().toISOString().slice(0, 10);
       if (resume) {
+        /** Provides resumed behavior. */
         const resumed = await getIssuedAuthoritativeSession(
           request.auth.uid,
           resume.sessionToken,
@@ -133,6 +143,7 @@ export const getCurrentDailyChallenge = onCallWithSentry(
         );
       }
 
+      /** Provides {daily challenge doc} behavior. */
       const {dailyChallengeDoc} = await getFreshDailyChallengeDoc(locale);
 
       if (!dailyChallengeDoc.exists) {
@@ -144,11 +155,9 @@ export const getCurrentDailyChallenge = onCallWithSentry(
         );
       }
 
+      /** Provides all data behavior. */
       const allData = dailyChallengeDoc.data();
-      if (
-        !allData ||
-        !isPlayableRiddleContent(allData)
-      ) {
+      if (!allData || !isPlayableRiddleContent(allData)) {
         functions.logger.error("Daily challenge document is missing required playable question data.");
         return validateCallableResponse(
           GetCurrentDailyChallengeResponseSchema,
@@ -157,13 +166,13 @@ export const getCurrentDailyChallenge = onCallWithSentry(
         );
       }
 
+      /** Provides challenge date behavior. */
       let challengeDate: string | undefined = todayDateString;
       if (allData.timestamp && typeof allData.timestamp === "object" && "toDate" in allData.timestamp) {
         challengeDate = allData.timestamp.toDate().toISOString().split("T")[0];
       }
-      const canonicalChallengeDate = typeof allData.challengeKey === "string"
-        ? allData.challengeKey
-        : challengeDate;
+      /** Provides canonical challenge date behavior. */
+      const canonicalChallengeDate = typeof allData.challengeKey === "string" ? allData.challengeKey : challengeDate;
       if (canonicalChallengeDate !== todayDateString) {
         return validateCallableResponse(
           GetCurrentDailyChallengeResponseSchema,
@@ -173,14 +182,19 @@ export const getCurrentDailyChallenge = onCallWithSentry(
       }
       challengeDate = canonicalChallengeDate;
 
+      /** Provides completion key behavior. */
       const completionKey = getSinglePlayerCompletionKey("challenge", todayDateString);
+      /** Provides progress behavior. */
       let progress = resolveDailyChallengeProgress(authenticatedUser, DAILY_CHALLENGE_QUESTION_COUNT);
-      if (!progress.hasCompletedToday && await recoverPendingAuthoritativeCompletion(
-        request.auth.uid,
-        "challenge",
-        completionKey,
-        request.auth.token?.firebase?.sign_in_provider === "anonymous",
-      )) {
+      if (
+        !progress.hasCompletedToday &&
+        (await recoverPendingAuthoritativeCompletion(
+          request.auth.uid,
+          "challenge",
+          completionKey,
+          request.auth.token?.firebase?.sign_in_provider === "anonymous",
+        ))
+      ) {
         authenticatedUser = await getUser(request.auth.uid);
         if (!authenticatedUser) throw new HttpsError("not-found", "User data not found.");
         progress = resolveDailyChallengeProgress(authenticatedUser, DAILY_CHALLENGE_QUESTION_COUNT);
@@ -192,13 +206,17 @@ export const getCurrentDailyChallenge = onCallWithSentry(
           "getCurrentDailyChallenge",
         );
       }
+      /** Provides riddle id behavior. */
       const riddleId = allData.riddleId || CURRENT_DAILY_RIDDLE_DOC_ID;
+      /** Provides canonical riddle behavior. */
       const canonicalRiddle = {
         ...allData,
         riddleId,
         answer: allData.answer as string,
       };
+      /** Provides content key behavior. */
       const contentKey = getSinglePlayerContentKey(canonicalRiddle, "challenge", locale);
+      /** Provides session token behavior. */
       let sessionToken = await ensureAuthoritativeSession(
         request.auth.uid,
         "challenge",
@@ -209,12 +227,8 @@ export const getCurrentDailyChallenge = onCallWithSentry(
         canonicalRiddle.answer,
         {challengeDate: todayDateString},
       );
-      const boundSession = await getIssuedAuthoritativeSession(
-        request.auth.uid,
-        sessionToken,
-        "challenge",
-        riddleId,
-      );
+      /** Provides bound session behavior. */
+      const boundSession = await getIssuedAuthoritativeSession(request.auth.uid, sessionToken, "challenge", riddleId);
       if (
         boundSession.terminal &&
         !boundSession.isSkipped &&
@@ -233,10 +247,8 @@ export const getCurrentDailyChallenge = onCallWithSentry(
         );
         authenticatedUser = await getUser(request.auth.uid);
         if (!authenticatedUser) throw new HttpsError("not-found", "User data not found.");
-        const reconciledProgress = resolveDailyChallengeProgress(
-          authenticatedUser,
-          DAILY_CHALLENGE_QUESTION_COUNT,
-        );
+        /** Provides reconciled progress behavior. */
+        const reconciledProgress = resolveDailyChallengeProgress(authenticatedUser, DAILY_CHALLENGE_QUESTION_COUNT);
         if (reconciledProgress.hasCompletedToday) {
           return validateCallableResponse(
             GetCurrentDailyChallengeResponseSchema,
@@ -257,12 +269,9 @@ export const getCurrentDailyChallenge = onCallWithSentry(
         );
       }
 
-      const activeSession = await getIssuedAuthoritativeSession(
-        request.auth.uid,
-        sessionToken,
-        "challenge",
-        riddleId,
-      );
+      /** Provides active session behavior. */
+      const activeSession = await getIssuedAuthoritativeSession(request.auth.uid, sessionToken, "challenge", riddleId);
+      /** Provides challenge data behavior. */
       const challengeData = buildSinglePlayerChallengeResponse(
         {...canonicalRiddle, locale},
         challengeDate,
@@ -270,8 +279,11 @@ export const getCurrentDailyChallenge = onCallWithSentry(
         activeSession,
       );
 
+      /** Provides current question behavior. */
       let currentQuestion: number | undefined = undefined;
+      /** Indicates whether has completed today. */
       let hasCompletedToday: boolean | undefined = undefined;
+      /** Provides questions completed behavior. */
       let questionsCompleted: number | undefined = undefined;
 
       ({currentQuestion, hasCompletedToday, questionsCompleted} = progress);
@@ -316,9 +328,13 @@ export const getCurrentClassicRiddle = onCallWithSentry(
   browserCallableSecurityOptions,
   async (
     request: CallableRequest<{
+      /** Stores classic index. */
       classicIndex?: number;
+      /** Stores locale. */
       locale?: string;
+      /** Stores session token. */
       sessionToken?: unknown;
+      /** Stores riddle id. */
       riddleId?: unknown;
     }>,
   ): Promise<GetCurrentDailyChallengeResponse> => {
@@ -327,11 +343,13 @@ export const getCurrentClassicRiddle = onCallWithSentry(
         throw new HttpsError("unauthenticated", "The user must be authenticated to load a classic riddle.");
       }
 
-      const requestedClassicIndex = request.data?.classicIndex === undefined
-        ? undefined
-        : parseClassicLoadIndex(request.data.classicIndex);
+      /** Requests ed classic index. */
+      const requestedClassicIndex =
+        request.data?.classicIndex === undefined ? undefined : parseClassicLoadIndex(request.data.classicIndex);
 
+      /** Provides locale behavior. */
       let locale = "en";
+      /** Provides r. */
       let user = await getUser(request.auth.uid);
       if (!user) throw new HttpsError("not-found", "User data not found.");
       if (
@@ -346,6 +364,7 @@ export const getCurrentClassicRiddle = onCallWithSentry(
         locale = user.preferredLanguage;
       }
 
+      /** Provides resume behavior. */
       let resume: ReturnType<typeof parseSinglePlayerResumeFields>;
       try {
         resume = parseSinglePlayerResumeFields(request.data);
@@ -356,8 +375,10 @@ export const getCurrentClassicRiddle = onCallWithSentry(
           hasRiddleId: request.data?.riddleId !== undefined,
         });
       }
+      /** Provides reconciled terminal session behavior. */
       let reconciledTerminalSession = false;
       if (resume) {
+        /** Provides resumed behavior. */
         const resumed = await getIssuedAuthoritativeSession(
           request.auth.uid,
           resume.sessionToken,
@@ -380,23 +401,32 @@ export const getCurrentClassicRiddle = onCallWithSentry(
         }
       }
 
+      /** Provides expected classic index behavior. */
       let expectedClassicIndex = user.progress?.classicIndex ?? 1;
-      if (await recoverPendingAuthoritativeCompletion(
-        request.auth.uid,
-        "classic",
-        getSinglePlayerCompletionKey("classic", expectedClassicIndex),
-        request.auth.token?.firebase?.sign_in_provider === "anonymous",
-      )) {
+      if (
+        await recoverPendingAuthoritativeCompletion(
+          request.auth.uid,
+          "classic",
+          getSinglePlayerCompletionKey("classic", expectedClassicIndex),
+          request.auth.token?.firebase?.sign_in_provider === "anonymous",
+        )
+      ) {
         user = await getUser(request.auth.uid);
         if (!user) throw new HttpsError("not-found", "User data not found.");
         expectedClassicIndex = user.progress?.classicIndex ?? 1;
         reconciledTerminalSession = true;
       }
-      if (requestedClassicIndex !== undefined && requestedClassicIndex !== expectedClassicIndex && !reconciledTerminalSession) {
+      if (
+        requestedClassicIndex !== undefined &&
+        requestedClassicIndex !== expectedClassicIndex &&
+        !reconciledTerminalSession
+      ) {
         throw new HttpsError("permission-denied", "Only the current classic riddle can be loaded.");
       }
+      /** Provides classic index behavior. */
       let classicIndex = expectedClassicIndex;
 
+      /** Provides playable behavior. */
       let playable = await getPlayableClassicRiddle(classicIndex, locale);
       if (!playable) {
         return validateCallableResponse(
@@ -405,11 +435,14 @@ export const getCurrentClassicRiddle = onCallWithSentry(
           "getCurrentClassicRiddle",
         );
       }
+      /** Provides {riddle, content locale} behavior. */
       let {riddle, contentLocale} = playable;
       if (riddle.classicIndex !== undefined && riddle.classicIndex !== expectedClassicIndex) {
         throw new HttpsError("failed-precondition", "The classic riddle does not match current progression.");
       }
+      /** Provides content key behavior. */
       const contentKey = getSinglePlayerContentKey(riddle, "classic", contentLocale);
+      /** Provides session token behavior. */
       let sessionToken = await ensureAuthoritativeSession(
         request.auth.uid,
         "classic",
@@ -420,6 +453,7 @@ export const getCurrentClassicRiddle = onCallWithSentry(
         riddle.answer,
         {classicIndex: expectedClassicIndex},
       );
+      /** Provides bound session behavior. */
       const boundSession = await getIssuedAuthoritativeSession(
         request.auth.uid,
         sessionToken,
@@ -438,6 +472,7 @@ export const getCurrentClassicRiddle = onCallWithSentry(
         }
         user = await getUser(request.auth.uid);
         if (!user) throw new HttpsError("not-found", "User data not found.");
+        /** Provides reconciled index behavior. */
         const reconciledIndex = user.progress?.classicIndex ?? 1;
         if (reconciledIndex !== expectedClassicIndex) {
           classicIndex = reconciledIndex;
@@ -451,6 +486,7 @@ export const getCurrentClassicRiddle = onCallWithSentry(
           }
           ({riddle, contentLocale} = playable);
         }
+        /** Provides reconciled content key behavior. */
         const reconciledContentKey = getSinglePlayerContentKey(riddle, "classic", contentLocale);
         sessionToken = await ensureAuthoritativeSession(
           request.auth.uid,
@@ -464,6 +500,7 @@ export const getCurrentClassicRiddle = onCallWithSentry(
         );
       }
 
+      /** Provides active session behavior. */
       const activeSession = await getIssuedAuthoritativeSession(
         request.auth.uid,
         sessionToken,

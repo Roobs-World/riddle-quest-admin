@@ -10,7 +10,8 @@ import {firebaseEnvironment} from "../firebaseEnvironment";
 import {hasTrustedTestHarnessMarker} from "../testHarness";
 
 /** Indicates whether a trusted harness route may bypass browser attestation. */
-const isHarnessRoute = typeof window !== "undefined" &&
+const isHarnessRoute =
+  typeof window !== "undefined" &&
   new URLSearchParams(window.location.search).has("harness") &&
   (!firebaseEnvironment.production || hasTrustedTestHarnessMarker());
 

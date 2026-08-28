@@ -3,7 +3,9 @@ import {join} from "node:path";
 import {assertFails, initializeTestEnvironment, type RulesTestEnvironment} from "@firebase/rules-unit-testing";
 import {doc, getDoc, setDoc} from "firebase/firestore";
 
+/** Defines the project id value. */
 const PROJECT_ID = process.env.GCLOUD_PROJECT ?? "riddle-quest-ec2b2";
+/** Provides test environment behavior. */
 let testEnvironment: RulesTestEnvironment;
 
 beforeAll(async () => {
@@ -41,7 +43,8 @@ beforeAll(async () => {
       setDoc(doc(context.firestore(), "facebookCommerceReceipts/receipt-1"), {uid: "facebook_uid"}),
       setDoc(doc(context.firestore(), "facebookCommerceRefunds/refund-1"), {uid: "facebook_uid"}),
       setDoc(doc(context.firestore(), "facebookNotificationPromptLeases/facebook_uid"), {
-        uid: "facebook_uid", accepted: false,
+        uid: "facebook_uid",
+        accepted: false,
       }),
       setDoc(doc(context.firestore(), "facebookReferralTokens/token-1"), {inviterUid: "facebook_uid"}),
       setDoc(doc(context.firestore(), "facebookReferralBindings/facebook_uid"), {inviteeUid: "facebook_uid"}),
@@ -60,13 +63,13 @@ beforeAll(async () => {
       }),
     ]);
   });
-
 });
 
 afterAll(async () => testEnvironment.cleanup());
 
 describe("username reservation Firestore boundary", () => {
   it.each(["player-1", undefined])("denies direct leaderboard access to client %s", async (userId) => {
+    /** Provides db behavior. */
     const db = userId
       ? testEnvironment.authenticatedContext(userId).firestore()
       : testEnvironment.unauthenticatedContext().firestore();
@@ -75,6 +78,7 @@ describe("username reservation Firestore boundary", () => {
   });
 
   it.each(["player-1", undefined])("denies reservation and migration state to client %s", async (userId) => {
+    /** Provides db behavior. */
     const db = userId
       ? testEnvironment.authenticatedContext(userId).firestore()
       : testEnvironment.unauthenticatedContext().firestore();
@@ -85,6 +89,7 @@ describe("username reservation Firestore boundary", () => {
   });
 
   it.each(["facebook_uid", "player-1", undefined])("denies Facebook identity state to client %s", async (userId) => {
+    /** Provides db behavior. */
     const db = userId
       ? testEnvironment.authenticatedContext(userId).firestore()
       : testEnvironment.unauthenticatedContext().firestore();
@@ -94,31 +99,35 @@ describe("username reservation Firestore boundary", () => {
     }
   });
 
-  it.each(["player-1", "player-2", undefined])("denies social safety and tournament state to client %s", async (userId) => {
-    const db = userId
-      ? testEnvironment.authenticatedContext(userId).firestore()
-      : testEnvironment.unauthenticatedContext().firestore();
-    for (const path of [
-      "users/player-1/knownRivals/player-2",
-      "users/player-1/blockedRivals/player-2",
-      "socialModerationQueue/report-1",
-      "socialReportRateLimits/limit-1",
-      "facebookTournaments/tournament-1",
-      "facebookTournaments/tournament-1/entries/player-1",
-      "facebookCommerceAccounts/facebook_uid",
-      "facebookCommerceReceipts/receipt-1",
-      "facebookCommerceRefunds/refund-1",
-      "facebookNotificationPromptLeases/facebook_uid",
-      "facebookReferralTokens/token-1",
-      "facebookReferralBindings/facebook_uid",
-      "facebookReferralDailyCaps/cap-1",
-      "facebookReferralSettlements/settlement-1",
-      "facebookContextCompetitions/context-1",
-      "facebookContextCompetitions/context-1/entries/facebook_uid",
-      "facebookContextCompetitionHistory/context-1_1",
-    ]) {
-      await assertFails(getDoc(doc(db, path)));
-      await assertFails(setDoc(doc(db, path), {forged: true}));
-    }
-  });
+  it.each(["player-1", "player-2", undefined])(
+    "denies social safety and tournament state to client %s",
+    async (userId) => {
+      /** Provides db behavior. */
+      const db = userId
+        ? testEnvironment.authenticatedContext(userId).firestore()
+        : testEnvironment.unauthenticatedContext().firestore();
+      for (const path of [
+        "users/player-1/knownRivals/player-2",
+        "users/player-1/blockedRivals/player-2",
+        "socialModerationQueue/report-1",
+        "socialReportRateLimits/limit-1",
+        "facebookTournaments/tournament-1",
+        "facebookTournaments/tournament-1/entries/player-1",
+        "facebookCommerceAccounts/facebook_uid",
+        "facebookCommerceReceipts/receipt-1",
+        "facebookCommerceRefunds/refund-1",
+        "facebookNotificationPromptLeases/facebook_uid",
+        "facebookReferralTokens/token-1",
+        "facebookReferralBindings/facebook_uid",
+        "facebookReferralDailyCaps/cap-1",
+        "facebookReferralSettlements/settlement-1",
+        "facebookContextCompetitions/context-1",
+        "facebookContextCompetitions/context-1/entries/facebook_uid",
+        "facebookContextCompetitionHistory/context-1_1",
+      ]) {
+        await assertFails(getDoc(doc(db, path)));
+        await assertFails(setDoc(doc(db, path), {forged: true}));
+      }
+    },
+  );
 });

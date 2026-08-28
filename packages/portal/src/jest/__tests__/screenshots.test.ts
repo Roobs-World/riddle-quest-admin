@@ -1,28 +1,37 @@
-import {
-  captureGameScreenshot,
-  captureVictoryShareImage,
-  sizeCheckedScreenshotProvider,
-} from "../sharing/screenshots";
+import {captureGameScreenshot, captureVictoryShareImage, sizeCheckedScreenshotProvider} from "../sharing/screenshots";
 
 it("rejects non-PNG and oversized screenshots", async () => {
   expect(await sizeCheckedScreenshotProvider(() => "data:image/jpeg;base64,YQ==")()).toBeNull();
   expect(await sizeCheckedScreenshotProvider(() => `data:image/png;base64,${"A".repeat(2_800_000)}`)()).toBeNull();
 });
-it("accepts a small PNG data URL", async () => expect(await sizeCheckedScreenshotProvider(() => "data:image/png;base64,YQ==")()).toBe("data:image/png;base64,YQ=="));
-it("accounts for single-padding PNG data URLs", async () => expect(
-  await sizeCheckedScreenshotProvider(() => "data:image/png;base64,YWI=")(),
-).toBe("data:image/png;base64,YWI="));
-it("preserves a provider cancellation", async () => expect(await sizeCheckedScreenshotProvider(() => null)()).toBeNull());
+it("accepts a small PNG data URL", async () =>
+  expect(await sizeCheckedScreenshotProvider(() => "data:image/png;base64,YQ==")()).toBe("data:image/png;base64,YQ=="));
+it("accounts for single-padding PNG data URLs", async () =>
+  expect(await sizeCheckedScreenshotProvider(() => "data:image/png;base64,YWI=")()).toBe("data:image/png;base64,YWI="));
+it("preserves a provider cancellation", async () =>
+  expect(await sizeCheckedScreenshotProvider(() => null)()).toBeNull());
 
-const installDocument = (input: {text?: string | null; context?: Record<string, unknown> | null}) => {
+/** Provides install document behavior. */
+const installDocument = (input: {
+  /** Stores text. */
+  text?: string | null; /** Stores context. */
+  /** Stores context. */
+  context?: Record<string, unknown> | null;
+}) => {
+  /** Provides gradient behavior. */
   const gradient = {addColorStop: jest.fn()};
-  const context = input.context === null ? null : {
-    createLinearGradient: jest.fn(() => gradient),
-    fillRect: jest.fn(),
-    fillText: jest.fn(),
-    measureText: jest.fn((text: string) => ({width: text.length * 20})),
-    ...input.context,
-  };
+  /** Provides context behavior. */
+  const context =
+    input.context === null
+      ? null
+      : {
+          createLinearGradient: jest.fn(() => gradient),
+          fillRect: jest.fn(),
+          fillText: jest.fn(),
+          measureText: jest.fn((text: string) => ({width: text.length * 20})),
+          ...input.context,
+        };
+  /** Provides canvas behavior. */
   const canvas = {
     width: 0,
     height: 0,
@@ -32,7 +41,7 @@ const installDocument = (input: {text?: string | null; context?: Record<string, 
   Object.defineProperty(globalThis, "document", {
     configurable: true,
     value: {
-      querySelector: jest.fn(() => input.text === undefined ? null : {textContent: input.text}),
+      querySelector: jest.fn(() => (input.text === undefined ? null : {textContent: input.text})),
       createElement: jest.fn(() => canvas),
     },
   });
@@ -56,8 +65,11 @@ describe("screenshot capture", () => {
   });
 
   it("renders game copy with wrapping and returns a PNG", () => {
+    /** Provides {canvas, context} behavior. */
     const {canvas, context} = installDocument({
-      text: "A deliberately long game summary that wraps across several lines for the generated sharing card ".repeat(8),
+      text: "A deliberately long game summary that wraps across several lines for the generated sharing card ".repeat(
+        8,
+      ),
     });
     expect(captureGameScreenshot()).toBe("data:image/png;base64,YQ==");
     expect(canvas).toMatchObject({width: 1200, height: 630});
@@ -65,18 +77,22 @@ describe("screenshot capture", () => {
   });
 
   it("renders short copy without forcing a line wrap", () => {
+    /** Provides {context} behavior. */
     const {context} = installDocument({text: "Short summary"});
     expect(captureGameScreenshot()).toBe("data:image/png;base64,YQ==");
     expect(context?.fillText).toHaveBeenCalledWith("Short summary", 72, 180);
   });
 
   it("renders a bounded victory card and recent emoji rows", () => {
+    /** Provides {context, gradient} behavior. */
     const {context, gradient} = installDocument({text: "unused"});
-    expect(captureVictoryShareImage({
-      title: "T".repeat(100),
-      summary: "S".repeat(120),
-      emojiGrid: Array.from({length: 9}, () => "🟩".repeat(30)).join("\n"),
-    })).toBe("data:image/png;base64,YQ==");
+    expect(
+      captureVictoryShareImage({
+        title: "T".repeat(100),
+        summary: "S".repeat(120),
+        emojiGrid: Array.from({length: 9}, () => "🟩".repeat(30)).join("\n"),
+      }),
+    ).toBe("data:image/png;base64,YQ==");
     expect(gradient.addColorStop).toHaveBeenCalledTimes(3);
     expect(context?.fillText).toHaveBeenCalled();
   });

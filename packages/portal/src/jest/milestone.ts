@@ -19,11 +19,16 @@ export async function recordAuthoritativeCompletion(
   session: JestSession,
   completion: AuthoritativeCompletion,
   now = Date.now(),
-): Promise<PlatformResult<{
-  preferences: JestPreferences;
-  milestoneMarked: boolean;
-  shouldPromptRegistration: boolean;
-}>> {
+): Promise<
+  PlatformResult<{
+    /** Stores preferences. */
+    preferences: JestPreferences;
+    /** Stores milestone marked. */
+    milestoneMarked: boolean;
+    /** Stores should prompt registration. */
+    shouldPromptRegistration: boolean;
+  }>
+> {
   if (!completion.isCorrect) {
     return {
       status: "success",
@@ -35,9 +40,12 @@ export async function recordAuthoritativeCompletion(
     };
   }
 
+  /** Provides preferences behavior. */
   let preferences = session.preferences;
+  /** Provides milestone marked behavior. */
   let milestoneMarked = false;
   if (!preferences.firstMilestoneMarked) {
+    /** Provides result behavior. */
     const result = await platform.markFirstMilestone();
     if (result.status !== "success") return result;
     preferences = {...preferences, firstMilestoneMarked: true};
@@ -45,14 +53,14 @@ export async function recordAuthoritativeCompletion(
     milestoneMarked = true;
   }
 
+  /** Provides dismissed at behavior. */
   const dismissedAt = preferences.registrationPromptDismissedAt ?? 0;
   return {
     status: "success",
     value: {
       preferences,
       milestoneMarked,
-      shouldPromptRegistration:
-        !session.player.registered && now - dismissedAt >= REGISTRATION_PROMPT_COOLDOWN_MS,
+      shouldPromptRegistration: !session.player.registered && now - dismissedAt >= REGISTRATION_PROMPT_COOLDOWN_MS,
     },
   };
 }

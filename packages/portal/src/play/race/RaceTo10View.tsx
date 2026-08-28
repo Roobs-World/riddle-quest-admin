@@ -155,56 +155,190 @@ export type RaceTo10ViewProps = {
 
 /** Pure presentation for the Race to 10 state machine. */
 export function RaceTo10View(props: RaceTo10ViewProps) {
+  /** Provides {
+    stage, coins, error, safety notice, categories, inbox items, tournament, tournament loading,
+    context board, context board loading, challenge, countdown, run, outcome, published, sharing reward coins, pending,
+    adjusted now, ghost correct, feedback, penalty flash, current letters, active slot index, race guesses,
+    letter states, quit confirmation open, race guess loading, social pending, dialog ref, gameplay viewport ref, gameplay ref,
+    quit dialog ref, on close, on retry, on request close, on show inbox, on show tournaments, on choose category, on select category,
+    on inbox rematch, on block rival, on report rival, on select slot, on letter, on text, on backspace, on hint, on submit, on skip, on publish, on share,
+    on rematch, on dismiss quit, on abandon, on choose native context, on match native player,
+    player overlay, platform player id,
+  } behavior. */
   const {
-    stage, coins, error, safetyNotice, categories, inboxItems, tournament, tournamentLoading,
-    contextBoard, contextBoardLoading, challenge, countdown, run, outcome, published, sharingRewardCoins, pending,
-    adjustedNow, ghostCorrect, feedback, penaltyFlash, currentLetters, activeSlotIndex, raceGuesses,
-    letterStates, quitConfirmationOpen, raceGuessLoading, socialPending, dialogRef, gameplayViewportRef, gameplayRef,
-    quitDialogRef, onClose, onRetry, onRequestClose, onShowInbox, onShowTournaments, onChooseCategory, onSelectCategory,
-    onInboxRematch, onBlockRival, onReportRival, onSelectSlot, onLetter, onText, onBackspace, onHint, onSubmit, onSkip, onPublish, onShare,
-    onRematch, onDismissQuit, onAbandon, onChooseNativeContext, onMatchNativePlayer,
-    playerOverlay, platformPlayerId,
+    stage,
+    coins,
+    error,
+    safetyNotice,
+    categories,
+    inboxItems,
+    tournament,
+    tournamentLoading,
+    contextBoard,
+    contextBoardLoading,
+    challenge,
+    countdown,
+    run,
+    outcome,
+    published,
+    sharingRewardCoins,
+    pending,
+    adjustedNow,
+    ghostCorrect,
+    feedback,
+    penaltyFlash,
+    currentLetters,
+    activeSlotIndex,
+    raceGuesses,
+    letterStates,
+    quitConfirmationOpen,
+    raceGuessLoading,
+    socialPending,
+    dialogRef,
+    gameplayViewportRef,
+    gameplayRef,
+    quitDialogRef,
+    onClose,
+    onRetry,
+    onRequestClose,
+    onShowInbox,
+    onShowTournaments,
+    onChooseCategory,
+    onSelectCategory,
+    onInboxRematch,
+    onBlockRival,
+    onReportRival,
+    onSelectSlot,
+    onLetter,
+    onText,
+    onBackspace,
+    onHint,
+    onSubmit,
+    onSkip,
+    onPublish,
+    onShare,
+    onRematch,
+    onDismissQuit,
+    onAbandon,
+    onChooseNativeContext,
+    onMatchNativePlayer,
+    playerOverlay,
+    platformPlayerId,
   } = props;
   return (
-    <section ref={dialogRef} className={stage === "racing" ? "race-screen race-screen-gameplay" : "race-screen"}
-      data-analytics-screen={`multiplayer_${stage}`} role="dialog" aria-modal="true" aria-labelledby="race-title" tabIndex={-1}>
+    <section
+      ref={dialogRef}
+      className={stage === "racing" ? "race-screen race-screen-gameplay" : "race-screen"}
+      data-analytics-screen={`multiplayer_${stage}`}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="race-title"
+      tabIndex={-1}
+    >
       {stage !== "racing" && stage !== "countdown" && <RaceTopbar coins={coins} onClose={onRequestClose} />}
-      {error && <div className="race-error" role="alert">{error}<button onClick={onRetry}>{tr("RaceTo10.RETRY")}</button></div>}
-      {safetyNotice && <p className="race-safety-notice" role="status">{safetyNotice}</p>}
-      {(stage === "categories" || stage === "inbox" || stage === "tournaments") && <RaceHubTabs
-        active={stage === "inbox" ? "activity" : stage === "tournaments" ? "tournaments" : "play"}
-        onPlay={onChooseCategory}
-        onActivity={onShowInbox}
-        onTournaments={onShowTournaments}
-        onChooseContext={onChooseNativeContext}
-        onMatchPlayer={onMatchNativePlayer}
-        socialPending={socialPending}
-      />}
-      {(stage === "inbox" || stage === "tournaments") && playerOverlay && platformPlayerId &&
-        <PlatformPlayerOverlay overlay={playerOverlay} playerId={platformPlayerId} />}
-      {stage === "categories" && <RaceCategoriesPanel categories={categories} loading={pending === "raceCategories"}
-        onSelect={onSelectCategory} onShowInbox={onShowInbox} />}
-      {stage === "inbox" && <RaceInboxPanel items={inboxItems} loading={pending === "raceInbox"}
-        contextBoard={contextBoard} contextBoardLoading={contextBoardLoading}
-        safetyPending={pending === "raceBlock" || pending === "raceReport"}
-        onRematch={onInboxRematch} onBlock={onBlockRival} onReport={onReportRival}
-        onChooseCategory={onChooseCategory} />}
+      {error && (
+        <div className="race-error" role="alert">
+          {error}
+          <button onClick={onRetry}>{tr("RaceTo10.RETRY")}</button>
+        </div>
+      )}
+      {safetyNotice && (
+        <p className="race-safety-notice" role="status">
+          {safetyNotice}
+        </p>
+      )}
+      {(stage === "categories" || stage === "inbox" || stage === "tournaments") && (
+        <RaceHubTabs
+          active={stage === "inbox" ? "activity" : stage === "tournaments" ? "tournaments" : "play"}
+          onPlay={onChooseCategory}
+          onActivity={onShowInbox}
+          onTournaments={onShowTournaments}
+          onChooseContext={onChooseNativeContext}
+          onMatchPlayer={onMatchNativePlayer}
+          socialPending={socialPending}
+        />
+      )}
+      {(stage === "inbox" || stage === "tournaments") && playerOverlay && platformPlayerId && (
+        <PlatformPlayerOverlay overlay={playerOverlay} playerId={platformPlayerId} />
+      )}
+      {stage === "categories" && (
+        <RaceCategoriesPanel
+          categories={categories}
+          loading={pending === "raceCategories"}
+          onSelect={onSelectCategory}
+          onShowInbox={onShowInbox}
+        />
+      )}
+      {stage === "inbox" && (
+        <RaceInboxPanel
+          items={inboxItems}
+          loading={pending === "raceInbox"}
+          contextBoard={contextBoard}
+          contextBoardLoading={contextBoardLoading}
+          safetyPending={pending === "raceBlock" || pending === "raceReport"}
+          onRematch={onInboxRematch}
+          onBlock={onBlockRival}
+          onReport={onReportRival}
+          onChooseCategory={onChooseCategory}
+        />
+      )}
       {stage === "tournaments" && <RaceTournamentPanel tournament={tournament} loading={tournamentLoading} />}
       {stage === "challenge" && <RaceChallengePanel challenge={challenge} onAccept={onSelectCategory} />}
-      {stage === "countdown" && <RaceCountdown countdown={countdown} loading={pending === "raceStart"}
-        coins={coins} onClose={onRequestClose} />}
-      {stage === "racing" && run && <RaceGameplay viewportRef={gameplayViewportRef} gameplayRef={gameplayRef}
-        run={run} adjustedNow={adjustedNow} ghostCorrect={ghostCorrect} feedback={feedback} coins={coins}
-        currentLetters={currentLetters} activeSlotIndex={activeSlotIndex} guesses={raceGuesses}
-        letterStates={letterStates} pending={Boolean(pending)} onClose={onRequestClose} onSelectSlot={onSelectSlot}
-        onLetter={onLetter} onText={onText} onBackspace={onBackspace} onHint={onHint} onSubmit={onSubmit} onSkip={onSkip} />}
-      {stage === "racing" && penaltyFlash && <div className="race-penalty-flash" role="status">{penaltyFlash}</div>}
-      {stage === "result" && outcome && <RaceResultPanel outcome={outcome} run={run} publication={published}
-        publishing={Boolean(pending)} sharingRewardCoins={sharingRewardCoins}
-        onPublish={onPublish} onShare={onShare} onRematch={onRematch}
-        onChooseCategory={() => onRematch()} onClose={onClose} />}
-      {quitConfirmationOpen && run?.status === "active" && <RaceQuitDialog dialogRef={quitDialogRef} error={error}
-        abandoning={pending === "raceAbandon"} onCancel={onDismissQuit} onConfirm={onAbandon} />}
+      {stage === "countdown" && (
+        <RaceCountdown countdown={countdown} loading={pending === "raceStart"} coins={coins} onClose={onRequestClose} />
+      )}
+      {stage === "racing" && run && (
+        <RaceGameplay
+          viewportRef={gameplayViewportRef}
+          gameplayRef={gameplayRef}
+          run={run}
+          adjustedNow={adjustedNow}
+          ghostCorrect={ghostCorrect}
+          feedback={feedback}
+          coins={coins}
+          currentLetters={currentLetters}
+          activeSlotIndex={activeSlotIndex}
+          guesses={raceGuesses}
+          letterStates={letterStates}
+          pending={Boolean(pending)}
+          onClose={onRequestClose}
+          onSelectSlot={onSelectSlot}
+          onLetter={onLetter}
+          onText={onText}
+          onBackspace={onBackspace}
+          onHint={onHint}
+          onSubmit={onSubmit}
+          onSkip={onSkip}
+        />
+      )}
+      {stage === "racing" && penaltyFlash && (
+        <div className="race-penalty-flash" role="status">
+          {penaltyFlash}
+        </div>
+      )}
+      {stage === "result" && outcome && (
+        <RaceResultPanel
+          outcome={outcome}
+          run={run}
+          publication={published}
+          publishing={Boolean(pending)}
+          sharingRewardCoins={sharingRewardCoins}
+          onPublish={onPublish}
+          onShare={onShare}
+          onRematch={onRematch}
+          onChooseCategory={() => onRematch()}
+          onClose={onClose}
+        />
+      )}
+      {quitConfirmationOpen && run?.status === "active" && (
+        <RaceQuitDialog
+          dialogRef={quitDialogRef}
+          error={error}
+          abandoning={pending === "raceAbandon"}
+          onCancel={onDismissQuit}
+          onConfirm={onAbandon}
+        />
+      )}
       {raceGuessLoading && <SpinningWheelLoader overlay className="race-operation-loader" />}
     </section>
   );

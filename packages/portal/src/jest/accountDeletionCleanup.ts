@@ -1,8 +1,5 @@
 import {tr} from "../play/i18n";
-import {
-  clearBrowserPlayerState,
-  safeBrowserStorageGet,
-} from "../play/playerPreferences";
+import {clearBrowserPlayerState, safeBrowserStorageGet} from "../play/playerPreferences";
 import {PLAYER_NOTIFICATION_IDS} from "./notifications/engagement";
 import type {JestPlatformPort} from "./types";
 
@@ -17,11 +14,11 @@ export const ACCOUNT_DELETION_PENDING_PHASE = {
 } as const;
 /** Durable account-deletion phase stored across a page reload. */
 export type AccountDeletionPendingPhase =
-  typeof ACCOUNT_DELETION_PENDING_PHASE[keyof typeof ACCOUNT_DELETION_PENDING_PHASE];
+  (typeof ACCOUNT_DELETION_PENDING_PHASE)[keyof typeof ACCOUNT_DELETION_PENDING_PHASE];
 /** Browser areas used redundantly so one restricted storage boundary cannot lose the retry marker. */
 const CLEANUP_MARKER_STORAGE_AREAS = ["local", "session"] as const;
 /** Browser storage area that can retain one account-deletion recovery marker. */
-type CleanupMarkerStorageArea = typeof CLEANUP_MARKER_STORAGE_AREAS[number];
+type CleanupMarkerStorageArea = (typeof CLEANUP_MARKER_STORAGE_AREAS)[number];
 
 /** Error describing which post-server account-deletion cleanup boundaries need retry. */
 export class AccountDeletionCleanupError extends Error {
@@ -33,12 +30,7 @@ export class AccountDeletionCleanupError extends Error {
   readonly browserFailed: boolean;
 
   /** Creates one retryable client-cleanup error. */
-  constructor(
-    notificationsFailed: boolean,
-    platformFailed: boolean,
-    browserFailed: boolean,
-    failures: unknown[],
-  ) {
+  constructor(notificationsFailed: boolean, platformFailed: boolean, browserFailed: boolean, failures: unknown[]) {
     super(tr("Profile.DELETE_ACCOUNT_ERROR_MESSAGE"), {
       cause: new AggregateError(failures, "account-deletion-client-cleanup-failed"),
     });
@@ -51,8 +43,9 @@ export class AccountDeletionCleanupError extends Error {
 
 /** Returns the most conservative durable deletion phase visible to this tab. */
 export function getAccountDeletionPendingPhase(): AccountDeletionPendingPhase | null {
-  const values = CLEANUP_MARKER_STORAGE_AREAS.map(
-    (area) => safeBrowserStorageGet(area, ACCOUNT_DELETION_CLEANUP_PENDING_KEY),
+  /** Provides values behavior. */
+  const values = CLEANUP_MARKER_STORAGE_AREAS.map((area) =>
+    safeBrowserStorageGet(area, ACCOUNT_DELETION_CLEANUP_PENDING_KEY),
   );
   if (values.includes(ACCOUNT_DELETION_PENDING_PHASE.authoritativeDeletion)) {
     return ACCOUNT_DELETION_PENDING_PHASE.authoritativeDeletion;
@@ -68,8 +61,7 @@ export function getAccountDeletionPendingPhase(): AccountDeletionPendingPhase | 
 export const isAccountDeletionCleanupPending = (): boolean => getAccountDeletionPendingPhase() !== null;
 
 /** Returns the deletion generation captured by cross-tab operation gates. */
-export const getAccountDeletionEpoch = (): string | null =>
-  safeBrowserStorageGet("local", ACCOUNT_DELETION_EPOCH_KEY);
+export const getAccountDeletionEpoch = (): string | null => safeBrowserStorageGet("local", ACCOUNT_DELETION_EPOCH_KEY);
 
 /** Minimal cross-tab gate used to serialize startup identity with deletion authority. */
 type AccountDeletionStartupGate = {
@@ -102,10 +94,7 @@ export async function runAccountDeletionAwareIdentityOperation(
 
   await gate.runExclusive(async () => {
     // The owner may have completed deletion while this recovery waited for the lock.
-    if (
-      getAccountDeletionPendingPhase() !==
-      ACCOUNT_DELETION_PENDING_PHASE.authoritativeDeletion
-    ) return;
+    if (getAccountDeletionPendingPhase() !== ACCOUNT_DELETION_PENDING_PHASE.authoritativeDeletion) return;
     await operation();
   });
   // A recovery startup is terminal even if another tab completed it first.
@@ -125,8 +114,10 @@ export async function completeTombstonedAccountDeletion(
 ): Promise<void> {
   if (getAccountDeletionPendingPhase() === null) markAccountDeletionRequested();
   await gate.runExclusive(async () => {
+    /** Provides phase behavior. */
     const phase = getAccountDeletionPendingPhase();
     if (phase === null) return;
+    /** Provides recovered behavior. */
     const recovered = await recoverPendingAccountDeletion(
       platform,
       phase === ACCOUNT_DELETION_PENDING_PHASE.authoritativeDeletion ? "signed" : "initialized",
@@ -147,13 +138,14 @@ const getCleanupMarkerStorage = (area: CleanupMarkerStorageArea): Storage =>
   area === "local" ? globalThis.localStorage : globalThis.sessionStorage;
 
 /** Persists and verifies a reload marker before any fallible client cleanup starts. */
-const persistAccountDeletionCleanupMarker = (
-  phase: AccountDeletionPendingPhase,
-): CleanupMarkerStorageArea[] => {
+const persistAccountDeletionCleanupMarker = (phase: AccountDeletionPendingPhase): CleanupMarkerStorageArea[] => {
+  /** Provides persisted behavior. */
   const persisted: CleanupMarkerStorageArea[] = [];
+  /** Provides failures behavior. */
   const failures: unknown[] = [];
   CLEANUP_MARKER_STORAGE_AREAS.forEach((area) => {
     try {
+      /** Provides storage behavior. */
       const storage = getCleanupMarkerStorage(area);
       storage.setItem(ACCOUNT_DELETION_CLEANUP_PENDING_KEY, phase);
       if (storage.getItem(ACCOUNT_DELETION_CLEANUP_PENDING_KEY) !== phase) {
@@ -175,7 +167,9 @@ const persistAccountDeletionCleanupMarker = (
 /** Rotates and verifies the origin-wide generation that permanently quiesces older live tabs. */
 const rotateAccountDeletionEpoch = (): void => {
   try {
+    /** Provides storage behavior. */
     const storage = getCleanupMarkerStorage("local");
+    /** Provides epoch behavior. */
     const epoch = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
     storage.setItem(ACCOUNT_DELETION_EPOCH_KEY, epoch);
     if (storage.getItem(ACCOUNT_DELETION_EPOCH_KEY) !== epoch) {
@@ -194,9 +188,11 @@ export function markAccountDeletionRequested(): void {
 
 /** Removes every successfully persisted marker copy and verifies each removal. */
 const removeAccountDeletionCleanupMarker = (persisted: CleanupMarkerStorageArea[]): void => {
+  /** Provides failures behavior. */
   const failures: unknown[] = [];
   persisted.forEach((area) => {
     try {
+      /** Provides storage behavior. */
       const storage = getCleanupMarkerStorage(area);
       storage.removeItem(ACCOUNT_DELETION_CLEANUP_PENDING_KEY);
       if (storage.getItem(ACCOUNT_DELETION_CLEANUP_PENDING_KEY) !== null) {
@@ -227,18 +223,25 @@ export async function purgeDeletedPlayerState(
     waitForPendingNotificationOperations,
     withExclusiveNotificationAccess,
   }: {
+    /** Stores clear firebase authentication. */
     clearFirebaseAuthentication?: () => Promise<void>;
+    /** Stores wait for pending notification operations. */
     waitForPendingNotificationOperations?: () => Promise<void>;
+    /** Stores with exclusive notification access. */
     withExclusiveNotificationAccess?: (operation: () => Promise<void>) => Promise<void>;
   } = {},
 ): Promise<void> {
-  const persistedMarkerAreas = persistAccountDeletionCleanupMarker(
-    ACCOUNT_DELETION_PENDING_PHASE.clientCleanup,
-  );
+  /** Provides persisted marker areas behavior. */
+  const persistedMarkerAreas = persistAccountDeletionCleanupMarker(ACCOUNT_DELETION_PENDING_PHASE.clientCleanup);
+  /** Provides failures behavior. */
   const failures: unknown[] = [];
+  /** Provides notifications failed behavior. */
   let notificationsFailed = false;
+  /** Provides platform failed behavior. */
   let platformFailed = false;
+  /** Provides browser failed behavior. */
   let browserFailed = false;
+  /** Clears notifications. */
   const clearNotifications = async (): Promise<void> => {
     try {
       await waitForPendingNotificationOperations?.();
@@ -248,6 +251,7 @@ export async function purgeDeletedPlayerState(
     }
     try {
       if (platform.getPlayer().registered) {
+        /** Provides removals behavior. */
         const removals = await Promise.allSettled(
           PLAYER_NOTIFICATION_IDS.map((identifier) => platform.removeNotification(identifier)),
         );
@@ -257,9 +261,9 @@ export async function purgeDeletedPlayerState(
             failures.push(removal.reason);
           } else if (removal.value.status !== "success") {
             notificationsFailed = true;
-            failures.push(new Error(
-              `notification-unschedule-failed:${PLAYER_NOTIFICATION_IDS[index]}:${removal.value.status}`,
-            ));
+            failures.push(
+              new Error(`notification-unschedule-failed:${PLAYER_NOTIFICATION_IDS[index]}:${removal.value.status}`),
+            );
           }
         });
       }
@@ -313,16 +317,22 @@ export async function recoverPendingAccountDeletion(
     waitForPendingNotificationOperations,
     withExclusiveNotificationAccess,
   }: {
+    /** Stores clear firebase authentication. */
     clearFirebaseAuthentication?: () => Promise<void>;
+    /** Stores retry authoritative deletion. */
     retryAuthoritativeDeletion?: () => Promise<void>;
+    /** Stores wait for pending notification operations. */
     waitForPendingNotificationOperations?: () => Promise<void>;
+    /** Stores with exclusive notification access. */
     withExclusiveNotificationAccess?: (operation: () => Promise<void>) => Promise<void>;
   } = {},
 ): Promise<boolean> {
+  /** Provides phase behavior. */
   const phase = getAccountDeletionPendingPhase();
+  /** Provides client cleanup ready behavior. */
   const clientCleanupReady = phase === ACCOUNT_DELETION_PENDING_PHASE.clientCleanup && stage === "initialized";
-  const authoritativeRetryReady =
-    phase === ACCOUNT_DELETION_PENDING_PHASE.authoritativeDeletion && stage === "signed";
+  /** Provides authoritative retry ready behavior. */
+  const authoritativeRetryReady = phase === ACCOUNT_DELETION_PENDING_PHASE.authoritativeDeletion && stage === "signed";
   if (!clientCleanupReady && !authoritativeRetryReady) return false;
 
   if (authoritativeRetryReady) {

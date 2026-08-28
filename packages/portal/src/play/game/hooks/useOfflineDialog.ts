@@ -4,13 +4,18 @@ import {useEffect, type RefObject} from "react";
 export function useOfflineDialog(online: boolean, dialogRef: RefObject<HTMLDivElement | null>): void {
   useEffect(() => {
     if (online) return;
+    /** Provides dialog behavior. */
     const dialog = dialogRef.current;
     if (!dialog) return;
+    /** Provides previously focused behavior. */
     const previouslyFocused = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    /** Provides focus frame behavior. */
     const focusFrame = window.requestAnimationFrame(() => dialog.focus());
+    /** Provides keep focus in dialog behavior. */
     const keepFocusInDialog = (event: FocusEvent) => {
       if (event.target instanceof Node && !dialog.contains(event.target)) dialog.focus();
     };
+    /** Provides block obscured keyboard interaction behavior. */
     const blockObscuredKeyboardInteraction = (event: KeyboardEvent) => {
       if (event.key === "Tab") {
         event.preventDefault();
@@ -18,7 +23,9 @@ export function useOfflineDialog(online: boolean, dialogRef: RefObject<HTMLDivEl
         return;
       }
       if (
-        !event.ctrlKey && !event.metaKey && !event.altKey &&
+        !event.ctrlKey &&
+        !event.metaKey &&
+        !event.altKey &&
         (/^[a-z]$/i.test(event.key) || ["Backspace", "Enter", "Escape"].includes(event.key))
       ) {
         event.preventDefault();

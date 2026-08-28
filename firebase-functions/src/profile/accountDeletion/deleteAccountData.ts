@@ -55,18 +55,27 @@ function purchaseGrantTombstone(
 
 /** Replaces identity-linked legacy purchase grants with hashed, non-identifying tombstones. */
 async function anonymizePurchaseGrantDocuments(userId: string): Promise<void> {
+  /** Provides db behavior. */
   const db = admin.firestore();
+  /** Provides collection behavior. */
   const collection = db.collection("jestPurchaseGrants");
   while (true) {
+    /** Provides snapshot behavior. */
     const snapshot = await collection.where("uid", "==", userId).limit(PURCHASE_MIGRATION_BATCH_SIZE).get();
     if (snapshot.empty) return;
+    /** Provides batch behavior. */
     const batch = db.batch();
     snapshot.docs.forEach((document) => {
+      /** Provides data behavior. */
       const data = document.data();
+      /** Stores d hash. */
       const storedHash = data.purchaseTokenHash;
-      const purchaseTokenHash = typeof storedHash === "string" && /^[0-9a-f]{64}$/.test(storedHash)
-        ? storedHash
-        : createJestPurchaseGrantId(document.id);
+      /** Provides purchase token hash behavior. */
+      const purchaseTokenHash =
+        typeof storedHash === "string" && /^[0-9a-f]{64}$/.test(storedHash)
+          ? storedHash
+          : createJestPurchaseGrantId(document.id);
+      /** Provides target behavior. */
       const target = collection.doc(purchaseTokenHash);
       batch.set(target, purchaseGrantTombstone(purchaseTokenHash, data));
       if (target.path !== document.ref.path) batch.delete(document.ref);
@@ -80,12 +89,16 @@ async function anonymizeFacebookCommerceDocuments(
   collectionName: "facebookCommerceReceipts" | "facebookCommerceRefunds",
   userId: string,
 ): Promise<void> {
+  /** Provides collection behavior. */
   const collection = admin.firestore().collection(collectionName);
   while (true) {
+    /** Provides snapshot behavior. */
     const snapshot = await collection.where("uid", "==", userId).limit(SINGLE_WRITE_BATCH_SIZE).get();
     if (snapshot.empty) return;
+    /** Provides batch behavior. */
     const batch = admin.firestore().batch();
     snapshot.docs.forEach((document) => {
+      /** Provides data behavior. */
       const data = document.data();
       batch.set(document.ref, {
         provider: "facebook",
@@ -106,12 +119,16 @@ async function anonymizeRedditCommerceDocuments(
   collectionName: "redditCommerceReceipts" | "redditCommerceRefunds",
   userId: string,
 ): Promise<void> {
+  /** Provides collection behavior. */
   const collection = admin.firestore().collection(collectionName);
   while (true) {
+    /** Provides snapshot behavior. */
     const snapshot = await collection.where("uid", "==", userId).limit(SINGLE_WRITE_BATCH_SIZE).get();
     if (snapshot.empty) return;
+    /** Provides batch behavior. */
     const batch = admin.firestore().batch();
     snapshot.docs.forEach((document) => {
+      /** Provides data behavior. */
       const data = document.data();
       batch.set(document.ref, {
         provider: "reddit",
@@ -129,12 +146,16 @@ async function anonymizeRedditCommerceDocuments(
 
 /** Removes both identities while preserving one referral settlement replay tombstone. */
 async function anonymizeFacebookReferralSettlements(field: "inviteeUid" | "inviterUid", userId: string): Promise<void> {
+  /** Provides collection behavior. */
   const collection = admin.firestore().collection("facebookReferralSettlements");
   while (true) {
+    /** Provides snapshot behavior. */
     const snapshot = await collection.where(field, "==", userId).limit(SINGLE_WRITE_BATCH_SIZE).get();
     if (snapshot.empty) return;
+    /** Provides batch behavior. */
     const batch = admin.firestore().batch();
     snapshot.docs.forEach((document) => {
+      /** Provides data behavior. */
       const data = document.data();
       batch.set(document.ref, {
         provider: "facebook",
@@ -150,12 +171,16 @@ async function anonymizeFacebookReferralSettlements(field: "inviteeUid" | "invit
 
 /** Removes both Reddit identities while preserving one referral settlement replay tombstone. */
 async function anonymizeRedditReferralSettlements(field: "inviteeUid" | "inviterUid", userId: string): Promise<void> {
+  /** Provides collection behavior. */
   const collection = admin.firestore().collection("redditReferralSettlements");
   while (true) {
+    /** Provides snapshot behavior. */
     const snapshot = await collection.where(field, "==", userId).limit(SINGLE_WRITE_BATCH_SIZE).get();
     if (snapshot.empty) return;
+    /** Provides batch behavior. */
     const batch = admin.firestore().batch();
     snapshot.docs.forEach((document) => {
+      /** Provides data behavior. */
       const data = document.data();
       batch.set(document.ref, {
         provider: "reddit",
@@ -186,11 +211,15 @@ function referralRewardTombstone(data: FirebaseFirestore.DocumentData): Firebase
 
 /** Removes a platform player ID from existing referral reward receipts without enabling replay. */
 async function anonymizeReferralRewardDocuments(field: string, jestPlayerId: string): Promise<void> {
+  /** Provides db behavior. */
   const db = admin.firestore();
+  /** Provides collection behavior. */
   const collection = db.collection("jestReferralRewards");
   while (true) {
+    /** Provides snapshot behavior. */
     const snapshot = await collection.where(field, "==", jestPlayerId).limit(SINGLE_WRITE_BATCH_SIZE).get();
     if (snapshot.empty) return;
+    /** Provides batch behavior. */
     const batch = db.batch();
     snapshot.docs.forEach((document) => batch.set(document.ref, referralRewardTombstone(document.data())));
     await batch.commit();
@@ -200,8 +229,11 @@ async function anonymizeReferralRewardDocuments(field: string, jestPlayerId: str
 /** Removes Jest referral records or identity linkage owned by one platform player. */
 async function removeJestReferralIdentity(jestPlayerId: string): Promise<void> {
   await deleteMatchingDocuments("jestReferralVerifications", "playerId", jestPlayerId);
-  await admin.firestore().collection("jestReferralVerifications")
-    .doc(createJestReferralVerificationId(jestPlayerId)).delete();
+  await admin
+    .firestore()
+    .collection("jestReferralVerifications")
+    .doc(createJestReferralVerificationId(jestPlayerId))
+    .delete();
   await anonymizeReferralRewardDocuments("playerId", jestPlayerId);
   await anonymizeReferralRewardDocuments("referredPlayerId", jestPlayerId);
 }
@@ -210,15 +242,26 @@ async function removeJestReferralIdentity(jestPlayerId: string): Promise<void> {
 function isMissingStorageBucket(error: unknown): boolean {
   if (typeof error !== "object" || error === null || !("code" in error)) return false;
   /** Provider error code returned by Cloud Storage or the Firebase Admin SDK. */
-  const code = (error as {code?: unknown}).code;
+  const code = (
+    error as {
+      /** Stores code. */
+      code?: unknown;
+    }
+  ).code;
   return code === 404 || code === "404" || code === "storage/bucket-not-found";
 }
 
 /** Removes player-owned files when the project has a Firebase Storage bucket. */
 async function deletePlayerStorageFiles(userId: string): Promise<void> {
   try {
-    await Promise.all(["avatars", "exports"].map((folder) =>
-      admin.storage().bucket().deleteFiles({prefix: `${folder}/${userId}/`})));
+    await Promise.all(
+      ["avatars", "exports"].map((folder) =>
+        admin
+          .storage()
+          .bucket()
+          .deleteFiles({prefix: `${folder}/${userId}/`}),
+      ),
+    );
   } catch (error) {
     if (!isMissingStorageBucket(error)) throw error;
   }
@@ -226,6 +269,7 @@ async function deletePlayerStorageFiles(userId: string): Promise<void> {
 
 /** Permanently removes an authenticated player's Riddle Quest data and Firebase identity. */
 export async function deleteAccountForUser(userId: string, jestPlayerId?: string): Promise<void> {
+  /** Provides db behavior. */
   const db = admin.firestore();
   // This permanent pseudonymous guard is written first so another device or
   // an older build/token cannot recreate account data while the remaining
@@ -234,8 +278,7 @@ export async function deleteAccountForUser(userId: string, jestPlayerId?: string
   await removeCrossUserRaceIdentitySnapshots(userId);
   await removeUserFromFacebookContextCompetitions(userId, db);
   await Promise.all([
-    ...USER_OWNED_COLLECTIONS.map(({collection, field}) =>
-      deleteMatchingDocuments(collection, field, userId)),
+    ...USER_OWNED_COLLECTIONS.map(({collection, field}) => deleteMatchingDocuments(collection, field, userId)),
     deleteMatchingDocuments("raceAnalytics", "cohortUserHash", hashRaceCohortUser(userId)),
     deleteMatchingDocuments("socialModerationQueue", "targetUserId", userId),
     deleteMatchingCollectionGroupDocuments("knownRivals", "targetUserId", userId),
@@ -265,6 +308,7 @@ export async function deleteAccountForUser(userId: string, jestPlayerId?: string
     deletePresenceForUser(userId, admin.database()),
   ]);
   if (jestPlayerId) await removeJestReferralIdentity(jestPlayerId);
+  /** Provides r ref. */
   const userRef = db.collection("users").doc(userId);
   await deleteUsernameReservationAndProfiles(userId);
   // The transaction removes the top-level user document. recursiveDelete then
@@ -275,8 +319,18 @@ export async function deleteAccountForUser(userId: string, jestPlayerId?: string
     try {
       await admin.auth().deleteUser(userId);
     } catch (error) {
-      if (!(typeof error === "object" && error !== null && "code" in error
-        && (error as {code?: string}).code === "auth/user-not-found")) throw error;
+      if (!(
+        typeof error === "object" &&
+        error !== null &&
+        "code" in error &&
+        (
+          error as {
+            /** Stores code. */
+            code?: string;
+          }
+        ).code === "auth/user-not-found"
+      ))
+        throw error;
     }
   }
 }

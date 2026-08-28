@@ -34,7 +34,9 @@ export function AchievementsModalPage({profile}: ProfileStatsModalPageProps) {
               <div className="achievement-progress">
                 <i style={{width: `${(progress / achievement.threshold) * 100}%`}} />
               </div>
-              <small>{progress}/{achievement.threshold}</small>
+              <small>
+                {progress}/{achievement.threshold}
+              </small>
             </div>
           </article>
         );
@@ -66,7 +68,10 @@ export function StatisticsModalPage({profile}: ProfileStatsModalPageProps) {
   return (
     <dl className="full-stat-grid">
       {statistics.map(([label, value]) => (
-        <div key={label}><dt>{label}</dt><dd>{value}</dd></div>
+        <div key={label}>
+          <dt>{label}</dt>
+          <dd>{value}</dd>
+        </div>
       ))}
     </dl>
   );
@@ -84,8 +89,14 @@ export function RanksModalPage({profile}: ProfileStatsModalPageProps) {
           <span className="rank-emblem" style={{background: rank.color}}>
             <RankIcon name={rank.icon} />
           </span>
-          <div><strong>{tr(rank.nameKey)}</strong><p>{tr(rank.descriptionKey)}</p></div>
-          <small>{tr("Ranks.LEVEL_REQUIREMENT_PREFIX")}{rank.minimumLevel}</small>
+          <div>
+            <strong>{tr(rank.nameKey)}</strong>
+            <p>{tr(rank.descriptionKey)}</p>
+          </div>
+          <small>
+            {tr("Ranks.LEVEL_REQUIREMENT_PREFIX")}
+            {rank.minimumLevel}
+          </small>
         </article>
       ))}
     </div>

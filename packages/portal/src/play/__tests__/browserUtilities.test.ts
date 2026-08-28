@@ -2,8 +2,11 @@ import {dispatchLocalBridge, GAME_TO_HOST_EVENT, HOST_TO_GAME_EVENT} from "../lo
 import {createRequestId} from "../requestIds";
 
 describe("browser utility boundaries", () => {
+  /** Provides original crypto behavior. */
   const originalCrypto = globalThis.crypto;
+  /** Provides original window behavior. */
   const originalWindow = globalThis.window;
+  /** Provides original custom event behavior. */
   const originalCustomEvent = globalThis.CustomEvent;
 
   afterEach(() => {
@@ -31,16 +34,27 @@ describe("browser utility boundaries", () => {
   });
 
   it("dispatches typed bridge events to the local host", () => {
+    /** Provides test custom event behavior. */
     class TestCustomEvent {
+      /** Stores type. */
       public readonly type: string;
+      /** Stores detail. */
       public readonly detail: unknown;
 
-      public constructor(type: string, init: {detail: unknown}) {
+      /** Creates a test custom event instance. */
+      public constructor(
+        type: string,
+        init: {
+          /** Stores detail. */
+          detail: unknown;
+        },
+      ) {
         this.type = type;
         this.detail = init.detail;
       }
     }
 
+    /** Provides dispatch event behavior. */
     const dispatchEvent = jest.fn(() => true);
     Object.defineProperty(globalThis, "CustomEvent", {configurable: true, value: TestCustomEvent});
     Object.defineProperty(globalThis, "window", {configurable: true, value: {dispatchEvent}});
@@ -48,9 +62,11 @@ describe("browser utility boundaries", () => {
     expect(GAME_TO_HOST_EVENT).toBe("riddle-quest:game-to-host");
     expect(HOST_TO_GAME_EVENT).toBe("riddle-quest:host-to-game");
     expect(dispatchLocalBridge(GAME_TO_HOST_EVENT, {ready: true})).toBe(true);
-    expect(dispatchEvent).toHaveBeenCalledWith(expect.objectContaining({
-      type: GAME_TO_HOST_EVENT,
-      detail: {ready: true},
-    }));
+    expect(dispatchEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: GAME_TO_HOST_EVENT,
+        detail: {ready: true},
+      }),
+    );
   });
 });

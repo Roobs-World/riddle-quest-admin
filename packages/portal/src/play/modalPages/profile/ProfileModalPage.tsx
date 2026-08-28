@@ -88,6 +88,7 @@ export function ProfileModalPage({
       return;
     }
     if (event.key !== "Tab") return;
+    /** Provides buttons behavior. */
     const buttons = Array.from(
       deleteDialogRef.current?.querySelectorAll<HTMLButtonElement>("button:not(:disabled)") ?? [],
     );
@@ -95,7 +96,9 @@ export function ProfileModalPage({
       event.preventDefault();
       return;
     }
+    /** Provides first behavior. */
     const first = buttons[0];
+    /** Provides last behavior. */
     const last = buttons[buttons.length - 1];
     if (event.shiftKey && document.activeElement === first) {
       event.preventDefault();
@@ -127,7 +130,9 @@ export function ProfileModalPage({
                 {(profile?.username ?? tr("Profile.GUEST_USERNAME")).slice(0, 1).toUpperCase()}
               </span>
             )}
-            <span className="profile-avatar-edit" aria-hidden="true">＋</span>
+            <span className="profile-avatar-edit" aria-hidden="true">
+              ＋
+            </span>
           </button>
           <input
             ref={avatarInputRef}
@@ -138,7 +143,11 @@ export function ProfileModalPage({
             tabIndex={-1}
             aria-hidden="true"
           />
-          {avatarError ? <small className="profile-avatar-error" role="alert">{avatarError}</small> : null}
+          {avatarError ? (
+            <small className="profile-avatar-error" role="alert">
+              {avatarError}
+            </small>
+          ) : null}
           <div>
             <strong>{profile?.username ?? tr("Profile.GUEST_USERNAME")}</strong>
             <button className="play-text-button" onClick={() => onOpenModal("username")}>
@@ -157,9 +166,16 @@ export function ProfileModalPage({
           </div>
         </section>
         <div className="xp-progress">
-          <span>{tr("Profile.XP_LEVEL_PREFIX")}{progress.level}</span>
-          <div><i style={{width: `${progress.percentage}%`}} /></div>
-          <span>{progress.xp} {tr("StatsModal.XP")}</span>
+          <span>
+            {tr("Profile.XP_LEVEL_PREFIX")}
+            {progress.level}
+          </span>
+          <div>
+            <i style={{width: `${progress.percentage}%`}} />
+          </div>
+          <span>
+            {progress.xp} {tr("StatsModal.XP")}
+          </span>
         </div>
         {nextRank ? (
           <p className="next-rank">
@@ -168,11 +184,21 @@ export function ProfileModalPage({
         ) : null}
       </div>
       <dl className="profile-stats" data-tooltip="profileStats">
-        <div><dt>{tr("Profile.TOTAL_COINS_LABEL")}</dt><dd>{profile?.coins ?? 0}</dd></div>
-        <div><dt>{tr("Profile.TOTAL_WINS_STAT")}</dt><dd>{profile?.totalWins ?? profile?.wins ?? 0}</dd></div>
-        <div><dt>{tr("Profile.BEST_STREAK_STAT")}</dt><dd>{profile?.bestStreak ?? 0}</dd></div>
+        <div>
+          <dt>{tr("Profile.TOTAL_COINS_LABEL")}</dt>
+          <dd>{profile?.coins ?? 0}</dd>
+        </div>
+        <div>
+          <dt>{tr("Profile.TOTAL_WINS_STAT")}</dt>
+          <dd>{profile?.totalWins ?? profile?.wins ?? 0}</dd>
+        </div>
+        <div>
+          <dt>{tr("Profile.BEST_STREAK_STAT")}</dt>
+          <dd>{profile?.bestStreak ?? 0}</dd>
+        </div>
         <div data-tooltip="profileDailyPuzzles">
-          <dt>{tr("Profile.DAILY_PUZZLES_STAT")}</dt><dd>{profile?.dailyPuzzlesCompleted ?? 0}</dd>
+          <dt>{tr("Profile.DAILY_PUZZLES_STAT")}</dt>
+          <dd>{profile?.dailyPuzzlesCompleted ?? 0}</dd>
         </div>
       </dl>
       <div className="profile-links">
@@ -181,8 +207,12 @@ export function ProfileModalPage({
             {tr("VictoryModal.SHARE_TEXT", {coins: referralSharing.rewardCoins})}
           </button>
         ) : null}
-        <button data-tooltip="profileStatistics" onClick={() => onOpenModal("statistics")}>{tr("StatsModal.TITLE")}</button>
-        <button data-tooltip="profileAchievements" onClick={() => onOpenModal("achievements")}>{tr("Achievements.MODAL_TITLE")}</button>
+        <button data-tooltip="profileStatistics" onClick={() => onOpenModal("statistics")}>
+          {tr("StatsModal.TITLE")}
+        </button>
+        <button data-tooltip="profileAchievements" onClick={() => onOpenModal("achievements")}>
+          {tr("Achievements.MODAL_TITLE")}
+        </button>
         <button
           onMouseDown={(event) => event.stopPropagation()}
           onClick={(event) => {
@@ -192,8 +222,12 @@ export function ProfileModalPage({
         >
           {tr("Ranks.TITLE")}
         </button>
-        <button data-tooltip="profileLeaderboard" onClick={() => onOpenModal("leaderboard")}>{tr("Leaderboard.TITLE")}</button>
-        <button data-tooltip="profileTreasure" onClick={() => onOpenModal("treasure")}>{tr("Profile.TREASURE_CHEST_TITLE")}</button>
+        <button data-tooltip="profileLeaderboard" onClick={() => onOpenModal("leaderboard")}>
+          {tr("Leaderboard.TITLE")}
+        </button>
+        <button data-tooltip="profileTreasure" onClick={() => onOpenModal("treasure")}>
+          {tr("Profile.TREASURE_CHEST_TITLE")}
+        </button>
       </div>
       <div className="profile-danger-zone">
         <button

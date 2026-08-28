@@ -20,16 +20,36 @@ export class RedditPollingPresence {
   /** Stores capability. */
   private readonly capability: PresenceCapability;
   /** Stores on rivals. */
-  private readonly onRivals: (rivals: Array<{userId: string; state: PresenceState}>) => void;
+  private readonly onRivals: (
+    rivals: Array<{
+      /** Stores user id. */
+      userId: string; /** Stores state. */
+      /** Stores state. */
+      state: PresenceState;
+    }>,
+  ) => void;
   /** Stores visibility. */
   private readonly visibility: () => DocumentVisibilityState;
 
   /** Creates a reddit polling presence instance. */
-  constructor(capability: PresenceCapability, options: {
-    sessionId?: string;
-    onRivals?: (rivals: Array<{userId: string; state: PresenceState}>) => void;
-    visibility?: () => DocumentVisibilityState;
-  } = {}) {
+  constructor(
+    capability: PresenceCapability,
+    options: {
+      /** Stores session id. */
+      sessionId?: string;
+      /** Stores on rivals. */
+      onRivals?: (
+        rivals: Array<{
+          /** Stores user id. */
+          userId: string; /** Stores state. */
+          /** Stores state. */
+          state: PresenceState;
+        }>,
+      ) => void;
+      /** Stores visibility. */
+      visibility?: () => DocumentVisibilityState;
+    } = {},
+  ) {
     this.capability = capability;
     this.sessionId = options.sessionId ?? crypto.randomUUID().replaceAll("-", "_");
     this.onRivals = options.onRivals ?? (() => undefined);
@@ -72,17 +92,23 @@ export class RedditPollingPresence {
   }
 
   /** Clears timer. */
-  private clearTimer() { if (this.timer) clearTimeout(this.timer); this.timer = undefined; }
+  private clearTimer() {
+    if (this.timer) clearTimeout(this.timer);
+    this.timer = undefined;
+  }
   /** Provides poll behavior. */
   private async poll(): Promise<void> {
     if (this.running) return this.running;
-    this.running = this.capability.poll({sessionId: this.sessionId, state: this.state, enabled: true})
+    this.running = this.capability
+      .poll({sessionId: this.sessionId, state: this.state, enabled: true})
       .then(({rivals}) => this.onRivals(rivals))
       .finally(() => {
         this.running = undefined;
         if (this.enabled && this.visibility() === "visible") {
-          this.timer = setTimeout(() => void this.poll().catch(() => undefined),
-            this.state === "racing" ? REDDIT_RACE_POLL_MS : REDDIT_HUB_POLL_MS);
+          this.timer = setTimeout(
+            () => void this.poll().catch(() => undefined),
+            this.state === "racing" ? REDDIT_RACE_POLL_MS : REDDIT_HUB_POLL_MS,
+          );
         }
       });
     return this.running;

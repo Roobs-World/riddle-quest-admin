@@ -13,6 +13,7 @@ export interface DailyChallengeProgress {
 
 /** Indicates whether is completed today. */
 function isCompletedToday(lastCompletedAt: unknown): boolean {
+  /** Provides last completed day behavior. */
   const lastCompletedDay = getUtcDayString(lastCompletedAt);
   if (!lastCompletedDay) return false;
   return lastCompletedDay === new Date().toISOString().split("T")[0];
@@ -24,7 +25,9 @@ export function resolveDailyChallengeProgress(user: Player | undefined, question
     return {currentQuestion: 0, hasCompletedToday: false, questionsCompleted: 0};
   }
 
+  /** Indicates whether has completed today. */
   const hasCompletedToday = isCompletedToday(user.lastDailyChallengeCompletedAt);
+  /** Stores d question. */
   const storedQuestion = user.progress?.dailyChallengeCurrentQuestion ?? 0;
   return {
     hasCompletedToday,

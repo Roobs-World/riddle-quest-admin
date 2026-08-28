@@ -13,9 +13,21 @@ export type FacebookIdentityCredentials = {
 /** Defines the contract for facebook backend port. */
 export interface FacebookBackendPort {
   /** Provides issue identity nonce behavior. */
-  issueIdentityNonce(): Promise<{nonce: string; expiresAtMs: number}>;
+  issueIdentityNonce(): Promise<{
+    /** Stores nonce. */
+    nonce: string; /** Stores expires at ms. */
+    /** Stores expires at ms. */
+    expiresAtMs: number;
+  }>;
   /** Provides exchange identity behavior. */
-  exchangeIdentity(input: {signedPlayer: string; playerId: string; nonce: string}): Promise<FacebookIdentityCredentials>;
+  exchangeIdentity(input: {
+    /** Stores signed player. */
+    signedPlayer: string; /** Stores player id. */
+    /** Stores player id. */
+    playerId: string; /** Stores nonce. */
+    /** Stores nonce. */
+    nonce: string;
+  }): Promise<FacebookIdentityCredentials>;
 }
 
 /** Describes facebook backend client options. */
@@ -44,14 +56,27 @@ const isRecord = (value: unknown): value is Record<string, unknown> =>
 const hasExactKeys = (value: Record<string, unknown>, expected: readonly string[]) =>
   Object.keys(value).length === expected.length && expected.every((key) => Object.hasOwn(value, key));
 /** Provides bounded token behavior. */
-const boundedToken = (value: unknown): value is string => typeof value === "string" &&
-  value.length > 0 && new TextEncoder().encode(value).byteLength <= 16_384 && TOKEN.test(value);
+const boundedToken = (value: unknown): value is string =>
+  typeof value === "string" &&
+  value.length > 0 &&
+  new TextEncoder().encode(value).byteLength <= 16_384 &&
+  TOKEN.test(value);
 
 /** Rejects malformed or drifted nonce responses before invoking the Facebook SDK. */
-export function parseFacebookIdentityNonceResponse(value: unknown): {nonce: string; expiresAtMs: number} {
-  if (!isRecord(value) || !hasExactKeys(value, ["nonce", "expiresAtMs"]) ||
-    typeof value.nonce !== "string" || !NONCE.test(value.nonce) ||
-    !Number.isSafeInteger(value.expiresAtMs) || (value.expiresAtMs as number) < 1) {
+export function parseFacebookIdentityNonceResponse(value: unknown): {
+  /** Stores nonce. */
+  nonce: string; /** Stores expires at ms. */
+  /** Stores expires at ms. */
+  expiresAtMs: number;
+} {
+  if (
+    !isRecord(value) ||
+    !hasExactKeys(value, ["nonce", "expiresAtMs"]) ||
+    typeof value.nonce !== "string" ||
+    !NONCE.test(value.nonce) ||
+    !Number.isSafeInteger(value.expiresAtMs) ||
+    (value.expiresAtMs as number) < 1
+  ) {
     throw new Error("Invalid Facebook identity nonce response.");
   }
   return {nonce: value.nonce, expiresAtMs: value.expiresAtMs as number};
@@ -59,11 +84,15 @@ export function parseFacebookIdentityNonceResponse(value: unknown): {nonce: stri
 
 /** Accepts only the exact one-hour, provider-scoped credential response contract. */
 export function parseFacebookIdentityCredentials(value: unknown): FacebookIdentityCredentials {
-  if (!isRecord(value) || !hasExactKeys(value, [
-    "customToken", "appCheckToken", "appCheckExpiresInMs", "uid",
-  ]) || !boundedToken(value.customToken) || !boundedToken(value.appCheckToken) ||
+  if (
+    !isRecord(value) ||
+    !hasExactKeys(value, ["customToken", "appCheckToken", "appCheckExpiresInMs", "uid"]) ||
+    !boundedToken(value.customToken) ||
+    !boundedToken(value.appCheckToken) ||
     value.appCheckExpiresInMs !== FACEBOOK_APP_CHECK_TTL_MS ||
-    typeof value.uid !== "string" || !FACEBOOK_UID.test(value.uid)) {
+    typeof value.uid !== "string" ||
+    !FACEBOOK_UID.test(value.uid)
+  ) {
     throw new Error("Invalid Facebook identity credential response.");
   }
   return {
@@ -76,11 +105,13 @@ export function parseFacebookIdentityCredentials(value: unknown): FacebookIdenti
 
 /** Resolves facebook backend url. */
 export function resolveFacebookBackendUrl(baseUrl: string, options: FacebookBackendClientOptions = {}): string {
+  /** Provides trimmed behavior. */
   const trimmed = baseUrl.trim();
   if (trimmed.startsWith("/")) {
     if (trimmed.startsWith("//")) throw new Error("Facebook backend URL must not be protocol-relative.");
     return trimmed;
   }
+  /** Parses d. */
   let parsed: URL;
   try {
     parsed = new URL(trimmed);
@@ -88,6 +119,7 @@ export function resolveFacebookBackendUrl(baseUrl: string, options: FacebookBack
     throw new Error("Facebook backend URL must be HTTPS or root-relative.");
   }
   if (parsed.protocol === "https:") return parsed.toString();
+  /** Provides loopback behavior. */
   const loopback = parsed.hostname === "localhost" || parsed.hostname === "127.0.0.1" || parsed.hostname === "[::1]";
   if (options.allowInsecureLoopback && parsed.protocol === "http:" && loopback) return parsed.toString();
   throw new Error("Facebook backend URL must use HTTPS.");
@@ -111,7 +143,9 @@ export class FacebookBackendClient implements FacebookBackendPort {
 
   /** Provides post behavior. */
   private async post<T>(path: string, body: unknown): Promise<T> {
+    /** Provides controller behavior. */
     const controller = new AbortController();
+    /** Provides timeout behavior. */
     let timeout: ReturnType<typeof setTimeout> | undefined;
     return Promise.race([
       fetch(`${this.baseUrl.replace(/\/$/, "")}/${path}`, {
@@ -135,12 +169,24 @@ export class FacebookBackendClient implements FacebookBackendPort {
   }
 
   /** Provides issue identity nonce behavior. */
-  issueIdentityNonce(): Promise<{nonce: string; expiresAtMs: number}> {
+  issueIdentityNonce(): Promise<{
+    /** Stores nonce. */
+    nonce: string; /** Stores expires at ms. */
+    /** Stores expires at ms. */
+    expiresAtMs: number;
+  }> {
     return this.post<unknown>("issueFacebookIdentityNonce", {}).then(parseFacebookIdentityNonceResponse);
   }
 
   /** Provides exchange identity behavior. */
-  exchangeIdentity(input: {signedPlayer: string; playerId: string; nonce: string}): Promise<FacebookIdentityCredentials> {
+  exchangeIdentity(input: {
+    /** Stores signed player. */
+    signedPlayer: string; /** Stores player id. */
+    /** Stores player id. */
+    playerId: string; /** Stores nonce. */
+    /** Stores nonce. */
+    nonce: string;
+  }): Promise<FacebookIdentityCredentials> {
     return this.post<unknown>("exchangeFacebookIdentity", input).then(parseFacebookIdentityCredentials);
   }
 }

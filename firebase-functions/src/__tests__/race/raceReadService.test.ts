@@ -1,11 +1,18 @@
 import {beforeEach, describe, expect, it, jest} from "@jest/globals";
 
+/** Provides mock default db behavior. */
 let mockDefaultDb: unknown;
+/** Provides mock challenge preview behavior. */
 const mockChallengePreview = jest.fn();
+/** Provides mock parse challenge record behavior. */
 const mockParseChallengeRecord = jest.fn();
+/** Provides mock parse run record behavior. */
 const mockParseRunRecord = jest.fn();
+/** Provides mock persist race achievement event behavior. */
 const mockPersistRaceAchievementEvent = jest.fn();
+/** Provides mock race outcome behavior. */
 const mockRaceOutcome = jest.fn();
+/** Provides mock validate callable response behavior. */
 const mockValidateCallableResponse = jest.fn((_schema: unknown, value: unknown) => value);
 
 jest.mock("../../shared/firebaseAdmin", () => ({
@@ -19,8 +26,10 @@ jest.mock("../../shared/firebaseAdmin", () => ({
 
 jest.mock("firebase-functions/v2/https", () => ({
   HttpsError: class MockHttpsError extends Error {
+    /** Stores code. */
     code: string;
 
+    /** Creates a class instance. */
     constructor(code: string, message: string) {
       super(message);
       this.name = "HttpsError";
@@ -45,12 +54,9 @@ jest.mock("../../race/raceSetupService", () => ({
   persistRaceAchievementEvent: mockPersistRaceAchievementEvent,
 }));
 
-import {
-  getRaceChallengePreview,
-  getRaceOutcomeForUser,
-  listRaceInboxForUser,
-} from "../../race/raceReadService";
+import {getRaceChallengePreview, getRaceOutcomeForUser, listRaceInboxForUser} from "../../race/raceReadService";
 
+/** Provides base outcome behavior. */
 const baseOutcome = {
   runId: "run-1",
   result: "player_win",
@@ -64,48 +70,72 @@ const baseOutcome = {
   rematchEligible: true,
 };
 
+/** Provides document snapshot behavior. */
 const documentSnapshot = (exists: boolean, data?: unknown) => ({
   exists,
   data: () => data,
 });
 
+/** Creates challenge db. */
 const createChallengeDb = (snapshot: ReturnType<typeof documentSnapshot>, creatorDeleted = false) => {
+  /** Provides challenge ref behavior. */
   const challengeRef = {path: "raceChallenges/challenge-1"};
+  /** Provides doc behavior. */
   const doc = jest.fn((id: string) => ({
     path: id === "challenge-1" ? challengeRef.path : `jestAccountDeletionTombstones/${id}`,
     id,
   }));
+  /** Provides collection behavior. */
   const collection = jest.fn(() => ({doc}));
+  /** Provides transaction behavior. */
   const transaction = {
-    get: jest.fn(async (ref: {path: string}) => ref.path === challengeRef.path
-      ? snapshot
-      : documentSnapshot(creatorDeleted)),
+    get: jest.fn(
+      async (ref: {
+        /** Stores path. */ /** Stores path. */ /** Stores path. */
+        /** Stores path. */
+        path: string;
+      }) => (ref.path === challengeRef.path ? snapshot : documentSnapshot(creatorDeleted)),
+    ),
     update: jest.fn(),
   };
+  /** Provides run transaction behavior. */
   const runTransaction = jest.fn(async (callback: (value: typeof transaction) => Promise<unknown>) =>
-    callback(transaction));
+    callback(transaction),
+  );
   return {db: {collection, runTransaction}, collection, doc, transaction};
 };
 
+/** Creates outcome db. */
 const createOutcomeDb = (
   runSnapshot: ReturnType<typeof documentSnapshot>,
   userSnapshot: ReturnType<typeof documentSnapshot>,
 ) => {
+  /** Provides run ref behavior. */
   const runRef = {path: "raceRuns/run-1"};
+  /** Provides r ref. */
   const userRef = {path: "users/player-1"};
+  /** Provides transaction behavior. */
   const transaction = {
-    get: jest.fn(async (ref: {path: string}) => ref.path === runRef.path ? runSnapshot : userSnapshot),
+    get: jest.fn(
+      async (ref: {
+        /** Stores path. */ /** Stores path. */ /** Stores path. */
+        /** Stores path. */
+        path: string;
+      }) => (ref.path === runRef.path ? runSnapshot : userSnapshot),
+    ),
     set: jest.fn(),
   };
+  /** Provides db behavior. */
   const db = {
     collection: jest.fn((name: string) => ({
-      doc: jest.fn(() => name === "raceRuns" ? runRef : userRef),
+      doc: jest.fn(() => (name === "raceRuns" ? runRef : userRef)),
     })),
     runTransaction: jest.fn(async (callback: (value: typeof transaction) => Promise<unknown>) => callback(transaction)),
   };
   return {db, runRef, userRef, transaction};
 };
 
+/** Provides inbox item behavior. */
 const inboxItem = (itemId: string, createdAtMs: number, read: boolean) => ({
   itemId,
   challengeId: `challenge-${itemId}`,
@@ -118,7 +148,9 @@ const inboxItem = (itemId: string, createdAtMs: number, read: boolean) => ({
   createdAtMs,
 });
 
+/** Provides inbox document behavior. */
 const inboxDocument = (itemId: string, createdAtMs: number, read: boolean) => {
+  /** Provides data behavior. */
   const data = {
     ...inboxItem(itemId, createdAtMs, read),
     opponentUserId: "server-only-opponent",
@@ -127,10 +159,25 @@ const inboxDocument = (itemId: string, createdAtMs: number, read: boolean) => {
   return {id: itemId, ref: {path: `inbox/${itemId}`}, data: () => data};
 };
 
+/** Creates inbox db. */
 const createInboxDb = (
-  documents: Array<ReturnType<typeof inboxDocument> | {id: string; ref: {path: string}; data(): unknown}>,
+  documents: Array<
+    | ReturnType<typeof inboxDocument>
+    | {
+        /** Stores id. */
+        id: string; /** Stores ref. */
+        /** Stores ref. */
+        ref: {
+          /** Stores path. */
+          path: string;
+        }; /** Provides data behavior. */
+        /** Provides data behavior. */
+        data(): unknown;
+      }
+  >,
   deletedOpponentIds: string[] = [],
 ) => {
+  /** Provides query behavior. */
   const query = {
     orderBy: jest.fn(),
     limit: jest.fn(),
@@ -140,14 +187,23 @@ const createInboxDb = (
   query.orderBy.mockReturnValue(query);
   query.limit.mockReturnValue(query);
   query.startAfter.mockReturnValue(query);
+  /** Provides batch behavior. */
   const batch = {update: jest.fn(), commit: jest.fn(async () => undefined)};
+  /** Provides deletion ids behavior. */
   const deletionIds = new Set(deletedOpponentIds);
+  /** Provides db behavior. */
   const db = {
-    collection: jest.fn((name: string) => name === "jestAccountDeletionTombstones"
-      ? {doc: (id: string) => ({id, path: `${name}/${id}`})}
-      : query),
-    getAll: jest.fn(async (...refs: Array<{id: string}>) =>
-      refs.map((ref) => ({id: ref.id, exists: deletionIds.has(ref.id)}))),
+    collection: jest.fn((name: string) =>
+      name === "jestAccountDeletionTombstones" ? {doc: (id: string) => ({id, path: `${name}/${id}`})} : query,
+    ),
+    getAll: jest.fn(
+      async (
+        ...refs: Array<{
+          /** Stores id. */
+          id: string;
+        }>
+      ) => refs.map((ref) => ({id: ref.id, exists: deletionIds.has(ref.id)})),
+    ),
     batch: jest.fn(() => batch),
   };
   return {db, query, batch};
@@ -167,23 +223,28 @@ beforeEach(() => {
 
 describe("getRaceChallengePreview", () => {
   it("rejects a missing challenge without attempting to parse it", async () => {
+    /** Provides {db} behavior. */
     const {db} = createChallengeDb(documentSnapshot(false));
 
-    await expect(getRaceChallengePreview("missing", "en", {db: db as never, nowMs: 10}))
-      .rejects.toMatchObject({code: "not-found"});
+    await expect(getRaceChallengePreview("missing", "en", {db: db as never, nowMs: 10})).rejects.toMatchObject({
+      code: "not-found",
+    });
     expect(mockParseChallengeRecord).not.toHaveBeenCalled();
   });
 
   it("parses and projects an existing challenge using the requested clock", async () => {
+    /** Stores d. */
     const stored = {challengeId: "challenge-1"};
+    /** Parses d. */
     const parsed = {...stored, creatorId: "creator-1", locale: "en", parsed: true};
+    /** Provides preview behavior. */
     const preview = {challengeId: "challenge-1", status: "active"};
+    /** Provides {db, collection, doc} behavior. */
     const {db, collection, doc} = createChallengeDb(documentSnapshot(true, stored));
     mockParseChallengeRecord.mockReturnValue(parsed);
     mockChallengePreview.mockReturnValue(preview);
 
-    await expect(getRaceChallengePreview("challenge-1", "en", {db: db as never, nowMs: 123}))
-      .resolves.toBe(preview);
+    await expect(getRaceChallengePreview("challenge-1", "en", {db: db as never, nowMs: 123})).resolves.toBe(preview);
     expect(collection).toHaveBeenCalledWith("raceChallenges");
     expect(doc).toHaveBeenCalledWith("challenge-1");
     expect(mockParseChallengeRecord).toHaveBeenCalledWith(stored);
@@ -191,19 +252,23 @@ describe("getRaceChallengePreview", () => {
   });
 
   it("scrubs a tombstoned creator before projecting or retaining a challenge snapshot", async () => {
+    /** Stores d. */
     const stored = {challengeId: "challenge-1"};
+    /** Parses d. */
     const parsed = {
       ...stored,
       creatorId: "creator-1",
       locale: "en",
       creatorSnapshot: {displayName: "Ada", avatarUrl: "https://example.test/ada.png"},
     };
+    /** Provides fixture behavior. */
     const fixture = createChallengeDb(documentSnapshot(true, stored), true);
     mockParseChallengeRecord.mockReturnValue(parsed);
     mockChallengePreview.mockImplementation((challenge: unknown) => challenge);
 
-    await expect(getRaceChallengePreview("challenge-1", "en", {db: fixture.db as never}))
-      .resolves.toMatchObject({creatorSnapshot: {displayName: "Riddle Quest player"}});
+    await expect(getRaceChallengePreview("challenge-1", "en", {db: fixture.db as never})).resolves.toMatchObject({
+      creatorSnapshot: {displayName: "Riddle Quest player"},
+    });
     expect(mockChallengePreview).toHaveBeenCalledWith(
       expect.objectContaining({creatorSnapshot: {displayName: "Riddle Quest player"}}),
       expect.any(Number),
@@ -215,6 +280,7 @@ describe("getRaceChallengePreview", () => {
   });
 
   it("uses the default database and current clock when options are omitted", async () => {
+    /** Provides {db} behavior. */
     const {db} = createChallengeDb(documentSnapshot(true, {}));
     mockDefaultDb = db;
     mockParseChallengeRecord.mockReturnValue({challengeId: "challenge-1", creatorId: "creator-1", locale: "en"});
@@ -229,7 +295,9 @@ describe("getRaceChallengePreview", () => {
   });
 
   it("rejects a cross-locale preview before returning sender identity", async () => {
+    /** Stores d. */
     const stored = {challengeId: "challenge-1"};
+    /** Provides fixture behavior. */
     const fixture = createChallengeDb(documentSnapshot(true, stored));
     mockParseChallengeRecord.mockReturnValue({
       challengeId: "challenge-1",
@@ -238,37 +306,47 @@ describe("getRaceChallengePreview", () => {
       creatorSnapshot: {displayName: "Sender identity"},
     });
 
-    await expect(getRaceChallengePreview("challenge-1", "fr", {db: fixture.db as never}))
-      .rejects.toMatchObject({code: "failed-precondition", message: "RaceTo10.ERROR_LOCALE_MISMATCH"});
+    await expect(getRaceChallengePreview("challenge-1", "fr", {db: fixture.db as never})).rejects.toMatchObject({
+      code: "failed-precondition",
+      message: "RaceTo10.ERROR_LOCALE_MISMATCH",
+    });
     expect(mockChallengePreview).not.toHaveBeenCalled();
   });
 });
 
 describe("getRaceOutcomeForUser", () => {
   it("rejects missing runs and runs belonging to another player", async () => {
+    /** Provides missing behavior. */
     const missing = createOutcomeDb(documentSnapshot(false), documentSnapshot(true, {}));
-    await expect(getRaceOutcomeForUser("player-1", "run-1", {db: missing.db as never, nowMs: 10}))
-      .rejects.toMatchObject({code: "not-found"});
+    await expect(
+      getRaceOutcomeForUser("player-1", "run-1", {db: missing.db as never, nowMs: 10}),
+    ).rejects.toMatchObject({code: "not-found"});
 
+    /** Provides foreign behavior. */
     const foreign = createOutcomeDb(documentSnapshot(true, {}), documentSnapshot(true, {}));
     mockParseRunRecord.mockReturnValue({userId: "player-2"});
-    await expect(getRaceOutcomeForUser("player-1", "run-1", {db: foreign.db as never, nowMs: 10}))
-      .rejects.toMatchObject({code: "permission-denied"});
+    await expect(
+      getRaceOutcomeForUser("player-1", "run-1", {db: foreign.db as never, nowMs: 10}),
+    ).rejects.toMatchObject({code: "permission-denied"});
   });
 
   it("returns an already-recorded outcome without granting achievements twice", async () => {
+    /** Provides fixture behavior. */
     const fixture = createOutcomeDb(documentSnapshot(true, {}), documentSnapshot(true, {coins: 250}));
     mockParseRunRecord.mockReturnValue({userId: "player-1", achievementProgressRecordedAtMs: 5});
 
-    await expect(getRaceOutcomeForUser("player-1", "run-1", {db: fixture.db as never, nowMs: 10}))
-      .resolves.toEqual(baseOutcome);
+    await expect(getRaceOutcomeForUser("player-1", "run-1", {db: fixture.db as never, nowMs: 10})).resolves.toEqual(
+      baseOutcome,
+    );
     expect(mockPersistRaceAchievementEvent).not.toHaveBeenCalled();
     expect(fixture.transaction.set).not.toHaveBeenCalled();
   });
 
   it("uses the default database and current clock when outcome options are omitted", async () => {
+    /** Provides fixture behavior. */
     const fixture = createOutcomeDb(documentSnapshot(true, {}), documentSnapshot(true, {}));
     mockDefaultDb = fixture.db;
+    /** Provides run behavior. */
     const run = {userId: "player-1", achievementProgressRecordedAtMs: 5};
     mockParseRunRecord.mockReturnValue(run);
 
@@ -278,25 +356,27 @@ describe("getRaceOutcomeForUser", () => {
   });
 
   it("requires player progress before recording the achievement event", async () => {
+    /** Provides fixture behavior. */
     const fixture = createOutcomeDb(documentSnapshot(true, {}), documentSnapshot(false));
     mockParseRunRecord.mockReturnValue({userId: "player-1"});
 
-    await expect(getRaceOutcomeForUser("player-1", "run-1", {db: fixture.db as never, nowMs: 10}))
-      .rejects.toMatchObject({code: "internal"});
+    await expect(
+      getRaceOutcomeForUser("player-1", "run-1", {db: fixture.db as never, nowMs: 10}),
+    ).rejects.toMatchObject({code: "internal"});
     expect(mockPersistRaceAchievementEvent).not.toHaveBeenCalled();
   });
 
   it("records a clean win and returns the authoritative achievement grant", async () => {
+    /** Provides fixture behavior. */
     const fixture = createOutcomeDb(documentSnapshot(true, {}), documentSnapshot(true, undefined));
     mockParseRunRecord.mockReturnValue({userId: "player-1"});
 
-    await expect(getRaceOutcomeForUser("player-1", "run-1", {db: fixture.db as never, nowMs: 50}))
-      .resolves.toEqual({
-        ...baseOutcome,
-        newlyUnlockedAchievementIds: ["race_first_finish"],
-        achievementCoinsAwarded: 100,
-        newCoins: 350,
-      });
+    await expect(getRaceOutcomeForUser("player-1", "run-1", {db: fixture.db as never, nowMs: 50})).resolves.toEqual({
+      ...baseOutcome,
+      newlyUnlockedAchievementIds: ["race_first_finish"],
+      achievementCoinsAwarded: 100,
+      newCoins: 350,
+    });
     expect(mockPersistRaceAchievementEvent).toHaveBeenCalledWith(
       fixture.transaction,
       fixture.userRef,
@@ -313,6 +393,7 @@ describe("getRaceOutcomeForUser", () => {
   });
 
   it("records losses and penalized wins without a clean-run achievement", async () => {
+    /** Provides fixture behavior. */
     const fixture = createOutcomeDb(documentSnapshot(true, {}), documentSnapshot(true, {coins: 1}));
     mockParseRunRecord.mockReturnValue({userId: "player-1"});
     mockRaceOutcome.mockReturnValue({...baseOutcome, result: "player_loss", correctCount: 9, totalPenaltyMs: 1});
@@ -331,26 +412,36 @@ describe("getRaceOutcomeForUser", () => {
 
 describe("listRaceInboxForUser", () => {
   it("rejects malformed and structurally invalid cursors", async () => {
+    /** Provides {db} behavior. */
     const {db} = createInboxDb([]);
-    await expect(listRaceInboxForUser("player-1", {limit: 1, cursor: "not-json"}, db as never))
-      .rejects.toMatchObject({code: "invalid-argument"});
+    await expect(listRaceInboxForUser("player-1", {limit: 1, cursor: "not-json"}, db as never)).rejects.toMatchObject({
+      code: "invalid-argument",
+    });
 
+    /** Provides wrong shape behavior. */
     const wrongShape = Buffer.from(JSON.stringify({createdAtMs: "yesterday"})).toString("base64url");
-    await expect(listRaceInboxForUser("player-1", {limit: 1, cursor: wrongShape}, db as never))
-      .rejects.toMatchObject({code: "invalid-argument"});
+    await expect(listRaceInboxForUser("player-1", {limit: 1, cursor: wrongShape}, db as never)).rejects.toMatchObject({
+      code: "invalid-argument",
+    });
   });
 
   it("returns a cursor page and marks only visible unread items", async () => {
+    /** Provides first behavior. */
     const first = inboxDocument("item-1", 200, false);
+    /** Provides second behavior. */
     const second = inboxDocument("item-2", 100, false);
+    /** Provides {db, query, batch} behavior. */
     const {db, query, batch} = createInboxDb([first, second]);
 
+    /** Provides response behavior. */
     const response = await listRaceInboxForUser("player-1", {limit: 1}, db as never);
 
-    expect(response.items).toEqual([{
-      ...inboxItem("item-1", 200, false),
-      opponentUserId: "server-only-opponent",
-    }]);
+    expect(response.items).toEqual([
+      {
+        ...inboxItem("item-1", 200, false),
+        opponentUserId: "server-only-opponent",
+      },
+    ]);
     expect(response.items[0]).not.toHaveProperty("expiresAt");
     expect(response.nextCursor).toBeDefined();
     expect(query.orderBy).toHaveBeenNthCalledWith(1, "createdAtMs", "desc");
@@ -362,10 +453,14 @@ describe("listRaceInboxForUser", () => {
   });
 
   it("decodes cursors and avoids writes for an already-read final page", async () => {
+    /** Provides document behavior. */
     const document = inboxDocument("item-2", 100, true);
+    /** Provides {db, query, batch} behavior. */
     const {db, query, batch} = createInboxDb([document]);
+    /** Provides cursor behavior. */
     const cursor = Buffer.from(JSON.stringify({createdAtMs: 200, itemId: "item-1"})).toString("base64url");
 
+    /** Provides response behavior. */
     const response = await listRaceInboxForUser("player-1", {limit: 2, cursor}, db as never);
 
     expect(query.startAfter).toHaveBeenCalledWith(200, "item-1");
@@ -378,18 +473,22 @@ describe("listRaceInboxForUser", () => {
   });
 
   it("suppresses identity in legacy inbox records that lack a server-only subject link", async () => {
+    /** Provides legacy data behavior. */
     const legacyData = {
       ...inboxItem("legacy-item", 100, true),
       opponentDisplayName: "Legacy player name",
       opponentAvatarUrl: "https://example.test/legacy-avatar.png",
     };
+    /** Provides legacy document behavior. */
     const legacyDocument = {
       id: "legacy-item",
       ref: {path: "inbox/legacy-item"},
       data: () => legacyData,
     };
+    /** Provides {db} behavior. */
     const {db} = createInboxDb([legacyDocument]);
 
+    /** Provides response behavior. */
     const response = await listRaceInboxForUser("player-1", {limit: 2}, db as never);
 
     expect(response.items[0]).toMatchObject({
@@ -402,9 +501,12 @@ describe("listRaceInboxForUser", () => {
   });
 
   it("scrubs a tombstoned linked opponent in the response and stored inbox row", async () => {
+    /** Provides document behavior. */
     const document = inboxDocument("item-1", 200, true);
+    /** Provides {db, batch} behavior. */
     const {db, batch} = createInboxDb([document], ["server-only-opponent"]);
 
+    /** Provides response behavior. */
     const response = await listRaceInboxForUser("player-1", {limit: 1}, db as never);
 
     expect(response.items[0]).toMatchObject({opponentDisplayName: "Riddle Quest player"});

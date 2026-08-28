@@ -22,41 +22,50 @@ export class JestPurchaseCoordinator {
 
   /** Gets products. */
   async getProducts(locale?: string): Promise<PlatformResult<ProductSummary[]>> {
+    /** Provides result behavior. */
     const result = await this.platform.getProducts();
     if (result.status !== "success") return result;
+    /** Provides local catalog behavior. */
     const localCatalog = new Map(DEFAULT_PRODUCT_PRICING.map((product) => [product.productId, product]));
     return {
       status: "success",
       value: result.value.flatMap((product) => {
+        /** Provides local behavior. */
         const local = localCatalog.get(product.sku);
         if (!local || !Number.isFinite(product.price) || !isCurrency(product.currency)) return [];
-        return [{
-          productId: product.sku,
-          name: product.name || local.name,
-          description: product.description || local.description,
-          coins: local.coins,
-          displayPrice: new Intl.NumberFormat(locale, {
-            style: "currency",
+        return [
+          {
+            productId: product.sku,
+            name: product.name || local.name,
+            description: product.description || local.description,
+            coins: local.coins,
+            displayPrice: new Intl.NumberFormat(locale, {
+              style: "currency",
+              currency: product.currency,
+            }).format(product.price),
+            price: product.price,
             currency: product.currency,
-          }).format(product.price),
-          price: product.price,
-          currency: product.currency,
-          featuredBadge: local.featuredBadge,
-        }];
+            featuredBadge: local.featuredBadge,
+          },
+        ];
       }),
     };
   }
 
   /** Gets subscriptions. */
   async getSubscriptions(playerId: string, locale?: string): Promise<PlatformResult<ProductSummary[]>> {
+    /** Provides result behavior. */
     const result = await this.platform.getSubscriptions();
     if (result.status !== "success") return result;
     if (typeof result.value.subscriptionsSigned !== "string") {
       return {status: "retryable-failure", message: "Jest returned unsigned subscription data"};
     }
+    /** Provides active skus behavior. */
     let activeSkus: Set<string>;
+    /** Provides blocked skus behavior. */
     let blockedSkus: Set<string>;
     try {
+      /** Provides verified behavior. */
       const verified = await this.backend.syncSubscriptions(result.value.subscriptionsSigned, playerId);
       activeSkus = new Set(verified.activeSkus);
       blockedSkus = new Set(verified.blockedSkus ?? []);
@@ -75,37 +84,49 @@ export class JestPurchaseCoordinator {
         ) {
           return [];
         }
-        return [{
-          productId: subscription.sku,
-          productType: "subscription" as const,
-          name: subscription.displayName,
-          description: subscription.displayDescription ?? "",
-          coins: 0,
-          displayPrice: new Intl.NumberFormat(locale, {
-            style: "currency",
+        return [
+          {
+            productId: subscription.sku,
+            productType: "subscription" as const,
+            name: subscription.displayName,
+            description: subscription.displayDescription ?? "",
+            coins: 0,
+            displayPrice: new Intl.NumberFormat(locale, {
+              style: "currency",
+              currency: subscription.currency,
+            }).format(subscription.price),
+            price: subscription.price,
             currency: subscription.currency,
-          }).format(subscription.price),
-          price: subscription.price,
-          currency: subscription.currency,
-          billingPeriod: subscription.billingPeriod,
-          subscriptionStatus: activeSkus.has(subscription.sku) ? "active" as const : "inactive" as const,
-          trialEligible: subscription.trialEligible,
-        }];
+            billingPeriod: subscription.billingPeriod,
+            subscriptionStatus: activeSkus.has(subscription.sku) ? ("active" as const) : ("inactive" as const),
+            trialEligible: subscription.trialEligible,
+          },
+        ];
       }),
     };
   }
 
   /** Provides subscribe behavior. */
-  async subscribe(subscriptionSku: string, playerId: string): Promise<PlatformResult<{
-    activeSku: string;
-    blockedSkus: string[];
-  }>> {
+  async subscribe(
+    subscriptionSku: string,
+    playerId: string,
+  ): Promise<
+    PlatformResult<{
+      /** Stores active sku. */
+      activeSku: string;
+      /** Stores blocked skus. */
+      blockedSkus: string[];
+    }>
+  > {
+    /** Starts ed. */
     const started = await this.platform.beginSubscription(subscriptionSku);
     if (started.status !== "success") {
       if (started.status !== "unavailable" || started.message !== "already_subscribed") return started;
+      /** Provides refreshed behavior. */
       const refreshed = await this.platform.getSubscriptions();
       if (refreshed.status !== "success") return refreshed;
       try {
+        /** Provides verified behavior. */
         const verified = await this.backend.syncSubscriptions(refreshed.value.subscriptionsSigned, playerId);
         return verified.activeSkus.includes(subscriptionSku)
           ? {status: "success", value: {activeSku: subscriptionSku, blockedSkus: verified.blockedSkus ?? []}}
@@ -116,6 +137,7 @@ export class JestPurchaseCoordinator {
       }
     }
     try {
+      /** Provides verified behavior. */
       const verified = await this.backend.syncSubscriptions(started.value.subscriptionSigned, playerId);
       if (!verified.activeSkus.includes(subscriptionSku)) {
         return {status: "terminal-failure", message: "Subscription entitlement was not active"};
@@ -131,19 +153,30 @@ export class JestPurchaseCoordinator {
   }
 
   /** Provides purchase behavior. */
-  async purchase(productSku: string, playerId: string): Promise<PlatformResult<{
-    coinsAwarded: number;
-    newCoins: number;
-    newlyUnlockedAchievementIds?: string[];
-  }>> {
+  async purchase(
+    productSku: string,
+    playerId: string,
+  ): Promise<
+    PlatformResult<{
+      /** Stores coins awarded. */
+      coinsAwarded: number;
+      /** Stores new coins. */
+      newCoins: number;
+      /** Stores newly unlocked achievement ids. */
+      newlyUnlockedAchievementIds?: string[];
+    }>
+  > {
+    /** Starts ed. */
     const started = await this.platform.beginPurchase(productSku);
     if (started.status !== "success") return started;
     try {
+      /** Provides grant behavior. */
       const grant = await this.backend.grantPurchase(
         started.value.purchaseSigned,
         playerId,
         started.value.purchase.purchaseToken,
       );
+      /** Completes d. */
       const completed = await this.platform.completePurchase(started.value.purchase.purchaseToken);
       return completed.status === "success"
         ? {
@@ -163,12 +196,15 @@ export class JestPurchaseCoordinator {
 
   /** Provides reconcile behavior. */
   async reconcile(playerId: string): Promise<PlatformResult<number>> {
+    /** Provides count behavior. */
     let count = 0;
     for (let page = 0; page < 100; page += 1) {
+      /** Provides result behavior. */
       const result = await this.platform.getIncompletePurchases();
       if (result.status !== "success") return result;
       for (const purchase of result.value.purchases) {
         await this.backend.grantPurchase(result.value.purchasesSigned, playerId, purchase.purchaseToken);
+        /** Completes d. */
         const completed = await this.platform.completePurchase(purchase.purchaseToken);
         if (completed.status !== "success") return completed;
         count += 1;

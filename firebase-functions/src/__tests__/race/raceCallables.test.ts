@@ -1,3 +1,4 @@
+/** Provides service mocks behavior. */
 const serviceMocks = {
   abandonRaceRunForUser: jest.fn(),
   getRaceChallengePreview: jest.fn(),
@@ -13,12 +14,12 @@ const serviceMocks = {
   getRaceAccessForUser: jest.fn(),
   recordRaceAnalyticsForUser: jest.fn(),
 };
+/** Provides mock assert race access behavior. */
 const mockAssertRaceAccess = jest.fn();
-const mockRunWithJestAccountOperationLease = jest.fn(async (
-  _userId: string,
-  _timeoutSeconds: number,
-  operation: () => Promise<unknown>,
-) => operation());
+/** Provides mock run with jest account operation lease behavior. */
+const mockRunWithJestAccountOperationLease = jest.fn(
+  async (_userId: string, _timeoutSeconds: number, operation: () => Promise<unknown>) => operation(),
+);
 
 jest.mock("../../jest/jestAccountDeletion", () => ({
   ...jest.requireActual<typeof import("../../jest/jestAccountDeletion")>("../../jest/jestAccountDeletion"),
@@ -26,7 +27,11 @@ jest.mock("../../jest/jestAccountDeletion", () => ({
 }));
 
 jest.mock("firebase-functions/v2/https", () => {
-  const actual = jest.requireActual("firebase-functions/v2/https") as {HttpsError: unknown};
+  /** Provides actual behavior. */
+  const actual = jest.requireActual("firebase-functions/v2/https") as {
+    /** Stores https error. */
+    HttpsError: unknown;
+  };
   return {
     HttpsError: actual.HttpsError,
     onCall: jest.fn((_options: unknown, handler: unknown) => handler),
@@ -74,6 +79,7 @@ import {
 import {createRaceCallableCases, type RaceCallableHandlers} from "./callableCases";
 import {raceCallableUserId} from "./callableFixtures";
 
+/** Handles rs. */
 const handlers = {
   abandonRaceRun,
   getRaceAccess,
@@ -89,8 +95,10 @@ const handlers = {
   startRaceRun,
   submitRaceGuess,
 } as unknown as RaceCallableHandlers;
+/** Provides callable cases behavior. */
 const callableCases = createRaceCallableCases(handlers, serviceMocks);
 
+/** Provides authenticated request behavior. */
 const authenticatedRequest = (data: unknown): CallableRequest<unknown> =>
   ({auth: {uid: raceCallableUserId}, data}) as CallableRequest<unknown>;
 

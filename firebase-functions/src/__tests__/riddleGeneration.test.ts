@@ -3,15 +3,25 @@
 import {describe, expect, test, beforeEach, afterEach, jest} from "@jest/globals";
 
 // Mock dependencies - using type assertion to bypass strict typing
+/** Provides mock generate unique riddle behavior. */
 const mockGenerateUniqueRiddle: any = jest.fn();
+/** Provides mock firestore collection behavior. */
 const mockFirestoreCollection: any = jest.fn();
+/** Provides mock firestore batch behavior. */
 const mockFirestoreBatch: any = jest.fn();
+/** Provides mock firestore doc behavior. */
 const mockFirestoreDoc: any = jest.fn();
+/** Provides mock set behavior. */
 const mockSet: any = jest.fn();
+/** Provides mock commit behavior. */
 const mockCommit: any = jest.fn();
+/** Provides mock get behavior. */
 const mockGet: any = jest.fn();
+/** Provides mock where behavior. */
 const mockWhere: any = jest.fn();
+/** Provides mock order by behavior. */
 const mockOrderBy: any = jest.fn();
+/** Provides mock limit behavior. */
 const mockLimit: any = jest.fn();
 
 jest.mock("../riddles/openaiService", () => ({
@@ -19,6 +29,7 @@ jest.mock("../riddles/openaiService", () => ({
 }));
 
 jest.mock("firebase-admin", () => {
+  /** Provides firestore impl behavior. */
   const firestoreImpl = () => ({
     collection: mockFirestoreCollection,
     batch: mockFirestoreBatch,
@@ -34,7 +45,9 @@ jest.mock("firebase-admin", () => {
 });
 
 jest.mock("firebase-functions", () => {
+  /** Provides mock https error behavior. */
   class MockHttpsError extends Error {
+    /** Creates a mock https error instance. */
     constructor(
       public code: string,
       public message: string,
@@ -45,6 +58,7 @@ jest.mock("firebase-functions", () => {
     }
   }
 
+  /** Provides mock module behavior. */
   const mockModule = {
     https: {
       HttpsError: MockHttpsError,
@@ -80,8 +94,11 @@ jest.mock("firebase-functions/v2/https", () => ({
 import * as riddleGeneration from "../riddles/riddleGeneration";
 
 describe("riddleGeneration", () => {
+  /** Provides admin callable request behavior. */
   const adminCallableRequest = {auth: {uid: "admin-user", token: {admin: true}}, data: {}} as any;
+  /** Provides mock riddle ref behavior. */
   const mockRiddleRef = {id: "test-riddle-id"};
+  /** Provides mock batch behavior. */
   const mockBatch = {
     set: mockSet,
     update: jest.fn(),
@@ -103,6 +120,7 @@ describe("riddleGeneration", () => {
     process.env.OPENAI_API_KEY = "test-api-key";
 
     // Simplified mock setup to reduce memory usage
+    /** Provides empty snapshot behavior. */
     const emptySnapshot = {
       empty: true,
       docs: [],
@@ -110,6 +128,7 @@ describe("riddleGeneration", () => {
     };
 
     // Simple query chain that resolves immediately
+    /** Provides mock query behavior. */
     const mockQuery = {
       get: jest.fn().mockResolvedValue(emptySnapshot),
       orderBy: jest.fn().mockReturnThis(),
@@ -170,6 +189,7 @@ describe("riddleGeneration", () => {
 
   describe("getExistingRiddlesFromFirestore", () => {
     test("should fetch existing riddles from both collections", async () => {
+      /** Provides riddles snapshot behavior. */
       const riddlesSnapshot: any = {
         empty: false,
         docs: [],
@@ -179,6 +199,7 @@ describe("riddleGeneration", () => {
         }),
       };
 
+      /** Provides daily challenge snapshot behavior. */
       const dailyChallengeSnapshot: any = {
         empty: false,
         docs: [],
@@ -215,6 +236,7 @@ describe("riddleGeneration", () => {
     });
 
     test("should handle documents with missing data", async () => {
+      /** Provides riddles snapshot behavior. */
       const riddlesSnapshot: any = {
         empty: false,
         docs: [],
@@ -243,6 +265,7 @@ describe("riddleGeneration", () => {
   describe("getNextClassicIndex", () => {
     test("should return 0 when no classic riddles exist", async () => {
       // Setup specific mocks for index query
+      /** Provides index query behavior. */
       const indexQuery = {
         get: jest.fn().mockResolvedValue({empty: true, docs: [], forEach: jest.fn()}),
         orderBy: jest.fn().mockReturnThis(),
@@ -268,7 +291,9 @@ describe("riddleGeneration", () => {
     });
 
     test("should return next index when riddles exist", async () => {
+      /** Provides mock doc behavior. */
       const mockDoc = {data: () => ({classicIndex: 5})};
+      /** Provides index query behavior. */
       const indexQuery = {
         get: jest.fn().mockResolvedValue({empty: false, docs: [mockDoc], forEach: jest.fn()}),
         orderBy: jest.fn().mockReturnThis(),
@@ -294,7 +319,9 @@ describe("riddleGeneration", () => {
     });
 
     test("should handle missing classicIndex in document", async () => {
+      /** Provides mock doc behavior. */
       const mockDoc = {data: () => ({})}; // No classicIndex
+      /** Provides index query behavior. */
       const indexQuery = {
         get: jest.fn().mockResolvedValue({empty: false, docs: [mockDoc], forEach: jest.fn()}),
         orderBy: jest.fn().mockReturnThis(),
@@ -320,6 +347,7 @@ describe("riddleGeneration", () => {
     });
 
     test("should handle Firestore errors", async () => {
+      /** Provides index query behavior. */
       const indexQuery = {
         get: jest.fn().mockRejectedValue(new Error("Firestore error")),
         orderBy: jest.fn().mockReturnThis(),
@@ -440,6 +468,7 @@ describe("riddleGeneration", () => {
     });
 
     test("should skip duplicate riddles and continue generating", async () => {
+      /** Provides existing riddles snapshot behavior. */
       const existingRiddlesSnapshot: any = {
         empty: false,
         docs: [],
@@ -448,6 +477,7 @@ describe("riddleGeneration", () => {
         }),
       };
 
+      /** Provides empty snapshot behavior. */
       const emptySnapshot = {empty: true, docs: [], forEach: jest.fn()};
 
       // Mock all three collections for getExistingRiddlesFromFirestore
@@ -540,6 +570,7 @@ describe("riddleGeneration", () => {
     });
 
     test("should handle duplicate detection for daily riddles", async () => {
+      /** Provides existing snapshot behavior. */
       const existingSnapshot: any = {
         empty: false,
         docs: [],
@@ -548,6 +579,7 @@ describe("riddleGeneration", () => {
         }),
       };
 
+      /** Provides empty snapshot behavior. */
       const emptySnapshot = {empty: true, docs: [], forEach: jest.fn()};
 
       // Mock all three collections for getExistingRiddlesFromFirestore
@@ -600,6 +632,7 @@ describe("riddleGeneration", () => {
   describe("initializeRiddleDatabaseIfEmpty", () => {
     test("should skip initialization when riddles already exist", async () => {
       // Mock the existence check to return non-empty
+      /** Provides existence query behavior. */
       const existenceQuery = {
         get: jest.fn().mockResolvedValue({
           empty: false,
@@ -620,11 +653,13 @@ describe("riddleGeneration", () => {
 
     test("should initialize database when empty", async () => {
       // Mock the existence check to return empty, then set up generation mocks
+      /** Provides existence query behavior. */
       const existenceQuery = {
         get: jest.fn().mockResolvedValue({empty: true, docs: [], forEach: jest.fn()}),
         limit: jest.fn().mockReturnThis(),
       };
 
+      /** Provides index query behavior. */
       const indexQuery = {
         get: jest.fn().mockResolvedValue({empty: true, docs: [], forEach: jest.fn()}),
         orderBy: jest.fn().mockReturnThis(),
@@ -653,11 +688,13 @@ describe("riddleGeneration", () => {
 
     test("should use default riddle count when not specified", async () => {
       // Mock the existence check to return empty
+      /** Provides existence query behavior. */
       const existenceQuery = {
         get: jest.fn().mockResolvedValue({empty: true, docs: [], forEach: jest.fn()}),
         limit: jest.fn().mockReturnThis(),
       };
 
+      /** Provides index query behavior. */
       const indexQuery = {
         get: jest.fn().mockResolvedValue({empty: true, docs: [], forEach: jest.fn()}),
         orderBy: jest.fn().mockReturnThis(),
@@ -685,6 +722,7 @@ describe("riddleGeneration", () => {
     });
 
     test("should handle initialization errors", async () => {
+      /** Provides existence query behavior. */
       const existenceQuery = {
         get: jest.fn().mockRejectedValue(new Error("Database error")),
         limit: jest.fn().mockReturnThis(),
@@ -709,11 +747,14 @@ describe("riddleGeneration", () => {
     });
 
     test("functions should have proper TypeScript types", () => {
+      /** Provides func1 behavior. */
       const func1: (count: number) => Promise<void> = riddleGeneration.generateAndAppendRiddles;
+      /** Provides func2 behavior. */
       const func2: (count: number) => Promise<void> = riddleGeneration.generateAndAppendDailyRiddles;
+      /** Provides func3 behavior. */
       const func3: (count?: number) => Promise<void> = riddleGeneration.initializeRiddleDatabaseIfEmpty;
-      const func4: (forceGenerate?: boolean) => Promise<void> =
-        riddleGeneration.generateLocalizedTodaysDailyChallenge;
+      /** Provides func4 behavior. */
+      const func4: (forceGenerate?: boolean) => Promise<void> = riddleGeneration.generateLocalizedTodaysDailyChallenge;
 
       expect(func1).toBeDefined();
       expect(func2).toBeDefined();
@@ -724,23 +765,31 @@ describe("riddleGeneration", () => {
 
   describe("Duplicate Detection Logic", () => {
     test("should detect question duplicates case-insensitively", () => {
+      /** Provides test question behavior. */
       const testQuestion = "What is BLUE?";
+      /** Provides existing questions behavior. */
       const existingQuestions = ["what is blue?", "what is red?"];
 
       expect(existingQuestions.includes(testQuestion.toLowerCase())).toBe(true);
     });
 
     test("should detect answer duplicates case-insensitively", () => {
+      /** Provides test answer behavior. */
       const testAnswer = "SKY";
+      /** Provides existing answers behavior. */
       const existingAnswers = ["sky", "fire"];
 
       expect(existingAnswers.includes(testAnswer.toLowerCase())).toBe(true);
     });
 
     test("should allow non-duplicate riddles", () => {
+      /** Provides new question behavior. */
       const newQuestion = "What is green?";
+      /** Provides new answer behavior. */
       const newAnswer = "grass";
+      /** Provides existing questions behavior. */
       const existingQuestions = ["what is blue?", "what is red?"];
+      /** Provides existing answers behavior. */
       const existingAnswers = ["sky", "fire"];
 
       expect(existingQuestions.includes(newQuestion.toLowerCase())).toBe(false);
@@ -750,6 +799,7 @@ describe("riddleGeneration", () => {
 
   describe("Edge Cases and Error Scenarios", () => {
     test("should handle empty responses from OpenAI gracefully", async () => {
+      /** Provides call count behavior. */
       let callCount = 0;
       (mockGenerateUniqueRiddle as any).mockImplementation(() => {
         callCount++;
@@ -813,6 +863,7 @@ describe("riddleGeneration", () => {
       // Mock to always return the same riddle (simulating persistent duplicates)
       (mockGenerateUniqueRiddle as any).mockResolvedValue(["Repeated riddle?", "same"]);
 
+      /** Provides existing snapshot behavior. */
       const existingSnapshot: any = {
         empty: false,
         docs: [],
@@ -821,6 +872,7 @@ describe("riddleGeneration", () => {
         }),
       };
 
+      /** Provides empty snapshot behavior. */
       const emptySnapshot = {empty: true, docs: [], forEach: jest.fn()};
 
       // Mock all three collections for getExistingRiddlesFromFirestore
@@ -840,6 +892,7 @@ describe("riddleGeneration", () => {
     });
 
     test("should handle partial success when circuit breaker activates", async () => {
+      /** Provides call count behavior. */
       let callCount = 0;
       (mockGenerateUniqueRiddle as any).mockImplementation(() => {
         callCount++;
@@ -876,16 +929,41 @@ describe("riddleGeneration", () => {
 
   describe("generateLocalizedClassicRiddles", () => {
     test("skips locales that already have localized classic riddles", async () => {
-      const supportedLocales = ["ar", "de", "en", "es", "fr", "hi", "id", "it", "ja", "ko", "nl", "pl", "pt", "ru", "tr", "vi", "zh"];
+      /** Provides supported locales behavior. */
+      const supportedLocales = [
+        "ar",
+        "de",
+        "en",
+        "es",
+        "fr",
+        "hi",
+        "id",
+        "it",
+        "ja",
+        "ko",
+        "nl",
+        "pl",
+        "pt",
+        "ru",
+        "tr",
+        "vi",
+        "zh",
+      ];
+      /** Provides seeded locale behavior. */
       const seededLocale = "de";
+      /** Provides empty snapshot behavior. */
       const emptySnapshot = {empty: true, docs: [], forEach: jest.fn()};
+      /** Provides seeded snapshot behavior. */
       const seededSnapshot = {empty: false, docs: [{data: () => ({classicIndex: 1})}], forEach: jest.fn()};
 
       (mockGenerateUniqueRiddle as any).mockResolvedValue(["New localized riddle?", "answer"]);
 
       (mockFirestoreCollection as any).mockImplementation((collectionPath: string) => {
+        /** Provides locale behavior. */
         const locale = collectionPath.split("/")[1];
+        /** Indicates whether is seeded locale. */
         const isSeededLocale = locale === seededLocale;
+        /** Provides query behavior. */
         const query = {
           get: jest.fn().mockResolvedValue(isSeededLocale ? seededSnapshot : emptySnapshot),
           orderBy: jest.fn().mockReturnThis(),

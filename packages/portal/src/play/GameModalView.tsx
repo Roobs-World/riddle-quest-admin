@@ -7,10 +7,7 @@ import type {GameModal, GameSessionState} from "./gameSession";
 import {tr} from "./i18n";
 import {SpinningWheel} from "./SpinningWheelLoader";
 import {GameModalPages} from "./GameModalPages";
-import {
-  RewardFanfareContent,
-  VictoryFanfareContent,
-} from "./modalPages/fanfare/FanfareModalContent";
+import {RewardFanfareContent, VictoryFanfareContent} from "./modalPages/fanfare/FanfareModalContent";
 import {
   createRewardFanfareSteps,
   createVictoryFanfareSteps,
@@ -77,10 +74,15 @@ export function GameModalView({
   onDeleteAccount,
   onCoinBalancePreview,
 }: GameModalViewProps) {
+  /** Provides [victory step index, set victory step index] behavior. */
   const [victoryStepIndex, setVictoryStepIndex] = useState(0);
+  /** Provides [reward step index, set reward step index] behavior. */
   const [rewardStepIndex, setRewardStepIndex] = useState(0);
+  /** Provides [collected coin step, set collected coin step] behavior. */
   const [collectedCoinStep, setCollectedCoinStep] = useState<string | null>(null);
+  /** Provides modal ref behavior. */
   const modalRef = useRef<HTMLElement | null>(null);
+  /** Provides on close ref behavior. */
   const onCloseRef = useRef(onClose);
   onCloseRef.current = onClose;
 
@@ -88,15 +90,19 @@ export function GameModalView({
     if (!state.modal) {
       return;
     }
+    /** Provides previously focused behavior. */
     const previouslyFocused = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    /** Provides modal behavior. */
     const modal = modalRef.current;
     modal?.scrollTo({top: 0, left: 0});
     modal?.parentElement?.scrollTo({top: 0, left: 0});
+    /** Provides external notice behavior. */
     const externalNotice = document.querySelector<HTMLElement>(".play-alert");
     if (externalNotice) {
       externalNotice.inert = true;
       externalNotice.setAttribute("aria-hidden", "true");
     }
+    /** Gets focusable. */
     const getFocusable = () =>
       Array.from(
         modal?.querySelectorAll<HTMLElement>(
@@ -104,9 +110,11 @@ export function GameModalView({
         ) ?? [],
       );
     window.requestAnimationFrame(() => getFocusable()[0]?.focus());
+    /** Handles key down. */
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         event.preventDefault();
+        /** Provides collecting coins behavior. */
         const collectingCoins = modal?.querySelector("[data-coin-collection='pending']");
         if (state.modal !== "victory" && !collectingCoins) {
           onCloseRef.current();
@@ -116,12 +124,15 @@ export function GameModalView({
       if (event.key !== "Tab") {
         return;
       }
+      /** Provides focusable behavior. */
       const focusable = getFocusable();
       if (focusable.length === 0) {
         event.preventDefault();
         return;
       }
+      /** Provides first behavior. */
       const first = focusable[0];
+      /** Provides last behavior. */
       const last = focusable[focusable.length - 1];
       if (event.shiftKey && document.activeElement === first) {
         event.preventDefault();
@@ -156,12 +167,19 @@ export function GameModalView({
     return null;
   }
 
+  /** Provides victory steps behavior. */
   const victorySteps = createVictoryFanfareSteps(state.lastRewards);
+  /** Provides auxiliary steps behavior. */
   const auxiliarySteps = createRewardFanfareSteps(state.auxiliaryFanfare);
+  /** Provides active victory step behavior. */
   const activeVictoryStep = getActiveFanfareStep(victorySteps, victoryStepIndex);
+  /** Provides active reward step behavior. */
   const activeRewardStep = getActiveFanfareStep(auxiliarySteps, rewardStepIndex);
+  /** Provides active coin award behavior. */
   const activeCoinAward = getActiveCoinAward(state, activeVictoryStep, activeRewardStep);
+  /** Provides coin collection pending behavior. */
   const coinCollectionPending = isCoinCollectionPending(activeCoinAward, collectedCoinStep);
+  /** Provides titles behavior. */
   const titles: Record<Exclude<GameModal, null>, string> = {
     victory: tr("VictoryModal.TITLE"),
     continue: tr("LossModal.OUT_OF_ATTEMPTS"),
@@ -181,6 +199,7 @@ export function GameModalView({
     treasure: tr("Profile.TREASURE_CHEST_TITLE"),
     reward: tr("CoinPurchase.TITLE"),
   };
+  /** Provides active fanfare step behavior. */
   const activeFanfareStep = state.modal === "victory" ? activeVictoryStep : activeRewardStep;
   if (activeFanfareStep?.kind === "achievement") {
     titles[state.modal] = tr("Achievements.FANFARE_TITLE");
@@ -192,7 +211,9 @@ export function GameModalView({
     titles.reward = tr("VictoryModal.REFERRAL_REWARD_TITLE");
   }
 
+  /** Indicates whether is mandatory outcome. */
   const isMandatoryOutcome = state.modal === "victory" || coinCollectionPending;
+  /** Provides advance victory fanfare behavior. */
   const advanceVictoryFanfare = () => {
     if (victoryStepIndex + 1 < victorySteps.length) {
       setVictoryStepIndex((index) => index + 1);
@@ -201,6 +222,7 @@ export function GameModalView({
     onClose();
     window.setTimeout(onNext, 220);
   };
+  /** Provides advance reward fanfare behavior. */
   const advanceRewardFanfare = () => {
     if (rewardStepIndex + 1 < auxiliarySteps.length) {
       setRewardStepIndex((index) => index + 1);
@@ -210,11 +232,7 @@ export function GameModalView({
   };
 
   return (
-    <div
-      className="game-modal-backdrop"
-      role="presentation"
-      onMouseDown={isMandatoryOutcome ? undefined : onClose}
-    >
+    <div className="game-modal-backdrop" role="presentation" onMouseDown={isMandatoryOutcome ? undefined : onClose}>
       {state.modal !== "profile" ? <SpinningWheel /> : null}
       <section
         ref={modalRef}

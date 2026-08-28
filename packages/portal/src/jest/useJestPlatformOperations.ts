@@ -8,23 +8,29 @@ type TrackFunnelParams = Record<string, string | number | boolean>;
 
 /** Coordinates foreground and background Jest platform operations. */
 export function useJestPlatformActivity(gate: NotificationOperationGate) {
+  /** Provides [pending platform operations, set pending platform operations] behavior. */
   const [pendingPlatformOperations, setPendingPlatformOperations] = useState(0);
-  const withPlatformActivity = useCallback(async <Result,>(
-    operation: () => Promise<Result>,
-  ): Promise<Result> => {
-    const startedAt = Date.now();
-    setPendingPlatformOperations((current) => current + 1);
-    try {
-      return await gate.run(operation);
-    } finally {
-      const remainingTime = Math.max(0, 180 - (Date.now() - startedAt));
-      window.setTimeout(() => {
-        setPendingPlatformOperations((current) => Math.max(0, current - 1));
-      }, remainingTime);
-    }
-  }, [gate]);
+  /** Runs platform activity. */
+  const withPlatformActivity = useCallback(
+    async <Result>(operation: () => Promise<Result>): Promise<Result> => {
+      /** Starts ed at. */
+      const startedAt = Date.now();
+      setPendingPlatformOperations((current) => current + 1);
+      try {
+        return await gate.run(operation);
+      } finally {
+        /** Provides remaining time behavior. */
+        const remainingTime = Math.max(0, 180 - (Date.now() - startedAt));
+        window.setTimeout(() => {
+          setPendingPlatformOperations((current) => Math.max(0, current - 1));
+        }, remainingTime);
+      }
+    },
+    [gate],
+  );
+  /** Runs background platform activity. */
   const withBackgroundPlatformActivity = useCallback(
-    async <Result,>(operation: () => Promise<Result>): Promise<Result> => gate.run(operation),
+    async <Result>(operation: () => Promise<Result>): Promise<Result> => gate.run(operation),
     [gate],
   );
 
@@ -37,31 +43,41 @@ export function useJestFunnelTracking({
   platform,
   sessionRef,
 }: {
+  /** Stores gate. */
   gate: NotificationOperationGate;
+  /** Stores platform. */
   platform: JestPlatformPort;
+  /** Stores session ref. */
   sessionRef: MutableRefObject<JestSession | null>;
 }) {
-  return useCallback((eventName: string, params: TrackFunnelParams = {}) => {
-    if (!gate.isOpen()) return;
-    const intent = sessionRef.current?.entryIntent;
-    const attributedParams = {
-      ...(intent?.campaign ? {campaign: intent.campaign} : {}),
-      ...(intent?.reference ? {reference: intent.reference} : {}),
-      ...(intent?.utmSource ? {utm_source: intent.utmSource} : {}),
-      ...(intent?.utmMedium ? {utm_medium: intent.utmMedium} : {}),
-      ...(intent?.utmCampaign ? {utm_campaign: intent.utmCampaign} : {}),
-      ...(intent?.utmTerm ? {utm_term: intent.utmTerm} : {}),
-      ...(intent?.utmContent ? {utm_content: intent.utmContent} : {}),
-      ...params,
-    };
-    const safeParams = sanitizeAnalyticsParams(attributedParams);
-    console.info("[riddle-quest-funnel]", eventName, safeParams);
-    trackEvent(eventName, safeParams);
-    const safePlatformParams = Object.fromEntries(
-      Object.entries(safeParams).filter(
-        (entry): entry is [string, string | number | boolean] => !Array.isArray(entry[1]),
-      ),
-    );
-    platform.captureEvent(eventName, safePlatformParams);
-  }, [gate, platform, sessionRef]);
+  return useCallback(
+    (eventName: string, params: TrackFunnelParams = {}) => {
+      if (!gate.isOpen()) return;
+      /** Provides intent behavior. */
+      const intent = sessionRef.current?.entryIntent;
+      /** Provides attributed params behavior. */
+      const attributedParams = {
+        ...(intent?.campaign ? {campaign: intent.campaign} : {}),
+        ...(intent?.reference ? {reference: intent.reference} : {}),
+        ...(intent?.utmSource ? {utm_source: intent.utmSource} : {}),
+        ...(intent?.utmMedium ? {utm_medium: intent.utmMedium} : {}),
+        ...(intent?.utmCampaign ? {utm_campaign: intent.utmCampaign} : {}),
+        ...(intent?.utmTerm ? {utm_term: intent.utmTerm} : {}),
+        ...(intent?.utmContent ? {utm_content: intent.utmContent} : {}),
+        ...params,
+      };
+      /** Provides safe params behavior. */
+      const safeParams = sanitizeAnalyticsParams(attributedParams);
+      console.info("[riddle-quest-funnel]", eventName, safeParams);
+      trackEvent(eventName, safeParams);
+      /** Provides safe platform params behavior. */
+      const safePlatformParams = Object.fromEntries(
+        Object.entries(safeParams).filter(
+          (entry): entry is [string, string | number | boolean] => !Array.isArray(entry[1]),
+        ),
+      );
+      platform.captureEvent(eventName, safePlatformParams);
+    },
+    [gate, platform, sessionRef],
+  );
 }

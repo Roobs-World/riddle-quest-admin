@@ -27,10 +27,7 @@ import {lowerCaseGraphemes} from "@qwordly/core/game";
 import {finalizeAuthoritativeSession} from "./singlePlayerSession";
 import {assertPlayableSinglePlayerAnswer} from "./singlePlayerAnswerPolicy";
 import {getSafeErrorMetadata} from "../shared/errorMetadata";
-import {
-  completionBindingMatches,
-  getSinglePlayerCompletionBindingRef,
-} from "./singlePlayerCompletionBinding";
+import {completionBindingMatches, getSinglePlayerCompletionBindingRef} from "./singlePlayerCompletionBinding";
 import {settleFacebookReferralAfterAuthoritativeWin} from "../facebook/facebookReferrals";
 import {settleRedditReferralAfterAuthoritativeWin} from "../reddit/redditReferrals";
 
@@ -68,6 +65,7 @@ export const LOSS_COMPLETION_RECEIPT_TTL_MS = 45 * 24 * 60 * 60 * 1_000;
 /** Parses a server timestamp without trusting caller-provided time. */
 function toTrustedDate(value: unknown): Date | undefined {
   if (typeof value === "object" && value !== null && "toDate" in value && typeof value.toDate === "function") {
+    /** Parses d. */
     const parsed = value.toDate();
     return parsed instanceof Date && !Number.isNaN(parsed.getTime()) ? parsed : undefined;
   }
@@ -85,24 +83,27 @@ export function isDailyCompletionDateEligible(
   now = new Date(),
 ): boolean {
   if (!challengeDate) return false;
+  /** Provides today behavior. */
   const today = now.toISOString().slice(0, 10);
   if (challengeDate === today) return true;
   if (!isCorrect || !terminalAt) return false;
+  /** Provides rollover behavior. */
   const rollover = new Date(`${challengeDate}T00:00:00.000Z`);
   if (Number.isNaN(rollover.getTime())) return false;
   rollover.setUTCDate(rollover.getUTCDate() + 1);
+  /** Provides rollover ms behavior. */
   const rolloverMs = rollover.getTime();
-  return terminalAt.getTime() >= rolloverMs - DAILY_COMPLETION_ROLLOVER_GRACE_MS &&
+  return (
+    terminalAt.getTime() >= rolloverMs - DAILY_COMPLETION_ROLLOVER_GRACE_MS &&
     terminalAt.getTime() <= rolloverMs + DAILY_COMPLETION_ROLLOVER_GRACE_MS &&
     now.getTime() >= rolloverMs &&
-    now.getTime() <= rolloverMs + DAILY_COMPLETION_ROLLOVER_GRACE_MS;
+    now.getTime() <= rolloverMs + DAILY_COMPLETION_ROLLOVER_GRACE_MS
+  );
 }
 
 /** Resolves the canonical locale used by authoritative riddle validation. */
 const resolveUserLocale = (preferredLanguage: string | undefined): SupportedLocale =>
-  SUPPORTED_LOCALES.includes(preferredLanguage as SupportedLocale)
-    ? preferredLanguage as SupportedLocale
-    : "en";
+  SUPPORTED_LOCALES.includes(preferredLanguage as SupportedLocale) ? (preferredLanguage as SupportedLocale) : "en";
 
 /**
  * Loads the canonical riddle and derives the terminal outcome from server-owned
@@ -110,28 +111,31 @@ const resolveUserLocale = (preferredLanguage: string | undefined): SupportedLoca
  */
 export async function deriveAuthoritativeCompletion(
   data: CompleteGameRequestData,
-  auth: {uid: string; isAnonymous?: boolean},
+  auth: {
+    /** Stores uid. */
+    uid: string; /** Stores is anonymous. */
+    /** Stores is anonymous. */
+    isAnonymous?: boolean;
+  },
 ): Promise<AuthoritativeCompleteGameData> {
-  const state = await finalizeAuthoritativeSession(
-    auth.uid,
-    data.gameMode,
-    data.riddleId,
-    data.sessionToken,
-  );
+  /** Provides state behavior. */
+  const state = await finalizeAuthoritativeSession(auth.uid, data.gameMode, data.riddleId, data.sessionToken);
   if (!state.lastGuess || state.attempts < 1 || state.attempts > 6) {
     throw new HttpsError("failed-precondition", "The authoritative game state is incomplete.");
   }
   assertPlayableSinglePlayerAnswer(state.answer);
+  /** Provides locale behavior. */
   const locale = resolveUserLocale(state.locale);
+  /** Normalizes d answer. */
   const normalizedAnswer = lowerCaseGraphemes(state.answer.trim(), locale).join("");
+  /** Normalizes d guess. */
   const normalizedGuess = lowerCaseGraphemes(state.lastGuess.trim(), locale).join("");
   return {
     ...data,
     attempts: state.attempts,
     isCorrect: normalizedGuess === normalizedAnswer,
-    completionKey: normalizedGuess === normalizedAnswer
-      ? state.completionKey
-      : `${state.completionKey}:loss:${data.sessionToken}`,
+    completionKey:
+      normalizedGuess === normalizedAnswer ? state.completionKey : `${state.completionKey}:loss:${data.sessionToken}`,
     entitlementCompletionKey: state.completionKey,
     locale,
     ...(state.classicIndex !== undefined ? {classicIndex: state.classicIndex} : {}),
@@ -143,8 +147,14 @@ export async function deriveAuthoritativeCompletion(
 /** Resolves and executes one replay-safe authoritative completion. */
 export async function completeAuthoritativeGame(
   data: CompleteGameRequestData,
-  auth: {uid: string; isAnonymous?: boolean},
+  auth: {
+    /** Stores uid. */
+    uid: string; /** Stores is anonymous. */
+    /** Stores is anonymous. */
+    isAnonymous?: boolean;
+  },
 ): Promise<CompleteGameResponseData> {
+  /** Provides outcome behavior. */
   const outcome = await deriveAuthoritativeCompletion(data, auth);
   return commitAuthoritativeCompletion(outcome, auth);
 }
@@ -175,47 +185,67 @@ const defaultPlayerStats = (): PlayerStats => ({
 /** Atomically applies progression, rewards, achievements, and the replay receipt. */
 async function commitAuthoritativeCompletion(
   data: AuthoritativeCompleteGameData,
-  auth: {uid: string; isAnonymous?: boolean},
+  auth: {
+    /** Stores uid. */
+    uid: string; /** Stores is anonymous. */
+    /** Stores is anonymous. */
+    isAnonymous?: boolean;
+  },
 ): Promise<CompleteGameResponseData> {
   await ensureUserDocumentComplete(auth.uid);
-  const receiptId = createHash("sha256")
-    .update(`${auth.uid}\0${data.gameMode}\0${data.completionKey}`)
-    .digest("hex");
+  /** Provides receipt id behavior. */
+  const receiptId = createHash("sha256").update(`${auth.uid}\0${data.gameMode}\0${data.completionKey}`).digest("hex");
+  /** Provides db behavior. */
   const db = admin.firestore();
+  /** Provides r ref. */
   const userRef = db.collection("users").doc(auth.uid);
+  /** Provides receipt ref behavior. */
   const receiptRef = db.collection("gameCompletionReceipts").doc(receiptId);
+  /** Provides completion binding ref behavior. */
   const completionBindingRef = getSinglePlayerCompletionBindingRef(
     auth.uid,
     data.gameMode,
     data.entitlementCompletionKey,
   );
 
+  /** Provides result behavior. */
   let result = await db.runTransaction(async (transaction) => {
+    /** Provides [receipt snapshot, user snapshot, completion binding snapshot] behavior. */
     const [receiptSnapshot, userSnapshot, completionBindingSnapshot] = await Promise.all([
       transaction.get(receiptRef),
       transaction.get(userRef),
       transaction.get(completionBindingRef),
     ]);
+    /** Clears matching completion binding. */
     const clearMatchingCompletionBinding = () => {
-      if (completionBindingSnapshot.exists && completionBindingMatches(completionBindingSnapshot.data(), {
-        sessionToken: data.sessionToken,
-        gameMode: data.gameMode,
-        completionKey: data.entitlementCompletionKey,
-        riddleId: data.riddleId,
-      })) transaction.delete(completionBindingRef);
+      if (
+        completionBindingSnapshot.exists &&
+        completionBindingMatches(completionBindingSnapshot.data(), {
+          sessionToken: data.sessionToken,
+          gameMode: data.gameMode,
+          completionKey: data.entitlementCompletionKey,
+          riddleId: data.riddleId,
+        })
+      )
+        transaction.delete(completionBindingRef);
     };
-    const createCompletionReceipt = (response: CompleteGameResponseData) => transaction.create(receiptRef, {
-      userId: auth.uid,
-      gameMode: data.gameMode,
-      completionKey: data.completionKey,
-      status: "completed",
-      result: response,
-      completedAt: admin.firestore.FieldValue.serverTimestamp(),
-      ...(!data.isCorrect ? {
-        expiresAt: admin.firestore.Timestamp.fromMillis(Date.now() + LOSS_COMPLETION_RECEIPT_TTL_MS),
-      } : {}),
-    });
+    /** Creates completion receipt. */
+    const createCompletionReceipt = (response: CompleteGameResponseData) =>
+      transaction.create(receiptRef, {
+        userId: auth.uid,
+        gameMode: data.gameMode,
+        completionKey: data.completionKey,
+        status: "completed",
+        result: response,
+        completedAt: admin.firestore.FieldValue.serverTimestamp(),
+        ...(!data.isCorrect
+          ? {
+              expiresAt: admin.firestore.Timestamp.fromMillis(Date.now() + LOSS_COMPLETION_RECEIPT_TTL_MS),
+            }
+          : {}),
+      });
     if (receiptSnapshot.exists) {
+      /** Provides cached behavior. */
       const cached = receiptSnapshot.data()?.result;
       if (receiptSnapshot.data()?.status === "completed" && cached) {
         clearMatchingCompletionBinding();
@@ -225,13 +255,17 @@ async function commitAuthoritativeCompletion(
     }
     if (!userSnapshot.exists) throw new HttpsError("not-found", "User data not found.");
 
+    /** Provides r. */
     const user = userSnapshot.data() as Player;
+    /** Provides current stats behavior. */
     const currentStats: PlayerStats = {...defaultPlayerStats(), ...(user.stats ?? {})};
+    /** Provides progress behavior. */
     const progress = {
       classicIndex: user.progress?.classicIndex ?? 1,
       dailyChallengeIndex: user.progress?.dailyChallengeIndex ?? 0,
       dailyChallengeCurrentQuestion: user.progress?.dailyChallengeCurrentQuestion ?? 0,
     };
+    /** Provides superseded completion behavior. */
     let supersededCompletion = false;
     if (data.gameMode === "classic") {
       if (typeof data.classicIndex !== "number" || !Number.isInteger(data.classicIndex)) {
@@ -243,21 +277,27 @@ async function commitAuthoritativeCompletion(
       }
     }
     if (data.gameMode === "challenge") {
+      /** Provides now behavior. */
       const now = new Date();
-      const lastCompletedKey = typeof user.lastCompletedDailyChallengeKey === "string"
-        ? user.lastCompletedDailyChallengeKey
-        : getUtcDayString(user.lastDailyChallengeCompletedAt);
-      const lastAttemptedKey = typeof user.lastDailyChallengeAttemptedKey === "string"
-        ? user.lastDailyChallengeAttemptedKey
-        : undefined;
+      /** Provides last completed key behavior. */
+      const lastCompletedKey =
+        typeof user.lastCompletedDailyChallengeKey === "string"
+          ? user.lastCompletedDailyChallengeKey
+          : getUtcDayString(user.lastDailyChallengeCompletedAt);
+      /** Provides last attempted key behavior. */
+      const lastAttemptedKey =
+        typeof user.lastDailyChallengeAttemptedKey === "string" ? user.lastDailyChallengeAttemptedKey : undefined;
       if (!data.isCorrect && lastCompletedKey && data.challengeDate && lastCompletedKey >= data.challengeDate) {
         supersededCompletion = true;
       } else {
         if (!isDailyCompletionDateEligible(data.challengeDate, data.isCorrect, data.terminalAt, now)) {
           throw new HttpsError("permission-denied", "This daily challenge is no longer current.");
         }
-        if (data.challengeDate !== now.toISOString().slice(0, 10) && lastAttemptedKey &&
-          lastAttemptedKey > data.challengeDate!) {
+        if (
+          data.challengeDate !== now.toISOString().slice(0, 10) &&
+          lastAttemptedKey &&
+          lastAttemptedKey > data.challengeDate!
+        ) {
           throw new HttpsError("permission-denied", "A newer daily challenge was already attempted.");
         }
         if (lastCompletedKey && lastCompletedKey >= data.challengeDate!) {
@@ -266,6 +306,7 @@ async function commitAuthoritativeCompletion(
       }
     }
     if (supersededCompletion) {
+      /** Provides response behavior. */
       const response: CompleteGameResponseData = {
         attempts: data.attempts,
         isCorrect: data.isCorrect,
@@ -282,25 +323,34 @@ async function commitAuthoritativeCompletion(
       clearMatchingCompletionBinding();
       return response;
     }
+    /** Provides stats behavior. */
     const stats: PlayerStats = {...currentStats};
 
     stats.totalWordsGuessed += data.attempts;
     stats.gamesPlayed += 1;
+    /** Provides base win coins behavior. */
     let baseWinCoins = 0;
+    /** Provides daily streak bonus behavior. */
     let dailyStreakBonus = 0;
+    /** Provides level up bonus behavior. */
     let levelUpBonus = 0;
+    /** Provides xp earned behavior. */
     let xpEarned = 0;
+    /** Provides new win streak behavior. */
     let newWinStreak: number | undefined;
 
     if (data.isCorrect) {
       stats.wins += 1;
       stats.totalWins += 1;
       stats.totalGuessesInWins += data.attempts;
+      /** Provides max attempts behavior. */
       const maxAttempts = data.gameMode === "challenge" ? MAX_ATTEMPTS_CHALLENGE : MAX_ATTEMPTS_CLASSIC;
-      xpEarned = (data.gameMode === "challenge" ? BASE_SCORE_CHALLENGE : BASE_SCORE_CLASSIC) +
+      xpEarned =
+        (data.gameMode === "challenge" ? BASE_SCORE_CHALLENGE : BASE_SCORE_CLASSIC) +
         Math.max(0, (maxAttempts - data.attempts + 1) * 10);
       stats.xp += xpEarned;
       stats.totalScore += xpEarned;
+      /** Provides previous level behavior. */
       const previousLevel = currentStats.level ?? getLevelFromXp(currentStats.xp);
       stats.level = getLevelFromXp(stats.xp);
       if (stats.level > previousLevel) levelUpBonus = LEVEL_UP_COIN_BONUS;
@@ -329,29 +379,29 @@ async function commitAuthoritativeCompletion(
       stats.winStreak = 0;
     }
 
-    stats.averageGuesses = stats.totalWins > 0
-      ? Number((stats.totalGuessesInWins / stats.totalWins).toFixed(2))
-      : 0;
-    stats.winRate = stats.gamesPlayed > 0
-      ? Number(((stats.totalWins / stats.gamesPlayed) * 100).toFixed(2))
-      : 0;
+    stats.averageGuesses = stats.totalWins > 0 ? Number((stats.totalGuessesInWins / stats.totalWins).toFixed(2)) : 0;
+    stats.winRate = stats.gamesPlayed > 0 ? Number(((stats.totalWins / stats.gamesPlayed) * 100).toFixed(2)) : 0;
 
+    /** Provides pre achievement coins behavior. */
     const preAchievementCoins = Number(user.coins ?? 0) + baseWinCoins + dailyStreakBonus + levelUpBonus;
+    /** Provides projected user behavior. */
     const projectedUser: Player = {...user, coins: preAchievementCoins, stats, progress};
+    /** Provides new achievements behavior. */
     const newAchievements = findNewAchievements(projectedUser, {
       gameMode: data.gameMode,
       isCorrect: data.isCorrect,
       attempts: data.attempts,
       gameOver: true,
     });
+    /** Provides newly unlocked achievement ids behavior. */
     const newlyUnlockedAchievementIds = newAchievements.map((entry) => entry.achievementId);
-    const achievementBonus = data.isCorrect
-      ? newlyUnlockedAchievementIds.length * ACHIEVEMENT_UNLOCK_COIN_REWARD
-      : 0;
-    const coinsEarned = data.isCorrect
-      ? baseWinCoins + dailyStreakBonus + levelUpBonus + achievementBonus
-      : 0;
+    /** Provides achievement bonus behavior. */
+    const achievementBonus = data.isCorrect ? newlyUnlockedAchievementIds.length * ACHIEVEMENT_UNLOCK_COIN_REWARD : 0;
+    /** Provides coins earned behavior. */
+    const coinsEarned = data.isCorrect ? baseWinCoins + dailyStreakBonus + levelUpBonus + achievementBonus : 0;
+    /** Provides new balance behavior. */
     const newBalance = Number(user.coins ?? 0) + coinsEarned;
+    /** Provides response behavior. */
     const response: CompleteGameResponseData = {
       attempts: data.attempts,
       isCorrect: data.isCorrect,
@@ -363,16 +413,18 @@ async function commitAuthoritativeCompletion(
       newLevel: stats.level,
       leveledUp: stats.level > currentStats.level,
       ...(newWinStreak !== undefined ? {newWinStreak} : {}),
-      ...(data.isCorrect ? {
-        rewardBreakdown: {
-          baseWinCoins,
-          levelUpBonus,
-          dailyStreakBonus,
-          achievementBonus,
-          totalAwarded: coinsEarned,
-          newBalance,
-        },
-      } : {}),
+      ...(data.isCorrect
+        ? {
+            rewardBreakdown: {
+              baseWinCoins,
+              levelUpBonus,
+              dailyStreakBonus,
+              achievementBonus,
+              totalAwarded: coinsEarned,
+              newBalance,
+            },
+          }
+        : {}),
     };
 
     transaction.update(userRef, {
@@ -380,12 +432,15 @@ async function commitAuthoritativeCompletion(
       stats,
       progress,
       unlockedAchievements: [...(user.unlockedAchievements ?? []), ...newAchievements],
-      ...(data.gameMode === "challenge" && data.isCorrect ? {
-        lastDailyChallengeCompletedAt: data.challengeDate === new Date().toISOString().slice(0, 10)
-          ? admin.firestore.FieldValue.serverTimestamp()
-          : admin.firestore.Timestamp.fromDate(new Date(`${data.challengeDate}T12:00:00.000Z`)),
-        lastCompletedDailyChallengeKey: data.challengeDate ?? data.completionKey,
-      } : {}),
+      ...(data.gameMode === "challenge" && data.isCorrect
+        ? {
+            lastDailyChallengeCompletedAt:
+              data.challengeDate === new Date().toISOString().slice(0, 10)
+                ? admin.firestore.FieldValue.serverTimestamp()
+                : admin.firestore.Timestamp.fromDate(new Date(`${data.challengeDate}T12:00:00.000Z`)),
+            lastCompletedDailyChallengeKey: data.challengeDate ?? data.completionKey,
+          }
+        : {}),
       ...(data.gameMode === "challenge" ? {lastDailyChallengeAttemptedKey: data.challengeDate} : {}),
     });
     createCompletionReceipt(response);
@@ -396,8 +451,11 @@ async function commitAuthoritativeCompletion(
   // A failed settlement makes the callable retryable. On retry the completion
   // receipt replays safely and the referral transaction resumes idempotently.
   if (data.isCorrect) {
+    /** Provides facebook referral behavior. */
     const facebookReferral = await settleFacebookReferralAfterAuthoritativeWin(auth.uid);
+    /** Provides reddit referral behavior. */
     const redditReferral = await settleRedditReferralAfterAuthoritativeWin(auth.uid);
+    /** Provides referral behavior. */
     const referral = {
       inviteeCoins: facebookReferral.inviteeCoins + redditReferral.inviteeCoins,
     };
@@ -418,6 +476,7 @@ async function commitAuthoritativeCompletion(
   // These effects are derived, overwrite-safe, and retried on receipt replay;
   // they cannot make the already-committed player reward partial.
   try {
+    /** Provides r. */
     const user = await getUser(auth.uid);
     if (data.isCorrect && user && !auth.isAnonymous) {
       await updateLeaderboardEntry(

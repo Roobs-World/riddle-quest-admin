@@ -10,11 +10,7 @@ import {captureBrowserException} from "../../../observability/browserErrorReport
 type MessageRouter = (message: unknown) => Promise<unknown>;
 
 /** Provides report bridge error behavior. */
-function reportBridgeError(
-  error: unknown,
-  requestPrefix: string,
-  postToHost: (message: GameToHostMessage) => void,
-) {
+function reportBridgeError(error: unknown, requestPrefix: string, postToHost: (message: GameToHostMessage) => void) {
   captureBrowserException(error, {component: "game_bridge", operation: requestPrefix});
   postToHost({
     type: "game:error",
@@ -29,18 +25,25 @@ export function useGameReadyReporter({
   sendReady,
   postToHost,
 }: {
+  /** Stores initialized. */
   initialized: boolean;
+  /** Stores send ready. */
   sendReady: () => void;
+  /** Stores post to host. */
   postToHost: (message: GameToHostMessage) => void;
 }) {
+  /** Provides initialized ref behavior. */
   const initializedRef = useRef(initialized);
   initializedRef.current = initialized;
 
   useEffect(() => {
+    /** Reads y timer. */
     const readyTimer = window.setTimeout(sendReady, 0);
+    /** Reads y interval. */
     const readyInterval = window.setInterval(() => {
       if (!initializedRef.current) sendReady();
     }, 750);
+    /** Provides report size behavior. */
     const reportSize = () => {
       postToHost({
         type: "game:resize",
@@ -51,7 +54,9 @@ export function useGameReadyReporter({
         },
       });
     };
+    /** Provides observer behavior. */
     let observer: ResizeObserver | null = null;
+    /** Stops waiting for layout. */
     const stopWaitingForLayout = runWhenLayoutReady(() => {
       reportSize();
       window.addEventListener("resize", reportSize);
@@ -73,14 +78,18 @@ export function useGameMessageListener({
   router,
   postToHost,
 }: {
+  /** Stores router. */
   router: MessageRouter;
+  /** Stores post to host. */
   postToHost: (message: GameToHostMessage) => void;
 }) {
   useEffect(() => {
+    /** Handles message. */
     const handleMessage = (event: MessageEvent) => {
       if (event.origin !== window.location.origin || event.source !== window.parent) return;
       void router(event.data).catch((error) => reportBridgeError(error, "parse-error", postToHost));
     };
+    /** Handles local message. */
     const handleLocalMessage = (event: Event) => {
       void router((event as CustomEvent<unknown>).detail).catch((error) =>
         reportBridgeError(error, "local-parse-error", postToHost),

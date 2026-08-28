@@ -17,34 +17,62 @@ import {
   subscribeToPlayerPreferenceChanges,
 } from "../playerPreferences";
 
+/** Provides memory storage behavior. */
 class MemoryStorage implements Storage {
+  /** Stores values. */
   private readonly values = new Map<string, string>();
-  get length() { return this.values.size; }
-  clear() { this.values.clear(); }
-  getItem(key: string) { return this.values.get(key) ?? null; }
-  key(index: number) { return [...this.values.keys()][index] ?? null; }
-  removeItem(key: string) { this.values.delete(key); }
-  setItem(key: string, value: string) { this.values.set(key, String(value)); }
+  /** Gets length. */
+  get length() {
+    return this.values.size;
+  }
+  /** Provides clear behavior. */
+  clear() {
+    this.values.clear();
+  }
+  /** Gets item. */
+  getItem(key: string) {
+    return this.values.get(key) ?? null;
+  }
+  /** Provides key behavior. */
+  key(index: number) {
+    return [...this.values.keys()][index] ?? null;
+  }
+  /** Removes item. */
+  removeItem(key: string) {
+    this.values.delete(key);
+  }
+  /** Sets item. */
+  setItem(key: string, value: string) {
+    this.values.set(key, String(value));
+  }
 }
 
+/** Provides original descriptors behavior. */
 const originalDescriptors = new Map<string, PropertyDescriptor | undefined>();
 
+/** Provides install global behavior. */
 const installGlobal = (key: string, value: unknown) => {
   if (!originalDescriptors.has(key)) originalDescriptors.set(key, Object.getOwnPropertyDescriptor(globalThis, key));
   Object.defineProperty(globalThis, key, {configurable: true, writable: true, value});
 };
 
+/** Provides install throwing global behavior. */
 const installThrowingGlobal = (key: string) => {
   if (!originalDescriptors.has(key)) originalDescriptors.set(key, Object.getOwnPropertyDescriptor(globalThis, key));
   Object.defineProperty(globalThis, key, {
     configurable: true,
-    get: () => { throw new DOMException("Storage access denied", "SecurityError"); },
+    get: () => {
+      throw new DOMException("Storage access denied", "SecurityError");
+    },
   });
 };
 
 beforeEach(() => {
+  /** Provides local storage behavior. */
   const localStorage = new MemoryStorage();
+  /** Provides session storage behavior. */
   const sessionStorage = new MemoryStorage();
+  /** Provides document element behavior. */
   const documentElement = {dataset: {} as Record<string, string>, lang: "en", dir: "ltr"};
   installGlobal("localStorage", localStorage);
   installGlobal("sessionStorage", sessionStorage);
@@ -70,13 +98,15 @@ it("applies validated platform preferences before play and overrides browser fal
   localStorage.setItem(PLAYER_PREFERENCE_STORAGE_KEYS.reducedMotion, "false");
   localStorage.setItem(PLAYER_PREFERENCE_STORAGE_KEYS.highContrast, "false");
 
-  expect(applyPlayerPreferences({
-    locale: "fr",
-    muted: true,
-    reducedMotion: true,
-    highContrast: true,
-    onboardingComplete: true,
-  })).toEqual({
+  expect(
+    applyPlayerPreferences({
+      locale: "fr",
+      muted: true,
+      reducedMotion: true,
+      highContrast: true,
+      onboardingComplete: true,
+    }),
+  ).toEqual({
     locale: "fr",
     muted: true,
     reducedMotion: true,
@@ -115,7 +145,9 @@ it("uses existing stored preferences and OS accessibility defaults when platform
 
 it("emits only user-initiated changes for the platform persistence adapter", () => {
   applyPlayerPreferences({locale: "en", muted: false, reducedMotion: false, highContrast: false});
+  /** Provides changes behavior. */
   const changes: unknown[] = [];
+  /** Provides unsubscribe behavior. */
   const unsubscribe = subscribeToPlayerPreferenceChanges((change) => changes.push(change));
 
   setPlayerLocale("de");
@@ -137,6 +169,7 @@ it("emits only user-initiated changes for the platform persistence adapter", () 
 });
 
 it("clears only app-owned user state after authoritative deletion", () => {
+  /** Removes d local keys. */
   const removedLocalKeys = [
     ...Object.values(PLAYER_PREFERENCE_STORAGE_KEYS),
     "riddleQuest:onboarding:user-1",
@@ -161,7 +194,9 @@ it("clears only app-owned user state after authoritative deletion", () => {
 });
 
 it("blocks stale Jest callbacks from recreating browser state after deletion", () => {
+  /** Provides mutation allowed behavior. */
   let mutationAllowed = true;
+  /** Removes guard. */
   const removeGuard = installBrowserPlayerStateMutationGuard(() => mutationAllowed);
   try {
     safeBrowserStorageSet("local", PLAYER_PREFERENCE_STORAGE_KEYS.activeRace, "race-before");
@@ -183,6 +218,7 @@ it("blocks stale Jest callbacks from recreating browser state after deletion", (
 });
 
 it("fails closed while still attempting session cleanup when browser persistence cannot be removed", () => {
+  /** Provides failing local storage behavior. */
   const failingLocalStorage = new MemoryStorage();
   failingLocalStorage.setItem(PLAYER_PREFERENCE_STORAGE_KEYS.locale, "fr");
   jest.spyOn(failingLocalStorage, "removeItem").mockImplementation(() => undefined);

@@ -9,10 +9,13 @@ export function containsProfanity(username: string): boolean {
     return false;
   }
 
+  /** Provides clean username behavior. */
   const cleanUsername = username.toLowerCase().trim();
 
   return PROFANE_WORDS.some((word) => {
+    /** Provides exact match behavior. */
     const exactMatch = new RegExp(`\\b${word}\\b`, "i").test(cleanUsername);
+    /** Provides substring match behavior. */
     const substringMatch = BOUNDARY_ONLY_PROFANITY_WORDS.has(word) ? false : cleanUsername.includes(word);
 
     return exactMatch || substringMatch;

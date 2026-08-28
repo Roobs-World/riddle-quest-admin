@@ -3,34 +3,48 @@ import type {PlatformRuntimePolicy} from "../platform/types";
 
 /** Locale identifiers supported by the bundled YouTube content pack. */
 export type YouTubeLocale =
-  | "en" | "es" | "pt" | "fr" | "de" | "ja" | "ko" | "zh" | "hi"
-  | "ru" | "tr" | "ar" | "id" | "it" | "nl" | "pl" | "vi";
+  "en" | "es" | "pt" | "fr" | "de" | "ja" | "ko" | "zh" | "hi" | "ru" | "tr" | "ar" | "id" | "it" | "nl" | "pl" | "vi";
 
 /** The two self-contained game modes available in the Playable. */
 export type YouTubeGameMode = "classic" | "daily";
 
 /** Riddle data bundled into the artifact. Answers are never written to Cloud Save. */
 export type YouTubeRiddle = Readonly<{
+  /** Stores canonical id. */
   canonicalId: string;
+  /** Stores text. */
   text: string;
+  /** Stores answer. */
   answer: string;
+  /** Stores category id. */
   categoryId: string;
+  /** Stores difficulty band. */
   difficultyBand: "easy" | "medium" | "hard";
+  /** Stores content fingerprint. */
   contentFingerprint: string;
 }>;
 
 /** A locale-specific, release-versioned view of the bundled content. */
 export type YouTubeContent = Readonly<{
+  /** Stores content version. */
   contentVersion: string;
+  /** Stores locale. */
   locale: YouTubeLocale;
+  /** Stores classic order. */
   classicOrder: readonly string[];
+  /** Stores daily. */
   daily: Readonly<{
+    /** Stores schedule version. */
     scheduleVersion: number;
+    /** Stores segments. */
     segments: readonly Readonly<{
+      /** Stores starts on. */
       startsOn: string;
+      /** Stores canonical ids. */
       canonicalIds: readonly string[];
     }>[];
   }>;
+  /** Stores riddles. */
   riddles: ReadonlyMap<string, YouTubeRiddle>;
 }>;
 
@@ -78,7 +92,9 @@ export const YOUTUBE_RUNTIME_POLICY: PlatformRuntimePolicy = Object.freeze({
 
 /** Serializable feedback row for a submitted guess. */
 export type YouTubeSavedGuess = Readonly<{
+  /** Stores letters. */
   letters: string[];
+  /** Stores feedback. */
   feedback: Feedback[];
 }>;
 
@@ -144,7 +160,9 @@ export type YouTubeProgress = {
 
 /** Describes you tube operation receipt. */
 export type YouTubeOperationReceipt = Readonly<{
+  /** Stores id. */
   id: string;
+  /** Stores revision. */
   revision: number;
 }>;
 
@@ -164,18 +182,27 @@ export type YouTubeSaveV1 = {
   operationReceipts: YouTubeOperationReceipt[];
   /** Stores preferences. */
   preferences: {
+    /** Stores reduced motion. */
     reducedMotion: boolean;
+    /** Stores high contrast. */
     highContrast: boolean;
+    /** Stores guidance complete. */
     guidanceComplete: boolean;
   };
 };
 
 /** Describes you tube result. */
 export type YouTubeResult = Readonly<{
+  /** Stores kind. */
   kind: "win" | "loss" | "skip";
+  /** Stores mode. */
   mode: YouTubeGameMode;
+  /** Stores attempts. */
   attempts: number;
+  /** Stores coins earned. */
   coinsEarned: number;
+  /** Stores xp earned. */
   xpEarned: number;
+  /** Stores newly unlocked achievement ids. */
   newlyUnlockedAchievementIds: readonly string[];
 }>;

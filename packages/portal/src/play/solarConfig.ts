@@ -50,7 +50,16 @@ export type PlanetConfig = {
   /** Stores atmosphere. */
   atmosphere: PlanetAtmosphere;
   /** Stores ring. */
-  ring?: {innerRadius: number; outerRadius: number; texture: string; tiltRadians: number};
+  ring?: {
+    /** Stores inner radius. */
+    innerRadius: number; /** Stores outer radius. */
+    /** Stores outer radius. */
+    outerRadius: number; /** Stores texture. */
+    /** Stores texture. */
+    texture: string; /** Stores tilt radians. */
+    /** Stores tilt radians. */
+    tiltRadians: number;
+  };
 };
 
 /** Defines the solar system config value. */

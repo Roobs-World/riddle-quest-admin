@@ -2,11 +2,14 @@ import {describe, expect, it} from "@jest/globals";
 
 import {assertExactDeployedJestBuildUrl} from "./deployedJestBuildIdentity";
 
+/** Provides game id behavior. */
 const gameId = "019faa68-f3ec-755d-9ab5-c887fb426801";
+/** Builds version. */
 const buildVersion = "1.0.0-dev.20260823084020.3c32ac3a619f.a5c4ff30";
 
 describe("deployed Jest build identity", () => {
   it("accepts the exact canonical HTTPS build URL with Jest context parameters", () => {
+    /** Provides deployed behavior. */
     const deployed = assertExactDeployedJestBuildUrl({
       buildVersion,
       gameId,

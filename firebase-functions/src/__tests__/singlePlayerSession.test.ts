@@ -12,11 +12,13 @@ const request = (guess: string, requestId: string, gameMode: "classic" | "challe
 
 describe("single-player authoritative session", () => {
   it("derives correctness and attempt count from canonical state", () => {
+    /** Provides first behavior. */
     const first = transitionSinglePlayerGuess({
       request: request("crane", "request-0001"),
       answer: "piano",
       locale: "en",
     });
+    /** Provides second behavior. */
     const second = transitionSinglePlayerGuess({
       state: first.state,
       request: request("piano", "request-0002"),
@@ -32,11 +34,13 @@ describe("single-player authoritative session", () => {
   });
 
   it("replays the same request without incrementing and binds it to its guess", () => {
+    /** Provides first behavior. */
     const first = transitionSinglePlayerGuess({
       request: request("crane", "request-0001"),
       answer: "piano",
       locale: "en",
     });
+    /** Provides replay behavior. */
     const replay = transitionSinglePlayerGuess({
       state: first.state,
       request: request("crane", "request-0001"),
@@ -45,16 +49,20 @@ describe("single-player authoritative session", () => {
     });
 
     expect(replay).toMatchObject({replayed: true, result: {attempts: 1}});
-    expect(() => transitionSinglePlayerGuess({
-      state: first.state,
-      request: request("piano", "request-0001"),
-      answer: "piano",
-      locale: "en",
-    })).toThrow(HttpsError);
+    expect(() =>
+      transitionSinglePlayerGuess({
+        state: first.state,
+        request: request("piano", "request-0001"),
+        answer: "piano",
+        locale: "en",
+      }),
+    ).toThrow(HttpsError);
   });
 
   it("stops at the base cap until the server grants the paid attempt", () => {
+    /** Provides state behavior. */
     let state: SinglePlayerSessionState | undefined;
+    /** Provides guesses behavior. */
     const guesses = ["crane", "slate", "house", "brick", "flame"];
     for (let index = 1; index <= 5; index += 1) {
       state = transitionSinglePlayerGuess({
@@ -65,14 +73,18 @@ describe("single-player authoritative session", () => {
       }).state;
     }
     expect(state).toMatchObject({attempts: 5, awaitingContinue: true, terminal: false});
-    expect(() => transitionSinglePlayerGuess({
-      state,
-      request: request("piano", "request-0006"),
-      answer: "piano",
-      locale: "en",
-    })).toThrow(HttpsError);
+    expect(() =>
+      transitionSinglePlayerGuess({
+        state,
+        request: request("piano", "request-0006"),
+        answer: "piano",
+        locale: "en",
+      }),
+    ).toThrow(HttpsError);
 
+    /** Provides continued behavior. */
     const continued = {...state!, awaitingContinue: false, hasUsedContinue: true};
+    /** Provides final behavior. */
     const final = transitionSinglePlayerGuess({
       state: continued,
       request: request("piano", "request-0006"),
@@ -83,19 +95,23 @@ describe("single-player authoritative session", () => {
   });
 
   it("rejects guesses that do not match the canonical playable answer length", () => {
-    expect(() => transitionSinglePlayerGuess({
-      request: request("four", "request-0001"),
-      answer: "piano",
-      locale: "en",
-    })).toThrow(HttpsError);
+    expect(() =>
+      transitionSinglePlayerGuess({
+        request: request("four", "request-0001"),
+        answer: "piano",
+        locale: "en",
+      }),
+    ).toThrow(HttpsError);
   });
 
   it("semantically replays a dropped response even when the transport creates a fresh request id", () => {
+    /** Provides first behavior. */
     const first = transitionSinglePlayerGuess({
       request: request("crane", "request-0001"),
       answer: "piano",
       locale: "en",
     });
+    /** Provides replay behavior. */
     const replay = transitionSinglePlayerGuess({
       state: first.state,
       request: request("crane", "request-fresh"),

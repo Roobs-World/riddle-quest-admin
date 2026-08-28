@@ -1,8 +1,11 @@
 import {RACE_RULES} from "@qwordly/core/race";
 
+/** Provides race callable user id behavior. */
 export const raceCallableUserId = "player-1";
+/** Provides race callable request id behavior. */
 export const raceCallableRequestId = "request-0001";
 
+/** Provides race run fixture behavior. */
 export const raceRunFixture = {
   runId: "run-1",
   role: "creator" as const,
@@ -27,13 +30,16 @@ export const raceRunFixture = {
   events: [],
 };
 
+/** Provides race run response fixture behavior. */
 export const raceRunResponseFixture = {run: raceRunFixture};
 
+/** Provides abandoned race response fixture behavior. */
 export const abandonedRaceResponseFixture = {
   run: {...raceRunFixture, status: "abandoned" as const, currentRiddle: null},
   result: null,
 };
 
+/** Provides race challenge preview fixture behavior. */
 export const raceChallengePreviewFixture = {
   challengeId: "challenge-1",
   creator: {displayName: "Ada", avatarUrl: null},
@@ -46,6 +52,7 @@ export const raceChallengePreviewFixture = {
   status: "active" as const,
 };
 
+/** Provides race outcome fixture behavior. */
 export const raceOutcomeFixture = {
   runId: "run-1",
   result: "recorded" as const,
@@ -61,6 +68,7 @@ export const raceOutcomeFixture = {
   achievementCoinsAwarded: 0,
 };
 
+/** Provides race categories fixture behavior. */
 export const raceCategoriesFixture = {
   categories: [
     {

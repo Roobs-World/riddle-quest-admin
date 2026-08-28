@@ -106,7 +106,12 @@ export function getGameTour(gameMode: GameSessionState["gameMode"]): TooltipId[]
 export function getContextualTooltipCandidates(
   state: Pick<GameSessionState, "gameMode" | "guesses" | "lastOutcome" | "lastRewards" | "profile">,
   modal: GameModal,
-): Array<{id: TooltipId; when: boolean}> {
+): Array<{
+  /** Stores id. */
+  id: TooltipId; /** Stores when. */
+  /** Stores when. */
+  when: boolean;
+}> {
   return [
     {
       id: "achievementEarned",

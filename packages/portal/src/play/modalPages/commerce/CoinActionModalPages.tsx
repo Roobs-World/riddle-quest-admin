@@ -43,7 +43,13 @@ export type TreasureModalPageProps = {
 };
 
 /** Renders the server-authoritative extra-attempt prompt. */
-export function ContinueModalPage({balance, onContinue, onOpenModal, commerceAvailable = true}: ContinueModalPageProps) {
+export function ContinueModalPage({
+  balance,
+  onContinue,
+  onOpenModal,
+  commerceAvailable = true,
+}: ContinueModalPageProps) {
+  /** Indicates whether can afford. */
   const canAfford = balance >= CONTINUE_COIN_COST;
   return (
     <div className="modal-actions continue-actions">
@@ -53,17 +59,17 @@ export function ContinueModalPage({balance, onContinue, onOpenModal, commerceAva
         <strong>{tr("Profile.TOTAL_COINS_LABEL")}</strong>
         <span>{balance.toLocaleString()}</span>
       </div>
-      <button
-        className="play-primary"
-        disabled={!canAfford}
-        onClick={() => onContinue(CONTINUE_COIN_COST)}
-      >
-        {tr("LossModal.USE_COINS_PREFIX")}{CONTINUE_COIN_COST}{tr("LossModal.USE_COINS_SUFFIX")}
+      <button className="play-primary" disabled={!canAfford} onClick={() => onContinue(CONTINUE_COIN_COST)}>
+        {tr("LossModal.USE_COINS_PREFIX")}
+        {CONTINUE_COIN_COST}
+        {tr("LossModal.USE_COINS_SUFFIX")}
       </button>
       {!canAfford ? <p>{tr("GameScreenAlerts.CONTINUE_NOT_ENOUGH_COINS_MESSAGE")}</p> : null}
-      {commerceAvailable && <button className="play-primary" onClick={() => onOpenModal("shop")}>
-        {tr("LossModal.OPEN_SHOP_BUTTON")}
-      </button>}
+      {commerceAvailable && (
+        <button className="play-primary" onClick={() => onOpenModal("shop")}>
+          {tr("LossModal.OPEN_SHOP_BUTTON")}
+        </button>
+      )}
       <button className="play-primary" onClick={() => onOpenModal("skip")}>
         {tr("LossModal.SKIP_PUZZLE_BUTTON")}
       </button>
@@ -120,18 +126,25 @@ export function TreasureModalPage({balance, onOpenModal, commerceAvailable = tru
   return (
     <div className="treasure-chest">
       <img src={treasureChestUrl} alt="" />
-      <strong>{balance.toLocaleString()} {tr("CoinShop.COINS_SUFFIX")}</strong>
-      {commerceAvailable && <button className="play-primary" onClick={() => onOpenModal("shop")}>
-        {tr("Navigation.BUY_COINS_BUTTON")}
-      </button>}
+      <strong>
+        {balance.toLocaleString()} {tr("CoinShop.COINS_SUFFIX")}
+      </strong>
+      {commerceAvailable && (
+        <button className="play-primary" onClick={() => onOpenModal("shop")}>
+          {tr("Navigation.BUY_COINS_BUTTON")}
+        </button>
+      )}
     </div>
   );
 }
 
 /** Internal inputs shared by the hint and skip confirmation pages. */
 type CoinActionPromptProps = CoinActionModalPageProps & {
+  /** Stores cost. */
   cost: number;
+  /** Stores insufficient funds key. */
   insufficientFundsKey: string;
+  /** Stores action label key. */
   actionLabelKey: string;
 };
 
@@ -146,6 +159,7 @@ function CoinActionPrompt({
   onRequestAction,
   commerceAvailable = true,
 }: CoinActionPromptProps) {
+  /** Indicates whether can afford. */
   const canAfford = balance >= cost;
 
   /** Requests the authoritative action before closing its confirmation modal. */
@@ -156,15 +170,23 @@ function CoinActionPrompt({
 
   return (
     <div className="modal-actions">
-      <p>{tr("GameScreenAlerts.COST_COINS_PREFIX")}{cost}{tr("GameScreenAlerts.COST_COINS_SUFFIX")}</p>
+      <p>
+        {tr("GameScreenAlerts.COST_COINS_PREFIX")}
+        {cost}
+        {tr("GameScreenAlerts.COST_COINS_SUFFIX")}
+      </p>
       {canAfford ? (
-        <button className="play-primary" onClick={requestAction}>{tr(actionLabelKey)}</button>
+        <button className="play-primary" onClick={requestAction}>
+          {tr(actionLabelKey)}
+        </button>
       ) : (
         <>
           <p>{tr(insufficientFundsKey)}</p>
-          {commerceAvailable && <button className="play-primary" onClick={() => onOpenModal("shop")}>
-            {tr("LossModal.OPEN_SHOP_BUTTON")}
-          </button>}
+          {commerceAvailable && (
+            <button className="play-primary" onClick={() => onOpenModal("shop")}>
+              {tr("LossModal.OPEN_SHOP_BUTTON")}
+            </button>
+          )}
         </>
       )}
     </div>

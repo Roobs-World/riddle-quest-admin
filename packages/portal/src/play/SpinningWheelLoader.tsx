@@ -13,11 +13,7 @@ export function PulsingSpinner() {
   return (
     <span className="pulsing-spinner" aria-hidden="true">
       {Array.from({length: SPINNER_DOT_COUNT}, (_, index) => (
-        <span
-          className="pulsing-spinner-dot"
-          data-testid="spinner-dot"
-          key={index}
-        />
+        <span className="pulsing-spinner-dot" data-testid="spinner-dot" key={index} />
       ))}
     </span>
   );
@@ -30,16 +26,19 @@ export function SpinningWheelLoader({
   message,
   progress,
 }: {
+  /** Stores overlay. */
   overlay?: boolean;
+  /** Stores class name. */
   className?: string;
+  /** Stores message. */
   message?: string;
+  /** Stores progress. */
   progress?: number;
 }) {
-  const classes = [
-    "spinning-wheel-loader",
-    overlay ? "spinning-wheel-loader-overlay" : "",
-    className,
-  ].filter(Boolean).join(" ");
+  /** Provides classes behavior. */
+  const classes = ["spinning-wheel-loader", overlay ? "spinning-wheel-loader-overlay" : "", className]
+    .filter(Boolean)
+    .join(" ");
 
   return (
     <div

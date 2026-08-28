@@ -1,6 +1,7 @@
 import {describe, expect, it, jest} from "@jest/globals";
 import type {GameSessionState} from "../gameSessionTypes";
 
+/** Provides mock use memo behavior. */
 const mockUseMemo = (factory: () => unknown) => factory();
 
 jest.mock("react", () => ({
@@ -12,7 +13,9 @@ import {useGameMessageRouter} from "../useGameMessageRouter";
 
 describe("useGameMessageRouter", () => {
   it("consumes a successful bridge cancellation without notice, balance, or fanfare actions", async () => {
+    /** Provides dispatch behavior. */
     const dispatch = jest.fn();
+    /** Provides router behavior. */
     const router = useGameMessageRouter({
       dispatch,
       stateRef: {current: {} as GameSessionState},

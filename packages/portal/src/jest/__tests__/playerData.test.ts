@@ -1,7 +1,9 @@
 import type {BridgeProfile, BridgeUser} from "@qwordly/core/bridge";
 import {restoreJestProfileWhileServerLoads} from "../playerData";
 
+/** Provides r. */
 const user: BridgeUser = {uid: "player-1", isAnonymous: false};
+/** Saves d profile. */
 const savedProfile: BridgeProfile = {
   username: "Nova",
   coins: 425,
@@ -35,6 +37,7 @@ it("restores every saved statistic from Jest while the authoritative profile loa
 });
 
 it("replaces the Jest cache with an available authoritative profile", () => {
+  /** Provides authoritative profile behavior. */
   const authoritativeProfile = {...savedProfile, xp: 900, totalScore: 1600};
   expect(restoreJestProfileWhileServerLoads({user, profile: authoritativeProfile}, savedProfile)).toEqual({
     user,

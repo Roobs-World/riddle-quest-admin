@@ -23,6 +23,7 @@ const coerceTimestampToMillis = (value: unknown): unknown => {
     return value;
   }
   if (typeof value === "string") {
+    /** Parses d. */
     const parsed = new Date(value);
     return Number.isNaN(parsed.getTime()) ? value : parsed.getTime();
   }
@@ -30,6 +31,7 @@ const coerceTimestampToMillis = (value: unknown): unknown => {
     return value.getTime();
   }
   if (typeof value === "object") {
+    /** Provides timestamp like behavior. */
     const timestampLike = value as TimestampLike;
     if (typeof timestampLike.toMillis === "function") {
       return timestampLike.toMillis();
@@ -38,6 +40,7 @@ const coerceTimestampToMillis = (value: unknown): unknown => {
       return timestampLike.toDate().getTime();
     }
     if (typeof timestampLike.seconds === "number") {
+      /** Provides nanos behavior. */
       const nanos = typeof timestampLike.nanoseconds === "number" ? timestampLike.nanoseconds : 0;
       return timestampLike.seconds * 1000 + Math.floor(nanos / 1_000_000);
     }

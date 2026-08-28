@@ -50,6 +50,7 @@ const decodeBase64Url = (part: string): Buffer => {
   if (!part || part.length > MAX_ENCODED_PART_CHARACTERS || !BASE64URL.test(part)) {
     throw new Error("malformed-facebook-signed-player");
   }
+  /** Provides decoded behavior. */
   const decoded = Buffer.from(part, "base64url");
   if (!decoded.length || decoded.toString("base64url") !== part) {
     throw new Error("malformed-facebook-signed-player");
@@ -59,7 +60,9 @@ const decodeBase64Url = (part: string): Buffer => {
 
 /** Provides equal text behavior. */
 const equalText = (left: string, right: string): boolean => {
+  /** Provides left buffer behavior. */
   const leftBuffer = Buffer.from(left, "utf8");
+  /** Provides right buffer behavior. */
   const rightBuffer = Buffer.from(right, "utf8");
   return leftBuffer.length === rightBuffer.length && timingSafeEqual(leftBuffer, rightBuffer);
 };
@@ -85,14 +88,18 @@ export async function verifyFacebookSignedPlayer(
     throw new Error("invalid-facebook-verification-input");
   }
 
+  /** Provides parts behavior. */
   const parts = signedPlayer.split(".");
   if (parts.length !== 2) throw new Error("malformed-facebook-signed-player");
+  /** Provides actual signature behavior. */
   const actualSignature = decodeBase64Url(parts[0]);
+  /** Provides expected signature behavior. */
   const expectedSignature = createHmac("sha256", options.appSecret).update(parts[1]).digest();
   if (actualSignature.length !== expectedSignature.length || !timingSafeEqual(actualSignature, expectedSignature)) {
     throw new Error("invalid-facebook-signature");
   }
 
+  /** Provides payload behavior. */
   let payload: unknown;
   try {
     payload = JSON.parse(decodeBase64Url(parts[1]).toString("utf8"));
@@ -103,6 +110,7 @@ export async function verifyFacebookSignedPlayer(
   if (!payload || typeof payload !== "object" || Array.isArray(payload)) {
     throw new Error("malformed-facebook-signed-player");
   }
+  /** Provides claims behavior. */
   const claims = payload as Record<string, unknown>;
   if (claims.algorithm !== "HMAC-SHA256") throw new Error("invalid-facebook-algorithm");
   if (
@@ -110,19 +118,24 @@ export async function verifyFacebookSignedPlayer(
     !claims.player_id ||
     claims.player_id.length > MAX_PLAYER_ID_CHARACTERS ||
     !/^[A-Za-z0-9_-]+$/.test(claims.player_id)
-  ) throw new Error("invalid-facebook-player-id");
+  )
+    throw new Error("invalid-facebook-player-id");
   if (!equalText(claims.player_id, options.expectedPlayerId)) throw new Error("facebook-player-id-mismatch");
   if (
     typeof claims.request_payload !== "string" ||
     !claims.request_payload ||
     claims.request_payload.length > MAX_NONCE_CHARACTERS ||
     !equalText(claims.request_payload, options.expectedNonce)
-  ) throw new Error("facebook-nonce-mismatch");
+  )
+    throw new Error("facebook-nonce-mismatch");
   if (!Number.isSafeInteger(claims.issued_at) || (claims.issued_at as number) < 0) {
     throw new Error("invalid-facebook-issued-at");
   }
+  /** Provides issued at behavior. */
   const issuedAt = claims.issued_at as number;
+  /** Provides now seconds behavior. */
   const nowSeconds = options.nowSeconds ?? Math.floor(Date.now() / 1000);
+  /** Provides max age seconds behavior. */
   const maxAgeSeconds = options.maxAgeSeconds ?? 300;
   if (
     !Number.isSafeInteger(nowSeconds) ||
@@ -135,7 +148,7 @@ export async function verifyFacebookSignedPlayer(
   if (issuedAt > nowSeconds + 60 || nowSeconds - issuedAt > maxAgeSeconds) {
     throw new Error("stale-facebook-signed-player");
   }
-  if (options.consumeNonce && !await options.consumeNonce(options.expectedNonce, claims.player_id, issuedAt)) {
+  if (options.consumeNonce && !(await options.consumeNonce(options.expectedNonce, claims.player_id, issuedAt))) {
     throw new Error("facebook-nonce-replayed");
   }
   return claims as FacebookSignedPlayerPayload;
@@ -149,6 +162,7 @@ export function facebookFirebaseUid(playerId: string, uidSecretBase64: string, a
   if (!/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(uidSecretBase64)) {
     throw new Error("invalid-facebook-uid-secret");
   }
+  /** Provides secret behavior. */
   const secret = Buffer.from(uidSecretBase64, "base64");
   if (secret.length < 32 || secret.toString("base64") !== uidSecretBase64) {
     throw new Error("invalid-facebook-uid-secret");
@@ -160,6 +174,7 @@ export function facebookFirebaseUid(playerId: string, uidSecretBase64: string, a
   ) {
     throw new Error("invalid-facebook-account-generation");
   }
+  /** Provides digest behavior. */
   const digest = createHmac("sha256", secret)
     .update("riddle-quest-facebook-uid-v1\0", "utf8")
     .update(String(accountGeneration), "utf8")
@@ -188,13 +203,17 @@ export function verifyFacebookDeletionRequest(signedRequest: string, appSecret: 
   if (!signedRequest || signedRequest.length > MAX_SIGNED_PLAYER_CHARACTERS || appSecret.length < 32) {
     throw new Error("invalid-facebook-deletion-request");
   }
+  /** Provides parts behavior. */
   const parts = signedRequest.split(".");
   if (parts.length !== 2) throw new Error("invalid-facebook-deletion-request");
+  /** Provides actual signature behavior. */
   const actualSignature = decodeBase64Url(parts[0]);
+  /** Provides expected signature behavior. */
   const expectedSignature = createHmac("sha256", appSecret).update(parts[1]).digest();
   if (actualSignature.length !== expectedSignature.length || !timingSafeEqual(actualSignature, expectedSignature)) {
     throw new Error("invalid-facebook-deletion-signature");
   }
+  /** Provides payload behavior. */
   let payload: unknown;
   try {
     payload = JSON.parse(decodeBase64Url(parts[1]).toString("utf8"));
@@ -204,6 +223,7 @@ export function verifyFacebookDeletionRequest(signedRequest: string, appSecret: 
   if (!payload || typeof payload !== "object" || Array.isArray(payload)) {
     throw new Error("invalid-facebook-deletion-request");
   }
+  /** Provides claims behavior. */
   const claims = payload as Record<string, unknown>;
   if (claims.algorithm !== "HMAC-SHA256") throw new Error("invalid-facebook-algorithm");
   if (
@@ -211,9 +231,9 @@ export function verifyFacebookDeletionRequest(signedRequest: string, appSecret: 
     !claims.user_id ||
     claims.user_id.length > MAX_PLAYER_ID_CHARACTERS ||
     !/^[A-Za-z0-9_-]+$/.test(claims.user_id)
-  ) throw new Error("invalid-facebook-player-id");
-  if (claims.issued_at !== undefined &&
-    (!Number.isSafeInteger(claims.issued_at) || (claims.issued_at as number) < 0)) {
+  )
+    throw new Error("invalid-facebook-player-id");
+  if (claims.issued_at !== undefined && (!Number.isSafeInteger(claims.issued_at) || (claims.issued_at as number) < 0)) {
     throw new Error("invalid-facebook-issued-at");
   }
   return claims as FacebookDeletionPayload;

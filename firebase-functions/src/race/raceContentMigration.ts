@@ -14,16 +14,27 @@ export type ExistingRaceContentRecord = {
   documentPath: string;
   /** Stores data. */
   data: {
+    /** Stores riddle id. */
     riddleId?: unknown;
+    /** Stores canonical riddle id. */
     canonicalRiddleId?: unknown;
+    /** Stores challenge key. */
     challengeKey?: unknown;
+    /** Stores classic index. */
     classicIndex?: unknown;
+    /** Stores daily index. */
     dailyIndex?: unknown;
+    /** Stores text. */
     text?: unknown;
+    /** Stores answer. */
     answer?: unknown;
+    /** Stores category id. */
     categoryId?: unknown;
+    /** Stores difficulty band. */
     difficultyBand?: unknown;
+    /** Stores race eligible. */
     raceEligible?: unknown;
+    /** Stores quality version. */
     qualityVersion?: unknown;
   };
 };
@@ -47,15 +58,37 @@ export type RaceContentDryRunReport = {
   /** Stores scanned. */
   scanned: number;
   /** Stores proposed writes. */
-  proposedWrites: Array<{documentPath: string; patch: RaceContentPatch}>;
+  proposedWrites: Array<{
+    /** Stores document path. */
+    documentPath: string; /** Stores patch. */
+    /** Stores patch. */
+    patch: RaceContentPatch;
+  }>;
   /** Stores unchanged. */
   unchanged: string[];
   /** Stores unclassifiable. */
-  unclassifiable: Array<{documentPath: string; reason: string}>;
+  unclassifiable: Array<{
+    /** Stores document path. */
+    documentPath: string; /** Stores reason. */
+    /** Stores reason. */
+    reason: string;
+  }>;
   /** Stores collisions. */
-  collisions: Array<{locale: SupportedLocale; canonicalRiddleId: string; documentPaths: string[]}>;
+  collisions: Array<{
+    /** Stores locale. */
+    locale: SupportedLocale; /** Stores canonical riddle id. */
+    /** Stores canonical riddle id. */
+    canonicalRiddleId: string; /** Stores document paths. */
+    /** Stores document paths. */
+    documentPaths: string[];
+  }>;
   /** Stores missing translations. */
-  missingTranslations: Array<{canonicalRiddleId: string; locales: SupportedLocale[]}>;
+  missingTranslations: Array<{
+    /** Stores canonical riddle id. */
+    canonicalRiddleId: string; /** Stores locales. */
+    /** Stores locales. */
+    locales: SupportedLocale[];
+  }>;
 };
 
 /** Indicates whether is race category id. */
@@ -68,6 +101,7 @@ const isDifficultyBand = (value: unknown): value is RaceDifficultyBand =>
 
 /** Infers a race difficulty band from the trimmed answer length. */
 export function inferRaceDifficulty(answer: string): RaceDifficultyBand {
+  /** Provides length behavior. */
   const length = Array.from(answer.trim()).length;
   if (length <= 3) return "easy";
   if (length <= 5) return "medium";
@@ -76,6 +110,7 @@ export function inferRaceDifficulty(answer: string): RaceDifficultyBand {
 
 /** Derives a stable canonical identifier from supported legacy metadata. */
 export function inferCanonicalRiddleId(record: ExistingRaceContentRecord): string | null {
+  /** Provides {data} behavior. */
   const {data} = record;
   if (typeof data.canonicalRiddleId === "string" && data.canonicalRiddleId.trim()) {
     return data.canonicalRiddleId.trim();
@@ -94,7 +129,9 @@ export function inferCanonicalRiddleId(record: ExistingRaceContentRecord): strin
 
 /** Proposes normalized race metadata without modifying the source record. */
 export function proposeRaceContentPatch(record: ExistingRaceContentRecord): RaceContentPatch | null {
+  /** Provides canonical riddle id behavior. */
   const canonicalRiddleId = inferCanonicalRiddleId(record);
+  /** Provides answer behavior. */
   const answer = typeof record.data.answer === "string" ? record.data.answer.trim() : "";
   if (!canonicalRiddleId || !answer) return null;
 
@@ -122,6 +159,7 @@ const patchAlreadyApplied = (record: ExistingRaceContentRecord, patch: RaceConte
 
 /** Audits proposed migration changes, collisions, and missing translations. */
 export function createRaceContentDryRun(records: ExistingRaceContentRecord[]): RaceContentDryRunReport {
+  /** Provides report behavior. */
   const report: RaceContentDryRunReport = {
     scanned: records.length,
     proposedWrites: [],
@@ -130,10 +168,13 @@ export function createRaceContentDryRun(records: ExistingRaceContentRecord[]): R
     collisions: [],
     missingTranslations: [],
   };
+  /** Provides paths by locale and canonical behavior. */
   const pathsByLocaleAndCanonical = new Map<string, string[]>();
+  /** Provides locales by canonical behavior. */
   const localesByCanonical = new Map<string, Set<SupportedLocale>>();
 
   for (const record of records) {
+    /** Provides patch behavior. */
     const patch = proposeRaceContentPatch(record);
     if (!patch) {
       report.unclassifiable.push({
@@ -146,11 +187,14 @@ export function createRaceContentDryRun(records: ExistingRaceContentRecord[]): R
     if (patchAlreadyApplied(record, patch)) report.unchanged.push(record.documentPath);
     else report.proposedWrites.push({documentPath: record.documentPath, patch});
 
+    /** Provides locale key behavior. */
     const localeKey = `${record.locale}\u0000${patch.canonicalRiddleId}`;
+    /** Provides paths behavior. */
     const paths = pathsByLocaleAndCanonical.get(localeKey) ?? [];
     paths.push(record.documentPath);
     pathsByLocaleAndCanonical.set(localeKey, paths);
 
+    /** Provides locales behavior. */
     const locales = localesByCanonical.get(patch.canonicalRiddleId) ?? new Set<SupportedLocale>();
     locales.add(record.locale);
     localesByCanonical.set(patch.canonicalRiddleId, locales);
@@ -158,11 +202,13 @@ export function createRaceContentDryRun(records: ExistingRaceContentRecord[]): R
 
   for (const [key, documentPaths] of pathsByLocaleAndCanonical.entries()) {
     if (documentPaths.length < 2) continue;
+    /** Provides [locale, canonical riddle id] behavior. */
     const [locale, canonicalRiddleId] = key.split("\u0000") as [SupportedLocale, string];
     report.collisions.push({locale, canonicalRiddleId, documentPaths: [...documentPaths].sort()});
   }
 
   for (const [canonicalRiddleId, presentLocales] of localesByCanonical.entries()) {
+    /** Provides locales behavior. */
     const locales = RACE_SUPPORTED_LOCALES.filter((locale) => !presentLocales.has(locale));
     if (locales.length > 0) report.missingTranslations.push({canonicalRiddleId, locales});
   }

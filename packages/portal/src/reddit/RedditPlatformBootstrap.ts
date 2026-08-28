@@ -8,8 +8,10 @@ import type {
 } from "../platform/types";
 import {parsePlayerData} from "../platform/playerDataValidation";
 import {
-  FindRedditRaceMatchResponseSchema, ListFacebookTournamentResponseSchema,
-  RecordFacebookTournamentRunResponseSchema, type RaceLocale,
+  FindRedditRaceMatchResponseSchema,
+  ListFacebookTournamentResponseSchema,
+  RecordFacebookTournamentRunResponseSchema,
+  type RaceLocale,
 } from "@qwordly/core/race";
 import {REDDIT_GOLD_PRODUCTS, resolveRedditGoldProduct} from "@qwordly/core/pricing/redditCatalog";
 import {purchase} from "@devvit/payments/client";
@@ -45,11 +47,13 @@ export const selectMigratableGuestPreferences = (preferences: PlatformPreference
 
 /** Provides post reddit gateway behavior. */
 export const postRedditGateway = async (path: string, body: unknown = {}): Promise<Record<string, unknown>> => {
+  /** Provides response behavior. */
   const response = await fetch(path, {
     method: "POST",
     headers: {"content-type": "application/json"},
     body: JSON.stringify(body),
   });
+  /** Provides payload behavior. */
   const payload: unknown = await response.json();
   if (!response.ok || !isRecord(payload) || payload.ok !== true) throw new Error("reddit-gateway-request-failed");
   return payload;
@@ -74,61 +78,112 @@ class RedditServerStorage implements PlatformStorage {
     await postRedditGateway("/api/storage/write", {playerData});
   }
   /** Provides clear behavior. */
-  async clear(): Promise<void> { await postRedditGateway("/api/storage/clear"); }
+  async clear(): Promise<void> {
+    await postRedditGateway("/api/storage/clear");
+  }
   /** Provides flush behavior. */
-  async flush(): Promise<void> { /* Writes resolve only after the gateway acknowledges Firebase. */ }
+  async flush(): Promise<void> {
+    /* Writes resolve only after the gateway acknowledges Firebase. */
+  }
 }
 
 /** Provides reddit guest storage behavior. */
 class RedditGuestStorage implements PlatformStorage {
   /** Reads raw. */
-  private readRaw(): {preferences: PlatformPreferences; playerData: unknown} {
+  private readRaw(): {
+    /** Stores preferences. */
+    preferences: PlatformPreferences; /** Stores player data. */
+    /** Stores player data. */
+    playerData: unknown;
+  } {
     try {
+      /** Parses d. */
       const parsed: unknown = JSON.parse(window.localStorage.getItem(GUEST_KEY) ?? "null");
       if (!isRecord(parsed)) return {preferences: {}, playerData: null};
       return {preferences: parsePreferences(parsed.preferences), playerData: parsed.playerData ?? null};
-    } catch { return {preferences: {}, playerData: null}; }
+    } catch {
+      return {preferences: {}, playerData: null};
+    }
   }
   /** Reads preferences. */
-  async readPreferences() { return this.readRaw().preferences; }
+  async readPreferences() {
+    return this.readRaw().preferences;
+  }
   /** Provides write preferences behavior. */
   async writePreferences(preferences: PlatformPreferences) {
-    window.localStorage.setItem(GUEST_KEY, JSON.stringify({...this.readRaw(), preferences: parsePreferences(preferences)}));
+    window.localStorage.setItem(
+      GUEST_KEY,
+      JSON.stringify({...this.readRaw(), preferences: parsePreferences(preferences)}),
+    );
   }
   /** Reads player data. */
-  async readPlayerData() { return parsePlayerData(this.readRaw().playerData); }
+  async readPlayerData() {
+    return parsePlayerData(this.readRaw().playerData);
+  }
   /** Provides write player data behavior. */
   async writePlayerData(playerData: PlayerData) {
+    /** Parses d. */
     const parsed = await parsePlayerData(playerData);
     window.localStorage.setItem(GUEST_KEY, JSON.stringify({...this.readRaw(), playerData: parsed}));
   }
   /** Provides clear behavior. */
-  async clear() { window.localStorage.removeItem(GUEST_KEY); }
+  async clear() {
+    window.localStorage.removeItem(GUEST_KEY);
+  }
   /** Provides flush behavior. */
-  async flush() { /* localStorage writes synchronously. */ }
+  async flush() {
+    /* localStorage writes synchronously. */
+  }
 }
 
 /** Provides success behavior. */
 const success = <T>(value: T): PlatformResult<T> => ({status: "success", value});
 /** Reads commerce recovery scope. */
-const readCommerceRecoveryScope = async (): Promise<{key: string; metadataKey: string}> => {
+const readCommerceRecoveryScope = async (): Promise<{
+  /** Stores key. */
+  key: string; /** Stores metadata key. */
+  /** Stores metadata key. */
+  metadataKey: string;
+}> => {
+  /** Provides payload behavior. */
   const payload = await postRedditGateway("/api/commerce/key");
-  if (typeof payload.key !== "string" || !/^[A-Za-z0-9_-]{43}$/.test(payload.key) ||
-    payload.metadataKey !== "riddle-account") throw new Error("invalid-reddit-commerce-recovery-scope");
+  if (
+    typeof payload.key !== "string" ||
+    !/^[A-Za-z0-9_-]{43}$/.test(payload.key) ||
+    payload.metadataKey !== "riddle-account"
+  )
+    throw new Error("invalid-reddit-commerce-recovery-scope");
   return {key: payload.key, metadataKey: payload.metadataKey};
 };
 /** Provides feature names behavior. */
-const featureNames = ["identity", "gameplay", "commerce", "referrals", "notifications", "matchmaking", "tournaments", "presence"] as const;
+const featureNames = [
+  "identity",
+  "gameplay",
+  "commerce",
+  "referrals",
+  "notifications",
+  "matchmaking",
+  "tournaments",
+  "presence",
+] as const;
 
 /** Indicates whether has enabled authenticated gameplay. */
 const hasEnabledAuthenticatedGameplay = (session: Record<string, unknown>): boolean => {
   if (session.authenticated !== true || !isRecord(session.features)) return false;
+  /** Provides features behavior. */
   const features = session.features;
-  if (Object.keys(features).length !== featureNames.length ||
-    featureNames.some((name) => typeof features[name] !== "boolean")) return false;
-  return features.identity === true && features.gameplay === true &&
-    Number.isSafeInteger(session.accountGeneration) && (session.accountGeneration as number) >= 1 &&
-    (session.accountGeneration as number) <= 1_000_000;
+  if (
+    Object.keys(features).length !== featureNames.length ||
+    featureNames.some((name) => typeof features[name] !== "boolean")
+  )
+    return false;
+  return (
+    features.identity === true &&
+    features.gameplay === true &&
+    Number.isSafeInteger(session.accountGeneration) &&
+    (session.accountGeneration as number) >= 1 &&
+    (session.accountGeneration as number) <= 1_000_000
+  );
 };
 
 /** Initializes a Reddit session without exposing Reddit identity or Firebase credentials to the browser. */
@@ -137,13 +192,20 @@ export class RedditPlatformBootstrap implements PlatformBootstrap {
   async initialize(reportProgress: (progress: number) => void): Promise<PlatformResult<PlatformSession>> {
     try {
       reportProgress(20);
+      /** Provides session behavior. */
       const session = await postRedditGateway("/api/session");
+      /** Provides authenticated behavior. */
       const authenticated = hasEnabledAuthenticatedGameplay(session);
+      /** Provides guest storage behavior. */
       const guestStorage = new RedditGuestStorage();
+      /** Provides storage behavior. */
       const storage = authenticated ? new RedditServerStorage() : guestStorage;
+      /** Provides initial preferences behavior. */
       let initialPreferences: PlatformPreferences;
       if (authenticated) {
+        /** Provides guest preferences behavior. */
         const guestPreferences = selectMigratableGuestPreferences(await guestStorage.readPreferences());
+        /** Provides server preferences behavior. */
         const serverPreferences = await storage.readPreferences();
         initialPreferences = {...guestPreferences, ...serverPreferences};
         if (Object.keys(guestPreferences).length > 0) {
@@ -160,14 +222,23 @@ export class RedditPlatformBootstrap implements PlatformBootstrap {
         initialPreferences = await storage.readPreferences();
       }
       reportProgress(80);
+      /** Provides lifecycle behavior. */
       const lifecycle = {
+        /** Provides on pause behavior. */
         onPause(callback: () => void | Promise<void>) {
-          const listener = () => { if (document.visibilityState === "hidden") void callback(); };
+          /** Lists ener. */
+          const listener = () => {
+            if (document.visibilityState === "hidden") void callback();
+          };
           document.addEventListener("visibilitychange", listener);
           return () => document.removeEventListener("visibilitychange", listener);
         },
+        /** Provides on resume behavior. */
         onResume(callback: () => void | Promise<void>) {
-          const listener = () => { if (document.visibilityState === "visible") void callback(); };
+          /** Lists ener. */
+          const listener = () => {
+            if (document.visibilityState === "visible") void callback();
+          };
           document.addEventListener("visibilitychange", listener);
           return () => document.removeEventListener("visibilitychange", listener);
         },
@@ -180,83 +251,131 @@ export class RedditPlatformBootstrap implements PlatformBootstrap {
         initialPreferences,
         capabilities: {
           lifecycle,
-          ...(authenticated && (session.features as Record<string, boolean>).commerce ? {
-            commerce: {
-              async listProducts() {
-                return success(REDDIT_GOLD_PRODUCTS.map((product) => ({
-                  id: product.productId,
-                  title: product.coins.toLocaleString(),
-                  description: "",
-                  price: `${product.goldCost} Gold`,
-                  kind: "consumable" as const,
-                })));
-              },
-              async purchase(productId: string) {
-                try {
-                  resolveRedditGoldProduct(productId);
-                  const recovery = await readCommerceRecoveryScope();
-                  const result = await purchase(productId, {[recovery.metadataKey]: recovery.key});
-                  if (result.status === 0) return {status: "cancelled" as const};
-                  if (result.status !== 1 || typeof result.orderId !== "string" || !result.orderId) {
-                    return {status: "retryable-failure" as const, message: "reddit-purchase-failed"};
-                  }
-                  return success({providerReceiptId: result.orderId});
-                } catch (error) {
-                  return {status: "retryable-failure" as const,
-                    message: error instanceof Error ? error.message : "reddit-purchase-failed"};
-                }
-              },
-              async recover() {
-                try {
-                  await postRedditGateway("/api/commerce/recover");
-                  return success(undefined);
-                } catch (error) {
-                  return {status: "retryable-failure" as const,
-                    message: error instanceof Error ? error.message : "reddit-purchase-recovery-failed"};
-                }
-              },
-            },
-          } : {}),
-          ...(authenticated && (session.features as Record<string, boolean>).matchmaking ? {
-            matchmaking: {
-              async find(locale: RaceLocale) {
-                try {
-                  const payload = await postRedditGateway("/api/game/race.match", {locale});
-                  return success(FindRedditRaceMatchResponseSchema.parse(payload.result));
-                } catch (error) {
-                  return {status: "retryable-failure" as const, message: error instanceof Error ? error.message : "reddit-matchmaking-failed"};
-                }
-              },
-            },
-          } : {}),
-          ...(authenticated && (session.features as Record<string, boolean>).tournaments ? {
-            tournaments: {
-              async list(locale: RaceLocale) {
-                const payload = await postRedditGateway("/api/game/tournament.list", {locale});
-                return ListFacebookTournamentResponseSchema.parse(payload.result);
-              },
-              async record(runId: string, locale: RaceLocale) {
-                const payload = await postRedditGateway("/api/game/tournament.record", {runId, locale});
-                return RecordFacebookTournamentRunResponseSchema.parse(payload.result);
-              },
-            },
-          } : {}),
-          ...(authenticated && (session.features as Record<string, boolean>).presence ? {
-            presence: {
-              async poll(input: {sessionId: string; state: "online" | "playing" | "racing"; enabled: boolean}) {
-                const payload = await postRedditGateway("/api/game/presence.poll", input);
-                if (!Array.isArray(payload.result)) {
-                  const result = payload.result;
-                  if (!isRecord(result) || !Array.isArray(result.rivals)) throw new Error("invalid-reddit-presence-response");
-                  return result as {rivals: Array<{userId: string; state: "offline" | "online" | "playing" | "racing"}>};
-                }
-                throw new Error("invalid-reddit-presence-response");
-              },
-              async disconnect(sessionId: string) {
-                await postRedditGateway("/api/game/presence.disconnect", {sessionId});
-              },
-            },
-          } : {}),
+          ...(authenticated && (session.features as Record<string, boolean>).commerce
+            ? {
+                commerce: {
+                  /** Lists products. */
+                  async listProducts() {
+                    return success(
+                      REDDIT_GOLD_PRODUCTS.map((product) => ({
+                        id: product.productId,
+                        title: product.coins.toLocaleString(),
+                        description: "",
+                        price: `${product.goldCost} Gold`,
+                        kind: "consumable" as const,
+                      })),
+                    );
+                  },
+                  /** Provides purchase behavior. */
+                  async purchase(productId: string) {
+                    try {
+                      resolveRedditGoldProduct(productId);
+                      /** Provides recovery behavior. */
+                      const recovery = await readCommerceRecoveryScope();
+                      /** Provides result behavior. */
+                      const result = await purchase(productId, {[recovery.metadataKey]: recovery.key});
+                      if (result.status === 0) return {status: "cancelled" as const};
+                      if (result.status !== 1 || typeof result.orderId !== "string" || !result.orderId) {
+                        return {status: "retryable-failure" as const, message: "reddit-purchase-failed"};
+                      }
+                      return success({providerReceiptId: result.orderId});
+                    } catch (error) {
+                      return {
+                        status: "retryable-failure" as const,
+                        message: error instanceof Error ? error.message : "reddit-purchase-failed",
+                      };
+                    }
+                  },
+                  /** Provides recover behavior. */
+                  async recover() {
+                    try {
+                      await postRedditGateway("/api/commerce/recover");
+                      return success(undefined);
+                    } catch (error) {
+                      return {
+                        status: "retryable-failure" as const,
+                        message: error instanceof Error ? error.message : "reddit-purchase-recovery-failed",
+                      };
+                    }
+                  },
+                },
+              }
+            : {}),
+          ...(authenticated && (session.features as Record<string, boolean>).matchmaking
+            ? {
+                matchmaking: {
+                  /** Provides find behavior. */
+                  async find(locale: RaceLocale) {
+                    try {
+                      /** Provides payload behavior. */
+                      const payload = await postRedditGateway("/api/game/race.match", {locale});
+                      return success(FindRedditRaceMatchResponseSchema.parse(payload.result));
+                    } catch (error) {
+                      return {
+                        status: "retryable-failure" as const,
+                        message: error instanceof Error ? error.message : "reddit-matchmaking-failed",
+                      };
+                    }
+                  },
+                },
+              }
+            : {}),
+          ...(authenticated && (session.features as Record<string, boolean>).tournaments
+            ? {
+                tournaments: {
+                  /** Provides list behavior. */
+                  async list(locale: RaceLocale) {
+                    /** Provides payload behavior. */
+                    const payload = await postRedditGateway("/api/game/tournament.list", {locale});
+                    return ListFacebookTournamentResponseSchema.parse(payload.result);
+                  },
+                  /** Provides record behavior. */
+                  async record(runId: string, locale: RaceLocale) {
+                    /** Provides payload behavior. */
+                    const payload = await postRedditGateway("/api/game/tournament.record", {runId, locale});
+                    return RecordFacebookTournamentRunResponseSchema.parse(payload.result);
+                  },
+                },
+              }
+            : {}),
+          ...(authenticated && (session.features as Record<string, boolean>).presence
+            ? {
+                presence: {
+                  /** Provides poll behavior. */
+                  async poll(input: {
+                    /** Stores session id. */
+                    sessionId: string; /** Stores state. */
+                    /** Stores state. */
+                    state: "online" | "playing" | "racing"; /** Stores enabled. */
+                    /** Stores enabled. */
+                    enabled: boolean;
+                  }) {
+                    /** Provides payload behavior. */
+                    const payload = await postRedditGateway("/api/game/presence.poll", input);
+                    if (!Array.isArray(payload.result)) {
+                      /** Provides result behavior. */
+                      const result = payload.result;
+                      if (!isRecord(result) || !Array.isArray(result.rivals))
+                        throw new Error("invalid-reddit-presence-response");
+                      return result as {
+                        /** Stores rivals. */
+                        rivals: Array<{
+                          /** Stores user id. */
+                          userId: string; /** Stores state. */
+                          /** Stores state. */
+                          state: "offline" | "online" | "playing" | "racing";
+                        }>;
+                      };
+                    }
+                    throw new Error("invalid-reddit-presence-response");
+                  },
+                  /** Provides disconnect behavior. */
+                  async disconnect(sessionId: string) {
+                    await postRedditGateway("/api/game/presence.disconnect", {sessionId});
+                  },
+                },
+              }
+            : {}),
         },
         ...(authenticated ? {accountGeneration: session.accountGeneration as number} : {}),
       });

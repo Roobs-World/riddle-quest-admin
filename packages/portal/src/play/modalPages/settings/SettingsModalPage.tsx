@@ -33,6 +33,7 @@ export function SettingsModalPage({
 }: SettingsModalPageProps) {
   /** Persists and immediately activates the selected locale. */
   const changeLocale = (event: ChangeEvent<HTMLSelectElement>) => {
+    /** Provides next locale behavior. */
     const nextLocale = event.target.value as Locale;
     setPlayerLocale(nextLocale);
   };
@@ -53,22 +54,28 @@ export function SettingsModalPage({
         <span>{tr("Settings.LANGUAGE_LABEL")}</span>
         <select value={locale} onChange={changeLocale}>
           {LANGUAGE_OPTIONS.map((language) => (
-            <option key={language.code} value={language.code}>{language.label}</option>
+            <option key={language.code} value={language.code}>
+              {language.label}
+            </option>
           ))}
         </select>
       </label>
       <button className="settings-row" onClick={() => onOpenModal("instructions")}>
-        <span>{tr("Settings.HELP_BUTTON")}</span><strong>›</strong>
+        <span>{tr("Settings.HELP_BUTTON")}</span>
+        <strong>›</strong>
       </button>
       <button className="settings-row" onClick={() => onOpenModal("credits")}>
-        <span>{tr("Settings.CREDITS_BUTTON")}</span><strong>›</strong>
+        <span>{tr("Settings.CREDITS_BUTTON")}</span>
+        <strong>›</strong>
       </button>
       <button className="settings-row" onClick={() => onOpenModal("about")}>
-        <span>{tr("Settings.ABOUT_BUTTON")}</span><strong>›</strong>
+        <span>{tr("Settings.ABOUT_BUTTON")}</span>
+        <strong>›</strong>
       </button>
       {commerceAvailable && (
         <button className="settings-row" onClick={() => onOpenModal("shop")}>
-          <span>{tr("Navigation.BUY_COINS_BUTTON")}</span><strong>›</strong>
+          <span>{tr("Navigation.BUY_COINS_BUTTON")}</span>
+          <strong>›</strong>
         </button>
       )}
     </div>

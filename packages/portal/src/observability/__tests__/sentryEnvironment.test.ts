@@ -1,6 +1,10 @@
+/** Provides mock initialize browser sentry behavior. */
 const mockInitializeBrowserSentry = jest.fn(() => true);
+/** Provides mock is browser telemetry runtime allowed behavior. */
 const mockIsBrowserTelemetryRuntimeAllowed = jest.fn(() => true);
+/** Provides mock configure browser error reporter behavior. */
 const mockConfigureBrowserErrorReporter = jest.fn();
+/** Provides mock capture browser exception behavior. */
 const mockCaptureBrowserException = jest.fn();
 
 jest.mock("../sentry", () => ({

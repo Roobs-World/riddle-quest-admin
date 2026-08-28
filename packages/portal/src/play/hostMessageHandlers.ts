@@ -60,10 +60,15 @@ const reportHostOperationError = (error: unknown, operation: HostOperationName):
 /** Describes load and post riddle. */
 type LoadAndPostRiddle = (
   input: {
+    /** Stores game mode. */
     gameMode: WebGameMode;
+    /** Stores locale. */
     locale: string;
+    /** Stores classic index. */
     classicIndex?: number;
+    /** Stores session token. */
     sessionToken?: string;
+    /** Stores riddle id. */
     riddleId?: string;
   },
   requestId?: string,
@@ -99,9 +104,15 @@ type CreateHostMessageHandlersOptions = {
   /** Stores services. */
   services: HostServices;
   /** Stores loaded user id ref. */
-  loadedUserIdRef: {current: string | null};
+  loadedUserIdRef: {
+    /** Stores current. */
+    current: string | null;
+  };
   /** Stores playable reported ref. */
-  playableReportedRef: {current: boolean};
+  playableReportedRef: {
+    /** Stores current. */
+    current: boolean;
+  };
   /** Stores set frame ready. */
   setFrameReady: (ready: boolean) => void;
   /** Stores set notice. */
@@ -119,12 +130,22 @@ type CreateHostMessageHandlersOptions = {
   /** Stores apply purchase balance. */
   applyPurchaseBalance: (result: PurchaseResult) => void;
   /** Stores sync race achievement progress. */
-  syncRaceAchievementProgress: (result: {newlyUnlockedAchievementIds?: string[]; newCoins?: number}) => Promise<void>;
+  syncRaceAchievementProgress: (result: {
+    /** Stores newly unlocked achievement ids. */
+    newlyUnlockedAchievementIds?: string[]; /** Stores new coins. */
+    /** Stores new coins. */
+    newCoins?: number;
+  }) => Promise<void>;
   /** Stores on playable. */
   onPlayable?: () => void;
   /** Stores on authoritative complete. */
   onAuthoritativeComplete?: (
-    input: {riddleId: string; gameMode: WebGameMode},
+    input: {
+      /** Stores riddle id. */
+      riddleId: string; /** Stores game mode. */
+      /** Stores game mode. */
+      gameMode: WebGameMode;
+    },
     result: CompletionResult,
   ) => void | Promise<void>;
   /** Notifies the platform after an authoritative race result has loaded. */
@@ -134,7 +155,10 @@ type CreateHostMessageHandlersOptions = {
   /** Persists account-deletion intent before the authoritative request starts. */
   onAccountDeletionRequested?: () => void | Promise<void>;
   /** Remembers authoritative deletion across handler recreation and client-cleanup retries. */
-  accountDeletionCompletedRef: {current: boolean};
+  accountDeletionCompletedRef: {
+    /** Stores current. */
+    current: boolean;
+  };
 };
 
 /** Builds the schema-routed commands that connect the game frame to authoritative host services. */
@@ -167,6 +191,7 @@ export const createPlayHostMessageHandlers = ({
     if (!authSnapshot.user) return;
 
     loadedUserIdRef.current = authSnapshot.user.uid;
+    /** Loads ed. */
     const loaded = await loadAndPostRiddle({
       gameMode,
       locale,
@@ -183,6 +208,7 @@ export const createPlayHostMessageHandlers = ({
   },
   submitGuess: async (message) => {
     try {
+      /** Provides result behavior. */
       const result = await withServerActivity(() => services.submitGuess(message.payload));
       postOperation(message.requestId, "guess", true, result);
       trackEvent("guess_submitted", {
@@ -197,7 +223,9 @@ export const createPlayHostMessageHandlers = ({
   },
   completeGame: async (message) => {
     try {
+      /** Provides result behavior. */
       const result = await withServerActivity(async () => {
+        /** Provides completion behavior. */
         const completion = await services.completeGame(message.payload);
         await onAuthoritativeComplete?.(message.payload, completion);
         return completion;
@@ -222,6 +250,7 @@ export const createPlayHostMessageHandlers = ({
   },
   requestHint: async (message) => {
     try {
+      /** Provides result behavior. */
       const result = await withServerActivity(() => services.requestHint(message.payload));
       postOperation(message.requestId, "hint", true, result);
       trackEvent("spend_virtual_currency", {
@@ -237,10 +266,13 @@ export const createPlayHostMessageHandlers = ({
   },
   spendCoins: async (message) => {
     try {
-      const result = await withServerActivity(() => services.spendCoins({
-        ...message.payload,
-        requestId: message.requestId ?? createRequestId("continue"),
-      }));
+      /** Provides result behavior. */
+      const result = await withServerActivity(() =>
+        services.spendCoins({
+          ...message.payload,
+          requestId: message.requestId ?? createRequestId("continue"),
+        }),
+      );
       postOperation(message.requestId, "spendCoins", true, result);
       trackEvent("spend_virtual_currency", {
         virtual_currency_name: "coins",
@@ -255,13 +287,17 @@ export const createPlayHostMessageHandlers = ({
   },
   skipRiddle: async (message) => {
     try {
+      /** Provides {riddle id, game mode: skip game mode, session token} behavior. */
       const {riddleId, gameMode: skipGameMode, sessionToken} = message.payload;
-      const result = await withServerActivity(() => services.skipRiddle({
-        riddleId,
-        gameMode: skipGameMode,
-        sessionToken,
-        requestId: message.requestId ?? createRequestId("skip"),
-      }));
+      /** Provides result behavior. */
+      const result = await withServerActivity(() =>
+        services.skipRiddle({
+          riddleId,
+          gameMode: skipGameMode,
+          sessionToken,
+          requestId: message.requestId ?? createRequestId("skip"),
+        }),
+      );
       postOperation(message.requestId, "skip", true, result);
       trackEvent("riddle_skipped", {game_mode: skipGameMode, value: result.costDeducted});
       await loadAndPostRiddle({
@@ -276,6 +312,7 @@ export const createPlayHostMessageHandlers = ({
   },
   requestPurchase: async (message) => {
     try {
+      /** Provides result behavior. */
       const result = await withServerActivity(() => services.requestPurchase(message.payload.productId));
       if (!result.success) {
         postOperation(message.requestId, "purchase", true, result);
@@ -295,6 +332,7 @@ export const createPlayHostMessageHandlers = ({
   },
   loadLeaderboard: async (message) => {
     try {
+      /** Provides entries behavior. */
       const entries = await withServerActivity(() => services.loadLeaderboard(message.payload.leaderboardType));
       postOperation(message.requestId, "leaderboard", true, {
         type: message.payload.leaderboardType,
@@ -307,6 +345,7 @@ export const createPlayHostMessageHandlers = ({
   },
   updateUsername: async (message) => {
     try {
+      /** Provides profile behavior. */
       const profile = await withServerActivity(() => services.updateUsername(message.payload.username));
       postOperation(message.requestId, "profile", true, {profile});
     } catch (error) {
@@ -316,6 +355,7 @@ export const createPlayHostMessageHandlers = ({
   },
   updateAvatar: async (message) => {
     try {
+      /** Provides profile behavior. */
       const profile = await withServerActivity(() => services.updateAvatar(message.payload.imageDataUrl));
       postOperation(message.requestId, "profile", true, {profile});
     } catch (error) {
@@ -356,15 +396,18 @@ export const createPlayHostMessageHandlers = ({
     runRaceOperation(message.requestId, "raceAbandon", () => services.abandonRace(message.payload)),
   publishRace: (message) =>
     runRaceOperation(message.requestId, "racePublish", async () => {
+      /** Provides result behavior. */
       const result = await services.publishRace(message.payload);
       await syncRaceAchievementProgress(result);
       return result;
     }),
   getRaceChallenge: (message) =>
     runRaceOperation(message.requestId, "raceChallenge", () =>
-      services.getRaceChallenge(message.payload.challengeId, message.payload.locale)),
+      services.getRaceChallenge(message.payload.challengeId, message.payload.locale),
+    ),
   getRaceOutcome: (message) =>
     runRaceOperation(message.requestId, "raceOutcome", async () => {
+      /** Provides result behavior. */
       const result = await services.getRaceOutcome(message.payload.runId);
       await syncRaceAchievementProgress(result);
       await onAuthoritativeRaceResult?.(result);
@@ -375,10 +418,12 @@ export const createPlayHostMessageHandlers = ({
   blockRival: (message) =>
     runRaceOperation(message.requestId, "raceBlock", () => services.blockRival(message.payload.targetUserId)),
   reportRival: (message) =>
-    runRaceOperation(message.requestId, "raceReport", () => services.reportRival({
-      ...message.payload,
-      requestId: message.requestId ?? createRequestId("race-report"),
-    })),
+    runRaceOperation(message.requestId, "raceReport", () =>
+      services.reportRival({
+        ...message.payload,
+        requestId: message.requestId ?? createRequestId("race-report"),
+      }),
+    ),
   analytics: (message) => {
     console.info("[riddle-quest-web]", message.payload.eventName, message.payload.params ?? {});
     trackEvent(message.payload.eventName, message.payload.params);

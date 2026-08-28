@@ -1,4 +1,11 @@
-import type {JestEntryIntent, JestPlatformPort, JestPlayerData, JestPreferences, PlatformResult, ScreenshotProvider} from "./types";
+import type {
+  JestEntryIntent,
+  JestPlatformPort,
+  JestPlayerData,
+  JestPreferences,
+  PlatformResult,
+  ScreenshotProvider,
+} from "./types";
 import {parseEntryIntent} from "./entryIntent";
 
 /** Provides ok behavior. */
@@ -10,7 +17,12 @@ const PREMIUM_SUBSCRIPTION_SKU = "com.roobsworld.riddlequest.premium.monthly";
 /** Provides mock jest platform behavior. */
 export class MockJestPlatform implements JestPlatformPort {
   /** Stores player. */
-  player: {playerId: string; registered: boolean};
+  player: {
+    /** Stores player id. */
+    playerId: string; /** Stores registered. */
+    /** Stores registered. */
+    registered: boolean;
+  };
   /** Stores preferences. */
   preferences: JestPreferences = {};
   /** Stores progress. */
@@ -20,7 +32,12 @@ export class MockJestPlatform implements JestPlatformPort {
   /** Stores first milestone marked. */
   firstMilestoneMarked = false;
   /** Stores captured events. */
-  capturedEvents: Array<{name: string; properties?: Record<string, string | number | boolean>}> = [];
+  capturedEvents: Array<{
+    /** Stores name. */
+    name: string; /** Stores properties. */
+    /** Stores properties. */
+    properties?: Record<string, string | number | boolean>;
+  }> = [];
   /** Stores subscription active. */
   subscriptionActive = false;
   /** Creates a mock jest platform instance. */
@@ -40,7 +57,9 @@ export class MockJestPlatform implements JestPlatformPort {
   };
   /** Provides show registration overlay behavior. */
   showRegistrationOverlay = (options: Parameters<JestPlatformPort["showRegistrationOverlay"]>[0]) => {
+    /** Provides closed behavior. */
     let closed = false;
+    /** Provides close behavior. */
     const close = () => {
       if (closed) return;
       closed = true;
@@ -63,6 +82,7 @@ export class MockJestPlatform implements JestPlatformPort {
   /** Reads player data. */
   readPlayerData = (): JestPlayerData | null => {
     try {
+      /** Provides raw behavior. */
       const raw = globalThis.localStorage?.getItem(MOCK_PLAYER_DATA_KEY);
       return raw ? (JSON.parse(raw) as JestPlayerData) : null;
     } catch {
@@ -81,8 +101,11 @@ export class MockJestPlatform implements JestPlatformPort {
   /** Gets entry intent. */
   getEntryIntent = (): JestEntryIntent => {
     if (typeof location === "undefined") return {};
+    /** Provides params behavior. */
     const params = new URLSearchParams(location.search);
+    /** Provides game mode behavior. */
     const gameMode = params.get("gameMode");
+    /** Provides challenge id behavior. */
     const challengeId = params.get("challengeId");
     return {
       ...parseEntryIntent({}, location.search),

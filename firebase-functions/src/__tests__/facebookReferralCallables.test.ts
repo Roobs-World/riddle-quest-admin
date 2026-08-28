@@ -1,5 +1,8 @@
+/** Provides mock issue behavior. */
 const mockIssue = jest.fn();
+/** Provides mock bind behavior. */
 const mockBind = jest.fn();
+/** Provides mock feature enabled behavior. */
 const mockFeatureEnabled = jest.fn(() => true);
 
 jest.mock("../shared/sentryHandlers", () => ({
@@ -16,9 +19,19 @@ jest.mock("../facebook/facebookFeatureFlags", () => ({
 import type {CallableRequest} from "firebase-functions/v2/https";
 import {bindFacebookReferral, createFacebookReferral} from "../facebook/facebookReferralCallables";
 
+/** Provides uid behavior. */
 const uid = `facebook_${"a".repeat(40)}`;
-const call = (handler: unknown, data: unknown, auth?: {uid: string; token: Record<string, unknown>}) =>
-  (handler as (request: CallableRequest<unknown>) => Promise<unknown>)({data, auth} as CallableRequest<unknown>);
+/** Provides call behavior. */
+const call = (
+  handler: unknown,
+  data: unknown,
+  auth?: {
+    /** Stores uid. */
+    uid: string; /** Stores token. */
+    /** Stores token. */
+    token: Record<string, unknown>;
+  },
+) => (handler as (request: CallableRequest<unknown>) => Promise<unknown>)({data, auth} as CallableRequest<unknown>);
 
 describe("Facebook referral callables", () => {
   beforeEach(() => {
@@ -30,16 +43,20 @@ describe("Facebook referral callables", () => {
 
   it("requires exact Facebook provider claims and honors the referral kill switch", async () => {
     await expect(call(createFacebookReferral, {}, undefined)).rejects.toMatchObject({code: "unauthenticated"});
-    await expect(call(createFacebookReferral, {}, {uid, token: {provider: "jest"}}))
-      .rejects.toMatchObject({code: "unauthenticated"});
-    await expect(call(createFacebookReferral, {}, {uid: "facebook_bad", token: {provider: "facebook"}}))
-      .rejects.toMatchObject({code: "unauthenticated"});
+    await expect(call(createFacebookReferral, {}, {uid, token: {provider: "jest"}})).rejects.toMatchObject({
+      code: "unauthenticated",
+    });
+    await expect(
+      call(createFacebookReferral, {}, {uid: "facebook_bad", token: {provider: "facebook"}}),
+    ).rejects.toMatchObject({code: "unauthenticated"});
     mockFeatureEnabled.mockReturnValue(false);
-    await expect(call(createFacebookReferral, {}, {uid, token: {provider: "facebook"}}))
-      .rejects.toMatchObject({code: "unavailable"});
+    await expect(call(createFacebookReferral, {}, {uid, token: {provider: "facebook"}})).rejects.toMatchObject({
+      code: "unavailable",
+    });
   });
 
   it("issues only for an empty request and binds only one exact opaque token", async () => {
+    /** Provides auth behavior. */
     const auth = {uid, token: {provider: "facebook"}};
     await expect(call(createFacebookReferral, {}, auth)).resolves.toEqual({token: "T".repeat(43), expiresAtMs: 10});
     expect(mockIssue).toHaveBeenCalledWith(uid);
@@ -47,7 +64,8 @@ describe("Facebook referral callables", () => {
       code: "invalid-argument",
     });
     await expect(call(bindFacebookReferral, {token: "A".repeat(43)}, auth)).resolves.toEqual({
-      alreadyBound: false, expiresAtMs: 10,
+      alreadyBound: false,
+      expiresAtMs: 10,
     });
     expect(mockBind).toHaveBeenCalledWith(uid, "A".repeat(43));
     await expect(call(bindFacebookReferral, {token: "short", inviterUid: uid}, auth)).rejects.toMatchObject({

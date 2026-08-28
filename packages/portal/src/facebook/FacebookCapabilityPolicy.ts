@@ -3,16 +3,22 @@ export type FacebookAgeCategory = "13_plus" | "unknown";
 
 /** Describes facebook optional capability availability. */
 export type FacebookOptionalCapabilityAvailability = Readonly<{
+  /** Stores commerce. */
   commerce: boolean;
+  /** Stores ads. */
   ads: boolean;
+  /** Stores notifications. */
   notifications: boolean;
+  /** Stores native social. */
   nativeSocial: boolean;
 }>;
 
 /** Describes facebook capability visibility. */
-export type FacebookCapabilityVisibility = FacebookOptionalCapabilityAvailability & Readonly<{
-  corePlay: true;
-}>;
+export type FacebookCapabilityVisibility = FacebookOptionalCapabilityAvailability &
+  Readonly<{
+    /** Stores core play. */
+    corePlay: true;
+  }>;
 
 /** Accepts only the explicit verified 13+ build value; every other value is unknown. */
 export const parseFacebookAgeCategory = (value: string | undefined): FacebookAgeCategory =>
@@ -23,9 +29,12 @@ export function resolveFacebookCapabilityVisibility({
   ageCategory,
   available,
 }: {
+  /** Stores age category. */
   ageCategory: FacebookAgeCategory;
+  /** Stores available. */
   available: FacebookOptionalCapabilityAvailability;
 }): FacebookCapabilityVisibility {
+  /** Provides age known behavior. */
   const ageKnown = ageCategory === "13_plus";
   return {
     corePlay: true,

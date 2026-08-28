@@ -8,7 +8,9 @@ import {
 } from "@firebase/rules-unit-testing";
 import {doc, getDoc, setDoc} from "firebase/firestore";
 
+/** Defines the project id value. */
 const PROJECT_ID = process.env.GCLOUD_PROJECT ?? "riddle-quest-ec2b2";
+/** Provides test environment behavior. */
 let testEnvironment: RulesTestEnvironment;
 
 beforeAll(async () => {
@@ -17,6 +19,7 @@ beforeAll(async () => {
     firestore: {rules: readFileSync(join(__dirname, "../../../firestore.rules"), "utf8")},
   });
   await testEnvironment.withSecurityRulesDisabled(async (context) => {
+    /** Provides db behavior. */
     const db = context.firestore();
     await Promise.all([
       setDoc(doc(db, "localizedRiddles/en/riddles/history-1"), {text: "Secret clue", answer: "piano"}),
@@ -46,7 +49,9 @@ describe("Race to 10 Firestore trust boundary", () => {
   });
 
   it("denies authenticated clients access to source answers and every race collection", async () => {
+    /** Provides db behavior. */
     const db = testEnvironment.authenticatedContext("player-1").firestore();
+    /** Provides paths behavior. */
     const paths = [
       "localizedRiddles/en/riddles/history-1",
       "raceDecks/deck-1",
@@ -65,12 +70,14 @@ describe("Race to 10 Firestore trust boundary", () => {
   });
 
   it("denies unauthenticated clients too", async () => {
+    /** Provides db behavior. */
     const db = testEnvironment.unauthenticatedContext().firestore();
     await assertFails(getDoc(doc(db, "raceChallenges/challenge-1")));
     await assertFails(setDoc(doc(db, "raceRuns/run-2"), {userId: "attacker"}));
   });
 
   it("allows a player to read but never directly mutate their authoritative profile", async () => {
+    /** Provides db behavior. */
     const db = testEnvironment.authenticatedContext("player-1").firestore();
     await assertSucceeds(getDoc(doc(db, "users/player-1")));
     await assertFails(setDoc(doc(db, "users/player-1"), {userId: "player-1", username: "Forged"}, {merge: true}));
@@ -78,6 +85,7 @@ describe("Race to 10 Firestore trust boundary", () => {
   });
 
   it("prevents one authenticated player from reading another player's profile", async () => {
+    /** Provides db behavior. */
     const db = testEnvironment.authenticatedContext("attacker").firestore();
     await assertFails(getDoc(doc(db, "users/player-1")));
   });

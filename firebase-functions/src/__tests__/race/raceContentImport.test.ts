@@ -1,6 +1,7 @@
 import {RACE_CATEGORY_IDS, type RaceCategoryId, type RaceDifficultyBand} from "@qwordly/core/race";
 import {createRaceContentImportPlan} from "../../race/raceContentImport";
 
+/** Provides valid file behavior. */
 const validFile = () => ({
   locale: "en" as const,
   riddles: RACE_CATEGORY_IDS.flatMap((categoryId: RaceCategoryId) =>
@@ -17,6 +18,7 @@ const validFile = () => ({
 
 describe("English Race content import planning", () => {
   it("accepts exactly 30 reviewed riddles in each of the six categories", () => {
+    /** Provides plan behavior. */
     const plan = createRaceContentImportPlan(validFile());
     expect(plan.valid).toBe(true);
     expect(plan.totalRiddles).toBe(180);
@@ -25,20 +27,25 @@ describe("English Race content import planning", () => {
   });
 
   it("rejects answers beyond the current seven-character game limit", () => {
+    /** Provides file behavior. */
     const file = validFile();
     file.riddles[0].answer = "eight888";
+    /** Provides plan behavior. */
     const plan = createRaceContentImportPlan(file);
     expect(plan.valid).toBe(false);
     expect(plan.issues.some((issue) => issue.code === "answer_too_long")).toBe(true);
   });
 
   it("rejects duplicate content across categories", () => {
+    /** Provides file behavior. */
     const file = validFile();
     file.riddles[30].answer = file.riddles[0].answer;
     file.riddles[30].text = file.riddles[0].text;
     file.riddles[30].canonicalRiddleId = file.riddles[0].canonicalRiddleId;
+    /** Provides plan behavior. */
     const plan = createRaceContentImportPlan(file);
     expect(plan.valid).toBe(false);
+    /** Provides codes behavior. */
     const codes = new Set(plan.issues.map((issue) => issue.code));
     expect(codes.has("duplicate_answer")).toBe(true);
     expect(codes.has("duplicate_question")).toBe(true);

@@ -16,11 +16,13 @@ export function createJestPurchaseGrantId(purchaseToken: string): string {
  * slash, reserved path segment, or oversized token to reach Firestore's `doc()` API.
  */
 export function isSafeLegacyJestPurchaseGrantId(purchaseToken: string): boolean {
-  return purchaseToken.length > 0 &&
+  return (
+    purchaseToken.length > 0 &&
     purchaseToken !== "." &&
     purchaseToken !== ".." &&
     !purchaseToken.includes("/") &&
-    Buffer.byteLength(purchaseToken, "utf8") <= FIRESTORE_DOCUMENT_ID_MAX_BYTES;
+    Buffer.byteLength(purchaseToken, "utf8") <= FIRESTORE_DOCUMENT_ID_MAX_BYTES
+  );
 }
 
 /** Reads the authoritative current coin balance used in an idempotent purchase response. */

@@ -1,8 +1,12 @@
 import {beforeEach, describe, expect, it, jest} from "@jest/globals";
 
+/** Provides mock get behavior. */
 const mockGet = jest.fn();
+/** Provides mock set behavior. */
 const mockSet = jest.fn();
+/** Provides mock get localized daily doc ref behavior. */
 const mockGetLocalizedDailyDocRef = jest.fn(() => ({get: mockGet, set: mockSet}));
+/** Provides mock generate unique riddle behavior. */
 const mockGenerateUniqueRiddle = jest.fn();
 
 jest.mock("@qwordly/core/validation", () => ({SUPPORTED_LOCALES: ["en"]}));
@@ -40,12 +44,14 @@ describe("immutable localized Daily generation", () => {
     await generateLocalizedDailyChallengeForDate("2026-08-12");
 
     expect(mockGetLocalizedDailyDocRef).toHaveBeenCalledWith("en", "2026-08-12");
-    expect(mockSet).toHaveBeenCalledWith(expect.objectContaining({
-      riddleId: "daily-2026-08-12",
-      challengeKey: "2026-08-12",
-      answer: "clock",
-      locale: "en",
-    }));
+    expect(mockSet).toHaveBeenCalledWith(
+      expect.objectContaining({
+        riddleId: "daily-2026-08-12",
+        challengeKey: "2026-08-12",
+        answer: "clock",
+        locale: "en",
+      }),
+    );
   });
 
   it("regenerates an existing document whose answer is not keyboard-playable", async () => {

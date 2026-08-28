@@ -8,9 +8,13 @@ export async function startOptionalPresence({
   start,
   reportFailure,
 }: {
+  /** Stores enabled. */
   enabled: boolean;
+  /** Stores can start. */
   canStart: boolean;
+  /** Stores start. */
   start: () => Promise<void>;
+  /** Stores report failure. */
   reportFailure: (error: unknown) => void;
 }): Promise<boolean> {
   if (!enabled || !canStart) return false;

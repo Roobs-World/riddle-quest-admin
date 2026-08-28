@@ -71,11 +71,14 @@ const duplicateIssues = (
   field: "canonicalRiddleId" | "text" | "answer",
   code: "duplicate_canonical" | "duplicate_question" | "duplicate_answer",
 ): RacePoolIssue[] => {
+  /** Provides paths by value behavior. */
   const pathsByValue = new Map<string, string[]>();
   for (const record of records) {
     // Records in an import plan are constructed only after the strict import
     // schema has validated all three duplicate-comparison fields as strings.
+    /** Provides raw behavior. */
     const raw = record.data[field] as string;
+    /** Provides value behavior. */
     const value = field === "canonicalRiddleId" ? raw : normalized(raw);
     pathsByValue.set(value, [...(pathsByValue.get(value) ?? []), record.documentPath]);
   }
@@ -86,8 +89,11 @@ const duplicateIssues = (
 
 /** Parses content and creates a deterministic, validated import plan. */
 export function createRaceContentImportPlan(input: unknown): RaceContentImportPlan {
+  /** Provides file behavior. */
   const file = RaceContentImportFileSchema.parse(input);
+  /** Records s. */
   const records = file.riddles.map((riddle): ExistingRaceContentRecord => {
+    /** Provides document id behavior. */
     const documentId = documentIdFor(riddle.canonicalRiddleId);
     return {
       locale: "en",
@@ -95,12 +101,14 @@ export function createRaceContentImportPlan(input: unknown): RaceContentImportPl
       data: {riddleId: documentId, ...riddle, raceEligible: true},
     };
   });
+  /** Provides category counts behavior. */
   const categoryCounts = Object.fromEntries(
     RACE_CATEGORY_IDS.map((categoryId) => [
       categoryId,
       records.filter((record) => record.data.categoryId === categoryId).length,
     ]),
   ) as Record<RaceCategoryId, number>;
+  /** Provides issues behavior. */
   const issues = RACE_CATEGORY_IDS.flatMap(
     (categoryId) => validateRacePool(records, {locale: "en", categoryId, poolSize: RACE_POOL_SIZE}).issues,
   );
@@ -109,6 +117,7 @@ export function createRaceContentImportPlan(input: unknown): RaceContentImportPl
     ...duplicateIssues(records, "text", "duplicate_question"),
     ...duplicateIssues(records, "answer", "duplicate_answer"),
   );
+  /** Provides unique issues behavior. */
   const uniqueIssues = [
     ...new Map(issues.map((issue) => [`${issue.code}:${issue.documentPaths.join("|")}`, issue])).values(),
   ];

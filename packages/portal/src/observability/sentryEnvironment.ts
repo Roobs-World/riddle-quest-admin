@@ -5,11 +5,13 @@ import {isBrowserTelemetryRuntimeAllowed} from "./telemetryRuntime";
 
 /** Initializes browser telemetry from Vite's production environment. */
 export function initializeBrowserSentryFromEnvironment(): boolean {
+  /** Provides runtime behavior. */
   const runtime = firebaseEnvironment.platformTarget;
   if ((runtime !== "jest" && runtime !== "facebook") || !isBrowserTelemetryRuntimeAllowed()) {
     configureBrowserErrorReporter(null);
     return false;
   }
+  /** Provides initialized behavior. */
   const initialized = initializeBrowserSentry({
     dsn: firebaseEnvironment.sentryDsn,
     environment: firebaseEnvironment.sentryEnvironment,

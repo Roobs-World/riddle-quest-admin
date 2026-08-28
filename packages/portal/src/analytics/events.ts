@@ -12,7 +12,12 @@ export type AnalyticsSink = (eventName: string, params: SanitizedAnalyticsParams
 /** Provides sink behavior. */
 let sink: AnalyticsSink | null = null;
 /** Provides pending events behavior. */
-let pendingEvents: Array<{eventName: string; params: SanitizedAnalyticsParams}> = [];
+let pendingEvents: Array<{
+  /** Stores event name. */
+  eventName: string; /** Stores params. */
+  /** Stores params. */
+  params: SanitizedAnalyticsParams;
+}> = [];
 /** Nonessential analytics is disabled until an explicit consent flow enables collection. */
 let collectionEnabled = false;
 /** Provides last screen behavior. */
@@ -26,6 +31,7 @@ const sensitiveAnalyticsFieldPattern =
 
 /** Provides compact behavior. */
 const compact = (value: string, fallback: string) => {
+  /** Normalizes d. */
   const normalized = value
     .normalize("NFKD")
     .replace(/[^a-zA-Z0-9]+/g, "_")
@@ -39,6 +45,7 @@ const compact = (value: string, fallback: string) => {
 export const sanitizeAnalyticsParams = (params: AnalyticsParams = {}): SanitizedAnalyticsParams =>
   Object.entries(params).reduce<SanitizedAnalyticsParams>((result, [key, value]) => {
     if (sensitiveAnalyticsFieldPattern.test(key)) return result;
+    /** Provides safe key behavior. */
     const safeKey = compact(key, "param");
     if (Array.isArray(value)) {
       result[safeKey] = value.slice(0, 10).map((item) => sanitizeAnalyticsParams(item) as AnalyticsItem);
@@ -80,7 +87,9 @@ export const setAnalyticsCollectionEnabled = (enabled: boolean) => {
 /** Tracks event. */
 export const trackEvent = (eventName: string, params: AnalyticsParams = {}) => {
   if (!collectionEnabled) return;
+  /** Provides safe name behavior. */
   const safeName = compact(eventName, "game_event").slice(0, 40);
+  /** Provides safe params behavior. */
   const safeParams = sanitizeAnalyticsParams(params);
   if (sink) sink(safeName, safeParams);
   else pendingEvents = [...pendingEvents.slice(-99), {eventName: safeName, params: safeParams}];
@@ -88,6 +97,7 @@ export const trackEvent = (eventName: string, params: AnalyticsParams = {}) => {
 
 /** Tracks screen. */
 export const trackScreen = (screenName: string, params: AnalyticsParams = {}) => {
+  /** Provides safe screen behavior. */
   const safeScreen = compact(screenName, "unknown_screen");
   if (safeScreen === lastScreen) return;
   lastScreen = safeScreen;
@@ -100,23 +110,33 @@ export const trackScreen = (screenName: string, params: AnalyticsParams = {}) =>
 
 /** Gets button id. */
 const getButtonId = (button: HTMLElement) => {
+  /** Provides explicit behavior. */
   const explicit = button.dataset.analyticsId || button.dataset.tooltip;
   if (explicit) return compact(explicit, "button");
-  if (button.classList.contains("key")) return button.classList.contains("utility") ? "keyboard_delete" : "keyboard_letter";
+  if (button.classList.contains("key"))
+    return button.classList.contains("utility") ? "keyboard_delete" : "keyboard_letter";
   if (button.classList.contains("guess-cell")) return "guess_slot";
-  const className = Array.from(button.classList).find((name) => !name.startsWith("active") && !name.startsWith("disabled"));
+  /** Provides class name behavior. */
+  const className = Array.from(button.classList).find(
+    (name) => !name.startsWith("active") && !name.startsWith("disabled"),
+  );
   if (className) return compact(className, "button");
+  /** Provides label behavior. */
   const label = button.getAttribute("aria-label");
   return label ? compact(label, "button") : "button";
 };
 
 /** Provides install button analytics behavior. */
 export const installButtonAnalytics = (root: Document = document) => {
+  /** Provides on click behavior. */
   const onClick = (event: MouseEvent) => {
+    /** Provides target behavior. */
     const target = event.target;
     if (!(target instanceof Element)) return;
+    /** Provides button behavior. */
     const button = target.closest<HTMLElement>("button, [role='button']");
     if (!button || button.matches(":disabled, [aria-disabled='true']")) return;
+    /** Provides screen behavior. */
     const screen = button.closest<HTMLElement>("[data-analytics-screen]")?.dataset.analyticsScreen;
     trackEvent("button_press", {
       button_id: getButtonId(button),
@@ -132,13 +152,17 @@ export const installButtonAnalytics = (root: Document = document) => {
  * stack traces, URLs, player identifiers, or rejected values.
  */
 export const installGlobalErrorAnalytics = (target: Window = window) => {
+  /** Provides remaining reports behavior. */
   let remainingReports = CLIENT_ERROR_REPORT_LIMIT;
+  /** Provides report behavior. */
   const report = (errorKind: "uncaught_error" | "unhandled_rejection") => {
     if (remainingReports <= 0) return;
     remainingReports -= 1;
     trackEvent("client_error", {error_kind: errorKind});
   };
+  /** Provides on error behavior. */
   const onError = () => report("uncaught_error");
+  /** Provides on unhandled rejection behavior. */
   const onUnhandledRejection = () => report("unhandled_rejection");
   target.addEventListener("error", onError);
   target.addEventListener("unhandledrejection", onUnhandledRejection);
@@ -150,23 +174,30 @@ export const installGlobalErrorAnalytics = (target: Window = window) => {
 
 /** Tracks purchase. */
 export const trackPurchase = (input: {
+  /** Stores product id. */
   productId: string;
+  /** Stores purchase type. */
   purchaseType: "consumable" | "subscription";
+  /** Stores price. */
   price?: number;
+  /** Stores currency. */
   currency?: string;
 }) => {
   trackEvent("purchase", {
-    transaction_id: typeof crypto.randomUUID === "function"
-      ? crypto.randomUUID()
-      : `web-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+    transaction_id:
+      typeof crypto.randomUUID === "function"
+        ? crypto.randomUUID()
+        : `web-${Date.now()}-${Math.random().toString(36).slice(2)}`,
     value: input.price,
     currency: input.currency,
-    items: [{
-      item_id: input.productId,
-      item_category: input.purchaseType,
-      price: input.price ?? 0,
-      quantity: 1,
-    }],
+    items: [
+      {
+        item_id: input.productId,
+        item_category: input.purchaseType,
+        price: input.price ?? 0,
+        quantity: 1,
+      },
+    ],
   });
 };
 

@@ -1,11 +1,5 @@
 import {parseEntryIntent} from "./entryIntent";
-import type {
-  JestPlatformPort,
-  JestPlayerData,
-  JestPreferences,
-  PlatformResult,
-  ScreenshotProvider,
-} from "./types";
+import type {JestPlatformPort, JestPlayerData, JestPreferences, PlatformResult, ScreenshotProvider} from "./types";
 import {captureBrowserException} from "../observability/browserErrorReporter";
 import {parsePlayerData} from "../platform/playerDataValidation";
 
@@ -34,6 +28,7 @@ const success = <T>(value: T): PlatformResult<T> => ({status: "success", value})
 /** Provides failure behavior. */
 const failure = (error: unknown): PlatformResult<never> => {
   captureBrowserException(error, {component: "jest_sdk"});
+  /** Provides message behavior. */
   const message = error instanceof Error ? error.message : String(error);
   return /INVALID_ARGUMENTS|BAD_REQUEST|invalid sku/i.test(message)
     ? {status: "terminal-failure", message}
@@ -42,11 +37,17 @@ const failure = (error: unknown): PlatformResult<never> => {
 
 /** Waits for the independently loaded Jest SDK without delaying the React startup shell. */
 const waitForGlobalJestSdk = (timeoutMs: number): Promise<Sdk> => {
-  const target = globalThis as typeof globalThis & {JestSDK?: Sdk};
+  /** Provides target behavior. */
+  const target = globalThis as typeof globalThis & {
+    /** Stores jest sdk. */
+    JestSDK?: Sdk;
+  };
   if (typeof target.JestSDK?.init === "function") return Promise.resolve(target.JestSDK);
 
   return new Promise((resolve, reject) => {
+    /** Starts ed at. */
     const startedAt = Date.now();
+    /** Provides check behavior. */
     const check = () => {
       if (typeof target.JestSDK?.init === "function") {
         resolve(target.JestSDK);
@@ -64,6 +65,7 @@ const waitForGlobalJestSdk = (timeoutMs: number): Promise<Sdk> => {
 
 /** Rejects an SDK operation that does not settle before its UI timeout. */
 const withTimeout = async <T>(operation: Promise<T>, timeoutMs: number, message: string): Promise<T> => {
+  /** Provides timeout id behavior. */
   let timeoutId: ReturnType<typeof setTimeout> | undefined;
   try {
     return await Promise.race([
@@ -130,9 +132,13 @@ export class JestSdkPlatform implements JestPlatformPort {
     }
   }
   /** @returns The current target-scoped player projection directly from Jest. */
-  getPlayer() { return this.sdk.getPlayer(); }
+  getPlayer() {
+    return this.sdk.getPlayer();
+  }
   /** @returns The player projection and opaque signed identity envelope for backend exchange. */
-  getPlayerSigned() { return this.sdk.getPlayerSigned(); }
+  getPlayerSigned() {
+    return this.sdk.getPlayerSigned();
+  }
   /**
    * Opens Jest login only when the current player is not already registered.
    *
@@ -141,11 +147,14 @@ export class JestSdkPlatform implements JestPlatformPort {
    */
   async login(entryPayload?: Record<string, string>) {
     try {
+      /** Provides player behavior. */
       const player = this.getPlayer();
       if (player.registered) return success(player);
       await this.sdk.login(entryPayload ? {entryPayload} : undefined);
       return success(this.getPlayer());
-    } catch (e) { return failure(e); }
+    } catch (e) {
+      return failure(e);
+    }
   }
   /**
    * Wraps Jest's provider-owned registration overlay in a narrow imperative handle.
@@ -155,6 +164,7 @@ export class JestSdkPlatform implements JestPlatformPort {
    */
   showRegistrationOverlay(options: Parameters<JestPlatformPort["showRegistrationOverlay"]>[0]) {
     try {
+      /** Provides handle behavior. */
       const handle = this.sdk.showRegistrationOverlay(options);
       return success({
         loginButtonAction: () => handle.loginButtonAction(),
@@ -170,6 +180,7 @@ export class JestSdkPlatform implements JestPlatformPort {
    * @returns A partial preference projection; malformed and unknown fields are omitted.
    */
   readPreferences(): JestPreferences {
+    /** Provides data behavior. */
     const data = this.sdk.data?.getAll?.() ?? {};
     return {
       locale: typeof data.locale === "string" ? data.locale : undefined,
@@ -188,13 +199,17 @@ export class JestSdkPlatform implements JestPlatformPort {
    *
    * @param value - Validated partial preference projection.
    */
-  async writePreferences(value: JestPreferences) { this.sdk.data.set(value); await this.sdk.data.flush(); }
+  async writePreferences(value: JestPreferences) {
+    this.sdk.data.set(value);
+    await this.sdk.data.flush();
+  }
   /**
    * Parses the app-owned versioned snapshot from untrusted SDK storage.
    *
    * @returns The bounded snapshot, or `null` when absent or malformed.
    */
   async readPlayerData(): Promise<JestPlayerData | null> {
+    /** Provides value behavior. */
     const value: unknown = this.sdk.data?.getAll?.()?.[PLAYER_DATA_KEY];
     return parsePlayerData(value);
   }
@@ -222,7 +237,9 @@ export class JestSdkPlatform implements JestPlatformPort {
     return parseEntryIntent(this.sdk.getEntryPayload?.() ?? {}, globalThis.location?.search ?? "");
   }
   /** @returns A 128-pixel provider display profile, or `null` when unavailable. */
-  async getProfile() { return this.sdk.social.getProfile({avatarSize: 128}) ?? null; }
+  async getProfile() {
+    return this.sdk.social.getProfile({avatarSize: 128}) ?? null;
+  }
   /**
    * Schedules provider notification content for a registered player.
    *
@@ -231,7 +248,12 @@ export class JestSdkPlatform implements JestPlatformPort {
    */
   async scheduleNotification(input: Parameters<JestPlatformPort["scheduleNotification"]>[0]) {
     if (!this.getPlayer().registered) return {status: "unavailable", message: "Registration is required"} as const;
-    try { await this.sdk.notifications.scheduleNotification(input); return success(undefined); } catch (e) { return failure(e); }
+    try {
+      await this.sdk.notifications.scheduleNotification(input);
+      return success(undefined);
+    } catch (e) {
+      return failure(e);
+    }
   }
   /**
    * Unschedules one provider notification for a registered player.
@@ -241,7 +263,12 @@ export class JestSdkPlatform implements JestPlatformPort {
    */
   async removeNotification(identifier: string) {
     if (!this.getPlayer().registered) return {status: "unavailable", message: "Registration is required"} as const;
-    try { await this.sdk.notifications.unscheduleNotification({identifier}); return success(undefined); } catch (e) { return failure(e); }
+    try {
+      await this.sdk.notifications.unscheduleNotification({identifier});
+      return success(undefined);
+    } catch (e) {
+      return failure(e);
+    }
   }
   /**
    * Opens the Jest referral-share surface with target-owned attribution.
@@ -250,18 +277,35 @@ export class JestSdkPlatform implements JestPlatformPort {
    */
   async shareReferral(input: Parameters<JestPlatformPort["shareReferral"]>[0]) {
     try {
+      /** Provides result behavior. */
       const result = await this.sdk.referrals.shareReferralLink(input);
-      return result?.canceled ? {status: "cancelled"} as const : success(undefined);
-    } catch (e) { return failure(e); }
+      return result?.canceled ? ({status: "cancelled"} as const) : success(undefined);
+    } catch (e) {
+      return failure(e);
+    }
   }
   /** @returns Jest's opaque signed referral list for authoritative backend verification. */
   async listReferralsSigned() {
-    try { const result = await this.sdk.referrals.listReferrals(); return success(result.referralsSigned); } catch (e) { return failure(e); }
+    try {
+      /** Provides result behavior. */
+      const result = await this.sdk.referrals.listReferrals();
+      return success(result.referralsSigned);
+    } catch (e) {
+      return failure(e);
+    }
   }
   /** Registers or removes the lazy screenshot callback consumed by Jest sharing. */
-  setScreenshotProvider(provider: ScreenshotProvider | null) { this.sdk.social.setScreenshotProvider(provider); }
+  setScreenshotProvider(provider: ScreenshotProvider | null) {
+    this.sdk.social.setScreenshotProvider(provider);
+  }
   /** @returns Provider-priced consumables for display; no client-side grant is implied. */
-  async getProducts() { try { return success(await this.sdk.payments.getProducts()); } catch (e) { return failure(e); } }
+  async getProducts() {
+    try {
+      return success(await this.sdk.payments.getProducts());
+    } catch (e) {
+      return failure(e);
+    }
+  }
   /**
    * Opens a consumable checkout and preserves its signed envelope for backend granting.
    *
@@ -270,23 +314,32 @@ export class JestSdkPlatform implements JestPlatformPort {
    */
   async beginPurchase(productSku: string) {
     try {
+      /** Provides result behavior. */
       const result = await this.sdk.payments.beginPurchase({productSku});
       if (result?.result === "cancel") return {status: "cancelled"} as const;
       if (result?.result === "error") {
         captureBrowserException(new Error(String(result.error)), {component: "jest_sdk", operation: "begin_purchase"});
         return result.error === "invalid_product"
-          ? {status: "terminal-failure", message: result.error} as const
-          : {status: "retryable-failure", message: String(result.error)} as const;
+          ? ({status: "terminal-failure", message: result.error} as const)
+          : ({status: "retryable-failure", message: String(result.error)} as const);
       }
       return success({purchase: result.purchase, purchaseSigned: result.purchaseSigned});
-    } catch (e) { return failure(e); }
+    } catch (e) {
+      return failure(e);
+    }
   }
   /**
    * Retrieves purchases that still require authoritative grant or provider completion.
    *
    * @returns Provider purchase data and its opaque aggregate signature.
    */
-  async getIncompletePurchases() { try { return success(await this.sdk.payments.getIncompletePurchases()); } catch (e) { return failure(e); } }
+  async getIncompletePurchases() {
+    try {
+      return success(await this.sdk.payments.getIncompletePurchases());
+    } catch (e) {
+      return failure(e);
+    }
+  }
   /**
    * Marks a purchase complete only after its server-authoritative grant has succeeded.
    *
@@ -295,15 +348,21 @@ export class JestSdkPlatform implements JestPlatformPort {
    */
   async completePurchase(purchaseToken: string) {
     try {
+      /** Provides result behavior. */
       const result = await this.sdk.payments.completePurchase({purchaseToken});
       if (result?.result === "error") {
-        captureBrowserException(new Error(String(result.error)), {component: "jest_sdk", operation: "complete_purchase"});
+        captureBrowserException(new Error(String(result.error)), {
+          component: "jest_sdk",
+          operation: "complete_purchase",
+        });
         return result.error === "invalid_token"
-          ? {status: "terminal-failure", message: result.error} as const
-          : {status: "retryable-failure", message: String(result.error)} as const;
+          ? ({status: "terminal-failure", message: result.error} as const)
+          : ({status: "retryable-failure", message: String(result.error)} as const);
       }
       return success(undefined);
-    } catch (e) { return failure(e); }
+    } catch (e) {
+      return failure(e);
+    }
   }
   /**
    * Reads subscription state without trusting it as an entitlement grant.
@@ -312,12 +371,15 @@ export class JestSdkPlatform implements JestPlatformPort {
    */
   async getSubscriptions() {
     try {
+      /** Provides result behavior. */
       const result = await this.sdk.payments.getSubscriptions();
       return success({
         subscriptions: result.subscriptions ?? [],
         subscriptionsSigned: result.subscriptionsSigned ?? result.signed,
       });
-    } catch (e) { return failure(e); }
+    } catch (e) {
+      return failure(e);
+    }
   }
   /**
    * Opens a subscription checkout with the constructor-configured deadline.
@@ -331,6 +393,7 @@ export class JestSdkPlatform implements JestPlatformPort {
    */
   async beginSubscription(subscriptionSku: string) {
     try {
+      /** Provides result behavior. */
       const result: any = await withTimeout<any>(
         this.sdk.payments.beginSubscription({subscriptionSku}),
         this.subscriptionCheckoutTimeoutMs,
@@ -338,18 +401,23 @@ export class JestSdkPlatform implements JestPlatformPort {
       );
       if (result?.result === "cancel") return {status: "cancelled"} as const;
       if (result?.result === "error") {
-        captureBrowserException(new Error(String(result.error)), {component: "jest_sdk", operation: "begin_subscription"});
+        captureBrowserException(new Error(String(result.error)), {
+          component: "jest_sdk",
+          operation: "begin_subscription",
+        });
         return result.error === "invalid_subscription"
-          ? {status: "terminal-failure", message: result.error} as const
+          ? ({status: "terminal-failure", message: result.error} as const)
           : result.error === "guest_not_allowed" || result.error === "already_subscribed"
-            ? {status: "unavailable", message: result.error} as const
-            : {status: "retryable-failure", message: String(result.error)} as const;
+            ? ({status: "unavailable", message: result.error} as const)
+            : ({status: "retryable-failure", message: String(result.error)} as const);
       }
       return success({
         subscription: result.subscription,
         subscriptionSigned: result.subscriptionSigned,
       });
-    } catch (e) { return failure(e); }
+    } catch (e) {
+      return failure(e);
+    }
   }
   /**
    * Sends one low-cardinality event when the optional SDK analytics hook exists.
@@ -362,10 +430,19 @@ export class JestSdkPlatform implements JestPlatformPort {
   }
   /** @returns The normalized result of the provider's idempotent first-milestone signal. */
   async markFirstMilestone() {
-    try { await this.sdk.markFirstMilestone(); return success(undefined); } catch (e) { return failure(e); }
+    try {
+      await this.sdk.markFirstMilestone();
+      return success(undefined);
+    } catch (e) {
+      return failure(e);
+    }
   }
   /** Reports startup progress to Jest on the inclusive 0-100 scale. */
-  setLoadingProgress(progress: number) { this.sdk.setLoadingProgress(progress); }
+  setLoadingProgress(progress: number) {
+    this.sdk.setLoadingProgress(progress);
+  }
   /** Dismisses the provider loading surface after the game becomes interactive. */
-  markGameLoaded() { this.sdk.markGameLoaded(); }
+  markGameLoaded() {
+    this.sdk.markGameLoaded();
+  }
 }

@@ -7,9 +7,12 @@ import {
 } from "../../race/raceTranslationGenerator";
 import reviewedEnglish from "../../../content/race-en-reviewed-v1.json";
 
+/** Provides source behavior. */
 const source = reviewedEnglish;
 
+/** Provides port behavior. */
 const port = (): RaceTranslationModelPort => ({
+  /** Provides translate behavior. */
   async translate({source: batch}) {
     return batch.map((item) => ({
       canonicalRiddleId: item.canonicalRiddleId,
@@ -17,6 +20,7 @@ const port = (): RaceTranslationModelPort => ({
       answer: item.answer,
     }));
   },
+  /** Provides critique behavior. */
   async critique({source: batch}) {
     return batch.map((item) => ({
       canonicalRiddleId: item.canonicalRiddleId,
@@ -32,23 +36,33 @@ const port = (): RaceTranslationModelPort => ({
 
 describe("race translation generator", () => {
   it("rejects duplicate or substituted response IDs before persistence", () => {
-    expect(() => assertExactTranslationResponseIds(
-      [{canonicalRiddleId: "a"}, {canonicalRiddleId: "a"}], ["a", "b"], "translation",
-    )).toThrow("translation-canonical-set-mismatch");
-    expect(() => assertExactTranslationResponseIds(
-      [{canonicalRiddleId: "a"}, {canonicalRiddleId: "c"}], ["a", "b"], "critique",
-    )).toThrow("critique-canonical-set-mismatch");
-    expect(() => assertExactTranslationResponseIds(
-      [{canonicalRiddleId: "b"}, {canonicalRiddleId: "a"}], ["a", "b"], "translation",
-    )).not.toThrow();
+    expect(() =>
+      assertExactTranslationResponseIds(
+        [{canonicalRiddleId: "a"}, {canonicalRiddleId: "a"}],
+        ["a", "b"],
+        "translation",
+      ),
+    ).toThrow("translation-canonical-set-mismatch");
+    expect(() =>
+      assertExactTranslationResponseIds([{canonicalRiddleId: "a"}, {canonicalRiddleId: "c"}], ["a", "b"], "critique"),
+    ).toThrow("critique-canonical-set-mismatch");
+    expect(() =>
+      assertExactTranslationResponseIds(
+        [{canonicalRiddleId: "b"}, {canonicalRiddleId: "a"}],
+        ["a", "b"],
+        "translation",
+      ),
+    ).not.toThrow();
   });
 
   it("binds restored critiques to exact translation bytes and known canonical IDs", () => {
+    /** Provides translation behavior. */
     const translation = {
       canonicalRiddleId: source.riddles[0].canonicalRiddleId,
       text: "日本語の手掛かり",
       answer: "答え",
     };
+    /** Provides critique behavior. */
     const critique = {
       canonicalRiddleId: translation.canonicalRiddleId,
       backTranslation: "A Japanese clue",
@@ -58,6 +72,7 @@ describe("race translation generator", () => {
       categoryMatch: true,
       difficultyMatch: true,
     };
+    /** Provides checkpoint behavior. */
     const checkpoint = {
       sourceFileHash: "a".repeat(64),
       translatorModel: "translator-v1",
@@ -68,6 +83,7 @@ describe("race translation generator", () => {
         [translation.canonicalRiddleId]: raceTranslationDraftHash(translation),
       },
     };
+    /** Provides expected behavior. */
     const expected = {
       sourceFileHash: checkpoint.sourceFileHash,
       translatorModel: checkpoint.translatorModel,
@@ -75,17 +91,28 @@ describe("race translation generator", () => {
       canonicalRiddleIds: source.riddles.map(({canonicalRiddleId}) => canonicalRiddleId),
     };
     expect(validateRaceTranslationCheckpoint(checkpoint, expected)).toEqual(checkpoint);
-    expect(() => validateRaceTranslationCheckpoint({
-      ...checkpoint,
-      translations: {[translation.canonicalRiddleId]: {...translation, text: "改変された手掛かり"}},
-    }, expected)).toThrow("checkpoint-critique-translation-mismatch");
-    expect(() => validateRaceTranslationCheckpoint({
-      ...checkpoint,
-      translations: {...checkpoint.translations, unknown: {...translation, canonicalRiddleId: "unknown"}},
-    }, expected)).toThrow("checkpoint-critique-translation-mismatch");
+    expect(() =>
+      validateRaceTranslationCheckpoint(
+        {
+          ...checkpoint,
+          translations: {[translation.canonicalRiddleId]: {...translation, text: "改変された手掛かり"}},
+        },
+        expected,
+      ),
+    ).toThrow("checkpoint-critique-translation-mismatch");
+    expect(() =>
+      validateRaceTranslationCheckpoint(
+        {
+          ...checkpoint,
+          translations: {...checkpoint.translations, unknown: {...translation, canonicalRiddleId: "unknown"}},
+        },
+        expected,
+      ),
+    ).toThrow("checkpoint-critique-translation-mismatch");
   });
 
   it("assembles a complete independently critiqued machine-only bundle", async () => {
+    /** Provides bundle behavior. */
     const bundle = await generateRaceTranslationBundle({
       locale: "ja",
       source,
@@ -100,59 +127,73 @@ describe("race translation generator", () => {
   });
 
   it("rejects same-model review and incomplete canonical responses", async () => {
-    await expect(generateRaceTranslationBundle({
-      locale: "ja",
-      source,
-      translatorModel: "same",
-      criticModel: "same",
-      port: port(),
-    })).rejects.toThrow("translation-models-must-be-distinct");
+    await expect(
+      generateRaceTranslationBundle({
+        locale: "ja",
+        source,
+        translatorModel: "same",
+        criticModel: "same",
+        port: port(),
+      }),
+    ).rejects.toThrow("translation-models-must-be-distinct");
+    /** Provides incomplete behavior. */
     const incomplete = port();
-    incomplete.translate = async ({source: batch}) => batch.slice(1).map((item) => ({
-      canonicalRiddleId: item.canonicalRiddleId,
-      text: item.text,
-      answer: item.answer,
-    }));
-    await expect(generateRaceTranslationBundle({
-      locale: "ja",
-      source,
-      translatorModel: "translator-v1",
-      criticModel: "critic-v2",
-      port: incomplete,
-    })).rejects.toThrow();
+    incomplete.translate = async ({source: batch}) =>
+      batch.slice(1).map((item) => ({
+        canonicalRiddleId: item.canonicalRiddleId,
+        text: item.text,
+        answer: item.answer,
+      }));
+    await expect(
+      generateRaceTranslationBundle({
+        locale: "ja",
+        source,
+        translatorModel: "translator-v1",
+        criticModel: "critic-v2",
+        port: incomplete,
+      }),
+    ).rejects.toThrow();
   });
 
   it("rejects an unsafe translated answer before requesting independent critique", async () => {
+    /** Provides invalid behavior. */
     const invalid = port();
-    invalid.translate = async ({source: batch}) => batch.map((item, index) => ({
-      canonicalRiddleId: item.canonicalRiddleId,
-      text: `日本語の手掛かり ${item.canonicalRiddleId}`,
-      answer: index === 0 ? "two words" : item.answer,
-    }));
+    invalid.translate = async ({source: batch}) =>
+      batch.map((item, index) => ({
+        canonicalRiddleId: item.canonicalRiddleId,
+        text: `日本語の手掛かり ${item.canonicalRiddleId}`,
+        answer: index === 0 ? "two words" : item.answer,
+      }));
     invalid.critique = jest.fn(invalid.critique);
-    await expect(generateRaceTranslationBundle({
-      locale: "ja",
-      source,
-      translatorModel: "translator-v1",
-      criticModel: "critic-v2",
-      port: invalid,
-    })).rejects.toThrow("translation-answer-invalid:race:history:01:letters_and_marks_only");
+    await expect(
+      generateRaceTranslationBundle({
+        locale: "ja",
+        source,
+        translatorModel: "translator-v1",
+        criticModel: "critic-v2",
+        port: invalid,
+      }),
+    ).rejects.toThrow("translation-answer-invalid:race:history:01:letters_and_marks_only");
     expect(invalid.critique).not.toHaveBeenCalled();
   });
 
   it("rejects an invalid reviewed source before spending a model request", async () => {
+    /** Provides invalid source behavior. */
     const invalidSource = structuredClone(source);
     invalidSource.riddles[1].canonicalRiddleId = invalidSource.riddles[0].canonicalRiddleId;
+    /** Provides model port behavior. */
     const modelPort = port();
     modelPort.translate = jest.fn(modelPort.translate);
     modelPort.critique = jest.fn(modelPort.critique);
-    await expect(generateRaceTranslationBundle({
-      locale: "ja",
-      source: invalidSource,
-      translatorModel: "translator-v1",
-      criticModel: "critic-v2",
-      port: modelPort,
-    })).rejects.toThrow("translation-source-invalid:duplicate_canonical");
+    await expect(
+      generateRaceTranslationBundle({
+        locale: "ja",
+        source: invalidSource,
+        translatorModel: "translator-v1",
+        criticModel: "critic-v2",
+        port: modelPort,
+      }),
+    ).rejects.toThrow("translation-source-invalid:duplicate_canonical");
     expect(modelPort.translate).not.toHaveBeenCalled();
     expect(modelPort.critique).not.toHaveBeenCalled();
   });

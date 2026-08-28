@@ -2,44 +2,58 @@ import type {RaceLocale} from "@qwordly/core/race";
 import type {NativeSocialCapability, PlatformResult} from "../platform/types";
 
 /** Describes context value. */
-type ContextValue = {/** Stores context id. */
-/** Stores context id. */
-contextId: string; /** Stores context type. */
-/** Stores context type. */
-contextType: "THREAD" | "GROUP"};
+type ContextValue = {
+  /** Stores context id. */
+  /** Stores context id. */
+  contextId: string; /** Stores context type. */
+  /** Stores context type. */
+  contextType: "THREAD" | "GROUP";
+};
 
 /** Defines the contract for facebook context backend port. */
 export interface FacebookContextBackendPort {
   /** Provides join behavior. */
-  join(input: ContextValue & {locale: RaceLocale}): Promise<void>;
+  join(
+    input: ContextValue & {
+      /** Stores locale. */
+      locale: RaceLocale;
+    },
+  ): Promise<void>;
   /** Provides leave behavior. */
-  leave(input: {contextId: string}): Promise<void>;
+  leave(input: {
+    /** Stores context id. */ /** Stores context id. */ /** Stores context id. */
+    contextId: string;
+  }): Promise<void>;
 }
 
 /** Provides firebase facebook context backend behavior. */
 class FirebaseFacebookContextBackend implements FacebookContextBackendPort {
   /** Provides join behavior. */
-  async join(input: ContextValue & {locale: RaceLocale}): Promise<void> {
+  async join(
+    input: ContextValue & {
+      /** Stores locale. */
+      locale: RaceLocale;
+    },
+  ): Promise<void> {
+    /** Provides [{get functions, https callable}, {firebase app}] behavior. */
     const [{getFunctions, httpsCallable}, {firebaseApp}] = await Promise.all([
       import("firebase/functions"),
       import("../firebase"),
     ]);
-    await httpsCallable<typeof input, unknown>(
-      getFunctions(firebaseApp, "us-central1"),
-      "joinFacebookContext",
-    )(input);
+    await httpsCallable<typeof input, unknown>(getFunctions(firebaseApp, "us-central1"), "joinFacebookContext")(input);
   }
 
   /** Provides leave behavior. */
-  async leave(input: {contextId: string}): Promise<void> {
+  async leave(input: {
+    /** Stores context id. */ /** Stores context id. */ /** Stores context id. */
+    contextId: string;
+  }): Promise<void> {
+    /** Provides [{get functions, https callable}, {firebase app}] behavior. */
     const [{getFunctions, httpsCallable}, {firebaseApp}] = await Promise.all([
       import("firebase/functions"),
       import("../firebase"),
     ]);
-    await httpsCallable<typeof input, unknown>(
-      getFunctions(firebaseApp, "us-central1"),
-      "leaveFacebookContext",
-    )(input);
+    await httpsCallable<typeof input, unknown>(getFunctions(firebaseApp, "us-central1"), "leaveFacebookContext")(input);
   }
 }
 
@@ -75,6 +89,7 @@ export class FacebookContextCoordinator implements NativeSocialCapability {
 
   /** Provides current context behavior. */
   currentContext(): PlatformResult<ContextValue> {
+    /** Provides sdk context behavior. */
     const sdkContext = this.sdkSocial.currentContext();
     if (
       sdkContext.status !== "success" ||
@@ -105,11 +120,16 @@ export class FacebookContextCoordinator implements NativeSocialCapability {
 
   /** Provides synchronize behavior. */
   private synchronize(result: PlatformResult<ContextValue>): Promise<PlatformResult<ContextValue>> {
+    /** Provides revision behavior. */
     const revision = ++this.requestedRevision;
     this.synchronizedContext = undefined;
     this.synchronizedLocale = undefined;
+    /** Provides operation behavior. */
     const operation = this.synchronization.then(() => this.applySynchronization(result, revision));
-    this.synchronization = operation.then(() => undefined, () => undefined);
+    this.synchronization = operation.then(
+      () => undefined,
+      () => undefined,
+    );
     return operation;
   }
 
@@ -122,7 +142,9 @@ export class FacebookContextCoordinator implements NativeSocialCapability {
     if (revision !== this.requestedRevision) {
       return {status: "unavailable", message: "facebook-context-not-synchronized"};
     }
+    /** Provides previous context id behavior. */
     const previousContextId = this.currentContextId;
+    /** Provides locale behavior. */
     const locale = this.getLocale();
     try {
       await this.backend.join({...result.value, locale});

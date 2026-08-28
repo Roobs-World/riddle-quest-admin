@@ -26,16 +26,26 @@ export function shouldLoadDecorativeWebGl(capabilities: MobileCapabilities): boo
 
 /** Gets mobile capabilities. */
 export function getMobileCapabilities(): MobileCapabilities {
+  /** Provides runtime navigator behavior. */
   const runtimeNavigator = navigator as Navigator & {
+    /** Stores device memory. */
     deviceMemory?: number;
-    connection?: {saveData?: boolean; effectiveType?: string};
+    /** Stores connection. */
+    connection?: {
+      /** Stores save data. */
+      saveData?: boolean; /** Stores effective type. */
+      /** Stores effective type. */
+      effectiveType?: string;
+    };
   };
+  /** Provides web gl available behavior. */
   let webGlAvailable = false;
   if (typeof WebGLRenderingContext !== "undefined") {
     if (typeof document === "undefined") {
       webGlAvailable = true;
     } else {
       try {
+        /** Provides canvas behavior. */
         const canvas = document.createElement("canvas");
         webGlAvailable = Boolean(canvas.getContext("webgl2") || canvas.getContext("webgl"));
       } catch {

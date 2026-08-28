@@ -12,13 +12,19 @@ export const FACEBOOK_FEATURES = [
 ] as const;
 
 /** Describes facebook feature. */
-export type FacebookFeature = typeof FACEBOOK_FEATURES[number];
+export type FacebookFeature = (typeof FACEBOOK_FEATURES)[number];
 
 /** Parses the provider-scoped emergency-off list and rejects unknown names. */
 export function parseFacebookDisabledFeatures(value: string | undefined): ReadonlySet<FacebookFeature> {
   if (!value?.trim()) return new Set();
+  /** Provides known behavior. */
   const known = new Set<string>(FACEBOOK_FEATURES);
-  const entries = value.split(",").map((entry) => entry.trim()).filter(Boolean);
+  /** Provides entries behavior. */
+  const entries = value
+    .split(",")
+    .map((entry) => entry.trim())
+    .filter(Boolean);
+  /** Provides unknown behavior. */
   const unknown = entries.filter((entry) => !known.has(entry));
   if (unknown.length > 0) throw new Error(`unknown-facebook-feature:${unknown.join(",")}`);
   return new Set(entries as FacebookFeature[]);
