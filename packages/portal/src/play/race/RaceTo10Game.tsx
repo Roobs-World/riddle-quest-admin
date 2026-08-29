@@ -31,23 +31,12 @@ import {RACE_COUNTDOWN_START} from "./logic/raceCountdown";
 import {deleteRaceLetter, insertRaceLetter, insertRaceText, isRaceSlotEditable} from "./logic/raceInput";
 import type {RaceOperation} from "./logic/raceOperations";
 import {getGhostCorrectCount} from "./logic/racePlayback";
-import {
-  createRaceAttempt,
-  findFirstEditableRaceSlot,
-  getAdjustedRaceTime,
-  getRaceLetterStates,
-} from "./logic/racePresentation";
+import {createRaceAttempt, findFirstEditableRaceSlot, getAdjustedRaceTime, getRaceLetterStates} from "./logic/racePresentation";
 import {useRaceDialogFocus, useRaceGameplayFit, useRaceGameplayKeyboard, useRaceOperationLifecycle} from "./hooks";
 import {RaceTo10View, type RaceStage} from "./RaceTo10View";
 import {safeBrowserStorageGet, safeBrowserStorageRemove} from "../playerPreferences";
 import {EMPTY_RACE_CATEGORIES, type RaceTo10GameProps} from "./RaceTo10Game.types";
-import {
-  ACTIVE_RACE_KEY,
-  useActiveRacePersistence,
-  useRaceClockEffects,
-  useRaceEntryTracking,
-  useRaceFeedbackTimers,
-} from "./hooks/useRaceRuntimeEffects";
+import {ACTIVE_RACE_KEY, useActiveRacePersistence, useRaceClockEffects, useRaceEntryTracking, useRaceFeedbackTimers} from "./hooks/useRaceRuntimeEffects";
 import {useReferralSharing} from "../sharing/ReferralSharingCapability";
 
 /** Coordinates the complete server-authoritative Race to 10 multiplayer experience. */
@@ -126,8 +115,7 @@ export function RaceTo10Game({
     send,
     set race guess awaiting outcome,
   } behavior. */
-  const {expectedRequestRef, finishOperation, pending, raceGuessLoading, send, setRaceGuessAwaitingOutcome} =
-    useRaceOperationLifecycle({postToHost, setError});
+  const {expectedRequestRef, finishOperation, pending, raceGuessLoading, send, setRaceGuessAwaitingOutcome} = useRaceOperationLifecycle({postToHost, setError});
   /** Latest rivalry identifier available synchronously to rematch callbacks. */
   const rivalryChallengeIdRef = useRef<string | undefined>(undefined);
   /** Target associated with the one correlated social-safety operation. */
@@ -163,11 +151,7 @@ export function RaceTo10Game({
   }, []);
 
   /** Emits a schema-constrained multiplayer analytics event through the host. */
-  const analytics = useCallback(
-    (eventName: RaceAnalyticsEventName, params: Record<string, string | number | boolean> = {}) =>
-      postToHost(createRaceAnalyticsMessage(eventName, params)),
-    [postToHost],
-  );
+  const analytics = useCallback((eventName: RaceAnalyticsEventName, params: Record<string, string | number | boolean> = {}) => postToHost(createRaceAnalyticsMessage(eventName, params)), [postToHost]);
   /** Opens and refreshes the multiplayer results inbox. */
   const showInbox = useCallback(() => {
     setStage("inbox");
@@ -255,11 +239,7 @@ export function RaceTo10Game({
       /** Provides operation behavior. */
       const operation = message.payload.operation as RaceOperation;
       if (!message.payload.ok) {
-        setError(
-          message.payload.error === "RaceTo10.ERROR_LOCALE_MISMATCH"
-            ? tr("RaceTo10.ERROR_LOCALE_MISMATCH")
-            : (message.payload.error ?? tr("RaceTo10.ERROR_GENERIC")),
-        );
+        setError(message.payload.error === "RaceTo10.ERROR_LOCALE_MISMATCH" ? tr("RaceTo10.ERROR_LOCALE_MISMATCH") : (message.payload.error ?? tr("RaceTo10.ERROR_GENERIC")));
         if (operation === "raceBlock" || operation === "raceReport") safetyTargetRef.current = null;
         if (operation === "raceStart") {
           setRun(null);
@@ -335,8 +315,7 @@ export function RaceTo10Game({
         } else if (operation === "raceAbandon") {
           /** Provides abandoned behavior. */
           const abandoned = AbandonRaceRunResponseSchema.parse(message.payload.data);
-          if (abandoned.run.status !== "abandoned" || abandoned.result !== null)
-            throw new Error("Invalid abandon response");
+          if (abandoned.run.status !== "abandoned" || abandoned.result !== null) throw new Error("Invalid abandon response");
           safeBrowserStorageRemove("local", ACTIVE_RACE_KEY);
           setRun(abandoned.run);
           setQuitConfirmationOpen(false);
@@ -352,10 +331,7 @@ export function RaceTo10Game({
           if (previousRiddle !== result.run.currentRiddle?.riddleId) {
             resetAttempt(result.run);
           } else {
-            setRaceGuesses((guesses) => [
-              ...guesses,
-              {guess: currentLetters, feedback: result.feedback.map(({status}) => status)},
-            ]);
+            setRaceGuesses((guesses) => [...guesses, {guess: currentLetters, feedback: result.feedback.map(({status}) => status)}]);
             setCurrentLetters(createRaceAttempt(result.run.currentRiddle));
             setActiveSlotIndex(findFirstEditableRaceSlot(result.run.currentRiddle));
           }
@@ -428,21 +404,7 @@ export function RaceTo10Game({
     };
     window.addEventListener(HOST_TO_GAME_EVENT, handle);
     return () => window.removeEventListener(HOST_TO_GAME_EVENT, handle);
-  }, [
-    activeChallengeId,
-    activeSlotIndex,
-    analytics,
-    currentLetters,
-    finishOperation,
-    initialCategories.length,
-    locale,
-    onClose,
-    resetAttempt,
-    run?.currentRiddle?.riddleId,
-    send,
-    setRaceGuessAwaitingOutcome,
-    updateRun,
-  ]);
+  }, [activeChallengeId, activeSlotIndex, analytics, currentLetters, finishOperation, initialCategories.length, locale, onClose, resetAttempt, run?.currentRiddle?.riddleId, send, setRaceGuessAwaitingOutcome, updateRun]);
 
   useRaceClockEffects(stage, countdown, run, setStage, setCountdown, setTick);
 
@@ -482,23 +444,11 @@ export function RaceTo10Game({
     if (rivalryChallengeIdRef.current) analytics("race_counter_challenge_started", {categoryId});
     setCountdown(RACE_COUNTDOWN_START);
     setStage("countdown");
-    send(
-      "raceStart",
-      "game:startRace",
-      challengeIdForStart
-        ? {locale, challengeId: challengeIdForStart}
-        : {locale, categoryId, ...(rivalryIdForStart ? {rivalryChallengeId: rivalryIdForStart} : {})},
-    );
+    send("raceStart", "game:startRace", challengeIdForStart ? {locale, challengeId: challengeIdForStart} : {locale, categoryId, ...(rivalryIdForStart ? {rivalryChallengeId: rivalryIdForStart} : {})});
   };
   /** Submits the complete current answer attempt to the server. */
   const submit = () => {
-    if (
-      !run?.currentRiddle ||
-      currentLetters.length !== run.currentRiddle.answerLength ||
-      currentLetters.some((letter) => !letter) ||
-      pending
-    )
-      return;
+    if (!run?.currentRiddle || currentLetters.length !== run.currentRiddle.answerLength || currentLetters.some((letter) => !letter) || pending) return;
     send("raceGuess", "game:submitRaceGuess", {
       runId: run.runId,
       riddleId: run.currentRiddle.riddleId,
@@ -619,8 +569,7 @@ export function RaceTo10Game({
   const retry = () => {
     if (stage === "tournaments") showTournaments();
     else if (stage === "inbox") send("raceInbox", "game:listRaceInbox", {limit: 20});
-    else if (activeChallengeId)
-      send("raceChallenge", "game:getRaceChallenge", {challengeId: activeChallengeId, locale});
+    else if (activeChallengeId) send("raceChallenge", "game:getRaceChallenge", {challengeId: activeChallengeId, locale});
     else send("raceCategories", "game:listRaceCategories", {locale});
   };
   /** Provides run native social behavior. */
@@ -630,8 +579,7 @@ export function RaceTo10Game({
     setError(null);
     try {
       /** Provides result behavior. */
-      const result =
-        kind === "context" ? await nativeSocial.chooseContext() : await nativeSocial.matchPlayer(`race10_v1:${locale}`);
+      const result = kind === "context" ? await nativeSocial.chooseContext() : await nativeSocial.matchPlayer(`race10_v1:${locale}`);
       if (result.status !== "success" && result.status !== "cancelled") {
         setError(tr("RaceTo10.ERROR_GENERIC"));
       }
@@ -722,9 +670,7 @@ export function RaceTo10Game({
       onRematch={resetForNewRace}
       onDismissQuit={dismissQuitConfirmation}
       onChooseNativeContext={nativeSocial ? () => void runNativeSocial("context") : undefined}
-      onMatchNativePlayer={
-        matchmaking ? () => void findOfflineMatch() : nativeSocial ? () => void runNativeSocial("match") : undefined
-      }
+      onMatchNativePlayer={matchmaking ? () => void findOfflineMatch() : nativeSocial ? () => void runNativeSocial("match") : undefined}
       onAbandon={() => run && send("raceAbandon", "game:abandonRace", {runId: run.runId})}
     />
   );

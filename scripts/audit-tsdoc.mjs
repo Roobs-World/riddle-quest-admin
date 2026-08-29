@@ -5,7 +5,7 @@ import path from "node:path";
 const root = process.cwd();
 const requireFromPortal = createRequire(path.join(root, "packages/portal/package.json"));
 const ts = requireFromPortal("typescript");
-const sourceRoots = ["packages/core/src", "packages/portal/src", "packages/reddit-app/src", "firebase-functions/src"];
+const sourceRoots = ["packages/core/src", "packages/portal", "packages/reddit-app", "firebase-functions/src"];
 const ignoredDirectories = new Set(["coverage", "dist", "dist-jest", "lib", "node_modules"]);
 const fix = process.argv.includes("--fix");
 

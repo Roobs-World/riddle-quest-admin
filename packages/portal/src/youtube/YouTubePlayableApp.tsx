@@ -3,18 +3,8 @@ import {splitGraphemes} from "@qwordly/core/game";
 import {loadYouTubeContent, resolveYouTubeLocale} from "./content";
 import {YOUTUBE_CLASSIC_SKIP_COST, YOUTUBE_CONTINUE_COST, YOUTUBE_HINT_COST, utcDay} from "./economy";
 import {youtubeDirection, youtubeText, type YouTubeCopyKey} from "./i18n";
-import {
-  deleteYouTubeAnswerLetter,
-  insertYouTubeAnswerText,
-  canShowLatinShortcut,
-  normalizeLatinShortcutKey,
-} from "./input";
-import {
-  LocalSoloAuthority,
-  YouTubeAuthorityError,
-  YouTubeAuthorityRestoreSaveError,
-  type YouTubeAuthoritySnapshot,
-} from "./LocalSoloAuthority";
+import {deleteYouTubeAnswerLetter, insertYouTubeAnswerText, canShowLatinShortcut, normalizeLatinShortcutKey} from "./input";
+import {LocalSoloAuthority, YouTubeAuthorityError, YouTubeAuthorityRestoreSaveError, type YouTubeAuthoritySnapshot} from "./LocalSoloAuthority";
 import {cloneYouTubeSave, createEmptyYouTubeSave, parseYouTubeSave} from "./save";
 import type {YouTubeContent, YouTubeLocale, YouTubeSaveV1, YouTubeSdkPort} from "./types";
 import {YouTubeNativeAnswerInput} from "./YouTubeNativeAnswerInput";
@@ -165,12 +155,9 @@ const authorityErrorKey = (error: unknown): YouTubeCopyKey => {
 };
 
 /** Provides you tube playable app behavior. */
-export function YouTubePlayableApp({
-  sdk,
-}: {
-  /** Stores sdk. */ /** Stores sdk. */ /** Stores sdk. */
-  sdk: YouTubeSdkPort;
-}) {
+export function YouTubePlayableApp({sdk}: {/** Stores sdk. */ /** Stores sdk. */ /** Stores sdk. */ /** Stores sdk. */
+/** Stores sdk. */
+sdk: YouTubeSdkPort}) {
   /** Provides [boot, set boot] behavior. */
   const [boot, setBoot] = useState<BootState>({kind: "loading"});
   /** Provides [boot attempt, set boot attempt] behavior. */
@@ -201,10 +188,7 @@ export function YouTubePlayableApp({
 
   /** Resolves prepared runtime. */
   const resolvePreparedRuntime = useCallback(
-    async (
-      prepared: PreparedLoadedSave,
-      cancelled: () => boolean = () => false,
-    ): Promise<PreparedRuntimeResult | null> => {
+    async (prepared: PreparedLoadedSave, cancelled: () => boolean = () => false): Promise<PreparedRuntimeResult | null> => {
       /** Provides language tag behavior. */
       const languageTag = await sdk.getLanguage();
       await waitUntilActive();
@@ -216,15 +200,7 @@ export function YouTubePlayableApp({
       /** Provides authority behavior. */
       let authority: LocalSoloAuthority;
       try {
-        authority = await LocalSoloAuthority.restore(
-          prepared.save,
-          content,
-          prepared.gate,
-          undefined,
-          false,
-          false,
-          prepared.recoveredActiveGame,
-        );
+        authority = await LocalSoloAuthority.restore(prepared.save, content, prepared.gate, undefined, false, false, prepared.recoveredActiveGame);
       } catch (error) {
         if (!(error instanceof YouTubeAuthorityRestoreSaveError)) throw error;
         return {
@@ -471,13 +447,7 @@ export function YouTubePlayableApp({
     /** Provides {locale} behavior. */
     const {locale} = boot.runtime;
     return (
-      <main
-        className="yt-shell yt-center"
-        data-youtube-playable-root
-        lang={locale}
-        dir={youtubeDirection(locale)}
-        inert={platformPaused}
-      >
+      <main className="yt-shell yt-center" data-youtube-playable-root lang={locale} dir={youtubeDirection(locale)} inert={platformPaused}>
         <h1>{youtubeText(locale, "title")}</h1>
         <p role="alert">{youtubeText(locale, "saveFailed")}</p>
         <button
@@ -495,13 +465,7 @@ export function YouTubePlayableApp({
     /** Provides {locale} behavior. */
     const {locale} = boot.reset;
     return (
-      <main
-        className="yt-shell yt-center"
-        data-youtube-playable-root
-        lang={locale}
-        dir={youtubeDirection(locale)}
-        inert={platformPaused}
-      >
+      <main className="yt-shell yt-center" data-youtube-playable-root lang={locale} dir={youtubeDirection(locale)} inert={platformPaused}>
         <h1>{youtubeText(locale, "title")}</h1>
         <p role="alert">{youtubeText(locale, "saveFailed")}</p>
         <button
@@ -519,24 +483,9 @@ export function YouTubePlayableApp({
     /** Provides {locale} behavior. */
     const {locale} = boot.reset;
     return (
-      <main
-        className="yt-shell yt-center"
-        data-youtube-playable-root
-        lang={locale}
-        dir={youtubeDirection(locale)}
-        inert={platformPaused}
-      >
+      <main className="yt-shell yt-center" data-youtube-playable-root lang={locale} dir={youtubeDirection(locale)} inert={platformPaused}>
         <h1>{youtubeText(locale, boot.confirming ? "confirmReset" : "title")}</h1>
-        <p role="alert">
-          {youtubeText(
-            locale,
-            boot.confirming
-              ? "confirmResetBody"
-              : boot.reset.kind === "future-version"
-                ? "futureSave"
-                : "incompatibleSave",
-          )}
-        </p>
+        <p role="alert">{youtubeText(locale, boot.confirming ? "confirmResetBody" : boot.reset.kind === "future-version" ? "futureSave" : "incompatibleSave")}</p>
         {boot.confirming ? (
           <div className="yt-actions">
             <button
@@ -634,24 +583,14 @@ function ReadyYouTubeApp({
   const applyText = (value: string): void => {
     if (!active || !riddle || !displayLetters) return;
     /** Updates d. */
-    const updated = insertYouTubeAnswerText(
-      {letters: [...displayLetters], activeSlotIndex: snapshot.activeSlotIndex},
-      value,
-      displayLetters.length,
-      active.hintRevealedIndices,
-      locale,
-    );
+    const updated = insertYouTubeAnswerText({letters: [...displayLetters], activeSlotIndex: snapshot.activeSlotIndex}, value, displayLetters.length, active.hintRevealedIndices, locale);
     authority.setInput(updated.letters, updated.activeSlotIndex);
   };
   /** Provides backspace behavior. */
   const backspace = (): void => {
     if (!active || !displayLetters) return;
     /** Updates d. */
-    const updated = deleteYouTubeAnswerLetter(
-      {letters: [...displayLetters], activeSlotIndex: snapshot.activeSlotIndex},
-      displayLetters.length,
-      active.hintRevealedIndices,
-    );
+    const updated = deleteYouTubeAnswerLetter({letters: [...displayLetters], activeSlotIndex: snapshot.activeSlotIndex}, displayLetters.length, active.hintRevealedIndices);
     authority.setInput(updated.letters, updated.activeSlotIndex);
   };
 
@@ -659,13 +598,7 @@ function ReadyYouTubeApp({
     /** Provides result behavior. */
     const result = snapshot.lastResult;
     return (
-      <main
-        className="yt-shell yt-center"
-        data-youtube-playable-root
-        lang={locale}
-        dir={youtubeDirection(locale)}
-        inert={snapshot.paused}
-      >
+      <main className="yt-shell yt-center" data-youtube-playable-root lang={locale} dir={youtubeDirection(locale)} inert={snapshot.paused}>
         <StatusHeader snapshot={snapshot} locale={locale} />
         {snapshot.saveBlocked && <SaveBanner text={text} retry={() => run(() => authority.retryPendingSave())} />}
         <section className="yt-panel yt-result" aria-live="polite">
@@ -709,13 +642,7 @@ function ReadyYouTubeApp({
     /** Provides latin shortcut behavior. */
     const latinShortcut = canShowLatinShortcut(riddle.answer);
     return (
-      <main
-        className="yt-shell"
-        data-youtube-playable-root
-        lang={locale}
-        dir={youtubeDirection(locale)}
-        inert={snapshot.paused}
-      >
+      <main className="yt-shell" data-youtube-playable-root lang={locale} dir={youtubeDirection(locale)} inert={snapshot.paused}>
         <StatusHeader snapshot={snapshot} locale={locale} />
         {snapshot.saveBlocked && <SaveBanner text={text} retry={() => run(() => authority.retryPendingSave())} />}
         {notice && (
@@ -768,12 +695,7 @@ function ReadyYouTubeApp({
           {latinShortcut && (
             <div className="yt-keyboard" aria-hidden="true">
               {"QWERTYUIOPASDFGHJKLZXCVBNM".split("").map((letter) => (
-                <button
-                  tabIndex={-1}
-                  disabled={materialDisabled || active.awaitingContinue}
-                  onClick={() => applyText(normalizeLatinShortcutKey(letter))}
-                  key={letter}
-                >
+                <button tabIndex={-1} disabled={materialDisabled || active.awaitingContinue} onClick={() => applyText(normalizeLatinShortcutKey(letter))} key={letter}>
                   {letter}
                 </button>
               ))}
@@ -840,18 +762,9 @@ function ReadyYouTubeApp({
 
   if (screen === "progress") {
     /** Provides rank behavior. */
-    const rank = Math.max(
-      1,
-      [1, 3, 6, 10, 15, 21, 28, 36].filter((threshold) => progression.level >= threshold).length,
-    );
+    const rank = Math.max(1, [1, 3, 6, 10, 15, 21, 28, 36].filter((threshold) => progression.level >= threshold).length);
     return (
-      <main
-        className="yt-shell"
-        data-youtube-playable-root
-        lang={locale}
-        dir={youtubeDirection(locale)}
-        inert={snapshot.paused}
-      >
+      <main className="yt-shell" data-youtube-playable-root lang={locale} dir={youtubeDirection(locale)} inert={snapshot.paused}>
         <StatusHeader snapshot={snapshot} locale={locale} />
         {snapshot.saveBlocked && <SaveBanner text={text} retry={() => run(() => authority.retryPendingSave())} />}
         <section className="yt-panel">
@@ -938,13 +851,7 @@ function ReadyYouTubeApp({
   /** Provides daily complete behavior. */
   const dailyComplete = Boolean(progression.lastDailyCompletedDate && progression.lastDailyCompletedDate >= today);
   return (
-    <main
-      className="yt-shell"
-      data-youtube-playable-root
-      lang={locale}
-      dir={youtubeDirection(locale)}
-      inert={snapshot.paused}
-    >
+    <main className="yt-shell" data-youtube-playable-root lang={locale} dir={youtubeDirection(locale)} inert={snapshot.paused}>
       <StatusHeader snapshot={snapshot} locale={locale} />
       {snapshot.saveBlocked && <SaveBanner text={text} retry={() => run(() => authority.retryPendingSave())} />}
       {snapshot.recoveryNotice && (
@@ -988,11 +895,7 @@ function ReadyYouTubeApp({
           >
             <span aria-hidden="true">🪐</span>
             <strong>{text("classic")}</strong>
-            <small>
-              {classicComplete
-                ? text("classicComplete")
-                : `${progression.classicIndex + 1}/${content.classicOrder.length}`}
-            </small>
+            <small>{classicComplete ? text("classicComplete") : `${progression.classicIndex + 1}/${content.classicOrder.length}`}</small>
           </button>
           <button
             className="yt-mode-card"

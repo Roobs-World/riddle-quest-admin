@@ -7,22 +7,35 @@ import path from "node:path";
 import {fileURLToPath, URL} from "node:url";
 import type {ConfigEnv, Plugin, PluginOption, UserConfig} from "vite";
 
+/** Provides portal environment directory behavior. */
 const portalEnvironmentDirectory = fileURLToPath(new URL("../../config/vite/portal/", import.meta.url));
+/** Provides portal package directory behavior. */
 const portalPackageDirectory = fileURLToPath(new URL("./", import.meta.url));
+/** Provides shared shop modal page behavior. */
 const sharedShopModalPage = fileURLToPath(new URL("./src/play/modalPages/commerce/ShopModalPage.tsx", import.meta.url));
+/** Provides reddit shop modal page behavior. */
 const redditShopModalPage = fileURLToPath(new URL("./src/reddit/RedditShopModalPage.tsx", import.meta.url));
+/** Provides jest html entry behavior. */
 const jestHtmlEntry = fileURLToPath(new URL("./targets/jest/index.html", import.meta.url));
+/** Provides facebook html entry behavior. */
 const facebookHtmlEntry = fileURLToPath(new URL("./targets/facebook/index.html", import.meta.url));
+/** Provides reddit html entry behavior. */
 const redditHtmlEntry = fileURLToPath(new URL("./targets/reddit/index.html", import.meta.url));
+/** Provides reddit inline html entry behavior. */
 const redditInlineHtmlEntry = fileURLToPath(new URL("./targets/reddit/reddit-inline.html", import.meta.url));
+/** Provides youtube html entry behavior. */
 const youtubeHtmlEntry = fileURLToPath(new URL("./targets/youtube/index.html", import.meta.url));
+/** Provides youtube release content behavior. */
 const youtubeReleaseContent = fileURLToPath(
   new URL("./src/youtube/generated/youtube-content-v1.json", import.meta.url),
 );
+/** Provides youtube fixture content behavior. */
 const youtubeFixtureContent = fileURLToPath(
   new URL("../../firebase-functions/content/youtube-fixtures/youtube-content-fixture-v1.json", import.meta.url),
 );
+/** Provides youtube forbidden shop entry behavior. */
 const youtubeForbiddenShopEntry = "virtual:youtube-forbidden-shop-entry";
+/** Provides youtube locales behavior. */
 const youtubeLocales = [
   "ar", "de", "en", "es", "fr", "hi", "id", "it", "ja", "ko", "nl", "pl", "pt", "ru", "tr", "vi", "zh",
 ] as const;
@@ -30,6 +43,7 @@ const youtubeLocales = [
 /** The four compile-time Web Targets shipped by the portal package. */
 export type WebTarget = "jest" | "facebook" | "reddit" | "youtube";
 
+/** Provides canonical build output directories behavior. */
 const canonicalBuildOutputDirectories: Readonly<Record<WebTarget, string>> = Object.freeze({
   jest: "dist-jest",
   facebook: "dist-facebook",
@@ -39,47 +53,95 @@ const canonicalBuildOutputDirectories: Readonly<Record<WebTarget, string>> = Obj
 
 /** Input to the single Web Target build-configuration interface. */
 export type WebTargetViteConfigRequest = Readonly<{
+  /** Stores command. */
   command: ConfigEnv["command"];
+  /** Stores mode. */
   mode: string;
+  /** Stores environment. */
   environment: Readonly<Record<string, string | undefined>>;
 }>;
 
+/** Describes you tube content document. */
 type YouTubeContentDocument = {
+  /** Stores schema version. */
   schemaVersion?: unknown;
+  /** Stores content version. */
   contentVersion?: unknown;
+  /** Stores release ready. */
   releaseReady?: unknown;
+  /** Stores fixture. */
   fixture?: unknown;
+  /** Stores locales. */
   locales?: unknown;
+  /** Stores classic order. */
   classicOrder?: unknown;
-  dailySchedule?: {segments?: unknown};
+  /** Stores daily schedule. */
+  dailySchedule?: {/** Stores segments. */
+  /** Stores segments. */
+  segments?: unknown};
 };
 
+/** Describes validated you tube content document. */
 type ValidatedYouTubeContentDocument = YouTubeContentDocument & {
+  /** Stores schema version. */
   schemaVersion: 1;
+  /** Stores content version. */
   contentVersion: string;
+  /** Stores release ready. */
   releaseReady: boolean;
+  /** Stores fixture. */
   fixture: boolean;
+  /** Stores locales. */
   locales: string[];
+  /** Stores classic order. */
   classicOrder: string[];
-  dailySchedule: {segments: Array<{startsOn: string; canonicalIds: string[]}>};
+  /** Stores daily schedule. */
+  dailySchedule: {/** Stores segments. */
+  /** Stores segments. */
+  segments: Array<{/** Stores starts on. */
+  /** Stores starts on. */
+  startsOn: string; /** Stores canonical ids. */
+  /** Stores canonical ids. */
+  canonicalIds: string[]}>};
 };
 
+/** Describes web target plugin context. */
 type WebTargetPluginContext = Readonly<{
+  /** Stores allow you tube fixture. */
   allowYouTubeFixture: boolean;
+  /** Stores youtube content. */
   youtubeContent: string;
 }>;
 
+/** Describes web target profile. */
 type WebTargetProfile = Readonly<{
+  /** Stores id. */
   id: WebTarget;
+  /** Stores shop entry. */
   shopEntry: string;
+  /** Stores public directory. */
   publicDirectory: "public" | false;
+  /** Stores input. */
   input: string | Readonly<Record<string, string>>;
-  htmlOutputs: readonly [Readonly<{source: string; fileName: string}>, ...Readonly<{source: string; fileName: string}>[]];
+  /** Stores html outputs. */
+  htmlOutputs: readonly [Readonly<{/** Stores source. */
+  /** Stores source. */
+  source: string; /** Stores file name. */
+  /** Stores file name. */
+  fileName: string}>, ...Readonly<{/** Stores source. */
+  /** Stores source. */
+  source: string; /** Stores file name. */
+  /** Stores file name. */
+  fileName: string}>[]];
+  /** Stores disable module preload polyfill. */
   disableModulePreloadPolyfill?: boolean;
+  /** Creates artifact plugins. */
   createArtifactPlugins(context: WebTargetPluginContext): readonly PluginOption[];
 }>;
 
+/** Reads you tube content document. */
 function readYouTubeContentDocument(contentPath: string, allowFixture: boolean) {
+  /** Provides source behavior. */
   let source: string;
   try {
     source = readFileSync(contentPath, "utf8");
@@ -91,6 +153,7 @@ function readYouTubeContentDocument(contentPath: string, allowFixture: boolean) 
       {cause: error},
     );
   }
+  /** Provides document behavior. */
   let document: YouTubeContentDocument;
   try {
     document = JSON.parse(source) as YouTubeContentDocument;
@@ -111,13 +174,20 @@ function readYouTubeContentDocument(contentPath: string, allowFixture: boolean) 
     document.dailySchedule.segments.length < 1 ||
     !document.dailySchedule.segments.every((segment) =>
       segment !== null && typeof segment === "object" &&
-      typeof (segment as {startsOn?: unknown}).startsOn === "string" &&
-      Array.isArray((segment as {canonicalIds?: unknown}).canonicalIds) &&
-      (segment as {canonicalIds: unknown[]}).canonicalIds.every((value) => typeof value === "string")
+      typeof (segment as {/** Stores starts on. */
+      /** Stores starts on. */
+      startsOn?: unknown}).startsOn === "string" &&
+      Array.isArray((segment as {/** Stores canonical ids. */
+      /** Stores canonical ids. */
+      canonicalIds?: unknown}).canonicalIds) &&
+      (segment as {/** Stores canonical ids. */
+      /** Stores canonical ids. */
+      canonicalIds: unknown[]}).canonicalIds.every((value) => typeof value === "string")
     )
   ) {
     throw new Error("YouTube content does not match the v1 runtime contract");
   }
+  /** Provides locales behavior. */
   const locales = [...document.locales].sort();
   if (allowFixture) {
     if (document.releaseReady !== false || document.fixture !== true || locales.join(",") !== "en") {
@@ -133,21 +203,27 @@ function readYouTubeContentDocument(contentPath: string, allowFixture: boolean) 
   return {document: document as ValidatedYouTubeContentDocument, source};
 }
 
+/** Provides youtube artifact plugin behavior. */
 function youtubeArtifactPlugin(contentPath: string, allowFixture: boolean): Plugin {
+  /** Provides content manifest behavior. */
   let contentManifest: string;
   return {
     name: "riddle-quest-youtube-artifact",
+    /** Resolves id. */
     resolveId(source) {
       if (source === youtubeForbiddenShopEntry) return `\0${source}`;
       return null;
     },
+    /** Provides load behavior. */
     load(id) {
       if (id === `\0${youtubeForbiddenShopEntry}`) {
         throw new Error("YouTube entry imported an unsupported shared commerce module");
       }
       return null;
     },
+    /** Builds start. */
     buildStart() {
+      /** Provides {document, source} behavior. */
       const {document, source} = readYouTubeContentDocument(contentPath, allowFixture);
       contentManifest = `${JSON.stringify({
         schemaVersion: 1,
@@ -166,6 +242,7 @@ function youtubeArtifactPlugin(contentPath: string, allowFixture: boolean): Plug
     },
     generateBundle: {
       order: "post",
+      /** Provides handler behavior. */
       handler() {
         this.emitFile({type: "asset", fileName: "youtube-content-manifest.json", source: contentManifest});
       },
@@ -173,9 +250,11 @@ function youtubeArtifactPlugin(contentPath: string, allowFixture: boolean): Plug
   };
 }
 
+/** Provides facebook artifact plugin behavior. */
 function facebookArtifactPlugin(): Plugin {
   return {
     name: "riddle-quest-facebook-artifact",
+    /** Provides generate bundle behavior. */
     generateBundle() {
       this.emitFile({
         type: "asset",
@@ -192,14 +271,21 @@ function facebookArtifactPlugin(): Plugin {
   };
 }
 
+/** Provides reddit artifact plugin behavior. */
 function redditArtifactPlugin(): Plugin {
   return {
     name: "riddle-quest-reddit-artifact",
     enforce: "pre",
+    /** Provides load behavior. */
     load(id) {
+      /** Provides filename behavior. */
       const filename = id.split("?", 1)[0];
       if (!/[\\/]src[\\/]locales[\\/][^\\/]+[\\/]shop\.json$/u.test(filename)) return null;
-      const catalog = JSON.parse(readFileSync(filename, "utf8")) as {CoinShop?: Record<string, unknown>};
+      /** Provides catalog behavior. */
+      const catalog = JSON.parse(readFileSync(filename, "utf8")) as {/** Stores coin shop. */
+      /** Stores coin shop. */
+      CoinShop?: Record<string, unknown>};
+      /** Provides shop behavior. */
       const shop = catalog.CoinShop ?? {};
       return JSON.stringify({CoinShop: Object.fromEntries([
         "COINS_SUFFIX", "LOADING_TEXT", "NO_PACKS_AVAILABLE", "PURCHASE_BUTTON", "TITLE", "YOUR_BALANCE",
@@ -208,6 +294,7 @@ function redditArtifactPlugin(): Plugin {
   };
 }
 
+/** Normalizes output path. */
 function normalizeOutputPath(value: string): string {
   return value.split(path.sep).join("/");
 }
@@ -217,8 +304,10 @@ function targetHtmlPlugin(profile: WebTargetProfile): Plugin {
   return {
     name: "riddle-quest-web-target-html",
     enforce: "pre",
+    /** Provides configure server behavior. */
     configureServer(server) {
       server.middlewares.use((request, response, next) => {
+        /** Requests path. */
         const requestPath = request.url?.split("?", 1)[0];
         if (requestPath !== "/" && requestPath !== "/index.html") {
           next();
@@ -234,9 +323,12 @@ function targetHtmlPlugin(profile: WebTargetProfile): Plugin {
     },
     generateBundle: {
       order: "post",
+      /** Provides handler behavior. */
       handler(_options, bundle) {
         for (const htmlOutput of profile.htmlOutputs) {
+          /** Provides source file name behavior. */
           const sourceFileName = normalizeOutputPath(path.relative(portalPackageDirectory, htmlOutput.source));
+          /** Provides candidates behavior. */
           const candidates = Object.values(bundle).filter((output) =>
             output.type === "asset" && normalizeOutputPath(output.fileName) === sourceFileName
           );
@@ -245,11 +337,14 @@ function targetHtmlPlugin(profile: WebTargetProfile): Plugin {
               `${profile.id} Web Target build expected one ${sourceFileName} HTML asset, found ${candidates.length}`,
             );
           }
+          /** Provides [output] behavior. */
           const [output] = candidates;
           if (output.type !== "asset" || typeof output.source !== "string") {
             throw new Error(`${profile.id} Web Target HTML output was not a text asset`);
           }
+          /** Provides source directory behavior. */
           const sourceDirectory = path.posix.dirname(sourceFileName);
+          /** Provides relative asset prefix behavior. */
           const relativeAssetPrefix = sourceDirectory === "."
             ? "./"
             : "../".repeat(sourceDirectory.split("/").length);
@@ -265,6 +360,7 @@ function targetHtmlPlugin(profile: WebTargetProfile): Plugin {
   };
 }
 
+/** Provides target profiles behavior. */
 const targetProfiles: Readonly<Record<WebTarget, WebTargetProfile>> = Object.freeze({
   jest: Object.freeze({
     id: "jest",
@@ -306,16 +402,20 @@ const targetProfiles: Readonly<Record<WebTarget, WebTargetProfile>> = Object.fre
   }),
 });
 
+/** Indicates whether is web target. */
 function isWebTarget(mode: string): mode is WebTarget {
   return Object.hasOwn(targetProfiles, mode);
 }
 
+/** Resolves web target. */
 function resolveWebTarget(mode: string): WebTargetProfile {
   if (isWebTarget(mode)) return targetProfiles[mode];
   throw new Error(`Unknown Web Target mode: ${mode}; expected jest, facebook, reddit, or youtube`);
 }
 
+/** Provides contains path behavior. */
 function containsPath(root: string, candidate: string): boolean {
+  /** Provides relative behavior. */
   const relative = path.relative(root, candidate);
   return relative === "" ||
     (relative !== ".." && !relative.startsWith(`..${path.sep}`) && !path.isAbsolute(relative));
@@ -327,12 +427,19 @@ function webTargetBuildContractPlugin(target: WebTarget, expectedOutDir: string)
     name: "riddle-quest-web-target-build-contract",
     apply: "build",
     enforce: "pre",
+    /** Provides config resolved behavior. */
     configResolved(config) {
+      /** Provides project root behavior. */
       const projectRoot = path.resolve(config.root);
+      /** Provides repository root behavior. */
       const repositoryRoot = path.resolve(fileURLToPath(new URL("../..", import.meta.url)));
+      /** Provides expected behavior. */
       const expected = path.resolve(projectRoot, expectedOutDir);
+      /** Provides resolved behavior. */
       const resolved = path.resolve(projectRoot, config.build.outDir);
+      /** Provides selected canonical behavior. */
       const selectedCanonical = path.resolve(projectRoot, canonicalBuildOutputDirectories[target]);
+      /** Provides other canonical behavior. */
       const otherCanonical = Object.entries(canonicalBuildOutputDirectories).find(
         ([candidateTarget, candidateDirectory]) =>
           candidateTarget !== target && path.resolve(projectRoot, candidateDirectory) === resolved,
@@ -374,25 +481,33 @@ export function createWebTargetViteConfig({
   mode,
   environment,
 }: WebTargetViteConfigRequest): UserConfig {
+  /** Provides profile behavior. */
   const profile = resolveWebTarget(mode);
+  /** Provides allow you tube fixture behavior. */
   const allowYouTubeFixture = environment.YOUTUBE_ALLOW_INCOMPLETE_CONTENT_FIXTURE === "1";
   if (allowYouTubeFixture && profile.id !== "youtube") {
     throw new Error("The YouTube engineering content fixture can only be used with the youtube Web Target");
   }
+  /** Provides youtube content behavior. */
   const youtubeContent = allowYouTubeFixture ? youtubeFixtureContent : youtubeReleaseContent;
+  /** Provides upload sentry source maps behavior. */
   const uploadSentrySourceMaps = environment.SENTRY_UPLOAD_SOURCEMAPS === "1";
   if (profile.id === "youtube" && uploadSentrySourceMaps) {
     throw new Error("Sentry source-map upload is forbidden for the self-contained YouTube artifact");
   }
 
+  /** Provides jest build out dir behavior. */
   const jestBuildOutDir = environment.JEST_BUILD_OUT_DIR?.trim() || canonicalBuildOutputDirectories.jest;
+  /** Builds output directories. */
   const buildOutputDirectories: Readonly<Record<WebTarget, string>> = {
     jest: jestBuildOutDir,
     facebook: environment.FACEBOOK_BUILD_OUT_DIR?.trim() || canonicalBuildOutputDirectories.facebook,
     reddit: environment.REDDIT_BUILD_OUT_DIR?.trim() || canonicalBuildOutputDirectories.reddit,
     youtube: environment.YOUTUBE_BUILD_OUT_DIR?.trim() || canonicalBuildOutputDirectories.youtube,
   };
+  /** Provides selected build out dir behavior. */
   const selectedBuildOutDir = buildOutputDirectories[profile.id];
+  /** Provides sentry build environment behavior. */
   const sentryBuildEnvironment = {
     authToken: environment.SENTRY_AUTH_TOKEN,
     org: environment.SENTRY_ORG,
@@ -400,6 +515,7 @@ export function createWebTargetViteConfig({
     release: environment.SENTRY_RELEASE,
   };
   if (uploadSentrySourceMaps) {
+    /** Provides missing behavior. */
     const missing = Object.entries(sentryBuildEnvironment)
       .filter(([, value]) => !value?.trim())
       .map(([name]) => name);
@@ -408,6 +524,7 @@ export function createWebTargetViteConfig({
     }
   }
 
+  /** Provides plugins behavior. */
   const plugins: PluginOption[] = [
     webTargetBuildContractPlugin(profile.id, selectedBuildOutDir),
     targetHtmlPlugin(profile),

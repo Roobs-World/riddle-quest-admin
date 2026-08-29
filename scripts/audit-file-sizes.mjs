@@ -6,6 +6,29 @@ const scanRoots = ["packages/core/src", "packages/portal/src", "firebase-functio
 const ignoredSegments = new Set(["__mocks__", "coverage", "dist", "dist-jest", "lib", "node_modules"]);
 const sourceExtensions = new Set([".css", ".js", ".mjs", ".ts", ".tsx"]);
 
+/** Counts 100-character implementation-line equivalents while excluding standalone TSDoc blocks. */
+const countImplementationLines = (contents, extension) => {
+  const lines = contents === "" ? [] : contents.split("\n");
+  if (![".js", ".mjs", ".ts", ".tsx"].includes(extension)) return lines.length;
+
+  let insideTsdoc = false;
+  const implementationLines = [];
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (insideTsdoc) {
+      if (trimmed.includes("*/")) insideTsdoc = false;
+      continue;
+    }
+    if (trimmed.startsWith("/**")) {
+      if (!trimmed.includes("*/")) insideTsdoc = true;
+      continue;
+    }
+    implementationLines.push(line);
+  }
+  const implementationCharacters = implementationLines.join("\n").length;
+  return implementationCharacters === 0 ? 0 : Math.ceil(implementationCharacters / 100);
+};
+
 const isTestFile = (file) =>
   file.includes(`${path.sep}__tests__${path.sep}`) || /\.(?:it\.)?test\.[cm]?[jt]sx?$/.test(file);
 
@@ -34,7 +57,7 @@ const files = (await Promise.all(scanRoots.map((directory) => collect(path.join(
 const violations = [];
 for (const file of files) {
   const contents = await readFile(file, "utf8");
-  const lines = contents === "" ? 0 : contents.split("\n").length;
+  const lines = countImplementationLines(contents, path.extname(file));
   const limit = maximumLines(file);
   if (lines > limit) violations.push({file: path.relative(root, file), lines, limit});
 }
@@ -42,7 +65,7 @@ for (const file of files) {
 if (violations.length > 0) {
   console.error("Maintainable-file size audit failed:");
   for (const violation of violations.sort((left, right) => right.lines - left.lines)) {
-    console.error(`- ${violation.file}: ${violation.lines} lines (limit ${violation.limit})`);
+    console.error(`- ${violation.file}: ${violation.lines} equivalent lines (limit ${violation.limit})`);
   }
   process.exitCode = 1;
 } else {
