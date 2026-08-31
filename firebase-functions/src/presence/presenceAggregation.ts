@@ -82,7 +82,9 @@ export async function setPresenceConsentForUser(
 
 /** Maintains the server-owned aggregate whenever a tab/device connects, changes, or disconnects. */
 export const aggregatePresenceStatus = onValueWritten(
-  {ref: "/presenceConnections/{userId}/{sessionId}", region: "us-central1"},
+  // The production RTDB instance is in europe-west1. Database triggers must
+  // be colocated with the instance or Eventarc cannot resolve the pattern.
+  {ref: "/presenceConnections/{userId}/{sessionId}", region: "europe-west1"},
   async (event) => {
     /** Provides r id. */
     const userId = event.params.userId;

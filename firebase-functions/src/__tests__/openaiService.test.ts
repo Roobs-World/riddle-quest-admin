@@ -41,6 +41,11 @@ function approvedReviewResponse() {
   };
 }
 
+/** Provides an unambiguous blind solve response behavior. */
+function approvedBlindSolveResponse(answer: string) {
+  return {output_parsed: {answer, confidence: "high", alternativeAnswers: []}};
+}
+
 /** Provides rejected review response behavior. */
 function rejectedReviewResponse(issues: string[]) {
   return {
@@ -60,6 +65,7 @@ function rejectedReviewResponse(issues: string[]) {
 function mockApprovedRiddle(question: string, answer: string) {
   mockParse
     .mockResolvedValueOnce(parsedRiddleResponse(question, answer))
+    .mockResolvedValueOnce(approvedBlindSolveResponse(answer))
     .mockResolvedValueOnce(approvedReviewResponse());
 }
 
@@ -146,7 +152,7 @@ describe("OpenAI Service", () => {
       await generateUniqueRiddle();
 
       /** Provides review request behavior. */
-      const reviewRequest = mockParse.mock.calls[1][0] as {
+      const reviewRequest = mockParse.mock.calls[2][0] as {
         /** Stores model. */
         model: string;
         /** Stores reasoning. */
@@ -178,6 +184,33 @@ describe("OpenAI Service", () => {
       expect(reviewRequest.instructions).toContain("translation-like wording");
       expect(reviewRequest.input).toContain('"answer":"mirror"');
       expect(reviewRequest.store).toBe(false);
+    });
+
+    test("blind-solves the clue without leaking the proposed answer", async () => {
+      mockApprovedRiddle("Seen after rain, I bend sunlight into a coloured arc.", "rainbow");
+
+      await generateUniqueRiddle();
+
+      const request = mockParse.mock.calls[1][0] as {input: string; instructions: string};
+      expect(request.input).toContain('"question"');
+      expect(request.input).not.toContain("rainbow");
+      expect(request.instructions).toContain("not been given the author's answer");
+    });
+
+    test("rejects a clue when a blind solver finds another answer", async () => {
+      mockParse
+        .mockResolvedValueOnce(parsedRiddleResponse("I have keys but open no locks.", "piano"))
+        .mockResolvedValueOnce({
+          output_parsed: {answer: "keyboard", confidence: "medium", alternativeAnswers: ["piano"]},
+        });
+
+      await expect(generateUniqueRiddle()).resolves.toBeNull();
+      expect(mockParse).toHaveBeenCalledTimes(2);
+      expect(mockLogger.warn).toHaveBeenCalledWith("Generated riddle failed the blind-solve check.", {
+        answerMatched: false,
+        confidence: "medium",
+        alternativeCount: 1,
+      });
     });
 
     test("includes riddle rules, broad pub quiz guidance, and structured output in the prompt", async () => {
@@ -220,7 +253,7 @@ describe("OpenAI Service", () => {
 
       await generateUniqueRiddle();
 
-      expect(mockParse).toHaveBeenCalledTimes(2);
+      expect(mockParse).toHaveBeenCalledTimes(3);
       for (const [request] of mockParse.mock.calls) {
         expect(request).toEqual(
           expect.objectContaining({
@@ -300,13 +333,14 @@ describe("OpenAI Service", () => {
     test("rejects a semantically weak or ambiguous riddle after independent review", async () => {
       mockParse
         .mockResolvedValueOnce(parsedRiddleResponse("I can be bright and fill a room. What am I?", "light"))
+        .mockResolvedValueOnce(approvedBlindSolveResponse("light"))
         .mockResolvedValueOnce(rejectedReviewResponse(["The clue also fits colour, music, or laughter."]));
 
       /** Provides result behavior. */
       const result = await generateUniqueRiddle();
 
       expect(result).toBeNull();
-      expect(mockParse).toHaveBeenCalledTimes(2);
+      expect(mockParse).toHaveBeenCalledTimes(3);
       expect(mockLogger.warn).toHaveBeenCalledWith("Generated riddle was rejected by quality review.", {
         issueCount: 1,
         failedChecks: {
@@ -325,6 +359,7 @@ describe("OpenAI Service", () => {
         .mockResolvedValueOnce(
           parsedRiddleResponse("Seen after rain when sunlight returns, I arc in many colours.", "rainbow"),
         )
+        .mockResolvedValueOnce(approvedBlindSolveResponse("rainbow"))
         .mockResolvedValueOnce({output_parsed: null});
 
       /** Provides result behavior. */
@@ -376,7 +411,7 @@ describe("OpenAI Service", () => {
       await generateUniqueRiddle();
 
       expect(mockOpenAI).toHaveBeenCalledTimes(1);
-      expect(mockParse).toHaveBeenCalledTimes(4);
+      expect(mockParse).toHaveBeenCalledTimes(6);
     });
   });
 });

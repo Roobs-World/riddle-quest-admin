@@ -33,6 +33,15 @@ const OpenAIRiddleReviewSchema = z
   })
   .strict();
 
+/** Validates a blind solve performed before the proposed answer is revealed. */
+const OpenAIBlindSolveSchema = z
+  .object({
+    answer: z.string().min(1).max(MAX_RIDDLE_ANSWER_CHARACTERS).regex(/^[a-z]+$/),
+    confidence: z.enum(["high", "medium", "low"]),
+    alternativeAnswers: z.array(z.string().min(1).max(40)).max(3),
+  })
+  .strict();
+
 /** Validates the generated riddle data shape. */
 export const GeneratedRiddleSchema = z
   .object({
@@ -53,6 +62,8 @@ export const GeneratedRiddleSchema = z
 type GeneratedRiddle = z.infer<typeof GeneratedRiddleSchema>;
 /** Describes riddle review. */
 type RiddleReview = z.infer<typeof OpenAIRiddleReviewSchema>;
+/** Describes a reviewer's answer when it has not seen the generated answer. */
+type BlindSolve = z.infer<typeof OpenAIBlindSolveSchema>;
 
 /** Defines the default openai model value. */
 const DEFAULT_OPENAI_MODEL = "gpt-5.6-sol";
@@ -205,6 +216,63 @@ function reviewPassed(review: RiddleReview): boolean {
   );
 }
 
+/** Provides blind solve passed behavior. */
+function blindSolvePassed(solve: BlindSolve, answer: string): boolean {
+  return (
+    normalizeGeneratedText(solve.answer).toLocaleLowerCase() === answer &&
+    solve.confidence === "high" &&
+    solve.alternativeAnswers.length === 0
+  );
+}
+
+/** Solves a clue without exposing the proposed answer. */
+async function blindSolveGeneratedRiddle(
+  openai: OpenAI,
+  model: string,
+  locale: SupportedLocale,
+  question: string,
+  answer: string,
+): Promise<boolean> {
+  /** Provides completion behavior. */
+  const completion = await withSentrySpan(
+    "openai.blindSolveGeneratedRiddle",
+    "ai.review",
+    () =>
+      openai.responses.parse({
+        model,
+        ...getReasoningSettings(model),
+        instructions:
+          "Solve the supplied mobile-game riddle exactly as a casual player would. You have not been given the author's answer. " +
+          "Return the single lowercase a-z answer you would enter, your honest confidence, and up to three other genuinely plausible answers. " +
+          "Use high confidence only when the clue clearly converges on one familiar answer and its expected romanized spelling is unambiguous. " +
+          "Do not invent extra facts or explain away ambiguity.",
+        input: JSON.stringify({targetLocale: locale, question}),
+        prompt_cache_key: "riddlequest-riddle-blind-solve-v1",
+        store: false,
+        text: {format: zodTextFormat(OpenAIBlindSolveSchema, "riddle_blind_solve"), verbosity: "low"},
+      }),
+    {model, locale},
+  );
+
+  /** Provides solve behavior. */
+  const solve = completion.output_parsed;
+  if (!solve) {
+    functions.logger.warn("OpenAI returned empty blind-solve content.");
+    return false;
+  }
+
+  if (!blindSolvePassed(solve, answer)) {
+    functions.logger.warn("Generated riddle failed the blind-solve check.", {
+      answerMatched: normalizeGeneratedText(solve.answer).toLocaleLowerCase() === answer,
+      confidence: solve.confidence,
+      alternativeCount: solve.alternativeAnswers.length,
+    });
+    return false;
+  }
+
+  return true;
+}
+
 /** Provides review generated riddle behavior. */
 async function reviewGeneratedRiddle(
   openai: OpenAI,
@@ -331,6 +399,11 @@ export async function generateUniqueRiddle(
 
     /** Provides [question, answer] behavior. */
     const [question, answer] = validatedRiddle;
+    /** Provides solved behavior. */
+    const solved = await blindSolveGeneratedRiddle(openai, model, locale, question, answer);
+    if (!solved) {
+      return null;
+    }
     /** Provides accepted behavior. */
     const accepted = await reviewGeneratedRiddle(openai, model, locale, question, answer);
     if (!accepted) {
