@@ -1,0 +1,3248 @@
+{
+  "locale": "hi",
+  "provenance": "automated_translation_v1",
+  "translatorModel": "gpt-5.6-sol",
+  "criticModel": "gpt-5.5",
+  "riddles": [
+    {
+      "canonicalRiddleId": "race:history:01",
+      "sourceCanonicalHash": "bf9da31eba062c2459b99c1bb5ab9438d2cd8202f9c8898f76ca31e30c5fd7ba",
+      "text": "ऑगस्टस जैसे सम्राटों द्वारा शासित साम्राज्य का केंद्र कौन-सा प्राचीन नगर था?",
+      "answer": "रोम",
+      "categoryId": "history",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which ancient city was the center of an empire ruled by emperors such as Augustus?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:02",
+      "sourceCanonicalHash": "ecef91939068c010775552025c72cdf165cbe7ab9547909a3343d929c19e3f62",
+      "text": "माचू पिच्चू का निर्माण किस एंडीज़ सभ्यता ने किया था?",
+      "answer": "इंका",
+      "categoryId": "history",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Andean civilization built Machu Picchu?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:03",
+      "sourceCanonicalHash": "4979a8fb4065ca4f2d61f9d44f0b0b9af80fb2de382616e654dd8b9b49225cb1",
+      "text": "तेनोच्तित्लान की स्थापना किस मेसोअमेरिकी समुदाय ने की थी?",
+      "answer": "एज़्टेक",
+      "categoryId": "history",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Mesoamerican community founded Tenochtitlan?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:04",
+      "sourceCanonicalHash": "570966a9e2a0530eca8e63666998260ad15e56fc053f8fd9426d942e2d831f21",
+      "text": "हेनरी अष्टम और एलिज़ाबेथ प्रथम किस अंग्रेज़ राजवंश से थे?",
+      "answer": "ट्यूडर",
+      "categoryId": "history",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Henry VIII and Elizabeth I were from which English royal dynasty?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:05",
+      "sourceCanonicalHash": "5ec99f6d7a26639d71b33fa2a4e07ecfc4841103241386941fc2d2e42907d255",
+      "text": "यूरोप भर में समुद्री हमले और व्यापार करने वाले नॉर्स नाविकों को क्या कहा जाता था?",
+      "answer": "वाइकिंग",
+      "categoryId": "history",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What were the Norse sailors who carried out sea raids and trade across Europe called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:06",
+      "sourceCanonicalHash": "66fa1d53119cd820f236dab683b82c626ae771bac9b107a807a7162f6c3478fe",
+      "text": "किस रोमन नेता ने ईसा पूर्व उनचास में रुबिकॉन नदी पार की थी?",
+      "answer": "सीज़र",
+      "categoryId": "history",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Roman leader crossed the Rubicon River in 49 BCE?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:07",
+      "sourceCanonicalHash": "37edea7681a819aee96da8c738b388e0c44e5d96e8b385d30aefc131443f0b4f",
+      "text": "अहिंसक प्रतिरोध के लिए प्रसिद्ध भारतीय स्वतंत्रता नेता कौन थे?",
+      "answer": "गांधी",
+      "categoryId": "history",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Indian independence leader was famous for nonviolent resistance?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:08",
+      "sourceCanonicalHash": "14cea9af177e7fe82b9f08a73ebbfef937f2baebf47dae2e8f4a574dbb9ea13f",
+      "text": "अपनी योद्धा संस्कृति के लिए कौन-सा यूनानी नगर-राज्य प्रसिद्ध था?",
+      "answer": "स्पार्टा",
+      "categoryId": "history",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Greek city-state was famous for its warrior culture?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:09",
+      "sourceCanonicalHash": "22edf64658755362d864cab5002f55e3343835dfdf032c9b3f5a0a7d37d223c4",
+      "text": "गीज़ा के पिरामिड किस प्राचीन सभ्यता ने बनाए थे?",
+      "answer": "मिस्र",
+      "categoryId": "history",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which ancient civilization built the pyramids of Giza?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:10",
+      "sourceCanonicalHash": "b5be7dce8cd442a07c01cd6515f564925333ab1c3db2b6217dc2b17c3b400393",
+      "text": "राजा जॉन द्वारा बारह सौ पंद्रह में मुहरबंद किए गए प्रसिद्ध अधिकारपत्र के नाम का पहला शब्द क्या है?",
+      "answer": "मैग्ना",
+      "categoryId": "history",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the first word in the name of the famous charter of rights sealed by King John in 1215?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:11",
+      "sourceCanonicalHash": "4b6bbdba20788bb587f7a8c31c40794a3067db0a681145959b96e03698bd816e",
+      "text": "वेसुवियस पर्वत के विस्फोट से उन्यासी ईस्वी में कौन-सा रोमन नगर दब गया था?",
+      "answer": "पोम्पेई",
+      "categoryId": "history",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Roman town was buried by the eruption of Mount Vesuvius in 79 CE?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:12",
+      "sourceCanonicalHash": "fa18edf89c44cd3954503a6e3c281653429d7d3d23845c0236b775e90e343e03",
+      "text": "पंद्रह सौ सत्रह में पंचानबे थीसिस प्रकाशित करने वाले धर्मसुधारक कौन थे?",
+      "answer": "लूथर",
+      "categoryId": "history",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which reformer published the Ninety-five Theses in 1517?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:13",
+      "sourceCanonicalHash": "794e449ea97bbe3e58ba4afcfb9d8a68d9b4fc9201cfc0d91aa0314d2c1d77dd",
+      "text": "अठारह सौ तिरपन से अठारह सौ छप्पन तक चले युद्ध का नाम किस प्रायद्वीप पर पड़ा था?",
+      "answer": "क्रीमिया",
+      "categoryId": "history",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "The war that lasted from 1853 to 1856 was named after which peninsula?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:14",
+      "sourceCanonicalHash": "ff57f2d93247f5780f2a1442e74c96a78ca79dbd7b636776259d800cc61a630b",
+      "text": "मनुष्यों को पहली बार चंद्रमा पर उतारने वाले अभियानों के कार्यक्रम का नाम क्या था?",
+      "answer": "अपोलो",
+      "categoryId": "history",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What was the name of the program of the missions that first landed humans on the Moon?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:15",
+      "sourceCanonicalHash": "ea4e030a17efd49f51574172321fa98aeb8747802d0388f7c2956a116c486b0e",
+      "text": "हेनरी अष्टम की दूसरी पत्नी ऐन का उपनाम क्या था?",
+      "answer": "बोलिन",
+      "categoryId": "history",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What was the surname of Henry VIII's second wife, Anne?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:16",
+      "sourceCanonicalHash": "a35980b49599ac96c439abdd7a4c5e2f011fb5f1a72eaeaf03c4dd46f5e4119f",
+      "text": "उन्नीस सौ सोलह की कौन-सी लड़ाई प्रथम विश्व युद्ध की सबसे लंबी लड़ाइयों में गिनी जाती है?",
+      "answer": "वर्दन",
+      "categoryId": "history",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which battle of 1916 is counted among the longest battles of the First World War?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:17",
+      "sourceCanonicalHash": "1eac2497bd5cf464d7017941382526222086eea1d42eadfadc595bbba6a691e8",
+      "text": "उन्नीस सौ पैंतालीस में रूज़वेल्ट, चर्चिल और स्टालिन की बैठक किस क्रीमियाई पर्यटन नगर में हुई थी?",
+      "answer": "याल्टा",
+      "categoryId": "history",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "In 1945, in which Crimean tourist city did the meeting of Roosevelt, Churchill, and Stalin take place?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:18",
+      "sourceCanonicalHash": "2982ead5a75c205a8a51725e5c97826d3e9ac89e12cd9f705f71346a85a84aef",
+      "text": "टोक्यो से पहले कौन-सा जापानी नगर शाही राजधानी था?",
+      "answer": "क्योटो",
+      "categoryId": "history",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Before Tokyo, which Japanese city was the imperial capital?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:19",
+      "sourceCanonicalHash": "0b9da389f98dcfe9838a25ce9e516b15fa22e372ee7f472e94b8da3b86f03ef4",
+      "text": "शिवाजी ने किस भारतीय महासंघ की स्थापना की थी?",
+      "answer": "मराठा",
+      "categoryId": "history",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Indian confederacy was founded by Shivaji?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:20",
+      "sourceCanonicalHash": "1d911ce4f7a243ad21bc1fe44458efe3705c8be566b51d46ac78c91d392e1ee9",
+      "text": "एदो काल में अधिकांश विदेशी संपर्क सीमित करने वाली जापानी नीति क्या कहलाती थी?",
+      "answer": "साकोकु",
+      "categoryId": "history",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What was the Japanese policy called that limited most foreign contact during the Edo period?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:21",
+      "sourceCanonicalHash": "dc7c976603f4bc9eff632aebaab5d2f43a43424a4e33dc87fd336e263327ad76",
+      "text": "कांस्य युग के किस अनातोलियाई समुदाय ने हट्टुसा को अपनी राजधानी बनाया था?",
+      "answer": "हित्ती",
+      "categoryId": "history",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Bronze Age Anatolian community made Hattusa its capital?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:22",
+      "sourceCanonicalHash": "f2459dd32f8fb18bd3539c206052a1946390ad213d2cd1e4015ab9a08336651c",
+      "text": "कांस्य युग की किस सभ्यता ने नॉसस का महल बनाया था?",
+      "answer": "मिनोअन",
+      "categoryId": "history",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Bronze Age civilization built the palace at Knossos?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:23",
+      "sourceCanonicalHash": "f894b74d726c38c80fd0e249434e0e94970476dd8a0bdf86a3c3fc51207383a6",
+      "text": "उर और उरुक जैसे नगर-राज्य विकसित करने वाले प्राचीन लोगों की सभ्यता किस नाम से जानी जाती है?",
+      "answer": "सुमेर",
+      "categoryId": "history",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "The civilization of the ancient people who developed city-states such as Ur and Uruk is known by what name?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:24",
+      "sourceCanonicalHash": "2d2cb011fe2d08a8217f493073663abbb689c608aad8026898d145f0a5ced76e",
+      "text": "रोम और कार्थेज के बीच हुए तीन युद्धों के नाम में कौन-सा विशेषण आता है?",
+      "answer": "प्यूनिक",
+      "categoryId": "history",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which adjective appears in the name of the three wars fought between Rome and Carthage?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:25",
+      "sourceCanonicalHash": "6d4dda9b4c40be011aab7f324a6b14b5b6108f9fce8f1e9fbeaed159e6077d18",
+      "text": "किस सम्राट ने उत्तरी ब्रिटेन में एक रक्षात्मक दीवार बनवाने का आदेश दिया था?",
+      "answer": "हैड्रियन",
+      "categoryId": "history",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which emperor ordered a defensive wall to be built in northern Britain?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:26",
+      "sourceCanonicalHash": "7eaaa0b8ee0fc5b13d6d0eadbbbbefbef0562157abbe280d854921e48e633267",
+      "text": "सन् १५८८ के विफल स्पेनी बेड़े के नाम को कौन-सा एक शब्द पूरा करता है?",
+      "answer": "आर्मडा",
+      "categoryId": "history",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "In the year 1588, what single word completes the name of the failed Spanish fleet?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:27",
+      "sourceCanonicalHash": "3df530edf3525f740a85d3a305eba8bdd99b1f47a7776ab6dfb3b73c5386911e",
+      "text": "अठारह सौ अड़सठ में शुरू हुए किस पुनर्स्थापन से जापान का तीव्र आधुनिकीकरण आरंभ हुआ?",
+      "answer": "मेइजी",
+      "categoryId": "history",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which restoration, beginning in 1868, started Japan's rapid modernization?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:28",
+      "sourceCanonicalHash": "dab6b8970ec9a76cdc1b3df4976f926fd93acd3c232526ccba55d32586092856",
+      "text": "अंगकोर वाट का निर्माण किस साम्राज्य ने कराया था?",
+      "answer": "खमेर",
+      "categoryId": "history",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which empire had Angkor Wat built?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:29",
+      "sourceCanonicalHash": "33431d049be5dbbea80332bc8a524644a432aa2055bb42826f7e09ee66cfabc9",
+      "text": "उत्तरी इथियोपिया और इरिट्रिया में केंद्रित किस प्राचीन राज्य ने अपने सिक्के ढाले थे?",
+      "answer": "अक्सुम",
+      "categoryId": "history",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which ancient kingdom centered in northern Ethiopia and Eritrea minted its own coins?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:30",
+      "sourceCanonicalHash": "c162ae791822da5646262fd85d2cd803ffaebbefabc2daf3d4302ddbdaf6d329",
+      "text": "ईसा पूर्व दो सौ इक्कीस में किस चीनी राजवंश ने पहली बार देश का एकीकरण किया था?",
+      "answer": "चिन",
+      "categoryId": "history",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "In 221 BCE, which Chinese dynasty unified the country for the first time?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:01",
+      "sourceCanonicalHash": "d235fafd64d57b3ac13d97adb1a0e870dd5f9cce95a6ff8b9d197571189f2bf8",
+      "text": "कौन-सी नदी मिस्र से होकर उत्तर की ओर बहते हुए भूमध्य सागर में मिलती है?",
+      "answer": "नील",
+      "categoryId": "geography",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which river flows north through Egypt and joins the Mediterranean Sea?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:02",
+      "sourceCanonicalHash": "ce35db44cf0f95d9de19f24c906098a96c6294e553f86c753bbae912d657d6b3",
+      "text": "दक्षिण अमेरिका के पश्चिमी किनारे के साथ कौन-सी पर्वतमाला फैली है?",
+      "answer": "एंडीज़",
+      "categoryId": "geography",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which mountain range extends along the western edge of South America?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:03",
+      "sourceCanonicalHash": "d0c24dbb35ab48282b1fe83ef7e16ec7705d0f827164c7f2c4b20636973801ac",
+      "text": "जापान की राजधानी कौन-सी है?",
+      "answer": "टोक्यो",
+      "categoryId": "geography",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the capital of Japan?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:04",
+      "sourceCanonicalHash": "bdad3b18d354f0fca7ecbd623d0f8b9d414f0701a52deba0e3cc9fa92fb54934",
+      "text": "मसाई मारा अभयारण्य किस अफ्रीकी देश में है?",
+      "answer": "केन्या",
+      "categoryId": "geography",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "In which African country is the Maasai Mara reserve?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:05",
+      "sourceCanonicalHash": "237630f4fb060c58d5f23b4c82921443edbd682e19bb0dfa293c5c196a15d218",
+      "text": "उत्तरी अफ्रीका के बड़े हिस्से में फैला विशाल रेगिस्तान कौन-सा है?",
+      "answer": "सहारा",
+      "categoryId": "geography",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which vast desert is spread over a large part of northern Africa?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:06",
+      "sourceCanonicalHash": "52ab8d49f2f3082728c61898a2ccb91ce210fc0d30c3505976d20c321c83e152",
+      "text": "उत्तर ध्रुव को कौन-सा महासागर घेरे हुए है?",
+      "answer": "आर्कटिक",
+      "categoryId": "geography",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which ocean surrounds the North Pole?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:07",
+      "sourceCanonicalHash": "bfe931bb15818d3142ad871480d692403a20eced2402bac07f510bc959b2e12e",
+      "text": "क्षेत्रफल के हिसाब से दक्षिण अमेरिका का सबसे बड़ा देश कौन-सा है?",
+      "answer": "ब्राज़ील",
+      "categoryId": "geography",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "By area, which is the largest country in South America?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:08",
+      "sourceCanonicalHash": "4d5235209deb477ddfe2c2519dd7d2b60474667d3ab166ccc5cb310c18fc190f",
+      "text": "कनाडा की राजधानी कौन-सी है?",
+      "answer": "ओटावा",
+      "categoryId": "geography",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the capital of Canada?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:09",
+      "sourceCanonicalHash": "b2cf4859c3f0d8a9ab4e0ecc419af98e333e867e6c99bb398c5e7368ebc63aae",
+      "text": "मों ब्लां किस यूरोपीय पर्वतमाला में स्थित है?",
+      "answer": "आल्प्स",
+      "categoryId": "geography",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Mont Blanc is located in which European mountain range?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:10",
+      "sourceCanonicalHash": "6391cd7101e8dadbd28771ca89db13f1359833c214d8446152f6545a8f3c5bf9",
+      "text": "काठमांडू किस हिमालयी देश की राजधानी है?",
+      "answer": "नेपाल",
+      "categoryId": "geography",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Kathmandu is the capital of which Himalayan country?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:11",
+      "sourceCanonicalHash": "815f2be3e118c91424651107d565dc8f165d9adeaa7d9335bb4f4b5918347d06",
+      "text": "कौन-सी नदी वियना, ब्रातिस्लावा, बुडापेस्ट और बेलग्रेड से होकर बहती है?",
+      "answer": "डेन्यूब",
+      "categoryId": "geography",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which river flows through Vienna, Bratislava, Budapest, and Belgrade?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:12",
+      "sourceCanonicalHash": "92eebe0d36ded4c4332948d9b677902dd59148b4266911bc6550ea4a532c1645",
+      "text": "कौन-सा हिमालयी राजतंत्र सकल राष्ट्रीय खुशहाली से प्रगति मापता है?",
+      "answer": "भूटान",
+      "categoryId": "geography",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Himalayan monarchy measures progress by Gross National Happiness?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:13",
+      "sourceCanonicalHash": "d22a165f5a46c5eb8b25bffc4ea553b2b8ddb427c16c525e9fcf7accec0f05ed",
+      "text": "सिसिली के दक्षिण में कौन-सा द्वीपीय देश स्थित है?",
+      "answer": "माल्टा",
+      "categoryId": "geography",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which island country is located south of Sicily?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:14",
+      "sourceCanonicalHash": "6521a2585673e558f5faf7bf22c66093dd7b696cdec8c798f97939bbc69072aa",
+      "text": "ऊँचाई पर बसी इक्वाडोर की राजधानी कौन-सी है?",
+      "answer": "क्विटो",
+      "categoryId": "geography",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which is Ecuador's capital situated at high altitude?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:15",
+      "sourceCanonicalHash": "f487b7c39c6a8d41c508eec39644ecbb5bc69993afeb52139705ff4e497d0968",
+      "text": "मोरक्को, अल्जीरिया और ट्यूनीशिया में फैली पर्वतमाला कौन-सी है?",
+      "answer": "एटलस",
+      "categoryId": "geography",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which mountain range spreads across Morocco, Algeria, and Tunisia?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:16",
+      "sourceCanonicalHash": "a0aa53a1b69408c10dbc39c097b93276f941bdc662aecde5f322b0386a442992",
+      "text": "इटली के नक्शे में जूते की नोक के पास कौन-सा बड़ा भूमध्यसागरीय द्वीप है?",
+      "answer": "सिसिली",
+      "categoryId": "geography",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "On the map of Italy, which large Mediterranean island is near the toe of the boot?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:17",
+      "sourceCanonicalHash": "13b48097d1e735f23ca115a4af8b2484d215d02b96daf12f0fb19fe450db248f",
+      "text": "मंगोलिया और उत्तरी चीन के कुछ हिस्सों में कौन-सा रेगिस्तान फैला है?",
+      "answer": "गोबी",
+      "categoryId": "geography",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which desert spreads across parts of Mongolia and northern China?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:18",
+      "sourceCanonicalHash": "a9f8dfba933c346c696e8b35699d9af7ad226426b257e2eed6831b4d5300a79d",
+      "text": "प्राचीन नगर पेट्रा किस देश में है?",
+      "answer": "जॉर्डन",
+      "categoryId": "geography",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "In which country is the ancient city of Petra?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:19",
+      "sourceCanonicalHash": "a129a68a70989ed679a9acff5b4a93f42aaa4b00dbcefe7d721ab1a719cf177d",
+      "text": "कौन-सा द्वीप इंडोनेशिया, मलेशिया और ब्रुनेई के बीच बँटा हुआ है?",
+      "answer": "बोर्नियो",
+      "categoryId": "geography",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which island is divided among Indonesia, Malaysia, and Brunei?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:20",
+      "sourceCanonicalHash": "4a4f0207d1071d2210c0226d7eb148f7b353c87bbfc907c46bb4db7b8def0cc1",
+      "text": "सतही क्षेत्रफल के हिसाब से दुनिया की सबसे बड़ी झील कौन-सी है?",
+      "answer": "कैस्पियन",
+      "categoryId": "geography",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "By surface area, which is the world's largest lake?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:21",
+      "sourceCanonicalHash": "162f990117d68117f2ad3ced1aec4096c2b4bf5aa5aec3c7de9ab0647e8f77b6",
+      "text": "कौन-सा देश चारों ओर से दक्षिण अफ्रीका से घिरा है?",
+      "answer": "लेसोथो",
+      "categoryId": "geography",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which country is surrounded on all sides by South Africa?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:22",
+      "sourceCanonicalHash": "e8de550b473c4f5d46b6d8c620f076438b6312e160a6d5ba0010bf0540edc551",
+      "text": "कौन-सी प्रमुख नदी वेनेज़ुएला से बहकर अटलांटिक महासागर के किनारे विशाल डेल्टा बनाती है?",
+      "answer": "ओरिनोको",
+      "categoryId": "geography",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which major river flows through Venezuela and forms a vast delta at the Atlantic Ocean?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:23",
+      "sourceCanonicalHash": "8fdf88ae83a7610216158c0ace1d48600780705f72275b9a481c9be07173819d",
+      "text": "किस स्थलरुद्ध अफ्रीकी देश में उसी के नाम वाली झील का अधिकांश भाग स्थित है?",
+      "answer": "मलावी",
+      "categoryId": "geography",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which landlocked African country contains most of the lake with the same name?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:24",
+      "sourceCanonicalHash": "d9bce9b67f2884bded0c2504b76ec264aa36255b4b159f0ae94f81a0bd2e7455",
+      "text": "सुंडा जलडमरूमध्य के पार जावा के पश्चिम में कौन-सा इंडोनेशियाई द्वीप है?",
+      "answer": "सुमात्रा",
+      "categoryId": "geography",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Across the Sunda Strait, which Indonesian island lies west of Java?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:25",
+      "sourceCanonicalHash": "46f3a0768b7ccada385e647d6fc32fd7fa5dd826557c4ee7376bece550931e08",
+      "text": "दक्षिणी अफ्रीका के अटलांटिक तट के बड़े हिस्से में कौन-सा रेगिस्तान फैला है?",
+      "answer": "नामीब",
+      "categoryId": "geography",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which desert is spread along a large part of southern Africa's Atlantic coast?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:26",
+      "sourceCanonicalHash": "9206d2286b6af25a5b00259c93199a35eeaf562811a6e79c2df08d80164d9baa",
+      "text": "लातविया की राजधानी कौन-सी है?",
+      "answer": "रीगा",
+      "categoryId": "geography",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the capital of Latvia?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:27",
+      "sourceCanonicalHash": "e2d4b8e054e252ea80abfdae9c5edc79c15f1983bf7feac72407a1ff9976d6d6",
+      "text": "बेलमोपान किस मध्य अमेरिकी देश की राजधानी है?",
+      "answer": "बेलीज़",
+      "categoryId": "geography",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Belmopan is the capital of which Central American country?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:28",
+      "sourceCanonicalHash": "16b5c7758f79db5a52c4fba88fc718569a4e9ab5dcf9ce93773892b6d08691b4",
+      "text": "कौन-सी पर्वतमाला यूरोप और एशिया के बीच सीमा का एक प्रचलित हिस्सा मानी जाती है?",
+      "answer": "यूराल",
+      "categoryId": "geography",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which mountain range is considered a commonly used part of the boundary between Europe and Asia?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:29",
+      "sourceCanonicalHash": "a5d92e54178b67c9309564189d195ac715a033909e3575babf8eff38cf4f31d4",
+      "text": "जकार्ता किस इंडोनेशियाई द्वीप पर स्थित है?",
+      "answer": "जावा",
+      "categoryId": "geography",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Jakarta is located on which Indonesian island?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:30",
+      "sourceCanonicalHash": "4f0ea7f2d9224fb02faf35ccf20a5dc6b743c9d62a59278e84f08123538dfc5e",
+      "text": "प्रशांत महासागर के किस छोटे द्वीपीय देश की कोई आधिकारिक राजधानी नहीं है?",
+      "answer": "नाउरू",
+      "categoryId": "geography",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which small island country in the Pacific Ocean has no official capital?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:01",
+      "sourceCanonicalHash": "18e6ea3b543c58b8d7880df7675d63a92c7b06571e7f58790ca84fdeec0143f0",
+      "text": "किस कीबोर्ड वाद्य में आम तौर पर 88 कुंजियाँ होती हैं?",
+      "answer": "पियानो",
+      "categoryId": "music",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which keyboard instrument generally has 88 keys?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:02",
+      "sourceCanonicalHash": "71e2dd95f96ad0f201f187bb341f3673723dbf7a7a20f51f4855947e4ff6b27c",
+      "text": "किस तंत्री वाद्य को ठुड्डी के नीचे रखकर गज से बजाया जाता है?",
+      "answer": "वायलिन",
+      "categoryId": "music",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which string instrument is held under the chin and played with a bow?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:03",
+      "sourceCanonicalHash": "7df7b8479532eecd1bf1b5b85eed9ecefcf9674bcf44a50d4ee40d79cd64bebe",
+      "text": "किस संगीत शब्द से किसी रचना की गति बताई जाती है?",
+      "answer": "टेम्पो",
+      "categoryId": "music",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which musical term tells the speed of a composition?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:04",
+      "sourceCanonicalHash": "affab903824785220f53388b9babdfe532263bccdad3c1f0ad457f7546d25e8c",
+      "text": "गीत का कौन-सा दोहराया जाने वाला हिस्सा आम तौर पर उसकी मुख्य आकर्षक पंक्ति समेटता है?",
+      "answer": "कोरस",
+      "categoryId": "music",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which repeated part of a song usually contains its main catchy line?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:05",
+      "sourceCanonicalHash": "c169bc4a8478329e800e61e0685879a55c452e778731ffc0a46560b89025a9fd",
+      "text": "मेजर स्केल के पहले से आठवें स्वर तक के अंतराल को क्या कहते हैं?",
+      "answer": "सप्तक",
+      "categoryId": "music",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the interval from the first to the eighth note of a major scale called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:06",
+      "sourceCanonicalHash": "11a0a1327a80bd0d78909e3d50485604892ae718818ba6fb2e709294df414940",
+      "text": "न्यू ऑरलियन्स के अफ्रीकी अमेरिकी समुदायों में कौन-सी संगीत शैली विकसित हुई?",
+      "answer": "जैज़",
+      "categoryId": "music",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which musical style developed in the African American communities of New Orleans?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:07",
+      "sourceCanonicalHash": "e71e515a0607c0bcfcd72033be811bbf1d6cd43f13efca8cc708574a1978dae3",
+      "text": "किस रंगमंचीय विधा में कथा मुख्यतः गायन के जरिए प्रस्तुत होती है?",
+      "answer": "ओपेरा",
+      "categoryId": "music",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "In which theatrical form is the story presented mainly through singing?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:08",
+      "sourceCanonicalHash": "e2026b1d686593cd03d2073addebfd15acdcb1b1e782498b25bdb6a2975f86d5",
+      "text": "कौन-सा बड़ा तंत्री वाद्य बैठकर घुटनों के बीच रखकर गज से बजाया जाता है?",
+      "answer": "सेलो",
+      "categoryId": "music",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which large string instrument is played with a bow while seated with it between the knees?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:09",
+      "sourceCanonicalHash": "c4cdae38d8b61ded9aca64f7c8b0506e1c5a8316d77d7fba277299e9577b0be2",
+      "text": "कौन-सा काष्ठ वायु वाद्य होंठों के पास आड़ा रखकर बजाया जाता है?",
+      "answer": "वेणु",
+      "categoryId": "music",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which woodwind instrument is played by holding it sideways near the lips?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:10",
+      "sourceCanonicalHash": "4f16961f673a0409a003c62d00e181cf19c2bee4a189b0770b21076240cde05d",
+      "text": "संगीत में मात्राओं के सुव्यवस्थित क्रम को क्या कहते हैं?",
+      "answer": "लय",
+      "categoryId": "music",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the organized sequence of beats in music called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:11",
+      "sourceCanonicalHash": "b1ed20dc78ea996eca4cc81d215cec4023c51af241afa983b8c30032a55a0a44",
+      "text": "वयस्क महिला गायन की मानक श्रेणियों में सबसे ऊँची आवाज़ को क्या कहते हैं?",
+      "answer": "सोप्रानो",
+      "categoryId": "music",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the highest voice among the standard categories of adult female singing called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:12",
+      "sourceCanonicalHash": "0e7036f8ba223c005dd2d379e119d6ba80fba2a6212120b48ea5eb6b250f0a1a",
+      "text": "बॉब मार्ले से खास तौर पर जुड़ी जमैका की संगीत शैली कौन-सी है?",
+      "answer": "रेगे",
+      "categoryId": "music",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Jamaican musical style is especially associated with Bob Marley?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:13",
+      "sourceCanonicalHash": "82fdbf40899839d8dd046ac8183502427845e5f1bc9ba41facd87b14ecc259ad",
+      "text": "ब्लूग्रास संगीत में प्रमुख, गोल पेटी वाला तंत्री वाद्य कौन-सा है?",
+      "answer": "बैंजो",
+      "categoryId": "music",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which round-bodied string instrument is prominent in bluegrass music?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:14",
+      "sourceCanonicalHash": "b0eb1b0603161312c4e96ae718093da051e39b68b6e1c1fed1943a8554319dbb",
+      "text": "एकल वाद्य या छोटे वाद्यवृंद के लिए प्रायः रची जाने वाली बहुखंडीय संगीत रचना क्या कहलाती है?",
+      "answer": "सोनाटा",
+      "categoryId": "music",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is a multi-section musical composition usually written for a solo instrument or small ensemble called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:15",
+      "sourceCanonicalHash": "5c43e83809e0bed4f1a9731a4b923709eb8b8bc16fd111a756e81be0b08abd62",
+      "text": "वयस्क पुरुषों की सामान्य छाती की आवाज़ों में सबसे ऊँची श्रेणी क्या कहलाती है?",
+      "answer": "टेनर",
+      "categoryId": "music",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the highest category among common adult male chest voices called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:16",
+      "sourceCanonicalHash": "1efd23d42d34797685fef0ff053ff3ecd4b3e64e59d618fc55c7c57a420417f3",
+      "text": "कौन-सी संगीत शैली आम तौर पर बारह मापों वाली हार्मोनिक संरचना अपनाती है?",
+      "answer": "ब्लूज़",
+      "categoryId": "music",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which musical style commonly uses a twelve-measure harmonic structure?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:17",
+      "sourceCanonicalHash": "01a6f566e82d04da58baa4eb720aaa1bdfded19a625d8f7f4aa3b0ce0128da99",
+      "text": "सुप्रीम्स और स्टीवी वंडर को संगीत जगत में उतारने वाला डेट्रॉइट का रिकॉर्ड लेबल कौन-सा था?",
+      "answer": "मोटाउन",
+      "categoryId": "music",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Detroit record label launched the Supremes and Stevie Wonder into the music world?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:18",
+      "sourceCanonicalHash": "28111ed2ce05128f760295f1f9f5cdb07e60a2ee4d475f3335f39670acedde99",
+      "text": "प्लिए और अरबेस्क जैसी मुद्राओं वाली मंचीय नृत्य विधा कौन-सी है?",
+      "answer": "बैले",
+      "categoryId": "music",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which staged dance form has positions such as plié and arabesque?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:19",
+      "sourceCanonicalHash": "6c5e1857e8bdae4dff0ecd978b54775623c56a46527b8a696684b9da08558bd8",
+      "text": "एक के बाद एक बजने वाले अलग-अलग स्वरों का वह क्रम क्या कहलाता है जो एक संगीत रेखा जैसा सुनाई दे?",
+      "answer": "धुन",
+      "categoryId": "music",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the sequence of separate notes played one after another called when it sounds like one musical line?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:20",
+      "sourceCanonicalHash": "f3b8387f1ab963006e7d53eb0f76f8b594b1d95bd4ddd9466dce60b6ce4aabce",
+      "text": "तीन या अधिक स्वरों को एक साथ बजाने पर बनने वाले स्वरसमूह को क्या कहते हैं?",
+      "answer": "कॉर्ड",
+      "categoryId": "music",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What do you call the group of notes formed when three or more notes are played together?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:21",
+      "sourceCanonicalHash": "41228202d9a11a1a2f3dda80bf109f9c1c6bbef97749409351b1f75d962608d8",
+      "text": "अपने-आप गूँजने वाले सहायक तारों और लंबी गर्दन वाला कौन-सा भारतीय तंत्री वाद्य उँगलियों से छेड़कर बजाया जाता है?",
+      "answer": "सितार",
+      "categoryId": "music",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Indian string instrument with self-resonating auxiliary strings and a long neck is played by plucking with the fingers?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:22",
+      "sourceCanonicalHash": "d236eec2a01ebc4c7b064193fcb56b5250feaca83ec7f050b1d91068e089c965",
+      "text": "किस प्रतितानात्मक संगीत रूप में एक मूल विषय को आपस में गुंथी स्वर रेखाओं के जरिए विकसित किया जाता है?",
+      "answer": "फ्यूग",
+      "categoryId": "music",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "In which contrapuntal musical form is a subject developed through interwoven voice lines?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:23",
+      "sourceCanonicalHash": "80398eebb33b472d91feaad497831fb364209fa3436a434a52febe9eb951a0c2",
+      "text": "कार्यक्रम से पहले वाद्यवृंद किस दोहरी पत्ती वाले काष्ठ वायु वाद्य के सुर पर अपने वाद्य मिलाता है?",
+      "answer": "ओबो",
+      "categoryId": "music",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Before a performance, to the pitch of which double-reed woodwind does the orchestra tune its instruments?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:24",
+      "sourceCanonicalHash": "61e29bf0bc9f3099eeba88cb0c48b68b023a283de0cfbe6e1de8c41f3dec6bed",
+      "text": "किस संगीत रूप में विपरीत प्रकृति के खंडों के बीच मुख्य विषय बार-बार लौटता है?",
+      "answer": "रोंडो",
+      "categoryId": "music",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "In which musical form does the main theme return repeatedly between contrasting sections?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:25",
+      "sourceCanonicalHash": "18def9ff1c4264960cff6dd1fe1264c29b959b2f48e992810d8d682a686a47c4",
+      "text": "पुनर्जागरण के बाद आया अलंकृत संगीत युग कौन-सा था?",
+      "answer": "बरोक",
+      "categoryId": "music",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which ornate musical era came after the Renaissance?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:26",
+      "sourceCanonicalHash": "b66980ea56f6649a6d2a647b4ce4307f24164fb17869f06e0ef771349771dc7e",
+      "text": "ध्वनि के विशिष्ट स्वर रंग को बताने वाला संगीत शब्द क्या है?",
+      "answer": "टिम्बर",
+      "categoryId": "music",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What musical term describes the distinctive tone color of a sound?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:27",
+      "sourceCanonicalHash": "483c79b75b182f63abdb0054f6102dc0b41533cc7196cae78d805f0aec309da8",
+      "text": "पूर्वी यूरोप की कौन-सी यहूदी संगीत परंपरा अक्सर क्लैरिनेट का उपयोग करती है?",
+      "answer": "क्लेज़मर",
+      "categoryId": "music",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Eastern European Jewish musical tradition often uses clarinet?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:28",
+      "sourceCanonicalHash": "c95ea4d9b0e94eb99401b80bdabdd1d64814ef4e8589c5dbdff4dd6ed34b3585",
+      "text": "गोंग और धातु की पट्टियों वाले वाद्यों पर केंद्रित इंडोनेशियाई वाद्यवृंद क्या कहलाता है?",
+      "answer": "गैमेलन",
+      "categoryId": "music",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the Indonesian ensemble centered on gongs and metal-bar instruments called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:29",
+      "sourceCanonicalHash": "843e025043584306d74aa0e916a9a2b6863ae34b6217797e96fec09c70462e44",
+      "text": "कौन-सा संगीत निर्देश कलाकार को समय गति में भावपूर्ण ढील लेने देता है?",
+      "answer": "रुबाटो",
+      "categoryId": "music",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which musical direction lets the performer take expressive looseness in timing or tempo?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:30",
+      "sourceCanonicalHash": "0e5433bd11c770bccf7502098d77a15146e1c2e9413108b95b3772ff332583a7",
+      "text": "किसी संगीत रचना के समापन वाले अंश को क्या कहते हैं?",
+      "answer": "कोडा",
+      "categoryId": "music",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the concluding section of a musical composition called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:01",
+      "sourceCanonicalHash": "4a8bd4c9a87d584617fe7a720933194c0c7b64a0a137d22680017c4230e9ab0d",
+      "text": "अकादमी पुरस्कार की प्रतिमा को आम तौर पर किस उपनाम से पुकारा जाता है?",
+      "answer": "ऑस्कर",
+      "categoryId": "film",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "By what nickname is the Academy Award statuette commonly called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:02",
+      "sourceCanonicalHash": "6a7c3b86a4ca91ea0b330bcd4d68c058be3acc7bec63d8b8994aa51c30f8fb70",
+      "text": "टॉय स्टोरी और फाइंडिंग नीमो किस एनिमेशन स्टूडियो ने बनाई थीं?",
+      "answer": "पिक्सार",
+      "categoryId": "film",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which animation studio made Toy Story and Finding Nemo?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:03",
+      "sourceCanonicalHash": "1c1f4a9ca1fed1114ea8a6a0d286d907d9c3c5c88f2cfb13c965bb8a83d9c84b",
+      "text": "सिल्वेस्टर स्टैलोन ने किस काल्पनिक मुक्केबाज़ की भूमिका निभाई है?",
+      "answer": "रॉकी",
+      "categoryId": "film",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which fictional boxer has Sylvester Stallone played?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:04",
+      "sourceCanonicalHash": "4283b5518ddf8ae52c8f179ab077530bfb8730910c2f888797d3aae8c8b8955a",
+      "text": "एमिटी द्वीप के पास ग्रेट व्हाइट शार्क वाली उन्नीस सौ पचहत्तर की थ्रिलर फिल्म कौन-सी है?",
+      "answer": "जबड़े",
+      "categoryId": "film",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which 1975 thriller film features a great white shark near Amity Island?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:05",
+      "sourceCanonicalHash": "dfb27caa6f05bb25d21f4e0290d4d46a03ed1f4be2e4f4e2ee3d2d75a45d793f",
+      "text": "दो हजार तीन की एक एनिमेशन फिल्म में अपने बेटे को खोजने निकले क्लाउनफिश पिता का नाम क्या है?",
+      "answer": "मार्लिन",
+      "categoryId": "film",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "In a 2003 animated film, what is the name of the clownfish father who sets out to find his son?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:06",
+      "sourceCanonicalHash": "a29e8238bc69c6bb43cf4a4373e03552ba74bce77130159bf9a5335e7c93f5f7",
+      "text": "शून्य शून्य सात के नाम से पहचाने जाने वाले जासूस का उपनाम क्या है?",
+      "answer": "बॉन्ड",
+      "categoryId": "film",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the surname of the spy identified as zero zero seven?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:07",
+      "sourceCanonicalHash": "99ec8851b094b23bf9d5222be3267b13da19a3852614858e15efbd3c1a534c1c",
+      "text": "गधे के साथ दलदल में रहने वाला हरे रंग का दैत्य कौन है?",
+      "answer": "श्रेक",
+      "categoryId": "film",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Who is the green ogre living in a swamp with Donkey?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:08",
+      "sourceCanonicalHash": "3d5fbe6cd1fcf36c0cad52f9d05f0cabfe5db2dd8a3dcddf300dafe84c84bdee",
+      "text": "स्टार वॉर्स के उस खलनायक का उपनाम क्या है जिसे पहले अनाकिन के नाम से जाना जाता था?",
+      "answer": "वेडर",
+      "categoryId": "film",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the surname of the Star Wars villain who was formerly known as Anakin?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:09",
+      "sourceCanonicalHash": "41a0a91d90d1515e42152a594e6508bf3aed99460156e32e8ef75144723bf641",
+      "text": "टू थाउज़ंड वन अ स्पेस ओडिसी और द शाइनिंग के निर्देशक कौन थे?",
+      "answer": "कुब्रिक",
+      "categoryId": "film",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Who was the director of 2001: A Space Odyssey and The Shining?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:10",
+      "sourceCanonicalHash": "f8b1ad0b9c68193c3465eb9412a380a4f08fcfc41bb0d3c5ff29f0bed6a9256a",
+      "text": "मूक फिल्मों के किस सितारे ने ट्रैम्प नामक पात्र रचा था?",
+      "answer": "चैप्लिन",
+      "categoryId": "film",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which star of silent films created the character known as the Tramp?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:11",
+      "sourceCanonicalHash": "21e1d34a6d1ede57d8ca95bfb978b5f79c102497806916e00c3b5e3789b09424",
+      "text": "चलचित्रों की कला और उद्योग के लिए कौन-सा सामान्य शब्द इस्तेमाल होता है?",
+      "answer": "सिनेमा",
+      "categoryId": "film",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What general word is used for the art and industry of motion pictures?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:12",
+      "sourceCanonicalHash": "b9083f9cb2ee2dae835dde4b08968cf240d8fccb4436be6526a008c706b9251d",
+      "text": "किसी पिछली फिल्म की कहानी को आगे बढ़ाने वाली अगली फिल्म क्या कहलाती है?",
+      "answer": "सीक्वल",
+      "categoryId": "film",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is a next film that continues the story of a previous film called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:13",
+      "sourceCanonicalHash": "3f72301d2467ab62ac0dd57ab6afa5e9820561b93350675f38517e9f3da373eb",
+      "text": "फिल्म में किसी प्रसिद्ध व्यक्ति की बहुत छोटी भूमिका को क्या कहते हैं?",
+      "answer": "कैमियो",
+      "categoryId": "film",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is a very small role by a famous person in a film called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:14",
+      "sourceCanonicalHash": "19abde3bc90c786fa780dc39b7ef33c42c4c6ffd64cdf5cf0dc304b2c815c865",
+      "text": "अँधेरे और निराशावादी अपराध आधारित चलचित्रों के लिए कौन-सा फ़्रांसीसी शब्द प्रयोग होता है?",
+      "answer": "नॉयर",
+      "categoryId": "film",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which French word is used for dark and cynical crime-based motion pictures?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:15",
+      "sourceCanonicalHash": "7359706de657c68c4e43d087a64abaea3dab224d1d71a8f6c7bfd6f398fa70ef",
+      "text": "कैमरे को सहज गति से चलाते हुए दृश्य लेने के लिए किस पहिएदार मंच का उपयोग होता है?",
+      "answer": "डॉली",
+      "categoryId": "film",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What wheeled platform is used to take shots while moving the camera smoothly?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:16",
+      "sourceCanonicalHash": "1c294fbc611a9957b5121c32bda138ed10dc69b285d74cf08b59cf4d6ddb83b2",
+      "text": "फिल्म के दृश्यों और संवादों वाला लिखित दस्तावेज़ क्या कहलाता है?",
+      "answer": "पटकथा",
+      "categoryId": "film",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the written document containing a film's scenes and dialogue called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:17",
+      "sourceCanonicalHash": "16f40e46a4a0bfae6d5d34dcec0a7b59a8b8ba0e829c59b7815d0cfc0e82c468",
+      "text": "एक्शन दृश्य के लिए किया जाने वाला खतरनाक शारीरिक करतब क्या कहलाता है?",
+      "answer": "स्टंट",
+      "categoryId": "film",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is a dangerous physical feat performed for an action scene called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:18",
+      "sourceCanonicalHash": "48dea669746e6cebc3db77e957c2fce97e5eaa2b663acb5b7795a743688c9177",
+      "text": "रोज़मर्रा की गतिविधियों की समकालिक ध्वनियाँ बनाने की कला किस उपनाम से जानी जाती है?",
+      "answer": "फोली",
+      "categoryId": "film",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "By what surname is the craft of creating synchronized sounds of everyday activities known?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:19",
+      "sourceCanonicalHash": "e24c9480a33adfaafc98787ff9a38b60c3fd61d2611d7006c07195c9bcf40fe4",
+      "text": "चलचित्र की पट्टी पर बनी एक अकेली छवि को क्या कहते हैं?",
+      "answer": "फ्रेम",
+      "categoryId": "film",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is a single image on a strip of motion-picture film called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:20",
+      "sourceCanonicalHash": "1f32dea9fb79649aab69afac43aae8cb1b3a37037632e6ecdad24cab2c5498da",
+      "text": "समान विषय, रूप या अंदाज़ वाली फिल्मों के वर्ग के लिए कौन-सा शब्द है?",
+      "answer": "जॉनर",
+      "categoryId": "film",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What word is used for a class of films with similar subject, form, or style?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:21",
+      "sourceCanonicalHash": "f77429ef97d1a69883129abf977d1f3c76c65d1de994b9d86bb354549140b569",
+      "text": "द लेडीकिलर्स जैसी प्रसिद्ध ब्रिटिश हास्य फिल्में लंदन के किस स्टूडियो ने बनाई थीं?",
+      "answer": "ईलिंग",
+      "categoryId": "film",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which London studio made famous British comedy films such as The Ladykillers?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:22",
+      "sourceCanonicalHash": "d739f562dd5c0f513bca4e339aed93670f196757b55c49d94c18e37ad61f3cca",
+      "text": "किस फ़्रांसीसी शब्द से ऐसे निर्देशक का वर्णन होता है जिसे फिल्म का मुख्य रचनात्मक लेखक माना जाए?",
+      "answer": "ऑतूर",
+      "categoryId": "film",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which French word describes a director who is considered the film's main creative author?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:23",
+      "sourceCanonicalHash": "5fbdf303c8251ed6f38ebbfda29f8382e0c2b4fadbc0b4af9e856a736accd665",
+      "text": "फिल्म के सेट पर विद्युत विभाग का नेतृत्व करने वाला कर्मचारी क्या कहलाता है?",
+      "answer": "गैफर",
+      "categoryId": "film",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the worker who leads the electrical department on a film set called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:24",
+      "sourceCanonicalHash": "4320417aa8e9582747434680f2719a42623d120bd04c9cd4e3fd9b8678507a04",
+      "text": "समय के बीतने को संक्षेप में दिखाने के लिए कई छोटे शॉटों को क्रम में पिरोने वाली संपादन विधि क्या है?",
+      "answer": "मोंताज",
+      "categoryId": "film",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What editing technique strings together several short shots in sequence to show the passage of time briefly?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:25",
+      "sourceCanonicalHash": "ae199c85b263aeca0ee8cbeba8d43a78b1c19aab32ed93e4612345d704056ba3",
+      "text": "पहले प्रदर्शित फिल्म की घटनाओं से पूर्व की कहानी दिखाने वाली फिल्म क्या कहलाती है?",
+      "answer": "प्रीक्वल",
+      "categoryId": "film",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is a film showing a story before the events of a previously released film called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:26",
+      "sourceCanonicalHash": "1325a0dc30ce888826ac16d1ded82b5922aa8ce70cc55b19aafb9d2a43a31dda",
+      "text": "बिना फिल्माए किसी परिवेश को रचने वाली चित्रित या संयोजित पृष्ठभूमि को क्या कहते हैं?",
+      "answer": "मैट",
+      "categoryId": "film",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is a painted or composited background that creates an environment without filming it called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:27",
+      "sourceCanonicalHash": "ec37ead91418096a9a6c8ce75afd5e805aad83938be57a1588d7396dbe993b06",
+      "text": "निर्माण के दौरान समीक्षा के लिए देखी जाने वाली बिना संपादित दैनिक प्रतियाँ क्या कहलाती हैं?",
+      "answer": "रशेज़",
+      "categoryId": "film",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What are the unedited daily copies viewed for review during production called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:28",
+      "sourceCanonicalHash": "eb9897d02138a3d2a081ce7907333e778bdc2e589d188eb49a03799075bc851f",
+      "text": "डॉलर्स त्रयी के इतालवी निर्देशक का उपनाम क्या था?",
+      "answer": "लियोने",
+      "categoryId": "film",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What was the surname of the Italian director of the Dollars Trilogy?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:29",
+      "sourceCanonicalHash": "e4f0c54dc07d26be04b5f7912dc830570a1b601e89a49c8e2150f16605479657",
+      "text": "द जनरल और शरलॉक जूनियर में अभिनय करने वाले मूक हास्य कलाकार कौन थे?",
+      "answer": "कीटन",
+      "categoryId": "film",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which silent comedian acted in The General and Sherlock Jr.?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:30",
+      "sourceCanonicalHash": "de6618da1edc49f5bad02d1ff389a2e5a5b77a62f3f11b01be2637f59216da84",
+      "text": "अठारह सौ पंचानबे में सार्वजनिक फिल्म प्रदर्शन की शुरुआत करने वाले फ़्रांसीसी भाइयों का साझा उपनाम क्या था?",
+      "answer": "ल्यूमिएर",
+      "categoryId": "film",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What was the shared surname of the French brothers who began public film screenings in 1895?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:01",
+      "sourceCanonicalHash": "9744775a3777a836d49f87df086bcd5e5c3b1827f13cf5ca7f9f49ae34ec1bf1",
+      "text": "किसी तत्त्व की वह सबसे छोटी इकाई क्या है जिसमें उसके रासायनिक गुण बने रहते हैं?",
+      "answer": "परमाणु",
+      "categoryId": "science",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the smallest unit of an element in which its chemical properties remain?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:02",
+      "sourceCanonicalHash": "517a27a750d169924ecf029b3dc1231d3ef71f2cf310caa0aa344d6b381f617b",
+      "text": "किस ग्रह को अक्सर लाल ग्रह कहा जाता है?",
+      "answer": "मंगल",
+      "categoryId": "science",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which planet is often called the Red Planet?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:03",
+      "sourceCanonicalHash": "3505e20b6ee1adc140c2f863e3cca525d48fe8c04565887833a0ed7cbcf26700",
+      "text": "परमाणु क्रमांक आठ वाली कौन-सी गैस मनुष्य के श्वसन के लिए आवश्यक है?",
+      "answer": "ऑक्सीजन",
+      "categoryId": "science",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which gas with atomic number eight is necessary for human respiration?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:04",
+      "sourceCanonicalHash": "e543c5e44e24de2021d320d8c834940dc5f8f5362bb36a2d5b880418b5838b91",
+      "text": "दो पिंडों को एक-दूसरे की ओर खींचने वाला बल कौन-सा है?",
+      "answer": "गुरुत्वाकर्षण",
+      "categoryId": "science",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which force pulls two bodies toward each other?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:05",
+      "sourceCanonicalHash": "65c6372c44145ddad5754127dbb0d5a1013e575d91657a9ef2a45e2e6742a48e",
+      "text": "तंत्रिका तंत्र में संकेत पहुँचाने वाली विशेष कोशिका क्या कहलाती है?",
+      "answer": "न्यूरॉन",
+      "categoryId": "science",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the specialized cell that carries signals in the nervous system called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:06",
+      "sourceCanonicalHash": "c62e7067443fa957d9da37a8ad34aa1e06fbfbf51ef1bd9acbb05fc989578a95",
+      "text": "चट्टानों में मिलने वाले प्राचीन जीवों के संरक्षित अवशेष या निशान को क्या कहते हैं?",
+      "answer": "जीवाश्म",
+      "categoryId": "science",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What are the preserved remains or traces of ancient organisms found in rocks called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:07",
+      "sourceCanonicalHash": "7ea3d47f457e730ff1fd8c993912efc3650daf4099fbbe5faa84187df0f16d97",
+      "text": "विद्युतचुंबकीय विकिरण के ऊर्जा-कण को क्या कहते हैं?",
+      "answer": "फोटॉन",
+      "categoryId": "science",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the energy-particle of electromagnetic radiation called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:08",
+      "sourceCanonicalHash": "a399021c34f565ee1096e3ef8d191043b100a6a1112fcdc8a8ee25de755f6d15",
+      "text": "तारों में सामान्यतः पाई जाने वाली पदार्थ की आयनित अवस्था क्या कहलाती है?",
+      "answer": "प्लाज्मा",
+      "categoryId": "science",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the ionized state of matter commonly found in stars called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:09",
+      "sourceCanonicalHash": "3d7749bddb3bfa46efb914aa8a038ef270451921f4755f68ab663cd2a5f2f159",
+      "text": "कौन-सी कोशिका-विभाजन प्रक्रिया दो आनुवंशिक रूप से समान संतति कोशिकाएँ बनाती है?",
+      "answer": "समसूत्रण",
+      "categoryId": "science",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which cell-division process makes two genetically identical daughter cells?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:10",
+      "sourceCanonicalHash": "2d182aa67060ce612953021abdb7480b25986b2c4f4166f81eae01d9dc628cd9",
+      "text": "जीवों में रासायनिक अभिक्रिया की गति बढ़ाने वाला उत्प्रेरक क्या कहलाता है?",
+      "answer": "एंजाइम",
+      "categoryId": "science",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the catalyst in living things that increases the speed of a chemical reaction called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:11",
+      "sourceCanonicalHash": "9839df19082981911c2b202181b2944a2544a28850d2f05ae15b44a64c543623",
+      "text": "अतिविशाल कृष्ण विवर से ऊर्जा पाने वाला अत्यंत चमकीला मंदाकिनीय केंद्र क्या कहलाता है?",
+      "answer": "क्वासर",
+      "categoryId": "science",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is an extremely bright galactic center powered by a supermassive black hole called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:12",
+      "sourceCanonicalHash": "9a67c7c0f983d899261577c71ca84a08d02b772e8df50487f1353d7561d663ed",
+      "text": "एक ही तत्त्व का वह रूप क्या कहलाता है जिसमें न्यूट्रॉनों की संख्या अलग हो?",
+      "answer": "समस्थानिक",
+      "categoryId": "science",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the form of the same element in which the number of neutrons is different called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:13",
+      "sourceCanonicalHash": "912279d724e9330e069ae2042b8fc367648613959088396531e51839e99784a5",
+      "text": "किसी जीव की समस्त आनुवंशिक सामग्री के पूरे संग्रह को क्या कहते हैं?",
+      "answer": "जीनोम",
+      "categoryId": "science",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the complete collection of all genetic material of an organism called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:14",
+      "sourceCanonicalHash": "2cad196323817ac5953b9388eacd941db0adef5b0f7cc18dcbea167921fbaab7",
+      "text": "कौन-सी गहरी ज्वालामुखीय चट्टान महासागरीय भूपर्पटी का बड़ा हिस्सा बनाती है?",
+      "answer": "बेसाल्ट",
+      "categoryId": "science",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which dark volcanic rock makes up a large part of the oceanic crust?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:15",
+      "sourceCanonicalHash": "55c1d4b1d2a3273cc821bfb3e36f902ecbe705b4243bd6c9747434014f42a221",
+      "text": "परमाणु के नाभिक में पाया जाने वाला धनावेशित कण कौन-सा है?",
+      "answer": "प्रोटॉन",
+      "categoryId": "science",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which positively charged particle is found in the nucleus of an atom?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:16",
+      "sourceCanonicalHash": "d6e00e35538437100739c0122cdf042bbacd8824d76fb0af051259002b55428d",
+      "text": "आँख के पिछले भाग में स्थित प्रकाश-संवेदी परत क्या कहलाती है?",
+      "answer": "रेटिना",
+      "categoryId": "science",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the light-sensitive layer located at the back of the eye called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:17",
+      "sourceCanonicalHash": "8d006916ef3736aebac7d4640c12d6c458dda74665ab1ee54075b634da891ac7",
+      "text": "बीजीय पौधों में नर जनन कोशिकाएँ ले जाने वाला महीन चूर्ण क्या कहलाता है?",
+      "answer": "पराग",
+      "categoryId": "science",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the fine powder that carries male reproductive cells in seed plants called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:18",
+      "sourceCanonicalHash": "427d5c71d69af8be22bf119bf949ab73375ebc0f52ec3c88e1c07a26be977f0b",
+      "text": "अर्धपारगम्य झिल्ली के पार अधिक विलेय-सांद्रता की ओर पानी जाने की प्रक्रिया क्या है?",
+      "answer": "परासरण",
+      "categoryId": "science",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the process of water moving across a semipermeable membrane toward higher solute concentration?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:19",
+      "sourceCanonicalHash": "87c14facd3b34e13904d7579b6d4af505a4bc7746d89368799862d5b1613cc9a",
+      "text": "परमाणु क्रमांक दो वाला कौन-सा तत्त्व कई उत्सवी गुब्बारों में भरा जाता है?",
+      "answer": "हीलियम",
+      "categoryId": "science",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which element with atomic number two is filled in many festive balloons?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:20",
+      "sourceCanonicalHash": "e787a618bfc549b12cc316e45d94d002d6fd9c462662d4bbe439cd590ec0eaa1",
+      "text": "पृथ्वी की वह कठोर सबसे बाहरी परत क्या है जो गतिशील प्लेटों में टूटी हुई है?",
+      "answer": "भूपर्पटी",
+      "categoryId": "science",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the hard outermost layer of Earth that is broken into moving plates?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:21",
+      "sourceCanonicalHash": "ea74391b37ab3e19dd18b289f4c22b49e8cece2bd358dd806f9a7b6ca63196cb",
+      "text": "प्रबल सीपी समस्या के समाधान के लिए कौन-सा काल्पनिक कण प्रस्तावित किया गया था?",
+      "answer": "ऐक्सियॉन",
+      "categoryId": "science",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which hypothetical particle was proposed for the solution of the strong CP problem?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:22",
+      "sourceCanonicalHash": "d6f6a0754265a0b5af68f22904d114f7d75a530b8cc586f6586e73921cedbfb0",
+      "text": "फोटॉन, ग्लूऑन और हिग्स किस कण-वर्ग में आते हैं?",
+      "answer": "बोसॉन",
+      "categoryId": "science",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Photons, gluons, and the Higgs fall into which particle class?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:23",
+      "sourceCanonicalHash": "2b687b50829627510638667fdf50b046b1e821c3d021da1dd67b6a0990dbe235",
+      "text": "विद्युतरासायनिक सेल में ऑक्सीकरण किस इलेक्ट्रोड पर होता है?",
+      "answer": "एनोड",
+      "categoryId": "science",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "At which electrode does oxidation occur in an electrochemical cell?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:24",
+      "sourceCanonicalHash": "91ecfe20ceb1b66f813cf86fe208f9dadea6b7a61e75ea94eb7fcb6d4ec410b6",
+      "text": "कौन-सा मूलभूत कण तीन के समूह में मिलकर प्रोटॉन और न्यूट्रॉन बनाता है?",
+      "answer": "क्वार्क",
+      "categoryId": "science",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which fundamental particle combines in groups of three to form protons and neutrons?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:25",
+      "sourceCanonicalHash": "df2122805e5e698f8011e575e0c9ab70eb8728305d7697b20309d4d0e2b3dcf4",
+      "text": "कई तंत्रिका तंतुओं के चारों ओर आवरण बनाने वाला कुचालक पदार्थ क्या है?",
+      "answer": "माइलिन",
+      "categoryId": "science",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the insulating substance that forms a sheath around many nerve fibers?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:26",
+      "sourceCanonicalHash": "583cf532038168bcbb9cdb99163a88e71c1c1de6fa94ed50ce2073ad51d41580",
+      "text": "वर्गीकरण में जगत से नीचे और वर्ग से ऊपर कौन-सा पद होता है?",
+      "answer": "संघ",
+      "categoryId": "science",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "In classification, which rank is below kingdom and above class?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:27",
+      "sourceCanonicalHash": "5c83f94c4f4d2b1410c8df240389dd171b3c9547055bf5ad75b17194f58ec118",
+      "text": "नियमित विकिरण-किरणें छोड़ने वाला तेजी से घूमता न्यूट्रॉन तारा क्या कहलाता है?",
+      "answer": "पल्सर",
+      "categoryId": "science",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is a rapidly rotating neutron star that emits regular radiation beams called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:28",
+      "sourceCanonicalHash": "46b6b221a9de46bb58e376d972d04216d52fde83d58d9ba8435e0d3167b8139e",
+      "text": "अपचयन और ऑक्सीकरण दोनों वाली अभिक्रियाओं के लिए कौन-सा संक्षिप्त शब्द है?",
+      "answer": "रेडॉक्स",
+      "categoryId": "science",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What abbreviated term is used for reactions involving both reduction and oxidation?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:29",
+      "sourceCanonicalHash": "32c64a0effe23f8abd1ae8d4973e77391ef62e29fe87279efc263b7c0661f5c4",
+      "text": "गुणसूत्र के उसी स्थान पर पाया जाने वाला किसी जीन का वैकल्पिक रूप क्या कहलाता है?",
+      "answer": "एलील",
+      "categoryId": "science",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is an alternative form of a gene found at the same place on a chromosome called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:30",
+      "sourceCanonicalHash": "e825a2c40147cfd12c9a98e6ccc3dbc5f2f034d6ea6a8de57ad7f2e796d624cb",
+      "text": "पूर्ण सूर्यग्रहण के समय दिखाई देने वाला सूर्य का तप्त बाहरी वायुमंडल क्या कहलाता है?",
+      "answer": "कोरोना",
+      "categoryId": "science",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the Sun's hot outer atmosphere, visible during a total solar eclipse, called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:01",
+      "sourceCanonicalHash": "e2c01989fd6c9dda1a49e947fcd364c6b68aac627f02230e10b85d25d2a9f8a6",
+      "text": "धूप में मैं आपके पीछे चलता हूँ, लेकिन अँधेरे में गायब हो जाता हूँ। मैं क्या हूँ?",
+      "answer": "छाया",
+      "categoryId": "mixed",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "In sunlight I walk behind you, but in darkness I disappear. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:02",
+      "sourceCanonicalHash": "409f9b4be238ca6fc695f0484c78dde806a2d759181bc45ec9930c62376310e3",
+      "text": "मैं हर पुकार का जवाब देता हूँ, लेकिन पहले कभी नहीं बोलता। मैं क्या हूँ?",
+      "answer": "गूँज",
+      "categoryId": "mixed",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I answer every call, but I never speak first. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:03",
+      "sourceCanonicalHash": "4e9d3eed869f15c491e2986b54897bd792c196f2f4c2283042b3c6126b98fedf",
+      "text": "मेरा चेहरा और दो हाथ हैं, लेकिन बाँहें या पैर नहीं। मैं क्या हूँ?",
+      "answer": "घड़ी",
+      "categoryId": "mixed",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I have a face and two hands, but no arms or legs. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:04",
+      "sourceCanonicalHash": "e6aa1dde4908240ce80ba76b1ec67ef890f3d945688d0addbb562478f6feab28",
+      "text": "उजाला देते-देते मैं छोटा होता जाता हूँ। मैं क्या हूँ?",
+      "answer": "मोमबत्ती",
+      "categoryId": "mixed",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "While giving light, I keep becoming smaller. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:05",
+      "sourceCanonicalHash": "b5b28f7c086b80f355b83432ac1a517cc1f700db30149daa25cd202ba9edcf41",
+      "text": "जितना अधिक सुखाता हूँ, उतना ही गीला होता जाता हूँ। मैं क्या हूँ?",
+      "answer": "तौलिया",
+      "categoryId": "mixed",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "The more I dry, the wetter I become. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:06",
+      "sourceCanonicalHash": "810ed96591aafef4881bd7e122e57a0c8fa210f683f6a8f30f453ff879b5bf62",
+      "text": "मेरे शरीर में बहुत से छेद हैं, फिर भी मैं पानी रोक सकता हूँ। मैं क्या हूँ?",
+      "answer": "स्पंज",
+      "categoryId": "mixed",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "There are many holes in my body, yet I can hold water. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:07",
+      "sourceCanonicalHash": "f1f579ccf08f7fc86ad9d788348af0f3c8bb412be6a9e6aaffa6fa18b610fbb3",
+      "text": "मेरी एक आँख है, फिर भी मैं देख नहीं सकती और अपने पीछे धागा खींचती हूँ। मैं क्या हूँ?",
+      "answer": "सुई",
+      "categoryId": "mixed",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I have one eye, yet I cannot see, and I pull thread behind me. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:08",
+      "sourceCanonicalHash": "8811806e41df60a6583006a8703f0b5af6328923e8df972b7a40071078dcc5b9",
+      "text": "अगर आप मुझे किसी को बता दें, तो शायद मैं केवल आपका न रहूँ। मैं क्या हूँ?",
+      "answer": "राज",
+      "categoryId": "mixed",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "If you tell me to someone, perhaps I will no longer remain only yours. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:09",
+      "sourceCanonicalHash": "8b35d6d126d7732448194c48f4748841d0a7c9b7dc4be394292a5eda1ad8faf9",
+      "text": "मैं हमेशा आपके आगे रहता हूँ, लेकिन कभी दिखाई नहीं देता। मैं क्या हूँ?",
+      "answer": "भविष्य",
+      "categoryId": "mixed",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I am always ahead of you, but I am never visible. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:10",
+      "sourceCanonicalHash": "8a03b4b5e345f4863848ca0c2b1fece5a93df9fab428de93fc2e4fdd6b19c502",
+      "text": "मेरा नाम लेते ही मैं गायब हो जाता हूँ। मैं क्या हूँ?",
+      "answer": "मौन",
+      "categoryId": "mixed",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "As soon as my name is taken, I disappear. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:11",
+      "sourceCanonicalHash": "538195f14ec46aca0b2b6cb9b8e84136af4dd5f38c21b64c40efd0c5dfdfe431",
+      "text": "मैं किसी जहाज़ को स्थिर रखने के लिए डूबता हूँ और उसके चलने से पहले ऊपर आ जाता हूँ। मैं क्या हूँ?",
+      "answer": "लंगर",
+      "categoryId": "mixed",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I sink to keep a ship still and come up before it starts moving. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:12",
+      "sourceCanonicalHash": "20351791678a52fa488649c706c1dca46f60a4938bedb94e1676853766cea752",
+      "text": "मेरे बहुत से दाँत हैं और मैं दो किनारों को जोड़ता हूँ, फिर भी कभी काटता नहीं। मैं क्या हूँ?",
+      "answer": "ज़िप",
+      "categoryId": "mixed",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I have many teeth and join two edges, yet I never bite. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:13",
+      "sourceCanonicalHash": "468a45cc456ccde567b69ef034290552da95af3d677da88eb97ab1ccd03df0a2",
+      "text": "मैं आपकी सूरत दिखाता हूँ, लेकिन दाएँ और बाएँ को उलट देता हूँ। मैं क्या हूँ?",
+      "answer": "दर्पण",
+      "categoryId": "mixed",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I show your face/appearance, but reverse right and left. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:14",
+      "sourceCanonicalHash": "d46bcbe64d51b5d37a2a0b4eb06b84be83c0aa749a2eeffbe13302ab395b087c",
+      "text": "मेरी गर्दन है, लेकिन सिर नहीं और अक्सर मेरे ऊपर ढक्कन होता है। मैं क्या हूँ?",
+      "answer": "बोतल",
+      "categoryId": "mixed",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I have a neck, but no head, and often there is a cap/lid on top of me. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:15",
+      "sourceCanonicalHash": "8aa6c99cf4e649d78fcc5a43d3fe77ed2b8b547a1b027a2099ccf6b0daaf8bbd",
+      "text": "मैं दो दूर किनारों को जोड़कर यात्रियों को पार कराता हूँ, लेकिन खुद नहीं चलता। मैं क्या हूँ?",
+      "answer": "पुल",
+      "categoryId": "mixed",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I connect two far edges and get travelers across, but I myself do not move. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:16",
+      "sourceCanonicalHash": "7540d0d8d5b12b59d9092377ea4b64085bdecc5c702a91186019de45a2c3bfe0",
+      "text": "मेरे कई डंडे हैं, लेकिन मैं दौड़ता नहीं और ऊपर चढ़ने में मदद करता हूँ। मैं क्या हूँ?",
+      "answer": "सीढ़ी",
+      "categoryId": "mixed",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I have many rods/rungs, but I do not run, and I help you climb up. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:17",
+      "sourceCanonicalHash": "5d91c8be556f5f582b97aeaec7036856878c8d3808161465b214539465cf3530",
+      "text": "मैं ऐसा रास्ता हूँ जिसका प्रवेश और निकास होता है, लेकिन आम तौर पर कोई रोशनदान नहीं होता। मैं क्या हूँ?",
+      "answer": "सुरंग",
+      "categoryId": "mixed",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I am a path that has an entrance and exit, but usually has no window/ventilator. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:18",
+      "sourceCanonicalHash": "e3c4e26b4bf4b858394dfda59fc9da598029d43512cab438d13939cbd8289345",
+      "text": "मैं कपड़े की एक छोटी गुफा हूँ जो आपके पहनावे के साथ घूमती है। मैं क्या हूँ?",
+      "answer": "जेब",
+      "categoryId": "mixed",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I am a small cloth cave that travels with your clothing. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:19",
+      "sourceCanonicalHash": "9d97ec3320cb08107e2f674c8deaf0322e9411f8b8eb0427f8a094ef962561a7",
+      "text": "मैं एक कोने में रहकर पूरी दुनिया घूमता हूँ। मैं क्या हूँ?",
+      "answer": "डाकटिकट",
+      "categoryId": "mixed",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I travel the whole world while staying in one corner. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:20",
+      "sourceCanonicalHash": "00357117c9458955a2549e549ec0dabb7dc901650e8603062e18d7fa5b57fcf1",
+      "text": "मैं आपको बाहर देखने देता हूँ, लेकिन बारिश और हवा को अंदर आने से रोकता हूँ। मैं क्या हूँ?",
+      "answer": "खिड़की",
+      "categoryId": "mixed",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I let you look outside, but stop rain and wind from coming inside. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:21",
+      "sourceCanonicalHash": "01da05bf8423ce6191b2caa47a01e5c04bd076bc913280811c451f7695c1b17b",
+      "text": "मेरे दाँत हैं, लेकिन मैं चबा नहीं सकता और आपके बाल सँवारने में मदद करता हूँ। मैं क्या हूँ?",
+      "answer": "कंघी",
+      "categoryId": "mixed",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I have teeth, but I cannot chew, and I help arrange your hair. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:22",
+      "sourceCanonicalHash": "705d1c88562c45dff9e75cbb072ec92c0c57848f0b49cbac40377d0ce9a528b2",
+      "text": "मेरी पाँच उँगलियाँ हैं, लेकिन न हड्डियाँ हैं न त्वचा। मैं क्या हूँ?",
+      "answer": "दस्ताना",
+      "categoryId": "mixed",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I have five fingers, but neither bones nor skin. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:23",
+      "sourceCanonicalHash": "b1c327114a355ab298a6f2767509a270bdaf1973d91a47f0a5d6338e12549b98",
+      "text": "मेरा मुहाना और तल है, लेकिन मैं कभी खाता या सोता नहीं। मैं क्या हूँ?",
+      "answer": "नदी",
+      "categoryId": "mixed",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I have a mouth and a bed/bottom, but I never eat or sleep. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:24",
+      "sourceCanonicalHash": "fb7d3774e16c83d1c1a805d1561d0025e4fc18e65a6151c2dbe6ed7c0a2e753c",
+      "text": "मेरी बाहरी परतें हटाओ तो आपकी आँखों में आँसू आ सकते हैं। मैं क्या हूँ?",
+      "answer": "प्याज",
+      "categoryId": "mixed",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Remove my outer layers and tears may come to your eyes. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:25",
+      "sourceCanonicalHash": "7ac2ea462baf7dcee1fd00101b684912b8241f39c12a200864fc337284c3620b",
+      "text": "मैं बिना पंखों के तैरता हूँ और अपने साथ बारिश ला सकता हूँ। मैं क्या हूँ?",
+      "answer": "बादल",
+      "categoryId": "mixed",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I float without wings and can bring rain with me. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:26",
+      "sourceCanonicalHash": "e401839bd2fec9cba4869880198b91e7a9f42128ea47127200828d78bb4c446e",
+      "text": "मेरी रीढ़ है और बहुत-से पत्र हैं, फिर भी मैं कोई वनस्पति नहीं। मैं क्या हूँ?",
+      "answer": "पुस्तक",
+      "categoryId": "mixed",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I have a spine and many leaves/sheets, yet I am not a plant. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:27",
+      "sourceCanonicalHash": "a7ef2ad823737cfa675ddd29f717412609b1c2af2f8fcb1ce80df4f2d2a929ad",
+      "text": "मैं जगहें और रास्ते दिखाता हूँ, लेकिन मेरे भीतर असली इमारतें या गाड़ियाँ नहीं होतीं। मैं क्या हूँ?",
+      "answer": "नक्शा",
+      "categoryId": "mixed",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I show places and roads, but there are no real buildings or vehicles inside me. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:28",
+      "sourceCanonicalHash": "801afbceac7fc9265cb2eaa1c2dec4205c2fcb640146637a24c80f8487f3738f",
+      "text": "मैं तालों को खोलता हूँ, लेकिन दरवाज़ा नहीं हूँ। मैं क्या हूँ?",
+      "answer": "चाबी",
+      "categoryId": "mixed",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I open locks, but I am not a door. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:29",
+      "sourceCanonicalHash": "e638668b03a6f9d5a82b9e478bd9de99873b3a9df1121ad7d71261ef83442dcf",
+      "text": "मुझे भोजन दो तो मैं जीवित रहता हूँ, पानी पिलाओ तो मर जाता हूँ। मैं क्या हूँ?",
+      "answer": "आग",
+      "categoryId": "mixed",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Give me food and I stay alive; give me water to drink and I die. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:30",
+      "sourceCanonicalHash": "5f5ca682a2867d02dadc45bf285fa094fe4ed0743142e4df69c1def24fb0d4ee",
+      "text": "मैं पूरे कमरे को भर सकता हूँ, लेकिन कोई जगह नहीं घेरता। मैं क्या हूँ?",
+      "answer": "रोशनी",
+      "categoryId": "mixed",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I can fill the whole room, but I take up no space. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    }
+  ]
+}

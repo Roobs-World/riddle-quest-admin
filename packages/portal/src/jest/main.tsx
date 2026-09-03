@@ -10,7 +10,7 @@ import "../styles.css";
 initializeBrowserSentryFromEnvironment();
 
 if (import.meta.env.DEV) {
-  resetDevelopmentFirstRunState(window.localStorage, window.sessionStorage);
+  resetDevelopmentFirstRunState();
 }
 
 installButtonAnalytics();

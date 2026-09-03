@@ -1,6 +1,7 @@
 import {afterAll, beforeAll, describe, expect, it} from "@jest/globals";
 import {chromium, type Browser, type Page} from "@playwright/test";
-import {loadYouTubeContent} from "../content";
+import {readFile} from "node:fs/promises";
+import path from "node:path";
 import {createEmptyYouTubeSave} from "../save";
 import {
   installYouTubeSdkHarness,
@@ -11,6 +12,12 @@ import {
 
 /** Provides describe browser behavior. */
 const describeBrowser = process.env.PORTAL_BROWSER_TESTS === "1" ? describe : describe.skip;
+
+/** Describes the artifact fields needed by the browser harness. */
+interface YouTubeArtifactManifest {
+  /** Stores the exact content version embedded in the artifact under test. */
+  contentVersion: string;
+}
 
 /** Provides expect ordered behavior. */
 const expectOrdered = (events: readonly string[], expected: readonly string[]): void => {
@@ -34,8 +41,17 @@ describeBrowser("YouTube Playables artifact with injected Game API", () => {
   let artifact: YouTubeArtifactServer;
   /** Provides browser behavior. */
   let browser: Browser;
+  /** Stores the exact content version served to the browser. */
+  let artifactContentVersion: string;
 
   beforeAll(async () => {
+    /** Provides package root behavior. */
+    const packageRoot = path.resolve(__dirname, "../../..");
+    /** Provides manifest behavior. */
+    const manifest = JSON.parse(
+      await readFile(path.join(packageRoot, "dist-youtube/youtube-content-manifest.json"), "utf8"),
+    ) as YouTubeArtifactManifest;
+    artifactContentVersion = manifest.contentVersion;
     artifact = await startYouTubeArtifactServer();
     browser = await chromium.launch({headless: true});
   }, 120_000);
@@ -221,7 +237,7 @@ describeBrowser("YouTube Playables artifact with injected Game API", () => {
     expect(JSON.parse(snapshot.savedPayloads[2] ?? "{}")).toMatchObject({
       schemaVersion: 1,
       revision: 2,
-      contentVersion: loadYouTubeContent("en").contentVersion,
+      contentVersion: artifactContentVersion,
     });
     await page.close();
   }, 45_000);

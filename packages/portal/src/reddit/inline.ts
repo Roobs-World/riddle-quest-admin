@@ -1,4 +1,5 @@
 import {requestExpandedMode} from "@devvit/client";
+import {readBrowserStorage} from "../platform/browserStorage";
 
 /** Describes reddit copy. */
 type RedditCopy = {
@@ -37,7 +38,7 @@ const supported = new Set([
   "zh",
 ]);
 /** Requests ed. */
-const requested = (window.localStorage.getItem("appLanguage") ?? navigator.languages?.[0] ?? navigator.language ?? "en")
+const requested = (readBrowserStorage("local", "appLanguage") ?? navigator.languages?.[0] ?? navigator.language ?? "en")
   .toLowerCase()
   .split("-")[0];
 /** Provides locale behavior. */

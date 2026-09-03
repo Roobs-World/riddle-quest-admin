@@ -21,7 +21,7 @@ const {
 
 const YOUTUBE_AUTHOR_CONTRACT_SCHEMA_VERSION = 2;
 const YOUTUBE_AUTHOR_SCHEMA_VERSION = 4;
-const YOUTUBE_TRANSLATION_RETRY_POLICY_VERSION = 4;
+const YOUTUBE_TRANSLATION_RETRY_POLICY_VERSION = 6;
 const YOUTUBE_ENGLISH_QUALITY_VERSION = "automated_review_v1";
 const YOUTUBE_AUTHOR_MAX_ATTEMPTS = 6;
 const SHA256_PATTERN = /^[0-9a-f]{64}$/u;
@@ -301,7 +301,7 @@ const resetUnapprovedTranslationAttempts = (checkpoint) => {
 const migrateCheckpoint = (value, contractHash) => {
   if (!isPlainObject(value)) return value;
   if (value.schemaVersion === YOUTUBE_AUTHOR_SCHEMA_VERSION) {
-    if (value.translationRetryPolicyVersion !== 3) return value;
+    if (![3, 4, 5].includes(value.translationRetryPolicyVersion)) return value;
     const migrated = structuredClone(value);
     assertExactKeys(migrated, [
       "schemaVersion", "translationRetryPolicyVersion", "contractHash", "englishDrafts", "englishCritiques",
@@ -679,6 +679,10 @@ const authorYouTubeContent = async ({
                 model: YOUTUBE_TRANSLATOR_MODEL,
                 locale,
                 source: missing,
+                localizedCatalog: [
+                  ...existingByLocale[locale].values(),
+                  ...Object.values(checkpoint.translations[locale]),
+                ],
                 attempts: Object.fromEntries(ids.map((id) => [
                   id,
                   checkpoint.translationAttempts[locale][id] || 0,
@@ -694,15 +698,21 @@ const authorYouTubeContent = async ({
               await persist();
               continue;
             }
+            let terminalAnswerIssue;
             for (const id of ids) {
               const draft = translated.get(id);
-              if (playableAnswerIssue(draft.answer, locale) !== null) {
+              const answerIssue = playableAnswerIssue(draft.answer, locale);
+              if (answerIssue !== null) {
                 invalidateTranslationDraft(checkpoint, locale, id);
+                if (checkpoint.translationAttempts[locale][id] >= YOUTUBE_AUTHOR_MAX_ATTEMPTS) {
+                  terminalAnswerIssue = `${locale}:${id}:${answerIssue}`;
+                }
                 continue;
               }
               checkpoint.translations[locale][id] = draft;
             }
             await persist();
+            if (terminalAnswerIssue) fail("translation-answer-invalid", terminalAnswerIssue);
           }
           const awaitingCritique = pending.filter(({canonicalRiddleId}) =>
             checkpoint.translations[locale][canonicalRiddleId] &&

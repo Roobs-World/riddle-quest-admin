@@ -9,6 +9,7 @@ import {
   type RaceRunView,
 } from "@qwordly/core/race";
 import type {HostServices} from "../../types";
+import {readBrowserStorage, writeBrowserStorage} from "../../../platform/browserStorage";
 
 /** Multiplayer host methods implemented by the deterministic browser harness. */
 type RaceMethods = Pick<
@@ -69,7 +70,7 @@ const sharedHarnessEnabled = () =>
 const loadPersistedChallenge = async (challengeId: string): Promise<FakeChallenge | undefined> => {
   try {
     /** Provides raw behavior. */
-    const raw = globalThis.localStorage?.getItem(`${FAKE_CHALLENGE_PREFIX}${challengeId}`);
+    const raw = readBrowserStorage("local", `${FAKE_CHALLENGE_PREFIX}${challengeId}`);
     if (raw) return JSON.parse(raw) as FakeChallenge;
     if (sharedHarnessEnabled()) {
       /** Provides response behavior. */
@@ -85,7 +86,7 @@ const loadPersistedChallenge = async (challengeId: string): Promise<FakeChalleng
 /** Persists a challenge for recipient-browser test flows. */
 const persistChallenge = async (challengeId: string, challenge: FakeChallenge) => {
   try {
-    globalThis.localStorage?.setItem(`${FAKE_CHALLENGE_PREFIX}${challengeId}`, JSON.stringify(challenge));
+    writeBrowserStorage("local", `${FAKE_CHALLENGE_PREFIX}${challengeId}`, JSON.stringify(challenge));
     if (sharedHarnessEnabled()) {
       await fetch(`/__race-harness/challenges/${encodeURIComponent(challengeId)}`, {
         method: "PUT",

@@ -7,6 +7,7 @@ import type {
   ScreenshotProvider,
 } from "./types";
 import {parseEntryIntent} from "./entryIntent";
+import {readBrowserStorage, removeBrowserStorage, writeBrowserStorage} from "../platform/browserStorage";
 
 /** Provides ok behavior. */
 const ok = <T>(value: T): PlatformResult<T> => ({status: "success", value});
@@ -83,7 +84,7 @@ export class MockJestPlatform implements JestPlatformPort {
   readPlayerData = (): JestPlayerData | null => {
     try {
       /** Provides raw behavior. */
-      const raw = globalThis.localStorage?.getItem(MOCK_PLAYER_DATA_KEY);
+      const raw = readBrowserStorage("local", MOCK_PLAYER_DATA_KEY);
       return raw ? (JSON.parse(raw) as JestPlayerData) : null;
     } catch {
       return null;
@@ -91,12 +92,12 @@ export class MockJestPlatform implements JestPlatformPort {
   };
   /** Provides write player data behavior. */
   writePlayerData = async (value: JestPlayerData) => {
-    globalThis.localStorage?.setItem(MOCK_PLAYER_DATA_KEY, JSON.stringify(value));
+    writeBrowserStorage("local", MOCK_PLAYER_DATA_KEY, JSON.stringify(value));
   };
   /** Clears mock client state after authoritative account deletion. */
   clearPlayerState = async () => {
     this.preferences = {};
-    globalThis.localStorage?.removeItem(MOCK_PLAYER_DATA_KEY);
+    removeBrowserStorage("local", MOCK_PLAYER_DATA_KEY);
   };
   /** Gets entry intent. */
   getEntryIntent = (): JestEntryIntent => {

@@ -191,7 +191,13 @@ describe("OpenAI Service", () => {
 
       await generateUniqueRiddle();
 
-      const request = mockParse.mock.calls[1][0] as {input: string; instructions: string};
+      /** Captures the second model request for blind-solve assertions. */
+      const request = mockParse.mock.calls[1][0] as {
+        /** Stores the blind-solve request input. */
+        input: string;
+        /** Stores the blind-solve system instructions. */
+        instructions: string;
+      };
       expect(request.input).toContain('"question"');
       expect(request.input).not.toContain("rainbow");
       expect(request.instructions).toContain("not been given the author's answer");

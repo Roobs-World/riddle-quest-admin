@@ -82,4 +82,52 @@ describe("development first-run reset", () => {
 
     expect(warn).toHaveBeenCalledWith("[riddle-quest] Could not reset development first-run state", storageError);
   });
+
+  it("contains errors while acquiring browser storage during startup", () => {
+    /** Provides original storage descriptor behavior. */
+    const originalStorage = Object.getOwnPropertyDescriptor(globalThis, "localStorage");
+    /** Provides storage error behavior. */
+    const storageError = new DOMException("Storage access denied", "SecurityError");
+    Object.defineProperty(globalThis, "localStorage", {
+      configurable: true,
+      get: () => {
+        throw storageError;
+      },
+    });
+    /** Provides warn behavior. */
+    const warn = jest.spyOn(console, "warn").mockImplementation(() => undefined);
+
+    try {
+      expect(() => resetDevelopmentFirstRunState()).not.toThrow();
+      expect(warn).toHaveBeenCalledWith("[riddle-quest] Could not reset development first-run state", storageError);
+    } finally {
+      if (originalStorage) Object.defineProperty(globalThis, "localStorage", originalStorage);
+      else Reflect.deleteProperty(globalThis, "localStorage");
+    }
+  });
+
+  it("acquires both browser storage areas when startup does not inject them", () => {
+    /** Provides original local storage descriptor behavior. */
+    const originalLocalStorage = Object.getOwnPropertyDescriptor(globalThis, "localStorage");
+    /** Provides original session storage descriptor behavior. */
+    const originalSessionStorage = Object.getOwnPropertyDescriptor(globalThis, "sessionStorage");
+    /** Provides local storage behavior. */
+    const localStorage = createStorage({"riddleQuest:progress": "seen", unrelated: "preserved"});
+    /** Provides session storage behavior. */
+    const sessionStorage = createStorage({"riddleQuest:welcomeSession:user": "seen", unrelated: "preserved"});
+    Object.defineProperty(globalThis, "localStorage", {configurable: true, value: localStorage});
+    Object.defineProperty(globalThis, "sessionStorage", {configurable: true, value: sessionStorage});
+
+    try {
+      resetDevelopmentFirstRunState();
+
+      expect(localStorage.entries()).toEqual({unrelated: "preserved"});
+      expect(sessionStorage.entries()).toEqual({unrelated: "preserved"});
+    } finally {
+      if (originalLocalStorage) Object.defineProperty(globalThis, "localStorage", originalLocalStorage);
+      else Reflect.deleteProperty(globalThis, "localStorage");
+      if (originalSessionStorage) Object.defineProperty(globalThis, "sessionStorage", originalSessionStorage);
+      else Reflect.deleteProperty(globalThis, "sessionStorage");
+    }
+  });
 });

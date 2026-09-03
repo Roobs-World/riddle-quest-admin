@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "contentVersion": "youtube-content-v1-70584787c0bcc8f6",
+  "releaseReady": true,
+  "inputs": {
+    "canonicalSourceSha256": "600bea2a5c06e8944119bbf4a95de48097b462d8090f005306330c45a6f54499",
+    "orderManifestSha256": "ec23985705b6edb914ddbc0bdfb895dd6eecac3229ee4dff497cd6550cc064b2",
+    "translationBundles": {
+      "es": {
+        "sha256": "0f8db82cd6d8142cd602a5f76280ed4183852814f995e5c2b5a790a903b16363",
+        "translatorModel": "gpt-5.6-sol",
+        "criticModel": "gpt-5.5"
+      },
+      "pt": {
+        "sha256": "d9e59891a6c959f7ec9f39300c579d2a72b83c1e83c69551f36805f7a8812d83",
+        "translatorModel": "gpt-5.6-sol",
+        "criticModel": "gpt-5.5"
+      },
+      "fr": {
+        "sha256": "39b0bec688454741ba075202940eb22a131d9adac595eef4fff53e68d545f2e8",
+        "translatorModel": "gpt-5.6-sol",
+        "criticModel": "gpt-5.5"
+      },
+      "de": {
+        "sha256": "2957791361afc724c0e5cef7e5f1f7a060e4345171f92d86b08deaa28c3c251f",
+        "translatorModel": "gpt-5.6-sol",
+        "criticModel": "gpt-5.5"
+      },
+      "ja": {
+        "sha256": "693b87ea91921d5df5bb3505a0069b12a0df0f1ccb7e6de7426ca2dee0588c96",
+        "translatorModel": "gpt-5.6-sol",
+        "criticModel": "gpt-5.5"
+      },
+      "ko": {
+        "sha256": "74840cd0fdd27341c257020308ccfdbbfbe17c7fa7194924c5f8f0c13e8eb3b2",
+        "translatorModel": "gpt-5.6-sol",
+        "criticModel": "gpt-5.5"
+      },
+      "zh": {
+        "sha256": "46d8a234cabb3fb8d0ed0bf85ff7aec42ed1cc4f1e8e551e96e7e42d1044982a",
+        "translatorModel": "gpt-5.6-sol",
+        "criticModel": "gpt-5.5"
+      },
+      "hi": {
+        "sha256": "bc7ca3d3543b776c7022d9d1526d19506418e01ff1fb268e1a254f84482c4ecb",
+        "translatorModel": "gpt-5.6-sol",
+        "criticModel": "gpt-5.5"
+      },
+      "ru": {
+        "sha256": "8b35a3f2e2927b6349cadcb12d796bb5d40bcb1a7958850f2252b583c624100e",
+        "translatorModel": "gpt-5.6-sol",
+        "criticModel": "gpt-5.5"
+      },
+      "tr": {
+        "sha256": "e1e365be2e3016edb310099e45c64ddafd610680633526e9d733ed1300fbb94a",
+        "translatorModel": "gpt-5.6-sol",
+        "criticModel": "gpt-5.5"
+      },
+      "ar": {
+        "sha256": "a8a3393fe350b32e070b6a380c4064889e697c006ed07ce95f61824572f243da",
+        "translatorModel": "gpt-5.6-sol",
+        "criticModel": "gpt-5.5"
+      },
+      "id": {
+        "sha256": "1893bb77b6f98ef7e5c340cda28490f44fc26bbb80916c63340344335947d53f",
+        "translatorModel": "gpt-5.6-sol",
+        "criticModel": "gpt-5.5"
+      },
+      "it": {
+        "sha256": "07f1d8b72295b5b760325fbcf1262439a657971d787ae247fc1e958663132400",
+        "translatorModel": "gpt-5.6-sol",
+        "criticModel": "gpt-5.5"
+      },
+      "nl": {
+        "sha256": "569bebbb3623898d96946356bf8c67d508ba25d95bac29e394d7b065d26e5124",
+        "translatorModel": "gpt-5.6-sol",
+        "criticModel": "gpt-5.5"
+      },
+      "pl": {
+        "sha256": "e0cf058fd20c500c6eb9fe1b1e2f6dd6f2f76dbf046f6c79c7bf3df6cc0a2dec",
+        "translatorModel": "gpt-5.6-sol",
+        "criticModel": "gpt-5.5"
+      },
+      "vi": {
+        "sha256": "0393b5720a137a9cfdd24ee151e9f5deb08bb90807081a41e89309f20c07eb56",
+        "translatorModel": "gpt-5.6-sol",
+        "criticModel": "gpt-5.5"
+      }
+    },
+    "canonicalAuthoring": {
+      "sourceDescriptorSha256": "600bea2a5c06e8944119bbf4a95de48097b462d8090f005306330c45a6f54499",
+      "generatorModel": "gpt-5.6-sol",
+      "criticModel": "gpt-5.5",
+      "appendReceiptCount": 0,
+      "appendReceiptsSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    }
+  },
+  "runtime": {
+    "sha256": "58c24e29caf1c8bd14892c51b489ab5a31083aa49bacdbd8235a668ffa27f9a2",
+    "localeCount": 17,
+    "riddleCountPerLocale": 180
+  }
+}

@@ -1,5 +1,6 @@
 import {splitGraphemes} from "@qwordly/core/game";
 import contentDocument from "#youtube-content";
+import {YOUTUBE_ANSWER_MAX_GRAPHEMES} from "./limits";
 import type {YouTubeContent, YouTubeLocale, YouTubeRiddle} from "./types";
 
 /** Defines the youtube locales value. */
@@ -103,7 +104,7 @@ const parseRiddle = (id: string, value: unknown, locale: YouTubeLocale): YouTube
     value.answer !== value.answer.normalize("NFC") ||
     !ANSWER_PATTERN.test(value.answer) ||
     splitGraphemes(value.answer, locale).length < 1 ||
-    splitGraphemes(value.answer, locale).length > 7 ||
+    splitGraphemes(value.answer, locale).length > YOUTUBE_ANSWER_MAX_GRAPHEMES ||
     !isId(value.categoryId, 80) ||
     (value.difficultyBand !== "easy" && value.difficultyBand !== "medium" && value.difficultyBand !== "hard") ||
     typeof value.contentFingerprint !== "string" ||

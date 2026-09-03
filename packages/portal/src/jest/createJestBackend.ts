@@ -1,4 +1,5 @@
 import {JestBackendClient, type JestBackendPort} from "./backend";
+import {readBrowserStorage, writeBrowserStorage} from "../platform/browserStorage";
 
 /** Describes auth harness state. */
 type AuthHarnessState = {
@@ -45,7 +46,8 @@ export function createJestBackend({
       /** Provides registration once key behavior. */
       const registrationOnceKey = "riddleQuest:jestAuthHarness:registrationIdentityFailed";
       /** Indicates whether should fail once. */
-      const shouldFailOnce = testState?.scenario === "identity-once-failure" && sessionStorage.getItem(onceKey) !== "1";
+      const shouldFailOnce =
+        testState?.scenario === "identity-once-failure" && readBrowserStorage("session", onceKey) !== "1";
       /** Indicates whether should fail after registration. */
       const shouldFailAfterRegistration =
         testState?.scenario === "registration-identity-failure" && playerSigned.endsWith(":true");
@@ -53,9 +55,9 @@ export function createJestBackend({
       const shouldFailAfterRegistrationOnce =
         testState?.scenario === "registration-identity-once-failure" &&
         playerSigned.endsWith(":true") &&
-        sessionStorage.getItem(registrationOnceKey) !== "1";
-      if (shouldFailOnce) sessionStorage.setItem(onceKey, "1");
-      if (shouldFailAfterRegistrationOnce) sessionStorage.setItem(registrationOnceKey, "1");
+        readBrowserStorage("session", registrationOnceKey) !== "1";
+      if (shouldFailOnce) writeBrowserStorage("session", onceKey, "1");
+      if (shouldFailAfterRegistrationOnce) writeBrowserStorage("session", registrationOnceKey, "1");
       if (
         testState?.scenario === "identity-failure" ||
         shouldFailOnce ||

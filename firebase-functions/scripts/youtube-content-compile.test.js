@@ -74,7 +74,7 @@ const translationBundle = (locale, source) => ({
   })),
 });
 
-test("accepts NFC native letters and marks from one through seven graphemes", () => {
+test("accepts NFC native letters and marks through the localized answer limit", () => {
   assert.equal(playableAnswerIssue("東京", "ja"), null);
   assert.equal(playableAnswerIssue("إجابة", "ar"), null);
   assert.equal(playableAnswerIssue("éclair", "fr"), null);
@@ -82,7 +82,8 @@ test("accepts NFC native letters and marks from one through seven graphemes", ()
   assert.equal(playableAnswerIssue("two words", "en"), "letters-and-marks-only");
   assert.equal(playableAnswerIssue("answer!", "en"), "letters-and-marks-only");
   assert.equal(playableAnswerIssue("answer2", "en"), "letters-and-marks-only");
-  assert.equal(playableAnswerIssue("abcdefgh", "en"), "grapheme-length");
+  assert.equal(playableAnswerIssue("abcdefghijkl", "en"), null);
+  assert.equal(playableAnswerIssue("abcdefghijklm", "en"), "grapheme-length");
   assert.equal(playableAnswerIssue("🧩", "en"), "letters-and-marks-only");
 });
 

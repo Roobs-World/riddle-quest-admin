@@ -9,6 +9,7 @@ const {writeSync} = require("node:fs");
 const {mkdir, readFile, rename, rm, unlink, writeFile} = require("node:fs/promises");
 const {
   SUPPORTED_LOCALES,
+  YOUTUBE_ANSWER_MAX_GRAPHEMES,
   YOUTUBE_CLUE_MAX_LENGTH,
   YOUTUBE_CRITIC_MODEL,
   YOUTUBE_TRANSLATOR_MODEL,
@@ -261,7 +262,7 @@ const main = async () => {
         cacheKey: "riddlequest-youtube-english-critic-v1",
       });
     },
-    async translate({model, locale, source, attempts, feedback}) {
+    async translate({model, locale, source, localizedCatalog, attempts, feedback}) {
       return parseResponse({
         openai,
         model,
@@ -279,9 +280,11 @@ const main = async () => {
           "is true, retain an otherwise correct answer and rewrite the clue so it contains no literal answer. When " +
           "difficultyMatch is false, restore the source difficulty without changing the canonical fact. " +
           "Answers must be NFC-normalized Unicode letters/marks only, with no spaces or punctuation, and one through " +
-          "seven grapheme clusters. Return every canonicalRiddleId exactly once.",
-        input: {expectedCount: source.length, source, attempts, feedback},
-        cacheKey: `riddlequest-youtube-translation-${locale}-v4`,
+          `${YOUTUBE_ANSWER_MAX_GRAPHEMES} grapheme clusters. Return only the bare dictionary-form answer without ` +
+          "an article, determiner, explanation, or surrounding phrase. Do not reuse any answer in localizedCatalog; " +
+          "choose a faithful native synonym when necessary. Return every canonicalRiddleId exactly once.",
+        input: {expectedCount: source.length, source, localizedCatalog, attempts, feedback},
+        cacheKey: `riddlequest-youtube-translation-${locale}-v6`,
       });
     },
     async critiqueTranslation({model, locale, source, translations}) {

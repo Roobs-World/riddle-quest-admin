@@ -1,0 +1,3248 @@
+{
+  "locale": "pt",
+  "provenance": "automated_translation_v1",
+  "translatorModel": "gpt-5.6-sol",
+  "criticModel": "gpt-5.5",
+  "riddles": [
+    {
+      "canonicalRiddleId": "race:history:01",
+      "sourceCanonicalHash": "bf9da31eba062c2459b99c1bb5ab9438d2cd8202f9c8898f76ca31e30c5fd7ba",
+      "text": "Qual cidade antiga foi o centro de um império governado por imperadores como Augusto?",
+      "answer": "Roma",
+      "categoryId": "history",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which ancient city was the center of an empire ruled by emperors such as Augustus?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:02",
+      "sourceCanonicalHash": "ecef91939068c010775552025c72cdf165cbe7ab9547909a3343d929c19e3f62",
+      "text": "Qual civilização andina construiu Machu Picchu?",
+      "answer": "inca",
+      "categoryId": "history",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Andean civilization built Machu Picchu?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:03",
+      "sourceCanonicalHash": "4979a8fb4065ca4f2d61f9d44f0b0b9af80fb2de382616e654dd8b9b49225cb1",
+      "text": "Qual povo mesoamericano fundou Tenochtitlán?",
+      "answer": "asteca",
+      "categoryId": "history",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Mesoamerican people founded Tenochtitlan?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:04",
+      "sourceCanonicalHash": "570966a9e2a0530eca8e63666998260ad15e56fc053f8fd9426d942e2d831f21",
+      "text": "A qual casa real inglesa pertenceram Henrique VIII e Isabel I?",
+      "answer": "Tudor",
+      "categoryId": "history",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "To which English royal house did Henry VIII and Elizabeth I belong?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:05",
+      "sourceCanonicalHash": "5ec99f6d7a26639d71b33fa2a4e07ecfc4841103241386941fc2d2e42907d255",
+      "text": "Que nome se dá aos navegadores nórdicos que saqueavam e comerciavam pela Europa?",
+      "answer": "viquingue",
+      "categoryId": "history",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What name is given to the Norse seafarers who raided and traded across Europe?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:06",
+      "sourceCanonicalHash": "66fa1d53119cd820f236dab683b82c626ae771bac9b107a807a7162f6c3478fe",
+      "text": "Que líder romano atravessou o rio Rubicão em 49 a.C.?",
+      "answer": "César",
+      "categoryId": "history",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Roman leader crossed the Rubicon River in 49 BC?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:07",
+      "sourceCanonicalHash": "37edea7681a819aee96da8c738b388e0c44e5d96e8b385d30aefc131443f0b4f",
+      "text": "Que líder da independência da Índia ficou conhecido pela resistência não violenta?",
+      "answer": "Gandhi",
+      "categoryId": "history",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which leader of India's independence became known for nonviolent resistance?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:08",
+      "sourceCanonicalHash": "14cea9af177e7fe82b9f08a73ebbfef937f2baebf47dae2e8f4a574dbb9ea13f",
+      "text": "Que cidade-estado grega era famosa pela sua sociedade guerreira?",
+      "answer": "Esparta",
+      "categoryId": "history",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Greek city-state was famous for its warrior society?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:09",
+      "sourceCanonicalHash": "22edf64658755362d864cab5002f55e3343835dfdf032c9b3f5a0a7d37d223c4",
+      "text": "Que civilização antiga construiu as pirâmides de Gizé?",
+      "answer": "Egito",
+      "categoryId": "history",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which ancient civilization built the pyramids of Giza?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:10",
+      "sourceCanonicalHash": "b5be7dce8cd442a07c01cd6515f564925333ab1c3db2b6217dc2b17c3b400393",
+      "text": "Qual é a primeira palavra do nome da carta selada pelo rei João em 1215?",
+      "answer": "Magna",
+      "categoryId": "history",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the first word of the name of the charter sealed by King John in 1215?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:11",
+      "sourceCanonicalHash": "4b6bbdba20788bb587f7a8c31c40794a3067db0a681145959b96e03698bd816e",
+      "text": "Que cidade romana foi soterrada pelo monte Vesúvio no ano 79?",
+      "answer": "Pompeia",
+      "categoryId": "history",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Roman city was buried by Mount Vesuvius in the year 79?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:12",
+      "sourceCanonicalHash": "fa18edf89c44cd3954503a6e3c281653429d7d3d23845c0236b775e90e343e03",
+      "text": "Que reformador publicou as Noventa e Cinco Teses em 1517?",
+      "answer": "Lutero",
+      "categoryId": "history",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which reformer published the Ninety-five Theses in 1517?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:13",
+      "sourceCanonicalHash": "794e449ea97bbe3e58ba4afcfb9d8a68d9b4fc9201cfc0d91aa0314d2c1d77dd",
+      "text": "Que península deu nome à guerra travada entre 1853 e 1856?",
+      "answer": "Crimeia",
+      "categoryId": "history",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which peninsula gave its name to the war fought between 1853 and 1856?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:14",
+      "sourceCanonicalHash": "ff57f2d93247f5780f2a1442e74c96a78ca79dbd7b636776259d800cc61a630b",
+      "text": "Que nome tinha o programa das missões que levaram os primeiros seres humanos à Lua?",
+      "answer": "Apolo",
+      "categoryId": "history",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What name did the program of the missions that took the first human beings to the Moon have?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:15",
+      "sourceCanonicalHash": "ea4e030a17efd49f51574172321fa98aeb8747802d0388f7c2956a116c486b0e",
+      "text": "Qual era o apelido de Ana, a segunda esposa de Henrique VIII?",
+      "answer": "Bolena",
+      "categoryId": "history",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What was the surname of Anne, the second wife of Henry VIII?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:16",
+      "sourceCanonicalHash": "a35980b49599ac96c439abdd7a4c5e2f011fb5f1a72eaeaf03c4dd46f5e4119f",
+      "text": "Que batalha de 1916 se tornou uma das mais longas da Primeira Guerra Mundial?",
+      "answer": "Verdun",
+      "categoryId": "history",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which battle of 1916 became one of the longest of the First World War?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:17",
+      "sourceCanonicalHash": "1eac2497bd5cf464d7017941382526222086eea1d42eadfadc595bbba6a691e8",
+      "text": "Que cidade turística da Crimeia recebeu Roosevelt, Churchill e Stalin em 1945?",
+      "answer": "Ialta",
+      "categoryId": "history",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which tourist city in Crimea hosted Roosevelt, Churchill, and Stalin in 1945?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:18",
+      "sourceCanonicalHash": "2982ead5a75c205a8a51725e5c97826d3e9ac89e12cd9f705f71346a85a84aef",
+      "text": "Que cidade japonesa foi a capital imperial antes de Tóquio?",
+      "answer": "Quioto",
+      "categoryId": "history",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Japanese city was the imperial capital before Tokyo?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:19",
+      "sourceCanonicalHash": "0b9da389f98dcfe9838a25ce9e516b15fa22e372ee7f472e94b8da3b86f03ef4",
+      "text": "Que confederação indiana foi fundada por Shivaji?",
+      "answer": "Marata",
+      "categoryId": "history",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Indian confederacy was founded by Shivaji?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:20",
+      "sourceCanonicalHash": "1d911ce4f7a243ad21bc1fe44458efe3705c8be566b51d46ac78c91d392e1ee9",
+      "text": "Que política japonesa restringiu a maior parte do contato com estrangeiros durante o período Edo?",
+      "answer": "Sakoku",
+      "categoryId": "history",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Japanese policy restricted most contact with foreigners during the Edo period?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:21",
+      "sourceCanonicalHash": "dc7c976603f4bc9eff632aebaab5d2f43a43424a4e33dc87fd336e263327ad76",
+      "text": "Que povo da Anatólia da Idade do Bronze fez de Hattusa sua capital?",
+      "answer": "Hitita",
+      "categoryId": "history",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which people of Bronze Age Anatolia made Hattusa their capital?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:22",
+      "sourceCanonicalHash": "f2459dd32f8fb18bd3539c206052a1946390ad213d2cd1e4015ab9a08336651c",
+      "text": "Que civilização da Idade do Bronze construiu o palácio de Cnossos?",
+      "answer": "Minoica",
+      "categoryId": "history",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Bronze Age civilization built the palace of Knossos?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:23",
+      "sourceCanonicalHash": "f894b74d726c38c80fd0e249434e0e94970476dd8a0bdf86a3c3fc51207383a6",
+      "text": "Que povo antigo desenvolveu cidades-estado como Ur e Uruk?",
+      "answer": "Sumérios",
+      "categoryId": "history",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which ancient people developed city-states such as Ur and Uruk?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:24",
+      "sourceCanonicalHash": "2d2cb011fe2d08a8217f493073663abbb689c608aad8026898d145f0a5ced76e",
+      "text": "Que adjetivo descreve as três guerras travadas entre Roma e Cartago?",
+      "answer": "Púnicas",
+      "categoryId": "history",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which adjective describes the three wars fought between Rome and Carthage?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:25",
+      "sourceCanonicalHash": "6d4dda9b4c40be011aab7f324a6b14b5b6108f9fce8f1e9fbeaed159e6077d18",
+      "text": "Que imperador ordenou a construção de uma muralha defensiva no norte da Grã-Bretanha?",
+      "answer": "Adriano",
+      "categoryId": "history",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which emperor ordered the construction of a defensive wall in northern Great Britain?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:26",
+      "sourceCanonicalHash": "7eaaa0b8ee0fc5b13d6d0eadbbbbefbef0562157abbe280d854921e48e633267",
+      "text": "Que palavra dá nome à fracassada frota espanhola de 1588?",
+      "answer": "Armada",
+      "categoryId": "history",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which word gives its name to the failed Spanish fleet of 1588?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:27",
+      "sourceCanonicalHash": "3df530edf3525f740a85d3a305eba8bdd99b1f47a7776ab6dfb3b73c5386911e",
+      "text": "Que restauração iniciou a rápida modernização do Japão em 1868?",
+      "answer": "Meiji",
+      "categoryId": "history",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which restoration began Japan's rapid modernization in 1868?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:28",
+      "sourceCanonicalHash": "dab6b8970ec9a76cdc1b3df4976f926fd93acd3c232526ccba55d32586092856",
+      "text": "Que império construiu Angkor Wat?",
+      "answer": "Quemer",
+      "categoryId": "history",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which empire built Angkor Wat?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:29",
+      "sourceCanonicalHash": "33431d049be5dbbea80332bc8a524644a432aa2055bb42826f7e09ee66cfabc9",
+      "text": "Que antigo reino, centrado no norte da Etiópia e na Eritreia, cunhava suas próprias moedas?",
+      "answer": "Axum",
+      "categoryId": "history",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which ancient kingdom, centered in northern Ethiopia and Eritrea, minted its own coins?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:30",
+      "sourceCanonicalHash": "c162ae791822da5646262fd85d2cd803ffaebbefabc2daf3d4302ddbdaf6d329",
+      "text": "Que dinastia chinesa unificou a China pela primeira vez em 221 a.C.?",
+      "answer": "Qin",
+      "categoryId": "history",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Chinese dynasty unified China for the first time in 221 BC?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:01",
+      "sourceCanonicalHash": "d235fafd64d57b3ac13d97adb1a0e870dd5f9cce95a6ff8b9d197571189f2bf8",
+      "text": "Qual rio corre para o norte pelo Egito e deságua no mar Mediterrâneo?",
+      "answer": "Nilo",
+      "categoryId": "geography",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which river runs north through Egypt and flows into the Mediterranean Sea?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:02",
+      "sourceCanonicalHash": "ce35db44cf0f95d9de19f24c906098a96c6294e553f86c753bbae912d657d6b3",
+      "text": "Qual cordilheira se estende pela costa oeste da América do Sul?",
+      "answer": "Andes",
+      "categoryId": "geography",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which mountain range extends along the west coast of South America?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:03",
+      "sourceCanonicalHash": "d0c24dbb35ab48282b1fe83ef7e16ec7705d0f827164c7f2c4b20636973801ac",
+      "text": "Qual é a capital do Japão?",
+      "answer": "Tóquio",
+      "categoryId": "geography",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the capital of Japan?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:04",
+      "sourceCanonicalHash": "bdad3b18d354f0fca7ecbd623d0f8b9d414f0701a52deba0e3cc9fa92fb54934",
+      "text": "Em qual país africano fica a reserva de Maasai Mara?",
+      "answer": "Quênia",
+      "categoryId": "geography",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "In which African country is the Maasai Mara reserve located?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:05",
+      "sourceCanonicalHash": "237630f4fb060c58d5f23b4c82921443edbd682e19bb0dfa293c5c196a15d218",
+      "text": "Qual imenso deserto cobre grande parte do norte da África?",
+      "answer": "Saara",
+      "categoryId": "geography",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which immense desert covers much of northern Africa?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:06",
+      "sourceCanonicalHash": "52ab8d49f2f3082728c61898a2ccb91ce210fc0d30c3505976d20c321c83e152",
+      "text": "Qual oceano circunda o Polo Norte?",
+      "answer": "Ártico",
+      "categoryId": "geography",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which ocean surrounds the North Pole?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:07",
+      "sourceCanonicalHash": "bfe931bb15818d3142ad871480d692403a20eced2402bac07f510bc959b2e12e",
+      "text": "Qual é o maior país da América do Sul em extensão territorial?",
+      "answer": "Brasil",
+      "categoryId": "geography",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the largest country in South America by land area?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:08",
+      "sourceCanonicalHash": "4d5235209deb477ddfe2c2519dd7d2b60474667d3ab166ccc5cb310c18fc190f",
+      "text": "Qual é a capital do Canadá?",
+      "answer": "Ottawa",
+      "categoryId": "geography",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the capital of Canada?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:09",
+      "sourceCanonicalHash": "b2cf4859c3f0d8a9ab4e0ecc419af98e333e867e6c99bb398c5e7368ebc63aae",
+      "text": "Qual cordilheira europeia inclui o Monte Branco?",
+      "answer": "Alpes",
+      "categoryId": "geography",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which European mountain range includes Mont Blanc?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:10",
+      "sourceCanonicalHash": "6391cd7101e8dadbd28771ca89db13f1359833c214d8446152f6545a8f3c5bf9",
+      "text": "Qual país do Himalaia tem Catmandu como capital?",
+      "answer": "Nepal",
+      "categoryId": "geography",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Himalayan country has Kathmandu as its capital?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:11",
+      "sourceCanonicalHash": "815f2be3e118c91424651107d565dc8f165d9adeaa7d9335bb4f4b5918347d06",
+      "text": "Qual rio passa por Viena, Bratislava, Budapeste e Belgrado?",
+      "answer": "Danúbio",
+      "categoryId": "geography",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which river passes through Vienna, Bratislava, Budapest, and Belgrade?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:12",
+      "sourceCanonicalHash": "92eebe0d36ded4c4332948d9b677902dd59148b4266911bc6550ea4a532c1645",
+      "text": "Qual reino do Himalaia mede o progresso pela Felicidade Interna Bruta?",
+      "answer": "Butão",
+      "categoryId": "geography",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Himalayan kingdom measures progress by Gross National Happiness?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:13",
+      "sourceCanonicalHash": "d22a165f5a46c5eb8b25bffc4ea553b2b8ddb427c16c525e9fcf7accec0f05ed",
+      "text": "Qual país insular fica ao sul da Sicília?",
+      "answer": "Malta",
+      "categoryId": "geography",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which island country lies south of Sicily?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:14",
+      "sourceCanonicalHash": "6521a2585673e558f5faf7bf22c66093dd7b696cdec8c798f97939bbc69072aa",
+      "text": "Qual é a capital equatoriana situada em grande altitude?",
+      "answer": "Quito",
+      "categoryId": "geography",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the Ecuadorian capital located at high altitude?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:15",
+      "sourceCanonicalHash": "f487b7c39c6a8d41c508eec39644ecbb5bc69993afeb52139705ff4e497d0968",
+      "text": "Qual cordilheira se estende por Marrocos, Argélia e Tunísia?",
+      "answer": "Atlas",
+      "categoryId": "geography",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which mountain range extends through Morocco, Algeria, and Tunisia?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:16",
+      "sourceCanonicalHash": "a0aa53a1b69408c10dbc39c097b93276f941bdc662aecde5f322b0386a442992",
+      "text": "Qual é a grande ilha do Mediterrâneo que fica perto da ponta da bota italiana?",
+      "answer": "Sicília",
+      "categoryId": "geography",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which large Mediterranean island is near the tip of the Italian boot?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:17",
+      "sourceCanonicalHash": "13b48097d1e735f23ca115a4af8b2484d215d02b96daf12f0fb19fe450db248f",
+      "text": "Qual deserto se estende por partes da Mongólia e do norte da China?",
+      "answer": "Gobi",
+      "categoryId": "geography",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which desert stretches across parts of Mongolia and northern China?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:18",
+      "sourceCanonicalHash": "a9f8dfba933c346c696e8b35699d9af7ad226426b257e2eed6831b4d5300a79d",
+      "text": "Em que país fica a antiga cidade de Petra?",
+      "answer": "Jordânia",
+      "categoryId": "geography",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "In which country is the ancient city of Petra located?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:19",
+      "sourceCanonicalHash": "a129a68a70989ed679a9acff5b4a93f42aaa4b00dbcefe7d721ab1a719cf177d",
+      "text": "Qual ilha é dividida entre Indonésia, Malásia e Brunei?",
+      "answer": "Bornéu",
+      "categoryId": "geography",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which island is divided between Indonesia, Malaysia, and Brunei?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:20",
+      "sourceCanonicalHash": "4a4f0207d1071d2210c0226d7eb148f7b353c87bbfc907c46bb4db7b8def0cc1",
+      "text": "Qual é o maior lago do mundo em área de superfície?",
+      "answer": "Cáspio",
+      "categoryId": "geography",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the largest lake in the world by surface area?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:21",
+      "sourceCanonicalHash": "162f990117d68117f2ad3ced1aec4096c2b4bf5aa5aec3c7de9ab0647e8f77b6",
+      "text": "Qual país é totalmente cercado pela África do Sul?",
+      "answer": "Lesoto",
+      "categoryId": "geography",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which country is totally surrounded by South Africa?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:22",
+      "sourceCanonicalHash": "e8de550b473c4f5d46b6d8c620f076438b6312e160a6d5ba0010bf0540edc551",
+      "text": "Qual grande rio atravessa a Venezuela e forma um vasto delta no Atlântico?",
+      "answer": "Orinoco",
+      "categoryId": "geography",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which major river crosses Venezuela and forms a vast delta in the Atlantic?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:23",
+      "sourceCanonicalHash": "8fdf88ae83a7610216158c0ace1d48600780705f72275b9a481c9be07173819d",
+      "text": "Qual país africano sem litoral abriga a maior parte de um lago que tem o mesmo nome dele?",
+      "answer": "Maláui",
+      "categoryId": "geography",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which landlocked African country contains most of a lake that has the same name as it?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:24",
+      "sourceCanonicalHash": "d9bce9b67f2884bded0c2504b76ec264aa36255b4b159f0ae94f81a0bd2e7455",
+      "text": "Qual ilha indonésia fica a oeste de Java, do outro lado do estreito de Sunda?",
+      "answer": "Sumatra",
+      "categoryId": "geography",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Indonesian island lies west of Java, across the Sunda Strait?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:25",
+      "sourceCanonicalHash": "46f3a0768b7ccada385e647d6fc32fd7fa5dd826557c4ee7376bece550931e08",
+      "text": "Qual deserto costeiro acompanha grande parte do litoral atlântico do sul da África?",
+      "answer": "Namibe",
+      "categoryId": "geography",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which coastal desert follows much of the Atlantic coastline of southern Africa?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:26",
+      "sourceCanonicalHash": "9206d2286b6af25a5b00259c93199a35eeaf562811a6e79c2df08d80164d9baa",
+      "text": "Qual é a capital da Letônia?",
+      "answer": "Riga",
+      "categoryId": "geography",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the capital of Latvia?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:27",
+      "sourceCanonicalHash": "e2d4b8e054e252ea80abfdae9c5edc79c15f1983bf7feac72407a1ff9976d6d6",
+      "text": "Qual país da América Central tem Belmopan como capital?",
+      "answer": "Belize",
+      "categoryId": "geography",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Central American country has Belmopan as its capital?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:28",
+      "sourceCanonicalHash": "16b5c7758f79db5a52c4fba88fc718569a4e9ab5dcf9ce93773892b6d08691b4",
+      "text": "Qual cordilheira é comumente considerada parte da fronteira entre a Europa e a Ásia?",
+      "answer": "Urais",
+      "categoryId": "geography",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which mountain range is commonly considered part of the border between Europe and Asia?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:29",
+      "sourceCanonicalHash": "a5d92e54178b67c9309564189d195ac715a033909e3575babf8eff38cf4f31d4",
+      "text": "Em qual ilha indonésia fica Jacarta?",
+      "answer": "Java",
+      "categoryId": "geography",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "On which Indonesian island is Jakarta located?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:30",
+      "sourceCanonicalHash": "4f0ea7f2d9224fb02faf35ccf20a5dc6b743c9d62a59278e84f08123538dfc5e",
+      "text": "Qual pequeno país insular do Pacífico não tem uma capital oficial?",
+      "answer": "Nauru",
+      "categoryId": "geography",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which small Pacific island country does not have an official capital?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:01",
+      "sourceCanonicalHash": "18e6ea3b543c58b8d7880df7675d63a92c7b06571e7f58790ca84fdeec0143f0",
+      "text": "Qual instrumento de teclado costuma ter 88 teclas?",
+      "answer": "piano",
+      "categoryId": "music",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which keyboard instrument usually has 88 keys?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:02",
+      "sourceCanonicalHash": "71e2dd95f96ad0f201f187bb341f3673723dbf7a7a20f51f4855947e4ff6b27c",
+      "text": "Qual instrumento de cordas é tocado com arco e apoiado sob o queixo?",
+      "answer": "violino",
+      "categoryId": "music",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which string instrument is played with a bow and supported under the chin?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:03",
+      "sourceCanonicalHash": "7df7b8479532eecd1bf1b5b85eed9ecefcf9674bcf44a50d4ee40d79cd64bebe",
+      "text": "Qual termo musical indica a velocidade de uma peça?",
+      "answer": "tempo",
+      "categoryId": "music",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which musical term indicates the speed of a piece?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:04",
+      "sourceCanonicalHash": "affab903824785220f53388b9babdfe532263bccdad3c1f0ad457f7546d25e8c",
+      "text": "Qual parte repetida de uma canção costuma trazer seu trecho mais marcante?",
+      "answer": "refrão",
+      "categoryId": "music",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which repeated part of a song usually contains its most striking section?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:05",
+      "sourceCanonicalHash": "c169bc4a8478329e800e61e0685879a55c452e778731ffc0a46560b89025a9fd",
+      "text": "Qual intervalo abrange oito notas de uma escala maior?",
+      "answer": "oitava",
+      "categoryId": "music",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which interval covers eight notes of a major scale?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:06",
+      "sourceCanonicalHash": "11a0a1327a80bd0d78909e3d50485604892ae718818ba6fb2e709294df414940",
+      "text": "Qual gênero surgiu nas comunidades afro-americanas de Nova Orleans?",
+      "answer": "jazz",
+      "categoryId": "music",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which genre emerged in African American communities in New Orleans?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:07",
+      "sourceCanonicalHash": "e71e515a0607c0bcfcd72033be811bbf1d6cd43f13efca8cc708574a1978dae3",
+      "text": "Qual forma teatral conta uma história principalmente por meio do canto?",
+      "answer": "ópera",
+      "categoryId": "music",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which theatrical form tells a story mainly through singing?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:08",
+      "sourceCanonicalHash": "e2026b1d686593cd03d2073addebfd15acdcb1b1e782498b25bdb6a2975f86d5",
+      "text": "Qual grande instrumento de cordas é tocado com arco, com o músico sentado e segurando-o entre os joelhos?",
+      "answer": "violoncelo",
+      "categoryId": "music",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which large string instrument is played with a bow, with the musician seated and holding it between the knees?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:09",
+      "sourceCanonicalHash": "c4cdae38d8b61ded9aca64f7c8b0506e1c5a8316d77d7fba277299e9577b0be2",
+      "text": "Qual instrumento da família dos sopros de madeira é segurado na horizontal e tocado junto aos lábios?",
+      "answer": "flauta",
+      "categoryId": "music",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which instrument in the woodwind family is held horizontally and played at the lips?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:10",
+      "sourceCanonicalHash": "4f16961f673a0409a003c62d00e181cf19c2bee4a189b0770b21076240cde05d",
+      "text": "Que palavra descreve o padrão organizado das batidas na música?",
+      "answer": "ritmo",
+      "categoryId": "music",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What word describes the organized pattern of beats in music?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:11",
+      "sourceCanonicalHash": "b1ed20dc78ea996eca4cc81d215cec4023c51af241afa983b8c30032a55a0a44",
+      "text": "Qual é a voz feminina adulta padrão mais aguda?",
+      "answer": "soprano",
+      "categoryId": "music",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the highest standard adult female voice?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:12",
+      "sourceCanonicalHash": "0e7036f8ba223c005dd2d379e119d6ba80fba2a6212120b48ea5eb6b250f0a1a",
+      "text": "Qual gênero jamaicano é fortemente associado a Bob Marley?",
+      "answer": "reggae",
+      "categoryId": "music",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Jamaican genre is strongly associated with Bob Marley?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:13",
+      "sourceCanonicalHash": "82fdbf40899839d8dd046ac8183502427845e5f1bc9ba41facd87b14ecc259ad",
+      "text": "Qual instrumento de cordas com corpo arredondado se destaca no bluegrass?",
+      "answer": "banjo",
+      "categoryId": "music",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which round-bodied string instrument stands out in bluegrass?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:14",
+      "sourceCanonicalHash": "b0eb1b0603161312c4e96ae718093da051e39b68b6e1c1fed1943a8554319dbb",
+      "text": "Qual composição em vários movimentos costuma ser escrita para um instrumento solo ou pequeno conjunto?",
+      "answer": "sonata",
+      "categoryId": "music",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which composition in several movements is usually written for a solo instrument or small ensemble?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:15",
+      "sourceCanonicalHash": "5c43e83809e0bed4f1a9731a4b923709eb8b8bc16fd111a756e81be0b08abd62",
+      "text": "Qual é a voz masculina adulta de peito mais aguda entre as mais comuns?",
+      "answer": "tenor",
+      "categoryId": "music",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the highest adult male chest voice among the most common ones?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:16",
+      "sourceCanonicalHash": "1efd23d42d34797685fef0ff053ff3ecd4b3e64e59d618fc55c7c57a420417f3",
+      "text": "Que gênero costuma usar uma forma harmônica de doze compassos?",
+      "answer": "blues",
+      "categoryId": "music",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What genre commonly uses a twelve-bar harmonic form?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:17",
+      "sourceCanonicalHash": "01a6f566e82d04da58baa4eb720aaa1bdfded19a625d8f7f4aa3b0ce0128da99",
+      "text": "Que gravadora de Detroit lançou as Supremes e Stevie Wonder?",
+      "answer": "Motown",
+      "categoryId": "music",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Detroit record label launched the Supremes and Stevie Wonder?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:18",
+      "sourceCanonicalHash": "28111ed2ce05128f760295f1f9f5cdb07e60a2ee4d475f3335f39670acedde99",
+      "text": "Que forma de dança cênica usa posições como plié e arabesque?",
+      "answer": "balé",
+      "categoryId": "music",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which staged dance form uses positions such as plié and arabesque?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:19",
+      "sourceCanonicalHash": "6c5e1857e8bdae4dff0ecd978b54775623c56a46527b8a696684b9da08558bd8",
+      "text": "Que termo designa uma sequência de notas individuais percebida como uma única linha musical?",
+      "answer": "melodia",
+      "categoryId": "music",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What term denotes a sequence of individual notes perceived as a single musical line?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:20",
+      "sourceCanonicalHash": "f3b8387f1ab963006e7d53eb0f76f8b594b1d95bd4ddd9466dce60b6ce4aabce",
+      "text": "Como os músicos chamam três ou mais notas tocadas ao mesmo tempo?",
+      "answer": "acorde",
+      "categoryId": "music",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What do musicians call three or more notes played at the same time?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:21",
+      "sourceCanonicalHash": "41228202d9a11a1a2f3dda80bf109f9c1c6bbef97749409351b1f75d962608d8",
+      "text": "Que instrumento indiano dedilhado tem cordas simpáticas e braço longo?",
+      "answer": "sitar",
+      "categoryId": "music",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which plucked Indian instrument has sympathetic strings and a long neck?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:22",
+      "sourceCanonicalHash": "d236eec2a01ebc4c7b064193fcb56b5250feaca83ec7f050b1d91068e089c965",
+      "text": "Que forma contrapontística desenvolve um tema por meio de vozes entrelaçadas?",
+      "answer": "fuga",
+      "categoryId": "music",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What contrapuntal form develops a theme through interwoven voices?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:23",
+      "sourceCanonicalHash": "80398eebb33b472d91feaad497831fb364209fa3436a434a52febe9eb951a0c2",
+      "text": "Que instrumento de sopro de madeira com palheta dupla afina a orquestra antes de um concerto?",
+      "answer": "oboé",
+      "categoryId": "music",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which double-reed woodwind instrument tunes the orchestra before a concert?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:24",
+      "sourceCanonicalHash": "61e29bf0bc9f3099eeba88cb0c48b68b023a283de0cfbe6e1de8c41f3dec6bed",
+      "text": "Que forma faz um tema principal reaparecer entre seções contrastantes?",
+      "answer": "rondó",
+      "categoryId": "music",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What form makes a main theme reappear between contrasting sections?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:25",
+      "sourceCanonicalHash": "18def9ff1c4264960cff6dd1fe1264c29b959b2f48e992810d8d682a686a47c4",
+      "text": "Que período musical ornamentado sucedeu o Renascimento?",
+      "answer": "barroco",
+      "categoryId": "music",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which ornate musical period succeeded the Renaissance?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:26",
+      "sourceCanonicalHash": "b66980ea56f6649a6d2a647b4ce4307f24164fb17869f06e0ef771349771dc7e",
+      "text": "Que termo descreve a qualidade sonora característica de um som?",
+      "answer": "timbre",
+      "categoryId": "music",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What term describes the characteristic sound quality of a sound?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:27",
+      "sourceCanonicalHash": "483c79b75b182f63abdb0054f6102dc0b41533cc7196cae78d805f0aec309da8",
+      "text": "Que tradição musical judaica do Leste Europeu costuma destacar o clarinete?",
+      "answer": "klezmer",
+      "categoryId": "music",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Eastern European Jewish musical tradition often features the clarinet?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:28",
+      "sourceCanonicalHash": "c95ea4d9b0e94eb99401b80bdabdd1d64814ef4e8589c5dbdff4dd6ed34b3585",
+      "text": "Que conjunto musical indonésio é formado principalmente por gongos e metalofones?",
+      "answer": "gamelão",
+      "categoryId": "music",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Indonesian musical ensemble is formed mainly of gongs and metallophones?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:29",
+      "sourceCanonicalHash": "843e025043584306d74aa0e916a9a2b6863ae34b6217797e96fec09c70462e44",
+      "text": "Que indicação permite flexibilidade expressiva no tempo musical?",
+      "answer": "rubato",
+      "categoryId": "music",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What indication allows expressive flexibility in musical time?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:30",
+      "sourceCanonicalHash": "0e5433bd11c770bccf7502098d77a15146e1c2e9413108b95b3772ff332583a7",
+      "text": "Como se chama o trecho conclusivo de uma obra musical?",
+      "answer": "coda",
+      "categoryId": "music",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the concluding passage of a musical work called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:01",
+      "sourceCanonicalHash": "4a8bd4c9a87d584617fe7a720933194c0c7b64a0a137d22680017c4230e9ab0d",
+      "text": "Que apelido é usado para a estatueta entregue pela Academia de Hollywood?",
+      "answer": "Oscar",
+      "categoryId": "film",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What nickname is used for the statuette awarded by the Hollywood Academy?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:02",
+      "sourceCanonicalHash": "6a7c3b86a4ca91ea0b330bcd4d68c058be3acc7bec63d8b8994aa51c30f8fb70",
+      "text": "Que estúdio de animação produziu Toy Story e Finding Nemo?",
+      "answer": "Pixar",
+      "categoryId": "film",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which animation studio produced Toy Story and Finding Nemo?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:03",
+      "sourceCanonicalHash": "1c1f4a9ca1fed1114ea8a6a0d286d907d9c3c5c88f2cfb13c965bb8a83d9c84b",
+      "text": "Que pugilista fictício é interpretado por Sylvester Stallone?",
+      "answer": "Rocky",
+      "categoryId": "film",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which fictional boxer is played by Sylvester Stallone?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:04",
+      "sourceCanonicalHash": "4283b5518ddf8ae52c8f179ab077530bfb8730910c2f888797d3aae8c8b8955a",
+      "text": "Qual suspense de 1975 mostra um tubarão-branco aterrorizando os arredores da ilha de Amity?",
+      "answer": "Jaws",
+      "categoryId": "film",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which 1975 thriller shows a great white shark terrorizing the area around Amity Island?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:05",
+      "sourceCanonicalHash": "dfb27caa6f05bb25d21f4e0290d4d46a03ed1f4be2e4f4e2ee3d2d75a45d793f",
+      "text": "Como se chama o peixe-palhaço que procura o filho numa animação de 2003?",
+      "answer": "Marlin",
+      "categoryId": "film",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the name of the clownfish who searches for his son in a 2003 animation?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:06",
+      "sourceCanonicalHash": "a29e8238bc69c6bb43cf4a4373e03552ba74bce77130159bf9a5335e7c93f5f7",
+      "text": "Qual é o sobrenome do espião identificado como 007?",
+      "answer": "Bond",
+      "categoryId": "film",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the surname of the spy identified as 007?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:07",
+      "sourceCanonicalHash": "99ec8851b094b23bf9d5222be3267b13da19a3852614858e15efbd3c1a534c1c",
+      "text": "Que ogro verde vive num pântano com o Burro?",
+      "answer": "Shrek",
+      "categoryId": "film",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which green ogre lives in a swamp with Donkey?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:08",
+      "sourceCanonicalHash": "3d5fbe6cd1fcf36c0cad52f9d05f0cabfe5db2dd8a3dcddf300dafe84c84bdee",
+      "text": "Que sobrenome usa o vilão de Star Wars antes conhecido como Anakin?",
+      "answer": "Vader",
+      "categoryId": "film",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which surname does the Star Wars villain formerly known as Anakin use?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:09",
+      "sourceCanonicalHash": "41a0a91d90d1515e42152a594e6508bf3aed99460156e32e8ef75144723bf641",
+      "text": "Que cineasta realizou 2001 Uma Odisseia no Espaço e O Iluminado?",
+      "answer": "Kubrick",
+      "categoryId": "film",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which filmmaker directed 2001: A Space Odyssey and The Shining?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:10",
+      "sourceCanonicalHash": "f8b1ad0b9c68193c3465eb9412a380a4f08fcfc41bb0d3c5ff29f0bed6a9256a",
+      "text": "Que estrela da era do cinema mudo criou a personagem do Vagabundo?",
+      "answer": "Chaplin",
+      "categoryId": "film",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which silent-era movie star created the character of the Tramp?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:11",
+      "sourceCanonicalHash": "21e1d34a6d1ede57d8ca95bfb978b5f79c102497806916e00c3b5e3789b09424",
+      "text": "Que palavra geral designa a arte e a indústria dos filmes?",
+      "answer": "cinema",
+      "categoryId": "film",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What general word designates the art and industry of films?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:12",
+      "sourceCanonicalHash": "b9083f9cb2ee2dae835dde4b08968cf240d8fccb4436be6526a008c706b9251d",
+      "text": "Como se chama um filme posterior que continua uma história anterior?",
+      "answer": "sequência",
+      "categoryId": "film",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is a later film that continues an earlier story called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:13",
+      "sourceCanonicalHash": "3f72301d2467ab62ac0dd57ab6afa5e9820561b93350675f38517e9f3da373eb",
+      "text": "Como se chama a breve aparição de uma pessoa famosa num filme?",
+      "answer": "cameo",
+      "categoryId": "film",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the brief appearance of a famous person in a film called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:14",
+      "sourceCanonicalHash": "19abde3bc90c786fa780dc39b7ef33c42c4c6ffd64cdf5cf0dc304b2c815c865",
+      "text": "Que palavra francesa designa filmes policiais sombrios e cínicos?",
+      "answer": "noir",
+      "categoryId": "film",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which French word designates dark and cynical crime films?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:15",
+      "sourceCanonicalHash": "7359706de657c68c4e43d087a64abaea3dab224d1d71a8f6c7bfd6f398fa70ef",
+      "text": "Que plataforma com rodas transporta uma câmera para criar movimentos suaves?",
+      "answer": "dolly",
+      "categoryId": "film",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What platform with wheels carries a camera to create smooth movements?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:16",
+      "sourceCanonicalHash": "1c294fbc611a9957b5121c32bda138ed10dc69b285d74cf08b59cf4d6ddb83b2",
+      "text": "Que documento escrito reúne as cenas e os diálogos de um filme?",
+      "answer": "roteiro",
+      "categoryId": "film",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What written document brings together the scenes and dialogue of a film?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:17",
+      "sourceCanonicalHash": "16f40e46a4a0bfae6d5d34dcec0a7b59a8b8ba0e829c59b7815d0cfc0e82c468",
+      "text": "Como se chama uma proeza física perigosa realizada numa cena de ação?",
+      "answer": "acrobacia",
+      "categoryId": "film",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is a dangerous physical feat performed in an action scene called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:18",
+      "sourceCanonicalHash": "48dea669746e6cebc3db77e957c2fce97e5eaa2b663acb5b7795a743688c9177",
+      "text": "Que sobrenome dá nome à criação de efeitos sonoros cotidianos sincronizados com as imagens?",
+      "answer": "Foley",
+      "categoryId": "film",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What surname gives its name to the creation of everyday sound effects synchronized with the images?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:19",
+      "sourceCanonicalHash": "e24c9480a33adfaafc98787ff9a38b60c3fd61d2611d7006c07195c9bcf40fe4",
+      "text": "Como se chama cada imagem individual de uma película cinematográfica?",
+      "answer": "fotograma",
+      "categoryId": "film",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is each individual image of a motion-picture film called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:20",
+      "sourceCanonicalHash": "1f32dea9fb79649aab69afac43aae8cb1b3a37037632e6ecdad24cab2c5498da",
+      "text": "Que termo classifica filmes por estilo, tema ou forma em comum?",
+      "answer": "gênero",
+      "categoryId": "film",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What term classifies films by shared style, subject, or form?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:21",
+      "sourceCanonicalHash": "f77429ef97d1a69883129abf977d1f3c76c65d1de994b9d86bb354549140b569",
+      "text": "Que estúdio londrino produziu comédias britânicas clássicas como The Ladykillers?",
+      "answer": "Ealing",
+      "categoryId": "film",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which London studio produced classic British comedies such as The Ladykillers?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:22",
+      "sourceCanonicalHash": "d739f562dd5c0f513bca4e339aed93670f196757b55c49d94c18e37ad61f3cca",
+      "text": "Que termo francês designa um diretor considerado o principal criador de um filme?",
+      "answer": "auteur",
+      "categoryId": "film",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What French term designates a director considered the main creator of a film?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:23",
+      "sourceCanonicalHash": "5fbdf303c8251ed6f38ebbfda29f8382e0c2b4fadbc0b4af9e856a736accd665",
+      "text": "Que profissional chefia o departamento de elétrica num set de filmagem?",
+      "answer": "gaffer",
+      "categoryId": "film",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What professional heads the electrical department on a film set?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:24",
+      "sourceCanonicalHash": "4320417aa8e9582747434680f2719a42623d120bd04c9cd4e3fd9b8678507a04",
+      "text": "Que técnica de edição reúne uma sequência de planos curtos para condensar o tempo?",
+      "answer": "montagem",
+      "categoryId": "film",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What editing technique brings together a sequence of short shots to condense time?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:25",
+      "sourceCanonicalHash": "ae199c85b263aeca0ee8cbeba8d43a78b1c19aab32ed93e4612345d704056ba3",
+      "text": "Como se chama um filme ambientado antes dos acontecimentos de uma obra lançada anteriormente?",
+      "answer": "prequela",
+      "categoryId": "film",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is a film set before the events of a previously released work called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:26",
+      "sourceCanonicalHash": "1325a0dc30ce888826ac16d1ded82b5922aa8ce70cc55b19aafb9d2a43a31dda",
+      "text": "Que fundo pintado ou criado por composição representa um ambiente que não foi filmado?",
+      "answer": "matte",
+      "categoryId": "film",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What painted or composited background represents an environment that was not filmed?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:27",
+      "sourceCanonicalHash": "ec37ead91418096a9a6c8ce75afd5e805aad83938be57a1588d7396dbe993b06",
+      "text": "Como são chamadas as cópias diárias ainda não editadas, vistas durante a produção?",
+      "answer": "copiões",
+      "categoryId": "film",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What are the still-unedited daily copies, viewed during production, called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:28",
+      "sourceCanonicalHash": "eb9897d02138a3d2a081ce7907333e778bdc2e589d188eb49a03799075bc851f",
+      "text": "Qual é o sobrenome do diretor italiano da Trilogia dos Dólares?",
+      "answer": "Leone",
+      "categoryId": "film",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the surname of the Italian director of the Dollars Trilogy?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:29",
+      "sourceCanonicalHash": "e4f0c54dc07d26be04b5f7912dc830570a1b601e89a49c8e2150f16605479657",
+      "text": "Que comediante do cinema mudo estrelou The General e Sherlock Jr.?",
+      "answer": "Keaton",
+      "categoryId": "film",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which silent-film comedian starred in The General and Sherlock Jr.?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:30",
+      "sourceCanonicalHash": "de6618da1edc49f5bad02d1ff389a2e5a5b77a62f3f11b01be2637f59216da84",
+      "text": "Que sobrenome compartilhavam os irmãos franceses pioneiros das sessões públicas de cinema em 1895?",
+      "answer": "Lumière",
+      "categoryId": "film",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What surname was shared by the French brothers who pioneered public cinema screenings in 1895?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:01",
+      "sourceCanonicalHash": "9744775a3777a836d49f87df086bcd5e5c3b1827f13cf5ca7f9f49ae34ec1bf1",
+      "text": "Qual é a menor unidade de um elemento que mantém suas propriedades químicas?",
+      "answer": "átomo",
+      "categoryId": "science",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the smallest unit of an element that maintains its chemical properties?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:02",
+      "sourceCanonicalHash": "517a27a750d169924ecf029b3dc1231d3ef71f2cf310caa0aa344d6b381f617b",
+      "text": "Qual planeta é frequentemente chamado de Planeta Vermelho?",
+      "answer": "Marte",
+      "categoryId": "science",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which planet is often called the Red Planet?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:03",
+      "sourceCanonicalHash": "3505e20b6ee1adc140c2f863e3cca525d48fe8c04565887833a0ed7cbcf26700",
+      "text": "Qual gás de número atômico oito é essencial para a respiração humana?",
+      "answer": "oxigênio",
+      "categoryId": "science",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which gas with atomic number eight is essential for human respiration?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:04",
+      "sourceCanonicalHash": "e543c5e44e24de2021d320d8c834940dc5f8f5362bb36a2d5b880418b5838b91",
+      "text": "Qual força atrai massas umas em direção às outras?",
+      "answer": "gravidade",
+      "categoryId": "science",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which force attracts masses toward one another?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:05",
+      "sourceCanonicalHash": "65c6372c44145ddad5754127dbb0d5a1013e575d91657a9ef2a45e2e6742a48e",
+      "text": "Qual célula especializada transmite sinais no sistema nervoso?",
+      "answer": "neurônio",
+      "categoryId": "science",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which specialized cell transmits signals in the nervous system?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:06",
+      "sourceCanonicalHash": "c62e7067443fa957d9da37a8ad34aa1e06fbfbf51ef1bd9acbb05fc989578a95",
+      "text": "Que vestígio ou resto preservado de vida antiga é encontrado nas rochas?",
+      "answer": "fóssil",
+      "categoryId": "science",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What preserved trace or remains of ancient life is found in rocks?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:07",
+      "sourceCanonicalHash": "7ea3d47f457e730ff1fd8c993912efc3650daf4099fbbe5faa84187df0f16d97",
+      "text": "Qual partícula é o quantum da radiação eletromagnética?",
+      "answer": "fóton",
+      "categoryId": "science",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which particle is the quantum of electromagnetic radiation?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:08",
+      "sourceCanonicalHash": "a399021c34f565ee1096e3ef8d191043b100a6a1112fcdc8a8ee25de755f6d15",
+      "text": "Qual estado ionizado da matéria é comum nas estrelas?",
+      "answer": "plasma",
+      "categoryId": "science",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which ionized state of matter is common in stars?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:09",
+      "sourceCanonicalHash": "3d7749bddb3bfa46efb914aa8a038ef270451921f4755f68ab663cd2a5f2f159",
+      "text": "Qual processo de divisão celular produz duas células-filhas geneticamente idênticas?",
+      "answer": "mitose",
+      "categoryId": "science",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which cell-division process produces two genetically identical daughter cells?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:10",
+      "sourceCanonicalHash": "2d182aa67060ce612953021abdb7480b25986b2c4f4166f81eae01d9dc628cd9",
+      "text": "Qual catalisador biológico acelera uma reação química?",
+      "answer": "enzima",
+      "categoryId": "science",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which biological catalyst speeds up a chemical reaction?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:11",
+      "sourceCanonicalHash": "9839df19082981911c2b202181b2944a2544a28850d2f05ae15b44a64c543623",
+      "text": "Qual núcleo galáctico extremamente luminoso é alimentado por um buraco negro supermassivo?",
+      "answer": "quasar",
+      "categoryId": "science",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which extremely luminous galactic nucleus is powered by a supermassive black hole?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:12",
+      "sourceCanonicalHash": "9a67c7c0f983d899261577c71ca84a08d02b772e8df50487f1353d7561d663ed",
+      "text": "Qual variante de um elemento tem um número diferente de nêutrons?",
+      "answer": "isótopo",
+      "categoryId": "science",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which variant of an element has a different number of neutrons?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:13",
+      "sourceCanonicalHash": "912279d724e9330e069ae2042b8fc367648613959088396531e51839e99784a5",
+      "text": "Como se chama o conjunto completo do material genético de um organismo?",
+      "answer": "genoma",
+      "categoryId": "science",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the complete set of genetic material of an organism called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:14",
+      "sourceCanonicalHash": "2cad196323817ac5953b9388eacd941db0adef5b0f7cc18dcbea167921fbaab7",
+      "text": "Qual rocha vulcânica escura forma grande parte da crosta oceânica?",
+      "answer": "basalto",
+      "categoryId": "science",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which dark volcanic rock forms a large part of the oceanic crust?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:15",
+      "sourceCanonicalHash": "55c1d4b1d2a3273cc821bfb3e36f902ecbe705b4243bd6c9747434014f42a221",
+      "text": "Qual partícula de carga positiva é encontrada no núcleo de um átomo?",
+      "answer": "próton",
+      "categoryId": "science",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which positively charged particle is found in the nucleus of an atom?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:16",
+      "sourceCanonicalHash": "d6e00e35538437100739c0122cdf042bbacd8824d76fb0af051259002b55428d",
+      "text": "Qual camada sensível à luz reveste o fundo do olho?",
+      "answer": "retina",
+      "categoryId": "science",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which light-sensitive layer lines the back of the eye?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:17",
+      "sourceCanonicalHash": "8d006916ef3736aebac7d4640c12d6c458dda74665ab1ee54075b634da891ac7",
+      "text": "Que material em pó transporta as células reprodutivas masculinas das plantas com sementes?",
+      "answer": "pólen",
+      "categoryId": "science",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What powdery material carries the male reproductive cells of seed plants?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:18",
+      "sourceCanonicalHash": "427d5c71d69af8be22bf119bf949ab73375ebc0f52ec3c88e1c07a26be977f0b",
+      "text": "Que processo faz a água atravessar uma membrana semipermeável em direção à maior concentração de soluto?",
+      "answer": "osmose",
+      "categoryId": "science",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What process makes water cross a semipermeable membrane toward the higher solute concentration?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:19",
+      "sourceCanonicalHash": "87c14facd3b34e13904d7579b6d4af505a4bc7746d89368799862d5b1613cc9a",
+      "text": "Qual elemento de número atômico dois enche muitos balões de festa?",
+      "answer": "hélio",
+      "categoryId": "science",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which element with atomic number two fills many party balloons?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:20",
+      "sourceCanonicalHash": "e787a618bfc549b12cc316e45d94d002d6fd9c462662d4bbe439cd590ec0eaa1",
+      "text": "Qual é a camada externa rígida da Terra, dividida em placas móveis?",
+      "answer": "crosta",
+      "categoryId": "science",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is Earth's rigid outer layer, divided into moving plates?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:21",
+      "sourceCanonicalHash": "ea74391b37ab3e19dd18b289f4c22b49e8cece2bd358dd806f9a7b6ca63196cb",
+      "text": "Qual partícula hipotética foi proposta para solucionar o problema CP forte?",
+      "answer": "áxion",
+      "categoryId": "science",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which hypothetical particle was proposed to solve the strong CP problem?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:22",
+      "sourceCanonicalHash": "d6f6a0754265a0b5af68f22904d114f7d75a530b8cc586f6586e73921cedbfb0",
+      "text": "A que classe de partículas pertencem os fótons, os glúons e o Higgs?",
+      "answer": "bóson",
+      "categoryId": "science",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "To which class of particles do photons, gluons, and the Higgs belong?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:23",
+      "sourceCanonicalHash": "2b687b50829627510638667fdf50b046b1e821c3d021da1dd67b6a0990dbe235",
+      "text": "Em qual eletrodo ocorre a oxidação numa célula eletroquímica?",
+      "answer": "ânodo",
+      "categoryId": "science",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "At which electrode does oxidation occur in an electrochemical cell?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:24",
+      "sourceCanonicalHash": "91ecfe20ceb1b66f813cf86fe208f9dadea6b7a61e75ea94eb7fcb6d4ec410b6",
+      "text": "Qual partícula fundamental se combina em trios para formar prótons e nêutrons?",
+      "answer": "quark",
+      "categoryId": "science",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which fundamental particle combines in groups of three to form protons and neutrons?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:25",
+      "sourceCanonicalHash": "df2122805e5e698f8011e575e0c9ab70eb8728305d7697b20309d4d0e2b3dcf4",
+      "text": "Qual substância isolante forma uma bainha ao redor de muitas fibras nervosas?",
+      "answer": "mielina",
+      "categoryId": "science",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which insulating substance forms a sheath around many nerve fibers?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:26",
+      "sourceCanonicalHash": "583cf532038168bcbb9cdb99163a88e71c1c1de6fa94ed50ce2073ad51d41580",
+      "text": "Qual categoria taxonômica fica abaixo de reino e acima de classe?",
+      "answer": "filo",
+      "categoryId": "science",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which taxonomic category is below kingdom and above class?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:27",
+      "sourceCanonicalHash": "5c83f94c4f4d2b1410c8df240389dd171b3c9547055bf5ad75b17194f58ec118",
+      "text": "Que estrela de nêutrons em rotação rápida emite feixes regulares de radiação?",
+      "answer": "pulsar",
+      "categoryId": "science",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What rapidly rotating neutron star emits regular beams of radiation?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:28",
+      "sourceCanonicalHash": "46b6b221a9de46bb58e376d972d04216d52fde83d58d9ba8435e0d3167b8139e",
+      "text": "Qual termo abreviado designa reações que envolvem redução e oxidação?",
+      "answer": "redox",
+      "categoryId": "science",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which abbreviated term denotes reactions involving reduction and oxidation?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:29",
+      "sourceCanonicalHash": "32c64a0effe23f8abd1ae8d4973e77391ef62e29fe87279efc263b7c0661f5c4",
+      "text": "Que forma alternativa de um gene ocupa o mesmo locus num cromossomo?",
+      "answer": "alelo",
+      "categoryId": "science",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What alternative form of a gene occupies the same locus on a chromosome?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:30",
+      "sourceCanonicalHash": "e825a2c40147cfd12c9a98e6ccc3dbc5f2f034d6ea6a8de57ad7f2e796d624cb",
+      "text": "Qual é a atmosfera externa e quente do Sol, visível durante um eclipse total?",
+      "answer": "coroa",
+      "categoryId": "science",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the Sun's hot outer atmosphere, visible during a total eclipse?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:01",
+      "sourceCanonicalHash": "e2c01989fd6c9dda1a49e947fcd364c6b68aac627f02230e10b85d25d2a9f8a6",
+      "text": "Sigo você à luz do sol, mas desapareço no escuro. O que sou?",
+      "answer": "sombra",
+      "categoryId": "mixed",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I follow you in sunlight, but disappear in the dark. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:02",
+      "sourceCanonicalHash": "409f9b4be238ca6fc695f0484c78dde806a2d759181bc45ec9930c62376310e3",
+      "text": "Respondo a todos os chamados, mas nunca falo primeiro. O que sou?",
+      "answer": "eco",
+      "categoryId": "mixed",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I answer every call, but never speak first. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:03",
+      "sourceCanonicalHash": "4e9d3eed869f15c491e2986b54897bd792c196f2f4c2283042b3c6126b98fedf",
+      "text": "Tenho rosto e mãos, mas não tenho braços nem pernas. O que sou?",
+      "answer": "relógio",
+      "categoryId": "mixed",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I have a face and hands, but I have no arms or legs. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:04",
+      "sourceCanonicalHash": "e6aa1dde4908240ce80ba76b1ec67ef890f3d945688d0addbb562478f6feab28",
+      "text": "Fico menor enquanto ilumino. O que sou?",
+      "answer": "vela",
+      "categoryId": "mixed",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I get smaller while I give light. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:05",
+      "sourceCanonicalHash": "b5b28f7c086b80f355b83432ac1a517cc1f700db30149daa25cd202ba9edcf41",
+      "text": "Quanto mais enxugo, mais molhada fico. O que sou?",
+      "answer": "toalha",
+      "categoryId": "mixed",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "The more I dry, the wetter I get. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:06",
+      "sourceCanonicalHash": "810ed96591aafef4881bd7e122e57a0c8fa210f683f6a8f30f453ff879b5bf62",
+      "text": "Sou cheia de buracos, mas ainda consigo reter água. O que sou?",
+      "answer": "esponja",
+      "categoryId": "mixed",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I am full of holes, but I can still retain water. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:07",
+      "sourceCanonicalHash": "f1f579ccf08f7fc86ad9d788348af0f3c8bb412be6a9e6aaffa6fa18b610fbb3",
+      "text": "Tenho um olho, mas não vejo, e puxo uma linha atrás de mim. O que sou?",
+      "answer": "agulha",
+      "categoryId": "mixed",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I have an eye, but I cannot see, and I pull a thread behind me. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:08",
+      "sourceCanonicalHash": "8811806e41df60a6583006a8703f0b5af6328923e8df972b7a40071078dcc5b9",
+      "text": "Se me contar a alguém, talvez eu deixe de ser só seu. O que sou?",
+      "answer": "segredo",
+      "categoryId": "mixed",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "If you tell me to someone, I may stop being only yours. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:09",
+      "sourceCanonicalHash": "8b35d6d126d7732448194c48f4748841d0a7c9b7dc4be394292a5eda1ad8faf9",
+      "text": "Estou sempre à sua frente, mas nunca posso ser visto. O que sou?",
+      "answer": "futuro",
+      "categoryId": "mixed",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I am always ahead of you, but I can never be seen. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:10",
+      "sourceCanonicalHash": "8a03b4b5e345f4863848ca0c2b1fece5a93df9fab428de93fc2e4fdd6b19c502",
+      "text": "Diga meu nome e eu desapareço. O que sou?",
+      "answer": "silêncio",
+      "categoryId": "mixed",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Say my name and I disappear. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:11",
+      "sourceCanonicalHash": "538195f14ec46aca0b2b6cb9b8e84136af4dd5f38c21b64c40efd0c5dfdfe431",
+      "text": "Afundo para manter uma embarcação parada e subo antes de ela partir. O que sou?",
+      "answer": "âncora",
+      "categoryId": "mixed",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I sink to keep a vessel still and rise before it departs. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:12",
+      "sourceCanonicalHash": "20351791678a52fa488649c706c1dca46f60a4938bedb94e1676853766cea752",
+      "text": "Tenho muitos dentes e uno dois lados, mas nunca mordo. O que sou?",
+      "answer": "zíper",
+      "categoryId": "mixed",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I have many teeth and join two sides, but I never bite. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:13",
+      "sourceCanonicalHash": "468a45cc456ccde567b69ef034290552da95af3d677da88eb97ab1ccd03df0a2",
+      "text": "Copio sua aparência, mas troco a esquerda pela direita. O que sou?",
+      "answer": "espelho",
+      "categoryId": "mixed",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I copy your appearance, but swap left for right. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:14",
+      "sourceCanonicalHash": "d46bcbe64d51b5d37a2a0b4eb06b84be83c0aa749a2eeffbe13302ab395b087c",
+      "text": "Tenho pescoço, mas não tenho cabeça, e muitas vezes uso uma tampa. O que sou?",
+      "answer": "garrafa",
+      "categoryId": "mixed",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I have a neck, but no head, and often wear a cap. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:15",
+      "sourceCanonicalHash": "8aa6c99cf4e649d78fcc5a43d3fe77ed2b8b547a1b027a2099ccf6b0daaf8bbd",
+      "text": "Atravesso um vão e transporto viajantes sem sair do lugar. O que sou?",
+      "answer": "ponte",
+      "categoryId": "mixed",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I span a gap and carry travelers without leaving the place. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:16",
+      "sourceCanonicalHash": "7540d0d8d5b12b59d9092377ea4b64085bdecc5c702a91186019de45a2c3bfe0",
+      "text": "Tenho degraus, mas nunca corro, e ajudo você a subir. O que sou?",
+      "answer": "escada",
+      "categoryId": "mixed",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I have steps/rungs, but I never run, and I help you climb. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:17",
+      "sourceCanonicalHash": "5d91c8be556f5f582b97aeaec7036856878c8d3808161465b214539465cf3530",
+      "text": "Sou uma passagem com entrada e saída, mas geralmente sem janelas. O que sou?",
+      "answer": "túnel",
+      "categoryId": "mixed",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I am a passage with an entrance and exit, but usually without windows. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:18",
+      "sourceCanonicalHash": "e3c4e26b4bf4b858394dfda59fc9da598029d43512cab438d13939cbd8289345",
+      "text": "Sou uma pequena caverna de tecido que viaja presa à sua roupa. O que sou?",
+      "answer": "bolso",
+      "categoryId": "mixed",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I am a small cloth cave that travels attached to your clothing. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:19",
+      "sourceCanonicalHash": "9d97ec3320cb08107e2f674c8deaf0322e9411f8b8eb0427f8a094ef962561a7",
+      "text": "Viajo pelo mundo inteiro sem sair de um canto. O que sou?",
+      "answer": "selo",
+      "categoryId": "mixed",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I travel all over the world without leaving a corner. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:20",
+      "sourceCanonicalHash": "00357117c9458955a2549e549ec0dabb7dc901650e8603062e18d7fa5b57fcf1",
+      "text": "Deixo você ver lá fora enquanto mantenho o mau tempo do lado de fora. O que sou?",
+      "answer": "janela",
+      "categoryId": "mixed",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I let you see outside while I keep bad weather outside. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:21",
+      "sourceCanonicalHash": "01da05bf8423ce6191b2caa47a01e5c04bd076bc913280811c451f7695c1b17b",
+      "text": "Tenho dentes, mas não mastigo, e ajudo a arrumar seu cabelo. O que sou?",
+      "answer": "pente",
+      "categoryId": "mixed",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I have teeth, but I do not chew, and I help arrange your hair. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:22",
+      "sourceCanonicalHash": "705d1c88562c45dff9e75cbb072ec92c0c57848f0b49cbac40377d0ce9a528b2",
+      "text": "Tenho cinco dedos, mas nenhum osso ou pele. O que sou?",
+      "answer": "luva",
+      "categoryId": "mixed",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I have five fingers, but no bone or skin. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:23",
+      "sourceCanonicalHash": "b1c327114a355ab298a6f2767509a270bdaf1973d91a47f0a5d6338e12549b98",
+      "text": "Tenho uma foz e um leito, mas nunca como nem durmo. O que sou?",
+      "answer": "rio",
+      "categoryId": "mixed",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I have a mouth/river mouth and a bed, but I never eat or sleep. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:24",
+      "sourceCanonicalHash": "fb7d3774e16c83d1c1a805d1561d0025e4fc18e65a6151c2dbe6ed7c0a2e753c",
+      "text": "Retire minhas camadas externas e talvez eu faça você chorar. O que sou?",
+      "answer": "cebola",
+      "categoryId": "mixed",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Remove my outer layers and maybe I will make you cry. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:25",
+      "sourceCanonicalHash": "7ac2ea462baf7dcee1fd00101b684912b8241f39c12a200864fc337284c3620b",
+      "text": "Flutuo sem asas e posso carregar chuva. O que sou?",
+      "answer": "nuvem",
+      "categoryId": "mixed",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I float without wings and can carry rain. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:26",
+      "sourceCanonicalHash": "e401839bd2fec9cba4869880198b91e7a9f42128ea47127200828d78bb4c446e",
+      "text": "Tenho lombada e muitas folhas, mas não sou uma planta. O que sou?",
+      "answer": "livro",
+      "categoryId": "mixed",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I have a spine and many leaves/pages, but I am not a plant. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:27",
+      "sourceCanonicalHash": "a7ef2ad823737cfa675ddd29f717412609b1c2af2f8fcb1ce80df4f2d2a929ad",
+      "text": "Mostro lugares e estradas, mas não tenho prédios nem carros. O que sou?",
+      "answer": "mapa",
+      "categoryId": "mixed",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I show places and roads, but I do not have buildings or cars. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:28",
+      "sourceCanonicalHash": "801afbceac7fc9265cb2eaa1c2dec4205c2fcb640146637a24c80f8487f3738f",
+      "text": "Abro fechaduras, mas não sou uma porta. O que sou?",
+      "answer": "chave",
+      "categoryId": "mixed",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I open locks, but I am not a door. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:29",
+      "sourceCanonicalHash": "e638668b03a6f9d5a82b9e478bd9de99873b3a9df1121ad7d71261ef83442dcf",
+      "text": "Alimente-me e eu vivo; dê-me de beber e eu morro. O que sou?",
+      "answer": "fogo",
+      "categoryId": "mixed",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Feed me and I live; give me something to drink and I die. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:30",
+      "sourceCanonicalHash": "5f5ca682a2867d02dadc45bf285fa094fe4ed0743142e4df69c1def24fb0d4ee",
+      "text": "Posso preencher uma sala sem ocupar espaço. O que sou?",
+      "answer": "luz",
+      "categoryId": "mixed",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I can fill a room without taking up space. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    }
+  ]
+}

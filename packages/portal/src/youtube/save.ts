@@ -1,4 +1,5 @@
 import {splitGraphemes} from "@qwordly/core/game";
+import {YOUTUBE_ANSWER_MAX_GRAPHEMES} from "./limits";
 import type {
   YouTubeActiveGame,
   YouTubeOperationReceipt,
@@ -198,8 +199,10 @@ const parseActiveGame = (value: unknown, envelopeRevision: number): YouTubeActiv
   if ((value.mode === "daily") !== (typeof value.dailyDate === "string")) return null;
   if (
     !Array.isArray(value.hintRevealedIndices) ||
-    value.hintRevealedIndices.length > 7 ||
-    !value.hintRevealedIndices.every((index) => isSafeNonNegativeInteger(index, 6)) ||
+    value.hintRevealedIndices.length > YOUTUBE_ANSWER_MAX_GRAPHEMES ||
+    !value.hintRevealedIndices.every((index) =>
+      isSafeNonNegativeInteger(index, YOUTUBE_ANSWER_MAX_GRAPHEMES - 1),
+    ) ||
     new Set(value.hintRevealedIndices).size !== value.hintRevealedIndices.length
   )
     return null;

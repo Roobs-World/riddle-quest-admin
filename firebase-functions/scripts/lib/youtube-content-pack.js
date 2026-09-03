@@ -7,6 +7,7 @@ const YOUTUBE_CONTENT_VERSION_PREFIX = "youtube-content-v1";
 const YOUTUBE_TRANSLATOR_MODEL = "gpt-5.6-sol";
 const YOUTUBE_CRITIC_MODEL = "gpt-5.5";
 const YOUTUBE_CLUE_MAX_LENGTH = 500;
+const YOUTUBE_ANSWER_MAX_GRAPHEMES = 12;
 const AUTOMATED_TRANSLATION_QUALITY_VERSION = "automated_translation_v1";
 const REVIEWED_QUALITY_VERSION_PATTERN = /^(?:reviewed|human_review|automated_review)_/iu;
 const SUPPORTED_LOCALES = [
@@ -75,7 +76,7 @@ const playableAnswerIssue = (value, locale) => {
   if (value !== value.normalize("NFC")) return "non-nfc";
   if (!/^\p{L}[\p{L}\p{M}]*$/u.test(value)) return "letters-and-marks-only";
   const length = graphemeLength(value, locale);
-  if (length < 1 || length > 7) return "grapheme-length";
+  if (length < 1 || length > YOUTUBE_ANSWER_MAX_GRAPHEMES) return "grapheme-length";
   return null;
 };
 
@@ -421,6 +422,7 @@ module.exports = {
   YOUTUBE_CONTENT_SCHEMA_VERSION,
   YOUTUBE_CONTENT_VERSION_PREFIX,
   YOUTUBE_CLUE_MAX_LENGTH,
+  YOUTUBE_ANSWER_MAX_GRAPHEMES,
   YOUTUBE_CRITIC_MODEL,
   YOUTUBE_TRANSLATOR_MODEL,
   YouTubeContentError,

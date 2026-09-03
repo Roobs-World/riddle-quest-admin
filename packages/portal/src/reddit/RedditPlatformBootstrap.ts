@@ -15,12 +15,28 @@ import {
 } from "@qwordly/core/race";
 import {REDDIT_GOLD_PRODUCTS, resolveRedditGoldProduct} from "@qwordly/core/pricing/redditCatalog";
 import {purchase} from "@devvit/payments/client";
+import {readBrowserStorage, removeBrowserStorage, writeBrowserStorage} from "../platform/browserStorage";
 
 /** Defines the guest key value. */
 const GUEST_KEY = "riddleQuestRedditGuestV1";
+/** Maximum time allowed for a same-origin Reddit gateway request. */
+export const REDDIT_GATEWAY_REQUEST_TIMEOUT_MS = 15_000;
 /** Indicates whether is record. */
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
+
+/** Rejects paths that could escape Reddit's same-origin Devvit gateway namespace. */
+const assertRedditGatewayPath = (path: string): void => {
+  /** Provides segments behavior. */
+  const segments = path.split("/");
+  if (
+    !/^\/api\/[A-Za-z0-9._/-]+$/.test(path) ||
+    path.includes("//") ||
+    segments.some((segment) => segment === "." || segment === "..")
+  ) {
+    throw new Error("invalid-reddit-gateway-path");
+  }
+};
 
 /** Parses preferences. */
 const parsePreferences = (value: unknown): PlatformPreferences => {
@@ -47,16 +63,37 @@ export const selectMigratableGuestPreferences = (preferences: PlatformPreference
 
 /** Provides post reddit gateway behavior. */
 export const postRedditGateway = async (path: string, body: unknown = {}): Promise<Record<string, unknown>> => {
-  /** Provides response behavior. */
-  const response = await fetch(path, {
-    method: "POST",
-    headers: {"content-type": "application/json"},
-    body: JSON.stringify(body),
-  });
-  /** Provides payload behavior. */
-  const payload: unknown = await response.json();
-  if (!response.ok || !isRecord(payload) || payload.ok !== true) throw new Error("reddit-gateway-request-failed");
-  return payload;
+  assertRedditGatewayPath(path);
+  /** Provides controller behavior. */
+  const controller = new AbortController();
+  /** Provides timeout behavior. */
+  let timeout: ReturnType<typeof setTimeout> | undefined;
+  try {
+    /** Provides request behavior. */
+    const request = (async () => {
+      /** Provides response behavior. */
+      const response = await fetch(path, {
+        method: "POST",
+        headers: {"content-type": "application/json"},
+        body: JSON.stringify(body),
+        signal: controller.signal,
+      });
+      /** Provides payload behavior. */
+      const payload: unknown = await response.json();
+      if (!response.ok || !isRecord(payload) || payload.ok !== true) throw new Error("reddit-gateway-request-failed");
+      return payload;
+    })();
+    /** Provides deadline behavior. */
+    const deadline = new Promise<never>((_resolve, reject) => {
+      timeout = setTimeout(() => {
+        controller.abort();
+        reject(new Error("reddit-gateway-request-timed-out"));
+      }, REDDIT_GATEWAY_REQUEST_TIMEOUT_MS);
+    });
+    return await Promise.race([request, deadline]);
+  } finally {
+    if (timeout !== undefined) clearTimeout(timeout);
+  }
 };
 
 /** Provides reddit server storage behavior. */
@@ -89,21 +126,40 @@ class RedditServerStorage implements PlatformStorage {
 
 /** Provides reddit guest storage behavior. */
 class RedditGuestStorage implements PlatformStorage {
+  /** Preserves guest progress for the current session when browser storage is unavailable. */
+  private fallback: {
+    /** Stores preferences. */
+    preferences: PlatformPreferences;
+    /** Stores player data. */
+    playerData: unknown;
+  } = {preferences: {}, playerData: null};
+
   /** Reads raw. */
   private readRaw(): {
     /** Stores preferences. */
-    preferences: PlatformPreferences; /** Stores player data. */
+    preferences: PlatformPreferences;
     /** Stores player data. */
     playerData: unknown;
   } {
     try {
       /** Parses d. */
-      const parsed: unknown = JSON.parse(window.localStorage.getItem(GUEST_KEY) ?? "null");
-      if (!isRecord(parsed)) return {preferences: {}, playerData: null};
-      return {preferences: parsePreferences(parsed.preferences), playerData: parsed.playerData ?? null};
+      const parsed: unknown = JSON.parse(readBrowserStorage("local", GUEST_KEY) ?? "null");
+      if (!isRecord(parsed)) return this.fallback;
+      this.fallback = {preferences: parsePreferences(parsed.preferences), playerData: parsed.playerData ?? null};
+      return this.fallback;
     } catch {
-      return {preferences: {}, playerData: null};
+      return this.fallback;
     }
+  }
+  /** Persists raw guest state when storage access is permitted. */
+  private writeRaw(value: {
+    /** Stores preferences. */
+    preferences: PlatformPreferences;
+    /** Stores player data. */
+    playerData: unknown;
+  }): void {
+    this.fallback = value;
+    writeBrowserStorage("local", GUEST_KEY, JSON.stringify(value));
   }
   /** Reads preferences. */
   async readPreferences() {
@@ -111,10 +167,7 @@ class RedditGuestStorage implements PlatformStorage {
   }
   /** Provides write preferences behavior. */
   async writePreferences(preferences: PlatformPreferences) {
-    window.localStorage.setItem(
-      GUEST_KEY,
-      JSON.stringify({...this.readRaw(), preferences: parsePreferences(preferences)}),
-    );
+    this.writeRaw({...this.readRaw(), preferences: parsePreferences(preferences)});
   }
   /** Reads player data. */
   async readPlayerData() {
@@ -124,11 +177,12 @@ class RedditGuestStorage implements PlatformStorage {
   async writePlayerData(playerData: PlayerData) {
     /** Parses d. */
     const parsed = await parsePlayerData(playerData);
-    window.localStorage.setItem(GUEST_KEY, JSON.stringify({...this.readRaw(), playerData: parsed}));
+    this.writeRaw({...this.readRaw(), playerData: parsed});
   }
   /** Provides clear behavior. */
   async clear() {
-    window.localStorage.removeItem(GUEST_KEY);
+    this.fallback = {preferences: {}, playerData: null};
+    removeBrowserStorage("local", GUEST_KEY);
   }
   /** Provides flush behavior. */
   async flush() {

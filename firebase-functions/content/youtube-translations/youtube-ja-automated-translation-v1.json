@@ -1,0 +1,3248 @@
+{
+  "locale": "ja",
+  "provenance": "automated_translation_v1",
+  "translatorModel": "gpt-5.6-sol",
+  "criticModel": "gpt-5.5",
+  "riddles": [
+    {
+      "canonicalRiddleId": "race:history:01",
+      "sourceCanonicalHash": "bf9da31eba062c2459b99c1bb5ab9438d2cd8202f9c8898f76ca31e30c5fd7ba",
+      "text": "アウグストゥスなどの皇帝が治めた帝国の中心だった古代都市はどこ？",
+      "answer": "ローマ",
+      "categoryId": "history",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which ancient city was the center of an empire ruled by emperors such as Augustus?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:02",
+      "sourceCanonicalHash": "ecef91939068c010775552025c72cdf165cbe7ab9547909a3343d929c19e3f62",
+      "text": "マチュピチュを築いたアンデスの文明は？",
+      "answer": "インカ",
+      "categoryId": "history",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Andean civilization built Machu Picchu?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:03",
+      "sourceCanonicalHash": "4979a8fb4065ca4f2d61f9d44f0b0b9af80fb2de382616e654dd8b9b49225cb1",
+      "text": "テノチティトランを建設したメソアメリカの民族は？",
+      "answer": "アステカ",
+      "categoryId": "history",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Mesoamerican people built Tenochtitlan?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:04",
+      "sourceCanonicalHash": "570966a9e2a0530eca8e63666998260ad15e56fc053f8fd9426d942e2d831f21",
+      "text": "ヘンリー八世とエリザベス一世を輩出したイングランド王家は？",
+      "answer": "テューダー",
+      "categoryId": "history",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which English royal house produced Henry VIII and Elizabeth I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:05",
+      "sourceCanonicalHash": "5ec99f6d7a26639d71b33fa2a4e07ecfc4841103241386941fc2d2e42907d255",
+      "text": "ヨーロッパ各地を襲撃し、交易も行った北欧の船乗りたちは何と呼ばれる？",
+      "answer": "ヴァイキング",
+      "categoryId": "history",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What are the Norse seafarers who raided and also traded across Europe called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:06",
+      "sourceCanonicalHash": "66fa1d53119cd820f236dab683b82c626ae771bac9b107a807a7162f6c3478fe",
+      "text": "紀元前四十九年にルビコン川を渡ったローマの指導者は？",
+      "answer": "カエサル",
+      "categoryId": "history",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Roman leader crossed the Rubicon River in 49 BCE?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:07",
+      "sourceCanonicalHash": "37edea7681a819aee96da8c738b388e0c44e5d96e8b385d30aefc131443f0b4f",
+      "text": "非暴力抵抗で知られるインド独立運動の指導者は？",
+      "answer": "ガンディー",
+      "categoryId": "history",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which leader of the Indian independence movement is known for nonviolent resistance?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:08",
+      "sourceCanonicalHash": "14cea9af177e7fe82b9f08a73ebbfef937f2baebf47dae2e8f4a574dbb9ea13f",
+      "text": "戦士を重んじる社会で有名だったギリシャの都市国家は？",
+      "answer": "スパルタ",
+      "categoryId": "history",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Greek city-state was famous for a society that valued warriors?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:09",
+      "sourceCanonicalHash": "22edf64658755362d864cab5002f55e3343835dfdf032c9b3f5a0a7d37d223c4",
+      "text": "ギザのピラミッドを築いた古代文明は？",
+      "answer": "エジプト",
+      "categoryId": "history",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which ancient civilization built the pyramids at Giza?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:10",
+      "sourceCanonicalHash": "b5be7dce8cd442a07c01cd6515f564925333ab1c3db2b6217dc2b17c3b400393",
+      "text": "1215年にジョン王が承認した有名な憲章。そのラテン語名の最初の単語は？",
+      "answer": "Magna",
+      "categoryId": "history",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "A famous charter approved by King John in 1215. What is the first word of its Latin name?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:11",
+      "sourceCanonicalHash": "4b6bbdba20788bb587f7a8c31c40794a3067db0a681145959b96e03698bd816e",
+      "text": "西暦七十九年のヴェスヴィオ火山噴火で埋没したローマの町は？",
+      "answer": "ポンペイ",
+      "categoryId": "history",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Roman town was buried by the eruption of Mount Vesuvius in 79 CE?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:12",
+      "sourceCanonicalHash": "fa18edf89c44cd3954503a6e3c281653429d7d3d23845c0236b775e90e343e03",
+      "text": "一五一七年に九十五か条の論題を発表した宗教改革者は？",
+      "answer": "ルター",
+      "categoryId": "history",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which religious reformer published the Ninety-five Theses in 1517?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:13",
+      "sourceCanonicalHash": "794e449ea97bbe3e58ba4afcfb9d8a68d9b4fc9201cfc0d91aa0314d2c1d77dd",
+      "text": "一八五三年から一八五六年まで続いた戦争の名の由来となった半島は？",
+      "answer": "クリミア",
+      "categoryId": "history",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which peninsula gave its name to the war that lasted from 1853 to 1856?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:14",
+      "sourceCanonicalHash": "ff57f2d93247f5780f2a1442e74c96a78ca79dbd7b636776259d800cc61a630b",
+      "text": "人類を初めて月面に着陸させた一連の宇宙計画の名称は？",
+      "answer": "アポロ",
+      "categoryId": "history",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What was the name of the series of space programs that first landed humans on the Moon?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:15",
+      "sourceCanonicalHash": "ea4e030a17efd49f51574172321fa98aeb8747802d0388f7c2956a116c486b0e",
+      "text": "ヘンリー八世の二番目の王妃アンの姓は？",
+      "answer": "ブーリン",
+      "categoryId": "history",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What was the surname of Henry VIII's second queen, Anne?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:16",
+      "sourceCanonicalHash": "a35980b49599ac96c439abdd7a4c5e2f011fb5f1a72eaeaf03c4dd46f5e4119f",
+      "text": "第一次世界大戦で最も長期化した戦いの一つとなった一九一六年の戦いは？",
+      "answer": "ヴェルダン",
+      "categoryId": "history",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which 1916 battle became one of the longest battles of the First World War?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:17",
+      "sourceCanonicalHash": "1eac2497bd5cf464d7017941382526222086eea1d42eadfadc595bbba6a691e8",
+      "text": "一九四五年にルーズベルト、チャーチル、スターリンが会談したクリミア半島の保養地は？",
+      "answer": "ヤルタ",
+      "categoryId": "history",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Crimean resort was where Roosevelt, Churchill, and Stalin met in 1945?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:18",
+      "sourceCanonicalHash": "2982ead5a75c205a8a51725e5c97826d3e9ac89e12cd9f705f71346a85a84aef",
+      "text": "東京より前に日本の都が置かれていた都市は？",
+      "answer": "京都",
+      "categoryId": "history",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which city was Japan's capital before Tokyo?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:19",
+      "sourceCanonicalHash": "0b9da389f98dcfe9838a25ce9e516b15fa22e372ee7f472e94b8da3b86f03ef4",
+      "text": "シヴァージーが創設したインドの連合国家は？",
+      "answer": "マラーター",
+      "categoryId": "history",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Indian confederated state was founded by Shivaji?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:20",
+      "sourceCanonicalHash": "1d911ce4f7a243ad21bc1fe44458efe3705c8be566b51d46ac78c91d392e1ee9",
+      "text": "江戸時代に外国との接触を大幅に制限した日本の政策は？",
+      "answer": "鎖国",
+      "categoryId": "history",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Japanese policy greatly restricted contact with foreign countries during the Edo period?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:21",
+      "sourceCanonicalHash": "dc7c976603f4bc9eff632aebaab5d2f43a43424a4e33dc87fd336e263327ad76",
+      "text": "青銅器時代にハットゥシャを首都としたアナトリアの民族は？",
+      "answer": "ヒッタイト",
+      "categoryId": "history",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Anatolian people made Hattusa their capital in the Bronze Age?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:22",
+      "sourceCanonicalHash": "f2459dd32f8fb18bd3539c206052a1946390ad213d2cd1e4015ab9a08336651c",
+      "text": "青銅器時代にクノッソス宮殿を築いた文明は？",
+      "answer": "ミノア",
+      "categoryId": "history",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Bronze Age civilization built the palace of Knossos?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:23",
+      "sourceCanonicalHash": "f894b74d726c38c80fd0e249434e0e94970476dd8a0bdf86a3c3fc51207383a6",
+      "text": "ウルやウルクなどの都市国家を築いた古代の民族は？",
+      "answer": "シュメール",
+      "categoryId": "history",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which ancient people built city-states such as Ur and Uruk?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:24",
+      "sourceCanonicalHash": "2d2cb011fe2d08a8217f493073663abbb689c608aad8026898d145f0a5ced76e",
+      "text": "ローマとカルタゴの間で行われた三度の戦争を表す形容語は？",
+      "answer": "ポエニ",
+      "categoryId": "history",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What adjective describes the three wars fought between Rome and Carthage?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:25",
+      "sourceCanonicalHash": "6d4dda9b4c40be011aab7f324a6b14b5b6108f9fce8f1e9fbeaed159e6077d18",
+      "text": "ブリテン島北部を横断する防壁の建設を命じたローマ皇帝は？",
+      "answer": "ハドリアヌス",
+      "categoryId": "history",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Roman emperor ordered the construction of a defensive wall across northern Britain?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:26",
+      "sourceCanonicalHash": "7eaaa0b8ee0fc5b13d6d0eadbbbbefbef0562157abbe280d854921e48e633267",
+      "text": "一五八八年にイングランド遠征に失敗したスペイン艦隊の名称を、カタカナ一語で答えると？",
+      "answer": "アルマダ",
+      "categoryId": "history",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "If answering in one katakana word, what is the name of the Spanish fleet that failed in its expedition to England in 1588?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:27",
+      "sourceCanonicalHash": "3df530edf3525f740a85d3a305eba8bdd99b1f47a7776ab6dfb3b73c5386911e",
+      "text": "一八六八年に始まり、日本の急速な近代化につながった維新は？",
+      "answer": "明治",
+      "categoryId": "history",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which restoration began in 1868 and led to Japan's rapid modernization?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:28",
+      "sourceCanonicalHash": "dab6b8970ec9a76cdc1b3df4976f926fd93acd3c232526ccba55d32586092856",
+      "text": "アンコールワットを建造した帝国は？",
+      "answer": "クメール",
+      "categoryId": "history",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which empire built Angkor Wat?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:29",
+      "sourceCanonicalHash": "33431d049be5dbbea80332bc8a524644a432aa2055bb42826f7e09ee66cfabc9",
+      "text": "エチオピア北部とエリトリアを中心に栄え、独自の硬貨を鋳造した古代王国は？",
+      "answer": "アクスム",
+      "categoryId": "history",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which ancient kingdom flourished centered on northern Ethiopia and Eritrea and minted its own coins?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:30",
+      "sourceCanonicalHash": "c162ae791822da5646262fd85d2cd803ffaebbefabc2daf3d4302ddbdaf6d329",
+      "text": "紀元前二二一年に初めて中国を統一した王朝は？",
+      "answer": "秦",
+      "categoryId": "history",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which dynasty first unified China in 221 BCE?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:01",
+      "sourceCanonicalHash": "d235fafd64d57b3ac13d97adb1a0e870dd5f9cce95a6ff8b9d197571189f2bf8",
+      "text": "エジプトを北へ流れ、地中海に注ぐ川は？",
+      "answer": "ナイル",
+      "categoryId": "geography",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which river flows north through Egypt and empties into the Mediterranean Sea?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:02",
+      "sourceCanonicalHash": "ce35db44cf0f95d9de19f24c906098a96c6294e553f86c753bbae912d657d6b3",
+      "text": "南アメリカ大陸の西端に沿って連なる山脈は？",
+      "answer": "アンデス",
+      "categoryId": "geography",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which mountain range stretches along the western edge of the South American continent?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:03",
+      "sourceCanonicalHash": "d0c24dbb35ab48282b1fe83ef7e16ec7705d0f827164c7f2c4b20636973801ac",
+      "text": "日本の首都は？",
+      "answer": "東京",
+      "categoryId": "geography",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the capital of Japan?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:04",
+      "sourceCanonicalHash": "bdad3b18d354f0fca7ecbd623d0f8b9d414f0701a52deba0e3cc9fa92fb54934",
+      "text": "マサイマラ国立保護区があるアフリカの国は？",
+      "answer": "ケニア",
+      "categoryId": "geography",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which African country has the Maasai Mara National Reserve?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:05",
+      "sourceCanonicalHash": "237630f4fb060c58d5f23b4c82921443edbd682e19bb0dfa293c5c196a15d218",
+      "text": "北アフリカの大部分を占める広大な砂漠は？",
+      "answer": "サハラ",
+      "categoryId": "geography",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which vast desert occupies most of North Africa?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:06",
+      "sourceCanonicalHash": "52ab8d49f2f3082728c61898a2ccb91ce210fc0d30c3505976d20c321c83e152",
+      "text": "北極点を取り囲む海洋は？",
+      "answer": "北極海",
+      "categoryId": "geography",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which ocean surrounds the North Pole?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:07",
+      "sourceCanonicalHash": "bfe931bb15818d3142ad871480d692403a20eced2402bac07f510bc959b2e12e",
+      "text": "南アメリカで面積が最も大きい国は？",
+      "answer": "ブラジル",
+      "categoryId": "geography",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which country has the largest area in South America?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:08",
+      "sourceCanonicalHash": "4d5235209deb477ddfe2c2519dd7d2b60474667d3ab166ccc5cb310c18fc190f",
+      "text": "カナダの首都は？",
+      "answer": "オタワ",
+      "categoryId": "geography",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the capital of Canada?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:09",
+      "sourceCanonicalHash": "b2cf4859c3f0d8a9ab4e0ecc419af98e333e867e6c99bb398c5e7368ebc63aae",
+      "text": "モンブランがあるヨーロッパの山脈は？",
+      "answer": "アルプス",
+      "categoryId": "geography",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which European mountain range contains Mont Blanc?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:10",
+      "sourceCanonicalHash": "6391cd7101e8dadbd28771ca89db13f1359833c214d8446152f6545a8f3c5bf9",
+      "text": "カトマンズを首都とするヒマラヤの国は？",
+      "answer": "ネパール",
+      "categoryId": "geography",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Himalayan country has Kathmandu as its capital?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:11",
+      "sourceCanonicalHash": "815f2be3e118c91424651107d565dc8f165d9adeaa7d9335bb4f4b5918347d06",
+      "text": "ウィーン、ブラチスラバ、ブダペスト、ベオグラードを流れる川は？",
+      "answer": "ドナウ",
+      "categoryId": "geography",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which river flows through Vienna, Bratislava, Budapest, and Belgrade?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:12",
+      "sourceCanonicalHash": "92eebe0d36ded4c4332948d9b677902dd59148b4266911bc6550ea4a532c1645",
+      "text": "国民総幸福量で発展を測るヒマラヤの王国は？",
+      "answer": "ブータン",
+      "categoryId": "geography",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Himalayan kingdom measures development by Gross National Happiness?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:13",
+      "sourceCanonicalHash": "d22a165f5a46c5eb8b25bffc4ea553b2b8ddb427c16c525e9fcf7accec0f05ed",
+      "text": "シチリア島の南にある島国は？",
+      "answer": "マルタ",
+      "categoryId": "geography",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which island nation is south of Sicily?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:14",
+      "sourceCanonicalHash": "6521a2585673e558f5faf7bf22c66093dd7b696cdec8c798f97939bbc69072aa",
+      "text": "標高の高い場所にあるエクアドルの首都は？",
+      "answer": "キト",
+      "categoryId": "geography",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the capital of Ecuador located at a high elevation?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:15",
+      "sourceCanonicalHash": "f487b7c39c6a8d41c508eec39644ecbb5bc69993afeb52139705ff4e497d0968",
+      "text": "モロッコ、アルジェリア、チュニジアにまたがる山脈は？",
+      "answer": "アトラス",
+      "categoryId": "geography",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which mountain range spans Morocco, Algeria, and Tunisia?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:16",
+      "sourceCanonicalHash": "a0aa53a1b69408c10dbc39c097b93276f941bdc662aecde5f322b0386a442992",
+      "text": "イタリア半島のつま先の沖にある、地中海の大きな島は？",
+      "answer": "シチリア",
+      "categoryId": "geography",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which large Mediterranean island lies off the toe of the Italian peninsula?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:17",
+      "sourceCanonicalHash": "13b48097d1e735f23ca115a4af8b2484d215d02b96daf12f0fb19fe450db248f",
+      "text": "モンゴルと中国北部にまたがる砂漠は？",
+      "answer": "ゴビ",
+      "categoryId": "geography",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which desert spans Mongolia and northern China?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:18",
+      "sourceCanonicalHash": "a9f8dfba933c346c696e8b35699d9af7ad226426b257e2eed6831b4d5300a79d",
+      "text": "古代都市ペトラがある国は？",
+      "answer": "ヨルダン",
+      "categoryId": "geography",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which country has the ancient city of Petra?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:19",
+      "sourceCanonicalHash": "a129a68a70989ed679a9acff5b4a93f42aaa4b00dbcefe7d721ab1a719cf177d",
+      "text": "インドネシア、マレーシア、ブルネイの三か国に分かれている島は？",
+      "answer": "ボルネオ",
+      "categoryId": "geography",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which island is divided among the three countries of Indonesia, Malaysia, and Brunei?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:20",
+      "sourceCanonicalHash": "4a4f0207d1071d2210c0226d7eb148f7b353c87bbfc907c46bb4db7b8def0cc1",
+      "text": "表面積が世界最大の湖とされる内陸の水域は？",
+      "answer": "カスピ海",
+      "categoryId": "geography",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which inland body of water is regarded as the world's largest lake by surface area?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:21",
+      "sourceCanonicalHash": "162f990117d68117f2ad3ced1aec4096c2b4bf5aa5aec3c7de9ab0647e8f77b6",
+      "text": "国土全体を南アフリカ共和国に囲まれている国は？",
+      "answer": "レソト",
+      "categoryId": "geography",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which country is entirely surrounded by the Republic of South Africa?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:22",
+      "sourceCanonicalHash": "e8de550b473c4f5d46b6d8c620f076438b6312e160a6d5ba0010bf0540edc551",
+      "text": "ベネズエラを流れ、大西洋岸に巨大な三角州を形成する大河は？",
+      "answer": "オリノコ",
+      "categoryId": "geography",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which major river flows through Venezuela and forms a huge delta on the Atlantic coast?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:23",
+      "sourceCanonicalHash": "8fdf88ae83a7610216158c0ace1d48600780705f72275b9a481c9be07173819d",
+      "text": "国名と同じ名を持つ湖の大部分がある、アフリカの内陸国は？",
+      "answer": "マラウイ",
+      "categoryId": "geography",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which landlocked African country contains most of a lake with the same name as the country?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:24",
+      "sourceCanonicalHash": "d9bce9b67f2884bded0c2504b76ec264aa36255b4b159f0ae94f81a0bd2e7455",
+      "text": "スンダ海峡を挟んでジャワ島の西にあるインドネシアの島は？",
+      "answer": "スマトラ",
+      "categoryId": "geography",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Indonesian island lies west of Java across the Sunda Strait?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:25",
+      "sourceCanonicalHash": "46f3a0768b7ccada385e647d6fc32fd7fa5dd826557c4ee7376bece550931e08",
+      "text": "アフリカ南部の大西洋岸に沿って広がる海岸砂漠は？",
+      "answer": "ナミブ",
+      "categoryId": "geography",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which coastal desert stretches along the Atlantic coast of southern Africa?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:26",
+      "sourceCanonicalHash": "9206d2286b6af25a5b00259c93199a35eeaf562811a6e79c2df08d80164d9baa",
+      "text": "ラトビアの首都は？",
+      "answer": "リガ",
+      "categoryId": "geography",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the capital of Latvia?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:27",
+      "sourceCanonicalHash": "e2d4b8e054e252ea80abfdae9c5edc79c15f1983bf7feac72407a1ff9976d6d6",
+      "text": "ベルモパンを首都とする中央アメリカの国は？",
+      "answer": "ベリーズ",
+      "categoryId": "geography",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Central American country has Belmopan as its capital?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:28",
+      "sourceCanonicalHash": "16b5c7758f79db5a52c4fba88fc718569a4e9ab5dcf9ce93773892b6d08691b4",
+      "text": "ヨーロッパとアジアの境界の一部とされる山脈は？",
+      "answer": "ウラル",
+      "categoryId": "geography",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which mountain range is considered part of the boundary between Europe and Asia?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:29",
+      "sourceCanonicalHash": "a5d92e54178b67c9309564189d195ac715a033909e3575babf8eff38cf4f31d4",
+      "text": "ジャカルタがあるインドネシアの島は？",
+      "answer": "ジャワ",
+      "categoryId": "geography",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Indonesian island has Jakarta?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:30",
+      "sourceCanonicalHash": "4f0ea7f2d9224fb02faf35ccf20a5dc6b743c9d62a59278e84f08123538dfc5e",
+      "text": "公式な首都を定めていない、太平洋の小さな島国は？",
+      "answer": "ナウル",
+      "categoryId": "geography",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which tiny Pacific island country has not established an official capital?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:01",
+      "sourceCanonicalHash": "18e6ea3b543c58b8d7880df7675d63a92c7b06571e7f58790ca84fdeec0143f0",
+      "text": "通常、八十八鍵ある鍵盤楽器は？",
+      "answer": "ピアノ",
+      "categoryId": "music",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which keyboard instrument usually has 88 keys?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:02",
+      "sourceCanonicalHash": "71e2dd95f96ad0f201f187bb341f3673723dbf7a7a20f51f4855947e4ff6b27c",
+      "text": "あごの下に構え、弓で弾く弦楽器は？",
+      "answer": "バイオリン",
+      "categoryId": "music",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which string instrument is held under the chin and played with a bow?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:03",
+      "sourceCanonicalHash": "7df7b8479532eecd1bf1b5b85eed9ecefcf9674bcf44a50d4ee40d79cd64bebe",
+      "text": "楽曲の速さを表す音楽用語は？",
+      "answer": "テンポ",
+      "categoryId": "music",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What musical term expresses the speed of a piece?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:04",
+      "sourceCanonicalHash": "affab903824785220f53388b9babdfe532263bccdad3c1f0ad457f7546d25e8c",
+      "text": "曲の中で繰り返され、中心的な聞かせどころとなる部分は？",
+      "answer": "コーラス",
+      "categoryId": "music",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What part of a song is repeated and serves as the central highlight?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:05",
+      "sourceCanonicalHash": "c169bc4a8478329e800e61e0685879a55c452e778731ffc0a46560b89025a9fd",
+      "text": "長音階で、ある音から八番目の音までの音程は？",
+      "answer": "オクターブ",
+      "categoryId": "music",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "In a major scale, what is the interval from one note to the eighth note?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:06",
+      "sourceCanonicalHash": "11a0a1327a80bd0d78909e3d50485604892ae718818ba6fb2e709294df414940",
+      "text": "ニューオーリンズのアフリカ系アメリカ人社会から生まれた音楽ジャンルは？",
+      "answer": "ジャズ",
+      "categoryId": "music",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which music genre was born from African American communities in New Orleans?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:07",
+      "sourceCanonicalHash": "e71e515a0607c0bcfcd72033be811bbf1d6cd43f13efca8cc708574a1978dae3",
+      "text": "主に歌によって物語を演じる舞台芸術は？",
+      "answer": "オペラ",
+      "categoryId": "music",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which stage art performs a story mainly through song?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:08",
+      "sourceCanonicalHash": "e2026b1d686593cd03d2073addebfd15acdcb1b1e782498b25bdb6a2975f86d5",
+      "text": "座って両膝の間に構え、弓で弾く大型の弦楽器は？",
+      "answer": "チェロ",
+      "categoryId": "music",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which large string instrument is held between the knees while seated and played with a bow?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:09",
+      "sourceCanonicalHash": "c4cdae38d8b61ded9aca64f7c8b0506e1c5a8316d77d7fba277299e9577b0be2",
+      "text": "口元に横向きに構えて吹く木管楽器は？",
+      "answer": "フルート",
+      "categoryId": "music",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which woodwind instrument is held sideways at the mouth and blown?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:10",
+      "sourceCanonicalHash": "4f16961f673a0409a003c62d00e181cf19c2bee4a189b0770b21076240cde05d",
+      "text": "音楽で拍を規則的に組み合わせた型を何という？",
+      "answer": "リズム",
+      "categoryId": "music",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "In music, what do you call a pattern made by regularly combining beats?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:11",
+      "sourceCanonicalHash": "b1ed20dc78ea996eca4cc81d215cec4023c51af241afa983b8c30032a55a0a44",
+      "text": "一般的な成人女性の声域で最も高いものは？",
+      "answer": "ソプラノ",
+      "categoryId": "music",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the highest common vocal range for adult women?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:12",
+      "sourceCanonicalHash": "0e7036f8ba223c005dd2d379e119d6ba80fba2a6212120b48ea5eb6b250f0a1a",
+      "text": "ボブ・マーリーと強く結びついているジャマイカ発祥の音楽ジャンルは？",
+      "answer": "レゲエ",
+      "categoryId": "music",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Jamaican-origin music genre is strongly associated with Bob Marley?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:13",
+      "sourceCanonicalHash": "82fdbf40899839d8dd046ac8183502427845e5f1bc9ba41facd87b14ecc259ad",
+      "text": "丸い胴を持ち、ブルーグラスでよく使われる弦楽器は？",
+      "answer": "バンジョー",
+      "categoryId": "music",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which string instrument has a round body and is often used in bluegrass?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:14",
+      "sourceCanonicalHash": "b0eb1b0603161312c4e96ae718093da051e39b68b6e1c1fed1943a8554319dbb",
+      "text": "独奏楽器や小編成のために書かれることが多い、多楽章の楽曲形式は？",
+      "answer": "ソナタ",
+      "categoryId": "music",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What multi-movement musical form is often written for a solo instrument or small ensemble?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:15",
+      "sourceCanonicalHash": "5c43e83809e0bed4f1a9731a4b923709eb8b8bc16fd111a756e81be0b08abd62",
+      "text": "一般的な成人男性の地声の声域で最も高いものは？",
+      "answer": "テノール",
+      "categoryId": "music",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the highest common chest-voice range for adult men?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:16",
+      "sourceCanonicalHash": "1efd23d42d34797685fef0ff053ff3ecd4b3e64e59d618fc55c7c57a420417f3",
+      "text": "十二小節の定型的なコード進行をよく使う音楽ジャンルは？",
+      "answer": "ブルース",
+      "categoryId": "music",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which music genre often uses a standard twelve-bar chord progression?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:17",
+      "sourceCanonicalHash": "01a6f566e82d04da58baa4eb720aaa1bdfded19a625d8f7f4aa3b0ce0128da99",
+      "text": "スプリームスやスティーヴィー・ワンダーを世に送り出したデトロイトのレコード会社は？",
+      "answer": "モータウン",
+      "categoryId": "music",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Detroit record company launched the Supremes and Stevie Wonder?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:18",
+      "sourceCanonicalHash": "28111ed2ce05128f760295f1f9f5cdb07e60a2ee4d475f3335f39670acedde99",
+      "text": "プリエやアラベスクなどの型を用いる舞台舞踊は？",
+      "answer": "バレエ",
+      "categoryId": "music",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which staged dance uses forms such as plié and arabesque?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:19",
+      "sourceCanonicalHash": "6c5e1857e8bdae4dff0ecd978b54775623c56a46527b8a696684b9da08558bd8",
+      "text": "単音が連なり、一つの音楽的な流れとして聞こえるものは？",
+      "answer": "メロディー",
+      "categoryId": "music",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is a series of single notes heard as one musical flow?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:20",
+      "sourceCanonicalHash": "f3b8387f1ab963006e7d53eb0f76f8b594b1d95bd4ddd9466dce60b6ce4aabce",
+      "text": "三つ以上の音を同時に鳴らした響きを何という？",
+      "answer": "和音",
+      "categoryId": "music",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What do you call the sound produced by three or more notes sounded together?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:21",
+      "sourceCanonicalHash": "41228202d9a11a1a2f3dda80bf109f9c1c6bbef97749409351b1f75d962608d8",
+      "text": "共鳴弦と長い棹を持つ、インドの撥弦楽器は？",
+      "answer": "シタール",
+      "categoryId": "music",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Indian plucked string instrument has sympathetic strings and a long neck?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:22",
+      "sourceCanonicalHash": "d236eec2a01ebc4c7b064193fcb56b5250feaca83ec7f050b1d91068e089c965",
+      "text": "一つの主題を複数の声部が絡み合いながら展開する対位法的な形式は？",
+      "answer": "フーガ",
+      "categoryId": "music",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What contrapuntal form develops one subject as multiple voices intertwine?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:23",
+      "sourceCanonicalHash": "80398eebb33b472d91feaad497831fb364209fa3436a434a52febe9eb951a0c2",
+      "text": "演奏会前の調律で基準音を出す、ダブルリードの木管楽器は？",
+      "answer": "オーボエ",
+      "categoryId": "music",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which double-reed woodwind instrument gives the reference pitch for tuning before a concert?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:24",
+      "sourceCanonicalHash": "61e29bf0bc9f3099eeba88cb0c48b68b023a283de0cfbe6e1de8c41f3dec6bed",
+      "text": "対照的な部分を挟みながら、中心となる主題が何度も戻る楽曲形式は？",
+      "answer": "ロンド",
+      "categoryId": "music",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What musical form repeatedly returns to a central theme while interspersing contrasting sections?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:25",
+      "sourceCanonicalHash": "18def9ff1c4264960cff6dd1fe1264c29b959b2f48e992810d8d682a686a47c4",
+      "text": "ルネサンスの後に続いた、装飾性の豊かな音楽時代は？",
+      "answer": "バロック",
+      "categoryId": "music",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which richly ornamental musical era followed the Renaissance?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:26",
+      "sourceCanonicalHash": "b66980ea56f6649a6d2a647b4ce4307f24164fb17869f06e0ef771349771dc7e",
+      "text": "音をほかと区別する、その音特有の響きの性質を何という？",
+      "answer": "音色",
+      "categoryId": "music",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What do you call the quality of a sound’s distinctive resonance that distinguishes it from others?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:27",
+      "sourceCanonicalHash": "483c79b75b182f63abdb0054f6102dc0b41533cc7196cae78d805f0aec309da8",
+      "text": "クラリネットをよく用いる、東欧ユダヤ系の音楽伝統は？",
+      "answer": "クレズマー",
+      "categoryId": "music",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Eastern European Jewish musical tradition often uses clarinet?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:28",
+      "sourceCanonicalHash": "c95ea4d9b0e94eb99401b80bdabdd1d64814ef4e8589c5dbdff4dd6ed34b3585",
+      "text": "ゴングや金属打楽器を中心とするインドネシアの合奏音楽は？",
+      "answer": "ガムラン",
+      "categoryId": "music",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Indonesian ensemble music centers on gongs and metal percussion instruments?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:29",
+      "sourceCanonicalHash": "843e025043584306d74aa0e916a9a2b6863ae34b6217797e96fec09c70462e44",
+      "text": "演奏の速さを表情豊かに伸び縮みさせてよいことを示す指示は？",
+      "answer": "ルバート",
+      "categoryId": "music",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What direction indicates that the performance speed may be expressively stretched and compressed?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:30",
+      "sourceCanonicalHash": "0e5433bd11c770bccf7502098d77a15146e1c2e9413108b95b3772ff332583a7",
+      "text": "楽曲の最後を締めくくる部分を何という？",
+      "answer": "コーダ",
+      "categoryId": "music",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What do you call the part that concludes the end of a musical work?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:01",
+      "sourceCanonicalHash": "4a8bd4c9a87d584617fe7a720933194c0c7b64a0a137d22680017c4230e9ab0d",
+      "text": "アカデミー賞で贈られる小像の通称は？",
+      "answer": "オスカー",
+      "categoryId": "film",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the common name for the statuette awarded at the Academy Awards?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:02",
+      "sourceCanonicalHash": "6a7c3b86a4ca91ea0b330bcd4d68c058be3acc7bec63d8b8994aa51c30f8fb70",
+      "text": "『トイ・ストーリー』と『ファインディング・ニモ』を制作したアニメーション会社は？",
+      "answer": "ピクサー",
+      "categoryId": "film",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which animation company produced Toy Story and Finding Nemo?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:03",
+      "sourceCanonicalHash": "1c1f4a9ca1fed1114ea8a6a0d286d907d9c3c5c88f2cfb13c965bb8a83d9c84b",
+      "text": "シルベスター・スタローンが演じた架空のボクサーは？",
+      "answer": "ロッキー",
+      "categoryId": "film",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which fictional boxer was played by Sylvester Stallone?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:04",
+      "sourceCanonicalHash": "4283b5518ddf8ae52c8f179ab077530bfb8730910c2f888797d3aae8c8b8955a",
+      "text": "アミティ島近海に現れた巨大なホホジロザメを描く、一九七五年のスリラー映画は？",
+      "answer": "ジョーズ",
+      "categoryId": "film",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which 1975 thriller film depicts a giant great white shark appearing near Amity Island?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:05",
+      "sourceCanonicalHash": "dfb27caa6f05bb25d21f4e0290d4d46a03ed1f4be2e4f4e2ee3d2d75a45d793f",
+      "text": "二〇〇三年のアニメ映画で、行方不明の息子を捜す父親のカクレクマノミは？",
+      "answer": "マーリン",
+      "categoryId": "film",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "In a 2003 animated film, who is the father clownfish searching for his missing son?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:06",
+      "sourceCanonicalHash": "a29e8238bc69c6bb43cf4a4373e03552ba74bce77130159bf9a5335e7c93f5f7",
+      "text": "コード番号〇〇七で知られるスパイの姓は？",
+      "answer": "ボンド",
+      "categoryId": "film",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the surname of the spy known by code number 007?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:07",
+      "sourceCanonicalHash": "99ec8851b094b23bf9d5222be3267b13da19a3852614858e15efbd3c1a534c1c",
+      "text": "ロバの相棒と沼に暮らす緑色の鬼は？",
+      "answer": "シュレック",
+      "categoryId": "film",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which green ogre lives in a swamp with his donkey companion?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:08",
+      "sourceCanonicalHash": "3d5fbe6cd1fcf36c0cad52f9d05f0cabfe5db2dd8a3dcddf300dafe84c84bdee",
+      "text": "かつてアナキンと呼ばれていた『スター・ウォーズ』の悪役の姓は？",
+      "answer": "ベイダー",
+      "categoryId": "film",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the surname of the Star Wars villain who was once called Anakin?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:09",
+      "sourceCanonicalHash": "41a0a91d90d1515e42152a594e6508bf3aed99460156e32e8ef75144723bf641",
+      "text": "『二〇〇一年宇宙の旅』と『シャイニング』を監督した人物の姓は？",
+      "answer": "キューブリック",
+      "categoryId": "film",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the surname of the person who directed 2001: A Space Odyssey and The Shining?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:10",
+      "sourceCanonicalHash": "f8b1ad0b9c68193c3465eb9412a380a4f08fcfc41bb0d3c5ff29f0bed6a9256a",
+      "text": "放浪者のキャラクターを生み出した無声映画時代のスターは？",
+      "answer": "チャップリン",
+      "categoryId": "film",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which silent-film-era star created the Tramp character?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:11",
+      "sourceCanonicalHash": "21e1d34a6d1ede57d8ca95bfb978b5f79c102497806916e00c3b5e3789b09424",
+      "text": "動く映像作品の芸術と産業全般を表す一般的な言葉は？",
+      "answer": "映画",
+      "categoryId": "film",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What general word refers to the art and industry of moving-image works?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:12",
+      "sourceCanonicalHash": "b9083f9cb2ee2dae835dde4b08968cf240d8fccb4436be6526a008c706b9251d",
+      "text": "先に公開された作品の物語を引き継ぐ後発作品を何という？",
+      "answer": "続編",
+      "categoryId": "film",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What do you call a later work that continues the story of a previously released work?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:13",
+      "sourceCanonicalHash": "3f72301d2467ab62ac0dd57ab6afa5e9820561b93350675f38517e9f3da373eb",
+      "text": "有名人が作品中にほんの短時間だけ姿を見せる演出を何という？",
+      "answer": "カメオ",
+      "categoryId": "film",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What do you call the device of a famous person appearing only very briefly in a work?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:14",
+      "sourceCanonicalHash": "19abde3bc90c786fa780dc39b7ef33c42c4c6ffd64cdf5cf0dc304b2c815c865",
+      "text": "暗く冷笑的な犯罪ものを分類するフランス語は？",
+      "answer": "ノワール",
+      "categoryId": "film",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What French word classifies dark, cynical crime works?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:15",
+      "sourceCanonicalHash": "7359706de657c68c4e43d087a64abaea3dab224d1d71a8f6c7bfd6f398fa70ef",
+      "text": "滑らかな移動撮影のためにカメラを載せる車輪付き台は？",
+      "answer": "ドリー",
+      "categoryId": "film",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the wheeled platform on which a camera is placed for smooth moving shots?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:16",
+      "sourceCanonicalHash": "1c294fbc611a9957b5121c32bda138ed10dc69b285d74cf08b59cf4d6ddb83b2",
+      "text": "作品の場面やせりふが記された文書は？",
+      "answer": "脚本",
+      "categoryId": "film",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the document in which a work's scenes and dialogue are written?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:17",
+      "sourceCanonicalHash": "16f40e46a4a0bfae6d5d34dcec0a7b59a8b8ba0e829c59b7815d0cfc0e82c468",
+      "text": "アクション場面のために行う危険な身体演技は？",
+      "answer": "スタント",
+      "categoryId": "film",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What dangerous physical performance is done for an action scene?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:18",
+      "sourceCanonicalHash": "48dea669746e6cebc3db77e957c2fce97e5eaa2b663acb5b7795a743688c9177",
+      "text": "日常の効果音を映像に合わせて作る技法の名になった人物の姓は？",
+      "answer": "フォーリー",
+      "categoryId": "film",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What surname became the name of the technique of making everyday sound effects in sync with footage?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:19",
+      "sourceCanonicalHash": "e24c9480a33adfaafc98787ff9a38b60c3fd61d2611d7006c07195c9bcf40fe4",
+      "text": "映画フィルムの帯に並ぶ個々の静止画像を何という？",
+      "answer": "コマ",
+      "categoryId": "film",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What do you call each individual still image lined up on a strip of movie film?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:20",
+      "sourceCanonicalHash": "1f32dea9fb79649aab69afac43aae8cb1b3a37037632e6ecdad24cab2c5498da",
+      "text": "共通する作風や題材、形式によって作品を分類する言葉は？",
+      "answer": "ジャンル",
+      "categoryId": "film",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What word classifies works by common style, subject matter, or form?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:21",
+      "sourceCanonicalHash": "f77429ef97d1a69883129abf977d1f3c76c65d1de994b9d86bb354549140b569",
+      "text": "『マダムと泥棒』など英国の古典喜劇を制作したロンドンの撮影所は？",
+      "answer": "イーリング",
+      "categoryId": "film",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which London studio produced classic British comedies such as The Ladykillers?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:22",
+      "sourceCanonicalHash": "d739f562dd5c0f513bca4e339aed93670f196757b55c49d94c18e37ad61f3cca",
+      "text": "監督を作品の中心的な創造者とみなすときに使うフランス語は？",
+      "answer": "オートゥール",
+      "categoryId": "film",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What French word is used when regarding the director as the central creative author of a work?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:23",
+      "sourceCanonicalHash": "5fbdf303c8251ed6f38ebbfda29f8382e0c2b4fadbc0b4af9e856a736accd665",
+      "text": "撮影現場で照明用電気部門を率いるスタッフは？",
+      "answer": "ガファー",
+      "categoryId": "film",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which staff member leads the lighting/electrical department on a shooting set?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:24",
+      "sourceCanonicalHash": "4320417aa8e9582747434680f2719a42623d120bd04c9cd4e3fd9b8678507a04",
+      "text": "短いショットを連続させ、時間の経過を圧縮して見せる編集技法は？",
+      "answer": "モンタージュ",
+      "categoryId": "film",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What editing technique strings together short shots to show time passing in compressed form?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:25",
+      "sourceCanonicalHash": "ae199c85b263aeca0ee8cbeba8d43a78b1c19aab32ed93e4612345d704056ba3",
+      "text": "先に公開された作品より前の出来事を描く映画を何という？",
+      "answer": "プリクエル",
+      "categoryId": "film",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What do you call a movie depicting events before a previously released work?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:26",
+      "sourceCanonicalHash": "1325a0dc30ce888826ac16d1ded82b5922aa8ce70cc55b19aafb9d2a43a31dda",
+      "text": "実際には撮影していない環境を作るための、描画または合成された背景は？",
+      "answer": "マット",
+      "categoryId": "film",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is a painted or composited background used to create an environment that was not actually filmed?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:27",
+      "sourceCanonicalHash": "ec37ead91418096a9a6c8ce75afd5e805aad83938be57a1588d7396dbe993b06",
+      "text": "制作中に確認される、未編集の撮影済みプリントを何という？",
+      "answer": "ラッシュ",
+      "categoryId": "film",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What are the unedited filmed prints checked during production called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:28",
+      "sourceCanonicalHash": "eb9897d02138a3d2a081ce7907333e778bdc2e589d188eb49a03799075bc851f",
+      "text": "「ドル箱三部作」を監督したイタリア人映画監督の姓は？",
+      "answer": "レオーネ",
+      "categoryId": "film",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the surname of the Italian film director who directed the Dollars Trilogy?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:29",
+      "sourceCanonicalHash": "e4f0c54dc07d26be04b5f7912dc830570a1b601e89a49c8e2150f16605479657",
+      "text": "蒸気機関車を巡る南北戦争喜劇や、映写技師が探偵になる作品で主演した無声喜劇俳優は？",
+      "answer": "キートン",
+      "categoryId": "film",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which silent comedy actor starred in a Civil War comedy about a steam locomotive and in a work where a projectionist becomes a detective?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:30",
+      "sourceCanonicalHash": "de6618da1edc49f5bad02d1ff389a2e5a5b77a62f3f11b01be2637f59216da84",
+      "text": "一八九五年に映画の公開上映を先駆けたフランス人兄弟の姓は？",
+      "answer": "リュミエール",
+      "categoryId": "film",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What surname belongs to the French brothers who pioneered public film screenings in 1895?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:01",
+      "sourceCanonicalHash": "9744775a3777a836d49f87df086bcd5e5c3b1827f13cf5ca7f9f49ae34ec1bf1",
+      "text": "元素の化学的性質を保つ最小の単位は？",
+      "answer": "原子",
+      "categoryId": "science",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the smallest unit that preserves the chemical properties of an element?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:02",
+      "sourceCanonicalHash": "517a27a750d169924ecf029b3dc1231d3ef71f2cf310caa0aa344d6b381f617b",
+      "text": "太陽系の惑星のうち、赤い色でよく知られているのは？",
+      "answer": "火星",
+      "categoryId": "science",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Among the planets in the solar system, which is well known for its red color?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:03",
+      "sourceCanonicalHash": "3505e20b6ee1adc140c2f863e3cca525d48fe8c04565887833a0ed7cbcf26700",
+      "text": "原子番号が八で、人間の呼吸に欠かせない気体は？",
+      "answer": "酸素",
+      "categoryId": "science",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What gas has atomic number eight and is essential for human respiration?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:04",
+      "sourceCanonicalHash": "e543c5e44e24de2021d320d8c834940dc5f8f5362bb36a2d5b880418b5838b91",
+      "text": "質量を持つ物体同士を引き寄せる力は？",
+      "answer": "重力",
+      "categoryId": "science",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What force attracts objects with mass to each other?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:05",
+      "sourceCanonicalHash": "65c6372c44145ddad5754127dbb0d5a1013e575d91657a9ef2a45e2e6742a48e",
+      "text": "体内の情報伝達網で信号を伝える特殊な細胞は？",
+      "answer": "神経細胞",
+      "categoryId": "science",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What specialized cell transmits signals in the body's information-transmission network?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:06",
+      "sourceCanonicalHash": "c62e7067443fa957d9da37a8ad34aa1e06fbfbf51ef1bd9acbb05fc989578a95",
+      "text": "岩石中に残された太古の生物の痕跡や遺骸は？",
+      "answer": "化石",
+      "categoryId": "science",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What traces or remains of ancient organisms are left in rock?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:07",
+      "sourceCanonicalHash": "7ea3d47f457e730ff1fd8c993912efc3650daf4099fbbe5faa84187df0f16d97",
+      "text": "電磁放射を構成する量子は？",
+      "answer": "光子",
+      "categoryId": "science",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What quantum makes up electromagnetic radiation?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:08",
+      "sourceCanonicalHash": "a399021c34f565ee1096e3ef8d191043b100a6a1112fcdc8a8ee25de755f6d15",
+      "text": "恒星で一般的に見られる、物質が電離した状態は？",
+      "answer": "プラズマ",
+      "categoryId": "science",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What ionized state of matter is commonly seen in stars?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:09",
+      "sourceCanonicalHash": "3d7749bddb3bfa46efb914aa8a038ef270451921f4755f68ab663cd2a5f2f159",
+      "text": "遺伝的に同一な二つの娘細胞を生じる細胞分裂は？",
+      "answer": "有糸分裂",
+      "categoryId": "science",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What cell division produces two genetically identical daughter cells?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:10",
+      "sourceCanonicalHash": "2d182aa67060ce612953021abdb7480b25986b2c4f4166f81eae01d9dc628cd9",
+      "text": "化学反応を速める生体触媒は？",
+      "answer": "酵素",
+      "categoryId": "science",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What biological catalyst speeds up chemical reactions?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:11",
+      "sourceCanonicalHash": "9839df19082981911c2b202181b2944a2544a28850d2f05ae15b44a64c543623",
+      "text": "超大質量ブラックホールをエネルギー源とする、非常に明るい銀河核は？",
+      "answer": "クエーサー",
+      "categoryId": "science",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What extremely bright galactic nucleus is powered by a supermassive black hole?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:12",
+      "sourceCanonicalHash": "9a67c7c0f983d899261577c71ca84a08d02b772e8df50487f1353d7561d663ed",
+      "text": "中性子の数が異なる同じ元素の種類は？",
+      "answer": "同位体",
+      "categoryId": "science",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What type of the same element has a different number of neutrons?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:13",
+      "sourceCanonicalHash": "912279d724e9330e069ae2042b8fc367648613959088396531e51839e99784a5",
+      "text": "生物が持つ遺伝情報の全体を何という？",
+      "answer": "ゲノム",
+      "categoryId": "science",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the entirety of the genetic information possessed by an organism called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:14",
+      "sourceCanonicalHash": "2cad196323817ac5953b9388eacd941db0adef5b0f7cc18dcbea167921fbaab7",
+      "text": "海洋地殻の大部分を形作る黒っぽい火山岩は？",
+      "answer": "玄武岩",
+      "categoryId": "science",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What dark volcanic rock forms most of the oceanic crust?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:15",
+      "sourceCanonicalHash": "55c1d4b1d2a3273cc821bfb3e36f902ecbe705b4243bd6c9747434014f42a221",
+      "text": "原子核にある正の電荷を持つ粒子は？",
+      "answer": "陽子",
+      "categoryId": "science",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What positively charged particle is in the atomic nucleus?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:16",
+      "sourceCanonicalHash": "d6e00e35538437100739c0122cdf042bbacd8824d76fb0af051259002b55428d",
+      "text": "眼球の奥を覆う、光を感じる層は？",
+      "answer": "網膜",
+      "categoryId": "science",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What light-sensing layer covers the back of the eyeball?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:17",
+      "sourceCanonicalHash": "8d006916ef3736aebac7d4640c12d6c458dda74665ab1ee54075b634da891ac7",
+      "text": "種子植物の雄の生殖細胞を運ぶ粉状のものは？",
+      "answer": "花粉",
+      "categoryId": "science",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What powdery thing carries the male reproductive cells of seed plants?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:18",
+      "sourceCanonicalHash": "427d5c71d69af8be22bf119bf949ab73375ebc0f52ec3c88e1c07a26be977f0b",
+      "text": "半透膜を通して、水が溶質濃度の高い側へ移動する現象は？",
+      "answer": "浸透",
+      "categoryId": "science",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What phenomenon is water moving through a semipermeable membrane toward the side with higher solute concentration?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:19",
+      "sourceCanonicalHash": "87c14facd3b34e13904d7579b6d4af505a4bc7746d89368799862d5b1613cc9a",
+      "text": "原子番号が二で、パーティー用風船によく詰められる元素は？",
+      "answer": "ヘリウム",
+      "categoryId": "science",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What element has atomic number two and is often filled into party balloons?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:20",
+      "sourceCanonicalHash": "e787a618bfc549b12cc316e45d94d002d6fd9c462662d4bbe439cd590ec0eaa1",
+      "text": "地球の最も外側にある硬い層で、動くプレートに分かれている部分は？",
+      "answer": "地殻",
+      "categoryId": "science",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the hard layer at the very outside of Earth, the part divided into moving plates?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:21",
+      "sourceCanonicalHash": "ea74391b37ab3e19dd18b289f4c22b49e8cece2bd358dd806f9a7b6ca63196cb",
+      "text": "強い相互作用のCP問題を解決するために提唱された仮説上の粒子は？",
+      "answer": "アクシオン",
+      "categoryId": "science",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What hypothetical particle was proposed to solve the CP problem of the strong interaction?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:22",
+      "sourceCanonicalHash": "d6f6a0754265a0b5af68f22904d114f7d75a530b8cc586f6586e73921cedbfb0",
+      "text": "フォトン、グルーオン、ヒッグス粒子が属する粒子の分類は？",
+      "answer": "ボース粒子",
+      "categoryId": "science",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What particle classification do photons, gluons, and the Higgs particle belong to?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:23",
+      "sourceCanonicalHash": "2b687b50829627510638667fdf50b046b1e821c3d021da1dd67b6a0990dbe235",
+      "text": "電気化学セルで酸化が起こる電極は？",
+      "answer": "アノード",
+      "categoryId": "science",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "In an electrochemical cell, which electrode is where oxidation occurs?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:24",
+      "sourceCanonicalHash": "91ecfe20ceb1b66f813cf86fe208f9dadea6b7a61e75ea94eb7fcb6d4ec410b6",
+      "text": "三つ組み合わさって陽子や中性子を作る基本粒子は？",
+      "answer": "クォーク",
+      "categoryId": "science",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What fundamental particle combines in groups of three to make protons and neutrons?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:25",
+      "sourceCanonicalHash": "df2122805e5e698f8011e575e0c9ab70eb8728305d7697b20309d4d0e2b3dcf4",
+      "text": "多くの神経線維を包む絶縁性の鞘を作る物質は？",
+      "answer": "ミエリン",
+      "categoryId": "science",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What substance makes the insulating sheath that surrounds many nerve fibers?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:26",
+      "sourceCanonicalHash": "583cf532038168bcbb9cdb99163a88e71c1c1de6fa94ed50ce2073ad51d41580",
+      "text": "生物分類で、界の下、綱の上に位置する階級は？",
+      "answer": "門",
+      "categoryId": "science",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "In biological classification, what rank is located below kingdom and above class?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:27",
+      "sourceCanonicalHash": "5c83f94c4f4d2b1410c8df240389dd171b3c9547055bf5ad75b17194f58ec118",
+      "text": "高速で自転し、規則的な放射ビームを出す中性子星は？",
+      "answer": "パルサー",
+      "categoryId": "science",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What neutron star rotates rapidly and emits regular beams of radiation?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:28",
+      "sourceCanonicalHash": "46b6b221a9de46bb58e376d972d04216d52fde83d58d9ba8435e0d3167b8139e",
+      "text": "還元と酸化の両方を伴う反応を表す略語は？",
+      "answer": "レドックス",
+      "categoryId": "science",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What abbreviation represents reactions involving both reduction and oxidation?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:29",
+      "sourceCanonicalHash": "32c64a0effe23f8abd1ae8d4973e77391ef62e29fe87279efc263b7c0661f5c4",
+      "text": "染色体上の同じ位置を占める、同一遺伝子の異なる型は？",
+      "answer": "アレル",
+      "categoryId": "science",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What different form of the same gene occupies the same position on a chromosome?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:30",
+      "sourceCanonicalHash": "e825a2c40147cfd12c9a98e6ccc3dbc5f2f034d6ea6a8de57ad7f2e796d624cb",
+      "text": "皆既日食の際に見える、太陽の高温な外層大気は？",
+      "answer": "コロナ",
+      "categoryId": "science",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the Sun's hot outer atmosphere, visible during a total solar eclipse?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:01",
+      "sourceCanonicalHash": "e2c01989fd6c9dda1a49e947fcd364c6b68aac627f02230e10b85d25d2a9f8a6",
+      "text": "日なたではついてくるのに、暗闇では消えます。何でしょう？",
+      "answer": "影",
+      "categoryId": "mixed",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "In the sunshine I follow you, but in darkness I disappear. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:02",
+      "sourceCanonicalHash": "409f9b4be238ca6fc695f0484c78dde806a2d759181bc45ec9930c62376310e3",
+      "text": "呼びかけにはいつも答えますが、自分から先に話すことはありません。何でしょう？",
+      "answer": "こだま",
+      "categoryId": "mixed",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I always answer when called, but I never speak first on my own. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:03",
+      "sourceCanonicalHash": "4e9d3eed869f15c491e2986b54897bd792c196f2f4c2283042b3c6126b98fedf",
+      "text": "文字盤と針はありますが、腕も脚もありません。何でしょう？",
+      "answer": "時計",
+      "categoryId": "mixed",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I have a dial/face and hands, but no arms or legs. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:04",
+      "sourceCanonicalHash": "e6aa1dde4908240ce80ba76b1ec67ef890f3d945688d0addbb562478f6feab28",
+      "text": "明かりをともすほど短くなります。何でしょう？",
+      "answer": "ろうそく",
+      "categoryId": "mixed",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "The more I give light, the shorter I become. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:05",
+      "sourceCanonicalHash": "b5b28f7c086b80f355b83432ac1a517cc1f700db30149daa25cd202ba9edcf41",
+      "text": "何かを拭いて乾かすほど、自分はぬれます。何でしょう？",
+      "answer": "タオル",
+      "categoryId": "mixed",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "The more I wipe something and dry it, the wetter I get. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:06",
+      "sourceCanonicalHash": "810ed96591aafef4881bd7e122e57a0c8fa210f683f6a8f30f453ff879b5bf62",
+      "text": "穴だらけなのに、水を含んでいられます。何でしょう？",
+      "answer": "スポンジ",
+      "categoryId": "mixed",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Even though I am full of holes, I can hold water. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:07",
+      "sourceCanonicalHash": "f1f579ccf08f7fc86ad9d788348af0f3c8bb412be6a9e6aaffa6fa18b610fbb3",
+      "text": "一つだけ目がありますが見えず、後ろに糸を引いて進みます。何でしょう？",
+      "answer": "針",
+      "categoryId": "mixed",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I have only one eye but cannot see, and I move forward pulling thread behind me. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:08",
+      "sourceCanonicalHash": "8811806e41df60a6583006a8703f0b5af6328923e8df972b7a40071078dcc5b9",
+      "text": "人に話すと、もう自分だけのものではなくなるかもしれません。何でしょう？",
+      "answer": "秘密",
+      "categoryId": "mixed",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "If you tell someone, it may no longer be only your own. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:09",
+      "sourceCanonicalHash": "8b35d6d126d7732448194c48f4748841d0a7c9b7dc4be394292a5eda1ad8faf9",
+      "text": "いつもあなたの先にありますが、決して見ることはできません。何でしょう？",
+      "answer": "未来",
+      "categoryId": "mixed",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I am always ahead of you, but you can never see me. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:10",
+      "sourceCanonicalHash": "8a03b4b5e345f4863848ca0c2b1fece5a93df9fab428de93fc2e4fdd6b19c502",
+      "text": "私の名を声に出した瞬間、私は消えます。何でしょう？",
+      "answer": "沈黙",
+      "categoryId": "mixed",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "The moment you say my name aloud, I disappear. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:11",
+      "sourceCanonicalHash": "538195f14ec46aca0b2b6cb9b8e84136af4dd5f38c21b64c40efd0c5dfdfe431",
+      "text": "船をその場に留めるため海中へ沈み、出航前には引き上げられます。何でしょう？",
+      "answer": "錨",
+      "categoryId": "mixed",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I sink into the sea to keep a ship in place, and before departure I am raised. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:12",
+      "sourceCanonicalHash": "20351791678a52fa488649c706c1dca46f60a4938bedb94e1676853766cea752",
+      "text": "たくさんの歯で両側をつなぎますが、かみつきません。何でしょう？",
+      "answer": "ファスナー",
+      "categoryId": "mixed",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I connect both sides with many teeth, but I do not bite. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:13",
+      "sourceCanonicalHash": "468a45cc456ccde567b69ef034290552da95af3d677da88eb97ab1ccd03df0a2",
+      "text": "あなたの姿を映しますが、左右を逆に見せます。何でしょう？",
+      "answer": "鏡",
+      "categoryId": "mixed",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I reflect your appearance, but show left and right reversed. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:14",
+      "sourceCanonicalHash": "d46bcbe64d51b5d37a2a0b4eb06b84be83c0aa749a2eeffbe13302ab395b087c",
+      "text": "首はあっても頭はなく、よくふたをかぶっています。何でしょう？",
+      "answer": "瓶",
+      "categoryId": "mixed",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I have a neck but no head, and often wear a lid/cap. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:15",
+      "sourceCanonicalHash": "8aa6c99cf4e649d78fcc5a43d3fe77ed2b8b547a1b027a2099ccf6b0daaf8bbd",
+      "text": "隔たりをまたぎ、動かずに人々を向こう側へ運びます。何でしょう？",
+      "answer": "橋",
+      "categoryId": "mixed",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I span a gap and, without moving, carry people to the other side. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:16",
+      "sourceCanonicalHash": "7540d0d8d5b12b59d9092377ea4b64085bdecc5c702a91186019de45a2c3bfe0",
+      "text": "横木が何段もあり、自分は走らず人を高い所へ上らせます。何でしょう？",
+      "answer": "はしご",
+      "categoryId": "mixed",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I have many rungs, do not run myself, and make people climb to high places. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:17",
+      "sourceCanonicalHash": "5d91c8be556f5f582b97aeaec7036856878c8d3808161465b214539465cf3530",
+      "text": "入口と出口がある通り道ですが、たいてい外を見る開口部はありません。何でしょう？",
+      "answer": "トンネル",
+      "categoryId": "mixed",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I am a passage with an entrance and an exit, but usually have no openings for looking outside. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:18",
+      "sourceCanonicalHash": "e3c4e26b4bf4b858394dfda59fc9da598029d43512cab438d13939cbd8289345",
+      "text": "服について一緒に旅をする、小さな布の洞窟です。何でしょう？",
+      "answer": "ポケット",
+      "categoryId": "mixed",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I am a small cloth cave attached to clothes that travels together with them. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:19",
+      "sourceCanonicalHash": "9d97ec3320cb08107e2f674c8deaf0322e9411f8b8eb0427f8a094ef962561a7",
+      "text": "片隅にじっとしたまま、世界中を旅します。何でしょう？",
+      "answer": "切手",
+      "categoryId": "mixed",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "While staying still in one corner, I travel all over the world. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:20",
+      "sourceCanonicalHash": "00357117c9458955a2549e549ec0dabb7dc901650e8603062e18d7fa5b57fcf1",
+      "text": "雨や風を中に入れず、外の景色を見せてくれます。何でしょう？",
+      "answer": "窓",
+      "categoryId": "mixed",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I keep rain and wind from coming inside and let you see the outside scenery. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:21",
+      "sourceCanonicalHash": "01da05bf8423ce6191b2caa47a01e5c04bd076bc913280811c451f7695c1b17b",
+      "text": "歯はありますが物をかめず、髪を整えるのに役立ちます。何でしょう？",
+      "answer": "櫛",
+      "categoryId": "mixed",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I have teeth but cannot chew things, and I help arrange hair. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:22",
+      "sourceCanonicalHash": "705d1c88562c45dff9e75cbb072ec92c0c57848f0b49cbac40377d0ce9a528b2",
+      "text": "五本の指がありますが、骨も皮膚もありません。何でしょう？",
+      "answer": "手袋",
+      "categoryId": "mixed",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I have five fingers, but no bones or skin. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:23",
+      "sourceCanonicalHash": "b1c327114a355ab298a6f2767509a270bdaf1973d91a47f0a5d6338e12549b98",
+      "text": "口と寝床がありますが、食べることも眠ることもありません。何でしょう？",
+      "answer": "川",
+      "categoryId": "mixed",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I have a mouth and a sleeping place/bed, but I neither eat nor sleep. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:24",
+      "sourceCanonicalHash": "fb7d3774e16c83d1c1a805d1561d0025e4fc18e65a6151c2dbe6ed7c0a2e753c",
+      "text": "外側を何枚もむくと、涙が出るかもしれません。何でしょう？",
+      "answer": "玉ねぎ",
+      "categoryId": "mixed",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "If you peel off many outer layers, tears may come out. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:25",
+      "sourceCanonicalHash": "7ac2ea462baf7dcee1fd00101b684912b8241f39c12a200864fc337284c3620b",
+      "text": "翼なしで空に浮かび、雨を運ぶことがあります。何でしょう？",
+      "answer": "雲",
+      "categoryId": "mixed",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I float in the sky without wings and sometimes carry rain. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:26",
+      "sourceCanonicalHash": "e401839bd2fec9cba4869880198b91e7a9f42128ea47127200828d78bb4c446e",
+      "text": "背骨とたくさんの葉を持ちますが、植物ではありません。何でしょう？",
+      "answer": "本",
+      "categoryId": "mixed",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I have a backbone/spine and many leaves, but I am not a plant. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:27",
+      "sourceCanonicalHash": "a7ef2ad823737cfa675ddd29f717412609b1c2af2f8fcb1ce80df4f2d2a929ad",
+      "text": "場所や道が描かれていますが、建物も車も実際には入っていません。何でしょう？",
+      "answer": "地図",
+      "categoryId": "mixed",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Places and roads are drawn on me, but buildings and cars are not actually inside me. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:28",
+      "sourceCanonicalHash": "801afbceac7fc9265cb2eaa1c2dec4205c2fcb640146637a24c80f8487f3738f",
+      "text": "扉ではないのに、錠を開けます。何でしょう？",
+      "answer": "鍵",
+      "categoryId": "mixed",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Although I am not a door, I open locks. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:29",
+      "sourceCanonicalHash": "e638668b03a6f9d5a82b9e478bd9de99873b3a9df1121ad7d71261ef83442dcf",
+      "text": "燃料を与えると生き続け、水を飲ませると死にます。何でしょう？",
+      "answer": "火",
+      "categoryId": "mixed",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "If you give me fuel, I keep living; if you make me drink water, I die. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:30",
+      "sourceCanonicalHash": "5f5ca682a2867d02dadc45bf285fa094fe4ed0743142e4df69c1def24fb0d4ee",
+      "text": "部屋いっぱいに広がっても、場所を取りません。何でしょう？",
+      "answer": "光",
+      "categoryId": "mixed",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Even if I spread through/fill the whole room, I take up no space. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    }
+  ]
+}

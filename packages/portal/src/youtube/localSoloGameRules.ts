@@ -11,6 +11,7 @@ import {
   nextYouTubeDailyStreak,
 } from "./economy";
 import {YouTubeAuthorityError} from "./LocalSoloAuthority.contract";
+import {YOUTUBE_ANSWER_MAX_GRAPHEMES} from "./limits";
 import type {
   YouTubeActiveGame,
   YouTubeContent,
@@ -48,7 +49,7 @@ export const activeYouTubeGameMatchesContent = (
   if (!riddle || active.contentFingerprint !== riddle.contentFingerprint) return false;
   /** Provides answer behavior. */
   const answer = splitGraphemes(riddle.answer.normalize("NFC"));
-  if (answer.length < 1 || answer.length > 7) return false;
+  if (answer.length < 1 || answer.length > YOUTUBE_ANSWER_MAX_GRAPHEMES) return false;
   // Submitted guesses and hint positions describe the locale in which the
   // attempt began. A language change must retain that canonical puzzle even
   // when the newly localized answer has a different grapheme count.

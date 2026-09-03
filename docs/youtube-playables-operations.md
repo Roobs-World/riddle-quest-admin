@@ -34,7 +34,7 @@ pnpm --dir firebase-functions youtube:content:append --append-count 6 --daily-st
 
 The append count must be between 1 and 180. Supply the intended future UTC start date explicitly; it must not overlap any immutable released segment. The command allocates canonical IDs, categories, difficulty, Classic order, and a separately hashed Daily segment deterministically; models cannot choose or reorder those identifiers. It resumes from model/hash-bound checkpoints and commits an append receipt only after the independent English critique and all 16 translation critiques pass.
 
-`youtube-content-source-v1.json` binds the unchanged, strict 180-riddle Race seed by SHA-256 and stores only YouTube additions. The Race import remains exactly 180 items. The compiler resolves that layered source offline, then proves an exact 17-locale canonical set, immutable Classic and Daily prefixes, native NFC answers of one to seven graphemes, source/review hashes, and deterministic runtime bytes. The audit must fail if any locale, critique, hash, or committed output is absent or stale.
+`youtube-content-source-v1.json` binds the unchanged, strict 180-riddle Race seed by SHA-256 and stores only YouTube additions. The Race import remains exactly 180 items. The compiler resolves that layered source offline, then proves an exact 17-locale canonical set, immutable Classic and Daily prefixes, native NFC answers of one to twelve graphemes, source/review hashes, and deterministic runtime bytes. The audit must fail if any locale, critique, hash, or committed output is absent or stale.
 
 Retain the generated content audit beside the release evidence. Model prompts, responses, checkpoints, critiques, and authoring credentials must not enter the game ZIP.
 

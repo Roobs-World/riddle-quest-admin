@@ -1,4 +1,5 @@
 import type {AccountDeletionServiceGate} from "./accountDeletionServiceGate";
+import {readBrowserStorage, writeBrowserStorage} from "../platform/browserStorage";
 
 /** Describes cross context lock. */
 type CrossContextLock = {
@@ -15,20 +16,12 @@ const FACEBOOK_DELETION_EPOCH = "riddleQuest:facebookAccountDeletionEpoch:v1";
 
 /** Reads browser epoch. */
 const readBrowserEpoch = (): string | null => {
-  try {
-    return globalThis.localStorage?.getItem(FACEBOOK_DELETION_EPOCH) ?? null;
-  } catch {
-    return null;
-  }
+  return readBrowserStorage("local", FACEBOOK_DELETION_EPOCH);
 };
 
 /** Provides write browser epoch behavior. */
 const writeBrowserEpoch = (epoch: string): void => {
-  try {
-    globalThis.localStorage?.setItem(FACEBOOK_DELETION_EPOCH, epoch);
-  } catch {
-    // The in-memory close still prevents this tab from starting more work.
-  }
+  writeBrowserStorage("local", FACEBOOK_DELETION_EPOCH, epoch);
 };
 
 /** Creates browser lock. */

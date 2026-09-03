@@ -401,7 +401,7 @@ test("reopens exhausted translations after schema or retry policy changes", asyn
       port: fakePort(),
     });
     assert.equal(resumed.checkpoint.schemaVersion, 4);
-    assert.equal(resumed.checkpoint.translationRetryPolicyVersion, 4);
+    assert.equal(resumed.checkpoint.translationRetryPolicyVersion, 6);
     assert.equal(resumed.checkpoint.translationAttempts.es["race:history:31"], 0);
   }
 });

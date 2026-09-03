@@ -16,6 +16,7 @@ import {RedditPlatformBootstrap} from "./RedditPlatformBootstrap";
 import {createRedditHostServices} from "./RedditHostServices";
 import {createRedditGuestHostServices} from "./RedditGuestHostServices";
 import {RedditPollingPresence} from "./RedditPollingPresence";
+import {readBrowserStorage} from "../platform/browserStorage";
 
 /** Describes startup state. */
 type StartupState =
@@ -67,7 +68,7 @@ export function RedditPlatformEntry() {
   );
 
   useEffect(() => {
-    detectDeviceLanguage(window.localStorage.getItem("appLanguage") ?? navigator.language);
+    detectDeviceLanguage(readBrowserStorage("local", "appLanguage") ?? navigator.language);
   }, []);
 
   useEffect(() => {

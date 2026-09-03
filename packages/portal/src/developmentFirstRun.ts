@@ -13,10 +13,14 @@ const removeMatchingKeys = (storage: BrowserStorage, shouldRemove: (key: string)
 };
 
 /** Resets development first run state. */
-export const resetDevelopmentFirstRunState = (localStorage: BrowserStorage, sessionStorage: BrowserStorage) => {
+export const resetDevelopmentFirstRunState = (localStorage?: BrowserStorage, sessionStorage?: BrowserStorage) => {
   try {
-    removeMatchingKeys(localStorage, (key) => key.startsWith("riddleQuest:") || key === "appLanguage");
-    removeMatchingKeys(sessionStorage, (key) => key.startsWith("riddleQuest:"));
+    /** Provides active local storage behavior. */
+    const activeLocalStorage = localStorage ?? globalThis.localStorage;
+    /** Provides active session storage behavior. */
+    const activeSessionStorage = sessionStorage ?? globalThis.sessionStorage;
+    removeMatchingKeys(activeLocalStorage, (key) => key.startsWith("riddleQuest:") || key === "appLanguage");
+    removeMatchingKeys(activeSessionStorage, (key) => key.startsWith("riddleQuest:"));
   } catch (error) {
     console.warn("[riddle-quest] Could not reset development first-run state", error);
   }

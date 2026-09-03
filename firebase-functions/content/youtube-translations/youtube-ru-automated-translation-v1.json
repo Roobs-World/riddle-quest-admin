@@ -1,0 +1,3248 @@
+{
+  "locale": "ru",
+  "provenance": "automated_translation_v1",
+  "translatorModel": "gpt-5.6-sol",
+  "criticModel": "gpt-5.5",
+  "riddles": [
+    {
+      "canonicalRiddleId": "race:history:01",
+      "sourceCanonicalHash": "bf9da31eba062c2459b99c1bb5ab9438d2cd8202f9c8898f76ca31e30c5fd7ba",
+      "text": "Какой древний город был центром империи, которой правили такие императоры, как Август?",
+      "answer": "Рим",
+      "categoryId": "history",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which ancient city was the center of an empire ruled by emperors such as Augustus?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:02",
+      "sourceCanonicalHash": "ecef91939068c010775552025c72cdf165cbe7ab9547909a3343d929c19e3f62",
+      "text": "Какая цивилизация Анд построила Мачу-Пикчу?",
+      "answer": "Инки",
+      "categoryId": "history",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which civilization of the Andes built Machu Picchu?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:03",
+      "sourceCanonicalHash": "4979a8fb4065ca4f2d61f9d44f0b0b9af80fb2de382616e654dd8b9b49225cb1",
+      "text": "Какой народ Мезоамерики основал Теночтитлан?",
+      "answer": "Ацтеки",
+      "categoryId": "history",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which people of Mesoamerica founded Tenochtitlan?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:04",
+      "sourceCanonicalHash": "570966a9e2a0530eca8e63666998260ad15e56fc053f8fd9426d942e2d831f21",
+      "text": "К какой английской королевской династии принадлежали Генрих VIII и Елизавета I?",
+      "answer": "Тюдоры",
+      "categoryId": "history",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "To which English royal dynasty did Henry VIII and Elizabeth I belong?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:05",
+      "sourceCanonicalHash": "5ec99f6d7a26639d71b33fa2a4e07ecfc4841103241386941fc2d2e42907d255",
+      "text": "Как называли скандинавских мореходов, которые совершали набеги и торговали по всей Европе?",
+      "answer": "Викинги",
+      "categoryId": "history",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What were the Scandinavian seafarers called who raided and traded throughout Europe?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:06",
+      "sourceCanonicalHash": "66fa1d53119cd820f236dab683b82c626ae771bac9b107a807a7162f6c3478fe",
+      "text": "Кто из римских правителей в 49 году до нашей эры совершил знаменитый переход через Рубикон?",
+      "answer": "Цезарь",
+      "categoryId": "history",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Roman ruler in 49 BCE made the famous crossing over the Rubicon?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:07",
+      "sourceCanonicalHash": "37edea7681a819aee96da8c738b388e0c44e5d96e8b385d30aefc131443f0b4f",
+      "text": "Какой лидер движения за независимость Индии прославился ненасильственным сопротивлением?",
+      "answer": "Ганди",
+      "categoryId": "history",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which leader of the Indian independence movement became famous for nonviolent resistance?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:08",
+      "sourceCanonicalHash": "14cea9af177e7fe82b9f08a73ebbfef937f2baebf47dae2e8f4a574dbb9ea13f",
+      "text": "Какой греческий полис славился своим воинским укладом?",
+      "answer": "Спарта",
+      "categoryId": "history",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Greek polis was famous for its warrior way of life?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:09",
+      "sourceCanonicalHash": "22edf64658755362d864cab5002f55e3343835dfdf032c9b3f5a0a7d37d223c4",
+      "text": "Какое древнее государство возвело пирамиды в Гизе?",
+      "answer": "Египет",
+      "categoryId": "history",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which ancient state built the pyramids at Giza?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:10",
+      "sourceCanonicalHash": "b5be7dce8cd442a07c01cd6515f564925333ab1c3db2b6217dc2b17c3b400393",
+      "text": "Каково первое слово латинского названия хартии, скреплённой печатью короля Иоанна в 1215 году?",
+      "answer": "Магна",
+      "categoryId": "history",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the first word of the Latin name of the charter sealed by King John in 1215?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:11",
+      "sourceCanonicalHash": "4b6bbdba20788bb587f7a8c31c40794a3067db0a681145959b96e03698bd816e",
+      "text": "Назовите римский город, который в 79 году нашей эры был погребён извержением Везувия.",
+      "answer": "Помпеи",
+      "categoryId": "history",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Name the Roman city that in 79 CE was buried by the eruption of Vesuvius.",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:12",
+      "sourceCanonicalHash": "fa18edf89c44cd3954503a6e3c281653429d7d3d23845c0236b775e90e343e03",
+      "text": "Какой реформатор опубликовал девяносто пять тезисов в 1517 году?",
+      "answer": "Лютер",
+      "categoryId": "history",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which reformer published the ninety-five theses in 1517?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:13",
+      "sourceCanonicalHash": "794e449ea97bbe3e58ba4afcfb9d8a68d9b4fc9201cfc0d91aa0314d2c1d77dd",
+      "text": "Какой полуостров дал название войне 1853–1856 годов?",
+      "answer": "Крым",
+      "categoryId": "history",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which peninsula gave its name to the war of 1853–1856?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:14",
+      "sourceCanonicalHash": "ff57f2d93247f5780f2a1442e74c96a78ca79dbd7b636776259d800cc61a630b",
+      "text": "Как называлась программа полётов, впервые доставившая людей на Луну?",
+      "answer": "Аполлон",
+      "categoryId": "history",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What was the name of the flight program that first brought people to the Moon?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:15",
+      "sourceCanonicalHash": "ea4e030a17efd49f51574172321fa98aeb8747802d0388f7c2956a116c486b0e",
+      "text": "Какова фамилия второй жены Генриха VIII Анны?",
+      "answer": "Болейн",
+      "categoryId": "history",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the surname of Henry VIII's second wife, Anne?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:16",
+      "sourceCanonicalHash": "a35980b49599ac96c439abdd7a4c5e2f011fb5f1a72eaeaf03c4dd46f5e4119f",
+      "text": "Как называлось одно из самых продолжительных сражений Первой мировой войны, начавшееся в 1916 году?",
+      "answer": "Верден",
+      "categoryId": "history",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What was one of the longest battles of the First World War, begun in 1916?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:17",
+      "sourceCanonicalHash": "1eac2497bd5cf464d7017941382526222086eea1d42eadfadc595bbba6a691e8",
+      "text": "Какой крымский курорт принимал Рузвельта, Черчилля и Сталина в 1945 году?",
+      "answer": "Ялта",
+      "categoryId": "history",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Crimean resort hosted Roosevelt, Churchill, and Stalin in 1945?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:18",
+      "sourceCanonicalHash": "2982ead5a75c205a8a51725e5c97826d3e9ac89e12cd9f705f71346a85a84aef",
+      "text": "Какой японский город был императорской столицей до Токио?",
+      "answer": "Киото",
+      "categoryId": "history",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Japanese city was the imperial capital before Tokyo?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:19",
+      "sourceCanonicalHash": "0b9da389f98dcfe9838a25ce9e516b15fa22e372ee7f472e94b8da3b86f03ef4",
+      "text": "Как называлась индийская конфедерация, основанная Шиваджи?",
+      "answer": "Маратхская",
+      "categoryId": "history",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What was the Indian confederacy founded by Shivaji called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:20",
+      "sourceCanonicalHash": "1d911ce4f7a243ad21bc1fe44458efe3705c8be566b51d46ac78c91d392e1ee9",
+      "text": "Как называлась японская политика ограничения большинства контактов с иностранцами в период Эдо?",
+      "answer": "Сакоку",
+      "categoryId": "history",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What was the name of the Japanese policy of restricting most contacts with foreigners in the Edo period?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:21",
+      "sourceCanonicalHash": "dc7c976603f4bc9eff632aebaab5d2f43a43424a4e33dc87fd336e263327ad76",
+      "text": "Какой анатолийский народ бронзового века избрал Хаттусу своей столицей?",
+      "answer": "Хеттский",
+      "categoryId": "history",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Bronze Age Anatolian people chose Hattusa as their capital?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:22",
+      "sourceCanonicalHash": "f2459dd32f8fb18bd3539c206052a1946390ad213d2cd1e4015ab9a08336651c",
+      "text": "Какая цивилизация бронзового века построила дворец в Кноссе?",
+      "answer": "Минойцы",
+      "categoryId": "history",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Bronze Age civilization built the palace at Knossos?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:23",
+      "sourceCanonicalHash": "f894b74d726c38c80fd0e249434e0e94970476dd8a0bdf86a3c3fc51207383a6",
+      "text": "Какой древний народ создал города-государства Ур и Урук?",
+      "answer": "Шумеры",
+      "categoryId": "history",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which ancient people created the city-states of Ur and Uruk?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:24",
+      "sourceCanonicalHash": "2d2cb011fe2d08a8217f493073663abbb689c608aad8026898d145f0a5ced76e",
+      "text": "Каким прилагательным называют три войны между Римом и Карфагеном?",
+      "answer": "Пунический",
+      "categoryId": "history",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What adjective is used for the three wars between Rome and Carthage?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:25",
+      "sourceCanonicalHash": "6d4dda9b4c40be011aab7f324a6b14b5b6108f9fce8f1e9fbeaed159e6077d18",
+      "text": "Какой император приказал возвести оборонительный вал на севере Британии?",
+      "answer": "Адриан",
+      "categoryId": "history",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which emperor ordered a defensive wall to be built in northern Britain?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:26",
+      "sourceCanonicalHash": "7eaaa0b8ee0fc5b13d6d0eadbbbbefbef0562157abbe280d854921e48e633267",
+      "text": "Каким одним словом заканчивается историческое название потерпевшего неудачу испанского флота 1588 года?",
+      "answer": "Армада",
+      "categoryId": "history",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What single word ends the historical name of the failed Spanish fleet of 1588?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:27",
+      "sourceCanonicalHash": "3df530edf3525f740a85d3a305eba8bdd99b1f47a7776ab6dfb3b73c5386911e",
+      "text": "Какая реставрация положила начало стремительной модернизации Японии в 1868 году?",
+      "answer": "Мэйдзи",
+      "categoryId": "history",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which restoration began Japan's rapid modernization in 1868?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:28",
+      "sourceCanonicalHash": "dab6b8970ec9a76cdc1b3df4976f926fd93acd3c232526ccba55d32586092856",
+      "text": "Какая империя возвела Ангкор-Ват?",
+      "answer": "Кхмерская",
+      "categoryId": "history",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which empire erected Angkor Wat?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:29",
+      "sourceCanonicalHash": "33431d049be5dbbea80332bc8a524644a432aa2055bb42826f7e09ee66cfabc9",
+      "text": "Как называлось древнее царство на севере Эфиопии и территории Эритреи, чеканившее собственные монеты?",
+      "answer": "Аксум",
+      "categoryId": "history",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What was the name of the ancient kingdom in northern Ethiopia and the territory of Eritrea that minted its own coins?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:history:30",
+      "sourceCanonicalHash": "c162ae791822da5646262fd85d2cd803ffaebbefabc2daf3d4302ddbdaf6d329",
+      "text": "Какая китайская династия впервые объединила Китай в 221 году до нашей эры?",
+      "answer": "Цинь",
+      "categoryId": "history",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Chinese dynasty first unified China in 221 BCE?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:01",
+      "sourceCanonicalHash": "d235fafd64d57b3ac13d97adb1a0e870dd5f9cce95a6ff8b9d197571189f2bf8",
+      "text": "Какая река течёт на север через Египет и впадает в Средиземное море?",
+      "answer": "Нил",
+      "categoryId": "geography",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which river flows north through Egypt and empties into the Mediterranean Sea?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:02",
+      "sourceCanonicalHash": "ce35db44cf0f95d9de19f24c906098a96c6294e553f86c753bbae912d657d6b3",
+      "text": "Какие горы протянулись вдоль западной окраины Южной Америки?",
+      "answer": "Анды",
+      "categoryId": "geography",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which mountains stretch along the western edge of South America?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:03",
+      "sourceCanonicalHash": "d0c24dbb35ab48282b1fe83ef7e16ec7705d0f827164c7f2c4b20636973801ac",
+      "text": "Какой город является столицей Японии?",
+      "answer": "Токио",
+      "categoryId": "geography",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which city is the capital of Japan?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:04",
+      "sourceCanonicalHash": "bdad3b18d354f0fca7ecbd623d0f8b9d414f0701a52deba0e3cc9fa92fb54934",
+      "text": "В какой африканской стране находится заповедник Масаи-Мара?",
+      "answer": "Кения",
+      "categoryId": "geography",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "In which African country is the Maasai Mara reserve located?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:05",
+      "sourceCanonicalHash": "237630f4fb060c58d5f23b4c82921443edbd682e19bb0dfa293c5c196a15d218",
+      "text": "Какая огромная пустыня занимает большую часть Северной Африки?",
+      "answer": "Сахара",
+      "categoryId": "geography",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which vast desert occupies most of North Africa?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:06",
+      "sourceCanonicalHash": "52ab8d49f2f3082728c61898a2ccb91ce210fc0d30c3505976d20c321c83e152",
+      "text": "Какой океан окружает Северный полюс?",
+      "answer": "Арктический",
+      "categoryId": "geography",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which ocean surrounds the North Pole?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:07",
+      "sourceCanonicalHash": "bfe931bb15818d3142ad871480d692403a20eced2402bac07f510bc959b2e12e",
+      "text": "Какая страна Южной Америки занимает наибольшую площадь?",
+      "answer": "Бразилия",
+      "categoryId": "geography",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which country in South America has the largest area?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:08",
+      "sourceCanonicalHash": "4d5235209deb477ddfe2c2519dd7d2b60474667d3ab166ccc5cb310c18fc190f",
+      "text": "Какой город является столицей Канады?",
+      "answer": "Оттава",
+      "categoryId": "geography",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which city is the capital of Canada?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:09",
+      "sourceCanonicalHash": "b2cf4859c3f0d8a9ab4e0ecc419af98e333e867e6c99bb398c5e7368ebc63aae",
+      "text": "К какой европейской горной системе относится Монблан?",
+      "answer": "Альпы",
+      "categoryId": "geography",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which European mountain system does Mont Blanc belong to?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:10",
+      "sourceCanonicalHash": "6391cd7101e8dadbd28771ca89db13f1359833c214d8446152f6545a8f3c5bf9",
+      "text": "В какой гималайской стране столица — Катманду?",
+      "answer": "Непал",
+      "categoryId": "geography",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "In which Himalayan country is the capital Kathmandu?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:11",
+      "sourceCanonicalHash": "815f2be3e118c91424651107d565dc8f165d9adeaa7d9335bb4f4b5918347d06",
+      "text": "Какая река протекает через Вену, Братиславу, Будапешт и Белград?",
+      "answer": "Дунай",
+      "categoryId": "geography",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which river flows through Vienna, Bratislava, Budapest, and Belgrade?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:12",
+      "sourceCanonicalHash": "92eebe0d36ded4c4332948d9b677902dd59148b4266911bc6550ea4a532c1645",
+      "text": "Какое гималайское королевство оценивает развитие с помощью показателя валового национального счастья?",
+      "answer": "Бутан",
+      "categoryId": "geography",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Himalayan kingdom assesses development using the Gross National Happiness indicator?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:13",
+      "sourceCanonicalHash": "d22a165f5a46c5eb8b25bffc4ea553b2b8ddb427c16c525e9fcf7accec0f05ed",
+      "text": "Какое островное государство расположено к югу от Сицилии?",
+      "answer": "Мальта",
+      "categoryId": "geography",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which island nation is located south of Sicily?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:14",
+      "sourceCanonicalHash": "6521a2585673e558f5faf7bf22c66093dd7b696cdec8c798f97939bbc69072aa",
+      "text": "Как называется высокогорная столица Эквадора?",
+      "answer": "Кито",
+      "categoryId": "geography",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the name of the high-altitude capital of Ecuador?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:15",
+      "sourceCanonicalHash": "f487b7c39c6a8d41c508eec39644ecbb5bc69993afeb52139705ff4e497d0968",
+      "text": "Какая горная система тянется через Марокко, Алжир и Тунис?",
+      "answer": "Атлас",
+      "categoryId": "geography",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which mountain system stretches through Morocco, Algeria, and Tunisia?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:16",
+      "sourceCanonicalHash": "a0aa53a1b69408c10dbc39c097b93276f941bdc662aecde5f322b0386a442992",
+      "text": "Какой крупный остров в Средиземном море расположен у носка итальянского сапога?",
+      "answer": "Сицилия",
+      "categoryId": "geography",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which large island in the Mediterranean Sea is located at the toe of the Italian boot?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:17",
+      "sourceCanonicalHash": "13b48097d1e735f23ca115a4af8b2484d215d02b96daf12f0fb19fe450db248f",
+      "text": "Какая пустыня занимает часть Монголии и северного Китая?",
+      "answer": "Гоби",
+      "categoryId": "geography",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which desert occupies part of Mongolia and northern China?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:18",
+      "sourceCanonicalHash": "a9f8dfba933c346c696e8b35699d9af7ad226426b257e2eed6831b4d5300a79d",
+      "text": "В какой стране находится древний город Петра?",
+      "answer": "Иордания",
+      "categoryId": "geography",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "In which country is the ancient city of Petra located?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:19",
+      "sourceCanonicalHash": "a129a68a70989ed679a9acff5b4a93f42aaa4b00dbcefe7d721ab1a719cf177d",
+      "text": "Какой остров разделён между Индонезией, Малайзией и Брунеем?",
+      "answer": "Калимантан",
+      "categoryId": "geography",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which island is divided among Indonesia, Malaysia, and Brunei?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:20",
+      "sourceCanonicalHash": "4a4f0207d1071d2210c0226d7eb148f7b353c87bbfc907c46bb4db7b8def0cc1",
+      "text": "Какой внутренний водоём считается крупнейшим озером мира по площади поверхности?",
+      "answer": "Каспий",
+      "categoryId": "geography",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which inland body of water is considered the world's largest lake by surface area?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:21",
+      "sourceCanonicalHash": "162f990117d68117f2ad3ced1aec4096c2b4bf5aa5aec3c7de9ab0647e8f77b6",
+      "text": "Какая страна полностью окружена территорией ЮАР?",
+      "answer": "Лесото",
+      "categoryId": "geography",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which country is completely surrounded by the territory of South Africa?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:22",
+      "sourceCanonicalHash": "e8de550b473c4f5d46b6d8c620f076438b6312e160a6d5ba0010bf0540edc551",
+      "text": "Какая крупная река протекает по Венесуэле и образует обширную дельту у Атлантического океана?",
+      "answer": "Ориноко",
+      "categoryId": "geography",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which major river flows through Venezuela and forms a vast delta at the Atlantic Ocean?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:23",
+      "sourceCanonicalHash": "8fdf88ae83a7610216158c0ace1d48600780705f72275b9a481c9be07173819d",
+      "text": "Какая африканская страна без выхода к морю включает большую часть одноимённого озера?",
+      "answer": "Малави",
+      "categoryId": "geography",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which landlocked African country includes most of a lake of the same name?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:24",
+      "sourceCanonicalHash": "d9bce9b67f2884bded0c2504b76ec264aa36255b4b159f0ae94f81a0bd2e7455",
+      "text": "Какой индонезийский остров расположен к западу от Явы, за Зондским проливом?",
+      "answer": "Суматра",
+      "categoryId": "geography",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Indonesian island is located west of Java, across the Sunda Strait?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:25",
+      "sourceCanonicalHash": "46f3a0768b7ccada385e647d6fc32fd7fa5dd826557c4ee7376bece550931e08",
+      "text": "Какая прибрежная пустыня тянется вдоль значительной части атлантического побережья юга Африки?",
+      "answer": "Намиб",
+      "categoryId": "geography",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which coastal desert stretches along a significant part of the Atlantic coast of southern Africa?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:26",
+      "sourceCanonicalHash": "9206d2286b6af25a5b00259c93199a35eeaf562811a6e79c2df08d80164d9baa",
+      "text": "Какой город является столицей Латвии?",
+      "answer": "Рига",
+      "categoryId": "geography",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which city is the capital of Latvia?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:27",
+      "sourceCanonicalHash": "e2d4b8e054e252ea80abfdae9c5edc79c15f1983bf7feac72407a1ff9976d6d6",
+      "text": "В какой стране Центральной Америки столица — Бельмопан?",
+      "answer": "Белиз",
+      "categoryId": "geography",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "In which Central American country is the capital Belmopan?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:28",
+      "sourceCanonicalHash": "16b5c7758f79db5a52c4fba88fc718569a4e9ab5dcf9ce93773892b6d08691b4",
+      "text": "Какая горная система обычно считается частью границы между Европой и Азией?",
+      "answer": "Урал",
+      "categoryId": "geography",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which mountain system is usually considered part of the boundary between Europe and Asia?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:29",
+      "sourceCanonicalHash": "a5d92e54178b67c9309564189d195ac715a033909e3575babf8eff38cf4f31d4",
+      "text": "На каком индонезийском острове находится Джакарта?",
+      "answer": "Ява",
+      "categoryId": "geography",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "On which Indonesian island is Jakarta located?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:geography:30",
+      "sourceCanonicalHash": "4f0ea7f2d9224fb02faf35ccf20a5dc6b743c9d62a59278e84f08123538dfc5e",
+      "text": "Какое крошечное островное государство в Тихом океане не имеет официальной столицы?",
+      "answer": "Науру",
+      "categoryId": "geography",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which tiny island nation in the Pacific Ocean has no official capital?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:01",
+      "sourceCanonicalHash": "18e6ea3b543c58b8d7880df7675d63a92c7b06571e7f58790ca84fdeec0143f0",
+      "text": "Какой клавишный инструмент обычно имеет 88 клавиш?",
+      "answer": "пианино",
+      "categoryId": "music",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which keyboard instrument usually has 88 keys?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:02",
+      "sourceCanonicalHash": "71e2dd95f96ad0f201f187bb341f3673723dbf7a7a20f51f4855947e4ff6b27c",
+      "text": "Какой смычковый струнный инструмент держат под подбородком?",
+      "answer": "скрипка",
+      "categoryId": "music",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which bowed string instrument is held under the chin?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:03",
+      "sourceCanonicalHash": "7df7b8479532eecd1bf1b5b85eed9ecefcf9674bcf44a50d4ee40d79cd64bebe",
+      "text": "Как называется скорость исполнения музыкального произведения?",
+      "answer": "темп",
+      "categoryId": "music",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the speed of performing a musical piece called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:04",
+      "sourceCanonicalHash": "affab903824785220f53388b9babdfe532263bccdad3c1f0ad457f7546d25e8c",
+      "text": "Какая повторяющаяся часть песни обычно содержит её главный запоминающийся мотив?",
+      "answer": "припев",
+      "categoryId": "music",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which repeated part of a song usually contains its main memorable motif?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:05",
+      "sourceCanonicalHash": "c169bc4a8478329e800e61e0685879a55c452e778731ffc0a46560b89025a9fd",
+      "text": "Как называется интервал между первой и восьмой ступенями мажорной гаммы?",
+      "answer": "октава",
+      "categoryId": "music",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the interval between the first and eighth degrees of a major scale called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:06",
+      "sourceCanonicalHash": "11a0a1327a80bd0d78909e3d50485604892ae718818ba6fb2e709294df414940",
+      "text": "Какой жанр зародился в афроамериканских сообществах Нового Орлеана?",
+      "answer": "джаз",
+      "categoryId": "music",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which genre originated in the African American communities of New Orleans?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:07",
+      "sourceCanonicalHash": "e71e515a0607c0bcfcd72033be811bbf1d6cd43f13efca8cc708574a1978dae3",
+      "text": "Как называется театральный жанр, в котором драматический сюжет раскрывается главным образом через пение?",
+      "answer": "опера",
+      "categoryId": "music",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the theatrical genre in which a dramatic plot is revealed mainly through singing called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:08",
+      "sourceCanonicalHash": "e2026b1d686593cd03d2073addebfd15acdcb1b1e782498b25bdb6a2975f86d5",
+      "text": "На каком крупном смычковом инструменте играют сидя, удерживая его между коленями?",
+      "answer": "виолончель",
+      "categoryId": "music",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which large bowed instrument is played sitting down, holding it between the knees?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:09",
+      "sourceCanonicalHash": "c4cdae38d8b61ded9aca64f7c8b0506e1c5a8316d77d7fba277299e9577b0be2",
+      "text": "На каком деревянном духовом инструменте играют, держа его поперёк у рта?",
+      "answer": "флейта",
+      "categoryId": "music",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which woodwind instrument is played by holding it crosswise at the mouth?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:10",
+      "sourceCanonicalHash": "4f16961f673a0409a003c62d00e181cf19c2bee4a189b0770b21076240cde05d",
+      "text": "Как называется упорядоченное чередование долей в музыке?",
+      "answer": "ритм",
+      "categoryId": "music",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the ordered alternation of beats in music called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:11",
+      "sourceCanonicalHash": "b1ed20dc78ea996eca4cc81d215cec4023c51af241afa983b8c30032a55a0a44",
+      "text": "Как называется самый высокий стандартный взрослый женский певческий голос?",
+      "answer": "сопрано",
+      "categoryId": "music",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the highest standard adult female singing voice called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:12",
+      "sourceCanonicalHash": "0e7036f8ba223c005dd2d379e119d6ba80fba2a6212120b48ea5eb6b250f0a1a",
+      "text": "Какой ямайский музыкальный жанр тесно связан с Бобом Марли?",
+      "answer": "регги",
+      "categoryId": "music",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Jamaican musical genre is closely associated with Bob Marley?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:13",
+      "sourceCanonicalHash": "82fdbf40899839d8dd046ac8183502427845e5f1bc9ba41facd87b14ecc259ad",
+      "text": "Какой круглый струнный инструмент особенно заметен в музыке блюграсс?",
+      "answer": "банджо",
+      "categoryId": "music",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which round string instrument is especially prominent in bluegrass music?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:14",
+      "sourceCanonicalHash": "b0eb1b0603161312c4e96ae718093da051e39b68b6e1c1fed1943a8554319dbb",
+      "text": "Как называется произведение из нескольких частей, обычно написанное для одного инструмента или небольшого ансамбля?",
+      "answer": "соната",
+      "categoryId": "music",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is a work in several movements, usually written for one instrument or a small ensemble, called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:15",
+      "sourceCanonicalHash": "5c43e83809e0bed4f1a9731a4b923709eb8b8bc16fd111a756e81be0b08abd62",
+      "text": "Как называется самый высокий распространённый взрослый мужской голос грудного регистра?",
+      "answer": "тенор",
+      "categoryId": "music",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the highest common adult male chest-register voice called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:16",
+      "sourceCanonicalHash": "1efd23d42d34797685fef0ff053ff3ecd4b3e64e59d618fc55c7c57a420417f3",
+      "text": "В каком жанре часто используется двенадцатитактовая гармоническая схема?",
+      "answer": "блюз",
+      "categoryId": "music",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "In which genre is a twelve-bar harmonic scheme often used?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:17",
+      "sourceCanonicalHash": "01a6f566e82d04da58baa4eb720aaa1bdfded19a625d8f7f4aa3b0ce0128da99",
+      "text": "Какой детройтский лейбл открыл миру группу Supremes и Стиви Уандера?",
+      "answer": "Мотаун",
+      "categoryId": "music",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Detroit label introduced the Supremes and Stevie Wonder to the world?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:18",
+      "sourceCanonicalHash": "28111ed2ce05128f760295f1f9f5cdb07e60a2ee4d475f3335f39670acedde99",
+      "text": "Как называется сценическое танцевальное искусство с такими позициями, как плие и арабеск?",
+      "answer": "балет",
+      "categoryId": "music",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the staged dance art with positions such as plié and arabesque called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:19",
+      "sourceCanonicalHash": "6c5e1857e8bdae4dff0ecd978b54775623c56a46527b8a696684b9da08558bd8",
+      "text": "Как называется последовательность отдельных нот, воспринимаемая как единая музыкальная линия?",
+      "answer": "мелодия",
+      "categoryId": "music",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is a sequence of individual notes perceived as a single musical line called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:20",
+      "sourceCanonicalHash": "f3b8387f1ab963006e7d53eb0f76f8b594b1d95bd4ddd9466dce60b6ce4aabce",
+      "text": "Как музыканты называют три или более ноты, звучащие одновременно?",
+      "answer": "аккорд",
+      "categoryId": "music",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What do musicians call three or more notes sounding simultaneously?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:21",
+      "sourceCanonicalHash": "41228202d9a11a1a2f3dda80bf109f9c1c6bbef97749409351b1f75d962608d8",
+      "text": "Какой индийский щипковый инструмент имеет длинный гриф и резонирующие струны?",
+      "answer": "ситар",
+      "categoryId": "music",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which Indian plucked instrument has a long neck and resonating strings?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:22",
+      "sourceCanonicalHash": "d236eec2a01ebc4c7b064193fcb56b5250feaca83ec7f050b1d91068e089c965",
+      "text": "Какая полифоническая форма развивает главную тему посредством переплетающихся голосов?",
+      "answer": "фуга",
+      "categoryId": "music",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which polyphonic form develops the main theme by means of interweaving voices?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:23",
+      "sourceCanonicalHash": "80398eebb33b472d91feaad497831fb364209fa3436a434a52febe9eb951a0c2",
+      "text": "Какой деревянный духовой инструмент с двойной тростью задаёт оркестру строй перед концертом?",
+      "answer": "гобой",
+      "categoryId": "music",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which woodwind instrument with a double reed sets the orchestra's tuning before a concert?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:24",
+      "sourceCanonicalHash": "61e29bf0bc9f3099eeba88cb0c48b68b023a283de0cfbe6e1de8c41f3dec6bed",
+      "text": "В какой музыкальной форме главная тема многократно возвращается между контрастными разделами?",
+      "answer": "рондо",
+      "categoryId": "music",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "In which musical form does the main theme return many times between contrasting sections?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:25",
+      "sourceCanonicalHash": "18def9ff1c4264960cff6dd1fe1264c29b959b2f48e992810d8d682a686a47c4",
+      "text": "Какая эпоха пышной музыки последовала за Возрождением?",
+      "answer": "барокко",
+      "categoryId": "music",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which era of ornate music followed the Renaissance?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:26",
+      "sourceCanonicalHash": "b66980ea56f6649a6d2a647b4ce4307f24164fb17869f06e0ef771349771dc7e",
+      "text": "Как называется характерная звуковая окраска голоса или инструмента?",
+      "answer": "тембр",
+      "categoryId": "music",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the characteristic sound coloration of a voice or instrument called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:27",
+      "sourceCanonicalHash": "483c79b75b182f63abdb0054f6102dc0b41533cc7196cae78d805f0aec309da8",
+      "text": "Как называется восточноевропейская еврейская музыкальная традиция, в которой часто звучит кларнет?",
+      "answer": "клезмер",
+      "categoryId": "music",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the Eastern European Jewish musical tradition in which the clarinet is often heard called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:28",
+      "sourceCanonicalHash": "c95ea4d9b0e94eb99401b80bdabdd1d64814ef4e8589c5dbdff4dd6ed34b3585",
+      "text": "Как называется индонезийский ансамбль, основу которого составляют гонги и металлофоны?",
+      "answer": "гамелан",
+      "categoryId": "music",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the Indonesian ensemble whose basis consists of gongs and metallophones called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:29",
+      "sourceCanonicalHash": "843e025043584306d74aa0e916a9a2b6863ae34b6217797e96fec09c70462e44",
+      "text": "Какое музыкальное указание позволяет исполнителю выразительно менять темп?",
+      "answer": "рубато",
+      "categoryId": "music",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which musical direction allows the performer to change the tempo expressively?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:music:30",
+      "sourceCanonicalHash": "0e5433bd11c770bccf7502098d77a15146e1c2e9413108b95b3772ff332583a7",
+      "text": "Как называется заключительный раздел музыкального произведения?",
+      "answer": "кода",
+      "categoryId": "music",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the concluding section of a musical work called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:01",
+      "sourceCanonicalHash": "4a8bd4c9a87d584617fe7a720933194c0c7b64a0a137d22680017c4230e9ab0d",
+      "text": "Как обычно называют статуэтку Американской киноакадемии?",
+      "answer": "Оскар",
+      "categoryId": "film",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the statuette of the American Film Academy usually called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:02",
+      "sourceCanonicalHash": "6a7c3b86a4ca91ea0b330bcd4d68c058be3acc7bec63d8b8994aa51c30f8fb70",
+      "text": "Какая анимационная студия создала «Историю игрушек» и «В поисках Немо»?",
+      "answer": "Пиксар",
+      "categoryId": "film",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which animation studio created Toy Story and Finding Nemo?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:03",
+      "sourceCanonicalHash": "1c1f4a9ca1fed1114ea8a6a0d286d907d9c3c5c88f2cfb13c965bb8a83d9c84b",
+      "text": "Какого вымышленного боксёра сыграл Сильвестр Сталлоне?",
+      "answer": "Рокки",
+      "categoryId": "film",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which fictional boxer did Sylvester Stallone play?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:04",
+      "sourceCanonicalHash": "4283b5518ddf8ae52c8f179ab077530bfb8730910c2f888797d3aae8c8b8955a",
+      "text": "Как называется триллер 1975 года о большой белой акуле у острова Эмити?",
+      "answer": "Челюсти",
+      "categoryId": "film",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the title of the 1975 thriller about a great white shark near Amity Island?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:05",
+      "sourceCanonicalHash": "dfb27caa6f05bb25d21f4e0290d4d46a03ed1f4be2e4f4e2ee3d2d75a45d793f",
+      "text": "Как зовут рыбу-клоуна — отца, отправившегося на поиски сына в мультфильме 2003 года?",
+      "answer": "Марлин",
+      "categoryId": "film",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the name of the clownfish father who set off to search for his son in a 2003 animated film?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:06",
+      "sourceCanonicalHash": "a29e8238bc69c6bb43cf4a4373e03552ba74bce77130159bf9a5335e7c93f5f7",
+      "text": "Какова фамилия шпиона с кодовым номером 007?",
+      "answer": "Бонд",
+      "categoryId": "film",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the surname of the spy with code number 007?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:07",
+      "sourceCanonicalHash": "99ec8851b094b23bf9d5222be3267b13da19a3852614858e15efbd3c1a534c1c",
+      "text": "Как зовут зелёного огра, живущего на болоте вместе с Ослом?",
+      "answer": "Шрек",
+      "categoryId": "film",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the name of the green ogre living in a swamp together with Donkey?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:08",
+      "sourceCanonicalHash": "3d5fbe6cd1fcf36c0cad52f9d05f0cabfe5db2dd8a3dcddf300dafe84c84bdee",
+      "text": "Какова фамилия злодея из «Звёздных войн», прежде известного как Энакин?",
+      "answer": "Вейдер",
+      "categoryId": "film",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the surname of the Star Wars villain formerly known as Anakin?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:09",
+      "sourceCanonicalHash": "41a0a91d90d1515e42152a594e6508bf3aed99460156e32e8ef75144723bf641",
+      "text": "Кто снял фильмы «Космическая одиссея 2001 года» и «Сияние»?",
+      "answer": "Кубрик",
+      "categoryId": "film",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Who directed the films 2001: A Space Odyssey and The Shining?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:10",
+      "sourceCanonicalHash": "f8b1ad0b9c68193c3465eb9412a380a4f08fcfc41bb0d3c5ff29f0bed6a9256a",
+      "text": "Какова фамилия звезды немого кино, создавшей образ Бродяги?",
+      "answer": "Чаплин",
+      "categoryId": "film",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the surname of the silent-film star who created the Tramp character?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:11",
+      "sourceCanonicalHash": "21e1d34a6d1ede57d8ca95bfb978b5f79c102497806916e00c3b5e3789b09424",
+      "text": "Как одним словом называют искусство и индустрию создания движущихся изображений?",
+      "answer": "Кинематограф",
+      "categoryId": "film",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What single word is used for the art and industry of creating moving images?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:12",
+      "sourceCanonicalHash": "b9083f9cb2ee2dae835dde4b08968cf240d8fccb4436be6526a008c706b9251d",
+      "text": "Как называется фильм, продолжающий сюжет предыдущей части?",
+      "answer": "Сиквел",
+      "categoryId": "film",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is a film that continues the plot of the previous part called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:13",
+      "sourceCanonicalHash": "3f72301d2467ab62ac0dd57ab6afa5e9820561b93350675f38517e9f3da373eb",
+      "text": "Как называется короткое появление знаменитости в фильме?",
+      "answer": "Камео",
+      "categoryId": "film",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is a brief appearance by a celebrity in a film called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:14",
+      "sourceCanonicalHash": "19abde3bc90c786fa780dc39b7ef33c42c4c6ffd64cdf5cf0dc304b2c815c865",
+      "text": "Какое французское слово обозначает мрачные и циничные криминальные фильмы?",
+      "answer": "Нуар",
+      "categoryId": "film",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which French word denotes gloomy and cynical crime films?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:15",
+      "sourceCanonicalHash": "7359706de657c68c4e43d087a64abaea3dab224d1d71a8f6c7bfd6f398fa70ef",
+      "text": "Как называется колёсная платформа для плавного движения камеры?",
+      "answer": "Долли",
+      "categoryId": "film",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is a wheeled platform for smooth camera movement called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:16",
+      "sourceCanonicalHash": "1c294fbc611a9957b5121c32bda138ed10dc69b285d74cf08b59cf4d6ddb83b2",
+      "text": "Как называется документ, содержащий сцены и диалоги фильма?",
+      "answer": "Сценарий",
+      "categoryId": "film",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is a document containing a film's scenes and dialogue called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:17",
+      "sourceCanonicalHash": "16f40e46a4a0bfae6d5d34dcec0a7b59a8b8ba0e829c59b7815d0cfc0e82c468",
+      "text": "Как называется опасный физический приём, выполняемый для боевой сцены в кино?",
+      "answer": "Трюк",
+      "categoryId": "film",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is a dangerous physical move performed for an action/fight scene in cinema called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:18",
+      "sourceCanonicalHash": "48dea669746e6cebc3db77e957c2fce97e5eaa2b663acb5b7795a743688c9177",
+      "text": "Чья фамилия дала название искусству синхронного воссоздания бытовых звуков для кино?",
+      "answer": "Фоли",
+      "categoryId": "film",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Whose surname gave its name to the art of synchronously recreating everyday sounds for film?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:19",
+      "sourceCanonicalHash": "e24c9480a33adfaafc98787ff9a38b60c3fd61d2611d7006c07195c9bcf40fe4",
+      "text": "Как называется отдельное изображение на киноплёнке?",
+      "answer": "Кадр",
+      "categoryId": "film",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is an individual image on motion-picture film called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:20",
+      "sourceCanonicalHash": "1f32dea9fb79649aab69afac43aae8cb1b3a37037632e6ecdad24cab2c5498da",
+      "text": "Какой термин объединяет фильмы по общему стилю, тематике или форме?",
+      "answer": "Жанр",
+      "categoryId": "film",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What term groups films by common style, subject matter, or form?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:21",
+      "sourceCanonicalHash": "f77429ef97d1a69883129abf977d1f3c76c65d1de994b9d86bb354549140b569",
+      "text": "Какая лондонская студия выпустила классические британские комедии, включая «Замочить старушку»?",
+      "answer": "Илинг",
+      "categoryId": "film",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which London studio released classic British comedies, including The Ladykillers?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:22",
+      "sourceCanonicalHash": "d739f562dd5c0f513bca4e339aed93670f196757b55c49d94c18e37ad61f3cca",
+      "text": "Какое французское слово обозначает режиссёра, которого считают главным творческим создателем фильма?",
+      "answer": "Автор",
+      "categoryId": "film",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which French word denotes a director considered the main creative creator of a film?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:23",
+      "sourceCanonicalHash": "5fbdf303c8251ed6f38ebbfda29f8382e0c2b4fadbc0b4af9e856a736accd665",
+      "text": "Как называется руководитель электротехнической группы на съёмочной площадке?",
+      "answer": "Гафер",
+      "categoryId": "film",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the head of the electrical department on a film set called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:24",
+      "sourceCanonicalHash": "4320417aa8e9582747434680f2719a42623d120bd04c9cd4e3fd9b8678507a04",
+      "text": "Как называется соединение коротких планов в последовательность для сжатия времени?",
+      "answer": "Монтаж",
+      "categoryId": "film",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the joining of short shots into a sequence to compress time called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:25",
+      "sourceCanonicalHash": "ae199c85b263aeca0ee8cbeba8d43a78b1c19aab32ed93e4612345d704056ba3",
+      "text": "Как называется фильм, события которого происходят до сюжета ранее выпущенной картины?",
+      "answer": "Приквел",
+      "categoryId": "film",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is a film whose events take place before the plot of an earlier released picture called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:26",
+      "sourceCanonicalHash": "1325a0dc30ce888826ac16d1ded82b5922aa8ce70cc55b19aafb9d2a43a31dda",
+      "text": "Как называется нарисованный или совмещённый фон, создающий не снятое камерой окружение?",
+      "answer": "Мэтт",
+      "categoryId": "film",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is a painted or composited background that creates an environment not captured by the camera called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:27",
+      "sourceCanonicalHash": "ec37ead91418096a9a6c8ce75afd5e805aad83938be57a1588d7396dbe993b06",
+      "text": "Как называют необработанные ежедневные материалы, просматриваемые во время производства фильма?",
+      "answer": "Раши",
+      "categoryId": "film",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What are unprocessed daily materials reviewed during film production called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:28",
+      "sourceCanonicalHash": "eb9897d02138a3d2a081ce7907333e778bdc2e589d188eb49a03799075bc851f",
+      "text": "Какова фамилия итальянского режиссёра «Долларовой трилогии»?",
+      "answer": "Леоне",
+      "categoryId": "film",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the surname of the Italian director of the Dollars Trilogy?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:29",
+      "sourceCanonicalHash": "e4f0c54dc07d26be04b5f7912dc830570a1b601e89a49c8e2150f16605479657",
+      "text": "Какова фамилия комика эпохи немого кино, сыгравшего в фильмах «Генерал» и «Шерлок-младший»?",
+      "answer": "Китон",
+      "categoryId": "film",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the surname of the silent-era comedian who starred in The General and Sherlock Jr.?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:film:30",
+      "sourceCanonicalHash": "de6618da1edc49f5bad02d1ff389a2e5a5b77a62f3f11b01be2637f59216da84",
+      "text": "Какую фамилию носили французские братья, ставшие первопроходцами публичных киносеансов в 1895 году?",
+      "answer": "Люмьер",
+      "categoryId": "film",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What surname did the French brothers who pioneered public film screenings in 1895 bear?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:01",
+      "sourceCanonicalHash": "9744775a3777a836d49f87df086bcd5e5c3b1827f13cf5ca7f9f49ae34ec1bf1",
+      "text": "Как называется мельчайшая частица химического элемента, сохраняющая его химические свойства?",
+      "answer": "атом",
+      "categoryId": "science",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the smallest particle of a chemical element that retains its chemical properties called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:02",
+      "sourceCanonicalHash": "517a27a750d169924ecf029b3dc1231d3ef71f2cf310caa0aa344d6b381f617b",
+      "text": "Какую планету часто называют Красной?",
+      "answer": "Марс",
+      "categoryId": "science",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which planet is often called the Red one?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:03",
+      "sourceCanonicalHash": "3505e20b6ee1adc140c2f863e3cca525d48fe8c04565887833a0ed7cbcf26700",
+      "text": "Какой газ с атомным номером восемь необходим человеку для дыхания?",
+      "answer": "кислород",
+      "categoryId": "science",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which gas with atomic number eight is necessary for humans to breathe?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:04",
+      "sourceCanonicalHash": "e543c5e44e24de2021d320d8c834940dc5f8f5362bb36a2d5b880418b5838b91",
+      "text": "Какая сила заставляет массы притягиваться друг к другу?",
+      "answer": "гравитация",
+      "categoryId": "science",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which force makes masses attract one another?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:05",
+      "sourceCanonicalHash": "65c6372c44145ddad5754127dbb0d5a1013e575d91657a9ef2a45e2e6742a48e",
+      "text": "Какая специализированная клетка передаёт сигналы в нервной системе?",
+      "answer": "нейрон",
+      "categoryId": "science",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What specialized cell transmits signals in the nervous system?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:06",
+      "sourceCanonicalHash": "c62e7067443fa957d9da37a8ad34aa1e06fbfbf51ef1bd9acbb05fc989578a95",
+      "text": "Как называется сохранившийся в горной породе след или остаток древнего организма?",
+      "answer": "окаменелость",
+      "categoryId": "science",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is a trace or remnant of an ancient organism preserved in rock called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:07",
+      "sourceCanonicalHash": "7ea3d47f457e730ff1fd8c993912efc3650daf4099fbbe5faa84187df0f16d97",
+      "text": "Как называется квант электромагнитного излучения?",
+      "answer": "фотон",
+      "categoryId": "science",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the quantum of electromagnetic radiation called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:08",
+      "sourceCanonicalHash": "a399021c34f565ee1096e3ef8d191043b100a6a1112fcdc8a8ee25de755f6d15",
+      "text": "Как называется ионизированное состояние вещества, обычное для звёзд?",
+      "answer": "плазма",
+      "categoryId": "science",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the ionized state of matter common in stars called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:09",
+      "sourceCanonicalHash": "3d7749bddb3bfa46efb914aa8a038ef270451921f4755f68ab663cd2a5f2f159",
+      "text": "Какой процесс клеточного деления образует две генетически одинаковые дочерние клетки?",
+      "answer": "митоз",
+      "categoryId": "science",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which cell-division process forms two genetically identical daughter cells?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:10",
+      "sourceCanonicalHash": "2d182aa67060ce612953021abdb7480b25986b2c4f4166f81eae01d9dc628cd9",
+      "text": "Как называется биологический катализатор, ускоряющий химическую реакцию?",
+      "answer": "фермент",
+      "categoryId": "science",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is a biological catalyst that speeds up a chemical reaction called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:11",
+      "sourceCanonicalHash": "9839df19082981911c2b202181b2944a2544a28850d2f05ae15b44a64c543623",
+      "text": "Как называется чрезвычайно яркое ядро галактики, питаемое сверхмассивной чёрной дырой?",
+      "answer": "квазар",
+      "categoryId": "science",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is an extremely bright galactic nucleus powered by a supermassive black hole called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:12",
+      "sourceCanonicalHash": "9a67c7c0f983d899261577c71ca84a08d02b772e8df50487f1353d7561d663ed",
+      "text": "Как называется разновидность химического элемента с иным числом нейтронов?",
+      "answer": "изотоп",
+      "categoryId": "science",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is a variety of a chemical element with a different number of neutrons called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:13",
+      "sourceCanonicalHash": "912279d724e9330e069ae2042b8fc367648613959088396531e51839e99784a5",
+      "text": "Как называется полный набор генетического материала организма?",
+      "answer": "геном",
+      "categoryId": "science",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the complete set of an organism's genetic material called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:14",
+      "sourceCanonicalHash": "2cad196323817ac5953b9388eacd941db0adef5b0f7cc18dcbea167921fbaab7",
+      "text": "Какая тёмная вулканическая порода составляет значительную часть океанической коры?",
+      "answer": "базальт",
+      "categoryId": "science",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which dark volcanic rock makes up a significant part of the oceanic crust?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:15",
+      "sourceCanonicalHash": "55c1d4b1d2a3273cc821bfb3e36f902ecbe705b4243bd6c9747434014f42a221",
+      "text": "Какая положительно заряженная частица находится в ядре атома?",
+      "answer": "протон",
+      "categoryId": "science",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which positively charged particle is located in the nucleus of an atom?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:16",
+      "sourceCanonicalHash": "d6e00e35538437100739c0122cdf042bbacd8824d76fb0af051259002b55428d",
+      "text": "Как называется светочувствительный слой на задней стенке глаза?",
+      "answer": "сетчатка",
+      "categoryId": "science",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the light-sensitive layer on the back wall of the eye called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:17",
+      "sourceCanonicalHash": "8d006916ef3736aebac7d4640c12d6c458dda74665ab1ee54075b634da891ac7",
+      "text": "Как называется порошкообразное вещество, переносящее мужские половые клетки семенных растений?",
+      "answer": "пыльца",
+      "categoryId": "science",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the powdery substance that carries the male sex cells of seed plants called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:18",
+      "sourceCanonicalHash": "427d5c71d69af8be22bf119bf949ab73375ebc0f52ec3c88e1c07a26be977f0b",
+      "text": "Какой процесс перемещает воду через полупроницаемую мембрану в сторону большей концентрации растворённых веществ?",
+      "answer": "осмос",
+      "categoryId": "science",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which process moves water through a semipermeable membrane toward a higher concentration of dissolved substances?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:19",
+      "sourceCanonicalHash": "87c14facd3b34e13904d7579b6d4af505a4bc7746d89368799862d5b1613cc9a",
+      "text": "Какой элемент с атомным номером два используют для наполнения многих праздничных шаров?",
+      "answer": "гелий",
+      "categoryId": "science",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which element with atomic number two is used to fill many party balloons?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:20",
+      "sourceCanonicalHash": "e787a618bfc549b12cc316e45d94d002d6fd9c462662d4bbe439cd590ec0eaa1",
+      "text": "Как называется твёрдый наружный слой Земли, разбитый на движущиеся плиты?",
+      "answer": "кора",
+      "categoryId": "science",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the solid outer layer of Earth, broken into moving plates, called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:21",
+      "sourceCanonicalHash": "ea74391b37ab3e19dd18b289f4c22b49e8cece2bd358dd806f9a7b6ca63196cb",
+      "text": "Какую гипотетическую частицу предложили для решения сильной CP-проблемы?",
+      "answer": "аксион",
+      "categoryId": "science",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which hypothetical particle was proposed to solve the strong CP problem?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:22",
+      "sourceCanonicalHash": "d6f6a0754265a0b5af68f22904d114f7d75a530b8cc586f6586e73921cedbfb0",
+      "text": "К какому классу частиц относятся фотоны, глюоны и частица Хиггса?",
+      "answer": "бозон",
+      "categoryId": "science",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which class of particles do photons, gluons, and the Higgs particle belong to?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:23",
+      "sourceCanonicalHash": "2b687b50829627510638667fdf50b046b1e821c3d021da1dd67b6a0990dbe235",
+      "text": "На каком электроде происходит окисление в электрохимической ячейке?",
+      "answer": "анод",
+      "categoryId": "science",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "At which electrode does oxidation occur in an electrochemical cell?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:24",
+      "sourceCanonicalHash": "91ecfe20ceb1b66f813cf86fe208f9dadea6b7a61e75ea94eb7fcb6d4ec410b6",
+      "text": "Какая фундаментальная частица объединяется по три, образуя протоны и нейтроны?",
+      "answer": "кварк",
+      "categoryId": "science",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which fundamental particle combines in threes to form protons and neutrons?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:25",
+      "sourceCanonicalHash": "df2122805e5e698f8011e575e0c9ab70eb8728305d7697b20309d4d0e2b3dcf4",
+      "text": "Какое изолирующее вещество образует оболочку вокруг многих нервных волокон?",
+      "answer": "миелин",
+      "categoryId": "science",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What insulating substance forms a sheath around many nerve fibers?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:26",
+      "sourceCanonicalHash": "583cf532038168bcbb9cdb99163a88e71c1c1de6fa94ed50ce2073ad51d41580",
+      "text": "Какой таксономический ранг находится ниже царства и выше класса?",
+      "answer": "тип",
+      "categoryId": "science",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which taxonomic rank is below kingdom and above class?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:27",
+      "sourceCanonicalHash": "5c83f94c4f4d2b1410c8df240389dd171b3c9547055bf5ad75b17194f58ec118",
+      "text": "Как называется быстро вращающаяся нейтронная звезда, испускающая регулярные пучки излучения?",
+      "answer": "пульсар",
+      "categoryId": "science",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is a rapidly rotating neutron star that emits regular beams of radiation called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:28",
+      "sourceCanonicalHash": "46b6b221a9de46bb58e376d972d04216d52fde83d58d9ba8435e0d3167b8139e",
+      "text": "Какой краткий термин обозначает реакции, включающие и восстановление, и окисление?",
+      "answer": "редокс",
+      "categoryId": "science",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Which short term denotes reactions involving both reduction and oxidation?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:29",
+      "sourceCanonicalHash": "32c64a0effe23f8abd1ae8d4973e77391ef62e29fe87279efc263b7c0661f5c4",
+      "text": "Как называется альтернативная форма гена, занимающая тот же локус в хромосоме?",
+      "answer": "аллель",
+      "categoryId": "science",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is an alternative form of a gene occupying the same locus on a chromosome called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:science:30",
+      "sourceCanonicalHash": "e825a2c40147cfd12c9a98e6ccc3dbc5f2f034d6ea6a8de57ad7f2e796d624cb",
+      "text": "Как называется раскалённая внешняя атмосфера Солнца, видимая во время полного затмения?",
+      "answer": "корона",
+      "categoryId": "science",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "What is the Sun's hot outer atmosphere, visible during a total eclipse, called?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:01",
+      "sourceCanonicalHash": "e2c01989fd6c9dda1a49e947fcd364c6b68aac627f02230e10b85d25d2a9f8a6",
+      "text": "Я следую за тобой при солнечном свете, но исчезаю в темноте. Что я?",
+      "answer": "тень",
+      "categoryId": "mixed",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I follow you in sunlight, but disappear in darkness. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:02",
+      "sourceCanonicalHash": "409f9b4be238ca6fc695f0484c78dde806a2d759181bc45ec9930c62376310e3",
+      "text": "Я отвечаю на каждый зов, но никогда не говорю первым. Что я?",
+      "answer": "эхо",
+      "categoryId": "mixed",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I answer every call, but never speak first. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:03",
+      "sourceCanonicalHash": "4e9d3eed869f15c491e2986b54897bd792c196f2f4c2283042b3c6126b98fedf",
+      "text": "У меня есть циферблат и стрелки, но нет ни рук, ни ног. Что я?",
+      "answer": "часы",
+      "categoryId": "mixed",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I have a dial and clock hands, but no arms/hands or legs. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:04",
+      "sourceCanonicalHash": "e6aa1dde4908240ce80ba76b1ec67ef890f3d945688d0addbb562478f6feab28",
+      "text": "Даря сияние, я становлюсь всё короче. Что я?",
+      "answer": "свеча",
+      "categoryId": "mixed",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Giving radiance, I become shorter and shorter. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:05",
+      "sourceCanonicalHash": "b5b28f7c086b80f355b83432ac1a517cc1f700db30149daa25cd202ba9edcf41",
+      "text": "Чем больше я вытираю, тем мокрее становлюсь. Что я?",
+      "answer": "полотенце",
+      "categoryId": "mixed",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "The more I wipe/dry, the wetter I become. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:06",
+      "sourceCanonicalHash": "810ed96591aafef4881bd7e122e57a0c8fa210f683f6a8f30f453ff879b5bf62",
+      "text": "Во мне полно дыр, но я всё равно удерживаю воду. Что я?",
+      "answer": "губка",
+      "categoryId": "mixed",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I am full of holes, but I still hold water. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:07",
+      "sourceCanonicalHash": "f1f579ccf08f7fc86ad9d788348af0f3c8bb412be6a9e6aaffa6fa18b610fbb3",
+      "text": "У меня одно ушко, но я не вижу и тяну за собой нитку. Что я?",
+      "answer": "игла",
+      "categoryId": "mixed",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I have one little ear/eyelet, but I do not see and pull a thread behind me. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:08",
+      "sourceCanonicalHash": "8811806e41df60a6583006a8703f0b5af6328923e8df972b7a40071078dcc5b9",
+      "text": "Если меня выдать, хранить меня дальше уже не получится. Что я?",
+      "answer": "секрет",
+      "categoryId": "mixed",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "If I am revealed/given away, it will no longer be possible to keep me. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:09",
+      "sourceCanonicalHash": "8b35d6d126d7732448194c48f4748841d0a7c9b7dc4be394292a5eda1ad8faf9",
+      "text": "Я всегда впереди тебя, но увидеть меня невозможно. Что я?",
+      "answer": "будущее",
+      "categoryId": "mixed",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I am always ahead of you, but it is impossible to see me. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:10",
+      "sourceCanonicalHash": "8a03b4b5e345f4863848ca0c2b1fece5a93df9fab428de93fc2e4fdd6b19c502",
+      "text": "Назови меня вслух — и меня больше нет. Что я?",
+      "answer": "молчание",
+      "categoryId": "mixed",
+      "difficultyBand": "easy",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Say my name out loud, and I am no more. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:11",
+      "sourceCanonicalHash": "538195f14ec46aca0b2b6cb9b8e84136af4dd5f38c21b64c40efd0c5dfdfe431",
+      "text": "Я опускаюсь на дно, чтобы судно не двигалось, и поднимаюсь перед отплытием. Что я?",
+      "answer": "якорь",
+      "categoryId": "mixed",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I go down to the bottom so the vessel does not move, and rise before departure. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:12",
+      "sourceCanonicalHash": "20351791678a52fa488649c706c1dca46f60a4938bedb94e1676853766cea752",
+      "text": "У меня много зубцов, и я соединяю две стороны, но никогда не кусаюсь. Что я?",
+      "answer": "молния",
+      "categoryId": "mixed",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I have many teeth and I join two sides, but I never bite. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:13",
+      "sourceCanonicalHash": "468a45cc456ccde567b69ef034290552da95af3d677da88eb97ab1ccd03df0a2",
+      "text": "Я повторяю твой облик, меняя местами левую и правую стороны. Что я?",
+      "answer": "зеркало",
+      "categoryId": "mixed",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I repeat your appearance, swapping the left and right sides. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:14",
+      "sourceCanonicalHash": "d46bcbe64d51b5d37a2a0b4eb06b84be83c0aa749a2eeffbe13302ab395b087c",
+      "text": "У меня есть горлышко, но нет головы, а сверху часто бывает крышка. Что я?",
+      "answer": "бутылка",
+      "categoryId": "mixed",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I have a little neck/throat, but no head, and there is often a lid on top. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:15",
+      "sourceCanonicalHash": "8aa6c99cf4e649d78fcc5a43d3fe77ed2b8b547a1b027a2099ccf6b0daaf8bbd",
+      "text": "Я перекинут через преграду и перевожу путников, сам не двигаясь. Что я?",
+      "answer": "мост",
+      "categoryId": "mixed",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I am thrown across an obstacle and carry travelers, without moving myself. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:16",
+      "sourceCanonicalHash": "7540d0d8d5b12b59d9092377ea4b64085bdecc5c702a91186019de45a2c3bfe0",
+      "text": "По моим перекладинам можно подняться, хотя сама я никуда не бегу. Что я?",
+      "answer": "лестница",
+      "categoryId": "mixed",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "You can climb up my rungs, although I myself don't run anywhere. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:17",
+      "sourceCanonicalHash": "5d91c8be556f5f582b97aeaec7036856878c8d3808161465b214539465cf3530",
+      "text": "Я представляю собой проход со входом и выходом, но обычно без окон. Что я?",
+      "answer": "туннель",
+      "categoryId": "mixed",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I am a passage with an entrance and an exit, but usually without windows. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:18",
+      "sourceCanonicalHash": "e3c4e26b4bf4b858394dfda59fc9da598029d43512cab438d13939cbd8289345",
+      "text": "Я похож на маленькую пещерку из ткани и путешествую вместе с твоей одеждой. Что я?",
+      "answer": "карман",
+      "categoryId": "mixed",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I am like a small cave made of cloth and travel together with your clothes. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:19",
+      "sourceCanonicalHash": "9d97ec3320cb08107e2f674c8deaf0322e9411f8b8eb0427f8a094ef962561a7",
+      "text": "Я могу облететь весь мир, всё время оставаясь в одном углу. Что я?",
+      "answer": "почтмарка",
+      "categoryId": "mixed",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I can fly around the whole world while remaining in one corner the whole time. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:20",
+      "sourceCanonicalHash": "00357117c9458955a2549e549ec0dabb7dc901650e8603062e18d7fa5b57fcf1",
+      "text": "Я позволяю смотреть наружу, не впуская в дом непогоду. Что я?",
+      "answer": "окно",
+      "categoryId": "mixed",
+      "difficultyBand": "medium",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I allow you to look outside while not letting bad weather into the house. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:21",
+      "sourceCanonicalHash": "01da05bf8423ce6191b2caa47a01e5c04bd076bc913280811c451f7695c1b17b",
+      "text": "У меня есть зубья, но я не умею жевать и помогаю укладывать волосы. Что я?",
+      "answer": "расчёска",
+      "categoryId": "mixed",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I have teeth, but I cannot chew and help arrange hair. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:22",
+      "sourceCanonicalHash": "705d1c88562c45dff9e75cbb072ec92c0c57848f0b49cbac40377d0ce9a528b2",
+      "text": "У меня пять пальцев, но нет ни костей, ни кожи. Что я?",
+      "answer": "перчатка",
+      "categoryId": "mixed",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I have five fingers, but no bones or skin. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:23",
+      "sourceCanonicalHash": "b1c327114a355ab298a6f2767509a270bdaf1973d91a47f0a5d6338e12549b98",
+      "text": "У меня есть рот и постель, но мне не нужны ни еда, ни сон. Что я?",
+      "answer": "речка",
+      "categoryId": "mixed",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I have a mouth and a bed, but I need neither food nor sleep. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:24",
+      "sourceCanonicalHash": "fb7d3774e16c83d1c1a805d1561d0025e4fc18e65a6151c2dbe6ed7c0a2e753c",
+      "text": "Сними с меня внешние слои — и я могу заставить тебя плакать. Что я?",
+      "answer": "лук",
+      "categoryId": "mixed",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Remove my outer layers, and I may make you cry. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:25",
+      "sourceCanonicalHash": "7ac2ea462baf7dcee1fd00101b684912b8241f39c12a200864fc337284c3620b",
+      "text": "Я плыву по небу без крыльев и могу принести дождь. Что я?",
+      "answer": "облако",
+      "categoryId": "mixed",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I float through the sky without wings and can bring rain. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:26",
+      "sourceCanonicalHash": "e401839bd2fec9cba4869880198b91e7a9f42128ea47127200828d78bb4c446e",
+      "text": "У меня есть корешок и множество листов, но я не растение. Что я?",
+      "answer": "книга",
+      "categoryId": "mixed",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I have a spine and many leaves/sheets, but I am not a plant. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:27",
+      "sourceCanonicalHash": "a7ef2ad823737cfa675ddd29f717412609b1c2af2f8fcb1ce80df4f2d2a929ad",
+      "text": "Я изображаю разные места и дороги, но настоящих зданий и машин во мне нет. Что я?",
+      "answer": "план",
+      "categoryId": "mixed",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I depict different places and roads, but there are no real buildings or cars in me. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:28",
+      "sourceCanonicalHash": "801afbceac7fc9265cb2eaa1c2dec4205c2fcb640146637a24c80f8487f3738f",
+      "text": "Я отпираю замки, хотя сам не являюсь дверью. Что я?",
+      "answer": "ключ",
+      "categoryId": "mixed",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I unlock locks, although I myself am not a door. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:29",
+      "sourceCanonicalHash": "e638668b03a6f9d5a82b9e478bd9de99873b3a9df1121ad7d71261ef83442dcf",
+      "text": "Накорми меня — и я буду жить, напои — и я умру. Что я?",
+      "answer": "огонь",
+      "categoryId": "mixed",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "Feed me and I will live; give me a drink and I will die. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    },
+    {
+      "canonicalRiddleId": "race:mixed:30",
+      "sourceCanonicalHash": "5f5ca682a2867d02dadc45bf285fa094fe4ed0743142e4df69c1def24fb0d4ee",
+      "text": "Я могу заполнить всю комнату, не занимая места. Что я?",
+      "answer": "свет",
+      "categoryId": "mixed",
+      "difficultyBand": "hard",
+      "qualityVersion": "automated_translation_v1",
+      "review": {
+        "criticModel": "gpt-5.5",
+        "backTranslation": "I can fill the whole room without taking up space. What am I?",
+        "equivalentCanonical": true,
+        "clueLeak": false,
+        "prohibitedContent": false,
+        "categoryMatch": true,
+        "difficultyMatch": true
+      }
+    }
+  ]
+}

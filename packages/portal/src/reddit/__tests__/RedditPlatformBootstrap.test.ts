@@ -1,4 +1,9 @@
-import {RedditPlatformBootstrap, selectMigratableGuestPreferences} from "../RedditPlatformBootstrap";
+import {
+  REDDIT_GATEWAY_REQUEST_TIMEOUT_MS,
+  RedditPlatformBootstrap,
+  postRedditGateway,
+  selectMigratableGuestPreferences,
+} from "../RedditPlatformBootstrap";
 import {purchase} from "@devvit/payments/client";
 
 jest.mock("@devvit/payments/client", () => ({purchase: jest.fn()}));
@@ -48,6 +53,24 @@ beforeEach(() => {
   jest.restoreAllMocks();
 });
 
+afterEach(() => {
+  jest.useRealTimers();
+});
+
+it.each([
+  "https://attacker.example/api/session",
+  "//attacker.example/api/session",
+  "/functions/session",
+  "/api/../functions/session",
+  "/api/%2e%2e/functions/session",
+  "/api\\session",
+])("rejects a Reddit gateway path outside the exact same-origin namespace: %s", async (path) => {
+  global.fetch = jest.fn();
+
+  await expect(postRedditGateway(path)).rejects.toThrow("invalid-reddit-gateway-path");
+  expect(global.fetch).not.toHaveBeenCalled();
+});
+
 it("creates transient guest storage without exposing optional platform capabilities", async () => {
   global.fetch = jest.fn(() => reply({ok: true, authenticated: false}));
   /** Provides progress behavior. */
@@ -62,6 +85,30 @@ it("creates transient guest storage without exposing optional platform capabilit
   await result.value.storage.writePreferences({locale: "ar", muted: true});
   await expect(result.value.storage.readPreferences()).resolves.toMatchObject({locale: "ar", muted: true});
   expect(progress).toEqual([20, 80, 100]);
+});
+
+it("keeps guest state in memory when browser storage is unavailable", async () => {
+  global.fetch = jest.fn(() => reply({ok: true, authenticated: false}));
+  Object.defineProperty(window, "localStorage", {
+    configurable: true,
+    get: () => {
+      throw new DOMException("Storage is blocked", "SecurityError");
+    },
+  });
+
+  try {
+    /** Provides result behavior. */
+    const result = await new RedditPlatformBootstrap().initialize(() => undefined);
+    expect(result.status).toBe("success");
+    if (result.status !== "success") return;
+
+    await expect(result.value.storage.writePreferences({locale: "ar", muted: true})).resolves.toBeUndefined();
+    await expect(result.value.storage.readPreferences()).resolves.toEqual({locale: "ar", muted: true});
+    await expect(result.value.storage.clear()).resolves.toBeUndefined();
+    await expect(result.value.storage.readPreferences()).resolves.toEqual({});
+  } finally {
+    Object.defineProperty(window, "localStorage", {configurable: true, value: localStorage});
+  }
 });
 
 it("uses only same-origin gateway storage for authenticated Reddit sessions", async () => {
@@ -236,6 +283,25 @@ it("returns a recoverable startup failure for an invalid gateway response", asyn
     status: "retryable-failure",
     message: "reddit-gateway-request-failed",
   });
+});
+
+it("aborts Reddit gateway requests that exceed their deadline", async () => {
+  jest.useFakeTimers();
+  global.fetch = jest.fn(
+    (_input, init) =>
+      new Promise((_resolve, reject) => {
+        init?.signal?.addEventListener("abort", () => reject(new DOMException("Aborted", "AbortError")));
+      }),
+  );
+
+  /** Provides pending behavior. */
+  const pending = postRedditGateway("/api/session");
+  /** Provides rejection behavior. */
+  const rejection = expect(pending).rejects.toThrow("reddit-gateway-request-timed-out");
+  await jest.advanceTimersByTimeAsync(REDDIT_GATEWAY_REQUEST_TIMEOUT_MS);
+
+  await rejection;
+  expect(((global.fetch as jest.Mock).mock.calls[0]?.[1] as RequestInit).signal?.aborted).toBe(true);
 });
 
 it("falls back to isolated guest play when Reddit gameplay is emergency-disabled", async () => {

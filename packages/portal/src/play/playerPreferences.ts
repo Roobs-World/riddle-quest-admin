@@ -1,4 +1,10 @@
 import {LANGUAGE_OPTIONS, detectDeviceLanguage, setLocale, type Locale} from "./i18n";
+import {
+  readBrowserStorage,
+  removeBrowserStorage,
+  writeBrowserStorage,
+  type BrowserStorageArea,
+} from "../platform/browserStorage";
 
 /** Preferences that are safe for the client to read and update. */
 export type PlayerPreferences = {
@@ -44,7 +50,7 @@ let onboardingCompleteOverride: boolean | undefined;
 let browserPlayerStateMutationGuard: (() => boolean) | undefined;
 
 /** Browser storage areas used by app-owned player state. */
-export type BrowserStorageArea = "local" | "session";
+export type {BrowserStorageArea} from "../platform/browserStorage";
 
 /** Obtains browser storage without allowing a restrictive iframe getter to crash the app. */
 const getBrowserStorage = (area: BrowserStorageArea, rethrow = false): Storage | undefined => {
@@ -58,31 +64,19 @@ const getBrowserStorage = (area: BrowserStorageArea, rethrow = false): Storage |
 
 /** Reads browser storage defensively for restrictive embedded environments. */
 export const safeBrowserStorageGet = (area: BrowserStorageArea, key: string): string | null => {
-  try {
-    return getBrowserStorage(area)?.getItem(key) ?? null;
-  } catch {
-    return null;
-  }
+  return readBrowserStorage(area, key);
 };
 
 /** Writes browser storage defensively for restrictive embedded environments. */
 export const safeBrowserStorageSet = (area: BrowserStorageArea, key: string, value: string): void => {
-  try {
-    if (browserPlayerStateMutationGuard && !browserPlayerStateMutationGuard()) return;
-    getBrowserStorage(area)?.setItem(key, value);
-  } catch {
-    // The applied in-memory/document state still works for this session.
-  }
+  if (browserPlayerStateMutationGuard && !browserPlayerStateMutationGuard()) return;
+  writeBrowserStorage(area, key, value);
 };
 
 /** Removes browser storage defensively for restrictive embedded environments. */
 export const safeBrowserStorageRemove = (area: BrowserStorageArea, key: string): void => {
-  try {
-    if (browserPlayerStateMutationGuard && !browserPlayerStateMutationGuard()) return;
-    getBrowserStorage(area)?.removeItem(key);
-  } catch {
-    // Cleanup that is not part of account deletion remains best effort.
-  }
+  if (browserPlayerStateMutationGuard && !browserPlayerStateMutationGuard()) return;
+  removeBrowserStorage(area, key);
 };
 
 /** Installs a Jest-runtime-only guard around app-owned browser-state mutations. */
