@@ -67,6 +67,7 @@ import {
   listRaceCategories,
   listRaceInbox,
   publishRaceChallenge,
+  raceAbandonCallableOptions,
   raceHintCallableOptions,
   raceStartCallableOptions,
   recordRaceAnalytics,
@@ -103,6 +104,10 @@ const authenticatedRequest = (data: unknown): CallableRequest<unknown> =>
   ({auth: {uid: raceCallableUserId}, data}) as CallableRequest<unknown>;
 
 describe("Race callable deployment options", () => {
+  it("keeps the latency-sensitive abandon callable warm", () => {
+    expect(raceAbandonCallableOptions).toMatchObject({minInstances: 1, invoker: "public"});
+  });
+
   it("keeps the latency-sensitive hint callable warm", () => {
     expect(raceHintCallableOptions).toMatchObject({minInstances: 1, invoker: "public"});
   });

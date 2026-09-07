@@ -58,6 +58,12 @@ export const raceStartCallableOptions = {
   minInstances: 1,
 };
 
+/** Deployment options that keep the latency-sensitive abandon callable warm. */
+export const raceAbandonCallableOptions = {
+  ...jestWebCallableOptions,
+  minInstances: 1,
+};
+
 /** Provides require user id behavior. */
 const requireUserId = (request: CallableRequest<unknown>): string => {
   if (!request.auth) {
@@ -201,7 +207,7 @@ export const resumeRaceRun = onCallWithSentry(
 /** Abandons the authenticated player's active run without granting a result. */
 export const abandonRaceRun = onCallWithSentry(
   "abandonRaceRun",
-  jestWebCallableOptions,
+  raceAbandonCallableOptions,
   async (request: CallableRequest<unknown>) => {
     /** Provides r id. */
     const userId = await requireRaceUser(request);
