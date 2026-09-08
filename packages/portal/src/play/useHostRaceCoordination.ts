@@ -1,5 +1,5 @@
-import {useCallback, useEffect, useMemo, useState, type Dispatch, type SetStateAction} from "react";
-import type {HostToGameMessage} from "@qwordly/core/bridge";
+import {useCallback, useEffect, useMemo, useState} from "react";
+import type {BridgeProfile, HostToGameMessage} from "@qwordly/core/bridge";
 import type {ListRaceCategoriesResponse} from "@qwordly/core/race";
 import {trackEvent} from "../analytics/events";
 import type {Locale} from "./i18n";
@@ -29,8 +29,10 @@ type HostRaceCoordinationOptions = Readonly<{
   initialRaceChallengeId?: string;
   /** Locale eligibility policy supplied by the active target. */
   raceLocalePolicy: "english-only" | "all";
-  /** Updates the host's authoritative authentication state. */
-  setAuthSnapshot: Dispatch<SetStateAction<AuthSnapshot>>;
+  /** Applies an authoritative balance to authenticated host state. */
+  applyCoinBalance: (coins?: number) => void;
+  /** Replaces authenticated host profile state after a refresh. */
+  replaceProfile: (profile: BridgeProfile | null) => void;
   /** Delivers a protocol message to the embedded game. */
   postToGame: (message: HostToGameMessage) => void;
 }>;
@@ -53,7 +55,8 @@ export function useHostRaceCoordination({
   services,
   initialRaceChallengeId,
   raceLocalePolicy,
-  setAuthSnapshot,
+  applyCoinBalance,
+  replaceProfile,
   postToGame,
 }: HostRaceCoordinationOptions): HostRaceCoordination {
   /** Stable race rollout decision for the lifetime of this host. */
@@ -98,11 +101,7 @@ export function useHostRaceCoordination({
   /** Reconciles multiplayer rewards and refreshes the authoritative profile. */
   const syncProgress = useCallback(
     async (result: RaceProgressResult) => {
-      if (typeof result.newCoins === "number") {
-        setAuthSnapshot((current) =>
-          current.profile ? {...current, profile: {...current.profile, coins: result.newCoins!}} : current,
-        );
-      }
+      applyCoinBalance(result.newCoins);
       for (const achievementId of result.newlyUnlockedAchievementIds ?? []) {
         trackEvent("unlock_achievement", {achievement_id: achievementId, source: "multiplayer"});
       }
@@ -113,7 +112,7 @@ export function useHostRaceCoordination({
       try {
         /** Fresh profile after the server applies all rewards. */
         const profile = await services.loadProfile(user.uid);
-        setAuthSnapshot((current) => ({...current, profile}));
+        replaceProfile(profile);
         postToGame({
           type: "host:authState",
           requestId: createRequestId("race-profile"),
@@ -123,7 +122,7 @@ export function useHostRaceCoordination({
         console.warn("[riddle-quest-race-achievements] Profile refresh failed", error);
       }
     },
-    [authSnapshot.user, bridgeUser, postToGame, services, setAuthSnapshot],
+    [applyCoinBalance, authSnapshot.user, bridgeUser, postToGame, replaceProfile, services],
   );
 
   return {enabled, prefetchedCategories, syncProgress};

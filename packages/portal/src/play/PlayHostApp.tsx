@@ -1,16 +1,15 @@
 import {useCallback, useEffect, useMemo, useRef, useState} from "react";
-import type {HostToGameMessage} from "@qwordly/core/bridge";
+import type {BridgeProfile, HostToGameMessage} from "@qwordly/core/bridge";
 import {BRIDGE_PROTOCOL_VERSION} from "@qwordly/core/bridge/constants";
 import {createHostMessageRouter} from "./bridgeRouter";
 import {detectDeviceLanguage, tr, useLocale} from "./i18n";
 import {createRequestId} from "./requestIds";
 import {GameFrameApp} from "./GameFrameApp";
 import {dispatchLocalBridge, GAME_TO_HOST_EVENT, HOST_TO_GAME_EVENT} from "./localBridge";
-import type {AuthSnapshot, CompletionResult, HostServices, ProductSummary, WebGameMode} from "./types";
+import type {CompletionResult, HostServices, ProductSummary, WebGameMode} from "./types";
 import type {RaceOutcome} from "@qwordly/core/race";
 import {SpinningWheelLoader} from "./SpinningWheelLoader";
 import type {PlatformCapabilities, PlayerData, PlayerDataUpdate} from "../platform/types";
-import {restoreProfileWhileServerLoads} from "../platform/playerData";
 import {
   createPlayHostMessageHandlers,
   getHostErrorMessage,
@@ -25,6 +24,7 @@ import {ReferralSharingProvider, type ReferralSharingCapability} from "./sharing
 import {useHostOperations} from "./useHostOperations";
 import {useHostRiddleLifecycle} from "./useHostRiddleLifecycle";
 import {useHostRaceCoordination} from "./useHostRaceCoordination";
+import {useHostAuthSession} from "./useHostAuthSession";
 
 /** Creates host message. */
 const createHostMessage = <Message extends HostToGameMessage>(message: Message): Message => ({
@@ -140,8 +140,6 @@ export function PlayHostApp({
   }, [accountDeletionServiceGate, hostServices, platformProducts, platformPurchase]);
   /** Provides configuration warning behavior. */
   const configurationWarning = hostConfigurationWarning;
-  /** Provides [auth snapshot, set auth snapshot] behavior. */
-  const [authSnapshot, setAuthSnapshot] = useState<AuthSnapshot>({user: null, profile: null});
   /** Provides [frame ready, set frame ready] behavior. */
   const [frameReady, setFrameReady] = useState(false);
   /** Provides [notice, set notice] behavior. */
@@ -158,15 +156,6 @@ export function PlayHostApp({
   }, [onPlayable]);
   /** Provides account deletion completed ref behavior. */
   const accountDeletionCompletedRef = useRef(false);
-  /** Provides bridge user behavior. */
-  const bridgeUser = useMemo(
-    () =>
-      authSnapshot.user
-        ? {...authSnapshot.user, platformRegistered: platformCapabilities?.accountUpgrade?.state === "complete"}
-        : null,
-    [authSnapshot.user, platformCapabilities?.accountUpgrade?.state],
-  );
-
   /** Saves active game. */
   const saveActiveGame = useCallback(
     (activeGame: NonNullable<PlayerData["activeGame"]> | null) => onPlayerDataChange?.({activeGame}),
@@ -177,24 +166,29 @@ export function PlayHostApp({
     detectDeviceLanguage(safeBrowserStorageGet("local", "appLanguage") ?? navigator.language);
   }, []);
 
-  useEffect(
-    () =>
-      services.auth.subscribe((snapshot) => {
-        setAuthSnapshot(restoreProfileWhileServerLoads(snapshot, initialPlayerData?.profile));
-      }),
-    [initialPlayerData?.profile, services],
-  );
-
-  useEffect(() => {
-    if (authSnapshot.profile) {
-      onPlayerDataChange?.({profile: authSnapshot.profile});
-    }
-  }, [authSnapshot.profile, onPlayerDataChange]);
-
   /** Provides post to game behavior. */
   const postToGame = useCallback((message: HostToGameMessage) => {
     dispatchLocalBridge(HOST_TO_GAME_EVENT, createHostMessage(message));
   }, []);
+  /** Persists an authoritative profile through the active target adapter. */
+  const persistProfile = useCallback(
+    (profile: BridgeProfile) => onPlayerDataChange?.({profile}),
+    [onPlayerDataChange],
+  );
+
+  /** Authenticated state, persistence, and game-bridge synchronization. */
+  const {
+    snapshot: authSnapshot,
+    bridgeUser,
+    applyCoinBalance,
+    replaceProfile,
+  } = useHostAuthSession({
+    services,
+    initialProfile: initialPlayerData?.profile,
+    platformRegistered: platformCapabilities?.accountUpgrade?.state === "complete",
+    onProfileChange: persistProfile,
+    postToGame,
+  });
 
   /** Latest init delivery, used by riddle recovery without a dependency cycle. */
   const sendInitRef = useRef<() => void>(() => undefined);
@@ -266,12 +260,10 @@ export function PlayHostApp({
   sendInitRef.current = sendInit;
 
   /** Applies purchase balance. */
-  const applyPurchaseBalance = useCallback((result: import("./types").PurchaseResult) => {
-    if (typeof result.newCoins !== "number") return;
-    setAuthSnapshot((current) =>
-      current.profile ? {...current, profile: {...current.profile, coins: result.newCoins!}} : current,
-    );
-  }, []);
+  const applyPurchaseBalance = useCallback(
+    (result: import("./types").PurchaseResult) => applyCoinBalance(result.newCoins),
+    [applyCoinBalance],
+  );
 
   /** Multiplayer rollout, preload, and authoritative reward reconciliation. */
   const {
@@ -285,7 +277,8 @@ export function PlayHostApp({
     services,
     initialRaceChallengeId,
     raceLocalePolicy,
-    setAuthSnapshot,
+    applyCoinBalance,
+    replaceProfile,
     postToGame,
   });
 
@@ -314,14 +307,6 @@ export function PlayHostApp({
     },
     [onAuthoritativeRaceResult, onResultScreen],
   );
-
-  useEffect(() => {
-    postToGame({
-      type: "host:authState",
-      requestId: createRequestId("auth"),
-      payload: {...authSnapshot, user: bridgeUser},
-    });
-  }, [authSnapshot, bridgeUser, postToGame]);
 
   /** Provides router behavior. */
   const router = useMemo(
