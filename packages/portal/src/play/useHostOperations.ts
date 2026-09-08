@@ -24,18 +24,14 @@ type PostOperation = (
 
 /** Configuration owned by the host-operation module. */
 type HostOperationOptions = Readonly<{
-  /** Whether the release target currently blocks external interaction. */
-  externalInteractionBlocked: boolean;
-  /** Whether the first playable riddle has loaded. */
-  startupComplete: boolean;
   /** Correlated result delivery function. */
   postOperation: PostOperation;
 }>;
 
 /** Small interface consumed by host orchestration and rendering. */
 export type HostOperations = Readonly<{
-  /** Whether interaction must remain blocked. */
-  interactionBlocked: boolean;
+  /** Whether global server activity currently blocks interaction. */
+  activityActive: boolean;
   /** Runs an operation while maintaining global server-activity state. */
   withActivity: <Result>(operation: () => Promise<Result>) => Promise<Result>;
   /** Runs a multiplayer operation with correlated delivery and latency telemetry. */
@@ -47,11 +43,7 @@ export type HostOperations = Readonly<{
 }>;
 
 /** Owns server activity accounting and multiplayer operation delivery. */
-export function useHostOperations({
-  externalInteractionBlocked,
-  startupComplete,
-  postOperation,
-}: HostOperationOptions): HostOperations {
+export function useHostOperations({postOperation}: HostOperationOptions): HostOperations {
   /** Number of global server operations whose activity window remains open. */
   const [pendingOperations, setPendingOperations] = useState(0);
 
@@ -100,7 +92,7 @@ export function useHostOperations({
   );
 
   return {
-    interactionBlocked: pendingOperations > 0 || externalInteractionBlocked || !startupComplete,
+    activityActive: pendingOperations > 0,
     withActivity,
     runRace,
   };

@@ -25,6 +25,7 @@ import {coordinateHostServices, type AccountDeletionServiceGate} from "./account
 import type {ActivePresenceState} from "../presence/PlatformPresenceSession";
 import {ReferralSharingProvider, type ReferralSharingCapability} from "./sharing/ReferralSharingCapability";
 import {useHostOperations} from "./useHostOperations";
+import {useHostRiddleLifecycle} from "./useHostRiddleLifecycle";
 
 /** Creates host message. */
 const createHostMessage = <Message extends HostToGameMessage>(message: Message): Message => ({
@@ -158,32 +159,20 @@ export function PlayHostApp({
   );
   /** Provides [frame ready, set frame ready] behavior. */
   const [frameReady, setFrameReady] = useState(false);
-  /** Provides [game mode, set game mode] behavior. */
-  const [gameMode, setGameMode] = useState<WebGameMode>(initialGameMode ?? "classic");
   /** Provides [notice, set notice] behavior. */
   const [notice, setNotice] = useState<string | null>(configurationWarning);
-  /** Provides [startup complete, set startup complete] behavior. */
-  const [startupComplete, setStartupComplete] = useState(false);
   /** Loads ed user id ref. */
   const loadedUserIdRef = useRef<string | null>(null);
-  /** Provides riddle loaded ref behavior. */
-  const riddleLoadedRef = useRef(false);
-  /** Provides riddle load in flight ref behavior. */
-  const riddleLoadInFlightRef = useRef<Promise<boolean> | null>(null);
-  /** Provides riddle context version ref behavior. */
-  const riddleContextVersionRef = useRef(0);
-  /** Provides schedule riddle recovery ref behavior. */
-  const scheduleRiddleRecoveryRef = useRef<() => void>(() => undefined);
   /** Provides playable reported ref behavior. */
   const playableReportedRef = useRef(false);
+  /** Reports readiness at most once across recovery and bridge-ready paths. */
+  const reportPlayable = useCallback(() => {
+    if (playableReportedRef.current) return;
+    playableReportedRef.current = true;
+    onPlayable?.();
+  }, [onPlayable]);
   /** Provides account deletion completed ref behavior. */
   const accountDeletionCompletedRef = useRef(false);
-  /** Provides game mode ref behavior. */
-  const gameModeRef = useRef(gameMode);
-  /** Provides classic index ref behavior. */
-  const classicIndexRef = useRef(authSnapshot.profile?.classicIndex);
-  gameModeRef.current = gameMode;
-  classicIndexRef.current = authSnapshot.profile?.classicIndex;
   /** Provides bridge user behavior. */
   const bridgeUser = useMemo(
     () =>
@@ -248,25 +237,10 @@ export function PlayHostApp({
     dispatchLocalBridge(HOST_TO_GAME_EVENT, createHostMessage(message));
   }, []);
 
-  /** Sends init. */
-  const sendInit = useCallback(() => {
-    postToGame({
-      type: "host:init",
-      requestId: createRequestId("init"),
-      payload: {
-        protocolVersion: BRIDGE_PROTOCOL_VERSION,
-        sessionId: sessionIdRef.current,
-        locale,
-        user: bridgeUser,
-        profile: authSnapshot.profile,
-        gameMode,
-        products: services.products,
-      },
-    });
-  }, [authSnapshot.profile, bridgeUser, gameMode, locale, postToGame, services.products]);
-  /** Sends init ref. */
-  const sendInitRef = useRef(sendInit);
-  sendInitRef.current = sendInit;
+  /** Latest init delivery, used by riddle recovery without a dependency cycle. */
+  const sendInitRef = useRef<() => void>(() => undefined);
+  /** Delivers the latest init state before an automatic riddle recovery. */
+  const sendRecoveryInit = useCallback(() => sendInitRef.current(), []);
 
   /** Provides post operation behavior. */
   const postOperation = useCallback(
@@ -287,10 +261,50 @@ export function PlayHostApp({
 
   /** Server-operation module shared by bridge handlers and the host view. */
   const {
-    interactionBlocked: serverInteractionActive,
+    activityActive: serverActivityActive,
     withActivity: withServerActivity,
     runRace: runRaceOperation,
-  } = useHostOperations({externalInteractionBlocked, startupComplete, postOperation});
+  } = useHostOperations({postOperation});
+
+  /** Single-player riddle loading, recovery, and readiness module. */
+  const {
+    gameMode,
+    startupComplete,
+    loadRiddle: loadAndPostRiddle,
+  } = useHostRiddleLifecycle({
+    userId: authSnapshot.user?.uid,
+    profile: authSnapshot.profile,
+    initialGameMode: initialGameMode ?? "classic",
+    locale,
+    services,
+    withActivity: withServerActivity,
+    postToGame,
+    postOperation,
+    configurationWarning,
+    setNotice,
+    onPlayable: reportPlayable,
+    onRecoveryAttempt: sendRecoveryInit,
+  });
+  /** Whether startup, server work, or the target lifecycle blocks interaction. */
+  const serverInteractionActive = serverActivityActive || externalInteractionBlocked || !startupComplete;
+
+  /** Sends the complete current host state to the game. */
+  const sendInit = useCallback(() => {
+    postToGame({
+      type: "host:init",
+      requestId: createRequestId("init"),
+      payload: {
+        protocolVersion: BRIDGE_PROTOCOL_VERSION,
+        sessionId: sessionIdRef.current,
+        locale,
+        user: bridgeUser,
+        profile: authSnapshot.profile,
+        gameMode,
+        products: services.products,
+      },
+    });
+  }, [authSnapshot.profile, bridgeUser, gameMode, locale, postToGame, services.products]);
+  sendInitRef.current = sendInit;
 
   /** Applies purchase balance. */
   const applyPurchaseBalance = useCallback((result: import("./types").PurchaseResult) => {
@@ -360,75 +374,6 @@ export function PlayHostApp({
     },
     [onAuthoritativeRaceResult, onResultScreen],
   );
-
-  /** Loads and post riddle. */
-  const loadAndPostRiddle = useCallback(
-    async (
-      input: {
-        /** Stores game mode. */
-        gameMode: WebGameMode; /** Stores locale. */
-        /** Stores locale. */
-        locale: string; /** Stores classic index. */
-        /** Stores classic index. */
-        classicIndex?: number;
-      },
-      requestId?: string,
-    ) => {
-      // Automatic ready/recovery calls may share one request. Correlated game
-      // requests must run independently so their requestId always receives a response.
-      if (!requestId && riddleLoadInFlightRef.current) return riddleLoadInFlightRef.current;
-      /** Provides context version behavior. */
-      const contextVersion = riddleContextVersionRef.current;
-      /** Provides pending behavior. */
-      const pending = (async () => {
-        try {
-          setGameMode(input.gameMode);
-          /** Provides riddle behavior. */
-          const riddle = await withServerActivity(() => services.loadRiddle(input));
-          if (contextVersion !== riddleContextVersionRef.current) return false;
-          riddleLoadedRef.current = true;
-          postToGame({
-            type: "host:riddleLoaded",
-            requestId,
-            payload: {
-              riddle,
-              profile: authSnapshot.profile,
-            },
-          });
-          postOperation(requestId, "loadRiddle", true, {riddleId: riddle.riddleId});
-          trackEvent("level_start", {
-            game_mode: riddle.gameMode,
-            level_name: riddle.index === undefined ? riddle.gameMode : `${riddle.gameMode}_${riddle.index}`,
-            level_number: riddle.index,
-          });
-          setNotice(configurationWarning);
-          setStartupComplete(true);
-          if (!playableReportedRef.current) {
-            playableReportedRef.current = true;
-            onPlayable?.();
-          }
-          return true;
-        } catch (error) {
-          riddleLoadedRef.current = false;
-          captureBrowserException(error, {component: "play_host", operation: "loadRiddle"});
-          /** Provides message behavior. */
-          const message = getHostErrorMessage(error);
-          setNotice(message);
-          postOperation(requestId, "loadRiddle", false, undefined, message);
-          scheduleRiddleRecoveryRef.current();
-          return false;
-        }
-      })();
-      riddleLoadInFlightRef.current = pending;
-      return pending.finally(() => {
-        if (riddleLoadInFlightRef.current === pending) riddleLoadInFlightRef.current = null;
-      });
-    },
-    [authSnapshot.profile, configurationWarning, onPlayable, postOperation, postToGame, services, withServerActivity],
-  );
-  /** Loads and post riddle ref. */
-  const loadAndPostRiddleRef = useRef(loadAndPostRiddle);
-  loadAndPostRiddleRef.current = loadAndPostRiddle;
 
   useEffect(() => {
     postToGame({
@@ -505,7 +450,6 @@ export function PlayHostApp({
   useEffect(() => {
     if (!authSnapshot.user) {
       loadedUserIdRef.current = null;
-      riddleLoadedRef.current = false;
       return;
     }
 
@@ -520,50 +464,6 @@ export function PlayHostApp({
       classicIndex: authSnapshot.profile?.classicIndex,
     });
   }, [authSnapshot.profile?.classicIndex, authSnapshot.user, frameReady, gameMode, loadAndPostRiddle, locale]);
-
-  useEffect(() => {
-    riddleContextVersionRef.current += 1;
-    riddleLoadInFlightRef.current = null;
-    riddleLoadedRef.current = false;
-    /** Provides r. */
-    const user = authSnapshot.user;
-    if (!user) return;
-    /** Provides cancelled behavior. */
-    let cancelled = false;
-    /** Provides recovery timer behavior. */
-    let recoveryTimer: number | undefined;
-    /** Provides failed attempts behavior. */
-    let failedAttempts = 0;
-    /** Provides schedule recovery behavior. */
-    const scheduleRecovery = (delayMs: number) => {
-      if (cancelled) return;
-      if (recoveryTimer !== undefined) window.clearTimeout(recoveryTimer);
-      recoveryTimer = window.setTimeout(() => void recoverHostAndRiddle(), delayMs);
-    };
-    /** Provides recover host and riddle behavior. */
-    const recoverHostAndRiddle = async () => {
-      sendInitRef.current();
-      if (riddleLoadedRef.current || cancelled) return;
-      /** Loads ed. */
-      const loaded = await loadAndPostRiddleRef.current({
-        gameMode: gameModeRef.current,
-        locale,
-        classicIndex: classicIndexRef.current,
-      });
-      if (loaded || cancelled) return;
-      failedAttempts += 1;
-      /** Provides retry delay ms behavior. */
-      const retryDelayMs = Math.min(30_000, 500 * 2 ** Math.min(failedAttempts, 6));
-      scheduleRecovery(retryDelayMs);
-    };
-    scheduleRiddleRecoveryRef.current = () => scheduleRecovery(250);
-    scheduleRecovery(250);
-    return () => {
-      cancelled = true;
-      scheduleRiddleRecoveryRef.current = () => undefined;
-      if (recoveryTimer !== undefined) window.clearTimeout(recoveryTimer);
-    };
-  }, [authSnapshot.user?.uid, locale]);
 
   useEffect(() => {
     /** Provides on visibility change behavior. */
