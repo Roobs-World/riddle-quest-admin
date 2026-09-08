@@ -24,6 +24,7 @@ import {safeBrowserStorageGet} from "./playerPreferences";
 import {coordinateHostServices, type AccountDeletionServiceGate} from "./accountDeletionServiceGate";
 import type {ActivePresenceState} from "../presence/PlatformPresenceSession";
 import {ReferralSharingProvider, type ReferralSharingCapability} from "./sharing/ReferralSharingCapability";
+import {useHostOperations} from "./useHostOperations";
 
 /** Creates host message. */
 const createHostMessage = <Message extends HostToGameMessage>(message: Message): Message => ({
@@ -161,12 +162,8 @@ export function PlayHostApp({
   const [gameMode, setGameMode] = useState<WebGameMode>(initialGameMode ?? "classic");
   /** Provides [notice, set notice] behavior. */
   const [notice, setNotice] = useState<string | null>(configurationWarning);
-  /** Provides [pending server operations, set pending server operations] behavior. */
-  const [pendingServerOperations, setPendingServerOperations] = useState(0);
   /** Provides [startup complete, set startup complete] behavior. */
   const [startupComplete, setStartupComplete] = useState(false);
-  /** Provides server interaction active behavior. */
-  const serverInteractionActive = pendingServerOperations > 0 || externalInteractionBlocked || !startupComplete;
   /** Loads ed user id ref. */
   const loadedUserIdRef = useRef<string | null>(null);
   /** Provides riddle loaded ref behavior. */
@@ -196,23 +193,6 @@ export function PlayHostApp({
     [authSnapshot.user, platformCapabilities?.accountUpgrade?.state],
   );
 
-  /** Runs server activity. */
-  const withServerActivity = useCallback(async <Result,>(operation: () => Promise<Result>): Promise<Result> => {
-    /** Starts ed at. */
-    const startedAt = Date.now();
-    setPendingServerOperations((current) => current + 1);
-    try {
-      return await operation();
-    } finally {
-      /** Provides minimum visible time behavior. */
-      const minimumVisibleTime = 180;
-      /** Provides remaining time behavior. */
-      const remainingTime = Math.max(0, minimumVisibleTime - (Date.now() - startedAt));
-      window.setTimeout(() => {
-        setPendingServerOperations((current) => Math.max(0, current - 1));
-      }, remainingTime);
-    }
-  }, []);
   /** Saves active game. */
   const saveActiveGame = useCallback(
     (activeGame: NonNullable<PlayerData["activeGame"]> | null) => onPlayerDataChange?.({activeGame}),
@@ -305,6 +285,13 @@ export function PlayHostApp({
     [postToGame],
   );
 
+  /** Server-operation module shared by bridge handlers and the host view. */
+  const {
+    interactionBlocked: serverInteractionActive,
+    withActivity: withServerActivity,
+    runRace: runRaceOperation,
+  } = useHostOperations({externalInteractionBlocked, startupComplete, postOperation});
+
   /** Applies purchase balance. */
   const applyPurchaseBalance = useCallback((result: import("./types").PurchaseResult) => {
     if (typeof result.newCoins !== "number") return;
@@ -312,37 +299,6 @@ export function PlayHostApp({
       current.profile ? {...current, profile: {...current.profile, coins: result.newCoins!}} : current,
     );
   }, []);
-
-  /** Provides run race operation behavior. */
-  const runRaceOperation = useCallback(
-    async (requestId: string | undefined, operation: HostOperationName, action: () => Promise<unknown>) => {
-      /** Starts ed at. */
-      const startedAt = performance.now();
-      try {
-        // The multiplayer surface owns its pending states. Using the global
-        // server-activity wrapper here blocks the entire game behind an overlay
-        // while a race request is in flight, including the initial screen open.
-        postOperation(requestId, operation, true, await action());
-        /** Provides duration ms behavior. */
-        const durationMs = Math.round(performance.now() - startedAt);
-        /** Provides report behavior. */
-        const report = durationMs >= 2_000 ? console.warn : console.info;
-        report("[riddle-quest-race-latency]", operation, {
-          ok: true,
-          durationMs,
-          slow: durationMs >= 2_000,
-        });
-      } catch (error) {
-        captureBrowserException(error, {component: "play_host", operation});
-        postOperation(requestId, operation, false, undefined, getHostErrorMessage(error));
-        console.warn("[riddle-quest-race-latency]", operation, {
-          ok: false,
-          durationMs: Math.round(performance.now() - startedAt),
-        });
-      }
-    },
-    [postOperation],
-  );
 
   /** Provides sync race achievement progress behavior. */
   const syncRaceAchievementProgress = useCallback(
