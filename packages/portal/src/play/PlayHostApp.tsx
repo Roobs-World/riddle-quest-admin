@@ -7,12 +7,10 @@ import {createRequestId} from "./requestIds";
 import {GameFrameApp} from "./GameFrameApp";
 import {dispatchLocalBridge, GAME_TO_HOST_EVENT, HOST_TO_GAME_EVENT} from "./localBridge";
 import type {AuthSnapshot, CompletionResult, HostServices, ProductSummary, WebGameMode} from "./types";
-import type {ListRaceCategoriesResponse, RaceOutcome} from "@qwordly/core/race";
+import type {RaceOutcome} from "@qwordly/core/race";
 import {SpinningWheelLoader} from "./SpinningWheelLoader";
 import type {PlatformCapabilities, PlayerData, PlayerDataUpdate} from "../platform/types";
 import {restoreProfileWhileServerLoads} from "../platform/playerData";
-import {isRaceTo10Enabled} from "./race/logic/raceFeatureFlag";
-import {trackEvent} from "../analytics/events";
 import {
   createPlayHostMessageHandlers,
   getHostErrorMessage,
@@ -26,6 +24,7 @@ import type {ActivePresenceState} from "../presence/PlatformPresenceSession";
 import {ReferralSharingProvider, type ReferralSharingCapability} from "./sharing/ReferralSharingCapability";
 import {useHostOperations} from "./useHostOperations";
 import {useHostRiddleLifecycle} from "./useHostRiddleLifecycle";
+import {useHostRaceCoordination} from "./useHostRaceCoordination";
 
 /** Creates host message. */
 const createHostMessage = <Message extends HostToGameMessage>(message: Message): Message => ({
@@ -141,22 +140,8 @@ export function PlayHostApp({
   }, [accountDeletionServiceGate, hostServices, platformProducts, platformPurchase]);
   /** Provides configuration warning behavior. */
   const configurationWarning = hostConfigurationWarning;
-  /** Provides race build enabled behavior. */
-  const raceBuildEnabled = useMemo(
-    () =>
-      isRaceTo10Enabled({
-        search: window.location.search,
-        envValue: import.meta.env.VITE_RACE_TO_10_ENABLED,
-      }),
-    [],
-  );
-
   /** Provides [auth snapshot, set auth snapshot] behavior. */
   const [authSnapshot, setAuthSnapshot] = useState<AuthSnapshot>({user: null, profile: null});
-  /** Provides [prefetched race categories, set prefetched race categories] behavior. */
-  const [prefetchedRaceCategories, setPrefetchedRaceCategories] = useState<ListRaceCategoriesResponse["categories"]>(
-    [],
-  );
   /** Provides [frame ready, set frame ready] behavior. */
   const [frameReady, setFrameReady] = useState(false);
   /** Provides [notice, set notice] behavior. */
@@ -205,32 +190,6 @@ export function PlayHostApp({
       onPlayerDataChange?.({profile: authSnapshot.profile});
     }
   }, [authSnapshot.profile, onPlayerDataChange]);
-
-  useEffect(() => {
-    /** Provides cancelled behavior. */
-    let cancelled = false;
-    setPrefetchedRaceCategories([]);
-    if (!raceBuildEnabled || !authSnapshot.user || (raceLocalePolicy === "english-only" && locale !== "en")) return;
-    void services
-      .getRaceAccess()
-      .then(async (access) => {
-        if (!access.enabled || cancelled) return;
-        if (initialRaceChallengeId) return;
-        try {
-          /** Provides categories behavior. */
-          const categories = await services.listRaceCategories(locale);
-          if (!cancelled) setPrefetchedRaceCategories(categories.categories);
-        } catch (error) {
-          console.warn("[riddle-quest-race-prefetch] Unable to preload categories", error);
-        }
-      })
-      .catch((error) => {
-        console.warn("[riddle-quest-race-access] Unable to load rollout access", error);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [authSnapshot.user, initialRaceChallengeId, locale, raceBuildEnabled, raceLocalePolicy, services]);
 
   /** Provides post to game behavior. */
   const postToGame = useCallback((message: HostToGameMessage) => {
@@ -314,40 +273,21 @@ export function PlayHostApp({
     );
   }, []);
 
-  /** Provides sync race achievement progress behavior. */
-  const syncRaceAchievementProgress = useCallback(
-    async (result: {
-      /** Stores newly unlocked achievement ids. */
-      newlyUnlockedAchievementIds?: string[]; /** Stores new coins. */
-      /** Stores new coins. */
-      newCoins?: number;
-    }) => {
-      if (typeof result.newCoins === "number") {
-        setAuthSnapshot((current) =>
-          current.profile ? {...current, profile: {...current.profile, coins: result.newCoins!}} : current,
-        );
-      }
-      for (const achievementId of result.newlyUnlockedAchievementIds ?? []) {
-        trackEvent("unlock_achievement", {achievement_id: achievementId, source: "multiplayer"});
-      }
-      /** Provides r. */
-      const user = authSnapshot.user;
-      if (!user) return;
-      try {
-        /** Provides profile behavior. */
-        const profile = await services.loadProfile(user.uid);
-        setAuthSnapshot((current) => ({...current, profile}));
-        postToGame({
-          type: "host:authState",
-          requestId: createRequestId("race-profile"),
-          payload: {user: bridgeUser, profile},
-        });
-      } catch (error) {
-        console.warn("[riddle-quest-race-achievements] Profile refresh failed", error);
-      }
-    },
-    [authSnapshot.user, bridgeUser, postToGame, services],
-  );
+  /** Multiplayer rollout, preload, and authoritative reward reconciliation. */
+  const {
+    enabled: raceBuildEnabled,
+    prefetchedCategories: prefetchedRaceCategories,
+    syncProgress: syncRaceAchievementProgress,
+  } = useHostRaceCoordination({
+    authSnapshot,
+    bridgeUser,
+    locale,
+    services,
+    initialRaceChallengeId,
+    raceLocalePolicy,
+    setAuthSnapshot,
+    postToGame,
+  });
 
   /** Handles authoritative complete. */
   const handleAuthoritativeComplete = useCallback(
