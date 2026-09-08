@@ -3,7 +3,7 @@ import type {GameToHostMessage} from "@qwordly/core/bridge";
 import {BRIDGE_PROTOCOL_VERSION} from "@qwordly/core/bridge/constants";
 import musicUrl from "../../../../assets/audio-web/music.webm";
 import {createInitialGameSession, gameSessionReducer} from "./gameSession";
-import {isSupportedLocale, tr} from "./i18n";
+import {tr} from "./i18n";
 import {createRequestId} from "./requestIds";
 import {dispatchLocalBridge, GAME_TO_HOST_EVENT} from "./localBridge";
 import {GuidanceOverlay} from "./GuidanceOverlay";
@@ -29,7 +29,6 @@ import {
 } from "./GameFrameControls";
 import {useGameMessageRouter} from "./useGameMessageRouter";
 import {useOnlineStatus} from "./useOnlineStatus";
-import {isRaceHarness} from "./race/logic/raceFeatureFlag";
 import {
   useGameAudio,
   useAnswerKeyboard,
@@ -44,10 +43,9 @@ import {
   useViewportFit,
 } from "./game/hooks";
 import {getMobileCapabilities, shouldLoadDecorativeWebGl} from "./performance/mobileCapabilities";
-import {trackScreen} from "../analytics/events";
 import type {ListRaceCategoriesResponse} from "@qwordly/core/race";
 import type {ActivePresenceState} from "../presence/PlatformPresenceSession";
-import {resolveActivityPresence} from "../presence/activityPresence";
+import {useGameSurfaceCoordination} from "./useGameSurfaceCoordination";
 
 /** Renders the solar system interface. */
 const SolarSystem = lazy(() => import("./SolarSystem").then((module) => ({default: module.SolarSystem})));
@@ -126,23 +124,18 @@ export function GameFrameApp({
   const online = useOnlineStatus();
   /** Provides [solar ready, set solar ready] behavior. */
   const [solarReady, setSolarReady] = useState(false);
-  /** Provides [guidance active, set guidance active] behavior. */
-  const [guidanceActive, setGuidanceActive] = useState(false);
   /** Provides [animated coin balance, set animated coin balance] behavior. */
   const [animatedCoinBalance, setAnimatedCoinBalance] = useState<number | null>(null);
-  /** Indicates whether has active riddle. */
-  const hasActiveRiddle = Boolean(state.riddle);
-  /** Provides modal open behavior. */
-  const modalOpen = Boolean(state.modal);
-  /** Provides race locale behavior. */
-  const raceLocale = isSupportedLocale(state.locale) ? state.locale : undefined;
-  /** Provides race enabled behavior. */
-  const raceEnabled =
-    raceLocale !== undefined &&
-    (raceLocalePolicy === "all" || raceLocale === "en") &&
-    (raceFeatureEnabled || isRaceHarness(typeof window === "undefined" ? "" : window.location.search));
-  /** Provides [race open, set race open] behavior. */
-  const [raceOpen, setRaceOpen] = useState(Boolean((initialRaceChallengeId || initialRaceInbox) && raceEnabled));
+  /** Overlay lifecycle, multiplayer eligibility, analytics, and presence coordination. */
+  const {raceLocale, raceEnabled, raceOpen, setRaceOpen, guidanceActive, setGuidanceActive} =
+    useGameSurfaceCoordination({
+      session: state,
+      raceFeatureEnabled,
+      raceLocalePolicy,
+      initialRaceChallengeId,
+      initialRaceInbox,
+      onPresenceStateChange,
+    });
   /** Provides offline dialog ref behavior. */
   const offlineDialogRef = useRef<HTMLDivElement | null>(null);
   /** Provides state ref behavior. */
@@ -153,35 +146,6 @@ export function GameFrameApp({
 
   /** Provides {game modal view, race to10 game} behavior. */
   const {GameModalView, RaceTo10Game} = useGameSurfaces(raceEnabled);
-
-  useEffect(() => {
-    /** Provides screen behavior. */
-    const screen = raceOpen
-      ? "multiplayer"
-      : guidanceActive
-        ? "guidance"
-        : state.modal
-          ? `modal_${state.modal}`
-          : state.riddle
-            ? `game_${state.gameMode}`
-            : "game_loading";
-    trackScreen(screen, {game_mode: state.gameMode});
-  }, [guidanceActive, raceOpen, state.gameMode, state.modal, state.riddle]);
-
-  useEffect(() => {
-    /** Provides next presence state behavior. */
-    const nextPresenceState: ActivePresenceState = resolveActivityPresence({
-      raceOpen,
-      hasRiddle: hasActiveRiddle,
-      modalOpen,
-    });
-    onPresenceStateChange?.(nextPresenceState);
-  }, [hasActiveRiddle, modalOpen, onPresenceStateChange, raceOpen]);
-
-  useEffect(() => {
-    if (!raceEnabled) setRaceOpen(false);
-    else if (initialRaceChallengeId || initialRaceInbox) setRaceOpen(true);
-  }, [initialRaceChallengeId, initialRaceInbox, raceEnabled]);
 
   useEffect(() => {
     if (state.modal === null) setAnimatedCoinBalance(null);
