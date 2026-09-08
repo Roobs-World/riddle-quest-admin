@@ -11,18 +11,21 @@
 </head>
 <body><main>
   <section class="hero">
-    <p class="eyebrow">Jest submission evidence · 3 September 2026</p>
+    <p class="eyebrow">Jest submission evidence · verified 8 September 2026</p>
     <h1>Riddle-Q meets the locally testable Jest launch requirements</h1>
-    <p class="lead">The exact standalone candidate passed the extended production gate, including a 10-minute constrained-mobile soak. Jest accepted the clean, timestamped release for automatic activation; processing and the authenticated Developer Console review submission remain outstanding.</p>
+    <p class="lead">The current clean source passed the canonical production gate, W3C validation, isolated Jest browser tests, and exact upload preflight. The previously uploaded version is active; authenticated sandbox acceptance and the Developer Console Simulator review remain human-operated release steps.</p>
   </section>
   <section class="facts" aria-label="Artifact facts">
-    <div class="fact"><strong>2.62 MiB</strong><span>compressed ZIP</span></div>
+    <div class="fact"><strong>2.62 MiB</strong><span>current preflight ZIP</span></div>
     <div class="fact"><strong>4.13 MiB</strong><span>expanded artifact</span></div>
-    <div class="fact"><strong>0.48 MiB</strong><span>initial resources</span></div>
+    <div class="fact"><strong>0.49 MiB</strong><span>initial resources</span></div>
     <div class="fact"><strong>420</strong><span>archive entries</span></div>
   </section>
   <section class="panel"><h2>Accepted release</h2>
-    <p><strong>Build:</strong> <code>1.0.0-dev.20260903161114.1001c0050692.4cd8f224</code><br><strong>Version ID:</strong> <code>01a06819-52aa-7057-a975-6794928aa445</code><br><strong>ZIP SHA-256:</strong> <code>a21c49a0627e06b80bc6fa11144217db55bb4c596d212339b621b4f7dbf90278</code><br><strong>Source commit:</strong> <code>1001c005069253ae89544cfc871c55f666910547</code> (clean and pushed)<br><strong>Game ID:</strong> <code>019faa68-f3ec-755d-9ab5-c887fb426801</code><br><strong>Jest response:</strong> HTTP 202, processing pending; automatic activation requested.</p>
+    <p><strong>Build:</strong> <code>1.0.0-dev.20260903161114.1001c0050692.4cd8f224</code><br><strong>Version ID:</strong> <code>01a06819-52aa-7057-a975-6794928aa445</code><br><strong>ZIP SHA-256:</strong> <code>a21c49a0627e06b80bc6fa11144217db55bb4c596d212339b621b4f7dbf90278</code><br><strong>Source commit:</strong> <code>1001c005069253ae89544cfc871c55f666910547</code> (clean and pushed)<br><strong>Game ID:</strong> <code>019faa68-f3ec-755d-9ab5-c887fb426801</code><br><strong>Jest status:</strong> active, as confirmed in the Developer Console on 3 September 2026.</p>
+  </section>
+  <section class="panel"><h2>Current source preflight</h2>
+    <p><strong>Source commit:</strong> <code>9a61aae2ddc424ab972ca65b5446b9e6c6de11a7</code> (clean and pushed)<br><strong>ZIP SHA-256:</strong> <code>a56f8d0e6cf7ece12a20fc15e53c78766db01496ec7125c1b1d7cfd3e2602e4d</code><br><strong>ZIP:</strong> 2,750,965 bytes, 420 entries<br><strong>Expanded artifact:</strong> 4.13 MiB; 0.49 MiB initial resources<br><strong>Result:</strong> canonical <code>pnpm verify:production</code> and dry-run upload preflight exited successfully without network transmission.</p>
   </section>
   <section class="panel"><h2>Basic launch requirements</h2><table><thead><tr><th>Requirement</th><th>Status</th><th>Evidence</th></tr></thead><tbody>
     <tr><td>Mobile-browser build, touch, responsive layouts</td><td class="pass">Passed locally</td><td>Injected mobile/iframe journeys and the 601-second constrained-device soak passed.</td></tr>
@@ -49,11 +52,11 @@
     <tr><td>Subscription</td><td>Monthly SKU remains sandbox-only</td><td class="optional">Correctly withheld from production</td></tr>
   </tbody></table></section>
   <section class="panel"><h2>Required before submission</h2>
-    <div class="notice"><strong>Do not upload or retry this source again.</strong> Jest accepted the timestamped release and its source barrier must remain until Developer Console or the completion email reports an authoritative final state.</div>
+    <div class="notice"><strong>Automated requirements pass; review evidence is still required.</strong> Use the active uploaded build for sandbox and Simulator checks. Upload the current preflight artifact only when intentionally publishing a new version.</div>
     <p><strong>Release-host readiness:</strong> <code>/usr/bin/bwrap</code> is available and the external Jest credential file is a regular owner-only <code>0600</code> file. Credential contents were not read. The local receipt store currently contains 11 unresolved source barriers, 11 accepted upload attempts, and 11 pending build receipts from earlier releases.</p>
     <ol>
-      <li>Sign in to Jest Developer Console and reconcile this version plus every historical unresolved or accepted-pending receipt. Never delete barriers merely to retry.</li>
-      <li>Wait for version <code>01a06819-52aa-7057-a975-6794928aa445</code> to finish processing and confirm build <code>1.0.0-dev.20260903161114.1001c0050692.4cd8f224</code> is active.</li>
+      <li>Sign in to Jest Developer Console and reconcile every historical unresolved or accepted-pending receipt. Never delete barriers merely to retry.</li>
+      <li>Confirm version <code>01a06819-52aa-7057-a975-6794928aa445</code> remains active before gathering review evidence.</li>
       <li>Run the deployed registered-sandbox browser gate against that exact active version.</li>
       <li>Exercise sandbox purchase success/cancel/error/recovery, notification delivery, and a two-player referral conversion. Confirm the signed server-side grants and idempotent replay behavior.</li>
       <li>Use Simulator on the exact active version for onboarding, guest play, registration, first solve, shop, multiplayer, portrait/landscape, audio, and background/foreground recovery.</li>
@@ -68,5 +71,5 @@
     <li><a href="https://docs.jest.com/content-review-and-moderation">Review and moderation</a></li>
     <li><a href="https://docs.jest.com/sdk/html5/player">Player identity</a>, <a href="https://docs.jest.com/sdk/html5/payments">payments</a>, and <a href="https://docs.jest.com/sdk/html5/loading-screen">loading lifecycle</a></li>
   </ul></section>
-  <p class="stamp">Evidence: the canonical <code>pnpm release:jest</code> workflow exited 0 on 3 September 2026. Jest accepted the automatic-activation request with HTTP 202. Review submission was not performed because Developer Console authentication and authoritative processing completion are still required.</p>
+  <p class="stamp">Evidence: the canonical <code>pnpm verify:production</code> workflow and exact dry-run upload preflight exited 0 on 8 September 2026 from clean commit <code>9a61aae2</code>. The accepted 3 September version is active. Final sandbox transactions, Simulator recording, metadata confirmation, and review submission require an authenticated Developer Console session.</p>
 </main></body></html>
