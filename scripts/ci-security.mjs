@@ -5,13 +5,31 @@ import path from "node:path";
 const repositoryRoot = fileURLToPath(new URL("../", import.meta.url));
 const workflowDirectory = `${repositoryRoot}.github/workflows`;
 
+/** Extracts top-level job bodies without requiring workflow execution. */
+function readJobBlocks(source) {
+  const lines = source.split(/\r?\n/u);
+  const jobsStart = lines.findIndex((line) => line === "jobs:");
+  if (jobsStart < 0) return [];
+  const blocks = [];
+  for (let index = jobsStart + 1; index < lines.length; index += 1) {
+    const match = /^  ([a-zA-Z0-9_-]+):\s*$/u.exec(lines[index]);
+    if (!match) continue;
+    let end = index + 1;
+    while (end < lines.length && (lines[end].startsWith("    ") || lines[end].trim() === "")) end += 1;
+    blocks.push({name: match[1], source: lines.slice(index, end).join("\n")});
+    index = end - 1;
+  }
+  return blocks;
+}
+
 /** Returns security violations in one GitHub Actions workflow. */
 export function auditWorkflowSource(name, source) {
   const failures = [];
   if (/^\s*pull_request_target\s*:/mu.test(source)) {
     failures.push(`${name}: pull_request_target is forbidden because it exposes privileged context to forked code`);
   }
-  if (!/^permissions:\s*\n\s{2}contents:\s*read\s*$/mu.test(source)) {
+  const permissions = /^permissions:\s*\n((?:  [^\n]*\n?)*)/mu.exec(source)?.[1]?.trim();
+  if (permissions !== "contents: read") {
     failures.push(`${name}: workflow permissions must be limited to contents: read`);
   }
 
@@ -30,14 +48,18 @@ export function auditWorkflowSource(name, source) {
     }
   }
 
-  if (!/^\s{4}timeout-minutes:\s*[1-9]\d*\s*$/mu.test(source)) {
-    failures.push(`${name}: every workflow must place a finite timeout on its jobs`);
+  const jobBlocks = readJobBlocks(source);
+  if (jobBlocks.length === 0) failures.push(`${name}: workflow must define at least one job`);
+  for (const job of jobBlocks) {
+    if (!/^\s{4}timeout-minutes:\s*[1-9]\d*\s*$/mu.test(job.source)) {
+      failures.push(`${name}: job ${job.name} must have a finite positive timeout`);
+    }
   }
   if (!/pnpm install --frozen-lockfile/u.test(source)) {
     failures.push(`${name}: dependency installation must enforce the committed lockfile`);
   }
 
-  if (/^name:\s*Deploy\b/mu.test(source)) {
+  if (name.startsWith("deploy-") || /^name:\s*Deploy\b/mu.test(source)) {
     if (!/^\s{4}environment:\s*[a-z0-9-]*production[a-z0-9-]*\s*$/mu.test(source)) {
       failures.push(`${name}: deployment jobs must use a protected production environment`);
     }

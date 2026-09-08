@@ -42,8 +42,17 @@ test("rejects workflows without least privilege, timeouts, or lockfile enforceme
     .replace(" --frozen-lockfile", "");
   const failures = auditWorkflowSource("unsafe.yml", source).join("\n");
   assert.match(failures, /contents: read/u);
-  assert.match(failures, /finite timeout/u);
+  assert.match(failures, /finite positive timeout/u);
   assert.match(failures, /committed lockfile/u);
+});
+
+test("rejects additional workflow permissions and a timeout missing from any job", () => {
+  const source = safeWorkflow()
+    .replace("  contents: read", "  contents: read\n  issues: write")
+    .replace("jobs:\n", "jobs:\n  untimed:\n    runs-on: ubuntu-24.04\n    steps:\n      - run: pnpm install --frozen-lockfile\n");
+  const failures = auditWorkflowSource("unsafe.yml", source).join("\n");
+  assert.match(failures, /limited to contents: read/u);
+  assert.match(failures, /job untimed must have a finite positive timeout/u);
 });
 
 test("requires manual, branch-scoped, protected, non-cancelling deployments", () => {
