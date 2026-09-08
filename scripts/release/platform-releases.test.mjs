@@ -46,6 +46,8 @@ test("the root package exposes separate build and release commands without relea
     );
   }
   assert.equal(packageJson.scripts["release:all"], undefined);
+  assert.equal(packageJson.scripts["preflight:all-platforms"], "pnpm verify:all-targets && pnpm release:plan");
+  assert.match(packageJson.scripts["verify:all-targets"], /^pnpm check:security\b/u);
 });
 
 test("target plans preserve distinct external effects", () => {
