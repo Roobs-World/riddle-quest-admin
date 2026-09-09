@@ -5,18 +5,16 @@ import {createHostMessageRouter} from "./bridgeRouter";
 import {detectDeviceLanguage, tr, useLocale} from "./i18n";
 import {createRequestId} from "./requestIds";
 import {GameFrameApp} from "./GameFrameApp";
-import {dispatchLocalBridge, GAME_TO_HOST_EVENT, HOST_TO_GAME_EVENT} from "./localBridge";
+import {dispatchLocalBridge, HOST_TO_GAME_EVENT} from "./localBridge";
 import type {CompletionResult, HostServices, ProductSummary, WebGameMode} from "./types";
 import type {RaceOutcome} from "@qwordly/core/race";
 import {SpinningWheelLoader} from "./SpinningWheelLoader";
 import type {PlatformCapabilities, PlayerData, PlayerDataUpdate} from "../platform/types";
 import {
   createPlayHostMessageHandlers,
-  getHostErrorMessage,
   getHostNoticeMessage,
   type HostOperationName,
 } from "./hostMessageHandlers";
-import {captureBrowserException} from "../observability/browserErrorReporter";
 import {safeBrowserStorageGet} from "./playerPreferences";
 import {coordinateHostServices, type AccountDeletionServiceGate} from "./accountDeletionServiceGate";
 import type {ActivePresenceState} from "../presence/PlatformPresenceSession";
@@ -25,6 +23,7 @@ import {useHostOperations} from "./useHostOperations";
 import {useHostRiddleLifecycle} from "./useHostRiddleLifecycle";
 import {useHostRaceCoordination} from "./useHostRaceCoordination";
 import {useHostAuthSession} from "./useHostAuthSession";
+import {useHostBridgeLifecycle} from "./useHostBridgeLifecycle";
 
 /** Creates host message. */
 const createHostMessage = <Message extends HostToGameMessage>(message: Message): Message => ({
@@ -358,19 +357,8 @@ export function PlayHostApp({
     ],
   );
 
-  useEffect(() => {
-    /** Handles local message. */
-    const handleLocalMessage = (event: Event) => {
-      void router((event as CustomEvent<unknown>).detail).catch((error) => {
-        captureBrowserException(error, {component: "play_host", operation: "route_local_message"});
-        setNotice(getHostErrorMessage(error));
-      });
-    };
-    window.addEventListener(GAME_TO_HOST_EVENT, handleLocalMessage);
-    return () => {
-      window.removeEventListener(GAME_TO_HOST_EVENT, handleLocalMessage);
-    };
-  }, [router]);
+  /** Stable local message routing and document visibility projection. */
+  useHostBridgeLifecycle({router, postToGame, setNotice});
 
   useEffect(() => {
     if (!authSnapshot.user) {
@@ -389,19 +377,6 @@ export function PlayHostApp({
       classicIndex: authSnapshot.profile?.classicIndex,
     });
   }, [authSnapshot.profile?.classicIndex, authSnapshot.user, frameReady, gameMode, loadAndPostRiddle, locale]);
-
-  useEffect(() => {
-    /** Provides on visibility change behavior. */
-    const onVisibilityChange = () => {
-      postToGame({
-        type: document.visibilityState === "hidden" ? "host:pause" : "host:resume",
-        requestId: createRequestId("visibility"),
-        payload: {},
-      });
-    };
-    document.addEventListener("visibilitychange", onVisibilityChange);
-    return () => document.removeEventListener("visibilitychange", onVisibilityChange);
-  }, [postToGame]);
 
   if (!authSnapshot.user) {
     return (
