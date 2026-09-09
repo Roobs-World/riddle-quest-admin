@@ -1,6 +1,5 @@
-import {useCallback, useEffect, useRef, useState} from "react";
-import {splitGraphemes} from "@qwordly/core/game";
-import {YOUTUBE_CLASSIC_SKIP_COST, YOUTUBE_CONTINUE_COST, YOUTUBE_HINT_COST, utcDay} from "./economy";
+import {useRef, useState} from "react";
+import {YOUTUBE_CLASSIC_SKIP_COST, YOUTUBE_CONTINUE_COST, YOUTUBE_HINT_COST} from "./economy";
 import {youtubeDirection, youtubeText, type YouTubeCopyKey} from "./i18n";
 import {
   deleteYouTubeAnswerLetter,
@@ -8,32 +7,11 @@ import {
   canShowLatinShortcut,
   normalizeLatinShortcutKey,
 } from "./input";
-import {YouTubeAuthorityError, type YouTubeAuthoritySnapshot} from "./LocalSoloAuthority";
 import type {YouTubeSdkPort} from "./types";
 import {YouTubeNativeAnswerInput} from "./YouTubeNativeAnswerInput";
-import {YouTubeSaveBlockedError} from "./YouTubeSaveGate";
 import {AchievementIcon, SaveBanner, StatusHeader} from "./YouTubePlayableViews";
 import {useYouTubePlayableBoot, type YouTubeRuntime} from "./useYouTubePlayableBoot";
-
-/** Provides milliseconds until next utc day behavior. */
-const millisecondsUntilNextUtcDay = (now: Date): number => {
-  /** Provides next behavior. */
-  const next = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1);
-  // A small boundary cushion avoids rescheduling against the previous day on
-  // clocks whose timeout fires fractionally early.
-  return Math.max(1, next - now.getTime() + 50);
-};
-
-/** Provides authority error key behavior. */
-const authorityErrorKey = (error: unknown): YouTubeCopyKey => {
-  /** Provides code behavior. */
-  const code = error instanceof YouTubeAuthorityError ? error.code : "";
-  if (code === "coins-insufficient") return "insufficientCoins";
-  if (code === "answer-incomplete") return "answerIncomplete";
-  if (code === "daily-unavailable") return "dailyUnavailable";
-  if (error instanceof YouTubeSaveBlockedError) return "saveFailed";
-  return "operationFailed";
-};
+import {useYouTubeReadySession} from "./useYouTubeReadySession";
 
 /** Provides you tube playable app behavior. */
 export function YouTubePlayableApp({
@@ -166,52 +144,14 @@ function ReadyYouTubeApp({
 }) {
   /** Provides {locale, content, authority} behavior. */
   const {locale, content, authority} = runtime;
-  /** Provides [snapshot, set snapshot] behavior. */
-  const [snapshot, setSnapshot] = useState<YouTubeAuthoritySnapshot>(() => authority.getSnapshot());
   /** Provides [screen, set screen] behavior. */
   const [screen, setScreen] = useState<"menu" | "progress">("menu");
-  /** Provides [notice, set notice] behavior. */
-  const [notice, setNotice] = useState<YouTubeCopyKey | null>(null);
-  /** Provides [today, set today] behavior. */
-  const [today, setToday] = useState(() => utcDay(new Date()));
   /** Provides input ref behavior. */
   const inputRef = useRef<HTMLInputElement>(null);
+  /** Ready-session lifecycle and authority projection. */
+  const {snapshot, today, notice, run} = useYouTubeReadySession(authority, sdk, inputRef);
   /** Provides text behavior. */
   const text = (key: YouTubeCopyKey): string => youtubeText(locale, key);
-
-  useEffect(() => authority.subscribe(() => setSnapshot(authority.getSnapshot())), [authority]);
-  useEffect(() => {
-    document.documentElement.classList.toggle("youtube-reduced-motion", snapshot.save.preferences.reducedMotion);
-    document.documentElement.classList.toggle("youtube-high-contrast", snapshot.save.preferences.highContrast);
-    return () => {
-      document.documentElement.classList.remove("youtube-reduced-motion", "youtube-high-contrast");
-    };
-  }, [snapshot.save.preferences.highContrast, snapshot.save.preferences.reducedMotion]);
-  useEffect(() => {
-    if (!snapshot.paused) sdk.gameReady();
-  }, [sdk, snapshot.paused]);
-  useEffect(() => {
-    if (snapshot.activeRiddle && !snapshot.paused) inputRef.current?.focus();
-  }, [snapshot.activeRiddle, snapshot.paused]);
-  useEffect(() => {
-    if (snapshot.paused) return;
-    /** Provides now behavior. */
-    const now = new Date();
-    setToday(utcDay(now));
-    /** Provides timer behavior. */
-    const timer = window.setTimeout(() => setToday(utcDay(new Date())), millisecondsUntilNextUtcDay(now));
-    return () => window.clearTimeout(timer);
-  }, [snapshot.paused, today]);
-
-  /** Provides run behavior. */
-  const run = async (action: () => Promise<unknown>): Promise<void> => {
-    setNotice(null);
-    try {
-      await action();
-    } catch (error) {
-      setNotice(authorityErrorKey(error));
-    }
-  };
 
   /** Provides active behavior. */
   const active = snapshot.save.activeGame;
