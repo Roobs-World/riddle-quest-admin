@@ -6,6 +6,60 @@ import type {JestPlatformPort, JestSession} from "./types";
 /** Primitive analytics properties accepted by both browser and Jest event sinks. */
 type TrackFunnelParams = Record<string, string | number | boolean>;
 
+/** Sends one best-effort funnel event without letting telemetry interrupt gameplay. */
+export function trackJestFunnelEvent({
+  gate,
+  platform,
+  session,
+  eventName,
+  params = {},
+}: {
+  /** Gate that closes when account deletion begins. */
+  gate: Pick<NotificationOperationGate, "isOpen">;
+  /** Jest-owned event destination. */
+  platform: Pick<JestPlatformPort, "captureEvent">;
+  /** Current session used only for bounded attribution. */
+  session: Pick<JestSession, "entryIntent"> | null;
+  /** Bounded funnel event name. */
+  eventName: string;
+  /** Primitive event properties. */
+  params?: TrackFunnelParams;
+}): void {
+  if (!gate.isOpen()) return;
+  /** Provides intent behavior. */
+  const intent = session?.entryIntent;
+  /** Provides attributed params behavior. */
+  const attributedParams = {
+    ...(intent?.campaign ? {campaign: intent.campaign} : {}),
+    ...(intent?.reference ? {reference: intent.reference} : {}),
+    ...(intent?.utmSource ? {utm_source: intent.utmSource} : {}),
+    ...(intent?.utmMedium ? {utm_medium: intent.utmMedium} : {}),
+    ...(intent?.utmCampaign ? {utm_campaign: intent.utmCampaign} : {}),
+    ...(intent?.utmTerm ? {utm_term: intent.utmTerm} : {}),
+    ...(intent?.utmContent ? {utm_content: intent.utmContent} : {}),
+    ...params,
+  };
+  /** Provides safe params behavior. */
+  const safeParams = sanitizeAnalyticsParams(attributedParams);
+  try {
+    console.info("[riddle-quest-funnel]", eventName, safeParams);
+    trackEvent(eventName, safeParams);
+  } catch {
+    // A configured analytics sink is nonessential and may fail independently.
+  }
+  /** Provides safe platform params behavior. */
+  const safePlatformParams = Object.fromEntries(
+    Object.entries(safeParams).filter(
+      (entry): entry is [string, string | number | boolean] => !Array.isArray(entry[1]),
+    ),
+  );
+  try {
+    platform.captureEvent(eventName, safePlatformParams);
+  } catch {
+    // Jest telemetry is best-effort and must never break player operations.
+  }
+}
+
 /** Coordinates foreground and background Jest platform operations. */
 export function useJestPlatformActivity(gate: NotificationOperationGate) {
   /** Provides [pending platform operations, set pending platform operations] behavior. */
@@ -52,31 +106,7 @@ export function useJestFunnelTracking({
 }) {
   return useCallback(
     (eventName: string, params: TrackFunnelParams = {}) => {
-      if (!gate.isOpen()) return;
-      /** Provides intent behavior. */
-      const intent = sessionRef.current?.entryIntent;
-      /** Provides attributed params behavior. */
-      const attributedParams = {
-        ...(intent?.campaign ? {campaign: intent.campaign} : {}),
-        ...(intent?.reference ? {reference: intent.reference} : {}),
-        ...(intent?.utmSource ? {utm_source: intent.utmSource} : {}),
-        ...(intent?.utmMedium ? {utm_medium: intent.utmMedium} : {}),
-        ...(intent?.utmCampaign ? {utm_campaign: intent.utmCampaign} : {}),
-        ...(intent?.utmTerm ? {utm_term: intent.utmTerm} : {}),
-        ...(intent?.utmContent ? {utm_content: intent.utmContent} : {}),
-        ...params,
-      };
-      /** Provides safe params behavior. */
-      const safeParams = sanitizeAnalyticsParams(attributedParams);
-      console.info("[riddle-quest-funnel]", eventName, safeParams);
-      trackEvent(eventName, safeParams);
-      /** Provides safe platform params behavior. */
-      const safePlatformParams = Object.fromEntries(
-        Object.entries(safeParams).filter(
-          (entry): entry is [string, string | number | boolean] => !Array.isArray(entry[1]),
-        ),
-      );
-      platform.captureEvent(eventName, safePlatformParams);
+      trackJestFunnelEvent({gate, platform, session: sessionRef.current, eventName, params});
     },
     [gate, platform, sessionRef],
   );

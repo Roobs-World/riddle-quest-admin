@@ -13,6 +13,76 @@ const session: JestSession = {
   firebaseAuthenticated: true,
 };
 
+/** Creates isolated startup collaborators for each assertion. */
+const createCommitDependencies = () => ({
+  enablePlayerStateWrites: jest.fn(),
+  setEngagementProgress: jest.fn(),
+  setSession: jest.fn(),
+  trackFunnel: jest.fn(),
+});
+
+it("commits restored progress and attributed invite analytics", async () => {
+  /** Captures each startup side effect. */
+  const dependencies = createCommitDependencies();
+  /** Represents a registered player returning through an invite. */
+  const restoredSession: JestSession = {
+    ...session,
+    entryIntent: {
+      campaign: "friend_challenge_v2",
+      inviteKind: "friend",
+      inviterName: "Riddle Quest player",
+      utmSource: "jest",
+    },
+    playerData: {profile: {level: 7, winStreak: 3, wins: 12}},
+  } as JestSession;
+  /** Keeps startup operations enabled for this successful commit. */
+  const gate = createNotificationOperationGate({
+    crossContextLock: null,
+    deletionPending: () => false,
+    deletionEpoch: () => null,
+    requireCrossContextLock: false,
+  });
+
+  await expect(commitJestStartupSession({
+    gate,
+    isActive: () => true,
+    session: restoredSession,
+    ...dependencies,
+  })).resolves.toBe(true);
+
+  expect(dependencies.enablePlayerStateWrites).toHaveBeenCalledWith(restoredSession.playerData);
+  expect(dependencies.setEngagementProgress).toHaveBeenCalledWith({level: 7, winStreak: 3, wins: 12});
+  expect(dependencies.setSession).toHaveBeenCalledWith(restoredSession);
+  expect(dependencies.trackFunnel).toHaveBeenCalledWith(
+    "viral_invite_opened",
+    expect.objectContaining({inviteKind: "friend", hasInviterName: true}),
+  );
+});
+
+it("does not fail an authoritative startup commit when optional analytics throws", async () => {
+  /** Captures startup effects while simulating an unavailable analytics sink. */
+  const dependencies = createCommitDependencies();
+  dependencies.trackFunnel.mockImplementation(() => {
+    throw new Error("analytics-unavailable");
+  });
+  /** Keeps authoritative startup work enabled. */
+  const gate = createNotificationOperationGate({
+    crossContextLock: null,
+    deletionPending: () => false,
+    deletionEpoch: () => null,
+    requireCrossContextLock: false,
+  });
+
+  await expect(commitJestStartupSession({
+    gate,
+    isActive: () => true,
+    session,
+    ...dependencies,
+  })).resolves.toBe(true);
+
+  expect(dependencies.setSession).toHaveBeenCalledWith(session);
+});
+
 it("does not reapply startup state after deletion wins the cross-tab lock", async () => {
   /** Provides epoch behavior. */
   let epoch = "before";

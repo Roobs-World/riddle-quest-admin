@@ -865,8 +865,12 @@ describeBrowser("standalone Jest browser game", () => {
         }),
       ).toBe(true);
       for (const viewport of [
+        {width: 280, height: 480},
+        {width: 768, height: 1024},
         {width: 844, height: 501},
         {width: 1024, height: 600},
+        {width: 1920, height: 1080},
+        {width: 2560, height: 1080},
       ]) {
         await page.setViewportSize(viewport);
         await page.waitForFunction(
@@ -874,9 +878,33 @@ describeBrowser("standalone Jest browser game", () => {
             (document.querySelector(".game-bottom-navigation")?.getBoundingClientRect().bottom ?? Infinity) <=
             innerHeight + 1,
         );
+        expect(
+          await page.evaluate(() => {
+            /** Collects the primary surfaces that must remain visible. */
+            const visibleSurfaces = [
+              document.querySelector(".game-header"),
+              document.querySelector(".riddle-card"),
+              document.querySelector(".guess-board"),
+              document.querySelector(".keyboard"),
+              document.querySelector(".game-bottom-navigation"),
+            ].filter((element): element is Element => element !== null);
+            return {
+              documentFits:
+                document.documentElement.scrollWidth <= innerWidth + 1 &&
+                document.documentElement.scrollHeight <= innerHeight + 1,
+              surfacesFit: visibleSurfaces.every((element) => {
+                /** Captures this surface's viewport-relative bounds. */
+                const rect = element.getBoundingClientRect();
+                return rect.left >= -1 && rect.right <= innerWidth + 1 && rect.top >= -1 && rect.bottom <= innerHeight + 1;
+              }),
+            };
+          }),
+        ).toEqual({documentFits: true, surfacesFit: true});
       }
       await page.setViewportSize({width: 1280, height: 800});
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
+      await page.setViewportSize({width: 2560, height: 1080});
+      expect(await page.locator(".game-header").evaluate((element) => element.getBoundingClientRect().width)).toBeLessThanOrEqual(1201);
 
       expect(await page.locator("body").innerText()).not.toMatch(
         /Clerk|Auth0|sign in with Google|rewarded ad|install the app/i,

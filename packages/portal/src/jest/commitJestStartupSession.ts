@@ -27,6 +27,17 @@ export async function commitJestStartupSession({
   /** Stores track funnel. */
   trackFunnel: (eventName: string, params: Record<string, string | number | boolean>) => void;
 }): Promise<boolean> {
+  /** Keeps nonessential analytics failures from invalidating committed player state. */
+  const trackFunnelSafely = (
+    eventName: string,
+    params: Record<string, string | number | boolean>,
+  ): void => {
+    try {
+      trackFunnel(eventName, params);
+    } catch {
+      // Startup state is authoritative; analytics sinks are best-effort only.
+    }
+  };
   /** Provides committed behavior. */
   let committed = false;
   try {
@@ -42,7 +53,7 @@ export async function commitJestStartupSession({
         wins: savedProfile?.wins ?? 0,
       });
       setSession(session);
-      trackFunnel("session_started", {
+      trackFunnelSafely("session_started", {
         registered: session.player.registered,
         campaign: session.entryIntent.campaign ?? "direct",
         reference: session.entryIntent.reference ?? "none",
@@ -55,7 +66,7 @@ export async function commitJestStartupSession({
         utm_content: session.entryIntent.utmContent ?? "none",
       });
       if (session.entryIntent.inviteKind) {
-        trackFunnel("viral_invite_opened", {
+        trackFunnelSafely("viral_invite_opened", {
           inviteKind: session.entryIntent.inviteKind,
           campaign: session.entryIntent.campaign ?? "unknown",
           hasInviterName: Boolean(session.entryIntent.inviterName),
