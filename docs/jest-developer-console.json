@@ -6,6 +6,7 @@
   "publicUrl": "https://jest.com/g/riddle-q",
   "supportEmail": "grindheadgames@gmail.com",
   "shortDescription": "Solve multilingual riddles with Wordle-style color clues in Riddle Quest, an HTML5 word puzzle on Jest.",
+  "keywords": ["riddles"],
   "loadingScreenMode": "manual",
   "supportedOrientation": "both",
   "desiredVisibility": "public",

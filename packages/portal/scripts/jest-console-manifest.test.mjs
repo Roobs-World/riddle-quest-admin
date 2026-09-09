@@ -98,6 +98,14 @@ test("known public identity and bounded listing copy cannot drift", async () => 
     () => validateJestConsoleManifestRecord({...manifest, shortDescription: "x".repeat(111)}),
     /at most 110 characters/,
   );
+  assert.throws(
+    () => validateJestConsoleManifestRecord({...manifest, keywords: []}),
+    /keywords must be exactly: riddles/,
+  );
+  assert.throws(
+    () => validateJestConsoleManifestRecord({...manifest, keywords: ["puzzles"]}),
+    /keywords must be exactly: riddles/,
+  );
   const insecurePrivacyManifest = structuredClone(manifest);
   insecurePrivacyManifest.ownerApprovedValues.privacyPolicyUrl = "http://example.com/privacy";
   assert.throws(

@@ -16,6 +16,7 @@ const expectedConsumableSkus = Array.from(
 );
 const expectedSubscriptionSkus = ["com.roobsworld.riddlequest.premium.monthly"];
 const expectedOnboardingSlugs = ["friend-challenge", "race-to-10"];
+const expectedKeywords = ["riddles"];
 const topLevelKeys = [
   "assets",
   "consumableSkus",
@@ -23,6 +24,7 @@ const topLevelKeys = [
   "desiredVisibility",
   "displayName",
   "gameId",
+  "keywords",
   "loadingScreenMode",
   "onboardingSlugs",
   "ownerApprovedValues",
@@ -169,6 +171,7 @@ export const validateJestConsoleManifestRecord = (manifest, {releaseReady = fals
     throw new Error("shortDescription must be a nonempty trimmed string of at most 110 characters");
   }
   if (manifest.loadingScreenMode !== "manual") throw new Error("loadingScreenMode must be manual");
+  assertExactList(manifest.keywords, expectedKeywords, "keywords");
   if (manifest.supportedOrientation !== "both") throw new Error("supportedOrientation must be both");
   if (manifest.desiredVisibility !== "public") throw new Error("desiredVisibility must be public");
   if (manifest.desiredReviewStatus !== "approved") throw new Error("desiredReviewStatus must be approved");
