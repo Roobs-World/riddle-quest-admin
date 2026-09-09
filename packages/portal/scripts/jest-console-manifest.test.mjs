@@ -24,6 +24,20 @@ test("the owner-approved manifest passes strict release readiness", async () => 
   assert.doesNotThrow(() => validateJestConsoleManifestRecord(manifest, {releaseReady: true}));
 });
 
+test("submission guidance cannot pin a historical build as the current active version", async () => {
+  const readiness = await readFile(
+    path.join(repositoryDirectory, "docs/jest-submission-readiness.html"),
+    "utf8",
+  );
+  const requiredSection = readiness.match(
+    /<section class="panel"><h2>Required before submission<\/h2>([\s\S]*?)<\/section>/u,
+  )?.[1];
+
+  assert.ok(requiredSection, "submission readiness must retain its required-actions section");
+  assert.doesNotMatch(requiredSection, /[0-9a-f]{8}-[0-9a-f-]{27,}/iu);
+  assert.match(requiredSection, /current active version/u);
+});
+
 test("release-readiness fails closed if publisher and privacy approval are removed", async () => {
   const manifest = await readManifest();
   const unresolvedManifest = structuredClone(manifest);
