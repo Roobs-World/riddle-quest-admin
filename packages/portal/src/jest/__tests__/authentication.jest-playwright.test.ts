@@ -33,6 +33,8 @@ type AuthHarnessState = {
   overlayOptions: Array<{
     /** Stores theme. */
     theme?: string;
+    /** Stores registration message. */
+    message?: string;
     /** Stores source. */
     source?: string;
     /** Stores campaign. */
@@ -161,6 +163,8 @@ const installJestSdkHarness = async (page: Page, scenario = "success") => {
       showRegistrationOverlay: (options: {
         /** Stores theme. */
         theme?: string;
+        /** Stores registration message. */
+        message?: string;
         /** Stores entry payload. */
         entryPayload?: {
           /** Stores source. */
@@ -184,6 +188,7 @@ const installJestSdkHarness = async (page: Page, scenario = "success") => {
         state.calls.push("sdk.showRegistrationOverlay");
         state.overlayOptions.push({
           theme: options.theme,
+          message: options.message,
           source: options.entryPayload?.source,
           campaign: options.entryPayload?.campaign,
           reference: options.entryPayload?.reference,
@@ -568,6 +573,7 @@ describeBrowser("Jest authentication integration", () => {
     expect((await getHarnessState(page)).overlayOptions).toEqual([
       {
         theme: "dark",
+        message: "Keep my Riddle Quest progress! {{registrationCode}} is my registration code.",
         source: "post_instructions",
         campaign: "jest_onboarding",
         reference: "registration_post_instructions_v1",

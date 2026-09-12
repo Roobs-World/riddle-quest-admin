@@ -235,7 +235,7 @@ export type JestNotificationSchedule = JestNotificationContent &
  */
 export interface JestPlatformPort {
   /**
-   * Initializes the provider SDK with automatic login reminders active.
+   * Initializes the provider SDK with automatic login reminders disabled.
    *
    * @returns `success` when SDK APIs are ready, otherwise a normalized failure.
    */
@@ -269,6 +269,8 @@ export interface JestPlatformPort {
   showRegistrationOverlay(options: {
     /** Stores theme. */
     theme: "dark" | "light";
+    /** Branded SMS/RCS request containing the provider-owned registration-code placeholder. */
+    message: string;
     /** Stores entry payload. */
     entryPayload?: Record<string, string>;
     /** Stores on close. */

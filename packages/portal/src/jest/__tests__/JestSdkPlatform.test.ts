@@ -148,12 +148,14 @@ it("wires the custom registration overlay actions and options", () => {
   /** Provides result behavior. */
   const result = new JestSdkPlatform(mock).showRegistrationOverlay({
     theme: "dark",
+    message: "Keep my Riddle Quest progress! {{registrationCode}} is my registration code.",
     entryPayload: {source: "post_instructions"},
     onClose,
   });
 
   expect(mock.showRegistrationOverlay).toHaveBeenCalledWith({
     theme: "dark",
+    message: "Keep my Riddle Quest progress! {{registrationCode}} is my registration code.",
     entryPayload: {source: "post_instructions"},
     onClose,
   });
@@ -403,7 +405,7 @@ it("uses the global SDK by default and initializes it safely", async () => {
   /** Provides platform behavior. */
   const platform = new JestSdkPlatform();
   await expect(platform.init()).resolves.toEqual({status: "success", value: undefined});
-  expect(mock.init).toHaveBeenCalledWith({autoLoginReminders: true});
+  expect(mock.init).toHaveBeenCalledWith({autoLoginReminders: false});
   expect(platform.getPlayer()).toEqual({playerId: "p1", registered: false});
   platform.getPlayerSigned();
   expect(mock.getPlayerSigned).toHaveBeenCalled();
@@ -432,7 +434,7 @@ it("resolves the global SDK lazily when it appears after construction", async ()
   target.JestSDK = mock;
 
   await expect(platform.init()).resolves.toEqual({status: "success", value: undefined});
-  expect(mock.init).toHaveBeenCalledWith({autoLoginReminders: true});
+  expect(mock.init).toHaveBeenCalledWith({autoLoginReminders: false});
   target.JestSDK = original;
 });
 
@@ -486,7 +488,11 @@ it("runs both registration overlay actions and contains overlay errors", () => {
   /** Provides platform behavior. */
   const platform = new JestSdkPlatform(mock);
   /** Provides result behavior. */
-  const result = platform.showRegistrationOverlay({theme: "dark", onClose: jest.fn()});
+  const result = platform.showRegistrationOverlay({
+    theme: "dark",
+    message: "Keep my Riddle Quest progress! {{registrationCode}} is my registration code.",
+    onClose: jest.fn(),
+  });
   expect(result.status).toBe("success");
   if (result.status === "success") {
     result.value.loginButtonAction();
@@ -498,7 +504,13 @@ it("runs both registration overlay actions and contains overlay errors", () => {
   mock.showRegistrationOverlay.mockImplementation(() => {
     throw new Error("overlay unavailable");
   });
-  expect(platform.showRegistrationOverlay({theme: "dark", onClose: jest.fn()})).toEqual({
+  expect(
+    platform.showRegistrationOverlay({
+      theme: "dark",
+      message: "Keep my Riddle Quest progress! {{registrationCode}} is my registration code.",
+      onClose: jest.fn(),
+    }),
+  ).toEqual({
     status: "retryable-failure",
     message: "overlay unavailable",
   });

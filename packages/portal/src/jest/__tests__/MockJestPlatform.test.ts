@@ -33,7 +33,11 @@ describe("MockJestPlatform", () => {
     /** Provides platform behavior. */
     const platform = new MockJestPlatform();
     /** Provides result behavior. */
-    const result = platform.showRegistrationOverlay({theme: "dark", onClose});
+    const result = platform.showRegistrationOverlay({
+      theme: "dark",
+      message: "Keep my Riddle Quest progress! {{registrationCode}} is my registration code.",
+      onClose,
+    });
     expect(result.status).toBe("success");
     if (result.status !== "success") return;
     result.value.loginButtonAction();

@@ -11,11 +11,11 @@ it("uses Jest's SDK and a local backend mock for standalone development", () => 
   );
 });
 
-it("uses the real SDK and backend inside the hosted emulator", () => {
+it("uses the real SDK and local backend mock inside the hosted emulator", () => {
   expect(resolveJestRuntimeMode({development: true, embedded: true, harness: null, testHarnessEnabled: true})).toEqual({
     authHarness: false,
     deterministicHarness: false,
-    mockBackend: false,
+    mockBackend: true,
     useSdkPlatform: true,
   });
 });

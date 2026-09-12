@@ -16,7 +16,7 @@ export const shouldEnableJestSubscriptions = (development: boolean): boolean => 
 /** Resolves jest runtime mode. */
 export function resolveJestRuntimeMode({
   development,
-  embedded,
+  embedded: _embedded,
   harness,
   testHarnessEnabled,
 }: {
@@ -33,12 +33,15 @@ export function resolveJestRuntimeMode({
   const authHarness = testHarnessEnabled && (harness === "jest-auth" || harness === "race-auth");
   /** Provides deterministic harness behavior. */
   const deterministicHarness = testHarnessEnabled && (harness === "jest" || harness === "dev" || harness === "race");
-  /** Provides local sdk mock behavior. */
-  const localSdkMock = development && !embedded && !authHarness && !deterministicHarness;
+  // Localhost cannot reach the production purchase authority. Keep Jest's real
+  // SDK when the Developer Console embeds the dev server, but use the local
+  // idempotent grant mock so recovery can finish before completePurchase.
+  /** Provides local backend mock behavior. */
+  const localBackendMock = development && !authHarness && !deterministicHarness;
   return {
     authHarness,
     deterministicHarness,
-    mockBackend: authHarness || deterministicHarness || localSdkMock,
+    mockBackend: authHarness || deterministicHarness || localBackendMock,
     useSdkPlatform: authHarness || !deterministicHarness,
   };
 }

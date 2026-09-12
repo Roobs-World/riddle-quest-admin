@@ -182,7 +182,7 @@ Start the local server on the port expected by Jest:
 pnpm jest:hosted
 ```
 
-While logged into the developer account, open `https://jest.com/g/riddle-q?host=http://localhost:3000`. The game detects that it is embedded and uses the live Jest SDK rather than either local mock adapter. The production backend remains unavailable to the localhost iframe by design. Exercise registration dismissal/completion, stable player identity, entry payloads, platform overlays, and mobile iframe sizing here; use a locally configured Functions emulator or an uploaded sandbox build for backend-authoritative behavior.
+While logged into the developer account, open `https://jest.com/g/riddle-q?host=http://localhost:3000`. The game detects that it is embedded and uses the live Jest SDK with the local authoritative-backend mock. This lets the Developer Console exercise interrupted-purchase recovery through grant and `completePurchase()` without sending its synthetic signed payloads to production. Exercise registration dismissal/completion, stable player identity, entry payloads, platform overlays, and mobile iframe sizing here; use an uploaded sandbox build for production-backend-authoritative behavior.
 
 ### Uploaded build and sandbox users
 

@@ -169,6 +169,7 @@ export function useJestRegistration({
         /** Provides overlay behavior. */
         const overlay = platform.showRegistrationOverlay({
           theme: "dark",
+          message: "Keep my Riddle Quest progress! {{registrationCode}} is my registration code.",
           entryPayload: createRegistrationEntryPayload(source, session.entryIntent),
           onClose: complete,
         });
