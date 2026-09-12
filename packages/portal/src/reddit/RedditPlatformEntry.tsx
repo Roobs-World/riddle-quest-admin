@@ -50,6 +50,7 @@ export function RedditPlatformEntry() {
   const [startup, setStartup] = useState<StartupState>({state: "loading", progress: 5});
   /** Provides [presence enabled, set presence enabled] behavior. */
   const [presenceEnabled, setPresenceEnabled] = useState(false);
+  /** Provides player persistence ref behavior. */
   const playerPersistenceRef = useRef<PlayerProjectionPersistence | null>(null);
   /** Provides preferences ref behavior. */
   const preferencesRef = useRef<PlatformPreferences>({});
@@ -196,6 +197,7 @@ export function RedditPlatformEntry() {
   const writePlayerData = useCallback(
     async (update: PlayerDataUpdate) => {
       if (startup.state !== "ready") return;
+      /** Provides persistence behavior. */
       const persistence = playerPersistenceRef.current;
       if (!persistence) return;
       await persistence.update(update);

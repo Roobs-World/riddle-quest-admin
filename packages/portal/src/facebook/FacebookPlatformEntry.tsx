@@ -60,6 +60,7 @@ export function FacebookPlatformEntry() {
   const [presenceEnabled, setPresenceEnabled] = useState(false);
   /** Provides [presence available, set presence available] behavior. */
   const [presenceAvailable, setPresenceAvailable] = useState(false);
+  /** Provides player persistence ref behavior. */
   const playerPersistenceRef = useRef<PlayerProjectionPersistence | null>(null);
   /** Provides preferences ref behavior. */
   const preferencesRef = useRef<Awaited<ReturnType<PlatformSession["storage"]["readPreferences"]>>>({});
@@ -201,6 +202,7 @@ export function FacebookPlatformEntry() {
           if (!deletionGateRef.current.isOpen()) return;
           void deletionGateRef.current
             .run(async () => {
+              /** Provides next behavior. */
               const next = await playerPersistenceRef.current?.updatePreferences(change);
               if (!next) return;
               preferencesRef.current = next;
@@ -368,6 +370,7 @@ export function FacebookPlatformEntry() {
     async (update: PlayerDataUpdate) => {
       if (startup.status !== "ready" || !deletionGateRef.current.isOpen()) return;
       await deletionGateRef.current.run(async () => {
+        /** Provides persistence behavior. */
         const persistence = playerPersistenceRef.current;
         if (!persistence) return;
         await persistence.update(update);

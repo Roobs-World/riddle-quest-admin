@@ -4,6 +4,7 @@ import {createHostAuthorityModules} from "../HostAuthorityModules";
 
 describe("host authority modules", () => {
   it("represents Reddit guest Capability Gaps as absent modules", () => {
+    /** Provides modules behavior. */
     const modules = createHostAuthorityModules(createRedditGuestHostServices(), {}, false, false);
 
     expect(modules.gameplay).toBeDefined();

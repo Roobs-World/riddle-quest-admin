@@ -4,6 +4,7 @@ import {createHostedPlaySession} from "../HostedPlaySession";
 
 describe("hosted-play session assembly", () => {
   it("concentrates target defaults behind one session interface", () => {
+    /** Provides session behavior. */
     const session = createHostedPlaySession({hostServices: createFakeHostServices()});
 
     expect(session.initialGameMode).toBe("classic");

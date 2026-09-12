@@ -2,12 +2,18 @@ import type {PlatformPreferences, PlatformStorage, PlayerData, PlayerDataUpdate}
 
 /** Owns version assembly and durable ordering for one client-owned player projection. */
 export class PlayerProjectionPersistence {
+  /** Stores storage. */
   private readonly storage: PlatformStorage;
+  /** Stores projection. */
   private projection: PlayerData | null;
+  /** Stores preferences. */
   private preferences: PlatformPreferences;
+  /** Stores pending. */
   private pending: Promise<void> = Promise.resolve();
+  /** Stores accepting. */
   private accepting = true;
 
+  /** Creates a player projection persistence instance. */
   constructor(
     storage: PlatformStorage,
     initial: PlayerData | null,
@@ -21,6 +27,7 @@ export class PlayerProjectionPersistence {
   /** Merges, versions, writes, and flushes one update in call order. */
   update(update: PlayerDataUpdate): Promise<void> {
     if (!this.accepting) return Promise.reject(new Error("player-projection-persistence-closed"));
+    /** Provides next behavior. */
     const next: PlayerData = {
       ...(this.projection ?? {}),
       ...update,
@@ -38,6 +45,7 @@ export class PlayerProjectionPersistence {
   /** Merges and durably orders one preference update. */
   updatePreferences(change: PlatformPreferences): Promise<PlatformPreferences> {
     if (!this.accepting) return Promise.reject(new Error("player-projection-persistence-closed"));
+    /** Provides next behavior. */
     const next = {...this.preferences, ...change};
     this.pending = this.pending.then(async () => {
       await this.storage.writePreferences(next);

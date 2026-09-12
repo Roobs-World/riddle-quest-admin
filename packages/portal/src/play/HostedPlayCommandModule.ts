@@ -10,6 +10,7 @@ export type HostedPlayCommandModule = Readonly<{
 
 /** Coherent inputs consumed by the command implementation. */
 export type HostedPlayCommandContext = Readonly<{
+  /** Stores session. */
   session: Pick<
     CreateHostMessageHandlersOptions,
     | "authSnapshot"
@@ -19,14 +20,17 @@ export type HostedPlayCommandContext = Readonly<{
     | "playableReportedRef"
     | "accountDeletionCompletedRef"
   >;
+  /** Stores delivery. */
   delivery: Pick<
     CreateHostMessageHandlersOptions,
     "setFrameReady" | "setNotice" | "sendInit" | "loadAndPostRiddle" | "postOperation"
   >;
+  /** Stores execution. */
   execution: Pick<
     CreateHostMessageHandlersOptions,
     "authority" | "runRaceOperation" | "withServerActivity" | "applyPurchaseBalance" | "syncRaceAchievementProgress"
   >;
+  /** Stores callbacks. */
   callbacks: Pick<
     CreateHostMessageHandlersOptions,
     | "onPlayable"

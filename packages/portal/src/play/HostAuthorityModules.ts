@@ -3,14 +3,20 @@ import type {HostServices} from "./types";
 
 /** Capability-shaped authority modules exposed to hosted play. */
 export type HostAuthorityModules = Readonly<{
+  /** Stores identity. */
   identity: Pick<HostServices, "auth" | "loadProfile">;
+  /** Stores gameplay. */
   gameplay: Pick<
     HostServices,
     "loadRiddle" | "loadProfile" | "completeGame" | "submitGuess" | "skipRiddle"
   >;
+  /** Stores economy. */
   economy?: Pick<HostServices, "requestHint" | "spendCoins">;
+  /** Stores commerce. */
   commerce?: Pick<HostServices, "requestPurchase" | "products">;
+  /** Stores account. */
   account?: Pick<HostServices, "updateUsername" | "updateAvatar" | "deleteAccount" | "loadLeaderboard">;
+  /** Stores race. */
   race?: Pick<
     HostServices,
     | "listRaceCategories"
@@ -38,6 +44,7 @@ export function createHostAuthorityModules(
   commerceAvailable = capabilities?.commerce !== undefined,
   economyAvailable = true,
 ): HostAuthorityModules {
+  /** Provides authenticated behavior. */
   const authenticated = capabilities?.accountUpgrade?.state === "complete";
   return {
     identity: services,

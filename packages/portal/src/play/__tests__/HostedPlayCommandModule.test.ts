@@ -5,9 +5,13 @@ import {createHostAuthorityModules} from "../HostAuthorityModules";
 
 describe("hosted-play command module", () => {
   it("parses and executes a command through one interface", async () => {
+    /** Sets frame ready. */
     const setFrameReady = jest.fn((_ready: boolean) => undefined);
+    /** Provides post operation behavior. */
     const postOperation = jest.fn(() => undefined);
+    /** Provides services behavior. */
     const services = createFakeHostServices();
+    /** Provides commands behavior. */
     const commands = createHostedPlayCommandModule({
       session: {
         authSnapshot: {user: null, profile: null},
@@ -34,6 +38,7 @@ describe("hosted-play command module", () => {
       callbacks: {},
     });
 
+    /** Provides message behavior. */
     const message = await commands.execute({
       type: "game:ready",
       requestId: "ready-1",

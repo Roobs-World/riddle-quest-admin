@@ -4,11 +4,14 @@ import {PlayerProjectionPersistence} from "../PlayerProjectionPersistence";
 
 describe("player projection persistence", () => {
   it("serializes merged versioned projections through the target storage adapter", async () => {
+    /** Provides events behavior. */
     const events: string[] = [];
+    /** Provides storage behavior. */
     const storage = {
       writePlayerData: jest.fn(async (value: PlayerData) => events.push(`write:${value.profile?.coins}`)),
       flush: jest.fn(async () => events.push("flush")),
     } as unknown as PlatformStorage;
+    /** Provides persistence behavior. */
     const persistence = new PlayerProjectionPersistence(storage, {
       schemaVersion: 1,
       updatedAt: 1,
@@ -24,12 +27,15 @@ describe("player projection persistence", () => {
   });
 
   it("owns preference merge, flush, and deletion ordering", async () => {
+    /** Provides events behavior. */
     const events: string[] = [];
+    /** Provides storage behavior. */
     const storage = {
       writePreferences: jest.fn(async () => events.push("preferences")),
       flush: jest.fn(async () => events.push("flush")),
       clear: jest.fn(async () => events.push("clear")),
     } as unknown as PlatformStorage;
+    /** Provides persistence behavior. */
     const persistence = new PlayerProjectionPersistence(storage, null, {muted: false});
 
     await persistence.updatePreferences({presenceEnabled: true});
