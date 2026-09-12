@@ -14,6 +14,7 @@ import {tr, useLocale} from "../play/i18n";
 import {MockJestPlatform} from "./MockJestPlatform";
 import {recordAuthoritativeCompletion} from "./milestone";
 import {useJestNotifications} from "./notifications/useJestNotifications";
+import type {NotificationCopy} from "./notifications/copy";
 import {createNotificationOperationGate} from "./notifications/operationGate";
 import {useJestSharing} from "./sharing/useJestSharing";
 import {resolveJestRuntimeMode, shouldEnableJestSubscriptions} from "./runtimeMode";
@@ -132,12 +133,29 @@ export function JestPlayApp() {
   });
   /** Provides account deletion quiesced behavior. */
   const accountDeletionQuiesced = useAccountDeletionQuiescence(notificationOperationGate);
+  /** Bundled locale copy keeps the Jest notification lifecycle independent of remote configuration availability. */
+  const notificationFallbackCopy = useMemo<NotificationCopy>(
+    () => ({
+      dailyBody: tr("WebPortal.NOTIFICATION_DAILY_BODY"),
+      dailyCta: tr("WebPortal.NOTIFICATION_DAILY_CTA"),
+      streakBody: tr("WebPortal.NOTIFICATION_STREAK_BODY"),
+      streakCta: tr("WebPortal.NOTIFICATION_STREAK_CTA"),
+      weeklyBody: tr("WebPortal.NOTIFICATION_WEEKLY_BODY"),
+      weeklyCta: tr("WebPortal.NOTIFICATION_WEEKLY_CTA"),
+      raceTitle: tr("RaceTo10.TITLE"),
+      raceBody: tr("RaceTo10.RESULTS_NOTIFICATION_BODY"),
+      raceCta: tr("RaceTo10.CHECK_RESULTS"),
+    }),
+    [locale],
+  );
   useJestNotifications({
     locale,
     mockRuntime,
     session,
     engagementProgress,
+    gameTitle: tr("WebPortal.APP_TITLE"),
     playerFallback: tr("WebPortal.NOTIFICATION_PLAYER_FALLBACK"),
+    fallbackCopy: notificationFallbackCopy,
     assetReference: import.meta.env.VITE_JEST_NOTIFICATION_ASSET_REFERENCE || undefined,
     platform,
     notificationsEnabled: notificationOperationGate.isOpen,

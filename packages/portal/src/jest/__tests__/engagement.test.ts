@@ -13,6 +13,7 @@ import {MockJestPlatform} from "../MockJestPlatform";
 
 /** Provides copy behavior. */
 const copy = {
+  gameTitle: "Riddle Quest",
   dailyBody: "A daily riddle is ready.",
   streakBody: "Keep your streak going.",
   weeklyBody: "Your next challenge is ready.",
@@ -40,6 +41,7 @@ it("schedules a rotating, attributed D1-D7 series with stable identifiers", asyn
     expect.objectContaining({
       identifier: ENGAGEMENT_REMINDER_IDS[0],
       scheduledInDays: 1,
+      title: "Riddle Quest",
       body: "A daily riddle is ready.",
       ctaText: "Solve it",
       entryPayload: expect.objectContaining({

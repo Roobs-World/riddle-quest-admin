@@ -118,7 +118,7 @@ export class JestSdkPlatform implements JestPlatformPort {
   }
 
   /**
-   * Waits for the independently loaded SDK and disables Jest's automatic login reminders.
+   * Waits for the independently loaded SDK and leaves login prompting to the game's custom UI.
    *
    * @returns `success` once SDK calls are safe, or a normalized provider/load failure.
    */

@@ -98,7 +98,9 @@ const createHarness = ({
     mockRuntime,
     session: currentSession,
     engagementProgress: {level: 8, winStreak: 3, wins: 12},
+    gameTitle: "Riddle Quest",
     playerFallback: "Player",
+    fallbackCopy: MOCK_NOTIFICATION_COPY,
     assetReference,
     platform,
     notificationsEnabled: () => notificationsEnabledState,
@@ -194,19 +196,20 @@ describe("useJestNotifications", () => {
     createHarness({mockRuntime: false});
 
     mockEffects[0]();
+    expect(mockSetCopy).toHaveBeenCalledWith(MOCK_NOTIFICATION_COPY);
     await flushPromises();
 
     expect(mockLoadNotificationCopy).toHaveBeenCalledWith("en-GB");
     expect(mockSetCopy).toHaveBeenCalledWith(MOCK_NOTIFICATION_COPY);
   });
 
-  it("reports active copy-load failures and ignores results after cleanup", async () => {
+  it("falls back to bundled copy after an active remote copy-load failure and ignores results after cleanup", async () => {
     mockLoadNotificationCopy.mockRejectedValueOnce(new Error("offline"));
     /** Provides failed behavior. */
     const failed = createHarness({mockRuntime: false});
     mockEffects[0]();
     await flushPromises();
-    expect(mockSetCopy).toHaveBeenCalledWith(null);
+    expect(mockSetCopy).toHaveBeenCalledWith(MOCK_NOTIFICATION_COPY);
     expect(failed.trackFunnel).toHaveBeenCalledWith("notification_copy_load_failed", {locale: "en-GB"});
 
     jest.clearAllMocks();
@@ -227,7 +230,8 @@ describe("useJestNotifications", () => {
     resolveCopy(MOCK_NOTIFICATION_COPY);
     await flushPromises();
     await flushPromises();
-    expect(mockSetCopy).not.toHaveBeenCalled();
+    expect(mockSetCopy).toHaveBeenCalledTimes(1);
+    expect(mockSetCopy).toHaveBeenCalledWith(MOCK_NOTIFICATION_COPY);
 
     jest.clearAllMocks();
     mockEffects.length = 0;
@@ -248,7 +252,8 @@ describe("useJestNotifications", () => {
     rejectCopy(new Error("late failure"));
     await flushPromises();
     await flushPromises();
-    expect(mockSetCopy).not.toHaveBeenCalled();
+    expect(mockSetCopy).toHaveBeenCalledTimes(1);
+    expect(mockSetCopy).toHaveBeenCalledWith(MOCK_NOTIFICATION_COPY);
     expect(cleanedUp.trackFunnel).not.toHaveBeenCalled();
   });
 
@@ -315,7 +320,9 @@ describe("useJestNotifications", () => {
   it("schedules a race-results reminder only for a valid published challenge", async () => {
     mockCopyState = MOCK_NOTIFICATION_COPY;
     /** Provides {remove notification, schedule notification, track funnel} behavior. */
-    const {removeNotification, scheduleNotification, trackFunnel} = createHarness();
+    const {removeNotification, scheduleNotification, trackFunnel} = createHarness({
+      assetReference: "notification-hero",
+    });
     removeNotification.mockResolvedValue({status: "success", value: undefined});
     scheduleNotification.mockResolvedValue({status: "success", value: undefined});
 
@@ -335,6 +342,7 @@ describe("useJestNotifications", () => {
         identifier: "race_to_10_results_v1",
         scheduledInDays: 1,
         priority: "high",
+        assetReference: "notification-hero",
         entryPayload: expect.objectContaining({challengeId: "challenge-1"}),
       }),
     );
@@ -346,6 +354,27 @@ describe("useJestNotifications", () => {
       }),
     );
     expect(scheduleNotification).toHaveBeenCalledTimes(1);
+  });
+
+  it("omits an unconfigured asset from race-results reminders", async () => {
+    mockCopyState = MOCK_NOTIFICATION_COPY;
+    /** Provides {schedule notification} behavior. */
+    const {scheduleNotification} = createHarness();
+    scheduleNotification.mockResolvedValue({status: "success", value: undefined});
+
+    /** Provides cleanup behavior. */
+    const cleanup = mockEffects[2]() as () => void;
+    window.dispatchEvent(
+      new CustomEvent("riddle-quest:race-challenge-published", {
+        detail: {challengeId: "challenge-with-default-hero"},
+      }),
+    );
+    await flushPromises();
+
+    expect(scheduleNotification).toHaveBeenCalledWith(
+      expect.not.objectContaining({assetReference: expect.anything()}),
+    );
+    cleanup();
   });
 
   it("removes the race reminder when a registered player opens the inbox", async () => {

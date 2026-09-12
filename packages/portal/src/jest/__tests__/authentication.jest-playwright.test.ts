@@ -630,7 +630,7 @@ describeBrowser("Jest authentication integration", () => {
             /** Stores riddle quest jest auth test. */
             __RIDDLE_QUEST_JEST_AUTH_TEST__: AuthHarnessState;
           }
-        ).__RIDDLE_QUEST_JEST_AUTH_TEST__.notificationSchedules.length === 7,
+        ).__RIDDLE_QUEST_JEST_AUTH_TEST__.notificationSchedules.length >= 7,
     );
     expect((await getHarnessState(page)).notificationSchedules).toEqual(
       expect.arrayContaining([
@@ -977,8 +977,8 @@ describeBrowser("Jest authentication integration", () => {
     });
 
     await page.getByRole("heading", {name: /challenge results/i}).waitFor({timeout: 15_000});
-    expect(await page.getByText("Nova", {exact: true}).isVisible()).toBe(true);
-    expect(await page.getByText(/time difference: 0:03\.5/i).isVisible()).toBe(true);
+    await page.getByText("Nova", {exact: true}).waitFor({state: "visible"});
+    await page.getByText(/time difference: 0:03\.5/i).waitFor({state: "visible"});
     /** Provides state behavior. */
     const state = await getHarnessState(page);
     expect(state.notificationRemovals).toContain("race_to_10_results_v1");

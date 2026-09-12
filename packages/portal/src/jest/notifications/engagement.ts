@@ -33,6 +33,8 @@ type ReminderVariant = {
 export async function scheduleEngagementReminders(
   platform: JestPlatformPort,
   copy: {
+    /** Stores game title. */
+    gameTitle: string;
     /** Stores daily body. */
     dailyBody: string;
     /** Stores streak body. */
@@ -92,6 +94,7 @@ export async function scheduleEngagementReminders(
         identifier,
         scheduledInDays,
         priority: scheduledInDays >= 3 ? "high" : "medium",
+        title: copy.gameTitle,
         body: variant.body,
         ctaText: variant.cta,
         entryPayload: {

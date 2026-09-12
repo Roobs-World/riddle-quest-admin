@@ -20,7 +20,9 @@ export function useJestNotifications({
   mockRuntime,
   session,
   engagementProgress,
+  gameTitle,
   playerFallback,
+  fallbackCopy,
   assetReference,
   platform,
   notificationsEnabled,
@@ -42,8 +44,12 @@ export function useJestNotifications({
     /** Stores wins. */
     wins: number;
   };
+  /** Localized game title shown on every scheduled notification. */
+  gameTitle: string;
   /** Stores player fallback. */
   playerFallback: string;
+  /** Bundled localized copy used when the remotely managed copy is unavailable. */
+  fallbackCopy: NotificationCopy;
   /** Stores asset reference. */
   assetReference?: string;
   /** Stores platform. */
@@ -56,13 +62,14 @@ export function useJestNotifications({
   trackFunnel: TrackFunnel;
 }) {
   /** Provides [copy, set copy] behavior. */
-  const [copy, setCopy] = useState<NotificationCopy | null>(null);
+  const [copy, setCopy] = useState<NotificationCopy | null>(fallbackCopy);
 
   useEffect(() => {
     if (!session?.player.registered || !notificationsEnabled()) {
       setCopy(null);
       return;
     }
+    setCopy(fallbackCopy);
     /** Provides active behavior. */
     let active = true;
     void withPlatformActivity(() =>
@@ -76,14 +83,14 @@ export function useJestNotifications({
       .catch((error) => {
         captureBrowserException(error, {component: "jest_notifications", operation: "load_copy"});
         if (active) {
-          setCopy(null);
+          setCopy(fallbackCopy);
           trackFunnel("notification_copy_load_failed", {locale});
         }
       });
     return () => {
       active = false;
     };
-  }, [locale, mockRuntime, notificationsEnabled, session?.player.registered, trackFunnel, withPlatformActivity]);
+  }, [fallbackCopy, locale, mockRuntime, notificationsEnabled, session?.player.registered, trackFunnel, withPlatformActivity]);
 
   useEffect(() => {
     if (!session?.player.registered || !copy || !notificationsEnabled()) return;
@@ -93,6 +100,7 @@ export function useJestNotifications({
       replaceEngagementReminders(
         platform,
         {
+          gameTitle,
           dailyBody: renderNotificationBody(copy.dailyBody, {name: playerName, coins: 75}),
           streakBody: renderNotificationBody(copy.streakBody, {
             wins: engagementProgress.wins,
@@ -130,6 +138,7 @@ export function useJestNotifications({
     engagementProgress.level,
     engagementProgress.winStreak,
     engagementProgress.wins,
+    gameTitle,
     platform,
     playerFallback,
     notificationsEnabled,
@@ -160,10 +169,11 @@ export function useJestNotifications({
         return platform.scheduleNotification({
           identifier: RACE_RESULTS_REMINDER_ID,
           scheduledInDays: 1,
-          title: copy.raceTitle,
+          title: `${gameTitle}: ${copy.raceTitle}`,
           body: copy.raceBody,
           ctaText: copy.raceCta,
           priority: "high",
+          ...(assetReference ? {assetReference} : {}),
           entryPayload: {
             campaign: "race_to_10_results_v1",
             reference: "race_to_10_results_d1_v1",
@@ -177,7 +187,7 @@ export function useJestNotifications({
     };
     window.addEventListener("riddle-quest:race-challenge-published", scheduleRaceReturn);
     return () => window.removeEventListener("riddle-quest:race-challenge-published", scheduleRaceReturn);
-  }, [copy, notificationsEnabled, platform, session?.player.registered, trackFunnel, withPlatformActivity]);
+  }, [assetReference, copy, gameTitle, notificationsEnabled, platform, session?.player.registered, trackFunnel, withPlatformActivity]);
 
   useEffect(() => {
     if (!session?.player.registered || !notificationsEnabled() || session.entryIntent.challengeDestination !== "inbox")
