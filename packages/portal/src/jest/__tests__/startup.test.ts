@@ -104,6 +104,21 @@ it("checks incomplete purchases even when identity exchange fails later in start
   expect(platform.getIncompletePurchases).toHaveBeenCalledTimes(1);
 });
 
+it("stops startup when the incomplete-purchase check fails", async () => {
+  const platform = new MockJestPlatform();
+  platform.getIncompletePurchases = jest.fn(async () => ({
+    status: "retryable-failure" as const,
+    message: "purchase recovery unavailable",
+  }));
+  const backend = {exchangeIdentity: jest.fn()};
+
+  await expect(
+    startJestSession(platform, backend as never, {} as never, async () => undefined),
+  ).resolves.toEqual({status: "retryable-failure", message: "purchase recovery unavailable"});
+
+  expect(backend.exchangeIdentity).not.toHaveBeenCalled();
+});
+
 it("drains cross-tab identity authentication before authoritative deletion", async () => {
   /** Provides active shared behavior. */
   let activeShared = 0;

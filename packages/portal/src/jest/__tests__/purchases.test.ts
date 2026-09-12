@@ -74,6 +74,39 @@ it("paginates and completes every recovered purchase", async () => {
   expect(platform.completePurchase).toHaveBeenCalledTimes(2);
 });
 
+it("consumes a startup recovery page before requesting the next page", async () => {
+  const platform = new MockJestPlatform();
+  platform.getIncompletePurchases = jest.fn(async () => ({
+    status: "success" as const,
+    value: {
+      purchases: [{purchaseToken: "t2", productSku: "coins"}],
+      purchasesSigned: "signed-2",
+      hasMore: false,
+    },
+  }));
+  platform.completePurchase = jest.fn(async () => ({status: "success" as const, value: undefined}));
+  const backend = {
+    grantPurchase: jest.fn(async () => ({
+      granted: true,
+      purchaseToken: "t",
+      coinsAwarded: 250,
+      newCoins: 550,
+    })),
+  };
+
+  await expect(
+    new JestPurchaseCoordinator(platform, backend as never).reconcile("p1", {
+      purchases: [{purchaseToken: "t1", productSku: "coins"}],
+      purchasesSigned: "signed-1",
+      hasMore: true,
+    }),
+  ).resolves.toEqual({status: "success", value: 2});
+
+  expect(platform.getIncompletePurchases).toHaveBeenCalledTimes(1);
+  expect(backend.grantPurchase).toHaveBeenNthCalledWith(1, "signed-1", "p1", "t1");
+  expect(backend.grantPurchase).toHaveBeenNthCalledWith(2, "signed-2", "p1", "t2");
+});
+
 it("maps the Jest catalog with SDK currency and trusted coin values", async () => {
   /** Provides platform behavior. */
   const platform = new MockJestPlatform();
