@@ -401,6 +401,9 @@ dd {
 }
 
 @media (max-width: 420px) {
+  .yt-keyboard {
+    width: 92%;
+  }
   .yt-mode-grid {
     grid-template-columns: 1fr;
   }

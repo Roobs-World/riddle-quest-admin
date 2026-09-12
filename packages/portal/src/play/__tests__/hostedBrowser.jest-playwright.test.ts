@@ -499,11 +499,17 @@ describeBrowser("standalone Jest browser game", () => {
         const navigation = document.querySelector(".game-bottom-navigation")?.getBoundingClientRect();
         /** Provides keyboard key behavior. */
         const keyboardKey = document.querySelector(".keyboard .key")?.getBoundingClientRect();
+        /** Provides keyboard behavior. */
+        const keyboard = document.querySelector(".keyboard")?.getBoundingClientRect();
+        /** Provides game area behavior. */
+        const gameArea = document.querySelector(".riddle-surface")?.getBoundingClientRect();
         /** Provides content behavior. */
         const content = document.querySelector<HTMLElement>(".game-content");
         return {
           documentHeight: document.documentElement.scrollHeight,
           keyHeight: keyboardKey?.height ?? 0,
+          keyboardWidth: keyboard?.width ?? Infinity,
+          gameAreaWidth: gameArea?.width ?? 0,
           navigationBottom: navigation?.bottom ?? Infinity,
           scale: Number(content?.dataset.viewportScale ?? 0),
         };
@@ -511,6 +517,7 @@ describeBrowser("standalone Jest browser game", () => {
       expect(compactLayout.documentHeight).toBeLessThanOrEqual(569);
       expect(compactLayout.navigationBottom).toBeLessThanOrEqual(569);
       expect(compactLayout.keyHeight).toBeGreaterThanOrEqual(44);
+      expect(compactLayout.keyboardWidth).toBeLessThan(compactLayout.gameAreaWidth);
       expect(compactLayout.scale).toBeGreaterThanOrEqual(0.92);
       expect(await compactPage.getByRole("region", {name: /virtual keyboard/i}).isVisible()).toBe(true);
 

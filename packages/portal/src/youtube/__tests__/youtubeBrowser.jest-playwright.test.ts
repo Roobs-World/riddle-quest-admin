@@ -361,6 +361,12 @@ describeBrowser("YouTube Playables artifact with injected Game API", () => {
     await page.goto(artifact.origin);
     await waitForSdkEvent(page, "sdk:game-ready");
     await page.locator(".yt-mode-card").first().click();
+    /** Provides mobile puzzle proportions. */
+    const mobilePuzzleWidths = await page.evaluate(() => ({
+      gameArea: document.querySelector(".yt-puzzle")?.getBoundingClientRect().width ?? 0,
+      keyboard: document.querySelector(".yt-keyboard")?.getBoundingClientRect().width ?? Infinity,
+    }));
+    expect(mobilePuzzleWidths.keyboard).toBeLessThan(mobilePuzzleWidths.gameArea);
     await page.locator(".yt-keyboard button").filter({hasText: /^I$/u}).click();
     /** Provides letters behavior. */
     const letters = await page.locator(".yt-guess-row.current .yt-tile").allTextContents();

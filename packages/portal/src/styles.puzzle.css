@@ -221,8 +221,8 @@
   gap: 7px;
   min-width: 0;
   padding-inline: 14px;
-  color: #fff;
-  background: linear-gradient(120deg, #173e4c, #2e8b57);
+  color: #171717;
+  background: #fff3cd;
   border-radius: 999px;
   box-shadow: 0 8px 18px rgba(23, 62, 76, 0.25);
   font:
@@ -231,7 +231,7 @@
     sans-serif;
 }
 .game-bottom-navigation .multiplayer-navigation-action:hover {
-  background: #fff3cd;
+  background: #ff9e2c;
   color: #171717;
 }
 .game-bottom-navigation .multiplayer-navigation-action .native-control-icon {
