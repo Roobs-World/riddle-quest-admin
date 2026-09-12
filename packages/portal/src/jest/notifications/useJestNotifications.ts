@@ -88,10 +88,7 @@ export function useJestNotifications({
   useEffect(() => {
     if (!session?.player.registered || !copy || !notificationsEnabled()) return;
     /** Provides player name behavior. */
-    const playerName = notificationPlayerName(
-      session.profile?.username ?? session.entryIntent.customName,
-      playerFallback,
-    );
+    const playerName = notificationPlayerName(session.profile?.username, playerFallback);
     void withPlatformActivity(() =>
       replaceEngagementReminders(
         platform,
@@ -136,7 +133,6 @@ export function useJestNotifications({
     platform,
     playerFallback,
     notificationsEnabled,
-    session?.entryIntent.customName,
     session?.player.playerId,
     session?.player.registered,
     session?.profile?.username,

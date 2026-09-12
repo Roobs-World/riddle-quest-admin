@@ -121,7 +121,16 @@ try {
 
   const sandboxNotice = page.getByText(/Sandbox mode\. You won't be charged for this purchase\./i);
   await sandboxNotice.waitFor({state: "visible", timeout: 15_000});
-  await page.getByRole("button", {name: /get with jest balance/i}).click();
+  const checkoutAction = page.getByRole("button", {name: /get with jest (?:balance|wallet)/i});
+  try {
+    await checkoutAction.click({timeout: 5_000});
+  } catch (error) {
+    const visibleButtons = await page.getByRole("button").allInnerTexts();
+    throw new Error(
+      `Jest sandbox checkout action was not found. Visible buttons: ${JSON.stringify(visibleButtons)}`,
+      {cause: error},
+    );
+  }
 
   const purchase = await game.evaluate(async () => await globalThis.__RIDDLE_QUEST_PAYMENT_TEST__);
   if (

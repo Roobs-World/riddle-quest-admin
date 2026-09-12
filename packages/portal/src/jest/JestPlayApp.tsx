@@ -44,6 +44,7 @@ import {createHostServices, getHostConfigurationWarning, resolveHostServicesMode
 import {useJestFunnelTracking, useJestPlatformActivity} from "./useJestPlatformOperations";
 import {useJestPresence} from "./useJestPresence";
 import {useJestRegistration} from "./useJestRegistration";
+import {createHostedPlaySession} from "../play/HostedPlaySession";
 /** Provides jest play app behavior. */
 export function JestPlayApp() {
   /** Provides locale behavior. */
@@ -438,33 +439,35 @@ export function JestPlayApp() {
         />
       ) : null}
       <PlayHostApp
-        hostServices={hostServices}
-        hostConfigurationWarning={hostConfigurationWarning}
-        initialGameMode={session.entryIntent.gameMode}
-        initialRaceChallengeId={resolveRaceChallengeId(session.entryIntent)}
-        initialRaceInbox={session.entryIntent.challengeDestination === "inbox"}
-        registrationName={session.entryIntent.customName}
-        registrationInviterName={session.entryIntent.inviterName}
+        session={createHostedPlaySession({
+          hostServices,
+          hostConfigurationWarning,
+          initialGameMode: session.entryIntent.gameMode,
+          initialRaceChallengeId: resolveRaceChallengeId(session.entryIntent),
+          initialRaceInbox: session.entryIntent.challengeDestination === "inbox",
+          registrationName: session.entryIntent.customName,
+          registrationInviterName: session.entryIntent.inviterName,
+          platformProducts: jestProducts,
+          platformPurchase: purchaseProduct,
+          platformCapabilities: {
+            accountUpgrade: {
+              state: session.player.registered ? "complete" : "available",
+              begin: async () => ({status: "unavailable", message: "Use the Jest registration controls."}),
+            },
+          },
+          externalInteractionBlocked: pendingPlatformOperations > 0,
+          initialPlayerData: session.playerData,
+          onPlayerDataChange: playerStateWrites.savePlayerData,
+          accountDeletionServiceGate: notificationOperationGate,
+          presenceEnabled: session.preferences.presenceEnabled === true,
+          onTogglePresence: togglePresence,
+          onPresenceStateChange: setPresenceState,
+          referralSharing,
+        })}
         onPlayable={() => markJestPlayable(platform)}
         onAuthoritativeComplete={handleAuthoritativeComplete}
-        platformProducts={jestProducts}
-        platformPurchase={purchaseProduct}
-        platformCapabilities={{
-          accountUpgrade: {
-            state: session.player.registered ? "complete" : "available",
-            begin: async () => ({status: "unavailable", message: "Use the Jest registration controls."}),
-          },
-        }}
-        externalInteractionBlocked={pendingPlatformOperations > 0}
-        initialPlayerData={session.playerData}
-        onPlayerDataChange={playerStateWrites.savePlayerData}
-        accountDeletionServiceGate={notificationOperationGate}
         onAccountDeletionRequested={markAccountDeletionRequested}
         onAccountDeleted={clearPlayerState}
-        presenceEnabled={session.preferences.presenceEnabled === true}
-        onTogglePresence={togglePresence}
-        onPresenceStateChange={setPresenceState}
-        referralSharing={referralSharing}
       />
     </>
   );

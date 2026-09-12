@@ -17,6 +17,8 @@ import {createRedditHostServices} from "./RedditHostServices";
 import {createRedditGuestHostServices} from "./RedditGuestHostServices";
 import {RedditPollingPresence} from "./RedditPollingPresence";
 import {readBrowserStorage} from "../platform/browserStorage";
+import {PlayerProjectionPersistence} from "../platform/PlayerProjectionPersistence";
+import {createHostedPlaySession} from "../play/HostedPlaySession";
 
 /** Describes startup state. */
 type StartupState =
@@ -48,8 +50,7 @@ export function RedditPlatformEntry() {
   const [startup, setStartup] = useState<StartupState>({state: "loading", progress: 5});
   /** Provides [presence enabled, set presence enabled] behavior. */
   const [presenceEnabled, setPresenceEnabled] = useState(false);
-  /** Provides player data ref behavior. */
-  const playerDataRef = useRef<PlayerData | null>(null);
+  const playerPersistenceRef = useRef<PlayerProjectionPersistence | null>(null);
   /** Provides preferences ref behavior. */
   const preferencesRef = useRef<PlatformPreferences>({});
   /** Provides presence ref behavior. */
@@ -82,9 +83,8 @@ export function RedditPlatformEntry() {
     return subscribeToPlayerPreferenceChanges((change) => {
       /** Provides next behavior. */
       const next = {...preferencesRef.current, ...change};
-      void startup.session.storage
-        .writePreferences(next)
-        .then(() => startup.session.storage.flush())
+      void playerPersistenceRef.current
+        ?.updatePreferences(change)
         .then(() => {
           preferencesRef.current = next;
         })
@@ -152,9 +152,8 @@ export function RedditPlatformEntry() {
     const next = !presenceEnabled;
     /** Provides preferences behavior. */
     const preferences = {...preferencesRef.current, presenceEnabled: next};
-    void startup.session.storage
-      .writePreferences(preferences)
-      .then(() => startup.session.storage.flush())
+    void playerPersistenceRef.current
+      ?.updatePreferences({presenceEnabled: next})
       .then(() => presenceRef.current?.setEnabled(next))
       .then(() => {
         preferencesRef.current = preferences;
@@ -178,7 +177,11 @@ export function RedditPlatformEntry() {
         }
         /** Provides player data behavior. */
         const playerData = await result.value.storage.readPlayerData();
-        playerDataRef.current = playerData;
+        playerPersistenceRef.current = new PlayerProjectionPersistence(
+          result.value.storage,
+          playerData,
+          result.value.initialPreferences,
+        );
         if (active) setStartup({state: "ready", session: result.value, playerData});
       })
       .catch(() => {
@@ -193,16 +196,9 @@ export function RedditPlatformEntry() {
   const writePlayerData = useCallback(
     async (update: PlayerDataUpdate) => {
       if (startup.state !== "ready") return;
-      /** Provides next behavior. */
-      const next: PlayerData = {
-        ...(playerDataRef.current ?? {}),
-        ...update,
-        schemaVersion: 1,
-        updatedAt: Date.now(),
-      };
-      playerDataRef.current = next;
-      await startup.session.storage.writePlayerData(next);
-      await startup.session.storage.flush();
+      const persistence = playerPersistenceRef.current;
+      if (!persistence) return;
+      await persistence.update(update);
     },
     [startup],
   );
@@ -227,9 +223,10 @@ export function RedditPlatformEntry() {
     if (startup.session.playerId !== "reddit-guest") {
       return (
         <PlayHostApp
-          hostServices={hostServices}
-          platformProducts={commerceProducts}
-          platformPurchase={
+          session={createHostedPlaySession({
+            hostServices,
+            platformProducts: commerceProducts,
+            platformPurchase:
             startup.session.capabilities.commerce
               ? async (productId) => {
                   /** Provides before behavior. */
@@ -249,17 +246,17 @@ export function RedditPlatformEntry() {
                     newCoins: after?.coins,
                   };
                 }
-              : undefined
-          }
-          platformCapabilities={startup.session.capabilities}
-          platformPlayerId={startup.session.playerId}
-          initialPlayerData={startup.playerData}
-          onPlayerDataChange={(update) => void writePlayerData(update)}
-          raceLocalePolicy="all"
-          presenceEnabled={presenceEnabled}
-          onTogglePresence={startup.session.capabilities.presence ? togglePresence : undefined}
-          onPresenceStateChange={(state) => void presenceRef.current?.setState(state).catch(() => undefined)}
-          onAccountDeletionRequested={() => startup.session.storage.flush()}
+              : undefined,
+            platformCapabilities: startup.session.capabilities,
+            platformPlayerId: startup.session.playerId,
+            initialPlayerData: startup.playerData,
+            onPlayerDataChange: (update) => void writePlayerData(update),
+            raceLocalePolicy: "all",
+            presenceEnabled,
+            onTogglePresence: startup.session.capabilities.presence ? togglePresence : undefined,
+            onPresenceStateChange: (state) => void presenceRef.current?.setState(state).catch(() => undefined),
+          })}
+          onAccountDeletionRequested={() => playerPersistenceRef.current?.closeAndFlush()}
         />
       );
     }
@@ -272,13 +269,16 @@ export function RedditPlatformEntry() {
           </button>
         </aside>
         <PlayHostApp
-          hostServices={guestHostServices}
-          platformCapabilities={startup.session.capabilities}
-          platformPlayerId={startup.session.playerId}
-          initialPlayerData={startup.playerData}
-          onPlayerDataChange={(update) => void writePlayerData(update)}
-          raceLocalePolicy="english-only"
-          hostConfigurationWarning={tr("RedditPlatform.CONFIG_WARNING")}
+          session={createHostedPlaySession({
+            hostServices: guestHostServices,
+            economyAvailable: false,
+            platformCapabilities: startup.session.capabilities,
+            platformPlayerId: startup.session.playerId,
+            initialPlayerData: startup.playerData,
+            onPlayerDataChange: (update) => void writePlayerData(update),
+            raceLocalePolicy: "english-only",
+            hostConfigurationWarning: tr("RedditPlatform.CONFIG_WARNING"),
+          })}
         />
       </>
     );

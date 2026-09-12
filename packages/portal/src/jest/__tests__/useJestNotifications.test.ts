@@ -285,7 +285,7 @@ describe("useJestNotifications", () => {
     });
   });
 
-  it("uses entry attribution as the name fallback and reports invalid reminder copy", async () => {
+  it("does not place untrusted entry attribution in notifications and reports invalid reminder copy", async () => {
     mockCopyState = MOCK_NOTIFICATION_COPY;
     mockReplaceEngagementReminders.mockRejectedValue(new Error("invalid copy"));
     /** Provides {track funnel} behavior. */
@@ -298,8 +298,13 @@ describe("useJestNotifications", () => {
 
     expect(mockReplaceEngagementReminders).toHaveBeenCalledWith(
       expect.anything(),
-      expect.objectContaining({dailyBody: expect.stringContaining("Grace")}),
+      expect.objectContaining({dailyBody: expect.stringContaining("Player")}),
       4,
+    );
+    expect(mockReplaceEngagementReminders).not.toHaveBeenCalledWith(
+      expect.anything(),
+      expect.objectContaining({dailyBody: expect.stringContaining("Grace")}),
+      expect.anything(),
     );
     expect(trackFunnel).toHaveBeenCalledWith("notification_schedule_failed", {
       index: -1,

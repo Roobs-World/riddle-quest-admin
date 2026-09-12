@@ -19,6 +19,8 @@ import {
   isSafeLegacyJestPurchaseGrantId,
 } from "../jest/jestPurchaseReceipts";
 import {createJestReferralRewardId, createJestReferralVerificationId} from "../jest/jestReferralReceipts";
+import {JEST_COIN_PRODUCTS} from "../jest/jestProductCatalog";
+import {DEFAULT_PRODUCT_PRICING} from "@qwordly/core/pricing/catalog";
 
 /** Provides request behavior. */
 const request = (input: {
@@ -220,6 +222,25 @@ describe("Jest HTTP input bounds", () => {
 describe("signed Jest purchase selection", () => {
   /** Provides sku behavior. */
   const sku = "com.roobsworld.riddlequest.coinpack1";
+  it("keeps every client coin pack aligned with the authoritative backend grant", () => {
+    /** Maps every shop SKU to its client-visible coin amount. */
+    const clientGrants = Object.fromEntries(
+      DEFAULT_PRODUCT_PRICING.map((product) => [product.productId, product.coins]),
+    );
+
+    expect(clientGrants).toEqual(JEST_COIN_PRODUCTS);
+    for (const [productSku, coins] of Object.entries(JEST_COIN_PRODUCTS)) {
+      /** Uses a distinct opaque token for this product contract check. */
+      const purchaseToken = `token-${productSku}`;
+      expect(
+        resolveSignedPurchase(
+          {purchase: {purchaseToken, productSku}},
+          purchaseToken,
+          new Set(Object.keys(JEST_COIN_PRODUCTS)),
+        ),
+      ).toEqual({purchaseToken, productSku, coins});
+    }
+  });
   it("selects a requested token from a signed recovery array", () =>
     expect(
       resolveSignedPurchase(

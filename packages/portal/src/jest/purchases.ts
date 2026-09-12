@@ -203,7 +203,12 @@ export class JestPurchaseCoordinator {
       const result = await this.platform.getIncompletePurchases();
       if (result.status !== "success") return result;
       for (const purchase of result.value.purchases) {
-        await this.backend.grantPurchase(result.value.purchasesSigned, playerId, purchase.purchaseToken);
+        try {
+          await this.backend.grantPurchase(result.value.purchasesSigned, playerId, purchase.purchaseToken);
+        } catch (error) {
+          captureBrowserException(error, {component: "jest_purchases", operation: "reconcile_purchase"});
+          return {status: "retryable-failure", message: error instanceof Error ? error.message : String(error)};
+        }
         /** Completes d. */
         const completed = await this.platform.completePurchase(purchase.purchaseToken);
         if (completed.status !== "success") return completed;

@@ -16,7 +16,7 @@ type HostRiddleLifecycleOptions = Readonly<{
   /** Current game locale. */
   locale: string;
   /** Target-specific host operations. */
-  services: HostServices;
+  services: Pick<HostServices, "loadRiddle">;
   /** Runs globally blocking server activity. */
   withActivity: <Result>(operation: () => Promise<Result>) => Promise<Result>;
   /** Delivers a bridge message to the game. */

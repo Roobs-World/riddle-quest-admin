@@ -534,6 +534,32 @@ it("stops reconciliation on platform failures and enforces its page limit", asyn
   expect(platform.getIncompletePurchases).toHaveBeenCalledTimes(100);
 });
 
+it("keeps an incomplete purchase recoverable when its backend grant throws", async () => {
+  /** Provides platform behavior. */
+  const platform = new MockJestPlatform();
+  platform.getIncompletePurchases = async () => ({
+    status: "success",
+    value: {
+      purchases: [{purchaseToken: "recoverable-token", productSku: "coins"}],
+      purchasesSigned: "signed-recovery-page",
+      hasMore: false,
+    },
+  });
+  platform.completePurchase = jest.fn(async () => ({status: "success", value: undefined}));
+
+  await expect(
+    new JestPurchaseCoordinator(platform, {
+      grantPurchase: async () => {
+        throw new Error("backend temporarily unavailable");
+      },
+    } as never).reconcile("p1"),
+  ).resolves.toEqual({
+    status: "retryable-failure",
+    message: "backend temporarily unavailable",
+  });
+  expect(platform.completePurchase).not.toHaveBeenCalled();
+});
+
 it("normalizes verifier errors and omitted blocked subscription lists", async () => {
   /** Provides platform behavior. */
   const platform = new MockJestPlatform(true);

@@ -3,7 +3,8 @@ import {trackEvent} from "../analytics/events";
 import {tr} from "./i18n";
 import {createRequestId} from "./requestIds";
 import type {RaceOutcome} from "@qwordly/core/race";
-import type {AuthSnapshot, CompletionResult, HostServices, PurchaseResult, WebGameMode} from "./types";
+import type {AuthSnapshot, CompletionResult, PurchaseResult, WebGameMode} from "./types";
+import type {HostAuthorityModules} from "./HostAuthorityModules";
 import {captureBrowserException} from "../observability/browserErrorReporter";
 
 /** Describes host operation name. */
@@ -57,6 +58,16 @@ const reportHostOperationError = (error: unknown, operation: HostOperationName):
   captureBrowserException(error, {component: "play_host", operation});
 };
 
+/** Requires a capability-shaped authority module before crossing its seam. */
+const requireAuthority = <Module>(module: Module | undefined, message: string): Module => {
+  if (!module) throw new Error(message);
+  return module;
+};
+
+/** Requires the race authority through one shared Capability Gap policy. */
+const requireRaceAuthority = (authority: HostAuthorityModules): NonNullable<HostAuthorityModules["race"]> =>
+  requireAuthority(authority.race, "host-race-capability-unavailable");
+
 /** Describes load and post riddle. */
 type LoadAndPostRiddle = (
   input: {
@@ -94,15 +105,15 @@ type RunRaceOperation = (
 type WithServerActivity = <Result>(operation: () => Promise<Result>) => Promise<Result>;
 
 /** Describes create host message handlers options. */
-type CreateHostMessageHandlersOptions = {
+export type CreateHostMessageHandlersOptions = {
   /** Stores auth snapshot. */
   authSnapshot: AuthSnapshot;
   /** Stores game mode. */
   gameMode: WebGameMode;
   /** Stores locale. */
   locale: string;
-  /** Stores services. */
-  services: HostServices;
+  /** Capability-shaped authority modules available to this session. */
+  authority: HostAuthorityModules;
   /** Stores loaded user id ref. */
   loadedUserIdRef: {
     /** Stores current. */
@@ -166,7 +177,7 @@ export const createPlayHostMessageHandlers = ({
   authSnapshot,
   gameMode,
   locale,
-  services,
+  authority,
   loadedUserIdRef,
   playableReportedRef,
   setFrameReady,
@@ -209,7 +220,7 @@ export const createPlayHostMessageHandlers = ({
   submitGuess: async (message) => {
     try {
       /** Provides result behavior. */
-      const result = await withServerActivity(() => services.submitGuess(message.payload));
+      const result = await withServerActivity(() => authority.gameplay.submitGuess(message.payload));
       postOperation(message.requestId, "guess", true, result);
       trackEvent("guess_submitted", {
         game_mode: message.payload.gameMode,
@@ -226,7 +237,7 @@ export const createPlayHostMessageHandlers = ({
       /** Provides result behavior. */
       const result = await withServerActivity(async () => {
         /** Provides completion behavior. */
-        const completion = await services.completeGame(message.payload);
+        const completion = await authority.gameplay.completeGame(message.payload);
         await onAuthoritativeComplete?.(message.payload, completion);
         return completion;
       });
@@ -251,7 +262,8 @@ export const createPlayHostMessageHandlers = ({
   requestHint: async (message) => {
     try {
       /** Provides result behavior. */
-      const result = await withServerActivity(() => services.requestHint(message.payload));
+      const economy = requireAuthority(authority.economy, "host-economy-capability-unavailable");
+      const result = await withServerActivity(() => economy.requestHint(message.payload));
       postOperation(message.requestId, "hint", true, result);
       trackEvent("spend_virtual_currency", {
         virtual_currency_name: "coins",
@@ -267,8 +279,9 @@ export const createPlayHostMessageHandlers = ({
   spendCoins: async (message) => {
     try {
       /** Provides result behavior. */
+      const economy = requireAuthority(authority.economy, "host-economy-capability-unavailable");
       const result = await withServerActivity(() =>
-        services.spendCoins({
+        economy.spendCoins({
           ...message.payload,
           requestId: message.requestId ?? createRequestId("continue"),
         }),
@@ -291,7 +304,7 @@ export const createPlayHostMessageHandlers = ({
       const {riddleId, gameMode: skipGameMode, sessionToken} = message.payload;
       /** Provides result behavior. */
       const result = await withServerActivity(() =>
-        services.skipRiddle({
+        authority.gameplay.skipRiddle({
           riddleId,
           gameMode: skipGameMode,
           sessionToken,
@@ -313,7 +326,8 @@ export const createPlayHostMessageHandlers = ({
   requestPurchase: async (message) => {
     try {
       /** Provides result behavior. */
-      const result = await withServerActivity(() => services.requestPurchase(message.payload.productId));
+      const commerce = requireAuthority(authority.commerce, "host-commerce-capability-unavailable");
+      const result = await withServerActivity(() => commerce.requestPurchase(message.payload.productId));
       if (!result.success) {
         postOperation(message.requestId, "purchase", true, result);
         return;
@@ -333,7 +347,8 @@ export const createPlayHostMessageHandlers = ({
   loadLeaderboard: async (message) => {
     try {
       /** Provides entries behavior. */
-      const entries = await withServerActivity(() => services.loadLeaderboard(message.payload.leaderboardType));
+      const account = requireAuthority(authority.account, "host-account-capability-unavailable");
+      const entries = await withServerActivity(() => account.loadLeaderboard(message.payload.leaderboardType));
       postOperation(message.requestId, "leaderboard", true, {
         type: message.payload.leaderboardType,
         entries,
@@ -346,7 +361,8 @@ export const createPlayHostMessageHandlers = ({
   updateUsername: async (message) => {
     try {
       /** Provides profile behavior. */
-      const profile = await withServerActivity(() => services.updateUsername(message.payload.username));
+      const account = requireAuthority(authority.account, "host-account-capability-unavailable");
+      const profile = await withServerActivity(() => account.updateUsername(message.payload.username));
       postOperation(message.requestId, "profile", true, {profile});
     } catch (error) {
       reportHostOperationError(error, "profile");
@@ -356,7 +372,8 @@ export const createPlayHostMessageHandlers = ({
   updateAvatar: async (message) => {
     try {
       /** Provides profile behavior. */
-      const profile = await withServerActivity(() => services.updateAvatar(message.payload.imageDataUrl));
+      const account = requireAuthority(authority.account, "host-account-capability-unavailable");
+      const profile = await withServerActivity(() => account.updateAvatar(message.payload.imageDataUrl));
       postOperation(message.requestId, "profile", true, {profile});
     } catch (error) {
       reportHostOperationError(error, "avatar");
@@ -367,7 +384,8 @@ export const createPlayHostMessageHandlers = ({
     try {
       if (!accountDeletionCompletedRef.current) {
         await onAccountDeletionRequested?.();
-        await withServerActivity(() => services.deleteAccount());
+        const account = requireAuthority(authority.account, "host-account-capability-unavailable");
+        await withServerActivity(() => account.deleteAccount());
         accountDeletionCompletedRef.current = true;
       }
       await onAccountDeleted?.();
@@ -382,52 +400,85 @@ export const createPlayHostMessageHandlers = ({
     }
   },
   listRaceCategories: (message) =>
-    runRaceOperation(message.requestId, "raceCategories", () => services.listRaceCategories(message.payload.locale)),
-  startRace: (message) => runRaceOperation(message.requestId, "raceStart", () => services.startRace(message.payload)),
+    runRaceOperation(message.requestId, "raceCategories", () => {
+      const race = requireRaceAuthority(authority);
+      return race.listRaceCategories(message.payload.locale);
+    }),
+  startRace: (message) =>
+    runRaceOperation(message.requestId, "raceStart", () => {
+      const race = requireRaceAuthority(authority);
+      return race.startRace(message.payload);
+    }),
   submitRaceGuess: (message) =>
-    runRaceOperation(message.requestId, "raceGuess", () => services.submitRaceGuess(message.payload)),
+    runRaceOperation(message.requestId, "raceGuess", () => {
+      const race = requireRaceAuthority(authority);
+      return race.submitRaceGuess(message.payload);
+    }),
   requestRaceHint: (message) =>
-    runRaceOperation(message.requestId, "raceHint", () => services.requestRaceHint(message.payload)),
+    runRaceOperation(message.requestId, "raceHint", () => {
+      const race = requireRaceAuthority(authority);
+      return race.requestRaceHint(message.payload);
+    }),
   skipRaceRiddle: (message) =>
-    runRaceOperation(message.requestId, "raceSkip", () => services.skipRaceRiddle(message.payload)),
+    runRaceOperation(message.requestId, "raceSkip", () => {
+      const race = requireRaceAuthority(authority);
+      return race.skipRaceRiddle(message.payload);
+    }),
   resumeRace: (message) =>
-    runRaceOperation(message.requestId, "raceResume", () => services.resumeRace(message.payload.runId)),
+    runRaceOperation(message.requestId, "raceResume", () => {
+      const race = requireRaceAuthority(authority);
+      return race.resumeRace(message.payload.runId);
+    }),
   abandonRace: (message) =>
-    runRaceOperation(message.requestId, "raceAbandon", () => services.abandonRace(message.payload)),
+    runRaceOperation(message.requestId, "raceAbandon", () => {
+      const race = requireRaceAuthority(authority);
+      return race.abandonRace(message.payload);
+    }),
   publishRace: (message) =>
     runRaceOperation(message.requestId, "racePublish", async () => {
       /** Provides result behavior. */
-      const result = await services.publishRace(message.payload);
+      const race = requireRaceAuthority(authority);
+      const result = await race.publishRace(message.payload);
       await syncRaceAchievementProgress(result);
       return result;
     }),
   getRaceChallenge: (message) =>
-    runRaceOperation(message.requestId, "raceChallenge", () =>
-      services.getRaceChallenge(message.payload.challengeId, message.payload.locale),
-    ),
+    runRaceOperation(message.requestId, "raceChallenge", () => {
+      const race = requireRaceAuthority(authority);
+      return race.getRaceChallenge(message.payload.challengeId, message.payload.locale);
+    }),
   getRaceOutcome: (message) =>
     runRaceOperation(message.requestId, "raceOutcome", async () => {
       /** Provides result behavior. */
-      const result = await services.getRaceOutcome(message.payload.runId);
+      const race = requireRaceAuthority(authority);
+      const result = await race.getRaceOutcome(message.payload.runId);
       await syncRaceAchievementProgress(result);
       await onAuthoritativeRaceResult?.(result);
       return result;
     }),
   listRaceInbox: (message) =>
-    runRaceOperation(message.requestId, "raceInbox", () => services.listRaceInbox(message.payload)),
+    runRaceOperation(message.requestId, "raceInbox", () => {
+      const race = requireRaceAuthority(authority);
+      return race.listRaceInbox(message.payload);
+    }),
   blockRival: (message) =>
-    runRaceOperation(message.requestId, "raceBlock", () => services.blockRival(message.payload.targetUserId)),
+    runRaceOperation(message.requestId, "raceBlock", () => {
+      const race = requireRaceAuthority(authority);
+      return race.blockRival(message.payload.targetUserId);
+    }),
   reportRival: (message) =>
-    runRaceOperation(message.requestId, "raceReport", () =>
-      services.reportRival({
+    runRaceOperation(message.requestId, "raceReport", () => {
+      const race = requireRaceAuthority(authority);
+      return race.reportRival({
         ...message.payload,
         requestId: message.requestId ?? createRequestId("race-report"),
-      }),
-    ),
+      });
+    }),
   analytics: (message) => {
     console.info("[riddle-quest-web]", message.payload.eventName, message.payload.params ?? {});
     trackEvent(message.payload.eventName, message.payload.params);
-    void services
+    if (!authority.race) return;
+    void authority.race
       .recordRaceAnalytics({
         eventId: message.requestId ?? createRequestId("race-analytics"),
         eventName: message.payload.eventName,

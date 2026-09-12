@@ -1,29 +1,27 @@
 import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import type {BridgeProfile, HostToGameMessage} from "@qwordly/core/bridge";
 import {BRIDGE_PROTOCOL_VERSION} from "@qwordly/core/bridge/constants";
-import {createHostMessageRouter} from "./bridgeRouter";
 import {detectDeviceLanguage, tr, useLocale} from "./i18n";
 import {createRequestId} from "./requestIds";
 import {GameFrameApp} from "./GameFrameApp";
 import {dispatchLocalBridge, HOST_TO_GAME_EVENT} from "./localBridge";
-import type {CompletionResult, HostServices, ProductSummary, WebGameMode} from "./types";
+import type {CompletionResult, WebGameMode} from "./types";
 import type {RaceOutcome} from "@qwordly/core/race";
 import {SpinningWheelLoader} from "./SpinningWheelLoader";
-import type {PlatformCapabilities, PlayerData, PlayerDataUpdate} from "../platform/types";
+import type {PlayerData} from "../platform/types";
 import {
-  createPlayHostMessageHandlers,
   getHostNoticeMessage,
   type HostOperationName,
 } from "./hostMessageHandlers";
 import {safeBrowserStorageGet} from "./playerPreferences";
-import {coordinateHostServices, type AccountDeletionServiceGate} from "./accountDeletionServiceGate";
-import type {ActivePresenceState} from "../presence/PlatformPresenceSession";
-import {ReferralSharingProvider, type ReferralSharingCapability} from "./sharing/ReferralSharingCapability";
+import {ReferralSharingProvider} from "./sharing/ReferralSharingCapability";
 import {useHostOperations} from "./useHostOperations";
 import {useHostRiddleLifecycle} from "./useHostRiddleLifecycle";
 import {useHostRaceCoordination} from "./useHostRaceCoordination";
 import {useHostAuthSession} from "./useHostAuthSession";
 import {useHostBridgeLifecycle} from "./useHostBridgeLifecycle";
+import {createHostedPlayCommandModule} from "./HostedPlayCommandModule";
+import type {HostedPlaySession} from "./HostedPlaySession";
 
 /** Creates host message. */
 const createHostMessage = <Message extends HostToGameMessage>(message: Message): Message => ({
@@ -33,39 +31,35 @@ const createHostMessage = <Message extends HostToGameMessage>(message: Message):
 
 /** Provides play host app behavior. */
 export function PlayHostApp({
-  hostServices,
-  hostConfigurationWarning = null,
-  initialGameMode,
+  session: {
+    services,
+    authority,
+    hostConfigurationWarning,
+    initialGameMode,
+    platformCapabilities,
+    platformPlayerId,
+    externalInteractionBlocked,
+    initialPlayerData,
+    onPlayerDataChange,
+    registrationName,
+    registrationInviterName,
+    initialRaceChallengeId,
+    initialRaceInbox,
+    presenceEnabled,
+    onTogglePresence,
+    raceLocalePolicy,
+    onPresenceStateChange,
+    referralSharing,
+  },
   onPlayable,
   onAuthoritativeComplete,
   onResultScreen,
   onAuthoritativeRaceResult,
-  platformProducts,
-  platformPurchase,
-  platformCapabilities,
-  platformPlayerId,
-  externalInteractionBlocked = false,
-  initialPlayerData,
-  onPlayerDataChange,
   onAccountDeleted,
   onAccountDeletionRequested,
-  accountDeletionServiceGate,
-  registrationName,
-  registrationInviterName,
-  initialRaceChallengeId,
-  initialRaceInbox = false,
-  presenceEnabled,
-  onTogglePresence,
-  raceLocalePolicy = "english-only",
-  onPresenceStateChange,
-  referralSharing,
 }: {
-  /** Stores host services. */
-  hostServices: HostServices;
-  /** Stores host configuration warning. */
-  hostConfigurationWarning?: string | null;
-  /** Stores initial game mode. */
-  initialGameMode?: WebGameMode;
+  /** Target-owned hosted-play session. */
+  session: HostedPlaySession;
   /** Stores on playable. */
   onPlayable?: () => void;
   /** Stores on authoritative complete. */
@@ -82,61 +76,15 @@ export function PlayHostApp({
   onResultScreen?: () => void | Promise<void>;
   /** Runs after the server returns one authoritative multiplayer outcome. */
   onAuthoritativeRaceResult?: (result: RaceOutcome) => void | Promise<void>;
-  /** Stores platform products. */
-  platformProducts?: ProductSummary[];
-  /** Stores platform purchase. */
-  platformPurchase?: (productId: string) => Promise<import("./types").PurchaseResult>;
-  /** Stores platform capabilities. */
-  platformCapabilities?: PlatformCapabilities;
-  /** Stores platform player id. */
-  platformPlayerId?: string;
-  /** Stores external interaction blocked. */
-  externalInteractionBlocked?: boolean;
-  /** Stores initial player data. */
-  initialPlayerData?: PlayerData | null;
-  /** Stores on player data change. */
-  onPlayerDataChange?: (update: PlayerDataUpdate) => void;
   /** Stores on account deleted. */
   onAccountDeleted?: () => void | Promise<void>;
   /** Stores on account deletion requested. */
   onAccountDeletionRequested?: () => void | Promise<void>;
-  /** Stores account deletion service gate. */
-  accountDeletionServiceGate?: AccountDeletionServiceGate;
-  /** Stores registration name. */
-  registrationName?: string;
-  /** Stores registration inviter name. */
-  registrationInviterName?: string;
-  /** Stores initial race challenge id. */
-  initialRaceChallengeId?: string;
-  /** Stores initial race inbox. */
-  initialRaceInbox?: boolean;
-  /** Stores presence enabled. */
-  presenceEnabled?: boolean;
-  /** Stores on toggle presence. */
-  onTogglePresence?: () => void;
-  /** Stores race locale policy. */
-  raceLocalePolicy?: "english-only" | "all";
-  /** Stores on presence state change. */
-  onPresenceStateChange?: (state: ActivePresenceState) => void;
-  /** Optional outbound referral sharing supplied by the active release target. */
-  referralSharing?: ReferralSharingCapability | null;
 }) {
   /** Provides locale behavior. */
   const locale = useLocale();
   /** Provides session id ref behavior. */
   const sessionIdRef = useRef(createRequestId("session"));
-  /** Provides services behavior. */
-  const services = useMemo<HostServices>(() => {
-    /** Provides configured services behavior. */
-    const configuredServices: HostServices = {
-      ...hostServices,
-      products: platformProducts ?? hostServices.products,
-      requestPurchase: platformPurchase ?? hostServices.requestPurchase,
-    };
-    return accountDeletionServiceGate
-      ? coordinateHostServices(configuredServices, accountDeletionServiceGate)
-      : configuredServices;
-  }, [accountDeletionServiceGate, hostServices, platformProducts, platformPurchase]);
   /** Provides configuration warning behavior. */
   const configurationWarning = hostConfigurationWarning;
   /** Provides [frame ready, set frame ready] behavior. */
@@ -182,7 +130,7 @@ export function PlayHostApp({
     applyCoinBalance,
     replaceProfile,
   } = useHostAuthSession({
-    services,
+    services: authority.identity,
     initialProfile: initialPlayerData?.profile,
     platformRegistered: platformCapabilities?.accountUpgrade?.state === "complete",
     onProfileChange: persistProfile,
@@ -226,9 +174,9 @@ export function PlayHostApp({
   } = useHostRiddleLifecycle({
     userId: authSnapshot.user?.uid,
     profile: authSnapshot.profile,
-    initialGameMode: initialGameMode ?? "classic",
+    initialGameMode,
     locale,
-    services,
+    services: authority.gameplay,
     withActivity: withServerActivity,
     postToGame,
     postOperation,
@@ -252,10 +200,10 @@ export function PlayHostApp({
         user: bridgeUser,
         profile: authSnapshot.profile,
         gameMode,
-        products: services.products,
+        products: authority.commerce?.products ?? [],
       },
     });
-  }, [authSnapshot.profile, bridgeUser, gameMode, locale, postToGame, services.products]);
+  }, [authSnapshot.profile, authority.commerce, bridgeUser, gameMode, locale, postToGame]);
   sendInitRef.current = sendInit;
 
   /** Applies purchase balance. */
@@ -273,7 +221,8 @@ export function PlayHostApp({
     authSnapshot,
     bridgeUser,
     locale,
-    services,
+    race: authority.race,
+    identity: authority.identity,
     initialRaceChallengeId,
     raceLocalePolicy,
     applyCoinBalance,
@@ -307,34 +256,27 @@ export function PlayHostApp({
     [onAuthoritativeRaceResult, onResultScreen],
   );
 
-  /** Provides router behavior. */
-  const router = useMemo(
+  /** Provides hosted-play command behavior. */
+  const commands = useMemo(
     () =>
-      createHostMessageRouter(
-        createPlayHostMessageHandlers({
-          authSnapshot,
-          gameMode,
-          locale,
-          services,
-          loadedUserIdRef,
-          playableReportedRef,
-          setFrameReady,
-          setNotice,
-          sendInit,
-          loadAndPostRiddle,
-          postOperation,
+      createHostedPlayCommandModule({
+        session: {authSnapshot, gameMode, locale, loadedUserIdRef, playableReportedRef, accountDeletionCompletedRef},
+        delivery: {setFrameReady, setNotice, sendInit, loadAndPostRiddle, postOperation},
+        execution: {
+          authority,
           runRaceOperation,
           withServerActivity,
           applyPurchaseBalance,
           syncRaceAchievementProgress,
+        },
+        callbacks: {
           onPlayable,
           onAuthoritativeComplete: handleAuthoritativeComplete,
           onAuthoritativeRaceResult: handleAuthoritativeRaceResult,
           onAccountDeleted,
           onAccountDeletionRequested,
-          accountDeletionCompletedRef,
-        }),
-      ),
+        },
+      }),
     [
       applyPurchaseBalance,
       authSnapshot.profile,
@@ -351,14 +293,14 @@ export function PlayHostApp({
       postOperation,
       runRaceOperation,
       sendInit,
-      services,
+      authority,
       syncRaceAchievementProgress,
       withServerActivity,
     ],
   );
 
   /** Stable local message routing and document visibility projection. */
-  useHostBridgeLifecycle({router, postToGame, setNotice});
+  useHostBridgeLifecycle({router: commands.execute, postToGame, setNotice});
 
   useEffect(() => {
     if (!authSnapshot.user) {

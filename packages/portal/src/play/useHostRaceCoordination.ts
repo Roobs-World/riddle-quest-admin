@@ -6,6 +6,7 @@ import type {Locale} from "./i18n";
 import {createRequestId} from "./requestIds";
 import {isRaceTo10Enabled} from "./race/logic/raceFeatureFlag";
 import type {AuthSnapshot, HostServices} from "./types";
+import type {HostAuthorityModules} from "./HostAuthorityModules";
 
 /** Result fields that can change profile state after a multiplayer operation. */
 export type RaceProgressResult = Readonly<{
@@ -23,8 +24,10 @@ type HostRaceCoordinationOptions = Readonly<{
   bridgeUser: AuthSnapshot["user"];
   /** Current game locale. */
   locale: Locale;
-  /** Target-neutral host services. */
-  services: HostServices;
+  /** Present race authority, absent for a Capability Gap. */
+  race: HostAuthorityModules["race"];
+  /** Profile authority shared with authenticated host state. */
+  identity: Pick<HostServices, "loadProfile">;
   /** Challenge deep link, which makes category preloading unnecessary. */
   initialRaceChallengeId?: string;
   /** Locale eligibility policy supplied by the active target. */
@@ -52,7 +55,8 @@ export function useHostRaceCoordination({
   authSnapshot,
   bridgeUser,
   locale,
-  services,
+  race,
+  identity,
   initialRaceChallengeId,
   raceLocalePolicy,
   applyCoinBalance,
@@ -75,15 +79,15 @@ export function useHostRaceCoordination({
     /** Prevents stale requests from updating a changed session or locale. */
     let cancelled = false;
     setPrefetchedCategories([]);
-    if (!enabled || !authSnapshot.user || (raceLocalePolicy === "english-only" && locale !== "en")) return;
+    if (!enabled || !race || !authSnapshot.user || (raceLocalePolicy === "english-only" && locale !== "en")) return;
 
-    void services
+    void race
       .getRaceAccess()
       .then(async (access) => {
         if (!access.enabled || cancelled || initialRaceChallengeId) return;
         try {
           /** Categories returned for the current locale. */
-          const response = await services.listRaceCategories(locale);
+          const response = await race.listRaceCategories(locale);
           if (!cancelled) setPrefetchedCategories(response.categories);
         } catch (error) {
           console.warn("[riddle-quest-race-prefetch] Unable to preload categories", error);
@@ -96,7 +100,7 @@ export function useHostRaceCoordination({
     return () => {
       cancelled = true;
     };
-  }, [authSnapshot.user, enabled, initialRaceChallengeId, locale, raceLocalePolicy, services]);
+  }, [authSnapshot.user, enabled, initialRaceChallengeId, locale, race, raceLocalePolicy]);
 
   /** Reconciles multiplayer rewards and refreshes the authoritative profile. */
   const syncProgress = useCallback(
@@ -111,7 +115,7 @@ export function useHostRaceCoordination({
       if (!user) return;
       try {
         /** Fresh profile after the server applies all rewards. */
-        const profile = await services.loadProfile(user.uid);
+        const profile = await identity.loadProfile(user.uid);
         replaceProfile(profile);
         postToGame({
           type: "host:authState",
@@ -122,7 +126,7 @@ export function useHostRaceCoordination({
         console.warn("[riddle-quest-race-achievements] Profile refresh failed", error);
       }
     },
-    [applyCoinBalance, authSnapshot.user, bridgeUser, postToGame, replaceProfile, services],
+    [applyCoinBalance, authSnapshot.user, bridgeUser, identity, postToGame, replaceProfile],
   );
 
   return {enabled, prefetchedCategories, syncProgress};

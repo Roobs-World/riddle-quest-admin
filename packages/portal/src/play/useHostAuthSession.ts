@@ -7,7 +7,7 @@ import type {AuthSnapshot, HostServices} from "./types";
 /** Configuration owned by the authenticated host-session module. */
 type HostAuthSessionOptions = Readonly<{
   /** Target-neutral host services providing the authentication subscription. */
-  services: HostServices;
+  services: Pick<HostServices, "auth">;
   /** Profile restored from target persistence while the server profile loads. */
   initialProfile?: BridgeProfile | null;
   /** Whether the active target has completed platform registration. */

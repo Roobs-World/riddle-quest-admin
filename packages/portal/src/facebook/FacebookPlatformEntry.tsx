@@ -22,6 +22,8 @@ import {settleFacebookPause, settleFacebookPresenceResume} from "./settleFaceboo
 import {reconcilePresenceOptIn} from "../presence/reconcilePresenceOptIn";
 import {startOptionalPresence} from "../presence/startOptionalPresence";
 import {createHostServices, getHostConfigurationWarning, resolveHostServicesMode} from "../play/services";
+import {PlayerProjectionPersistence} from "../platform/PlayerProjectionPersistence";
+import {createHostedPlaySession} from "../play/HostedPlaySession";
 
 /** Describes startup state. */
 type StartupState =
@@ -58,8 +60,7 @@ export function FacebookPlatformEntry() {
   const [presenceEnabled, setPresenceEnabled] = useState(false);
   /** Provides [presence available, set presence available] behavior. */
   const [presenceAvailable, setPresenceAvailable] = useState(false);
-  /** Provides player data ref behavior. */
-  const playerDataRef = useRef<PlayerData | null>(null);
+  const playerPersistenceRef = useRef<PlayerProjectionPersistence | null>(null);
   /** Provides preferences ref behavior. */
   const preferencesRef = useRef<Awaited<ReturnType<PlatformSession["storage"]["readPreferences"]>>>({});
   /** Provides presence ref behavior. */
@@ -200,10 +201,8 @@ export function FacebookPlatformEntry() {
           if (!deletionGateRef.current.isOpen()) return;
           void deletionGateRef.current
             .run(async () => {
-              /** Provides next behavior. */
-              const next = {...preferencesRef.current, ...change};
-              await session.storage.writePreferences(next);
-              await session.storage.flush();
+              const next = await playerPersistenceRef.current?.updatePreferences(change);
+              if (!next) return;
               preferencesRef.current = next;
             })
             .catch((error) => {
@@ -332,7 +331,11 @@ export function FacebookPlatformEntry() {
         }
         /** Provides player data behavior. */
         const playerData = await session.storage.readPlayerData();
-        playerDataRef.current = playerData;
+        playerPersistenceRef.current = new PlayerProjectionPersistence(
+          session.storage,
+          playerData,
+          preferencesRef.current,
+        );
         unsubscribePause = session.capabilities.lifecycle?.onPause(() =>
           settleFacebookPause({
             flushStorage: () => session.storage.flush(),
@@ -365,16 +368,9 @@ export function FacebookPlatformEntry() {
     async (update: PlayerDataUpdate) => {
       if (startup.status !== "ready" || !deletionGateRef.current.isOpen()) return;
       await deletionGateRef.current.run(async () => {
-        /** Provides next behavior. */
-        const next: PlayerData = {
-          ...(playerDataRef.current ?? {}),
-          ...update,
-          schemaVersion: 1,
-          updatedAt: Date.now(),
-        };
-        playerDataRef.current = next;
-        await startup.session.storage.writePlayerData(next);
-        await startup.session.storage.flush();
+        const persistence = playerPersistenceRef.current;
+        if (!persistence) return;
+        await persistence.update(update);
       });
     },
     [startup],
@@ -389,8 +385,7 @@ export function FacebookPlatformEntry() {
       .run(async () => {
         /** Provides preferences behavior. */
         const preferences = {...preferencesRef.current, presenceEnabled: next};
-        await startup.session.storage.writePreferences(preferences);
-        await startup.session.storage.flush();
+        await playerPersistenceRef.current?.updatePreferences({presenceEnabled: next});
         /** Provides presence behavior. */
         const presence = presenceRef.current;
         await reconcilePresenceOptIn({
@@ -423,15 +418,15 @@ export function FacebookPlatformEntry() {
     if (startup.status !== "ready") return;
     deletionGateRef.current.close();
     await presenceRef.current?.stop();
-    await startup.session.storage.flush();
+    await playerPersistenceRef.current?.closeAndFlush();
   }, [startup]);
 
   /** Completes account deletion. */
   const completeAccountDeletion = useCallback(async () => {
     if (startup.status !== "ready") return;
-    await startup.session.storage.clear();
+    await playerPersistenceRef.current?.clear();
+    playerPersistenceRef.current = null;
     clearBrowserPlayerState();
-    playerDataRef.current = null;
     preferencesRef.current = {};
     setPresenceEnabled(false);
     setPresenceAvailable(false);
@@ -511,19 +506,21 @@ export function FacebookPlatformEntry() {
   }
   return (
     <PlayHostApp
-      hostServices={hostServices}
-      hostConfigurationWarning={hostConfigurationWarning}
-      platformCapabilities={startup.session.capabilities}
-      platformPlayerId={startup.session.playerId}
-      initialPlayerData={startup.playerData}
-      onPlayerDataChange={(update) => void writePlayerData(update)}
-      accountDeletionServiceGate={deletionGateRef.current}
+      session={createHostedPlaySession({
+        hostServices,
+        hostConfigurationWarning,
+        platformCapabilities: startup.session.capabilities,
+        platformPlayerId: startup.session.playerId,
+        initialPlayerData: startup.playerData,
+        onPlayerDataChange: (update) => void writePlayerData(update),
+        accountDeletionServiceGate: deletionGateRef.current,
+        presenceEnabled,
+        onTogglePresence: presenceAvailable ? togglePresence : undefined,
+        raceLocalePolicy: "all",
+        onPresenceStateChange: setPresenceState,
+      })}
       onAccountDeletionRequested={requestAccountDeletion}
       onAccountDeleted={completeAccountDeletion}
-      presenceEnabled={presenceEnabled}
-      onTogglePresence={presenceAvailable ? togglePresence : undefined}
-      raceLocalePolicy="all"
-      onPresenceStateChange={setPresenceState}
       onResultScreen={showResultInterstitial}
       onAuthoritativeComplete={handleAuthoritativeCompletion}
       onAuthoritativeRaceResult={handleAuthoritativeRaceResult}
