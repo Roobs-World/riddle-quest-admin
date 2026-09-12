@@ -79,16 +79,27 @@ it("runs identity, Firebase auth and recovery in startup order", async () => {
   expect(platform.progress).toEqual([5, 15, 28, 42, 58, 72]);
 });
 
-it("checks incomplete purchases even when identity exchange fails later in startup", async () => {
+it("grants and completes incomplete purchases before a later identity exchange failure", async () => {
   /** Provides platform behavior. */
   const platform = new MockJestPlatform();
   platform.player.registered = true;
   platform.getIncompletePurchases = jest.fn(async () => ({
     status: "success" as const,
-    value: {purchases: [], purchasesSigned: "signed-purchases", hasMore: false},
+    value: {
+      purchases: [{purchaseToken: "pending-token", productSku: "com.roobsworld.riddlequest.coinpack1"}],
+      purchasesSigned: "signed-purchases",
+      hasMore: false,
+    },
   }));
+  platform.completePurchase = jest.fn(async () => ({status: "success" as const, value: undefined}));
   /** Provides backend behavior. */
   const backend = {
+    grantPurchase: jest.fn(async () => ({
+      granted: true,
+      purchaseToken: "pending-token",
+      coinsAwarded: 250,
+      newCoins: 250,
+    })),
     exchangeIdentity: async () => {
       throw new Error("simulator identity unavailable");
     },
@@ -104,6 +115,8 @@ it("checks incomplete purchases even when identity exchange fails later in start
   ).resolves.toMatchObject({status: "retryable-failure"});
 
   expect(platform.getIncompletePurchases).toHaveBeenCalledTimes(1);
+  expect(backend.grantPurchase).toHaveBeenCalledWith("signed-purchases", platform.player.playerId, "pending-token");
+  expect(platform.completePurchase).toHaveBeenCalledWith("pending-token");
 });
 
 it("stops startup when the incomplete-purchase check fails", async () => {
@@ -121,6 +134,87 @@ it("stops startup when the incomplete-purchase check fails", async () => {
   ).resolves.toEqual({status: "retryable-failure", message: "purchase recovery unavailable"});
 
   expect(backend.exchangeIdentity).not.toHaveBeenCalled();
+});
+
+it("continues urgent recovery when an empty first page reports more purchases", async () => {
+  /** Provides platform behavior. */
+  const platform = new MockJestPlatform();
+  platform.getIncompletePurchases = jest.fn(async () => ({
+    status: "success" as const,
+    value: {purchases: [], purchasesSigned: "signed-purchases", hasMore: true},
+  }));
+  /** Provides reconcile behavior. */
+  const reconcile = jest.fn(async () => ({status: "success" as const, value: 1}));
+  /** Provides with account operation behavior. */
+  const withAccountOperation = jest.fn(async (operation: () => Promise<unknown>) => operation());
+
+  await startJestSession(
+    platform,
+    {exchangeIdentity: async () => Promise.reject(new Error("stop after recovery"))} as never,
+    {reconcile} as never,
+    async () => undefined,
+    undefined,
+    {withAccountOperation},
+  );
+
+  expect(withAccountOperation).toHaveBeenCalledTimes(1);
+  expect(reconcile).toHaveBeenCalledWith(platform.player.playerId, {
+    purchases: [],
+    purchasesSigned: "signed-purchases",
+    hasMore: true,
+  });
+});
+
+it("stops startup when urgent purchase recovery cannot complete", async () => {
+  /** Provides platform behavior. */
+  const platform = new MockJestPlatform();
+  platform.getIncompletePurchases = jest.fn(async () => ({
+    status: "success" as const,
+    value: {
+      purchases: [{purchaseToken: "pending-token", productSku: "com.roobsworld.riddlequest.coinpack1"}],
+      purchasesSigned: "signed-purchases",
+      hasMore: false,
+    },
+  }));
+  /** Provides backend behavior. */
+  const backend = {exchangeIdentity: jest.fn()};
+
+  await expect(
+    startJestSession(
+      platform,
+      backend as never,
+      {reconcile: async () => ({status: "retryable-failure", message: "grant unavailable"})} as never,
+      async () => undefined,
+    ),
+  ).resolves.toEqual({status: "retryable-failure", message: "grant unavailable"});
+
+  expect(backend.exchangeIdentity).not.toHaveBeenCalled();
+});
+
+it("does not run successful urgent recovery a second time after authentication", async () => {
+  /** Provides platform behavior. */
+  const platform = new MockJestPlatform();
+  platform.getIncompletePurchases = jest.fn(async () => ({
+    status: "success" as const,
+    value: {
+      purchases: [{purchaseToken: "pending-token", productSku: "com.roobsworld.riddlequest.coinpack1"}],
+      purchasesSigned: "signed-purchases",
+      hasMore: false,
+    },
+  }));
+  /** Provides reconcile behavior. */
+  const reconcile = jest.fn(async () => ({status: "success" as const, value: 1}));
+
+  await expect(
+    startJestSession(
+      platform,
+      {exchangeIdentity: async () => ({customToken: "firebase", uid: "uid"})} as never,
+      {reconcile} as never,
+      async () => undefined,
+    ),
+  ).resolves.toMatchObject({status: "success"});
+
+  expect(reconcile).toHaveBeenCalledTimes(1);
 });
 
 it("drains cross-tab identity authentication before authoritative deletion", async () => {

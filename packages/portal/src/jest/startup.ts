@@ -151,11 +151,24 @@ export async function startJestSession(
     /** Provides [signed, player data] behavior. */
     const [signed, playerData] = await Promise.all([signedPromise, playerDataPromise]);
     // Read the first recovery page before optional profile and identity work so
-    // Jest can always observe the required startup check. Grants remain deferred
-    // until authoritative identity and account-deletion checks have succeeded.
+    // Jest can always observe the required startup check.
     /** Stores the first recovery page read before optional startup work. */
     const initialIncompletePurchases = await platform.getIncompletePurchases();
     if (initialIncompletePurchases.status !== "success") return initialIncompletePurchases;
+    // A non-empty signed recovery envelope lets the backend verify ownership,
+    // grant idempotently, and enforce the canonical account-deletion guard.
+    // Complete pending work before optional startup work so a later identity or
+    // profile failure cannot strand a purchase this launch already discovered.
+    /** Provides urgent recovery behavior. */
+    const urgentRecovery =
+      initialIncompletePurchases.value.purchases.length > 0 || initialIncompletePurchases.value.hasMore;
+    /** Provides reconcile behavior. */
+    const reconcile = () => purchases.reconcile(signed.player.playerId, initialIncompletePurchases.value);
+    if (urgentRecovery) {
+      /** Provides recovered behavior. */
+      const recovered = options.withAccountOperation ? await options.withAccountOperation(reconcile) : await reconcile();
+      if (recovered.status !== "success") return recovered;
+    }
     /** Provides profile behavior. */
     let profile: JestSession["profile"] = null;
 
@@ -202,11 +215,11 @@ export async function startJestSession(
     }
     reportJestLoadingProgress(platform, phaseProgress[4]);
 
-    /** Provides reconcile behavior. */
-    const reconcile = () => purchases.reconcile(signed.player.playerId, initialIncompletePurchases.value);
-    /** Provides recovered behavior. */
-    const recovered = options.withAccountOperation ? await options.withAccountOperation(reconcile) : await reconcile();
-    if (recovered.status !== "success") return recovered;
+    if (!urgentRecovery) {
+      /** Provides recovered behavior. */
+      const recovered = options.withAccountOperation ? await options.withAccountOperation(reconcile) : await reconcile();
+      if (recovered.status !== "success") return recovered;
+    }
 
     reportJestLoadingProgress(platform, phaseProgress[5]);
     if (!firebaseUid) throw new Error("jest-firebase-uid-missing");
