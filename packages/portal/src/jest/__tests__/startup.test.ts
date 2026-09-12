@@ -80,12 +80,14 @@ it("runs identity, Firebase auth and recovery in startup order", async () => {
 });
 
 it("checks incomplete purchases even when identity exchange fails later in startup", async () => {
+  /** Provides platform behavior. */
   const platform = new MockJestPlatform();
   platform.player.registered = true;
   platform.getIncompletePurchases = jest.fn(async () => ({
     status: "success" as const,
     value: {purchases: [], purchasesSigned: "signed-purchases", hasMore: false},
   }));
+  /** Provides backend behavior. */
   const backend = {
     exchangeIdentity: async () => {
       throw new Error("simulator identity unavailable");
@@ -105,11 +107,13 @@ it("checks incomplete purchases even when identity exchange fails later in start
 });
 
 it("stops startup when the incomplete-purchase check fails", async () => {
+  /** Provides platform behavior. */
   const platform = new MockJestPlatform();
   platform.getIncompletePurchases = jest.fn(async () => ({
     status: "retryable-failure" as const,
     message: "purchase recovery unavailable",
   }));
+  /** Provides backend behavior. */
   const backend = {exchangeIdentity: jest.fn()};
 
   await expect(

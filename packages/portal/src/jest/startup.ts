@@ -153,6 +153,7 @@ export async function startJestSession(
     // Read the first recovery page before optional profile and identity work so
     // Jest can always observe the required startup check. Grants remain deferred
     // until authoritative identity and account-deletion checks have succeeded.
+    /** Stores the first recovery page read before optional startup work. */
     const initialIncompletePurchases = await platform.getIncompletePurchases();
     if (initialIncompletePurchases.status !== "success") return initialIncompletePurchases;
     /** Provides profile behavior. */

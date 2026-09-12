@@ -4,6 +4,21 @@ import {DEFAULT_PRODUCT_PRICING} from "@qwordly/core/pricing/catalog";
 import type {ProductSummary} from "../play/types";
 import {captureBrowserException} from "../observability/browserErrorReporter";
 
+/** Represents a page read from Jest's incomplete-purchase recovery queue. */
+type IncompletePurchasePage = {
+  /** Purchases returned by the startup recovery check. */
+  purchases: Array<{
+    /** Stable token used for idempotent grant and completion. */
+    purchaseToken: string;
+    /** Catalog SKU associated with the recovered purchase. */
+    productSku: string;
+  }>;
+  /** Signed envelope covering the startup recovery page. */
+  purchasesSigned: string;
+  /** Whether Jest has another recovery page available. */
+  hasMore: boolean;
+};
+
 /** Indicates whether is currency. */
 const isCurrency = (value: string) => /^[A-Z]{3}$/.test(value);
 
@@ -197,14 +212,7 @@ export class JestPurchaseCoordinator {
   /** Provides reconcile behavior. */
   async reconcile(
     playerId: string,
-    initialPage?: {
-      /** Purchases returned by the startup recovery check. */
-      purchases: Array<{purchaseToken: string; productSku: string}>;
-      /** Signed envelope covering the startup recovery page. */
-      purchasesSigned: string;
-      /** Whether Jest has another recovery page available. */
-      hasMore: boolean;
-    },
+    initialPage?: IncompletePurchasePage,
   ): Promise<PlatformResult<number>> {
     /** Provides count behavior. */
     let count = 0;

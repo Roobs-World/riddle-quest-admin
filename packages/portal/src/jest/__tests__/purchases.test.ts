@@ -75,6 +75,7 @@ it("paginates and completes every recovered purchase", async () => {
 });
 
 it("consumes a startup recovery page before requesting the next page", async () => {
+  /** Provides platform behavior. */
   const platform = new MockJestPlatform();
   platform.getIncompletePurchases = jest.fn(async () => ({
     status: "success" as const,
@@ -85,6 +86,7 @@ it("consumes a startup recovery page before requesting the next page", async () 
     },
   }));
   platform.completePurchase = jest.fn(async () => ({status: "success" as const, value: undefined}));
+  /** Provides backend behavior. */
   const backend = {
     grantPurchase: jest.fn(async () => ({
       granted: true,
