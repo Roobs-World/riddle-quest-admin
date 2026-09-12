@@ -140,6 +140,10 @@ export async function startJestSession(
     if (await options.onInitialized?.()) return {status: "account-deleted"};
     onProgress?.({stage: "player", progress: phaseProgress[1]});
     reportJestLoadingProgress(platform, phaseProgress[1]);
+    // Read the plain player projection explicitly: Jest's launch checklist
+    // records getPlayer() independently from the signed backend envelope.
+    /** Provides player behavior. */
+    const player = platform.getPlayer();
     /** Provides signed promise behavior. */
     const signedPromise = platform.getPlayerSigned();
     /** Provides entry intent behavior. */
@@ -163,7 +167,7 @@ export async function startJestSession(
     const urgentRecovery =
       initialIncompletePurchases.value.purchases.length > 0 || initialIncompletePurchases.value.hasMore;
     /** Provides reconcile behavior. */
-    const reconcile = () => purchases.reconcile(signed.player.playerId, initialIncompletePurchases.value);
+    const reconcile = () => purchases.reconcile(player.playerId, initialIncompletePurchases.value);
     if (urgentRecovery) {
       /** Provides recovered behavior. */
       const recovered = options.withAccountOperation ? await options.withAccountOperation(reconcile) : await reconcile();
@@ -172,7 +176,7 @@ export async function startJestSession(
     /** Provides profile behavior. */
     let profile: JestSession["profile"] = null;
 
-    if (signed.player.registered) {
+    if (player.registered) {
       reportJestLoadingProgress(platform, phaseProgress[2]);
       onProgress?.({stage: "progress", progress: phaseProgress[2]});
       try {
@@ -228,7 +232,7 @@ export async function startJestSession(
       status: "success",
       value: {
         firebaseUid,
-        player: signed.player,
+        player,
         profile,
         entryIntent,
         preferences,

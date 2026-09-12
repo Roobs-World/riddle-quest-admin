@@ -15,6 +15,10 @@ it("runs identity, Firebase auth and recovery in startup order", async () => {
     order.push("init");
     return {status: "success", value: undefined};
   };
+  platform.getPlayer = () => {
+    order.push("player");
+    return platform.player;
+  };
   platform.getPlayerSigned = async () => {
     order.push("signed");
     return {player: platform.player, playerSigned: "signed"};
@@ -67,6 +71,7 @@ it("runs identity, Firebase auth and recovery in startup order", async () => {
   });
   expect(order).toEqual([
     "init",
+    "player",
     "signed",
     "preferences",
     "playerData",

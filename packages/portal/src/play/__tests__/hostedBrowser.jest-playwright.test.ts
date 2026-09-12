@@ -980,7 +980,12 @@ describeBrowser("standalone Jest browser game", () => {
         .getByRole("button", {name: /buy coins/i})
         .first()
         .click();
-      expect(await registeredPage.locator(".shop-subscription-card").count()).toBe(0);
+      await registeredPage.locator(".shop-subscription-card").waitFor();
+      expect(await registeredPage.locator(".game-shop-grid").innerText()).toMatch(/riddle quest premium/i);
+      await registeredPage.locator(".shop-subscription-card").getByRole("button", {name: /start free trial/i}).click();
+      await registeredPage.locator(".game-modal").waitFor({state: "detached"});
+      await registeredPage.getByRole("button", {name: /buy coins/i}).first().click();
+      await registeredPage.locator(".shop-subscription-card").waitFor({state: "detached"});
       expect(await registeredPage.locator(".game-shop-grid").innerText()).not.toMatch(/riddle quest premium/i);
       await registeredPage
         .locator(".game-shop-grid article:not(.shop-subscription-card)")

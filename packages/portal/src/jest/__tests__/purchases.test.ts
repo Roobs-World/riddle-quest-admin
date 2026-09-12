@@ -179,7 +179,7 @@ it("uses only backend-verified subscription status in the shop catalog", async (
   });
 });
 
-it("hides an equivalent inactive subscription when another cadence is active", async () => {
+it("never re-offers an active subscription or an equivalent blocked cadence", async () => {
   /** Provides platform behavior. */
   const platform = new MockJestPlatform(true);
   platform.getSubscriptions = async () => ({
@@ -206,6 +206,16 @@ it("hides an equivalent inactive subscription when another cadence is active", a
           status: "inactive",
           trialEligible: true,
         },
+        {
+          sku: "supporter-monthly",
+          displayName: "Supporter monthly",
+          displayDescription: null,
+          price: 1.99,
+          currency: "USD",
+          billingPeriod: "monthly",
+          status: "inactive",
+          trialEligible: false,
+        },
       ],
       subscriptionsSigned: "catalog.signed",
     },
@@ -226,8 +236,9 @@ it("hides an equivalent inactive subscription when another cadence is active", a
     status: "success",
     value: [
       expect.objectContaining({
-        productId: "premium-monthly",
-        subscriptionStatus: "active",
+        productId: "supporter-monthly",
+        description: "",
+        subscriptionStatus: "inactive",
       }),
     ],
   });

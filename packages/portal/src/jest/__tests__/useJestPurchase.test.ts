@@ -310,7 +310,6 @@ describe("useJestPurchase", () => {
     /** Provides update behavior. */
     const update = setProducts.mock.calls[0][0] as (current: ProductSummary[]) => ProductSummary[];
     expect(update(products)).toEqual([
-      {...monthly, subscriptionStatus: "active", trialEligible: false},
       {...supporter, subscriptionStatus: "inactive", trialEligible: false},
       consumable,
     ]);

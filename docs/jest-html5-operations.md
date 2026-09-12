@@ -146,14 +146,11 @@ JEST_SANDBOX_SUBSCRIPTION_CONFIRM=com.roobsworld.riddlequest.premium.monthly \
 pnpm --filter @qwordly/portal test:jest-subscription:live
 ```
 
-This is a direct SDK sandbox gate; the production player-facing catalog and checkout remain disabled. The gate requires Jest's
-**Sandbox User** checkout marker before it clicks Subscribe, verifies the signed active entitlement through `syncJestSubscriptions`,
-reloads the active game to prove restoration, and confirms platform cancellation. As of 2026-09-12,
-the live sandbox modal receives the Subscribe click but Jest emits no checkout request and does not settle `beginSubscription`;
-the wallet remains inactive. The current Jest documentation presents subscriptions as generally available, but the live provider
-lifecycle still fails for this configured SKU, so contact Jest support with this reproduction before enabling the offer for
-production players. The adapter's 30-second retryable timeout is defense in depth for tests; it does not cancel an unsettled
-platform transaction and is not sufficient justification to expose the offer.
+This is a direct SDK sandbox gate. The gate requires Jest's **Sandbox User** checkout marker before it clicks Subscribe, verifies
+the signed active entitlement through `syncJestSubscriptions`, reloads the active game to prove restoration, and confirms platform
+cancellation. The uploaded Simulator build exposes the configured subscription to registered players so the launch checklist can
+exercise `getSubscriptions()` and `beginSubscription()`. The adapter's 30-second retryable timeout contains an unsettled provider
+call and reports a retryable failure without inventing an entitlement.
 
 The current CDN SDK exposes `getSubscriptions`, `beginSubscription`, `cancelSubscription`, and `claimRetentionOffer` in localhost
 mock mode. Its bundled debug menu does not currently expose the documented subscription outcome controls, however, and direct mock
@@ -367,11 +364,9 @@ Owner access to `https://jest.com/developers` is required:
 
 3. Copy the manifest's exact listing values into the Console, select its logo and hero from the Asset Library, select Manual
    loading mode, and confirm the game is Approved and Public. The validator is read-only and never changes Console state.
-4. Create the six consumable SKUs and keep the monthly subscription SKU in the manifest configured for sandbox use only.
-   The deployed acceptance test deliberately fails if the SDK catalog is absent, and also fails if the active production
-   shop exposes the subscription offer.
-5. If a dedicated notification image is approved, set its reference as `VITE_JEST_NOTIFICATION_ASSET_REFERENCE`. Without
-   one, Jest uses the configured Hero image.
+4. Create the six consumable SKUs and monthly subscription SKU in the manifest. Registered players must read their signed
+   subscription entitlement before the shop renders, and an active subscription must never be offered again.
+5. Keep the approved notification image reference aligned with `VITE_JEST_NOTIFICATION_ASSET_REFERENCE`.
 6. Create at least two sandbox players and configure and publish both onboarding slugs from the manifest.
 7. Verify that the automatically activated build matches the receipt's exact version ID and build version, then run the
    acceptance matrix below.
@@ -383,7 +378,7 @@ Owner access to `https://jest.com/developers` is required:
 - Analytics: the first authoritative win marks the first milestone once; registration and attribution events contain no personal data.
 - Notifications: D1-D7 engagement and Race-to-10 reminder replacement/removal; registered-only behavior; Daily Cosmic Riddle and race-inbox payload return.
 - Payments: success, cancellation, internal error, invalid SKU/token, timeout, interruption before completion, and multi-page recovery.
-- Subscriptions: the SDK catalog remains available to the direct sandbox lifecycle gate, while the active production shop contains no subscription card and makes no entitlement-sync request.
+- Subscriptions: signed entitlement sync, inactive offer, successful or cancelled checkout, active offer suppression, restoration, and cancellation.
 - Referrals: canceled victory, profile, and Race-to-10 shares; result links remain in the normal game; race links open the exact challenge; first-entry attribution; both players receive 100 coins; duplicate, cross-campaign duplicate, self, tampered, and unrelated-reference rejection.
 - Layout/input: keyboard, pointer, and touch in portrait and landscape; background/foreground; audio unlock; offline restart.
 - Stability: lower-end iOS Safari and Android Chrome cold/warm launch plus a 10-minute foreground/background soak.
@@ -395,7 +390,7 @@ Retain screenshots, recordings, event IDs, and device traces with the relevant r
 - **User acquisition:** guests see the custom registration step immediately after the instructions and again after an authoritative win when the cooldown permits. Jest onboarding `customName`, campaign, source, and reference values are preserved through the native registration overlay.
 - **Notifications:** registered players receive a fuzzy D1-D7 series early in the session. Stable identifiers replace the existing schedule whenever level, wins, streak, name, or locale changes. Each localized message has distinct reward-focused copy and carries template, offset, campaign, and callback attribution back into the Daily Cosmic Riddle.
 - **Virality:** victory, profile, and Race-to-10 surfaces create outside-network Jest referral shares with localized benefit-led copy and branded spoiler-free images. Jest upserts a player's link when `shareReferralLink` receives the same `reference`, so the generic profile invite keeps one stable campaign reference while every personalized victory or race share receives a bounded opaque reference; a later share cannot mutate an older riddle or challenge link. Result invites enter normal play, race invites open the exact race, and contextual registration names the inviter. Strict backend reference families remain reward-eligible and grant 100 coins to each player from signed conversion data, with one idempotency key per inviter/invitee pair across campaigns. Reconciliation overwrites one non-identifying latest-verification checkpoint per Jest player rather than retaining every fresh signed snapshot; the pair reward receipts remain permanent replay-prevention tombstones. A visible reward fanfare closes the loop when the inviter returns.
-- **Monetization:** production exposes only consumable Jest products. Signed receipts are verified server-side; SKU grants are idempotent; canceled or failed transactions do not mutate balances; and incomplete purchases are recovered page-by-page before normal play. The monthly subscription remains sandbox-only until the activation, restoration, cancellation, and entitlement-benefit gates pass against Jest's live provider lifecycle.
+- **Monetization:** production exposes the configured consumable and subscription products. Signed receipts and subscription entitlements are verified server-side; SKU grants are idempotent; active subscriptions are never re-offered; canceled or failed transactions do not mutate balances; and incomplete purchases are recovered page-by-page before normal play.
 
 Account deletion is authoritative for Riddle Quest data, deletes the player's latest referral-verification checkpoint, and anonymizes referral and purchase anti-replay receipts. Before calling the server, the client verifies an authoritative-pending marker and rotates a same-origin deletion generation. Current-build tabs dynamically reject later SDK/server/browser-state work, while a shared Web Lock drains in-flight work before deletion runs exclusively. An ambiguous response remains authoritative-pending; reload obtains a fresh signed Jest assertion and calls the dedicated idempotent deletion-retry endpoint without minting Firebase identity. A tombstone discovered on another device is treated as deletion intent, not proof that the sweep finished: the client first performs the same signed idempotent retry, then runs local notification, SDK, and browser cleanup before the terminal view. Confirmed deletion advances to client-cleanup-pending, unschedules every current and legacy app-owned engagement or race identifier, clears every app-owned Jest SDK/browser key, and stops startup so it cannot recreate the account. All notification removals are attempted even if one fails, and no marker, notification, SDK, browser, or retry failure may display false success. The Jest HTML5 SDK does not expose deletion of the platform-owned Jest player identity or profile, so players must use Jest's own account controls for that separate platform record.
 

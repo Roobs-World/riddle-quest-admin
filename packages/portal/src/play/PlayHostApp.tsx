@@ -85,6 +85,8 @@ export function PlayHostApp({
   const locale = useLocale();
   /** Provides session id ref behavior. */
   const sessionIdRef = useRef(createRequestId("session"));
+  /** Tracks the product catalog most recently projected into the game frame. */
+  const sentProductsRef = useRef<readonly import("./types").ProductSummary[] | undefined>(undefined);
   /** Provides configuration warning behavior. */
   const configurationWarning = hostConfigurationWarning;
   /** Provides [frame ready, set frame ready] behavior. */
@@ -205,6 +207,18 @@ export function PlayHostApp({
     });
   }, [authSnapshot.profile, authority.commerce, bridgeUser, gameMode, locale, postToGame]);
   sendInitRef.current = sendInit;
+
+  // Catalog reads and subscription activation finish asynchronously. Re-send
+  // host state whenever that catalog identity changes so an open or reopened
+  // paywall cannot retain an offer the player now owns.
+  useEffect(() => {
+    if (!frameReady) return;
+    /** Provides products behavior. */
+    const products = authority.commerce?.products;
+    if (sentProductsRef.current === products) return;
+    sentProductsRef.current = products;
+    sendInit();
+  }, [authority.commerce, frameReady, sendInit]);
 
   /** Applies purchase balance. */
   const applyPurchaseBalance = useCallback(

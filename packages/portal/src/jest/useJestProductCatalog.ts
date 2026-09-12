@@ -20,7 +20,7 @@ export function useJestProductCatalog({
   purchases: JestPurchaseCoordinator;
   /** Stores session. */
   session: JestSession | null;
-  /** Enables the subscription offer only in trusted test runtimes. */
+  /** Enables the Jest subscription entitlement and offer catalog. */
   subscriptionsEnabled?: boolean;
   /** Stores track funnel. */
   trackFunnel: TrackFunnel;

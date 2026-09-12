@@ -69,9 +69,6 @@ export function JestPlayApp() {
   });
   /** Provides {auth harness, mock backend: mock runtime} behavior. */
   const {authHarness, mockBackend: mockRuntime} = runtimeMode;
-  // Subscription checkout is beta and currently stalls in Jest's live sandbox.
-  // Keep the UI available in local development, but never expose it from an
-  // uploaded production artifact until the release gate is deliberately changed.
   /** Provides subscriptions enabled behavior. */
   const subscriptionsEnabled = shouldEnableJestSubscriptions(import.meta.env.DEV);
   /** Provides mock registered behavior. */

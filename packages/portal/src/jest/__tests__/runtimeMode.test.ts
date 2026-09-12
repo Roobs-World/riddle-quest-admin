@@ -58,8 +58,8 @@ it("does not let production query parameters enable a mock backend", () => {
   });
 });
 
-it("keeps subscriptions disabled in the normal uploaded production runtime", () => {
-  expect(shouldEnableJestSubscriptions(false)).toBe(false);
+it("enables subscriptions in the normal uploaded production runtime", () => {
+  expect(shouldEnableJestSubscriptions(false)).toBe(true);
 });
 
 it("retains subscription coverage in local development", () => {

@@ -68,6 +68,8 @@ type AuthHarnessState = {
     body?: string;
     /** Stores cta text. */
     ctaText?: string;
+    /** Stores asset reference. */
+    assetReference?: string;
     /** Stores entry payload. */
     entryPayload?: Record<string, string>;
   }>;
@@ -527,8 +529,10 @@ describeBrowser("Jest authentication integration", () => {
     /** Provides state behavior. */
     const state = await getHarnessState(page);
     expect(state.calls).toContain("sdk.init");
+    expect(state.calls).toContain("sdk.getPlayer");
     expect(state.calls).toContain("sdk.getPlayerSigned");
-    expect(state.calls.indexOf("sdk.init")).toBeLessThan(state.calls.indexOf("sdk.getPlayerSigned"));
+    expect(state.calls.indexOf("sdk.init")).toBeLessThan(state.calls.indexOf("sdk.getPlayer"));
+    expect(state.calls.indexOf("sdk.getPlayer")).toBeLessThan(state.calls.indexOf("sdk.getPlayerSigned"));
     expect(state.backendExchanges).toEqual(["signed:jest-auth-player-stable:false"]);
     expect(state.firebaseTokens).toEqual(["mock"]);
     expect(state.profileReads).toBe(0);
@@ -638,6 +642,7 @@ describeBrowser("Jest authentication integration", () => {
           identifier: "riddle-quest-d1-v3",
           scheduledInDays: 1,
           priority: "medium",
+          assetReference: "riddle-q-notification",
           entryPayload: expect.objectContaining({
             gameMode: "challenge",
             reference: "notification_d1_v4",
@@ -656,6 +661,7 @@ describeBrowser("Jest authentication integration", () => {
         }),
       ]),
     );
+    expect((await getHarnessState(page)).calls).toContain("sdk.payments.getSubscriptions");
     await page.evaluate(() =>
       window.dispatchEvent(
         new CustomEvent("riddle-quest:share-referral", {

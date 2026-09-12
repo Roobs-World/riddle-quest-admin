@@ -24,7 +24,7 @@ export function useJestPurchase({
   session: JestSession | null;
   /** Stores set products. */
   setProducts: Dispatch<SetStateAction<ProductSummary[]>>;
-  /** Enables subscription checkout only in trusted test runtimes. */
+  /** Enables the Jest subscription catalog and checkout. */
   subscriptionsEnabled?: boolean;
   /** Stores track funnel. */
   trackFunnel: TrackFunnel;
@@ -65,12 +65,15 @@ export function useJestPurchase({
         }
         setProducts((current) =>
           current
-            .filter((candidate) => !subscribed.value.blockedSkus.includes(candidate.productId))
+            .filter(
+              (candidate) =>
+                candidate.productId !== subscribed.value.activeSku &&
+                !subscribed.value.blockedSkus.includes(candidate.productId),
+            )
             .map((candidate) =>
               candidate.productType === "subscription"
                 ? {
                     ...candidate,
-                    subscriptionStatus: candidate.productId === productId ? "active" : candidate.subscriptionStatus,
                     trialEligible: false,
                   }
                 : candidate,

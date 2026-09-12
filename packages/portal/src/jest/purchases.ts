@@ -91,7 +91,8 @@ export class JestPurchaseCoordinator {
     return {
       status: "success",
       value: result.value.subscriptions.flatMap((subscription) => {
-        if (blockedSkus.has(subscription.sku)) return [];
+        // An active entitlement is account state, not a product to sell again.
+        if (activeSkus.has(subscription.sku) || blockedSkus.has(subscription.sku)) return [];
         if (
           !Number.isFinite(subscription.price) ||
           !isCurrency(subscription.currency) ||
@@ -113,7 +114,7 @@ export class JestPurchaseCoordinator {
             price: subscription.price,
             currency: subscription.currency,
             billingPeriod: subscription.billingPeriod,
-            subscriptionStatus: activeSkus.has(subscription.sku) ? ("active" as const) : ("inactive" as const),
+            subscriptionStatus: "inactive" as const,
             trialEligible: subscription.trialEligible,
           },
         ];

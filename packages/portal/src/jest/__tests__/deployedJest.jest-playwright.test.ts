@@ -357,10 +357,10 @@ describeDeployed("deployed Jest sandbox game", () => {
       return result.subscriptions.map(({sku}) => sku);
     });
     expect(subscriptionSkus).toContain(expectedSubscriptionSku);
-    // Keep the SKU configured for explicit sandbox lifecycle tests, but never
-    // expose the beta offer in the active production player's shop.
-    expect(await game.locator(".shop-subscription-card").count()).toBe(0);
-    expect([...successfulFunctions]).not.toContain("syncJestSubscriptions");
+    // The inactive offer is production-visible only after its signed
+    // entitlement has been verified by the backend.
+    expect(await game.locator(".shop-subscription-card").count()).toBe(1);
+    expect([...successfulFunctions]).toContain("syncJestSubscriptions");
   });
 });
 

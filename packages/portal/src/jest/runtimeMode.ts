@@ -10,8 +10,8 @@ export type JestRuntimeMode = {
   useSdkPlatform: boolean;
 };
 
-/** Keeps subscription offers out of production until the live provider lifecycle gate passes. */
-export const shouldEnableJestSubscriptions = (development: boolean): boolean => development;
+/** Enables the configured Jest subscription lifecycle in both Simulator and local development. */
+export const shouldEnableJestSubscriptions = (_development: boolean): boolean => true;
 
 /** Resolves jest runtime mode. */
 export function resolveJestRuntimeMode({
