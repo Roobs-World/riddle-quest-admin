@@ -449,6 +449,7 @@ export function JestPlayApp() {
           registrationInviterName: session.entryIntent.inviterName,
           platformProducts: jestProducts,
           platformPurchase: purchaseProduct,
+          raceAvailable: true,
           platformCapabilities: {
             accountUpgrade: {
               state: session.player.registered ? "complete" : "available",

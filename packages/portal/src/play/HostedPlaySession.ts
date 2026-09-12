@@ -57,6 +57,8 @@ export type HostedPlaySessionInput = Omit<HostedPlaySession, "services" | "autho
   accountDeletionServiceGate?: AccountDeletionServiceGate;
   /** Stores economy available. */
   economyAvailable?: boolean;
+  /** Indicates whether the target exposes backend race authority. */
+  raceAvailable?: boolean;
 };
 
 /** Describes session authority assembly. */
@@ -71,6 +73,8 @@ type SessionAuthorityAssembly = Readonly<{
   capabilities: PlatformCapabilities | undefined;
   /** Stores economy available. */
   economyAvailable: boolean | undefined;
+  /** Stores race available. */
+  raceAvailable: boolean | undefined;
   /** Stores services. */
   services: HostServices;
   /** Stores authority. */
@@ -91,7 +95,8 @@ const assembleAuthority = (input: HostedPlaySessionInput): SessionAuthorityAssem
         entry.purchase === input.platformPurchase &&
         entry.gate === input.accountDeletionServiceGate &&
         entry.capabilities === input.platformCapabilities &&
-        entry.economyAvailable === input.economyAvailable,
+        entry.economyAvailable === input.economyAvailable &&
+        entry.raceAvailable === input.raceAvailable,
     );
   if (cached) return cached;
   /** Provides configured behavior. */
@@ -111,12 +116,14 @@ const assembleAuthority = (input: HostedPlaySessionInput): SessionAuthorityAssem
     gate: input.accountDeletionServiceGate,
     capabilities: input.platformCapabilities,
     economyAvailable: input.economyAvailable,
+    raceAvailable: input.raceAvailable,
     services,
     authority: createHostAuthorityModules(
       services,
       input.platformCapabilities,
       input.platformPurchase !== undefined,
       input.economyAvailable ?? true,
+      input.raceAvailable,
     ),
   };
   /** Provides entries behavior. */

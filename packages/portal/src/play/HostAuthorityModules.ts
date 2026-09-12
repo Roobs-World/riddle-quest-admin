@@ -10,12 +10,14 @@ export type HostAuthorityModules = Readonly<{
     HostServices,
     "loadRiddle" | "loadProfile" | "completeGame" | "submitGuess" | "skipRiddle"
   >;
+  /** Read-only public ranking authority available independently of account management. */
+  leaderboard: Pick<HostServices, "loadLeaderboard">;
   /** Stores economy. */
   economy?: Pick<HostServices, "requestHint" | "spendCoins">;
   /** Stores commerce. */
   commerce?: Pick<HostServices, "requestPurchase" | "products">;
   /** Stores account. */
-  account?: Pick<HostServices, "updateUsername" | "updateAvatar" | "deleteAccount" | "loadLeaderboard">;
+  account?: Pick<HostServices, "updateUsername" | "updateAvatar" | "deleteAccount">;
   /** Stores race. */
   race?: Pick<
     HostServices,
@@ -43,17 +45,17 @@ export function createHostAuthorityModules(
   capabilities: PlatformCapabilities | undefined,
   commerceAvailable = capabilities?.commerce !== undefined,
   economyAvailable = true,
+  raceAvailable = Boolean(capabilities?.matchmaking || capabilities?.tournaments || capabilities?.contextBoard),
 ): HostAuthorityModules {
   /** Provides authenticated behavior. */
   const authenticated = capabilities?.accountUpgrade?.state === "complete";
   return {
     identity: services,
     gameplay: services,
+    leaderboard: services,
     ...(economyAvailable ? {economy: services} : {}),
     ...(commerceAvailable ? {commerce: services} : {}),
     ...(authenticated ? {account: services} : {}),
-    ...(capabilities?.matchmaking || capabilities?.tournaments || capabilities?.contextBoard
-      ? {race: services}
-      : {}),
+    ...(raceAvailable ? {race: services} : {}),
   };
 }

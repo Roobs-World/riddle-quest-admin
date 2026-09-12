@@ -8,6 +8,7 @@ describe("host authority modules", () => {
     const modules = createHostAuthorityModules(createRedditGuestHostServices(), {}, false, false);
 
     expect(modules.gameplay).toBeDefined();
+    expect(modules.leaderboard).toBeDefined();
     expect(modules.commerce).toBeUndefined();
     expect(modules.economy).toBeUndefined();
     expect(modules.race).toBeUndefined();

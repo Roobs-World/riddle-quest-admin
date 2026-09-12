@@ -350,9 +350,10 @@ export const createPlayHostMessageHandlers = ({
   loadLeaderboard: async (message) => {
     try {
       /** Provides entries behavior. */
-      const account = requireAuthority(authority.account, "host-account-capability-unavailable");
       /** Provides entries behavior. */
-      const entries = await withServerActivity(() => account.loadLeaderboard(message.payload.leaderboardType));
+      const entries = await withServerActivity(() =>
+        authority.leaderboard.loadLeaderboard(message.payload.leaderboardType),
+      );
       postOperation(message.requestId, "leaderboard", true, {
         type: message.payload.leaderboardType,
         entries,
