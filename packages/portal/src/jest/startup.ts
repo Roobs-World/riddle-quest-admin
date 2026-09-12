@@ -150,6 +150,11 @@ export async function startJestSession(
     const playerDataPromise = platform.readPlayerData();
     /** Provides [signed, player data] behavior. */
     const [signed, playerData] = await Promise.all([signedPromise, playerDataPromise]);
+    // Read the first recovery page before optional profile and identity work so
+    // Jest can always observe the required startup check. Grants remain deferred
+    // until authoritative identity and account-deletion checks have succeeded.
+    const initialIncompletePurchases = await platform.getIncompletePurchases();
+    if (initialIncompletePurchases.status !== "success") return initialIncompletePurchases;
     /** Provides profile behavior. */
     let profile: JestSession["profile"] = null;
 
@@ -197,7 +202,7 @@ export async function startJestSession(
     reportJestLoadingProgress(platform, phaseProgress[4]);
 
     /** Provides reconcile behavior. */
-    const reconcile = () => purchases.reconcile(signed.player.playerId);
+    const reconcile = () => purchases.reconcile(signed.player.playerId, initialIncompletePurchases.value);
     /** Provides recovered behavior. */
     const recovered = options.withAccountOperation ? await options.withAccountOperation(reconcile) : await reconcile();
     if (recovered.status !== "success") return recovered;

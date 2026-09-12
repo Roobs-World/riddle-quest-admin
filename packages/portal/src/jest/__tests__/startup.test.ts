@@ -1,4 +1,5 @@
 import {MockJestPlatform} from "../MockJestPlatform";
+import {JestPurchaseCoordinator} from "../purchases";
 import {createNotificationOperationGate, type NotificationCrossContextLock} from "../notifications/operationGate";
 import {markJestPlayable, startJestSession, stopJestLoadingHeartbeat} from "../startup";
 
@@ -76,6 +77,31 @@ it("runs identity, Firebase auth and recovery in startup order", async () => {
     "recover",
   ]);
   expect(platform.progress).toEqual([5, 15, 28, 42, 58, 72]);
+});
+
+it("checks incomplete purchases even when identity exchange fails later in startup", async () => {
+  const platform = new MockJestPlatform();
+  platform.player.registered = true;
+  platform.getIncompletePurchases = jest.fn(async () => ({
+    status: "success" as const,
+    value: {purchases: [], purchasesSigned: "signed-purchases", hasMore: false},
+  }));
+  const backend = {
+    exchangeIdentity: async () => {
+      throw new Error("simulator identity unavailable");
+    },
+  };
+
+  await expect(
+    startJestSession(
+      platform,
+      backend as never,
+      new JestPurchaseCoordinator(platform, backend as never),
+      async () => undefined,
+    ),
+  ).resolves.toMatchObject({status: "retryable-failure"});
+
+  expect(platform.getIncompletePurchases).toHaveBeenCalledTimes(1);
 });
 
 it("drains cross-tab identity authentication before authoritative deletion", async () => {

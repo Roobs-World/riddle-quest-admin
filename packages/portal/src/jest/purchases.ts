@@ -195,12 +195,25 @@ export class JestPurchaseCoordinator {
   }
 
   /** Provides reconcile behavior. */
-  async reconcile(playerId: string): Promise<PlatformResult<number>> {
+  async reconcile(
+    playerId: string,
+    initialPage?: {
+      /** Purchases returned by the startup recovery check. */
+      purchases: Array<{purchaseToken: string; productSku: string}>;
+      /** Signed envelope covering the startup recovery page. */
+      purchasesSigned: string;
+      /** Whether Jest has another recovery page available. */
+      hasMore: boolean;
+    },
+  ): Promise<PlatformResult<number>> {
     /** Provides count behavior. */
     let count = 0;
     for (let page = 0; page < 100; page += 1) {
       /** Provides result behavior. */
-      const result = await this.platform.getIncompletePurchases();
+      const result =
+        page === 0 && initialPage
+          ? ({status: "success", value: initialPage} as const)
+          : await this.platform.getIncompletePurchases();
       if (result.status !== "success") return result;
       for (const purchase of result.value.purchases) {
         try {

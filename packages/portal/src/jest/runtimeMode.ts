@@ -10,7 +10,7 @@ export type JestRuntimeMode = {
   useSdkPlatform: boolean;
 };
 
-/** Keeps beta subscription offers out of every uploaded production artifact runtime. */
+/** Keeps subscription offers out of production until the live provider lifecycle gate passes. */
 export const shouldEnableJestSubscriptions = (development: boolean): boolean => development;
 
 /** Resolves jest runtime mode. */

@@ -24,7 +24,7 @@ export function useJestPurchase({
   session: JestSession | null;
   /** Stores set products. */
   setProducts: Dispatch<SetStateAction<ProductSummary[]>>;
-  /** Enables the beta subscription checkout only in trusted test runtimes. */
+  /** Enables subscription checkout only in trusted test runtimes. */
   subscriptionsEnabled?: boolean;
   /** Stores track funnel. */
   trackFunnel: TrackFunnel;

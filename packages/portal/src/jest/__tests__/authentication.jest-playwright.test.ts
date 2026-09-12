@@ -290,11 +290,14 @@ const installJestSdkHarness = async (page: Page, scenario = "success") => {
           state.calls.push("sdk.payments.getProducts:end");
           return [];
         },
-        getIncompletePurchases: async () => ({
-          purchases: [],
-          purchasesSigned: "signed-purchases",
-          hasMore: false,
-        }),
+        getIncompletePurchases: async () => {
+          state.calls.push("sdk.payments.getIncompletePurchases");
+          return {
+            purchases: [],
+            purchasesSigned: "signed-purchases",
+            hasMore: false,
+          };
+        },
         completePurchase: async () => ({result: "success"}),
         beginPurchase: async () => ({result: "cancel"}),
         getSubscriptions: async () => {
@@ -1404,6 +1407,9 @@ describeBrowser("Jest authentication integration", () => {
     await page.getByRole("heading", {name: /startup failed/i}).waitFor({timeout: 15_000});
     expect(await page.getByText(message).isVisible()).toBe(true);
     expect(await page.getByRole("button", {name: /retry/i}).isVisible()).toBe(true);
+    if (scenario === "identity-failure") {
+      expect((await getHarnessState(page)).calls).toContain("sdk.payments.getIncompletePurchases");
+    }
     await context.close();
   });
 

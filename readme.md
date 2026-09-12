@@ -118,8 +118,8 @@ After changing browser values, rebuild the game. Vite values are compile-time se
 
 Recurring subscriptions are intentionally fail-closed in every uploaded production build. Local development and focused unit tests
 retain the subscription UI, while the direct live sandbox script exercises the configured SDK SKU. Do not expose the offer
-to production players until Jest approves beta production use and the full activation, restoration, cancellation, and entitlement
-benefit lifecycle passes.
+to production players until the full activation, restoration, cancellation, and entitlement-benefit lifecycle passes against
+Jest's live sandbox checkout.
 
 Google Analytics is disabled in uploaded Jest builds: the dedicated environment has no measurement ID, startup does not import the Firebase Analytics adapter, the event sink defaults closed, pre-consent events are discarded, and the production CSP does not authorize GA or Tag Manager endpoints. Do not add a measurement ID or initialize collection until an owner-approved consent/opt-out design has been implemented and tested for every supported audience. If that work is later authorized, do not add player names, riddle answers, guesses, email addresses, Jest player IDs, or purchase tokens to event parameters.
 
@@ -201,7 +201,7 @@ Repository values and Developer Console values must agree.
 
 1. Select Manual loading mode. The game reports meaningful progress and calls `markGameLoaded()` when input is available.
 2. Configure the game ID and copy its shared secret into Firebase Secret Manager.
-3. Create each enabled consumable with the exact SKU used by the backend catalog. Keep the beta subscription SKU configured only for the direct sandbox gate; normal uploaded builds hide it from the player-facing catalog.
+3. Create each enabled consumable with the exact SKU used by the backend catalog. Keep the subscription SKU configured for the direct sandbox gate; normal uploaded builds hide it from the player-facing catalog until the live lifecycle gate passes.
 4. Upload and approve the logo, Hero image, and any notification asset. Notification imagery should use the current Jest-recommended ratio.
 5. Create at least two sandbox users for purchases and referral conversion testing.
 6. Keep direct-to-game registration and onboarding payloads compatible with `customName`, campaign, reference, challenge, and UTM entry fields.

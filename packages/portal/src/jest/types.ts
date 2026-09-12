@@ -235,7 +235,7 @@ export type JestNotificationSchedule = JestNotificationContent &
  */
 export interface JestPlatformPort {
   /**
-   * Initializes the provider SDK with automatic login reminders disabled.
+   * Initializes the provider SDK with automatic login reminders active.
    *
    * @returns `success` when SDK APIs are ready, otherwise a normalized failure.
    */
