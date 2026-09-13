@@ -159,13 +159,11 @@ export function GuidanceOverlay({
     /** Provides modal element behavior. */
     const modalElement = document.querySelector<HTMLElement>(".game-modal");
     if (modalElement && activeTooltip) {
-      modalElement.inert = true;
       modalElement.setAttribute("aria-hidden", "true");
     }
     return () => {
       onActiveChange?.(false);
       if (modalElement) {
-        modalElement.inert = false;
         modalElement.removeAttribute("aria-hidden");
       }
     };

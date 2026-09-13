@@ -682,6 +682,7 @@ describeBrowser("standalone Jest browser game", () => {
       /** Provides profile tour headings behavior. */
       const profileTourHeadings: string[] = [];
       for (let step = 0; step < 8; step += 1) {
+        expect(await page.locator(".modal-profile").getAttribute("inert")).toBeNull();
         expect(
           await page.locator(".tooltip-backdrop").evaluate((element) => {
             /** Captures all overlay effects that could obscure the profile page. */
