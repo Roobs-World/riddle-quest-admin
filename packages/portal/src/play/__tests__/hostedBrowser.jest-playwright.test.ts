@@ -190,6 +190,28 @@ describeBrowser("standalone Jest browser game", () => {
       ).toBe("left");
       expect(welcomeAction!.width).toBeGreaterThanOrEqual(200);
       expect(welcomeAction!.y + welcomeAction!.height).toBeLessThanOrEqual(welcomeCard!.y + welcomeCard!.height);
+      await page.setViewportSize({width: 390, height: 600});
+      /** Captures compact welcome spacing against the visible logo crop. */
+      const compactWelcomeLayout = await page.locator(".onboarding-card-welcome").evaluate((card) => {
+        /** Captures the welcome logo bounds in the compact Jest viewport. */
+        const logo = card.querySelector(".onboarding-logo")!.getBoundingClientRect();
+        /** Captures the compact welcome description paragraphs. */
+        const paragraphs = card.querySelectorAll("p");
+        /** Captures the first compact description bounds. */
+        const first = paragraphs[0].getBoundingClientRect();
+        /** Captures the last compact description bounds. */
+        const last = paragraphs[paragraphs.length - 1].getBoundingClientRect();
+        /** Captures the compact welcome action bounds. */
+        const action = card.querySelector(".play-primary")!.getBoundingClientRect();
+        return {
+          gapDifference: Math.abs(first.top - logo.bottom - (action.top - last.bottom)),
+          logoAspectRatio: logo.width / logo.height,
+        };
+      });
+      expect(compactWelcomeLayout.gapDifference).toBeLessThanOrEqual(1);
+      expect(compactWelcomeLayout.logoAspectRatio).toBeGreaterThanOrEqual(5.16);
+      expect(compactWelcomeLayout.logoAspectRatio).toBeLessThanOrEqual(5.27);
+      await page.setViewportSize({width: 390, height: 844});
       await page.keyboard.press("Tab");
       /** Provides focused onboarding action behavior. */
       const focusedOnboardingAction = page.locator(":focus");

@@ -79,8 +79,11 @@
 }
 .onboarding-card-welcome .onboarding-logo {
   width: min(460px, calc(100% + 20px));
+  aspect-ratio: 845 / 162;
   max-width: none;
   max-height: none;
+  object-fit: cover;
+  object-position: center;
 }
 .onboarding-card-welcome p {
   width: min(390px, 100%);
