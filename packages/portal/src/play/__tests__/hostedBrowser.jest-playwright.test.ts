@@ -975,15 +975,18 @@ describeBrowser("standalone Jest browser game", () => {
             };
           }),
         ).toEqual({documentFits: true, surfacesFit: true});
-        expect(
-          await page.locator(".riddle-card h1").evaluate((heading) => {
-            /** Captures the riddle text bounds. */
-            const text = heading.getBoundingClientRect();
-            /** Captures the background card bounds. */
-            const card = heading.parentElement!.getBoundingClientRect();
-            return Math.abs(text.top + text.height / 2 - (card.top + card.height / 2));
-          }),
-        ).toBeLessThanOrEqual(1);
+        /** Captures the font-relative optical offset after pixel rounding. */
+        const riddleOpticalOffset = await page.locator(".riddle-card h1").evaluate((heading) => {
+          /** Captures the riddle text bounds. */
+          const text = heading.getBoundingClientRect();
+          /** Captures the background card bounds. */
+          const card = heading.parentElement!.getBoundingClientRect();
+          /** Captures the rendered riddle font size. */
+          const fontSize = Number.parseFloat(getComputedStyle(heading).fontSize);
+          return (text.top + text.height / 2 - (card.top + card.height / 2)) / fontSize;
+        });
+        expect(riddleOpticalOffset).toBeGreaterThanOrEqual(-0.3);
+        expect(riddleOpticalOffset).toBeLessThanOrEqual(-0.18);
       }
       await page.setViewportSize({width: 1280, height: 800});
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);

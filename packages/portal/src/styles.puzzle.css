@@ -54,6 +54,7 @@
 .riddle-surface h1 {
   max-width: 760px;
   margin: 0;
+  transform: translateY(-0.25em);
   text-align: center;
   color: #171717;
   font:
