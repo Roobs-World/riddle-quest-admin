@@ -12,6 +12,7 @@
   },
   "WebPortal": {
     "APP_TITLE": "Riddle Quest",
+    "JEST_APP_TITLE": "Riddle-Q",
     "HTML5_BADGE": "Portal jugable HTML5",
     "EMAIL_LABEL": "Correo",
     "PASSWORD_LABEL": "Contrasena",

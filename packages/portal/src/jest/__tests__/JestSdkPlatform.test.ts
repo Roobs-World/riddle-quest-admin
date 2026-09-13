@@ -405,7 +405,7 @@ it("uses the global SDK by default and initializes it safely", async () => {
   /** Provides platform behavior. */
   const platform = new JestSdkPlatform();
   await expect(platform.init()).resolves.toEqual({status: "success", value: undefined});
-  expect(mock.init).toHaveBeenCalledWith();
+  expect(mock.init).toHaveBeenCalledWith({autoLoginReminders: false});
   expect(platform.getPlayer()).toEqual({playerId: "p1", registered: false});
   platform.getPlayerSigned();
   expect(mock.getPlayerSigned).toHaveBeenCalled();
@@ -434,7 +434,7 @@ it("resolves the global SDK lazily when it appears after construction", async ()
   target.JestSDK = mock;
 
   await expect(platform.init()).resolves.toEqual({status: "success", value: undefined});
-  expect(mock.init).toHaveBeenCalledWith();
+  expect(mock.init).toHaveBeenCalledWith({autoLoginReminders: false});
   target.JestSDK = original;
 });
 

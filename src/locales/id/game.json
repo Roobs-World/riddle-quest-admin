@@ -12,6 +12,7 @@
   },
   "WebPortal": {
     "APP_TITLE": "Riddle Quest",
+    "JEST_APP_TITLE": "Riddle-Q",
     "HTML5_BADGE": "Portal HTML5 yang bisa dimainkan",
     "EMAIL_LABEL": "Email pengguna",
     "PASSWORD_LABEL": "Kata sandi",

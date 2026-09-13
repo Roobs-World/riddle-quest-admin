@@ -118,14 +118,14 @@ export class JestSdkPlatform implements JestPlatformPort {
   }
 
   /**
-   * Waits for the independently loaded SDK and keeps Jest's automatic registration reminders active.
+   * Waits for the independently loaded SDK and disables duplicate platform registration reminders.
    *
    * @returns `success` once SDK calls are safe, or a normalized provider/load failure.
    */
   async init() {
     try {
       if (this.usesGlobalSdk) this.sdk = await waitForGlobalJestSdk(this.sdkLoadTimeoutMs);
-      await this.sdk.init();
+      await this.sdk.init({autoLoginReminders: false});
       return success(undefined);
     } catch (error) {
       return failure(error);

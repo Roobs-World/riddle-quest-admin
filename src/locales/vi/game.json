@@ -12,6 +12,7 @@
   },
   "WebPortal": {
     "APP_TITLE": "Riddle Quest",
+    "JEST_APP_TITLE": "Riddle-Q",
     "HTML5_BADGE": "Cổng HTML5 có thể chơi",
     "EMAIL_LABEL": "Email người chơi",
     "PASSWORD_LABEL": "Mật khẩu",

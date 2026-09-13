@@ -151,7 +151,7 @@ export function JestPlayApp() {
     mockRuntime,
     session,
     engagementProgress,
-    gameTitle: tr("WebPortal.APP_TITLE"),
+    gameTitle: tr("WebPortal.JEST_APP_TITLE"),
     playerFallback: tr("WebPortal.NOTIFICATION_PLAYER_FALLBACK"),
     fallbackCopy: notificationFallbackCopy,
     assetReference: import.meta.env.VITE_JEST_NOTIFICATION_ASSET_REFERENCE || undefined,

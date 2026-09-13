@@ -12,6 +12,7 @@
   },
   "WebPortal": {
     "APP_TITLE": "Riddle Quest",
+    "JEST_APP_TITLE": "Riddle-Q",
     "HTML5_BADGE": "HTML5 플레이 포털",
     "EMAIL_LABEL": "이메일",
     "PASSWORD_LABEL": "비밀번호",
