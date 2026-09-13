@@ -47,6 +47,9 @@ const completeOnboardingAndTours = async (page: Page, checkTooltipAccessibility 
     }),
   ).toBeLessThanOrEqual(1);
   await letsPlay.click();
+  expect(
+    await page.locator(".guidance-backdrop").evaluate((element) => getComputedStyle(element).backdropFilter),
+  ).toBe("none");
   await page.getByRole("button", {name: /got it/i}).click();
   /** Provides guest continue behavior. */
   const guestContinue = page.getByRole("button", {name: /play as guest/i});
