@@ -255,8 +255,8 @@
   width: min(760px, 100%);
   justify-self: center;
   display: grid;
-  gap: 5px;
-  padding-bottom: 8px;
+  gap: 2px;
+  padding-bottom: 2px;
 }
 .keyboard > div {
   display: flex;
@@ -265,7 +265,7 @@
 }
 .key {
   width: min(52px, 8vw);
-  height: 48px;
+  height: 40px;
   border: 0;
   background: transparent;
   color: #fff;

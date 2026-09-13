@@ -31,6 +31,17 @@ const completeOnboardingAndTours = async (page: Page, checkTooltipAccessibility 
   await letsPlay.waitFor();
   await page.waitForFunction(() => document.activeElement?.matches(".onboarding-card .play-primary"));
   expect(await letsPlay.evaluate((button) => document.activeElement === button)).toBe(true);
+  expect(
+    await page.locator(".onboarding-card-welcome").evaluate((card) => {
+      /** Measures the title, description, and button spacing. */
+      const title = card.querySelector(".onboarding-logo")!.getBoundingClientRect();
+      const paragraphs = card.querySelectorAll("p");
+      const first = paragraphs[0].getBoundingClientRect();
+      const last = paragraphs[paragraphs.length - 1].getBoundingClientRect();
+      const button = card.querySelector(".play-primary")!.getBoundingClientRect();
+      return Math.abs(first.top - title.bottom - (button.top - last.bottom));
+    }),
+  ).toBeLessThanOrEqual(1);
   await letsPlay.click();
   await page.getByRole("button", {name: /got it/i}).click();
   /** Provides guest continue behavior. */
@@ -62,6 +73,12 @@ const completeOnboardingAndTours = async (page: Page, checkTooltipAccessibility 
   expect(spotlightBox!.x).toBeLessThan(coinButtonBox!.x);
   expect(spotlightBox!.x + spotlightBox!.width).toBeGreaterThan(coinButtonBox!.x + coinButtonBox!.width);
   for (let step = 0; step < 4; step += 1) {
+    expect(
+      await page.locator(".tooltip-backdrop").evaluate((element) => {
+        const style = getComputedStyle(element);
+        return {filter: style.backdropFilter, background: style.backgroundColor, image: style.backgroundImage};
+      }),
+    ).toEqual({filter: "none", background: "rgba(0, 0, 0, 0)", image: "none"});
     await page.getByRole("button", {name: /got it/i}).click();
   }
 };
@@ -516,7 +533,8 @@ describeBrowser("standalone Jest browser game", () => {
       });
       expect(compactLayout.documentHeight).toBeLessThanOrEqual(569);
       expect(compactLayout.navigationBottom).toBeLessThanOrEqual(569);
-      expect(compactLayout.keyHeight).toBeGreaterThanOrEqual(44);
+      expect(compactLayout.keyHeight).toBeGreaterThanOrEqual(32);
+      expect(compactLayout.keyHeight).toBeLessThanOrEqual(40);
       expect(compactLayout.keyboardWidth).toBeLessThan(compactLayout.gameAreaWidth);
       expect(compactLayout.scale).toBeGreaterThanOrEqual(0.92);
       expect(await compactPage.getByRole("region", {name: /virtual keyboard/i}).isVisible()).toBe(true);
@@ -634,6 +652,19 @@ describeBrowser("standalone Jest browser game", () => {
       /** Provides profile tour headings behavior. */
       const profileTourHeadings: string[] = [];
       for (let step = 0; step < 8; step += 1) {
+        expect(
+          await page.locator(".tooltip-backdrop").evaluate((element) => {
+            /** Captures all overlay effects that could obscure the profile page. */
+            const style = getComputedStyle(element);
+            const spotlight = element.querySelector(".tooltip-spotlight");
+            return {
+              filter: style.backdropFilter,
+              background: style.backgroundColor,
+              image: style.backgroundImage,
+              dimsOutsideSpotlight: spotlight ? getComputedStyle(spotlight).boxShadow.includes("9999px") : false,
+            };
+          }),
+        ).toEqual({filter: "none", background: "rgba(0, 0, 0, 0)", image: "none", dimsOutsideSpotlight: false});
         profileTourHeadings.push(await page.locator(".tooltip-card h3").innerText());
         await page
           .locator(".tooltip-card")
@@ -871,7 +902,13 @@ describeBrowser("standalone Jest browser game", () => {
           );
         }),
       ).toBe(true);
+      // Clear the transient reward notice before measuring the riddle on its own.
+      await page.keyboard.press("a");
+      await page.locator(".game-notice").waitFor({state: "hidden"});
       for (const viewport of [
+        {width: 390, height: 844},
+        {width: 390, height: 600},
+        {width: 844, height: 390},
         {width: 280, height: 480},
         {width: 768, height: 1024},
         {width: 844, height: 501},
@@ -907,6 +944,15 @@ describeBrowser("standalone Jest browser game", () => {
             };
           }),
         ).toEqual({documentFits: true, surfacesFit: true});
+        expect(
+          await page.locator(".riddle-card h1").evaluate((heading) => {
+            /** Captures the riddle text bounds. */
+            const text = heading.getBoundingClientRect();
+            /** Captures the background card bounds. */
+            const card = heading.parentElement!.getBoundingClientRect();
+            return Math.abs(text.top + text.height / 2 - (card.top + card.height / 2));
+          }),
+        ).toBeLessThanOrEqual(1);
       }
       await page.setViewportSize({width: 1280, height: 800});
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);

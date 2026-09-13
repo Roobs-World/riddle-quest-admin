@@ -46,7 +46,7 @@ export function TooltipOverlay({
   const bodyId = `guidance-tooltip-${activeTooltip}-body`;
 
   return (
-    <div className="tooltip-backdrop" role="presentation">
+    <div className="tooltip-backdrop" role="presentation" data-tooltip-id={activeTooltip}>
       {targetRect ? (
         <div
           className="tooltip-spotlight"
