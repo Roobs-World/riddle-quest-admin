@@ -49,7 +49,6 @@ export function JestAccountDeleted() {
       <div role="status">
         <h1>{tr("Profile.DELETE_ACCOUNT_SUCCESS_TITLE")}</h1>
         <p>{tr("Profile.DELETE_ACCOUNT_SUCCESS_MESSAGE")}</p>
-        <button onClick={() => window.location.reload()}>{tr("Navigation.PLAY_BUTTON")}</button>
       </div>
     </main>
   );

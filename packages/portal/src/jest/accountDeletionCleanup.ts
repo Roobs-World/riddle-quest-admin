@@ -5,6 +5,8 @@ import type {JestPlatformPort} from "./types";
 
 /** Browser marker retained until all app-owned post-deletion state has been purged. */
 export const ACCOUNT_DELETION_CLEANUP_PENDING_KEY = "riddleQuest:accountDeletionCleanupPending";
+/** Player identity owning the durable deletion marker. */
+export const ACCOUNT_DELETION_PENDING_PLAYER_KEY = "riddleQuest:accountDeletionPendingPlayer";
 /** Monotonic deletion generation permanently quiesces tabs that predate a deletion request. */
 export const ACCOUNT_DELETION_EPOCH_KEY = "riddleQuest:accountDeletionEpoch";
 /** Durable phases distinguish requested server deletion from post-server client cleanup. */
@@ -63,6 +65,31 @@ export const isAccountDeletionCleanupPending = (): boolean => getAccountDeletion
 /** Returns the deletion generation captured by cross-tab operation gates. */
 export const getAccountDeletionEpoch = (): string | null => safeBrowserStorageGet("local", ACCOUNT_DELETION_EPOCH_KEY);
 
+/**
+ * Drops a player-scoped marker after the Jest simulator replaces its player.
+ * Legacy unscoped markers remain fail-closed and require one-time site-data cleanup.
+ */
+export function discardAccountDeletionForDifferentPlayer(playerId: string): boolean {
+  /** Provides marked player ids behavior. */
+  const markedPlayerIds = CLEANUP_MARKER_STORAGE_AREAS.map((area) =>
+    safeBrowserStorageGet(area, ACCOUNT_DELETION_PENDING_PLAYER_KEY),
+  ).filter((value): value is string => Boolean(value));
+  if (!isAccountDeletionCleanupPending() || markedPlayerIds.length === 0 || markedPlayerIds.includes(playerId)) {
+    return false;
+  }
+  CLEANUP_MARKER_STORAGE_AREAS.forEach((area) => {
+    try {
+      /** Provides storage behavior. */
+      const storage = getCleanupMarkerStorage(area);
+      storage.removeItem(ACCOUNT_DELETION_CLEANUP_PENDING_KEY);
+      storage.removeItem(ACCOUNT_DELETION_PENDING_PLAYER_KEY);
+    } catch {
+      // Verification below keeps a restricted storage boundary fail-closed.
+    }
+  });
+  return !isAccountDeletionCleanupPending();
+}
+
 /** Minimal cross-tab gate used to serialize startup identity with deletion authority. */
 type AccountDeletionStartupGate = {
   /** Returns whether this tab may still begin player operations. */
@@ -112,7 +139,7 @@ export async function completeTombstonedAccountDeletion(
   retryAuthoritativeDeletion: (playerSigned: string) => Promise<void>,
   clearFirebaseAuthentication?: () => Promise<void>,
 ): Promise<void> {
-  if (getAccountDeletionPendingPhase() === null) markAccountDeletionRequested();
+  if (getAccountDeletionPendingPhase() === null) markAccountDeletionRequested(platform.getPlayer().playerId);
   await gate.runExclusive(async () => {
     /** Provides phase behavior. */
     const phase = getAccountDeletionPendingPhase();
@@ -138,7 +165,10 @@ const getCleanupMarkerStorage = (area: CleanupMarkerStorageArea): Storage =>
   area === "local" ? globalThis.localStorage : globalThis.sessionStorage;
 
 /** Persists and verifies a reload marker before any fallible client cleanup starts. */
-const persistAccountDeletionCleanupMarker = (phase: AccountDeletionPendingPhase): CleanupMarkerStorageArea[] => {
+const persistAccountDeletionCleanupMarker = (
+  phase: AccountDeletionPendingPhase,
+  playerId: string,
+): CleanupMarkerStorageArea[] => {
   /** Provides persisted behavior. */
   const persisted: CleanupMarkerStorageArea[] = [];
   /** Provides failures behavior. */
@@ -148,7 +178,11 @@ const persistAccountDeletionCleanupMarker = (phase: AccountDeletionPendingPhase)
       /** Provides storage behavior. */
       const storage = getCleanupMarkerStorage(area);
       storage.setItem(ACCOUNT_DELETION_CLEANUP_PENDING_KEY, phase);
-      if (storage.getItem(ACCOUNT_DELETION_CLEANUP_PENDING_KEY) !== phase) {
+      storage.setItem(ACCOUNT_DELETION_PENDING_PLAYER_KEY, playerId);
+      if (
+        storage.getItem(ACCOUNT_DELETION_CLEANUP_PENDING_KEY) !== phase ||
+        storage.getItem(ACCOUNT_DELETION_PENDING_PLAYER_KEY) !== playerId
+      ) {
         throw new Error(`cleanup-marker-write-unverified:${area}`);
       }
       persisted.push(area);
@@ -181,8 +215,8 @@ const rotateAccountDeletionEpoch = (): void => {
 };
 
 /** Persists deletion intent before the authoritative request is allowed to start. */
-export function markAccountDeletionRequested(): void {
-  persistAccountDeletionCleanupMarker(ACCOUNT_DELETION_PENDING_PHASE.authoritativeDeletion);
+export function markAccountDeletionRequested(playerId: string): void {
+  persistAccountDeletionCleanupMarker(ACCOUNT_DELETION_PENDING_PHASE.authoritativeDeletion, playerId);
   rotateAccountDeletionEpoch();
 }
 
@@ -195,6 +229,7 @@ const removeAccountDeletionCleanupMarker = (persisted: CleanupMarkerStorageArea[
       /** Provides storage behavior. */
       const storage = getCleanupMarkerStorage(area);
       storage.removeItem(ACCOUNT_DELETION_CLEANUP_PENDING_KEY);
+      storage.removeItem(ACCOUNT_DELETION_PENDING_PLAYER_KEY);
       if (storage.getItem(ACCOUNT_DELETION_CLEANUP_PENDING_KEY) !== null) {
         throw new Error(`cleanup-marker-remove-unverified:${area}`);
       }
@@ -232,7 +267,10 @@ export async function purgeDeletedPlayerState(
   } = {},
 ): Promise<void> {
   /** Provides persisted marker areas behavior. */
-  const persistedMarkerAreas = persistAccountDeletionCleanupMarker(ACCOUNT_DELETION_PENDING_PHASE.clientCleanup);
+  const persistedMarkerAreas = persistAccountDeletionCleanupMarker(
+    ACCOUNT_DELETION_PENDING_PHASE.clientCleanup,
+    platform.getPlayer().playerId,
+  );
   /** Provides failures behavior. */
   const failures: unknown[] = [];
   /** Provides notifications failed behavior. */

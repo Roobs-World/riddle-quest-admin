@@ -44,4 +44,16 @@ describe("Firestore index policy", () => {
       indexes: [{order: "ASCENDING", queryScope: "COLLECTION_GROUP"}],
     });
   });
+
+  it("indexes nested rival links used by account deletion", () => {
+    /** Provides overrides behavior. */
+    const overrides = readIndexConfig().fieldOverrides;
+    for (const collectionGroup of ["knownRivals", "blockedRivals"]) {
+      expect(overrides).toContainEqual({
+        collectionGroup,
+        fieldPath: "targetUserId",
+        indexes: [{order: "ASCENDING", queryScope: "COLLECTION_GROUP"}],
+      });
+    }
+  });
 });

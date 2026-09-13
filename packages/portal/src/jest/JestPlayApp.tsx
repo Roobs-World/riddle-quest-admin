@@ -30,6 +30,7 @@ import {
   ACCOUNT_DELETION_PENDING_PHASE,
   AccountDeletionCleanupError,
   completeTombstonedAccountDeletion,
+  discardAccountDeletionForDifferentPlayer,
   getAccountDeletionPendingPhase,
   isAccountDeletionCleanupPending,
   markAccountDeletionRequested,
@@ -240,12 +241,15 @@ export function JestPlayApp() {
     let active = true;
     playerStateWrites.disable();
     /** Provides deletion recovery behavior. */
-    const deletionRecovery = getAccountDeletionPendingPhase() === ACCOUNT_DELETION_PENDING_PHASE.authoritativeDeletion;
     void startJestSession(platform, backend, purchases, authenticateJestIdentity, setStartup, {
-      onInitialized: () => recoverPendingAccountDeletion(platform, "initialized", deletionCleanupOptions),
+      onInitialized: () => {
+        discardAccountDeletionForDifferentPlayer(platform.getPlayer().playerId);
+        return recoverPendingAccountDeletion(platform, "initialized", deletionCleanupOptions);
+      },
       onAuthenticated: isAccountDeletionCleanupPending,
       onIdentityDeleted: completeTombstonedPlayerCleanup,
-      deletionRecovery,
+      deletionRecovery: () =>
+        getAccountDeletionPendingPhase() === ACCOUNT_DELETION_PENDING_PHASE.authoritativeDeletion,
       recoverAccountDeletion: (playerSigned) =>
         recoverPendingAccountDeletion(platform, "signed", {
           clearFirebaseAuthentication: deletionCleanupOptions.clearFirebaseAuthentication,
@@ -261,7 +265,11 @@ export function JestPlayApp() {
       // Recovery owns the exclusive lock through identity, authority, and client purge.
       // Ordinary identity is shared work and is rechecked immediately after lock release.
       withIdentityOperation: (operation) =>
-        runAccountDeletionAwareIdentityOperation(deletionRecovery, notificationOperationGate, operation),
+        runAccountDeletionAwareIdentityOperation(
+          getAccountDeletionPendingPhase() === ACCOUNT_DELETION_PENDING_PHASE.authoritativeDeletion,
+          notificationOperationGate,
+          operation,
+        ),
       withAccountOperation: notificationOperationGate.run,
     }).then(async (result) => {
       if (!active) return;
@@ -482,7 +490,7 @@ export function JestPlayApp() {
         })}
         onPlayable={() => markJestPlayable(platform)}
         onAuthoritativeComplete={handleAuthoritativeComplete}
-        onAccountDeletionRequested={markAccountDeletionRequested}
+        onAccountDeletionRequested={() => markAccountDeletionRequested(platform.getPlayer().playerId)}
         onAccountDeleted={clearPlayerState}
       />
     </>

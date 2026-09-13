@@ -1386,7 +1386,7 @@ describeBrowser("Jest authentication integration", () => {
     await context.close();
   });
 
-  it("replaces play with a restartable terminal screen after account deletion", async () => {
+  it("replaces play with a terminal screen that cannot reload the deleted identity", async () => {
     /** Provides {context, page} behavior. */
     const {context, page} = await openHarness(browser, {registered: true});
     await enterRegisteredGame(page);
@@ -1398,7 +1398,7 @@ describeBrowser("Jest authentication integration", () => {
 
     await page.getByRole("heading", {name: /account deleted/i}).waitFor({timeout: 15_000});
     expect(await page.getByText("Your account has been deleted.", {exact: true}).isVisible()).toBe(true);
-    expect(await page.getByRole("button", {name: /^play$/i}).isVisible()).toBe(true);
+    expect(await page.getByRole("button", {name: /^play$/i}).count()).toBe(0);
     /** Provides state behavior. */
     const state = await getHarnessState(page);
     expect(state.notificationRemovals).toEqual(expect.arrayContaining([...PLAYER_NOTIFICATION_IDS]));

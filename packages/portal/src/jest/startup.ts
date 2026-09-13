@@ -100,7 +100,7 @@ export async function startJestSession(
     /** Stores on identity deleted. */
     onIdentityDeleted?: (playerSigned: string) => void | Promise<void>;
     /** Stores deletion recovery. */
-    deletionRecovery?: boolean;
+    deletionRecovery?: boolean | (() => boolean);
     /** Stores recover account deletion. */
     recoverAccountDeletion?: (playerSigned: string) => Promise<void>;
     /** Stores with identity operation. */
@@ -188,13 +188,16 @@ export async function startJestSession(
 
     reportJestLoadingProgress(platform, phaseProgress[3]);
     onProgress?.({stage: "game", progress: phaseProgress[3]});
+    /** Resolves deletion recovery after SDK initialization may reconcile a player-scoped marker. */
+    const deletionRecovery =
+      typeof options.deletionRecovery === "function" ? options.deletionRecovery() : Boolean(options.deletionRecovery);
     /** Provides identity tombstoned behavior. */
     let identityTombstoned = false;
     /** Provides firebase uid behavior. */
     let firebaseUid: string | undefined;
     /** Provides authenticate identity behavior. */
     const authenticateIdentity = async (): Promise<boolean> => {
-      if (options.deletionRecovery) {
+      if (deletionRecovery) {
         if (!options.recoverAccountDeletion) throw new Error("account-deletion-recovery-unavailable");
         await options.recoverAccountDeletion(signed.playerSigned);
         return true;

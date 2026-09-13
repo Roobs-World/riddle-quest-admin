@@ -2,9 +2,11 @@ import {MockJestPlatform} from "../MockJestPlatform";
 import {
   ACCOUNT_DELETION_CLEANUP_PENDING_KEY,
   ACCOUNT_DELETION_EPOCH_KEY,
+  ACCOUNT_DELETION_PENDING_PLAYER_KEY,
   ACCOUNT_DELETION_PENDING_PHASE,
   AccountDeletionCleanupError,
   completeTombstonedAccountDeletion,
+  discardAccountDeletionForDifferentPlayer,
   getAccountDeletionPendingPhase,
   isAccountDeletionCleanupPending,
   markAccountDeletionRequested,
@@ -207,12 +209,63 @@ it("persists authoritative intent before rotating the cross-tab deletion generat
     value: new EpochWriteBlockedStorage(),
   });
 
-  expect(() => markAccountDeletionRequested()).toThrow(AccountDeletionCleanupError);
+  expect(() => markAccountDeletionRequested("player-1")).toThrow(AccountDeletionCleanupError);
   expect(localStorage.getItem(ACCOUNT_DELETION_EPOCH_KEY)).toBeNull();
   expect(getAccountDeletionPendingPhase()).toBe(ACCOUNT_DELETION_PENDING_PHASE.authoritativeDeletion);
   expect(sessionStorage.getItem(ACCOUNT_DELETION_CLEANUP_PENDING_KEY)).toBe(
     ACCOUNT_DELETION_PENDING_PHASE.authoritativeDeletion,
   );
+});
+
+it("discards a scoped deletion marker when the simulator replaces the player", () => {
+  markAccountDeletionRequested("deleted-player");
+
+  expect(discardAccountDeletionForDifferentPlayer("replacement-player")).toBe(true);
+  expect(getAccountDeletionPendingPhase()).toBeNull();
+  expect(localStorage.getItem(ACCOUNT_DELETION_PENDING_PLAYER_KEY)).toBeNull();
+  expect(sessionStorage.getItem(ACCOUNT_DELETION_PENDING_PLAYER_KEY)).toBeNull();
+});
+
+it("keeps deletion recovery scoped to the player who requested it", () => {
+  markAccountDeletionRequested("deleted-player");
+
+  expect(discardAccountDeletionForDifferentPlayer("deleted-player")).toBe(false);
+  expect(getAccountDeletionPendingPhase()).toBe(ACCOUNT_DELETION_PENDING_PHASE.authoritativeDeletion);
+  expect(localStorage.getItem(ACCOUNT_DELETION_PENDING_PLAYER_KEY)).toBe("deleted-player");
+});
+
+it("starts a replacement simulator player instead of deleting it through stale recovery", async () => {
+  /** Provides platform behavior. */
+  const platform = new MockJestPlatform(false);
+  platform.player.playerId = "replacement-player";
+  markAccountDeletionRequested("deleted-player");
+  /** Provides exchange identity behavior. */
+  const exchangeIdentity = jest.fn(async () => ({status: "success", customToken: "token", uid: "uid"}) as const);
+  /** Provides retry authoritative deletion behavior. */
+  const retryAuthoritativeDeletion = jest.fn(async () => undefined);
+
+  /** Provides result behavior. */
+  const result = await startJestSession(
+    platform,
+    {exchangeIdentity} as never,
+    {reconcile: async () => ({status: "success", value: 0})} as never,
+    async () => undefined,
+    undefined,
+    {
+      onInitialized: () => {
+        discardAccountDeletionForDifferentPlayer(platform.getPlayer().playerId);
+        return recoverPendingAccountDeletion(platform, "initialized");
+      },
+      deletionRecovery: () =>
+        getAccountDeletionPendingPhase() === ACCOUNT_DELETION_PENDING_PHASE.authoritativeDeletion,
+      recoverAccountDeletion: retryAuthoritativeDeletion,
+    },
+  );
+
+  expect(result.status).toBe("success");
+  expect(exchangeIdentity).toHaveBeenCalledTimes(1);
+  expect(retryAuthoritativeDeletion).not.toHaveBeenCalled();
+  expect(getAccountDeletionPendingPhase()).toBeNull();
 });
 
 it("skips a queued recovery exchange when another tab already completed deletion", async () => {
@@ -235,7 +288,7 @@ it("skips a queued recovery exchange when another tab already completed deletion
 });
 
 it("owns one non-reentrant exclusive lock through signed retry and client purge", async () => {
-  markAccountDeletionRequested();
+  markAccountDeletionRequested("jest-mock-player");
   /** Provides exclusive active behavior. */
   let exclusiveActive = false;
   /** Provides run exclusive behavior. */
@@ -565,7 +618,7 @@ it("retries authority after a crash exactly between server success and client cl
   const platform = new MockJestPlatform(true);
   /** Provides reconcile behavior. */
   const reconcile = jest.fn(async () => ({status: "success", value: 0}) as const);
-  markAccountDeletionRequested();
+  markAccountDeletionRequested(platform.player.playerId);
   // The first tab's server call succeeded, then the tab disappeared before its cleanup callback.
   platform.getPlayerSigned = async () => {
     order.push("signed");
@@ -628,7 +681,7 @@ it("never purges an ambiguous request before a signed authoritative retry succee
   const clearPlayerState = jest.spyOn(platform, "clearPlayerState");
   /** Clears firebase authentication. */
   const clearFirebaseAuthentication = jest.fn(async () => undefined);
-  markAccountDeletionRequested();
+  markAccountDeletionRequested(platform.player.playerId);
   /** Provides dependencies behavior. */
   const dependencies = [
     {

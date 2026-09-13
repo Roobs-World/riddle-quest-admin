@@ -43,6 +43,16 @@
       "fieldPath": "userId",
       "indexes": [{"order": "ASCENDING", "queryScope": "COLLECTION_GROUP"}]
     },
+    {
+      "collectionGroup": "knownRivals",
+      "fieldPath": "targetUserId",
+      "indexes": [{"order": "ASCENDING", "queryScope": "COLLECTION_GROUP"}]
+    },
+    {
+      "collectionGroup": "blockedRivals",
+      "fieldPath": "targetUserId",
+      "indexes": [{"order": "ASCENDING", "queryScope": "COLLECTION_GROUP"}]
+    },
     {"collectionGroup": "raceAnalytics", "fieldPath": "expiresAt", "ttl": true, "indexes": []},
     {"collectionGroup": "raceInbox", "fieldPath": "expiresAt", "ttl": true, "indexes": []},
     {"collectionGroup": "facebookContextCompetitionHistory", "fieldPath": "expiresAt", "ttl": true, "indexes": []},
