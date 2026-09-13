@@ -18,6 +18,19 @@ try {
     body: html,
     signal: controller.signal,
   });
+  if (response.status === 429) {
+    console.warn("W3C validator rate-limited the request; retrying with the Nu validator mirror.");
+    response = await fetch("https://validator.nu/?out=json", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "text/html; charset=utf-8",
+        "User-Agent": "Riddle-Quest-W3C-Validation/1.0",
+      },
+      body: html,
+      signal: controller.signal,
+    });
+  }
 } finally {
   clearTimeout(timeout);
 }
