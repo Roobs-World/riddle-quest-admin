@@ -120,6 +120,8 @@ export function RaceTo10Game({
   const rivalryChallengeIdRef = useRef<string | undefined>(undefined);
   /** Target associated with the one correlated social-safety operation. */
   const safetyTargetRef = useRef<string | null>(null);
+  /** Whether a successful publication should immediately open Jest's recipient picker. */
+  const shareAfterPublishRef = useRef(false);
   /** Records ed tournament runs ref. */
   const recordedTournamentRunsRef = useRef(new Set<string>());
   /** Records ed context runs ref. */
@@ -152,6 +154,15 @@ export function RaceTo10Game({
 
   /** Emits a schema-constrained multiplayer analytics event through the host. */
   const analytics = useCallback((eventName: RaceAnalyticsEventName, params: Record<string, string | number | boolean> = {}) => postToHost(createRaceAnalyticsMessage(eventName, params)), [postToHost]);
+  /** Opens the host-owned recipient picker for an authoritative published challenge. */
+  const sharePublishedChallenge = useCallback(
+    (publication: ReturnType<typeof PublishRaceChallengeResponseSchema.parse>) => {
+      if (!referralSharing) return;
+      analytics("race_share_dialog_opened", {categoryId: publication.preview.categoryId});
+      referralSharing.shareRace({challengeId: publication.challengeId, preview: publication.preview});
+    },
+    [analytics, referralSharing],
+  );
   /** Opens and refreshes the multiplayer results inbox. */
   const showInbox = useCallback(() => {
     setStage("inbox");
@@ -239,6 +250,7 @@ export function RaceTo10Game({
       /** Provides operation behavior. */
       const operation = message.payload.operation as RaceOperation;
       if (!message.payload.ok) {
+        if (operation === "racePublish") shareAfterPublishRef.current = false;
         setError(message.payload.error === "RaceTo10.ERROR_LOCALE_MISMATCH" ? tr("RaceTo10.ERROR_LOCALE_MISMATCH") : (message.payload.error ?? tr("RaceTo10.ERROR_GENERIC")));
         if (operation === "raceBlock" || operation === "raceReport") safetyTargetRef.current = null;
         if (operation === "raceStart") {
@@ -395,6 +407,10 @@ export function RaceTo10Game({
           setPublished(publication);
           analytics("race_challenge_published", {categoryId: publication.preview.categoryId});
           window.dispatchEvent(new CustomEvent("riddle-quest:race-challenge-published", {detail: publication}));
+          if (shareAfterPublishRef.current) {
+            shareAfterPublishRef.current = false;
+            sharePublishedChallenge(publication);
+          }
         }
       } catch {
         setError(tr("RaceTo10.ERROR_INVALID_RESPONSE"));
@@ -404,7 +420,7 @@ export function RaceTo10Game({
     };
     window.addEventListener(HOST_TO_GAME_EVENT, handle);
     return () => window.removeEventListener(HOST_TO_GAME_EVENT, handle);
-  }, [activeChallengeId, activeSlotIndex, analytics, currentLetters, finishOperation, initialCategories.length, locale, onClose, resetAttempt, run?.currentRiddle?.riddleId, send, setRaceGuessAwaitingOutcome, updateRun]);
+  }, [activeChallengeId, activeSlotIndex, analytics, currentLetters, finishOperation, initialCategories.length, locale, onClose, resetAttempt, run?.currentRiddle?.riddleId, send, setRaceGuessAwaitingOutcome, sharePublishedChallenge, updateRun]);
 
   useRaceClockEffects(stage, countdown, run, setStage, setCountdown, setTick);
 
@@ -517,13 +533,13 @@ export function RaceTo10Game({
   /** Publishes a completed creator run as a shareable challenge. */
   const publish = () => {
     if (!referralSharing || !run || pending) return;
+    shareAfterPublishRef.current = true;
     send("racePublish", "game:publishRace", {runId: run.runId});
   };
   /** Opens the host share flow for a published race challenge. */
   const share = () => {
     if (!referralSharing || !published) return;
-    analytics("race_share_dialog_opened", {categoryId: published.preview.categoryId});
-    referralSharing.shareRace({challengeId: published.challengeId, preview: published.preview});
+    sharePublishedChallenge(published);
   };
   /** Clears completed-run presentation state and optionally starts a rematch. */
   const resetForNewRace = (categoryId?: RaceCategoryId, rivalryId?: string) => {

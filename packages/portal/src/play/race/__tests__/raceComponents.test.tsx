@@ -351,7 +351,7 @@ describe("race presentation components", () => {
           onClose={noop}
         />,
       ),
-    ).not.toContain("Create challenge");
+    ).not.toContain("Send challenge");
     expect(
       renderToString(
         <RaceResultPanel
@@ -367,7 +367,23 @@ describe("race presentation components", () => {
           onClose={noop}
         />,
       ),
-    ).toContain("Create challenge");
+    ).toContain("Send challenge");
+    expect(
+      renderToString(
+        <RaceResultPanel
+          outcome={outcome}
+          run={{...run, status: "completed"}}
+          publication={null}
+          publishing={false}
+          sharingRewardCoins={100}
+          onPublish={noop}
+          onShare={noop}
+          onRematch={noop}
+          onChooseCategory={noop}
+          onClose={noop}
+        />,
+      ),
+    ).toContain("Choose a mobile number or another Jest user in Jest.");
 
     /** Published challenge fixture used by the share-ready result variant. */
     const publication: PublishRaceChallengeResponse = {

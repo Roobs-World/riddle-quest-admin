@@ -57,18 +57,16 @@ export function RaceResultPanel({
           <strong>{formatRaceTime(outcome.adjustedFinishMs)}</strong>
         </span>
       </div>
+      {sharingRewardCoins !== undefined && outcome.publishable ? <p>{tr("RaceTo10.CHALLENGE_READY")}</p> : null}
       {sharingRewardCoins !== undefined && outcome.publishable && !publication ? (
         <button className="race-primary" onClick={onPublish} disabled={publishing}>
           {tr("RaceTo10.CREATE_CHALLENGE")}
         </button>
       ) : null}
       {sharingRewardCoins !== undefined && publication ? (
-        <>
-          <p>{tr("RaceTo10.CHALLENGE_READY")}</p>
-          <button className="race-primary" onClick={onShare}>
-            {tr("RaceTo10.SHARE_CHALLENGE", {coins: sharingRewardCoins})}
-          </button>
-        </>
+        <button className="race-primary" onClick={onShare}>
+          {tr("RaceTo10.SHARE_CHALLENGE", {coins: sharingRewardCoins})}
+        </button>
       ) : null}
       {outcome.rematchEligible && run && (
         <div className="race-rematch-actions">

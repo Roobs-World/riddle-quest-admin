@@ -1139,7 +1139,19 @@ describeBrowser("Jest authentication integration", () => {
       return Boolean(screen && screen.scrollHeight <= screen.clientHeight + 1);
     });
     await solveFakeRace(creator.page, {expectChainedSubmitLoader: true});
-    await creator.page.getByRole("button", {name: /create challenge/i}).click();
+    await creator.page.getByText("Choose a mobile number or another Jest user in Jest.", {exact: true}).waitFor();
+    await creator.page.getByRole("button", {name: /send challenge/i}).click();
+    await creator.page.waitForFunction(
+      () =>
+        (
+          window as typeof window & {
+            /** Stores riddle quest jest auth test. */
+            __RIDDLE_QUEST_JEST_AUTH_TEST__: AuthHarnessState;
+          }
+        ).__RIDDLE_QUEST_JEST_AUTH_TEST__.referralShares.some(
+          (share) => share.entryPayload?.challengeId === "fake-challenge-2",
+        ),
+    );
     await creator.page.getByRole("button", {name: /challenge a friend/i}).waitFor({timeout: 10_000});
     expect(sharedRaceChallenges.has("fake-challenge-2")).toBe(true);
 
