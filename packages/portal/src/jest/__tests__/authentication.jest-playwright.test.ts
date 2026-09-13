@@ -1118,6 +1118,21 @@ describeBrowser("Jest authentication integration", () => {
     expect(await getMultiplayerLayout()).toEqual(expectedMultiplayerLayout);
     await creator.page.setViewportSize({width: 390, height: 667});
     await creator.page.waitForFunction(() => Boolean(document.querySelector(".race-gameplay-viewport")?.getAttribute("data-viewport-scale")));
+    /** Captures use of the available portrait multiplayer height. */
+    const portraitRaceLayout = await creator.page.locator(".race-gameplay-viewport").evaluate((viewport) => {
+      /** Captures the multiplayer screen bounds. */
+      const screen = viewport.closest(".race-screen")!;
+      /** Captures the screen's usable lower edge. */
+      const usableBottom = screen.getBoundingClientRect().bottom - Number.parseFloat(getComputedStyle(screen).paddingBottom);
+      /** Captures the multiplayer answer board bounds. */
+      const guessBoard = viewport.querySelector(".guess-board")?.getBoundingClientRect();
+      return {
+        bottomGap: usableBottom - viewport.getBoundingClientRect().bottom,
+        guessBoardWidth: guessBoard?.width ?? 0,
+      };
+    });
+    expect(portraitRaceLayout.bottomGap).toBeLessThanOrEqual(1);
+    expect(portraitRaceLayout.guessBoardWidth).toBeGreaterThan(250);
     await creator.page.waitForFunction(() => {
       /** Provides screen behavior. */
       const screen = document.querySelector(".race-screen");

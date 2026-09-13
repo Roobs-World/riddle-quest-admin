@@ -69,9 +69,11 @@
 }
 .race-gameplay {
   width: min(900px, 100%);
+  min-height: 100%;
   margin: 0 auto;
   display: grid;
   grid-template-columns: minmax(0, 1fr) 118px;
+  grid-template-rows: minmax(0, 1fr) auto auto;
   grid-template-areas:
     "riddle scoreboard"
     "keyboard scoreboard"
@@ -460,7 +462,7 @@
     font-size: clamp(20px, 6vw, 27px);
   }
   .race-riddle-surface .guess-board {
-    max-width: min(250px, 100%);
+    max-width: min(var(--board-max-width), 100%);
   }
   .race-gameplay > .keyboard > div {
     gap: 3px;

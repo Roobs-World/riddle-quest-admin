@@ -40,12 +40,13 @@ export function useRaceGameplayFit({active, screenRef, viewportRef, gameplayRef}
         const paddingBottom = Number.parseFloat(getComputedStyle(screen).paddingBottom) || 0;
         /** Vertical space available below the gameplay viewport origin. */
         const availableHeight = Math.max(1, screenRect.bottom - paddingBottom - viewportRect.top);
+        gameplay.style.minHeight = `${availableHeight}px`;
         /** Unscaled gameplay height. */
         const naturalHeight = gameplay.offsetHeight;
         /** Scale required to keep the complete gameplay surface visible. */
         const scale = naturalHeight > availableHeight ? availableHeight / naturalHeight : 1;
         gameplay.style.transform = `scale(${scale})`;
-        viewport.style.height = `${naturalHeight * scale}px`;
+        viewport.style.height = `${availableHeight}px`;
         viewport.dataset.viewportScale = scale.toFixed(4);
       });
     };
@@ -61,6 +62,7 @@ export function useRaceGameplayFit({active, screenRef, viewportRef, gameplayRef}
       observer.disconnect();
       window.removeEventListener("resize", fitGameplay);
       gameplay.style.transform = "";
+      gameplay.style.minHeight = "";
       viewport.style.height = "";
       delete viewport.dataset.viewportScale;
     };

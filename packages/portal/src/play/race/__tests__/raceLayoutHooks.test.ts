@@ -304,6 +304,7 @@ describe("useRaceGameplayFit", () => {
     runLatestFrame();
 
     expect(harness.gameplay.style.transform).toBe("scale(0.5)");
+    expect(harness.gameplay.style.minHeight).toBe("380px");
     expect(harness.viewport.style.height).toBe("380px");
     expect(harness.viewport.dataset.viewportScale).toBe("0.5000");
     expect(observe).toHaveBeenCalledWith(harness.screen);
@@ -318,6 +319,7 @@ describe("useRaceGameplayFit", () => {
     expect(disconnect).toHaveBeenCalledTimes(1);
     expect(testWindow.removeEventListener).toHaveBeenCalledWith("resize", resizeHandler);
     expect(harness.gameplay.style.transform).toBe("");
+    expect(harness.gameplay.style.minHeight).toBe("");
     expect(harness.viewport.style.height).toBe("");
     expect(harness.viewport.dataset.viewportScale).toBeUndefined();
   });
@@ -329,7 +331,8 @@ describe("useRaceGameplayFit", () => {
     runLatestFrame();
 
     expect(harness.gameplay.style.transform).toBe("scale(1)");
-    expect(harness.viewport.style.height).toBe("200px");
+    expect(harness.gameplay.style.minHeight).toBe("380px");
+    expect(harness.viewport.style.height).toBe("380px");
     expect(harness.viewport.dataset.viewportScale).toBe("1.0000");
   });
 
