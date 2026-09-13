@@ -33,11 +33,15 @@ const completeOnboardingAndTours = async (page: Page, checkTooltipAccessibility 
   expect(await letsPlay.evaluate((button) => document.activeElement === button)).toBe(true);
   expect(
     await page.locator(".onboarding-card-welcome").evaluate((card) => {
-      /** Measures the title, description, and button spacing. */
+      /** Captures the welcome title bounds. */
       const title = card.querySelector(".onboarding-logo")!.getBoundingClientRect();
+      /** Provides description paragraphs behavior. */
       const paragraphs = card.querySelectorAll("p");
+      /** Captures the first description bounds. */
       const first = paragraphs[0].getBoundingClientRect();
+      /** Captures the last description bounds. */
       const last = paragraphs[paragraphs.length - 1].getBoundingClientRect();
+      /** Captures the welcome button bounds. */
       const button = card.querySelector(".play-primary")!.getBoundingClientRect();
       return Math.abs(first.top - title.bottom - (button.top - last.bottom));
     }),
@@ -75,6 +79,7 @@ const completeOnboardingAndTours = async (page: Page, checkTooltipAccessibility 
   for (let step = 0; step < 4; step += 1) {
     expect(
       await page.locator(".tooltip-backdrop").evaluate((element) => {
+        /** Captures the walkthrough backdrop style. */
         const style = getComputedStyle(element);
         return {filter: style.backdropFilter, background: style.backgroundColor, image: style.backgroundImage};
       }),
@@ -656,6 +661,7 @@ describeBrowser("standalone Jest browser game", () => {
           await page.locator(".tooltip-backdrop").evaluate((element) => {
             /** Captures all overlay effects that could obscure the profile page. */
             const style = getComputedStyle(element);
+            /** Provides spotlight behavior. */
             const spotlight = element.querySelector(".tooltip-spotlight");
             return {
               filter: style.backdropFilter,
