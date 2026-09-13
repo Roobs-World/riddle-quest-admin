@@ -271,6 +271,23 @@ describeBrowser("standalone Jest browser game", () => {
       expect(await page.locator(".guess-row").count()).toBe(5);
       expect(await page.locator(".keyboard").isVisible()).toBe(true);
       expect((await page.locator("[data-tooltip='gameSkip']").innerText()).trim()).toBe("Skip");
+      /** Captures the portrait game stack's use of the available height. */
+      const portraitGameLayout = await page.evaluate(() => {
+        /** Captures the bottom navigation bounds. */
+        const navigation = document.querySelector(".game-bottom-navigation")?.getBoundingClientRect();
+        /** Captures the answer board bounds. */
+        const guessBoard = document.querySelector(".guess-board")?.getBoundingClientRect();
+        /** Captures the fitted game content. */
+        const content = document.querySelector<HTMLElement>(".game-content");
+        return {
+          bottomGap: navigation ? innerHeight - navigation.bottom : Infinity,
+          guessBoardWidth: guessBoard?.width ?? 0,
+          scale: Number(content?.dataset.viewportScale ?? 0),
+        };
+      });
+      expect(portraitGameLayout.bottomGap).toBeLessThanOrEqual(1);
+      expect(portraitGameLayout.guessBoardWidth).toBeGreaterThan(300);
+      expect(portraitGameLayout.scale).toBe(1);
 
       /** Provides main game coin balance behavior. */
       const mainGameCoinBalance = (await page.locator(".game-header .coin-pill strong").innerText()).trim();

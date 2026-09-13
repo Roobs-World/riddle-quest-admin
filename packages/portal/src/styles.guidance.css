@@ -334,7 +334,7 @@
     font-size: 27px;
   }
   .guess-board {
-    max-width: min(300px, 94vw);
+    max-width: min(var(--board-max-width), 94vw);
     gap: 4px;
     margin-top: 4px;
   }
@@ -402,8 +402,8 @@
   .game-content {
     padding: max(8px, env(safe-area-inset-top)) 8px 0;
     gap: 2px;
-    grid-template-rows: auto auto auto auto auto;
-    align-content: start;
+    grid-template-rows: auto minmax(0, 1fr) auto auto auto;
+    align-content: stretch;
   }
   .game-input-actions {
     width: 100%;
@@ -501,7 +501,6 @@
     font-size: 22px;
   }
   .guess-board {
-    max-width: min(260px, 94vw);
     gap: 2px;
     margin-top: 0;
   }
@@ -548,6 +547,9 @@
   .guess-board,
   .keyboard {
     gap: 1px;
+  }
+  .guess-board {
+    max-width: min(260px, 94vw);
   }
   .game-bottom-navigation {
     min-height: 46px;
