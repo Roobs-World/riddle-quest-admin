@@ -194,6 +194,26 @@ describeDeployed("deployed Jest sandbox game", () => {
     expect((await game.locator(".riddle-card h1").innerText()).trim()).not.toBe("");
 
     expect(await game.locator(".keyboard").isVisible()).toBe(true);
+    expect(
+      await game.locator(".keyboard").evaluate((keyboard) => {
+        /** Provides first key behavior. */
+        const firstKey = keyboard.querySelector<HTMLElement>(".key");
+        /** Provides first row behavior. */
+        const firstRow = keyboard.firstElementChild as HTMLElement | null;
+        /** Provides key style behavior. */
+        const keyStyle = firstKey ? getComputedStyle(firstKey) : null;
+        /** Provides keyboard style behavior. */
+        const keyboardStyle = getComputedStyle(keyboard);
+        /** Provides row style behavior. */
+        const rowStyle = firstRow ? getComputedStyle(firstRow) : null;
+        return {
+          keyHeight: keyStyle?.height,
+          keyMinHeight: keyStyle?.minHeight,
+          letterGap: rowStyle?.columnGap,
+          rowGap: keyboardStyle.rowGap,
+        };
+      }),
+    ).toEqual({keyHeight: "32px", keyMinHeight: "32px", letterGap: "2px", rowGap: "0px"});
     expect(await game.locator(".guess-row").count()).toBe(5);
     expect(
       await game.evaluate(
