@@ -548,6 +548,8 @@ describeBrowser("standalone Jest browser game", () => {
         const keyboardKey = document.querySelector(".keyboard .key")?.getBoundingClientRect();
         /** Provides keyboard behavior. */
         const keyboard = document.querySelector(".keyboard")?.getBoundingClientRect();
+        /** Provides guess board behavior. */
+        const guessBoard = document.querySelector(".guess-board")?.getBoundingClientRect();
         /** Provides game area behavior. */
         const gameArea = document.querySelector(".riddle-surface")?.getBoundingClientRect();
         /** Provides content behavior. */
@@ -555,7 +557,9 @@ describeBrowser("standalone Jest browser game", () => {
         return {
           documentHeight: document.documentElement.scrollHeight,
           keyHeight: keyboardKey?.height ?? 0,
+          keyboardHeight: keyboard?.height ?? Infinity,
           keyboardWidth: keyboard?.width ?? Infinity,
+          guessBoardWidth: guessBoard?.width ?? 0,
           gameAreaWidth: gameArea?.width ?? 0,
           navigationBottom: navigation?.bottom ?? Infinity,
           scale: Number(content?.dataset.viewportScale ?? 0),
@@ -563,9 +567,11 @@ describeBrowser("standalone Jest browser game", () => {
       });
       expect(compactLayout.documentHeight).toBeLessThanOrEqual(569);
       expect(compactLayout.navigationBottom).toBeLessThanOrEqual(569);
-      expect(compactLayout.keyHeight).toBeGreaterThanOrEqual(32);
-      expect(compactLayout.keyHeight).toBeLessThanOrEqual(40);
+      expect(compactLayout.keyHeight).toBeGreaterThanOrEqual(28);
+      expect(compactLayout.keyHeight).toBeLessThanOrEqual(32);
+      expect(compactLayout.keyboardHeight).toBeLessThanOrEqual(98);
       expect(compactLayout.keyboardWidth).toBeLessThan(compactLayout.gameAreaWidth);
+      expect(compactLayout.guessBoardWidth).toBeGreaterThanOrEqual(245);
       expect(compactLayout.scale).toBeGreaterThanOrEqual(0.92);
       expect(await compactPage.getByRole("region", {name: /virtual keyboard/i}).isVisible()).toBe(true);
 

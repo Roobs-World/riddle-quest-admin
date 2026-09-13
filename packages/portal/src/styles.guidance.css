@@ -342,19 +342,20 @@
     gap: 8px;
   }
   .keyboard {
-    gap: 2px;
-    padding-bottom: 2px;
+    gap: 0;
+    padding-bottom: 0;
   }
   .keyboard > div {
-    gap: 5px;
+    gap: 2px;
   }
-  .key {
-    width: min(43px, 8.15vw);
-    height: 36px;
+  .keyboard .key {
+    width: min(39px, 7.6vw);
+    height: 32px;
+    min-height: 32px;
     font-size: 20px;
   }
-  .key.utility {
-    width: 54px;
+  .keyboard .key.utility {
+    width: 48px;
   }
   .game-input-actions {
     padding: 0 8px;
@@ -410,7 +411,11 @@
     gap: 8px;
   }
   .keyboard {
-    width: 92%;
+    width: 88%;
+    gap: 0;
+  }
+  .keyboard > div {
+    gap: 2px;
   }
   .game-input-actions button {
     min-width: 0;
@@ -444,13 +449,14 @@
   .cell {
     font-size: 28px;
   }
-  .key {
-    width: min(43px, 8.15vw);
-    height: 36px;
+  .keyboard .key {
+    width: min(39px, 7.6vw);
+    height: 32px;
+    min-height: 32px;
     font-size: 20px;
   }
-  .key.utility {
-    width: 54px;
+  .keyboard .key.utility {
+    width: 48px;
   }
 }
 
@@ -495,7 +501,7 @@
     font-size: 22px;
   }
   .guess-board {
-    max-width: min(230px, 94vw);
+    max-width: min(260px, 94vw);
     gap: 2px;
     margin-top: 0;
   }
@@ -506,14 +512,15 @@
     font-size: 22px;
   }
   .keyboard {
-    gap: 2px;
+    gap: 0;
     padding-bottom: 0;
   }
   .keyboard > div {
-    gap: 4px;
+    gap: 2px;
   }
-  .key {
-    height: 36px;
+  .keyboard .key {
+    height: 32px;
+    min-height: 32px;
   }
   .game-input-actions button {
     min-height: 48px;
