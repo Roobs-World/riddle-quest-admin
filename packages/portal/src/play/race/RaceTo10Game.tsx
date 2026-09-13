@@ -222,7 +222,7 @@ export function RaceTo10Game({
       }
     }, 0);
     return () => window.clearTimeout(timer);
-  }, [analytics, challengeId, initialCategories, locale, openInbox, send]);
+  }, [challengeId, initialCategories.length, locale, openInbox, send]);
 
   useEffect(() => {
     /** Processes correlated race-operation responses emitted by the host bridge. */
