@@ -468,6 +468,7 @@ export function JestPlayApp() {
           initialGameMode: session.entryIntent.gameMode,
           initialRaceChallengeId: resolveRaceChallengeId(session.entryIntent),
           initialRaceInbox: session.entryIntent.challengeDestination === "inbox",
+          initialRaceLobby: session.entryIntent.challengeDestination === "multiplayer",
           registrationName: session.entryIntent.customName,
           registrationInviterName: session.entryIntent.inviterName,
           platformProducts: jestProducts,

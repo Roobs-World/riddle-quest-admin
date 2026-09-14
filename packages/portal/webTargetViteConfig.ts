@@ -314,9 +314,13 @@ function targetHtmlPlugin(profile: WebTargetProfile): Plugin {
           return;
         }
         response.statusCode = 302;
+        /** Preserve the host SDK session and encoded entry payload through the entry redirect. */
+        const queryIndex = request.url?.indexOf("?") ?? -1;
+        /** Original query bytes avoid changing signed or encoded platform parameters. */
+        const query = queryIndex >= 0 ? request.url!.slice(queryIndex) : "";
         response.setHeader(
           "Location",
-          `/${normalizeOutputPath(path.relative(portalPackageDirectory, profile.htmlOutputs[0].source))}`,
+          `/${normalizeOutputPath(path.relative(portalPackageDirectory, profile.htmlOutputs[0].source))}${query}`,
         );
         response.end();
       });

@@ -241,13 +241,13 @@ export function useJestSharing({
   );
 
   /** Provides share invite behavior. */
-  const shareInvite = useCallback(() => {
+  const shareOpenInvite = useCallback((multiplayer: boolean) => {
     if (!session) return;
     /** Provides inviter name behavior. */
     const inviterName = session.profile?.username ?? tr("WebPortal.NOTIFICATION_PLAYER_FALLBACK");
     /** Provides reward message behavior. */
     const rewardMessage = tr("VictoryModal.REFERRAL_REWARD_MESSAGE", {coins: JEST_REFERRAL_REWARD_COINS});
-    trackFunnel("viral_share_intent", {surface: "profile", campaign: "open_invite_v1"});
+    trackFunnel("viral_share_intent", {surface: multiplayer ? "race" : "profile", campaign: "open_invite_v1"});
     void withPlatformActivity(async () => {
       /** Provides share image behavior. */
       const shareImage = await sizeCheckedScreenshotProvider(() =>
@@ -258,26 +258,27 @@ export function useJestSharing({
         }),
       )();
       return platform.shareReferral({
-        reference: JEST_REFERRAL_REFERENCES.friendChallenge,
-        shareTitle: tr("WebPortal.APP_TITLE"),
-        shareText: tr("VictoryModal.OPEN_INVITE_MESSAGE", {
+        reference: multiplayer ? createUniqueJestReferralReference("race") : JEST_REFERRAL_REFERENCES.friendChallenge,
+        shareTitle: tr(multiplayer ? "RaceTo10.TITLE" : "WebPortal.APP_TITLE"),
+        shareText: multiplayer ? `${tr("RaceTo10.CHALLENGED_BY", {name: inviterName})} · ${tr("RaceTo10.TITLE")}` : tr("VictoryModal.OPEN_INVITE_MESSAGE", {
           name: inviterName,
           coins: JEST_REFERRAL_REWARD_COINS,
         }),
         ...(shareImage ? {shareImage} : {}),
-        onboardingSlug: "friend-challenge",
+        onboardingSlug: multiplayer ? "race-to-10" : "friend-challenge",
         entryPayload: {
           campaign: "open_invite_v1",
           reference: "profile_invite_v1",
           inviteKind: "open",
           inviterName,
+          ...(multiplayer ? {challengeDestination: "multiplayer"} : {}),
         },
       });
     })
       .then((result) =>
         trackFunnel("viral_share_dialog_result", {
           status: result.status,
-          surface: "profile",
+          surface: multiplayer ? "race" : "profile",
           campaign: "open_invite_v1",
         }),
       )
@@ -285,11 +286,16 @@ export function useJestSharing({
         console.warn("[riddle-quest] Jest profile invite failed", error);
         trackFunnel("viral_share_dialog_result", {
           status: "retryable-failure",
-          surface: "profile",
+          surface: multiplayer ? "race" : "profile",
           campaign: "open_invite_v1",
         });
       });
   }, [locale, platform, session, trackFunnel, withPlatformActivity]);
+
+  /** Shares the existing general invitation from the profile. */
+  const shareInvite = useCallback(() => shareOpenInvite(false), [shareOpenInvite]);
+  /** Opens Jest sharing immediately for a multiplayer invitation. */
+  const shareMultiplayerInvite = useCallback(() => shareOpenInvite(true), [shareOpenInvite]);
 
   useEffect(() => {
     if (!authHarness || !session) return;
@@ -320,9 +326,10 @@ export function useJestSharing({
             rewardCoins: JEST_REFERRAL_REWARD_COINS,
             shareResult,
             shareInvite,
+            shareMultiplayerInvite,
             shareRace,
           }
         : null,
-    [session, shareInvite, shareRace, shareResult],
+    [session, shareInvite, shareMultiplayerInvite, shareRace, shareResult],
   );
 }

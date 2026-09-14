@@ -1019,6 +1019,22 @@ describeBrowser("Jest authentication integration", () => {
     await creator.page.setViewportSize({width: 390, height: 667});
     await multiplayerButton.click();
     await creator.page.getByRole("button", {name: /^History /}).waitFor();
+    await creator.page.getByRole("button", {name: "Play with friends", exact: true}).click();
+    await creator.page.waitForFunction(() =>
+      (window as typeof window & {
+        /** Injected Jest share-dialog receipts. */
+        __RIDDLE_QUEST_JEST_AUTH_TEST__: AuthHarnessState;
+      })
+        .__RIDDLE_QUEST_JEST_AUTH_TEST__.referralShares.some((share) => share.entryPayload?.challengeDestination === "multiplayer"),
+    );
+    /** Invitation captured at the real SDK adapter boundary. */
+    const multiplayerInvite = (await getHarnessState(creator.page)).referralShares.find(
+      (share) => share.entryPayload?.challengeDestination === "multiplayer",
+    );
+    expect(multiplayerInvite?.shareTitle).toBe("Race to 10");
+    expect(multiplayerInvite?.shareText).toContain("challenged you");
+    expect(multiplayerInvite?.entryPayload?.challengeId).toBeUndefined();
+    await creator.page.getByTestId("server-activity-loader").waitFor({state: "detached"});
     expect(await creator.page.locator('[data-testid="server-activity-loader"]').count()).toBe(0);
     await creator.page.evaluate(() => {
       /** Provides timing window behavior. */
@@ -1079,6 +1095,15 @@ describeBrowser("Jest authentication integration", () => {
     });
     expect(countdownCenterOffset).toBeLessThanOrEqual(0.5);
     await creator.page.locator(".race-gameplay .guess-board").waitFor({state: "visible", timeout: 10_000});
+    /** Horizontal coverage of the multiplayer keyboard within the game surface. */
+    const keyboardCoverage = await creator.page.locator(".race-gameplay").evaluate((gameplay) => {
+      /** Available game width. */
+      const surface = gameplay.getBoundingClientRect();
+      /** Rendered keyboard width. */
+      const keyboard = gameplay.querySelector(".keyboard")!.getBoundingClientRect();
+      return keyboard.width / surface.width;
+    });
+    expect(keyboardCoverage).toBeGreaterThan(0.98);
     /** Provides race start timing behavior. */
     const raceStartTiming = await creator.page.evaluate(
       () =>
@@ -1142,6 +1167,7 @@ describeBrowser("Jest authentication integration", () => {
     });
     expect(portraitRaceLayout.bottomGap).toBeLessThanOrEqual(1);
     expect(portraitRaceLayout.guessBoardWidth).toBeGreaterThan(250);
+    await creator.page.screenshot({path: "/tmp/riddle-multiplayer-portrait.png"});
     await creator.page.waitForFunction(() => {
       /** Provides screen behavior. */
       const screen = document.querySelector(".race-screen");
@@ -1163,6 +1189,12 @@ describeBrowser("Jest authentication integration", () => {
     );
     await creator.page.getByRole("button", {name: /challenge a friend/i}).waitFor({timeout: 10_000});
     expect(sharedRaceChallenges.has("fake-challenge-2")).toBe(true);
+
+    /** A recipient of the lobby invitation enters multiplayer without a fabricated race result. */
+    const invited = await openHarness(browser, {registered: true, harness: "race-auth", challengeDestination: "multiplayer"});
+    await invited.page.getByRole("button", {name: "Play with friends", exact: true}).waitFor({timeout: 15_000});
+    expect(await invited.page.locator(".race-category-grid").isVisible()).toBe(true);
+    await invited.context.close();
 
     /** Provides recipient behavior. */
     const recipient = await openHarness(browser, {

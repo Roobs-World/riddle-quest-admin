@@ -144,6 +144,9 @@
   width: 100%;
   min-height: 48px;
 }
+.race-lobby-challenge button + button {
+  margin-top: 10px;
+}
 .race-lobby-challenge p {
   margin: 10px 0 0;
 }

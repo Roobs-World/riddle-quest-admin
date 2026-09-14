@@ -60,6 +60,7 @@ export function GameFrameApp({
   registrationInviterName,
   initialRaceChallengeId,
   initialRaceInbox = false,
+  initialRaceLobby = false,
   raceFeatureEnabled = false,
   prefetchedRaceCategories = [],
   presenceEnabled,
@@ -89,6 +90,8 @@ export function GameFrameApp({
   initialRaceChallengeId?: string;
   /** Stores initial race inbox. */
   initialRaceInbox?: boolean;
+  /** Opens the multiplayer lobby for an incoming platform invitation. */
+  initialRaceLobby?: boolean;
   /** Stores race feature enabled. */
   raceFeatureEnabled?: boolean;
   /** Stores prefetched race categories. */
@@ -134,6 +137,7 @@ export function GameFrameApp({
       raceLocalePolicy,
       initialRaceChallengeId,
       initialRaceInbox,
+      initialRaceLobby,
       onPresenceStateChange,
     });
   /** Provides offline dialog ref behavior. */

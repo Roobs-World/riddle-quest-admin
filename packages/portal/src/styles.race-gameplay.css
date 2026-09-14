@@ -1,5 +1,6 @@
 .race-screen-gameplay {
   padding-block-start: max(8px, env(safe-area-inset-top));
+  padding-block-end: max(8px, env(safe-area-inset-bottom));
   background:
     radial-gradient(circle at 18% 22%, #fff 0 1px, transparent 1.5px),
     radial-gradient(circle at 72% 36%, #fff 0 1px, transparent 1.5px),
@@ -76,8 +77,8 @@
   grid-template-rows: minmax(0, 1fr) auto auto;
   grid-template-areas:
     "riddle scoreboard"
-    "keyboard scoreboard"
-    "actions scoreboard";
+    "keyboard keyboard"
+    "actions actions";
   align-items: start;
   justify-items: stretch;
   gap: 10px;
@@ -203,6 +204,7 @@
 }
 .race-riddle-surface {
   grid-area: riddle;
+  min-width: 0;
 }
 
 .race-native-answer-input {
@@ -224,6 +226,11 @@
 }
 .race-gameplay > .keyboard {
   grid-area: keyboard;
+  width: 100%;
+  gap: 5px;
+}
+.race-gameplay > .keyboard .key {
+  height: 52px;
 }
 .race-gameplay > .race-actions {
   grid-area: actions;
@@ -468,12 +475,12 @@
     gap: 3px;
   }
   .race-gameplay > .keyboard .key {
-    width: min(35px, 6.2vw);
-    height: 38px;
-    font-size: 17px;
+    width: min(52px, 8.8vw);
+    height: clamp(44px, 7.5dvh, 60px);
+    font-size: 21px;
   }
   .race-gameplay > .keyboard .key.utility {
-    width: 42px;
+    width: min(54px, 13vw);
   }
   .race-actions {
     gap: 4px;

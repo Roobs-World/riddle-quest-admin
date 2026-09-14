@@ -293,7 +293,7 @@ test("explicit development profiles redirect the package root to their target-ow
     let location;
     let ended = false;
     middleware(
-      {url: "/?from=hosted-script"},
+      {url: "/?sid=simulator-session&tce=1&entryPayload=%7B%22test%22%3Atrue%7D"},
       {
         statusCode: 0,
         setHeader(name, value) {
@@ -303,7 +303,7 @@ test("explicit development profiles redirect the package root to their target-ow
       },
       () => assert.fail("root request should not fall through"),
     );
-    assert.equal(location, `/targets/${mode}/index.html`);
+    assert.equal(location, `/targets/${mode}/index.html?sid=simulator-session&tce=1&entryPayload=%7B%22test%22%3Atrue%7D`);
     assert.equal(ended, true);
   }
   assert.throws(

@@ -33,6 +33,8 @@ export type ReferralSharingCapability = {
   shareResult: (input: ReferralResultShareInput) => void;
   /** Shares an open invitation from the player profile. */
   shareInvite: () => void;
+  /** Opens the provider share dialog for an invitation to the multiplayer lobby. */
+  shareMultiplayerInvite?: () => void;
   /** Shares a published multiplayer challenge. */
   shareRace: (input: ReferralRaceShareInput) => void;
 };

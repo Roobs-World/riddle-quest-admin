@@ -10,6 +10,7 @@ import type {
 } from "@qwordly/core/race";
 import {tr} from "../../i18n";
 import {formatRaceTime} from "../logic/racePresentation";
+import {useReferralSharing} from "../../sharing/ReferralSharingCapability";
 
 /** Displays available server-provided categories and navigation to race results. */
 export function RaceCategoriesPanel({
@@ -30,10 +31,17 @@ export function RaceCategoriesPanel({
   /** Whether the active platform can send a completed race to another player. */
   canChallenge?: boolean;
 }) {
+  /** Target-owned invitation dialog, available only on supported platforms. */
+  const referralSharing = useReferralSharing();
   return (
     <div className="race-panel">
       {canChallenge && (
         <div className="race-lobby-challenge">
+          {referralSharing?.shareMultiplayerInvite && (
+            <button type="button" className="race-primary" onClick={referralSharing.shareMultiplayerInvite}>
+              {tr("RaceTo10.CHOOSE_CONTEXT")}
+            </button>
+          )}
           <button
             type="button"
             className="race-primary"

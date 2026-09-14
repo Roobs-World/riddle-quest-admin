@@ -33,6 +33,8 @@ export type HostedPlaySession = Readonly<{
   initialRaceChallengeId?: string;
   /** Stores initial race inbox. */
   initialRaceInbox: boolean;
+  /** Opens category selection for an incoming multiplayer invitation. */
+  initialRaceLobby?: boolean;
   /** Stores presence enabled. */
   presenceEnabled?: boolean;
   /** Stores on toggle presence. */
@@ -147,6 +149,7 @@ export function createHostedPlaySession(
     initialGameMode: input.initialGameMode ?? "classic",
     externalInteractionBlocked: input.externalInteractionBlocked ?? false,
     initialRaceInbox: input.initialRaceInbox ?? false,
+    initialRaceLobby: input.initialRaceLobby ?? false,
     raceLocalePolicy: input.raceLocalePolicy ?? "english-only",
   };
 }

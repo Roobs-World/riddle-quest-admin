@@ -38,6 +38,7 @@
     "test": "pnpm --filter @qwordly/core test && pnpm --filter @qwordly/portal test",
     "test:coverage": "pnpm prepare:functions && pnpm --filter @qwordly/core test:coverage && pnpm --filter @qwordly/portal test:coverage && pnpm --dir firebase-functions test:coverage",
     "test:race:coverage": "pnpm prepare:functions && pnpm --filter @qwordly/core test:race:coverage && pnpm --filter @qwordly/portal test:race:coverage && pnpm --dir firebase-functions test:race:coverage",
+    "test:jest-notifications": "pnpm --filter @qwordly/portal test:jest-notifications",
     "test:web": "pnpm --filter @qwordly/portal test",
     "test:core": "pnpm --filter @qwordly/core test",
     "test:functions": "pnpm --dir firebase-functions test",

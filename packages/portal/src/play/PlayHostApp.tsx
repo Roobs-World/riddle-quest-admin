@@ -45,6 +45,7 @@ export function PlayHostApp({
     registrationInviterName,
     initialRaceChallengeId,
     initialRaceInbox,
+    initialRaceLobby,
     presenceEnabled,
     onTogglePresence,
     raceLocalePolicy,
@@ -355,6 +356,7 @@ export function PlayHostApp({
           registrationInviterName={registrationInviterName}
           initialRaceChallengeId={initialRaceChallengeId}
           initialRaceInbox={initialRaceInbox}
+          initialRaceLobby={initialRaceLobby}
           raceFeatureEnabled={raceBuildEnabled}
           prefetchedRaceCategories={prefetchedRaceCategories}
           presenceEnabled={presenceEnabled}

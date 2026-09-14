@@ -21,6 +21,8 @@ type GameSurfaceCoordinationOptions = Readonly<{
   initialRaceChallengeId?: string;
   /** Whether the multiplayer inbox should open immediately when eligible. */
   initialRaceInbox: boolean;
+  /** Whether an invitation should open the multiplayer lobby. */
+  initialRaceLobby?: boolean;
   /** Receives target-neutral presence derived from the active surface. */
   onPresenceStateChange?: (state: ActivePresenceState) => void;
 }>;
@@ -48,6 +50,7 @@ export function useGameSurfaceCoordination({
   raceLocalePolicy,
   initialRaceChallengeId,
   initialRaceInbox,
+  initialRaceLobby,
   onPresenceStateChange,
 }: GameSurfaceCoordinationOptions): GameSurfaceCoordination {
   /** Supported multiplayer locale derived from host initialization. */
@@ -58,7 +61,7 @@ export function useGameSurfaceCoordination({
     (raceLocalePolicy === "all" || raceLocale === "en") &&
     (raceFeatureEnabled || isRaceHarness(typeof window === "undefined" ? "" : window.location.search));
   /** Whether multiplayer currently owns the primary game surface. */
-  const [raceOpen, setRaceOpen] = useState(Boolean((initialRaceChallengeId || initialRaceInbox) && raceEnabled));
+  const [raceOpen, setRaceOpen] = useState(Boolean((initialRaceChallengeId || initialRaceInbox || initialRaceLobby) && raceEnabled));
   /** Whether guidance currently owns interaction above the game. */
   const [guidanceActive, setGuidanceActive] = useState(false);
   /** Whether a playable riddle is present beneath overlays. */
@@ -86,8 +89,8 @@ export function useGameSurfaceCoordination({
 
   useEffect(() => {
     if (!raceEnabled) setRaceOpen(false);
-    else if (initialRaceChallengeId || initialRaceInbox) setRaceOpen(true);
-  }, [initialRaceChallengeId, initialRaceInbox, raceEnabled]);
+    else if (initialRaceChallengeId || initialRaceInbox || initialRaceLobby) setRaceOpen(true);
+  }, [initialRaceChallengeId, initialRaceInbox, initialRaceLobby, raceEnabled]);
 
   return {raceLocale, raceEnabled, raceOpen, setRaceOpen, guidanceActive, setGuidanceActive};
 }
