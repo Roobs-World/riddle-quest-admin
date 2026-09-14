@@ -17,6 +17,13 @@ import {RaceResultPanel} from "../components/RaceResultPanel";
 import {RaceScoreboard} from "../components/RaceScoreboard";
 import {createFakeRaceServices} from "../testing/fakeRaceServices";
 
+// Direct presentation-callback tests run outside React's hook dispatcher.
+// The injected browser suite verifies the real referral provider and SDK flow.
+jest.mock("../../sharing/ReferralSharingCapability", () => ({
+  /** Keeps isolated presentation tests independent of the platform provider. */
+  useReferralSharing: () => null,
+}));
+
 /** No-op callback used by server-rendered presentation components. */
 const noop = () => undefined;
 
