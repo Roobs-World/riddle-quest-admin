@@ -10,7 +10,9 @@ const wcagTags = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
 
 /** Checks the rendered modal is vertically centered within the Jest viewport. */
 const expectModalCentered = async (page: Page) => {
+  /** Distance between the modal center and the viewport center. */
   const offset = await page.locator(".game-modal").evaluate((element) => {
+    /** Rendered modal bounds in viewport coordinates. */
     const rect = element.getBoundingClientRect();
     return Math.abs(rect.top + rect.height / 2 - innerHeight / 2);
   });

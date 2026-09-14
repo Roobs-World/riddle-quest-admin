@@ -1051,8 +1051,10 @@ describeBrowser("Jest authentication integration", () => {
       });
       observer.observe(document.body, {subtree: true, childList: true, characterData: true});
     });
+    /** Lobby action used to create a challenge for another player. */
     const challengePlayer = creator.page.getByRole("button", {name: "Challenge another player", exact: true});
     expect(await challengePlayer.isEnabled()).toBe(true);
+    /** Mobile bounds used to verify the challenge action remains tappable. */
     const challengeBounds = await challengePlayer.boundingBox();
     expect(challengeBounds).not.toBeNull();
     expect(challengeBounds!.x).toBeGreaterThanOrEqual(0);
