@@ -17,6 +17,7 @@ export function RaceCategoriesPanel({
   loading,
   onSelect,
   onShowInbox,
+  canChallenge = false,
 }: {
   /** Stores categories. */
   categories: ListRaceCategoriesResponse["categories"];
@@ -26,9 +27,25 @@ export function RaceCategoriesPanel({
   onSelect: (categoryId: RaceCategoryId) => void;
   /** Stores on show inbox. */
   onShowInbox: () => void;
+  /** Whether the active platform can send a completed race to another player. */
+  canChallenge?: boolean;
 }) {
   return (
     <div className="race-panel">
+      {canChallenge && (
+        <div className="race-lobby-challenge">
+          <button
+            type="button"
+            className="race-primary"
+            disabled={loading || !categories.some((category) => category.categoryId === "mixed")}
+            aria-describedby="race-challenge-help"
+            onClick={() => onSelect("mixed")}
+          >
+            {tr("RaceTo10.CHALLENGE_PLAYER")}
+          </button>
+          <p id="race-challenge-help">{tr("RaceTo10.CHALLENGE_PLAYER_HELP")}</p>
+        </div>
+      )}
       <h2>{tr("RaceTo10.CHOOSE_CATEGORY")}</h2>
       <p>{tr("RaceTo10.RULES_SUMMARY")}</p>
       <div className="race-category-grid">

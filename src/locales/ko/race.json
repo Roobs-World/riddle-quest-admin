@@ -28,6 +28,8 @@
     "HUB_TOURNAMENTS": "토너먼트",
     "MATCH_PLAYER": "상대 찾기",
     "CHOOSE_CONTEXT": "친구와 플레이",
+    "CHALLENGE_PLAYER": "다른 플레이어에게 도전",
+    "CHALLENGE_PLAYER_HELP": "혼합 카테고리 레이스를 완주한 뒤 다른 플레이어가 도전할 수 있도록 기록을 보내세요.",
     "SAFETY_ACTIONS": "안전 옵션",
     "BLOCK_RIVAL": "상대 차단",
     "REPORT_REASON": "신고 사유",

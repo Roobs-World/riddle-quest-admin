@@ -6,6 +6,7 @@ import {FatalErrorBoundary} from "../FatalErrorBoundary";
 import {initializeBrowserSentryFromEnvironment} from "../observability/sentryEnvironment";
 import {JestPlayApp} from "./JestPlayApp";
 import "../styles.css";
+import "./styles.css";
 
 initializeBrowserSentryFromEnvironment();
 

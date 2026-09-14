@@ -28,6 +28,8 @@
     "HUB_TOURNAMENTS": "トーナメント",
     "MATCH_PLAYER": "対戦相手を探す",
     "CHOOSE_CONTEXT": "友達とプレイ",
+    "CHALLENGE_PLAYER": "ほかのプレイヤーに挑戦",
+    "CHALLENGE_PLAYER_HELP": "ミックスカテゴリのレースを完走してから、ほかのプレイヤーが挑戦できるようにタイムを送りましょう。",
     "SAFETY_ACTIONS": "安全オプション",
     "BLOCK_RIVAL": "対戦相手をブロック",
     "REPORT_REASON": "報告理由",

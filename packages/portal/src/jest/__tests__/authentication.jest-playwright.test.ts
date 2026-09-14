@@ -1051,7 +1051,14 @@ describeBrowser("Jest authentication integration", () => {
       });
       observer.observe(document.body, {subtree: true, childList: true, characterData: true});
     });
-    await creator.page.getByRole("button", {name: /^History /}).click();
+    const challengePlayer = creator.page.getByRole("button", {name: "Challenge another player", exact: true});
+    expect(await challengePlayer.isEnabled()).toBe(true);
+    const challengeBounds = await challengePlayer.boundingBox();
+    expect(challengeBounds).not.toBeNull();
+    expect(challengeBounds!.x).toBeGreaterThanOrEqual(0);
+    expect(challengeBounds!.x + challengeBounds!.width).toBeLessThanOrEqual(390);
+    expect(challengeBounds!.height).toBeGreaterThanOrEqual(48);
+    await challengePlayer.click();
     /** Provides countdown rail behavior. */
     const countdownRail = creator.page.locator(".race-countdown-rail");
     await countdownRail.waitFor();

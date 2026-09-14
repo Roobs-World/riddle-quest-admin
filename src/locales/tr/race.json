@@ -28,6 +28,8 @@
     "HUB_TOURNAMENTS": "Turnuvalar",
     "MATCH_PLAYER": "Rakip bul",
     "CHOOSE_CONTEXT": "Arkadaşlarla oyna",
+    "CHALLENGE_PLAYER": "Başka bir oyuncuya meydan oku",
+    "CHALLENGE_PLAYER_HELP": "Karışık kategorili bir yarışı tamamla, ardından başka bir oyuncunun geçmesi için süreni gönder.",
     "SAFETY_ACTIONS": "Güvenlik seçenekleri",
     "BLOCK_RIVAL": "Rakibi engelle",
     "REPORT_REASON": "Bildirim nedeni",

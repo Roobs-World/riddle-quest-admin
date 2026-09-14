@@ -135,6 +135,18 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
 }
+.race-lobby-challenge {
+  padding-bottom: 14px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid #c9d9d3;
+}
+.race-lobby-challenge button {
+  width: 100%;
+  min-height: 48px;
+}
+.race-lobby-challenge p {
+  margin: 10px 0 0;
+}
 .race-category-grid button {
   min-height: 126px;
   padding: 18px;

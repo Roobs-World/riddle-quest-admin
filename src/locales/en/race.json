@@ -28,6 +28,8 @@
     "HUB_TOURNAMENTS": "Tournaments",
     "MATCH_PLAYER": "Find opponent",
     "CHOOSE_CONTEXT": "Play with friends",
+    "CHALLENGE_PLAYER": "Challenge another player",
+    "CHALLENGE_PLAYER_HELP": "Complete a mixed-category race, then send your time for another player to beat.",
     "SAFETY_ACTIONS": "Safety options",
     "BLOCK_RIVAL": "Block opponent",
     "REPORT_REASON": "Reason for report",

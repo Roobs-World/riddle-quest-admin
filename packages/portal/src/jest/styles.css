@@ -1,0 +1,4 @@
+/* Keep every Jest modal centered, including the shared settings bottom sheet. */
+#root .game-modal-backdrop {
+  align-items: center;
+}

@@ -28,6 +28,8 @@
     "HUB_TOURNAMENTS": "Tournois",
     "MATCH_PLAYER": "Trouver un adversaire",
     "CHOOSE_CONTEXT": "Jouer avec des amis",
+    "CHALLENGE_PLAYER": "Défier un autre joueur",
+    "CHALLENGE_PLAYER_HELP": "Terminez une course de catégories variées, puis envoyez votre temps à battre à un autre joueur.",
     "SAFETY_ACTIONS": "Options de sécurité",
     "BLOCK_RIVAL": "Bloquer l’adversaire",
     "REPORT_REASON": "Motif du signalement",

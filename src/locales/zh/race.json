@@ -28,6 +28,8 @@
     "HUB_TOURNAMENTS": "锦标赛",
     "MATCH_PLAYER": "寻找对手",
     "CHOOSE_CONTEXT": "与好友一起玩",
+    "CHALLENGE_PLAYER": "挑战其他玩家",
+    "CHALLENGE_PLAYER_HELP": "完成混合类别竞赛，然后发送你的用时，让其他玩家挑战你的记录。",
     "SAFETY_ACTIONS": "安全选项",
     "BLOCK_RIVAL": "屏蔽对手",
     "REPORT_REASON": "举报原因",

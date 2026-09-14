@@ -86,7 +86,7 @@
 }
 .onboarding-card-welcome p {
   width: min(390px, 100%);
-  text-align: left;
+  text-align: center;
 }
 .onboarding-card-welcome > .play-primary {
   width: min(240px, 100%);

@@ -8,6 +8,15 @@ const describeBrowser = process.env.PORTAL_BROWSER_TESTS === "1" ? describe : de
 /** Provides wcag tags behavior. */
 const wcagTags = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
 
+/** Checks the rendered modal is vertically centered within the Jest viewport. */
+const expectModalCentered = async (page: Page) => {
+  const offset = await page.locator(".game-modal").evaluate((element) => {
+    const rect = element.getBoundingClientRect();
+    return Math.abs(rect.top + rect.height / 2 - innerHeight / 2);
+  });
+  expect(offset).toBeLessThanOrEqual(1);
+};
+
 /** Provides expect accessible behavior. */
 const expectAccessible = async (page: Page, state: string) => {
   /** Provides {violations} behavior. */
@@ -190,7 +199,7 @@ describeBrowser("standalone Jest browser game", () => {
           .locator(".onboarding-card-welcome p")
           .first()
           .evaluate((element) => getComputedStyle(element).textAlign),
-      ).toBe("left");
+      ).toBe("center");
       expect(welcomeAction!.width).toBeGreaterThanOrEqual(200);
       expect(welcomeAction!.y + welcomeAction!.height).toBeLessThanOrEqual(welcomeCard!.y + welcomeCard!.height);
       await page.setViewportSize({width: 390, height: 600});
@@ -599,8 +608,10 @@ describeBrowser("standalone Jest browser game", () => {
       expect(modalChunkRequested).toBe(true);
       releaseModalChunk();
       await compactPage.getByRole("heading", {name: /^settings$/i}).waitFor();
+      await expectModalCentered(compactPage);
       await compactPage.getByRole("button", {name: /^about/i}).click();
       await compactPage.getByRole("heading", {name: /about \/ legal/i}).waitFor();
+      await expectModalCentered(compactPage);
       /** Provides about list behavior. */
       const aboutList = compactPage.locator(".about-list");
       /** Provides about rows behavior. */
@@ -652,6 +663,7 @@ describeBrowser("standalone Jest browser game", () => {
         .first()
         .click();
       await page.getByRole("heading", {name: /coin shop/i}).waitFor();
+      await expectModalCentered(page);
       await expectAccessible(page, "coin shop");
       await page.keyboard.press("Escape");
       await page.setViewportSize({width: 390, height: 667});
@@ -730,11 +742,13 @@ describeBrowser("standalone Jest browser game", () => {
       await page.locator(".tooltip-card").waitFor({state: "detached"});
       await page.waitForFunction(() => document.querySelector(".game-modal")?.contains(document.activeElement));
       await expectAccessible(page, "profile");
+      await expectModalCentered(page);
       for (const name of [/statistics/i, /achievements/i, /ranks/i, /leaderboard/i, /treasure/i]) {
         expect(await page.getByRole("button", {name}).isVisible()).toBe(true);
       }
       await page.getByRole("button", {name: /^statistics$/i}).click();
       await page.locator(".modal-statistics").waitFor();
+      await expectModalCentered(page);
       await expectAccessible(page, "statistics");
       await page.keyboard.press("Escape");
       await page
@@ -838,6 +852,7 @@ describeBrowser("standalone Jest browser game", () => {
         expect(await page.getByText(text).first().isVisible()).toBe(true);
       }
       await expectAccessible(page, "settings");
+      await expectModalCentered(page);
       await page.keyboard.press("Escape");
 
       await page.locator(".keyboard").getByRole("button", {name: /^P$/}).click();

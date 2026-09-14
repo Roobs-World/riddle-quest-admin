@@ -267,6 +267,7 @@ export function RaceTo10View(props: RaceTo10ViewProps) {
           loading={pending === "raceCategories"}
           onSelect={onSelectCategory}
           onShowInbox={onShowInbox}
+          canChallenge={sharingRewardCoins !== undefined}
         />
       )}
       {stage === "inbox" && (
