@@ -419,6 +419,26 @@ export class JestSdkPlatform implements JestPlatformPort {
       return failure(e);
     }
   }
+  /** Opens the provider confirmation; success schedules expiry without revoking access. */
+  async cancelSubscription(subscriptionSku: string): Promise<PlatformResult<void>> {
+    try {
+      /** Bounds the cancellation confirmation wait. */
+      const result = await withTimeout<any>(
+        this.sdk.payments.cancelSubscription({subscriptionSku}),
+        this.subscriptionCheckoutTimeoutMs,
+        "Jest subscription cancellation timed out",
+      );
+      if (result?.result === "success") return success(undefined);
+      if (result?.result === "cancel") return {status: "cancelled"};
+      /** Normalizes missing or provider-specific failure codes. */
+      const message = String(result?.error ?? "invalid_response");
+      if (message === "not_found") return {status: "terminal-failure", message};
+      if (message === "not_active" || message === "guest_not_allowed") return {status: "unavailable", message};
+      return {status: "retryable-failure", message};
+    } catch (error) {
+      return failure(error);
+    }
+  }
   /**
    * Sends one low-cardinality event when the optional SDK analytics hook exists.
    *

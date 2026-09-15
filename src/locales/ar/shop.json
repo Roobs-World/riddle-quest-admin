@@ -10,6 +10,8 @@
     "START_TRIAL_BUTTON": "ابدأ التجربة المجانية",
     "SUBSCRIBE_BUTTON": "اشترك",
     "SUBSCRIBED_BUTTON": "مشترك",
+    "CANCEL_SUBSCRIPTION": "إلغاء الاشتراك",
+    "SUBSCRIPTION_CANCELLED_NOTICE": "تم إلغاء التجديد. تبقى المزايا المميزة نشطة حتى نهاية فترة الفوترة.",
     "SUBSCRIPTION_ACTIVE": "الاشتراك المميز نشط",
     "SUBSCRIPTION_ACTIVE_NOTICE": "اشتراكك المميز نشط.",
     "TITLE": "متجر العملات",

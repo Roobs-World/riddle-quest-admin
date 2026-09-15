@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useCallback, useEffect, useRef, useState} from "react";
 import type {ProductSummary} from "../play/types";
 import type {JestPurchaseCoordinator} from "./purchases";
 import type {JestSession} from "./types";
@@ -31,9 +31,14 @@ export function useJestProductCatalog({
   const catalog = useState<ProductSummary[]>([]);
   /** Provides [, set products] behavior. */
   const [, setProducts] = catalog;
-  useEffect(() => {
+  /** Rejects responses from superseded refreshes and departed sessions. */
+  const generation = useRef(0);
+  /** Reloads authoritative catalog presentation without restarting the session. */
+  const refresh = useCallback(async () => {
     if (!session) return;
-    void withPlatformActivity(async () => {
+    /** Identifies this refresh for last-request-wins publication. */
+    const request = ++generation.current;
+    await withPlatformActivity(async () => {
       /** Provides products behavior. */
       const products = await purchases.getProducts(navigator.language);
       /** Provides subscriptions behavior. */
@@ -43,6 +48,7 @@ export function useJestProductCatalog({
           : ({status: "success", value: []} as const);
       return {products, subscriptions};
     }).then(({products, subscriptions}) => {
+      if (request !== generation.current) return;
       /** Provides next products behavior. */
       const nextProducts = products.status === "success" ? products.value : [];
       /** Provides next subscriptions behavior. */
@@ -52,6 +58,9 @@ export function useJestProductCatalog({
       if (subscriptions.status !== "success") {
         trackFunnel("subscriptions_load_failed", {status: subscriptions.status});
       }
+    }).catch(() => {
+      if (request === generation.current) setProducts([]);
+      trackFunnel("subscriptions_load_failed", {status: "retryable-failure"});
     });
   }, [
     purchases,
@@ -62,5 +71,9 @@ export function useJestProductCatalog({
     trackFunnel,
     withPlatformActivity,
   ]);
-  return catalog;
+  useEffect(() => {
+    void refresh();
+    return () => { generation.current += 1; };
+  }, [refresh]);
+  return [...catalog, refresh] as const;
 }

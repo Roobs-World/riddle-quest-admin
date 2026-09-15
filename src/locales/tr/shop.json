@@ -10,6 +10,8 @@
     "START_TRIAL_BUTTON": "ÜCRETSİZ DENE",
     "SUBSCRIBE_BUTTON": "ABONE OL",
     "SUBSCRIBED_BUTTON": "ABONE",
+    "CANCEL_SUBSCRIPTION": "Aboneliği iptal et",
+    "SUBSCRIPTION_CANCELLED_NOTICE": "Yenileme iptal edildi. Premium, fatura döneminizin sonuna kadar etkin kalır.",
     "SUBSCRIPTION_ACTIVE": "Premium aktif",
     "SUBSCRIPTION_ACTIVE_NOTICE": "Premium aboneliğiniz aktif.",
     "TITLE": "PARA MAGASASI",

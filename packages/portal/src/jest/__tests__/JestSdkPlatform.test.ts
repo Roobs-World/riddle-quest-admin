@@ -55,6 +55,7 @@ const sdk = () => ({
     completePurchase: jest.fn(),
     getSubscriptions: jest.fn(),
     beginSubscription: jest.fn(),
+    cancelSubscription: jest.fn(),
   },
   markFirstMilestone: jest.fn(),
   setLoadingProgress: jest.fn(),
@@ -851,4 +852,28 @@ it("marks the first milestone and contains milestone failures", async () => {
   await expect(platform.markFirstMilestone()).resolves.toEqual({status: "success", value: undefined});
   mock.markFirstMilestone.mockRejectedValue(new Error("offline"));
   await expect(platform.markFirstMilestone()).resolves.toEqual({status: "retryable-failure", message: "offline"});
+});
+
+it("normalizes subscription cancellation without treating dismissal as success", async () => {
+  /** Creates a provider SDK fixture. */
+  const mock = sdk();
+  /** Uses a short timeout to cover an unresolved confirmation. */
+  const platform = new JestSdkPlatform(mock, 1);
+  for (const [response, expected] of [
+    [{result: "success"}, {status: "success", value: undefined}],
+    [{result: "cancel"}, {status: "cancelled"}],
+    [{result: "error", error: "not_found"}, {status: "terminal-failure", message: "not_found"}],
+    [{result: "error", error: "not_active"}, {status: "unavailable", message: "not_active"}],
+    [{result: "error", error: "guest_not_allowed"}, {status: "unavailable", message: "guest_not_allowed"}],
+    [{result: "error", error: "internal_error"}, {status: "retryable-failure", message: "internal_error"}],
+    [null, {status: "retryable-failure", message: "invalid_response"}],
+  ]) {
+    mock.payments.cancelSubscription.mockResolvedValueOnce(response);
+    await expect(platform.cancelSubscription("premium")).resolves.toEqual(expected);
+  }
+  expect(mock.payments.cancelSubscription).toHaveBeenCalledWith({subscriptionSku: "premium"});
+  mock.payments.cancelSubscription.mockRejectedValueOnce(new Error("offline"));
+  await expect(platform.cancelSubscription("premium")).resolves.toMatchObject({status: "retryable-failure"});
+  mock.payments.cancelSubscription.mockImplementationOnce(() => new Promise(() => undefined));
+  await expect(platform.cancelSubscription("premium")).resolves.toMatchObject({status: "retryable-failure", message: expect.stringContaining("timed out")});
 });

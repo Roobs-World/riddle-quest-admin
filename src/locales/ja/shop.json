@@ -10,6 +10,8 @@
     "START_TRIAL_BUTTON": "無料トライアルを開始",
     "SUBSCRIBE_BUTTON": "登録する",
     "SUBSCRIBED_BUTTON": "登録済み",
+    "CANCEL_SUBSCRIPTION": "定期購入を解約",
+    "SUBSCRIPTION_CANCELLED_NOTICE": "自動更新を停止しました。請求期間の終了までプレミアムをご利用いただけます。",
     "SUBSCRIPTION_ACTIVE": "プレミアム有効",
     "SUBSCRIPTION_ACTIVE_NOTICE": "プレミアム登録が有効です。",
     "TITLE": "コインショップ",

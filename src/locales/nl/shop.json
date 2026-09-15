@@ -10,6 +10,8 @@
     "START_TRIAL_BUTTON": "GRATIS PROBEREN",
     "SUBSCRIBE_BUTTON": "ABONNEREN",
     "SUBSCRIBED_BUTTON": "GEABONNEERD",
+    "CANCEL_SUBSCRIPTION": "Abonnement opzeggen",
+    "SUBSCRIPTION_CANCELLED_NOTICE": "Verlenging geannuleerd. Premium blijft actief tot het einde van je factureringsperiode.",
     "SUBSCRIPTION_ACTIVE": "Premium actief",
     "SUBSCRIPTION_ACTIVE_NOTICE": "Je premiumabonnement is actief.",
     "TITLE": "MUNTWINKEL",

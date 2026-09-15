@@ -132,6 +132,9 @@ const installJestSdkHarness = async (page: Page, scenario = "success") => {
     let overlayClosed = false;
     /** Provides subscription active behavior. */
     let subscriptionActive = false;
+    window.addEventListener("test:subscription-state", (event) => {
+      subscriptionActive = Boolean((event as CustomEvent).detail);
+    });
     /** Provides sdk behavior. */
     const sdk = {
       init: async () => {
@@ -327,6 +330,15 @@ const installJestSdkHarness = async (page: Page, scenario = "success") => {
             signed: subscriptionActive ? "mock.subscriptions.active.signed" : "mock.subscriptions.inactive.signed",
           };
         },
+        cancelSubscription: async ({subscriptionSku}: {
+          /** Provider SKU selected by the shop. */
+          subscriptionSku: string;
+        }) => {
+          state.calls.push(`sdk.payments.cancelSubscription:${subscriptionSku}`);
+          if (state.scenario === "subscription-cancel-dismiss") return {result: "cancel"};
+          if (state.scenario === "subscription-cancel-error") return {result: "error", error: "internal_error"};
+          return {result: "success"};
+        },
         beginSubscription: async ({subscriptionSku}: {/** Stores subscription sku. */ /** Stores subscription sku. */ /** Stores subscription sku. */
         /** Stores subscription sku. */
         subscriptionSku: string}) => {
@@ -521,6 +533,35 @@ describeBrowser("Jest authentication integration", () => {
     await browser?.close();
     await new Promise<void>((resolve, reject) => server?.close((error) => (error ? reject(error) : resolve())));
   });
+
+  it("refreshes Config-panel subscription changes and cancels renewal from the shop", async () => {
+    /** Starts a registered wallet in the injected SDK harness. */
+    const {page} = await openHarness(browser, {registered: true});
+    await enterRegisteredGame(page);
+    await page.getByRole("button", {name: /buy coins/i}).first().click();
+    await page.getByRole("button", {name: /start free trial/i}).waitFor();
+    await page.evaluate(() => window.dispatchEvent(new CustomEvent("test:subscription-state", {detail: true})));
+    /** Finds the active plan’s cancellation action. */
+    const cancel = page.getByRole("button", {name: /cancel subscription/i});
+    await cancel.waitFor();
+    expect(await page.getByRole("button", {name: /start free trial|^subscribe$/i}).count()).toBe(0);
+    expect((await getHarnessState(page)).calls).not.toContain("sdk.payments.beginSubscription");
+    for (const scenario of ["subscription-cancel-dismiss", "subscription-cancel-error", "success"]) {
+      await page.evaluate((value) => {
+        (window as any).__RIDDLE_QUEST_JEST_AUTH_TEST__.scenario = value;
+      }, scenario);
+      await cancel.click();
+      await page.getByTestId("server-activity-loader").waitFor({state: "hidden"});
+      if (scenario === "subscription-cancel-error") await page.getByRole("alert").filter({hasText: /unexpected error/i}).waitFor();
+      if (scenario !== "success") expect(await page.getByText(/renewal cancelled/i).count()).toBe(0);
+    }
+    await page.getByText(/renewal cancelled/i).waitFor();
+    expect(await page.getByText("Premium active", {exact: true}).isVisible()).toBe(true);
+    expect((await getHarnessState(page)).calls.filter((call) => call.startsWith("sdk.payments.cancelSubscription:"))).toHaveLength(3);
+    await page.screenshot({path: "/tmp/riddle-subscription-cancelled.png"});
+    await page.evaluate(() => window.dispatchEvent(new CustomEvent("test:subscription-state", {detail: false})));
+    await page.getByRole("button", {name: /start free trial/i}).waitFor();
+  }, 30_000);
 
   it("starts a guest through signed identity exchange and reads stable-player progress", async () => {
     /** Provides {context, page} behavior. */

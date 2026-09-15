@@ -10,6 +10,8 @@
     "START_TRIAL_BUTTON": "START FREE TRIAL",
     "SUBSCRIBE_BUTTON": "SUBSCRIBE",
     "SUBSCRIBED_BUTTON": "SUBSCRIBED",
+    "CANCEL_SUBSCRIPTION": "Cancel subscription",
+    "SUBSCRIPTION_CANCELLED_NOTICE": "Renewal cancelled. Premium stays active until the end of your billing period.",
     "SUBSCRIPTION_ACTIVE": "Premium active",
     "SUBSCRIPTION_ACTIVE_NOTICE": "Your premium subscription is active.",
     "TITLE": "COIN SHOP",

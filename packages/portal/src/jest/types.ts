@@ -367,6 +367,8 @@ export interface JestPlatformPort {
       subscriptionsSigned: string;
     }>
   >;
+  /** Opens provider cancellation confirmation without revoking the paid-period entitlement. */
+  cancelSubscription(subscriptionSku: string): Promise<PlatformResult<void>>;
   /**
    * Opens a bounded subscription checkout.
    *

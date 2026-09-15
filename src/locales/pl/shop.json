@@ -10,6 +10,8 @@
     "START_TRIAL_BUTTON": "ROZPOCZNIJ OKRES PRÓBNY",
     "SUBSCRIBE_BUTTON": "SUBSKRYBUJ",
     "SUBSCRIBED_BUTTON": "SUBSKRYBUJESZ",
+    "CANCEL_SUBSCRIPTION": "Anuluj subskrypcję",
+    "SUBSCRIPTION_CANCELLED_NOTICE": "Odnowienie anulowane. Premium pozostaje aktywne do końca okresu rozliczeniowego.",
     "SUBSCRIPTION_ACTIVE": "Premium aktywne",
     "SUBSCRIPTION_ACTIVE_NOTICE": "Twoja subskrypcja premium jest aktywna.",
     "TITLE": "SKLEP Z MONETAMI",

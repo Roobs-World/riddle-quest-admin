@@ -10,6 +10,8 @@
     "START_TRIAL_BUTTON": "BESPLATNYY PERIOD",
     "SUBSCRIBE_BUTTON": "PODPISATSYA",
     "SUBSCRIBED_BUTTON": "PODPISKA AKTIVNA",
+    "CANCEL_SUBSCRIPTION": "Отменить подписку",
+    "SUBSCRIPTION_CANCELLED_NOTICE": "Продление отменено. Премиум остаётся активным до конца оплаченного периода.",
     "SUBSCRIPTION_ACTIVE": "Premium aktiven",
     "SUBSCRIPTION_ACTIVE_NOTICE": "Vasha premium-podpiska aktivna.",
     "TITLE": "MAGAZIN MONET",

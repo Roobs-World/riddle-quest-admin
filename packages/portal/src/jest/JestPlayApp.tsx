@@ -1,3 +1,4 @@
+import {ShopSubscriptionContext} from "../play/modalPages/commerce/ShopSubscriptionContext";
 import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {PlayHostApp} from "../play/PlayHostApp";
 import {JestSdkPlatform} from "./JestSdkPlatform";
@@ -172,13 +173,23 @@ export function JestPlayApp() {
     authHarness,
   });
   /** Provides [jest products, set jest products] behavior. */
-  const [jestProducts, setJestProducts] = useJestProductCatalog({
+  const [jestProducts, setJestProducts, refreshProducts] = useJestProductCatalog({
     purchases,
     session,
     subscriptionsEnabled,
     trackFunnel,
     withPlatformActivity: withBackgroundPlatformActivity,
   });
+  /** Supplies shop operations through the Jest adapter. */
+  const subscriptionActions = useMemo(() => ({
+    refresh: refreshProducts,
+    cancel: async (sku: string): Promise<"success" | "cancelled" | "error"> => {
+      /** Waits for the provider cancellation confirmation. */
+      const result = await withPlatformActivity(() => platform.cancelSubscription(sku));
+      await refreshProducts();
+      return result.status === "success" || result.status === "cancelled" ? result.status : "error";
+    },
+  }), [platform, refreshProducts, withPlatformActivity]);
   /** Provides purchase product behavior. */
   const purchaseProduct = useJestPurchase({
     products: jestProducts,
@@ -461,39 +472,41 @@ export function JestPlayApp() {
           onDismiss={dismissRegistration}
         />
       ) : null}
-      <PlayHostApp
-        session={createHostedPlaySession({
-          hostServices,
-          hostConfigurationWarning,
-          initialGameMode: session.entryIntent.gameMode,
-          initialRaceChallengeId: resolveRaceChallengeId(session.entryIntent),
-          initialRaceInbox: session.entryIntent.challengeDestination === "inbox",
-          initialRaceLobby: session.entryIntent.challengeDestination === "multiplayer",
-          registrationName: session.entryIntent.customName,
-          registrationInviterName: session.entryIntent.inviterName,
-          platformProducts: jestProducts,
-          platformPurchase: purchaseProduct,
-          raceAvailable: true,
-          platformCapabilities: {
-            accountUpgrade: {
-              state: session.player.registered ? "complete" : "available",
-              begin: async () => ({status: "unavailable", message: "Use the Jest registration controls."}),
+      <ShopSubscriptionContext.Provider value={subscriptionsEnabled ? subscriptionActions : null}>
+        <PlayHostApp
+          session={createHostedPlaySession({
+            hostServices,
+            hostConfigurationWarning,
+            initialGameMode: session.entryIntent.gameMode,
+            initialRaceChallengeId: resolveRaceChallengeId(session.entryIntent),
+            initialRaceInbox: session.entryIntent.challengeDestination === "inbox",
+            initialRaceLobby: session.entryIntent.challengeDestination === "multiplayer",
+            registrationName: session.entryIntent.customName,
+            registrationInviterName: session.entryIntent.inviterName,
+            platformProducts: jestProducts,
+            platformPurchase: purchaseProduct,
+            raceAvailable: true,
+            platformCapabilities: {
+              accountUpgrade: {
+                state: session.player.registered ? "complete" : "available",
+                begin: async () => ({status: "unavailable", message: "Use the Jest registration controls."}),
+              },
             },
-          },
-          externalInteractionBlocked: pendingPlatformOperations > 0,
-          initialPlayerData: session.playerData,
-          onPlayerDataChange: playerStateWrites.savePlayerData,
-          accountDeletionServiceGate: notificationOperationGate,
-          presenceEnabled: session.preferences.presenceEnabled === true,
-          onTogglePresence: togglePresence,
-          onPresenceStateChange: setPresenceState,
-          referralSharing,
-        })}
-        onPlayable={() => markJestPlayable(platform)}
-        onAuthoritativeComplete={handleAuthoritativeComplete}
-        onAccountDeletionRequested={() => markAccountDeletionRequested(platform.getPlayer().playerId)}
-        onAccountDeleted={clearPlayerState}
-      />
+            externalInteractionBlocked: pendingPlatformOperations > 0,
+            initialPlayerData: session.playerData,
+            onPlayerDataChange: playerStateWrites.savePlayerData,
+            accountDeletionServiceGate: notificationOperationGate,
+            presenceEnabled: session.preferences.presenceEnabled === true,
+            onTogglePresence: togglePresence,
+            onPresenceStateChange: setPresenceState,
+            referralSharing,
+          })}
+          onPlayable={() => markJestPlayable(platform)}
+          onAuthoritativeComplete={handleAuthoritativeComplete}
+          onAccountDeletionRequested={() => markAccountDeletionRequested(platform.getPlayer().playerId)}
+          onAccountDeleted={clearPlayerState}
+        />
+      </ShopSubscriptionContext.Provider>
     </>
   );
 }

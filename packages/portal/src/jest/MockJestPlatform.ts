@@ -224,6 +224,12 @@ export class MockJestPlatform implements JestPlatformPort {
       subscriptionSigned: "mock.subscription.signed",
     });
   };
+  /** Cancels renewal while retaining the current billing-period entitlement. */
+  cancelSubscription = async (_subscriptionSku: string): Promise<PlatformResult<void>> => {
+    if (!this.player.registered) return {status: "unavailable", message: "guest_not_allowed"};
+    if (!this.subscriptionActive) return {status: "unavailable", message: "not_active"};
+    return ok(undefined);
+  };
   /** Captures event. */
   captureEvent = (name: string, properties?: Record<string, string | number | boolean>) => {
     this.capturedEvents.push({name, properties});

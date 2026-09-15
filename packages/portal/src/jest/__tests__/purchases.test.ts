@@ -137,7 +137,7 @@ it("maps the Jest catalog with SDK currency and trusted coin values", async () =
   );
 });
 
-it("uses only backend-verified subscription status in the shop catalog", async () => {
+it("does not sell a subscription the SDK says is held, even when verification disagrees", async () => {
   /** Provides platform behavior. */
   const platform = new MockJestPlatform(true);
   platform.getSubscriptions = async () => ({
@@ -171,7 +171,7 @@ it("uses only backend-verified subscription status in the shop catalog", async (
       expect.objectContaining({
         productId: "premium",
         productType: "subscription",
-        subscriptionStatus: "inactive",
+        subscriptionStatus: "active",
         displayPrice: "$4.99",
         billingPeriod: "monthly",
       }),
@@ -235,6 +235,10 @@ it("never re-offers an active subscription or an equivalent blocked cadence", as
   expect(result).toEqual({
     status: "success",
     value: [
+      expect.objectContaining({
+        productId: "premium-monthly",
+        subscriptionStatus: "active",
+      }),
       expect.objectContaining({
         productId: "supporter-monthly",
         description: "",

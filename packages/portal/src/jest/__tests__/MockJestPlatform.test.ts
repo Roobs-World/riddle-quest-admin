@@ -173,3 +173,15 @@ describe("MockJestPlatform", () => {
     ]);
   });
 });
+
+it("cancels renewal only for an active registered wallet and retains paid access", async () => {
+  /** Guest wallets cannot cancel subscriptions. */
+  const guest = new MockJestPlatform(false);
+  await expect(guest.cancelSubscription("premium")).resolves.toMatchObject({status: "unavailable", message: "guest_not_allowed"});
+  /** Registered wallets must hold a plan before cancelling it. */
+  const registered = new MockJestPlatform(true);
+  await expect(registered.cancelSubscription("premium")).resolves.toMatchObject({status: "unavailable", message: "not_active"});
+  await registered.beginSubscription("premium");
+  await expect(registered.cancelSubscription("premium")).resolves.toMatchObject({status: "success"});
+  await expect(registered.getSubscriptions()).resolves.toMatchObject({value: {subscriptions: [expect.objectContaining({status: "active"})]}});
+});

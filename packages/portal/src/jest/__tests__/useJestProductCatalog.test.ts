@@ -9,6 +9,8 @@ const mockEffects: Array<() => void> = [];
 const mockSetProducts = jest.fn();
 
 jest.mock("react", () => ({
+  useCallback: (callback: unknown) => callback,
+  useRef: () => ({current: 0}),
   useEffect: (effect: () => void) => mockEffects.push(effect),
   useState: () => [[], mockSetProducts],
 }));
@@ -143,4 +145,40 @@ describe("useJestProductCatalog", () => {
       status: "cancelled",
     });
   });
+});
+
+it("refreshes a Config-panel activation without restarting the player session", async () => {
+  /** Keeps the same session while changing provider state. */
+  const {getProducts, getSubscriptions, state} = createHarness(session(true), true);
+  /** Starts with an inactive subscription offer. */
+  const offer = {...product("premium", "subscription"), subscriptionStatus: "inactive" as const};
+  getProducts.mockResolvedValue({status: "success", value: []});
+  getSubscriptions.mockResolvedValue({status: "success", value: [offer]});
+  await flushCatalogLoad();
+  getSubscriptions.mockResolvedValue({status: "success", value: [{...offer, subscriptionStatus: "active"}]});
+  await state[2]();
+  expect(mockSetProducts).toHaveBeenLastCalledWith([{...offer, subscriptionStatus: "active"}]);
+});
+
+it("closes offers when refreshing throws", async () => {
+  /** Simulates an SDK rejection before catalog normalization. */
+  const {getProducts, state, trackFunnel} = createHarness(session(true), true);
+  getProducts.mockRejectedValue(new Error("offline"));
+  await state[2]();
+  expect(mockSetProducts).toHaveBeenLastCalledWith([]);
+  expect(trackFunnel).toHaveBeenCalledWith("subscriptions_load_failed", {status: "retryable-failure"});
+});
+
+it.each([false, true])("ignores departed-session responses (failure: %s)", async (fails) => {
+  /** Keeps the provider call pending until the session effect is cleaned up. */
+  let settle!: (value: never) => void;
+  /** Controls a late catalog response from the departed wallet. */
+  const {getProducts} = createHarness(session(true), false);
+  getProducts.mockImplementation(() => new Promise((resolve, reject) => { settle = fails ? reject : resolve; }));
+  /** Simulates unmounting or replacing the current wallet. */
+  const cleanup = mockEffects[0]() as unknown as () => void;
+  cleanup();
+  settle((fails ? new Error("offline") : {status: "success", value: []}) as never);
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  expect(mockSetProducts).not.toHaveBeenCalled();
 });

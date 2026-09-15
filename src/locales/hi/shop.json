@@ -10,6 +10,8 @@
     "START_TRIAL_BUTTON": "मुफ़्त ट्रायल शुरू करें",
     "SUBSCRIBE_BUTTON": "सदस्यता लें",
     "SUBSCRIBED_BUTTON": "सदस्यता सक्रिय",
+    "CANCEL_SUBSCRIPTION": "सदस्यता रद्द करें",
+    "SUBSCRIPTION_CANCELLED_NOTICE": "नवीनीकरण रद्द कर दिया गया है। बिलिंग अवधि समाप्त होने तक प्रीमियम सक्रिय रहेगा।",
     "SUBSCRIPTION_ACTIVE": "प्रीमियम सक्रिय",
     "SUBSCRIPTION_ACTIVE_NOTICE": "आपकी प्रीमियम सदस्यता सक्रिय है।",
     "TITLE": "सिक्का दुकान",

@@ -10,6 +10,8 @@
     "START_TRIAL_BUTTON": "TESTE GRÁTIS",
     "SUBSCRIBE_BUTTON": "ASSINAR",
     "SUBSCRIBED_BUTTON": "ASSINADO",
+    "CANCEL_SUBSCRIPTION": "Cancelar assinatura",
+    "SUBSCRIPTION_CANCELLED_NOTICE": "Renovação cancelada. O Premium permanece ativo até o fim do período de cobrança.",
     "SUBSCRIPTION_ACTIVE": "Premium ativo",
     "SUBSCRIPTION_ACTIVE_NOTICE": "Sua assinatura premium está ativa.",
     "TITLE": "LOJA DE MOEDAS",

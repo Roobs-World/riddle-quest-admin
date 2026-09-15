@@ -60,6 +60,8 @@ const createHarness = ({
   const purchase = jest.fn<JestPurchaseCoordinator["purchase"]>();
   /** Provides subscribe behavior. */
   const subscribe = jest.fn<JestPurchaseCoordinator["subscribe"]>();
+  /** Returns fresh provider state for checkout preflight. */
+  const getSubscriptions = jest.fn<JestPurchaseCoordinator["getSubscriptions"]>().mockResolvedValue({status: "success", value: products});
   /** Sets products. */
   const setProducts = jest.fn<Dispatch<SetStateAction<ProductSummary[]>>>();
   /** Tracks funnel. */
@@ -67,13 +69,13 @@ const createHarness = ({
   /** Provides purchase product behavior. */
   const purchaseProduct = useJestPurchase({
     products,
-    purchases: {purchase, subscribe} as unknown as JestPurchaseCoordinator,
+    purchases: {purchase, subscribe, getSubscriptions} as unknown as JestPurchaseCoordinator,
     session: currentSession,
     setProducts,
     ...(subscriptionsEnabled === undefined ? {} : {subscriptionsEnabled}),
     trackFunnel,
   });
-  return {purchase, purchaseProduct, setProducts, subscribe, trackFunnel};
+  return {purchase, purchaseProduct, setProducts, subscribe, trackFunnel, getSubscriptions};
 };
 
 beforeEach(() => {
@@ -245,7 +247,7 @@ describe("useJestPurchase", () => {
       purchaseType: "subscription",
     });
     expect(trackFunnel).toHaveBeenCalledWith("subscription_cancelled", {productId: "premium-monthly"});
-    expect(setProducts).not.toHaveBeenCalled();
+    expect(setProducts).toHaveBeenCalledTimes(1);
     expect(mockTrackPurchase).not.toHaveBeenCalled();
   });
 
@@ -308,9 +310,10 @@ describe("useJestPurchase", () => {
     });
 
     /** Provides update behavior. */
-    const update = setProducts.mock.calls[0][0] as (current: ProductSummary[]) => ProductSummary[];
+    const update = setProducts.mock.calls.at(-1)![0] as (current: ProductSummary[]) => ProductSummary[];
     expect(update(products)).toEqual([
-      {...supporter, subscriptionStatus: "inactive", trialEligible: false},
+      {...monthly, subscriptionStatus: "active", trialEligible: false},
+      supporter,
       consumable,
     ]);
     expect(subscribe).toHaveBeenCalledWith("premium-monthly", "player-1");
@@ -322,4 +325,40 @@ describe("useJestPurchase", () => {
       currency: "GBP",
     });
   });
+});
+
+it("refreshes stale offers before checkout and never starts an already-held plan", async () => {
+  /** Creates an offer that becomes stale before checkout. */
+  const subscription = product({productId: "premium", productType: "subscription", subscriptionStatus: "inactive"});
+  /** Exposes checkout and the provider state refresh. */
+  const {purchaseProduct, subscribe, getSubscriptions} = createHarness({products: [subscription], subscriptionsEnabled: true});
+  getSubscriptions.mockResolvedValue({status: "success", value: [{...subscription, subscriptionStatus: "active"}]});
+  await purchaseProduct("premium");
+  expect(subscribe).not.toHaveBeenCalled();
+  expect(mockTrackPurchase).not.toHaveBeenCalled();
+});
+
+it("fails closed when checkout preflight cannot read subscriptions", async () => {
+  /** Starts with a previously available plan. */
+  const subscription = product({productId: "premium", productType: "subscription"});
+  /** Controls the provider failure at the purchase boundary. */
+  const {purchaseProduct, subscribe, getSubscriptions} = createHarness({products: [subscription], subscriptionsEnabled: true});
+  getSubscriptions.mockResolvedValue({status: "retryable-failure", message: "offline"});
+  await expect(purchaseProduct("premium")).rejects.toThrow();
+  expect(subscribe).not.toHaveBeenCalled();
+});
+
+it("removes a now-blocked cadence while preserving coin packs", async () => {
+  /** Represents a cadence that was offered before another plan became active. */
+  const subscription = product({productId: "premium", productType: "subscription"});
+  /** Existing consumables are independent of subscription availability. */
+  const coinPack = product();
+  /** Exposes the state update used to remove the stale cadence. */
+  const {purchaseProduct, subscribe, getSubscriptions, setProducts} = createHarness({products: [subscription, coinPack], subscriptionsEnabled: true});
+  getSubscriptions.mockResolvedValue({status: "success", value: []});
+  await purchaseProduct("premium");
+  /** Applies the actual catalog updater to the prior visible state. */
+  const update = setProducts.mock.calls[0][0] as (current: ProductSummary[]) => ProductSummary[];
+  expect(update([subscription, coinPack])).toEqual([coinPack]);
+  expect(subscribe).not.toHaveBeenCalled();
 });

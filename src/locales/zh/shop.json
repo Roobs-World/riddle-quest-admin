@@ -10,6 +10,8 @@
     "START_TRIAL_BUTTON": "开始免费试用",
     "SUBSCRIBE_BUTTON": "订阅",
     "SUBSCRIBED_BUTTON": "已订阅",
+    "CANCEL_SUBSCRIPTION": "取消订阅",
+    "SUBSCRIPTION_CANCELLED_NOTICE": "已取消续订。高级会员权益将保留至当前计费周期结束。",
     "SUBSCRIPTION_ACTIVE": "高级会员已生效",
     "SUBSCRIPTION_ACTIVE_NOTICE": "您的高级会员订阅已生效。",
     "TITLE": "金币商店",
