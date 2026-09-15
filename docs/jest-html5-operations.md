@@ -375,7 +375,7 @@ Owner access to `https://jest.com/developers` is required:
 
 - Identity: guest and registered startup; dismissal and cancellation; stable player ID; invalid and stale token rejection.
 - Loading: every manual phase advances; no 15-second timeout; retry works; overlay closes only when input is enabled.
-- Analytics: the first authoritative win marks the first milestone once; registration and attribution events contain no personal data.
+- Analytics: every authoritative win calls `markFirstMilestone()`; Jest deduplicates the signal per session; registration and attribution events contain no personal data.
 - Notifications: D1-D7 engagement and Race-to-10 reminder replacement/removal; registered-only behavior; Daily Cosmic Riddle and race-inbox payload return.
 - Payments: success, cancellation, internal error, invalid SKU/token, timeout, interruption before completion, and multi-page recovery.
 - Subscriptions: signed entitlement sync, inactive offer, successful or cancelled checkout, active offer suppression, restoration, and cancellation.

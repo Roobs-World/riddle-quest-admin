@@ -124,7 +124,7 @@ export type PlatformPreferences = {
   onboardingComplete?: boolean;
   /** Unix epoch milliseconds of the latest dismissed registration prompt. */
   registrationPromptDismissedAt?: number;
-  /** Prevents the first authoritative milestone from being reported more than once. */
+  /** Records historical milestone completion; Jest deduplicates SDK reporting per session. */
   firstMilestoneMarked?: boolean;
   /** Explicit player consent for account-wide presence publication. */
   presenceEnabled?: boolean;

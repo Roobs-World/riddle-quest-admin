@@ -40,14 +40,17 @@ export async function recordAuthoritativeCompletion(
     };
   }
 
+  // Jest deduplicates this event per session. A saved flag must not prevent
+  // a new session (including the Simulator checklist) from observing it.
+  /** Reports every authoritative win through the platform's milestone API. */
+  const result = await platform.markFirstMilestone();
+  if (result.status !== "success") return result;
+
   /** Provides preferences behavior. */
   let preferences = session.preferences;
   /** Provides milestone marked behavior. */
   let milestoneMarked = false;
   if (!preferences.firstMilestoneMarked) {
-    /** Provides result behavior. */
-    const result = await platform.markFirstMilestone();
-    if (result.status !== "success") return result;
     preferences = {...preferences, firstMilestoneMarked: true};
     await platform.writePreferences(preferences);
     milestoneMarked = true;

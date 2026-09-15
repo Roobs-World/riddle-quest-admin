@@ -127,7 +127,8 @@ const installJestSdkHarness = async (page: Page, scenario = "success") => {
       registered: params.get("registered") === "1" || localStorage.getItem("riddleQuest:jestAuthHarness:registered") === "1",
     };
     /** Provides preferences behavior. */
-    const preferences: Record<string, unknown> = {};
+    const preferences: Record<string, unknown> = selectedScenario === "returning-milestone"
+      ? {firstMilestoneMarked: true} : {};
     /** Provides overlay closed behavior. */
     let overlayClosed = false;
     /** Provides subscription active behavior. */
@@ -360,7 +361,7 @@ const installJestSdkHarness = async (page: Page, scenario = "success") => {
           };
         },
       },
-      markFirstMilestone: async () => {},
+      markFirstMilestone: async () => { state.calls.push("sdk.markFirstMilestone"); },
       setLoadingProgress: (progress: number) => state.calls.push(`sdk.progress:${progress}`),
       markGameLoaded: () => state.calls.push("sdk.markGameLoaded"),
     };
@@ -561,6 +562,21 @@ describeBrowser("Jest authentication integration", () => {
     await page.screenshot({path: "/tmp/riddle-subscription-cancelled.png"});
     await page.evaluate(() => window.dispatchEvent(new CustomEvent("test:subscription-state", {detail: false})));
     await page.getByRole("button", {name: /start free trial/i}).waitFor();
+  }, 30_000);
+
+  it("reports first_milestone after a returning player solves a riddle", async () => {
+    /** Restores a wallet that completed the milestone in an earlier session. */
+    const {page} = await openHarness(browser, {registered: true, scenario: "returning-milestone"});
+    await enterRegisteredGame(page);
+    expect((await getHarnessState(page)).calls).not.toContain("sdk.markFirstMilestone");
+    for (const letter of "PIANO") await page.locator(".keyboard").getByRole("button", {name: letter, exact: true}).click();
+    await page.getByRole("button", {name: /submit/i}).click();
+    await page.waitForFunction(() =>
+      (window as typeof window & {
+        /** Observed SDK calls for this test session. */
+        __RIDDLE_QUEST_JEST_AUTH_TEST__: AuthHarnessState;
+      }).__RIDDLE_QUEST_JEST_AUTH_TEST__.calls.includes("sdk.markFirstMilestone"));
+    expect((await getHarnessState(page)).calls.filter((call) => call === "sdk.markFirstMilestone")).toHaveLength(1);
   }, 30_000);
 
   it("starts a guest through signed identity exchange and reads stable-player progress", async () => {

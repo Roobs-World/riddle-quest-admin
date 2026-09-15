@@ -49,6 +49,7 @@ describe("authoritative first milestone", () => {
       {gameMode: "challenge", isCorrect: false},
       REGISTRATION_PROMPT_COOLDOWN_MS,
     );
+    expect(mark).not.toHaveBeenCalled();
     /** Provides cooling down behavior. */
     const coolingDown = await recordAuthoritativeCompletion(
       platform,
@@ -69,7 +70,7 @@ describe("authoritative first milestone", () => {
         value: expect.objectContaining({milestoneMarked: false, shouldPromptRegistration: false}),
       }),
     );
-    expect(mark).not.toHaveBeenCalled();
+    expect(mark).toHaveBeenCalledTimes(1);
   });
 
   test("propagates a platform milestone failure without writing preferences", async () => {
@@ -103,4 +104,15 @@ describe("authoritative first milestone", () => {
       }),
     );
   });
+});
+
+test("reports a returning player's solved riddle even when the saved milestone flag is set", async () => {
+  /** Represents a player returning to a new Simulator session. */
+  const platform = new MockJestPlatform();
+  /** Observes the SDK event required by the checklist. */
+  const mark = jest.spyOn(platform, "markFirstMilestone");
+  await recordAuthoritativeCompletion(platform, session({preferences: {firstMilestoneMarked: true}}), {
+    gameMode: "classic", isCorrect: true,
+  });
+  expect(mark).toHaveBeenCalledTimes(1);
 });
