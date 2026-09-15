@@ -323,6 +323,7 @@ describeBrowser("standalone Jest browser game", () => {
       expect(await page.locator('[data-testid="server-activity-loader"]').count()).toBe(0);
       expect(await page.locator(".race-category-grid button").count()).toBeGreaterThan(0);
       expect(await page.evaluate(() => localStorage.getItem("riddleQuest:activeRaceRun"))).toBeNull();
+      expect(await page.locator(".race-screen [role=alert]").count()).toBe(0);
       expect((await page.locator(".race-coin-balance strong").innerText()).trim()).toBe(mainGameCoinBalance);
       expect(await page.locator(".race-coin-balance").isVisible()).toBe(true);
       await expectAccessible(page, "multiplayer category selection");

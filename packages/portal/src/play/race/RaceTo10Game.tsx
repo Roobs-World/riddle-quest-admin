@@ -34,9 +34,9 @@ import {getGhostCorrectCount} from "./logic/racePlayback";
 import {createRaceAttempt, findFirstEditableRaceSlot, getAdjustedRaceTime, getRaceLetterStates} from "./logic/racePresentation";
 import {useRaceDialogFocus, useRaceGameplayFit, useRaceGameplayKeyboard, useRaceOperationLifecycle} from "./hooks";
 import {RaceTo10View, type RaceStage} from "./RaceTo10View";
-import {safeBrowserStorageGet, safeBrowserStorageRemove} from "../playerPreferences";
+import {readActiveRace, clearActiveRace} from "./logic/activeRaceStorage";
 import {EMPTY_RACE_CATEGORIES, type RaceTo10GameProps} from "./RaceTo10Game.types";
-import {ACTIVE_RACE_KEY, useActiveRacePersistence, useRaceClockEffects, useRaceEntryTracking, useRaceFeedbackTimers} from "./hooks/useRaceRuntimeEffects";
+import {useActiveRacePersistence, useRaceClockEffects, useRaceEntryTracking, useRaceFeedbackTimers} from "./hooks/useRaceRuntimeEffects";
 import {useReferralSharing} from "../sharing/ReferralSharingCapability";
 
 /** Coordinates the complete server-authoritative Race to 10 multiplayer experience. */
@@ -45,6 +45,7 @@ export function RaceTo10Game({
   challengeId,
   openInbox = false,
   coins,
+  ownerId,
   postToHost,
   onClose,
   initialCategories = EMPTY_RACE_CATEGORIES,
@@ -227,13 +228,13 @@ export function RaceTo10Game({
       else if (challengeId) send("raceChallenge", "game:getRaceChallenge", {challengeId, locale});
       else {
         /** Provides active run id behavior. */
-        const activeRunId = safeBrowserStorageGet("local", ACTIVE_RACE_KEY)?.trim();
+        const activeRunId = readActiveRace(ownerId);
         if (activeRunId) send("raceResume", "game:resumeRace", {runId: activeRunId});
         else if (initialCategories.length === 0) send("raceCategories", "game:listRaceCategories", {locale});
       }
     }, 0);
     return () => window.clearTimeout(timer);
-  }, [challengeId, initialCategories.length, locale, openInbox, send]);
+  }, [challengeId, initialCategories.length, locale, openInbox, ownerId, send]);
 
   useEffect(() => {
     /** Processes correlated race-operation responses emitted by the host bridge. */
@@ -257,7 +258,7 @@ export function RaceTo10Game({
           setRun(null);
           setStage(activeChallengeId ? "challenge" : "categories");
         } else if (operation === "raceResume") {
-          safeBrowserStorageRemove("local", ACTIVE_RACE_KEY);
+          clearActiveRace(ownerId);
           setRun(null);
           setStage("categories");
           if (initialCategories.length === 0) send("raceCategories", "game:listRaceCategories", {locale});
@@ -328,7 +329,7 @@ export function RaceTo10Game({
           /** Provides abandoned behavior. */
           const abandoned = AbandonRaceRunResponseSchema.parse(message.payload.data);
           if (abandoned.run.status !== "abandoned" || abandoned.result !== null) throw new Error("Invalid abandon response");
-          safeBrowserStorageRemove("local", ACTIVE_RACE_KEY);
+          clearActiveRace(ownerId);
           setRun(abandoned.run);
           setQuitConfirmationOpen(false);
           onClose();
@@ -420,7 +421,7 @@ export function RaceTo10Game({
     };
     window.addEventListener(HOST_TO_GAME_EVENT, handle);
     return () => window.removeEventListener(HOST_TO_GAME_EVENT, handle);
-  }, [activeChallengeId, activeSlotIndex, analytics, currentLetters, finishOperation, initialCategories.length, locale, onClose, resetAttempt, run?.currentRiddle?.riddleId, send, setRaceGuessAwaitingOutcome, sharePublishedChallenge, updateRun]);
+  }, [activeChallengeId, activeSlotIndex, analytics, currentLetters, finishOperation, initialCategories.length, locale, onClose, ownerId, resetAttempt, run?.currentRiddle?.riddleId, send, setRaceGuessAwaitingOutcome, sharePublishedChallenge, updateRun]);
 
   useRaceClockEffects(stage, countdown, run, setStage, setCountdown, setTick);
 
@@ -436,7 +437,7 @@ export function RaceTo10Game({
   /** Authoritative adjusted elapsed time advanced locally since the last response. */
   const adjustedNow = getAdjustedRaceTime(run, receivedAtMs);
 
-  useActiveRacePersistence(run);
+  useActiveRacePersistence(run, ownerId);
   /** Opponent score replayed against the adjusted race clock. */
   const ghostCorrect = useMemo(() => getGhostCorrectCount(run?.opponent, adjustedNow), [adjustedNow, run?.opponent]);
   /** Best server-scored feedback seen for each keyboard letter. */

@@ -18,6 +18,8 @@ export type RaceTo10GameProps = Readonly<{
   openInbox?: boolean;
   /** Stores coins. */
   coins: number;
+  /** Authenticated game account that owns persisted race runs. */
+  ownerId?: string;
   /** Stores post to host. */
   postToHost: (message: GameToHostMessage) => void;
   /** Stores on close. */

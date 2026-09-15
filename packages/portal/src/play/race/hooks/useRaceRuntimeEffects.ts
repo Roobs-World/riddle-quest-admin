@@ -1,12 +1,12 @@
 import {useEffect, type Dispatch, type SetStateAction} from "react";
 import type {RaceRunView} from "@qwordly/core/race";
 import {trackEvent, trackScreen} from "../../../analytics/events";
-import {safeBrowserStorageRemove, safeBrowserStorageSet} from "../../playerPreferences";
+import {clearActiveRace, saveActiveRace} from "../logic/activeRaceStorage";
 import {getRaceCountdownStep} from "../logic/raceCountdown";
 import type {RaceStage} from "../RaceTo10View";
 
 /** Local-storage key used to remember the currently active race run. */
-export const ACTIVE_RACE_KEY = "riddleQuest:activeRaceRun";
+export {ACTIVE_RACE_KEY} from "../logic/activeRaceStorage";
 
 /** Tracks entry into Race to 10 screens and the top-level mode. */
 export const useRaceEntryTracking = (stage: RaceStage, challengeId: string | undefined): void => {
@@ -68,10 +68,10 @@ export const useRaceFeedbackTimers = (
 };
 
 /** Persists only the identifier of an active server-authoritative race run. */
-export const useActiveRacePersistence = (run: RaceRunView | null): void => {
+export const useActiveRacePersistence = (run: RaceRunView | null, ownerId?: string): void => {
   useEffect(() => {
     if (!run) return;
-    if (run.status === "active") safeBrowserStorageSet("local", ACTIVE_RACE_KEY, run.runId);
-    else safeBrowserStorageRemove("local", ACTIVE_RACE_KEY);
-  }, [run]);
+    if (run.status === "active") saveActiveRace(ownerId, run.runId);
+    else clearActiveRace(ownerId);
+  }, [run, ownerId]);
 };

@@ -348,6 +348,7 @@ export function PlayHostApp({
       <div className="play-game-shell">
         {notice && <div className="play-alert game-shell-alert">{getHostNoticeMessage(notice)}</div>}
         <GameFrameApp
+          raceOwnerId={authSnapshot.user?.uid}
           localBridge
           interactionBlocked={serverInteractionActive}
           restoredGame={initialPlayerData?.activeGame}

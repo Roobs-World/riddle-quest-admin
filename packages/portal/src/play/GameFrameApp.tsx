@@ -53,6 +53,7 @@ const SolarSystem = lazy(() => import("./SolarSystem").then((module) => ({defaul
 /** Provides game frame app behavior. */
 export function GameFrameApp({
   localBridge = false,
+  raceOwnerId,
   interactionBlocked = false,
   restoredGame,
   onSaveGame,
@@ -76,6 +77,8 @@ export function GameFrameApp({
 }: {
   /** Stores local bridge. */
   localBridge?: boolean;
+  /** Authenticated game account used to isolate race resume state. */
+  raceOwnerId?: string;
   /** Stores interaction blocked. */
   interactionBlocked?: boolean;
   /** Stores restored game. */
@@ -410,6 +413,8 @@ export function GameFrameApp({
         {raceOpen && raceEnabled && (
           <Suspense fallback={<SpinningWheel />}>
             <RaceTo10Game
+              key={raceOwnerId}
+              ownerId={raceOwnerId}
               locale={raceLocale ?? "en"}
               challengeId={initialRaceChallengeId}
               openInbox={initialRaceInbox}
