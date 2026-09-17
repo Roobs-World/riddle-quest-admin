@@ -38,6 +38,8 @@ export function useHostAuthSession({
   onProfileChange,
   postToGame,
 }: HostAuthSessionOptions): HostAuthSession {
+  /** Auth lifetime is independent of reconstructed commerce and capability wrappers. */
+  const auth = services.auth;
   /** Latest authentication snapshot supplied by the active target adapter. */
   const [snapshot, setSnapshot] = useState<AuthSnapshot>({user: null, profile: null});
   /** User representation enriched only with target registration state. */
@@ -48,10 +50,10 @@ export function useHostAuthSession({
 
   useEffect(
     () =>
-      services.auth.subscribe((nextSnapshot) => {
+      auth.subscribe((nextSnapshot) => {
         setSnapshot(restoreProfileWhileServerLoads(nextSnapshot, initialProfile ?? undefined));
       }),
-    [initialProfile, services],
+    [initialProfile, auth],
   );
 
   useEffect(() => {

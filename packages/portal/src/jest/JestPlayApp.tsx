@@ -86,6 +86,13 @@ export function JestPlayApp() {
   const purchases = useMemo(() => new JestPurchaseCoordinator(platform, backend), [backend, platform]);
   /** Provides [session, set session] behavior. */
   const [session, setSession] = useState<JestSession | null>(null);
+  /** Keeps host authority assembly stable while player progress and SDK activity update. */
+  const platformCapabilities = useMemo(() => ({
+    accountUpgrade: {
+      state: session?.player.registered ? "complete" as const : "available" as const,
+      begin: async () => ({status: "unavailable" as const, message: "Use the Jest registration controls."}),
+    },
+  }), [session?.player.registered]);
   /** Provides [error, set error] behavior. */
   const [error, setError] = useState<string | null>(null);
   /** Provides [account deleted, set account deleted] behavior. */
@@ -486,12 +493,7 @@ export function JestPlayApp() {
             platformProducts: jestProducts,
             platformPurchase: purchaseProduct,
             raceAvailable: true,
-            platformCapabilities: {
-              accountUpgrade: {
-                state: session.player.registered ? "complete" : "available",
-                begin: async () => ({status: "unavailable", message: "Use the Jest registration controls."}),
-              },
-            },
+            platformCapabilities,
             externalInteractionBlocked: pendingPlatformOperations > 0,
             initialPlayerData: session.playerData,
             onPlayerDataChange: playerStateWrites.savePlayerData,
