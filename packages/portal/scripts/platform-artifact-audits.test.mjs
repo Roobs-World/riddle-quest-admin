@@ -374,7 +374,7 @@ async function withFixture(platform, operation) {
 <html lang="en"><head><meta charset="UTF-8"><script src="https://connect.facebook.net/en_US/fbinstant.8.0.js"></script></head>
 <body><script type="module" src="./app.js"></script></body></html>\n`);
       await writeFile(path.join(directory, "fbapp-config.json"), `${JSON.stringify({
-        instant_games: {platform_version: "8.0", orientation: "both", navigation_menu_version: "NAV_2"},
+        instant_games: {platform_version: "RICH_GAMEPLAY", navigation_menu_version: "NAV_FLOATING"},
       })}\n`);
     } else if (platform === "reddit") {
       await writeFile(path.join(directory, "index.html"), `<!doctype html>
@@ -431,6 +431,40 @@ test("Jest audit accepts its fixture and rejects Facebook contamination", async 
     const contaminated = runAudit(jestAudit, directory);
     assert.notEqual(contaminated.status, 0);
     assert.match(contaminated.stderr, /Facebook Instant Games integration/);
+  });
+});
+
+test("Facebook audit rejects the navigation menu value rejected by Meta", async () => {
+  await withFixture("facebook", async (directory) => {
+    const configPath = path.join(directory, "fbapp-config.json");
+    const config = JSON.parse(await readFile(configPath, "utf8"));
+    config.instant_games.navigation_menu_version = "NAV_2";
+    await writeFile(configPath, JSON.stringify(config));
+    const invalid = runAudit(facebookAudit, directory);
+    assert.notEqual(invalid.status, 0);
+    assert.match(invalid.stderr, /NAV_FLOATING/);
+  });
+});
+
+test("Facebook audit rejects SDK-version bundle configuration", async () => {
+  await withFixture("facebook", async (directory) => {
+    const configPath = path.join(directory, "fbapp-config.json");
+    const config = JSON.parse(await readFile(configPath, "utf8"));
+    config.instant_games.platform_version = "8.0";
+    config.instant_games.orientation = "both";
+    await writeFile(configPath, JSON.stringify(config));
+    const invalid = runAudit(facebookAudit, directory);
+    assert.notEqual(invalid.status, 0);
+    assert.match(invalid.stderr, /RICH_GAMEPLAY/);
+  });
+});
+
+test("Facebook audit rejects direct parent-window messaging", async () => {
+  await withFixture("facebook", async (directory) => {
+    await writeFile(path.join(directory, "app.js"), "window.parent.postMessage({type: 'game:ready'}, window.location.origin);");
+    const contaminated = runAudit(facebookAudit, directory);
+    assert.notEqual(contaminated.status, 0);
+    assert.match(contaminated.stderr, /Direct parent-window messaging/);
   });
 });
 

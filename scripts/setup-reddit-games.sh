@@ -233,8 +233,10 @@ fi
 pnpm --filter @qwordly/reddit-app build:package
 pnpm --filter @qwordly/reddit-app audit:performance
 warn "This bootstrap playtest upload is non-promotable and is not a production release receipt."
+say "Check existing versions in the app dashboard; automatic prerelease bumps can collide in Devvit 0.14.1."
+ask REDDIT_PLAYTEST_VERSION "Enter an unused explicit prerelease version (major.minor.patch.prerelease):"
 confirm "Upload a private prerelease?" || exit 1
-env -u DEBUG -u FIREBASE_DEBUG_MODE pnpm --filter @qwordly/reddit-app playtest:upload
+env -u DEBUG -u FIREBASE_DEBUG_MODE pnpm --filter @qwordly/reddit-app playtest:upload "$REDDIT_PLAYTEST_VERSION"
 say "Run this in a second terminal and wait for Playtest ready before continuing:"
 say "env -u DEBUG -u FIREBASE_DEBUG_MODE pnpm --filter @qwordly/reddit-app exec devvit playtest $REDDIT_TEST_SUBREDDIT --show-timestamps"
 pause "Confirm the private version is installed and its exact version identifier is recorded."

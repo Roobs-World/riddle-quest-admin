@@ -80,8 +80,8 @@ jobs:
       - run: corepack prepare pnpm@11.21.0 --activate
       - run: pnpm install --frozen-lockfile
       - run: pnpm --filter @qwordly/portal exec playwright install --with-deps chromium
-      - run: pnpm --filter @qwordly/reddit-app build:package:from-client
       - run: pnpm test:e2e
+      - run: pnpm --filter @qwordly/reddit-app build:package:from-client
       - run: pnpm --filter @qwordly/portal preflight:jest-upload
       - run: pnpm --filter @qwordly/portal preflight:facebook-upload
       - run: pnpm check:facebook-progress

@@ -10,8 +10,8 @@ type HostAuthSessionOptions = Readonly<{
   services: Pick<HostServices, "auth">;
   /** Profile restored from target persistence while the server profile loads. */
   initialProfile?: BridgeProfile | null;
-  /** Whether the active target has completed platform registration. */
-  platformRegistered: boolean;
+  /** Registration state, absent when the target has no account-upgrade flow. */
+  platformRegistered?: boolean;
   /** Persists authoritative profile changes through the active target adapter. */
   onProfileChange?: (profile: BridgeProfile) => void;
   /** Delivers authentication state to the embedded game. */

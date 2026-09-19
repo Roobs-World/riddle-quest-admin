@@ -18,6 +18,7 @@ if (artifactBytes > maximumArtifactBytes) {
 const inspectable = files.filter((file) => /\.(?:html|js|css|json|map)$/i.test(file));
 const content = (await Promise.all(inspectable.map((file) => readFile(file, "utf8")))).join("\n");
 const forbidden = [
+  ["Direct parent-window messaging", /\b(?:parent|top)\s*\.\s*postMessage\s*\(/],
   [
     "YouTube Playables integration",
     /www\.youtube\.com\/game_api\/v1|\bytgame\b|youtube-sdk-unavailable|youtube-content-envelope-invalid|youtube-content-manifest\.json/i,
@@ -60,11 +61,11 @@ const configPath = path.join(root, "fbapp-config.json");
 if (!files.includes(configPath)) throw new Error("Facebook artifact is missing root-level fbapp-config.json");
 const config = JSON.parse(await readFile(configPath, "utf8"));
 if (
-  config?.instant_games?.platform_version !== "8.0" ||
-  config?.instant_games?.orientation !== "both" ||
-  config?.instant_games?.navigation_menu_version !== "NAV_2"
+  config?.instant_games?.platform_version !== "RICH_GAMEPLAY" ||
+  config?.instant_games?.orientation !== undefined ||
+  config?.instant_games?.navigation_menu_version !== "NAV_FLOATING"
 ) {
-  throw new Error("fbapp-config.json does not declare SDK v8, both orientations, and NAV_2");
+  throw new Error("fbapp-config.json must declare RICH_GAMEPLAY and NAV_FLOATING with dashboard-managed orientation");
 }
 
 const licenseNoticePath = path.join(root, "third-party-licenses.txt");

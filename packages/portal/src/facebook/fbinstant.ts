@@ -80,7 +80,7 @@ export interface FacebookOverlayViews {
 /** Defines the contract for facebook instant purchase. */
 export interface FacebookInstantPurchase {
   /** Stores developer payload. */
-  developerPayload?: string;
+  developerPayload?: string | null;
   /** Stores is consumed. */
   isConsumed: boolean;
   /** Stores payment action type. */
@@ -116,7 +116,7 @@ export interface FacebookInstantProduct {
   /** Stores price currency code. */
   priceCurrencyCode: string;
   /** Stores price amount. */
-  priceAmount: number;
+  priceAmount: number | string;
 }
 
 /** Defines the contract for facebook instant payments. */

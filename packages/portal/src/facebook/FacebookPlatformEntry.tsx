@@ -503,7 +503,7 @@ export function FacebookPlatformEntry() {
   if (startup.status === "loading") {
     return (
       <main className="route-loading">
-        <SpinningWheelLoader message={tr("WebPortal.STARTUP_CONNECTING")} progress={startup.progress} />
+        <SpinningWheelLoader message={tr("Accessibility.LOADING")} progress={startup.progress} />
       </main>
     );
   }

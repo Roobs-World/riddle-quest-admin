@@ -18,7 +18,17 @@ declare global {
   /** Defines the contract for window. */
   interface Window {
     /** Stores reddit effects. */
-    __redditEffects: unknown[];
+    __redditEffects: Array<{
+      /** Correlates Devvit requests and replies. */
+      id?: string;
+      /** Captures checkout arguments sent to Reddit. */
+      createOrder?: {
+        /** Requested Reddit product identifiers. */
+        skus: string[];
+        /** Opaque account association for recovery. */
+        metadata: Record<string, string>;
+      };
+    }>;
   }
 }
 
@@ -161,6 +171,10 @@ describeBrowser("Reddit artifact with injected Devvit context", () => {
       await injectDevvit(authenticatedLocaleSmoke, 2);
       /** Saves d locale. */
       let savedLocale = "en";
+      /** Enables checkout only for the dedicated commerce journey. */
+      let commerceEnabled = false;
+      /** Models the authoritative balance returned by the gateway. */
+      let commerceBalance = 300;
       await authenticatedLocaleSmoke.route("**/api/**", (route) => {
         /** Provides pathname behavior. */
         const pathname = new URL(route.request().url()).pathname;
@@ -175,7 +189,7 @@ describeBrowser("Reddit artifact with injected Devvit context", () => {
             features: {
               identity: true,
               gameplay: true,
-              commerce: false,
+              commerce: commerceEnabled,
               referrals: false,
               notifications: false,
               matchmaking: false,
@@ -183,6 +197,10 @@ describeBrowser("Reddit artifact with injected Devvit context", () => {
               presence: false,
             },
           });
+        if (pathname === "/api/commerce/recover") return json({ok: true, recovered: 0});
+        if (pathname === "/api/commerce/key")
+          return json({ok: true, key: "R".repeat(43), metadataKey: "riddle-account"});
+        if (pathname === "/api/storage/write") return json({ok: true});
         if (pathname === "/api/storage/read")
           return json({ok: true, preferences: {locale: savedLocale, onboardingComplete: true}, playerData: null});
         if (pathname === "/api/game/profile.load")
@@ -190,7 +208,7 @@ describeBrowser("Reddit artifact with injected Devvit context", () => {
             ok: true,
             result: {
               username: "LocaleSolver",
-              coins: 300,
+              coins: commerceBalance,
               level: 1,
               xp: 0,
               winStreak: 0,
@@ -249,6 +267,66 @@ describeBrowser("Reddit artifact with injected Devvit context", () => {
         await authenticatedLocaleSmoke.getByText(`locale-riddle-${locale}`, {exact: true}).waitFor();
         await authenticatedLocaleSmoke.waitForFunction((value) => document.documentElement.lang === value, locale);
         expect(await authenticatedLocaleSmoke.locator("html").getAttribute("lang")).toBe(locale);
+      }
+
+      // Exercise the real Devvit checkout bridge without spending live Reddit Gold.
+      authenticatedLocaleSmoke.setDefaultTimeout(5_000);
+      try {
+        commerceEnabled = true;
+        savedLocale = "en";
+        await authenticatedLocaleSmoke.goto("http://127.0.0.1:4182/");
+        await authenticatedLocaleSmoke.getByText("locale-riddle-en", {exact: true}).waitFor();
+        await authenticatedLocaleSmoke.getByTestId("server-activity-loader").waitFor({state: "hidden"});
+        await authenticatedLocaleSmoke.getByRole("button", {name: /let's play/i}).click();
+        await authenticatedLocaleSmoke.getByRole("button", {name: /got it/i}).click();
+        for (let step = 0; step < 4; step += 1) {
+          /** Advances only the visible registered-player tutorial steps. */
+          const next = authenticatedLocaleSmoke.getByRole("button", {name: /got it/i});
+          if (!await next.isVisible()) break;
+          await next.click();
+        }
+        await authenticatedLocaleSmoke.locator("button.coin-pill").click();
+        await authenticatedLocaleSmoke.locator(".game-shop-grid article").first().waitFor();
+        expect(await authenticatedLocaleSmoke.locator(".game-shop-grid article").count()).toBe(6);
+        for (const gold of [50, 100, 150, 250, 500, 1000]) {
+          expect(await authenticatedLocaleSmoke.getByRole("button", {name: new RegExp(`^${gold} Gold$`)}).count()).toBe(1);
+        }
+        expect(await authenticatedLocaleSmoke.locator(".shop-balance strong").innerText()).toBe("300");
+        for (const status of [0, 1]) {
+          await authenticatedLocaleSmoke.evaluate(() => { window.__redditEffects = []; });
+          await authenticatedLocaleSmoke.getByRole("button", {name: /^50 Gold$/}).click();
+          await authenticatedLocaleSmoke.waitForFunction(() =>
+            window.__redditEffects.some((effect) => effect.createOrder),
+          );
+          // The client must not award coins merely for opening checkout.
+          expect(await authenticatedLocaleSmoke.locator(".shop-balance strong").innerText()).toBe("300");
+          if (status === 1) commerceBalance = 550;
+          await authenticatedLocaleSmoke.evaluate((checkoutStatus) => {
+            /** Checkout message emitted by the installed Devvit SDK. */
+            const effect = window.__redditEffects.find((value) => value.createOrder);
+            if (!effect?.createOrder) throw new Error("missing-reddit-checkout-effect");
+            if (JSON.stringify(effect.createOrder.skus) !== JSON.stringify(["riddle_quest_coins_250"]) ||
+              effect.createOrder.metadata["riddle-account"] !== "R".repeat(43)) {
+              throw new Error("incorrect-reddit-checkout-payload");
+            }
+            window.postMessage({type: "devvit-message", data: {
+              id: effect.id,
+              orderResult: {status: checkoutStatus, orderId: checkoutStatus === 1 ? "gold-order-1" : ""},
+            }}, "*");
+          }, status);
+          if (status === 1) {
+            await authenticatedLocaleSmoke.getByText("250 coins added.", {exact: true}).waitFor();
+          } else {
+            await authenticatedLocaleSmoke.getByRole("button", {name: /^50 Gold$/}).waitFor();
+          }
+        }
+        await authenticatedLocaleSmoke.reload();
+        await authenticatedLocaleSmoke.getByText("locale-riddle-en", {exact: true}).waitFor();
+        await authenticatedLocaleSmoke.waitForFunction(() =>
+          document.querySelector(".coin-pill strong")?.textContent === "550",
+        );
+      } catch (error) {
+        throw new Error(`${String(error)} ${await authenticatedLocaleSmoke.locator("body").innerText()}`);
       }
 
       /** Provides guest behavior. */

@@ -59,6 +59,24 @@ const payments = (overrides: Record<string, unknown> = {}) => ({
 });
 
 describe("Facebook commerce capability", () => {
+  test("accepts documented decimal-string catalog amounts and preserves localized display prices", async () => {
+    /** Catalog using the SDK-documented decimal string format. */
+    const products = catalog().map((entry) => ({...entry, priceAmount: String(entry.priceAmount)}));
+    /** Exercises provider catalog validation and display projection together. */
+    const capability = new FacebookCommerceCapability(payments({getCatalogAsync: async () => products}), jest.fn());
+    await expect(capability.listProducts()).resolves.toMatchObject({
+      status: "success",
+      value: products.map((entry) => ({id: entry.productID, price: entry.price})),
+    });
+  });
+
+  test.each(["", " ", "0x1", "Infinity", "1e2", "0,99", "-0.99", null, true])(
+    "rejects malformed decimal price %p",
+    (priceAmount) => {
+      expect(() => parseFacebookCatalog(catalog().map((entry) => ({...entry, priceAmount})))).toThrow();
+    },
+  );
+
   test("maps only exact allowlisted SDK catalog entries to platform products", async () => {
     /** Provides sdk behavior. */
     const sdk = payments();

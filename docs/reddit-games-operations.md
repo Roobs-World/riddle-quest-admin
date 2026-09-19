@@ -12,14 +12,37 @@ Firebase secret to an environment file or repository. Its `playtest:upload` is a
 bootstrap artifact only; it is not an immutable production candidate or promotion
 receipt.
 
-Last updated: 2026-08-20
+Last updated: 2026-09-19
 
 ## Release state
 
-Reddit is a separate compile-time target packaged as a Devvit Web app. It is not
-approved or deployed. External app creation, the dedicated community, HTTP-fetch
-allowlisting, payment eligibility, notification beta, multi-role playtests, real
-iOS/Android tests, upload, review, and publication remain blocking acceptance gates.
+Reddit is a separate compile-time target packaged as a Devvit Web app. Private
+prerelease `0.0.1.21` is uploaded and installed in `r/riddle_quest_dev`; the
+`r/RiddleQuestGame` installation remains at `0.0.1.20`. Production approval and
+publication are not complete. HTTP-fetch approval, payment eligibility, policy
+configuration, multi-role playtests, physical iOS/Android tests, hosted evidence,
+and exact-artifact release verification remain outstanding. Notifications remain
+disabled unless separately approved. See [the September verification record](evidence/reddit-release-2026-09-17.md).
+
+The game Terms are now published at https://roobsworld.com/riddle-quest/terms.
+The Reddit app details still need that URL and a reviewed game Privacy Policy;
+publication of the Terms does not establish Reddit approval. Current local Gold
+checkout coverage is recorded in [the currency verification](evidence/reddit-gold-2026-09-19.md).
+
+For another private bootstrap upload, choose an unused numeric prerelease version
+from the app dashboard and pass it explicitly:
+
+```bash
+pnpm --filter @qwordly/reddit-app playtest:upload <major.minor.patch.prerelease>
+```
+
+Devvit 0.14.1 computes `upload --bump prerelease` from the latest stable version,
+ignoring existing prereleases, which caused a duplicate-version failure on
+2026-09-17. The wrapper validates the package and requires an explicit prerelease;
+it never retries an uncertain upload. Inspect that exact version with
+`devvit view riddle-quest@<version>` before deciding whether to retry. Upload does
+not update an existing installation: use `devvit install <test-subreddit>
+riddle-quest@<version>` to install the confirmed private version.
 
 ## Trust and network boundary
 

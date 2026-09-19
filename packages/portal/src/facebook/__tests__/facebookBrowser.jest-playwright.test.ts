@@ -372,7 +372,7 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
                   muted: true,
                   reducedMotion: true,
                   highContrast: true,
-                  onboardingComplete: true,
+                  onboardingComplete: false,
                   presenceEnabled: false,
                 },
                 riddleQuestPlayerState: {schemaVersion: 1, updatedAt: 42, coins: 300},
@@ -480,8 +480,12 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       const onboardingAction = successPage.locator(".onboarding-card .play-primary");
       await onboardingAction.waitFor({timeout: 5_000});
       await onboardingAction.evaluate((element: HTMLElement) => element.click());
+      await successPage.locator(".onboarding-clues").waitFor({timeout: 5_000});
+      expect(await successPage.locator(".onboarding-progress").innerText()).toBe("2/2");
+      await onboardingAction.click();
       await onboardingAction.waitFor({state: "detached", timeout: 5_000});
       expect(await successPage.locator(".onboarding-card").count()).toBe(0);
+      expect(await successPage.locator(".onboarding-registration-actions").count()).toBe(0);
       try {
         await successPage.locator(".multiplayer-navigation-action").click({timeout: 5_000});
         await successPage.locator(".race-hub-tabs").waitFor({timeout: 5_000});

@@ -42,7 +42,7 @@ export function parseFacebookUnconsumedPurchases(value: unknown): FacebookInstan
       !/^\d+$/u.test(item.purchaseTime) ||
       !bounded(item.purchaseToken, 8_192) ||
       !bounded(item.signedRequest, 8_192) ||
-      (item.developerPayload !== undefined && !bounded(item.developerPayload, 1_024))
+      (item.developerPayload != null && !bounded(item.developerPayload, 1_024))
     ) {
       throw new Error("facebook-purchase-invalid");
     }

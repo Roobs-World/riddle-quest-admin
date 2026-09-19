@@ -13,6 +13,7 @@ module.exports = {
     ],
   },
   moduleNameMapper: {
+    "^\\.\\./platform/webTargetEnvironment$": "<rootDir>/src/test/webTargetEnvironmentMock.ts",
     "^@qwordly/core$": "<rootDir>/../core/src/index.ts",
     "^@qwordly/core/(.*)$": "<rootDir>/../core/src/$1",
     "^#youtube-content$": "<rootDir>/../../firebase-functions/content/youtube-fixtures/youtube-content-fixture-v1.json",

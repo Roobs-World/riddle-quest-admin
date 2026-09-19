@@ -135,7 +135,9 @@ export function PlayHostApp({
   } = useHostAuthSession({
     services: authority.identity,
     initialProfile: initialPlayerData?.profile,
-    platformRegistered: platformCapabilities?.accountUpgrade?.state === "complete",
+    platformRegistered: platformCapabilities?.accountUpgrade
+      ? platformCapabilities.accountUpgrade.state === "complete"
+      : undefined,
     onProfileChange: persistProfile,
     postToGame,
   });

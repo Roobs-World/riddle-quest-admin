@@ -22,6 +22,14 @@ export function parseFacebookCatalog(value: unknown): FacebookInstantProduct[] {
   /** Provides products behavior. */
   const products = value.map((item) => {
     if (!isRecord(item)) throw new Error("facebook-product-invalid");
+    // Meta documents decimal strings; retain compatibility with numeric SDK responses.
+    /** Normalized decimal amount used to validate the configured USD price. */
+    const priceAmount =
+      typeof item.priceAmount === "number"
+        ? item.priceAmount
+        : typeof item.priceAmount === "string" && /^\d{1,9}(?:\.\d{1,6})?$/u.test(item.priceAmount)
+          ? Number(item.priceAmount)
+          : Number.NaN;
     /** Provides keys behavior. */
     const keys = ["title", "productID", "description", "imageURI", "price", "priceCurrencyCode", "priceAmount"];
     if (
@@ -34,15 +42,14 @@ export function parseFacebookCatalog(value: unknown): FacebookInstantProduct[] {
       !bounded(item.imageURI, 2_048) ||
       !bounded(item.price, 128) ||
       !bounded(item.priceCurrencyCode, 16) ||
-      typeof item.priceAmount !== "number" ||
-      !Number.isFinite(item.priceAmount) ||
-      item.priceAmount < 0
+      !Number.isFinite(priceAmount) ||
+      priceAmount < 0
     ) {
       throw new Error("facebook-product-invalid");
     }
     if (
       item.priceCurrencyCode === "USD" &&
-      Math.abs(item.priceAmount * 100 - FACEBOOK_PRODUCTS[item.productID].basePriceUsdCents) > 1e-9
+      Math.abs(priceAmount * 100 - FACEBOOK_PRODUCTS[item.productID].basePriceUsdCents) > 1e-9
     ) {
       throw new Error("facebook-product-usd-price-mismatch");
     }

@@ -11,7 +11,7 @@ import {PLAYER_NOTIFICATION_IDS} from "../notifications/engagement";
 /** Provides describe browser behavior. */
 const describeBrowser = process.env.PORTAL_BROWSER_TESTS === "1" ? describe : describe.skip;
 /** Provides base url behavior. */
-const baseUrl = "http://127.0.0.1:4179";
+let baseUrl: string;
 /** Provides shared race challenges behavior. */
 const sharedRaceChallenges = new Map<string, string>();
 
@@ -524,7 +524,17 @@ describeBrowser("Jest authentication integration", () => {
         response.end("Not found");
       }
     });
-    await new Promise<void>((resolve) => server.listen(4179, "127.0.0.1", resolve));
+    await new Promise<void>((resolve, reject) => {
+      server.once("error", reject);
+      server.listen(0, "127.0.0.1", () => {
+        server.off("error", reject);
+        resolve();
+      });
+    });
+    /** OS-assigned port avoids collisions with concurrent browser harnesses. */
+    const address = server.address();
+    if (!address || typeof address === "string") throw new Error("Browser harness TCP address unavailable");
+    baseUrl = `http://127.0.0.1:${address.port}`;
     browser = await chromium.launch({headless: true, args: ["--renderer-process-limit=4"]});
   });
 

@@ -16,10 +16,27 @@ const purchase = (overrides: Record<string, unknown> = {}) => ({
 });
 
 describe("Facebook purchase recovery", () => {
+  test("recovers receipts with Meta's deprecated null developerPayload", async () => {
+    /** Provider fixture returns the documented nullable legacy field. */
+    const payments = {
+      getPurchasesAsync: jest.fn(async () => [purchase({developerPayload: null})]),
+      consumePurchaseAsync: jest.fn(async () => undefined),
+    };
+    /** Records the authoritative grant before consumption. */
+    const grant = jest.fn(async () => ({granted: true as const, providerReceiptId: "receipt-1", consume: true}));
+    await expect(new FacebookPurchaseRecovery(payments, grant).recover()).resolves.toEqual({
+      status: "success",
+      value: undefined,
+    });
+    expect(grant).toHaveBeenCalledWith({signedRequest: "signature.payload"});
+    expect(payments.consumePurchaseAsync).toHaveBeenCalledWith("purchase-token-1");
+  });
+
   test("grants each signed request before consuming its token", async () => {
     /** Provides events behavior. */
     const events: string[] = [];
     /** Provides payments behavior. */
+    /** Provider fixture returns the documented nullable legacy field. */
     const payments = {
       getPurchasesAsync: jest.fn(async () => [
         purchase(),
@@ -62,6 +79,7 @@ describe("Facebook purchase recovery", () => {
     /** Provides consume purchase async behavior. */
     const consumePurchaseAsync = jest.fn(async () => undefined);
     /** Provides payments behavior. */
+    /** Provider fixture returns the documented nullable legacy field. */
     const payments = {getPurchasesAsync: async () => [purchase()], consumePurchaseAsync};
     await expect(
       new FacebookPurchaseRecovery(payments, async () => {
@@ -83,6 +101,7 @@ describe("Facebook purchase recovery", () => {
     /** Provides consume attempts behavior. */
     let consumeAttempts = 0;
     /** Provides payments behavior. */
+    /** Provider fixture returns the documented nullable legacy field. */
     const payments = {
       getPurchasesAsync: async () => [purchase()],
       consumePurchaseAsync: async () => {
@@ -91,6 +110,7 @@ describe("Facebook purchase recovery", () => {
       },
     };
     /** Provides grant behavior. */
+    /** Records the authoritative grant before consumption. */
     const grant = jest.fn(async () => ({granted: true as const, providerReceiptId: "receipt-1", consume: true}));
     /** Provides recovery behavior. */
     const recovery = new FacebookPurchaseRecovery(payments, grant);
@@ -111,6 +131,7 @@ describe("Facebook purchase recovery", () => {
       releasePurchases = resolve;
     });
     /** Provides payments behavior. */
+    /** Provider fixture returns the documented nullable legacy field. */
     const payments = {
       getPurchasesAsync: jest.fn(async () => {
         await purchasesReady;
@@ -119,6 +140,7 @@ describe("Facebook purchase recovery", () => {
       consumePurchaseAsync: jest.fn(async () => undefined),
     };
     /** Provides grant behavior. */
+    /** Records the authoritative grant before consumption. */
     const grant = jest.fn(async () => ({granted: true as const, providerReceiptId: "receipt-1", consume: true}));
     /** Provides recovery behavior. */
     const recovery = new FacebookPurchaseRecovery(payments, grant);
@@ -140,6 +162,7 @@ describe("Facebook purchase recovery", () => {
 
   test("does not consume a server-classified durable purchase", async () => {
     /** Provides payments behavior. */
+    /** Provider fixture returns the documented nullable legacy field. */
     const payments = {
       getCatalogAsync: jest.fn(),
       purchaseAsync: jest.fn(),

@@ -261,9 +261,10 @@ function facebookArtifactPlugin(): Plugin {
         fileName: "fbapp-config.json",
         source: `${JSON.stringify({
           instant_games: {
-            platform_version: "8.0",
-            orientation: "both",
-            navigation_menu_version: "NAV_2",
+            // Meta's upload validator uses the bundle platform enum, not the
+            // JavaScript SDK version. Orientation stays dashboard-managed.
+            platform_version: "RICH_GAMEPLAY",
+            navigation_menu_version: "NAV_FLOATING",
           },
         }, null, 2)}\n`,
       });

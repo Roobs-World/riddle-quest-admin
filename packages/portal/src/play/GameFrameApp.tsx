@@ -2,6 +2,7 @@ import {lazy, Suspense, useCallback, useEffect, useReducer, useRef, useState} fr
 import type {GameToHostMessage} from "@qwordly/core/bridge";
 import {BRIDGE_PROTOCOL_VERSION} from "@qwordly/core/bridge/constants";
 import musicUrl from "../../../../assets/audio-web/music.webm";
+import {isFacebookWebTarget} from "../platform/webTargetEnvironment";
 import {createInitialGameSession, gameSessionReducer} from "./gameSession";
 import {tr} from "./i18n";
 import {createRequestId} from "./requestIds";
@@ -161,7 +162,9 @@ export function GameFrameApp({
   /** Provides post to host behavior. */
   const postToHost = useCallback(
     (message: GameToHostMessage) => {
-      if (localBridge || window.parent === window) {
+      // Facebook's host communication belongs to FBInstant. Its game shell uses
+      // the local bridge, so remove the iframe fallback from that artifact.
+      if (isFacebookWebTarget || localBridge || window.parent === window) {
         dispatchLocalBridge(GAME_TO_HOST_EVENT, {...message, sentAt: Date.now()});
         return;
       }

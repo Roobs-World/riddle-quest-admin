@@ -1,0 +1,208 @@
+Simulator
+Preview
+URL
+App version
+Team…
+RoobsWorld
+App…
+riddle-q
+1.0.0-dev.20260917064922.ad58fe7d2294.2d45dba7 (Active)
+Load
+Reload app
+Reset
+← Back
+FPS 82
+Config
+Checklist
+Notifications
+SDK activity
+✓
+Basic Launch
+21 / 21
+Collapse
+
+Every automated check that applies to your app is passing
+
+USER MANAGEMENT
+✓
+SDK initializes correctly
+SDK initialization complete
+Docs
+✓
+No SDK errors
+Docs
+✓
+Reads player identity
+App called getPlayer() / getPlayerSigned()
+Docs
+✓
+Prompts guest to register
+Login requested at 50s
+Docs
+✓
+Provides a registration flow
+App triggers its own registration prompt
+Docs
+✓
+Prompts login only for guests
+No login calls while registered
+Docs
+✓
+Saves player data as guest
+1 update(s) before login
+Docs
+NOTIFICATIONS
+✓
+Schedules a D1–D7 notification sequence
+All 7 days covered by 63 notification(s)
+Docs
+✓
+Schedules notifications early
+First notification at 3s after registration
+Docs
+PURCHASES
+✓
+Fetches product catalog
+App called getProducts()
+Docs
+✓
+Initiates a purchase
+Purchased: com.roobsworld.riddlequest.coinpack1
+Docs
+✓
+Checks for incomplete purchases on startup
+Docs
+✓
+Completes recovered purchases
+Completed 1/1 recovered purchase(s)
+Docs
+SUBSCRIPTIONS
+✓
+Reads subscription entitlement
+Entitlement read 53s after init
+Docs
+✓
+Offers a subscription to the player
+Offered: com.roobsworld.riddlequest.premium.monthly
+Docs
+✓
+Never re-offers a subscription the player holds
+Paywall skips subscriptions the player already holds
+Docs
+REGISTRATION OVERLAY
+✓
+Prefill includes the login code placeholder
+All 1 prefill(s) carry {{registrationCode}}
+Docs
+✓
+Prefill fits one SMS
+All 1 prefill(s) fit a single SMS
+Docs
+✓
+Disables the platform's automatic popups
+Initialized with autoLoginReminders: false
+Docs
+ANALYTICS
+✓
+Reports app loaded
+App called markGameLoaded()
+Docs
+✓
+Implements first_milestone event
+Fired 96s in, after your "authoritative_puzzle_won" event
+Docs
+CHECKED BY A JEST REVIEWER
+6 items
+
+Assessed by our team after you submit. Failing any one will result in a decline, so review these carefully.
+
+Experience is intuitive, coherent, and complete
+Loads in under 10 seconds
+No vibrations or haptics
+Stable after extended usage (10+ minutes)
+No CTAs, prompts, or copy that direct players outside Jest
+No in-app ads, and no mechanics that depend on ad revenue
+✓
+Fund applicants
+7 / 7
+Collapse
+
+Eligible to apply. The Fund checkbox is on by default at submit.
+
+NOTIFICATIONS
+✓
+Every notification includes the app title
+All 63 notification(s) name "Riddle-Q"
+Docs
+✓
+Notifications include an image reference
+All 63 notification(s) include an image reference
+Docs
+✓
+Schedules diverse notifications
+6 unique notification text(s)
+Docs
+✓
+Asset references exist in library
+1 asset reference(s) validated
+Docs
+✓
+Notification assets are approved
+1/1 notification asset(s) approved
+Docs
+✓
+Notification body ≤ 100 characters
+All notification bodies within limit
+Docs
+MONETIZATION
+✓
+Sells at least one product or subscription
+6 product(s) and 1 subscription(s) on sale
+Docs
+CHECKED BY A JEST REVIEWER
+5 items
+
+Assessed by our team after you submit. Failing any one will result in a decline, so review these carefully.
+
+Registration prompts appear at contextually appropriate moments
+Notification copy is compelling and tied to a callback mechanic
+All purchase paths work end-to-end
+Monetization is compelling and part of the core loop
+Screenshot capture works properly on all key screens
+✓
+Recommended
+5 / 5
+Collapse
+
+Not required, but these strengthen your Fund application and make for a better player experience
+
+USER MANAGEMENT
+✓
+Possibly has a backend
+Called getPlayerSigned(). App likely owns state server-side
+Docs
+NOTIFICATIONS
+✓
+Reschedules based on progress
+Same identifier rescheduled
+Docs
+REGISTRATION OVERLAY
+✓
+Customizes the registration request message
+All 1 overlay call(s) pass a registrationMessage
+Docs
+VIRALITY
+✓
+Implements referral sharing
+App called shareReferralLink()
+Docs
+✓
+Personalizes the referral preview image
+All 1 share(s) set a custom shareImage
+Docs
+CHECKED BY A JEST REVIEWER
+1 items
+
+Assessed by our team after you submit. These never block you, but they strengthen a Fund application.
+
+The virality feature works and gives a real reason to invite someone new

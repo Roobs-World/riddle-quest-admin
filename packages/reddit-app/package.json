@@ -28,7 +28,7 @@
     "release:promotion": "pnpm validate:hosted && node scripts/verify-reddit-promotion.mjs && node ../../scripts/assert-reddit-promotion-ready.mjs",
     "validate": "pnpm check:types && pnpm test && node scripts/validate-package.mjs",
     "playtest": "devvit playtest",
-    "playtest:upload": "pnpm build && devvit upload --bump prerelease",
+    "playtest:upload": "node scripts/upload-reddit-playtest.mjs",
     "release:upload": "node scripts/direct-release-guard.mjs upload",
     "release:publish": "node scripts/direct-release-guard.mjs publish",
     "prepublishOnly": "node scripts/direct-release-guard.mjs publish"
