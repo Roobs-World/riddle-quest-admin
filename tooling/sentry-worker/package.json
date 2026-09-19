@@ -1,0 +1,14 @@
+{
+  "name": "riddle-quest-sentry-worker",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "24.x"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.js"
+  },
+  "dependencies": {
+    "@vercel/sandbox": "^3.3.0"
+  }
+}
