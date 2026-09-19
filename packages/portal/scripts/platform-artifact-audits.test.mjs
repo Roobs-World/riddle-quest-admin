@@ -51,7 +51,7 @@ test("Vite configuration requires an explicit known Web Target for build and ser
   for (const command of ["build", "serve"]) {
     assert.throws(
       () => createWebTargetViteConfig({command, mode: "unknown-target", environment: {}}),
-      /Unknown Web Target mode: unknown-target; expected jest, facebook, reddit, or youtube/u,
+      /Unknown Web Target mode: unknown-target; expected jest, facebook, reddit, youtube, netflix, or yahoo/u,
     );
   }
   assert.throws(
@@ -99,6 +99,18 @@ test("the Web Target config resolves one isolated build profile for every releas
     youtube: {
       outDir: "dist-youtube",
       htmlEntry: "/targets/youtube/index.html",
+      shopEntry: "virtual:youtube-forbidden-shop-entry",
+      artifactPlugin: "riddle-quest-youtube-artifact",
+    },
+    netflix: {
+      outDir: "dist-netflix",
+      htmlEntry: "/targets/netflix/index.html",
+      shopEntry: "virtual:youtube-forbidden-shop-entry",
+      artifactPlugin: "riddle-quest-youtube-artifact",
+    },
+    yahoo: {
+      outDir: "dist-yahoo",
+      htmlEntry: "/targets/yahoo/index.html",
       shopEntry: "virtual:youtube-forbidden-shop-entry",
       artifactPlugin: "riddle-quest-youtube-artifact",
     },
@@ -175,6 +187,8 @@ test("one selected output directory drives each Web Target build", async () => {
     ["facebook", "FACEBOOK_BUILD_OUT_DIR"],
     ["reddit", "REDDIT_BUILD_OUT_DIR"],
     ["youtube", "YOUTUBE_BUILD_OUT_DIR"],
+    ["netflix", "NETFLIX_BUILD_OUT_DIR"],
+    ["yahoo", "YAHOO_BUILD_OUT_DIR"],
   ]) {
     const outputDirectory = path.join(tmpdir(), `riddle-quest-${mode}-output`);
     const config = createWebTargetViteConfig({
@@ -197,7 +211,7 @@ test("the resolved profile owns runtime target identity despite conflicting ambi
   assert.equal(config.define["import.meta.env.VITE_PLATFORM_TARGET"], JSON.stringify("facebook"));
 
   const packageManifest = JSON.parse(await readFile(path.join(packageDirectory, "package.json"), "utf8"));
-  for (const script of ["build:facebook", "build:reddit", "build:youtube", "build:youtube:fixture"]) {
+  for (const script of ["build:facebook", "build:reddit", "build:youtube", "build:youtube:fixture", "build:netflix", "build:yahoo"]) {
     assert.doesNotMatch(packageManifest.scripts[script], /\bVITE_PLATFORM_TARGET=/u);
   }
   const facebookEnvironment = await readFile(
@@ -281,7 +295,7 @@ test("the build contract rejects roots, repository paths, and another target's c
 
 test("explicit development profiles redirect the package root to their target-owned document", async () => {
   const {createWebTargetViteConfig} = await import("../webTargetViteConfig.ts");
-  for (const mode of ["jest", "facebook", "reddit", "youtube"]) {
+  for (const mode of ["jest", "facebook", "reddit", "youtube", "netflix", "yahoo"]) {
     const development = createWebTargetViteConfig({command: "serve", mode, environment: {}});
     const plugin = development.plugins.flat(Infinity).find(
       (candidate) => candidate?.name === "riddle-quest-web-target-html",
@@ -312,7 +326,7 @@ test("explicit development profiles redirect the package root to their target-ow
       mode: "facebook",
       environment: {YOUTUBE_ALLOW_INCOMPLETE_CONTENT_FIXTURE: "1"},
     }),
-    /fixture can only be used with the youtube Web Target/u,
+    /fixture can only be used with a self-contained Web Target/u,
   );
 });
 
@@ -335,6 +349,8 @@ test("each target-owned HTML document imports one explicit target main and only 
       module: "/src/youtube/main.tsx",
       externalScripts: ["https://www.youtube.com/game_api/v1"],
     },
+    {file: "targets/netflix/index.html", module: "/src/youtube/standaloneMain.tsx", externalScripts: []},
+    {file: "targets/yahoo/index.html", module: "/src/youtube/standaloneMain.tsx", externalScripts: []},
   ];
 
   for (const document of documents) {

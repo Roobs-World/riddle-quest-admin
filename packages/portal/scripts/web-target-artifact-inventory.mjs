@@ -6,6 +6,8 @@ const targetNames = Object.freeze({
   facebook: "Facebook",
   reddit: "Reddit",
   youtube: "YouTube",
+  netflix: "Netflix candidate",
+  yahoo: "Yahoo candidate",
 });
 
 const inspectableTextExtension = /\.(?:css|html?|js|mjs|cjs|json|svg|xml|txt|webmanifest)$/iu;

@@ -46,6 +46,8 @@
     "build:jest": "pnpm --filter @qwordly/portal build:jest",
     "build:facebook": "pnpm --filter @qwordly/portal build:facebook",
     "build:youtube": "pnpm --filter @qwordly/portal build:youtube",
+    "build:netflix": "pnpm --filter @qwordly/portal build:netflix",
+    "build:yahoo": "pnpm --filter @qwordly/portal build:yahoo",
     "build:reddit": "pnpm --filter @qwordly/reddit-app build:package",
     "release:plan": "node scripts/release/run-platform-release.mjs --list",
     "release:jest": "node scripts/release/run-platform-release.mjs jest",

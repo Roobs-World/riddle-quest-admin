@@ -1,0 +1,41 @@
+import {readFile} from "node:fs/promises";
+import path from "node:path";
+import {inspectWebTargetArtifact} from "./web-target-artifact-inventory.mjs";
+
+const target = process.argv[2];
+if (!new Set(["netflix", "yahoo"]).has(target)) throw new Error("Expected netflix or yahoo target");
+const inventory = await inspectWebTargetArtifact({rootDirectory: process.argv[3] || `dist-${target}`, target});
+const {files, root, textFiles, totalBytes} = inventory;
+if (totalBytes >= 30 * 1024 * 1024) throw new Error(`${target} candidate artifact must be below 30 MiB`);
+const indexPath = path.join(root, "index.html");
+if (!files.includes(indexPath)) throw new Error(`${target} candidate is missing index.html`);
+const html = await readFile(indexPath, "utf8");
+if (!/^<!doctype html>/iu.test(html) || !/<meta\s[^>]*charset=/iu.test(html)) {
+  throw new Error(`${target} candidate entry is missing HTML5 metadata`);
+}
+for (const match of html.matchAll(/(?:src|href)=["']([^"']+)["']/giu)) {
+  const reference = match[1];
+  if (/^(?:https?:)?\/\//iu.test(reference) || reference.startsWith("/")) {
+    throw new Error(`${target} candidate contains a non-portable entry resource: ${reference}`);
+  }
+}
+const content = textFiles.map(({source}) => source).join("\n");
+const forbidden = [
+  ["Jest", /cdn\.jest\.com|\bJestSDK\b/iu],
+  ["Facebook", /connect\.facebook\.net|\bFBInstant\b|fbapp-config/iu],
+  ["Reddit", /\bdevvit(?:-internal)?\b|RedditPlatform/iu],
+  ["YouTube", /youtube\.com\/game_api|\bytgame\b/iu],
+  ["Firebase", /firebaseio\.com|googleapis\.com|cloudfunctions\.net|\bfirebase(?:app|auth|database|firestore|functions|storage)\b/iu],
+  ["analytics", /\bSentry\b|sentry\.io|google-analytics|googletagmanager|\bgtag\s*\(/iu],
+  ["network API", /\bfetch\s*\(|\bXMLHttpRequest\b|\bWebSocket\b|\bEventSource\b|\bsendBeacon\s*\(/u],
+  ["commerce or advertising", /\b(?:purchaseAsync|checkout|IAP|showInterstitialAd|showRewardedAd|AdMob)\b/iu],
+];
+for (const [label, pattern] of forbidden) {
+  if (pattern.test(content)) throw new Error(`${label} integration found in ${target} candidate artifact`);
+}
+const manifestPath = path.join(root, "youtube-content-manifest.json");
+const manifest = JSON.parse(await readFile(manifestPath, "utf8"));
+if (manifest.target !== `${target}-candidate` || manifest.fixture !== true || manifest.releaseReady !== false) {
+  throw new Error(`${target} candidate content manifest is malformed`);
+}
+console.log(`${target} candidate artifact audit passed: ${files.length} files, ${(totalBytes / 1024 / 1024).toFixed(2)} MiB`);

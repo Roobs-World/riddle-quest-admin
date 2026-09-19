@@ -25,6 +25,8 @@ const redditHtmlEntry = fileURLToPath(new URL("./targets/reddit/index.html", imp
 const redditInlineHtmlEntry = fileURLToPath(new URL("./targets/reddit/reddit-inline.html", import.meta.url));
 /** Provides youtube html entry behavior. */
 const youtubeHtmlEntry = fileURLToPath(new URL("./targets/youtube/index.html", import.meta.url));
+const netflixHtmlEntry = fileURLToPath(new URL("./targets/netflix/index.html", import.meta.url));
+const yahooHtmlEntry = fileURLToPath(new URL("./targets/yahoo/index.html", import.meta.url));
 /** Provides youtube release content behavior. */
 const youtubeReleaseContent = fileURLToPath(
   new URL("./src/youtube/generated/youtube-content-v1.json", import.meta.url),
@@ -41,7 +43,7 @@ const youtubeLocales = [
 ] as const;
 
 /** The four compile-time Web Targets shipped by the portal package. */
-export type WebTarget = "jest" | "facebook" | "reddit" | "youtube";
+export type WebTarget = "jest" | "facebook" | "reddit" | "youtube" | "netflix" | "yahoo";
 
 /** Provides canonical build output directories behavior. */
 const canonicalBuildOutputDirectories: Readonly<Record<WebTarget, string>> = Object.freeze({
@@ -49,6 +51,8 @@ const canonicalBuildOutputDirectories: Readonly<Record<WebTarget, string>> = Obj
   facebook: "dist-facebook",
   reddit: "dist-reddit",
   youtube: "dist-youtube",
+  netflix: "dist-netflix",
+  yahoo: "dist-yahoo",
 });
 
 /** Input to the single Web Target build-configuration interface. */
@@ -204,7 +208,7 @@ function readYouTubeContentDocument(contentPath: string, allowFixture: boolean) 
 }
 
 /** Provides youtube artifact plugin behavior. */
-function youtubeArtifactPlugin(contentPath: string, allowFixture: boolean): Plugin {
+function youtubeArtifactPlugin(contentPath: string, allowFixture: boolean, target = "youtube-playables"): Plugin {
   /** Provides content manifest behavior. */
   let contentManifest: string;
   return {
@@ -227,7 +231,7 @@ function youtubeArtifactPlugin(contentPath: string, allowFixture: boolean): Plug
       const {document, source} = readYouTubeContentDocument(contentPath, allowFixture);
       contentManifest = `${JSON.stringify({
         schemaVersion: 1,
-        target: "youtube-playables",
+        target,
         contentVersion: document.contentVersion,
         contentSha256: createHash("sha256").update(source).digest("hex"),
         releaseReady: document.releaseReady,
@@ -405,6 +409,28 @@ const targetProfiles: Readonly<Record<WebTarget, WebTargetProfile>> = Object.fre
       youtubeArtifactPlugin(youtubeContent, allowYouTubeFixture),
     ],
   }),
+  netflix: Object.freeze({
+    id: "netflix",
+    shopEntry: youtubeForbiddenShopEntry,
+    publicDirectory: false,
+    input: netflixHtmlEntry,
+    htmlOutputs: Object.freeze([{source: netflixHtmlEntry, fileName: "index.html"}] as const),
+    disableModulePreloadPolyfill: true,
+    createArtifactPlugins: ({allowYouTubeFixture, youtubeContent}: WebTargetPluginContext) => [
+      youtubeArtifactPlugin(youtubeContent, allowYouTubeFixture, "netflix-candidate"),
+    ],
+  }),
+  yahoo: Object.freeze({
+    id: "yahoo",
+    shopEntry: youtubeForbiddenShopEntry,
+    publicDirectory: false,
+    input: yahooHtmlEntry,
+    htmlOutputs: Object.freeze([{source: yahooHtmlEntry, fileName: "index.html"}] as const),
+    disableModulePreloadPolyfill: true,
+    createArtifactPlugins: ({allowYouTubeFixture, youtubeContent}: WebTargetPluginContext) => [
+      youtubeArtifactPlugin(youtubeContent, allowYouTubeFixture, "yahoo-candidate"),
+    ],
+  }),
 });
 
 /** Indicates whether is web target. */
@@ -415,7 +441,7 @@ function isWebTarget(mode: string): mode is WebTarget {
 /** Resolves web target. */
 function resolveWebTarget(mode: string): WebTargetProfile {
   if (isWebTarget(mode)) return targetProfiles[mode];
-  throw new Error(`Unknown Web Target mode: ${mode}; expected jest, facebook, reddit, or youtube`);
+  throw new Error(`Unknown Web Target mode: ${mode}; expected jest, facebook, reddit, youtube, netflix, or yahoo`);
 }
 
 /** Provides contains path behavior. */
@@ -490,15 +516,15 @@ export function createWebTargetViteConfig({
   const profile = resolveWebTarget(mode);
   /** Provides allow you tube fixture behavior. */
   const allowYouTubeFixture = environment.YOUTUBE_ALLOW_INCOMPLETE_CONTENT_FIXTURE === "1";
-  if (allowYouTubeFixture && profile.id !== "youtube") {
-    throw new Error("The YouTube engineering content fixture can only be used with the youtube Web Target");
+  if (allowYouTubeFixture && !["youtube", "netflix", "yahoo"].includes(profile.id)) {
+    throw new Error("The bundled engineering content fixture can only be used with a self-contained Web Target");
   }
   /** Provides youtube content behavior. */
   const youtubeContent = allowYouTubeFixture ? youtubeFixtureContent : youtubeReleaseContent;
   /** Provides upload sentry source maps behavior. */
   const uploadSentrySourceMaps = environment.SENTRY_UPLOAD_SOURCEMAPS === "1";
-  if (profile.id === "youtube" && uploadSentrySourceMaps) {
-    throw new Error("Sentry source-map upload is forbidden for the self-contained YouTube artifact");
+  if (["youtube", "netflix", "yahoo"].includes(profile.id) && uploadSentrySourceMaps) {
+    throw new Error("Sentry source-map upload is forbidden for self-contained artifacts");
   }
 
   /** Provides jest build out dir behavior. */
@@ -509,6 +535,8 @@ export function createWebTargetViteConfig({
     facebook: environment.FACEBOOK_BUILD_OUT_DIR?.trim() || canonicalBuildOutputDirectories.facebook,
     reddit: environment.REDDIT_BUILD_OUT_DIR?.trim() || canonicalBuildOutputDirectories.reddit,
     youtube: environment.YOUTUBE_BUILD_OUT_DIR?.trim() || canonicalBuildOutputDirectories.youtube,
+    netflix: environment.NETFLIX_BUILD_OUT_DIR?.trim() || canonicalBuildOutputDirectories.netflix,
+    yahoo: environment.YAHOO_BUILD_OUT_DIR?.trim() || canonicalBuildOutputDirectories.yahoo,
   };
   /** Provides selected build out dir behavior. */
   const selectedBuildOutDir = buildOutputDirectories[profile.id];
