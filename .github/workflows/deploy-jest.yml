@@ -1,9 +1,6 @@
 name: Deploy Jest production
 
 on:
-  push:
-    branches:
-      - jest
   workflow_dispatch:
 
 permissions:
