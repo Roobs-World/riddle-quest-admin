@@ -3,7 +3,6 @@ import {createRoot} from "react-dom/client";
 import {FatalErrorBoundary} from "../FatalErrorBoundary";
 import {YahooPlatformEntry} from "./YahooPlatformEntry";
 import "../styles.css";
-import "./styles.css";
 
 /** Provides root behavior. */
 const root = document.getElementById("root");

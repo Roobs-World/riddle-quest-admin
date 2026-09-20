@@ -9,7 +9,7 @@
     "dev:reddit": "vite --mode reddit",
     "dev:youtube": "YOUTUBE_ALLOW_INCOMPLETE_CONTENT_FIXTURE=1 vite --mode youtube",
     "dev:netflix": "YOUTUBE_ALLOW_INCOMPLETE_CONTENT_FIXTURE=1 vite --mode netflix",
-    "dev:yahoo": "YOUTUBE_ALLOW_INCOMPLETE_CONTENT_FIXTURE=1 vite --mode yahoo",
+    "dev:yahoo": "vite --mode yahoo",
     "dev:jest-hosted": "vite --mode jest --host 0.0.0.0 --port 3000 --strictPort",
     "dev:facebook-hosted": "vite --mode facebook --host 0.0.0.0 --port 3001 --strictPort",
     "dev:youtube-hosted": "YOUTUBE_ALLOW_INCOMPLETE_CONTENT_FIXTURE=1 vite --mode youtube --host 0.0.0.0 --port 3002 --strictPort",
@@ -70,7 +70,7 @@
     "preview:reddit": "vite preview --mode reddit",
     "preview:youtube": "YOUTUBE_ALLOW_INCOMPLETE_CONTENT_FIXTURE=1 vite preview --mode youtube",
     "preview:netflix": "YOUTUBE_ALLOW_INCOMPLETE_CONTENT_FIXTURE=1 vite preview --mode netflix",
-    "preview:yahoo": "YOUTUBE_ALLOW_INCOMPLETE_CONTENT_FIXTURE=1 vite preview --mode yahoo",
+    "preview:yahoo": "vite preview --mode yahoo",
     "test": "jest --config jest.config.cjs",
     "test:coverage": "jest --config jest.config.cjs --runInBand --coverage",
     "test:race:coverage": "jest --config jest.race-coverage.config.cjs --runInBand"
