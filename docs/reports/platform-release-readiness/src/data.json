@@ -3,7 +3,7 @@
   "surface": "dashboard",
   "buildStatus": "complete",
   "title": "Riddle Quest integration and release status",
-  "generatedAt": "2026-09-20T19:53:44.096Z",
+  "generatedAt": "2026-09-20T21:08:52.906Z",
   "status": "verified-repository-and-provider-evidence",
   "filters": [],
   "queries": {
@@ -822,107 +822,123 @@
       "rows": [
         {
           "platform": "All configured targets",
-          "status": "Passed",
-          "trigger": "local",
-          "revision": "local-candidate",
-          "completedAt": "2026-09-20T19:18:41.573Z",
-          "evidence": "Release adapter tests and three provider packages passed locally"
+          "status": "Packaging passed",
+          "trigger": "workflow_dispatch",
+          "revision": "1ce37da4",
+          "completedAt": "2026-09-20T21:08:52.906Z",
+          "evidence": "GitHub Actions run 35537066189"
+        },
+        {
+          "platform": "Jest",
+          "status": "Waiting for credentials",
+          "trigger": "workflow_dispatch",
+          "revision": "1ce37da4",
+          "completedAt": "2026-09-20T21:08:52.906Z",
+          "evidence": "Automatic publish requires JEST_GAME_UPLOAD_TOKEN in the jest-production environment"
+        },
+        {
+          "platform": "Reddit",
+          "status": "Waiting for evidence",
+          "trigger": "workflow_dispatch",
+          "revision": "1ce37da4",
+          "completedAt": "2026-09-20T21:08:52.906Z",
+          "evidence": "Promotion requires six sanitized production contract fixtures"
         },
         {
           "platform": "itch.io",
-          "status": "Handoff ready",
-          "trigger": "local",
-          "revision": "local-candidate",
-          "completedAt": "2026-09-20T19:18:41.573Z",
-          "evidence": "build-itch.zip ac8061bc0642607365fe52dd3e70922d3c539ea5d7c40c1288c1b7588eab7471"
+          "status": "Waiting for credentials",
+          "trigger": "workflow_dispatch",
+          "revision": "1ce37da4",
+          "completedAt": "2026-09-20T21:08:52.906Z",
+          "evidence": "Official Butler stage runs after the shared release artifact succeeds"
         },
         {
           "platform": "CrazyGames",
-          "status": "Handoff ready",
-          "trigger": "local",
-          "revision": "local-candidate",
-          "completedAt": "2026-09-20T19:18:41.573Z",
-          "evidence": "build-crazygames-basic.zip 9df77850ea541215f5e8c7df6212f0c8dab2e80b785e7c6cea5abc1aabf77f89"
+          "status": "Manual upload handoff ready",
+          "trigger": "workflow_dispatch",
+          "revision": "1ce37da4",
+          "completedAt": "2026-09-20T21:08:52.906Z",
+          "evidence": "build-crazygames-basic.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
           "platform": "Newgrounds",
-          "status": "Handoff ready",
-          "trigger": "local",
-          "revision": "local-candidate",
-          "completedAt": "2026-09-20T19:18:41.573Z",
-          "evidence": "build-newgrounds.zip 47a961baf0b403cccbcd0db203f89ffa174f755355650f34ed72f0eaa86f88a0"
+          "status": "Manual upload handoff ready",
+          "trigger": "workflow_dispatch",
+          "revision": "1ce37da4",
+          "completedAt": "2026-09-20T21:08:52.906Z",
+          "evidence": "build-newgrounds.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
           "platform": "Game Jolt",
-          "status": "Handoff ready",
-          "trigger": "local",
-          "revision": "local-candidate",
-          "completedAt": "2026-09-20T19:36:47.035Z",
-          "evidence": "build-gamejolt.zip and its SHA-256 manifest are produced by the release adapter"
+          "status": "Manual upload handoff ready",
+          "trigger": "workflow_dispatch",
+          "revision": "1ce37da4",
+          "completedAt": "2026-09-20T21:08:52.906Z",
+          "evidence": "build-gamejolt.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
           "platform": "Coolmath Games",
-          "status": "Pitch handoff ready",
-          "trigger": "local",
-          "revision": "local-candidate",
-          "completedAt": "2026-09-20T19:36:47.035Z",
-          "evidence": "build-coolmath-pitch.zip and its SHA-256 manifest are produced by the release adapter"
+          "status": "Licensing pitch handoff ready",
+          "trigger": "workflow_dispatch",
+          "revision": "1ce37da4",
+          "completedAt": "2026-09-20T21:08:52.906Z",
+          "evidence": "build-coolmath-pitch.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
           "platform": "Armor Games",
-          "status": "Pitch handoff ready",
-          "trigger": "local",
-          "revision": "local-candidate",
-          "completedAt": "2026-09-20T19:36:47.035Z",
-          "evidence": "build-armor-pitch.zip and its SHA-256 manifest are produced by the release adapter"
+          "status": "Licensing pitch handoff ready",
+          "trigger": "workflow_dispatch",
+          "revision": "1ce37da4",
+          "completedAt": "2026-09-20T21:08:52.906Z",
+          "evidence": "build-armor-pitch.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
           "platform": "GamePix",
-          "status": "Review handoff ready",
-          "trigger": "local",
-          "revision": "local-candidate",
-          "completedAt": "2026-09-20T19:53:44.096Z",
-          "evidence": "build-gamepix-review.zip and its SHA-256 manifest are produced by the release adapter"
+          "status": "Manual review handoff ready",
+          "trigger": "workflow_dispatch",
+          "revision": "1ce37da4",
+          "completedAt": "2026-09-20T21:08:52.906Z",
+          "evidence": "build-gamepix-review.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
           "platform": "Addicting Games",
-          "status": "Review handoff ready",
-          "trigger": "local",
-          "revision": "local-candidate",
-          "completedAt": "2026-09-20T19:53:44.096Z",
-          "evidence": "build-addictinggames-review.zip and its SHA-256 manifest are produced by the release adapter"
+          "status": "Manual review handoff ready",
+          "trigger": "workflow_dispatch",
+          "revision": "1ce37da4",
+          "completedAt": "2026-09-20T21:08:52.906Z",
+          "evidence": "build-addictinggames-review.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
           "platform": "HTMLGames.com",
-          "status": "Pitch handoff ready",
-          "trigger": "local",
-          "revision": "local-candidate",
-          "completedAt": "2026-09-20T19:53:44.096Z",
-          "evidence": "build-htmlgames-pitch.zip and its SHA-256 manifest are produced by the release adapter"
+          "status": "Licensing pitch handoff ready",
+          "trigger": "workflow_dispatch",
+          "revision": "1ce37da4",
+          "completedAt": "2026-09-20T21:08:52.906Z",
+          "evidence": "build-htmlgames-pitch.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
           "platform": "PlayKovo",
-          "status": "Review handoff ready",
-          "trigger": "local",
-          "revision": "local-candidate",
-          "completedAt": "2026-09-20T19:53:44.096Z",
-          "evidence": "build-playkovo-review.zip and its SHA-256 manifest are produced by the release adapter"
+          "status": "Manual review handoff ready",
+          "trigger": "workflow_dispatch",
+          "revision": "1ce37da4",
+          "completedAt": "2026-09-20T21:08:52.906Z",
+          "evidence": "build-playkovo-review.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
           "platform": "Kongregate",
           "status": "Manual upload handoff ready",
-          "trigger": "local",
-          "revision": "local-candidate",
-          "completedAt": "2026-09-20T21:15:00.000Z",
-          "evidence": "build-kongregate.zip and its SHA-256 manifest are produced by the release adapter"
+          "trigger": "workflow_dispatch",
+          "revision": "1ce37da4",
+          "completedAt": "2026-09-20T21:08:52.906Z",
+          "evidence": "build-kongregate.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
           "platform": "Lagged",
           "status": "Developer review handoff ready",
-          "trigger": "local",
-          "revision": "local-candidate",
-          "completedAt": "2026-09-20T21:15:00.000Z",
-          "evidence": "build-lagged-review.zip and its SHA-256 manifest are produced by the release adapter"
+          "trigger": "workflow_dispatch",
+          "revision": "1ce37da4",
+          "completedAt": "2026-09-20T21:08:52.906Z",
+          "evidence": "build-lagged-review.zip and its SHA-256 manifest are retained in the workflow artifact"
         }
       ],
       "source": {

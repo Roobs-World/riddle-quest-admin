@@ -14,8 +14,12 @@ const trigger = process.env.GITHUB_EVENT_NAME || "local";
 snapshot.generatedAt = completedAt;
 snapshot.queries.release_automation = {
   rows: [
-    {platform: "All configured targets", status: "Passed", trigger, revision: sha, completedAt,
+    {platform: "All configured targets", status: "Packaging passed", trigger, revision: sha, completedAt,
       evidence: runId === "local" ? "Local release automation run" : `GitHub Actions run ${runId}`},
+    {platform: "Jest", status: process.env.JEST_PUBLISH_CONFIGURED === "true" ? "Publish stage configured" : "Waiting for credentials",
+      trigger, revision: sha, completedAt, evidence: "Automatic publish requires JEST_GAME_UPLOAD_TOKEN in the jest-production environment"},
+    {platform: "Reddit", status: process.env.REDDIT_CONTRACTS_CONFIGURED === "true" ? "Immutable handoff ready" : "Waiting for evidence",
+      trigger, revision: sha, completedAt, evidence: "Promotion requires six sanitized production contract fixtures"},
     {platform: "itch.io", status: process.env.ITCH_BUTLER_CONFIGURED === "true" ? "Publish stage configured" : "Waiting for credentials",
       trigger, revision: sha, completedAt, evidence: "Official Butler stage runs after the shared release artifact succeeds"},
     {platform: "CrazyGames", status: "Manual upload handoff ready", trigger, revision: sha, completedAt,
