@@ -9,6 +9,7 @@ import {
   formatPlatformReleasePlan,
   getPlatformReleasePlan,
   listPlatformReleasePlans,
+  runAllPlatformReleases,
   runPlatformRelease,
 } from "./platform-releases.mjs";
 
@@ -17,17 +18,21 @@ const expectedCommands = new Map([
   ["facebook", ["--filter", "@qwordly/portal", "release:facebook"]],
   ["youtube", ["--filter", "@qwordly/portal", "preflight:youtube-upload"]],
   ["reddit", ["--filter", "@qwordly/reddit-app", "release:candidate"]],
+  ["netflix", ["build:netflix"]],
+  ["yahoo", ["build:yahoo"]],
 ]);
 const expectedRunbooks = new Map([
   ["jest", "docs/jest-html5-operations.md"],
   ["facebook", "docs/facebook-instant-games-operations.md"],
   ["youtube", "docs/youtube-playables-operations.md"],
   ["reddit", "docs/reddit-games-operations.md"],
+  ["netflix", "docs/netflix-yahoo-candidate-builds.md"],
+  ["yahoo", "docs/netflix-yahoo-candidate-builds.md"],
 ]);
 
 test("the public interface exposes one isolated canonical command per release target", () => {
   const plans = listPlatformReleasePlans();
-  assert.deepEqual(plans.map(({target}) => target), ["jest", "facebook", "youtube", "reddit"]);
+  assert.deepEqual(plans.map(({target}) => target), ["jest", "facebook", "youtube", "reddit", "netflix", "yahoo"]);
   for (const plan of plans) {
     assert.equal(plan.publicCommand, `pnpm release:${plan.target}`);
     assert.equal("command" in plan, false);
@@ -36,16 +41,16 @@ test("the public interface exposes one isolated canonical command per release ta
   assert.equal(plans.some(({target}) => target === "all"), false);
 });
 
-test("the root package exposes separate build and release commands without release:all", async () => {
+test("the root package exposes target releases and one combined release command", async () => {
   const packageJson = JSON.parse(await readFile(new URL("../../package.json", import.meta.url), "utf8"));
-  for (const target of ["jest", "facebook", "youtube", "reddit"]) {
+  for (const target of ["jest", "facebook", "youtube", "reddit", "netflix", "yahoo"]) {
     assert.equal(typeof packageJson.scripts[`build:${target}`], "string");
     assert.equal(
       packageJson.scripts[`release:${target}`],
       `node scripts/release/run-platform-release.mjs ${target}`,
     );
   }
-  assert.equal(packageJson.scripts["release:all"], undefined);
+  assert.equal(packageJson.scripts["release:all"], "node scripts/release/run-platform-release.mjs all");
   assert.equal(packageJson.scripts["preflight:all-platforms"], "pnpm verify:all-targets && pnpm release:plan");
   assert.match(packageJson.scripts["verify:all-targets"], /^pnpm check:security\b/u);
 });
@@ -59,7 +64,28 @@ test("target plans preserve distinct external effects", () => {
   assert.match(getPlatformReleasePlan("youtube").externalEffect, /^None;/u);
   assert.equal(getPlatformReleasePlan("reddit").boundary, "local-immutable-handoff");
   assert.match(getPlatformReleasePlan("reddit").externalEffect, /^None;/u);
+  assert.equal(getPlatformReleasePlan("netflix").boundary, "local-validated-artifact");
+  assert.equal(getPlatformReleasePlan("yahoo").boundary, "local-validated-artifact");
   assert.throws(() => getPlatformReleasePlan("all"), /Unknown release target/u);
+});
+
+test("the combined release verifies once before running all six adapters", async () => {
+  const invocations = [];
+  const results = await runAllPlatformReleases({
+    commandRunner: async (command) => invocations.push(command),
+    environment: {},
+    log: () => {},
+  });
+  assert.deepEqual(invocations[0].args, ["verify:all-targets"]);
+  assert.deepEqual(invocations.slice(1).map(({args}) => args), [
+    expectedCommands.get("jest"),
+    expectedCommands.get("facebook"),
+    expectedCommands.get("youtube"),
+    expectedCommands.get("reddit"),
+    expectedCommands.get("netflix"),
+    expectedCommands.get("yahoo"),
+  ]);
+  assert.deepEqual(results.map(({target}) => target), ["jest", "facebook", "youtube", "reddit", "netflix", "yahoo"]);
 });
 
 test("the Facebook adapter performs only the local preflight and immutable handoff", async () => {

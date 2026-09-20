@@ -62,6 +62,28 @@ const releasePlans = Object.freeze([
     handoff: "Remote ingestion remains blocked until an exact-byte Devvit adapter or equivalent proof is available.",
     runbook: "docs/reddit-games-operations.md",
   }),
+  Object.freeze({
+    target: "netflix",
+    title: "Netflix",
+    boundary: "local-validated-artifact",
+    publicCommand: "pnpm release:netflix",
+    summary: "Build and audit the isolated Netflix candidate artifact.",
+    externalEffect: "None until a Netflix partner upload command is configured.",
+    command: Object.freeze({executable: "pnpm", args: Object.freeze(["build:netflix"])}),
+    handoff: "Use packages/portal/dist-netflix with the Netflix partner delivery tooling.",
+    runbook: "docs/netflix-yahoo-candidate-builds.md",
+  }),
+  Object.freeze({
+    target: "yahoo",
+    title: "Yahoo",
+    boundary: "local-validated-artifact",
+    publicCommand: "pnpm release:yahoo",
+    summary: "Build and audit the isolated Yahoo candidate artifact.",
+    externalEffect: "None until a Yahoo partner upload command is configured.",
+    command: Object.freeze({executable: "pnpm", args: Object.freeze(["build:yahoo"])}),
+    handoff: "Use packages/portal/dist-yahoo with the Yahoo partner delivery tooling.",
+    runbook: "docs/netflix-yahoo-candidate-builds.md",
+  }),
 ]);
 
 const plansByTarget = new Map(releasePlans.map((plan) => [plan.target, plan]));
@@ -82,7 +104,7 @@ export function listPlatformReleasePlans() {
 export function getPlatformReleasePlan(target) {
   const plan = plansByTarget.get(target);
   if (!plan) {
-    throw new Error(`Unknown release target ${JSON.stringify(target)}; expected jest, facebook, youtube, or reddit`);
+    throw new Error(`Unknown release target ${JSON.stringify(target)}; expected jest, facebook, youtube, reddit, netflix, or yahoo`);
   }
   return clonePlan(plan);
 }
@@ -195,4 +217,25 @@ export async function runPlatformRelease(
   await commandRunner({...definition.command, cwd: repositoryDirectory, environment});
   log(`Release handoff ready for ${plan.title}. ${plan.handoff}`);
   return {target, status: "handoff-ready", boundary: plan.boundary};
+}
+
+/** Verifies once, then executes every target-specific release adapter in a deterministic order. */
+export async function runAllPlatformReleases({
+  dryRun = false,
+  commandRunner = runReleaseCommand,
+  environment = process.env,
+  log = console.log,
+} = {}) {
+  if (dryRun) {
+    log("All-target release plan (no build, upload, package, or publish action will be performed).\n");
+    for (const plan of releasePlans) log(`${formatPlatformReleasePlan(clonePlan(plan))}\n`);
+    return releasePlans.map(({target, boundary}) => ({target, status: "planned", boundary}));
+  }
+  log("Running the shared six-target verification gate before any release adapter.");
+  await commandRunner({executable: "pnpm", args: ["verify:all-targets"], cwd: repositoryDirectory, environment});
+  const results = [];
+  for (const {target} of releasePlans) {
+    results.push(await runPlatformRelease(target, {commandRunner, environment, log}));
+  }
+  return results;
 }
