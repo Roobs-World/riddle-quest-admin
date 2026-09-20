@@ -99,6 +99,7 @@ export const createYahooStripeCheckout = onCallWithSentry<
   const session = await stripeClient().checkout.sessions.create(
     {
       mode: "payment",
+      managed_payments: {enabled: true},
       client_reference_id: uid,
       customer_email: typeof request.auth?.token.email === "string" ? request.auth.token.email : undefined,
       line_items: [
