@@ -1,9 +1,6 @@
 name: Deploy websites
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
 
 permissions:
@@ -11,7 +8,7 @@ permissions:
 
 concurrency:
   group: deploy-websites-production
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
@@ -22,6 +19,8 @@ jobs:
     name: Deploy Yahoo game website
     runs-on: ubuntu-24.04
     timeout-minutes: 30
+    environment: website-production
+    if: github.ref == 'refs/heads/main'
     env:
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_GAME_PROJECT_ID }}
     steps:
@@ -33,6 +32,7 @@ jobs:
           node-version-file: .nvmrc
       - run: corepack enable
       - run: corepack prepare pnpm@11.21.0 --activate
+      - run: pnpm install --frozen-lockfile
       - name: Pull production configuration
         run: npx --yes vercel@54.14.2 pull --yes --environment=production --token="$VERCEL_TOKEN"
       - name: Build production artifact
@@ -44,6 +44,8 @@ jobs:
     name: Deploy release dashboard
     runs-on: ubuntu-24.04
     timeout-minutes: 20
+    environment: website-production
+    if: github.ref == 'refs/heads/main'
     env:
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_DASHBOARD_PROJECT_ID }}
     steps:
@@ -55,6 +57,9 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
           cache-dependency-path: docs/reports/platform-release-readiness/package-lock.json
+      - run: corepack enable
+      - run: corepack prepare pnpm@11.21.0 --activate
+      - run: pnpm install --frozen-lockfile
       - name: Pull production configuration
         run: npx --yes vercel@54.14.2 pull --yes --environment=production --token="$VERCEL_TOKEN"
       - name: Build production artifact
