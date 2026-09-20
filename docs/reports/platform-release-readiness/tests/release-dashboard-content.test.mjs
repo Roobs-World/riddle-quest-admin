@@ -95,6 +95,17 @@ test("the dashboard reports IAP and advertising policy for every release platfor
   assert.match(dashboard, /queryId="monetization_readiness"/u);
 });
 
+test("the dashboard uses source-owned shadcn primitives for operational UI", async () => {
+  const shadcn = await readFile(new URL("../src/content/dashboard/shadcn-ui.jsx", import.meta.url), "utf8");
+  const config = JSON.parse(await readFile(new URL("../components.json", import.meta.url), "utf8"));
+  assert.equal(config.style, "new-york");
+  for (const component of ["Badge", "Button", "Card", "Progress", "Table"]) {
+    assert.match(shadcn, new RegExp(`export function ${component}\\b`, "u"));
+  }
+  assert.match(dashboard, /from "\.\/shadcn-ui\.jsx"/u);
+  assert.match(dashboard, /id="release-queue-summary"/u);
+});
+
 test("the dashboard publishes its desktop, mobile and output-coverage E2E results", () => {
   const checks = data.queries.dashboard_verification.rows;
 

@@ -2,6 +2,7 @@ import React from "react";
 import {DeploymentMonitoring, ProviderActivity} from "./DeploymentMonitoring.jsx";
 import {BackendMonitoring} from "./BackendMonitoring.jsx";
 import {DataComponent, MetricCard, Section, SectionHeader, useDataApp} from "../../data-app-public.jsx";
+import {Badge, Button, Card, CardContent, Progress, Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "./shadcn-ui.jsx";
 
 function Status({children}) {
   const value = String(children);
@@ -10,21 +11,37 @@ function Status({children}) {
     : /passed|implemented|deployed|testing|private testing/iu.test(value)
       ? "positive"
       : "neutral";
-  return <span className="integration-status" data-tone={tone}>{value}</span>;
+  return <Badge variant={tone} data-tone={tone}>{value}</Badge>;
 }
 
 function EvidenceTable({id, queryId, title, rows, columns}) {
   return <DataComponent id={id} queryId={queryId} title={title} kind="table" variant="card" displayRows={rows} sourceRows={rows}>
-    <div className="integration-table-wrap">
-      <table className="integration-table">
-        <thead><tr>{columns.map(({key, label}) => <th key={key}>{label}</th>)}</tr></thead>
-        <tbody>{rows.map((row) => <tr key={row.platform ?? row.service ?? row.check}>
-          {columns.map(({key, status, link}) => <td key={key}>{link && row[key]
-            ? <a href={row[key]} target="_blank" rel="noreferrer">Open</a>
-            : status ? <Status>{row[key]}</Status> : row[key]}</td>)}
-        </tr>)}</tbody>
-      </table>
-    </div>
+    <Table className="integration-table">
+      <TableHeader><TableRow>{columns.map(({key, label}) => <TableHead key={key}>{label}</TableHead>)}</TableRow></TableHeader>
+      <TableBody>{rows.map((row) => <TableRow key={row.platform ?? row.service ?? row.check}>
+        {columns.map(({key, status, link}) => <TableCell key={key}>{link && row[key]
+          ? <Button><a href={row[key]} target="_blank" rel="noreferrer">Open</a></Button>
+          : status ? <Status>{row[key]}</Status> : row[key]}</TableCell>)}
+      </TableRow>)}</TableBody>
+    </Table>
+  </DataComponent>;
+}
+
+function ReleaseQueueSummary({rows}) {
+  const done = rows.filter(({status}) => /done|complete|verified/iu.test(status)).length;
+  const blocked = rows.filter(({status}) => /blocked|hold/iu.test(status)).length;
+  const remaining = Math.max(0, rows.length - done);
+  const progress = rows.length ? (done / rows.length) * 100 : 0;
+  return <DataComponent id="release-queue-summary" queryId="manual_action_checklist" title="Release action queue" kind="metric" variant="plain" displayRows={rows} sourceRows={rows}>
+    <Card className="release-queue-card">
+      <CardContent>
+        <div className="release-queue-card__header">
+          <div><p className="release-queue-card__eyebrow">Owner actions</p><p className="release-queue-card__value">{remaining} remaining</p></div>
+          <div className="release-queue-card__badges"><Badge variant="positive">{done} complete</Badge><Badge variant="attention">{blocked} blocked or held</Badge></div>
+        </div>
+        <Progress value={progress} label="Manual release checklist completion" />
+      </CardContent>
+    </Card>
   </DataComponent>;
 }
 
@@ -53,6 +70,7 @@ export function DashboardContent() {
       <MetricCard id="metric-provider-releases" queryId="provider_release_evidence" sourceRows={releases} title="Provider environments" value={String(providerEnvironments)} description="Jest accepted, Facebook Testing, Reddit private and Yahoo production." />
       <MetricCard id="metric-services" queryId="service_status" sourceRows={services} title="Operational services" value={`${integratedServices}/${services.length}`} description="Firebase, Sentry, Vercel and Stripe are integrated." />
     </section>
+    <ReleaseQueueSummary rows={manualActions} />
 
     <Section>
       <SectionHeader id="manual-action-checklist-title" title="Your manual release checklist" />
