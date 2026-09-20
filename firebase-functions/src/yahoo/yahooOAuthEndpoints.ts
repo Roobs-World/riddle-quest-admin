@@ -152,7 +152,8 @@ export const yahooOAuthCallback = onRequestWithSentry("yahooOAuthCallback", opti
   const verified = await jwtVerify(idToken, yahooKeys, {
     issuer: "https://api.login.yahoo.com",
     audience: clientId,
-    algorithms: ["RS256"],
+    // https://api.login.yahoo.com/.well-known/openid-configuration advertises both.
+    algorithms: ["ES256", "RS256"],
   });
   if (verified.payload.nonce !== state.nonce || typeof verified.payload.sub !== "string") {
     throw new Error("invalid-yahoo-id-token");
