@@ -5,6 +5,7 @@ import {YahooPlatformEntry} from "./YahooPlatformEntry";
 import "../styles.css";
 import "./styles.css";
 
+/** Provides root behavior. */
 const root = document.getElementById("root");
 if (!root) throw new Error("yahoo-root-missing");
 

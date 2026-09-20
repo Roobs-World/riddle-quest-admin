@@ -25,7 +25,9 @@ const redditHtmlEntry = fileURLToPath(new URL("./targets/reddit/index.html", imp
 const redditInlineHtmlEntry = fileURLToPath(new URL("./targets/reddit/reddit-inline.html", import.meta.url));
 /** Provides youtube html entry behavior. */
 const youtubeHtmlEntry = fileURLToPath(new URL("./targets/youtube/index.html", import.meta.url));
+/** Provides netflix html entry behavior. */
 const netflixHtmlEntry = fileURLToPath(new URL("./targets/netflix/index.html", import.meta.url));
+/** Provides yahoo html entry behavior. */
 const yahooHtmlEntry = fileURLToPath(new URL("./targets/yahoo/index.html", import.meta.url));
 /** Provides youtube release content behavior. */
 const youtubeReleaseContent = fileURLToPath(

@@ -12,7 +12,9 @@ const sdkWithAd = () => {
 
 /** Provides SDK with an opt-in rewarded video placement. */
 const sdkWithRewardedAd = () => {
+  /** Provides ad behavior. */
   const ad = {loadAsync: jest.fn(async () => undefined), showAsync: jest.fn(async () => undefined)};
+  /** Gets rewarded video async. */
   const getRewardedVideoAsync = jest.fn(async () => ad);
   return {ad, getRewardedVideoAsync, sdk: {getRewardedVideoAsync} as unknown as FacebookInstantSdk};
 };
@@ -60,8 +62,11 @@ describe("Facebook ads capability", () => {
   });
 
   it("shows only the allowlisted opt-in rewarded placement and suppresses a following interstitial", async () => {
+    /** Provides rewarded behavior. */
     const rewarded = sdkWithRewardedAd();
+    /** Provides now ms behavior. */
     let nowMs = 1_000_000;
+    /** Provides ads behavior. */
     const ads = createFacebookAdsCapability({
       sdk: rewarded.sdk,
       placementId: "",
@@ -75,8 +80,10 @@ describe("Facebook ads capability", () => {
     await expect(ads.showRewarded("continue")).resolves.toEqual({status: "success", value: undefined});
     expect(rewarded.getRewardedVideoAsync).toHaveBeenCalledWith("continue-placement");
 
+    /** Provides both behavior. */
     const both = sdkWithAd();
     (both.sdk as FacebookInstantSdk).getRewardedVideoAsync = rewarded.getRewardedVideoAsync;
+    /** Provides combined behavior. */
     const combined = createFacebookAdsCapability({
       sdk: both.sdk,
       placementId: "result-placement",

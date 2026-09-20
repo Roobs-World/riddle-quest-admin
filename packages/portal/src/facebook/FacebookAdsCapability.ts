@@ -38,10 +38,13 @@ export function createFacebookAdsCapability({
 }): AdsCapability | undefined {
   /** Normalizes d placement. */
   const normalizedPlacement = placementId.trim();
+  /** Provides normalized rewarded placement behavior. */
   const normalizedRewardedPlacement = rewardedPlacementId.trim();
+  /** Provides interstitial available behavior. */
   const interstitialAvailable = Boolean(
     normalizedPlacement && normalizedPlacement.length <= 256 && sdk.getInterstitialAdAsync,
   );
+  /** Provides rewarded available behavior. */
   const rewardedAvailable = Boolean(
     rewardedEnabled &&
       normalizedRewardedPlacement &&
@@ -53,6 +56,7 @@ export function createFacebookAdsCapability({
   let state: FacebookInterstitialState = createFacebookInterstitialState(adFree);
   /** Provides showing interstitial behavior. */
   let showingInterstitial = false;
+  /** Provides showing rewarded behavior. */
   let showingRewarded = false;
   /** Provides interstitials disabled behavior. */
   let interstitialsDisabled = false;
@@ -108,13 +112,16 @@ export function createFacebookAdsCapability({
       }
       showingRewarded = true;
       try {
+        /** Provides started at ms behavior. */
         const startedAtMs = now();
         if (!Number.isSafeInteger(startedAtMs) || startedAtMs < 0) {
           return {status: "unavailable", message: "facebook-rewarded-clock-invalid"};
         }
+        /** Provides ad behavior. */
         const ad = await sdk.getRewardedVideoAsync!(normalizedRewardedPlacement);
         await ad.loadAsync();
         await ad.showAsync();
+        /** Provides completed at ms behavior. */
         const completedAtMs = now();
         if (!Number.isSafeInteger(completedAtMs) || completedAtMs < startedAtMs) {
           throw new Error("facebook-rewarded-clock-invalid");

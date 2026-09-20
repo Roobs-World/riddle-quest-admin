@@ -34,7 +34,10 @@ async function rawBody(request) {
 }
 async function api(url, token, options = {}) {
   const response = await fetch(url, {...options, headers: {Accept: "application/json", Authorization: `Bearer ${token}`, ...options.headers}});
-  if (!response.ok) throw new Error(`Upstream request failed (${response.status})`);
+  if (!response.ok) {
+    const endpoint = new URL(url);
+    throw new Error(`Upstream request to ${endpoint.hostname}${endpoint.pathname} failed (${response.status})`);
+  }
   return response.status === 204 ? null : response.json();
 }
 export function issueIdentity(payload) {
@@ -44,11 +47,18 @@ export function issueIdentity(payload) {
   const id = String(issue?.id ?? payload?.data?.event?.groupID ?? "");
   return /^\d+$/.test(id) ? id : null;
 }
+async function issues(token, query, limit = "25") {
+  const params = new URLSearchParams({project: PROJECT_ID, query, sort: "date", limit});
+  return api(`https://sentry.io/api/0/organizations/${ORG}/issues/?${params}`, token);
+}
 async function newestIssue(token) {
-  const params = new URLSearchParams({project: PROJECT_ID, query: "is:unresolved", sort: "date", limit: "25"});
-  const issues = await api(`https://sentry.io/api/0/organizations/${ORG}/issues/?${params}`, token);
+  const found = await issues(token, "is:unresolved");
   const cutoff = Date.parse(process.env.WORKER_NOT_BEFORE ?? "2026-09-20T00:00:00Z");
-  return issues.find((issue) => Date.parse(issue.lastSeen) >= cutoff)?.id ?? null;
+  return found.find((issue) => Date.parse(issue.lastSeen) >= cutoff) ?? null;
+}
+async function issueById(issueId, token) {
+  const found = await issues(token, `issue.id:${issueId}`, "5");
+  return found.find((issue) => String(issue.id) === String(issueId)) ?? null;
 }
 async function reserveBranch(issueId, token) {
   const repoUrl = `https://api.github.com/repos/${REPOSITORY}`;
@@ -67,8 +77,8 @@ async function reserveBranch(issueId, token) {
 function sanitizeIssue(issue) {
   return {id: String(issue.id), shortId: issue.shortId, title: String(issue.title ?? "").slice(0, 300), culprit: String(issue.culprit ?? "").slice(0, 300), level: issue.level, firstSeen: issue.firstSeen, lastSeen: issue.lastSeen, count: issue.count, metadata: {type: issue.metadata?.type, value: String(issue.metadata?.value ?? "").slice(0, 500)}, permalink: issue.permalink};
 }
-async function launch(issueId, credentials) {
-  const issue = await api(`https://sentry.io/api/0/issues/${issueId}/`, credentials.sentry);
+async function launch(issue, credentials) {
+  const issueId = String(issue.id);
   const reservation = await reserveBranch(issueId, credentials.github);
   if (!reservation) return {duplicate: true};
   const script = await readFile(new URL("../worker/repair.mjs", import.meta.url));
@@ -91,18 +101,21 @@ export default async function handler(request, response) {
   }
   try {
     if (["SENTRY_AUTH_TOKEN", "SENTRY_WORKER_GITHUB_TOKEN", "OPENAI_API_KEY", "CRON_SECRET"].some((key) => !process.env[key])) return send(response, 503, {error: "worker_not_configured"});
-    let issueId;
+    let issueId; let issue;
     if (request.method === "GET") {
       if (header(request, "authorization") !== `Bearer ${process.env.CRON_SECRET}`) return send(response, 401, {error: "unauthorized"});
-      issueId = await newestIssue(process.env.SENTRY_AUTH_TOKEN);
-      if (!issueId) return send(response, 200, {status: "idle"});
+      issue = await newestIssue(process.env.SENTRY_AUTH_TOKEN);
+      if (!issue) return send(response, 200, {status: "idle"});
+      issueId = String(issue.id);
     } else {
       const body = await rawBody(request);
       if (!verifySignature(body, header(request, "sentry-hook-signature"), process.env.SENTRY_WEBHOOK_SECRET)) return send(response, 401, {error: "invalid_signature"});
       issueId = issueIdentity(JSON.parse(body.toString("utf8")));
       if (!issueId) return send(response, 202, {status: "ignored"});
     }
-    const result = await launch(issueId, {sentry: process.env.SENTRY_AUTH_TOKEN, github: process.env.SENTRY_WORKER_GITHUB_TOKEN, openai: process.env.OPENAI_API_KEY});
+    issue ??= await issueById(issueId, process.env.SENTRY_AUTH_TOKEN);
+    if (!issue) return send(response, 202, {status: "ignored"});
+    const result = await launch(issue, {sentry: process.env.SENTRY_AUTH_TOKEN, github: process.env.SENTRY_WORKER_GITHUB_TOKEN, openai: process.env.OPENAI_API_KEY});
     return send(response, result.duplicate ? 200 : 202, {status: result.duplicate ? "already_claimed" : "started", issueId, sandboxId: result.sandboxId});
   } catch (error) {
     console.error("Sentry worker launch failed", {name: error?.name, message: error?.message});
