@@ -114,6 +114,24 @@
       "iap": "Provider-gated; Game Jolt marketplace terms require authenticated review",
       "ads": "Unavailable in the provider-neutral browser package",
       "gate": "Create the game and review current authenticated monetization options before adding an isolated adapter"
+    },
+    {
+      "platform": "Addicting Games",
+      "iap": "Contract-gated",
+      "ads": "Publisher-gated",
+      "gate": "Submit the hosted build and accept only compatible non-exclusive monetization terms"
+    },
+    {
+      "platform": "HTMLGames.com",
+      "iap": "Contract-gated",
+      "ads": "Publisher-gated",
+      "gate": "Obtain written commercial and technical requirements before adding an isolated adapter"
+    },
+    {
+      "platform": "PlayKovo",
+      "iap": "Provider requirements pending review",
+      "ads": "Provider requirements pending review",
+      "gate": "Complete manual review and obtain written monetization requirements"
     }
   ]
 }

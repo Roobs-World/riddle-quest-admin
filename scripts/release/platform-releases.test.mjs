@@ -26,6 +26,10 @@ const expectedCommands = new Map([
   ["gamejolt", ["scripts/release/package-html5-platform.mjs", "gamejolt"]],
   ["coolmath", ["scripts/release/package-html5-platform.mjs", "coolmath"]],
   ["armor", ["scripts/release/package-html5-platform.mjs", "armor"]],
+  ["gamepix", ["scripts/release/package-html5-platform.mjs", "gamepix"]],
+  ["addictinggames", ["scripts/release/package-html5-platform.mjs", "addictinggames"]],
+  ["htmlgames", ["scripts/release/package-html5-platform.mjs", "htmlgames"]],
+  ["playkovo", ["scripts/release/package-html5-platform.mjs", "playkovo"]],
 ]);
 const expectedRunbooks = new Map([
   ["jest", "docs/jest-html5-operations.md"],
@@ -40,11 +44,15 @@ const expectedRunbooks = new Map([
   ["gamejolt", "docs/research/html5-publishing-platforms-2026-09-20.md"],
   ["coolmath", "docs/research/html5-publishing-platforms-2026-09-20.md"],
   ["armor", "docs/research/html5-publishing-platforms-2026-09-20.md"],
+  ["gamepix", "docs/research/html5-publishing-platforms-2026-09-20.md"],
+  ["addictinggames", "docs/research/html5-publishing-platforms-2026-09-20.md"],
+  ["htmlgames", "docs/research/html5-publishing-platforms-2026-09-20.md"],
+  ["playkovo", "docs/research/html5-publishing-platforms-2026-09-20.md"],
 ]);
 
 test("the public interface exposes one isolated canonical command per release target", () => {
   const plans = listPlatformReleasePlans();
-  assert.deepEqual(plans.map(({target}) => target), ["jest", "facebook", "youtube", "reddit", "netflix", "yahoo", "itch", "crazygames", "newgrounds", "gamejolt", "coolmath", "armor"]);
+  assert.deepEqual(plans.map(({target}) => target), ["jest", "facebook", "youtube", "reddit", "netflix", "yahoo", "itch", "crazygames", "newgrounds", "gamejolt", "coolmath", "armor", "gamepix", "addictinggames", "htmlgames", "playkovo"]);
   for (const plan of plans) {
     assert.equal(plan.publicCommand, `pnpm release:${plan.target}`);
     assert.equal("command" in plan, false);
@@ -55,7 +63,7 @@ test("the public interface exposes one isolated canonical command per release ta
 
 test("the root package exposes target releases and one combined release command", async () => {
   const packageJson = JSON.parse(await readFile(new URL("../../package.json", import.meta.url), "utf8"));
-  for (const target of ["jest", "facebook", "youtube", "reddit", "netflix", "yahoo", "itch", "crazygames", "newgrounds", "gamejolt", "coolmath", "armor"]) {
+  for (const target of ["jest", "facebook", "youtube", "reddit", "netflix", "yahoo", "itch", "crazygames", "newgrounds", "gamejolt", "coolmath", "armor", "gamepix", "addictinggames", "htmlgames", "playkovo"]) {
     assert.equal(
       packageJson.scripts[`release:${target}`],
       `node scripts/release/run-platform-release.mjs ${target}`,
@@ -104,8 +112,12 @@ test("the combined release verifies once before running every adapter", async ()
     expectedCommands.get("gamejolt"),
     expectedCommands.get("coolmath"),
     expectedCommands.get("armor"),
+    expectedCommands.get("gamepix"),
+    expectedCommands.get("addictinggames"),
+    expectedCommands.get("htmlgames"),
+    expectedCommands.get("playkovo"),
   ]);
-  assert.deepEqual(results.map(({target}) => target), ["jest", "facebook", "youtube", "reddit", "netflix", "yahoo", "itch", "crazygames", "newgrounds", "gamejolt", "coolmath", "armor"]);
+  assert.deepEqual(results.map(({target}) => target), ["jest", "facebook", "youtube", "reddit", "netflix", "yahoo", "itch", "crazygames", "newgrounds", "gamejolt", "coolmath", "armor", "gamepix", "addictinggames", "htmlgames", "playkovo"]);
 });
 
 test("the Facebook adapter performs only the local preflight and immutable handoff", async () => {

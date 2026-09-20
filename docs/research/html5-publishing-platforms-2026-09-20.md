@@ -50,3 +50,12 @@ Only itch.io publishes a supported unattended upload mechanism among the reviewe
 ## Added distribution target: Game Jolt
 
 **Game Jolt** supports browser/HTML5 games through a self-service game page and browser release package. The account owner must create and publish the game, package, and release in the authenticated dashboard; no supported public release CLI was found. The repository therefore produces `build-gamejolt.zip` and a SHA-256 manifest in the all-platform workflow, while the final dashboard upload and publication remain manual. Start at the official [add-game dashboard](https://gamejolt.com/dashboard/games/add). Optional Game Jolt API features must use a future isolated target adapter rather than changing the provider-neutral archive.
+
+## Added review and licensing targets
+
+- **GamePix** explicitly permits an entirely SDK-free game under its current [submission guidelines](https://partners.gamepix.com/guidelines/submission). The workflow now creates `build-gamepix-review.zip`; monetized distribution still requires a separate GamePix adapter and provider review.
+- **Addicting Games** accepts a hosted test link through its official [game submission page](https://www.addictinggames.com/about/upload). The workflow retains `build-addictinggames-review.zip` if reviewers request the files.
+- **HTMLGames.com** invites HTML5 developers to submit games through its official [developer form](https://html5games.com/Static/Developers). The workflow produces `build-htmlgames-pitch.zip` while commercial and technical terms remain pending.
+- **PlayKovo** accepts hosted builds, iframe links, or HTML5 files for manual review through its [developer portal](https://developer.playkovo.com/). The workflow produces `build-playkovo-review.zip`; approval and publication remain manual.
+
+None of these providers documents a supported unattended publishing CLI. GitHub Actions therefore automates reproducible builds, checksums, retention, and dashboard receipts without claiming that a portal accepted or published the game.

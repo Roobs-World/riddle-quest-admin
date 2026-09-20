@@ -28,7 +28,7 @@ test("the dashboard tracks additional HTML5 distribution submissions", () => {
   const candidates = data.queries.html5_distribution_candidates.rows;
 
   assert.deepEqual(candidates.map(({platform}) => platform), [
-    "itch.io", "CrazyGames", "Discord", "GamePix", "GameDistribution", "GameMonetize", "Yandex Games", "Poki", "Newgrounds", "Coolmath Games", "Kongregate", "Armor Games", "Game Jolt",
+    "itch.io", "CrazyGames", "Discord", "GamePix", "GameDistribution", "GameMonetize", "Yandex Games", "Poki", "Newgrounds", "Coolmath Games", "Kongregate", "Armor Games", "Game Jolt", "Addicting Games", "HTMLGames.com", "PlayKovo",
   ]);
   assert.ok(candidates.every(({submissionProgress}) => submissionProgress.trim()));
   assert.match(candidates.find(({platform}) => platform === "Discord").submissionProgress, /non-exclusive/iu);
@@ -54,6 +54,10 @@ test("the dashboard exposes the latest release automation receipt", () => {
   assert.ok(rows.some(({platform}) => platform === "Game Jolt"));
   assert.ok(rows.some(({platform}) => platform === "Coolmath Games"));
   assert.ok(rows.some(({platform}) => platform === "Armor Games"));
+  assert.ok(rows.some(({platform}) => platform === "GamePix"));
+  assert.ok(rows.some(({platform}) => platform === "Addicting Games"));
+  assert.ok(rows.some(({platform}) => platform === "HTMLGames.com"));
+  assert.ok(rows.some(({platform}) => platform === "PlayKovo"));
   assert.match(dashboard, /queryId="release_automation"/u);
 });
 

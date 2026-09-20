@@ -15,6 +15,10 @@ const definitions = Object.freeze({
   gamejolt: Object.freeze({artifact: "build-gamejolt.zip", boundary: "Game Jolt game-page, browser package, release and publication setup remain manual."}),
   coolmath: Object.freeze({artifact: "build-coolmath-pitch.zip", boundary: "Coolmath licensing review remains manual; this neutral archive is for the non-exclusive pitch only."}),
   armor: Object.freeze({artifact: "build-armor-pitch.zip", boundary: "Armor Games licensing outreach and publication remain manual."}),
+  gamepix: Object.freeze({artifact: "build-gamepix-review.zip", boundary: "GamePix account creation, upload, distribution choice and review remain manual."}),
+  addictinggames: Object.freeze({artifact: "build-addictinggames-review.zip", boundary: "Addicting Games submission and licensing review remain manual."}),
+  htmlgames: Object.freeze({artifact: "build-htmlgames-pitch.zip", boundary: "HTMLGames.com contact, commercial review and publication remain manual."}),
+  playkovo: Object.freeze({artifact: "build-playkovo-review.zip", boundary: "PlayKovo submission review and publication remain manual."}),
 });
 
 export function getHtml5DistributionDefinition(target) {
