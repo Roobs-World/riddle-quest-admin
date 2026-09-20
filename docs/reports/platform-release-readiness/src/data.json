@@ -2,7 +2,7 @@
   "id": "7677b77a-0b56-4194-a2e7-937aff8f27f7",
   "surface": "dashboard",
   "title": "Riddle Quest integration and release status",
-  "generatedAt": "2026-09-20T15:30:00Z",
+  "generatedAt": "2026-09-20T16:13:48Z",
   "status": "verified-repository-and-provider-evidence",
   "filters": [],
   "queries": {
@@ -32,12 +32,25 @@
         {"platform":"YouTube","providerReference":"Playables Developer Portal","artifact":"build-youtube.zip; SHA-256 1b9f41fc0a46378341c01fac3176566ffe1489beebfaef9f751c0191fd69c041","state":"Portal unauthorized","nextGate":"Invitation and Editor or Manager channel access"},
         {"platform":"Yahoo","providerReference":"Vercel deployment dpl_2n49GfZUrGx8FQmogJD4AfG81XuH","artifact":"yahoo.roobsworld.com plus three deployed Stripe Functions","state":"Production deployed","nextGate":"Verify authenticated payment journey"},
         {"platform":"Jest","providerReference":"Version 01a0bf64-5ea4-7305-983f-fd7c5c9cdbd1","artifact":"1.0.0-dev.20260920145944.5616967cfa28.e09c4095","state":"Accepted; automatic activation pending","nextGate":"Obtain authoritative activation completion evidence"},
-        {"platform":"Netflix","providerReference":"Netflix Games Partner Portal","artifact":"Provider-neutral engineering candidate","state":"No partner access","nextGate":"Netflix Games producer and private SDK contract"}
+        {"platform":"Netflix","providerReference":"Netflix Games Partner Portal","artifact":"packages/portal/dist-netflix; 7 files; 1.07 MiB provider-neutral candidate","state":"No partner access","nextGate":"Netflix Games producer and private SDK contract"}
       ],
       "source": {
         "label": "Authenticated release evidence and platform operations records",
         "tables": ["packages/portal/.facebook-upload-receipts","docs/evidence/reddit-integration-2026-09-19.md","docs/youtube-playables-progress.html","docs/netflix-yahoo-candidate-builds.md"],
         "metricDefinitions": [{"label":"Provider release evidence","definition":"A provider-side identifier or deployment state observed through authenticated tooling or portal access.","componentIds":["provider-release-evidence","metric-provider-releases"]}]
+      }
+    },
+    "dashboard_verification": {
+      "rows": [
+        {"check":"Release output coverage","viewport":"Data contract","result":"Passed","evidence":"All six targets expose a provider reference, concrete output, provider state and next gate."},
+        {"check":"Desktop rendering and source inspection","viewport":"1440 × 900","result":"Passed","evidence":"All target and service rows rendered without page overflow; provider evidence source drawer opened successfully."},
+        {"check":"Responsive rendering","viewport":"390 × 844","result":"Passed","evidence":"No page-level horizontal overflow; metrics collapsed to one column and all four wide tables remained locally scrollable."}
+      ],
+      "source": {
+        "label": "Agent-browser E2E run against the production dashboard build on 20 September 2026",
+        "tables": ["docs/reports/platform-release-readiness/tests/release-dashboard-content.test.mjs","docs/reports/platform-release-readiness/dist/index.html"],
+        "filters": ["Desktop and mobile checks were executed against the same built HTML artifact."],
+        "metricDefinitions": [{"label":"Dashboard E2E result","definition":"Passed requires the rendered content, output coverage, responsive containment and source inspection interaction to succeed.","componentIds":["dashboard-verification"]}]
       }
     },
     "service_status": {

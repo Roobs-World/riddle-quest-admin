@@ -16,7 +16,7 @@ function EvidenceTable({id, queryId, title, rows, columns}) {
     <div className="integration-table-wrap">
       <table className="integration-table">
         <thead><tr>{columns.map(({key, label}) => <th key={key}>{label}</th>)}</tr></thead>
-        <tbody>{rows.map((row) => <tr key={row.platform ?? row.service}>
+        <tbody>{rows.map((row) => <tr key={row.platform ?? row.service ?? row.check}>
           {columns.map(({key, status}) => <td key={key}>{status ? <Status>{row[key]}</Status> : row[key]}</td>)}
         </tr>)}</tbody>
       </table>
@@ -29,17 +29,18 @@ export function DashboardContent() {
   const platforms = reviewedRows("platform_status");
   const releases = reviewedRows("provider_release_evidence");
   const services = reviewedRows("service_status");
+  const dashboardChecks = reviewedRows("dashboard_verification");
   const integratedTargets = platforms.filter(({integration}) => integration.startsWith("Implemented")).length;
-  const providerEnvironments = releases.filter(({state}) => ["Testing", "Private testing", "Deployed"].includes(state)).length;
+  const providerEnvironments = releases.filter(({state}) => /testing|deployed|accepted/iu.test(state)).length;
   const integratedServices = services.filter(({status}) => status === "Integrated").length;
 
   return <article className="integration-dashboard" aria-label="Riddle Quest integration and release dashboard">
     <section className="integration-metrics" aria-label="Integration summary">
       <MetricCard id="metric-targets" queryId="platform_status" sourceRows={platforms} title="Release targets" value={String(platforms.length)} description="Every intended target is represented." />
-      <MetricCard id="metric-integrated" queryId="platform_status" sourceRows={platforms} title="Full provider adapters" value={`${integratedTargets}/${platforms.length}`} description="Jest, Facebook, Reddit and YouTube." />
-      <MetricCard id="metric-builds" queryId="platform_status" sourceRows={platforms} title="Local validation" value={`${platforms.filter(({localValidation}) => localValidation === "Passed").length}/${platforms.length}`} description="Isolated builds and artifact audits passed." />
-      <MetricCard id="metric-provider-releases" queryId="provider_release_evidence" sourceRows={releases} title="Provider environments" value={String(providerEnvironments)} description="Facebook Testing, Reddit private and Yahoo web." />
-      <MetricCard id="metric-services" queryId="service_status" sourceRows={services} title="Operational services" value={`${integratedServices}/${services.length}`} description="Firebase, Sentry and Vercel are integrated." />
+      <MetricCard id="metric-integrated" queryId="platform_status" sourceRows={platforms} title="Full provider adapters" value={`${integratedTargets}/${platforms.length}`} description="Jest, Facebook, Reddit, YouTube and Yahoo." />
+      <MetricCard id="metric-builds" queryId="platform_status" sourceRows={platforms} title="Local validation" value={`${platforms.filter(({localValidation}) => /passed/iu.test(localValidation)).length}/${platforms.length}`} description="Isolated builds and artifact audits passed." />
+      <MetricCard id="metric-provider-releases" queryId="provider_release_evidence" sourceRows={releases} title="Provider environments" value={String(providerEnvironments)} description="Jest accepted, Facebook Testing, Reddit private and Yahoo production." />
+      <MetricCard id="metric-services" queryId="service_status" sourceRows={services} title="Operational services" value={`${integratedServices}/${services.length}`} description="Firebase, Sentry, Vercel and Stripe are integrated." />
     </section>
 
     <Section>
@@ -57,7 +58,8 @@ export function DashboardContent() {
         <SectionHeader id="provider-release-title" title="Provider release evidence" />
         <EvidenceTable id="provider-release-evidence" queryId="provider_release_evidence" title="Latest verified external state" rows={releases} columns={[
           {key:"platform",label:"Target"}, {key:"providerReference",label:"Provider reference"},
-          {key:"state",label:"State",status:true}, {key:"nextGate",label:"Next gate"},
+          {key:"artifact",label:"Output"}, {key:"state",label:"State",status:true},
+          {key:"nextGate",label:"Next gate"},
         ]} />
       </Section>
       <Section>
@@ -65,6 +67,13 @@ export function DashboardContent() {
         <EvidenceTable id="service-status" queryId="service_status" title="Infrastructure and account integrations" rows={services} columns={[
           {key:"service",label:"Service"}, {key:"purpose",label:"Purpose"},
           {key:"status",label:"Status",status:true}, {key:"evidence",label:"Evidence"},
+        ]} />
+      </Section>
+      <Section>
+        <SectionHeader id="dashboard-verification-title" title="Dashboard E2E verification" />
+        <EvidenceTable id="dashboard-verification" queryId="dashboard_verification" title="Rendered dashboard checks" rows={dashboardChecks} columns={[
+          {key:"check",label:"Check"}, {key:"viewport",label:"Viewport"},
+          {key:"result",label:"Result",status:true}, {key:"evidence",label:"Evidence"},
         ]} />
       </Section>
     </section>
