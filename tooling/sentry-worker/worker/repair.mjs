@@ -25,11 +25,12 @@ const prompt = `Fix the Sentry issue described in ../issue.json in this reposito
 await run("git", ["remote", "set-url", "origin", `https://github.com/${env.REPOSITORY}.git`], {cwd: env.REPO_DIR});
 const agentEnv = {PATH: env.PATH, HOME: env.HOME, OPENAI_API_KEY: env.OPENAI_API_KEY, CI: "true"};
 const codexArchive = "/tmp/codex.tgz";
-const codexExecutable = "/tmp/codex";
+const codexPlatformDirectory = "/tmp/package/vendor/x86_64-unknown-linux-musl";
+const codexExecutable = `${codexPlatformDirectory}/bin/codex`;
 await run("curl", ["--fail", "--silent", "--show-error", "--location", "https://registry.npmjs.org/@openai/codex/-/codex-0.155.1-linux-x64.tgz", "--output", codexArchive]);
-await run("tar", ["-xzf", codexArchive, "-C", "/tmp", "--strip-components=4", "package/vendor/x86_64-unknown-linux-musl/bin/codex"]);
+await run("tar", ["-xzf", codexArchive, "-C", "/tmp", "package/vendor/x86_64-unknown-linux-musl"]);
 await run("chmod", ["700", codexExecutable]);
-await run(codexExecutable, ["exec", "--dangerously-bypass-approvals-and-sandbox", "--ephemeral", "--ignore-user-config", "-C", env.REPO_DIR, "-o", "/home/ubuntu/repair-summary.md", prompt], {cwd: env.REPO_DIR, env: agentEnv});
+await run(codexExecutable, ["exec", "--dangerously-bypass-approvals-and-sandbox", "--ephemeral", "--ignore-user-config", "-C", env.REPO_DIR, "-o", "/home/ubuntu/repair-summary.md", prompt], {cwd: env.REPO_DIR, env: {...agentEnv, CODEX_HOME: codexPlatformDirectory}});
 const diff = await run("git", ["status", "--porcelain"], {cwd: env.REPO_DIR, capture: true});
 if (!diff.stdout.trim()) throw new Error("Agent produced no repository changes");
 await run("git", ["add", "-A"], {cwd: env.REPO_DIR});
