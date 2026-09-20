@@ -3,7 +3,7 @@
   "surface": "dashboard",
   "buildStatus": "complete",
   "title": "Riddle Quest integration and release status",
-  "generatedAt": "2026-09-20T21:08:52.906Z",
+  "generatedAt": "2026-09-20T22:01:20.840665Z",
   "status": "verified-repository-and-provider-evidence",
   "filters": [],
   "queries": {
@@ -14,7 +14,7 @@
           "integration": "Implemented",
           "identityAndSaves": "Signed player exchange and Jest player data",
           "commerceAndSocial": "Purchases, subscriptions, profiles, referrals and notifications",
-          "ads": "Unavailable — no approved Jest ad API",
+          "ads": "Unavailable \u2014 no approved Jest ad API",
           "localValidation": "Passed",
           "releaseStatus": "Build accepted for automatic activation; authoritative completion pending"
         },
@@ -32,7 +32,7 @@
           "integration": "Implemented",
           "identityAndSaves": "Devvit identity and same-origin storage gateway",
           "commerceAndSocial": "Reddit Gold purchases, matchmaking, tournaments and presence",
-          "ads": "Unavailable — no supported in-game ad API",
+          "ads": "Unavailable \u2014 no supported in-game ad API",
           "localValidation": "Build passed; release gate blocked on contract fixtures",
           "releaseStatus": "Private version 0.0.1.23 installed; public submission pending"
         },
@@ -379,13 +379,13 @@
         },
         {
           "check": "Desktop rendering and source inspection",
-          "viewport": "1440 × 900",
+          "viewport": "1440 \u00d7 900",
           "result": "Passed",
           "evidence": "All target and service rows rendered without page overflow; provider evidence source drawer opened successfully."
         },
         {
           "check": "Responsive rendering",
-          "viewport": "390 × 844",
+          "viewport": "390 \u00d7 844",
           "result": "Passed",
           "evidence": "No page-level horizontal overflow; all nine tables remained locally scrollable. Deployment filters, source inspection and the Jest activity chart were checked at desktop and mobile widths."
         }
@@ -798,13 +798,13 @@
         }
       ],
       "source": {
-        "label": "Authenticated Jest game analytics — dau_summary, retrieved 20 September 2026",
+        "label": "Authenticated Jest game analytics \u2014 dau_summary, retrieved 20 September 2026",
         "tables": [
           "Jest get_game_analytics(teamId=019f0e38-4b34-76fe-99ba-a8957c15295c, gameId=019f5674-93a8-7338-a664-8e603d6bda06, chart=dau_summary)"
         ],
         "filters": [
           "Provider-reported game-wide daily active users; no build/deployment dimension or timezone metadata returned.",
-          "22 August–19 September 2026; 20 September excluded because it is the current reporting day.",
+          "22 August\u201319 September 2026; 20 September excluded because it is the current reporting day.",
           "Not comparable to deployment activePlayers without matching provider definitions and attribution. Zeroes are returned measurements, not missing data."
         ],
         "metricDefinitions": [
@@ -1240,7 +1240,7 @@
         {
           "platform": "Jest",
           "iap": "Implemented and server-authoritative",
-          "ads": "Unavailable — no approved Jest ad API",
+          "ads": "Unavailable \u2014 no approved Jest ad API",
           "gate": "Verify live purchase recovery and activation evidence"
         },
         {
@@ -1252,7 +1252,7 @@
         {
           "platform": "Reddit",
           "iap": "Implemented with Reddit Gold; production approval required",
-          "ads": "Unavailable — no supported Devvit in-game ad API",
+          "ads": "Unavailable \u2014 no supported Devvit in-game ad API",
           "gate": "Complete payment verification, product review and public app review"
         },
         {
@@ -1264,7 +1264,7 @@
         {
           "platform": "Yahoo",
           "iap": "Implemented with server-authoritative Stripe fulfillment",
-          "ads": "Unavailable — no approved Yahoo Games ad SDK",
+          "ads": "Unavailable \u2014 no approved Yahoo Games ad SDK",
           "gate": "Verify one live authenticated checkout and entitlement"
         },
         {
@@ -1276,7 +1276,7 @@
         {
           "platform": "itch.io",
           "iap": "Unavailable for embedded HTML5; page donations only",
-          "ads": "Unavailable — itch.io does not place ads on project pages",
+          "ads": "Unavailable \u2014 itch.io does not place ads on project pages",
           "gate": "Create the initial HTML Game page and configure Butler"
         },
         {
@@ -1294,7 +1294,7 @@
         {
           "platform": "Discord",
           "iap": "Planned through Premium Apps",
-          "ads": "Unavailable — no supported Activity ad product",
+          "ads": "Unavailable \u2014 no supported Activity ad product",
           "gate": "Create and verify the Discord application, then configure Premium Apps"
         },
         {
@@ -1414,6 +1414,475 @@
             "definition": "The audited engineering and provider state for IAP and advertising on one target. A provider gate is not a successful live transaction.",
             "componentIds": [
               "monetization-readiness"
+            ]
+          }
+        ]
+      }
+    },
+    "promotion_outreach": {
+      "rows": [
+        {
+          "priority": "Tier 1",
+          "website": "Pocket Gamer",
+          "audience": "Mobile and handheld players",
+          "route": "Editorial news or review pitch",
+          "status": "Ready to contact",
+          "contactUrl": "https://www.pocketgamer.com/pages/contact-us/",
+          "pitchAngle": "Mobile-friendly word puzzle; 17 languages and daily play"
+        },
+        {
+          "priority": "Tier 1",
+          "website": "Gamezebo",
+          "audience": "Mobile and casual-game players",
+          "route": "Review submission",
+          "status": "Ready to contact",
+          "contactUrl": "https://www.gamezebo.com/get-reviewed/",
+          "pitchAngle": "Accessible casual word puzzle with short sessions"
+        },
+        {
+          "priority": "Tier 1",
+          "website": "TouchArcade",
+          "audience": "iOS and mobile-game enthusiasts",
+          "route": "Press and preview contact",
+          "status": "Ready to contact",
+          "contactUrl": "https://toucharcade.com/about/",
+          "pitchAngle": "Touch-friendly browser game and future mobile availability"
+        },
+        {
+          "priority": "Tier 1",
+          "website": "Pocket Tactics",
+          "audience": "Mobile strategy, puzzle and RPG players",
+          "route": "Editorial contact or news tip",
+          "status": "Ready to contact",
+          "contactUrl": "https://www.pockettactics.com/",
+          "pitchAngle": "Daily puzzle retention and competitive Race to 10"
+        },
+        {
+          "priority": "Tier 1",
+          "website": "DroidGamers",
+          "audience": "Android and mobile-game players",
+          "route": "Editorial contact",
+          "status": "Ready to contact",
+          "contactUrl": "https://www.droidgamers.com/contact-us/",
+          "pitchAngle": "Mobile browser play and planned Android reach"
+        },
+        {
+          "priority": "Tier 1",
+          "website": "Indie Games Plus",
+          "audience": "Players seeking independent games",
+          "route": "Direct editorial pitch",
+          "status": "Ready to contact",
+          "contactUrl": "https://indiegamesplus.com/contact-2/",
+          "pitchAngle": "Small UK studio, distinctive colour-clue word design"
+        },
+        {
+          "priority": "Tier 1",
+          "website": "Alpha Beta Gamer",
+          "audience": "Indie discovery audience and YouTube viewers",
+          "route": "Game submission form",
+          "status": "Ready to contact",
+          "contactUrl": "https://www.alphabetagamer.com/contact-us/",
+          "pitchAngle": "Immediately playable build with strong visual identity"
+        },
+        {
+          "priority": "Tier 1",
+          "website": "PC Gamer",
+          "audience": "Large PC gaming audience",
+          "route": "Editor pitch",
+          "status": "Ready to contact",
+          "contactUrl": "https://www.pcgamer.com/about-pc-gamer/",
+          "pitchAngle": "Free browser puzzle with no installation"
+        },
+        {
+          "priority": "Tier 1",
+          "website": "Rock Paper Shotgun",
+          "audience": "PC and indie-game readers",
+          "route": "Editorial contact",
+          "status": "Ready to contact",
+          "contactUrl": "https://www.rockpapershotgun.com/contact-us",
+          "pitchAngle": "Thoughtful daily browser puzzle from a UK developer"
+        },
+        {
+          "priority": "Tier 1",
+          "website": "Destructoid",
+          "audience": "Mainstream and indie gaming readers",
+          "route": "Editorial contact",
+          "status": "Ready to contact",
+          "contactUrl": "https://www.destructoid.com/contact-us/",
+          "pitchAngle": "Cross-platform HTML5 release story"
+        },
+        {
+          "priority": "Tier 2",
+          "website": "IGN",
+          "audience": "Large global games and entertainment audience",
+          "route": "Corporate editorial contact",
+          "status": "Ready to contact",
+          "contactUrl": "https://corp.ign.com/contact",
+          "pitchAngle": "Concise launch tip with playable link and trailer"
+        },
+        {
+          "priority": "Tier 2",
+          "website": "GameSpot",
+          "audience": "Large general gaming audience",
+          "route": "News tip or editorial contact",
+          "status": "Ready to contact",
+          "contactUrl": "https://www.gamespot.com/about/",
+          "pitchAngle": "Browser-game launch and unusual platform rollout"
+        },
+        {
+          "priority": "Tier 2",
+          "website": "Eurogamer",
+          "audience": "Large UK and European gaming audience",
+          "route": "Editorial contact",
+          "status": "Ready to contact",
+          "contactUrl": "https://www.eurogamer.net/contact",
+          "pitchAngle": "UK indie studio and accessible multilingual puzzle"
+        },
+        {
+          "priority": "Tier 2",
+          "website": "Polygon",
+          "audience": "Games and culture audience",
+          "route": "Editorial contact",
+          "status": "Ready to contact",
+          "contactUrl": "https://www.polygon.com/contact",
+          "pitchAngle": "Design story behind riddles, colour clues and daily habit"
+        },
+        {
+          "priority": "Tier 2",
+          "website": "Kotaku",
+          "audience": "Large games and culture readership",
+          "route": "News tip via about page",
+          "status": "Ready to contact",
+          "contactUrl": "https://kotaku.com/about",
+          "pitchAngle": "Short visual pitch tied to launch or notable update"
+        },
+        {
+          "priority": "Tier 2",
+          "website": "GamesRadar+",
+          "audience": "Large multiplatform gaming audience",
+          "route": "Editorial team contact",
+          "status": "Ready to contact",
+          "contactUrl": "https://www.gamesradar.com/",
+          "pitchAngle": "Playable browser launch with screenshots and trailer"
+        },
+        {
+          "priority": "Tier 2",
+          "website": "TheGamer",
+          "audience": "Broad gaming guides and news audience",
+          "route": "Editorial contact",
+          "status": "Ready to contact",
+          "contactUrl": "https://www.thegamer.com/contact/",
+          "pitchAngle": "Approachable word game and daily challenge"
+        },
+        {
+          "priority": "Tier 2",
+          "website": "Game Developer",
+          "audience": "Professional game-development audience",
+          "route": "Editorial contact",
+          "status": "Ready to contact",
+          "contactUrl": "https://www.gamedeveloper.com/contact-us",
+          "pitchAngle": "Technical story on one HTML5 game across provider SDKs"
+        },
+        {
+          "priority": "Tier 2",
+          "website": "GamesIndustry.biz",
+          "audience": "Games business and publishing audience",
+          "route": "Editorial contact",
+          "status": "Ready to contact",
+          "contactUrl": "https://www.gamesindustry.biz/",
+          "pitchAngle": "Independent multi-platform distribution case study"
+        },
+        {
+          "priority": "Tier 2",
+          "website": "GamesBeat",
+          "audience": "Games business and technology audience",
+          "route": "VentureBeat contact",
+          "status": "Ready to contact",
+          "contactUrl": "https://venturebeat.com/contact/",
+          "pitchAngle": "Automated multi-platform HTML5 release pipeline"
+        },
+        {
+          "priority": "Tier 2",
+          "website": "PocketGamer.biz",
+          "audience": "Mobile games business audience",
+          "route": "Editorial team or business network",
+          "status": "Ready to contact",
+          "contactUrl": "https://www.pocketgamer.biz/",
+          "pitchAngle": "Roobs World launch and cross-platform monetization strategy"
+        },
+        {
+          "priority": "Tier 2",
+          "website": "MobileGamer.biz",
+          "audience": "Mobile games industry audience",
+          "route": "Editorial contact through site",
+          "status": "Ready to contact",
+          "contactUrl": "https://mobilegamer.biz/",
+          "pitchAngle": "Independent studio expanding a browser game across mobile channels"
+        },
+        {
+          "priority": "Portal",
+          "website": "CrazyGames",
+          "audience": "Large desktop and mobile web-game audience",
+          "route": "Developer Portal submission",
+          "status": "Submission tracked separately",
+          "contactUrl": "https://developer.crazygames.com/",
+          "pitchAngle": "Basic Launch candidate; provider ZIP already prepared"
+        },
+        {
+          "priority": "Portal",
+          "website": "Poki",
+          "audience": "Large global web-game audience",
+          "route": "Poki for Developers upload",
+          "status": "Submission tracked separately",
+          "contactUrl": "https://developers.poki.com/",
+          "pitchAngle": "Mobile-first web puzzle; commercial terms require review"
+        },
+        {
+          "priority": "Portal",
+          "website": "itch.io",
+          "audience": "Indie players and creators",
+          "route": "Create HTML game page",
+          "status": "Submission tracked separately",
+          "contactUrl": "https://itch.io/game/new",
+          "pitchAngle": "Direct playable release and devlog updates"
+        },
+        {
+          "priority": "Portal",
+          "website": "Newgrounds",
+          "audience": "Independent web-game community",
+          "route": "Create game project",
+          "status": "Submission tracked separately",
+          "contactUrl": "https://www.newgrounds.com/projects/games/new",
+          "pitchAngle": "Community feedback and browser-native play"
+        },
+        {
+          "priority": "Portal",
+          "website": "GamePix",
+          "audience": "Syndicated HTML5 game network",
+          "route": "Developer programme",
+          "status": "Submission tracked separately",
+          "contactUrl": "https://partners.gamepix.com/developers",
+          "pitchAngle": "Network distribution after SDK and terms review"
+        },
+        {
+          "priority": "Portal",
+          "website": "Armor Games",
+          "audience": "Curated browser-game audience",
+          "route": "Developer pitch",
+          "status": "Submission tracked separately",
+          "contactUrl": "https://developers.armorgames.com/",
+          "pitchAngle": "Non-exclusive word-puzzle licensing pitch"
+        },
+        {
+          "priority": "Portal",
+          "website": "Coolmath Games",
+          "audience": "Large casual and puzzle-game audience",
+          "route": "Developer submission form",
+          "status": "Submission tracked separately",
+          "contactUrl": "https://developers.coolmathgames.com/",
+          "pitchAngle": "Strong editorial fit for a logic and word puzzle"
+        },
+        {
+          "priority": "Portal",
+          "website": "Kongregate",
+          "audience": "Browser-game community",
+          "route": "Developer submission process",
+          "status": "Submission tracked separately",
+          "contactUrl": "https://blog.kongregate.com/hc/en-us/articles/44395849259661-SUBMISSION-How-do-I-submit-a-game-to-Kongregate-It-s-Easy",
+          "pitchAngle": "Community release with dedicated provider adapter"
+        },
+        {
+          "priority": "Portal",
+          "website": "Addicting Games",
+          "audience": "Large casual browser-game audience",
+          "route": "Official game submission",
+          "status": "Submission tracked separately",
+          "contactUrl": "https://www.addictinggames.com/about/upload",
+          "pitchAngle": "Hosted playable review and non-exclusive distribution"
+        },
+        {
+          "priority": "Portal",
+          "website": "Lagged",
+          "audience": "Mobile-friendly browser-game audience",
+          "route": "Developer application",
+          "status": "Submission tracked separately",
+          "contactUrl": "https://lagged.dev/",
+          "pitchAngle": "Mobile-ready HTML5 puzzle with isolated SDK integration"
+        }
+      ],
+      "source": {
+        "label": "Official editorial contact pages and HTML5 developer portals reviewed 20 September 2026",
+        "tables": [
+          "Official contact, submission and developer pages linked in each reviewed row",
+          "docs/research/html5-publishing-platforms-2026-09-20.md"
+        ],
+        "filters": [
+          "This is a curated high-reach and high-fit outreach list, not a traffic ranking or a guarantee of coverage.",
+          "Editorial outreach and provider submission are separate workflows. Personalize each pitch and do not bulk-send identical messages."
+        ],
+        "metricDefinitions": [
+          {
+            "label": "Priority",
+            "definition": "Tier 1 is the best audience fit for an indie mobile-friendly word game; Tier 2 is broader press reach; Portal is playable distribution rather than editorial coverage.",
+            "componentIds": [
+              "promotion-outreach"
+            ]
+          }
+        ],
+        "links": [
+          {
+            "label": "Pocket Gamer",
+            "href": "https://www.pocketgamer.com/pages/contact-us/"
+          },
+          {
+            "label": "Gamezebo",
+            "href": "https://www.gamezebo.com/get-reviewed/"
+          },
+          {
+            "label": "TouchArcade",
+            "href": "https://toucharcade.com/about/"
+          },
+          {
+            "label": "Pocket Tactics",
+            "href": "https://www.pockettactics.com/"
+          },
+          {
+            "label": "DroidGamers",
+            "href": "https://www.droidgamers.com/contact-us/"
+          },
+          {
+            "label": "Indie Games Plus",
+            "href": "https://indiegamesplus.com/contact-2/"
+          },
+          {
+            "label": "Alpha Beta Gamer",
+            "href": "https://www.alphabetagamer.com/contact-us/"
+          },
+          {
+            "label": "PC Gamer",
+            "href": "https://www.pcgamer.com/about-pc-gamer/"
+          },
+          {
+            "label": "Rock Paper Shotgun",
+            "href": "https://www.rockpapershotgun.com/contact-us"
+          },
+          {
+            "label": "Destructoid",
+            "href": "https://www.destructoid.com/contact-us/"
+          },
+          {
+            "label": "IGN",
+            "href": "https://corp.ign.com/contact"
+          },
+          {
+            "label": "GameSpot",
+            "href": "https://www.gamespot.com/about/"
+          },
+          {
+            "label": "Eurogamer",
+            "href": "https://www.eurogamer.net/contact"
+          },
+          {
+            "label": "Polygon",
+            "href": "https://www.polygon.com/contact"
+          },
+          {
+            "label": "Kotaku",
+            "href": "https://kotaku.com/about"
+          },
+          {
+            "label": "GamesRadar+",
+            "href": "https://www.gamesradar.com/"
+          },
+          {
+            "label": "TheGamer",
+            "href": "https://www.thegamer.com/contact/"
+          },
+          {
+            "label": "Game Developer",
+            "href": "https://www.gamedeveloper.com/contact-us"
+          },
+          {
+            "label": "GamesIndustry.biz",
+            "href": "https://www.gamesindustry.biz/"
+          },
+          {
+            "label": "GamesBeat",
+            "href": "https://venturebeat.com/contact/"
+          },
+          {
+            "label": "PocketGamer.biz",
+            "href": "https://www.pocketgamer.biz/"
+          },
+          {
+            "label": "MobileGamer.biz",
+            "href": "https://mobilegamer.biz/"
+          },
+          {
+            "label": "CrazyGames",
+            "href": "https://developer.crazygames.com/"
+          },
+          {
+            "label": "Poki",
+            "href": "https://developers.poki.com/"
+          },
+          {
+            "label": "itch.io",
+            "href": "https://itch.io/game/new"
+          },
+          {
+            "label": "Newgrounds",
+            "href": "https://www.newgrounds.com/projects/games/new"
+          },
+          {
+            "label": "GamePix",
+            "href": "https://partners.gamepix.com/developers"
+          },
+          {
+            "label": "Armor Games",
+            "href": "https://developers.armorgames.com/"
+          },
+          {
+            "label": "Coolmath Games",
+            "href": "https://developers.coolmathgames.com/"
+          },
+          {
+            "label": "Kongregate",
+            "href": "https://blog.kongregate.com/hc/en-us/articles/44395849259661-SUBMISSION-How-do-I-submit-a-game-to-Kongregate-It-s-Easy"
+          },
+          {
+            "label": "Addicting Games",
+            "href": "https://www.addictinggames.com/about/upload"
+          },
+          {
+            "label": "Lagged",
+            "href": "https://lagged.dev/"
+          }
+        ]
+      }
+    },
+    "promotion_email_template": {
+      "rows": [
+        {
+          "subject": "Riddle Quest \u2014 a multilingual browser word game built for quick daily play",
+          "body": "Hi [Name],\n\nI\u2019m Craig from Roobs World Limited, an independent UK game studio. I\u2019d like to introduce Riddle Quest, a free HTML5 word game that combines written riddles with colour clues, daily challenges, streaks and competitive Race to 10 play.\n\nIt is designed for quick sessions on desktop and mobile, includes 17 languages, and uses a distinctive solar-system presentation with original music.\n\nPlay it here: https://yahoo.roobsworld.com\nGame and studio information: https://www.roobsworld.com/riddle-quest\n\nI think it could suit [Website] because [one specific reason based on their audience or recent coverage]. Would you be interested in covering, reviewing or featuring it? I can provide screenshots, logos, gameplay video, an interview, or any additional build information you need.\n\nBest,\nCraig Beswetherick\nRoobs World Limited\nhttps://www.roobsworld.com",
+          "usage": "Replace the bracketed fields, add one specific sentence showing why the outlet is a fit, and attach no more than the assets its contact page requests."
+        }
+      ],
+      "source": {
+        "label": "Roobs World promotion draft prepared for Riddle Quest outreach",
+        "tables": [
+          "docs/reports/platform-release-readiness/src/data.json"
+        ],
+        "filters": [
+          "Draft only. No messages have been sent. Verify the recipient and personalize the bracketed fields before sending."
+        ],
+        "metricDefinitions": [
+          {
+            "label": "Reusable promotion email",
+            "definition": "A concise editorial pitch containing the playable URL, studio page and available press assets.",
+            "componentIds": [
+              "promotion-email-template"
             ]
           }
         ]

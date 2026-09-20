@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {DeploymentMonitoring, ProviderActivity} from "./DeploymentMonitoring.jsx";
 import {BackendMonitoring} from "./BackendMonitoring.jsx";
 import {DataComponent, MetricCard, Section, SectionHeader, useDataApp} from "../../data-app-public.jsx";
@@ -45,6 +45,28 @@ function ReleaseQueueSummary({rows}) {
   </DataComponent>;
 }
 
+function OutreachEmail({rows}) {
+  const [copied, setCopied] = useState(false);
+  const draft = rows[0] ?? {};
+  const email = `Subject: ${draft.subject ?? ""}\n\n${draft.body ?? ""}`;
+  async function copyDraft() {
+    await navigator.clipboard.writeText(email);
+    setCopied(true);
+    globalThis.setTimeout(() => setCopied(false), 2000);
+  }
+  return <DataComponent id="promotion-email-template" queryId="promotion_email_template" title="Reusable promotion email" kind="table" variant="card" displayRows={rows} sourceRows={rows}>
+    <Card className="outreach-email-card">
+      <CardContent>
+        <div className="outreach-email-card__header">
+          <div><p className="release-queue-card__eyebrow">Press and promotion pitch</p><p className="outreach-email-card__subject">{draft.subject}</p></div>
+          <Button onClick={copyDraft}>{copied ? "Copied" : "Copy email"}</Button>
+        </div>
+        <pre className="outreach-email-card__body">{draft.body}</pre>
+      </CardContent>
+    </Card>
+  </DataComponent>;
+}
+
 export function DashboardContent() {
   const {reviewedRows} = useDataApp();
   const platforms = reviewedRows("platform_status");
@@ -55,6 +77,8 @@ export function DashboardContent() {
   const monetization = reviewedRows("monetization_readiness");
   const services = reviewedRows("service_status");
   const dashboardChecks = reviewedRows("dashboard_verification");
+  const promotionOutreach = reviewedRows("promotion_outreach");
+  const promotionEmail = reviewedRows("promotion_email_template");
   const integratedTargets = platforms.filter(({integration}) => integration.startsWith("Implemented")).length;
   const providerEnvironments = releases.filter(({state}) => /testing|deployed|accepted/iu.test(state)).length;
   const integratedServices = services.filter(({status}) => status === "Integrated").length;
@@ -71,6 +95,17 @@ export function DashboardContent() {
       <MetricCard id="metric-services" queryId="service_status" sourceRows={services} title="Operational services" value={`${integratedServices}/${services.length}`} description="Firebase, Sentry, Vercel and Stripe are integrated." />
     </section>
     <ReleaseQueueSummary rows={manualActions} />
+
+    <Section>
+      <SectionHeader id="promotion-outreach-title" title="Promotion outreach" />
+      <OutreachEmail rows={promotionEmail} />
+      <EvidenceTable id="promotion-outreach" queryId="promotion_outreach" title="HTML5 and mobile gaming outreach list" rows={promotionOutreach} columns={[
+        {key:"priority",label:"Priority",status:true}, {key:"website",label:"Website"},
+        {key:"audience",label:"Audience"}, {key:"route",label:"Best outreach route"},
+        {key:"status",label:"Status",status:true}, {key:"contactUrl",label:"Contact",link:true},
+        {key:"pitchAngle",label:"Suggested angle"},
+      ]} />
+    </Section>
 
     <Section>
       <SectionHeader id="manual-action-checklist-title" title="Your manual release checklist" />
