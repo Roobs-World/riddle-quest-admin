@@ -53,4 +53,3 @@ if (checks?.state !== "passed") throw new Error(checks?.state === "failed" ? `Pr
 
 const merged = await github(`/pulls/${pr.number}/merge`, {method: "PUT", body: JSON.stringify({sha: pr.head.sha, merge_method: "squash", commit_title: pr.title})});
 if (!merged.merged) throw new Error(`Pull request was not merged: ${merged.message ?? "unknown reason"}`);
-await github("/actions/workflows/deploy-jest.yml/dispatches", {method: "POST", body: JSON.stringify({ref: env.BASE_BRANCH})});

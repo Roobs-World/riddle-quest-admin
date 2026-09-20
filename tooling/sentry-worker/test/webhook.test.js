@@ -52,7 +52,6 @@ test("a later cron merges a repaired pull request after its exact checks pass", 
     [{number: 4, title: "Fix issue", head: {sha: "repair-sha"}}],
     {workflow_runs: [{id: 99, head_sha: "repair-sha", event: "pull_request", status: "completed", conclusion: "success"}]},
     {merged: true},
-    null,
   ];
   context.after(() => {globalThis.fetch = originalFetch;});
   globalThis.fetch = async (url, options = {}) => {
@@ -62,11 +61,10 @@ test("a later cron merges a repaired pull request after its exact checks pass", 
   };
 
   assert.deepEqual(await reconcileRepair("148177327", "token"), {
-    status: "merged_and_deploy_dispatched",
+    status: "merged",
     pullRequest: 4,
   });
   assert.equal(requests[2].method, "PUT");
   assert.match(requests[2].url, /\/pulls\/4\/merge$/u);
-  assert.equal(requests[3].method, "POST");
-  assert.match(requests[3].url, /\/actions\/workflows\/deploy-jest\.yml\/dispatches$/u);
+  assert.equal(requests.length, 3);
 });

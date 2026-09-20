@@ -12,4 +12,5 @@ test("the isolated runner downloads and pins the Codex executable without npm", 
   assert.doesNotMatch(source, /CODEX_HOME/u);
   assert.doesNotMatch(source, /run\("npx"/u);
   assert.doesNotMatch(source, /run\("codex"/u);
+  assert.doesNotMatch(source, /deploy-jest\.yml/u);
 });

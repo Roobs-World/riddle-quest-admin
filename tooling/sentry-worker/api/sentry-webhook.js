@@ -96,12 +96,10 @@ export async function reconcileRepair(issueId, token) {
     body: JSON.stringify({sha: pull.head.sha, merge_method: "squash", commit_title: pull.title}),
   });
   if (!merged.merged) throw new Error(`Pull request was not merged: ${merged.message ?? "unknown reason"}`);
-  await api(`${repoUrl}/actions/workflows/deploy-jest.yml/dispatches`, token, {
-    method: "POST",
-    headers: {Accept: "application/vnd.github+json", "Content-Type": "application/json"},
-    body: JSON.stringify({ref: process.env.TARGET_BRANCH ?? "jest"}),
-  });
-  return {status: "merged_and_deploy_dispatched", pullRequest: pull.number};
+  // Vercel tracks TARGET_BRANCH and creates the applicable production
+  // deployments from the merge. A Sentry repair may affect shared, Yahoo, or
+  // worker code, so dispatching a provider-specific release here is unsafe.
+  return {status: "merged", pullRequest: pull.number};
 }
 function sanitizeIssue(issue) {
   return {id: String(issue.id), shortId: issue.shortId, title: String(issue.title ?? "").slice(0, 300), culprit: String(issue.culprit ?? "").slice(0, 300), level: issue.level, firstSeen: issue.firstSeen, lastSeen: issue.lastSeen, count: issue.count, metadata: {type: issue.metadata?.type, value: String(issue.metadata?.value ?? "").slice(0, 500)}, permalink: issue.permalink};
