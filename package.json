@@ -66,6 +66,8 @@
     "release:addictinggames": "node scripts/release/run-platform-release.mjs addictinggames",
     "release:htmlgames": "node scripts/release/run-platform-release.mjs htmlgames",
     "release:playkovo": "node scripts/release/run-platform-release.mjs playkovo",
+    "release:kongregate": "node scripts/release/run-platform-release.mjs kongregate",
+    "release:lagged": "node scripts/release/run-platform-release.mjs lagged",
     "release:html5": "node scripts/release/package-html5-release.mjs",
     "release:all": "node scripts/release/run-platform-release.mjs all",
     "jest:build-upload": "pnpm release:jest",

@@ -194,6 +194,28 @@ const releasePlans = Object.freeze([
     handoff: "Submit the hosted build or build-playkovo-review.zip through the provider review channel.",
     runbook: "docs/research/html5-publishing-platforms-2026-09-20.md",
   }),
+  Object.freeze({
+    target: "kongregate",
+    title: "Kongregate",
+    boundary: "local-manual-handoff",
+    publicCommand: "pnpm release:kongregate",
+    summary: "Create a provider-neutral HTML5 archive for Kongregate developer review.",
+    externalEffect: "None; developer approval, agreement acceptance, upload and publication remain authenticated portal steps.",
+    command: Object.freeze({executable: "node", args: Object.freeze(["scripts/release/package-html5-platform.mjs", "kongregate"])}),
+    handoff: "Apply for developer status, review the upload agreement, then upload build-kongregate.zip for review.",
+    runbook: "docs/research/html5-publishing-platforms-2026-09-20.md",
+  }),
+  Object.freeze({
+    target: "lagged",
+    title: "Lagged review",
+    boundary: "local-manual-handoff",
+    publicCommand: "pnpm release:lagged",
+    summary: "Create a neutral HTML5 archive for the Lagged developer application and integration review.",
+    externalEffect: "None; developer approval and account-issued SDK configuration are required before monetized publication.",
+    command: Object.freeze({executable: "node", args: Object.freeze(["scripts/release/package-html5-platform.mjs", "lagged"])}),
+    handoff: "Apply with the production playable URL and retain build-lagged-review.zip for provider review.",
+    runbook: "docs/research/html5-publishing-platforms-2026-09-20.md",
+  }),
 ]);
 
 const plansByTarget = new Map(releasePlans.map((plan) => [plan.target, plan]));

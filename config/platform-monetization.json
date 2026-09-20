@@ -132,6 +132,12 @@
       "iap": "Provider requirements pending review",
       "ads": "Provider requirements pending review",
       "gate": "Complete manual review and obtain written monetization requirements"
+    },
+    {
+      "platform": "Lagged",
+      "iap": "No public IAP product identified",
+      "ads": "Account-gated Lagged SDK integration required",
+      "gate": "Obtain developer approval and SDK credentials before adding ads to the isolated target"
     }
   ]
 }

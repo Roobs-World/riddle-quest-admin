@@ -36,6 +36,10 @@ snapshot.queries.release_automation = {
       evidence: "build-htmlgames-pitch.zip and its SHA-256 manifest are retained in the workflow artifact"},
     {platform: "PlayKovo", status: "Manual review handoff ready", trigger, revision: sha, completedAt,
       evidence: "build-playkovo-review.zip and its SHA-256 manifest are retained in the workflow artifact"},
+    {platform: "Kongregate", status: "Manual upload handoff ready", trigger, revision: sha, completedAt,
+      evidence: "build-kongregate.zip and its SHA-256 manifest are retained in the workflow artifact"},
+    {platform: "Lagged", status: "Developer review handoff ready", trigger, revision: sha, completedAt,
+      evidence: "build-lagged-review.zip and its SHA-256 manifest are retained in the workflow artifact"},
   ],
   source: {
     label: "All-platform release workflow receipt",

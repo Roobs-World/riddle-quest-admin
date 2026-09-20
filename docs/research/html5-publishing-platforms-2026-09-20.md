@@ -59,3 +59,10 @@ Only itch.io publishes a supported unattended upload mechanism among the reviewe
 - **PlayKovo** accepts hosted builds, iframe links, or HTML5 files for manual review through its [developer portal](https://developer.playkovo.com/). The workflow produces `build-playkovo-review.zip`; approval and publication remain manual.
 
 None of these providers documents a supported unattended publishing CLI. GitHub Actions therefore automates reproducible builds, checksums, retention, and dashboard receipts without claiming that a portal accepted or published the game.
+
+## Added handoffs: Kongregate and Lagged
+
+- **Kongregate** is accepting HTML5/WebGL submissions through its renewed developer approval and portal process. The workflow now creates `build-kongregate.zip` and a SHA-256 manifest. Account approval, the upload agreement, payment onboarding, upload, and publication remain manual, as documented in Kongregate's official [submission process](https://blog.kongregate.com/hc/en-us/articles/44395849259661-SUBMISSION-How-do-I-submit-a-game-to-Kongregate-It-s-Easy).
+- **Lagged** accepts applications for original browser games and advertises an account-gated JavaScript SDK for ads and achievements. The workflow now creates `build-lagged-review.zip` and a SHA-256 manifest for review. Apply through the official [Lagged developer dashboard](https://lagged.dev/); integrate its SDK only after the provider issues credentials and requirements.
+
+These handoffs do not claim publication. They make the exact reviewed build reproducible while preserving provider SDK and advertising isolation.

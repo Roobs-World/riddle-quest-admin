@@ -53,6 +53,8 @@ jobs:
           pnpm release:addictinggames
           pnpm release:htmlgames
           pnpm release:playkovo
+          pnpm release:kongregate
+          pnpm release:lagged
       - name: Record the successful release in the dashboard
         run: node scripts/release/record-release-automation.mjs
         env:
@@ -88,6 +90,10 @@ jobs:
             build-htmlgames-pitch.zip.manifest.json
             build-playkovo-review.zip
             build-playkovo-review.zip.manifest.json
+            build-kongregate.zip
+            build-kongregate.zip.manifest.json
+            build-lagged-review.zip
+            build-lagged-review.zip.manifest.json
             build-youtube.zip
             build-youtube.manifest.json
             build-youtube.test-report.json
