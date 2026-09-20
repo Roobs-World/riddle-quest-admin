@@ -5,6 +5,8 @@ dist-jest/
 dist-facebook/
 dist-reddit/
 dist-youtube/
+dist-netflix/
+dist-yahoo/
 coverage/
 *.tsbuildinfo
 
