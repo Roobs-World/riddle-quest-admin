@@ -1,70 +1,769 @@
 {
   "id": "7677b77a-0b56-4194-a2e7-937aff8f27f7",
   "surface": "dashboard",
+  "buildStatus": "complete",
   "title": "Riddle Quest integration and release status",
-  "generatedAt": "2026-09-20T16:13:48Z",
+  "generatedAt": "2026-09-20T18:47:00Z",
   "status": "verified-repository-and-provider-evidence",
   "filters": [],
   "queries": {
     "platform_status": {
       "rows": [
-        {"platform":"Jest","integration":"Implemented","identityAndSaves":"Signed player exchange and Jest player data","commerceAndSocial":"Purchases, subscriptions, profiles, referrals and notifications","ads":"Unavailable — no approved Jest ad API","localValidation":"Passed","releaseStatus":"Build accepted for automatic activation; authoritative completion pending"},
-        {"platform":"Facebook","integration":"Implemented; gated features remain","identityAndSaves":"FBInstant signed identity and player data","commerceAndSocial":"Social APIs implemented; payments remain gated pending hosted verification","ads":"Interstitial implemented; rewarded ads remain gated","localValidation":"Passed","releaseStatus":"Version 3 staged in Testing; App Review draft prepared"},
-        {"platform":"Reddit","integration":"Implemented","identityAndSaves":"Devvit identity and same-origin storage gateway","commerceAndSocial":"Reddit Gold purchases, matchmaking, tournaments and presence","ads":"Unavailable — no supported in-game ad API","localValidation":"Build passed; release gate blocked on contract fixtures","releaseStatus":"Private version 0.0.1.23 installed; public submission pending"},
-        {"platform":"YouTube","integration":"Implemented","identityAndSaves":"YouTube Playable Save and lifecycle API","commerceAndSocial":"Excluded by target contract","ads":"Forbidden by self-contained Playables contract","localValidation":"Passed","releaseStatus":"Candidate ready; channel lacks Developer Portal authorization"},
-        {"platform":"Netflix","integration":"Engineering candidate only","identityAndSaves":"Browser-local save with audited 17-locale production content; Netflix partner SDK unavailable","commerceAndSocial":"Not integrated without private partner contract","ads":"Not integrated","localValidation":"Passed","releaseStatus":"Partner Portal access and producer required"},
-        {"platform":"Yahoo","integration":"Implemented web integration","identityAndSaves":"Yahoo OAuth identity with Firebase-backed game data","commerceAndSocial":"Server-authoritative Stripe checkout, confirmation and webhook fulfillment","ads":"Not integrated","localValidation":"Passed","releaseStatus":"Merged web and Stripe integration deployed at yahoo.roobsworld.com"}
+        {
+          "platform": "Jest",
+          "integration": "Implemented",
+          "identityAndSaves": "Signed player exchange and Jest player data",
+          "commerceAndSocial": "Purchases, subscriptions, profiles, referrals and notifications",
+          "ads": "Unavailable \u2014 no approved Jest ad API",
+          "localValidation": "Passed",
+          "releaseStatus": "Build accepted for automatic activation; authoritative completion pending"
+        },
+        {
+          "platform": "Facebook",
+          "integration": "Implemented; gated features remain",
+          "identityAndSaves": "FBInstant signed identity and player data",
+          "commerceAndSocial": "Social APIs implemented; payments remain gated pending hosted verification",
+          "ads": "Interstitial implemented; rewarded ads remain gated",
+          "localValidation": "Passed",
+          "releaseStatus": "Version 3 staged in Testing; App Review draft prepared; verified-business correction blocked on representative verification"
+        },
+        {
+          "platform": "Reddit",
+          "integration": "Implemented",
+          "identityAndSaves": "Devvit identity and same-origin storage gateway",
+          "commerceAndSocial": "Reddit Gold purchases, matchmaking, tournaments and presence",
+          "ads": "Unavailable \u2014 no supported in-game ad API",
+          "localValidation": "Build passed; release gate blocked on contract fixtures",
+          "releaseStatus": "Private version 0.0.1.23 installed; public submission pending"
+        },
+        {
+          "platform": "YouTube",
+          "integration": "Implemented",
+          "identityAndSaves": "YouTube Playable Save and lifecycle API",
+          "commerceAndSocial": "Excluded by target contract",
+          "ads": "Forbidden by self-contained Playables contract",
+          "localValidation": "Passed",
+          "releaseStatus": "Candidate ready; channel lacks Developer Portal authorization"
+        },
+        {
+          "platform": "Netflix",
+          "integration": "Engineering candidate only",
+          "identityAndSaves": "Browser-local save with audited 17-locale production content; Netflix partner SDK unavailable",
+          "commerceAndSocial": "Not integrated without private partner contract",
+          "ads": "Not integrated",
+          "localValidation": "Passed",
+          "releaseStatus": "Partner Portal access and producer required"
+        },
+        {
+          "platform": "Yahoo",
+          "integration": "Implemented web integration",
+          "identityAndSaves": "Yahoo OAuth identity with Firebase-backed game data",
+          "commerceAndSocial": "Server-authoritative Stripe checkout, confirmation and webhook fulfillment",
+          "ads": "Not integrated",
+          "localValidation": "Passed",
+          "releaseStatus": "Merged web and Stripe integration deployed at yahoo.roobsworld.com"
+        }
       ],
       "source": {
         "label": "Target adapters, artifact audits, release receipts and provider portal checks",
-        "tables": ["docs/platform-integration-matrix.md","packages/portal/src","packages/portal/scripts","build-youtube.test-report.json","provider portal evidence captured 2026-09-20"],
-        "filters": ["Status is reported only when supported by repository code, release evidence, or an authenticated provider portal."],
+        "tables": [
+          "docs/platform-integration-matrix.md",
+          "packages/portal/src",
+          "packages/portal/scripts",
+          "build-youtube.test-report.json",
+          "provider portal evidence captured 2026-09-20"
+        ],
+        "filters": [
+          "Status is reported only when supported by repository code, release evidence, or an authenticated provider portal."
+        ],
         "metricDefinitions": [
-          {"label":"Integration status","definition":"Implemented means the target owns a provider-specific adapter and its isolated local build and audit pass. It does not imply provider approval or production promotion.","componentIds":["platform-status","metric-integrated"]},
-          {"label":"Release status","definition":"The latest verified provider-side state, kept separate from local build readiness.","componentIds":["platform-status","metric-provider-releases"]}
+          {
+            "label": "Integration status",
+            "definition": "Implemented means the target owns a provider-specific adapter and its isolated local build and audit pass. It does not imply provider approval or production promotion.",
+            "componentIds": [
+              "platform-status",
+              "metric-integrated"
+            ]
+          },
+          {
+            "label": "Release status",
+            "definition": "The latest verified provider-side state, kept separate from local build readiness.",
+            "componentIds": [
+              "platform-status",
+              "metric-provider-releases"
+            ]
+          }
         ]
       }
     },
     "provider_release_evidence": {
       "rows": [
-        {"platform":"Facebook","providerReference":"Bundle instance 28625402820405523; review draft 1748953119658228","artifact":"SHA-256 50fd13547d5dab5049b24d5d7cf4a2cbb0d06d04e558a230c4a946cb86f50c45","state":"Testing; controller and country saved in review draft","nextGate":"Confirm processors, national-security disclosure and formal request policies; then submit review and promote"},
-        {"platform":"Reddit","providerReference":"Private version 0.0.1.23","artifact":"Installed through authenticated Devvit CLI","state":"Private testing","nextGate":"Capture auth, payment, refund, post-entry, realtime and notification contract fixtures"},
-        {"platform":"YouTube","providerReference":"Playables Developer Portal","artifact":"build-youtube.zip; SHA-256 1b9f41fc0a46378341c01fac3176566ffe1489beebfaef9f751c0191fd69c041","state":"Portal unauthorized","nextGate":"Invitation and Editor or Manager channel access"},
-        {"platform":"Yahoo","providerReference":"Vercel deployment dpl_2n49GfZUrGx8FQmogJD4AfG81XuH","artifact":"yahoo.roobsworld.com plus three deployed Stripe Functions","state":"Production deployed","nextGate":"Verify authenticated payment journey"},
-        {"platform":"Jest","providerReference":"Version 01a0bf64-5ea4-7305-983f-fd7c5c9cdbd1","artifact":"1.0.0-dev.20260920145944.5616967cfa28.e09c4095","state":"Accepted; automatic activation pending","nextGate":"Obtain authoritative activation completion evidence"},
-        {"platform":"Netflix","providerReference":"Netflix Games Partner Portal","artifact":"packages/portal/dist-netflix; 7 files; 1.07 MiB provider-neutral candidate","state":"No partner access","nextGate":"Netflix Games producer and private SDK contract"}
+        {
+          "platform": "Facebook",
+          "providerReference": "Bundle instance 28625402820405523; review draft 1748953119658228",
+          "artifact": "SHA-256 50fd13547d5dab5049b24d5d7cf4a2cbb0d06d04e558a230c4a946cb86f50c45",
+          "state": "Testing; controller and country saved in review draft",
+          "submissionProgress": "App Review draft prepared; correction supplied to Meta support assistant; Account Status independently shows no restrictions",
+          "nextGate": "Complete representative verification with an accepted photo-ID administrator, then update verified details, finish legal declarations, submit and promote"
+        },
+        {
+          "platform": "Reddit",
+          "providerReference": "Private version 0.0.1.23",
+          "artifact": "Installed through authenticated Devvit CLI",
+          "state": "Private testing",
+          "submissionProgress": "Private release installed; public submission awaiting evidence",
+          "nextGate": "Capture auth, payment, refund, post-entry, realtime and notification contract fixtures"
+        },
+        {
+          "platform": "YouTube",
+          "providerReference": "Playables Developer Portal",
+          "artifact": "build-youtube.zip; SHA-256 1b9f41fc0a46378341c01fac3176566ffe1489beebfaef9f751c0191fd69c041",
+          "state": "Portal unauthorized",
+          "submissionProgress": "Submission-grade ZIP verified from clean commit; portal upload not started",
+          "nextGate": "Invitation and Editor or Manager channel access"
+        },
+        {
+          "platform": "Yahoo",
+          "providerReference": "Vercel deployment dpl_2n49GfZUrGx8FQmogJD4AfG81XuH",
+          "artifact": "yahoo.roobsworld.com plus three deployed Stripe Functions",
+          "state": "Production deployed",
+          "submissionProgress": "Production deployment complete",
+          "nextGate": "Verify authenticated payment journey"
+        },
+        {
+          "platform": "Jest",
+          "providerReference": "Version 01a0bf64-5ea4-7305-983f-fd7c5c9cdbd1",
+          "artifact": "1.0.0-dev.20260920145944.5616967cfa28.e09c4095",
+          "state": "Accepted; automatic activation pending",
+          "submissionProgress": "Provider accepted the release; awaiting activation evidence",
+          "nextGate": "Obtain authoritative activation completion evidence"
+        },
+        {
+          "platform": "Netflix",
+          "providerReference": "Netflix Games Partner Portal",
+          "artifact": "packages/portal/dist-netflix; 7 files; 1.07 MiB provider-neutral candidate",
+          "state": "No partner access",
+          "submissionProgress": "Candidate built; provider submission unavailable",
+          "nextGate": "Netflix Games producer and private SDK contract"
+        }
       ],
       "source": {
         "label": "Authenticated release evidence and platform operations records",
-        "tables": ["packages/portal/.facebook-upload-receipts","docs/evidence/reddit-integration-2026-09-19.md","docs/youtube-playables-progress.html","docs/netflix-yahoo-candidate-builds.md"],
-        "metricDefinitions": [{"label":"Provider release evidence","definition":"A provider-side identifier or deployment state observed through authenticated tooling or portal access.","componentIds":["provider-release-evidence","metric-provider-releases"]}]
+        "tables": [
+          "packages/portal/.facebook-upload-receipts",
+          "docs/evidence/reddit-integration-2026-09-19.md",
+          "docs/youtube-playables-progress.html",
+          "docs/netflix-yahoo-candidate-builds.md"
+        ],
+        "metricDefinitions": [
+          {
+            "label": "Provider release evidence",
+            "definition": "A provider-side identifier or deployment state observed through authenticated tooling or portal access.",
+            "componentIds": [
+              "provider-release-evidence",
+              "metric-provider-releases"
+            ]
+          }
+        ]
+      }
+    },
+    "html5_distribution_candidates": {
+      "rows": [
+        {
+          "platform": "itch.io",
+          "releaseModel": "Self-service hosted HTML5 project; no exclusivity",
+          "integration": "No SDK; provider-neutral ZIP with root index.html",
+          "submissionProgress": "Verified neutral ZIP and CI publish stage ready; initial project, ITCH_BUTLER_API_KEY and ITCH_GAME_TARGET still required",
+          "nextGate": "Complete human verification and create the first project page, then configure the GitHub secret and variable to enable automatic Butler releases"
+        },
+        {
+          "platform": "CrazyGames",
+          "releaseModel": "QA-reviewed Basic Launch, then performance-selected Full Launch",
+          "integration": "SDK optional for Basic Launch; isolated CrazyGames SDK and ads required for Full Launch",
+          "submissionProgress": "Neutral Basic Launch ZIP produced automatically by the all-platform workflow; Developer Portal login and first upload required",
+          "nextGate": "Sign in as Roobs World, upload the neutral ZIP and supply store media"
+        },
+        {
+          "platform": "Discord",
+          "releaseModel": "Hosted Activity with App Directory discovery",
+          "integration": "Isolated Embedded App SDK target, OAuth identity, URL mapping and optional Premium Apps",
+          "submissionProgress": "Approved as a non-exclusive distribution target; implementation and Developer Portal setup not started",
+          "nextGate": "Create the isolated Discord build and application, deploy it to Vercel, map its URL and test inside Discord"
+        },
+        {
+          "platform": "GamePix",
+          "releaseModel": "Portal review with optional network syndication",
+          "integration": "Isolated GamePix SDK/ad adapter for monetized distribution",
+          "submissionProgress": "Candidate identified; no account or build submitted",
+          "nextGate": "Review live distribution terms, create account and implement an isolated adapter"
+        },
+        {
+          "platform": "GameDistribution",
+          "releaseModel": "Portal-hosted and syndicated HTML5 distribution",
+          "integration": "GameDistribution SDK, ads, lifecycle and consent signals",
+          "submissionProgress": "Candidate identified; no account or build submitted",
+          "nextGate": "Review portal contract, obtain game ID and implement an isolated adapter"
+        },
+        {
+          "platform": "GameMonetize",
+          "releaseModel": "Dashboard upload followed by SDK verification and activation",
+          "integration": "GameMonetize HTML5 SDK and ads",
+          "submissionProgress": "Candidate identified; no account or build submitted",
+          "nextGate": "Compare live commercial terms, create account and implement an isolated adapter"
+        },
+        {
+          "platform": "Yandex Games",
+          "releaseModel": "Console draft, contract onboarding and moderation",
+          "integration": "Mandatory Yandex SDK; Yandex-only identity, ads and payments",
+          "submissionProgress": "Candidate identified; no contract, draft or build submitted",
+          "nextGate": "Confirm UK company eligibility for Yandex Advertising Network contracting before implementation"
+        },
+        {
+          "platform": "Poki",
+          "releaseModel": "Application, moderation and staged playtesting",
+          "integration": "Poki SDK and Poki-only ads required for release",
+          "submissionProgress": "On hold by owner after developer-access application submission on 20 September 2026",
+          "nextGate": "Take no release action; revisit only a written non-exclusive flat-fee offer compatible with every existing target"
+        },
+        {
+          "platform": "Newgrounds",
+          "releaseModel": "Account-gated community game project",
+          "integration": "Current public integration requirements require authenticated review",
+          "submissionProgress": "Neutral ZIP produced automatically; lower-priority account-gated project submission remains manual",
+          "nextGate": "Inspect authenticated project terms and technical requirements"
+        },
+        {
+          "platform": "Coolmath Games",
+          "releaseModel": "Curated non-exclusive HTML5 licence",
+          "integration": "Accepted build must remove ads, external links and external analytics, then add the Coolmath SDK",
+          "submissionProgress": "New candidate identified; neutral build and playable URL are ready, submission form not sent",
+          "nextGate": "Submit a non-exclusive licensing pitch and implement an isolated target only after acceptance"
+        },
+        {
+          "platform": "Kongregate",
+          "releaseModel": "Developer application, portal upload and approval",
+          "integration": "Isolated Kongregate identity, statistics and Kreds commerce adapter; no third-party ads or payments",
+          "submissionProgress": "New candidate identified; developer account and upload agreement not completed",
+          "nextGate": "Apply as Roobs World Limited, review the upload agreement and avoid optional exclusive hosting incentives"
+        },
+        {
+          "platform": "Armor Games",
+          "releaseModel": "Curated HTML5 licensing pitch",
+          "integration": "Provider API and IAP only if agreed; disclose any generative-AI use",
+          "submissionProgress": "New candidate identified; playable build ready for a non-exclusive pitch",
+          "nextGate": "Send the official developer pitch and explicitly decline timed site exclusivity"
+        }
+      ],
+      "source": {
+        "label": "Official HTML5 publisher documentation and authenticated portal checks on 20 September 2026",
+        "tables": [
+          "docs/research/html5-publishing-platforms-2026-09-20.md",
+          "build-html5.zip",
+          "build-html5.sha256",
+          ".github/workflows/release-all-platforms.yml",
+          "scripts/release/package-html5-release.mjs"
+        ],
+        "filters": [
+          "A ready artifact does not imply provider approval. SDK and advertising integrations must remain isolated by target.",
+          "Only non-exclusive distribution is permitted. Poki is on hold and its application did not accept an exclusivity or publishing agreement."
+        ],
+        "metricDefinitions": [
+          {
+            "label": "Submission progress",
+            "definition": "The latest directly observed portal or artifact state. Submitted means the named portal acknowledged receipt; identified means research only.",
+            "componentIds": [
+              "html5-distribution-candidates"
+            ]
+          }
+        ]
       }
     },
     "dashboard_verification": {
       "rows": [
-        {"check":"Release output coverage","viewport":"Data contract","result":"Passed","evidence":"All six targets expose a provider reference, concrete output, provider state and next gate."},
-        {"check":"Desktop rendering and source inspection","viewport":"1440 × 900","result":"Passed","evidence":"All target and service rows rendered without page overflow; provider evidence source drawer opened successfully."},
-        {"check":"Responsive rendering","viewport":"390 × 844","result":"Passed","evidence":"No page-level horizontal overflow; metrics collapsed to one column and all four wide tables remained locally scrollable."}
+        {
+          "check": "Release output coverage",
+          "viewport": "Data contract",
+          "result": "Passed",
+          "evidence": "All six targets expose a provider reference, concrete output, provider state and next gate."
+        },
+        {
+          "check": "Desktop rendering and source inspection",
+          "viewport": "1440 \u00d7 900",
+          "result": "Passed",
+          "evidence": "All target and service rows rendered without page overflow; provider evidence source drawer opened successfully."
+        },
+        {
+          "check": "Responsive rendering",
+          "viewport": "390 \u00d7 844",
+          "result": "Passed",
+          "evidence": "No page-level horizontal overflow; all nine tables remained locally scrollable. Deployment filters, source inspection and the Jest activity chart were checked at desktop and mobile widths."
+        }
       ],
       "source": {
         "label": "Agent-browser E2E run against the production dashboard build on 20 September 2026",
-        "tables": ["docs/reports/platform-release-readiness/tests/release-dashboard-content.test.mjs","docs/reports/platform-release-readiness/dist/index.html"],
-        "filters": ["Desktop and mobile checks were executed against the same built HTML artifact."],
-        "metricDefinitions": [{"label":"Dashboard E2E result","definition":"Passed requires the rendered content, output coverage, responsive containment and source inspection interaction to succeed.","componentIds":["dashboard-verification"]}]
+        "tables": [
+          "docs/reports/platform-release-readiness/tests/release-dashboard-content.test.mjs",
+          "docs/reports/platform-release-readiness/dist/index.html"
+        ],
+        "filters": [
+          "Desktop and mobile checks were executed against the same built HTML artifact."
+        ],
+        "metricDefinitions": [
+          {
+            "label": "Dashboard E2E result",
+            "definition": "Passed requires the rendered content, output coverage, responsive containment and source inspection interaction to succeed.",
+            "componentIds": [
+              "dashboard-verification"
+            ]
+          }
+        ]
       }
     },
     "service_status": {
       "rows": [
-        {"service":"Firebase","purpose":"Authoritative identity, game data and server endpoints","status":"Integrated","evidence":"Functions and rules tests passed; Yahoo Stripe functions deployed in us-central1"},
-        {"service":"Sentry","purpose":"Privacy-restricted browser and Functions error reporting","status":"Integrated","evidence":"SDK boundaries and automated repair worker are present"},
-        {"service":"Vercel","purpose":"Web hosting and scheduled Sentry worker","status":"Integrated","evidence":"Yahoo deployment and hourly worker configuration are present"},
-        {"service":"Stripe","purpose":"Yahoo web checkout and server-authoritative fulfillment","status":"Integrated","evidence":"Checkout creation, confirmation and signed webhook functions deployed; unauthenticated smoke requests rejected"},
-        {"service":"Clerk","purpose":"Requested dashboard login","status":"Not integrated","evidence":"Repository policy excludes Clerk and no Clerk code is present"}
+        {
+          "service": "Firebase",
+          "purpose": "Authoritative identity, game data and server endpoints",
+          "status": "Integrated",
+          "evidence": "Functions and rules tests passed; Yahoo Stripe functions deployed in us-central1"
+        },
+        {
+          "service": "Sentry",
+          "purpose": "Privacy-restricted browser and Functions error reporting",
+          "status": "Integrated",
+          "evidence": "SDK boundaries and automated repair worker are present"
+        },
+        {
+          "service": "Vercel",
+          "purpose": "Web hosting and scheduled Sentry worker",
+          "status": "Integrated",
+          "evidence": "Yahoo deployment and hourly worker configuration are present"
+        },
+        {
+          "service": "Stripe",
+          "purpose": "Yahoo web checkout and server-authoritative fulfillment",
+          "status": "Integrated",
+          "evidence": "Checkout creation, confirmation and signed webhook functions deployed; unauthenticated smoke requests rejected"
+        },
+        {
+          "service": "Clerk",
+          "purpose": "Requested dashboard login",
+          "status": "Not integrated",
+          "evidence": "Repository policy excludes Clerk and no Clerk code is present"
+        }
       ],
       "source": {
         "label": "Repository dependency, environment-boundary and deployment configuration audit",
-        "tables": ["firebase-functions/src","packages/portal/src/observability","tooling/sentry-worker","tooling/sentry-worker/vercel.json","AGENTS.md"],
-        "metricDefinitions": [{"label":"Operational service status","definition":"Integrated requires executable repository code or deployment configuration; an externally configured account alone is reported separately.","componentIds":["service-status","metric-services"]}]
+        "tables": [
+          "firebase-functions/src",
+          "packages/portal/src/observability",
+          "tooling/sentry-worker",
+          "tooling/sentry-worker/vercel.json",
+          "AGENTS.md"
+        ],
+        "metricDefinitions": [
+          {
+            "label": "Operational service status",
+            "definition": "Integrated requires executable repository code or deployment configuration; an externally configured account alone is reported separately.",
+            "componentIds": [
+              "service-status",
+              "metric-services"
+            ]
+          }
+        ]
+      }
+    },
+    "deployment_metrics": {
+      "rows": [
+        {
+          "platform": "Facebook",
+          "deployment": "Bundle instance 28625402820405523; review draft 1748953119658228",
+          "environment": "Testing",
+          "date": "Not reported",
+          "collectedAt": null,
+          "source": "No deployment-attributed metrics supplied",
+          "nextStep": "Import a provider report with this deployment identifier and a UTC reporting day.",
+          "activePlayers": null,
+          "sessions": null,
+          "gamesStarted": null,
+          "gamesCompleted": null,
+          "engagedSeconds": null,
+          "loadSamples": null,
+          "loadP95Ms": null,
+          "errorSessions": null,
+          "observedSessions": null
+        },
+        {
+          "platform": "Reddit",
+          "deployment": "Private version 0.0.1.23",
+          "environment": "Private testing",
+          "date": "Not reported",
+          "collectedAt": null,
+          "source": "No deployment-attributed metrics supplied",
+          "nextStep": "Import a provider report with this deployment identifier and a UTC reporting day.",
+          "activePlayers": null,
+          "sessions": null,
+          "gamesStarted": null,
+          "gamesCompleted": null,
+          "engagedSeconds": null,
+          "loadSamples": null,
+          "loadP95Ms": null,
+          "errorSessions": null,
+          "observedSessions": null
+        },
+        {
+          "platform": "YouTube",
+          "deployment": "Playables Developer Portal",
+          "environment": "Candidate",
+          "date": "Not reported",
+          "collectedAt": null,
+          "source": "No deployment-attributed metrics supplied",
+          "nextStep": "Import a provider report with this deployment identifier and a UTC reporting day.",
+          "activePlayers": null,
+          "sessions": null,
+          "gamesStarted": null,
+          "gamesCompleted": null,
+          "engagedSeconds": null,
+          "loadSamples": null,
+          "loadP95Ms": null,
+          "errorSessions": null,
+          "observedSessions": null
+        },
+        {
+          "platform": "Yahoo",
+          "deployment": "Vercel deployment dpl_2n49GfZUrGx8FQmogJD4AfG81XuH",
+          "environment": "Production",
+          "date": "Not reported",
+          "collectedAt": null,
+          "source": "No deployment-attributed metrics supplied",
+          "nextStep": "Import a provider report with this deployment identifier and a UTC reporting day.",
+          "activePlayers": null,
+          "sessions": null,
+          "gamesStarted": null,
+          "gamesCompleted": null,
+          "engagedSeconds": null,
+          "loadSamples": null,
+          "loadP95Ms": null,
+          "errorSessions": null,
+          "observedSessions": null
+        },
+        {
+          "platform": "Jest",
+          "deployment": "Version 01a0bf64-5ea4-7305-983f-fd7c5c9cdbd1",
+          "environment": "Activation pending",
+          "date": "Not reported",
+          "collectedAt": null,
+          "source": "No deployment-attributed metrics supplied",
+          "nextStep": "Import a provider report with this deployment identifier and a UTC reporting day.",
+          "activePlayers": null,
+          "sessions": null,
+          "gamesStarted": null,
+          "gamesCompleted": null,
+          "engagedSeconds": null,
+          "loadSamples": null,
+          "loadP95Ms": null,
+          "errorSessions": null,
+          "observedSessions": null
+        },
+        {
+          "platform": "Netflix",
+          "deployment": "Netflix Games Partner Portal",
+          "environment": "Candidate",
+          "date": "Not reported",
+          "collectedAt": null,
+          "source": "No deployment-attributed metrics supplied",
+          "nextStep": "Import a provider report with this deployment identifier and a UTC reporting day.",
+          "activePlayers": null,
+          "sessions": null,
+          "gamesStarted": null,
+          "gamesCompleted": null,
+          "engagedSeconds": null,
+          "loadSamples": null,
+          "loadP95Ms": null,
+          "errorSessions": null,
+          "observedSessions": null
+        }
+      ],
+      "source": {
+        "label": "Deployment monitoring coverage and imported provider measurements",
+        "tables": [
+          "docs/reports/platform-release-readiness/src/data.json:provider_release_evidence",
+          "scripts/monitoring/import-deployment-metrics.mjs",
+          "packages/portal/src/observability/sentry.ts",
+          "AGENTS.md"
+        ],
+        "filters": [
+          "No engagement or performance measurements have been imported. Release readiness is not runtime performance.",
+          "One row per target, deployment, environment and UTC day. Missing values are null, never zero. Provider definitions must match the import contract.",
+          "YouTube, Netflix and Yahoo candidates use provider-side reports only; no analytics SDK is added to game artifacts."
+        ],
+        "metricDefinitions": [
+          {
+            "label": "Active players",
+            "definition": "Distinct players with a gameplay action during the UTC day in this deployment. Never summed across days or deployments.",
+            "componentIds": [
+              "deployment-engagement"
+            ]
+          },
+          {
+            "label": "Sessions and engagement",
+            "definition": "Provider-counted sessions, games started and completed; completion rate = gamesCompleted / gamesStarted. Average engaged seconds = engagedSeconds / sessions. Missing or zero denominators yield unavailable.",
+            "componentIds": [
+              "deployment-engagement"
+            ]
+          },
+          {
+            "label": "Performance",
+            "definition": "Load p95 is the provider-computed 95th percentile of milliseconds from launch to playable, with loadSamples as its denominator. Error-session rate = errorSessions / observedSessions; observedSessions is the error-monitored population. Percentiles and rates are never averaged across rows.",
+            "componentIds": [
+              "deployment-performance"
+            ]
+          },
+          {
+            "label": "Freshness",
+            "definition": "Missing means no metrics; partial means some metrics are missing; stale means the UTC reporting day ended over 48 hours ago. Collection time is shown separately.",
+            "componentIds": [
+              "deployment-coverage"
+            ]
+          }
+        ]
+      }
+    },
+    "provider_daily_activity": {
+      "rows": [
+        {
+          "date": "2026-08-22",
+          "platform": "Jest",
+          "dailyActiveUsers": 0,
+          "registeredDailyActiveUsers": 0
+        },
+        {
+          "date": "2026-08-23",
+          "platform": "Jest",
+          "dailyActiveUsers": 0,
+          "registeredDailyActiveUsers": 0
+        },
+        {
+          "date": "2026-08-24",
+          "platform": "Jest",
+          "dailyActiveUsers": 0,
+          "registeredDailyActiveUsers": 0
+        },
+        {
+          "date": "2026-08-25",
+          "platform": "Jest",
+          "dailyActiveUsers": 0,
+          "registeredDailyActiveUsers": 0
+        },
+        {
+          "date": "2026-08-26",
+          "platform": "Jest",
+          "dailyActiveUsers": 0,
+          "registeredDailyActiveUsers": 0
+        },
+        {
+          "date": "2026-08-27",
+          "platform": "Jest",
+          "dailyActiveUsers": 0,
+          "registeredDailyActiveUsers": 0
+        },
+        {
+          "date": "2026-08-28",
+          "platform": "Jest",
+          "dailyActiveUsers": 0,
+          "registeredDailyActiveUsers": 0
+        },
+        {
+          "date": "2026-08-29",
+          "platform": "Jest",
+          "dailyActiveUsers": 0,
+          "registeredDailyActiveUsers": 0
+        },
+        {
+          "date": "2026-08-30",
+          "platform": "Jest",
+          "dailyActiveUsers": 0,
+          "registeredDailyActiveUsers": 0
+        },
+        {
+          "date": "2026-08-31",
+          "platform": "Jest",
+          "dailyActiveUsers": 0,
+          "registeredDailyActiveUsers": 0
+        },
+        {
+          "date": "2026-09-01",
+          "platform": "Jest",
+          "dailyActiveUsers": 0,
+          "registeredDailyActiveUsers": 0
+        },
+        {
+          "date": "2026-09-02",
+          "platform": "Jest",
+          "dailyActiveUsers": 0,
+          "registeredDailyActiveUsers": 0
+        },
+        {
+          "date": "2026-09-03",
+          "platform": "Jest",
+          "dailyActiveUsers": 0,
+          "registeredDailyActiveUsers": 0
+        },
+        {
+          "date": "2026-09-04",
+          "platform": "Jest",
+          "dailyActiveUsers": 0,
+          "registeredDailyActiveUsers": 0
+        },
+        {
+          "date": "2026-09-05",
+          "platform": "Jest",
+          "dailyActiveUsers": 0,
+          "registeredDailyActiveUsers": 0
+        },
+        {
+          "date": "2026-09-06",
+          "platform": "Jest",
+          "dailyActiveUsers": 0,
+          "registeredDailyActiveUsers": 0
+        },
+        {
+          "date": "2026-09-07",
+          "platform": "Jest",
+          "dailyActiveUsers": 0,
+          "registeredDailyActiveUsers": 0
+        },
+        {
+          "date": "2026-09-08",
+          "platform": "Jest",
+          "dailyActiveUsers": 0,
+          "registeredDailyActiveUsers": 0
+        },
+        {
+          "date": "2026-09-09",
+          "platform": "Jest",
+          "dailyActiveUsers": 0,
+          "registeredDailyActiveUsers": 0
+        },
+        {
+          "date": "2026-09-10",
+          "platform": "Jest",
+          "dailyActiveUsers": 0,
+          "registeredDailyActiveUsers": 0
+        },
+        {
+          "date": "2026-09-11",
+          "platform": "Jest",
+          "dailyActiveUsers": 0,
+          "registeredDailyActiveUsers": 0
+        },
+        {
+          "date": "2026-09-12",
+          "platform": "Jest",
+          "dailyActiveUsers": 0,
+          "registeredDailyActiveUsers": 0
+        },
+        {
+          "date": "2026-09-13",
+          "platform": "Jest",
+          "dailyActiveUsers": 0,
+          "registeredDailyActiveUsers": 0
+        },
+        {
+          "date": "2026-09-14",
+          "platform": "Jest",
+          "dailyActiveUsers": 0,
+          "registeredDailyActiveUsers": 0
+        },
+        {
+          "date": "2026-09-15",
+          "platform": "Jest",
+          "dailyActiveUsers": 0,
+          "registeredDailyActiveUsers": 0
+        },
+        {
+          "date": "2026-09-16",
+          "platform": "Jest",
+          "dailyActiveUsers": 0,
+          "registeredDailyActiveUsers": 0
+        },
+        {
+          "date": "2026-09-17",
+          "platform": "Jest",
+          "dailyActiveUsers": 2,
+          "registeredDailyActiveUsers": 0
+        },
+        {
+          "date": "2026-09-18",
+          "platform": "Jest",
+          "dailyActiveUsers": 1,
+          "registeredDailyActiveUsers": 0
+        },
+        {
+          "date": "2026-09-19",
+          "platform": "Jest",
+          "dailyActiveUsers": 0,
+          "registeredDailyActiveUsers": 0
+        }
+      ],
+      "source": {
+        "label": "Authenticated Jest game analytics \u2014 dau_summary, retrieved 20 September 2026",
+        "tables": [
+          "Jest get_game_analytics(teamId=019f0e38-4b34-76fe-99ba-a8957c15295c, gameId=019f5674-93a8-7338-a664-8e603d6bda06, chart=dau_summary)"
+        ],
+        "filters": [
+          "Provider-reported game-wide daily active users; no build/deployment dimension or timezone metadata returned.",
+          "22 August\u201319 September 2026; 20 September excluded because it is the current reporting day.",
+          "Not comparable to deployment activePlayers without matching provider definitions and attribution. Zeroes are returned measurements, not missing data."
+        ],
+        "metricDefinitions": [
+          {
+            "label": "Jest daily active users",
+            "definition": "The Jest dau_summary response dau field, retained at the provider-reported day grain. Game-wide, not attributable to a release. Registered daily active users are the separate registeredDau field.",
+            "componentIds": [
+              "provider-daily-activity"
+            ]
+          }
+        ]
+      }
+    },
+    "release_automation": {
+      "rows": [
+        {
+          "platform": "All configured targets",
+          "status": "Passed",
+          "trigger": "local",
+          "revision": "local",
+          "completedAt": "2026-09-20T18:37:38.093Z",
+          "evidence": "Local release automation run"
+        },
+        {
+          "platform": "itch.io",
+          "status": "Waiting for credentials",
+          "trigger": "local",
+          "revision": "local",
+          "completedAt": "2026-09-20T18:37:38.093Z",
+          "evidence": "Official Butler stage runs after the shared release artifact succeeds"
+        }
+      ],
+      "source": {
+        "label": "All-platform release workflow receipt",
+        "tables": [
+          ".github/workflows/release-all-platforms.yml",
+          "scripts/release/record-release-automation.mjs"
+        ],
+        "filters": [
+          "Passed records the repository verification and release adapters; provider review completion remains separately reported."
+        ],
+        "metricDefinitions": [
+          {
+            "label": "Automation status",
+            "definition": "The result emitted by the immutable all-platform workflow for one exact repository revision.",
+            "componentIds": [
+              "release-automation"
+            ]
+          }
+        ]
       }
     }
   }

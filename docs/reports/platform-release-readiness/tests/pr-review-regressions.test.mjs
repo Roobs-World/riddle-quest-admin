@@ -1,3 +1,4 @@
+import { templateTestUrl } from "./template-test-fixtures.mjs";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
@@ -9,7 +10,7 @@ import {
   regionalTotals,
 } from "../src/content/dashboard/dashboard-data.js";
 import { compareTableValues, distributionBuckets, distributionPercentiles, statusTone } from "../src/charting/table-data.js";
-const data = JSON.parse(readFileSync(new URL("../src/data.json", import.meta.url)));
+const data = JSON.parse(readFileSync(templateTestUrl("../src/data.json", import.meta.url)));
 
 test("table sorting compares decimal percentages numerically and keeps missing cells last", () => {
   const values = [0.004321, .75, .06, .04, -.02, null];

@@ -1,5 +1,5 @@
 import React, { useEffect, useId, useRef, useState } from "react";
-import dataComposerIcon from "../../../../../assets/datascience-small.svg?url";
+import dataComposerIcon from "../content/assets/datascience-small.svg?url";
 
 import { Icon } from "./Icon.jsx";
 import { SourceInspector } from "./SourceInspector.jsx";

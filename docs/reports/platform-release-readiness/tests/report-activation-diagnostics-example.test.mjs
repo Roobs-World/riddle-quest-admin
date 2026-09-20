@@ -4,7 +4,7 @@ import test from "node:test";
 import { analyzeProductGrowth, createReportSnapshot } from "../examples/reports/activation-diagnostics/analysis.mjs";
 import { reviewedNarrativeQueries, reviewedSource, scopedMetricDefinitions } from "../src/source-provenance.js";
 
-const input = await readFile(new URL("../../../../assets/demo-product-growth.csv", import.meta.url), "utf8");
+const input = await readFile(new URL("./fixtures/data-plugin/assets/demo-product-growth.csv", import.meta.url), "utf8");
 const results = analyzeProductGrowth(input);
 const close = (actual, expected) => assert.ok(Math.abs(actual - expected) < 1e-10, `${actual} != ${expected}`);
 

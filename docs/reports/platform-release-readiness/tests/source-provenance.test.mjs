@@ -1,3 +1,4 @@
+import { templateTestUrl } from "./template-test-fixtures.mjs";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
@@ -445,7 +446,7 @@ test("legacy unscoped definitions remain available without leaking explicitly sc
 });
 
 test("starter forecast-gap provenance includes both reviewed formula operands and exact identifiers", async () => {
-  const snapshot = JSON.parse(await readFile(new URL("../src/data.json", import.meta.url), "utf8"));
+  const snapshot = JSON.parse(await readFile(templateTestUrl("../src/data.json", import.meta.url), "utf8"));
   const source = reviewedSource(snapshot.queries.forecast_outlook.source);
   const projected = source.definitions.find(({ label }) => label === "Projected users");
   const target = source.definitions.find(({ label }) => label === "Target users");

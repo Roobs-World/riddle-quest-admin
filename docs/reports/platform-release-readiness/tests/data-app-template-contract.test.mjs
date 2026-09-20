@@ -1,3 +1,4 @@
+import { templateTestUrl } from "./template-test-fixtures.mjs";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
@@ -174,9 +175,9 @@ test("the starter keeps its shared runtime and hosted data contract", async () =
 test("report and dashboard content inherit protected chrome and source-backed component actions", async () => {
   const [shell, dashboard, report, reportStyles, manifest] = await Promise.all([
     readFile(new URL("../src/DataAppShell.jsx", import.meta.url), "utf8"),
-    readFile(new URL("../src/content/dashboard/DashboardContent.jsx", import.meta.url), "utf8"),
-    readFile(new URL("../src/content/report/ReportContent.jsx", import.meta.url), "utf8"),
-    readFile(new URL("../src/content/report/report.css", import.meta.url), "utf8"),
+    readFile(templateTestUrl("../src/content/dashboard/DashboardContent.jsx", import.meta.url), "utf8"),
+    readFile(templateTestUrl("../src/content/report/ReportContent.jsx", import.meta.url), "utf8"),
+    readFile(templateTestUrl("../src/content/report/report.css", import.meta.url), "utf8"),
     readFile(new URL("../protected-runtime.json", import.meta.url), "utf8"),
   ]);
   const protectedRuntime = JSON.parse(manifest);

@@ -1,0 +1,92 @@
+name: Release all platforms
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-all-platforms
+  cancel-in-progress: false
+
+jobs:
+  verify-and-package:
+    name: Verify and package every supported target
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    environment: jest-production
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version-file: .nvmrc
+      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
+        with:
+          distribution: temurin
+          java-version: "21"
+      - run: corepack enable
+      - run: corepack prepare pnpm@11.21.0 --activate
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @qwordly/portal exec playwright install --with-deps chromium
+      - name: Verify and run every configured release adapter
+        run: pnpm release:all
+        env:
+          JEST_GAME_UPLOAD_TOKEN: ${{ secrets.JEST_GAME_UPLOAD_TOKEN }}
+          JEST_NOTIFICATION_EMAIL: ${{ secrets.JEST_NOTIFICATION_EMAIL }}
+      - name: Create neutral HTML5 handoff
+        run: pnpm release:html5
+      - name: Record the successful release in the dashboard
+        run: node scripts/release/record-release-automation.mjs
+        env:
+          ITCH_BUTLER_CONFIGURED: ${{ secrets.ITCH_BUTLER_API_KEY != '' && vars.ITCH_GAME_TARGET != '' }}
+      - name: Build the release dashboard
+        run: npm run build
+        working-directory: docs/reports/platform-release-readiness
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: riddle-quest-release-${{ github.sha }}
+          if-no-files-found: error
+          retention-days: 30
+          path: |
+            build-html5.zip
+            build-html5.sha256
+            build-youtube.zip
+            build-youtube.manifest.json
+            build-youtube.test-report.json
+            packages/portal/dist-facebook
+            packages/portal/dist-reddit
+            packages/portal/dist-yahoo
+            docs/reports/platform-release-readiness/dist/index.html
+
+  itch:
+    name: Publish itch.io when configured
+    needs: verify-and-package
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      BUTLER_API_KEY: ${{ secrets.ITCH_BUTLER_API_KEY }}
+      ITCH_GAME_TARGET: ${{ vars.ITCH_GAME_TARGET }}
+    steps:
+      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
+        with:
+          name: riddle-quest-release-${{ github.sha }}
+      - name: Publish the verified HTML5 archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -z "${BUTLER_API_KEY}" || -z "${ITCH_GAME_TARGET}" ]]; then
+            echo "itch.io skipped: configure ITCH_BUTLER_API_KEY and ITCH_GAME_TARGET after creating the project page."
+            exit 0
+          fi
+          curl --fail --location --silent --show-error \
+            https://broth.itch.ovh/butler/linux-amd64/LATEST/archive/default \
+            --output /tmp/butler.zip
+          unzip -q /tmp/butler.zip -d /tmp/butler
+          chmod +x /tmp/butler/butler
+          /tmp/butler/butler push build-html5.zip "${ITCH_GAME_TARGET}:html5" --userversion "${GITHUB_REF_NAME}-${GITHUB_SHA::12}"

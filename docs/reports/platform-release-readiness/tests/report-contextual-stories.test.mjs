@@ -8,7 +8,7 @@ import test from "node:test";
 import { contextualCases, contextualAnnotations, contextualAnswer, reconcileContextAnnotations } from "../examples/reports/contextual-stories/context.mjs";
 import { createContextualStories, joinContextRows, reproduceContextualStories } from "../examples/reports/contextual-stories/stories.mjs";
 import { resolveChartAnnotations } from "../src/charting/chart-annotations.js";
-import { normalizeInlineChartInput } from "../../../../skills/visualize-data/scripts/inline-chart-input.mjs";
+import { normalizeInlineChartInput } from "./fixtures/data-plugin/skills/visualize-data/scripts/inline-chart-input.mjs";
 
 const input = readFileSync(new URL("../examples/reports/contextual-stories/evidence.json", import.meta.url), "utf8");
 const evidence = JSON.parse(input);

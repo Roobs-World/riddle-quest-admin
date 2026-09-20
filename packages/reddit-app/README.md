@@ -51,16 +51,62 @@ evidence belong in `docs/reddit-games-progress.html`.
   installation-scoped and cannot safely replace the existing cross-platform,
   transactional account/economy authority.
 
+### Requested exception and endpoint scope
+
+This is a request for a limited-scope Firebase backend exception, not a claim
+that hosting on Google Cloud automatically qualifies for approval. The exact
+hostname above is the deployed Firebase Functions host for this game project.
+It is the only external host configured in this Reddit package.
+
+| Endpoint | Purpose |
+| --- | --- |
+| `exchangeRedditIdentity` | Validate the signed Reddit context and establish the game account/session and enabled capabilities. |
+| `redditStorage` | Read, write, and clear that player's game preferences and stored player projection. |
+| `redditGameplay` | Execute allowlisted gameplay, profile, economy, payment/refund, referral, race, and presence operations. Availability depends on server capability configuration. |
+| `deleteRedditAccount` | Delete the player's game account through the account-generation and cleanup flow. |
+
+The capability needed is a transactional account/economy authority shared across
+Reddit installations and used by the existing game services. Devvit's
+installation-scoped Redis is used for the installation's canonical post reference;
+it is not the authority for balances, purchase receipts, or player progression.
+This architectural requirement is the basis for the exception request. Reddit
+must determine whether it qualifies under its HTTP Fetch Policy.
+
+### Data sent and request controls
+
+The Devvit server sends the app, installation, subreddit, post, and Reddit user
+identifiers with the requested operation, issue time, random nonce, payload hash,
+and an HMAC signature. Identity exchange can include the current user's Reddit
+username and a validated Reddit-hosted avatar URL. Operation payloads contain
+the relevant game preferences, gameplay inputs, or commerce/referral/race data.
+These requests therefore transmit Reddit user data to the game's Firebase backend.
+
+The browser calls only same-origin `/api/*` routes. It does not supply the trusted
+Reddit identity, select an external destination, or receive the gateway signing
+secret. The server constructs the fixed Firebase destinations and signs each
+operation; the Firebase handlers validate assertions and replay constraints.
+Purchase grants and refunds are server-authoritative and idempotent. Anonymous
+sessions use isolated local classic play without an identity exchange.
+
+### Current review status
+
+On September 20, 2026, Reddit's authenticated app API reported the exact host's
+request as `DENIED`, last updated August 21, 2026. Hosted logs also report that
+requests to it are not allowed. Authenticated hosted gameplay is blocked until
+Reddit approves this exception. Local tests and package uploads do not establish
+approval.
+
 ## Policies
 
 - Terms and conditions: https://roobsworld.com/riddle-quest/terms
 - Privacy policy: https://roobsworld.com/privacy
 - Data deletion requests: https://roobsworld.com/contact
 
-The game Terms page is published. Production review remains blocked until its
-URL and a Privacy Policy covering the Reddit game are added to the Reddit app
-details. The currently linked Privacy page describes website account
-and analytics processing; its coverage of the game still needs owner review.
+Both URLs are saved in the Reddit app details, verified through the authenticated
+app API on September 20, 2026. The currently linked Privacy page describes website
+account and analytics processing; it does not explain the Reddit game's identity,
+Firebase, progression, or Gold-receipt processing. A game-specific privacy notice
+and its operational details remain to be completed before reconsideration.
 A private playtest or upload must not be represented as policy approval.
 
 The Reddit package owns a target-specific third-party notice generated from its production dependency

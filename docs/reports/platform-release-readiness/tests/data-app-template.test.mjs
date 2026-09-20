@@ -1,3 +1,4 @@
+import { templateTestUrl } from "./template-test-fixtures.mjs";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
@@ -50,7 +51,7 @@ import { dataAppThemePalette, dataAppThemes } from "../src/theme-presets.js";
 import { filterReviewedRows, previousPeriodRows, resolveSectionRows } from "../src/use-data-app.js";
 
 const templateRoot = new URL("../", import.meta.url);
-const templates = new URL("../../", import.meta.url);
+const templates = new URL("./fixtures/data-plugin/templates/data-app/", import.meta.url);
 const themes = ["codex-classic", "default", "dark-pixel", "scientific-blue", "sticker-pop"];
 const tokens = [
   "--background",
@@ -97,8 +98,8 @@ test("metric comparisons are consistent, directional previous-period deltas", ()
 test("dashboard tables abbreviate large values while source previews retain exact reviewed integers", async () => {
   const controls = await readFile(new URL("../src/components/Controls.jsx", import.meta.url), "utf8");
   const inspector = await readFile(new URL("../src/components/SourceInspector.jsx", import.meta.url), "utf8");
-  const app = await readFile(new URL("../src/content/dashboard/DashboardContent.jsx", import.meta.url), "utf8");
-  const snapshot = JSON.parse(await readFile(new URL("../src/data.json", import.meta.url), "utf8"));
+  const app = await readFile(templateTestUrl("../src/content/dashboard/DashboardContent.jsx", import.meta.url), "utf8");
+  const snapshot = JSON.parse(await readFile(templateTestUrl("../src/data.json", import.meta.url), "utf8"));
 
   assert.match(
     controls,
@@ -242,8 +243,8 @@ test("chart axes preserve readable ticks while dense heatmaps thin and format da
 test("ranked lists display complete reviewed categories and aligned values without chart axes", async () => {
   const renderer = await readFile(new URL("../src/charting/ChartRenderer.jsx", import.meta.url), "utf8");
   const theme = await readFile(new URL("../src/charting/chart-theme.js", import.meta.url), "utf8");
-  const appTheme = await readFile(new URL("../src/theme.css", import.meta.url), "utf8");
-  const dashboard = await readFile(new URL("../src/content/dashboard/DashboardContent.jsx", import.meta.url), "utf8");
+  const appTheme = await readFile(templateTestUrl("../src/theme.css", import.meta.url), "utf8");
+  const dashboard = await readFile(templateTestUrl("../src/content/dashboard/DashboardContent.jsx", import.meta.url), "utf8");
   const explorer = await readFile(new URL("../src/components/ChartExplorer.jsx", import.meta.url), "utf8");
   const styles = await readFile(new URL("../src/styles.css", import.meta.url), "utf8");
 
@@ -588,7 +589,7 @@ test("modal selects preserve stable dashboard geometry and block outside click-t
 });
 
 test("regional map shares neutral fills and fades geography without fading markers", async () => {
-  const css = await readFile(new URL("../src/content/dashboard/dashboard.css", import.meta.url), "utf8");
+  const css = await readFile(templateTestUrl("../src/content/dashboard/dashboard.css", import.meta.url), "utf8");
   assert.match(css, /\.regional-map-land\s*\{\s*fill:\s*var\(--chart-neutral-fill\)/u);
   assert.match(css, /\.regional-map-plot\s*\{[^}]*width:\s*min\(100%, 560px\);[^}]*aspect-ratio:\s*28\s*\/\s*11/su);
   assert.match(css, /\.regional-map-surface\s*\{[^}]*mask-image:[^}]*mask-composite:\s*intersect/su);
@@ -597,7 +598,7 @@ test("regional map shares neutral fills and fades geography without fading marke
 
 test("themes implement the shared token contract", async () => {
   for (const theme of themes) {
-    const css = await readFile(new URL(`themes/${theme}/theme.css`, templates), "utf8");
+    const css = await readFile(templateTestUrl(`themes/${theme}/theme.css`, templates), "utf8");
     tokens.forEach((token) => assert.match(css, new RegExp(`${token}:`), `${theme} is missing ${token}`));
     assert.match(css, /--movement-positive:/);
     assert.match(css, /--movement-negative:/);
@@ -628,17 +629,17 @@ test("themes implement the shared token contract", async () => {
     /\bsystem-ui,[^;]*\bsans-serif,/,
     "The selectable Classic preset must use the same system-font family as its theme file",
   );
-  assert.equal(await readFile(new URL("../src/theme.css", import.meta.url), "utf8"), classic);
+  assert.equal(await readFile(templateTestUrl("../src/theme.css", import.meta.url), "utf8"), classic);
 });
 
 test("shared Data app styles keep readable typography and overlay component actions", async () => {
   for (const stylesheet of ["styles.css", "theme-picker.css", "content/dashboard/dashboard.css"]) {
-    const css = await readFile(new URL(`../src/${stylesheet}`, import.meta.url), "utf8");
+    const css = await readFile(templateTestUrl(`../src/${stylesheet}`, import.meta.url), "utf8");
     assert.doesNotMatch(css, /font-size:\s*(?:9|10|11)px\b/, `${stylesheet} contains sub-12px text`);
   }
   const css = (await Promise.all(["styles.css", "theme-picker.css"].map((file) =>
-    readFile(new URL(`../src/${file}`, import.meta.url), "utf8")))).join("\n");
-  const layout = await readFile(new URL("../src/content/dashboard/dashboard.css", import.meta.url), "utf8");
+    readFile(templateTestUrl(`../src/${file}`, import.meta.url), "utf8")))).join("\n");
+  const layout = await readFile(templateTestUrl("../src/content/dashboard/dashboard.css", import.meta.url), "utf8");
   assert.match(css, /--data-app-dashboard-content-width:\s*1440px/u);
   assert.match(css, /--data-app-dashboard-wide-content-width:\s*1600px/u);
   assert.match(css, /--data-app-report-evidence-width:\s*748px/u);
@@ -924,7 +925,7 @@ test("every Data app theme follows system appearance or remains intentionally da
   }
 
   for (const name of ["codex-classic", "default", "scientific-blue", "sticker-pop"]) {
-    const css = await readFile(new URL(`themes/${name}/theme.css`, templates), "utf8");
+    const css = await readFile(templateTestUrl(`themes/${name}/theme.css`, templates), "utf8");
     assert.match(css, /color-scheme:\s*light dark/, `${name} must support both browser appearances`);
     assert.match(
       css,
@@ -1118,31 +1119,31 @@ test("table visualization tooltips follow the pointer and show one concise revie
 
 test("published chart permalinks use safe, encoded origin-rooted URLs without leaking viewer context", () => {
   const chartId = "Revenue [North] 50% — 東京";
-  const source = new URL("https://viewer:private@dashboard.chatgpt.site/published?token=secret#codexThreadId=private");
+  const source = templateTestUrl("https://viewer:private@dashboard.chatgpt.site/published?token=secret#codexThreadId=private");
   const encodedId = encodeURIComponent(chartId);
   const chartUrl = `https://dashboard.chatgpt.site/_data/charts/${encodedId}`;
 
   assert.equal(chartPermalink(source, chartId), chartUrl);
   assert.equal(
-    chartPermalink(new URL(`${chartUrl}?another=secret#private`), chartId, {
+    chartPermalink(templateTestUrl(`${chartUrl}?another=secret#private`), chartId, {
       detail: true,
     }),
     `${chartUrl}/detail`,
   );
-  assert.deepEqual(readChartPermalink(new URL(chartUrl)), {
+  assert.deepEqual(readChartPermalink(templateTestUrl(chartUrl)), {
     id: chartId,
     detail: false,
   });
-  assert.deepEqual(readChartPermalink(new URL(`${chartUrl}/detail?token=secret#private`)), {
+  assert.deepEqual(readChartPermalink(templateTestUrl(`${chartUrl}/detail?token=secret#private`)), {
     id: chartId,
     detail: true,
   });
-  assert.deepEqual(readComponentPermalink(new URL(chartUrl)), {
+  assert.deepEqual(readComponentPermalink(templateTestUrl(chartUrl)), {
     id: chartId,
     detail: false,
     kind: "chart",
   });
-  assert.deepEqual(readComponentPermalink(new URL(`${chartUrl}/detail`)), {
+  assert.deepEqual(readComponentPermalink(templateTestUrl(`${chartUrl}/detail`)), {
     id: chartId,
     detail: true,
     kind: "chart",
@@ -1150,18 +1151,18 @@ test("published chart permalinks use safe, encoded origin-rooted URLs without le
   assert.equal(canonicalDashboardPath(`/_data/charts/${encodedId}`), "/");
   assert.equal(canonicalDashboardPath(`/_data/charts/${encodedId}/detail`), "/");
   assert.equal(canonicalDashboardPath("/published"), "/published");
-  assert.deepEqual(currentDataAppReference(new URL(`${chartUrl}/detail?token=secret#private`)), {
+  assert.deepEqual(currentDataAppReference(templateTestUrl(`${chartUrl}/detail?token=secret#private`)), {
     sourceUrl: "https://dashboard.chatgpt.site/",
   });
   assert.doesNotMatch(chartUrl, /private|secret|codexThreadId/u);
 });
 
 test("published component aliases are stable opaque UUIDv5 values scoped to their canonical Site", () => {
-  const source = new URL(
+  const source = templateTestUrl(
     "https://viewer:secret@dashboard.chatgpt.site:443/published?token=private#codexThreadId=private",
   );
-  const cleanSource = new URL("https://dashboard.chatgpt.site/_data/charts/old/detail?another=private#hidden");
-  const secondSource = new URL("https://another-dashboard.chatgpt.site/");
+  const cleanSource = templateTestUrl("https://dashboard.chatgpt.site/_data/charts/old/detail?another=private#hidden");
+  const secondSource = templateTestUrl("https://another-dashboard.chatgpt.site/");
   const authoredIds = [
     "active-users",
     "growth",
@@ -1221,11 +1222,11 @@ test("published component aliases are stable opaque UUIDv5 values scoped to thei
 });
 
 test("newly shared component aliases are eight-character Site-scoped UUIDv5 prefixes", () => {
-  const source = new URL(
+  const source = templateTestUrl(
     "https://viewer:secret@dashboard.chatgpt.site:443/published?token=private#codexThreadId=private",
   );
-  const cleanSource = new URL("https://dashboard.chatgpt.site/_data/charts/old/detail?another=private#hidden");
-  const secondSource = new URL("https://another-dashboard.chatgpt.site/");
+  const cleanSource = templateTestUrl("https://dashboard.chatgpt.site/_data/charts/old/detail?another=private#hidden");
+  const secondSource = templateTestUrl("https://another-dashboard.chatgpt.site/");
   const authoredIds = [
     "active-users",
     "growth",
@@ -1295,24 +1296,24 @@ test("newly shared component aliases are eight-character Site-scoped UUIDv5 pref
 
 test("every published widget receives a safe, encoded component permalink without exposing viewer context", () => {
   const componentId = "Activation [North] 50% — 東京";
-  const source = new URL("https://viewer:private@dashboard.chatgpt.site/published?token=secret#codexThreadId=private");
+  const source = templateTestUrl("https://viewer:private@dashboard.chatgpt.site/published?token=secret#codexThreadId=private");
   const encodedId = encodeURIComponent(componentId);
   const componentUrl = `https://dashboard.chatgpt.site/_data/components/${encodedId}`;
 
   assert.equal(componentPermalink(source, componentId), componentUrl);
-  assert.equal(componentPermalink(new URL(`${componentUrl}?another=secret#private`), componentId), componentUrl);
-  assert.deepEqual(readComponentPermalink(new URL(`${componentUrl}?token=secret#private`)), {
+  assert.equal(componentPermalink(templateTestUrl(`${componentUrl}?another=secret#private`), componentId), componentUrl);
+  assert.deepEqual(readComponentPermalink(templateTestUrl(`${componentUrl}?token=secret#private`)), {
     id: componentId,
     detail: false,
     kind: "component",
   });
   assert.equal(
-    readChartPermalink(new URL(componentUrl)),
+    readChartPermalink(templateTestUrl(componentUrl)),
     null,
     "Generic component links must not be misclassified as legacy chart routes",
   );
   assert.equal(canonicalDashboardPath(`/_data/components/${encodedId}`), "/");
-  assert.deepEqual(currentDataAppReference(new URL(`${componentUrl}?token=secret#private`)), {
+  assert.deepEqual(currentDataAppReference(templateTestUrl(`${componentUrl}?token=secret#private`)), {
     sourceUrl: "https://dashboard.chatgpt.site/",
   });
   assert.doesNotMatch(componentUrl, /private|secret|codexThreadId/u);
@@ -1376,7 +1377,7 @@ test("every published dashboard menu offers exactly one Copy link action with it
   const [component, app, dashboard] = await Promise.all([
     readFile(new URL("../src/components/DataComponent.jsx", import.meta.url), "utf8"),
     readFile(new URL("../src/DataAppShell.jsx", import.meta.url), "utf8"),
-    readFile(new URL("../src/content/dashboard/DashboardContent.jsx", import.meta.url), "utf8"),
+    readFile(templateTestUrl("../src/content/dashboard/DashboardContent.jsx", import.meta.url), "utf8"),
   ]);
 
   assert.match(component, /published\s*=\s*false/u);
@@ -1482,8 +1483,8 @@ test("authored dashboard views register with protected global tabs and retain sh
 
 test("page filters stick beneath the collapsing runtime navigation", async () => {
   const [dashboard, dashboardStyles, controls, chrome, styles] = await Promise.all([
-    readFile(new URL("../src/content/dashboard/DashboardContent.jsx", import.meta.url), "utf8"),
-    readFile(new URL("../src/content/dashboard/dashboard.css", import.meta.url), "utf8"),
+    readFile(templateTestUrl("../src/content/dashboard/DashboardContent.jsx", import.meta.url), "utf8"),
+    readFile(templateTestUrl("../src/content/dashboard/dashboard.css", import.meta.url), "utf8"),
     readFile(new URL("../src/components/Controls.jsx", import.meta.url), "utf8"),
     readFile(new URL("../src/components/DataAppChrome.jsx", import.meta.url), "utf8"),
     readFile(new URL("../src/styles.css", import.meta.url), "utf8"),
@@ -1859,11 +1860,11 @@ test("Data app actions use temporary accessible toasts without shifting the layo
 });
 
 test("the default Classic starter starts with controls and avoids duplicate hero text", async () => {
-  const app = await readFile(new URL("../src/content/dashboard/DashboardContent.jsx", import.meta.url), "utf8");
-  const layout = await readFile(new URL("../src/content/dashboard/dashboard.css", import.meta.url), "utf8");
+  const app = await readFile(templateTestUrl("../src/content/dashboard/DashboardContent.jsx", import.meta.url), "utf8");
+  const layout = await readFile(templateTestUrl("../src/content/dashboard/dashboard.css", import.meta.url), "utf8");
   const shell = await readFile(new URL("../src/DataAppShell.jsx", import.meta.url), "utf8");
   const styles = await readFile(new URL("../src/styles.css", import.meta.url), "utf8");
-  const snapshot = JSON.parse(await readFile(new URL("../src/data.json", import.meta.url), "utf8"));
+  const snapshot = JSON.parse(await readFile(templateTestUrl("../src/data.json", import.meta.url), "utf8"));
   assert.doesNotMatch(
     app,
     /className="hero"|data-data-app-title|\{appTitle\}<\/h1>/u,
@@ -2045,7 +2046,7 @@ test("the default Classic starter starts with controls and avoids duplicate hero
 test("Classic typography keeps app-specific display sizes outside the shared scale", async () => {
   const files = await Promise.all(
     ["styles.css", "content/dashboard/dashboard.css", "theme-picker.css"].map((file) =>
-      readFile(new URL(`../src/${file}`, import.meta.url), "utf8"),
+      readFile(templateTestUrl(`../src/${file}`, import.meta.url), "utf8"),
     ),
   );
   const sizes = [
@@ -2074,7 +2075,7 @@ test("Classic typography keeps app-specific display sizes outside the shared sca
 
 test("selected theme presets update authored text while preserving preview typography", async () => {
   const styles = (await Promise.all(["styles.css", "theme-picker.css"].map((file) =>
-    readFile(new URL(`../src/${file}`, import.meta.url), "utf8")))).join("\n");
+    readFile(templateTestUrl(`../src/${file}`, import.meta.url), "utf8")))).join("\n");
   assert.match(styles, /:root\[data-app-theme\]:not\(\[data-app-theme="original"\]\)/);
   assert.match(styles, /:is\(main, \.dashboard-topbar, \.source-sidebar, \[role="dialog"\]\)/);
   assert.match(
@@ -3456,9 +3457,9 @@ test("the starter keeps its shared runtime and hosted data contract", async () =
 test("report and dashboard content inherit protected chrome and source-backed component actions", async () => {
   const [shell, dashboard, report, reportStyles, manifest] = await Promise.all([
     readFile(new URL("../src/DataAppShell.jsx", import.meta.url), "utf8"),
-    readFile(new URL("../src/content/dashboard/DashboardContent.jsx", import.meta.url), "utf8"),
-    readFile(new URL("../src/content/report/ReportContent.jsx", import.meta.url), "utf8"),
-    readFile(new URL("../src/content/report/report.css", import.meta.url), "utf8"),
+    readFile(templateTestUrl("../src/content/dashboard/DashboardContent.jsx", import.meta.url), "utf8"),
+    readFile(templateTestUrl("../src/content/report/ReportContent.jsx", import.meta.url), "utf8"),
+    readFile(templateTestUrl("../src/content/report/report.css", import.meta.url), "utf8"),
     readFile(new URL("../protected-runtime.json", import.meta.url), "utf8"),
   ]);
   const protectedRuntime = JSON.parse(manifest);
@@ -3528,7 +3529,7 @@ test("authored report and dashboard code uses the protected public component API
 });
 
 test("source drawer defers data work and shares measured tab selection motion", async () => {
-  const read = (path) => readFile(new URL(path, import.meta.url), "utf8");
+  const read = (path) => readFile(templateTestUrl(path, import.meta.url), "utf8");
   const [shell, source, ui, tabs, css] = await Promise.all([
     read("../src/DataAppShell.jsx"),
     read("../src/components/SourceInspector.jsx"),

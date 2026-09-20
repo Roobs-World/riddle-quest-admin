@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { createServer } from "vite";
-import { normalizeInlineSourcesInput } from "../../../../skills/visualize-data/scripts/inline-sources-input.mjs";
+import { normalizeInlineSourcesInput } from "./fixtures/data-plugin/skills/visualize-data/scripts/inline-sources-input.mjs";
 
 test("shared report evidence exposes useful accessible names without replacing current interactions", async (t) => {
   const server = await createServer({ root: fileURLToPath(new URL("../", import.meta.url)),
@@ -273,7 +273,7 @@ test("shared report evidence exposes useful accessible names without replacing c
     });
 
     await t.test("source inspection retains funnel definitions for cosmetic edits but not a replacement measure", async () => {
-      const snapshot = JSON.parse(await readFile(new URL("../src/data.json", import.meta.url), "utf8"));
+      const snapshot = JSON.parse(await readFile(new URL("./fixtures/data-plugin/templates/data-app/base/src/data.json", import.meta.url), "utf8"));
       const query = snapshot.queries.activation_journey;
       assert.ok(query, "Use the starter's reviewed activation journey");
       const chart = { type: "funnel", x: "stage", y: "accounts" };

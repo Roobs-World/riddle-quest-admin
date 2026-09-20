@@ -17,6 +17,11 @@ function copiedTemplate() {
     filter: (path) => !path.includes("/node_modules") && !path.includes("/dist"),
   });
   symlinkSync(join(template, "node_modules"), join(copy, "node_modules"), "dir");
+  // Exercise default-layout guards against the starter's default layout. This app
+  // intentionally declares a wide dashboard and an authored report layout.
+  for (const path of ["content/dashboard/dashboard.css", "content/report/report.css"]) {
+    cpSync(join(template, "tests/fixtures/data-plugin/templates/data-app/base/src", path), join(copy, "src", path));
+  }
   return copy;
 }
 

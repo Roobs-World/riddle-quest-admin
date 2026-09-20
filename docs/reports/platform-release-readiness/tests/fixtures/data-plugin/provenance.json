@@ -1,0 +1,45 @@
+{
+  "source": "openai-curated-remote/data-analytics/1.0.9",
+  "originalSha256": {
+    "templates/data-app/base/src/data.json": "00b1d02cc69b126c3518947b13c3b645c4f6d4f90fb4b37ca87ad39cb9b0d265",
+    "templates/data-app/base/src/theme.css": "d6885cb4e6cd5201935773f47148888bcd634e9cc13df9951803a7beacac25f2",
+    "assets/demo-product-growth.csv": "7a417139cf77ba194f8d328db17ca08355edab76f1aef3bd8ef0e75863a6c0f5",
+    "skills/build-report/SKILL.md": "a464dc6bcda8bf5659ba951a9ccba52020cf9c5d6f5f40e05d0e6a42149b51cf",
+    "skills/visualize-data/scripts/inline-chart-input.mjs": "06c18674b1d4a4a4445d4ca9f799b5ca90d46a445f5ec2dcb7f9d6130c0397e0",
+    "skills/visualize-data/scripts/inline-sources-input.mjs": "0f24d315409614214a8d1d472974ae2a427319fcddf41e48a2b5132943cfa478",
+    "templates/data-app/base/src/content/dashboard/DashboardContent.jsx": "fa43f58386ff51561846e8dee2a90356d477f0241cc64872d3f5e5803c09d2fc",
+    "templates/data-app/base/src/content/dashboard/dashboard.css": "5aa331e0997e2690f5618389550f4f8eb62e729e5c550a396688ae0dab726a55",
+    "templates/data-app/base/src/content/report/ReportContent.jsx": "4273826b9000ca93bd87329eb8d335946e0a6148a3e86d22da7ea16940c9e896",
+    "templates/data-app/base/src/content/report/report.css": "0eb46187d839cc87986a5ae42500e73257e52c0daf223bc1a00ef4d59c61ab3a",
+    "templates/data-app/themes/codex-classic/theme.css": "d6885cb4e6cd5201935773f47148888bcd634e9cc13df9951803a7beacac25f2",
+    "templates/data-app/themes/default/theme.css": "037016b9c28e6a23ebe974190533b1cabf39e4aa8769e90d28a8e1d235cc56e0",
+    "templates/data-app/themes/dark-pixel/theme.css": "ce04fb800ea1e113c9cb4d427585675d597fd2fba4817d9356310deae9900eeb",
+    "templates/data-app/themes/scientific-blue/theme.css": "c60478d6af0abe70ab86f0cde084cf8f1d08c2c892a65d8cadfe104fbdb3d994",
+    "templates/data-app/themes/sticker-pop/theme.css": "645f58df4310c23ea6ed70d9666e17c365790cec16e61c2bf10367c56b636527",
+    "templates/data-app/base/src/charting/chart-spec-validation.js": "a293a06bc346734f25742f79d100ce45c45d107ec5c368965f931bf2d7b5c5f8",
+    "templates/data-app/base/src/source-provenance.js": "0cc0f174aa47eecbdb9e15bd473432280c880f547f9756e9bd03153f43b4210b"
+  },
+  "adaptation": "Inline input modules import the application runtime instead of duplicating it.",
+  "adaptations": [
+    {
+      "path": "templates/data-app/base/src/content/dashboard/DashboardContent.jsx",
+      "source": "repository commit 1001c005, matching the copied runtime"
+    },
+    {
+      "path": "templates/data-app/base/src/content/dashboard/dashboard.css",
+      "source": "repository commit 1001c005, matching the copied runtime"
+    },
+    {
+      "path": "templates/data-app/base/src/content/report/report.css",
+      "reason": "Restore the copied runtime report typography contract: desktop H1 48px/700 and mobile H1 36px."
+    },
+    {
+      "path": "skills/visualize-data/scripts/chart-spec-validation.js",
+      "reason": "Bundle the inline-input validator missing from the older runtime and use the actual runtime chart types."
+    },
+    {
+      "path": "skills/visualize-data/scripts/source-provenance.js",
+      "reason": "Inline fixture preparers require the newer provider-query link validator; production rendering remains tested against the application runtime."
+    }
+  ]
+}

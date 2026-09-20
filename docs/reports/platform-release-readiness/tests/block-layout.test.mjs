@@ -1,3 +1,4 @@
+import { templateTestUrl } from "./template-test-fixtures.mjs";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
@@ -816,7 +817,7 @@ test("protected block reordering is the public authoring contract on both surfac
     "../src/content/report/ReportContent.jsx",
     "../AGENTS.md",
     "../src/content/COMPONENTS.md",
-  ].map((path) => readFile(new URL(path, import.meta.url), "utf8")));
+  ].map((path) => readFile(templateTestUrl(path, import.meta.url), "utf8")));
   assert.match(publicApi, /export\s*\{\s*SortableItem,\s*SortableRegion\s*\}/u);
   assert.match(dashboard, /<SortableRegion id="dashboard:dashboard:canvas"[\s\S]*?variant="canvas"/u);
   assert.equal((dashboard.match(/<SortableRegion\b/gu) ?? []).length, 1,
@@ -861,7 +862,7 @@ test("block layout state is isolated and measured constraints invalidate after p
     "../src/DataAppContext.jsx",
     "../src/DataAppShell.jsx",
     "../src/components/SortableRegion.jsx",
-  ].map((path) => readFile(new URL(path, import.meta.url), "utf8")));
+  ].map((path) => readFile(templateTestUrl(path, import.meta.url), "utf8")));
   assert.match(context, /export const DataAppBlockLayoutContext = createContext\(null\)/u);
   assert.match(shell, /const shellContext = useMemo\(/u);
   assert.match(shell, /const blockLayoutContext = useMemo\(/u);

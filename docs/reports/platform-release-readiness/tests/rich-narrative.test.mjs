@@ -1,3 +1,4 @@
+import { templateTestUrl } from "./template-test-fixtures.mjs";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
@@ -6,14 +7,14 @@ test("shared Lexical narratives expose a protected safe selection-formatting too
   const [editor, toolbar, dashboard, report, styles, reportStyles, publicApi, manifest, authoringGuide, reportSkill] = await Promise.all([
     readFile(new URL("../src/components/RichMarkdown.jsx", import.meta.url), "utf8"),
     readFile(new URL("../src/components/RichTextFormatToolbar.jsx", import.meta.url), "utf8"),
-    readFile(new URL("../src/content/dashboard/DashboardContent.jsx", import.meta.url), "utf8"),
-    readFile(new URL("../src/content/report/ReportContent.jsx", import.meta.url), "utf8"),
+    readFile(templateTestUrl("../src/content/dashboard/DashboardContent.jsx", import.meta.url), "utf8"),
+    readFile(templateTestUrl("../src/content/report/ReportContent.jsx", import.meta.url), "utf8"),
     readFile(new URL("../src/styles.css", import.meta.url), "utf8"),
-    readFile(new URL("../src/content/report/report.css", import.meta.url), "utf8"),
+    readFile(templateTestUrl("../src/content/report/report.css", import.meta.url), "utf8"),
     readFile(new URL("../src/data-app-public.jsx", import.meta.url), "utf8"),
     readFile(new URL("../protected-runtime.json", import.meta.url), "utf8"),
     readFile(new URL("../AGENTS.md", import.meta.url), "utf8"),
-    readFile(new URL("../../../../skills/build-report/SKILL.md", import.meta.url), "utf8"),
+    readFile(new URL("./fixtures/data-plugin/skills/build-report/SKILL.md", import.meta.url), "utf8"),
   ]);
 
   assert.match(editor, /<RichTextFormatToolbar\s*\/>/u);

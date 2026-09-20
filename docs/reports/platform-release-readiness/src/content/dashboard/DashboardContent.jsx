@@ -1,4 +1,6 @@
 import React from "react";
+import {DeploymentMonitoring, ProviderActivity} from "./DeploymentMonitoring.jsx";
+import {BackendMonitoring} from "./BackendMonitoring.jsx";
 import {DataComponent, MetricCard, Section, SectionHeader, useDataApp} from "../../data-app-public.jsx";
 
 function Status({children}) {
@@ -28,6 +30,8 @@ export function DashboardContent() {
   const {reviewedRows} = useDataApp();
   const platforms = reviewedRows("platform_status");
   const releases = reviewedRows("provider_release_evidence");
+  const distributionCandidates = reviewedRows("html5_distribution_candidates");
+  const releaseAutomation = reviewedRows("release_automation");
   const services = reviewedRows("service_status");
   const dashboardChecks = reviewedRows("dashboard_verification");
   const integratedTargets = platforms.filter(({integration}) => integration.startsWith("Implemented")).length;
@@ -35,6 +39,9 @@ export function DashboardContent() {
   const integratedServices = services.filter(({status}) => status === "Integrated").length;
 
   return <article className="integration-dashboard" aria-label="Riddle Quest integration and release dashboard">
+    <BackendMonitoring />
+    <DeploymentMonitoring />
+    <ProviderActivity />
     <section className="integration-metrics" aria-label="Integration summary">
       <MetricCard id="metric-targets" queryId="platform_status" sourceRows={platforms} title="Release targets" value={String(platforms.length)} description="Every intended target is represented." />
       <MetricCard id="metric-integrated" queryId="platform_status" sourceRows={platforms} title="Full provider adapters" value={`${integratedTargets}/${platforms.length}`} description="Jest, Facebook, Reddit, YouTube and Yahoo." />
@@ -59,7 +66,24 @@ export function DashboardContent() {
         <EvidenceTable id="provider-release-evidence" queryId="provider_release_evidence" title="Latest verified external state" rows={releases} columns={[
           {key:"platform",label:"Target"}, {key:"providerReference",label:"Provider reference"},
           {key:"artifact",label:"Output"}, {key:"state",label:"State",status:true},
+          {key:"submissionProgress",label:"Submission progress"},
           {key:"nextGate",label:"Next gate"},
+        ]} />
+      </Section>
+      <Section>
+        <SectionHeader id="html5-distribution-title" title="Additional HTML5 distribution" />
+        <EvidenceTable id="html5-distribution-candidates" queryId="html5_distribution_candidates" title="Submission and integration progress" rows={distributionCandidates} columns={[
+          {key:"platform",label:"Platform"}, {key:"releaseModel",label:"Release model"},
+          {key:"integration",label:"Required integration"}, {key:"submissionProgress",label:"Submission progress",status:true},
+          {key:"nextGate",label:"Next gate"},
+        ]} />
+      </Section>
+      <Section>
+        <SectionHeader id="release-automation-title" title="Release automation" />
+        <EvidenceTable id="release-automation" queryId="release_automation" title="Latest all-platform workflow receipt" rows={releaseAutomation} columns={[
+          {key:"platform",label:"Scope"}, {key:"status",label:"Status",status:true},
+          {key:"trigger",label:"Trigger"}, {key:"revision",label:"Revision"},
+          {key:"completedAt",label:"Completed"}, {key:"evidence",label:"Evidence"},
         ]} />
       </Section>
       <Section>

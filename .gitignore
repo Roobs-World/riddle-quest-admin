@@ -38,6 +38,8 @@ packages/portal/build-facebook.zip
 packages/portal/build-youtube.zip
 packages/portal/build-youtube.manifest.json
 build-youtube.zip
+build-html5.zip
+build-html5.sha256
 build-youtube.manifest.json
 build-youtube.test-report.json
 packages/portal/.facebook-upload-receipts/

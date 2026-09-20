@@ -11,9 +11,32 @@ export function DataAppRuntime({
   ReportContent,
   hosted = globalThis.location?.hostname.endsWith(".chatgpt.site") ?? false,
 } = {}) {
-  const [snapshot, setSnapshot] = useState(hosted ? null : reviewedSnapshot);
+  const monitoring = !hosted && globalThis.document?.querySelector('meta[name="data-app-monitoring"]')?.content === "cloud";
+  const [snapshot, setSnapshot] = useState(hosted || monitoring ? null : reviewedSnapshot);
   const [presentationRecord, setPresentationRecord] = useState({ presentation: {}, revision: 0 });
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (!monitoring) return;
+    const controller = new AbortController();
+    let pending = false;
+    async function refresh() {
+      if (pending) return;
+      pending = true;
+      try {
+        const response = await fetch("/api/snapshot", {cache: "no-store", signal: controller.signal});
+        if (!response.ok) throw new Error("Automatic monitoring data is unavailable.");
+        const next = await response.json();
+        if (next.id !== reviewedSnapshot.id || !next.queries) throw new Error("Unexpected monitoring snapshot.");
+        if (!controller.signal.aborted) { setSnapshot(next); setError(null); }
+      } catch (cause) {
+        if (!controller.signal.aborted) setError(cause);
+      } finally { pending = false; }
+    }
+    refresh();
+    const timer = setInterval(refresh, 60000);
+    return () => {clearInterval(timer); controller.abort();};
+  }, [monitoring, reviewedSnapshot.id]);
 
   useEffect(() => {
     if (!hosted) return;
@@ -39,6 +62,7 @@ export function DataAppRuntime({
       initialPresentation={presentationRecord.presentation}
       initialRevision={presentationRecord.revision}
     >
+      {monitoring && error && <p role="status">Automatic refresh is unavailable. Showing the last loaded measurements.</p>}
       <Content />
     </DataAppShell>
   );

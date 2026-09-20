@@ -1,3 +1,4 @@
+import { templateTestUrl } from "./template-test-fixtures.mjs";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
@@ -486,9 +487,9 @@ test("Dark Pixel keeps clean semantic chart fills without decorative dithering",
   const [shell, styles, dashboard, dashboardStyles, theme] = await Promise.all([
     readFile(new URL("../src/DataAppShell.jsx", import.meta.url), "utf8"),
     readFile(new URL("../src/styles.css", import.meta.url), "utf8"),
-    readFile(new URL("../src/content/dashboard/DashboardContent.jsx", import.meta.url), "utf8"),
-    readFile(new URL("../src/content/dashboard/dashboard.css", import.meta.url), "utf8"),
-    readFile(new URL("../../themes/dark-pixel/theme.css", import.meta.url), "utf8"),
+    readFile(templateTestUrl("../src/content/dashboard/DashboardContent.jsx", import.meta.url), "utf8"),
+    readFile(templateTestUrl("../src/content/dashboard/dashboard.css", import.meta.url), "utf8"),
+    readFile(new URL("./fixtures/data-plugin/templates/data-app/themes/dark-pixel/theme.css", import.meta.url), "utf8"),
   ]);
   for (const [name, source] of Object.entries({ shell, styles, dashboard, dashboardStyles, theme })) {
     assert.doesNotMatch(source, /PixelChartShaders|pixel-chart-dither|data-app-chart-effect|data-chart-effect/u,

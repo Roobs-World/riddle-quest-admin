@@ -1,10 +1,11 @@
+import { templateTestUrl } from "./template-test-fixtures.mjs";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 import { adoptionBrief } from "../src/content/report/adoption-brief.js";
 import { scopedMetricDefinitions } from "../src/source-provenance.js";
 
-const snapshot = JSON.parse(await readFile(new URL("../src/data.json", import.meta.url), "utf8"));
+const snapshot = JSON.parse(await readFile(templateTestUrl("../src/data.json", import.meta.url), "utf8"));
 const aggregate = (id, week) => snapshot.queries[id].rows.filter((row) => row.week === week && row.segment === "all" && row.region === "all");
 const [latest] = aggregate("usage_summary", "2026-07-27");
 const [previous] = aggregate("usage_summary", "2026-07-20");
@@ -13,7 +14,7 @@ const segments = snapshot.queries.segment_usage.rows.filter((row) => row.week ==
 const accounts = snapshot.queries.account_health.rows;
 
 test("report prose links remain recognizable without accent-colored text", async () => {
-  const css = await readFile(new URL("../src/content/report/report.css", import.meta.url), "utf8");
+  const css = await readFile(templateTestUrl("../src/content/report/report.css", import.meta.url), "utf8");
   assert.match(css, /\.report-page \.report-content :is\(\.rich-narrative-content, \.report-rich-editable\) a \{\s*color: inherit;[\s\S]*?text-decoration-style: dotted;/u);
   assert.match(css, /a:focus-visible \{\s*outline: 2px solid currentColor;/u);
 });
