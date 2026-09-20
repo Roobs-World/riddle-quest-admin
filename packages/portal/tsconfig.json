@@ -31,6 +31,7 @@
       "@qwordly/core/pricing/facebookCatalog": ["../core/src/pricing/facebookCatalog.ts"],
       "@qwordly/core/pricing/redditCatalog": ["../core/src/pricing/redditCatalog.ts"],
       "@qwordly/core/race": ["../core/src/race/index.ts"],
+      "@qwordly/core/referrals": ["../core/src/referrals/index.ts"],
       "@qwordly/core/validation": ["../core/src/validation/index.ts"],
       "@qwordly/core/validation/*": ["../core/src/validation/*"]
     },

@@ -1,6 +1,6 @@
 import {useEffect, useMemo, useState} from "react";
 import {onAuthStateChanged, signInAnonymously, signInWithCustomToken} from "firebase/auth";
-import {auth} from "../firebase";
+import {auth, confirmYahooStripeCheckout} from "../firebase";
 import {PlayHostApp} from "../play/PlayHostApp";
 import {createHostedPlaySession} from "../play/HostedPlaySession";
 import {createHostServices, resolveHostServicesMode} from "../play/services";
@@ -8,6 +8,7 @@ import {SpinningWheelLoader} from "../play/SpinningWheelLoader";
 import {tr, useLocale} from "../play/i18n";
 import type {PlatformCapabilities} from "../platform/types";
 import {getYahooAuthState, type YahooAuthState} from "./authState";
+import {purchaseYahooStripeProduct, yahooStripeProducts} from "./yahooStripeCommerce";
 
 /** Yahoo OpenID Connect entry wrapped around the standard Riddle Quest web interface. */
 export function YahooPlatformEntry() {
@@ -21,23 +22,31 @@ export function YahooPlatformEntry() {
   /** Provides host services behavior. */
   const hostServices = useMemo(() => createHostServices(hostServicesMode), [hostServicesMode]);
   /** Keeps Yahoo registration inside the same profile flow used by the Jest game shell. */
-  const platformCapabilities = useMemo<PlatformCapabilities>(() => ({
-    accountUpgrade: {
-      state: authState === "authenticated" ? "complete" : "available",
-      begin: async () => {
-        if (!startUrl) return {status: "unavailable", message: "Yahoo sign-in is not configured."};
-        globalThis.location.assign(startUrl);
-        return {status: "success", value: undefined};
+  const platformCapabilities = useMemo<PlatformCapabilities>(
+    () => ({
+      accountUpgrade: {
+        state: authState === "authenticated" ? "complete" : "available",
+        begin: async () => {
+          if (!startUrl) return {status: "unavailable", message: "Yahoo sign-in is not configured."};
+          globalThis.location.assign(startUrl);
+          return {status: "success", value: undefined};
+        },
       },
-    },
-    ...(authState === "authenticated"
-      ? {accountManagement: {username: true, avatar: true, deletion: true}}
-      : {}),
-  }), [authState, startUrl]);
+      ...(authState === "authenticated" ? {accountManagement: {username: true, avatar: true, deletion: true}} : {}),
+    }),
+    [authState, startUrl],
+  );
   /** Provides session behavior. */
   const session = useMemo(
-    () => createHostedPlaySession({hostServices, platformCapabilities, raceAvailable: true}),
-    [hostServices, platformCapabilities],
+    () =>
+      createHostedPlaySession({
+        hostServices,
+        platformCapabilities,
+        platformProducts: authState === "authenticated" ? yahooStripeProducts : [],
+        platformPurchase: authState === "authenticated" ? purchaseYahooStripeProduct : undefined,
+        raceAvailable: true,
+      }),
+    [authState, hostServices, platformCapabilities],
   );
 
   useEffect(() => {
@@ -55,7 +64,28 @@ export function YahooPlatformEntry() {
     } else if (!auth.currentUser) {
       void signInAnonymously(auth).catch(() => setAuthState("failed"));
     }
-    return onAuthStateChanged(auth, (user) => setAuthState(getYahooAuthState(user)));
+    return onAuthStateChanged(auth, (user) => {
+      /** Provides next state behavior. */
+      const nextState = getYahooAuthState(user);
+      /** Provides search behavior. */
+      const search = new URLSearchParams(globalThis.location.search);
+      /** Provides checkout behavior. */
+      const checkout = search.get("checkout");
+      /** Provides session id behavior. */
+      const sessionId = search.get("session_id");
+      if (nextState === "authenticated" && checkout === "success" && sessionId) {
+        globalThis.history.replaceState(null, "", globalThis.location.pathname);
+        void confirmYahooStripeCheckout({sessionId})
+          .then(() => setAuthState("authenticated"))
+          .catch((error) => {
+            console.error("[riddle-quest-yahoo] Checkout confirmation is pending webhook delivery", error);
+            setAuthState("authenticated");
+          });
+        return;
+      }
+      if (checkout === "cancelled") globalThis.history.replaceState(null, "", globalThis.location.pathname);
+      setAuthState(nextState);
+    });
   }, [hostServicesMode]);
 
   useEffect(() => {
