@@ -1,0 +1,6 @@
+.yahoo-sign-out {
+  position: fixed;
+  z-index: 40;
+  top: max(8px, env(safe-area-inset-top));
+  right: max(8px, env(safe-area-inset-right));
+}

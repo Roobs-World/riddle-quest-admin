@@ -26,16 +26,20 @@ const forbidden = [
   ["Reddit", /\bdevvit(?:-internal)?\b|RedditPlatform/iu],
   ["YouTube", /youtube\.com\/game_api|\bytgame\b/iu],
   ...(target === "netflix" ? [["Firebase", /firebaseio\.com|googleapis\.com|cloudfunctions\.net|\bfirebase(?:app|auth|database|firestore|functions|storage)\b/iu]] : []),
-  ["analytics", /\bSentry\b|sentry\.io|google-analytics|googletagmanager|\bgtag\s*\(/iu],
+  ...(target === "netflix" ? [["analytics", /\bSentry\b|sentry\.io|google-analytics|googletagmanager|\bgtag\s*\(/iu]] : []),
   ...(target === "netflix" ? [["network API", /\bfetch\s*\(|\bXMLHttpRequest\b|\bWebSocket\b|\bEventSource\b|\bsendBeacon\s*\(/u]] : []),
-  ["commerce or advertising", /\b(?:purchaseAsync|checkout|IAP|showInterstitialAd|showRewardedAd|AdMob)\b/iu],
+  ...(target === "netflix"
+    ? [["commerce or advertising", /\b(?:purchaseAsync|checkout|IAP|showInterstitialAd|showRewardedAd|AdMob)\b/iu]]
+    : [["advertising", /\b(?:showInterstitialAd|showRewardedAd|AdMob)\b/iu]]),
 ];
 for (const [label, pattern] of forbidden) {
   if (pattern.test(content)) throw new Error(`${label} integration found in ${target} candidate artifact`);
 }
-const manifestPath = path.join(root, "youtube-content-manifest.json");
-const manifest = JSON.parse(await readFile(manifestPath, "utf8"));
-if (manifest.target !== `${target}-candidate` || manifest.fixture !== true || manifest.releaseReady !== false) {
-  throw new Error(`${target} candidate content manifest is malformed`);
+if (target === "netflix") {
+  const manifestPath = path.join(root, "youtube-content-manifest.json");
+  const manifest = JSON.parse(await readFile(manifestPath, "utf8"));
+  if (manifest.target !== `${target}-candidate` || manifest.fixture !== true || manifest.releaseReady !== false) {
+    throw new Error(`${target} candidate content manifest is malformed`);
+  }
 }
-console.log(`${target} candidate artifact audit passed: ${files.length} files, ${(totalBytes / 1024 / 1024).toFixed(2)} MiB`);
+console.log(`${target} artifact audit passed: ${files.length} files, ${(totalBytes / 1024 / 1024).toFixed(2)} MiB`);

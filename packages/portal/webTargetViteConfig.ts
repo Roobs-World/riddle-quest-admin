@@ -422,14 +422,11 @@ const targetProfiles: Readonly<Record<WebTarget, WebTargetProfile>> = Object.fre
   }),
   yahoo: Object.freeze({
     id: "yahoo",
-    shopEntry: youtubeForbiddenShopEntry,
-    publicDirectory: false,
+    shopEntry: sharedShopModalPage,
+    publicDirectory: "public",
     input: yahooHtmlEntry,
     htmlOutputs: Object.freeze([{source: yahooHtmlEntry, fileName: "index.html"}] as const),
-    disableModulePreloadPolyfill: true,
-    createArtifactPlugins: ({allowYouTubeFixture, youtubeContent}: WebTargetPluginContext) => [
-      youtubeArtifactPlugin(youtubeContent, allowYouTubeFixture, "yahoo-candidate"),
-    ],
+    createArtifactPlugins: () => [],
   }),
 });
 
@@ -516,14 +513,14 @@ export function createWebTargetViteConfig({
   const profile = resolveWebTarget(mode);
   /** Provides allow you tube fixture behavior. */
   const allowYouTubeFixture = environment.YOUTUBE_ALLOW_INCOMPLETE_CONTENT_FIXTURE === "1";
-  if (allowYouTubeFixture && !["youtube", "netflix", "yahoo"].includes(profile.id)) {
+  if (allowYouTubeFixture && !["youtube", "netflix"].includes(profile.id)) {
     throw new Error("The bundled engineering content fixture can only be used with a self-contained Web Target");
   }
   /** Provides youtube content behavior. */
   const youtubeContent = allowYouTubeFixture ? youtubeFixtureContent : youtubeReleaseContent;
   /** Provides upload sentry source maps behavior. */
   const uploadSentrySourceMaps = environment.SENTRY_UPLOAD_SOURCEMAPS === "1";
-  if (["youtube", "netflix", "yahoo"].includes(profile.id) && uploadSentrySourceMaps) {
+  if (["youtube", "netflix"].includes(profile.id) && uploadSentrySourceMaps) {
     throw new Error("Sentry source-map upload is forbidden for self-contained artifacts");
   }
 

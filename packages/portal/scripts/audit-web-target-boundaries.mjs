@@ -4,7 +4,7 @@ import {fileURLToPath} from "node:url";
 import ts from "typescript";
 
 const defaultSourceDirectory = fileURLToPath(new URL("../src", import.meta.url));
-const targetOwners = new Set(["jest", "facebook", "reddit", "youtube"]);
+const targetOwners = new Set(["jest", "facebook", "reddit", "youtube", "yahoo"]);
 const sharedOwner = "shared";
 const externalOwner = "external";
 const compilerOptions = Object.freeze({
@@ -227,8 +227,7 @@ export async function auditWebTargetBoundaries({sourceDirectory = defaultSourceD
         });
       }
 
-      const yahooIdentityEntry = owner === "youtube" && path.basename(file) === "yahooMain.tsx";
-      if ((owner === "reddit" || (owner === "youtube" && !yahooIdentityEntry)) &&
+      if ((owner === "reddit" || owner === "youtube") &&
           (isFirebasePackage(specifier) || isSentryPackage(specifier))) {
         addViolation({
           code: "FORBIDDEN_PROVIDER_IMPORT",
