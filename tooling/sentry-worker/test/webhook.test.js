@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import {createHmac} from "node:crypto";
 import test from "node:test";
-import handler, {issueIdentity, launchFirstUnclaimed, verifySignature} from "../api/sentry-webhook.js";
+import handler, {issueIdentity, launchFirstUnclaimed, reconcileRepair, verifySignature} from "../api/sentry-webhook.js";
 
 async function request(method, headers = {}) {
   const response = {headers: {}, setHeader(name, value) {this.headers[name] = value;}, end(body) {this.body = body;}};
@@ -44,4 +44,29 @@ test("cron selection skips claimed issues and launches the next candidate", asyn
   });
   assert.deepEqual(seen, ["newest", "next"]);
   assert.deepEqual(started, {issue: {id: "next"}, result: {duplicate: false, sandboxId: "sandbox"}});
+});
+test("a later cron merges a repaired pull request after its exact checks pass", async (context) => {
+  const originalFetch = globalThis.fetch;
+  const requests = [];
+  const replies = [
+    [{number: 4, title: "Fix issue", head: {sha: "repair-sha"}}],
+    {workflow_runs: [{id: 99, head_sha: "repair-sha", event: "pull_request", status: "completed", conclusion: "success"}]},
+    {merged: true},
+    null,
+  ];
+  context.after(() => {globalThis.fetch = originalFetch;});
+  globalThis.fetch = async (url, options = {}) => {
+    requests.push({url: String(url), method: options.method ?? "GET", body: options.body});
+    const body = replies.shift();
+    return new Response(body === null ? null : JSON.stringify(body), {status: body === null ? 204 : 200});
+  };
+
+  assert.deepEqual(await reconcileRepair("148177327", "token"), {
+    status: "merged_and_deploy_dispatched",
+    pullRequest: 4,
+  });
+  assert.equal(requests[2].method, "PUT");
+  assert.match(requests[2].url, /\/pulls\/4\/merge$/u);
+  assert.equal(requests[3].method, "POST");
+  assert.match(requests[3].url, /\/actions\/workflows\/deploy-jest\.yml\/dispatches$/u);
 });

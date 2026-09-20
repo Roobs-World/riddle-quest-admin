@@ -1,6 +1,7 @@
 import {createHmac, timingSafeEqual} from "node:crypto";
 import {readFile} from "node:fs/promises";
 import {Sandbox} from "@vercel/sandbox";
+import {evaluateWorkflowRuns} from "../worker/check-policy.mjs";
 
 const ORG = "roobs-world-limited";
 const PROJECT = "riddle-quest";
@@ -74,6 +75,34 @@ async function reserveBranch(issueId, token) {
   if (!response.ok) throw new Error(`Unable to reserve repair branch (${response.status})`);
   return {base, branch};
 }
+export async function reconcileRepair(issueId, token) {
+  const repoUrl = `https://api.github.com/repos/${REPOSITORY}`;
+  const branch = `codex/sentry-${issueId}`;
+  const pulls = await api(`${repoUrl}/pulls?state=open&head=${encodeURIComponent(`Grindhead:${branch}`)}&per_page=1`, token, {
+    headers: {Accept: "application/vnd.github+json"},
+  });
+  const pull = pulls[0];
+  if (!pull) return null;
+  const workflowRuns = await api(
+    `${repoUrl}/actions/workflows/production-readiness.yml/runs?branch=${encodeURIComponent(branch)}&event=pull_request&per_page=20`,
+    token,
+    {headers: {Accept: "application/vnd.github+json"}},
+  );
+  const checks = evaluateWorkflowRuns(workflowRuns.workflow_runs, pull.head.sha);
+  if (checks.state !== "passed") return {status: checks.state === "failed" ? "checks_failed" : "checks_pending", pullRequest: pull.number};
+  const merged = await api(`${repoUrl}/pulls/${pull.number}/merge`, token, {
+    method: "PUT",
+    headers: {Accept: "application/vnd.github+json", "Content-Type": "application/json"},
+    body: JSON.stringify({sha: pull.head.sha, merge_method: "squash", commit_title: pull.title}),
+  });
+  if (!merged.merged) throw new Error(`Pull request was not merged: ${merged.message ?? "unknown reason"}`);
+  await api(`${repoUrl}/actions/workflows/deploy-jest.yml/dispatches`, token, {
+    method: "POST",
+    headers: {Accept: "application/vnd.github+json", "Content-Type": "application/json"},
+    body: JSON.stringify({ref: process.env.TARGET_BRANCH ?? "jest"}),
+  });
+  return {status: "merged_and_deploy_dispatched", pullRequest: pull.number};
+}
 function sanitizeIssue(issue) {
   return {id: String(issue.id), shortId: issue.shortId, title: String(issue.title ?? "").slice(0, 300), culprit: String(issue.culprit ?? "").slice(0, 300), level: issue.level, firstSeen: issue.firstSeen, lastSeen: issue.lastSeen, count: issue.count, metadata: {type: issue.metadata?.type, value: String(issue.metadata?.value ?? "").slice(0, 500)}, permalink: issue.permalink};
 }
@@ -112,6 +141,12 @@ export default async function handler(request, response) {
     if (request.method === "GET") {
       if (header(request, "authorization") !== `Bearer ${process.env.CRON_SECRET}`) return send(response, 401, {error: "unauthorized"});
       const candidates = await recentIssues(process.env.SENTRY_AUTH_TOKEN);
+      for (const candidate of candidates) {
+        const reconciliation = await reconcileRepair(candidate.id, process.env.SENTRY_WORKER_GITHUB_TOKEN);
+        if (reconciliation && reconciliation.status !== "checks_failed") {
+          return send(response, 200, {...reconciliation, issueId: String(candidate.id)});
+        }
+      }
       const started = await launchFirstUnclaimed(candidates, (candidate) => launch(candidate, {
         sentry: process.env.SENTRY_AUTH_TOKEN,
         github: process.env.SENTRY_WORKER_GITHUB_TOKEN,
