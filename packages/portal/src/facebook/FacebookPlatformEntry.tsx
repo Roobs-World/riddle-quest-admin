@@ -162,12 +162,16 @@ export function FacebookPlatformEntry() {
           }
           if (
             ageCategory === "13_plus" &&
-            clientConfiguration.interstitialsEnabled &&
-            sdk.getSupportedAPIs().includes("getInterstitialAdAsync")
+            ((clientConfiguration.interstitialsEnabled && sdk.getSupportedAPIs().includes("getInterstitialAdAsync")) ||
+              (clientConfiguration.rewardedAdsEnabled && sdk.getSupportedAPIs().includes("getRewardedVideoAsync")))
           ) {
             ads = createFacebookAdsCapability({
               sdk,
-              placementId: import.meta.env.VITE_FACEBOOK_INTERSTITIAL_PLACEMENT_ID || "",
+              placementId: clientConfiguration.interstitialsEnabled
+                ? import.meta.env.VITE_FACEBOOK_INTERSTITIAL_PLACEMENT_ID || ""
+                : "",
+              rewardedPlacementId: import.meta.env.VITE_FACEBOOK_REWARDED_PLACEMENT_ID || "",
+              rewardedEnabled: clientConfiguration.rewardedAdsEnabled,
               adFree: clientConfiguration.removeInterstitialAds,
             });
           }

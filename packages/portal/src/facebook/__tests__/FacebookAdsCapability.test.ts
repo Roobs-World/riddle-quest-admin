@@ -10,6 +10,13 @@ const sdkWithAd = () => {
   return {ad, getInterstitialAdAsync, sdk: {getInterstitialAdAsync} as unknown as FacebookInstantSdk};
 };
 
+/** Provides SDK with an opt-in rewarded video placement. */
+const sdkWithRewardedAd = () => {
+  const ad = {loadAsync: jest.fn(async () => undefined), showAsync: jest.fn(async () => undefined)};
+  const getRewardedVideoAsync = jest.fn(async () => ad);
+  return {ad, getRewardedVideoAsync, sdk: {getRewardedVideoAsync} as unknown as FacebookInstantSdk};
+};
+
 describe("Facebook ads capability", () => {
   it("loads then shows only at a result and records only a successful impression", async () => {
     /** Provides harness behavior. */
@@ -50,6 +57,38 @@ describe("Facebook ads capability", () => {
       message: "ADS_NO_FILL",
     });
     await expect(failing.showRewarded("coins")).resolves.toMatchObject({status: "unavailable"});
+  });
+
+  it("shows only the allowlisted opt-in rewarded placement and suppresses a following interstitial", async () => {
+    const rewarded = sdkWithRewardedAd();
+    let nowMs = 1_000_000;
+    const ads = createFacebookAdsCapability({
+      sdk: rewarded.sdk,
+      placementId: "",
+      rewardedPlacementId: "continue-placement",
+      rewardedEnabled: true,
+      adFree: false,
+      now: () => nowMs,
+    })!;
+
+    await expect(ads.showRewarded("coins")).resolves.toMatchObject({status: "unavailable"});
+    await expect(ads.showRewarded("continue")).resolves.toEqual({status: "success", value: undefined});
+    expect(rewarded.getRewardedVideoAsync).toHaveBeenCalledWith("continue-placement");
+
+    const both = sdkWithAd();
+    (both.sdk as FacebookInstantSdk).getRewardedVideoAsync = rewarded.getRewardedVideoAsync;
+    const combined = createFacebookAdsCapability({
+      sdk: both.sdk,
+      placementId: "result-placement",
+      rewardedPlacementId: "continue-placement",
+      rewardedEnabled: true,
+      adFree: false,
+      now: () => nowMs,
+    })!;
+    await expect(combined.showRewarded("continue")).resolves.toMatchObject({status: "success"});
+    await expect(combined.showInterstitial("result")).resolves.toMatchObject({status: "unavailable"});
+    nowMs += 90_000;
+    await expect(combined.showInterstitial("result")).resolves.toMatchObject({status: "success"});
   });
 
   it("suppresses concurrent callbacks and starts cooldown when the impression finishes", async () => {

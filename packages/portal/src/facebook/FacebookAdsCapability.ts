@@ -4,6 +4,7 @@ import {
   canShowFacebookInterstitial,
   createFacebookInterstitialState,
   recordFacebookInterstitialShown,
+  recordFacebookRewardedShown,
   type FacebookInterstitialState,
 } from "./FacebookInterstitialPolicy";
 
@@ -17,6 +18,8 @@ const failure = (error: unknown): PlatformResult<void> => ({
 export function createFacebookAdsCapability({
   sdk,
   placementId,
+  rewardedPlacementId = "",
+  rewardedEnabled = false,
   adFree,
   now = Date.now,
 }: {
@@ -24,6 +27,10 @@ export function createFacebookAdsCapability({
   sdk: FacebookInstantSdk;
   /** Stores placement id. */
   placementId: string;
+  /** Provider placement for opt-in rewarded video. */
+  rewardedPlacementId?: string;
+  /** Server-controlled release switch for rewarded video. */
+  rewardedEnabled?: boolean;
   /** Stores ad free. */
   adFree: boolean;
   /** Stores now. */
@@ -31,11 +38,22 @@ export function createFacebookAdsCapability({
 }): AdsCapability | undefined {
   /** Normalizes d placement. */
   const normalizedPlacement = placementId.trim();
-  if (!normalizedPlacement || normalizedPlacement.length > 256 || !sdk.getInterstitialAdAsync) return undefined;
+  const normalizedRewardedPlacement = rewardedPlacementId.trim();
+  const interstitialAvailable = Boolean(
+    normalizedPlacement && normalizedPlacement.length <= 256 && sdk.getInterstitialAdAsync,
+  );
+  const rewardedAvailable = Boolean(
+    rewardedEnabled &&
+      normalizedRewardedPlacement &&
+      normalizedRewardedPlacement.length <= 256 &&
+      sdk.getRewardedVideoAsync,
+  );
+  if (!interstitialAvailable && !rewardedAvailable) return undefined;
   /** Provides state behavior. */
   let state: FacebookInterstitialState = createFacebookInterstitialState(adFree);
   /** Provides showing interstitial behavior. */
   let showingInterstitial = false;
+  let showingRewarded = false;
   /** Provides interstitials disabled behavior. */
   let interstitialsDisabled = false;
 
@@ -51,6 +69,7 @@ export function createFacebookAdsCapability({
       }
       if (
         interstitialsDisabled ||
+        !interstitialAvailable ||
         showingInterstitial ||
         placement !== "result" ||
         !canShowFacebookInterstitial(state, "result", startedAtMs)
@@ -83,8 +102,30 @@ export function createFacebookAdsCapability({
       }
     },
     /** Provides show rewarded behavior. */
-    async showRewarded() {
-      return {status: "unavailable", message: "facebook-rewarded-unavailable"};
+    async showRewarded(placement) {
+      if (!rewardedAvailable || showingRewarded || placement !== "continue") {
+        return {status: "unavailable", message: "facebook-rewarded-unavailable"};
+      }
+      showingRewarded = true;
+      try {
+        const startedAtMs = now();
+        if (!Number.isSafeInteger(startedAtMs) || startedAtMs < 0) {
+          return {status: "unavailable", message: "facebook-rewarded-clock-invalid"};
+        }
+        const ad = await sdk.getRewardedVideoAsync!(normalizedRewardedPlacement);
+        await ad.loadAsync();
+        await ad.showAsync();
+        const completedAtMs = now();
+        if (!Number.isSafeInteger(completedAtMs) || completedAtMs < startedAtMs) {
+          throw new Error("facebook-rewarded-clock-invalid");
+        }
+        state = recordFacebookRewardedShown(state, completedAtMs);
+        return {status: "success", value: undefined};
+      } catch (error) {
+        return failure(error);
+      } finally {
+        showingRewarded = false;
+      }
     },
   };
 }
