@@ -178,6 +178,12 @@ describeBrowser("standalone Jest browser game", () => {
       });
       await page.addInitScript(() => {
         Object.assign(window, {__RIDDLE_QUEST_BROWSER_TEST__: true});
+        Object.defineProperty(navigator, "hardwareConcurrency", {configurable: true, value: 8});
+        Object.defineProperty(navigator, "deviceMemory", {configurable: true, value: 8});
+        Object.defineProperty(navigator, "connection", {
+          configurable: true,
+          value: {effectiveType: "4g", saveData: false},
+        });
         localStorage.setItem("riddleQuest:tooltipSequenceSeen:gameTour:jest-guest", "seen");
         localStorage.setItem("riddleQuest:tooltipSequenceSeen:profileTour:jest-guest", "seen");
       });
