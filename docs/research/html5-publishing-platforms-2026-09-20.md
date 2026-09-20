@@ -72,3 +72,50 @@ These handoffs do not claim publication. They make the exact reviewed build repr
 Google GameSnacks distributes licensed HTML5 games across Google and partner surfaces. Its [requirements](https://developers.google.com/gamesnacks/developer/requirements) require the provider-injected SDK, a root `game.json`, relative bundled resources, provider storage, audio controls, and lifecycle signals. The repository now produces an isolated `build-gamesnacks.zip` with those runtime integrations and marketing metadata. It contains no Firebase, external IAP, sharing, or third-party ad SDK.
 
 Publication is account-gated. Google's [Developer Console release notes](https://developers.google.com/gamesnacks/developer/release-notes) state that a distribution agreement must be signed before a new licensed game can be approved or served. The bundle is therefore recorded as ready for licensing review, not as published.
+
+## Additional verified distribution routes
+
+The following routes were checked on 20 September 2026 against their current first-party documentation. They were not included in the existing release matrix or automated handoffs.
+
+### Telegram HTML5 Games / Mini Apps
+
+Telegram can launch a hosted HTML5 game from a bot in chats and inline results. The documented game route starts by sending `/newgame` to `@BotFather`; the bot then uses `sendGame`, receives the resulting callback query, and supplies the player-specific HTTPS game URL through `answerCallbackQuery`. Telegram also provides platform scoreboards through `setGameScore` and `getGameHighScores`. See Telegram's official [Gaming Platform guide](https://core.telegram.org/bots/games) and [bot feature overview](https://core.telegram.org/bots/features#html5-games).
+
+For a fuller app surface, the same web client can become a main Mini App and receive a `t.me/<bot>?startapp` launch link. A bot with a main Mini App that accepts Telegram Stars can be considered for the Mini App Store, but featuring is discretionary. See the official [Mini Apps documentation](https://core.telegram.org/bots/webapps).
+
+- **SDK / identity:** create a dedicated Telegram adapter. Validate signed Mini App init data on the server before trusting identity; use the game API only for Telegram scores.
+- **IAP:** digital goods inside Telegram must use Telegram Stars (`XTR`). Telegram explicitly disallows another currency or payment provider for digital goods, even when the same product has an external web checkout. Payment grants and refunds must remain server-authoritative. See [Telegram's digital-goods payment guide](https://core.telegram.org/bots/payments-stars).
+- **Ads:** Telegram documents revenue sharing for ads displayed in bots and channels, but it does not document a client-side in-game ad SDK for HTML5 games. Do not insert a third-party ad SDK or claim in-game ad support. Treat bot/channel ad revenue as separate from game runtime monetization.
+- **Submission route:** create the bot and game with `@BotFather`, deploy the HTTPS build and bot backend, then distribute the bot/game link. A main Mini App can subsequently be configured through `@BotFather` and considered for store featuring.
+- **Automation:** **high after manual bootstrap.** Hosting and bot deployment can run in CI, while Bot API calls can automate game messages, payments and score operations. Bot creation, `/newgame`, main-app configuration and any store featuring remain authenticated manual steps.
+- **Recommendation:** **high priority.** It supplies a direct social distribution route and a documented digital-goods system without exclusivity. It requires an isolated Telegram target and server adapter before release.
+
+### Microsoft Store PWA game
+
+Microsoft accepts a web game as a packaged Progressive Web App. The official process is to enroll in Partner Center, choose **New product → MSIX or PWA app → Game**, reserve the product name, create a submission, and package the HTTPS PWA with PWABuilder using the identity values from Partner Center. Microsoft documents the complete path in [Get started with Microsoft Store](https://learn.microsoft.com/en-us/windows/apps/publish/get-started) and [Turn your website into a high quality PWA](https://learn.microsoft.com/en-us/windows/apps/publish/publish-your-app/pwa/turn-your-website-pwa).
+
+- **SDK / packaging:** the website needs HTTPS and production PWA metadata. PWABuilder produces the Store packages; this is a packaging target rather than a provider JavaScript SDK target. A web-manifest change requires a new Store package, while ordinary hosted-code updates generally do not. See Microsoft's [PWA Store publishing guide](https://learn.microsoft.com/en-us/microsoft-edge/progressive-web-apps/how-to/microsoft-store).
+- **IAP:** classify the submission as a game and use Microsoft Store commerce for game digital purchases unless Partner Center confirms a policy exception. Microsoft's current publishing guide describes Microsoft commerce and a 12% game fee; the Store policies govern the final implementation. Keep the existing web checkout disabled in the Store build until certification requirements are confirmed.
+- **Ads:** advertising is an allowed monetization model, subject to Store advertising and content policies. No ad SDK is required merely to list the PWA. Do not add an advertising dependency until the chosen provider is checked against the current Store policy and tested in the packaged webview.
+- **Submission route:** manually create the Partner Center developer account and product reservation, generate the identity-bound MSIX/AppX packages with PWABuilder, complete pricing, age rating, properties and listing, then submit for certification.
+- **Automation:** **medium after the first submission.** Microsoft requires the initial app creation, name reservation, age-rating answers and first submission in Partner Center. Its app-submission APIs can then automate later submissions and metadata updates after an Entra application is associated with the account. Microsoft documents these prerequisites in [Manage app submissions](https://learn.microsoft.com/en-us/windows/uwp/monetize/manage-app-submissions). Hosted game-code updates can deploy through the existing website pipeline when package metadata is unchanged.
+- **Recommendation:** **high priority after PWA readiness work.** It adds Windows Store discovery while keeping the web implementation. Account enrollment, product identity and commerce design must precede automation.
+
+### LINE MINI App
+
+LINE MINI Apps are hosted HTML5 applications built on LIFF. The official route is to create a LINE MINI App channel in the LINE Developers Console, load and initialize the LIFF SDK, configure the hosted endpoint URLs, and request review. An unverified Mini App can be released with restrictions; verified status requires LY Corporation review. See [Implementing a web app as a LINE MINI App](https://developers.line.biz/en/docs/line-mini-app/develop/web-to-mini-app/) and the [submission guide](https://developers.line.biz/en/docs/line-mini-app/submit/submission-guide/).
+
+- **SDK / identity:** use a dedicated LIFF adapter for LINE login/profile data and validate tokens on the server. The app continues to be hosted by Roobs World, with its production URL registered as the published endpoint.
+- **IAP:** LINE's native digital-content IAP currently requires a verified Mini App with both the service region and owner/company region set to Japan; it supports consumables and requires server webhooks. That makes native IAP unavailable to the current UK company configuration. LINE documents other payment methods for ordinary web flows, but their suitability for this game's digital goods must be confirmed during review. See [LINE MINI App payment handling](https://developers.line.biz/en/docs/line-mini-app/develop/payment/) and the [IAP eligibility rules](https://developers.line.biz/en/docs/line-mini-app/in-app-purchase/overview/).
+- **Ads:** LINE permits only reviewed LY Ads Network Display Ads in MINI Apps, and the documented programme is limited to services provided in Japan. It requires a network-partner application and a separate site review before tags are issued. See [Place ads in LINE MINI Apps](https://developers.line.biz/en/docs/line-mini-app/service/line-mini-app-ads/). This UK release should therefore ship without ads unless LY Corporation approves an eligible regional arrangement.
+- **Submission route:** create a Business ID and provider/channel in LINE Developers Console, deploy separate Developing, Review and Published endpoints, complete policy and listing data, and submit the Review channel. Verification usually takes about one to two weeks according to the official submission guide.
+- **Automation:** **medium for deployment, low for submission.** CI can build and deploy the isolated LIFF client and server. Channel creation, business data, endpoint promotion and review requests are console operations; no supported submission API is documented.
+- **Recommendation:** **later regional experiment.** Technically viable, but the current company cannot use LINE's documented native IAP or ad programme. Prioritize Telegram and Microsoft Store first, and retain LINE as an ad-free/IAP-free candidate unless regional commercial eligibility changes.
+
+## Recommended next additions
+
+1. Add **Telegram** to the active delivery backlog and dashboard as `integration required`; it is the best new social HTML5 route and has an official IAP mechanism.
+2. Add **Microsoft Store PWA** as `account setup required`; first make the neutral web build installable and reserve the product in Partner Center.
+3. Add **LINE MINI App** as `commercial eligibility blocked`; avoid engineering its adapter until the desired release region and monetization route are confirmed.
+
+None of these routes requires distribution exclusivity. Automation must stop short of creating accounts, accepting commercial terms, supplying identity or tax information, and initiating irreversible review submissions. Those account-owner actions should remain explicit dashboard checklist items.

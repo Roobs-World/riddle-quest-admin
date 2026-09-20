@@ -46,6 +46,12 @@ snapshot.queries.release_automation = {
       evidence: "build-lagged-review.zip and its SHA-256 manifest are retained in the workflow artifact"},
     {platform: "Google GameSnacks", status: "SDK bundle ready; licensing required", trigger, revision: sha, completedAt,
       evidence: "build-gamesnacks.zip includes the isolated lifecycle, audio, storage SDK adapter and game.json metadata"},
+    {platform: "GameDistribution", status: "Contract review handoff ready", trigger, revision: sha, completedAt,
+      evidence: "build-gamedistribution-review.zip and its SHA-256 manifest are retained in the workflow artifact"},
+    {platform: "GameMonetize", status: "SDK review handoff ready", trigger, revision: sha, completedAt,
+      evidence: "build-gamemonetize-review.zip and its SHA-256 manifest are retained in the workflow artifact"},
+    {platform: "Yandex Games", status: "Contract review handoff ready", trigger, revision: sha, completedAt,
+      evidence: "build-yandex-review.zip and its SHA-256 manifest are retained in the workflow artifact"},
   ],
   source: {
     label: "All-platform release workflow receipt",

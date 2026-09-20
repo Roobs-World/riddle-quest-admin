@@ -28,7 +28,7 @@ test("the dashboard tracks additional HTML5 distribution submissions", () => {
   const candidates = data.queries.html5_distribution_candidates.rows;
 
   assert.deepEqual(candidates.map(({platform}) => platform), [
-    "itch.io", "CrazyGames", "Discord", "GamePix", "GameDistribution", "GameMonetize", "Yandex Games", "Poki", "Newgrounds", "Coolmath Games", "Kongregate", "Armor Games", "Game Jolt", "Addicting Games", "HTMLGames.com", "PlayKovo", "Lagged", "Google GameSnacks",
+    "itch.io", "CrazyGames", "Discord", "GamePix", "GameDistribution", "GameMonetize", "Yandex Games", "Poki", "Newgrounds", "Coolmath Games", "Kongregate", "Armor Games", "Game Jolt", "Addicting Games", "HTMLGames.com", "PlayKovo", "Lagged", "Google GameSnacks", "Telegram", "Microsoft Store PWA", "LINE MINI App",
   ]);
   assert.ok(candidates.every(({submissionProgress}) => submissionProgress.trim()));
   assert.match(candidates.find(({platform}) => platform === "Discord").submissionProgress, /non-exclusive/iu);

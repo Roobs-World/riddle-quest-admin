@@ -144,6 +144,24 @@
       "iap": "Prohibited — GameSnacks does not support in-game payments",
       "ads": "Provider-managed advertising; no third-party ad SDK is bundled",
       "gate": "Complete licensing and validate provider-hosted automatic ad opportunities during review"
+    },
+    {
+      "platform": "Telegram",
+      "iap": "Provider-gated; Telegram Stars only for digital goods",
+      "ads": "Unavailable — no documented client-side in-game ad SDK",
+      "gate": "Create the bot and game with BotFather, then implement signed identity and server-authoritative Stars fulfillment"
+    },
+    {
+      "platform": "Microsoft Store PWA",
+      "iap": "Provider-gated; Microsoft Store commerce required for game digital purchases unless Partner Center confirms an exception",
+      "ads": "Policy-gated; no ad SDK is required for listing",
+      "gate": "Complete Partner Center enrollment, PWA readiness and product-name reservation"
+    },
+    {
+      "platform": "LINE MINI App",
+      "iap": "Unavailable to the current UK company through documented native IAP eligibility",
+      "ads": "Unavailable to the current UK release through documented LY Ads regional eligibility",
+      "gate": "Confirm an eligible region and commercial route before implementing a LIFF adapter"
     }
   ]
 }

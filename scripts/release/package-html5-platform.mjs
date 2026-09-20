@@ -21,6 +21,9 @@ const definitions = Object.freeze({
   playkovo: Object.freeze({artifact: "build-playkovo-review.zip", boundary: "PlayKovo submission review and publication remain manual."}),
   kongregate: Object.freeze({artifact: "build-kongregate.zip", boundary: "Kongregate developer approval, upload agreement, portal upload and publication remain manual."}),
   lagged: Object.freeze({artifact: "build-lagged-review.zip", boundary: "Lagged developer approval, SDK credentials, integration review and publication remain manual."}),
+  gamedistribution: Object.freeze({artifact: "build-gamedistribution-review.zip", boundary: "GameDistribution contracting, game ID issuance, SDK integration, upload and activation remain manual."}),
+  gamemonetize: Object.freeze({artifact: "build-gamemonetize-review.zip", boundary: "GameMonetize account setup, GameId issuance, SDK integration, upload and activation remain manual."}),
+  yandex: Object.freeze({artifact: "build-yandex-review.zip", boundary: "Yandex developer registration, contract, SDK integration, Console upload and moderation remain manual."}),
 });
 
 export function getHtml5DistributionDefinition(target) {
