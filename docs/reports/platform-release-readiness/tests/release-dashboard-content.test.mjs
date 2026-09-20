@@ -6,7 +6,7 @@ const data = JSON.parse(await readFile(new URL("../src/data.json", import.meta.u
 const dashboard = await readFile(new URL("../src/content/dashboard/DashboardContent.jsx", import.meta.url), "utf8");
 
 test("the release dashboard reports every target and a concrete output", () => {
-  const expected = ["Jest", "Facebook", "Reddit", "YouTube", "Netflix", "Yahoo"];
+  const expected = ["Jest", "Facebook", "Reddit", "YouTube", "Netflix", "Yahoo", "itch.io", "CrazyGames", "Newgrounds"];
   const releases = data.queries.provider_release_evidence.rows;
 
   assert.deepEqual(releases.map(({platform}) => platform).sort(), expected.sort());
@@ -49,6 +49,8 @@ test("the dashboard exposes the latest release automation receipt", () => {
   const rows = data.queries.release_automation.rows;
   assert.ok(rows.some(({platform}) => platform === "All configured targets"));
   assert.ok(rows.some(({platform}) => platform === "itch.io"));
+  assert.ok(rows.some(({platform}) => platform === "CrazyGames"));
+  assert.ok(rows.some(({platform}) => platform === "Newgrounds"));
   assert.match(dashboard, /queryId="release_automation"/u);
 });
 

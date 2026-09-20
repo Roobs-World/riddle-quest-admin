@@ -3,7 +3,7 @@
   "surface": "dashboard",
   "buildStatus": "complete",
   "title": "Riddle Quest integration and release status",
-  "generatedAt": "2026-09-20T18:47:00Z",
+  "generatedAt": "2026-09-20T19:18:41.573Z",
   "status": "verified-repository-and-provider-evidence",
   "filters": [],
   "queries": {
@@ -14,7 +14,7 @@
           "integration": "Implemented",
           "identityAndSaves": "Signed player exchange and Jest player data",
           "commerceAndSocial": "Purchases, subscriptions, profiles, referrals and notifications",
-          "ads": "Unavailable \u2014 no approved Jest ad API",
+          "ads": "Unavailable — no approved Jest ad API",
           "localValidation": "Passed",
           "releaseStatus": "Build accepted for automatic activation; authoritative completion pending"
         },
@@ -32,7 +32,7 @@
           "integration": "Implemented",
           "identityAndSaves": "Devvit identity and same-origin storage gateway",
           "commerceAndSocial": "Reddit Gold purchases, matchmaking, tournaments and presence",
-          "ads": "Unavailable \u2014 no supported in-game ad API",
+          "ads": "Unavailable — no supported in-game ad API",
           "localValidation": "Build passed; release gate blocked on contract fixtures",
           "releaseStatus": "Private version 0.0.1.23 installed; public submission pending"
         },
@@ -145,6 +145,30 @@
           "state": "No partner access",
           "submissionProgress": "Candidate built; provider submission unavailable",
           "nextGate": "Netflix Games producer and private SDK contract"
+        },
+        {
+          "platform": "itch.io",
+          "providerReference": "Automated Butler stage in release-all-platforms.yml",
+          "artifact": "build-itch.zip; SHA-256 ac8061bc0642607365fe52dd3e70922d3c539ea5d7c40c1288c1b7588eab7471",
+          "state": "Candidate packaged; initial project required",
+          "submissionProgress": "Provider-specific artifact verified locally and automatic Butler updates are implemented",
+          "nextGate": "Create the initial itch.io HTML Game page and configure ITCH_BUTLER_API_KEY plus ITCH_GAME_TARGET"
+        },
+        {
+          "platform": "CrazyGames",
+          "providerReference": "CrazyGames Developer Portal Basic Launch",
+          "artifact": "build-crazygames-basic.zip; SHA-256 9df77850ea541215f5e8c7df6212f0c8dab2e80b785e7c6cea5abc1aabf77f89",
+          "state": "Basic Launch candidate packaged",
+          "submissionProgress": "SDK-free, ad-free provider archive is ready for the first portal upload",
+          "nextGate": "Sign in to the Developer Portal, upload the archive and complete QA metadata"
+        },
+        {
+          "platform": "Newgrounds",
+          "providerReference": "Authenticated Newgrounds game project",
+          "artifact": "build-newgrounds.zip; SHA-256 47a961baf0b403cccbcd0db203f89ffa174f755355650f34ed72f0eaa86f88a0",
+          "state": "Candidate packaged; portal review required",
+          "submissionProgress": "Provider-specific neutral archive is ready; publication remains account-gated",
+          "nextGate": "Review authenticated project terms, create the game project and upload the archive"
         }
       ],
       "source": {
@@ -153,7 +177,9 @@
           "packages/portal/.facebook-upload-receipts",
           "docs/evidence/reddit-integration-2026-09-19.md",
           "docs/youtube-playables-progress.html",
-          "docs/netflix-yahoo-candidate-builds.md"
+          "docs/netflix-yahoo-candidate-builds.md",
+          "scripts/release/package-html5-platform.mjs",
+          ".github/workflows/release-all-platforms.yml"
         ],
         "metricDefinitions": [
           {
@@ -173,15 +199,15 @@
           "platform": "itch.io",
           "releaseModel": "Self-service hosted HTML5 project; no exclusivity",
           "integration": "No SDK; provider-neutral ZIP with root index.html",
-          "submissionProgress": "Verified neutral ZIP and CI publish stage ready; initial project, ITCH_BUTLER_API_KEY and ITCH_GAME_TARGET still required",
-          "nextGate": "Complete human verification and create the first project page, then configure the GitHub secret and variable to enable automatic Butler releases"
+          "submissionProgress": "Provider-specific ZIP and manifest verified; CI Butler publish stage ready; initial project and credentials still required",
+          "nextGate": "Create the HTML Game page, then configure ITCH_BUTLER_API_KEY and ITCH_GAME_TARGET"
         },
         {
           "platform": "CrazyGames",
           "releaseModel": "QA-reviewed Basic Launch, then performance-selected Full Launch",
           "integration": "SDK optional for Basic Launch; isolated CrazyGames SDK and ads required for Full Launch",
-          "submissionProgress": "Neutral Basic Launch ZIP produced automatically by the all-platform workflow; Developer Portal login and first upload required",
-          "nextGate": "Sign in as Roobs World, upload the neutral ZIP and supply store media"
+          "submissionProgress": "SDK-free, ad-free Basic Launch ZIP and SHA-256 manifest verified and included in every all-platform workflow",
+          "nextGate": "Sign in as Roobs World, upload build-crazygames-basic.zip and supply store media"
         },
         {
           "platform": "Discord",
@@ -229,8 +255,8 @@
           "platform": "Newgrounds",
           "releaseModel": "Account-gated community game project",
           "integration": "Current public integration requirements require authenticated review",
-          "submissionProgress": "Neutral ZIP produced automatically; lower-priority account-gated project submission remains manual",
-          "nextGate": "Inspect authenticated project terms and technical requirements"
+          "submissionProgress": "Provider-specific ZIP and SHA-256 manifest verified and included in every all-platform workflow",
+          "nextGate": "Inspect authenticated project terms, create the game project and upload build-newgrounds.zip"
         },
         {
           "platform": "Coolmath Games",
@@ -288,13 +314,13 @@
         },
         {
           "check": "Desktop rendering and source inspection",
-          "viewport": "1440 \u00d7 900",
+          "viewport": "1440 × 900",
           "result": "Passed",
           "evidence": "All target and service rows rendered without page overflow; provider evidence source drawer opened successfully."
         },
         {
           "check": "Responsive rendering",
-          "viewport": "390 \u00d7 844",
+          "viewport": "390 × 844",
           "result": "Passed",
           "evidence": "No page-level horizontal overflow; all nine tables remained locally scrollable. Deployment filters, source inspection and the Jest activity chart were checked at desktop and mobile widths."
         }
@@ -707,13 +733,13 @@
         }
       ],
       "source": {
-        "label": "Authenticated Jest game analytics \u2014 dau_summary, retrieved 20 September 2026",
+        "label": "Authenticated Jest game analytics — dau_summary, retrieved 20 September 2026",
         "tables": [
           "Jest get_game_analytics(teamId=019f0e38-4b34-76fe-99ba-a8957c15295c, gameId=019f5674-93a8-7338-a664-8e603d6bda06, chart=dau_summary)"
         ],
         "filters": [
           "Provider-reported game-wide daily active users; no build/deployment dimension or timezone metadata returned.",
-          "22 August\u201319 September 2026; 20 September excluded because it is the current reporting day.",
+          "22 August–19 September 2026; 20 September excluded because it is the current reporting day.",
           "Not comparable to deployment activePlayers without matching provider definitions and attribution. Zeroes are returned measurements, not missing data."
         ],
         "metricDefinitions": [
@@ -733,17 +759,33 @@
           "platform": "All configured targets",
           "status": "Passed",
           "trigger": "local",
-          "revision": "local",
-          "completedAt": "2026-09-20T18:37:38.093Z",
-          "evidence": "Local release automation run"
+          "revision": "local-candidate",
+          "completedAt": "2026-09-20T19:18:41.573Z",
+          "evidence": "Release adapter tests and three provider packages passed locally"
         },
         {
           "platform": "itch.io",
-          "status": "Waiting for credentials",
+          "status": "Handoff ready",
           "trigger": "local",
-          "revision": "local",
-          "completedAt": "2026-09-20T18:37:38.093Z",
-          "evidence": "Official Butler stage runs after the shared release artifact succeeds"
+          "revision": "local-candidate",
+          "completedAt": "2026-09-20T19:18:41.573Z",
+          "evidence": "build-itch.zip ac8061bc0642607365fe52dd3e70922d3c539ea5d7c40c1288c1b7588eab7471"
+        },
+        {
+          "platform": "CrazyGames",
+          "status": "Handoff ready",
+          "trigger": "local",
+          "revision": "local-candidate",
+          "completedAt": "2026-09-20T19:18:41.573Z",
+          "evidence": "build-crazygames-basic.zip 9df77850ea541215f5e8c7df6212f0c8dab2e80b785e7c6cea5abc1aabf77f89"
+        },
+        {
+          "platform": "Newgrounds",
+          "status": "Handoff ready",
+          "trigger": "local",
+          "revision": "local-candidate",
+          "completedAt": "2026-09-20T19:18:41.573Z",
+          "evidence": "build-newgrounds.zip 47a961baf0b403cccbcd0db203f89ffa174f755355650f34ed72f0eaa86f88a0"
         }
       ],
       "source": {

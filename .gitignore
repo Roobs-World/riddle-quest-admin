@@ -40,6 +40,12 @@ packages/portal/build-youtube.manifest.json
 build-youtube.zip
 build-html5.zip
 build-html5.sha256
+build-itch.zip
+build-itch.zip.manifest.json
+build-crazygames-basic.zip
+build-crazygames-basic.zip.manifest.json
+build-newgrounds.zip
+build-newgrounds.zip.manifest.json
 build-youtube.manifest.json
 build-youtube.test-report.json
 packages/portal/.facebook-upload-receipts/

@@ -18,6 +18,10 @@ snapshot.queries.release_automation = {
       evidence: runId === "local" ? "Local release automation run" : `GitHub Actions run ${runId}`},
     {platform: "itch.io", status: process.env.ITCH_BUTLER_CONFIGURED === "true" ? "Publish stage configured" : "Waiting for credentials",
       trigger, revision: sha, completedAt, evidence: "Official Butler stage runs after the shared release artifact succeeds"},
+    {platform: "CrazyGames", status: "Manual upload handoff ready", trigger, revision: sha, completedAt,
+      evidence: "build-crazygames-basic.zip and its SHA-256 manifest are retained in the workflow artifact"},
+    {platform: "Newgrounds", status: "Manual upload handoff ready", trigger, revision: sha, completedAt,
+      evidence: "build-newgrounds.zip and its SHA-256 manifest are retained in the workflow artifact"},
   ],
   source: {
     label: "All-platform release workflow receipt",

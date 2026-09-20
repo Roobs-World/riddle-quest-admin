@@ -41,6 +41,11 @@ jobs:
           JEST_NOTIFICATION_EMAIL: ${{ secrets.JEST_NOTIFICATION_EMAIL }}
       - name: Create neutral HTML5 handoff
         run: pnpm release:html5
+      - name: Create distribution-specific HTML5 handoffs
+        run: |
+          pnpm release:itch
+          pnpm release:crazygames
+          pnpm release:newgrounds
       - name: Record the successful release in the dashboard
         run: node scripts/release/record-release-automation.mjs
         env:
@@ -56,6 +61,12 @@ jobs:
           path: |
             build-html5.zip
             build-html5.sha256
+            build-itch.zip
+            build-itch.zip.manifest.json
+            build-crazygames-basic.zip
+            build-crazygames-basic.zip.manifest.json
+            build-newgrounds.zip
+            build-newgrounds.zip.manifest.json
             build-youtube.zip
             build-youtube.manifest.json
             build-youtube.test-report.json
@@ -89,4 +100,4 @@ jobs:
             --output /tmp/butler.zip
           unzip -q /tmp/butler.zip -d /tmp/butler
           chmod +x /tmp/butler/butler
-          /tmp/butler/butler push build-html5.zip "${ITCH_GAME_TARGET}:html5" --userversion "${GITHUB_REF_NAME}-${GITHUB_SHA::12}"
+          /tmp/butler/butler push build-itch.zip "${ITCH_GAME_TARGET}:html5" --userversion "${GITHUB_REF_NAME}-${GITHUB_SHA::12}"

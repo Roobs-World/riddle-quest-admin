@@ -84,6 +84,39 @@ const releasePlans = Object.freeze([
     handoff: "Use packages/portal/dist-yahoo with the Yahoo partner delivery tooling.",
     runbook: "docs/netflix-yahoo-candidate-builds.md",
   }),
+  Object.freeze({
+    target: "itch",
+    title: "itch.io",
+    boundary: "local-immutable-handoff",
+    publicCommand: "pnpm release:itch",
+    summary: "Build the provider-neutral HTML5 game and create an itch.io-specific immutable handoff.",
+    externalEffect: "None locally; the configured GitHub Actions Butler stage publishes this artifact after verification.",
+    command: Object.freeze({executable: "node", args: Object.freeze(["scripts/release/package-html5-platform.mjs", "itch"])}),
+    handoff: "Create the initial itch.io project once, then configure Butler for automatic updates.",
+    runbook: "docs/research/html5-publishing-platforms-2026-09-20.md",
+  }),
+  Object.freeze({
+    target: "crazygames",
+    title: "CrazyGames Basic Launch",
+    boundary: "local-manual-handoff",
+    publicCommand: "pnpm release:crazygames",
+    summary: "Create the SDK-free, ad-free HTML5 archive accepted for a CrazyGames Basic Launch.",
+    externalEffect: "None; CrazyGames Developer Portal upload and QA review remain manual.",
+    command: Object.freeze({executable: "node", args: Object.freeze(["scripts/release/package-html5-platform.mjs", "crazygames"])}),
+    handoff: "Upload build-crazygames-basic.zip in the Developer Portal and retain its manifest digest.",
+    runbook: "docs/research/html5-publishing-platforms-2026-09-20.md",
+  }),
+  Object.freeze({
+    target: "newgrounds",
+    title: "Newgrounds",
+    boundary: "local-manual-handoff",
+    publicCommand: "pnpm release:newgrounds",
+    summary: "Create a provider-neutral HTML5 archive for an authenticated Newgrounds game project.",
+    externalEffect: "None; Newgrounds project creation, terms review, upload, and publication remain manual.",
+    command: Object.freeze({executable: "node", args: Object.freeze(["scripts/release/package-html5-platform.mjs", "newgrounds"])}),
+    handoff: "Use build-newgrounds.zip only after the authenticated project requirements are reviewed.",
+    runbook: "docs/research/html5-publishing-platforms-2026-09-20.md",
+  }),
 ]);
 
 const plansByTarget = new Map(releasePlans.map((plan) => [plan.target, plan]));
@@ -104,7 +137,7 @@ export function listPlatformReleasePlans() {
 export function getPlatformReleasePlan(target) {
   const plan = plansByTarget.get(target);
   if (!plan) {
-    throw new Error(`Unknown release target ${JSON.stringify(target)}; expected jest, facebook, youtube, reddit, netflix, or yahoo`);
+    throw new Error(`Unknown release target ${JSON.stringify(target)}; run pnpm release:plan for supported targets`);
   }
   return clonePlan(plan);
 }
@@ -231,7 +264,7 @@ export async function runAllPlatformReleases({
     for (const plan of releasePlans) log(`${formatPlatformReleasePlan(clonePlan(plan))}\n`);
     return releasePlans.map(({target, boundary}) => ({target, status: "planned", boundary}));
   }
-  log("Running the shared six-target verification gate before any release adapter.");
+  log("Running the shared target verification gate before any release adapter.");
   await commandRunner({executable: "pnpm", args: ["verify:all-targets"], cwd: repositoryDirectory, environment});
   const results = [];
   for (const {target} of releasePlans) {

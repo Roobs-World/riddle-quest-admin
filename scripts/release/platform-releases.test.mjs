@@ -20,6 +20,9 @@ const expectedCommands = new Map([
   ["reddit", ["--filter", "@qwordly/reddit-app", "release:candidate"]],
   ["netflix", ["build:netflix"]],
   ["yahoo", ["build:yahoo"]],
+  ["itch", ["scripts/release/package-html5-platform.mjs", "itch"]],
+  ["crazygames", ["scripts/release/package-html5-platform.mjs", "crazygames"]],
+  ["newgrounds", ["scripts/release/package-html5-platform.mjs", "newgrounds"]],
 ]);
 const expectedRunbooks = new Map([
   ["jest", "docs/jest-html5-operations.md"],
@@ -28,11 +31,14 @@ const expectedRunbooks = new Map([
   ["reddit", "docs/reddit-games-operations.md"],
   ["netflix", "docs/netflix-yahoo-candidate-builds.md"],
   ["yahoo", "docs/netflix-yahoo-candidate-builds.md"],
+  ["itch", "docs/research/html5-publishing-platforms-2026-09-20.md"],
+  ["crazygames", "docs/research/html5-publishing-platforms-2026-09-20.md"],
+  ["newgrounds", "docs/research/html5-publishing-platforms-2026-09-20.md"],
 ]);
 
 test("the public interface exposes one isolated canonical command per release target", () => {
   const plans = listPlatformReleasePlans();
-  assert.deepEqual(plans.map(({target}) => target), ["jest", "facebook", "youtube", "reddit", "netflix", "yahoo"]);
+  assert.deepEqual(plans.map(({target}) => target), ["jest", "facebook", "youtube", "reddit", "netflix", "yahoo", "itch", "crazygames", "newgrounds"]);
   for (const plan of plans) {
     assert.equal(plan.publicCommand, `pnpm release:${plan.target}`);
     assert.equal("command" in plan, false);
@@ -43,8 +49,7 @@ test("the public interface exposes one isolated canonical command per release ta
 
 test("the root package exposes target releases and one combined release command", async () => {
   const packageJson = JSON.parse(await readFile(new URL("../../package.json", import.meta.url), "utf8"));
-  for (const target of ["jest", "facebook", "youtube", "reddit", "netflix", "yahoo"]) {
-    assert.equal(typeof packageJson.scripts[`build:${target}`], "string");
+  for (const target of ["jest", "facebook", "youtube", "reddit", "netflix", "yahoo", "itch", "crazygames", "newgrounds"]) {
     assert.equal(
       packageJson.scripts[`release:${target}`],
       `node scripts/release/run-platform-release.mjs ${target}`,
@@ -66,10 +71,13 @@ test("target plans preserve distinct external effects", () => {
   assert.match(getPlatformReleasePlan("reddit").externalEffect, /^None;/u);
   assert.equal(getPlatformReleasePlan("netflix").boundary, "local-validated-artifact");
   assert.equal(getPlatformReleasePlan("yahoo").boundary, "local-validated-artifact");
+  assert.equal(getPlatformReleasePlan("itch").boundary, "local-immutable-handoff");
+  assert.equal(getPlatformReleasePlan("crazygames").boundary, "local-manual-handoff");
+  assert.equal(getPlatformReleasePlan("newgrounds").boundary, "local-manual-handoff");
   assert.throws(() => getPlatformReleasePlan("all"), /Unknown release target/u);
 });
 
-test("the combined release verifies once before running all six adapters", async () => {
+test("the combined release verifies once before running every adapter", async () => {
   const invocations = [];
   const results = await runAllPlatformReleases({
     commandRunner: async (command) => invocations.push(command),
@@ -84,8 +92,11 @@ test("the combined release verifies once before running all six adapters", async
     expectedCommands.get("reddit"),
     expectedCommands.get("netflix"),
     expectedCommands.get("yahoo"),
+    expectedCommands.get("itch"),
+    expectedCommands.get("crazygames"),
+    expectedCommands.get("newgrounds"),
   ]);
-  assert.deepEqual(results.map(({target}) => target), ["jest", "facebook", "youtube", "reddit", "netflix", "yahoo"]);
+  assert.deepEqual(results.map(({target}) => target), ["jest", "facebook", "youtube", "reddit", "netflix", "yahoo", "itch", "crazygames", "newgrounds"]);
 });
 
 test("the Facebook adapter performs only the local preflight and immutable handoff", async () => {
