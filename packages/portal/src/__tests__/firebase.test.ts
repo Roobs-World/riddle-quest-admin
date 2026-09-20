@@ -47,6 +47,8 @@ describe("Firebase browser adapter", () => {
     );
     expect(mockGetFunctions).toHaveBeenCalledWith(firebaseApp, "us-central1");
     expect(mockHttpsCallable.mock.calls.map((call) => call[1])).toEqual([
+      "createYahooStripeCheckout",
+      "confirmYahooStripeCheckout",
       "getCurrentDailyChallenge",
       "getCurrentClassicRiddle",
       "completeGame",
