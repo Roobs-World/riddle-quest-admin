@@ -46,3 +46,19 @@ outstanding policy, external-fetch/payment approval, device-testing, deployment,
 and immutable release evidence. Those remote conditions were not reverified by
 this local run. The production gates remain enforced; local harness results must
 not be treated as live Reddit acceptance.
+
+## Enrollment follow-up — 2026-09-20
+
+The owner reported that Reddit payment enrollment is complete. The authenticated
+Devvit CLI confirmed app ownership, six configured Gold products, the published
+Terms and Privacy URLs, and the `0.0.1.22` installation in `r/riddle_quest_dev`.
+The CLI does not expose payment-verification or HTTP-fetch review state, so the
+owner's enrollment report is not recorded as provider approval.
+
+The current working package passed typechecking, all 31 Devvit package tests,
+the isolated client audit, and the 436-file/7.04 MiB package contract. It was
+uploaded as private playtest `0.0.1.23` and installed successfully in
+`r/riddle_quest_dev`. This is a test version built from the current dirty shared
+workspace, not an immutable public candidate. Public submission remains guarded
+until hosted contract, approval, role/device, deployment, and artifact evidence
+passes the repository release gates.

@@ -4,6 +4,13 @@ import {describe, expect, test, beforeEach, afterEach, jest} from "@jest/globals
 const mockLogger = {info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn()};
 jest.mock("firebase-functions", () => ({logger: mockLogger}));
 
+/** Records explicit diagnostic fields at the telemetry boundary. */
+const mockCaptureException = jest.fn();
+jest.mock("../shared/sentry", () => ({
+  ...jest.requireActual<typeof import("../shared/sentry")>("../shared/sentry"),
+  captureException: (...args: unknown[]) => mockCaptureException(...args),
+}));
+
 /** Provides mock parse behavior. */
 const mockParse = jest.fn();
 /** Provides mock open ai behavior. */
@@ -401,6 +408,25 @@ describe("OpenAI Service", () => {
         errorClass: "Error",
       });
       expect(mockLogger.error).not.toHaveBeenCalledWith(expect.anything(), apiError);
+    });
+
+    test("reports bounded upstream classifications without copying request or player fields into extras", async () => {
+      /** Includes private fields to prove only the safe classification allowlist is copied. */
+      const apiError = Object.assign(new Error("private provider response"), {
+        name: "APIError",
+        status: 503,
+        code: "server_error",
+        request: {authorization: "private credential"},
+        userId: "private player",
+      });
+      mockParse.mockRejectedValue(apiError);
+
+      await expect(generateUniqueRiddle()).resolves.toBeNull();
+      expect(mockCaptureException).toHaveBeenCalledWith(apiError, {
+        errorClass: "APIError",
+        status: 503,
+        code: "server_error",
+      });
     });
 
     test("throws error when OPENAI_API_KEY is missing", async () => {

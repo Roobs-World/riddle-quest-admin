@@ -17,38 +17,38 @@ import {
 } from "./facebookCallableResponses";
 
 /** Provides claim facebook notification permission prompt raw behavior. */
-const claimFacebookNotificationPermissionPromptRaw = httpsCallable<undefined, unknown>(
+const claimFacebookNotificationPermissionPromptRaw = httpsCallable<Record<string, never>, unknown>(
   firebaseFunctions,
   "claimFacebookNotificationPermissionPrompt",
 );
 /** Provides claim facebook notification permission prompt behavior. */
 export const claimFacebookNotificationPermissionPrompt = async () => {
   /** Provides result behavior. */
-  const result = await claimFacebookNotificationPermissionPromptRaw();
+  const result = await claimFacebookNotificationPermissionPromptRaw({});
   return {...result, data: parseFacebookNotificationPromptClaim(result.data)};
 };
 
 /** Provides accept facebook notification permission prompt raw behavior. */
-const acceptFacebookNotificationPermissionPromptRaw = httpsCallable<undefined, unknown>(
+const acceptFacebookNotificationPermissionPromptRaw = httpsCallable<Record<string, never>, unknown>(
   firebaseFunctions,
   "acceptFacebookNotificationPermissionPrompt",
 );
 /** Provides accept facebook notification permission prompt behavior. */
 export const acceptFacebookNotificationPermissionPrompt = async (): Promise<void> => {
   /** Provides result behavior. */
-  const result = await acceptFacebookNotificationPermissionPromptRaw();
+  const result = await acceptFacebookNotificationPermissionPromptRaw({});
   parseFacebookNotificationPromptAcceptance(result.data);
 };
 
 /** Reads fail-closed Facebook feature switches and durable ad suppression. */
-const getFacebookClientConfigurationRaw = httpsCallable<undefined, unknown>(
+const getFacebookClientConfigurationRaw = httpsCallable<Record<string, never>, unknown>(
   firebaseFunctions,
   "getFacebookClientConfiguration",
 );
 /** Gets facebook client configuration. */
 export const getFacebookClientConfiguration = async () => {
   /** Provides result behavior. */
-  const result = await getFacebookClientConfigurationRaw();
+  const result = await getFacebookClientConfigurationRaw({});
   return {...result, data: parseFacebookClientConfiguration(result.data)};
 };
 

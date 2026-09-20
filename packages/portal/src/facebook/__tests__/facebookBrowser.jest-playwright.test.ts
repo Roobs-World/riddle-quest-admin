@@ -173,6 +173,7 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
 
       /** Provides success page behavior. */
       const successPage = await browser.newPage({viewport: {width: 390, height: 844}});
+      successPage.setDefaultTimeout(5_000);
       /** Provides success requests behavior. */
       const successRequests: string[] = [];
       /** Provides configuration request behavior. */
@@ -422,7 +423,7 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       expect(configurationRequest).toEqual({
         authorization: `Bearer ${firebaseIdToken}`,
         appCheck: appCheckToken,
-        body: JSON.stringify({data: null}),
+        body: JSON.stringify({data: {}}),
       });
       expect(
         await successPage.evaluate(() => ({
@@ -591,6 +592,25 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
           () => window.__facebookEvents.filter((event) => event === "read:riddleQuestPreferences").length,
         ),
       ).toBe(2);
+      // Exercise the real Facebook session's account authority using only fake services.
+      // This SDK fixture returns a fresh player record on every reload.
+      await successPage.locator('.onboarding-card .play-primary').click();
+      await successPage.locator('.onboarding-clues').waitFor();
+      await successPage.locator('.onboarding-card .play-primary').click();
+      await successPage.locator('.onboarding-card').waitFor({state: 'detached'});
+      await successPage.evaluate(() => localStorage.setItem(
+        'riddleQuest:tooltipSequenceSeen:profileTour:v2:jest-guest', 'seen'));
+      await successPage.locator('.game-bottom-navigation button').last().click();
+      await successPage.locator('.profile-page').waitFor();
+      expect(await successPage.locator('.profile-avatar-input').count()).toBe(0);
+      await successPage.locator('.profile-identity .play-text-button').click();
+      await successPage.locator('.username-form input').fill('FacebookTester');
+      await successPage.locator('.username-form button').click();
+      await successPage.getByText('FacebookTester', {exact: true}).first().waitFor();
+      await successPage.locator('.profile-danger-zone .profile-delete-account-button').click();
+      await successPage.locator('.profile-delete-dialog .profile-delete-account-button').click();
+      await successPage.locator('.profile-page').waitFor({state: 'detached'});
+      expect(await successPage.locator('body').innerText()).not.toContain('host-account-capability-unavailable');
     } finally {
       await browser.close();
       try {
@@ -599,5 +619,5 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
         await rm(distDirectory, {force: true, recursive: true});
       }
     }
-  }, 30_000);
+  }, 60_000);
 });

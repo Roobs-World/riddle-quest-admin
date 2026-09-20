@@ -1,5 +1,5 @@
 import {type ScheduledEvent} from "firebase-functions/v2/scheduler";
-import {generateLocalizedDailyChallengeForDate} from "./dailyRiddleGeneration";
+import {DailyGenerationIncompleteError, generateLocalizedDailyChallengeForDate} from "./dailyRiddleGeneration";
 import * as functions from "firebase-functions";
 import {captureException} from "../shared/sentry";
 import {onScheduleWithSentry} from "../shared/sentryHandlers";
@@ -37,6 +37,9 @@ export const scheduledTaskHandler = async (context: ScheduledEvent) => {
       functionName: "dailyChallengeScheduler",
       phase: "scheduled_generation",
       challengeDate: targetDateString,
+      ...(error instanceof DailyGenerationIncompleteError
+        ? {failedLocales: error.failedLocales, attemptCount: error.attemptCount}
+        : {}),
     });
     throw error; // Re-throw to ensure proper error reporting
   }

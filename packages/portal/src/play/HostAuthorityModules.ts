@@ -17,7 +17,7 @@ export type HostAuthorityModules = Readonly<{
   /** Stores commerce. */
   commerce?: Pick<HostServices, "requestPurchase" | "products">;
   /** Stores account. */
-  account?: Pick<HostServices, "updateUsername" | "updateAvatar" | "deleteAccount">;
+  account?: Partial<Pick<HostServices, "updateUsername" | "updateAvatar" | "deleteAccount">>;
   /** Stores race. */
   race?: Pick<
     HostServices,
@@ -49,13 +49,25 @@ export function createHostAuthorityModules(
 ): HostAuthorityModules {
   /** Provides authenticated behavior. */
   const authenticated = capabilities?.accountUpgrade?.state === "complete";
+  /** Target-owned account permissions independent of guest registration. */
+  const permissions = capabilities?.accountManagement;
+  /** Only expose operations approved for this target or registered Jest session. */
+  const account = authenticated
+    ? services
+    : permissions
+      ? {
+          ...(permissions.username ? {updateUsername: services.updateUsername} : {}),
+          ...(permissions.avatar ? {updateAvatar: services.updateAvatar} : {}),
+          ...(permissions.deletion ? {deleteAccount: services.deleteAccount} : {}),
+        }
+      : undefined;
   return {
     identity: services,
     gameplay: services,
     leaderboard: services,
     ...(economyAvailable ? {economy: services} : {}),
     ...(commerceAvailable ? {commerce: services} : {}),
-    ...(authenticated ? {account: services} : {}),
+    ...(account ? {account} : {}),
     ...(raceAvailable ? {race: services} : {}),
   };
 }

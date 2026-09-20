@@ -314,7 +314,7 @@ export function JestPlayApp() {
       } else {
         /** Provides message behavior. */
         const message = "message" in result ? result.message : tr("ErrorMessages.CHECK_INTERNET_AND_TRY_AGAIN");
-        setError(message === JEST_SDK_INIT_TIMEOUT_MESSAGE ? tr("Errors.CHECK_INTERNET_AND_TRY_AGAIN") : message);
+        setError(message === JEST_SDK_INIT_TIMEOUT_MESSAGE ? tr("ErrorMessages.CHECK_INTERNET_AND_TRY_AGAIN") : message);
       }
     });
     return () => {

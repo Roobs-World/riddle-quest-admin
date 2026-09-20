@@ -245,6 +245,7 @@ export class FacebookPlatformBootstrap implements PlatformBootstrap {
         playerId,
         storage,
         capabilities: {
+          accountManagement: {username: true, avatar: false, deletion: true},
           ...(nativeSocial ? {nativeSocial} : {}),
           ...(overlay ? {overlay} : {}),
           lifecycle: {

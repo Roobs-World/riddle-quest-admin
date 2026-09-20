@@ -19,6 +19,19 @@ const MAX_DAILY_ATTEMPTS_PER_RUN = 51;
 /** Locale generation concurrency keeps OpenAI and Firestore pressure bounded. */
 const DAILY_LOCALE_CONCURRENCY = 3;
 
+/** Carries content-free diagnostics across the scheduler's error boundary. */
+export class DailyGenerationIncompleteError extends Error {
+  /** Retains only locale identifiers and the bounded candidate count. */
+  constructor(
+    /** Locale identifiers whose dated content could not be prepared. */
+    readonly failedLocales: SupportedLocale[],
+    /** Candidate attempts spent in this invocation, including rejected candidates. */
+    readonly attemptCount: number,
+  ) {
+    super(`Daily generation incomplete for ${failedLocales.length} locale(s).`);
+  }
+}
+
 /** Validates and normalizes an immutable UTC daily-content key. */
 function assertUtcDateKey(value: string): string {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) throw new Error("A YYYY-MM-DD UTC challenge date is required.");
@@ -158,7 +171,7 @@ export async function generateLocalizedDailyChallengeForDate(
       failedLocales: failures.map((entry) => entry.locale),
       attemptCount: totalAttemptCount,
     });
-    throw new Error(`Daily generation incomplete for ${failures.length} locale(s).`);
+    throw new DailyGenerationIncompleteError(failures.map((entry) => entry.locale), totalAttemptCount);
   }
   logger.info("Immutable localized daily generation completed.", {
     challengeDate,

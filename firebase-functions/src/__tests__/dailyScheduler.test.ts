@@ -3,6 +3,8 @@ import type {ScheduledEvent} from "firebase-functions/v2/scheduler";
 
 /** Provides mock generate for date behavior. */
 const mockGenerateForDate = jest.fn();
+/** Records only explicit error-reporting context. */
+const mockCaptureException = jest.fn();
 /** Provides mock logger behavior. */
 const mockLogger = {
   info: jest.fn(),
@@ -12,12 +14,19 @@ const mockLogger = {
 };
 
 jest.mock("../daily/dailyRiddleGeneration", () => ({
+  ...jest.requireActual<typeof import("../daily/dailyRiddleGeneration")>("../daily/dailyRiddleGeneration"),
   generateLocalizedDailyChallengeForDate: (...args: unknown[]) => mockGenerateForDate(...args),
+}));
+
+jest.mock("../shared/sentry", () => ({
+  ...jest.requireActual<typeof import("../shared/sentry")>("../shared/sentry"),
+  captureException: (...args: unknown[]) => mockCaptureException(...args),
 }));
 
 jest.mock("firebase-functions", () => ({logger: mockLogger}));
 
 import {scheduledTaskHandler} from "../daily/dailyScheduler";
+import {DailyGenerationIncompleteError} from "../daily/dailyRiddleGeneration";
 
 /** Provides scheduled event behavior. */
 const scheduledEvent = {} as ScheduledEvent;
@@ -58,5 +67,20 @@ describe("dailyChallengeScheduler", () => {
       code: "rate_limit",
     });
     expect(mockLogger.error).not.toHaveBeenCalledWith(expect.anything(), failure);
+  });
+
+  it("reports locale and attempt diagnostics without including generated content", async () => {
+    /** Replays the aggregate failure produced by an exhausted generation budget. */
+    const failure = new DailyGenerationIncompleteError(["en", "ja"], 6);
+    mockGenerateForDate.mockRejectedValue(failure);
+
+    await expect(scheduledTaskHandler(scheduledEvent)).rejects.toBe(failure);
+    expect(mockCaptureException).toHaveBeenCalledWith(failure, {
+      functionName: "dailyChallengeScheduler",
+      phase: "scheduled_generation",
+      challengeDate: "2026-08-12",
+      failedLocales: ["en", "ja"],
+      attemptCount: 6,
+    });
   });
 });

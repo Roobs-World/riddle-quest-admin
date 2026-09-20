@@ -366,9 +366,9 @@ export const createPlayHostMessageHandlers = ({
   updateUsername: async (message) => {
     try {
       /** Provides profile behavior. */
-      const account = requireAuthority(authority.account, "host-account-capability-unavailable");
+      const updateUsername = requireAuthority(authority.account?.updateUsername, "host-account-capability-unavailable");
       /** Provides profile behavior. */
-      const profile = await withServerActivity(() => account.updateUsername(message.payload.username));
+      const profile = await withServerActivity(() => updateUsername(message.payload.username));
       postOperation(message.requestId, "profile", true, {profile});
     } catch (error) {
       reportHostOperationError(error, "profile");
@@ -378,9 +378,9 @@ export const createPlayHostMessageHandlers = ({
   updateAvatar: async (message) => {
     try {
       /** Provides profile behavior. */
-      const account = requireAuthority(authority.account, "host-account-capability-unavailable");
+      const updateAvatar = requireAuthority(authority.account?.updateAvatar, "host-account-capability-unavailable");
       /** Provides profile behavior. */
-      const profile = await withServerActivity(() => account.updateAvatar(message.payload.imageDataUrl));
+      const profile = await withServerActivity(() => updateAvatar(message.payload.imageDataUrl));
       postOperation(message.requestId, "profile", true, {profile});
     } catch (error) {
       reportHostOperationError(error, "avatar");
@@ -390,10 +390,11 @@ export const createPlayHostMessageHandlers = ({
   deleteAccount: async (message) => {
     try {
       if (!accountDeletionCompletedRef.current) {
+        /** Check authority before any callback closes the player's operation gate. */
+        const deleteAccount = requireAuthority(authority.account?.deleteAccount, "host-account-capability-unavailable");
         await onAccountDeletionRequested?.();
         /** Provides account behavior. */
-        const account = requireAuthority(authority.account, "host-account-capability-unavailable");
-        await withServerActivity(() => account.deleteAccount());
+        await withServerActivity(() => deleteAccount());
         accountDeletionCompletedRef.current = true;
       }
       await onAccountDeleted?.();

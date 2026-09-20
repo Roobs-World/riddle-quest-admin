@@ -113,6 +113,17 @@ export function ProfileModalPage({
     <div className="profile-page">
       <div className="profile-hero">
         <div className="profile-identity" data-tooltip="profileIdentity">
+          {platformRegistered === undefined ? (
+            <div className="profile-avatar-button">
+              {profile?.avatarUrl ? (
+                <img src={profile.avatarUrl} alt="" referrerPolicy="no-referrer" />
+              ) : (
+                <span className="profile-avatar-fallback" aria-hidden="true">
+                  {(profile?.username ?? tr("Profile.GUEST_USERNAME")).slice(0, 1).toUpperCase()}
+                </span>
+              )}
+            </div>
+          ) : <>
           <button
             type="button"
             className="profile-avatar-button"
@@ -143,6 +154,7 @@ export function ProfileModalPage({
             tabIndex={-1}
             aria-hidden="true"
           />
+          </>}
           {avatarError ? (
             <small className="profile-avatar-error" role="alert">
               {avatarError}

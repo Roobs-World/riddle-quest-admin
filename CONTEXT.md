@@ -32,6 +32,14 @@ _Avoid_: Tenant, community account
 A shared game feature for which the current platform has no approved, trustworthy provider capability. Its surface is absent or explicitly unavailable rather than simulated.
 _Avoid_: Unsupported no-op, partial support
 
+**Facebook Release Candidate**:
+A Riddle Quest Facebook version prepared for owner approval, including verified purchases and required platform review evidence. Preparation does not authorize public publication.
+_Avoid_: Published release, testing bundle
+
+**Facebook Audience**:
+Eligible Facebook players aged 13 and above; family-friendly presentation does not mean the release is directed at children under 13.
+_Avoid_: All-ages Facebook release
+
 ## Identity and authority
 
 **Reddit Session**:

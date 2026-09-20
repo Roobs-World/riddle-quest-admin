@@ -35,6 +35,15 @@ const profile: BridgeProfile = {
 };
 
 describe("ProfileModalPage", () => {
+  it("does not offer Jest-only avatar uploads on targets without registration", () => {
+    /** Profile markup for a target without Jest registration. */
+    const html = renderToString(<ProfileModalPage profile={profile} onOpenModal={noop}
+      onUpdateAvatar={updateAvatar} onDeleteAccount={noop} />);
+    expect(html).toContain("avatar.webp");
+    expect(html).not.toContain('type="file"');
+    expect(html).not.toContain("profile-avatar-edit");
+    expect(html).toContain("Delete Account");
+  });
   it("renders safe guest and registration fallbacks", () => {
     /** Guest profile markup with no optional platform profile fields. */
     const html = renderToString(

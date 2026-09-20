@@ -10,6 +10,7 @@ import {
   type HostOperationName,
 } from "../hostMessageHandlers";
 import * as browserErrorReporter from "../../observability/browserErrorReporter";
+import {createHostAuthorityModules, type HostAuthorityModules} from "../HostAuthorityModules";
 
 /** Reads auth snapshot. */
 const readAuthSnapshot = (services: HostServices): AuthSnapshot => {
@@ -30,6 +31,7 @@ const createHarness = (
   onAccountDeletionRequested?: () => void | Promise<void>,
   onAuthoritativeComplete?: () => void | Promise<void>,
   onAuthoritativeRaceResult?: (result: RaceOutcome) => void | Promise<void>,
+  authority?: HostAuthorityModules,
 ) => {
   /** Provides post operation behavior. */
   const postOperation = jest.fn(
@@ -69,9 +71,10 @@ const createHarness = (
     authSnapshot: readAuthSnapshot(services),
     gameMode: "classic",
     locale: "en",
-    authority: {
+    authority: authority ?? {
       identity: services,
       gameplay: services,
+      leaderboard: services,
       economy: services,
       commerce: services,
       account: services,
@@ -403,6 +406,39 @@ describe("play host message handlers", () => {
     expect(harness.setNotice).not.toHaveBeenCalled();
     expect(captureBrowserException).not.toHaveBeenCalled();
     captureBrowserException.mockRestore();
+  });
+
+  it("rejects unavailable deletion before closing the player's operation gate", async () => {
+    /** Isolated game services for account-operation regression checks. */
+    const services = createFakeHostServices();
+    /** Records whether deletion preparation starts. */
+    const requested = jest.fn();
+    /** Records calls to the authoritative deletion service. */
+    const deleted = jest.spyOn(services, "deleteAccount");
+    /** Uses actual capability-shaped account authority. */
+    const harness = createHarness(services, undefined, requested, undefined, undefined,
+      createHostAuthorityModules(services, {}));
+    await harness.handlers.deleteAccount({type: "game:deleteAccount", requestId: "denied", payload: {}});
+    expect(requested).not.toHaveBeenCalled();
+    expect(deleted).not.toHaveBeenCalled();
+    expect(harness.postOperation).toHaveBeenCalledWith("denied", "accountDeletion", false, undefined,
+      "host-account-capability-unavailable");
+  });
+
+  it("deletes a Facebook account through explicit account permissions without a Jest upgrade", async () => {
+    /** Isolated game services for account-operation regression checks. */
+    const services = createFakeHostServices();
+    /** Records whether deletion preparation starts. */
+    const requested = jest.fn();
+    /** Records calls to the authoritative deletion service. */
+    const deleted = jest.spyOn(services, "deleteAccount");
+    /** Uses actual capability-shaped account authority. */
+    const harness = createHarness(services, undefined, requested, undefined, undefined,
+      createHostAuthorityModules(services, {accountManagement: {username: true, avatar: false, deletion: true}}));
+    await harness.handlers.deleteAccount({type: "game:deleteAccount", requestId: "facebook", payload: {}});
+    expect(requested).toHaveBeenCalledTimes(1);
+    expect(deleted).toHaveBeenCalledTimes(1);
+    expect(harness.postOperation).toHaveBeenCalledWith("facebook", "accountDeletion", true, {success: true});
   });
 
   it("reports account deletion as failed when post-server client cleanup must be retried", async () => {

@@ -91,4 +91,22 @@ describe("immutable localized Daily generation", () => {
     expect(mockGenerateUniqueRiddle).toHaveBeenCalledTimes(3);
     expect(mockSet).not.toHaveBeenCalled();
   });
+
+  it("preserves bounded failure diagnostics for scheduled error reporting", async () => {
+    mockGenerateUniqueRiddle.mockResolvedValue(null);
+
+    await expect(generateLocalizedDailyChallengeForDate("2026-08-12")).rejects.toMatchObject({
+      failedLocales: ["en"],
+      attemptCount: 3,
+    });
+  });
+
+  it("recovers within the bounded budget after a transient generation failure", async () => {
+    mockGenerateUniqueRiddle.mockResolvedValueOnce(null);
+
+    await generateLocalizedDailyChallengeForDate("2026-08-12");
+
+    expect(mockGenerateUniqueRiddle).toHaveBeenCalledTimes(2);
+    expect(mockSet).toHaveBeenCalledTimes(1);
+  });
 });

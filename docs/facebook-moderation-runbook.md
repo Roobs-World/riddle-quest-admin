@@ -2,6 +2,8 @@
 
 Last source audit: 2026-08-22
 
+Owner decision, 2026-09-19: routine resolved player reports and support correspondence must be deleted 90 days after closure, with documented exceptions for active disputes or legal obligations. This resolves the period decision for those records only. The operator assignment, auditable closure/exception process and purge implementation remain release gates; no automatic expiry is claimed.
+
 This runbook describes the moderation intake that exists in source. It does not claim that an operator roster, response-time promise, sanction system, or production retention policy exists. Those items require owner/counsel approval before release. No chat or moderation admin panel is implemented or permitted by the product plan.
 
 ## Intake contract

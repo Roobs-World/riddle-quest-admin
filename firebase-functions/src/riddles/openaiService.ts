@@ -414,7 +414,7 @@ export async function generateUniqueRiddle(
     return validatedRiddle;
   } catch (error) {
     functions.logger.error("OpenAI riddle generation failed.", {model, ...getSafeErrorMetadata(error)});
-    captureException(error);
+    captureException(error, getSafeErrorMetadata(error));
     return null; // Return null on error to prevent breaking the loop
   }
 }

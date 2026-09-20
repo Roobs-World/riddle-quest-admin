@@ -217,3 +217,45 @@ The live Audience details screen states that Meta does not allow apps aimed at c
 ### Terms URL published
 
 Created and published the HTML5 Riddle Quest Terms of Service at https://roobsworld.com/riddle-quest/terms using the existing `portfolio` Vercel project. The exact URL now returns HTTP 200 to unauthenticated visitors. Desktop and mobile public browser checks passed. This supersedes the earlier 404 blocker. See [publication evidence](website/riddle-quest-terms-publication-2026-09-19.md) for source provenance, company verification, deployment ID and checks. Facebook age-audience confirmation and the remaining platform/commerce requirements are still outstanding.
+
+## Release-candidate audit and account fix
+
+The owner confirmed a Facebook audience of 13+, authorized artwork resizing, and requested a complete candidate for final approval rather than public publication. Meta recorded the audience declaration. All four required images and the real 28-second gameplay preview were accepted, with no missing-media notice after reload. See [current draft](../facebook-review-draft-2026-09-19.md), which supersedes the earlier media and age blockers.
+
+After owner email verification, Meta Business Settings lists Riddle Quest as owned by Roobs World; the developer Page selector now offers it and the partner form is populated. The form has not been submitted. The business address/website correction still returns “Error performing query”, including a retry after owner verification. No successful save is claimed.
+
+### Account regression repaired locally
+
+The audit found that shared host account authority depended solely on completed Jest registration. Facebook does not expose that upgrade flow, so username edits and deletion failed. Worse, deletion preparation closed the player's operation gate before discovering the missing authority.
+
+The fix adds explicit target-owned account permissions, allows Facebook username changes and deletion, and denies avatar upload because its backend remains Jest-only. The profile no longer offers that unsupported upload. Deletion now verifies authority before preparing destructive work. This is an availability fix; backend authentication and authoritative deletion remain required.
+
+Validation on the modified source:
+
+- All four isolated artifacts built and passed their audits. YouTube remains an engineering content fixture, not a complete certified release pack.
+- Portal unit suite: **126 suites / 753 tests passed**; **7 suites / 42 opt-in tests skipped**. Browser tests were run separately.
+- Focused account tests: **22 passed**, including absence of guest authority and deletion preparation ordering.
+- Jest gameplay browser: **1 passed**; Jest authentication browser: **28 passed**.
+- Expanded Facebook browser: **1 passed**, including actual target session assembly, two-step onboarding, profile username changes, absence of avatar uploads, and deletion against isolated fake services. No real player's account was deleted.
+- Reddit browser: **1 passed**; YouTube browser: **9 passed**. Release-script tests: **126 passed**; YouTube unit tests: **43 passed**.
+- Facebook profile boundary, commerce activation, TSDoc, file-size and whitespace checks passed.
+
+The initial sandboxed build stopped at pnpm's inaccessible SQLite package database. The approved rerun completed the builds. The first expanded Facebook test exposed fixture onboarding/tooltips after reload; completing onboarding and marking the unrelated profile tour seen resolved the harness failure. The passing Facebook test and remaining Reddit/YouTube checks were then run separately; do not describe the earlier interrupted combined command as a passing run.
+
+Logs: `/tmp/riddle-release-verification-fixed-20260919.log`, `/tmp/riddle-facebook-account-browser.log`, `/tmp/riddle-release-portal-unit.log`, `/tmp/riddle-facebook-account-tests.log`, `/tmp/riddle-release-reddit-after-fix.log`, `/tmp/riddle-release-youtube-after-fix.log`.
+
+**The fix is local and not included in Meta Testing version 2.** A new immutable testing bundle and hosted acceptance are still required before owner approval.
+
+An isolated clean checkout subsequently recorded the fix as `7d02b848eb17d2468ed8ab8600c1a0f7235bbc0f`. Its independent Facebook preflight passed and produced a 2,745,554-byte ZIP, SHA-256 `185b01400b24ec52fd6bb86b556c441882dccdf1c15082fa350f48d6791ebb15`. Existing dependencies were copied into the checkout after a cross-filesystem hard-link attempt failed; pnpm was configured to warn instead of attempting to reinstall matching dependencies. The main workspace dependencies were not removed. The clean-source check and artifact/secret-boundary audits passed.
+
+The local hash-scoped handoff was opened and the immutable ZIP selected in Meta's upload dialog. Automatic approval review rejected submitting the upload, requiring explicit owner authorization for that exact external artifact. The owner was asked. This records preparation only; Meta has not accepted or activated this new bundle.
+
+### Remaining external and operational gates
+
+Facebook commerce remains disabled: the seven-product catalog and 41 passing staged commerce/recovery tests do not prove a real checkout. Public signed-receipt verification, authenticated refund delivery, runtime activation and purchase/recovery/refund acceptance remain outstanding. Current official [IAP guidance](https://developers.facebook.com/documentation/games/monetize/in-app-purchases) permits test purchases before approval; [webhook guidance](https://developers.facebook.com/documentation/games/monetize/iap-webhooks) requires approved Zero Permission Access or Gaming Profile even in development. Payment APIs were absent from the actual hosted supported-API list. No charge or final review submission was made.
+
+IARC is still a draft. Reviewed content includes historical war references; the owner chose to retain and rate it accurately. Violence references and digital purchases are selected, but remaining content follow-ups and remote Classic/Daily corpus review are unresolved. No certificate is claimed.
+
+The live `/privacy` URL describes the portfolio website, not Facebook game processing. A [dedicated notice draft](../facebook-privacy-draft.md) records the actual platform boundary and publication gates. The owner approved 90 days after closure for routine reports/support correspondence, with documented dispute/legal exceptions; implementation and the operator assignment remain pending.
+
+Read-only live infrastructure inspection verified Firestore `eur3`, daily backups for seven days, weekly backups for 28 days, EU object storage with seven-day soft deletion, US Facebook identity/gameplay functions, and log retention of 30 days for `_Default` and 400 days for `_Required`. All 17 configured TTL policies were active, but no TTL was listed for identity nonces, retained provider identities, context-board parents, referrals or moderation records. These are configuration observations, not proof that every deletion or international-transfer obligation is satisfied.

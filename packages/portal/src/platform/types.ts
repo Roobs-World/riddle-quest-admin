@@ -463,6 +463,15 @@ export type ContextBoardCapability = {
  * another target's SDK to fill a missing capability.
  */
 export type PlatformCapabilities = {
+  /** Account operations supported without a provider registration/upgrade flow. */
+  accountManagement?: {
+    /** Whether the game account permits username changes. */
+    username: boolean;
+    /** Whether the target permits uploaded game avatars. */
+    avatar: boolean;
+    /** Whether authoritative account deletion is available. */
+    deletion: boolean;
+  };
   /** Guest registration/upgrade flow, when supported by the provider. */
   accountUpgrade?: AccountUpgradeCapability;
   /** Provider pause/resume callbacks, when browser lifecycle events are insufficient. */

@@ -140,6 +140,9 @@ const installJestSdkHarness = async (page: Page, scenario = "success") => {
     const sdk = {
       init: async () => {
         state.calls.push("sdk.init");
+        if (selectedScenario === "init-timeout") {
+          await new Promise<void>(() => undefined);
+        }
         if (selectedScenario === "init-failure" || (selectedScenario === "init-once-failure" && once("initFailed"))) {
           throw new Error("Mock Jest SDK initialization failed");
         }
@@ -426,6 +429,9 @@ const openHarness = async (
   const context = await browser.newContext({viewport: {width: 390, height: 844}});
   /** Provides page behavior. */
   const page = await context.newPage();
+  /** Captures uncaught startup failures, including asynchronous translation errors. */
+  const pageErrors: string[] = [];
+  page.on("pageerror", (error) => pageErrors.push(error.message));
   await page.route("https://cdn.jest.com/**", async (route) => {
     if (options.scenario === "sdk-request-delay") {
       await new Promise((resolve) => setTimeout(resolve, 5_000));
@@ -455,7 +461,7 @@ const openHarness = async (
     await page.locator("#root > *").waitFor({timeout: 2_000});
   }
   await navigation;
-  return {context, page};
+  return {context, page, pageErrors};
 };
 
 describeBrowser("Jest authentication integration", () => {
@@ -1544,16 +1550,18 @@ describeBrowser("Jest authentication integration", () => {
 
   it.each([
     ["SDK initialization", "init-failure", /sdk initialization failed/i],
+    ["SDK initialization timeout", "init-timeout", /please check your internet connection and try again/i],
     ["signed player", "signed-player-failure", /signed player request failed/i],
     ["identity exchange", "identity-failure", /identity exchange failed/i],
   ])("shows a retryable startup screen for %s failures", async (_name, scenario, message) => {
     /** Provides {context, page} behavior. */
-    const {context, page} = await openHarness(browser, {
+    const {context, page, pageErrors} = await openHarness(browser, {
       scenario,
     });
     await page.getByRole("heading", {name: /startup failed/i}).waitFor({timeout: 15_000});
     expect(await page.getByText(message).isVisible()).toBe(true);
     expect(await page.getByRole("button", {name: /retry/i}).isVisible()).toBe(true);
+    expect(pageErrors).toEqual([]);
     if (scenario === "identity-failure") {
       expect((await getHarnessState(page)).calls).toContain("sdk.payments.getIncompletePurchases");
     }
