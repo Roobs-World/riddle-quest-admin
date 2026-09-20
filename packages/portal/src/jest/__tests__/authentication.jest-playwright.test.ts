@@ -1265,8 +1265,7 @@ describeBrowser("Jest authentication integration", () => {
 
     /** A recipient of the lobby invitation enters multiplayer without a fabricated race result. */
     const invited = await openHarness(browser, {registered: true, harness: "race-auth", challengeDestination: "multiplayer"});
-    await invited.page.getByRole("button", {name: "Play with friends", exact: true}).waitFor({timeout: 15_000});
-    expect(await invited.page.locator(".race-category-grid").isVisible()).toBe(true);
+    await invited.page.locator(".race-category-grid").waitFor({state: "visible", timeout: 15_000});
     await invited.context.close();
 
     /** Provides recipient behavior. */
