@@ -22,6 +22,12 @@ snapshot.queries.release_automation = {
       evidence: "build-crazygames-basic.zip and its SHA-256 manifest are retained in the workflow artifact"},
     {platform: "Newgrounds", status: "Manual upload handoff ready", trigger, revision: sha, completedAt,
       evidence: "build-newgrounds.zip and its SHA-256 manifest are retained in the workflow artifact"},
+    {platform: "Game Jolt", status: "Manual upload handoff ready", trigger, revision: sha, completedAt,
+      evidence: "build-gamejolt.zip and its SHA-256 manifest are retained in the workflow artifact"},
+    {platform: "Coolmath Games", status: "Licensing pitch handoff ready", trigger, revision: sha, completedAt,
+      evidence: "build-coolmath-pitch.zip and its SHA-256 manifest are retained in the workflow artifact"},
+    {platform: "Armor Games", status: "Licensing pitch handoff ready", trigger, revision: sha, completedAt,
+      evidence: "build-armor-pitch.zip and its SHA-256 manifest are retained in the workflow artifact"},
   ],
   source: {
     label: "All-platform release workflow receipt",

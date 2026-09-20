@@ -3,7 +3,7 @@ import test from "node:test";
 import {getHtml5DistributionDefinition} from "./package-html5-platform.mjs";
 
 test("distribution targets have distinct immutable artifact names and honest release boundaries", () => {
-  const targets = ["itch", "crazygames", "newgrounds"];
+  const targets = ["itch", "crazygames", "newgrounds", "gamejolt", "coolmath", "armor"];
   const definitions = targets.map(getHtml5DistributionDefinition);
   assert.equal(new Set(definitions.map(({artifact}) => artifact)).size, targets.length);
   assert.ok(definitions.every(({artifact}) => artifact.endsWith(".zip")));

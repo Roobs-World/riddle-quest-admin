@@ -12,6 +12,9 @@ const definitions = Object.freeze({
   itch: Object.freeze({artifact: "build-itch.zip", boundary: "Initial project creation remains a manual itch.io step; later uploads use Butler."}),
   crazygames: Object.freeze({artifact: "build-crazygames-basic.zip", boundary: "Developer Portal upload and Basic Launch review remain manual."}),
   newgrounds: Object.freeze({artifact: "build-newgrounds.zip", boundary: "Newgrounds project creation and publication remain manual."}),
+  gamejolt: Object.freeze({artifact: "build-gamejolt.zip", boundary: "Game Jolt game-page, browser package, release and publication setup remain manual."}),
+  coolmath: Object.freeze({artifact: "build-coolmath-pitch.zip", boundary: "Coolmath licensing review remains manual; this neutral archive is for the non-exclusive pitch only."}),
+  armor: Object.freeze({artifact: "build-armor-pitch.zip", boundary: "Armor Games licensing outreach and publication remain manual."}),
 });
 
 export function getHtml5DistributionDefinition(target) {

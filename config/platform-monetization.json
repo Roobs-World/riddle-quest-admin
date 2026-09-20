@@ -1,23 +1,119 @@
 {
   "schemaVersion": 1,
   "platforms": [
-    {"platform":"Jest","iap":"Implemented and server-authoritative","ads":"Unavailable — no approved Jest ad API","gate":"Verify live purchase recovery and activation evidence"},
-    {"platform":"Facebook","iap":"Staged; disabled pending signed grant verification","ads":"Implemented; placement IDs and production feature flags required","gate":"Finish Meta verification, create both placements and capture hosted purchase contracts"},
-    {"platform":"Reddit","iap":"Implemented with Reddit Gold; production approval required","ads":"Unavailable — no supported Devvit in-game ad API","gate":"Complete payment verification, product review and public app review"},
-    {"platform":"YouTube","iap":"Prohibited by release contract","ads":"Excluded by repository target policy","gate":"Keep the artifact free of commerce and advertising code"},
-    {"platform":"Yahoo","iap":"Implemented with server-authoritative Stripe fulfillment","ads":"Unavailable — no approved Yahoo Games ad SDK","gate":"Verify one live authenticated checkout and entitlement"},
-    {"platform":"Netflix","iap":"Partner-gated","ads":"Partner-gated","gate":"Obtain written Netflix Games SDK and monetization contracts"},
-    {"platform":"itch.io","iap":"Unavailable for embedded HTML5; page donations only","ads":"Unavailable — itch.io does not place ads on project pages","gate":"Create the initial HTML Game page and configure Butler"},
-    {"platform":"CrazyGames","iap":"Disabled for Basic Launch; partner-selected options only later","ads":"Disabled for Basic Launch; CrazyGames ads required for Full Launch","gate":"Pass Basic Launch before building the isolated Full Launch adapter"},
-    {"platform":"Newgrounds","iap":"Provider requirements pending authenticated review","ads":"Provider requirements pending authenticated review","gate":"Review authenticated project and monetization terms"},
-    {"platform":"Discord","iap":"Planned through Premium Apps","ads":"Unavailable — no supported Activity ad product","gate":"Create and verify the Discord application, then configure Premium Apps"},
-    {"platform":"GamePix","iap":"Unavailable in reviewed public integration","ads":"Provider-gated; isolated GamePix adapter required","gate":"Accept terms, obtain account access and decide syndication"},
-    {"platform":"GameDistribution","iap":"Unavailable in reviewed public integration","ads":"Provider-gated; isolated GameDistribution adapter required","gate":"Accept contract and obtain the assigned game ID"},
-    {"platform":"GameMonetize","iap":"Unavailable in reviewed public integration","ads":"Provider-gated; isolated GameMonetize adapter required","gate":"Create the game record and obtain its GameId"},
-    {"platform":"Yandex Games","iap":"Provider-gated; Yandex payments only","ads":"Provider-gated; Yandex ads only","gate":"Confirm UK company contracting and payout eligibility"},
-    {"platform":"Poki","iap":"Prohibited","ads":"On hold; Poki ads required if a non-exclusive release is accepted","gate":"Take no action unless a written non-exclusive offer is accepted"},
-    {"platform":"Coolmath Games","iap":"Contract-gated","ads":"Must be removed from the submitted build","gate":"Wait for licensing acceptance before implementing an isolated target"},
-    {"platform":"Kongregate","iap":"Provider-gated; Kreds only","ads":"Third-party ads prohibited","gate":"Obtain developer approval and accept a compatible upload agreement"},
-    {"platform":"Armor Games","iap":"Contract-gated","ads":"Contract-gated","gate":"Obtain written terms through a non-exclusive licensing agreement"}
+    {
+      "platform": "Jest",
+      "iap": "Implemented and server-authoritative",
+      "ads": "Unavailable — no approved Jest ad API",
+      "gate": "Verify live purchase recovery and activation evidence"
+    },
+    {
+      "platform": "Facebook",
+      "iap": "Staged; disabled pending signed grant verification",
+      "ads": "Implemented; placement IDs and production feature flags required",
+      "gate": "Finish Meta verification, create both placements and capture hosted purchase contracts"
+    },
+    {
+      "platform": "Reddit",
+      "iap": "Implemented with Reddit Gold; production approval required",
+      "ads": "Unavailable — no supported Devvit in-game ad API",
+      "gate": "Complete payment verification, product review and public app review"
+    },
+    {
+      "platform": "YouTube",
+      "iap": "Prohibited by release contract",
+      "ads": "Excluded by repository target policy",
+      "gate": "Keep the artifact free of commerce and advertising code"
+    },
+    {
+      "platform": "Yahoo",
+      "iap": "Implemented with server-authoritative Stripe fulfillment",
+      "ads": "Unavailable — no approved Yahoo Games ad SDK",
+      "gate": "Verify one live authenticated checkout and entitlement"
+    },
+    {
+      "platform": "Netflix",
+      "iap": "Partner-gated",
+      "ads": "Partner-gated",
+      "gate": "Obtain written Netflix Games SDK and monetization contracts"
+    },
+    {
+      "platform": "itch.io",
+      "iap": "Unavailable for embedded HTML5; page donations only",
+      "ads": "Unavailable — itch.io does not place ads on project pages",
+      "gate": "Create the initial HTML Game page and configure Butler"
+    },
+    {
+      "platform": "CrazyGames",
+      "iap": "Disabled for Basic Launch; partner-selected options only later",
+      "ads": "Disabled for Basic Launch; CrazyGames ads required for Full Launch",
+      "gate": "Pass Basic Launch before building the isolated Full Launch adapter"
+    },
+    {
+      "platform": "Newgrounds",
+      "iap": "Provider requirements pending authenticated review",
+      "ads": "Provider requirements pending authenticated review",
+      "gate": "Review authenticated project and monetization terms"
+    },
+    {
+      "platform": "Discord",
+      "iap": "Planned through Premium Apps",
+      "ads": "Unavailable — no supported Activity ad product",
+      "gate": "Create and verify the Discord application, then configure Premium Apps"
+    },
+    {
+      "platform": "GamePix",
+      "iap": "Unavailable in reviewed public integration",
+      "ads": "Provider-gated; isolated GamePix adapter required",
+      "gate": "Accept terms, obtain account access and decide syndication"
+    },
+    {
+      "platform": "GameDistribution",
+      "iap": "Unavailable in reviewed public integration",
+      "ads": "Provider-gated; isolated GameDistribution adapter required",
+      "gate": "Accept contract and obtain the assigned game ID"
+    },
+    {
+      "platform": "GameMonetize",
+      "iap": "Unavailable in reviewed public integration",
+      "ads": "Provider-gated; isolated GameMonetize adapter required",
+      "gate": "Create the game record and obtain its GameId"
+    },
+    {
+      "platform": "Yandex Games",
+      "iap": "Provider-gated; Yandex payments only",
+      "ads": "Provider-gated; Yandex ads only",
+      "gate": "Confirm UK company contracting and payout eligibility"
+    },
+    {
+      "platform": "Poki",
+      "iap": "Prohibited",
+      "ads": "On hold; Poki ads required if a non-exclusive release is accepted",
+      "gate": "Take no action unless a written non-exclusive offer is accepted"
+    },
+    {
+      "platform": "Coolmath Games",
+      "iap": "Contract-gated",
+      "ads": "Must be removed from the submitted build",
+      "gate": "Wait for licensing acceptance before implementing an isolated target"
+    },
+    {
+      "platform": "Kongregate",
+      "iap": "Provider-gated; Kreds only",
+      "ads": "Third-party ads prohibited",
+      "gate": "Obtain developer approval and accept a compatible upload agreement"
+    },
+    {
+      "platform": "Armor Games",
+      "iap": "Contract-gated",
+      "ads": "Contract-gated",
+      "gate": "Obtain written terms through a non-exclusive licensing agreement"
+    },
+    {
+      "platform": "Game Jolt",
+      "iap": "Provider-gated; Game Jolt marketplace terms require authenticated review",
+      "ads": "Unavailable in the provider-neutral browser package",
+      "gate": "Create the game and review current authenticated monetization options before adding an isolated adapter"
+    }
   ]
 }

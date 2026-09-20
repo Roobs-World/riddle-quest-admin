@@ -46,3 +46,7 @@ Only itch.io publishes a supported unattended upload mechanism among the reviewe
 6. Create and deploy an isolated Discord Activity target, then configure its application and URL mapping in the Developer Portal.
 7. Keep Poki on hold and consider only a written non-exclusive offer; keep Newgrounds as a later manual submission because official public integration details are limited.
 8. Submit non-exclusive pitches to Coolmath Games and Armor Games, and apply for Kongregate developer access.
+
+## Added distribution target: Game Jolt
+
+**Game Jolt** supports browser/HTML5 games through a self-service game page and browser release package. The account owner must create and publish the game, package, and release in the authenticated dashboard; no supported public release CLI was found. The repository therefore produces `build-gamejolt.zip` and a SHA-256 manifest in the all-platform workflow, while the final dashboard upload and publication remain manual. Start at the official [add-game dashboard](https://gamejolt.com/dashboard/games/add). Optional Game Jolt API features must use a future isolated target adapter rather than changing the provider-neutral archive.

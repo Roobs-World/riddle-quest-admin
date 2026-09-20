@@ -23,6 +23,9 @@ const expectedCommands = new Map([
   ["itch", ["scripts/release/package-html5-platform.mjs", "itch"]],
   ["crazygames", ["scripts/release/package-html5-platform.mjs", "crazygames"]],
   ["newgrounds", ["scripts/release/package-html5-platform.mjs", "newgrounds"]],
+  ["gamejolt", ["scripts/release/package-html5-platform.mjs", "gamejolt"]],
+  ["coolmath", ["scripts/release/package-html5-platform.mjs", "coolmath"]],
+  ["armor", ["scripts/release/package-html5-platform.mjs", "armor"]],
 ]);
 const expectedRunbooks = new Map([
   ["jest", "docs/jest-html5-operations.md"],
@@ -34,11 +37,14 @@ const expectedRunbooks = new Map([
   ["itch", "docs/research/html5-publishing-platforms-2026-09-20.md"],
   ["crazygames", "docs/research/html5-publishing-platforms-2026-09-20.md"],
   ["newgrounds", "docs/research/html5-publishing-platforms-2026-09-20.md"],
+  ["gamejolt", "docs/research/html5-publishing-platforms-2026-09-20.md"],
+  ["coolmath", "docs/research/html5-publishing-platforms-2026-09-20.md"],
+  ["armor", "docs/research/html5-publishing-platforms-2026-09-20.md"],
 ]);
 
 test("the public interface exposes one isolated canonical command per release target", () => {
   const plans = listPlatformReleasePlans();
-  assert.deepEqual(plans.map(({target}) => target), ["jest", "facebook", "youtube", "reddit", "netflix", "yahoo", "itch", "crazygames", "newgrounds"]);
+  assert.deepEqual(plans.map(({target}) => target), ["jest", "facebook", "youtube", "reddit", "netflix", "yahoo", "itch", "crazygames", "newgrounds", "gamejolt", "coolmath", "armor"]);
   for (const plan of plans) {
     assert.equal(plan.publicCommand, `pnpm release:${plan.target}`);
     assert.equal("command" in plan, false);
@@ -49,7 +55,7 @@ test("the public interface exposes one isolated canonical command per release ta
 
 test("the root package exposes target releases and one combined release command", async () => {
   const packageJson = JSON.parse(await readFile(new URL("../../package.json", import.meta.url), "utf8"));
-  for (const target of ["jest", "facebook", "youtube", "reddit", "netflix", "yahoo", "itch", "crazygames", "newgrounds"]) {
+  for (const target of ["jest", "facebook", "youtube", "reddit", "netflix", "yahoo", "itch", "crazygames", "newgrounds", "gamejolt", "coolmath", "armor"]) {
     assert.equal(
       packageJson.scripts[`release:${target}`],
       `node scripts/release/run-platform-release.mjs ${target}`,
@@ -95,8 +101,11 @@ test("the combined release verifies once before running every adapter", async ()
     expectedCommands.get("itch"),
     expectedCommands.get("crazygames"),
     expectedCommands.get("newgrounds"),
+    expectedCommands.get("gamejolt"),
+    expectedCommands.get("coolmath"),
+    expectedCommands.get("armor"),
   ]);
-  assert.deepEqual(results.map(({target}) => target), ["jest", "facebook", "youtube", "reddit", "netflix", "yahoo", "itch", "crazygames", "newgrounds"]);
+  assert.deepEqual(results.map(({target}) => target), ["jest", "facebook", "youtube", "reddit", "netflix", "yahoo", "itch", "crazygames", "newgrounds", "gamejolt", "coolmath", "armor"]);
 });
 
 test("the Facebook adapter performs only the local preflight and immutable handoff", async () => {

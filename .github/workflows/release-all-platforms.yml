@@ -46,6 +46,9 @@ jobs:
           pnpm release:itch
           pnpm release:crazygames
           pnpm release:newgrounds
+          pnpm release:gamejolt
+          pnpm release:coolmath
+          pnpm release:armor
       - name: Record the successful release in the dashboard
         run: node scripts/release/record-release-automation.mjs
         env:
@@ -67,6 +70,12 @@ jobs:
             build-crazygames-basic.zip.manifest.json
             build-newgrounds.zip
             build-newgrounds.zip.manifest.json
+            build-gamejolt.zip
+            build-gamejolt.zip.manifest.json
+            build-coolmath-pitch.zip
+            build-coolmath-pitch.zip.manifest.json
+            build-armor-pitch.zip
+            build-armor-pitch.zip.manifest.json
             build-youtube.zip
             build-youtube.manifest.json
             build-youtube.test-report.json
