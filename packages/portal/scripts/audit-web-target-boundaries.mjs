@@ -227,7 +227,9 @@ export async function auditWebTargetBoundaries({sourceDirectory = defaultSourceD
         });
       }
 
-      if ((owner === "reddit" || owner === "youtube") && (isFirebasePackage(specifier) || isSentryPackage(specifier))) {
+      const yahooIdentityEntry = owner === "youtube" && path.basename(file) === "yahooMain.tsx";
+      if ((owner === "reddit" || (owner === "youtube" && !yahooIdentityEntry)) &&
+          (isFirebasePackage(specifier) || isSentryPackage(specifier))) {
         addViolation({
           code: "FORBIDDEN_PROVIDER_IMPORT",
           file,

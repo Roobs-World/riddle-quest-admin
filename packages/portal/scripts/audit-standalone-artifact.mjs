@@ -25,9 +25,9 @@ const forbidden = [
   ["Facebook", /connect\.facebook\.net|\bFBInstant\b|fbapp-config/iu],
   ["Reddit", /\bdevvit(?:-internal)?\b|RedditPlatform/iu],
   ["YouTube", /youtube\.com\/game_api|\bytgame\b/iu],
-  ["Firebase", /firebaseio\.com|googleapis\.com|cloudfunctions\.net|\bfirebase(?:app|auth|database|firestore|functions|storage)\b/iu],
+  ...(target === "netflix" ? [["Firebase", /firebaseio\.com|googleapis\.com|cloudfunctions\.net|\bfirebase(?:app|auth|database|firestore|functions|storage)\b/iu]] : []),
   ["analytics", /\bSentry\b|sentry\.io|google-analytics|googletagmanager|\bgtag\s*\(/iu],
-  ["network API", /\bfetch\s*\(|\bXMLHttpRequest\b|\bWebSocket\b|\bEventSource\b|\bsendBeacon\s*\(/u],
+  ...(target === "netflix" ? [["network API", /\bfetch\s*\(|\bXMLHttpRequest\b|\bWebSocket\b|\bEventSource\b|\bsendBeacon\s*\(/u]] : []),
   ["commerce or advertising", /\b(?:purchaseAsync|checkout|IAP|showInterstitialAd|showRewardedAd|AdMob)\b/iu],
 ];
 for (const [label, pattern] of forbidden) {

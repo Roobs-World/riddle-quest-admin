@@ -350,7 +350,7 @@ test("each target-owned HTML document imports one explicit target main and only 
       externalScripts: ["https://www.youtube.com/game_api/v1"],
     },
     {file: "targets/netflix/index.html", module: "/src/youtube/standaloneMain.tsx", externalScripts: []},
-    {file: "targets/yahoo/index.html", module: "/src/youtube/standaloneMain.tsx", externalScripts: []},
+    {file: "targets/yahoo/index.html", module: "/src/youtube/yahooMain.tsx", externalScripts: []},
   ];
 
   for (const document of documents) {
