@@ -19,7 +19,9 @@ function EvidenceTable({id, queryId, title, rows, columns}) {
       <table className="integration-table">
         <thead><tr>{columns.map(({key, label}) => <th key={key}>{label}</th>)}</tr></thead>
         <tbody>{rows.map((row) => <tr key={row.platform ?? row.service ?? row.check}>
-          {columns.map(({key, status}) => <td key={key}>{status ? <Status>{row[key]}</Status> : row[key]}</td>)}
+          {columns.map(({key, status, link}) => <td key={key}>{link && row[key]
+            ? <a href={row[key]} target="_blank" rel="noreferrer">Open</a>
+            : status ? <Status>{row[key]}</Status> : row[key]}</td>)}
         </tr>)}</tbody>
       </table>
     </div>
@@ -32,6 +34,7 @@ export function DashboardContent() {
   const releases = reviewedRows("provider_release_evidence");
   const distributionCandidates = reviewedRows("html5_distribution_candidates");
   const releaseAutomation = reviewedRows("release_automation");
+  const manualActions = reviewedRows("manual_action_checklist");
   const services = reviewedRows("service_status");
   const dashboardChecks = reviewedRows("dashboard_verification");
   const integratedTargets = platforms.filter(({integration}) => integration.startsWith("Implemented")).length;
@@ -49,6 +52,15 @@ export function DashboardContent() {
       <MetricCard id="metric-provider-releases" queryId="provider_release_evidence" sourceRows={releases} title="Provider environments" value={String(providerEnvironments)} description="Jest accepted, Facebook Testing, Reddit private and Yahoo production." />
       <MetricCard id="metric-services" queryId="service_status" sourceRows={services} title="Operational services" value={`${integratedServices}/${services.length}`} description="Firebase, Sentry, Vercel and Stripe are integrated." />
     </section>
+
+    <Section>
+      <SectionHeader id="manual-action-checklist-title" title="Your manual release checklist" />
+      <EvidenceTable id="manual-action-checklist" queryId="manual_action_checklist" title="Account, portal and approval steps that require you" rows={manualActions} columns={[
+        {key:"status",label:"Status",status:true}, {key:"priority",label:"Priority"},
+        {key:"platform",label:"Platform"}, {key:"action",label:"What you need to do"},
+        {key:"destination",label:"Portal",link:true}, {key:"unlocks",label:"Unlocks"},
+      ]} />
+    </Section>
 
     <Section>
       <SectionHeader id="platform-integration-title" title="Target integration matrix" />

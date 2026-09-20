@@ -54,6 +54,25 @@ test("the dashboard exposes the latest release automation receipt", () => {
   assert.match(dashboard, /queryId="release_automation"/u);
 });
 
+test("the dashboard provides one source-backed manual checklist covering every release platform", () => {
+  const actions = data.queries.manual_action_checklist.rows;
+  const coveredPlatforms = new Set(actions.map(({platform}) => platform));
+  const expectedPlatforms = new Set([
+    ...data.queries.provider_release_evidence.rows.map(({platform}) => platform),
+    ...data.queries.html5_distribution_candidates.rows.map(({platform}) => platform),
+  ]);
+
+  for (const platform of expectedPlatforms) {
+    assert.ok(coveredPlatforms.has(platform), `${platform} is missing from the manual checklist`);
+  }
+  assert.ok(actions.length >= expectedPlatforms.size);
+  assert.ok(actions.every(({status, priority, action, unlocks}) =>
+    status.trim() && priority.trim() && action.trim() && unlocks.trim()));
+  assert.ok(actions.every(({destination}) => destination === "" || /^https:\/\//u.test(destination)));
+  assert.match(dashboard, /queryId="manual_action_checklist"/u);
+  assert.match(dashboard, /title="Your manual release checklist"/u);
+});
+
 test("the dashboard publishes its desktop, mobile and output-coverage E2E results", () => {
   const checks = data.queries.dashboard_verification.rows;
 

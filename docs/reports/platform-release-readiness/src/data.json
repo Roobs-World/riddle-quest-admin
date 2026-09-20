@@ -3,7 +3,7 @@
   "surface": "dashboard",
   "buildStatus": "complete",
   "title": "Riddle Quest integration and release status",
-  "generatedAt": "2026-09-20T19:18:41.573Z",
+  "generatedAt": "2026-09-20T19:24:42.222Z",
   "status": "verified-repository-and-provider-evidence",
   "filters": [],
   "queries": {
@@ -803,6 +803,224 @@
             "definition": "The result emitted by the immutable all-platform workflow for one exact repository revision.",
             "componentIds": [
               "release-automation"
+            ]
+          }
+        ]
+      }
+    },
+    "manual_action_checklist": {
+      "rows": [
+        {
+          "status": "To do",
+          "priority": "Now",
+          "platform": "GitHub / Jest",
+          "action": "Add JEST_GAME_UPLOAD_TOKEN and JEST_NOTIFICATION_EMAIL to the protected jest-production environment.",
+          "destination": "https://github.com/Grindhead/riddle-quest/settings/environments",
+          "unlocks": "Automatic Jest release and activation workflow"
+        },
+        {
+          "status": "To verify",
+          "priority": "Now",
+          "platform": "Jest",
+          "action": "Confirm the accepted version has activated and record the authoritative provider result.",
+          "destination": "",
+          "unlocks": "Closes the current Jest release gate"
+        },
+        {
+          "status": "Blocked",
+          "priority": "Now",
+          "platform": "Facebook",
+          "action": "Complete Meta representative verification using an accepted photo-ID administrator.",
+          "destination": "https://business.facebook.com/settings/security",
+          "unlocks": "Business-detail correction and App Review submission"
+        },
+        {
+          "status": "To do",
+          "priority": "After verification",
+          "platform": "Facebook",
+          "action": "Correct the legal address and website, complete declarations, then submit the existing review draft.",
+          "destination": "https://developers.facebook.com/apps/1748953042991569/app-review/",
+          "unlocks": "Meta App Review"
+        },
+        {
+          "status": "To do",
+          "priority": "After verification",
+          "platform": "Facebook",
+          "action": "Create one interstitial and one rewarded-video ad placement and save their IDs in the deployment environment.",
+          "destination": "https://business.facebook.com/pub/",
+          "unlocks": "Facebook-only production ads"
+        },
+        {
+          "status": "To do",
+          "priority": "Now",
+          "platform": "Reddit",
+          "action": "Capture the required authentication, payment, refund, post-entry, realtime and notification contract fixtures.",
+          "destination": "https://developers.reddit.com/apps",
+          "unlocks": "Public submission evidence"
+        },
+        {
+          "status": "To do",
+          "priority": "After evidence",
+          "platform": "Reddit",
+          "action": "Confirm production Payments approval and submit private version 0.0.1.23 for public review.",
+          "destination": "https://developers.reddit.com/apps",
+          "unlocks": "Public Reddit distribution and Gold purchases"
+        },
+        {
+          "status": "Blocked",
+          "priority": "Now",
+          "platform": "YouTube",
+          "action": "Obtain Playables Developer Portal access and Editor or Manager access to the onboarded channel.",
+          "destination": "https://developers.google.com/youtube/gaming/playables/developer_portal",
+          "unlocks": "Bundle ingestion and certification"
+        },
+        {
+          "status": "To do",
+          "priority": "After access",
+          "platform": "YouTube",
+          "action": "Upload the exact release ZIP, run bundle analysis and the hosted test suite, then complete desktop, mobile and physical-device checks.",
+          "destination": "https://developers.google.com/youtube/gaming/playables/developer_portal",
+          "unlocks": "YouTube certification submission"
+        },
+        {
+          "status": "To verify",
+          "priority": "Now",
+          "platform": "Yahoo",
+          "action": "Complete one authenticated Stripe purchase and verify the entitlement appears after webhook fulfillment.",
+          "destination": "https://yahoo.roobsworld.com",
+          "unlocks": "Production payment evidence"
+        },
+        {
+          "status": "Blocked",
+          "priority": "Partner access",
+          "platform": "Netflix",
+          "action": "Obtain a Netflix Games producer, Partner Portal invitation, private SDK contract and certification requirements.",
+          "destination": "https://help.netflix.com/en/node/132197",
+          "unlocks": "A real Netflix integration and submission"
+        },
+        {
+          "status": "To do",
+          "priority": "Now",
+          "platform": "itch.io",
+          "action": "Create an HTML Game page for Riddle Quest.",
+          "destination": "https://itch.io/game/new",
+          "unlocks": "The first itch.io upload"
+        },
+        {
+          "status": "To do",
+          "priority": "After page creation",
+          "platform": "itch.io",
+          "action": "Add ITCH_BUTLER_API_KEY and ITCH_GAME_TARGET to the GitHub release environment.",
+          "destination": "https://github.com/Grindhead/riddle-quest/settings/environments",
+          "unlocks": "Automatic Butler uploads on future releases"
+        },
+        {
+          "status": "To do",
+          "priority": "Now",
+          "platform": "CrazyGames",
+          "action": "Sign in as Roobs World, create the game, upload build-crazygames-basic.zip and supply the requested store media.",
+          "destination": "https://developer.crazygames.com/",
+          "unlocks": "Basic Launch QA"
+        },
+        {
+          "status": "To do",
+          "priority": "Later",
+          "platform": "Newgrounds",
+          "action": "Review the authenticated project terms, create a game project and upload build-newgrounds.zip.",
+          "destination": "https://www.newgrounds.com/projects/games/new",
+          "unlocks": "Newgrounds review and publication"
+        },
+        {
+          "status": "To do",
+          "priority": "Next integration",
+          "platform": "Discord",
+          "action": "Create the Discord application, enable Activities and provide its application ID and URL mapping.",
+          "destination": "https://discord.com/developers/applications",
+          "unlocks": "Embedded App SDK integration and in-client testing"
+        },
+        {
+          "status": "To review",
+          "priority": "Later",
+          "platform": "GamePix",
+          "action": "Create a developer account, review current distribution terms and decide whether network syndication is allowed.",
+          "destination": "https://partners.gamepix.com/developers",
+          "unlocks": "GamePix adapter and submission"
+        },
+        {
+          "status": "To review",
+          "priority": "Later",
+          "platform": "GameDistribution",
+          "action": "Review the portal contract, create the game record and copy its assigned game ID.",
+          "destination": "https://gamedistribution.com/game-developers",
+          "unlocks": "GameDistribution SDK and ads adapter"
+        },
+        {
+          "status": "To review",
+          "priority": "Later",
+          "platform": "GameMonetize",
+          "action": "Compare current commercial terms, create the game record and obtain its GameId.",
+          "destination": "https://gamemonetize.com/developers",
+          "unlocks": "GameMonetize SDK verification"
+        },
+        {
+          "status": "To investigate",
+          "priority": "Later",
+          "platform": "Yandex Games",
+          "action": "Confirm that Yandex Advertising Network can contract with and pay the UK company before engineering starts.",
+          "destination": "https://games.yandex.com/console/",
+          "unlocks": "Contract onboarding and Yandex target work"
+        },
+        {
+          "status": "On hold",
+          "priority": "No action",
+          "platform": "Poki",
+          "action": "Do not accept web exclusivity; revisit only a written non-exclusive offer compatible with existing releases.",
+          "destination": "https://app.poki.dev/",
+          "unlocks": "A safe commercial decision if Poki responds"
+        },
+        {
+          "status": "To do",
+          "priority": "Outreach",
+          "platform": "Coolmath Games",
+          "action": "Submit the playable URL as a non-exclusive licensing pitch.",
+          "destination": "https://developers.coolmathgames.com/",
+          "unlocks": "Editorial review before any isolated SDK work"
+        },
+        {
+          "status": "To do",
+          "priority": "Outreach",
+          "platform": "Kongregate",
+          "action": "Apply as Roobs World Limited, review the upload agreement and decline exclusive-hosting incentives.",
+          "destination": "https://www.kongregate.com/developer_center",
+          "unlocks": "Developer Portal upload access"
+        },
+        {
+          "status": "To do",
+          "priority": "Outreach",
+          "platform": "Armor Games",
+          "action": "Send the playable build as a non-exclusive pitch, disclose generative-AI use and decline timed exclusivity.",
+          "destination": "https://developers.armorgames.com/docs/introduction/overview/",
+          "unlocks": "Curated licensing review"
+        }
+      ],
+      "source": {
+        "label": "Manual release actions consolidated from current verified platform gates",
+        "tables": [
+          "docs/all-platform-activation-checklist.md",
+          "docs/research/html5-publishing-platforms-2026-09-20.md",
+          "docs/reports/platform-release-readiness/src/data.json:provider_release_evidence",
+          "docs/reports/platform-release-readiness/src/data.json:html5_distribution_candidates"
+        ],
+        "filters": [
+          "Only steps requiring an account owner, identity check, contract decision, portal interaction, credential creation or physical-device verification are included.",
+          "Completed repository automation is excluded. Poki remains an explicit no-action hold."
+        ],
+        "metricDefinitions": [
+          {
+            "label": "Manual action status",
+            "definition": "The latest reviewed state of one owner-operated release gate. It is not evidence that the provider accepted or completed the action.",
+            "componentIds": [
+              "manual-action-checklist"
             ]
           }
         ]
