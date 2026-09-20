@@ -27,7 +27,7 @@
     },
     "provider_release_evidence": {
       "rows": [
-        {"platform":"Facebook","providerReference":"Bundle instance 28625402820405523; review draft 1748953119658228","artifact":"SHA-256 50fd13547d5dab5049b24d5d7cf4a2cbb0d06d04e558a230c4a946cb86f50c45","state":"Testing; review draft incomplete","nextGate":"Complete legal data-handling declarations, submit review and promote"},
+        {"platform":"Facebook","providerReference":"Bundle instance 28625402820405523; review draft 1748953119658228","artifact":"SHA-256 50fd13547d5dab5049b24d5d7cf4a2cbb0d06d04e558a230c4a946cb86f50c45","state":"Testing; controller and country saved in review draft","nextGate":"Confirm processors, national-security disclosure and formal request policies; then submit review and promote"},
         {"platform":"Reddit","providerReference":"Private version 0.0.1.23","artifact":"Installed through authenticated Devvit CLI","state":"Private testing","nextGate":"Capture auth, payment, refund, post-entry, realtime and notification contract fixtures"},
         {"platform":"YouTube","providerReference":"Playables Developer Portal","artifact":"build-youtube.zip; SHA-256 1b9f41fc0a46378341c01fac3176566ffe1489beebfaef9f751c0191fd69c041","state":"Portal unauthorized","nextGate":"Invitation and Editor or Manager channel access"},
         {"platform":"Yahoo","providerReference":"Vercel deployment dpl_2n49GfZUrGx8FQmogJD4AfG81XuH","artifact":"yahoo.roobsworld.com plus three deployed Stripe Functions","state":"Production deployed","nextGate":"Verify authenticated payment journey"},
