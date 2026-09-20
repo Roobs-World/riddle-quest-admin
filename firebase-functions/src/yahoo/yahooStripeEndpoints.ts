@@ -14,6 +14,8 @@ const stripeWebhookSecret = defineSecret("STRIPE_WEBHOOK_SECRET");
 const gameUrl = "https://yahoo.roobsworld.com/";
 /** Provides region behavior. */
 const region = "us-central1";
+/** Stripe's eligible general digital-goods code for electronically supplied virtual items. */
+const yahooCoinTaxCode = "txcd_10000000";
 
 /** Provides stripe client behavior. */
 const stripeClient = () => new Stripe(stripeSecretKey.value());
@@ -109,9 +111,10 @@ export const createYahooStripeCheckout = onCallWithSentry<
             currency: product.currency,
             unit_amount: product.unitAmount,
             product_data: {
-              name: product.name,
-              description: product.description,
-              metadata: {productId: product.productId, coins: String(product.coins)},
+            name: product.name,
+            description: product.description,
+            tax_code: yahooCoinTaxCode,
+            metadata: {productId: product.productId, coins: String(product.coins)},
             },
           },
         },

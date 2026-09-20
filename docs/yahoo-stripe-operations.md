@@ -1,6 +1,6 @@
 # Yahoo Stripe commerce operations
 
-The Yahoo web release uses Stripe-hosted Checkout with Managed Payments for the six shared consumable coin packs. Stripe acts as merchant of record for these transactions. Yahoo authentication remains the account boundary. The browser never grants coins and never receives a Stripe secret.
+The Yahoo web release uses Stripe-hosted Checkout with Managed Payments for the six shared consumable coin packs. Stripe acts as merchant of record for these transactions. Coin packs use Stripe's eligible `txcd_10000000` electronically supplied digital-goods tax classification. Yahoo authentication remains the account boundary. The browser never grants coins and never receives a Stripe secret.
 
 ## Runtime flow
 
