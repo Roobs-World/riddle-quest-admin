@@ -61,7 +61,27 @@ async function issueById(issueId, token) {
   const found = await issues(token, `issue.id:${issueId}`, "5");
   return found.find((issue) => String(issue.id) === String(issueId)) ?? null;
 }
-async function reserveBranch(issueId, token) {
+const CLAIM_TIMEOUT_MS = 4 * 60 * 60 * 1000;
+
+async function createClaim(repoUrl, baseRef, branch, issueId, token) {
+  const commit = await api(`${repoUrl}/git/commits/${baseRef.object.sha}`, token);
+  const claim = await api(`${repoUrl}/git/commits`, token, {
+    method: "POST",
+    headers: {Accept: "application/vnd.github+json", "Content-Type": "application/json"},
+    body: JSON.stringify({
+      message: `[sentry-worker] Claim issue ${issueId}`,
+      tree: commit.tree.sha,
+      parents: [baseRef.object.sha],
+    }),
+  });
+  await api(`${repoUrl}/git/refs/heads/${encodeURIComponent(branch)}`, token, {
+    method: "PATCH",
+    headers: {Accept: "application/vnd.github+json", "Content-Type": "application/json"},
+    body: JSON.stringify({sha: claim.sha}),
+  });
+}
+
+export async function reserveBranch(issueId, token, now = Date.now()) {
   const repoUrl = `https://api.github.com/repos/${REPOSITORY}`;
   const base = process.env.TARGET_BRANCH ?? "jest";
   const ref = await api(`${repoUrl}/git/ref/heads/${encodeURIComponent(base)}`, token);
@@ -70,9 +90,20 @@ async function reserveBranch(issueId, token) {
     headers: {Accept: "application/vnd.github+json"},
   });
   const branch = `codex/sentry-${issueId}`;
-  const response = await fetch(`${repoUrl}/git/refs`, {method: "POST", headers: {Accept: "application/vnd.github+json", Authorization: `Bearer ${token}`, "Content-Type": "application/json"}, body: JSON.stringify({ref: `refs/heads/${branch}`, sha: ref.object.sha})});
-  if (response.status === 422) return null;
+  let response = await fetch(`${repoUrl}/git/refs`, {method: "POST", headers: {Accept: "application/vnd.github+json", Authorization: `Bearer ${token}`, "Content-Type": "application/json"}, body: JSON.stringify({ref: `refs/heads/${branch}`, sha: ref.object.sha})});
+  if (response.status === 422) {
+    const pulls = await api(`${repoUrl}/pulls?state=all&head=${encodeURIComponent(`Grindhead:${branch}`)}&per_page=1`, token, {
+      headers: {Accept: "application/vnd.github+json"},
+    });
+    if (pulls.length) return null;
+    const existing = await api(`${repoUrl}/branches/${encodeURIComponent(branch)}`, token);
+    const updatedAt = Date.parse(existing.commit?.commit?.committer?.date ?? "");
+    if (!Number.isFinite(updatedAt) || now - updatedAt < CLAIM_TIMEOUT_MS) return null;
+    await api(`${repoUrl}/git/refs/heads/${encodeURIComponent(branch)}`, token, {method: "DELETE"});
+    response = await fetch(`${repoUrl}/git/refs`, {method: "POST", headers: {Accept: "application/vnd.github+json", Authorization: `Bearer ${token}`, "Content-Type": "application/json"}, body: JSON.stringify({ref: `refs/heads/${branch}`, sha: ref.object.sha})});
+  }
   if (!response.ok) throw new Error(`Unable to reserve repair branch (${response.status})`);
+  await createClaim(repoUrl, ref, branch, issueId, token);
   return {base, branch};
 }
 export async function reconcileRepair(issueId, token) {

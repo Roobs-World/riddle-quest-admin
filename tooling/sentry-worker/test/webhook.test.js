@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import {createHmac} from "node:crypto";
 import test from "node:test";
-import handler, {issueIdentity, launchFirstUnclaimed, reconcileRepair, verifySignature} from "../api/sentry-webhook.js";
+import handler, {issueIdentity, launchFirstUnclaimed, reconcileRepair, reserveBranch, verifySignature} from "../api/sentry-webhook.js";
 
 async function request(method, headers = {}) {
   const response = {headers: {}, setHeader(name, value) {this.headers[name] = value;}, end(body) {this.body = body;}};
@@ -44,6 +44,38 @@ test("cron selection skips claimed issues and launches the next candidate", asyn
   });
   assert.deepEqual(seen, ["newest", "next"]);
   assert.deepEqual(started, {issue: {id: "next"}, result: {duplicate: false, sandboxId: "sandbox"}});
+});
+test("an abandoned branch without a pull request is reclaimed after the sandbox timeout", async (context) => {
+  const originalFetch = globalThis.fetch;
+  const requests = [];
+  const replies = [
+    {object: {sha: "base-sha"}},
+    {workflow_runs: []},
+    {status: 422, body: {message: "Reference already exists"}},
+    [],
+    {commit: {commit: {committer: {date: "2026-09-20T00:00:00Z"}}}},
+    {status: 204, body: null},
+    {ref: "refs/heads/codex/sentry-123"},
+    {tree: {sha: "tree-sha"}},
+    {sha: "claim-sha"},
+    {ref: "refs/heads/codex/sentry-123", object: {sha: "claim-sha"}},
+  ];
+  context.after(() => {globalThis.fetch = originalFetch;});
+  globalThis.fetch = async (url, options = {}) => {
+    requests.push({url: String(url), method: options.method ?? "GET", body: options.body});
+    const next = replies.shift();
+    const status = next?.status ?? 200;
+    const body = next && Object.hasOwn(next, "body") ? next.body : next;
+    return new Response(body === null ? null : JSON.stringify(body), {status});
+  };
+
+  assert.deepEqual(await reserveBranch("123", "token", Date.parse("2026-09-20T05:00:00Z")), {
+    base: "jest",
+    branch: "codex/sentry-123",
+  });
+  assert.equal(requests.filter((request) => request.method === "DELETE").length, 1);
+  assert.equal(requests.filter((request) => request.url.endsWith("/git/refs")).length, 2);
+  assert.match(requests.at(-2).body, /\[sentry-worker\] Claim issue 123/u);
 });
 test("a later cron merges a repaired pull request after its exact checks pass", async (context) => {
   const originalFetch = globalThis.fetch;
