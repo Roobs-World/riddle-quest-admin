@@ -1,23 +1,58 @@
 {
-  "id":"7677b77a-0b56-4194-a2e7-937aff8f27f7","surface":"report","title":"Four targets pass locally; YouTube is packaged for external certification","generatedAt":"2026-09-03T10:30:00Z","status":"verified-local-evidence","filters":[],"report":{"asOf":"2026-09-03","visibleFilterIds":[]},
-  "queries":{
-    "platform_status":{"rows":[
-      {"platform":"Jest","build":"Passed","artifactAudit":"Passed","browser":"Passed","releaseBoundary":"Manual upload not performed"},
-      {"platform":"Facebook","build":"Passed","artifactAudit":"Passed","browser":"Passed","releaseBoundary":"Manual upload not performed"},
-      {"platform":"Reddit","build":"Passed","artifactAudit":"Passed","browser":"Passed","releaseBoundary":"Promotion not performed"},
-      {"platform":"YouTube","build":"Passed","artifactAudit":"Passed","browser":"9/9 passed","releaseBoundary":"ZIP ready; Portal certification pending"}
-    ],"source":{"label":"Canonical local release verification report","tables":["build-youtube.test-report.json"],"filters":["Evidence captured 2026-09-03; external platform actions excluded"],"metricDefinitions":[{"label":"Platform status","definition":"Result recorded by the canonical release evidence suites for each isolated target.","componentIds":["platform-status","local-summary"]}]}},
-    "youtube_artifact":{"rows":[{"contentVersion":"youtube-content-v1-70584787c0bcc8f6","locales":17,"riddlesPerLocale":180,"translatedItems":2880,"expandedFiles":7,"expandedBytes":1116274,"zipBytes":365853,"zipSha256":"b778f026238aca72d82096bfc534a53c1e264b9fd8f93f40edfee1916cd8788c"}],"source":{"label":"Deterministic YouTube release manifest and content audit","tables":["build-youtube.manifest.json","firebase-functions/artifacts/youtube-content/youtube-content-v1.audit.json"],"metricDefinitions":[
-      {"label":"Locales","definition":"Locales embedded in the audited production YouTube content pack.","componentIds":["metric-locales","youtube-artifact"]},
-      {"label":"Riddles per locale","definition":"Canonical riddle count present in every embedded locale.","componentIds":["metric-riddles","youtube-artifact"]},
-      {"label":"Release suites","definition":"Canonical local evidence suites with a passed status.","componentIds":["metric-suites","verification-suites"]},
-      {"label":"ZIP size","definition":"Byte length of the deterministic root-level YouTube upload archive.","componentIds":["metric-zip","youtube-artifact"]}
-    ]}},
-    "verification_suites":{"rows":[
-      {"suite":"YouTube content tests","status":"Passed","scope":"Authoring, compilation, audit and recovery"},{"suite":"YouTube runtime unit tests","status":"Passed","scope":"SDK, save, authority, content and input"},{"suite":"Legacy target builds and audits","status":"Passed","scope":"Jest, Facebook and Reddit isolated builds"},{"suite":"YouTube release build and audit","status":"Passed","scope":"Production bundle and forbidden-code boundary"},{"suite":"Release boundary tests","status":"Passed","scope":"Packaging, reproducibility and contamination checks"},{"suite":"Jest browser tests","status":"Passed","scope":"Injected platform harness"},{"suite":"Facebook browser tests","status":"Passed","scope":"Injected platform harness"},{"suite":"Reddit browser tests","status":"Passed","scope":"Injected platform harness"},{"suite":"YouTube browser tests","status":"Passed","scope":"9 production artifact journeys"}
-    ],"source":{"label":"Hash-bound YouTube test report","tables":["build-youtube.test-report.json"],"metricDefinitions":[{"label":"Suite status","definition":"Exit-zero result retained with stdout and stderr SHA-256 evidence.","componentIds":["verification-suites","metric-suites"]}]}},
-    "remaining_work":{"rows":[
-      {"item":"Portal access and channel role","status":"Blocked externally","requirement":"YouTube invitation plus Manager or Editor permission"},{"item":"Portal metadata and thumbnails","status":"Blocked externally","requirement":"Owner-approved current Portal assets"},{"item":"Google bundle analyzer","status":"Blocked externally","requirement":"Authenticated browser result for the exact ZIP hash"},{"item":"Hosted Test Suite","status":"Blocked externally","requirement":"Portal ingestion and generated Test Suite link"},{"item":"Physical device matrix","status":"Blocked externally","requirement":"Desktop, mobile web, physical Android and physical iOS evidence"},{"item":"Certification submission","status":"Blocked externally","requirement":"All prior external evidence for the same ZIP hash"}
-    ],"source":{"label":"Validated YouTube progress tracker and external checklist","tables":["docs/youtube-playables-progress.html","build-youtube.test-report.json"],"metricDefinitions":[{"label":"External blocker","definition":"A step that cannot be completed from repository-local tooling without owner access, assets, hosted links or devices.","componentIds":["remaining-work","report-next"]}]}}
+  "id": "7677b77a-0b56-4194-a2e7-937aff8f27f7",
+  "surface": "dashboard",
+  "title": "Riddle Quest integration and release status",
+  "generatedAt": "2026-09-20T15:30:00Z",
+  "status": "verified-repository-and-provider-evidence",
+  "filters": [],
+  "queries": {
+    "platform_status": {
+      "rows": [
+        {"platform":"Jest","integration":"Implemented","identityAndSaves":"Signed player exchange and Jest player data","commerceAndSocial":"Purchases, subscriptions, profiles, referrals and notifications","ads":"Unavailable — no approved Jest ad API","localValidation":"Passed","releaseStatus":"Ready; upload not recorded"},
+        {"platform":"Facebook","integration":"Implemented; gated features remain","identityAndSaves":"FBInstant signed identity and player data","commerceAndSocial":"Social APIs implemented; payments remain gated pending hosted verification","ads":"Interstitial implemented; rewarded ads remain gated","localValidation":"Passed","releaseStatus":"Version 3 staged in Testing"},
+        {"platform":"Reddit","integration":"Implemented","identityAndSaves":"Devvit identity and same-origin storage gateway","commerceAndSocial":"Reddit Gold purchases, matchmaking, tournaments and presence","ads":"Unavailable — no supported in-game ad API","localValidation":"Passed","releaseStatus":"Private version 0.0.1.23 installed; public submission pending"},
+        {"platform":"YouTube","integration":"Implemented","identityAndSaves":"YouTube Playable Save and lifecycle API","commerceAndSocial":"Excluded by target contract","ads":"Forbidden by self-contained Playables contract","localValidation":"Passed","releaseStatus":"Candidate ready; channel lacks Developer Portal authorization"},
+        {"platform":"Netflix","integration":"Engineering candidate only","identityAndSaves":"Browser-local save; Netflix partner SDK unavailable","commerceAndSocial":"Not integrated without private partner contract","ads":"Not integrated","localValidation":"Passed","releaseStatus":"Partner Portal access and producer required"},
+        {"platform":"Yahoo","integration":"Partial provider integration","identityAndSaves":"Yahoo OAuth identity with Firebase-backed game data","commerceAndSocial":"No Yahoo commerce SDK; Stripe checkout is not implemented in application code","ads":"Not integrated","localValidation":"Passed","releaseStatus":"Web build deployed at yahoo.roobsworld.com; no game-store submission route verified"}
+      ],
+      "source": {
+        "label": "Target adapters, artifact audits, release receipts and provider portal checks",
+        "tables": ["docs/platform-integration-matrix.md","packages/portal/src","packages/portal/scripts","build-youtube.test-report.json","provider portal evidence captured 2026-09-20"],
+        "filters": ["Status is reported only when supported by repository code, release evidence, or an authenticated provider portal."],
+        "metricDefinitions": [
+          {"label":"Integration status","definition":"Implemented means the target owns a provider-specific adapter and its isolated local build and audit pass. It does not imply provider approval or production promotion.","componentIds":["platform-status","metric-integrated"]},
+          {"label":"Release status","definition":"The latest verified provider-side state, kept separate from local build readiness.","componentIds":["platform-status","metric-provider-releases"]}
+        ]
+      }
+    },
+    "provider_release_evidence": {
+      "rows": [
+        {"platform":"Facebook","providerReference":"Bundle instance 28625402820405523","artifact":"SHA-256 50fd13547d5dab5049b24d5d7cf4a2cbb0d06d04e558a230c4a946cb86f50c45","state":"Testing","nextGate":"Hosted smoke, App Review and production promotion"},
+        {"platform":"Reddit","providerReference":"Private version 0.0.1.23","artifact":"Installed through authenticated Devvit CLI","state":"Private testing","nextGate":"Hosted evidence and public review submission"},
+        {"platform":"YouTube","providerReference":"Playables Developer Portal","artifact":"Deterministic ZIP candidate","state":"Portal unauthorized","nextGate":"Invitation and Editor or Manager channel access"},
+        {"platform":"Yahoo","providerReference":"yahoo.roobsworld.com","artifact":"Vercel web deployment","state":"Deployed","nextGate":"Verify production OAuth and payment journey"},
+        {"platform":"Jest","providerReference":"Jest release workflow","artifact":"Locally verified candidate","state":"Not uploaded","nextGate":"Authenticated upload and activation"},
+        {"platform":"Netflix","providerReference":"Netflix Games Partner Portal","artifact":"Provider-neutral engineering candidate","state":"No partner access","nextGate":"Netflix Games producer and private SDK contract"}
+      ],
+      "source": {
+        "label": "Authenticated release evidence and platform operations records",
+        "tables": ["packages/portal/.facebook-upload-receipts","docs/evidence/reddit-integration-2026-09-19.md","docs/youtube-playables-progress.html","docs/netflix-yahoo-candidate-builds.md"],
+        "metricDefinitions": [{"label":"Provider release evidence","definition":"A provider-side identifier or deployment state observed through authenticated tooling or portal access.","componentIds":["provider-release-evidence","metric-provider-releases"]}]
+      }
+    },
+    "service_status": {
+      "rows": [
+        {"service":"Firebase","purpose":"Authoritative identity, game data and server endpoints","status":"Integrated","evidence":"Functions and rules test suites passed"},
+        {"service":"Sentry","purpose":"Privacy-restricted browser and Functions error reporting","status":"Integrated","evidence":"SDK boundaries and automated repair worker are present"},
+        {"service":"Vercel","purpose":"Web hosting and scheduled Sentry worker","status":"Integrated","evidence":"Yahoo deployment and hourly worker configuration are present"},
+        {"service":"Stripe","purpose":"Proposed Yahoo web checkout","status":"Account configured; app integration absent","evidence":"No Stripe SDK, checkout endpoint or webhook exists in repository code"},
+        {"service":"Clerk","purpose":"Requested dashboard login","status":"Not integrated","evidence":"Repository policy excludes Clerk and no Clerk code is present"}
+      ],
+      "source": {
+        "label": "Repository dependency, environment-boundary and deployment configuration audit",
+        "tables": ["firebase-functions/src","packages/portal/src/observability","tooling/sentry-worker","tooling/sentry-worker/vercel.json","AGENTS.md"],
+        "metricDefinitions": [{"label":"Operational service status","definition":"Integrated requires executable repository code or deployment configuration; an externally configured account alone is reported separately.","componentIds":["service-status","metric-services"]}]
+      }
+    }
   }
 }

@@ -9,7 +9,7 @@ Each release owns its provider SDK and exposes only capabilities approved for th
 | Reddit | Devvit Web and Payments | Server-side Reddit identity exchange and same-origin storage gateway | Reddit Gold purchases, matchmaking, tournaments, and presence | No game ad integration |
 | YouTube | YouTube Playables Game API | Playable Save | Provider lifecycle, locale, audio, readiness, and health reporting | Forbidden by the self-contained Playables contract |
 | Netflix | Partner contract required | Engineering-only local save adapter | Blocked until the private Netflix Games SDK and credentials are supplied | No ads unless Netflix's partner contract explicitly approves them |
-| Yahoo | Partner contract required | Engineering-only local save adapter | Blocked until a Yahoo Games partner SDK and delivery contract are supplied | No ads unless Yahoo's game partner contract explicitly approves them |
+| Yahoo | Yahoo OpenID Connect plus Firebase | Yahoo OAuth identity exchange and Firebase-backed game data | Provider commerce unavailable; Stripe checkout is not implemented in application code | No approved Yahoo in-game ad integration |
 
 Facebook ad activation requires both deployment environment variables:
 
