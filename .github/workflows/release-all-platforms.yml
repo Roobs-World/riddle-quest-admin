@@ -34,8 +34,22 @@ jobs:
       - run: corepack prepare pnpm@11.21.0 --activate
       - run: pnpm install --frozen-lockfile
       - run: pnpm --filter @qwordly/portal exec playwright install --with-deps chromium
-      - name: Verify and run every configured release adapter
-        run: pnpm release:all
+      - name: Verify every configured target
+        run: pnpm verify:all-targets
+      - name: Run core provider release adapters
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -n "${JEST_GAME_UPLOAD_TOKEN}" ]]; then
+            pnpm release:jest
+          else
+            echo "Jest publish skipped: configure JEST_GAME_UPLOAD_TOKEN in the jest-production environment."
+          fi
+          pnpm release:facebook
+          pnpm release:youtube
+          pnpm release:reddit
+          pnpm release:netflix
+          pnpm release:yahoo
         env:
           JEST_GAME_UPLOAD_TOKEN: ${{ secrets.JEST_GAME_UPLOAD_TOKEN }}
           JEST_NOTIFICATION_EMAIL: ${{ secrets.JEST_NOTIFICATION_EMAIL }}
