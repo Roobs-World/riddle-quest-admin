@@ -3,7 +3,7 @@
   "surface": "dashboard",
   "buildStatus": "complete",
   "title": "Riddle Quest integration and release status",
-  "generatedAt": "2026-09-20T22:23:52Z",
+  "generatedAt": "2026-09-20T22:27:01Z",
   "status": "verified-repository-and-provider-evidence",
   "filters": [],
   "queries": {
@@ -829,11 +829,11 @@
       "rows": [
         {
           "platform": "All configured targets",
-          "status": "Verification in progress",
+          "status": "Failed during Facebook handoff",
           "trigger": "workflow_dispatch",
           "revision": "e3ae7c95",
-          "completedAt": "2026-09-20T22:23:52Z",
-          "evidence": "GitHub Actions run 35541203142 is verifying every configured target"
+          "completedAt": "2026-09-20T22:24:40Z",
+          "evidence": "GitHub Actions run 35541203142 passed full target verification, then stopped before provider transmission because generated build-gamesnacks.zip made the checkout appear dirty"
         },
         {
           "platform": "Production readiness",

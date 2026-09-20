@@ -7,6 +7,7 @@ dist-reddit/
 dist-youtube/
 dist-netflix/
 dist-yahoo/
+packages/portal/dist-gamesnacks/
 coverage/
 *.tsbuildinfo
 
@@ -60,6 +61,8 @@ build-htmlgames-pitch.zip
 build-htmlgames-pitch.zip.manifest.json
 build-playkovo-review.zip
 build-playkovo-review.zip.manifest.json
+build-gamesnacks.zip
+build-gamesnacks.zip.manifest.json
 build-youtube.manifest.json
 build-youtube.test-report.json
 packages/portal/.facebook-upload-receipts/
