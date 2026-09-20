@@ -51,7 +51,7 @@ test("Vite configuration requires an explicit known Web Target for build and ser
   for (const command of ["build", "serve"]) {
     assert.throws(
       () => createWebTargetViteConfig({command, mode: "unknown-target", environment: {}}),
-      /Unknown Web Target mode: unknown-target; expected jest, facebook, reddit, youtube, netflix, or yahoo/u,
+      /Unknown Web Target mode: unknown-target; expected jest, facebook, reddit, youtube, netflix, yahoo, or gamesnacks/u,
     );
   }
   assert.throws(

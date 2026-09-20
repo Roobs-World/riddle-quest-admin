@@ -4,9 +4,12 @@ import {fileURLToPath} from "node:url";
 import ts from "typescript";
 
 const defaultSourceDirectory = fileURLToPath(new URL("../src", import.meta.url));
-const targetOwners = new Set(["jest", "facebook", "reddit", "youtube", "yahoo"]);
+const targetOwners = new Set(["jest", "facebook", "reddit", "youtube", "yahoo", "gamesnacks"]);
 const sharedOwner = "shared";
 const externalOwner = "external";
+// GameSnacks reuses the audited self-contained playable UI and content engine. Its
+// provider port remains GameSnacks-owned and the artifact audit rejects YouTube APIs.
+const allowedCrossTargetEdges = new Set(["gamesnacks:youtube"]);
 const compilerOptions = Object.freeze({
   allowImportingTsExtensions: true,
   jsx: ts.JsxEmit.ReactJSX,
@@ -270,7 +273,12 @@ export async function auditWebTargetBoundaries({sourceDirectory = defaultSourceD
           specifier,
           message: `${syntax} crosses from shared source into ${destinationOwner}-owned source: ${specifier}`,
         });
-      } else if (targetOwners.has(owner) && targetOwners.has(destinationOwner) && owner !== destinationOwner) {
+      } else if (
+        targetOwners.has(owner) &&
+        targetOwners.has(destinationOwner) &&
+        owner !== destinationOwner &&
+        !allowedCrossTargetEdges.has(`${owner}:${destinationOwner}`)
+      ) {
         addViolation({
           code: "CROSS_TARGET_IMPORT",
           file,

@@ -44,6 +44,8 @@ snapshot.queries.release_automation = {
       evidence: "build-kongregate.zip and its SHA-256 manifest are retained in the workflow artifact"},
     {platform: "Lagged", status: "Developer review handoff ready", trigger, revision: sha, completedAt,
       evidence: "build-lagged-review.zip and its SHA-256 manifest are retained in the workflow artifact"},
+    {platform: "Google GameSnacks", status: "SDK bundle ready; licensing required", trigger, revision: sha, completedAt,
+      evidence: "build-gamesnacks.zip includes the isolated lifecycle, audio, storage SDK adapter and game.json metadata"},
   ],
   source: {
     label: "All-platform release workflow receipt",

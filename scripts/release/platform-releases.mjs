@@ -85,6 +85,17 @@ const releasePlans = Object.freeze([
     runbook: "docs/netflix-yahoo-candidate-builds.md",
   }),
   Object.freeze({
+    target: "gamesnacks",
+    title: "Google GameSnacks",
+    boundary: "local-immutable-handoff",
+    publicCommand: "pnpm release:gamesnacks",
+    summary: "Build and package the isolated GameSnacks SDK target with its required game.json metadata.",
+    externalEffect: "None; licensing and authenticated Developer Console upload remain manual.",
+    command: Object.freeze({executable: "pnpm", args: Object.freeze(["build:gamesnacks"])}),
+    handoff: "Complete the GameSnacks licensing agreement, then upload build-gamesnacks.zip in the Developer Console.",
+    runbook: "docs/research/html5-publishing-platforms-2026-09-20.md",
+  }),
+  Object.freeze({
     target: "itch",
     title: "itch.io",
     boundary: "local-immutable-handoff",

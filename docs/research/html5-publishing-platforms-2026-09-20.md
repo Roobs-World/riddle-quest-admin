@@ -66,3 +66,9 @@ None of these providers documents a supported unattended publishing CLI. GitHub 
 - **Lagged** accepts applications for original browser games and advertises an account-gated JavaScript SDK for ads and achievements. The workflow now creates `build-lagged-review.zip` and a SHA-256 manifest for review. Apply through the official [Lagged developer dashboard](https://lagged.dev/); integrate its SDK only after the provider issues credentials and requirements.
 
 These handoffs do not claim publication. They make the exact reviewed build reproducible while preserving provider SDK and advertising isolation.
+
+## Added SDK target: Google GameSnacks
+
+Google GameSnacks distributes licensed HTML5 games across Google and partner surfaces. Its [requirements](https://developers.google.com/gamesnacks/developer/requirements) require the provider-injected SDK, a root `game.json`, relative bundled resources, provider storage, audio controls, and lifecycle signals. The repository now produces an isolated `build-gamesnacks.zip` with those runtime integrations and marketing metadata. It contains no Firebase, external IAP, sharing, or third-party ad SDK.
+
+Publication is account-gated. Google's [Developer Console release notes](https://developers.google.com/gamesnacks/developer/release-notes) state that a distribution agreement must be signed before a new licensed game can be approved or served. The bundle is therefore recorded as ready for licensing review, not as published.

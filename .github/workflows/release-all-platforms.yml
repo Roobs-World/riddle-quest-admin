@@ -54,6 +54,7 @@ jobs:
           fi
           pnpm release:netflix
           pnpm release:yahoo
+          pnpm release:gamesnacks
         env:
           JEST_GAME_UPLOAD_TOKEN: ${{ secrets.JEST_GAME_UPLOAD_TOKEN }}
           JEST_NOTIFICATION_EMAIL: ${{ secrets.JEST_NOTIFICATION_EMAIL }}
@@ -117,12 +118,15 @@ jobs:
             build-kongregate.zip.manifest.json
             build-lagged-review.zip
             build-lagged-review.zip.manifest.json
+            build-gamesnacks.zip
+            build-gamesnacks.zip.manifest.json
             build-youtube.zip
             build-youtube.manifest.json
             build-youtube.test-report.json
             packages/portal/dist-facebook
             packages/portal/dist-reddit
             packages/portal/dist-yahoo
+            packages/portal/dist-gamesnacks
             docs/reports/platform-release-readiness/dist/index.html
 
   itch:

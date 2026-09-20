@@ -29,6 +29,8 @@ const youtubeHtmlEntry = fileURLToPath(new URL("./targets/youtube/index.html", i
 const netflixHtmlEntry = fileURLToPath(new URL("./targets/netflix/index.html", import.meta.url));
 /** Provides yahoo html entry behavior. */
 const yahooHtmlEntry = fileURLToPath(new URL("./targets/yahoo/index.html", import.meta.url));
+/** Provides GameSnacks html entry behavior. */
+const gameSnacksHtmlEntry = fileURLToPath(new URL("./targets/gamesnacks/index.html", import.meta.url));
 /** Provides youtube release content behavior. */
 const youtubeReleaseContent = fileURLToPath(
   new URL("./src/youtube/generated/youtube-content-v1.json", import.meta.url),
@@ -45,7 +47,7 @@ const youtubeLocales = [
 ] as const;
 
 /** The four compile-time Web Targets shipped by the portal package. */
-export type WebTarget = "jest" | "facebook" | "reddit" | "youtube" | "netflix" | "yahoo";
+export type WebTarget = "jest" | "facebook" | "reddit" | "youtube" | "netflix" | "yahoo" | "gamesnacks";
 
 /** Provides canonical build output directories behavior. */
 const canonicalBuildOutputDirectories: Readonly<Record<WebTarget, string>> = Object.freeze({
@@ -55,6 +57,7 @@ const canonicalBuildOutputDirectories: Readonly<Record<WebTarget, string>> = Obj
   youtube: "dist-youtube",
   netflix: "dist-netflix",
   yahoo: "dist-yahoo",
+  gamesnacks: "dist-gamesnacks",
 });
 
 /** Input to the single Web Target build-configuration interface. */
@@ -430,6 +433,17 @@ const targetProfiles: Readonly<Record<WebTarget, WebTargetProfile>> = Object.fre
     htmlOutputs: Object.freeze([{source: yahooHtmlEntry, fileName: "index.html"}] as const),
     createArtifactPlugins: () => [],
   }),
+  gamesnacks: Object.freeze({
+    id: "gamesnacks",
+    shopEntry: youtubeForbiddenShopEntry,
+    publicDirectory: false,
+    input: gameSnacksHtmlEntry,
+    htmlOutputs: Object.freeze([{source: gameSnacksHtmlEntry, fileName: "index.html"}] as const),
+    disableModulePreloadPolyfill: true,
+    createArtifactPlugins: ({allowYouTubeFixture, youtubeContent}: WebTargetPluginContext) => [
+      youtubeArtifactPlugin(youtubeContent, allowYouTubeFixture, "gamesnacks"),
+    ],
+  }),
 });
 
 /** Indicates whether is web target. */
@@ -440,7 +454,7 @@ function isWebTarget(mode: string): mode is WebTarget {
 /** Resolves web target. */
 function resolveWebTarget(mode: string): WebTargetProfile {
   if (isWebTarget(mode)) return targetProfiles[mode];
-  throw new Error(`Unknown Web Target mode: ${mode}; expected jest, facebook, reddit, youtube, netflix, or yahoo`);
+  throw new Error(`Unknown Web Target mode: ${mode}; expected jest, facebook, reddit, youtube, netflix, yahoo, or gamesnacks`);
 }
 
 /** Provides contains path behavior. */
@@ -522,7 +536,7 @@ export function createWebTargetViteConfig({
   const youtubeContent = allowYouTubeFixture ? youtubeFixtureContent : youtubeReleaseContent;
   /** Provides upload sentry source maps behavior. */
   const uploadSentrySourceMaps = environment.SENTRY_UPLOAD_SOURCEMAPS === "1";
-  if (["youtube", "netflix"].includes(profile.id) && uploadSentrySourceMaps) {
+  if (["youtube", "netflix", "gamesnacks"].includes(profile.id) && uploadSentrySourceMaps) {
     throw new Error("Sentry source-map upload is forbidden for self-contained artifacts");
   }
 
@@ -536,6 +550,7 @@ export function createWebTargetViteConfig({
     youtube: environment.YOUTUBE_BUILD_OUT_DIR?.trim() || canonicalBuildOutputDirectories.youtube,
     netflix: environment.NETFLIX_BUILD_OUT_DIR?.trim() || canonicalBuildOutputDirectories.netflix,
     yahoo: environment.YAHOO_BUILD_OUT_DIR?.trim() || canonicalBuildOutputDirectories.yahoo,
+    gamesnacks: environment.GAMESNACKS_BUILD_OUT_DIR?.trim() || canonicalBuildOutputDirectories.gamesnacks,
   };
   /** Provides selected build out dir behavior. */
   const selectedBuildOutDir = buildOutputDirectories[profile.id];
@@ -633,6 +648,11 @@ export function createWebTargetViteConfig({
         input: profile.input,
         output: {
           strictExecutionOrder: true,
+          ...(profile.id === "gamesnacks" ? {
+            entryFileNames: "assets/[name].js",
+            chunkFileNames: "assets/[name].js",
+            assetFileNames: "assets/[name][extname]",
+          } : {}),
           codeSplitting: {
             groups: [
               {

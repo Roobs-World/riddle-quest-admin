@@ -20,6 +20,7 @@ const expectedCommands = new Map([
   ["reddit", ["--filter", "@qwordly/reddit-app", "release:candidate"]],
   ["netflix", ["build:netflix"]],
   ["yahoo", ["build:yahoo"]],
+  ["gamesnacks", ["build:gamesnacks"]],
   ["itch", ["scripts/release/package-html5-platform.mjs", "itch"]],
   ["crazygames", ["scripts/release/package-html5-platform.mjs", "crazygames"]],
   ["newgrounds", ["scripts/release/package-html5-platform.mjs", "newgrounds"]],
@@ -40,6 +41,7 @@ const expectedRunbooks = new Map([
   ["reddit", "docs/reddit-games-operations.md"],
   ["netflix", "docs/netflix-yahoo-candidate-builds.md"],
   ["yahoo", "docs/netflix-yahoo-candidate-builds.md"],
+  ["gamesnacks", "docs/research/html5-publishing-platforms-2026-09-20.md"],
   ["itch", "docs/research/html5-publishing-platforms-2026-09-20.md"],
   ["crazygames", "docs/research/html5-publishing-platforms-2026-09-20.md"],
   ["newgrounds", "docs/research/html5-publishing-platforms-2026-09-20.md"],
@@ -56,7 +58,7 @@ const expectedRunbooks = new Map([
 
 test("the public interface exposes one isolated canonical command per release target", () => {
   const plans = listPlatformReleasePlans();
-  assert.deepEqual(plans.map(({target}) => target), ["jest", "facebook", "youtube", "reddit", "netflix", "yahoo", "itch", "crazygames", "newgrounds", "gamejolt", "coolmath", "armor", "gamepix", "addictinggames", "htmlgames", "playkovo", "kongregate", "lagged"]);
+  assert.deepEqual(plans.map(({target}) => target), ["jest", "facebook", "youtube", "reddit", "netflix", "yahoo", "gamesnacks", "itch", "crazygames", "newgrounds", "gamejolt", "coolmath", "armor", "gamepix", "addictinggames", "htmlgames", "playkovo", "kongregate", "lagged"]);
   for (const plan of plans) {
     assert.equal(plan.publicCommand, `pnpm release:${plan.target}`);
     assert.equal("command" in plan, false);
@@ -67,7 +69,7 @@ test("the public interface exposes one isolated canonical command per release ta
 
 test("the root package exposes target releases and one combined release command", async () => {
   const packageJson = JSON.parse(await readFile(new URL("../../package.json", import.meta.url), "utf8"));
-  for (const target of ["jest", "facebook", "youtube", "reddit", "netflix", "yahoo", "itch", "crazygames", "newgrounds", "gamejolt", "coolmath", "armor", "gamepix", "addictinggames", "htmlgames", "playkovo", "kongregate", "lagged"]) {
+  for (const target of ["jest", "facebook", "youtube", "reddit", "netflix", "yahoo", "gamesnacks", "itch", "crazygames", "newgrounds", "gamejolt", "coolmath", "armor", "gamepix", "addictinggames", "htmlgames", "playkovo", "kongregate", "lagged"]) {
     assert.equal(
       packageJson.scripts[`release:${target}`],
       `node scripts/release/run-platform-release.mjs ${target}`,
@@ -89,6 +91,7 @@ test("target plans preserve distinct external effects", () => {
   assert.match(getPlatformReleasePlan("reddit").externalEffect, /^None;/u);
   assert.equal(getPlatformReleasePlan("netflix").boundary, "local-validated-artifact");
   assert.equal(getPlatformReleasePlan("yahoo").boundary, "local-validated-artifact");
+  assert.equal(getPlatformReleasePlan("gamesnacks").boundary, "local-immutable-handoff");
   assert.equal(getPlatformReleasePlan("itch").boundary, "local-immutable-handoff");
   assert.equal(getPlatformReleasePlan("crazygames").boundary, "local-manual-handoff");
   assert.equal(getPlatformReleasePlan("newgrounds").boundary, "local-manual-handoff");
@@ -110,6 +113,7 @@ test("the combined release verifies once before running every adapter", async ()
     expectedCommands.get("reddit"),
     expectedCommands.get("netflix"),
     expectedCommands.get("yahoo"),
+    expectedCommands.get("gamesnacks"),
     expectedCommands.get("itch"),
     expectedCommands.get("crazygames"),
     expectedCommands.get("newgrounds"),
@@ -123,7 +127,7 @@ test("the combined release verifies once before running every adapter", async ()
     expectedCommands.get("kongregate"),
     expectedCommands.get("lagged"),
   ]);
-  assert.deepEqual(results.map(({target}) => target), ["jest", "facebook", "youtube", "reddit", "netflix", "yahoo", "itch", "crazygames", "newgrounds", "gamejolt", "coolmath", "armor", "gamepix", "addictinggames", "htmlgames", "playkovo", "kongregate", "lagged"]);
+  assert.deepEqual(results.map(({target}) => target), ["jest", "facebook", "youtube", "reddit", "netflix", "yahoo", "gamesnacks", "itch", "crazygames", "newgrounds", "gamejolt", "coolmath", "armor", "gamepix", "addictinggames", "htmlgames", "playkovo", "kongregate", "lagged"]);
 });
 
 test("the Facebook adapter performs only the local preflight and immutable handoff", async () => {
