@@ -8,12 +8,12 @@
   "queries": {
     "platform_status": {
       "rows": [
-        {"platform":"Jest","integration":"Implemented","identityAndSaves":"Signed player exchange and Jest player data","commerceAndSocial":"Purchases, subscriptions, profiles, referrals and notifications","ads":"Unavailable — no approved Jest ad API","localValidation":"Passed","releaseStatus":"Ready; upload not recorded"},
-        {"platform":"Facebook","integration":"Implemented; gated features remain","identityAndSaves":"FBInstant signed identity and player data","commerceAndSocial":"Social APIs implemented; payments remain gated pending hosted verification","ads":"Interstitial implemented; rewarded ads remain gated","localValidation":"Passed","releaseStatus":"Version 3 staged in Testing"},
-        {"platform":"Reddit","integration":"Implemented","identityAndSaves":"Devvit identity and same-origin storage gateway","commerceAndSocial":"Reddit Gold purchases, matchmaking, tournaments and presence","ads":"Unavailable — no supported in-game ad API","localValidation":"Passed","releaseStatus":"Private version 0.0.1.23 installed; public submission pending"},
+        {"platform":"Jest","integration":"Implemented","identityAndSaves":"Signed player exchange and Jest player data","commerceAndSocial":"Purchases, subscriptions, profiles, referrals and notifications","ads":"Unavailable — no approved Jest ad API","localValidation":"Passed","releaseStatus":"Build accepted for automatic activation; authoritative completion pending"},
+        {"platform":"Facebook","integration":"Implemented; gated features remain","identityAndSaves":"FBInstant signed identity and player data","commerceAndSocial":"Social APIs implemented; payments remain gated pending hosted verification","ads":"Interstitial implemented; rewarded ads remain gated","localValidation":"Passed","releaseStatus":"Version 3 staged in Testing; App Review draft prepared"},
+        {"platform":"Reddit","integration":"Implemented","identityAndSaves":"Devvit identity and same-origin storage gateway","commerceAndSocial":"Reddit Gold purchases, matchmaking, tournaments and presence","ads":"Unavailable — no supported in-game ad API","localValidation":"Build passed; release gate blocked on contract fixtures","releaseStatus":"Private version 0.0.1.23 installed; public submission pending"},
         {"platform":"YouTube","integration":"Implemented","identityAndSaves":"YouTube Playable Save and lifecycle API","commerceAndSocial":"Excluded by target contract","ads":"Forbidden by self-contained Playables contract","localValidation":"Passed","releaseStatus":"Candidate ready; channel lacks Developer Portal authorization"},
         {"platform":"Netflix","integration":"Engineering candidate only","identityAndSaves":"Browser-local save with audited 17-locale production content; Netflix partner SDK unavailable","commerceAndSocial":"Not integrated without private partner contract","ads":"Not integrated","localValidation":"Passed","releaseStatus":"Partner Portal access and producer required"},
-        {"platform":"Yahoo","integration":"Partial provider integration","identityAndSaves":"Yahoo OAuth identity with Firebase-backed game data","commerceAndSocial":"No Yahoo commerce SDK; Stripe checkout is not implemented in application code","ads":"Not integrated","localValidation":"Passed","releaseStatus":"Web build deployed at yahoo.roobsworld.com; no game-store submission route verified"}
+        {"platform":"Yahoo","integration":"Implemented web integration","identityAndSaves":"Yahoo OAuth identity with Firebase-backed game data","commerceAndSocial":"Server-authoritative Stripe checkout, confirmation and webhook fulfillment","ads":"Not integrated","localValidation":"Passed","releaseStatus":"Merged web and Stripe integration deployed at yahoo.roobsworld.com"}
       ],
       "source": {
         "label": "Target adapters, artifact audits, release receipts and provider portal checks",
@@ -27,11 +27,11 @@
     },
     "provider_release_evidence": {
       "rows": [
-        {"platform":"Facebook","providerReference":"Bundle instance 28625402820405523","artifact":"SHA-256 50fd13547d5dab5049b24d5d7cf4a2cbb0d06d04e558a230c4a946cb86f50c45","state":"Testing","nextGate":"Hosted smoke, App Review and production promotion"},
-        {"platform":"Reddit","providerReference":"Private version 0.0.1.23","artifact":"Installed through authenticated Devvit CLI","state":"Private testing","nextGate":"Hosted evidence and public review submission"},
-        {"platform":"YouTube","providerReference":"Playables Developer Portal","artifact":"Deterministic ZIP candidate","state":"Portal unauthorized","nextGate":"Invitation and Editor or Manager channel access"},
-        {"platform":"Yahoo","providerReference":"yahoo.roobsworld.com","artifact":"Vercel web deployment","state":"Deployed","nextGate":"Verify production OAuth and payment journey"},
-        {"platform":"Jest","providerReference":"Jest release workflow","artifact":"Locally verified candidate","state":"Not uploaded","nextGate":"Authenticated upload and activation"},
+        {"platform":"Facebook","providerReference":"Bundle instance 28625402820405523; review draft 1748953119658228","artifact":"SHA-256 50fd13547d5dab5049b24d5d7cf4a2cbb0d06d04e558a230c4a946cb86f50c45","state":"Testing; review draft incomplete","nextGate":"Complete legal data-handling declarations, submit review and promote"},
+        {"platform":"Reddit","providerReference":"Private version 0.0.1.23","artifact":"Installed through authenticated Devvit CLI","state":"Private testing","nextGate":"Capture auth, payment, refund, post-entry, realtime and notification contract fixtures"},
+        {"platform":"YouTube","providerReference":"Playables Developer Portal","artifact":"build-youtube.zip; SHA-256 1b9f41fc0a46378341c01fac3176566ffe1489beebfaef9f751c0191fd69c041","state":"Portal unauthorized","nextGate":"Invitation and Editor or Manager channel access"},
+        {"platform":"Yahoo","providerReference":"Vercel deployment dpl_2n49GfZUrGx8FQmogJD4AfG81XuH","artifact":"yahoo.roobsworld.com plus three deployed Stripe Functions","state":"Production deployed","nextGate":"Verify authenticated payment journey"},
+        {"platform":"Jest","providerReference":"Version 01a0bf64-5ea4-7305-983f-fd7c5c9cdbd1","artifact":"1.0.0-dev.20260920145944.5616967cfa28.e09c4095","state":"Accepted; automatic activation pending","nextGate":"Obtain authoritative activation completion evidence"},
         {"platform":"Netflix","providerReference":"Netflix Games Partner Portal","artifact":"Provider-neutral engineering candidate","state":"No partner access","nextGate":"Netflix Games producer and private SDK contract"}
       ],
       "source": {
@@ -42,10 +42,10 @@
     },
     "service_status": {
       "rows": [
-        {"service":"Firebase","purpose":"Authoritative identity, game data and server endpoints","status":"Integrated","evidence":"Functions and rules test suites passed"},
+        {"service":"Firebase","purpose":"Authoritative identity, game data and server endpoints","status":"Integrated","evidence":"Functions and rules tests passed; Yahoo Stripe functions deployed in us-central1"},
         {"service":"Sentry","purpose":"Privacy-restricted browser and Functions error reporting","status":"Integrated","evidence":"SDK boundaries and automated repair worker are present"},
         {"service":"Vercel","purpose":"Web hosting and scheduled Sentry worker","status":"Integrated","evidence":"Yahoo deployment and hourly worker configuration are present"},
-        {"service":"Stripe","purpose":"Proposed Yahoo web checkout","status":"Account configured; app integration absent","evidence":"No Stripe SDK, checkout endpoint or webhook exists in repository code"},
+        {"service":"Stripe","purpose":"Yahoo web checkout and server-authoritative fulfillment","status":"Integrated","evidence":"Checkout creation, confirmation and signed webhook functions deployed; unauthenticated smoke requests rejected"},
         {"service":"Clerk","purpose":"Requested dashboard login","status":"Not integrated","evidence":"Repository policy excludes Clerk and no Clerk code is present"}
       ],
       "source": {
