@@ -138,6 +138,12 @@
       "iap": "No public IAP product identified",
       "ads": "Account-gated Lagged SDK integration required",
       "gate": "Obtain developer approval and SDK credentials before adding ads to the isolated target"
+    },
+    {
+      "platform": "Google GameSnacks",
+      "iap": "Prohibited — GameSnacks does not support in-game payments",
+      "ads": "Provider-managed advertising; no third-party ad SDK is bundled",
+      "gate": "Complete licensing and validate provider-hosted automatic ad opportunities during review"
     }
   ]
 }

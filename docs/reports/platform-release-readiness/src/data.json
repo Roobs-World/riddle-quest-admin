@@ -3,7 +3,7 @@
   "surface": "dashboard",
   "buildStatus": "complete",
   "title": "Riddle Quest integration and release status",
-  "generatedAt": "2026-09-20T22:13:28.890Z",
+  "generatedAt": "2026-09-20T22:23:52Z",
   "status": "verified-repository-and-provider-evidence",
   "filters": [],
   "queries": {
@@ -14,7 +14,7 @@
           "integration": "Implemented",
           "identityAndSaves": "Signed player exchange and Jest player data",
           "commerceAndSocial": "Purchases, subscriptions, profiles, referrals and notifications",
-          "ads": "Unavailable — no approved Jest ad API",
+          "ads": "Unavailable \u2014 no approved Jest ad API",
           "localValidation": "Passed",
           "releaseStatus": "Build accepted for automatic activation; authoritative completion pending"
         },
@@ -32,7 +32,7 @@
           "integration": "Implemented",
           "identityAndSaves": "Devvit identity and same-origin storage gateway",
           "commerceAndSocial": "Reddit Gold purchases, matchmaking, tournaments and presence",
-          "ads": "Unavailable — no supported in-game ad API",
+          "ads": "Unavailable \u2014 no supported in-game ad API",
           "localValidation": "Build passed; release gate blocked on contract fixtures",
           "releaseStatus": "Private version 0.0.1.23 installed; public submission pending"
         },
@@ -386,13 +386,13 @@
         },
         {
           "check": "Desktop rendering and source inspection",
-          "viewport": "1440 × 900",
+          "viewport": "1440 \u00d7 900",
           "result": "Passed",
           "evidence": "All target and service rows rendered without page overflow; provider evidence source drawer opened successfully."
         },
         {
           "check": "Responsive rendering",
-          "viewport": "390 × 844",
+          "viewport": "390 \u00d7 844",
           "result": "Passed",
           "evidence": "No page-level horizontal overflow; all nine tables remained locally scrollable. Deployment filters, source inspection and the Jest activity chart were checked at desktop and mobile widths."
         }
@@ -805,13 +805,13 @@
         }
       ],
       "source": {
-        "label": "Authenticated Jest game analytics — dau_summary, retrieved 20 September 2026",
+        "label": "Authenticated Jest game analytics \u2014 dau_summary, retrieved 20 September 2026",
         "tables": [
           "Jest get_game_analytics(teamId=019f0e38-4b34-76fe-99ba-a8957c15295c, gameId=019f5674-93a8-7338-a664-8e603d6bda06, chart=dau_summary)"
         ],
         "filters": [
           "Provider-reported game-wide daily active users; no build/deployment dimension or timezone metadata returned.",
-          "22 August–19 September 2026; 20 September excluded because it is the current reporting day.",
+          "22 August\u201319 September 2026; 20 September excluded because it is the current reporting day.",
           "Not comparable to deployment activePlayers without matching provider definitions and attribution. Zeroes are returned measurements, not missing data."
         ],
         "metricDefinitions": [
@@ -829,11 +829,27 @@
       "rows": [
         {
           "platform": "All configured targets",
-          "status": "Packaging passed",
-          "trigger": "local",
-          "revision": "local",
-          "completedAt": "2026-09-20T22:13:28.890Z",
-          "evidence": "Local release automation run"
+          "status": "Verification in progress",
+          "trigger": "workflow_dispatch",
+          "revision": "e3ae7c95",
+          "completedAt": "2026-09-20T22:23:52Z",
+          "evidence": "GitHub Actions run 35541203142 is verifying every configured target"
+        },
+        {
+          "platform": "Production readiness",
+          "status": "Failed \u2014 monetization policy repaired",
+          "trigger": "push",
+          "revision": "e3ae7c95",
+          "completedAt": "2026-09-20T22:19:26Z",
+          "evidence": "GitHub Actions run 35541192772 failed because Google GameSnacks was absent from canonical monetization policy; config/platform-monetization.json now matches the dashboard"
+        },
+        {
+          "platform": "Release dashboard",
+          "status": "Deployed",
+          "trigger": "workflow_dispatch",
+          "revision": "e3ae7c95",
+          "completedAt": "2026-09-20T22:19:17Z",
+          "evidence": "Deploy websites run 35541220881 completed successfully; live dashboard returned HTTP 200 with Google GameSnacks content"
         },
         {
           "platform": "Jest",
@@ -1263,7 +1279,7 @@
         {
           "platform": "Jest",
           "iap": "Implemented and server-authoritative",
-          "ads": "Unavailable — no approved Jest ad API",
+          "ads": "Unavailable \u2014 no approved Jest ad API",
           "gate": "Verify live purchase recovery and activation evidence"
         },
         {
@@ -1275,7 +1291,7 @@
         {
           "platform": "Reddit",
           "iap": "Implemented with Reddit Gold; production approval required",
-          "ads": "Unavailable — no supported Devvit in-game ad API",
+          "ads": "Unavailable \u2014 no supported Devvit in-game ad API",
           "gate": "Complete payment verification, product review and public app review"
         },
         {
@@ -1287,7 +1303,7 @@
         {
           "platform": "Yahoo",
           "iap": "Implemented with server-authoritative Stripe fulfillment",
-          "ads": "Unavailable — no approved Yahoo Games ad SDK",
+          "ads": "Unavailable \u2014 no approved Yahoo Games ad SDK",
           "gate": "Verify one live authenticated checkout and entitlement"
         },
         {
@@ -1299,7 +1315,7 @@
         {
           "platform": "itch.io",
           "iap": "Unavailable for embedded HTML5; page donations only",
-          "ads": "Unavailable — itch.io does not place ads on project pages",
+          "ads": "Unavailable \u2014 itch.io does not place ads on project pages",
           "gate": "Create the initial HTML Game page and configure Butler"
         },
         {
@@ -1317,7 +1333,7 @@
         {
           "platform": "Discord",
           "iap": "Planned through Premium Apps",
-          "ads": "Unavailable — no supported Activity ad product",
+          "ads": "Unavailable \u2014 no supported Activity ad product",
           "gate": "Create and verify the Discord application, then configure Premium Apps"
         },
         {
@@ -1400,7 +1416,7 @@
         },
         {
           "platform": "Google GameSnacks",
-          "iap": "Prohibited — GameSnacks does not support in-game payments",
+          "iap": "Prohibited \u2014 GameSnacks does not support in-game payments",
           "ads": "Provider-managed advertising; no third-party ad SDK is bundled",
           "gate": "Complete licensing and validate provider-hosted automatic ad opportunities during review"
         }
@@ -1893,8 +1909,8 @@
     "promotion_email_template": {
       "rows": [
         {
-          "subject": "Riddle Quest — a multilingual browser word game built for quick daily play",
-          "body": "Hi [Name],\n\nI’m Craig from Roobs World Limited, an independent UK game studio. I’d like to introduce Riddle Quest, a free HTML5 word game that combines written riddles with colour clues, daily challenges, streaks and competitive Race to 10 play.\n\nIt is designed for quick sessions on desktop and mobile, includes 17 languages, and uses a distinctive solar-system presentation with original music.\n\nPlay it here: https://yahoo.roobsworld.com\nGame and studio information: https://www.roobsworld.com/riddle-quest\n\nI think it could suit [Website] because [one specific reason based on their audience or recent coverage]. Would you be interested in covering, reviewing or featuring it? I can provide screenshots, logos, gameplay video, an interview, or any additional build information you need.\n\nBest,\nCraig Beswetherick\nRoobs World Limited\nhttps://www.roobsworld.com",
+          "subject": "Riddle Quest \u2014 a multilingual browser word game built for quick daily play",
+          "body": "Hi [Name],\n\nI\u2019m Craig from Roobs World Limited, an independent UK game studio. I\u2019d like to introduce Riddle Quest, a free HTML5 word game that combines written riddles with colour clues, daily challenges, streaks and competitive Race to 10 play.\n\nIt is designed for quick sessions on desktop and mobile, includes 17 languages, and uses a distinctive solar-system presentation with original music.\n\nPlay it here: https://yahoo.roobsworld.com\nGame and studio information: https://www.roobsworld.com/riddle-quest\n\nI think it could suit [Website] because [one specific reason based on their audience or recent coverage]. Would you be interested in covering, reviewing or featuring it? I can provide screenshots, logos, gameplay video, an interview, or any additional build information you need.\n\nBest,\nCraig Beswetherick\nRoobs World Limited\nhttps://www.roobsworld.com",
           "usage": "Replace the bracketed fields, add one specific sentence showing why the outlet is a fit, and attach no more than the assets its contact page requests."
         }
       ],
