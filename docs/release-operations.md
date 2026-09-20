@@ -30,7 +30,7 @@ pnpm release:reddit --dry-run
 | `pnpm release:youtube` | Content audit, all isolated target builds and browser gates, deterministic package and evidence | None | `build-youtube.zip`, manifest, and test report for manual Portal ingestion and certification |
 | `pnpm release:reddit` | Contract validation, fresh isolated Devvit package build, commit/hash-bound receipt and read-only candidate handoff | None | Immutable package under `packages/reddit-app/.reddit-release-receipts`; remote ingestion remains blocked pending exact-byte proof |
 
-There is no `release:all` command. A combined command could accidentally upload Jest while an operator intended only to prepare a local Facebook, YouTube, or Reddit handoff.
+`pnpm release:all` runs the shared six-target verification gate before invoking the Jest, Facebook, YouTube, Reddit, Netflix, and Yahoo adapters in order. Use `pnpm release:all --dry-run` to inspect every external effect without building, uploading, packaging, or publishing. Each adapter retains its provider-specific delivery boundary.
 
 ## Code structure
 
