@@ -3,7 +3,7 @@
   "surface": "dashboard",
   "buildStatus": "complete",
   "title": "Riddle Quest integration and release status",
-  "generatedAt": "2026-09-20T22:27:01Z",
+  "generatedAt": "2026-09-20T22:54:35Z",
   "status": "verified-repository-and-provider-evidence",
   "filters": [],
   "queries": {
@@ -829,146 +829,146 @@
       "rows": [
         {
           "platform": "All configured targets",
-          "status": "Failed during Facebook handoff",
+          "status": "Release automation passed",
           "trigger": "workflow_dispatch",
-          "revision": "e3ae7c95",
-          "completedAt": "2026-09-20T22:24:40Z",
-          "evidence": "GitHub Actions run 35541203142 passed full target verification, then stopped before provider transmission because generated build-gamesnacks.zip made the checkout appear dirty"
+          "revision": "17afad1da27c",
+          "completedAt": "2026-09-20T22:38:54Z",
+          "evidence": "GitHub Actions run 35541760854 passed the complete target matrix, provider adapters, handoff packaging, dashboard build, and artifact upload"
         },
         {
           "platform": "Production readiness",
-          "status": "Failed \u2014 monetization policy repaired",
+          "status": "Passed",
           "trigger": "push",
-          "revision": "e3ae7c95",
-          "completedAt": "2026-09-20T22:19:26Z",
-          "evidence": "GitHub Actions run 35541192772 failed because Google GameSnacks was absent from canonical monetization policy; config/platform-monetization.json now matches the dashboard"
+          "revision": "3f336c80",
+          "completedAt": "2026-09-20T22:54:21Z",
+          "evidence": "GitHub Actions run 35541972269 passed Workspace, Firebase Functions, browser end-to-end, and Firebase rules checks"
         },
         {
           "platform": "Release dashboard",
           "status": "Deployed",
           "trigger": "workflow_dispatch",
-          "revision": "e3ae7c95",
-          "completedAt": "2026-09-20T22:19:17Z",
-          "evidence": "Deploy websites run 35541220881 completed successfully; live dashboard returned HTTP 200 with Google GameSnacks content"
+          "revision": "17afad1d",
+          "completedAt": "2026-09-20T22:29:13Z",
+          "evidence": "Deploy websites run 35541761939 completed successfully"
         },
         {
           "platform": "Jest",
           "status": "Waiting for credentials",
-          "trigger": "local",
-          "revision": "local",
-          "completedAt": "2026-09-20T22:13:28.890Z",
+          "trigger": "workflow_dispatch",
+          "revision": "17afad1da27c",
+          "completedAt": "2026-09-20T22:52:06.088Z",
           "evidence": "Automatic publish requires JEST_GAME_UPLOAD_TOKEN in the jest-production environment"
         },
         {
           "platform": "Reddit",
           "status": "Waiting for evidence",
-          "trigger": "local",
-          "revision": "local",
-          "completedAt": "2026-09-20T22:13:28.890Z",
+          "trigger": "workflow_dispatch",
+          "revision": "17afad1da27c",
+          "completedAt": "2026-09-20T22:52:06.088Z",
           "evidence": "Promotion requires six sanitized production contract fixtures"
         },
         {
           "platform": "itch.io",
           "status": "Waiting for credentials",
-          "trigger": "local",
-          "revision": "local",
-          "completedAt": "2026-09-20T22:13:28.890Z",
+          "trigger": "workflow_dispatch",
+          "revision": "17afad1da27c",
+          "completedAt": "2026-09-20T22:52:06.088Z",
           "evidence": "Official Butler stage runs after the shared release artifact succeeds"
         },
         {
           "platform": "CrazyGames",
           "status": "Manual upload handoff ready",
-          "trigger": "local",
-          "revision": "local",
-          "completedAt": "2026-09-20T22:13:28.890Z",
+          "trigger": "workflow_dispatch",
+          "revision": "17afad1da27c",
+          "completedAt": "2026-09-20T22:52:06.088Z",
           "evidence": "build-crazygames-basic.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
           "platform": "Newgrounds",
           "status": "Manual upload handoff ready",
-          "trigger": "local",
-          "revision": "local",
-          "completedAt": "2026-09-20T22:13:28.890Z",
+          "trigger": "workflow_dispatch",
+          "revision": "17afad1da27c",
+          "completedAt": "2026-09-20T22:52:06.088Z",
           "evidence": "build-newgrounds.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
           "platform": "Game Jolt",
           "status": "Manual upload handoff ready",
-          "trigger": "local",
-          "revision": "local",
-          "completedAt": "2026-09-20T22:13:28.890Z",
+          "trigger": "workflow_dispatch",
+          "revision": "17afad1da27c",
+          "completedAt": "2026-09-20T22:52:06.088Z",
           "evidence": "build-gamejolt.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
           "platform": "Coolmath Games",
           "status": "Licensing pitch handoff ready",
-          "trigger": "local",
-          "revision": "local",
-          "completedAt": "2026-09-20T22:13:28.890Z",
+          "trigger": "workflow_dispatch",
+          "revision": "17afad1da27c",
+          "completedAt": "2026-09-20T22:52:06.088Z",
           "evidence": "build-coolmath-pitch.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
           "platform": "Armor Games",
           "status": "Licensing pitch handoff ready",
-          "trigger": "local",
-          "revision": "local",
-          "completedAt": "2026-09-20T22:13:28.890Z",
+          "trigger": "workflow_dispatch",
+          "revision": "17afad1da27c",
+          "completedAt": "2026-09-20T22:52:06.088Z",
           "evidence": "build-armor-pitch.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
           "platform": "GamePix",
           "status": "Manual review handoff ready",
-          "trigger": "local",
-          "revision": "local",
-          "completedAt": "2026-09-20T22:13:28.890Z",
+          "trigger": "workflow_dispatch",
+          "revision": "17afad1da27c",
+          "completedAt": "2026-09-20T22:52:06.088Z",
           "evidence": "build-gamepix-review.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
           "platform": "Addicting Games",
           "status": "Manual review handoff ready",
-          "trigger": "local",
-          "revision": "local",
-          "completedAt": "2026-09-20T22:13:28.890Z",
+          "trigger": "workflow_dispatch",
+          "revision": "17afad1da27c",
+          "completedAt": "2026-09-20T22:52:06.088Z",
           "evidence": "build-addictinggames-review.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
           "platform": "HTMLGames.com",
           "status": "Licensing pitch handoff ready",
-          "trigger": "local",
-          "revision": "local",
-          "completedAt": "2026-09-20T22:13:28.890Z",
+          "trigger": "workflow_dispatch",
+          "revision": "17afad1da27c",
+          "completedAt": "2026-09-20T22:52:06.088Z",
           "evidence": "build-htmlgames-pitch.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
           "platform": "PlayKovo",
           "status": "Manual review handoff ready",
-          "trigger": "local",
-          "revision": "local",
-          "completedAt": "2026-09-20T22:13:28.890Z",
+          "trigger": "workflow_dispatch",
+          "revision": "17afad1da27c",
+          "completedAt": "2026-09-20T22:52:06.088Z",
           "evidence": "build-playkovo-review.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
           "platform": "Kongregate",
           "status": "Manual upload handoff ready",
-          "trigger": "local",
-          "revision": "local",
-          "completedAt": "2026-09-20T22:13:28.890Z",
+          "trigger": "workflow_dispatch",
+          "revision": "17afad1da27c",
+          "completedAt": "2026-09-20T22:52:06.088Z",
           "evidence": "build-kongregate.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
           "platform": "Lagged",
           "status": "Developer review handoff ready",
-          "trigger": "local",
-          "revision": "local",
-          "completedAt": "2026-09-20T22:13:28.890Z",
+          "trigger": "workflow_dispatch",
+          "revision": "17afad1da27c",
+          "completedAt": "2026-09-20T22:52:06.088Z",
           "evidence": "build-lagged-review.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
           "platform": "Google GameSnacks",
           "status": "SDK bundle ready; licensing required",
-          "trigger": "local",
-          "revision": "local",
-          "completedAt": "2026-09-20T22:13:28.890Z",
+          "trigger": "workflow_dispatch",
+          "revision": "17afad1da27c",
+          "completedAt": "2026-09-20T22:52:06.088Z",
           "evidence": "build-gamesnacks.zip includes the isolated lifecycle, audio, storage SDK adapter and game.json metadata"
         }
       ],
