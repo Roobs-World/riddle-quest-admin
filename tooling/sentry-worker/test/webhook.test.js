@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import {createHmac} from "node:crypto";
 import test from "node:test";
-import handler, {issueIdentity, verifySignature} from "../api/sentry-webhook.js";
+import handler, {issueIdentity, launchFirstUnclaimed, verifySignature} from "../api/sentry-webhook.js";
 
 async function request(method, headers = {}) {
   const response = {headers: {}, setHeader(name, value) {this.headers[name] = value;}, end(body) {this.body = body;}};
@@ -35,4 +35,13 @@ test("other methods are rejected", async () => {
   const result = await request("PUT");
   assert.equal(result.statusCode, 405);
   assert.equal(result.headers.Allow, "GET, HEAD, POST");
+});
+test("cron selection skips claimed issues and launches the next candidate", async () => {
+  const seen = [];
+  const started = await launchFirstUnclaimed([{id: "newest"}, {id: "next"}, {id: "oldest"}], async (issue) => {
+    seen.push(issue.id);
+    return issue.id === "next" ? {duplicate: false, sandboxId: "sandbox"} : {duplicate: true};
+  });
+  assert.deepEqual(seen, ["newest", "next"]);
+  assert.deepEqual(started, {issue: {id: "next"}, result: {duplicate: false, sandboxId: "sandbox"}});
 });

@@ -47,14 +47,14 @@ export function issueIdentity(payload) {
   const id = String(issue?.id ?? payload?.data?.event?.groupID ?? "");
   return /^\d+$/.test(id) ? id : null;
 }
-async function issues(token, query, limit = "25") {
+async function issues(token, query, limit = "100") {
   const params = new URLSearchParams({project: PROJECT_ID, query, sort: "date", limit});
   return api(`https://sentry.io/api/0/organizations/${ORG}/issues/?${params}`, token);
 }
-async function newestIssue(token) {
+async function recentIssues(token) {
   const found = await issues(token, "is:unresolved");
   const cutoff = Date.parse(process.env.WORKER_NOT_BEFORE ?? "2026-09-20T00:00:00Z");
-  return found.find((issue) => Date.parse(issue.lastSeen) >= cutoff) ?? null;
+  return found.filter((issue) => Date.parse(issue.lastSeen) >= cutoff);
 }
 async function issueById(issueId, token) {
   const found = await issues(token, `issue.id:${issueId}`, "5");
@@ -92,6 +92,13 @@ async function launch(issue, credentials) {
   await sandbox.runCommand({cmd: "node", args: ["repair.mjs"], detached: true, env: {OPENAI_API_KEY: credentials.openai, GITHUB_TOKEN: credentials.github, REPAIR_BRANCH: reservation.branch, BASE_BRANCH: reservation.base, REPOSITORY, ISSUE_ID: String(issueId), REPO_DIR: "riddle-quest"}});
   return {duplicate: false, sandboxId: sandbox.sandboxId ?? sandbox.id ?? sandbox.name};
 }
+export async function launchFirstUnclaimed(candidates, launchCandidate) {
+  for (const issue of candidates) {
+    const result = await launchCandidate(issue);
+    if (!result.duplicate) return {issue, result};
+  }
+  return null;
+}
 export default async function handler(request, response) {
   if (request.method === "GET" && !header(request, "authorization")) return send(response, 200, {service: "riddle-quest-sentry-worker", status: "active", workerEnabled: true});
   if (request.method === "HEAD") return send(response, 200);
@@ -101,12 +108,20 @@ export default async function handler(request, response) {
   }
   try {
     if (["SENTRY_AUTH_TOKEN", "SENTRY_WORKER_GITHUB_TOKEN", "OPENAI_API_KEY", "CRON_SECRET"].some((key) => !process.env[key])) return send(response, 503, {error: "worker_not_configured"});
-    let issueId; let issue;
+    let issueId; let issue; let result;
     if (request.method === "GET") {
       if (header(request, "authorization") !== `Bearer ${process.env.CRON_SECRET}`) return send(response, 401, {error: "unauthorized"});
-      issue = await newestIssue(process.env.SENTRY_AUTH_TOKEN);
-      if (!issue) return send(response, 200, {status: "idle"});
-      issueId = String(issue.id);
+      const candidates = await recentIssues(process.env.SENTRY_AUTH_TOKEN);
+      const started = await launchFirstUnclaimed(candidates, (candidate) => launch(candidate, {
+        sentry: process.env.SENTRY_AUTH_TOKEN,
+        github: process.env.SENTRY_WORKER_GITHUB_TOKEN,
+        openai: process.env.OPENAI_API_KEY,
+      }));
+      if (started) {
+        ({issue, result} = started);
+        issueId = String(issue.id);
+      }
+      if (!issue) return send(response, 200, {status: candidates.length ? "already_claimed" : "idle"});
     } else {
       const body = await rawBody(request);
       if (!verifySignature(body, header(request, "sentry-hook-signature"), process.env.SENTRY_WEBHOOK_SECRET)) return send(response, 401, {error: "invalid_signature"});
@@ -115,7 +130,7 @@ export default async function handler(request, response) {
     }
     issue ??= await issueById(issueId, process.env.SENTRY_AUTH_TOKEN);
     if (!issue) return send(response, 202, {status: "ignored"});
-    const result = await launch(issue, {sentry: process.env.SENTRY_AUTH_TOKEN, github: process.env.SENTRY_WORKER_GITHUB_TOKEN, openai: process.env.OPENAI_API_KEY});
+    result ??= await launch(issue, {sentry: process.env.SENTRY_AUTH_TOKEN, github: process.env.SENTRY_WORKER_GITHUB_TOKEN, openai: process.env.OPENAI_API_KEY});
     return send(response, result.duplicate ? 200 : 202, {status: result.duplicate ? "already_claimed" : "started", issueId, sandboxId: result.sandboxId});
   } catch (error) {
     console.error("Sentry worker launch failed", {name: error?.name, message: error?.message});
