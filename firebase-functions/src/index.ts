@@ -65,6 +65,11 @@ import {deleteRedditAccount, exchangeRedditIdentity} from "./reddit/redditEndpoi
 import {redditStorage} from "./reddit/redditStorageEndpoint";
 import {redditGameplay} from "./reddit/redditGameplayEndpoint";
 import {yahooOAuthCallback, yahooOAuthStart} from "./yahoo/yahooOAuthEndpoints";
+import {
+  confirmYahooStripeCheckout,
+  createYahooStripeCheckout,
+  yahooStripeWebhook,
+} from "./yahoo/yahooStripeEndpoints";
 export {
   spendCoins,
   skipRiddle,
@@ -123,4 +128,7 @@ export {
   redditGameplay,
   yahooOAuthStart,
   yahooOAuthCallback,
+  createYahooStripeCheckout,
+  confirmYahooStripeCheckout,
+  yahooStripeWebhook,
 };

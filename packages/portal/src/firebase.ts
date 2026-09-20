@@ -69,6 +69,32 @@ const functions = getFunctions(firebaseApp, firebaseEnvironment.functionsRegion 
 /** Shared Functions instance used by target-specific lazy adapters. */
 export const firebaseFunctions = functions;
 
+/** Creates a server-authorized Stripe Checkout Session for Yahoo. */
+export const createYahooStripeCheckout = httpsCallable<
+  {
+    /** Stores product id. */
+    productId: string;
+    /** Stores checkout attempt id. */
+    checkoutAttemptId: string;
+  },
+  {
+    /** Stores checkout url. */
+    checkoutUrl: string;
+  }
+>(functions, "createYahooStripeCheckout");
+
+/** Confirms and idempotently grants a paid Yahoo Stripe Checkout Session. */
+export const confirmYahooStripeCheckout = httpsCallable<
+  {
+    /** Stores session id. */
+    sessionId: string;
+  },
+  {
+    /** Stores coins. */
+    coins: number;
+  }
+>(functions, "confirmYahooStripeCheckout");
+
 /** Gets current daily challenge. */
 export const getCurrentDailyChallenge = httpsCallable<
   | {
