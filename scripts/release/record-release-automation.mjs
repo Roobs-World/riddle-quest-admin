@@ -52,6 +52,10 @@ snapshot.queries.release_automation = {
       evidence: "build-gamemonetize-review.zip and its SHA-256 manifest are retained in the workflow artifact"},
     {platform: "Yandex Games", status: "Contract review handoff ready", trigger, revision: sha, completedAt,
       evidence: "build-yandex-review.zip and its SHA-256 manifest are retained in the workflow artifact"},
+    {platform: "Telegram", status: "Integration review handoff ready", trigger, revision: sha, completedAt,
+      evidence: "build-telegram-review.zip and its SHA-256 manifest are retained in the workflow artifact"},
+    {platform: "Microsoft Store PWA", status: "Installable PWA handoff ready", trigger, revision: sha, completedAt,
+      evidence: "build-microsoft-pwa.zip includes the web manifest, app icon and service worker and is retained with its SHA-256 manifest"},
   ],
   source: {
     label: "All-platform release workflow receipt",

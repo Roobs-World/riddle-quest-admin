@@ -73,6 +73,8 @@
     "release:gamedistribution": "node scripts/release/run-platform-release.mjs gamedistribution",
     "release:gamemonetize": "node scripts/release/run-platform-release.mjs gamemonetize",
     "release:yandex": "node scripts/release/run-platform-release.mjs yandex",
+    "release:telegram": "node scripts/release/run-platform-release.mjs telegram",
+    "release:microsoft-pwa": "node scripts/release/run-platform-release.mjs microsoft-pwa",
     "release:html5": "node scripts/release/package-html5-release.mjs",
     "release:all": "node scripts/release/run-platform-release.mjs all",
     "jest:build-upload": "pnpm release:jest",

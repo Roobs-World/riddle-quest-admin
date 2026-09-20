@@ -260,6 +260,28 @@ const releasePlans = Object.freeze([
     handoff: "Confirm contracting eligibility and obtain Console access before building the isolated mandatory SDK adapter.",
     runbook: "docs/research/html5-publishing-platforms-2026-09-20.md",
   }),
+  Object.freeze({
+    target: "telegram",
+    title: "Telegram HTML5 Games review",
+    boundary: "local-manual-handoff",
+    publicCommand: "pnpm release:telegram",
+    summary: "Create a neutral hosted-game archive for Telegram bot and Mini App integration.",
+    externalEffect: "None; BotFather setup, signed identity, Stars fulfillment and launch configuration remain manual.",
+    command: Object.freeze({executable: "node", args: Object.freeze(["scripts/release/package-html5-platform.mjs", "telegram"])}),
+    handoff: "Create the bot and game in BotFather, then use build-telegram-review.zip as the isolated integration baseline.",
+    runbook: "docs/research/html5-publishing-platforms-2026-09-20.md",
+  }),
+  Object.freeze({
+    target: "microsoft-pwa",
+    title: "Microsoft Store PWA review",
+    boundary: "local-manual-handoff",
+    publicCommand: "pnpm release:microsoft-pwa",
+    summary: "Build an installable PWA archive for PWABuilder and Partner Center review.",
+    externalEffect: "None; Partner Center enrollment, product reservation, identity-bound package generation and certification remain manual.",
+    command: Object.freeze({executable: "node", args: Object.freeze(["scripts/release/package-microsoft-pwa.mjs"])}),
+    handoff: "Reserve the product name, copy its identity values into PWABuilder and generate the signed Store package from build-microsoft-pwa.zip.",
+    runbook: "docs/research/html5-publishing-platforms-2026-09-20.md",
+  }),
 ]);
 
 const plansByTarget = new Map(releasePlans.map((plan) => [plan.target, plan]));

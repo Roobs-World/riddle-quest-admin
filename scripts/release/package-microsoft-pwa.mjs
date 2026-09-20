@@ -1,0 +1,66 @@
+#!/usr/bin/env node
+import {createHash} from "node:crypto";
+import {execFile} from "node:child_process";
+import {cp, mkdir, readFile, rm, writeFile} from "node:fs/promises";
+import {promisify} from "node:util";
+import {fileURLToPath} from "node:url";
+import path from "node:path";
+
+const execute = promisify(execFile);
+const repository = fileURLToPath(new URL("../..", import.meta.url));
+const staging = path.join(repository, "packages/portal/dist-microsoft-pwa");
+const artifact = path.join(repository, "build-microsoft-pwa.zip");
+
+/** Builds an installable PWA review package without Store identity or commerce credentials. */
+export async function packageMicrosoftPwa({run = execute} = {}) {
+  await run("pnpm", ["release:html5"], {cwd: repository});
+  await rm(staging, {recursive: true, force: true});
+  await cp(path.join(repository, "packages/portal/dist-netflix"), staging, {recursive: true});
+  await mkdir(path.join(staging, "icons"), {recursive: true});
+  await cp(path.join(repository, "assets/images/icon.png"), path.join(staging, "icons/riddle-quest.png"));
+
+  const manifest = {
+    id: "/",
+    name: "Riddle Quest",
+    short_name: "Riddle Quest",
+    description: "Solve colourful word riddles, build streaks and complete daily challenges.",
+    start_url: "/",
+    scope: "/",
+    display: "standalone",
+    orientation: "portrait",
+    background_color: "#070b1d",
+    theme_color: "#070b1d",
+    categories: ["games", "puzzle"],
+    icons: [{src: "icons/riddle-quest.png", sizes: "1254x1254", type: "image/png", purpose: "any maskable"}],
+  };
+  await writeFile(path.join(staging, "manifest.webmanifest"), `${JSON.stringify(manifest, null, 2)}\n`);
+  await writeFile(path.join(staging, "service-worker.js"), `self.addEventListener("install",()=>self.skipWaiting());\nself.addEventListener("activate",event=>event.waitUntil(self.clients.claim()));\nself.addEventListener("fetch",event=>{if(event.request.method==="GET")event.respondWith(fetch(event.request).catch(()=>caches.match(event.request)));});\n`);
+
+  const indexPath = path.join(staging, "index.html");
+  const index = await readFile(indexPath, "utf8");
+  const head = `<link rel="manifest" href="./manifest.webmanifest"><meta name="theme-color" content="#070b1d"><link rel="icon" href="./icons/riddle-quest.png">`;
+  const registration = `<script>if("serviceWorker" in navigator){addEventListener("load",()=>navigator.serviceWorker.register("./service-worker.js"));}</script>`;
+  await writeFile(indexPath, index.replace("</head>", `${head}</head>`).replace("</body>", `${registration}</body>`));
+
+  await rm(artifact, {force: true});
+  await run("zip", ["-q", "-r", artifact, "."], {cwd: staging});
+  const digest = createHash("sha256").update(await readFile(artifact)).digest("hex");
+  const receipt = {
+    schemaVersion: 1,
+    platform: "microsoft-pwa",
+    artifact: path.basename(artifact),
+    sha256: digest,
+    sourceArtifact: "build-html5.zip",
+    releaseBoundary: "Partner Center enrollment, product reservation, identity-bound MSIX packaging, commerce and certification remain manual.",
+  };
+  await writeFile(`${artifact}.manifest.json`, `${JSON.stringify(receipt, null, 2)}\n`);
+  console.log(`Prepared Microsoft Store PWA handoff ${path.basename(artifact)} (${digest}).`);
+  return receipt;
+}
+
+if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1])) {
+  packageMicrosoftPwa().catch((error) => {
+    console.error(error instanceof Error ? error.message : String(error));
+    process.exitCode = 1;
+  });
+}

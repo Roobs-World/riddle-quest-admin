@@ -24,6 +24,7 @@ const definitions = Object.freeze({
   gamedistribution: Object.freeze({artifact: "build-gamedistribution-review.zip", boundary: "GameDistribution contracting, game ID issuance, SDK integration, upload and activation remain manual."}),
   gamemonetize: Object.freeze({artifact: "build-gamemonetize-review.zip", boundary: "GameMonetize account setup, GameId issuance, SDK integration, upload and activation remain manual."}),
   yandex: Object.freeze({artifact: "build-yandex-review.zip", boundary: "Yandex developer registration, contract, SDK integration, Console upload and moderation remain manual."}),
+  telegram: Object.freeze({artifact: "build-telegram-review.zip", boundary: "BotFather bot/game creation, signed identity, Telegram Stars fulfillment and launch-link configuration remain manual."}),
 });
 
 export function getHtml5DistributionDefinition(target) {

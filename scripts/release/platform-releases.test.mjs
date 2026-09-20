@@ -36,6 +36,8 @@ const expectedCommands = new Map([
   ["gamedistribution", ["scripts/release/package-html5-platform.mjs", "gamedistribution"]],
   ["gamemonetize", ["scripts/release/package-html5-platform.mjs", "gamemonetize"]],
   ["yandex", ["scripts/release/package-html5-platform.mjs", "yandex"]],
+  ["telegram", ["scripts/release/package-html5-platform.mjs", "telegram"]],
+  ["microsoft-pwa", ["scripts/release/package-microsoft-pwa.mjs"]],
 ]);
 const expectedRunbooks = new Map([
   ["jest", "docs/jest-html5-operations.md"],
@@ -60,11 +62,13 @@ const expectedRunbooks = new Map([
   ["gamedistribution", "docs/research/html5-publishing-platforms-2026-09-20.md"],
   ["gamemonetize", "docs/research/html5-publishing-platforms-2026-09-20.md"],
   ["yandex", "docs/research/html5-publishing-platforms-2026-09-20.md"],
+  ["telegram", "docs/research/html5-publishing-platforms-2026-09-20.md"],
+  ["microsoft-pwa", "docs/research/html5-publishing-platforms-2026-09-20.md"],
 ]);
 
 test("the public interface exposes one isolated canonical command per release target", () => {
   const plans = listPlatformReleasePlans();
-  assert.deepEqual(plans.map(({target}) => target), ["jest", "facebook", "youtube", "reddit", "netflix", "yahoo", "gamesnacks", "itch", "crazygames", "newgrounds", "gamejolt", "coolmath", "armor", "gamepix", "addictinggames", "htmlgames", "playkovo", "kongregate", "lagged", "gamedistribution", "gamemonetize", "yandex"]);
+  assert.deepEqual(plans.map(({target}) => target), ["jest", "facebook", "youtube", "reddit", "netflix", "yahoo", "gamesnacks", "itch", "crazygames", "newgrounds", "gamejolt", "coolmath", "armor", "gamepix", "addictinggames", "htmlgames", "playkovo", "kongregate", "lagged", "gamedistribution", "gamemonetize", "yandex", "telegram", "microsoft-pwa"]);
   for (const plan of plans) {
     assert.equal(plan.publicCommand, `pnpm release:${plan.target}`);
     assert.equal("command" in plan, false);
@@ -75,7 +79,7 @@ test("the public interface exposes one isolated canonical command per release ta
 
 test("the root package exposes target releases and one combined release command", async () => {
   const packageJson = JSON.parse(await readFile(new URL("../../package.json", import.meta.url), "utf8"));
-  for (const target of ["jest", "facebook", "youtube", "reddit", "netflix", "yahoo", "gamesnacks", "itch", "crazygames", "newgrounds", "gamejolt", "coolmath", "armor", "gamepix", "addictinggames", "htmlgames", "playkovo", "kongregate", "lagged", "gamedistribution", "gamemonetize", "yandex"]) {
+  for (const target of ["jest", "facebook", "youtube", "reddit", "netflix", "yahoo", "gamesnacks", "itch", "crazygames", "newgrounds", "gamejolt", "coolmath", "armor", "gamepix", "addictinggames", "htmlgames", "playkovo", "kongregate", "lagged", "gamedistribution", "gamemonetize", "yandex", "telegram", "microsoft-pwa"]) {
     assert.equal(
       packageJson.scripts[`release:${target}`],
       `node scripts/release/run-platform-release.mjs ${target}`,
@@ -135,8 +139,10 @@ test("the combined release verifies once before running every adapter", async ()
     expectedCommands.get("gamedistribution"),
     expectedCommands.get("gamemonetize"),
     expectedCommands.get("yandex"),
+    expectedCommands.get("telegram"),
+    expectedCommands.get("microsoft-pwa"),
   ]);
-  assert.deepEqual(results.map(({target}) => target), ["jest", "facebook", "youtube", "reddit", "netflix", "yahoo", "gamesnacks", "itch", "crazygames", "newgrounds", "gamejolt", "coolmath", "armor", "gamepix", "addictinggames", "htmlgames", "playkovo", "kongregate", "lagged", "gamedistribution", "gamemonetize", "yandex"]);
+  assert.deepEqual(results.map(({target}) => target), ["jest", "facebook", "youtube", "reddit", "netflix", "yahoo", "gamesnacks", "itch", "crazygames", "newgrounds", "gamejolt", "coolmath", "armor", "gamepix", "addictinggames", "htmlgames", "playkovo", "kongregate", "lagged", "gamedistribution", "gamemonetize", "yandex", "telegram", "microsoft-pwa"]);
 });
 
 test("the Facebook adapter performs only the local preflight and immutable handoff", async () => {

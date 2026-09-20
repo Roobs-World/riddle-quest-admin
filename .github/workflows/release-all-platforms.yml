@@ -77,6 +77,8 @@ jobs:
           pnpm release:gamedistribution
           pnpm release:gamemonetize
           pnpm release:yandex
+          pnpm release:telegram
+          pnpm release:microsoft-pwa
       - name: Record the successful release in the dashboard
         run: node scripts/release/record-release-automation.mjs
         env:
@@ -127,6 +129,10 @@ jobs:
             build-gamemonetize-review.zip.manifest.json
             build-yandex-review.zip
             build-yandex-review.zip.manifest.json
+            build-telegram-review.zip
+            build-telegram-review.zip.manifest.json
+            build-microsoft-pwa.zip
+            build-microsoft-pwa.zip.manifest.json
             build-gamesnacks.zip
             build-gamesnacks.zip.manifest.json
             build-youtube.zip
