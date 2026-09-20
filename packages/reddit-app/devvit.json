@@ -21,7 +21,7 @@
     "http": {
       "enable": true,
       "domains": [
-        "us-central1-riddle-quest-ec2b2.cloudfunctions.net"
+        "www.roobsworld.com"
       ]
     },
     "redis": true,

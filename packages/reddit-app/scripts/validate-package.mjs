@@ -39,8 +39,8 @@ for (const dependency of ["@devvit/client@", "@devvit/web@", "devvit@", "hono@"]
   if (!licenseNotice.includes(dependency)) errors.push(`third-party notices omit ${dependency}`);
 }
 const domains = config.permissions?.http?.domains;
-if (!Array.isArray(domains) || domains.length !== 1 || domains[0] !== "us-central1-riddle-quest-ec2b2.cloudfunctions.net") {
-  errors.push("HTTP permission must contain only the reviewed Firebase Functions host");
+if (!Array.isArray(domains) || domains.length !== 1 || domains[0] !== "www.roobsworld.com") {
+  errors.push("HTTP permission must contain only the reviewed Roobs World gateway host");
 }
 if (config.permissions?.redis !== true) errors.push("Redis permission is missing");
 if (config.permissions?.payments !== true) errors.push("Payments permission is missing");
@@ -72,6 +72,12 @@ const serverBundle = await readFile(path.join(root, config.server?.dir ?? "", co
 for (const functionName of ["exchangeRedditIdentity", "deleteRedditAccount", "redditStorage", "redditGameplay"]) {
   if (!serverBundle.includes(functionName)) errors.push(`server bundle omits fixed Firebase route ${functionName}`);
 }
+if (!serverBundle.includes("https://www.roobsworld.com/api/reddit-gateway/")) {
+  errors.push("server bundle omits the fixed Roobs World gateway URL");
+}
+if (serverBundle.includes("us-central1-riddle-quest-ec2b2.cloudfunctions.net")) {
+  errors.push("server bundle bypasses the Roobs World gateway");
+}
 for (const route of ["/internal/menu/post-create", "/internal/triggers/app-install",
   "/internal/triggers/app-upgrade", "/internal/payments/fulfill", "/internal/payments/refund"]) {
   if (!serverBundle.includes(route)) errors.push(`server bundle omits ${route}`);
@@ -96,4 +102,4 @@ for (const {file, bytes} of packageSizes) {
 }
 if (errors.length) throw new Error(errors.join("\n"));
 const packageBytes = packageSizes.reduce((sum, {bytes}) => sum + bytes, 0);
-console.log(`Devvit package contract passed: ${packageFiles.length} regular files/${(packageBytes / 1024 / 1024).toFixed(2)} MiB, isolated inline/game client, CJS server, Redis, and one Firebase host`);
+console.log(`Devvit package contract passed: ${packageFiles.length} regular files/${(packageBytes / 1024 / 1024).toFixed(2)} MiB, isolated inline/game client, CJS server, Redis, and one gateway host`);

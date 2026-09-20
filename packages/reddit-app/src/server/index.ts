@@ -77,7 +77,7 @@ async function callFirebase(
     payload,
   );
   /** Provides response behavior. */
-  const response = await fetch(`https://us-central1-riddle-quest-ec2b2.cloudfunctions.net/${functionName}`, {
+  const response = await fetch(`https://www.roobsworld.com/api/reddit-gateway/${functionName}`, {
     method: "POST",
     headers: {"content-type": "application/json", "x-riddle-quest-reddit-signature": signed.signature},
     body: JSON.stringify({assertion: signed.assertion, payload: signed.payload}),

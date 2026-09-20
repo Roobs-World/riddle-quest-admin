@@ -50,7 +50,7 @@ The webview contains only the Reddit adapter and calls same-origin `/api/*` rout
 It must not contain the Firebase browser SDK, JestSDK, FBInstant, private credentials,
 or external browser endpoints. The request-scoped Devvit server obtains trusted
 `userId`, post, subreddit, and app context, then signs one-operation assertions to
-`us-central1-riddle-quest-ec2b2.cloudfunctions.net`. That exact host is the only
+`www.roobsworld.com/api/reddit-gateway/*`. That exact hostname is the only
 external domain in `devvit.json`; Reddit approval of it is required before release.
 
 Firebase is the authoritative global identity, profile, economy, riddle, and race

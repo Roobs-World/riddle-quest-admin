@@ -43,9 +43,9 @@ evidence belong in `docs/reddit-games-progress.html`.
 
 ## Fetch Domains
 
-- `us-central1-riddle-quest-ec2b2.cloudfunctions.net` — The request-scoped
-  Devvit server uses four fixed HTTPS endpoints on this host to exchange trusted
-  Reddit identity and access the existing global Firebase authority for player
+- `www.roobsworld.com` — The request-scoped Devvit server uses four fixed HTTPS
+  gateway endpoints on this host to exchange trusted Reddit identity and access
+  the existing global Firebase authority for player
   storage, gameplay, account deletion, purchases, referrals, races, moderation,
   and presence. The browser never contacts this host directly. Devvit Redis is
   installation-scoped and cannot safely replace the existing cross-platform,
@@ -53,10 +53,9 @@ evidence belong in `docs/reddit-games-progress.html`.
 
 ### Requested exception and endpoint scope
 
-This is a request for a limited-scope Firebase backend exception, not a claim
-that hosting on Google Cloud automatically qualifies for approval. The exact
-hostname above is the deployed Firebase Functions host for this game project.
-It is the only external host configured in this Reddit package.
+This is a request for a limited-scope first-party backend exception. The exact
+hostname above serves a fixed, signed gateway for this game project and is the
+only external host configured in this Reddit package.
 
 | Endpoint | Purpose |
 | --- | --- |

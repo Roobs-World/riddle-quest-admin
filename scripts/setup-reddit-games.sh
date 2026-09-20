@@ -211,7 +211,7 @@ if [[ ! "$REDDIT_TEST_SUBREDDIT" =~ ^[A-Za-z0-9_]{3,21}$ ]]; then
   exit 1
 fi
 write_env REDDIT_APP_NAME "riddle-quest"
-write_env REDDIT_FIREBASE_GATEWAY_HOST "us-central1-riddle-quest-ec2b2.cloudfunctions.net"
+write_env REDDIT_GATEWAY_HOST "www.roobsworld.com"
 write_env REDDIT_DISABLED_FEATURES ""
 write_env REDDIT_APPROVED_FEATURES ""
 write_env REDDIT_COMMERCE_SANDBOX_ENABLED "1"
