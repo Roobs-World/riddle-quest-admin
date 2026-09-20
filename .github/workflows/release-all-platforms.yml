@@ -47,7 +47,11 @@ jobs:
           fi
           pnpm release:facebook
           pnpm release:youtube
-          pnpm release:reddit
+          if pnpm --filter @qwordly/reddit-app validate:contracts; then
+            pnpm release:reddit
+          else
+            echo "Reddit release handoff skipped: capture the six sanitized production contract fixtures first."
+          fi
           pnpm release:netflix
           pnpm release:yahoo
         env:
