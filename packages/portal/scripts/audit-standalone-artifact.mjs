@@ -38,8 +38,11 @@ for (const [label, pattern] of forbidden) {
 if (target === "netflix") {
   const manifestPath = path.join(root, "youtube-content-manifest.json");
   const manifest = JSON.parse(await readFile(manifestPath, "utf8"));
-  if (manifest.target !== `${target}-candidate` || manifest.fixture !== true || manifest.releaseReady !== false) {
+  if (manifest.target !== `${target}-candidate` || manifest.fixture !== false || manifest.releaseReady !== true) {
     throw new Error(`${target} candidate content manifest is malformed`);
+  }
+  if (!Array.isArray(manifest.locales) || manifest.locales.length !== 17 || manifest.classicRiddleCount !== 180) {
+    throw new Error(`${target} candidate must contain the complete audited release content`);
   }
 }
 console.log(`${target} artifact audit passed: ${files.length} files, ${(totalBytes / 1024 / 1024).toFixed(2)} MiB`);
