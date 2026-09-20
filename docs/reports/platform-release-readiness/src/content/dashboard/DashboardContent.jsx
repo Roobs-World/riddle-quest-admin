@@ -35,6 +35,7 @@ export function DashboardContent() {
   const distributionCandidates = reviewedRows("html5_distribution_candidates");
   const releaseAutomation = reviewedRows("release_automation");
   const manualActions = reviewedRows("manual_action_checklist");
+  const monetization = reviewedRows("monetization_readiness");
   const services = reviewedRows("service_status");
   const dashboardChecks = reviewedRows("dashboard_verification");
   const integratedTargets = platforms.filter(({integration}) => integration.startsWith("Implemented")).length;
@@ -59,6 +60,14 @@ export function DashboardContent() {
         {key:"status",label:"Status",status:true}, {key:"priority",label:"Priority"},
         {key:"platform",label:"Platform"}, {key:"action",label:"What you need to do"},
         {key:"destination",label:"Portal",link:true}, {key:"unlocks",label:"Unlocks"},
+      ]} />
+    </Section>
+
+    <Section>
+      <SectionHeader id="monetization-readiness-title" title="IAP and advertising by platform" />
+      <EvidenceTable id="monetization-readiness" queryId="monetization_readiness" title="Implemented capabilities and provider gates" rows={monetization} columns={[
+        {key:"platform",label:"Platform"}, {key:"iap",label:"In-app purchases",status:true},
+        {key:"ads",label:"Advertising",status:true}, {key:"gate",label:"Remaining verification or provider gate"},
       ]} />
     </Section>
 

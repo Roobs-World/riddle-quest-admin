@@ -73,6 +73,21 @@ test("the dashboard provides one source-backed manual checklist covering every r
   assert.match(dashboard, /title="Your manual release checklist"/u);
 });
 
+test("the dashboard reports IAP and advertising policy for every release platform", () => {
+  const monetization = data.queries.monetization_readiness.rows;
+  const expectedPlatforms = new Set([
+    ...data.queries.provider_release_evidence.rows.map(({platform}) => platform),
+    ...data.queries.html5_distribution_candidates.rows.map(({platform}) => platform),
+  ]);
+  assert.deepEqual(new Set(monetization.map(({platform}) => platform)), expectedPlatforms);
+  assert.ok(monetization.every(({iap, ads, gate}) => iap.trim() && ads.trim() && gate.trim()));
+  assert.match(monetization.find(({platform}) => platform === "Facebook").ads, /Implemented/iu);
+  assert.match(monetization.find(({platform}) => platform === "Reddit").iap, /Implemented/iu);
+  assert.match(monetization.find(({platform}) => platform === "Yahoo").iap, /Implemented/iu);
+  assert.match(monetization.find(({platform}) => platform === "YouTube").iap, /Prohibited/iu);
+  assert.match(dashboard, /queryId="monetization_readiness"/u);
+});
+
 test("the dashboard publishes its desktop, mobile and output-coverage E2E results", () => {
   const checks = data.queries.dashboard_verification.rows;
 
