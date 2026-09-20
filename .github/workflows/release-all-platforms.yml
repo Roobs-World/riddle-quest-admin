@@ -77,6 +77,9 @@ jobs:
         run: node scripts/release/record-release-automation.mjs
         env:
           ITCH_BUTLER_CONFIGURED: ${{ secrets.ITCH_BUTLER_API_KEY != '' && vars.ITCH_GAME_TARGET != '' }}
+      - name: Install release dashboard dependencies
+        run: npm ci
+        working-directory: docs/reports/platform-release-readiness
       - name: Build the release dashboard
         run: npm run build
         working-directory: docs/reports/platform-release-readiness
