@@ -3,7 +3,7 @@
   "surface": "dashboard",
   "buildStatus": "complete",
   "title": "Riddle Quest integration and release status",
-  "generatedAt": "2026-09-21T03:16:33Z",
+  "generatedAt": "2026-09-21T05:50:13Z",
   "status": "verified-repository-and-provider-evidence",
   "filters": [],
   "queries": {
@@ -317,7 +317,7 @@
         },
         {
           "platform": "Yahoo",
-          "providerReference": "Vercel deployment dpl_2n49GfZUrGx8FQmogJD4AfG81XuH",
+          "providerReference": "Vercel deployment dpl_7L7hNTkBcFws4ATs1ETBmHcwjp2S",
           "artifact": "yahoo.roobsworld.com plus three deployed Stripe Functions",
           "state": "Production deployed",
           "submissionProgress": "Production deployment complete",
@@ -611,7 +611,7 @@
           "check": "Release output coverage",
           "viewport": "Data contract",
           "result": "Passed",
-          "evidence": "All six targets expose a provider reference, concrete output, provider state and next gate."
+          "evidence": "All 27 canonical release targets are present in policy order with integration, identity/save, commerce, ads, validation and release status fields."
         },
         {
           "check": "Desktop rendering and source inspection",
@@ -627,13 +627,14 @@
         }
       ],
       "source": {
-        "label": "Agent-browser E2E run against the production dashboard build on 20 September 2026",
+        "label": "Dashboard contract tests and the most recent browser E2E run",
         "tables": [
           "docs/reports/platform-release-readiness/tests/release-dashboard-content.test.mjs",
           "docs/reports/platform-release-readiness/dist/index.html"
         ],
         "filters": [
-          "Desktop and mobile checks were executed against the same built HTML artifact."
+          "The 27-target coverage check is automated in release-dashboard-content.test.mjs.",
+          "Desktop and mobile rendering evidence was last captured on 20 September 2026 against the built HTML artifact."
         ],
         "metricDefinitions": [
           {
@@ -664,7 +665,7 @@
           "service": "Vercel",
           "purpose": "Web hosting and scheduled Sentry worker",
           "status": "Integrated",
-          "evidence": "Yahoo deployment and hourly worker configuration are present"
+          "evidence": "Yahoo and dashboard projects are connected directly to Grindhead/riddle-quest; commit e1ab08b0 deployed automatically from jest and both production URLs returned HTTP 200"
         },
         {
           "service": "Stripe",
@@ -758,7 +759,7 @@
         },
         {
           "platform": "Yahoo",
-          "deployment": "Vercel deployment dpl_2n49GfZUrGx8FQmogJD4AfG81XuH",
+          "deployment": "Vercel deployment dpl_7L7hNTkBcFws4ATs1ETBmHcwjp2S",
           "environment": "Production",
           "date": "Not reported",
           "collectedAt": null,
@@ -1040,7 +1041,7 @@
         ],
         "filters": [
           "Provider-reported game-wide daily active users; no build/deployment dimension or timezone metadata returned.",
-          "22 August–19 September 2026; 20 September excluded because it is the current reporting day.",
+          "22 August–19 September 2026. The automated Jest collector currently requires OAuth reconnection, so later days are unavailable.",
           "Not comparable to deployment activePlayers without matching provider definitions and attribution. Zeroes are returned measurements, not missing data."
         ],
         "metricDefinitions": [
@@ -1068,17 +1069,17 @@
           "platform": "Production readiness",
           "status": "Passed",
           "trigger": "push",
-          "revision": "e5000454eac8",
-          "completedAt": "2026-09-21T00:01:46Z",
-          "evidence": "GitHub Actions run 35545225812 passed Workspace, Firebase Functions, browser end-to-end and Firebase rules checks"
+          "revision": "e1ab08b0c3d0",
+          "completedAt": "2026-09-21T05:11:41Z",
+          "evidence": "GitHub Actions Production readiness completed successfully for the current revision"
         },
         {
           "platform": "Release dashboard",
-          "status": "Deployed",
-          "trigger": "workflow_dispatch",
-          "revision": "e5000454eac8",
-          "completedAt": "2026-09-20T23:40:09Z",
-          "evidence": "Deploy websites run 35545234396 completed successfully with Telegram and Microsoft Store PWA artifact status"
+          "status": "Deployed automatically",
+          "trigger": "Vercel Git push",
+          "revision": "e1ab08b0c3d0",
+          "completedAt": "2026-09-21T05:11:01Z",
+          "evidence": "Vercel Git deployment dpl_3NScWvBvy3NdU7nJik1rxji4YoBW reached READY; production deploy from jest also reached READY without VERCEL_TOKEN"
         },
         {
           "platform": "Jest",
@@ -1245,10 +1246,13 @@
         "label": "All-platform release workflow receipt",
         "tables": [
           ".github/workflows/release-all-platforms.yml",
+          ".github/workflows/production-readiness.yml",
+          "Vercel Git integrations for riddle-quest-yahoo and riddle-quest-release-dashboard",
           "scripts/release/record-release-automation.mjs"
         ],
         "filters": [
-          "Passed records the repository verification and release adapters; provider review completion remains separately reported."
+          "The all-platform receipt records repository verification and release adapters; provider review completion remains separately reported.",
+          "Website production deploys use Vercel Git integration from the jest branch; the retired VERCEL_TOKEN workflow is excluded."
         ],
         "metricDefinitions": [
           {
@@ -1278,6 +1282,14 @@
           "action": "Confirm the accepted version has activated and record the authoritative provider result.",
           "destination": "",
           "unlocks": "Closes the current Jest release gate"
+        },
+        {
+          "status": "To do",
+          "priority": "Now",
+          "platform": "Jest metrics",
+          "action": "Reconnect Jest OAuth for the private hourly monitoring service so daily-active-user collection resumes.",
+          "destination": "",
+          "unlocks": "Current automatic Jest player metrics on the dashboard"
         },
         {
           "status": "Blocked",
@@ -1390,14 +1402,6 @@
           "action": "Create the Discord application, enable Activities and provide its application ID and URL mapping.",
           "destination": "https://discord.com/developers/applications",
           "unlocks": "Embedded App SDK integration and in-client testing"
-        },
-        {
-          "status": "To review",
-          "priority": "Later",
-          "platform": "GamePix",
-          "action": "Create a developer account, review current distribution terms and decide whether network syndication is allowed.",
-          "destination": "https://partners.gamepix.com/developers",
-          "unlocks": "GamePix adapter and submission"
         },
         {
           "status": "To review",
@@ -1550,11 +1554,12 @@
           "docs/all-platform-activation-checklist.md",
           "docs/research/html5-publishing-platforms-2026-09-20.md",
           "docs/reports/platform-release-readiness/src/data.json:provider_release_evidence",
-          "docs/reports/platform-release-readiness/src/data.json:html5_distribution_candidates"
+          "docs/reports/platform-release-readiness/src/data.json:html5_distribution_candidates",
+          "tooling/deployment-monitor/jest-provider.mjs"
         ],
         "filters": [
-          "Only steps requiring an account owner, identity check, contract decision, portal interaction, credential creation or physical-device verification are included.",
-          "Completed repository automation is excluded. Poki remains an explicit no-action hold."
+          "Only steps requiring an account owner, identity check, contract decision, portal interaction, credential creation, OAuth consent or physical-device verification are included.",
+          "Completed repository and Vercel Git automation is excluded. Poki remains an explicit no-action hold."
         ],
         "metricDefinitions": [
           {
@@ -2239,6 +2244,1016 @@
             "definition": "A concise editorial pitch containing the playable URL, studio page and available press assets.",
             "componentIds": [
               "promotion-email-template"
+            ]
+          }
+        ]
+      }
+    },
+    "backend_deployment_metrics": {
+      "rows": [
+        {
+          "platform": "Facebook",
+          "service": "acceptfacebooknotificationpermissionprompt",
+          "deployment": "acceptfacebooknotificationpermissionprompt-00002-qaf",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 0,
+          "successfulRequests": 0,
+          "clientErrors": 0,
+          "serverErrors": 0,
+          "latencySamples": 0,
+          "latencyP95Ms": null,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Facebook",
+          "service": "bindfacebookreferral",
+          "deployment": "bindfacebookreferral-00002-dof",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 0,
+          "successfulRequests": 0,
+          "clientErrors": 0,
+          "serverErrors": 0,
+          "latencySamples": 0,
+          "latencyP95Ms": null,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Facebook",
+          "service": "claimfacebooknotificationpermissionprompt",
+          "deployment": "claimfacebooknotificationpermissionprompt-00002-hol",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 0,
+          "successfulRequests": 0,
+          "clientErrors": 0,
+          "serverErrors": 0,
+          "latencySamples": 0,
+          "latencyP95Ms": null,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Facebook",
+          "service": "createfacebookreferral",
+          "deployment": "createfacebookreferral-00002-lut",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 0,
+          "successfulRequests": 0,
+          "clientErrors": 0,
+          "serverErrors": 0,
+          "latencySamples": 0,
+          "latencyP95Ms": null,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Facebook",
+          "service": "exchangefacebookidentity",
+          "deployment": "exchangefacebookidentity-00004-daf",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 0,
+          "successfulRequests": 0,
+          "clientErrors": 0,
+          "serverErrors": 0,
+          "latencySamples": 0,
+          "latencyP95Ms": null,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Facebook",
+          "service": "facebookdatadeletioncallback",
+          "deployment": "facebookdatadeletioncallback-00003-cug",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 0,
+          "successfulRequests": 0,
+          "clientErrors": 0,
+          "serverErrors": 0,
+          "latencySamples": 0,
+          "latencyP95Ms": null,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Facebook",
+          "service": "facebookdatadeletionstatus",
+          "deployment": "facebookdatadeletionstatus-00002-yer",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 0,
+          "successfulRequests": 0,
+          "clientErrors": 0,
+          "serverErrors": 0,
+          "latencySamples": 0,
+          "latencyP95Ms": null,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Facebook",
+          "service": "getfacebookclientconfiguration",
+          "deployment": "getfacebookclientconfiguration-00002-huq",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 0,
+          "successfulRequests": 0,
+          "clientErrors": 0,
+          "serverErrors": 0,
+          "latencySamples": 0,
+          "latencyP95Ms": null,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Facebook",
+          "service": "issuefacebookidentitynonce",
+          "deployment": "issuefacebookidentitynonce-00004-zir",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 0,
+          "successfulRequests": 0,
+          "clientErrors": 0,
+          "serverErrors": 0,
+          "latencySamples": 0,
+          "latencyP95Ms": null,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Facebook",
+          "service": "joinfacebookcontext",
+          "deployment": "joinfacebookcontext-00002-yul",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 0,
+          "successfulRequests": 0,
+          "clientErrors": 0,
+          "serverErrors": 0,
+          "latencySamples": 0,
+          "latencyP95Ms": null,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Facebook",
+          "service": "leavefacebookcontext",
+          "deployment": "leavefacebookcontext-00002-bag",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 0,
+          "successfulRequests": 0,
+          "clientErrors": 0,
+          "serverErrors": 0,
+          "latencySamples": 0,
+          "latencyP95Ms": null,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Facebook",
+          "service": "listfacebookcontextboard",
+          "deployment": "listfacebookcontextboard-00002-tot",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 0,
+          "successfulRequests": 0,
+          "clientErrors": 0,
+          "serverErrors": 0,
+          "latencySamples": 0,
+          "latencyP95Ms": null,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Facebook",
+          "service": "listfacebooktournament",
+          "deployment": "listfacebooktournament-00002-yol",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 0,
+          "successfulRequests": 0,
+          "clientErrors": 0,
+          "serverErrors": 0,
+          "latencySamples": 0,
+          "latencyP95Ms": null,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Facebook",
+          "service": "recordfacebookcontextrun",
+          "deployment": "recordfacebookcontextrun-00002-cag",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 0,
+          "successfulRequests": 0,
+          "clientErrors": 0,
+          "serverErrors": 0,
+          "latencySamples": 0,
+          "latencyP95Ms": null,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Facebook",
+          "service": "recordfacebooktournament",
+          "deployment": "recordfacebooktournament-00002-fon",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 0,
+          "successfulRequests": 0,
+          "clientErrors": 0,
+          "serverErrors": 0,
+          "latencySamples": 0,
+          "latencyP95Ms": null,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Jest",
+          "service": "exchangejestidentity",
+          "deployment": "exchangejestidentity-00019-vib",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 5,
+          "successfulRequests": 5,
+          "clientErrors": 0,
+          "serverErrors": 0,
+          "latencySamples": 5,
+          "latencyP95Ms": 5578.000276,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Jest",
+          "service": "grantjestpurchase",
+          "deployment": "grantjestpurchase-00019-say",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 0,
+          "successfulRequests": 0,
+          "clientErrors": 0,
+          "serverErrors": 0,
+          "latencySamples": 0,
+          "latencyP95Ms": null,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Jest",
+          "service": "retryjestaccountdeletion",
+          "deployment": "retryjestaccountdeletion-00002-cij",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 0,
+          "successfulRequests": 0,
+          "clientErrors": 0,
+          "serverErrors": 0,
+          "latencySamples": 0,
+          "latencyP95Ms": null,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Jest",
+          "service": "syncjestsubscriptions",
+          "deployment": "syncjestsubscriptions-00014-nec",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 0,
+          "successfulRequests": 0,
+          "clientErrors": 0,
+          "serverErrors": 0,
+          "latencySamples": 0,
+          "latencyP95Ms": null,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Jest",
+          "service": "verifyjestreferrals",
+          "deployment": "verifyjestreferrals-00019-puf",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 0,
+          "successfulRequests": 0,
+          "clientErrors": 0,
+          "serverErrors": 0,
+          "latencySamples": 0,
+          "latencyP95Ms": null,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Reddit",
+          "service": "deleteredditaccount",
+          "deployment": "deleteredditaccount-00003-kec",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 0,
+          "successfulRequests": 0,
+          "clientErrors": 0,
+          "serverErrors": 0,
+          "latencySamples": 0,
+          "latencyP95Ms": null,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Reddit",
+          "service": "exchangeredditidentity",
+          "deployment": "exchangeredditidentity-00003-pan",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 0,
+          "successfulRequests": 0,
+          "clientErrors": 0,
+          "serverErrors": 0,
+          "latencySamples": 0,
+          "latencyP95Ms": null,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Reddit",
+          "service": "redditgameplay",
+          "deployment": "redditgameplay-00003-xaz",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 0,
+          "successfulRequests": 0,
+          "clientErrors": 0,
+          "serverErrors": 0,
+          "latencySamples": 0,
+          "latencyP95Ms": null,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Reddit",
+          "service": "redditstorage",
+          "deployment": "redditstorage-00003-deb",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 0,
+          "successfulRequests": 0,
+          "clientErrors": 0,
+          "serverErrors": 0,
+          "latencySamples": 0,
+          "latencyP95Ms": null,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Shared backend",
+          "service": "abandonracerun",
+          "deployment": "abandonracerun-00010-feg",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 0,
+          "successfulRequests": 0,
+          "clientErrors": 0,
+          "serverErrors": 0,
+          "latencySamples": 0,
+          "latencyP95Ms": null,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Shared backend",
+          "service": "blockrival",
+          "deployment": "blockrival-00002-vab",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 0,
+          "successfulRequests": 0,
+          "clientErrors": 0,
+          "serverErrors": 0,
+          "latencySamples": 0,
+          "latencyP95Ms": null,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Shared backend",
+          "service": "completegame",
+          "deployment": "completegame-00018-peg",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 0,
+          "successfulRequests": 0,
+          "clientErrors": 0,
+          "serverErrors": 0,
+          "latencySamples": 0,
+          "latencyP95Ms": null,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Shared backend",
+          "service": "dailychallengescheduler",
+          "deployment": "dailychallengescheduler-00014-baz",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 6,
+          "successfulRequests": 0,
+          "clientErrors": 0,
+          "serverErrors": 6,
+          "latencySamples": 6,
+          "latencyP95Ms": 211821.597304,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Shared backend",
+          "service": "deleteaccount",
+          "deployment": "deleteaccount-00007-vup",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 0,
+          "successfulRequests": 0,
+          "clientErrors": 0,
+          "serverErrors": 0,
+          "latencySamples": 0,
+          "latencyP95Ms": null,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Shared backend",
+          "service": "getcurrentclassicriddle",
+          "deployment": "getcurrentclassicriddle-00015-get",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 4,
+          "successfulRequests": 4,
+          "clientErrors": 0,
+          "serverErrors": 0,
+          "latencySamples": 4,
+          "latencyP95Ms": 5359.816364,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Shared backend",
+          "service": "getcurrentdailychallenge",
+          "deployment": "getcurrentdailychallenge-00018-yop",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 0,
+          "successfulRequests": 0,
+          "clientErrors": 0,
+          "serverErrors": 0,
+          "latencySamples": 0,
+          "latencyP95Ms": null,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Shared backend",
+          "service": "gethint",
+          "deployment": "gethint-00015-vat",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 0,
+          "successfulRequests": 0,
+          "clientErrors": 0,
+          "serverErrors": 0,
+          "latencySamples": 0,
+          "latencyP95Ms": null,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Shared backend",
+          "service": "getleaderboard",
+          "deployment": "getleaderboard-00013-lag",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 0,
+          "successfulRequests": 0,
+          "clientErrors": 0,
+          "serverErrors": 0,
+          "latencySamples": 0,
+          "latencyP95Ms": null,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Shared backend",
+          "service": "getraceaccess",
+          "deployment": "getraceaccess-00014-xuq",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 9,
+          "successfulRequests": 9,
+          "clientErrors": 0,
+          "serverErrors": 0,
+          "latencySamples": 9,
+          "latencyP95Ms": 6583.577346,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Shared backend",
+          "service": "getracechallenge",
+          "deployment": "getracechallenge-00014-wot",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 0,
+          "successfulRequests": 0,
+          "clientErrors": 0,
+          "serverErrors": 0,
+          "latencySamples": 0,
+          "latencyP95Ms": null,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Shared backend",
+          "service": "getraceoutcome",
+          "deployment": "getraceoutcome-00014-six",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 0,
+          "successfulRequests": 0,
+          "clientErrors": 0,
+          "serverErrors": 0,
+          "latencySamples": 0,
+          "latencyP95Ms": null,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Shared backend",
+          "service": "listracecategories",
+          "deployment": "listracecategories-00014-jon",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 4,
+          "successfulRequests": 4,
+          "clientErrors": 0,
+          "serverErrors": 0,
+          "latencySamples": 4,
+          "latencyP95Ms": 4877.066582,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Shared backend",
+          "service": "listraceinbox",
+          "deployment": "listraceinbox-00014-tih",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 0,
+          "successfulRequests": 0,
+          "clientErrors": 0,
+          "serverErrors": 0,
+          "latencySamples": 0,
+          "latencyP95Ms": null,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Shared backend",
+          "service": "publishracechallenge",
+          "deployment": "publishracechallenge-00014-ges",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 0,
+          "successfulRequests": 0,
+          "clientErrors": 0,
+          "serverErrors": 0,
+          "latencySamples": 0,
+          "latencyP95Ms": null,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Shared backend",
+          "service": "recordraceanalytics",
+          "deployment": "recordraceanalytics-00014-xet",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 0,
+          "successfulRequests": 0,
+          "clientErrors": 0,
+          "serverErrors": 0,
+          "latencySamples": 0,
+          "latencyP95Ms": null,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Shared backend",
+          "service": "reportrival",
+          "deployment": "reportrival-00002-qak",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 0,
+          "successfulRequests": 0,
+          "clientErrors": 0,
+          "serverErrors": 0,
+          "latencySamples": 0,
+          "latencyP95Ms": null,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Shared backend",
+          "service": "requestracehint",
+          "deployment": "requestracehint-00015-heg",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 0,
+          "successfulRequests": 0,
+          "clientErrors": 0,
+          "serverErrors": 0,
+          "latencySamples": 0,
+          "latencyP95Ms": null,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Shared backend",
+          "service": "resumeracerun",
+          "deployment": "resumeracerun-00014-mar",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 0,
+          "successfulRequests": 0,
+          "clientErrors": 0,
+          "serverErrors": 0,
+          "latencySamples": 0,
+          "latencyP95Ms": null,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Shared backend",
+          "service": "setpresenceconsent",
+          "deployment": "setpresenceconsent-00002-nuq",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 0,
+          "successfulRequests": 0,
+          "clientErrors": 0,
+          "serverErrors": 0,
+          "latencySamples": 0,
+          "latencyP95Ms": null,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Shared backend",
+          "service": "skipraceriddle",
+          "deployment": "skipraceriddle-00014-qal",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 0,
+          "successfulRequests": 0,
+          "clientErrors": 0,
+          "serverErrors": 0,
+          "latencySamples": 0,
+          "latencyP95Ms": null,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Shared backend",
+          "service": "skipriddle",
+          "deployment": "skipriddle-00014-quf",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 0,
+          "successfulRequests": 0,
+          "clientErrors": 0,
+          "serverErrors": 0,
+          "latencySamples": 0,
+          "latencyP95Ms": null,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Shared backend",
+          "service": "spendcoins",
+          "deployment": "spendcoins-00014-bix",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 0,
+          "successfulRequests": 0,
+          "clientErrors": 0,
+          "serverErrors": 0,
+          "latencySamples": 0,
+          "latencyP95Ms": null,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Shared backend",
+          "service": "startracerun",
+          "deployment": "startracerun-00014-duz",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 0,
+          "successfulRequests": 0,
+          "clientErrors": 0,
+          "serverErrors": 0,
+          "latencySamples": 0,
+          "latencyP95Ms": null,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Shared backend",
+          "service": "submitraceguess",
+          "deployment": "submitraceguess-00014-bej",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 0,
+          "successfulRequests": 0,
+          "clientErrors": 0,
+          "serverErrors": 0,
+          "latencySamples": 0,
+          "latencyP95Ms": null,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Shared backend",
+          "service": "submitsingleplayerguess",
+          "deployment": "submitsingleplayerguess-00003-loz",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 0,
+          "successfulRequests": 0,
+          "clientErrors": 0,
+          "serverErrors": 0,
+          "latencySamples": 0,
+          "latencyP95Ms": null,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Shared backend",
+          "service": "syncblockedrivalpresencevisibility",
+          "deployment": "syncblockedrivalpresencevisibility-00002-nak",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 0,
+          "successfulRequests": 0,
+          "clientErrors": 0,
+          "serverErrors": 0,
+          "latencySamples": 0,
+          "latencyP95Ms": null,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Shared backend",
+          "service": "syncknownrivalpresencevisibility",
+          "deployment": "syncknownrivalpresencevisibility-00002-pav",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 0,
+          "successfulRequests": 0,
+          "clientErrors": 0,
+          "serverErrors": 0,
+          "latencySamples": 0,
+          "latencyP95Ms": null,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Shared backend",
+          "service": "updateavatar",
+          "deployment": "updateavatar-00013-zij",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 0,
+          "successfulRequests": 0,
+          "clientErrors": 0,
+          "serverErrors": 0,
+          "latencySamples": 0,
+          "latencyP95Ms": null,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Shared backend",
+          "service": "updateusername",
+          "deployment": "updateusername-00013-coh",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 0,
+          "successfulRequests": 0,
+          "clientErrors": 0,
+          "serverErrors": 0,
+          "latencySamples": 0,
+          "latencyP95Ms": null,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Yahoo",
+          "service": "confirmyahoostripecheckout",
+          "deployment": "confirmyahoostripecheckout-00003-zaz",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 1,
+          "successfulRequests": 0,
+          "clientErrors": 1,
+          "serverErrors": 0,
+          "latencySamples": 1,
+          "latencyP95Ms": 8170.506927,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Yahoo",
+          "service": "createyahoostripecheckout",
+          "deployment": "createyahoostripecheckout-00001-dob",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 1,
+          "successfulRequests": 0,
+          "clientErrors": 1,
+          "serverErrors": 0,
+          "latencySamples": 1,
+          "latencyP95Ms": 179.756349,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Yahoo",
+          "service": "createyahoostripecheckout",
+          "deployment": "createyahoostripecheckout-00002-his",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 2,
+          "successfulRequests": 0,
+          "clientErrors": 2,
+          "serverErrors": 0,
+          "latencySamples": 2,
+          "latencyP95Ms": 309.911542,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Yahoo",
+          "service": "createyahoostripecheckout",
+          "deployment": "createyahoostripecheckout-00003-pey",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 1,
+          "successfulRequests": 0,
+          "clientErrors": 1,
+          "serverErrors": 0,
+          "latencySamples": 1,
+          "latencyP95Ms": 2008.6106090000003,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Yahoo",
+          "service": "createyahoostripecheckout",
+          "deployment": "createyahoostripecheckout-00004-gon",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 1,
+          "successfulRequests": 0,
+          "clientErrors": 1,
+          "serverErrors": 0,
+          "latencySamples": 1,
+          "latencyP95Ms": 50.486931,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Yahoo",
+          "service": "yahoooauthcallback",
+          "deployment": "yahoooauthcallback-00002-bed",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 1,
+          "successfulRequests": 0,
+          "clientErrors": 0,
+          "serverErrors": 1,
+          "latencySamples": 1,
+          "latencyP95Ms": 6941.346281,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Yahoo",
+          "service": "yahoooauthstart",
+          "deployment": "yahoooauthstart-00002-toh",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 5,
+          "successfulRequests": 0,
+          "clientErrors": 1,
+          "serverErrors": 0,
+          "latencySamples": 5,
+          "latencyP95Ms": 4682.454262,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Yahoo",
+          "service": "yahoostripewebhook",
+          "deployment": "yahoostripewebhook-00001-xez",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 4,
+          "successfulRequests": 0,
+          "clientErrors": 4,
+          "serverErrors": 0,
+          "latencySamples": 4,
+          "latencyP95Ms": 39.494001,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Yahoo",
+          "service": "yahoostripewebhook",
+          "deployment": "yahoostripewebhook-00002-faj",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 1,
+          "successfulRequests": 0,
+          "clientErrors": 1,
+          "serverErrors": 0,
+          "latencySamples": 1,
+          "latencyP95Ms": 59.700746,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Yahoo",
+          "service": "yahoostripewebhook",
+          "deployment": "yahoostripewebhook-00003-poj",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "requests": 1,
+          "successfulRequests": 0,
+          "clientErrors": 1,
+          "serverErrors": 0,
+          "latencySamples": 1,
+          "latencyP95Ms": 23.02376,
+          "reportStatus": "Current window"
+        },
+        {
+          "platform": "Yahoo",
+          "service": "yahoooauthstart",
+          "deployment": "yahoooauthstart-00001-wal",
+          "windowStart": "2026-09-20T00:00:43.604Z",
+          "windowEnd": "2026-09-21T00:00:43.604Z",
+          "requests": 3,
+          "successfulRequests": 0,
+          "clientErrors": 1,
+          "serverErrors": 0,
+          "latencySamples": 3,
+          "latencyP95Ms": 25.087097,
+          "reportStatus": "Historical"
+        },
+        {
+          "platform": "Facebook",
+          "service": "exchangefacebookidentity",
+          "deployment": "exchangefacebookidentity-00003-geh",
+          "windowStart": "2026-09-19T18:00:13.149Z",
+          "windowEnd": "2026-09-20T18:00:13.149Z",
+          "requests": 3,
+          "successfulRequests": 1,
+          "clientErrors": 2,
+          "serverErrors": 0,
+          "latencySamples": 3,
+          "latencyP95Ms": 1530.4251140000001,
+          "reportStatus": "Historical"
+        },
+        {
+          "platform": "Facebook",
+          "service": "issuefacebookidentitynonce",
+          "deployment": "issuefacebookidentitynonce-00002-juc",
+          "windowStart": "2026-09-19T18:00:13.149Z",
+          "windowEnd": "2026-09-20T18:00:13.149Z",
+          "requests": 6,
+          "successfulRequests": 0,
+          "clientErrors": 6,
+          "serverErrors": 0,
+          "latencySamples": 6,
+          "latencyP95Ms": 8.62358,
+          "reportStatus": "Historical"
+        },
+        {
+          "platform": "Facebook",
+          "service": "issuefacebookidentitynonce",
+          "deployment": "issuefacebookidentitynonce-00003-mix",
+          "windowStart": "2026-09-19T18:00:13.149Z",
+          "windowEnd": "2026-09-20T18:00:13.149Z",
+          "requests": 4,
+          "successfulRequests": 4,
+          "clientErrors": 0,
+          "serverErrors": 0,
+          "latencySamples": 4,
+          "latencyP95Ms": 1572.688754,
+          "reportStatus": "Historical"
+        }
+      ],
+      "source": {
+        "label": "Google Cloud Logging request logs and Cloud Run deployment inventory",
+        "retrievedAt": "2026-09-21T05:00:44.248Z",
+        "tables": [
+          "projects/riddle-quest-ec2b2/logs/run.googleapis.com%2Frequests",
+          "projects/riddle-quest-ec2b2/locations/us-central1/services"
+        ],
+        "filters": [
+          "Rolling 24-hour window. All pages read before publication; failed or truncated reads retain the last successful snapshot.",
+          "Includes development probes, rejected requests and OPTIONS traffic. Request counts are not players, sessions or completed games.",
+          "Each current ready backend revision is represented even when no request logs were observed. Older revisions with traffic remain visible.",
+          "Retired revisions retain their last observed reporting window and are labelled Historical. Their values are not current-window traffic.",
+          "Latency is server request latency, not game launch-to-playable. Shared endpoints are not attributed to a client target."
+        ],
+        "metricDefinitions": [
+          {
+            "label": "Backend traffic and performance",
+            "definition": "Requests count observed HTTP request logs per service/revision. Successful requests are HTTP 2xx; client errors 4xx; server errors 5xx. p95 is nearest-rank over latency samples from this same group. No samples means unavailable.",
+            "componentIds": [
+              "backend-deployment-metrics"
+            ]
+          }
+        ]
+      }
+    },
+    "monitoring_refresh": {
+      "rows": [
+        {
+          "collector": "Cloud Logging",
+          "status": "Succeeded",
+          "lastSuccessAt": "2026-09-21T05:00:44.248Z",
+          "windowStart": "2026-09-20T05:00:44.248Z",
+          "windowEnd": "2026-09-21T05:00:44.248Z",
+          "deployments": 68
+        },
+        {
+          "collector": "Jest analytics",
+          "status": "Connection required",
+          "lastSuccessAt": null
+        }
+      ],
+      "source": {
+        "label": "Automatic collector execution",
+        "retrievedAt": "2026-09-21T05:00:44.248Z",
+        "metricDefinitions": [
+          {
+            "label": "Refresh status",
+            "definition": "Only updated after complete provider retrieval and durable snapshot publication. The browser checks for updated snapshots every minute.",
+            "componentIds": [
+              "monitoring-refresh"
             ]
           }
         ]
