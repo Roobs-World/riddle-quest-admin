@@ -100,6 +100,9 @@ jobs:
           pnpm release:zoom
           pnpm release:pwa-directory
           pnpm release:miro
+          pnpm release:greenhouse
+          pnpm release:ozogames
+          pnpm release:slowden
       - name: Record the successful release in the dashboard
         run: node scripts/release/record-release-automation.mjs
         env:
@@ -198,6 +201,12 @@ jobs:
             build-pwa-directory-review.zip.manifest.json
             build-miro-marketplace-review.zip
             build-miro-marketplace-review.zip.manifest.json
+            build-greenhouse-review.zip
+            build-greenhouse-review.zip.manifest.json
+            build-ozogames-review.zip
+            build-ozogames-review.zip.manifest.json
+            build-slowden-review.zip
+            build-slowden-review.zip.manifest.json
             build-youtube.zip
             build-youtube.manifest.json
             build-youtube.test-report.json

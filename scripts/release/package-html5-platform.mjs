@@ -46,6 +46,9 @@ const definitions = Object.freeze({
   zoom: Object.freeze({artifact: "build-zoom-app-review.zip", boundary: "Zoom app creation, agreement review, SDK integration, security evidence, Marketplace review and publication remain manual."}),
   "pwa-directory": Object.freeze({artifact: "build-pwa-directory-review.zip", boundary: "PWA installability review, metadata submission, directory review and listing approval remain manual."}),
   miro: Object.freeze({artifact: "build-miro-marketplace-review.zip", boundary: "Miro app creation, collaborative-flow design, SDK integration, beta adoption, Marketplace review and publication remain manual."}),
+  greenhouse: Object.freeze({artifact: "build-greenhouse-review.zip", boundary: "Greenhouse educational positioning, CSP/offline adaptation, creator onboarding, upload, review and publication remain manual."}),
+  ozogames: Object.freeze({artifact: "build-ozogames-review.zip", boundary: "OzoGames email submission, publisher agreement, monetization review and publication remain manual."}),
+  slowden: Object.freeze({artifact: "build-slowden-review.zip", boundary: "SlowDen form submission, terms confirmation, editorial review and listing approval remain manual."}),
 });
 
 export function getHtml5DistributionDefinition(target) {

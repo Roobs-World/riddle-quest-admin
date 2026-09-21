@@ -98,6 +98,12 @@ snapshot.queries.release_automation = {
       evidence: "build-pwa-directory-review.zip and its SHA-256 manifest are retained before free listing submission"},
     {platform: "Miro Marketplace", status: "Beta planning handoff ready", trigger, revision: sha, completedAt,
       evidence: "build-miro-marketplace-review.zip and its SHA-256 manifest are retained before collaboration and beta work"},
+    {platform: "Greenhouse Games", status: "Educational review handoff ready", trigger, revision: sha, completedAt,
+      evidence: "build-greenhouse-review.zip and its SHA-256 manifest are retained before CSP/offline adaptation"},
+    {platform: "OzoGames", status: "Publisher review handoff ready", trigger, revision: sha, completedAt,
+      evidence: "build-ozogames-review.zip and its SHA-256 manifest are retained before contract and monetization review"},
+    {platform: "SlowDen", status: "Directory review handoff ready", trigger, revision: sha, completedAt,
+      evidence: "build-slowden-review.zip and its SHA-256 manifest are retained before hosted-link form submission"},
   ],
   source: {
     label: "All-platform release workflow receipt",

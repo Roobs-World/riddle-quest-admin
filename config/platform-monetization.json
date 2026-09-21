@@ -288,6 +288,24 @@
       "iap": "Free-only launch; external paid access requires later entitlement and disclosure review",
       "ads": "Prohibited by Miro Developer Terms; artifact must contain no advertising SDK",
       "gate": "Design a valid team-building flow and prove >50 MAU for two months across >10 organizations"
+    },
+    {
+      "platform": "Greenhouse Games",
+      "iap": "Prohibited — microtransactions, paid upgrades and paywalls must be absent",
+      "ads": "Prohibited — advertising, tracking and monetization manipulation must be absent",
+      "gate": "Approve educational fit and build a self-contained CSP-safe artifact before creator upload"
+    },
+    {
+      "platform": "OzoGames",
+      "iap": "Unavailable pending written commerce and server-verification terms",
+      "ads": "Contract-gated; submit an ad-free candidate before any isolated integration",
+      "gate": "Review publisher agreement, revenue share, consent, reporting and payout terms"
+    },
+    {
+      "platform": "SlowDen",
+      "iap": "Not applicable — no platform commerce API; prefer commerce-disabled listing path",
+      "ads": "Unavailable — no platform ad SDK or developer revenue programme documented",
+      "gate": "Submit the canonical neutral hosted URL and capture the live listing"
     }
   ]
 }

@@ -462,6 +462,30 @@ const releasePlans = Object.freeze([
     handoff: "Design a real facilitator and board-result flow before recruiting the beta organizations required for review.",
     runbook: "docs/research/additional-release-targets-round-8-2026-09-21.md",
   }),
+  Object.freeze({
+    target: "greenhouse", title: "Greenhouse Games review", boundary: "local-manual-handoff", publicCommand: "pnpm release:greenhouse",
+    summary: "Create a neutral archive for Greenhouse educational-fit and CSP/offline planning.",
+    externalEffect: "None; educational positioning, artifact adaptation, onboarding, upload and review remain manual.",
+    command: Object.freeze({executable: "node", args: Object.freeze(["scripts/release/package-html5-platform.mjs", "greenhouse"])}),
+    handoff: "Define the learning objective and remove ads, IAP, analytics and off-origin dependencies before submission.",
+    runbook: "docs/research/additional-release-targets-round-9-2026-09-21.md",
+  }),
+  Object.freeze({
+    target: "ozogames", title: "OzoGames review", boundary: "local-manual-handoff", publicCommand: "pnpm release:ozogames",
+    summary: "Create an ad-free neutral HTML5 archive for OzoGames editorial and contract review.",
+    externalEffect: "None; email submission, agreement review, monetization decision and publication remain manual.",
+    command: Object.freeze({executable: "node", args: Object.freeze(["scripts/release/package-html5-platform.mjs", "ozogames"])}),
+    handoff: "Send the demo and request written advertising, revenue-share and commerce terms before integration.",
+    runbook: "docs/research/additional-release-targets-round-9-2026-09-21.md",
+  }),
+  Object.freeze({
+    target: "slowden", title: "SlowDen review", boundary: "local-manual-handoff", publicCommand: "pnpm release:slowden",
+    summary: "Create a neutral archive and metadata handoff for SlowDen hosted-link review.",
+    externalEffect: "None; form submission, editorial review and public listing approval remain manual.",
+    command: Object.freeze({executable: "node", args: Object.freeze(["scripts/release/package-html5-platform.mjs", "slowden"])}),
+    handoff: "Submit the canonical neutral URL and record the listing only after it becomes public.",
+    runbook: "docs/research/additional-release-targets-round-9-2026-09-21.md",
+  }),
 ]);
 
 const plansByTarget = new Map(releasePlans.map((plan) => [plan.target, plan]));
