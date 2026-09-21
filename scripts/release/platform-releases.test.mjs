@@ -38,6 +38,10 @@ const expectedCommands = new Map([
   ["yandex", ["scripts/release/package-html5-platform.mjs", "yandex"]],
   ["telegram", ["scripts/release/package-html5-platform.mjs", "telegram"]],
   ["microsoft-pwa", ["scripts/release/package-microsoft-pwa.mjs"]],
+  ["y8", ["scripts/release/package-html5-platform.mjs", "y8"]],
+  ["playgama", ["scripts/release/package-html5-platform.mjs", "playgama"]],
+  ["amazon", ["scripts/release/package-html5-platform.mjs", "amazon"]],
+  ["jiogames", ["scripts/release/package-html5-platform.mjs", "jiogames"]],
 ]);
 const expectedRunbooks = new Map([
   ["jest", "docs/jest-html5-operations.md"],
@@ -64,11 +68,15 @@ const expectedRunbooks = new Map([
   ["yandex", "docs/research/html5-publishing-platforms-2026-09-20.md"],
   ["telegram", "docs/research/html5-publishing-platforms-2026-09-20.md"],
   ["microsoft-pwa", "docs/research/html5-publishing-platforms-2026-09-20.md"],
+  ["y8", "docs/research/additional-html5-release-targets-2026-09-21.md"],
+  ["playgama", "docs/research/additional-html5-release-targets-2026-09-21.md"],
+  ["amazon", "docs/research/additional-html5-release-targets-2026-09-21.md"],
+  ["jiogames", "docs/research/additional-html5-release-targets-2026-09-21.md"],
 ]);
 
 test("the public interface exposes one isolated canonical command per release target", () => {
   const plans = listPlatformReleasePlans();
-  assert.deepEqual(plans.map(({target}) => target), ["jest", "facebook", "youtube", "reddit", "netflix", "yahoo", "gamesnacks", "itch", "crazygames", "newgrounds", "gamejolt", "coolmath", "armor", "gamepix", "addictinggames", "htmlgames", "playkovo", "kongregate", "lagged", "gamedistribution", "gamemonetize", "yandex", "telegram", "microsoft-pwa"]);
+  assert.deepEqual(plans.map(({target}) => target), ["jest", "facebook", "youtube", "reddit", "netflix", "yahoo", "gamesnacks", "itch", "crazygames", "newgrounds", "gamejolt", "coolmath", "armor", "gamepix", "addictinggames", "htmlgames", "playkovo", "kongregate", "lagged", "gamedistribution", "gamemonetize", "yandex", "telegram", "microsoft-pwa", "y8", "playgama", "amazon", "jiogames"]);
   for (const plan of plans) {
     assert.equal(plan.publicCommand, `pnpm release:${plan.target}`);
     assert.equal("command" in plan, false);
@@ -79,7 +87,7 @@ test("the public interface exposes one isolated canonical command per release ta
 
 test("the root package exposes target releases and one combined release command", async () => {
   const packageJson = JSON.parse(await readFile(new URL("../../package.json", import.meta.url), "utf8"));
-  for (const target of ["jest", "facebook", "youtube", "reddit", "netflix", "yahoo", "gamesnacks", "itch", "crazygames", "newgrounds", "gamejolt", "coolmath", "armor", "gamepix", "addictinggames", "htmlgames", "playkovo", "kongregate", "lagged", "gamedistribution", "gamemonetize", "yandex", "telegram", "microsoft-pwa"]) {
+  for (const target of ["jest", "facebook", "youtube", "reddit", "netflix", "yahoo", "gamesnacks", "itch", "crazygames", "newgrounds", "gamejolt", "coolmath", "armor", "gamepix", "addictinggames", "htmlgames", "playkovo", "kongregate", "lagged", "gamedistribution", "gamemonetize", "yandex", "telegram", "microsoft-pwa", "y8", "playgama", "amazon", "jiogames"]) {
     assert.equal(
       packageJson.scripts[`release:${target}`],
       `node scripts/release/run-platform-release.mjs ${target}`,
@@ -141,8 +149,12 @@ test("the combined release verifies once before running every adapter", async ()
     expectedCommands.get("yandex"),
     expectedCommands.get("telegram"),
     expectedCommands.get("microsoft-pwa"),
+    expectedCommands.get("y8"),
+    expectedCommands.get("playgama"),
+    expectedCommands.get("amazon"),
+    expectedCommands.get("jiogames"),
   ]);
-  assert.deepEqual(results.map(({target}) => target), ["jest", "facebook", "youtube", "reddit", "netflix", "yahoo", "gamesnacks", "itch", "crazygames", "newgrounds", "gamejolt", "coolmath", "armor", "gamepix", "addictinggames", "htmlgames", "playkovo", "kongregate", "lagged", "gamedistribution", "gamemonetize", "yandex", "telegram", "microsoft-pwa"]);
+  assert.deepEqual(results.map(({target}) => target), ["jest", "facebook", "youtube", "reddit", "netflix", "yahoo", "gamesnacks", "itch", "crazygames", "newgrounds", "gamejolt", "coolmath", "armor", "gamepix", "addictinggames", "htmlgames", "playkovo", "kongregate", "lagged", "gamedistribution", "gamemonetize", "yandex", "telegram", "microsoft-pwa", "y8", "playgama", "amazon", "jiogames"]);
 });
 
 test("the Facebook adapter performs only the local preflight and immutable handoff", async () => {

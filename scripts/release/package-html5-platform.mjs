@@ -25,6 +25,10 @@ const definitions = Object.freeze({
   gamemonetize: Object.freeze({artifact: "build-gamemonetize-review.zip", boundary: "GameMonetize account setup, GameId issuance, SDK integration, upload and activation remain manual."}),
   yandex: Object.freeze({artifact: "build-yandex-review.zip", boundary: "Yandex developer registration, contract, SDK integration, Console upload and moderation remain manual."}),
   telegram: Object.freeze({artifact: "build-telegram-review.zip", boundary: "BotFather bot/game creation, signed identity, Telegram Stars fulfillment and launch-link configuration remain manual."}),
+  y8: Object.freeze({artifact: "build-y8-review.zip", boundary: "Y8 account setup, studio review, SDK approval, upload and publication remain manual."}),
+  playgama: Object.freeze({artifact: "build-playgama-review.zip", boundary: "Playgama contracting, Bridge integration, distribution choices, moderation and publication remain manual."}),
+  amazon: Object.freeze({artifact: "build-amazon-webapp-review.zip", boundary: "Amazon developer enrollment, Fire compatibility testing, IAP setup, listing and certification remain manual."}),
+  jiogames: Object.freeze({artifact: "build-jiogames-review.zip", boundary: "JioGames account approval, HTML5 SDK access, ads/IAP integration, QA and publication remain manual."}),
 });
 
 export function getHtml5DistributionDefinition(target) {

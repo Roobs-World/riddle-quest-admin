@@ -72,6 +72,14 @@ build-telegram-review.zip.manifest.json
 build-microsoft-pwa.zip
 build-microsoft-pwa.zip.manifest.json
 packages/portal/dist-microsoft-pwa/
+build-y8-review.zip
+build-y8-review.zip.manifest.json
+build-playgama-review.zip
+build-playgama-review.zip.manifest.json
+build-amazon-webapp-review.zip
+build-amazon-webapp-review.zip.manifest.json
+build-jiogames-review.zip
+build-jiogames-review.zip.manifest.json
 build-gamesnacks.zip
 build-gamesnacks.zip.manifest.json
 build-youtube.manifest.json

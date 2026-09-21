@@ -162,6 +162,30 @@
       "iap": "Unavailable to the current UK company through documented native IAP eligibility",
       "ads": "Unavailable to the current UK release through documented LY Ads regional eligibility",
       "gate": "Confirm an eligible region and commercial route before implementing a LIFF adapter"
+    },
+    {
+      "platform": "Y8",
+      "iap": "Unavailable in reviewed public documentation",
+      "ads": "Provider-gated; Y8 SDK and studio advertising approval required",
+      "gate": "Create a studio, submit the ad-free build and obtain SDK/advertising approval"
+    },
+    {
+      "platform": "Playgama",
+      "iap": "Provider-gated through Playgama Bridge with server verification",
+      "ads": "Provider-gated through isolated Playgama Bridge integration",
+      "gate": "Review sublicense and partner overlap, then implement and validate an isolated Bridge adapter"
+    },
+    {
+      "platform": "Amazon Appstore Web App",
+      "iap": "Provider-gated; Amazon IAP is required for digital content",
+      "ads": "Policy-gated; Fire web runtime cannot expose advertising ID",
+      "gate": "Complete Fire Web App compatibility testing and Developer Console enrollment"
+    },
+    {
+      "platform": "JioGames HTML5",
+      "iap": "Provider-gated; public documentation does not define the HTML5 receipt contract",
+      "ads": "Provider-gated through account-issued JioAds integration",
+      "gate": "Obtain partner approval, current set-top-box SDK and UK commercial terms"
     }
   ]
 }

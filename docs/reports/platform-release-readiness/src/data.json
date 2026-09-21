@@ -3,7 +3,7 @@
   "surface": "dashboard",
   "buildStatus": "complete",
   "title": "Riddle Quest integration and release status",
-  "generatedAt": "2026-09-21T05:59:38Z",
+  "generatedAt": "2026-09-21T10:01:40Z",
   "status": "verified-repository-and-provider-evidence",
   "filters": [],
   "queries": {
@@ -251,6 +251,42 @@
           "ads": "Unavailable to the current UK release through documented LY Ads regional eligibility",
           "localValidation": "Not started — account, commercial or eligibility gate",
           "releaseStatus": "Verified as a later non-exclusive target; blocked on regional commercial eligibility"
+        },
+        {
+          "platform": "Y8",
+          "integration": "Provider-neutral review handoff",
+          "identityAndSaves": "Guest/local save; Y8 account contract not implemented",
+          "commerceAndSocial": "IAP unavailable pending written requirements",
+          "ads": "Excluded until Y8 studio and SDK approval",
+          "localValidation": "Passed — immutable review handoff generated",
+          "releaseStatus": "Ad-free review ZIP and SHA-256 manifest generated; studio creation and upload remain manual"
+        },
+        {
+          "platform": "Playgama",
+          "integration": "Provider-neutral review handoff; Bridge adapter pending",
+          "identityAndSaves": "Bridge identity/storage contract not implemented",
+          "commerceAndSocial": "Bridge IAP requires isolated server-authoritative integration",
+          "ads": "Excluded until isolated Bridge adapter is approved",
+          "localValidation": "Passed — immutable review handoff generated",
+          "releaseStatus": "Review ZIP and SHA-256 manifest generated; contract and distribution choices remain manual"
+        },
+        {
+          "platform": "Amazon Appstore Web App",
+          "integration": "Packaged HTML5 compatibility handoff",
+          "identityAndSaves": "Web guest/local save; Amazon account adapter pending",
+          "commerceAndSocial": "Amazon JavaScript IAP requires isolated integration",
+          "ads": "Excluded pending Fire runtime/privacy review",
+          "localValidation": "Passed — immutable review handoff generated",
+          "releaseStatus": "Self-contained review ZIP and SHA-256 manifest generated; Fire device testing and listing remain manual"
+        },
+        {
+          "platform": "JioGames HTML5",
+          "integration": "Provider-neutral set-top-box review handoff",
+          "identityAndSaves": "Account-issued HTML5 SDK contract pending",
+          "commerceAndSocial": "Provider-gated IAP contract pending",
+          "ads": "Excluded until JioAds SDK and placement rules are supplied",
+          "localValidation": "Passed — immutable review handoff generated",
+          "releaseStatus": "Review ZIP and SHA-256 manifest generated; partner approval and SDK access remain manual"
         }
       ],
       "source": {
@@ -263,7 +299,8 @@
           "provider portal evidence captured 2026-09-20",
           "config/platform-monetization.json",
           "docs/reports/platform-release-readiness/src/data.json:html5_distribution_candidates",
-          ".github/workflows/release-all-platforms.yml"
+          ".github/workflows/release-all-platforms.yml",
+          "docs/research/additional-html5-release-targets-2026-09-21.md"
         ],
         "filters": [
           "Every canonical release target is listed, including research-only, blocked and account-gated targets.",
@@ -534,6 +571,34 @@
           "integration": "Dedicated LIFF identity and lifecycle adapter; current UK release has no documented native IAP or ads eligibility",
           "submissionProgress": "Verified as a later non-exclusive target; blocked on regional commercial eligibility",
           "nextGate": "Confirm an eligible service region and monetization route before implementation"
+        },
+        {
+          "platform": "Y8",
+          "releaseModel": "Direct ZIP or iframe submission with optional Y8-managed monetization",
+          "integration": "Ad-free neutral build first; isolated Y8 SDK only after approval",
+          "submissionProgress": "Provider-specific ad-free review ZIP and SHA-256 manifest generated",
+          "nextGate": "Create Y8 account/studio and upload build-y8-review.zip"
+        },
+        {
+          "platform": "Playgama",
+          "releaseModel": "Playgama portal plus optional partner-network distribution",
+          "integration": "Isolated Playgama Bridge adapter for identity, storage, ads and IAP",
+          "submissionProgress": "Neutral contract-review ZIP and SHA-256 manifest generated",
+          "nextGate": "Review sublicense and overlapping distribution choices before Bridge work"
+        },
+        {
+          "platform": "Amazon Appstore Web App",
+          "releaseModel": "Packaged or hosted HTML5 listing for Fire tablets",
+          "integration": "Fire web compatibility plus isolated Amazon JavaScript IAP",
+          "submissionProgress": "Self-contained Fire compatibility ZIP and SHA-256 manifest generated",
+          "nextGate": "Enroll and test the package in Fire Web App Tester"
+        },
+        {
+          "platform": "JioGames HTML5",
+          "releaseModel": "Partner-reviewed HTML5 game for Jio set-top boxes",
+          "integration": "Account-issued SDK for lifecycle, ads and IAP after approval",
+          "submissionProgress": "Provider-neutral partner-review ZIP and SHA-256 manifest generated",
+          "nextGate": "Apply for partner access and request SDK plus UK payout terms"
         }
       ],
       "source": {
@@ -546,7 +611,8 @@
           "scripts/release/package-html5-release.mjs",
           "scripts/release/package-microsoft-pwa.mjs",
           "build-telegram-review.zip",
-          "build-microsoft-pwa.zip"
+          "build-microsoft-pwa.zip",
+          "docs/research/additional-html5-release-targets-2026-09-21.md"
         ],
         "filters": [
           "A ready artifact does not imply provider approval. SDK and advertising integrations must remain isolated by target.",
@@ -611,7 +677,7 @@
           "check": "Release output coverage",
           "viewport": "Data contract",
           "result": "Passed",
-          "evidence": "All 27 canonical release targets are present in policy order with integration, identity/save, commerce, ads, validation and release status fields."
+          "evidence": "All 31 canonical release targets are present in policy order with integration, identity/save, commerce, ads, validation and release status fields."
         },
         {
           "check": "Desktop rendering and source inspection",
@@ -1538,6 +1604,38 @@
           "action": "Confirm regional commercial eligibility with LINE before starting a UK release adapter.",
           "destination": "https://developers.line.biz/console/",
           "unlocks": "LIFF integration and review-channel setup"
+        },
+        {
+          "status": "To do",
+          "priority": "Next submission",
+          "platform": "Y8",
+          "action": "Create a Y8 account and studio, then upload build-y8-review.zip without external monetization.",
+          "destination": "https://www.y8.com/upload",
+          "unlocks": "Y8 review and later managed-ad eligibility"
+        },
+        {
+          "status": "To review",
+          "priority": "Next integration",
+          "platform": "Playgama",
+          "action": "Register, review the publishing sublicense and overlapping partner distribution choices, then decide whether to implement Playgama Bridge.",
+          "destination": "https://developer.playgama.com/",
+          "unlocks": "Playgama moderation, syndication, ads and IAP integration"
+        },
+        {
+          "status": "To do",
+          "priority": "Next submission",
+          "platform": "Amazon Appstore Web App",
+          "action": "Enroll in Amazon Developer Console and test build-amazon-webapp-review.zip with Fire Web App Tester before creating the listing.",
+          "destination": "https://developer.amazon.com/apps-and-games",
+          "unlocks": "Fire tablet compatibility evidence and Appstore submission"
+        },
+        {
+          "status": "To do",
+          "priority": "Partner access",
+          "platform": "JioGames HTML5",
+          "action": "Apply to JioGames and request the current set-top-box HTML5 SDK, UK payout terms and written non-exclusive confirmation.",
+          "destination": "https://developer.jiogames.com/",
+          "unlocks": "JioGames SDK integration and QA"
         }
       ],
       "source": {
@@ -1548,7 +1646,8 @@
           "docs/reports/platform-release-readiness/src/data.json:provider_release_evidence",
           "docs/reports/platform-release-readiness/src/data.json:html5_distribution_candidates",
           "tooling/deployment-monitor/jest-provider.mjs",
-          ".env:Facebook placement variable presence"
+          ".env:Facebook placement variable presence",
+          "docs/research/additional-html5-release-targets-2026-09-21.md"
         ],
         "filters": [
           "Only steps requiring an account owner, identity check, contract decision, portal interaction, credential creation, OAuth consent or physical-device verification are included.",
@@ -1729,6 +1828,30 @@
           "iap": "Unavailable to the current UK company through documented native IAP eligibility",
           "ads": "Unavailable to the current UK release through documented LY Ads regional eligibility",
           "gate": "Confirm an eligible region and commercial route before implementing a LIFF adapter"
+        },
+        {
+          "platform": "Y8",
+          "iap": "Unavailable in reviewed public documentation",
+          "ads": "Provider-gated; Y8 SDK and studio advertising approval required",
+          "gate": "Create a studio, submit the ad-free build and obtain SDK/advertising approval"
+        },
+        {
+          "platform": "Playgama",
+          "iap": "Provider-gated through Playgama Bridge with server verification",
+          "ads": "Provider-gated through isolated Playgama Bridge integration",
+          "gate": "Review sublicense and partner overlap, then implement and validate an isolated Bridge adapter"
+        },
+        {
+          "platform": "Amazon Appstore Web App",
+          "iap": "Provider-gated; Amazon IAP is required for digital content",
+          "ads": "Policy-gated; Fire web runtime cannot expose advertising ID",
+          "gate": "Complete Fire Web App compatibility testing and Developer Console enrollment"
+        },
+        {
+          "platform": "JioGames HTML5",
+          "iap": "Provider-gated; public documentation does not define the HTML5 receipt contract",
+          "ads": "Provider-gated through account-issued JioAds integration",
+          "gate": "Obtain partner approval, current set-top-box SDK and UK commercial terms"
         }
       ],
       "source": {
@@ -1739,7 +1862,8 @@
           "packages/portal/src/jest/purchases.ts",
           "packages/portal/src/facebook/FacebookAdsCapability.ts",
           "packages/reddit-app/products.json",
-          "packages/portal/src/yahoo/yahooStripeCommerce.ts"
+          "packages/portal/src/yahoo/yahooStripeCommerce.ts",
+          "docs/research/additional-html5-release-targets-2026-09-21.md"
         ],
         "links": [
           {

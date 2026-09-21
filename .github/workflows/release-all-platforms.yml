@@ -79,6 +79,10 @@ jobs:
           pnpm release:yandex
           pnpm release:telegram
           pnpm release:microsoft-pwa
+          pnpm release:y8
+          pnpm release:playgama
+          pnpm release:amazon
+          pnpm release:jiogames
       - name: Record the successful release in the dashboard
         run: node scripts/release/record-release-automation.mjs
         env:
@@ -135,6 +139,14 @@ jobs:
             build-microsoft-pwa.zip.manifest.json
             build-gamesnacks.zip
             build-gamesnacks.zip.manifest.json
+            build-y8-review.zip
+            build-y8-review.zip.manifest.json
+            build-playgama-review.zip
+            build-playgama-review.zip.manifest.json
+            build-amazon-webapp-review.zip
+            build-amazon-webapp-review.zip.manifest.json
+            build-jiogames-review.zip
+            build-jiogames-review.zip.manifest.json
             build-youtube.zip
             build-youtube.manifest.json
             build-youtube.test-report.json
