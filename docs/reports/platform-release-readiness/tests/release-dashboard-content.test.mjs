@@ -32,7 +32,7 @@ test("the dashboard tracks additional HTML5 distribution submissions", () => {
   const candidates = data.queries.html5_distribution_candidates.rows;
 
   assert.deepEqual(candidates.map(({platform}) => platform), [
-    "itch.io", "CrazyGames", "Discord", "GamePix", "GameDistribution", "GameMonetize", "Yandex Games", "Poki", "Newgrounds", "Coolmath Games", "Kongregate", "Armor Games", "Game Jolt", "Addicting Games", "HTMLGames.com", "PlayKovo", "Lagged", "Google GameSnacks", "Telegram", "Microsoft Store PWA", "LINE MINI App", "Y8", "Playgama", "Amazon Appstore Web App", "JioGames HTML5", "Famobi", "GamePush Distribution", "SOFTGAMES", "WGPlayground", "Miniplay", "Kizi", "Huawei Quick Game", "GameFlare Distribution", "Shockwave",
+    "itch.io", "CrazyGames", "Discord", "GamePix", "GameDistribution", "GameMonetize", "Yandex Games", "Poki", "Newgrounds", "Coolmath Games", "Kongregate", "Armor Games", "Game Jolt", "Addicting Games", "HTMLGames.com", "PlayKovo", "Lagged", "Google GameSnacks", "Telegram", "Microsoft Store PWA", "LINE MINI App", "Y8", "Playgama", "Amazon Appstore Web App", "JioGames HTML5", "Famobi", "GamePush Distribution", "SOFTGAMES", "WGPlayground", "Miniplay", "Kizi", "Huawei Quick Game", "GameFlare Distribution", "Shockwave", "AirConsole", "World App Mini Apps", "Farcaster Mini Apps",
   ]);
   assert.ok(candidates.every(({submissionProgress}) => submissionProgress.trim()));
   assert.match(candidates.find(({platform}) => platform === "Discord").submissionProgress, /non-exclusive/iu);
@@ -45,7 +45,7 @@ test("dashboard integration metrics match reviewed rows", () => {
   const services = data.queries.service_status.rows;
 
   assert.equal(platforms.filter(({integration}) => integration.startsWith("Implemented")).length, 5);
-  assert.equal(platforms.filter(({localValidation}) => /passed/iu.test(localValidation)).length, 37);
+  assert.equal(platforms.filter(({localValidation}) => /passed/iu.test(localValidation)).length, 40);
   assert.equal(services.filter(({status}) => status === "Integrated").length, 4);
 });
 

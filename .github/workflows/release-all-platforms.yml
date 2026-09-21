@@ -92,6 +92,9 @@ jobs:
           pnpm release:huawei
           pnpm release:gameflare
           pnpm release:shockwave
+          pnpm release:airconsole
+          pnpm release:world
+          pnpm release:farcaster
       - name: Record the successful release in the dashboard
         run: node scripts/release/record-release-automation.mjs
         env:
@@ -174,6 +177,12 @@ jobs:
             build-gameflare-review.zip.manifest.json
             build-shockwave-review.zip
             build-shockwave-review.zip.manifest.json
+            build-airconsole-review.zip
+            build-airconsole-review.zip.manifest.json
+            build-world-mini-app-review.zip
+            build-world-mini-app-review.zip.manifest.json
+            build-farcaster-mini-app-review.zip
+            build-farcaster-mini-app-review.zip.manifest.json
             build-youtube.zip
             build-youtube.manifest.json
             build-youtube.test-report.json

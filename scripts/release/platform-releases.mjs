@@ -398,6 +398,30 @@ const releasePlans = Object.freeze([
     handoff: "Obtain official SDK documentation and confirm its ad behavior is compatible before isolated integration.",
     runbook: "docs/research/additional-release-targets-round-4-2026-09-21.md",
   }),
+  Object.freeze({
+    target: "airconsole", title: "AirConsole review", boundary: "local-manual-handoff", publicCommand: "pnpm release:airconsole",
+    summary: "Create a neutral HTML5 archive for AirConsole controller, SDK and performance planning.",
+    externalEffect: "None; game creation, controller implementation, upload, review and release remain manual.",
+    command: Object.freeze({executable: "node", args: Object.freeze(["scripts/release/package-html5-platform.mjs", "airconsole"])}),
+    handoff: "Create the game ID and design the phone controller before building the isolated two-page artifact.",
+    runbook: "docs/research/additional-release-targets-round-5-2026-09-21.md",
+  }),
+  Object.freeze({
+    target: "world", title: "World App Mini Apps review", boundary: "local-manual-handoff", publicCommand: "pnpm release:world",
+    summary: "Create a neutral hosted-web archive for World App eligibility and commercial review.",
+    externalEffect: "None; portal setup, payment decision, MiniKit integration, review and release remain manual.",
+    command: Object.freeze({executable: "node", args: Object.freeze(["scripts/release/package-html5-platform.mjs", "world"])}),
+    handoff: "Verify UK eligibility and choose free-only or legally reviewed wallet payments before MiniKit integration.",
+    runbook: "docs/research/additional-release-targets-round-5-2026-09-21.md",
+  }),
+  Object.freeze({
+    target: "farcaster", title: "Farcaster Mini Apps review", boundary: "local-manual-handoff", publicCommand: "pnpm release:farcaster",
+    summary: "Create a neutral hosted-web archive for Farcaster manifest and SDK planning.",
+    externalEffect: "None; domain reservation, manifest signing, SDK integration and launch publication remain manual.",
+    command: Object.freeze({executable: "node", args: Object.freeze(["scripts/release/package-html5-platform.mjs", "farcaster"])}),
+    handoff: "Reserve a stable domain and sign the initial association before publishing the isolated Mini App.",
+    runbook: "docs/research/additional-release-targets-round-5-2026-09-21.md",
+  }),
 ]);
 
 const plansByTarget = new Map(releasePlans.map((plan) => [plan.target, plan]));

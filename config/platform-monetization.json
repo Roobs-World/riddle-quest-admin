@@ -240,6 +240,24 @@
       "iap": "Contract/API required; authoritative verification and idempotent grants required before enablement",
       "ads": "Blocked pending proof that the mandatory SDK operates without prohibited in-game ad formats",
       "gate": "Obtain official SDK documentation, UK commercial terms and written ad-format confirmation"
+    },
+    {
+      "platform": "AirConsole",
+      "iap": "Unavailable — no suitable public per-game IAP API identified",
+      "ads": "No third-party ads; AirConsole Hero promotion breaks require isolated lifecycle callbacks",
+      "gate": "Create a game ID, design the controller and validate subscription revenue terms"
+    },
+    {
+      "platform": "World App Mini Apps",
+      "iap": "Commercial review required; wallet payment is not treated as ready IAP",
+      "ads": "Unavailable — no first-party in-game advertising product identified",
+      "gate": "Verify UK eligibility and complete legal, tax, refund, age and regional review before any payment work"
+    },
+    {
+      "platform": "Farcaster Mini Apps",
+      "iap": "Unavailable pending a separately approved wallet-based entitlement design",
+      "ads": "Unavailable — no first-party in-game advertising SDK identified",
+      "gate": "Reserve a stable domain, sign the manifest and implement authenticated server verification before commerce"
     }
   ]
 }

@@ -82,6 +82,12 @@ snapshot.queries.release_automation = {
       evidence: "build-gameflare-review.zip and its SHA-256 manifest are retained before account and contract approval"},
     {platform: "Shockwave", status: "SDK review handoff ready", trigger, revision: sha, completedAt,
       evidence: "build-shockwave-review.zip and its SHA-256 manifest are retained before official SDK integration"},
+    {platform: "AirConsole", status: "Integration planning handoff ready", trigger, revision: sha, completedAt,
+      evidence: "build-airconsole-review.zip and its SHA-256 manifest are retained before controller and SDK work"},
+    {platform: "World App Mini Apps", status: "Commercial review handoff ready", trigger, revision: sha, completedAt,
+      evidence: "build-world-mini-app-review.zip and its SHA-256 manifest are retained before MiniKit integration"},
+    {platform: "Farcaster Mini Apps", status: "Manifest planning handoff ready", trigger, revision: sha, completedAt,
+      evidence: "build-farcaster-mini-app-review.zip and its SHA-256 manifest are retained before domain signing and SDK work"},
   ],
   source: {
     label: "All-platform release workflow receipt",
