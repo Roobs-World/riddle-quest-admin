@@ -3,7 +3,7 @@
   "surface": "dashboard",
   "buildStatus": "complete",
   "title": "Riddle Quest integration and release status",
-  "generatedAt": "2026-09-21T05:50:13Z",
+  "generatedAt": "2026-09-21T05:59:38Z",
   "status": "verified-repository-and-provider-evidence",
   "filters": [],
   "queries": {
@@ -1308,12 +1308,12 @@
           "unlocks": "Meta App Review"
         },
         {
-          "status": "To do",
+          "status": "To verify",
           "priority": "After verification",
           "platform": "Facebook",
-          "action": "Create one interstitial and one rewarded-video ad placement and save their IDs in the deployment environment.",
+          "action": "Verify the two configured placement IDs in Meta Monetisation Manager, add them to the production Facebook build configuration, and capture hosted interstitial and rewarded-ad evidence.",
           "destination": "https://business.facebook.com/pub/",
-          "unlocks": "Facebook-only production ads"
+          "unlocks": "Facebook-only production ads and review evidence"
         },
         {
           "status": "To do",
@@ -1446,14 +1446,6 @@
         {
           "status": "To do",
           "priority": "Outreach",
-          "platform": "Kongregate",
-          "action": "Apply as Roobs World Limited, review the upload agreement and decline exclusive-hosting incentives.",
-          "destination": "https://www.kongregate.com/developer_center",
-          "unlocks": "Developer Portal upload access"
-        },
-        {
-          "status": "To do",
-          "priority": "Outreach",
           "platform": "Armor Games",
           "action": "Send the playable build as a non-exclusive pitch, disclose generative-AI use and decline timed exclusivity.",
           "destination": "https://developers.armorgames.com/docs/introduction/overview/",
@@ -1503,7 +1495,7 @@
           "status": "To do",
           "priority": "Now",
           "platform": "Kongregate",
-          "action": "Apply for developer status as Roobs World Limited, review the upload agreement and upload build-kongregate.zip after approval.",
+          "action": "Apply for developer status as Roobs World Limited, review the upload agreement, decline exclusive-hosting incentives, and upload build-kongregate.zip after approval.",
           "destination": "https://blog.kongregate.com/hc/en-us/articles/44395849259661-SUBMISSION-How-do-I-submit-a-game-to-Kongregate-It-s-Easy",
           "unlocks": "Kongregate portal review and publication"
         },
@@ -1555,10 +1547,12 @@
           "docs/research/html5-publishing-platforms-2026-09-20.md",
           "docs/reports/platform-release-readiness/src/data.json:provider_release_evidence",
           "docs/reports/platform-release-readiness/src/data.json:html5_distribution_candidates",
-          "tooling/deployment-monitor/jest-provider.mjs"
+          "tooling/deployment-monitor/jest-provider.mjs",
+          ".env:Facebook placement variable presence"
         ],
         "filters": [
           "Only steps requiring an account owner, identity check, contract decision, portal interaction, credential creation, OAuth consent or physical-device verification are included.",
+          "Credential values are never copied into the dashboard; only configured/missing state is used to refine an action.",
           "Completed repository and Vercel Git automation is excluded. Poki remains an explicit no-action hold."
         ],
         "metricDefinitions": [
