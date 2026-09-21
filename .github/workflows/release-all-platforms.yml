@@ -104,6 +104,7 @@ jobs:
           pnpm release:ozogames
           pnpm release:slowden
           pnpm release:noadsgames
+          pnpm release:yalgames
       - name: Record the successful release in the dashboard
         run: node scripts/release/record-release-automation.mjs
         env:
@@ -212,6 +213,8 @@ jobs:
             build-slowden-review.zip.manifest.json
             build-noadsgames-review.zip
             build-noadsgames-review.zip.manifest.json
+            build-yalgames-review.zip
+            build-yalgames-review.zip.manifest.json
             build-youtube.zip
             build-youtube.manifest.json
             build-youtube.test-report.json

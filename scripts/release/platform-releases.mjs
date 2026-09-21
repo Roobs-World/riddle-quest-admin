@@ -494,6 +494,14 @@ const releasePlans = Object.freeze([
     handoff: "Submit the hosted HTTPS URL or ZIP only after confirming the artifact contains no advertising code.",
     runbook: "docs/research/additional-release-targets-round-10-2026-09-21.md",
   }),
+  Object.freeze({
+    target: "yalgames", title: "YalGames review", boundary: "local-manual-handoff", publicCommand: "pnpm release:yalgames",
+    summary: "Create an ad-free, commerce-disabled HTML5 archive for YalGames editorial review.",
+    externalEffect: "None; contact submission, review and publication remain manual.",
+    command: Object.freeze({executable: "node", args: Object.freeze(["scripts/release/package-html5-platform.mjs", "yalgames"])}),
+    handoff: "Send the canonical HTTPS playable and review ZIP through the official contact route.",
+    runbook: "docs/research/additional-release-targets-round-11-2026-09-21.md",
+  }),
 ]);
 
 const plansByTarget = new Map(releasePlans.map((plan) => [plan.target, plan]));

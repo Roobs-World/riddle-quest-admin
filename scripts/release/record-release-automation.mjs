@@ -114,6 +114,8 @@ snapshot.queries.release_automation = {
       evidence: "build-slowden-review.zip and its SHA-256 manifest are retained before hosted-link form submission"},
     {platform: "NoAdsGames", status: "Ad-free review handoff ready", trigger, revision: sha, completedAt,
       evidence: "build-noadsgames-review.zip and its SHA-256 manifest are retained before API submission and human review"},
+    {platform: "YalGames", status: "Editorial review handoff ready", trigger, revision: sha, completedAt,
+      evidence: "build-yalgames-review.zip and its SHA-256 manifest are retained before manual contact submission"},
   ],
   source: {
     label: "All-platform release workflow receipt",

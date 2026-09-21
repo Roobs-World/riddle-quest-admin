@@ -50,6 +50,7 @@ const definitions = Object.freeze({
   ozogames: Object.freeze({artifact: "build-ozogames-review.zip", boundary: "OzoGames email submission, publisher agreement, monetization review and publication remain manual."}),
   slowden: Object.freeze({artifact: "build-slowden-review.zip", boundary: "SlowDen form submission, terms confirmation, editorial review and listing approval remain manual."}),
   noadsgames: Object.freeze({artifact: "build-noadsgames-review.zip", boundary: "NoAdsGames API submission and mandatory human review remain manual; the artifact must remain ad-free."}),
+  yalgames: Object.freeze({artifact: "build-yalgames-review.zip", boundary: "YalGames contact submission, editorial review and publication remain manual; ads and commerce stay disabled."}),
 });
 
 export function listHtml5DistributionDefinitions() {

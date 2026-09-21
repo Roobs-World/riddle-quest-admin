@@ -12,6 +12,11 @@ const execute = promisify(execFile);
 const repository = fileURLToPath(new URL("../..", import.meta.url));
 const snapshot = JSON.parse(await readFile(path.join(repository, "docs/reports/platform-release-readiness/src/data.json"), "utf8"));
 const plans = listPlatformReleasePlans();
+const gatedTargets = new Map([
+  ["Discord", /not started|account|portal/iu],
+  ["Poki", /on hold/iu],
+  ["LINE MINI App", /blocked|eligibility/iu],
+]);
 const dashboardNames = new Map([
   ["crazygames", "CrazyGames"], ["coolmath", "Coolmath Games"], ["armor", "Armor Games"],
   ["htmlgames", "HTMLGames.com"], ["lagged", "Lagged"], ["telegram", "Telegram"],
@@ -66,4 +71,20 @@ const todoNames = new Set(snapshot.queries.manual_action_checklist.rows.map(({pl
 const missingTodos = plans.map(expectedName).filter((name) => !todoNames.has(name));
 if (missingTodos.length) throw new Error(`manual_action_checklist is missing: ${missingTodos.join(", ")}`);
 
-console.log(`Release-target E2E passed for ${plans.length} targets: ${definitions.length + 3} immutable ZIPs, 4 browser builds, and the Reddit client/server package; dashboard status, monetization, automation receipts, and TODOs are complete.`);
+const statusByPlatform = new Map(snapshot.queries.platform_status.rows.map((row) => [row.platform, row]));
+const monetizationNames = new Set(snapshot.queries.monetization_readiness.rows.map(({platform}) => platform));
+for (const [platform, expectedGate] of gatedTargets) {
+  const status = statusByPlatform.get(platform);
+  if (!status || !expectedGate.test(`${status.localValidation} ${status.releaseStatus}`)) {
+    throw new Error(`${platform} does not expose its truthful external release gate`);
+  }
+  if (!todoNames.has(platform) || !monetizationNames.has(platform)) {
+    throw new Error(`${platform} is missing its dashboard TODO or monetization policy`);
+  }
+}
+const coveredTargets = plans.length + gatedTargets.size;
+if (coveredTargets !== snapshot.queries.platform_status.rows.length) {
+  throw new Error(`E2E coverage mismatch: ${coveredTargets} covered, ${snapshot.queries.platform_status.rows.length} tracked`);
+}
+
+console.log(`Release-target E2E passed for all ${coveredTargets} tracked targets: ${plans.length} executable release paths and ${gatedTargets.size} explicit external gates; ${definitions.length + 3} immutable ZIPs, 4 browser builds, and the Reddit client/server package are valid; dashboard status, monetization, automation receipts, and TODOs are complete.`);

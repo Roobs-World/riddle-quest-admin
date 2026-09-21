@@ -312,6 +312,12 @@
       "iap": "Optional transparent IAP is permitted; grants must remain server-authoritative and comply with review terms",
       "ads": "Prohibited \u2014 every advertising format and advertising SDK must be absent",
       "gate": "Submit the ad-free hosted HTTPS build or ZIP through the documented API, then await mandatory human review"
+    },
+    {
+      "platform": "YalGames",
+      "iap": "Disabled \u2014 no documented platform IAP or server-verification contract",
+      "ads": "Disabled \u2014 no documented ad SDK, revenue terms or consent contract",
+      "gate": "Submit the canonical HTTPS playable manually and obtain written commercial terms before enabling monetization"
     }
   ]
 }
