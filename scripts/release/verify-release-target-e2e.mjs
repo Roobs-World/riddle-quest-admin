@@ -95,7 +95,7 @@ for (const [platform, expectedGate] of gatedTargets) {
 }
 const coveredTargets = plans.length + gatedTargets.size;
 if (coveredTargets !== snapshot.queries.platform_status.rows.length) {
-  throw new Error(`E2E coverage mismatch: ${coveredTargets} covered, ${snapshot.queries.platform_status.rows.length} tracked`);
+  throw new Error(`Release coverage mismatch: ${coveredTargets} covered, ${snapshot.queries.platform_status.rows.length} tracked`);
 }
 
-console.log(`Release-target E2E passed for all ${coveredTargets} tracked targets: ${plans.length} executable release paths and ${gatedTargets.size} explicit external gates; ${definitions.length + 3} immutable ZIPs, 4 browser builds, and the Reddit client/server package are valid; dashboard status, game/admin links, monetization, automation receipts, and TODOs are complete.`);
+console.log(`Release-target integrity passed for all ${coveredTargets} tracked targets: ${plans.length} executable release paths and ${gatedTargets.size} explicit external gates; ${definitions.length + 3} immutable ZIPs, 4 browser builds, and the Reddit client/server package are valid; dashboard status, game/admin links, monetization, automation receipts, and TODOs are complete.`);

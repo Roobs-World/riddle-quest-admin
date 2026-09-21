@@ -1,0 +1,42 @@
+{
+  "verifiedAt": "2026-09-21T21:19:33.917Z",
+  "results": [
+    {
+      "target": "web",
+      "url": "https://riddle-quest-web.vercel.app/",
+      "status": "passed",
+      "startupMs": 323,
+      "solve": "ROME",
+      "coins": 450,
+      "persistedClassicLevel": 2,
+      "externalRequests": 0,
+      "offlineReload": false,
+      "installabilityChecked": false
+    },
+    {
+      "target": "pwa",
+      "url": "https://riddle-quest-pwa.vercel.app/",
+      "offline": true,
+      "status": "passed",
+      "startupMs": 402,
+      "solve": "ROME",
+      "coins": 450,
+      "persistedClassicLevel": 2,
+      "externalRequests": 0,
+      "offlineReload": true,
+      "installabilityChecked": true
+    },
+    {
+      "target": "yahoo",
+      "url": "https://yahoo.roobsworld.com/",
+      "status": "passed",
+      "startupMs": 305,
+      "solve": "ROME",
+      "coins": 450,
+      "persistedClassicLevel": 2,
+      "externalRequests": 0,
+      "offlineReload": false,
+      "installabilityChecked": false
+    }
+  ]
+}

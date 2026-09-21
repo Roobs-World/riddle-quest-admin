@@ -31,7 +31,7 @@
     "check:functions-lock": "npm --prefix firebase-functions ci --dry-run --ignore-scripts --omit=dev --no-audit --no-fund --silent",
     "check:w3c": "pnpm --filter @qwordly/portal validate:w3c",
     "test:release-interface": "node --test scripts/release/platform-releases.test.mjs",
-    "test:release-targets:e2e": "node scripts/release/verify-release-target-e2e.mjs",
+    "test:release-targets:e2e": "node scripts/release/verify-release-target-e2e.mjs && pnpm test:release-artifacts:browser",
     "verify:functions:node22": "pnpm prepare:functions && node firebase-functions/scripts/run-with-functions-node.js firebase-functions/scripts/verify-node-runtime.js",
     "verify:production": "pnpm audit --prod --audit-level high && pnpm audit --audit-level high && pnpm check:monetization && pnpm check:functions-lock && pnpm --dir firebase-functions test:deploy-scripts && pnpm check:facebook-secrets && pnpm check:youtube-progress && pnpm check:types && pnpm --dir firebase-functions lint && pnpm verify:functions:node22 && pnpm check:facebook-copy && pnpm --dir firebase-functions test:youtube-content && pnpm --filter @qwordly/portal test:youtube:unit && pnpm test:coverage && pnpm --dir firebase-functions test:race:rules && pnpm --filter @qwordly/portal test:release-scripts && pnpm build && pnpm --filter @qwordly/portal build:youtube:fixture && pnpm check:w3c && pnpm --filter @qwordly/portal test:jest-local:playwright && PORTAL_USE_EXISTING_BUILD=1 pnpm --filter @qwordly/portal test:facebook:playwright && PORTAL_USE_EXISTING_BUILD=1 pnpm --filter @qwordly/portal test:reddit:playwright && PORTAL_USE_EXISTING_BUILD=1 pnpm --filter @qwordly/portal test:youtube:playwright && pnpm --filter @qwordly/portal preflight:jest-upload && pnpm --filter @qwordly/portal preflight:facebook-upload",
     "verify:production:extended": "pnpm verify:production && PORTAL_USE_EXISTING_BUILD=1 pnpm --filter @qwordly/portal test:mobile-soak",
@@ -117,7 +117,11 @@
     "youtube:package": "pnpm --filter @qwordly/portal package:youtube",
     "verify:all-targets": "pnpm check:security && pnpm --dir firebase-functions test:youtube-content && pnpm --filter @qwordly/portal verify:all-targets && pnpm --filter @qwordly/reddit-app build:package:from-client",
     "preflight:all-platforms": "pnpm verify:all-targets && pnpm release:plan",
-    "check:monetization": "node scripts/audit-platform-monetization.mjs"
+    "check:monetization": "node scripts/audit-platform-monetization.mjs",
+    "test:release-artifacts:browser": "node scripts/release/verify-packaged-games.mjs",
+    "deploy:web": "node scripts/release/deploy-standalone.mjs web",
+    "deploy:pwa": "node scripts/release/deploy-standalone.mjs pwa",
+    "test:deployments:live": "node scripts/release/verify-live-web-games.mjs"
   },
   "engines": {
     "node": ">=24.17.0"

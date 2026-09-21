@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import {createHash} from "node:crypto";
 import {execFile} from "node:child_process";
-import {cp, mkdir, readFile, rm, writeFile} from "node:fs/promises";
+import {cp, mkdir, readFile, readdir, rm, writeFile} from "node:fs/promises";
 import {promisify} from "node:util";
 import {fileURLToPath} from "node:url";
 import path from "node:path";
@@ -34,13 +34,29 @@ export async function packageMicrosoftPwa({run = execute} = {}) {
     icons: [{src: "icons/riddle-quest.png", sizes: "1254x1254", type: "image/png", purpose: "any maskable"}],
   };
   await writeFile(path.join(staging, "manifest.webmanifest"), `${JSON.stringify(manifest, null, 2)}\n`);
-  await writeFile(path.join(staging, "service-worker.js"), `self.addEventListener("install",()=>self.skipWaiting());\nself.addEventListener("activate",event=>event.waitUntil(self.clients.claim()));\nself.addEventListener("fetch",event=>{if(event.request.method==="GET")event.respondWith(fetch(event.request).catch(()=>caches.match(event.request)));});\n`);
 
   const indexPath = path.join(staging, "index.html");
   const index = await readFile(indexPath, "utf8");
   const head = `<link rel="manifest" href="./manifest.webmanifest"><meta name="theme-color" content="#070b1d"><link rel="icon" href="./icons/riddle-quest.png">`;
   const registration = `<script>if("serviceWorker" in navigator){addEventListener("load",()=>navigator.serviceWorker.register("./service-worker.js"));}</script>`;
   await writeFile(indexPath, index.replace("</head>", `${head}</head>`).replace("</body>", `${registration}</body>`));
+
+  // Precache the complete game, including lazy content, before promising offline readiness.
+  const files = (await readdir(staging, {recursive: true, withFileTypes: true}))
+    .filter(entry => entry.isFile())
+    .map(entry => path.relative(staging, path.join(entry.parentPath, entry.name)).split(path.sep).join("/"))
+    .sort();
+  const cacheDigest = createHash("sha256");
+  for (const file of files) cacheDigest.update(file).update(await readFile(path.join(staging, file)));
+  const cacheName = `riddle-quest-pwa-${cacheDigest.digest("hex").slice(0, 16)}`;
+  await writeFile(path.join(staging, "service-worker.js"), `const CACHE=${JSON.stringify(cacheName)};
+const FILES=${JSON.stringify(["./", ...files.map(file => `./${file}`)])};
+self.addEventListener("install",event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(FILES)).then(()=>self.skipWaiting())));
+self.addEventListener("activate",event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith("riddle-quest-pwa-")&&key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim())));
+self.addEventListener("fetch",event=>{
+ if(event.request.method!=="GET"||new URL(event.request.url).origin!==self.location.origin)return;
+ event.respondWith(caches.open(CACHE).then(async cache=>(await cache.match(event.request))||fetch(event.request)));
+});\n`);
 
   await rm(artifact, {force: true});
   await run("zip", ["-q", "-r", artifact, "."], {cwd: staging});

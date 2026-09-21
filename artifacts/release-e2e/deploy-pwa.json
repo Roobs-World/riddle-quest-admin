@@ -1,0 +1,27 @@
+{
+  "target": "pwa",
+  "project": "riddle-quest-pwa",
+  "verifiedAt": "2026-09-21T21:16:16.246Z",
+  "providerPublication": false,
+  "local": {
+    "startupMs": 79,
+    "solve": "ROME",
+    "coins": 450,
+    "persistedClassicLevel": 2,
+    "externalRequests": 0,
+    "offlineReload": true
+  },
+  "status": "passed",
+  "url": "https://riddle-quest-pwa.vercel.app/",
+  "live": {
+    "startupMs": 242,
+    "solve": "ROME",
+    "coins": 450,
+    "persistedClassicLevel": 2,
+    "externalRequests": 0,
+    "offlineReload": true
+  },
+  "filesVerified": 10,
+  "artifactSha256": "0196ebf3ee56f6c6f19d280d68822883f34fa6eb51eb55a5a9d2f4c63152d4bf",
+  "reconciledFrom": "Vercel inspect: READY production deployment"
+}

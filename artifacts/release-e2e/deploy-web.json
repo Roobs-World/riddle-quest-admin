@@ -1,0 +1,26 @@
+{
+  "target": "web",
+  "project": "riddle-quest-web",
+  "verifiedAt": "2026-09-21T21:18:18.734Z",
+  "providerPublication": false,
+  "local": {
+    "startupMs": 77,
+    "solve": "ROME",
+    "coins": 450,
+    "persistedClassicLevel": 2,
+    "externalRequests": 0,
+    "offlineReload": false
+  },
+  "url": "https://riddle-quest-web.vercel.app",
+  "artifactSha256": "c07276ef627d9322af1c29449aa4ac1810ec15d2863080f38173e9fb30c6db6a",
+  "filesVerified": 7,
+  "live": {
+    "startupMs": 348,
+    "solve": "ROME",
+    "coins": 450,
+    "persistedClassicLevel": 2,
+    "externalRequests": 0,
+    "offlineReload": false
+  },
+  "status": "passed"
+}
