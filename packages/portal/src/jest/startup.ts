@@ -144,16 +144,21 @@ export async function startJestSession(
     // records getPlayer() independently from the signed backend envelope.
     /** Provides player behavior. */
     const player = platform.getPlayer();
-    /** Provides signed promise behavior. */
-    const signedPromise = platform.getPlayerSigned();
-    /** Provides entry intent behavior. */
-    const entryIntent = platform.getEntryIntent();
-    /** Provides preferences behavior. */
-    const preferences = platform.readPreferences();
-    /** Provides player data promise behavior. */
-    const playerDataPromise = platform.readPlayerData();
-    /** Provides [signed, player data] behavior. */
-    const [signed, playerData] = await Promise.all([signedPromise, playerDataPromise]);
+    // Convert synchronous local-read failures into rejections so Promise.all
+    // always observes the signed request, even when another startup read fails.
+    /** Stores the signed identity and local launch state read concurrently. */
+    const [signed, {entryIntent, preferences, playerData}] = await Promise.all([
+      platform.getPlayerSigned(),
+      (async () => {
+        /** Stores the parsed launch intent. */
+        const entryIntent = platform.getEntryIntent();
+        /** Stores the player's local preferences. */
+        const preferences = platform.readPreferences();
+        /** Stores the validated progress snapshot. */
+        const playerData = await platform.readPlayerData();
+        return {entryIntent, preferences, playerData};
+      })(),
+    ]);
     // Read the first recovery page before optional profile and identity work so
     // Jest can always observe the required startup check.
     /** Stores the first recovery page read before optional startup work. */
