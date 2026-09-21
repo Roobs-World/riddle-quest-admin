@@ -86,6 +86,8 @@
     "release:miniplay": "node scripts/release/run-platform-release.mjs miniplay",
     "release:kizi": "node scripts/release/run-platform-release.mjs kizi",
     "release:huawei": "node scripts/release/run-platform-release.mjs huawei",
+    "release:gameflare": "node scripts/release/run-platform-release.mjs gameflare",
+    "release:shockwave": "node scripts/release/run-platform-release.mjs shockwave",
     "release:html5": "node scripts/release/package-html5-release.mjs",
     "release:all": "node scripts/release/run-platform-release.mjs all",
     "jest:build-upload": "pnpm release:jest",

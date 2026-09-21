@@ -382,6 +382,22 @@ const releasePlans = Object.freeze([
     handoff: "Confirm UK eligibility and non-exclusive terms before building the isolated RPK wrapper or enabling services.",
     runbook: "docs/research/additional-release-targets-round-3-2026-09-21.md",
   }),
+  Object.freeze({
+    target: "gameflare", title: "GameFlare Distribution review", boundary: "local-manual-handoff", publicCommand: "pnpm release:gameflare",
+    summary: "Create an ad-free neutral HTML5 archive for GameFlare suitability and contract review.",
+    externalEffect: "None; account creation, contract acceptance, payout setup, upload and production approval remain manual.",
+    command: Object.freeze({executable: "node", args: Object.freeze(["scripts/release/package-html5-platform.mjs", "gameflare"])}),
+    handoff: "Confirm host-side advertising without bundled ad code and non-exclusive terms before submission.",
+    runbook: "docs/research/additional-release-targets-round-4-2026-09-21.md",
+  }),
+  Object.freeze({
+    target: "shockwave", title: "Shockwave review", boundary: "local-manual-handoff", publicCommand: "pnpm release:shockwave",
+    summary: "Create a neutral HTML5 archive for Shockwave SDK, contract and compatibility review.",
+    externalEffect: "None; registration, SDK access, integration, testing, QA and publication remain manual.",
+    command: Object.freeze({executable: "node", args: Object.freeze(["scripts/release/package-html5-platform.mjs", "shockwave"])}),
+    handoff: "Obtain official SDK documentation and confirm its ad behavior is compatible before isolated integration.",
+    runbook: "docs/research/additional-release-targets-round-4-2026-09-21.md",
+  }),
 ]);
 
 const plansByTarget = new Map(releasePlans.map((plan) => [plan.target, plan]));

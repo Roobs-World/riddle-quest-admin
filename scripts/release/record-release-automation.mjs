@@ -78,6 +78,10 @@ snapshot.queries.release_automation = {
       evidence: "build-kizi-pitch.zip and its SHA-256 manifest are retained pending non-exclusive terms"},
     {platform: "Huawei Quick Game", status: "RPK feasibility handoff ready", trigger, revision: sha, completedAt,
       evidence: "build-huawei-quick-game-review.zip and its SHA-256 manifest are retained before UK onboarding and RPK work"},
+    {platform: "GameFlare Distribution", status: "Distribution review handoff ready", trigger, revision: sha, completedAt,
+      evidence: "build-gameflare-review.zip and its SHA-256 manifest are retained before account and contract approval"},
+    {platform: "Shockwave", status: "SDK review handoff ready", trigger, revision: sha, completedAt,
+      evidence: "build-shockwave-review.zip and its SHA-256 manifest are retained before official SDK integration"},
   ],
   source: {
     label: "All-platform release workflow receipt",

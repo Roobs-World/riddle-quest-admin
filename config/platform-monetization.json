@@ -228,6 +228,18 @@
       "iap": "Provider-gated; full Quick Game service integration and authoritative verification required",
       "ads": "Provider-gated; Huawei advertising code must remain isolated to the RPK target",
       "gate": "Confirm UK business onboarding, release-country eligibility, non-exclusive terms and service approvals"
+    },
+    {
+      "platform": "GameFlare Distribution",
+      "iap": "Unavailable pending official commerce documentation and server verification contract",
+      "ads": "Host-side advertising only; no rewarded or interstitial ad code in the artifact",
+      "gate": "Confirm non-exclusive terms, payout setup and host-side monetization without bundled ad code"
+    },
+    {
+      "platform": "Shockwave",
+      "iap": "Contract/API required; authoritative verification and idempotent grants required before enablement",
+      "ads": "Blocked pending proof that the mandatory SDK operates without prohibited in-game ad formats",
+      "gate": "Obtain official SDK documentation, UK commercial terms and written ad-format confirmation"
     }
   ]
 }

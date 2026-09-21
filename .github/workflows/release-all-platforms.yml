@@ -90,6 +90,8 @@ jobs:
           pnpm release:miniplay
           pnpm release:kizi
           pnpm release:huawei
+          pnpm release:gameflare
+          pnpm release:shockwave
       - name: Record the successful release in the dashboard
         run: node scripts/release/record-release-automation.mjs
         env:
@@ -168,6 +170,10 @@ jobs:
             build-kizi-pitch.zip.manifest.json
             build-huawei-quick-game-review.zip
             build-huawei-quick-game-review.zip.manifest.json
+            build-gameflare-review.zip
+            build-gameflare-review.zip.manifest.json
+            build-shockwave-review.zip
+            build-shockwave-review.zip.manifest.json
             build-youtube.zip
             build-youtube.manifest.json
             build-youtube.test-report.json

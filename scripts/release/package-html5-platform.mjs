@@ -36,6 +36,8 @@ const definitions = Object.freeze({
   miniplay: Object.freeze({artifact: "build-miniplay-review.zip", boundary: "Miniplay account setup, support request, API credentials, integration review and production launch remain manual."}),
   kizi: Object.freeze({artifact: "build-kizi-pitch.zip", boundary: "Kizi developer outreach, non-exclusive commercial review, SDK integration and publication remain manual."}),
   huawei: Object.freeze({artifact: "build-huawei-quick-game-review.zip", boundary: "Huawei UK developer onboarding, agreement review, service approvals, RPK integration and AppGallery review remain manual."}),
+  gameflare: Object.freeze({artifact: "build-gameflare-review.zip", boundary: "GameFlare account setup, contract review, upload, payout configuration and production approval remain manual."}),
+  shockwave: Object.freeze({artifact: "build-shockwave-review.zip", boundary: "Shockwave registration, agreement review, official SDK access, integration, QA and publication remain manual."}),
 });
 
 export function getHtml5DistributionDefinition(target) {
