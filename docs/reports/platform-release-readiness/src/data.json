@@ -3,7 +3,7 @@
   "surface": "dashboard",
   "buildStatus": "complete",
   "title": "Riddle Quest integration and release status",
-  "generatedAt": "2026-09-21T12:25:57.276Z",
+  "generatedAt": "2026-09-21T12:31:43.898Z",
   "status": "verified-repository-and-provider-evidence",
   "filters": [],
   "queries": {
@@ -1021,13 +1021,13 @@
           "check": "Desktop rendering and source inspection",
           "viewport": "1440 × 900",
           "result": "Passed",
-          "evidence": "All target and service rows rendered without page overflow; provider evidence source drawer opened successfully."
+          "evidence": "Opening hierarchy, five-card summary, action-first section order, jump navigation, local table scrolling and source actions verified at desktop width."
         },
         {
           "check": "Responsive rendering",
           "viewport": "390 × 844",
           "result": "Passed",
-          "evidence": "No page-level horizontal overflow; all nine tables remained locally scrollable. Deployment filters, source inspection and the Jest activity chart were checked at desktop and mobile widths."
+          "evidence": "No page-level horizontal overflow at 390 × 844; jump navigation scrolls locally, metric cards stack cleanly, and wide evidence tables remain contained."
         }
       ],
       "source": {

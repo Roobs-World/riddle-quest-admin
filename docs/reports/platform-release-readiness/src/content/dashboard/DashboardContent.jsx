@@ -84,9 +84,20 @@ export function DashboardContent() {
   const integratedServices = services.filter(({status}) => status === "Integrated").length;
 
   return <article className="integration-dashboard" aria-label="Riddle Quest integration and release dashboard">
-    <BackendMonitoring />
-    <DeploymentMonitoring />
-    <ProviderActivity />
+    <nav className="dashboard-jump-nav" aria-label="Dashboard sections">
+      <div className="dashboard-jump-nav__identity">
+        <span className="dashboard-jump-nav__signal" aria-hidden="true" />
+        <span>Release operations</span>
+      </div>
+      <div className="dashboard-jump-nav__links">
+        <a href="#manual-action-checklist-title">Action queue</a>
+        <a href="#platform-integration-title">Targets</a>
+        <a href="#monetization-readiness-title">Monetization</a>
+        <a href="#release-automation-title">Automation</a>
+        <a href="#promotion-outreach-title">Outreach</a>
+      </div>
+    </nav>
+
     <section className="integration-metrics" aria-label="Integration summary">
       <MetricCard id="metric-targets" queryId="platform_status" sourceRows={platforms} title="Release targets" value={String(platforms.length)} description="Every intended target is represented." />
       <MetricCard id="metric-integrated" queryId="platform_status" sourceRows={platforms} title="Full provider adapters" value={`${integratedTargets}/${platforms.length}`} description="Jest, Facebook, Reddit, YouTube and Yahoo." />
@@ -95,6 +106,66 @@ export function DashboardContent() {
       <MetricCard id="metric-services" queryId="service_status" sourceRows={services} title="Operational services" value={`${integratedServices}/${services.length}`} description="Firebase, Sentry, Vercel and Stripe are integrated." />
     </section>
     <ReleaseQueueSummary rows={manualActions} />
+
+    <Section>
+      <SectionHeader id="manual-action-checklist-title" title="Your manual release checklist" />
+      <EvidenceTable id="manual-action-checklist" queryId="manual_action_checklist" title="Account, portal and approval steps that require you" rows={manualActions} columns={[
+        {key:"status",label:"Status",status:true}, {key:"priority",label:"Priority"},
+        {key:"platform",label:"Platform"}, {key:"action",label:"What you need to do"},
+        {key:"destination",label:"Portal",link:true}, {key:"unlocks",label:"Unlocks"},
+      ]} />
+    </Section>
+
+    <Section>
+      <SectionHeader id="platform-integration-title" title="Target integration matrix" />
+      <EvidenceTable id="platform-status" queryId="platform_status" title="Capabilities and release state" rows={platforms} columns={[
+        {key:"platform",label:"Target"}, {key:"integration",label:"Integration"},
+        {key:"identityAndSaves",label:"Identity and saves"}, {key:"commerceAndSocial",label:"Commerce and social"},
+        {key:"ads",label:"Ads"}, {key:"localValidation",label:"Local checks",status:true},
+        {key:"releaseStatus",label:"Provider release"},
+      ]} />
+    </Section>
+
+    <Section>
+      <SectionHeader id="monetization-readiness-title" title="IAP and advertising by platform" />
+      <EvidenceTable id="monetization-readiness" queryId="monetization_readiness" title="Implemented capabilities and provider gates" rows={monetization} columns={[
+        {key:"platform",label:"Platform"}, {key:"iap",label:"In-app purchases"},
+        {key:"ads",label:"Advertising"}, {key:"gate",label:"Remaining verification or provider gate"},
+      ]} />
+    </Section>
+
+    <section className="integration-grid integration-grid--evidence">
+      <Section>
+        <SectionHeader id="provider-release-title" title="Provider release evidence" />
+        <EvidenceTable id="provider-release-evidence" queryId="provider_release_evidence" title="Latest verified external state" rows={releases} columns={[
+          {key:"platform",label:"Target"}, {key:"providerReference",label:"Provider reference"},
+          {key:"artifact",label:"Output"}, {key:"state",label:"State",status:true},
+          {key:"submissionProgress",label:"Submission progress"}, {key:"nextGate",label:"Next gate"},
+        ]} />
+      </Section>
+      <Section>
+        <SectionHeader id="html5-distribution-title" title="Additional HTML5 distribution" />
+        <EvidenceTable id="html5-distribution-candidates" queryId="html5_distribution_candidates" title="Submission and integration progress" rows={distributionCandidates} columns={[
+          {key:"platform",label:"Platform"}, {key:"releaseModel",label:"Release model"},
+          {key:"integration",label:"Required integration"}, {key:"submissionProgress",label:"Submission progress"},
+          {key:"nextGate",label:"Next gate"},
+        ]} />
+      </Section>
+      <Section>
+        <SectionHeader id="release-automation-title" title="Release automation" />
+        <EvidenceTable id="release-automation" queryId="release_automation" title="Latest all-platform workflow receipt" rows={releaseAutomation} columns={[
+          {key:"platform",label:"Scope"}, {key:"status",label:"Status",status:true},
+          {key:"trigger",label:"Trigger"}, {key:"revision",label:"Revision"},
+          {key:"completedAt",label:"Completed"}, {key:"evidence",label:"Evidence"},
+        ]} />
+      </Section>
+    </section>
+
+    <section className="monitoring-stack" aria-label="Monitoring and activity">
+      <BackendMonitoring />
+      <DeploymentMonitoring />
+      <ProviderActivity />
+    </section>
 
     <Section>
       <SectionHeader id="promotion-outreach-title" title="Promotion outreach" />
@@ -107,59 +178,7 @@ export function DashboardContent() {
       ]} />
     </Section>
 
-    <Section>
-      <SectionHeader id="manual-action-checklist-title" title="Your manual release checklist" />
-      <EvidenceTable id="manual-action-checklist" queryId="manual_action_checklist" title="Account, portal and approval steps that require you" rows={manualActions} columns={[
-        {key:"status",label:"Status",status:true}, {key:"priority",label:"Priority"},
-        {key:"platform",label:"Platform"}, {key:"action",label:"What you need to do"},
-        {key:"destination",label:"Portal",link:true}, {key:"unlocks",label:"Unlocks"},
-      ]} />
-    </Section>
-
-    <Section>
-      <SectionHeader id="monetization-readiness-title" title="IAP and advertising by platform" />
-      <EvidenceTable id="monetization-readiness" queryId="monetization_readiness" title="Implemented capabilities and provider gates" rows={monetization} columns={[
-        {key:"platform",label:"Platform"}, {key:"iap",label:"In-app purchases",status:true},
-        {key:"ads",label:"Advertising",status:true}, {key:"gate",label:"Remaining verification or provider gate"},
-      ]} />
-    </Section>
-
-    <Section>
-      <SectionHeader id="platform-integration-title" title="Target integration matrix" />
-      <EvidenceTable id="platform-status" queryId="platform_status" title="Capabilities and release state" rows={platforms} columns={[
-        {key:"platform",label:"Target"}, {key:"integration",label:"Integration",status:true},
-        {key:"identityAndSaves",label:"Identity and saves"}, {key:"commerceAndSocial",label:"Commerce and social"},
-        {key:"ads",label:"Ads"}, {key:"localValidation",label:"Local checks",status:true},
-        {key:"releaseStatus",label:"Provider release"},
-      ]} />
-    </Section>
-
-    <section className="integration-grid">
-      <Section>
-        <SectionHeader id="provider-release-title" title="Provider release evidence" />
-        <EvidenceTable id="provider-release-evidence" queryId="provider_release_evidence" title="Latest verified external state" rows={releases} columns={[
-          {key:"platform",label:"Target"}, {key:"providerReference",label:"Provider reference"},
-          {key:"artifact",label:"Output"}, {key:"state",label:"State",status:true},
-          {key:"submissionProgress",label:"Submission progress"},
-          {key:"nextGate",label:"Next gate"},
-        ]} />
-      </Section>
-      <Section>
-        <SectionHeader id="html5-distribution-title" title="Additional HTML5 distribution" />
-        <EvidenceTable id="html5-distribution-candidates" queryId="html5_distribution_candidates" title="Submission and integration progress" rows={distributionCandidates} columns={[
-          {key:"platform",label:"Platform"}, {key:"releaseModel",label:"Release model"},
-          {key:"integration",label:"Required integration"}, {key:"submissionProgress",label:"Submission progress",status:true},
-          {key:"nextGate",label:"Next gate"},
-        ]} />
-      </Section>
-      <Section>
-        <SectionHeader id="release-automation-title" title="Release automation" />
-        <EvidenceTable id="release-automation" queryId="release_automation" title="Latest all-platform workflow receipt" rows={releaseAutomation} columns={[
-          {key:"platform",label:"Scope"}, {key:"status",label:"Status",status:true},
-          {key:"trigger",label:"Trigger"}, {key:"revision",label:"Revision"},
-          {key:"completedAt",label:"Completed"}, {key:"evidence",label:"Evidence"},
-        ]} />
-      </Section>
+    <section className="integration-grid integration-grid--compact">
       <Section>
         <SectionHeader id="service-status-title" title="Operational integrations" />
         <EvidenceTable id="service-status" queryId="service_status" title="Infrastructure and account integrations" rows={services} columns={[
