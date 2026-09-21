@@ -25,17 +25,17 @@ const forbidden = [
   ["Facebook", /connect\.facebook\.net|\bFBInstant\b|fbapp-config/iu],
   ["Reddit", /\bdevvit(?:-internal)?\b|RedditPlatform/iu],
   ["YouTube", /youtube\.com\/game_api|\bytgame\b/iu],
-  ...(target === "netflix" ? [["Firebase", /firebaseio\.com|googleapis\.com|cloudfunctions\.net|\bfirebase(?:app|auth|database|firestore|functions|storage)\b/iu]] : []),
-  ...(target === "netflix" ? [["analytics", /\bSentry\b|sentry\.io|google-analytics|googletagmanager|\bgtag\s*\(/iu]] : []),
-  ...(target === "netflix" ? [["network API", /\bfetch\s*\(|\bXMLHttpRequest\b|\bWebSocket\b|\bEventSource\b|\bsendBeacon\s*\(/u]] : []),
-  ...(target === "netflix"
+  ...(["netflix", "yahoo"].includes(target) ? [["Firebase", /firebaseio\.com|googleapis\.com|cloudfunctions\.net|\bfirebase(?:app|auth|database|firestore|functions|storage)\b/iu]] : []),
+  ...(["netflix", "yahoo"].includes(target) ? [["analytics", /\bSentry\b|sentry\.io|google-analytics|googletagmanager|\bgtag\s*\(/iu]] : []),
+  ...(["netflix", "yahoo"].includes(target) ? [["network API", /\bfetch\s*\(|\bXMLHttpRequest\b|\bWebSocket\b|\bEventSource\b|\bsendBeacon\s*\(/u]] : []),
+  ...(["netflix", "yahoo"].includes(target)
     ? [["commerce or advertising", /\b(?:purchaseAsync|checkout|IAP|showInterstitialAd|showRewardedAd|AdMob)\b/iu]]
     : [["advertising", /\b(?:showInterstitialAd|showRewardedAd|AdMob)\b/iu]]),
 ];
 for (const [label, pattern] of forbidden) {
   if (pattern.test(content)) throw new Error(`${label} integration found in ${target} candidate artifact`);
 }
-if (target === "netflix") {
+if (["netflix", "yahoo"].includes(target)) {
   const manifestPath = path.join(root, "youtube-content-manifest.json");
   const manifest = JSON.parse(await readFile(manifestPath, "utf8"));
   if (manifest.target !== `${target}-candidate` || manifest.fixture !== false || manifest.releaseReady !== true) {

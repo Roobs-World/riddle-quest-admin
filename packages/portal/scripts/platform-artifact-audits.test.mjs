@@ -111,8 +111,8 @@ test("the Web Target config resolves one isolated build profile for every releas
     yahoo: {
       outDir: "dist-yahoo",
       htmlEntry: "/targets/yahoo/index.html",
-      shopEntry: "/src/play/modalPages/commerce/ShopModalPage.tsx",
-      artifactPlugin: undefined,
+      shopEntry: "virtual:youtube-forbidden-shop-entry",
+      artifactPlugin: "riddle-quest-youtube-artifact",
     },
   };
 
@@ -350,7 +350,7 @@ test("each target-owned HTML document imports one explicit target main and only 
       externalScripts: ["https://www.youtube.com/game_api/v1"],
     },
     {file: "targets/netflix/index.html", module: "/src/youtube/standaloneMain.tsx", externalScripts: []},
-    {file: "targets/yahoo/index.html", module: "/src/yahoo/main.tsx", externalScripts: []},
+    {file: "targets/yahoo/index.html", module: "/src/youtube/standaloneMain.tsx", externalScripts: []},
   ];
 
   for (const document of documents) {

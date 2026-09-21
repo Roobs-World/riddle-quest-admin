@@ -427,11 +427,14 @@ const targetProfiles: Readonly<Record<WebTarget, WebTargetProfile>> = Object.fre
   }),
   yahoo: Object.freeze({
     id: "yahoo",
-    shopEntry: sharedShopModalPage,
-    publicDirectory: "public",
+    shopEntry: youtubeForbiddenShopEntry,
+    publicDirectory: false,
     input: yahooHtmlEntry,
     htmlOutputs: Object.freeze([{source: yahooHtmlEntry, fileName: "index.html"}] as const),
-    createArtifactPlugins: () => [],
+    disableModulePreloadPolyfill: true,
+    createArtifactPlugins: ({allowYouTubeFixture, youtubeContent}: WebTargetPluginContext) => [
+      youtubeArtifactPlugin(youtubeContent, allowYouTubeFixture, "yahoo-candidate"),
+    ],
   }),
   gamesnacks: Object.freeze({
     id: "gamesnacks",
@@ -536,7 +539,7 @@ export function createWebTargetViteConfig({
   const youtubeContent = allowYouTubeFixture ? youtubeFixtureContent : youtubeReleaseContent;
   /** Provides upload sentry source maps behavior. */
   const uploadSentrySourceMaps = environment.SENTRY_UPLOAD_SOURCEMAPS === "1";
-  if (["youtube", "netflix", "gamesnacks"].includes(profile.id) && uploadSentrySourceMaps) {
+  if (["youtube", "netflix", "yahoo", "gamesnacks"].includes(profile.id) && uploadSentrySourceMaps) {
     throw new Error("Sentry source-map upload is forbidden for self-contained artifacts");
   }
 
