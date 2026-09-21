@@ -47,7 +47,7 @@ Reproductions before fixes: the browser measured 32 px solo keys; the component 
 
 ## Release and live verification
 
-Deploy the race-engine backend change with the client before resubmission; the old backend will still reject immediate skips. Purchase grants remain server-authoritative and idempotent. No Jest Developer Console changes are required for the profile presentation change.
+The race-engine backend and verified Jest client were deployed on 21 September. The exact active build passed a real sandbox smoke including immediate skip before any answer. See [deployment verification](deployment-verification-2026-09-21.md) for provider-specific outcomes and remaining release limits. Purchase grants remain server-authoritative and idempotent. No Jest Developer Console changes are required for the profile presentation change.
 
 The SDK profile handling follows [Jest's social profile documentation](https://docs.jest.com/sdk/social#user-profile): read after initialization and support null profile/avatar values. The adapter already fetched this data; the missing connection was its presentation in the profile panel.
 

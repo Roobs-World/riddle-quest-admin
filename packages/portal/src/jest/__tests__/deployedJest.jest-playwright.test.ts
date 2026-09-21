@@ -400,6 +400,7 @@ describeDeployed("deployed Jest sandbox game", () => {
     expect(subscriptionSkus).toContain(expectedSubscriptionSku);
     // The inactive offer is production-visible only after its signed
     // entitlement has been verified by the backend.
+    await game.locator(".shop-subscription-card").waitFor({state: "visible", timeout: 30_000});
     expect(await game.locator(".shop-subscription-card").count()).toBe(1);
     expect([...successfulFunctions]).toContain("syncJestSubscriptions");
   });
