@@ -4,6 +4,21 @@ it("rejects non-PNG and oversized screenshots", async () => {
   expect(await sizeCheckedScreenshotProvider(() => "data:image/jpeg;base64,YQ==")()).toBeNull();
   expect(await sizeCheckedScreenshotProvider(() => `data:image/png;base64,${"A".repeat(2_800_000)}`)()).toBeNull();
 });
+it("bounds the full encoded data URL rather than the decoded PNG bytes", async () => {
+  /** Decodes to less than 2 MiB but exceeds Jest's data URL limit. */
+  const oversized = `data:image/png;base64,${"A".repeat(2 * 1024 * 1024)}`;
+  expect(await sizeCheckedScreenshotProvider(async () => oversized)()).toBeNull();
+});
+it("includes the data URL prefix in the size boundary", async () => {
+  /** Counts toward the provider's encoded size limit. */
+  const prefix = "data:image/png;base64,";
+  /** Keeps base64 aligned to complete four-character groups. */
+  const encodedLength = Math.floor((2 * 1024 * 1024 - prefix.length) / 4) * 4;
+  /** Largest aligned payload that fits with its prefix. */
+  const largest = `${prefix}${"A".repeat(encodedLength)}`;
+  expect(await sizeCheckedScreenshotProvider(() => largest)()).toBe(largest);
+  expect(await sizeCheckedScreenshotProvider(() => `${largest}AAAA`)()).toBeNull();
+});
 it("accepts a small PNG data URL", async () =>
   expect(await sizeCheckedScreenshotProvider(() => "data:image/png;base64,YQ==")()).toBe("data:image/png;base64,YQ=="));
 it("accounts for single-padding PNG data URLs", async () =>

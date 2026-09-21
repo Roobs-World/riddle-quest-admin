@@ -290,6 +290,9 @@ const installJestSdkHarness = async (page: Page, scenario = "success") => {
       referrals: {
         listReferrals: async () => ({referralsSigned: "signed-referrals"}),
         shareReferralLink: async (input: AuthHarnessState["referralShares"][number]) => {
+          if (input.shareImage && input.shareImage.length > 2 * 1024 * 1024) {
+            throw new Error("BAD_REQUEST: shareImage data URL exceeds 2 MiB");
+          }
           state.calls.push("sdk.referrals.shareReferralLink");
           state.referralShares.push(structuredClone(input));
           return {canceled: false};
@@ -549,6 +552,31 @@ describeBrowser("Jest authentication integration", () => {
   afterAll(async () => {
     await browser?.close();
     await new Promise<void>((resolve, reject) => server?.close((error) => (error ? reject(error) : resolve())));
+  });
+
+  it("shares an invite without the optional image when its encoded data URL is oversized", async () => {
+    /** Isolates the canvas override and records uncaught browser failures. */
+    const {context, page, pageErrors} = await openHarness(browser, {registered: true});
+    await enterRegisteredGame(page);
+    await page.evaluate(() => {
+      HTMLCanvasElement.prototype.toDataURL = () => `data:image/png;base64,${"A".repeat(2 * 1024 * 1024)}`;
+      window.dispatchEvent(new CustomEvent("riddle-quest:share-invite"));
+    });
+    await page.waitForFunction(() =>
+      (window as typeof window & {
+        /** Records calls accepted by the injected SDK. */
+        __RIDDLE_QUEST_JEST_AUTH_TEST__: AuthHarnessState;
+      })
+        .__RIDDLE_QUEST_JEST_AUTH_TEST__.referralShares.length === 1,
+    );
+    /** Captures the referral accepted without its oversized optional image. */
+    const [share] = (await getHarnessState(page)).referralShares;
+    expect(share).not.toHaveProperty("shareImage");
+    expect(share.reference).toBe("riddle_quest_friend_challenge_v2");
+    expect(share.entryPayload).toMatchObject({inviteKind: "open"});
+    expect(share.shareText).toContain("both earn 100 coins");
+    expect(pageErrors).toEqual([]);
+    await context.close();
   });
 
   it("refreshes Config-panel subscription changes and cancels renewal from the shop", async () => {
