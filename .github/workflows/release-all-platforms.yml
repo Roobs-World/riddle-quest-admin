@@ -83,6 +83,10 @@ jobs:
           pnpm release:playgama
           pnpm release:amazon
           pnpm release:jiogames
+          pnpm release:famobi
+          pnpm release:gamepush
+          pnpm release:softgames
+          pnpm release:wgplayground
       - name: Record the successful release in the dashboard
         run: node scripts/release/record-release-automation.mjs
         env:
@@ -147,6 +151,14 @@ jobs:
             build-amazon-webapp-review.zip.manifest.json
             build-jiogames-review.zip
             build-jiogames-review.zip.manifest.json
+            build-famobi-pitch.zip
+            build-famobi-pitch.zip.manifest.json
+            build-gamepush-review.zip
+            build-gamepush-review.zip.manifest.json
+            build-softgames-pitch.zip
+            build-softgames-pitch.zip.manifest.json
+            build-wgplayground-review.zip
+            build-wgplayground-review.zip.manifest.json
             build-youtube.zip
             build-youtube.manifest.json
             build-youtube.test-report.json

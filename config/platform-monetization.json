@@ -186,6 +186,30 @@
       "iap": "Provider-gated; public documentation does not define the HTML5 receipt contract",
       "ads": "Provider-gated through account-issued JioAds integration",
       "gate": "Obtain partner approval, current set-top-box SDK and UK commercial terms"
+    },
+    {
+      "platform": "Famobi",
+      "iap": "Provider-gated; authenticated server verification required before enablement",
+      "ads": "Provider-gated through an isolated Famobi API adapter",
+      "gate": "Obtain a written non-exclusive offer, SDK credentials and server-side IAP contract"
+    },
+    {
+      "platform": "GamePush Distribution",
+      "iap": "Provider-gated through unified SDK; verification contract required",
+      "ads": "Provider-gated through isolated GamePush SDK across selected destinations",
+      "gate": "Approve UK contract, destination opt-outs, revenue share and purchase-verification terms"
+    },
+    {
+      "platform": "SOFTGAMES",
+      "iap": "Unavailable pending written purchase and receipt-verification requirements",
+      "ads": "Provider-gated; managed advertising SDK and consent contract required",
+      "gate": "Obtain a written non-exclusive revenue-share offer before source disclosure or integration"
+    },
+    {
+      "platform": "WGPlayground",
+      "iap": "Provider-gated; public agreement mentions IAP but verification API is account-gated",
+      "ads": "Provider-gated through isolated WGPlayground SDK",
+      "gate": "Review agreement terms and authenticated SDK/IAP documentation before upload"
     }
   ]
 }

@@ -326,6 +326,38 @@ const releasePlans = Object.freeze([
     handoff: "Apply for partner access and obtain the current SDK and UK commercial terms before integration.",
     runbook: "docs/research/additional-html5-release-targets-2026-09-21.md",
   }),
+  Object.freeze({
+    target: "famobi", title: "Famobi pitch", boundary: "local-manual-handoff", publicCommand: "pnpm release:famobi",
+    summary: "Create a neutral HTML5 archive for Famobi contract and studio review.",
+    externalEffect: "None; contract screening, studio approval, source handling, SDK integration, QA and publication remain manual.",
+    command: Object.freeze({executable: "node", args: Object.freeze(["scripts/release/package-html5-platform.mjs", "famobi"])}),
+    handoff: "Pitch the hosted demo and retain build-famobi-pitch.zip until compatible non-exclusive terms are offered.",
+    runbook: "docs/research/further-html5-release-targets-2026-09-21.md",
+  }),
+  Object.freeze({
+    target: "gamepush", title: "GamePush Distribution review", boundary: "local-manual-handoff", publicCommand: "pnpm release:gamepush",
+    summary: "Create a neutral HTML5 archive for GamePush contract and destination review.",
+    externalEffect: "None; contracting, destination selection, SDK integration, moderation and syndication remain manual.",
+    command: Object.freeze({executable: "node", args: Object.freeze(["scripts/release/package-html5-platform.mjs", "gamepush"])}),
+    handoff: "Request the exact destination and opt-out list before implementing the isolated GamePush SDK adapter.",
+    runbook: "docs/research/further-html5-release-targets-2026-09-21.md",
+  }),
+  Object.freeze({
+    target: "softgames", title: "SOFTGAMES pitch", boundary: "local-manual-handoff", publicCommand: "pnpm release:softgames",
+    summary: "Create a neutral HTML5 archive for a non-exclusive SOFTGAMES publishing enquiry.",
+    externalEffect: "None; outreach, contract review, SDK integration and publication remain manual.",
+    command: Object.freeze({executable: "node", args: Object.freeze(["scripts/release/package-html5-platform.mjs", "softgames"])}),
+    handoff: "Request a written non-exclusive revenue-share offer before providing source or integrating an SDK.",
+    runbook: "docs/research/further-html5-release-targets-2026-09-21.md",
+  }),
+  Object.freeze({
+    target: "wgplayground", title: "WGPlayground review", boundary: "local-manual-handoff", publicCommand: "pnpm release:wgplayground",
+    summary: "Create a neutral HTML5 archive for WGPlayground agreement and SDK review.",
+    externalEffect: "None; agreement review, account setup, SDK integration, upload and publication remain manual.",
+    command: Object.freeze({executable: "node", args: Object.freeze(["scripts/release/package-html5-platform.mjs", "wgplayground"])}),
+    handoff: "Review renewal, sublicensing, termination and fee clauses before integrating the isolated SDK.",
+    runbook: "docs/research/further-html5-release-targets-2026-09-21.md",
+  }),
 ]);
 
 const plansByTarget = new Map(releasePlans.map((plan) => [plan.target, plan]));

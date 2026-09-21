@@ -3,7 +3,7 @@
   "surface": "dashboard",
   "buildStatus": "complete",
   "title": "Riddle Quest integration and release status",
-  "generatedAt": "2026-09-21T10:01:40Z",
+  "generatedAt": "2026-09-21T10:14:37Z",
   "status": "verified-repository-and-provider-evidence",
   "filters": [],
   "queries": {
@@ -287,6 +287,42 @@
           "ads": "Excluded until JioAds SDK and placement rules are supplied",
           "localValidation": "Passed — immutable review handoff generated",
           "releaseStatus": "Review ZIP and SHA-256 manifest generated; partner approval and SDK access remain manual"
+        },
+        {
+          "platform": "Famobi",
+          "integration": "Provider-neutral contract pitch handoff",
+          "identityAndSaves": "Famobi API identity/storage contract pending",
+          "commerceAndSocial": "IAP disabled pending server-verification contract",
+          "ads": "Excluded until compatible contract and isolated adapter",
+          "localValidation": "Passed — immutable pitch handoff generated",
+          "releaseStatus": "Pitch ZIP and SHA-256 manifest generated; non-exclusive contract screening remains manual"
+        },
+        {
+          "platform": "GamePush Distribution",
+          "integration": "Provider-neutral distribution review handoff",
+          "identityAndSaves": "Unified SDK identity/storage adapter pending",
+          "commerceAndSocial": "Unified IAP requires isolated server-authoritative integration",
+          "ads": "Excluded until destination list and SDK contract approval",
+          "localValidation": "Passed — immutable review handoff generated",
+          "releaseStatus": "Review ZIP and SHA-256 manifest generated; contracting and destination opt-outs remain manual"
+        },
+        {
+          "platform": "SOFTGAMES",
+          "integration": "Provider-neutral publishing pitch handoff",
+          "identityAndSaves": "Publisher SDK contract not supplied",
+          "commerceAndSocial": "Commerce unavailable pending written requirements",
+          "ads": "Excluded until managed-ad contract and isolated adapter",
+          "localValidation": "Passed — immutable pitch handoff generated",
+          "releaseStatus": "Pitch ZIP and SHA-256 manifest generated; non-exclusive offer required before source or SDK work"
+        },
+        {
+          "platform": "WGPlayground",
+          "integration": "Provider-neutral agreement review handoff",
+          "identityAndSaves": "SDK identity/storage contract pending",
+          "commerceAndSocial": "IAP disabled pending authenticated verification API",
+          "ads": "Excluded until agreement approval and isolated SDK adapter",
+          "localValidation": "Passed — immutable review handoff generated",
+          "releaseStatus": "Review ZIP and SHA-256 manifest generated; agreement review and account setup remain manual"
         }
       ],
       "source": {
@@ -300,7 +336,8 @@
           "config/platform-monetization.json",
           "docs/reports/platform-release-readiness/src/data.json:html5_distribution_candidates",
           ".github/workflows/release-all-platforms.yml",
-          "docs/research/additional-html5-release-targets-2026-09-21.md"
+          "docs/research/additional-html5-release-targets-2026-09-21.md",
+          "docs/research/further-html5-release-targets-2026-09-21.md"
         ],
         "filters": [
           "Every canonical release target is listed, including research-only, blocked and account-gated targets.",
@@ -599,6 +636,34 @@
           "integration": "Account-issued SDK for lifecycle, ads and IAP after approval",
           "submissionProgress": "Provider-neutral partner-review ZIP and SHA-256 manifest generated",
           "nextGate": "Apply for partner access and request SDK plus UK payout terms"
+        },
+        {
+          "platform": "Famobi",
+          "releaseModel": "Publisher submission with affiliate-network distribution",
+          "integration": "Famobi Game API after compatible written contract",
+          "submissionProgress": "Provider-neutral pitch ZIP and SHA-256 manifest generated",
+          "nextGate": "Pitch hosted demo and obtain written non-exclusive terms before source disclosure"
+        },
+        {
+          "platform": "GamePush Distribution",
+          "releaseModel": "One SDK integration distributed to selected partner destinations",
+          "integration": "Isolated GamePush SDK for lifecycle, ads and provider-gated IAP",
+          "submissionProgress": "Neutral distribution-review ZIP and SHA-256 manifest generated",
+          "nextGate": "Request UK contract, exact destination list and opt-out controls"
+        },
+        {
+          "platform": "SOFTGAMES",
+          "releaseModel": "Curated publishing, sponsorship or revenue-share agreement",
+          "integration": "Publisher SDK only after non-exclusive terms and technical contract",
+          "submissionProgress": "Neutral publishing-pitch ZIP and SHA-256 manifest generated",
+          "nextGate": "Send enquiry explicitly requesting a non-exclusive revenue-share offer"
+        },
+        {
+          "platform": "WGPlayground",
+          "releaseModel": "Self-service portal plus optional publisher syndication",
+          "integration": "Isolated WGPlayground SDK for ads and provider-gated IAP",
+          "submissionProgress": "Neutral agreement-review ZIP and SHA-256 manifest generated",
+          "nextGate": "Review renewal, sublicensing, termination and fee clauses"
         }
       ],
       "source": {
@@ -612,7 +677,8 @@
           "scripts/release/package-microsoft-pwa.mjs",
           "build-telegram-review.zip",
           "build-microsoft-pwa.zip",
-          "docs/research/additional-html5-release-targets-2026-09-21.md"
+          "docs/research/additional-html5-release-targets-2026-09-21.md",
+          "docs/research/further-html5-release-targets-2026-09-21.md"
         ],
         "filters": [
           "A ready artifact does not imply provider approval. SDK and advertising integrations must remain isolated by target.",
@@ -677,7 +743,7 @@
           "check": "Release output coverage",
           "viewport": "Data contract",
           "result": "Passed",
-          "evidence": "All 31 canonical release targets are present in policy order with integration, identity/save, commerce, ads, validation and release status fields."
+          "evidence": "All 35 canonical release targets are present in policy order with integration, identity/save, commerce, ads, validation and release status fields."
         },
         {
           "check": "Desktop rendering and source inspection",
@@ -1636,6 +1702,38 @@
           "action": "Apply to JioGames and request the current set-top-box HTML5 SDK, UK payout terms and written non-exclusive confirmation.",
           "destination": "https://developer.jiogames.com/",
           "unlocks": "JioGames SDK integration and QA"
+        },
+        {
+          "status": "To review",
+          "priority": "Outreach",
+          "platform": "Famobi",
+          "action": "Pitch the hosted demo and request written non-exclusive terms, SDK credentials, server-side IAP verification details, source-handling terms and proposed destinations.",
+          "destination": "https://famobi.com/developers/?locale=en",
+          "unlocks": "Famobi studio onboarding and API integration decision"
+        },
+        {
+          "status": "To review",
+          "priority": "Next integration",
+          "platform": "GamePush Distribution",
+          "action": "Apply with the demo and request UK-company terms, exact revenue share, destination list, opt-out controls, privacy terms and purchase verification contract.",
+          "destination": "https://gamepush.com/en/distribution/",
+          "unlocks": "Controlled multi-portal distribution through one isolated adapter"
+        },
+        {
+          "status": "To do",
+          "priority": "Outreach",
+          "platform": "SOFTGAMES",
+          "action": "Send a publishing enquiry requesting non-exclusive revenue-share terms; reject acquisition, IP-transfer or exclusive sponsorship terms.",
+          "destination": "https://www.softgames.com/html5-game-publishing/",
+          "unlocks": "SOFTGAMES contract and technical review"
+        },
+        {
+          "status": "To review",
+          "priority": "Next integration",
+          "platform": "WGPlayground",
+          "action": "Review renewal, termination, sublicensing and fee clauses, then create an account and request authenticated SDK/IAP documentation.",
+          "destination": "https://www.wgplayground.com/developers",
+          "unlocks": "WGPlayground SDK candidate and portal submission"
         }
       ],
       "source": {
@@ -1647,7 +1745,8 @@
           "docs/reports/platform-release-readiness/src/data.json:html5_distribution_candidates",
           "tooling/deployment-monitor/jest-provider.mjs",
           ".env:Facebook placement variable presence",
-          "docs/research/additional-html5-release-targets-2026-09-21.md"
+          "docs/research/additional-html5-release-targets-2026-09-21.md",
+          "docs/research/further-html5-release-targets-2026-09-21.md"
         ],
         "filters": [
           "Only steps requiring an account owner, identity check, contract decision, portal interaction, credential creation, OAuth consent or physical-device verification are included.",
@@ -1852,6 +1951,30 @@
           "iap": "Provider-gated; public documentation does not define the HTML5 receipt contract",
           "ads": "Provider-gated through account-issued JioAds integration",
           "gate": "Obtain partner approval, current set-top-box SDK and UK commercial terms"
+        },
+        {
+          "platform": "Famobi",
+          "iap": "Provider-gated; authenticated server verification required before enablement",
+          "ads": "Provider-gated through an isolated Famobi API adapter",
+          "gate": "Obtain a written non-exclusive offer, SDK credentials and server-side IAP contract"
+        },
+        {
+          "platform": "GamePush Distribution",
+          "iap": "Provider-gated through unified SDK; verification contract required",
+          "ads": "Provider-gated through isolated GamePush SDK across selected destinations",
+          "gate": "Approve UK contract, destination opt-outs, revenue share and purchase-verification terms"
+        },
+        {
+          "platform": "SOFTGAMES",
+          "iap": "Unavailable pending written purchase and receipt-verification requirements",
+          "ads": "Provider-gated; managed advertising SDK and consent contract required",
+          "gate": "Obtain a written non-exclusive revenue-share offer before source disclosure or integration"
+        },
+        {
+          "platform": "WGPlayground",
+          "iap": "Provider-gated; public agreement mentions IAP but verification API is account-gated",
+          "ads": "Provider-gated through isolated WGPlayground SDK",
+          "gate": "Review agreement terms and authenticated SDK/IAP documentation before upload"
         }
       ],
       "source": {
@@ -1863,7 +1986,8 @@
           "packages/portal/src/facebook/FacebookAdsCapability.ts",
           "packages/reddit-app/products.json",
           "packages/portal/src/yahoo/yahooStripeCommerce.ts",
-          "docs/research/additional-html5-release-targets-2026-09-21.md"
+          "docs/research/additional-html5-release-targets-2026-09-21.md",
+          "docs/research/further-html5-release-targets-2026-09-21.md"
         ],
         "links": [
           {

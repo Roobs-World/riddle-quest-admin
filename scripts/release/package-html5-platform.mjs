@@ -29,6 +29,10 @@ const definitions = Object.freeze({
   playgama: Object.freeze({artifact: "build-playgama-review.zip", boundary: "Playgama contracting, Bridge integration, distribution choices, moderation and publication remain manual."}),
   amazon: Object.freeze({artifact: "build-amazon-webapp-review.zip", boundary: "Amazon developer enrollment, Fire compatibility testing, IAP setup, listing and certification remain manual."}),
   jiogames: Object.freeze({artifact: "build-jiogames-review.zip", boundary: "JioGames account approval, HTML5 SDK access, ads/IAP integration, QA and publication remain manual."}),
+  famobi: Object.freeze({artifact: "build-famobi-pitch.zip", boundary: "Famobi contract screening, studio approval, source handling, SDK integration, QA and publication remain manual."}),
+  gamepush: Object.freeze({artifact: "build-gamepush-review.zip", boundary: "GamePush contracting, destination selection, SDK integration, moderation and syndication remain manual."}),
+  softgames: Object.freeze({artifact: "build-softgames-pitch.zip", boundary: "SOFTGAMES outreach, non-exclusive contract review, SDK integration and publication remain manual."}),
+  wgplayground: Object.freeze({artifact: "build-wgplayground-review.zip", boundary: "WGPlayground agreement review, account setup, SDK integration, upload and publication remain manual."}),
 });
 
 export function getHtml5DistributionDefinition(target) {
