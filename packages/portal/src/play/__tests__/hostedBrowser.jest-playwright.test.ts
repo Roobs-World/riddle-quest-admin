@@ -21,6 +21,13 @@ const expectModalCentered = async (page: Page) => {
 
 /** Provides expect accessible behavior. */
 const expectAccessible = async (page: Page, state: string) => {
+  await page.evaluate(async () => {
+    await document.fonts.ready;
+    // Audit settled colors, not the intermediate opacity of entrance animations.
+    await Promise.all(document.getAnimations()
+      .filter(animation => Number.isFinite(animation.effect?.getComputedTiming().endTime))
+      .map(animation => animation.finished.catch(() => undefined)));
+  });
   /** Provides {violations} behavior. */
   const {violations} = await new AxeBuilder({page}).withTags(wcagTags).analyze();
   expect(
