@@ -87,6 +87,9 @@ jobs:
           pnpm release:gamepush
           pnpm release:softgames
           pnpm release:wgplayground
+          pnpm release:miniplay
+          pnpm release:kizi
+          pnpm release:huawei
       - name: Record the successful release in the dashboard
         run: node scripts/release/record-release-automation.mjs
         env:
@@ -159,6 +162,12 @@ jobs:
             build-softgames-pitch.zip.manifest.json
             build-wgplayground-review.zip
             build-wgplayground-review.zip.manifest.json
+            build-miniplay-review.zip
+            build-miniplay-review.zip.manifest.json
+            build-kizi-pitch.zip
+            build-kizi-pitch.zip.manifest.json
+            build-huawei-quick-game-review.zip
+            build-huawei-quick-game-review.zip.manifest.json
             build-youtube.zip
             build-youtube.manifest.json
             build-youtube.test-report.json

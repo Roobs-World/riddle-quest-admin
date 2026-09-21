@@ -72,6 +72,12 @@ snapshot.queries.release_automation = {
       evidence: "build-softgames-pitch.zip and its SHA-256 manifest are retained pending a non-exclusive offer"},
     {platform: "WGPlayground", status: "Agreement review handoff ready", trigger, revision: sha, completedAt,
       evidence: "build-wgplayground-review.zip and its SHA-256 manifest are retained before SDK integration"},
+    {platform: "Miniplay", status: "Browser review handoff ready", trigger, revision: sha, completedAt,
+      evidence: "build-miniplay-review.zip and its SHA-256 manifest are retained before account and API approval"},
+    {platform: "Kizi", status: "Publisher pitch handoff ready", trigger, revision: sha, completedAt,
+      evidence: "build-kizi-pitch.zip and its SHA-256 manifest are retained pending non-exclusive terms"},
+    {platform: "Huawei Quick Game", status: "RPK feasibility handoff ready", trigger, revision: sha, completedAt,
+      evidence: "build-huawei-quick-game-review.zip and its SHA-256 manifest are retained before UK onboarding and RPK work"},
   ],
   source: {
     label: "All-platform release workflow receipt",

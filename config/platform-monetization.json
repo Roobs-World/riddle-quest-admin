@@ -210,6 +210,24 @@
       "iap": "Provider-gated; public agreement mentions IAP but verification API is account-gated",
       "ads": "Provider-gated through isolated WGPlayground SDK",
       "gate": "Review agreement terms and authenticated SDK/IAP documentation before upload"
+    },
+    {
+      "platform": "Miniplay",
+      "iap": "Provider-gated through the Miniplay API; server-authoritative verification required",
+      "ads": "Provider-gated; no advertising SDK is enabled in the neutral handoff",
+      "gate": "Create a corporate account, request API credentials and confirm non-exclusive commercial terms"
+    },
+    {
+      "platform": "Kizi",
+      "iap": "Contract-gated; public developer page describes IAP revenue share but no receipt API",
+      "ads": "Unavailable pending written technical and commercial requirements",
+      "gate": "Obtain a compatible non-exclusive offer and authenticated SDK documentation"
+    },
+    {
+      "platform": "Huawei Quick Game",
+      "iap": "Provider-gated; full Quick Game service integration and authoritative verification required",
+      "ads": "Provider-gated; Huawei advertising code must remain isolated to the RPK target",
+      "gate": "Confirm UK business onboarding, release-country eligibility, non-exclusive terms and service approvals"
     }
   ]
 }

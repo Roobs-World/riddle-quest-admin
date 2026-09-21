@@ -3,7 +3,7 @@
   "surface": "dashboard",
   "buildStatus": "complete",
   "title": "Riddle Quest integration and release status",
-  "generatedAt": "2026-09-21T10:14:37Z",
+  "generatedAt": "2026-09-21T10:29:44.758Z",
   "status": "verified-repository-and-provider-evidence",
   "filters": [],
   "queries": {
@@ -323,6 +323,33 @@
           "ads": "Excluded until agreement approval and isolated SDK adapter",
           "localValidation": "Passed — immutable review handoff generated",
           "releaseStatus": "Review ZIP and SHA-256 manifest generated; agreement review and account setup remain manual"
+        },
+        {
+          "platform": "Miniplay",
+          "integration": "Provider-neutral browser/iframe review handoff",
+          "identityAndSaves": "Miniplay API credentials and contract pending",
+          "commerceAndSocial": "IAP disabled pending authenticated verification contract",
+          "ads": "Excluded from neutral handoff pending provider requirements",
+          "localValidation": "Passed — immutable review handoff generated",
+          "releaseStatus": "Review ZIP and SHA-256 manifest generated; account and support request remain manual"
+        },
+        {
+          "platform": "Kizi",
+          "integration": "Provider-neutral publisher pitch handoff",
+          "identityAndSaves": "Provider API contract not supplied",
+          "commerceAndSocial": "IAP disabled pending authenticated verification contract",
+          "ads": "Excluded pending written technical requirements",
+          "localValidation": "Passed — immutable pitch handoff generated",
+          "releaseStatus": "Pitch ZIP and SHA-256 manifest generated; non-exclusive offer required"
+        },
+        {
+          "platform": "Huawei Quick Game",
+          "integration": "Provider-neutral RPK feasibility handoff",
+          "identityAndSaves": "Huawei account services require onboarding and isolated adapter",
+          "commerceAndSocial": "IAP disabled pending service approval and verification contract",
+          "ads": "Excluded until approval and isolated RPK adapter",
+          "localValidation": "Passed — immutable review handoff generated",
+          "releaseStatus": "Review ZIP and SHA-256 manifest generated; UK onboarding and RPK implementation remain gated"
         }
       ],
       "source": {
@@ -337,7 +364,8 @@
           "docs/reports/platform-release-readiness/src/data.json:html5_distribution_candidates",
           ".github/workflows/release-all-platforms.yml",
           "docs/research/additional-html5-release-targets-2026-09-21.md",
-          "docs/research/further-html5-release-targets-2026-09-21.md"
+          "docs/research/further-html5-release-targets-2026-09-21.md",
+          "docs/research/additional-release-targets-round-3-2026-09-21.md"
         ],
         "filters": [
           "Every canonical release target is listed, including research-only, blocked and account-gated targets.",
@@ -664,6 +692,27 @@
           "integration": "Isolated WGPlayground SDK for ads and provider-gated IAP",
           "submissionProgress": "Neutral agreement-review ZIP and SHA-256 manifest generated",
           "nextGate": "Review renewal, sublicensing, termination and fee clauses"
+        },
+        {
+          "platform": "Miniplay",
+          "releaseModel": "Browser/iframe publishing through Miniplay and Minijuegos network",
+          "integration": "Isolated Miniplay API after credentials and non-exclusive terms",
+          "submissionProgress": "Neutral review ZIP and SHA-256 manifest generated",
+          "nextGate": "Create corporate account and send the game registration support request"
+        },
+        {
+          "platform": "Kizi",
+          "releaseModel": "Direct HTML5 publisher application with license or IAP revenue share",
+          "integration": "Provider-neutral handoff pending current technical contract",
+          "submissionProgress": "Neutral pitch ZIP and SHA-256 manifest generated",
+          "nextGate": "Contact Kizi with playable build and request non-exclusive commercial terms"
+        },
+        {
+          "platform": "Huawei Quick Game",
+          "releaseModel": "AppGallery Connect Quick Game submission using an RPK wrapper",
+          "integration": "Dedicated RPK wrapper and isolated Huawei services after approval",
+          "submissionProgress": "Neutral feasibility ZIP and SHA-256 manifest generated",
+          "nextGate": "Confirm UK onboarding, countries, agreement terms and service eligibility"
         }
       ],
       "source": {
@@ -678,7 +727,8 @@
           "build-telegram-review.zip",
           "build-microsoft-pwa.zip",
           "docs/research/additional-html5-release-targets-2026-09-21.md",
-          "docs/research/further-html5-release-targets-2026-09-21.md"
+          "docs/research/further-html5-release-targets-2026-09-21.md",
+          "docs/research/additional-release-targets-round-3-2026-09-21.md"
         ],
         "filters": [
           "A ready artifact does not imply provider approval. SDK and advertising integrations must remain isolated by target.",
@@ -733,6 +783,18 @@
           {
             "label": "LINE MINI App submission",
             "href": "https://developers.line.biz/en/docs/line-mini-app/submit/submission-guide/"
+          },
+          {
+            "label": "Miniplay publishing checklist",
+            "href": "https://ssl.miniplay.com/dev/docs/overview"
+          },
+          {
+            "label": "Kizi developer publishing",
+            "href": "https://kizi.com/developers"
+          },
+          {
+            "label": "Huawei Quick Game",
+            "href": "https://developer.huawei.com/consumer/en/quickGame/"
           }
         ]
       }
@@ -743,7 +805,7 @@
           "check": "Release output coverage",
           "viewport": "Data contract",
           "result": "Passed",
-          "evidence": "All 35 canonical release targets are present in policy order with integration, identity/save, commerce, ads, validation and release status fields."
+          "evidence": "All 38 canonical release targets match the monetization policy and every tracked target has a concrete status."
         },
         {
           "check": "Desktop rendering and source inspection",
@@ -765,7 +827,7 @@
           "docs/reports/platform-release-readiness/dist/index.html"
         ],
         "filters": [
-          "The 27-target coverage check is automated in release-dashboard-content.test.mjs.",
+          "The 38-target coverage check is automated in release-dashboard-content.test.mjs.",
           "Desktop and mobile rendering evidence was last captured on 20 September 2026 against the built HTML artifact."
         ],
         "metricDefinitions": [
@@ -1191,200 +1253,269 @@
       "rows": [
         {
           "platform": "All configured targets",
-          "status": "Release automation passed",
-          "trigger": "workflow_dispatch",
-          "revision": "e5000454eac8",
-          "completedAt": "2026-09-20T23:54:48Z",
-          "evidence": "GitHub Actions run 35545233485 passed the complete target matrix, provider adapters, 17 distribution handoffs, dashboard build and artifact upload"
-        },
-        {
-          "platform": "Production readiness",
-          "status": "Passed",
-          "trigger": "push",
-          "revision": "e1ab08b0c3d0",
-          "completedAt": "2026-09-21T05:11:41Z",
-          "evidence": "GitHub Actions Production readiness completed successfully for the current revision"
-        },
-        {
-          "platform": "Release dashboard",
-          "status": "Deployed automatically",
-          "trigger": "Vercel Git push",
-          "revision": "e1ab08b0c3d0",
-          "completedAt": "2026-09-21T05:11:01Z",
-          "evidence": "Vercel Git deployment dpl_3NScWvBvy3NdU7nJik1rxji4YoBW reached READY; production deploy from jest also reached READY without VERCEL_TOKEN"
+          "status": "Packaging passed",
+          "trigger": "local",
+          "revision": "local",
+          "completedAt": "2026-09-21T10:29:44.758Z",
+          "evidence": "Local release automation run"
         },
         {
           "platform": "Jest",
           "status": "Waiting for credentials",
-          "trigger": "workflow_dispatch",
-          "revision": "e5000454eac8",
-          "completedAt": "2026-09-21T00:02:19.339Z",
+          "trigger": "local",
+          "revision": "local",
+          "completedAt": "2026-09-21T10:29:44.758Z",
           "evidence": "Automatic publish requires JEST_GAME_UPLOAD_TOKEN in the jest-production environment"
         },
         {
           "platform": "Reddit",
           "status": "Waiting for evidence",
-          "trigger": "workflow_dispatch",
-          "revision": "e5000454eac8",
-          "completedAt": "2026-09-21T00:02:19.339Z",
+          "trigger": "local",
+          "revision": "local",
+          "completedAt": "2026-09-21T10:29:44.758Z",
           "evidence": "Promotion requires six sanitized production contract fixtures"
         },
         {
           "platform": "itch.io",
           "status": "Waiting for credentials",
-          "trigger": "workflow_dispatch",
-          "revision": "e5000454eac8",
-          "completedAt": "2026-09-21T00:02:19.339Z",
+          "trigger": "local",
+          "revision": "local",
+          "completedAt": "2026-09-21T10:29:44.758Z",
           "evidence": "Official Butler stage runs after the shared release artifact succeeds"
         },
         {
           "platform": "CrazyGames",
           "status": "Manual upload handoff ready",
-          "trigger": "workflow_dispatch",
-          "revision": "e5000454eac8",
-          "completedAt": "2026-09-21T00:02:19.339Z",
+          "trigger": "local",
+          "revision": "local",
+          "completedAt": "2026-09-21T10:29:44.758Z",
           "evidence": "build-crazygames-basic.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
           "platform": "Newgrounds",
           "status": "Manual upload handoff ready",
-          "trigger": "workflow_dispatch",
-          "revision": "e5000454eac8",
-          "completedAt": "2026-09-21T00:02:19.339Z",
+          "trigger": "local",
+          "revision": "local",
+          "completedAt": "2026-09-21T10:29:44.758Z",
           "evidence": "build-newgrounds.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
           "platform": "Game Jolt",
           "status": "Manual upload handoff ready",
-          "trigger": "workflow_dispatch",
-          "revision": "e5000454eac8",
-          "completedAt": "2026-09-21T00:02:19.339Z",
+          "trigger": "local",
+          "revision": "local",
+          "completedAt": "2026-09-21T10:29:44.758Z",
           "evidence": "build-gamejolt.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
           "platform": "Coolmath Games",
           "status": "Licensing pitch handoff ready",
-          "trigger": "workflow_dispatch",
-          "revision": "e5000454eac8",
-          "completedAt": "2026-09-21T00:02:19.339Z",
+          "trigger": "local",
+          "revision": "local",
+          "completedAt": "2026-09-21T10:29:44.758Z",
           "evidence": "build-coolmath-pitch.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
           "platform": "Armor Games",
           "status": "Licensing pitch handoff ready",
-          "trigger": "workflow_dispatch",
-          "revision": "e5000454eac8",
-          "completedAt": "2026-09-21T00:02:19.339Z",
+          "trigger": "local",
+          "revision": "local",
+          "completedAt": "2026-09-21T10:29:44.758Z",
           "evidence": "build-armor-pitch.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
           "platform": "GamePix",
           "status": "Manual review handoff ready",
-          "trigger": "workflow_dispatch",
-          "revision": "e5000454eac8",
-          "completedAt": "2026-09-21T00:02:19.339Z",
+          "trigger": "local",
+          "revision": "local",
+          "completedAt": "2026-09-21T10:29:44.758Z",
           "evidence": "build-gamepix-review.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
           "platform": "Addicting Games",
           "status": "Manual review handoff ready",
-          "trigger": "workflow_dispatch",
-          "revision": "e5000454eac8",
-          "completedAt": "2026-09-21T00:02:19.339Z",
+          "trigger": "local",
+          "revision": "local",
+          "completedAt": "2026-09-21T10:29:44.758Z",
           "evidence": "build-addictinggames-review.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
           "platform": "HTMLGames.com",
           "status": "Licensing pitch handoff ready",
-          "trigger": "workflow_dispatch",
-          "revision": "e5000454eac8",
-          "completedAt": "2026-09-21T00:02:19.339Z",
+          "trigger": "local",
+          "revision": "local",
+          "completedAt": "2026-09-21T10:29:44.758Z",
           "evidence": "build-htmlgames-pitch.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
           "platform": "PlayKovo",
           "status": "Manual review handoff ready",
-          "trigger": "workflow_dispatch",
-          "revision": "e5000454eac8",
-          "completedAt": "2026-09-21T00:02:19.339Z",
+          "trigger": "local",
+          "revision": "local",
+          "completedAt": "2026-09-21T10:29:44.758Z",
           "evidence": "build-playkovo-review.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
           "platform": "Kongregate",
           "status": "Manual upload handoff ready",
-          "trigger": "workflow_dispatch",
-          "revision": "e5000454eac8",
-          "completedAt": "2026-09-21T00:02:19.339Z",
+          "trigger": "local",
+          "revision": "local",
+          "completedAt": "2026-09-21T10:29:44.758Z",
           "evidence": "build-kongregate.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
           "platform": "Lagged",
           "status": "Developer review handoff ready",
-          "trigger": "workflow_dispatch",
-          "revision": "e5000454eac8",
-          "completedAt": "2026-09-21T00:02:19.339Z",
+          "trigger": "local",
+          "revision": "local",
+          "completedAt": "2026-09-21T10:29:44.758Z",
           "evidence": "build-lagged-review.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
           "platform": "Google GameSnacks",
           "status": "SDK bundle ready; licensing required",
-          "trigger": "workflow_dispatch",
-          "revision": "e5000454eac8",
-          "completedAt": "2026-09-21T00:02:19.339Z",
+          "trigger": "local",
+          "revision": "local",
+          "completedAt": "2026-09-21T10:29:44.758Z",
           "evidence": "build-gamesnacks.zip includes the isolated lifecycle, audio, storage SDK adapter and game.json metadata"
         },
         {
           "platform": "GameDistribution",
           "status": "Contract review handoff ready",
-          "trigger": "workflow_dispatch",
-          "revision": "e5000454eac8",
-          "completedAt": "2026-09-21T00:02:19.339Z",
+          "trigger": "local",
+          "revision": "local",
+          "completedAt": "2026-09-21T10:29:44.758Z",
           "evidence": "build-gamedistribution-review.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
           "platform": "GameMonetize",
           "status": "SDK review handoff ready",
-          "trigger": "workflow_dispatch",
-          "revision": "e5000454eac8",
-          "completedAt": "2026-09-21T00:02:19.339Z",
+          "trigger": "local",
+          "revision": "local",
+          "completedAt": "2026-09-21T10:29:44.758Z",
           "evidence": "build-gamemonetize-review.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
           "platform": "Yandex Games",
           "status": "Contract review handoff ready",
-          "trigger": "workflow_dispatch",
-          "revision": "e5000454eac8",
-          "completedAt": "2026-09-21T00:02:19.339Z",
+          "trigger": "local",
+          "revision": "local",
+          "completedAt": "2026-09-21T10:29:44.758Z",
           "evidence": "build-yandex-review.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
           "platform": "Telegram",
           "status": "Integration review handoff ready",
-          "trigger": "workflow_dispatch",
-          "revision": "e5000454eac8",
-          "completedAt": "2026-09-21T00:02:19.339Z",
+          "trigger": "local",
+          "revision": "local",
+          "completedAt": "2026-09-21T10:29:44.758Z",
           "evidence": "build-telegram-review.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
           "platform": "Microsoft Store PWA",
           "status": "Installable PWA handoff ready",
-          "trigger": "workflow_dispatch",
-          "revision": "e5000454eac8",
-          "completedAt": "2026-09-21T00:02:19.339Z",
+          "trigger": "local",
+          "revision": "local",
+          "completedAt": "2026-09-21T10:29:44.758Z",
           "evidence": "build-microsoft-pwa.zip includes the web manifest, app icon and service worker and is retained with its SHA-256 manifest"
+        },
+        {
+          "platform": "Y8",
+          "status": "Manual review handoff ready",
+          "trigger": "local",
+          "revision": "local",
+          "completedAt": "2026-09-21T10:29:44.758Z",
+          "evidence": "build-y8-review.zip and its SHA-256 manifest are retained without external monetization"
+        },
+        {
+          "platform": "Playgama",
+          "status": "Contract review handoff ready",
+          "trigger": "local",
+          "revision": "local",
+          "completedAt": "2026-09-21T10:29:44.758Z",
+          "evidence": "build-playgama-review.zip and its SHA-256 manifest are retained before Bridge integration"
+        },
+        {
+          "platform": "Amazon Appstore Web App",
+          "status": "Fire compatibility handoff ready",
+          "trigger": "local",
+          "revision": "local",
+          "completedAt": "2026-09-21T10:29:44.758Z",
+          "evidence": "build-amazon-webapp-review.zip and its SHA-256 manifest are retained for Fire Web App testing"
+        },
+        {
+          "platform": "JioGames HTML5",
+          "status": "Partner review handoff ready",
+          "trigger": "local",
+          "revision": "local",
+          "completedAt": "2026-09-21T10:29:44.758Z",
+          "evidence": "build-jiogames-review.zip and its SHA-256 manifest are retained pending partner SDK access"
+        },
+        {
+          "platform": "Famobi",
+          "status": "Contract pitch handoff ready",
+          "trigger": "local",
+          "revision": "local",
+          "completedAt": "2026-09-21T10:29:44.758Z",
+          "evidence": "build-famobi-pitch.zip and its SHA-256 manifest are retained pending compatible terms"
+        },
+        {
+          "platform": "GamePush Distribution",
+          "status": "Distribution review handoff ready",
+          "trigger": "local",
+          "revision": "local",
+          "completedAt": "2026-09-21T10:29:44.758Z",
+          "evidence": "build-gamepush-review.zip and its SHA-256 manifest are retained before destination and SDK approval"
+        },
+        {
+          "platform": "SOFTGAMES",
+          "status": "Publishing pitch handoff ready",
+          "trigger": "local",
+          "revision": "local",
+          "completedAt": "2026-09-21T10:29:44.758Z",
+          "evidence": "build-softgames-pitch.zip and its SHA-256 manifest are retained pending a non-exclusive offer"
+        },
+        {
+          "platform": "WGPlayground",
+          "status": "Agreement review handoff ready",
+          "trigger": "local",
+          "revision": "local",
+          "completedAt": "2026-09-21T10:29:44.758Z",
+          "evidence": "build-wgplayground-review.zip and its SHA-256 manifest are retained before SDK integration"
+        },
+        {
+          "platform": "Miniplay",
+          "status": "Browser review handoff ready",
+          "trigger": "local",
+          "revision": "local",
+          "completedAt": "2026-09-21T10:29:44.758Z",
+          "evidence": "build-miniplay-review.zip and its SHA-256 manifest are retained before account and API approval"
+        },
+        {
+          "platform": "Kizi",
+          "status": "Publisher pitch handoff ready",
+          "trigger": "local",
+          "revision": "local",
+          "completedAt": "2026-09-21T10:29:44.758Z",
+          "evidence": "build-kizi-pitch.zip and its SHA-256 manifest are retained pending non-exclusive terms"
+        },
+        {
+          "platform": "Huawei Quick Game",
+          "status": "RPK feasibility handoff ready",
+          "trigger": "local",
+          "revision": "local",
+          "completedAt": "2026-09-21T10:29:44.758Z",
+          "evidence": "build-huawei-quick-game-review.zip and its SHA-256 manifest are retained before UK onboarding and RPK work"
         }
       ],
       "source": {
         "label": "All-platform release workflow receipt",
         "tables": [
           ".github/workflows/release-all-platforms.yml",
-          ".github/workflows/production-readiness.yml",
-          "Vercel Git integrations for riddle-quest-yahoo and riddle-quest-release-dashboard",
           "scripts/release/record-release-automation.mjs"
         ],
         "filters": [
-          "The all-platform receipt records repository verification and release adapters; provider review completion remains separately reported.",
-          "Website production deploys use Vercel Git integration from the jest branch; the retired VERCEL_TOKEN workflow is excluded."
+          "Passed records the repository verification and release adapters; provider review completion remains separately reported."
         ],
         "metricDefinitions": [
           {
@@ -1734,6 +1865,30 @@
           "action": "Review renewal, termination, sublicensing and fee clauses, then create an account and request authenticated SDK/IAP documentation.",
           "destination": "https://www.wgplayground.com/developers",
           "unlocks": "WGPlayground SDK candidate and portal submission"
+        },
+        {
+          "status": "To do",
+          "priority": "Account",
+          "platform": "Miniplay",
+          "action": "Create a Roobs World Limited account, send the browser game support request, and request written non-exclusive terms and API credentials.",
+          "destination": "https://ssl.miniplay.com/dev/docs/overview",
+          "unlocks": "Miniplay private test environment and API integration"
+        },
+        {
+          "status": "To do",
+          "priority": "Outreach",
+          "platform": "Kizi",
+          "action": "Send the playable build and media kit, requesting current technical requirements and a non-exclusive publishing offer.",
+          "destination": "https://kizi.com/developers",
+          "unlocks": "Kizi commercial and technical review"
+        },
+        {
+          "status": "To verify",
+          "priority": "Eligibility",
+          "platform": "Huawei Quick Game",
+          "action": "Register the UK company, confirm accepted release countries and non-exclusive terms, then apply for required Quick Game services.",
+          "destination": "https://developer.huawei.com/consumer/en/quickGame/",
+          "unlocks": "Huawei RPK wrapper and AppGallery submission work"
         }
       ],
       "source": {
@@ -1746,7 +1901,8 @@
           "tooling/deployment-monitor/jest-provider.mjs",
           ".env:Facebook placement variable presence",
           "docs/research/additional-html5-release-targets-2026-09-21.md",
-          "docs/research/further-html5-release-targets-2026-09-21.md"
+          "docs/research/further-html5-release-targets-2026-09-21.md",
+          "docs/research/additional-release-targets-round-3-2026-09-21.md"
         ],
         "filters": [
           "Only steps requiring an account owner, identity check, contract decision, portal interaction, credential creation, OAuth consent or physical-device verification are included.",
@@ -1975,6 +2131,24 @@
           "iap": "Provider-gated; public agreement mentions IAP but verification API is account-gated",
           "ads": "Provider-gated through isolated WGPlayground SDK",
           "gate": "Review agreement terms and authenticated SDK/IAP documentation before upload"
+        },
+        {
+          "platform": "Miniplay",
+          "iap": "Provider-gated through the Miniplay API; server-authoritative verification required",
+          "ads": "Provider-gated; no advertising SDK is enabled in the neutral handoff",
+          "gate": "Create a corporate account, request API credentials and confirm non-exclusive commercial terms"
+        },
+        {
+          "platform": "Kizi",
+          "iap": "Contract-gated; public developer page describes IAP revenue share but no receipt API",
+          "ads": "Unavailable pending written technical and commercial requirements",
+          "gate": "Obtain a compatible non-exclusive offer and authenticated SDK documentation"
+        },
+        {
+          "platform": "Huawei Quick Game",
+          "iap": "Provider-gated; full Quick Game service integration and authoritative verification required",
+          "ads": "Provider-gated; Huawei advertising code must remain isolated to the RPK target",
+          "gate": "Confirm UK business onboarding, release-country eligibility, non-exclusive terms and service approvals"
         }
       ],
       "source": {
@@ -1987,7 +2161,8 @@
           "packages/reddit-app/products.json",
           "packages/portal/src/yahoo/yahooStripeCommerce.ts",
           "docs/research/additional-html5-release-targets-2026-09-21.md",
-          "docs/research/further-html5-release-targets-2026-09-21.md"
+          "docs/research/further-html5-release-targets-2026-09-21.md",
+          "docs/research/additional-release-targets-round-3-2026-09-21.md"
         ],
         "links": [
           {

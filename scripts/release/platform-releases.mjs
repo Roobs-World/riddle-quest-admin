@@ -358,6 +358,30 @@ const releasePlans = Object.freeze([
     handoff: "Review renewal, sublicensing, termination and fee clauses before integrating the isolated SDK.",
     runbook: "docs/research/further-html5-release-targets-2026-09-21.md",
   }),
+  Object.freeze({
+    target: "miniplay", title: "Miniplay review", boundary: "local-manual-handoff", publicCommand: "pnpm release:miniplay",
+    summary: "Create a neutral HTML5 archive for Miniplay account and API review.",
+    externalEffect: "None; account setup, support request, API integration, testing and production launch remain manual.",
+    command: Object.freeze({executable: "node", args: Object.freeze(["scripts/release/package-html5-platform.mjs", "miniplay"])}),
+    handoff: "Request credentials and written non-exclusive terms before implementing an isolated Miniplay adapter.",
+    runbook: "docs/research/additional-release-targets-round-3-2026-09-21.md",
+  }),
+  Object.freeze({
+    target: "kizi", title: "Kizi pitch", boundary: "local-manual-handoff", publicCommand: "pnpm release:kizi",
+    summary: "Create a neutral HTML5 archive for Kizi developer and commercial review.",
+    externalEffect: "None; outreach, commercial review, SDK integration and publication remain manual.",
+    command: Object.freeze({executable: "node", args: Object.freeze(["scripts/release/package-html5-platform.mjs", "kizi"])}),
+    handoff: "Send the playable build and accept only a compatible non-exclusive publishing offer.",
+    runbook: "docs/research/additional-release-targets-round-3-2026-09-21.md",
+  }),
+  Object.freeze({
+    target: "huawei", title: "Huawei Quick Game review", boundary: "local-manual-handoff", publicCommand: "pnpm release:huawei",
+    summary: "Create a neutral HTML5 archive for Huawei Quick Game onboarding and RPK feasibility review.",
+    externalEffect: "None; UK onboarding, service approvals, RPK integration and AppGallery review remain manual.",
+    command: Object.freeze({executable: "node", args: Object.freeze(["scripts/release/package-html5-platform.mjs", "huawei"])}),
+    handoff: "Confirm UK eligibility and non-exclusive terms before building the isolated RPK wrapper or enabling services.",
+    runbook: "docs/research/additional-release-targets-round-3-2026-09-21.md",
+  }),
 ]);
 
 const plansByTarget = new Map(releasePlans.map((plan) => [plan.target, plan]));

@@ -33,6 +33,9 @@ const definitions = Object.freeze({
   gamepush: Object.freeze({artifact: "build-gamepush-review.zip", boundary: "GamePush contracting, destination selection, SDK integration, moderation and syndication remain manual."}),
   softgames: Object.freeze({artifact: "build-softgames-pitch.zip", boundary: "SOFTGAMES outreach, non-exclusive contract review, SDK integration and publication remain manual."}),
   wgplayground: Object.freeze({artifact: "build-wgplayground-review.zip", boundary: "WGPlayground agreement review, account setup, SDK integration, upload and publication remain manual."}),
+  miniplay: Object.freeze({artifact: "build-miniplay-review.zip", boundary: "Miniplay account setup, support request, API credentials, integration review and production launch remain manual."}),
+  kizi: Object.freeze({artifact: "build-kizi-pitch.zip", boundary: "Kizi developer outreach, non-exclusive commercial review, SDK integration and publication remain manual."}),
+  huawei: Object.freeze({artifact: "build-huawei-quick-game-review.zip", boundary: "Huawei UK developer onboarding, agreement review, service approvals, RPK integration and AppGallery review remain manual."}),
 });
 
 export function getHtml5DistributionDefinition(target) {
