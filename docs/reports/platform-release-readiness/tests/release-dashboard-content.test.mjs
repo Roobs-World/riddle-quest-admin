@@ -3,6 +3,10 @@ import {readFile} from "node:fs/promises";
 import test from "node:test";
 
 const data = JSON.parse(await readFile(new URL("../src/data.json", import.meta.url), "utf8"));
+const monetizationPolicy = JSON.parse(await readFile(
+  new URL("../../../../config/platform-monetization.json", import.meta.url),
+  "utf8",
+));
 const dashboard = await readFile(new URL("../src/content/dashboard/DashboardContent.jsx", import.meta.url), "utf8");
 
 test("the release dashboard reports every target and a concrete output", () => {
@@ -41,8 +45,18 @@ test("dashboard integration metrics match reviewed rows", () => {
   const services = data.queries.service_status.rows;
 
   assert.equal(platforms.filter(({integration}) => integration.startsWith("Implemented")).length, 5);
-  assert.equal(platforms.filter(({localValidation}) => /passed/iu.test(localValidation)).length, 6);
+  assert.equal(platforms.filter(({localValidation}) => /passed/iu.test(localValidation)).length, 24);
   assert.equal(services.filter(({status}) => status === "Integrated").length, 4);
+});
+
+test("the primary release table contains every canonical platform target", () => {
+  const expected = monetizationPolicy.platforms.map(({platform}) => platform);
+  const rows = data.queries.platform_status.rows;
+
+  assert.deepEqual(rows.map(({platform}) => platform), expected);
+  assert.ok(rows.every(({integration, identityAndSaves, commerceAndSocial, ads, localValidation, releaseStatus}) =>
+    [integration, identityAndSaves, commerceAndSocial, ads, localValidation, releaseStatus]
+      .every((value) => typeof value === "string" && value.trim())));
 });
 
 test("the dashboard exposes the latest release automation receipt", () => {
