@@ -3,7 +3,7 @@
   "surface": "dashboard",
   "buildStatus": "complete",
   "title": "Riddle Quest integration and release status",
-  "generatedAt": "2026-09-21T16:01:59.213Z",
+  "generatedAt": "2026-09-21T16:45:53.776Z",
   "status": "verified-repository-and-provider-evidence",
   "filters": [],
   "queries": {
@@ -25,7 +25,7 @@
           "commerceAndSocial": "Social APIs implemented; payments remain gated pending hosted verification",
           "ads": "Interstitial implemented; rewarded ads remain gated",
           "localValidation": "Passed",
-          "releaseStatus": "Version 3 staged in Testing; App Review draft prepared; verified-business correction blocked on representative verification"
+          "releaseStatus": "Version 3 staged in Testing; App Review draft prepared; Meta identity confirmation submitted and under review"
         },
         {
           "platform": "Reddit",
@@ -557,8 +557,8 @@
           "providerReference": "Bundle instance 28625402820405523; review draft 1748953119658228",
           "artifact": "SHA-256 50fd13547d5dab5049b24d5d7cf4a2cbb0d06d04e558a230c4a946cb86f50c45",
           "state": "Testing; controller and country saved in review draft",
-          "submissionProgress": "App Review draft prepared; correction supplied to Meta support assistant; Account Status independently shows no restrictions",
-          "nextGate": "Complete representative verification with an accepted photo-ID administrator, then update verified details, finish legal declarations, submit and promote"
+          "submissionProgress": "App Review draft prepared; corrected business record selected and passport identity confirmation submitted to Meta on 21 September 2026",
+          "nextGate": "Wait for Meta identity confirmation (normally within 48 hours), then confirm the corrected business details, finish legal declarations, submit and promote"
         },
         {
           "platform": "Reddit",
@@ -2059,10 +2059,10 @@
           "unlocks": "Current automatic Jest player metrics on the dashboard"
         },
         {
-          "status": "Blocked",
-          "priority": "Now",
+          "status": "Submitted",
+          "priority": "Awaiting provider",
           "platform": "Facebook",
-          "action": "Complete Meta representative verification using an accepted photo-ID administrator.",
+          "action": "Wait for Meta to decide the submitted passport identity confirmation; Meta states that review usually completes within 48 hours.",
           "destination": "https://business.facebook.com/settings/security",
           "unlocks": "Business-detail correction and App Review submission"
         },
@@ -4440,7 +4440,7 @@
         },
         {
           "platform": "Facebook",
-          "gameLinkStatus": "Shared live gameplay preview; target release pending",
+          "gameLinkStatus": "Shared live gameplay preview; Meta identity confirmation under review",
           "gameUrl": "https://yahoo.roobsworld.com/",
           "adminUrl": "https://developers.facebook.com/apps/1748953042991569/app-review/"
         },
