@@ -3,7 +3,7 @@
   "surface": "dashboard",
   "buildStatus": "complete",
   "title": "Riddle Quest integration and release status",
-  "generatedAt": "2026-09-20T23:35:19Z",
+  "generatedAt": "2026-09-21T00:02:19Z",
   "status": "verified-repository-and-provider-evidence",
   "filters": [],
   "queries": {
@@ -867,169 +867,185 @@
           "platform": "All configured targets",
           "status": "Release automation passed",
           "trigger": "workflow_dispatch",
-          "revision": "cfed19fb5607",
-          "completedAt": "2026-09-20T23:26:55Z",
-          "evidence": "GitHub Actions run 35543610706 attempt 2 passed the complete target matrix, all provider adapters, 15 distribution handoffs, dashboard build and artifact upload"
+          "revision": "e5000454eac8",
+          "completedAt": "2026-09-20T23:54:48Z",
+          "evidence": "GitHub Actions run 35545233485 passed the complete target matrix, provider adapters, 17 distribution handoffs, dashboard build and artifact upload"
         },
         {
           "platform": "Production readiness",
           "status": "Passed",
           "trigger": "push",
-          "revision": "cfed19fb5607",
-          "completedAt": "2026-09-20T23:29:14Z",
-          "evidence": "GitHub Actions run 35543601661 passed Workspace, Firebase Functions, browser end-to-end and Firebase rules checks"
+          "revision": "e5000454eac8",
+          "completedAt": "2026-09-21T00:01:46Z",
+          "evidence": "GitHub Actions run 35545225812 passed Workspace, Firebase Functions, browser end-to-end and Firebase rules checks"
         },
         {
           "platform": "Release dashboard",
           "status": "Deployed",
           "trigger": "workflow_dispatch",
-          "revision": "cfed19fb5607",
-          "completedAt": "2026-09-20T23:07:26Z",
-          "evidence": "Deploy websites run 35543611835 completed successfully with the expanded candidate and checklist data"
+          "revision": "e5000454eac8",
+          "completedAt": "2026-09-20T23:40:09Z",
+          "evidence": "Deploy websites run 35545234396 completed successfully with Telegram and Microsoft Store PWA artifact status"
         },
         {
           "platform": "Jest",
           "status": "Waiting for credentials",
           "trigger": "workflow_dispatch",
-          "revision": "cfed19fb5607",
-          "completedAt": "2026-09-20T23:29:38.165Z",
+          "revision": "e5000454eac8",
+          "completedAt": "2026-09-21T00:02:19.339Z",
           "evidence": "Automatic publish requires JEST_GAME_UPLOAD_TOKEN in the jest-production environment"
         },
         {
           "platform": "Reddit",
           "status": "Waiting for evidence",
           "trigger": "workflow_dispatch",
-          "revision": "cfed19fb5607",
-          "completedAt": "2026-09-20T23:29:38.165Z",
+          "revision": "e5000454eac8",
+          "completedAt": "2026-09-21T00:02:19.339Z",
           "evidence": "Promotion requires six sanitized production contract fixtures"
         },
         {
           "platform": "itch.io",
           "status": "Waiting for credentials",
           "trigger": "workflow_dispatch",
-          "revision": "cfed19fb5607",
-          "completedAt": "2026-09-20T23:29:38.165Z",
+          "revision": "e5000454eac8",
+          "completedAt": "2026-09-21T00:02:19.339Z",
           "evidence": "Official Butler stage runs after the shared release artifact succeeds"
         },
         {
           "platform": "CrazyGames",
           "status": "Manual upload handoff ready",
           "trigger": "workflow_dispatch",
-          "revision": "cfed19fb5607",
-          "completedAt": "2026-09-20T23:29:38.165Z",
+          "revision": "e5000454eac8",
+          "completedAt": "2026-09-21T00:02:19.339Z",
           "evidence": "build-crazygames-basic.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
           "platform": "Newgrounds",
           "status": "Manual upload handoff ready",
           "trigger": "workflow_dispatch",
-          "revision": "cfed19fb5607",
-          "completedAt": "2026-09-20T23:29:38.165Z",
+          "revision": "e5000454eac8",
+          "completedAt": "2026-09-21T00:02:19.339Z",
           "evidence": "build-newgrounds.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
           "platform": "Game Jolt",
           "status": "Manual upload handoff ready",
           "trigger": "workflow_dispatch",
-          "revision": "cfed19fb5607",
-          "completedAt": "2026-09-20T23:29:38.165Z",
+          "revision": "e5000454eac8",
+          "completedAt": "2026-09-21T00:02:19.339Z",
           "evidence": "build-gamejolt.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
           "platform": "Coolmath Games",
           "status": "Licensing pitch handoff ready",
           "trigger": "workflow_dispatch",
-          "revision": "cfed19fb5607",
-          "completedAt": "2026-09-20T23:29:38.165Z",
+          "revision": "e5000454eac8",
+          "completedAt": "2026-09-21T00:02:19.339Z",
           "evidence": "build-coolmath-pitch.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
           "platform": "Armor Games",
           "status": "Licensing pitch handoff ready",
           "trigger": "workflow_dispatch",
-          "revision": "cfed19fb5607",
-          "completedAt": "2026-09-20T23:29:38.165Z",
+          "revision": "e5000454eac8",
+          "completedAt": "2026-09-21T00:02:19.339Z",
           "evidence": "build-armor-pitch.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
           "platform": "GamePix",
           "status": "Manual review handoff ready",
           "trigger": "workflow_dispatch",
-          "revision": "cfed19fb5607",
-          "completedAt": "2026-09-20T23:29:38.165Z",
+          "revision": "e5000454eac8",
+          "completedAt": "2026-09-21T00:02:19.339Z",
           "evidence": "build-gamepix-review.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
           "platform": "Addicting Games",
           "status": "Manual review handoff ready",
           "trigger": "workflow_dispatch",
-          "revision": "cfed19fb5607",
-          "completedAt": "2026-09-20T23:29:38.165Z",
+          "revision": "e5000454eac8",
+          "completedAt": "2026-09-21T00:02:19.339Z",
           "evidence": "build-addictinggames-review.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
           "platform": "HTMLGames.com",
           "status": "Licensing pitch handoff ready",
           "trigger": "workflow_dispatch",
-          "revision": "cfed19fb5607",
-          "completedAt": "2026-09-20T23:29:38.165Z",
+          "revision": "e5000454eac8",
+          "completedAt": "2026-09-21T00:02:19.339Z",
           "evidence": "build-htmlgames-pitch.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
           "platform": "PlayKovo",
           "status": "Manual review handoff ready",
           "trigger": "workflow_dispatch",
-          "revision": "cfed19fb5607",
-          "completedAt": "2026-09-20T23:29:38.165Z",
+          "revision": "e5000454eac8",
+          "completedAt": "2026-09-21T00:02:19.339Z",
           "evidence": "build-playkovo-review.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
           "platform": "Kongregate",
           "status": "Manual upload handoff ready",
           "trigger": "workflow_dispatch",
-          "revision": "cfed19fb5607",
-          "completedAt": "2026-09-20T23:29:38.165Z",
+          "revision": "e5000454eac8",
+          "completedAt": "2026-09-21T00:02:19.339Z",
           "evidence": "build-kongregate.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
           "platform": "Lagged",
           "status": "Developer review handoff ready",
           "trigger": "workflow_dispatch",
-          "revision": "cfed19fb5607",
-          "completedAt": "2026-09-20T23:29:38.165Z",
+          "revision": "e5000454eac8",
+          "completedAt": "2026-09-21T00:02:19.339Z",
           "evidence": "build-lagged-review.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
           "platform": "Google GameSnacks",
           "status": "SDK bundle ready; licensing required",
           "trigger": "workflow_dispatch",
-          "revision": "cfed19fb5607",
-          "completedAt": "2026-09-20T23:29:38.165Z",
+          "revision": "e5000454eac8",
+          "completedAt": "2026-09-21T00:02:19.339Z",
           "evidence": "build-gamesnacks.zip includes the isolated lifecycle, audio, storage SDK adapter and game.json metadata"
         },
         {
           "platform": "GameDistribution",
           "status": "Contract review handoff ready",
           "trigger": "workflow_dispatch",
-          "revision": "cfed19fb5607",
-          "completedAt": "2026-09-20T23:29:38.165Z",
+          "revision": "e5000454eac8",
+          "completedAt": "2026-09-21T00:02:19.339Z",
           "evidence": "build-gamedistribution-review.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
           "platform": "GameMonetize",
           "status": "SDK review handoff ready",
           "trigger": "workflow_dispatch",
-          "revision": "cfed19fb5607",
-          "completedAt": "2026-09-20T23:29:38.165Z",
+          "revision": "e5000454eac8",
+          "completedAt": "2026-09-21T00:02:19.339Z",
           "evidence": "build-gamemonetize-review.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
           "platform": "Yandex Games",
           "status": "Contract review handoff ready",
           "trigger": "workflow_dispatch",
-          "revision": "cfed19fb5607",
-          "completedAt": "2026-09-20T23:29:38.165Z",
+          "revision": "e5000454eac8",
+          "completedAt": "2026-09-21T00:02:19.339Z",
           "evidence": "build-yandex-review.zip and its SHA-256 manifest are retained in the workflow artifact"
+        },
+        {
+          "platform": "Telegram",
+          "status": "Integration review handoff ready",
+          "trigger": "workflow_dispatch",
+          "revision": "e5000454eac8",
+          "completedAt": "2026-09-21T00:02:19.339Z",
+          "evidence": "build-telegram-review.zip and its SHA-256 manifest are retained in the workflow artifact"
+        },
+        {
+          "platform": "Microsoft Store PWA",
+          "status": "Installable PWA handoff ready",
+          "trigger": "workflow_dispatch",
+          "revision": "e5000454eac8",
+          "completedAt": "2026-09-21T00:02:19.339Z",
+          "evidence": "build-microsoft-pwa.zip includes the web manifest, app icon and service worker and is retained with its SHA-256 manifest"
         }
       ],
       "source": {
