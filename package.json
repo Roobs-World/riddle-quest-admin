@@ -95,6 +95,7 @@
     "release:minipay": "node scripts/release/run-platform-release.mjs minipay",
     "release:zoom": "node scripts/release/run-platform-release.mjs zoom",
     "release:pwa-directory": "node scripts/release/run-platform-release.mjs pwa-directory",
+    "release:miro": "node scripts/release/run-platform-release.mjs miro",
     "release:html5": "node scripts/release/package-html5-release.mjs",
     "release:all": "node scripts/release/run-platform-release.mjs all",
     "jest:build-upload": "pnpm release:jest",

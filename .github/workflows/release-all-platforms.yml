@@ -99,6 +99,7 @@ jobs:
           pnpm release:minipay
           pnpm release:zoom
           pnpm release:pwa-directory
+          pnpm release:miro
       - name: Record the successful release in the dashboard
         run: node scripts/release/record-release-automation.mjs
         env:
@@ -195,6 +196,8 @@ jobs:
             build-zoom-app-review.zip.manifest.json
             build-pwa-directory-review.zip
             build-pwa-directory-review.zip.manifest.json
+            build-miro-marketplace-review.zip
+            build-miro-marketplace-review.zip.manifest.json
             build-youtube.zip
             build-youtube.manifest.json
             build-youtube.test-report.json

@@ -96,6 +96,8 @@ snapshot.queries.release_automation = {
       evidence: "build-zoom-app-review.zip and its SHA-256 manifest are retained before SDK and security review"},
     {platform: "PWA Directory", status: "Directory review handoff ready", trigger, revision: sha, completedAt,
       evidence: "build-pwa-directory-review.zip and its SHA-256 manifest are retained before free listing submission"},
+    {platform: "Miro Marketplace", status: "Beta planning handoff ready", trigger, revision: sha, completedAt,
+      evidence: "build-miro-marketplace-review.zip and its SHA-256 manifest are retained before collaboration and beta work"},
   ],
   source: {
     label: "All-platform release workflow receipt",

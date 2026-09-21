@@ -45,6 +45,7 @@ const definitions = Object.freeze({
   minipay: Object.freeze({artifact: "build-minipay-mini-app-review.zip", boundary: "MiniPay terms review, commerce decision, hosted integration, listing submission and approval remain manual."}),
   zoom: Object.freeze({artifact: "build-zoom-app-review.zip", boundary: "Zoom app creation, agreement review, SDK integration, security evidence, Marketplace review and publication remain manual."}),
   "pwa-directory": Object.freeze({artifact: "build-pwa-directory-review.zip", boundary: "PWA installability review, metadata submission, directory review and listing approval remain manual."}),
+  miro: Object.freeze({artifact: "build-miro-marketplace-review.zip", boundary: "Miro app creation, collaborative-flow design, SDK integration, beta adoption, Marketplace review and publication remain manual."}),
 });
 
 export function getHtml5DistributionDefinition(target) {

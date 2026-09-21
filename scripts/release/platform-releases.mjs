@@ -454,6 +454,14 @@ const releasePlans = Object.freeze([
     handoff: "Use the free review path after validating manifest, service worker, icons and installed launch behavior.",
     runbook: "docs/research/additional-release-targets-round-7-2026-09-21.md",
   }),
+  Object.freeze({
+    target: "miro", title: "Miro Marketplace review", boundary: "local-manual-handoff", publicCommand: "pnpm release:miro",
+    summary: "Create an ad-free neutral hosted-web archive for Miro team-building integration planning.",
+    externalEffect: "None; app creation, collaboration design, SDK integration, beta adoption and review remain manual.",
+    command: Object.freeze({executable: "node", args: Object.freeze(["scripts/release/package-html5-platform.mjs", "miro"])}),
+    handoff: "Design a real facilitator and board-result flow before recruiting the beta organizations required for review.",
+    runbook: "docs/research/additional-release-targets-round-8-2026-09-21.md",
+  }),
 ]);
 
 const plansByTarget = new Map(releasePlans.map((plan) => [plan.target, plan]));

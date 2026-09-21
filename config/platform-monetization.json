@@ -282,6 +282,12 @@
       "iap": "Not applicable at directory level; canonical website commerce retains existing server verification",
       "ads": "Not applicable — the directory links to the hosted PWA and provides no ad SDK",
       "gate": "Pass manifest, service-worker, installability and installed-launch review before free submission"
+    },
+    {
+      "platform": "Miro Marketplace",
+      "iap": "Free-only launch; external paid access requires later entitlement and disclosure review",
+      "ads": "Prohibited by Miro Developer Terms; artifact must contain no advertising SDK",
+      "gate": "Design a valid team-building flow and prove >50 MAU for two months across >10 organizations"
     }
   ]
 }
