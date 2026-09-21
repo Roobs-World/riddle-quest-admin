@@ -88,6 +88,10 @@ snapshot.queries.release_automation = {
       evidence: "build-world-mini-app-review.zip and its SHA-256 manifest are retained before MiniKit integration"},
     {platform: "Farcaster Mini Apps", status: "Manifest planning handoff ready", trigger, revision: sha, completedAt,
       evidence: "build-farcaster-mini-app-review.zip and its SHA-256 manifest are retained before domain signing and SDK work"},
+    {platform: "Pi Apps Platform", status: "Account and SDK review handoff ready", trigger, revision: sha, completedAt,
+      evidence: "build-pi-apps-review.zip and its SHA-256 manifest are retained before KYC, terms acceptance and SDK work"},
+    {platform: "MiniPay Mini Apps", status: "Listing review handoff ready", trigger, revision: sha, completedAt,
+      evidence: "build-minipay-mini-app-review.zip and its SHA-256 manifest are retained before terms and commerce review"},
   ],
   source: {
     label: "All-platform release workflow receipt",

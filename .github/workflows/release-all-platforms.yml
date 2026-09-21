@@ -95,6 +95,8 @@ jobs:
           pnpm release:airconsole
           pnpm release:world
           pnpm release:farcaster
+          pnpm release:pi
+          pnpm release:minipay
       - name: Record the successful release in the dashboard
         run: node scripts/release/record-release-automation.mjs
         env:
@@ -183,6 +185,10 @@ jobs:
             build-world-mini-app-review.zip.manifest.json
             build-farcaster-mini-app-review.zip
             build-farcaster-mini-app-review.zip.manifest.json
+            build-pi-apps-review.zip
+            build-pi-apps-review.zip.manifest.json
+            build-minipay-mini-app-review.zip
+            build-minipay-mini-app-review.zip.manifest.json
             build-youtube.zip
             build-youtube.manifest.json
             build-youtube.test-report.json

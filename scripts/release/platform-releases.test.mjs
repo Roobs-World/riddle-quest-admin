@@ -54,6 +54,8 @@ const expectedCommands = new Map([
   ["airconsole", ["scripts/release/package-html5-platform.mjs", "airconsole"]],
   ["world", ["scripts/release/package-html5-platform.mjs", "world"]],
   ["farcaster", ["scripts/release/package-html5-platform.mjs", "farcaster"]],
+  ["pi", ["scripts/release/package-html5-platform.mjs", "pi"]],
+  ["minipay", ["scripts/release/package-html5-platform.mjs", "minipay"]],
 ]);
 const expectedRunbooks = new Map([
   ["jest", "docs/jest-html5-operations.md"],
@@ -96,11 +98,13 @@ const expectedRunbooks = new Map([
   ["airconsole", "docs/research/additional-release-targets-round-5-2026-09-21.md"],
   ["world", "docs/research/additional-release-targets-round-5-2026-09-21.md"],
   ["farcaster", "docs/research/additional-release-targets-round-5-2026-09-21.md"],
+  ["pi", "docs/research/additional-release-targets-round-6-2026-09-21.md"],
+  ["minipay", "docs/research/additional-release-targets-round-6-2026-09-21.md"],
 ]);
 
 test("the public interface exposes one isolated canonical command per release target", () => {
   const plans = listPlatformReleasePlans();
-  assert.deepEqual(plans.map(({target}) => target), ["jest", "facebook", "youtube", "reddit", "netflix", "yahoo", "gamesnacks", "itch", "crazygames", "newgrounds", "gamejolt", "coolmath", "armor", "gamepix", "addictinggames", "htmlgames", "playkovo", "kongregate", "lagged", "gamedistribution", "gamemonetize", "yandex", "telegram", "microsoft-pwa", "y8", "playgama", "amazon", "jiogames", "famobi", "gamepush", "softgames", "wgplayground", "miniplay", "kizi", "huawei", "gameflare", "shockwave", "airconsole", "world", "farcaster"]);
+  assert.deepEqual(plans.map(({target}) => target), ["jest", "facebook", "youtube", "reddit", "netflix", "yahoo", "gamesnacks", "itch", "crazygames", "newgrounds", "gamejolt", "coolmath", "armor", "gamepix", "addictinggames", "htmlgames", "playkovo", "kongregate", "lagged", "gamedistribution", "gamemonetize", "yandex", "telegram", "microsoft-pwa", "y8", "playgama", "amazon", "jiogames", "famobi", "gamepush", "softgames", "wgplayground", "miniplay", "kizi", "huawei", "gameflare", "shockwave", "airconsole", "world", "farcaster", "pi", "minipay"]);
   for (const plan of plans) {
     assert.equal(plan.publicCommand, `pnpm release:${plan.target}`);
     assert.equal("command" in plan, false);
@@ -111,7 +115,7 @@ test("the public interface exposes one isolated canonical command per release ta
 
 test("the root package exposes target releases and one combined release command", async () => {
   const packageJson = JSON.parse(await readFile(new URL("../../package.json", import.meta.url), "utf8"));
-  for (const target of ["jest", "facebook", "youtube", "reddit", "netflix", "yahoo", "gamesnacks", "itch", "crazygames", "newgrounds", "gamejolt", "coolmath", "armor", "gamepix", "addictinggames", "htmlgames", "playkovo", "kongregate", "lagged", "gamedistribution", "gamemonetize", "yandex", "telegram", "microsoft-pwa", "y8", "playgama", "amazon", "jiogames", "famobi", "gamepush", "softgames", "wgplayground", "miniplay", "kizi", "huawei", "gameflare", "shockwave", "airconsole", "world", "farcaster"]) {
+  for (const target of ["jest", "facebook", "youtube", "reddit", "netflix", "yahoo", "gamesnacks", "itch", "crazygames", "newgrounds", "gamejolt", "coolmath", "armor", "gamepix", "addictinggames", "htmlgames", "playkovo", "kongregate", "lagged", "gamedistribution", "gamemonetize", "yandex", "telegram", "microsoft-pwa", "y8", "playgama", "amazon", "jiogames", "famobi", "gamepush", "softgames", "wgplayground", "miniplay", "kizi", "huawei", "gameflare", "shockwave", "airconsole", "world", "farcaster", "pi", "minipay"]) {
     assert.equal(
       packageJson.scripts[`release:${target}`],
       `node scripts/release/run-platform-release.mjs ${target}`,
@@ -189,8 +193,10 @@ test("the combined release verifies once before running every adapter", async ()
     expectedCommands.get("airconsole"),
     expectedCommands.get("world"),
     expectedCommands.get("farcaster"),
+    expectedCommands.get("pi"),
+    expectedCommands.get("minipay"),
   ]);
-  assert.deepEqual(results.map(({target}) => target), ["jest", "facebook", "youtube", "reddit", "netflix", "yahoo", "gamesnacks", "itch", "crazygames", "newgrounds", "gamejolt", "coolmath", "armor", "gamepix", "addictinggames", "htmlgames", "playkovo", "kongregate", "lagged", "gamedistribution", "gamemonetize", "yandex", "telegram", "microsoft-pwa", "y8", "playgama", "amazon", "jiogames", "famobi", "gamepush", "softgames", "wgplayground", "miniplay", "kizi", "huawei", "gameflare", "shockwave", "airconsole", "world", "farcaster"]);
+  assert.deepEqual(results.map(({target}) => target), ["jest", "facebook", "youtube", "reddit", "netflix", "yahoo", "gamesnacks", "itch", "crazygames", "newgrounds", "gamejolt", "coolmath", "armor", "gamepix", "addictinggames", "htmlgames", "playkovo", "kongregate", "lagged", "gamedistribution", "gamemonetize", "yandex", "telegram", "microsoft-pwa", "y8", "playgama", "amazon", "jiogames", "famobi", "gamepush", "softgames", "wgplayground", "miniplay", "kizi", "huawei", "gameflare", "shockwave", "airconsole", "world", "farcaster", "pi", "minipay"]);
 });
 
 test("the Facebook adapter performs only the local preflight and immutable handoff", async () => {

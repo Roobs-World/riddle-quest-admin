@@ -422,6 +422,22 @@ const releasePlans = Object.freeze([
     handoff: "Reserve a stable domain and sign the initial association before publishing the isolated Mini App.",
     runbook: "docs/research/additional-release-targets-round-5-2026-09-21.md",
   }),
+  Object.freeze({
+    target: "pi", title: "Pi Apps Platform review", boundary: "local-manual-handoff", publicCommand: "pnpm release:pi",
+    summary: "Create a neutral hosted-web archive for Pi account, terms and SDK review.",
+    externalEffect: "None; KYC, app creation, terms acceptance, integration and ecosystem listing remain manual.",
+    command: Object.freeze({executable: "node", args: Object.freeze(["scripts/release/package-html5-platform.mjs", "pi"])}),
+    handoff: "Review authenticated terms and verify a dedicated domain before isolated SDK or payment work.",
+    runbook: "docs/research/additional-release-targets-round-6-2026-09-21.md",
+  }),
+  Object.freeze({
+    target: "minipay", title: "MiniPay Mini Apps review", boundary: "local-manual-handoff", publicCommand: "pnpm release:minipay",
+    summary: "Create a neutral hosted-web archive for MiniPay listing and commerce review.",
+    externalEffect: "None; terms review, commerce decision, listing form and approval remain manual.",
+    command: Object.freeze({executable: "node", args: Object.freeze(["scripts/release/package-html5-platform.mjs", "minipay"])}),
+    handoff: "Confirm UK organization eligibility and start free-only unless wallet commerce is separately approved.",
+    runbook: "docs/research/additional-release-targets-round-6-2026-09-21.md",
+  }),
 ]);
 
 const plansByTarget = new Map(releasePlans.map((plan) => [plan.target, plan]));

@@ -41,6 +41,8 @@ const definitions = Object.freeze({
   airconsole: Object.freeze({artifact: "build-airconsole-review.zip", boundary: "AirConsole game creation, controller design, SDK integration, upload, review and approval remain manual."}),
   world: Object.freeze({artifact: "build-world-mini-app-review.zip", boundary: "World Developer Portal setup, commercial review, MiniKit integration, listing review and release remain manual."}),
   farcaster: Object.freeze({artifact: "build-farcaster-mini-app-review.zip", boundary: "Farcaster domain selection, manifest signing, SDK integration, launch publication and discovery remain manual."}),
+  pi: Object.freeze({artifact: "build-pi-apps-review.zip", boundary: "Pi account, KYC, terms review, app creation, SDK integration, listing review and approval remain manual."}),
+  minipay: Object.freeze({artifact: "build-minipay-mini-app-review.zip", boundary: "MiniPay terms review, commerce decision, hosted integration, listing submission and approval remain manual."}),
 });
 
 export function getHtml5DistributionDefinition(target) {

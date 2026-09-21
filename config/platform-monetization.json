@@ -258,6 +258,18 @@
       "iap": "Unavailable pending a separately approved wallet-based entitlement design",
       "ads": "Unavailable — no first-party in-game advertising SDK identified",
       "gate": "Reserve a stable domain, sign the manifest and implement authenticated server verification before commerce"
+    },
+    {
+      "platform": "Pi Apps Platform",
+      "iap": "Disabled pending legal review, authenticated terms and server-authoritative Pi payment design",
+      "ads": "Prohibited for this target — rewarded and interstitial formats remain Facebook-only",
+      "gate": "Complete account/KYC and terms review; begin free-only unless commerce receives separate approval"
+    },
+    {
+      "platform": "MiniPay Mini Apps",
+      "iap": "Disabled pending legal, tax and technical review of Celo wallet commerce",
+      "ads": "Unavailable — no first-party in-game advertising API documented",
+      "gate": "Confirm UK organization eligibility and submit a free commerce-disabled listing first"
     }
   ]
 }
