@@ -23,8 +23,8 @@ function EvidenceTable({id, queryId, title, rows, columns}) {
       <Table className="integration-table">
         <TableHeader><TableRow>{columns.map(({key, label}) => <TableHead key={key}>{label}</TableHead>)}</TableRow></TableHeader>
         <TableBody>{rows.map((row) => <TableRow key={row.platform ?? row.service ?? row.check}>
-          {columns.map(({key, status, link}) => <TableCell key={key}>{link && row[key]
-            ? <Button><a href={row[key]} target="_blank" rel="noreferrer">Open</a></Button>
+          {columns.map(({key, status, link, linkLabel}) => <TableCell key={key}>{link && row[key]
+            ? <Button><a href={row[key]} target="_blank" rel="noreferrer">{linkLabel ?? "Open"}</a></Button>
             : status ? <Status>{row[key]}</Status> : row[key]}</TableCell>)}
         </TableRow>)}</TableBody>
       </Table>
@@ -75,6 +75,7 @@ function OutreachEmail({rows}) {
 export function DashboardContent() {
   const {reviewedRows} = useDataApp();
   const platforms = reviewedRows("platform_status");
+  const targetLinks = reviewedRows("target_links");
   const releases = reviewedRows("provider_release_evidence");
   const distributionCandidates = reviewedRows("html5_distribution_candidates");
   const releaseAutomation = reviewedRows("release_automation");
@@ -123,6 +124,11 @@ export function DashboardContent() {
 
     <Section>
       <SectionHeader id="platform-integration-title" title="Target integration matrix" />
+      <EvidenceTable id="target-links" queryId="target_links" title="Game and deployment links for every target" rows={targetLinks} columns={[
+        {key:"platform",label:"Target"}, {key:"gameLinkStatus",label:"Game link status",status:true},
+        {key:"gameUrl",label:"Preview or live game",link:true,linkLabel:"Play"},
+        {key:"adminUrl",label:"Deployment admin",link:true,linkLabel:"Manage"},
+      ]} />
       <EvidenceTable id="platform-status" queryId="platform_status" title="Capabilities and release state" rows={platforms} columns={[
         {key:"platform",label:"Target"}, {key:"integration",label:"Integration"},
         {key:"identityAndSaves",label:"Identity and saves"}, {key:"commerceAndSocial",label:"Commerce and social"},

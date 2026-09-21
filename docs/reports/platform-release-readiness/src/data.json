@@ -3,7 +3,7 @@
   "surface": "dashboard",
   "buildStatus": "complete",
   "title": "Riddle Quest integration and release status",
-  "generatedAt": "2026-09-21T15:36:48.417Z",
+  "generatedAt": "2026-09-21T16:01:59.213Z",
   "status": "verified-repository-and-provider-evidence",
   "filters": [],
   "queries": {
@@ -1141,7 +1141,7 @@
           "check": "Release output coverage",
           "viewport": "Data contract",
           "result": "Passed",
-          "evidence": "All 55 canonical release targets match the monetization policy; 52 executable paths and 3 explicit provider gates have complete status, monetization and TODO coverage."
+          "evidence": "All 55 canonical release targets match the monetization policy and each has a secure playable URL plus a secure provider administration or submission route; 52 executable paths and 3 explicit provider gates have complete status, monetization and TODO coverage."
         },
         {
           "check": "Desktop rendering and source inspection",
@@ -4426,6 +4426,373 @@
             "componentIds": [
               "monitoring-refresh"
             ]
+          }
+        ]
+      }
+    },
+    "target_links": {
+      "rows": [
+        {
+          "platform": "Jest",
+          "gameLinkStatus": "Live target release",
+          "gameUrl": "https://jest.com/g/riddle-q",
+          "adminUrl": "https://jest.com/developers"
+        },
+        {
+          "platform": "Facebook",
+          "gameLinkStatus": "Shared live gameplay preview; target release pending",
+          "gameUrl": "https://yahoo.roobsworld.com/",
+          "adminUrl": "https://developers.facebook.com/apps/1748953042991569/app-review/"
+        },
+        {
+          "platform": "Reddit",
+          "gameLinkStatus": "Shared live gameplay preview; target release pending",
+          "gameUrl": "https://yahoo.roobsworld.com/",
+          "adminUrl": "https://developers.reddit.com/apps"
+        },
+        {
+          "platform": "YouTube",
+          "gameLinkStatus": "Shared live gameplay preview; target release pending",
+          "gameUrl": "https://yahoo.roobsworld.com/",
+          "adminUrl": "https://developers.google.com/youtube/gaming/playables/developer_portal"
+        },
+        {
+          "platform": "Yahoo",
+          "gameLinkStatus": "Live target release",
+          "gameUrl": "https://yahoo.roobsworld.com/",
+          "adminUrl": "https://vercel.com/roobs-world-limited/riddle-quest-yahoo"
+        },
+        {
+          "platform": "Netflix",
+          "gameLinkStatus": "Shared live gameplay preview; target release pending",
+          "gameUrl": "https://yahoo.roobsworld.com/",
+          "adminUrl": "https://help.netflix.com/en/node/132197"
+        },
+        {
+          "platform": "itch.io",
+          "gameLinkStatus": "Shared live gameplay preview; target release pending",
+          "gameUrl": "https://yahoo.roobsworld.com/",
+          "adminUrl": "https://itch.io/game/new"
+        },
+        {
+          "platform": "CrazyGames",
+          "gameLinkStatus": "Shared live gameplay preview; target release pending",
+          "gameUrl": "https://yahoo.roobsworld.com/",
+          "adminUrl": "https://developer.crazygames.com/"
+        },
+        {
+          "platform": "Newgrounds",
+          "gameLinkStatus": "Shared live gameplay preview; target release pending",
+          "gameUrl": "https://yahoo.roobsworld.com/",
+          "adminUrl": "https://www.newgrounds.com/projects/games/new"
+        },
+        {
+          "platform": "Discord",
+          "gameLinkStatus": "Shared live gameplay preview; target release pending",
+          "gameUrl": "https://yahoo.roobsworld.com/",
+          "adminUrl": "https://discord.com/developers/applications"
+        },
+        {
+          "platform": "GamePix",
+          "gameLinkStatus": "Shared live gameplay preview; target release pending",
+          "gameUrl": "https://yahoo.roobsworld.com/",
+          "adminUrl": "https://partners.gamepix.com/developers"
+        },
+        {
+          "platform": "GameDistribution",
+          "gameLinkStatus": "Shared live gameplay preview; target release pending",
+          "gameUrl": "https://yahoo.roobsworld.com/",
+          "adminUrl": "https://gamedistribution.com/game-developers"
+        },
+        {
+          "platform": "GameMonetize",
+          "gameLinkStatus": "Shared live gameplay preview; target release pending",
+          "gameUrl": "https://yahoo.roobsworld.com/",
+          "adminUrl": "https://gamemonetize.com/developers"
+        },
+        {
+          "platform": "Yandex Games",
+          "gameLinkStatus": "Shared live gameplay preview; target release pending",
+          "gameUrl": "https://yahoo.roobsworld.com/",
+          "adminUrl": "https://games.yandex.com/console/"
+        },
+        {
+          "platform": "Poki",
+          "gameLinkStatus": "Shared live gameplay preview; target release pending",
+          "gameUrl": "https://yahoo.roobsworld.com/",
+          "adminUrl": "https://app.poki.dev/"
+        },
+        {
+          "platform": "Coolmath Games",
+          "gameLinkStatus": "Shared live gameplay preview; target release pending",
+          "gameUrl": "https://yahoo.roobsworld.com/",
+          "adminUrl": "https://developers.coolmathgames.com/"
+        },
+        {
+          "platform": "Kongregate",
+          "gameLinkStatus": "Shared live gameplay preview; target release pending",
+          "gameUrl": "https://yahoo.roobsworld.com/",
+          "adminUrl": "https://blog.kongregate.com/hc/en-us/articles/44395849259661-SUBMISSION-How-do-I-submit-a-game-to-Kongregate-It-s-Easy"
+        },
+        {
+          "platform": "Armor Games",
+          "gameLinkStatus": "Shared live gameplay preview; target release pending",
+          "gameUrl": "https://yahoo.roobsworld.com/",
+          "adminUrl": "https://developers.armorgames.com/docs/introduction/overview/"
+        },
+        {
+          "platform": "Game Jolt",
+          "gameLinkStatus": "Shared live gameplay preview; target release pending",
+          "gameUrl": "https://yahoo.roobsworld.com/",
+          "adminUrl": "https://gamejolt.com/dashboard/games/add"
+        },
+        {
+          "platform": "Addicting Games",
+          "gameLinkStatus": "Shared live gameplay preview; target release pending",
+          "gameUrl": "https://yahoo.roobsworld.com/",
+          "adminUrl": "https://www.addictinggames.com/about/upload"
+        },
+        {
+          "platform": "HTMLGames.com",
+          "gameLinkStatus": "Shared live gameplay preview; target release pending",
+          "gameUrl": "https://yahoo.roobsworld.com/",
+          "adminUrl": "https://html5games.com/Static/Developers"
+        },
+        {
+          "platform": "PlayKovo",
+          "gameLinkStatus": "Shared live gameplay preview; target release pending",
+          "gameUrl": "https://yahoo.roobsworld.com/",
+          "adminUrl": "https://developer.playkovo.com/"
+        },
+        {
+          "platform": "Lagged",
+          "gameLinkStatus": "Shared live gameplay preview; target release pending",
+          "gameUrl": "https://yahoo.roobsworld.com/",
+          "adminUrl": "https://lagged.dev/"
+        },
+        {
+          "platform": "Google GameSnacks",
+          "gameLinkStatus": "Shared live gameplay preview; target release pending",
+          "gameUrl": "https://yahoo.roobsworld.com/",
+          "adminUrl": "https://developers.google.com/gamesnacks"
+        },
+        {
+          "platform": "Telegram",
+          "gameLinkStatus": "Shared live gameplay preview; target release pending",
+          "gameUrl": "https://yahoo.roobsworld.com/",
+          "adminUrl": "https://core.telegram.org/bots/games"
+        },
+        {
+          "platform": "Microsoft Store PWA",
+          "gameLinkStatus": "Shared live gameplay preview; target release pending",
+          "gameUrl": "https://yahoo.roobsworld.com/",
+          "adminUrl": "https://partner.microsoft.com/dashboard"
+        },
+        {
+          "platform": "LINE MINI App",
+          "gameLinkStatus": "Shared live gameplay preview; target release pending",
+          "gameUrl": "https://yahoo.roobsworld.com/",
+          "adminUrl": "https://developers.line.biz/console/"
+        },
+        {
+          "platform": "Y8",
+          "gameLinkStatus": "Shared live gameplay preview; target release pending",
+          "gameUrl": "https://yahoo.roobsworld.com/",
+          "adminUrl": "https://www.y8.com/upload"
+        },
+        {
+          "platform": "Playgama",
+          "gameLinkStatus": "Shared live gameplay preview; target release pending",
+          "gameUrl": "https://yahoo.roobsworld.com/",
+          "adminUrl": "https://developer.playgama.com/"
+        },
+        {
+          "platform": "Amazon Appstore Web App",
+          "gameLinkStatus": "Shared live gameplay preview; target release pending",
+          "gameUrl": "https://yahoo.roobsworld.com/",
+          "adminUrl": "https://developer.amazon.com/apps-and-games"
+        },
+        {
+          "platform": "JioGames HTML5",
+          "gameLinkStatus": "Shared live gameplay preview; target release pending",
+          "gameUrl": "https://yahoo.roobsworld.com/",
+          "adminUrl": "https://developer.jiogames.com/"
+        },
+        {
+          "platform": "Famobi",
+          "gameLinkStatus": "Shared live gameplay preview; target release pending",
+          "gameUrl": "https://yahoo.roobsworld.com/",
+          "adminUrl": "https://famobi.com/developers/?locale=en"
+        },
+        {
+          "platform": "GamePush Distribution",
+          "gameLinkStatus": "Shared live gameplay preview; target release pending",
+          "gameUrl": "https://yahoo.roobsworld.com/",
+          "adminUrl": "https://gamepush.com/en/distribution/"
+        },
+        {
+          "platform": "SOFTGAMES",
+          "gameLinkStatus": "Shared live gameplay preview; target release pending",
+          "gameUrl": "https://yahoo.roobsworld.com/",
+          "adminUrl": "https://www.softgames.com/html5-game-publishing/"
+        },
+        {
+          "platform": "WGPlayground",
+          "gameLinkStatus": "Shared live gameplay preview; target release pending",
+          "gameUrl": "https://yahoo.roobsworld.com/",
+          "adminUrl": "https://www.wgplayground.com/developers"
+        },
+        {
+          "platform": "Miniplay",
+          "gameLinkStatus": "Shared live gameplay preview; target release pending",
+          "gameUrl": "https://yahoo.roobsworld.com/",
+          "adminUrl": "https://ssl.miniplay.com/dev/docs/overview"
+        },
+        {
+          "platform": "Kizi",
+          "gameLinkStatus": "Shared live gameplay preview; target release pending",
+          "gameUrl": "https://yahoo.roobsworld.com/",
+          "adminUrl": "https://kizi.com/developers"
+        },
+        {
+          "platform": "Huawei Quick Game",
+          "gameLinkStatus": "Shared live gameplay preview; target release pending",
+          "gameUrl": "https://yahoo.roobsworld.com/",
+          "adminUrl": "https://developer.huawei.com/consumer/en/quickGame/"
+        },
+        {
+          "platform": "GameFlare Distribution",
+          "gameLinkStatus": "Shared live gameplay preview; target release pending",
+          "gameUrl": "https://yahoo.roobsworld.com/",
+          "adminUrl": "https://distribution.gameflare.com/developers/"
+        },
+        {
+          "platform": "Shockwave",
+          "gameLinkStatus": "Shared live gameplay preview; target release pending",
+          "gameUrl": "https://yahoo.roobsworld.com/",
+          "adminUrl": "https://developers.shockwave.com/"
+        },
+        {
+          "platform": "AirConsole",
+          "gameLinkStatus": "Shared live gameplay preview; target release pending",
+          "gameUrl": "https://yahoo.roobsworld.com/",
+          "adminUrl": "https://developers.airconsole.com/"
+        },
+        {
+          "platform": "World App Mini Apps",
+          "gameLinkStatus": "Shared live gameplay preview; target release pending",
+          "gameUrl": "https://yahoo.roobsworld.com/",
+          "adminUrl": "https://docs.world.org/mini-apps/quick-start/app-store"
+        },
+        {
+          "platform": "Farcaster Mini Apps",
+          "gameLinkStatus": "Shared live gameplay preview; target release pending",
+          "gameUrl": "https://yahoo.roobsworld.com/",
+          "adminUrl": "https://miniapps.farcaster.xyz/docs/guides/publishing"
+        },
+        {
+          "platform": "Pi Apps Platform",
+          "gameLinkStatus": "Shared live gameplay preview; target release pending",
+          "gameUrl": "https://yahoo.roobsworld.com/",
+          "adminUrl": "https://developers.minepi.com/docs/build-first-app/RegisterApp"
+        },
+        {
+          "platform": "MiniPay Mini Apps",
+          "gameLinkStatus": "Shared live gameplay preview; target release pending",
+          "gameUrl": "https://yahoo.roobsworld.com/",
+          "adminUrl": "https://developer.minipay.to/mini-app-listing"
+        },
+        {
+          "platform": "Zoom App Marketplace",
+          "gameLinkStatus": "Shared live gameplay preview; target release pending",
+          "gameUrl": "https://yahoo.roobsworld.com/",
+          "adminUrl": "https://developers.zoom.us/docs/zoom-apps/create/"
+        },
+        {
+          "platform": "PWA Directory",
+          "gameLinkStatus": "Shared live gameplay preview; target release pending",
+          "gameUrl": "https://yahoo.roobsworld.com/",
+          "adminUrl": "https://pwa.directory/submit"
+        },
+        {
+          "platform": "Miro Marketplace",
+          "gameLinkStatus": "Shared live gameplay preview; target release pending",
+          "gameUrl": "https://yahoo.roobsworld.com/",
+          "adminUrl": "https://developers.miro.com/docs/publish-your-app"
+        },
+        {
+          "platform": "Greenhouse Games",
+          "gameLinkStatus": "Shared live gameplay preview; target release pending",
+          "gameUrl": "https://yahoo.roobsworld.com/",
+          "adminUrl": "https://greenhousegames.io/devs"
+        },
+        {
+          "platform": "OzoGames",
+          "gameLinkStatus": "Shared live gameplay preview; target release pending",
+          "gameUrl": "https://yahoo.roobsworld.com/",
+          "adminUrl": "https://ozogames.com/for-developers/"
+        },
+        {
+          "platform": "SlowDen",
+          "gameLinkStatus": "Shared live gameplay preview; target release pending",
+          "gameUrl": "https://yahoo.roobsworld.com/",
+          "adminUrl": "https://slowden.com/submit/"
+        },
+        {
+          "platform": "NoAdsGames",
+          "gameLinkStatus": "Shared live gameplay preview; target release pending",
+          "gameUrl": "https://yahoo.roobsworld.com/",
+          "adminUrl": "https://noadsgames.com/developers"
+        },
+        {
+          "platform": "YalGames",
+          "gameLinkStatus": "Shared live gameplay preview; target release pending",
+          "gameUrl": "https://yahoo.roobsworld.com/",
+          "adminUrl": "https://yalgames.com/developers"
+        },
+        {
+          "platform": "Rando.gg",
+          "gameLinkStatus": "Shared live gameplay preview; target release pending",
+          "gameUrl": "https://yahoo.roobsworld.com/",
+          "adminUrl": "https://rando.gg/developers"
+        },
+        {
+          "platform": "PWAStore.io",
+          "gameLinkStatus": "Shared live gameplay preview; target release pending",
+          "gameUrl": "https://yahoo.roobsworld.com/",
+          "adminUrl": "https://pwastore.io/submit"
+        }
+      ],
+      "source": {
+        "label": "Canonical live game, shared gameplay preview and provider administration routes reviewed 21 September 2026",
+        "tables": [
+          "docs/jest-developer-console.json",
+          "docs/reports/platform-release-readiness/src/data.json:platform_status",
+          "docs/reports/platform-release-readiness/src/data.json:manual_action_checklist",
+          ".vercel/project.json"
+        ],
+        "filters": [
+          "Every canonical target has one playable URL and one provider administration, submission or access route.",
+          "Only Jest and Yahoo are labelled live target releases. Pending targets link to the deployed Yahoo build as a shared gameplay preview and do not imply provider publication.",
+          "Provider routes requiring authentication may redirect to sign-in before opening the target console."
+        ],
+        "metricDefinitions": [
+          {
+            "label": "Game link status",
+            "definition": "Whether the playable URL is a verified target release or the shared production gameplay preview used while that provider release remains pending.",
+            "componentIds": [
+              "target-links"
+            ]
+          }
+        ],
+        "links": [
+          {
+            "label": "Jest live game",
+            "href": "https://jest.com/g/riddle-q"
+          },
+          {
+            "label": "Yahoo live game",
+            "href": "https://yahoo.roobsworld.com/"
           }
         ]
       }

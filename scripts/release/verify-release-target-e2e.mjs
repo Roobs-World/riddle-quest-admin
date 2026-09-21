@@ -62,10 +62,21 @@ for (const directory of ["dist-jest", "dist-facebook", "dist-netflix", "dist-yah
 await requireFile("packages/reddit-app/dist/client/game.html");
 await requireFile("packages/reddit-app/dist/server/index.cjs");
 
-for (const query of ["platform_status", "monetization_readiness", "release_automation"]) {
+for (const query of ["platform_status", "target_links", "monetization_readiness", "release_automation"]) {
   const names = new Set(snapshot.queries[query].rows.map(({platform}) => platform));
   const missing = plans.map(expectedName).filter((name) => !names.has(name));
   if (missing.length) throw new Error(`${query} is missing: ${missing.join(", ")}`);
+}
+const targetLinks = snapshot.queries.target_links.rows;
+for (const {platform, gameLinkStatus, gameUrl, adminUrl} of targetLinks) {
+  if (!gameLinkStatus?.trim()) throw new Error(`${platform} has no game-link status`);
+  for (const [kind, value] of [["game", gameUrl], ["administration", adminUrl]]) {
+    let url;
+    try { url = new URL(value); } catch { throw new Error(`${platform} has an invalid ${kind} URL`); }
+    if (url.protocol !== "https:" || ["localhost", "127.0.0.1"].includes(url.hostname)) {
+      throw new Error(`${platform} has a non-production ${kind} URL`);
+    }
+  }
 }
 const todoNames = new Set(snapshot.queries.manual_action_checklist.rows.map(({platform}) => platform));
 const missingTodos = plans.map(expectedName).filter((name) => !todoNames.has(name));
@@ -87,4 +98,4 @@ if (coveredTargets !== snapshot.queries.platform_status.rows.length) {
   throw new Error(`E2E coverage mismatch: ${coveredTargets} covered, ${snapshot.queries.platform_status.rows.length} tracked`);
 }
 
-console.log(`Release-target E2E passed for all ${coveredTargets} tracked targets: ${plans.length} executable release paths and ${gatedTargets.size} explicit external gates; ${definitions.length + 3} immutable ZIPs, 4 browser builds, and the Reddit client/server package are valid; dashboard status, monetization, automation receipts, and TODOs are complete.`);
+console.log(`Release-target E2E passed for all ${coveredTargets} tracked targets: ${plans.length} executable release paths and ${gatedTargets.size} explicit external gates; ${definitions.length + 3} immutable ZIPs, 4 browser builds, and the Reddit client/server package are valid; dashboard status, game/admin links, monetization, automation receipts, and TODOs are complete.`);

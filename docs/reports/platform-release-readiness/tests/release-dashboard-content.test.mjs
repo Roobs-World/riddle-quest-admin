@@ -59,6 +59,26 @@ test("the primary release table contains every canonical platform target", () =>
       .every((value) => typeof value === "string" && value.trim())));
 });
 
+test("every canonical target has a playable link and deployment administration route", () => {
+  const expected = data.queries.platform_status.rows.map(({platform}) => platform);
+  const links = data.queries.target_links.rows;
+
+  assert.deepEqual(links.map(({platform}) => platform), expected);
+  assert.equal(new Set(links.map(({platform}) => platform)).size, expected.length);
+  for (const {platform, gameLinkStatus, gameUrl, adminUrl} of links) {
+    assert.ok(gameLinkStatus.trim(), `${platform} is missing its game-link status`);
+    assert.match(gameUrl, /^https:\/\//u, `${platform} is missing a secure playable URL`);
+    assert.match(adminUrl, /^https:\/\//u, `${platform} is missing a secure administration URL`);
+    assert.doesNotMatch(gameUrl, /localhost|127\.0\.0\.1/iu, `${platform} uses a local playable URL`);
+    assert.doesNotMatch(adminUrl, /localhost|127\.0\.0\.1/iu, `${platform} uses a local administration URL`);
+  }
+  assert.equal(links.find(({platform}) => platform === "Jest").gameUrl, "https://jest.com/g/riddle-q");
+  assert.equal(links.find(({platform}) => platform === "Yahoo").gameUrl, "https://yahoo.roobsworld.com/");
+  assert.match(dashboard, /queryId="target_links"/u);
+  assert.match(dashboard, /label:"Preview or live game"/u);
+  assert.match(dashboard, /label:"Deployment admin"/u);
+});
+
 test("the dashboard exposes the latest release automation receipt", () => {
   const rows = data.queries.release_automation.rows;
   assert.ok(rows.some(({platform}) => platform === "All configured targets"));
