@@ -486,6 +486,14 @@ const releasePlans = Object.freeze([
     handoff: "Submit the canonical neutral URL and record the listing only after it becomes public.",
     runbook: "docs/research/additional-release-targets-round-9-2026-09-21.md",
   }),
+  Object.freeze({
+    target: "noadsgames", title: "NoAdsGames review", boundary: "local-manual-handoff", publicCommand: "pnpm release:noadsgames",
+    summary: "Create an ad-free HTML5 archive for NoAdsGames API submission and human review.",
+    externalEffect: "None; authenticated API submission and mandatory human review remain external steps.",
+    command: Object.freeze({executable: "node", args: Object.freeze(["scripts/release/package-html5-platform.mjs", "noadsgames"])}),
+    handoff: "Submit the hosted HTTPS URL or ZIP only after confirming the artifact contains no advertising code.",
+    runbook: "docs/research/additional-release-targets-round-10-2026-09-21.md",
+  }),
 ]);
 
 const plansByTarget = new Map(releasePlans.map((plan) => [plan.target, plan]));

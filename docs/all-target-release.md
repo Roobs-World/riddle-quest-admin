@@ -39,3 +39,5 @@ Zoom App Marketplace and PWA Directory add an embedded collaboration surface and
 Miro Marketplace is included as a gated team-building integration candidate. Its artifact must remain ad-free, add meaningful facilitator and board-result behavior, and complete a controlled beta above Miro's published adoption thresholds before Marketplace review. See `docs/research/additional-release-targets-round-8-2026-09-21.md`.
 
 Greenhouse Games, OzoGames, and SlowDen add an educational subscription catalog, a non-exclusive browser publisher, and a hosted-link discovery listing. Greenhouse requires a separate CSP-safe artifact with ads, IAP, analytics and external dependencies removed. OzoGames remains ad-free until written commercial terms arrive. SlowDen adds no platform SDK or commerce. See `docs/research/additional-release-targets-round-9-2026-09-21.md`.
+
+NoAdsGames accepts an ad-free hosted HTTPS game or HTML5 ZIP without exclusivity. The workflow creates `build-noadsgames-review.zip` and its digest manifest; authenticated API submission and mandatory human review remain checklist gates. See `docs/research/additional-release-targets-round-10-2026-09-21.md`.

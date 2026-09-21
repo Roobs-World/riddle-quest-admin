@@ -4,7 +4,7 @@
     {
       "platform": "Jest",
       "iap": "Implemented and server-authoritative",
-      "ads": "Unavailable — no approved Jest ad API",
+      "ads": "Unavailable \u2014 no approved Jest ad API",
       "gate": "Verify live purchase recovery and activation evidence"
     },
     {
@@ -16,7 +16,7 @@
     {
       "platform": "Reddit",
       "iap": "Implemented with Reddit Gold; production approval required",
-      "ads": "Unavailable — no supported Devvit in-game ad API",
+      "ads": "Unavailable \u2014 no supported Devvit in-game ad API",
       "gate": "Complete payment verification, product review and public app review"
     },
     {
@@ -28,7 +28,7 @@
     {
       "platform": "Yahoo",
       "iap": "Implemented with server-authoritative Stripe fulfillment",
-      "ads": "Unavailable — no approved Yahoo Games ad SDK",
+      "ads": "Unavailable \u2014 no approved Yahoo Games ad SDK",
       "gate": "Verify one live authenticated checkout and entitlement"
     },
     {
@@ -40,7 +40,7 @@
     {
       "platform": "itch.io",
       "iap": "Unavailable for embedded HTML5; page donations only",
-      "ads": "Unavailable — itch.io does not place ads on project pages",
+      "ads": "Unavailable \u2014 itch.io does not place ads on project pages",
       "gate": "Create the initial HTML Game page and configure Butler"
     },
     {
@@ -58,7 +58,7 @@
     {
       "platform": "Discord",
       "iap": "Planned through Premium Apps",
-      "ads": "Unavailable — no supported Activity ad product",
+      "ads": "Unavailable \u2014 no supported Activity ad product",
       "gate": "Create and verify the Discord application, then configure Premium Apps"
     },
     {
@@ -141,14 +141,14 @@
     },
     {
       "platform": "Google GameSnacks",
-      "iap": "Prohibited — GameSnacks does not support in-game payments",
+      "iap": "Prohibited \u2014 GameSnacks does not support in-game payments",
       "ads": "Provider-managed advertising; no third-party ad SDK is bundled",
       "gate": "Complete licensing and validate provider-hosted automatic ad opportunities during review"
     },
     {
       "platform": "Telegram",
       "iap": "Provider-gated; Telegram Stars only for digital goods",
-      "ads": "Unavailable — no documented client-side in-game ad SDK",
+      "ads": "Unavailable \u2014 no documented client-side in-game ad SDK",
       "gate": "Create the bot and game with BotFather, then implement signed identity and server-authoritative Stars fulfillment"
     },
     {
@@ -243,44 +243,44 @@
     },
     {
       "platform": "AirConsole",
-      "iap": "Unavailable — no suitable public per-game IAP API identified",
+      "iap": "Unavailable \u2014 no suitable public per-game IAP API identified",
       "ads": "No third-party ads; AirConsole Hero promotion breaks require isolated lifecycle callbacks",
       "gate": "Create a game ID, design the controller and validate subscription revenue terms"
     },
     {
       "platform": "World App Mini Apps",
       "iap": "Commercial review required; wallet payment is not treated as ready IAP",
-      "ads": "Unavailable — no first-party in-game advertising product identified",
+      "ads": "Unavailable \u2014 no first-party in-game advertising product identified",
       "gate": "Verify UK eligibility and complete legal, tax, refund, age and regional review before any payment work"
     },
     {
       "platform": "Farcaster Mini Apps",
       "iap": "Unavailable pending a separately approved wallet-based entitlement design",
-      "ads": "Unavailable — no first-party in-game advertising SDK identified",
+      "ads": "Unavailable \u2014 no first-party in-game advertising SDK identified",
       "gate": "Reserve a stable domain, sign the manifest and implement authenticated server verification before commerce"
     },
     {
       "platform": "Pi Apps Platform",
       "iap": "Disabled pending legal review, authenticated terms and server-authoritative Pi payment design",
-      "ads": "Prohibited for this target — rewarded and interstitial formats remain Facebook-only",
+      "ads": "Prohibited for this target \u2014 rewarded and interstitial formats remain Facebook-only",
       "gate": "Complete account/KYC and terms review; begin free-only unless commerce receives separate approval"
     },
     {
       "platform": "MiniPay Mini Apps",
       "iap": "Disabled pending legal, tax and technical review of Celo wallet commerce",
-      "ads": "Unavailable — no first-party in-game advertising API documented",
+      "ads": "Unavailable \u2014 no first-party in-game advertising API documented",
       "gate": "Confirm UK organization eligibility and submit a free commerce-disabled listing first"
     },
     {
       "platform": "Zoom App Marketplace",
       "iap": "Disabled pending Zoom monetization eligibility and server-authoritative entitlement design",
-      "ads": "Unavailable — no first-party in-app advertising route identified",
+      "ads": "Unavailable \u2014 no first-party in-app advertising route identified",
       "gate": "Review current agreement, UK monetization eligibility, scopes and security requirements"
     },
     {
       "platform": "PWA Directory",
       "iap": "Not applicable at directory level; canonical website commerce retains existing server verification",
-      "ads": "Not applicable — the directory links to the hosted PWA and provides no ad SDK",
+      "ads": "Not applicable \u2014 the directory links to the hosted PWA and provides no ad SDK",
       "gate": "Pass manifest, service-worker, installability and installed-launch review before free submission"
     },
     {
@@ -291,8 +291,8 @@
     },
     {
       "platform": "Greenhouse Games",
-      "iap": "Prohibited — microtransactions, paid upgrades and paywalls must be absent",
-      "ads": "Prohibited — advertising, tracking and monetization manipulation must be absent",
+      "iap": "Prohibited \u2014 microtransactions, paid upgrades and paywalls must be absent",
+      "ads": "Prohibited \u2014 advertising, tracking and monetization manipulation must be absent",
       "gate": "Approve educational fit and build a self-contained CSP-safe artifact before creator upload"
     },
     {
@@ -303,9 +303,15 @@
     },
     {
       "platform": "SlowDen",
-      "iap": "Not applicable — no platform commerce API; prefer commerce-disabled listing path",
-      "ads": "Unavailable — no platform ad SDK or developer revenue programme documented",
+      "iap": "Not applicable \u2014 no platform commerce API; prefer commerce-disabled listing path",
+      "ads": "Unavailable \u2014 no platform ad SDK or developer revenue programme documented",
       "gate": "Submit the canonical neutral hosted URL and capture the live listing"
+    },
+    {
+      "platform": "NoAdsGames",
+      "iap": "Optional transparent IAP is permitted; grants must remain server-authoritative and comply with review terms",
+      "ads": "Prohibited \u2014 every advertising format and advertising SDK must be absent",
+      "gate": "Submit the ad-free hosted HTTPS build or ZIP through the documented API, then await mandatory human review"
     }
   ]
 }

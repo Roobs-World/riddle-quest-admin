@@ -103,12 +103,15 @@ jobs:
           pnpm release:greenhouse
           pnpm release:ozogames
           pnpm release:slowden
+          pnpm release:noadsgames
       - name: Record the successful release in the dashboard
         run: node scripts/release/record-release-automation.mjs
         env:
           ITCH_BUTLER_CONFIGURED: ${{ secrets.ITCH_BUTLER_API_KEY != '' && vars.ITCH_GAME_TARGET != '' }}
           JEST_PUBLISH_CONFIGURED: ${{ secrets.JEST_GAME_UPLOAD_TOKEN != '' }}
           REDDIT_CONTRACTS_CONFIGURED: false
+      - name: Verify every release target end to end
+        run: pnpm test:release-targets:e2e
       - name: Install release dashboard dependencies
         run: npm ci
         working-directory: docs/reports/platform-release-readiness
@@ -207,6 +210,8 @@ jobs:
             build-ozogames-review.zip.manifest.json
             build-slowden-review.zip
             build-slowden-review.zip.manifest.json
+            build-noadsgames-review.zip
+            build-noadsgames-review.zip.manifest.json
             build-youtube.zip
             build-youtube.manifest.json
             build-youtube.test-report.json

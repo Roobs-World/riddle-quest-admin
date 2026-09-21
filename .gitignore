@@ -128,3 +128,9 @@ packages/portal/.facebook-upload-receipts/
 packages/portal/.facebook-setup-receipts/
 packages/reddit-app/build-reddit.zip
 packages/reddit-app/.reddit-release-receipts/
+build-noadsgames-review.zip
+build-noadsgames-review.zip.manifest.json
+build-kongregate.zip
+build-kongregate.zip.manifest.json
+build-lagged-review.zip
+build-lagged-review.zip.manifest.json

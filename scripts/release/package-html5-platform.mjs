@@ -49,7 +49,12 @@ const definitions = Object.freeze({
   greenhouse: Object.freeze({artifact: "build-greenhouse-review.zip", boundary: "Greenhouse educational positioning, CSP/offline adaptation, creator onboarding, upload, review and publication remain manual."}),
   ozogames: Object.freeze({artifact: "build-ozogames-review.zip", boundary: "OzoGames email submission, publisher agreement, monetization review and publication remain manual."}),
   slowden: Object.freeze({artifact: "build-slowden-review.zip", boundary: "SlowDen form submission, terms confirmation, editorial review and listing approval remain manual."}),
+  noadsgames: Object.freeze({artifact: "build-noadsgames-review.zip", boundary: "NoAdsGames API submission and mandatory human review remain manual; the artifact must remain ad-free."}),
 });
+
+export function listHtml5DistributionDefinitions() {
+  return Object.entries(definitions).map(([target, definition]) => ({target, ...definition}));
+}
 
 export function getHtml5DistributionDefinition(target) {
   const definition = definitions[target];
