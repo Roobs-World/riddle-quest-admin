@@ -3,6 +3,74 @@ import {JestPurchaseCoordinator} from "../purchases";
 import {createNotificationOperationGate, type NotificationCrossContextLock} from "../notifications/operationGate";
 import {markJestPlayable, startJestSession, stopJestLoadingHeartbeat} from "../startup";
 
+it.each(["getEntryIntent", "readPreferences", "readPlayerData"] as const)(
+  "observes a late signed-player rejection after %s throws synchronously",
+  async (method) => {
+    /** Creates the isolated platform for this failure scenario. */
+    const platform = new MockJestPlatform();
+    /** Rejects the outstanding SDK request after startup has already failed. */
+    let rejectSigned!: (error: Error) => void;
+    platform.getPlayerSigned = jest.fn(() => new Promise((_resolve, reject) => {
+      rejectSigned = reject;
+    }));
+    platform[method] = () => {
+      throw new Error("local read failed");
+    };
+    /** Tracks server-authoritative identity exchanges. */
+    const exchangeIdentity = jest.fn();
+    /** Tracks purchase reconciliation. */
+    const reconcile = jest.fn();
+    /** Tracks Firebase authentication. */
+    const authenticate = jest.fn();
+
+    await expect(startJestSession(
+      platform, {exchangeIdentity} as never, {reconcile} as never, authenticate,
+    )).resolves.toEqual({status: "retryable-failure", message: "local read failed"});
+    expect(platform.getPlayerSigned).toHaveBeenCalledTimes(1);
+    // Allow Node's unhandled-rejection turn to run; Jest fails if the SDK
+    // request was abandoned when the synchronous read threw.
+    rejectSigned(new Error("signed player unavailable"));
+    await new Promise<void>((resolve) => setImmediate(resolve));
+    expect(exchangeIdentity).not.toHaveBeenCalled();
+    expect(authenticate).not.toHaveBeenCalled();
+    expect(reconcile).not.toHaveBeenCalled();
+    expect(platform.loaded).toBe(true);
+    expect(platform.progress.at(-1)).toBe(100);
+  },
+);
+
+it.each(["throw", "reject"])("fails closed when signed-player retrieval fails via %s and allows retry", async (mode) => {
+  /** Creates the isolated platform for this failure scenario. */
+  const platform = new MockJestPlatform();
+  /** Preserves successful SDK behavior for the retry. */
+  const getPlayerSigned = platform.getPlayerSigned;
+  platform.getPlayerSigned = () => {
+    if (mode === "throw") throw new Error("signed player unavailable");
+    return Promise.reject(new Error("signed player unavailable"));
+  };
+  /** Tracks server-authoritative identity exchanges. */
+  const exchangeIdentity = jest.fn(async () => ({customToken: "firebase", uid: "uid"}));
+  /** Tracks purchase reconciliation. */
+  const reconcile = jest.fn(async () => ({status: "success", value: 0} as const));
+  /** Tracks Firebase authentication. */
+  const authenticate = jest.fn(async () => undefined);
+  await expect(startJestSession(
+    platform, {exchangeIdentity} as never, {reconcile} as never, authenticate,
+  )).resolves.toEqual({status: "retryable-failure", message: "signed player unavailable"});
+  expect(exchangeIdentity).not.toHaveBeenCalled();
+  expect(authenticate).not.toHaveBeenCalled();
+  expect(reconcile).not.toHaveBeenCalled();
+  expect(platform.loaded).toBe(true);
+
+  platform.getPlayerSigned = getPlayerSigned;
+  await expect(startJestSession(
+    platform, {exchangeIdentity} as never, {reconcile} as never, authenticate,
+  )).resolves.toMatchObject({status: "success", value: {firebaseAuthenticated: true}});
+  expect(exchangeIdentity).toHaveBeenCalledWith("mock.signed.player");
+  expect(authenticate).toHaveBeenCalledWith("firebase");
+  markJestPlayable(platform);
+});
+
 it("runs identity, Firebase auth and recovery in startup order", async () => {
   /** Provides order behavior. */
   const order: string[] = [];
