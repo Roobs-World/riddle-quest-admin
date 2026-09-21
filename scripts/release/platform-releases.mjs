@@ -438,6 +438,22 @@ const releasePlans = Object.freeze([
     handoff: "Confirm UK organization eligibility and start free-only unless wallet commerce is separately approved.",
     runbook: "docs/research/additional-release-targets-round-6-2026-09-21.md",
   }),
+  Object.freeze({
+    target: "zoom", title: "Zoom App Marketplace review", boundary: "local-manual-handoff", publicCommand: "pnpm release:zoom",
+    summary: "Create a neutral hosted-web archive for Zoom App SDK, security and Marketplace review.",
+    externalEffect: "None; app creation, agreement acceptance, SDK integration, review and publication remain manual.",
+    command: Object.freeze({executable: "node", args: Object.freeze(["scripts/release/package-html5-platform.mjs", "zoom"])}),
+    handoff: "Confirm non-exclusive terms and UK monetization eligibility before isolated Zoom integration.",
+    runbook: "docs/research/additional-release-targets-round-7-2026-09-21.md",
+  }),
+  Object.freeze({
+    target: "pwa-directory", title: "PWA Directory review", boundary: "local-manual-handoff", publicCommand: "pnpm release:pwa-directory",
+    summary: "Create a neutral web archive for PWA installability and free directory review.",
+    externalEffect: "None; installability audit, metadata submission, review and listing approval remain manual.",
+    command: Object.freeze({executable: "node", args: Object.freeze(["scripts/release/package-html5-platform.mjs", "pwa-directory"])}),
+    handoff: "Use the free review path after validating manifest, service worker, icons and installed launch behavior.",
+    runbook: "docs/research/additional-release-targets-round-7-2026-09-21.md",
+  }),
 ]);
 
 const plansByTarget = new Map(releasePlans.map((plan) => [plan.target, plan]));

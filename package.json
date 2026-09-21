@@ -93,6 +93,8 @@
     "release:farcaster": "node scripts/release/run-platform-release.mjs farcaster",
     "release:pi": "node scripts/release/run-platform-release.mjs pi",
     "release:minipay": "node scripts/release/run-platform-release.mjs minipay",
+    "release:zoom": "node scripts/release/run-platform-release.mjs zoom",
+    "release:pwa-directory": "node scripts/release/run-platform-release.mjs pwa-directory",
     "release:html5": "node scripts/release/package-html5-release.mjs",
     "release:all": "node scripts/release/run-platform-release.mjs all",
     "jest:build-upload": "pnpm release:jest",

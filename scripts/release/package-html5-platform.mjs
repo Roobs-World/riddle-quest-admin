@@ -43,6 +43,8 @@ const definitions = Object.freeze({
   farcaster: Object.freeze({artifact: "build-farcaster-mini-app-review.zip", boundary: "Farcaster domain selection, manifest signing, SDK integration, launch publication and discovery remain manual."}),
   pi: Object.freeze({artifact: "build-pi-apps-review.zip", boundary: "Pi account, KYC, terms review, app creation, SDK integration, listing review and approval remain manual."}),
   minipay: Object.freeze({artifact: "build-minipay-mini-app-review.zip", boundary: "MiniPay terms review, commerce decision, hosted integration, listing submission and approval remain manual."}),
+  zoom: Object.freeze({artifact: "build-zoom-app-review.zip", boundary: "Zoom app creation, agreement review, SDK integration, security evidence, Marketplace review and publication remain manual."}),
+  "pwa-directory": Object.freeze({artifact: "build-pwa-directory-review.zip", boundary: "PWA installability review, metadata submission, directory review and listing approval remain manual."}),
 });
 
 export function getHtml5DistributionDefinition(target) {

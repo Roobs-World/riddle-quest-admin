@@ -270,6 +270,18 @@
       "iap": "Disabled pending legal, tax and technical review of Celo wallet commerce",
       "ads": "Unavailable — no first-party in-game advertising API documented",
       "gate": "Confirm UK organization eligibility and submit a free commerce-disabled listing first"
+    },
+    {
+      "platform": "Zoom App Marketplace",
+      "iap": "Disabled pending Zoom monetization eligibility and server-authoritative entitlement design",
+      "ads": "Unavailable — no first-party in-app advertising route identified",
+      "gate": "Review current agreement, UK monetization eligibility, scopes and security requirements"
+    },
+    {
+      "platform": "PWA Directory",
+      "iap": "Not applicable at directory level; canonical website commerce retains existing server verification",
+      "ads": "Not applicable — the directory links to the hosted PWA and provides no ad SDK",
+      "gate": "Pass manifest, service-worker, installability and installed-launch review before free submission"
     }
   ]
 }

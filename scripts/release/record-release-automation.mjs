@@ -92,6 +92,10 @@ snapshot.queries.release_automation = {
       evidence: "build-pi-apps-review.zip and its SHA-256 manifest are retained before KYC, terms acceptance and SDK work"},
     {platform: "MiniPay Mini Apps", status: "Listing review handoff ready", trigger, revision: sha, completedAt,
       evidence: "build-minipay-mini-app-review.zip and its SHA-256 manifest are retained before terms and commerce review"},
+    {platform: "Zoom App Marketplace", status: "Marketplace review handoff ready", trigger, revision: sha, completedAt,
+      evidence: "build-zoom-app-review.zip and its SHA-256 manifest are retained before SDK and security review"},
+    {platform: "PWA Directory", status: "Directory review handoff ready", trigger, revision: sha, completedAt,
+      evidence: "build-pwa-directory-review.zip and its SHA-256 manifest are retained before free listing submission"},
   ],
   source: {
     label: "All-platform release workflow receipt",
