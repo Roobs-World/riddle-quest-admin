@@ -51,6 +51,8 @@ const definitions = Object.freeze({
   slowden: Object.freeze({artifact: "build-slowden-review.zip", boundary: "SlowDen form submission, terms confirmation, editorial review and listing approval remain manual."}),
   noadsgames: Object.freeze({artifact: "build-noadsgames-review.zip", boundary: "NoAdsGames API submission and mandatory human review remain manual; the artifact must remain ad-free."}),
   yalgames: Object.freeze({artifact: "build-yalgames-review.zip", boundary: "YalGames contact submission, editorial review and publication remain manual; ads and commerce stay disabled."}),
+  rando: Object.freeze({artifact: "build-rando-review.zip", boundary: "Rando.gg hosted-URL submission and listing review remain manual; ads and commerce stay disabled."}),
+  pwastore: Object.freeze({artifact: "build-pwastore-review.zip", boundary: "PWAStore.io URL submission, PWA validation and listing review remain manual."}),
 });
 
 export function listHtml5DistributionDefinitions() {

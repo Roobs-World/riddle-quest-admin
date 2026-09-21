@@ -3,7 +3,7 @@
   "surface": "dashboard",
   "buildStatus": "complete",
   "title": "Riddle Quest integration and release status",
-  "generatedAt": "2026-09-21T14:50:40.782Z",
+  "generatedAt": "2026-09-21T15:28:38.084Z",
   "status": "verified-repository-and-provider-evidence",
   "filters": [],
   "queries": {
@@ -485,6 +485,24 @@
           "ads": "Disabled pending written SDK, consent and revenue terms",
           "localValidation": "Passed — immutable review handoff generated",
           "releaseStatus": "Review ZIP generated; manual hosted-URL contact, editorial review and publication remain"
+        },
+        {
+          "platform": "Rando.gg",
+          "integration": "Provider-neutral developer-hosted iframe review handoff",
+          "identityAndSaves": "Canonical local save path; no provider identity SDK documented",
+          "commerceAndSocial": "Commerce disabled pending a verification contract",
+          "ads": "Disabled pending written advertising terms",
+          "localValidation": "Passed — immutable iframe-review handoff generated",
+          "releaseStatus": "Review ZIP generated; hosted-URL submission and listing review remain"
+        },
+        {
+          "platform": "PWAStore.io",
+          "integration": "Canonical installable PWA directory handoff",
+          "identityAndSaves": "Uses canonical website; no directory identity SDK",
+          "commerceAndSocial": "Directory provides no commerce layer",
+          "ads": "Directory provides no game advertising SDK",
+          "localValidation": "Passed — immutable PWA-review handoff generated",
+          "releaseStatus": "Review ZIP generated; installability validation, URL submission and listing approval remain"
         }
       ],
       "source": {
@@ -959,6 +977,20 @@
           "integration": "Ad-free, commerce-disabled provider-neutral hosted HTTPS build",
           "submissionProgress": "Neutral review ZIP and SHA-256 manifest generated",
           "nextGate": "Send the canonical playable through the official contact route and record the editorial response"
+        },
+        {
+          "platform": "Rando.gg",
+          "releaseModel": "Non-exclusive developer-hosted HTML5 iframe listing",
+          "integration": "Ad-free, commerce-disabled canonical HTTPS playable",
+          "submissionProgress": "Iframe-review ZIP and SHA-256 manifest generated",
+          "nextGate": "Run cross-origin iframe checks and submit the canonical playable URL"
+        },
+        {
+          "platform": "PWAStore.io",
+          "releaseModel": "URL-only PWA directory listing with developer ownership retained",
+          "integration": "Canonical HTTPS PWA with manifest and service worker",
+          "submissionProgress": "PWA-review ZIP and SHA-256 manifest generated",
+          "nextGate": "Validate installability and submit the canonical PWA URL"
         }
       ],
       "source": {
@@ -1560,7 +1592,7 @@
           "status": "Packaging passed",
           "trigger": "local",
           "revision": "local",
-          "completedAt": "2026-09-21T14:50:40.782Z",
+          "completedAt": "2026-09-21T15:28:38.084Z",
           "evidence": "Local release automation run"
         },
         {
@@ -1568,7 +1600,7 @@
           "status": "Waiting for credentials",
           "trigger": "local",
           "revision": "local",
-          "completedAt": "2026-09-21T14:50:40.782Z",
+          "completedAt": "2026-09-21T15:28:38.084Z",
           "evidence": "Automatic publish requires JEST_GAME_UPLOAD_TOKEN in the jest-production environment"
         },
         {
@@ -1576,7 +1608,7 @@
           "status": "Validated artifact ready",
           "trigger": "local",
           "revision": "local",
-          "completedAt": "2026-09-21T14:50:40.782Z",
+          "completedAt": "2026-09-21T15:28:38.084Z",
           "evidence": "The isolated Facebook Instant Games artifact passed its release adapter and target checks"
         },
         {
@@ -1584,7 +1616,7 @@
           "status": "Immutable handoff ready",
           "trigger": "local",
           "revision": "local",
-          "completedAt": "2026-09-21T14:50:40.782Z",
+          "completedAt": "2026-09-21T15:28:38.084Z",
           "evidence": "build-youtube.zip, manifest and test report passed the YouTube upload preflight"
         },
         {
@@ -1592,7 +1624,7 @@
           "status": "Waiting for evidence",
           "trigger": "local",
           "revision": "local",
-          "completedAt": "2026-09-21T14:50:40.782Z",
+          "completedAt": "2026-09-21T15:28:38.084Z",
           "evidence": "Promotion requires six sanitized production contract fixtures"
         },
         {
@@ -1600,7 +1632,7 @@
           "status": "Validated artifact ready",
           "trigger": "local",
           "revision": "local",
-          "completedAt": "2026-09-21T14:50:40.782Z",
+          "completedAt": "2026-09-21T15:28:38.084Z",
           "evidence": "The isolated Netflix candidate passed its build and boundary audit"
         },
         {
@@ -1608,7 +1640,7 @@
           "status": "Validated artifact ready",
           "trigger": "local",
           "revision": "local",
-          "completedAt": "2026-09-21T14:50:40.782Z",
+          "completedAt": "2026-09-21T15:28:38.084Z",
           "evidence": "The isolated Yahoo candidate passed its build and boundary audit"
         },
         {
@@ -1616,7 +1648,7 @@
           "status": "Waiting for credentials",
           "trigger": "local",
           "revision": "local",
-          "completedAt": "2026-09-21T14:50:40.782Z",
+          "completedAt": "2026-09-21T15:28:38.084Z",
           "evidence": "Official Butler stage runs after the shared release artifact succeeds"
         },
         {
@@ -1624,7 +1656,7 @@
           "status": "Manual upload handoff ready",
           "trigger": "local",
           "revision": "local",
-          "completedAt": "2026-09-21T14:50:40.782Z",
+          "completedAt": "2026-09-21T15:28:38.084Z",
           "evidence": "build-crazygames-basic.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
@@ -1632,7 +1664,7 @@
           "status": "Manual upload handoff ready",
           "trigger": "local",
           "revision": "local",
-          "completedAt": "2026-09-21T14:50:40.782Z",
+          "completedAt": "2026-09-21T15:28:38.084Z",
           "evidence": "build-newgrounds.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
@@ -1640,7 +1672,7 @@
           "status": "Manual upload handoff ready",
           "trigger": "local",
           "revision": "local",
-          "completedAt": "2026-09-21T14:50:40.782Z",
+          "completedAt": "2026-09-21T15:28:38.084Z",
           "evidence": "build-gamejolt.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
@@ -1648,7 +1680,7 @@
           "status": "Licensing pitch handoff ready",
           "trigger": "local",
           "revision": "local",
-          "completedAt": "2026-09-21T14:50:40.782Z",
+          "completedAt": "2026-09-21T15:28:38.084Z",
           "evidence": "build-coolmath-pitch.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
@@ -1656,7 +1688,7 @@
           "status": "Licensing pitch handoff ready",
           "trigger": "local",
           "revision": "local",
-          "completedAt": "2026-09-21T14:50:40.782Z",
+          "completedAt": "2026-09-21T15:28:38.084Z",
           "evidence": "build-armor-pitch.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
@@ -1664,7 +1696,7 @@
           "status": "Manual review handoff ready",
           "trigger": "local",
           "revision": "local",
-          "completedAt": "2026-09-21T14:50:40.782Z",
+          "completedAt": "2026-09-21T15:28:38.084Z",
           "evidence": "build-gamepix-review.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
@@ -1672,7 +1704,7 @@
           "status": "Manual review handoff ready",
           "trigger": "local",
           "revision": "local",
-          "completedAt": "2026-09-21T14:50:40.782Z",
+          "completedAt": "2026-09-21T15:28:38.084Z",
           "evidence": "build-addictinggames-review.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
@@ -1680,7 +1712,7 @@
           "status": "Licensing pitch handoff ready",
           "trigger": "local",
           "revision": "local",
-          "completedAt": "2026-09-21T14:50:40.782Z",
+          "completedAt": "2026-09-21T15:28:38.084Z",
           "evidence": "build-htmlgames-pitch.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
@@ -1688,7 +1720,7 @@
           "status": "Manual review handoff ready",
           "trigger": "local",
           "revision": "local",
-          "completedAt": "2026-09-21T14:50:40.782Z",
+          "completedAt": "2026-09-21T15:28:38.084Z",
           "evidence": "build-playkovo-review.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
@@ -1696,7 +1728,7 @@
           "status": "Manual upload handoff ready",
           "trigger": "local",
           "revision": "local",
-          "completedAt": "2026-09-21T14:50:40.782Z",
+          "completedAt": "2026-09-21T15:28:38.084Z",
           "evidence": "build-kongregate.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
@@ -1704,7 +1736,7 @@
           "status": "Developer review handoff ready",
           "trigger": "local",
           "revision": "local",
-          "completedAt": "2026-09-21T14:50:40.782Z",
+          "completedAt": "2026-09-21T15:28:38.084Z",
           "evidence": "build-lagged-review.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
@@ -1712,7 +1744,7 @@
           "status": "SDK bundle ready; licensing required",
           "trigger": "local",
           "revision": "local",
-          "completedAt": "2026-09-21T14:50:40.782Z",
+          "completedAt": "2026-09-21T15:28:38.084Z",
           "evidence": "build-gamesnacks.zip includes the isolated lifecycle, audio, storage SDK adapter and game.json metadata"
         },
         {
@@ -1720,7 +1752,7 @@
           "status": "Contract review handoff ready",
           "trigger": "local",
           "revision": "local",
-          "completedAt": "2026-09-21T14:50:40.782Z",
+          "completedAt": "2026-09-21T15:28:38.084Z",
           "evidence": "build-gamedistribution-review.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
@@ -1728,7 +1760,7 @@
           "status": "SDK review handoff ready",
           "trigger": "local",
           "revision": "local",
-          "completedAt": "2026-09-21T14:50:40.782Z",
+          "completedAt": "2026-09-21T15:28:38.084Z",
           "evidence": "build-gamemonetize-review.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
@@ -1736,7 +1768,7 @@
           "status": "Contract review handoff ready",
           "trigger": "local",
           "revision": "local",
-          "completedAt": "2026-09-21T14:50:40.782Z",
+          "completedAt": "2026-09-21T15:28:38.084Z",
           "evidence": "build-yandex-review.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
@@ -1744,7 +1776,7 @@
           "status": "Integration review handoff ready",
           "trigger": "local",
           "revision": "local",
-          "completedAt": "2026-09-21T14:50:40.782Z",
+          "completedAt": "2026-09-21T15:28:38.084Z",
           "evidence": "build-telegram-review.zip and its SHA-256 manifest are retained in the workflow artifact"
         },
         {
@@ -1752,7 +1784,7 @@
           "status": "Installable PWA handoff ready",
           "trigger": "local",
           "revision": "local",
-          "completedAt": "2026-09-21T14:50:40.782Z",
+          "completedAt": "2026-09-21T15:28:38.084Z",
           "evidence": "build-microsoft-pwa.zip includes the web manifest, app icon and service worker and is retained with its SHA-256 manifest"
         },
         {
@@ -1760,7 +1792,7 @@
           "status": "Manual review handoff ready",
           "trigger": "local",
           "revision": "local",
-          "completedAt": "2026-09-21T14:50:40.782Z",
+          "completedAt": "2026-09-21T15:28:38.084Z",
           "evidence": "build-y8-review.zip and its SHA-256 manifest are retained without external monetization"
         },
         {
@@ -1768,7 +1800,7 @@
           "status": "Contract review handoff ready",
           "trigger": "local",
           "revision": "local",
-          "completedAt": "2026-09-21T14:50:40.782Z",
+          "completedAt": "2026-09-21T15:28:38.084Z",
           "evidence": "build-playgama-review.zip and its SHA-256 manifest are retained before Bridge integration"
         },
         {
@@ -1776,7 +1808,7 @@
           "status": "Fire compatibility handoff ready",
           "trigger": "local",
           "revision": "local",
-          "completedAt": "2026-09-21T14:50:40.782Z",
+          "completedAt": "2026-09-21T15:28:38.084Z",
           "evidence": "build-amazon-webapp-review.zip and its SHA-256 manifest are retained for Fire Web App testing"
         },
         {
@@ -1784,7 +1816,7 @@
           "status": "Partner review handoff ready",
           "trigger": "local",
           "revision": "local",
-          "completedAt": "2026-09-21T14:50:40.782Z",
+          "completedAt": "2026-09-21T15:28:38.084Z",
           "evidence": "build-jiogames-review.zip and its SHA-256 manifest are retained pending partner SDK access"
         },
         {
@@ -1792,7 +1824,7 @@
           "status": "Contract pitch handoff ready",
           "trigger": "local",
           "revision": "local",
-          "completedAt": "2026-09-21T14:50:40.782Z",
+          "completedAt": "2026-09-21T15:28:38.084Z",
           "evidence": "build-famobi-pitch.zip and its SHA-256 manifest are retained pending compatible terms"
         },
         {
@@ -1800,7 +1832,7 @@
           "status": "Distribution review handoff ready",
           "trigger": "local",
           "revision": "local",
-          "completedAt": "2026-09-21T14:50:40.782Z",
+          "completedAt": "2026-09-21T15:28:38.084Z",
           "evidence": "build-gamepush-review.zip and its SHA-256 manifest are retained before destination and SDK approval"
         },
         {
@@ -1808,7 +1840,7 @@
           "status": "Publishing pitch handoff ready",
           "trigger": "local",
           "revision": "local",
-          "completedAt": "2026-09-21T14:50:40.782Z",
+          "completedAt": "2026-09-21T15:28:38.084Z",
           "evidence": "build-softgames-pitch.zip and its SHA-256 manifest are retained pending a non-exclusive offer"
         },
         {
@@ -1816,7 +1848,7 @@
           "status": "Agreement review handoff ready",
           "trigger": "local",
           "revision": "local",
-          "completedAt": "2026-09-21T14:50:40.782Z",
+          "completedAt": "2026-09-21T15:28:38.084Z",
           "evidence": "build-wgplayground-review.zip and its SHA-256 manifest are retained before SDK integration"
         },
         {
@@ -1824,7 +1856,7 @@
           "status": "Browser review handoff ready",
           "trigger": "local",
           "revision": "local",
-          "completedAt": "2026-09-21T14:50:40.782Z",
+          "completedAt": "2026-09-21T15:28:38.084Z",
           "evidence": "build-miniplay-review.zip and its SHA-256 manifest are retained before account and API approval"
         },
         {
@@ -1832,7 +1864,7 @@
           "status": "Publisher pitch handoff ready",
           "trigger": "local",
           "revision": "local",
-          "completedAt": "2026-09-21T14:50:40.782Z",
+          "completedAt": "2026-09-21T15:28:38.084Z",
           "evidence": "build-kizi-pitch.zip and its SHA-256 manifest are retained pending non-exclusive terms"
         },
         {
@@ -1840,7 +1872,7 @@
           "status": "RPK feasibility handoff ready",
           "trigger": "local",
           "revision": "local",
-          "completedAt": "2026-09-21T14:50:40.782Z",
+          "completedAt": "2026-09-21T15:28:38.084Z",
           "evidence": "build-huawei-quick-game-review.zip and its SHA-256 manifest are retained before UK onboarding and RPK work"
         },
         {
@@ -1848,7 +1880,7 @@
           "status": "Distribution review handoff ready",
           "trigger": "local",
           "revision": "local",
-          "completedAt": "2026-09-21T14:50:40.782Z",
+          "completedAt": "2026-09-21T15:28:38.084Z",
           "evidence": "build-gameflare-review.zip and its SHA-256 manifest are retained before account and contract approval"
         },
         {
@@ -1856,7 +1888,7 @@
           "status": "SDK review handoff ready",
           "trigger": "local",
           "revision": "local",
-          "completedAt": "2026-09-21T14:50:40.782Z",
+          "completedAt": "2026-09-21T15:28:38.084Z",
           "evidence": "build-shockwave-review.zip and its SHA-256 manifest are retained before official SDK integration"
         },
         {
@@ -1864,7 +1896,7 @@
           "status": "Integration planning handoff ready",
           "trigger": "local",
           "revision": "local",
-          "completedAt": "2026-09-21T14:50:40.782Z",
+          "completedAt": "2026-09-21T15:28:38.084Z",
           "evidence": "build-airconsole-review.zip and its SHA-256 manifest are retained before controller and SDK work"
         },
         {
@@ -1872,7 +1904,7 @@
           "status": "Commercial review handoff ready",
           "trigger": "local",
           "revision": "local",
-          "completedAt": "2026-09-21T14:50:40.782Z",
+          "completedAt": "2026-09-21T15:28:38.084Z",
           "evidence": "build-world-mini-app-review.zip and its SHA-256 manifest are retained before MiniKit integration"
         },
         {
@@ -1880,7 +1912,7 @@
           "status": "Manifest planning handoff ready",
           "trigger": "local",
           "revision": "local",
-          "completedAt": "2026-09-21T14:50:40.782Z",
+          "completedAt": "2026-09-21T15:28:38.084Z",
           "evidence": "build-farcaster-mini-app-review.zip and its SHA-256 manifest are retained before domain signing and SDK work"
         },
         {
@@ -1888,7 +1920,7 @@
           "status": "Account and SDK review handoff ready",
           "trigger": "local",
           "revision": "local",
-          "completedAt": "2026-09-21T14:50:40.782Z",
+          "completedAt": "2026-09-21T15:28:38.084Z",
           "evidence": "build-pi-apps-review.zip and its SHA-256 manifest are retained before KYC, terms acceptance and SDK work"
         },
         {
@@ -1896,7 +1928,7 @@
           "status": "Listing review handoff ready",
           "trigger": "local",
           "revision": "local",
-          "completedAt": "2026-09-21T14:50:40.782Z",
+          "completedAt": "2026-09-21T15:28:38.084Z",
           "evidence": "build-minipay-mini-app-review.zip and its SHA-256 manifest are retained before terms and commerce review"
         },
         {
@@ -1904,7 +1936,7 @@
           "status": "Marketplace review handoff ready",
           "trigger": "local",
           "revision": "local",
-          "completedAt": "2026-09-21T14:50:40.782Z",
+          "completedAt": "2026-09-21T15:28:38.084Z",
           "evidence": "build-zoom-app-review.zip and its SHA-256 manifest are retained before SDK and security review"
         },
         {
@@ -1912,7 +1944,7 @@
           "status": "Directory review handoff ready",
           "trigger": "local",
           "revision": "local",
-          "completedAt": "2026-09-21T14:50:40.782Z",
+          "completedAt": "2026-09-21T15:28:38.084Z",
           "evidence": "build-pwa-directory-review.zip and its SHA-256 manifest are retained before free listing submission"
         },
         {
@@ -1920,7 +1952,7 @@
           "status": "Beta planning handoff ready",
           "trigger": "local",
           "revision": "local",
-          "completedAt": "2026-09-21T14:50:40.782Z",
+          "completedAt": "2026-09-21T15:28:38.084Z",
           "evidence": "build-miro-marketplace-review.zip and its SHA-256 manifest are retained before collaboration and beta work"
         },
         {
@@ -1928,7 +1960,7 @@
           "status": "Educational review handoff ready",
           "trigger": "local",
           "revision": "local",
-          "completedAt": "2026-09-21T14:50:40.782Z",
+          "completedAt": "2026-09-21T15:28:38.084Z",
           "evidence": "build-greenhouse-review.zip and its SHA-256 manifest are retained before CSP/offline adaptation"
         },
         {
@@ -1936,7 +1968,7 @@
           "status": "Publisher review handoff ready",
           "trigger": "local",
           "revision": "local",
-          "completedAt": "2026-09-21T14:50:40.782Z",
+          "completedAt": "2026-09-21T15:28:38.084Z",
           "evidence": "build-ozogames-review.zip and its SHA-256 manifest are retained before contract and monetization review"
         },
         {
@@ -1944,7 +1976,7 @@
           "status": "Directory review handoff ready",
           "trigger": "local",
           "revision": "local",
-          "completedAt": "2026-09-21T14:50:40.782Z",
+          "completedAt": "2026-09-21T15:28:38.084Z",
           "evidence": "build-slowden-review.zip and its SHA-256 manifest are retained before hosted-link form submission"
         },
         {
@@ -1952,7 +1984,7 @@
           "status": "Ad-free review handoff ready",
           "trigger": "local",
           "revision": "local",
-          "completedAt": "2026-09-21T14:50:40.782Z",
+          "completedAt": "2026-09-21T15:28:38.084Z",
           "evidence": "build-noadsgames-review.zip and its SHA-256 manifest are retained before API submission and human review"
         },
         {
@@ -1960,8 +1992,24 @@
           "status": "Editorial review handoff ready",
           "trigger": "local",
           "revision": "local",
-          "completedAt": "2026-09-21T14:50:40.782Z",
+          "completedAt": "2026-09-21T15:28:38.084Z",
           "evidence": "build-yalgames-review.zip and its SHA-256 manifest are retained before manual contact submission"
+        },
+        {
+          "platform": "Rando.gg",
+          "status": "Hosted iframe review handoff ready",
+          "trigger": "local",
+          "revision": "local",
+          "completedAt": "2026-09-21T15:28:38.084Z",
+          "evidence": "build-rando-review.zip and its SHA-256 manifest are retained before hosted-URL submission"
+        },
+        {
+          "platform": "PWAStore.io",
+          "status": "PWA listing handoff ready",
+          "trigger": "local",
+          "revision": "local",
+          "completedAt": "2026-09-21T15:28:38.084Z",
+          "evidence": "build-pwastore-review.zip and its SHA-256 manifest are retained before URL submission and validation"
         }
       ],
       "source": {
@@ -2465,6 +2513,22 @@
           "action": "Send the canonical HTTPS playable, description, controls and review ZIP through the official developer contact route; record the response and obtain written monetization terms before enabling ads or commerce.",
           "destination": "https://yalgames.com/developers",
           "unlocks": "YalGames editorial review and non-exclusive browser publication"
+        },
+        {
+          "status": "To do",
+          "priority": "Submission",
+          "platform": "Rando.gg",
+          "action": "Verify the canonical game in a cross-origin iframe with ads and commerce disabled, then submit its HTTPS URL and record the listing review result.",
+          "destination": "https://rando.gg/developers",
+          "unlocks": "Rando.gg iframe listing and developer-hosted updates"
+        },
+        {
+          "status": "To do",
+          "priority": "Directory",
+          "platform": "PWAStore.io",
+          "action": "Verify HTTPS, web manifest, service worker, icons and installed launch behavior, then submit the canonical PWA URL and record approval.",
+          "destination": "https://pwastore.io/submit",
+          "unlocks": "PWAStore.io directory listing"
         }
       ],
       "source": {
@@ -2821,6 +2885,18 @@
           "iap": "Disabled — no documented platform IAP or server-verification contract",
           "ads": "Disabled — no documented ad SDK, revenue terms or consent contract",
           "gate": "Submit the canonical HTTPS playable manually and obtain written commercial terms before enabling monetization"
+        },
+        {
+          "platform": "Rando.gg",
+          "iap": "Disabled — no documented platform IAP or server-verification contract",
+          "ads": "Disabled — no documented advertising SDK or revenue contract",
+          "gate": "Verify cross-origin iframe play, then submit the canonical HTTPS URL for manual listing review"
+        },
+        {
+          "platform": "PWAStore.io",
+          "iap": "Not applicable at directory level; canonical website commerce remains disabled pending embedded-flow verification",
+          "ads": "Not applicable — directory listing provides no game advertising SDK",
+          "gate": "Pass manifest, service-worker, HTTPS and installability validation before URL submission"
         }
       ],
       "source": {

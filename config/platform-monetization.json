@@ -318,6 +318,18 @@
       "iap": "Disabled \u2014 no documented platform IAP or server-verification contract",
       "ads": "Disabled \u2014 no documented ad SDK, revenue terms or consent contract",
       "gate": "Submit the canonical HTTPS playable manually and obtain written commercial terms before enabling monetization"
+    },
+    {
+      "platform": "Rando.gg",
+      "iap": "Disabled \u2014 no documented platform IAP or server-verification contract",
+      "ads": "Disabled \u2014 no documented advertising SDK or revenue contract",
+      "gate": "Verify cross-origin iframe play, then submit the canonical HTTPS URL for manual listing review"
+    },
+    {
+      "platform": "PWAStore.io",
+      "iap": "Not applicable at directory level; canonical website commerce remains disabled pending embedded-flow verification",
+      "ads": "Not applicable \u2014 directory listing provides no game advertising SDK",
+      "gate": "Pass manifest, service-worker, HTTPS and installability validation before URL submission"
     }
   ]
 }

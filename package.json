@@ -102,6 +102,8 @@
     "release:slowden": "node scripts/release/run-platform-release.mjs slowden",
     "release:noadsgames": "node scripts/release/run-platform-release.mjs noadsgames",
     "release:yalgames": "node scripts/release/run-platform-release.mjs yalgames",
+    "release:rando": "node scripts/release/run-platform-release.mjs rando",
+    "release:pwastore": "node scripts/release/run-platform-release.mjs pwastore",
     "release:html5": "node scripts/release/package-html5-release.mjs",
     "release:all": "node scripts/release/run-platform-release.mjs all",
     "jest:build-upload": "pnpm release:jest",

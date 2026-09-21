@@ -43,3 +43,5 @@ Greenhouse Games, OzoGames, and SlowDen add an educational subscription catalog,
 NoAdsGames accepts an ad-free hosted HTTPS game or HTML5 ZIP without exclusivity. The workflow creates `build-noadsgames-review.zip` and its digest manifest; authenticated API submission and mandatory human review remain checklist gates. See `docs/research/additional-release-targets-round-10-2026-09-21.md`.
 
 YalGames accepts non-exclusive HTML5/WebGL games through a manual hosted-URL submission. The workflow creates `build-yalgames-review.zip` and its digest manifest with ads and commerce disabled; editorial contact, review and publication remain manual. See `docs/research/additional-release-targets-round-11-2026-09-21.md`.
+
+Rando.gg accepts a non-exclusive developer-hosted HTML5 iframe URL, while PWAStore.io accepts the canonical installable PWA URL. Their workflow handoffs stay ad-free and commerce-disabled pending written monetization terms; submission and review remain manual. See `docs/research/additional-release-targets-round-12-2026-09-21.md`.

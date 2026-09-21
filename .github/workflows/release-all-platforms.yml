@@ -105,6 +105,8 @@ jobs:
           pnpm release:slowden
           pnpm release:noadsgames
           pnpm release:yalgames
+          pnpm release:rando
+          pnpm release:pwastore
       - name: Record the successful release in the dashboard
         run: node scripts/release/record-release-automation.mjs
         env:
@@ -215,6 +217,10 @@ jobs:
             build-noadsgames-review.zip.manifest.json
             build-yalgames-review.zip
             build-yalgames-review.zip.manifest.json
+            build-rando-review.zip
+            build-rando-review.zip.manifest.json
+            build-pwastore-review.zip
+            build-pwastore-review.zip.manifest.json
             build-youtube.zip
             build-youtube.manifest.json
             build-youtube.test-report.json

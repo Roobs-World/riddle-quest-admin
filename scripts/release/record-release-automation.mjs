@@ -116,6 +116,10 @@ snapshot.queries.release_automation = {
       evidence: "build-noadsgames-review.zip and its SHA-256 manifest are retained before API submission and human review"},
     {platform: "YalGames", status: "Editorial review handoff ready", trigger, revision: sha, completedAt,
       evidence: "build-yalgames-review.zip and its SHA-256 manifest are retained before manual contact submission"},
+    {platform: "Rando.gg", status: "Hosted iframe review handoff ready", trigger, revision: sha, completedAt,
+      evidence: "build-rando-review.zip and its SHA-256 manifest are retained before hosted-URL submission"},
+    {platform: "PWAStore.io", status: "PWA listing handoff ready", trigger, revision: sha, completedAt,
+      evidence: "build-pwastore-review.zip and its SHA-256 manifest are retained before URL submission and validation"},
   ],
   source: {
     label: "All-platform release workflow receipt",

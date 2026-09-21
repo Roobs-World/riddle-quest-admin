@@ -502,6 +502,22 @@ const releasePlans = Object.freeze([
     handoff: "Send the canonical HTTPS playable and review ZIP through the official contact route.",
     runbook: "docs/research/additional-release-targets-round-11-2026-09-21.md",
   }),
+  Object.freeze({
+    target: "rando", title: "Rando.gg review", boundary: "local-manual-handoff", publicCommand: "pnpm release:rando",
+    summary: "Create an ad-free, commerce-disabled HTML5 handoff for Rando.gg iframe review.",
+    externalEffect: "None; hosted-URL submission and listing review remain manual.",
+    command: Object.freeze({executable: "node", args: Object.freeze(["scripts/release/package-html5-platform.mjs", "rando"])}),
+    handoff: "Submit the canonical HTTPS playable after cross-origin iframe verification.",
+    runbook: "docs/research/additional-release-targets-round-12-2026-09-21.md",
+  }),
+  Object.freeze({
+    target: "pwastore", title: "PWAStore.io review", boundary: "local-manual-handoff", publicCommand: "pnpm release:pwastore",
+    summary: "Create a neutral HTML5 handoff for PWAStore.io installability and listing review.",
+    externalEffect: "None; URL submission, PWA validation and listing approval remain manual.",
+    command: Object.freeze({executable: "node", args: Object.freeze(["scripts/release/package-html5-platform.mjs", "pwastore"])}),
+    handoff: "Submit the canonical PWA URL only after manifest, service-worker and installability checks pass.",
+    runbook: "docs/research/additional-release-targets-round-12-2026-09-21.md",
+  }),
 ]);
 
 const plansByTarget = new Map(releasePlans.map((plan) => [plan.target, plan]));
