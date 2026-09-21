@@ -87,6 +87,22 @@ describe("Jest Firebase App Check adapter", () => {
     await expect(adapter.ensureJestFirebaseAppCheckReady()).resolves.toBeUndefined();
   });
 
+  it("propagates throttling and leaves refresh disabled until attestation succeeds", async () => {
+    /** Production adapter with attestation enabled. */
+    const adapter = await loadAdapter();
+    /** Rejection retains the original exchange status. */
+    const failure = Object.assign(new Error("attestation rejected"), {
+      code: "appCheck/throttled",
+      customData: {httpStatus: 403},
+    });
+    mockGetToken.mockRejectedValueOnce(failure);
+    await expect(adapter.ensureJestFirebaseAppCheckReady()).rejects.toBe(failure);
+    expect(mockGetToken).toHaveBeenCalledTimes(1);
+    expect(mockSetTokenAutoRefreshEnabled).not.toHaveBeenCalled();
+    await expect(adapter.ensureJestFirebaseAppCheckReady()).resolves.toBeUndefined();
+    expect(mockSetTokenAutoRefreshEnabled).toHaveBeenCalledWith({name: "jest-app-check"}, true);
+  });
+
   it("does not let an untrusted production query disable attestation", async () => {
     /** Provides adapter behavior. */
     const adapter = await loadAdapter({}, {location: {search: "?harness=race"}});

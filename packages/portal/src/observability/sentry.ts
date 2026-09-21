@@ -1,4 +1,5 @@
 import * as Sentry from "@sentry/browser";
+import {appCheckDiagnostics} from "./appCheckDiagnostics";
 import {redactBrowserSentryEvent, redactBrowserTelemetry, resolveSecureBrowserSentryDsn} from "./sentryPrivacy";
 
 /** Describes the build-time settings used to initialize browser telemetry. */
@@ -52,7 +53,11 @@ export function initializeBrowserSentry(configuration: BrowserSentryConfiguratio
     sendDefaultPii: false,
     tracesSampleRate: 0,
     integrations: (defaults) => defaults.filter(({name}) => !nonEssentialBrowserIntegrations.has(name)),
-    beforeSend: (event) => redactBrowserSentryEvent(event),
+    beforeSend: (event, hint) =>
+      redactBrowserSentryEvent({
+        ...event,
+        extra: {...event.extra, ...appCheckDiagnostics(hint?.originalException)},
+      }),
     beforeSendTransaction: (event) => redactBrowserSentryEvent(event),
   });
   Sentry.setTag("runtime", `${configuration.runtime}-html5`);

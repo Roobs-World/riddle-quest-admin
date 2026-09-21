@@ -95,4 +95,27 @@ describe("browser Sentry lifecycle", () => {
     expect(captureException).toHaveBeenCalledTimes(2);
     expect(captureException).toHaveBeenCalledWith(error);
   });
+
+  it.each(["initial-throttle", "throttled", "fetch-status-error"])(
+    "preserves bounded App Check %s diagnostics through the privacy hook",
+    (suffix) => {
+      initializeBrowserSentry({production: true, dsn: "https://public@example.test/1", runtime: "jest"});
+      /** Simulates SDK metadata containing both safe diagnostics and private data. */
+      const originalException = Object.assign(new Error("private response"), {
+        code: `appCheck/${suffix}`,
+        customData: {httpStatus: 403, token: "secret", response: "private response", url: "private url"},
+      });
+      /** Event shared by manual and automatic Sentry captures. */
+      const event = {
+        exception: {values: [{type: "FirebaseError", value: originalException.message}]},
+        extra: {component: "jest_startup"},
+        breadcrumbs: [{message: "private response"}],
+      };
+      expect(init.mock.calls[0][0].beforeSend(event, {originalException})).toEqual({
+        exception: {values: [{type: "FirebaseError", value: "[REDACTED_MESSAGE]"}]},
+        extra: {component: "jest_startup", appCheckErrorCode: `appCheck/${suffix}`, appCheckHttpStatus: 403},
+      });
+      expect(event.exception.values[0].value).toBe("private response");
+    },
+  );
 });
