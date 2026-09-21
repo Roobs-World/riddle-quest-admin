@@ -3,7 +3,7 @@
   "surface": "dashboard",
   "buildStatus": "complete",
   "title": "Riddle Quest integration and release status",
-  "generatedAt": "2026-09-21T12:31:43.898Z",
+  "generatedAt": "2026-09-21T12:37:40.484Z",
   "status": "verified-repository-and-provider-evidence",
   "filters": [],
   "queries": {
@@ -1021,13 +1021,13 @@
           "check": "Desktop rendering and source inspection",
           "viewport": "1440 × 900",
           "result": "Passed",
-          "evidence": "Opening hierarchy, five-card summary, action-first section order, jump navigation, local table scrolling and source actions verified at desktop width."
+          "evidence": "Action-first hierarchy, row-count toolbars, six contained evidence tables, sticky headers, status tones and source actions verified at 1440 × 900 with no page overflow."
         },
         {
           "check": "Responsive rendering",
           "viewport": "390 × 844",
           "result": "Passed",
-          "evidence": "No page-level horizontal overflow at 390 × 844; jump navigation scrolls locally, metric cards stack cleanly, and wide evidence tables remain contained."
+          "evidence": "No page-level horizontal overflow at 390 × 844; navigation and wide tables scroll locally, large tables remain height-contained, and metric cards stack cleanly."
         }
       ],
       "source": {

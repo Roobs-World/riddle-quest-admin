@@ -6,7 +6,9 @@ import {Badge, Button, Card, CardContent, Progress, Table, TableBody, TableCell,
 
 function Status({children}) {
   const value = String(children);
-  const tone = /absent|unauthorized|no partner|not uploaded|pending|gated|candidate|partial/iu.test(value)
+  const tone = /blocked|prohibited|failed|rejected/iu.test(value)
+    ? "critical"
+    : /absent|unauthorized|no partner|not uploaded|pending|gated|candidate|partial|hold/iu.test(value)
     ? "attention"
     : /passed|implemented|deployed|testing|private testing/iu.test(value)
       ? "positive"
@@ -16,14 +18,17 @@ function Status({children}) {
 
 function EvidenceTable({id, queryId, title, rows, columns}) {
   return <DataComponent id={id} queryId={queryId} title={title} kind="table" variant="card" displayRows={rows} sourceRows={rows}>
-    <Table className="integration-table">
-      <TableHeader><TableRow>{columns.map(({key, label}) => <TableHead key={key}>{label}</TableHead>)}</TableRow></TableHeader>
-      <TableBody>{rows.map((row) => <TableRow key={row.platform ?? row.service ?? row.check}>
-        {columns.map(({key, status, link}) => <TableCell key={key}>{link && row[key]
-          ? <Button><a href={row[key]} target="_blank" rel="noreferrer">Open</a></Button>
-          : status ? <Status>{row[key]}</Status> : row[key]}</TableCell>)}
-      </TableRow>)}</TableBody>
-    </Table>
+    <div className={rows.length > 10 ? "evidence-table-frame evidence-table-frame--scroll" : "evidence-table-frame"}>
+      <div className="evidence-table-frame__toolbar"><span>{rows.length} {rows.length === 1 ? "record" : "records"}</span><span>Scroll table to inspect all details</span></div>
+      <Table className="integration-table">
+        <TableHeader><TableRow>{columns.map(({key, label}) => <TableHead key={key}>{label}</TableHead>)}</TableRow></TableHeader>
+        <TableBody>{rows.map((row) => <TableRow key={row.platform ?? row.service ?? row.check}>
+          {columns.map(({key, status, link}) => <TableCell key={key}>{link && row[key]
+            ? <Button><a href={row[key]} target="_blank" rel="noreferrer">Open</a></Button>
+            : status ? <Status>{row[key]}</Status> : row[key]}</TableCell>)}
+        </TableRow>)}</TableBody>
+      </Table>
+    </div>
   </DataComponent>;
 }
 
