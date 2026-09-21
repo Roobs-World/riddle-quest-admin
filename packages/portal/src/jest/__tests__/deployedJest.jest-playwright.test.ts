@@ -213,7 +213,8 @@ describeDeployed("deployed Jest sandbox game", () => {
           rowGap: keyboardStyle.rowGap,
         };
       }),
-    ).toEqual({keyHeight: "32px", keyMinHeight: "32px", letterGap: "2px", rowGap: "0px"});
+    ).toEqual({keyHeight: "48px", keyMinHeight: "48px", letterGap: "3px", rowGap: "4px"});
+    expect(await game.locator(".keyboard .key").first().evaluate(key => key.getBoundingClientRect().height)).toBeGreaterThanOrEqual(44);
     expect(await game.locator(".guess-row").count()).toBe(5);
     expect(
       await game.evaluate(
@@ -302,6 +303,26 @@ describeDeployed("deployed Jest sandbox game", () => {
     }
     await game.locator(".race-gameplay .guess-board").waitFor({state: "visible", timeout: 5_000});
     expect(await game.locator(".race-error").count()).toBe(0);
+    expect(await game.locator(".race-gameplay .coin-pill").count()).toBe(0);
+    await game.locator(".race-actions button").last().click();
+    await game.waitForFunction(() => {
+      /** Observed authoritative responses from the live host. */
+      const messages = (globalThis as typeof globalThis & {
+        /** Correlated operation results retained by this test. */
+        __RIDDLE_QUEST_LIVE_RACE_MESSAGES__?: Array<{
+          /** Server response payload. */
+          payload?: {
+          /** Operation discriminator. */ operation?: string;
+          /** Whether the authoritative operation succeeded. */ ok?: boolean;
+          /** Returned skip penalty. */ data?: {
+            /** Added milliseconds. */
+            penaltyAddedMs?: number;
+          };
+        }}>;
+      }).__RIDDLE_QUEST_LIVE_RACE_MESSAGES__;
+      return messages?.some(message => message.payload?.operation === "raceSkip" &&
+        message.payload.ok === true && message.payload.data?.penaltyAddedMs === 45_000);
+    }, undefined, {timeout: 30_000});
     await game.getByRole("button", {name: /close race to 10/i}).click();
     /** Provides confirm quit behavior. */
     const confirmQuit = game.getByRole("button", {name: /^quit race$/i});
