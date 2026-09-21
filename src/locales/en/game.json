@@ -20,7 +20,6 @@
     "SIGNING_IN": "Signing in...",
     "GUEST_WARNING": "Play as a guest or sign in to sync progress, coins, and leaderboard results.",
     "HOST_STATUS_READY": "Host connected",
-    "HOST_STATUS_WAITING": "Waiting for the host wrapper",
     "STARTUP_CONNECTING": "Connecting to Jest…",
     "STARTUP_PLAYER": "Loading player account…",
     "STARTUP_PROGRESS": "Loading saved progress…",

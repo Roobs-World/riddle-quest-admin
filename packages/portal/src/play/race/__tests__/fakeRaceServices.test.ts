@@ -34,7 +34,7 @@ describe("createFakeRaceServices", () => {
     expect(hinted.run.totalPenaltyMs).toBe(RACE_HINT_PENALTY_MS);
     expect(hinted.revealedLetter).toBe("p");
 
-    /** Incorrect guess that unlocks the skip operation. */
+    /** Incorrect guess before a later manual skip. */
     const guessed = await services.submitRaceGuess({
       runId: run.runId,
       riddleId: run.currentRiddle!.riddleId,
@@ -42,7 +42,7 @@ describe("createFakeRaceServices", () => {
       guess: "xxxxx",
     });
     expect(guessed.isCorrect).toBe(false);
-    /** Authoritative skip response after the required first guess. */
+    /** Authoritative skip response with the published time penalty. */
     const skipped = await services.skipRaceRiddle({
       runId: run.runId,
       riddleId: run.currentRiddle!.riddleId,

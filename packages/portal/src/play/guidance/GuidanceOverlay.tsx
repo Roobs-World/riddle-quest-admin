@@ -44,8 +44,6 @@ export function GuidanceOverlay({
   state,
   modal,
   onActiveChange,
-  registrationName,
-  registrationInviterName,
   interactionBlocked = false,
 }: GuidanceOverlayProps) {
   useLocale();
@@ -138,21 +136,6 @@ export function GuidanceOverlay({
     onboardingCardRef.current?.scrollTo({top: 0});
   }, [onboardingStep]);
 
-  useEffect(() => {
-    if (onboardingStep !== 2) return;
-    /** Provides close prompt behavior. */
-    const closePrompt = () => {
-      completePlayerOnboarding(createGuidanceStorageKey("onboarding", userId));
-      setOnboardingStep(null);
-    };
-    window.addEventListener("riddle-quest:registration-prompt-closed", closePrompt);
-    return () => window.removeEventListener("riddle-quest:registration-prompt-closed", closePrompt);
-  }, [onboardingStep, userId]);
-
-  useEffect(() => {
-    if (onboardingStep !== 2 || state.user?.platformRegistered !== false) return;
-    window.dispatchEvent(new CustomEvent("riddle-quest:registration-prompt-opened"));
-  }, [onboardingStep, state.user?.platformRegistered]);
 
   useEffect(() => {
     onActiveChange?.(guidanceActive);
@@ -303,13 +286,11 @@ export function GuidanceOverlay({
     /** Indicates whether is welcome. */
     const isWelcome = onboardingStep === 0;
     /** Provides total steps behavior. */
-    const totalSteps = getOnboardingTotalSteps(onboardingStep, state.user?.platformRegistered);
+    const totalSteps = getOnboardingTotalSteps();
     return (
       <OnboardingOverlay
         cardRef={onboardingCardRef}
         onboardingStep={onboardingStep}
-        registrationName={registrationName}
-        registrationInviterName={registrationInviterName}
         totalSteps={totalSteps}
         welcomeOnly={welcomeOnly}
         onAdvance={() => {
@@ -320,10 +301,6 @@ export function GuidanceOverlay({
               return;
             }
             setOnboardingStep(1);
-            return;
-          }
-          if (totalSteps === 3) {
-            setOnboardingStep(2);
             return;
           }
           completePlayerOnboarding(createGuidanceStorageKey("onboarding", userId));

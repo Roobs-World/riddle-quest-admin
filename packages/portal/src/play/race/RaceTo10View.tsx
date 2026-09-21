@@ -13,7 +13,6 @@ import type {
   ListFacebookContextBoardResponse,
 } from "@qwordly/core/race";
 import {tr} from "../i18n";
-import {SpinningWheelLoader} from "../SpinningWheelLoader";
 import {RaceCountdown} from "./components/RaceCountdown";
 import {RaceGameplay} from "./components/RaceGameplay";
 import {RaceHubTabs} from "./components/RaceHubTabs";
@@ -340,7 +339,7 @@ export function RaceTo10View(props: RaceTo10ViewProps) {
           onConfirm={onAbandon}
         />
       )}
-      {raceGuessLoading && <SpinningWheelLoader overlay className="race-operation-loader" />}
+      {raceGuessLoading && <div className="race-operation-loader" role="status" aria-label={tr("Accessibility.LOADING")} />}
     </section>
   );
 }

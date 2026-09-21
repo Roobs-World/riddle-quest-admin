@@ -20,7 +20,6 @@
     "SIGNING_IN": "Đang đăng nhập...",
     "GUEST_WARNING": "Chơi với tư cách khách hoặc đăng nhập để đồng bộ tiến trình, xu và bảng xếp hạng.",
     "HOST_STATUS_READY": "Host đã kết nối",
-    "HOST_STATUS_WAITING": "Đang chờ lớp host",
     "STARTUP_CONNECTING": "Đang kết nối với Jest…",
     "STARTUP_PLAYER": "Đang tải tài khoản người chơi…",
     "STARTUP_PROGRESS": "Đang tải tiến trình đã lưu…",

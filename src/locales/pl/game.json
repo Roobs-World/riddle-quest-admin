@@ -20,7 +20,6 @@
     "SIGNING_IN": "Logowanie...",
     "GUEST_WARNING": "Graj jako gość albo zaloguj się, aby synchronizować postęp, monety i ranking.",
     "HOST_STATUS_READY": "Host połączony",
-    "HOST_STATUS_WAITING": "Oczekiwanie na host wrapper",
     "STARTUP_CONNECTING": "Łączenie z Jest…",
     "STARTUP_PLAYER": "Wczytywanie konta gracza…",
     "STARTUP_PROGRESS": "Wczytywanie zapisanego postępu…",

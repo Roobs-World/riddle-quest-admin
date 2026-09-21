@@ -200,6 +200,52 @@ describe("play host message handlers", () => {
     expect(harness.postOperation).toHaveBeenLastCalledWith("hint-1", "hint", false, undefined, "hint unavailable");
   });
 
+  it("delivers earned rewards before optional platform follow-up finishes", async () => {
+    /** Captures services for this regression check. */
+    const services = createFakeHostServices();
+    jest.spyOn(services, "completeGame").mockResolvedValue({attempts: 2, isCorrect: true, coinsEarned: 50, newlyUnlockedAchievementIds: []});
+    /** Captures finish for this regression check. */
+    let finish!: () => void;
+    /** Captures follow up for this regression check. */
+    const followUp = new Promise<void>(resolve => { finish = resolve; });
+    /** Captures harness for this regression check. */
+    const harness = createHarness(services, undefined, undefined, () => followUp);
+    /** Captures operation for this regression check. */
+    const operation = harness.handlers.completeGame({type: "game:completeGame", requestId: "complete-fast", payload: {
+      riddleId: "classic-fake-1", gameMode: "classic", sessionToken: "00000000-0000-4000-8000-000000000003",
+    }});
+    await new Promise(resolve => setImmediate(resolve));
+    try {
+      expect(harness.postOperation).toHaveBeenCalledWith("complete-fast", "completeGame", true, expect.objectContaining({coinsEarned: 50}));
+    } finally {
+      finish();
+      await operation;
+    }
+  });
+
+  it("delivers multiplayer outcomes without waiting for profile and notification follow-up", async () => {
+    /** Authoritative response is ready while optional profile loading remains pending. */
+    const services = createFakeHostServices();
+    jest.spyOn(services, "getRaceOutcome").mockResolvedValue({
+      runId: "run-1", result: "recorded", correctCount: 10, wallFinishMs: 40_000,
+      hintPenaltyMs: 0, skipPenaltyMs: 0, totalPenaltyMs: 0, adjustedFinishMs: 40_000,
+      publishable: true, rematchEligible: false, newlyUnlockedAchievementIds: [], achievementCoinsAwarded: 0,
+    });
+    /** Releases the delayed profile refresh after checking result delivery. */
+    let finish!: () => void;
+    /** Controlled profile latency independent of the outcome response. */
+    const followUp = new Promise<void>(resolve => { finish = resolve; });
+    /** Real host routing with a deliberately slow profile collaborator. */
+    const harness = createHarness(services);
+    harness.syncRaceAchievementProgress.mockImplementation(() => followUp.then(() => undefined));
+    /** Whether the result has reached the host operation delivery boundary. */
+    let delivered = false;
+    /** In-flight result request exercised through the real handler. */
+    const request = harness.handlers.getRaceOutcome({type: "game:getRaceOutcome", requestId: "outcome-fast", payload: {runId: "run-1"}}).then(() => { delivered = true; });
+    await new Promise(resolve => setImmediate(resolve));
+    try { expect(delivered).toBe(true); } finally { finish(); await request; }
+  });
+
   it("notifies the platform only after authoritative single-player and race results", async () => {
     /** Provides services behavior. */
     const services = createFakeHostServices();

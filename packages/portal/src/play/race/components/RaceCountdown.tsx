@@ -22,7 +22,7 @@ export function RaceCountdown({
   return (
     <div className="race-countdown-layout">
       <div className="race-countdown" aria-live="assertive">
-        <span>{countdownLabel}</span>
+        {!loading && <span>{countdownLabel}</span>}
         <p>{loading ? tr("Accessibility.LOADING") : tr("RaceTo10.FIRST_TO_TEN")}</p>
       </div>
       <aside className="race-scoreboard race-countdown-rail">

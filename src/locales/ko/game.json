@@ -20,7 +20,6 @@
     "SIGNING_IN": "로그인 중...",
     "GUEST_WARNING": "게스트로 플레이하거나 로그인해 진행도, 코인, 순위를 동기화하세요.",
     "HOST_STATUS_READY": "호스트 연결됨",
-    "HOST_STATUS_WAITING": "호스트 래퍼를 기다리는 중",
     "STARTUP_CONNECTING": "Jest에 연결 중…",
     "STARTUP_PLAYER": "플레이어 계정 불러오는 중…",
     "STARTUP_PROGRESS": "저장된 진행 상황 불러오는 중…",

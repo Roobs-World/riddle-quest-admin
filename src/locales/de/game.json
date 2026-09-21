@@ -20,7 +20,6 @@
     "SIGNING_IN": "Anmeldung...",
     "GUEST_WARNING": "Spiele als Gast oder melde dich an, um Fortschritt, Muenzen und Rangliste zu synchronisieren.",
     "HOST_STATUS_READY": "Host verbunden",
-    "HOST_STATUS_WAITING": "Warte auf Host-Wrapper",
     "STARTUP_CONNECTING": "Verbindung mit Jest wird hergestellt…",
     "STARTUP_PLAYER": "Spielerkonto wird geladen…",
     "STARTUP_PROGRESS": "Gespeicherter Fortschritt wird geladen…",

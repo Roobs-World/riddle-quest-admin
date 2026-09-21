@@ -20,7 +20,6 @@
     "SIGNING_IN": "Sedang masuk...",
     "GUEST_WARNING": "Main sebagai tamu atau masuk untuk menyinkronkan progres, koin, dan papan peringkat.",
     "HOST_STATUS_READY": "Host terhubung",
-    "HOST_STATUS_WAITING": "Menunggu pembungkus host",
     "STARTUP_CONNECTING": "Menghubungkan ke Jest…",
     "STARTUP_PLAYER": "Memuat akun pemain…",
     "STARTUP_PROGRESS": "Memuat progres tersimpan…",

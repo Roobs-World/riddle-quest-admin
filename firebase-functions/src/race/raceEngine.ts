@@ -347,9 +347,6 @@ export function applyRaceSkip(
   /** Provides run behavior. */
   const run = refreshRaceRun(input, nowMs);
   requireActiveRiddle(run, inputData.riddleId);
-  if (run.guessesUsed < 1) {
-    throw new HttpsError("failed-precondition", "Submit at least one guess before skipping a race riddle.");
-  }
   run.skipPenaltyMs += RACE_SKIP_PENALTY_MS;
   appendEvent(run, "skip", nowMs, RACE_SKIP_PENALTY_MS);
   advanceRiddle(run, nowMs);

@@ -92,6 +92,7 @@ export function GameModalPages({
         <ProfileModalPage
           profile={profile}
           platformRegistered={state.user?.platformRegistered}
+          onClose={onClose}
           onOpenModal={onOpenModal}
           onUpdateAvatar={onUpdateAvatar}
           onDeleteAccount={onDeleteAccount}

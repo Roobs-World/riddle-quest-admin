@@ -12,7 +12,17 @@
 }
 
 .race-operation-loader {
+  position: fixed;
   z-index: 125;
+  inset: 0 0 auto;
+  height: 4px;
+  pointer-events: none;
+  background: linear-gradient(90deg, #49cf87, #ffe57a, #49cf87);
+  background-size: 200% 100%;
+  animation: race-operation-progress 1s linear infinite;
+}
+@keyframes race-operation-progress {
+  to { background-position: -200% 0; }
 }
 
 .race-topbar {

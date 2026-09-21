@@ -1,3 +1,4 @@
+import {ProviderProfileContext} from "../ProviderProfileContext";
 import {describe, expect, it} from "@jest/globals";
 import {renderToString} from "react-dom/server";
 import type {BridgeProfile} from "@qwordly/core/bridge";
@@ -35,6 +36,27 @@ const profile: BridgeProfile = {
 };
 
 describe("ProfileModalPage", () => {
+  it("shows provider display identity while preserving the authoritative balance", () => {
+    /** Captures html for this regression check. */
+    const html = renderToString(<ProviderProfileContext.Provider value={{username: "Jest Solver", avatarUrl: "https://example.com/jest.webp"}}>
+      <ProfileModalPage profile={profile} platformRegistered onOpenModal={noop} onUpdateAvatar={updateAvatar} onDeleteAccount={noop} />
+    </ProviderProfileContext.Provider>);
+    expect(html).toContain("Jest Solver");
+    expect(html).toContain("jest.webp");
+    expect(html).toContain("250");
+    expect(html).not.toContain("Nova");
+    expect(html).not.toContain('type="file"');
+    expect(html).not.toContain('class="play-text-button"');
+  });
+  it("uses a guest fallback when the provider has no configured profile", () => {
+    /** Captures html for this regression check. */
+    const html = renderToString(<ProviderProfileContext.Provider value={{username: null, avatarUrl: null}}>
+      <ProfileModalPage profile={profile} platformRegistered onOpenModal={noop} onUpdateAvatar={updateAvatar} onDeleteAccount={noop} />
+    </ProviderProfileContext.Provider>);
+    expect(html).toContain("Guest");
+    expect(html).not.toContain("Nova");
+  });
+
   it("does not offer Jest-only avatar uploads on targets without registration", () => {
     /** Profile markup for a target without Jest registration. */
     const html = renderToString(<ProfileModalPage profile={profile} onOpenModal={noop}

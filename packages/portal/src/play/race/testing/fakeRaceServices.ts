@@ -410,7 +410,6 @@ export const createFakeRaceServices = (): RaceMethods => {
       /** Provides cached behavior. */
       const cached = run.responses.get(input.requestId);
       if (cached) return cached as Awaited<ReturnType<RaceMethods["skipRaceRiddle"]>>;
-      if (run.guessesUsed < 1) throw new Error("Submit one guess before skipping.");
       run.skipPenaltyMs += RACE_SKIP_PENALTY_MS;
       addEvent(run, "skip", RACE_SKIP_PENALTY_MS);
       advance(run);

@@ -94,6 +94,13 @@ export function PlayHostApp({
   const [frameReady, setFrameReady] = useState(false);
   /** Provides [notice, set notice] behavior. */
   const [notice, setNotice] = useState<string | null>(configurationWarning);
+  useEffect(() => {
+    if (!notice || notice === configurationWarning) return;
+    /** Dismisses a transient host notice. */
+    const timer = window.setTimeout(() => setNotice(null), 4_000);
+    return () => window.clearTimeout(timer);
+  }, [notice, configurationWarning]);
+
   /** Loads ed user id ref. */
   const loadedUserIdRef = useRef<string | null>(null);
   /** Provides playable reported ref behavior. */
@@ -373,7 +380,7 @@ export function PlayHostApp({
           raceLocalePolicy={raceLocalePolicy}
           onPresenceStateChange={onPresenceStateChange}
         />
-        {serverInteractionActive ? (
+        {!startupComplete ? (
           <SpinningWheelLoader
             overlay
             message={!startupComplete ? tr("WebPortal.STARTUP_GAME") : undefined}

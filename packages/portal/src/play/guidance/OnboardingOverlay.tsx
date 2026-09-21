@@ -9,10 +9,6 @@ export type OnboardingOverlayProps = {
   cardRef: RefObject<HTMLDivElement | null>;
   /** Stores onboarding step. */
   onboardingStep: number;
-  /** Stores registration name. */
-  registrationName?: string;
-  /** Stores registration inviter name. */
-  registrationInviterName?: string;
   /** Stores total steps. */
   totalSteps: number;
   /** Stores welcome only. */
@@ -21,29 +17,23 @@ export type OnboardingOverlayProps = {
   onAdvance: () => void;
 };
 
-/** Renders welcome, instructions, or Jest registration onboarding content. */
+/** Renders welcome and instructions before uninterrupted guest play. */
 export function OnboardingOverlay({
   cardRef,
   onboardingStep,
-  registrationName,
-  registrationInviterName,
   totalSteps,
   welcomeOnly,
   onAdvance,
 }: OnboardingOverlayProps) {
   /** Indicates whether is welcome. */
   const isWelcome = onboardingStep === 0;
-  /** Indicates whether is guest notice. */
-  const isGuestNotice = onboardingStep === 2;
 
   return (
     <div className="guidance-backdrop" role="presentation">
       <SpinningWheel />
       <div
         ref={cardRef}
-        className={`onboarding-card${isWelcome ? " onboarding-card-welcome" : ""}${
-          isGuestNotice ? " onboarding-card-registration" : ""
-        }`}
+        className={`onboarding-card${isWelcome ? " onboarding-card-welcome" : ""}`}
         role="dialog"
         aria-modal="true"
         aria-labelledby="onboarding-title"
@@ -59,42 +49,13 @@ export function OnboardingOverlay({
           <img id="onboarding-title" className="onboarding-logo" src={logoUrl} alt={tr("WebPortal.APP_TITLE")} />
         ) : (
           <h2 id="onboarding-title">
-            {isGuestNotice ? tr("Profile.JEST_REGISTRATION_TITLE") : tr("Instructions.GOAL_TITLE")}
+            {tr("Instructions.GOAL_TITLE")}
           </h2>
         )}
         {isWelcome ? (
           <>
             <p>{tr("WelcomeModal.SOLVE_RIDDLES_TEXT")}</p>
             <p>{tr("WelcomeModal.EARN_COINS_TEXT")}</p>
-          </>
-        ) : isGuestNotice ? (
-          <>
-            {registrationInviterName ? (
-              <p>{tr("Profile.JEST_INVITED_BY", {name: registrationInviterName})}</p>
-            ) : registrationName ? (
-              <p>{tr("Profile.JEST_REGISTRATION_GREETING", {name: registrationName})}</p>
-            ) : null}
-            <p>{tr("Profile.JEST_REGISTRATION_DESCRIPTION")}</p>
-            <div className="onboarding-registration-actions">
-              <button
-                className="play-primary"
-                onClick={() => window.dispatchEvent(new CustomEvent("riddle-quest:register-player"))}
-              >
-                {tr("Profile.JEST_REGISTER_BUTTON")}
-              </button>
-              <button
-                className="play-secondary"
-                onClick={() => window.dispatchEvent(new CustomEvent("riddle-quest:login-player"))}
-              >
-                {tr("Profile.JEST_LOGIN_BUTTON")}
-              </button>
-              <button
-                className="play-text-button"
-                onClick={() => window.dispatchEvent(new CustomEvent("riddle-quest:dismiss-registration"))}
-              >
-                {tr("Profile.JEST_PLAY_AS_GUEST_BUTTON")}
-              </button>
-            </div>
           </>
         ) : (
           <>
@@ -116,11 +77,9 @@ export function OnboardingOverlay({
             <p>{tr("Instructions.TIPS_DESCRIPTION")}</p>
           </>
         )}
-        {!isGuestNotice ? (
-          <button className="play-primary" onClick={onAdvance}>
-            {isWelcome ? tr("WelcomeModal.LETS_PLAY") : tr("Instructions.GOT_IT_BUTTON")}
-          </button>
-        ) : null}
+        <button className="play-primary" onClick={onAdvance}>
+          {isWelcome ? tr("WelcomeModal.LETS_PLAY") : tr("Instructions.GOT_IT_BUTTON")}
+        </button>
       </div>
     </div>
   );

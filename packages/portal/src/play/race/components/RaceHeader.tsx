@@ -69,7 +69,6 @@ export const RaceTopbar = memo(function RaceTopbar({
 
 /** Compact header placed inside the right-hand multiplayer rail. */
 export const RaceRailHeader = memo(function RaceRailHeader({
-  coins,
   onClose,
 }: {
   /** Stores coins. */
@@ -80,7 +79,6 @@ export const RaceRailHeader = memo(function RaceRailHeader({
   return (
     <div className="race-rail-header">
       <RaceTitle />
-      <RaceCoinBalance coins={coins} />
       <RaceCloseButton onClose={onClose} />
     </div>
   );

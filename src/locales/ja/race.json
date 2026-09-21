@@ -72,7 +72,6 @@
     "YOU": "あなた",
     "RIDDLES_REMAINING": "残り{count}問",
     "ANSWER_LABEL": "答え",
-    "GUESSES_REMAINING": "残り{count}回",
     "HINT_BUTTON": "ヒント",
     "SUBMIT": "回答",
     "SKIP_BUTTON": "スキップ",

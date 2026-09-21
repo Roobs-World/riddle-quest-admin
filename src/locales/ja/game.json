@@ -20,7 +20,6 @@
     "SIGNING_IN": "サインイン中...",
     "GUEST_WARNING": "ゲストで遊ぶか、サインインして進行、コイン、ランキングを同期します。",
     "HOST_STATUS_READY": "ホスト接続済み",
-    "HOST_STATUS_WAITING": "ホストラッパーを待機中",
     "STARTUP_CONNECTING": "Jestに接続中…",
     "STARTUP_PLAYER": "プレイヤーアカウントを読み込み中…",
     "STARTUP_PROGRESS": "保存した進行状況を読み込み中…",

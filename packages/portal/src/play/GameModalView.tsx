@@ -220,6 +220,7 @@ export function GameModalView({
       return;
     }
     onClose();
+    window.dispatchEvent(new CustomEvent("riddle-quest:victory-dismissed"));
     window.setTimeout(onNext, 220);
   };
   /** Provides advance reward fanfare behavior. */
@@ -233,7 +234,7 @@ export function GameModalView({
 
   return (
     <div className="game-modal-backdrop" role="presentation" onMouseDown={isMandatoryOutcome ? undefined : onClose}>
-      {state.modal !== "profile" ? <SpinningWheel /> : null}
+      {state.modal !== "profile" && state.modal !== "continue" ? <SpinningWheel /> : null}
       <section
         ref={modalRef}
         className={`game-modal modal-${state.modal}`}

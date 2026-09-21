@@ -2,9 +2,6 @@ import {useCallback, useState} from "react";
 import {captureBrowserException} from "../observability/browserErrorReporter";
 import {getHostErrorMessage, type HostOperationName} from "./hostMessageHandlers";
 
-/** Minimum duration that prevents server activity from flashing on screen. */
-const MINIMUM_ACTIVITY_VISIBILITY_MS = 180;
-
 /** Duration after which a race operation is reported as slow. */
 const SLOW_RACE_OPERATION_MS = 2_000;
 
@@ -44,22 +41,16 @@ export type HostOperations = Readonly<{
 
 /** Owns server activity accounting and multiplayer operation delivery. */
 export function useHostOperations({postOperation}: HostOperationOptions): HostOperations {
-  /** Number of global server operations whose activity window remains open. */
+  /** Number of outstanding server operations. */
   const [pendingOperations, setPendingOperations] = useState(0);
 
-  /** Runs an operation while maintaining non-flashing activity state. */
+  /** Blocks duplicate input only for the actual operation lifetime. */
   const withActivity = useCallback(async <Result>(operation: () => Promise<Result>): Promise<Result> => {
-    /** Wall-clock start used only for minimum UI visibility. */
-    const startedAt = Date.now();
     setPendingOperations((current) => current + 1);
     try {
       return await operation();
     } finally {
-      /** Remaining activity-display duration. */
-      const remainingTime = Math.max(0, MINIMUM_ACTIVITY_VISIBILITY_MS - (Date.now() - startedAt));
-      window.setTimeout(() => {
-        setPendingOperations((current) => Math.max(0, current - 1));
-      }, remainingTime);
+      setPendingOperations((current) => Math.max(0, current - 1));
     }
   }, []);
 

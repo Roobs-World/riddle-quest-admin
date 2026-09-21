@@ -29,8 +29,8 @@
 }
 .game-modal:has(> .modal-x) > h2 {
   width: 100%;
-  padding-inline-end: 72px;
-  text-align: left;
+  padding-inline: 52px;
+  text-align: center;
 }
 .game-modal.modal-achievements,
 .game-modal.modal-profile,
@@ -101,9 +101,8 @@
   overflow: hidden;
   border: 5px solid #fec880;
   border-radius: 38px;
-  background:
-    repeating-conic-gradient(from -12deg at 50% 48%, rgba(254, 200, 128, 0.26) 0 10deg, transparent 10deg 22deg),
-    #fff5df;
+  background: #e8e5eb;
+  border-color: #86778d;
   color: #000;
 }
 .modal-continue > h2 {
@@ -151,7 +150,7 @@
   min-height: 50px;
   border-radius: 12px;
   background: #ff8a00;
-  color: #fff;
+  color: #172930;
   font:
     400 19px/1 "Poetsen One",
     "Poppins",

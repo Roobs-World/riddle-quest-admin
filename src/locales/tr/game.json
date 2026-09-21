@@ -20,7 +20,6 @@
     "SIGNING_IN": "Giris yapiliyor...",
     "GUEST_WARNING": "Misafir olarak oyna veya ilerleme, jeton ve lider tablosunu esitlemek icin giris yap.",
     "HOST_STATUS_READY": "Host baglandi",
-    "HOST_STATUS_WAITING": "Host sarmalayici bekleniyor",
     "STARTUP_CONNECTING": "Jest'e bağlanılıyor…",
     "STARTUP_PLAYER": "Oyuncu hesabı yükleniyor…",
     "STARTUP_PROGRESS": "Kayıtlı ilerleme yükleniyor…",

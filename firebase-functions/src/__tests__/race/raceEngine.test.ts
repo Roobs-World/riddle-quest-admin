@@ -158,14 +158,9 @@ describe("Race to 10 authoritative engine", () => {
     ).toThrow("No unrevealed race hint");
   });
 
-  it("requires a guess before a manual skip and then adds the heavy 45-second penalty", () => {
-    expect(() => applyRaceSkip(createRun(), {riddleId: "riddle-1"}, STARTED_AT + 2_000)).toThrow(
-      "Submit at least one guess",
-    );
-    /** Provides wrong behavior. */
-    const wrong = applyRaceGuess(createRun(), {riddleId: "riddle-1", guess: "xxxxx"}, STARTED_AT + 2_000);
-    /** Provides skipped behavior. */
-    const skipped = applyRaceSkip(wrong.run, {riddleId: "riddle-1"}, STARTED_AT + 4_000);
+  it("allows an immediate manual skip with the heavy 45-second penalty", () => {
+    /** Captures skipped for this regression check. */
+    const skipped = applyRaceSkip(createRun(), {riddleId: "riddle-1"}, STARTED_AT + 4_000);
     expect(skipped.skipPenaltyMs).toBe(RACE_SKIP_PENALTY_MS);
     expect(skipped.currentPosition).toBe(1);
     expect(skipped.correctCount).toBe(0);

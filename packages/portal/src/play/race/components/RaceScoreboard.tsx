@@ -44,9 +44,6 @@ export function RaceScoreboard({
                 count: Math.max(0, RACE_TARGET_CORRECT - run.correctCount),
               })}
             </span>
-            <span id="race-attempts">
-              {tr("RaceTo10.GUESSES_REMAINING", {count: run.currentRiddle.guessesRemaining})}
-            </span>
           </div>
         )}
         {feedback && (

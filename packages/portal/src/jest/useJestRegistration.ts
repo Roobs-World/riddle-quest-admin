@@ -63,7 +63,12 @@ export function useJestRegistration({
   /** Provides completing ref behavior. */
   const completingRef = useRef(false);
   /** Provides source ref behavior. */
-  const sourceRef = useRef<RegistrationSource>("post_instructions");
+  const sourceRef = useRef<RegistrationSource>("profile");
+  /** Records reward dismissal even if optional milestone persistence is still pending. */
+  const victoryDismissedRef = useRef(false);
+  /** Holds the automatic prompt until the player finishes the reward sequence. */
+  const awaitingVictoryDismissalRef = useRef(false);
+
 
   /** Provides complete behavior. */
   const complete = useCallback(() => {
@@ -164,6 +169,14 @@ export function useJestRegistration({
         window.dispatchEvent(new CustomEvent("riddle-quest:registration-prompt-closed", {detail: {registered: true}}));
         return;
       }
+      if (source === "authoritative_win") {
+        if (!victoryDismissedRef.current) {
+          awaitingVictoryDismissalRef.current = true;
+          return;
+        }
+        victoryDismissedRef.current = false;
+        awaitingVictoryDismissalRef.current = false;
+      }
       sourceRef.current = source;
       if (!overlayRef.current) {
         /** Provides overlay behavior. */
@@ -246,14 +259,21 @@ export function useJestRegistration({
   }, [complete, platform, sessionRef, trackFunnel, withPlatformActivity]);
 
   useEffect(() => {
-    /** Provides open after instructions behavior. */
-    const openAfterInstructions = () => open("post_instructions", false);
-    window.addEventListener("riddle-quest:registration-prompt-opened", openAfterInstructions);
+    /** Opens signup only after a voluntary profile action. */
+    const openFromProfile = () => open("profile", true);
+    /** Hands ownership to signup after every win/achievement panel has closed. */
+    const onVictoryDismissed = () => {
+      victoryDismissedRef.current = true;
+      if (awaitingVictoryDismissalRef.current) open("authoritative_win", true);
+    };
+    window.addEventListener("riddle-quest:victory-dismissed", onVictoryDismissed);
+    window.addEventListener("riddle-quest:registration-prompt-opened", openFromProfile);
     window.addEventListener("riddle-quest:register-player", register);
     window.addEventListener("riddle-quest:login-player", login);
     window.addEventListener("riddle-quest:dismiss-registration", dismiss);
     return () => {
-      window.removeEventListener("riddle-quest:registration-prompt-opened", openAfterInstructions);
+      window.removeEventListener("riddle-quest:victory-dismissed", onVictoryDismissed);
+      window.removeEventListener("riddle-quest:registration-prompt-opened", openFromProfile);
       window.removeEventListener("riddle-quest:register-player", register);
       window.removeEventListener("riddle-quest:login-player", login);
       window.removeEventListener("riddle-quest:dismiss-registration", dismiss);

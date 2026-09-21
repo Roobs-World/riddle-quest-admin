@@ -2,3 +2,7 @@
 #root .game-modal-backdrop {
   align-items: center;
 }
+
+.jest-registration-alert .play-text-button {
+  color: #793813;
+}

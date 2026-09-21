@@ -291,7 +291,10 @@ describe("race presentation components", () => {
       categoryId: "science",
       requestId: "request-components",
     });
-    expect(renderToString(<RaceCountdown countdown={3} loading coins={1_250} onClose={noop} />)).toContain("1,250");
+    /** Captures loading html for this regression check. */
+    const loadingHtml = renderToString(<RaceCountdown countdown={3} loading coins={1_250} onClose={noop} />);
+    expect(loadingHtml).not.toContain("<span>3</span>");
+    expect(loadingHtml).not.toContain("race-coin-balance");
     expect(renderToString(<RaceCountdown countdown={0} loading={false} coins={0} onClose={noop} />)).toContain("GO!");
     expect(
       renderToString(
@@ -323,6 +326,9 @@ describe("race presentation components", () => {
         onSkip={noop}
       />,
     );
+    expect(gameplayHtml).not.toContain('race-coin-balance');
+    expect(gameplayHtml).not.toContain('id="race-attempts"');
+    expect(gameplayHtml).not.toMatch(/<button disabled=""><svg[^>]*>.*?<span>Skip/);
     expect(gameplayHtml).toContain('class="keyboard"');
     expect(gameplayHtml).toContain("+15 seconds");
     expect(gameplayHtml).toContain("+45 seconds");

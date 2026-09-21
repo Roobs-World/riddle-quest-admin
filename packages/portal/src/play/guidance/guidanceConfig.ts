@@ -93,8 +93,8 @@ export function createTooltipTourStorageKey(tourName: string, userId?: string): 
 }
 
 /** Returns the onboarding step count for registered and guest players. */
-export function getOnboardingTotalSteps(onboardingStep: number, platformRegistered?: boolean): number {
-  return onboardingStep === 2 || platformRegistered === false ? 3 : 2;
+export function getOnboardingTotalSteps(): number {
+  return 2;
 }
 
 /** Returns the main tour, omitting the unavailable skip action in challenge mode. */

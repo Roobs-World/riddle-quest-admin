@@ -20,7 +20,6 @@
     "SIGNING_IN": "Entrando...",
     "GUEST_WARNING": "Jogue como convidado ou entre para sincronizar progresso, moedas e ranking.",
     "HOST_STATUS_READY": "Host conectado",
-    "HOST_STATUS_WAITING": "Aguardando o invólucro host",
     "STARTUP_CONNECTING": "Conectando ao Jest…",
     "STARTUP_PLAYER": "Carregando a conta do jogador…",
     "STARTUP_PROGRESS": "Carregando o progresso salvo…",

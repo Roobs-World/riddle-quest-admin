@@ -637,33 +637,35 @@ describeBrowser("Jest authentication integration", () => {
     await context.close();
   });
 
-  it("prompts only after instructions and dismisses without treating the guest as registered", async () => {
-    /** Provides {context, page} behavior. */
+  it("lets a guest play before any automatic signup prompt", async () => {
+    /** Fresh guest with no prior milestone or onboarding. */
     const {context, page} = await openHarness(browser, {customName: "Nova"});
-    await page.getByRole("button", {name: /let's play/i}).waitFor({timeout: 15_000});
+    await enterRegisteredGame(page);
     expect((await getHarnessState(page)).overlayOptions).toEqual([]);
-    await page.getByRole("button", {name: /let's play/i}).click();
+    expect(await page.getByText("Keep your progress", {exact: true}).count()).toBe(0);
+    await page.locator('.keyboard').getByRole('button', {name: /^P$/}).click();
+    expect(await page.getByRole('button', {name: /^letter 1: p$/i}).isVisible()).toBe(true);
     expect((await getHarnessState(page)).overlayOptions).toEqual([]);
-    await page.getByRole("button", {name: /got it/i}).click();
+    for (const letter of ["I", "A", "N", "O"]) {
+      await page.locator('.keyboard').getByRole('button', {name: letter, exact: true}).click();
+    }
+    await page.locator('.game-input-actions').getByRole('button', {name: /submit/i}).click();
+    await page.waitForFunction(() => (window as typeof window & {
+      /** Captured provider calls and preferences from the injected SDK. */
+      __RIDDLE_QUEST_JEST_AUTH_TEST__: AuthHarnessState;
+    }).__RIDDLE_QUEST_JEST_AUTH_TEST__.preferenceWrites.some(value => value.firstMilestoneMarked === true));
+    expect((await getHarnessState(page)).overlayOptions).toEqual([]);
+    await page.locator('.modal-victory').waitFor();
+    for (let step = 0; step < 6 && await page.locator('.modal-victory').count(); step += 1) {
+      expect(await page.locator('.jest-registration-alert').count()).toBe(0);
+      if (await page.getByRole('button', {name: /tap the chest/i}).isVisible()) {
+        await page.getByRole('button', {name: /tap the chest/i}).click();
+      }
+      await page.waitForFunction(() => !document.querySelector<HTMLButtonElement>('.reward-continue')?.disabled);
+      await page.locator('.reward-continue').click();
+    }
     await page.getByText("Keep your progress", {exact: true}).waitFor();
-    await page.getByText("Welcome, Nova.").waitFor();
-    expect((await getHarnessState(page)).overlayOptions).toEqual([
-      {
-        theme: "dark",
-        message: "Keep my Riddle Quest progress! {{registrationCode}} is my registration code.",
-        source: "post_instructions",
-        campaign: "jest_onboarding",
-        reference: "registration_post_instructions_v1",
-        customName: "Nova",
-      },
-    ]);
-    await page.getByRole("button", {name: /play as guest/i}).click();
-    await page.getByText("Keep your progress", {exact: true}).waitFor({state: "detached"});
-    /** Provides state behavior. */
-    const state = await getHarnessState(page);
-    expect(state.calls).toContain("sdk.registration.closeButtonAction");
-    expect(state.backendExchanges).toHaveLength(1);
-    expect(state.preferenceWrites.some((value) => typeof value.registrationPromptDismissedAt === "number")).toBe(true);
+    expect((await getHarnessState(page)).overlayOptions).toEqual([expect.objectContaining({source: "authoritative_win"})]);
     await context.close();
   });
 
@@ -840,6 +842,8 @@ describeBrowser("Jest authentication integration", () => {
     });
     await enterRegisteredGame(creator.page);
     await openProfileAfterGuidance(creator.page);
+    expect(await creator.page.locator('.profile-identity').innerText()).toContain('Authenticated Solver');
+    expect(await creator.page.locator('.profile-identity input[type=file]').count()).toBe(0);
     /** Provides invite button behavior. */
     const inviteButton = creator.page.getByRole("button", {name: /invite a friend/i});
     await inviteButton.waitFor({state: "visible"});
@@ -883,9 +887,9 @@ describeBrowser("Jest authentication integration", () => {
     await recipient.page.getByText("Authenticated Solver invited you to play.", {exact: true}).waitFor();
     expect((await getHarnessState(recipient.page)).overlayOptions).toContainEqual(
       expect.objectContaining({
-        source: "post_instructions",
+        source: "profile",
         campaign: "open_invite_v1",
-        reference: "registration_post_instructions_v1",
+        reference: "registration_profile_v1",
         acquisitionReference: "profile_invite_v1",
         inviteKind: "open",
         inviterName: "Authenticated Solver",
@@ -1154,12 +1158,13 @@ describeBrowser("Jest authentication integration", () => {
     const countdownRail = creator.page.locator(".race-countdown-rail");
     await countdownRail.waitFor();
     await creator.page.waitForTimeout(1_200);
-    expect(await creator.page.locator(".race-countdown > span").innerText()).toBe("3");
+    expect(await creator.page.locator(".race-countdown > span").count()).toBe(0);
     expect(await creator.page.locator(".race-countdown > p").innerText()).toMatch(/loading/i);
     expect(await creator.page.locator(".race-topbar").count()).toBe(0);
     expect(await countdownRail.getByText(/recorded head-to-head/i).isVisible()).toBe(true);
-    expect(await countdownRail.locator(".race-coin-balance").isVisible()).toBe(true);
+    expect(await countdownRail.locator(".race-coin-balance").count()).toBe(0);
     expect(await countdownRail.getByRole("button", {name: /close race to 10/i}).isVisible()).toBe(true);
+    await creator.page.locator(".race-countdown > span").waitFor();
     /** Provides countdown center offset behavior. */
     const countdownCenterOffset = await creator.page.locator(".race-countdown > span").evaluate((element) => {
       /** Provides rect behavior. */
@@ -1208,8 +1213,8 @@ describeBrowser("Jest authentication integration", () => {
           statusInRail: Boolean(gameplay.querySelector(".race-scoreboard .race-rail-status")),
           statusInGameInfo: Boolean(gameplay.querySelector(".race-rail-game-info > .race-rail-status")),
           statusInRiddle: Boolean(gameplay.querySelector(".race-riddle-surface .race-rail-status")),
-          statusIsRightOfRiddle: Boolean(status && riddle && status.left >= riddle.right),
-          railIsRightOfRiddle: Boolean(rail && riddle && rail.left >= riddle.right),
+          statusIsAboveRiddle: Boolean(status && riddle && status.bottom <= riddle.top),
+          railIsAboveRiddle: Boolean(rail && riddle && rail.bottom <= riddle.top),
         };
       });
     /** Provides expected multiplayer layout behavior. */
@@ -1217,8 +1222,8 @@ describeBrowser("Jest authentication integration", () => {
       statusInRail: true,
       statusInGameInfo: true,
       statusInRiddle: false,
-      statusIsRightOfRiddle: true,
-      railIsRightOfRiddle: true,
+      statusIsAboveRiddle: true,
+      railIsAboveRiddle: true,
     };
     expect(await getMultiplayerLayout()).toEqual(expectedMultiplayerLayout);
     await creator.page.setViewportSize({width: 900, height: 844});
@@ -1368,9 +1373,9 @@ describeBrowser("Jest authentication integration", () => {
     expect(state.calls).toContain("sdk.login");
     expect(state.loginPayloads).toEqual([
       {
-        source: "post_instructions",
+        source: "profile",
         campaign: "direct_to_game_registration_v2",
-        reference: "registration_post_instructions_v1",
+        reference: "registration_profile_v1",
       },
     ]);
     expect(state.backendExchanges.at(-1)).toBe("signed:jest-auth-player-stable:true");

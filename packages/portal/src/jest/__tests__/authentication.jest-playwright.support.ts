@@ -3,10 +3,11 @@ import type {Page} from "@playwright/test";
 
 /** Provides advance to registration behavior. */
 export const advanceToRegistration = async (page: Page) => {
-  await page.getByRole("button", {name: /let's play/i}).click();
-  await page.getByRole("button", {name: /got it/i}).click();
+  await enterRegisteredGame(page);
+  await openProfileAfterGuidance(page);
+  await page.getByRole("button", {name: /upgrade account/i}).click();
+  await page.locator('.modal-profile').waitFor({state: 'detached'});
   await page.getByText("Keep your progress", {exact: true}).waitFor();
-  expect(await page.locator(".onboarding-progress").textContent()).toBe("3/3");
   expect(await page.getByRole("button", {name: /^register$/i}).isVisible()).toBe(true);
   expect(await page.getByRole("button", {name: /^log in$/i}).isVisible()).toBe(true);
   expect(await page.getByRole("button", {name: /play as guest/i}).isVisible()).toBe(true);
@@ -120,7 +121,11 @@ export const solveFakeRace = async (
     const submitLoader = page.locator(".race-operation-loader");
     /** Loads er visible. */
     const loaderVisible = submitLoader.waitFor({state: "visible", timeout: 1_000});
-    if (answer === "book" && options.expectChainedSubmitLoader) await loaderVisible;
+    if (answer === "book" && options.expectChainedSubmitLoader) {
+      await loaderVisible;
+      expect(await submitLoader.evaluate(element => element.getBoundingClientRect().height)).toBeLessThanOrEqual(6);
+      expect(await submitLoader.evaluate(element => getComputedStyle(element).pointerEvents)).toBe("none");
+    }
     else await loaderVisible.catch(() => undefined);
     if (answer !== "book") {
       await Promise.all([

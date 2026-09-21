@@ -72,7 +72,6 @@
     "YOU": "나",
     "RIDDLES_REMAINING": "남은 문제 {count}개",
     "ANSWER_LABEL": "정답",
-    "GUESSES_REMAINING": "남은 시도 {count}회",
     "HINT_BUTTON": "힌트",
     "SUBMIT": "제출",
     "SKIP_BUTTON": "건너뛰기",

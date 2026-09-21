@@ -70,6 +70,8 @@ export function RaceTo10Game({
   const [challenge, setChallenge] = useState<RaceChallengePreview | null>(null);
   /** Completed race results available in the multiplayer inbox. */
   const [inboxItems, setInboxItems] = useState<RaceInboxItem[]>([]);
+  /** Briefly reuses this mounted player session’s activity results. */
+  const inboxLoadedAtRef = useRef(0);
   /** Provides [tournament, set tournament] behavior. */
   const [tournament, setTournament] = useState<ListFacebookTournamentResponse | null>(null);
   /** Provides [tournament loading, set tournament loading] behavior. */
@@ -167,7 +169,7 @@ export function RaceTo10Game({
   /** Opens and refreshes the multiplayer results inbox. */
   const showInbox = useCallback(() => {
     setStage("inbox");
-    send("raceInbox", "game:listRaceInbox", {limit: 20});
+    if (Date.now() - inboxLoadedAtRef.current >= 30_000) send("raceInbox", "game:listRaceInbox", {limit: 20});
     if (contextBoard) {
       setContextBoardLoading(true);
       void contextBoard
@@ -279,7 +281,8 @@ export function RaceTo10Game({
           /** Provides inbox behavior. */
           const inbox = ListRaceInboxResponseSchema.parse(message.payload.data);
           setInboxItems(inbox.items);
-          setStage("inbox");
+          inboxLoadedAtRef.current = Date.now();
+          // Navigation belongs to the player; a delayed refresh only updates data.
           analytics("race_inbox_viewed", {resultCount: inbox.items.length});
         } else if (operation === "raceBlock") {
           /** Provides target user id behavior. */
@@ -459,6 +462,7 @@ export function RaceTo10Game({
     const rivalryIdForStart = startContext ? startContext.rivalryChallengeId : rivalryChallengeId;
     analytics("race_category_selected", {categoryId});
     if (rivalryChallengeIdRef.current) analytics("race_counter_challenge_started", {categoryId});
+    inboxLoadedAtRef.current = 0;
     setCountdown(RACE_COUNTDOWN_START);
     setStage("countdown");
     send("raceStart", "game:startRace", challengeIdForStart ? {locale, challengeId: challengeIdForStart} : {locale, categoryId, ...(rivalryIdForStart ? {rivalryChallengeId: rivalryIdForStart} : {})});
@@ -480,7 +484,7 @@ export function RaceTo10Game({
       riddleId: run.currentRiddle.riddleId,
     });
   };
-  /** Requests a server-authoritative skip after the first guess. */
+  /** Requests a server-authoritative skip with the published time penalty. */
   const skip = () => {
     if (!run?.currentRiddle || pending) return;
     send("raceSkip", "game:skipRaceRiddle", {runId: run.runId, riddleId: run.currentRiddle.riddleId});

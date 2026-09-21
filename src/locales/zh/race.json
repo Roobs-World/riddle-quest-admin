@@ -72,7 +72,6 @@
     "YOU": "你",
     "RIDDLES_REMAINING": "还剩 {count} 道题",
     "ANSWER_LABEL": "你的答案",
-    "GUESSES_REMAINING": "还可尝试{count}次",
     "HINT_BUTTON": "提示",
     "SUBMIT": "提交",
     "SKIP_BUTTON": "跳过",

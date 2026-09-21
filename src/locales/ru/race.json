@@ -72,7 +72,6 @@
     "YOU": "Вы",
     "RIDDLES_REMAINING": "Осталось загадок: {count}",
     "ANSWER_LABEL": "Ваш ответ",
-    "GUESSES_REMAINING": "Осталось попыток: {count}",
     "HINT_BUTTON": "Подсказка",
     "SUBMIT": "Ответить",
     "SKIP_BUTTON": "Пропустить",

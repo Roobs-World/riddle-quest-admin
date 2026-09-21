@@ -164,7 +164,7 @@ export function RaceInboxPanel({
           ))}
         </ol>
       ) : null}
-      {loading ? (
+      {loading && items.length === 0 ? (
         <p aria-live="polite">{tr("RaceTo10.RESULTS_LOADING")}</p>
       ) : items.length === 0 ? (
         <p>{tr("RaceTo10.RESULTS_EMPTY")}</p>

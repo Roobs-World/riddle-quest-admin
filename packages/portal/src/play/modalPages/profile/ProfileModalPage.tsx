@@ -1,3 +1,5 @@
+import chestUrl from "../../../../../../assets/images-web/chest-closed.png";
+import {useProviderProfile} from "../../ProviderProfileContext";
 import {useRef, useState} from "react";
 import type {ChangeEvent, KeyboardEvent} from "react";
 import type {GameModal, GameSessionState} from "../../gameSession";
@@ -13,6 +15,8 @@ export type ProfileModalPageProps = {
   profile: GameSessionState["profile"];
   /** Whether the current Jest player has completed platform registration. */
   platformRegistered?: boolean;
+  /** Dismisses the profile before opening provider-owned registration. */
+  onClose?: () => void;
   /** Opens a related profile modal. */
   onOpenModal: (modal: Exclude<GameModal, null>) => void;
   /** Uploads a selected avatar through the existing host boundary. */
@@ -26,9 +30,16 @@ export function ProfileModalPage({
   profile,
   platformRegistered,
   onOpenModal,
+  onClose,
   onUpdateAvatar,
   onDeleteAccount,
 }: ProfileModalPageProps) {
+  /** Target-owned display identity, when supplied. */
+  const providerProfile = useProviderProfile();
+  /** Provider name with a localized fallback. */
+  const displayName = (providerProfile ? providerProfile.username : profile?.username) ?? tr("Profile.GUEST_USERNAME");
+  /** Provider avatar without altering account data. */
+  const avatarUrl = providerProfile ? providerProfile.avatarUrl : profile?.avatarUrl;
   /** Optional outbound sharing supplied by the active release target. */
   const referralSharing = useReferralSharing();
   /** Recoverable avatar-selection error shown within the profile page. */
@@ -113,13 +124,13 @@ export function ProfileModalPage({
     <div className="profile-page">
       <div className="profile-hero">
         <div className="profile-identity" data-tooltip="profileIdentity">
-          {platformRegistered === undefined ? (
+          {platformRegistered === undefined || providerProfile ? (
             <div className="profile-avatar-button">
-              {profile?.avatarUrl ? (
-                <img src={profile.avatarUrl} alt="" referrerPolicy="no-referrer" />
+              {avatarUrl ? (
+                <img src={avatarUrl} alt="" referrerPolicy="no-referrer" />
               ) : (
                 <span className="profile-avatar-fallback" aria-hidden="true">
-                  {(profile?.username ?? tr("Profile.GUEST_USERNAME")).slice(0, 1).toUpperCase()}
+                  {displayName.slice(0, 1).toUpperCase()}
                 </span>
               )}
             </div>
@@ -134,11 +145,11 @@ export function ProfileModalPage({
             }
             onClick={chooseAvatar}
           >
-            {profile?.avatarUrl ? (
-              <img src={profile.avatarUrl} alt="" referrerPolicy="no-referrer" />
+            {avatarUrl ? (
+              <img src={avatarUrl} alt="" referrerPolicy="no-referrer" />
             ) : (
               <span className="profile-avatar-fallback" aria-hidden="true">
-                {(profile?.username ?? tr("Profile.GUEST_USERNAME")).slice(0, 1).toUpperCase()}
+                {displayName.slice(0, 1).toUpperCase()}
               </span>
             )}
             <span className="profile-avatar-edit" aria-hidden="true">
@@ -161,10 +172,18 @@ export function ProfileModalPage({
             </small>
           ) : null}
           <div>
-            <strong>{profile?.username ?? tr("Profile.GUEST_USERNAME")}</strong>
-            <button className="play-text-button" onClick={() => onOpenModal("username")}>
+            <strong>{displayName}</strong>
+            {providerProfile && platformRegistered === false && (
+              <button className="play-text-button" onClick={() => {
+                onClose?.();
+                window.dispatchEvent(new CustomEvent("riddle-quest:registration-prompt-opened"));
+              }}>
+                {tr("Profile.UPGRADE_ACCOUNT_BUTTON")}
+              </button>
+            )}
+            {!providerProfile && <button className="play-text-button" onClick={() => onOpenModal("username")}>
               {tr("Profile.EDIT_BUTTON")}
-            </button>
+            </button>}
           </div>
         </div>
         <section className="rank-card" data-tooltip="profileProgression">
@@ -237,8 +256,8 @@ export function ProfileModalPage({
         <button data-tooltip="profileLeaderboard" onClick={() => onOpenModal("leaderboard")}>
           {tr("Leaderboard.TITLE")}
         </button>
-        <button data-tooltip="profileTreasure" onClick={() => onOpenModal("treasure")}>
-          {tr("Profile.TREASURE_CHEST_TITLE")}
+        <button className="profile-treasure-button" data-tooltip="profileTreasure" aria-label={tr("Profile.TREASURE_CHEST_TITLE")} onClick={() => onOpenModal("treasure")}>
+          <img src={chestUrl} alt="" width="72" height="64" />
         </button>
       </div>
       <div className="profile-danger-zone">

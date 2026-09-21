@@ -305,6 +305,20 @@ describeBrowser("standalone Jest browser game", () => {
       expect(portraitGameLayout.bottomGap).toBeLessThanOrEqual(1);
       expect(portraitGameLayout.guessBoardWidth).toBeGreaterThan(300);
       expect(portraitGameLayout.scale).toBe(1);
+      /** Captures key height for this regression check. */
+      const keyHeight = await page.locator('.game-content .key').first().evaluate(element => element.getBoundingClientRect().height);
+      expect(keyHeight).toBeGreaterThanOrEqual(44);
+      /** Captures sound overlaps text for this regression check. */
+      const soundOverlapsText = await page.locator('.riddle-card').evaluate(card => {
+        /** Captures sound for this regression check. */
+        const sound = card.querySelector('.riddle-sound-button')!.getBoundingClientRect();
+        /** Captures text for this regression check. */
+        const text = card.querySelector('h1')!.getBoundingClientRect();
+        return sound.left < text.right && sound.right > text.left && sound.top < text.bottom && sound.bottom > text.top;
+      });
+      expect(soundOverlapsText).toBe(false);
+      await page.screenshot({path: "/tmp/jest-feedback-solo.png"});
+
 
       /** Provides main game coin balance behavior. */
       const mainGameCoinBalance = (await page.locator(".game-header .coin-pill strong").innerText()).trim();
@@ -358,6 +372,20 @@ describeBrowser("standalone Jest browser game", () => {
       /** Provides native answer input behavior. */
       const nativeAnswerInput = page.locator(".race-native-answer-input");
       await nativeAnswerInput.waitFor({state: "attached"});
+      expect(await page.locator('.race-gameplay .race-coin-balance').count()).toBe(0);
+      expect(await page.locator('.race-actions button').last().isEnabled()).toBe(true);
+      /** Captures race layout for this regression check. */
+      const raceLayout = await page.locator('.race-gameplay').evaluate(game => {
+        /** Captures bar for this regression check. */
+        const bar = game.querySelector('.race-scoreboard')!.getBoundingClientRect();
+        /** Captures riddle for this regression check. */
+        const riddle = game.querySelector('.race-riddle-surface')!.getBoundingClientRect();
+        return {above: bar.bottom <= riddle.top, widthDifference: Math.abs(bar.width - riddle.width)};
+      });
+      expect(raceLayout.above).toBe(true);
+      expect(raceLayout.widthDifference).toBeLessThanOrEqual(1);
+      await page.screenshot({path: "/tmp/jest-feedback-race.png"});
+
       for (const {committed, rendered} of [
         {committed: "e\u0301", rendered: "é"},
         {committed: "نَ", rendered: "نَ"},
@@ -456,6 +484,16 @@ describeBrowser("standalone Jest browser game", () => {
       /** Provides activity hub tab behavior. */
       const activityHubTab = hubTablist.getByRole("tab", {name: /^activity$/i});
       expect(await hubTablist.getByRole("tab").count()).toBe(2);
+      await page.evaluate(() => {
+        /** Holds one delayed Activity response until the player has navigated away. */
+        const holdInbox = (event: Event) => {
+          if ((event as CustomEvent).detail?.payload?.operation !== "raceInbox") return;
+          event.stopImmediatePropagation();
+          window.removeEventListener("riddle-quest:host-to-game", holdInbox, true);
+          Object.assign(window, {__delayedRaceInbox: (event as CustomEvent).detail});
+        };
+        window.addEventListener("riddle-quest:host-to-game", holdInbox, true);
+      });
       await playHubTab.focus();
       await playHubTab.press("End");
       await page.waitForFunction(
@@ -463,7 +501,19 @@ describeBrowser("standalone Jest browser game", () => {
       );
       expect(await activityHubTab.getAttribute("aria-selected")).toBe("true");
       expect(await activityHubTab.evaluate((element) => element === document.activeElement)).toBe(true);
+      await page.waitForFunction(() => "__delayedRaceInbox" in window);
       await playHubTab.click();
+      await page.evaluate(async () => {
+        /** Captures the delayed response without changing its request correlation. */
+        const delayedWindow = window as typeof window & {
+          /** Delayed harness-only host payload. */
+          __delayedRaceInbox?: unknown;
+        };
+        window.dispatchEvent(new CustomEvent("riddle-quest:host-to-game", {detail: delayedWindow.__delayedRaceInbox}));
+        delete delayedWindow.__delayedRaceInbox;
+        await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      });
+      expect(await playHubTab.getAttribute("aria-selected")).toBe("true");
       await playHubTab.focus();
       await playHubTab.press("ArrowRight");
       await page.waitForFunction(
@@ -602,10 +652,10 @@ describeBrowser("standalone Jest browser game", () => {
       });
       expect(compactLayout.documentHeight).toBeLessThanOrEqual(569);
       expect(compactLayout.navigationBottom).toBeLessThanOrEqual(569);
-      expect(compactLayout.keyHeight).toBeGreaterThanOrEqual(28);
-      expect(compactLayout.keyHeight).toBeLessThanOrEqual(32);
-      expect(compactLayout.keyboardHeight).toBeLessThanOrEqual(98);
-      expect(compactLayout.keyboardWidth).toBeLessThan(compactLayout.gameAreaWidth);
+      expect(compactLayout.keyHeight).toBeGreaterThanOrEqual(44);
+      expect(compactLayout.keyHeight).toBeLessThanOrEqual(48);
+      expect(compactLayout.keyboardHeight).toBeLessThanOrEqual(152);
+      expect(compactLayout.keyboardWidth).toBeLessThanOrEqual(compactLayout.gameAreaWidth + 1);
       expect(compactLayout.guessBoardWidth).toBeGreaterThanOrEqual(245);
       expect(compactLayout.scale).toBeGreaterThanOrEqual(0.92);
       expect(await compactPage.getByRole("region", {name: /virtual keyboard/i}).isVisible()).toBe(true);
@@ -922,6 +972,8 @@ describeBrowser("standalone Jest browser game", () => {
       expect(await page.locator(".game-content").evaluate((element) => (element as HTMLElement).inert)).toBe(true);
       await page.getByRole("button", {name: /^next$/i}).click();
       await page.getByRole("heading", {name: /nice job/i}).waitFor();
+      expect(await page.locator("#game-modal-title").evaluate(heading => getComputedStyle(heading).textAlign)).toBe("center");
+      await page.screenshot({path: "/tmp/jest-feedback-victory.png"});
       await expectAccessible(page, "victory reward");
       /** Provides victory chest behavior. */
       const victoryChest = page.getByRole("button", {name: /tap the chest/i});
@@ -1052,8 +1104,8 @@ describeBrowser("standalone Jest browser game", () => {
       // cannot starve a later renderer process.
       await context.close();
 
-      /** Provides low end page behavior. */
-      const lowEndPage = await browser.newPage({
+      /** Isolates low-end device settings while allowing accessibility analysis pages. */
+      const lowEndContext = await browser.newContext({
         viewport: {width: 360, height: 740},
         deviceScaleFactor: 2,
         hasTouch: true,
@@ -1062,6 +1114,8 @@ describeBrowser("standalone Jest browser game", () => {
           "Mozilla/5.0 (Linux; Android 11; Pixel 3a) AppleWebKit/537.36 " +
           "(KHTML, like Gecko) Chrome/124.0 Mobile Safari/537.36",
       });
+      /** Exercises the low-end gameplay and loss screens. */
+      const lowEndPage = await lowEndContext.newPage();
       await lowEndPage.addInitScript(() => {
         Object.assign(window, {__RIDDLE_QUEST_BROWSER_TEST__: true});
         Object.defineProperty(navigator, "hardwareConcurrency", {configurable: true, value: 4});
@@ -1071,6 +1125,7 @@ describeBrowser("standalone Jest browser game", () => {
           value: {effectiveType: "4g", saveData: false},
         });
         localStorage.setItem("riddleQuest:onboarding:jest-guest", "seen");
+        localStorage.setItem("riddleQuest:tooltipSequenceSeen:gameTour:v2:jest-guest", "seen");
         sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
       });
       await lowEndPage.goto("http://127.0.0.1:4178/?harness=jest");
@@ -1084,7 +1139,21 @@ describeBrowser("standalone Jest browser game", () => {
       expect(lowEndResources.some((resource) => /music-.*\.webm/.test(resource))).toBe(false);
       expect(lowEndResources.some((resource) => /vendor-three|SolarSystem/.test(resource))).toBe(false);
       expect(await lowEndPage.locator(".keyboard").isVisible()).toBe(true);
-      await lowEndPage.close();
+      // Exhaust attempts to verify the loss panel does not use the victory decoration.
+      for (let attempt = 0; attempt < 5; attempt += 1) {
+        for (let letter = 0; letter < 5; letter += 1) {
+          await lowEndPage.locator(".keyboard").getByRole("button", {name: /^X$/}).click();
+        }
+        await lowEndPage.locator(".game-input-actions").getByRole("button", {name: /submit/i}).click();
+        await lowEndPage.locator(".guess-row").nth(attempt).locator(".cell.red").first().waitFor();
+        if (attempt === 0) await lowEndPage.getByRole("button", {name: /got it/i}).click();
+      }
+      await lowEndPage.locator(".modal-continue").waitFor();
+      expect(await lowEndPage.locator(".modal-continue").evaluate(panel => getComputedStyle(panel).backgroundImage)).toBe("none");
+      expect(await lowEndPage.locator(".game-modal-backdrop > .spinning-wheel-graphic").count()).toBe(0);
+      await expectAccessible(lowEndPage, "out of attempts");
+      await lowEndPage.screenshot({path: "/tmp/jest-feedback-loss.png"});
+      await lowEndContext.close();
 
       /** Provides iframe page behavior. */
       const iframePage = await browser.newPage({viewport: {width: 390, height: 844}});
@@ -1136,40 +1205,15 @@ describeBrowser("standalone Jest browser game", () => {
         () => !(document.querySelector(".reward-continue") as HTMLButtonElement)?.disabled,
       );
       await purchaseContinue.click();
+      await registeredPage.locator('.game-shell-alert').waitFor({state: 'detached', timeout: 5_000});
       await registeredPage
         .getByRole("button", {name: /^profile$/i})
         .first()
         .click();
-      /** Provides avatar button behavior. */
-      const avatarButton = registeredPage.getByRole("button", {name: /upload from photo library/i});
-      await avatarButton.waitFor();
-      /** Provides avatar png behavior. */
-      const avatarPng = await registeredPage.evaluate(() => {
-        /** Provides canvas behavior. */
-        const canvas = document.createElement("canvas");
-        canvas.width = 8;
-        canvas.height = 8;
-        /** Provides context behavior. */
-        const context = canvas.getContext("2d");
-        if (!context) throw new Error("Canvas is unavailable");
-        context.fillStyle = "#8c5dbe";
-        context.fillRect(0, 0, 8, 8);
-        return canvas.toDataURL("image/png").split(",")[1];
-      });
-      /** Provides file chooser promise behavior. */
-      const fileChooserPromise = registeredPage.waitForEvent("filechooser");
-      await avatarButton.click();
-      /** Provides file chooser behavior. */
-      const fileChooser = await fileChooserPromise;
-      await fileChooser.setFiles({
-        name: "avatar.png",
-        mimeType: "image/png",
-        buffer: Buffer.from(avatarPng, "base64"),
-      });
-      await registeredPage.locator(".profile-avatar-button img").waitFor({timeout: 15000});
-      expect(await registeredPage.locator(".profile-avatar-button img").getAttribute("src")).toMatch(
-        /^data:image\/webp;base64,/,
-      );
+      expect(await registeredPage.locator('.profile-avatar-fallback').isVisible()).toBe(true);
+      expect(await registeredPage.getByRole('button', {name: /upload from photo library/i}).count()).toBe(0);
+      expect(await registeredPage.locator('.profile-treasure-button img').isVisible()).toBe(true);
+      await registeredPage.screenshot({path: "/tmp/jest-feedback-profile.png"});
       await registeredPage.close();
     } finally {
       await browser.close();

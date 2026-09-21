@@ -19,9 +19,7 @@ describe("guidance configuration", () => {
   });
 
   it("selects onboarding and game tour steps for each player mode", () => {
-    expect(getOnboardingTotalSteps(2, true)).toBe(3);
-    expect(getOnboardingTotalSteps(0, false)).toBe(3);
-    expect(getOnboardingTotalSteps(0, true)).toBe(2);
+    expect(getOnboardingTotalSteps()).toBe(2);
     expect(getGameTour("classic")).toEqual(["gameCoins", "gameHint", "submitAnswer", "gameSkip"]);
     expect(getGameTour("challenge")).toEqual(["gameCoins", "gameHint", "submitAnswer"]);
   });

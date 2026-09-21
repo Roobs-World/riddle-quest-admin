@@ -43,42 +43,7 @@ describe("guidance views", () => {
     expect(welcomeHtml).toContain('tabindex="-1"');
     expect(instructionsHtml).toContain("onboarding-clues");
     expect(instructionsHtml).toContain("Got It!");
-  });
-
-  it("renders the Jest registration onboarding page", () => {
-    /** Provides html behavior. */
-    const html = renderToString(
-      <OnboardingOverlay
-        cardRef={createRef<HTMLDivElement>()}
-        onboardingStep={2}
-        registrationName="Nova"
-        totalSteps={3}
-        welcomeOnly={false}
-        onAdvance={noop}
-      />,
-    );
-
-    expect(html).toContain("Nova");
-    expect(html).toContain("Register");
-    expect(html).toContain("Play as guest");
-  });
-
-  it("shows the inviter identity on attributed registration", () => {
-    /** Provides html behavior. */
-    const html = renderToString(
-      <OnboardingOverlay
-        cardRef={createRef<HTMLDivElement>()}
-        onboardingStep={2}
-        registrationName="Generic welcome"
-        registrationInviterName="Orion"
-        totalSteps={3}
-        welcomeOnly={false}
-        onAdvance={noop}
-      />,
-    );
-
-    expect(html).toContain("Orion invited you to play");
-    expect(html).not.toContain("Generic welcome");
+    expect(instructionsHtml).not.toContain("Register");
   });
 
   it("renders centered and targeted tooltip presentations", () => {

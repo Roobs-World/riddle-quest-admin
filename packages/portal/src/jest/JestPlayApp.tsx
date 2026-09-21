@@ -1,3 +1,4 @@
+import {ProviderProfileContext} from "../play/ProviderProfileContext";
 import {ShopSubscriptionContext} from "../play/modalPages/commerce/ShopSubscriptionContext";
 import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {PlayHostApp} from "../play/PlayHostApp";
@@ -479,6 +480,7 @@ export function JestPlayApp() {
           onDismiss={dismissRegistration}
         />
       ) : null}
+      <ProviderProfileContext.Provider value={{username: session.profile?.username ?? null, avatarUrl: session.profile?.avatarUrl ?? null}}>
       <ShopSubscriptionContext.Provider value={subscriptionsEnabled ? subscriptionActions : null}>
         <PlayHostApp
           session={createHostedPlaySession({
@@ -509,6 +511,7 @@ export function JestPlayApp() {
           onAccountDeleted={clearPlayerState}
         />
       </ShopSubscriptionContext.Provider>
+      </ProviderProfileContext.Provider>
     </>
   );
 }

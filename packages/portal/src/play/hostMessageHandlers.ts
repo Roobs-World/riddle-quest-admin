@@ -235,13 +235,12 @@ export const createPlayHostMessageHandlers = ({
   completeGame: async (message) => {
     try {
       /** Provides result behavior. */
-      const result = await withServerActivity(async () => {
-        /** Provides completion behavior. */
-        const completion = await authority.gameplay.completeGame(message.payload);
-        await onAuthoritativeComplete?.(message.payload, completion);
-        return completion;
-      });
+      const result = await withServerActivity(() => authority.gameplay.completeGame(message.payload));
       postOperation(message.requestId, "completeGame", true, result);
+      // Rewards are already authoritative. Optional notification/storage work must
+      // neither delay their presentation nor turn a completed win into an error.
+      void Promise.resolve().then(() => onAuthoritativeComplete?.(message.payload, result))
+        .catch(error => reportHostOperationError(error, "completeGame"));
       trackEvent("level_end", {
         game_mode: message.payload.gameMode,
         success: result.isCorrect,
@@ -456,7 +455,8 @@ export const createPlayHostMessageHandlers = ({
       const race = requireRaceAuthority(authority);
       /** Provides result behavior. */
       const result = await race.publishRace(message.payload);
-      await syncRaceAchievementProgress(result);
+      void Promise.resolve().then(() => syncRaceAchievementProgress(result))
+        .catch(error => reportHostOperationError(error, "racePublish"));
       return result;
     }),
   getRaceChallenge: (message) =>
@@ -471,8 +471,11 @@ export const createPlayHostMessageHandlers = ({
       const race = requireRaceAuthority(authority);
       /** Provides result behavior. */
       const result = await race.getRaceOutcome(message.payload.runId);
-      await syncRaceAchievementProgress(result);
-      await onAuthoritativeRaceResult?.(result);
+      // Present the confirmed outcome while optional profile and platform work finishes.
+      void Promise.resolve().then(async () => {
+        await syncRaceAchievementProgress(result);
+        await onAuthoritativeRaceResult?.(result);
+      }).catch(error => reportHostOperationError(error, "raceOutcome"));
       return result;
     }),
   listRaceInbox: (message) =>

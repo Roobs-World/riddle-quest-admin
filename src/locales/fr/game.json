@@ -20,7 +20,6 @@
     "SIGNING_IN": "Connexion...",
     "GUEST_WARNING": "Jouez en invite ou connectez-vous pour synchroniser progression, pieces et classement.",
     "HOST_STATUS_READY": "Hote connecte",
-    "HOST_STATUS_WAITING": "En attente de l'enveloppe hote",
     "STARTUP_CONNECTING": "Connexion à Jest…",
     "STARTUP_PLAYER": "Chargement du compte joueur…",
     "STARTUP_PROGRESS": "Chargement de la progression sauvegardée…",

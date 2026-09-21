@@ -20,7 +20,6 @@
     "SIGNING_IN": "Bezig met inloggen...",
     "GUEST_WARNING": "Speel als gast of log in om voortgang, munten en klassement te synchroniseren.",
     "HOST_STATUS_READY": "Host verbonden",
-    "HOST_STATUS_WAITING": "Wachten op host-wrapper",
     "STARTUP_CONNECTING": "Verbinden met Jest…",
     "STARTUP_PLAYER": "Spelersaccount laden…",
     "STARTUP_PROGRESS": "Opgeslagen voortgang laden…",

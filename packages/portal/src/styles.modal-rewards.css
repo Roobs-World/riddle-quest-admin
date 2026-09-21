@@ -1,3 +1,8 @@
+.game-modal.modal-victory > h2,
+.game-modal.modal-reward > h2 {
+  width: 100%;
+  text-align: center;
+}
 .game-modal.modal-shop {
   --modal-border-width: 4px;
   width: min(484px, 100%);
