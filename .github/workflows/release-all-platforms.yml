@@ -107,14 +107,16 @@ jobs:
           pnpm release:yalgames
           pnpm release:rando
           pnpm release:pwastore
-      - name: Record the successful release in the dashboard
+      - name: Verify packaged gameplay before recording readiness
+        run: pnpm test:release-artifacts:browser
+      - name: Record the verified release evidence in the dashboard
         run: node scripts/release/record-release-automation.mjs
         env:
           ITCH_BUTLER_CONFIGURED: ${{ secrets.ITCH_BUTLER_API_KEY != '' && vars.ITCH_GAME_TARGET != '' }}
           JEST_PUBLISH_CONFIGURED: ${{ secrets.JEST_GAME_UPLOAD_TOKEN != '' }}
           REDDIT_CONTRACTS_CONFIGURED: false
       - name: Verify every release target end to end
-        run: pnpm test:release-targets:e2e
+        run: node scripts/release/verify-release-target-e2e.mjs
       - name: Install release dashboard dependencies
         run: npm ci
         working-directory: docs/reports/platform-release-readiness

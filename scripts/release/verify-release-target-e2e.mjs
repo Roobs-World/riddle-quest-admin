@@ -8,6 +8,8 @@ import {fileURLToPath} from "node:url";
 import {listHtml5DistributionDefinitions} from "./package-html5-platform.mjs";
 import {listPlatformReleasePlans} from "./platform-releases.mjs";
 
+import {expectedName} from "./release-target-names.mjs";
+
 const execute = promisify(execFile);
 const repository = fileURLToPath(new URL("../..", import.meta.url));
 const snapshot = JSON.parse(await readFile(path.join(repository, "docs/reports/platform-release-readiness/src/data.json"), "utf8"));
@@ -17,19 +19,6 @@ const gatedTargets = new Map([
   ["Poki", /on hold/iu],
   ["LINE MINI App", /blocked|eligibility/iu],
 ]);
-const dashboardNames = new Map([
-  ["crazygames", "CrazyGames"], ["coolmath", "Coolmath Games"], ["armor", "Armor Games"],
-  ["htmlgames", "HTMLGames.com"], ["lagged", "Lagged"], ["telegram", "Telegram"],
-  ["microsoft-pwa", "Microsoft Store PWA"], ["y8", "Y8"], ["amazon", "Amazon Appstore Web App"],
-  ["jiogames", "JioGames HTML5"], ["gamepush", "GamePush Distribution"], ["softgames", "SOFTGAMES"],
-  ["wgplayground", "WGPlayground"], ["huawei", "Huawei Quick Game"], ["gameflare", "GameFlare Distribution"],
-  ["world", "World App Mini Apps"], ["farcaster", "Farcaster Mini Apps"], ["pi", "Pi Apps Platform"],
-  ["minipay", "MiniPay Mini Apps"], ["zoom", "Zoom App Marketplace"], ["pwa-directory", "PWA Directory"],
-  ["miro", "Miro Marketplace"], ["greenhouse", "Greenhouse Games"], ["ozogames", "OzoGames"],
-  ["slowden", "SlowDen"], ["noadsgames", "NoAdsGames"], ["gamesnacks", "Google GameSnacks"],
-]);
-
-const expectedName = (plan) => dashboardNames.get(plan.target) ?? plan.title.replace(/ (Basic Launch|pitch|review)$/u, "");
 const requireFile = async (relative) => access(path.join(repository, relative));
 const verifyZip = async (artifact, expectedPlatform) => {
   await requireFile(artifact);

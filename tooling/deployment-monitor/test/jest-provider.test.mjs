@@ -62,3 +62,7 @@ test("missing connection is explicit and provider failures cannot replace review
     fetcher: async () => new Response("private error", {status: 401})}), /Jest token refresh returned 401/);
   assert.equal(seed.queries.provider_daily_activity.rows[0].dailyActiveUsers, 2);
 });
+
+ test("analytics is bound to the production game documented for uploads", () => {
+  assert.deepEqual(jestGame, {teamId: "019faa67-d2a6-7169-aa29-a4411a3a3c3d", gameId: "019faa68-f3ec-755d-9ab5-c887fb426801"});
+});

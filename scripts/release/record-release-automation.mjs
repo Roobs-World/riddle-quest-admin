@@ -1,135 +1,63 @@
 #!/usr/bin/env node
-import {readFile, rename, writeFile} from "node:fs/promises";
-import {fileURLToPath} from "node:url";
-import path from "node:path";
+import {createHash} from 'node:crypto';
+import {execFileSync} from 'node:child_process';
+import {readFile, rename, writeFile} from 'node:fs/promises';
+import {fileURLToPath, pathToFileURL} from 'node:url';
+import path from 'node:path';
+import {listPlatformReleasePlans} from './platform-releases.mjs';
+import {listHtml5DistributionDefinitions} from './package-html5-platform.mjs';
+import {expectedName} from './release-target-names.mjs';
 
-const repository = fileURLToPath(new URL("../..", import.meta.url));
-const snapshotPath = path.join(repository, "docs/reports/platform-release-readiness/src/data.json");
-const snapshot = JSON.parse(await readFile(snapshotPath, "utf8"));
-const completedAt = new Date().toISOString();
-const sha = (process.env.GITHUB_SHA || "local").slice(0, 12);
-const runId = process.env.GITHUB_RUN_ID || "local";
-const trigger = process.env.GITHUB_EVENT_NAME || "local";
+const repository = fileURLToPath(new URL('../..', import.meta.url));
 
-snapshot.generatedAt = completedAt;
-snapshot.queries.release_automation = {
-  rows: [
-    {platform: "All configured targets", status: "Packaging passed", trigger, revision: sha, completedAt,
-      evidence: runId === "local" ? "Local release automation run" : `GitHub Actions run ${runId}`},
-    {platform: "Jest", status: process.env.JEST_PUBLISH_CONFIGURED === "true" ? "Publish stage configured" : "Waiting for credentials",
-      trigger, revision: sha, completedAt, evidence: "Automatic publish requires JEST_GAME_UPLOAD_TOKEN in the jest-production environment"},
-    {platform: "Facebook", status: "Validated artifact ready", trigger, revision: sha, completedAt,
-      evidence: "The isolated Facebook Instant Games artifact passed its release adapter and target checks"},
-    {platform: "YouTube", status: "Immutable handoff ready", trigger, revision: sha, completedAt,
-      evidence: "build-youtube.zip, manifest and test report passed the YouTube upload preflight"},
-    {platform: "Reddit", status: process.env.REDDIT_CONTRACTS_CONFIGURED === "true" ? "Immutable handoff ready" : "Waiting for evidence",
-      trigger, revision: sha, completedAt, evidence: "Promotion requires six sanitized production contract fixtures"},
-    {platform: "Netflix", status: "Validated artifact ready", trigger, revision: sha, completedAt,
-      evidence: "The isolated Netflix candidate passed its build and boundary audit"},
-    {platform: "Yahoo", status: "Validated artifact ready", trigger, revision: sha, completedAt,
-      evidence: "The isolated Yahoo candidate passed its build and boundary audit"},
-    {platform: "itch.io", status: process.env.ITCH_BUTLER_CONFIGURED === "true" ? "Publish stage configured" : "Waiting for credentials",
-      trigger, revision: sha, completedAt, evidence: "Official Butler stage runs after the shared release artifact succeeds"},
-    {platform: "CrazyGames", status: "Manual upload handoff ready", trigger, revision: sha, completedAt,
-      evidence: "build-crazygames-basic.zip and its SHA-256 manifest are retained in the workflow artifact"},
-    {platform: "Newgrounds", status: "Manual upload handoff ready", trigger, revision: sha, completedAt,
-      evidence: "build-newgrounds.zip and its SHA-256 manifest are retained in the workflow artifact"},
-    {platform: "Game Jolt", status: "Manual upload handoff ready", trigger, revision: sha, completedAt,
-      evidence: "build-gamejolt.zip and its SHA-256 manifest are retained in the workflow artifact"},
-    {platform: "Coolmath Games", status: "Licensing pitch handoff ready", trigger, revision: sha, completedAt,
-      evidence: "build-coolmath-pitch.zip and its SHA-256 manifest are retained in the workflow artifact"},
-    {platform: "Armor Games", status: "Licensing pitch handoff ready", trigger, revision: sha, completedAt,
-      evidence: "build-armor-pitch.zip and its SHA-256 manifest are retained in the workflow artifact"},
-    {platform: "GamePix", status: "Manual review handoff ready", trigger, revision: sha, completedAt,
-      evidence: "build-gamepix-review.zip and its SHA-256 manifest are retained in the workflow artifact"},
-    {platform: "Addicting Games", status: "Manual review handoff ready", trigger, revision: sha, completedAt,
-      evidence: "build-addictinggames-review.zip and its SHA-256 manifest are retained in the workflow artifact"},
-    {platform: "HTMLGames.com", status: "Licensing pitch handoff ready", trigger, revision: sha, completedAt,
-      evidence: "build-htmlgames-pitch.zip and its SHA-256 manifest are retained in the workflow artifact"},
-    {platform: "PlayKovo", status: "Manual review handoff ready", trigger, revision: sha, completedAt,
-      evidence: "build-playkovo-review.zip and its SHA-256 manifest are retained in the workflow artifact"},
-    {platform: "Kongregate", status: "Manual upload handoff ready", trigger, revision: sha, completedAt,
-      evidence: "build-kongregate.zip and its SHA-256 manifest are retained in the workflow artifact"},
-    {platform: "Lagged", status: "Developer review handoff ready", trigger, revision: sha, completedAt,
-      evidence: "build-lagged-review.zip and its SHA-256 manifest are retained in the workflow artifact"},
-    {platform: "Google GameSnacks", status: "SDK bundle ready; licensing required", trigger, revision: sha, completedAt,
-      evidence: "build-gamesnacks.zip includes the isolated lifecycle, audio, storage SDK adapter and game.json metadata"},
-    {platform: "GameDistribution", status: "Contract review handoff ready", trigger, revision: sha, completedAt,
-      evidence: "build-gamedistribution-review.zip and its SHA-256 manifest are retained in the workflow artifact"},
-    {platform: "GameMonetize", status: "SDK review handoff ready", trigger, revision: sha, completedAt,
-      evidence: "build-gamemonetize-review.zip and its SHA-256 manifest are retained in the workflow artifact"},
-    {platform: "Yandex Games", status: "Contract review handoff ready", trigger, revision: sha, completedAt,
-      evidence: "build-yandex-review.zip and its SHA-256 manifest are retained in the workflow artifact"},
-    {platform: "Telegram", status: "Integration review handoff ready", trigger, revision: sha, completedAt,
-      evidence: "build-telegram-review.zip and its SHA-256 manifest are retained in the workflow artifact"},
-    {platform: "Microsoft Store PWA", status: "Installable PWA handoff ready", trigger, revision: sha, completedAt,
-      evidence: "build-microsoft-pwa.zip includes the web manifest, app icon and service worker and is retained with its SHA-256 manifest"},
-    {platform: "Y8", status: "Manual review handoff ready", trigger, revision: sha, completedAt,
-      evidence: "build-y8-review.zip and its SHA-256 manifest are retained without external monetization"},
-    {platform: "Playgama", status: "Contract review handoff ready", trigger, revision: sha, completedAt,
-      evidence: "build-playgama-review.zip and its SHA-256 manifest are retained before Bridge integration"},
-    {platform: "Amazon Appstore Web App", status: "Fire compatibility handoff ready", trigger, revision: sha, completedAt,
-      evidence: "build-amazon-webapp-review.zip and its SHA-256 manifest are retained for Fire Web App testing"},
-    {platform: "JioGames HTML5", status: "Partner review handoff ready", trigger, revision: sha, completedAt,
-      evidence: "build-jiogames-review.zip and its SHA-256 manifest are retained pending partner SDK access"},
-    {platform: "Famobi", status: "Contract pitch handoff ready", trigger, revision: sha, completedAt,
-      evidence: "build-famobi-pitch.zip and its SHA-256 manifest are retained pending compatible terms"},
-    {platform: "GamePush Distribution", status: "Distribution review handoff ready", trigger, revision: sha, completedAt,
-      evidence: "build-gamepush-review.zip and its SHA-256 manifest are retained before destination and SDK approval"},
-    {platform: "SOFTGAMES", status: "Publishing pitch handoff ready", trigger, revision: sha, completedAt,
-      evidence: "build-softgames-pitch.zip and its SHA-256 manifest are retained pending a non-exclusive offer"},
-    {platform: "WGPlayground", status: "Agreement review handoff ready", trigger, revision: sha, completedAt,
-      evidence: "build-wgplayground-review.zip and its SHA-256 manifest are retained before SDK integration"},
-    {platform: "Miniplay", status: "Browser review handoff ready", trigger, revision: sha, completedAt,
-      evidence: "build-miniplay-review.zip and its SHA-256 manifest are retained before account and API approval"},
-    {platform: "Kizi", status: "Publisher pitch handoff ready", trigger, revision: sha, completedAt,
-      evidence: "build-kizi-pitch.zip and its SHA-256 manifest are retained pending non-exclusive terms"},
-    {platform: "Huawei Quick Game", status: "RPK feasibility handoff ready", trigger, revision: sha, completedAt,
-      evidence: "build-huawei-quick-game-review.zip and its SHA-256 manifest are retained before UK onboarding and RPK work"},
-    {platform: "GameFlare Distribution", status: "Distribution review handoff ready", trigger, revision: sha, completedAt,
-      evidence: "build-gameflare-review.zip and its SHA-256 manifest are retained before account and contract approval"},
-    {platform: "Shockwave", status: "SDK review handoff ready", trigger, revision: sha, completedAt,
-      evidence: "build-shockwave-review.zip and its SHA-256 manifest are retained before official SDK integration"},
-    {platform: "AirConsole", status: "Integration planning handoff ready", trigger, revision: sha, completedAt,
-      evidence: "build-airconsole-review.zip and its SHA-256 manifest are retained before controller and SDK work"},
-    {platform: "World App Mini Apps", status: "Commercial review handoff ready", trigger, revision: sha, completedAt,
-      evidence: "build-world-mini-app-review.zip and its SHA-256 manifest are retained before MiniKit integration"},
-    {platform: "Farcaster Mini Apps", status: "Manifest planning handoff ready", trigger, revision: sha, completedAt,
-      evidence: "build-farcaster-mini-app-review.zip and its SHA-256 manifest are retained before domain signing and SDK work"},
-    {platform: "Pi Apps Platform", status: "Account and SDK review handoff ready", trigger, revision: sha, completedAt,
-      evidence: "build-pi-apps-review.zip and its SHA-256 manifest are retained before KYC, terms acceptance and SDK work"},
-    {platform: "MiniPay Mini Apps", status: "Listing review handoff ready", trigger, revision: sha, completedAt,
-      evidence: "build-minipay-mini-app-review.zip and its SHA-256 manifest are retained before terms and commerce review"},
-    {platform: "Zoom App Marketplace", status: "Marketplace review handoff ready", trigger, revision: sha, completedAt,
-      evidence: "build-zoom-app-review.zip and its SHA-256 manifest are retained before SDK and security review"},
-    {platform: "PWA Directory", status: "Directory review handoff ready", trigger, revision: sha, completedAt,
-      evidence: "build-pwa-directory-review.zip and its SHA-256 manifest are retained before free listing submission"},
-    {platform: "Miro Marketplace", status: "Beta planning handoff ready", trigger, revision: sha, completedAt,
-      evidence: "build-miro-marketplace-review.zip and its SHA-256 manifest are retained before collaboration and beta work"},
-    {platform: "Greenhouse Games", status: "Educational review handoff ready", trigger, revision: sha, completedAt,
-      evidence: "build-greenhouse-review.zip and its SHA-256 manifest are retained before CSP/offline adaptation"},
-    {platform: "OzoGames", status: "Publisher review handoff ready", trigger, revision: sha, completedAt,
-      evidence: "build-ozogames-review.zip and its SHA-256 manifest are retained before contract and monetization review"},
-    {platform: "SlowDen", status: "Directory review handoff ready", trigger, revision: sha, completedAt,
-      evidence: "build-slowden-review.zip and its SHA-256 manifest are retained before hosted-link form submission"},
-    {platform: "NoAdsGames", status: "Ad-free review handoff ready", trigger, revision: sha, completedAt,
-      evidence: "build-noadsgames-review.zip and its SHA-256 manifest are retained before API submission and human review"},
-    {platform: "YalGames", status: "Editorial review handoff ready", trigger, revision: sha, completedAt,
-      evidence: "build-yalgames-review.zip and its SHA-256 manifest are retained before manual contact submission"},
-    {platform: "Rando.gg", status: "Hosted iframe review handoff ready", trigger, revision: sha, completedAt,
-      evidence: "build-rando-review.zip and its SHA-256 manifest are retained before hosted-URL submission"},
-    {platform: "PWAStore.io", status: "PWA listing handoff ready", trigger, revision: sha, completedAt,
-      evidence: "build-pwastore-review.zip and its SHA-256 manifest are retained before URL submission and validation"},
-  ],
-  source: {
-    label: "All-platform release workflow receipt",
-    tables: [".github/workflows/release-all-platforms.yml", "scripts/release/record-release-automation.mjs"],
-    filters: ["Passed records the repository verification and release adapters; provider review completion remains separately reported."],
-    metricDefinitions: [{label: "Automation status", definition: "The result emitted by the immutable all-platform workflow for one exact repository revision.", componentIds: ["release-automation"]}],
-  },
-};
+/** A packaged game is verified only when the tested digest matches the current bytes. */
+export function packageEvidence(artifact, bytes, manifest, report) {
+  const digest = createHash('sha256').update(bytes).digest('hex');
+  if (manifest.artifact !== artifact || manifest.sha256 !== digest) throw new Error('Manifest does not match archive');
+  const result = report?.results?.find(row => row.artifact === artifact && row.sha256 === digest && row.status === 'passed');
+  return {status: result ? 'Packaged gameplay verified; provider submission pending' : 'Packaged; gameplay verification pending',
+    completedAt: result ? report.verifiedAt : null,
+    evidence: `${artifact}; SHA-256 ${digest}. ${manifest.releaseBoundary ?? 'Provider publication is not established by packaging.'}`};
+}
 
-const temporary = `${snapshotPath}.${process.pid}.tmp`;
-await writeFile(temporary, `${JSON.stringify(snapshot, null, 2)}\n`, {flag: "wx"});
-await rename(temporary, snapshotPath);
-console.log(`Recorded release automation receipt for ${sha}.`);
+export async function recordReleaseAutomation(root = repository) {
+  const snapshotPath = path.join(root, 'docs/reports/platform-release-readiness/src/data.json');
+  const json = async relative => JSON.parse(await readFile(path.join(root, relative), 'utf8'));
+  const snapshot = await json('docs/reports/platform-release-readiness/src/data.json');
+  const report = await json('artifacts/release-e2e/packaged-games.json').catch(() => null);
+  const artifacts = new Map(listHtml5DistributionDefinitions().map(row => [row.target, row.artifact]));
+  artifacts.set('gamesnacks', 'build-gamesnacks.zip');
+  artifacts.set('microsoft-pwa', 'build-microsoft-pwa.zip');
+  const revision = execFileSync('git', ['rev-parse', 'HEAD'], {cwd: root, encoding: 'utf8'}).trim();
+  const rows = [];
+  for (const plan of listPlatformReleasePlans()) {
+    const platform = expectedName(plan);
+    let evidence;
+    const artifact = artifacts.get(plan.target);
+    if (artifact) {
+      try {
+        evidence = packageEvidence(artifact, await readFile(path.join(root, artifact)), await json(`${artifact}.manifest.json`), report);
+      } catch {
+        evidence = {status: 'Artifact missing or invalid', completedAt: null, evidence: `Rebuild and verify ${artifact}. ${plan.handoff}`};
+      }
+    } else {
+      const provider = snapshot.queries.provider_release_evidence.rows.find(row => row.platform === platform);
+      evidence = {status: provider?.state ?? 'Provider evidence required', completedAt: provider?.verifiedAt ?? null,
+        evidence: provider ? `${provider.artifact}. ${provider.nextGate}` : plan.handoff};
+    }
+    rows.push({platform, trigger: process.env.GITHUB_EVENT_NAME || 'local', revision, ...evidence});
+  }
+  snapshot.generatedAt = new Date().toISOString();
+  snapshot.queries.release_automation = {rows, source: {
+    label: 'Artifact digests, packaged browser checks and separately reviewed provider receipts',
+    retrievedAt: snapshot.generatedAt,
+    tables: ['artifacts/release-e2e/packaged-games.json', 'build-*.manifest.json', 'provider_release_evidence'],
+    filters: ['Packaging and gameplay checks do not establish provider integration, upload, review approval or publication. Missing verification dates remain unknown.'],
+    metricDefinitions: [{label: 'Automation status', definition: 'Current archive digest matched to a successful browser test, or a separately reviewed provider record. Revision identifies this audit, not necessarily the provider artifact source.', componentIds: ['release-automation']}],
+  }};
+  const temporary = `${snapshotPath}.${process.pid}.tmp`;
+  await writeFile(temporary, `${JSON.stringify(snapshot, null, 2)}\n`, {flag: 'wx'});
+  await rename(temporary, snapshotPath);
+  console.log(`Recorded evidence for ${rows.length} executable targets.`);
+}
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) await recordReleaseAutomation();

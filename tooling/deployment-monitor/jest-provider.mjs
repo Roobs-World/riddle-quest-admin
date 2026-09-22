@@ -1,4 +1,4 @@
-export const jestGame = {teamId: "019f0e38-4b34-76fe-99ba-a8957c15295c", gameId: "019f5674-93a8-7338-a664-8e603d6bda06"};
+export const jestGame = {teamId: "019faa67-d2a6-7169-aa29-a4411a3a3c3d", gameId: "019faa68-f3ec-755d-9ab5-c887fb426801"};
 
 export function dailyActivity(result, now = new Date()) {
   const data = result?.data;

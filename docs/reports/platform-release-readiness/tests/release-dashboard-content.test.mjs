@@ -44,9 +44,9 @@ test("dashboard integration metrics match reviewed rows", () => {
   const platforms = data.queries.platform_status.rows;
   const services = data.queries.service_status.rows;
 
-  assert.equal(platforms.filter(({integration}) => integration.startsWith("Implemented")).length, 5);
+  assert.equal(platforms.filter(({integration}) => integration.startsWith("Implemented")).length, 4);
   assert.equal(platforms.filter(({localValidation}) => /passed/iu.test(localValidation)).length, 52);
-  assert.equal(services.filter(({status}) => status === "Integrated").length, 4);
+  assert.equal(services.filter(({status}) => status === "Integrated").length, 3);
 });
 
 test("the primary release table contains every canonical platform target", () => {
@@ -81,7 +81,8 @@ test("every canonical target has a playable link and deployment administration r
 
 test("the dashboard exposes the latest release automation receipt", () => {
   const rows = data.queries.release_automation.rows;
-  assert.ok(rows.some(({platform}) => platform === "All configured targets"));
+  assert.equal(rows.length, 52);
+  assert.ok(rows.every(({evidence}) => evidence.trim()));
   assert.ok(rows.some(({platform}) => platform === "itch.io"));
   assert.ok(rows.some(({platform}) => platform === "CrazyGames"));
   assert.ok(rows.some(({platform}) => platform === "Newgrounds"));
@@ -127,7 +128,7 @@ test("the dashboard reports IAP and advertising policy for every release platfor
   assert.ok(monetization.every(({iap, ads, gate}) => iap.trim() && ads.trim() && gate.trim()));
   assert.match(monetization.find(({platform}) => platform === "Facebook").ads, /Implemented/iu);
   assert.match(monetization.find(({platform}) => platform === "Reddit").iap, /Implemented/iu);
-  assert.match(monetization.find(({platform}) => platform === "Yahoo").iap, /Implemented/iu);
+  assert.match(monetization.find(({platform}) => platform === "Yahoo").iap, /Disabled/iu);
   assert.match(monetization.find(({platform}) => platform === "YouTube").iap, /Prohibited/iu);
   assert.match(dashboard, /queryId="monetization_readiness"/u);
 });

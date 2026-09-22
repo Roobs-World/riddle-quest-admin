@@ -62,7 +62,7 @@ export function ProviderActivity() {
   const chart = chartOverrides["provider-daily-activity"] ?? {type: "line", x: "date", y: "dailyActiveUsers", stackable: false};
   return <Section>
     <SectionHeader id="provider-activity-title" title="Provider-level engagement" />
-    <p className="monitoring-note">Jest collection: {snapshot.monitoringStatus?.jestStatus ?? "Snapshot only"}. Last provider read: {snapshot.queries.provider_daily_activity?.source.retrievedAt ?? "20 September 2026 (manual snapshot)"}.</p>
+    <p className="monitoring-note">Jest collection: {snapshot.monitoringStatus?.jestStatus ?? "Snapshot only"}. Last provider read: {snapshot.queries.provider_daily_activity?.source.retrievedAt ?? "Unavailable for the current game"}.</p>
     <p className="monitoring-note">Jest reports game-wide activity without deployment attribution. These measurements are separate from the deployment filters above. Provider reporting timezone is unspecified; the current day is excluded.</p>
     <DataComponent id="provider-daily-activity" queryId="provider_daily_activity" title="Jest daily active users"
       variant="card" kind="chart" chart={chart} displayRows={rows} sourceRows={rows}>
