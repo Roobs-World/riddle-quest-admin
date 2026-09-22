@@ -82,3 +82,5 @@ publish the new client artifacts to enable this behavior for reviewers. Legacy
 clients retain the old response shape because the evaluation field is opt-in;
 new clients without evaluation data retain server-response feedback as a fallback.
 YouTube, Netflix, and Yahoo already score their bundled solo content locally.
+
+Subsequent publication is recorded in [Live deployment — 22 September 2026](live-deployment-2026-09-22.md).
