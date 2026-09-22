@@ -3,7 +3,7 @@
   "surface": "dashboard",
   "buildStatus": "complete",
   "title": "Riddle Quest integration and release status",
-  "generatedAt": "2026-09-22T15:46:13.156Z",
+  "generatedAt": "2026-09-22T17:24:12.636340Z",
   "status": "verified-repository-and-provider-evidence",
   "filters": [],
   "queries": {
@@ -70,7 +70,7 @@
           "commerceAndSocial": "Unavailable for embedded HTML5; page donations only",
           "ads": "Unavailable — itch.io does not place ads on project pages",
           "localValidation": "Packaged solve, reward and reload passed",
-          "releaseStatus": "Provider submission pending. Initial project creation remains a manual itch.io step; later uploads use Butler."
+          "releaseStatus": "Blocked: human verification and login. Complete the browser challenge and sign in to the developer account."
         },
         {
           "platform": "CrazyGames",
@@ -79,7 +79,7 @@
           "commerceAndSocial": "Disabled for Basic Launch; partner-selected options only later",
           "ads": "Disabled for Basic Launch; CrazyGames ads required for Full Launch",
           "localValidation": "Packaged solve, reward and reload passed",
-          "releaseStatus": "Provider submission pending. Developer Portal upload and Basic Launch review remain manual."
+          "releaseStatus": "Blocked: developer login required. Sign in to the developer account to create the Basic Launch submission."
         },
         {
           "platform": "Newgrounds",
@@ -88,7 +88,7 @@
           "commerceAndSocial": "Provider requirements pending authenticated review",
           "ads": "Provider requirements pending authenticated review",
           "localValidation": "Packaged solve, reward and reload passed",
-          "releaseStatus": "Provider submission pending. Newgrounds project creation and publication remain manual."
+          "releaseStatus": "Blocked: developer login required. Sign in to the Newgrounds account to create and upload the game project."
         },
         {
           "platform": "Discord",
@@ -151,7 +151,7 @@
           "commerceAndSocial": "Contract-gated",
           "ads": "Must be removed from the submitted build",
           "localValidation": "Packaged solve, reward and reload passed",
-          "releaseStatus": "Provider submission pending. Coolmath licensing review remains manual; this neutral archive is for the non-exclusive pitch only."
+          "releaseStatus": "Submitted; licensing review pending. Await non-exclusive licensing review; no publisher agreement has been accepted."
         },
         {
           "platform": "Kongregate",
@@ -430,7 +430,7 @@
           "commerceAndSocial": "Website commerce unchanged; directory commerce not applicable",
           "ads": "Directory advertising API not applicable",
           "localValidation": "Packaged solve, reward and reload passed",
-          "releaseStatus": "Provider submission pending. PWA installability review, metadata submission, directory review and listing approval remain manual."
+          "releaseStatus": "Submitted; review pending. Await the standard review outcome by email; provider states up to four weeks."
         },
         {
           "platform": "Miro Marketplace",
@@ -466,7 +466,7 @@
           "commerceAndSocial": "Platform commerce unavailable; neutral entry path preferred",
           "ads": "Platform advertising unavailable",
           "localValidation": "Packaged solve, reward and reload passed",
-          "releaseStatus": "Provider submission pending. SlowDen form submission, terms confirmation, editorial review and listing approval remain manual."
+          "releaseStatus": "Live listing verified. No further submission action; monitor the published embedded game."
         },
         {
           "platform": "NoAdsGames",
@@ -475,7 +475,7 @@
           "commerceAndSocial": "Optional transparent IAP requires separate review and server-authoritative grants",
           "ads": "Prohibited; artifact contains no advertising SDK",
           "localValidation": "Packaged solve, reward and reload passed",
-          "releaseStatus": "Provider submission pending. NoAdsGames API submission and mandatory human review remain manual; the artifact must remain ad-free."
+          "releaseStatus": "Submitted; review pending. Await provider review of submission 93; do not send duplicate hosted-game submissions."
         },
         {
           "platform": "YalGames",
@@ -484,7 +484,7 @@
           "commerceAndSocial": "Commerce disabled pending a documented verification contract",
           "ads": "Disabled pending written SDK, consent and revenue terms",
           "localValidation": "Packaged solve, reward and reload passed",
-          "releaseStatus": "Provider submission pending. YalGames contact submission, editorial review and publication remain manual; ads and commerce stay disabled."
+          "releaseStatus": "Submitted; review pending. Await the editorial response; additional landscape artwork can be supplied if requested."
         },
         {
           "platform": "Rando.gg",
@@ -493,7 +493,7 @@
           "commerceAndSocial": "Commerce disabled pending a verification contract",
           "ads": "Disabled pending written advertising terms",
           "localValidation": "Packaged solve, reward and reload passed",
-          "releaseStatus": "Provider submission pending. Rando.gg hosted-URL submission and listing review remain manual; ads and commerce stay disabled."
+          "releaseStatus": "Blocked: submission service unavailable. Retry once the provider reopens intake; no accepted submission or listing was established."
         },
         {
           "platform": "PWAStore.io",
@@ -502,7 +502,7 @@
           "commerceAndSocial": "Directory provides no commerce layer",
           "ads": "Directory provides no game advertising SDK",
           "localValidation": "Packaged solve, reward and reload passed",
-          "releaseStatus": "Provider submission pending. PWAStore.io URL submission, PWA validation and listing review remain manual."
+          "releaseStatus": "Live listing verified. No further submission action; hosted PWA updates remain at the submitted URL."
         }
       ],
       "source": {
@@ -666,15 +666,15 @@
           "platform": "itch.io",
           "releaseModel": "Self-service hosted HTML5 project; no exclusivity",
           "integration": "No SDK; provider-neutral ZIP with root index.html",
-          "submissionProgress": "Current archive passed solve, reward and reload checks on 22 September 2026; no provider submission is established.",
-          "nextGate": "Initial project creation remains a manual itch.io step; later uploads use Butler."
+          "submissionProgress": "Blocked: human verification and login. Developer route redirects to login behind a Cloudflare human-verification challenge. No upload attempted.",
+          "nextGate": "Complete the browser challenge and sign in to the developer account."
         },
         {
           "platform": "CrazyGames",
           "releaseModel": "QA-reviewed Basic Launch, then performance-selected Full Launch",
           "integration": "SDK optional for Basic Launch; isolated CrazyGames SDK and ads required for Full Launch",
-          "submissionProgress": "Current archive passed solve, reward and reload checks on 22 September 2026; no provider submission is established.",
-          "nextGate": "Developer Portal upload and Basic Launch review remain manual."
+          "submissionProgress": "Blocked: developer login required. Developer Portal login form is displayed; no authenticated session available.",
+          "nextGate": "Sign in to the developer account to create the Basic Launch submission."
         },
         {
           "platform": "Discord",
@@ -722,15 +722,15 @@
           "platform": "Newgrounds",
           "releaseModel": "Account-gated community game project",
           "integration": "Current public integration requirements require authenticated review",
-          "submissionProgress": "Current archive passed solve, reward and reload checks on 22 September 2026; no provider submission is established.",
-          "nextGate": "Newgrounds project creation and publication remain manual."
+          "submissionProgress": "Blocked: developer login required. New game route redirects to /login; no authenticated developer session available.",
+          "nextGate": "Sign in to the Newgrounds account to create and upload the game project."
         },
         {
           "platform": "Coolmath Games",
           "releaseModel": "Curated non-exclusive HTML5 licence",
           "integration": "Accepted build must remove ads, external links and external analytics, then add the Coolmath SDK",
-          "submissionProgress": "Current archive passed solve, reward and reload checks on 22 September 2026; no provider submission is established.",
-          "nextGate": "Coolmath licensing review remains manual; this neutral archive is for the non-exclusive pitch only."
+          "submissionProgress": "Submitted; licensing review pending. Official Google Form POST /formResponse returned 200 and confirmed the game submission.",
+          "nextGate": "Await non-exclusive licensing review; no publisher agreement has been accepted."
         },
         {
           "platform": "Kongregate",
@@ -946,8 +946,8 @@
           "platform": "PWA Directory",
           "releaseModel": "Free curated directory listing linking to the canonical installable PWA",
           "integration": "No provider SDK; canonical manifest and service worker must pass review",
-          "submissionProgress": "Current archive passed solve, reward and reload checks on 22 September 2026; no provider submission is established.",
-          "nextGate": "PWA installability review, metadata submission, directory review and listing approval remain manual."
+          "submissionProgress": "Submitted; review pending. POST /api/submit returned 200 and the page confirmed receipt of the free standard submission.",
+          "nextGate": "Await the standard review outcome by email; provider states up to four weeks."
         },
         {
           "platform": "Miro Marketplace",
@@ -974,36 +974,36 @@
           "platform": "SlowDen",
           "releaseModel": "Hosted-link discovery listing with developer ownership and removal rights",
           "integration": "No platform adapter; canonical neutral HTTPS entry point",
-          "submissionProgress": "Current archive passed solve, reward and reload checks on 22 September 2026; no provider submission is established.",
-          "nextGate": "SlowDen form submission, terms confirmation, editorial review and listing approval remain manual."
+          "submissionProgress": "Live listing verified. POST /api/submit-game returned 200; live catalog includes riddle-quest-ghw1o and links to the game.",
+          "nextGate": "No further submission action; monitor the published embedded game."
         },
         {
           "platform": "NoAdsGames",
           "releaseModel": "Free non-exclusive HTML5 catalog with API-assisted submission and mandatory human review",
           "integration": "Ad-free hosted HTTPS game or HTML5 ZIP; optional transparent IAP only",
-          "submissionProgress": "Current archive passed solve, reward and reload checks on 22 September 2026; no provider submission is established.",
-          "nextGate": "NoAdsGames API submission and mandatory human review remain manual; the artifact must remain ad-free."
+          "submissionProgress": "Submitted; review pending. Submission 93; pending_review. Antivirus, advertising, iframe and human review remain pending.",
+          "nextGate": "Await provider review of submission 93; do not send duplicate hosted-game submissions."
         },
         {
           "platform": "YalGames",
           "releaseModel": "Free manual editorial review for non-exclusive HTML5/WebGL games",
           "integration": "Ad-free, commerce-disabled provider-neutral hosted HTTPS build",
-          "submissionProgress": "Current archive passed solve, reward and reload checks on 22 September 2026; no provider submission is established.",
-          "nextGate": "YalGames contact submission, editorial review and publication remain manual; ads and commerce stay disabled."
+          "submissionProgress": "Submitted; review pending. WPForms POST to /wp-admin/admin-ajax.php returned 200; contact page confirmed receipt.",
+          "nextGate": "Await the editorial response; additional landscape artwork can be supplied if requested."
         },
         {
           "platform": "Rando.gg",
           "releaseModel": "Non-exclusive developer-hosted HTML5 iframe listing",
           "integration": "Ad-free, commerce-disabled canonical HTTPS playable",
-          "submissionProgress": "Current archive passed solve, reward and reload checks on 22 September 2026; no provider submission is established.",
-          "nextGate": "Rando.gg hosted-URL submission and listing review remain manual; ads and commerce stay disabled."
+          "submissionProgress": "Blocked: submission service unavailable. POST /api/submit returned 503; the page says intake is disabled while an error is investigated.",
+          "nextGate": "Retry once the provider reopens intake; no accepted submission or listing was established."
         },
         {
           "platform": "PWAStore.io",
           "releaseModel": "URL-only PWA directory listing with developer ownership retained",
           "integration": "Canonical HTTPS PWA with manifest and service worker",
-          "submissionProgress": "Current archive passed solve, reward and reload checks on 22 September 2026; no provider submission is established.",
-          "nextGate": "PWAStore.io URL submission, PWA validation and listing review remain manual."
+          "submissionProgress": "Live listing verified. POST /api/submit-pwa returned 200; completion page and public listing verified.",
+          "nextGate": "No further submission action; hosted PWA updates remain at the submitted URL."
         }
       ],
       "source": {
@@ -1967,34 +1967,34 @@
           "unlocks": "A real Netflix integration and submission"
         },
         {
-          "status": "To do",
-          "priority": "Now",
+          "status": "Blocked",
+          "priority": "Access or provider repair",
           "platform": "itch.io",
-          "action": "Create an HTML Game page for Riddle Quest.",
+          "action": "Complete the browser challenge and sign in to the developer account.",
           "destination": "https://itch.io/game/new",
           "unlocks": "The first itch.io upload"
         },
         {
-          "status": "To do",
-          "priority": "After page creation",
+          "status": "Blocked",
+          "priority": "Access or provider repair",
           "platform": "itch.io",
-          "action": "Add ITCH_BUTLER_API_KEY and ITCH_GAME_TARGET to the GitHub release environment.",
-          "destination": "https://github.com/Grindhead/riddle-quest/settings/environments",
+          "action": "Complete the browser challenge and sign in to the developer account.",
+          "destination": "https://itch.io/game/new",
           "unlocks": "Automatic Butler uploads on future releases"
         },
         {
-          "status": "To do",
-          "priority": "Now",
+          "status": "Blocked",
+          "priority": "Access or provider repair",
           "platform": "CrazyGames",
-          "action": "Sign in as Roobs World, create the game, upload build-crazygames-basic.zip and supply the requested store media.",
+          "action": "Sign in to the developer account to create the Basic Launch submission.",
           "destination": "https://developer.crazygames.com/",
           "unlocks": "Basic Launch QA"
         },
         {
-          "status": "To do",
-          "priority": "Later",
+          "status": "Blocked",
+          "priority": "Access or provider repair",
           "platform": "Newgrounds",
-          "action": "Review the authenticated project terms, create a game project and upload build-newgrounds.zip.",
+          "action": "Sign in to the Newgrounds account to create and upload the game project.",
           "destination": "https://www.newgrounds.com/projects/games/new",
           "unlocks": "Newgrounds review and publication"
         },
@@ -2039,11 +2039,11 @@
           "unlocks": "A safe commercial decision if Poki responds"
         },
         {
-          "status": "To do",
-          "priority": "Outreach",
+          "status": "Submitted",
+          "priority": "Awaiting provider",
           "platform": "Coolmath Games",
-          "action": "Submit the playable URL as a non-exclusive licensing pitch.",
-          "destination": "https://developers.coolmathgames.com/",
+          "action": "Await non-exclusive licensing review; no publisher agreement has been accepted.",
+          "destination": "https://www.coolmathgames.com/submit-a-game",
           "unlocks": "Editorial review before any isolated SDK work"
         },
         {
@@ -2295,10 +2295,10 @@
           "unlocks": "Zoom SDK integration and Marketplace review"
         },
         {
-          "status": "To do",
-          "priority": "PWA audit",
+          "status": "Submitted",
+          "priority": "Awaiting provider",
           "platform": "PWA Directory",
-          "action": "Validate the canonical manifest, service worker, icons, offline behavior and installed launch, then submit through the free review path without purchasing Pro Launch.",
+          "action": "Await the standard review outcome by email; provider states up to four weeks.",
           "destination": "https://pwa.directory/submit",
           "unlocks": "PWA Directory review and listing"
         },
@@ -2327,43 +2327,43 @@
           "unlocks": "OzoGames editorial and commercial review"
         },
         {
-          "status": "To do",
-          "priority": "Directory",
+          "status": "Complete",
+          "priority": "Verified",
           "platform": "SlowDen",
-          "action": "Submit the canonical neutral HTTPS game URL, description and cover through the official form, then record the public listing after approval.",
-          "destination": "https://slowden.com/submit/",
+          "action": "No further submission action; monitor the published embedded game.",
+          "destination": "https://slowden.com/play/?g=riddle-quest-ghw1o",
           "unlocks": "SlowDen discovery listing and availability monitoring"
         },
         {
-          "status": "To do",
-          "priority": "Submission",
+          "status": "Submitted",
+          "priority": "Awaiting provider",
           "platform": "NoAdsGames",
-          "action": "Create submission credentials, confirm the candidate is entirely ad-free, submit the hosted HTTPS URL or ZIP through the official API, and record the returned submission ID and review result.",
-          "destination": "https://noadsgames.com/developers",
+          "action": "Await provider review of submission 93; do not send duplicate hosted-game submissions.",
+          "destination": "https://noadsgames.org/en/publish-game",
           "unlocks": "NoAdsGames mandatory human review and catalog publication"
         },
         {
-          "status": "To do",
-          "priority": "Submission",
+          "status": "Submitted",
+          "priority": "Awaiting provider",
           "platform": "YalGames",
-          "action": "Send the canonical HTTPS playable, description, controls and review ZIP through the official developer contact route; record the response and obtain written monetization terms before enabling ads or commerce.",
-          "destination": "https://yalgames.com/developers",
+          "action": "Await the editorial response; additional landscape artwork can be supplied if requested.",
+          "destination": "https://yalgames.com/contact/",
           "unlocks": "YalGames editorial review and non-exclusive browser publication"
         },
         {
-          "status": "To do",
-          "priority": "Submission",
+          "status": "Blocked",
+          "priority": "Access or provider repair",
           "platform": "Rando.gg",
-          "action": "Verify the canonical game in a cross-origin iframe with ads and commerce disabled, then submit its HTTPS URL and record the listing review result.",
-          "destination": "https://rando.gg/developers",
+          "action": "Retry once the provider reopens intake; no accepted submission or listing was established.",
+          "destination": "https://rando.gg/submit",
           "unlocks": "Rando.gg iframe listing and developer-hosted updates"
         },
         {
-          "status": "To do",
-          "priority": "Directory",
+          "status": "Complete",
+          "priority": "Verified",
           "platform": "PWAStore.io",
-          "action": "Verify HTTPS, web manifest, service worker, icons and installed launch behavior, then submit the canonical PWA URL and record approval.",
-          "destination": "https://pwastore.io/submit",
+          "action": "No further submission action; hosted PWA updates remain at the submitted URL.",
+          "destination": "https://www.pwastore.io/app/riddle-quest",
           "unlocks": "PWAStore.io directory listing"
         },
         {
@@ -5214,20 +5214,20 @@
         },
         {
           "platform": "itch.io",
-          "gameLinkStatus": "Shared live gameplay preview; target release pending",
-          "gameUrl": "https://yahoo.roobsworld.com/",
+          "gameLinkStatus": "Hosted game available; blocked: human verification and login",
+          "gameUrl": "https://riddle-quest-web.vercel.app/",
           "adminUrl": "https://itch.io/game/new"
         },
         {
           "platform": "CrazyGames",
-          "gameLinkStatus": "Shared live gameplay preview; target release pending",
-          "gameUrl": "https://yahoo.roobsworld.com/",
+          "gameLinkStatus": "Hosted game available; blocked: developer login required",
+          "gameUrl": "https://riddle-quest-web.vercel.app/",
           "adminUrl": "https://developer.crazygames.com/"
         },
         {
           "platform": "Newgrounds",
-          "gameLinkStatus": "Shared live gameplay preview; target release pending",
-          "gameUrl": "https://yahoo.roobsworld.com/",
+          "gameLinkStatus": "Hosted game available; blocked: developer login required",
+          "gameUrl": "https://riddle-quest-web.vercel.app/",
           "adminUrl": "https://www.newgrounds.com/projects/games/new"
         },
         {
@@ -5268,9 +5268,9 @@
         },
         {
           "platform": "Coolmath Games",
-          "gameLinkStatus": "Shared live gameplay preview; target release pending",
-          "gameUrl": "https://yahoo.roobsworld.com/",
-          "adminUrl": "https://developers.coolmathgames.com/"
+          "gameLinkStatus": "Hosted game available; submitted; licensing review pending",
+          "gameUrl": "https://riddle-quest-web.vercel.app/",
+          "adminUrl": "https://www.coolmathgames.com/submit-a-game"
         },
         {
           "platform": "Kongregate",
@@ -5454,8 +5454,8 @@
         },
         {
           "platform": "PWA Directory",
-          "gameLinkStatus": "Shared live gameplay preview; target release pending",
-          "gameUrl": "https://yahoo.roobsworld.com/",
+          "gameLinkStatus": "Hosted game available; submitted; review pending",
+          "gameUrl": "https://riddle-quest-pwa.vercel.app/",
           "adminUrl": "https://pwa.directory/submit"
         },
         {
@@ -5478,33 +5478,33 @@
         },
         {
           "platform": "SlowDen",
-          "gameLinkStatus": "Shared live gameplay preview; target release pending",
-          "gameUrl": "https://yahoo.roobsworld.com/",
+          "gameLinkStatus": "Verified live provider listing",
+          "gameUrl": "https://slowden.com/play/?g=riddle-quest-ghw1o",
           "adminUrl": "https://slowden.com/submit/"
         },
         {
           "platform": "NoAdsGames",
-          "gameLinkStatus": "Shared live gameplay preview; target release pending",
-          "gameUrl": "https://yahoo.roobsworld.com/",
-          "adminUrl": "https://noadsgames.com/developers"
+          "gameLinkStatus": "Hosted game available; submitted; review pending",
+          "gameUrl": "https://riddle-quest-web.vercel.app/",
+          "adminUrl": "https://noadsgames.org/en/publish-game"
         },
         {
           "platform": "YalGames",
-          "gameLinkStatus": "Shared live gameplay preview; target release pending",
-          "gameUrl": "https://yahoo.roobsworld.com/",
-          "adminUrl": "https://yalgames.com/developers"
+          "gameLinkStatus": "Hosted game available; submitted; review pending",
+          "gameUrl": "https://riddle-quest-web.vercel.app/",
+          "adminUrl": "https://yalgames.com/contact/"
         },
         {
           "platform": "Rando.gg",
-          "gameLinkStatus": "Shared live gameplay preview; target release pending",
-          "gameUrl": "https://yahoo.roobsworld.com/",
-          "adminUrl": "https://rando.gg/developers"
+          "gameLinkStatus": "Hosted game available; blocked: submission service unavailable",
+          "gameUrl": "https://riddle-quest-web.vercel.app/",
+          "adminUrl": "https://rando.gg/submit"
         },
         {
           "platform": "PWAStore.io",
-          "gameLinkStatus": "Shared live gameplay preview; target release pending",
-          "gameUrl": "https://yahoo.roobsworld.com/",
-          "adminUrl": "https://pwastore.io/submit"
+          "gameLinkStatus": "Verified live provider listing",
+          "gameUrl": "https://www.pwastore.io/app/riddle-quest",
+          "adminUrl": "https://www.pwastore.io/submit"
         }
       ],
       "source": {
@@ -5541,6 +5541,187 @@
           }
         ],
         "retrievedAt": "2026-09-22T15:42:02.625736Z"
+      }
+    },
+    "submission_activity": {
+      "rows": [
+        {
+          "platform": "PWAStore.io",
+          "outcome": "live",
+          "status": "Live listing verified",
+          "verifiedAt": "2026-09-22T17:24:12.636340Z",
+          "submissionUrl": "https://www.pwastore.io/submit",
+          "listingUrl": "https://www.pwastore.io/app/riddle-quest",
+          "httpStatus": 200,
+          "evidence": "POST /api/submit-pwa returned 200; completion page and public listing verified.",
+          "nextStep": "No further submission action; hosted PWA updates remain at the submitted URL.",
+          "gameUrl": "https://riddle-quest-pwa.vercel.app/"
+        },
+        {
+          "platform": "SlowDen",
+          "outcome": "live",
+          "status": "Live listing verified",
+          "verifiedAt": "2026-09-22T17:24:12.636340Z",
+          "submissionUrl": "https://slowden.com/submit/",
+          "listingUrl": "https://slowden.com/play/?g=riddle-quest-ghw1o",
+          "httpStatus": 200,
+          "evidence": "POST /api/submit-game returned 200; live catalog includes riddle-quest-ghw1o and links to the game.",
+          "nextStep": "No further submission action; monitor the published embedded game.",
+          "gameUrl": "https://riddle-quest-web.vercel.app/"
+        },
+        {
+          "platform": "NoAdsGames",
+          "outcome": "submitted",
+          "status": "Submitted; review pending",
+          "verifiedAt": "2026-09-22T17:24:12.636340Z",
+          "submissionUrl": "https://noadsgames.org/en/publish-game",
+          "listingUrl": "",
+          "httpStatus": 202,
+          "evidence": "Submission 93; pending_review. Antivirus, advertising, iframe and human review remain pending.",
+          "nextStep": "Await provider review of submission 93; do not send duplicate hosted-game submissions.",
+          "gameUrl": "https://riddle-quest-web.vercel.app/"
+        },
+        {
+          "platform": "PWA Directory",
+          "outcome": "submitted",
+          "status": "Submitted; review pending",
+          "verifiedAt": "2026-09-22T17:24:12.636340Z",
+          "submissionUrl": "https://pwa.directory/submit",
+          "listingUrl": "",
+          "httpStatus": 200,
+          "evidence": "POST /api/submit returned 200 and the page confirmed receipt of the free standard submission.",
+          "nextStep": "Await the standard review outcome by email; provider states up to four weeks.",
+          "gameUrl": "https://riddle-quest-pwa.vercel.app/"
+        },
+        {
+          "platform": "YalGames",
+          "outcome": "submitted",
+          "status": "Submitted; review pending",
+          "verifiedAt": "2026-09-22T17:24:12.636340Z",
+          "submissionUrl": "https://yalgames.com/contact/",
+          "listingUrl": "",
+          "httpStatus": 200,
+          "evidence": "WPForms POST to /wp-admin/admin-ajax.php returned 200; contact page confirmed receipt.",
+          "nextStep": "Await the editorial response; additional landscape artwork can be supplied if requested.",
+          "gameUrl": "https://riddle-quest-web.vercel.app/"
+        },
+        {
+          "platform": "Coolmath Games",
+          "outcome": "submitted",
+          "status": "Submitted; licensing review pending",
+          "verifiedAt": "2026-09-22T17:24:12.636340Z",
+          "submissionUrl": "https://www.coolmathgames.com/submit-a-game",
+          "listingUrl": "",
+          "httpStatus": 200,
+          "evidence": "Official Google Form POST /formResponse returned 200 and confirmed the game submission.",
+          "nextStep": "Await non-exclusive licensing review; no publisher agreement has been accepted.",
+          "gameUrl": "https://riddle-quest-web.vercel.app/"
+        },
+        {
+          "platform": "Rando.gg",
+          "outcome": "blocked",
+          "status": "Blocked: submission service unavailable",
+          "verifiedAt": "2026-09-22T17:24:12.636340Z",
+          "submissionUrl": "https://rando.gg/submit",
+          "listingUrl": "",
+          "httpStatus": 503,
+          "evidence": "POST /api/submit returned 503; the page says intake is disabled while an error is investigated.",
+          "nextStep": "Retry once the provider reopens intake; no accepted submission or listing was established.",
+          "gameUrl": "https://riddle-quest-web.vercel.app/"
+        },
+        {
+          "platform": "Tabatu",
+          "outcome": "blocked",
+          "status": "Blocked: form does not transmit",
+          "verifiedAt": "2026-09-22T17:24:12.636340Z",
+          "submissionUrl": "https://tabatu.com/submit-game",
+          "listingUrl": "",
+          "httpStatus": null,
+          "evidence": "The form displayed a confirmation but made no POST. Its public client handler only calls preventDefault and changes local display state.",
+          "nextStep": "A working provider submission endpoint is required; do not count the displayed confirmation as receipt.",
+          "gameUrl": "https://riddle-quest-web.vercel.app/"
+        },
+        {
+          "platform": "ViralGameZone",
+          "outcome": "blocked",
+          "status": "Blocked: form does not transmit",
+          "verifiedAt": "2026-09-22T17:24:12.636340Z",
+          "submissionUrl": "https://viralgamezone.com/submit-game",
+          "listingUrl": "",
+          "httpStatus": null,
+          "evidence": "The public submit button only invokes alert(); no submission transport exists in the form. No contact details were sent.",
+          "nextStep": "Wait for a working intake route; no submission was made.",
+          "gameUrl": "https://riddle-quest-web.vercel.app/"
+        },
+        {
+          "platform": "itch.io",
+          "outcome": "blocked",
+          "status": "Blocked: human verification and login",
+          "verifiedAt": "2026-09-22T17:24:12.636340Z",
+          "submissionUrl": "https://itch.io/game/new",
+          "listingUrl": "",
+          "httpStatus": null,
+          "evidence": "Developer route redirects to login behind a Cloudflare human-verification challenge. No upload attempted.",
+          "nextStep": "Complete the browser challenge and sign in to the developer account.",
+          "gameUrl": "https://riddle-quest-web.vercel.app/"
+        },
+        {
+          "platform": "CrazyGames",
+          "outcome": "blocked",
+          "status": "Blocked: developer login required",
+          "verifiedAt": "2026-09-22T17:24:12.636340Z",
+          "submissionUrl": "https://developer.crazygames.com/",
+          "listingUrl": "",
+          "httpStatus": null,
+          "evidence": "Developer Portal login form is displayed; no authenticated session available.",
+          "nextStep": "Sign in to the developer account to create the Basic Launch submission.",
+          "gameUrl": "https://riddle-quest-web.vercel.app/"
+        },
+        {
+          "platform": "Newgrounds",
+          "outcome": "blocked",
+          "status": "Blocked: developer login required",
+          "verifiedAt": "2026-09-22T17:24:12.636340Z",
+          "submissionUrl": "https://www.newgrounds.com/projects/games/new",
+          "listingUrl": "",
+          "httpStatus": null,
+          "evidence": "New game route redirects to /login; no authenticated developer session available.",
+          "nextStep": "Sign in to the Newgrounds account to create and upload the game project.",
+          "gameUrl": "https://riddle-quest-web.vercel.app/"
+        },
+        {
+          "platform": "DeskLink",
+          "outcome": "blocked",
+          "status": "Manual intake required",
+          "verifiedAt": "2026-09-22T17:24:12.636340Z",
+          "submissionUrl": "https://www.desklink.cc/developers/",
+          "listingUrl": "",
+          "httpStatus": null,
+          "evidence": "Terms expressly disallow automated website access. No submission attempted.",
+          "nextStep": "Use the provider form manually or obtain an approved automated intake route.",
+          "gameUrl": "https://riddle-quest-web.vercel.app/"
+        }
+      ],
+      "source": {
+        "label": "Provider submission receipts and independently verified listings",
+        "retrievedAt": "2026-09-22T17:24:12.636340Z",
+        "tables": [
+          "docs/evidence/submissions-2026-09-22.json",
+          "artifacts/submissions/2026-09-22/"
+        ],
+        "filters": [
+          "Two listings verified live; four further submissions received. Review acceptance is not publication.",
+          "Additional intake routes are recorded here without implying a new integrated platform build. Browser-only success messages without transport are blocked."
+        ],
+        "metricDefinitions": [
+          {
+            "label": "Submission outcome",
+            "definition": "Observed server acceptance plus confirmation, or an independently reachable listing. Local packaging alone does not qualify.",
+            "componentIds": [
+              "submission-activity"
+            ]
+          }
+        ]
       }
     }
   }

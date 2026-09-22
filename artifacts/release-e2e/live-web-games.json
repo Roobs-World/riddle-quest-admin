@@ -1,11 +1,11 @@
 {
-  "verifiedAt": "2026-09-21T21:19:33.917Z",
+  "verifiedAt": "2026-09-22T17:14:10.546Z",
   "results": [
     {
       "target": "web",
       "url": "https://riddle-quest-web.vercel.app/",
       "status": "passed",
-      "startupMs": 323,
+      "startupMs": 381,
       "solve": "ROME",
       "coins": 450,
       "persistedClassicLevel": 2,
@@ -18,7 +18,7 @@
       "url": "https://riddle-quest-pwa.vercel.app/",
       "offline": true,
       "status": "passed",
-      "startupMs": 402,
+      "startupMs": 466,
       "solve": "ROME",
       "coins": 450,
       "persistedClassicLevel": 2,
@@ -30,7 +30,7 @@
       "target": "yahoo",
       "url": "https://yahoo.roobsworld.com/",
       "status": "passed",
-      "startupMs": 305,
+      "startupMs": 1888,
       "solve": "ROME",
       "coins": 450,
       "persistedClassicLevel": 2,

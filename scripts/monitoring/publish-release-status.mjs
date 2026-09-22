@@ -6,7 +6,7 @@ import {jestGame} from '../../tooling/deployment-monitor/jest-provider.mjs';
 
 const releaseQueries = ['platform_status', 'provider_release_evidence', 'html5_distribution_candidates',
   'dashboard_verification', 'service_status', 'release_automation', 'manual_action_checklist',
-  'monetization_readiness', 'target_links'];
+  'monetization_readiness', 'target_links', 'submission_activity'];
 
 /** Refresh release evidence without replacing cloud-collected measurements or presentation. */
 export function mergeReleaseStatus(current, reviewed, now = new Date()) {

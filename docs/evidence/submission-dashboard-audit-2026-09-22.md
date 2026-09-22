@@ -34,3 +34,14 @@ The Cloud Run collector successfully refreshed 132 backend deployment rows on 22
 | Remaining distributors | Current neutral packages pass gameplay checks. Individual accounts, contracts, required SDK work, listings and human/provider review are still separately listed in the dashboard. |
 
 See `live-deployment-2026-09-22.md` for the live game deployments and exact accepted Jest/YouTube release digests. No new provider review approval or public partner listing is claimed by this audit.
+
+## Additional submissions completed on 22 September
+
+- PWAStore.io published `https://www.pwastore.io/app/riddle-quest`; the listing and submitted PWA URL were independently fetched after its validation flow completed.
+- SlowDen published `https://slowden.com/play/?g=riddle-quest-ghw1o`; the embedded provider page passed a live solve, reward and reload-persistence check.
+- NoAdsGames accepted hosted-game submission `93` with HTTP 202. Its antivirus, advertising, iframe and manual reviews remain pending.
+- PWA Directory accepted the free standard submission and confirmed that human review is pending.
+- YalGames accepted the complete game submission through its contact form and confirmed receipt.
+- Coolmath Games accepted the official licensing form and confirmed receipt. No licensing agreement has been accepted and no publication is claimed.
+
+Rando.gg returned HTTP 503 from its submission endpoint. Tabatu and ViralGameZone only displayed local success messages without transmitting a submission. itch.io, CrazyGames and Newgrounds require authenticated developer sessions. These routes remain blocked in the dashboard rather than being counted as submissions.

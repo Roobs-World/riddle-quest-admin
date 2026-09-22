@@ -77,6 +77,7 @@ export function DashboardContent() {
   const platforms = reviewedRows("platform_status");
   const targetLinks = reviewedRows("target_links");
   const releases = reviewedRows("provider_release_evidence");
+  const submissions = reviewedRows("submission_activity");
   const distributionCandidates = reviewedRows("html5_distribution_candidates");
   const releaseAutomation = reviewedRows("release_automation");
   const manualActions = reviewedRows("manual_action_checklist");
@@ -142,6 +143,15 @@ export function DashboardContent() {
       <EvidenceTable id="monetization-readiness" queryId="monetization_readiness" title="Implemented capabilities and provider gates" rows={monetization} columns={[
         {key:"platform",label:"Platform"}, {key:"iap",label:"In-app purchases"},
         {key:"ads",label:"Advertising"}, {key:"gate",label:"Remaining verification or provider gate"},
+      ]} />
+    </Section>
+
+    <Section>
+      <SectionHeader id="submission-activity-title" title="Submission receipts and live listings" />
+      <EvidenceTable id="submission-activity" queryId="submission_activity" title="Verified submission outcomes" rows={submissions} columns={[
+        {key:"platform",label:"Platform"}, {key:"status",label:"Outcome",status:true},
+        {key:"verifiedAt",label:"Verified (UTC)"}, {key:"evidence",label:"Receipt or blocker"},
+        {key:"listingUrl",label:"Live listing",link:true,linkLabel:"Play"}, {key:"nextStep",label:"Next step"},
       ]} />
     </Section>
 

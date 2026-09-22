@@ -1,0 +1,162 @@
+{
+  "verifiedAt": "2026-09-22T17:24:12.636340Z",
+  "scope": "Actual provider submission observations; local confirmation without a server request is not receipt.",
+  "results": [
+    {
+      "platform": "PWAStore.io",
+      "outcome": "live",
+      "status": "Live listing verified",
+      "verifiedAt": "2026-09-22T17:24:12.636340Z",
+      "submissionUrl": "https://www.pwastore.io/submit",
+      "listingUrl": "https://www.pwastore.io/app/riddle-quest",
+      "httpStatus": 200,
+      "evidence": "POST /api/submit-pwa returned 200; completion page and public listing verified.",
+      "nextStep": "No further submission action; hosted PWA updates remain at the submitted URL.",
+      "gameUrl": "https://riddle-quest-pwa.vercel.app/"
+    },
+    {
+      "platform": "SlowDen",
+      "outcome": "live",
+      "status": "Live listing verified",
+      "verifiedAt": "2026-09-22T17:24:12.636340Z",
+      "submissionUrl": "https://slowden.com/submit/",
+      "listingUrl": "https://slowden.com/play/?g=riddle-quest-ghw1o",
+      "httpStatus": 200,
+      "evidence": "POST /api/submit-game returned 200; live catalog includes riddle-quest-ghw1o and links to the game.",
+      "nextStep": "No further submission action; monitor the published embedded game.",
+      "gameUrl": "https://riddle-quest-web.vercel.app/"
+    },
+    {
+      "platform": "NoAdsGames",
+      "outcome": "submitted",
+      "status": "Submitted; review pending",
+      "verifiedAt": "2026-09-22T17:24:12.636340Z",
+      "submissionUrl": "https://noadsgames.org/en/publish-game",
+      "listingUrl": "",
+      "httpStatus": 202,
+      "evidence": "Submission 93; pending_review. Antivirus, advertising, iframe and human review remain pending.",
+      "nextStep": "Await provider review of submission 93; do not send duplicate hosted-game submissions.",
+      "gameUrl": "https://riddle-quest-web.vercel.app/"
+    },
+    {
+      "platform": "PWA Directory",
+      "outcome": "submitted",
+      "status": "Submitted; review pending",
+      "verifiedAt": "2026-09-22T17:24:12.636340Z",
+      "submissionUrl": "https://pwa.directory/submit",
+      "listingUrl": "",
+      "httpStatus": 200,
+      "evidence": "POST /api/submit returned 200 and the page confirmed receipt of the free standard submission.",
+      "nextStep": "Await the standard review outcome by email; provider states up to four weeks.",
+      "gameUrl": "https://riddle-quest-pwa.vercel.app/"
+    },
+    {
+      "platform": "YalGames",
+      "outcome": "submitted",
+      "status": "Submitted; review pending",
+      "verifiedAt": "2026-09-22T17:24:12.636340Z",
+      "submissionUrl": "https://yalgames.com/contact/",
+      "listingUrl": "",
+      "httpStatus": 200,
+      "evidence": "WPForms POST to /wp-admin/admin-ajax.php returned 200; contact page confirmed receipt.",
+      "nextStep": "Await the editorial response; additional landscape artwork can be supplied if requested.",
+      "gameUrl": "https://riddle-quest-web.vercel.app/"
+    },
+    {
+      "platform": "Coolmath Games",
+      "outcome": "submitted",
+      "status": "Submitted; licensing review pending",
+      "verifiedAt": "2026-09-22T17:24:12.636340Z",
+      "submissionUrl": "https://www.coolmathgames.com/submit-a-game",
+      "listingUrl": "",
+      "httpStatus": 200,
+      "evidence": "Official Google Form POST /formResponse returned 200 and confirmed the game submission.",
+      "nextStep": "Await non-exclusive licensing review; no publisher agreement has been accepted.",
+      "gameUrl": "https://riddle-quest-web.vercel.app/"
+    },
+    {
+      "platform": "Rando.gg",
+      "outcome": "blocked",
+      "status": "Blocked: submission service unavailable",
+      "verifiedAt": "2026-09-22T17:24:12.636340Z",
+      "submissionUrl": "https://rando.gg/submit",
+      "listingUrl": "",
+      "httpStatus": 503,
+      "evidence": "POST /api/submit returned 503; the page says intake is disabled while an error is investigated.",
+      "nextStep": "Retry once the provider reopens intake; no accepted submission or listing was established.",
+      "gameUrl": "https://riddle-quest-web.vercel.app/"
+    },
+    {
+      "platform": "Tabatu",
+      "outcome": "blocked",
+      "status": "Blocked: form does not transmit",
+      "verifiedAt": "2026-09-22T17:24:12.636340Z",
+      "submissionUrl": "https://tabatu.com/submit-game",
+      "listingUrl": "",
+      "httpStatus": null,
+      "evidence": "The form displayed a confirmation but made no POST. Its public client handler only calls preventDefault and changes local display state.",
+      "nextStep": "A working provider submission endpoint is required; do not count the displayed confirmation as receipt.",
+      "gameUrl": "https://riddle-quest-web.vercel.app/"
+    },
+    {
+      "platform": "ViralGameZone",
+      "outcome": "blocked",
+      "status": "Blocked: form does not transmit",
+      "verifiedAt": "2026-09-22T17:24:12.636340Z",
+      "submissionUrl": "https://viralgamezone.com/submit-game",
+      "listingUrl": "",
+      "httpStatus": null,
+      "evidence": "The public submit button only invokes alert(); no submission transport exists in the form. No contact details were sent.",
+      "nextStep": "Wait for a working intake route; no submission was made.",
+      "gameUrl": "https://riddle-quest-web.vercel.app/"
+    },
+    {
+      "platform": "itch.io",
+      "outcome": "blocked",
+      "status": "Blocked: human verification and login",
+      "verifiedAt": "2026-09-22T17:24:12.636340Z",
+      "submissionUrl": "https://itch.io/game/new",
+      "listingUrl": "",
+      "httpStatus": null,
+      "evidence": "Developer route redirects to login behind a Cloudflare human-verification challenge. No upload attempted.",
+      "nextStep": "Complete the browser challenge and sign in to the developer account.",
+      "gameUrl": "https://riddle-quest-web.vercel.app/"
+    },
+    {
+      "platform": "CrazyGames",
+      "outcome": "blocked",
+      "status": "Blocked: developer login required",
+      "verifiedAt": "2026-09-22T17:24:12.636340Z",
+      "submissionUrl": "https://developer.crazygames.com/",
+      "listingUrl": "",
+      "httpStatus": null,
+      "evidence": "Developer Portal login form is displayed; no authenticated session available.",
+      "nextStep": "Sign in to the developer account to create the Basic Launch submission.",
+      "gameUrl": "https://riddle-quest-web.vercel.app/"
+    },
+    {
+      "platform": "Newgrounds",
+      "outcome": "blocked",
+      "status": "Blocked: developer login required",
+      "verifiedAt": "2026-09-22T17:24:12.636340Z",
+      "submissionUrl": "https://www.newgrounds.com/projects/games/new",
+      "listingUrl": "",
+      "httpStatus": null,
+      "evidence": "New game route redirects to /login; no authenticated developer session available.",
+      "nextStep": "Sign in to the Newgrounds account to create and upload the game project.",
+      "gameUrl": "https://riddle-quest-web.vercel.app/"
+    },
+    {
+      "platform": "DeskLink",
+      "outcome": "blocked",
+      "status": "Manual intake required",
+      "verifiedAt": "2026-09-22T17:24:12.636340Z",
+      "submissionUrl": "https://www.desklink.cc/developers/",
+      "listingUrl": "",
+      "httpStatus": null,
+      "evidence": "Terms expressly disallow automated website access. No submission attempted.",
+      "nextStep": "Use the provider form manually or obtain an approved automated intake route.",
+      "gameUrl": "https://riddle-quest-web.vercel.app/"
+    }
+  ]
+}
