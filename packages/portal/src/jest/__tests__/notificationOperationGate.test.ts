@@ -5,14 +5,20 @@ it("closes notification writes and drains work that was already in flight", asyn
   const gate = createNotificationOperationGate();
   /** Provides finish behavior. */
   let finish: () => void = () => undefined;
+  /** Signals that the operation has actually acquired its lock and started. */
+  let markStarted: () => void = () => undefined;
+  /** Separates in-flight work from work still queued behind the lock. */
+  const started = new Promise<void>((resolve) => { markStarted = resolve; });
   /** Provides operation behavior. */
   const operation = gate.run(
     () =>
       new Promise<void>((resolve) => {
         finish = resolve;
+        markStarted();
       }),
   );
 
+  await started;
   gate.close();
   expect(gate.isOpen()).toBe(false);
   await expect(gate.run(async () => undefined)).rejects.toThrow("notification-operation-gate-closed");
