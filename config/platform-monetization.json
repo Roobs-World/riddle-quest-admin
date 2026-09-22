@@ -27,15 +27,15 @@
     },
     {
       "platform": "Yahoo",
-      "iap": "Implemented with server-authoritative Stripe fulfillment",
-      "ads": "Unavailable \u2014 no approved Yahoo Games ad SDK",
-      "gate": "Verify one live authenticated checkout and entitlement"
+      "iap": "Disabled in provider-neutral candidate",
+      "ads": "Excluded from candidate",
+      "gate": "Approved partner SDK and monetization contract required"
     },
     {
       "platform": "Netflix",
-      "iap": "Partner-gated",
-      "ads": "Partner-gated",
-      "gate": "Obtain written Netflix Games SDK and monetization contracts"
+      "iap": "Disabled in provider-neutral candidate",
+      "ads": "Excluded from candidate",
+      "gate": "Approved partner SDK and monetization contract required"
     },
     {
       "platform": "itch.io",

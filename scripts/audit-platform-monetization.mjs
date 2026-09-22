@@ -7,13 +7,15 @@ const root = fileURLToPath(new URL("..", import.meta.url));
 const read = (relative) => readFile(path.join(root, relative), "utf8");
 
 export async function auditPlatformMonetization() {
-  const [policySource, dashboardSource, jestPurchases, facebookEntry, facebookBootstrap, redditConfigSource,
-    redditProductsSource, redditClient, yahooCommerce, youtubeAudit] = await Promise.all([
+  const [policySource, dashboardSource, jestPurchases, facebookEntry, facebookBootstrap, facebookCommerce,
+    redditConfigSource, redditProductsSource, redditClient, youtubeAudit, standaloneAudit, yahooEntry] = await Promise.all([
     read("config/platform-monetization.json"), read("docs/reports/platform-release-readiness/src/data.json"),
     read("packages/portal/src/jest/purchases.ts"), read("packages/portal/src/facebook/FacebookPlatformEntry.tsx"),
-    read("packages/portal/src/facebook/FacebookPlatformBootstrap.ts"), read("packages/reddit-app/devvit.json"),
+    read("packages/portal/src/facebook/FacebookPlatformBootstrap.ts"),
+    read("packages/portal/src/facebook/FacebookCommerceCapability.ts"), read("packages/reddit-app/devvit.json"),
     read("packages/reddit-app/products.json"), read("packages/portal/src/reddit/RedditPlatformBootstrap.ts"),
-    read("packages/portal/src/yahoo/yahooStripeCommerce.ts"), read("packages/portal/scripts/audit-youtube-artifact.mjs"),
+    read("packages/portal/scripts/audit-youtube-artifact.mjs"),
+    read("packages/portal/scripts/audit-standalone-artifact.mjs"), read("packages/portal/targets/yahoo/index.html"),
   ]);
   const policy = JSON.parse(policySource);
   const dashboard = JSON.parse(dashboardSource);
@@ -33,12 +35,14 @@ export async function auditPlatformMonetization() {
   if (!/getIncompletePurchases/u.test(jestPurchases) || !/completePurchase/u.test(jestPurchases) || !/backend\.grantPurchase/u.test(jestPurchases)) failures.push("Jest purchase grant/recovery ordering is missing.");
   if (!/createFacebookAdsCapability/u.test(facebookEntry) || !/VITE_FACEBOOK_INTERSTITIAL_PLACEMENT_ID/u.test(facebookEntry) || !/VITE_FACEBOOK_REWARDED_PLACEMENT_ID/u.test(facebookEntry)) failures.push("Facebook ad capability or placement boundary is missing.");
   if (!/commerce:\s*false/u.test(facebookBootstrap)) failures.push("Unverified Facebook IAP must remain unreachable.");
+  if (!/price:\s*product\.price/u.test(facebookCommerce)) failures.push("Facebook commerce must preserve Meta's formatted catalog price.");
   const redditConfig = JSON.parse(redditConfigSource);
   const redditProducts = JSON.parse(redditProductsSource);
   if (redditConfig.permissions?.payments !== true || !redditConfig.payments?.endpoints?.fulfillOrder || !redditConfig.payments?.endpoints?.refundOrder) failures.push("Reddit payment permissions and handlers must be configured.");
   if (!Array.isArray(redditProducts.products) || redditProducts.products.length < 1 || !/purchase\(productId/u.test(redditClient)) failures.push("Reddit Gold products or client purchase flow is missing.");
-  if (!/createYahooStripeCheckout/u.test(yahooCommerce) || !/checkout\.stripe\.com/u.test(yahooCommerce)) failures.push("Yahoo Stripe checkout boundary is missing.");
   if (!/purchase integration/u.test(youtubeAudit)) failures.push("YouTube artifact audit must continue rejecting purchase integration.");
+  if (!/standaloneMain\.tsx/u.test(yahooEntry)) failures.push("Yahoo candidate must use the provider-neutral standalone entry.");
+  if (!/commerce or advertising/u.test(standaloneAudit) || !/checkout/u.test(standaloneAudit)) failures.push("Yahoo and Netflix candidate audits must reject checkout integration.");
   if (failures.length) throw new Error(`Platform monetization audit failed:\n- ${failures.join("\n- ")}`);
   return rows;
 }
