@@ -90,18 +90,20 @@ const closeServer = (server: Server): Promise<void> =>
     server.close((error) => (error ? reject(error) : resolve()));
   });
 
-/** Builds the explicit non-release content fixture and serves only the emitted artifact. */
-export async function startYouTubeArtifactServer(): Promise<YouTubeArtifactServer> {
+/** Serves an isolated playable artifact; YouTube defaults to its explicit content fixture. */
+export async function startYouTubeArtifactServer(
+  target: "youtube" | "netflix" | "yahoo" = "youtube",
+): Promise<YouTubeArtifactServer> {
   /** Provides package root behavior. */
   const packageRoot = path.resolve(__dirname, "../../..");
   if (process.env.PORTAL_USE_EXISTING_BUILD !== "1") {
-    execFileSync("pnpm", ["--filter", "@qwordly/portal", "build:youtube:fixture"], {
+    execFileSync("pnpm", ["--filter", "@qwordly/portal", target === "youtube" ? "build:youtube:fixture" : `build:${target}`], {
       cwd: path.resolve(packageRoot, "../.."),
       stdio: "inherit",
     });
   }
   /** Provides dist directory behavior. */
-  const distDirectory = path.join(packageRoot, "dist-youtube");
+  const distDirectory = path.join(packageRoot, `dist-${target}`);
   /** Provides zero size host behavior. */
   const zeroSizeHost = `<!doctype html><html><body style="margin:0">
     <iframe id="playable" title="YouTube Playable" src="/" style="border:0;width:0;height:0"></iframe>

@@ -70,6 +70,25 @@ describe("Facebook commerce capability", () => {
     });
   });
 
+  test.each([
+    ["GBP", "£0.89", "0.89"],
+    ["EUR", "0,99 €", "0.99"],
+    ["JPY", "￥150", "150"],
+  ])("preserves Meta's %s checkout price without a USD fallback", async (currency, price, amount) => {
+    /** Catalog entries returned by the provider. */
+    const products = catalog().map((entry) => ({
+      ...entry, price, priceCurrencyCode: currency, priceAmount: amount,
+    }));
+    /** Commerce adapter exercised by this test. */
+    const capability = new FacebookCommerceCapability(payments({getCatalogAsync: async () => products}), jest.fn());
+    /** Result returned by the operation under test. */
+    const result = await capability.listProducts();
+    expect(result.status).toBe("success");
+    if (result.status !== "success") throw new Error("Catalog unavailable");
+    expect(result.value).toHaveLength(7);
+    expect(result.value.map((product) => product.price)).toEqual(Array(7).fill(price));
+  });
+
   test.each(["", " ", "0x1", "Infinity", "1e2", "0,99", "-0.99", null, true])(
     "rejects malformed decimal price %p",
     (priceAmount) => {

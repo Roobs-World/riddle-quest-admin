@@ -355,6 +355,7 @@ describe("Daily Challenge Functions", () => {
     jest.clearAllMocks();
     mockEnsureAuthoritativeSession.mockResolvedValue(SESSION_TOKEN);
     mockGetIssuedAuthoritativeSession.mockResolvedValue({
+      locale: "en",
       gameMode: "classic",
       attempts: 0,
       hasUsedContinue: false,
@@ -405,7 +406,7 @@ describe("Daily Challenge Functions", () => {
       expect(result.error).toBe("No daily challenge available at the moment.");
     });
 
-    it("should return challenge and completion status for authenticated user", async () => {
+    it.each([false, true])("returns daily feedback only when requested (%s)", async (includeEvaluation) => {
       /** Provides mock user id behavior. */
       const mockUserId = "testUser123";
       /** Provides mock player behavior. */
@@ -421,7 +422,7 @@ describe("Daily Challenge Functions", () => {
       } as MockDocumentSnapshot<any>);
 
       /** Provides mock request behavior. */
-      const mockRequest = {auth: {uid: mockUserId}} as CallableRequest<unknown>;
+      const mockRequest = {auth: {uid: mockUserId}, data: {includeEvaluation}} as CallableRequest<unknown>;
       /** Provides result behavior. */
       const result = await getCurrentDailyChallenge(mockRequest);
 
@@ -431,6 +432,7 @@ describe("Daily Challenge Functions", () => {
           {
             riddleId: "current",
             text: "Question 1?",
+            ...(includeEvaluation ? {evaluation: {answer: "answer", locale: "en"}} : {}),
             answerLength: 6,
             sessionToken: SESSION_TOKEN,
             questionNumber: 1,
@@ -885,7 +887,7 @@ describe("Daily Challenge Functions", () => {
       expect(mockGetClassicRiddleByIndex).not.toHaveBeenCalled();
     });
 
-    it("should return classic challenge payload for authenticated user", async () => {
+    it.each([false, true])("returns classic feedback only when requested (%s)", async (includeEvaluation) => {
       /** Provides mock user id behavior. */
       const mockUserId = "classicUser";
       mockGetUser.mockResolvedValue(
@@ -901,7 +903,7 @@ describe("Daily Challenge Functions", () => {
       });
 
       /** Provides mock request behavior. */
-      const mockRequest = {auth: {uid: mockUserId}, data: {classicIndex: 10}} as CallableRequest<{
+      const mockRequest = {auth: {uid: mockUserId}, data: {classicIndex: 10, includeEvaluation}} as CallableRequest<{
         /** Stores classic index. */
         classicIndex?: number;
         /** Stores locale. */
@@ -916,6 +918,7 @@ describe("Daily Challenge Functions", () => {
           {
             riddleId: "classic-10",
             text: "Classic question?",
+            ...(includeEvaluation ? {evaluation: {answer: "ANSWER", locale: "en"}} : {}),
             answerLength: 6,
             sessionToken: SESSION_TOKEN,
             questionNumber: 1,

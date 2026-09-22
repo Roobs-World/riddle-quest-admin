@@ -89,6 +89,8 @@ export const DailyChallengeQuestionSchema = z
     riddleId: RiddleIdSchema,
     text: z.string().min(1).max(120),
     answerLength: z.number().int().positive().max(7),
+    // Presentation-only scoring data; submissions and rewards remain server-validated.
+    evaluation: z.object({answer: z.string().min(1).max(64), locale: z.string().min(2).max(35)}).strict().optional(),
     sessionToken: z.string().min(20).max(128),
     questionNumber: z.number().int().positive().max(1),
     attemptsUsed: z.number().int().nonnegative().max(6),

@@ -90,7 +90,7 @@ export function VictoryFanfareContent({
         ✦
       </div>
       {!activeStep ? (
-        <p aria-live="polite">{tr("Accessibility.LOADING")}</p>
+        <strong className="fanfare-title" aria-live="polite">{tr("VictoryModal.YOU_WON_TITLE")}</strong>
       ) : activeStep.kind === "achievement" ? (
         <AchievementFanfare achievementId={activeStep.achievementId} />
       ) : activeStep.kind === "level" ? (

@@ -166,3 +166,21 @@ describe("game session persistence", () => {
     expect(reloaded.lastOutcome).toMatchObject({kind: "win", attempts: 6});
   });
 });
+
+it("does not persist a feedback preview as confirmed progress or a completion", () => {
+  /** Game state driven through the submission flow. */
+  let state = gameSessionReducer(createInitialGameSession(), {type: "loadRiddle", riddle: {
+    riddleId: "classic-1", sessionToken: "00000000-0000-4000-8000-000000000001", text: "Clue",
+    answerLength: 5, gameMode: "classic", attemptsUsed: 0, hasUsedContinue: false, awaitingContinue: false,
+    evaluation: {answer: "piano", locale: "en"},
+  }});
+  for (const letter of "PIANO") state = gameSessionReducer(state, {type: "typeLetter", letter});
+  state = gameSessionReducer(state, {type: "guessRequested"});
+  expect(state.modal).toBe("victory");
+  /** Persisted projection excluding speculative progress. */
+  const saved = createSavedGame(state);
+  expect(saved?.guesses).toHaveLength(0);
+  expect(saved?.engineSnapshot.attemptsUsed).toBe(0);
+  expect(saved?.pendingOutcome).toBeUndefined();
+  expect(saved).not.toHaveProperty("evaluation");
+});

@@ -242,6 +242,39 @@ describeBrowser("YouTube Playables artifact with injected Game API", () => {
     await page.close();
   }, 45_000);
 
+  it("renders feedback and accepts the next draft during a slow platform save", async () => {
+    /** Runs the real artifact with deliberately delayed persistence. */
+    const page = await browser.newPage({viewport: {width: 390, height: 844}});
+    await installYouTubeSdkHarness(page, {
+      saveResults: [{kind: "resolve"}, {kind: "resolve", delayMs: 5000}],
+    });
+    await page.goto(artifact.origin);
+    await page.getByRole("button", {name: /Classic/}).click();
+    await page.getByRole("heading", {name: /Which ancient city/}).waitFor();
+    for (const letter of "XXXX") {
+      await page.locator(".yt-keyboard button", {hasText: new RegExp(`^${letter}$`)}).click();
+    }
+    /** Measures rendering while the save promise is still unresolved. */
+    const latency = await page.getByRole("button", {name: "Submit", exact: true}).evaluate(async (button) => {
+      /** Starts before invoking the game handler. */
+      const started = performance.now();
+      (button as HTMLButtonElement).click();
+      while (document.querySelectorAll(".yt-guess-row .yt-tile.red").length !== 4) {
+        if (performance.now() - started > 1000) throw new Error("Feedback waited for platform save");
+        await new Promise(resolve => requestAnimationFrame(resolve));
+      }
+      return performance.now() - started;
+    });
+    expect(latency).toBeLessThan(250);
+    await page.locator(".yt-keyboard button", {hasText: /^R$/}).click();
+    expect(await page.locator(".yt-guess-row.current .yt-tile").first().textContent()).toBe("r");
+    expect(await page.getByRole("button", {name: "Submit", exact: true}).isDisabled()).toBe(true);
+    await waitForSdkEvent(page, "sdk:save:success:2");
+    expect(await page.locator(".yt-guess-row.current .yt-tile").first().textContent()).toBe("r");
+    console.info(`YouTube: feedback ${latency.toFixed(1)}ms during a five-second save`);
+    await page.close();
+  }, 30_000);
+
   it("persists each material action, retries the exact payload, and accepts mouse, touch, keyboard, and IME input", async () => {
     /** Provides context behavior. */
     const context = await browser.newContext({viewport: {width: 390, height: 844}, hasTouch: true});

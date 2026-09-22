@@ -75,6 +75,8 @@ export const getCurrentDailyChallenge = onCallWithSentry(
       locale?: unknown;
       /** Stores session token. */
       sessionToken?: unknown;
+      /** Opts into preloaded feedback without changing legacy response shapes. */
+      includeEvaluation?: boolean;
       /** Stores riddle id. */
       riddleId?: unknown;
     }>,
@@ -277,6 +279,7 @@ export const getCurrentDailyChallenge = onCallWithSentry(
         challengeDate,
         sessionToken,
         activeSession,
+        request.data?.includeEvaluation === true,
       );
 
       /** Provides current question behavior. */
@@ -334,6 +337,8 @@ export const getCurrentClassicRiddle = onCallWithSentry(
       locale?: string;
       /** Stores session token. */
       sessionToken?: unknown;
+      /** Opts into preloaded feedback without changing legacy response shapes. */
+      includeEvaluation?: boolean;
       /** Stores riddle id. */
       riddleId?: unknown;
     }>,
@@ -510,7 +515,7 @@ export const getCurrentClassicRiddle = onCallWithSentry(
       return validateCallableResponse(
         GetCurrentDailyChallengeResponseSchema,
         {
-          challenge: buildSinglePlayerChallengeResponse(riddle, undefined, sessionToken, activeSession),
+          challenge: buildSinglePlayerChallengeResponse(riddle, undefined, sessionToken, activeSession, request.data?.includeEvaluation === true),
         },
         "getCurrentClassicRiddle",
       );

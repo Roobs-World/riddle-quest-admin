@@ -43,6 +43,98 @@ const resolveGuess = (
   });
 
 describe("game session reducer", () => {
+  it.each(["PIANO", "CRANE"])("shows feedback for %s before the server responds", (guess) => {
+    /** Riddle with canonical feedback data supplied at load time. */
+    const loaded = {...riddle, evaluation: {answer: "piano", locale: "en"}};
+    /** Game state driven through the submission flow. */
+    let state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle: loaded});
+    for (const letter of guess) state = reduce(state, {type: "typeLetter", letter});
+    state = reduce(state, {type: "guessRequested"});
+    expect(state.guesses).toHaveLength(1);
+    expect(state.guesses[0].feedback).toEqual(guess === "PIANO"
+      ? ["green", "green", "green", "green", "green"]
+      : ["red", "red", "green", "green", "red"]);
+    expect(state.guessPending).toBe(true);
+    expect(state.lastRewards).toBeNull();
+    expect(state.completionAcknowledged).toBe(false);
+  });
+
+  it("reconciles a preview without duplicate rows and rolls back rejected guesses", () => {
+    /** Riddle with canonical feedback data supplied at load time. */
+    const loaded = {...riddle, evaluation: {answer: "piano", locale: "en"}};
+    /** Confirmed state before submitting the guess. */
+    let before = reduce(createInitialGameSession(), {type: "loadRiddle", riddle: loaded});
+    for (const letter of "PIANO") before = reduce(before, {type: "typeLetter", letter});
+    /** Immediate presentation before server confirmation. */
+    const preview = reduce(before, {type: "guessRequested"});
+    expect(preview.modal).toBe("victory");
+    expect(reduce(preview, {type: "guessRequested"})).toBe(preview);
+    /** State after the server rejects the submission. */
+    const failed = reduce(preview, {type: "guessFailed"});
+    expect(failed).toEqual(before);
+    /** State after server confirmation replaces the preview. */
+    const confirmed = reduce(preview, {
+      type: "guessResolved", attempts: 1, isCorrect: true, gameOver: true, canContinue: false,
+      feedback: {guess: [..."piano"], feedback: ["green", "green", "green", "green", "green"]},
+    });
+    expect(confirmed.guesses).toHaveLength(1);
+    expect(confirmed.guessPending).toBe(false);
+    expect(confirmed.pendingGuessState).toBeNull();
+    /** Server disagreement that must override local feedback. */
+    const corrected = reduce(preview, {
+      type: "guessResolved", attempts: 1, isCorrect: false, gameOver: false, canContinue: false,
+      feedback: {guess: [..."piano"], feedback: ["red", "red", "red", "red", "red"]},
+    });
+    expect(corrected.modal).toBeNull();
+    expect(corrected.lastOutcome).toBeNull();
+    expect(corrected.letterStates.p).toBe("red");
+    expect(corrected.lastRewards).toBeNull();
+  });
+
+  it("does not preview a continue purchase until the fifth guess is confirmed", () => {
+    /** Game state driven through the submission flow. */
+    let state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle: {
+      ...riddle, attemptsUsed: 4, evaluation: {answer: "piano", locale: "en"},
+    }});
+    for (const letter of "CRANE") state = reduce(state, {type: "typeLetter", letter});
+    state = reduce(state, {type: "guessRequested"});
+    expect(state.guesses).toHaveLength(1);
+    expect(state.modal).toBeNull();
+    expect(state.lastOutcome).toBeNull();
+  });
+
+  it("keeps the next draft editable while a wrong guess is confirming", () => {
+    /** Loaded solo riddle with feedback data. */
+    const loaded = {...riddle, evaluation: {answer: "piano", locale: "en"}};
+    /** Submission followed by the next draft before confirmation. */
+    let state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle: loaded});
+    for (const letter of "CRANE") state = reduce(state, {type: "typeLetter", letter});
+    state = reduce(state, {type: "guessRequested"});
+    state = reduce(state, {type: "typeLetter", letter: "P"});
+    expect(state.currentLetters[0]).toBe("P");
+    state = reduce(state, {
+      type: "guessResolved", attempts: 1, isCorrect: false, gameOver: false, canContinue: false,
+      feedback: {guess: [..."crane"], feedback: ["red", "red", "green", "green", "red"]},
+    });
+    expect(state.currentLetters[0]).toBe("P");
+    expect(state.guesses).toHaveLength(1);
+    expect(state.guessPending).toBe(false);
+  });
+
+  it("ignores a stale saved snapshot while a guess is pending", () => {
+    /** State immediately before the backend acknowledges the guess. */
+    let state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle: {
+      ...riddle, evaluation: {answer: "piano", locale: "en"},
+    }});
+    for (const letter of "PIANO") state = reduce(state, {type: "typeLetter", letter});
+    state = reduce(state, {type: "guessRequested"});
+    expect(reduce(state, {
+      type: "restoreSession", currentLetters: [..."PIANO"], activeSlotIndex: 0,
+      hintRevealedIndices: [], guesses: [], letterStates: {}, awaitingContinue: false,
+      engineSnapshot: {guesses: [], attemptsUsed: 0, hasUsedContinue: false, gameOver: false},
+    })).toBe(state);
+  });
+
   it("does not open the skip modal for a daily riddle", () => {
     /** Provides daily riddle behavior. */
     const dailyRiddle = {...riddle, riddleId: "daily-1", gameMode: "challenge" as const};

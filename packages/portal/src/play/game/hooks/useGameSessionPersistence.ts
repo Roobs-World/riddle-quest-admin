@@ -4,6 +4,7 @@ import type {GameSessionAction, GameSessionState} from "../../gameSession";
 
 /** Projects an active game session into the versioned low-integrity Jest player-data snapshot. */
 export const createSavedGame = (state: GameSessionState, savedAt = Date.now()): SavedGame | null => {
+  if (state.pendingGuessState) state = {...state, ...state.pendingGuessState, pendingGuessState: null};
   if (!state.riddle || !state.engineSnapshot || (state.lastOutcome && state.completionAcknowledged)) return null;
   return {
     schemaVersion: 1,
@@ -47,6 +48,8 @@ export const useGameSessionPersistence = ({
   /** Stores on save game. */
   onSaveGame?: (game: SavedGame | null) => void;
 }) => {
+  /** Restores each loaded riddle once; subsequent saved-data echoes are checkpoints. */
+  const restoredRiddleRef = useRef<GameSessionState["riddle"]>(null);
   /** Provides last cleared outcome ref behavior. */
   const lastClearedOutcomeRef = useRef<string | null>(null);
   /** Provides last server checkpoint ref behavior. */
@@ -61,11 +64,12 @@ export const useGameSessionPersistence = ({
 
   useEffect(() => {
     if (
-      !state.riddle ||
+      !state.riddle || restoredRiddleRef.current === state.riddle ||
       restoredGame?.riddleId !== state.riddle.riddleId ||
       restoredGame.sessionToken !== state.riddle.sessionToken
     )
       return;
+    restoredRiddleRef.current = state.riddle;
     dispatch({
       type: "restoreSession",
       currentLetters: restoredGame.currentLetters,
@@ -77,7 +81,7 @@ export const useGameSessionPersistence = ({
       letterStates: restoredGame.letterStates,
       pendingOutcome: restoredGame.pendingOutcome,
     });
-  }, [dispatch, restoredGame, state.riddle?.riddleId, state.riddle?.sessionToken]);
+  }, [dispatch, restoredGame, state.riddle]);
 
   useEffect(() => {
     if (state.lastOutcome && state.completionAcknowledged) {

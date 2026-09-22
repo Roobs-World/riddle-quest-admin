@@ -104,6 +104,8 @@ export const getCurrentDailyChallenge = httpsCallable<
       sessionToken?: string;
       /** Stores riddle id. */
       riddleId?: string;
+      /** Requests presentation-only scoring data for immediate feedback. */
+      includeEvaluation?: boolean;
     }
   | undefined,
   CurrentRiddleResponse
@@ -120,6 +122,8 @@ export const getCurrentClassicRiddle = httpsCallable<
     sessionToken?: string;
     /** Stores riddle id. */
     riddleId?: string;
+    /** Requests presentation-only scoring data for immediate feedback. */
+    includeEvaluation?: boolean;
   },
   CurrentRiddleResponse
 >(functions, "getCurrentClassicRiddle");
@@ -353,6 +357,13 @@ export type CurrentRiddleResponse = {
       text: string;
       /** Stores answer length. */
       answerLength: number;
+      /** Canonical scoring data used only for immediate presentation. */
+      evaluation?: {
+        /** Answer supplied with this issued single-player riddle. */
+        answer: string;
+        /** Canonical content locale, including fallback language. */
+        locale: string;
+      };
       /** Stores session token. */
       sessionToken: string;
       /** Stores question number. */

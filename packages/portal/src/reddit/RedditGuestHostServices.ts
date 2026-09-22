@@ -70,6 +70,7 @@ export const createRedditGuestHostServices = (savedProfile?: BridgeProfile): Hos
         riddleId: source.id,
         text: source.text,
         answerLength: splitGraphemes(source.answer).length,
+        evaluation: {answer: source.answer, locale: "en"},
         sessionToken: `00000000-0000-4000-8000-00000000000${source === riddles[0] ? "1" : "2"}`,
         gameMode: "classic",
         index: classicIndex ?? profile.classicIndex,

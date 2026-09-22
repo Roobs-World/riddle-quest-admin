@@ -40,6 +40,8 @@ export function useGameOperations({
     guess: string; /** Stores request id. */
     /** Stores request id. */
     requestId: string;
+    /** Confirmed row count before sending this guess. */
+    guesses: number;
   } | null>(null);
   /** Provides hint retry ref behavior. */
   const hintRetryRef = useRef<{
@@ -99,7 +101,7 @@ export function useGameOperations({
     /** Requests id. */
     const requestId =
       retry?.riddleId === state.riddle.riddleId && retry.guess === guess ? retry.requestId : createRequestId("guess");
-    guessRetryRef.current = {riddleId: state.riddle.riddleId, guess, requestId};
+    guessRetryRef.current = {riddleId: state.riddle.riddleId, guess, requestId, guesses: state.guesses.length};
     playFeedback("submit");
     dispatch({type: "guessRequested"});
     postToHost({
@@ -113,11 +115,13 @@ export function useGameOperations({
         requestId,
       },
     });
-  }, [canSubmit, currentAttempt, dispatch, playFeedback, postToHost, state.riddle]);
+  }, [canSubmit, currentAttempt, dispatch, playFeedback, postToHost, state.riddle, state.guesses.length]);
 
   useEffect(() => {
-    guessRetryRef.current = null;
-  }, [state.guesses.length]);
+    if (!state.guessPending && state.guesses.length > (guessRetryRef.current?.guesses ?? Infinity)) {
+      guessRetryRef.current = null;
+    }
+  }, [state.guesses.length, state.guessPending]);
 
   /** Requests hint. */
   const requestHint = useCallback(() => {

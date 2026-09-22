@@ -1,3 +1,4 @@
+import {verifyImmediateSoloFeedback} from "../../play/__tests__/instantFeedback.jest-playwright.support";
 import {describe, expect, it} from "@jest/globals";
 import {chromium, type Page} from "@playwright/test";
 
@@ -485,6 +486,7 @@ describeBrowser("Reddit artifact with injected Devvit context", () => {
                     {
                       riddleId: "reddit-browser-riddle",
                       text: "What has keys but no locks?",
+                      evaluation: {answer: "piano", locale: "en"},
                       answerLength: 5,
                       sessionToken: "00000000-0000-4000-8000-000000000001",
                       questionNumber: 1,
@@ -497,6 +499,13 @@ describeBrowser("Reddit artifact with injected Devvit context", () => {
               },
             }),
           });
+        if (pathname === "/api/game/guess.submit") return route.fulfill({
+          status: 200, contentType: "application/json",
+          body: JSON.stringify({ok: true, result: {
+            feedback: [..."crane"].map((letter, index) => ({letter, status: index === 2 || index === 3 ? "green" : "red"})),
+            attempts: 1, isCorrect: false, gameOver: false,
+          }}),
+        });
         return route.fulfill({
           status: 500,
           contentType: "application/json",
@@ -546,6 +555,14 @@ describeBrowser("Reddit artifact with injected Devvit context", () => {
       );
       expect(apiRequests.filter((request) => request === "/api/game/race.match")).toHaveLength(1);
       await expanded.locator(".race-close").click();
+      await expanded.locator(".onboarding-card button").waitFor();
+      for (let step = 0; step < 10; step += 1) {
+        /** Currently visible onboarding or tutorial action. */
+        const guidanceButton = expanded.locator(".onboarding-card button, .tooltip-card button");
+        if (await guidanceButton.count()) await guidanceButton.last().click();
+        await expanded.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+      }
+      await verifyImmediateSoloFeedback(expanded, "Reddit");
       /** Sets tings button. */
       const settingsButton = expanded.locator(".game-bottom-navigation button").first();
       await settingsButton.click({force: true});

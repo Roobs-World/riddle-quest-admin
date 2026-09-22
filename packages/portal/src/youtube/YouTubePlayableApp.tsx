@@ -163,6 +163,8 @@ function ReadyYouTubeApp({
   const progression = snapshot.save.progression;
   /** Provides material disabled behavior. */
   const materialDisabled = snapshot.busy || snapshot.paused || snapshot.saveBlocked;
+  /** Ephemeral drafts remain editable while the previous result saves. */
+  const inputDisabled = snapshot.paused || snapshot.saveBlocked;
 
   /** Applies text. */
   const applyText = (value: string): void => {
@@ -276,7 +278,7 @@ function ReadyYouTubeApp({
               {displayLetters.map((letter, index) => (
                 <button
                   className={`yt-tile ${snapshot.activeSlotIndex === index ? "active" : ""} ${active.hintRevealedIndices.includes(index) ? "hinted" : ""}`}
-                  disabled={materialDisabled || active.hintRevealedIndices.includes(index)}
+                  disabled={inputDisabled || active.awaitingContinue || active.hintRevealedIndices.includes(index)}
                   onClick={() => {
                     authority.setActiveSlot(index);
                     inputRef.current?.focus();
@@ -290,7 +292,7 @@ function ReadyYouTubeApp({
           </div>
           <YouTubeNativeAnswerInput
             ref={inputRef}
-            disabled={materialDisabled || active.awaitingContinue}
+            disabled={inputDisabled || active.awaitingContinue}
             locale={locale}
             label={text("inputLabel")}
             onText={applyText}
@@ -304,14 +306,14 @@ function ReadyYouTubeApp({
               {"QWERTYUIOPASDFGHJKLZXCVBNM".split("").map((letter) => (
                 <button
                   tabIndex={-1}
-                  disabled={materialDisabled || active.awaitingContinue}
+                  disabled={inputDisabled || active.awaitingContinue}
                   onClick={() => applyText(normalizeLatinShortcutKey(letter))}
                   key={letter}
                 >
                   {letter}
                 </button>
               ))}
-              <button tabIndex={-1} disabled={materialDisabled || active.awaitingContinue} onClick={backspace}>
+              <button tabIndex={-1} disabled={inputDisabled || active.awaitingContinue} onClick={backspace}>
                 ⌫
               </button>
             </div>

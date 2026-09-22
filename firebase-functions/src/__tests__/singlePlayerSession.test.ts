@@ -1,3 +1,4 @@
+import {buildSinglePlayerChallengeResponse} from "../gameplay/singlePlayerRiddleResponse";
 import {HttpsError} from "firebase-functions/v2/https";
 import {transitionSinglePlayerGuess, type SinglePlayerSessionState} from "../gameplay/singlePlayerSession";
 
@@ -11,6 +12,17 @@ const request = (guess: string, requestId: string, gameMode: "classic" | "challe
 });
 
 describe("single-player authoritative session", () => {
+  it("preloads the issued answer snapshot even if canonical content changes", () => {
+    /** A session already bound to piano before content was edited. */
+    const issued = transitionSinglePlayerGuess({request: request("crane", "request-0001"), answer: "piano", locale: "en"});
+    /** Latest content must not replace the answer that the backend will actually score. */
+    const response = buildSinglePlayerChallengeResponse(
+      {riddleId: "riddle-1", text: "Updated clue", answer: "guitar", locale: "fr"},
+      undefined, request("crane", "request-0001").sessionToken, issued.state, true,
+    );
+    expect(response.questions[0]).toMatchObject({answerLength: 5, evaluation: {answer: "piano", locale: "en"}});
+  });
+
   it("derives correctness and attempt count from canonical state", () => {
     /** Provides first behavior. */
     const first = transitionSinglePlayerGuess({

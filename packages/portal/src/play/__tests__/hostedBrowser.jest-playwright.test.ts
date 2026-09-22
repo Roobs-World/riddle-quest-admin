@@ -707,6 +707,33 @@ describeBrowser("standalone Jest browser game", () => {
       expect(await licensesResponse.text()).toContain("react@19.2.8");
       await compactPage.getByRole("button", {name: /account deletion/i}).click();
       await compactPage.locator(".modal-profile").waitFor();
+      await compactPage.keyboard.press("Escape");
+      for (const letter of "CRANE") await compactPage.locator(".keyboard").getByRole("button", {name: new RegExp(`^${letter}$`)}).click();
+      await compactPage.evaluate(() => {
+        /** Withholds confirmation so the browser can only use preloaded feedback. */
+        const dispatch = window.dispatchEvent.bind(window);
+        window.dispatchEvent = (event: Event) => {
+          if (event.type === "riddle-quest:host-to-game" && (event as CustomEvent).detail?.payload?.operation === "guess") return true;
+          return dispatch(event);
+        };
+      });
+      /** Measures immediate wrong-answer rendering with the response withheld. */
+      const wrongFeedbackLatency = await compactPage.getByRole("button", {name: /^submit$/i}).evaluate(async (button) => {
+        /** Submission time on the browser's monotonic clock. */
+        const started = performance.now();
+        (button as HTMLButtonElement).click();
+        while (document.querySelectorAll(".guess-row:first-child .cell.red").length !== 3) {
+          if (performance.now() - started > 1000) throw new Error("Wrong-answer feedback waited for the server");
+          await new Promise(resolve => requestAnimationFrame(resolve));
+        }
+        return performance.now() - started;
+      });
+      expect(wrongFeedbackLatency).toBeLessThan(250);
+      expect(await compactPage.locator(".guess-row:first-child .cell.green").count()).toBe(2);
+      await compactPage.locator("[data-tooltip-id=hintAfterWrongGuess] button").click();
+      await compactPage.locator(".keyboard").getByRole("button", {name: /^P$/}).click();
+      expect(await compactPage.locator(".guess-row").nth(1).locator(".cell").first().textContent()).toBe("P");
+      console.info(`Immediate wrong-answer feedback: ${wrongFeedbackLatency.toFixed(1)}ms with server response held`);
       await compactPage.close();
 
       expect(
@@ -731,6 +758,9 @@ describeBrowser("standalone Jest browser game", () => {
       await page.getByRole("heading", {name: /coin shop/i}).waitFor();
       await expectModalCentered(page);
       await expectAccessible(page, "coin shop");
+      expect(await page.locator(".game-shop-grid article:not(.shop-subscription-card) button").allTextContents())
+        .toEqual(["$0.99", "$1.99", "$2.99", "$4.99", "$9.99", "$19.99"]
+          .map((price) => `PURCHASE ${price}`));
       await page.keyboard.press("Escape");
       await page.setViewportSize({width: 390, height: 667});
       await page.waitForFunction(
@@ -969,11 +999,46 @@ describeBrowser("standalone Jest browser game", () => {
         .evaluate((button) => (button as HTMLButtonElement).click());
       await page.locator(".keyboard").getByRole("button", {name: /^N$/}).click();
       await page.locator(".keyboard").getByRole("button", {name: /^O$/}).click();
-      await page
-        .locator(".game-input-actions")
-        .getByRole("button", {name: /submit/i})
-        .click();
-
+      await page.evaluate(() => {
+        /** Original transport, restored when the harness releases the response. */
+        const dispatch = window.dispatchEvent.bind(window);
+        Object.assign(window, {__completionBeforeGuess: false});
+        window.dispatchEvent = (event: Event) => {
+          if (event.type === "riddle-quest:host-to-game" && (event as CustomEvent).detail?.payload?.operation === "guess") {
+            Object.assign(window, {__heldGuess: (event as CustomEvent).detail});
+            return true;
+          }
+          if (event.type === "riddle-quest:game-to-host" && (event as CustomEvent).detail?.type === "game:completeGame") {
+            Object.assign(window, {__completionBeforeGuess: true});
+          }
+          return dispatch(event);
+        };
+        Object.assign(window, {__releaseGuess: () => {
+          window.dispatchEvent = dispatch;
+          dispatch(new CustomEvent("riddle-quest:host-to-game", {detail: Reflect.get(window, "__heldGuess")}));
+        }});
+      });
+      /** Elapsed time from submission to rendered letter feedback. */
+      const feedbackLatency = await page.locator(".game-input-actions").getByRole("button", {name: /submit/i})
+        .evaluate(async (button) => {
+          /** Monotonic timestamp immediately before submission. */
+          const started = performance.now();
+          (button as HTMLButtonElement).click();
+          while (document.querySelectorAll(".guess-row:first-child .cell.green").length !== 5) {
+            if (performance.now() - started > 1000) throw new Error("Guess feedback waited for the server");
+            await new Promise(resolve => requestAnimationFrame(resolve));
+          }
+          return performance.now() - started;
+        });
+      expect(feedbackLatency).toBeLessThan(250);
+      await page.waitForFunction(() => "__heldGuess" in window);
+      await page.getByRole("heading", {name: /nice job/i}).waitFor({timeout: 2000});
+      expect(await page.getByRole("button", {name: /tap the chest/i}).count()).toBe(0);
+      await page.evaluate(() => {
+        if (Reflect.get(window, "__completionBeforeGuess")) throw new Error("Completion ran before guess confirmation");
+        Reflect.get(window, "__releaseGuess")();
+      });
+      console.info(`Immediate correct-answer feedback: ${feedbackLatency.toFixed(1)}ms with server response held`);
       await page.getByRole("heading", {name: /achievement unlocked/i}).waitFor({timeout: 15000});
       expect(await page.locator(".sequence-progress").textContent()).toBe("1/2");
       expect(await page.locator(".game-content").evaluate((element) => (element as HTMLElement).inert)).toBe(true);

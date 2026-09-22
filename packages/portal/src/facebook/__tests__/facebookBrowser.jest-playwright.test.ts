@@ -1,3 +1,4 @@
+import {verifyImmediateSoloFeedback} from "../../play/__tests__/instantFeedback.jest-playwright.support";
 import {describe, expect, it} from "@jest/globals";
 import {chromium} from "@playwright/test";
 
@@ -578,6 +579,7 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       expect(desktopHubBox!.x).toBeGreaterThanOrEqual(0);
       expect(desktopHubBox!.x + desktopHubBox!.width).toBeLessThanOrEqual(1280);
       await successPage.locator(".race-close").click();
+      await verifyImmediateSoloFeedback(successPage, "Facebook");
       await successPage.evaluate(() => window.__facebookPause?.());
       await successPage.waitForFunction(() => window.__facebookEvents.includes("flush"));
       await successPage.reload();

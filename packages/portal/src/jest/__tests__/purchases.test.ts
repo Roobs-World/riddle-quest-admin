@@ -137,6 +137,34 @@ it("maps the Jest catalog with SDK currency and trusted coin values", async () =
   );
 });
 
+it.each(["en-US", "en-GB", "de", "ja", "ar"])(
+  "keeps the SDK checkout currency for products and subscriptions in %s",
+  async (locale) => {
+    /** Injected Jest platform for this scenario. */
+    const platform = new MockJestPlatform(true);
+    /** Purchase coordinator with a verified subscription backend. */
+    const coordinator = new JestPurchaseCoordinator(platform, {
+      syncSubscriptions: async () => ({verified: true, activeSkus: [], blockedSkus: []}),
+    } as never);
+    /** Catalog entries returned by the provider. */
+    const products = await coordinator.getProducts(locale);
+    /** Subscription catalog rendered for this locale. */
+    const subscriptions = await coordinator.getSubscriptions("p1", locale);
+    for (const result of [products, subscriptions]) {
+      expect(result.status).toBe("success");
+      if (result.status !== "success") throw new Error("Catalog unavailable");
+      expect(result.value.length).toBeGreaterThan(0);
+      for (const product of result.value) {
+        expect(product.currency).toBe("USD");
+        expect(product.displayPrice).toBe(
+          new Intl.NumberFormat(locale, {style: "currency", currency: "USD"}).format(product.price!),
+        );
+        expect(product.displayPrice).not.toMatch(/Gold|credits/i);
+      }
+    }
+  },
+);
+
 it("does not sell a subscription the SDK says is held, even when verification disagrees", async () => {
   /** Provides platform behavior. */
   const platform = new MockJestPlatform(true);

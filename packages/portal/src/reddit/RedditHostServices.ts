@@ -90,7 +90,7 @@ export const createRedditHostServices = (accountGeneration = 1): HostServices =>
     async loadRiddle(input) {
       /** Provides raw behavior. */
       const raw = GetCurrentDailyChallengeResponseSchema.parse(
-        await post(input.gameMode === "classic" ? "riddle.classic" : "riddle.daily", input),
+        await post(input.gameMode === "classic" ? "riddle.classic" : "riddle.daily", {...input, includeEvaluation: true}),
       );
       /** Provides question behavior. */
       const question = raw.challenge?.questions[0];
@@ -99,6 +99,7 @@ export const createRedditHostServices = (accountGeneration = 1): HostServices =>
         riddleId: question.riddleId,
         text: question.text,
         answerLength: question.answerLength,
+        ...(question.evaluation ? {evaluation: question.evaluation} : {}),
         sessionToken: question.sessionToken,
         gameMode: input.gameMode,
         index: question.questionNumber,

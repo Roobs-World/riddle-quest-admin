@@ -125,6 +125,8 @@ export const BridgeRiddleSchema = z
     riddleId: RiddleIdSchema,
     text: z.string().min(1),
     answerLength: z.number().int().positive(),
+    // Presentation-only scoring data; submissions and rewards remain server-validated.
+    evaluation: z.object({answer: z.string().min(1).max(64), locale: z.string().min(2).max(35)}).strict().optional(),
     sessionToken: z.string().min(20).max(128),
     gameMode: GameModeSchema,
     index: z.number().int().nonnegative().optional(),

@@ -220,7 +220,7 @@ export const createPlayHostMessageHandlers = ({
   submitGuess: async (message) => {
     try {
       /** Provides result behavior. */
-      const result = await withServerActivity(() => authority.gameplay.submitGuess(message.payload));
+      const result = await authority.gameplay.submitGuess(message.payload);
       postOperation(message.requestId, "guess", true, result);
       trackEvent("guess_submitted", {
         game_mode: message.payload.gameMode,

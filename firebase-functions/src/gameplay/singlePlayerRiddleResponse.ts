@@ -3,28 +3,34 @@ import type {GetCurrentDailyChallengeResponse} from "../validation/requestSchema
 import {projectPublicSinglePlayerSession} from "./singlePlayerPublicSession";
 import type {SinglePlayerSessionState} from "./singlePlayerSessionTypes";
 
-/** Minimal canonical content needed to create an answer-free load response. */
+/** Minimal canonical content needed to create a preloaded single-player feedback response. */
 type CanonicalPublicRiddle = {
   /** Canonical riddle identifier. */ riddleId: string;
   /** Player-facing clue. */ text: string;
-  /** Private answer used only to derive its public length. */ answer: string;
+  /** Canonical answer used for immediate feedback; never trusted back from the client. */ answer: string;
   /** Locale used for grapheme segmentation. */ locale?: string;
 };
 
-/** Builds one answer-free challenge-shaped response with authoritative recovery state. */
+/** Builds an authoritative recovery response, optionally including presentation-only scoring data. */
 export function buildSinglePlayerChallengeResponse(
   riddle: CanonicalPublicRiddle,
   date: string | undefined,
   sessionToken: string,
   state: SinglePlayerSessionState,
+  includeEvaluation = false,
 ): NonNullable<GetCurrentDailyChallengeResponse["challenge"]> {
+  /** Use the issued snapshot; retain compatibility with older content-only projections. */
+  const answer = state.answer ?? riddle.answer;
+  /** The session locale is the locale used by authoritative submission. */
+  const locale = state.locale ?? riddle.locale;
   return {
     date,
     questions: [
       {
         riddleId: riddle.riddleId,
         text: riddle.text,
-        answerLength: splitGraphemes(riddle.answer, riddle.locale ?? state.locale).length,
+        ...(includeEvaluation ? {evaluation: {answer, locale: state.locale}} : {}),
+        answerLength: splitGraphemes(answer, locale).length,
         sessionToken,
         questionNumber: 1,
         ...projectPublicSinglePlayerSession(state),

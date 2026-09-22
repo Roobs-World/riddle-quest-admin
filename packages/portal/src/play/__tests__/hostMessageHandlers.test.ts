@@ -64,8 +64,13 @@ const createHarness = (
   const playableReportedRef = {current: false};
   /** Provides account deletion completed ref behavior. */
   const accountDeletionCompletedRef = {current: false};
+  /** Records operations which block the whole game surface. */
+  const activityCalls = jest.fn();
   /** Runs server activity. */
-  const withServerActivity = async <Result>(operation: () => Promise<Result>): Promise<Result> => operation();
+  const withServerActivity = async <Result>(operation: () => Promise<Result>): Promise<Result> => {
+    activityCalls();
+    return operation();
+  };
   /** Handles rs. */
   const handlers = createPlayHostMessageHandlers({
     authSnapshot: readAuthSnapshot(services),
@@ -100,6 +105,7 @@ const createHarness = (
   });
   return {
     handlers,
+    activityCalls,
     postOperation,
     runRaceOperation,
     loadAndPostRiddle,
@@ -116,6 +122,35 @@ const createHarness = (
 };
 
 describe("play host message handlers", () => {
+  it("keeps guess confirmation outside global blocking activity", async () => {
+    /** Host services with a deliberately stalled guess request. */
+    const services = createFakeHostServices();
+    /** Issued riddle for the request under test. */
+    const riddle = await services.loadRiddle({gameMode: "classic", locale: "en", classicIndex: 1});
+    /** Releases the simulated slow backend. */
+    let release!: () => void;
+    /** Request remains outstanding until after the interaction assertion. */
+    const gate = new Promise<void>(resolve => { release = resolve; });
+    /** Original authoritative fake scorer. */
+    const submit = services.submitGuess.bind(services);
+    services.submitGuess = async input => { await gate; return submit(input); };
+    /** Real host handler and global activity recorder. */
+    const harness = createHarness(services);
+    /** Outstanding confirmation from the handler. */
+    const pending = harness.handlers.submitGuess({type: "game:submitGuess", requestId: "pending-guess", payload: {
+      riddleId: riddle.riddleId, gameMode: "classic", sessionToken: riddle.sessionToken,
+      guess: "crane", requestId: "pending-guess",
+    }});
+    try {
+      expect(harness.activityCalls).not.toHaveBeenCalled();
+      expect(harness.postOperation).not.toHaveBeenCalled();
+    } finally {
+      release();
+      await pending;
+    }
+    expect(harness.postOperation).toHaveBeenCalledWith("pending-guess", "guess", true, expect.objectContaining({isCorrect: false}));
+  });
+
   it("normalizes Firebase errors and unknown failures", () => {
     expect(getHostErrorMessage(new Error("Firebase: unavailable"))).toBe("unavailable");
     expect(getHostErrorMessage("unavailable")).toBe("An unexpected error occurred. Please try again.");

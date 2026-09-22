@@ -487,7 +487,7 @@ export class LocalSoloAuthority {
 
   /** Provides input allowed behavior. */
   private inputAllowed(): boolean {
-    return !this.paused && !this.busy && !this.saveGate.writing && !this.saveGate.blocked;
+    return !this.paused && !this.saveGate.blocked;
   }
 
   /** Provides wait until active behavior. */

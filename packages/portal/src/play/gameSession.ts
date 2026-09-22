@@ -1,5 +1,6 @@
 import {
   computeLetterStates,
+  computeFeedback,
   lowerCaseGraphemes,
   splitGraphemes,
   type Feedback,
@@ -29,6 +30,7 @@ export const createInitialGameSession = (): GameSessionState => ({
   hintRevealedIndices: [],
   guesses: [],
   guessPending: false,
+  pendingGuessState: null,
   engineSnapshot: null,
   modal: null,
   muted: safeBrowserStorageGet("local", "riddleQuest:soundEnabled") === "false",
@@ -96,6 +98,16 @@ const resetAttemptLetters = (state: GameSessionState): string[] =>
       )
     : [];
 
+/** Whether a scored nonterminal guess permits drafting while confirmation is in flight. */
+export const canDraftWhileConfirming = (state: GameSessionState): boolean =>
+  Boolean(state.pendingGuessState && state.engineSnapshot && !state.engineSnapshot.gameOver &&
+    (state.engineSnapshot.attemptsUsed < 5 || state.engineSnapshot.hasUsedContinue));
+
+/** Shared edit policy for physical keys, the on-screen keyboard, and slot selection. */
+export const canEditCurrentGuess = (state: GameSessionState): boolean =>
+  Boolean(state.riddle && !state.modal && !state.paused && !state.engineSnapshot?.gameOver &&
+    (!state.guessPending || canDraftWhileConfirming(state)));
+
 /** Provides game session reducer behavior. */
 export const gameSessionReducer = (state: GameSessionState, action: GameSessionAction): GameSessionState => {
   switch (action.type) {
@@ -129,6 +141,7 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
         hintRevealedIndices: [],
         guesses: snapshot.guesses,
         guessPending: false,
+        pendingGuessState: null,
         engineSnapshot: snapshot,
         modal: action.riddle.awaitingContinue ? "continue" : null,
         notice: null,
@@ -140,7 +153,7 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
       };
     }
     case "typeLetter": {
-      if (!state.riddle || state.modal || state.guessPending) {
+      if (!canEditCurrentGuess(state)) {
         return state;
       }
       /** Provides letter behavior. */
@@ -163,7 +176,7 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
       };
     }
     case "backspace": {
-      if (state.guessPending) return state;
+      if (!canEditCurrentGuess(state)) return state;
       /** Provides target behavior. */
       const target =
         !state.hintRevealedIndices.includes(state.activeSlotIndex) && state.currentLetters[state.activeSlotIndex]
@@ -179,7 +192,7 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
     }
     case "selectSlot":
       if (
-        state.guessPending ||
+        !canEditCurrentGuess(state) ||
         !state.riddle ||
         action.index < 0 ||
         action.index >= state.riddle.answerLength ||
@@ -190,13 +203,61 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
       return {...state, activeSlotIndex: action.index};
     case "guessRequested":
       if (!state.riddle || state.guessPending || state.currentLetters.some((letter) => !letter)) return state;
+      if (state.riddle.evaluation) {
+        /** Canonical scoring input preloaded with this riddle. */
+        const {answer, locale} = state.riddle.evaluation;
+        /** Submitted letters normalized using the content locale. */
+        const guess = lowerCaseGraphemes(state.currentLetters.join("").trim(), locale).join("");
+        /** Canonical answer normalized exactly as on the server. */
+        const normalizedAnswer = lowerCaseGraphemes(answer.trim(), locale).join("");
+        if (splitGraphemes(normalizedAnswer, locale).length !== state.riddle.answerLength) {
+          return {...state, guessPending: true, notice: null};
+        }
+        /** Predicted attempt number; the server remains authoritative. */
+        const attempts = (state.engineSnapshot?.attemptsUsed ?? 0) + 1;
+        /** Immediate presentation result for the submitted answer. */
+        const isCorrect = guess === normalizedAnswer;
+        /** Whether server confirmation will be needed before offering a continue. */
+        const canContinue = !isCorrect && attempts === 5 && !state.engineSnapshot?.hasUsedContinue;
+        /** Predicted terminal state, excluding the paid-continue boundary. */
+        const gameOver = isCorrect || (!canContinue && attempts >= 5 + (state.engineSnapshot?.hasUsedContinue ? 1 : 0));
+        /** Immediate presentation before server confirmation. */
+        const preview = gameSessionReducer(state, {
+          type: "guessResolved",
+          feedback: {guess: splitGraphemes(guess, locale), feedback: computeFeedback(guess, normalizedAnswer)},
+          attempts,
+          isCorrect,
+          canContinue,
+          gameOver,
+        });
+        /** Confirmed gameplay fields retained for rejection or reconciliation. */
+        const {currentLetters, activeSlotIndex, guesses, engineSnapshot, modal, lastOutcome, completionAcknowledged, letterStates} = state;
+        return {
+          ...preview,
+          modal: canContinue ? state.modal : preview.modal,
+          guessPending: true,
+          pendingGuessState: {
+            currentLetters, activeSlotIndex, guesses, engineSnapshot, modal, lastOutcome, completionAcknowledged, letterStates,
+          },
+        };
+      }
       return {...state, guessPending: true, notice: null};
     case "guessFailed":
-      return {...state, guessPending: false};
+      return {...state, ...state.pendingGuessState, guessPending: false, pendingGuessState: null};
     case "guessResolved": {
+      /** Preserve a next-answer draft typed while the prior row was being confirmed. */
+      const draft = canDraftWhileConfirming(state) && !action.gameOver && !action.canContinue
+        ? {currentLetters: state.currentLetters, activeSlotIndex: state.activeSlotIndex}
+        : null;
+      // Replace only speculative gameplay, preserving non-outcome surfaces opened in the meantime.
+      if (state.pendingGuessState) state = {
+        ...state, ...state.pendingGuessState,
+        modal: state.lastOutcome ? state.pendingGuessState.modal : state.modal,
+        pendingGuessState: null,
+      };
       if (!state.riddle) return state;
       if (action.attempts <= (state.engineSnapshot?.attemptsUsed ?? 0)) {
-        return {...state, guessPending: false, notice: null};
+        return {...state, ...draft, guessPending: false, pendingGuessState: null, notice: null};
       }
       /** Provides guesses behavior. */
       const guesses = [...state.guesses, action.feedback];
@@ -216,10 +277,11 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
 
       return {
         ...state,
-        currentLetters: nextLetters,
-        activeSlotIndex: firstEditableSlot(nextLetters, state.hintRevealedIndices),
+        currentLetters: draft?.currentLetters ?? nextLetters,
+        activeSlotIndex: draft?.activeSlotIndex ?? firstEditableSlot(nextLetters, state.hintRevealedIndices),
         guesses,
         guessPending: false,
+        pendingGuessState: null,
         engineSnapshot: snapshot,
         modal,
         notice: null,
@@ -288,7 +350,9 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
     case "showAuxiliaryFanfare":
       return {...state, auxiliaryFanfare: action.fanfare, modal: "reward"};
     case "restoreSession":
-      if (!state.riddle || action.currentLetters.length !== state.riddle.answerLength) {
+      if (!state.riddle || state.guessPending || state.lastOutcome ||
+        (state.engineSnapshot?.attemptsUsed ?? 0) > state.riddle.attemptsUsed ||
+        action.currentLetters.length !== state.riddle.answerLength) {
         return state;
       }
       {
@@ -316,6 +380,7 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
           hintRevealedIndices: action.hintRevealedIndices,
           guesses,
           guessPending: false,
+          pendingGuessState: null,
           engineSnapshot: {
             guesses,
             attemptsUsed: state.riddle.attemptsUsed,
@@ -343,6 +408,7 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
         ...state,
         guesses: snapshot.guesses,
         guessPending: false,
+        pendingGuessState: null,
         engineSnapshot: snapshot,
         currentLetters: nextLetters,
         activeSlotIndex: firstEditableSlot(nextLetters, state.hintRevealedIndices),
@@ -371,7 +437,8 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
         completionAcknowledged: false,
       };
     case "openModal":
-      if (action.modal === "skip" && state.gameMode === "challenge") {
+      if ((action.modal === "skip" && state.gameMode === "challenge") ||
+        (state.guessPending && (action.modal === "hint" || action.modal === "skip"))) {
         return state;
       }
       return action.modal === "leaderboard"

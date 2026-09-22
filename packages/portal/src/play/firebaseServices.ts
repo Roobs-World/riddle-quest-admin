@@ -61,6 +61,7 @@ const mapRiddleResponse = (response: CurrentRiddleResponse, gameMode: "classic" 
     riddleId: question.riddleId,
     text: question.text,
     answerLength: question.answerLength,
+    ...(question.evaluation ? {evaluation: question.evaluation} : {}),
     sessionToken: question.sessionToken,
     gameMode,
     index: question.questionNumber,
@@ -114,12 +115,13 @@ export const createFirebaseHostServices = (): HostServices => {
     async loadRiddle({gameMode, locale, classicIndex, sessionToken, riddleId}) {
       if (gameMode === "challenge") {
         /** Provides result behavior. */
-        const result = await getCurrentDailyChallenge({locale, sessionToken, riddleId});
+        const result = await getCurrentDailyChallenge({locale, sessionToken, riddleId, includeEvaluation: true});
         return mapRiddleResponse(result.data, "challenge");
       }
 
       /** Provides result behavior. */
       const result = await getCurrentClassicRiddle({
+        includeEvaluation: true,
         classicIndex: classicIndex ?? latestSnapshot.profile?.classicIndex ?? 1,
         locale,
         sessionToken,

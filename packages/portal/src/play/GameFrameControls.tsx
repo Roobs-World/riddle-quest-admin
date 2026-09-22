@@ -4,7 +4,7 @@ import mascotUrl from "../../../../assets/images-web/riddlequest-r.webp";
 import coinUrl from "../../../../assets/images/coin.svg";
 import backspaceUrl from "../../../../assets/images/backspace-key.svg";
 import {tr} from "./i18n";
-import {gameSessionReducer, type GameSessionState} from "./gameSession";
+import {canEditCurrentGuess, gameSessionReducer, type GameSessionState} from "./gameSession";
 
 /** Defines the keyboard rows value. */
 const KEYBOARD_ROWS = ["QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM"];
@@ -231,7 +231,7 @@ export function GuessBoard({
       activeSlotIndex={state.activeSlotIndex}
       hintRevealedIndices={state.hintRevealedIndices}
       guesses={state.guesses}
-      disabled={state.guessPending}
+      disabled={!canEditCurrentGuess(state)}
       onSelectSlot={(index) => dispatch({type: "selectSlot", index})}
     />
   );
@@ -297,7 +297,7 @@ export function Keyboard({
   return (
     <ControlledKeyboard
       letterStates={state.letterStates}
-      disabled={state.guessPending}
+      disabled={!canEditCurrentGuess(state)}
       onLetter={(letter) => {
         playFeedback("key");
         dispatch({type: "typeLetter", letter});

@@ -131,6 +131,33 @@ describe("LocalSoloAuthority", () => {
     });
   });
 
+  it("allows the next draft during a pending save while serializing submissions", async () => {
+    /** Releases the deliberately delayed save. */
+    let releaseSave = () => {};
+    /** Simulates a slow platform save after starting play. */
+    const saveData = jest.fn<Promise<void>, [string]>()
+      .mockResolvedValueOnce(undefined)
+      .mockImplementationOnce(() => new Promise<void>((resolve) => { releaseSave = resolve; }));
+    /** Owns the local game and save transaction. */
+    const authority = await createAuthority(saveData);
+    await authority.start("classic");
+    authority.setInput(["n", "o", "p", "e"], 3);
+    /** Remains pending while the player sees feedback and drafts again. */
+    const pending = authority.submitGuess();
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(authority.getSnapshot().save.activeGame?.guesses).toHaveLength(1);
+    authority.setInput(["r", "", "", ""], 1);
+    try {
+      expect(authority.getSnapshot().displayLetters).toEqual(["r", "", "", ""]);
+      await expect(authority.submitGuess()).rejects.toThrow("operation-pending");
+    } finally {
+      releaseSave();
+      await pending;
+    }
+    expect(authority.getSnapshot().displayLetters).toEqual(["r", "", "", ""]);
+  });
+
   it("retains an uncertain wrong-guess revision, freezes input, and retries exact bytes", async () => {
     /** Saves data. */
     const saveData = jest

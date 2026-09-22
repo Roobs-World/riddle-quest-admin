@@ -23,6 +23,12 @@ export type GameModal =
   | "reward"
   | null;
 
+/** Gameplay fields restored when server confirmation rejects a feedback preview. */
+export type PendingGuessState = Pick<GameSessionState,
+  "currentLetters" | "activeSlotIndex" | "guesses" | "engineSnapshot" |
+  "modal" | "lastOutcome" | "completionAcknowledged" | "letterStates"
+>;
+
 /** Captures all reducer-owned state for a classic or daily game session. */
 export type GameSessionState = {
   /** Indicates whether host initialization has completed. */ initialized: boolean;
@@ -41,6 +47,7 @@ export type GameSessionState = {
   /** Answer positions locked by purchased hints. */ hintRevealedIndices: number[];
   /** Scored guesses already submitted for the current riddle. */ guesses: ScoredGuess[];
   /** Indicates that an authoritative guess request is in flight. */ guessPending: boolean;
+  /** Confirmed gameplay state before an immediate feedback preview. */ pendingGuessState: PendingGuessState | null;
   /** Serializable snapshot of the deterministic game engine. */ engineSnapshot: GameEngineSnapshot | null;
   /** Modal currently presented above the game. */ modal: GameModal;
   /** Indicates whether game audio is muted. */ muted: boolean;

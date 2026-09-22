@@ -196,6 +196,7 @@ export const createFakeHostServices = ({
         ...publicRiddle,
         gameMode,
         answerLength: splitGraphemes(riddle.answer).length,
+        evaluation: {answer: riddle.answer, locale: "en"},
         attemptsUsed: prior?.attempts ?? 0,
         hasUsedContinue: prior?.hasUsedContinue ?? false,
         awaitingContinue: prior?.awaitingContinue ?? false,

@@ -21,7 +21,7 @@ const response = (result: unknown) =>
 
 beforeEach(() => jest.restoreAllMocks());
 
-it("loads an authenticated profile and canonical riddle through same-origin routes", async () => {
+it.each([false, true])("loads canonical feedback through same-origin routes, available=%s", async (includeEvaluation) => {
   global.fetch = jest.fn((input) => {
     /** Provides path behavior. */
     const path = String(input);
@@ -35,6 +35,7 @@ it("loads an authenticated profile and canonical riddle through same-origin rout
               riddleId: "classic-1",
               text: "What has keys?",
               answerLength: 5,
+              ...(includeEvaluation ? {evaluation: {answer: "piano", locale: "en"}} : {}),
               sessionToken: "00000000-0000-4000-8000-000000000001",
               questionNumber: 1,
               attemptsUsed: 0,
@@ -53,6 +54,7 @@ it("loads an authenticated profile and canonical riddle through same-origin rout
     riddleId: "classic-1",
     text: "What has keys?",
     answerLength: 5,
+    ...(includeEvaluation ? {evaluation: {answer: "piano", locale: "en"}} : {}),
     sessionToken: "00000000-0000-4000-8000-000000000001",
     gameMode: "classic",
     index: 1,
@@ -60,6 +62,9 @@ it("loads an authenticated profile and canonical riddle through same-origin rout
     hasUsedContinue: false,
     awaitingContinue: false,
   });
+  expect(global.fetch).toHaveBeenCalledWith("/api/game/riddle.classic", expect.objectContaining({
+    body: expect.stringContaining('"includeEvaluation":true'),
+  }));
   expect((global.fetch as jest.Mock).mock.calls.every(([path]) => String(path).startsWith("/api/"))).toBe(true);
 });
 
