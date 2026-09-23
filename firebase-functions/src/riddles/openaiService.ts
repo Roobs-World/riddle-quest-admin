@@ -351,6 +351,8 @@ export async function generateUniqueRiddle(
         )}.`
       : "";
 
+  /** Identifies the failed operation without exposing generated content. */
+  let phase: "generation" | "blind_solve" | "review" = "generation";
   try {
     /** Provides completion behavior. */
     const completion = await withSentrySpan(
@@ -399,11 +401,13 @@ export async function generateUniqueRiddle(
 
     /** Provides [question, answer] behavior. */
     const [question, answer] = validatedRiddle;
+    phase = "blind_solve";
     /** Provides solved behavior. */
     const solved = await blindSolveGeneratedRiddle(openai, model, locale, question, answer);
     if (!solved) {
       return null;
     }
+    phase = "review";
     /** Provides accepted behavior. */
     const accepted = await reviewGeneratedRiddle(openai, model, locale, question, answer);
     if (!accepted) {
@@ -414,7 +418,7 @@ export async function generateUniqueRiddle(
     return validatedRiddle;
   } catch (error) {
     functions.logger.error("OpenAI riddle generation failed.", {model, ...getSafeErrorMetadata(error)});
-    captureException(error, getSafeErrorMetadata(error));
+    captureException(error, {phase, locale, ...getSafeErrorMetadata(error)});
     return null; // Return null on error to prevent breaking the loop
   }
 }

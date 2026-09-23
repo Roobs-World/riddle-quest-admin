@@ -423,11 +423,42 @@ describe("OpenAI Service", () => {
 
       await expect(generateUniqueRiddle()).resolves.toBeNull();
       expect(mockCaptureException).toHaveBeenCalledWith(apiError, {
+        phase: "generation",
+        locale: "en",
         errorClass: "APIError",
         status: 503,
         code: "server_error",
       });
     });
+
+    test.each(["generation", "blind_solve", "review"] as const)(
+      "identifies %s timeouts and rejects incomplete candidates without further API calls",
+      async (phase) => {
+        mockParse.mockReset();
+        if (phase !== "generation") {
+          mockParse.mockResolvedValueOnce(parsedRiddleResponse("What flies without wings?", "time"));
+        }
+        if (phase === "review") {
+          mockParse.mockResolvedValueOnce(approvedBlindSolveResponse("time"));
+        }
+        /** Simulates an upstream timeout containing private request material. */
+        const error = Object.assign(new Error("private provider response"), {
+          name: "APIConnectionTimeoutError",
+          request: {input: "private riddle", authorization: "private credential"},
+        });
+        mockParse.mockRejectedValueOnce(error);
+
+        await expect(generateUniqueRiddle("fr", ["secret"])).resolves.toBeNull();
+
+        expect(mockParse).toHaveBeenCalledTimes({generation: 1, blind_solve: 2, review: 3}[phase]);
+        expect(mockCaptureException).toHaveBeenCalledTimes(1);
+        expect(mockCaptureException).toHaveBeenCalledWith(error, {
+          phase,
+          locale: "fr",
+          errorClass: "APIConnectionTimeoutError",
+        });
+      },
+    );
 
     test("throws error when OPENAI_API_KEY is missing", async () => {
       delete process.env.OPENAI_API_KEY;
