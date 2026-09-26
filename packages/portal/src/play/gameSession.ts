@@ -416,12 +416,14 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
       if (action.reason === "continue" && (state.modal !== "continue" || !state.riddle ||
         !state.engineSnapshot || state.engineSnapshot.hasUsedContinue)) return state;
       {
+        /** Gameplay checkpoint restored if the provisional Continue is rejected. */
         const continueState = action.reason === "continue" ? {
           currentLetters: state.currentLetters, activeSlotIndex: state.activeSlotIndex,
           guesses: state.guesses, engineSnapshot: state.engineSnapshot, modal: state.modal,
           lastOutcome: state.lastOutcome, completionAcknowledged: state.completionAcknowledged,
           letterStates: state.letterStates,
         } : undefined;
+        /** Session with the local charge and, for Continue, immediate extra attempt. */
         const charged = {...state, profile: withProfileCoins(state.profile, state.profile.coins - action.amount),
           pendingCoinSpend: {requestId: action.requestId, previousCoins: state.profile.coins,
             continueState, sessionToken: continueState ? state.riddle?.sessionToken : undefined}};

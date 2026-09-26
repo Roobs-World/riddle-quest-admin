@@ -326,6 +326,7 @@ describe("game session reducer", () => {
   });
 
   it("opens play immediately after a local Continue charge and restores the panel on rejection", () => {
+    /** Paid Continue session before and after server confirmation. */
     let state = reduce(createInitialGameSession(), {type: "hostInit", locale: "en", gameMode: "classic",
       user: null, products: [], profile: {username: "Guest", coins: 150, level: 1, xp: 0,
         winStreak: 0, gamesPlayed: 0, wins: 0, achievements: [], classicIndex: 1}});
