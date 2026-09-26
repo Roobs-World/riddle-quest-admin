@@ -1,15 +1,8 @@
 import {lazy, useEffect, useState} from "react";
+import {preloadGameModals} from "../../preloadGameModals";
 
 /** Provides game modal view promise behavior. */
-let gameModalViewPromise: Promise<{
-  /** Stores default. */
-  default: typeof import("../../GameModalView").GameModalView;
-}> | null = null;
-/** Loads game modal view. */
-const loadGameModalView = () =>
-  (gameModalViewPromise ??= import("../../GameModalView").then((module) => ({default: module.GameModalView})));
-/** Renders the lazy game modal view interface. */
-const LazyGameModalView = lazy(loadGameModalView);
+const LazyGameModalView = lazy(preloadGameModals);
 
 /** Provides race to10 game promise behavior. */
 let raceTo10GamePromise: Promise<{
@@ -40,9 +33,9 @@ export function useGameSurfaces(raceEnabled: boolean) {
         void loadRaceTo10Game().then(({default: game}) => setPreloadedRaceTo10Game(() => game));
       }
       if (typeof window.requestIdleCallback === "function") {
-        requestId = window.requestIdleCallback(() => void loadGameModalView(), {timeout: 2_000});
+        requestId = window.requestIdleCallback(() => void preloadGameModals().catch(() => undefined), {timeout: 2_000});
       } else {
-        timeoutId = window.setTimeout(() => void loadGameModalView(), 250);
+        timeoutId = window.setTimeout(() => void preloadGameModals().catch(() => undefined), 250);
       }
     };
 

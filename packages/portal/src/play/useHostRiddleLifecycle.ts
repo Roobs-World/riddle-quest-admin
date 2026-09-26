@@ -4,6 +4,7 @@ import {trackEvent} from "../analytics/events";
 import {captureBrowserException} from "../observability/browserErrorReporter";
 import {getHostErrorMessage} from "./hostMessageHandlers";
 import type {AuthSnapshot, HostServices, WebGameMode} from "./types";
+import {preloadGameModals} from "./preloadGameModals";
 
 /** Input required to own the host's complete single-player riddle lifecycle. */
 type HostRiddleLifecycleOptions = Readonly<{
@@ -119,6 +120,8 @@ export function useHostRiddleLifecycle({
       const pending = (async () => {
         try {
           setGameMode(input.gameMode);
+          // Prepare Hint/Skip while the adapter loads and refills its issued question buffer.
+          void preloadGameModals().catch(() => undefined);
           /** Authoritative riddle returned by the active target adapter. */
           const riddle = await withActivity(() => services.loadRiddle(input));
           if (contextVersion !== contextVersionRef.current) return false;

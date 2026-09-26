@@ -232,7 +232,7 @@ describe("play host message handlers", () => {
 
     requestHint.mockRejectedValueOnce(new Error("Firebase: hint unavailable"));
     await harness.handlers.requestHint(message);
-    expect(harness.postOperation).toHaveBeenLastCalledWith("hint-1", "hint", false, undefined, "hint unavailable");
+    expect(harness.postOperation).toHaveBeenLastCalledWith("hint-1", "hint", false, undefined, "hint unavailable", "retryable");
   });
 
   it("delivers earned rewards before optional platform follow-up finishes", async () => {
@@ -361,6 +361,7 @@ describe("play host message handlers", () => {
       false,
       undefined,
       "Daily riddles cannot be skipped.",
+      "retryable",
     );
   });
 

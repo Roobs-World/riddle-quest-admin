@@ -292,7 +292,7 @@ const installJestSdkHarness = async (page: Page, scenario = "success") => {
         shareReferralLink: async (input: AuthHarnessState["referralShares"][number]) => {
           state.calls.push("sdk.referrals.shareReferralLink");
           state.referralShares.push(structuredClone(input));
-          return {canceled: false};
+          return {canceled: selectedScenario === "race-share-cancel"};
         },
       },
       payments: {
@@ -764,7 +764,6 @@ describeBrowser("Jest authentication integration", () => {
       expect.objectContaining({
         reference: expect.stringMatching(/^riddle_quest_friend_challenge_v2_result_[0-9a-f]{16}$/),
         shareTitle: "Check out my Riddle Quest result!",
-        onboardingSlug: "friend-challenge",
         entryPayload: expect.objectContaining({
           campaign: "friend_challenge_v2",
           reference: "victory_friend_challenge_v2",
@@ -813,10 +812,14 @@ describeBrowser("Jest authentication integration", () => {
     );
     /** Provides generic invite behavior. */
     const genericInvite = (await getHarnessState(page)).referralShares[2];
+    expect([share, secondResultShare, genericInvite].map((item) => item.onboardingSlug)).toEqual([
+      undefined,
+      undefined,
+      undefined,
+    ]);
     expect(genericInvite).toEqual(
       expect.objectContaining({
         reference: "riddle_quest_friend_challenge_v2",
-        onboardingSlug: "friend-challenge",
         entryPayload: expect.objectContaining({
           inviteKind: "open",
           campaign: "open_invite_v1",
@@ -859,10 +862,10 @@ describeBrowser("Jest authentication integration", () => {
     );
     /** Provides [share] behavior. */
     const [share] = (await getHarnessState(creator.page)).referralShares;
+    expect(share.onboardingSlug).toBeUndefined();
     expect(share).toEqual(
       expect.objectContaining({
         reference: "riddle_quest_friend_challenge_v2",
-        onboardingSlug: "friend-challenge",
         entryPayload: expect.objectContaining({
           campaign: "open_invite_v1",
           reference: "profile_invite_v1",
@@ -1012,7 +1015,6 @@ describeBrowser("Jest authentication integration", () => {
     expect(state.referralShares).toContainEqual(
       expect.objectContaining({
         reference: expect.stringMatching(/^riddle_quest_race_to_10_v1_share_[0-9a-f]{16}$/),
-        onboardingSlug: "race-to-10",
         shareImage: expect.stringMatching(/^data:image\/png;base64,/),
         entryPayload: expect.objectContaining({
           challengeId: "race-challenge-42",
@@ -1023,6 +1025,7 @@ describeBrowser("Jest authentication integration", () => {
     );
     /** Provides first race share behavior. */
     const firstRaceShare = state.referralShares.find((item) => item.entryPayload?.challengeId === "race-challenge-42")!;
+    expect(firstRaceShare.onboardingSlug).toBeUndefined();
     await page.evaluate(() => {
       window.dispatchEvent(
         new CustomEvent("riddle-quest:share-race", {
@@ -1071,6 +1074,21 @@ describeBrowser("Jest authentication integration", () => {
     await context.close();
   });
 
+  it("keeps the creator in the lobby when the Jest invite is dismissed", async () => {
+    const {context, page} = await openHarness(browser, {registered: true, scenario: "race-share-cancel"});
+    await enterRegisteredGame(page);
+    await page.getByRole("button", {name: /^multiplayer$/i}).click();
+    await page.getByRole("button", {name: "Challenge another player", exact: true}).click();
+    await page.waitForFunction(() =>
+      (window as typeof window & {__RIDDLE_QUEST_JEST_AUTH_TEST__: AuthHarnessState})
+        .__RIDDLE_QUEST_JEST_AUTH_TEST__.referralShares.length > 0,
+    );
+    await page.getByRole("button", {name: "Challenge another player", exact: true}).waitFor({state: "visible"});
+    expect(await page.locator(".race-countdown").count()).toBe(0);
+    expect(await page.locator(".race-gameplay").count()).toBe(0);
+    await context.close();
+  });
+
   it("runs a creator-to-recipient race across isolated browser contexts", async () => {
     sharedRaceChallenges.clear();
     /** Provides creator behavior. */
@@ -1096,21 +1114,6 @@ describeBrowser("Jest authentication integration", () => {
     await creator.page.setViewportSize({width: 390, height: 667});
     await multiplayerButton.click();
     await creator.page.getByRole("button", {name: /^History /}).waitFor();
-    await creator.page.getByRole("button", {name: "Play with friends", exact: true}).click();
-    await creator.page.waitForFunction(() =>
-      (window as typeof window & {
-        /** Injected Jest share-dialog receipts. */
-        __RIDDLE_QUEST_JEST_AUTH_TEST__: AuthHarnessState;
-      })
-        .__RIDDLE_QUEST_JEST_AUTH_TEST__.referralShares.some((share) => share.entryPayload?.challengeDestination === "multiplayer"),
-    );
-    /** Invitation captured at the real SDK adapter boundary. */
-    const multiplayerInvite = (await getHarnessState(creator.page)).referralShares.find(
-      (share) => share.entryPayload?.challengeDestination === "multiplayer",
-    );
-    expect(multiplayerInvite?.shareTitle).toBe("Race to 10");
-    expect(multiplayerInvite?.shareText).toContain("challenged you");
-    expect(multiplayerInvite?.entryPayload?.challengeId).toBeUndefined();
     await creator.page.getByTestId("server-activity-loader").waitFor({state: "detached"});
     expect(await creator.page.locator('[data-testid="server-activity-loader"]').count()).toBe(0);
     await creator.page.evaluate(() => {
@@ -1154,6 +1157,19 @@ describeBrowser("Jest authentication integration", () => {
     expect(challengeBounds!.x + challengeBounds!.width).toBeLessThanOrEqual(390);
     expect(challengeBounds!.height).toBeGreaterThanOrEqual(48);
     await challengePlayer.click();
+    await creator.page.waitForFunction(() =>
+      (window as typeof window & {
+        __RIDDLE_QUEST_JEST_AUTH_TEST__: AuthHarnessState;
+      }).__RIDDLE_QUEST_JEST_AUTH_TEST__.referralShares.some((share) =>
+        /^jest-invite-[a-f0-9]{64}-[a-f0-9]{32}$/.test(share.entryPayload?.challengeId ?? "")),
+    );
+    const multiplayerInvite = (await getHarnessState(creator.page)).referralShares.find((share) =>
+      /^jest-invite-[a-f0-9]{64}-[a-f0-9]{32}$/.test(share.entryPayload?.challengeId ?? ""),
+    );
+    const invitedChallengeId = multiplayerInvite?.entryPayload?.challengeId;
+    expect(multiplayerInvite?.shareTitle).toBe("Race to 10");
+    expect(multiplayerInvite?.shareText).toContain("time for you to beat");
+    expect(invitedChallengeId).toMatch(/^jest-invite-[a-f0-9]{64}-[a-f0-9]{32}$/);
     /** Provides countdown rail behavior. */
     const countdownRail = creator.page.locator(".race-countdown-rail");
     await countdownRail.waitFor();
@@ -1251,40 +1267,25 @@ describeBrowser("Jest authentication integration", () => {
       const screen = document.querySelector(".race-screen");
       return Boolean(screen && screen.scrollHeight <= screen.clientHeight + 1);
     });
-    await solveFakeRace(creator.page, {expectChainedSubmitLoader: true});
-    await creator.page.getByText("Choose a mobile number or another Jest user in Jest.", {exact: true}).waitFor();
-    await creator.page.getByRole("button", {name: /send challenge/i}).click();
-    await creator.page.waitForFunction(
-      () =>
-        (
-          window as typeof window & {
-            /** Stores riddle quest jest auth test. */
-            __RIDDLE_QUEST_JEST_AUTH_TEST__: AuthHarnessState;
-          }
-        ).__RIDDLE_QUEST_JEST_AUTH_TEST__.referralShares.some(
-          (share) => share.entryPayload?.challengeId === "fake-challenge-2",
-        ),
-    );
-    await creator.page.getByRole("button", {name: /challenge a friend/i}).waitFor({timeout: 10_000});
-    expect(sharedRaceChallenges.has("fake-challenge-2")).toBe(true);
-
-    /** A recipient of the lobby invitation enters multiplayer without a fabricated race result. */
-    const invited = await openHarness(browser, {registered: true, harness: "race-auth", challengeDestination: "multiplayer"});
-    await invited.page.locator(".race-category-grid").waitFor({state: "visible", timeout: 15_000});
-    await invited.context.close();
-
-    /** Provides recipient behavior. */
+    /** The shared link opens before the sender has set a time. */
     const recipient = await openHarness(browser, {
       registered: true,
       harness: "race-auth",
       playerId: "race-recipient",
-      challengeId: "fake-challenge-2",
+      challengeId: invitedChallengeId,
       inviteKind: "race",
       campaign: "race_to_10_v1",
       sharedRace: true,
     });
-    await recipient.page.locator('[data-testid="server-activity-loader"]').waitFor({state: "detached", timeout: 15_000});
-    await recipient.page.getByRole("heading", {name: /Guest Solver challenged you/i}).waitFor({timeout: 10_000});
+    await recipient.page.locator(".race-challenge-card").getByText("Loading challenge…").waitFor();
+    expect(await recipient.page.getByRole("button", {name: /accept challenge/i}).count()).toBe(0);
+
+    await solveFakeRace(creator.page, {expectChainedSubmitLoader: true});
+    await creator.page.getByText("Run recorded!", {exact: true}).waitFor();
+    await creator.page.getByRole("button", {name: /challenge a friend/i}).waitFor({timeout: 10_000});
+    expect(sharedRaceChallenges.has(invitedChallengeId!)).toBe(true);
+
+    await recipient.page.getByRole("heading", {name: /Guest Solver challenged you/i}).waitFor({timeout: 20_000});
     await recipient.page.getByRole("button", {name: /accept challenge/i}).click();
     await recipient.page.locator(".race-gameplay .guess-board").waitFor({state: "visible", timeout: 10_000});
     /** Provides opponent progress behavior. */

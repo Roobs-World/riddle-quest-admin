@@ -1,4 +1,5 @@
 import {admin} from "../shared/firebaseAdmin";
+import {createHash} from "node:crypto";
 import {
   AbandonRaceRunResponseSchema,
   PublishRaceChallengeResponseSchema,
@@ -420,6 +421,12 @@ export async function publishRaceChallengeForUser(
     nowMs?: number;
   } = {},
 ): Promise<PublishRaceChallengeResponse> {
+  if (input.reservedChallengeId) {
+    const ownerHash = createHash("sha256").update(userId).digest("hex");
+    if (!input.reservedChallengeId.startsWith(`jest-invite-${ownerHash}-`)) {
+      throw new HttpsError("permission-denied", "This invitation belongs to another player.");
+    }
+  }
   /** Provides db behavior. */
   const db = dbOrDefault(options.db);
   /** Provides now ms behavior. */
@@ -429,7 +436,9 @@ export async function publishRaceChallengeForUser(
   /** Requests ref. */
   const requestRef = runRef.collection("requests").doc(requestDocumentId(userId, input.requestId));
   /** Provides challenge ref behavior. */
-  const challengeRef = db.collection("raceChallenges").doc();
+  const challengeRef = input.reservedChallengeId
+    ? db.collection("raceChallenges").doc(input.reservedChallengeId)
+    : db.collection("raceChallenges").doc();
   /** Provides response behavior. */
   const response = await db.runTransaction(async (transaction) => {
     /** Provides [request snapshot, run snapshot, user snapshot] behavior. */
@@ -450,6 +459,19 @@ export async function publishRaceChallengeForUser(
     if (requestSnapshot.exists) {
       if (privacy.scrubbed) transaction.set(runRef, raceRunPrivacyWrite(run, true), {merge: true});
       return requestSnapshot.data()?.response as PublishRaceChallengeResponse;
+    }
+    const publishedChallengeId = runSnapshot.data()?.publishedChallengeId;
+    if (typeof publishedChallengeId === "string" && publishedChallengeId.length > 0) {
+      if (input.reservedChallengeId && input.reservedChallengeId !== publishedChallengeId) {
+        throw new HttpsError("failed-precondition", "This run was already published to another invitation.");
+      }
+      const existingSnapshot = await transaction.get(db.collection("raceChallenges").doc(publishedChallengeId));
+      if (!existingSnapshot.exists) throw new HttpsError("internal", "The published challenge is missing.");
+      const existingChallenge = parseChallengeRecord(existingSnapshot.data());
+      return PublishRaceChallengeResponseSchema.parse({
+        challengeId: publishedChallengeId,
+        preview: challengePreview(existingChallenge, nowMs),
+      });
     }
     /** Provides outcome behavior. */
     const outcome = raceOutcome(run, nowMs);

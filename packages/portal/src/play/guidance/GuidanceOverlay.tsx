@@ -250,6 +250,16 @@ export function GuidanceOverlay({
         setTargetRect(null);
         return;
       }
+      if (activeTooltip.startsWith("profile")) {
+        const scrollContainer = element.closest(".profile-page");
+        if (scrollContainer) {
+          const target = element.getBoundingClientRect();
+          const visibleArea = scrollContainer.getBoundingClientRect();
+          if (target.top < visibleArea.top || target.bottom > visibleArea.bottom) {
+            element.scrollIntoView({block: "center", inline: "nearest", behavior: "instant"});
+          }
+        }
+      }
       setTargetRect(element.getBoundingClientRect());
     };
     // Measure before paint so the button cannot jump after a player starts a tap.

@@ -3,7 +3,7 @@ import type {GameToHostMessage} from "@qwordly/core/bridge";
 import {BRIDGE_PROTOCOL_VERSION} from "@qwordly/core/bridge/constants";
 import musicUrl from "../../../../assets/audio-web/music.webm";
 import {isFacebookWebTarget} from "../platform/webTargetEnvironment";
-import {canEditCurrentGuess, createInitialGameSession, gameSessionReducer} from "./gameSession";
+import {canDraftWhileConfirming, canEditCurrentGuess, createInitialGameSession, gameSessionReducer} from "./gameSession";
 import {tr} from "./i18n";
 import {createRequestId} from "./requestIds";
 import {dispatchLocalBridge, GAME_TO_HOST_EVENT} from "./localBridge";
@@ -200,10 +200,10 @@ export function GameFrameApp({
   } behavior. */
   const {
     canSubmit,
-    pendingPlay,
     bufferExhausted,
     submitGuess,
     handleQueuedGuessResult,
+    acceptRiddleResult,
     requestRiddle,
     requestHint,
     requestContinue,
@@ -257,6 +257,7 @@ export function GameFrameApp({
     requestRiddle,
     onCompletionResult: handleCompletionResult,
     onGuessResult: handleQueuedGuessResult,
+    acceptRiddleResult,
   });
 
   useReferralReward(stateRef, dispatch, state.initialized, state.riddle?.riddleId);
@@ -341,7 +342,7 @@ export function GameFrameApp({
             <Keyboard state={state} dispatch={dispatch} playFeedback={playFeedback} />
 
             <section className="game-input-actions" aria-label={tr("Navigation.GAME")}>
-              <button data-tooltip="gameHint" disabled={state.guessPending || pendingPlay} onClick={() => dispatch({type: "openModal", modal: "hint"})}>
+              <button data-tooltip="gameHint" disabled={state.guessPending && !canDraftWhileConfirming(state)} onClick={() => dispatch({type: "openModal", modal: "hint"})}>
                 <HintIcon />
                 {tr("Navigation.HINT_BUTTON")}
               </button>
@@ -349,7 +350,7 @@ export function GameFrameApp({
                 {tr("GameScreenAlerts.SUBMIT_BUTTON")}
               </button>
               {state.gameMode === "classic" && (
-                <button data-tooltip="gameSkip" disabled={state.guessPending || pendingPlay} onClick={() => dispatch({type: "openModal", modal: "skip"})}>
+                <button data-tooltip="gameSkip" disabled={state.guessPending && !canDraftWhileConfirming(state)} onClick={() => dispatch({type: "openModal", modal: "skip"})}>
                   <ForwardIcon />
                   {tr("GameScreenAlerts.SKIP_BUTTON")}
                 </button>

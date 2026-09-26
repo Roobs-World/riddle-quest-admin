@@ -177,8 +177,6 @@ type JestReferralShare = {
   shareText: string;
   /** Optional bounded screenshot or bundled image. */
   shareImage?: string;
-  /** Optional provider onboarding route for an unregistered recipient. */
-  onboardingSlug?: string;
   /** Sanitized values returned to a recipient launch; never trusted as authority. */
   entryPayload: Record<string, string>;
 };

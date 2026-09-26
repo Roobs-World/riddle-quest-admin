@@ -453,7 +453,7 @@ export const createFakeRaceServices = (): RaceMethods => {
       const cached = run.responses.get(input.requestId);
       if (cached) return cached as Awaited<ReturnType<RaceMethods["publishRace"]>>;
       /** Provides challenge id behavior. */
-      const challengeId = `fake-challenge-${++sequence}`;
+      const challengeId = input.reservedChallengeId ?? `fake-challenge-${++sequence}`;
       /** Provides preview behavior. */
       const preview = {
         challengeId,

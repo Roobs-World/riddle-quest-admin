@@ -276,6 +276,12 @@ describe("Race to 10 contracts", () => {
         achievementCoinsAwarded: 999_999,
       }).success,
     ).toBe(false);
+    expect(PublishRaceChallengeRequestSchema.safeParse({
+      runId: "run-1", requestId, reservedChallengeId: `jest-invite-${"a".repeat(64)}-${"b".repeat(32)}`,
+    }).success).toBe(true);
+    expect(PublishRaceChallengeRequestSchema.safeParse({
+      runId: "run-1", requestId, reservedChallengeId: "jest-invite-guessable",
+    }).success).toBe(false);
   });
 
   it("limits analytics payloads to ten bounded fields", () => {

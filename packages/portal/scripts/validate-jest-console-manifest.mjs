@@ -15,7 +15,8 @@ const expectedConsumableSkus = Array.from(
   (_, index) => `com.roobsworld.riddlequest.coinpack${index + 1}`,
 );
 const expectedSubscriptionSkus = ["com.roobsworld.riddlequest.premium.monthly"];
-const expectedOnboardingSlugs = ["friend-challenge", "race-to-10"];
+// onboardingSlug routes through a separate Jest game; none is configured for these referrals.
+const expectedOnboardingSlugs = [];
 const expectedKeywords = ["riddles"];
 const topLevelKeys = [
   "assets",

@@ -74,6 +74,12 @@ describeBrowser("profile walkthrough", () => {
         const card = await page.locator(".tooltip-card").boundingBox();
         expect(card!.y).toBeGreaterThanOrEqual(0);
         expect(card!.y + card!.height).toBeLessThanOrEqual(viewport.height);
+        if (["profileProgression", "profileAchievements", "profileStatistics", "profileLeaderboard", "profileTreasure"].includes(id)) {
+          const spotlight = await page.locator(".tooltip-spotlight").boundingBox();
+          expect(spotlight!.y).toBeGreaterThanOrEqual(0);
+          expect(spotlight!.y + spotlight!.height).toBeLessThanOrEqual(viewport.height);
+          if (id !== "profileProgression") expect(card!.y + card!.height).toBeLessThan(spotlight!.y);
+        }
         if (id === "profileStats" && viewport.width === 459) {
           await page.screenshot({path: "/tmp/profile-tour-stats.png"});
         }

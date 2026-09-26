@@ -40,8 +40,5 @@
   "sandboxOnlySubscriptionSkus": [
     "com.roobsworld.riddlequest.premium.monthly"
   ],
-  "onboardingSlugs": [
-    "friend-challenge",
-    "race-to-10"
-  ]
+  "onboardingSlugs": []
 }

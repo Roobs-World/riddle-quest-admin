@@ -2,6 +2,11 @@ import type {BridgeRiddle, GameToHostMessage} from "@qwordly/core/bridge";
 import type {Feedback} from "@qwordly/core/game";
 import type {PendingGuessState} from "./gameSessionTypes";
 
+/** A confirmed coin action delivered after all earlier answers settle. */
+export type QueuedCoinAction = Extract<GameToHostMessage, {
+  /** Supported server-authoritative coin actions. */ type: "game:requestHint" | "game:skipRiddle";
+}>;
+
 /** An exact request retained until the backend confirms or rejects it. */
 export type QueuedGuess = {
   /** The message retained for safe pending-play recovery. */
@@ -40,6 +45,8 @@ export type PendingGuessJournal = {
   }>;
   /** The queue retained for safe pending-play recovery. */
   queue: QueuedGuess[];
+  /** Exact paid request waiting behind the answer queue, retained across reloads. */
+  coinAction?: QueuedCoinAction;
   /** The draft retained for safe pending-play recovery. */
   draft: string[];
 };
@@ -64,6 +71,18 @@ const validGuess = (value: unknown): boolean => isRecord(value) && value.type ==
   typeof value.payload.riddleId === "string" && typeof value.payload.sessionToken === "string" &&
   typeof value.payload.guess === "string";
 
+/** Validates persisted paid requests without loading the bridge validator into startup. */
+const validCoinAction = (value: unknown): boolean => {
+  if (!isRecord(value) || typeof value.requestId !== "string" || value.requestId.length < 8 ||
+    !isRecord(value.payload) || typeof value.payload.riddleId !== "string" ||
+    typeof value.payload.sessionToken !== "string" || value.payload.sessionToken.length < 20) return false;
+  if (value.type === "game:skipRiddle") return value.payload.gameMode === "classic";
+  return value.type === "game:requestHint" && value.payload.requestId === value.requestId &&
+    (value.payload.gameMode === "classic" || value.payload.gameMode === "challenge") &&
+    Array.isArray(value.payload.currentAttempt) && value.payload.currentAttempt.length <= 7 &&
+    value.payload.currentAttempt.every((letter: unknown) => typeof letter === "string" && /^[a-z]?$/i.test(letter));
+};
+
 /** The provider UID changes with account generation except on Reddit. */
 export const pendingPlayScope = (uid: string, generation: number | undefined, locale: string) =>
   `${encodeURIComponent(uid)}:${generation ?? 1}:${encodeURIComponent(locale)}`;
@@ -87,6 +106,7 @@ export function readPendingGuessJournal(scope: string): PendingGuessJournal | nu
       !journal.successors.every((segment) => validRiddle(segment?.riddle) &&
         segment?.base && Array.isArray(segment.base.guesses) && Array.isArray(segment.draft)) ||
       !Array.isArray(journal.draft) || !journal.base ||
+      (journal.coinAction !== undefined && !validCoinAction(journal.coinAction)) ||
       !Array.isArray(journal.base.guesses) || !Array.isArray(journal.base.currentLetters) ||
       !journal.queue.every((item) => validGuess(item?.message) &&
         Number.isSafeInteger(item?.attempts) && Array.isArray(item?.feedback))) return null;

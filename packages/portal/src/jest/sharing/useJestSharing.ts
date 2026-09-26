@@ -139,7 +139,6 @@ export function useJestSharing({
           shareTitle: tr("VictoryModal.SHARE_RESULT_TITLE"),
           shareText,
           ...(shareImage ? {shareImage} : {}),
-          onboardingSlug: "friend-challenge",
           entryPayload: {
             campaign: "friend_challenge_v2",
             reference: "victory_friend_challenge_v2",
@@ -206,7 +205,6 @@ export function useJestSharing({
           shareTitle: tr("RaceTo10.TITLE"),
           shareText: `${tr("RaceTo10.CHALLENGED_BY", {name: inviterName})} · ${tr("RaceTo10.TIME_TO_BEAT", {time: `${seconds}s`})}\n\n${tr("VictoryModal.REFERRAL_REWARD_MESSAGE", {coins: JEST_REFERRAL_REWARD_COINS})}`,
           ...(shareImage ? {shareImage} : {}),
-          onboardingSlug: "race-to-10",
           entryPayload: {
             campaign: "race_to_10_v1",
             reference: "race_to_10_share_v1",
@@ -265,7 +263,6 @@ export function useJestSharing({
           coins: JEST_REFERRAL_REWARD_COINS,
         }),
         ...(shareImage ? {shareImage} : {}),
-        onboardingSlug: multiplayer ? "race-to-10" : "friend-challenge",
         entryPayload: {
           campaign: "open_invite_v1",
           reference: "profile_invite_v1",
@@ -294,8 +291,34 @@ export function useJestSharing({
 
   /** Shares the existing general invitation from the profile. */
   const shareInvite = useCallback(() => shareOpenInvite(false), [shareOpenInvite]);
-  /** Opens Jest sharing immediately for a multiplayer invitation. */
-  const shareMultiplayerInvite = useCallback(() => shareOpenInvite(true), [shareOpenInvite]);
+  /** Shares a link before the sender records the authoritative time to beat. */
+  const shareMultiplayerInvite = useCallback(async (challengeId: string): Promise<boolean> => {
+    if (!session || !/^jest-invite-[a-f0-9]{64}-[a-f0-9]{32}$/.test(challengeId)) return false;
+    const inviterName = session.profile?.username ?? tr("WebPortal.NOTIFICATION_PLAYER_FALLBACK");
+    const reference = createUniqueJestReferralReference("race");
+    trackFunnel("viral_share_intent", {surface: "race", campaign: "race_preinvite_v1"});
+    try {
+      const result = await withPlatformActivity(() => platform.shareReferral({
+        reference,
+        shareTitle: tr("RaceTo10.TITLE"),
+        shareText: tr("RaceTo10.INVITE_BEFORE_RUN", {name: inviterName}),
+        entryPayload: {
+          campaign: "race_to_10_v1",
+          reference: "race_preinvite_v1",
+          inviteKind: "race",
+          challengeDestination: challengeId,
+          challengeId,
+          inviterName,
+        },
+      }));
+      trackFunnel("viral_share_dialog_result", {status: result.status, surface: "race", campaign: "race_preinvite_v1"});
+      return result.status === "success";
+    } catch (error) {
+      console.warn("[riddle-quest] Jest race preinvite failed", error);
+      trackFunnel("viral_share_dialog_result", {status: "retryable-failure", surface: "race", campaign: "race_preinvite_v1"});
+      return false;
+    }
+  }, [locale, platform, session, trackFunnel, withPlatformActivity]);
 
   useEffect(() => {
     if (!authHarness || !session) return;

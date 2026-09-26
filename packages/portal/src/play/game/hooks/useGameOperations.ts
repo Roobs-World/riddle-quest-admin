@@ -16,6 +16,7 @@ import {
   writePendingGuessJournal,
   type PendingGuessJournal,
   type QueuedGuess,
+  type QueuedCoinAction,
 } from "../../pendingGuessJournal";
 import {createRequestId} from "../../requestIds";
 import type {GameFeedbackKind} from "./useGameAudio";
@@ -84,6 +85,15 @@ export function useGameOperations({
   const [journalAvailable, setJournalAvailable] = useState(true);
   /** Count of unconfirmed guesses. */
   const [pendingCount, setPendingCount] = useState(0);
+  /** Prevents later guesses or repeated purchases from overtaking a queued coin action. */
+  const [coinActionPending, setCoinActionPending] = useState(false);
+  /** Correlates the one successor load permitted by an accepted Skip request. */
+  const skipLoadRef = useRef<{
+    /** Accepted paid request. */
+    requestId: string;
+    /** Question being left behind. */
+    sessionToken: string;
+  } | null>(null);
   /** The lease renew ref used by the current operation. */
   const leaseRenewRef = useRef<number | null>(null);
   /** The scope used by the current operation. */
@@ -96,14 +106,14 @@ export function useGameOperations({
   /** The send first used by the current operation. */
   const sendFirst = useCallback(() => {
     /** The first used by the current operation. */
-    const first = queuedGuessesRef.current[0];
+    const message = queuedGuessesRef.current[0]?.message ?? journalRef.current?.coinAction;
     /** The active scope used by the current operation. */
     const activeScope = scopeRef.current;
-    if (!first || !activeScope || !acquirePendingPlayLease(activeScope, ownerRef.current)) return;
-    if (sentRequestRef.current !== first.message.requestId || Date.now() - sentAtRef.current >= 20_000) {
-      sentRequestRef.current = first.message.requestId ?? null;
+    if (!message || !activeScope || !acquirePendingPlayLease(activeScope, ownerRef.current)) return;
+    if (sentRequestRef.current !== message.requestId || Date.now() - sentAtRef.current >= 20_000) {
+      sentRequestRef.current = message.requestId ?? null;
       sentAtRef.current = Date.now();
-      postToHost(first.message);
+      postToHost(message);
     }
   }, [postToHost]);
   /** The retry timer ref used by the current operation. */
@@ -131,6 +141,8 @@ export function useGameOperations({
     sentRequestRef.current = null;
     queuedGuessesRef.current = [];
     setPendingCount(0);
+    setCoinActionPending(false);
+    skipLoadRef.current = null;
     journalRef.current = null;
     priorScopeRef.current = scope;
     setJournalAvailable(true);
@@ -161,6 +173,7 @@ export function useGameOperations({
     journalRef.current = journal;
     queuedGuessesRef.current = journal.queue;
     setPendingCount(journal.queue.length);
+    setCoinActionPending(Boolean(journal.coinAction));
     /** The active used by the current operation. */
     const active = journal.successors.at(-1) ?? journal;
     if (state.riddle.gameMode === "challenge" && active.riddle.sessionToken !== state.riddle.sessionToken) {
@@ -242,13 +255,13 @@ export function useGameOperations({
     ? Array.from({length: state.riddle.answerLength}, (_, index) => state.currentLetters[index] ?? "")
     : [];
   /** Indicates whether can submit. */
-  const canSubmit = (!state.guessPending || (state.riddle?.evaluation && !state.engineSnapshot?.gameOver &&
+  const canSubmit = !coinActionPending && (!state.guessPending || (state.riddle?.evaluation && !state.engineSnapshot?.gameOver &&
     journalAvailable && scope !== null && (state.engineSnapshot?.attemptsUsed ?? 0) < 5 + (state.engineSnapshot?.hasUsedContinue ? 1 : 0))) &&
     currentAttempt.length > 0 && currentAttempt.every(Boolean);
 
   /** Submits guess. */
   const submitGuess = useCallback(() => {
-    if (!canSubmit || !state.riddle) return;
+    if (!canSubmit || !state.riddle || journalRef.current?.coinAction || skipLoadRef.current) return;
     /** Provides guess behavior. */
     const guess = currentAttempt.join("");
     /** The last guess used by the current operation. */
@@ -346,6 +359,29 @@ export function useGameOperations({
   const handleQueuedGuessResult = useCallback((message: Extract<HostToGameMessage, {
     /** Correlated result discriminator. */ type: "host:operationResult";
   }>): boolean => {
+    if (message.payload.operation === "hint" || message.payload.operation === "skip") {
+      /** Paid request retained until its correlated authoritative result arrives. */
+      const action = journalRef.current?.coinAction;
+      if (!action || action.requestId !== message.requestId ||
+        message.payload.operation !== (action.type === "game:requestHint" ? "hint" : "skip")) return true;
+      if (!message.payload.ok && message.payload.errorKind === "retryable") return true;
+      if (journalRef.current) {
+        clearPendingGuessJournal(journalRef.current.scope);
+        releasePendingPlayLease(journalRef.current.scope, ownerRef.current);
+      }
+      journalRef.current = null;
+      sentRequestRef.current = null;
+      /** Only the current question may consume this action's result and successor. */
+      const currentSession = action.payload.sessionToken === stateRef.current.riddle?.sessionToken;
+      if (currentSession && message.payload.ok && action.type === "game:skipRiddle") {
+        skipLoadRef.current = {requestId: action.requestId!, sessionToken: action.payload.sessionToken};
+      }
+      setCoinActionPending(Boolean(skipLoadRef.current));
+      if (leaseRenewRef.current !== null) window.clearInterval(leaseRenewRef.current);
+      leaseRenewRef.current = null;
+      // A late hint must never reveal a letter in a different question or account.
+      return !currentSession;
+    }
     /** The first used by the current operation. */
     const first = queuedGuessesRef.current[0];
     if (!first || message.payload.operation !== "guess" || message.requestId !== first.message.requestId) return false;
@@ -366,6 +402,7 @@ export function useGameOperations({
       const checkpoint = journalRef.current;
       queuedGuessesRef.current = [];
       setPendingCount(0);
+      setCoinActionPending(false);
       sentRequestRef.current = null;
       if (journalRef.current) clearPendingGuessJournal(journalRef.current.scope);
       journalRef.current = null;
@@ -400,6 +437,7 @@ export function useGameOperations({
       const checkpoint = journalRef.current;
       queuedGuessesRef.current = [];
       setPendingCount(0);
+      setCoinActionPending(false);
       sentRequestRef.current = null;
       if (journalRef.current) clearPendingGuessJournal(journalRef.current.scope);
       journalRef.current = null;
@@ -455,7 +493,7 @@ export function useGameOperations({
           journal.draft = nextSegment.draft;
         }
       }
-      if (journal.queue.length > 0) writePendingGuessJournal(journal);
+      if (journal.queue.length > 0 || journal.coinAction) writePendingGuessJournal(journal);
       else {
         clearPendingGuessJournal(journal.scope);
         journalRef.current = null;
@@ -475,11 +513,52 @@ export function useGameOperations({
     if (next) sendFirst();
     else {
       dispatch({type: "guessPreviewConfirmed"});
+      if (journalRef.current?.coinAction) sendFirst();
       if (first.canContinue && stateRef.current.riddle?.sessionToken === first.message.payload.sessionToken)
         dispatch({type: "openModal", modal: "continue"});
     }
     return true;
   }, [dispatch, postToHost, sendFirst, stateRef]);
+
+  /** Rejects duplicate or stale Skip successor loads, including after account changes. */
+  const acceptRiddleResult = useCallback((message: Extract<HostToGameMessage, {
+    /** Correlated question result. */ type: "host:riddleLoaded";
+  }>) => {
+    if (message.requestId?.startsWith("skip-")) {
+      if (skipLoadRef.current?.requestId !== message.requestId) return false;
+      skipLoadRef.current = null;
+      setCoinActionPending(false);
+    } else if (skipLoadRef.current && message.payload.riddle.sessionToken !== skipLoadRef.current.sessionToken) {
+      skipLoadRef.current = null;
+      setCoinActionPending(false);
+    }
+    return true;
+  }, []);
+
+  /** Persists a confirmed coin action behind earlier answers before any network delivery. */
+  const enqueueCoinAction = useCallback((message: QueuedCoinAction) => {
+    /** Latest gameplay state, including a draft typed while prior answers synchronize. */
+    const current = stateRef.current;
+    if (!scope || !current.riddle || journalRef.current?.coinAction || skipLoadRef.current) return;
+    if ((current.guessPending && !journalRef.current) ||
+      !acquirePendingPlayLease(scope, ownerRef.current)) {
+      dispatch({type: "setNotice", notice: "ErrorMessages.SERVICE_TEMPORARILY_UNAVAILABLE"});
+      return;
+    }
+    /** Existing ordered answers, or a checkpoint for a standalone coin action. */
+    const journal: PendingGuessJournal = {...(journalRef.current ?? {
+      version: 1, scope, riddle: current.riddle, confirmedClassicIndex: current.profile?.classicIndex ?? 1,
+      base: {...capturePendingBase(current), modal: null}, successors: [], queue: [], draft: [...current.currentLetters],
+    }), coinAction: message};
+    if (!writePendingGuessJournal(journal)) {
+      dispatch({type: "setNotice", notice: "ErrorMessages.SERVICE_TEMPORARILY_UNAVAILABLE"});
+      return;
+    }
+    journalRef.current = journal;
+    setCoinActionPending(true);
+    if (queuedGuessesRef.current.length === 0) sendFirst();
+    if (leaseRenewRef.current === null) leaseRenewRef.current = window.setInterval(sendFirst, 5_000);
+  }, [dispatch, scope, sendFirst, stateRef]);
 
   useEffect(() => {
     if (!state.guessPending && state.guesses.length > (guessRetryRef.current?.guesses ?? Infinity)) {
@@ -489,7 +568,7 @@ export function useGameOperations({
 
   /** Requests hint. */
   const requestHint = useCallback(() => {
-    if (!state.riddle || pendingCount > 0) return;
+    if (!state.riddle || state.engineSnapshot?.gameOver) return;
     /** Provides attempt behavior. */
     const attempt = currentAttempt.join("");
     /** Provides retry behavior. */
@@ -500,7 +579,7 @@ export function useGameOperations({
         ? retry.requestId
         : createRequestId("hint");
     hintRetryRef.current = {sessionToken: state.riddle.sessionToken, attempt, requestId};
-    postToHost({
+    enqueueCoinAction({
       type: "game:requestHint",
       requestId,
       payload: {
@@ -511,7 +590,7 @@ export function useGameOperations({
         currentAttempt,
       },
     });
-  }, [currentAttempt, pendingCount, postToHost, state.riddle]);
+  }, [currentAttempt, enqueueCoinAction, state.engineSnapshot?.gameOver, state.riddle]);
 
   useEffect(() => {
     hintRetryRef.current = null;
@@ -520,7 +599,7 @@ export function useGameOperations({
   /** Requests continue. */
   const requestContinue = useCallback(
     (amount?: number) => {
-      if (!state.riddle || pendingCount > 0) return;
+      if (!state.riddle || pendingCount > 0 || journalRef.current?.coinAction) return;
       /** Provides retry behavior. */
       const retry = continueRetryRef.current;
       /** Requests id. */
@@ -544,13 +623,13 @@ export function useGameOperations({
 
   /** Requests skip. */
   const requestSkip = useCallback(() => {
-    if (!state.riddle || state.riddle.gameMode !== "classic" || pendingCount > 0) return;
+    if (!state.riddle || state.riddle.gameMode !== "classic") return;
     /** Provides retry behavior. */
     const retry = skipRetryRef.current;
     /** Requests id. */
     const requestId = retry?.sessionToken === state.riddle.sessionToken ? retry.requestId : createRequestId("skip");
     skipRetryRef.current = {sessionToken: state.riddle.sessionToken, requestId};
-    postToHost({
+    enqueueCoinAction({
       type: "game:skipRiddle",
       requestId,
       payload: {
@@ -559,12 +638,12 @@ export function useGameOperations({
         sessionToken: state.riddle.sessionToken,
       },
     });
-  }, [pendingCount, postToHost, state.riddle]);
+  }, [enqueueCoinAction, state.riddle]);
 
   /** Requests purchase. */
   const requestPurchase = useCallback(
     (productId: string) => {
-      if (pendingCount > 0) return;
+      if (pendingCount > 0 || journalRef.current?.coinAction) return;
       postToHost({
         type: "game:requestPurchase",
         requestId: createRequestId("purchase"),
@@ -624,12 +703,12 @@ export function useGameOperations({
 
   return {
     canSubmit,
-    pendingPlay: pendingCount > 0,
     bufferExhausted: pendingCount > 0 && state.gameMode === "classic" &&
       state.lastOutcome?.kind === "win" && state.riddle?.index !== undefined &&
       state.riddle.index + 1 > (journalRef.current?.confirmedClassicIndex ?? state.profile?.classicIndex ?? 1) + 2,
     submitGuess,
     handleQueuedGuessResult,
+    acceptRiddleResult,
     requestRiddle,
     requestHint,
     requestContinue,

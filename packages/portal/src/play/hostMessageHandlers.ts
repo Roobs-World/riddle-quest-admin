@@ -58,6 +58,14 @@ const reportHostOperationError = (error: unknown, operation: HostOperationName):
   captureBrowserException(error, {component: "play_host", operation});
 };
 
+/** Keeps ambiguous transport failures replayable with the original paid request ID. */
+const coinActionErrorKind = (error: unknown): "retryable" | "rejected" => {
+  /** Callable errors distinguish a definitive refusal from an unknown network outcome. */
+  const code = typeof error === "object" && error !== null && "code" in error ? String(error.code) : "";
+  return /(?:^|\/)(invalid-argument|permission-denied|failed-precondition|not-found|unauthenticated|resource-exhausted)$/.test(code)
+    ? "rejected" : "retryable";
+};
+
 /** Requires a capability-shaped authority module before crossing its seam. */
 const requireAuthority = <Module>(module: Module | undefined, message: string): Module => {
   if (!module) throw new Error(message);
@@ -280,7 +288,7 @@ export const createPlayHostMessageHandlers = ({
       });
     } catch (error) {
       reportHostOperationError(error, "hint");
-      postOperation(message.requestId, "hint", false, undefined, getHostErrorMessage(error));
+      postOperation(message.requestId, "hint", false, undefined, getHostErrorMessage(error), coinActionErrorKind(error));
     }
   },
   spendCoins: async (message) => {
@@ -325,10 +333,10 @@ export const createPlayHostMessageHandlers = ({
         gameMode: skipGameMode,
         locale,
         classicIndex: result.newProgress?.classicIndex ?? authSnapshot.profile?.classicIndex,
-      });
+      }, message.requestId);
     } catch (error) {
       reportHostOperationError(error, "skip");
-      postOperation(message.requestId, "skip", false, undefined, getHostErrorMessage(error));
+      postOperation(message.requestId, "skip", false, undefined, getHostErrorMessage(error), coinActionErrorKind(error));
     }
   },
   requestPurchase: async (message) => {

@@ -285,6 +285,7 @@ export const PublishRaceChallengeRequestSchema = z
   .object({
     runId: OpaqueIdSchema,
     requestId: RequestIdSchema,
+    reservedChallengeId: z.string().regex(/^jest-invite-[a-f0-9]{64}-[a-f0-9]{32}$/).optional(),
   })
   .strict();
 

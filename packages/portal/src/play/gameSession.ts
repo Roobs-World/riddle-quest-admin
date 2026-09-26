@@ -489,7 +489,8 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
       };
     case "openModal":
       if ((action.modal === "skip" && state.gameMode === "challenge") ||
-        (state.guessPending && (action.modal === "hint" || action.modal === "skip"))) {
+        (state.guessPending && !canDraftWhileConfirming(state) &&
+          (action.modal === "hint" || action.modal === "skip"))) {
         return state;
       }
       return action.modal === "leaderboard"

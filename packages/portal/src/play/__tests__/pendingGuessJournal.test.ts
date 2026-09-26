@@ -37,6 +37,28 @@ const journal = (): PendingGuessJournal => ({
 });
 
 describe("pending guess journal", () => {
+  it("retains a confirmed hint behind answers and after the answer queue drains", () => {
+    /** Journal with a paid request whose identity must survive a reload. */
+    const pending = journal();
+    pending.coinAction = {type: "game:requestHint", requestId: "hint-request-123", payload: {
+      riddleId: pending.riddle.riddleId, gameMode: "classic", sessionToken: pending.riddle.sessionToken,
+      requestId: "hint-request-123", currentAttempt: ["", "", "", "", ""],
+    }};
+    expect(writePendingGuessJournal(pending)).toBe(true);
+    expect(readPendingGuessJournal(scope)?.coinAction).toEqual(pending.coinAction);
+    pending.queue = [];
+    expect(writePendingGuessJournal(pending)).toBe(true);
+    expect(readPendingGuessJournal(scope)?.coinAction?.requestId).toBe("hint-request-123");
+    expect(readPendingGuessJournal(pendingPlayScope("player-1", 3, "en"))).toBeNull();
+  });
+
+  it("rejects malformed persisted coin actions", () => {
+    /** Corrupt action must not become a replayable paid request. */
+    const pending = {...journal(), coinAction: {type: "game:requestHint", payload: {}}};
+    values.set(`riddleQuest:pendingPlay:v1:${scope}`, JSON.stringify(pending));
+    expect(readPendingGuessJournal(scope)).toBeNull();
+  });
+
   it("restores exact requests only for the same identity generation and locale", () => {
     expect(writePendingGuessJournal(journal())).toBe(true);
     expect(readPendingGuessJournal(scope)?.queue[0].message.payload.requestId).toBe("request-123");

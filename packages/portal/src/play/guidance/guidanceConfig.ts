@@ -25,7 +25,10 @@ export type TooltipId =
 export const GAME_TOUR: readonly TooltipId[] = ["gameCoins", "gameHint", "submitAnswer", "gameSkip"];
 
 /** Tooltips positioned above their highlighted target. */
-export const ABOVE_TARGET_TOOLTIPS = new Set<TooltipId>(["gameHint", "submitAnswer", "gameSkip"]);
+export const ABOVE_TARGET_TOOLTIPS = new Set<TooltipId>([
+  "gameHint", "submitAnswer", "gameSkip",
+  "profileAchievements", "profileStatistics", "profileLeaderboard", "profileTreasure",
+]);
 
 /** Ordered tooltips shown during the profile tour. */
 export const PROFILE_TOUR: readonly TooltipId[] = [

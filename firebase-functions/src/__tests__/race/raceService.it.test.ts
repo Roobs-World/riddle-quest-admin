@@ -1,4 +1,5 @@
 import {getApps, initializeApp} from "firebase-admin/app";
+import {createHash} from "node:crypto";
 import {getFirestore} from "firebase-admin/firestore";
 import {RACE_CHALLENGE_TTL_MS} from "@qwordly/core/race";
 import {
@@ -291,7 +292,10 @@ describe("Race to 10 transactional service", () => {
     });
 
     /** Publishes input. */
-    const publishInput = {runId, requestId: "publish-request-0001"};
+    const reservedChallengeId = `jest-invite-${createHash("sha256").update("creator-1").digest("hex")}-${"a".repeat(32)}`;
+    const publishInput = {runId, requestId: "publish-request-0001", reservedChallengeId};
+    await expect(publishRaceChallengeForUser("another-creator", publishInput, {db, nowMs: NOW + 79_000}))
+      .rejects.toMatchObject({code: "permission-denied"});
     /** Publishes ed. */
     const published = await publishRaceChallengeForUser("creator-1", publishInput, {
       db,
@@ -303,6 +307,13 @@ describe("Race to 10 transactional service", () => {
       nowMs: NOW + 81_000,
     });
     expect(duplicatePublish).toEqual(published);
+    expect(published.challengeId).toBe(reservedChallengeId);
+    const replay = await publishRaceChallengeForUser("creator-1", {...publishInput, requestId: "publish-request-replay"}, {
+      db,
+      nowMs: NOW + 81_500,
+    });
+    expect(replay.challengeId).toBe(reservedChallengeId);
+    expect(replay.achievementCoinsAwarded).toBe(0);
     expect(published).toMatchObject({
       newlyUnlockedAchievementIds: ["race_host"],
       achievementCoinsAwarded: 25,

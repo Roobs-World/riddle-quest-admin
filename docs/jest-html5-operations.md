@@ -348,7 +348,7 @@ moderation requirements, or change a private listing to Public; those remain own
 Owner access to `https://jest.com/developers` is required:
 
 1. Treat [the desired Developer Console manifest](jest-developer-console.json) as the source of truth for the game ID,
-   public listing, loading mode, exact asset bytes, catalog SKUs, and onboarding slugs. Validate all known values and assets:
+   public listing, loading mode, exact asset bytes, catalog SKUs, and any separately published onboarding games. Validate all known values and assets:
 
    ```bash
    pnpm --filter @qwordly/portal check:jest-console
@@ -367,7 +367,7 @@ Owner access to `https://jest.com/developers` is required:
 4. Create the six consumable SKUs and monthly subscription SKU in the manifest. Registered players must read their signed
    subscription entitlement before the shop renders, and an active subscription must never be offered again.
 5. Keep the approved notification image reference aligned with `VITE_JEST_NOTIFICATION_ASSET_REFERENCE`.
-6. Create at least two sandbox players and configure and publish both onboarding slugs from the manifest.
+6. Create at least two sandbox players. The manifest currently lists no separate onboarding games; referral links enter Riddle Quest directly.
 7. Verify that the automatically activated build matches the receipt's exact version ID and build version, then run the
    acceptance matrix below.
 

@@ -43,6 +43,17 @@ const resolveGuess = (
   });
 
 describe("game session reducer", () => {
+  it.each(["hint", "skip"] as const)("opens %s while a wrong answer is awaiting confirmation", (modal) => {
+    /** Locally evaluated wrong answer with its server response still pending. */
+    let state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle: {
+      ...riddle, evaluation: {answer: "piano", locale: "en"},
+    }});
+    for (const letter of "CRANE") state = reduce(state, {type: "typeLetter", letter});
+    state = reduce(state, {type: "guessRequested"});
+    expect(state.guessPending).toBe(true);
+    expect(reduce(state, {type: "openModal", modal}).modal).toBe(modal);
+  });
+
   it.each(["PIANO", "CRANE"])("shows feedback for %s before the server responds", (guess) => {
     /** Riddle with canonical feedback data supplied at load time. */
     const loaded = {...riddle, evaluation: {answer: "piano", locale: "en"}};

@@ -49,6 +49,7 @@ export function useGameMessageRouter({
   requestRiddle,
   onCompletionResult,
   onGuessResult,
+  acceptRiddleResult,
 }: {
   /** Stores dispatch. */
   dispatch: GameDispatch;
@@ -63,6 +64,10 @@ export function useGameMessageRouter({
   /** Handles an optimistic guess before the default single-response reducer path. */
   onGuessResult?: (message: Extract<HostToGameMessage, {
     /** Correlated result discriminator. */ type: "host:operationResult";
+  }>) => boolean;
+  /** Rejects stale question deliveries from replayed paid actions. */
+  acceptRiddleResult?: (message: Extract<HostToGameMessage, {
+    /** Correlated question result. */ type: "host:riddleLoaded";
   }>) => boolean;
 }) {
   return useMemo(
@@ -79,11 +84,13 @@ export function useGameMessageRouter({
           }),
         authState: (message) =>
           dispatch({type: "authState", user: message.payload.user, profile: message.payload.profile}),
-        riddleLoaded: (message) =>
+        riddleLoaded: (message) => {
+          if (acceptRiddleResult && !acceptRiddleResult(message)) return;
           dispatch({type: "loadRiddle", riddle: message.payload.riddle, profile: message.payload.profile,
-            preserveNotice: message.requestId?.startsWith("reconcile-")}),
+            preserveNotice: message.requestId?.startsWith("reconcile-")});
+        },
         operationResult: async (message) => {
-          if (message.payload.operation === "guess" && onGuessResult?.(message)) return;
+          if (onGuessResult?.(message)) return;
           if (!message.payload.ok) {
             if (message.payload.operation === "leaderboard") dispatch({type: "leaderboardLoadFailed"});
             if (message.payload.operation === "guess") dispatch({type: "guessFailed"});
@@ -255,6 +262,6 @@ export function useGameMessageRouter({
         pause: () => dispatch({type: "pause"}),
         resume: () => dispatch({type: "resume"}),
       }),
-    [dispatch, onCompletionResult, onGuessResult, postToHost, requestRiddle, stateRef],
+    [acceptRiddleResult, dispatch, onCompletionResult, onGuessResult, postToHost, requestRiddle, stateRef],
   );
 }
