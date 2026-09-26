@@ -97,12 +97,6 @@
   border-color: #fff;
   outline: 0;
   outline-offset: 1px;
-  animation: active-slot-pulse 1.2s ease-in-out infinite;
-}
-@keyframes active-slot-pulse {
-  50% {
-    transform: scale(1.04);
-  }
 }
 .cell.green,
 .key.green {
