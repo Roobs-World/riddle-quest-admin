@@ -89,7 +89,7 @@ describe("callable request and response schemas", () => {
       }),
     ).toBeDefined();
     expect(
-      SkipRiddleResponseSchema.parse({success: true, newProgress: null, message: "ok", costDeducted: 5}),
+      SkipRiddleResponseSchema.parse({success: true, newProgress: null, message: "ok", costDeducted: 5, newCoins: 10}),
     ).toBeDefined();
     expect(
       SpendCoinsRequestSchema.parse({

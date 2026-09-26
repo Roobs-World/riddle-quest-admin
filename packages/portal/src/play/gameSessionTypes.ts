@@ -37,6 +37,13 @@ export type GameSessionState = {
   /** Active single-player mode. */ gameMode: "classic" | "challenge";
   /** Authenticated or guest player identity. */ user: BridgeUser | null;
   /** Latest server-authoritative player profile. */ profile: BridgeProfile | null;
+  /** Local coin charge awaiting its correlated server result. */
+  pendingCoinSpend: {
+    /** Correlates the local charge with its server result. */ requestId: string;
+    /** Balance to restore if the server rejects the charge. */ previousCoins: number;
+    /** Gameplay to restore if a provisional Continue is rejected. */ continueState?: PendingGuessState;
+    /** Session that received the provisional Continue. */ sessionToken?: string;
+  } | null;
   /** Purchasable products exposed by the current platform. */ products: ProductSummary[];
   /** Current leaderboard page. */ leaderboard: BridgeLeaderboardEntry[];
   /** Metric used to rank the current leaderboard page. */ leaderboardType: "xp" | "totalWins" | "bestStreak";
@@ -243,6 +250,21 @@ export type GameSessionAction =
       type: "coinsUpdated"; /** Stores new coins. */
       /** Stores new coins. */
       newCoins: number;
+    }
+  | {
+      /** Starts one reversible local charge. */ type: "previewCoinSpend";
+      /** Paid request identifier. */ requestId: string;
+      /** Cost displayed before the server responds. */ amount: number;
+      /** The paid action whose local gameplay should be previewed. */ reason?: "continue" | "skip";
+    }
+  | {
+      /** Replaces the preview with the server balance. */ type: "confirmCoinSpend";
+      /** Paid request identifier. */ requestId: string;
+      /** Authoritative post-charge balance. */ newCoins: number;
+    }
+  | {
+      /** Restores the pre-charge balance after rejection. */ type: "rejectCoinSpend";
+      /** Paid request identifier. */ requestId: string;
     }
   | {
       /** Stores type. */

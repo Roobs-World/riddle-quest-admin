@@ -143,6 +143,8 @@ type SkipResult = {
   message: string;
   /** Stores cost deducted. */
   costDeducted: number;
+  /** Server-confirmed balance after the skip charge. */
+  newCoins: number;
   /** Stores new progress. */
   newProgress?: {
     /** Stores classic index. */

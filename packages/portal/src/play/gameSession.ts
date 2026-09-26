@@ -20,6 +20,7 @@ export const createInitialGameSession = (): GameSessionState => ({
   gameMode: "classic",
   user: null,
   profile: null,
+  pendingCoinSpend: null,
   products: [],
   leaderboard: [],
   leaderboardType: "xp",
@@ -58,6 +59,10 @@ const withProfileCoins = (profile: BridgeProfile | null, coins?: number): Bridge
 
   return {...profile, coins};
 };
+
+/** Keeps a pending deduction visible while unrelated profile refreshes arrive. */
+const preservePendingCoins = (state: GameSessionState, profile: BridgeProfile | null): BridgeProfile | null =>
+  state.pendingCoinSpend ? withProfileCoins(profile, state.profile?.coins) : profile;
 
 /** Computes states. */
 const computeStates = (guesses: ScoredGuess[]): Record<string, Feedback> => {
@@ -119,7 +124,7 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
         locale: action.locale,
         gameMode: action.gameMode,
         user: action.user,
-        profile: action.profile,
+        profile: preservePendingCoins(state, action.profile),
         products: action.products,
       };
     case "authState": {
@@ -135,7 +140,8 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
       return {
         ...state,
         user: action.user,
-        profile: action.profile,
+        profile: sameAccount ? preservePendingCoins(state, action.profile) : action.profile,
+        pendingCoinSpend: sameAccount ? state.pendingCoinSpend : null,
         leaderboard: sameAccount && sameRanking ? state.leaderboard : [],
       };
     }
@@ -151,7 +157,7 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
         ...state,
         riddle: action.riddle,
         gameMode: action.riddle.gameMode,
-        profile: action.profile === undefined ? state.profile : action.profile,
+        profile: action.profile === undefined ? state.profile : preservePendingCoins(state, action.profile),
         currentLetters: Array.from({length: action.riddle.answerLength}, () => ""),
         activeSlotIndex: 0,
         hintRevealedIndices: [],
@@ -404,6 +410,32 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
     }
     case "coinsUpdated":
       return {...state, profile: withProfileCoins(state.profile, action.newCoins)};
+    case "previewCoinSpend":
+      if (state.pendingCoinSpend || !state.profile || !Number.isInteger(action.amount) ||
+        action.amount <= 0 || state.profile.coins < action.amount) return state;
+      if (action.reason === "continue" && (state.modal !== "continue" || !state.riddle ||
+        !state.engineSnapshot || state.engineSnapshot.hasUsedContinue)) return state;
+      {
+        const continueState = action.reason === "continue" ? {
+          currentLetters: state.currentLetters, activeSlotIndex: state.activeSlotIndex,
+          guesses: state.guesses, engineSnapshot: state.engineSnapshot, modal: state.modal,
+          lastOutcome: state.lastOutcome, completionAcknowledged: state.completionAcknowledged,
+          letterStates: state.letterStates,
+        } : undefined;
+        const charged = {...state, profile: withProfileCoins(state.profile, state.profile.coins - action.amount),
+          pendingCoinSpend: {requestId: action.requestId, previousCoins: state.profile.coins,
+            continueState, sessionToken: continueState ? state.riddle?.sessionToken : undefined}};
+        return continueState ? gameSessionReducer(charged, {type: "continueGranted"}) : charged;
+      }
+    case "confirmCoinSpend":
+      if (state.pendingCoinSpend?.requestId !== action.requestId) return state;
+      return {...state, profile: withProfileCoins(state.profile, action.newCoins), pendingCoinSpend: null};
+    case "rejectCoinSpend":
+      if (state.pendingCoinSpend?.requestId !== action.requestId) return state;
+      return {...state,
+        ...(state.pendingCoinSpend.continueState &&
+          state.riddle?.sessionToken === state.pendingCoinSpend.sessionToken ? state.pendingCoinSpend.continueState : {}),
+        profile: withProfileCoins(state.profile, state.pendingCoinSpend.previousCoins), pendingCoinSpend: null};
     case "leaderboardRequested":
       return {
         ...state,
@@ -421,7 +453,7 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
     case "leaderboardLoadFailed":
       return {...state, leaderboardLoading: false};
     case "profileUpdated":
-      return {...state, profile: action.profile, leaderboard: []};
+      return {...state, profile: preservePendingCoins(state, action.profile), leaderboard: []};
     case "completionReward":
       return {...state, lastRewards: action.reward, leaderboard: []};
     case "completionAcknowledged":

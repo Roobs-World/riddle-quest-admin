@@ -44,6 +44,30 @@ const resolveGuess = (
   });
 
 describe("game session reducer", () => {
+  it("shows one 100-coin charge immediately, keeps it through stale profiles, and reconciles by request", () => {
+    /** Guest account used to exercise the local charge. */
+    let state = reduce(createInitialGameSession(), {type: "hostInit", locale: "en", gameMode: "classic",
+      user: null, products: [], profile: {username: "Guest", coins: 250, level: 1, xp: 0,
+        winStreak: 0, gamesPlayed: 0, wins: 0, achievements: [], classicIndex: 1}});
+    /** Profile returned by a delayed request started before the charge. */
+    const originalProfile = state.profile!;
+    state = reduce(state, {type: "previewCoinSpend", requestId: "skip-1", amount: 100});
+    expect(state.profile?.coins).toBe(150);
+    expect(reduce(state, {type: "previewCoinSpend", requestId: "skip-1", amount: 100})).toBe(state);
+    state = reduce(state, {type: "authState", user: null, profile: originalProfile});
+    state = reduce(state, {type: "loadRiddle", riddle, profile: originalProfile});
+    expect(state.profile?.coins).toBe(150);
+    expect(reduce(state, {type: "confirmCoinSpend", requestId: "other", newCoins: 1})).toBe(state);
+    state = reduce(state, {type: "confirmCoinSpend", requestId: "skip-1", newCoins: 125});
+    expect(state.profile?.coins).toBe(125);
+    expect(state.pendingCoinSpend).toBeNull();
+    state = reduce(state, {type: "previewCoinSpend", requestId: "continue-1", amount: 100});
+    expect(state.profile?.coins).toBe(25);
+    state = reduce(state, {type: "rejectCoinSpend", requestId: "continue-1"});
+    expect(state.profile?.coins).toBe(125);
+    expect(state.pendingCoinSpend).toBeNull();
+  });
+
   it("previews a hint without saving it and restores only its slot if the charge fails", () => {
     /** Session state used by this assertion. */
     let state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle: {
@@ -299,6 +323,33 @@ describe("game session reducer", () => {
 
     expect(state.modal).toBeNull();
     expect(state.lastOutcome).toEqual(expect.objectContaining({kind: "loss", attempts: 6}));
+  });
+
+  it("opens play immediately after a local Continue charge and restores the panel on rejection", () => {
+    let state = reduce(createInitialGameSession(), {type: "hostInit", locale: "en", gameMode: "classic",
+      user: null, products: [], profile: {username: "Guest", coins: 150, level: 1, xp: 0,
+        winStreak: 0, gamesPlayed: 0, wins: 0, achievements: [], classicIndex: 1}});
+    state = reduce(state, {type: "loadRiddle", riddle});
+    for (let attempt = 1; attempt <= 5; attempt += 1)
+      state = resolveGuess(state, "clock", attempt, {canContinue: attempt === 5});
+    expect(state.modal).toBe("continue");
+
+    state = reduce(state, {type: "previewCoinSpend", requestId: "continue-1", amount: 100, reason: "continue"});
+    expect(state.profile?.coins).toBe(50);
+    expect(state.modal).toBeNull();
+    expect(state.engineSnapshot?.hasUsedContinue).toBe(true);
+
+    state = reduce(state, {type: "rejectCoinSpend", requestId: "continue-1"});
+    expect(state.profile?.coins).toBe(150);
+    expect(state.modal).toBe("continue");
+    expect(state.engineSnapshot?.hasUsedContinue).toBe(false);
+
+    state = reduce(state, {type: "previewCoinSpend", requestId: "continue-2", amount: 100, reason: "continue"});
+    state = reduce(state, {type: "confirmCoinSpend", requestId: "continue-2", newCoins: 40});
+    expect(state.profile?.coins).toBe(40);
+    expect(state.modal).toBeNull();
+    expect(state.engineSnapshot?.hasUsedContinue).toBe(true);
+    expect(state.pendingCoinSpend).toBeNull();
   });
 
   it("records a declined continue without opening an answer modal", () => {

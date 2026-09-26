@@ -133,7 +133,8 @@ export const createRedditGuestHostServices = (savedProfile?: BridgeProfile): Hos
     async skipRiddle() {
       profile = {...profile, classicIndex: profile.classicIndex + 1};
       emit();
-      return {success: true, message: "Skipped.", costDeducted: 0, newProgress: {classicIndex: profile.classicIndex}};
+      return {success: true, message: "Skipped.", costDeducted: 0, newCoins: profile.coins,
+        newProgress: {classicIndex: profile.classicIndex}};
     },
     requestPurchase: unavailable,
     /** Loads leaderboard. */

@@ -86,12 +86,15 @@ export function useGameMessageRouter({
           dispatch({type: "authState", user: message.payload.user, profile: message.payload.profile}),
         riddleLoaded: (message) => {
           if (acceptRiddleResult && !acceptRiddleResult(message)) return;
-          dispatch({type: "loadRiddle", riddle: message.payload.riddle, profile: message.payload.profile,
+          dispatch({type: "loadRiddle", riddle: message.payload.riddle,
+            profile: message.requestId?.startsWith("skip-") ? undefined : message.payload.profile,
             preserveNotice: message.requestId?.startsWith("reconcile-")});
         },
         operationResult: async (message) => {
           if (onGuessResult?.(message)) return;
           if (!message.payload.ok) {
+            if (message.payload.operation === "spendCoins" && message.requestId)
+              dispatch({type: "rejectCoinSpend", requestId: message.requestId});
             if (message.payload.operation === "leaderboard") dispatch({type: "leaderboardLoadFailed"});
             if (message.payload.operation === "guess") dispatch({type: "guessFailed"});
             if (message.payload.operation === "completeGame") onCompletionResult?.(false);
@@ -151,8 +154,13 @@ export function useGameMessageRouter({
           if (message.payload.operation === "spendCoins") {
             /** Provides new coins behavior. */
             const newCoins = getNumber(data.newCoins);
-            if (newCoins !== undefined) dispatch({type: "coinsUpdated", newCoins});
-            if (stateRef.current.modal === "continue") dispatch({type: "continueGranted"});
+            if (message.requestId && stateRef.current.pendingCoinSpend?.requestId === message.requestId) {
+              if (newCoins !== undefined) dispatch({type: "confirmCoinSpend", requestId: message.requestId, newCoins});
+              else {
+                dispatch({type: "rejectCoinSpend", requestId: message.requestId});
+                dispatch({type: "setNotice", notice: "ErrorMessages.GENERIC_UNEXPECTED_ERROR"});
+              }
+            }
             return;
           }
           if (message.payload.operation === "accountDeletion") {

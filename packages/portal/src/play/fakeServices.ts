@@ -361,6 +361,7 @@ export const createFakeHostServices = ({
         success: true,
         message: "Skipped.",
         costDeducted: skipCost,
+        newCoins,
         newProgress: {classicIndex: newClassicIndex},
       };
     },

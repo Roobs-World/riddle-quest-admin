@@ -93,6 +93,8 @@ describeBrowser("queued coin actions", () => {
       await page.waitForFunction(() => !Object.keys(localStorage).some(key => key.includes("pendingPlay:v1:")));
 
       await page.getByRole("button", {name: /^skip$/i}).click();
+      /** Balance before the held server charge. */
+      const coinsBeforeSkip = Number((await page.locator("[data-coin-meter] strong").innerText()).replaceAll(",", ""));
       /** Elapsed time until the successor appears. */
       const skipMs = await page.locator(".modal-skip .play-primary").first().evaluate(async (button) => {
         /** Timestamp when the button was clicked. */
@@ -105,9 +107,11 @@ describeBrowser("queued coin actions", () => {
         return performance.now() - started;
       });
       expect(skipMs).toBeLessThan(250);
+      await expect(page.locator("[data-coin-meter] strong")).toHaveText(String(coinsBeforeSkip - 100));
       await page.waitForFunction(() => Reflect.has(window, "__held_skip"));
       await page.evaluate(() => Reflect.get(window, "__releaseCoinAction")("skip"));
       await page.waitForFunction(() => !Object.keys(localStorage).some(key => key.includes("pendingPlay:v1:")));
+      await expect(page.locator("[data-coin-meter] strong")).toHaveText(String(coinsBeforeSkip - 100));
       expect(await page.locator(".riddle-card h1").innerText()).toMatch(/face and hands/i);
     } finally {
       await page.close();

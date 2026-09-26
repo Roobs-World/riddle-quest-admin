@@ -234,6 +234,7 @@ export const SkipRiddleResponseSchema = z
     newProgress: PlayerProgressPatchSchema.nullish(),
     message: z.string(),
     costDeducted: z.number().int().nonnegative(),
+    newCoins: z.number().int().nonnegative(),
   })
   .strict();
 /** Describes skip riddle response. */

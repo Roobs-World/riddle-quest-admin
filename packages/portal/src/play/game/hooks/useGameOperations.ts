@@ -19,6 +19,7 @@ import {
   type QueuedCoinAction,
 } from "../../pendingGuessJournal";
 import {createRequestId} from "../../requestIds";
+import {CONTINUE_COIN_COST, SKIP_COIN_COST} from "../../modalPages/commerce/commerceCosts";
 import type {GameFeedbackKind} from "./useGameAudio";
 
 /** Describes post to host. */
@@ -87,6 +88,12 @@ export function useGameOperations({
   const [pendingCount, setPendingCount] = useState(0);
   /** Prevents later guesses or repeated purchases from overtaking a queued coin action. */
   const [coinActionPending, setCoinActionPending] = useState(false);
+  /** Blocks repeated Continue clicks before React commits the local deduction. */
+  const continuePendingRef = useRef(false);
+  useEffect(() => {
+    if (!state.pendingCoinSpend || !state.pendingCoinSpend.requestId.startsWith("continue-"))
+      continuePendingRef.current = false;
+  }, [state.pendingCoinSpend]);
   /** Correlates the one successor load permitted by an accepted Skip request. */
   const skipLoadRef = useRef<{
     /** Accepted paid request. */
@@ -267,7 +274,8 @@ export function useGameOperations({
     ? Array.from({length: state.riddle.answerLength}, (_, index) => state.currentLetters[index] ?? "")
     : [];
   /** Indicates whether can submit. */
-  const canSubmit = !coinActionPending && (!state.guessPending || (state.riddle?.evaluation && !state.engineSnapshot?.gameOver &&
+  const canSubmit = !coinActionPending && !state.pendingCoinSpend?.continueState &&
+    (!state.guessPending || (state.riddle?.evaluation && !state.engineSnapshot?.gameOver &&
     journalAvailable && scope !== null && (state.engineSnapshot?.attemptsUsed ?? 0) < 5 + (state.engineSnapshot?.hasUsedContinue ? 1 : 0))) &&
     currentAttempt.length > 0 && currentAttempt.every(Boolean);
 
@@ -389,11 +397,17 @@ export function useGameOperations({
       const currentSession = action.payload.sessionToken === stateRef.current.riddle?.sessionToken;
       if (!message.payload.ok && action.type === "game:requestHint") dispatch({type: "rejectHint"});
       if (!message.payload.ok && action.type === "game:skipRiddle") {
+        dispatch({type: "rejectCoinSpend", requestId: action.requestId!});
         skipPreviewRef.current = null;
         earlySkipLoadRef.current = null;
         if (checkpoint) dispatch({type: "restoreConfirmedRiddle", riddle: checkpoint.riddle, base: checkpoint.base});
       }
       if (message.payload.ok && action.type === "game:skipRiddle") {
+        /** Server balance is authoritative even if a profile refresh arrived earlier. */
+        const data = message.payload.data;
+        if (data && typeof data === "object" && "newCoins" in data &&
+          typeof data.newCoins === "number")
+          dispatch({type: "confirmCoinSpend", requestId: action.requestId!, newCoins: data.newCoins});
         /** Successor returned before the paid Skip receipt. */
         const early = earlySkipLoadRef.current;
         if (early && early.requestId === action.requestId) {
@@ -654,13 +668,17 @@ export function useGameOperations({
   /** Requests continue. */
   const requestContinue = useCallback(
     (amount?: number) => {
-      if (!state.riddle || pendingCount > 0 || journalRef.current?.coinAction) return;
+      if (!state.riddle || !state.profile || state.profile.coins < CONTINUE_COIN_COST ||
+        pendingCount > 0 || journalRef.current?.coinAction || continuePendingRef.current ||
+        stateRef.current.pendingCoinSpend) return;
       /** Provides retry behavior. */
       const retry = continueRetryRef.current;
       /** Requests id. */
       const requestId =
         retry?.sessionToken === state.riddle.sessionToken ? retry.requestId : createRequestId("continue");
       continueRetryRef.current = {sessionToken: state.riddle.sessionToken, requestId};
+      continuePendingRef.current = true;
+      dispatch({type: "previewCoinSpend", requestId, amount: CONTINUE_COIN_COST, reason: "continue"});
       postToHost({
         type: "game:spendCoins",
         requestId,
@@ -673,12 +691,12 @@ export function useGameOperations({
         },
       });
     },
-    [pendingCount, postToHost, state.riddle],
+    [dispatch, pendingCount, postToHost, state.profile, state.riddle, stateRef],
   );
 
   /** Requests skip. */
   const requestSkip = useCallback(() => {
-    if (!state.riddle || state.riddle.gameMode !== "classic") return;
+    if (!state.riddle || state.riddle.gameMode !== "classic" || stateRef.current.pendingCoinSpend) return;
     /** Provides retry behavior. */
     const retry = skipRetryRef.current;
     /** Requests id. */
@@ -694,6 +712,7 @@ export function useGameOperations({
         sessionToken: state.riddle.sessionToken,
       },
     });
+    if (accepted) dispatch({type: "previewCoinSpend", requestId, amount: SKIP_COIN_COST});
     if (accepted && state.riddle.index !== undefined) {
       /** Correlation ID for the speculative successor request. */
       const requestId = createRequestId("skip-preview");
@@ -702,7 +721,7 @@ export function useGameOperations({
         gameMode: "classic", locale: state.locale, classicIndex: state.riddle.index + 1,
       }});
     }
-  }, [enqueueCoinAction, postToHost, state.locale, state.riddle]);
+  }, [dispatch, enqueueCoinAction, postToHost, state.locale, state.riddle, stateRef]);
 
   /** Requests purchase. */
   const requestPurchase = useCallback(

@@ -85,6 +85,7 @@ export const skipRiddle = onCallWithSentry(
           newProgress: result.newProgress,
           message: `Riddle skipped successfully. ${result.costDeducted} coins deducted. ${progressMessage}`,
           costDeducted: result.costDeducted,
+          newCoins: result.newCoins,
         },
         "skipRiddle",
       );

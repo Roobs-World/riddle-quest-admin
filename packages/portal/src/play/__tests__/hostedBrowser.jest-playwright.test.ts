@@ -1311,6 +1311,33 @@ describeBrowser("standalone Jest browser game", () => {
       expect(await lowEndPage.locator(".game-modal-backdrop > .spinning-wheel-graphic").count()).toBe(0);
       await expectAccessible(lowEndPage, "out of attempts");
       await lowEndPage.screenshot({path: "/tmp/jest-feedback-loss.png"});
+      /** Hold the paid Continue result to verify the displayed charge precedes confirmation. */
+      await lowEndPage.evaluate(() => {
+        /** Native event dispatcher bypassing the temporary result hold. */
+        const dispatch = window.dispatchEvent.bind(window);
+        Reflect.set(window, "__releaseContinue", () => dispatch(new CustomEvent("riddle-quest:host-to-game", {
+          detail: Reflect.get(window, "__heldContinue"),
+        })));
+        window.dispatchEvent = (event: Event) => {
+          /** Operation result intercepted until after the immediate balance check. */
+          const message = (event as CustomEvent).detail;
+          if (event.type === "riddle-quest:host-to-game" && message?.payload?.operation === "spendCoins") {
+            Reflect.set(window, "__heldContinue", message);
+            return true;
+          }
+          return dispatch(event);
+        };
+      });
+      /** Balance displayed before Continue is purchased. */
+      const coinsBeforeContinue = Number((await lowEndPage.locator("[data-coin-meter] strong").innerText()).replaceAll(",", ""));
+      await lowEndPage.locator(".continue-actions .play-primary").first().click();
+      await lowEndPage.waitForFunction((expected) =>
+        document.querySelector("[data-coin-meter] strong")?.textContent === String(expected),
+      coinsBeforeContinue - 100);
+      expect(Number((await lowEndPage.locator("[data-coin-meter] strong").innerText()).replaceAll(",", "")))
+        .toBe(coinsBeforeContinue - 100);
+      await lowEndPage.waitForFunction(() => Reflect.has(window, "__heldContinue"));
+      await lowEndPage.evaluate(() => Reflect.get(window, "__releaseContinue")());
       await lowEndContext.close();
 
       /** Opens the prefetched Classic question while the previous win is still unconfirmed. */

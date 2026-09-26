@@ -145,7 +145,7 @@ describe("authoritative game economy callables", () => {
       }),
     );
 
-    expect(result).toMatchObject({success: true, costDeducted: 100});
+    expect(result).toMatchObject({success: true, costDeducted: 100, newCoins: 100});
     expect(mockGetIssuedAuthoritativeSession).toHaveBeenCalledWith("player-1", SESSION_TOKEN, "classic", "classic-2");
     expect(mockSkipAuthoritativeRiddle).toHaveBeenCalledWith("player-1", {
       riddleId: "classic-2",
