@@ -251,9 +251,12 @@ export function GuidanceOverlay({
         return;
       }
       if (activeTooltip.startsWith("profile")) {
+        /** Scrollable profile area containing the highlighted element. */
         const scrollContainer = element.closest(".profile-page");
         if (scrollContainer) {
+          /** Highlighted element bounds. */
           const target = element.getBoundingClientRect();
+          /** Visible profile bounds. */
           const visibleArea = scrollContainer.getBoundingClientRect();
           if (target.top < visibleArea.top || target.bottom > visibleArea.bottom) {
             element.scrollIntoView({block: "center", inline: "nearest", behavior: "instant"});

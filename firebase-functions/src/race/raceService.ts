@@ -422,6 +422,7 @@ export async function publishRaceChallengeForUser(
   } = {},
 ): Promise<PublishRaceChallengeResponse> {
   if (input.reservedChallengeId) {
+    /** Hash binding a reserved invitation to the authenticated creator. */
     const ownerHash = createHash("sha256").update(userId).digest("hex");
     if (!input.reservedChallengeId.startsWith(`jest-invite-${ownerHash}-`)) {
       throw new HttpsError("permission-denied", "This invitation belongs to another player.");
@@ -460,13 +461,16 @@ export async function publishRaceChallengeForUser(
       if (privacy.scrubbed) transaction.set(runRef, raceRunPrivacyWrite(run, true), {merge: true});
       return requestSnapshot.data()?.response as PublishRaceChallengeResponse;
     }
+    /** Challenge already published for this run, if any. */
     const publishedChallengeId = runSnapshot.data()?.publishedChallengeId;
     if (typeof publishedChallengeId === "string" && publishedChallengeId.length > 0) {
       if (input.reservedChallengeId && input.reservedChallengeId !== publishedChallengeId) {
         throw new HttpsError("failed-precondition", "This run was already published to another invitation.");
       }
+      /** Existing challenge returned for an idempotent publication replay. */
       const existingSnapshot = await transaction.get(db.collection("raceChallenges").doc(publishedChallengeId));
       if (!existingSnapshot.exists) throw new HttpsError("internal", "The published challenge is missing.");
+      /** Validated existing challenge record. */
       const existingChallenge = parseChallengeRecord(existingSnapshot.data());
       return PublishRaceChallengeResponseSchema.parse({
         challengeId: publishedChallengeId,

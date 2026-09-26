@@ -75,6 +75,7 @@ describeBrowser("profile walkthrough", () => {
         expect(card!.y).toBeGreaterThanOrEqual(0);
         expect(card!.y + card!.height).toBeLessThanOrEqual(viewport.height);
         if (["profileProgression", "profileAchievements", "profileStatistics", "profileLeaderboard", "profileTreasure"].includes(id)) {
+          /** Spotlight bounds used to verify viewport containment. */
           const spotlight = await page.locator(".tooltip-spotlight").boundingBox();
           expect(spotlight!.y).toBeGreaterThanOrEqual(0);
           expect(spotlight!.y + spotlight!.height).toBeLessThanOrEqual(viewport.height);

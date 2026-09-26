@@ -39,7 +39,9 @@ import {EMPTY_RACE_CATEGORIES, type RaceTo10GameProps} from "./RaceTo10Game.type
 import {useActiveRacePersistence, useRaceClockEffects, useRaceEntryTracking, useRaceFeedbackTimers} from "./hooks/useRaceRuntimeEffects";
 import {useReferralSharing} from "../sharing/ReferralSharingCapability";
 
+/** Session key for a creator's invitation awaiting race publication. */
 const pendingJestInviteKey = (ownerId?: string) => `riddle-quest:pending-jest-race-invite:${ownerId ?? "guest"}`;
+/** Session key for the creator run associated with an invitation. */
 const pendingJestInviteRunKey = (ownerId?: string) => `${pendingJestInviteKey(ownerId)}:run`;
 
 /** Coordinates the complete server-authoritative Race to 10 multiplayer experience. */
@@ -134,10 +136,13 @@ export function RaceTo10Game({
   const reservedChallengeIdRef = useRef<string | null>(
     typeof window === "undefined" ? null : window.sessionStorage.getItem(pendingJestInviteKey(ownerId)),
   );
+  /** Creator run associated with the reserved invitation. */
   const reservedRunIdRef = useRef<string | null>(
     typeof window === "undefined" ? null : window.sessionStorage.getItem(pendingJestInviteRunKey(ownerId)),
   );
+  /** Prevents duplicate automatic publication requests. */
   const publishRequestedRef = useRef(false);
+  /** Whether the Jest recipient picker is open. */
   const [inviting, setInviting] = useState(false);
   /** Records ed tournament runs ref. */
   const recordedTournamentRunsRef = useRef(new Set<string>());
@@ -486,6 +491,7 @@ export function RaceTo10Game({
 
   useEffect(() => {
     if (stage !== "challenge" || !activeChallengeId?.startsWith("jest-invite-") || challenge || pending === "raceChallenge") return;
+    /** Retry timer while the creator records the invitation's time to beat. */
     const timer = window.setTimeout(() => {
       send("raceChallenge", "game:getRaceChallenge", {challengeId: activeChallengeId, locale});
     }, 10_000);
@@ -625,8 +631,11 @@ export function RaceTo10Game({
     setInviting(true);
     try {
       if (!ownerId) throw new Error("Race account is unavailable.");
+      /** SHA-256 digest binding the invitation ID to its creator. */
       const ownerDigest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(ownerId));
+      /** Hex creator digest checked by the backend. */
       const ownerHash = Array.from(new Uint8Array(ownerDigest), (byte) => byte.toString(16).padStart(2, "0")).join("");
+      /** Opaque challenge ID shared before the run starts. */
       const reservedChallengeId = `jest-invite-${ownerHash}-${crypto.randomUUID().replace(/-/g, "")}`;
       if (!(await referralSharing.shareMultiplayerInvite(reservedChallengeId))) return;
       reservedChallengeIdRef.current = reservedChallengeId;

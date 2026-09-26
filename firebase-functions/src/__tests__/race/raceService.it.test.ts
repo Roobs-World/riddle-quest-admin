@@ -293,6 +293,7 @@ describe("Race to 10 transactional service", () => {
 
     /** Publishes input. */
     const reservedChallengeId = `jest-invite-${createHash("sha256").update("creator-1").digest("hex")}-${"a".repeat(32)}`;
+    /** Repeatable publish request for the reserved invitation. */
     const publishInput = {runId, requestId: "publish-request-0001", reservedChallengeId};
     await expect(publishRaceChallengeForUser("another-creator", publishInput, {db, nowMs: NOW + 79_000}))
       .rejects.toMatchObject({code: "permission-denied"});
@@ -308,6 +309,7 @@ describe("Race to 10 transactional service", () => {
     });
     expect(duplicatePublish).toEqual(published);
     expect(published.challengeId).toBe(reservedChallengeId);
+    /** Replayed publication with a new request ID. */
     const replay = await publishRaceChallengeForUser("creator-1", {...publishInput, requestId: "publish-request-replay"}, {
       db,
       nowMs: NOW + 81_500,

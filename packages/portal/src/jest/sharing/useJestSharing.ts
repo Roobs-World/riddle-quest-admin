@@ -294,10 +294,13 @@ export function useJestSharing({
   /** Shares a link before the sender records the authoritative time to beat. */
   const shareMultiplayerInvite = useCallback(async (challengeId: string): Promise<boolean> => {
     if (!session || !/^jest-invite-[a-f0-9]{64}-[a-f0-9]{32}$/.test(challengeId)) return false;
+    /** Name displayed to the invitation recipient. */
     const inviterName = session.profile?.username ?? tr("WebPortal.NOTIFICATION_PLAYER_FALLBACK");
+    /** Unique reference used to attribute the invitation. */
     const reference = createUniqueJestReferralReference("race");
     trackFunnel("viral_share_intent", {surface: "race", campaign: "race_preinvite_v1"});
     try {
+      /** Jest share-dialog outcome. */
       const result = await withPlatformActivity(() => platform.shareReferral({
         reference,
         shareTitle: tr("RaceTo10.TITLE"),

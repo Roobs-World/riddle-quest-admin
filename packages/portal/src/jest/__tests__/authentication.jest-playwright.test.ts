@@ -1075,12 +1075,17 @@ describeBrowser("Jest authentication integration", () => {
   });
 
   it("keeps the creator in the lobby when the Jest invite is dismissed", async () => {
+    /** Browser context and page for the dismissed invitation. */
     const {context, page} = await openHarness(browser, {registered: true, scenario: "race-share-cancel"});
     await enterRegisteredGame(page);
     await page.getByRole("button", {name: /^multiplayer$/i}).click();
     await page.getByRole("button", {name: "Challenge another player", exact: true}).click();
     await page.waitForFunction(() =>
-      (window as typeof window & {__RIDDLE_QUEST_JEST_AUTH_TEST__: AuthHarnessState})
+      /** Reads the injected Jest harness share calls. */
+      (window as typeof window & {
+        /** Injected Jest authentication harness state. */
+        __RIDDLE_QUEST_JEST_AUTH_TEST__: AuthHarnessState;
+      })
         .__RIDDLE_QUEST_JEST_AUTH_TEST__.referralShares.length > 0,
     );
     await page.getByRole("button", {name: "Challenge another player", exact: true}).waitFor({state: "visible"});
@@ -1158,14 +1163,18 @@ describeBrowser("Jest authentication integration", () => {
     expect(challengeBounds!.height).toBeGreaterThanOrEqual(48);
     await challengePlayer.click();
     await creator.page.waitForFunction(() =>
+      /** Reads the injected Jest harness share calls. */
       (window as typeof window & {
+        /** Injected Jest authentication harness state. */
         __RIDDLE_QUEST_JEST_AUTH_TEST__: AuthHarnessState;
       }).__RIDDLE_QUEST_JEST_AUTH_TEST__.referralShares.some((share) =>
         /^jest-invite-[a-f0-9]{64}-[a-f0-9]{32}$/.test(share.entryPayload?.challengeId ?? "")),
     );
+    /** Shared invitation containing the reserved challenge. */
     const multiplayerInvite = (await getHarnessState(creator.page)).referralShares.find((share) =>
       /^jest-invite-[a-f0-9]{64}-[a-f0-9]{32}$/.test(share.entryPayload?.challengeId ?? ""),
     );
+    /** Challenge ID delivered to the recipient before the creator finishes. */
     const invitedChallengeId = multiplayerInvite?.entryPayload?.challengeId;
     expect(multiplayerInvite?.shareTitle).toBe("Race to 10");
     expect(multiplayerInvite?.shareText).toContain("time for you to beat");
