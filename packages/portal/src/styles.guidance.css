@@ -92,6 +92,10 @@
 .onboarding-card-welcome > .play-primary {
   width: min(240px, 100%);
 }
+.onboarding-card-instructions {
+  grid-template-rows: auto auto auto 1fr auto;
+  align-items: start;
+}
 .onboarding-card p {
   max-width: 390px;
   margin: 0;

@@ -1,4 +1,4 @@
-import type {RefObject} from "react";
+import {useLayoutEffect, useState, type RefObject} from "react";
 import {tr} from "../i18n";
 import {getTooltipPanelStyle, type TooltipId} from "./guidanceConfig";
 
@@ -38,8 +38,28 @@ export function TooltipOverlay({
   targetRect,
   onAdvance,
 }: TooltipOverlayProps) {
+  /** Measured card size keeps translated text and its action inside the viewport. */
+  const [panelSize, setPanelSize] = useState({height: 0, viewportHeight: window.innerHeight});
+  useLayoutEffect(() => {
+    const card = cardRef.current;
+    if (!card) return;
+    const measure = () => {
+      const height = card.getBoundingClientRect().height;
+      const viewportHeight = window.innerHeight;
+      setPanelSize(previous => previous.height === height && previous.viewportHeight === viewportHeight
+        ? previous : {height, viewportHeight});
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(card);
+    window.addEventListener("resize", measure);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, [activeTooltip, cardRef, content]);
   /** Provides panel style behavior. */
-  const panelStyle = getTooltipPanelStyle(activeTooltip, targetRect, window.innerHeight);
+  const panelStyle = getTooltipPanelStyle(activeTooltip, targetRect, panelSize.viewportHeight, panelSize.height);
   /** Provides title id behavior. */
   const titleId = `guidance-tooltip-${activeTooltip}-title`;
   /** Provides body id behavior. */

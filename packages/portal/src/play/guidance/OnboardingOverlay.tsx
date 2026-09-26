@@ -33,7 +33,7 @@ export function OnboardingOverlay({
       <SpinningWheel />
       <div
         ref={cardRef}
-        className={`onboarding-card${isWelcome ? " onboarding-card-welcome" : ""}`}
+        className={`onboarding-card ${isWelcome ? "onboarding-card-welcome" : "onboarding-card-instructions"}`}
         role="dialog"
         aria-modal="true"
         aria-labelledby="onboarding-title"

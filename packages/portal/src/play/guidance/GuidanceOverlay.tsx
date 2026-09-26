@@ -1,4 +1,4 @@
-import {useEffect, useMemo, useRef, useState} from "react";
+import {useEffect, useLayoutEffect, useMemo, useRef, useState} from "react";
 import {tr, useLocale} from "../i18n";
 import type {GameModal, GameSessionState} from "../gameSession";
 import {
@@ -66,9 +66,17 @@ export function GuidanceOverlay({
   /** Provides tooltip card ref behavior. */
   const tooltipCardRef = useRef<HTMLElement | null>(null);
   /** Provides active tooltip behavior. */
-  const activeTooltip = sequence[sequenceIndex];
+  const activeTooltip = sequenceName === "profileTour" && modal !== "profile" ? undefined : sequence[sequenceIndex];
   /** Provides guidance active behavior. */
   const guidanceActive = onboardingStep !== null || Boolean(activeTooltip);
+
+  useEffect(() => {
+    if (sequenceName !== "profileTour" || modal === "profile") return;
+    // An interrupted tour remains unseen so reopening the profile can restart it.
+    setSequence([]);
+    setSequenceName(null);
+    setSequenceIndex(0);
+  }, [modal, sequenceName]);
 
   useEffect(() => {
     if (!guidanceActive) return;
@@ -227,7 +235,7 @@ export function GuidanceOverlay({
     userId,
   ]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!activeTooltip) {
       setTargetRect(null);
       return;
@@ -242,16 +250,15 @@ export function GuidanceOverlay({
         setTargetRect(null);
         return;
       }
-      window.requestAnimationFrame(() => {
-        setTargetRect(element.getBoundingClientRect());
-      });
+      setTargetRect(element.getBoundingClientRect());
     };
-    /** Provides timer behavior. */
-    const timer = window.setTimeout(updateRect, 80);
+    // Measure before paint so the button cannot jump after a player starts a tap.
+    updateRect();
     window.addEventListener("resize", updateRect);
+    window.addEventListener("scroll", updateRect, true);
     return () => {
-      window.clearTimeout(timer);
       window.removeEventListener("resize", updateRect);
+      window.removeEventListener("scroll", updateRect, true);
     };
   }, [activeTooltip]);
 

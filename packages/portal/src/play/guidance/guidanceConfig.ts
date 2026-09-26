@@ -144,10 +144,11 @@ export function getTooltipPanelStyle(
   activeTooltip: TooltipId,
   targetRect: Pick<DOMRect, "bottom" | "top"> | null,
   viewportHeight: number,
+  panelHeight: number,
 ): CSSProperties {
   if (!targetRect) return {top: "50%", transform: "translate(-50%, -50%)"};
-  if (!ABOVE_TARGET_TOOLTIPS.has(activeTooltip) && targetRect.bottom < viewportHeight * 0.58) {
-    return {top: targetRect.bottom + 18};
-  }
-  return {bottom: viewportHeight - targetRect.top + 18};
+  /** Preferred placement, clamped to keep the entire card and button reachable. */
+  const preferredTop = !ABOVE_TARGET_TOOLTIPS.has(activeTooltip) && targetRect.bottom < viewportHeight * 0.58
+    ? targetRect.bottom + 18 : targetRect.top - panelHeight - 18;
+  return {top: Math.max(14, Math.min(preferredTop, viewportHeight - panelHeight - 14))};
 }

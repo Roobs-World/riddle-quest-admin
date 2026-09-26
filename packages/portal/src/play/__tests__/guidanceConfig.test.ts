@@ -93,9 +93,11 @@ describe("guidance configuration", () => {
   });
 
   it("positions tooltip panels below, above, or centrally", () => {
-    expect(getTooltipPanelStyle("profileStats", null, 1000)).toEqual({top: "50%", transform: "translate(-50%, -50%)"});
-    expect(getTooltipPanelStyle("profileStats", {top: 100, bottom: 200}, 1000)).toEqual({top: 218});
-    expect(getTooltipPanelStyle("gameHint", {top: 100, bottom: 200}, 1000)).toEqual({bottom: 918});
-    expect(getTooltipPanelStyle("profileStats", {top: 700, bottom: 800}, 1000)).toEqual({bottom: 318});
+    expect(getTooltipPanelStyle("profileStats", null, 1000, 200)).toEqual({top: "50%", transform: "translate(-50%, -50%)"});
+    expect(getTooltipPanelStyle("profileStats", {top: 100, bottom: 200}, 1000, 200)).toEqual({top: 218});
+    expect(getTooltipPanelStyle("gameHint", {top: 100, bottom: 200}, 1000, 200)).toEqual({top: 14});
+    expect(getTooltipPanelStyle("profileStats", {top: 700, bottom: 800}, 1000, 200)).toEqual({top: 482});
+    expect(getTooltipPanelStyle("profileIdentity", {top: 200, bottom: 330}, 591, 380)).toEqual({top: 197});
+    expect(getTooltipPanelStyle("profileTreasure", {top: 1200, bottom: 1300}, 591, 200)).toEqual({top: 377});
   });
 });
