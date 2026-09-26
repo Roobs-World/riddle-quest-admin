@@ -97,7 +97,12 @@ const completeOnboardingAndTours = async (page: Page, checkTooltipAccessibility 
   expect(spotlightBox).not.toBeNull();
   expect(spotlightBox!.x).toBeLessThan(coinButtonBox!.x);
   expect(spotlightBox!.x + spotlightBox!.width).toBeGreaterThan(coinButtonBox!.x + coinButtonBox!.width);
+  /** Keeps the game fixed while each tour target is highlighted. */
+  const headerTop = await page.locator(".game-header").evaluate((element) => element.getBoundingClientRect().top);
   for (let step = 0; step < 4; step += 1) {
+    await page.waitForTimeout(180);
+    expect(await page.locator(".game-app").evaluate((element) => element.scrollTop)).toBe(0);
+    expect(await page.locator(".game-header").evaluate((element) => element.getBoundingClientRect().top)).toBe(headerTop);
     expect(
       await page.locator(".tooltip-backdrop").evaluate((element) => {
         /** Captures the walkthrough backdrop style. */
@@ -244,7 +249,10 @@ describeBrowser("standalone Jest browser game", () => {
       const focusedOnboardingAction = page.locator(":focus");
       await expect(focusedOnboardingAction.getAttribute("class")).resolves.toContain("play-primary");
       expect(await focusedOnboardingAction.evaluate((element) => getComputedStyle(element).outlineWidth)).toBe("3px");
+      await page.setViewportSize({width: 459, height: 591});
       await completeOnboardingAndTours(page, true);
+      expect(await page.locator(".game-app").evaluate((element) => element.scrollTop)).toBe(0);
+      await page.setViewportSize({width: 390, height: 844});
       await expectAccessible(page, "game");
 
       /** Provides first guess cell behavior. */
@@ -747,6 +755,10 @@ describeBrowser("standalone Jest browser game", () => {
           return dispatch(event);
         };
       });
+      await compactPage.locator("audio").evaluate((audio: HTMLAudioElement) => {
+        audio.dataset.volumeChanged = "false";
+        audio.addEventListener("volumechange", () => { audio.dataset.volumeChanged = "true"; });
+      });
       /** Measures immediate wrong-answer rendering with the response withheld. */
       const wrongFeedbackLatency = await compactPage.getByRole("button", {name: /^submit$/i}).evaluate(async (button) => {
         /** Submission time on the browser's monotonic clock. */
@@ -763,6 +775,8 @@ describeBrowser("standalone Jest browser game", () => {
       await compactPage.locator("[data-tooltip-id=hintAfterWrongGuess] button").click();
       await compactPage.locator(".keyboard").getByRole("button", {name: /^P$/}).click();
       expect(await compactPage.locator(".guess-row").nth(1).locator(".cell").first().textContent()).toBe("P");
+      await compactPage.waitForTimeout(1100);
+      expect(await compactPage.locator("audio").getAttribute("data-volume-changed")).toBe("false");
       console.info(`Immediate wrong-answer feedback: ${wrongFeedbackLatency.toFixed(1)}ms with server response held`);
       await compactPage.close();
 
@@ -972,8 +986,8 @@ describeBrowser("standalone Jest browser game", () => {
       await page.getByRole("heading", {name: /^settings$/i}).waitFor();
       /** Provides modal close box behavior. */
       const modalCloseBox = await page.locator(".modal-x").boundingBox();
-      expect(modalCloseBox?.width).toBeGreaterThanOrEqual(60);
-      expect(modalCloseBox?.height).toBeGreaterThanOrEqual(60);
+      expect(modalCloseBox?.width).toBe(44);
+      expect(modalCloseBox?.height).toBe(44);
       for (const text of [/sound/i, /language/i, /help/i, /credits/i, /about/i, /buy coins/i]) {
         expect(await page.getByText(text).first().isVisible()).toBe(true);
       }

@@ -76,7 +76,7 @@ export function GuidanceOverlay({
     const previouslyFocused = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     return () => {
       window.requestAnimationFrame(() => {
-        if (previouslyFocused?.isConnected) previouslyFocused.focus();
+        if (previouslyFocused?.isConnected) previouslyFocused.focus({preventScroll: true});
       });
     };
   }, [guidanceActive]);
@@ -94,7 +94,7 @@ export function GuidanceOverlay({
         ),
       );
     /** Provides focus frame behavior. */
-    const focusFrame = window.requestAnimationFrame(() => (getFocusable()[0] ?? dialog).focus());
+    const focusFrame = window.requestAnimationFrame(() => (getFocusable()[0] ?? dialog).focus({preventScroll: true}));
     /** Handles key down. */
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
@@ -107,7 +107,7 @@ export function GuidanceOverlay({
       const focusable = getFocusable();
       if (focusable.length === 0) {
         event.preventDefault();
-        dialog.focus();
+        dialog.focus({preventScroll: true});
         return;
       }
       /** Provides first behavior. */
@@ -116,13 +116,13 @@ export function GuidanceOverlay({
       const last = focusable[focusable.length - 1];
       if (!dialog.contains(document.activeElement)) {
         event.preventDefault();
-        (event.shiftKey ? last : first).focus();
+        (event.shiftKey ? last : first).focus({preventScroll: true});
       } else if (event.shiftKey && document.activeElement === first) {
         event.preventDefault();
-        last.focus();
+        last.focus({preventScroll: true});
       } else if (!event.shiftKey && document.activeElement === last) {
         event.preventDefault();
-        first.focus();
+        first.focus({preventScroll: true});
       }
     };
     document.addEventListener("keydown", handleKeyDown, true);
@@ -242,7 +242,6 @@ export function GuidanceOverlay({
         setTargetRect(null);
         return;
       }
-      element.scrollIntoView({block: "center", inline: "nearest", behavior: "auto"});
       window.requestAnimationFrame(() => {
         setTargetRect(element.getBoundingClientRect());
       });

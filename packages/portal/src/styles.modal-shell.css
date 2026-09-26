@@ -29,7 +29,7 @@
 }
 .game-modal:has(> .modal-x) > h2 {
   width: 100%;
-  padding-inline: 52px;
+  padding-inline: 36px;
   text-align: center;
 }
 .game-modal.modal-achievements,
