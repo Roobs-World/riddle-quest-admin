@@ -41,15 +41,20 @@ export function TooltipOverlay({
   /** Measured card size keeps translated text and its action inside the viewport. */
   const [panelSize, setPanelSize] = useState({height: 0, viewportHeight: window.innerHeight});
   useLayoutEffect(() => {
+    /** Tooltip element whose dimensions determine placement. */
     const card = cardRef.current;
     if (!card) return;
+    /** Refreshes panel and viewport dimensions after layout changes. */
     const measure = () => {
+      /** Rendered tooltip height, including translated content. */
       const height = card.getBoundingClientRect().height;
+      /** Current available viewport height. */
       const viewportHeight = window.innerHeight;
       setPanelSize(previous => previous.height === height && previous.viewportHeight === viewportHeight
         ? previous : {height, viewportHeight});
     };
     measure();
+    /** Tracks tooltip size changes as its content wraps. */
     const observer = new ResizeObserver(measure);
     observer.observe(card);
     window.addEventListener("resize", measure);

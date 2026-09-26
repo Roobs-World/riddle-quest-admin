@@ -9,17 +9,25 @@ import {PROFILE_TOUR} from "../guidance/guidanceConfig";
 const describeBrowser = process.env.PORTAL_BROWSER_TESTS === "1" ? describe : describe.skip;
 
 describeBrowser("profile walkthrough", () => {
+  /** HTTP server serving the injected browser harness. */
   let server: Server;
+  /** Headless browser shared by the walkthrough checks. */
   let browser: Browser;
+  /** Local origin assigned to the harness server. */
   let origin: string;
 
   beforeAll(async () => {
+    /** Directory containing the built Jest artifact. */
     const dist = path.resolve(__dirname, "../../../dist-jest");
+    /** Content types used to serve artifact resources. */
     const types: Record<string, string> = {".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".svg": "image/svg+xml"};
     server = createServer(async (request, response) => {
+      /** Requested path within the artifact. */
       const pathname = new URL(request.url ?? "/", "http://localhost").pathname;
+      /** Artifact file corresponding to the request. */
       const file = path.join(dist, pathname === "/" ? "index.html" : pathname);
       try {
+        /** Resource bytes returned to the browser. */
         const body = await readFile(file);
         response.writeHead(200, {"Content-Type": types[path.extname(file)] ?? "application/octet-stream"});
         response.end(body);
@@ -28,6 +36,7 @@ describeBrowser("profile walkthrough", () => {
       }
     });
     await new Promise<void>(resolve => server.listen(0, "127.0.0.1", resolve));
+    /** Bound server address used to construct the harness origin. */
     const address = server.address();
     if (!address || typeof address === "string") throw new Error("Missing test server address");
     origin = `http://127.0.0.1:${address.port}`;
@@ -53,6 +62,7 @@ describeBrowser("profile walkthrough", () => {
   };
 
   it.each([{width: 459, height: 591}, {width: 320, height: 568}])("advances every step with one tap and keeps profile open at %j", async viewport => {
+    /** Isolated page for this walkthrough scenario. */
     const page = await browser.newPage({viewport, hasTouch: true});
     try {
       await openProfile(page);
@@ -60,6 +70,7 @@ describeBrowser("profile walkthrough", () => {
         await expect(page.locator(".tooltip-backdrop")).toHaveAttribute("data-tooltip-id", id);
         // Let the target measurement settle, then exercise actual touch hit testing.
         await page.waitForTimeout(150);
+        /** Tooltip bounds used to verify viewport containment. */
         const card = await page.locator(".tooltip-card").boundingBox();
         expect(card!.y).toBeGreaterThanOrEqual(0);
         expect(card!.y + card!.height).toBeLessThanOrEqual(viewport.height);
@@ -76,11 +87,13 @@ describeBrowser("profile walkthrough", () => {
   }, 30_000);
 
   it("keeps the next step's button in place throughout an immediate press", async () => {
+    /** Isolated page for this walkthrough scenario. */
     const page = await browser.newPage({viewport: {width: 459, height: 591}});
     try {
       await openProfile(page);
       await page.locator(".tooltip-card button").click();
       await expect(page.locator(".tooltip-backdrop")).toHaveAttribute("data-tooltip-id", PROFILE_TOUR[1]);
+      /** Action bounds used to simulate an immediate pointer press. */
       const button = await page.locator(".tooltip-card button").boundingBox();
       await page.mouse.move(button!.x + button!.width / 2, button!.y + button!.height / 2);
       await page.mouse.down();
@@ -94,6 +107,7 @@ describeBrowser("profile walkthrough", () => {
   }, 15_000);
 
   it("removes the tour when its profile closes and permits a fresh tour on reopening", async () => {
+    /** Isolated page for this walkthrough scenario. */
     const page = await browser.newPage({viewport: {width: 459, height: 591}});
     try {
       await openProfile(page);
