@@ -83,6 +83,7 @@ export function GameModalPages({
           onContinue={onContinue}
           onOpenModal={onOpenModal}
           commerceAvailable={commerceAvailable}
+          confirmationPending={state.guessPending}
         />
       )}
 

@@ -1258,12 +1258,51 @@ describeBrowser("standalone Jest browser game", () => {
       expect(await lowEndPage.locator(".keyboard").isVisible()).toBe(true);
       // Exhaust attempts to verify the loss panel does not use the victory decoration.
       for (let attempt = 0; attempt < 5; attempt += 1) {
+        if (attempt === 4) {
+          await lowEndPage.waitForFunction(() => !Object.keys(localStorage).some(key => key.includes("pendingPlay:v1:")));
+          await lowEndPage.evaluate(() => {
+            /** Original host dispatcher retained until the final result is released. */
+            const dispatch = window.dispatchEvent.bind(window);
+            window.dispatchEvent = (event: Event) => {
+              /** Host reply delayed to prove the panel is locally predicted. */
+              const message = (event as CustomEvent).detail;
+              if (event.type === "riddle-quest:host-to-game" && message?.type === "host:operationResult" &&
+                message.payload?.operation === "guess") {
+                Reflect.set(window, "__heldFinalGuess", message);
+                return true;
+              }
+              return dispatch(event);
+            };
+            Reflect.set(window, "__releaseFinalGuess", () =>
+              dispatch(new CustomEvent("riddle-quest:host-to-game", {detail: Reflect.get(window, "__heldFinalGuess")})));
+          });
+        }
         /** The wrong letter used by this regression scenario. */
         const wrongLetter = ["X", "Z", "Q", "V", "B"][attempt];
         for (let letter = 0; letter < 5; letter += 1) {
           await lowEndPage.locator(".keyboard").getByRole("button", {name: wrongLetter, exact: true}).click();
         }
-        await lowEndPage.locator(".game-input-actions").getByRole("button", {name: /submit/i}).click();
+        if (attempt === 4) {
+          /** Time from final Submit to the visible out of attempts panel. */
+          const panelMs = await lowEndPage.locator(".game-input-actions").getByRole("button", {name: /submit/i})
+            .evaluate(async (button) => {
+              /** Clock sampled immediately before the click. */
+              const started = performance.now();
+              (button as HTMLButtonElement).click();
+              while (!document.querySelector(".modal-continue")) {
+                if (performance.now() - started > 1_000) throw new Error("Out of attempts waited for the server");
+                await new Promise(resolve => requestAnimationFrame(resolve));
+              }
+              return performance.now() - started;
+            });
+          expect(panelMs).toBeLessThan(250);
+          await lowEndPage.waitForFunction(() => Reflect.has(window, "__heldFinalGuess"));
+          expect(await lowEndPage.locator(".continue-actions button:not(:disabled)").count()).toBe(0);
+          await lowEndPage.evaluate(() => Reflect.get(window, "__releaseFinalGuess")());
+          await lowEndPage.locator(".continue-actions button").last().waitFor({state: "visible"});
+          await lowEndPage.waitForFunction(() =>
+            document.querySelector(".continue-actions button:last-child")?.hasAttribute("disabled") === false);
+        } else await lowEndPage.locator(".game-input-actions").getByRole("button", {name: /submit/i}).click();
         await lowEndPage.locator(".guess-row").nth(attempt).locator(".cell.red").first().waitFor();
         if (attempt === 0) await lowEndPage.getByRole("button", {name: /got it/i}).click();
       }

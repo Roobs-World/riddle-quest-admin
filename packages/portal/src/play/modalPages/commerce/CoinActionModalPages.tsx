@@ -16,6 +16,8 @@ export type ContinueModalPageProps = {
   onOpenModal: OpenModalHandler;
   /** Stores commerce available. */
   commerceAvailable?: boolean;
+  /** Keeps paid choices inactive until the final guess is confirmed. */
+  confirmationPending?: boolean;
 };
 
 /** Props for a coin-funded gameplay action prompt. */
@@ -48,6 +50,7 @@ export function ContinueModalPage({
   onContinue,
   onOpenModal,
   commerceAvailable = true,
+  confirmationPending = false,
 }: ContinueModalPageProps) {
   /** Indicates whether can afford. */
   const canAfford = balance >= CONTINUE_COIN_COST;
@@ -59,18 +62,18 @@ export function ContinueModalPage({
         <strong>{tr("Profile.TOTAL_COINS_LABEL")}</strong>
         <span>{balance.toLocaleString()}</span>
       </div>
-      <button className="play-primary" disabled={!canAfford} onClick={() => onContinue(CONTINUE_COIN_COST)}>
+      <button className="play-primary" disabled={!canAfford || confirmationPending} onClick={() => onContinue(CONTINUE_COIN_COST)}>
         {tr("LossModal.USE_COINS_PREFIX")}
         {CONTINUE_COIN_COST}
         {tr("LossModal.USE_COINS_SUFFIX")}
       </button>
       {!canAfford ? <p>{tr("GameScreenAlerts.CONTINUE_NOT_ENOUGH_COINS_MESSAGE")}</p> : null}
       {commerceAvailable && (
-        <button className="play-primary" onClick={() => onOpenModal("shop")}>
+        <button className="play-primary" disabled={confirmationPending} onClick={() => onOpenModal("shop")}>
           {tr("LossModal.OPEN_SHOP_BUTTON")}
         </button>
       )}
-      <button className="play-primary" onClick={() => onOpenModal("skip")}>
+      <button className="play-primary" disabled={confirmationPending} onClick={() => onOpenModal("skip")}>
         {tr("LossModal.SKIP_PUZZLE_BUTTON")}
       </button>
     </div>

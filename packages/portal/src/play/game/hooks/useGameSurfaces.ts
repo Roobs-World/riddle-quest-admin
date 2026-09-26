@@ -15,27 +15,28 @@ const loadRaceTo10Game = () =>
 /** Renders the lazy race to10 game interface. */
 const LazyRaceTo10Game = lazy(loadRaceTo10Game);
 
-/** Provides lazy overlay surfaces and preloads them after the initial page load. */
+/** Provides lazy overlay surfaces and starts modal loading with the game frame. */
 export function useGameSurfaces(raceEnabled: boolean) {
+  /** Modal component made ready before an outcome needs to open. */
+  const [preloadedGameModalView, setPreloadedGameModalView] = useState<
+    typeof import("../../GameModalView").GameModalView | null
+  >(null);
   /** Provides [preloaded race to10 game, set preloaded race to10 game] behavior. */
   const [preloadedRaceTo10Game, setPreloadedRaceTo10Game] = useState<
     typeof import("../../race/RaceTo10Game").RaceTo10Game | null
   >(null);
 
   useEffect(() => {
-    /** Requests id. */
-    let requestId: number | undefined;
-    /** Provides timeout id behavior. */
-    let timeoutId: number | undefined;
+    // The fifth answer can open Continue immediately only when its modal chunk is ready.
+    /** Prevents a completed preload from updating an unmounted game frame. */
+    let cancelled = false;
+    void preloadGameModals().then(({default: view}) => {
+      if (!cancelled) setPreloadedGameModalView(() => view);
+    }).catch(() => undefined);
     /** Provides preload after page load behavior. */
     const preloadAfterPageLoad = () => {
       if (raceEnabled) {
         void loadRaceTo10Game().then(({default: game}) => setPreloadedRaceTo10Game(() => game));
-      }
-      if (typeof window.requestIdleCallback === "function") {
-        requestId = window.requestIdleCallback(() => void preloadGameModals().catch(() => undefined), {timeout: 2_000});
-      } else {
-        timeoutId = window.setTimeout(() => void preloadGameModals().catch(() => undefined), 250);
       }
     };
 
@@ -43,14 +44,13 @@ export function useGameSurfaces(raceEnabled: boolean) {
     else window.addEventListener("load", preloadAfterPageLoad, {once: true});
 
     return () => {
+      cancelled = true;
       window.removeEventListener("load", preloadAfterPageLoad);
-      if (requestId !== undefined) window.cancelIdleCallback(requestId);
-      if (timeoutId !== undefined) window.clearTimeout(timeoutId);
     };
   }, [raceEnabled]);
 
   return {
-    GameModalView: LazyGameModalView,
+    GameModalView: preloadedGameModalView ?? LazyGameModalView,
     RaceTo10Game: preloadedRaceTo10Game ?? LazyRaceTo10Game,
   };
 }

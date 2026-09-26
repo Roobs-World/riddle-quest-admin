@@ -252,7 +252,6 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
         const {currentLetters, activeSlotIndex, guesses, engineSnapshot, modal, lastOutcome, completionAcknowledged, letterStates} = state;
         return {
           ...preview,
-          modal: canContinue ? state.modal : preview.modal,
           guessPending: true,
           pendingGuessState: state.pendingGuessState ?? {
             currentLetters, activeSlotIndex, guesses, engineSnapshot, modal, lastOutcome, completionAcknowledged, letterStates,

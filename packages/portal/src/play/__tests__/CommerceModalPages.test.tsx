@@ -80,6 +80,14 @@ describe("commerce modal pages", () => {
     expect(fundedHtml).not.toContain("not have enough coins");
   });
 
+  it("shows the continue choices but prevents decisions while the fifth guess confirms", () => {
+    /** Continue panel rendered before the server confirms the final guess. */
+    const pendingHtml = renderToString(<ContinueModalPage balance={100} onContinue={noop}
+      onOpenModal={noop} confirmationPending />);
+    expect(pendingHtml).toContain("continue-actions");
+    expect(pendingHtml.match(/disabled=""/gu)).toHaveLength(3);
+  });
+
   it("removes every shop route when platform commerce is unavailable", () => {
     /** Provides continue html behavior. */
     const continueHtml = renderToString(

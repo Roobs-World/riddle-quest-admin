@@ -119,7 +119,7 @@ export function GameModalView({
         event.preventDefault();
         /** Provides collecting coins behavior. */
         const collectingCoins = modal?.querySelector("[data-coin-collection='pending']");
-        if (state.modal !== "victory" && !collectingCoins) {
+        if (state.modal !== "victory" && !(state.modal === "continue" && state.guessPending) && !collectingCoins) {
           onCloseRef.current();
         }
         return;
@@ -154,7 +154,7 @@ export function GameModalView({
         externalNotice.removeAttribute("aria-hidden");
       }
     };
-  }, [state.lastRewards, state.modal]);
+  }, [state.guessPending, state.lastRewards, state.modal]);
 
   useEffect(() => {
     setVictoryStepIndex(0);
@@ -215,7 +215,8 @@ export function GameModalView({
   }
 
   /** Indicates whether is mandatory outcome. */
-  const isMandatoryOutcome = state.modal === "victory" || coinCollectionPending;
+  const isMandatoryOutcome = state.modal === "victory" || coinCollectionPending ||
+    (state.modal === "continue" && state.guessPending);
   /** Provides advance victory fanfare behavior. */
   const advanceVictoryFanfare = () => {
     if (victoryStepIndex + 1 < victorySteps.length) {

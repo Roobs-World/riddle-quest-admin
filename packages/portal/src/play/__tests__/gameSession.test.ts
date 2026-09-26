@@ -140,7 +140,7 @@ describe("game session reducer", () => {
     expect(state.guessPending).toBe(false);
   });
 
-  it("does not preview a continue purchase until the fifth guess is confirmed", () => {
+  it("shows the out of attempts panel immediately and restores it if the fifth guess is rejected", () => {
     /** Game state driven through the submission flow. */
     let state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle: {
       ...riddle, attemptsUsed: 4, evaluation: {answer: "piano", locale: "en"},
@@ -148,8 +148,12 @@ describe("game session reducer", () => {
     for (const letter of "CRANE") state = reduce(state, {type: "typeLetter", letter});
     state = reduce(state, {type: "guessRequested"});
     expect(state.guesses).toHaveLength(1);
-    expect(state.modal).toBeNull();
+    expect(state.modal).toBe("continue");
+    expect(state.guessPending).toBe(true);
     expect(state.lastOutcome).toBeNull();
+    state = reduce(state, {type: "guessFailed"});
+    expect(state.modal).toBeNull();
+    expect(state.engineSnapshot?.attemptsUsed).toBe(4);
   });
 
   it("keeps the next draft editable while a wrong guess is confirming", () => {
