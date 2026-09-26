@@ -302,6 +302,14 @@ const nodeRuntimeDirectory = dirname(dirname(releaseNodeExecutable));
 if (pathIsWithin(operatorHomeDirectory, nodeRuntimeDirectory)) {
   addReadOnlyDirectoryBind(nodeRuntimeDirectory, nodeRuntimeDirectory);
 }
+// Reuse the installed pinned Functions runtime inside the release sandbox.
+// The gate itself still needs Node 24 for the repository's test runner flags.
+const functionsNodeVersion = readFileSync(join(repositoryDirectory, "firebase-functions", ".nvmrc"), "utf8").trim();
+const functionsNodeDirectory = join(operatorHomeDirectory, ".nvm", "versions", "node", `v${functionsNodeVersion}`);
+const functionsNodeBinary = join(functionsNodeDirectory, "bin", "node");
+if (existsSync(functionsNodeBinary)) {
+  addReadOnlyDirectoryBind(functionsNodeDirectory, functionsNodeDirectory);
+}
 if (process.env.JAVA_HOME) {
   if (!isAbsolute(process.env.JAVA_HOME)) throw new Error("JAVA_HOME must be absolute for a secure Jest release");
   if (pathIsWithin(operatorHomeDirectory, process.env.JAVA_HOME)) {
@@ -538,6 +546,7 @@ for (const [signal, exitCode] of [["SIGINT", 130], ["SIGTERM", 143]]) {
 
 const gateEnvironment = {
   ...releaseChildEnvironment,
+  ...(existsSync(functionsNodeBinary) ? {RIDDLE_QUEST_FUNCTIONS_NODE_BINARY: functionsNodeBinary} : {}),
   JEST_BUILD_COMMIT: sourceCommit,
   JEST_BUILD_VERSION: buildVersion,
   ...(activationRequested ? {JEST_CONFIRM_ACTIVATION: RIDDLE_QUEST_JEST_GAME_ID} : {}),

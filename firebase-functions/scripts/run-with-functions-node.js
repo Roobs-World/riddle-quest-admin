@@ -14,8 +14,18 @@ if (!/^22\.\d+\.\d+$/.test(functionsNodeVersion)) {
   throw new Error(`Firebase Functions .nvmrc must pin a Node 22 release; received ${functionsNodeVersion}.`);
 }
 const usesPinnedNode = process.versions.node === functionsNodeVersion;
-const command = usesPinnedNode ? process.execPath : "pnpm";
-const args = usesPinnedNode
+const configuredNode = process.env.RIDDLE_QUEST_FUNCTIONS_NODE_BINARY;
+if (configuredNode && !path.isAbsolute(configuredNode)) {
+  throw new Error("RIDDLE_QUEST_FUNCTIONS_NODE_BINARY must be an absolute path.");
+}
+if (configuredNode) {
+  const version = spawnSync(configuredNode, ["--version"], {encoding: "utf8"});
+  if (version.error || version.status !== 0 || version.stdout.trim() !== `v${functionsNodeVersion}`) {
+    throw new Error(`Configured Firebase Functions Node binary must be v${functionsNodeVersion}.`);
+  }
+}
+const command = usesPinnedNode ? process.execPath : configuredNode ?? "pnpm";
+const args = usesPinnedNode || configuredNode
   ? [absoluteTarget, ...targetArgs]
   : ["dlx", `node@${functionsNodeVersion}`, absoluteTarget, ...targetArgs];
 const result = spawnSync(command, args, {stdio: "inherit", env: process.env});
