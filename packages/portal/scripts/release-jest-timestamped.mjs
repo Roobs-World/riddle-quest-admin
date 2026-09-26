@@ -846,6 +846,7 @@ try {
   };
   for (const testPath of [
     "src/play/__tests__/hostedBrowser.jest-playwright.test.ts",
+    "src/play/__tests__/musicStart.jest-playwright.test.ts",
     "src/jest/__tests__/authentication.jest-playwright.test.ts",
   ]) {
     runNode(

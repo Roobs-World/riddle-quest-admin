@@ -33,6 +33,17 @@ export function useGameAudio(state: GameSessionState) {
   );
 
   useEffect(() => {
+    // A browser permits audible playback only after a user gesture. The
+    // onboarding Play tap is often the first gesture, before a gameplay key.
+    document.addEventListener("pointerup", unlockMusic, true);
+    document.addEventListener("keydown", unlockMusic, true);
+    return () => {
+      document.removeEventListener("pointerup", unlockMusic, true);
+      document.removeEventListener("keydown", unlockMusic, true);
+    };
+  }, [unlockMusic]);
+
+  useEffect(() => {
     setPlayerMuted(state.muted);
     /** Provides music behavior. */
     const music = musicRef.current;
