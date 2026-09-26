@@ -1,5 +1,6 @@
 import {BridgeProfileSchema, BridgeRiddleSchema, type BridgeProfile, type BridgeUser} from "@qwordly/core/bridge";
 import {
+  ClassicRiddleBufferResponseSchema,
   CompleteGameResponseDataSchema,
   GetCurrentDailyChallengeResponseSchema,
   GetHintResponseSchema,
@@ -38,7 +39,12 @@ const post = async (operation: string, body: unknown): Promise<unknown> => {
   /** Provides payload behavior. */
   const payload: unknown = await response.json();
   if (!response.ok || !isRecord(payload) || payload.ok !== true || !("result" in payload)) {
-    throw new Error("reddit-gameplay-request-failed");
+    /** The error used by the current operation. */
+    const error = new Error("reddit-gameplay-request-failed") as Error & {
+      /** Structured rejection code for host classification. */ code?: string;
+    };
+    if (isRecord(payload) && payload.error === "guess-rejected") error.code = "failed-precondition";
+    throw error;
   }
   return payload.result;
 };
@@ -54,9 +60,14 @@ export const createRedditHostServices = (accountGeneration = 1): HostServices =>
     throw new Error("invalid-reddit-account-generation");
   }
   /** Provides r. */
-  const user: BridgeUser = {uid: "reddit-account", displayName: "Riddle Quest player", isAnonymous: false};
+  const user: BridgeUser = {uid: "reddit-account", accountGeneration, displayName: "Riddle Quest player", isAnonymous: false};
   /** Provides profile behavior. */
   let profile: BridgeProfile | null = null;
+  /** The classic buffer used by the current operation. */
+  let classicBuffer: {
+    /** Content locale. */ locale: string;
+    /** Server-issued buffer. */ data: ReturnType<typeof ClassicRiddleBufferResponseSchema.parse>;
+  } | null = null;
   /** Provides subscribers behavior. */
   const subscribers = new Set<(snapshot: AuthSnapshot) => void>();
   /** Provides emit behavior. */
@@ -88,10 +99,57 @@ export const createRedditHostServices = (accountGeneration = 1): HostServices =>
     },
     /** Loads riddle. */
     async loadRiddle(input) {
+      if (input.gameMode === "classic" && input.authoritative) {
+        /** The data used by the current operation. */
+        const data = ClassicRiddleBufferResponseSchema.parse(
+          await post("riddle.classic-buffer", {locale: input.locale}),
+        );
+        classicBuffer = {locale: input.locale, data};
+        /** The issued used by the current operation. */
+        const issued = data.riddles.find((item) => item.classicIndex === data.confirmedClassicIndex);
+        if (!issued) throw new Error("classic-buffer-unavailable");
+        /** The question used by the current operation. */
+        const question = issued.question;
+        return BridgeRiddleSchema.parse({
+          riddleId: question.riddleId, text: question.text, answerLength: question.answerLength,
+          ...(question.evaluation ? {evaluation: question.evaluation} : {}),
+          sessionToken: question.sessionToken, gameMode: "classic", index: issued.classicIndex,
+          attemptsUsed: question.attemptsUsed, hasUsedContinue: question.hasUsedContinue,
+          awaitingContinue: question.awaitingContinue,
+        });
+      }
+      /** The cached used by the current operation. */
+      let cached = input.gameMode === "classic" && classicBuffer?.locale === input.locale
+        ? classicBuffer.data.riddles.find((item) =>
+            item.classicIndex === input.classicIndex &&
+            item.classicIndex > classicBuffer!.data.confirmedClassicIndex &&
+            item.expiresAtMs > Date.now() + 30_000,
+          )
+        : undefined;
+      if (!cached && input.gameMode === "classic" && input.classicIndex &&
+        input.classicIndex > (classicBuffer?.data.confirmedClassicIndex ?? profile?.classicIndex ?? 1) &&
+        !input.sessionToken && !input.riddleId) {
+        /** The data used by the current operation. */
+        const data = ClassicRiddleBufferResponseSchema.parse(
+          await post("riddle.classic-buffer", {locale: input.locale}),
+        );
+        classicBuffer = {locale: input.locale, data};
+        cached = data.riddles.find((item) => item.classicIndex === input.classicIndex &&
+          item.classicIndex > data.confirmedClassicIndex && item.expiresAtMs > Date.now() + 30_000);
+      }
+      /** The refresh buffer used by the current operation. */
+      const refreshBuffer = () => {
+        void post("riddle.classic-buffer", {locale: input.locale})
+          .then((value) => { classicBuffer = {locale: input.locale, data: ClassicRiddleBufferResponseSchema.parse(value)}; })
+          .catch(() => undefined);
+      };
       /** Provides raw behavior. */
-      const raw = GetCurrentDailyChallengeResponseSchema.parse(
-        await post(input.gameMode === "classic" ? "riddle.classic" : "riddle.daily", {...input, includeEvaluation: true}),
-      );
+      const raw = cached && !input.sessionToken && !input.riddleId
+        ? GetCurrentDailyChallengeResponseSchema.parse({challenge: {questions: [cached.question], totalQuestions: 1}})
+        : GetCurrentDailyChallengeResponseSchema.parse(
+            await post(input.gameMode === "classic" ? "riddle.classic" : "riddle.daily", {...input, includeEvaluation: true}),
+          );
+      if (input.gameMode === "classic") refreshBuffer();
       /** Provides question behavior. */
       const question = raw.challenge?.questions[0];
       if (!question || raw.error) throw new Error(raw.error ?? "reddit-riddle-unavailable");
@@ -102,7 +160,7 @@ export const createRedditHostServices = (accountGeneration = 1): HostServices =>
         ...(question.evaluation ? {evaluation: question.evaluation} : {}),
         sessionToken: question.sessionToken,
         gameMode: input.gameMode,
-        index: question.questionNumber,
+        index: input.gameMode === "classic" ? cached?.classicIndex ?? input.classicIndex ?? profile?.classicIndex ?? 1 : question.questionNumber,
         attemptsUsed: question.attemptsUsed,
         hasUsedContinue: question.hasUsedContinue,
         awaitingContinue: question.awaitingContinue,
@@ -118,7 +176,10 @@ export const createRedditHostServices = (accountGeneration = 1): HostServices =>
     },
     /** Submits guess. */
     async submitGuess(input) {
-      return SubmitSinglePlayerGuessResponseDataSchema.parse(await post("guess.submit", input));
+      /** The result used by the current operation. */
+      const result = SubmitSinglePlayerGuessResponseDataSchema.parse(await post("guess.submit", input));
+      if (result.gameOver) void reloadProfile().catch(() => undefined);
+      return result;
     },
     /** Requests hint. */
     async requestHint(input) {
@@ -183,7 +244,7 @@ export const createRedditHostServices = (accountGeneration = 1): HostServices =>
     },
     /** Provides resume race behavior. */
     async resumeRace(runId) {
-      return RaceRunResponseSchema.parse(await post("race.resume", {runId}));
+      return RaceRunResponseSchema.parse(await post("race.resume", {runId, includeEvaluation: true}));
     },
     /** Provides abandon race behavior. */
     async abandonRace(input) {

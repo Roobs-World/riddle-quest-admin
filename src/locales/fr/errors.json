@@ -11,6 +11,7 @@
     "AUTHENTICATION_FAILED": "Échec de l'authentification",
     "EMAIL_PERMISSION_REQUIRED": "L'e-mail est requis mais n'est pas fourni par le fournisseur d'authentification. Veuillez vous assurer que l'autorisation de courrier électronique est accordée.",
     "GENERIC_UNEXPECTED_ERROR": "Une erreur inattendue s'est produite. Veuillez réessayer.",
+    "PLAY_RESTORED": "Une réponse n’a pas pu être confirmée. Votre dernière progression confirmée a été restaurée.",
     "GUESS_CANNOT_BE_EMPTY": "La supposition ne peut pas être vide",
     "INVALID_DATA_FORMAT": "Format de données non valide. Veuillez vérifier votre saisie.",
     "NETWORK_ERROR_CHECK_CONNECTION": "Erreur réseau. Veuillez vérifier votre connexion.",

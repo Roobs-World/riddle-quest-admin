@@ -11,6 +11,7 @@
     "AUTHENTICATION_FAILED": "Otentikasi gagal",
     "EMAIL_PERMISSION_REQUIRED": "Email diperlukan tetapi tidak disediakan oleh penyedia otentikasi. Harap pastikan izin email diberikan.",
     "GENERIC_UNEXPECTED_ERROR": "Terjadi kesalahan yang tidak terduga. Silakan coba lagi.",
+    "PLAY_RESTORED": "Satu jawaban tidak dapat dikonfirmasi. Progres terakhir yang dikonfirmasi telah dipulihkan.",
     "GUESS_CANNOT_BE_EMPTY": "Tebakan tidak boleh kosong",
     "INVALID_DATA_FORMAT": "Format data tidak valid. Silakan periksa masukan Anda.",
     "NETWORK_ERROR_CHECK_CONNECTION": "Kesalahan jaringan. Silakan periksa koneksi Anda.",

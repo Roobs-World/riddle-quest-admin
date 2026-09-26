@@ -54,8 +54,7 @@ export function LeaderboardModalPage({
       </div>
       <ol className="leaderboard-list" aria-busy={loading}>
         {!loading && entries.length === 0 ? <li>{tr("Leaderboard.NO_SCORES_YET")}</li> : null}
-        {!loading
-          ? visibleEntries.map((entry, index) => (
+        {visibleEntries.map((entry, index) => (
               <li key={entry.userId}>
                 <b>{pageStart + index + 1}</b>
                 {entry.avatarUrl ? (
@@ -74,10 +73,9 @@ export function LeaderboardModalPage({
                       : entry.bestStreak}
                 </strong>
               </li>
-            ))
-          : null}
+            ))}
       </ol>
-      {!loading && entries.length > LEADERBOARD_PAGE_SIZE ? (
+      {entries.length > LEADERBOARD_PAGE_SIZE ? (
         <nav className="leaderboard-pagination" aria-label={tr("Leaderboard.PAGINATION_LABEL")}>
           <button
             className="play-secondary compact"

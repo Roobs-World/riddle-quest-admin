@@ -204,6 +204,16 @@ describe("Race to 10 authoritative engine", () => {
     expect(JSON.stringify(view)).not.toContain("piano");
   });
 
+  it("includes only the active answer when local feedback is requested", () => {
+    /** The run used by this regression scenario. */
+    const run = createRun();
+    run.riddles[1].answer = "orbit";
+    /** The view used by this regression scenario. */
+    const view = toRaceRunView(run, STARTED_AT + 3_000, true);
+    expect(view.currentRiddle?.evaluation).toEqual({answer: "piano", locale: "en"});
+    expect(JSON.stringify(view)).not.toContain("orbit");
+  });
+
   it("projects completed state and copies public opponent and event data", () => {
     /** Provides ghost event behavior. */
     const ghostEvent = {

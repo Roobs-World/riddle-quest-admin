@@ -77,6 +77,8 @@ export const BridgeUserSchema = z.object({
   photoURL: z.string().url().optional(),
   isAnonymous: z.boolean(),
   platformRegistered: z.boolean().optional(),
+  /** Provider account lifecycle that scopes local pending play. */
+  accountGeneration: z.number().int().positive().optional(),
 });
 /** A validated, provider-neutral player identity visible inside the game iframe. */
 export type BridgeUser = z.infer<typeof BridgeUserSchema>;
@@ -201,6 +203,7 @@ export const GameLoadRiddleMessageSchema = envelope(
     gameMode: GameModeSchema,
     locale: z.string().min(2),
     classicIndex: z.number().int().nonnegative().optional(),
+    authoritative: z.boolean().optional(),
     sessionToken: z.string().min(20).max(128).optional(),
     riddleId: RiddleIdSchema.optional(),
   }),
@@ -464,6 +467,8 @@ export const HostOperationResultMessageSchema = envelope(
     ok: z.boolean(),
     data: z.unknown().optional(),
     error: z.string().optional(),
+    /** Machine-readable delivery status for queued solo submissions. */
+    errorKind: z.enum(["retryable", "rejected"]).optional(),
   }),
 );
 

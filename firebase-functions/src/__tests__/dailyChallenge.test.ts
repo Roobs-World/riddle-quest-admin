@@ -294,6 +294,8 @@ describe("Daily Challenge Functions", () => {
   let getCurrentDailyChallenge: any;
   /** Gets current classic riddle. */
   let getCurrentClassicRiddle: any;
+  /** The get classic riddle buffer used by this regression scenario. */
+  let getClassicRiddleBuffer: any;
 
   beforeEach(() => {
     jest.resetModules();
@@ -328,6 +330,8 @@ describe("Daily Challenge Functions", () => {
     const dailyChallengeModule = require("../daily/dailyChallenge");
     getCurrentDailyChallenge = dailyChallengeModule.getCurrentDailyChallenge;
     getCurrentClassicRiddle = dailyChallengeModule.getCurrentClassicRiddle;
+    getCurrentClassicRiddle.run = getCurrentClassicRiddle;
+    getClassicRiddleBuffer = require("../daily/classicRiddleBuffer").getClassicRiddleBuffer;
 
     /** Provides mock fs service behavior. */
     const mockFsService = jest.requireMock("../gameplay/firestoreService") as {
@@ -871,6 +875,29 @@ describe("Daily Challenge Functions", () => {
   });
 
   describe("getCurrentClassicRiddle (v2)", () => {
+    it("issues no more than three Classic questions from confirmed progress", async () => {
+      mockGetUser.mockResolvedValue(getDefaultPlayer("classicUser", {
+        progress: {classicIndex: 10, dailyChallengeIndex: 0, dailyChallengeCurrentQuestion: 0},
+      }));
+      mockGetClassicRiddleByIndex.mockImplementation(async (index: number) => ({
+        riddleId: `classic-${index}`, text: `Question ${index}?`, answer: "ANSWER", locale: "en",
+      }));
+      mockGetIssuedAuthoritativeSession.mockResolvedValue({
+        locale: "en", gameMode: "classic", attempts: 0, hasUsedContinue: false,
+        awaitingContinue: false, terminal: false, isCorrect: false,
+        expiresAt: {toMillis: () => Date.now() + 600_000},
+      });
+
+      /** The result used by this regression scenario. */
+      const result = await getClassicRiddleBuffer({auth: {uid: "classicUser"}, data: {locale: "en"}});
+      expect(result.confirmedClassicIndex).toBe(10);
+      expect(result.riddles.map((riddle: {
+        /** Issued Classic position. */ classicIndex: number;
+      }) => riddle.classicIndex)).toEqual([10, 11, 12]);
+      expect(result.riddles[1].question.evaluation).toEqual({answer: "ANSWER", locale: "en"});
+      expect(mockGetClassicRiddleByIndex).not.toHaveBeenCalledWith(13, "en");
+    });
+
     it("should throw HttpsError if not authenticated", async () => {
       /** Provides mock request behavior. */
       const mockRequest = {auth: undefined, data: {classicIndex: 4}} as CallableRequest<{

@@ -91,6 +91,26 @@ describe("game session reducer", () => {
     expect(corrected.lastRewards).toBeNull();
   });
 
+  it("accepts another local attempt while confirmation is slow and retains accepted rows on rejection", () => {
+    /** The state used by this regression scenario. */
+    let state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle: {
+      ...riddle, evaluation: {answer: "piano", locale: "en"},
+    }});
+    for (const letter of "CRANE") state = reduce(state, {type: "typeLetter", letter});
+    state = reduce(state, {type: "guessRequested"});
+    for (const letter of "SLOPE") state = reduce(state, {type: "typeLetter", letter});
+    state = reduce(state, {type: "guessRequested"});
+    expect(state.guesses).toHaveLength(2);
+    expect(state.guessPending).toBe(true);
+
+    state = reduce(state, {type: "guessCheckpointAdvanced", attempts: 1,
+      feedback: state.guesses[0], isCorrect: false, gameOver: false, canContinue: false});
+    state = reduce(state, {type: "guessFailed"});
+    expect(state.guesses).toHaveLength(1);
+    expect(state.engineSnapshot?.attemptsUsed).toBe(1);
+    expect(state.guessPending).toBe(false);
+  });
+
   it("does not preview a continue purchase until the fifth guess is confirmed", () => {
     /** Game state driven through the submission flow. */
     let state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle: {
@@ -326,7 +346,7 @@ describe("game session reducer", () => {
     expect(state.hintRevealedIndices).toEqual([2]);
   });
 
-  it("clears leaderboard rows while a fresh leaderboard request is loading", () => {
+  it("keeps cached leaderboard rows while a fresh request is loading", () => {
     /** Provides existing entry behavior. */
     const existingEntry = {
       userId: "player-1",
@@ -344,12 +364,28 @@ describe("game session reducer", () => {
 
     state = reduce(state, {type: "openModal", modal: "leaderboard"});
 
-    expect(state.leaderboard).toEqual([]);
+    expect(state.leaderboard).toEqual([existingEntry]);
     expect(state.leaderboardLoading).toBe(true);
 
     state = reduce(state, {type: "leaderboardLoaded", leaderboardType: "xp", entries: [existingEntry]});
 
     expect(state.leaderboard).toEqual([existingEntry]);
     expect(state.leaderboardLoading).toBe(false);
+  });
+
+  it("invalidates cached rankings when the account generation or ranking profile changes", () => {
+    /** The user used by this regression scenario. */
+    const user = {uid: "player-1", accountGeneration: 1, isAnonymous: false};
+    /** The profile used by this regression scenario. */
+    const profile = {username: "Player", coins: 5, level: 1, xp: 10, winStreak: 0,
+      gamesPlayed: 1, wins: 1, achievements: [], classicIndex: 2};
+    /** The ranked used by this regression scenario. */
+    const ranked = {...createInitialGameSession(), user, profile,
+      leaderboard: [{userId: user.uid, username: "Player", level: 1, xp: 10, totalWins: 1, bestStreak: 0}]};
+    expect(reduce(ranked, {type: "authState", user, profile}).leaderboard).toHaveLength(1);
+    expect(reduce(ranked, {type: "authState", user: {...user, accountGeneration: 2}, profile}).leaderboard)
+      .toHaveLength(0);
+    expect(reduce(ranked, {type: "authState", user, profile: {...profile, xp: 20}}).leaderboard)
+      .toHaveLength(0);
   });
 });

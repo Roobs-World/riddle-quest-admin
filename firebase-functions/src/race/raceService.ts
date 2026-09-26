@@ -81,7 +81,7 @@ export async function startRaceRunForUser(
     /** Provides run id behavior. */
     const runId = existingStart.data()?.runId;
     if (typeof runId !== "string") throw new HttpsError("internal", "Stored race start request is invalid.");
-    return resumeRaceRunForUser(userId, runId, {db, nowMs});
+    return resumeRaceRunForUser(userId, runId, {db, nowMs, includeEvaluation: input.includeEvaluation});
   }
 
   /** Provides run ref behavior. */
@@ -235,7 +235,7 @@ export async function startRaceRunForUser(
   /** Provides committed run id behavior. */
   const committedRunId = committedStart.data()?.runId;
   if (typeof committedRunId !== "string") throw new HttpsError("internal", "Race start was not committed.");
-  return resumeRaceRunForUser(userId, committedRunId, {db, nowMs});
+  return resumeRaceRunForUser(userId, committedRunId, {db, nowMs, includeEvaluation: input.includeEvaluation});
 }
 /** Provides abandon race run for user behavior. */
 export async function abandonRaceRunForUser(
@@ -289,7 +289,7 @@ export async function submitRaceGuessForUser(
     return {
       run: result.run,
       response: {
-        run: toRaceRunView(result.run, nowMs),
+        run: toRaceRunView(result.run, nowMs, input.includeEvaluation),
         feedback: result.feedback,
         isCorrect: result.isCorrect,
         autoSkipped: result.autoSkipped,
@@ -329,7 +329,7 @@ export async function requestRaceHintForUser(
       return {
         run: result.run,
         response: {
-          run: toRaceRunView(result.run, nowMs),
+          run: toRaceRunView(result.run, nowMs, input.includeEvaluation),
           revealedLetter: result.revealedLetter,
           index: result.index,
         },
@@ -362,7 +362,7 @@ export async function skipRaceRiddleForUser(
     return {
       run: updated,
       response: {
-        run: toRaceRunView(updated, nowMs),
+        run: toRaceRunView(updated, nowMs, input.includeEvaluation),
         penaltyAddedMs: RACE_RULES.skipPenaltyMs,
       },
     };
@@ -379,6 +379,8 @@ export async function resumeRaceRunForUser(
     db?: Firestore; /** Stores now ms. */
     /** Stores now ms. */
     nowMs?: number;
+    /** The include evaluation used by the authoritative operation. */
+    includeEvaluation?: boolean;
   } = {},
 ): Promise<RaceRunResponse> {
   /** Provides db behavior. */
@@ -404,7 +406,7 @@ export async function resumeRaceRunForUser(
     }
     return refreshed;
   });
-  return RaceRunResponseSchema.parse({run: toRaceRunView(run, nowMs)});
+  return RaceRunResponseSchema.parse({run: toRaceRunView(run, nowMs, options.includeEvaluation)});
 }
 
 /** Publishes race challenge for user. */

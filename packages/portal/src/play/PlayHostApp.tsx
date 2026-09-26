@@ -156,7 +156,8 @@ export function PlayHostApp({
 
   /** Provides post operation behavior. */
   const postOperation = useCallback(
-    (requestId: string | undefined, operation: HostOperationName, ok: boolean, data?: unknown, error?: string) => {
+    (requestId: string | undefined, operation: HostOperationName, ok: boolean, data?: unknown, error?: string,
+      errorKind?: "retryable" | "rejected") => {
       postToGame({
         type: "host:operationResult",
         requestId,
@@ -165,6 +166,7 @@ export function PlayHostApp({
           ok,
           data,
           error,
+          errorKind,
         },
       });
     },

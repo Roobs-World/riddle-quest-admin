@@ -11,6 +11,7 @@
     "AUTHENTICATION_FAILED": "認証に失敗しました",
     "EMAIL_PERMISSION_REQUIRED": "電子メールは必須ですが、認証プロバイダーによって提供されていません。電子メールの許可が付与されていることを確認してください。",
     "GENERIC_UNEXPECTED_ERROR": "予期しないエラーが発生しました。もう一度お試しください。",
+    "PLAY_RESTORED": "回答を確認できませんでした。最後に確認された進行状況を復元しました。",
     "GUESS_CANNOT_BE_EMPTY": "推測を空にすることはできません",
     "INVALID_DATA_FORMAT": "データ形式が無効です。入力を確認してください。",
     "NETWORK_ERROR_CHECK_CONNECTION": "ネットワーク エラー。接続を確認してください。",

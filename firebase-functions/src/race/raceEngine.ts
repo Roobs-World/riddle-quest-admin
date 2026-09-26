@@ -372,8 +372,8 @@ export function abandonRaceRun(input: RaceRunRecord, nowMs: number): RaceRunReco
   };
 }
 
-/** Projects server-only run state into the answer-safe client response. */
-export function toRaceRunView(input: RaceRunRecord, nowMs: number): RaceRunView {
+/** Projects server-only run state, optionally including the active answer. */
+export function toRaceRunView(input: RaceRunRecord, nowMs: number, includeEvaluation = false): RaceRunView {
   /** Provides run behavior. */
   const run = refreshRaceRun(input, nowMs);
   /** Provides clock behavior. */
@@ -406,6 +406,7 @@ export function toRaceRunView(input: RaceRunRecord, nowMs: number): RaceRunView 
           guessesRemaining: RACE_MAX_GUESSES_PER_RIDDLE - run.guessesUsed,
           hintAvailable: !run.hintUsed,
           revealedLetters: run.revealedLetters.map((letter) => ({...letter})),
+          ...(includeEvaluation ? {evaluation: {answer: current.answer, locale: run.locale}} : {}),
         }
       : null,
     events: run.events.map((event) => ({...event})),

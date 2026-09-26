@@ -78,6 +78,8 @@ type LoadAndPostRiddle = (
     /** Stores classic index. */
     classicIndex?: number;
     /** Stores session token. */
+    authoritative?: boolean;
+    /** Stores session token. */
     sessionToken?: string;
     /** Stores riddle id. */
     riddleId?: string;
@@ -92,6 +94,7 @@ type PostOperation = (
   ok: boolean,
   data?: unknown,
   error?: string,
+  errorKind?: "retryable" | "rejected",
 ) => void;
 
 /** Describes run race operation. */
@@ -229,13 +232,17 @@ export const createPlayHostMessageHandlers = ({
       });
     } catch (error) {
       reportHostOperationError(error, "guess");
-      postOperation(message.requestId, "guess", false, undefined, getHostErrorMessage(error));
+      /** The code used by the current operation. */
+      const code = typeof error === "object" && error !== null && "code" in error ? String(error.code) : "";
+      /** The rejected used by the current operation. */
+      const rejected = /(?:^|\/)(invalid-argument|permission-denied|failed-precondition|not-found|unauthenticated)$/.test(code);
+      postOperation(message.requestId, "guess", false, undefined, getHostErrorMessage(error), rejected ? "rejected" : "retryable");
     }
   },
   completeGame: async (message) => {
     try {
       /** Provides result behavior. */
-      const result = await withServerActivity(() => authority.gameplay.completeGame(message.payload));
+      const result = await authority.gameplay.completeGame(message.payload);
       postOperation(message.requestId, "completeGame", true, result);
       // Rewards are already authoritative. Optional notification/storage work must
       // neither delay their presentation nor turn a completed win into an error.
@@ -350,9 +357,7 @@ export const createPlayHostMessageHandlers = ({
     try {
       /** Provides entries behavior. */
       /** Provides entries behavior. */
-      const entries = await withServerActivity(() =>
-        authority.leaderboard.loadLeaderboard(message.payload.leaderboardType),
-      );
+      const entries = await authority.leaderboard.loadLeaderboard(message.payload.leaderboardType);
       postOperation(message.requestId, "leaderboard", true, {
         type: message.payload.leaderboardType,
         entries,

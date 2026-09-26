@@ -11,6 +11,7 @@
     "AUTHENTICATION_FAILED": "Authentifizierung fehlgeschlagen",
     "EMAIL_PERMISSION_REQUIRED": "E-Mail ist erforderlich, wird aber nicht vom Authentifizierungsanbieter bereitgestellt. Bitte stellen Sie sicher, dass die E-Mail-Berechtigung erteilt wurde.",
     "GENERIC_UNEXPECTED_ERROR": "Es ist ein unerwarteter Fehler aufgetreten. Bitte versuchen Sie es erneut.",
+    "PLAY_RESTORED": "Eine Antwort konnte nicht bestätigt werden. Der zuletzt bestätigte Fortschritt wurde wiederhergestellt.",
     "GUESS_CANNOT_BE_EMPTY": "Vermutung darf nicht leer sein",
     "INVALID_DATA_FORMAT": "Ungültiges Datenformat. Bitte überprüfen Sie Ihre Eingabe.",
     "NETWORK_ERROR_CHECK_CONNECTION": "Netzwerkfehler. Bitte überprüfen Sie Ihre Verbindung.",

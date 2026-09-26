@@ -1,6 +1,6 @@
 import {useMemo} from "react";
 import type {Dispatch, MutableRefObject} from "react";
-import type {GameToHostMessage} from "@qwordly/core/bridge";
+import type {GameToHostMessage, HostToGameMessage} from "@qwordly/core/bridge";
 import {createGameMessageRouter} from "./bridgeRouter";
 import {gameSessionReducer, type GameSessionState} from "./gameSession";
 import {tr} from "./i18n";
@@ -48,6 +48,7 @@ export function useGameMessageRouter({
   postToHost,
   requestRiddle,
   onCompletionResult,
+  onGuessResult,
 }: {
   /** Stores dispatch. */
   dispatch: GameDispatch;
@@ -59,6 +60,10 @@ export function useGameMessageRouter({
   requestRiddle: () => void;
   /** Stores on completion result. */
   onCompletionResult?: (ok: boolean) => void;
+  /** Handles an optimistic guess before the default single-response reducer path. */
+  onGuessResult?: (message: Extract<HostToGameMessage, {
+    /** Correlated result discriminator. */ type: "host:operationResult";
+  }>) => boolean;
 }) {
   return useMemo(
     () =>
@@ -75,8 +80,10 @@ export function useGameMessageRouter({
         authState: (message) =>
           dispatch({type: "authState", user: message.payload.user, profile: message.payload.profile}),
         riddleLoaded: (message) =>
-          dispatch({type: "loadRiddle", riddle: message.payload.riddle, profile: message.payload.profile}),
+          dispatch({type: "loadRiddle", riddle: message.payload.riddle, profile: message.payload.profile,
+            preserveNotice: message.requestId?.startsWith("reconcile-")}),
         operationResult: async (message) => {
+          if (message.payload.operation === "guess" && onGuessResult?.(message)) return;
           if (!message.payload.ok) {
             if (message.payload.operation === "leaderboard") dispatch({type: "leaderboardLoadFailed"});
             if (message.payload.operation === "guess") dispatch({type: "guessFailed"});
@@ -248,6 +255,6 @@ export function useGameMessageRouter({
         pause: () => dispatch({type: "pause"}),
         resume: () => dispatch({type: "resume"}),
       }),
-    [dispatch, onCompletionResult, postToHost, requestRiddle, stateRef],
+    [dispatch, onCompletionResult, onGuessResult, postToHost, requestRiddle, stateRef],
   );
 }

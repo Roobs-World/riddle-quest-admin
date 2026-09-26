@@ -289,6 +289,7 @@ app.post("/api/game/:operation", async (request) => {
   const allowed = new Set([
     "profile.load",
     "riddle.classic",
+    "riddle.classic-buffer",
     "riddle.daily",
     "guess.submit",
     "game.complete",

@@ -28,7 +28,7 @@ const OpaqueIdSchema = z.string().trim().min(1).max(160);
 /** Validates the milliseconds data shape. */
 const MillisecondsSchema = z.number().int().nonnegative();
 
-/** Schema for the answer-safe current riddle presented to the client. */
+/** Schema for the current riddle, with optional local evaluation data. */
 export const RaceRiddlePromptSchema = z
   .object({
     riddleId: OpaqueIdSchema,
@@ -54,9 +54,11 @@ export const RaceRiddlePromptSchema = z
         })
         .strict(),
     ),
+    /** Opt-in local feedback for the current question only. */
+    evaluation: z.object({answer: z.string().min(1).max(MAX_RIDDLE_ANSWER_CHARACTERS), locale: RaceLocaleSchema}).strict().optional(),
   })
   .strict();
-/** Answer-safe current riddle presented during an active run. */
+/** Current riddle presented during an active run. */
 export type RaceRiddlePrompt = z.infer<typeof RaceRiddlePromptSchema>;
 
 /** Schema for the lifecycle state of an authoritative race run. */
@@ -76,7 +78,7 @@ export const RaceOpponentSchema = z
 /** Answer-free opponent identity and ghost playback data. */
 export type RaceOpponent = z.infer<typeof RaceOpponentSchema>;
 
-/** Schema for the answer-safe client projection of a race run. */
+/** Schema for the client projection of a race run. */
 export const RaceRunViewSchema = z
   .object({
     runId: OpaqueIdSchema,
@@ -96,7 +98,7 @@ export const RaceRunViewSchema = z
     opponent: RaceOpponentSchema.optional(),
   })
   .strict();
-/** Answer-safe client projection of an authoritative race run. */
+/** Client projection of an authoritative race run. */
 export type RaceRunView = z.infer<typeof RaceRunViewSchema>;
 
 /** Schema for positional feedback returned for a submitted guess. */
@@ -213,6 +215,7 @@ export const StartRaceRunRequestSchema = z
     challengeId: OpaqueIdSchema.optional(),
     rivalryChallengeId: OpaqueIdSchema.optional(),
     requestId: RequestIdSchema,
+    includeEvaluation: z.boolean().optional(),
   })
   .strict()
   .refine((input) => Boolean(input.categoryId) !== Boolean(input.challengeId), {
@@ -226,6 +229,7 @@ export const StartRaceRunRequestSchema = z
 export const RaceRunIdRequestSchema = z
   .object({
     runId: OpaqueIdSchema,
+    includeEvaluation: z.boolean().optional(),
   })
   .strict();
 
@@ -252,6 +256,7 @@ export const SubmitRaceGuessRequestSchema = z
     riddleId: OpaqueIdSchema,
     guess: z.string().trim().min(1).max(MAX_RIDDLE_ANSWER_CHARACTERS),
     requestId: RequestIdSchema,
+    includeEvaluation: z.boolean().optional(),
   })
   .strict();
 
@@ -261,6 +266,7 @@ export const RequestRaceHintRequestSchema = z
     runId: OpaqueIdSchema,
     riddleId: OpaqueIdSchema,
     requestId: RequestIdSchema,
+    includeEvaluation: z.boolean().optional(),
   })
   .strict();
 
@@ -270,6 +276,7 @@ export const SkipRaceRiddleRequestSchema = z
     runId: OpaqueIdSchema,
     riddleId: OpaqueIdSchema,
     requestId: RequestIdSchema,
+    includeEvaluation: z.boolean().optional(),
   })
   .strict();
 

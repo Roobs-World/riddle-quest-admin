@@ -2,7 +2,7 @@ import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import "../../styles.race-lobby.css";
 import "../../styles.race-gameplay.css";
 import {parseHostToGameMessage} from "@qwordly/core/bridge";
-import type {ScoredGuess} from "@qwordly/core/game";
+import {computeFeedback, type ScoredGuess} from "@qwordly/core/game";
 import {
   AbandonRaceRunResponseSchema,
   ListRaceCategoriesResponseSchema,
@@ -94,6 +94,8 @@ export function RaceTo10Game({
   const [raceGuesses, setRaceGuesses] = useState<ScoredGuess[]>([]);
   /** Temporary correctness feedback for the latest submitted guess. */
   const [feedback, setFeedback] = useState<"correct" | "incorrect" | null>(null);
+  /** Marks a local row that the next authoritative guess response must replace or undo. */
+  const previewedGuessRef = useRef(false);
   /** Temporary text describing a server-applied time penalty. */
   const [penaltyFlash, setPenaltyFlash] = useState<string | null>(null);
   /** Whether the active-race abandonment confirmation is visible. */
@@ -231,7 +233,7 @@ export function RaceTo10Game({
       else {
         /** Provides active run id behavior. */
         const activeRunId = readActiveRace(ownerId);
-        if (activeRunId) send("raceResume", "game:resumeRace", {runId: activeRunId});
+        if (activeRunId) send("raceResume", "game:resumeRace", {runId: activeRunId, includeEvaluation: true});
         else if (initialCategories.length === 0) send("raceCategories", "game:listRaceCategories", {locale});
       }
     }, 0);
@@ -253,6 +255,11 @@ export function RaceTo10Game({
       /** Provides operation behavior. */
       const operation = message.payload.operation as RaceOperation;
       if (!message.payload.ok) {
+        if (operation === "raceGuess" && previewedGuessRef.current) {
+          setRaceGuesses((guesses) => guesses.slice(0, -1));
+          setFeedback(null);
+          previewedGuessRef.current = false;
+        }
         if (operation === "racePublish") shareAfterPublishRef.current = false;
         setError(message.payload.error === "RaceTo10.ERROR_LOCALE_MISMATCH" ? tr("RaceTo10.ERROR_LOCALE_MISMATCH") : (message.payload.error ?? tr("RaceTo10.ERROR_GENERIC")));
         if (operation === "raceBlock" || operation === "raceReport") safetyTargetRef.current = null;
@@ -347,10 +354,14 @@ export function RaceTo10Game({
           if (previousRiddle !== result.run.currentRiddle?.riddleId) {
             resetAttempt(result.run);
           } else {
-            setRaceGuesses((guesses) => [...guesses, {guess: currentLetters, feedback: result.feedback.map(({status}) => status)}]);
+            setRaceGuesses((guesses) => [
+              ...(previewedGuessRef.current ? guesses.slice(0, -1) : guesses),
+              {guess: currentLetters, feedback: result.feedback.map(({status}) => status)},
+            ]);
             setCurrentLetters(createRaceAttempt(result.run.currentRiddle));
             setActiveSlotIndex(findFirstEditableRaceSlot(result.run.currentRiddle));
           }
+          previewedGuessRef.current = false;
           setFeedback(result.isCorrect ? "correct" : "incorrect");
         } else if (operation === "raceHint") {
           /** Provides result behavior. */
@@ -417,6 +428,11 @@ export function RaceTo10Game({
           }
         }
       } catch {
+        if (operation === "raceGuess" && previewedGuessRef.current) {
+          setRaceGuesses((guesses) => guesses.slice(0, -1));
+          setFeedback(null);
+          previewedGuessRef.current = false;
+        }
         setError(tr("RaceTo10.ERROR_INVALID_RESPONSE"));
       } finally {
         finishOperation(operation);
@@ -465,15 +481,23 @@ export function RaceTo10Game({
     inboxLoadedAtRef.current = 0;
     setCountdown(RACE_COUNTDOWN_START);
     setStage("countdown");
-    send("raceStart", "game:startRace", challengeIdForStart ? {locale, challengeId: challengeIdForStart} : {locale, categoryId, ...(rivalryIdForStart ? {rivalryChallengeId: rivalryIdForStart} : {})});
+    send("raceStart", "game:startRace", challengeIdForStart ? {locale, challengeId: challengeIdForStart, includeEvaluation: true} : {locale, categoryId, includeEvaluation: true, ...(rivalryIdForStart ? {rivalryChallengeId: rivalryIdForStart} : {})});
   };
   /** Submits the complete current answer attempt to the server. */
   const submit = () => {
     if (!run?.currentRiddle || currentLetters.length !== run.currentRiddle.answerLength || currentLetters.some((letter) => !letter) || pending) return;
+    if (run.currentRiddle.evaluation) {
+      /** The scored used by the current operation. */
+      const scored = computeFeedback(currentLetters.join(""), run.currentRiddle.evaluation.answer);
+      previewedGuessRef.current = true;
+      setRaceGuesses((guesses) => [...guesses, {guess: [...currentLetters], feedback: scored}]);
+      setFeedback(scored.every((status) => status === "green") ? "correct" : "incorrect");
+    }
     send("raceGuess", "game:submitRaceGuess", {
       runId: run.runId,
       riddleId: run.currentRiddle.riddleId,
       guess: currentLetters.join(""),
+      includeEvaluation: true,
     });
   };
   /** Requests the next server-selected hint for the active riddle. */
@@ -482,12 +506,13 @@ export function RaceTo10Game({
     send("raceHint", "game:requestRaceHint", {
       runId: run.runId,
       riddleId: run.currentRiddle.riddleId,
+      includeEvaluation: true,
     });
   };
   /** Requests a server-authoritative skip with the published time penalty. */
   const skip = () => {
     if (!run?.currentRiddle || pending) return;
-    send("raceSkip", "game:skipRaceRiddle", {runId: run.runId, riddleId: run.currentRiddle.riddleId});
+    send("raceSkip", "game:skipRaceRiddle", {runId: run.runId, riddleId: run.currentRiddle.riddleId, includeEvaluation: true});
   };
   /** Selects an editable answer position. */
   const selectSlot = (index: number) => {

@@ -28,6 +28,8 @@ export type GameModalViewProps = {
   onPurchase: (productId: string) => void;
   /** Stores on next. */
   onNext: () => void;
+  /** The synchronizing used by the current operation. */
+  synchronizing?: boolean;
   /** Stores on open modal. */
   onOpenModal: (modal: Exclude<GameModal, null>) => void;
   /** Stores on toggle mute. */
@@ -61,6 +63,7 @@ export function GameModalView({
   onContinue,
   onPurchase,
   onNext,
+  synchronizing = false,
   onOpenModal,
   onToggleMute,
   presenceEnabled,
@@ -221,7 +224,7 @@ export function GameModalView({
     }
     onClose();
     window.dispatchEvent(new CustomEvent("riddle-quest:victory-dismissed"));
-    window.setTimeout(onNext, 220);
+    onNext();
   };
   /** Provides advance reward fanfare behavior. */
   const advanceRewardFanfare = () => {
@@ -253,6 +256,7 @@ export function GameModalView({
 
         {state.modal === "victory" && (
           <VictoryFanfareContent
+            synchronizing={synchronizing}
             activeCoinAward={activeCoinAward}
             activeStep={activeVictoryStep}
             coinCollectionPending={coinCollectionPending}

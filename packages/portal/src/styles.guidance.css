@@ -72,8 +72,9 @@
   height: auto;
   filter: drop-shadow(0 10px 10px rgba(69, 17, 70, 0.2));
 }
-.onboarding-card-welcome {
+.onboarding-card.onboarding-card-welcome {
   width: min(520px, 100%);
+  align-content: space-between;
   padding-inline: 18px;
 }
 .onboarding-card-welcome .onboarding-logo {

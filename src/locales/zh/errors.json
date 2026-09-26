@@ -11,6 +11,7 @@
     "AUTHENTICATION_FAILED": "身份验证失败",
     "EMAIL_PERMISSION_REQUIRED": "电子邮件是必需的，但身份验证提供商未提供。请确保授予电子邮件权限。",
     "GENERIC_UNEXPECTED_ERROR": "发生意外错误。请重试。",
+    "PLAY_RESTORED": "有一个答案无法确认。已恢复到上次确认的进度。",
     "GUESS_CANNOT_BE_EMPTY": "猜测不能为空",
     "INVALID_DATA_FORMAT": "数据格式无效。请检查您的输入。",
     "NETWORK_ERROR_CHECK_CONNECTION": "网络错误。请检查您的连接。",

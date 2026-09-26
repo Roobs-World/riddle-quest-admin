@@ -11,6 +11,7 @@
     "AUTHENTICATION_FAILED": "Kimlik doğrulama başarısız oldu",
     "EMAIL_PERMISSION_REQUIRED": "E-posta gerekli ancak kimlik doğrulama sağlayıcısı tarafından sağlanmadı. Lütfen e-posta izninin verildiğinden emin olun.",
     "GENERIC_UNEXPECTED_ERROR": "Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin.",
+    "PLAY_RESTORED": "Bir yanıt doğrulanamadı. Son onaylanan ilerlemen geri yüklendi.",
     "GUESS_CANNOT_BE_EMPTY": "Tahmin boş olamaz",
     "INVALID_DATA_FORMAT": "Geçersiz veri biçimi. Lütfen girişinizi kontrol edin.",
     "NETWORK_ERROR_CHECK_CONNECTION": "Ağ hatası. Lütfen bağlantınızı kontrol edin.",

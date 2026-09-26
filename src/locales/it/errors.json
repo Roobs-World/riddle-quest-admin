@@ -11,6 +11,7 @@
     "AUTHENTICATION_FAILED": "Autenticazione non riuscita",
     "EMAIL_PERMISSION_REQUIRED": "L'indirizzo email è obbligatorio ma non fornito dal provider di autenticazione. Assicurati che sia concessa l'autorizzazione email.",
     "GENERIC_UNEXPECTED_ERROR": "Si è verificato un errore imprevisto. Riprova.",
+    "PLAY_RESTORED": "Non è stato possibile confermare una risposta. Sono stati ripristinati gli ultimi progressi confermati.",
     "GUESS_CANNOT_BE_EMPTY": "Immagino che non possa essere vuoto",
     "INVALID_DATA_FORMAT": "Formato dati non valido. Controlla i tuoi input.",
     "NETWORK_ERROR_CHECK_CONNECTION": "Errore di rete. Controlla la connessione.",

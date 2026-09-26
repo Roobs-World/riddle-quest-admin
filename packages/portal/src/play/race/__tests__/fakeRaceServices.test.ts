@@ -21,6 +21,23 @@ describe("createFakeRaceServices", () => {
     await expect(services.listRaceInbox()).resolves.toMatchObject({items: [{opponentDisplayName: "Nova"}]});
   });
 
+  it("exposes only the current answer when a Race run opts into local evaluation", async () => {
+    /** The services used by this regression scenario. */
+    const services = createFakeRaceServices();
+    /** The legacy used by this regression scenario. */
+    const legacy = await services.startRace({locale: "en", categoryId: "mixed", requestId: "legacy"});
+    expect(legacy.run.currentRiddle).not.toHaveProperty("evaluation");
+    /** The destructured result used by this regression scenario. */
+    const {run} = await services.startRace({locale: "en", categoryId: "mixed", requestId: "preview",
+      includeEvaluation: true});
+    expect(run.currentRiddle?.evaluation).toEqual({answer: "piano", locale: "en"});
+    expect(JSON.stringify(run)).not.toContain("clock");
+    /** The advanced used by this regression scenario. */
+    const advanced = await services.submitRaceGuess({runId: run.runId, riddleId: run.currentRiddle!.riddleId,
+      requestId: "answer-1", guess: "piano"});
+    expect(advanced.run.currentRiddle?.evaluation).toEqual({answer: "clock", locale: "en"});
+  });
+
   it("applies hints and skips idempotently with authoritative penalties", async () => {
     /** Isolated fake host service instance for the test. */
     const services = createFakeRaceServices();

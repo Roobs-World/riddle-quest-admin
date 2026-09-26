@@ -3,6 +3,7 @@ import {getAuth} from "firebase/auth";
 import {doc, getDoc, getFirestore} from "firebase/firestore/lite";
 import {getFunctions, httpsCallable} from "firebase/functions";
 import type {
+  ClassicRiddleBufferResponse,
   CompleteGameInput,
   CompleteGameOutput,
   SkipRiddleResponse,
@@ -127,6 +128,15 @@ export const getCurrentClassicRiddle = httpsCallable<
   },
   CurrentRiddleResponse
 >(functions, "getCurrentClassicRiddle");
+
+/** Issues the current Classic question and up to two future questions. */
+export const getClassicRiddleBuffer = httpsCallable<{
+  /** Requested content locale. */
+  locale: string;
+}, ClassicRiddleBufferResponse>(
+  functions,
+  "getClassicRiddleBuffer",
+);
 
 /** Completes game. */
 export const completeGame = httpsCallable<CompleteGameInput, CompleteGameOutput>(functions, "completeGame");
@@ -264,6 +274,8 @@ export const resumeRaceRun = httpsCallable<
   {
     /** Stores run id. */
     runId: string;
+    /** Requests current-question local scoring data. */
+    includeEvaluation?: boolean;
   },
   RaceRunResponse
 >(functions, "resumeRaceRun");

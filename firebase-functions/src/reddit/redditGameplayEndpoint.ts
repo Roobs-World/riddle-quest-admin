@@ -1,8 +1,9 @@
-import type {CallableRequest} from "firebase-functions/v2/https";
+import {HttpsError, type CallableRequest} from "firebase-functions/v2/https";
 import {defineSecret} from "firebase-functions/params";
 import {admin} from "../shared/firebaseAdmin";
 import {onRequestWithSentry} from "../shared/sentryHandlers";
 import {getCurrentClassicRiddle, getCurrentDailyChallenge} from "../daily/dailyChallenge";
+import {getClassicRiddleBuffer} from "../daily/classicRiddleBuffer";
 import {submitSinglePlayerGuess} from "../gameplay/submitSinglePlayerGuessCallable";
 import {completeGame} from "../gameplay/completeGameCallable";
 import {getHint, skipRiddle, spendCoins} from "../gameplay/gameLogic";
@@ -68,6 +69,7 @@ const MAX_BODY_BYTES = 80 * 1_024;
 export const REDDIT_GAMEPLAY_OPERATIONS = [
   "gameplay.profile.load",
   "gameplay.riddle.classic",
+  "gameplay.riddle.classic-buffer",
   "gameplay.riddle.daily",
   "gameplay.guess.submit",
   "gameplay.game.complete",
@@ -182,6 +184,8 @@ const dispatch = async (
       return runWithJestAccountOperationLease(uid, 60, () => publicProfile(uid));
     case "gameplay.riddle.classic":
       return getCurrentClassicRiddle.run(callableRequest(uid, payload) as never);
+    case "gameplay.riddle.classic-buffer":
+      return getClassicRiddleBuffer.run(callableRequest(uid, payload) as never);
     case "gameplay.riddle.daily":
       return getCurrentDailyChallenge.run(callableRequest(uid, payload) as never);
     case "gameplay.guess.submit":
@@ -371,6 +375,8 @@ const dispatch = async (
 
 /** Same-origin Reddit server gateway for existing server-authoritative single-player handlers. */
 export const redditGameplay = onRequestWithSentry("redditGameplay", options, async (request, response) => {
+  /** The verified guess used by the authoritative operation. */
+  let verifiedGuess = false;
   response.set("Cache-Control", "no-store");
   response.set("X-Content-Type-Options", "nosniff");
   if (request.method !== "POST") {
@@ -430,6 +436,7 @@ export const redditGameplay = onRequestWithSentry("redditGameplay", options, asy
         consumeNonce: consumeRedditGatewayNonce,
       },
     );
+    verifiedGuess = operation === "gameplay.guess.submit";
     if (
       !(await consumeRedditRequestQuota(
         `${assertion.appName}\0${assertion.userId}\0${assertion.operation}`,
@@ -460,7 +467,15 @@ export const redditGameplay = onRequestWithSentry("redditGameplay", options, asy
         ? await hydrateRedditRaceSocialResult(operation, envelope.payload, result)
         : result,
     });
-  } catch {
+  } catch (error) {
+    if (verifiedGuess) {
+      /** The code used by the authoritative operation. */
+      const code = error instanceof HttpsError ? error.code : "unknown";
+      /** The rejected used by the authoritative operation. */
+      const rejected = ["invalid-argument", "permission-denied", "failed-precondition", "not-found", "unauthenticated"].includes(code);
+      response.status(rejected ? 409 : 503).json({error: rejected ? "guess-rejected" : "guess-retryable"});
+      return;
+    }
     response.status(401).json({error: "invalid-request"});
   }
 });

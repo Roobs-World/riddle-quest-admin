@@ -5,6 +5,7 @@ import {
   blockRival,
   completeGame,
   getCurrentClassicRiddle,
+  getClassicRiddleBuffer,
   getCurrentDailyChallenge,
   getHint,
   getLeaderboard,
@@ -32,6 +33,7 @@ import {
   type CurrentRiddleResponse,
 } from "../firebase";
 import type {AuthSnapshot, HostServices} from "./types";
+import type {ClassicRiddleBufferResponse} from "@qwordly/core/validation";
 import {toBridgeProfile} from "./profileMapper";
 
 /** Provides to bridge user behavior. */
@@ -42,6 +44,8 @@ const toBridgeUser = (user: typeof auth.currentUser): BridgeUser | null => {
 
   return {
     uid: user.uid,
+    ...(user.metadata.creationTime && Number.isSafeInteger(Date.parse(user.metadata.creationTime))
+      ? {accountGeneration: Date.parse(user.metadata.creationTime)} : {}),
     displayName: user.displayName ?? undefined,
     email: user.email ?? undefined,
     photoURL: user.photoURL ?? undefined,
@@ -75,6 +79,12 @@ const mapRiddleResponse = (response: CurrentRiddleResponse, gameMode: "classic" 
 export const createFirebaseHostServices = (): HostServices => {
   /** Provides latest snapshot behavior. */
   let latestSnapshot: AuthSnapshot = {user: toBridgeUser(auth.currentUser), profile: null};
+  /** The classic buffer used by the current operation. */
+  let classicBuffer: {
+    /** Account owning the issued sessions. */ uid: string;
+    /** Content locale. */ locale: string;
+    /** Server-issued buffer. */ data: ClassicRiddleBufferResponse;
+  } | null = null;
   /** Provides subscribers behavior. */
   const subscribers = new Set<(snapshot: AuthSnapshot) => void>();
 
@@ -112,11 +122,49 @@ export const createFirebaseHostServices = (): HostServices => {
       },
     },
     /** Loads riddle. */
-    async loadRiddle({gameMode, locale, classicIndex, sessionToken, riddleId}) {
+    async loadRiddle({gameMode, locale, classicIndex, sessionToken, riddleId, authoritative}) {
       if (gameMode === "challenge") {
         /** Provides result behavior. */
         const result = await getCurrentDailyChallenge({locale, sessionToken, riddleId, includeEvaluation: true});
         return mapRiddleResponse(result.data, "challenge");
+      }
+
+      /** The uid used by the current operation. */
+      const uid = latestSnapshot.user?.uid;
+      if (authoritative && uid) {
+        /** The destructured result used by the current operation. */
+        const {data} = await getClassicRiddleBuffer({locale});
+        classicBuffer = {uid, locale, data};
+        /** The issued used by the current operation. */
+        const issued = data.riddles.find((item) => item.classicIndex === data.confirmedClassicIndex);
+        if (!issued) throw new Error("classic-buffer-unavailable");
+        return {...mapRiddleResponse({challenge: {questions: [issued.question], totalQuestions: 1}}, "classic"),
+          index: issued.classicIndex};
+      }
+      /** The buffer used by the current operation. */
+      const buffer = classicBuffer;
+      /** The cached used by the current operation. */
+      let cached = buffer && buffer.uid === uid && buffer.locale === locale
+        ? buffer.data.riddles.find((item) =>
+            item.classicIndex === classicIndex &&
+            item.classicIndex > buffer.data.confirmedClassicIndex &&
+            item.expiresAtMs > Date.now() + 30_000,
+          )
+        : undefined;
+      if (!cached && uid && classicIndex &&
+        classicIndex > (buffer?.data.confirmedClassicIndex ?? latestSnapshot.profile?.classicIndex ?? 1) &&
+        !sessionToken && !riddleId) {
+        /** The destructured result used by the current operation. */
+        const {data} = await getClassicRiddleBuffer({locale});
+        classicBuffer = {uid, locale, data};
+        cached = data.riddles.find((item) => item.classicIndex === classicIndex &&
+          item.classicIndex > data.confirmedClassicIndex && item.expiresAtMs > Date.now() + 30_000);
+      }
+      if (cached && !sessionToken && !riddleId) {
+        /** The riddle used by the current operation. */
+        const riddle = mapRiddleResponse({challenge: {questions: [cached.question], totalQuestions: 1}}, "classic");
+        void getClassicRiddleBuffer({locale}).then(({data}) => { classicBuffer = {uid: uid!, locale, data}; }).catch(() => undefined);
+        return {...riddle, index: cached.classicIndex};
       }
 
       /** Provides result behavior. */
@@ -127,7 +175,8 @@ export const createFirebaseHostServices = (): HostServices => {
         sessionToken,
         riddleId,
       });
-      return mapRiddleResponse(result.data, "classic");
+      if (uid) void getClassicRiddleBuffer({locale}).then(({data}) => { classicBuffer = {uid, locale, data}; }).catch(() => undefined);
+      return {...mapRiddleResponse(result.data, "classic"), index: classicIndex ?? latestSnapshot.profile?.classicIndex ?? 1};
     },
     /** Loads profile. */
     async loadProfile(userId) {
@@ -146,7 +195,16 @@ export const createFirebaseHostServices = (): HostServices => {
     },
     /** Submits guess. */
     async submitGuess(input) {
-      return (await submitSinglePlayerGuess(input)).data;
+      /** The result used by the current operation. */
+      const result = (await submitSinglePlayerGuess(input)).data;
+      if (result.gameOver && latestSnapshot.user) {
+        /** The user used by the current operation. */
+        const user = latestSnapshot.user;
+        void reloadProfile(user).then((profile) => {
+          if (latestSnapshot.user?.uid === user.uid) emit({user, profile});
+        }).catch(() => undefined);
+      }
+      return result;
     },
     /** Requests hint. */
     async requestHint(input) {
@@ -235,7 +293,7 @@ export const createFirebaseHostServices = (): HostServices => {
     },
     /** Provides resume race behavior. */
     async resumeRace(runId) {
-      return (await resumeRaceRun({runId})).data;
+      return (await resumeRaceRun({runId, includeEvaluation: true})).data;
     },
     /** Provides abandon race behavior. */
     async abandonRace(input) {

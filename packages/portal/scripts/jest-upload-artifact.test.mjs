@@ -888,9 +888,8 @@ test("the release sequence gates, packages, verifies, and uploads one immutable 
     /"ls-files",\s*"--others",\s*"--ignored",\s*"--exclude-standard",\s*"-z",\s*"--",\s*":\(glob\)\*\*\/\.env",\s*":\(glob\)\*\*\/\.env\.\*"/,
   );
   assert.match(releaseSource, /additionalMaskedFilePaths\.push\(\.\.\.ignoredEnvironmentPaths\)/);
-  assert.match(releaseSource, /timestamped Jest releases always request automatic activation/);
-  assert.match(releaseSource, /const activationRequested = true/);
-  assert.match(releaseSource, /JEST_CONFIRM_ACTIVATION:\s*RIDDLE_QUEST_JEST_GAME_ID/);
+  assert.match(releaseSource, /const activationRequested = process\.env\.JEST_RELEASE_INACTIVE !== ["']true["']/);
+  assert.match(releaseSource, /activationRequested \? \{JEST_CONFIRM_ACTIVATION: RIDDLE_QUEST_JEST_GAME_ID\} : \{\}/);
   assert.match(releaseSource, /JEST_UPLOAD_IS_ACTIVE:\s*String\(activationRequested\)/);
   assert.doesNotMatch(releaseSource, /credentials\.JEST_UPLOAD_IS_ACTIVE === ["']true["']/);
   assert.match(releaseSource, /additionalMaskedDirectoryPaths:\s*ignoredSensitiveDirectoryPaths/);

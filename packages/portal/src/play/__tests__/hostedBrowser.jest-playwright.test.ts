@@ -479,6 +479,36 @@ describeBrowser("standalone Jest browser game", () => {
           ).length === 1,
       );
       await nativeAnswerInput.press("Backspace");
+      await page.evaluate(() => {
+        /** The hold guess used by this regression scenario. */
+        const holdGuess = (event: Event) => {
+          if ((event as CustomEvent).detail?.payload?.operation !== "raceGuess") return;
+          event.stopImmediatePropagation();
+          window.removeEventListener("riddle-quest:host-to-game", holdGuess, true);
+          Object.assign(window, {__heldRaceGuess: (event as CustomEvent).detail});
+        };
+        window.addEventListener("riddle-quest:host-to-game", holdGuess, true);
+      });
+      await nativeAnswerInput.fill("PIANO");
+      /** The race feedback ms used by this regression scenario. */
+      const raceFeedbackMs = await page.locator(".race-actions .submit-action").evaluate(async button => {
+        /** The started used by this regression scenario. */
+        const started = performance.now();
+        (button as HTMLButtonElement).click();
+        while (document.querySelectorAll(".race-gameplay .guess-row:first-child .cell.green").length < 5) {
+          if (performance.now() - started > 1_000) throw new Error("Race feedback waited for server");
+          await new Promise(resolve => requestAnimationFrame(resolve));
+        }
+        return performance.now() - started;
+      });
+      expect(raceFeedbackMs).toBeLessThan(100);
+      await page.waitForFunction(() => Reflect.has(window, "__heldRaceGuess"));
+      expect(await page.locator(".race-scoreboard").innerText()).toContain("0");
+      await page.evaluate(() => window.dispatchEvent(new CustomEvent("riddle-quest:host-to-game", {
+        detail: Reflect.get(window, "__heldRaceGuess"),
+      })));
+      await page.getByText(/hands and a face/i).waitFor({timeout: 2_000});
+      console.info(`Immediate Race feedback: ${raceFeedbackMs.toFixed(1)}ms with server response held`);
       await page.locator(".race-close").click();
       await page.getByRole("button", {name: /^quit race$/i}).click();
       await page.locator(".race-screen").waitFor({state: "detached"});
@@ -1034,6 +1064,7 @@ describeBrowser("standalone Jest browser game", () => {
       await page.waitForFunction(() => "__heldGuess" in window);
       await page.getByRole("heading", {name: /nice job/i}).waitFor({timeout: 2000});
       expect(await page.getByRole("button", {name: /tap the chest/i}).count()).toBe(0);
+      expect(await page.getByRole("button", {name: /next level/i}).isEnabled()).toBe(true);
       await page.evaluate(() => {
         if (Reflect.get(window, "__completionBeforeGuess")) throw new Error("Completion ran before guess confirmation");
         Reflect.get(window, "__releaseGuess")();
@@ -1213,8 +1244,10 @@ describeBrowser("standalone Jest browser game", () => {
       expect(await lowEndPage.locator(".keyboard").isVisible()).toBe(true);
       // Exhaust attempts to verify the loss panel does not use the victory decoration.
       for (let attempt = 0; attempt < 5; attempt += 1) {
+        /** The wrong letter used by this regression scenario. */
+        const wrongLetter = ["X", "Z", "Q", "V", "B"][attempt];
         for (let letter = 0; letter < 5; letter += 1) {
-          await lowEndPage.locator(".keyboard").getByRole("button", {name: /^X$/}).click();
+          await lowEndPage.locator(".keyboard").getByRole("button", {name: wrongLetter, exact: true}).click();
         }
         await lowEndPage.locator(".game-input-actions").getByRole("button", {name: /submit/i}).click();
         await lowEndPage.locator(".guess-row").nth(attempt).locator(".cell.red").first().waitFor();
@@ -1226,6 +1259,154 @@ describeBrowser("standalone Jest browser game", () => {
       await expectAccessible(lowEndPage, "out of attempts");
       await lowEndPage.screenshot({path: "/tmp/jest-feedback-loss.png"});
       await lowEndContext.close();
+
+      /** Opens the prefetched Classic question while the previous win is still unconfirmed. */
+      const bufferedContext = await browser.newContext({viewport: {width: 390, height: 844}});
+      /** The buffered page used by this regression scenario. */
+      const bufferedPage = await bufferedContext.newPage();
+      await bufferedPage.addInitScript(() => {
+        Object.assign(window, {__RIDDLE_QUEST_BROWSER_TEST__: true});
+        localStorage.setItem("riddleQuest:onboarding:jest-guest", "seen");
+        localStorage.setItem("riddleQuest:tooltipSequenceSeen:gameTour:v2:jest-guest", "seen");
+        sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
+      });
+      await bufferedPage.goto("http://127.0.0.1:4178/?harness=jest");
+      await bufferedPage.getByText(/what has keys/i).waitFor({timeout: 15_000});
+      await bufferedPage.evaluate(() => {
+        /** The original used by this regression scenario. */
+        const original = window.dispatchEvent.bind(window);
+        /** The held used by this regression scenario. */
+        let held = false;
+        window.dispatchEvent = (event: Event) => {
+          if (!held && event.type === "riddle-quest:host-to-game" &&
+            (event as CustomEvent).detail?.payload?.operation === "guess") {
+            held = true;
+            Object.assign(window, {__heldClassicGuess: (event as CustomEvent).detail,
+              __releaseClassicGuess: () => original(new CustomEvent("riddle-quest:host-to-game", {
+                detail: Reflect.get(window, "__heldClassicGuess"),
+              }))});
+            return true;
+          }
+          return original(event);
+        };
+      });
+      for (const letter of "PIANO")
+        await bufferedPage.locator(".keyboard").getByRole("button", {name: letter, exact: true}).click();
+      await bufferedPage.getByRole("button", {name: /^submit$/i}).click();
+      /** Time from the Next action to the already-issued question appearing. */
+      const bufferedTransitionMs = await bufferedPage.getByRole("button", {name: /next level/i}).evaluate(async button => {
+        /** Browser start time of the actual player action. */
+        const started = performance.now();
+        (button as HTMLButtonElement).click();
+        while (!document.querySelector(".riddle-card h1")?.textContent?.includes("face and hands")) {
+          if (performance.now() - started > 1_000) throw new Error("Buffered transition waited for the server");
+          await new Promise(resolve => requestAnimationFrame(resolve));
+        }
+        return performance.now() - started;
+      });
+      expect(bufferedTransitionMs).toBeLessThan(100);
+      await bufferedPage.getByText(/face and hands/i).waitFor({timeout: 2_000});
+      await bufferedPage.getByRole("button", {name: /got it/i}).click();
+      for (const letter of "CLOCK")
+        await bufferedPage.locator(".keyboard").getByRole("button", {name: letter, exact: true}).click();
+      await bufferedPage.getByRole("button", {name: /^submit$/i}).click();
+      await bufferedPage.locator(".guess-row:first-child .cell.green").first().waitFor({timeout: 2_000});
+      await bufferedPage.evaluate(() => Reflect.get(window, "__releaseClassicGuess")());
+      await bufferedPage.waitForFunction(() => !Object.keys(localStorage).some((key) => key.includes("pendingPlay:v1:")),
+        null, {timeout: 5_000});
+      await bufferedContext.close();
+
+      /** A definitive rejection restores the confirmed question and explains the discarded play. */
+      const rejectedContext = await browser.newContext({viewport: {width: 390, height: 844}});
+      /** The rejected page used by this regression scenario. */
+      const rejectedPage = await rejectedContext.newPage();
+      await rejectedPage.addInitScript(() => {
+        Object.assign(window, {__RIDDLE_QUEST_BROWSER_TEST__: true});
+        localStorage.setItem("riddleQuest:onboarding:jest-guest", "seen");
+        localStorage.setItem("riddleQuest:tooltipSequenceSeen:gameTour:v2:jest-guest", "seen");
+        sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
+      });
+      await rejectedPage.goto("http://127.0.0.1:4178/?harness=jest");
+      await rejectedPage.getByText(/what has keys/i).waitFor({timeout: 15_000});
+      await rejectedPage.evaluate(() => {
+        /** The original used by this regression scenario. */
+        const original = window.dispatchEvent.bind(window);
+        /** The held used by this regression scenario. */
+        let held = false;
+        window.dispatchEvent = (event: Event) => {
+          if (!held && event.type === "riddle-quest:host-to-game" &&
+            (event as CustomEvent).detail?.payload?.operation === "guess") {
+            held = true;
+            Object.assign(window, {__heldRejectedGuess: (event as CustomEvent).detail});
+            return true;
+          }
+          return original(event);
+        };
+      });
+      for (const letter of "PIANO")
+        await rejectedPage.locator(".keyboard").getByRole("button", {name: letter, exact: true}).click();
+      await rejectedPage.getByRole("button", {name: /^submit$/i}).click();
+      await rejectedPage.getByRole("button", {name: /next level/i}).click();
+      await rejectedPage.getByText(/face and hands/i).waitFor({timeout: 2_000});
+      await rejectedPage.getByRole("button", {name: /got it/i}).click();
+      await rejectedPage.waitForFunction(() => Reflect.has(window, "__heldRejectedGuess"));
+      await rejectedPage.evaluate(() => {
+        /** The held used by this regression scenario. */
+        const held = Reflect.get(window, "__heldRejectedGuess");
+        window.dispatchEvent(new CustomEvent("riddle-quest:host-to-game", {detail: {
+          ...held, payload: {operation: "guess", ok: false, errorKind: "rejected", error: "Session expired"},
+        }}));
+      });
+      await rejectedPage.getByText(/last confirmed progress has been restored/i).waitFor({timeout: 3_000});
+      await rejectedPage.getByText(/what has keys/i).waitFor({timeout: 3_000});
+      expect(await rejectedPage.getByText(/face and hands/i).count()).toBe(0);
+      await rejectedContext.close();
+
+      /** Reload replays the exact pending request and restores its local feedback. */
+      const reloadContext = await browser.newContext({viewport: {width: 390, height: 844}});
+      /** Page used to verify journal recovery after navigation. */
+      const reloadPage = await reloadContext.newPage();
+      await reloadPage.addInitScript(() => {
+        Object.assign(window, {__RIDDLE_QUEST_BROWSER_TEST__: true});
+        localStorage.setItem("riddleQuest:onboarding:jest-guest", "seen");
+        localStorage.setItem("riddleQuest:tooltipSequenceSeen:gameTour:v2:jest-guest", "seen");
+        sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
+        window.addEventListener("riddle-quest:game-to-host", (event: Event) => {
+          if ((event as CustomEvent).detail?.type === "game:submitGuess")
+            sessionStorage.setItem("replayedGuessId", (event as CustomEvent).detail.requestId);
+        }, true);
+      });
+      await reloadPage.goto("http://127.0.0.1:4178/?harness=jest");
+      await reloadPage.getByText(/what has keys/i).waitFor({timeout: 15_000});
+      await reloadPage.evaluate(() => {
+        /** Holds the original response without stopping its host request. */
+        const original = window.dispatchEvent.bind(window);
+        window.dispatchEvent = (event: Event) => {
+          if (event.type === "riddle-quest:host-to-game" &&
+            (event as CustomEvent).detail?.payload?.operation === "guess") return true;
+          return original(event);
+        };
+      });
+      for (const letter of "CRANE")
+        await reloadPage.locator(".keyboard").getByRole("button", {name: letter, exact: true}).click();
+      await reloadPage.getByRole("button", {name: /^submit$/i}).click();
+      await reloadPage.locator(".guess-row:first-child .cell.red").first().waitFor({timeout: 2_000});
+      /** Request identifier durably written before the first response. */
+      const pendingId = await reloadPage.evaluate(() => {
+        /** Storage record for the authenticated harness player. */
+        const key = Object.keys(localStorage).find(item => item.includes("pendingPlay:v1:"));
+        return key ? JSON.parse(localStorage.getItem(key)!).queue[0].message.requestId as string : null;
+      });
+      expect(pendingId).toMatch(/^guess-/);
+      await reloadPage.evaluate(() => sessionStorage.removeItem("replayedGuessId"));
+      await reloadPage.reload();
+      await reloadPage.locator(".guess-row:first-child .cell.red").first().waitFor({timeout: 5_000});
+      await reloadPage.waitForFunction(() => sessionStorage.getItem("replayedGuessId") !== null,
+        null, {timeout: 5_000});
+      expect(await reloadPage.evaluate(() => sessionStorage.getItem("replayedGuessId"))).toBe(pendingId);
+      await reloadPage.waitForFunction(() => !Object.keys(localStorage).some(key => key.includes("pendingPlay:v1:")),
+        null, {timeout: 5_000});
+      await reloadContext.close();
 
       /** Provides iframe page behavior. */
       const iframePage = await browser.newPage({viewport: {width: 390, height: 844}});

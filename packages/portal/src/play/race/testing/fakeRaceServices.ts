@@ -31,6 +31,8 @@ type RaceMethods = Pick<
 
 /** Mutable harness record backing one simulated authoritative race run. */
 type FakeRun = {
+  /** The evaluation enabled used by the current operation. */
+  evaluationEnabled: boolean;
   /** Stores view. */
   view: RaceRunView;
   /** Stores started at ms. */
@@ -195,6 +197,9 @@ export const createFakeRaceServices = (): RaceMethods => {
             guessesUsed: run.guessesUsed,
             guessesRemaining: 5 - run.guessesUsed,
             hintAvailable: !run.hintUsed,
+            ...(run.evaluationEnabled ? {evaluation: {
+              answer: run.answers[run.view.currentRiddle.position], locale: run.view.locale,
+            }} : {}),
           }
         : null,
     };
@@ -286,6 +291,7 @@ export const createFakeRaceServices = (): RaceMethods => {
       const startedAtMs = Date.now();
       /** Provides run behavior. */
       const run: FakeRun = {
+        evaluationEnabled: input.includeEvaluation === true,
         startedAtMs,
         answers,
         guessesUsed: 0,

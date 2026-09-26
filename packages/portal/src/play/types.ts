@@ -204,6 +204,8 @@ export type HostServices = {
     /** Stores classic index. */
     classicIndex?: number;
     /** Stores session token. */
+    authoritative?: boolean;
+    /** Stores session token. */
     sessionToken?: string;
     /** Stores riddle id. */
     riddleId?: string;

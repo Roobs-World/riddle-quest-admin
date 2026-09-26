@@ -200,7 +200,10 @@ export function GameFrameApp({
   } behavior. */
   const {
     canSubmit,
+    pendingPlay,
+    bufferExhausted,
     submitGuess,
+    handleQueuedGuessResult,
     requestRiddle,
     requestHint,
     requestContinue,
@@ -253,6 +256,7 @@ export function GameFrameApp({
     postToHost,
     requestRiddle,
     onCompletionResult: handleCompletionResult,
+    onGuessResult: handleQueuedGuessResult,
   });
 
   useReferralReward(stateRef, dispatch, state.initialized, state.riddle?.riddleId);
@@ -337,7 +341,7 @@ export function GameFrameApp({
             <Keyboard state={state} dispatch={dispatch} playFeedback={playFeedback} />
 
             <section className="game-input-actions" aria-label={tr("Navigation.GAME")}>
-              <button data-tooltip="gameHint" disabled={state.guessPending} onClick={() => dispatch({type: "openModal", modal: "hint"})}>
+              <button data-tooltip="gameHint" disabled={state.guessPending || pendingPlay} onClick={() => dispatch({type: "openModal", modal: "hint"})}>
                 <HintIcon />
                 {tr("Navigation.HINT_BUTTON")}
               </button>
@@ -345,7 +349,7 @@ export function GameFrameApp({
                 {tr("GameScreenAlerts.SUBMIT_BUTTON")}
               </button>
               {state.gameMode === "classic" && (
-                <button data-tooltip="gameSkip" disabled={state.guessPending} onClick={() => dispatch({type: "openModal", modal: "skip"})}>
+                <button data-tooltip="gameSkip" disabled={state.guessPending || pendingPlay} onClick={() => dispatch({type: "openModal", modal: "skip"})}>
                   <ForwardIcon />
                   {tr("GameScreenAlerts.SKIP_BUTTON")}
                 </button>
@@ -391,6 +395,7 @@ export function GameFrameApp({
               onContinue={requestContinue}
               onPurchase={requestPurchase}
               onNext={requestRiddle}
+              synchronizing={bufferExhausted}
               onOpenModal={(modal) => dispatch({type: "openModal", modal})}
               onToggleMute={() => dispatch({type: "toggleMute"})}
               presenceEnabled={presenceEnabled}

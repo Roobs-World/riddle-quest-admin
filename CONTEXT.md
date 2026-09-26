@@ -42,6 +42,18 @@ _Avoid_: All-ages Facebook release
 
 ## Identity and authority
 
+**Provisional Play**:
+Solo answers and Classic progression shown to the player before the game backend confirms them.
+_Avoid_: Confirmed win, earned reward
+
+**Confirmed Progress**:
+The latest solo progression accepted by the game backend, including the entitlement to the next Classic question.
+_Avoid_: Local progress, displayed level
+
+**Issued Question Buffer**:
+A bounded set of Classic questions and immutable play sessions issued from Confirmed Progress for responsive solo play.
+_Avoid_: Offline catalog, unlocked levels
+
 **Reddit Session**:
 The trusted Reddit request context for a person, post, subreddit, installation, and app; it is anonymous when no Reddit user identity is present.
 _Avoid_: Firebase session, Reddit account

@@ -3,6 +3,7 @@
     "ACHIEVEMENT_UNLOCKED": "Достижение разблокировано!",
     "COINS_SUFFIX": " Монеты",
     "NEXT_LEVEL_BUTTON": "Следующий уровень",
+    "SYNCING_PROGRESS": "Синхронизация прогресса…",
     "SHARE_TEXT": "Пригласить друга · по 100 монет",
     "REFERRAL_REWARD_MESSAGE": "Зарегистрируйтесь по моему приглашению, и мы оба получим по {coins} монет!",
     "OPEN_INVITE_MESSAGE": "{name} приглашает вас в Riddle Quest. Зарегистрируйтесь по этой ссылке, и вы оба получите по {coins} монет!",

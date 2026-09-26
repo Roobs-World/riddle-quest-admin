@@ -11,6 +11,7 @@
     "AUTHENTICATION_FAILED": "Authentication failed",
     "EMAIL_PERMISSION_REQUIRED": "Email is required but not provided by the authentication provider. Please ensure email permission is granted.",
     "GENERIC_UNEXPECTED_ERROR": "An unexpected error occurred. Please try again.",
+    "PLAY_RESTORED": "An answer could not be confirmed. Your last confirmed progress has been restored.",
     "GUESS_CANNOT_BE_EMPTY": "Guess cannot be empty",
     "INVALID_DATA_FORMAT": "Invalid data format. Please check your input.",
     "NETWORK_ERROR_CHECK_CONNECTION": "Network error. Please check your connection.",

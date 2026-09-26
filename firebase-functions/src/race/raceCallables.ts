@@ -199,7 +199,9 @@ export const resumeRaceRun = onCallWithSentry(
     /** Provides input behavior. */
     const input = validateCallableRequest(RaceRunIdRequestSchema, request.data, "resumeRaceRun");
     /** Provides response behavior. */
-    const response = await resumeRaceRunForUser(userId, input.runId);
+    const response = input.includeEvaluation
+      ? await resumeRaceRunForUser(userId, input.runId, {includeEvaluation: true})
+      : await resumeRaceRunForUser(userId, input.runId);
     return validateCallableResponse(RaceRunResponseSchema, response, "resumeRaceRun");
   },
 );

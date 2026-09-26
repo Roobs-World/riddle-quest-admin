@@ -68,7 +68,7 @@ it.each([false, true])("loads canonical feedback through same-origin routes, ava
   expect((global.fetch as jest.Mock).mock.calls.every(([path]) => String(path).startsWith("/api/"))).toBe(true);
 });
 
-it("validates authoritative guesses and does not reload the profile for a non-economic mutation", async () => {
+it("validates terminal guesses and refreshes confirmed progress in the background", async () => {
   global.fetch = jest.fn((input) => {
     if (String(input) === "/api/game/guess.submit")
       return response({
@@ -88,7 +88,7 @@ it("validates authoritative guesses and does not reload the profile for a non-ec
       requestId: "request-1",
     }),
   ).resolves.toMatchObject({attempts: 1, isCorrect: true, gameOver: true});
-  expect(global.fetch).toHaveBeenCalledTimes(1);
+  expect(global.fetch).toHaveBeenCalledTimes(2);
 });
 
 it("fails closed for unsupported Reddit capabilities without calling the gateway", async () => {

@@ -121,8 +121,23 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
         profile: action.profile,
         products: action.products,
       };
-    case "authState":
-      return {...state, user: action.user, profile: action.profile};
+    case "authState": {
+      /** The same account used by the current operation. */
+      const sameAccount = state.user?.uid === action.user?.uid &&
+        state.user?.accountGeneration === action.user?.accountGeneration;
+      /** The same ranking used by the current operation. */
+      const sameRanking = state.profile?.xp === action.profile?.xp &&
+        state.profile?.wins === action.profile?.wins &&
+        state.profile?.bestStreak === action.profile?.bestStreak &&
+        state.profile?.username === action.profile?.username &&
+        state.profile?.avatarUrl === action.profile?.avatarUrl;
+      return {
+        ...state,
+        user: action.user,
+        profile: action.profile,
+        leaderboard: sameAccount && sameRanking ? state.leaderboard : [],
+      };
+    }
     case "loadRiddle": {
       /** Provides snapshot behavior. */
       const snapshot = {
@@ -144,7 +159,7 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
         pendingGuessState: null,
         engineSnapshot: snapshot,
         modal: action.riddle.awaitingContinue ? "continue" : null,
-        notice: null,
+        notice: action.preserveNotice ? state.notice : null,
         lastOutcome: null,
         completionAcknowledged: false,
         lastRewards: null,
@@ -202,7 +217,8 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
       }
       return {...state, activeSlotIndex: action.index};
     case "guessRequested":
-      if (!state.riddle || state.guessPending || state.currentLetters.some((letter) => !letter)) return state;
+      if (!state.riddle || (state.guessPending && !canDraftWhileConfirming(state)) ||
+        state.currentLetters.some((letter) => !letter)) return state;
       if (state.riddle.evaluation) {
         /** Canonical scoring input preloaded with this riddle. */
         const {answer, locale} = state.riddle.evaluation;
@@ -222,7 +238,7 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
         /** Predicted terminal state, excluding the paid-continue boundary. */
         const gameOver = isCorrect || (!canContinue && attempts >= 5 + (state.engineSnapshot?.hasUsedContinue ? 1 : 0));
         /** Immediate presentation before server confirmation. */
-        const preview = gameSessionReducer(state, {
+        const preview = gameSessionReducer({...state, pendingGuessState: null, guessPending: false}, {
           type: "guessResolved",
           feedback: {guess: splitGraphemes(guess, locale), feedback: computeFeedback(guess, normalizedAnswer)},
           attempts,
@@ -236,12 +252,47 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
           ...preview,
           modal: canContinue ? state.modal : preview.modal,
           guessPending: true,
-          pendingGuessState: {
+          pendingGuessState: state.pendingGuessState ?? {
             currentLetters, activeSlotIndex, guesses, engineSnapshot, modal, lastOutcome, completionAcknowledged, letterStates,
           },
         };
       }
       return {...state, guessPending: true, notice: null};
+    case "guessPreviewConfirmed":
+      return {...state, guessPending: false, pendingGuessState: null};
+    case "restoreQueuedGuesses": {
+      if (!state.riddle || action.base.currentLetters.length !== state.riddle.answerLength) return state;
+      /** The restored used by the current operation. */
+      let restored: GameSessionState = {...state, ...action.base, guessPending: false, pendingGuessState: null};
+      for (const guess of action.guesses) {
+        /** The letters used by the current operation. */
+        const letters = splitGraphemes(guess, state.riddle.evaluation?.locale).map((letter) => letter.toUpperCase());
+        if (letters.length !== state.riddle.answerLength || restored.engineSnapshot?.gameOver) return state;
+        restored = gameSessionReducer({...restored, currentLetters: letters}, {type: "guessRequested"});
+      }
+      if (action.draft.length === state.riddle.answerLength && !restored.engineSnapshot?.gameOver)
+        restored = {...restored, currentLetters: action.draft};
+      return restored;
+    }
+    case "restoreConfirmedRiddle": {
+      /** The loaded used by the current operation. */
+      const loaded = gameSessionReducer(state, {type: "loadRiddle", riddle: action.riddle});
+      return {...loaded, ...action.base, guessPending: false, pendingGuessState: null,
+        notice: null, lastRewards: null};
+    }
+    case "guessCheckpointAdvanced": {
+      if (!state.pendingGuessState) return state;
+      /** The checkpoint used by the current operation. */
+      const checkpoint = gameSessionReducer({
+        ...state, ...state.pendingGuessState, guessPending: false, pendingGuessState: null,
+      }, {type: "guessResolved", feedback: action.feedback, attempts: action.attempts,
+        isCorrect: action.isCorrect, gameOver: action.gameOver, canContinue: action.canContinue});
+      /** The destructured result used by the current operation. */
+      const {currentLetters, activeSlotIndex, guesses, engineSnapshot, modal, lastOutcome,
+        completionAcknowledged, letterStates} = checkpoint;
+      return {...state, pendingGuessState: {currentLetters, activeSlotIndex, guesses, engineSnapshot,
+        modal, lastOutcome, completionAcknowledged, letterStates}};
+    }
     case "guessFailed":
       return {...state, ...state.pendingGuessState, guessPending: false, pendingGuessState: null};
     case "guessResolved": {
@@ -329,7 +380,7 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
       return {
         ...state,
         leaderboardType: action.leaderboardType,
-        leaderboard: [],
+        leaderboard: state.leaderboardType === action.leaderboardType ? state.leaderboard : [],
         leaderboardLoading: true,
       };
     case "leaderboardLoaded":
@@ -340,11 +391,11 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
         leaderboardLoading: false,
       };
     case "leaderboardLoadFailed":
-      return {...state, leaderboard: [], leaderboardLoading: false};
+      return {...state, leaderboardLoading: false};
     case "profileUpdated":
-      return {...state, profile: action.profile};
+      return {...state, profile: action.profile, leaderboard: []};
     case "completionReward":
-      return {...state, lastRewards: action.reward};
+      return {...state, lastRewards: action.reward, leaderboard: []};
     case "completionAcknowledged":
       return {...state, completionAcknowledged: true};
     case "showAuxiliaryFanfare":
@@ -442,7 +493,7 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
         return state;
       }
       return action.modal === "leaderboard"
-        ? {...state, modal: action.modal, leaderboard: [], leaderboardLoading: true}
+        ? {...state, modal: action.modal, leaderboardLoading: true}
         : {...state, modal: action.modal};
     case "closeModal":
       return {

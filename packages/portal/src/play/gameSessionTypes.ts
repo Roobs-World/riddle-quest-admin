@@ -135,6 +135,8 @@ export type GameSessionAction =
       riddle: BridgeRiddle; /** Stores profile. */
       /** Stores profile. */
       profile?: BridgeProfile | null;
+      /** The preserve notice used by the current operation. */
+      preserveNotice?: boolean;
     }
   | {
       /** Stores type. */
@@ -159,6 +161,42 @@ export type GameSessionAction =
   | {
       /** Stores type. */
       type: "guessFailed";
+    }
+  | {
+      /** All locally previewed guesses have been accepted by the backend. */
+      type: "guessPreviewConfirmed";
+    }
+  | {
+      /** Reconstructs locally pending rows after a reload. */
+      type: "restoreQueuedGuesses";
+      /** The base used by the current operation. */
+      base: PendingGuessState;
+      /** The guesses used by the current operation. */
+      guesses: string[];
+      /** The draft used by the current operation. */
+      draft: string[];
+    }
+  | {
+      /** Restores the last accepted issued question after rejection. */
+      type: "restoreConfirmedRiddle";
+      /** The riddle used by the current operation. */
+      riddle: BridgeRiddle;
+      /** The base used by the current operation. */
+      base: PendingGuessState;
+    }
+  | {
+      /** Advances rollback state after one queued guess is accepted. */
+      type: "guessCheckpointAdvanced";
+      /** The feedback used by the current operation. */
+      feedback: ScoredGuess;
+      /** The attempts used by the current operation. */
+      attempts: number;
+      /** Whether the guess was correct. */
+      isCorrect: boolean;
+      /** Whether this guess ended the question. */
+      gameOver: boolean;
+      /** Whether a paid continue is available. */
+      canContinue: boolean;
     }
   | {
       /** Stores type. */

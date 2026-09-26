@@ -11,6 +11,7 @@
     "AUTHENTICATION_FAILED": "Error de autenticación",
     "EMAIL_PERMISSION_REQUIRED": "El correo electrónico es obligatorio pero no lo proporciona el proveedor de autenticación. Asegúrese de otorgar permiso por correo electrónico.",
     "GENERIC_UNEXPECTED_ERROR": "Se produjo un error inesperado. Inténtelo de nuevo.",
+    "PLAY_RESTORED": "No se pudo confirmar una respuesta. Se restauró tu último progreso confirmado.",
     "GUESS_CANNOT_BE_EMPTY": "Supongo que no puede estar vacío",
     "INVALID_DATA_FORMAT": "Formato de datos no válido. Por favor verifique su entrada.",
     "NETWORK_ERROR_CHECK_CONNECTION": "Error de red. Verifique su conexión.",

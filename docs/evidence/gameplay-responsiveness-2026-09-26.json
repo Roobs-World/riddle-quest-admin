@@ -1,0 +1,208 @@
+{
+  "gameplay": {
+    "coldDataReadyMs": 438
+  },
+  "profile": {
+    "coldOpenMs": 318.9,
+    "warmOpenMs": [
+      7.1,
+      7.6,
+      8.5,
+      9.1,
+      9.4,
+      9.7,
+      9.9
+    ],
+    "warmP95Ms": 9.9
+  },
+  "settings": {
+    "coldOpenMs": 23.7,
+    "warmOpenMs": [
+      7.3,
+      8.9,
+      9.6,
+      9.7,
+      9.8,
+      10.1,
+      10.3
+    ],
+    "warmP95Ms": 10.3
+  },
+  "shop": {
+    "coldOpenMs": 11.4,
+    "warmOpenMs": [
+      7.5,
+      8.8,
+      8.9,
+      9,
+      9.2,
+      9.3,
+      9.9
+    ],
+    "warmP95Ms": 9.9
+  },
+  "race": {
+    "coldOpenMs": 18.8,
+    "warmOpenMs": [
+      5.6,
+      8.3,
+      8.9,
+      9,
+      9.9,
+      10,
+      10.5
+    ],
+    "warmP95Ms": 10.5
+  },
+  "hint": {
+    "coldOpenMs": 10.1,
+    "warmOpenMs": [
+      9.2,
+      9.5,
+      10,
+      10.3,
+      10.4,
+      10.5,
+      10.9
+    ],
+    "warmP95Ms": 10.9
+  },
+  "skip": {
+    "coldOpenMs": 10.6,
+    "warmOpenMs": [
+      9.2,
+      9.9,
+      10.1,
+      10.3,
+      10.5,
+      10.7,
+      10.7
+    ],
+    "warmP95Ms": 10.7
+  },
+  "statistics": {
+    "coldOpenMs": 6.2,
+    "warmP95Ms": 6
+  },
+  "achievements": {
+    "coldOpenMs": 7.2,
+    "warmP95Ms": 6.6
+  },
+  "treasure": {
+    "coldOpenMs": 4.7,
+    "warmP95Ms": 12.6
+  },
+  "ranks": {
+    "coldOpenMs": 5.1,
+    "warmP95Ms": 6.6
+  },
+  "instructions": {
+    "coldOpenMs": 5.6,
+    "warmP95Ms": 7.9
+  },
+  "credits": {
+    "coldOpenMs": 6,
+    "warmP95Ms": 7
+  },
+  "about": {
+    "coldOpenMs": 4,
+    "warmP95Ms": 7.2
+  },
+  "leaderboard": {
+    "cold": {
+      "openMs": 10,
+      "cachedRowsVisible": 0,
+      "refreshReadyMs": 279.2
+    },
+    "warm": [
+      {
+        "openMs": 7.2,
+        "cachedRowsVisible": 10,
+        "refreshReadyMs": 259.8
+      },
+      {
+        "openMs": 7.5,
+        "cachedRowsVisible": 10,
+        "refreshReadyMs": 262.4
+      },
+      {
+        "openMs": 7.1,
+        "cachedRowsVisible": 10,
+        "refreshReadyMs": 260.6
+      },
+      {
+        "openMs": 10.6,
+        "cachedRowsVisible": 10,
+        "refreshReadyMs": 268.6
+      },
+      {
+        "openMs": 6.8,
+        "cachedRowsVisible": 10,
+        "refreshReadyMs": 264.6
+      },
+      {
+        "openMs": 7,
+        "cachedRowsVisible": 10,
+        "refreshReadyMs": 262
+      },
+      {
+        "openMs": 7.4,
+        "cachedRowsVisible": 10,
+        "refreshReadyMs": 261.6
+      }
+    ],
+    "warmOpenP95Ms": 10.6,
+    "warmRefreshP95Ms": 268.6
+  },
+  "soloFeedback": {
+    "samples": [
+      7,
+      10.1,
+      6.5,
+      5.3,
+      12.9,
+      14.8,
+      10.5,
+      9.1,
+      9,
+      11.7,
+      10.1,
+      4.1,
+      7.6,
+      9.1,
+      11.8,
+      10.7,
+      5.7,
+      2.9,
+      4.6,
+      11.5,
+      7.2,
+      4.5,
+      3.6,
+      8.9,
+      10.9
+    ],
+    "p95Ms": 12.9
+  },
+  "bufferedTransition": {
+    "samples": [
+      17,
+      19.9,
+      40.1,
+      21.4,
+      28.6
+    ],
+    "p95Ms": 40.1
+  },
+  "raceFeedback": {
+    "samples": [
+      12.2,
+      13.3,
+      11.3,
+      11.2,
+      11.4
+    ],
+    "p95Ms": 13.3
+  },
+  "mobileProfile": "390x844, DPR 2, 4x CPU slowdown, 4 logical cores, 4 GiB reported memory, local injected Jest harness"
+}

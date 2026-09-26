@@ -51,6 +51,7 @@ describe("Firebase browser adapter", () => {
       "confirmYahooStripeCheckout",
       "getCurrentDailyChallenge",
       "getCurrentClassicRiddle",
+      "getClassicRiddleBuffer",
       "completeGame",
       "submitSinglePlayerGuess",
       "getHint",

@@ -54,6 +54,8 @@ export type HostRiddleLifecycle = Readonly<{
       locale: string;
       /** Optional classic progression index. */
       classicIndex?: number;
+      /** The authoritative used by the current operation. */
+      authoritative?: boolean;
     },
     requestId?: string,
   ) => Promise<boolean>;
@@ -103,6 +105,8 @@ export function useHostRiddleLifecycle({
         locale: string;
         /** Optional classic progression index. */
         classicIndex?: number;
+        /** The authoritative used by the current operation. */
+        authoritative?: boolean;
       },
       requestId?: string,
     ): Promise<boolean> => {
