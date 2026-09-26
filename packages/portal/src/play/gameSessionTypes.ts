@@ -48,6 +48,12 @@ export type GameSessionState = {
   /** Scored guesses already submitted for the current riddle. */ guesses: ScoredGuess[];
   /** Indicates that an authoritative guess request is in flight. */ guessPending: boolean;
   /** Confirmed gameplay state before an immediate feedback preview. */ pendingGuessState: PendingGuessState | null;
+  /** The letter replaced by a hint while its server charge is unconfirmed. */
+  pendingHintState: {
+    /** Previewed answer position. */ index: number;
+    /** Letter replaced by the preview. */ previousLetter: string;
+    /** Keyboard position before the preview. */ previousActiveSlotIndex: number;
+  } | null;
   /** Serializable snapshot of the deterministic game engine. */ engineSnapshot: GameEngineSnapshot | null;
   /** Modal currently presented above the game. */ modal: GameModal;
   /** Indicates whether game audio is muted. */ muted: boolean;
@@ -211,6 +217,16 @@ export type GameSessionAction =
       gameOver: boolean; /** Stores can continue. */
       /** Stores can continue. */
       canContinue: boolean;
+    }
+  | {
+      /** Shows a deterministic hint while the server confirms its coin charge. */
+      type: "previewHint";
+      /** Answer position being revealed. */ index: number;
+      /** Revealed answer letter. */ letter: string;
+    }
+  | {
+      /** Removes a hint whose server charge was rejected. */
+      type: "rejectHint";
     }
   | {
       /** Stores type. */

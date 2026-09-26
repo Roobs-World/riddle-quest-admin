@@ -875,7 +875,7 @@ describe("Daily Challenge Functions", () => {
   });
 
   describe("getCurrentClassicRiddle (v2)", () => {
-    it("issues no more than three Classic questions from confirmed progress", async () => {
+    it("issues the current Classic question and three upcoming questions", async () => {
       mockGetUser.mockResolvedValue(getDefaultPlayer("classicUser", {
         progress: {classicIndex: 10, dailyChallengeIndex: 0, dailyChallengeCurrentQuestion: 0},
       }));
@@ -893,9 +893,9 @@ describe("Daily Challenge Functions", () => {
       expect(result.confirmedClassicIndex).toBe(10);
       expect(result.riddles.map((riddle: {
         /** Issued Classic position. */ classicIndex: number;
-      }) => riddle.classicIndex)).toEqual([10, 11, 12]);
+      }) => riddle.classicIndex)).toEqual([10, 11, 12, 13]);
       expect(result.riddles[1].question.evaluation).toEqual({answer: "ANSWER", locale: "en"});
-      expect(mockGetClassicRiddleByIndex).not.toHaveBeenCalledWith(13, "en");
+      expect(mockGetClassicRiddleByIndex).not.toHaveBeenCalledWith(14, "en");
     });
 
     it("should throw HttpsError if not authenticated", async () => {

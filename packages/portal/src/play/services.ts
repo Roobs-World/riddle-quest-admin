@@ -62,6 +62,10 @@ const createLazyHostServices = (
       };
     },
   },
+  /** Starts initial riddle downloads after the target adapter has loaded. */
+  preloadInitialRiddles(locale) {
+    void loadServices().then((services) => services.preloadInitialRiddles?.(locale)).catch(() => undefined);
+  },
   /** Loads riddle. */
   async loadRiddle(input) {
     return (await loadServices()).loadRiddle(input);

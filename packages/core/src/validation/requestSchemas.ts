@@ -194,14 +194,14 @@ export const GetCurrentDailyChallengeResponseSchema = z
 /** Describes get current daily challenge response. */
 export type GetCurrentDailyChallengeResponse = z.infer<typeof GetCurrentDailyChallengeResponseSchema>;
 
-/** A bounded set of issued Classic sessions anchored to confirmed progression. */
+/** The current Classic session and up to three successors anchored to confirmed progress. */
 export const ClassicRiddleBufferResponseSchema = z.object({
   confirmedClassicIndex: z.number().int().positive(),
   riddles: z.array(z.object({
     classicIndex: z.number().int().positive(),
     expiresAtMs: z.number().int().positive(),
     question: DailyChallengeQuestionSchema,
-  }).strict()).max(3),
+  }).strict()).max(4),
 }).strict();
 /** The classic riddle buffer response used by the current operation. */
 export type ClassicRiddleBufferResponse = z.infer<typeof ClassicRiddleBufferResponseSchema>;

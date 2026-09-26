@@ -8,7 +8,7 @@ export type HostAuthorityModules = Readonly<{
   /** Stores gameplay. */
   gameplay: Pick<
     HostServices,
-    "loadRiddle" | "loadProfile" | "completeGame" | "submitGuess" | "skipRiddle"
+    "loadRiddle" | "preloadInitialRiddles" | "loadProfile" | "completeGame" | "submitGuess" | "skipRiddle"
   >;
   /** Read-only public ranking authority available independently of account management. */
   leaderboard: Pick<HostServices, "loadLeaderboard">;

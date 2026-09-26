@@ -1,7 +1,7 @@
 import {useCallback, useEffect, useRef, useState} from "react";
 import type {Dispatch, MutableRefObject} from "react";
-import type {GameToHostMessage, HostToGameMessage} from "@qwordly/core/bridge";
-import {computeFeedback, splitGraphemes} from "@qwordly/core/game";
+import type {BridgeRiddle, GameToHostMessage, HostToGameMessage} from "@qwordly/core/bridge";
+import {computeFeedback, lowerCaseGraphemes, splitGraphemes} from "@qwordly/core/game";
 import type {SavedGame} from "../../../platform/types";
 import {prepareAvatarImage} from "../../avatarImage";
 import type {GameSessionAction, GameSessionState} from "../../gameSessionTypes";
@@ -94,6 +94,16 @@ export function useGameOperations({
     /** Question being left behind. */
     sessionToken: string;
   } | null>(null);
+  /** Correlates the speculative issued successor shown before a Skip receipt. */
+  const skipPreviewRef = useRef<{
+    /** Request that loaded the provisional successor. */ requestId: string;
+    /** Session being skipped. */ sessionToken: string;
+  } | null>(null);
+  /** Holds an authoritative successor that arrives before its correlated Skip receipt. */
+  const earlySkipLoadRef = useRef<{
+    /** Paid Skip request awaiting confirmation. */ requestId: string;
+    /** Server-confirmed successor. */ riddle: BridgeRiddle;
+  } | null>(null);
   /** The lease renew ref used by the current operation. */
   const leaseRenewRef = useRef<number | null>(null);
   /** The scope used by the current operation. */
@@ -143,6 +153,8 @@ export function useGameOperations({
     setPendingCount(0);
     setCoinActionPending(false);
     skipLoadRef.current = null;
+    skipPreviewRef.current = null;
+    earlySkipLoadRef.current = null;
     journalRef.current = null;
     priorScopeRef.current = scope;
     setJournalAvailable(true);
@@ -156,7 +168,7 @@ export function useGameOperations({
       /** The previous used by the current operation. */
       const previous = activeJournal.successors.at(-1)?.riddle ?? activeJournal.riddle;
       if (state.riddle.gameMode !== "classic" || state.riddle.index !== (previous.index ?? 0) + 1 ||
-        activeJournal.successors.length >= 2) return;
+        activeJournal.successors.length >= 3) return;
       activeJournal.successors.push({riddle: state.riddle, base: capturePendingBase(state), draft: []});
       writePendingGuessJournal(activeJournal);
       return;
@@ -236,7 +248,7 @@ export function useGameOperations({
     const nextClassic = current.gameMode === "classic" && current.lastOutcome?.kind === "win" &&
       current.riddle?.index !== undefined;
     if (nextClassic && journalRef.current &&
-      current.riddle!.index! + 1 > journalRef.current.confirmedClassicIndex + 2) return;
+      current.riddle!.index! + 1 > journalRef.current.confirmedClassicIndex + 3) return;
     postToHost({
       type: "game:loadRiddle",
       requestId: createRequestId("load"),
@@ -365,6 +377,8 @@ export function useGameOperations({
       if (!action || action.requestId !== message.requestId ||
         message.payload.operation !== (action.type === "game:requestHint" ? "hint" : "skip")) return true;
       if (!message.payload.ok && message.payload.errorKind === "retryable") return true;
+      /** Durable confirmed state before the paid action. */
+      const checkpoint = journalRef.current;
       if (journalRef.current) {
         clearPendingGuessJournal(journalRef.current.scope);
         releasePendingPlayLease(journalRef.current.scope, ownerRef.current);
@@ -373,14 +387,27 @@ export function useGameOperations({
       sentRequestRef.current = null;
       /** Only the current question may consume this action's result and successor. */
       const currentSession = action.payload.sessionToken === stateRef.current.riddle?.sessionToken;
-      if (currentSession && message.payload.ok && action.type === "game:skipRiddle") {
-        skipLoadRef.current = {requestId: action.requestId!, sessionToken: action.payload.sessionToken};
+      if (!message.payload.ok && action.type === "game:requestHint") dispatch({type: "rejectHint"});
+      if (!message.payload.ok && action.type === "game:skipRiddle") {
+        skipPreviewRef.current = null;
+        earlySkipLoadRef.current = null;
+        if (checkpoint) dispatch({type: "restoreConfirmedRiddle", riddle: checkpoint.riddle, base: checkpoint.base});
+      }
+      if (message.payload.ok && action.type === "game:skipRiddle") {
+        /** Successor returned before the paid Skip receipt. */
+        const early = earlySkipLoadRef.current;
+        if (early && early.requestId === action.requestId) {
+          if (stateRef.current.riddle?.sessionToken !== early.riddle.sessionToken)
+            dispatch({type: "loadRiddle", riddle: early.riddle});
+          earlySkipLoadRef.current = null;
+          skipPreviewRef.current = null;
+        } else skipLoadRef.current = {requestId: action.requestId!, sessionToken: action.payload.sessionToken};
       }
       setCoinActionPending(Boolean(skipLoadRef.current));
       if (leaseRenewRef.current !== null) window.clearInterval(leaseRenewRef.current);
       leaseRenewRef.current = null;
       // A late hint must never reveal a letter in a different question or account.
-      return !currentSession;
+      return message.payload.ok ? !currentSession : false;
     }
     /** The first used by the current operation. */
     const first = queuedGuessesRef.current[0];
@@ -524,10 +551,24 @@ export function useGameOperations({
   const acceptRiddleResult = useCallback((message: Extract<HostToGameMessage, {
     /** Correlated question result. */ type: "host:riddleLoaded";
   }>) => {
+    if (message.requestId?.startsWith("skip-preview-")) {
+      /** Locally shown state awaiting server confirmation. */
+      const preview = skipPreviewRef.current;
+      if (!preview || preview.requestId !== message.requestId ||
+        (!journalRef.current?.coinAction && !skipLoadRef.current)) return false;
+      return true;
+    }
     if (message.requestId?.startsWith("skip-")) {
-      if (skipLoadRef.current?.requestId !== message.requestId) return false;
+      if (skipLoadRef.current?.requestId !== message.requestId) {
+        if (journalRef.current?.coinAction?.type === "game:skipRiddle" &&
+          journalRef.current.coinAction.requestId === message.requestId)
+          earlySkipLoadRef.current = {requestId: message.requestId, riddle: message.payload.riddle};
+        return false;
+      }
       skipLoadRef.current = null;
+      skipPreviewRef.current = null;
       setCoinActionPending(false);
+      if (stateRef.current.riddle?.sessionToken === message.payload.riddle.sessionToken) return false;
     } else if (skipLoadRef.current && message.payload.riddle.sessionToken !== skipLoadRef.current.sessionToken) {
       skipLoadRef.current = null;
       setCoinActionPending(false);
@@ -536,14 +577,14 @@ export function useGameOperations({
   }, []);
 
   /** Persists a confirmed coin action behind earlier answers before any network delivery. */
-  const enqueueCoinAction = useCallback((message: QueuedCoinAction) => {
+  const enqueueCoinAction = useCallback((message: QueuedCoinAction): boolean => {
     /** Latest gameplay state, including a draft typed while prior answers synchronize. */
     const current = stateRef.current;
-    if (!scope || !current.riddle || journalRef.current?.coinAction || skipLoadRef.current) return;
+    if (!scope || !current.riddle || journalRef.current?.coinAction || skipLoadRef.current) return false;
     if ((current.guessPending && !journalRef.current) ||
       !acquirePendingPlayLease(scope, ownerRef.current)) {
       dispatch({type: "setNotice", notice: "ErrorMessages.SERVICE_TEMPORARILY_UNAVAILABLE"});
-      return;
+      return false;
     }
     /** Existing ordered answers, or a checkpoint for a standalone coin action. */
     const journal: PendingGuessJournal = {...(journalRef.current ?? {
@@ -552,12 +593,13 @@ export function useGameOperations({
     }), coinAction: message};
     if (!writePendingGuessJournal(journal)) {
       dispatch({type: "setNotice", notice: "ErrorMessages.SERVICE_TEMPORARILY_UNAVAILABLE"});
-      return;
+      return false;
     }
     journalRef.current = journal;
     setCoinActionPending(true);
     if (queuedGuessesRef.current.length === 0) sendFirst();
     if (leaseRenewRef.current === null) leaseRenewRef.current = window.setInterval(sendFirst, 5_000);
+    return true;
   }, [dispatch, scope, sendFirst, stateRef]);
 
   useEffect(() => {
@@ -579,7 +621,8 @@ export function useGameOperations({
         ? retry.requestId
         : createRequestId("hint");
     hintRetryRef.current = {sessionToken: state.riddle.sessionToken, attempt, requestId};
-    enqueueCoinAction({
+    /** Whether the paid action was durably queued. */
+    const accepted = enqueueCoinAction({
       type: "game:requestHint",
       requestId,
       payload: {
@@ -590,7 +633,19 @@ export function useGameOperations({
         currentAttempt,
       },
     });
-  }, [currentAttempt, enqueueCoinAction, state.engineSnapshot?.gameOver, state.riddle]);
+    if (accepted && state.riddle.evaluation) {
+      /** Preloaded answer and content locale used to reveal the hint. */
+      const {answer, locale} = state.riddle.evaluation;
+      /** Normalized answer letters used to choose the hint position. */
+      const answerLetters = lowerCaseGraphemes(answer.trim(), locale);
+      /** Answer position selected for the hint. */
+      const index = answerLetters.findIndex((letter, candidate) =>
+        !state.hintRevealedIndices.includes(candidate) &&
+        lowerCaseGraphemes(currentAttempt[candidate] ?? "", locale).join("") !== letter);
+      if (index >= 0) dispatch({type: "previewHint", index,
+        letter: answerLetters[index] ?? ""});
+    }
+  }, [currentAttempt, dispatch, enqueueCoinAction, state.engineSnapshot?.gameOver, state.hintRevealedIndices, state.riddle]);
 
   useEffect(() => {
     hintRetryRef.current = null;
@@ -629,7 +684,8 @@ export function useGameOperations({
     /** Requests id. */
     const requestId = retry?.sessionToken === state.riddle.sessionToken ? retry.requestId : createRequestId("skip");
     skipRetryRef.current = {sessionToken: state.riddle.sessionToken, requestId};
-    enqueueCoinAction({
+    /** Whether the paid action was durably queued. */
+    const accepted = enqueueCoinAction({
       type: "game:skipRiddle",
       requestId,
       payload: {
@@ -638,7 +694,15 @@ export function useGameOperations({
         sessionToken: state.riddle.sessionToken,
       },
     });
-  }, [enqueueCoinAction, state.riddle]);
+    if (accepted && state.riddle.index !== undefined) {
+      /** Correlation ID for the speculative successor request. */
+      const requestId = createRequestId("skip-preview");
+      skipPreviewRef.current = {requestId, sessionToken: state.riddle.sessionToken};
+      postToHost({type: "game:loadRiddle", requestId, payload: {
+        gameMode: "classic", locale: state.locale, classicIndex: state.riddle.index + 1,
+      }});
+    }
+  }, [enqueueCoinAction, postToHost, state.locale, state.riddle]);
 
   /** Requests purchase. */
   const requestPurchase = useCallback(
@@ -705,7 +769,7 @@ export function useGameOperations({
     canSubmit,
     bufferExhausted: pendingCount > 0 && state.gameMode === "classic" &&
       state.lastOutcome?.kind === "win" && state.riddle?.index !== undefined &&
-      state.riddle.index + 1 > (journalRef.current?.confirmedClassicIndex ?? state.profile?.classicIndex ?? 1) + 2,
+      state.riddle.index + 1 > (journalRef.current?.confirmedClassicIndex ?? state.profile?.classicIndex ?? 1) + 3,
     submitGuess,
     handleQueuedGuessResult,
     acceptRiddleResult,

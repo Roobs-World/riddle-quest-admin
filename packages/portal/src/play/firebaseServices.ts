@@ -85,6 +85,52 @@ export const createFirebaseHostServices = (): HostServices => {
     /** Content locale. */ locale: string;
     /** Server-issued buffer. */ data: ClassicRiddleBufferResponse;
   } | null = null;
+  /** Shared request that fills the Classic queue. */
+  let classicBufferInFlight: {
+    /** Player requesting the queue. */ uid: string;
+    /** Requested content locale. */ locale: string;
+    /** Pending response. */ promise: Promise<ClassicRiddleBufferResponse>;
+  } | null = null;
+  /** Daily response retained until progress changes or the UTC day rolls over. */
+  let dailyPreload: {
+    /** Player owning the Daily session. */ uid: string;
+    /** Requested content locale. */ locale: string;
+    /** UTC challenge day. */ day: string;
+    /** Pending or completed response. */ promise: Promise<CurrentRiddleResponse>;
+  } | null = null;
+  /** Returns the current UTC challenge day. */
+  const utcDay = () => new Date().toISOString().slice(0, 10);
+  /** Loads the Daily session once for this player, locale, and UTC day. */
+  const preloadDaily = (uid: string, locale: string): Promise<CurrentRiddleResponse> => {
+    /** UTC day associated with the cached Daily response. */
+    const day = utcDay();
+    if (dailyPreload?.uid === uid && dailyPreload.locale === locale && dailyPreload.day === day)
+      return dailyPreload.promise;
+    /** Request shared by concurrent callers. */
+    const promise = getCurrentDailyChallenge({locale, includeEvaluation: true}).then(({data}) => data).catch((error: unknown) => {
+      if (dailyPreload?.promise === promise) dailyPreload = null;
+      throw error;
+    });
+    dailyPreload = {uid, locale, day, promise};
+    return promise;
+  };
+  /** Fetches issued Classic sessions without letting an older response replace newer progress. */
+  const refreshClassicBuffer = (uid: string, locale: string, force = false): Promise<ClassicRiddleBufferResponse> => {
+    if (!force && classicBufferInFlight?.uid === uid && classicBufferInFlight.locale === locale)
+      return classicBufferInFlight.promise;
+    /** Request shared by concurrent callers. */
+    const promise = getClassicRiddleBuffer({locale}).then(({data}) => {
+      if (latestSnapshot.user?.uid === uid &&
+        (classicBuffer?.uid !== uid || classicBuffer.locale !== locale ||
+          data.confirmedClassicIndex >= classicBuffer.data.confirmedClassicIndex))
+        classicBuffer = {uid, locale, data};
+      return data;
+    }).finally(() => {
+      if (classicBufferInFlight?.promise === promise) classicBufferInFlight = null;
+    });
+    classicBufferInFlight = {uid, locale, promise};
+    return promise;
+  };
   /** Provides subscribers behavior. */
   const subscribers = new Set<(snapshot: AuthSnapshot) => void>();
 
@@ -104,6 +150,14 @@ export const createFirebaseHostServices = (): HostServices => {
 
   return {
     products: [],
+    /** Starts Daily and Classic downloads when the player session is ready. */
+    preloadInitialRiddles(locale) {
+      /** Account that owns the issued riddle sessions. */
+      const uid = latestSnapshot.user?.uid;
+      if (!uid) return;
+      void refreshClassicBuffer(uid, locale).catch(() => undefined);
+      void preloadDaily(uid, locale).catch(() => undefined);
+    },
     auth: {
       /** Provides subscribe behavior. */
       subscribe(listener) {
@@ -125,45 +179,56 @@ export const createFirebaseHostServices = (): HostServices => {
     async loadRiddle({gameMode, locale, classicIndex, sessionToken, riddleId, authoritative}) {
       if (gameMode === "challenge") {
         /** Provides result behavior. */
-        const result = await getCurrentDailyChallenge({locale, sessionToken, riddleId, includeEvaluation: true});
-        return mapRiddleResponse(result.data, "challenge");
+        const data = !sessionToken && !riddleId && latestSnapshot.user
+          ? await preloadDaily(latestSnapshot.user.uid, locale)
+          : (await getCurrentDailyChallenge({locale, sessionToken, riddleId, includeEvaluation: true})).data;
+        return mapRiddleResponse(data, "challenge");
       }
 
       /** The uid used by the current operation. */
       const uid = latestSnapshot.user?.uid;
       if (authoritative && uid) {
-        /** The destructured result used by the current operation. */
-        const {data} = await getClassicRiddleBuffer({locale});
-        classicBuffer = {uid, locale, data};
+        /** Validated riddle response from the host. */
+        const data = await refreshClassicBuffer(uid, locale);
         /** The issued used by the current operation. */
         const issued = data.riddles.find((item) => item.classicIndex === data.confirmedClassicIndex);
         if (!issued) throw new Error("classic-buffer-unavailable");
         return {...mapRiddleResponse({challenge: {questions: [issued.question], totalQuestions: 1}}, "classic"),
           index: issued.classicIndex};
       }
-      /** The buffer used by the current operation. */
-      const buffer = classicBuffer;
-      /** The cached used by the current operation. */
-      let cached = buffer && buffer.uid === uid && buffer.locale === locale
-        ? buffer.data.riddles.find((item) =>
-            item.classicIndex === classicIndex &&
-            item.classicIndex > buffer.data.confirmedClassicIndex &&
-            item.expiresAtMs > Date.now() + 30_000,
-          )
-        : undefined;
-      if (!cached && uid && classicIndex &&
-        classicIndex > (buffer?.data.confirmedClassicIndex ?? latestSnapshot.profile?.classicIndex ?? 1) &&
-        !sessionToken && !riddleId) {
-        /** The destructured result used by the current operation. */
-        const {data} = await getClassicRiddleBuffer({locale});
-        classicBuffer = {uid, locale, data};
-        cached = data.riddles.find((item) => item.classicIndex === classicIndex &&
-          item.classicIndex > data.confirmedClassicIndex && item.expiresAtMs > Date.now() + 30_000);
+      /** The requested position, including the initial current question. */
+      const requestedIndex = classicIndex ?? latestSnapshot.profile?.classicIndex ?? 1;
+      /** Finds a fresh, server-issued question for this account and locale. */
+      const findCached = () => {
+        /** Issued Classic question buffer for the current player. */
+        const buffer = classicBuffer;
+        return buffer && buffer.uid === uid && buffer.locale === locale
+          ? buffer.data.riddles.find((item) => item.classicIndex === requestedIndex &&
+              item.expiresAtMs > Date.now() + 30_000)
+          : undefined;
+      };
+      /** Unexpired issued question matching the requested index. */
+      let cached = !sessionToken && !riddleId ? findCached() : undefined;
+      if (!cached && uid && !sessionToken && !riddleId) {
+        /** Background request that may fill the Classic queue. */
+        const pending = refreshClassicBuffer(uid, locale);
+        if (requestedIndex > (latestSnapshot.profile?.classicIndex ?? 1)) {
+          try {
+            await pending;
+            cached = findCached();
+          } catch {
+            // The ordinary current-question callable remains available during buffer outages.
+          }
+        } else {
+          // Show the current question while its three successors download.
+          void pending.catch(() => undefined);
+        }
       }
       if (cached && !sessionToken && !riddleId) {
         /** The riddle used by the current operation. */
         const riddle = mapRiddleResponse({challenge: {questions: [cached.question], totalQuestions: 1}}, "classic");
-        void getClassicRiddleBuffer({locale}).then(({data}) => { classicBuffer = {uid: uid!, locale, data}; }).catch(() => undefined);
+        if (uid && cached.classicIndex > (classicBuffer?.data.confirmedClassicIndex ?? requestedIndex))
+          void refreshClassicBuffer(uid, locale).catch(() => undefined);
         return {...riddle, index: cached.classicIndex};
       }
 
@@ -175,7 +240,7 @@ export const createFirebaseHostServices = (): HostServices => {
         sessionToken,
         riddleId,
       });
-      if (uid) void getClassicRiddleBuffer({locale}).then(({data}) => { classicBuffer = {uid, locale, data}; }).catch(() => undefined);
+      if (uid) void refreshClassicBuffer(uid, locale).catch(() => undefined);
       return {...mapRiddleResponse(result.data, "classic"), index: classicIndex ?? latestSnapshot.profile?.classicIndex ?? 1};
     },
     /** Loads profile. */
@@ -188,6 +253,7 @@ export const createFirebaseHostServices = (): HostServices => {
     async completeGame(input) {
       /** Provides result behavior. */
       const result = await completeGame(input);
+      if (input.gameMode === "challenge") dailyPreload = null;
       if (latestSnapshot.user) {
         emit({user: latestSnapshot.user, profile: await reloadProfile(latestSnapshot.user)});
       }
@@ -198,11 +264,14 @@ export const createFirebaseHostServices = (): HostServices => {
       /** The result used by the current operation. */
       const result = (await submitSinglePlayerGuess(input)).data;
       if (result.gameOver && latestSnapshot.user) {
+        if (input.gameMode === "challenge") dailyPreload = null;
         /** The user used by the current operation. */
         const user = latestSnapshot.user;
         void reloadProfile(user).then((profile) => {
           if (latestSnapshot.user?.uid === user.uid) emit({user, profile});
         }).catch(() => undefined);
+        if (input.gameMode === "classic" && classicBuffer?.uid === user.uid)
+          void refreshClassicBuffer(user.uid, classicBuffer.locale, true).catch(() => undefined);
       }
       return result;
     },
@@ -211,7 +280,11 @@ export const createFirebaseHostServices = (): HostServices => {
       /** Provides result behavior. */
       const result = await getHint(input);
       if (latestSnapshot.user) {
-        emit({user: latestSnapshot.user, profile: await reloadProfile(latestSnapshot.user)});
+        /** Current authenticated player for the background refresh. */
+        const user = latestSnapshot.user;
+        void reloadProfile(user).then((profile) => {
+          if (latestSnapshot.user?.uid === user.uid) emit({user, profile});
+        }).catch(() => undefined);
       }
       return result.data;
     },
@@ -229,7 +302,13 @@ export const createFirebaseHostServices = (): HostServices => {
       /** Provides result behavior. */
       const result = await skipRiddle(input);
       if (latestSnapshot.user) {
-        emit({user: latestSnapshot.user, profile: await reloadProfile(latestSnapshot.user)});
+        /** Current authenticated player for the background refresh. */
+        const user = latestSnapshot.user;
+        void reloadProfile(user).then((profile) => {
+          if (latestSnapshot.user?.uid === user.uid) emit({user, profile});
+        }).catch(() => undefined);
+        if (classicBuffer?.uid === user.uid)
+          void refreshClassicBuffer(user.uid, classicBuffer.locale, true).catch(() => undefined);
       }
       return result.data;
     },

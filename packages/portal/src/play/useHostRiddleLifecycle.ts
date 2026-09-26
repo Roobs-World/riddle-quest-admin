@@ -17,7 +17,7 @@ type HostRiddleLifecycleOptions = Readonly<{
   /** Current game locale. */
   locale: string;
   /** Target-specific host operations. */
-  services: Pick<HostServices, "loadRiddle">;
+  services: Pick<HostServices, "loadRiddle" | "preloadInitialRiddles">;
   /** Runs globally blocking server activity. */
   withActivity: <Result>(operation: () => Promise<Result>) => Promise<Result>;
   /** Delivers a bridge message to the game. */
@@ -123,7 +123,9 @@ export function useHostRiddleLifecycle({
           // Prepare Hint/Skip while the adapter loads and refills its issued question buffer.
           void preloadGameModals().catch(() => undefined);
           /** Authoritative riddle returned by the active target adapter. */
-          const riddle = await withActivity(() => services.loadRiddle(input));
+          const riddle = loadedRef.current && !input.authoritative
+            ? await services.loadRiddle(input)
+            : await withActivity(() => services.loadRiddle(input));
           if (contextVersion !== contextVersionRef.current) return false;
           loadedRef.current = true;
           postToGame({
@@ -142,6 +144,8 @@ export function useHostRiddleLifecycle({
           onPlayable?.();
           return true;
         } catch (error) {
+          // A speculative Skip load is optional; the accepted Skip response will load its successor.
+          if (requestId?.startsWith("skip-preview-")) return false;
           loadedRef.current = false;
           captureBrowserException(error, {component: "play_host", operation: "loadRiddle"});
           /** Safe player-facing failure notice. */
@@ -168,6 +172,7 @@ export function useHostRiddleLifecycle({
     loadInFlightRef.current = null;
     loadedRef.current = false;
     if (!userId) return;
+    services.preloadInitialRiddles?.(locale);
     /** Whether this context generation has been disposed. */
     let cancelled = false;
     /** Active recovery timer. */

@@ -278,7 +278,7 @@ export const createPlayHostMessageHandlers = ({
       /** Provides result behavior. */
       const economy = requireAuthority(authority.economy, "host-economy-capability-unavailable");
       /** Provides result behavior. */
-      const result = await withServerActivity(() => economy.requestHint(message.payload));
+      const result = await economy.requestHint(message.payload);
       postOperation(message.requestId, "hint", true, result);
       trackEvent("spend_virtual_currency", {
         virtual_currency_name: "coins",
@@ -319,14 +319,12 @@ export const createPlayHostMessageHandlers = ({
       /** Provides {riddle id, game mode: skip game mode, session token} behavior. */
       const {riddleId, gameMode: skipGameMode, sessionToken} = message.payload;
       /** Provides result behavior. */
-      const result = await withServerActivity(() =>
-        authority.gameplay.skipRiddle({
+      const result = await authority.gameplay.skipRiddle({
           riddleId,
           gameMode: skipGameMode,
           sessionToken,
           requestId: message.requestId ?? createRequestId("skip"),
-        }),
-      );
+        });
       postOperation(message.requestId, "skip", true, result);
       trackEvent("riddle_skipped", {game_mode: skipGameMode, value: result.costDeducted});
       await loadAndPostRiddle({

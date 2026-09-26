@@ -5,6 +5,16 @@ import type {GameSessionAction, GameSessionState} from "../../gameSession";
 /** Projects an active game session into the versioned low-integrity Jest player-data snapshot. */
 export const createSavedGame = (state: GameSessionState, savedAt = Date.now()): SavedGame | null => {
   if (state.pendingGuessState) state = {...state, ...state.pendingGuessState, pendingGuessState: null};
+  if (state.pendingHintState) {
+    /** Unconfirmed hint details restored before saving. */
+    const {index, previousLetter, previousActiveSlotIndex} = state.pendingHintState;
+    /** Current draft with any unconfirmed hint removed. */
+    const currentLetters = [...state.currentLetters];
+    currentLetters[index] = previousLetter;
+    state = {...state, currentLetters, activeSlotIndex: previousActiveSlotIndex,
+      hintRevealedIndices: state.hintRevealedIndices.filter((candidate) => candidate !== index),
+      pendingHintState: null};
+  }
   if (!state.riddle || !state.engineSnapshot || (state.lastOutcome && state.completionAcknowledged)) return null;
   return {
     schemaVersion: 1,

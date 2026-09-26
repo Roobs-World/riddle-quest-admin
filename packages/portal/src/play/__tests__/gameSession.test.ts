@@ -6,6 +6,7 @@ import {
   type GameSessionAction,
   type GameSessionState,
 } from "../gameSession";
+import {createSavedGame} from "../game/hooks/useGameSessionPersistence";
 
 /** Provides riddle behavior. */
 const riddle = {
@@ -43,6 +44,23 @@ const resolveGuess = (
   });
 
 describe("game session reducer", () => {
+  it("previews a hint without saving it and restores only its slot if the charge fails", () => {
+    /** Session state used by this assertion. */
+    let state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle: {
+      ...riddle, evaluation: {answer: "piano", locale: "en"},
+    }});
+    state = reduce(state, {type: "typeLetter", letter: "C"});
+    state = reduce(state, {type: "previewHint", index: 0, letter: "P"});
+    expect(state.currentLetters[0]).toBe("P");
+    expect(state.hintRevealedIndices).toEqual([0]);
+    expect(createSavedGame(state)?.currentLetters[0]).toBe("C");
+    expect(createSavedGame(state)?.hintRevealedIndices).toEqual([]);
+    state = reduce(state, {type: "typeLetter", letter: "A"});
+    state = reduce(state, {type: "rejectHint"});
+    expect(state.currentLetters.slice(0, 2)).toEqual(["C", "A"]);
+    expect(state.hintRevealedIndices).toEqual([]);
+  });
+
   it.each(["hint", "skip"] as const)("opens %s while a wrong answer is awaiting confirmation", (modal) => {
     /** Locally evaluated wrong answer with its server response still pending. */
     let state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle: {

@@ -195,6 +195,8 @@ export type HostServices = {
   readonly products: ProductSummary[];
   /** Stores auth. */
   readonly auth: AuthAdapter;
+  /** Starts loading the Daily riddle and issued Classic queue for the initial play session. */
+  preloadInitialRiddles?: (locale: string) => void;
   /** Loads riddle. */
   loadRiddle(input: {
     /** Stores game mode. */

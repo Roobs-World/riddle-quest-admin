@@ -68,6 +68,70 @@ it.each([false, true])("loads canonical feedback through same-origin routes, ava
   expect((global.fetch as jest.Mock).mock.calls.every(([path]) => String(path).startsWith("/api/"))).toBe(true);
 });
 
+it("opens the current Classic riddle while three upcoming riddles download", async () => {
+  /** Completes the deferred Classic buffer response. */
+  let releaseBuffer!: (value: Response) => void;
+  /** Deferred Classic buffer response for the startup test. */
+  const pendingBuffer = new Promise<Response>((resolve) => { releaseBuffer = resolve; });
+  /** Server-shaped riddle fixture for the preload test. */
+  const question = (index: number) => ({
+    riddleId: `classic-${index}`, text: `Question ${index}`, answerLength: 5,
+    sessionToken: `00000000-0000-4000-8000-${String(index).padStart(12, "0")}`,
+    questionNumber: 1, attemptsUsed: 0, hasUsedContinue: false, awaitingContinue: false,
+  });
+  global.fetch = jest.fn((input) => {
+    /** Same-origin route requested by the adapter. */
+    const path = String(input);
+    if (path === "/api/game/riddle.classic-buffer") return pendingBuffer;
+    if (path === "/api/game/riddle.classic")
+      return response({challenge: {totalQuestions: 1, questions: [question(1)]}});
+    throw new Error(`unexpected route ${path}`);
+  }) as typeof fetch;
+  /** Reddit host adapter being tested. */
+  const services = createRedditHostServices();
+  await expect(services.loadRiddle({gameMode: "classic", locale: "en", classicIndex: 1}))
+    .resolves.toMatchObject({riddleId: "classic-1", index: 1});
+  expect(global.fetch).toHaveBeenCalledWith("/api/game/riddle.classic-buffer", expect.anything());
+  releaseBuffer(await response({confirmedClassicIndex: 1, riddles: [1, 2, 3, 4].map((index) => ({
+    classicIndex: index, expiresAtMs: Date.now() + 60_000, question: question(index),
+  }))}));
+  await pendingBuffer;
+  await Promise.resolve();
+  await expect(services.loadRiddle({gameMode: "classic", locale: "en", classicIndex: 2}))
+    .resolves.toMatchObject({riddleId: "classic-2", index: 2});
+  expect(global.fetch).not.toHaveBeenCalledWith("/api/game/riddle.classic", expect.objectContaining({
+    body: expect.stringContaining('"classicIndex":2'),
+  }));
+});
+
+it("preloads Daily alongside the Classic queue and reuses the Daily response", async () => {
+  /** Server-shaped riddle fixture for the preload test. */
+  const question = {
+    riddleId: "daily-1", text: "Daily question", answerLength: 5,
+    sessionToken: "00000000-0000-4000-8000-000000000101", questionNumber: 1,
+    attemptsUsed: 0, hasUsedContinue: false, awaitingContinue: false,
+  };
+  /** Completes the deferred Daily response. */
+  let releaseDaily!: (value: Response) => void;
+  /** Deferred Daily response for the preload test. */
+  const pendingDaily = new Promise<Response>((resolve) => { releaseDaily = resolve; });
+  global.fetch = jest.fn((input) => {
+    if (String(input) === "/api/game/riddle.daily") return pendingDaily;
+    if (String(input) === "/api/game/riddle.classic-buffer")
+      return response({confirmedClassicIndex: 1, riddles: []});
+    throw new Error(`unexpected route ${String(input)}`);
+  }) as typeof fetch;
+  /** Reddit host adapter being tested. */
+  const services = createRedditHostServices();
+  services.preloadInitialRiddles?.("en");
+  expect(global.fetch).toHaveBeenCalledWith("/api/game/riddle.daily", expect.anything());
+  expect(global.fetch).toHaveBeenCalledWith("/api/game/riddle.classic-buffer", expect.anything());
+  releaseDaily(await response({challenge: {totalQuestions: 1, questions: [question]}}));
+  await expect(services.loadRiddle({gameMode: "challenge", locale: "en"}))
+    .resolves.toMatchObject({riddleId: "daily-1", index: 1});
+  expect((global.fetch as jest.Mock).mock.calls.filter(([path]) => path === "/api/game/riddle.daily")).toHaveLength(1);
+});
+
 it("validates terminal guesses and refreshes confirmed progress in the background", async () => {
   global.fetch = jest.fn((input) => {
     if (String(input) === "/api/game/guess.submit")

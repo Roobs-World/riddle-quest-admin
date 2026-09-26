@@ -47,6 +47,73 @@ describeBrowser("queued coin actions", () => {
     await new Promise<void>(resolve => server?.close(() => resolve()));
   });
 
+  it("shows a purchased hint and the buffered Skip successor before server confirmation", async () => {
+    /** Browser page used to exercise immediate coin actions. */
+    const page = await browser.newPage({viewport: {width: 390, height: 844}});
+    try {
+      await page.addInitScript(() => {
+        Object.assign(window, {__RIDDLE_QUEST_BROWSER_TEST__: true});
+        localStorage.setItem("riddleQuest:onboarding:jest-guest", "seen");
+        localStorage.setItem("riddleQuest:tooltipSequenceSeen:gameTour:v2:jest-guest", "seen");
+        sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
+      });
+      await page.goto(`${origin}/?harness=jest`);
+      await page.getByText(/what has keys/i).waitFor();
+      await page.evaluate(() => {
+        /** Original bridge event dispatcher retained for confirmation. */
+        const dispatch = window.dispatchEvent.bind(window);
+        window.dispatchEvent = (event: Event) => {
+          /** Bridge message intercepted by the browser test. */
+          const message = (event as CustomEvent).detail;
+          if (event.type === "riddle-quest:host-to-game" &&
+            (message?.payload?.operation === "hint" || message?.payload?.operation === "skip")) {
+            Reflect.set(window, `__held_${message.payload.operation}`, message);
+            return true;
+          }
+          return dispatch(event);
+        };
+        Reflect.set(window, "__releaseCoinAction", (operation: string) =>
+          dispatch(new CustomEvent("riddle-quest:host-to-game", {detail: Reflect.get(window, `__held_${operation}`)})));
+      });
+      await page.getByRole("button", {name: /^hint$/i}).click();
+      /** Elapsed time until the hint appears. */
+      const hintMs = await page.locator(".modal-hint .play-primary").first().evaluate(async (button) => {
+        /** Timestamp when the button was clicked. */
+        const started = performance.now();
+        (button as HTMLButtonElement).click();
+        while (document.querySelector(".guess-row:first-child .cell")?.textContent !== "P") {
+          if (performance.now() - started > 1_000) throw new Error("Hint waited for server confirmation");
+          await new Promise(resolve => requestAnimationFrame(resolve));
+        }
+        return performance.now() - started;
+      });
+      expect(hintMs).toBeLessThan(250);
+      await page.waitForFunction(() => Reflect.has(window, "__held_hint"));
+      await page.evaluate(() => Reflect.get(window, "__releaseCoinAction")("hint"));
+      await page.waitForFunction(() => !Object.keys(localStorage).some(key => key.includes("pendingPlay:v1:")));
+
+      await page.getByRole("button", {name: /^skip$/i}).click();
+      /** Elapsed time until the successor appears. */
+      const skipMs = await page.locator(".modal-skip .play-primary").first().evaluate(async (button) => {
+        /** Timestamp when the button was clicked. */
+        const started = performance.now();
+        (button as HTMLButtonElement).click();
+        while (!document.querySelector(".riddle-card h1")?.textContent?.includes("face and hands")) {
+          if (performance.now() - started > 1_000) throw new Error("Skip waited for server confirmation");
+          await new Promise(resolve => requestAnimationFrame(resolve));
+        }
+        return performance.now() - started;
+      });
+      expect(skipMs).toBeLessThan(250);
+      await page.waitForFunction(() => Reflect.has(window, "__held_skip"));
+      await page.evaluate(() => Reflect.get(window, "__releaseCoinAction")("skip"));
+      await page.waitForFunction(() => !Object.keys(localStorage).some(key => key.includes("pendingPlay:v1:")));
+      expect(await page.locator(".riddle-card h1").innerText()).toMatch(/face and hands/i);
+    } finally {
+      await page.close();
+    }
+  });
+
   it.each([
     {action: "hint", recovery: "confirm"}, {action: "skip", recovery: "confirm"},
     {action: "hint", recovery: "reload"}, {action: "skip", recovery: "reload"},

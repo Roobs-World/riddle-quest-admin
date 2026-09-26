@@ -102,7 +102,7 @@ export function readPendingGuessJournal(scope: string): PendingGuessJournal | nu
       !validRiddle(journal.riddle) ||
       !Number.isSafeInteger(journal.confirmedClassicIndex) ||
       !Array.isArray(journal.queue) || journal.queue.length > 18 ||
-      !Array.isArray(journal.successors) || journal.successors.length > 2 ||
+      !Array.isArray(journal.successors) || journal.successors.length > 3 ||
       !journal.successors.every((segment) => validRiddle(segment?.riddle) &&
         segment?.base && Array.isArray(segment.base.guesses) && Array.isArray(segment.draft)) ||
       !Array.isArray(journal.draft) || !journal.base ||

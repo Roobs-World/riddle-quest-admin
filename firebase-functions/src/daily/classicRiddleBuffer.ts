@@ -10,7 +10,7 @@ import {browserCallableSecurityOptions} from "../shared/callableSecurity";
 import {onCallWithSentry} from "../shared/sentryHandlers";
 import {getCurrentClassicRiddle} from "./dailyChallenge";
 
-/** Issues the current Classic question and at most two future session snapshots. */
+/** Issues the current Classic question and at most three future session snapshots. */
 export const getClassicRiddleBuffer = onCallWithSentry(
   "getClassicRiddleBuffer",
   browserCallableSecurityOptions,
@@ -52,7 +52,7 @@ export const getClassicRiddleBuffer = onCallWithSentry(
       const state = await getIssuedAuthoritativeSession(request.auth.uid, currentQuestion.sessionToken, "classic", currentQuestion.riddleId);
       riddles.push({classicIndex: confirmedClassicIndex, expiresAtMs: state.expiresAt.toMillis(), question: currentQuestion});
     }
-    for (let offset = 1; offset <= 2 && currentQuestion; offset += 1) {
+    for (let offset = 1; offset <= 3 && currentQuestion; offset += 1) {
       /** The classic index used by the authoritative operation. */
       const classicIndex = confirmedClassicIndex + offset;
       /** The playable used by the authoritative operation. */

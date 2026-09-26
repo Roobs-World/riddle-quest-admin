@@ -68,6 +68,47 @@ export const createRedditHostServices = (accountGeneration = 1): HostServices =>
     /** Content locale. */ locale: string;
     /** Server-issued buffer. */ data: ReturnType<typeof ClassicRiddleBufferResponseSchema.parse>;
   } | null = null;
+  /** Shared same-origin request that fills the Classic queue. */
+  let classicBufferInFlight: {
+    /** Requested content locale. */ locale: string;
+    /** Pending response. */ promise: Promise<ReturnType<typeof ClassicRiddleBufferResponseSchema.parse>>;
+  } | null = null;
+  /** Daily response retained until progress changes or the UTC day rolls over. */
+  let dailyPreload: {
+    /** Requested content locale. */ locale: string;
+    /** UTC challenge day. */ day: string;
+    /** Pending or completed response. */ promise: Promise<ReturnType<typeof GetCurrentDailyChallengeResponseSchema.parse>>;
+  } | null = null;
+  /** Loads and retains the Daily response for this UTC day. */
+  const preloadDaily = (locale: string) => {
+    /** UTC day associated with the cached Daily response. */
+    const day = new Date().toISOString().slice(0, 10);
+    if (dailyPreload?.locale === locale && dailyPreload.day === day) return dailyPreload.promise;
+    /** Request shared by concurrent callers. */
+    const promise = post("riddle.daily", {gameMode: "challenge", locale, includeEvaluation: true})
+      .then((value) => GetCurrentDailyChallengeResponseSchema.parse(value)).catch((error: unknown) => {
+        if (dailyPreload?.promise === promise) dailyPreload = null;
+        throw error;
+      });
+    dailyPreload = {locale, day, promise};
+    return promise;
+  };
+  /** Fetches issued Classic sessions without replacing newer confirmed progress. */
+  const refreshClassicBuffer = (locale: string, force = false) => {
+    if (!force && classicBufferInFlight?.locale === locale) return classicBufferInFlight.promise;
+    /** Request shared by concurrent callers. */
+    const promise = post("riddle.classic-buffer", {locale}).then((value) => {
+      /** Validated riddle response from the host. */
+      const data = ClassicRiddleBufferResponseSchema.parse(value);
+      if (classicBuffer?.locale !== locale || data.confirmedClassicIndex >= classicBuffer.data.confirmedClassicIndex)
+        classicBuffer = {locale, data};
+      return data;
+    }).finally(() => {
+      if (classicBufferInFlight?.promise === promise) classicBufferInFlight = null;
+    });
+    classicBufferInFlight = {locale, promise};
+    return promise;
+  };
   /** Provides subscribers behavior. */
   const subscribers = new Set<(snapshot: AuthSnapshot) => void>();
   /** Provides emit behavior. */
@@ -88,6 +129,11 @@ export const createRedditHostServices = (accountGeneration = 1): HostServices =>
 
   return {
     products: [],
+    /** Starts Daily and Classic downloads when the player session is ready. */
+    preloadInitialRiddles(locale) {
+      void refreshClassicBuffer(locale).catch(() => undefined);
+      void preloadDaily(locale).catch(() => undefined);
+    },
     auth: {
       /** Provides subscribe behavior. */
       subscribe(listener) {
@@ -101,10 +147,7 @@ export const createRedditHostServices = (accountGeneration = 1): HostServices =>
     async loadRiddle(input) {
       if (input.gameMode === "classic" && input.authoritative) {
         /** The data used by the current operation. */
-        const data = ClassicRiddleBufferResponseSchema.parse(
-          await post("riddle.classic-buffer", {locale: input.locale}),
-        );
-        classicBuffer = {locale: input.locale, data};
+        const data = await refreshClassicBuffer(input.locale);
         /** The issued used by the current operation. */
         const issued = data.riddles.find((item) => item.classicIndex === data.confirmedClassicIndex);
         if (!issued) throw new Error("classic-buffer-unavailable");
@@ -118,38 +161,40 @@ export const createRedditHostServices = (accountGeneration = 1): HostServices =>
           awaitingContinue: question.awaitingContinue,
         });
       }
-      /** The cached used by the current operation. */
-      let cached = input.gameMode === "classic" && classicBuffer?.locale === input.locale
+      /** Classic question index requested by the game. */
+      const requestedIndex = input.classicIndex ?? profile?.classicIndex ?? 1;
+      /** Finds an unexpired issued Classic question. */
+      const findCached = () => input.gameMode === "classic" && classicBuffer?.locale === input.locale
         ? classicBuffer.data.riddles.find((item) =>
-            item.classicIndex === input.classicIndex &&
-            item.classicIndex > classicBuffer!.data.confirmedClassicIndex &&
-            item.expiresAtMs > Date.now() + 30_000,
+            item.classicIndex === requestedIndex && item.expiresAtMs > Date.now() + 30_000,
           )
         : undefined;
-      if (!cached && input.gameMode === "classic" && input.classicIndex &&
-        input.classicIndex > (classicBuffer?.data.confirmedClassicIndex ?? profile?.classicIndex ?? 1) &&
-        !input.sessionToken && !input.riddleId) {
-        /** The data used by the current operation. */
-        const data = ClassicRiddleBufferResponseSchema.parse(
-          await post("riddle.classic-buffer", {locale: input.locale}),
-        );
-        classicBuffer = {locale: input.locale, data};
-        cached = data.riddles.find((item) => item.classicIndex === input.classicIndex &&
-          item.classicIndex > data.confirmedClassicIndex && item.expiresAtMs > Date.now() + 30_000);
+      /** Unexpired issued question matching the requested index. */
+      let cached = !input.sessionToken && !input.riddleId ? findCached() : undefined;
+      if (!cached && input.gameMode === "classic" && !input.sessionToken && !input.riddleId) {
+        /** Background request that may fill the Classic queue. */
+        const pending = refreshClassicBuffer(input.locale);
+        if (requestedIndex > (profile?.classicIndex ?? 1)) {
+          try {
+            await pending;
+            cached = findCached();
+          } catch {
+            // A current riddle can still load if buffer issuance is temporarily unavailable.
+          }
+        } else {
+          // Show the current question while its three successors download.
+          void pending.catch(() => undefined);
+        }
       }
-      /** The refresh buffer used by the current operation. */
-      const refreshBuffer = () => {
-        void post("riddle.classic-buffer", {locale: input.locale})
-          .then((value) => { classicBuffer = {locale: input.locale, data: ClassicRiddleBufferResponseSchema.parse(value)}; })
-          .catch(() => undefined);
-      };
       /** Provides raw behavior. */
       const raw = cached && !input.sessionToken && !input.riddleId
         ? GetCurrentDailyChallengeResponseSchema.parse({challenge: {questions: [cached.question], totalQuestions: 1}})
+        : input.gameMode === "challenge" && !input.sessionToken && !input.riddleId
+          ? await preloadDaily(input.locale)
         : GetCurrentDailyChallengeResponseSchema.parse(
             await post(input.gameMode === "classic" ? "riddle.classic" : "riddle.daily", {...input, includeEvaluation: true}),
           );
-      if (input.gameMode === "classic") refreshBuffer();
+      if (input.gameMode === "classic") void refreshClassicBuffer(input.locale).catch(() => undefined);
       /** Provides question behavior. */
       const question = raw.challenge?.questions[0];
       if (!question || raw.error) throw new Error(raw.error ?? "reddit-riddle-unavailable");
@@ -172,18 +217,29 @@ export const createRedditHostServices = (accountGeneration = 1): HostServices =>
     },
     /** Completes game. */
     async completeGame(input) {
-      return mutate("game.complete", input, (value) => CompleteGameResponseDataSchema.parse(value));
+      /** Validated result of the current host operation. */
+      const result = await mutate("game.complete", input, (value) => CompleteGameResponseDataSchema.parse(value));
+      if (input.gameMode === "challenge") dailyPreload = null;
+      return result;
     },
     /** Submits guess. */
     async submitGuess(input) {
       /** The result used by the current operation. */
       const result = SubmitSinglePlayerGuessResponseDataSchema.parse(await post("guess.submit", input));
-      if (result.gameOver) void reloadProfile().catch(() => undefined);
+      if (result.gameOver) {
+        if (input.gameMode === "challenge") dailyPreload = null;
+        void reloadProfile().catch(() => undefined);
+        if (input.gameMode === "classic" && classicBuffer)
+          void refreshClassicBuffer(classicBuffer.locale, true).catch(() => undefined);
+      }
       return result;
     },
     /** Requests hint. */
     async requestHint(input) {
-      return mutate("hint.request", input, (value) => GetHintResponseSchema.parse(value));
+      /** Validated result of the current host operation. */
+      const result = GetHintResponseSchema.parse(await post("hint.request", input));
+      void reloadProfile().catch(() => undefined);
+      return result;
     },
     /** Provides spend coins behavior. */
     async spendCoins(input) {
@@ -191,7 +247,11 @@ export const createRedditHostServices = (accountGeneration = 1): HostServices =>
     },
     /** Provides skip riddle behavior. */
     async skipRiddle(input) {
-      return mutate("riddle.skip", input, (value) => SkipRiddleResponseSchema.parse(value));
+      /** Validated result of the current host operation. */
+      const result = SkipRiddleResponseSchema.parse(await post("riddle.skip", input));
+      void reloadProfile().catch(() => undefined);
+      if (classicBuffer) void refreshClassicBuffer(classicBuffer.locale, true).catch(() => undefined);
+      return result;
     },
     /** Requests purchase. */
     async requestPurchase() {

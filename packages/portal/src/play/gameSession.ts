@@ -31,6 +31,7 @@ export const createInitialGameSession = (): GameSessionState => ({
   guesses: [],
   guessPending: false,
   pendingGuessState: null,
+  pendingHintState: null,
   engineSnapshot: null,
   modal: null,
   muted: safeBrowserStorageGet("local", "riddleQuest:soundEnabled") === "false",
@@ -157,6 +158,7 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
         guesses: snapshot.guesses,
         guessPending: false,
         pendingGuessState: null,
+        pendingHintState: null,
         engineSnapshot: snapshot,
         modal: action.riddle.awaitingContinue ? "continue" : null,
         notice: action.preserveNotice ? state.notice : null,
@@ -351,7 +353,33 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
         letterStates: computeStates(guesses),
       };
     }
+    case "previewHint": {
+      if (!state.riddle || state.pendingHintState || state.hintRevealedIndices.includes(action.index) ||
+        action.index < 0 || action.index >= state.riddle.answerLength) return state;
+      /** Draft containing the provisional hint letter. */
+      const nextLetters = [...state.currentLetters];
+      /** Draft letter replaced by the provisional hint. */
+      const previousLetter = nextLetters[action.index] ?? "";
+      nextLetters[action.index] = action.letter.toUpperCase();
+      /** Hint positions including the provisional reveal. */
+      const hintRevealedIndices = [...state.hintRevealedIndices, action.index].sort((a, b) => a - b);
+      return {...state, currentLetters: nextLetters, hintRevealedIndices,
+        activeSlotIndex: firstEditableSlot(nextLetters, hintRevealedIndices, action.index + 1),
+        pendingHintState: {index: action.index, previousLetter, previousActiveSlotIndex: state.activeSlotIndex}};
+    }
+    case "rejectHint": {
+      /** Locally shown state awaiting server confirmation. */
+      const preview = state.pendingHintState;
+      if (!preview) return state;
+      /** Current draft with any unconfirmed hint removed. */
+      const currentLetters = [...state.currentLetters];
+      currentLetters[preview.index] = preview.previousLetter;
+      return {...state, currentLetters,
+        hintRevealedIndices: state.hintRevealedIndices.filter((index) => index !== preview.index),
+        activeSlotIndex: preview.previousActiveSlotIndex, pendingHintState: null};
+    }
     case "applyHint": {
+      if (state.pendingHintState) state = gameSessionReducer(state, {type: "rejectHint"});
       if (!state.riddle || action.index >= state.riddle.answerLength) {
         return state;
       }
@@ -371,6 +399,7 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
         activeSlotIndex: firstEditableSlot(nextLetters, hintRevealedIndices, action.index + 1),
         hintRevealedIndices,
         profile: withProfileCoins(state.profile, action.newCoins),
+        pendingHintState: null,
         notice: null,
       };
     }
