@@ -902,7 +902,7 @@ describe("Race to 10 transactional service", () => {
     expect(persistedInterleavingRun?.opponent).not.toHaveProperty("subjectUserId");
   }, 60_000);
 
-  it("serializes concurrent receipts and rejects stale, expired, and rate-exhausted actions", async () => {
+  it("serializes receipts, keeps creators active, and rejects stale and rate-exhausted actions", async () => {
     /** Provides concurrent behavior. */
     const concurrent = await startRaceRunForUser(
       "concurrent-user",
@@ -953,24 +953,24 @@ describe("Race to 10 transactional service", () => {
       ),
     ).rejects.toMatchObject({code: "failed-precondition"});
 
-    /** Provides expiring behavior. */
-    const expiring = await startRaceRunForUser(
+    /** Creator run that remains recordable beyond the challenger time cap. */
+    const extendedCreator = await startRaceRunForUser(
       "expiring-user",
       {locale: "en", categoryId: "history", requestId: "expiring-start-0001"},
       {db, nowMs: NOW + 200_000},
     );
-    await expect(
-      submitRaceGuessForUser(
-        "expiring-user",
-        {
-          runId: expiring.run.runId,
-          riddleId: expiring.run.currentRiddle!.riddleId,
-          guess: "xxxxxxx",
-          requestId: "expired-guess-0001",
-        },
-        {db, nowMs: NOW + 500_001},
-      ),
-    ).rejects.toMatchObject({code: "failed-precondition"});
+    await expect(submitRaceGuessForUser(
+      "expiring-user",
+      {
+        runId: extendedCreator.run.runId,
+        riddleId: extendedCreator.run.currentRiddle!.riddleId,
+        guess: "xxxxxxx",
+        requestId: "extended-creator-guess-0001",
+      },
+      {db, nowMs: NOW + 500_001},
+    )).resolves.toMatchObject({
+      run: {role: "creator", status: "active", adjustedElapsedMs: 300_001},
+    });
 
     /** Provides rate limited behavior. */
     const rateLimited = await startRaceRunForUser(
