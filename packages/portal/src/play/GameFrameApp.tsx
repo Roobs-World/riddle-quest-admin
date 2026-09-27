@@ -26,7 +26,6 @@ import {
   MultiplayerIcon,
   ProfileIcon,
   SettingsIcon,
-  SoundIcon,
 } from "./GameFrameControls";
 import {useGameMessageRouter} from "./useGameMessageRouter";
 import {useOnlineStatus} from "./useOnlineStatus";
@@ -311,6 +310,7 @@ export function GameFrameApp({
           state={state}
           displayedCoins={animatedCoinBalance ?? undefined}
           onOpenShop={() => dispatch({type: "openModal", modal: "shop"})}
+          onToggleMute={() => dispatch({type: "toggleMute"})}
           commerceAvailable={state.products.length > 0}
         />
 
@@ -320,13 +320,6 @@ export function GameFrameApp({
           <>
             <section className="riddle-surface">
               <div className="riddle-card">
-                <button
-                  className="riddle-sound-button"
-                  onClick={() => dispatch({type: "toggleMute"})}
-                  aria-label={state.muted ? tr("Accessibility.UNMUTE_SOUND") : tr("Accessibility.MUTE_SOUND")}
-                >
-                  <SoundIcon muted={state.muted} />
-                </button>
                 <h1>{state.riddle.text}</h1>
                 {state.notice && (
                   <div className="game-notice">

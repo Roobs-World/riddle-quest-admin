@@ -300,7 +300,7 @@ describe("race presentation components", () => {
       renderToString(
         <RaceScoreboard run={run} adjustedNow={12_500} ghostCorrect={0} feedback="correct" coins={50} onClose={noop} />,
       ),
-    ).toContain("race-rail-status");
+    ).not.toContain("riddles remaining");
     /** Provides gameplay html behavior. */
     const gameplayHtml = renderToString(
       <RaceGameplay

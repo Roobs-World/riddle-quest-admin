@@ -53,7 +53,7 @@ export function RaceCategoriesPanel({
         </div>
       )}
       <h2>{tr("RaceTo10.CHOOSE_CATEGORY")}</h2>
-      <p>{tr("RaceTo10.RULES_SUMMARY")}</p>
+      <p>{tr("RaceTo10.FIRST_TO_TEN")} · {tr("RaceTo10.HINT_BUTTON")} {tr("RaceTo10.HINT_PENALTY")} · {tr("RaceTo10.SKIP_BUTTON")} {tr("RaceTo10.SKIP_PENALTY")}</p>
       <div className="race-category-grid">
         {categories.map((category) => (
           <button
@@ -250,7 +250,7 @@ export function RaceChallengePanel({
         <>
           <h2>{tr("RaceTo10.CHALLENGED_BY", {name: challenge.creator.displayName})}</h2>
           <p>{tr("RaceTo10.TIME_TO_BEAT", {time: formatRaceTime(challenge.adjustedTimeToBeatMs)})}</p>
-          <p>{tr("RaceTo10.RULES_SUMMARY")}</p>
+          <p>{tr("RaceTo10.FIRST_TO_TEN")} · {tr("RaceTo10.HINT_BUTTON")} {tr("RaceTo10.HINT_PENALTY")} · {tr("RaceTo10.SKIP_BUTTON")} {tr("RaceTo10.SKIP_PENALTY")}</p>
           {challenge.status === "active" ? (
             <button className="race-primary" onClick={() => onAccept(challenge.categoryId)}>
               {tr("RaceTo10.ACCEPT_CHALLENGE")}

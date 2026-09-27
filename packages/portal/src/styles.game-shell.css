@@ -63,10 +63,16 @@
   width: min(1200px, 100%);
   min-height: 72px;
   display: grid;
-  grid-template-columns: 88px 1fr 88px;
+  grid-template-columns: 68px 44px minmax(0, 1fr) 88px;
   align-items: center;
   justify-self: center;
   gap: 10px;
+}
+.game-header .riddle-sound-button {
+  position: static;
+  width: 44px;
+  height: 44px;
+  justify-self: start;
 }
 .game-logo {
   width: clamp(48px, 9vw, 68px);

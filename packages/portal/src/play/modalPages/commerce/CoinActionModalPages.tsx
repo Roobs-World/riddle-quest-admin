@@ -58,22 +58,21 @@ export function ContinueModalPage({
     <div className="modal-actions continue-actions">
       <p>{tr("LossModal.EXTRA_GO_PROMPT")}</p>
       <div className="continue-balance">
-        <img src={treasureChestUrl} alt="" />
         <strong>{tr("Profile.TOTAL_COINS_LABEL")}</strong>
         <span>{balance.toLocaleString()}</span>
       </div>
-      <button className="play-primary" disabled={!canAfford || confirmationPending} onClick={() => onContinue(CONTINUE_COIN_COST)}>
+      <button className="play-primary loss-continue-action" disabled={!canAfford || confirmationPending} onClick={() => onContinue(CONTINUE_COIN_COST)}>
         {tr("LossModal.USE_COINS_PREFIX")}
         {CONTINUE_COIN_COST}
         {tr("LossModal.USE_COINS_SUFFIX")}
       </button>
       {!canAfford ? <p>{tr("GameScreenAlerts.CONTINUE_NOT_ENOUGH_COINS_MESSAGE")}</p> : null}
       {commerceAvailable && (
-        <button className="play-primary" disabled={confirmationPending} onClick={() => onOpenModal("shop")}>
+        <button className="play-primary loss-shop-action" disabled={confirmationPending} onClick={() => onOpenModal("shop")}>
           {tr("LossModal.OPEN_SHOP_BUTTON")}
         </button>
       )}
-      <button className="play-primary" disabled={confirmationPending} onClick={() => onOpenModal("skip")}>
+      <button className="play-primary loss-skip-action" disabled={confirmationPending} onClick={() => onOpenModal("skip")}>
         {tr("LossModal.SKIP_PUZZLE_BUTTON")}
       </button>
     </div>

@@ -1,5 +1,5 @@
 import type {CSSProperties} from "react";
-import {RACE_TARGET_CORRECT, type RaceRunView} from "@qwordly/core/race";
+import type {RaceRunView} from "@qwordly/core/race";
 import {tr} from "../../i18n";
 import {formatRaceTime} from "../logic/racePresentation";
 import {RaceRailHeader} from "./RaceHeader";
@@ -37,15 +37,6 @@ export function RaceScoreboard({
             +{formatRaceTime(run.totalPenaltyMs)}
           </small>
         </div>
-        {run.currentRiddle && (
-          <div className="race-rail-status">
-            <span>
-              {tr("RaceTo10.RIDDLES_REMAINING", {
-                count: Math.max(0, RACE_TARGET_CORRECT - run.correctCount),
-              })}
-            </span>
-          </div>
-        )}
         {feedback && (
           <div className={`race-feedback ${feedback}`} role="status" aria-live="polite">
             {tr(feedback === "correct" ? "RaceTo10.CORRECT" : "RaceTo10.TRY_AGAIN")}

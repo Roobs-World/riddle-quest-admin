@@ -1244,22 +1244,14 @@ describeBrowser("Jest authentication integration", () => {
         const rail = gameplay.querySelector(".race-scoreboard")?.getBoundingClientRect();
         /** Provides riddle behavior. */
         const riddle = gameplay.querySelector(".race-riddle-surface")?.getBoundingClientRect();
-        /** Provides status behavior. */
-        const status = gameplay.querySelector(".race-rail-status")?.getBoundingClientRect();
         return {
-          statusInRail: Boolean(gameplay.querySelector(".race-scoreboard .race-rail-status")),
-          statusInGameInfo: Boolean(gameplay.querySelector(".race-rail-game-info > .race-rail-status")),
-          statusInRiddle: Boolean(gameplay.querySelector(".race-riddle-surface .race-rail-status")),
-          statusIsAboveRiddle: Boolean(status && riddle && status.bottom <= riddle.top),
+          redundantRemainingCount: Boolean(gameplay.querySelector(".race-rail-status")),
           railIsAboveRiddle: Boolean(rail && riddle && rail.bottom <= riddle.top),
         };
       });
     /** Provides expected multiplayer layout behavior. */
     const expectedMultiplayerLayout = {
-      statusInRail: true,
-      statusInGameInfo: true,
-      statusInRiddle: false,
-      statusIsAboveRiddle: true,
+      redundantRemainingCount: false,
       railIsAboveRiddle: true,
     };
     expect(await getMultiplayerLayout()).toEqual(expectedMultiplayerLayout);

@@ -14,6 +14,7 @@ export function GameHeader({
   state,
   displayedCoins,
   onOpenShop,
+  onToggleMute,
   commerceAvailable = true,
 }: {
   /** Stores state. */
@@ -22,6 +23,8 @@ export function GameHeader({
   displayedCoins?: number;
   /** Stores on open shop. */
   onOpenShop: () => void;
+  /** Toggles game audio without placing a control over the riddle. */
+  onToggleMute: () => void;
   /** Stores commerce available. */
   commerceAvailable?: boolean;
 }) {
@@ -30,6 +33,13 @@ export function GameHeader({
   return (
     <header className="game-header">
       <img className="game-logo" src={mascotUrl} alt={tr("Accessibility.LOGO_BUTTON")} />
+      <button
+        className="riddle-sound-button"
+        onClick={onToggleMute}
+        aria-label={state.muted ? tr("Accessibility.UNMUTE_SOUND") : tr("Accessibility.MUTE_SOUND")}
+      >
+        <SoundIcon muted={state.muted} />
+      </button>
       <div className="game-mode-label">
         {state.gameMode === "challenge" ? tr("WebPortal.PLAY_DAILY") : tr("WebPortal.PLAY_CLASSIC")}
       </div>

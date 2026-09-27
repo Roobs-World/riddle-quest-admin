@@ -78,6 +78,8 @@ describe("commerce modal pages", () => {
     expect(poorHtml).toContain("disabled");
     expect(poorHtml).toContain("not have enough coins");
     expect(fundedHtml).not.toContain("not have enough coins");
+    expect(fundedHtml).not.toContain("<img");
+    expect(fundedHtml).toContain("loss-continue-action");
   });
 
   it("shows the continue choices but prevents decisions while the fifth guess confirms", () => {

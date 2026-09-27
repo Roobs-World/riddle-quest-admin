@@ -323,15 +323,8 @@ describeBrowser("standalone Jest browser game", () => {
       /** Captures key height for this regression check. */
       const keyHeight = await page.locator('.game-content .key').first().evaluate(element => element.getBoundingClientRect().height);
       expect(keyHeight).toBeGreaterThanOrEqual(44);
-      /** Captures sound overlaps text for this regression check. */
-      const soundOverlapsText = await page.locator('.riddle-card').evaluate(card => {
-        /** Captures sound for this regression check. */
-        const sound = card.querySelector('.riddle-sound-button')!.getBoundingClientRect();
-        /** Captures text for this regression check. */
-        const text = card.querySelector('h1')!.getBoundingClientRect();
-        return sound.left < text.right && sound.right > text.left && sound.top < text.bottom && sound.bottom > text.top;
-      });
-      expect(soundOverlapsText).toBe(false);
+      expect(await page.locator('.riddle-card .riddle-sound-button').count()).toBe(0);
+      expect(await page.locator('.game-header .riddle-sound-button').isVisible()).toBe(true);
       await page.screenshot({path: "/tmp/jest-feedback-solo.png"});
 
 
@@ -1309,6 +1302,9 @@ describeBrowser("standalone Jest browser game", () => {
       await lowEndPage.locator(".modal-continue").waitFor();
       expect(await lowEndPage.locator(".modal-continue").evaluate(panel => getComputedStyle(panel).backgroundImage)).toBe("none");
       expect(await lowEndPage.locator(".game-modal-backdrop > .spinning-wheel-graphic").count()).toBe(0);
+      expect(await lowEndPage.locator(".continue-balance img").count()).toBe(0);
+      expect(await lowEndPage.locator(".continue-actions .play-primary").first()
+        .evaluate(button => getComputedStyle(button).backgroundColor)).toBe("rgb(116, 47, 58)");
       await expectAccessible(lowEndPage, "out of attempts");
       await lowEndPage.screenshot({path: "/tmp/jest-feedback-loss.png"});
       /** Hold the paid Continue result to verify the displayed charge precedes confirmation. */

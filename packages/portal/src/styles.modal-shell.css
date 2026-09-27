@@ -81,6 +81,7 @@
 .game-modal-backdrop:has(.modal-continue) {
   place-items: center;
   overflow: hidden;
+  background: #02070d;
 }
 .game-modal-backdrop:has(.modal-hint),
 .game-modal-backdrop:has(.modal-skip),
@@ -99,13 +100,13 @@
   justify-items: center;
   padding: 26px 24px 24px;
   overflow: hidden;
-  border: 5px solid #fec880;
+  border: 5px solid #59676d;
   border-radius: 38px;
-  background: #e8e5eb;
-  border-color: #86778d;
-  color: #000;
+  background: #dfe3e4;
+  color: #172329;
 }
 .modal-continue > h2 {
+  color: #6b2632;
   font-size: 36px;
   text-align: center;
 }
@@ -127,17 +128,14 @@
     sans-serif;
 }
 .continue-balance {
-  display: grid;
-  justify-items: center;
-  gap: 3px;
-  padding: 10px;
-  border-radius: 18px;
-  background: rgba(64, 31, 64, 0.08);
-}
-.continue-balance img {
-  width: min(140px, 48%);
-  max-height: 108px;
-  object-fit: contain;
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid #aab3b6;
+  border-radius: 12px;
+  background: #cfd5d7;
 }
 .continue-balance strong,
 .continue-balance span {
@@ -149,12 +147,23 @@
 .continue-actions .play-primary {
   min-height: 50px;
   border-radius: 12px;
-  background: #ff8a00;
-  color: #172930;
+  border: 2px solid #66757a;
+  background: #34464d;
+  color: #fff;
   font:
     400 19px/1 "Poetsen One",
     "Poppins",
     sans-serif;
+}
+.continue-actions .loss-continue-action {
+  border-color: #742f3a;
+  background: #742f3a;
+}
+.continue-actions .loss-shop-action {
+  background: #526269;
+}
+.continue-actions .loss-skip-action {
+  background: #27383f;
 }
 @media (max-height: 620px) {
   .game-modal.modal-continue {
@@ -172,19 +181,10 @@
     font-size: 17px;
   }
   .continue-balance {
-    grid-template-columns: auto 1fr;
-    column-gap: 10px;
     padding: 7px 12px;
-    text-align: left;
-  }
-  .continue-balance img {
-    grid-row: 1 / 3;
-    width: 74px;
-    max-height: 66px;
   }
   .continue-balance strong,
   .continue-balance span {
-    justify-self: start;
     font-size: 18px;
   }
   .continue-actions .play-primary {
@@ -214,19 +214,10 @@
     font-size: 16px;
   }
   .continue-balance {
-    grid-template-columns: auto 1fr;
-    column-gap: 10px;
     padding: 5px 12px;
-    text-align: left;
-  }
-  .continue-balance img {
-    grid-row: 1 / 3;
-    width: 62px;
-    max-height: 54px;
   }
   .continue-balance strong,
   .continue-balance span {
-    justify-self: start;
     font-size: 17px;
   }
   .continue-actions .play-primary {
