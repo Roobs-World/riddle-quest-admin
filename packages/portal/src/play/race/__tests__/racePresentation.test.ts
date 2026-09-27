@@ -78,6 +78,7 @@ describe("race presentation helpers", () => {
     expect(getAdjustedRaceTime(null, 1_000, 5_000)).toBe(0);
     expect(getAdjustedRaceTime(run, 1_000, 5_000)).toBe(8_000);
     expect(getAdjustedRaceTime({...run, role: "challenger"}, 1_000, 20_000)).toBe(10_000);
+    expect(getAdjustedRaceTime({...run, role: "challenger", status: "completed"}, 1_000, 20_000)).toBe(4_000);
     expect(getAdjustedRaceTime({...run, role: "creator"}, 1_000, 20_000)).toBe(23_000);
     expect(getAdjustedRaceTime({...run, status: "completed"}, 1_000, 20_000)).toBe(4_000);
     expect(getAdjustedRaceTime({...run, status: "completed"}, 1_000)).toBe(4_000);
