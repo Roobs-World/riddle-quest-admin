@@ -1352,15 +1352,19 @@ describeBrowser("Jest authentication integration", () => {
       const screen = viewport.closest(".race-screen")!;
       /** Captures the screen's usable lower edge. */
       const usableBottom = screen.getBoundingClientRect().bottom - Number.parseFloat(getComputedStyle(screen).paddingBottom);
-      /** Captures the multiplayer answer board bounds. */
-      const guessBoard = viewport.querySelector(".guess-board")?.getBoundingClientRect();
+      /** Captures every rendered multiplayer answer cell. */
+      const answerCells = [...viewport.querySelectorAll<HTMLElement>(".guess-board .cell")].map((cell) =>
+        cell.getBoundingClientRect(),
+      );
       return {
         bottomGap: usableBottom - viewport.getBoundingClientRect().bottom,
-        guessBoardWidth: guessBoard?.width ?? 0,
+        minimumCellHeight: Math.min(...answerCells.map(({height}) => height)),
+        minimumCellWidth: Math.min(...answerCells.map(({width}) => width)),
       };
     });
     expect(portraitRaceLayout.bottomGap).toBeLessThanOrEqual(1);
-    expect(portraitRaceLayout.guessBoardWidth).toBeGreaterThan(250);
+    expect(portraitRaceLayout.minimumCellHeight).toBeGreaterThanOrEqual(44);
+    expect(portraitRaceLayout.minimumCellWidth).toBeGreaterThanOrEqual(44);
     await creator.page.screenshot({path: "/tmp/riddle-multiplayer-portrait.png"});
     await creator.page.waitForFunction(() => {
       /** Provides screen behavior. */
