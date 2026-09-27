@@ -1327,11 +1327,15 @@ describeBrowser("Jest authentication integration", () => {
     await captureMultiplayerEvidence(creator.page, "03-player-1-run-recorded.png");
     await creator.page.getByRole("button", {name: /send challenge/i}).click();
     await creator.page.waitForFunction(() =>
-      (window as typeof window & {__RIDDLE_QUEST_JEST_AUTH_TEST__: AuthHarnessState})
+      (window as typeof window & {
+        /** Captured referral shares from the injected Jest SDK. */
+        __RIDDLE_QUEST_JEST_AUTH_TEST__: AuthHarnessState;
+      })
         .__RIDDLE_QUEST_JEST_AUTH_TEST__.referralShares.length === 1,
     );
     /** First post-result share contains an already-published immutable score. */
     const firstInvite = (await getHarnessState(creator.page)).referralShares[0]!;
+    /** Immutable challenge selected from the creator's first invite payload. */
     const invitedChallengeId = firstInvite.entryPayload?.challengeId;
     expect(firstInvite.shareTitle).toBe("Race to 10");
     expect(firstInvite.shareText).toContain("Time to beat");
@@ -1344,9 +1348,13 @@ describeBrowser("Jest authentication integration", () => {
     await creator.page.getByRole("button", {name: /challenge a friend/i}).click();
     await creator.page.getByRole("button", {name: /challenge a friend/i}).click();
     await creator.page.waitForFunction(() =>
-      (window as typeof window & {__RIDDLE_QUEST_JEST_AUTH_TEST__: AuthHarnessState})
+      (window as typeof window & {
+        /** Captured referral shares from the injected Jest SDK. */
+        __RIDDLE_QUEST_JEST_AUTH_TEST__: AuthHarnessState;
+      })
         .__RIDDLE_QUEST_JEST_AUTH_TEST__.referralShares.length === 3,
     );
+    /** All repeated sends made from the same completed result. */
     const repeatedInvites = (await getHarnessState(creator.page)).referralShares;
     expect(repeatedInvites.map((invite) => invite.entryPayload?.challengeId)).toEqual([
       invitedChallengeId,
@@ -1430,7 +1438,10 @@ describeBrowser("Jest authentication integration", () => {
       window.addEventListener("riddle-quest:host-to-game", (event) => {
         if ((event as CustomEvent).detail?.payload?.operation === "raceOutcome") {
           Object.assign(window, {
-            __raceOutcomeResultCount: Number((window as typeof window & {__raceOutcomeResultCount?: number}).__raceOutcomeResultCount ?? 0) + 1,
+            __raceOutcomeResultCount: Number((window as typeof window & {
+              /** Counts authoritative race-outcome responses received by the game. */
+              __raceOutcomeResultCount?: number;
+            }).__raceOutcomeResultCount ?? 0) + 1,
           });
         }
       });
@@ -1439,10 +1450,16 @@ describeBrowser("Jest authentication integration", () => {
     await recipient.page.getByRole("button", {name: /accept challenge/i}).click();
     await recipient.page.locator(".race-countdown").waitFor({state: "visible", timeout: 10_000});
     await recipient.page.getByRole("heading", {name: /opponent wins/i}).waitFor({timeout: 5_000});
-    expect(await recipient.page.evaluate(() => (window as typeof window & {__raceOutcomeResultCount?: number}).__raceOutcomeResultCount)).toBe(0);
+    expect(await recipient.page.evaluate(() => (window as typeof window & {
+      /** Counts authoritative race-outcome responses received by the game. */
+      __raceOutcomeResultCount?: number;
+    }).__raceOutcomeResultCount)).toBe(0);
     expect(await recipient.page.getByRole("alert").count()).toBe(0);
     await recipient.page.waitForFunction(
-      () => (window as typeof window & {__raceOutcomeResultCount?: number}).__raceOutcomeResultCount === 1,
+      () => (window as typeof window & {
+        /** Counts authoritative race-outcome responses received by the game. */
+        __raceOutcomeResultCount?: number;
+      }).__raceOutcomeResultCount === 1,
       undefined,
       {timeout: 5_000},
     );
@@ -1467,7 +1484,10 @@ describeBrowser("Jest authentication integration", () => {
       window.addEventListener("riddle-quest:host-to-game", (event) => {
         if ((event as CustomEvent).detail?.payload?.operation === "raceOutcome") {
           Object.assign(window, {
-            __raceOutcomeResultCount: Number((window as typeof window & {__raceOutcomeResultCount?: number}).__raceOutcomeResultCount ?? 0) + 1,
+            __raceOutcomeResultCount: Number((window as typeof window & {
+              /** Counts authoritative race-outcome responses received by the game. */
+              __raceOutcomeResultCount?: number;
+            }).__raceOutcomeResultCount ?? 0) + 1,
           });
         }
       });
@@ -1476,11 +1496,17 @@ describeBrowser("Jest authentication integration", () => {
       expectChainedSubmitLoader: true,
       onFinalSubmitted: async () => {
         await creator.page.getByRole("heading", {name: /run recorded/i}).waitFor({timeout: 1_000});
-        expect(await creator.page.evaluate(() => (window as typeof window & {__raceOutcomeResultCount?: number}).__raceOutcomeResultCount)).toBe(0);
+        expect(await creator.page.evaluate(() => (window as typeof window & {
+          /** Counts authoritative race-outcome responses received by the game. */
+          __raceOutcomeResultCount?: number;
+        }).__raceOutcomeResultCount)).toBe(0);
       },
     });
     await creator.page.waitForFunction(
-      () => (window as typeof window & {__raceOutcomeResultCount?: number}).__raceOutcomeResultCount === 1,
+      () => (window as typeof window & {
+        /** Counts authoritative race-outcome responses received by the game. */
+        __raceOutcomeResultCount?: number;
+      }).__raceOutcomeResultCount === 1,
       undefined,
       {timeout: 5_000},
     );
