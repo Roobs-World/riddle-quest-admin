@@ -8,9 +8,9 @@ App: Riddle Quest (`1748953042991569`). Owner-approved boundary: prepare and ver
 | --- | --- | --- | --- |
 | Business verification and Page | Business verified; Riddle Quest Page connected to Roobs World | Correct the stale business address/website; prior saves returned a Meta query error | Agent can prepare/retry verified details; owner confirms tax-correspondence address |
 | Approved Partner Program | Not Submitted | Reconcile inherited details, complete application and resolve the legacy Apple Team ID field | Agent prepares; no invented Apple ID or unnecessary Apple enrollment |
-| Updated testing bundle | Fixed artifact built and audited; upload awaiting authorization | Upload exact ZIP, activate Testing, verify hosted gameplay/profile | Agent after explicit payload approval |
+| Updated testing bundle | Version 4, bundle `28232737223063645`, staged for Testing; downloaded ZIP matched local SHA-256 | Complete hosted gameplay, save, profile, lifecycle and ad checks | Agent and role-account tester |
 | Listing and age rating | Required media uploaded; 13+ audience declared; IARC unfinished | Review actual content and complete rating follow-ups accurately | Agent investigates and prepares; owner has chosen to retain historical themes |
-| Privacy and operations | Facebook notice drafted; live policy remains portfolio-only | Confirm operator, implement approved retention and finish/publish accurate game policy | Agent implements; owner supplies operational decisions |
+| Privacy and operations | Dedicated Facebook notice is live at `https://roobsworld.com/riddle-quest/privacy` and saved in Meta Basic settings | Verify operational support and retention practices against the published notice | Agent implements; owner supplies operational decisions |
 | Payments | Seven products registered; no valid payment account; runtime commerce disabled | Complete payout setup, implement and verify receipts/refunds/recovery, prepare IAP evidence | Owner supplies tax/bank/certification in Meta; agent handles implementation/testing |
 | Final review and release | Partner, policy, quality and IAP reviews not submitted | Complete prerequisites and obtain owner approval for the final release action | Owner approval retained |
 
@@ -34,10 +34,9 @@ Enter tax and banking information directly in Meta. A UK company's Corporation T
 
 ## Current interview frontier
 
-1. Authorize the exact unpublished testing ZIP: source `7d02b848`, SHA-256 `185b01400b24ec52fd6bb86b556c441882dccdf1c15082fa350f48d6791ebb15`. Automatic approval review requires explicit authorization for this external upload.
-2. Identify who monitors `grindheadgames@gmail.com` for support, privacy and safety reports.
-3. Confirm the proposed payout business details or provide the correct address.
+1. Identify who monitors `grindheadgames@gmail.com` for support, privacy and safety reports.
+2. Confirm the proposed payout business details or provide the correct address.
 
 Already settled: Facebook audience 13+; retain historical themes and rate accurately; routine resolved support/report records retained 90 days after closure with documented dispute/legal exceptions; public publication waits for final owner approval. Do not ask these again unless the owner changes them.
 
-No new runtime code changed during this walkthrough. The [release draft](facebook-review-draft-2026-09-19.md) and [verification evidence](evidence/facebook-port-verification-2026-09-19.md) contain the artifact/test details and remaining engineering gates.
+No new runtime code changed during this walkthrough. The [testing upload evidence](evidence/facebook-testing-upload-2026-09-27.md) records the current artifact and hosted check; the [release draft](facebook-review-draft-2026-09-19.md) and [earlier verification evidence](evidence/facebook-port-verification-2026-09-19.md) contain remaining engineering gates.

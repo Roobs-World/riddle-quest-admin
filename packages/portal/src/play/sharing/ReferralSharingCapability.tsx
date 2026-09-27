@@ -25,6 +25,9 @@ export type ReferralRaceShareInput = {
   };
 };
 
+/** Provider referral-dialog outcome, separating expected dismissal from failure. */
+export type ReferralShareOutcome = "success" | "cancelled" | "error";
+
 /** Optional outbound referral-sharing behavior supplied by one release target. */
 export type ReferralSharingCapability = {
   /** Coin reward displayed beside supported referral actions. */
@@ -33,10 +36,10 @@ export type ReferralSharingCapability = {
   shareResult: (input: ReferralResultShareInput) => void;
   /** Shares an open invitation from the player profile. */
   shareInvite: () => void;
-  /** Shares a link to a future verified race; resolves true when the provider dialog completes. */
-  shareMultiplayerInvite?: (challengeId: string) => Promise<boolean>;
-  /** Shares a published multiplayer challenge. */
-  shareRace: (input: ReferralRaceShareInput) => void;
+  /** Shares a link to a future verified race and distinguishes dismissal from failure. */
+  shareMultiplayerInvite?: (challengeId: string) => Promise<ReferralShareOutcome>;
+  /** Shares a published multiplayer challenge and distinguishes dismissal from failure. */
+  shareRace: (input: ReferralRaceShareInput) => Promise<ReferralShareOutcome>;
 };
 
 /** Null means the active release target does not support outbound referral sharing. */

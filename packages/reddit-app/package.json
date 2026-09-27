@@ -22,6 +22,7 @@
     "capture:contract": "node scripts/capture-reddit-contract-fixture.mjs",
     "validate:contracts": "node scripts/validate-reddit-contract-fixtures.mjs ../../docs/evidence/reddit-contracts",
     "validate:hosted": "node scripts/validate-reddit-hosted-evidence.mjs ../../docs/evidence/reddit-hosted-evidence.json",
+    "check:hosted-gateway": "node scripts/check-hosted-gateway.mjs",
     "test:release": "node --test scripts/reddit-release-artifact.test.mjs",
     "release:candidate": "pnpm validate:contracts && node scripts/prepare-reddit-release.mjs",
     "release:gate": "pnpm release:candidate",

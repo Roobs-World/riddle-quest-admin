@@ -8,10 +8,8 @@ describe("personalized Jest referral references", () => {
     });
 
     expect(token).toBe("00010f101f207fff");
-    expect(createUniqueJestReferralReference("result", token)).toBe(
-      "riddle_quest_friend_challenge_v2_result_00010f101f207fff",
-    );
-    expect(createUniqueJestReferralReference("race", token)).toBe("riddle_quest_race_to_10_v1_share_00010f101f207fff");
+    expect(createUniqueJestReferralReference("result", token)).toBe("rq_fc_v2_00010f101f207fff");
+    expect(createUniqueJestReferralReference("race", token)).toBe("rq_r10_v1_00010f101f207fff");
   });
 
   it("keeps fallback references unique, bounded, and telemetry safe", () => {
@@ -23,6 +21,6 @@ describe("personalized Jest referral references", () => {
     expect(first).not.toBe(second);
     expect(first).toMatch(/^[0-9a-f]{16}$/);
     expect(second).toMatch(/^[0-9a-f]{16}$/);
-    expect(createUniqueJestReferralReference("race", second).length).toBeLessThanOrEqual(64);
+    expect(createUniqueJestReferralReference("race", second).length).toBeLessThanOrEqual(32);
   });
 });

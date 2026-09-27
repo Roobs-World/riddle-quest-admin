@@ -762,7 +762,7 @@ describeBrowser("Jest authentication integration", () => {
     const [share] = (await getHarnessState(page)).referralShares;
     expect(share).toEqual(
       expect.objectContaining({
-        reference: expect.stringMatching(/^riddle_quest_friend_challenge_v2_result_[0-9a-f]{16}$/),
+        reference: expect.stringMatching(/^rq_fc_v2_[0-9a-f]{16}$/),
         shareTitle: "Check out my Riddle Quest result!",
         entryPayload: expect.objectContaining({
           campaign: "friend_challenge_v2",
@@ -796,7 +796,7 @@ describeBrowser("Jest authentication integration", () => {
     );
     /** Provides second result share behavior. */
     const secondResultShare = (await getHarnessState(page)).referralShares[1];
-    expect(secondResultShare.reference).toMatch(/^riddle_quest_friend_challenge_v2_result_[0-9a-f]{16}$/);
+    expect(secondResultShare.reference).toMatch(/^rq_fc_v2_[0-9a-f]{16}$/);
     expect(secondResultShare.reference).not.toBe(share.reference);
     expect(secondResultShare.entryPayload).toEqual(expect.objectContaining({riddleId: "classic-riddle-2"}));
 
@@ -997,7 +997,7 @@ describeBrowser("Jest authentication integration", () => {
           __RIDDLE_QUEST_JEST_AUTH_TEST__: AuthHarnessState;
         }
       ).__RIDDLE_QUEST_JEST_AUTH_TEST__;
-      return state.notificationSchedules.some((item) => item.identifier === "race_to_10_results_v1") && state.referralShares.some((item) => /^riddle_quest_race_to_10_v1_share_[0-9a-f]{16}$/.test(item.reference ?? ""));
+      return state.notificationSchedules.some((item) => item.identifier === "race_to_10_results_v1") && state.referralShares.some((item) => /^rq_r10_v1_[0-9a-f]{16}$/.test(item.reference ?? ""));
     });
     /** Provides state behavior. */
     let state = await getHarnessState(page);
@@ -1014,7 +1014,7 @@ describeBrowser("Jest authentication integration", () => {
     );
     expect(state.referralShares).toContainEqual(
       expect.objectContaining({
-        reference: expect.stringMatching(/^riddle_quest_race_to_10_v1_share_[0-9a-f]{16}$/),
+        reference: expect.stringMatching(/^rq_r10_v1_[0-9a-f]{16}$/),
         shareImage: expect.stringMatching(/^data:image\/png;base64,/),
         entryPayload: expect.objectContaining({
           challengeId: "race-challenge-42",
@@ -1048,7 +1048,7 @@ describeBrowser("Jest authentication integration", () => {
     state = await getHarnessState(page);
     /** Provides second race share behavior. */
     const secondRaceShare = state.referralShares.find((item) => item.entryPayload?.challengeId === "race-challenge-43")!;
-    expect(secondRaceShare.reference).toMatch(/^riddle_quest_race_to_10_v1_share_[0-9a-f]{16}$/);
+    expect(secondRaceShare.reference).toMatch(/^rq_r10_v1_[0-9a-f]{16}$/);
     expect(secondRaceShare.reference).not.toBe(firstRaceShare.reference);
     await context.close();
   });

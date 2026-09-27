@@ -118,6 +118,11 @@ export function RaceGameplay({
             />
           </>
         )}
+        {!run.currentRiddle && run.status === "completed" && (
+          <p className="race-outcome-loading" role="status">
+            {tr("RaceTo10.RESULTS_LOADING")}
+          </p>
+        )}
         <div className="game-input-actions race-actions">
           <button onClick={onHint} disabled={pending || !run.currentRiddle?.hintAvailable}>
             <HintIcon />

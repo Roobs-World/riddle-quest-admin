@@ -12,20 +12,24 @@ Firebase secret to an environment file or repository. Its `playtest:upload` is a
 bootstrap artifact only; it is not an immutable production candidate or promotion
 receipt.
 
-Last updated: 2026-09-19
+Last updated: 2026-09-27
 
 ## Release state
 
 Reddit is a separate compile-time target packaged as a Devvit Web app. Private
-prerelease `0.0.1.21` is uploaded and installed in `r/riddle_quest_dev`; the
-`r/RiddleQuestGame` installation remains at `0.0.1.20`. Production approval and
-publication are not complete. HTTP-fetch approval, payment eligibility, policy
-configuration, multi-role playtests, physical iOS/Android tests, hosted evidence,
-and exact-artifact release verification remain outstanding. Notifications remain
-disabled unless separately approved. See [the September verification record](evidence/reddit-release-2026-09-17.md).
+prerelease `0.0.1.23` is installed in `r/riddle_quest_dev`; it still calls the
+denied Cloud Functions hostname. The current local package calls the first-party
+`www.roobsworld.com` proxy, but that route is not live on the public domain.
+Run `pnpm --filter @qwordly/reddit-app check:hosted-gateway` after deploying the
+website route. Production approval and publication are not complete. HTTP-fetch
+approval for the current host, payment eligibility, policy review, multi-role
+playtests, physical iOS/Android tests, hosted evidence, and exact-artifact release
+verification remain outstanding. Notifications remain disabled unless separately
+approved. See [the current review check](evidence/reddit-review-readiness-2026-09-27.md).
 
 The game Terms are now published at https://roobsworld.com/riddle-quest/terms.
-The Reddit app details still need that URL and a reviewed game Privacy Policy;
+The Reddit app details contain that Terms URL and the general website Privacy
+Policy URL. The latter lacks the current Reddit game coverage on the live site;
 publication of the Terms does not establish Reddit approval. Current local Gold
 checkout coverage is recorded in [the currency verification](evidence/reddit-gold-2026-09-19.md).
 

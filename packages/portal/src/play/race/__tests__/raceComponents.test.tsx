@@ -334,6 +334,32 @@ describe("race presentation components", () => {
     expect(gameplayHtml).toContain("+45 seconds");
     expect(gameplayHtml).not.toContain("+15s");
     expect(gameplayHtml).not.toContain("+45s");
+    expect(
+      renderToString(
+        <RaceGameplay
+          viewportRef={{current: null}}
+          gameplayRef={{current: null}}
+          run={{...run, status: "completed", correctCount: 10, currentRiddle: null}}
+          adjustedNow={12_500}
+          ghostCorrect={0}
+          feedback={null}
+          coins={50}
+          currentLetters={[]}
+          activeSlotIndex={0}
+          guesses={[]}
+          letterStates={{}}
+          pending
+          onClose={noop}
+          onSelectSlot={noop}
+          onLetter={noop}
+          onText={noop}
+          onBackspace={noop}
+          onHint={noop}
+          onSubmit={noop}
+          onSkip={noop}
+        />,
+      ),
+    ).toContain("Loading results");
 
     /** Completed outcome fixture used by result variants. */
     const outcome: RaceOutcome = {

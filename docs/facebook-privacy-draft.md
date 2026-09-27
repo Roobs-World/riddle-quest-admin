@@ -1,6 +1,6 @@
 # Riddle Quest on Facebook — privacy notice draft
 
-**Not published.** Intended location: `https://roobsworld.com/riddle-quest/privacy`. Resolve the publication gates below before describing this as the release policy. Do not replace the separate Jest policy or portfolio privacy page with this platform-specific text.
+**Published URL:** `https://roobsworld.com/riddle-quest/privacy` (27 September 2026). This file remains a working draft and audit record; the website page is the public notice. The open review gates below still need resolution before the Facebook release is submitted. The separate Jest policy and portfolio privacy page retain their own scopes.
 
 ## Publisher and contact
 
@@ -18,13 +18,13 @@ We also process service requests, security records, technical errors and corresp
 
 ## Purposes and legal bases — proposed for owner review
 
-We use the information necessary to authenticate you, provide gameplay, save progress and fulfill purchases to perform our agreement with you. We use proportionate security, abuse-prevention and service-reliability processing for our legitimate interests in operating a trustworthy game. We process records needed to comply with applicable legal obligations on that basis. Optional presence requires your choice and can be turned off. Any optional processing requiring consent must remain off until a suitable consent mechanism is available. These bases and the supporting assessments must be approved before publication; this paragraph is draft language, not evidence that those assessments are complete.
+We use the information necessary to authenticate you, provide gameplay, save progress and fulfill purchases to perform our agreement with you. We use proportionate security, abuse-prevention and service-reliability processing for our legitimate interests in operating a trustworthy game. We process records needed to comply with applicable legal obligations on that basis. Optional presence requires your choice and can be turned off. Any optional processing requiring consent must remain off until a suitable consent mechanism is available. These bases and the supporting assessments still need owner review; this working paragraph is not evidence that those assessments are complete.
 
 ## Providers and international processing
 
 Meta provides the host platform, platform account and supported payment and social services. Firebase and Google Cloud provide game authentication, databases, functions, storage and operational logs. OpenAI supplies puzzle generation. Sentry may receive minimized diagnostic events when configured. Support correspondence uses the publisher's Gmail mailbox. Provider access is limited to the relevant service purpose and contractual arrangements; players should also consult the host platform's own privacy information.
 
-The game does not operate solely within the UK or EU: the current database is in Europe, while Facebook identity and gameplay functions also run in the United States. Applicable provider contracts, transfer safeguards and routes for obtaining further information must be verified and described here before publication.
+The game does not operate solely within the UK or EU: the current database is in Europe, while Facebook identity and gameplay functions also run in the United States. Applicable provider contracts and transfer safeguards still need verification for review readiness. The public notice directs players to contact the publisher for information about applicable arrangements.
 
 ## Retention and deletion
 
@@ -44,14 +44,14 @@ You may request access, correction, deletion or restriction of your personal inf
 
 The Facebook release is intended for eligible players aged 13 and above, subject to any higher platform or local minimum. Family-friendly presentation is not a claim that this Facebook release is directed at younger children. Contact us if you believe we hold game data from a player who is not eligible. We will date this notice and communicate material changes through an appropriate game, website or platform channel.
 
-## Publication gates and sources
+## Open review gates and sources
 
 - Confirm the support/safety operator and support/report retention decision; implement the approved process.
 - Verify Sentry activation, vendor contractual roles and international-transfer safeguards; do not claim an unverified safeguard is in place.
 - Approve and implement retention for identity nonces, retained identity/deletion records, moderation data and purchase replay records. Separate logical expiry from physical deletion.
 - Exercise game deletion and Meta's callback using a disposable role account after the account capability fix is uploaded.
 - Verify the release's actual social and commerce capability flags and align this notice with those enabled features.
-- Publish and browser-check the finished page, then update Meta and in-game policy destinations.
+- Verify that the in-game Facebook policy destination uses the dedicated URL; the website page and Meta Basic URL were updated on 27 September 2026.
 
 Engineering source: [privacy inventory](privacy-data-inventory.md), [moderation runbook](facebook-moderation-runbook.md), and Facebook source modules. Live nonsecret infrastructure settings were inspected on 19 September 2026; no player rows, logs or secrets were read.
 

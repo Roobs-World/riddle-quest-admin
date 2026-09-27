@@ -178,10 +178,12 @@ export function RaceTo10Game({
   const analytics = useCallback((eventName: RaceAnalyticsEventName, params: Record<string, string | number | boolean> = {}) => postToHost(createRaceAnalyticsMessage(eventName, params)), [postToHost]);
   /** Opens the host-owned recipient picker for an authoritative published challenge. */
   const sharePublishedChallenge = useCallback(
-    (publication: ReturnType<typeof PublishRaceChallengeResponseSchema.parse>) => {
+    async (publication: ReturnType<typeof PublishRaceChallengeResponseSchema.parse>) => {
       if (!referralSharing) return;
       analytics("race_share_dialog_opened", {categoryId: publication.preview.categoryId});
-      referralSharing.shareRace({challengeId: publication.challengeId, preview: publication.preview});
+      if ((await referralSharing.shareRace({challengeId: publication.challengeId, preview: publication.preview})) === "error") {
+        setError(tr("RaceTo10.ERROR_GENERIC"));
+      }
     },
     [analytics, referralSharing],
   );
@@ -471,7 +473,7 @@ export function RaceTo10Game({
           window.dispatchEvent(new CustomEvent("riddle-quest:race-challenge-published", {detail: publication}));
           if (shareAfterPublishRef.current) {
             shareAfterPublishRef.current = false;
-            sharePublishedChallenge(publication);
+            void sharePublishedChallenge(publication);
           }
         }
       } catch {
@@ -637,7 +639,13 @@ export function RaceTo10Game({
       const ownerHash = Array.from(new Uint8Array(ownerDigest), (byte) => byte.toString(16).padStart(2, "0")).join("");
       /** Opaque challenge ID shared before the run starts. */
       const reservedChallengeId = `jest-invite-${ownerHash}-${crypto.randomUUID().replace(/-/g, "")}`;
-      if (!(await referralSharing.shareMultiplayerInvite(reservedChallengeId))) return;
+      /** Provider outcome distinguishes an expected dismissal from a real share failure. */
+      const shareOutcome = await referralSharing.shareMultiplayerInvite(reservedChallengeId);
+      if (shareOutcome === "error") {
+        setError(tr("RaceTo10.ERROR_GENERIC"));
+        return;
+      }
+      if (shareOutcome === "cancelled") return;
       reservedChallengeIdRef.current = reservedChallengeId;
       reservedRunIdRef.current = null;
       window.sessionStorage.setItem(pendingJestInviteKey(ownerId), reservedChallengeId);
@@ -652,7 +660,7 @@ export function RaceTo10Game({
   /** Opens the host share flow for a published race challenge. */
   const share = () => {
     if (!referralSharing || !published) return;
-    sharePublishedChallenge(published);
+    void sharePublishedChallenge(published);
   };
   /** Clears completed-run presentation state and optionally starts a rematch. */
   const resetForNewRace = (categoryId?: RaceCategoryId, rivalryId?: string) => {

@@ -89,11 +89,13 @@ sessions use isolated local classic play without an identity exchange.
 
 ### Current review status
 
-On September 20, 2026, Reddit's authenticated app API reported the exact host's
-request as `DENIED`, last updated August 21, 2026. Hosted logs also report that
-requests to it are not allowed. Authenticated hosted gameplay is blocked until
-Reddit approves this exception. Local tests and package uploads do not establish
-approval.
+On September 27, 2026, the private installation remains at `0.0.1.23`, which
+calls the previously denied Cloud Functions hostname. This source version calls
+`www.roobsworld.com`, but the public `/api/reddit-gateway/*` route is not yet
+deployed there. The current host's Reddit fetch approval has not been verified.
+Run `pnpm check:hosted-gateway` before a private playtest upload; it requires an
+unsigned POST to receive the proxy's JSON `signature-required` response. A local
+build or a new upload does not establish fetch approval or hosted availability.
 
 ## Policies
 

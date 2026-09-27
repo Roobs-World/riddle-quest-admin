@@ -2,6 +2,8 @@
 
 **Status: preparation in progress; not ready for final submission.**
 
+For the latest local build, checks, unpublished ZIP and portal access status, see the [27 September readiness record](evidence/facebook-review-readiness-2026-09-27.md). The artifact and status details below describe the 19 September handoff and should not be treated as current portal readback.
+
 For the current sequence and owner-only steps, see the [approval walkthrough](facebook-approval-walkthrough.md).
 
 Owner-confirmed release boundary: prepare a complete Facebook release candidate with verified IAP, preserve the other Web Targets, and stop for owner approval before public publication. Retain historical content themes and declare them accurately for rating.

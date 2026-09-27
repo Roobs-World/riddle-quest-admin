@@ -4,8 +4,14 @@ export const JEST_REFERRAL_REFERENCES = {
   raceTo10: "riddle_quest_race_to_10_v1",
 } as const;
 
-/** Prefixes for one immutable Jest referral link per personalized share. */
+/** Short prefixes for one immutable Jest referral link per personalized share. */
 export const JEST_REFERRAL_SHARE_PREFIXES = {
+  result: "rq_fc_v2_",
+  race: "rq_r10_v1_",
+} as const;
+
+/** Previously issued personalized prefixes retained for signed-conversion reconciliation. */
+const JEST_LEGACY_REFERRAL_SHARE_PREFIXES = {
   result: `${JEST_REFERRAL_REFERENCES.friendChallenge}_result_`,
   race: `${JEST_REFERRAL_REFERENCES.raceTo10}_share_`,
 } as const;
@@ -42,11 +48,7 @@ export function createJestReferralShareReference(
 export function isJestRewardedReferralReference(value: unknown): value is JestReferralReference {
   if (typeof value !== "string") return false;
   if ((JEST_REWARDED_REFERRAL_REFERENCES as readonly string[]).includes(value)) return true;
-  if (value.startsWith(JEST_REFERRAL_SHARE_PREFIXES.result)) {
-    return JEST_REFERRAL_SHARE_TOKEN.test(value.slice(JEST_REFERRAL_SHARE_PREFIXES.result.length));
-  }
-  return (
-    value.startsWith(JEST_REFERRAL_SHARE_PREFIXES.race) &&
-    JEST_REFERRAL_SHARE_TOKEN.test(value.slice(JEST_REFERRAL_SHARE_PREFIXES.race.length))
+  return [...Object.values(JEST_REFERRAL_SHARE_PREFIXES), ...Object.values(JEST_LEGACY_REFERRAL_SHARE_PREFIXES)].some(
+    (prefix) => value.startsWith(prefix) && JEST_REFERRAL_SHARE_TOKEN.test(value.slice(prefix.length)),
   );
 }
