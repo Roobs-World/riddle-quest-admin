@@ -837,6 +837,28 @@ describeBrowser("Jest authentication integration", () => {
     await context.close();
   });
 
+  it("shares without a custom image when the encoded screenshot exceeds Jest's limit", async () => {
+    /** Isolated registered-player browser session. */
+    const {context, page} = await openHarness(browser, {registered: true});
+    await enterRegisteredGame(page);
+    await page.evaluate(() => {
+      HTMLCanvasElement.prototype.toDataURL = () => `data:image/png;base64,${"A".repeat(2 * 1024 * 1024)}`;
+      window.dispatchEvent(new CustomEvent("riddle-quest:share-referral", {
+        detail: {gameMode: "challenge", riddleId: "daily-riddle-1", attempts: 2, emojiGrid: "🟩"},
+      }));
+    });
+    await page.waitForFunction(() => (window as typeof window & {
+      /** Captured provider calls from the injected SDK. */
+      __RIDDLE_QUEST_JEST_AUTH_TEST__: AuthHarnessState;
+    }).__RIDDLE_QUEST_JEST_AUTH_TEST__.referralShares.length === 1);
+    /** Payload received by the provider after screenshot validation. */
+    const [share] = (await getHarnessState(page)).referralShares;
+    expect(share).not.toHaveProperty("shareImage");
+    expect(share.shareText).toBeTruthy();
+    expect(share.entryPayload).toMatchObject({inviteKind: "result", riddleId: "daily-riddle-1"});
+    await context.close();
+  });
+
   it("runs the complete profile invite, attributed registration, and inviter reward journey", async () => {
     /** Provides creator behavior. */
     const creator = await openHarness(browser, {

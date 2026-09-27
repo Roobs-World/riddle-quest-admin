@@ -6,6 +6,21 @@ it("rejects non-PNG and oversized screenshots", async () => {
 });
 it("accepts a small PNG data URL", async () =>
   expect(await sizeCheckedScreenshotProvider(() => "data:image/png;base64,YQ==")()).toBe("data:image/png;base64,YQ=="));
+it("rejects a data URL over 2 MiB even when decoded image bytes fit", async () => {
+  /** Payload whose decoded size fits but whose encoded size exceeds the provider limit. */
+  const image = `data:image/png;base64,${"A".repeat(2 * 1024 * 1024)}`;
+  expect(await sizeCheckedScreenshotProvider(() => image)()).toBeNull();
+});
+it("counts the prefix at the largest base64-aligned payload below 2 MiB", async () => {
+  /** Prefix included in the provider's size budget. */
+  const prefix = "data:image/png;base64,";
+  /** Largest complete base64 payload that fits alongside the prefix. */
+  const payloadLength = Math.floor((2 * 1024 * 1024 - prefix.length) / 4) * 4;
+  /** Data URL immediately below the provider limit. */
+  const image = prefix + "A".repeat(payloadLength);
+  expect(await sizeCheckedScreenshotProvider(() => image)()).toBe(image);
+  expect(await sizeCheckedScreenshotProvider(() => image + "AAAA")()).toBeNull();
+});
 it("accounts for single-padding PNG data URLs", async () =>
   expect(await sizeCheckedScreenshotProvider(() => "data:image/png;base64,YWI=")()).toBe("data:image/png;base64,YWI="));
 it("preserves a provider cancellation", async () =>
