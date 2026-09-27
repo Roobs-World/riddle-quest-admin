@@ -28,8 +28,9 @@ export function RaceScoreboard({
 }) {
   /** Converts a correct-answer count into progress toward this race's target. */
   const progressPercent = (correctCount: number) => `${(correctCount / run.rules.targetCorrect) * 100}%`;
-  /** Formats the visible score so the bar's ten-riddle purpose is explicit. */
-  const formatScore = (correctCount: number) => `${correctCount} / ${run.rules.targetCorrect}`;
+  /** Formats the visible score so the bar's purpose and target are explicit. */
+  const formatScore = (correctCount: number) =>
+    `${tr("RaceTo10.PROGRESS_LABEL")}: ${correctCount} / ${run.rules.targetCorrect}`;
 
   return (
     <section className="race-scoreboard" aria-label={tr("RaceTo10.PROGRESS_LABEL")}>
@@ -50,7 +51,6 @@ export function RaceScoreboard({
         >
           {feedback ? tr(feedback === "correct" ? "RaceTo10.CORRECT" : "RaceTo10.TRY_AGAIN") : "\u00a0"}
         </div>
-        <p className="race-progress-label">{tr("RaceTo10.PROGRESS_LABEL")}</p>
         <div className="race-progress">
           <div style={{"--race-progress": progressPercent(run.correctCount)} as CSSProperties}>
             <span title={tr("RaceTo10.YOU")}>{tr("RaceTo10.YOU")}</span>

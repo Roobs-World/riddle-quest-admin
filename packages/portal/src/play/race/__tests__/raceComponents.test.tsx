@@ -353,8 +353,7 @@ describe("race presentation components", () => {
     const scoreboardHtml = renderToString(
       <RaceScoreboard run={run} adjustedNow={12_500} ghostCorrect={0} feedback="correct" coins={50} onClose={noop} />,
     );
-    expect(scoreboardHtml).toContain("Riddles solved");
-    expect(scoreboardHtml).toContain("0 / 10");
+    expect(scoreboardHtml).toContain("Riddles solved: 0 / 10");
     expect(scoreboardHtml).not.toContain("riddles remaining");
     /** Provides gameplay html behavior. */
     const gameplayHtml = renderToString(

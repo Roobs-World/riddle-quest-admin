@@ -150,13 +150,6 @@
   gap: 8px;
   min-height: 190px;
 }
-.race-progress-label {
-  margin: 0;
-  font-size: 0.68rem;
-  font-weight: 800;
-  line-height: 1.1;
-  text-align: center;
-}
 .race-progress > div {
   min-width: 0;
   display: flex;
@@ -522,11 +515,6 @@
 .race-gameplay .race-progress {
   min-height: 0;
   gap: 8px;
-}
-.race-gameplay .race-progress-label {
-  align-self: end;
-  font-size: 0.65rem;
-  text-align: start;
 }
 .race-gameplay .race-progress > div {
   display: grid;
