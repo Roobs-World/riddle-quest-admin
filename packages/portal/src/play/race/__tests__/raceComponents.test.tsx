@@ -349,11 +349,13 @@ describe("race presentation components", () => {
     expect(loadingHtml).not.toContain("<span>3</span>");
     expect(loadingHtml).not.toContain("race-coin-balance");
     expect(renderToString(<RaceCountdown countdown={0} loading={false} coins={0} onClose={noop} />)).toContain("GO!");
-    expect(
-      renderToString(
-        <RaceScoreboard run={run} adjustedNow={12_500} ghostCorrect={0} feedback="correct" coins={50} onClose={noop} />,
-      ),
-    ).not.toContain("riddles remaining");
+    /** Scoreboard copy must explain what the bars and their values represent. */
+    const scoreboardHtml = renderToString(
+      <RaceScoreboard run={run} adjustedNow={12_500} ghostCorrect={0} feedback="correct" coins={50} onClose={noop} />,
+    );
+    expect(scoreboardHtml).toContain("Riddles solved");
+    expect(scoreboardHtml).toContain("0 / 10");
+    expect(scoreboardHtml).not.toContain("riddles remaining");
     /** Provides gameplay html behavior. */
     const gameplayHtml = renderToString(
       <RaceGameplay

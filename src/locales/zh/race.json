@@ -65,7 +65,7 @@
     "FIRST_TO_TEN": "率先答对10题者获胜",
     "ADJUSTED_TIME": "调整后时间",
     "PENALTIES": "罚时：{time}",
-    "PROGRESS_LABEL": "比赛进度",
+    "PROGRESS_LABEL": "已解谜题",
     "YOU": "你",
     "ANSWER_LABEL": "你的答案",
     "HINT_BUTTON": "提示",

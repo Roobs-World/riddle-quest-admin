@@ -65,7 +65,7 @@
     "FIRST_TO_TEN": "O primeiro a 10 acertos vence",
     "ADJUSTED_TIME": "Tempo ajustado",
     "PENALTIES": "Penalidades: {time}",
-    "PROGRESS_LABEL": "Progresso da corrida",
+    "PROGRESS_LABEL": "Enigmas resolvidos",
     "YOU": "Você",
     "ANSWER_LABEL": "Sua resposta",
     "HINT_BUTTON": "Dica",

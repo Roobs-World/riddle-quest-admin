@@ -65,7 +65,7 @@
     "FIRST_TO_TEN": "先に10問正解で勝利",
     "ADJUSTED_TIME": "調整後タイム",
     "PENALTIES": "ペナルティ：{time}",
-    "PROGRESS_LABEL": "レース進行",
+    "PROGRESS_LABEL": "解いたなぞなぞ",
     "YOU": "あなた",
     "ANSWER_LABEL": "答え",
     "HINT_BUTTON": "ヒント",

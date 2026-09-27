@@ -26,6 +26,11 @@ export function RaceScoreboard({
   /** Stores on close. */
   onClose: () => void;
 }) {
+  /** Converts a correct-answer count into progress toward this race's target. */
+  const progressPercent = (correctCount: number) => `${(correctCount / run.rules.targetCorrect) * 100}%`;
+  /** Formats the visible score so the bar's ten-riddle purpose is explicit. */
+  const formatScore = (correctCount: number) => `${correctCount} / ${run.rules.targetCorrect}`;
+
   return (
     <section className="race-scoreboard" aria-label={tr("RaceTo10.PROGRESS_LABEL")}>
       <RaceRailHeader coins={coins} onClose={onClose} />
@@ -45,10 +50,11 @@ export function RaceScoreboard({
         >
           {feedback ? tr(feedback === "correct" ? "RaceTo10.CORRECT" : "RaceTo10.TRY_AGAIN") : "\u00a0"}
         </div>
+        <p className="race-progress-label">{tr("RaceTo10.PROGRESS_LABEL")}</p>
         <div className="race-progress">
-          <div style={{"--race-progress": `${run.correctCount * 10}%`} as CSSProperties}>
+          <div style={{"--race-progress": progressPercent(run.correctCount)} as CSSProperties}>
             <span title={tr("RaceTo10.YOU")}>{tr("RaceTo10.YOU")}</span>
-            <strong>{run.correctCount}</strong>
+            <strong>{formatScore(run.correctCount)}</strong>
             <div className="race-progress-track" aria-hidden="true">
               <i />
             </div>
@@ -57,9 +63,9 @@ export function RaceScoreboard({
             </progress>
           </div>
           {run.opponent && (
-            <div style={{"--race-progress": `${ghostCorrect * 10}%`} as CSSProperties}>
+            <div style={{"--race-progress": progressPercent(ghostCorrect)} as CSSProperties}>
               <span title={run.opponent.displayName}>{run.opponent.displayName}</span>
-              <strong>{ghostCorrect}</strong>
+              <strong>{formatScore(ghostCorrect)}</strong>
               <div className="race-progress-track" aria-hidden="true">
                 <i />
               </div>
