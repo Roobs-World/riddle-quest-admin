@@ -1144,6 +1144,7 @@ describeBrowser("Jest authentication integration", () => {
     await page.locator(".race-gameplay .guess-board").waitFor({state: "visible", timeout: 10_000});
     /** First clue shown after the full deck has loaded and the countdown has completed. */
     const firstRiddle = await page.locator(".race-riddle-surface h2").innerText();
+    /** Skip control whose cooldown state is exercised by this flow. */
     const skipButton = page.getByRole("button", {name: /^Skip/});
     await skipButton.click();
     await page.waitForFunction(
@@ -1153,6 +1154,7 @@ describeBrowser("Jest authentication integration", () => {
     expect(await page.locator(".race-riddle-surface h2").innerText()).toContain("hands and a face");
     expect(await skipButton.isDisabled()).toBe(true);
     await page.waitForFunction(() => {
+      /** Current skip control discovered inside the browser page. */
       const button = [...document.querySelectorAll<HTMLButtonElement>(".race-actions button")].find((candidate) =>
         candidate.textContent?.includes("Skip"),
       );

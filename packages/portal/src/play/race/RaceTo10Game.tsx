@@ -291,6 +291,7 @@ export function RaceTo10Game({
           setPublishRequested(false);
         }
         if (operation === "raceSkip" && skipRollbackRef.current) {
+          /** Optimistic run snapshot restored when a skip request fails. */
           const rollback = skipRollbackRef.current;
           skipRollbackRef.current = null;
           setRun(rollback);
@@ -502,6 +503,7 @@ export function RaceTo10Game({
           previewedGuessRef.current = false;
         }
         if (operation === "raceSkip" && skipRollbackRef.current) {
+          /** Optimistic run snapshot restored when a skip response is invalid. */
           const rollback = skipRollbackRef.current;
           skipRollbackRef.current = null;
           setRun(rollback);
