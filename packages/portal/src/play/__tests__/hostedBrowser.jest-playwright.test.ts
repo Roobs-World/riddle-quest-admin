@@ -1078,7 +1078,13 @@ describeBrowser("standalone Jest browser game", () => {
         if (!raw) return false;
         try {
           /** Locally projected profile data. */
-          const profile = (JSON.parse(raw) as {profile?: {achievements?: unknown[]}}).profile;
+          const profile = (JSON.parse(raw) as {
+            /** Stores profile. */
+            profile?: {
+              /** Stores achievements. */
+              achievements?: unknown[];
+            };
+          }).profile;
           return profile?.achievements?.includes("perfect_guess") === true &&
             profile.achievements.includes("classic_perfect");
         } catch {

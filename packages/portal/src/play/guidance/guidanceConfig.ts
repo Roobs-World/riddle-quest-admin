@@ -99,6 +99,7 @@ export function createGuidanceStorageKey(kind: string, userId?: string): string 
 
 /** Builds the versioned persistence key for a completed tooltip tour. */
 export function createTooltipTourStorageKey(tourName: string, userId?: string): string {
+  /** Provides version behavior. */
   const version = tourName === "profileTour" ? PROFILE_TOOLTIP_TOUR_VERSION : TOOLTIP_TOUR_VERSION;
   return createGuidanceStorageKey(`tooltipSequenceSeen:${tourName}:${version}`, userId);
 }
@@ -160,8 +161,11 @@ export function getTooltipPanelStyle(
   if (!targetRect) return {top: "50%", transform: "translate(-50%, -50%)"};
   /** Preferred placement, clamped to keep the entire card and button reachable. */
   const belowTop = targetRect.bottom + 18;
+  /** Provides above top behavior. */
   const aboveTop = targetRect.top - panelHeight - 18;
+  /** Provides fits below behavior. */
   const fitsBelow = belowTop + panelHeight <= viewportHeight - 14;
+  /** Provides prefer below behavior. */
   const preferBelow = !ABOVE_TARGET_TOOLTIPS.has(activeTooltip) && targetRect.bottom < viewportHeight * 0.58;
   /** Profile scrolling can leave an above-target step without enough room; use the clear side when available. */
   const preferredTop = preferBelow || (activeTooltip.startsWith("profile") && aboveTop < 14 && fitsBelow)

@@ -80,6 +80,7 @@ describeBrowser("profile walkthrough", () => {
           expect(spotlight!.y).toBeGreaterThanOrEqual(0);
           expect(spotlight!.y + spotlight!.height).toBeLessThanOrEqual(viewport.height);
           if (id !== "profileProgression") {
+            /** Provides separated behavior. */
             const separated = card!.y + card!.height < spotlight!.y
               || card!.y > spotlight!.y + spotlight!.height;
             expect(separated).toBe(true);

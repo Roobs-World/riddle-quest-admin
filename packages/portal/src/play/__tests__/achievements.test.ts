@@ -94,6 +94,7 @@ describe("optimistic completion achievements", () => {
   });
 
   it("does not project unlocks for a nonterminal guess or missing profile", () => {
+    /** Provides completion behavior. */
     const completion = {gameMode: "classic" as const, isCorrect: false, attempts: 2, gameOver: false};
     expect(predictCompletionAchievementIds(null, completion)).toEqual([]);
   });

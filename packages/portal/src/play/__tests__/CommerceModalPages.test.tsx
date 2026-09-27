@@ -115,7 +115,13 @@ describe("commerce modal pages", () => {
     });
     /** Direct skip action rendered by the funded loss prompt. */
     const skipButton = fundedPrompt.props.children.find(
-      (child: {props?: {className?: string}}) => child?.props?.className === "play-primary loss-skip-action",
+      (child: {
+        /** Stores props. */
+        props?: {
+          /** Stores class name. */
+          className?: string;
+        };
+      }) => child?.props?.className === "play-primary loss-skip-action",
     );
 
     expect(poorHtml).toMatch(/not have enough coins[\s\S]*loss-skip-action[^>]*disabled/u);

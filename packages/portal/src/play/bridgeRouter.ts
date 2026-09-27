@@ -66,7 +66,10 @@ export type HostMessageHandlers = {
   ): void | Promise<void>;
   /** Persists a local achievement projection while completion reconciles. */
   recordAchievements(
-    message: Extract<GameToHostMessage, {type: "game:recordAchievements"}>,
+    message: Extract<GameToHostMessage, {
+      /** Stores type. */
+      type: "game:recordAchievements";
+    }>,
   ): void | Promise<void>;
   /** Requests hint. */
   requestHint(

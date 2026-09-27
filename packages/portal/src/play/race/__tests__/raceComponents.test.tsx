@@ -301,6 +301,7 @@ describe("race presentation components", () => {
     const categories = (await createFakeRaceServices().listRaceCategories("en")).categories;
     /** Provider invite actions for each recipient route. */
     const onChallengeJestPlayer = jest.fn();
+    /** Provides on challenge by sms behavior. */
     const onChallengeBySms = jest.fn();
     /** Challenge-enabled lobby presentation. */
     const panel = RaceCategoriesPanel({

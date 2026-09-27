@@ -29,6 +29,7 @@ describe("guidance configuration", () => {
   });
 
   it("shows ranks immediately after achievements in the profile tour", () => {
+    /** Provides achievements index behavior. */
     const achievementsIndex = PROFILE_TOUR.indexOf("profileAchievements");
     expect(PROFILE_TOUR[achievementsIndex + 1]).toBe("profileRanks");
   });

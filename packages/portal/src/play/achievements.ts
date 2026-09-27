@@ -428,16 +428,23 @@ export function predictCompletionAchievementIds(
   const existing = new Set(profile.achievements);
   /** Projected aggregate values produced by a successful completion. */
   const gamesPlayed = profile.gamesPlayed + 1;
+  /** Provides total wins behavior. */
   const totalWins = (profile.totalWins ?? profile.wins) + (completion.isCorrect ? 1 : 0);
+  /** Provides total guesses in wins behavior. */
   const totalGuessesInWins = (profile.totalGuessesInWins ?? 0) +
     (completion.isCorrect ? completion.attempts : 0);
+  /** Provides average guesses behavior. */
   const averageGuesses = totalWins > 0 ? Number((totalGuessesInWins / totalWins).toFixed(2)) : 0;
+  /** Provides win rate behavior. */
   const winRate = Number(((totalWins / gamesPlayed) * 100).toFixed(2));
+  /** Provides highest level classic behavior. */
   const highestLevelClassic = completion.gameMode === "classic" && completion.isCorrect
     ? Math.max(profile.highestLevelClassic ?? 0, profile.classicIndex + 1)
     : (profile.highestLevelClassic ?? 0);
+  /** Provides daily puzzles completed behavior. */
   const dailyPuzzlesCompleted = (profile.dailyPuzzlesCompleted ?? 0) +
     (completion.gameMode === "challenge" && completion.isCorrect ? 1 : 0);
+  /** Provides challenge wins behavior. */
   const challengeWins = (profile.challengeWins ?? 0) +
     (completion.gameMode === "challenge" && completion.isCorrect ? 1 : 0);
   /** Rules whose result does not depend on unprojected server-only state. */
