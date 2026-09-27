@@ -225,6 +225,7 @@ export const createFakeRaceServices = (): RaceMethods => {
       ...(run.evaluationEnabled
         ? {
             preloadedRiddles: clues.map((text, position) => ({
+              hint: {index: 0, letter: Array.from(answers[position]!)[0]!},
               riddleId: `fake-race-${position + 1}`,
               text,
               answerLength: answers[position].length,
@@ -474,8 +475,10 @@ export const createFakeRaceServices = (): RaceMethods => {
       const delayMs = getRaceSkipDelayMs();
       if (delayMs > 0) await new Promise((resolve) => window.setTimeout(resolve, delayMs));
       run.skipPenaltyMs += RACE_SKIP_PENALTY_MS;
+      run.view = {...run.view, correctCount: run.view.correctCount + 1};
       addEvent(run, "skip", RACE_SKIP_PENALTY_MS);
-      advance(run);
+      if (run.view.correctCount >= 10) run.view = {...syncView(run), status: "completed", currentRiddle: null};
+      else advance(run);
       /** Provides response behavior. */
       const response = {run: syncView(run), penaltyAddedMs: RACE_SKIP_PENALTY_MS as 45000};
       run.responses.set(input.requestId, response);

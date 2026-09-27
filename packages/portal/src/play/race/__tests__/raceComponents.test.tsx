@@ -172,6 +172,8 @@ describe("race presentation components", () => {
     );
     expect(categoriesHtml).toContain("race-category-grid");
     expect(categoriesHtml).toContain("Loading categories");
+    expect(categoriesHtml).not.toContain("riddles ready");
+    expect(categoriesHtml).not.toContain(String(categories[0]?.availableRiddleCount));
 
     /** Rendered populated race inbox. */
     const inboxHtml = renderToString(
@@ -345,10 +347,12 @@ describe("race presentation components", () => {
       requestId: "request-components",
     });
     /** Captures loading html for this regression check. */
-    const loadingHtml = renderToString(<RaceCountdown countdown={3} loading coins={1_250} onClose={noop} />);
+    const loadingHtml = renderToString(<RaceCountdown countdown={3} loading loadingProgress={65} coins={1_250} onClose={noop} />);
     expect(loadingHtml).not.toContain("<span>3</span>");
+    expect(loadingHtml).toContain("65%");
+    expect(loadingHtml).toContain('role="progressbar"');
     expect(loadingHtml).not.toContain("race-coin-balance");
-    expect(renderToString(<RaceCountdown countdown={0} loading={false} coins={0} onClose={noop} />)).toContain("GO!");
+    expect(renderToString(<RaceCountdown countdown={0} loading={false} loadingProgress={100} coins={0} onClose={noop} />)).toContain("GO!");
     /** Scoreboard copy must explain what the bars and their values represent. */
     const scoreboardHtml = renderToString(
       <RaceScoreboard run={run} adjustedNow={12_500} ghostCorrect={0} feedback="correct" coins={50} onClose={noop} />,

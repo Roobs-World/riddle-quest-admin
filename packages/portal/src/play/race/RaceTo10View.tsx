@@ -64,6 +64,10 @@ export type RaceTo10ViewProps = {
   challenge: RaceChallengePreview | null;
   /** Stores countdown. */
   countdown: number;
+  /** Percentage of race data loaded before countdown begins. */
+  loadingProgress: number;
+  /** Whether the completed loading state has handed off to 3-2-1. */
+  countdownReady: boolean;
   /** Stores run. */
   run: RaceRunView | null;
   /** Stores outcome. */
@@ -164,7 +168,7 @@ export type RaceTo10ViewProps = {
 export function RaceTo10View(props: RaceTo10ViewProps) {
   /** Provides {
     stage, coins, error, safety notice, categories, inbox items, tournament, tournament loading,
-    context board, context board loading, challenge, countdown, run, outcome, published, sharing reward coins, pending,
+    context board, context board loading, challenge, countdown, loadingProgress, countdownReady, run, outcome, published, sharing reward coins, pending,
     adjusted now, ghost correct, feedback, penalty flash, current letters, active slot index, race guesses,
     letter states, quit confirmation open, race guess loading, social pending, dialog ref, gameplay viewport ref, gameplay ref,
     quit dialog ref, on close, on retry, on request close, on show inbox, on show tournaments, on choose category, on select category,
@@ -186,6 +190,8 @@ export function RaceTo10View(props: RaceTo10ViewProps) {
     contextBoardLoading,
     challenge,
     countdown,
+    loadingProgress,
+    countdownReady,
     run,
     outcome,
     published,
@@ -302,7 +308,8 @@ export function RaceTo10View(props: RaceTo10ViewProps) {
       {stage === "countdown" && (
         <RaceCountdown
           countdown={countdown}
-          loading={pending === "raceStart"}
+          loading={!countdownReady}
+          loadingProgress={loadingProgress}
           closing={closeAfterStart}
           coins={coins}
           onClose={onRequestClose}
@@ -361,7 +368,7 @@ export function RaceTo10View(props: RaceTo10ViewProps) {
           onConfirm={onAbandon}
         />
       )}
-      {(raceGuessLoading || ((stage === "racing" || stage === "result") && Boolean(pending))) && (
+      {(raceGuessLoading || ((stage === "racing" || stage === "result") && Boolean(pending) && pending !== "raceHint" && pending !== "raceSkip")) && (
         <div className="race-operation-loader" role="status" aria-label={tr("Accessibility.LOADING")} />
       )}
     </section>

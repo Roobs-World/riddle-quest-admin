@@ -33,14 +33,17 @@ export const findFirstEditableRaceSlot = (riddle: RaceRiddle | null): number => 
 /** Immediately advances to the already-downloaded next riddle while the server records the skip. */
 export const projectInstantRaceSkip = (run: RaceRunView): RaceRunView | null => {
   if (run.status !== "active" || !run.currentRiddle || !run.preloadedRiddles) return null;
+  /** Cleared-riddle count shown immediately while the authoritative mutation is in flight. */
+  const correctCount = Math.min(run.rules.targetCorrect, run.correctCount + 1);
   /** Immutable prompt selected from the deck downloaded before the countdown completed. */
   const next = run.preloadedRiddles[run.currentRiddle.position + 1];
   return {
     ...run,
-    status: next ? "active" : "timed_out",
+    status: correctCount >= run.rules.targetCorrect ? "completed" : next ? "active" : "timed_out",
+    correctCount,
     totalPenaltyMs: run.totalPenaltyMs + run.rules.skipPenaltyMs,
     adjustedElapsedMs: run.adjustedElapsedMs + run.rules.skipPenaltyMs,
-    currentRiddle: next
+    currentRiddle: correctCount < run.rules.targetCorrect && next
       ? {
           ...next,
           guessesUsed: 0,
@@ -49,6 +52,24 @@ export const projectInstantRaceSkip = (run: RaceRunView): RaceRunView | null => 
           revealedLetters: [],
         }
       : null,
+  };
+};
+
+/** Immediately reveals the preloaded server-selected hint while the server records it. */
+export const projectInstantRaceHint = (run: RaceRunView): RaceRunView | null => {
+  if (run.status !== "active" || !run.currentRiddle?.hintAvailable || !run.preloadedRiddles) return null;
+  /** Immutable hint selected by the same first-unrevealed-letter rule as the server. */
+  const hint = run.preloadedRiddles[run.currentRiddle.position]?.hint;
+  if (!hint) return null;
+  return {
+    ...run,
+    totalPenaltyMs: run.totalPenaltyMs + run.rules.hintPenaltyMs,
+    adjustedElapsedMs: run.adjustedElapsedMs + run.rules.hintPenaltyMs,
+    currentRiddle: {
+      ...run.currentRiddle,
+      hintAvailable: false,
+      revealedLetters: [...run.currentRiddle.revealedLetters, hint],
+    },
   };
 };
 

@@ -4,6 +4,14 @@ export const RACE_COUNTDOWN_START = 3;
 export const RACE_COUNTDOWN_TICK_MS = 1_000;
 /** Duration for which the final “Go” state remains visible. */
 export const RACE_GO_DISPLAY_MS = 180;
+/** Interval used to visibly advance race-data loading before the deck arrives. */
+export const RACE_LOADING_TICK_MS = 100;
+/** Time that a completed 100% indicator remains visible before 3-2-1 begins. */
+export const RACE_LOADING_COMPLETE_DISPLAY_MS = 300;
+
+/** Advances visible preparation without claiming completion before the deck is validated. */
+export const advanceRaceLoadingProgress = (current: number, dataReady: boolean): number =>
+  dataReady ? 100 : Math.min(90, Math.max(0, current) + 5);
 
 /** A deterministic transition in the multiplayer countdown state machine. */
 export type RaceCountdownStep =

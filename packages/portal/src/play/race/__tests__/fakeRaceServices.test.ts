@@ -84,6 +84,7 @@ describe("createFakeRaceServices", () => {
     });
     expect(skipped.penaltyAddedMs).toBe(RACE_SKIP_PENALTY_MS);
     expect(skipped.run.totalPenaltyMs).toBe(RACE_HINT_PENALTY_MS + RACE_SKIP_PENALTY_MS);
+    expect(skipped.run.correctCount).toBe(1);
     expect(skipped.run.currentRiddle?.position).toBe(1);
   });
 

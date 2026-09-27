@@ -163,7 +163,7 @@ describe("Race to 10 authoritative engine", () => {
     const skipped = applyRaceSkip(createRun(), {riddleId: "riddle-1"}, STARTED_AT + 4_000);
     expect(skipped.skipPenaltyMs).toBe(RACE_SKIP_PENALTY_MS);
     expect(skipped.currentPosition).toBe(1);
-    expect(skipped.correctCount).toBe(0);
+    expect(skipped.correctCount).toBe(1);
     expect(skipped.events[0]).toMatchObject({type: "skip", penaltyAddedMs: 45_000, adjustedElapsedMs: 49_000});
   });
 
@@ -177,8 +177,19 @@ describe("Race to 10 authoritative engine", () => {
       expect(result.autoSkipped).toBe(attempt === 5);
     }
     expect(run.currentPosition).toBe(1);
+    expect(run.correctCount).toBe(1);
     expect(run.skipPenaltyMs).toBe(45_000);
     expect(run.events.filter((event) => event.type === "skip")).toHaveLength(1);
+  });
+
+  it("completes the run when a skip clears the tenth riddle", () => {
+    /** Ninth-clear run whose next skip reaches the Race to 10 target. */
+    const completed = applyRaceSkip(
+      createRun({correctCount: 9}),
+      {riddleId: "riddle-1"},
+      STARTED_AT + 4_000,
+    );
+    expect(completed).toMatchObject({status: "completed", result: "recorded", correctCount: 10});
   });
 
   it("times out when the final available riddle is skipped without ten solves", () => {
@@ -218,6 +229,7 @@ describe("Race to 10 authoritative engine", () => {
       answerLength: 5,
       position: 1,
       evaluation: {answer: "orbit", locale: "en"},
+      hint: {index: 0, letter: "o"},
     });
   });
 

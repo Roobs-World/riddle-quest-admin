@@ -27,11 +27,11 @@ import {
 import {tr} from "../i18n";
 import {HOST_TO_GAME_EVENT} from "../localBridge";
 import {createRaceAnalyticsMessage} from "./logic/raceAnalytics";
-import {RACE_COUNTDOWN_START} from "./logic/raceCountdown";
+import {advanceRaceLoadingProgress, RACE_COUNTDOWN_START, RACE_LOADING_COMPLETE_DISPLAY_MS, RACE_LOADING_TICK_MS} from "./logic/raceCountdown";
 import {deleteRaceLetter, insertRaceLetter, insertRaceText, isRaceSlotEditable} from "./logic/raceInput";
 import type {RaceOperation} from "./logic/raceOperations";
 import {getGhostCorrectCount} from "./logic/racePlayback";
-import {applyRaceOutcome, createRaceAttempt, findFirstEditableRaceSlot, getAdjustedRaceTime, getRaceLetterStates, projectInstantRaceSkip, projectRaceOutcome} from "./logic/racePresentation";
+import {applyRaceOutcome, createRaceAttempt, findFirstEditableRaceSlot, getAdjustedRaceTime, getRaceLetterStates, projectInstantRaceHint, projectInstantRaceSkip, projectRaceOutcome} from "./logic/racePresentation";
 import {useRaceDialogFocus, useRaceGameplayFit, useRaceGameplayKeyboard, useRaceOperationLifecycle} from "./hooks";
 import {RaceTo10View, type RaceStage} from "./RaceTo10View";
 import {readActiveRace, clearActiveRace} from "./logic/activeRaceStorage";
@@ -86,6 +86,10 @@ export function RaceTo10Game({
   const [outcome, setOutcome] = useState<RaceOutcome | null>(null);
   /** Number currently displayed by the pre-race countdown. */
   const [countdown, setCountdown] = useState(RACE_COUNTDOWN_START);
+  /** Visible progress while the complete immutable multiplayer deck is loading. */
+  const [loadingProgress, setLoadingProgress] = useState(0);
+  /** Becomes true after 100% has been displayed, allowing 3-2-1 to begin. */
+  const [countdownReady, setCountdownReady] = useState(false);
   /** Letters currently entered for the active riddle. */
   const [currentLetters, setCurrentLetters] = useState<string[]>([]);
   /** Answer slot that receives the next keyboard input. */
@@ -98,6 +102,10 @@ export function RaceTo10Game({
   const previewedGuessRef = useRef(false);
   /** Authoritative view restored if an instant local skip cannot be recorded by the server. */
   const skipRollbackRef = useRef<RaceRunView | null>(null);
+  /** Authoritative view restored if an instant local hint cannot be recorded by the server. */
+  const hintRollbackRef = useRef<RaceRunView | null>(null);
+  /** Run most recently reported after this client entered its final screen. */
+  const finalScreenNotifiedRunRef = useRef<string | null>(null);
   /** Temporary text describing a server-applied time penalty. */
   const [penaltyFlash, setPenaltyFlash] = useState<string | null>(null);
   /** Whether the active-race abandonment confirmation is visible. */
@@ -239,16 +247,13 @@ export function RaceTo10Game({
     requestClose,
   });
 
-  /** Stores a new authoritative run view and requests its outcome when complete. */
+  /** Stores a new authoritative run view. */
   const updateRun = useCallback(
     (next: RaceRunView) => {
       setRun(next);
       setReceivedAtMs(Date.now());
-      if (next.status !== "active") {
-        send("raceOutcome", "game:getRaceOutcome", {runId: next.runId});
-      }
     },
-    [send],
+    [],
   );
 
   useEffect(() => {
@@ -294,6 +299,14 @@ export function RaceTo10Game({
           /** Optimistic run snapshot restored when a skip request fails. */
           const rollback = skipRollbackRef.current;
           skipRollbackRef.current = null;
+          setRun(rollback);
+          setReceivedAtMs(Date.now());
+          resetAttempt(rollback);
+          setPenaltyFlash(null);
+        }
+        if (operation === "raceHint" && hintRollbackRef.current) {
+          const rollback = hintRollbackRef.current;
+          hintRollbackRef.current = null;
           setRun(rollback);
           setReceivedAtMs(Date.now());
           resetAttempt(rollback);
@@ -431,6 +444,7 @@ export function RaceTo10Game({
         } else if (operation === "raceHint") {
           /** Provides result behavior. */
           const result = RequestRaceHintResponseSchema.parse(message.payload.data);
+          hintRollbackRef.current = null;
           updateRun(result.run);
           setCurrentLetters((letters) => {
             /** Provides next behavior. */
@@ -511,6 +525,14 @@ export function RaceTo10Game({
           resetAttempt(rollback);
           setPenaltyFlash(null);
         }
+        if (operation === "raceHint" && hintRollbackRef.current) {
+          const rollback = hintRollbackRef.current;
+          hintRollbackRef.current = null;
+          setRun(rollback);
+          setReceivedAtMs(Date.now());
+          resetAttempt(rollback);
+          setPenaltyFlash(null);
+        }
         setError(tr("RaceTo10.ERROR_INVALID_RESPONSE"));
       } finally {
         finishOperation(operation);
@@ -529,7 +551,21 @@ export function RaceTo10Game({
     return () => window.clearTimeout(timer);
   }, [activeChallengeId, challenge, locale, pending, send, stage]);
 
-  useRaceClockEffects(stage, countdown, closeAfterStart ? null : run, setStage, setCountdown, setTick);
+  useEffect(() => {
+    if (stage !== "countdown") return;
+    if (run) {
+      setLoadingProgress(100);
+      const completeTimer = window.setTimeout(() => setCountdownReady(true), RACE_LOADING_COMPLETE_DISPLAY_MS);
+      return () => window.clearTimeout(completeTimer);
+    }
+    const progressTimer = window.setInterval(
+      () => setLoadingProgress((current) => advanceRaceLoadingProgress(current, false)),
+      RACE_LOADING_TICK_MS,
+    );
+    return () => window.clearInterval(progressTimer);
+  }, [run, stage]);
+
+  useRaceClockEffects(stage, countdown, closeAfterStart || !countdownReady ? null : run, setStage, setCountdown, setTick);
 
   useRaceGameplayFit({
     active: stage === "racing",
@@ -553,8 +589,13 @@ export function RaceTo10Game({
     setError(null);
     setOutcome(projected);
     setStage("result");
-    if (run.status === "active") send("raceOutcome", "game:getRaceOutcome", {runId: run.runId});
-  }, [adjustedNow, outcome, pending, run, send, stage]);
+  }, [adjustedNow, outcome, pending, run, stage]);
+
+  useEffect(() => {
+    if (stage !== "result" || !run || finalScreenNotifiedRunRef.current === run.runId) return;
+    finalScreenNotifiedRunRef.current = run.runId;
+    send("raceOutcome", "game:getRaceOutcome", {runId: run.runId});
+  }, [run, send, stage]);
 
   useEffect(() => {
     if (!publishRequested || published || pending || !referralSharing || !run || run.status !== "completed") return;
@@ -586,6 +627,8 @@ export function RaceTo10Game({
     if (rivalryChallengeIdRef.current) analytics("race_counter_challenge_started", {categoryId});
     inboxLoadedAtRef.current = 0;
     setCountdown(RACE_COUNTDOWN_START);
+    setLoadingProgress(0);
+    setCountdownReady(false);
     setStage("countdown");
     send("raceStart", "game:startRace", challengeIdForStart ? {locale, challengeId: challengeIdForStart, includeEvaluation: true} : {locale, categoryId, includeEvaluation: true, ...(rivalryIdForStart ? {rivalryChallengeId: rivalryIdForStart} : {})});
   };
@@ -609,6 +652,16 @@ export function RaceTo10Game({
   /** Requests the next server-selected hint for the active riddle. */
   const requestHint = () => {
     if (!run?.currentRiddle || pending) return;
+    /** Hint projected entirely from the deck downloaded before the countdown. */
+    const projected = projectInstantRaceHint(run);
+    if (projected) {
+      hintRollbackRef.current = run;
+      setRun(projected);
+      setReceivedAtMs(Date.now());
+      setCurrentLetters(createRaceAttempt(projected.currentRiddle));
+      setActiveSlotIndex(findFirstEditableRaceSlot(projected.currentRiddle));
+      setPenaltyFlash(tr("RaceTo10.HINT_PENALTY"));
+    }
     send("raceHint", "game:requestRaceHint", {
       runId: run.runId,
       riddleId: run.currentRiddle.riddleId,
@@ -694,6 +747,7 @@ export function RaceTo10Game({
     setActiveChallengeId(undefined);
     setRun(null);
     setOutcome(null);
+    finalScreenNotifiedRunRef.current = null;
     setPublished(null);
     setPublishRequested(false);
     closeAfterStartRef.current = false;
@@ -792,6 +846,8 @@ export function RaceTo10Game({
         contextBoardLoading,
         challenge,
         countdown,
+        loadingProgress,
+        countdownReady,
         run,
         outcome,
         pending,

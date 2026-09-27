@@ -71,6 +71,13 @@ export const RacePreloadedRiddleSchema = z
     evaluation: z
       .object({answer: z.string().min(1).max(MAX_RIDDLE_ANSWER_CHARACTERS), locale: RaceLocaleSchema})
       .strict(),
+    /** First server-selected hint, downloaded with the immutable race deck. */
+    hint: z
+      .object({
+        index: z.number().int().nonnegative().max(MAX_RIDDLE_ANSWER_CHARACTERS - 1),
+        letter: z.string().min(1).max(8),
+      })
+      .strict(),
   })
   .strict();
 /** Immutable riddle content downloaded before an evaluation-enabled race begins. */

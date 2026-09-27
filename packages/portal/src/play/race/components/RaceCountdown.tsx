@@ -5,6 +5,7 @@ import {RaceRailHeader} from "./RaceHeader";
 export function RaceCountdown({
   countdown,
   loading,
+  loadingProgress,
   closing = false,
   coins,
   onClose,
@@ -13,6 +14,8 @@ export function RaceCountdown({
   countdown: number;
   /** Stores loading. */
   loading: boolean;
+  /** Percentage of the complete multiplayer deck prepared for play. */
+  loadingProgress: number;
   /** Whether close was requested while the authoritative run was starting. */
   closing?: boolean;
   /** Stores coins. */
@@ -25,7 +28,20 @@ export function RaceCountdown({
   return (
     <div className="race-countdown-layout">
       <div className="race-countdown" aria-live="assertive">
-        {!loading && <span>{countdownLabel}</span>}
+        {loading ? (
+          <div
+            className="race-loading-progress"
+            role="progressbar"
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={loadingProgress}
+          >
+            <strong>{loadingProgress}%</strong>
+            <div className="race-loading-track" aria-hidden="true">
+              <span style={{width: `${loadingProgress}%`}} />
+            </div>
+          </div>
+        ) : <span>{countdownLabel}</span>}
         <p>{closing ? tr("RaceTo10.QUITTING") : loading ? tr("Accessibility.LOADING") : tr("RaceTo10.FIRST_TO_TEN")}</p>
       </div>
       <aside className="race-scoreboard race-countdown-rail">

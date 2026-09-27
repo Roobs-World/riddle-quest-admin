@@ -153,6 +153,19 @@ const finishRun = (
   };
 };
 
+/** Completes a run once the tenth riddle has been cleared, whether answered or skipped. */
+const finishCompletedRun = (run: RaceRunRecord, nowMs: number): RaceRunRecord => {
+  /** Adjusted finish time after any penalty attached to the clearing action. */
+  const adjustedFinishMs = raceClock(run, nowMs).adjustedElapsedMs;
+  /** Competitive result determined against the immutable opponent finish time. */
+  const result: RaceOutcome["result"] = run.opponent
+    ? adjustedFinishMs < run.opponent.adjustedFinishMs
+      ? "player_win"
+      : "tie"
+    : "recorded";
+  return finishRun(run, result, adjustedFinishMs);
+};
+
 /** Refreshes time-dependent run state, including timeout and ghost completion. */
 export function refreshRaceRun(input: RaceRunRecord, nowMs: number): RaceRunRecord {
   /** Provides run behavior. */
@@ -272,15 +285,7 @@ export function applyRaceGuess(
     run.correctCount += 1;
     appendEvent(run, "correct", nowMs, 0);
     if (run.correctCount >= RACE_TARGET_CORRECT) {
-      /** Provides adjusted finish ms behavior. */
-      const adjustedFinishMs = raceClock(run, nowMs).adjustedElapsedMs;
-      /** Provides result behavior. */
-      const result: RaceOutcome["result"] = run.opponent
-        ? adjustedFinishMs < run.opponent.adjustedFinishMs
-          ? "player_win"
-          : "tie"
-        : "recorded";
-      return {run: finishRun(run, result, adjustedFinishMs), feedback, isCorrect, autoSkipped: false};
+      return {run: finishCompletedRun(run, nowMs), feedback, isCorrect, autoSkipped: false};
     }
     advanceRiddle(run, nowMs);
     return {run, feedback, isCorrect, autoSkipped: false};
@@ -288,7 +293,11 @@ export function applyRaceGuess(
 
   if (run.guessesUsed >= RACE_MAX_GUESSES_PER_RIDDLE) {
     run.skipPenaltyMs += RACE_SKIP_PENALTY_MS;
+    run.correctCount += 1;
     appendEvent(run, "skip", nowMs, RACE_SKIP_PENALTY_MS);
+    if (run.correctCount >= RACE_TARGET_CORRECT) {
+      return {run: finishCompletedRun(run, nowMs), feedback, isCorrect, autoSkipped: true};
+    }
     advanceRiddle(run, nowMs);
     return {run: finalizeAfterPenalty(run, nowMs), feedback, isCorrect, autoSkipped: true};
   }
@@ -348,7 +357,9 @@ export function applyRaceSkip(
   const run = refreshRaceRun(input, nowMs);
   requireActiveRiddle(run, inputData.riddleId);
   run.skipPenaltyMs += RACE_SKIP_PENALTY_MS;
+  run.correctCount += 1;
   appendEvent(run, "skip", nowMs, RACE_SKIP_PENALTY_MS);
+  if (run.correctCount >= RACE_TARGET_CORRECT) return finishCompletedRun(run, nowMs);
   advanceRiddle(run, nowMs);
   return finalizeAfterPenalty(run, nowMs);
 }
@@ -412,6 +423,8 @@ export function toRaceRunView(input: RaceRunRecord, nowMs: number, includeEvalua
     ...(includeEvaluation
       ? {
           preloadedRiddles: run.riddles.map((riddle) => ({
+            /** Graphemes are computed once so the exact server hint is available before play. */
+            hint: {index: 0, letter: splitGraphemes(riddle.answer, run.locale)[0]},
             riddleId: riddle.riddleId,
             text: riddle.text,
             answerLength: splitGraphemes(riddle.answer, run.locale).length,

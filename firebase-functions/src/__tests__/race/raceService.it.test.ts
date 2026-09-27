@@ -282,7 +282,7 @@ describe("Race to 10 transactional service", () => {
     const duplicateSkip = await skipRaceRiddleForUser("creator-1", skipInput, {db, nowMs: NOW + 15_000});
     expect(duplicateSkip).toEqual(skipped);
     expect(skipped.run.totalPenaltyMs).toBe(60_000);
-    expect(skipped.run.correctCount).toBe(0);
+    expect(skipped.run.correctCount).toBe(1);
   });
 
   it("finalizes, publishes once, and gives a challenger the identical canonical deck", async () => {

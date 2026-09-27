@@ -40,9 +40,6 @@ export function RaceCategoriesPanel({
           >
             <strong>{tr(category.nameKey)}</strong>
             <span>{tr(category.descriptionKey)}</span>
-            <small>
-              {category.availableRiddleCount} {tr("RaceTo10.RIDDLES")}
-            </small>
           </button>
         ))}
       </div>

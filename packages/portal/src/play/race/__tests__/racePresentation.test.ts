@@ -7,6 +7,7 @@ import {
   formatRaceTime,
   getAdjustedRaceTime,
   getRaceLetterStates,
+  projectInstantRaceHint,
   projectInstantRaceSkip,
   projectRaceOutcome,
 } from "../logic/racePresentation";
@@ -94,6 +95,7 @@ describe("race presentation helpers", () => {
       evaluation: {answer: "test", locale: "en" as const},
     }));
     expect(projectInstantRaceSkip(run({preloadedRiddles}))).toMatchObject({
+      correctCount: 9,
       totalPenaltyMs: RACE_RULES.skipPenaltyMs,
       adjustedElapsedMs: 2_000 + RACE_RULES.skipPenaltyMs,
       currentRiddle: {
@@ -108,11 +110,37 @@ describe("race presentation helpers", () => {
       },
     });
     expect(projectInstantRaceSkip(run())).toBeNull();
+    expect(projectInstantRaceSkip(run({correctCount: 9, preloadedRiddles}))).toMatchObject({
+      status: "completed",
+      correctCount: 10,
+      currentRiddle: null,
+    });
     expect(
       projectInstantRaceSkip(
         run({currentRiddle: {...riddle(), position: RACE_RULES.deckSize - 1}, preloadedRiddles}),
       ),
     ).toMatchObject({status: "timed_out", currentRiddle: null});
+  });
+
+  it("projects a hint immediately from the answer downloaded before the race", () => {
+    /** Complete immutable deck available before the countdown finishes. */
+    const preloadedRiddles = Array.from({length: RACE_RULES.deckSize}, (_, position) => ({
+      riddleId: `riddle-${position + 1}`,
+      text: `Clue ${position + 1}`,
+      answerLength: 4,
+      position,
+      evaluation: {answer: "test", locale: "en" as const},
+      hint: {index: 0, letter: "t"},
+    }));
+    expect(projectInstantRaceHint(run({preloadedRiddles}))).toMatchObject({
+      totalPenaltyMs: RACE_RULES.hintPenaltyMs,
+      adjustedElapsedMs: 2_000 + RACE_RULES.hintPenaltyMs,
+      currentRiddle: {
+        hintAvailable: false,
+        revealedLetters: [{index: 0, letter: "t"}],
+      },
+    });
+    expect(projectInstantRaceHint(run())).toBeNull();
   });
 
   it("projects an opponent win only after the server-issued ghost finish elapses", () => {
