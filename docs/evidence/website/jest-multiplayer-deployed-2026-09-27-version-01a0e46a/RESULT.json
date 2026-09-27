@@ -1,0 +1,64 @@
+{
+  "build": "1.0.0-dev.20260927192937.83a313b3c60d.0812ecf8",
+  "versionId": "01a0e46a-3801-760b-9b90-c8b745a87d4e",
+  "hostViewport": {
+    "width": 520,
+    "height": 932
+  },
+  "gameViewport": {
+    "width": 424,
+    "height": 692
+  },
+  "players": [
+    {
+      "registered": true,
+      "playerHash": "64f0cc7d9bac",
+      "displayName": ""
+    },
+    {
+      "registered": true,
+      "playerHash": "0cbda21aac8d",
+      "displayName": ""
+    }
+  ],
+  "challengeIdFormat": "valid",
+  "creatorScore": 10,
+  "creatorAdjustedFinishMs": 35234,
+  "opponentDisplayName": "Jest 64f0cc7d9bac20ff8c1",
+  "opponentScoreEvents": 10,
+  "opponentAdjustedFinishMs": 35234,
+  "scoreMappingVerified": true,
+  "outcome": "You win!",
+  "diagnostics": {
+    "player1": {
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET",
+        "requestStorageAccess: Refused to execute request. The document is sandboxed, and the 'allow-storage-access-by-user-activation' keyword is not set."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        {
+          "url": "https://jest.com/trpc/serverEvents.subscribe?input=%7B%22channels%22%3A%5B%22chat.message.global%22%2C%22chat.reaction.global%22%5D%7D",
+          "error": "net::ERR_ABORTED"
+        },
+        {
+          "url": "https://cdn.jestpub.com/cdn-cgi/image/format=auto%2Cfit=contain%2Cwidth=512%2Cquality=90%2Cmetadata=none%2C/https%3A%2F%2Fjest.com%2Fpublic%2Favatar%2Fface%2F02%2F02.webp",
+          "error": "net::ERR_CONNECTION_RESET"
+        }
+      ]
+    },
+    "player2": {
+      "consoleErrors": [
+        "requestStorageAccess: Refused to execute request. The document is sandboxed, and the 'allow-storage-access-by-user-activation' keyword is not set."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        {
+          "url": "https://jest.com/trpc/serverEvents.subscribe?input=%7B%22channels%22%3A%5B%22chat.message.global%22%2C%22chat.reaction.global%22%5D%7D",
+          "error": "net::ERR_ABORTED"
+        }
+      ]
+    }
+  },
+  "completed": true
+}
