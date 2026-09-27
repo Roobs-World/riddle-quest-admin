@@ -32,7 +32,6 @@ const requiredKeys = {
     "RaceTo10.RESULTS_NOTIFICATION_BODY",
   ],
   settings: [
-    "Settings.PRESENCE_TOGGLE",
     "Settings.ACCOUNT_DELETION_BUTTON",
     "Settings.TOGGLE_OFF",
     "Settings.TOGGLE_ON",
