@@ -29,6 +29,7 @@ export type HostAuthorityModules = Readonly<{
     | "resumeRace"
     | "abandonRace"
     | "publishRace"
+    | "reserveRaceInvite"
     | "getRaceChallenge"
     | "getRaceOutcome"
     | "listRaceInbox"

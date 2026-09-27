@@ -4,10 +4,10 @@
     "EXTRA_GO_PROMPT": "Out of attempts. Get an extra go or skip this puzzle.",
     "OPEN_SHOP_BUTTON": "Open Shop",
     "OUT_OF_ATTEMPTS": "Out of Attempts",
-    "SKIP_LEVEL_PREFIX": "Skip Level (",
-    "SKIP_LEVEL_SUFFIX": " Coins)",
+    "SKIP_LEVEL_PREFIX": "Use ",
+    "SKIP_LEVEL_SUFFIX": " coins to Skip Level",
     "SKIP_PUZZLE_BUTTON": "Skip Puzzle",
     "USE_COINS_PREFIX": "Use ",
-    "USE_COINS_SUFFIX": " Coins to Continue"
+    "USE_COINS_SUFFIX": " Coins to Try Again"
   }
 }

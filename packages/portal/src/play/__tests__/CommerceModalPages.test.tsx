@@ -52,7 +52,7 @@ describe("commerce modal pages", () => {
     expect({CONTINUE_COIN_COST, HINT_COIN_COST, SKIP_COIN_COST}).toEqual({
       CONTINUE_COIN_COST: 100,
       HINT_COIN_COST: 50,
-      SKIP_COIN_COST: 100,
+      SKIP_COIN_COST: 200,
     });
   });
 
@@ -95,16 +95,18 @@ describe("commerce modal pages", () => {
 
     expect(poorHtml).toContain("disabled");
     expect(poorHtml).toContain("not have enough coins");
-    expect(fundedHtml).not.toContain("not have enough coins");
+    expect(fundedHtml).not.toContain("not have enough coins to continue");
     expect(fundedHtml).not.toContain("<img");
-    expect(fundedHtml).toContain("loss-continue-action");
+    expect(fundedHtml).toContain('class="play-primary loss-continue-action">');
+    expect(fundedHtml.replace(/<[^>]+>/gu, "")).toContain("Use 100 Coins to Try Again");
+    expect(fundedHtml.replace(/<[^>]+>/gu, "")).toContain("Use 200 coins to Skip Level");
   });
 
   it("runs skip directly from the loss prompt and disables it when coins are insufficient", () => {
     /** Counts direct skip requests from the loss prompt. */
     let skipRequests = 0;
     /** Provides poor html behavior. */
-    const poorHtml = renderToString(<ContinueModalPage balance={99} onContinue={noop}
+    const poorHtml = renderToString(<ContinueModalPage balance={199} onContinue={noop}
       onSkip={() => { skipRequests += 1; }} onOpenModal={noop} />);
     /** Provides funded prompt behavior for interaction inspection. */
     const fundedPrompt = ContinueModalPage({
@@ -135,7 +137,7 @@ describe("commerce modal pages", () => {
     const pendingHtml = renderToString(<ContinueModalPage balance={100} onContinue={noop}
       onSkip={noop} onOpenModal={noop} />);
     expect(pendingHtml).toContain("continue-actions");
-    expect(pendingHtml).not.toContain("disabled");
+    expect(pendingHtml).toContain('class="play-primary loss-continue-action">');
   });
 
   it("removes every shop route when platform commerce is unavailable", () => {
@@ -163,7 +165,7 @@ describe("commerce modal pages", () => {
     );
     /** Provides funded skip html behavior. */
     const fundedSkipHtml = renderToString(
-      <SkipModalPage balance={100} onClose={noop} onOpenModal={noop} onRequestAction={noop} />,
+      <SkipModalPage balance={200} onClose={noop} onOpenModal={noop} onRequestAction={noop} />,
     );
 
     expect(poorHintHtml).toContain("Open Shop");

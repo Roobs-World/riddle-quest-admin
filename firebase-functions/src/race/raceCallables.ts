@@ -7,6 +7,8 @@ import {
   ListRaceInboxResponseSchema,
   PublishRaceChallengeRequestSchema,
   PublishRaceChallengeResponseSchema,
+  ReserveRaceInviteRequestSchema,
+  ReserveRaceInviteResponseSchema,
   RaceAccessRequestSchema,
   RaceAccessResponseSchema,
   RaceAnalyticsEventRequestSchema,
@@ -32,7 +34,9 @@ import {
   getRaceOutcomeForUser,
   listRaceCategoriesForLocale,
   listRaceInboxForUser,
+  claimRaceInviteForUser,
   publishRaceChallengeForUser,
+  reserveRaceInviteForUser,
   requestRaceHintForUser,
   resumeRaceRunForUser,
   skipRaceRiddleForUser,
@@ -236,14 +240,27 @@ export const publishRaceChallenge = onCallWithSentry(
   },
 );
 
+/** Creates the server-owned two-seat lobby carried by a Jest referral link. */
+export const reserveRaceInvite = onCallWithSentry(
+  "reserveRaceInvite",
+  jestWebCallableOptions,
+  async (request: CallableRequest<unknown>) => {
+    const userId = await requireRaceUser(request);
+    const input = validateCallableRequest(ReserveRaceInviteRequestSchema, request.data, "reserveRaceInvite");
+    const response = await reserveRaceInviteForUser(userId, input);
+    return validateCallableResponse(ReserveRaceInviteResponseSchema, response, "reserveRaceInvite");
+  },
+);
+
 /** Returns the answer-safe public preview of a multiplayer challenge. */
 export const getRaceChallenge = onCallWithSentry(
   "getRaceChallenge",
   jestWebCallableOptions,
   async (request: CallableRequest<unknown>) => {
-    await requireRaceUser(request);
+    const userId = await requireRaceUser(request);
     /** Provides input behavior. */
     const input = validateCallableRequest(RaceChallengeIdRequestSchema, request.data, "getRaceChallenge");
+    await claimRaceInviteForUser(userId, input.challengeId, input.locale);
     /** Provides response behavior. */
     const response = await getRaceChallengePreview(input.challengeId, input.locale);
     return validateCallableResponse(RaceChallengePreviewSchema, response, "getRaceChallenge");

@@ -4,10 +4,10 @@
     "EXTRA_GO_PROMPT": "挑戦回数がなくなりました。追加の1回を得るか、このパズルをスキップできます。",
     "OPEN_SHOP_BUTTON": "ショップを開く",
     "OUT_OF_ATTEMPTS": "挑戦回数切れ。",
-    "SKIP_LEVEL_PREFIX": "レベルをスキップ（",
-    "SKIP_LEVEL_SUFFIX": "コイン）",
+    "SKIP_LEVEL_PREFIX": "使用: ",
+    "SKIP_LEVEL_SUFFIX": "コインでレベルをスキップ",
     "SKIP_PUZZLE_BUTTON": "パズルをスキップ",
     "USE_COINS_PREFIX": "使用: ",
-    "USE_COINS_SUFFIX": "コインで続ける"
+    "USE_COINS_SUFFIX": "コインでもう一度挑戦"
   }
 }

@@ -13,6 +13,7 @@ import {
   ListRaceCategoriesRequestSchema,
   ListRaceInboxRequestSchema,
   PublishRaceChallengeRequestSchema,
+  ReserveRaceInviteRequestSchema,
   RaceChallengeIdRequestSchema,
   RaceAnalyticsEventRequestSchema,
   RaceRunIdRequestSchema,
@@ -58,6 +59,7 @@ const OperationSchema = z.enum([
   "raceResume",
   "raceAbandon",
   "racePublish",
+  "raceInviteReserve",
   "raceChallenge",
   "raceOutcome",
   "raceInbox",
@@ -351,6 +353,8 @@ export const GameResumeRaceMessageSchema = envelope("game:resumeRace", RaceRunId
 export const GameAbandonRaceMessageSchema = envelope("game:abandonRace", AbandonRaceRunRequestSchema);
 /** Validates the game publish race message data shape. */
 export const GamePublishRaceMessageSchema = envelope("game:publishRace", PublishRaceChallengeRequestSchema);
+/** Validates the game reserve invite-lobby message data shape. */
+export const GameReserveRaceInviteMessageSchema = envelope("game:reserveRaceInvite", ReserveRaceInviteRequestSchema);
 /** Validates the game get race challenge message data shape. */
 export const GameGetRaceChallengeMessageSchema = envelope("game:getRaceChallenge", RaceChallengeIdRequestSchema);
 /** Validates the game get race outcome message data shape. */
@@ -412,6 +416,7 @@ export const GameToHostMessageSchema = z.discriminatedUnion("type", [
   GameResumeRaceMessageSchema,
   GameAbandonRaceMessageSchema,
   GamePublishRaceMessageSchema,
+  GameReserveRaceInviteMessageSchema,
   GameGetRaceChallengeMessageSchema,
   GameGetRaceOutcomeMessageSchema,
   GameListRaceInboxMessageSchema,

@@ -22,6 +22,7 @@ type RaceMethods = Pick<
   | "resumeRace"
   | "abandonRace"
   | "publishRace"
+  | "reserveRaceInvite"
   | "getRaceChallenge"
   | "getRaceOutcome"
   | "listRaceInbox"
@@ -443,6 +444,14 @@ export const createFakeRaceServices = (): RaceMethods => {
       const response = {run: syncView(run), result: null};
       run.responses.set(input.requestId, response);
       return response;
+    },
+    /** Reserves an expiring two-player invite lobby for browser-harness sharing. */
+    async reserveRaceInvite() {
+      const suffix = (++sequence).toString(16).padStart(32, "0");
+      return {
+        challengeId: `jest-invite-${"a".repeat(64)}-${suffix}`,
+        expiresAtMs: Date.now() + 7 * 24 * 60 * 60 * 1_000,
+      };
     },
     /** Publishes a completed creator run as a persisted harness challenge. */
     async publishRace(input) {

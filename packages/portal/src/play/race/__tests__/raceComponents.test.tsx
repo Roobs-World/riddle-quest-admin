@@ -52,18 +52,6 @@ function findElement(
   return null;
 }
 
-/** Finds every server-renderable element matching a presentation predicate. */
-function findElements(
-  node: ReactNode,
-  predicate: (props: TestElementProps) => boolean,
-): ReactElement<TestElementProps>[] {
-  if (!isValidElement<TestElementProps>(node)) return [];
-  /** Matching descendants, including the current element. */
-  const matches = predicate(node.props) ? [node] : [];
-  for (const child of Children.toArray(node.props.children)) matches.push(...findElements(child, predicate));
-  return matches;
-}
-
 describe("race presentation components", () => {
   it("renders capability-appropriate accessible hub tabs", () => {
     /** Provides jest html behavior. */
@@ -296,33 +284,25 @@ describe("race presentation components", () => {
     expect(onRematch).toHaveBeenCalledWith("science");
   });
 
-  it("offers separate Jest-player and SMS challenge actions", async () => {
-    /** Categories required before either challenge action can be used. */
+  it("opens the Jest recipient dialog from the challenge action", async () => {
+    /** Categories required before the challenge action can be used. */
     const categories = (await createFakeRaceServices().listRaceCategories("en")).categories;
-    /** Provider invite actions for each recipient route. */
-    const onChallengeJestPlayer = jest.fn();
-    /** Provides on challenge by sms behavior. */
-    const onChallengeBySms = jest.fn();
+    /** Provider invite action that opens Jest's share dialog. */
+    const onInviteChallenge = jest.fn();
     /** Challenge-enabled lobby presentation. */
     const panel = RaceCategoriesPanel({
       categories,
       loading: false,
       onSelect: noop,
       onShowInbox: noop,
-      onChallengeJestPlayer,
-      onChallengeBySms,
+      onInviteChallenge,
       canChallenge: true,
     });
-    /** The two explicit challenge controls rendered above the category grid. */
-    const challengeButtons = findElements(panel, ({className}) => className === "race-primary");
-    expect(challengeButtons).toHaveLength(2);
-    expect(renderToString(panel)).toContain("Challenge a Jest player");
-    expect(renderToString(panel)).toContain("Send challenge by SMS");
-
-    challengeButtons[0]?.props.onClick?.();
-    challengeButtons[1]?.props.onClick?.();
-    expect(onChallengeJestPlayer).toHaveBeenCalledTimes(1);
-    expect(onChallengeBySms).toHaveBeenCalledTimes(1);
+    /** The single challenge control delegates recipient selection to Jest. */
+    const challengeButton = findElement(panel, ({className}) => className === "race-primary");
+    expect(renderToString(panel)).toContain("Challenge a player");
+    challengeButton?.props.onClick?.();
+    expect(onInviteChallenge).toHaveBeenCalledTimes(1);
   });
 
   it("renders countdown, scoreboard, result, and quit variants", async () => {

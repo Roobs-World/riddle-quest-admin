@@ -3,18 +3,22 @@ import type {ScreenshotProvider} from "../types";
 /** Defines the max screenshot bytes value. */
 const MAX_SCREENSHOT_BYTES = 2 * 1024 * 1024;
 
+/** Returns a Jest-supported image only when its encoded payload fits the SDK limit. */
+export function sizeCheckedShareImage(result: string | null): string | null {
+  if (!result || !/^data:image\/png;base64,/.test(result)) return null;
+  /** Provides encoded behavior. */
+  const encoded = result.slice(result.indexOf(",") + 1);
+  /** Provides bytes behavior. */
+  const bytes = Math.floor((encoded.length * 3) / 4) - (encoded.endsWith("==") ? 2 : encoded.endsWith("=") ? 1 : 0);
+  return bytes <= MAX_SCREENSHOT_BYTES ? result : null;
+}
+
 /** Provides size checked screenshot provider behavior. */
 export function sizeCheckedScreenshotProvider(provider: ScreenshotProvider): ScreenshotProvider {
   return async () => {
     /** Provides result behavior. */
     const result = await provider();
-    if (!result) return null;
-    if (!/^data:image\/png;base64,/.test(result)) return null;
-    /** Provides encoded behavior. */
-    const encoded = result.slice(result.indexOf(",") + 1);
-    /** Provides bytes behavior. */
-    const bytes = Math.floor((encoded.length * 3) / 4) - (encoded.endsWith("==") ? 2 : encoded.endsWith("=") ? 1 : 0);
-    return bytes <= MAX_SCREENSHOT_BYTES ? result : null;
+    return sizeCheckedShareImage(result);
   };
 }
 

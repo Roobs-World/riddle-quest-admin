@@ -20,6 +20,8 @@ import type {
   ListRaceInboxResponse,
   PublishRaceChallengeRequest,
   PublishRaceChallengeResponse,
+  ReserveRaceInviteRequest,
+  ReserveRaceInviteResponse,
   RaceAccessRequest,
   RaceAccessResponse,
   RaceAnalyticsEventRequest,
@@ -285,6 +287,11 @@ export const abandonRaceRun = httpsCallable<AbandonRaceRunRequest, AbandonRaceRu
 export const publishRaceChallenge = httpsCallable<PublishRaceChallengeRequest, PublishRaceChallengeResponse>(
   functions,
   "publishRaceChallenge",
+);
+/** Reserves a server-owned two-player lobby before opening a Jest invite. */
+export const reserveRaceInvite = httpsCallable<ReserveRaceInviteRequest, ReserveRaceInviteResponse>(
+  functions,
+  "reserveRaceInvite",
 );
 /** Gets race challenge. */
 export const getRaceChallenge = httpsCallable<

@@ -8,6 +8,8 @@ import {
   getRaceChallengePreview,
   listRaceInboxForUser,
   publishRaceChallengeForUser,
+  reserveRaceInviteForUser,
+  claimRaceInviteForUser,
   requestRaceHintForUser,
   resumeRaceRunForUser,
   skipRaceRiddleForUser,
@@ -110,6 +112,8 @@ beforeAll(async () => {
       "raceRuns",
       "raceDecks",
       "raceChallenges",
+      "raceInviteLobbies",
+      "raceInviteRequests",
       "raceAttempts",
       "raceStartRequests",
       "jestAccountDeletionTombstones",
@@ -135,6 +139,7 @@ beforeAll(async () => {
   }
   batch.set(db.doc("users/creator-1"), {displayName: "Ada", avatarUrl: "https://example.test/ada.png"});
   batch.set(db.doc("users/challenger-1"), {displayName: "Grace"});
+  batch.set(db.doc("users/challenger-2"), {displayName: "Dorothy"});
   batch.set(db.doc("users/challenger-interleave"), {displayName: "Lin"});
   batch.set(db.doc("users/tombstone-challenger"), {displayName: "Katherine"});
   batch.set(db.doc("raceConfig/rollout"), {enabled: true, percentage: 100, allowlistHashes: []});
@@ -147,6 +152,8 @@ afterAll(async () => {
       "raceRuns",
       "raceDecks",
       "raceChallenges",
+      "raceInviteLobbies",
+      "raceInviteRequests",
       "raceAttempts",
       "raceStartRequests",
       "jestAccountDeletionTombstones",
@@ -156,6 +163,33 @@ afterAll(async () => {
 });
 
 describe("Race to 10 transactional service", () => {
+  it("reserves one Jest invite recipient idempotently", async () => {
+    const reservation = await reserveRaceInviteForUser(
+      "creator-1",
+      {locale: "en", requestId: "reserve-invite-0001"},
+      {db, nowMs: NOW + 17_000},
+    );
+    const duplicateReservation = await reserveRaceInviteForUser(
+      "creator-1",
+      {locale: "en", requestId: "reserve-invite-0001"},
+      {db, nowMs: NOW + 17_500},
+    );
+
+    expect(duplicateReservation).toEqual(reservation);
+    expect(await claimRaceInviteForUser("challenger-1", reservation.challengeId, "en", {db, nowMs: NOW + 18_000}))
+      .toBe(true);
+    expect(await claimRaceInviteForUser("challenger-1", reservation.challengeId, "en", {db, nowMs: NOW + 18_500}))
+      .toBe(true);
+    await expect(
+      claimRaceInviteForUser("challenger-2", reservation.challengeId, "en", {db, nowMs: NOW + 19_000}),
+    ).rejects.toMatchObject({code: "already-exists"});
+    expect((await db.doc(`raceInviteLobbies/${reservation.challengeId}`).get()).data()).toMatchObject({
+      creatorId: "creator-1",
+      recipientId: "challenger-1",
+      status: "claimed",
+    });
+  });
+
   it("abandons a run idempotently with a persisted null result", async () => {
     /** Starts ed. */
     const started = await startRaceRunForUser(

@@ -10,7 +10,12 @@ import type {
 import type {JestBackendPort} from "../backend";
 import type {JestPlatformPort, JestSession} from "../types";
 import {createUniqueJestReferralReference} from "./referralReferences";
-import {captureGameScreenshot, captureVictoryShareImage, sizeCheckedScreenshotProvider} from "./screenshots";
+import {
+  captureGameScreenshot,
+  captureVictoryShareImage,
+  sizeCheckedScreenshotProvider,
+  sizeCheckedShareImage,
+} from "./screenshots";
 
 /** Describes with platform activity. */
 type WithPlatformActivity = <Result>(operation: () => Promise<Result>) => Promise<Result>;
@@ -241,27 +246,27 @@ export function useJestSharing({
     [locale, platform, session, trackFunnel, withPlatformActivity],
   );
 
-  /** Provides share invite behavior. */
-  const shareOpenInvite = useCallback((multiplayer: boolean) => {
+  /** Opens Jest's provider-owned profile invite dialog with custom referral details. */
+  const shareInvite = useCallback(() => {
     if (!session) return;
     /** Provides inviter name behavior. */
     const inviterName = session.profile?.username ?? tr("WebPortal.NOTIFICATION_PLAYER_FALLBACK");
     /** Provides reward message behavior. */
     const rewardMessage = tr("VictoryModal.REFERRAL_REWARD_MESSAGE", {coins: JEST_REFERRAL_REWARD_COINS});
-    trackFunnel("viral_share_intent", {surface: multiplayer ? "race" : "profile", campaign: "open_invite_v1"});
-    void withPlatformActivity(async () => {
-      /** Provides share image behavior. */
-      const shareImage = await sizeCheckedScreenshotProvider(() =>
-        captureVictoryShareImage({
-          title: tr("WebPortal.APP_TITLE"),
-          summary: rewardMessage,
-          emojiGrid: "🧩  🤝  🪙",
-        }),
-      )();
-      return platform.shareReferral({
-        reference: multiplayer ? createUniqueJestReferralReference("race") : JEST_REFERRAL_REFERENCES.friendChallenge,
-        shareTitle: tr(multiplayer ? "RaceTo10.TITLE" : "WebPortal.APP_TITLE"),
-        shareText: multiplayer ? `${tr("RaceTo10.CHALLENGED_BY", {name: inviterName})} · ${tr("RaceTo10.TITLE")}` : tr("VictoryModal.OPEN_INVITE_MESSAGE", {
+    /** Custom preview prepared synchronously so the SDK call remains in the button's click dispatch. */
+    const shareImage = sizeCheckedShareImage(
+      captureVictoryShareImage({
+        title: tr("WebPortal.APP_TITLE"),
+        summary: rewardMessage,
+        emojiGrid: "🧩  🤝  🪙",
+      }),
+    );
+    trackFunnel("viral_share_intent", {surface: "profile", campaign: "open_invite_v1"});
+    void platform
+      .shareReferral({
+        reference: JEST_REFERRAL_REFERENCES.friendChallenge,
+        shareTitle: tr("WebPortal.APP_TITLE"),
+        shareText: tr("VictoryModal.OPEN_INVITE_MESSAGE", {
           name: inviterName,
           coins: JEST_REFERRAL_REWARD_COINS,
         }),
@@ -271,14 +276,12 @@ export function useJestSharing({
           reference: "profile_invite_v1",
           inviteKind: "open",
           inviterName,
-          ...(multiplayer ? {challengeDestination: "multiplayer"} : {}),
         },
-      });
-    })
+      })
       .then((result) =>
         trackFunnel("viral_share_dialog_result", {
           status: result.status,
-          surface: multiplayer ? "race" : "profile",
+          surface: "profile",
           campaign: "open_invite_v1",
         }),
       )
@@ -286,14 +289,11 @@ export function useJestSharing({
         console.warn("[riddle-quest] Jest profile invite failed", error);
         trackFunnel("viral_share_dialog_result", {
           status: "retryable-failure",
-          surface: multiplayer ? "race" : "profile",
+          surface: "profile",
           campaign: "open_invite_v1",
         });
       });
-  }, [locale, platform, session, trackFunnel, withPlatformActivity]);
-
-  /** Shares the existing general invitation from the profile. */
-  const shareInvite = useCallback(() => shareOpenInvite(false), [shareOpenInvite]);
+  }, [locale, platform, session, trackFunnel]);
   /** Shares a link before the sender records the authoritative time to beat. */
   const shareMultiplayerInvite = useCallback(async (challengeId: string): Promise<ReferralShareOutcome> => {
     if (!session || !/^jest-invite-[a-f0-9]{64}-[a-f0-9]{32}$/.test(challengeId)) return "error";

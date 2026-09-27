@@ -4,10 +4,10 @@
     "EXTRA_GO_PROMPT": "نفدت المحاولات. احصل على فرصة إضافية أو تخط هذا اللغز.",
     "OPEN_SHOP_BUTTON": "افتح المتجر",
     "OUT_OF_ATTEMPTS": "من المحاولات.",
-    "SKIP_LEVEL_PREFIX": "تخطي المستوى (",
-    "SKIP_LEVEL_SUFFIX": "عملات معدنية)",
+    "SKIP_LEVEL_PREFIX": "استخدم ",
+    "SKIP_LEVEL_SUFFIX": " عملة لتخطي المستوى",
     "SKIP_PUZZLE_BUTTON": "تخطي اللغز",
     "USE_COINS_PREFIX": "استخدم",
-    "USE_COINS_SUFFIX": "العملات المعدنية للمتابعة"
+    "USE_COINS_SUFFIX": " عملة للمحاولة مرة أخرى"
   }
 }

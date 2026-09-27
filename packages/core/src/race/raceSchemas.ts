@@ -300,6 +300,22 @@ export const PublishRaceChallengeResponseSchema = z
   })
   .strict();
 
+/** Creates one expiring server-owned lobby before opening a provider invite dialog. */
+export const ReserveRaceInviteRequestSchema = z
+  .object({
+    locale: RaceLocaleSchema,
+    requestId: RequestIdSchema,
+  })
+  .strict();
+
+/** Identifies the reserved lobby carried through the provider referral payload. */
+export const ReserveRaceInviteResponseSchema = z
+  .object({
+    challengeId: z.string().regex(/^jest-invite-[a-f0-9]{64}-[a-f0-9]{32}$/),
+    expiresAtMs: MillisecondsSchema,
+  })
+  .strict();
+
 /** Schema identifying one published race challenge. */
 export const RaceChallengeIdRequestSchema = z
   .object({
@@ -483,6 +499,10 @@ export type SkipRaceRiddleResponse = z.infer<typeof SkipRaceRiddleResponseSchema
 export type PublishRaceChallengeRequest = z.infer<typeof PublishRaceChallengeRequestSchema>;
 /** Validated response returned after publishing a race challenge. */
 export type PublishRaceChallengeResponse = z.infer<typeof PublishRaceChallengeResponseSchema>;
+/** Validated request for reserving a two-player invite lobby. */
+export type ReserveRaceInviteRequest = z.infer<typeof ReserveRaceInviteRequestSchema>;
+/** Validated response identifying a reserved invite lobby. */
+export type ReserveRaceInviteResponse = z.infer<typeof ReserveRaceInviteResponseSchema>;
 /** One validated multiplayer result inbox item. */
 export type RaceInboxItem = z.infer<typeof RaceInboxItemSchema>;
 /** Validated cursor-paginated multiplayer inbox request. */

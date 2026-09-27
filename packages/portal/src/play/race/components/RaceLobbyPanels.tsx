@@ -17,8 +17,7 @@ export function RaceCategoriesPanel({
   loading,
   onSelect,
   onShowInbox,
-  onChallengeJestPlayer,
-  onChallengeBySms,
+  onInviteChallenge,
   inviting = false,
   canChallenge = false,
 }: {
@@ -30,10 +29,8 @@ export function RaceCategoriesPanel({
   onSelect: (categoryId: RaceCategoryId) => void;
   /** Stores on show inbox. */
   onShowInbox: () => void;
-  /** Opens Jest's challenge flow for a specific Jest player. */
-  onChallengeJestPlayer?: () => void;
-  /** Opens Jest's challenge flow for an SMS recipient. */
-  onChallengeBySms?: () => void;
+  /** Opens Jest's recipient dialog before beginning a creator run. */
+  onInviteChallenge?: () => void;
   /** Whether the Jest share dialog is open. */
   inviting?: boolean;
   /** Whether the active platform can send a completed race to another player. */
@@ -48,18 +45,9 @@ export function RaceCategoriesPanel({
             className="race-primary"
             disabled={loading || inviting || !categories.some((category) => category.categoryId === "mixed")}
             aria-describedby="race-challenge-help"
-            onClick={onChallengeJestPlayer ?? (() => onSelect("mixed"))}
+            onClick={onInviteChallenge ?? (() => onSelect("mixed"))}
           >
-            {tr("RaceTo10.CHALLENGE_JEST_PLAYER")}
-          </button>
-          <button
-            type="button"
-            className="race-primary"
-            disabled={loading || inviting || !categories.some((category) => category.categoryId === "mixed")}
-            aria-describedby="race-challenge-help"
-            onClick={onChallengeBySms ?? (() => onSelect("mixed"))}
-          >
-            {tr("RaceTo10.CHALLENGE_BY_SMS")}
+            {tr("RaceTo10.CHALLENGE_PLAYER")}
           </button>
           <p id="race-challenge-help">{tr("RaceTo10.CHALLENGE_PLAYER_HELP")}</p>
         </div>

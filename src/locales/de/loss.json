@@ -4,10 +4,10 @@
     "EXTRA_GO_PROMPT": "Keine Versuche mehr. Hol dir einen extra Versuch oder ueberspringe dieses Raetsel.",
     "OPEN_SHOP_BUTTON": "Shop oeffnen",
     "OUT_OF_ATTEMPTS": "Keine Versuche mehr.",
-    "SKIP_LEVEL_PREFIX": "Level ueberspringen (",
-    "SKIP_LEVEL_SUFFIX": " Muenzen)",
+    "SKIP_LEVEL_PREFIX": "Verwende ",
+    "SKIP_LEVEL_SUFFIX": " Muenzen, um das Level zu ueberspringen",
     "SKIP_PUZZLE_BUTTON": "Raetsel ueberspringen",
     "USE_COINS_PREFIX": "Verwende ",
-    "USE_COINS_SUFFIX": " Muenzen zum Weitermachen"
+    "USE_COINS_SUFFIX": " Muenzen fuer einen neuen Versuch"
   }
 }

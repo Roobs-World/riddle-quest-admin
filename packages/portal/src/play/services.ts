@@ -146,6 +146,11 @@ const createLazyHostServices = (
   async publishRace(input) {
     return (await loadServices()).publishRace(input);
   },
+  async reserveRaceInvite(input) {
+    const services = await loadServices();
+    if (!services.reserveRaceInvite) throw new Error("Race invite lobbies are unavailable.");
+    return services.reserveRaceInvite(input);
+  },
   /** Gets race challenge. */
   async getRaceChallenge(challengeId, locale) {
     return (await loadServices()).getRaceChallenge(challengeId, locale);

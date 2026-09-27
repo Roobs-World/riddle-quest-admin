@@ -46,8 +46,6 @@ export function PlayHostApp({
     initialRaceChallengeId,
     initialRaceInbox,
     initialRaceLobby,
-    presenceEnabled,
-    onTogglePresence,
     raceLocalePolicy,
     onPresenceStateChange,
     referralSharing,
@@ -385,8 +383,6 @@ export function PlayHostApp({
           initialRaceLobby={initialRaceLobby}
           raceFeatureEnabled={raceBuildEnabled}
           prefetchedRaceCategories={prefetchedRaceCategories}
-          presenceEnabled={presenceEnabled}
-          onTogglePresence={onTogglePresence}
           nativeSocial={platformCapabilities?.nativeSocial}
           matchmaking={platformCapabilities?.matchmaking}
           playerOverlay={platformCapabilities?.overlay}

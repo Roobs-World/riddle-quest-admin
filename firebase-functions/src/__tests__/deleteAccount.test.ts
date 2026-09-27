@@ -275,6 +275,15 @@ describe("deleteAccount", () => {
         opponentDisplayName: "Player One",
       }),
     ]);
+    queryDocuments.set("raceInviteLobbies:creatorId:user-1", [
+      queryDocument("raceInviteLobbies/created-invite", {creatorId: "user-1"}),
+    ]);
+    queryDocuments.set("raceInviteLobbies:recipientId:user-1", [
+      queryDocument("raceInviteLobbies/claimed-invite", {recipientId: "user-1"}),
+    ]);
+    queryDocuments.set("raceInviteRequests:userId:user-1", [
+      queryDocument("raceInviteRequests/reservation-receipt", {userId: "user-1"}),
+    ]);
     queryDocuments.set(`raceInbox:itemId:${requestDocumentId("challenge-entered", "user-1")}`, [
       queryDocument("users/creator-1/raceInbox/legacy-run-item", {
         itemId: requestDocumentId("challenge-entered", "user-1"),
@@ -432,6 +441,9 @@ describe("deleteAccount", () => {
     expect(mockBatchDelete).toHaveBeenCalledWith({path: "raceAttempts/attempt-1"});
     expect(mockBatchDelete).toHaveBeenCalledWith({path: "raceChallenges/challenge-owned"});
     expect(mockBatchDelete).toHaveBeenCalledWith({path: "users/other-user/raceInbox/new-item"});
+    expect(mockBatchDelete).toHaveBeenCalledWith({path: "raceInviteLobbies/created-invite"});
+    expect(mockBatchDelete).toHaveBeenCalledWith({path: "raceInviteLobbies/claimed-invite"});
+    expect(mockBatchDelete).toHaveBeenCalledWith({path: "raceInviteRequests/reservation-receipt"});
     expect(mockBatchDelete).toHaveBeenCalledWith({path: "users/creator-1/raceInbox/legacy-run-item"});
     expect(mockBatchDelete).toHaveBeenCalledWith({path: "users/creator-2/raceInbox/legacy-attempt-item"});
     expect(mockBatchUpdate).toHaveBeenCalledWith(

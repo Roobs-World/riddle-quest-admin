@@ -1,4 +1,9 @@
-import {captureGameScreenshot, captureVictoryShareImage, sizeCheckedScreenshotProvider} from "../sharing/screenshots";
+import {
+  captureGameScreenshot,
+  captureVictoryShareImage,
+  sizeCheckedScreenshotProvider,
+  sizeCheckedShareImage,
+} from "../sharing/screenshots";
 
 it("rejects non-PNG and oversized screenshots", async () => {
   expect(await sizeCheckedScreenshotProvider(() => "data:image/jpeg;base64,YQ==")()).toBeNull();
@@ -10,6 +15,10 @@ it("accounts for single-padding PNG data URLs", async () =>
   expect(await sizeCheckedScreenshotProvider(() => "data:image/png;base64,YWI=")()).toBe("data:image/png;base64,YWI="));
 it("preserves a provider cancellation", async () =>
   expect(await sizeCheckedScreenshotProvider(() => null)()).toBeNull());
+it("validates an already-created custom share image synchronously", () => {
+  expect(sizeCheckedShareImage("data:image/png;base64,YQ==")).toBe("data:image/png;base64,YQ==");
+  expect(sizeCheckedShareImage("data:image/jpeg;base64,YQ==")).toBeNull();
+});
 
 /** Provides install document behavior. */
 const installDocument = (input: {

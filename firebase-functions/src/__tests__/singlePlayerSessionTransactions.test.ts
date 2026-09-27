@@ -274,8 +274,28 @@ describe("single-player session transactions", () => {
     const replay = await skipAuthoritativeRiddle(USER_ID, {...request, requestId: "skip-request-fresh"});
 
     expect(replay).toEqual(first);
-    expect(mockDocuments.get(userPath)).toMatchObject({coins: 200, progress: {classicIndex: 2}});
+    expect(first).toMatchObject({costDeducted: 200, newCoins: 100});
+    expect(mockDocuments.get(userPath)).toMatchObject({coins: 100, progress: {classicIndex: 2}});
     expect(mockDocuments.get(userPath)?.stats.classicSkipped).toBe(1);
+  });
+
+  it("requires the full 200-coin skip price without mutating progress", async () => {
+    mockDocuments.set(userPath, {...baseUser(), coins: 199});
+    /** Captures the exact session object to prove the rejected transaction leaves it untouched. */
+    const sessionBefore = baseSession();
+    mockDocuments.set(sessionPath(), sessionBefore);
+
+    await expect(
+      skipAuthoritativeRiddle(USER_ID, {
+        riddleId: "classic-1",
+        gameMode: "classic",
+        sessionToken: TOKEN,
+        requestId: "skip-request-insufficient",
+      }),
+    ).rejects.toMatchObject({code: "failed-precondition"});
+
+    expect(mockDocuments.get(userPath)).toMatchObject({coins: 199, progress: {classicIndex: 1}});
+    expect(mockDocuments.get(sessionPath())).toBe(sessionBefore);
   });
 
   it("recovers a committed continue without a second charge", async () => {

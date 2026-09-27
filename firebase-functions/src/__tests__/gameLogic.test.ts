@@ -63,7 +63,7 @@ describe("authoritative game economy callables", () => {
     mockSkipAuthoritativeRiddle.mockResolvedValue({
       newCoins: 100,
       newProgress: {classicIndex: 3, dailyChallengeIndex: 0, dailyChallengeCurrentQuestion: 0},
-      costDeducted: 100,
+      costDeducted: 200,
     });
     mockTriggerClassicRiddleGenerationIfNeeded.mockResolvedValue(undefined);
   });
@@ -145,7 +145,7 @@ describe("authoritative game economy callables", () => {
       }),
     );
 
-    expect(result).toMatchObject({success: true, costDeducted: 100, newCoins: 100});
+    expect(result).toMatchObject({success: true, costDeducted: 200, newCoins: 100});
     expect(mockGetIssuedAuthoritativeSession).toHaveBeenCalledWith("player-1", SESSION_TOKEN, "classic", "classic-2");
     expect(mockSkipAuthoritativeRiddle).toHaveBeenCalledWith("player-1", {
       riddleId: "classic-2",

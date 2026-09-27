@@ -7,7 +7,7 @@ export const YOUTUBE_HINT_COST = 50;
 /** Defines the youtube continue cost value. */
 export const YOUTUBE_CONTINUE_COST = 100;
 /** Defines the youtube classic skip cost value. */
-export const YOUTUBE_CLASSIC_SKIP_COST = 100;
+export const YOUTUBE_CLASSIC_SKIP_COST = 200;
 /** Defines the youtube classic win coins value. */
 export const YOUTUBE_CLASSIC_WIN_COINS = 25;
 /** Defines the youtube daily win coins value. */

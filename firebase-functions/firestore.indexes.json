@@ -35,6 +35,8 @@
     {"collectionGroup": "raceDecks", "fieldPath": "expiresAt", "ttl": true, "indexes": []},
     {"collectionGroup": "raceRuns", "fieldPath": "expiresAt", "ttl": true, "indexes": []},
     {"collectionGroup": "raceChallenges", "fieldPath": "expiresAt", "ttl": true, "indexes": []},
+    {"collectionGroup": "raceInviteLobbies", "fieldPath": "expiresAt", "ttl": true, "indexes": []},
+    {"collectionGroup": "raceInviteRequests", "fieldPath": "expiresAt", "ttl": true, "indexes": []},
     {"collectionGroup": "raceAttempts", "fieldPath": "expiresAt", "ttl": true, "indexes": []},
     {"collectionGroup": "raceStartRequests", "fieldPath": "expiresAt", "ttl": true, "indexes": []},
     {"collectionGroup": "requests", "fieldPath": "expiresAt", "ttl": true, "indexes": []},

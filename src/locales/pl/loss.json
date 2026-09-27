@@ -4,10 +4,10 @@
     "EXTRA_GO_PROMPT": "Brak prob. Zdobadz jedna dodatkowa probe albo pomin te lamiglowke.",
     "OPEN_SHOP_BUTTON": "Otwórz sklep",
     "OUT_OF_ATTEMPTS": "Poza próbami.",
-    "SKIP_LEVEL_PREFIX": "Pomiń poziom (",
-    "SKIP_LEVEL_SUFFIX": "Monety)",
+    "SKIP_LEVEL_PREFIX": "Użyj ",
+    "SKIP_LEVEL_SUFFIX": " monet, aby pominąć poziom",
     "SKIP_PUZZLE_BUTTON": "Pomiń łamigłówkę",
     "USE_COINS_PREFIX": "Użyj",
-    "USE_COINS_SUFFIX": "Monety, aby kontynuować"
+    "USE_COINS_SUFFIX": " monet, aby spróbować ponownie"
   }
 }

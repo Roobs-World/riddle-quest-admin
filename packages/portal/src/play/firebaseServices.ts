@@ -19,6 +19,7 @@ import {
   resumeRaceRun,
   abandonRaceRun,
   publishRaceChallenge,
+  reserveRaceInvite,
   getRaceChallenge,
   getRaceOutcome,
   getRaceAccess,
@@ -377,6 +378,10 @@ export const createFirebaseHostServices = (): HostServices => {
     /** Provides abandon race behavior. */
     async abandonRace(input) {
       return (await abandonRaceRun(input)).data;
+    },
+    /** Reserves a provider-invite lobby. */
+    async reserveRaceInvite(input) {
+      return (await reserveRaceInvite(input)).data;
     },
     /** Publishes race. */
     async publishRace(input) {

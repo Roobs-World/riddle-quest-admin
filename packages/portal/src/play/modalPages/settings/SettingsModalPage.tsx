@@ -13,10 +13,6 @@ export type SettingsModalPageProps = {
   onOpenModal: (modal: Exclude<GameModal, null>) => void;
   /** Stores on toggle mute. */
   onToggleMute: () => void;
-  /** Optional opt-in control for known-rival presence. */
-  presenceEnabled?: boolean;
-  /** Changes known-rival presence opt-in. */
-  onTogglePresence?: () => void;
   /** Shows the platform shop only when a verified catalog is available. */
   commerceAvailable?: boolean;
 };
@@ -27,8 +23,6 @@ export function SettingsModalPage({
   muted,
   onOpenModal,
   onToggleMute,
-  presenceEnabled,
-  onTogglePresence,
   commerceAvailable = true,
 }: SettingsModalPageProps) {
   /** Persists and immediately activates the selected locale. */
@@ -44,12 +38,6 @@ export function SettingsModalPage({
         <span>{tr("Settings.SOUND_TOGGLE")}</span>
         <strong>{muted ? tr("Settings.TOGGLE_OFF") : tr("Settings.TOGGLE_ON")}</strong>
       </button>
-      {onTogglePresence && (
-        <button className="settings-row" onClick={onTogglePresence}>
-          <span>{tr("Settings.PRESENCE_TOGGLE")}</span>
-          <strong>{presenceEnabled ? tr("Settings.TOGGLE_ON") : tr("Settings.TOGGLE_OFF")}</strong>
-        </button>
-      )}
       <label className="settings-row">
         <span>{tr("Settings.LANGUAGE_LABEL")}</span>
         <select value={locale} onChange={changeLocale}>

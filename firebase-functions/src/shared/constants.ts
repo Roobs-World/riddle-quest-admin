@@ -4,7 +4,7 @@
  */
 
 /** Coin cost to skip a level in Classic mode. */
-export const SKIP_COST_CLASSIC = 100;
+export const SKIP_COST_CLASSIC = 200;
 
 /** Coin cost to skip a level in Daily Challenge mode. */
 

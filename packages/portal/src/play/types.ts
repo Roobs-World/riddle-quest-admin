@@ -7,6 +7,8 @@ import type {
   ListRaceInboxResponse,
   PublishRaceChallengeRequest,
   PublishRaceChallengeResponse,
+  ReserveRaceInviteRequest,
+  ReserveRaceInviteResponse,
   RaceAccessResponse,
   RaceAnalyticsEventRequest,
   RaceChallengePreview,
@@ -303,6 +305,8 @@ export type HostServices = {
   abandonRace(input: AbandonRaceRunRequest): Promise<AbandonRaceRunResponse>;
   /** Publishes race. */
   publishRace(input: PublishRaceChallengeRequest): Promise<PublishRaceChallengeResponse>;
+  /** Reserves an expiring provider-invite lobby. */
+  reserveRaceInvite?(input: ReserveRaceInviteRequest): Promise<ReserveRaceInviteResponse>;
   /** Gets race challenge. */
   getRaceChallenge(challengeId: string, locale: StartRaceRunRequest["locale"]): Promise<RaceChallengePreview>;
   /** Gets race outcome. */

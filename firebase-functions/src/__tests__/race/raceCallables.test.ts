@@ -6,6 +6,8 @@ const serviceMocks = {
   listRaceCategoriesForLocale: jest.fn(),
   listRaceInboxForUser: jest.fn(),
   publishRaceChallengeForUser: jest.fn(),
+  reserveRaceInviteForUser: jest.fn(),
+  claimRaceInviteForUser: jest.fn(),
   requestRaceHintForUser: jest.fn(),
   resumeRaceRunForUser: jest.fn(),
   skipRaceRiddleForUser: jest.fn(),
@@ -45,6 +47,8 @@ jest.mock("../../race/raceService", () => ({
   listRaceCategoriesForLocale: serviceMocks.listRaceCategoriesForLocale,
   listRaceInboxForUser: serviceMocks.listRaceInboxForUser,
   publishRaceChallengeForUser: serviceMocks.publishRaceChallengeForUser,
+  reserveRaceInviteForUser: serviceMocks.reserveRaceInviteForUser,
+  claimRaceInviteForUser: serviceMocks.claimRaceInviteForUser,
   requestRaceHintForUser: serviceMocks.requestRaceHintForUser,
   resumeRaceRunForUser: serviceMocks.resumeRaceRunForUser,
   skipRaceRiddleForUser: serviceMocks.skipRaceRiddleForUser,
@@ -67,6 +71,7 @@ import {
   listRaceCategories,
   listRaceInbox,
   publishRaceChallenge,
+  reserveRaceInvite,
   raceAbandonCallableOptions,
   raceHintCallableOptions,
   raceStartCallableOptions,
@@ -89,6 +94,7 @@ const handlers = {
   listRaceCategories,
   listRaceInbox,
   publishRaceChallenge,
+  reserveRaceInvite,
   recordRaceAnalytics,
   requestRaceHint,
   resumeRaceRun,
@@ -120,6 +126,7 @@ describe("Race callable deployment options", () => {
 describe("Race callable methods", () => {
   beforeEach(() => {
     mockAssertRaceAccess.mockResolvedValue(undefined);
+    serviceMocks.claimRaceInviteForUser.mockResolvedValue(false);
   });
 
   it.each(callableCases)("$name rejects unauthenticated requests", async ({handler, input}) => {

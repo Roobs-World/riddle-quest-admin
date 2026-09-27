@@ -44,6 +44,7 @@ type HandlerName =
   | "resumeRaceRun"
   | "abandonRaceRun"
   | "publishRaceChallenge"
+  | "reserveRaceInvite"
   | "getRaceChallenge"
   | "getRaceOutcome"
   | "listRaceInbox";
@@ -60,6 +61,7 @@ type ServiceName =
   | "resumeRaceRunForUser"
   | "abandonRaceRunForUser"
   | "publishRaceChallengeForUser"
+  | "reserveRaceInviteForUser"
   | "getRaceChallengePreview"
   | "getRaceOutcomeForUser"
   | "listRaceInboxForUser";
@@ -181,6 +183,15 @@ export const createRaceCallableCases = (
         achievementCoinsAwarded: 0,
       },
       expectedCall: [userId, {runId: "run-1", requestId}],
+      accessCall: [userId],
+    },
+    {
+      name: "reserveRaceInvite",
+      handler: handlers.reserveRaceInvite,
+      input: {locale: "en", requestId},
+      serviceMock: mocks.reserveRaceInviteForUser,
+      response: {challengeId: `jest-invite-${"a".repeat(64)}-${"b".repeat(32)}`, expiresAtMs: 1_800_604_800_000},
+      expectedCall: [userId, {locale: "en", requestId}],
       accessCall: [userId],
     },
     {

@@ -64,8 +64,6 @@ export function GameFrameApp({
   initialRaceLobby = false,
   raceFeatureEnabled = false,
   prefetchedRaceCategories = [],
-  presenceEnabled,
-  onTogglePresence,
   nativeSocial,
   matchmaking,
   playerOverlay,
@@ -99,10 +97,6 @@ export function GameFrameApp({
   raceFeatureEnabled?: boolean;
   /** Stores prefetched race categories. */
   prefetchedRaceCategories?: ListRaceCategoriesResponse["categories"];
-  /** Stores presence enabled. */
-  presenceEnabled?: boolean;
-  /** Stores on toggle presence. */
-  onTogglePresence?: () => void;
   /** Stores native social. */
   nativeSocial?: NativeSocialCapability;
   /** Stores matchmaking. */
@@ -407,8 +401,6 @@ export function GameFrameApp({
               synchronizing={bufferExhausted}
               onOpenModal={(modal) => dispatch({type: "openModal", modal})}
               onToggleMute={() => dispatch({type: "toggleMute"})}
-              presenceEnabled={presenceEnabled}
-              onTogglePresence={onTogglePresence}
               commerceAvailable={state.products.length > 0}
               onRequestHint={requestHint}
               onRequestSkip={requestSkip}

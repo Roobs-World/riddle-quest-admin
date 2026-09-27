@@ -15,24 +15,11 @@ describe("utility modal pages", () => {
     );
     /** Provides muted html behavior. */
     const mutedHtml = renderToString(<SettingsModalPage locale="en" muted onOpenModal={noop} onToggleMute={noop} />);
-    /** Provides presence html behavior. */
-    const presenceHtml = renderToString(
-      <SettingsModalPage
-        locale="en"
-        muted={false}
-        onOpenModal={noop}
-        onToggleMute={noop}
-        presenceEnabled
-        onTogglePresence={noop}
-      />,
-    );
-
     expect(enabledHtml).toContain("settings-page");
     expect(enabledHtml).toContain("English");
     expect(enabledHtml).toContain("On");
     expect(mutedHtml).toContain("Off");
     expect(enabledHtml).not.toContain("Show activity to rivals");
-    expect(presenceHtml).toContain("Show activity to rivals");
     expect(
       renderToString(
         <SettingsModalPage

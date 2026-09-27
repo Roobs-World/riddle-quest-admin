@@ -5,6 +5,7 @@ import type {AuthSnapshot, HostServices, LeaderboardType, ProductSummary} from "
 import {toProductSummaries} from "./types";
 import {createFakeRaceServices} from "./race/testing/fakeRaceServices";
 import {predictCompletionAchievementIds} from "./achievements";
+import {CONTINUE_COIN_COST, SKIP_COIN_COST} from "./modalPages/commerce/commerceCosts";
 
 /** Provides fake riddles behavior. */
 const fakeRiddles: Array<
@@ -63,7 +64,7 @@ const createFakeUser = (): BridgeUser => ({
 /** Creates fake profile. */
 const createFakeProfile = (): BridgeProfile => ({
   username: "Guest Solver",
-  coins: 180,
+  coins: 300,
   level: 3,
   xp: 420,
   winStreak: 2,
@@ -340,14 +341,15 @@ export const createFakeHostServices = ({
     },
     /** Provides spend coins behavior. */
     async spendCoins({amount, riddleId}) {
-      /** Provides cost behavior. */
-      const cost = amount ?? 100;
+      if (amount !== undefined && amount !== CONTINUE_COIN_COST) {
+        throw new Error(`Continue costs ${CONTINUE_COIN_COST} coins.`);
+      }
       /** Provides prior behavior. */
       const prior = singlePlayerResults.get(riddleId);
       if (prior?.awaitingContinue) {
         singlePlayerResults.set(riddleId, {...prior, hasUsedContinue: true, awaitingContinue: false});
       }
-      return {newCoins: spend(cost)};
+      return {newCoins: spend(CONTINUE_COIN_COST)};
     },
     /** Provides skip riddle behavior. */
     async skipRiddle({gameMode}) {
@@ -356,17 +358,15 @@ export const createFakeHostServices = ({
       }
       /** Provides profile behavior. */
       const profile = snapshot.profile;
-      /** Provides skip cost behavior. */
-      const skipCost = 100;
       /** Provides new coins behavior. */
-      const newCoins = spend(skipCost);
+      const newCoins = spend(SKIP_COIN_COST);
       /** Provides new classic index behavior. */
       const newClassicIndex = (profile?.classicIndex ?? 1) + 1;
       updateProfile({coins: newCoins, classicIndex: newClassicIndex});
       return {
         success: true,
         message: "Skipped.",
-        costDeducted: skipCost,
+        costDeducted: SKIP_COIN_COST,
         newCoins,
         newProgress: {classicIndex: newClassicIndex},
       };

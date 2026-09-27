@@ -4,10 +4,10 @@
     "EXTRA_GO_PROMPT": "Sin intentos. Obten un intento extra o salta este acertijo.",
     "OPEN_SHOP_BUTTON": "Abrir tienda",
     "OUT_OF_ATTEMPTS": "Sin intentos.",
-    "SKIP_LEVEL_PREFIX": "Saltar nivel (",
-    "SKIP_LEVEL_SUFFIX": " monedas)",
+    "SKIP_LEVEL_PREFIX": "Usa ",
+    "SKIP_LEVEL_SUFFIX": " monedas para saltar el nivel",
     "SKIP_PUZZLE_BUTTON": "Saltar acertijo",
     "USE_COINS_PREFIX": "Usar ",
-    "USE_COINS_SUFFIX": " monedas para continuar"
+    "USE_COINS_SUFFIX": " monedas para intentarlo de nuevo"
   }
 }

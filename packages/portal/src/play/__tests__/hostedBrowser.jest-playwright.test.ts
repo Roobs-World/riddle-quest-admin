@@ -985,6 +985,7 @@ describeBrowser("standalone Jest browser game", () => {
       for (const text of [/sound/i, /language/i, /help/i, /credits/i, /about/i, /buy coins/i]) {
         expect(await page.getByText(text).first().isVisible()).toBe(true);
       }
+      expect(await page.getByText(/show activity to rivals/i).count()).toBe(0);
       await expectAccessible(page, "settings");
       await expectModalCentered(page);
       await page.keyboard.press("Escape");
@@ -1353,9 +1354,9 @@ describeBrowser("standalone Jest browser game", () => {
       expect(await lowEndPage.locator(".modal-skip").count()).toBe(0);
       await lowEndPage.waitForFunction((expected) =>
         document.querySelector("[data-coin-meter] strong")?.textContent === String(expected),
-      coinsBeforeLossSkip - 100);
+      coinsBeforeLossSkip - 200);
       expect(Number((await lowEndPage.locator("[data-coin-meter] strong").innerText()).replaceAll(",", "")))
-        .toBe(coinsBeforeLossSkip - 100);
+        .toBe(coinsBeforeLossSkip - 200);
       await lowEndPage.waitForFunction(() => Reflect.has(window, "__heldLossSkip"));
       await lowEndPage.evaluate(() => Reflect.get(window, "__releaseLossSkip")());
       await lowEndContext.close();

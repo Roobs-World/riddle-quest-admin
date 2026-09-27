@@ -231,6 +231,10 @@ export type HostMessageHandlers = {
       }
     >,
   ): void | Promise<void>;
+  /** Reserves an expiring provider-invite lobby. */
+  reserveRaceInvite(
+    message: Extract<GameToHostMessage, {type: "game:reserveRaceInvite"}>,
+  ): void | Promise<void>;
   /** Gets race challenge. */
   getRaceChallenge(
     message: Extract<
@@ -377,6 +381,9 @@ export const createHostMessageRouter = (handlers: HostMessageHandlers) => {
         break;
       case "game:publishRace":
         await handlers.publishRace(message);
+        break;
+      case "game:reserveRaceInvite":
+        await handlers.reserveRaceInvite(message);
         break;
       case "game:getRaceChallenge":
         await handlers.getRaceChallenge(message);

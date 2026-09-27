@@ -76,7 +76,9 @@ export function ContinueModalPage({
       )}
       {!canAffordSkip ? <p>{tr("GameScreenAlerts.SKIP_NOT_ENOUGH_COINS_MESSAGE")}</p> : null}
       <button className="play-primary loss-skip-action" disabled={!canAffordSkip} onClick={onSkip}>
-        {tr("LossModal.SKIP_PUZZLE_BUTTON")}
+        {tr("LossModal.SKIP_LEVEL_PREFIX")}
+        {SKIP_COIN_COST}
+        {tr("LossModal.SKIP_LEVEL_SUFFIX")}
       </button>
     </div>
   );

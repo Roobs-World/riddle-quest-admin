@@ -37,6 +37,18 @@ describe("Firestore index policy", () => {
     }
   });
 
+  it("expires Jest race invite lobbies and reservation receipts", () => {
+    const overrides = readIndexConfig().fieldOverrides;
+    for (const collectionGroup of ["raceInviteLobbies", "raceInviteRequests"]) {
+      expect(overrides).toContainEqual({
+        collectionGroup,
+        fieldPath: "expiresAt",
+        ttl: true,
+        indexes: [],
+      });
+    }
+  });
+
   it("indexes the owner link on nested race receipts for deletion", () => {
     expect(readIndexConfig().fieldOverrides).toContainEqual({
       collectionGroup: "requests",

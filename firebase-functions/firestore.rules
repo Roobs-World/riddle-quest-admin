@@ -150,6 +150,14 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    match /raceInviteLobbies/{challengeId} {
+      allow read, write: if false;
+    }
+
+    match /raceInviteRequests/{requestId} {
+      allow read, write: if false;
+    }
+
     match /raceAttempts/{attemptId} {
       allow read, write: if false;
     }

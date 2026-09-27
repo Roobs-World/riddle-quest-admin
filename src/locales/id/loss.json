@@ -4,10 +4,10 @@
     "EXTRA_GO_PROMPT": "Kesempatan habis. Dapatkan satu kesempatan ekstra atau lewati teka-teki ini.",
     "OPEN_SHOP_BUTTON": "Buka Toko",
     "OUT_OF_ATTEMPTS": "Di luar upaya.",
-    "SKIP_LEVEL_PREFIX": "Lewati Tingkat (",
-    "SKIP_LEVEL_SUFFIX": "Koin)",
+    "SKIP_LEVEL_PREFIX": "Gunakan ",
+    "SKIP_LEVEL_SUFFIX": " Koin untuk Melewati Tingkat",
     "SKIP_PUZZLE_BUTTON": "Lewati Teka-teki",
     "USE_COINS_PREFIX": "Gunakan",
-    "USE_COINS_SUFFIX": "Koin untuk Melanjutkan"
+    "USE_COINS_SUFFIX": " Koin untuk Mencoba Lagi"
   }
 }

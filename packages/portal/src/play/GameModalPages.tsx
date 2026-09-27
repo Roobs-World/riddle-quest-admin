@@ -28,10 +28,6 @@ export type GameModalPagesProps = {
   onOpenModal: (modal: Exclude<GameModal, null>) => void;
   /** Stores on toggle mute. */
   onToggleMute: () => void;
-  /** Stores presence enabled. */
-  presenceEnabled?: boolean;
-  /** Stores on toggle presence. */
-  onTogglePresence?: () => void;
   /** Stores commerce available. */
   commerceAvailable?: boolean;
   /** Stores on request hint. */
@@ -56,8 +52,6 @@ export function GameModalPages({
   onPurchase,
   onOpenModal,
   onToggleMute,
-  presenceEnabled,
-  onTogglePresence,
   commerceAvailable = true,
   onRequestHint,
   onRequestSkip,
@@ -106,8 +100,6 @@ export function GameModalPages({
           muted={state.muted}
           onOpenModal={onOpenModal}
           onToggleMute={onToggleMute}
-          presenceEnabled={presenceEnabled}
-          onTogglePresence={onTogglePresence}
           commerceAvailable={commerceAvailable}
         />
       )}

@@ -35,7 +35,7 @@ describe("YouTube local economy parity", () => {
       continueAttempts: 1,
       hintCost: 50,
       continueCost: 100,
-      classicSkipCost: 100,
+      classicSkipCost: 200,
       classicWinCoins: 25,
       dailyWinCoins: 75,
       levelUpCoins: 50,

@@ -214,10 +214,6 @@
 .race-gameplay > .keyboard {
   grid-area: keyboard;
   width: 100%;
-  gap: 5px;
-}
-.race-gameplay > .keyboard .key {
-  height: 52px;
 }
 .race-gameplay > .race-actions {
   grid-area: actions;
@@ -452,17 +448,6 @@
   }
   .race-riddle-surface .guess-board {
     max-width: min(var(--board-max-width), 100%);
-  }
-  .race-gameplay > .keyboard > div {
-    gap: 3px;
-  }
-  .race-gameplay > .keyboard .key {
-    width: min(52px, 8.8vw);
-    height: clamp(44px, 7.5dvh, 60px);
-    font-size: 21px;
-  }
-  .race-gameplay > .keyboard .key.utility {
-    width: min(54px, 13vw);
   }
   .race-actions {
     gap: 4px;

@@ -5,4 +5,4 @@ export const CONTINUE_COIN_COST = 100;
 export const HINT_COIN_COST = 50;
 
 /** Coin cost of skipping a classic riddle. */
-export const SKIP_COIN_COST = 100;
+export const SKIP_COIN_COST = 200;

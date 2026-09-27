@@ -4,10 +4,10 @@
     "EXTRA_GO_PROMPT": "Deneme hakkin bitti. Bir ekstra hak al veya bu bulmacayi atla.",
     "OPEN_SHOP_BUTTON": "Magazayi ac",
     "OUT_OF_ATTEMPTS": "Deneme hakki bitti.",
-    "SKIP_LEVEL_PREFIX": "Bolumu atla (",
-    "SKIP_LEVEL_SUFFIX": " para)",
+    "SKIP_LEVEL_PREFIX": "Kullan: ",
+    "SKIP_LEVEL_SUFFIX": " para ile bolumu atla",
     "SKIP_PUZZLE_BUTTON": "Bulmacayi atla",
     "USE_COINS_PREFIX": "Kullan: ",
-    "USE_COINS_SUFFIX": " para ile devam et"
+    "USE_COINS_SUFFIX": " para ile yeniden dene"
   }
 }

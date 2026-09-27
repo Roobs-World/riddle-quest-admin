@@ -28,6 +28,7 @@ export type HostOperationName =
   | "raceResume"
   | "raceAbandon"
   | "racePublish"
+  | "raceInviteReserve"
   | "raceChallenge"
   | "raceOutcome"
   | "raceInbox"
@@ -473,6 +474,12 @@ export const createPlayHostMessageHandlers = ({
       void Promise.resolve().then(() => syncRaceAchievementProgress(result))
         .catch(error => reportHostOperationError(error, "racePublish"));
       return result;
+    }),
+  reserveRaceInvite: (message) =>
+    runRaceOperation(message.requestId, "raceInviteReserve", () => {
+      const race = requireRaceAuthority(authority);
+      if (!race.reserveRaceInvite) throw new Error("Race invite lobbies are unavailable.");
+      return race.reserveRaceInvite(message.payload);
     }),
   getRaceChallenge: (message) =>
     runRaceOperation(message.requestId, "raceChallenge", () => {

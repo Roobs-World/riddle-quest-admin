@@ -29,7 +29,7 @@ describe("fake host services", () => {
       answerLength: 4,
     });
     expect(await services.loadRiddle({gameMode: "challenge", locale: "en"})).not.toHaveProperty("answer");
-    expect(await services.loadProfile("jest-guest")).toMatchObject({coins: 180});
+    expect(await services.loadProfile("jest-guest")).toMatchObject({coins: 300});
 
     await expect(
       services.requestHint({
@@ -39,7 +39,7 @@ describe("fake host services", () => {
         requestId: "hint-request-1",
         currentAttempt: [],
       }),
-    ).resolves.toMatchObject({index: 0, coinsCost: 50, newCoins: 130});
+    ).resolves.toMatchObject({index: 0, coinsCost: 50, newCoins: 250});
     await expect(
       services.requestHint({
         riddleId: "classic-fake-1",
@@ -56,9 +56,19 @@ describe("fake host services", () => {
         gameMode: "classic",
         sessionToken: classicSessionToken,
         requestId: "continue-request-1",
-        amount: 50,
+        amount: 100,
       }),
-    ).resolves.toEqual({newCoins: 80});
+    ).resolves.toEqual({newCoins: 150});
+    await expect(
+      services.spendCoins({
+        reason: "continue",
+        riddleId: "classic-fake-1",
+        gameMode: "classic",
+        sessionToken: classicSessionToken,
+        requestId: "continue-request-wrong-cost",
+        amount: 99,
+      }),
+    ).rejects.toThrow(/costs 100 coins/i);
 
     await services.submitGuess({
       riddleId: "classic-fake-1",
@@ -74,6 +84,9 @@ describe("fake host services", () => {
         sessionToken: classicSessionToken,
       }),
     ).resolves.toMatchObject({coinsEarned: 50});
+    /** Provides enough coins for the now more expensive skip action. */
+    const product = services.products[0];
+    await expect(services.requestPurchase(product.productId)).resolves.toMatchObject({success: true});
     await expect(
       services.skipRiddle({
         riddleId: "classic-fake-1",
@@ -81,7 +94,7 @@ describe("fake host services", () => {
         sessionToken: classicSessionToken,
         requestId: "skip-request-1",
       }),
-    ).resolves.toMatchObject({success: true, costDeducted: 100});
+    ).resolves.toMatchObject({success: true, costDeducted: 200});
     await expect(
       services.skipRiddle({
         riddleId: "daily-fake-1",
@@ -91,9 +104,6 @@ describe("fake host services", () => {
       }),
     ).rejects.toThrow(/cannot be skipped/i);
 
-    /** Provides product behavior. */
-    const product = services.products[0];
-    await expect(services.requestPurchase(product.productId)).resolves.toMatchObject({success: true});
     await expect(services.requestPurchase("missing")).rejects.toThrow(/not found/i);
     await expect(services.updateUsername("New Solver")).resolves.toMatchObject({username: "New Solver"});
     await expect(services.updateAvatar("data:image/png;base64,YQ==")).resolves.toMatchObject({

@@ -72,7 +72,7 @@ describeBrowser("queued coin actions", () => {
       const coinsBefore = Number((await page.locator("[data-coin-meter] strong").innerText()).replaceAll(",", ""));
       await page.locator(".loss-skip-action").click();
       expect(await page.locator(".modal-skip").count()).toBe(0);
-      await expect(page.locator("[data-coin-meter] strong")).toHaveText(String(coinsBefore - 100));
+      await expect(page.locator("[data-coin-meter] strong")).toHaveText(String(coinsBefore - 200));
       await page.getByText(/face and hands/i).waitFor();
     } finally {
       await page.close();
@@ -139,11 +139,11 @@ describeBrowser("queued coin actions", () => {
         return performance.now() - started;
       });
       expect(skipMs).toBeLessThan(250);
-      await expect(page.locator("[data-coin-meter] strong")).toHaveText(String(coinsBeforeSkip - 100));
+      await expect(page.locator("[data-coin-meter] strong")).toHaveText(String(coinsBeforeSkip - 200));
       await page.waitForFunction(() => Reflect.has(window, "__held_skip"));
       await page.evaluate(() => Reflect.get(window, "__releaseCoinAction")("skip"));
       await page.waitForFunction(() => !Object.keys(localStorage).some(key => key.includes("pendingPlay:v1:")));
-      await expect(page.locator("[data-coin-meter] strong")).toHaveText(String(coinsBeforeSkip - 100));
+      await expect(page.locator("[data-coin-meter] strong")).toHaveText(String(coinsBeforeSkip - 200));
       expect(await page.locator(".riddle-card h1").innerText()).toMatch(/face and hands/i);
     } finally {
       await page.close();

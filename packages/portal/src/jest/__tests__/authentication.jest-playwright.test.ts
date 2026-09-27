@@ -99,6 +99,8 @@ type AuthHarnessState = {
     /** Stores entry payload. */
     entryPayload?: Record<string, string>;
   }>;
+  /** Records whether each referral request began synchronously in the profile click. */
+  referralSharesStartedFromProfileClick: boolean[];
 };
 
 /** Provides install jest sdk harness behavior. */
@@ -119,6 +121,7 @@ const installJestSdkHarness = async (page: Page, scenario = "success") => {
       notificationSchedules: [],
       notificationRemovals: [],
       referralShares: [],
+      referralSharesStartedFromProfileClick: [],
     };
     /** Provides once behavior. */
     const once = (key: string) => {
@@ -300,6 +303,10 @@ const installJestSdkHarness = async (page: Page, scenario = "success") => {
         listReferrals: async () => ({referralsSigned: "signed-referrals"}),
         shareReferralLink: async (input: AuthHarnessState["referralShares"][number]) => {
           state.calls.push("sdk.referrals.shareReferralLink");
+          state.referralSharesStartedFromProfileClick.push(Boolean(
+            (window as typeof window & {__RIDDLE_QUEST_PROFILE_INVITE_CLICK__?: boolean})
+              .__RIDDLE_QUEST_PROFILE_INVITE_CLICK__,
+          ));
           state.referralShares.push(structuredClone(input));
           return {canceled: selectedScenario === "race-share-cancel"};
         },
@@ -829,6 +836,9 @@ describeBrowser("Jest authentication integration", () => {
     expect(genericInvite).toEqual(
       expect.objectContaining({
         reference: "riddle_quest_friend_challenge_v2",
+        shareTitle: "Riddle Quest",
+        shareText: "Authenticated Solver challenged you to Riddle Quest. Register through this invite and you both earn 100 coins!",
+        shareImage: expect.stringMatching(/^data:image\/png;base64,/),
         entryPayload: expect.objectContaining({
           inviteKind: "open",
           campaign: "open_invite_v1",
@@ -859,7 +869,16 @@ describeBrowser("Jest authentication integration", () => {
     /** Provides invite button behavior. */
     const inviteButton = creator.page.getByRole("button", {name: /invite a friend/i});
     await inviteButton.waitFor({state: "visible"});
-    await inviteButton.click();
+    await inviteButton.evaluate((button) => {
+      /** Marks the exact synchronous Profile-button callback under test. */
+      const target = window as typeof window & {__RIDDLE_QUEST_PROFILE_INVITE_CLICK__?: boolean};
+      target.__RIDDLE_QUEST_PROFILE_INVITE_CLICK__ = true;
+      try {
+        button.click();
+      } finally {
+        target.__RIDDLE_QUEST_PROFILE_INVITE_CLICK__ = false;
+      }
+    });
     await creator.page.waitForFunction(
       () =>
         (
@@ -870,11 +889,17 @@ describeBrowser("Jest authentication integration", () => {
         ).__RIDDLE_QUEST_JEST_AUTH_TEST__.referralShares.length === 1,
     );
     /** Provides [share] behavior. */
-    const [share] = (await getHarnessState(creator.page)).referralShares;
+    const creatorState = await getHarnessState(creator.page);
+    const [share] = creatorState.referralShares;
+    expect(creatorState.calls).toContain("sdk.referrals.shareReferralLink");
+    expect(creatorState.referralSharesStartedFromProfileClick).toEqual([true]);
     expect(share.onboardingSlug).toBeUndefined();
     expect(share).toEqual(
       expect.objectContaining({
         reference: "riddle_quest_friend_challenge_v2",
+        shareTitle: "Riddle Quest",
+        shareText: "Authenticated Solver challenged you to Riddle Quest. Register through this invite and you both earn 100 coins!",
+        shareImage: expect.stringMatching(/^data:image\/png;base64,/),
         entryPayload: expect.objectContaining({
           campaign: "open_invite_v1",
           reference: "profile_invite_v1",
@@ -1088,7 +1113,7 @@ describeBrowser("Jest authentication integration", () => {
     const {context, page} = await openHarness(browser, {registered: true, scenario: "race-share-cancel"});
     await enterRegisteredGame(page);
     await page.getByRole("button", {name: /^multiplayer$/i}).click();
-    await page.getByRole("button", {name: "Challenge a Jest player", exact: true}).click();
+    await page.getByRole("button", {name: "Challenge a player", exact: true}).click();
     await page.waitForFunction(() =>
       /** Reads the injected Jest harness share calls. */
       (window as typeof window & {
@@ -1097,16 +1122,7 @@ describeBrowser("Jest authentication integration", () => {
       })
         .__RIDDLE_QUEST_JEST_AUTH_TEST__.referralShares.length > 0,
     );
-    await page.getByRole("button", {name: "Send challenge by SMS", exact: true}).click();
-    await page.waitForFunction(() =>
-      /** Confirms both explicit delivery choices reached Jest's referral dialog. */
-      (window as typeof window & {
-        /** Injected Jest authentication harness state. */
-        __RIDDLE_QUEST_JEST_AUTH_TEST__: AuthHarnessState;
-      }).__RIDDLE_QUEST_JEST_AUTH_TEST__.referralShares.length === 2,
-    );
-    await page.getByRole("button", {name: "Challenge a Jest player", exact: true}).waitFor({state: "visible"});
-    await page.getByRole("button", {name: "Send challenge by SMS", exact: true}).waitFor({state: "visible"});
+    await page.getByRole("button", {name: "Challenge a player", exact: true}).waitFor({state: "visible"});
     expect(await page.locator(".race-countdown").count()).toBe(0);
     expect(await page.locator(".race-gameplay").count()).toBe(0);
     await context.close();
@@ -1172,8 +1188,7 @@ describeBrowser("Jest authentication integration", () => {
       observer.observe(document.body, {subtree: true, childList: true, characterData: true});
     });
     /** Lobby action used to create a challenge for another player. */
-    const challengePlayer = creator.page.getByRole("button", {name: "Challenge a Jest player", exact: true});
-    await creator.page.getByRole("button", {name: "Send challenge by SMS", exact: true}).waitFor({state: "visible"});
+    const challengePlayer = creator.page.getByRole("button", {name: "Challenge a player", exact: true});
     expect(await challengePlayer.isEnabled()).toBe(true);
     /** Mobile bounds used to verify the challenge action remains tappable. */
     const challengeBounds = await challengePlayer.boundingBox();
@@ -1194,6 +1209,7 @@ describeBrowser("Jest authentication integration", () => {
     const multiplayerInvite = (await getHarnessState(creator.page)).referralShares.find((share) =>
       /^jest-invite-[a-f0-9]{64}-[a-f0-9]{32}$/.test(share.entryPayload?.challengeId ?? ""),
     );
+    expect((await getHarnessState(creator.page)).calls).toContain("sdk.referrals.shareReferralLink");
     /** Challenge ID delivered to the recipient before the creator finishes. */
     const invitedChallengeId = multiplayerInvite?.entryPayload?.challengeId;
     expect(multiplayerInvite?.shareTitle).toBe("Race to 10");
@@ -1229,6 +1245,31 @@ describeBrowser("Jest authentication integration", () => {
       return keyboard.width / surface.width;
     });
     expect(keyboardCoverage).toBeGreaterThan(0.98);
+    /** Visual styles shared with the main-game keyboard at phone widths. */
+    const multiplayerKeyboardStyle = await creator.page.locator(".race-gameplay .keyboard").evaluate((keyboard) => {
+      /** First letter key. */
+      const letterKey = keyboard.querySelector<HTMLElement>(".key:not(.utility)")!;
+      /** Backspace key. */
+      const utilityKey = keyboard.querySelector<HTMLElement>(".key.utility")!;
+      /** Rendered letter-key style. */
+      const letterStyle = getComputedStyle(letterKey);
+      return {
+        backgroundColor: letterStyle.backgroundColor,
+        borderWidth: letterStyle.borderWidth,
+        borderRadius: letterStyle.borderRadius,
+        height: letterStyle.height,
+        utilityWidth: getComputedStyle(utilityKey).width,
+        letterWidth: letterStyle.width,
+      };
+    });
+    expect(multiplayerKeyboardStyle).toEqual({
+      backgroundColor: "rgba(255, 255, 255, 0.12)",
+      borderWidth: "1px",
+      borderRadius: "7px",
+      height: "48px",
+      utilityWidth: multiplayerKeyboardStyle.letterWidth,
+      letterWidth: multiplayerKeyboardStyle.letterWidth,
+    });
     /** Provides race start timing behavior. */
     const raceStartTiming = await creator.page.evaluate(
       () =>
