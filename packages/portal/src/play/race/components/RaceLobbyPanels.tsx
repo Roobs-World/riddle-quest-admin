@@ -17,9 +17,6 @@ export function RaceCategoriesPanel({
   loading,
   onSelect,
   onShowInbox,
-  onInviteChallenge,
-  inviting = false,
-  canChallenge = false,
 }: {
   /** Stores categories. */
   categories: ListRaceCategoriesResponse["categories"];
@@ -29,29 +26,9 @@ export function RaceCategoriesPanel({
   onSelect: (categoryId: RaceCategoryId) => void;
   /** Stores on show inbox. */
   onShowInbox: () => void;
-  /** Opens Jest's recipient dialog before beginning a creator run. */
-  onInviteChallenge?: () => void;
-  /** Whether the Jest share dialog is open. */
-  inviting?: boolean;
-  /** Whether the active platform can send a completed race to another player. */
-  canChallenge?: boolean;
 }) {
   return (
     <div className="race-panel">
-      {canChallenge && (
-        <div className="race-lobby-challenge">
-          <button
-            type="button"
-            className="race-primary"
-            disabled={loading || inviting || !categories.some((category) => category.categoryId === "mixed")}
-            aria-describedby="race-challenge-help"
-            onClick={onInviteChallenge ?? (() => onSelect("mixed"))}
-          >
-            {tr("RaceTo10.CHALLENGE_PLAYER")}
-          </button>
-          <p id="race-challenge-help">{tr("RaceTo10.CHALLENGE_PLAYER_HELP")}</p>
-        </div>
-      )}
       <h2>{tr("RaceTo10.CHOOSE_CATEGORY")}</h2>
       <p>{tr("RaceTo10.FIRST_TO_TEN")} · {tr("RaceTo10.HINT_BUTTON")} {tr("RaceTo10.HINT_PENALTY")} · {tr("RaceTo10.SKIP_BUTTON")} {tr("RaceTo10.SKIP_PENALTY")}</p>
       <div className="race-category-grid">

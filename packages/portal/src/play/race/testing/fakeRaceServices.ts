@@ -165,6 +165,14 @@ const getRaceOutcomeDelayMs = () => {
   return Number.isFinite(requestedDelay) ? Math.max(0, Math.min(2_000, requestedDelay)) : 0;
 };
 
+/** Returns how many outcome requests the browser harness should fail before recovering. */
+const getRaceOutcomeFailureCount = () => {
+  if (typeof location === "undefined") return 0;
+  /** Requested number of one-shot failures. */
+  const requestedFailures = Number(new URLSearchParams(location.search).get("raceOutcomeFailures"));
+  return Number.isFinite(requestedFailures) ? Math.max(0, Math.min(3, Math.floor(requestedFailures))) : 0;
+};
+
 /** Returns the bounded race-start delay requested by the browser-test URL. */
 const getRaceStartDelayMs = () => {
   if (typeof location === "undefined") return 0;
@@ -173,8 +181,22 @@ const getRaceStartDelayMs = () => {
   return Number.isFinite(requestedDelay) ? Math.max(0, Math.min(5_000, requestedDelay)) : 0;
 };
 
+/** Returns the bounded guess delay requested by the browser-test URL. */
+const getRaceGuessDelayMs = () => {
+  if (typeof location === "undefined") return 0;
+  /** Requested artificial guess latency in milliseconds. */
+  const requestedDelay = Number(new URLSearchParams(location.search).get("raceGuessDelayMs"));
+  return Number.isFinite(requestedDelay) ? Math.max(0, Math.min(5_000, requestedDelay)) : 0;
+};
+
+/** Whether the browser harness should mirror the backend's late-ghost rejection. */
+const rejectsLateGhostGuess = () =>
+  typeof location !== "undefined" && new URLSearchParams(location.search).get("raceRejectLateGuess") === "1";
+
 /** Creates deterministic in-memory race services for browser and component harnesses. */
 export const createFakeRaceServices = (): RaceMethods => {
+  /** Remaining deliberate outcome failures for retry-path browser coverage. */
+  let raceOutcomeFailuresRemaining = getRaceOutcomeFailureCount();
   /** Mutable runs indexed by their opaque harness run identifier. */
   const runs = new Map<string, FakeRun>();
   /** Published challenges indexed by their opaque harness challenge identifier. */
@@ -343,6 +365,18 @@ export const createFakeRaceServices = (): RaceMethods => {
       /** Provides cached behavior. */
       const cached = run.responses.get(input.requestId);
       if (cached) return cached as Awaited<ReturnType<RaceMethods["submitRaceGuess"]>>;
+      /** Provides delay ms behavior. */
+      const delayMs = getRaceGuessDelayMs();
+      if (delayMs > 0) await new Promise((resolve) => window.setTimeout(resolve, delayMs));
+      /** Current view after deliberate network latency. */
+      const delayedView = syncView(run);
+      if (
+        rejectsLateGhostGuess() &&
+        delayedView.opponent &&
+        delayedView.adjustedElapsedMs > delayedView.opponent.adjustedFinishMs
+      ) {
+        throw new Error("This Race to 10 run is no longer active. [400]");
+      }
       if (run.view.currentRiddle?.riddleId !== input.riddleId) throw new Error("That riddle is no longer active.");
       /** Provides answer behavior. */
       const answer = run.answers[run.view.currentRiddle.position];
@@ -503,6 +537,10 @@ export const createFakeRaceServices = (): RaceMethods => {
       /** Provides delay ms behavior. */
       const delayMs = getRaceOutcomeDelayMs();
       if (delayMs > 0) await new Promise((resolve) => setTimeout(resolve, delayMs));
+      if (raceOutcomeFailuresRemaining > 0) {
+        raceOutcomeFailuresRemaining -= 1;
+        throw new Error("Temporary outcome service failure.");
+      }
       /** Provides run behavior. */
       const run = getRun(runId);
       /** Provides view behavior. */

@@ -1,5 +1,5 @@
 import type {Feedback, ScoredGuess} from "@qwordly/core/game";
-import type {RaceRunView} from "@qwordly/core/race";
+import type {RaceOutcome, RaceRunView} from "@qwordly/core/race";
 
 /** Non-null riddle prompt presented during an active race. */
 type RaceRiddle = NonNullable<RaceRunView["currentRiddle"]>;
@@ -38,6 +38,70 @@ export const getAdjustedRaceTime = (run: RaceRunView | null, receivedAtMs: numbe
         run.adjustedElapsedMs + (run.status === "active" ? nowMs - receivedAtMs : 0),
       )
     : 0;
+
+/** Projects a terminal result that is already determined by authoritative run data. */
+export const projectRaceOutcome = (run: RaceRunView, adjustedNow: number): RaceOutcome | null => {
+  if (run.status === "abandoned") return null;
+  /** Whether the shared adjusted-time limit has conclusively elapsed. */
+  const timedOut = run.status === "timed_out" ||
+    (run.status === "active" && adjustedNow >= run.rules.maxAdjustedTimeMs);
+  /** Whether the server-issued opponent time has conclusively elapsed. */
+  const opponentFinished = Boolean(
+    run.opponent && run.status === "active" && adjustedNow > run.opponent.adjustedFinishMs,
+  );
+  if (run.status === "active" && !timedOut && !opponentFinished) return null;
+  /** Final result implied by the authoritative status, score, role, and opponent time. */
+  const result: RaceOutcome["result"] = timedOut
+    ? "timed_out"
+    : run.role === "creator"
+      ? "recorded"
+      : run.correctCount < run.rules.targetCorrect
+        ? "ghost_win"
+        : run.opponent && run.adjustedElapsedMs < run.opponent.adjustedFinishMs
+          ? "player_win"
+          : "tie";
+  /** Exact adjusted finish time fixed by the applicable terminal rule. */
+  const adjustedFinishMs = timedOut
+    ? run.rules.maxAdjustedTimeMs
+    : opponentFinished
+      ? run.opponent!.adjustedFinishMs
+      : run.adjustedElapsedMs;
+  /** Penalties split from the authoritative event history for immediate result presentation. */
+  const hintPenaltyMs = run.events
+    .filter((event) => event.type === "hint")
+    .reduce((total, event) => total + event.penaltyAddedMs, 0);
+  /** Skip penalties split from the authoritative event history for immediate result presentation. */
+  const skipPenaltyMs = run.events
+    .filter((event) => event.type === "skip")
+    .reduce((total, event) => total + event.penaltyAddedMs, 0);
+  return {
+    runId: run.runId,
+    challengeId: run.challengeId,
+    result,
+    correctCount: run.correctCount,
+    wallFinishMs: Math.max(0, adjustedFinishMs - run.totalPenaltyMs),
+    hintPenaltyMs,
+    skipPenaltyMs,
+    totalPenaltyMs: run.totalPenaltyMs,
+    adjustedFinishMs,
+    opponentAdjustedFinishMs: run.opponent?.adjustedFinishMs,
+    publishable: result === "recorded" && run.correctCount === run.rules.targetCorrect,
+    rematchEligible: result === "player_win" || result === "ghost_win" || result === "tie",
+    newlyUnlockedAchievementIds: [],
+    achievementCoinsAwarded: 0,
+  };
+};
+
+/** Applies a confirmed outcome to the latest public run view. */
+export const applyRaceOutcome = (run: RaceRunView, outcome: RaceOutcome): RaceRunView => ({
+  ...run,
+  status: outcome.result === "timed_out" ? "timed_out" : "completed",
+  correctCount: outcome.correctCount,
+  wallElapsedMs: outcome.wallFinishMs,
+  totalPenaltyMs: outcome.totalPenaltyMs,
+  adjustedElapsedMs: outcome.adjustedFinishMs,
+  currentRiddle: null,
+});
 
 /** Keeps the strongest server-scored feedback observed for each keyboard letter. */
 export const getRaceLetterStates = (guesses: readonly ScoredGuess[]): Record<string, Feedback> => {

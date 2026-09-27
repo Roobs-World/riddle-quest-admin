@@ -1,6 +1,7 @@
 import type {PublishRaceChallengeResponse, RaceCategoryId, RaceOutcome, RaceRunView} from "@qwordly/core/race";
 import {tr} from "../../i18n";
 import {formatRaceTime} from "../logic/racePresentation";
+import {getGhostCorrectCount} from "../logic/racePlayback";
 
 /** Displays authoritative race timing, publication, and rematch actions. */
 export function RaceResultPanel({
@@ -36,9 +37,23 @@ export function RaceResultPanel({
   /** Stores on close. */
   onClose: () => void;
 }) {
+  /** Opponent's final replay score at the player's terminal adjusted time. */
+  const opponentCorrect = getGhostCorrectCount(run?.opponent, outcome.adjustedFinishMs);
   return (
     <div className="race-panel race-result" aria-live="polite">
       <h2>{tr(`RaceTo10.RESULT_${outcome.result.toUpperCase()}`)}</h2>
+      {run?.opponent ? (
+        <div className="race-result-score" aria-label={tr("RaceTo10.PROGRESS_LABEL")}>
+          <span>
+            <small>{tr("RaceTo10.YOU")}</small>
+            <strong>{outcome.correctCount}/{run.rules.targetCorrect}</strong>
+          </span>
+          <span>
+            <small>{run.opponent.displayName}</small>
+            <strong>{opponentCorrect}/{run.rules.targetCorrect}</strong>
+          </span>
+        </div>
+      ) : null}
       <div className="race-result-grid">
         <span>
           {tr("RaceTo10.WALL_TIME")}

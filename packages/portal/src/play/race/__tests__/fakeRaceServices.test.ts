@@ -6,6 +6,22 @@ import {createFakeRaceServices} from "../testing/fakeRaceServices";
 const answers = ["piano", "clock", "towel", "bottle", "stamp", "needle", "name", "comb", "water", "book"];
 
 describe("createFakeRaceServices", () => {
+  it("fails only the requested number of background outcome attempts", async () => {
+    /** Existing global location descriptor restored after configuring the browser-only harness seam. */
+    const previousLocation = Object.getOwnPropertyDescriptor(globalThis, "location");
+    Object.defineProperty(globalThis, "location", {
+      configurable: true,
+      value: {search: "?raceOutcomeFailures=1"},
+    });
+    /** Service captures the bounded one-shot failure count at construction. */
+    const services = createFakeRaceServices();
+    if (previousLocation) Object.defineProperty(globalThis, "location", previousLocation);
+    else Reflect.deleteProperty(globalThis, "location");
+
+    await expect(services.getRaceOutcome("missing-run")).rejects.toThrow("Temporary outcome service failure");
+    await expect(services.getRaceOutcome("missing-run")).rejects.toThrow("Race run not found");
+  });
+
   it("lists categories and starts and resumes an authoritative run", async () => {
     /** Isolated fake host service instance for the test. */
     const services = createFakeRaceServices();

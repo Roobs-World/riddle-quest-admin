@@ -294,38 +294,6 @@ export function useJestSharing({
         });
       });
   }, [locale, platform, session, trackFunnel]);
-  /** Shares a link before the sender records the authoritative time to beat. */
-  const shareMultiplayerInvite = useCallback(async (challengeId: string): Promise<ReferralShareOutcome> => {
-    if (!session || !/^jest-invite-[a-f0-9]{64}-[a-f0-9]{32}$/.test(challengeId)) return "error";
-    /** Name displayed to the invitation recipient. */
-    const inviterName = session.profile?.username ?? tr("WebPortal.NOTIFICATION_PLAYER_FALLBACK");
-    /** Unique reference used to attribute the invitation. */
-    const reference = createUniqueJestReferralReference("race");
-    trackFunnel("viral_share_intent", {surface: "race", campaign: "race_preinvite_v1"});
-    try {
-      /** Jest share-dialog outcome. */
-      const result = await withPlatformActivity(() => platform.shareReferral({
-        reference,
-        shareTitle: tr("RaceTo10.TITLE"),
-        shareText: tr("RaceTo10.INVITE_BEFORE_RUN", {name: inviterName}),
-        entryPayload: {
-          campaign: "race_to_10_v1",
-          reference: "race_preinvite_v1",
-          inviteKind: "race",
-          challengeDestination: challengeId,
-          challengeId,
-          inviterName,
-        },
-      }));
-      trackFunnel("viral_share_dialog_result", {status: result.status, surface: "race", campaign: "race_preinvite_v1"});
-      return result.status === "success" ? "success" : result.status === "cancelled" ? "cancelled" : "error";
-    } catch (error) {
-      console.warn("[riddle-quest] Jest race preinvite failed", error);
-      trackFunnel("viral_share_dialog_result", {status: "retryable-failure", surface: "race", campaign: "race_preinvite_v1"});
-      return "error";
-    }
-  }, [locale, platform, session, trackFunnel, withPlatformActivity]);
-
   useEffect(() => {
     if (!authHarness || !session) return;
     /** Provides on result behavior. */
@@ -355,10 +323,9 @@ export function useJestSharing({
             rewardCoins: JEST_REFERRAL_REWARD_COINS,
             shareResult,
             shareInvite,
-            shareMultiplayerInvite,
             shareRace,
           }
         : null,
-    [session, shareInvite, shareMultiplayerInvite, shareRace, shareResult],
+    [session, shareInvite, shareRace, shareResult],
   );
 }

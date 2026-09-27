@@ -442,6 +442,12 @@ const openHarness = async (
     raceStartDelayMs?: number;
     /** Stores race outcome delay ms. */
     raceOutcomeDelayMs?: number;
+    /** Number of outcome requests that fail before the harness recovers. */
+    raceOutcomeFailures?: number;
+    /** Stores race guess delay ms. */
+    raceGuessDelayMs?: number;
+    /** Whether late ghost guesses reproduce the production rejection. */
+    raceRejectLateGuess?: boolean;
   } = {},
 ) => {
   /** Provides context behavior. */
@@ -474,6 +480,9 @@ const openHarness = async (
   if (options.sharedRace) query.set("sharedRace", "1");
   if (options.raceStartDelayMs) query.set("raceStartDelayMs", String(options.raceStartDelayMs));
   if (options.raceOutcomeDelayMs) query.set("raceOutcomeDelayMs", String(options.raceOutcomeDelayMs));
+  if (options.raceOutcomeFailures) query.set("raceOutcomeFailures", String(options.raceOutcomeFailures));
+  if (options.raceGuessDelayMs) query.set("raceGuessDelayMs", String(options.raceGuessDelayMs));
+  if (options.raceRejectLateGuess) query.set("raceRejectLateGuess", "1");
   /** Provides navigation behavior. */
   const navigation = page.goto(`${baseUrl}/?${query}`);
   if (options.scenario === "sdk-request-delay") {
@@ -1115,27 +1124,7 @@ describeBrowser("Jest authentication integration", () => {
     await context.close();
   });
 
-  it("keeps the creator in the lobby when the Jest invite is dismissed", async () => {
-    /** Browser context and page for the dismissed invitation. */
-    const {context, page} = await openHarness(browser, {registered: true, scenario: "race-share-cancel"});
-    await enterRegisteredGame(page);
-    await page.getByRole("button", {name: /^multiplayer$/i}).click();
-    await page.getByRole("button", {name: "Challenge a player", exact: true}).click();
-    await page.waitForFunction(() =>
-      /** Reads the injected Jest harness share calls. */
-      (window as typeof window & {
-        /** Injected Jest authentication harness state. */
-        __RIDDLE_QUEST_JEST_AUTH_TEST__: AuthHarnessState;
-      })
-        .__RIDDLE_QUEST_JEST_AUTH_TEST__.referralShares.length > 0,
-    );
-    await page.getByRole("button", {name: "Challenge a player", exact: true}).waitFor({state: "visible"});
-    expect(await page.locator(".race-countdown").count()).toBe(0);
-    expect(await page.locator(".race-gameplay").count()).toBe(0);
-    await context.close();
-  });
-
-  it("runs a creator-to-recipient race across isolated browser contexts", async () => {
+  it("publishes a completed score before reusable Jest invites reach recipients", async () => {
     sharedRaceChallenges.clear();
     /** Provides creator behavior. */
     const creator = await openHarness(browser, {
@@ -1163,6 +1152,19 @@ describeBrowser("Jest authentication integration", () => {
     await creator.page.getByTestId("server-activity-loader").waitFor({state: "detached"});
     await captureMultiplayerEvidence(creator.page, "01-player-1-multiplayer-lobby.png");
     expect(await creator.page.locator('[data-testid="server-activity-loader"]').count()).toBe(0);
+    /** Every lobby surface stays inside the narrow embedded game viewport. */
+    const lobbyBounds = await creator.page.locator(".race-topbar, .race-hub-tabs, .race-panel").evaluateAll((elements) =>
+      elements.map((element) => {
+        /** Element bounds relative to the embedded game viewport. */
+        const bounds = element.getBoundingClientRect();
+        return {left: bounds.left, right: bounds.right};
+      }),
+    );
+    expect(lobbyBounds).toHaveLength(3);
+    for (const bounds of lobbyBounds) {
+      expect(bounds.left).toBeGreaterThanOrEqual(0);
+      expect(bounds.right).toBeLessThanOrEqual(390);
+    }
     await creator.page.evaluate(() => {
       /** Provides timing window behavior. */
       const timingWindow = window as typeof window & {
@@ -1194,35 +1196,9 @@ describeBrowser("Jest authentication integration", () => {
       });
       observer.observe(document.body, {subtree: true, childList: true, characterData: true});
     });
-    /** Lobby action used to create a challenge for another player. */
-    const challengePlayer = creator.page.getByRole("button", {name: "Challenge a player", exact: true});
-    expect(await challengePlayer.isEnabled()).toBe(true);
-    /** Mobile bounds used to verify the challenge action remains tappable. */
-    const challengeBounds = await challengePlayer.boundingBox();
-    expect(challengeBounds).not.toBeNull();
-    expect(challengeBounds!.x).toBeGreaterThanOrEqual(0);
-    expect(challengeBounds!.x + challengeBounds!.width).toBeLessThanOrEqual(390);
-    expect(challengeBounds!.height).toBeGreaterThanOrEqual(48);
-    await challengePlayer.click();
-    await creator.page.waitForFunction(() =>
-      /** Reads the injected Jest harness share calls. */
-      (window as typeof window & {
-        /** Injected Jest authentication harness state. */
-        __RIDDLE_QUEST_JEST_AUTH_TEST__: AuthHarnessState;
-      }).__RIDDLE_QUEST_JEST_AUTH_TEST__.referralShares.some((share) =>
-        /^jest-invite-[a-f0-9]{64}-[a-f0-9]{32}$/.test(share.entryPayload?.challengeId ?? "")),
-    );
-    /** Shared invitation containing the reserved challenge. */
-    const multiplayerInvite = (await getHarnessState(creator.page)).referralShares.find((share) =>
-      /^jest-invite-[a-f0-9]{64}-[a-f0-9]{32}$/.test(share.entryPayload?.challengeId ?? ""),
-    );
-    expect((await getHarnessState(creator.page)).calls).toContain("sdk.referrals.shareReferralLink");
-    /** Challenge ID delivered to the recipient before the creator finishes. */
-    const invitedChallengeId = multiplayerInvite?.entryPayload?.challengeId;
-    expect(multiplayerInvite?.shareTitle).toBe("Race to 10");
-    expect(multiplayerInvite?.shareText).toContain("time for you to beat");
-    expect(invitedChallengeId).toMatch(/^jest-invite-[a-f0-9]{64}-[a-f0-9]{32}$/);
-    await captureMultiplayerEvidence(creator.page, "02-player-1-invite-sent.png");
+    expect(await creator.page.getByRole("button", {name: /challenge a player/i}).count()).toBe(0);
+    expect((await getHarnessState(creator.page)).referralShares).toHaveLength(0);
+    await creator.page.getByRole("button", {name: /^History /}).click();
     /** Provides countdown rail behavior. */
     const countdownRail = creator.page.locator(".race-countdown-rail");
     await countdownRail.waitFor();
@@ -1242,7 +1218,7 @@ describeBrowser("Jest authentication integration", () => {
     });
     expect(countdownCenterOffset).toBeLessThanOrEqual(0.5);
     await creator.page.locator(".race-gameplay .guess-board").waitFor({state: "visible", timeout: 10_000});
-    await captureMultiplayerEvidence(creator.page, "03-player-1-race-started.png");
+    await captureMultiplayerEvidence(creator.page, "02-player-1-race-started.png");
     /** Horizontal coverage of the multiplayer keyboard within the game surface. */
     const keyboardCoverage = await creator.page.locator(".race-gameplay").evaluate((gameplay) => {
       /** Available game width. */
@@ -1338,7 +1314,48 @@ describeBrowser("Jest authentication integration", () => {
       const screen = document.querySelector(".race-screen");
       return Boolean(screen && screen.scrollHeight <= screen.clientHeight + 1);
     });
-    /** The shared link opens before the sender has set a time. */
+    await solveFakeRace(creator.page, {expectChainedSubmitLoader: true});
+    await creator.page.getByText("Run recorded!", {exact: true}).waitFor();
+    /** Completing gameplay must reset any horizontal offset created by the scaled answer surface. */
+    const completedLayout = await creator.page.locator(".race-screen").evaluate((screen) => ({
+      documentScrollLeft: document.scrollingElement?.scrollLeft ?? 0,
+      screenScrollLeft: screen.scrollLeft,
+      topbarLeft: screen.querySelector(".race-topbar")?.getBoundingClientRect().left ?? -1,
+    }));
+    expect(completedLayout).toEqual({documentScrollLeft: 0, screenScrollLeft: 0, topbarLeft: 18});
+    expect((await getHarnessState(creator.page)).referralShares).toHaveLength(0);
+    await captureMultiplayerEvidence(creator.page, "03-player-1-run-recorded.png");
+    await creator.page.getByRole("button", {name: /send challenge/i}).click();
+    await creator.page.waitForFunction(() =>
+      (window as typeof window & {__RIDDLE_QUEST_JEST_AUTH_TEST__: AuthHarnessState})
+        .__RIDDLE_QUEST_JEST_AUTH_TEST__.referralShares.length === 1,
+    );
+    /** First post-result share contains an already-published immutable score. */
+    const firstInvite = (await getHarnessState(creator.page)).referralShares[0]!;
+    const invitedChallengeId = firstInvite.entryPayload?.challengeId;
+    expect(firstInvite.shareTitle).toBe("Race to 10");
+    expect(firstInvite.shareText).toContain("Time to beat");
+    expect(invitedChallengeId).toMatch(/^fake-challenge-/);
+    expect(sharedRaceChallenges.has(invitedChallengeId!)).toBe(true);
+    await creator.page.getByRole("button", {name: /challenge a friend/i}).waitFor({timeout: 10_000});
+    await captureMultiplayerEvidence(creator.page, "04-player-1-challenge-ready.png");
+
+    /** The same completed challenge may be sent to as many Jest recipients as desired. */
+    await creator.page.getByRole("button", {name: /challenge a friend/i}).click();
+    await creator.page.getByRole("button", {name: /challenge a friend/i}).click();
+    await creator.page.waitForFunction(() =>
+      (window as typeof window & {__RIDDLE_QUEST_JEST_AUTH_TEST__: AuthHarnessState})
+        .__RIDDLE_QUEST_JEST_AUTH_TEST__.referralShares.length === 3,
+    );
+    const repeatedInvites = (await getHarnessState(creator.page)).referralShares;
+    expect(repeatedInvites.map((invite) => invite.entryPayload?.challengeId)).toEqual([
+      invitedChallengeId,
+      invitedChallengeId,
+      invitedChallengeId,
+    ]);
+    expect(new Set(repeatedInvites.map((invite) => invite.reference)).size).toBe(3);
+
+    /** Recipient opens only after the creator's score and challenge both exist. */
     const recipient = await openHarness(browser, {
       registered: true,
       harness: "race-auth",
@@ -1348,30 +1365,192 @@ describeBrowser("Jest authentication integration", () => {
       campaign: "race_to_10_v1",
       sharedRace: true,
     });
-    await recipient.page.locator(".race-challenge-card").getByText("Loading challenge…").waitFor();
-    await captureMultiplayerEvidence(recipient.page, "04-player-2-invite-loading.png");
-    expect(await recipient.page.getByRole("button", {name: /accept challenge/i}).count()).toBe(0);
-
-    await solveFakeRace(creator.page, {expectChainedSubmitLoader: true});
-    await creator.page.getByText("Run recorded!", {exact: true}).waitFor();
-    await creator.page.getByRole("button", {name: /challenge a friend/i}).waitFor({timeout: 10_000});
-    await captureMultiplayerEvidence(creator.page, "05-player-1-run-recorded.png");
-    expect(sharedRaceChallenges.has(invitedChallengeId!)).toBe(true);
 
     await recipient.page.getByRole("heading", {name: /Guest Solver challenged you/i}).waitFor({timeout: 20_000});
-    await captureMultiplayerEvidence(recipient.page, "06-player-2-invite-ready.png");
+    await captureMultiplayerEvidence(recipient.page, "05-player-2-invite-ready.png");
     await recipient.page.getByRole("button", {name: /accept challenge/i}).click();
     await recipient.page.locator(".race-gameplay .guess-board").waitFor({state: "visible", timeout: 10_000});
-    /** Provides opponent progress behavior. */
-    const opponentProgress = recipient.page.locator(".race-progress > div").nth(1);
-    await opponentProgress.getByText("10/10", {exact: true}).waitFor({timeout: 10_000});
-    await captureMultiplayerEvidence(recipient.page, "07-player-2-race-started.png");
-    await solveFakeRace(recipient.page);
+    await captureMultiplayerEvidence(recipient.page, "06-player-2-race-started.png");
+    await recipient.page.getByRole("heading", {name: /opponent wins/i}).waitFor({timeout: 10_000});
+    /** Final score makes the exact opponent replay explicit after automatic completion. */
+    const finalScore = recipient.page.locator(".race-result-score");
+    expect(await finalScore.innerText()).toContain("You\n0/10");
+    expect(await finalScore.innerText()).toContain("Guest Solver\n10/10");
+    await captureMultiplayerEvidence(recipient.page, "07-player-2-automatic-result.png");
     expect(await recipient.page.locator(".race-result-grid").innerText()).toContain("Adjusted time");
-    expect(await recipient.page.locator(".race-result h2").innerText()).toMatch(/You win|Opponent wins|tie/i);
+    expect(await recipient.page.locator(".race-result h2").innerText()).toMatch(/Opponent wins/i);
     await captureMultiplayerEvidence(recipient.page, "08-player-2-final-result.png");
 
     await Promise.all([creator.context.close(), recipient.context.close()]);
+  });
+
+  it("shows an opponent win automatically while the authoritative outcome confirms in the background", async () => {
+    sharedRaceChallenges.clear();
+    /** Deterministic challenge whose ghost finishes just after the gameplay countdown. */
+    const challengeId = `jest-invite-${"a".repeat(64)}-${"b".repeat(32)}`;
+    /** Server-issued ghost score replayed by the recipient. */
+    const events = Array.from({length: 10}, (_, index) => ({
+      sequence: index,
+      type: "correct" as const,
+      riddlePosition: index,
+      wallElapsedMs: (index + 1) * 300,
+      penaltyAddedMs: 0 as const,
+      totalPenaltyMs: 0,
+      adjustedElapsedMs: (index + 1) * 300,
+      correctCount: index + 1,
+    }));
+    sharedRaceChallenges.set(challengeId, JSON.stringify({
+      preview: {
+        challengeId,
+        creator: {displayName: "Fast Opponent"},
+        categoryId: "mixed",
+        locale: "en",
+        targetCorrect: 10,
+        adjustedTimeToBeatMs: 3_000,
+        rulesVersion: "race10_v1",
+        expiresAtMs: Date.now() + 60_000,
+        status: "active",
+      },
+      runId: "fast-opponent-run",
+      events,
+    }));
+    /** Recipient whose outcome response is deliberately slower than the local result presentation. */
+    const recipient = await openHarness(browser, {
+      registered: true,
+      harness: "race-auth",
+      playerId: "automatic-loss-recipient",
+      challengeId,
+      inviteKind: "race",
+      campaign: "race_to_10_v1",
+      sharedRace: true,
+      raceOutcomeDelayMs: 2_000,
+    });
+    await recipient.page.evaluate(() => {
+      Object.assign(window, {__raceOutcomeResultCount: 0});
+      window.addEventListener("riddle-quest:host-to-game", (event) => {
+        if ((event as CustomEvent).detail?.payload?.operation === "raceOutcome") {
+          Object.assign(window, {
+            __raceOutcomeResultCount: Number((window as typeof window & {__raceOutcomeResultCount?: number}).__raceOutcomeResultCount ?? 0) + 1,
+          });
+        }
+      });
+    });
+    await recipient.page.getByRole("button", {name: /accept challenge/i}).waitFor({state: "visible"});
+    await recipient.page.getByRole("button", {name: /accept challenge/i}).click();
+    await recipient.page.locator(".race-countdown").waitFor({state: "visible", timeout: 10_000});
+    await recipient.page.getByRole("heading", {name: /opponent wins/i}).waitFor({timeout: 5_000});
+    expect(await recipient.page.evaluate(() => (window as typeof window & {__raceOutcomeResultCount?: number}).__raceOutcomeResultCount)).toBe(0);
+    expect(await recipient.page.getByRole("alert").count()).toBe(0);
+    await recipient.page.waitForFunction(
+      () => (window as typeof window & {__raceOutcomeResultCount?: number}).__raceOutcomeResultCount === 1,
+      undefined,
+      {timeout: 5_000},
+    );
+    expect(await recipient.page.getByRole("heading", {name: /opponent wins/i}).isVisible()).toBe(true);
+    await recipient.context.close();
+  });
+
+  it("shows a completed creator result while authoritative completion work continues in the background", async () => {
+    /** Creator with deliberately delayed outcome reconciliation. */
+    const creator = await openHarness(browser, {
+      registered: true,
+      harness: "race-auth",
+      playerId: "instant-result-creator",
+      raceOutcomeDelayMs: 2_000,
+    });
+    await enterRegisteredGame(creator.page);
+    await creator.page.getByRole("button", {name: /^multiplayer$/i}).click();
+    await creator.page.getByRole("button", {name: /^History /}).click();
+    await creator.page.locator(".race-gameplay").waitFor({state: "visible", timeout: 10_000});
+    await creator.page.evaluate(() => {
+      Object.assign(window, {__raceOutcomeResultCount: 0});
+      window.addEventListener("riddle-quest:host-to-game", (event) => {
+        if ((event as CustomEvent).detail?.payload?.operation === "raceOutcome") {
+          Object.assign(window, {
+            __raceOutcomeResultCount: Number((window as typeof window & {__raceOutcomeResultCount?: number}).__raceOutcomeResultCount ?? 0) + 1,
+          });
+        }
+      });
+    });
+    await solveFakeRace(creator.page, {
+      expectChainedSubmitLoader: true,
+      onFinalSubmitted: async () => {
+        await creator.page.getByRole("heading", {name: /run recorded/i}).waitFor({timeout: 1_000});
+        expect(await creator.page.evaluate(() => (window as typeof window & {__raceOutcomeResultCount?: number}).__raceOutcomeResultCount)).toBe(0);
+      },
+    });
+    await creator.page.waitForFunction(
+      () => (window as typeof window & {__raceOutcomeResultCount?: number}).__raceOutcomeResultCount === 1,
+      undefined,
+      {timeout: 5_000},
+    );
+    expect(await creator.page.getByRole("heading", {name: /run recorded/i}).isVisible()).toBe(true);
+    await creator.context.close();
+  });
+
+  it("recovers a guess rejected after the ghost deadline without exposing a retry dead-end", async () => {
+    sharedRaceChallenges.clear();
+    /** Challenge long enough for the first guess to begin before, but finish after, the ghost deadline. */
+    const challengeId = `jest-invite-${"c".repeat(64)}-${"d".repeat(32)}`;
+    sharedRaceChallenges.set(challengeId, JSON.stringify({
+      preview: {
+        challengeId,
+        creator: {displayName: "Deadline Opponent"},
+        categoryId: "mixed",
+        locale: "en",
+        targetCorrect: 10,
+        adjustedTimeToBeatMs: 5_000,
+        rulesVersion: "race10_v1",
+        expiresAtMs: Date.now() + 60_000,
+        status: "active",
+      },
+      runId: "deadline-opponent-run",
+      events: [],
+    }));
+    /** Recipient whose in-flight guess crosses the authoritative opponent deadline. */
+    const recipient = await openHarness(browser, {
+      registered: true,
+      harness: "race-auth",
+      playerId: "late-guess-recipient",
+      challengeId,
+      inviteKind: "race",
+      campaign: "race_to_10_v1",
+      sharedRace: true,
+      raceGuessDelayMs: 2_500,
+      raceRejectLateGuess: true,
+    });
+    await recipient.page.getByRole("button", {name: /accept challenge/i}).waitFor({state: "visible"});
+    await recipient.page.getByRole("button", {name: /accept challenge/i}).click();
+    await recipient.page.locator(".race-gameplay .guess-board").waitFor({state: "visible", timeout: 10_000});
+    await recipient.page.locator(".race-gameplay .guess-board").click();
+    await recipient.page.keyboard.type("piano");
+    await recipient.page.locator(".race-actions .submit-action").click();
+    await recipient.page.getByRole("heading", {name: /opponent wins/i}).waitFor({timeout: 6_000});
+    expect(await recipient.page.getByRole("alert").count()).toBe(0);
+    expect(await recipient.page.getByRole("button", {name: /^retry$/i}).count()).toBe(0);
+    await recipient.context.close();
+  });
+
+  it("keeps the immediate result visible and retries failed background reconciliation", async () => {
+    /** Creator whose first background outcome request fails transiently. */
+    const creator = await openHarness(browser, {
+      registered: true,
+      harness: "race-auth",
+      playerId: "outcome-retry-creator",
+      raceOutcomeFailures: 1,
+    });
+    await enterRegisteredGame(creator.page);
+    await creator.page.getByRole("button", {name: /^multiplayer$/i}).click();
+    await creator.page.getByRole("button", {name: /^History /}).click();
+    await creator.page.locator(".race-gameplay").waitFor({state: "visible", timeout: 10_000});
+    await solveFakeRace(creator.page);
+    await creator.page.getByRole("heading", {name: /run recorded/i}).waitFor({timeout: 1_000});
+    await creator.page.getByRole("alert").waitFor({state: "visible", timeout: 5_000});
+    expect(await creator.page.getByRole("heading", {name: /run recorded/i}).isVisible()).toBe(true);
+    await creator.page.getByRole("button", {name: /^retry$/i}).click();
+    await creator.page.getByRole("alert").waitFor({state: "hidden", timeout: 5_000});
+    expect(await creator.page.getByRole("heading", {name: /run recorded/i}).isVisible()).toBe(true);
+    await creator.context.close();
   });
 
   it("confirms quitting an active race and abandons it with no result", async () => {

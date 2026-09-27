@@ -1,11 +1,13 @@
 import {describe, expect, it} from "@jest/globals";
-import type {RaceRiddlePrompt, RaceRunView} from "@qwordly/core/race";
+import {RACE_RULES, type RaceRiddlePrompt, type RaceRunView} from "@qwordly/core/race";
 import {
+  applyRaceOutcome,
   createRaceAttempt,
   findFirstEditableRaceSlot,
   formatRaceTime,
   getAdjustedRaceTime,
   getRaceLetterStates,
+  projectRaceOutcome,
 } from "../logic/racePresentation";
 
 /** Provides riddle behavior. */
@@ -18,6 +20,25 @@ const riddle = (revealedLetters: RaceRiddlePrompt["revealedLetters"] = []): Race
   guessesRemaining: 5,
   hintAvailable: true,
   revealedLetters,
+});
+
+/** Complete public run view used by result-presentation examples. */
+const run = (overrides: Partial<RaceRunView> = {}): RaceRunView => ({
+  runId: "run-1",
+  challengeId: "challenge-1",
+  role: "challenger",
+  status: "active",
+  categoryId: "mixed",
+  locale: "en",
+  rules: RACE_RULES,
+  correctCount: 8,
+  wallElapsedMs: 2_000,
+  totalPenaltyMs: 0,
+  adjustedElapsedMs: 2_000,
+  currentRiddle: riddle(),
+  events: [],
+  opponent: {displayName: "Ava", adjustedFinishMs: 3_000, events: []},
+  ...overrides,
 });
 
 describe("race presentation helpers", () => {
@@ -57,6 +78,51 @@ describe("race presentation helpers", () => {
     expect(getAdjustedRaceTime(run, 1_000, 5_000)).toBe(8_000);
     expect(getAdjustedRaceTime(run, 1_000, 20_000)).toBe(10_000);
     expect(getAdjustedRaceTime({...run, status: "completed"}, 1_000, 20_000)).toBe(4_000);
+  });
+
+  it("projects an opponent win only after the server-issued ghost finish elapses", () => {
+    /** Active run containing already-confirmed hint and skip penalties. */
+    const penalized = run({
+      totalPenaltyMs: 60_000,
+      events: [
+        {sequence: 0, type: "hint", riddlePosition: 0, wallElapsedMs: 500, penaltyAddedMs: 15_000, totalPenaltyMs: 15_000, adjustedElapsedMs: 15_500, correctCount: 0},
+        {sequence: 1, type: "skip", riddlePosition: 0, wallElapsedMs: 600, penaltyAddedMs: 45_000, totalPenaltyMs: 60_000, adjustedElapsedMs: 60_600, correctCount: 0},
+      ],
+      opponent: {displayName: "Ava", adjustedFinishMs: 70_000, events: []},
+    });
+    expect(projectRaceOutcome(penalized, 70_000)).toBeNull();
+    expect(projectRaceOutcome(penalized, 70_001)).toMatchObject({
+      result: "ghost_win",
+      correctCount: 8,
+      wallFinishMs: 10_000,
+      hintPenaltyMs: 15_000,
+      skipPenaltyMs: 45_000,
+      totalPenaltyMs: 60_000,
+      adjustedFinishMs: 70_000,
+      opponentAdjustedFinishMs: 70_000,
+      rematchEligible: true,
+    });
+  });
+
+  it("projects every server-determined terminal result and applies confirmation to the run", () => {
+    expect(projectRaceOutcome(run({role: "creator", status: "completed", correctCount: 10, currentRiddle: null, adjustedElapsedMs: 42_000, wallElapsedMs: 42_000, opponent: undefined}), 42_000)).toMatchObject({
+      result: "recorded",
+      publishable: true,
+    });
+    expect(projectRaceOutcome(run({status: "completed", correctCount: 10, currentRiddle: null, adjustedElapsedMs: 2_500}), 2_500)).toMatchObject({result: "player_win"});
+    expect(projectRaceOutcome(run({status: "completed", correctCount: 10, currentRiddle: null, adjustedElapsedMs: 3_000}), 3_000)).toMatchObject({result: "tie"});
+    /** Provides timeout behavior. */
+    const timeout = projectRaceOutcome(run({opponent: undefined}), RACE_RULES.maxAdjustedTimeMs);
+    expect(timeout).toMatchObject({
+      result: "timed_out",
+      adjustedFinishMs: RACE_RULES.maxAdjustedTimeMs,
+      rematchEligible: false,
+    });
+    expect(applyRaceOutcome(run(), timeout!)).toMatchObject({
+      status: "timed_out",
+      currentRiddle: null,
+      adjustedElapsedMs: RACE_RULES.maxAdjustedTimeMs,
+    });
   });
 
   it("retains green keyboard feedback and ignores empty scoring cells", () => {

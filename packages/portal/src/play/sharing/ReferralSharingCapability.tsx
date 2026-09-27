@@ -36,8 +36,6 @@ export type ReferralSharingCapability = {
   shareResult: (input: ReferralResultShareInput) => void;
   /** Shares an open invitation from the player profile. */
   shareInvite: () => void;
-  /** Shares a link to a future verified race and distinguishes dismissal from failure. */
-  shareMultiplayerInvite?: (challengeId: string) => Promise<ReferralShareOutcome>;
   /** Shares a published multiplayer challenge and distinguishes dismissal from failure. */
   shareRace: (input: ReferralRaceShareInput) => Promise<ReferralShareOutcome>;
 };

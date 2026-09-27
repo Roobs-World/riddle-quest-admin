@@ -76,6 +76,8 @@ export const solveFakeRace = async (
   options: {
     /** Stores expect chained submit loader. */
     expectChainedSubmitLoader?: boolean;
+    /** Runs immediately after the final answer is sent, before outcome confirmation. */
+    onFinalSubmitted?: () => Promise<void>;
   } = {},
 ) => {
   for (const answer of fakeRaceAnswers) {
@@ -117,6 +119,7 @@ export const solveFakeRace = async (
       throw new Error(`Race solver could not submit ${answer}: ${JSON.stringify(state)}`);
     }
     await submit.click({timeout: 5_000});
+    if (answer === "book") await options.onFinalSubmitted?.();
     /** Submits loader. */
     const submitLoader = page.locator(".race-operation-loader");
     /** Loads er visible. */

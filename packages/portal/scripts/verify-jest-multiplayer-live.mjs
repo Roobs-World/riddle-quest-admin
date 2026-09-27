@@ -1,4 +1,5 @@
-import {existsSync, lstatSync, mkdirSync} from "node:fs";
+import {existsSync, lstatSync, mkdirSync, writeFileSync} from "node:fs";
+import {createHash} from "node:crypto";
 import path from "node:path";
 import {chromium} from "@playwright/test";
 
@@ -7,6 +8,7 @@ const gameUrl = process.env.JEST_DEPLOYED_GAME_URL || "https://jest.com/g/riddle
 const playerOneState = process.env.JEST_PLAYER_ONE_STORAGE_STATE || "/tmp/riddle-quest-jest-sandbox-state.json";
 const playerTwoState = process.env.JEST_PLAYER_TWO_STORAGE_STATE || "/tmp/riddle-quest-jest-sandbox-state-player-2.json";
 const evidenceDirectory = process.env.JEST_MULTIPLAYER_EVIDENCE_DIR;
+const expectedBuildVersion = process.env.JEST_EXPECTED_BUILD_VERSION;
 
 for (const statePath of [playerOneState, playerTwoState]) {
   if (!existsSync(statePath)) throw new Error(`Missing Jest sandbox browser state: ${statePath}`);
@@ -21,6 +23,7 @@ for (const statePath of [playerOneState, playerTwoState]) {
 if (!process.env.FIREBASE_APPCHECK_DEBUG_TOKEN) {
   throw new Error("FIREBASE_APPCHECK_DEBUG_TOKEN is required for automated live Jest testing.");
 }
+if (!expectedBuildVersion) throw new Error("JEST_EXPECTED_BUILD_VERSION is required for exact-build verification.");
 if (evidenceDirectory) mkdirSync(evidenceDirectory, {recursive: true});
 
 const browser = await chromium.launch({headless: process.env.JEST_DEPLOYED_HEADED !== "1"});
@@ -32,6 +35,14 @@ const openPlayer = async (statePath, url = gameUrl) => {
   }, process.env.FIREBASE_APPCHECK_DEBUG_TOKEN);
   const page = await context.newPage();
   const referralResponses = [];
+  const consoleErrors = [];
+  const pageErrors = [];
+  const failedRequests = [];
+  page.on("console", (message) => {
+    if (message.type() === "error") consoleErrors.push(message.text());
+  });
+  page.on("pageerror", (error) => pageErrors.push(error.message));
+  page.on("requestfailed", (request) => failedRequests.push({url: request.url(), error: request.failure()?.errorText ?? "unknown"}));
   page.on("response", async (response) => {
     if (!new URL(response.url()).pathname.includes("upsertReferral")) return;
     referralResponses.push({status: response.status(), body: await response.json().catch(() => null)});
@@ -62,7 +73,13 @@ const openPlayer = async (statePath, url = gameUrl) => {
     });
     if (game && !game.isDetached()) {
       await page.waitForTimeout(750);
-      if (!game.isDetached() && page.frames().includes(game)) return {context, page, game, referralResponses};
+      if (!game.isDetached() && page.frames().includes(game)) {
+        const build = new URL(game.url()).pathname.split("/").at(-2);
+        if (build !== expectedBuildVersion) {
+          throw new Error(`Expected deployed build ${expectedBuildVersion}, received ${build ?? "unknown"}.`);
+        }
+        return {context, page, game, referralResponses, consoleErrors, pageErrors, failedRequests};
+      }
     }
     await page.waitForTimeout(100);
   }
@@ -113,7 +130,30 @@ const installRaceObserver = async ({game}) => game.evaluate(() => {
   });
 });
 
-const finishRace = async ({page, game}, prefix) => {
+const readIdentity = async ({game}) => {
+  await game.waitForFunction(() => {
+    try {
+      return Boolean(globalThis.JestSDK?.getPlayer()?.playerId);
+    } catch {
+      return false;
+    }
+  }, undefined, {timeout: 30_000});
+  return game.evaluate(async () => ({
+    player: globalThis.JestSDK.getPlayer(),
+    profile: await globalThis.JestSDK.social.getProfile({avatarSize: 64}),
+  }));
+};
+
+const latestRun = async ({game}, predicate) => game.evaluate((serializedPredicate) => {
+  const matches = [...(globalThis.__RIDDLE_QUEST_LIVE_RACE_MESSAGES__ ?? [])].reverse().map((message) => message?.payload?.data?.run).filter(Boolean);
+  if (serializedPredicate === "completed") return structuredClone(matches.find((run) => run.status === "completed"));
+  if (serializedPredicate === "opponent") return structuredClone(matches.find((run) => run.opponent));
+  return undefined;
+}, predicate);
+
+const countCorrectEvents = (events) => events.filter((event) => event?.type === "correct").length;
+
+const finishRace = async ({page, game}, prefix, {betweenAnswersMs = 250} = {}) => {
   await game.locator(".race-gameplay .guess-board").waitFor({state: "visible", timeout: 45_000});
   await capture({page}, `${prefix}-race-started.png`);
   for (let step = 0; step < 10; step += 1) {
@@ -147,7 +187,7 @@ const finishRace = async ({page, game}, prefix) => {
       throw new Error(`Live race answer ${step + 1} did not fill the board: ${JSON.stringify({answerLength: current.answer.length, state})}`, {cause: error});
     }
     await submit.click();
-    await page.waitForTimeout(250);
+    await page.waitForTimeout(betweenAnswersMs);
     try {
       await game.waitForFunction((previousPosition) => {
         if (document.querySelector(".race-result")) return true;
@@ -157,12 +197,29 @@ const finishRace = async ({page, game}, prefix) => {
     } catch (error) {
       const diagnostic = await game.evaluate(() => ({
         resultVisible: Boolean(document.querySelector(".race-result")),
-        messages: [...(globalThis.__RIDDLE_QUEST_LIVE_RACE_MESSAGES__ ?? [])].slice(-4).map((message) => ({operation: message?.payload?.operation, ok: message?.payload?.ok, status: message?.payload?.data?.run?.status, position: message?.payload?.data?.run?.currentRiddle?.position})),
+        messages: [...(globalThis.__RIDDLE_QUEST_LIVE_RACE_MESSAGES__ ?? [])].slice(-4).map((message) => ({
+          operation: message?.payload?.operation,
+          ok: message?.payload?.ok,
+          error: message?.payload?.error,
+          status: message?.payload?.data?.run?.status,
+          position: message?.payload?.data?.run?.currentRiddle?.position,
+        })),
       }));
+      await capture({page}, `${prefix}-race-error-answer-${step + 1}.png`);
       throw new Error(`Live race answer ${step + 1} did not advance: ${JSON.stringify(diagnostic)}`, {cause: error});
     }
   }
   await game.locator(".race-result").waitFor({state: "visible", timeout: 45_000});
+  const rewardModal = game.locator(".game-modal-backdrop");
+  if (await rewardModal.isVisible().catch(() => false)) {
+    await capture({page}, `${prefix}-achievement-unlocked.png`);
+    for (let step = 0; step < 8 && await rewardModal.isVisible().catch(() => false); step += 1) {
+      const advance = rewardModal.locator(".reward-continue");
+      if (!await advance.isVisible().catch(() => false)) break;
+      await advance.click();
+      await page.waitForTimeout(250);
+    }
+  }
   await capture({page}, `${prefix}-race-finished.png`);
 };
 
@@ -170,6 +227,8 @@ const creator = await openPlayer(playerOneState);
 let recipient;
 try {
   await enterGame(creator);
+  const creatorIdentity = await readIdentity(creator);
+  if (!creatorIdentity.player?.registered) throw new Error("Player 1 is not a registered Jest player.");
   await installRaceObserver(creator);
   await creator.game.evaluate(() => {
     const referrals = globalThis.JestSDK.referrals;
@@ -183,15 +242,29 @@ try {
   });
   await creator.game.getByRole("button", {name: /^multiplayer$/i}).click();
   await creator.game.getByRole("button", {name: /^History /}).waitFor({timeout: 15_000});
+  await creator.page.waitForTimeout(500);
   await capture(creator, "live-01-player-1-lobby.png");
-  await creator.game.getByRole("button", {name: /challenge another player/i}).click({noWaitAfter: true});
-  await creator.game.waitForFunction(() => Boolean(globalThis.__RIDDLE_QUEST_LIVE_INVITE__?.input?.entryPayload?.challengeId), undefined, {timeout: 30_000});
+  if (await creator.game.getByRole("button", {name: /challenge a player/i}).count()) {
+    throw new Error("The multiplayer lobby exposed a challenge before Player 1 completed a score.");
+  }
+  await creator.game.getByRole("button", {name: /^History /}).click();
+  await creator.game.locator(".race-gameplay .guess-board").waitFor({state: "visible", timeout: 45_000});
+
+  await finishRace(creator, "live-02-player-1", {betweenAnswersMs: 2_500});
+  const creatorRun = await latestRun(creator, "completed");
+  if (!creatorRun || creatorRun.correctCount !== 10 || countCorrectEvents(creatorRun.events ?? []) !== 10) {
+    throw new Error("Player 1's authoritative completed run did not contain a 10/10 score history.");
+  }
+  if (creator.referralResponses.length !== 0) throw new Error("Jest sharing occurred before Player 1 completed the run.");
+  await capture(creator, "live-03-player-1-completed.png");
+  await creator.game.getByRole("button", {name: /send challenge/i}).click({noWaitAfter: true});
+  await creator.game.waitForFunction(() => Boolean(globalThis.__RIDDLE_QUEST_LIVE_INVITE__?.input?.entryPayload?.challengeId), undefined, {timeout: 45_000});
   const invite = await creator.game.evaluate(() => structuredClone(globalThis.__RIDDLE_QUEST_LIVE_INVITE__.input));
   const challengeId = invite.entryPayload.challengeId;
-  if (!/^jest-invite-[a-f0-9]{64}-[a-f0-9]{32}$/.test(challengeId)) {
+  if (typeof challengeId !== "string" || challengeId.length < 1 || challengeId.length > 160) {
     throw new Error("The live challenge did not produce a valid opaque challenge ID.");
   }
-  await capture(creator, "live-02-player-1-share-dialog.png");
+  await capture(creator, "live-04-player-1-share-dialog.png");
   const referralDeadline = Date.now() + 15_000;
   while (creator.referralResponses.length === 0 && Date.now() < referralDeadline) await creator.page.waitForTimeout(100);
   const referralUrl = creator.referralResponses[0]?.body?.[0]?.result?.data?.link;
@@ -204,19 +277,27 @@ try {
     const close = dialog.getByRole("button", {name: /close|cancel|done/i}).last();
     if (await close.isVisible().catch(() => false)) await close.click();
   }
-  await creator.game.locator(".race-gameplay .guess-board").waitFor({state: "visible", timeout: 45_000});
-
-  await finishRace(creator, "live-04-player-1");
-  await creator.game.waitForFunction((publishedChallengeId) =>
-    !Object.values(sessionStorage).includes(publishedChallengeId), challengeId, {timeout: 45_000});
+  const publishedPreview = await creator.game.evaluate((publishedChallengeId) => structuredClone(
+    [...(globalThis.__RIDDLE_QUEST_LIVE_RACE_MESSAGES__ ?? [])].reverse().map((message) => message?.payload?.data?.preview)
+      .find((preview) => preview?.challengeId === publishedChallengeId),
+  ), challengeId);
+  if (!publishedPreview) throw new Error("Player 1's published challenge preview was not observed.");
+  if (publishedPreview.adjustedTimeToBeatMs !== creatorRun.adjustedElapsedMs) {
+    throw new Error("Player 1's published score does not match the completed run time.");
+  }
   recipient = await openPlayer(playerTwoState, referralUrl);
+  const recipientIdentity = await readIdentity(recipient);
+  if (!recipientIdentity.player?.registered) throw new Error("Player 2 is not a registered Jest player.");
+  if (recipientIdentity.player.playerId === creatorIdentity.player.playerId) {
+    throw new Error("Player 1 and Player 2 resolved to the same Jest player.");
+  }
+  await installRaceObserver(recipient);
   try {
     await recipient.game.getByRole("button", {name: /accept challenge/i}).waitFor({state: "visible", timeout: 45_000});
   } catch (error) {
     throw new Error(`Player 2 did not receive the live challenge: ${JSON.stringify({pageUrl: recipient.page.url(), gameUrl: recipient.game.url(), body: (await recipient.game.locator("body").innerText()).slice(0, 2_000)})}`, {cause: error});
   }
   await capture(recipient, "live-05-player-2-invite-ready.png");
-  await installRaceObserver(recipient);
   await recipient.game.getByRole("button", {name: /accept challenge/i}).click();
   await recipient.page.waitForTimeout(1_000);
   const acceptedGame = recipient.page.frames().find((frame) => {
@@ -231,11 +312,48 @@ try {
     recipient.game = acceptedGame;
     await installRaceObserver(recipient);
   }
-  await finishRace(recipient, "live-06-player-2");
+  await recipient.game.locator(".race-gameplay .guess-board").waitFor({state: "visible", timeout: 45_000});
+  const recipientRun = await latestRun(recipient, "opponent");
+  if (!recipientRun?.opponent) throw new Error("Player 2's accepted run did not contain an opponent score.");
+  const opponent = recipientRun.opponent;
+  if (recipientRun.challengeId !== challengeId) throw new Error("Player 2 started a different challenge than Player 1 published.");
+  if (opponent.displayName !== publishedPreview.creator.displayName) throw new Error("Player 2's opponent name does not match Player 1's published identity.");
+  if (opponent.adjustedFinishMs !== creatorRun.adjustedElapsedMs || opponent.adjustedFinishMs !== publishedPreview.adjustedTimeToBeatMs) {
+    throw new Error("Player 2's opponent finish time does not match Player 1's authoritative score.");
+  }
+  if (JSON.stringify(opponent.events) !== JSON.stringify(creatorRun.events) || countCorrectEvents(opponent.events ?? []) !== 10) {
+    throw new Error("Player 2's opponent event history does not match Player 1's authoritative 10/10 run.");
+  }
+  const opponentRailName = (await recipient.game.locator(".race-progress > div").nth(1).locator("span").innerText()).trim();
+  if (opponentRailName !== publishedPreview.creator.displayName) throw new Error("Player 2's visible score rail names the wrong opponent.");
+  await finishRace(recipient, "live-06-player-2", {betweenAnswersMs: 50});
 
   const outcome = (await recipient.game.locator(".race-result h2").innerText()).trim();
   if (!/you win|opponent wins|tie/i.test(outcome)) throw new Error(`Unexpected live race outcome: ${outcome}`);
-  console.log(JSON.stringify({build: new URL(creator.game.url()).pathname.split("/").at(-2), challengeIdFormat: "valid", outcome, completed: true}, null, 2));
+  const summary = {
+    build: new URL(creator.game.url()).pathname.split("/").at(-2),
+    versionId: new URL(gameUrl).searchParams.get("versionId"),
+    players: [creatorIdentity, recipientIdentity].map((identity) => ({
+      registered: identity.player.registered,
+      playerHash: createHash("sha256").update(identity.player.playerId).digest("hex").slice(0, 12),
+      displayName: identity.profile?.displayName ?? identity.profile?.username ?? null,
+    })),
+    challengeIdFormat: "valid",
+    creatorScore: creatorRun.correctCount,
+    creatorAdjustedFinishMs: creatorRun.adjustedElapsedMs,
+    opponentDisplayName: opponent.displayName,
+    opponentScoreEvents: countCorrectEvents(opponent.events),
+    opponentAdjustedFinishMs: opponent.adjustedFinishMs,
+    scoreMappingVerified: true,
+    outcome,
+    diagnostics: {
+      player1: {consoleErrors: creator.consoleErrors, pageErrors: creator.pageErrors, failedRequests: creator.failedRequests},
+      player2: {consoleErrors: recipient.consoleErrors, pageErrors: recipient.pageErrors, failedRequests: recipient.failedRequests},
+    },
+    completed: true,
+  };
+  if (evidenceDirectory) writeFileSync(path.join(evidenceDirectory, "RESULT.json"), `${JSON.stringify(summary, null, 2)}\n`, {mode: 0o600});
+  console.log(JSON.stringify(summary, null, 2));
 } finally {
   await recipient?.context.close().catch(() => undefined);
   await creator.context.close().catch(() => undefined);

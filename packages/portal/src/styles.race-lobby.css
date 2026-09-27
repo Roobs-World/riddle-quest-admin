@@ -145,21 +145,6 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
 }
-.race-lobby-challenge {
-  padding-bottom: 14px;
-  margin-bottom: 18px;
-  border-bottom: 1px solid #c9d9d3;
-}
-.race-lobby-challenge button {
-  width: 100%;
-  min-height: 48px;
-}
-.race-lobby-challenge button + button {
-  margin-top: 10px;
-}
-.race-lobby-challenge p {
-  margin: 10px 0 0;
-}
 .race-category-grid button {
   min-height: 126px;
   padding: 18px;
@@ -180,6 +165,30 @@
 .race-panel > .race-secondary {
   width: 100%;
   margin-top: 14px;
+}
+.race-result-score {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0 0 16px;
+}
+.race-result-score > span {
+  display: grid;
+  gap: 2px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #edf7f3;
+}
+.race-result-score small {
+  overflow: hidden;
+  color: #49645b;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.race-result-score strong {
+  font-size: 1.3rem;
+  font-variant-numeric: tabular-nums;
 }
 .race-inbox {
   max-width: 700px;

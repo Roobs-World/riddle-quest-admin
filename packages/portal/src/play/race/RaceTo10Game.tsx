@@ -8,7 +8,6 @@ import {
   ListRaceCategoriesResponseSchema,
   ListRaceInboxResponseSchema,
   PublishRaceChallengeResponseSchema,
-  ReserveRaceInviteResponseSchema,
   RaceChallengePreviewSchema,
   RaceOutcomeSchema,
   RaceRunResponseSchema,
@@ -32,18 +31,13 @@ import {RACE_COUNTDOWN_START} from "./logic/raceCountdown";
 import {deleteRaceLetter, insertRaceLetter, insertRaceText, isRaceSlotEditable} from "./logic/raceInput";
 import type {RaceOperation} from "./logic/raceOperations";
 import {getGhostCorrectCount} from "./logic/racePlayback";
-import {createRaceAttempt, findFirstEditableRaceSlot, getAdjustedRaceTime, getRaceLetterStates} from "./logic/racePresentation";
+import {applyRaceOutcome, createRaceAttempt, findFirstEditableRaceSlot, getAdjustedRaceTime, getRaceLetterStates, projectRaceOutcome} from "./logic/racePresentation";
 import {useRaceDialogFocus, useRaceGameplayFit, useRaceGameplayKeyboard, useRaceOperationLifecycle} from "./hooks";
 import {RaceTo10View, type RaceStage} from "./RaceTo10View";
 import {readActiveRace, clearActiveRace} from "./logic/activeRaceStorage";
 import {EMPTY_RACE_CATEGORIES, type RaceTo10GameProps} from "./RaceTo10Game.types";
 import {useActiveRacePersistence, useRaceClockEffects, useRaceEntryTracking, useRaceFeedbackTimers} from "./hooks/useRaceRuntimeEffects";
 import {useReferralSharing} from "../sharing/ReferralSharingCapability";
-
-/** Session key for a creator's invitation awaiting race publication. */
-const pendingJestInviteKey = (ownerId?: string) => `riddle-quest:pending-jest-race-invite:${ownerId ?? "guest"}`;
-/** Session key for the creator run associated with an invitation. */
-const pendingJestInviteRunKey = (ownerId?: string) => `${pendingJestInviteKey(ownerId)}:run`;
 
 /** Coordinates the complete server-authoritative Race to 10 multiplayer experience. */
 export function RaceTo10Game({
@@ -133,18 +127,6 @@ export function RaceTo10Game({
   const safetyTargetRef = useRef<string | null>(null);
   /** Whether a successful publication should immediately open Jest's recipient picker. */
   const shareAfterPublishRef = useRef(false);
-  /** Pre-shared Jest link resolved when this creator run is published. */
-  const reservedChallengeIdRef = useRef<string | null>(
-    typeof window === "undefined" ? null : window.sessionStorage.getItem(pendingJestInviteKey(ownerId)),
-  );
-  /** Creator run associated with the reserved invitation. */
-  const reservedRunIdRef = useRef<string | null>(
-    typeof window === "undefined" ? null : window.sessionStorage.getItem(pendingJestInviteRunKey(ownerId)),
-  );
-  /** Prevents duplicate automatic publication requests. */
-  const publishRequestedRef = useRef(false);
-  /** Whether the Jest recipient picker is open. */
-  const [inviting, setInviting] = useState(false);
   /** Records ed tournament runs ref. */
   const recordedTournamentRunsRef = useRef(new Set<string>());
   /** Records ed context runs ref. */
@@ -236,17 +218,13 @@ export function RaceTo10Game({
   /** Stores a new authoritative run view and requests its outcome when complete. */
   const updateRun = useCallback(
     (next: RaceRunView) => {
-      if (reservedChallengeIdRef.current && next.role === "creator") {
-        reservedRunIdRef.current = next.runId;
-        window.sessionStorage.setItem(pendingJestInviteRunKey(ownerId), next.runId);
-      }
       setRun(next);
       setReceivedAtMs(Date.now());
       if (next.status !== "active") {
         send("raceOutcome", "game:getRaceOutcome", {runId: next.runId});
       }
     },
-    [ownerId, send],
+    [send],
   );
 
   useEffect(() => {
@@ -257,7 +235,7 @@ export function RaceTo10Game({
       else {
         /** Provides active run id behavior. */
         const activeRunId = readActiveRace(ownerId);
-        if (activeRunId || reservedRunIdRef.current) send("raceResume", "game:resumeRace", {runId: activeRunId ?? reservedRunIdRef.current, includeEvaluation: true});
+        if (activeRunId) send("raceResume", "game:resumeRace", {runId: activeRunId, includeEvaluation: true});
         else if (initialCategories.length === 0) send("raceCategories", "game:listRaceCategories", {locale});
       }
     }, 0);
@@ -286,10 +264,12 @@ export function RaceTo10Game({
         }
         if (operation === "racePublish") {
           shareAfterPublishRef.current = false;
-          publishRequestedRef.current = false;
         }
-        if (operation === "raceInviteReserve") setInviting(false);
         if (operation === "raceChallenge" && activeChallengeId?.startsWith("jest-invite-") && message.payload.error?.includes("not found")) {
+          setError(null);
+        } else if (operation === "raceGuess" && message.payload.error?.includes("no longer active")) {
+          // The local ghost clock presents the terminal result as soon as this
+          // request settles, then reconciles the authoritative outcome.
           setError(null);
         } else {
           setError(message.payload.error === "RaceTo10.ERROR_LOCALE_MISMATCH" ? tr("RaceTo10.ERROR_LOCALE_MISMATCH") : (message.payload.error ?? tr("RaceTo10.ERROR_GENERIC")));
@@ -373,10 +353,6 @@ export function RaceTo10Game({
           const abandoned = AbandonRaceRunResponseSchema.parse(message.payload.data);
           if (abandoned.run.status !== "abandoned" || abandoned.result !== null) throw new Error("Invalid abandon response");
           clearActiveRace(ownerId);
-          reservedChallengeIdRef.current = null;
-          reservedRunIdRef.current = null;
-          window.sessionStorage.removeItem(pendingJestInviteKey(ownerId));
-          window.sessionStorage.removeItem(pendingJestInviteRunKey(ownerId));
           setRun(abandoned.run);
           setQuitConfirmationOpen(false);
           onClose();
@@ -421,17 +397,12 @@ export function RaceTo10Game({
           setPenaltyFlash(tr("RaceTo10.SKIP_PENALTY"));
           analytics("race_skip_used", {penaltyMs: 45_000});
         } else if (operation === "raceOutcome") {
-          setOutcome(RaceOutcomeSchema.parse(message.payload.data));
-          setStage("result");
-          /** Provides result behavior. */
+          /** Confirmed outcome replacing any immediate deterministic projection. */
           const result = RaceOutcomeSchema.parse(message.payload.data);
-          if (result.publishable && run?.runId && reservedChallengeIdRef.current && !publishRequestedRef.current) {
-            publishRequestedRef.current = true;
-            send("racePublish", "game:publishRace", {
-              runId: run.runId,
-              reservedChallengeId: reservedChallengeIdRef.current,
-            });
-          }
+          setOutcome(result);
+          setRun((current) => current && current.runId === result.runId ? applyRaceOutcome(current, result) : current);
+          setReceivedAtMs(Date.now());
+          setStage("result");
           analytics("race_completed", {
             result: result.result,
             correctCount: result.correctCount,
@@ -464,50 +435,14 @@ export function RaceTo10Game({
           /** Provides publication behavior. */
           const publication = PublishRaceChallengeResponseSchema.parse(message.payload.data);
           setPublished(publication);
-          publishRequestedRef.current = false;
-          if (reservedChallengeIdRef.current === publication.challengeId) {
-            reservedChallengeIdRef.current = null;
-            reservedRunIdRef.current = null;
-            window.sessionStorage.removeItem(pendingJestInviteKey(ownerId));
-            window.sessionStorage.removeItem(pendingJestInviteRunKey(ownerId));
-          }
           analytics("race_challenge_published", {categoryId: publication.preview.categoryId});
           window.dispatchEvent(new CustomEvent("riddle-quest:race-challenge-published", {detail: publication}));
           if (shareAfterPublishRef.current) {
             shareAfterPublishRef.current = false;
             void sharePublishedChallenge(publication);
           }
-        } else if (operation === "raceInviteReserve") {
-          /** Server-issued lobby reservation safe to include in the Jest entry payload. */
-          const reservation = ReserveRaceInviteResponseSchema.parse(message.payload.data);
-          void (async () => {
-            try {
-              if (!referralSharing?.shareMultiplayerInvite) throw new Error("Jest referral sharing is unavailable.");
-              /** Result of opening and completing or dismissing the Jest referral dialog. */
-              const shareOutcome = await referralSharing.shareMultiplayerInvite(reservation.challengeId);
-              if (shareOutcome === "error") {
-                setError(tr("RaceTo10.ERROR_GENERIC"));
-                return;
-              }
-              if (shareOutcome === "cancelled") return;
-              reservedChallengeIdRef.current = reservation.challengeId;
-              reservedRunIdRef.current = null;
-              window.sessionStorage.setItem(pendingJestInviteKey(ownerId), reservation.challengeId);
-              window.sessionStorage.removeItem(pendingJestInviteRunKey(ownerId));
-              analytics("race_category_selected", {categoryId: "mixed"});
-              inboxLoadedAtRef.current = 0;
-              setCountdown(RACE_COUNTDOWN_START);
-              setStage("countdown");
-              send("raceStart", "game:startRace", {locale, categoryId: "mixed", includeEvaluation: true});
-            } catch {
-              setError(tr("RaceTo10.ERROR_GENERIC"));
-            } finally {
-              setInviting(false);
-            }
-          })();
         }
       } catch {
-        if (operation === "raceInviteReserve") setInviting(false);
         if (operation === "raceGuess" && previewedGuessRef.current) {
           setRaceGuesses((guesses) => guesses.slice(0, -1));
           setFeedback(null);
@@ -544,6 +479,19 @@ export function RaceTo10Game({
 
   /** Authoritative adjusted elapsed time advanced locally since the last response. */
   const adjustedNow = getAdjustedRaceTime(run, receivedAtMs);
+
+  useEffect(() => {
+    if (stage !== "racing" || !run || outcome) return;
+    // A mutation already in flight may still establish a last-moment win.
+    if (run.status === "active" && pending) return;
+    /** Immediate result determined entirely by the latest authoritative run and shared clock. */
+    const projected = projectRaceOutcome(run, adjustedNow);
+    if (!projected) return;
+    setError(null);
+    setOutcome(projected);
+    setStage("result");
+    if (run.status === "active") send("raceOutcome", "game:getRaceOutcome", {runId: run.runId});
+  }, [adjustedNow, outcome, pending, run, send, stage]);
 
   useActiveRacePersistence(run, ownerId);
   /** Opponent score replayed against the adjusted race clock. */
@@ -653,16 +601,7 @@ export function RaceTo10Game({
   const publish = () => {
     if (!referralSharing || !run || pending) return;
     shareAfterPublishRef.current = true;
-    send("racePublish", "game:publishRace", {
-      runId: run.runId,
-      ...(reservedChallengeIdRef.current ? {reservedChallengeId: reservedChallengeIdRef.current} : {}),
-    });
-  };
-  /** Reserves a backend lobby before opening Jest's recipient dialog. */
-  const inviteAndBegin = () => {
-    if (!referralSharing?.shareMultiplayerInvite || inviting || pending) return;
-    setInviting(true);
-    send("raceInviteReserve", "game:reserveRaceInvite", {locale});
+    send("racePublish", "game:publishRace", {runId: run.runId});
   };
   /** Opens the host share flow for a published race challenge. */
   const share = () => {
@@ -711,7 +650,8 @@ export function RaceTo10Game({
   };
   /** Provides retry behavior. */
   const retry = () => {
-    if (stage === "tournaments") showTournaments();
+    if (stage === "result" && run) send("raceOutcome", "game:getRaceOutcome", {runId: run.runId});
+    else if (stage === "tournaments") showTournaments();
     else if (stage === "inbox") send("raceInbox", "game:listRaceInbox", {limit: 20});
     else if (activeChallengeId) send("raceChallenge", "game:getRaceChallenge", {challengeId: activeChallengeId, locale});
     else send("raceCategories", "game:listRaceCategories", {locale});
@@ -799,8 +739,6 @@ export function RaceTo10Game({
       onShowTournaments={tournaments ? showTournaments : undefined}
       onChooseCategory={() => setStage("categories")}
       onSelectCategory={begin}
-      onInviteChallenge={referralSharing?.shareMultiplayerInvite ? inviteAndBegin : undefined}
-      inviting={inviting}
       onInboxRematch={startInboxRematch}
       onBlockRival={blockInboxRival}
       onReportRival={reportInboxRival}

@@ -284,25 +284,17 @@ describe("race presentation components", () => {
     expect(onRematch).toHaveBeenCalledWith("science");
   });
 
-  it("opens the Jest recipient dialog from the challenge action", async () => {
+  it("keeps Jest sharing out of the lobby until a run has completed", async () => {
     /** Categories required before the challenge action can be used. */
     const categories = (await createFakeRaceServices().listRaceCategories("en")).categories;
-    /** Provider invite action that opens Jest's share dialog. */
-    const onInviteChallenge = jest.fn();
     /** Challenge-enabled lobby presentation. */
     const panel = RaceCategoriesPanel({
       categories,
       loading: false,
       onSelect: noop,
       onShowInbox: noop,
-      onInviteChallenge,
-      canChallenge: true,
     });
-    /** The single challenge control delegates recipient selection to Jest. */
-    const challengeButton = findElement(panel, ({className}) => className === "race-primary");
-    expect(renderToString(panel)).toContain("Challenge a player");
-    challengeButton?.props.onClick?.();
-    expect(onInviteChallenge).toHaveBeenCalledTimes(1);
+    expect(renderToString(panel)).not.toContain("Challenge a player");
   });
 
   it("renders countdown, scoreboard, result, and quit variants", async () => {
@@ -397,8 +389,8 @@ describe("race presentation components", () => {
       newlyUnlockedAchievementIds: [],
       achievementCoinsAwarded: 0,
     };
-    expect(
-      renderToString(
+    /** Result markup retains both final scores after gameplay disappears. */
+    const recordedResultHtml = renderToString(
         <RaceResultPanel
           outcome={outcome}
           run={{...run, status: "completed"}}
@@ -410,8 +402,30 @@ describe("race presentation components", () => {
           onChooseCategory={noop}
           onClose={noop}
         />,
-      ),
-    ).not.toContain("Send challenge");
+    );
+    expect(recordedResultHtml).not.toContain("Send challenge");
+    /** Competitive result retains both final scores after gameplay disappears. */
+    const competitiveResultHtml = renderToString(
+      <RaceResultPanel
+        outcome={{...outcome, result: "player_win", publishable: false}}
+        run={{
+          ...run,
+          role: "challenger",
+          status: "completed",
+          correctCount: 10,
+          opponent: {displayName: "Ava", adjustedFinishMs: 55_000, events: []},
+        }}
+        publication={null}
+        publishing={false}
+        onPublish={noop}
+        onShare={noop}
+        onRematch={noop}
+        onChooseCategory={noop}
+        onClose={noop}
+      />,
+    );
+    expect(competitiveResultHtml).toMatch(/You<\/small><strong>10.*\/.*10/);
+    expect(competitiveResultHtml).toMatch(/Ava<\/small><strong>10.*\/.*10/);
     expect(
       renderToString(
         <RaceResultPanel
