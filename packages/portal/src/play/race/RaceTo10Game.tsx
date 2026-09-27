@@ -305,6 +305,7 @@ export function RaceTo10Game({
           setPenaltyFlash(null);
         }
         if (operation === "raceHint" && hintRollbackRef.current) {
+          /** Optimistic run snapshot restored when a hint request fails. */
           const rollback = hintRollbackRef.current;
           hintRollbackRef.current = null;
           setRun(rollback);
@@ -526,6 +527,7 @@ export function RaceTo10Game({
           setPenaltyFlash(null);
         }
         if (operation === "raceHint" && hintRollbackRef.current) {
+          /** Optimistic run snapshot restored when a hint response is invalid. */
           const rollback = hintRollbackRef.current;
           hintRollbackRef.current = null;
           setRun(rollback);
@@ -555,9 +557,11 @@ export function RaceTo10Game({
     if (stage !== "countdown") return;
     if (run) {
       setLoadingProgress(100);
+      /** Keeps the completed loading state visible briefly before countdown. */
       const completeTimer = window.setTimeout(() => setCountdownReady(true), RACE_LOADING_COMPLETE_DISPLAY_MS);
       return () => window.clearTimeout(completeTimer);
     }
+    /** Advances simulated progress while the authoritative race payload loads. */
     const progressTimer = window.setInterval(
       () => setLoadingProgress((current) => advanceRaceLoadingProgress(current, false)),
       RACE_LOADING_TICK_MS,
