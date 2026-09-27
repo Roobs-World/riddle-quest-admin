@@ -580,7 +580,10 @@ describeBrowser("standalone Jest browser game", () => {
       await page.waitForFunction(() => "__delayedRaceSafetyResponse" in window);
       await page.evaluate(() => {
         /** Replays the correlated safety response after the busy state has been verified. */
-        const delayedWindow = window as typeof window & {__delayedRaceSafetyResponse?: unknown};
+        const delayedWindow = window as typeof window & {
+          /** Response held by the test harness until the initiating control is inspected. */
+          __delayedRaceSafetyResponse?: unknown;
+        };
         window.dispatchEvent(new CustomEvent("riddle-quest:host-to-game", {detail: delayedWindow.__delayedRaceSafetyResponse}));
         delete delayedWindow.__delayedRaceSafetyResponse;
       });
@@ -595,13 +598,17 @@ describeBrowser("standalone Jest browser game", () => {
         };
         window.addEventListener("riddle-quest:host-to-game", holdSafetyResponse, true);
       });
+      /** Block control inspected while its host response remains in flight. */
       const blockOpponent = page.getByRole("button", {name: /^block opponent$/i});
       await blockOpponent.click();
       expect(await blockOpponent.getAttribute("aria-busy")).toBe("true");
       await page.waitForFunction(() => "__delayedRaceSafetyResponse" in window);
       await page.evaluate(() => {
         /** Releases the block response after immediate feedback has been verified. */
-        const delayedWindow = window as typeof window & {__delayedRaceSafetyResponse?: unknown};
+        const delayedWindow = window as typeof window & {
+          /** Response held by the test harness until the initiating control is inspected. */
+          __delayedRaceSafetyResponse?: unknown;
+        };
         window.dispatchEvent(new CustomEvent("riddle-quest:host-to-game", {detail: delayedWindow.__delayedRaceSafetyResponse}));
         delete delayedWindow.__delayedRaceSafetyResponse;
       });

@@ -1343,6 +1343,7 @@ describeBrowser("Jest authentication integration", () => {
     expect((await getHarnessState(creator.page)).referralShares).toHaveLength(0);
     await captureMultiplayerEvidence(creator.page, "03-player-1-run-recorded.png");
     await creator.page.getByRole("button", {name: /send challenge/i}).click();
+    /** Share control inspected while the Jest provider call remains in flight. */
     const sharingButton = creator.page.getByRole("button", {name: /challenge a friend/i});
     await sharingButton.waitFor({timeout: 10_000});
     expect(await sharingButton.getAttribute("aria-busy")).toBe("true");
@@ -1630,6 +1631,7 @@ describeBrowser("Jest authentication integration", () => {
     await player.page.getByRole("button", {name: /^multiplayer$/i}).click();
     await player.page.getByRole("button", {name: /^History /}).click();
     await player.page.locator(".race-countdown").waitFor({state: "visible", timeout: 5_000});
+    /** Close control inspected while the delayed authoritative start is reconciled. */
     const closeButton = player.page.locator(".race-close");
     await closeButton.click();
     expect(await closeButton.getAttribute("aria-busy")).toBe("true");
