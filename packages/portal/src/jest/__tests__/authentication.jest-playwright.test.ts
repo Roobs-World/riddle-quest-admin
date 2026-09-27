@@ -2,7 +2,7 @@ import {afterAll, afterEach, beforeAll, describe, expect, it, jest} from "@jest/
 import {chromium, type Browser, type Page} from "@playwright/test";
 import {execFileSync} from "node:child_process";
 import {createServer, type Server} from "node:http";
-import {readFile} from "node:fs/promises";
+import {mkdir, readFile} from "node:fs/promises";
 import path from "node:path";
 
 import {advanceToRegistration, enterRegisteredGame, openProfileAfterGuidance, solveFakeRace} from "./authentication.jest-playwright.support";
@@ -14,6 +14,15 @@ const describeBrowser = process.env.PORTAL_BROWSER_TESTS === "1" ? describe : de
 let baseUrl: string;
 /** Provides shared race challenges behavior. */
 const sharedRaceChallenges = new Map<string, string>();
+
+/** Captures optional durable evidence for the two-player race journey. */
+const captureMultiplayerEvidence = async (page: Page, filename: string) => {
+  /** Directory selected only by an explicit evidence run. */
+  const directory = process.env.JEST_MULTIPLAYER_EVIDENCE_DIR;
+  if (!directory) return;
+  await mkdir(directory, {recursive: true});
+  await page.screenshot({path: path.join(directory, filename), fullPage: true});
+};
 
 /** Describes auth harness state. */
 type AuthHarnessState = {
@@ -1120,6 +1129,7 @@ describeBrowser("Jest authentication integration", () => {
     await multiplayerButton.click();
     await creator.page.getByRole("button", {name: /^History /}).waitFor();
     await creator.page.getByTestId("server-activity-loader").waitFor({state: "detached"});
+    await captureMultiplayerEvidence(creator.page, "01-player-1-multiplayer-lobby.png");
     expect(await creator.page.locator('[data-testid="server-activity-loader"]').count()).toBe(0);
     await creator.page.evaluate(() => {
       /** Provides timing window behavior. */
@@ -1179,6 +1189,7 @@ describeBrowser("Jest authentication integration", () => {
     expect(multiplayerInvite?.shareTitle).toBe("Race to 10");
     expect(multiplayerInvite?.shareText).toContain("time for you to beat");
     expect(invitedChallengeId).toMatch(/^jest-invite-[a-f0-9]{64}-[a-f0-9]{32}$/);
+    await captureMultiplayerEvidence(creator.page, "02-player-1-invite-sent.png");
     /** Provides countdown rail behavior. */
     const countdownRail = creator.page.locator(".race-countdown-rail");
     await countdownRail.waitFor();
@@ -1198,6 +1209,7 @@ describeBrowser("Jest authentication integration", () => {
     });
     expect(countdownCenterOffset).toBeLessThanOrEqual(0.5);
     await creator.page.locator(".race-gameplay .guess-board").waitFor({state: "visible", timeout: 10_000});
+    await captureMultiplayerEvidence(creator.page, "03-player-1-race-started.png");
     /** Horizontal coverage of the multiplayer keyboard within the game surface. */
     const keyboardCoverage = await creator.page.locator(".race-gameplay").evaluate((gameplay) => {
       /** Available game width. */
@@ -1287,22 +1299,27 @@ describeBrowser("Jest authentication integration", () => {
       sharedRace: true,
     });
     await recipient.page.locator(".race-challenge-card").getByText("Loading challenge…").waitFor();
+    await captureMultiplayerEvidence(recipient.page, "04-player-2-invite-loading.png");
     expect(await recipient.page.getByRole("button", {name: /accept challenge/i}).count()).toBe(0);
 
     await solveFakeRace(creator.page, {expectChainedSubmitLoader: true});
     await creator.page.getByText("Run recorded!", {exact: true}).waitFor();
     await creator.page.getByRole("button", {name: /challenge a friend/i}).waitFor({timeout: 10_000});
+    await captureMultiplayerEvidence(creator.page, "05-player-1-run-recorded.png");
     expect(sharedRaceChallenges.has(invitedChallengeId!)).toBe(true);
 
     await recipient.page.getByRole("heading", {name: /Guest Solver challenged you/i}).waitFor({timeout: 20_000});
+    await captureMultiplayerEvidence(recipient.page, "06-player-2-invite-ready.png");
     await recipient.page.getByRole("button", {name: /accept challenge/i}).click();
     await recipient.page.locator(".race-gameplay .guess-board").waitFor({state: "visible", timeout: 10_000});
     /** Provides opponent progress behavior. */
     const opponentProgress = recipient.page.locator(".race-progress > div").nth(1);
     await opponentProgress.getByText("10/10", {exact: true}).waitFor({timeout: 10_000});
+    await captureMultiplayerEvidence(recipient.page, "07-player-2-race-started.png");
     await solveFakeRace(recipient.page);
     expect(await recipient.page.locator(".race-result-grid").innerText()).toContain("Adjusted time");
     expect(await recipient.page.locator(".race-result h2").innerText()).toMatch(/You win|Opponent wins|tie/i);
+    await captureMultiplayerEvidence(recipient.page, "08-player-2-final-result.png");
 
     await Promise.all([creator.context.close(), recipient.context.close()]);
   });
