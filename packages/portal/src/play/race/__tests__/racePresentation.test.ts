@@ -141,6 +141,7 @@ describe("race presentation helpers", () => {
       },
     });
     expect(projectInstantRaceHint(run())).toBeNull();
+    expect(projectInstantRaceHint(run({preloadedRiddles: []}))).toBeNull();
   });
 
   it("projects an opponent win only after the server-issued ghost finish elapses", () => {
