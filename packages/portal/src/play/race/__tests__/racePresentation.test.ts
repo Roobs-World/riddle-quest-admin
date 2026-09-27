@@ -78,6 +78,7 @@ describe("race presentation helpers", () => {
     expect(getAdjustedRaceTime(run, 1_000, 5_000)).toBe(8_000);
     expect(getAdjustedRaceTime(run, 1_000, 20_000)).toBe(10_000);
     expect(getAdjustedRaceTime({...run, status: "completed"}, 1_000, 20_000)).toBe(4_000);
+    expect(getAdjustedRaceTime({...run, status: "completed"}, 1_000)).toBe(4_000);
   });
 
   it("projects an opponent win only after the server-issued ghost finish elapses", () => {
@@ -105,11 +106,19 @@ describe("race presentation helpers", () => {
   });
 
   it("projects every server-determined terminal result and applies confirmation to the run", () => {
+    expect(projectRaceOutcome(run({status: "abandoned"}), 2_000)).toBeNull();
     expect(projectRaceOutcome(run({role: "creator", status: "completed", correctCount: 10, currentRiddle: null, adjustedElapsedMs: 42_000, wallElapsedMs: 42_000, opponent: undefined}), 42_000)).toMatchObject({
       result: "recorded",
       publishable: true,
     });
-    expect(projectRaceOutcome(run({status: "completed", correctCount: 10, currentRiddle: null, adjustedElapsedMs: 2_500}), 2_500)).toMatchObject({result: "player_win"});
+    /** Completed challenger outcome used to cover the non-timeout run projection. */
+    const playerWin = projectRaceOutcome(run({status: "completed", correctCount: 10, currentRiddle: null, adjustedElapsedMs: 2_500}), 2_500);
+    expect(playerWin).toMatchObject({result: "player_win"});
+    expect(applyRaceOutcome(run(), playerWin!)).toMatchObject({
+      status: "completed",
+      currentRiddle: null,
+      adjustedElapsedMs: 2_500,
+    });
     expect(projectRaceOutcome(run({status: "completed", correctCount: 10, currentRiddle: null, adjustedElapsedMs: 3_000}), 3_000)).toMatchObject({result: "tie"});
     /** Provides timeout behavior. */
     const timeout = projectRaceOutcome(run({opponent: undefined}), RACE_RULES.maxAdjustedTimeMs);
