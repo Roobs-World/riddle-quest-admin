@@ -432,7 +432,7 @@ export function predictCompletionAchievementIds(
   const totalGuessesInWins = (profile.totalGuessesInWins ?? 0) +
     (completion.isCorrect ? completion.attempts : 0);
   const averageGuesses = totalWins > 0 ? Number((totalGuessesInWins / totalWins).toFixed(2)) : 0;
-  const winRate = gamesPlayed > 0 ? Number(((totalWins / gamesPlayed) * 100).toFixed(2)) : 0;
+  const winRate = Number(((totalWins / gamesPlayed) * 100).toFixed(2));
   const highestLevelClassic = completion.gameMode === "classic" && completion.isCorrect
     ? Math.max(profile.highestLevelClassic ?? 0, profile.classicIndex + 1)
     : (profile.highestLevelClassic ?? 0);
