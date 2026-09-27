@@ -1,6 +1,6 @@
 # Jest deployed multiplayer verification — 2026-09-27
 
-Status: exact candidate verified; complete two-player simulator journey passed.
+Status: exact deployed candidate and complete two-player simulator journey passed.
 
 ## Deployment
 
@@ -22,11 +22,22 @@ The embedded iframe path contained the expected build
 `1.0.0-dev.20260927042555.21e0f329ac01.d6335a86`, proving that the requested
 candidate—not the older active release—was selected.
 
-Live gameplay could not start because Google's Firebase App Check token exchange
-returned HTTP 403 in the automated headed browser. Firebase then cached a 24-hour
-throttle for that app/browser context. Player 2's fresh one-time link was left
-unused. This is an automation/challenge limitation; it occurs before multiplayer
-code runs.
+The first automated launch used production reCAPTCHA Enterprise attestation.
+Google rejected automated Chromium's assessment with HTTP 403 and Firebase cached
+a 24-hour throttle for that browser context. The configured Firebase app, site
+key, `builds.jest.com` domain, and 0.5 minimum risk score were verified as aligned.
+
+The retest injected the repository's private, registered App Check debug token
+before any page or iframe JavaScript ran. Firebase then used
+`exchangeDebugToken` (HTTP 200), while the production bundle and production App
+Check enforcement remained unchanged. The exact deployed acceptance test passed
+all identity, Firebase Function, race, referral-verification, and subscription
+catalog assertions in 35 seconds (`1/1` test passed). No debug credential is
+stored in this report or committed to Git.
+
+Player 2's fresh one-time link was left unused because the deployed acceptance
+gate needs one registered sandbox identity; the two-player handoff is covered by
+the isolated simulator journey below.
 
 ## Complete simulator journey
 
