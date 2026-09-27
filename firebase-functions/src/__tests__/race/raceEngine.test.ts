@@ -192,6 +192,17 @@ describe("Race to 10 authoritative engine", () => {
     expect(completed).toMatchObject({status: "completed", result: "recorded", correctCount: 10});
   });
 
+  it("completes the run when the fifth wrong guess auto-skips the tenth riddle", () => {
+    /** Ninth-clear run on its final allowed guess. */
+    const result = applyRaceGuess(
+      createRun({correctCount: 9, guessesUsed: 4}),
+      {riddleId: "riddle-1", guess: "xxxxx"},
+      STARTED_AT + 5_000,
+    );
+    expect(result).toMatchObject({isCorrect: false, autoSkipped: true});
+    expect(result.run).toMatchObject({status: "completed", result: "recorded", correctCount: 10});
+  });
+
   it("times out when the final available riddle is skipped without ten solves", () => {
     /** Provides final riddle run behavior. */
     const finalRiddleRun = createRun({currentPosition: 14, guessesUsed: 1});
