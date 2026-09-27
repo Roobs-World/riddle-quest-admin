@@ -70,6 +70,7 @@ describe("Firebase browser adapter", () => {
       "resumeRaceRun",
       "abandonRaceRun",
       "publishRaceChallenge",
+      "reserveRaceInvite",
       "getRaceChallenge",
       "getRaceOutcome",
       "listRaceInbox",
