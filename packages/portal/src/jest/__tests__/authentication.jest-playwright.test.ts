@@ -310,6 +310,9 @@ const installJestSdkHarness = async (page: Page, scenario = "success") => {
             })
               .__RIDDLE_QUEST_PROFILE_INVITE_CLICK__,
           ));
+          if (selectedScenario === "race-share-delay" && input.entryPayload?.inviteKind === "race") {
+            await new Promise((resolve) => window.setTimeout(resolve, 2_000));
+          }
           state.referralShares.push(structuredClone(input));
           return {canceled: selectedScenario === "race-share-cancel"};
         },
@@ -1134,6 +1137,7 @@ describeBrowser("Jest authentication integration", () => {
       sharedRace: true,
       raceStartDelayMs: 2_500,
       raceOutcomeDelayMs: 500,
+      scenario: "race-share-delay",
     });
     await enterRegisteredGame(creator.page);
     /** Provides multiplayer button behavior. */
@@ -1165,6 +1169,19 @@ describeBrowser("Jest authentication integration", () => {
       expect(bounds.left).toBeGreaterThanOrEqual(0);
       expect(bounds.right).toBeLessThanOrEqual(390);
     }
+    /** The game dialog itself cannot retain a horizontal offset after transient child layout. */
+    const lobbyOverflow = await creator.page.locator(".race-screen").evaluate((screen) => ({
+      overflowX: getComputedStyle(screen).overflowX,
+      scrollLeft: screen.scrollLeft,
+      scrollWidth: screen.scrollWidth,
+      clientWidth: screen.clientWidth,
+    }));
+    expect(lobbyOverflow).toEqual({
+      overflowX: "hidden",
+      scrollLeft: 0,
+      scrollWidth: lobbyOverflow.clientWidth,
+      clientWidth: lobbyOverflow.clientWidth,
+    });
     await creator.page.evaluate(() => {
       /** Provides timing window behavior. */
       const timingWindow = window as typeof window & {
@@ -1326,6 +1343,10 @@ describeBrowser("Jest authentication integration", () => {
     expect((await getHarnessState(creator.page)).referralShares).toHaveLength(0);
     await captureMultiplayerEvidence(creator.page, "03-player-1-run-recorded.png");
     await creator.page.getByRole("button", {name: /send challenge/i}).click();
+    const sharingButton = creator.page.getByRole("button", {name: /challenge a friend/i});
+    await sharingButton.waitFor({timeout: 10_000});
+    expect(await sharingButton.getAttribute("aria-busy")).toBe("true");
+    expect(await sharingButton.isDisabled()).toBe(true);
     await creator.page.waitForFunction(() =>
       (window as typeof window & {
         /** Captured referral shares from the injected Jest SDK. */
@@ -1335,6 +1356,8 @@ describeBrowser("Jest authentication integration", () => {
     );
     /** First post-result share contains an already-published immutable score. */
     const firstInvite = (await getHarnessState(creator.page)).referralShares[0]!;
+    expect(await sharingButton.getAttribute("aria-busy")).toBe("false");
+    expect(await sharingButton.isEnabled()).toBe(true);
     /** Immutable challenge selected from the creator's first invite payload. */
     const invitedChallengeId = firstInvite.entryPayload?.challengeId;
     expect(firstInvite.shareTitle).toBe("Race to 10");
@@ -1392,7 +1415,7 @@ describeBrowser("Jest authentication integration", () => {
     await Promise.all([creator.context.close(), recipient.context.close()]);
   });
 
-  it("shows an opponent win automatically while the authoritative outcome confirms in the background", async () => {
+  it("shows an opponent win immediately and keeps category navigation ahead of delayed outcome work", async () => {
     sharedRaceChallenges.clear();
     /** Deterministic challenge whose ghost finishes just after the gameplay countdown. */
     const challengeId = `jest-invite-${"a".repeat(64)}-${"b".repeat(32)}`;
@@ -1455,6 +1478,9 @@ describeBrowser("Jest authentication integration", () => {
       __raceOutcomeResultCount?: number;
     }).__raceOutcomeResultCount)).toBe(0);
     expect(await recipient.page.getByRole("alert").count()).toBe(0);
+    /** Cached category navigation must invalidate obsolete outcome presentation without a replacement request. */
+    await recipient.page.getByRole("button", {name: /choose your category/i}).click();
+    await recipient.page.locator(".race-category-grid").waitFor({state: "visible", timeout: 1_000});
     await recipient.page.waitForFunction(
       () => (window as typeof window & {
         /** Counts authoritative race-outcome responses received by the game. */
@@ -1463,7 +1489,8 @@ describeBrowser("Jest authentication integration", () => {
       undefined,
       {timeout: 5_000},
     );
-    expect(await recipient.page.getByRole("heading", {name: /opponent wins/i}).isVisible()).toBe(true);
+    expect(await recipient.page.getByRole("heading", {name: /opponent wins/i}).count()).toBe(0);
+    expect(await recipient.page.locator(".race-category-grid").isVisible()).toBe(true);
     await recipient.context.close();
   });
 
@@ -1500,6 +1527,11 @@ describeBrowser("Jest authentication integration", () => {
           /** Counts authoritative race-outcome responses received by the game. */
           __raceOutcomeResultCount?: number;
         }).__raceOutcomeResultCount)).toBe(0);
+        /** The player's next intent is accepted immediately while outcome confirmation remains in flight. */
+        const sendChallenge = creator.page.getByRole("button", {name: /send challenge/i});
+        await sendChallenge.click({timeout: 1_000});
+        expect(await sendChallenge.getAttribute("aria-busy")).toBe("true");
+        expect(await sendChallenge.isDisabled()).toBe(true);
       },
     });
     await creator.page.waitForFunction(
@@ -1511,6 +1543,13 @@ describeBrowser("Jest authentication integration", () => {
       {timeout: 5_000},
     );
     expect(await creator.page.getByRole("heading", {name: /run recorded/i}).isVisible()).toBe(true);
+    await creator.page.waitForFunction(() =>
+      (window as typeof window & {
+        /** Captured referral shares from the injected Jest SDK. */
+        __RIDDLE_QUEST_JEST_AUTH_TEST__: AuthHarnessState;
+      }).__RIDDLE_QUEST_JEST_AUTH_TEST__.referralShares.length === 1,
+    );
+    await creator.page.getByRole("button", {name: /challenge a friend/i}).waitFor({timeout: 5_000});
     await creator.context.close();
   });
 
@@ -1577,6 +1616,31 @@ describeBrowser("Jest authentication integration", () => {
     await creator.page.getByRole("alert").waitFor({state: "hidden", timeout: 5_000});
     expect(await creator.page.getByRole("heading", {name: /run recorded/i}).isVisible()).toBe(true);
     await creator.context.close();
+  });
+
+  it("acknowledges close during a delayed start and abandons the created run before exiting", async () => {
+    /** Player whose authoritative start deliberately resolves after the close intent. */
+    const player = await openHarness(browser, {
+      registered: true,
+      harness: "race-auth",
+      playerId: "close-during-start-player",
+      raceStartDelayMs: 2_000,
+    });
+    await enterRegisteredGame(player.page);
+    await player.page.getByRole("button", {name: /^multiplayer$/i}).click();
+    await player.page.getByRole("button", {name: /^History /}).click();
+    await player.page.locator(".race-countdown").waitFor({state: "visible", timeout: 5_000});
+    const closeButton = player.page.locator(".race-close");
+    await closeButton.click();
+    expect(await closeButton.getAttribute("aria-busy")).toBe("true");
+    expect(await closeButton.isDisabled()).toBe(true);
+    expect(await player.page.locator(".race-screen").isVisible()).toBe(true);
+    await player.page.locator(".race-screen").waitFor({state: "detached", timeout: 7_000});
+    /** A subsequent race starts normally instead of inheriting an unknown active run. */
+    await player.page.getByRole("button", {name: /^multiplayer$/i}).click();
+    await player.page.getByRole("button", {name: /^History /}).click();
+    await player.page.locator(".race-gameplay").waitFor({state: "visible", timeout: 10_000});
+    await player.context.close();
   });
 
   it("confirms quitting an active race and abandons it with no result", async () => {

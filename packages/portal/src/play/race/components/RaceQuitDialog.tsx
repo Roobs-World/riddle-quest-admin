@@ -42,7 +42,7 @@ export function RaceQuitDialog({
           <button onClick={onCancel} disabled={abandoning}>
             {tr("RaceTo10.KEEP_PLAYING")}
           </button>
-          <button className="race-quit-confirm" onClick={onConfirm} disabled={abandoning}>
+          <button className="race-quit-confirm" onClick={onConfirm} disabled={abandoning} aria-busy={abandoning}>
             {abandoning ? tr("RaceTo10.QUITTING") : tr("RaceTo10.QUIT_RACE")}
           </button>
         </div>

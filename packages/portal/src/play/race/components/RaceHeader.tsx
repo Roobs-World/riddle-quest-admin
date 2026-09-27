@@ -23,12 +23,15 @@ function RaceCoinBalance({
 /** Closes the current race screen through its owning controller. */
 function RaceCloseButton({
   onClose,
+  busy = false,
 }: {
   /** Stores on close. */ /** Stores on close. */ /** Stores on close. */
   onClose: () => void;
+  /** Whether authoritative cleanup is completing before close. */
+  busy?: boolean;
 }) {
   return (
-    <button className="race-close" onClick={onClose} aria-label={tr("RaceTo10.CLOSE")}>
+    <button className="race-close" onClick={onClose} aria-label={tr("RaceTo10.CLOSE")} disabled={busy} aria-busy={busy}>
       ×
     </button>
   );
@@ -70,16 +73,19 @@ export const RaceTopbar = memo(function RaceTopbar({
 /** Compact header placed inside the right-hand multiplayer rail. */
 export const RaceRailHeader = memo(function RaceRailHeader({
   onClose,
+  closeBusy = false,
 }: {
   /** Stores coins. */
   coins: number; /** Stores on close. */
   /** Stores on close. */
   onClose: () => void;
+  /** Whether authoritative cleanup is completing before close. */
+  closeBusy?: boolean;
 }) {
   return (
     <div className="race-rail-header">
       <RaceTitle />
-      <RaceCloseButton onClose={onClose} />
+      <RaceCloseButton onClose={onClose} busy={closeBusy} />
     </div>
   );
 });

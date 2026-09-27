@@ -42,6 +42,8 @@ export type RaceTo10ViewProps = {
   error: string | null;
   /** Stores the latest successful social-safety action. */
   safetyNotice: string | null;
+  /** Rival targeted by the current correlated safety mutation. */
+  safetyTargetUserId: string | null;
   /** Stores categories. */
   categories: ListRaceCategoriesResponse["categories"];
   /** Stores inbox items. */
@@ -70,6 +72,10 @@ export type RaceTo10ViewProps = {
   published: PublishRaceChallengeResponse | null;
   /** Referral reward displayed only when this target can share a published challenge. */
   sharingRewardCoins?: number;
+  /** Whether a publish intent is queued or in flight. */
+  publishRequested: boolean;
+  /** Whether the provider share flow is opening or active. */
+  sharing: boolean;
   /** Stores pending. */
   pending: RaceOperation | null;
   /** Stores adjusted now. */
@@ -92,6 +98,8 @@ export type RaceTo10ViewProps = {
   quitConfirmationOpen: boolean;
   /** Stores race guess loading. */
   raceGuessLoading: boolean;
+  /** Whether close is waiting for a just-started run to be abandoned. */
+  closeAfterStart: boolean;
   /** Stores the active Facebook social picker operation. */
   socialPending: "context" | "match" | null;
   /** Stores dialog ref. */
@@ -169,6 +177,7 @@ export function RaceTo10View(props: RaceTo10ViewProps) {
     coins,
     error,
     safetyNotice,
+    safetyTargetUserId,
     categories,
     inboxItems,
     tournament,
@@ -181,6 +190,8 @@ export function RaceTo10View(props: RaceTo10ViewProps) {
     outcome,
     published,
     sharingRewardCoins,
+    publishRequested,
+    sharing,
     pending,
     adjustedNow,
     ghostCorrect,
@@ -192,6 +203,7 @@ export function RaceTo10View(props: RaceTo10ViewProps) {
     letterStates,
     quitConfirmationOpen,
     raceGuessLoading,
+    closeAfterStart,
     socialPending,
     dialogRef,
     gameplayViewportRef,
@@ -274,7 +286,11 @@ export function RaceTo10View(props: RaceTo10ViewProps) {
           loading={pending === "raceInbox"}
           contextBoard={contextBoard}
           contextBoardLoading={contextBoardLoading}
-          safetyPending={pending === "raceBlock" || pending === "raceReport"}
+          safetyPending={
+            (pending === "raceBlock" || pending === "raceReport") && safetyTargetUserId
+              ? {operation: pending, targetUserId: safetyTargetUserId}
+              : null
+          }
           onRematch={onInboxRematch}
           onBlock={onBlockRival}
           onReport={onReportRival}
@@ -284,7 +300,13 @@ export function RaceTo10View(props: RaceTo10ViewProps) {
       {stage === "tournaments" && <RaceTournamentPanel tournament={tournament} loading={tournamentLoading} />}
       {stage === "challenge" && <RaceChallengePanel challenge={challenge} onAccept={onSelectCategory} />}
       {stage === "countdown" && (
-        <RaceCountdown countdown={countdown} loading={pending === "raceStart"} coins={coins} onClose={onRequestClose} />
+        <RaceCountdown
+          countdown={countdown}
+          loading={pending === "raceStart"}
+          closing={closeAfterStart}
+          coins={coins}
+          onClose={onRequestClose}
+        />
       )}
       {stage === "racing" && run && (
         <RaceGameplay
@@ -320,7 +342,8 @@ export function RaceTo10View(props: RaceTo10ViewProps) {
           outcome={outcome}
           run={run}
           publication={published}
-          publishing={Boolean(pending)}
+          publishing={publishRequested || pending === "racePublish"}
+          sharing={sharing}
           sharingRewardCoins={sharingRewardCoins}
           onPublish={onPublish}
           onShare={onShare}
@@ -338,7 +361,9 @@ export function RaceTo10View(props: RaceTo10ViewProps) {
           onConfirm={onAbandon}
         />
       )}
-      {raceGuessLoading && <div className="race-operation-loader" role="status" aria-label={tr("Accessibility.LOADING")} />}
+      {(raceGuessLoading || ((stage === "racing" || stage === "result") && Boolean(pending))) && (
+        <div className="race-operation-loader" role="status" aria-label={tr("Accessibility.LOADING")} />
+      )}
     </section>
   );
 }

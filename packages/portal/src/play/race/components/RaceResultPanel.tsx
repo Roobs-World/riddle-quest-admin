@@ -9,6 +9,7 @@ export function RaceResultPanel({
   run,
   publication,
   publishing,
+  sharing = false,
   sharingRewardCoins,
   onPublish,
   onShare,
@@ -24,6 +25,8 @@ export function RaceResultPanel({
   publication: PublishRaceChallengeResponse | null;
   /** Stores publishing. */
   publishing: boolean;
+  /** Whether the provider-owned share flow is opening or active. */
+  sharing?: boolean;
   /** Stores sharing reward coins. */
   sharingRewardCoins?: number;
   /** Stores on publish. */
@@ -74,12 +77,12 @@ export function RaceResultPanel({
       </div>
       {sharingRewardCoins !== undefined && outcome.publishable ? <p>{tr("RaceTo10.CHALLENGE_READY")}</p> : null}
       {sharingRewardCoins !== undefined && outcome.publishable && !publication ? (
-        <button className="race-primary" onClick={onPublish} disabled={publishing}>
+        <button className="race-primary" onClick={onPublish} disabled={publishing} aria-busy={publishing}>
           {tr("RaceTo10.CREATE_CHALLENGE")}
         </button>
       ) : null}
       {sharingRewardCoins !== undefined && publication ? (
-        <button className="race-primary" onClick={onShare}>
+        <button className="race-primary" onClick={onShare} disabled={sharing} aria-busy={sharing}>
           {tr("RaceTo10.SHARE_CHALLENGE", {coins: sharingRewardCoins})}
         </button>
       ) : null}

@@ -562,9 +562,49 @@ describeBrowser("standalone Jest browser game", () => {
       await page.getByText("Safety options", {exact: true}).click();
       await expectAccessible(page, "multiplayer safety actions");
       await page.getByLabel("Reason for report").selectOption("spam");
-      await page.getByRole("button", {name: /^report opponent$/i}).click();
+      await page.evaluate(() => {
+        /** Holds the next safety response so its initiating control can be inspected in flight. */
+        const holdSafetyResponse = (event: Event) => {
+          if ((event as CustomEvent).detail?.payload?.operation !== "raceReport") return;
+          event.stopImmediatePropagation();
+          window.removeEventListener("riddle-quest:host-to-game", holdSafetyResponse, true);
+          Object.assign(window, {__delayedRaceSafetyResponse: (event as CustomEvent).detail});
+        };
+        window.addEventListener("riddle-quest:host-to-game", holdSafetyResponse, true);
+      });
+      /** Report feedback is immediate while the server response remains deliberately held. */
+      const reportOpponent = page.getByRole("button", {name: /^report opponent$/i});
+      await reportOpponent.click();
+      expect(await reportOpponent.getAttribute("aria-busy")).toBe("true");
+      expect(await page.getByRole("button", {name: /^block opponent$/i}).isDisabled()).toBe(true);
+      await page.waitForFunction(() => "__delayedRaceSafetyResponse" in window);
+      await page.evaluate(() => {
+        /** Replays the correlated safety response after the busy state has been verified. */
+        const delayedWindow = window as typeof window & {__delayedRaceSafetyResponse?: unknown};
+        window.dispatchEvent(new CustomEvent("riddle-quest:host-to-game", {detail: delayedWindow.__delayedRaceSafetyResponse}));
+        delete delayedWindow.__delayedRaceSafetyResponse;
+      });
       await page.getByRole("status").getByText("Report sent.", {exact: true}).waitFor();
-      await page.getByRole("button", {name: /^block opponent$/i}).click();
+      await page.evaluate(() => {
+        /** Holds the block response independently from the preceding report response. */
+        const holdSafetyResponse = (event: Event) => {
+          if ((event as CustomEvent).detail?.payload?.operation !== "raceBlock") return;
+          event.stopImmediatePropagation();
+          window.removeEventListener("riddle-quest:host-to-game", holdSafetyResponse, true);
+          Object.assign(window, {__delayedRaceSafetyResponse: (event as CustomEvent).detail});
+        };
+        window.addEventListener("riddle-quest:host-to-game", holdSafetyResponse, true);
+      });
+      const blockOpponent = page.getByRole("button", {name: /^block opponent$/i});
+      await blockOpponent.click();
+      expect(await blockOpponent.getAttribute("aria-busy")).toBe("true");
+      await page.waitForFunction(() => "__delayedRaceSafetyResponse" in window);
+      await page.evaluate(() => {
+        /** Releases the block response after immediate feedback has been verified. */
+        const delayedWindow = window as typeof window & {__delayedRaceSafetyResponse?: unknown};
+        window.dispatchEvent(new CustomEvent("riddle-quest:host-to-game", {detail: delayedWindow.__delayedRaceSafetyResponse}));
+        delete delayedWindow.__delayedRaceSafetyResponse;
+      });
       await page.getByRole("status").getByText("Opponent blocked.", {exact: true}).waitFor();
       expect(await page.getByText(/no results yet/i).isVisible()).toBe(true);
 

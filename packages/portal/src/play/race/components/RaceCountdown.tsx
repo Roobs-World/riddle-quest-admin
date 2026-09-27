@@ -5,6 +5,7 @@ import {RaceRailHeader} from "./RaceHeader";
 export function RaceCountdown({
   countdown,
   loading,
+  closing = false,
   coins,
   onClose,
 }: {
@@ -12,6 +13,8 @@ export function RaceCountdown({
   countdown: number;
   /** Stores loading. */
   loading: boolean;
+  /** Whether close was requested while the authoritative run was starting. */
+  closing?: boolean;
   /** Stores coins. */
   coins: number;
   /** Stores on close. */
@@ -23,10 +26,10 @@ export function RaceCountdown({
     <div className="race-countdown-layout">
       <div className="race-countdown" aria-live="assertive">
         {!loading && <span>{countdownLabel}</span>}
-        <p>{loading ? tr("Accessibility.LOADING") : tr("RaceTo10.FIRST_TO_TEN")}</p>
+        <p>{closing ? tr("RaceTo10.QUITTING") : loading ? tr("Accessibility.LOADING") : tr("RaceTo10.FIRST_TO_TEN")}</p>
       </div>
       <aside className="race-scoreboard race-countdown-rail">
-        <RaceRailHeader coins={coins} onClose={onClose} />
+        <RaceRailHeader coins={coins} onClose={onClose} closeBusy={closing} />
       </aside>
     </div>
   );

@@ -76,12 +76,22 @@ export function RaceHubTabs({
       {onChooseContext || onMatchPlayer ? (
         <div className="race-hub-social-actions" aria-label={tr("RaceTo10.MULTIPLAYER_BUTTON")}>
           {onMatchPlayer ? (
-            <button type="button" onClick={onMatchPlayer} disabled={socialPending !== null}>
+            <button
+              type="button"
+              onClick={onMatchPlayer}
+              disabled={socialPending !== null}
+              aria-busy={socialPending === "match"}
+            >
               {tr("RaceTo10.MATCH_PLAYER")}
             </button>
           ) : null}
           {onChooseContext ? (
-            <button type="button" onClick={onChooseContext} disabled={socialPending !== null}>
+            <button
+              type="button"
+              onClick={onChooseContext}
+              disabled={socialPending !== null}
+              aria-busy={socialPending === "context"}
+            >
               {tr("RaceTo10.CHOOSE_CONTEXT")}
             </button>
           ) : null}

@@ -2,7 +2,8 @@
   position: fixed;
   inset: 0;
   z-index: 120;
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
   padding: max(18px, env(safe-area-inset-top)) max(18px, env(safe-area-inset-right))
     max(24px, env(safe-area-inset-bottom)) max(18px, env(safe-area-inset-left));
   color: #f6fbf9;
@@ -269,6 +270,24 @@
   color: #fff;
   background: #247147;
   border-color: #247147;
+}
+.race-primary[aria-busy="true"]::after,
+.race-hub-social-actions button[aria-busy="true"]::after,
+.race-safety-actions button[aria-busy="true"]::after,
+.race-quit-confirm[aria-busy="true"]::after {
+  content: "";
+  width: 0.8em;
+  height: 0.8em;
+  margin-inline-start: 0.55em;
+  display: inline-block;
+  vertical-align: -0.08em;
+  border: 2px solid currentColor;
+  border-inline-end-color: transparent;
+  border-radius: 50%;
+  animation: race-pending-spin 0.7s linear infinite;
+}
+@keyframes race-pending-spin {
+  to { transform: rotate(360deg); }
 }
 .race-challenge-card,
 .race-result {

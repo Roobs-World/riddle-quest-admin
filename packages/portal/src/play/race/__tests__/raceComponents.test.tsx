@@ -93,6 +93,18 @@ describe("race presentation components", () => {
     expect(facebookHtml).toContain("Tournaments");
     expect(facebookHtml).toContain("Find opponent");
     expect(facebookHtml).toContain("Play with friends");
+    /** Only the native social action currently awaiting its provider is announced busy. */
+    const socialPendingHtml = renderToString(
+      <RaceHubTabs
+        active="play"
+        onPlay={noop}
+        onActivity={noop}
+        onChooseContext={noop}
+        onMatchPlayer={noop}
+        socialPending="match"
+      />,
+    );
+    expect(socialPendingHtml.match(/aria-busy="true"/g)).toHaveLength(1);
   });
 
   it("renders identity-free, economy-free tournament standings", () => {
@@ -126,7 +138,7 @@ describe("race presentation components", () => {
       <RaceInboxPanel
         items={[]}
         loading={false}
-        safetyPending={false}
+        safetyPending={null}
         contextBoardLoading={false}
         contextBoard={{
           locale: "en",
@@ -178,7 +190,7 @@ describe("race presentation components", () => {
           },
         ]}
         loading={false}
-        safetyPending={false}
+        safetyPending={null}
         onRematch={noop}
         onBlock={noop}
         onReport={noop}
@@ -189,12 +201,40 @@ describe("race presentation components", () => {
     expect(inboxHtml).toContain("Safety options");
     expect(inboxHtml).toContain("Block opponent");
     expect(inboxHtml).toContain("Report opponent");
+    /** The selected safety mutation provides immediate, action-specific busy feedback. */
+    const safetyPendingHtml = renderToString(
+      <RaceInboxPanel
+        items={[
+          {
+            itemId: "result-1",
+            challengeId: "challenge-1",
+            opponentUserId: "facebook_1111111111111111111111111111111111111111",
+            opponentDisplayName: "Nova",
+            categoryId: "history",
+            result: "win",
+            adjustedDeltaMs: 3_500,
+            read: false,
+            createdAtMs: 1,
+          },
+        ]}
+        loading={false}
+        safetyPending={{
+          operation: "raceBlock",
+          targetUserId: "facebook_1111111111111111111111111111111111111111",
+        }}
+        onRematch={noop}
+        onBlock={noop}
+        onReport={noop}
+        onChooseCategory={noop}
+      />,
+    );
+    expect(safetyPendingHtml).toContain('aria-busy="true"');
     expect(
       renderToString(
         <RaceInboxPanel
           items={[]}
           loading={false}
-          safetyPending={false}
+          safetyPending={null}
           onRematch={noop}
           onBlock={noop}
           onReport={noop}
@@ -448,6 +488,22 @@ describe("race presentation components", () => {
           outcome={outcome}
           run={{...run, status: "completed"}}
           publication={null}
+          publishing
+          sharingRewardCoins={100}
+          onPublish={noop}
+          onShare={noop}
+          onRematch={noop}
+          onChooseCategory={noop}
+          onClose={noop}
+        />,
+      ),
+    ).toContain('disabled="" aria-busy="true"');
+    expect(
+      renderToString(
+        <RaceResultPanel
+          outcome={outcome}
+          run={{...run, status: "completed"}}
+          publication={null}
           publishing={false}
           sharingRewardCoins={100}
           onPublish={noop}
@@ -501,7 +557,7 @@ describe("race presentation components", () => {
           onConfirm={noop}
         />,
       ),
-    ).toContain("Quitting");
+    ).toContain('aria-busy="true"');
     /** Provides idle quit dialog behavior. */
     const idleQuitDialog = renderToString(
       <RaceQuitDialog dialogRef={{current: null}} error={null} abandoning={false} onCancel={noop} onConfirm={noop} />,

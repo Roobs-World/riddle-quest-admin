@@ -1,0 +1,51 @@
+{
+  "build": "1.0.0-dev.20260927174851.7216833e4333.d51ad980",
+  "versionId": "01a0e40d-72b2-76b6-92af-8cb126fe840d",
+  "players": [
+    {
+      "registered": true,
+      "playerHash": "64f0cc7d9bac",
+      "displayName": ""
+    },
+    {
+      "registered": true,
+      "playerHash": "0cbda21aac8d",
+      "displayName": ""
+    }
+  ],
+  "challengeIdFormat": "valid",
+  "creatorScore": 10,
+  "creatorAdjustedFinishMs": 29160,
+  "opponentDisplayName": "Jest 64f0cc7d9bac20ff8c1",
+  "opponentScoreEvents": 10,
+  "opponentAdjustedFinishMs": 29160,
+  "scoreMappingVerified": true,
+  "outcome": "You win!",
+  "diagnostics": {
+    "player1": {
+      "consoleErrors": [
+        "requestStorageAccess: Refused to execute request. The document is sandboxed, and the 'allow-storage-access-by-user-activation' keyword is not set."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        {
+          "url": "https://jest.com/trpc/serverEvents.subscribe?input=%7B%22channels%22%3A%5B%22chat.message.global%22%2C%22chat.reaction.global%22%5D%7D",
+          "error": "net::ERR_ABORTED"
+        }
+      ]
+    },
+    "player2": {
+      "consoleErrors": [
+        "requestStorageAccess: Refused to execute request. The document is sandboxed, and the 'allow-storage-access-by-user-activation' keyword is not set."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        {
+          "url": "https://jest.com/trpc/serverEvents.subscribe?input=%7B%22channels%22%3A%5B%22chat.message.global%22%2C%22chat.reaction.global%22%5D%7D",
+          "error": "net::ERR_ABORTED"
+        }
+      ]
+    }
+  },
+  "completed": true
+}

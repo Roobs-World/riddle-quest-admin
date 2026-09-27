@@ -100,6 +100,8 @@ export function RaceTo10Game({
   const [penaltyFlash, setPenaltyFlash] = useState<string | null>(null);
   /** Whether the active-race abandonment confirmation is visible. */
   const [quitConfirmationOpen, setQuitConfirmationOpen] = useState(false);
+  /** Whether close was requested before the authoritative race-start response arrived. */
+  const [closeAfterStart, setCloseAfterStart] = useState(false);
   /** Latest recoverable multiplayer error shown to the player. */
   const [error, setError] = useState<string | null>(null);
   /** Latest successful block/report announcement. */
@@ -108,6 +110,10 @@ export function RaceTo10Game({
   const [socialPending, setSocialPending] = useState<"context" | "match" | null>(null);
   /** Published challenge created from the completed run. */
   const [published, setPublished] = useState<ReturnType<typeof PublishRaceChallengeResponseSchema.parse> | null>(null);
+  /** Player intent to publish, retained while background outcome reconciliation finishes. */
+  const [publishRequested, setPublishRequested] = useState(false);
+  /** Whether the provider-owned recipient picker is being prepared or displayed. */
+  const [sharing, setSharing] = useState(false);
   /** Local receipt time used to advance the displayed authoritative clock. */
   const [receivedAtMs, setReceivedAtMs] = useState(Date.now());
   /** Render trigger used to refresh the displayed race clock. */
@@ -127,6 +133,10 @@ export function RaceTo10Game({
   const safetyTargetRef = useRef<string | null>(null);
   /** Whether a successful publication should immediately open Jest's recipient picker. */
   const shareAfterPublishRef = useRef(false);
+  /** Synchronous guard preventing duplicate provider share dialogs. */
+  const sharingRef = useRef(false);
+  /** Synchronous close intent consumed by the correlated race-start response. */
+  const closeAfterStartRef = useRef(false);
   /** Records ed tournament runs ref. */
   const recordedTournamentRunsRef = useRef(new Set<string>());
   /** Records ed context runs ref. */
@@ -162,10 +172,17 @@ export function RaceTo10Game({
   /** Opens the host-owned recipient picker for an authoritative published challenge. */
   const sharePublishedChallenge = useCallback(
     async (publication: ReturnType<typeof PublishRaceChallengeResponseSchema.parse>) => {
-      if (!referralSharing) return;
+      if (!referralSharing || sharingRef.current) return;
+      sharingRef.current = true;
+      setSharing(true);
       analytics("race_share_dialog_opened", {categoryId: publication.preview.categoryId});
-      if ((await referralSharing.shareRace({challengeId: publication.challengeId, preview: publication.preview})) === "error") {
-        setError(tr("RaceTo10.ERROR_GENERIC"));
+      try {
+        if ((await referralSharing.shareRace({challengeId: publication.challengeId, preview: publication.preview})) === "error") {
+          setError(tr("RaceTo10.ERROR_GENERIC"));
+        }
+      } finally {
+        sharingRef.current = false;
+        setSharing(false);
       }
     },
     [analytics, referralSharing],
@@ -198,12 +215,17 @@ export function RaceTo10Game({
 
   /** Closes the race or opens confirmation when an active run would be abandoned. */
   const requestClose = useCallback(() => {
+    if (closeStateRef.current.stage === "countdown" && pending === "raceStart") {
+      closeAfterStartRef.current = true;
+      setCloseAfterStart(true);
+      return;
+    }
     if (closeStateRef.current.stage === "racing" && closeStateRef.current.runStatus === "active") {
       setQuitConfirmationOpen(true);
       return;
     }
     onClose();
-  }, [onClose]);
+  }, [onClose, pending]);
 
   /** Hides the active-race abandonment confirmation. */
   const dismissQuitConfirmation = useCallback(() => setQuitConfirmationOpen(false), []);
@@ -264,6 +286,7 @@ export function RaceTo10Game({
         }
         if (operation === "racePublish") {
           shareAfterPublishRef.current = false;
+          setPublishRequested(false);
         }
         if (operation === "raceChallenge" && activeChallengeId?.startsWith("jest-invite-") && message.payload.error?.includes("not found")) {
           setError(null);
@@ -277,7 +300,17 @@ export function RaceTo10Game({
         if (operation === "raceBlock" || operation === "raceReport") safetyTargetRef.current = null;
         if (operation === "raceStart") {
           setRun(null);
-          setStage(activeChallengeId ? "challenge" : "categories");
+          if (closeAfterStartRef.current) {
+            closeAfterStartRef.current = false;
+            setCloseAfterStart(false);
+            onClose();
+          } else {
+            setStage(activeChallengeId ? "challenge" : "categories");
+          }
+        } else if (operation === "raceAbandon" && closeAfterStartRef.current) {
+          closeAfterStartRef.current = false;
+          setCloseAfterStart(false);
+          setStage("racing");
         } else if (operation === "raceResume") {
           clearActiveRace(ownerId);
           setRun(null);
@@ -345,14 +378,20 @@ export function RaceTo10Game({
           /** Provides next run behavior. */
           const nextRun = RaceRunResponseSchema.parse(message.payload.data).run;
           updateRun(nextRun);
-          resetAttempt(nextRun);
-          analytics("race_started", {kind: activeChallengeId ? "challenge" : "creator"});
-          if (operation === "raceStart") analytics("race_attempt_started", {categoryId: nextRun.categoryId});
+          if (closeAfterStartRef.current) {
+            send("raceAbandon", "game:abandonRace", {runId: nextRun.runId});
+          } else {
+            resetAttempt(nextRun);
+            analytics("race_started", {kind: activeChallengeId ? "challenge" : "creator"});
+            analytics("race_attempt_started", {categoryId: nextRun.categoryId});
+          }
         } else if (operation === "raceAbandon") {
           /** Provides abandoned behavior. */
           const abandoned = AbandonRaceRunResponseSchema.parse(message.payload.data);
           if (abandoned.run.status !== "abandoned" || abandoned.result !== null) throw new Error("Invalid abandon response");
           clearActiveRace(ownerId);
+          closeAfterStartRef.current = false;
+          setCloseAfterStart(false);
           setRun(abandoned.run);
           setQuitConfirmationOpen(false);
           onClose();
@@ -435,6 +474,7 @@ export function RaceTo10Game({
           /** Provides publication behavior. */
           const publication = PublishRaceChallengeResponseSchema.parse(message.payload.data);
           setPublished(publication);
+          setPublishRequested(false);
           analytics("race_challenge_published", {categoryId: publication.preview.categoryId});
           window.dispatchEvent(new CustomEvent("riddle-quest:race-challenge-published", {detail: publication}));
           if (shareAfterPublishRef.current) {
@@ -466,7 +506,7 @@ export function RaceTo10Game({
     return () => window.clearTimeout(timer);
   }, [activeChallengeId, challenge, locale, pending, send, stage]);
 
-  useRaceClockEffects(stage, countdown, run, setStage, setCountdown, setTick);
+  useRaceClockEffects(stage, countdown, closeAfterStart ? null : run, setStage, setCountdown, setTick);
 
   useRaceGameplayFit({
     active: stage === "racing",
@@ -492,6 +532,12 @@ export function RaceTo10Game({
     setStage("result");
     if (run.status === "active") send("raceOutcome", "game:getRaceOutcome", {runId: run.runId});
   }, [adjustedNow, outcome, pending, run, send, stage]);
+
+  useEffect(() => {
+    if (!publishRequested || published || pending || !referralSharing || !run || run.status !== "completed") return;
+    shareAfterPublishRef.current = true;
+    send("racePublish", "game:publishRace", {runId: run.runId});
+  }, [pending, publishRequested, published, referralSharing, run, send]);
 
   useActiveRacePersistence(run, ownerId);
   /** Opponent score replayed against the adjusted race clock. */
@@ -599,9 +645,8 @@ export function RaceTo10Game({
 
   /** Publishes a completed creator run as a shareable challenge. */
   const publish = () => {
-    if (!referralSharing || !run || pending) return;
-    shareAfterPublishRef.current = true;
-    send("racePublish", "game:publishRace", {runId: run.runId});
+    if (!referralSharing || !run || published || publishRequested) return;
+    setPublishRequested(true);
   };
   /** Opens the host share flow for a published race challenge. */
   const share = () => {
@@ -618,6 +663,11 @@ export function RaceTo10Game({
     setRun(null);
     setOutcome(null);
     setPublished(null);
+    setPublishRequested(false);
+    closeAfterStartRef.current = false;
+    setCloseAfterStart(false);
+    sharingRef.current = false;
+    setSharing(false);
     setCurrentLetters([]);
     setActiveSlotIndex(0);
     setRaceGuesses([]);
@@ -701,6 +751,7 @@ export function RaceTo10Game({
         coins,
         error,
         safetyNotice,
+        safetyTargetUserId: safetyTargetRef.current,
         categories,
         inboxItems,
         tournament,
@@ -722,6 +773,7 @@ export function RaceTo10Game({
         letterStates,
         quitConfirmationOpen,
         raceGuessLoading,
+        closeAfterStart,
         published,
         dialogRef,
         gameplayViewportRef,
@@ -731,6 +783,8 @@ export function RaceTo10Game({
         playerOverlay,
         platformPlayerId,
         sharingRewardCoins: referralSharing?.rewardCoins,
+        publishRequested,
+        sharing,
       }}
       onClose={onClose}
       onRetry={retry}

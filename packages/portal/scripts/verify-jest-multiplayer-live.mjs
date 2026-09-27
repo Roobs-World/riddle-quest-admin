@@ -9,6 +9,7 @@ const playerOneState = process.env.JEST_PLAYER_ONE_STORAGE_STATE || "/tmp/riddle
 const playerTwoState = process.env.JEST_PLAYER_TWO_STORAGE_STATE || "/tmp/riddle-quest-jest-sandbox-state-player-2.json";
 const evidenceDirectory = process.env.JEST_MULTIPLAYER_EVIDENCE_DIR;
 const expectedBuildVersion = process.env.JEST_EXPECTED_BUILD_VERSION;
+const hostViewport = {width: 520, height: 932};
 
 for (const statePath of [playerOneState, playerTwoState]) {
   if (!existsSync(statePath)) throw new Error(`Missing Jest sandbox browser state: ${statePath}`);
@@ -29,10 +30,17 @@ if (evidenceDirectory) mkdirSync(evidenceDirectory, {recursive: true});
 const browser = await chromium.launch({headless: process.env.JEST_DEPLOYED_HEADED !== "1"});
 
 const openPlayer = async (statePath, url = gameUrl) => {
-  const context = await browser.newContext({storageState: statePath, viewport: {width: 390, height: 844}});
+  const context = await browser.newContext({storageState: statePath, viewport: hostViewport});
   await context.addInitScript((token) => {
     globalThis.FIREBASE_APPCHECK_DEBUG_TOKEN = token;
   }, process.env.FIREBASE_APPCHECK_DEBUG_TOKEN);
+  await context.addInitScript(() => {
+    globalThis.__RIDDLE_QUEST_LIVE_RACE_MESSAGES__ = [];
+    window.addEventListener("riddle-quest:host-to-game", (event) => {
+      const detail = event.detail;
+      if (detail?.type === "host:operationResult") globalThis.__RIDDLE_QUEST_LIVE_RACE_MESSAGES__.push(structuredClone(detail));
+    });
+  });
   const page = await context.newPage();
   const referralResponses = [];
   const consoleErrors = [];
@@ -78,7 +86,18 @@ const openPlayer = async (statePath, url = gameUrl) => {
         if (build !== expectedBuildVersion) {
           throw new Error(`Expected deployed build ${expectedBuildVersion}, received ${build ?? "unknown"}.`);
         }
-        return {context, page, game, referralResponses, consoleErrors, pageErrors, failedRequests};
+        const frameBounds = await (await game.frameElement()).boundingBox();
+        if (
+          !frameBounds ||
+          frameBounds.x < 0 ||
+          frameBounds.y < 0 ||
+          frameBounds.x + frameBounds.width > hostViewport.width ||
+          frameBounds.y + frameBounds.height > hostViewport.height
+        ) {
+          throw new Error(`The Jest game frame is clipped by the evidence viewport: ${JSON.stringify({hostViewport, frameBounds})}`);
+        }
+        const gameViewport = await game.evaluate(() => ({width: innerWidth, height: innerHeight}));
+        return {context, page, game, gameViewport, referralResponses, consoleErrors, pageErrors, failedRequests};
       }
     }
     await page.waitForTimeout(100);
@@ -86,7 +105,34 @@ const openPlayer = async (statePath, url = gameUrl) => {
   throw new Error("The deployed Jest game frame was not found.");
 };
 
-const enterGame = async ({page, game}) => {
+const capture = async ({page}, filename) => {
+  if (!evidenceDirectory) return;
+  await page.screenshot({path: path.join(evidenceDirectory, filename), fullPage: true});
+};
+
+const dismissRewardModals = async ({page, game}, evidenceFilename) => {
+  const rewardModal = game.locator(".game-modal-backdrop");
+  if (await rewardModal.isVisible().catch(() => false) && evidenceFilename) {
+    await capture({page}, evidenceFilename);
+  }
+  for (let step = 0; step < 12 && await rewardModal.isVisible().catch(() => false); step += 1) {
+    const chest = rewardModal.getByRole("button", {name: /tap the chest/i});
+    if (await chest.isVisible().catch(() => false) && await chest.isEnabled().catch(() => false)) {
+      await chest.click();
+    }
+    const advance = rewardModal.locator(".reward-continue");
+    if (!await advance.isVisible().catch(() => false)) break;
+    await advance.waitFor({state: "visible", timeout: 10_000});
+    await game.waitForFunction(() => {
+      const candidate = document.querySelector(".game-modal-backdrop .reward-continue");
+      return candidate instanceof HTMLButtonElement && !candidate.disabled;
+    }, undefined, {timeout: 10_000});
+    await advance.click();
+    await page.waitForTimeout(250);
+  }
+};
+
+const enterGame = async ({page, game}, {startupRewardFilename} = {}) => {
   const playable = game.locator(".onboarding-card-welcome, .riddle-card h1").first();
   const startupError = game.locator(".route-missing");
   await playable.or(startupError).first().waitFor({timeout: 45_000});
@@ -115,11 +161,7 @@ const enterGame = async ({page, game}) => {
   }
   await game.locator(".game-content:not([aria-hidden='true'])").waitFor({state: "visible", timeout: 30_000});
   await game.getByRole("button", {name: /^multiplayer$/i}).waitFor({state: "visible", timeout: 30_000});
-};
-
-const capture = async ({page}, filename) => {
-  if (!evidenceDirectory) return;
-  await page.screenshot({path: path.join(evidenceDirectory, filename), fullPage: true});
+  await dismissRewardModals({page, game}, startupRewardFilename);
 };
 
 const installRaceObserver = async ({game}) => game.evaluate(() => {
@@ -210,23 +252,14 @@ const finishRace = async ({page, game}, prefix, {betweenAnswersMs = 250} = {}) =
     }
   }
   await game.locator(".race-result").waitFor({state: "visible", timeout: 45_000});
-  const rewardModal = game.locator(".game-modal-backdrop");
-  if (await rewardModal.isVisible().catch(() => false)) {
-    await capture({page}, `${prefix}-achievement-unlocked.png`);
-    for (let step = 0; step < 8 && await rewardModal.isVisible().catch(() => false); step += 1) {
-      const advance = rewardModal.locator(".reward-continue");
-      if (!await advance.isVisible().catch(() => false)) break;
-      await advance.click();
-      await page.waitForTimeout(250);
-    }
-  }
+  await dismissRewardModals({page, game}, `${prefix}-achievement-unlocked.png`);
   await capture({page}, `${prefix}-race-finished.png`);
 };
 
 const creator = await openPlayer(playerOneState);
 let recipient;
 try {
-  await enterGame(creator);
+  await enterGame(creator, {startupRewardFilename: "live-00-player-1-returning-reward.png"});
   const creatorIdentity = await readIdentity(creator);
   if (!creatorIdentity.player?.registered) throw new Error("Player 1 is not a registered Jest player.");
   await installRaceObserver(creator);
@@ -258,7 +291,30 @@ try {
   if (creator.referralResponses.length !== 0) throw new Error("Jest sharing occurred before Player 1 completed the run.");
   await capture(creator, "live-03-player-1-completed.png");
   await creator.game.getByRole("button", {name: /send challenge/i}).click({noWaitAfter: true});
-  await creator.game.waitForFunction(() => Boolean(globalThis.__RIDDLE_QUEST_LIVE_INVITE__?.input?.entryPayload?.challengeId), undefined, {timeout: 45_000});
+  await capture(creator, "live-04-player-1-share-requested.png");
+  try {
+    await creator.game.waitForFunction(() => Boolean(globalThis.__RIDDLE_QUEST_LIVE_INVITE__?.input?.entryPayload?.challengeId), undefined, {timeout: 45_000});
+  } catch (error) {
+    const diagnostic = await creator.game.evaluate(() => ({
+      body: document.body.innerText.slice(0, 4_000),
+      invite: structuredClone(globalThis.__RIDDLE_QUEST_LIVE_INVITE__ ?? null),
+      messages: [...(globalThis.__RIDDLE_QUEST_LIVE_RACE_MESSAGES__ ?? [])].slice(-8).map((message) => ({
+        operation: message?.payload?.operation,
+        ok: message?.payload?.ok,
+        error: message?.payload?.error,
+        status: message?.payload?.data?.run?.status,
+        challengeId: message?.payload?.data?.preview?.challengeId,
+      })),
+    }));
+    await capture(creator, "live-04-player-1-share-error.png");
+    throw new Error(`Player 1's completed run did not reach Jest referral sharing: ${JSON.stringify({
+      diagnostic,
+      referralResponses: creator.referralResponses,
+      consoleErrors: creator.consoleErrors,
+      pageErrors: creator.pageErrors,
+      failedRequests: creator.failedRequests,
+    })}`, {cause: error});
+  }
   const invite = await creator.game.evaluate(() => structuredClone(globalThis.__RIDDLE_QUEST_LIVE_INVITE__.input));
   const challengeId = invite.entryPayload.challengeId;
   if (typeof challengeId !== "string" || challengeId.length < 1 || challengeId.length > 160) {
@@ -277,6 +333,8 @@ try {
     const close = dialog.getByRole("button", {name: /close|cancel|done/i}).last();
     if (await close.isVisible().catch(() => false)) await close.click();
   }
+  await dismissRewardModals(creator);
+  await capture(creator, "live-04b-player-1-challenge-ready.png");
   const publishedPreview = await creator.game.evaluate((publishedChallengeId) => structuredClone(
     [...(globalThis.__RIDDLE_QUEST_LIVE_RACE_MESSAGES__ ?? [])].reverse().map((message) => message?.payload?.data?.preview)
       .find((preview) => preview?.challengeId === publishedChallengeId),
@@ -297,22 +355,58 @@ try {
   } catch (error) {
     throw new Error(`Player 2 did not receive the live challenge: ${JSON.stringify({pageUrl: recipient.page.url(), gameUrl: recipient.game.url(), body: (await recipient.game.locator("body").innerText()).slice(0, 2_000)})}`, {cause: error});
   }
+  let stableInviteFrame = recipient.game;
+  let stableSince = Date.now();
+  const stableInviteDeadline = Date.now() + 30_000;
+  while (Date.now() - stableSince < 3_000 && Date.now() < stableInviteDeadline) {
+    const candidate = [...recipient.page.frames()].reverse().find((frame) => {
+      try {
+        return new URL(frame.url()).hostname === `${gameId}.builds.jest.com` && !frame.isDetached();
+      } catch {
+        return false;
+      }
+    });
+    const actionable = candidate && await candidate.getByRole("button", {name: /accept challenge/i}).isVisible().catch(() => false);
+    if (!actionable || candidate !== stableInviteFrame) {
+      stableInviteFrame = candidate ?? stableInviteFrame;
+      stableSince = Date.now();
+    }
+    await recipient.page.waitForTimeout(100);
+  }
+  if (Date.now() - stableSince < 3_000) throw new Error("Player 2's invite frame did not stabilize before acceptance.");
+  recipient.game = stableInviteFrame;
   await capture(recipient, "live-05-player-2-invite-ready.png");
   await recipient.game.getByRole("button", {name: /accept challenge/i}).click();
-  await recipient.page.waitForTimeout(1_000);
-  const acceptedGame = recipient.page.frames().find((frame) => {
-    try {
-      return new URL(frame.url()).hostname === `${gameId}.builds.jest.com` && !frame.isDetached();
-    } catch {
-      return false;
+  const acceptedDeadline = Date.now() + 45_000;
+  let acceptedGame;
+  while (!acceptedGame && Date.now() < acceptedDeadline) {
+    for (const frame of [...recipient.page.frames()].reverse()) {
+      try {
+        if (new URL(frame.url()).hostname !== `${gameId}.builds.jest.com` || frame.isDetached()) continue;
+        if (await frame.locator(".race-gameplay .guess-board").isVisible().catch(() => false)) {
+          acceptedGame = frame;
+          break;
+        }
+      } catch {
+        // The candidate frame may be replaced while the Jest shell resolves the referral route.
+      }
     }
-  });
-  if (!acceptedGame) throw new Error("Player 2's accepted challenge frame was not found.");
+    if (!acceptedGame) await recipient.page.waitForTimeout(100);
+  }
+  if (!acceptedGame) {
+    await capture(recipient, "live-06-player-2-accept-error.png");
+    throw new Error(`Player 2's accepted challenge did not reach gameplay: ${JSON.stringify({
+      pageUrl: recipient.page.url(),
+      frames: recipient.page.frames().map((frame) => frame.url()),
+      body: (await recipient.page.locator("body").innerText()).slice(0, 2_000),
+      consoleErrors: recipient.consoleErrors,
+      pageErrors: recipient.pageErrors,
+      failedRequests: recipient.failedRequests,
+    })}`);
+  }
   if (acceptedGame !== recipient.game) {
     recipient.game = acceptedGame;
-    await installRaceObserver(recipient);
   }
-  await recipient.game.locator(".race-gameplay .guess-board").waitFor({state: "visible", timeout: 45_000});
   const recipientRun = await latestRun(recipient, "opponent");
   if (!recipientRun?.opponent) throw new Error("Player 2's accepted run did not contain an opponent score.");
   const opponent = recipientRun.opponent;
@@ -333,6 +427,8 @@ try {
   const summary = {
     build: new URL(creator.game.url()).pathname.split("/").at(-2),
     versionId: new URL(gameUrl).searchParams.get("versionId"),
+    hostViewport,
+    gameViewport: creator.gameViewport,
     players: [creatorIdentity, recipientIdentity].map((identity) => ({
       registered: identity.player.registered,
       playerHash: createHash("sha256").update(identity.player.playerId).digest("hex").slice(0, 12),

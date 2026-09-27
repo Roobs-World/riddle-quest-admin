@@ -104,8 +104,13 @@ export function RaceInboxPanel({
   items: RaceInboxItem[];
   /** Stores loading. */
   loading: boolean;
-  /** Stores safety pending. */
-  safetyPending: boolean;
+  /** Safety mutation whose initiating control should display progress. */
+  safetyPending: {
+    /** Correlated safety operation in flight. */
+    operation: "raceBlock" | "raceReport";
+    /** Rival whose safety mutation is in flight. */
+    targetUserId: string;
+  } | null;
   /** Stores context board. */
   contextBoard?: ListFacebookContextBoardResponse | null;
   /** Stores context board loading. */
@@ -171,14 +176,19 @@ export function RaceInboxPanel({
               {item.opponentUserId ? (
                 <details className="race-safety-actions">
                   <summary>{tr("RaceTo10.SAFETY_ACTIONS")}</summary>
-                  <button type="button" disabled={safetyPending} onClick={() => onBlock(item)}>
+                  <button
+                    type="button"
+                    disabled={Boolean(safetyPending)}
+                    aria-busy={safetyPending?.operation === "raceBlock" && safetyPending.targetUserId === item.opponentUserId}
+                    onClick={() => onBlock(item)}
+                  >
                     {tr("RaceTo10.BLOCK_RIVAL")}
                   </button>
                   <label>
                     <span>{tr("RaceTo10.REPORT_REASON")}</span>
                     <select
                       value={reportCategories[item.itemId] ?? "harassment"}
-                      disabled={safetyPending}
+                      disabled={Boolean(safetyPending)}
                       onChange={(event) =>
                         setReportCategories((current) => ({
                           ...current,
@@ -195,7 +205,8 @@ export function RaceInboxPanel({
                   </label>
                   <button
                     type="button"
-                    disabled={safetyPending}
+                    disabled={Boolean(safetyPending)}
+                    aria-busy={safetyPending?.operation === "raceReport" && safetyPending.targetUserId === item.opponentUserId}
                     onClick={() => onReport(item, reportCategories[item.itemId] ?? "harassment")}
                   >
                     {tr("RaceTo10.REPORT_RIVAL")}
