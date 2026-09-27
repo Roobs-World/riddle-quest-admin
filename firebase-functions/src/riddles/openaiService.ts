@@ -351,6 +351,8 @@ export async function generateUniqueRiddle(
         )}.`
       : "";
 
+  /** Tracks only the fixed pipeline stage, never request or response content. */
+  let operation: "generate" | "blind-solve" | "review" = "generate";
   try {
     /** Provides completion behavior. */
     const completion = await withSentrySpan(
@@ -399,11 +401,13 @@ export async function generateUniqueRiddle(
 
     /** Provides [question, answer] behavior. */
     const [question, answer] = validatedRiddle;
+    operation = "blind-solve";
     /** Provides solved behavior. */
     const solved = await blindSolveGeneratedRiddle(openai, model, locale, question, answer);
     if (!solved) {
       return null;
     }
+    operation = "review";
     /** Provides accepted behavior. */
     const accepted = await reviewGeneratedRiddle(openai, model, locale, question, answer);
     if (!accepted) {
@@ -413,8 +417,10 @@ export async function generateUniqueRiddle(
     functions.logger.info("Generated and quality-approved a riddle.", {answerLength: answer.length});
     return validatedRiddle;
   } catch (error) {
-    functions.logger.error("OpenAI riddle generation failed.", {model, ...getSafeErrorMetadata(error)});
-    captureException(error, getSafeErrorMetadata(error));
+    /** Identifies the failed stage without including prompts or generated content. */
+    const diagnostics = {operation, locale, ...getSafeErrorMetadata(error)};
+    functions.logger.error("OpenAI riddle generation failed.", {model, ...diagnostics});
+    captureException(error, diagnostics);
     return null; // Return null on error to prevent breaking the loop
   }
 }

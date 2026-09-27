@@ -405,6 +405,8 @@ describe("OpenAI Service", () => {
       expect(result).toBeNull();
       expect(mockLogger.error).toHaveBeenCalledWith("OpenAI riddle generation failed.", {
         model: "gpt-5.6-sol",
+        operation: "generate",
+        locale: "en",
         errorClass: "Error",
       });
       expect(mockLogger.error).not.toHaveBeenCalledWith(expect.anything(), apiError);
@@ -423,11 +425,48 @@ describe("OpenAI Service", () => {
 
       await expect(generateUniqueRiddle()).resolves.toBeNull();
       expect(mockCaptureException).toHaveBeenCalledWith(apiError, {
+        operation: "generate",
+        locale: "en",
         errorClass: "APIError",
         status: 503,
         code: "server_error",
       });
     });
+
+    test.each(["generate", "blind-solve", "review"] as const)(
+      "rejects a candidate on a %s server failure and permits a later fully reviewed candidate",
+      async (operation) => {
+        /** Simulates a provider failure carrying content that must not enter diagnostics. */
+        const apiError = Object.assign(new Error("private provider response"), {
+          name: "InternalServerError",
+          status: 500,
+          request: {input: "private prompt"},
+        });
+        if (operation !== "generate") {
+          mockParse.mockResolvedValueOnce(parsedRiddleResponse("What runs but never walks?", "river"));
+        }
+        if (operation === "review") {
+          mockParse.mockResolvedValueOnce(approvedBlindSolveResponse("river"));
+        }
+        mockParse.mockRejectedValueOnce(apiError);
+
+        await expect(generateUniqueRiddle("fr")).resolves.toBeNull();
+        expect(mockParse).toHaveBeenCalledTimes(["generate", "blind-solve", "review"].indexOf(operation) + 1);
+        expect(mockCaptureException).toHaveBeenCalledWith(apiError, {
+          operation,
+          locale: "fr",
+          errorClass: "InternalServerError",
+          status: 500,
+        });
+        expect(mockLogger.info).not.toHaveBeenCalled();
+
+        mockParse.mockClear();
+        mockApprovedRiddle("What runs but never walks?", "river");
+        await expect(generateUniqueRiddle("fr")).resolves.toEqual(["What runs but never walks?", "river"]);
+        expect(mockParse).toHaveBeenCalledTimes(3);
+        expect(mockCaptureException).toHaveBeenCalledTimes(1);
+      },
+    );
 
     test("throws error when OPENAI_API_KEY is missing", async () => {
       delete process.env.OPENAI_API_KEY;
