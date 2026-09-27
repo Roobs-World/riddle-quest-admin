@@ -1443,10 +1443,10 @@ describeBrowser("Jest authentication integration", () => {
     await captureMultiplayerEvidence(recipient.page, "05-player-2-invite-ready.png");
     await recipient.page.getByRole("button", {name: /accept challenge/i}).click();
     await recipient.page.locator(".race-gameplay .guess-board").waitFor({state: "visible", timeout: 10_000});
-    expect(await recipient.page.locator(".race-progress strong").allInnerTexts()).toEqual([
-      "Riddles solved: 0 / 10",
-      "Riddles solved: 0 / 10",
-    ]);
+    /** Progress can race with the creator's first server-confirmed automatic clear. */
+    const initialProgress = await recipient.page.locator(".race-progress strong").allInnerTexts();
+    expect(initialProgress[0]).toBe("Riddles solved: 0 / 10");
+    expect(initialProgress[1]).toMatch(/^Riddles solved: [01] \/ 10$/);
     await captureMultiplayerEvidence(recipient.page, "06-player-2-race-started.png");
     await recipient.page.getByRole("heading", {name: /opponent wins/i}).waitFor({timeout: 10_000});
     /** Final score makes the exact opponent replay explicit after automatic completion. */
