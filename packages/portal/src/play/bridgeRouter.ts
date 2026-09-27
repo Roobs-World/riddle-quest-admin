@@ -233,7 +233,13 @@ export type HostMessageHandlers = {
   ): void | Promise<void>;
   /** Reserves an expiring provider-invite lobby. */
   reserveRaceInvite(
-    message: Extract<GameToHostMessage, {type: "game:reserveRaceInvite"}>,
+    message: Extract<
+      GameToHostMessage,
+      {
+        /** Identifies the race invite reservation request. */
+        type: "game:reserveRaceInvite";
+      }
+    >,
   ): void | Promise<void>;
   /** Gets race challenge. */
   getRaceChallenge(

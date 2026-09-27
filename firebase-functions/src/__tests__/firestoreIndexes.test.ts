@@ -38,6 +38,7 @@ describe("Firestore index policy", () => {
   });
 
   it("expires Jest race invite lobbies and reservation receipts", () => {
+    /** Firestore field policies configured for TTL and index behavior. */
     const overrides = readIndexConfig().fieldOverrides;
     for (const collectionGroup of ["raceInviteLobbies", "raceInviteRequests"]) {
       expect(overrides).toContainEqual({

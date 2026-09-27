@@ -477,6 +477,7 @@ export const createPlayHostMessageHandlers = ({
     }),
   reserveRaceInvite: (message) =>
     runRaceOperation(message.requestId, "raceInviteReserve", () => {
+      /** Authoritative race service used to reserve the provider invite. */
       const race = requireRaceAuthority(authority);
       if (!race.reserveRaceInvite) throw new Error("Race invite lobbies are unavailable.");
       return race.reserveRaceInvite(message.payload);

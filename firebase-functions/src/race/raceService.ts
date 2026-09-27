@@ -65,12 +65,19 @@ export {buildDeterministicRaceDeck, listRaceCategoriesForLocale} from "./raceSet
 
 /** Server-owned two-seat lobby created before Jest opens its referral dialog. */
 type RaceInviteLobbyRecord = {
+  /** Opaque identifier carried by the provider referral payload. */
   challengeId: string;
+  /** Internal user that created the invitation. */
   creatorId: string;
+  /** First authenticated user to claim the second seat. */
   recipientId?: string;
+  /** Content locale shared by both lobby seats. */
   locale: StartRaceRunRequest["locale"];
+  /** Current server-owned invitation lifecycle state. */
   status: "inviting" | "claimed" | "published";
+  /** Creation time in Unix milliseconds. */
   createdAtMs: number;
+  /** Expiration time in Unix milliseconds. */
   expiresAtMs: number;
 };
 
@@ -94,20 +101,34 @@ const parseRaceInviteLobby = (value: FirebaseFirestore.DocumentData | undefined)
 export async function reserveRaceInviteForUser(
   userId: string,
   input: ReserveRaceInviteRequest,
-  options: {db?: Firestore; nowMs?: number} = {},
+  options: {
+    /** Optional Firestore boundary used by integration tests. */
+    db?: Firestore;
+    /** Optional clock boundary used by integration tests. */
+    nowMs?: number;
+  } = {},
 ): Promise<ReserveRaceInviteResponse> {
   /** Authoritative storage and time boundary. */
   const db = dbOrDefault(options.db);
+  /** Current server time used for creation and expiry. */
   const nowMs = options.nowMs ?? Date.now();
+  /** Idempotency receipt for this user-scoped reservation request. */
   const requestRef = db.collection("raceInviteRequests").doc(requestDocumentId(userId, input.requestId));
+  /** Non-reversible creator component used to namespace the opaque challenge ID. */
   const ownerHash = createHash("sha256").update(userId).digest("hex");
+  /** Opaque challenge identifier sent through the Jest referral entry payload. */
   const challengeId = `jest-invite-${ownerHash}-${randomUUID().replace(/-/g, "")}`;
+  /** Authoritative two-seat lobby document. */
   const lobbyRef = db.collection("raceInviteLobbies").doc(challengeId);
+  /** Shared expiration timestamp for the lobby and request receipt. */
   const expiresAtMs = nowMs + RACE_CHALLENGE_TTL_MS;
+  /** Validated response persisted for idempotent replays. */
   const response = ReserveRaceInviteResponseSchema.parse({challengeId, expiresAtMs});
   return db.runTransaction(async (transaction) => {
+    /** Existing idempotency receipt, when the request was already handled. */
     const existing = await transaction.get(requestRef);
     if (existing.exists) return ReserveRaceInviteResponseSchema.parse(existing.data()?.response);
+    /** Firestore TTL timestamp shared by both reservation documents. */
     const expiresAt = admin.firestore.Timestamp.fromMillis(expiresAtMs);
     transaction.create(lobbyRef, {
       challengeId,
@@ -128,16 +149,26 @@ export async function claimRaceInviteForUser(
   userId: string,
   challengeId: string,
   locale: StartRaceRunRequest["locale"],
-  options: {db?: Firestore; nowMs?: number} = {},
+  options: {
+    /** Optional Firestore boundary used by integration tests. */
+    db?: Firestore;
+    /** Optional clock boundary used by integration tests. */
+    nowMs?: number;
+  } = {},
 ): Promise<boolean> {
   if (!challengeId.startsWith("jest-invite-")) return false;
+  /** Authoritative storage boundary. */
   const db = dbOrDefault(options.db);
+  /** Current server time used to reject expired invitations. */
   const nowMs = options.nowMs ?? Date.now();
+  /** Authoritative two-seat lobby document. */
   const lobbyRef = db.collection("raceInviteLobbies").doc(challengeId);
   return db.runTransaction(async (transaction) => {
+    /** Current lobby state read inside the claim transaction. */
     const snapshot = await transaction.get(lobbyRef);
     // Invites created by an older release remain usable during migration.
     if (!snapshot.exists) return false;
+    /** Validated server-owned lobby state. */
     const lobby = parseRaceInviteLobby(snapshot.data());
     if (lobby.expiresAtMs <= nowMs) throw new HttpsError("failed-precondition", "Race invite lobby has expired.");
     if (lobby.locale !== locale) throw new HttpsError("failed-precondition", "RaceTo10.ERROR_LOCALE_MISMATCH");
@@ -305,6 +336,7 @@ export async function startRaceRunForUser(
       assertJestAccountActive(creatorDeletionSnapshot);
       await assertRaceInteractionAllowed(transaction, db, userId, committedChallenge.creatorId);
       if (inviteLobbySnapshot?.exists) {
+        /** Lobby state constraining which recipient may accept this challenge. */
         const lobby = parseRaceInviteLobby(inviteLobbySnapshot.data());
         if (lobby.recipientId !== userId) {
           throw new HttpsError("permission-denied", "This race invite belongs to another recipient.");
@@ -540,6 +572,7 @@ export async function publishRaceChallengeForUser(
   const challengeRef = input.reservedChallengeId
     ? db.collection("raceChallenges").doc(input.reservedChallengeId)
     : db.collection("raceChallenges").doc();
+  /** Optional pre-shared lobby that this publication must finalize. */
   const inviteLobbyRef = input.reservedChallengeId
     ? db.collection("raceInviteLobbies").doc(input.reservedChallengeId)
     : null;
@@ -566,6 +599,7 @@ export async function publishRaceChallengeForUser(
       return requestSnapshot.data()?.response as PublishRaceChallengeResponse;
     }
     if (inviteLobbySnapshot?.exists) {
+      /** Validated lobby state authorizing publication by its creator. */
       const lobby = parseRaceInviteLobby(inviteLobbySnapshot.data());
       if (lobby.creatorId !== userId) throw new HttpsError("permission-denied", "This invite lobby belongs to another player.");
       if (lobby.expiresAtMs <= nowMs) throw new HttpsError("failed-precondition", "Race invite lobby has expired.");

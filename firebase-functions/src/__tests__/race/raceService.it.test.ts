@@ -164,11 +164,13 @@ afterAll(async () => {
 
 describe("Race to 10 transactional service", () => {
   it("reserves one Jest invite recipient idempotently", async () => {
+    /** Initial server-owned invite lobby reservation. */
     const reservation = await reserveRaceInviteForUser(
       "creator-1",
       {locale: "en", requestId: "reserve-invite-0001"},
       {db, nowMs: NOW + 17_000},
     );
+    /** Idempotent replay of the same reservation request. */
     const duplicateReservation = await reserveRaceInviteForUser(
       "creator-1",
       {locale: "en", requestId: "reserve-invite-0001"},

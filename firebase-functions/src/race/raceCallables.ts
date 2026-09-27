@@ -245,8 +245,11 @@ export const reserveRaceInvite = onCallWithSentry(
   "reserveRaceInvite",
   jestWebCallableOptions,
   async (request: CallableRequest<unknown>) => {
+    /** Authenticated internal user issuing the invite. */
     const userId = await requireRaceUser(request);
+    /** Validated invite reservation request. */
     const input = validateCallableRequest(ReserveRaceInviteRequestSchema, request.data, "reserveRaceInvite");
+    /** Newly reserved or idempotently replayed lobby response. */
     const response = await reserveRaceInviteForUser(userId, input);
     return validateCallableResponse(ReserveRaceInviteResponseSchema, response, "reserveRaceInvite");
   },
@@ -257,6 +260,7 @@ export const getRaceChallenge = onCallWithSentry(
   "getRaceChallenge",
   jestWebCallableOptions,
   async (request: CallableRequest<unknown>) => {
+    /** Authenticated internal user opening the challenge. */
     const userId = await requireRaceUser(request);
     /** Provides input behavior. */
     const input = validateCallableRequest(RaceChallengeIdRequestSchema, request.data, "getRaceChallenge");

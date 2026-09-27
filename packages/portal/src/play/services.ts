@@ -146,7 +146,9 @@ const createLazyHostServices = (
   async publishRace(input) {
     return (await loadServices()).publishRace(input);
   },
+  /** Reserves an expiring provider-invite lobby. */
   async reserveRaceInvite(input) {
+    /** Lazily loaded target services that may support provider invitations. */
     const services = await loadServices();
     if (!services.reserveRaceInvite) throw new Error("Race invite lobbies are unavailable.");
     return services.reserveRaceInvite(input);

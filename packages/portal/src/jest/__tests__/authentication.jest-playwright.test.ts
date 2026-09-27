@@ -304,7 +304,10 @@ const installJestSdkHarness = async (page: Page, scenario = "success") => {
         shareReferralLink: async (input: AuthHarnessState["referralShares"][number]) => {
           state.calls.push("sdk.referrals.shareReferralLink");
           state.referralSharesStartedFromProfileClick.push(Boolean(
-            (window as typeof window & {__RIDDLE_QUEST_PROFILE_INVITE_CLICK__?: boolean})
+            (window as typeof window & {
+              /** True only while the profile invite button's synchronous handler is running. */
+              __RIDDLE_QUEST_PROFILE_INVITE_CLICK__?: boolean;
+            })
               .__RIDDLE_QUEST_PROFILE_INVITE_CLICK__,
           ));
           state.referralShares.push(structuredClone(input));
@@ -871,7 +874,10 @@ describeBrowser("Jest authentication integration", () => {
     await inviteButton.waitFor({state: "visible"});
     await inviteButton.evaluate((button) => {
       /** Marks the exact synchronous Profile-button callback under test. */
-      const target = window as typeof window & {__RIDDLE_QUEST_PROFILE_INVITE_CLICK__?: boolean};
+      const target = window as typeof window & {
+        /** True only while the profile invite button's synchronous handler is running. */
+        __RIDDLE_QUEST_PROFILE_INVITE_CLICK__?: boolean;
+      };
       target.__RIDDLE_QUEST_PROFILE_INVITE_CLICK__ = true;
       try {
         button.click();
@@ -888,9 +894,10 @@ describeBrowser("Jest authentication integration", () => {
           }
         ).__RIDDLE_QUEST_JEST_AUTH_TEST__.referralShares.length === 1,
     );
-    /** Provides [share] behavior. */
+    /** Captures the referral request opened by the profile invite action. */
     const creatorState = await getHarnessState(creator.page);
-    const [share] = creatorState.referralShares;
+    /** First and only referral share request emitted during the journey. */
+    const share = creatorState.referralShares[0];
     expect(creatorState.calls).toContain("sdk.referrals.shareReferralLink");
     expect(creatorState.referralSharesStartedFromProfileClick).toEqual([true]);
     expect(share.onboardingSlug).toBeUndefined();

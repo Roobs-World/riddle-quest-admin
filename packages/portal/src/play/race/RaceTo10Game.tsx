@@ -478,10 +478,12 @@ export function RaceTo10Game({
             void sharePublishedChallenge(publication);
           }
         } else if (operation === "raceInviteReserve") {
+          /** Server-issued lobby reservation safe to include in the Jest entry payload. */
           const reservation = ReserveRaceInviteResponseSchema.parse(message.payload.data);
           void (async () => {
             try {
               if (!referralSharing?.shareMultiplayerInvite) throw new Error("Jest referral sharing is unavailable.");
+              /** Result of opening and completing or dismissing the Jest referral dialog. */
               const shareOutcome = await referralSharing.shareMultiplayerInvite(reservation.challengeId);
               if (shareOutcome === "error") {
                 setError(tr("RaceTo10.ERROR_GENERIC"));

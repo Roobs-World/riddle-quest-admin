@@ -447,6 +447,7 @@ export const createFakeRaceServices = (): RaceMethods => {
     },
     /** Reserves an expiring two-player invite lobby for browser-harness sharing. */
     async reserveRaceInvite() {
+      /** Deterministic unique component for the synthetic challenge identifier. */
       const suffix = (++sequence).toString(16).padStart(32, "0");
       return {
         challengeId: `jest-invite-${"a".repeat(64)}-${suffix}`,
