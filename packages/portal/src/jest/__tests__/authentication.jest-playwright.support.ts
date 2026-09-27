@@ -61,7 +61,7 @@ export const openProfileAfterGuidance = async (page: Page) => {
   /** Provides tooltip behavior. */
   const tooltip = page.locator(".tooltip-card");
   await tooltip.waitFor({state: "visible", timeout: 1_000}).catch(() => undefined);
-  for (let step = 0; step < 8 && (await tooltip.isVisible()); step += 1) {
+  for (let step = 0; step < 20 && (await tooltip.isVisible()); step += 1) {
     await tooltip.getByRole("button", {name: /got it/i}).click();
   }
   await tooltip.waitFor({state: "detached", timeout: 5_000});
