@@ -1,7 +1,7 @@
 import type {ScreenshotProvider} from "../types";
 
-/** Defines the max screenshot bytes value. */
-const MAX_SCREENSHOT_BYTES = 2 * 1024 * 1024;
+/** Jest limits the complete ASCII data URL, including its prefix and base64 expansion. */
+const MAX_SCREENSHOT_DATA_URL_BYTES = 2 * 1024 * 1024;
 
 /** Provides size checked screenshot provider behavior. */
 export function sizeCheckedScreenshotProvider(provider: ScreenshotProvider): ScreenshotProvider {
@@ -10,11 +10,7 @@ export function sizeCheckedScreenshotProvider(provider: ScreenshotProvider): Scr
     const result = await provider();
     if (!result) return null;
     if (!/^data:image\/png;base64,/.test(result)) return null;
-    /** Provides encoded behavior. */
-    const encoded = result.slice(result.indexOf(",") + 1);
-    /** Provides bytes behavior. */
-    const bytes = Math.floor((encoded.length * 3) / 4) - (encoded.endsWith("==") ? 2 : encoded.endsWith("=") ? 1 : 0);
-    return bytes <= MAX_SCREENSHOT_BYTES ? result : null;
+    return result.length <= MAX_SCREENSHOT_DATA_URL_BYTES ? result : null;
   };
 }
 
