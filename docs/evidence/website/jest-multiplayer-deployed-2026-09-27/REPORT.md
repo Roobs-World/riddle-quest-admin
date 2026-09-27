@@ -1,6 +1,6 @@
 # Jest deployed multiplayer verification — 2026-09-27
 
-Status: exact deployed candidate and complete two-player simulator journey passed.
+Status: exact deployed candidate, real two-player sandbox race, and simulator journey passed.
 
 ## Deployment
 
@@ -35,9 +35,29 @@ all identity, Firebase Function, race, referral-verification, and subscription
 catalog assertions in 35 seconds (`1/1` test passed). No debug credential is
 stored in this report or committed to Git.
 
-Player 2's fresh one-time link was left unused because the deployed acceptance
-gate needs one registered sandbox identity; the two-player handoff is covered by
-the isolated simulator journey below.
+## Complete live sandbox journey
+
+Two fresh registered Jest sandbox identities completed the full production-hosted
+journey against the version-specific candidate:
+
+1. Player 1 opened Multiplayer and selected **Challenge another player**.
+2. Jest accepted the referral upsert and returned a real `https://jest.com/l/...`
+   invite URL containing a bounded opaque challenge ID.
+3. Player 1 completed all ten server-issued riddles and the backend published the
+   reserved challenge.
+4. Player 2 followed the real Jest referral URL. Because Jest's general referral
+   route initially selected the older active version, the runner preserved its
+   `entryPayload` and `refid` while continuing on version
+   `01a0e12d-c178-73ed-9963-c1cba7a83aac`.
+5. Player 2 saw Player 1's published challenge, accepted it, and entered the same
+   head-to-head race with Player 1 displayed on the opponent score rail.
+6. Player 2 completed all ten server-issued riddles and reached the shared final
+   outcome, **You win!**.
+
+The reusable runner is `packages/portal/scripts/verify-jest-multiplayer-live.mjs`.
+It requires two private owner-only browser state files and the registered App
+Check debug token; no identity, referral URL, challenge ID, or credential is
+written to the repository.
 
 ## Complete simulator journey
 
@@ -61,6 +81,18 @@ Result: targeted Jest suite `1 passed`; prerequisite browser suites `13 passed`.
 The Jest build and artifact audit also passed.
 
 ## Evidence
+
+### Live Jest sandbox
+
+- `live-01-player-1-lobby.png`
+- `live-02-player-1-share-dialog.png`
+- `live-04-player-1-race-started.png`
+- `live-04-player-1-race-finished.png`
+- `live-05-player-2-invite-ready.png`
+- `live-06-player-2-race-started.png`
+- `live-06-player-2-race-finished.png`
+
+### Isolated simulator
 
 - `01-player-1-multiplayer-lobby.png`
 - `02-player-1-invite-sent.png`
