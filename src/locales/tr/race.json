@@ -29,6 +29,8 @@
     "MATCH_PLAYER": "Rakip bul",
     "CHOOSE_CONTEXT": "Arkadaşlarla oyna",
     "CHALLENGE_PLAYER": "Başka bir oyuncuya meydan oku",
+    "CHALLENGE_JEST_PLAYER": "Bir Jest oyuncusuna meydan oku",
+    "CHALLENGE_BY_SMS": "SMS ile meydan okuma gönder",
     "CHALLENGE_PLAYER_HELP": "Önce Jest üzerinden birini davet et, sonra karışık kategorili yarışı tamamlayarak geçilmesi gereken süreyi belirle.",
     "INVITE_BEFORE_RUN": "{name} seni Jest’te Race to 10 oyununa davet ediyor. Geçmen için bir süre belirleyeceğim!",
     "SAFETY_ACTIONS": "Güvenlik seçenekleri",

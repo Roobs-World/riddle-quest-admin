@@ -81,9 +81,9 @@ export function GameModalPages({
         <ContinueModalPage
           balance={balance}
           onContinue={onContinue}
+          onSkip={onRequestSkip}
           onOpenModal={onOpenModal}
           commerceAvailable={commerceAvailable}
-          confirmationPending={state.guessPending}
         />
       )}
 

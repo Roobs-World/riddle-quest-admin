@@ -1088,7 +1088,7 @@ describeBrowser("Jest authentication integration", () => {
     const {context, page} = await openHarness(browser, {registered: true, scenario: "race-share-cancel"});
     await enterRegisteredGame(page);
     await page.getByRole("button", {name: /^multiplayer$/i}).click();
-    await page.getByRole("button", {name: "Challenge another player", exact: true}).click();
+    await page.getByRole("button", {name: "Challenge a Jest player", exact: true}).click();
     await page.waitForFunction(() =>
       /** Reads the injected Jest harness share calls. */
       (window as typeof window & {
@@ -1097,7 +1097,16 @@ describeBrowser("Jest authentication integration", () => {
       })
         .__RIDDLE_QUEST_JEST_AUTH_TEST__.referralShares.length > 0,
     );
-    await page.getByRole("button", {name: "Challenge another player", exact: true}).waitFor({state: "visible"});
+    await page.getByRole("button", {name: "Send challenge by SMS", exact: true}).click();
+    await page.waitForFunction(() =>
+      /** Confirms both explicit delivery choices reached Jest's referral dialog. */
+      (window as typeof window & {
+        /** Injected Jest authentication harness state. */
+        __RIDDLE_QUEST_JEST_AUTH_TEST__: AuthHarnessState;
+      }).__RIDDLE_QUEST_JEST_AUTH_TEST__.referralShares.length === 2,
+    );
+    await page.getByRole("button", {name: "Challenge a Jest player", exact: true}).waitFor({state: "visible"});
+    await page.getByRole("button", {name: "Send challenge by SMS", exact: true}).waitFor({state: "visible"});
     expect(await page.locator(".race-countdown").count()).toBe(0);
     expect(await page.locator(".race-gameplay").count()).toBe(0);
     await context.close();
@@ -1163,7 +1172,8 @@ describeBrowser("Jest authentication integration", () => {
       observer.observe(document.body, {subtree: true, childList: true, characterData: true});
     });
     /** Lobby action used to create a challenge for another player. */
-    const challengePlayer = creator.page.getByRole("button", {name: "Challenge another player", exact: true});
+    const challengePlayer = creator.page.getByRole("button", {name: "Challenge a Jest player", exact: true});
+    await creator.page.getByRole("button", {name: "Send challenge by SMS", exact: true}).waitFor({state: "visible"});
     expect(await challengePlayer.isEnabled()).toBe(true);
     /** Mobile bounds used to verify the challenge action remains tappable. */
     const challengeBounds = await challengePlayer.boundingBox();

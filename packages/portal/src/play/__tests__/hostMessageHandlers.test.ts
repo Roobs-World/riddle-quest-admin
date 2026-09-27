@@ -48,6 +48,8 @@ const createHarness = (
   const loadAndPostRiddle = jest.fn(async () => true);
   /** Provides sync race achievement progress behavior. */
   const syncRaceAchievementProgress = jest.fn(async () => undefined);
+  /** Persists a locally projected achievement. */
+  const persistAchievementProjection = jest.fn((_achievementIds: string[]) => undefined);
   /** Sets frame ready. */
   const setFrameReady = jest.fn((_ready: boolean) => undefined);
   /** Sets notice. */
@@ -96,6 +98,7 @@ const createHarness = (
     withServerActivity,
     applyPurchaseBalance,
     syncRaceAchievementProgress,
+    persistAchievementProjection,
     onPlayable,
     onAuthoritativeComplete,
     onAuthoritativeRaceResult,
@@ -110,6 +113,7 @@ const createHarness = (
     runRaceOperation,
     loadAndPostRiddle,
     syncRaceAchievementProgress,
+    persistAchievementProjection,
     setFrameReady,
     setNotice,
     sendInit,
@@ -122,6 +126,17 @@ const createHarness = (
 };
 
 describe("play host message handlers", () => {
+  it("persists projected achievements without starting a backend operation", () => {
+    /** Host-side persistence seam under test. */
+    const harness = createHarness();
+    harness.handlers.recordAchievements({
+      type: "game:recordAchievements",
+      payload: {achievementIds: ["first_win", "perfect_guess"]},
+    });
+    expect(harness.persistAchievementProjection).toHaveBeenCalledWith(["first_win", "perfect_guess"]);
+    expect(harness.postOperation).not.toHaveBeenCalled();
+  });
+
   it("keeps guess confirmation outside global blocking activity", async () => {
     /** Host services with a deliberately stalled guess request. */
     const services = createFakeHostServices();

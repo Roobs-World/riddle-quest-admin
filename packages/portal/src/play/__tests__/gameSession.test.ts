@@ -112,6 +112,28 @@ describe("game session reducer", () => {
     expect(state.completionAcknowledged).toBe(false);
   });
 
+  it("shows and records deterministic achievement unlocks before completion responds", () => {
+    /** Profile has one win remaining before its five-win milestone. */
+    let state = reduce(createInitialGameSession(), {type: "hostInit", locale: "en", gameMode: "classic",
+      user: null, products: [], profile: {username: "Guest", coins: 0, level: 1, xp: 0,
+        winStreak: 0, gamesPlayed: 4, wins: 4, totalWins: 4, totalGuessesInWins: 8,
+        achievements: ["first_win"], classicIndex: 1}});
+    state = reduce(state, {type: "loadRiddle", riddle: {...riddle, evaluation: {answer: "piano", locale: "en"}}});
+    for (const letter of "PIANO") state = reduce(state, {type: "typeLetter", letter});
+    state = reduce(state, {type: "guessRequested"});
+    expect(state.guessPending).toBe(true);
+    expect(state.lastRewards?.newlyUnlockedAchievementIds).toEqual([
+      "wins_5", "perfect_guess", "classic_perfect",
+    ]);
+    expect(state.profile?.achievements).toEqual(["first_win", "wins_5", "perfect_guess", "classic_perfect"]);
+    state = reduce(state, {type: "completionReward", reward: {
+      coinsEarned: 100, newlyUnlockedAchievementIds: ["wins_5", "perfect_guess", "classic_perfect", "level_5"],
+    }});
+    expect(state.lastRewards?.newlyUnlockedAchievementIds).toEqual([
+      "wins_5", "perfect_guess", "classic_perfect", "level_5",
+    ]);
+  });
+
   it("reconciles a preview without duplicate rows and rolls back rejected guesses", () => {
     /** Riddle with canonical feedback data supplied at load time. */
     const loaded = {...riddle, evaluation: {answer: "piano", locale: "en"}};
@@ -296,6 +318,7 @@ describe("game session reducer", () => {
     state = reduce(state, {type: "applyHint", index: 2, letter: "A", newCoins: 75});
 
     expect(state.currentLetters[2]).toBe("A");
+    expect(state.letterStates.a).toBe("green");
     expect(state.profile?.coins).toBe(75);
   });
 

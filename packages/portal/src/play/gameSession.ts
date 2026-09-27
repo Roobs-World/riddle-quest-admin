@@ -9,6 +9,7 @@ import {
 import type {BridgeProfile} from "@qwordly/core/bridge";
 import type {GameSessionAction, GameSessionState} from "./gameSessionTypes";
 import {safeBrowserStorageGet} from "./playerPreferences";
+import {predictCompletionAchievementIds} from "./achievements";
 
 export type {GameModal, GameSessionAction, GameSessionState} from "./gameSessionTypes";
 
@@ -38,6 +39,7 @@ export const createInitialGameSession = (): GameSessionState => ({
   muted: safeBrowserStorageGet("local", "riddleQuest:soundEnabled") === "false",
   notice: null,
   lastRewards: null,
+  optimisticAchievementIds: [],
   auxiliaryFanfare: null,
   lastOutcome: null,
   completionAcknowledged: false,
@@ -171,6 +173,7 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
         lastOutcome: null,
         completionAcknowledged: false,
         lastRewards: null,
+        optimisticAchievementIds: [],
         auxiliaryFanfare: null,
         letterStates: {},
       };
@@ -255,12 +258,14 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
           gameOver,
         });
         /** Confirmed gameplay fields retained for rejection or reconciliation. */
-        const {currentLetters, activeSlotIndex, guesses, engineSnapshot, modal, lastOutcome, completionAcknowledged, letterStates} = state;
+        const {currentLetters, activeSlotIndex, guesses, engineSnapshot, modal, lastOutcome, completionAcknowledged,
+          letterStates, profile, lastRewards, optimisticAchievementIds} = state;
         return {
           ...preview,
           guessPending: true,
           pendingGuessState: state.pendingGuessState ?? {
-            currentLetters, activeSlotIndex, guesses, engineSnapshot, modal, lastOutcome, completionAcknowledged, letterStates,
+            currentLetters, activeSlotIndex, guesses, engineSnapshot, modal, lastOutcome, completionAcknowledged,
+            letterStates, profile, lastRewards, optimisticAchievementIds,
           },
         };
       }
@@ -296,9 +301,9 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
         isCorrect: action.isCorrect, gameOver: action.gameOver, canContinue: action.canContinue});
       /** The destructured result used by the current operation. */
       const {currentLetters, activeSlotIndex, guesses, engineSnapshot, modal, lastOutcome,
-        completionAcknowledged, letterStates} = checkpoint;
+        completionAcknowledged, letterStates, profile, lastRewards, optimisticAchievementIds} = checkpoint;
       return {...state, pendingGuessState: {currentLetters, activeSlotIndex, guesses, engineSnapshot,
-        modal, lastOutcome, completionAcknowledged, letterStates}};
+        modal, lastOutcome, completionAcknowledged, letterStates, profile, lastRewards, optimisticAchievementIds}};
     }
     case "guessFailed":
       return {...state, ...state.pendingGuessState, guessPending: false, pendingGuessState: null};
@@ -332,9 +337,23 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
         hasUsedContinue: state.engineSnapshot?.hasUsedContinue ?? false,
         gameOver: isTerminal,
       };
+      /** Unlocks that can be presented without waiting for the reward transaction. */
+      const optimisticAchievementIds = isTerminal
+        ? predictCompletionAchievementIds(state.profile, {
+            gameMode: state.riddle.gameMode,
+            isCorrect: action.isCorrect,
+            attempts: action.attempts,
+            gameOver: true,
+          })
+        : [];
+      /** Local profile projection used by achievements UI and provider cache. */
+      const profile = optimisticAchievementIds.length > 0 && state.profile
+        ? {...state.profile, achievements: [...new Set([...state.profile.achievements, ...optimisticAchievementIds])]}
+        : state.profile;
 
       return {
         ...state,
+        profile,
         currentLetters: draft?.currentLetters ?? nextLetters,
         activeSlotIndex: draft?.activeSlotIndex ?? firstEditableSlot(nextLetters, state.hintRevealedIndices),
         guesses,
@@ -355,6 +374,10 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
             }
           : state.lastOutcome,
         completionAcknowledged: isTerminal ? false : state.completionAcknowledged,
+        optimisticAchievementIds,
+        lastRewards: optimisticAchievementIds.length > 0
+          ? {coinsEarned: 0, newlyUnlockedAchievementIds: optimisticAchievementIds}
+          : state.lastRewards,
         letterStates: computeStates(guesses),
       };
     }
@@ -403,6 +426,7 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
         currentLetters: nextLetters.slice(0, state.riddle.answerLength),
         activeSlotIndex: firstEditableSlot(nextLetters, hintRevealedIndices, action.index + 1),
         hintRevealedIndices,
+        letterStates: {...state.letterStates, [action.letter.toLowerCase()]: "green"},
         profile: withProfileCoins(state.profile, action.newCoins),
         pendingHintState: null,
         notice: null,
@@ -421,7 +445,8 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
           currentLetters: state.currentLetters, activeSlotIndex: state.activeSlotIndex,
           guesses: state.guesses, engineSnapshot: state.engineSnapshot, modal: state.modal,
           lastOutcome: state.lastOutcome, completionAcknowledged: state.completionAcknowledged,
-          letterStates: state.letterStates,
+          letterStates: state.letterStates, profile: state.profile, lastRewards: state.lastRewards,
+          optimisticAchievementIds: state.optimisticAchievementIds,
         } : undefined;
         /** Session with the local charge and, for Continue, immediate extra attempt. */
         const charged = {...state, profile: withProfileCoins(state.profile, state.profile.coins - action.amount),
@@ -457,7 +482,24 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
     case "profileUpdated":
       return {...state, profile: preservePendingCoins(state, action.profile), leaderboard: []};
     case "completionReward":
-      return {...state, lastRewards: action.reward, leaderboard: []};
+      return {
+        ...state,
+        lastRewards: {
+          ...action.reward,
+          newlyUnlockedAchievementIds: [
+            ...state.optimisticAchievementIds,
+            ...action.reward.newlyUnlockedAchievementIds.filter(id => !state.optimisticAchievementIds.includes(id)),
+          ],
+        },
+        profile: state.profile
+          ? {...state.profile, achievements: [...new Set([
+              ...state.profile.achievements,
+              ...action.reward.newlyUnlockedAchievementIds,
+            ])]}
+          : state.profile,
+        optimisticAchievementIds: [],
+        leaderboard: [],
+      };
     case "completionAcknowledged":
       return {...state, completionAcknowledged: true};
     case "showAuxiliaryFanfare":

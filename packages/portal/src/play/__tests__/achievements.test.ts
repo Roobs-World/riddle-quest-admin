@@ -1,7 +1,7 @@
 import {describe, expect, it} from "@jest/globals";
 import {RACE_ACHIEVEMENT_IDS} from "@qwordly/core/race";
 import {PlayerProgressSchema, PlayerStatsSchema} from "@qwordly/core/validation";
-import {ACHIEVEMENT_DEFINITIONS, getAchievementProgress} from "../achievements";
+import {ACHIEVEMENT_DEFINITIONS, getAchievementProgress, predictCompletionAchievementIds} from "../achievements";
 
 describe("multiplayer achievement presentation", () => {
   it("defines every authoritative multiplayer achievement with localized copy", () => {
@@ -79,5 +79,22 @@ describe("achievement progress", () => {
     expect(getAchievementProgress("wins_5", stats, progress)).toBe(100);
     expect(getAchievementProgress("missing" as never, stats, progress)).toBe(0);
     expect(getAchievementProgress("first_purchase", stats, progress, true)).toBe(1);
+  });
+});
+
+describe("optimistic completion achievements", () => {
+  it("predicts only new deterministic unlocks from the local completion projection", () => {
+    expect(predictCompletionAchievementIds({
+      username: "Solver", coins: 10, level: 1, xp: 0, winStreak: 0,
+      gamesPlayed: 4, wins: 4, totalWins: 4, totalGuessesInWins: 8,
+      achievements: ["first_win", "perfect_guess"], classicIndex: 9, highestLevelClassic: 9,
+    }, {gameMode: "classic", isCorrect: true, attempts: 1, gameOver: true})).toEqual([
+      "wins_5", "classic_10", "classic_perfect",
+    ]);
+  });
+
+  it("does not project unlocks for a nonterminal guess or missing profile", () => {
+    const completion = {gameMode: "classic" as const, isCorrect: false, attempts: 2, gameOver: false};
+    expect(predictCompletionAchievementIds(null, completion)).toEqual([]);
   });
 });

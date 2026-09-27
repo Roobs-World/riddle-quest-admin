@@ -138,8 +138,10 @@ export type RaceTo10ViewProps = {
   onSkip: () => void;
   /** Stores on publish. */
   onPublish: () => void;
-  /** Opens the Jest invite before beginning a creator run. */
-  onInviteChallenge?: () => void;
+  /** Opens the Jest invite for a specific Jest player before beginning a creator run. */
+  onChallengeJestPlayer?: () => void;
+  /** Opens the Jest invite for an SMS recipient before beginning a creator run. */
+  onChallengeBySms?: () => void;
   /** Whether the Jest invite dialog is in progress. */
   inviting?: boolean;
   /** Stores on share. */
@@ -219,7 +221,8 @@ export function RaceTo10View(props: RaceTo10ViewProps) {
     onSubmit,
     onSkip,
     onPublish,
-    onInviteChallenge,
+    onChallengeJestPlayer,
+    onChallengeBySms,
     inviting,
     onShare,
     onRematch,
@@ -271,7 +274,8 @@ export function RaceTo10View(props: RaceTo10ViewProps) {
           categories={categories}
           loading={pending === "raceCategories"}
           onSelect={onSelectCategory}
-          onInviteChallenge={onInviteChallenge}
+          onChallengeJestPlayer={onChallengeJestPlayer}
+          onChallengeBySms={onChallengeBySms}
           inviting={inviting}
           onShowInbox={onShowInbox}
           canChallenge={sharingRewardCoins !== undefined}

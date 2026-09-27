@@ -29,6 +29,8 @@
     "MATCH_PLAYER": "प्रतिद्वंद्वी खोजें",
     "CHOOSE_CONTEXT": "दोस्तों के साथ खेलें",
     "CHALLENGE_PLAYER": "दूसरे खिलाड़ी को चुनौती दें",
+    "CHALLENGE_JEST_PLAYER": "Jest खिलाड़ी को चुनौती दें",
+    "CHALLENGE_BY_SMS": "SMS से चुनौती भेजें",
     "CHALLENGE_PLAYER_HELP": "पहले Jest के ज़रिए किसी को आमंत्रित करें, फिर मिश्रित श्रेणियों की रेस पूरी करके हराने के लिए समय तय करें।",
     "INVITE_BEFORE_RUN": "{name} ने आपको Jest पर Race to 10 के लिए आमंत्रित किया है। मैं आपके लिए हराने का समय तय करूँगा!",
     "SAFETY_ACTIONS": "सुरक्षा विकल्प",

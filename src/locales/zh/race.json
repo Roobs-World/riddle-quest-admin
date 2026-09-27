@@ -29,6 +29,8 @@
     "MATCH_PLAYER": "寻找对手",
     "CHOOSE_CONTEXT": "与好友一起玩",
     "CHALLENGE_PLAYER": "挑战其他玩家",
+    "CHALLENGE_JEST_PLAYER": "挑战 Jest 玩家",
+    "CHALLENGE_BY_SMS": "通过短信发送挑战",
     "CHALLENGE_PLAYER_HELP": "先通过 Jest 邀请对手，再完成混合类别竞赛，设定对方需要超越的用时。",
     "INVITE_BEFORE_RUN": "{name} 邀请你在 Jest 上玩 Race to 10。我会设定一个时间，等你来挑战！",
     "SAFETY_ACTIONS": "安全选项",

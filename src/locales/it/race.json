@@ -29,6 +29,8 @@
     "MATCH_PLAYER": "Trova avversario",
     "CHOOSE_CONTEXT": "Gioca con gli amici",
     "CHALLENGE_PLAYER": "Sfida un altro giocatore",
+    "CHALLENGE_JEST_PLAYER": "Sfida un giocatore Jest",
+    "CHALLENGE_BY_SMS": "Invia la sfida tramite SMS",
     "CHALLENGE_PLAYER_HELP": "Invita qualcuno tramite Jest, poi completa una gara a categorie miste per stabilire il tempo da battere.",
     "INVITE_BEFORE_RUN": "{name} ti invita a Race to 10 su Jest. Stabilirò un tempo da battere!",
     "SAFETY_ACTIONS": "Opzioni di sicurezza",

@@ -12,12 +12,12 @@ export type ContinueModalPageProps = {
   balance: number;
   /** Stores on continue. */
   onContinue: (amount?: number) => void;
+  /** Requests a paid skip directly from the loss prompt. */
+  onSkip: () => void;
   /** Stores on open modal. */
   onOpenModal: OpenModalHandler;
   /** Stores commerce available. */
   commerceAvailable?: boolean;
-  /** Keeps paid choices inactive until the final guess is confirmed. */
-  confirmationPending?: boolean;
 };
 
 /** Props for a coin-funded gameplay action prompt. */
@@ -48,12 +48,14 @@ export type TreasureModalPageProps = {
 export function ContinueModalPage({
   balance,
   onContinue,
+  onSkip,
   onOpenModal,
   commerceAvailable = true,
-  confirmationPending = false,
 }: ContinueModalPageProps) {
   /** Indicates whether can afford. */
   const canAfford = balance >= CONTINUE_COIN_COST;
+  /** Indicates whether the player can afford to skip this level. */
+  const canAffordSkip = balance >= SKIP_COIN_COST;
   return (
     <div className="modal-actions continue-actions">
       <p>{tr("LossModal.EXTRA_GO_PROMPT")}</p>
@@ -61,18 +63,19 @@ export function ContinueModalPage({
         <strong>{tr("Profile.TOTAL_COINS_LABEL")}</strong>
         <span>{balance.toLocaleString()}</span>
       </div>
-      <button className="play-primary loss-continue-action" disabled={!canAfford || confirmationPending} onClick={() => onContinue(CONTINUE_COIN_COST)}>
+      <button className="play-primary loss-continue-action" disabled={!canAfford} onClick={() => onContinue(CONTINUE_COIN_COST)}>
         {tr("LossModal.USE_COINS_PREFIX")}
         {CONTINUE_COIN_COST}
         {tr("LossModal.USE_COINS_SUFFIX")}
       </button>
       {!canAfford ? <p>{tr("GameScreenAlerts.CONTINUE_NOT_ENOUGH_COINS_MESSAGE")}</p> : null}
       {commerceAvailable && (
-        <button className="play-primary loss-shop-action" disabled={confirmationPending} onClick={() => onOpenModal("shop")}>
+        <button className="play-primary loss-shop-action" onClick={() => onOpenModal("shop")}>
           {tr("LossModal.OPEN_SHOP_BUTTON")}
         </button>
       )}
-      <button className="play-primary loss-skip-action" disabled={confirmationPending} onClick={() => onOpenModal("skip")}>
+      {!canAffordSkip ? <p>{tr("GameScreenAlerts.SKIP_NOT_ENOUGH_COINS_MESSAGE")}</p> : null}
+      <button className="play-primary loss-skip-action" disabled={!canAffordSkip} onClick={onSkip}>
         {tr("LossModal.SKIP_PUZZLE_BUTTON")}
       </button>
     </div>

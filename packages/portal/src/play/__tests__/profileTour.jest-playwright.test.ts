@@ -74,12 +74,16 @@ describeBrowser("profile walkthrough", () => {
         const card = await page.locator(".tooltip-card").boundingBox();
         expect(card!.y).toBeGreaterThanOrEqual(0);
         expect(card!.y + card!.height).toBeLessThanOrEqual(viewport.height);
-        if (["profileProgression", "profileAchievements", "profileStatistics", "profileLeaderboard", "profileTreasure"].includes(id)) {
+        if (["profileProgression", "profileAchievements", "profileRanks", "profileStatistics", "profileLeaderboard", "profileTreasure"].includes(id)) {
           /** Spotlight bounds used to verify viewport containment. */
           const spotlight = await page.locator(".tooltip-spotlight").boundingBox();
           expect(spotlight!.y).toBeGreaterThanOrEqual(0);
           expect(spotlight!.y + spotlight!.height).toBeLessThanOrEqual(viewport.height);
-          if (id !== "profileProgression") expect(card!.y + card!.height).toBeLessThan(spotlight!.y);
+          if (id !== "profileProgression") {
+            const separated = card!.y + card!.height < spotlight!.y
+              || card!.y > spotlight!.y + spotlight!.height;
+            expect(separated).toBe(true);
+          }
         }
         if (id === "profileStats" && viewport.width === 459) {
           await page.screenshot({path: "/tmp/profile-tour-stats.png"});

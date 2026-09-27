@@ -17,6 +17,7 @@ export type TooltipId =
   | "profileDailyPuzzles"
   | "profileStats"
   | "profileAchievements"
+  | "profileRanks"
   | "profileStatistics"
   | "profileLeaderboard"
   | "profileTreasure";
@@ -37,6 +38,7 @@ export const PROFILE_TOUR: readonly TooltipId[] = [
   "profileDailyPuzzles",
   "profileStats",
   "profileAchievements",
+  "profileRanks",
   "profileStatistics",
   "profileLeaderboard",
   "profileTreasure",
@@ -44,6 +46,9 @@ export const PROFILE_TOUR: readonly TooltipId[] = [
 
 /** Version used to invalidate previously completed tooltip tours. */
 export const TOOLTIP_TOUR_VERSION = "v2";
+
+/** Profile-specific version so a new profile step does not replay the game tour. */
+export const PROFILE_TOOLTIP_TOUR_VERSION = "v3";
 
 /** Translation keys for every tooltip title and body. */
 export const TOOLTIP_KEYS: Record<TooltipId, readonly [title: string, body: string]> = {
@@ -64,6 +69,7 @@ export const TOOLTIP_KEYS: Record<TooltipId, readonly [title: string, body: stri
   profileDailyPuzzles: ["Tooltips.PROFILE_DAILY_PUZZLES_TITLE", "Tooltips.PROFILE_DAILY_PUZZLES_BODY"],
   profileStats: ["Tooltips.PROFILE_STATS_TITLE", "Tooltips.PROFILE_STATS_BODY"],
   profileAchievements: ["Tooltips.PROFILE_ACHIEVEMENTS_TITLE", "Tooltips.PROFILE_ACHIEVEMENTS_BODY"],
+  profileRanks: ["Ranks.TITLE", "Tooltips.PROFILE_RANKS_BODY"],
   profileStatistics: ["Tooltips.PROFILE_STATISTICS_TITLE", "Tooltips.PROFILE_STATISTICS_BODY"],
   profileLeaderboard: ["Tooltips.PROFILE_LEADERBOARD_TITLE", "Tooltips.PROFILE_LEADERBOARD_BODY"],
   profileTreasure: ["Profile.TREASURE_CHEST_TITLE", "Tooltips.PROFILE_TREASURE_BODY"],
@@ -80,6 +86,7 @@ export const TOOLTIP_SELECTORS: Partial<Record<TooltipId, string>> = {
   profileDailyPuzzles: "[data-tooltip='profileDailyPuzzles']",
   profileStats: "[data-tooltip='profileStats']",
   profileAchievements: "[data-tooltip='profileAchievements']",
+  profileRanks: "[data-tooltip='profileRanks']",
   profileStatistics: "[data-tooltip='profileStatistics']",
   profileLeaderboard: "[data-tooltip='profileLeaderboard']",
   profileTreasure: "[data-tooltip='profileTreasure']",
@@ -92,7 +99,8 @@ export function createGuidanceStorageKey(kind: string, userId?: string): string 
 
 /** Builds the versioned persistence key for a completed tooltip tour. */
 export function createTooltipTourStorageKey(tourName: string, userId?: string): string {
-  return createGuidanceStorageKey(`tooltipSequenceSeen:${tourName}:${TOOLTIP_TOUR_VERSION}`, userId);
+  const version = tourName === "profileTour" ? PROFILE_TOOLTIP_TOUR_VERSION : TOOLTIP_TOUR_VERSION;
+  return createGuidanceStorageKey(`tooltipSequenceSeen:${tourName}:${version}`, userId);
 }
 
 /** Returns the onboarding step count for registered and guest players. */
@@ -151,7 +159,12 @@ export function getTooltipPanelStyle(
 ): CSSProperties {
   if (!targetRect) return {top: "50%", transform: "translate(-50%, -50%)"};
   /** Preferred placement, clamped to keep the entire card and button reachable. */
-  const preferredTop = !ABOVE_TARGET_TOOLTIPS.has(activeTooltip) && targetRect.bottom < viewportHeight * 0.58
-    ? targetRect.bottom + 18 : targetRect.top - panelHeight - 18;
+  const belowTop = targetRect.bottom + 18;
+  const aboveTop = targetRect.top - panelHeight - 18;
+  const fitsBelow = belowTop + panelHeight <= viewportHeight - 14;
+  const preferBelow = !ABOVE_TARGET_TOOLTIPS.has(activeTooltip) && targetRect.bottom < viewportHeight * 0.58;
+  /** Profile scrolling can leave an above-target step without enough room; use the clear side when available. */
+  const preferredTop = preferBelow || (activeTooltip.startsWith("profile") && aboveTop < 14 && fitsBelow)
+    ? belowTop : aboveTop;
   return {top: Math.max(14, Math.min(preferredTop, viewportHeight - panelHeight - 14))};
 }

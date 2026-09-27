@@ -7,6 +7,7 @@ import {
   TreasureModalPage,
 } from "../modalPages/commerce/CoinActionModalPages";
 import {ShopModalPage} from "../modalPages/commerce/ShopModalPage";
+import {ShopSubscriptionContext} from "../modalPages/commerce/ShopSubscriptionContext";
 import {CONTINUE_COIN_COST, HINT_COIN_COST, SKIP_COIN_COST} from "../modalPages/commerce/commerceCosts";
 import type {ProductSummary} from "../types";
 
@@ -69,11 +70,28 @@ describe("commerce modal pages", () => {
     expect(populatedHtml).toContain("shop-subscription-card");
   });
 
+  it("shows a cached subscription offer on the shop's first render", () => {
+    /** Subscription actions activate the Jest shop refresh path. */
+    const subscriptionActions = {
+      refresh: async () => undefined,
+      cancel: async () => "success" as const,
+    };
+    /** First render produced before the opening provider refresh can settle. */
+    const html = renderToString(
+      <ShopSubscriptionContext.Provider value={subscriptionActions}>
+        <ShopModalPage balance={1250} products={[products[1]]} onPurchase={noop} />
+      </ShopSubscriptionContext.Provider>,
+    );
+
+    expect(html).toContain("START FREE TRIAL");
+    expect(html).toContain("shop-subscription-card");
+  });
+
   it("renders affordable and insufficient continue prompts", () => {
     /** Provides poor html behavior. */
-    const poorHtml = renderToString(<ContinueModalPage balance={10} onContinue={noop} onOpenModal={noop} />);
+    const poorHtml = renderToString(<ContinueModalPage balance={10} onContinue={noop} onSkip={noop} onOpenModal={noop} />);
     /** Provides funded html behavior. */
-    const fundedHtml = renderToString(<ContinueModalPage balance={100} onContinue={noop} onOpenModal={noop} />);
+    const fundedHtml = renderToString(<ContinueModalPage balance={100} onContinue={noop} onSkip={noop} onOpenModal={noop} />);
 
     expect(poorHtml).toContain("disabled");
     expect(poorHtml).toContain("not have enough coins");
@@ -82,18 +100,42 @@ describe("commerce modal pages", () => {
     expect(fundedHtml).toContain("loss-continue-action");
   });
 
-  it("shows the continue choices but prevents decisions while the fifth guess confirms", () => {
+  it("runs skip directly from the loss prompt and disables it when coins are insufficient", () => {
+    /** Counts direct skip requests from the loss prompt. */
+    let skipRequests = 0;
+    /** Provides poor html behavior. */
+    const poorHtml = renderToString(<ContinueModalPage balance={99} onContinue={noop}
+      onSkip={() => { skipRequests += 1; }} onOpenModal={noop} />);
+    /** Provides funded prompt behavior for interaction inspection. */
+    const fundedPrompt = ContinueModalPage({
+      balance: SKIP_COIN_COST,
+      onContinue: noop,
+      onSkip: () => { skipRequests += 1; },
+      onOpenModal: noop,
+    });
+    /** Direct skip action rendered by the funded loss prompt. */
+    const skipButton = fundedPrompt.props.children.find(
+      (child: {props?: {className?: string}}) => child?.props?.className === "play-primary loss-skip-action",
+    );
+
+    expect(poorHtml).toMatch(/not have enough coins[\s\S]*loss-skip-action[^>]*disabled/u);
+    expect(skipButton.props.disabled).toBe(false);
+    skipButton.props.onClick();
+    expect(skipRequests).toBe(1);
+  });
+
+  it("keeps locally eligible continue choices usable while the fifth guess confirms", () => {
     /** Continue panel rendered before the server confirms the final guess. */
     const pendingHtml = renderToString(<ContinueModalPage balance={100} onContinue={noop}
-      onOpenModal={noop} confirmationPending />);
+      onSkip={noop} onOpenModal={noop} />);
     expect(pendingHtml).toContain("continue-actions");
-    expect(pendingHtml.match(/disabled=""/gu)).toHaveLength(3);
+    expect(pendingHtml).not.toContain("disabled");
   });
 
   it("removes every shop route when platform commerce is unavailable", () => {
     /** Provides continue html behavior. */
     const continueHtml = renderToString(
-      <ContinueModalPage balance={0} onContinue={noop} onOpenModal={noop} commerceAvailable={false} />,
+      <ContinueModalPage balance={0} onContinue={noop} onSkip={noop} onOpenModal={noop} commerceAvailable={false} />,
     );
     /** Provides hint html behavior. */
     const hintHtml = renderToString(

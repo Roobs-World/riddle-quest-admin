@@ -26,7 +26,8 @@ export type GameModal =
 /** Gameplay fields restored when server confirmation rejects a feedback preview. */
 export type PendingGuessState = Pick<GameSessionState,
   "currentLetters" | "activeSlotIndex" | "guesses" | "engineSnapshot" |
-  "modal" | "lastOutcome" | "completionAcknowledged" | "letterStates"
+  "modal" | "lastOutcome" | "completionAcknowledged" | "letterStates" |
+  "profile" | "lastRewards" | "optimisticAchievementIds"
 >;
 
 /** Captures all reducer-owned state for a classic or daily game session. */
@@ -82,6 +83,8 @@ export type GameSessionState = {
     /** Stores newly unlocked achievement ids. */
     newlyUnlockedAchievementIds: string[];
   } | null;
+  /** Unlocks shown and cached before authoritative completion reconciliation. */
+  optimisticAchievementIds: string[];
   /** Optional non-completion reward animation queued for display. */
   auxiliaryFanfare: {
     /** Stores id. */

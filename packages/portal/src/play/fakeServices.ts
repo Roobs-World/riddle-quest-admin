@@ -4,6 +4,7 @@ import type {BridgeLeaderboardEntry, BridgeProfile, BridgeRiddle, BridgeUser} fr
 import type {AuthSnapshot, HostServices, LeaderboardType, ProductSummary} from "./types";
 import {toProductSummaries} from "./types";
 import {createFakeRaceServices} from "./race/testing/fakeRaceServices";
+import {predictCompletionAchievementIds} from "./achievements";
 
 /** Provides fake riddles behavior. */
 const fakeRiddles: Array<
@@ -272,6 +273,10 @@ export const createFakeHostServices = ({
         gameMode === "challenge" ? (isCorrect ? (profile?.winStreak ?? 0) + 1 : 0) : (profile?.winStreak ?? 0);
       /** Provides score earned behavior. */
       const scoreEarned = isCorrect ? 90 : 0;
+      /** Mirrors the unlocks available to immediate client presentation. */
+      const newlyUnlockedAchievementIds = predictCompletionAchievementIds(profile, {
+        gameMode, isCorrect, attempts, gameOver: true,
+      });
       /** Provides next profile behavior. */
       const nextProfile = updateProfile({
         coins: (profile?.coins ?? 0) + coinsEarned,
@@ -293,13 +298,14 @@ export const createFakeHostServices = ({
           gameMode === "classic" && isCorrect
             ? Math.max(profile?.highestLevelClassic ?? 0, profile?.classicIndex ?? 1)
             : (profile?.highestLevelClassic ?? 0),
+        achievements: [...new Set([...(profile?.achievements ?? []), ...newlyUnlockedAchievementIds])],
       });
 
       return {
         attempts,
         isCorrect,
         coinsEarned,
-        newlyUnlockedAchievementIds: isCorrect ? ["first_win"] : [],
+        newlyUnlockedAchievementIds,
         newXp: nextProfile?.xp,
         newLevel: nextProfile?.level,
         newWinStreak: nextProfile?.winStreak,

@@ -18,7 +18,7 @@ export type ShopModalPageProps = {
 export function ShopModalPage({balance, products, onPurchase}: ShopModalPageProps) {
   /** Reads the current target’s subscription operations. */
   const subscriptions = useContext(ShopSubscriptionContext);
-  /** Hides stale subscription offers during the initial shop refresh. */
+  /** Exposes the opening provider refresh to assistive technology. */
   const [loading, setLoading] = useState(Boolean(subscriptions));
   /** Disables cancellation controls during provider confirmation. */
   const [pending, setPending] = useState<string | null>(null);
@@ -85,7 +85,7 @@ export function ShopModalPage({balance, products, onPurchase}: ShopModalPageProp
       {error ? <p role="alert">{tr("ErrorMessages.GENERIC_UNEXPECTED_ERROR")}</p> : null}
       <div className="game-shop-grid" aria-busy={loading}>
         {products.length === 0 ? <p>{tr("CoinShop.NO_PACKS_AVAILABLE")}</p> : null}
-        {products.filter((product) => !loading || product.productType !== "subscription").map((product) => (
+        {products.map((product) => (
           <article
             key={product.productId}
             className={product.productType === "subscription" ? "shop-subscription-card" : undefined}

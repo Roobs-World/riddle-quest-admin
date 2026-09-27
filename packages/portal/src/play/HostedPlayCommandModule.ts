@@ -29,6 +29,7 @@ export type HostedPlayCommandContext = Readonly<{
   execution: Pick<
     CreateHostMessageHandlersOptions,
     "authority" | "runRaceOperation" | "withServerActivity" | "applyPurchaseBalance" | "syncRaceAchievementProgress"
+    | "persistAchievementProjection"
   >;
   /** Stores callbacks. */
   callbacks: Pick<

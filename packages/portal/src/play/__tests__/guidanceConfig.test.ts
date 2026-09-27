@@ -7,6 +7,7 @@ import {
   getGameTour,
   getOnboardingTotalSteps,
   getTooltipPanelStyle,
+  PROFILE_TOUR,
 } from "../guidance/guidanceConfig";
 
 describe("guidance configuration", () => {
@@ -16,12 +17,20 @@ describe("guidance configuration", () => {
     expect(createTooltipTourStorageKey("gameTour", "user-1")).toBe(
       "riddleQuest:tooltipSequenceSeen:gameTour:v2:user-1",
     );
+    expect(createTooltipTourStorageKey("profileTour", "user-1")).toBe(
+      "riddleQuest:tooltipSequenceSeen:profileTour:v3:user-1",
+    );
   });
 
   it("selects onboarding and game tour steps for each player mode", () => {
     expect(getOnboardingTotalSteps()).toBe(2);
     expect(getGameTour("classic")).toEqual(["gameCoins", "gameHint", "submitAnswer", "gameSkip"]);
     expect(getGameTour("challenge")).toEqual(["gameCoins", "gameHint", "submitAnswer"]);
+  });
+
+  it("shows ranks immediately after achievements in the profile tour", () => {
+    const achievementsIndex = PROFILE_TOUR.indexOf("profileAchievements");
+    expect(PROFILE_TOUR[achievementsIndex + 1]).toBe("profileRanks");
   });
 
   it("derives contextual tooltip eligibility in priority order", () => {
@@ -96,6 +105,7 @@ describe("guidance configuration", () => {
     expect(getTooltipPanelStyle("profileStats", null, 1000, 200)).toEqual({top: "50%", transform: "translate(-50%, -50%)"});
     expect(getTooltipPanelStyle("profileStats", {top: 100, bottom: 200}, 1000, 200)).toEqual({top: 218});
     expect(getTooltipPanelStyle("gameHint", {top: 100, bottom: 200}, 1000, 200)).toEqual({top: 14});
+    expect(getTooltipPanelStyle("profileAchievements", {top: 213, bottom: 253}, 568, 224)).toEqual({top: 271});
     expect(getTooltipPanelStyle("profileStats", {top: 700, bottom: 800}, 1000, 200)).toEqual({top: 482});
     expect(getTooltipPanelStyle("profileIdentity", {top: 200, bottom: 330}, 591, 380)).toEqual({top: 197});
     expect(getTooltipPanelStyle("profileTreasure", {top: 1200, bottom: 1300}, 591, 200)).toEqual({top: 377});

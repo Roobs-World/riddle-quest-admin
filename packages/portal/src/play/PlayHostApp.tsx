@@ -132,7 +132,6 @@ export function PlayHostApp({
     (profile: BridgeProfile) => onPlayerDataChange?.({profile}),
     [onPlayerDataChange],
   );
-
   /** Authenticated state, persistence, and game-bridge synchronization. */
   const {
     snapshot: authSnapshot,
@@ -148,6 +147,19 @@ export function PlayHostApp({
     onProfileChange: persistProfile,
     postToGame,
   });
+  /** Caches immediate unlock presentation without mutating authoritative auth state. */
+  const persistAchievementProjection = useCallback(
+    (achievementIds: string[]) => {
+      if (!authSnapshot.profile) return;
+      onPlayerDataChange?.({
+        profile: {
+          ...authSnapshot.profile,
+          achievements: [...new Set([...authSnapshot.profile.achievements, ...achievementIds])],
+        },
+      });
+    },
+    [authSnapshot.profile, onPlayerDataChange],
+  );
 
   /** Latest init delivery, used by riddle recovery without a dependency cycle. */
   const sendInitRef = useRef<() => void>(() => undefined);
@@ -294,6 +306,7 @@ export function PlayHostApp({
           withServerActivity,
           applyPurchaseBalance,
           syncRaceAchievementProgress,
+          persistAchievementProjection,
         },
         callbacks: {
           onPlayable,
@@ -321,6 +334,7 @@ export function PlayHostApp({
       sendInit,
       authority,
       syncRaceAchievementProgress,
+      persistAchievementProjection,
       withServerActivity,
     ],
   );

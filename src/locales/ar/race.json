@@ -29,6 +29,8 @@
     "MATCH_PLAYER": "ابحث عن منافس",
     "CHOOSE_CONTEXT": "العب مع الأصدقاء",
     "CHALLENGE_PLAYER": "تحدَّ لاعبًا آخر",
+    "CHALLENGE_JEST_PLAYER": "تحدَّ لاعبًا على Jest",
+    "CHALLENGE_BY_SMS": "أرسل التحدي عبر رسالة نصية",
     "CHALLENGE_PLAYER_HELP": "ادعُ لاعبًا عبر Jest أولًا، ثم أكمل سباقًا بفئات متنوعة لتحديد الوقت الذي سيحاول تجاوزه.",
     "INVITE_BEFORE_RUN": "يدعوك {name} إلى سباق إلى 10 على Jest. سأحدد وقتًا لتتفوق عليه!",
     "SAFETY_ACTIONS": "خيارات الأمان",

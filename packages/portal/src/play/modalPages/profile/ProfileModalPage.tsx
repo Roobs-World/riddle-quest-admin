@@ -245,6 +245,7 @@ export function ProfileModalPage({
           {tr("Achievements.MODAL_TITLE")}
         </button>
         <button
+          data-tooltip="profileRanks"
           onMouseDown={(event) => event.stopPropagation()}
           onClick={(event) => {
             event.stopPropagation();

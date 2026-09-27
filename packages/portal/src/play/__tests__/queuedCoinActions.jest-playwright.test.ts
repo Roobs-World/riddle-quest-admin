@@ -47,6 +47,38 @@ describeBrowser("queued coin actions", () => {
     await new Promise<void>(resolve => server?.close(() => resolve()));
   });
 
+  it("skips and charges directly from the loss modal", async () => {
+    /** Browser page used to exhaust attempts and exercise the loss action. */
+    const page = await browser.newPage({viewport: {width: 390, height: 844}});
+    try {
+      await page.addInitScript(() => {
+        Object.assign(window, {__RIDDLE_QUEST_BROWSER_TEST__: true});
+        localStorage.setItem("riddleQuest:onboarding:jest-guest", "seen");
+        localStorage.setItem("riddleQuest:tooltipSequenceSeen:gameTour:v2:jest-guest", "seen");
+        sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
+      });
+      await page.goto(`${origin}/?harness=jest`);
+      await page.getByText(/what has keys/i).waitFor();
+      for (const wrongLetter of ["X", "Z", "Q", "V", "B"]) {
+        for (let letter = 0; letter < 5; letter += 1) {
+          await page.locator(".keyboard").getByRole("button", {name: wrongLetter, exact: true}).click();
+        }
+        await page.getByRole("button", {name: /^submit$/i}).click();
+        await page.locator(".guess-row .cell.red").last().waitFor();
+        if (wrongLetter === "X") await page.getByRole("button", {name: /got it/i}).click();
+      }
+      await page.locator(".modal-continue").waitFor();
+      /** Balance before the direct loss-modal skip. */
+      const coinsBefore = Number((await page.locator("[data-coin-meter] strong").innerText()).replaceAll(",", ""));
+      await page.locator(".loss-skip-action").click();
+      expect(await page.locator(".modal-skip").count()).toBe(0);
+      await expect(page.locator("[data-coin-meter] strong")).toHaveText(String(coinsBefore - 100));
+      await page.getByText(/face and hands/i).waitFor();
+    } finally {
+      await page.close();
+    }
+  });
+
   it("shows a purchased hint and the buffered Skip successor before server confirmation", async () => {
     /** Browser page used to exercise immediate coin actions. */
     const page = await browser.newPage({viewport: {width: 390, height: 844}});

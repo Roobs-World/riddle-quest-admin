@@ -114,6 +114,17 @@ describe("bridge protocol", () => {
     ).toBe(false);
   });
 
+  it("accepts bounded local achievement projections", () => {
+    expect(GameToHostMessageSchema.safeParse({
+      type: "game:recordAchievements",
+      payload: {achievementIds: ["first_win", "perfect_guess"]},
+    }).success).toBe(true);
+    expect(GameToHostMessageSchema.safeParse({
+      type: "game:recordAchievements",
+      payload: {achievementIds: Array.from({length: 51}, () => "first_win")},
+    }).success).toBe(false);
+  });
+
   it("rejects non-keyboard guess content at the bridge boundary", () => {
     for (const guess of ["pi ano", "pi\nno", "pïano", "🎹"] as const) {
       expect(

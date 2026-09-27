@@ -30,7 +30,8 @@ const capturePendingBase = (state: GameSessionState): PendingGuessState => ({
   currentLetters: [...state.currentLetters], activeSlotIndex: state.activeSlotIndex,
   guesses: [...state.guesses], engineSnapshot: state.engineSnapshot, modal: state.modal,
   lastOutcome: state.lastOutcome, completionAcknowledged: state.completionAcknowledged,
-  letterStates: {...state.letterStates},
+  letterStates: {...state.letterStates}, profile: state.profile, lastRewards: state.lastRewards,
+  optimisticAchievementIds: [...state.optimisticAchievementIds],
 });
 
 /** Finds the checkpoint for an issued session retained in the journal. */
@@ -205,6 +206,9 @@ export function useGameOperations({
     dispatch({type: "restoreQueuedGuesses", base: active.base,
       guesses: journal.queue.filter((item) => item.message.payload.sessionToken === active.riddle.sessionToken)
         .map((item) => item.message.payload.guess), draft: active.draft});
+    if (journal.coinAction?.type === "game:spendCoins")
+      dispatch({type: "previewCoinSpend", requestId: journal.coinAction.requestId!,
+        amount: journal.coinAction.payload.amount ?? CONTINUE_COIN_COST, reason: "continue"});
     sendFirst();
     if (leaseRenewRef.current === null) leaseRenewRef.current = window.setInterval(sendFirst, 5_000);
   }, [dispatch, scope, sendFirst, state.riddle]);
@@ -379,11 +383,15 @@ export function useGameOperations({
   const handleQueuedGuessResult = useCallback((message: Extract<HostToGameMessage, {
     /** Correlated result discriminator. */ type: "host:operationResult";
   }>): boolean => {
-    if (message.payload.operation === "hint" || message.payload.operation === "skip") {
+    if (message.payload.operation === "hint" || message.payload.operation === "spendCoins" ||
+      message.payload.operation === "skip") {
       /** Paid request retained until its correlated authoritative result arrives. */
       const action = journalRef.current?.coinAction;
+      /** Operation name expected for the retained paid action. */
+      const expectedOperation = action?.type === "game:requestHint" ? "hint" :
+        action?.type === "game:spendCoins" ? "spendCoins" : "skip";
       if (!action || action.requestId !== message.requestId ||
-        message.payload.operation !== (action.type === "game:requestHint" ? "hint" : "skip")) return true;
+        message.payload.operation !== expectedOperation) return true;
       if (!message.payload.ok && message.payload.errorKind === "retryable") return true;
       /** Durable confirmed state before the paid action. */
       const checkpoint = journalRef.current;
@@ -396,6 +404,8 @@ export function useGameOperations({
       /** Only the current question may consume this action's result and successor. */
       const currentSession = action.payload.sessionToken === stateRef.current.riddle?.sessionToken;
       if (!message.payload.ok && action.type === "game:requestHint") dispatch({type: "rejectHint"});
+      if (!message.payload.ok && action.type === "game:spendCoins")
+        dispatch({type: "rejectCoinSpend", requestId: action.requestId!});
       if (!message.payload.ok && action.type === "game:skipRiddle") {
         dispatch({type: "rejectCoinSpend", requestId: action.requestId!});
         skipPreviewRef.current = null;
@@ -421,7 +431,7 @@ export function useGameOperations({
       if (leaseRenewRef.current !== null) window.clearInterval(leaseRenewRef.current);
       leaseRenewRef.current = null;
       // A late hint must never reveal a letter in a different question or account.
-      return message.payload.ok ? !currentSession : false;
+      return action.type === "game:spendCoins" ? false : message.payload.ok ? !currentSession : false;
     }
     /** The first used by the current operation. */
     const first = queuedGuessesRef.current[0];
@@ -441,6 +451,8 @@ export function useGameOperations({
       retryTimerRef.current = null;
       /** The checkpoint used by the current operation. */
       const checkpoint = journalRef.current;
+      if (checkpoint?.coinAction?.type === "game:spendCoins")
+        dispatch({type: "rejectCoinSpend", requestId: checkpoint.coinAction.requestId!});
       queuedGuessesRef.current = [];
       setPendingCount(0);
       setCoinActionPending(false);
@@ -459,6 +471,8 @@ export function useGameOperations({
         }});
       }
       else dispatch({type: "guessFailed"});
+      if (first.isCorrect && first.gameOver)
+        postToHost({type: "game:recordAchievements", payload: {achievementIds: []}});
       dispatch({type: "setNotice", notice: "ErrorMessages.PLAY_RESTORED"});
       return true;
     }
@@ -476,6 +490,8 @@ export function useGameOperations({
       JSON.stringify(feedback) !== JSON.stringify(first.feedback)) {
       /** The checkpoint used by the current operation. */
       const checkpoint = journalRef.current;
+      if (checkpoint?.coinAction?.type === "game:spendCoins")
+        dispatch({type: "rejectCoinSpend", requestId: checkpoint.coinAction.requestId!});
       queuedGuessesRef.current = [];
       setPendingCount(0);
       setCoinActionPending(false);
@@ -494,6 +510,8 @@ export function useGameOperations({
         }});
       }
       else dispatch({type: "guessFailed"});
+      if (first.isCorrect && first.gameOver)
+        postToHost({type: "game:recordAchievements", payload: {achievementIds: []}});
       dispatch({type: "setNotice", notice: "ErrorMessages.PLAY_RESTORED"});
       return true;
     }
@@ -513,10 +531,10 @@ export function useGameOperations({
         isCorrect: first.isCorrect, gameOver: first.gameOver, canContinue: first.canContinue});
       /** The destructured result used by the current operation. */
       const {currentLetters, activeSlotIndex, guesses, engineSnapshot, modal, lastOutcome,
-        completionAcknowledged, letterStates} = base;
+        completionAcknowledged, letterStates, profile, lastRewards, optimisticAchievementIds} = base;
       /** The updated base used by the current operation. */
       const updatedBase: PendingGuessState = {currentLetters, activeSlotIndex, guesses, engineSnapshot, modal,
-        lastOutcome, completionAcknowledged, letterStates};
+        lastOutcome, completionAcknowledged, letterStates, profile, lastRewards, optimisticAchievementIds};
       if (segment.riddle.sessionToken === journal.riddle.sessionToken) journal.base = updatedBase;
       else {
         /** The successor used by the current operation. */
@@ -669,7 +687,7 @@ export function useGameOperations({
   const requestContinue = useCallback(
     (amount?: number) => {
       if (!state.riddle || !state.profile || state.profile.coins < CONTINUE_COIN_COST ||
-        pendingCount > 0 || journalRef.current?.coinAction || continuePendingRef.current ||
+        journalRef.current?.coinAction || continuePendingRef.current ||
         stateRef.current.pendingCoinSpend) return;
       /** Provides retry behavior. */
       const retry = continueRetryRef.current;
@@ -678,8 +696,8 @@ export function useGameOperations({
         retry?.sessionToken === state.riddle.sessionToken ? retry.requestId : createRequestId("continue");
       continueRetryRef.current = {sessionToken: state.riddle.sessionToken, requestId};
       continuePendingRef.current = true;
-      dispatch({type: "previewCoinSpend", requestId, amount: CONTINUE_COIN_COST, reason: "continue"});
-      postToHost({
+      /** Continue request retained behind the final guess until that guess settles. */
+      const accepted = enqueueCoinAction({
         type: "game:spendCoins",
         requestId,
         payload: {
@@ -690,8 +708,11 @@ export function useGameOperations({
           amount,
         },
       });
+      if (accepted)
+        dispatch({type: "previewCoinSpend", requestId, amount: CONTINUE_COIN_COST, reason: "continue"});
+      else continuePendingRef.current = false;
     },
-    [dispatch, pendingCount, postToHost, state.profile, state.riddle, stateRef],
+    [dispatch, enqueueCoinAction, state.profile, state.riddle, stateRef],
   );
 
   /** Requests skip. */

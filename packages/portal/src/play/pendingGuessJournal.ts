@@ -4,7 +4,8 @@ import type {PendingGuessState} from "./gameSessionTypes";
 
 /** A confirmed coin action delivered after all earlier answers settle. */
 export type QueuedCoinAction = Extract<GameToHostMessage, {
-  /** Supported server-authoritative coin actions. */ type: "game:requestHint" | "game:skipRiddle";
+  /** Supported server-authoritative coin actions. */
+  type: "game:requestHint" | "game:spendCoins" | "game:skipRiddle";
 }>;
 
 /** An exact request retained until the backend confirms or rejects it. */
@@ -77,6 +78,10 @@ const validCoinAction = (value: unknown): boolean => {
     !isRecord(value.payload) || typeof value.payload.riddleId !== "string" ||
     typeof value.payload.sessionToken !== "string" || value.payload.sessionToken.length < 20) return false;
   if (value.type === "game:skipRiddle") return value.payload.gameMode === "classic";
+  if (value.type === "game:spendCoins") return value.payload.reason === "continue" &&
+    (value.payload.gameMode === "classic" || value.payload.gameMode === "challenge") &&
+    (value.payload.amount === undefined ||
+      (Number.isSafeInteger(value.payload.amount) && Number(value.payload.amount) > 0));
   return value.type === "game:requestHint" && value.payload.requestId === value.requestId &&
     (value.payload.gameMode === "classic" || value.payload.gameMode === "challenge") &&
     Array.isArray(value.payload.currentAttempt) && value.payload.currentAttempt.length <= 7 &&

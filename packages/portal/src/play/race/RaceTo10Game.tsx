@@ -792,7 +792,8 @@ export function RaceTo10Game({
       onShowTournaments={tournaments ? showTournaments : undefined}
       onChooseCategory={() => setStage("categories")}
       onSelectCategory={begin}
-      onInviteChallenge={referralSharing?.shareMultiplayerInvite ? () => void inviteAndBegin() : undefined}
+      onChallengeJestPlayer={referralSharing?.shareMultiplayerInvite ? () => void inviteAndBegin() : undefined}
+      onChallengeBySms={referralSharing?.shareMultiplayerInvite ? () => void inviteAndBegin() : undefined}
       inviting={inviting}
       onInboxRematch={startInboxRematch}
       onBlockRival={blockInboxRival}

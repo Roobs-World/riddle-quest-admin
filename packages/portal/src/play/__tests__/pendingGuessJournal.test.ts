@@ -52,6 +52,17 @@ describe("pending guess journal", () => {
     expect(readPendingGuessJournal(pendingPlayScope("player-1", 3, "en"))).toBeNull();
   });
 
+  it("retains a continue choice behind the final unconfirmed answer", () => {
+    /** Continue choice that must be delivered only after the earlier answer settles. */
+    const pending = journal();
+    pending.coinAction = {type: "game:spendCoins", requestId: "continue-request-123", payload: {
+      reason: "continue", riddleId: pending.riddle.riddleId, gameMode: "classic",
+      sessionToken: pending.riddle.sessionToken, amount: 100,
+    }};
+    expect(writePendingGuessJournal(pending)).toBe(true);
+    expect(readPendingGuessJournal(scope)?.coinAction).toEqual(pending.coinAction);
+  });
+
   it("rejects malformed persisted coin actions", () => {
     /** Corrupt action must not become a replayable paid request. */
     const pending = {...journal(), coinAction: {type: "game:requestHint", payload: {}}};

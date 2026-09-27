@@ -849,7 +849,7 @@ describeBrowser("standalone Jest browser game", () => {
         .waitFor();
       /** Provides profile tour headings behavior. */
       const profileTourHeadings: string[] = [];
-      for (let step = 0; step < 8; step += 1) {
+      for (let step = 0; step < 9; step += 1) {
         expect(await page.locator(".modal-profile").getAttribute("inert")).toBeNull();
         expect(
           await page.locator(".tooltip-backdrop").evaluate((element) => {
@@ -871,6 +871,7 @@ describeBrowser("standalone Jest browser game", () => {
           .getByRole("button", {name: /got it/i})
           .click();
       }
+      expect(profileTourHeadings).toContain("User progression");
       expect(profileTourHeadings).toContain("Your Treasure Chest");
       await page.locator(".tooltip-card").waitFor({state: "detached"});
       await page.waitForFunction(() => document.querySelector(".game-modal")?.contains(document.activeElement));
@@ -1069,18 +1070,31 @@ describeBrowser("standalone Jest browser game", () => {
         });
       expect(feedbackLatency).toBeLessThan(250);
       await page.waitForFunction(() => "__heldGuess" in window);
-      await page.getByRole("heading", {name: /nice job/i}).waitFor({timeout: 2000});
+      await page.getByRole("heading", {name: /achievement unlocked/i}).waitFor({timeout: 2000});
+      expect(await page.locator(".sequence-progress").textContent()).toMatch(/^1\/[2-9]\d*$/);
+      await page.waitForFunction(() => {
+        /** Player cache written before the authoritative completion starts. */
+        const raw = localStorage.getItem("riddleQuest:mockJestPlayerData");
+        if (!raw) return false;
+        try {
+          /** Locally projected profile data. */
+          const profile = (JSON.parse(raw) as {profile?: {achievements?: unknown[]}}).profile;
+          return profile?.achievements?.includes("perfect_guess") === true &&
+            profile.achievements.includes("classic_perfect");
+        } catch {
+          return false;
+        }
+      });
       expect(await page.getByRole("button", {name: /tap the chest/i}).count()).toBe(0);
-      expect(await page.getByRole("button", {name: /next level/i}).isEnabled()).toBe(true);
       await page.evaluate(() => {
         if (Reflect.get(window, "__completionBeforeGuess")) throw new Error("Completion ran before guess confirmation");
         Reflect.get(window, "__releaseGuess")();
       });
       console.info(`Immediate correct-answer feedback: ${feedbackLatency.toFixed(1)}ms with server response held`);
-      await page.getByRole("heading", {name: /achievement unlocked/i}).waitFor({timeout: 15000});
-      expect(await page.locator(".sequence-progress").textContent()).toBe("1/2");
       expect(await page.locator(".game-content").evaluate((element) => (element as HTMLElement).inert)).toBe(true);
-      await page.getByRole("button", {name: /^next$/i}).click();
+      for (let step = 0; step < 10 && await page.getByRole("heading", {name: /achievement unlocked/i}).isVisible(); step += 1) {
+        await page.getByRole("button", {name: /^next$/i}).click();
+      }
       await page.getByRole("heading", {name: /nice job/i}).waitFor();
       expect(await page.locator("#game-modal-title").evaluate(heading => getComputedStyle(heading).textAlign)).toBe("center");
       await page.screenshot({path: "/tmp/jest-feedback-victory.png"});
@@ -1290,8 +1304,11 @@ describeBrowser("standalone Jest browser game", () => {
             });
           expect(panelMs).toBeLessThan(250);
           await lowEndPage.waitForFunction(() => Reflect.has(window, "__heldFinalGuess"));
-          expect(await lowEndPage.locator(".continue-actions button:not(:disabled)").count()).toBe(0);
+          expect(await lowEndPage.locator(".continue-actions button:not(:disabled)").count()).toBe(3);
+          await lowEndPage.locator(".loss-shop-action").click();
+          await lowEndPage.locator(".modal-shop").waitFor();
           await lowEndPage.evaluate(() => Reflect.get(window, "__releaseFinalGuess")());
+          await lowEndPage.locator(".modal-continue").waitFor();
           await lowEndPage.locator(".continue-actions button").last().waitFor({state: "visible"});
           await lowEndPage.waitForFunction(() =>
             document.querySelector(".continue-actions button:last-child")?.hasAttribute("disabled") === false);
@@ -1307,33 +1324,34 @@ describeBrowser("standalone Jest browser game", () => {
         .evaluate(button => getComputedStyle(button).backgroundColor)).toBe("rgb(116, 47, 58)");
       await expectAccessible(lowEndPage, "out of attempts");
       await lowEndPage.screenshot({path: "/tmp/jest-feedback-loss.png"});
-      /** Hold the paid Continue result to verify the displayed charge precedes confirmation. */
+      /** Hold the paid Skip result to verify the loss prompt acts directly and previews its charge. */
       await lowEndPage.evaluate(() => {
         /** Native event dispatcher bypassing the temporary result hold. */
         const dispatch = window.dispatchEvent.bind(window);
-        Reflect.set(window, "__releaseContinue", () => dispatch(new CustomEvent("riddle-quest:host-to-game", {
-          detail: Reflect.get(window, "__heldContinue"),
+        Reflect.set(window, "__releaseLossSkip", () => dispatch(new CustomEvent("riddle-quest:host-to-game", {
+          detail: Reflect.get(window, "__heldLossSkip"),
         })));
         window.dispatchEvent = (event: Event) => {
           /** Operation result intercepted until after the immediate balance check. */
           const message = (event as CustomEvent).detail;
-          if (event.type === "riddle-quest:host-to-game" && message?.payload?.operation === "spendCoins") {
-            Reflect.set(window, "__heldContinue", message);
+          if (event.type === "riddle-quest:host-to-game" && message?.payload?.operation === "skip") {
+            Reflect.set(window, "__heldLossSkip", message);
             return true;
           }
           return dispatch(event);
         };
       });
-      /** Balance displayed before Continue is purchased. */
-      const coinsBeforeContinue = Number((await lowEndPage.locator("[data-coin-meter] strong").innerText()).replaceAll(",", ""));
-      await lowEndPage.locator(".continue-actions .play-primary").first().click();
+      /** Balance displayed before Skip is purchased. */
+      const coinsBeforeLossSkip = Number((await lowEndPage.locator("[data-coin-meter] strong").innerText()).replaceAll(",", ""));
+      await lowEndPage.locator(".loss-skip-action").click();
+      expect(await lowEndPage.locator(".modal-skip").count()).toBe(0);
       await lowEndPage.waitForFunction((expected) =>
         document.querySelector("[data-coin-meter] strong")?.textContent === String(expected),
-      coinsBeforeContinue - 100);
+      coinsBeforeLossSkip - 100);
       expect(Number((await lowEndPage.locator("[data-coin-meter] strong").innerText()).replaceAll(",", "")))
-        .toBe(coinsBeforeContinue - 100);
-      await lowEndPage.waitForFunction(() => Reflect.has(window, "__heldContinue"));
-      await lowEndPage.evaluate(() => Reflect.get(window, "__releaseContinue")());
+        .toBe(coinsBeforeLossSkip - 100);
+      await lowEndPage.waitForFunction(() => Reflect.has(window, "__heldLossSkip"));
+      await lowEndPage.evaluate(() => Reflect.get(window, "__releaseLossSkip")());
       await lowEndContext.close();
 
       /** Opens the prefetched Classic question while the previous win is still unconfirmed. */
@@ -1369,6 +1387,9 @@ describeBrowser("standalone Jest browser game", () => {
       for (const letter of "PIANO")
         await bufferedPage.locator(".keyboard").getByRole("button", {name: letter, exact: true}).click();
       await bufferedPage.getByRole("button", {name: /^submit$/i}).click();
+      await bufferedPage.getByRole("heading", {name: /achievement unlocked/i}).waitFor({timeout: 2_000});
+      for (let step = 0; step < 10 && await bufferedPage.getByRole("heading", {name: /achievement unlocked/i}).isVisible(); step += 1)
+        await bufferedPage.getByRole("button", {name: /^next$/i}).click();
       /** Time from the Next action to the already-issued question appearing. */
       const bufferedTransitionMs = await bufferedPage.getByRole("button", {name: /next level/i}).evaluate(async button => {
         /** Browser start time of the actual player action. */
@@ -1422,6 +1443,9 @@ describeBrowser("standalone Jest browser game", () => {
       for (const letter of "PIANO")
         await rejectedPage.locator(".keyboard").getByRole("button", {name: letter, exact: true}).click();
       await rejectedPage.getByRole("button", {name: /^submit$/i}).click();
+      await rejectedPage.getByRole("heading", {name: /achievement unlocked/i}).waitFor({timeout: 2_000});
+      for (let step = 0; step < 10 && await rejectedPage.getByRole("heading", {name: /achievement unlocked/i}).isVisible(); step += 1)
+        await rejectedPage.getByRole("button", {name: /^next$/i}).click();
       await rejectedPage.getByRole("button", {name: /next level/i}).click();
       await rejectedPage.getByText(/face and hands/i).waitFor({timeout: 2_000});
       await rejectedPage.getByRole("button", {name: /got it/i}).click();
