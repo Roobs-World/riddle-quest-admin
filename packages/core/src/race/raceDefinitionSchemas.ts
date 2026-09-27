@@ -15,7 +15,7 @@ export const RACE_MAX_HINTS_PER_RIDDLE = 1;
 export const RACE_HINT_PENALTY_MS = 15_000;
 /** Adjusted-time penalty added for skipping a riddle. */
 export const RACE_SKIP_PENALTY_MS = 45_000;
-/** Maximum adjusted duration of an active race run. */
+/** Maximum adjusted duration of a competitive challenger run. */
 export const RACE_MAX_ADJUSTED_TIME_MS = 300_000;
 /** Duration for which a published race challenge remains active. */
 export const RACE_CHALLENGE_TTL_MS = 7 * 24 * 60 * 60 * 1_000;

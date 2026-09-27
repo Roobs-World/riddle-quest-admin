@@ -449,6 +449,8 @@ const openHarness = async (
     raceOutcomeFailures?: number;
     /** Stores race guess delay ms. */
     raceGuessDelayMs?: number;
+    /** Stores race skip delay ms. */
+    raceSkipDelayMs?: number;
     /** Whether late ghost guesses reproduce the production rejection. */
     raceRejectLateGuess?: boolean;
   } = {},
@@ -485,6 +487,7 @@ const openHarness = async (
   if (options.raceOutcomeDelayMs) query.set("raceOutcomeDelayMs", String(options.raceOutcomeDelayMs));
   if (options.raceOutcomeFailures) query.set("raceOutcomeFailures", String(options.raceOutcomeFailures));
   if (options.raceGuessDelayMs) query.set("raceGuessDelayMs", String(options.raceGuessDelayMs));
+  if (options.raceSkipDelayMs) query.set("raceSkipDelayMs", String(options.raceSkipDelayMs));
   if (options.raceRejectLateGuess) query.set("raceRejectLateGuess", "1");
   /** Provides navigation behavior. */
   const navigation = page.goto(`${baseUrl}/?${query}`);
@@ -1127,6 +1130,37 @@ describeBrowser("Jest authentication integration", () => {
     await context.close();
   });
 
+  it("renders the preloaded next riddle before a delayed skip response returns", async () => {
+    /** Registered race harness with deliberately slow authoritative skip transport. */
+    const {context, page} = await openHarness(browser, {
+      registered: true,
+      harness: "race-auth",
+      playerId: "race-instant-skip",
+      raceSkipDelayMs: 2_000,
+    });
+    await enterRegisteredGame(page);
+    await page.getByRole("button", {name: /^multiplayer$/i}).click();
+    await page.getByRole("button", {name: /^History /}).click();
+    await page.locator(".race-gameplay .guess-board").waitFor({state: "visible", timeout: 10_000});
+    /** First clue shown after the full deck has loaded and the countdown has completed. */
+    const firstRiddle = await page.locator(".race-riddle-surface h2").innerText();
+    const skipButton = page.getByRole("button", {name: /^Skip/});
+    await skipButton.click();
+    await page.waitForFunction(
+      (previous) => document.querySelector(".race-riddle-surface h2")?.textContent !== previous,
+      firstRiddle,
+    );
+    expect(await page.locator(".race-riddle-surface h2").innerText()).toContain("hands and a face");
+    expect(await skipButton.isDisabled()).toBe(true);
+    await page.waitForFunction(() => {
+      const button = [...document.querySelectorAll<HTMLButtonElement>(".race-actions button")].find((candidate) =>
+        candidate.textContent?.includes("Skip"),
+      );
+      return button?.disabled === false;
+    });
+    await context.close();
+  });
+
   it("publishes a completed score before reusable Jest invites reach recipients", async () => {
     sharedRaceChallenges.clear();
     /** Provides creator behavior. */
@@ -1236,12 +1270,12 @@ describeBrowser("Jest authentication integration", () => {
     expect(countdownCenterOffset).toBeLessThanOrEqual(0.5);
     await creator.page.locator(".race-gameplay .guess-board").waitFor({state: "visible", timeout: 10_000});
     await captureMultiplayerEvidence(creator.page, "02-player-1-race-started.png");
-    /** Horizontal coverage of the multiplayer keyboard within the game surface. */
-    const keyboardCoverage = await creator.page.locator(".race-gameplay").evaluate((gameplay) => {
-      /** Available game width. */
-      const surface = gameplay.getBoundingClientRect();
+    /** Horizontal coverage of the multiplayer keyboard within its viewport. */
+    const keyboardCoverage = await creator.page.locator(".race-gameplay-viewport").evaluate((viewport) => {
+      /** Available viewport width. */
+      const surface = viewport.getBoundingClientRect();
       /** Rendered keyboard width. */
-      const keyboard = gameplay.querySelector(".keyboard")!.getBoundingClientRect();
+      const keyboard = viewport.querySelector(".keyboard")!.getBoundingClientRect();
       return keyboard.width / surface.width;
     });
     expect(keyboardCoverage).toBeGreaterThan(0.98);

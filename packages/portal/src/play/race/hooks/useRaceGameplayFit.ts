@@ -46,6 +46,7 @@ export function useRaceGameplayFit({active, screenRef, viewportRef, gameplayRef}
         /** Scale required to keep the complete gameplay surface visible. */
         const scale = naturalHeight > availableHeight ? availableHeight / naturalHeight : 1;
         gameplay.style.transform = `scale(${scale})`;
+        gameplay.style.setProperty("--race-gameplay-scale", String(scale));
         viewport.style.height = `${availableHeight}px`;
         viewport.dataset.viewportScale = scale.toFixed(4);
       });
@@ -63,6 +64,7 @@ export function useRaceGameplayFit({active, screenRef, viewportRef, gameplayRef}
       window.removeEventListener("resize", fitGameplay);
       gameplay.style.transform = "";
       gameplay.style.minHeight = "";
+      gameplay.style.removeProperty("--race-gameplay-scale");
       viewport.style.height = "";
       delete viewport.dataset.viewportScale;
     };

@@ -118,7 +118,7 @@ export function RaceGameplay({
             />
           </>
         )}
-        {!run.currentRiddle && run.status === "completed" && (
+        {!run.currentRiddle && run.status !== "active" && (
           <p className="race-outcome-loading" role="status">
             {tr("RaceTo10.RESULTS_LOADING")}
           </p>

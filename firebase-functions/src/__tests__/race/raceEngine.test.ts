@@ -204,14 +204,21 @@ describe("Race to 10 authoritative engine", () => {
     expect(JSON.stringify(view)).not.toContain("piano");
   });
 
-  it("includes only the active answer when local feedback is requested", () => {
+  it("preloads every question and answer when local feedback is requested", () => {
     /** The run used by this regression scenario. */
     const run = createRun();
     run.riddles[1].answer = "orbit";
     /** The view used by this regression scenario. */
     const view = toRaceRunView(run, STARTED_AT + 3_000, true);
     expect(view.currentRiddle?.evaluation).toEqual({answer: "piano", locale: "en"});
-    expect(JSON.stringify(view)).not.toContain("orbit");
+    expect(view.preloadedRiddles).toHaveLength(15);
+    expect(view.preloadedRiddles?.[1]).toMatchObject({
+      riddleId: "riddle-2",
+      text: "Fixture clue 2",
+      answerLength: 5,
+      position: 1,
+      evaluation: {answer: "orbit", locale: "en"},
+    });
   });
 
   it("projects completed state and copies public opponent and event data", () => {
@@ -293,9 +300,24 @@ describe("Race to 10 authoritative engine", () => {
     });
   });
 
-  it("lets accumulated penalties trigger the five-minute adjusted cap", () => {
+  it("keeps a creator run active beyond the competitive time cap", () => {
     /** Provides run behavior. */
     const run = createRun({hintPenaltyMs: 15_000, skipPenaltyMs: 45_000});
+    /** Provides refreshed behavior. */
+    const refreshed = refreshRaceRun(run, STARTED_AT + 240_000);
+    expect(refreshed.status).toBe("active");
+    expect(refreshed.result).toBeUndefined();
+  });
+
+  it("lets accumulated penalties trigger the five-minute challenger cap", () => {
+    /** Provides run behavior. */
+    const run = createRun({
+      role: "challenger",
+      challengeId: "challenge-1",
+      opponent: {displayName: "Ava", adjustedFinishMs: 400_000, events: []},
+      hintPenaltyMs: 15_000,
+      skipPenaltyMs: 45_000,
+    });
     /** Provides timed out behavior. */
     const timedOut = refreshRaceRun(run, STARTED_AT + 240_000);
     expect(timedOut).toMatchObject({status: "timed_out", result: "timed_out", wallFinishMs: 240_000});

@@ -61,6 +61,21 @@ export const RaceRiddlePromptSchema = z
 /** Current riddle presented during an active run. */
 export type RaceRiddlePrompt = z.infer<typeof RaceRiddlePromptSchema>;
 
+/** Immutable riddle content downloaded before an evaluation-enabled race begins. */
+export const RacePreloadedRiddleSchema = z
+  .object({
+    riddleId: OpaqueIdSchema,
+    text: z.string().trim().min(1).max(2_000),
+    answerLength: z.number().int().positive().max(MAX_RIDDLE_ANSWER_CHARACTERS),
+    position: z.number().int().nonnegative().max(RACE_DECK_SIZE - 1),
+    evaluation: z
+      .object({answer: z.string().min(1).max(MAX_RIDDLE_ANSWER_CHARACTERS), locale: RaceLocaleSchema})
+      .strict(),
+  })
+  .strict();
+/** Immutable riddle content downloaded before an evaluation-enabled race begins. */
+export type RacePreloadedRiddle = z.infer<typeof RacePreloadedRiddleSchema>;
+
 /** Schema for the lifecycle state of an authoritative race run. */
 export const RaceRunStatusSchema = z.enum(["active", "completed", "timed_out", "abandoned"]);
 /** Lifecycle state of an authoritative race run. */
@@ -94,6 +109,8 @@ export const RaceRunViewSchema = z
     totalPenaltyMs: MillisecondsSchema,
     adjustedElapsedMs: MillisecondsSchema,
     currentRiddle: RaceRiddlePromptSchema.nullable(),
+    /** Complete immutable deck used for instant local transitions; absent for answer-safe legacy callers. */
+    preloadedRiddles: z.array(RacePreloadedRiddleSchema).length(RACE_DECK_SIZE).optional(),
     events: z.array(RaceGhostEventSchema).max(RACE_DECK_SIZE * 3),
     opponent: RaceOpponentSchema.optional(),
   })

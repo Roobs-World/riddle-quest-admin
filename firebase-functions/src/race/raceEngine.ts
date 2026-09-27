@@ -160,7 +160,7 @@ export function refreshRaceRun(input: RaceRunRecord, nowMs: number): RaceRunReco
   if (run.status !== "active") return run;
   /** Provides clock behavior. */
   const clock = raceClock(run, nowMs);
-  if (clock.adjustedElapsedMs >= RACE_MAX_ADJUSTED_TIME_MS) {
+  if (run.role === "challenger" && clock.adjustedElapsedMs >= RACE_MAX_ADJUSTED_TIME_MS) {
     return finishRun(run, "timed_out", RACE_MAX_ADJUSTED_TIME_MS);
   }
   if (run.opponent && clock.adjustedElapsedMs > run.opponent.adjustedFinishMs) {
@@ -372,7 +372,7 @@ export function abandonRaceRun(input: RaceRunRecord, nowMs: number): RaceRunReco
   };
 }
 
-/** Projects server-only run state, optionally including the active answer. */
+/** Projects server-only run state, optionally including the complete immutable evaluation deck. */
 export function toRaceRunView(input: RaceRunRecord, nowMs: number, includeEvaluation = false): RaceRunView {
   /** Provides run behavior. */
   const run = refreshRaceRun(input, nowMs);
@@ -409,6 +409,17 @@ export function toRaceRunView(input: RaceRunRecord, nowMs: number, includeEvalua
           ...(includeEvaluation ? {evaluation: {answer: current.answer, locale: run.locale}} : {}),
         }
       : null,
+    ...(includeEvaluation
+      ? {
+          preloadedRiddles: run.riddles.map((riddle) => ({
+            riddleId: riddle.riddleId,
+            text: riddle.text,
+            answerLength: splitGraphemes(riddle.answer, run.locale).length,
+            position: riddle.position,
+            evaluation: {answer: riddle.answer, locale: run.locale},
+          })),
+        }
+      : {}),
     events: run.events.map((event) => ({...event})),
     opponent: run.opponent
       ? {

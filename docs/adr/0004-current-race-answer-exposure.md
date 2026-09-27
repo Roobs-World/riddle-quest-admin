@@ -1,5 +1,5 @@
-# Current Race answer exposure for immediate feedback
+# Complete Race deck exposure for immediate play
 
 Status: accepted
 
-New Race clients may opt into receiving the current question's answer for immediate local feedback. A player can inspect that answer in browser memory. Competitive time, scoring, advancement, and rankings still require server confirmation. Legacy responses remain answer-free, and no future Race answers are sent.
+New Race clients may opt into receiving the complete immutable question-and-answer deck before the countdown finishes. This supports immediate local feedback and zero-wait transitions when a player skips a riddle. A player can inspect every answer in browser memory, so the deck is a responsiveness feature rather than an anti-cheat boundary. Competitive time, scoring, penalties, advancement, and rankings still require server confirmation. Legacy responses remain answer-free.

@@ -19,7 +19,15 @@ class TestElement {
   /** Stores dataset. */
   public readonly dataset: Record<string, string | undefined> = {};
   /** Stores style. */
-  public readonly style: Record<string, string> = {};
+  public readonly style = Object.assign({} as Record<string, string>, {
+    setProperty: jest.fn((property: string, value: string) => {
+      this.style[property] = value;
+    }),
+    removeProperty: jest.fn((property: string) => {
+      delete this.style[property];
+      return "";
+    }),
+  });
   /** Stores focus. */
   public focus = jest.fn(() => {
     testDocument.activeElement = this;
@@ -305,6 +313,7 @@ describe("useRaceGameplayFit", () => {
 
     expect(harness.gameplay.style.transform).toBe("scale(0.5)");
     expect(harness.gameplay.style.minHeight).toBe("380px");
+    expect(harness.gameplay.style["--race-gameplay-scale"]).toBe("0.5");
     expect(harness.viewport.style.height).toBe("380px");
     expect(harness.viewport.dataset.viewportScale).toBe("0.5000");
     expect(observe).toHaveBeenCalledWith(harness.screen);
@@ -320,6 +329,7 @@ describe("useRaceGameplayFit", () => {
     expect(testWindow.removeEventListener).toHaveBeenCalledWith("resize", resizeHandler);
     expect(harness.gameplay.style.transform).toBe("");
     expect(harness.gameplay.style.minHeight).toBe("");
+    expect(harness.gameplay.style["--race-gameplay-scale"]).toBeUndefined();
     expect(harness.viewport.style.height).toBe("");
     expect(harness.viewport.dataset.viewportScale).toBeUndefined();
   });
@@ -332,6 +342,7 @@ describe("useRaceGameplayFit", () => {
 
     expect(harness.gameplay.style.transform).toBe("scale(1)");
     expect(harness.gameplay.style.minHeight).toBe("380px");
+    expect(harness.gameplay.style["--race-gameplay-scale"]).toBe("1");
     expect(harness.viewport.style.height).toBe("380px");
     expect(harness.viewport.dataset.viewportScale).toBe("1.0000");
   });

@@ -55,6 +55,9 @@
 .race-feedback.incorrect {
   background: #a43b4d;
 }
+.race-feedback.idle {
+  visibility: hidden;
+}
 .race-gameplay {
   width: min(900px, 100%);
   min-height: 100%;
@@ -214,6 +217,7 @@
 .race-gameplay > .keyboard {
   grid-area: keyboard;
   width: 100%;
+  width: calc(100% / var(--race-gameplay-scale, 1));
 }
 .race-gameplay > .race-actions {
   grid-area: actions;

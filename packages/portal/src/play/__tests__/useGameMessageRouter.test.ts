@@ -12,6 +12,31 @@ jest.mock("react", () => ({
 import {useGameMessageRouter} from "../useGameMessageRouter";
 
 describe("useGameMessageRouter", () => {
+  it("does not leak a late multiplayer failure into the solo riddle notice", async () => {
+    /** Provides dispatch behavior. */
+    const dispatch = jest.fn();
+    /** Provides router behavior. */
+    const router = useGameMessageRouter({
+      dispatch,
+      stateRef: {current: {} as GameSessionState},
+      postToHost: jest.fn(),
+      requestRiddle: jest.fn(),
+    });
+
+    await router({
+      type: "host:operationResult",
+      requestId: "race-guess-after-close",
+      payload: {
+        operation: "raceGuess",
+        ok: false,
+        error: "This Race to 10 run is no longer active. [400]",
+        errorKind: "rejected",
+      },
+    });
+
+    expect(dispatch).not.toHaveBeenCalled();
+  });
+
   it("consumes a successful bridge cancellation without notice, balance, or fanfare actions", async () => {
     /** Provides dispatch behavior. */
     const dispatch = jest.fn();

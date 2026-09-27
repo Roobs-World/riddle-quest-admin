@@ -7,6 +7,7 @@ import {
   formatRaceTime,
   getAdjustedRaceTime,
   getRaceLetterStates,
+  projectInstantRaceSkip,
   projectRaceOutcome,
 } from "../logic/racePresentation";
 
@@ -67,7 +68,7 @@ describe("race presentation helpers", () => {
     expect(findFirstEditableRaceSlot(null)).toBe(0);
   });
 
-  it("advances only active authoritative clocks and clamps them to the race limit", () => {
+  it("advances active clocks and clamps only a challenger to the race limit", () => {
     /** Provides run behavior. */
     const run = {
       status: "active",
@@ -76,9 +77,41 @@ describe("race presentation helpers", () => {
     } as RaceRunView;
     expect(getAdjustedRaceTime(null, 1_000, 5_000)).toBe(0);
     expect(getAdjustedRaceTime(run, 1_000, 5_000)).toBe(8_000);
-    expect(getAdjustedRaceTime(run, 1_000, 20_000)).toBe(10_000);
+    expect(getAdjustedRaceTime({...run, role: "challenger"}, 1_000, 20_000)).toBe(10_000);
+    expect(getAdjustedRaceTime({...run, role: "creator"}, 1_000, 20_000)).toBe(23_000);
     expect(getAdjustedRaceTime({...run, status: "completed"}, 1_000, 20_000)).toBe(4_000);
     expect(getAdjustedRaceTime({...run, status: "completed"}, 1_000)).toBe(4_000);
+  });
+
+  it("projects a skip immediately from the deck downloaded before the race", () => {
+    /** Complete immutable deck available before the countdown finishes. */
+    const preloadedRiddles = Array.from({length: RACE_RULES.deckSize}, (_, position) => ({
+      riddleId: `riddle-${position + 1}`,
+      text: `Clue ${position + 1}`,
+      answerLength: 4,
+      position,
+      evaluation: {answer: "test", locale: "en" as const},
+    }));
+    expect(projectInstantRaceSkip(run({preloadedRiddles}))).toMatchObject({
+      totalPenaltyMs: RACE_RULES.skipPenaltyMs,
+      adjustedElapsedMs: 2_000 + RACE_RULES.skipPenaltyMs,
+      currentRiddle: {
+        riddleId: "riddle-2",
+        text: "Clue 2",
+        position: 1,
+        guessesUsed: 0,
+        guessesRemaining: RACE_RULES.maxGuessesPerRiddle,
+        hintAvailable: true,
+        revealedLetters: [],
+        evaluation: {answer: "test", locale: "en"},
+      },
+    });
+    expect(projectInstantRaceSkip(run())).toBeNull();
+    expect(
+      projectInstantRaceSkip(
+        run({currentRiddle: {...riddle(), position: RACE_RULES.deckSize - 1}, preloadedRiddles}),
+      ),
+    ).toMatchObject({status: "timed_out", currentRiddle: null});
   });
 
   it("projects an opponent win only after the server-issued ghost finish elapses", () => {
@@ -120,8 +153,10 @@ describe("race presentation helpers", () => {
       adjustedElapsedMs: 2_500,
     });
     expect(projectRaceOutcome(run({status: "completed", correctCount: 10, currentRiddle: null, adjustedElapsedMs: 3_000}), 3_000)).toMatchObject({result: "tie"});
-    /** Provides timeout behavior. */
-    const timeout = projectRaceOutcome(run({opponent: undefined}), RACE_RULES.maxAdjustedTimeMs);
+    /** A creator setting a time to beat is not competing against a deadline. */
+    expect(projectRaceOutcome(run({role: "creator", opponent: undefined}), RACE_RULES.maxAdjustedTimeMs)).toBeNull();
+    /** Provides challenger timeout behavior. */
+    const timeout = projectRaceOutcome(run({role: "challenger"}), RACE_RULES.maxAdjustedTimeMs);
     expect(timeout).toMatchObject({
       result: "timed_out",
       adjustedFinishMs: RACE_RULES.maxAdjustedTimeMs,

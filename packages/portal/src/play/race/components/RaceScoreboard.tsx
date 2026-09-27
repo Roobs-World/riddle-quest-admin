@@ -37,11 +37,14 @@ export function RaceScoreboard({
             +{formatRaceTime(run.totalPenaltyMs)}
           </small>
         </div>
-        {feedback && (
-          <div className={`race-feedback ${feedback}`} role="status" aria-live="polite">
-            {tr(feedback === "correct" ? "RaceTo10.CORRECT" : "RaceTo10.TRY_AGAIN")}
-          </div>
-        )}
+        <div
+          className={`race-feedback ${feedback ?? "idle"}`}
+          role="status"
+          aria-live="polite"
+          aria-hidden={feedback ? undefined : true}
+        >
+          {feedback ? tr(feedback === "correct" ? "RaceTo10.CORRECT" : "RaceTo10.TRY_AGAIN") : "\u00a0"}
+        </div>
         <div className="race-progress">
           <div style={{"--race-progress": `${run.correctCount * 10}%`} as CSSProperties}>
             <span title={tr("RaceTo10.YOU")}>{tr("RaceTo10.YOU")}</span>

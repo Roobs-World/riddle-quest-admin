@@ -30,21 +30,45 @@ export const findFirstEditableRaceSlot = (riddle: RaceRiddle | null): number => 
   );
 };
 
-/** Advances the latest server clock locally without exceeding the race limit. */
+/** Immediately advances to the already-downloaded next riddle while the server records the skip. */
+export const projectInstantRaceSkip = (run: RaceRunView): RaceRunView | null => {
+  if (run.status !== "active" || !run.currentRiddle || !run.preloadedRiddles) return null;
+  /** Immutable prompt selected from the deck downloaded before the countdown completed. */
+  const next = run.preloadedRiddles[run.currentRiddle.position + 1];
+  return {
+    ...run,
+    status: next ? "active" : "timed_out",
+    totalPenaltyMs: run.totalPenaltyMs + run.rules.skipPenaltyMs,
+    adjustedElapsedMs: run.adjustedElapsedMs + run.rules.skipPenaltyMs,
+    currentRiddle: next
+      ? {
+          ...next,
+          guessesUsed: 0,
+          guessesRemaining: run.rules.maxGuessesPerRiddle,
+          hintAvailable: true,
+          revealedLetters: [],
+        }
+      : null,
+  };
+};
+
+/** Advances the latest server clock locally, capping only competitive challenger runs. */
 export const getAdjustedRaceTime = (run: RaceRunView | null, receivedAtMs: number, nowMs = Date.now()): number =>
   run
-    ? Math.min(
-        run.rules.maxAdjustedTimeMs,
-        run.adjustedElapsedMs + (run.status === "active" ? nowMs - receivedAtMs : 0),
-      )
+    ? run.role === "challenger"
+      ? Math.min(
+          run.rules.maxAdjustedTimeMs,
+          run.adjustedElapsedMs + (run.status === "active" ? nowMs - receivedAtMs : 0),
+        )
+      : run.adjustedElapsedMs + (run.status === "active" ? nowMs - receivedAtMs : 0)
     : 0;
 
 /** Projects a terminal result that is already determined by authoritative run data. */
 export const projectRaceOutcome = (run: RaceRunView, adjustedNow: number): RaceOutcome | null => {
   if (run.status === "abandoned") return null;
-  /** Whether the shared adjusted-time limit has conclusively elapsed. */
+  /** Whether the challenger adjusted-time limit has conclusively elapsed. */
   const timedOut = run.status === "timed_out" ||
-    (run.status === "active" && adjustedNow >= run.rules.maxAdjustedTimeMs);
+    (run.role === "challenger" && run.status === "active" && adjustedNow >= run.rules.maxAdjustedTimeMs);
   /** Whether the server-issued opponent time has conclusively elapsed. */
   const opponentFinished = Boolean(
     run.opponent && run.status === "active" && adjustedNow > run.opponent.adjustedFinishMs,

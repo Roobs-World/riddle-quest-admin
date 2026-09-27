@@ -37,7 +37,7 @@ describe("createFakeRaceServices", () => {
     await expect(services.listRaceInbox()).resolves.toMatchObject({items: [{opponentDisplayName: "Nova"}]});
   });
 
-  it("exposes only the current answer when a Race run opts into local evaluation", async () => {
+  it("preloads every question and answer when a Race run opts into local evaluation", async () => {
     /** The services used by this regression scenario. */
     const services = createFakeRaceServices();
     /** The legacy used by this regression scenario. */
@@ -47,7 +47,8 @@ describe("createFakeRaceServices", () => {
     const {run} = await services.startRace({locale: "en", categoryId: "mixed", requestId: "preview",
       includeEvaluation: true});
     expect(run.currentRiddle?.evaluation).toEqual({answer: "piano", locale: "en"});
-    expect(JSON.stringify(run)).not.toContain("clock");
+    expect(run.preloadedRiddles).toHaveLength(15);
+    expect(run.preloadedRiddles?.[1]).toMatchObject({text: expect.any(String), evaluation: {answer: "clock", locale: "en"}});
     /** The advanced used by this regression scenario. */
     const advanced = await services.submitRaceGuess({runId: run.runId, riddleId: run.currentRiddle!.riddleId,
       requestId: "answer-1", guess: "piano"});

@@ -31,7 +31,7 @@ import {RACE_COUNTDOWN_START} from "./logic/raceCountdown";
 import {deleteRaceLetter, insertRaceLetter, insertRaceText, isRaceSlotEditable} from "./logic/raceInput";
 import type {RaceOperation} from "./logic/raceOperations";
 import {getGhostCorrectCount} from "./logic/racePlayback";
-import {applyRaceOutcome, createRaceAttempt, findFirstEditableRaceSlot, getAdjustedRaceTime, getRaceLetterStates, projectRaceOutcome} from "./logic/racePresentation";
+import {applyRaceOutcome, createRaceAttempt, findFirstEditableRaceSlot, getAdjustedRaceTime, getRaceLetterStates, projectInstantRaceSkip, projectRaceOutcome} from "./logic/racePresentation";
 import {useRaceDialogFocus, useRaceGameplayFit, useRaceGameplayKeyboard, useRaceOperationLifecycle} from "./hooks";
 import {RaceTo10View, type RaceStage} from "./RaceTo10View";
 import {readActiveRace, clearActiveRace} from "./logic/activeRaceStorage";
@@ -96,6 +96,8 @@ export function RaceTo10Game({
   const [feedback, setFeedback] = useState<"correct" | "incorrect" | null>(null);
   /** Marks a local row that the next authoritative guess response must replace or undo. */
   const previewedGuessRef = useRef(false);
+  /** Authoritative view restored if an instant local skip cannot be recorded by the server. */
+  const skipRollbackRef = useRef<RaceRunView | null>(null);
   /** Temporary text describing a server-applied time penalty. */
   const [penaltyFlash, setPenaltyFlash] = useState<string | null>(null);
   /** Whether the active-race abandonment confirmation is visible. */
@@ -288,6 +290,14 @@ export function RaceTo10Game({
           shareAfterPublishRef.current = false;
           setPublishRequested(false);
         }
+        if (operation === "raceSkip" && skipRollbackRef.current) {
+          const rollback = skipRollbackRef.current;
+          skipRollbackRef.current = null;
+          setRun(rollback);
+          setReceivedAtMs(Date.now());
+          resetAttempt(rollback);
+          setPenaltyFlash(null);
+        }
         if (operation === "raceChallenge" && activeChallengeId?.startsWith("jest-invite-") && message.payload.error?.includes("not found")) {
           setError(null);
         } else if (operation === "raceGuess" && message.payload.error?.includes("no longer active")) {
@@ -406,8 +416,10 @@ export function RaceTo10Game({
           if (previousRiddle !== result.run.currentRiddle?.riddleId) {
             resetAttempt(result.run);
           } else {
+            /** Whether this response replaces feedback already projected before the host round trip. */
+            const replacesPreview = previewedGuessRef.current;
             setRaceGuesses((guesses) => [
-              ...(previewedGuessRef.current ? guesses.slice(0, -1) : guesses),
+              ...(replacesPreview ? guesses.slice(0, -1) : guesses),
               {guess: currentLetters, feedback: result.feedback.map(({status}) => status)},
             ]);
             setCurrentLetters(createRaceAttempt(result.run.currentRiddle));
@@ -431,6 +443,7 @@ export function RaceTo10Game({
         } else if (operation === "raceSkip") {
           /** Provides result behavior. */
           const result = SkipRaceRiddleResponseSchema.parse(message.payload.data);
+          skipRollbackRef.current = null;
           updateRun(result.run);
           resetAttempt(result.run);
           setPenaltyFlash(tr("RaceTo10.SKIP_PENALTY"));
@@ -487,6 +500,14 @@ export function RaceTo10Game({
           setRaceGuesses((guesses) => guesses.slice(0, -1));
           setFeedback(null);
           previewedGuessRef.current = false;
+        }
+        if (operation === "raceSkip" && skipRollbackRef.current) {
+          const rollback = skipRollbackRef.current;
+          skipRollbackRef.current = null;
+          setRun(rollback);
+          setReceivedAtMs(Date.now());
+          resetAttempt(rollback);
+          setPenaltyFlash(null);
         }
         setError(tr("RaceTo10.ERROR_INVALID_RESPONSE"));
       } finally {
@@ -595,6 +616,15 @@ export function RaceTo10Game({
   /** Requests a server-authoritative skip with the published time penalty. */
   const skip = () => {
     if (!run?.currentRiddle || pending) return;
+    /** Next riddle projected entirely from the deck downloaded before the countdown. */
+    const projected = projectInstantRaceSkip(run);
+    if (projected) {
+      skipRollbackRef.current = run;
+      setRun(projected);
+      setReceivedAtMs(Date.now());
+      resetAttempt(projected);
+      setPenaltyFlash(tr("RaceTo10.SKIP_PENALTY"));
+    }
     send("raceSkip", "game:skipRaceRiddle", {runId: run.runId, riddleId: run.currentRiddle.riddleId, includeEvaluation: true});
   };
   /** Selects an editable answer position. */

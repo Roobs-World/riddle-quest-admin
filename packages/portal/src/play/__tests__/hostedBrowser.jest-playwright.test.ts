@@ -394,6 +394,17 @@ describeBrowser("standalone Jest browser game", () => {
       expect(raceLayout.widthDifference).toBeLessThanOrEqual(1);
       await page.screenshot({path: "/tmp/jest-feedback-race.png"});
 
+      await page.evaluate(() => {
+        /** Real clock restored after proving creator runs have no competitive deadline. */
+        const realNow = Date.now;
+        Object.assign(window, {__restoreRaceCreatorClock: () => { Date.now = realNow; }});
+        Date.now = () => realNow() + 300_001;
+      });
+      await page.waitForTimeout(250);
+      expect(await page.locator(".race-gameplay").isVisible()).toBe(true);
+      expect(await page.getByText(/time.s up/i).count()).toBe(0);
+      await page.evaluate(() => Reflect.get(window, "__restoreRaceCreatorClock")());
+
       for (const {committed, rendered} of [
         {committed: "e\u0301", rendered: "é"},
         {committed: "نَ", rendered: "نَ"},
@@ -480,6 +491,35 @@ describeBrowser("standalone Jest browser game", () => {
           ).length === 1,
       );
       await nativeAnswerInput.press("Backspace");
+      await nativeAnswerInput.fill("CRANE");
+      await page.evaluate(() => {
+        Object.assign(window, {__raceGuessRequestCount: 0});
+        window.addEventListener("riddle-quest:game-to-host", (event) => {
+          if ((event as CustomEvent).detail?.type !== "game:submitRaceGuess") return;
+          Object.assign(window, {
+            __raceGuessRequestCount: Number(Reflect.get(window, "__raceGuessRequestCount")) + 1,
+          });
+        });
+      });
+      /** Stable gameplay anchors before answer feedback is rendered. */
+      const layoutBeforeRaceSubmit = await page.locator(".race-gameplay").evaluate((gameplay) => ({
+        keyboardTop: gameplay.querySelector(".keyboard")!.getBoundingClientRect().top,
+        riddleTop: gameplay.querySelector(".race-riddle-surface")!.getBoundingClientRect().top,
+      }));
+      await page.locator(".race-actions .submit-action").click();
+      await page.locator(".race-gameplay .guess-row").first().locator(".cell.red").first().waitFor();
+      await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
+      /** Stable gameplay anchors after answer feedback is rendered. */
+      const layoutAfterRaceSubmit = await page.locator(".race-gameplay").evaluate((gameplay) => ({
+        keyboardTop: gameplay.querySelector(".keyboard")!.getBoundingClientRect().top,
+        riddleTop: gameplay.querySelector(".race-riddle-surface")!.getBoundingClientRect().top,
+      }));
+      expect(Math.abs(layoutAfterRaceSubmit.riddleTop - layoutBeforeRaceSubmit.riddleTop)).toBeLessThanOrEqual(1);
+      expect(Math.abs(layoutAfterRaceSubmit.keyboardTop - layoutBeforeRaceSubmit.keyboardTop)).toBeLessThanOrEqual(1);
+      expect(
+        await page.locator(".race-gameplay .guess-row").nth(1).locator(".cell").allTextContents(),
+      ).toEqual(["", "", "", "", ""]);
+      expect(await page.evaluate(() => Reflect.get(window, "__raceGuessRequestCount"))).toBe(1);
       await page.evaluate(() => {
         /** The hold guess used by this regression scenario. */
         const holdGuess = (event: Event) => {
@@ -496,7 +536,7 @@ describeBrowser("standalone Jest browser game", () => {
         /** The started used by this regression scenario. */
         const started = performance.now();
         (button as HTMLButtonElement).click();
-        while (document.querySelectorAll(".race-gameplay .guess-row:first-child .cell.green").length < 5) {
+        while (document.querySelectorAll(".race-gameplay .guess-row .cell.green").length < 5) {
           if (performance.now() - started > 1_000) throw new Error("Race feedback waited for server");
           await new Promise(resolve => requestAnimationFrame(resolve));
         }
@@ -513,6 +553,16 @@ describeBrowser("standalone Jest browser game", () => {
       await page.locator(".race-close").click();
       await page.getByRole("button", {name: /^quit race$/i}).click();
       await page.locator(".race-screen").waitFor({state: "detached"});
+      await page.evaluate(() => window.dispatchEvent(new CustomEvent("riddle-quest:host-to-game", {
+        detail: {
+          type: "host:operationResult",
+          requestId: "late-race-guess-after-close",
+          payload: {operation: "raceGuess", ok: false, errorKind: "rejected",
+            error: "This Race to 10 run is no longer active. [400]"},
+        },
+      })));
+      await page.waitForTimeout(50);
+      expect(await page.getByText(/this race to 10 run is no longer active/i).count()).toBe(0);
       await page.getByRole("button", {name: /^multiplayer$/i}).click();
       await page.locator(".race-category-grid button").first().waitFor();
       /** Provides hub tablist behavior. */

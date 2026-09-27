@@ -189,6 +189,14 @@ const getRaceGuessDelayMs = () => {
   return Number.isFinite(requestedDelay) ? Math.max(0, Math.min(5_000, requestedDelay)) : 0;
 };
 
+/** Returns the bounded skip delay requested by the browser-test URL. */
+const getRaceSkipDelayMs = () => {
+  if (typeof location === "undefined") return 0;
+  /** Requested artificial skip latency in milliseconds. */
+  const requestedDelay = Number(new URLSearchParams(location.search).get("raceSkipDelayMs"));
+  return Number.isFinite(requestedDelay) ? Math.max(0, Math.min(5_000, requestedDelay)) : 0;
+};
+
 /** Whether the browser harness should mirror the backend's late-ghost rejection. */
 const rejectsLateGhostGuess = () =>
   typeof location !== "undefined" && new URLSearchParams(location.search).get("raceRejectLateGuess") === "1";
@@ -214,6 +222,17 @@ export const createFakeRaceServices = (): RaceMethods => {
       wallElapsedMs,
       totalPenaltyMs: run.hintPenaltyMs + run.skipPenaltyMs,
       adjustedElapsedMs: wallElapsedMs + run.hintPenaltyMs + run.skipPenaltyMs,
+      ...(run.evaluationEnabled
+        ? {
+            preloadedRiddles: clues.map((text, position) => ({
+              riddleId: `fake-race-${position + 1}`,
+              text,
+              answerLength: answers[position].length,
+              position,
+              evaluation: {answer: answers[position], locale: run.view.locale},
+            })),
+          }
+        : {}),
       currentRiddle: run.view.currentRiddle
         ? {
             ...run.view.currentRiddle,
@@ -451,6 +470,9 @@ export const createFakeRaceServices = (): RaceMethods => {
       /** Provides cached behavior. */
       const cached = run.responses.get(input.requestId);
       if (cached) return cached as Awaited<ReturnType<RaceMethods["skipRaceRiddle"]>>;
+      /** Artificial transport latency used to prove that the client transition is local. */
+      const delayMs = getRaceSkipDelayMs();
+      if (delayMs > 0) await new Promise((resolve) => window.setTimeout(resolve, delayMs));
       run.skipPenaltyMs += RACE_SKIP_PENALTY_MS;
       addEvent(run, "skip", RACE_SKIP_PENALTY_MS);
       advance(run);

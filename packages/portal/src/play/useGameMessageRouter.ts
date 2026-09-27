@@ -93,6 +93,9 @@ export function useGameMessageRouter({
         operationResult: async (message) => {
           if (onGuessResult?.(message)) return;
           if (!message.payload.ok) {
+            // Multiplayer owns its failures while mounted. Once its overlay is
+            // closed, a late race response must not become the solo notice.
+            if (message.payload.operation.startsWith("race")) return;
             if (message.payload.operation === "spendCoins" && message.requestId)
               dispatch({type: "rejectCoinSpend", requestId: message.requestId});
             if (message.payload.operation === "leaderboard") dispatch({type: "leaderboardLoadFailed"});
