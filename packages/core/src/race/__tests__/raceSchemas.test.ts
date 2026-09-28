@@ -65,11 +65,18 @@ describe("Race to 10 contracts", () => {
       targetCorrect: 10,
       deckSize: 15,
       maxGuessesPerRiddle: 5,
-      maxHintsPerRiddle: 1,
+      maxHintsPerRiddle: 7,
       hintPenaltyMs: 15_000,
       skipPenaltyMs: 45_000,
       maxAdjustedTimeMs: 300_000,
     });
+  });
+
+  it("accepts a one-hint server response during the multiplayer rollout", () => {
+    expect(ListRaceCategoriesResponseSchema.safeParse({
+      categories: [],
+      rules: {...RACE_RULES, maxHintsPerRiddle: 1},
+    }).success).toBe(true);
   });
 
   it.each([correctEvent, hintEvent, skipEvent])("accepts a valid $type timeline event", (event) => {
@@ -152,6 +159,16 @@ describe("Race to 10 contracts", () => {
       events: [correctEvent, hintEvent],
     };
     expect(RaceRunViewSchema.parse(run)).toEqual(run);
+    const repeatedHints = Array.from({length: 46}, (_, sequence) => ({
+      ...hintEvent,
+      sequence,
+      totalPenaltyMs: (sequence + 1) * RACE_HINT_PENALTY_MS,
+      adjustedElapsedMs: hintEvent.wallElapsedMs + (sequence + 1) * RACE_HINT_PENALTY_MS,
+    }));
+    expect(RaceRunViewSchema.safeParse({...run, events: repeatedHints}).success).toBe(true);
+    expect(RaceRunViewSchema.safeParse({...run, events: Array.from({length: 121}, (_, index) => ({
+      ...repeatedHints[0], sequence: index,
+    }))}).success).toBe(false);
   });
 
   it("requires an idempotency key and a null result when abandoning a run", () => {

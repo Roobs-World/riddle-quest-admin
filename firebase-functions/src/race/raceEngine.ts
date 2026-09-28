@@ -75,7 +75,7 @@ export type RaceRunRecord = {
   correctCount: number;
   /** Stores guesses used. */
   guessesUsed: number;
-  /** Stores hint used. */
+  /** Legacy first-hint marker retained for existing persisted runs. */
   hintUsed: boolean;
   /** Stores revealed letters. */
   revealedLetters: Array<{
@@ -325,8 +325,6 @@ export function applyRaceHint(
   const run = refreshRaceRun(input, nowMs);
   /** Provides riddle behavior. */
   const riddle = requireActiveRiddle(run, inputData.riddleId);
-  if (run.hintUsed) throw new HttpsError("failed-precondition", "The race hint for this riddle is already used.");
-
   /** Provides answer behavior. */
   const answer = splitGraphemes(riddle.answer, run.locale);
   /** Provides revealed behavior. */
@@ -415,7 +413,7 @@ export function toRaceRunView(input: RaceRunRecord, nowMs: number, includeEvalua
           position: current.position,
           guessesUsed: run.guessesUsed,
           guessesRemaining: RACE_MAX_GUESSES_PER_RIDDLE - run.guessesUsed,
-          hintAvailable: !run.hintUsed,
+          hintAvailable: run.revealedLetters.length < splitGraphemes(current.answer, run.locale).length,
           revealedLetters: run.revealedLetters.map((letter) => ({...letter})),
           ...(includeEvaluation ? {evaluation: {answer: current.answer, locale: run.locale}} : {}),
         }

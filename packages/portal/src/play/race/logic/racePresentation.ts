@@ -55,23 +55,24 @@ export const projectInstantRaceSkip = (run: RaceRunView): RaceRunView | null => 
   };
 };
 
-/** Immediately reveals the preloaded server-selected hint while the server records it. */
+/** Immediately reveals the next preloaded answer letter while the server records the hint. */
 export const projectInstantRaceHint = (run: RaceRunView): RaceRunView | null => {
   if (run.status !== "active" || !run.currentRiddle?.hintAvailable || !run.preloadedRiddles) return null;
-  /** Immutable hint selected by the same first-unrevealed-letter rule as the server. */
+  /** Match the server's first-unrevealed-letter rule for every hint request. */
   const preloaded = run.preloadedRiddles[run.currentRiddle.position];
-  const hint = preloaded?.hint ?? (preloaded ? {
-    index: 0,
-    letter: splitGraphemes(preloaded.evaluation.answer, preloaded.evaluation.locale)[0],
-  } : null);
-  if (!hint) return null;
+  if (!preloaded) return null;
+  const answer = splitGraphemes(preloaded.evaluation.answer, preloaded.evaluation.locale);
+  const revealed = new Set(run.currentRiddle.revealedLetters.map((letter) => letter.index));
+  const index = answer.findIndex((_, candidateIndex) => !revealed.has(candidateIndex));
+  if (index < 0) return null;
+  const hint = {index, letter: answer[index]};
   return {
     ...run,
     totalPenaltyMs: run.totalPenaltyMs + run.rules.hintPenaltyMs,
     adjustedElapsedMs: run.adjustedElapsedMs + run.rules.hintPenaltyMs,
     currentRiddle: {
       ...run.currentRiddle,
-      hintAvailable: false,
+      hintAvailable: revealed.size + 1 < answer.length,
       revealedLetters: [...run.currentRiddle.revealedLetters, hint],
     },
   };

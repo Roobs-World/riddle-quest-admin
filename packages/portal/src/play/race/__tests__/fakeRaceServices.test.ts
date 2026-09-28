@@ -84,6 +84,10 @@ describe("createFakeRaceServices", () => {
     await expect(services.requestRaceHint(hintRequest)).resolves.toEqual(hinted);
     expect(hinted.run.totalPenaltyMs).toBe(RACE_HINT_PENALTY_MS);
     expect(hinted.revealedLetter).toBe("p");
+    const secondHint = await services.requestRaceHint({...hintRequest, requestId: "request-hint-2"});
+    expect(secondHint).toMatchObject({revealedLetter: "i", index: 1});
+    expect(secondHint.run.currentRiddle?.hintAvailable).toBe(true);
+    expect(secondHint.run.totalPenaltyMs).toBe(2 * RACE_HINT_PENALTY_MS);
 
     /** Incorrect guess before a later manual skip. */
     const guessed = await services.submitRaceGuess({
@@ -100,7 +104,7 @@ describe("createFakeRaceServices", () => {
       requestId: "request-skip-1",
     });
     expect(skipped.penaltyAddedMs).toBe(RACE_SKIP_PENALTY_MS);
-    expect(skipped.run.totalPenaltyMs).toBe(RACE_HINT_PENALTY_MS + RACE_SKIP_PENALTY_MS);
+    expect(skipped.run.totalPenaltyMs).toBe(2 * RACE_HINT_PENALTY_MS + RACE_SKIP_PENALTY_MS);
     expect(skipped.run.correctCount).toBe(1);
     expect(skipped.run.currentRiddle?.position).toBe(1);
   });

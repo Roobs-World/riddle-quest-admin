@@ -132,14 +132,24 @@ describe("race presentation helpers", () => {
       evaluation: {answer: "test", locale: "en" as const},
       hint: {index: 0, letter: "t"},
     }));
-    expect(projectInstantRaceHint(run({preloadedRiddles}))).toMatchObject({
+    const first = projectInstantRaceHint(run({preloadedRiddles}));
+    expect(first).toMatchObject({
       totalPenaltyMs: RACE_RULES.hintPenaltyMs,
       adjustedElapsedMs: 2_000 + RACE_RULES.hintPenaltyMs,
       currentRiddle: {
-        hintAvailable: false,
+        hintAvailable: true,
         revealedLetters: [{index: 0, letter: "t"}],
       },
     });
+    const second = projectInstantRaceHint(first!);
+    expect(second?.currentRiddle?.revealedLetters).toEqual([{index: 0, letter: "t"}, {index: 1, letter: "e"}]);
+    expect(second?.currentRiddle?.hintAvailable).toBe(true);
+    const third = projectInstantRaceHint(second!);
+    const fourth = projectInstantRaceHint(third!);
+    expect(fourth?.currentRiddle?.revealedLetters).toHaveLength(4);
+    expect(fourth?.currentRiddle?.hintAvailable).toBe(false);
+    expect(fourth?.totalPenaltyMs).toBe(4 * RACE_RULES.hintPenaltyMs);
+    expect(projectInstantRaceHint(fourth!)).toBeNull();
     expect(projectInstantRaceHint(run())).toBeNull();
     expect(projectInstantRaceHint(run({preloadedRiddles: []}))).toBeNull();
   });

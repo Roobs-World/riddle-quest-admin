@@ -5,6 +5,7 @@ import {
   RACE_HINT_PENALTY_MS,
   RACE_MAX_ADJUSTED_TIME_MS,
   RACE_MAX_GUESSES_PER_RIDDLE,
+  RACE_MAX_HINTS_PER_RIDDLE,
   RACE_RULES_VERSION,
   RACE_SKIP_PENALTY_MS,
   RACE_TARGET_CORRECT,
@@ -94,7 +95,7 @@ export const RaceOpponentSchema = z
     displayName: z.string().trim().min(1).max(80),
     avatarUrl: z.string().url().nullable().optional(),
     adjustedFinishMs: MillisecondsSchema,
-    events: z.array(RaceGhostEventSchema).max(RACE_DECK_SIZE * 3),
+    events: z.array(RaceGhostEventSchema).max(RACE_DECK_SIZE * (RACE_MAX_HINTS_PER_RIDDLE + 1)),
   })
   .strict();
 /** Answer-free opponent identity and ghost playback data. */
@@ -118,7 +119,7 @@ export const RaceRunViewSchema = z
     currentRiddle: RaceRiddlePromptSchema.nullable(),
     /** Complete immutable deck used for instant local transitions; absent for answer-safe legacy callers. */
     preloadedRiddles: z.array(RacePreloadedRiddleSchema).length(RACE_DECK_SIZE).optional(),
-    events: z.array(RaceGhostEventSchema).max(RACE_DECK_SIZE * 3),
+    events: z.array(RaceGhostEventSchema).max(RACE_DECK_SIZE * (RACE_MAX_HINTS_PER_RIDDLE + 1)),
     opponent: RaceOpponentSchema.optional(),
   })
   .strict();

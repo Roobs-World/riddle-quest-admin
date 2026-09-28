@@ -266,6 +266,20 @@ describe("Race to 10 transactional service", () => {
     });
     expect(duplicateHint).toEqual(hint);
     expect(hint.run.totalPenaltyMs).toBe(15_000);
+    const nextHintInput = {...hintInput, requestId: "hint-request-0002"};
+    const nextHint = await requestRaceHintForUser("creator-1", nextHintInput, {
+      db,
+      nowMs: NOW + 12_500,
+      enforceAccess: true,
+    });
+    expect(nextHint.index).toBe(1);
+    expect(nextHint.run.totalPenaltyMs).toBe(30_000);
+    expect(nextHint.run.currentRiddle?.hintAvailable).toBe(true);
+    expect(await requestRaceHintForUser("creator-1", nextHintInput, {
+      db,
+      nowMs: NOW + 12_750,
+      enforceAccess: true,
+    })).toEqual(nextHint);
 
     /** Provides wrong behavior. */
     const wrong = await submitRaceGuessForUser(
@@ -281,7 +295,7 @@ describe("Race to 10 transactional service", () => {
     /** Provides duplicate skip behavior. */
     const duplicateSkip = await skipRaceRiddleForUser("creator-1", skipInput, {db, nowMs: NOW + 15_000});
     expect(duplicateSkip).toEqual(skipped);
-    expect(skipped.run.totalPenaltyMs).toBe(60_000);
+    expect(skipped.run.totalPenaltyMs).toBe(75_000);
     expect(skipped.run.correctCount).toBe(1);
   });
 

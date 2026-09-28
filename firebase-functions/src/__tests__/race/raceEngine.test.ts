@@ -116,7 +116,14 @@ describe("Race to 10 authoritative engine", () => {
       adjustedElapsedMs: 20_000,
     });
     expect(result.run.events[0]).toMatchObject({type: "hint", penaltyAddedMs: 15_000, adjustedElapsedMs: 20_000});
-    expect(() => applyRaceHint(result.run, {riddleId: "riddle-1"}, STARTED_AT + 6_000)).toThrow("already used");
+    let hinted = result;
+    for (const [index, letter] of Array.from("iano").entries()) {
+      hinted = applyRaceHint(hinted.run, {riddleId: "riddle-1"}, STARTED_AT + 6_000 + index);
+      expect(hinted).toMatchObject({revealedLetter: letter, index: index + 1});
+      expect(hinted.run.hintPenaltyMs).toBe((index + 2) * RACE_HINT_PENALTY_MS);
+      expect(toRaceRunView(hinted.run, STARTED_AT + 6_000 + index).currentRiddle?.hintAvailable).toBe(index < 3);
+    }
+    expect(() => applyRaceHint(hinted.run, {riddleId: "riddle-1"}, STARTED_AT + 7_000)).toThrow("No unrevealed race hint");
   });
 
   it("selects multiplayer hint positions from server-owned state", () => {

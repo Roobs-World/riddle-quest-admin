@@ -42,8 +42,6 @@ type FakeRun = {
   answers: string[];
   /** Stores guesses used. */
   guessesUsed: number;
-  /** Stores hint used. */
-  hintUsed: boolean;
   /** Stores hint penalty ms. */
   hintPenaltyMs: number;
   /** Stores skip penalty ms. */
@@ -239,7 +237,7 @@ export const createFakeRaceServices = (): RaceMethods => {
             ...run.view.currentRiddle,
             guessesUsed: run.guessesUsed,
             guessesRemaining: 5 - run.guessesUsed,
-            hintAvailable: !run.hintUsed,
+            hintAvailable: run.view.currentRiddle.revealedLetters.length < run.answers[run.view.currentRiddle.position].length,
             ...(run.evaluationEnabled ? {evaluation: {
               answer: run.answers[run.view.currentRiddle.position], locale: run.view.locale,
             }} : {}),
@@ -261,7 +259,6 @@ export const createFakeRaceServices = (): RaceMethods => {
     /** Provides current position behavior. */
     const currentPosition = (run.view.currentRiddle?.position ?? 0) + 1;
     run.guessesUsed = 0;
-    run.hintUsed = false;
     run.view = {
       ...syncView(run),
       currentRiddle:
@@ -338,7 +335,6 @@ export const createFakeRaceServices = (): RaceMethods => {
         startedAtMs,
         answers,
         guessesUsed: 0,
-        hintUsed: false,
         hintPenaltyMs: 0,
         skipPenaltyMs: 0,
         responses: new Map(),
@@ -439,7 +435,7 @@ export const createFakeRaceServices = (): RaceMethods => {
       /** Provides cached behavior. */
       const cached = run.responses.get(input.requestId);
       if (cached) return cached as Awaited<ReturnType<RaceMethods["requestRaceHint"]>>;
-      if (run.hintUsed || !run.view.currentRiddle) throw new Error("The hint is already used.");
+      if (!run.view.currentRiddle) throw new Error("No active race riddle is available.");
       /** Provides revealed behavior. */
       const revealed = new Set(run.view.currentRiddle.revealedLetters.map((letter) => letter.index));
       /** Provides index behavior. */
@@ -449,7 +445,6 @@ export const createFakeRaceServices = (): RaceMethods => {
       if (index < 0) throw new Error("No server-selected hint is available.");
       /** Provides revealed letter behavior. */
       const revealedLetter = run.answers[run.view.currentRiddle.position][index];
-      run.hintUsed = true;
       run.hintPenaltyMs += RACE_HINT_PENALTY_MS;
       run.view = {
         ...run.view,

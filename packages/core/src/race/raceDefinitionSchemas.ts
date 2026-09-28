@@ -1,5 +1,6 @@
 import {z} from "zod";
 import {SUPPORTED_LOCALES} from "../validation/locales";
+import {MAX_RIDDLE_ANSWER_CHARACTERS} from "../game/limits";
 
 /** Version identifier for the current authoritative multiplayer rules. */
 export const RACE_RULES_VERSION = "race10_v1" as const;
@@ -10,7 +11,7 @@ export const RACE_DECK_SIZE = 15;
 /** Incorrect guesses allowed before a riddle is automatically skipped. */
 export const RACE_MAX_GUESSES_PER_RIDDLE = 5;
 /** Hints allowed for each race riddle. */
-export const RACE_MAX_HINTS_PER_RIDDLE = 1;
+export const RACE_MAX_HINTS_PER_RIDDLE = MAX_RIDDLE_ANSWER_CHARACTERS;
 /** Adjusted-time penalty added for using a hint. */
 export const RACE_HINT_PENALTY_MS = 15_000;
 /** Adjusted-time penalty added for skipping a riddle. */
@@ -78,7 +79,8 @@ export const RaceRulesSchema = z
     targetCorrect: z.literal(RACE_TARGET_CORRECT),
     deckSize: z.literal(RACE_DECK_SIZE),
     maxGuessesPerRiddle: z.literal(RACE_MAX_GUESSES_PER_RIDDLE),
-    maxHintsPerRiddle: z.literal(RACE_MAX_HINTS_PER_RIDDLE),
+    /** Accept one-hint responses while an older server revision is still serving races. */
+    maxHintsPerRiddle: z.union([z.literal(1), z.literal(RACE_MAX_HINTS_PER_RIDDLE)]),
     hintPenaltyMs: z.literal(RACE_HINT_PENALTY_MS),
     skipPenaltyMs: z.literal(RACE_SKIP_PENALTY_MS),
     maxAdjustedTimeMs: z.literal(RACE_MAX_ADJUSTED_TIME_MS),
