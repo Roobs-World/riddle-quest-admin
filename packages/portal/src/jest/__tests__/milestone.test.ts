@@ -36,7 +36,7 @@ describe("authoritative first milestone", () => {
     expect(mark).toHaveBeenCalledTimes(1);
   });
 
-  test("does not mark a loss and waits three more wins after the first guest prompt", async () => {
+  test("does not mark a loss and prompts a guest with legacy preferences", async () => {
     /** Provides platform behavior. */
     const platform = new MockJestPlatform();
     /** Provides mark behavior. */
@@ -64,10 +64,10 @@ describe("authoritative first milestone", () => {
     expect(nextWin).toEqual(
       expect.objectContaining({
         status: "success",
-        value: expect.objectContaining({milestoneMarked: false, shouldPromptRegistration: false}),
+        value: expect.objectContaining({milestoneMarked: false, shouldPromptRegistration: true}),
       }),
     );
-    expect(nextWin.status === "success" && nextWin.value.preferences.jestGuestCompletedRiddles).toBe(2);
+    expect(nextWin.status === "success" && nextWin.value.preferences.jestGuestCompletedRiddles).toBe(1);
     expect(mark).toHaveBeenCalledTimes(1);
   });
 

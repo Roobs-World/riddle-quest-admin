@@ -389,7 +389,10 @@ const installJestSdkHarness = async (page: Page, scenario = "success") => {
           };
         },
       },
-      markFirstMilestone: async () => { state.calls.push("sdk.markFirstMilestone"); },
+      markFirstMilestone: async () => {
+        state.calls.push("sdk.markFirstMilestone");
+        if (selectedScenario === "milestone-failure") throw new Error("Milestone unavailable");
+      },
       setLoadingProgress: (progress: number) => state.calls.push(`sdk.progress:${progress}`),
       markGameLoaded: () => state.calls.push("sdk.markGameLoaded"),
     };
@@ -674,9 +677,13 @@ describeBrowser("Jest authentication integration", () => {
     await context.close();
   });
 
-  it("lets a guest play before any automatic signup prompt", async () => {
+  it.each([
+    ["new guest", "success"],
+    ["guest with a legacy milestone", "returning-milestone"],
+    ["guest when the milestone call fails", "milestone-failure"],
+  ])("prompts a %s after the first solved riddle", async (_label, scenario) => {
     /** Fresh guest with no prior milestone or onboarding. */
-    const {context, page} = await openHarness(browser, {customName: "Nova"});
+    const {context, page} = await openHarness(browser, {customName: "Nova", scenario});
     await enterRegisteredGame(page);
     expect((await getHarnessState(page)).overlayOptions).toEqual([]);
     expect(await page.getByText("Keep your progress", {exact: true}).count()).toBe(0);
@@ -687,10 +694,14 @@ describeBrowser("Jest authentication integration", () => {
       await page.locator('.keyboard').getByRole('button', {name: letter, exact: true}).click();
     }
     await page.locator('.game-input-actions').getByRole('button', {name: /submit/i}).click();
-    await page.waitForFunction(() => (window as typeof window & {
-      /** Captured provider calls and preferences from the injected SDK. */
-      __RIDDLE_QUEST_JEST_AUTH_TEST__: AuthHarnessState;
-    }).__RIDDLE_QUEST_JEST_AUTH_TEST__.preferenceWrites.some(value => value.firstMilestoneMarked === true));
+    await page.waitForFunction((milestoneFailure) => {
+      const state = (window as typeof window & {
+        /** Captured provider calls and preferences from the injected SDK. */
+        __RIDDLE_QUEST_JEST_AUTH_TEST__: AuthHarnessState;
+      }).__RIDDLE_QUEST_JEST_AUTH_TEST__;
+      return milestoneFailure ? state.calls.includes("sdk.markFirstMilestone") :
+        state.preferenceWrites.some(value => value.firstMilestoneMarked === true);
+    }, scenario === "milestone-failure");
     expect((await getHarnessState(page)).overlayOptions).toEqual([]);
     await page.locator('.modal-victory').waitFor();
     for (let step = 0; step < 6 && await page.locator('.modal-victory').count(); step += 1) {
@@ -702,7 +713,9 @@ describeBrowser("Jest authentication integration", () => {
       await page.locator('.reward-continue').click();
     }
     await page.getByText("Keep your progress", {exact: true}).waitFor();
-    expect((await getHarnessState(page)).overlayOptions).toEqual([expect.objectContaining({source: "authoritative_win"})]);
+    const state = await getHarnessState(page);
+    expect(state.calls.filter((call) => call === "sdk.markFirstMilestone")).toHaveLength(1);
+    expect(state.overlayOptions).toEqual([expect.objectContaining({source: "authoritative_win"})]);
     await context.close();
   });
 

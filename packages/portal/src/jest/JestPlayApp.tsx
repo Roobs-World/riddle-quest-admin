@@ -14,7 +14,7 @@ import {
 import type {JestSession} from "./types";
 import {tr, useLocale} from "../play/i18n";
 import {MockJestPlatform} from "./MockJestPlatform";
-import {recordAuthoritativeCompletion} from "./milestone";
+import {recordAuthoritativeCompletion, shouldPromptGuestRegistration} from "./milestone";
 import {useJestNotifications} from "./notifications/useJestNotifications";
 import type {NotificationCopy} from "./notifications/copy";
 import {createNotificationOperationGate} from "./notifications/operationGate";
@@ -421,6 +421,7 @@ export function JestPlayApp() {
         winStreak: result.newWinStreak ?? current.winStreak,
         wins: current.wins + 1,
       }));
+      if (shouldPromptGuestRegistration(session)) openRegistrationPrompt("authoritative_win", true);
       /** Records ed. */
       const recorded = await notificationOperationGate.run(() =>
         recordAuthoritativeCompletion(platform, session, {
@@ -435,7 +436,6 @@ export function JestPlayApp() {
       }
       setSession((current) => (current ? {...current, preferences: recorded.value.preferences} : current));
       if (recorded.value.milestoneMarked) trackFunnel("first_milestone_marked");
-      if (recorded.value.shouldPromptRegistration) openRegistrationPrompt("authoritative_win", true);
     },
     [notificationOperationGate, openRegistrationPrompt, platform, session, trackFunnel],
   );

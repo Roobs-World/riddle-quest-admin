@@ -10,6 +10,13 @@ export type AuthoritativeCompletion = {
   newWinStreak?: number;
 };
 
+/** Decides whether a confirmed guest win should offer registration. */
+export function shouldPromptGuestRegistration(session: JestSession): boolean {
+  if (session.player.registered) return false;
+  const completedRiddles = (session.preferences.jestGuestCompletedRiddles ?? 0) + 1;
+  return (completedRiddles - 1) % 3 === 0;
+}
+
 /** Records authoritative completion. */
 export async function recordAuthoritativeCompletion(
   platform: JestPlatformPort,
@@ -47,7 +54,7 @@ export async function recordAuthoritativeCompletion(
   /** Provides milestone marked behavior. */
   let milestoneMarked = false;
   const guestCompletedRiddles = session.player.registered ? 0 :
-    (preferences.jestGuestCompletedRiddles ?? (preferences.firstMilestoneMarked ? 1 : 0)) + 1;
+    (preferences.jestGuestCompletedRiddles ?? 0) + 1;
   if (!preferences.firstMilestoneMarked || !session.player.registered) {
     preferences = {
       ...preferences,
@@ -63,7 +70,7 @@ export async function recordAuthoritativeCompletion(
     value: {
       preferences,
       milestoneMarked,
-      shouldPromptRegistration: !session.player.registered && (guestCompletedRiddles - 1) % 3 === 0,
+      shouldPromptRegistration: shouldPromptGuestRegistration(session),
     },
   };
 }
