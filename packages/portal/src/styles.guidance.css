@@ -703,6 +703,24 @@
   .race-gameplay > .keyboard .key.utility {
     width: calc((100% - 27px) / 10);
   }
+  .game-content > .keyboard .key.green,
+  .race-gameplay > .keyboard .key.green {
+    background: var(--feedback-correct);
+    color: #fff;
+    border-color: var(--feedback-correct);
+  }
+  .game-content > .keyboard .key.yellow,
+  .race-gameplay > .keyboard .key.yellow {
+    background: var(--feedback-present);
+    color: #17150f;
+    border-color: var(--feedback-present);
+  }
+  .game-content > .keyboard .key.red,
+  .race-gameplay > .keyboard .key.red {
+    background: var(--feedback-absent);
+    color: #fff;
+    border-color: var(--feedback-absent);
+  }
 }
 /* The in-game sound control lives in the header, leaving the riddle full-width. */
 .game-content .riddle-card {
