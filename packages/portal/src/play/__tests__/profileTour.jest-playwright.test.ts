@@ -133,4 +133,22 @@ describeBrowser("profile walkthrough", () => {
       await page.close();
     }
   }, 15_000);
+
+  it("opens the coin shop without a guidance popup", async () => {
+    const page = await browser.newPage({viewport: {width: 390, height: 844}});
+    try {
+      await page.addInitScript(() => {
+        Object.assign(window, {__RIDDLE_QUEST_BROWSER_TEST__: true});
+        localStorage.setItem("riddleQuest:onboarding:jest-guest", "seen");
+        localStorage.setItem("riddleQuest:tooltipSequenceSeen:gameTour:v2:jest-guest", "seen");
+        sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
+      });
+      await page.goto(`${origin}/?harness=jest`);
+      await page.getByRole("button", {name: /buy coins/i}).first().click();
+      await expect(page.getByRole("heading", {name: /coin shop/i})).toBeVisible();
+      await expect(page.locator(".tooltip-card")).toHaveCount(0);
+    } finally {
+      await page.close();
+    }
+  }, 15_000);
 });

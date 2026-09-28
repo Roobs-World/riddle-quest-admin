@@ -198,6 +198,18 @@ export function SolarSystem({
       depthTest: true,
       depthWrite: false,
     });
+    // The photographed corona has an opaque black background. Give dark pixels
+    // proportionally less alpha while keeping their additive light unchanged.
+    // Otherwise the transparent WebGL canvas composites as a black square.
+    coronaMaterial.onBeforeCompile = (shader) => {
+      shader.fragmentShader = shader.fragmentShader.replace(
+        "#include <colorspace_fragment>",
+        `#include <colorspace_fragment>
+        float coronaCoverage = max(gl_FragColor.r, max(gl_FragColor.g, gl_FragColor.b));
+        gl_FragColor.rgb /= max(coronaCoverage, 0.0001);
+        gl_FragColor.a *= coronaCoverage;`,
+      );
+    };
     /** Provides corona behavior. */
     const corona = new THREE.Sprite(coronaMaterial);
     // Pull the photographed limb more than two world units underneath the

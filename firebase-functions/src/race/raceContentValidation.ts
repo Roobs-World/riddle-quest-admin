@@ -1,4 +1,4 @@
-import {RACE_CATEGORY_IDS, RACE_DECK_SIZE, type RaceCategoryId, type RaceDifficultyBand} from "@qwordly/core/race";
+import {RACE_CATEGORY_IDS, type RaceCategoryId, type RaceDifficultyBand} from "@qwordly/core/race";
 import {graphemeLength} from "@qwordly/core/game";
 import {type SupportedLocale} from "@qwordly/core/validation";
 import {clueContainsLiteralAnswer} from "../riddles/riddleQuality";
@@ -7,6 +7,9 @@ import type {ExistingRaceContentRecord} from "./raceContentMigration";
 
 /** Required number of eligible riddles in each locale and race category pool. */
 export const RACE_POOL_SIZE = 30;
+
+/** Number of riddles selected from each difficulty band for a race deck. */
+export const RACE_DECK_DIFFICULTY_COUNTS = {easy: 10, medium: 5, hard: 0} as const;
 
 /** Stable machine-readable reason for a race content validation failure. */
 export type RacePoolIssueCode =
@@ -208,13 +211,12 @@ export function validateRacePool(
     }
   }
 
-  /** Provides minimum per band behavior. */
-  const minimumPerBand = RACE_DECK_SIZE / 3;
   for (const [difficulty, count] of Object.entries(difficultyCounts) as Array<[RaceDifficultyBand, number]>) {
-    if (localeRecords.length === poolSize && count < minimumPerBand) {
+    const minimum = RACE_DECK_DIFFICULTY_COUNTS[difficulty];
+    if (localeRecords.length === poolSize && count < minimum) {
       issues.push({
         code: "difficulty_imbalance",
-        message: `${difficulty} has ${count} riddles; at least ${minimumPerBand} required`,
+        message: `${difficulty} has ${count} riddles; at least ${minimum} required`,
         documentPaths: [],
       });
     }

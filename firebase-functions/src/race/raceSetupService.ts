@@ -17,7 +17,7 @@ import {
 import {logger} from "firebase-functions";
 import {HttpsError} from "firebase-functions/v2/https";
 import {type RaceRiddleSnapshot, type RaceRunRecord} from "./raceEngine";
-import {RACE_POOL_SIZE, validateRacePool} from "./raceContentValidation";
+import {RACE_DECK_DIFFICULTY_COUNTS, RACE_POOL_SIZE, validateRacePool} from "./raceContentValidation";
 import type {ExistingRaceContentRecord} from "./raceContentMigration";
 import {evaluateRaceAchievementEvent, type RaceAchievementEvent} from "./raceAchievements";
 
@@ -309,7 +309,7 @@ const deterministicSort = <
     return stableHash(`${seed}:${leftId}`).localeCompare(stableHash(`${seed}:${rightId}`));
   });
 
-/** Builds a balanced deterministic deck from a validated category pool. */
+/** Builds an easier deterministic deck from a validated category pool. */
 export function buildDeterministicRaceDeck(
   records: ExistingRaceContentRecord[],
   options: {
@@ -341,18 +341,18 @@ export function buildDeterministicRaceDeck(
 
   /** Provides selected behavior. */
   const selected: ExistingRaceContentRecord[] = [];
-  for (const difficultyBand of ["easy", "medium", "hard"] as const) {
+  for (const difficultyBand of ["easy", "medium"] as const) {
     selected.push(
       ...deterministicSort(
         records.filter((record) => record.data.difficultyBand === difficultyBand),
         `${options.seed}:${difficultyBand}`,
-      ).slice(0, RACE_DECK_SIZE / 3),
+      ).slice(0, RACE_DECK_DIFFICULTY_COUNTS[difficultyBand]),
     );
   }
   /** Provides ordered behavior. */
   const ordered = deterministicSort(selected, `${options.seed}:order`);
   if (ordered.length !== RACE_DECK_SIZE) {
-    throw new HttpsError("failed-precondition", "Race category does not have a balanced 15-riddle deck.");
+    throw new HttpsError("failed-precondition", "Race category does not have enough easy and medium riddles.");
   }
 
   /** Provides riddles behavior. */

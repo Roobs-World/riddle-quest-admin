@@ -891,6 +891,7 @@ describeBrowser("standalone Jest browser game", () => {
         .first()
         .click();
       await page.getByRole("heading", {name: /coin shop/i}).waitFor();
+      expect(await page.locator(".tooltip-card").count()).toBe(0);
       await expectModalCentered(page);
       await expectAccessible(page, "coin shop");
       expect(await page.locator(".game-shop-grid article:not(.shop-subscription-card) button").allTextContents())

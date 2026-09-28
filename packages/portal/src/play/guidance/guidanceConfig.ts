@@ -8,7 +8,6 @@ export type TooltipId =
   | "gameHint"
   | "gameSkip"
   | "hintAfterWrongGuess"
-  | "shopOutOfCoins"
   | "achievementEarned"
   | "leaderboardFifthCorrectAnswer"
   | "classicFromDaily"
@@ -57,7 +56,6 @@ export const TOOLTIP_KEYS: Record<TooltipId, readonly [title: string, body: stri
   gameHint: ["Tooltips.GAME_HINT_TITLE", "Tooltips.GAME_HINT_BODY"],
   gameSkip: ["Tooltips.GAME_SKIP_TITLE", "Tooltips.GAME_SKIP_BODY"],
   hintAfterWrongGuess: ["Tooltips.HINT_AFTER_WRONG_TITLE", "Tooltips.HINT_AFTER_WRONG_BODY"],
-  shopOutOfCoins: ["Tooltips.SHOP_OUT_OF_COINS_TITLE", "Tooltips.SHOP_OUT_OF_COINS_BODY"],
   achievementEarned: ["Tooltips.ACHIEVEMENT_EARNED_TITLE", "Tooltips.ACHIEVEMENT_EARNED_BODY"],
   leaderboardFifthCorrectAnswer: [
     "Tooltips.LEADERBOARD_FIFTH_CORRECT_TITLE",
@@ -139,10 +137,6 @@ export function getContextualTooltipCandidates(
     {
       id: "classicFromDaily",
       when: modal === null && state.lastOutcome?.kind === "win" && state.gameMode === "challenge",
-    },
-    {
-      id: "shopOutOfCoins",
-      when: modal === "shop" && (state.profile?.coins ?? 0) === 0,
     },
     {
       id: "hintAfterWrongGuess",

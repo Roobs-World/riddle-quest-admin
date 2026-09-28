@@ -1,4 +1,4 @@
-import type {Feedback, ScoredGuess} from "@qwordly/core/game";
+import {splitGraphemes, type Feedback, type ScoredGuess} from "@qwordly/core/game";
 import type {RaceOutcome, RaceRunView} from "@qwordly/core/race";
 
 /** Non-null riddle prompt presented during an active race. */
@@ -59,7 +59,11 @@ export const projectInstantRaceSkip = (run: RaceRunView): RaceRunView | null => 
 export const projectInstantRaceHint = (run: RaceRunView): RaceRunView | null => {
   if (run.status !== "active" || !run.currentRiddle?.hintAvailable || !run.preloadedRiddles) return null;
   /** Immutable hint selected by the same first-unrevealed-letter rule as the server. */
-  const hint = run.preloadedRiddles[run.currentRiddle.position]?.hint;
+  const preloaded = run.preloadedRiddles[run.currentRiddle.position];
+  const hint = preloaded?.hint ?? (preloaded ? {
+    index: 0,
+    letter: splitGraphemes(preloaded.evaluation.answer, preloaded.evaluation.locale)[0],
+  } : null);
   if (!hint) return null;
   return {
     ...run,

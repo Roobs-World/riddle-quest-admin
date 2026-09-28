@@ -33,7 +33,7 @@ describe("Race to 10 deterministic deck service", () => {
     expect(() => assertRaceLocaleCompatible(challenge, "ja")).not.toThrow();
     expect(() => assertRaceLocaleCompatible(challenge, "en")).toThrow("RaceTo10.ERROR_LOCALE_MISMATCH");
   });
-  it("selects a deterministic balanced 15-riddle deck", () => {
+  it("selects a deterministic 15-riddle deck with no hard riddles", () => {
     /** Provides first behavior. */
     const first = buildDeterministicRaceDeck(makePool("en"), {
       locale: "en",
@@ -61,7 +61,7 @@ describe("Race to 10 deterministic deck service", () => {
         }),
         {easy: 0, medium: 0, hard: 0},
       ),
-    ).toEqual({easy: 5, medium: 5, hard: 5});
+    ).toEqual({easy: 10, medium: 5, hard: 0});
   });
 
   it("rejects an undersized competitive pool", () => {

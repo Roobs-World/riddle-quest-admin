@@ -1,11 +1,28 @@
 import {describe, expect, it} from "@jest/globals";
-import {RACE_HINT_PENALTY_MS, RACE_SKIP_PENALTY_MS} from "@qwordly/core/race";
+import {RACE_HINT_PENALTY_MS, RACE_SKIP_PENALTY_MS, RaceRunResponseSchema} from "@qwordly/core/race";
 import {createFakeRaceServices} from "../testing/fakeRaceServices";
+import {projectInstantRaceHint} from "../logic/racePresentation";
 
 /** Deterministic answers corresponding to the fake service’s race deck. */
 const answers = ["piano", "clock", "towel", "bottle", "stamp", "needle", "name", "comb", "water", "book"];
 
 describe("createFakeRaceServices", () => {
+  it("accepts an earlier race-start response without preloaded hint fields", async () => {
+    const services = createFakeRaceServices();
+    const response = await services.startRace({
+      locale: "en", categoryId: "mixed", requestId: "legacy-start-1", includeEvaluation: true,
+    });
+    const deployedShape = {
+      run: {
+        ...response.run,
+        preloadedRiddles: response.run.preloadedRiddles?.map(({hint: _hint, ...riddle}) => riddle),
+      },
+    };
+    const parsed = RaceRunResponseSchema.parse(deployedShape);
+    expect(parsed.run.currentRiddle?.riddleId).toBe(response.run.currentRiddle?.riddleId);
+    expect(projectInstantRaceHint(parsed.run)?.currentRiddle?.revealedLetters).toEqual([{index: 0, letter: "p"}]);
+  });
+
   it("fails only the requested number of background outcome attempts", async () => {
     /** Existing global location descriptor restored after configuring the browser-only harness seam. */
     const previousLocation = Object.getOwnPropertyDescriptor(globalThis, "location");

@@ -42,7 +42,6 @@ describe("guidance configuration", () => {
       false,
       false,
       false,
-      false,
     ]);
 
     /** Provides achievement state behavior. */
@@ -81,7 +80,13 @@ describe("guidance configuration", () => {
     ).toBe(true);
     expect(getContextualTooltipCandidates({...winState, profile: null}, null)[1]?.when).toBe(false);
 
-    expect(getContextualTooltipCandidates({...baseState, profile: null}, "shop")[3]?.when).toBe(true);
+    expect(getContextualTooltipCandidates({...baseState, profile: null}, "shop").some(({when}) => when)).toBe(false);
+    expect(
+      getContextualTooltipCandidates(
+        {...baseState, profile: {coins: 0} as typeof baseState.profile},
+        "shop",
+      ).some(({when}) => when),
+    ).toBe(false);
     expect(
       getContextualTooltipCandidates(
         {
@@ -89,7 +94,7 @@ describe("guidance configuration", () => {
           profile: {coins: 4} as typeof baseState.profile,
         },
         "shop",
-      )[3]?.when,
+      ).some(({when}) => when),
     ).toBe(false);
     expect(
       getContextualTooltipCandidates(
@@ -98,7 +103,7 @@ describe("guidance configuration", () => {
           guesses: [{}] as typeof baseState.guesses,
         },
         null,
-      )[4]?.when,
+      )[3]?.when,
     ).toBe(true);
   });
 

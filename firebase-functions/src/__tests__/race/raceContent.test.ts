@@ -204,6 +204,17 @@ describe("race content pool validation", () => {
     expect(result.difficultyCounts).toEqual({easy: 10, medium: 10, hard: 10});
   });
 
+  it("requires enough easy riddles to fill the easier deck", () => {
+    const records = Array.from({length: 30}, (_, index) =>
+      record({index: index + 1, difficultyBand: index < 5 ? "easy" : "medium"}),
+    );
+    const result = validateRacePool(records, {locale: "en", categoryId: "history"});
+    expect(result.valid).toBe(false);
+    expect(result.issues).toEqual(expect.arrayContaining([
+      expect.objectContaining({code: "difficulty_imbalance", message: expect.stringContaining("easy has 5")}),
+    ]));
+  });
+
   it("rejects duplicate, leaking, oversized, and untranslated content", () => {
     /** Provides duplicate behavior. */
     const duplicate = record({index: 2, text: "A piano has keys", answer: "piano"});
