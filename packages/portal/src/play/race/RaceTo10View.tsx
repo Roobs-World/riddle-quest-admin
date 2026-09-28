@@ -102,6 +102,8 @@ export type RaceTo10ViewProps = {
   quitConfirmationOpen: boolean;
   /** Stores race guess loading. */
   raceGuessLoading: boolean;
+  /** Lets the player enter the next answer while the prior guess is confirmed. */
+  allowTypingWhilePending: boolean;
   /** Whether close is waiting for a just-started run to be abandoned. */
   closeAfterStart: boolean;
   /** Stores the active Facebook social picker operation. */
@@ -209,6 +211,7 @@ export function RaceTo10View(props: RaceTo10ViewProps) {
     letterStates,
     quitConfirmationOpen,
     raceGuessLoading,
+    allowTypingWhilePending,
     closeAfterStart,
     socialPending,
     dialogRef,
@@ -329,6 +332,7 @@ export function RaceTo10View(props: RaceTo10ViewProps) {
           guesses={raceGuesses}
           letterStates={letterStates}
           pending={Boolean(pending)}
+          allowTypingWhilePending={allowTypingWhilePending}
           onClose={onRequestClose}
           onSelectSlot={onSelectSlot}
           onLetter={onLetter}

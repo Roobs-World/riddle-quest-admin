@@ -87,6 +87,18 @@ export function JestPlayApp() {
   const purchases = useMemo(() => new JestPurchaseCoordinator(platform, backend), [backend, platform]);
   /** Provides [session, set session] behavior. */
   const [session, setSession] = useState<JestSession | null>(null);
+  /** Avoids duplicate avatar syncs while the same Jest session rerenders. */
+  const syncedAvatarRef = useRef<string | null>(null);
+  useEffect(() => {
+    const avatarUrl = session?.player.registered ? session.profile?.avatarUrl : null;
+    if (!avatarUrl || !session || authHarness || mockRuntime) return;
+    const key = `${session.firebaseUid}:${avatarUrl}`;
+    if (syncedAvatarRef.current === key) return;
+    syncedAvatarRef.current = key;
+    void import("../firebase").then(({syncJestAvatar}) => syncJestAvatar({avatarUrl})).catch((error) => {
+      captureBrowserException(error, {component: "jest_avatar_sync"});
+    });
+  }, [authHarness, mockRuntime, session]);
   /** Keeps host authority assembly stable while player progress and SDK activity update. */
   const platformCapabilities = useMemo(() => ({
     accountUpgrade: {

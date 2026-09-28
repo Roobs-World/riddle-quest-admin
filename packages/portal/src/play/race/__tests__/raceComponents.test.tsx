@@ -374,6 +374,7 @@ describe("race presentation components", () => {
         guesses={[]}
         letterStates={{}}
         pending={false}
+        allowTypingWhilePending={false}
         onClose={noop}
         onSelectSlot={noop}
         onLetter={noop}
@@ -407,6 +408,7 @@ describe("race presentation components", () => {
           guesses={[]}
           letterStates={{}}
           pending
+          allowTypingWhilePending={false}
           onClose={noop}
           onSelectSlot={noop}
           onLetter={noop}

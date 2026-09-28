@@ -1,0 +1,2768 @@
+{
+  "projectId": "riddle-quest-ec2b2",
+  "createdAt": "2026-09-28T22:37:38.764Z",
+  "targeted": [
+    {
+      "path": "localizedRiddles/en/riddles/race-en-8171aa39d05d2c354e6aa41b",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:history:01",
+        "difficultyBand": "easy",
+        "answer": "rome",
+        "riddleId": "race-en-8171aa39d05d2c354e6aa41b",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which ancient city was the centre of an empire ruled by emperors such as Augustus?",
+        "raceEligible": true,
+        "categoryId": "history"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-9682bbf6ed020be40ee42195",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:history:02",
+        "difficultyBand": "easy",
+        "answer": "inca",
+        "riddleId": "race-en-9682bbf6ed020be40ee42195",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which Andean civilization built Machu Picchu?",
+        "raceEligible": true,
+        "categoryId": "history"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-93cbb723f6b84bf8f7a744a4",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:history:03",
+        "difficultyBand": "easy",
+        "answer": "aztec",
+        "riddleId": "race-en-93cbb723f6b84bf8f7a744a4",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which Mesoamerican people founded Tenochtitlan?",
+        "raceEligible": true,
+        "categoryId": "history"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-510d27b464134cdea95cff97",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:history:04",
+        "difficultyBand": "easy",
+        "answer": "tudor",
+        "riddleId": "race-en-510d27b464134cdea95cff97",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which English royal house included Henry VIII and Elizabeth I?",
+        "raceEligible": true,
+        "categoryId": "history"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-16db2a293fa9d2c9cf44a50c",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:history:05",
+        "difficultyBand": "easy",
+        "answer": "viking",
+        "riddleId": "race-en-16db2a293fa9d2c9cf44a50c",
+        "qualityVersion": "reviewed_v1",
+        "text": "What name is given to the Norse seafarers who raided and traded across Europe?",
+        "raceEligible": true,
+        "categoryId": "history"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-a60f3a3abcabb2fb11fc4b8a",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:history:06",
+        "difficultyBand": "easy",
+        "answer": "caesar",
+        "riddleId": "race-en-a60f3a3abcabb2fb11fc4b8a",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which Roman leader crossed the Rubicon in 49 BCE?",
+        "raceEligible": true,
+        "categoryId": "history"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-46428ffed195248fb808df73",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:history:07",
+        "difficultyBand": "easy",
+        "answer": "gandhi",
+        "riddleId": "race-en-46428ffed195248fb808df73",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which Indian independence leader was known for nonviolent resistance?",
+        "raceEligible": true,
+        "categoryId": "history"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-545de04c258f5694aefb9c87",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:history:08",
+        "difficultyBand": "easy",
+        "answer": "sparta",
+        "riddleId": "race-en-545de04c258f5694aefb9c87",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which Greek city-state was famous for its warrior society?",
+        "raceEligible": true,
+        "categoryId": "history"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-43d9f1d596118e46df593cc7",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:history:09",
+        "difficultyBand": "easy",
+        "answer": "egypt",
+        "riddleId": "race-en-43d9f1d596118e46df593cc7",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which ancient civilization built the pyramids at Giza?",
+        "raceEligible": true,
+        "categoryId": "history"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-e267dfe380c0ba78ec55c64f",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:history:10",
+        "difficultyBand": "easy",
+        "answer": "magna",
+        "riddleId": "race-en-e267dfe380c0ba78ec55c64f",
+        "qualityVersion": "reviewed_v1",
+        "text": "What is the first word in the name of the charter sealed by King John in 1215?",
+        "raceEligible": true,
+        "categoryId": "history"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-099db319f7874005da714ec6",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-0644ba4f9136ad456724e8e0",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-be18a20845e706b670bb2d10",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-ca8f7ab24409b28c3209ecca",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-e23e7572b26ae33166d4d3b9",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-f8ed19a0bef5f9884eef9d27",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-3600e4328a910eac84eefc3d",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-d5773f004fb909cd4054fb01",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-7606d50a2deb00e46df7f5b8",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-2c89d8b8ddf9f3c2c82dfea1",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-08bba2bbd4e2344e5976fe13",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:history:21",
+        "difficultyBand": "hard",
+        "answer": "hittite",
+        "riddleId": "race-en-08bba2bbd4e2344e5976fe13",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which Bronze Age Anatolian people made Hattusa their capital?",
+        "raceEligible": true,
+        "categoryId": "history"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-ebdd344b7d7c11140a8dbd06",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:history:22",
+        "difficultyBand": "hard",
+        "answer": "minoan",
+        "riddleId": "race-en-ebdd344b7d7c11140a8dbd06",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which Bronze Age civilization built the palace at Knossos?",
+        "raceEligible": true,
+        "categoryId": "history"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-406d2443a39d15e6f9ed4f60",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:history:23",
+        "difficultyBand": "hard",
+        "answer": "sumer",
+        "riddleId": "race-en-406d2443a39d15e6f9ed4f60",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which ancient people developed city-states such as Ur and Uruk?",
+        "raceEligible": true,
+        "categoryId": "history"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-263b79f8733d8944229f0d24",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:history:24",
+        "difficultyBand": "hard",
+        "answer": "punic",
+        "riddleId": "race-en-263b79f8733d8944229f0d24",
+        "qualityVersion": "reviewed_v1",
+        "text": "What adjective describes the three wars fought between Rome and Carthage?",
+        "raceEligible": true,
+        "categoryId": "history"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-33b0ad32ec2b2e7b4d4b651b",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:history:25",
+        "difficultyBand": "hard",
+        "answer": "hadrian",
+        "riddleId": "race-en-33b0ad32ec2b2e7b4d4b651b",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which emperor ordered a defensive wall built across northern Britain?",
+        "raceEligible": true,
+        "categoryId": "history"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-5368c9ef67b2cf1b20bf7a60",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:history:26",
+        "difficultyBand": "hard",
+        "answer": "armada",
+        "riddleId": "race-en-5368c9ef67b2cf1b20bf7a60",
+        "qualityVersion": "reviewed_v1",
+        "text": "What single word completes the name of the failed Spanish fleet of 1588?",
+        "raceEligible": true,
+        "categoryId": "history"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-9b6afed9116153f6bf401545",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:history:27",
+        "difficultyBand": "hard",
+        "answer": "meiji",
+        "riddleId": "race-en-9b6afed9116153f6bf401545",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which restoration began Japan's rapid modernization in 1868?",
+        "raceEligible": true,
+        "categoryId": "history"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-82793f59eea32090b653fddb",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:history:28",
+        "difficultyBand": "hard",
+        "answer": "khmer",
+        "riddleId": "race-en-82793f59eea32090b653fddb",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which empire built Angkor Wat?",
+        "raceEligible": true,
+        "categoryId": "history"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-bc5b1aae98776034c3820a02",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:history:29",
+        "difficultyBand": "hard",
+        "answer": "aksum",
+        "riddleId": "race-en-bc5b1aae98776034c3820a02",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which ancient kingdom centred in northern Ethiopia and Eritrea minted its own coins?",
+        "raceEligible": true,
+        "categoryId": "history"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-20f6b75fa7c830f44b7c9a89",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:history:30",
+        "difficultyBand": "hard",
+        "answer": "qin",
+        "riddleId": "race-en-20f6b75fa7c830f44b7c9a89",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which Chinese dynasty first unified China in 221 BCE?",
+        "raceEligible": true,
+        "categoryId": "history"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-06ecb93f0c39590a0fe2e38a",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:geography:01",
+        "difficultyBand": "easy",
+        "answer": "nile",
+        "riddleId": "race-en-06ecb93f0c39590a0fe2e38a",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which river flows north through Egypt into the Mediterranean Sea?",
+        "raceEligible": true,
+        "categoryId": "geography"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-c0bb1d1b8316dec35d1f0dd5",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:geography:02",
+        "difficultyBand": "easy",
+        "answer": "andes",
+        "riddleId": "race-en-c0bb1d1b8316dec35d1f0dd5",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which mountain range runs along the western edge of South America?",
+        "raceEligible": true,
+        "categoryId": "geography"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-3888e6b7b883370c9bdf4092",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:geography:03",
+        "difficultyBand": "easy",
+        "answer": "tokyo",
+        "riddleId": "race-en-3888e6b7b883370c9bdf4092",
+        "qualityVersion": "reviewed_v1",
+        "text": "What is the capital city of Japan?",
+        "raceEligible": true,
+        "categoryId": "geography"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-eda72742739ee22d1970bd54",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:geography:04",
+        "difficultyBand": "easy",
+        "answer": "kenya",
+        "riddleId": "race-en-eda72742739ee22d1970bd54",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which African country contains the Maasai Mara reserve?",
+        "raceEligible": true,
+        "categoryId": "geography"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-174c50f0417bf8ba69ab161a",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:geography:05",
+        "difficultyBand": "easy",
+        "answer": "sahara",
+        "riddleId": "race-en-174c50f0417bf8ba69ab161a",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which vast desert covers much of northern Africa?",
+        "raceEligible": true,
+        "categoryId": "geography"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-079d78d804658b54050b36d7",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:geography:06",
+        "difficultyBand": "easy",
+        "answer": "arctic",
+        "riddleId": "race-en-079d78d804658b54050b36d7",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which ocean surrounds the North Pole?",
+        "raceEligible": true,
+        "categoryId": "geography"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-91dbdcc3c872deff73facf23",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:geography:07",
+        "difficultyBand": "easy",
+        "answer": "brazil",
+        "riddleId": "race-en-91dbdcc3c872deff73facf23",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which is the largest country in South America by area?",
+        "raceEligible": true,
+        "categoryId": "geography"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-a0d8eefc7091d8b2928b8796",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:geography:08",
+        "difficultyBand": "easy",
+        "answer": "ottawa",
+        "riddleId": "race-en-a0d8eefc7091d8b2928b8796",
+        "qualityVersion": "reviewed_v1",
+        "text": "What is the capital city of Canada?",
+        "raceEligible": true,
+        "categoryId": "geography"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-acf50859897a2bedd8ceeed4",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:geography:09",
+        "difficultyBand": "easy",
+        "answer": "alps",
+        "riddleId": "race-en-acf50859897a2bedd8ceeed4",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which European mountain range includes Mont Blanc?",
+        "raceEligible": true,
+        "categoryId": "geography"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-2e04541a069783f6a126414e",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:geography:10",
+        "difficultyBand": "easy",
+        "answer": "nepal",
+        "riddleId": "race-en-2e04541a069783f6a126414e",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which Himalayan country has Kathmandu as its capital?",
+        "raceEligible": true,
+        "categoryId": "geography"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-a4d32f7f852d2dfc29062dad",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-a2f80c5cf05c8f6021bbb5a1",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-42ba79146017bafb498085d1",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-8baa2179a10d9cf0ab2cbdd2",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-9ca88921760371099a8a221e",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-e9bd9d1610a6af14a26ca38f",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-a1594ba584a6b45133a110f7",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-72b6d810fd878f5f2cb60b31",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-2553108ce8b225afeb1c666d",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-042345f38b5c6f8d29a01964",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-fbd1c67b91f0a85459c03e89",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:geography:21",
+        "difficultyBand": "hard",
+        "answer": "lesotho",
+        "riddleId": "race-en-fbd1c67b91f0a85459c03e89",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which country is completely surrounded by South Africa?",
+        "raceEligible": true,
+        "categoryId": "geography"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-a414a70b9555ddb11a47742b",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:geography:22",
+        "difficultyBand": "hard",
+        "answer": "orinoco",
+        "riddleId": "race-en-a414a70b9555ddb11a47742b",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which major river flows through Venezuela and forms a vast delta at the Atlantic?",
+        "raceEligible": true,
+        "categoryId": "geography"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-f0b4b7088aedf2158acefcd0",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:geography:23",
+        "difficultyBand": "hard",
+        "answer": "malawi",
+        "riddleId": "race-en-f0b4b7088aedf2158acefcd0",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which landlocked African country contains most of a lake sharing its name?",
+        "raceEligible": true,
+        "categoryId": "geography"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-fc4174d4336c560b86fe1de6",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:geography:24",
+        "difficultyBand": "hard",
+        "answer": "sumatra",
+        "riddleId": "race-en-fc4174d4336c560b86fe1de6",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which Indonesian island lies west of Java across the Sunda Strait?",
+        "raceEligible": true,
+        "categoryId": "geography"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-41a1c9502d1a2f39a0eea02e",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:geography:25",
+        "difficultyBand": "hard",
+        "answer": "namib",
+        "riddleId": "race-en-41a1c9502d1a2f39a0eea02e",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which coastal desert lies along much of the Atlantic coast of southern Africa?",
+        "raceEligible": true,
+        "categoryId": "geography"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-0af2b57bd95067d189947afb",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:geography:26",
+        "difficultyBand": "hard",
+        "answer": "riga",
+        "riddleId": "race-en-0af2b57bd95067d189947afb",
+        "qualityVersion": "reviewed_v1",
+        "text": "What is the capital city of Latvia?",
+        "raceEligible": true,
+        "categoryId": "geography"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-d3667a97d4267be1782e56bb",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:geography:27",
+        "difficultyBand": "hard",
+        "answer": "belize",
+        "riddleId": "race-en-d3667a97d4267be1782e56bb",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which Central American country has Belmopan as its capital?",
+        "raceEligible": true,
+        "categoryId": "geography"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-2cfe01ad99150c7de42c3976",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:geography:28",
+        "difficultyBand": "hard",
+        "answer": "ural",
+        "riddleId": "race-en-2cfe01ad99150c7de42c3976",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which mountain range is commonly used as part of the boundary between Europe and Asia?",
+        "raceEligible": true,
+        "categoryId": "geography"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-c4a7c1f47aa793124a178888",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:geography:29",
+        "difficultyBand": "hard",
+        "answer": "java",
+        "riddleId": "race-en-c4a7c1f47aa793124a178888",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which Indonesian island contains Jakarta?",
+        "raceEligible": true,
+        "categoryId": "geography"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-dc70f34254ff46d1389fd512",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:geography:30",
+        "difficultyBand": "hard",
+        "answer": "nauru",
+        "riddleId": "race-en-dc70f34254ff46d1389fd512",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which tiny Pacific island country has no official capital city?",
+        "raceEligible": true,
+        "categoryId": "geography"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-0c94db49bdfa54b56a96ddf7",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:music:01",
+        "difficultyBand": "easy",
+        "answer": "piano",
+        "riddleId": "race-en-0c94db49bdfa54b56a96ddf7",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which keyboard instrument usually has 88 keys?",
+        "raceEligible": true,
+        "categoryId": "music"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-2761aaa992b8a984e61a04ad",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:music:02",
+        "difficultyBand": "easy",
+        "answer": "violin",
+        "riddleId": "race-en-2761aaa992b8a984e61a04ad",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which bowed string instrument is held beneath the chin?",
+        "raceEligible": true,
+        "categoryId": "music"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-b767ae990f74c0ccd6606505",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:music:03",
+        "difficultyBand": "easy",
+        "answer": "tempo",
+        "riddleId": "race-en-b767ae990f74c0ccd6606505",
+        "qualityVersion": "reviewed_v1",
+        "text": "What musical term describes the speed of a piece?",
+        "raceEligible": true,
+        "categoryId": "music"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-750ba6149256d959daf5213c",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:music:04",
+        "difficultyBand": "easy",
+        "answer": "chorus",
+        "riddleId": "race-en-750ba6149256d959daf5213c",
+        "qualityVersion": "reviewed_v1",
+        "text": "What repeated song section usually carries its main hook?",
+        "raceEligible": true,
+        "categoryId": "music"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-1e0fb513b28587884528f7ed",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:music:05",
+        "difficultyBand": "easy",
+        "answer": "octave",
+        "riddleId": "race-en-1e0fb513b28587884528f7ed",
+        "qualityVersion": "reviewed_v1",
+        "text": "What interval spans eight notes of a major scale?",
+        "raceEligible": true,
+        "categoryId": "music"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-9995b469f3148fbd46f38238",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:music:06",
+        "difficultyBand": "easy",
+        "answer": "jazz",
+        "riddleId": "race-en-9995b469f3148fbd46f38238",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which genre grew from African American communities in New Orleans?",
+        "raceEligible": true,
+        "categoryId": "music"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-b5be2a0310016c1d90428d5a",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:music:07",
+        "difficultyBand": "easy",
+        "answer": "opera",
+        "riddleId": "race-en-b5be2a0310016c1d90428d5a",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which theatrical form tells a drama primarily through singing?",
+        "raceEligible": true,
+        "categoryId": "music"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-5596b35915d796bbd08bb3c3",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:music:08",
+        "difficultyBand": "easy",
+        "answer": "cello",
+        "riddleId": "race-en-5596b35915d796bbd08bb3c3",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which large bowed string instrument is played seated between the knees?",
+        "raceEligible": true,
+        "categoryId": "music"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-d0df9fb245c33cc4779d41d3",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:music:09",
+        "difficultyBand": "easy",
+        "answer": "flute",
+        "riddleId": "race-en-d0df9fb245c33cc4779d41d3",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which woodwind instrument is played sideways across the mouth?",
+        "raceEligible": true,
+        "categoryId": "music"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-f8babf4416e96c8c9e0c6709",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:music:10",
+        "difficultyBand": "easy",
+        "answer": "rhythm",
+        "riddleId": "race-en-f8babf4416e96c8c9e0c6709",
+        "qualityVersion": "reviewed_v1",
+        "text": "What word describes the organized pattern of beats in music?",
+        "raceEligible": true,
+        "categoryId": "music"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-587dbae1130759a5f3056405",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-99c77574a77bb770637d5a7e",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-e227dcc948d6d3249ff57b50",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-881ebd29fed2c99efa4378ad",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-4639e7535c46a9e86bcf49d1",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-c620fcb842130839162eac2e",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-dff581108aa08705336b8791",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-100f658dbb1c069c4015beb4",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-88f57dee1da3a0b1e55be024",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-0536e5aaef1197db7255ba7b",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-5b0ebafa2cbac565c760a672",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:music:21",
+        "difficultyBand": "hard",
+        "answer": "sitar",
+        "riddleId": "race-en-5b0ebafa2cbac565c760a672",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which plucked Indian instrument has sympathetic strings and a long neck?",
+        "raceEligible": true,
+        "categoryId": "music"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-ae87cbfffd61f6923a5d9f5d",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:music:22",
+        "difficultyBand": "hard",
+        "answer": "fugue",
+        "riddleId": "race-en-ae87cbfffd61f6923a5d9f5d",
+        "qualityVersion": "reviewed_v1",
+        "text": "What contrapuntal form develops a subject through interweaving voices?",
+        "raceEligible": true,
+        "categoryId": "music"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-df6cda96b44130ba40f8f8ec",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:music:23",
+        "difficultyBand": "hard",
+        "answer": "oboe",
+        "riddleId": "race-en-df6cda96b44130ba40f8f8ec",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which double-reed woodwind tunes the orchestra before a concert?",
+        "raceEligible": true,
+        "categoryId": "music"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-123d9f1f53f8ba81ef080f30",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:music:24",
+        "difficultyBand": "hard",
+        "answer": "rondo",
+        "riddleId": "race-en-123d9f1f53f8ba81ef080f30",
+        "qualityVersion": "reviewed_v1",
+        "text": "What form returns repeatedly to a main theme between contrasting sections?",
+        "raceEligible": true,
+        "categoryId": "music"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-d37028a3011377b998126ce6",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:music:25",
+        "difficultyBand": "hard",
+        "answer": "baroque",
+        "riddleId": "race-en-d37028a3011377b998126ce6",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which ornate musical era followed the Renaissance?",
+        "raceEligible": true,
+        "categoryId": "music"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-aed0499655c5b73a5007589b",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:music:26",
+        "difficultyBand": "hard",
+        "answer": "timbre",
+        "riddleId": "race-en-aed0499655c5b73a5007589b",
+        "qualityVersion": "reviewed_v1",
+        "text": "What term describes the distinctive tone colour of a sound?",
+        "raceEligible": true,
+        "categoryId": "music"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-79454c83a3e46948fe040172",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:music:27",
+        "difficultyBand": "hard",
+        "answer": "klezmer",
+        "riddleId": "race-en-79454c83a3e46948fe040172",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which Eastern European Jewish musical tradition often features clarinet?",
+        "raceEligible": true,
+        "categoryId": "music"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-34c38dbfb69a20e13b47a278",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:music:28",
+        "difficultyBand": "hard",
+        "answer": "gamelan",
+        "riddleId": "race-en-34c38dbfb69a20e13b47a278",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which Indonesian ensemble centres on gongs and metallophones?",
+        "raceEligible": true,
+        "categoryId": "music"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-947e9c66767efc2c2d51ab09",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:music:29",
+        "difficultyBand": "hard",
+        "answer": "rubato",
+        "riddleId": "race-en-947e9c66767efc2c2d51ab09",
+        "qualityVersion": "reviewed_v1",
+        "text": "What direction allows expressive flexibility in musical timing?",
+        "raceEligible": true,
+        "categoryId": "music"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-eb8b18897b4bc99a3e02b1e7",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:music:30",
+        "difficultyBand": "hard",
+        "answer": "coda",
+        "riddleId": "race-en-eb8b18897b4bc99a3e02b1e7",
+        "qualityVersion": "reviewed_v1",
+        "text": "What is the concluding passage of a musical work called?",
+        "raceEligible": true,
+        "categoryId": "music"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-3bb25fbbdd3f19e200017f54",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:film:01",
+        "difficultyBand": "easy",
+        "answer": "oscar",
+        "riddleId": "race-en-3bb25fbbdd3f19e200017f54",
+        "qualityVersion": "reviewed_v1",
+        "text": "What nickname is commonly used for an Academy Award statuette?",
+        "raceEligible": true,
+        "categoryId": "film"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-9cd61496202b7dc8a36671f5",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:film:02",
+        "difficultyBand": "easy",
+        "answer": "pixar",
+        "riddleId": "race-en-9cd61496202b7dc8a36671f5",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which animation studio made Toy Story and Finding Nemo?",
+        "raceEligible": true,
+        "categoryId": "film"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-16f23507cf7ae6cd67ba9e78",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:film:03",
+        "difficultyBand": "easy",
+        "answer": "rocky",
+        "riddleId": "race-en-16f23507cf7ae6cd67ba9e78",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which fictional boxer is played by Sylvester Stallone?",
+        "raceEligible": true,
+        "categoryId": "film"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-7b798b66548b6aea16d3dedc",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:film:04",
+        "difficultyBand": "easy",
+        "answer": "jaws",
+        "riddleId": "race-en-7b798b66548b6aea16d3dedc",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which 1975 thriller features a great white shark near Amity Island?",
+        "raceEligible": true,
+        "categoryId": "film"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-bdeb2a892190dab26e0ec979",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:film:05",
+        "difficultyBand": "easy",
+        "answer": "marlin",
+        "riddleId": "race-en-bdeb2a892190dab26e0ec979",
+        "qualityVersion": "reviewed_v1",
+        "text": "What is the name of the clownfish father searching for his son in a 2003 animation?",
+        "raceEligible": true,
+        "categoryId": "film"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-9ce44d7ded354b39ab857a2d",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:film:06",
+        "difficultyBand": "easy",
+        "answer": "bond",
+        "riddleId": "race-en-9ce44d7ded354b39ab857a2d",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which surname belongs to the spy identified as 007?",
+        "raceEligible": true,
+        "categoryId": "film"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-13b3d902ad41b8a56ddfe4a0",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:film:07",
+        "difficultyBand": "easy",
+        "answer": "shrek",
+        "riddleId": "race-en-13b3d902ad41b8a56ddfe4a0",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which green ogre lives in a swamp with Donkey?",
+        "raceEligible": true,
+        "categoryId": "film"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-39fcadd05be05311a3bb8240",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:film:08",
+        "difficultyBand": "easy",
+        "answer": "vader",
+        "riddleId": "race-en-39fcadd05be05311a3bb8240",
+        "qualityVersion": "reviewed_v1",
+        "text": "What surname belongs to the Star Wars villain formerly known as Anakin?",
+        "raceEligible": true,
+        "categoryId": "film"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-caf4cd67ad493a0d63bfe7e7",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:film:09",
+        "difficultyBand": "easy",
+        "answer": "kubrick",
+        "riddleId": "race-en-caf4cd67ad493a0d63bfe7e7",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which director made 2001: A Space Odyssey and The Shining?",
+        "raceEligible": true,
+        "categoryId": "film"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-d9d1d6f89d09f0714f58fb9a",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:film:10",
+        "difficultyBand": "easy",
+        "answer": "chaplin",
+        "riddleId": "race-en-d9d1d6f89d09f0714f58fb9a",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which silent-era star created the character known as the Tramp?",
+        "raceEligible": true,
+        "categoryId": "film"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-e1a020ebb43ec4dd8f6d9028",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-2f0fc8085806aad60ba2d7c9",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-5ef1ac64e3c75b2d6b55691e",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-965c33571ef60080d3f16353",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-be61bfc0f54ef62f195bce2f",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-e15edadcf191030f34cd9610",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-83c731d0f0afce3370981121",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-c0095b61f746ae9949aef8fa",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-3ee8dc5f5ff93faf4ef349ec",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-d7923ed8abfa6d86128045f5",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-fcf56c736555337807d9bd1a",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:film:21",
+        "difficultyBand": "hard",
+        "answer": "ealing",
+        "riddleId": "race-en-fcf56c736555337807d9bd1a",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which London studio produced classic British comedies such as The Ladykillers?",
+        "raceEligible": true,
+        "categoryId": "film"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-b5ab94945617f4a5a26cbc74",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:film:22",
+        "difficultyBand": "hard",
+        "answer": "auteur",
+        "riddleId": "race-en-b5ab94945617f4a5a26cbc74",
+        "qualityVersion": "reviewed_v1",
+        "text": "What French term describes a director regarded as the primary creative author?",
+        "raceEligible": true,
+        "categoryId": "film"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-07b4d2c2b9074e50855c131a",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:film:23",
+        "difficultyBand": "hard",
+        "answer": "gaffer",
+        "riddleId": "race-en-07b4d2c2b9074e50855c131a",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which crew member leads the electrical department on a movie set?",
+        "raceEligible": true,
+        "categoryId": "film"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-c91b1e7c4b3de40f352dd2eb",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:film:24",
+        "difficultyBand": "hard",
+        "answer": "montage",
+        "riddleId": "race-en-c91b1e7c4b3de40f352dd2eb",
+        "qualityVersion": "reviewed_v1",
+        "text": "What editing technique combines a sequence of short shots to compress time?",
+        "raceEligible": true,
+        "categoryId": "film"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-c0336ccc0721dd8e1d06f74e",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:film:25",
+        "difficultyBand": "hard",
+        "answer": "prequel",
+        "riddleId": "race-en-c0336ccc0721dd8e1d06f74e",
+        "qualityVersion": "reviewed_v1",
+        "text": "What is a movie set before the events of an earlier release called?",
+        "raceEligible": true,
+        "categoryId": "film"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-30fd0cc35c02e6b084be2173",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:film:26",
+        "difficultyBand": "hard",
+        "answer": "matte",
+        "riddleId": "race-en-30fd0cc35c02e6b084be2173",
+        "qualityVersion": "reviewed_v1",
+        "text": "What painted or composited background creates an environment that was not filmed?",
+        "raceEligible": true,
+        "categoryId": "film"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-4a9872069b5511ed5761b845",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:film:27",
+        "difficultyBand": "hard",
+        "answer": "rushes",
+        "riddleId": "race-en-4a9872069b5511ed5761b845",
+        "qualityVersion": "reviewed_v1",
+        "text": "What are the unedited daily prints reviewed during production called?",
+        "raceEligible": true,
+        "categoryId": "film"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-35dbf7803a7cdc7ddcab359c",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:film:28",
+        "difficultyBand": "hard",
+        "answer": "leone",
+        "riddleId": "race-en-35dbf7803a7cdc7ddcab359c",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which surname belongs to the Italian director of the Dollars Trilogy?",
+        "raceEligible": true,
+        "categoryId": "film"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-4e1c6bfe8d87822655cd5d63",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:film:29",
+        "difficultyBand": "hard",
+        "answer": "keaton",
+        "riddleId": "race-en-4e1c6bfe8d87822655cd5d63",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which silent comedian starred in The General and Sherlock Jr.?",
+        "raceEligible": true,
+        "categoryId": "film"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-5d4c4dbd1f0840faa50fef19",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:film:30",
+        "difficultyBand": "hard",
+        "answer": "lumiere",
+        "riddleId": "race-en-5d4c4dbd1f0840faa50fef19",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which surname was shared by the French brothers who pioneered public film screenings in 1895?",
+        "raceEligible": true,
+        "categoryId": "film"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-bd49cccbf144317e57a7cf3d",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:science:01",
+        "difficultyBand": "easy",
+        "answer": "atom",
+        "riddleId": "race-en-bd49cccbf144317e57a7cf3d",
+        "qualityVersion": "reviewed_v1",
+        "text": "What is the smallest unit of an element that retains its chemical properties?",
+        "raceEligible": true,
+        "categoryId": "science"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-6744a93ab84092809c92a667",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:science:02",
+        "difficultyBand": "easy",
+        "answer": "mars",
+        "riddleId": "race-en-6744a93ab84092809c92a667",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which planet is often called the Red Planet?",
+        "raceEligible": true,
+        "categoryId": "science"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-7b974d36a5ad2573dd5500ae",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:science:03",
+        "difficultyBand": "easy",
+        "answer": "oxygen",
+        "riddleId": "race-en-7b974d36a5ad2573dd5500ae",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which gas with atomic number eight is essential for human respiration?",
+        "raceEligible": true,
+        "categoryId": "science"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-e5b4d2881c09860ec09239ac",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:science:04",
+        "difficultyBand": "easy",
+        "answer": "gravity",
+        "riddleId": "race-en-e5b4d2881c09860ec09239ac",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which force attracts masses toward one another?",
+        "raceEligible": true,
+        "categoryId": "science"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-5587d5f76db4d1de12f0061e",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:science:05",
+        "difficultyBand": "easy",
+        "answer": "neuron",
+        "riddleId": "race-en-5587d5f76db4d1de12f0061e",
+        "qualityVersion": "reviewed_v1",
+        "text": "What specialized cell transmits signals in the nervous system?",
+        "raceEligible": true,
+        "categoryId": "science"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-4897a54dfa8b55babd121276",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:science:06",
+        "difficultyBand": "easy",
+        "answer": "fossil",
+        "riddleId": "race-en-4897a54dfa8b55babd121276",
+        "qualityVersion": "reviewed_v1",
+        "text": "What preserved trace or remains of ancient life is found in rock?",
+        "raceEligible": true,
+        "categoryId": "science"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-dd0ec423686c1323e0dbc2f7",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:science:07",
+        "difficultyBand": "easy",
+        "answer": "photon",
+        "riddleId": "race-en-dd0ec423686c1323e0dbc2f7",
+        "qualityVersion": "reviewed_v1",
+        "text": "What particle is the quantum of electromagnetic radiation?",
+        "raceEligible": true,
+        "categoryId": "science"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-8d9de6211131f1ea9645602b",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:science:08",
+        "difficultyBand": "easy",
+        "answer": "plasma",
+        "riddleId": "race-en-8d9de6211131f1ea9645602b",
+        "qualityVersion": "reviewed_v1",
+        "text": "What ionized state of matter is common in stars?",
+        "raceEligible": true,
+        "categoryId": "science"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-bc347fb9429fdd70d45d3e02",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:science:09",
+        "difficultyBand": "easy",
+        "answer": "mitosis",
+        "riddleId": "race-en-bc347fb9429fdd70d45d3e02",
+        "qualityVersion": "reviewed_v1",
+        "text": "What cell-division process produces two genetically identical daughter cells?",
+        "raceEligible": true,
+        "categoryId": "science"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-bc989cb092da0a8c2e1b37c4",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:science:10",
+        "difficultyBand": "easy",
+        "answer": "enzyme",
+        "riddleId": "race-en-bc989cb092da0a8c2e1b37c4",
+        "qualityVersion": "reviewed_v1",
+        "text": "What biological catalyst speeds a chemical reaction?",
+        "raceEligible": true,
+        "categoryId": "science"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-e2474edfbd39f9a38d3f5137",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-52ea79463e59e3e77b8f0158",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-4f973f82073f66517bc14cf4",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-6b1af4b311899f53b9770d63",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-765295a1dc6397672ba0d0bd",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-fe6cb0c0739fadd13f6c8d0b",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-8cb4f9f39b227bcd9fbded9c",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-1f0af7b8b6fe22c6d3ae0ae3",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-ea12cde9ce2ab4d2d94ad0ec",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-3575c73a399bf8046fc71363",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-9662a5b3302fee6d5f19303e",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:science:21",
+        "difficultyBand": "hard",
+        "answer": "axion",
+        "riddleId": "race-en-9662a5b3302fee6d5f19303e",
+        "qualityVersion": "reviewed_v1",
+        "text": "What hypothetical particle was proposed to solve the strong CP problem?",
+        "raceEligible": true,
+        "categoryId": "science"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-265b2568f73e7ff8de1b5166",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:science:22",
+        "difficultyBand": "hard",
+        "answer": "boson",
+        "riddleId": "race-en-265b2568f73e7ff8de1b5166",
+        "qualityVersion": "reviewed_v1",
+        "text": "What particle class includes photons, gluons, and the Higgs?",
+        "raceEligible": true,
+        "categoryId": "science"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-756a3e82b5ef48efda595240",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:science:23",
+        "difficultyBand": "hard",
+        "answer": "anode",
+        "riddleId": "race-en-756a3e82b5ef48efda595240",
+        "qualityVersion": "reviewed_v1",
+        "text": "At which electrode does oxidation occur in an electrochemical cell?",
+        "raceEligible": true,
+        "categoryId": "science"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-5424e2faeb7f45eb2963597e",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:science:24",
+        "difficultyBand": "hard",
+        "answer": "quark",
+        "riddleId": "race-en-5424e2faeb7f45eb2963597e",
+        "qualityVersion": "reviewed_v1",
+        "text": "What fundamental particle combines in threes to form protons and neutrons?",
+        "raceEligible": true,
+        "categoryId": "science"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-96847e7ecbd46744f46d2350",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:science:25",
+        "difficultyBand": "hard",
+        "answer": "myelin",
+        "riddleId": "race-en-96847e7ecbd46744f46d2350",
+        "qualityVersion": "reviewed_v1",
+        "text": "What insulating substance forms a sheath around many nerve fibres?",
+        "raceEligible": true,
+        "categoryId": "science"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-8c9906326d4c6534d6cdfacf",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:science:26",
+        "difficultyBand": "hard",
+        "answer": "phylum",
+        "riddleId": "race-en-8c9906326d4c6534d6cdfacf",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which taxonomic rank lies below kingdom and above class?",
+        "raceEligible": true,
+        "categoryId": "science"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-a303765d42172922c79a6090",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:science:27",
+        "difficultyBand": "hard",
+        "answer": "pulsar",
+        "riddleId": "race-en-a303765d42172922c79a6090",
+        "qualityVersion": "reviewed_v1",
+        "text": "What rapidly rotating neutron star emits regular beams of radiation?",
+        "raceEligible": true,
+        "categoryId": "science"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-4319f0f5c7b27fb1d61a17b8",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:science:28",
+        "difficultyBand": "hard",
+        "answer": "redox",
+        "riddleId": "race-en-4319f0f5c7b27fb1d61a17b8",
+        "qualityVersion": "reviewed_v1",
+        "text": "What abbreviated term covers reactions involving both reduction and oxidation?",
+        "raceEligible": true,
+        "categoryId": "science"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-13a66919507e5484bc976779",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:science:29",
+        "difficultyBand": "hard",
+        "answer": "allele",
+        "riddleId": "race-en-13a66919507e5484bc976779",
+        "qualityVersion": "reviewed_v1",
+        "text": "What alternative form of a gene occupies the same locus on a chromosome?",
+        "raceEligible": true,
+        "categoryId": "science"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-797b90612fa27fe41772ab00",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:science:30",
+        "difficultyBand": "hard",
+        "answer": "corona",
+        "riddleId": "race-en-797b90612fa27fe41772ab00",
+        "qualityVersion": "reviewed_v1",
+        "text": "What is the Sun's hot outer atmosphere, visible during a total eclipse?",
+        "raceEligible": true,
+        "categoryId": "science"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-59cdd2ef7317c81aea220c73",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:mixed:01",
+        "difficultyBand": "easy",
+        "answer": "shadow",
+        "riddleId": "race-en-59cdd2ef7317c81aea220c73",
+        "qualityVersion": "reviewed_v1",
+        "text": "I follow you in sunlight but disappear in darkness. What am I?",
+        "raceEligible": true,
+        "categoryId": "mixed"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-1f9b814ba3be04cec1af5e68",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:mixed:02",
+        "difficultyBand": "easy",
+        "answer": "echo",
+        "riddleId": "race-en-1f9b814ba3be04cec1af5e68",
+        "qualityVersion": "reviewed_v1",
+        "text": "I answer every call but never speak first. What am I?",
+        "raceEligible": true,
+        "categoryId": "mixed"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-36d1477cc75e142b173bb59d",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:mixed:03",
+        "difficultyBand": "easy",
+        "answer": "clock",
+        "riddleId": "race-en-36d1477cc75e142b173bb59d",
+        "qualityVersion": "reviewed_v1",
+        "text": "I have a face and hands but no arms or legs. What am I?",
+        "raceEligible": true,
+        "categoryId": "mixed"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-8c08205542bbcbe03ebea3de",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:mixed:04",
+        "difficultyBand": "easy",
+        "answer": "candle",
+        "riddleId": "race-en-8c08205542bbcbe03ebea3de",
+        "qualityVersion": "reviewed_v1",
+        "text": "I grow shorter while giving light. What am I?",
+        "raceEligible": true,
+        "categoryId": "mixed"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-a4a69a9f0b219f82ff265d5f",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:mixed:05",
+        "difficultyBand": "easy",
+        "answer": "towel",
+        "riddleId": "race-en-a4a69a9f0b219f82ff265d5f",
+        "qualityVersion": "reviewed_v1",
+        "text": "I get wetter the more I dry. What am I?",
+        "raceEligible": true,
+        "categoryId": "mixed"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-b8329239e0e25a444c646ed9",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:mixed:06",
+        "difficultyBand": "easy",
+        "answer": "sponge",
+        "riddleId": "race-en-b8329239e0e25a444c646ed9",
+        "qualityVersion": "reviewed_v1",
+        "text": "I am full of holes but can still hold water. What am I?",
+        "raceEligible": true,
+        "categoryId": "mixed"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-413e3d0adc3038e7aba10221",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:mixed:07",
+        "difficultyBand": "easy",
+        "answer": "needle",
+        "riddleId": "race-en-413e3d0adc3038e7aba10221",
+        "qualityVersion": "reviewed_v1",
+        "text": "I have one eye but cannot see, and I pull thread behind me. What am I?",
+        "raceEligible": true,
+        "categoryId": "mixed"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-0a581e6f78a6344d4c7c2943",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:mixed:08",
+        "difficultyBand": "easy",
+        "answer": "secret",
+        "riddleId": "race-en-0a581e6f78a6344d4c7c2943",
+        "qualityVersion": "reviewed_v1",
+        "text": "If you tell me, I may no longer be mine to keep. What am I?",
+        "raceEligible": true,
+        "categoryId": "mixed"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-7055be45e2b630f7e500c458",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:mixed:09",
+        "difficultyBand": "easy",
+        "answer": "future",
+        "riddleId": "race-en-7055be45e2b630f7e500c458",
+        "qualityVersion": "reviewed_v1",
+        "text": "I am always ahead of you but can never be seen. What am I?",
+        "raceEligible": true,
+        "categoryId": "mixed"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-5f91a9d042783292fd6b4eb1",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:mixed:10",
+        "difficultyBand": "easy",
+        "answer": "silence",
+        "riddleId": "race-en-5f91a9d042783292fd6b4eb1",
+        "qualityVersion": "reviewed_v1",
+        "text": "Say my name and I vanish. What am I?",
+        "raceEligible": true,
+        "categoryId": "mixed"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-799035aa0dd48b68e42953bf",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-20167e19afa054c519f8cc61",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-58b13827d115adedb7b711f9",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-89a53e751c5a7b054c718eed",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-21be33de23026d5943735cb3",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-4e5ac0cfa8a9c9e0dc61d0c6",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-c529af3442f1e2b5bf4a52fd",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-3d0aeeee397f1c301eec129d",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-f06677977613f4b8b3093902",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-4fcbdf9af8c40e385bf15f95",
+      "existed": false,
+      "data": null
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-c092193ff22451c02cab75a4",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:mixed:21",
+        "difficultyBand": "hard",
+        "answer": "comb",
+        "riddleId": "race-en-c092193ff22451c02cab75a4",
+        "qualityVersion": "reviewed_v1",
+        "text": "I have teeth but cannot chew and help arrange your hair. What am I?",
+        "raceEligible": true,
+        "categoryId": "mixed"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-1025a16678c978455f34bdda",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:mixed:22",
+        "difficultyBand": "hard",
+        "answer": "glove",
+        "riddleId": "race-en-1025a16678c978455f34bdda",
+        "qualityVersion": "reviewed_v1",
+        "text": "I have five fingers but no bones or skin. What am I?",
+        "raceEligible": true,
+        "categoryId": "mixed"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-a57d2bec67ebee07b76a91e7",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:mixed:23",
+        "difficultyBand": "hard",
+        "answer": "river",
+        "riddleId": "race-en-a57d2bec67ebee07b76a91e7",
+        "qualityVersion": "reviewed_v1",
+        "text": "I have a mouth and a bed but never eat or sleep. What am I?",
+        "raceEligible": true,
+        "categoryId": "mixed"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-4fd0da4ecf0c65ea4adc61ee",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:mixed:24",
+        "difficultyBand": "hard",
+        "answer": "onion",
+        "riddleId": "race-en-4fd0da4ecf0c65ea4adc61ee",
+        "qualityVersion": "reviewed_v1",
+        "text": "Remove my outer layers and I may make you cry. What am I?",
+        "raceEligible": true,
+        "categoryId": "mixed"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-a833298e5ed8acbb08a6aa49",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:mixed:25",
+        "difficultyBand": "hard",
+        "answer": "cloud",
+        "riddleId": "race-en-a833298e5ed8acbb08a6aa49",
+        "qualityVersion": "reviewed_v1",
+        "text": "I float without wings and may carry rain. What am I?",
+        "raceEligible": true,
+        "categoryId": "mixed"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-1dd94f5d0fc2c4814943b5e6",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:mixed:26",
+        "difficultyBand": "hard",
+        "answer": "book",
+        "riddleId": "race-en-1dd94f5d0fc2c4814943b5e6",
+        "qualityVersion": "reviewed_v1",
+        "text": "I have a spine and many leaves, but I am not a plant. What am I?",
+        "raceEligible": true,
+        "categoryId": "mixed"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-35856433c0b03dad93da2b82",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:mixed:27",
+        "difficultyBand": "hard",
+        "answer": "map",
+        "riddleId": "race-en-35856433c0b03dad93da2b82",
+        "qualityVersion": "reviewed_v1",
+        "text": "I show places and roads but contain no buildings or cars. What am I?",
+        "raceEligible": true,
+        "categoryId": "mixed"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-8351805bad269e1145cba432",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:mixed:28",
+        "difficultyBand": "hard",
+        "answer": "key",
+        "riddleId": "race-en-8351805bad269e1145cba432",
+        "qualityVersion": "reviewed_v1",
+        "text": "I open locks but am not a door. What am I?",
+        "raceEligible": true,
+        "categoryId": "mixed"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-57590a9fd040903ff69e58b0",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:mixed:29",
+        "difficultyBand": "hard",
+        "answer": "fire",
+        "riddleId": "race-en-57590a9fd040903ff69e58b0",
+        "qualityVersion": "reviewed_v1",
+        "text": "Feed me and I live; give me a drink and I die. What am I?",
+        "raceEligible": true,
+        "categoryId": "mixed"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-dff87f55a305a752e0860900",
+      "existed": true,
+      "data": {
+        "canonicalRiddleId": "race:mixed:30",
+        "difficultyBand": "hard",
+        "answer": "light",
+        "riddleId": "race-en-dff87f55a305a752e0860900",
+        "qualityVersion": "reviewed_v1",
+        "text": "I can fill a room but take up no space. What am I?",
+        "raceEligible": true,
+        "categoryId": "mixed"
+      }
+    }
+  ],
+  "retired": [
+    {
+      "path": "localizedRiddles/en/riddles/race-en-063f45b00f7dabe3e0f6d0ef",
+      "data": {
+        "canonicalRiddleId": "race:mixed:19",
+        "difficultyBand": "medium",
+        "answer": "stamp",
+        "riddleId": "race-en-063f45b00f7dabe3e0f6d0ef",
+        "qualityVersion": "reviewed_v1",
+        "text": "I travel around the world while staying in one corner. What am I?",
+        "raceEligible": true,
+        "categoryId": "mixed"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-0c703f538580a6914d388a5b",
+      "data": {
+        "canonicalRiddleId": "race:history:11",
+        "difficultyBand": "medium",
+        "answer": "pompeii",
+        "riddleId": "race-en-0c703f538580a6914d388a5b",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which Roman town was buried by Mount Vesuvius in 79 CE?",
+        "raceEligible": true,
+        "categoryId": "history"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-0e5e7250b5ab0b1e087bd40e",
+      "data": {
+        "canonicalRiddleId": "race:music:12",
+        "difficultyBand": "medium",
+        "answer": "reggae",
+        "riddleId": "race-en-0e5e7250b5ab0b1e087bd40e",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which Jamaican genre is strongly associated with Bob Marley?",
+        "raceEligible": true,
+        "categoryId": "music"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-10944275baa5e9100e4e6150",
+      "data": {
+        "canonicalRiddleId": "race:history:16",
+        "difficultyBand": "medium",
+        "answer": "verdun",
+        "riddleId": "race-en-10944275baa5e9100e4e6150",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which 1916 battle became one of the longest of the First World War?",
+        "raceEligible": true,
+        "categoryId": "history"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-10d9682b163b185cbc6d44c0",
+      "data": {
+        "canonicalRiddleId": "race:science:14",
+        "difficultyBand": "medium",
+        "answer": "basalt",
+        "riddleId": "race-en-10d9682b163b185cbc6d44c0",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which dark volcanic rock forms much of the oceanic crust?",
+        "raceEligible": true,
+        "categoryId": "science"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-163cec1f1c456b053d5f623f",
+      "data": {
+        "canonicalRiddleId": "race:geography:15",
+        "difficultyBand": "medium",
+        "answer": "atlas",
+        "riddleId": "race-en-163cec1f1c456b053d5f623f",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which mountain range stretches across Morocco, Algeria, and Tunisia?",
+        "raceEligible": true,
+        "categoryId": "geography"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-18f260f1027c33a0ad4de209",
+      "data": {
+        "canonicalRiddleId": "race:geography:20",
+        "difficultyBand": "medium",
+        "answer": "caspian",
+        "riddleId": "race-en-18f260f1027c33a0ad4de209",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which inland body of water is the world's largest lake by surface area?",
+        "raceEligible": true,
+        "categoryId": "geography"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-199505eaa259e6dfb9a8c7e7",
+      "data": {
+        "canonicalRiddleId": "race:history:19",
+        "difficultyBand": "medium",
+        "answer": "maratha",
+        "riddleId": "race-en-199505eaa259e6dfb9a8c7e7",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which Indian confederacy was founded by Shivaji?",
+        "raceEligible": true,
+        "categoryId": "history"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-247c32f6370363bea44f302b",
+      "data": {
+        "canonicalRiddleId": "race:history:17",
+        "difficultyBand": "medium",
+        "answer": "yalta",
+        "riddleId": "race-en-247c32f6370363bea44f302b",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which Crimean resort hosted Roosevelt, Churchill, and Stalin in 1945?",
+        "raceEligible": true,
+        "categoryId": "history"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-289da8e0173c96babf7cbea3",
+      "data": {
+        "canonicalRiddleId": "race:mixed:17",
+        "difficultyBand": "medium",
+        "answer": "tunnel",
+        "riddleId": "race-en-289da8e0173c96babf7cbea3",
+        "qualityVersion": "reviewed_v1",
+        "text": "I am a passage with an entrance and exit but usually no windows. What am I?",
+        "raceEligible": true,
+        "categoryId": "mixed"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-2a5a95a009308f0f4ce49842",
+      "data": {
+        "canonicalRiddleId": "race:history:12",
+        "difficultyBand": "medium",
+        "answer": "luther",
+        "riddleId": "race-en-2a5a95a009308f0f4ce49842",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which reformer published the Ninety-five Theses in 1517?",
+        "raceEligible": true,
+        "categoryId": "history"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-2c10f6619666812974f6ac2a",
+      "data": {
+        "canonicalRiddleId": "race:geography:18",
+        "difficultyBand": "medium",
+        "answer": "jordan",
+        "riddleId": "race-en-2c10f6619666812974f6ac2a",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which country contains the ancient city of Petra?",
+        "raceEligible": true,
+        "categoryId": "geography"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-2c49acc356fb82a4a1e46e52",
+      "data": {
+        "canonicalRiddleId": "race:mixed:16",
+        "difficultyBand": "medium",
+        "answer": "ladder",
+        "riddleId": "race-en-2c49acc356fb82a4a1e46e52",
+        "qualityVersion": "reviewed_v1",
+        "text": "I have rungs but never run, and help you climb. What am I?",
+        "raceEligible": true,
+        "categoryId": "mixed"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-2d438819d1eb22f519392c77",
+      "data": {
+        "canonicalRiddleId": "race:mixed:11",
+        "difficultyBand": "medium",
+        "answer": "anchor",
+        "riddleId": "race-en-2d438819d1eb22f519392c77",
+        "qualityVersion": "reviewed_v1",
+        "text": "I sink to hold a vessel still, then rise before it sails. What am I?",
+        "raceEligible": true,
+        "categoryId": "mixed"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-3b1fe1b3851151b897095fe8",
+      "data": {
+        "canonicalRiddleId": "race:music:18",
+        "difficultyBand": "medium",
+        "answer": "ballet",
+        "riddleId": "race-en-3b1fe1b3851151b897095fe8",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which staged dance form uses positions such as plié and arabesque?",
+        "raceEligible": true,
+        "categoryId": "music"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-44ef4d8be13534a42220c558",
+      "data": {
+        "canonicalRiddleId": "race:mixed:18",
+        "difficultyBand": "medium",
+        "answer": "pocket",
+        "riddleId": "race-en-44ef4d8be13534a42220c558",
+        "qualityVersion": "reviewed_v1",
+        "text": "I am a small cloth cave that travels on your clothes. What am I?",
+        "raceEligible": true,
+        "categoryId": "mixed"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-45e0c45fe78b41e2be81f872",
+      "data": {
+        "canonicalRiddleId": "race:film:12",
+        "difficultyBand": "medium",
+        "answer": "sequel",
+        "riddleId": "race-en-45e0c45fe78b41e2be81f872",
+        "qualityVersion": "reviewed_v1",
+        "text": "What is a follow-up movie continuing an earlier story called?",
+        "raceEligible": true,
+        "categoryId": "film"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-4aae7b578ad11b13cd35ed18",
+      "data": {
+        "canonicalRiddleId": "race:music:19",
+        "difficultyBand": "medium",
+        "answer": "melody",
+        "riddleId": "race-en-4aae7b578ad11b13cd35ed18",
+        "qualityVersion": "reviewed_v1",
+        "text": "What term means a sequence of single notes perceived as one musical line?",
+        "raceEligible": true,
+        "categoryId": "music"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-4bdfcee6c11079991376be33",
+      "data": {
+        "canonicalRiddleId": "race:music:13",
+        "difficultyBand": "medium",
+        "answer": "banjo",
+        "riddleId": "race-en-4bdfcee6c11079991376be33",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which round-bodied string instrument is prominent in bluegrass?",
+        "raceEligible": true,
+        "categoryId": "music"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-4c1ba13efbdd9d778eb8ad71",
+      "data": {
+        "canonicalRiddleId": "race:music:11",
+        "difficultyBand": "medium",
+        "answer": "soprano",
+        "riddleId": "race-en-4c1ba13efbdd9d778eb8ad71",
+        "qualityVersion": "reviewed_v1",
+        "text": "What is the highest standard adult female singing voice?",
+        "raceEligible": true,
+        "categoryId": "music"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-4e5f75a98d0c6d4091e1d008",
+      "data": {
+        "canonicalRiddleId": "race:history:13",
+        "difficultyBand": "medium",
+        "answer": "crimea",
+        "riddleId": "race-en-4e5f75a98d0c6d4091e1d008",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which peninsula gave its name to the war fought from 1853 to 1856?",
+        "raceEligible": true,
+        "categoryId": "history"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-526a1fd5ce2bb7451a76bd66",
+      "data": {
+        "canonicalRiddleId": "race:mixed:12",
+        "difficultyBand": "medium",
+        "answer": "zipper",
+        "riddleId": "race-en-526a1fd5ce2bb7451a76bd66",
+        "qualityVersion": "reviewed_v1",
+        "text": "I have many teeth and join two sides, yet I never bite. What am I?",
+        "raceEligible": true,
+        "categoryId": "mixed"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-54ca9ba13916cddd127e13ce",
+      "data": {
+        "canonicalRiddleId": "race:mixed:15",
+        "difficultyBand": "medium",
+        "answer": "bridge",
+        "riddleId": "race-en-54ca9ba13916cddd127e13ce",
+        "qualityVersion": "reviewed_v1",
+        "text": "I span a gap and carry travellers without moving. What am I?",
+        "raceEligible": true,
+        "categoryId": "mixed"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-6061d99e09e23dec7e3c664c",
+      "data": {
+        "canonicalRiddleId": "race:film:19",
+        "difficultyBand": "medium",
+        "answer": "frame",
+        "riddleId": "race-en-6061d99e09e23dec7e3c664c",
+        "qualityVersion": "reviewed_v1",
+        "text": "What is one individual image in a strip of motion-picture film called?",
+        "raceEligible": true,
+        "categoryId": "film"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-6ee0451e52bded0e2c5dc537",
+      "data": {
+        "canonicalRiddleId": "race:music:15",
+        "difficultyBand": "medium",
+        "answer": "tenor",
+        "riddleId": "race-en-6ee0451e52bded0e2c5dc537",
+        "qualityVersion": "reviewed_v1",
+        "text": "What is the highest common adult male chest voice?",
+        "raceEligible": true,
+        "categoryId": "music"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-7ad6489c91d1665656c8fcaf",
+      "data": {
+        "canonicalRiddleId": "race:film:20",
+        "difficultyBand": "medium",
+        "answer": "genre",
+        "riddleId": "race-en-7ad6489c91d1665656c8fcaf",
+        "qualityVersion": "reviewed_v1",
+        "text": "What term groups movies by shared style, subject, or form?",
+        "raceEligible": true,
+        "categoryId": "film"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-7b8cbe37506a23a46e338105",
+      "data": {
+        "canonicalRiddleId": "race:mixed:13",
+        "difficultyBand": "medium",
+        "answer": "mirror",
+        "riddleId": "race-en-7b8cbe37506a23a46e338105",
+        "qualityVersion": "reviewed_v1",
+        "text": "I copy your appearance but reverse left and right. What am I?",
+        "raceEligible": true,
+        "categoryId": "mixed"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-7f641a3d03175a0428e99fc7",
+      "data": {
+        "canonicalRiddleId": "race:history:15",
+        "difficultyBand": "medium",
+        "answer": "boleyn",
+        "riddleId": "race-en-7f641a3d03175a0428e99fc7",
+        "qualityVersion": "reviewed_v1",
+        "text": "What was the surname of Henry VIII's second wife, Anne?",
+        "raceEligible": true,
+        "categoryId": "history"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-84d375ac37d902a3fe609cd9",
+      "data": {
+        "canonicalRiddleId": "race:film:11",
+        "difficultyBand": "medium",
+        "answer": "cinema",
+        "riddleId": "race-en-84d375ac37d902a3fe609cd9",
+        "qualityVersion": "reviewed_v1",
+        "text": "What general word describes the art and industry of motion pictures?",
+        "raceEligible": true,
+        "categoryId": "film"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-858d3d648a7a0bff70f99e56",
+      "data": {
+        "canonicalRiddleId": "race:film:14",
+        "difficultyBand": "medium",
+        "answer": "noir",
+        "riddleId": "race-en-858d3d648a7a0bff70f99e56",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which French word labels dark, cynical crime movies?",
+        "raceEligible": true,
+        "categoryId": "film"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-8de6868237b8c71e67cc4ad4",
+      "data": {
+        "canonicalRiddleId": "race:science:16",
+        "difficultyBand": "medium",
+        "answer": "retina",
+        "riddleId": "race-en-8de6868237b8c71e67cc4ad4",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which light-sensitive layer lines the back of the eye?",
+        "raceEligible": true,
+        "categoryId": "science"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-9a2218e12a35dab2c9a0882b",
+      "data": {
+        "canonicalRiddleId": "race:mixed:14",
+        "difficultyBand": "medium",
+        "answer": "bottle",
+        "riddleId": "race-en-9a2218e12a35dab2c9a0882b",
+        "qualityVersion": "reviewed_v1",
+        "text": "I have a neck but no head and often wear a cap. What am I?",
+        "raceEligible": true,
+        "categoryId": "mixed"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-9c2c79da567770eb607f8d4c",
+      "data": {
+        "canonicalRiddleId": "race:geography:12",
+        "difficultyBand": "medium",
+        "answer": "bhutan",
+        "riddleId": "race-en-9c2c79da567770eb607f8d4c",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which Himalayan kingdom measures progress with Gross National Happiness?",
+        "raceEligible": true,
+        "categoryId": "geography"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-a294440d5f27a55a50719a03",
+      "data": {
+        "canonicalRiddleId": "race:history:20",
+        "difficultyBand": "medium",
+        "answer": "sakoku",
+        "riddleId": "race-en-a294440d5f27a55a50719a03",
+        "qualityVersion": "reviewed_v1",
+        "text": "What Japanese policy restricted most foreign contact during the Edo period?",
+        "raceEligible": true,
+        "categoryId": "history"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-a4b1d6f8faeb37341877f14b",
+      "data": {
+        "canonicalRiddleId": "race:music:20",
+        "difficultyBand": "medium",
+        "answer": "chord",
+        "riddleId": "race-en-a4b1d6f8faeb37341877f14b",
+        "qualityVersion": "reviewed_v1",
+        "text": "What do musicians call three or more notes sounded together?",
+        "raceEligible": true,
+        "categoryId": "music"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-ad9ae30368245367b81cf391",
+      "data": {
+        "canonicalRiddleId": "race:geography:13",
+        "difficultyBand": "medium",
+        "answer": "malta",
+        "riddleId": "race-en-ad9ae30368245367b81cf391",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which island nation lies south of Sicily?",
+        "raceEligible": true,
+        "categoryId": "geography"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-ae3f7a3612bdfb63eaff75b1",
+      "data": {
+        "canonicalRiddleId": "race:science:13",
+        "difficultyBand": "medium",
+        "answer": "genome",
+        "riddleId": "race-en-ae3f7a3612bdfb63eaff75b1",
+        "qualityVersion": "reviewed_v1",
+        "text": "What is the complete set of genetic material in an organism?",
+        "raceEligible": true,
+        "categoryId": "science"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-b400644d4b5aa757ea80fa10",
+      "data": {
+        "canonicalRiddleId": "race:science:11",
+        "difficultyBand": "medium",
+        "answer": "quasar",
+        "riddleId": "race-en-b400644d4b5aa757ea80fa10",
+        "qualityVersion": "reviewed_v1",
+        "text": "What extremely luminous galactic nucleus is powered by a supermassive black hole?",
+        "raceEligible": true,
+        "categoryId": "science"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-b591c4a05337933b492b0044",
+      "data": {
+        "canonicalRiddleId": "race:film:16",
+        "difficultyBand": "medium",
+        "answer": "script",
+        "riddleId": "race-en-b591c4a05337933b492b0044",
+        "qualityVersion": "reviewed_v1",
+        "text": "What written document contains a movie's scenes and dialogue?",
+        "raceEligible": true,
+        "categoryId": "film"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-b6d626ba670d8821aeef39e2",
+      "data": {
+        "canonicalRiddleId": "race:geography:19",
+        "difficultyBand": "medium",
+        "answer": "borneo",
+        "riddleId": "race-en-b6d626ba670d8821aeef39e2",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which island is divided among Indonesia, Malaysia, and Brunei?",
+        "raceEligible": true,
+        "categoryId": "geography"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-b79653b40b8e19e0f45a73a6",
+      "data": {
+        "canonicalRiddleId": "race:science:17",
+        "difficultyBand": "medium",
+        "answer": "pollen",
+        "riddleId": "race-en-b79653b40b8e19e0f45a73a6",
+        "qualityVersion": "reviewed_v1",
+        "text": "What powdery material carries male reproductive cells in seed plants?",
+        "raceEligible": true,
+        "categoryId": "science"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-c151a44afe7c6284fa304921",
+      "data": {
+        "canonicalRiddleId": "race:science:19",
+        "difficultyBand": "medium",
+        "answer": "helium",
+        "riddleId": "race-en-c151a44afe7c6284fa304921",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which element with atomic number two fills many party balloons?",
+        "raceEligible": true,
+        "categoryId": "science"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-c1f75ffe0dd3130488bf61b8",
+      "data": {
+        "canonicalRiddleId": "race:film:13",
+        "difficultyBand": "medium",
+        "answer": "cameo",
+        "riddleId": "race-en-c1f75ffe0dd3130488bf61b8",
+        "qualityVersion": "reviewed_v1",
+        "text": "What is a brief appearance by a famous person in a movie called?",
+        "raceEligible": true,
+        "categoryId": "film"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-c24c152eb3564c49e5b7c9fe",
+      "data": {
+        "canonicalRiddleId": "race:mixed:20",
+        "difficultyBand": "medium",
+        "answer": "window",
+        "riddleId": "race-en-c24c152eb3564c49e5b7c9fe",
+        "qualityVersion": "reviewed_v1",
+        "text": "I let you look outside while keeping weather out. What am I?",
+        "raceEligible": true,
+        "categoryId": "mixed"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-c8f33b90087fb84cf56d6f38",
+      "data": {
+        "canonicalRiddleId": "race:music:16",
+        "difficultyBand": "medium",
+        "answer": "blues",
+        "riddleId": "race-en-c8f33b90087fb84cf56d6f38",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which genre commonly uses a twelve-bar harmonic form?",
+        "raceEligible": true,
+        "categoryId": "music"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-ce9099f24d04bc4d4133d6d2",
+      "data": {
+        "canonicalRiddleId": "race:geography:14",
+        "difficultyBand": "medium",
+        "answer": "quito",
+        "riddleId": "race-en-ce9099f24d04bc4d4133d6d2",
+        "qualityVersion": "reviewed_v1",
+        "text": "What is the high-altitude capital of Ecuador?",
+        "raceEligible": true,
+        "categoryId": "geography"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-cfe85114c12dd264542b3517",
+      "data": {
+        "canonicalRiddleId": "race:geography:17",
+        "difficultyBand": "medium",
+        "answer": "gobi",
+        "riddleId": "race-en-cfe85114c12dd264542b3517",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which desert spans parts of Mongolia and northern China?",
+        "raceEligible": true,
+        "categoryId": "geography"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-d51d7b0ce31b73fcd23f108a",
+      "data": {
+        "canonicalRiddleId": "race:film:17",
+        "difficultyBand": "medium",
+        "answer": "stunt",
+        "riddleId": "race-en-d51d7b0ce31b73fcd23f108a",
+        "qualityVersion": "reviewed_v1",
+        "text": "What dangerous physical feat is performed for a movie action scene?",
+        "raceEligible": true,
+        "categoryId": "film"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-dc9bd949608911e6dfa0f741",
+      "data": {
+        "canonicalRiddleId": "race:science:20",
+        "difficultyBand": "medium",
+        "answer": "crust",
+        "riddleId": "race-en-dc9bd949608911e6dfa0f741",
+        "qualityVersion": "reviewed_v1",
+        "text": "What is the rigid outer layer of Earth, broken into moving plates?",
+        "raceEligible": true,
+        "categoryId": "science"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-dcb4d72a49bab7b14dd68ab0",
+      "data": {
+        "canonicalRiddleId": "race:history:14",
+        "difficultyBand": "medium",
+        "answer": "apollo",
+        "riddleId": "race-en-dcb4d72a49bab7b14dd68ab0",
+        "qualityVersion": "reviewed_v1",
+        "text": "What programme name was used for the missions that first landed humans on the Moon?",
+        "raceEligible": true,
+        "categoryId": "history"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-df1c62a3c6170dae6b0562b0",
+      "data": {
+        "canonicalRiddleId": "race:geography:16",
+        "difficultyBand": "medium",
+        "answer": "sicily",
+        "riddleId": "race-en-df1c62a3c6170dae6b0562b0",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which large Mediterranean island sits off the toe of Italy?",
+        "raceEligible": true,
+        "categoryId": "geography"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-df71701ae4e1392d7020f5b8",
+      "data": {
+        "canonicalRiddleId": "race:music:14",
+        "difficultyBand": "medium",
+        "answer": "sonata",
+        "riddleId": "race-en-df71701ae4e1392d7020f5b8",
+        "qualityVersion": "reviewed_v1",
+        "text": "What multi-movement composition is typically written for a solo instrument or small ensemble?",
+        "raceEligible": true,
+        "categoryId": "music"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-e05d9f58c3a8f70b33656746",
+      "data": {
+        "canonicalRiddleId": "race:science:18",
+        "difficultyBand": "medium",
+        "answer": "osmosis",
+        "riddleId": "race-en-e05d9f58c3a8f70b33656746",
+        "qualityVersion": "reviewed_v1",
+        "text": "What process moves water through a semipermeable membrane toward higher solute concentration?",
+        "raceEligible": true,
+        "categoryId": "science"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-e3481ad84b8c398eaf1e1867",
+      "data": {
+        "canonicalRiddleId": "race:science:12",
+        "difficultyBand": "medium",
+        "answer": "isotope",
+        "riddleId": "race-en-e3481ad84b8c398eaf1e1867",
+        "qualityVersion": "reviewed_v1",
+        "text": "What variant of an element has a different number of neutrons?",
+        "raceEligible": true,
+        "categoryId": "science"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-e41b2d2dd0b772263cc48baf",
+      "data": {
+        "canonicalRiddleId": "race:geography:11",
+        "difficultyBand": "medium",
+        "answer": "danube",
+        "riddleId": "race-en-e41b2d2dd0b772263cc48baf",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which river passes through Vienna, Bratislava, Budapest, and Belgrade?",
+        "raceEligible": true,
+        "categoryId": "geography"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-e4496fb35b2f78dd373ee513",
+      "data": {
+        "canonicalRiddleId": "race:film:15",
+        "difficultyBand": "medium",
+        "answer": "dolly",
+        "riddleId": "race-en-e4496fb35b2f78dd373ee513",
+        "qualityVersion": "reviewed_v1",
+        "text": "What wheeled platform carries a camera for smooth tracking shots?",
+        "raceEligible": true,
+        "categoryId": "film"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-eb87f5266de49c151a3e7c93",
+      "data": {
+        "canonicalRiddleId": "race:science:15",
+        "difficultyBand": "medium",
+        "answer": "proton",
+        "riddleId": "race-en-eb87f5266de49c151a3e7c93",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which positively charged particle is found in an atomic nucleus?",
+        "raceEligible": true,
+        "categoryId": "science"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-f4aaa62a318bc908ca594597",
+      "data": {
+        "canonicalRiddleId": "race:film:18",
+        "difficultyBand": "medium",
+        "answer": "foley",
+        "riddleId": "race-en-f4aaa62a318bc908ca594597",
+        "qualityVersion": "reviewed_v1",
+        "text": "What surname names the craft of creating synchronized everyday sound effects?",
+        "raceEligible": true,
+        "categoryId": "film"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-f62f30b9a57cf5ff659d73f4",
+      "data": {
+        "canonicalRiddleId": "race:music:17",
+        "difficultyBand": "medium",
+        "answer": "motown",
+        "riddleId": "race-en-f62f30b9a57cf5ff659d73f4",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which Detroit record label launched the Supremes and Stevie Wonder?",
+        "raceEligible": true,
+        "categoryId": "music"
+      }
+    },
+    {
+      "path": "localizedRiddles/en/riddles/race-en-fe15c633deb2227caedd015e",
+      "data": {
+        "canonicalRiddleId": "race:history:18",
+        "difficultyBand": "medium",
+        "answer": "kyoto",
+        "riddleId": "race-en-fe15c633deb2227caedd015e",
+        "qualityVersion": "reviewed_v1",
+        "text": "Which Japanese city served as the imperial capital before Tokyo?",
+        "raceEligible": true,
+        "categoryId": "history"
+      }
+    }
+  ]
+}

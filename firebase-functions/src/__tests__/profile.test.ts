@@ -47,7 +47,7 @@ const mockTransactionGet = jest.fn(async (ref: MockDocumentRef | MockQueryRef) =
   }
   /** Provides data behavior. */
   const data = mockFirestoreDocuments.get(ref.path);
-  return {exists: data !== undefined, data: () => data};
+  return {exists: data !== undefined, data: () => data, get: (field: string) => data?.[field]};
 });
 /** Provides mock transaction update behavior. */
 const mockTransactionUpdate = jest.fn((ref: MockDocumentRef, data: Record<string, unknown>) => {
@@ -182,7 +182,8 @@ jest.mock("firebase-functions/v2/https", () => {
 });
 
 // 4. Import the module under test
-import {updateAvatar, updateUsername} from "../profile";
+import {syncJestAvatar, updateAvatar, updateUsername} from "../profile";
+import {jestFirebaseUid} from "../jest/jestSecurity";
 import {syncLeaderboardProfileFields} from "../profile/leaderboardProfile";
 import {createUsernameReservationId} from "../profile/usernameReservations";
 
@@ -202,6 +203,7 @@ describe("Profile Cloud Functions", () => {
 
   it("enables App Check and public Cloud Run ingress on profile update callables", () => {
     expect(mockOnCallInvocations).toEqual([
+      [{enforceAppCheck: true, invoker: "public", timeoutSeconds: 60}, expect.any(Function)],
       [{enforceAppCheck: true, invoker: "public", timeoutSeconds: 60}, expect.any(Function)],
       [{enforceAppCheck: true, invoker: "public", timeoutSeconds: 60}, expect.any(Function)],
       [
@@ -511,6 +513,40 @@ describe("Profile Cloud Functions", () => {
           data: {imageDataUrl: pngDataUrl},
         }),
       ).rejects.toMatchObject({code: "internal"});
+    });
+  });
+
+  describe("syncJestAvatar", () => {
+    const playerId = "jest-player-1";
+    const uid = jestFirebaseUid(playerId);
+    const avatarUrl = "https://cdn.jest.com/avatars/player.webp";
+    const request = (url = avatarUrl) => ({
+      auth: {uid, token: {jestPlayerId: playerId, jestRegistered: true}},
+      data: {avatarUrl: url},
+    });
+
+    it("fills only an empty Jest avatar and updates an existing leaderboard row", async () => {
+      mockFirestoreDocuments.set(`users/${uid}`, {username: "Player"});
+      mockFirestoreDocuments.set(`leaderboard/${uid}`, {username: "Player"});
+      await expect((syncJestAvatar as any)(request())).resolves.toEqual({avatarUrl});
+      expect(mockFirestoreDocuments.get(`users/${uid}`)?.avatarUrl).toBe(avatarUrl);
+      expect(mockFirestoreDocuments.get(`leaderboard/${uid}`)?.avatarUrl).toBe(avatarUrl);
+    });
+
+    it("keeps a player-selected avatar", async () => {
+      mockFirestoreDocuments.set(`users/${uid}`, {avatarUrl: "https://example.com/custom.webp"});
+      await expect((syncJestAvatar as any)(request())).resolves.toEqual({avatarUrl: "https://example.com/custom.webp"});
+      expect(mockTransactionUpdate).not.toHaveBeenCalled();
+    });
+
+    it("rejects other targets, malformed URLs, and deleted accounts", async () => {
+      await expect((syncJestAvatar as any)({auth: {uid, token: {provider: "facebook"}}, data: {avatarUrl}}))
+        .rejects.toMatchObject({code: "permission-denied"});
+      await expect((syncJestAvatar as any)(request("javascript:alert(1)")))
+        .rejects.toMatchObject({code: "invalid-argument"});
+      mockFirestoreDocuments.set(`users/${uid}`, {});
+      mockFirestoreDocuments.set(`jestAccountDeletionTombstones/${uid}`, {recreationBlocked: true});
+      await expect((syncJestAvatar as any)(request())).rejects.toMatchObject({code: "failed-precondition"});
     });
   });
 });

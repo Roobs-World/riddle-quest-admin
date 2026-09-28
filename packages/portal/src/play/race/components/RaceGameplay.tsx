@@ -20,6 +20,7 @@ export function RaceGameplay({
   guesses,
   letterStates,
   pending,
+  allowTypingWhilePending,
   onClose,
   onSelectSlot,
   onLetter,
@@ -53,6 +54,8 @@ export function RaceGameplay({
   letterStates: Record<string, Feedback>;
   /** Stores pending. */
   pending: boolean;
+  /** Allows editing a projected next clue before the previous result arrives. */
+  allowTypingWhilePending: boolean;
   /** Stores on close. */
   onClose: () => void;
   /** Stores on select slot. */
@@ -99,11 +102,11 @@ export function RaceGameplay({
                   onSelectSlot(index);
                   nativeInputRef.current?.focus({preventScroll: true});
                 }}
-                disabled={pending}
+                disabled={pending && !allowTypingWhilePending}
               />
               <NativeAnswerInput
                 ref={nativeInputRef}
-                disabled={pending}
+                disabled={pending && !allowTypingWhilePending}
                 locale={run.locale}
                 onText={onText}
                 onBackspace={onBackspace}
@@ -114,7 +117,7 @@ export function RaceGameplay({
               letterStates={letterStates}
               onLetter={onLetter}
               onBackspace={onBackspace}
-              disabled={pending}
+              disabled={pending && !allowTypingWhilePending}
             />
           </>
         )}

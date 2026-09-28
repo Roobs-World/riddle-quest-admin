@@ -40,6 +40,11 @@
   font-size: 13px;
   font-weight: 700;
 }
+.game-content > .game-notice {
+  width: min(760px, 100%);
+  justify-self: center;
+  text-align: center;
+}
 .play-primary,
 .play-secondary,
 .keyboard button,

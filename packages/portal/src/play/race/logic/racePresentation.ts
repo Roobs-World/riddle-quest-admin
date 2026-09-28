@@ -55,6 +55,25 @@ export const projectInstantRaceSkip = (run: RaceRunView): RaceRunView | null => 
   };
 };
 
+/** Shows the next downloaded riddle as soon as a correct guess is submitted. */
+export const projectInstantCorrectGuess = (run: RaceRunView): RaceRunView | null => {
+  if (run.status !== "active" || !run.currentRiddle || !run.preloadedRiddles ||
+    run.correctCount + 1 >= run.rules.targetCorrect) return null;
+  const next = run.preloadedRiddles[run.currentRiddle.position + 1];
+  if (!next) return null;
+  return {
+    ...run,
+    correctCount: run.correctCount + 1,
+    currentRiddle: {
+      ...next,
+      guessesUsed: 0,
+      guessesRemaining: run.rules.maxGuessesPerRiddle,
+      hintAvailable: true,
+      revealedLetters: [],
+    },
+  };
+};
+
 /** Immediately reveals the next preloaded answer letter while the server records the hint. */
 export const projectInstantRaceHint = (run: RaceRunView): RaceRunView | null => {
   if (run.status !== "active" || !run.currentRiddle?.hintAvailable || !run.preloadedRiddles) return null;

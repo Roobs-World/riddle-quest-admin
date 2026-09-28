@@ -28,7 +28,7 @@ const option = (name) => {
 };
 const translatorModel = option("--translator-model");
 const criticModel = option("--critic-model");
-const sourcePath = path.resolve(option("--source") || "content/race-en-reviewed-v1.json");
+const sourcePath = path.resolve(option("--source") || "content/race-en-reviewed-v2.json");
 const outputDirectory = path.resolve(option("--output-dir") || "content/race-translations");
 const requestedLocales = (option("--locales") || RACE_SUPPORTED_LOCALES.filter((locale) => locale !== "en").join(","))
   .split(",").map((locale) => locale.trim()).filter(Boolean);

@@ -230,6 +230,8 @@ export const updateAvatar = httpsCallable<
     avatarUrl: string;
   }
 >(functions, "updateAvatar");
+/** Fills an empty Jest game profile avatar from the platform profile. */
+export const syncJestAvatar = httpsCallable<{avatarUrl: string}, {avatarUrl: string}>(functions, "syncJestAvatar");
 /** Deletes account. */
 export const deleteAccount = httpsCallable<
   Record<string, never>,

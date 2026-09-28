@@ -7,6 +7,7 @@ import {
   formatRaceTime,
   getAdjustedRaceTime,
   getRaceLetterStates,
+  projectInstantCorrectGuess,
   projectInstantRaceHint,
   projectInstantRaceSkip,
   projectRaceOutcome,
@@ -120,6 +121,22 @@ describe("race presentation helpers", () => {
         run({currentRiddle: {...riddle(), position: RACE_RULES.deckSize - 1}, preloadedRiddles}),
       ),
     ).toMatchObject({status: "timed_out", currentRiddle: null});
+  });
+
+  it("shows the next preloaded clue immediately after a correct guess", () => {
+    const preloadedRiddles = Array.from({length: RACE_RULES.deckSize}, (_, position) => ({
+      riddleId: `riddle-${position + 1}`,
+      text: `Clue ${position + 1}`,
+      answerLength: 4,
+      position,
+      evaluation: {answer: "test", locale: "en" as const},
+    }));
+    expect(projectInstantCorrectGuess(run({preloadedRiddles}))).toMatchObject({
+      correctCount: 9,
+      currentRiddle: {riddleId: "riddle-2", text: "Clue 2", guessesUsed: 0},
+    });
+    expect(projectInstantCorrectGuess(run())).toBeNull();
+    expect(projectInstantCorrectGuess(run({correctCount: 9, preloadedRiddles}))).toBeNull();
   });
 
   it("projects a hint immediately from the answer downloaded before the race", () => {

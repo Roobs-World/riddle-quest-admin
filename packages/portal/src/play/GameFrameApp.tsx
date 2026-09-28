@@ -330,13 +330,6 @@ export function GameFrameApp({
             <section className="riddle-surface">
               <div className="riddle-card">
                 <h1>{state.riddle.text}</h1>
-                {state.notice && (
-                  <div className="game-notice">
-                    {state.notice.startsWith("WebPortal.") || state.notice.startsWith("ErrorMessages.")
-                      ? tr(state.notice)
-                      : state.notice}
-                  </div>
-                )}
               </div>
               <GuessBoard state={state} dispatch={dispatch} />
             </section>
@@ -359,6 +352,14 @@ export function GameFrameApp({
               )}
             </section>
 
+            {state.notice && (
+              <div className="game-notice" role="status" aria-live="polite">
+                {state.notice.startsWith("WebPortal.") || state.notice.startsWith("ErrorMessages.")
+                  ? tr(state.notice)
+                  : state.notice}
+              </div>
+            )}
+
             <nav className="game-bottom-navigation" aria-label={tr("Navigation.GAME")}>
               <button
                 onClick={() => dispatch({type: "openModal", modal: "settings"})}
@@ -377,6 +378,7 @@ export function GameFrameApp({
                 </button>
               )}
               <button
+                data-tooltip="achievementEarned"
                 onClick={() => dispatch({type: "openModal", modal: "profile"})}
                 aria-label={tr("Navigation.PROFILE_BUTTON")}
               >

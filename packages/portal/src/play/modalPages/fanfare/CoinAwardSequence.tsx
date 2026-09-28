@@ -147,14 +147,18 @@ export function CoinAwardSequence({amount, total, onBalancePreview, onCollected}
       const timer = window.setTimeout(() => {
         displayedBalance += particleValue;
         onBalancePreview(index === nextParticles.length - 1 ? finalBalance : displayedBalance);
-        meter.animate(
-          [{transform: "scale(1)"}, {transform: "scale(1.24)"}, {transform: "scale(0.94)"}, {transform: "scale(1)"}],
-          {duration: reducedMotion ? 120 : 260, easing: "ease-out"},
-        );
         if (index === nextParticles.length - 1) {
           setParticles([]);
           setPhase("collected");
           onCollected();
+        }
+        try {
+          meter.animate?.(
+            [{transform: "scale(1)"}, {transform: "scale(1.24)"}, {transform: "scale(0.94)"}, {transform: "scale(1)"}],
+            {duration: reducedMotion ? 120 : 260, easing: "ease-out"},
+          );
+        } catch {
+          // A visual effect must not prevent the award from completing.
         }
       }, particle.delayMs + particle.durationMs);
       timersRef.current.push(timer);

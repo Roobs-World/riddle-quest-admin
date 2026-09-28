@@ -79,6 +79,7 @@ export const TOOLTIP_SELECTORS: Partial<Record<TooltipId, string>> = {
   gameHint: "[data-tooltip='gameHint']",
   submitAnswer: "[data-tooltip='submitAnswer']",
   gameSkip: "[data-tooltip='gameSkip']",
+  achievementEarned: "[data-tooltip='achievementEarned']",
   profileIdentity: "[data-tooltip='profileIdentity']",
   profileProgression: "[data-tooltip='profileProgression']",
   profileDailyPuzzles: "[data-tooltip='profileDailyPuzzles']",

@@ -4,6 +4,8 @@ import {chromium, type Page} from "@playwright/test";
 
 /** Provides describe browser behavior. */
 const describeBrowser = process.env.PORTAL_BROWSER_TESTS === "1" ? describe : describe.skip;
+const hostedBrowserPort = Number(process.env.PORTAL_BROWSER_PORT ?? "4178");
+const hostedBrowserUrl = `http://127.0.0.1:${hostedBrowserPort}`;
 
 /** Provides wcag tags behavior. */
 const wcagTags = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
@@ -170,7 +172,7 @@ describeBrowser("standalone Jest browser game", () => {
       }
     });
 
-    await new Promise<void>((resolve) => server.listen(4178, "127.0.0.1", resolve));
+    await new Promise<void>((resolve) => server.listen(hostedBrowserPort, "127.0.0.1", resolve));
     /** Provides browser behavior. */
     const browser = await chromium.launch({headless: true, args: ["--renderer-process-limit=4"]});
     try {
@@ -199,7 +201,7 @@ describeBrowser("standalone Jest browser game", () => {
         localStorage.setItem("riddleQuest:tooltipSequenceSeen:gameTour:jest-guest", "seen");
         localStorage.setItem("riddleQuest:tooltipSequenceSeen:profileTour:jest-guest", "seen");
       });
-      await page.goto("http://127.0.0.1:4178/?harness=jest");
+      await page.goto(`${hostedBrowserUrl}/?harness=jest`);
       await page.getByRole("button", {name: /let's play/i}).waitFor({timeout: 15000});
       expect(await page.locator("main").count()).toBe(1);
       expect(await page.locator("main main").count()).toBe(0);
@@ -507,8 +509,24 @@ describeBrowser("standalone Jest browser game", () => {
         keyboardTop: gameplay.querySelector(".keyboard")!.getBoundingClientRect().top,
         riddleTop: gameplay.querySelector(".race-riddle-surface")!.getBoundingClientRect().top,
       }));
+      await page.evaluate(() => {
+        const holdWrongGuess = (event: Event) => {
+          if ((event as CustomEvent).detail?.payload?.operation !== "raceGuess") return;
+          event.stopImmediatePropagation();
+          window.removeEventListener("riddle-quest:host-to-game", holdWrongGuess, true);
+          Object.assign(window, {__heldWrongRaceGuess: (event as CustomEvent).detail});
+        };
+        window.addEventListener("riddle-quest:host-to-game", holdWrongGuess, true);
+      });
       await page.locator(".race-actions .submit-action").click();
       await page.locator(".race-gameplay .guess-row").first().locator(".cell.red").first().waitFor();
+      await page.waitForFunction(() => Reflect.has(window, "__heldWrongRaceGuess"));
+      await nativeAnswerInput.fill("P");
+      await page.waitForFunction(() => document.querySelectorAll(".race-gameplay .guess-row")[1]?.querySelector(".cell")?.textContent === "P");
+      await page.evaluate(() => window.dispatchEvent(new CustomEvent("riddle-quest:host-to-game", {
+        detail: Reflect.get(window, "__heldWrongRaceGuess"),
+      })));
+      await page.locator(".race-operation-loader").waitFor({state: "hidden"});
       await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
       /** Stable gameplay anchors after answer feedback is rendered. */
       const layoutAfterRaceSubmit = await page.locator(".race-gameplay").evaluate((gameplay) => ({
@@ -519,7 +537,7 @@ describeBrowser("standalone Jest browser game", () => {
       expect(Math.abs(layoutAfterRaceSubmit.keyboardTop - layoutBeforeRaceSubmit.keyboardTop)).toBeLessThanOrEqual(1);
       expect(
         await page.locator(".race-gameplay .guess-row").nth(1).locator(".cell").allTextContents(),
-      ).toEqual(["", "", "", "", ""]);
+      ).toEqual(["P", "", "", "", ""]);
       expect(await page.evaluate(() => Reflect.get(window, "__raceGuessRequestCount"))).toBe(1);
       await page.evaluate(() => {
         /** The hold guess used by this regression scenario. */
@@ -531,25 +549,32 @@ describeBrowser("standalone Jest browser game", () => {
         };
         window.addEventListener("riddle-quest:host-to-game", holdGuess, true);
       });
+      await nativeAnswerInput.press("Backspace");
       await nativeAnswerInput.fill("PIANO");
+      expect(await page.locator(".race-gameplay .guess-row").nth(1).locator(".cell").allTextContents()).toEqual(["P", "I", "A", "N", "O"]);
       /** The race feedback ms used by this regression scenario. */
       const raceFeedbackMs = await page.locator(".race-actions .submit-action").evaluate(async button => {
         /** The started used by this regression scenario. */
         const started = performance.now();
         (button as HTMLButtonElement).click();
-        while (document.querySelectorAll(".race-gameplay .guess-row .cell.green").length < 5) {
-          if (performance.now() - started > 1_000) throw new Error("Race feedback waited for server");
+        while (!document.querySelector(".race-riddle-surface h2")?.textContent?.match(/hands and a face/i)) {
+          if (performance.now() - started > 1_000) throw new Error("Next race riddle waited for server");
           await new Promise(resolve => requestAnimationFrame(resolve));
         }
         return performance.now() - started;
       });
       expect(raceFeedbackMs).toBeLessThan(100);
       await page.waitForFunction(() => Reflect.has(window, "__heldRaceGuess"));
-      expect(await page.locator(".race-scoreboard").innerText()).toContain("0");
+      expect(await page.locator(".race-gameplay .guess-row").nth(1).locator(".cell").allTextContents()).toEqual(["", "", "", "", ""]);
+      await page.getByText(/hands and a face/i).waitFor({timeout: 1_000});
+      expect(await page.locator(".race-scoreboard").innerText()).toContain("1");
+      await nativeAnswerInput.fill("C");
+      await page.waitForFunction(() => document.querySelector(".race-gameplay .guess-row .cell")?.textContent === "C");
       await page.evaluate(() => window.dispatchEvent(new CustomEvent("riddle-quest:host-to-game", {
         detail: Reflect.get(window, "__heldRaceGuess"),
       })));
       await page.getByText(/hands and a face/i).waitFor({timeout: 2_000});
+      expect(await page.locator(".race-gameplay .guess-row .cell").first().textContent()).toBe("C");
       console.info(`Immediate Race feedback: ${raceFeedbackMs.toFixed(1)}ms with server response held`);
       await page.locator(".race-close").click();
       await page.getByRole("button", {name: /^quit race$/i}).click();
@@ -652,7 +677,7 @@ describeBrowser("standalone Jest browser game", () => {
       /** Block control inspected while its host response remains in flight. */
       const blockOpponent = page.getByRole("button", {name: /^block opponent$/i});
       await blockOpponent.click();
-      expect(await blockOpponent.getAttribute("aria-busy")).toBe("true");
+      expect(await page.locator(".race-safety-actions button").first().getAttribute("aria-busy")).toBe("true");
       await page.waitForFunction(() => "__delayedRaceSafetyResponse" in window);
       await page.evaluate(() => {
         /** Releases the block response after immediate feedback has been verified. */
@@ -727,7 +752,7 @@ describeBrowser("standalone Jest browser game", () => {
         localStorage.setItem("riddleQuest:tooltipSequenceSeen:gameTour:v2:jest-guest", "seen");
         sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
       });
-      await dailyPage.goto("http://127.0.0.1:4178/?harness=jest&gameMode=challenge");
+      await dailyPage.goto(`${hostedBrowserUrl}/?harness=jest&gameMode=challenge`);
       await dailyPage.locator(".game-mode-label").getByText(/daily/i).waitFor({timeout: 15_000});
       expect(await dailyPage.locator("[data-tooltip='gameSkip']").count()).toBe(0);
       await dailyPage.close();
@@ -754,7 +779,7 @@ describeBrowser("standalone Jest browser game", () => {
         localStorage.setItem("riddleQuest:tooltipSequenceSeen:profileTour:v2:jest-guest", "seen");
         sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
       });
-      await compactPage.goto("http://127.0.0.1:4178/?harness=jest");
+      await compactPage.goto(`${hostedBrowserUrl}/?harness=jest`);
       await compactPage.locator(".game-bottom-navigation").waitFor({timeout: 15_000});
       await compactPage.waitForFunction(
         () =>
@@ -1241,6 +1266,8 @@ describeBrowser("standalone Jest browser game", () => {
 
       await page.setViewportSize({width: 844, height: 390});
       await victoryContinue.click();
+      expect(await page.locator(".game-content > .game-notice").innerText()).toMatch(/coins earned/i);
+      expect(await page.locator(".riddle-surface .game-notice").count()).toBe(0);
       await page.waitForFunction(
         () =>
           (document.querySelector(".game-bottom-navigation")?.getBoundingClientRect().bottom ?? Infinity) <=
@@ -1358,7 +1385,7 @@ describeBrowser("standalone Jest browser game", () => {
         localStorage.setItem("riddleQuest:tooltipSequenceSeen:gameTour:v2:jest-guest", "seen");
         sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
       });
-      await lowEndPage.goto("http://127.0.0.1:4178/?harness=jest");
+      await lowEndPage.goto(`${hostedBrowserUrl}/?harness=jest`);
       await lowEndPage.getByText(/what has keys/i).waitFor({timeout: 15_000});
       await lowEndPage.waitForTimeout(3_000);
       expect(await lowEndPage.locator(".solar-system").count()).toBe(0);
@@ -1470,7 +1497,7 @@ describeBrowser("standalone Jest browser game", () => {
         localStorage.setItem("riddleQuest:tooltipSequenceSeen:gameTour:v2:jest-guest", "seen");
         sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
       });
-      await bufferedPage.goto("http://127.0.0.1:4178/?harness=jest");
+      await bufferedPage.goto(`${hostedBrowserUrl}/?harness=jest`);
       await bufferedPage.getByText(/what has keys/i).waitFor({timeout: 15_000});
       await bufferedPage.evaluate(() => {
         /** The original used by this regression scenario. */
@@ -1529,7 +1556,7 @@ describeBrowser("standalone Jest browser game", () => {
         localStorage.setItem("riddleQuest:tooltipSequenceSeen:gameTour:v2:jest-guest", "seen");
         sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
       });
-      await rejectedPage.goto("http://127.0.0.1:4178/?harness=jest");
+      await rejectedPage.goto(`${hostedBrowserUrl}/?harness=jest`);
       await rejectedPage.getByText(/what has keys/i).waitFor({timeout: 15_000});
       await rejectedPage.evaluate(() => {
         /** The original used by this regression scenario. */
@@ -1564,6 +1591,9 @@ describeBrowser("standalone Jest browser game", () => {
         }}));
       });
       await rejectedPage.getByText(/last confirmed progress has been restored/i).waitFor({timeout: 3_000});
+      expect(await rejectedPage.locator(".game-content > .game-notice").innerText())
+        .toMatch(/last confirmed progress has been restored/i);
+      expect(await rejectedPage.locator(".riddle-surface .game-notice").count()).toBe(0);
       await rejectedPage.getByText(/what has keys/i).waitFor({timeout: 3_000});
       expect(await rejectedPage.getByText(/face and hands/i).count()).toBe(0);
       await rejectedContext.close();
@@ -1582,7 +1612,7 @@ describeBrowser("standalone Jest browser game", () => {
             sessionStorage.setItem("replayedGuessId", (event as CustomEvent).detail.requestId);
         }, true);
       });
-      await reloadPage.goto("http://127.0.0.1:4178/?harness=jest");
+      await reloadPage.goto(`${hostedBrowserUrl}/?harness=jest`);
       await reloadPage.getByText(/what has keys/i).waitFor({timeout: 15_000});
       await reloadPage.evaluate(() => {
         /** Holds the original response without stopping its host request. */
@@ -1618,7 +1648,7 @@ describeBrowser("standalone Jest browser game", () => {
       const iframePage = await browser.newPage({viewport: {width: 390, height: 844}});
       await iframePage.addInitScript(() => Object.assign(window, {__RIDDLE_QUEST_BROWSER_TEST__: true}));
       await iframePage.setContent(
-        '<iframe title="Jest host" style="width:390px;height:844px;border:0" src="http://127.0.0.1:4178/?harness=jest"></iframe>',
+        `<iframe title="Jest host" style="width:390px;height:844px;border:0" src="${hostedBrowserUrl}/?harness=jest"></iframe>`,
       );
       await iframePage
         .frameLocator('iframe[title="Jest host"]')
@@ -1629,7 +1659,7 @@ describeBrowser("standalone Jest browser game", () => {
       /** Provides registered page behavior. */
       const registeredPage = await browser.newPage({viewport: {width: 390, height: 844}});
       await registeredPage.addInitScript(() => Object.assign(window, {__RIDDLE_QUEST_BROWSER_TEST__: true}));
-      await registeredPage.goto("http://127.0.0.1:4178/?harness=jest&registered=1");
+      await registeredPage.goto(`${hostedBrowserUrl}/?harness=jest&registered=1`);
       await registeredPage.getByRole("button", {name: /let's play/i}).waitFor({timeout: 15000});
       await completeOnboardingAndTours(registeredPage);
       await registeredPage

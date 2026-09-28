@@ -12,7 +12,7 @@ const option = (name) => {
   const index = args.indexOf(name);
   return index >= 0 ? args[index + 1] : undefined;
 };
-const sourcePath = path.resolve(option("--source") || "content/race-en-reviewed-v1.json");
+const sourcePath = path.resolve(option("--source") || "content/race-en-reviewed-v2.json");
 const inputDirectory = path.resolve(option("--input-dir") || "content/race-translations");
 const locales = RACE_SUPPORTED_LOCALES.filter((locale) => locale !== "en");
 const expectedNames = locales.map((locale) => `race-${locale}-automated-translation-v1.json`);

@@ -152,4 +152,44 @@ describeBrowser("profile walkthrough", () => {
       await page.close();
     }
   }, 15_000);
+
+  it("highlights Profile after an achievement is unlocked", async () => {
+    const page = await browser.newPage({viewport: {width: 390, height: 844}});
+    try {
+      await page.addInitScript(() => {
+        Object.assign(window, {__RIDDLE_QUEST_BROWSER_TEST__: true});
+        localStorage.setItem("riddleQuest:onboarding:jest-guest", "seen");
+        localStorage.setItem("riddleQuest:tooltipSequenceSeen:gameTour:v2:jest-guest", "seen");
+        sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
+      });
+      await page.goto(`${origin}/?harness=jest`);
+      for (const letter of "PIANO") {
+        await page.locator(".keyboard").getByRole("button", {name: new RegExp(`^${letter}$`)}).click();
+      }
+      await page.getByRole("button", {name: /^submit$/i}).click();
+      await page.getByRole("heading", {name: /achievement unlocked/i}).waitFor();
+      for (let step = 0; step < 10 && await page.getByRole("heading", {name: /achievement unlocked/i}).isVisible(); step += 1) {
+        await page.getByRole("button", {name: /^next$/i}).click();
+      }
+      await page.getByRole("heading", {name: /nice job/i}).waitFor();
+      await page.getByRole("button", {name: /tap the chest/i}).click();
+      await page.getByRole("button", {name: /next level/i}).click();
+
+      const tooltip = page.locator("[data-tooltip-id='achievementEarned']");
+      await expect(tooltip.getByRole("heading", {name: /achievement unlocked/i})).toBeVisible();
+      await page.waitForTimeout(250);
+      const profile = await page.locator(".game-bottom-navigation [data-tooltip='achievementEarned']").boundingBox();
+      const spotlight = await tooltip.locator(".tooltip-spotlight").boundingBox();
+      const card = await tooltip.locator(".tooltip-card").boundingBox();
+      expect(profile).not.toBeNull();
+      expect(spotlight).not.toBeNull();
+      expect(spotlight!.x).toBeLessThan(profile!.x);
+      expect(spotlight!.x + spotlight!.width).toBeGreaterThan(profile!.x + profile!.width);
+      expect(spotlight!.y).toBeLessThan(profile!.y);
+      expect(spotlight!.y + spotlight!.height).toBeGreaterThan(profile!.y + profile!.height);
+      expect(card!.y + card!.height).toBeLessThan(spotlight!.y);
+    } finally {
+      await page.close();
+    }
+  }, 30_000);
 });

@@ -283,7 +283,10 @@ const installJestSdkHarness = async (page: Page, scenario = "success") => {
           state.calls.push("sdk.social.getProfile");
           state.profileReads += 1;
           if (selectedScenario === "profile-failure") throw new Error("Mock profile request failed");
-          return {username: "Authenticated Solver", avatarUrl: null};
+          return {
+            username: "Authenticated Solver",
+            avatarUrl: selectedScenario === "avatar-profile" ? "https://cdn.jest.com/mock-avatar.webp" : null,
+          };
         },
         setScreenshotProvider: () => {},
       },
@@ -871,6 +874,15 @@ describeBrowser("Jest authentication integration", () => {
     state = await getHarnessState(page);
     expect(state.backendExchanges).toEqual(["signed:jest-auth-player-stable:true"]);
     expect(state.profileReads).toBe(1);
+    await context.close();
+  });
+
+  it("prefills the Jest profile picture from the SDK avatar", async () => {
+    const {context, page} = await openHarness(browser, {registered: true, scenario: "avatar-profile"});
+    await enterRegisteredGame(page);
+    await openProfileAfterGuidance(page);
+    expect(await page.locator(".profile-identity img").getAttribute("src"))
+      .toBe("https://cdn.jest.com/mock-avatar.webp");
     await context.close();
   });
 

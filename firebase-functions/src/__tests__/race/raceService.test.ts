@@ -1,7 +1,7 @@
 import type {RaceDifficultyBand, RaceLocale} from "@qwordly/core/race";
 import type {ExistingRaceContentRecord} from "../../race/raceContentMigration";
 import {buildDeterministicRaceDeck} from "../../race/raceService";
-import {assertRaceLocaleCompatible, type RaceChallengeRecord} from "../../race/raceSetupService";
+import {assertRaceLocaleCompatible, resolveChallengeRiddles, type RaceChallengeRecord} from "../../race/raceSetupService";
 
 /** Creates pool. */
 const makePool = (locale: RaceLocale): ExistingRaceContentRecord[] =>
@@ -27,6 +27,31 @@ const makePool = (locale: RaceLocale): ExistingRaceContentRecord[] =>
   });
 
 describe("Race to 10 deterministic deck service", () => {
+  it("keeps published challenges playable after their riddles leave the eligible pool", async () => {
+    const challenge = {canonicalRiddleIds: ["history:retired"]} as RaceChallengeRecord;
+    const db = {
+      collection: jest.fn(() => ({
+        where: jest.fn(() => ({
+          get: jest.fn(async () => ({docs: [{data: () => ({
+            canonicalRiddleId: "history:retired",
+            riddleId: "retired-riddle",
+            text: "Which ship sank in 1912?",
+            answer: "titanic",
+            raceEligible: false,
+          })}]})),
+        })),
+      })),
+    } as unknown as FirebaseFirestore.Firestore;
+
+    await expect(resolveChallengeRiddles(db, "en", challenge)).resolves.toEqual([{
+      riddleId: "retired-riddle",
+      canonicalRiddleId: "history:retired",
+      text: "Which ship sank in 1912?",
+      answer: "titanic",
+      position: 0,
+    }]);
+  });
+
   it("rejects challenge, rematch, and rivalry entry across locale boundaries", () => {
     /** Provides challenge behavior. */
     const challenge = {locale: "ja"} as RaceChallengeRecord;

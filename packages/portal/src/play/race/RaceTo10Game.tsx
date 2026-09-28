@@ -31,7 +31,7 @@ import {advanceRaceLoadingProgress, RACE_COUNTDOWN_START, RACE_LOADING_COMPLETE_
 import {deleteRaceLetter, insertRaceLetter, insertRaceText, isRaceSlotEditable} from "./logic/raceInput";
 import type {RaceOperation} from "./logic/raceOperations";
 import {getGhostCorrectCount} from "./logic/racePlayback";
-import {applyRaceOutcome, createRaceAttempt, findFirstEditableRaceSlot, getAdjustedRaceTime, getRaceLetterStates, projectInstantRaceHint, projectInstantRaceSkip, projectRaceOutcome} from "./logic/racePresentation";
+import {applyRaceOutcome, createRaceAttempt, findFirstEditableRaceSlot, getAdjustedRaceTime, getRaceLetterStates, projectInstantCorrectGuess, projectInstantRaceHint, projectInstantRaceSkip, projectRaceOutcome} from "./logic/racePresentation";
 import {useRaceDialogFocus, useRaceGameplayFit, useRaceGameplayKeyboard, useRaceOperationLifecycle} from "./hooks";
 import {RaceTo10View, type RaceStage} from "./RaceTo10View";
 import {readActiveRace, clearActiveRace} from "./logic/activeRaceStorage";
@@ -100,6 +100,14 @@ export function RaceTo10Game({
   const [feedback, setFeedback] = useState<"correct" | "incorrect" | null>(null);
   /** Marks a local row that the next authoritative guess response must replace or undo. */
   const previewedGuessRef = useRef(false);
+  /** Submitted letters retained while the preview occupies the scored row. */
+  const submittedGuessRef = useRef<string[] | null>(null);
+  /** Original riddle and run retained while the next clue is shown optimistically. */
+  const guessRollbackRef = useRef<RaceRunView | null>(null);
+  /** Previous riddle's guess rows restored if a projected advance is rejected. */
+  const guessHistoryRollbackRef = useRef<ScoredGuess[] | null>(null);
+  /** Projected next riddle whose in-progress typing survives server confirmation. */
+  const guessProjectedNextRef = useRef<string | null>(null);
   /** Authoritative view restored if an instant local skip cannot be recorded by the server. */
   const skipRollbackRef = useRef<RaceRunView | null>(null);
   /** Authoritative view restored if an instant local hint cannot be recorded by the server. */
@@ -287,7 +295,14 @@ export function RaceTo10Game({
       const operation = message.payload.operation as RaceOperation;
       if (!message.payload.ok) {
         if (operation === "raceGuess" && previewedGuessRef.current) {
-          setRaceGuesses((guesses) => guesses.slice(0, -1));
+          const priorGuesses = guessHistoryRollbackRef.current;
+          setRaceGuesses((guesses) => priorGuesses ?? guesses.slice(0, -1));
+          guessHistoryRollbackRef.current = null;
+          guessProjectedNextRef.current = null;
+          if (guessRollbackRef.current) updateRun(guessRollbackRef.current);
+          guessRollbackRef.current = null;
+          if (submittedGuessRef.current) setCurrentLetters(submittedGuessRef.current);
+          submittedGuessRef.current = null;
           setFeedback(null);
           previewedGuessRef.current = false;
         }
@@ -424,23 +439,29 @@ export function RaceTo10Game({
           /** Provides result behavior. */
           const result = SubmitRaceGuessResponseSchema.parse(message.payload.data);
           /** Provides previous riddle behavior. */
-          const previousRiddle = run?.currentRiddle?.riddleId;
+          const previousRiddle = guessRollbackRef.current?.currentRiddle?.riddleId ?? run?.currentRiddle?.riddleId;
           setRaceGuessAwaitingOutcome(result.run.status !== "active");
           updateRun(result.run);
           if (result.autoSkipped) setPenaltyFlash(tr("RaceTo10.SKIP_PENALTY"));
           if (previousRiddle !== result.run.currentRiddle?.riddleId) {
-            resetAttempt(result.run);
+            if (guessProjectedNextRef.current !== result.run.currentRiddle?.riddleId) resetAttempt(result.run);
           } else {
             /** Whether this response replaces feedback already projected before the host round trip. */
             const replacesPreview = previewedGuessRef.current;
             setRaceGuesses((guesses) => [
               ...(replacesPreview ? guesses.slice(0, -1) : guesses),
-              {guess: currentLetters, feedback: result.feedback.map(({status}) => status)},
+              {guess: submittedGuessRef.current ?? currentLetters, feedback: result.feedback.map(({status}) => status)},
             ]);
-            setCurrentLetters(createRaceAttempt(result.run.currentRiddle));
-            setActiveSlotIndex(findFirstEditableRaceSlot(result.run.currentRiddle));
+            if (!replacesPreview) {
+              setCurrentLetters(createRaceAttempt(result.run.currentRiddle));
+              setActiveSlotIndex(findFirstEditableRaceSlot(result.run.currentRiddle));
+            }
           }
           previewedGuessRef.current = false;
+          submittedGuessRef.current = null;
+          guessRollbackRef.current = null;
+          guessHistoryRollbackRef.current = null;
+          guessProjectedNextRef.current = null;
           setFeedback(result.isCorrect ? "correct" : "incorrect");
         } else if (operation === "raceHint") {
           /** Provides result behavior. */
@@ -513,7 +534,14 @@ export function RaceTo10Game({
         }
       } catch {
         if (operation === "raceGuess" && previewedGuessRef.current) {
-          setRaceGuesses((guesses) => guesses.slice(0, -1));
+          const priorGuesses = guessHistoryRollbackRef.current;
+          setRaceGuesses((guesses) => priorGuesses ?? guesses.slice(0, -1));
+          guessHistoryRollbackRef.current = null;
+          guessProjectedNextRef.current = null;
+          if (guessRollbackRef.current) updateRun(guessRollbackRef.current);
+          guessRollbackRef.current = null;
+          if (submittedGuessRef.current) setCurrentLetters(submittedGuessRef.current);
+          submittedGuessRef.current = null;
           setFeedback(null);
           previewedGuessRef.current = false;
         }
@@ -643,8 +671,28 @@ export function RaceTo10Game({
       /** The scored used by the current operation. */
       const scored = computeFeedback(currentLetters.join(""), run.currentRiddle.evaluation.answer);
       previewedGuessRef.current = true;
+      submittedGuessRef.current = [...currentLetters];
       setRaceGuesses((guesses) => [...guesses, {guess: [...currentLetters], feedback: scored}]);
+      setCurrentLetters(createRaceAttempt(run.currentRiddle));
+      setActiveSlotIndex(findFirstEditableRaceSlot(run.currentRiddle));
       setFeedback(scored.every((status) => status === "green") ? "correct" : "incorrect");
+      if (scored.every((status) => status === "green")) {
+        const projected = projectInstantCorrectGuess(run);
+        if (projected) {
+          guessRollbackRef.current = run;
+          guessHistoryRollbackRef.current = raceGuesses;
+          guessProjectedNextRef.current = projected.currentRiddle?.riddleId ?? null;
+          const elapsedSinceReceipt = Math.max(0, Date.now() - receivedAtMs);
+          updateRun({
+            ...projected,
+            wallElapsedMs: run.wallElapsedMs + elapsedSinceReceipt,
+            adjustedElapsedMs: getAdjustedRaceTime(run, receivedAtMs),
+          });
+          setCurrentLetters(createRaceAttempt(projected.currentRiddle));
+          setActiveSlotIndex(findFirstEditableRaceSlot(projected.currentRiddle));
+          setRaceGuesses([]);
+        }
+      }
     }
     send("raceGuess", "game:submitRaceGuess", {
       runId: run.runId,
@@ -695,7 +743,7 @@ export function RaceTo10Game({
   const typeLetter = (letter: string) => {
     /** Current authoritative riddle accepting the letter. */
     const riddle = run?.currentRiddle;
-    if (!riddle || pending) return;
+    if (!riddle || (pending && !previewedGuessRef.current)) return;
     /** Input state produced by the pure multiplayer editing rules. */
     const nextState = insertRaceLetter(riddle, {letters: currentLetters, activeSlotIndex}, letter);
     if (nextState.letters === currentLetters) return;
@@ -706,7 +754,7 @@ export function RaceTo10Game({
   const typeText = (text: string) => {
     /** Provides riddle behavior. */
     const riddle = run?.currentRiddle;
-    if (!riddle || pending) return;
+    if (!riddle || (pending && !previewedGuessRef.current)) return;
     /** Provides next state behavior. */
     const nextState = insertRaceText(riddle, {letters: currentLetters, activeSlotIndex}, text);
     if (nextState.letters === currentLetters) return;
@@ -717,7 +765,7 @@ export function RaceTo10Game({
   const backspace = () => {
     /** Current authoritative riddle accepting deletion. */
     const riddle = run?.currentRiddle;
-    if (!riddle || pending) return;
+    if (!riddle || (pending && !previewedGuessRef.current)) return;
     /** Input state produced by the pure multiplayer deletion rules. */
     const nextState = deleteRaceLetter(riddle, {letters: currentLetters, activeSlotIndex});
     if (nextState.letters === currentLetters) return;
@@ -726,7 +774,7 @@ export function RaceTo10Game({
   };
 
   useRaceGameplayKeyboard({
-    active: stage === "racing" && !quitConfirmationOpen && !pending,
+    active: stage === "racing" && !quitConfirmationOpen && (!pending || previewedGuessRef.current),
     onLetter: typeLetter,
     onBackspace: backspace,
     onSubmit: submit,
@@ -865,6 +913,7 @@ export function RaceTo10Game({
         letterStates,
         quitConfirmationOpen,
         raceGuessLoading,
+        allowTypingWhilePending: previewedGuessRef.current,
         closeAfterStart,
         published,
         dialogRef,

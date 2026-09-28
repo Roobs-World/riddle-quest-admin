@@ -18,7 +18,7 @@ const option = (name) => {
 };
 const has = (name) => args.includes(name);
 const inputPath = option("--input");
-const sourcePath = option("--source") || "content/race-en-reviewed-v1.json";
+const sourcePath = option("--source") || "content/race-en-reviewed-v2.json";
 const projectId = option("--project") || process.env.GCLOUD_PROJECT || process.env.GOOGLE_CLOUD_PROJECT;
 const apply = has("--apply");
 const replaceExisting = has("--replace-existing");

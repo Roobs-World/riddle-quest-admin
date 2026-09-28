@@ -406,7 +406,7 @@ export async function resolveChallengeRiddles(
     const data = byCanonical.get(canonicalRiddleId);
     if (
       !data ||
-      data.raceEligible !== true ||
+      (data.raceEligible !== true && data.raceEligible !== false) ||
       typeof data.riddleId !== "string" ||
       typeof data.text !== "string" ||
       typeof data.answer !== "string"

@@ -1,4 +1,5 @@
 import {RACE_CATEGORY_IDS, type RaceCategoryId, type RaceDifficultyBand} from "@qwordly/core/race";
+import easierEnglish from "../../../content/race-en-reviewed-v2.json";
 import {createRaceContentImportPlan} from "../../race/raceContentImport";
 
 /** Provides valid file behavior. */
@@ -17,6 +18,13 @@ const validFile = () => ({
 });
 
 describe("English Race content import planning", () => {
+  it("accepts the new easier English pool", () => {
+    const plan = createRaceContentImportPlan(easierEnglish);
+    expect(plan.valid).toBe(true);
+    expect(plan.totalRiddles).toBe(180);
+    expect(plan.records.filter((record) => record.data.qualityVersion === "reviewed_v2")).toHaveLength(60);
+  });
+
   it("accepts exactly 30 reviewed riddles in each of the six categories", () => {
     /** Provides plan behavior. */
     const plan = createRaceContentImportPlan(validFile());
