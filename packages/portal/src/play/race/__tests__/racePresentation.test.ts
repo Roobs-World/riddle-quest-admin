@@ -150,6 +150,10 @@ describe("race presentation helpers", () => {
     expect(fourth?.currentRiddle?.hintAvailable).toBe(false);
     expect(fourth?.totalPenaltyMs).toBe(4 * RACE_RULES.hintPenaltyMs);
     expect(projectInstantRaceHint(fourth!)).toBeNull();
+    expect(projectInstantRaceHint(run({
+      currentRiddle: riddle(Array.from("test", (letter, index) => ({index, letter}))),
+      preloadedRiddles,
+    }))).toBeNull();
     expect(projectInstantRaceHint(run())).toBeNull();
     expect(projectInstantRaceHint(run({preloadedRiddles: []}))).toBeNull();
   });
