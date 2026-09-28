@@ -496,6 +496,10 @@ const sentryRelease = `riddle-quest@${buildVersion}`;
 if (process.env.JEST_RELEASE_INACTIVE !== undefined && process.env.JEST_RELEASE_INACTIVE !== "true") {
   throw new Error("JEST_RELEASE_INACTIVE accepts only true when specified");
 }
+if (process.env.JEST_RELEASE_SKIP_TESTS !== undefined && process.env.JEST_RELEASE_SKIP_TESTS !== "true") {
+  throw new Error("JEST_RELEASE_SKIP_TESTS accepts only true when specified");
+}
+const skipTests = process.env.JEST_RELEASE_SKIP_TESTS === "true";
 const activationRequested = process.env.JEST_RELEASE_INACTIVE !== "true";
 const workspaceDirectory = join(workspaceRoot, buildVersion);
 const immutableSourceDirectory = join(workspaceDirectory, "source");
@@ -683,6 +687,7 @@ for (const key of ["JEST_UPLOAD_IS_ACTIVE", "JEST_CONFIRM_ACTIVATION"]) {
   }
 }
 console.log(`Gating immutable Jest build ${buildVersion} from ${sourceCommit} for ${activationRequested ? "automatic activation" : "inactive upload"}`);
+if (skipTests) console.log("Skipping release test suites and packaged browser tests by operator request");
 
 try {
   const unresolvedUploadBarriers = findUnresolvedUploadBarriers({
@@ -706,7 +711,7 @@ try {
   // The long gate receives metadata only: no upload token, email, credential
   // path, Sentry token, or unrelated ambient environment. Release credentials
   // are read only after it passes.
-  runPnpm(["verify:production:extended"], gateEnvironment);
+  if (!skipTests) runPnpm(["verify:production:extended"], gateEnvironment);
   assertSourceClean();
   // The remaining credential-bearing phase never invokes Firebase emulators.
   // Remove disposable gate logs before credentials are loaded; prior logs stay
@@ -844,17 +849,19 @@ try {
     PORTAL_JEST_BUILD_DIR: verifiedBuildDirectory,
     PORTAL_USE_EXISTING_BUILD: "1",
   };
-  for (const testPath of [
-    "src/play/__tests__/hostedBrowser.jest-playwright.test.ts",
-    "src/play/__tests__/musicStart.jest-playwright.test.ts",
-    "src/jest/__tests__/authentication.jest-playwright.test.ts",
-  ]) {
-    runNode(
-      resolveJestCli(),
-      ["--config", "jest.config.cjs", "--runInBand", testPath],
-      verifiedBrowserEnvironment,
-      immutablePackageDirectory,
-    );
+  if (!skipTests) {
+    for (const testPath of [
+      "src/play/__tests__/hostedBrowser.jest-playwright.test.ts",
+      "src/play/__tests__/musicStart.jest-playwright.test.ts",
+      "src/jest/__tests__/authentication.jest-playwright.test.ts",
+    ]) {
+      runNode(
+        resolveJestCli(),
+        ["--config", "jest.config.cjs", "--runInBand", testPath],
+        verifiedBrowserEnvironment,
+        immutablePackageDirectory,
+      );
+    }
   }
   assertSourceClean();
   const finalDependencyFingerprint = fingerprintReleaseDependencies({repositoryDirectory});
