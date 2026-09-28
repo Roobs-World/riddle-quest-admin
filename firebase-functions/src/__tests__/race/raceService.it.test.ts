@@ -266,7 +266,9 @@ describe("Race to 10 transactional service", () => {
     });
     expect(duplicateHint).toEqual(hint);
     expect(hint.run.totalPenaltyMs).toBe(15_000);
+    /** New request ID for a second hint on the same riddle. */
     const nextHintInput = {...hintInput, requestId: "hint-request-0002"};
+    /** Authoritative second-hint response. */
     const nextHint = await requestRaceHintForUser("creator-1", nextHintInput, {
       db,
       nowMs: NOW + 12_500,

@@ -132,6 +132,7 @@ describe("race presentation helpers", () => {
       evaluation: {answer: "test", locale: "en" as const},
       hint: {index: 0, letter: "t"},
     }));
+    /** First locally projected reveal. */
     const first = projectInstantRaceHint(run({preloadedRiddles}));
     expect(first).toMatchObject({
       totalPenaltyMs: RACE_RULES.hintPenaltyMs,
@@ -141,10 +142,13 @@ describe("race presentation helpers", () => {
         revealedLetters: [{index: 0, letter: "t"}],
       },
     });
+    /** Second locally projected reveal. */
     const second = projectInstantRaceHint(first!);
     expect(second?.currentRiddle?.revealedLetters).toEqual([{index: 0, letter: "t"}, {index: 1, letter: "e"}]);
     expect(second?.currentRiddle?.hintAvailable).toBe(true);
+    /** Third locally projected reveal. */
     const third = projectInstantRaceHint(second!);
+    /** Final locally projected reveal. */
     const fourth = projectInstantRaceHint(third!);
     expect(fourth?.currentRiddle?.revealedLetters).toHaveLength(4);
     expect(fourth?.currentRiddle?.hintAvailable).toBe(false);

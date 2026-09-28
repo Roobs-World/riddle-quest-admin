@@ -205,9 +205,11 @@ describe("race content pool validation", () => {
   });
 
   it("requires enough easy riddles to fill the easier deck", () => {
+    /** Pool fixture with too few easy riddles. */
     const records = Array.from({length: 30}, (_, index) =>
       record({index: index + 1, difficultyBand: index < 5 ? "easy" : "medium"}),
     );
+    /** Validation result for the imbalanced pool. */
     const result = validateRacePool(records, {locale: "en", categoryId: "history"});
     expect(result.valid).toBe(false);
     expect(result.issues).toEqual(expect.arrayContaining([

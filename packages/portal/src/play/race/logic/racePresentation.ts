@@ -61,10 +61,14 @@ export const projectInstantRaceHint = (run: RaceRunView): RaceRunView | null => 
   /** Match the server's first-unrevealed-letter rule for every hint request. */
   const preloaded = run.preloadedRiddles[run.currentRiddle.position];
   if (!preloaded) return null;
+  /** Preloaded answer divided into the same graphemes as the server. */
   const answer = splitGraphemes(preloaded.evaluation.answer, preloaded.evaluation.locale);
+  /** Positions already revealed in this riddle. */
   const revealed = new Set(run.currentRiddle.revealedLetters.map((letter) => letter.index));
+  /** First still-hidden answer position. */
   const index = answer.findIndex((_, candidateIndex) => !revealed.has(candidateIndex));
   if (index < 0) return null;
+  /** Letter and position displayed while the request is in flight. */
   const hint = {index, letter: answer[index]};
   return {
     ...run,

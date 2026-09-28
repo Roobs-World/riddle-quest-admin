@@ -212,6 +212,7 @@ export function validateRacePool(
   }
 
   for (const [difficulty, count] of Object.entries(difficultyCounts) as Array<[RaceDifficultyBand, number]>) {
+    /** Required minimum riddles for this difficulty band. */
     const minimum = RACE_DECK_DIFFICULTY_COUNTS[difficulty];
     if (localeRecords.length === poolSize && count < minimum) {
       issues.push({

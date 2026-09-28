@@ -159,6 +159,7 @@ describe("Race to 10 contracts", () => {
       events: [correctEvent, hintEvent],
     };
     expect(RaceRunViewSchema.parse(run)).toEqual(run);
+    /** More than 45 hint events must remain valid for a long race. */
     const repeatedHints = Array.from({length: 46}, (_, sequence) => ({
       ...hintEvent,
       sequence,

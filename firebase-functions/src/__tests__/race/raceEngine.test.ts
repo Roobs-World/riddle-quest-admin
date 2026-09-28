@@ -116,6 +116,7 @@ describe("Race to 10 authoritative engine", () => {
       adjustedElapsedMs: 20_000,
     });
     expect(result.run.events[0]).toMatchObject({type: "hint", penaltyAddedMs: 15_000, adjustedElapsedMs: 20_000});
+    /** Latest authoritative result after each additional hint. */
     let hinted = result;
     for (const [index, letter] of Array.from("iano").entries()) {
       hinted = applyRaceHint(hinted.run, {riddleId: "riddle-1"}, STARTED_AT + 6_000 + index);

@@ -1708,8 +1708,10 @@ describeBrowser("Jest authentication integration", () => {
     await serverSelectedHint.waitFor({state: "visible", timeout: 5_000});
     expect((await serverSelectedHint.innerText()).trim()).not.toBe("");
     expect(await page.locator(".race-header-clock small").innerText()).toContain("0:15.0");
+    /** Hint control stays usable after each confirmed reveal. */
     const hintButton = page.locator(".race-actions").getByRole("button", {name: /^hint/i});
     await page.waitForFunction(() => {
+      /** Current multiplayer hint control. */
       const button = document.querySelector<HTMLButtonElement>(".race-actions button:first-child");
       return button?.disabled === false;
     });
@@ -1718,6 +1720,7 @@ describeBrowser("Jest authentication integration", () => {
     await page.waitForFunction(() => document.querySelectorAll(".race-gameplay .guess-row .cell.green").length === 2);
     expect(await page.locator(".race-header-clock small").innerText()).toMatch(/0:30\./);
     await page.waitForFunction(() => {
+      /** Current multiplayer hint control after the second reveal. */
       const button = document.querySelector<HTMLButtonElement>(".race-actions button:first-child");
       return button?.disabled === false;
     });

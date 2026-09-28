@@ -135,6 +135,7 @@ describeBrowser("profile walkthrough", () => {
   }, 15_000);
 
   it("opens the coin shop without a guidance popup", async () => {
+    /** Browser page for the shop navigation check. */
     const page = await browser.newPage({viewport: {width: 390, height: 844}});
     try {
       await page.addInitScript(() => {

@@ -8,16 +8,20 @@ const answers = ["piano", "clock", "towel", "bottle", "stamp", "needle", "name",
 
 describe("createFakeRaceServices", () => {
   it("accepts an earlier race-start response without preloaded hint fields", async () => {
+    /** Local authoritative race harness. */
     const services = createFakeRaceServices();
+    /** Evaluation-enabled start response. */
     const response = await services.startRace({
       locale: "en", categoryId: "mixed", requestId: "legacy-start-1", includeEvaluation: true,
     });
+    /** Earlier server response shape without a preselected hint. */
     const deployedShape = {
       run: {
         ...response.run,
         preloadedRiddles: response.run.preloadedRiddles?.map(({hint: _hint, ...riddle}) => riddle),
       },
     };
+    /** Validated response from the earlier server. */
     const parsed = RaceRunResponseSchema.parse(deployedShape);
     expect(parsed.run.currentRiddle?.riddleId).toBe(response.run.currentRiddle?.riddleId);
     expect(projectInstantRaceHint(parsed.run)?.currentRiddle?.revealedLetters).toEqual([{index: 0, letter: "p"}]);
@@ -84,6 +88,7 @@ describe("createFakeRaceServices", () => {
     await expect(services.requestRaceHint(hintRequest)).resolves.toEqual(hinted);
     expect(hinted.run.totalPenaltyMs).toBe(RACE_HINT_PENALTY_MS);
     expect(hinted.revealedLetter).toBe("p");
+    /** Distinct hint request for the same riddle. */
     const secondHint = await services.requestRaceHint({...hintRequest, requestId: "request-hint-2"});
     expect(secondHint).toMatchObject({revealedLetter: "i", index: 1});
     expect(secondHint.run.currentRiddle?.hintAvailable).toBe(true);
