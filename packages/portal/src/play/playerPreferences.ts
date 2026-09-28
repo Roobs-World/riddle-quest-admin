@@ -32,9 +32,8 @@ export const PLAYER_PREFERENCE_STORAGE_KEYS = {
   activeRace: "riddleQuest:activeRaceRun",
 } as const;
 
-/** Local-storage prefixes containing app-owned onboarding and tooltip state. */
+/** Local-storage prefixes containing app-owned tooltip state. */
 const GUIDANCE_STORAGE_PREFIXES = [
-  "riddleQuest:onboarding:",
   "riddleQuest:tooltipSeen:",
   "riddleQuest:tooltipSequenceSeen:",
 ] as const;
@@ -216,17 +215,16 @@ export function isPlayerHighContrastEnabled(): boolean {
   );
 }
 
-/** Returns onboarding completion with the platform value taking precedence over browser fallback. */
-export function hasCompletedPlayerOnboarding(storageKey: string): boolean {
-  return onboardingCompleteOverride ?? safeBrowserStorageGet("local", storageKey) === "seen";
+/** Returns onboarding completion from the authoritative platform preference only. */
+export function hasCompletedPlayerOnboarding(_storageKey: string): boolean {
+  return onboardingCompleteOverride === true;
 }
 
-/** Persists completion of the current player's onboarding flow. */
-export function completePlayerOnboarding(storageKey: string): void {
+/** Reports completion of the current player's onboarding flow to the platform adapter. */
+export function completePlayerOnboarding(_storageKey: string): void {
   /** Provides changed behavior. */
-  const changed = onboardingCompleteOverride !== true || safeBrowserStorageGet("local", storageKey) !== "seen";
+  const changed = onboardingCompleteOverride !== true;
   onboardingCompleteOverride = true;
-  safeBrowserStorageSet("local", storageKey, "seen");
   if (changed) emitPreferenceChange({onboardingComplete: true});
 }
 

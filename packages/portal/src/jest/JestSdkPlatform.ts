@@ -17,6 +17,7 @@ const PLAYER_STATE_KEYS = [
   "onboardingComplete",
   "registrationPromptDismissedAt",
   "firstMilestoneMarked",
+  "jestGuestCompletedRiddles",
   PLAYER_DATA_KEY,
 ] as const;
 /** Defines the longest a platform subscription checkout may block the game UI. */
@@ -192,6 +193,8 @@ export class JestSdkPlatform implements JestPlatformPort {
       registrationPromptDismissedAt:
         typeof data.registrationPromptDismissedAt === "number" ? data.registrationPromptDismissedAt : undefined,
       firstMilestoneMarked: typeof data.firstMilestoneMarked === "boolean" ? data.firstMilestoneMarked : undefined,
+      jestGuestCompletedRiddles: Number.isSafeInteger(data.jestGuestCompletedRiddles) && data.jestGuestCompletedRiddles >= 0
+        ? data.jestGuestCompletedRiddles : undefined,
     };
   }
   /**

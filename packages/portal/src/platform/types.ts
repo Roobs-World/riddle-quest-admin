@@ -126,6 +126,8 @@ export type PlatformPreferences = {
   registrationPromptDismissedAt?: number;
   /** Records historical milestone completion; Jest deduplicates SDK reporting per session. */
   firstMilestoneMarked?: boolean;
+  /** Number of authoritative riddles solved while playing as a Jest guest. */
+  jestGuestCompletedRiddles?: number;
   /** Explicit player consent for account-wide presence publication. */
   presenceEnabled?: boolean;
   /** Last durable Facebook notification-prompt outcome. */

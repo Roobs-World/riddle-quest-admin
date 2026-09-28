@@ -435,9 +435,7 @@ export function JestPlayApp() {
       }
       setSession((current) => (current ? {...current, preferences: recorded.value.preferences} : current));
       if (recorded.value.milestoneMarked) trackFunnel("first_milestone_marked");
-      if (recorded.value.shouldPromptRegistration) {
-        openRegistrationPrompt("authoritative_win", true);
-      }
+      if (recorded.value.shouldPromptRegistration) openRegistrationPrompt("authoritative_win", true);
     },
     [notificationOperationGate, openRegistrationPrompt, platform, session, trackFunnel],
   );

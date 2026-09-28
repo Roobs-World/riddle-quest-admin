@@ -140,7 +140,18 @@ it("uses existing stored preferences and OS accessibility defaults when platform
   });
   expect(isPlayerReducedMotionEnabled()).toBe(true);
   expect(isPlayerHighContrastEnabled()).toBe(true);
+  expect(hasCompletedPlayerOnboarding("riddleQuest:onboarding:user-1")).toBe(false);
+});
+
+it("keeps onboarding completion out of browser storage", () => {
+  applyPlayerPreferences({onboardingComplete: false});
+  localStorage.setItem("riddleQuest:onboarding:user-1", "seen");
+
+  expect(hasCompletedPlayerOnboarding("riddleQuest:onboarding:user-1")).toBe(false);
+  localStorage.removeItem("riddleQuest:onboarding:user-1");
+  completePlayerOnboarding("riddleQuest:onboarding:user-1");
   expect(hasCompletedPlayerOnboarding("riddleQuest:onboarding:user-1")).toBe(true);
+  expect(localStorage.getItem("riddleQuest:onboarding:user-1")).toBeNull();
 });
 
 it("emits only user-initiated changes for the platform persistence adapter", () => {
@@ -172,7 +183,6 @@ it("clears only app-owned user state after authoritative deletion", () => {
   /** Removes d local keys. */
   const removedLocalKeys = [
     ...Object.values(PLAYER_PREFERENCE_STORAGE_KEYS),
-    "riddleQuest:onboarding:user-1",
     "riddleQuest:tooltipSeen:gameHint:user-1",
     "riddleQuest:tooltipSequenceSeen:gameTour:1:user-1",
   ];

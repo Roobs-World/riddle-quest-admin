@@ -530,6 +530,7 @@ it("round-trips every supported preference", async () => {
     onboardingComplete: true,
     registrationPromptDismissedAt: 123,
     firstMilestoneMarked: false,
+    jestGuestCompletedRiddles: 4,
   };
   mock.data.getAll.mockReturnValue(preferences);
   /** Provides platform behavior. */
@@ -554,6 +555,7 @@ it("deletes every client-writable key and flushes once after authoritative accou
     "onboardingComplete",
     "registrationPromptDismissedAt",
     "firstMilestoneMarked",
+    "jestGuestCompletedRiddles",
     "riddleQuestPlayerState",
   ]);
   expect(mock.data.flush).toHaveBeenCalledTimes(1);

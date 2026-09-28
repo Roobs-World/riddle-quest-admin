@@ -1,8 +1,5 @@
 import type {JestPlatformPort, JestPreferences, JestSession, PlatformResult} from "./types";
 
-/** Defines the registration prompt cooldown ms value. */
-export const REGISTRATION_PROMPT_COOLDOWN_MS = 7 * 24 * 60 * 60 * 1000;
-
 /** Describes authoritative completion. */
 export type AuthoritativeCompletion = {
   /** Stores is correct. */
@@ -18,7 +15,6 @@ export async function recordAuthoritativeCompletion(
   platform: JestPlatformPort,
   session: JestSession,
   completion: AuthoritativeCompletion,
-  now = Date.now(),
 ): Promise<
   PlatformResult<{
     /** Stores preferences. */
@@ -50,20 +46,24 @@ export async function recordAuthoritativeCompletion(
   let preferences = session.preferences;
   /** Provides milestone marked behavior. */
   let milestoneMarked = false;
-  if (!preferences.firstMilestoneMarked) {
-    preferences = {...preferences, firstMilestoneMarked: true};
+  const guestCompletedRiddles = session.player.registered ? 0 :
+    (preferences.jestGuestCompletedRiddles ?? (preferences.firstMilestoneMarked ? 1 : 0)) + 1;
+  if (!preferences.firstMilestoneMarked || !session.player.registered) {
+    preferences = {
+      ...preferences,
+      firstMilestoneMarked: true,
+      ...(!session.player.registered && {jestGuestCompletedRiddles: guestCompletedRiddles}),
+    };
     await platform.writePreferences(preferences);
-    milestoneMarked = true;
+    milestoneMarked = !session.preferences.firstMilestoneMarked;
   }
 
-  /** Provides dismissed at behavior. */
-  const dismissedAt = preferences.registrationPromptDismissedAt ?? 0;
   return {
     status: "success",
     value: {
       preferences,
       milestoneMarked,
-      shouldPromptRegistration: !session.player.registered && now - dismissedAt >= REGISTRATION_PROMPT_COOLDOWN_MS,
+      shouldPromptRegistration: !session.player.registered && (guestCompletedRiddles - 1) % 3 === 0,
     },
   };
 }

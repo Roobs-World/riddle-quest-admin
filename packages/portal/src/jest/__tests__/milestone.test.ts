@@ -1,6 +1,6 @@
 import {describe, expect, jest, test} from "@jest/globals";
 import {MockJestPlatform} from "../MockJestPlatform";
-import {recordAuthoritativeCompletion, REGISTRATION_PROMPT_COOLDOWN_MS} from "../milestone";
+import {recordAuthoritativeCompletion} from "../milestone";
 import type {JestSession} from "../types";
 
 /** Provides session behavior. */
@@ -25,7 +25,6 @@ describe("authoritative first milestone", () => {
       platform,
       session(),
       {gameMode: "classic", isCorrect: true},
-      REGISTRATION_PROMPT_COOLDOWN_MS,
     );
 
     expect(result).toEqual(
@@ -37,7 +36,7 @@ describe("authoritative first milestone", () => {
     expect(mark).toHaveBeenCalledTimes(1);
   });
 
-  test("does not mark a loss and respects the dismissal cooldown", async () => {
+  test("does not mark a loss and waits three more wins after the first guest prompt", async () => {
     /** Provides platform behavior. */
     const platform = new MockJestPlatform();
     /** Provides mark behavior. */
@@ -47,15 +46,13 @@ describe("authoritative first milestone", () => {
       platform,
       session(),
       {gameMode: "challenge", isCorrect: false},
-      REGISTRATION_PROMPT_COOLDOWN_MS,
     );
     expect(mark).not.toHaveBeenCalled();
-    /** Provides cooling down behavior. */
-    const coolingDown = await recordAuthoritativeCompletion(
+    /** Provides next win behavior. */
+    const nextWin = await recordAuthoritativeCompletion(
       platform,
       session({preferences: {firstMilestoneMarked: true, registrationPromptDismissedAt: 100}}),
       {gameMode: "classic", isCorrect: true},
-      100 + REGISTRATION_PROMPT_COOLDOWN_MS - 1,
     );
 
     expect(lost).toEqual(
@@ -64,13 +61,31 @@ describe("authoritative first milestone", () => {
         value: expect.objectContaining({milestoneMarked: false, shouldPromptRegistration: false}),
       }),
     );
-    expect(coolingDown).toEqual(
+    expect(nextWin).toEqual(
       expect.objectContaining({
         status: "success",
         value: expect.objectContaining({milestoneMarked: false, shouldPromptRegistration: false}),
       }),
     );
+    expect(nextWin.status === "success" && nextWin.value.preferences.jestGuestCompletedRiddles).toBe(2);
     expect(mark).toHaveBeenCalledTimes(1);
+  });
+
+  test("prompts on guest wins 1, 4, and 7 across saved preferences", async () => {
+    const platform = new MockJestPlatform();
+    let preferences: JestSession["preferences"] = {};
+    const prompts: number[] = [];
+    for (let win = 1; win <= 7; win += 1) {
+      const result = await recordAuthoritativeCompletion(platform, session({preferences}), {
+        gameMode: "classic", isCorrect: true,
+      });
+      expect(result.status).toBe("success");
+      if (result.status !== "success") continue;
+      preferences = result.value.preferences;
+      if (result.value.shouldPromptRegistration) prompts.push(win);
+    }
+    expect(prompts).toEqual([1, 4, 7]);
+    expect(preferences.jestGuestCompletedRiddles).toBe(7);
   });
 
   test("propagates a platform milestone failure without writing preferences", async () => {
@@ -94,7 +109,6 @@ describe("authoritative first milestone", () => {
       platform,
       session({player: {playerId: "stable-player", registered: true}, preferences: {firstMilestoneMarked: true}}),
       {gameMode: "challenge", isCorrect: true},
-      REGISTRATION_PROMPT_COOLDOWN_MS,
     );
 
     expect(result).toEqual(
