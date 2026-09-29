@@ -3,7 +3,7 @@
   justify-self: center;
   display: grid;
   justify-items: center;
-  align-content: start;
+  align-content: center;
   gap: 12px;
 }
 .riddle-card {
