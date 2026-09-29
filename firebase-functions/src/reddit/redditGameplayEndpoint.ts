@@ -42,6 +42,7 @@ import {
   resumeRaceRun,
   skipRaceRiddle,
   startRaceRun,
+  readyRaceRun,
   submitRaceGuess,
 } from "../race/raceCallables";
 import {
@@ -81,6 +82,7 @@ export const REDDIT_GAMEPLAY_OPERATIONS = [
   "gameplay.race.access",
   "gameplay.race.categories",
   "gameplay.race.start",
+  "gameplay.race.ready",
   "gameplay.race.guess",
   "gameplay.race.hint",
   "gameplay.race.skip",
@@ -206,6 +208,8 @@ const dispatch = async (
       return getRaceAccess.run(callableRequest(uid, payload) as never);
     case "gameplay.race.categories":
       return listRaceCategories.run(callableRequest(uid, payload) as never);
+    case "gameplay.race.ready":
+      return readyRaceRun.run(callableRequest(uid, payload) as never);
     case "gameplay.race.start":
       return startRaceRun.run(callableRequest(uid, payload) as never);
     case "gameplay.race.guess":
@@ -230,7 +234,7 @@ const dispatch = async (
       /** Provides input behavior. */
       const input = FindRedditRaceMatchRequestSchema.parse(payload);
       await assertRaceAccess(uid, input.locale);
-      return findRedditRaceMatch(uid, input.locale);
+      return findRedditRaceMatch(uid, input);
     }
     case "gameplay.tournament.list": {
       /** Provides input behavior. */

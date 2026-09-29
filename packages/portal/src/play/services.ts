@@ -119,6 +119,8 @@ const createLazyHostServices = (
     return (await loadServices()).listRaceCategories(locale);
   },
   /** Starts race. */
+  /** Schedules through the lazily loaded provider adapter. */
+  async readyRace(input) { return (await loadServices()).readyRace(input); },
   async startRace(input) {
     return (await loadServices()).startRace(input);
   },

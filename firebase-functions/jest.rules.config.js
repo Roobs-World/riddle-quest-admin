@@ -5,6 +5,8 @@ module.exports = {
   testMatch: [
     "**/__tests__/race/raceRules.it.test.ts",
     "**/__tests__/race/raceService.it.test.ts",
+    "**/__tests__/race/raceSettlement.it.test.ts",
+    "**/__tests__/race/raceArchitectureMigration.it.test.ts",
     "**/__tests__/storageRules.it.test.ts",
     "**/__tests__/usernameRules.it.test.ts",
     "**/__tests__/databaseRules.it.test.ts",

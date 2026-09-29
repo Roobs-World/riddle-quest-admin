@@ -43,6 +43,7 @@ describe("immutable localized Daily generation", () => {
   it("writes a playable dated document and never overwrites legacy current", async () => {
     await generateLocalizedDailyChallengeForDate("2026-08-12");
 
+    expect(mockGenerateUniqueRiddle).toHaveBeenCalledWith("en", [], {mode: "daily", excludedQuestions: []});
     expect(mockGetLocalizedDailyDocRef).toHaveBeenCalledWith("en", "2026-08-12");
     expect(mockSet).toHaveBeenCalledWith(
       expect.objectContaining({

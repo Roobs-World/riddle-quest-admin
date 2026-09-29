@@ -20,6 +20,7 @@ import type {
   SkipRaceRiddleRequest,
   SkipRaceRiddleResponse,
   StartRaceRunRequest,
+  ReadyRaceRunRequest,
   SubmitRaceGuessRequest,
   SubmitRaceGuessResponse,
 } from "@qwordly/core/race";
@@ -293,6 +294,8 @@ export type HostServices = {
   listRaceCategories(locale: StartRaceRunRequest["locale"]): Promise<ListRaceCategoriesResponse>;
   /** Starts race. */
   startRace(input: StartRaceRunRequest): Promise<RaceRunResponse>;
+  /** Schedules a prepared run without resetting its start on retries. */
+  readyRace(input: ReadyRaceRunRequest): Promise<RaceRunResponse>;
   /** Submits race guess. */
   submitRaceGuess(input: SubmitRaceGuessRequest): Promise<SubmitRaceGuessResponse>;
   /** Requests race hint. */

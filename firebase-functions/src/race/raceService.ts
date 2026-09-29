@@ -19,6 +19,7 @@ import {
   type ReserveRaceInviteResponse,
   type RaceCategoryId,
   type RaceRunResponse,
+  type ReadyRaceRunRequest,
   type RequestRaceHintRequest,
   type RequestRaceHintResponse,
   type SkipRaceRiddleRequest,
@@ -34,7 +35,10 @@ import {
   applyRaceHint,
   applyRaceSkip,
   raceOutcome,
+  raceRules,
   raceDeadlineAtMs,
+  RACE_PREPARATION_WINDOW_MS,
+  RACE_START_LEAD_MS,
   toRaceRunView,
   type RaceOpponentRecord,
   type RaceRiddleSnapshot,
@@ -43,7 +47,6 @@ import {
 import {evaluateRaceAchievementEvent} from "./raceAchievements";
 import {raceReceiptExpiresAt} from "./raceReceiptPrivacy";
 import {raceRunPrivacyWrite, resolveRaceOpponentPrivacy} from "./raceOpponentPrivacy";
-import {assertJestAccountActive, getJestAccountDeletionRef} from "../jest/jestAccountDeletion";
 import {
   assertRaceLocaleCompatible,
   buildDeterministicRaceDeck,
@@ -61,6 +64,9 @@ import {
   type RaceDeckRecord,
 } from "./raceSetupService";
 import {assertRaceInteractionAllowed, mutateRaceRun} from "./raceRunMutation";
+import {assertRaceChallengeEligible, raceChallengeEligibility} from "./raceEligibility";
+import {projectRaceMatchCandidate} from "./raceMatchCandidates";
+import {raceDeckContentVersion} from "./raceDeckSnapshot";
 import {settleRaceRun} from "./raceSettlement";
 export {buildDeterministicRaceDeck, listRaceCategoriesForLocale} from "./raceSetupService";
 
@@ -182,6 +188,43 @@ export async function claimRaceInviteForUser(
     return true;
   });
 }
+/** Schedules one prepared attempt; its first accepted readiness permanently fixes the scored start. */
+export async function readyRaceRunForUser(userId: string, input: ReadyRaceRunRequest,
+  options: {/** Emulated storage seam. */ db?: Firestore; /** Deterministic test clock. */ nowMs?: number} = {}): Promise<RaceRunResponse> {
+  const db = dbOrDefault(options.db);
+  const ref = db.doc(`raceRuns/${input.runId}`);
+  const run = await db.runTransaction(async (transaction) => {
+    const snapshot = await transaction.get(ref);
+    if (!snapshot.exists) throw new HttpsError("not-found", "Race to 10 run not found.");
+    const stored = parseRunRecord(snapshot.data());
+    if (stored.userId !== userId) throw new HttpsError("permission-denied", "This race run belongs to another player.");
+    const privacy = await resolveRaceOpponentPrivacy(transaction, db, stored);
+    await assertRaceInteractionAllowed(transaction, db, userId, privacy.run.opponent?.subjectUserId);
+    if (stored.status !== "prepared") return privacy.run;
+    if (stored.challengeId) {
+      const challengeSnapshot = await transaction.get(db.doc(`raceChallenges/${stored.challengeId}`));
+      if (!challengeSnapshot.exists) throw new HttpsError("failed-precondition", "Race challenge is unavailable.");
+      const challenge = parseChallengeRecord(challengeSnapshot.data());
+      assertRaceChallengeEligible(await raceChallengeEligibility(transaction, db, userId, challenge, stored.locale,
+        options.nowMs ?? Date.now(), stored.runId));
+      if (challenge.contentVersion !== stored.contentVersion) throw new HttpsError("failed-precondition", "Race challenge changed during preparation.");
+    }
+    // Sample after reads so database preparation does not consume the lead-in.
+    const nowMs = options.nowMs ?? Date.now();
+    if (!Number.isFinite(stored.preparationExpiresAtMs) || nowMs >= stored.preparationExpiresAtMs!) {
+      const expired: RaceRunRecord = {...privacy.run, status: "abandoned", result: null, wallFinishMs: 0, finishedAtMs: nowMs};
+      transaction.set(ref, raceRunPrivacyWrite(expired, privacy.scrubbed), {merge: true});
+      return expired;
+    }
+    const scheduled: RaceRunRecord = {...privacy.run, status: "scheduled", startedAtMs: nowMs + RACE_START_LEAD_MS};
+    scheduled.deadlineAtMs = raceDeadlineAtMs(scheduled);
+    transaction.set(ref, {...raceRunPrivacyWrite(scheduled, privacy.scrubbed),
+      deadlineAtMs: scheduled.deadlineAtMs ?? admin.firestore.FieldValue.delete()}, {merge: true});
+    return scheduled;
+  });
+  return RaceRunResponseSchema.parse({run: toRaceRunView(run, options.nowMs ?? Date.now(), input.includeEvaluation)});
+}
+
 /** Starts race run for user. */
 export async function startRaceRunForUser(
   userId: string,
@@ -280,10 +323,14 @@ export async function startRaceRunForUser(
     challengeId: input.challengeId,
     rivalryChallengeId: input.rivalryChallengeId,
     role: input.challengeId ? "challenger" : "creator",
-    status: "active",
+    status: input.prepare ? "prepared" : "active",
+    ...(input.prepare ? {preparationExpiresAtMs: (options.nowMs ?? Date.now()) + RACE_PREPARATION_WINDOW_MS} : {}),
     categoryId,
     locale: input.locale,
-    rulesVersion: RACE_RULES.version,
+    rulesVersion: challenge?.rules.version ?? RACE_RULES.version,
+    rulesSnapshot: challenge?.rules ?? RACE_RULES,
+    contentVersion,
+    evaluationPolicy: challenge?.evaluationPolicy ?? "preloaded",
     deckId: deckRef.id,
     riddles,
     currentPosition: 0,
@@ -291,7 +338,7 @@ export async function startRaceRunForUser(
     guessesUsed: 0,
     hintUsed: false,
     revealedLetters: [],
-    startedAtMs: nowMs,
+    startedAtMs: input.prepare ? 0 : nowMs,
     hintPenaltyMs: 0,
     skipPenaltyMs: 0,
     events: [],
@@ -312,43 +359,18 @@ export async function startRaceRunForUser(
   };
 
   await db.runTransaction(async (transaction) => {
-    /** Provides the idempotency receipt, ranked attempt, challenge, and optional invite lobby. */
-    const [duplicateStart, challengeAttempt, committedChallengeSnapshot, inviteLobbySnapshot] = await Promise.all([
+    const [duplicateStart, committedChallengeSnapshot] = await Promise.all([
       transaction.get(startRequestRef),
-      input.challengeId
-        ? transaction.get(db.collection("raceAttempts").doc(requestDocumentId(input.challengeId, userId)))
-        : Promise.resolve(null),
-      input.challengeId
-        ? transaction.get(db.collection("raceChallenges").doc(input.challengeId))
-        : Promise.resolve(null),
-      input.challengeId?.startsWith("jest-invite-")
-        ? transaction.get(db.collection("raceInviteLobbies").doc(input.challengeId))
-        : Promise.resolve(null),
+      input.challengeId ? transaction.get(db.doc(`raceChallenges/${input.challengeId}`)) : Promise.resolve(null),
     ]);
     if (duplicateStart.exists) return;
     if (input.challengeId) {
       if (!committedChallengeSnapshot?.exists) throw new HttpsError("not-found", "Race to 10 challenge not found.");
-      /** Provides committed challenge behavior. */
       const committedChallenge = parseChallengeRecord(committedChallengeSnapshot.data());
-      /** Provides creator deletion snapshot behavior. */
-      const creatorDeletionSnapshot = await transaction.get(
-        getJestAccountDeletionRef(db, committedChallenge.creatorId),
-      );
-      assertJestAccountActive(creatorDeletionSnapshot);
-      await assertRaceInteractionAllowed(transaction, db, userId, committedChallenge.creatorId);
-      if (inviteLobbySnapshot?.exists) {
-        /** Lobby state constraining which recipient may accept this challenge. */
-        const lobby = parseRaceInviteLobby(inviteLobbySnapshot.data());
-        if (lobby.recipientId !== userId) {
-          throw new HttpsError("permission-denied", "This race invite belongs to another recipient.");
-        }
+      assertRaceChallengeEligible(await raceChallengeEligibility(transaction, db, userId, committedChallenge, input.locale, nowMs));
+      if (committedChallenge.contentVersion !== challenge?.contentVersion || committedChallenge.creatorRunId !== challenge?.creatorRunId) {
+        throw new HttpsError("failed-precondition", "The race challenge changed during preparation.");
       }
-      if (challengePreview(committedChallenge, nowMs).status !== "active")
-        throw new HttpsError("failed-precondition", "Race to 10 challenge is no longer active.");
-      assertRaceLocaleCompatible(committedChallenge, input.locale);
-    }
-    if (challengeAttempt?.exists) {
-      throw new HttpsError("already-exists", "This player already has a ranked attempt for the challenge.");
     }
     transaction.create(deckRef, stripUndefined(deck));
     transaction.create(runRef, {...stripUndefined({...run, deadlineAtMs: raceDeadlineAtMs(run)}), expiresAt});
@@ -647,12 +669,16 @@ export async function publishRaceChallengeForUser(
       challengeId: challengeRef.id,
       creatorId: userId,
       creatorRunId: run.runId,
+      scope: input.reservedChallengeId ? "invitation" : "public",
       rivalryChallengeId: run.rivalryChallengeId ?? run.challengeId,
       creatorSnapshot: {displayName, avatarUrl},
       categoryId: run.categoryId,
       locale: run.locale,
       deckId: run.deckId,
       canonicalRiddleIds: deck.canonicalRiddleIds,
+      riddles: run.riddles.map((riddle) => ({...riddle})),
+      snapshotVersion: 1,
+      evaluationPolicy: run.evaluationPolicy ?? "preloaded",
       targetCorrect: RACE_TARGET_CORRECT,
       creatorWallFinishMs: outcome.wallFinishMs,
       creatorHintPenaltyMs: outcome.hintPenaltyMs,
@@ -660,8 +686,8 @@ export async function publishRaceChallengeForUser(
       creatorTotalPenaltyMs: outcome.totalPenaltyMs,
       creatorAdjustedFinishMs: outcome.adjustedFinishMs,
       ghostEvents: run.events,
-      rules: RACE_RULES,
-      contentVersion: deck.contentVersion,
+      rules: raceRules(run),
+      contentVersion: raceDeckContentVersion(run.riddles),
       status: "active",
       createdAtMs: nowMs,
       expiresAtMs,
@@ -683,6 +709,8 @@ export async function publishRaceChallengeForUser(
       })(),
     });
     transaction.create(challengeRef, stripUndefined(challenge));
+    const candidate = projectRaceMatchCandidate(challenge);
+    if (candidate) transaction.create(db.doc(`raceMatchCandidates/${challenge.challengeId}`), candidate);
     if (inviteLobbyRef && inviteLobbySnapshot?.exists) {
       transaction.update(inviteLobbyRef, {status: "published", publishedAtMs: nowMs});
     }

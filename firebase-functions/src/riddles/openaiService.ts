@@ -1,4 +1,5 @@
 import OpenAI from "openai";
+import type {RaceCategoryId} from "@qwordly/core/race";
 import {zodTextFormat} from "openai/helpers/zod";
 import * as functions from "firebase-functions";
 import {z} from "zod";
@@ -29,6 +30,8 @@ const OpenAIRiddleReviewSchema = z
     naturalLanguage: z.boolean(),
     fairForCasualPlayers: z.boolean(),
     noAnswerSpoiler: z.boolean(),
+    difficulty: z.enum(["easy", "medium", "hard"]),
+    categoryMatch: z.boolean(),
     issues: z.array(z.string().min(1).max(160)).max(5),
   })
   .strict();
@@ -36,7 +39,11 @@ const OpenAIRiddleReviewSchema = z
 /** Validates a blind solve performed before the proposed answer is revealed. */
 const OpenAIBlindSolveSchema = z
   .object({
-    answer: z.string().min(1).max(MAX_RIDDLE_ANSWER_CHARACTERS).regex(/^[a-z]+$/),
+    answer: z
+      .string()
+      .min(1)
+      .max(MAX_RIDDLE_ANSWER_CHARACTERS)
+      .regex(/^[a-z]+$/),
     confidence: z.enum(["high", "medium", "low"]),
     alternativeAnswers: z.array(z.string().min(1).max(40)).max(3),
   })
@@ -65,8 +72,8 @@ type RiddleReview = z.infer<typeof OpenAIRiddleReviewSchema>;
 /** Describes a reviewer's answer when it has not seen the generated answer. */
 type BlindSolve = z.infer<typeof OpenAIBlindSolveSchema>;
 
-/** Defines the default openai model value. */
-const DEFAULT_OPENAI_MODEL = "gpt-5.6-sol";
+/** Pins authoring, blind solving, and review to the requested model. */
+export const RIDDLE_GENERATION_MODEL = "gpt-6.1-sol";
 /** Defines the riddle reasoning effort value. */
 const RIDDLE_REASONING_EFFORT = "medium" as const;
 
@@ -190,21 +197,47 @@ function validateGeneratedRiddle(generatedRiddle: GeneratedRiddle): [string, str
   return [validation.data.question, validation.data.answer];
 }
 
-/** Gets reasoning settings. */
-function getReasoningSettings(model: string):
-  | {
-      /** Stores reasoning. */
-      reasoning: {
-        /** Stores effort. */
-        effort: typeof RIDDLE_REASONING_EFFORT;
-      };
-    }
-  | Record<string, never> {
-  return model.startsWith("gpt-5.6") ? {reasoning: {effort: RIDDLE_REASONING_EFFORT}} : {};
+/** Context shared by the author and independent editor. */
+export type RiddleGenerationOptions = {
+  mode?: "classic" | "daily" | "multiplayer";
+  categoryId?: RaceCategoryId;
+  difficulty?: "easy" | "medium";
+  excludedQuestions?: string[];
+};
+
+/** Offline bank authoring can wait longer without extending player-facing supply deadlines. */
+const requestOptions = (options: RiddleGenerationOptions) => ({
+  timeout: options.mode === "multiplayer" ? 60_000 : 15_000,
+});
+
+/** Defines difficulty by knowledge and inference rather than answer length. */
+function getGenerationBrief(options: RiddleGenerationOptions): string {
+  const mode = options.mode ?? "classic";
+  return (
+    `Mode: ${mode}. ` +
+    (mode === "multiplayer"
+      ? "This is a timed multiplayer race: ONLY easy or medium questions. Easy means immediate recognition from everyday knowledge; medium means one straightforward inference from familiar facts. No specialist knowledge, obscure dates, trick wording, or multi-step deductions. "
+      : mode === "daily"
+        ? "Create a satisfying daily puzzle with a small aha moment, solvable from familiar knowledge and one fair inference. "
+        : "Create a varied, accessible classic riddle with concrete clues and a satisfying deduction. ") +
+    "Judge difficulty by the knowledge and reasoning needed, never by answer length. " +
+    (options.difficulty ? `Required difficulty: ${options.difficulty}. ` : "Target easy to medium difficulty. ") +
+    (options.difficulty === "medium"
+      ? "Use an indirect clue that requires combining two familiar facts into one small deduction, rather than a direct definition or simple name recall. Keep all needed information in the clue. "
+      : "") +
+    (options.categoryId ? `Required subject category: ${options.categoryId}. ` : "")
+  );
 }
 
+/** Compares punctuation and spacing variants without altering playable text. */
+const comparisonKey = (text: string): string =>
+  text
+    .normalize("NFKC")
+    .toLowerCase()
+    .replace(/[\p{P}\p{Z}\p{S}\s]+/gu, "");
+
 /** Provides review passed behavior. */
-function reviewPassed(review: RiddleReview): boolean {
+function reviewPassed(review: RiddleReview, options: RiddleGenerationOptions): boolean {
   return (
     review.clueSupportsAnswer &&
     review.singleBestAnswer &&
@@ -212,6 +245,9 @@ function reviewPassed(review: RiddleReview): boolean {
     review.naturalLanguage &&
     review.fairForCasualPlayers &&
     review.noAnswerSpoiler &&
+    review.categoryMatch &&
+    (review.difficulty === "easy" || review.difficulty === "medium") &&
+    (!options.difficulty || review.difficulty === options.difficulty) &&
     review.issues.length === 0
   );
 }
@@ -232,25 +268,29 @@ async function blindSolveGeneratedRiddle(
   locale: SupportedLocale,
   question: string,
   answer: string,
+  options: RiddleGenerationOptions,
 ): Promise<boolean> {
   /** Provides completion behavior. */
   const completion = await withSentrySpan(
     "openai.blindSolveGeneratedRiddle",
     "ai.review",
     () =>
-      openai.responses.parse({
-        model,
-        ...getReasoningSettings(model),
-        instructions:
-          "Solve the supplied mobile-game riddle exactly as a casual player would. You have not been given the author's answer. " +
-          "Return the single lowercase a-z answer you would enter, your honest confidence, and up to three other genuinely plausible answers. " +
-          "Use high confidence only when the clue clearly converges on one familiar answer and its expected romanized spelling is unambiguous. " +
-          "Do not invent extra facts or explain away ambiguity.",
-        input: JSON.stringify({targetLocale: locale, question}),
-        prompt_cache_key: "riddlequest-riddle-blind-solve-v1",
-        store: false,
-        text: {format: zodTextFormat(OpenAIBlindSolveSchema, "riddle_blind_solve"), verbosity: "low"},
-      }),
+      openai.responses.parse(
+        {
+          model,
+          reasoning: {effort: RIDDLE_REASONING_EFFORT},
+          instructions:
+            "Solve the supplied mobile-game riddle exactly as a casual player would. You have not been given the author's answer. " +
+            "Return the single lowercase a-z answer you would enter, your honest confidence, and up to three other genuinely plausible answers. " +
+            "Use high confidence only when the clue clearly converges on one familiar answer and its expected romanized spelling is unambiguous. " +
+            "Do not invent extra facts or explain away ambiguity.",
+          input: JSON.stringify({targetLocale: locale, question}),
+          prompt_cache_key: "riddlequest-riddle-blind-solve-v1",
+          store: false,
+          text: {format: zodTextFormat(OpenAIBlindSolveSchema, "riddle_blind_solve"), verbosity: "low"},
+        },
+        requestOptions(options),
+      ),
     {model, locale},
   );
 
@@ -280,26 +320,37 @@ async function reviewGeneratedRiddle(
   locale: SupportedLocale,
   question: string,
   answer: string,
+  options: RiddleGenerationOptions,
 ): Promise<boolean> {
   /** Provides completion behavior. */
   const completion = await withSentrySpan(
     "openai.reviewGeneratedRiddle",
     "ai.review",
     () =>
-      openai.responses.parse({
-        model,
-        ...getReasoningSettings(model),
-        instructions:
-          "You are the independent quality editor for an all-ages mobile riddle game. " +
-          "Review the candidate strictly; do not repair it and do not give it the benefit of the doubt. " +
-          "A passing clue must logically and factually support the supplied answer, make that answer clearly better than other plausible answers, read naturally in the target language, and be fair to casual players. " +
-          "Reject vague clues, strained associations, incorrect facts, translation-like wording, obscure trivia, and clues that reveal the answer or an obvious variant. " +
-          "Set every check independently. If any check fails, add a short, concrete issue. Return no issues only when every check passes.",
-        input: JSON.stringify({targetLocale: locale, candidate: {question, answer}}),
-        prompt_cache_key: "riddlequest-riddle-review-v1",
-        store: false,
-        text: {format: zodTextFormat(OpenAIRiddleReviewSchema, "riddle_review"), verbosity: "low"},
-      }),
+      openai.responses.parse(
+        {
+          model,
+          reasoning: {effort: RIDDLE_REASONING_EFFORT},
+          instructions:
+            "You are the independent quality editor for an all-ages mobile riddle game. " +
+            "Review the candidate strictly; do not repair it and do not give it the benefit of the doubt. " +
+            "A passing clue must logically and factually support the supplied answer, make that answer clearly better than other plausible answers, read naturally in the target language, and be fair to casual players. " +
+            "Reject vague clues, strained associations, incorrect facts, translation-like wording, obscure trivia, and clues that reveal the answer or an obvious variant. " +
+            "Assess difficulty honestly as easy, medium, or hard. Easy is everyday recognition; medium is one straightforward inference; hard needs specialist knowledge or multiple deductions. " +
+            "Set categoryMatch only if the candidate fits the requested subject, or if no subject is requested. Reject time-sensitive facts, unsafe or adult content, and near-paraphrases of excluded questions. " +
+            getGenerationBrief(options) +
+            "Set every check independently. If any check fails, add a short, concrete issue. Return no issues only when every check passes.",
+          input: JSON.stringify({
+            targetLocale: locale,
+            candidate: {question, answer},
+            excludedQuestions: options.excludedQuestions?.slice(-40) ?? [],
+          }),
+          prompt_cache_key: "riddlequest-riddle-review-v2",
+          store: false,
+          text: {format: zodTextFormat(OpenAIRiddleReviewSchema, "riddle_review"), verbosity: "low"},
+        },
+        requestOptions(options),
+      ),
     {model, locale},
   );
 
@@ -310,7 +361,7 @@ async function reviewGeneratedRiddle(
     return false;
   }
 
-  if (!reviewPassed(review)) {
+  if (!reviewPassed(review, options)) {
     functions.logger.warn("Generated riddle was rejected by quality review.", {
       issueCount: review.issues.length,
       failedChecks: {
@@ -320,6 +371,10 @@ async function reviewGeneratedRiddle(
         naturalLanguage: !review.naturalLanguage,
         fairForCasualPlayers: !review.fairForCasualPlayers,
         noAnswerSpoiler: !review.noAnswerSpoiler,
+        categoryMatch: !review.categoryMatch,
+        difficultyMatch:
+          !(review.difficulty === "easy" || review.difficulty === "medium") ||
+          Boolean(options.difficulty && review.difficulty !== options.difficulty),
       },
     });
     return false;
@@ -336,11 +391,12 @@ async function reviewGeneratedRiddle(
 export async function generateUniqueRiddle(
   locale: SupportedLocale = "en",
   excludedAnswers: string[] = [],
+  options: RiddleGenerationOptions = {},
 ): Promise<[string, string] | null> {
   /** Provides openai behavior. */
   const openai = initializeOpenAIClient();
   /** Provides model behavior. */
-  const model = process.env.OPENAI_MODEL || DEFAULT_OPENAI_MODEL;
+  const model = RIDDLE_GENERATION_MODEL;
   /** Provides locale prompt behavior. */
   const localePrompt = getLocaleSpecificPrompt(locale);
   /** Provides answer exclusion prompt behavior. */
@@ -357,30 +413,36 @@ export async function generateUniqueRiddle(
       "openai.generateUniqueRiddle",
       "ai.generate",
       () =>
-        openai.responses.parse({
-          model,
-          ...getReasoningSettings(model),
-          instructions:
-            "You design original, all-ages riddles for a mobile word game. Create one concise pub-quiz-style clue with exactly one natural answer. " +
-            "Before returning it, silently verify that every detail is factually correct, each detail points to the supplied answer, and no other familiar answer fits equally well. " +
-            "Use concrete, mutually reinforcing details instead of vague poetic associations. Prefer familiar knowledge and everyday concepts over specialist trivia or obscure proper nouns. " +
-            "Vary subjects and clue structures; avoid stock riddles, repeated 'What am I?' openings, and awkward attempts at wordplay. " +
-            "The clue must sound natural when read aloud and the answer must be the word a typical player would give without needing an explanation. " +
-            localePrompt,
-          input:
-            `Return one riddle for locale "${locale}" as question and answer fields.\n` +
-            "- Question: 10-120 characters; grammatical, natural, and specific.\n" +
-            `- Answer: 1-${MAX_RIDDLE_ANSWER_CHARACTERS} lowercase characters using only a-z; no accents, spaces, digits, apostrophes, or hyphens.\n` +
-            "- Use two or more compatible clue details that converge on one answer.\n" +
-            "- Do not include the answer, a plural, close variant, or obvious word stem in the clue.\n" +
-            "- Reject your own candidate and create another if the answer needs a strained interpretation, a disputed fact, or could be replaced by another common answer.\n" +
-            "- Keep it engaging and suitable for casual players of all ages.\n" +
-            "- Make it original in wording and angle, without sacrificing clarity or fairness." +
-            answerExclusionPrompt,
-          prompt_cache_key: "riddlequest-riddle-generation-v1",
-          store: false,
-          text: {format: zodTextFormat(OpenAIGeneratedRiddleSchema, "generated_riddle"), verbosity: "low"},
-        }),
+        openai.responses.parse(
+          {
+            model,
+            reasoning: {effort: RIDDLE_REASONING_EFFORT},
+            instructions:
+              "You design original, all-ages riddles for a mobile word game. Create one concise pub-quiz-style clue with exactly one natural answer. " +
+              "Before returning it, silently verify that every detail is factually correct, each detail points to the supplied answer, and no other familiar answer fits equally well. " +
+              "Use concrete, mutually reinforcing details instead of vague poetic associations. Prefer familiar knowledge and everyday concepts over specialist trivia or obscure proper nouns. " +
+              "Vary subjects and clue structures; avoid stock riddles, repeated 'What am I?' openings, and awkward attempts at wordplay. " +
+              "The clue must sound natural when read aloud and the answer must be the word a typical player would give without needing an explanation. " +
+              "Avoid facts that change over time, answer spelling traps, and questions that require a particular regional spelling. " +
+              getGenerationBrief(options) +
+              localePrompt,
+            input:
+              `Return one riddle for locale "${locale}" as question and answer fields.\n` +
+              "- Question: 10-120 characters; grammatical, natural, and specific.\n" +
+              `- Answer: 1-${MAX_RIDDLE_ANSWER_CHARACTERS} lowercase characters using only a-z; no accents, spaces, digits, apostrophes, or hyphens.\n` +
+              "- Use two or more compatible clue details that converge on one answer.\n" +
+              "- Do not include the answer, a plural, close variant, or obvious word stem in the clue.\n" +
+              "- Reject your own candidate and create another if the answer needs a strained interpretation, a disputed fact, or could be replaced by another common answer.\n" +
+              "- Keep it engaging and suitable for casual players of all ages.\n" +
+              "- Make it original in wording and angle, without sacrificing clarity or fairness." +
+              answerExclusionPrompt +
+              `\n- Do not repeat or lightly paraphrase these previous questions: ${JSON.stringify(options.excludedQuestions?.slice(-40) ?? [])}.`,
+            prompt_cache_key: "riddlequest-riddle-generation-v2",
+            store: false,
+            text: {format: zodTextFormat(OpenAIGeneratedRiddleSchema, "generated_riddle"), verbosity: "low"},
+          },
+          requestOptions(options),
+        ),
       {model, locale},
     );
 
@@ -399,13 +461,20 @@ export async function generateUniqueRiddle(
 
     /** Provides [question, answer] behavior. */
     const [question, answer] = validatedRiddle;
+    if (
+      excludedAnswers.some((previous) => comparisonKey(previous) === comparisonKey(answer)) ||
+      options.excludedQuestions?.some((previous) => comparisonKey(previous) === comparisonKey(question))
+    ) {
+      functions.logger.warn("Generated riddle repeated excluded content and was rejected.");
+      return null;
+    }
     /** Provides solved behavior. */
-    const solved = await blindSolveGeneratedRiddle(openai, model, locale, question, answer);
+    const solved = await blindSolveGeneratedRiddle(openai, model, locale, question, answer, options);
     if (!solved) {
       return null;
     }
     /** Provides accepted behavior. */
-    const accepted = await reviewGeneratedRiddle(openai, model, locale, question, answer);
+    const accepted = await reviewGeneratedRiddle(openai, model, locale, question, answer, options);
     if (!accepted) {
       return null;
     }

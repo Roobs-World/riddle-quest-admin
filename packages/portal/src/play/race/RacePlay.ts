@@ -68,7 +68,7 @@ export class RacePlay {
   constructor({
     postToHost,
     clock = {
-      now: Date.now,
+      now: () => performance.now(),
       schedule: (callback, delay) => window.setTimeout(callback, delay),
       cancel: (timer) => window.clearTimeout(timer),
     },

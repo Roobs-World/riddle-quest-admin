@@ -115,7 +115,7 @@ export const getAdjustedRaceTime = (run: RaceRunView | null, receivedAtMs: numbe
 
 /** Projects a terminal result that is already determined by authoritative run data. */
 export const projectRaceOutcome = (run: RaceRunView, adjustedNow: number): RaceOutcome | null => {
-  if (run.status === "abandoned") return null;
+  if (["abandoned", "prepared", "scheduled"].includes(run.status)) return null;
   /** Whether the challenger adjusted-time limit has conclusively elapsed. */
   const timedOut = run.status === "timed_out" ||
     (run.role === "challenger" && run.status === "active" && adjustedNow >= run.rules.maxAdjustedTimeMs);

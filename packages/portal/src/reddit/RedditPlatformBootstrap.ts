@@ -12,6 +12,7 @@ import {
   ListFacebookTournamentResponseSchema,
   RecordFacebookTournamentRunResponseSchema,
   type RaceLocale,
+  type RaceMatchRequest,
 } from "@qwordly/core/race";
 import {REDDIT_GOLD_PRODUCTS, resolveRedditGoldProduct} from "@qwordly/core/pricing/redditCatalog";
 import {purchase} from "@devvit/payments/client";
@@ -359,10 +360,10 @@ export class RedditPlatformBootstrap implements PlatformBootstrap {
             ? {
                 matchmaking: {
                   /** Provides find behavior. */
-                  async find(locale: RaceLocale) {
+                  async find(input: RaceMatchRequest | RaceLocale) {
                     try {
                       /** Provides payload behavior. */
-                      const payload = await postRedditGateway("/api/game/race.match", {locale});
+                      const payload = await postRedditGateway("/api/game/race.match", typeof input === "string" ? {locale: input} : input);
                       return success(FindRedditRaceMatchResponseSchema.parse(payload.result));
                     } catch (error) {
                       return {

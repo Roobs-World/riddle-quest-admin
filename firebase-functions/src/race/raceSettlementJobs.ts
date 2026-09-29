@@ -10,7 +10,7 @@ export const RACE_SETTLEMENT_JOB_LIMIT = 100;
 
 /** Settles due runs and retries pending outbox events without scanning all players. */
 export async function processRaceSettlementJobs(db: Firestore = admin.firestore(), nowMs = Date.now()): Promise<void> {
-  const due = await db.collection("raceRuns").where("status", "==", "active")
+  const due = await db.collection("raceRuns").where("status", "in", ["prepared", "scheduled", "active"])
     .where("deadlineAtMs", "<=", nowMs).orderBy("deadlineAtMs").limit(RACE_SETTLEMENT_JOB_LIMIT).get();
   // Bounded concurrency prevents one popular creator or retry wave overwhelming storage.
   for (let offset = 0; offset < due.docs.length; offset += 10) {

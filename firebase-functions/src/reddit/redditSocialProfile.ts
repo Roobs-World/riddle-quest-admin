@@ -169,6 +169,7 @@ export async function hydrateRedditRaceSocialResult(
   /** Provides run schemas behavior. */
   const runSchemas = {
     "gameplay.race.start": RaceRunResponseSchema,
+    "gameplay.race.ready": RaceRunResponseSchema,
     "gameplay.race.resume": RaceRunResponseSchema,
     "gameplay.race.guess": SubmitRaceGuessResponseSchema,
     "gameplay.race.hint": RequestRaceHintResponseSchema,

@@ -301,6 +301,7 @@ app.post("/api/game/:operation", async (request) => {
     "race.access",
     "race.categories",
     "race.start",
+    "race.ready",
     "race.guess",
     "race.hint",
     "race.skip",

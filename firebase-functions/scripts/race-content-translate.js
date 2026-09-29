@@ -26,7 +26,8 @@ const option = (name) => {
   const index = args.indexOf(name);
   return index >= 0 ? args[index + 1] : undefined;
 };
-const translatorModel = option("--translator-model");
+const {RIDDLE_GENERATION_MODEL} = require("../lib/riddles/openaiService.js");
+const translatorModel = RIDDLE_GENERATION_MODEL;
 const criticModel = option("--critic-model");
 const sourcePath = path.resolve(option("--source") || "content/race-en-reviewed-v2.json");
 const outputDirectory = path.resolve(option("--output-dir") || "content/race-translations");
@@ -45,11 +46,13 @@ const atomicJson = async (target, value) => {
   await rename(temporary, target);
 };
 
-const modelSettings = (model) => model.startsWith("gpt-5.6") ? {reasoning: {effort: "medium"}} : {};
+const modelSettings = (model) => (model.startsWith("gpt-5.6") || model === RIDDLE_GENERATION_MODEL) ? {reasoning: {effort: "medium"}} : {};
 
 if (!process.env.OPENAI_API_KEY) fail("Set OPENAI_API_KEY without placing it in the repository.");
-else if (!translatorModel || !criticModel || translatorModel === criticModel) {
-  fail("Provide distinct --translator-model and --critic-model values.");
+else if (option("--translator-model") && option("--translator-model") !== translatorModel) {
+  fail(`Multiplayer translation is pinned to ${translatorModel}.`);
+} else if (!criticModel || translatorModel === criticModel) {
+  fail("Provide an independent --critic-model distinct from gpt-6.1-sol.");
 } else if (requestedLocales.some((locale) => locale === "en" || !RACE_SUPPORTED_LOCALES.includes(locale))) {
   fail("--locales must contain only supported non-English locale codes.");
 } else if (new Set(requestedLocales).size !== requestedLocales.length) {
@@ -113,7 +116,7 @@ else if (!translatorModel || !criticModel || translatorModel === criticModel) {
               ...modelSettings(translatorModel),
               instructions:
                 `Translate each all-ages quiz clue and its answer naturally into locale ${locale}. ` +
-                "Preserve the exact canonical meaning, factual answer, category, and difficulty. Use native script and everyday native phrasing; do not explain, add clues, reveal the answer in the clue, or romanize unless that is the normal native answer form. " +
+                "Preserve the exact canonical meaning, factual answer, category, and difficulty. Easy means everyday recognition; medium means one straightforward inference from familiar facts. Do not introduce specialist vocabulary or increase the reasoning needed. Use native script and everyday native phrasing; do not explain, add clues, reveal the answer in the clue, or romanize unless that is the normal native answer form. " +
                 "Each answer must be NFC-normalized, contain only Unicode letters and combining marks with no spaces or punctuation, and be one through seven grapheme clusters. Return every canonicalRiddleId exactly once.",
               input: JSON.stringify(missing.map(({canonicalRiddleId, text, answer, categoryId, difficultyBand}) =>
                 ({canonicalRiddleId, text, answer, categoryId, difficultyBand}))),

@@ -161,6 +161,8 @@ export type HostMessageHandlers = {
       }
     >,
   ): void | Promise<void>;
+  /** Schedules a prepared authoritative run. */
+  readyRace(message: Extract<GameToHostMessage, {/** Bridge command discriminator. */ type: "game:readyRace"}>): void | Promise<void>;
   /** Starts race. */
   startRace(
     message: Extract<
@@ -366,6 +368,9 @@ export const createHostMessageRouter = (handlers: HostMessageHandlers) => {
         break;
       case "game:listRaceCategories":
         await handlers.listRaceCategories(message);
+        break;
+      case "game:readyRace":
+        await handlers.readyRace(message);
         break;
       case "game:startRace":
         await handlers.startRace(message);

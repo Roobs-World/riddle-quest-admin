@@ -71,7 +71,7 @@ export const useRaceFeedbackTimers = (
 export const useActiveRacePersistence = (run: RaceRunView | null, ownerId?: string): void => {
   useEffect(() => {
     if (!run) return;
-    if (run.status === "active") saveActiveRace(ownerId, run.runId);
+    if (["prepared", "scheduled", "active"].includes(run.status)) saveActiveRace(ownerId, run.runId);
     else clearActiveRace(ownerId);
   }, [run, ownerId]);
 };

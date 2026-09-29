@@ -3,6 +3,7 @@ export type RaceOperation =
   | "raceCategories"
   | "raceResume"
   | "raceStart"
+  | "raceReady"
   | "raceGuess"
   | "raceHint"
   | "raceSkip"
@@ -17,6 +18,7 @@ export type RaceOperation =
 /** Operations whose server mutations require an idempotency receipt. */
 const RECEIPT_OPERATIONS: ReadonlySet<RaceOperation> = new Set([
   "raceStart",
+  "raceReady",
   "raceGuess",
   "raceHint",
   "raceSkip",

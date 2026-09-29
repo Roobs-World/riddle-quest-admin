@@ -287,6 +287,8 @@ export const createRedditHostServices = (accountGeneration = 1): HostServices =>
       return ListRaceCategoriesResponseSchema.parse(await post("race.categories", {locale}));
     },
     /** Starts race. */
+    /** Keeps readiness traffic on the authenticated same-origin gateway. */
+    async readyRace(input) { return RaceRunResponseSchema.parse(await post("race.ready", input)); },
     async startRace(input) {
       return RaceRunResponseSchema.parse(await post("race.start", input));
     },

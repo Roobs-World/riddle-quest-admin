@@ -43,6 +43,8 @@ function approvedReviewResponse() {
       naturalLanguage: true,
       fairForCasualPlayers: true,
       noAnswerSpoiler: true,
+      difficulty: "easy",
+      categoryMatch: true,
       issues: [],
     },
   };
@@ -63,6 +65,8 @@ function rejectedReviewResponse(issues: string[]) {
       naturalLanguage: true,
       fairForCasualPlayers: true,
       noAnswerSpoiler: true,
+      difficulty: "easy",
+      categoryMatch: true,
       issues,
     },
   };
@@ -81,7 +85,8 @@ describe("OpenAI Service", () => {
   const originalEnv = process.env;
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    jest.resetAllMocks();
+    mockOpenAI.mockImplementation(() => ({responses: {parse: mockParse}}));
     resetOpenAIClient();
     process.env = {
       ...originalEnv,
@@ -138,18 +143,21 @@ describe("OpenAI Service", () => {
 
       expect(result).toEqual(["What flies without wings?", "time"]);
       expect(mockOpenAI).toHaveBeenCalledWith({apiKey: "test-api-key", timeout: 15_000, maxRetries: 0});
-      expect(mockParse).toHaveBeenCalledWith({
-        model: "gpt-5.6-sol",
-        reasoning: {effort: "medium"},
-        instructions: expect.any(String),
-        input: expect.any(String),
-        prompt_cache_key: "riddlequest-riddle-generation-v1",
-        store: false,
-        text: {
-          format: expect.objectContaining({type: "json_schema"}),
-          verbosity: "low",
+      expect(mockParse).toHaveBeenCalledWith(
+        {
+          model: "gpt-6.1-sol",
+          reasoning: {effort: "medium"},
+          instructions: expect.any(String),
+          input: expect.any(String),
+          prompt_cache_key: "riddlequest-riddle-generation-v2",
+          store: false,
+          text: {
+            format: expect.objectContaining({type: "json_schema"}),
+            verbosity: "low",
+          },
         },
-      });
+        {timeout: 15_000},
+      );
       expect(mockLogger.info).toHaveBeenCalledWith("Generated and quality-approved a riddle.", {answerLength: 4});
     });
 
@@ -183,7 +191,7 @@ describe("OpenAI Service", () => {
         };
       };
 
-      expect(reviewRequest.model).toBe("gpt-5.6-sol");
+      expect(reviewRequest.model).toBe("gpt-6.1-sol");
       expect(reviewRequest.reasoning?.effort).toBe("medium");
       expect(reviewRequest.text.format.name).toBe("riddle_review");
       expect(reviewRequest.instructions).toContain("logically and factually support");
@@ -260,7 +268,7 @@ describe("OpenAI Service", () => {
       );
     });
 
-    test("uses OPENAI_MODEL override when provided", async () => {
+    test("keeps generation and review pinned despite a stale OPENAI_MODEL override", async () => {
       process.env.OPENAI_MODEL = "gpt-4.1-mini";
       mockApprovedRiddle("What runs but never walks?", "river");
 
@@ -270,11 +278,69 @@ describe("OpenAI Service", () => {
       for (const [request] of mockParse.mock.calls) {
         expect(request).toEqual(
           expect.objectContaining({
-            model: "gpt-4.1-mini",
+            model: "gpt-6.1-sol",
           }),
         );
-        expect(request).not.toHaveProperty("reasoning");
+        expect(request).toHaveProperty("reasoning", {effort: "medium"});
       }
+    });
+
+    test.each(["classic", "daily", "multiplayer"] as const)(
+      "passes the %s brief to both author and editor",
+      async (mode) => {
+        mockApprovedRiddle("Seen after rain, I bend sunlight into a coloured arc.", "rainbow");
+        await expect(generateUniqueRiddle("en", [], {mode})).resolves.not.toBeNull();
+        for (const index of [0, 2]) {
+          const request = mockParse.mock.calls[index][0] as {instructions: string};
+          expect(request.instructions).toContain(`Mode: ${mode}`);
+        }
+      },
+    );
+
+    test.each([
+      {difficulty: "hard", categoryMatch: true},
+      {difficulty: "medium", categoryMatch: true},
+      {difficulty: "easy", categoryMatch: false},
+    ])("rejects multiplayer review outside requested easy science: %j", async (checks) => {
+      mockParse
+        .mockResolvedValueOnce(parsedRiddleResponse("Seen after rain, I bend sunlight into a coloured arc.", "rainbow"))
+        .mockResolvedValueOnce(approvedBlindSolveResponse("rainbow"))
+        .mockResolvedValueOnce({output_parsed: {...approvedReviewResponse().output_parsed, ...checks}});
+      await expect(
+        generateUniqueRiddle("en", [], {mode: "multiplayer", difficulty: "easy", categoryId: "science"}),
+      ).resolves.toBeNull();
+    });
+
+    test("accepts medium multiplayer content only after the independent checks", async () => {
+      mockParse
+        .mockResolvedValueOnce(parsedRiddleResponse("Seen after rain, I bend sunlight into a coloured arc.", "rainbow"))
+        .mockResolvedValueOnce(approvedBlindSolveResponse("rainbow"))
+        .mockResolvedValueOnce({output_parsed: {...approvedReviewResponse().output_parsed, difficulty: "medium"}});
+      await expect(
+        generateUniqueRiddle("en", [], {mode: "multiplayer", difficulty: "medium", categoryId: "science"}),
+      ).resolves.not.toBeNull();
+      expect(mockParse).toHaveBeenCalledTimes(3);
+      for (const [, options] of mockParse.mock.calls) expect(options).toEqual({timeout: 60_000});
+    });
+
+    test("rejects excluded answers outside the bounded prompt history before paying for reviews", async () => {
+      mockParse.mockResolvedValueOnce(
+        parsedRiddleResponse("Seen after rain, I bend sunlight into a coloured arc.", "rainbow"),
+      );
+      await expect(
+        generateUniqueRiddle("en", [" RAINBOW ", ...Array.from({length: 100}, (_, i) => `word${i}`)]),
+      ).resolves.toBeNull();
+      expect(mockParse).toHaveBeenCalledTimes(1);
+    });
+
+    test("rejects punctuation variants of previous clues", async () => {
+      mockParse.mockResolvedValueOnce(
+        parsedRiddleResponse("Seen after rain, I bend sunlight into a coloured arc.", "rainbow"),
+      );
+      await expect(
+        generateUniqueRiddle("en", [], {excludedQuestions: ["Seen after rain I bend sunlight into a coloured arc!"]}),
+      ).resolves.toBeNull();
+      expect(mockParse).toHaveBeenCalledTimes(1);
     });
 
     test("rejects an answer that is too long", async () => {
@@ -363,6 +429,8 @@ describe("OpenAI Service", () => {
           naturalLanguage: false,
           fairForCasualPlayers: false,
           noAnswerSpoiler: false,
+          categoryMatch: false,
+          difficultyMatch: false,
         },
       });
     });
@@ -404,7 +472,7 @@ describe("OpenAI Service", () => {
 
       expect(result).toBeNull();
       expect(mockLogger.error).toHaveBeenCalledWith("OpenAI riddle generation failed.", {
-        model: "gpt-5.6-sol",
+        model: "gpt-6.1-sol",
         errorClass: "Error",
       });
       expect(mockLogger.error).not.toHaveBeenCalledWith(expect.anything(), apiError);

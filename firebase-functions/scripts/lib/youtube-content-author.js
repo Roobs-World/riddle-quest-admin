@@ -7,6 +7,7 @@ const {
   SUPPORTED_LOCALES,
   YOUTUBE_CRITIC_MODEL,
   YOUTUBE_CLUE_MAX_LENGTH,
+  YOUTUBE_GENERATOR_MODEL,
   YOUTUBE_TRANSLATOR_MODEL,
   assertAppendOnlyOrderManifest,
   canonicalSourceHash,
@@ -164,7 +165,7 @@ const validateAppendReceipt = (receipt) => {
   ], "append-receipt-schema");
   assert(typeof receipt.batchId === "string" && SHA256_PATTERN.test(receipt.batchId), "append-receipt-batch-id");
   assert(SHA256_PATTERN.test(receipt.baseCanonicalSha256), "append-receipt-base-hash");
-  assert(receipt.generatorModel === YOUTUBE_TRANSLATOR_MODEL, "append-receipt-generator-model");
+  assert([YOUTUBE_GENERATOR_MODEL, "gpt-5.6-sol"].includes(receipt.generatorModel), "append-receipt-generator-model");
   assert(receipt.criticModel === YOUTUBE_CRITIC_MODEL, "append-receipt-critic-model");
   assert(Array.isArray(receipt.canonicalIds) && receipt.canonicalIds.length > 0 &&
     new Set(receipt.canonicalIds).size === receipt.canonicalIds.length, "append-receipt-canonical-ids");
@@ -551,7 +552,7 @@ const authorYouTubeContent = async ({
     dailyStartsOn: dailyStartsOn ?? null,
     appendSpecs,
     locales,
-    generatorModel: YOUTUBE_TRANSLATOR_MODEL,
+    generatorModel: YOUTUBE_GENERATOR_MODEL,
     criticModel: YOUTUBE_CRITIC_MODEL,
     existingBundleHashes,
   };
@@ -580,7 +581,7 @@ const authorYouTubeContent = async ({
           ids.forEach((id) => assertRetryAvailable(checkpoint.englishAttempts, "english", id));
           try {
             const generated = exactById(await port.generateEnglish({
-              model: YOUTUBE_TRANSLATOR_MODEL,
+              model: YOUTUBE_GENERATOR_MODEL,
               source: baseSource.riddles,
               specs: missing,
             }), ids, validateEnglishDraft, "english-generation");
@@ -783,7 +784,7 @@ const authorYouTubeContent = async ({
     const receipt = {
       batchId: sha256(`youtube-append-batch-v1\0${contractHash}`),
       baseCanonicalSha256: stableHash("youtube-resolved-source-v1", baseSource),
-      generatorModel: YOUTUBE_TRANSLATOR_MODEL,
+      generatorModel: YOUTUBE_GENERATOR_MODEL,
       criticModel: YOUTUBE_CRITIC_MODEL,
       canonicalIds: appendedIds,
       generatedRiddlesSha256: stableHash("youtube-appended-riddles-v1", appendedRiddles),

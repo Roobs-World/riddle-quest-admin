@@ -205,7 +205,7 @@ export function validateContentAudit(value, contentManifest) {
       "sourceDescriptorSha256",
     ]) ||
     authoring.sourceDescriptorSha256 !== inputs.canonicalSourceSha256 ||
-    authoring.generatorModel !== "gpt-5.6-sol" ||
+    !["gpt-5.6-sol", "gpt-6.1-sol"].includes(authoring.generatorModel) ||
     authoring.criticModel !== "gpt-5.5" ||
     authoring.generatorModel === authoring.criticModel ||
     !Number.isSafeInteger(authoring.appendReceiptCount) ||

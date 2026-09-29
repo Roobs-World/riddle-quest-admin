@@ -5,6 +5,7 @@ import {
   RACE_CATEGORY_IDS,
   RACE_DECK_SIZE,
   RACE_RULES,
+  RaceRulesSchema,
   RACE_SUPPORTED_LOCALES,
   RACE_TARGET_CORRECT,
   RaceChallengePreviewSchema,
@@ -14,6 +15,7 @@ import {
   type RaceLocale,
   type RaceChallengePreview,
 } from "@qwordly/core/race";
+import {raceDeckContentVersion, validateRaceDeckSnapshot} from "./raceDeckSnapshot";
 import {logger} from "firebase-functions";
 import {HttpsError} from "firebase-functions/v2/https";
 import {type RaceRiddleSnapshot, type RaceRunRecord} from "./raceEngine";
@@ -47,6 +49,14 @@ export type RaceChallengeRecord = {
   locale: RaceLocale;
   /** Stores deck id. */
   deckId: string;
+  /** Public recording or private, recipient-bound invitation. */
+  scope?: "public" | "invitation";
+  /** Complete immutable content shared by creator and challenger. */
+  riddles?: RaceRiddleSnapshot[];
+  /** Exact snapshot hashing contract; absent on recoverable legacy challenges. */
+  snapshotVersion?: 1;
+  /** Server-selected answer exposure policy; never controlled by a challenger. */
+  evaluationPolicy?: "preloaded" | "server-only";
   /** Stores canonical riddle ids. */
   canonicalRiddleIds: string[];
   /** Stores target correct. */
@@ -230,6 +240,10 @@ export const parseRunRecord = (value: FirebaseFirestore.DocumentData | undefined
   ) {
     throw new HttpsError("internal", "Stored Race to 10 state is invalid.");
   }
+  if (value.rulesSnapshot !== undefined) {
+    const rules = RaceRulesSchema.safeParse(value.rulesSnapshot);
+    if (!rules.success || rules.data.version !== value.rulesVersion) throw new HttpsError("data-loss", "Race rules snapshot is invalid.");
+  }
   return value as RaceRunRecord;
 };
 
@@ -250,7 +264,12 @@ export const parseChallengeRecord = (value: FirebaseFirestore.DocumentData | und
   if (!(RACE_SUPPORTED_LOCALES as readonly unknown[]).includes(locale)) {
     throw new HttpsError("internal", "Stored Race to 10 challenge locale is invalid.");
   }
-  return {...value, locale} as RaceChallengeRecord;
+  const rules = RaceRulesSchema.safeParse({...value.rules, maxHintsPerRiddle: value.rules.maxHintsPerRiddle ?? 1});
+  if (!rules.success) throw new HttpsError("data-loss", "Race challenge rules are unsupported.");
+  if (value.snapshotVersion !== undefined && value.snapshotVersion !== 1) {
+    throw new HttpsError("data-loss", "Race deck snapshot version is unsupported.");
+  }
+  return {...value, locale, rules: rules.data} as RaceChallengeRecord;
 };
 
 /** Rejects challenge, rematch, and rivalry entry across locale boundaries. */
@@ -375,17 +394,7 @@ export function buildDeterministicRaceDeck(
       position,
     };
   });
-  /** Provides content version behavior. */
-  const contentVersion = stableHash(
-    riddles
-      .map((riddle) => {
-        /** Provides quality version behavior. */
-        const qualityVersion = records.find((record) => record.data.canonicalRiddleId === riddle.canonicalRiddleId)
-          ?.data.qualityVersion;
-        return `${riddle.canonicalRiddleId}:${String(qualityVersion ?? "unknown")}`;
-      })
-      .join("|"),
-  ).slice(0, 24);
+  const contentVersion = raceDeckContentVersion(riddles);
   return {riddles, contentVersion};
 }
 
@@ -395,29 +404,17 @@ export async function resolveChallengeRiddles(
   locale: RaceLocale,
   challenge: RaceChallengeRecord,
 ): Promise<RaceRiddleSnapshot[]> {
-  /** Provides snapshot behavior. */
-  const snapshot = await getLocalizedCollection(db, locale)
-    .where("canonicalRiddleId", "in", challenge.canonicalRiddleIds)
-    .get();
-  /** Provides by canonical behavior. */
-  const byCanonical = new Map(snapshot.docs.map((document) => [document.data().canonicalRiddleId, document.data()]));
-  return challenge.canonicalRiddleIds.map((canonicalRiddleId, position) => {
-    /** Provides data behavior. */
-    const data = byCanonical.get(canonicalRiddleId);
-    if (
-      !data ||
-      (data.raceEligible !== true && data.raceEligible !== false) ||
-      typeof data.riddleId !== "string" ||
-      typeof data.text !== "string" ||
-      typeof data.answer !== "string"
-    ) {
-      throw new HttpsError(
-        "failed-precondition",
-        `The challenge is unavailable in locale ${locale}; translation ${canonicalRiddleId} is missing.`,
-      );
-    }
-    return {riddleId: data.riddleId, canonicalRiddleId, text: data.text, answer: data.answer, position};
-  });
+  assertRaceLocaleCompatible(challenge, locale);
+  if (challenge.riddles) return validateRaceDeckSnapshot(challenge.riddles, challenge.canonicalRiddleIds,
+    challenge.snapshotVersion === 1 ? challenge.contentVersion : undefined);
+  // Upgrade legacy challenges from the creator's authoritative snapshot. Never
+  // reconstruct a competitive deck from mutable localized catalog documents.
+  const creator = await db.doc(`raceRuns/${challenge.creatorRunId}`).get();
+  const data = creator.data();
+  if (!creator.exists || data?.userId !== challenge.creatorId || data?.locale !== locale) {
+    throw new HttpsError("failed-precondition", "The original challenge deck is unavailable.");
+  }
+  return validateRaceDeckSnapshot(data.riddles, challenge.canonicalRiddleIds);
 }
 
 /** Provides challenge preview behavior. */

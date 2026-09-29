@@ -12,6 +12,7 @@ const {
   YOUTUBE_ANSWER_MAX_GRAPHEMES,
   YOUTUBE_CLUE_MAX_LENGTH,
   YOUTUBE_CRITIC_MODEL,
+  YOUTUBE_GENERATOR_MODEL,
   YOUTUBE_TRANSLATOR_MODEL,
   sha256,
   stableJson,
@@ -179,7 +180,7 @@ const prepareAndCommit = async (result, locales) => {
 const parseResponse = async ({openai, model, schema, schemaName, instructions, input, cacheKey}) => {
   const response = await openai.responses.parse({
     model,
-    ...(model.startsWith("gpt-5.6") ? {reasoning: {effort: "medium"}} : {}),
+    ...((model.startsWith("gpt-5.6") || model === YOUTUBE_GENERATOR_MODEL) ? {reasoning: {effort: "medium"}} : {}),
     instructions,
     input: JSON.stringify(input),
     prompt_cache_key: cacheKey,
@@ -238,6 +239,8 @@ const main = async () => {
           "The clue must be factual, unambiguous, naturally phrased, and must not contain its answer. The answer must " +
           "be NFC-normalized Unicode letters/marks only, with no spaces or punctuation, and one through seven grapheme " +
           "clusters. Do not repeat or lightly paraphrase any existing clue and do not reuse any existing answer. " +
+          "Use concrete, mutually reinforcing details and a fresh angle; avoid stock riddles, vague associations, spelling traps, and facts that change over time. " +
+          "Easy means familiar recognition; medium means one straightforward inference. Difficulty must come from reasoning, never obscure vocabulary or answer length. " +
           "Return every requested canonicalRiddleId exactly once.",
         input: {
           expectedCount: specs.length,
@@ -306,7 +309,7 @@ const main = async () => {
   };
 
   process.stdout.write(
-    `YouTube authoring contract: ${YOUTUBE_TRANSLATOR_MODEL} generator/translator + ` +
+    `YouTube authoring contract: ${YOUTUBE_GENERATOR_MODEL} generator / ${YOUTUBE_TRANSLATOR_MODEL} translator + ` +
     `${YOUTUBE_CRITIC_MODEL} independent critic; append ${appendCount}; ${locales.length} locales.\n`,
   );
   const result = await authorYouTubeContent({

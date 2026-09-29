@@ -253,6 +253,31 @@ Registered players receive a rolling fuzzy D1-D7 schedule. Existing reminders ar
 
 ### Race to 10 content
 
+Classic and Daily generation, including new offline English additions, use `gpt-6.1-sol`.
+The shared online generator also blind-solves and independently reviews each candidate with that model;
+`OPENAI_MODEL` cannot override it. Questions must be unambiguous, keyboard-compatible, factual,
+and distinct from prior content. Daily and Classic pass their own mode and question history to the generator.
+
+Author a new multiplayer bank with `OPENAI_API_KEY` supplied securely in the environment:
+
+```bash
+pnpm --dir firebase-functions race:content:author \
+  --source content/race-en-reviewed-v2.json \
+  --output content/race-en-sol61-v1.json
+```
+
+This creates 180 reviewed English questions: 20 easy and 10 medium per category, with no hard questions.
+Easy means recognition from everyday knowledge; medium means one straightforward inference.
+The independent editor checks difficulty and category before acceptance. A card gets at most three attempts;
+the command fails without writing a bank if generation or final import validation fails. Approved progress is
+saved beside the output as `.checkpoint.json`; rerun the same command to resume it. The checkpoint is bound to
+the source and model. Existing output files are never overwritten. Authoring does not change Firestore or existing daily challenges.
+
+Multiplayer translation is also pinned to `gpt-6.1-sol`; supply a distinct `--critic-model` and the new
+`--source` to `race:translations:generate`. Use a fresh output directory for a new source/model contract.
+Translate and validate the bank for each enabled locale before importing it. Historical content and
+offline translation/critic provenance remain intact; rebuilding does not regenerate released content.
+
 Build and inspect the current eligible pool:
 
 ```bash

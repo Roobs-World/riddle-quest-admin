@@ -12,6 +12,8 @@ const mockParseRunRecord = jest.fn();
 const mockPersistRaceAchievementEvent = jest.fn();
 /** Provides mock race outcome behavior. */
 const mockRaceOutcome = jest.fn();
+/** Settlement behaviour is verified through the real emulator interface. */
+const mockReadSettledRaceOutcome = jest.fn();
 /** Provides mock validate callable response behavior. */
 const mockValidateCallableResponse = jest.fn((_schema: unknown, value: unknown) => value);
 
@@ -41,6 +43,8 @@ jest.mock("firebase-functions/v2/https", () => ({
 jest.mock("../../validation/callableValidation", () => ({
   validateCallableResponse: mockValidateCallableResponse,
 }));
+
+jest.mock("../../race/raceSettlement", () => ({readSettledRaceOutcome: mockReadSettledRaceOutcome}));
 
 jest.mock("../../race/raceEngine", () => ({
   raceOutcome: mockRaceOutcome,
@@ -330,83 +334,22 @@ describe("getRaceOutcomeForUser", () => {
     ).rejects.toMatchObject({code: "permission-denied"});
   });
 
-  it("returns an already-recorded outcome without granting achievements twice", async () => {
-    /** Provides fixture behavior. */
-    const fixture = createOutcomeDb(documentSnapshot(true, {}), documentSnapshot(true, {coins: 250}));
-    mockParseRunRecord.mockReturnValue({userId: "player-1", achievementProgressRecordedAtMs: 5});
-
-    await expect(getRaceOutcomeForUser("player-1", "run-1", {db: fixture.db as never, nowMs: 10})).resolves.toEqual(
-      baseOutcome,
-    );
-    expect(mockPersistRaceAchievementEvent).not.toHaveBeenCalled();
-    expect(fixture.transaction.set).not.toHaveBeenCalled();
+  it("validates the canonical settled outcome returned through the settlement module", async () => {
+    const fixture = createOutcomeDb(documentSnapshot(true, {}), documentSnapshot(true, {}));
+    mockParseRunRecord.mockReturnValue({userId: "player-1"});
+    mockReadSettledRaceOutcome.mockResolvedValue(baseOutcome);
+    await expect(getRaceOutcomeForUser("player-1", "run-1", {db: fixture.db as never, nowMs: 10})).resolves.toEqual(baseOutcome);
+    expect(mockValidateCallableResponse).toHaveBeenCalledWith(expect.anything(), baseOutcome, "getRaceOutcome");
   });
 
   it("uses the default database and current clock when outcome options are omitted", async () => {
-    /** Provides fixture behavior. */
     const fixture = createOutcomeDb(documentSnapshot(true, {}), documentSnapshot(true, {}));
     mockDefaultDb = fixture.db;
-    /** Provides run behavior. */
-    const run = {userId: "player-1", achievementProgressRecordedAtMs: 5};
+    const run = {userId: "player-1"};
     mockParseRunRecord.mockReturnValue(run);
-
+    mockReadSettledRaceOutcome.mockResolvedValue(baseOutcome);
     await getRaceOutcomeForUser("player-1", "run-1");
-
-    expect(mockRaceOutcome).toHaveBeenCalledWith(run, expect.any(Number));
-  });
-
-  it("requires player progress before recording the achievement event", async () => {
-    /** Provides fixture behavior. */
-    const fixture = createOutcomeDb(documentSnapshot(true, {}), documentSnapshot(false));
-    mockParseRunRecord.mockReturnValue({userId: "player-1"});
-
-    await expect(
-      getRaceOutcomeForUser("player-1", "run-1", {db: fixture.db as never, nowMs: 10}),
-    ).rejects.toMatchObject({code: "internal"});
-    expect(mockPersistRaceAchievementEvent).not.toHaveBeenCalled();
-  });
-
-  it("records a clean win and returns the authoritative achievement grant", async () => {
-    /** Provides fixture behavior. */
-    const fixture = createOutcomeDb(documentSnapshot(true, {}), documentSnapshot(true, undefined));
-    mockParseRunRecord.mockReturnValue({userId: "player-1"});
-
-    await expect(getRaceOutcomeForUser("player-1", "run-1", {db: fixture.db as never, nowMs: 50})).resolves.toEqual({
-      ...baseOutcome,
-      newlyUnlockedAchievementIds: ["race_first_finish"],
-      achievementCoinsAwarded: 100,
-      newCoins: 350,
-    });
-    expect(mockPersistRaceAchievementEvent).toHaveBeenCalledWith(
-      fixture.transaction,
-      fixture.userRef,
-      {},
-      {kind: "completed", won: true, cleanRun: true},
-      50,
-    );
-    expect(fixture.transaction.set).toHaveBeenCalledWith(
-      fixture.runRef,
-      {achievementProgressRecordedAtMs: 50},
-      {merge: true},
-    );
-    expect(mockValidateCallableResponse).toHaveBeenCalledWith(expect.anything(), expect.anything(), "getRaceOutcome");
-  });
-
-  it("records losses and penalized wins without a clean-run achievement", async () => {
-    /** Provides fixture behavior. */
-    const fixture = createOutcomeDb(documentSnapshot(true, {}), documentSnapshot(true, {coins: 1}));
-    mockParseRunRecord.mockReturnValue({userId: "player-1"});
-    mockRaceOutcome.mockReturnValue({...baseOutcome, result: "player_loss", correctCount: 9, totalPenaltyMs: 1});
-
-    await getRaceOutcomeForUser("player-1", "run-1", {db: fixture.db as never, nowMs: 60});
-
-    expect(mockPersistRaceAchievementEvent).toHaveBeenCalledWith(
-      fixture.transaction,
-      fixture.userRef,
-      {coins: 1},
-      {kind: "completed", won: false, cleanRun: false},
-      60,
-    );
+    expect(mockReadSettledRaceOutcome).toHaveBeenCalledWith(fixture.transaction, fixture.db, run, expect.any(Number));
   });
 });
 

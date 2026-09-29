@@ -34,6 +34,7 @@ import type {
   SkipRaceRiddleRequest,
   SkipRaceRiddleResponse,
   StartRaceRunRequest,
+  ReadyRaceRunRequest,
   SubmitRaceGuessRequest,
   SubmitRaceGuessResponse,
 } from "@qwordly/core/race";
@@ -270,6 +271,8 @@ export const listRaceCategories = httpsCallable<ListRaceCategoriesRequest, ListR
 );
 /** Starts race run. */
 export const startRaceRun = httpsCallable<StartRaceRunRequest, RaceRunResponse>(functions, "startRaceRun");
+/** Schedules an owned prepared run with a server-controlled countdown. */
+export const readyRaceRun = httpsCallable<ReadyRaceRunRequest, RaceRunResponse>(functions, "readyRaceRun");
 /** Submits race guess. */
 export const submitRaceGuess = httpsCallable<SubmitRaceGuessRequest, SubmitRaceGuessResponse>(
   functions,

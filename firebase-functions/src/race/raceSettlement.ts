@@ -2,7 +2,7 @@ import {RACE_CHALLENGE_TTL_MS, RACE_TARGET_CORRECT, type RaceOutcome} from "@qwo
 import {HttpsError} from "firebase-functions/v2/https";
 import {admin} from "../shared/firebaseAdmin";
 import {getJestAccountDeletionRef} from "../jest/jestAccountDeletion";
-import {raceOutcome, refreshRaceRun, type RaceRunRecord} from "./raceEngine";
+import {raceClock, raceOutcome, refreshRaceRun, type RaceRunRecord} from "./raceEngine";
 import {raceRunPrivacyWrite, resolveRaceOpponentPrivacy} from "./raceOpponentPrivacy";
 import {persistRaceAchievementEvent, stripUndefined, type Firestore} from "./raceSetupService";
 
@@ -26,8 +26,24 @@ export async function settleRaceRun(
   nowMs: number,
 ): Promise<RaceRunRecord> {
   const privacy = await resolveRaceOpponentPrivacy(transaction, db, input);
+  if (["prepared", "scheduled", "active"].includes(input.status) && privacy.run.opponent?.subjectUserId) {
+    const opponent = privacy.run.opponent.subjectUserId;
+    const blocks = await Promise.all([
+      transaction.get(db.doc(`users/${input.userId}/blockedRivals/${opponent}`)),
+      transaction.get(db.doc(`users/${opponent}/blockedRivals/${input.userId}`)),
+    ]);
+    if (blocks.some((block) => block.exists)) {
+      const abandoned: RaceRunRecord = {...privacy.run, status: "abandoned", result: null,
+        wallFinishMs: raceClock(input, nowMs).wallElapsedMs, finishedAtMs: nowMs};
+      transaction.set(db.doc(`raceRuns/${input.runId}`), raceRunPrivacyWrite(abandoned, privacy.scrubbed), {merge: true});
+      return abandoned;
+    }
+  }
   const run = refreshRaceRun(privacy.run, nowMs);
-  if (run.status === "active" || run.status === "abandoned" || run.settledAtMs !== undefined) return run;
+  if (["prepared", "scheduled", "active", "abandoned"].includes(run.status) || run.settledAtMs !== undefined) {
+    if (run.status !== input.status) transaction.set(db.doc(`raceRuns/${run.runId}`), raceRunPrivacyWrite(run, privacy.scrubbed), {merge: true});
+    return run;
+  }
   const outcome = raceOutcome(run, nowMs);
   const ownerRef = db.doc(`users/${run.userId}`);
   const [owner, deletion] = await Promise.all([

@@ -35,6 +35,7 @@ import {
   resumeRaceRun,
   skipRaceRiddle,
   startRaceRun,
+  readyRaceRun,
   submitRaceGuess,
 } from "./race/raceCallables";
 import {
@@ -90,6 +91,7 @@ export {
   listRaceCategories,
   listRaceInbox,
   startRaceRun,
+  readyRaceRun,
   submitRaceGuess,
   requestRaceHint,
   skipRaceRiddle,

@@ -21,6 +21,7 @@ export type HostOperationName =
   | "leaderboard"
   | "raceCategories"
   | "raceStart"
+  | "raceReady"
   | "raceGuess"
   | "raceHint"
   | "raceSkip"
@@ -461,6 +462,8 @@ export const createPlayHostMessageHandlers = ({
       const race = requireRaceAuthority(authority);
       return race.listRaceCategories(message.payload.locale);
     }),
+  /** Schedules an owned prepared run through the active authority adapter. */
+  readyRace: (message) => runRaceOperation(message.requestId, "raceReady", () => requireRaceAuthority(authority).readyRace(message.payload)),
   startRace: (message) =>
     runRaceOperation(message.requestId, "raceStart", () => {
       /** Provides race behavior. */

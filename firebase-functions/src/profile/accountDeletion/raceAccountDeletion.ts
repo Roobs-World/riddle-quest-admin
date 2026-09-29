@@ -220,6 +220,8 @@ async function deleteOwnedRaceChallenges(userId: string): Promise<void> {
 
 /** Removes every targetable cross-user race identity snapshot before its legacy lookup links disappear. */
 export async function removeCrossUserRaceIdentitySnapshots(userId: string): Promise<void> {
+  await deleteMatchingCollectionGroupDocuments("raceMatchCandidates", "creatorId", userId);
+  await deleteMatchingCollectionGroupDocuments("raceMatchOffers", "userId", userId);
   await deleteMatchingCollectionGroupDocuments("raceSettlementOutbox", "userId", userId);
   await deleteMatchingCollectionGroupDocuments("raceSettlementOutbox", "creatorId", userId);
   await deleteMatchingCollectionGroupDocuments("raceInbox", "opponentUserId", userId);

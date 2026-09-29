@@ -59,10 +59,11 @@ export async function generateLocalizedClassicRiddlesForLocale(
   while (newRiddles.length < numberOfRiddles && attemptCount < maxAttempts) {
     attemptCount++;
     /** Provides riddle behavior. */
-    const riddle = await generateUniqueRiddle(locale, [
-      ...existing.answers,
-      ...generatedAttempts.map((item) => item.answer),
-    ]);
+    const riddle = await generateUniqueRiddle(
+      locale,
+      [...existing.answers, ...generatedAttempts.map((item) => item.answer)],
+      {mode: "classic", excludedQuestions: [...existing.questions, ...generatedAttempts.map((item) => item.question)]},
+    );
     if (!riddle) {
       logger.warn(
         `Failed to generate unique classic riddle for locale ${locale}, retrying... (attempt ${attemptCount}/${maxAttempts})`,
@@ -189,10 +190,11 @@ export async function generateAndAppendRiddles(numberOfRiddles: number): Promise
 
     // Generate a riddle using the OpenAI service
     /** Provides riddle behavior. */
-    const riddle = await generateUniqueRiddle("en", [
-      ...existing.answers,
-      ...generatedAttempts.map((item) => item.answer),
-    ]);
+    const riddle = await generateUniqueRiddle(
+      "en",
+      [...existing.answers, ...generatedAttempts.map((item) => item.answer)],
+      {mode: "classic", excludedQuestions: [...existing.questions, ...generatedAttempts.map((item) => item.question)]},
+    );
 
     if (riddle) {
       /** Provides new riddle behavior. */
@@ -298,10 +300,11 @@ export async function generateAndAppendDailyRiddles(numberOfRiddles: number): Pr
 
     // Generate a riddle using the OpenAI service
     /** Provides riddle behavior. */
-    const riddle = await generateUniqueRiddle("en", [
-      ...existing.answers,
-      ...generatedAttempts.map((item) => item.answer),
-    ]);
+    const riddle = await generateUniqueRiddle(
+      "en",
+      [...existing.answers, ...generatedAttempts.map((item) => item.answer)],
+      {mode: "daily", excludedQuestions: [...existing.questions, ...generatedAttempts.map((item) => item.question)]},
+    );
 
     if (riddle) {
       /** Provides new riddle behavior. */

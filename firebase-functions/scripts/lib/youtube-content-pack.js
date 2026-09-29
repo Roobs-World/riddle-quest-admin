@@ -4,6 +4,7 @@ const {createHash} = require("node:crypto");
 
 const YOUTUBE_CONTENT_SCHEMA_VERSION = 1;
 const YOUTUBE_CONTENT_VERSION_PREFIX = "youtube-content-v1";
+const YOUTUBE_GENERATOR_MODEL = "gpt-6.1-sol";
 const YOUTUBE_TRANSLATOR_MODEL = "gpt-5.6-sol";
 const YOUTUBE_CRITIC_MODEL = "gpt-5.5";
 const YOUTUBE_CLUE_MAX_LENGTH = 500;
@@ -424,6 +425,7 @@ module.exports = {
   YOUTUBE_CLUE_MAX_LENGTH,
   YOUTUBE_ANSWER_MAX_GRAPHEMES,
   YOUTUBE_CRITIC_MODEL,
+  YOUTUBE_GENERATOR_MODEL,
   YOUTUBE_TRANSLATOR_MODEL,
   YouTubeContentError,
   assertAppendOnlyOrderManifest,

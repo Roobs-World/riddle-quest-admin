@@ -8,6 +8,7 @@ const {
   AUTOMATED_TRANSLATION_QUALITY_VERSION,
   SUPPORTED_LOCALES,
   YOUTUBE_CRITIC_MODEL,
+  YOUTUBE_GENERATOR_MODEL,
   YOUTUBE_TRANSLATOR_MODEL,
   canonicalSourceHash,
   saveRiddleFingerprint,
@@ -575,7 +576,7 @@ test("appends 181st+ canonical records under deterministic policy and preserves 
   assert.deepEqual(
     calls.filter(({method}) => method === "generateEnglish" || method === "translate")
       .map(({model}) => model),
-    [YOUTUBE_TRANSLATOR_MODEL, YOUTUBE_TRANSLATOR_MODEL],
+    [YOUTUBE_GENERATOR_MODEL, YOUTUBE_TRANSLATOR_MODEL],
   );
   assert.deepEqual(
     calls.filter(({method}) => method.includes("critique")).map(({model}) => model),

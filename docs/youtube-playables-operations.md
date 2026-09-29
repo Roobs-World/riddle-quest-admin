@@ -14,7 +14,7 @@ The public [Developer Portal guide](https://developers.google.com/youtube/gaming
 - Manager or Editor permission on the onboarded YouTube channel.
 - Owner-approved title, genre, description, publisher/developer values, and every thumbnail ratio currently requested by the Portal.
 - An owner-private `OPENAI_API_KEY` for content authoring. Keep it out of repository files and shell transcripts.
-- Distinct locked authoring models: `gpt-5.6-sol` generates English additions and translates; `gpt-5.5` independently critiques both stages.
+- Distinct locked authoring models: `gpt-6.1-sol` generates new English additions; the existing `gpt-5.6-sol` translation contract remains pinned; `gpt-5.5` independently critiques both stages.
 
 ## Author and freeze content
 

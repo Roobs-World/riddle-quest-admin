@@ -23,6 +23,7 @@ import {
   SkipRaceRiddleRequestSchema,
   SkipRaceRiddleResponseSchema,
   StartRaceRunRequestSchema,
+  ReadyRaceRunRequestSchema,
   SubmitRaceGuessRequestSchema,
   SubmitRaceGuessResponseSchema,
 } from "@qwordly/core/race";
@@ -41,6 +42,7 @@ import {
   resumeRaceRunForUser,
   skipRaceRiddleForUser,
   startRaceRunForUser,
+  readyRaceRunForUser,
   submitRaceGuessForUser,
 } from "./raceService";
 import {assertRaceAccess, getRaceAccessForUser, recordRaceAnalyticsForUser} from "./raceRollout";
@@ -147,6 +149,15 @@ export const startRaceRun = onCallWithSentry(
     return validateCallableResponse(RaceRunResponseSchema, response, "startRaceRun");
   },
 );
+
+/** Schedules a prepared run after content delivery, without resetting an existing scheduled start. */
+export const readyRaceRun = onCallWithSentry("readyRaceRun", raceStartCallableOptions, async (request: CallableRequest<unknown>) => {
+  const input = validateCallableRequest(ReadyRaceRunRequestSchema, request.data, "readyRaceRun");
+  const userId = requireUserId(request);
+  const run = await resumeRaceRunForUser(userId, input.runId);
+  await assertRaceAccess(userId, run.run.locale);
+  return validateCallableResponse(RaceRunResponseSchema, await readyRaceRunForUser(userId, input), "readyRaceRun");
+});
 
 /** Applies a guess to the authenticated player's authoritative active run. */
 export const submitRaceGuess = onCallWithSentry(

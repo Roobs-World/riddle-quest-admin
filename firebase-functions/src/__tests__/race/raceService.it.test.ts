@@ -1,5 +1,4 @@
 import {getApps, initializeApp} from "firebase-admin/app";
-import {createHash} from "node:crypto";
 import {getFirestore} from "firebase-admin/firestore";
 import {RACE_CHALLENGE_TTL_MS} from "@qwordly/core/race";
 import {
@@ -18,6 +17,7 @@ import {
 } from "../../race/raceService";
 import {removeCrossUserRaceIdentitySnapshots} from "../../profile/accountDeletion/deleteAccountData";
 import {requestDocumentId} from "../../race/raceSetupService";
+import {deliverRaceSettlement} from "../../race/raceSettlementDelivery";
 
 /** Defines the project id value. */
 const PROJECT_ID = process.env.GCLOUD_PROJECT ?? "riddle-quest-ec2b2";
@@ -109,6 +109,9 @@ beforeAll(async () => {
   await Promise.all(
     [
       "localizedRiddles",
+      "raceMatchCandidates",
+      "raceMatchOffers",
+      "raceSettlementOutbox",
       "raceRuns",
       "raceDecks",
       "raceChallenges",
@@ -149,6 +152,9 @@ beforeAll(async () => {
 afterAll(async () => {
   await Promise.all(
     [
+      "raceMatchCandidates",
+      "raceMatchOffers",
+      "raceSettlementOutbox",
       "raceRuns",
       "raceDecks",
       "raceChallenges",
@@ -344,9 +350,8 @@ describe("Race to 10 transactional service", () => {
     });
 
     /** Publishes input. */
-    const reservedChallengeId = `jest-invite-${createHash("sha256").update("creator-1").digest("hex")}-${"a".repeat(32)}`;
-    /** Repeatable publish request for the reserved invitation. */
-    const publishInput = {runId, requestId: "publish-request-0001", reservedChallengeId};
+    /** Public recording supports independent challengers used by the settlement/privacy cases below. */
+    const publishInput = {runId, requestId: "publish-request-0001"};
     await expect(publishRaceChallengeForUser("another-creator", publishInput, {db, nowMs: NOW + 79_000}))
       .rejects.toMatchObject({code: "permission-denied"});
     /** Publishes ed. */
@@ -360,13 +365,13 @@ describe("Race to 10 transactional service", () => {
       nowMs: NOW + 81_000,
     });
     expect(duplicatePublish).toEqual(published);
-    expect(published.challengeId).toBe(reservedChallengeId);
+    expect(published.challengeId).toBeTruthy();
     /** Replayed publication with a new request ID. */
     const replay = await publishRaceChallengeForUser("creator-1", {...publishInput, requestId: "publish-request-replay"}, {
       db,
       nowMs: NOW + 81_500,
     });
-    expect(replay.challengeId).toBe(reservedChallengeId);
+    expect(replay.challengeId).toBe(published.challengeId);
     expect(replay.achievementCoinsAwarded).toBe(0);
     expect(published).toMatchObject({
       newlyUnlockedAchievementIds: ["race_host"],
@@ -698,6 +703,7 @@ describe("Race to 10 transactional service", () => {
     expect((await db.doc("users/challenger-1").get()).data()).toMatchObject({
       stats: {multiplayerGamesPlayed: 1, multiplayerWins: 1},
     });
+    await deliverRaceSettlement(challenger.run.runId, db, NOW + 135_000);
     expect((await db.doc("users/creator-1").get()).data()).toMatchObject({
       coins: 75,
       stats: {multiplayerGamesPlayed: 2, multiplayerWins: 0, multiplayerChallengesCreated: 1},

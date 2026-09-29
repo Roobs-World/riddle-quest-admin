@@ -25,6 +25,7 @@ import {
   type ListFacebookContextBoardResponse,
 } from "@qwordly/core/race";
 import {tr} from "../i18n";
+import {createRequestId} from "../requestIds";
 import {HOST_TO_GAME_EVENT} from "../localBridge";
 import {createRaceAnalyticsMessage} from "./logic/raceAnalytics";
 import {
@@ -134,7 +135,7 @@ export function RaceTo10Game({
   /** Whether the provider-owned recipient picker is being prepared or displayed. */
   const [sharing, setSharing] = useState(false);
   /** Local receipt time used to advance the displayed authoritative clock. */
-  const [receivedAtMs, setReceivedAtMs] = useState(Date.now());
+  const [receivedAtMs, setReceivedAtMs] = useState(performance.now());
   /** Render trigger used to refresh the displayed race clock. */
   const [, setTick] = useState(0);
   /** Provides {
@@ -239,7 +240,7 @@ export function RaceTo10Game({
   }, [locale, tournamentLoading, tournaments]);
   /** Closes the race or opens confirmation when an active run would be abandoned. */
   const requestClose = useCallback(() => {
-    if (closeStateRef.current.stage === "countdown" && pending === "raceStart") {
+    if (closeStateRef.current.stage === "countdown" && (pending === "raceStart" || pending === "raceReady")) {
       closeAfterStartRef.current = true;
       setCloseAfterStart(true);
       return;
@@ -262,7 +263,7 @@ export function RaceTo10Game({
   /** Stores a new authoritative run view. */
   const updateRun = useCallback((next: RaceRunView) => {
     setRun(next);
-    setReceivedAtMs(Date.now());
+    setReceivedAtMs(performance.now());
   }, []);
 
   useEffect(() => {
@@ -295,7 +296,7 @@ export function RaceTo10Game({
         setFeedback(null);
       } else {
         setRun(rollback.run);
-        setReceivedAtMs(Date.now());
+        setReceivedAtMs(performance.now());
         resetAttempt(rollback.run);
         setPenaltyFlash(null);
       }
@@ -370,9 +371,10 @@ export function RaceTo10Game({
         } else if (operation === "raceResume") {
           /** Provides next run behavior. */
           const nextRun = RaceRunResponseSchema.parse(message.payload.data).run;
-          setStage("racing");
+          setStage(["prepared", "scheduled"].includes(nextRun.status) ? "countdown" : "racing");
           updateRun(nextRun);
-          if (nextRun.status === "active") resetAttempt(nextRun);
+          if (["prepared", "scheduled", "active"].includes(nextRun.status)) resetAttempt(nextRun);
+          if (nextRun.status === "prepared") send("raceReady", "game:readyRace", {runId: nextRun.runId, includeEvaluation: true});
         } else if (operation === "raceInbox") {
           /** Provides inbox behavior. */
           const inbox = ListRaceInboxResponseSchema.parse(message.payload.data);
@@ -418,7 +420,7 @@ export function RaceTo10Game({
           setChallenge(preview);
           setError(null);
           analytics("race_link_entered");
-        } else if (operation === "raceStart") {
+        } else if (operation === "raceStart" || operation === "raceReady") {
           /** Provides next run behavior. */
           const nextRun = RaceRunResponseSchema.parse(message.payload.data).run;
           updateRun(nextRun);
@@ -426,6 +428,8 @@ export function RaceTo10Game({
             send("raceAbandon", "game:abandonRace", {runId: nextRun.runId});
           } else {
             resetAttempt(nextRun);
+            if (nextRun.status === "prepared") send("raceReady", "game:readyRace", {runId: nextRun.runId, includeEvaluation: true});
+            if (nextRun.status === "abandoned") { clearActiveRace(ownerId); setStage("categories"); setRun(null); }
             analytics("race_started", {kind: activeChallengeId ? "challenge" : "creator"});
             analytics("race_attempt_started", {categoryId: nextRun.categoryId});
           }
@@ -480,7 +484,7 @@ export function RaceTo10Game({
           setRun((current) =>
             current && current.runId === result.runId ? applyRaceOutcome(current, result) : current,
           );
-          setReceivedAtMs(Date.now());
+          setReceivedAtMs(performance.now());
           setStage("result");
           analytics("race_completed", {
             result: result.result,
@@ -571,7 +575,7 @@ export function RaceTo10Game({
 
   useEffect(() => {
     if (stage !== "countdown") return;
-    if (run) {
+    if (run && run.status !== "prepared") {
       setLoadingProgress(100);
       /** Keeps the completed loading state visible briefly before countdown. */
       const completeTimer = window.setTimeout(() => setCountdownReady(true), RACE_LOADING_COMPLETE_DISPLAY_MS);
@@ -603,7 +607,7 @@ export function RaceTo10Game({
 
   useRaceFeedbackTimers(penaltyFlash, feedback, setPenaltyFlash, setFeedback);
   /** Authoritative adjusted elapsed time advanced locally since the last response. */
-  const adjustedNow = getAdjustedRaceTime(run, receivedAtMs);
+  const adjustedNow = getAdjustedRaceTime(run, receivedAtMs, performance.now());
 
   useEffect(() => {
     if (stage !== "racing" || !run || outcome) return;
@@ -658,11 +662,12 @@ export function RaceTo10Game({
       "raceStart",
       "game:startRace",
       challengeIdForStart
-        ? {locale, challengeId: challengeIdForStart, includeEvaluation: true}
+        ? {locale, challengeId: challengeIdForStart, includeEvaluation: true, prepare: true}
         : {
             locale,
             categoryId,
             includeEvaluation: true,
+            prepare: true,
             ...(rivalryIdForStart ? {rivalryChallengeId: rivalryIdForStart} : {}),
           },
     );
@@ -699,7 +704,7 @@ export function RaceTo10Game({
     const projected = play.projectPaid("raceHint", run);
     if (projected) {
       setRun(projected);
-      setReceivedAtMs(Date.now());
+      setReceivedAtMs(performance.now());
       setCurrentLetters(createRaceAttempt(projected.currentRiddle));
       setActiveSlotIndex(findFirstEditableRaceSlot(projected.currentRiddle));
       setPenaltyFlash(tr("RaceTo10.HINT_PENALTY"));
@@ -717,7 +722,7 @@ export function RaceTo10Game({
     const projected = play.projectPaid("raceSkip", run);
     if (projected) {
       setRun(projected);
-      setReceivedAtMs(Date.now());
+      setReceivedAtMs(performance.now());
       resetAttempt(projected);
       setPenaltyFlash(tr("RaceTo10.SKIP_PENALTY"));
     }
@@ -862,7 +867,7 @@ export function RaceTo10Game({
     setError(null);
     try {
       /** Provides result behavior. */
-      const result = await matchmaking.find(locale);
+      const result = await matchmaking.find({locale, requestId: createRequestId("raceMatch")});
       if (result.status === "success" && result.value.status === "matched") {
         setActiveChallengeId(result.value.challenge.challengeId);
         setChallenge(result.value.challenge);

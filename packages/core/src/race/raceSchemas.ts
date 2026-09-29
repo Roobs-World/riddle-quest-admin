@@ -85,7 +85,7 @@ export const RacePreloadedRiddleSchema = z
 export type RacePreloadedRiddle = z.infer<typeof RacePreloadedRiddleSchema>;
 
 /** Schema for the lifecycle state of an authoritative race run. */
-export const RaceRunStatusSchema = z.enum(["active", "completed", "timed_out", "abandoned"]);
+export const RaceRunStatusSchema = z.enum(["prepared", "scheduled", "active", "completed", "timed_out", "abandoned"]);
 /** Lifecycle state of an authoritative race run. */
 export type RaceRunStatus = z.infer<typeof RaceRunStatusSchema>;
 
@@ -109,6 +109,12 @@ export const RaceRunViewSchema = z
     rivalryChallengeId: OpaqueIdSchema.optional(),
     role: z.enum(["creator", "challenger"]),
     status: RaceRunStatusSchema,
+    /** Authoritative time sampled when projecting this response. */
+    serverNowMs: MillisecondsSchema.optional(),
+    /** Immutable scored start, including the scheduled countdown lead-in. */
+    startsAtMs: MillisecondsSchema.optional(),
+    /** Latest time a prepared run may be scheduled. */
+    preparationExpiresAtMs: MillisecondsSchema.optional(),
     categoryId: RaceCategoryIdSchema,
     locale: RaceLocaleSchema,
     rules: RaceRulesSchema,
@@ -241,6 +247,8 @@ export const StartRaceRunRequestSchema = z
     rivalryChallengeId: OpaqueIdSchema.optional(),
     requestId: RequestIdSchema,
     includeEvaluation: z.boolean().optional(),
+    /** Prepare content without starting the scored clock. */
+    prepare: z.boolean().optional(),
   })
   .strict()
   .refine((input) => Boolean(input.categoryId) !== Boolean(input.challengeId), {
@@ -257,6 +265,12 @@ export const RaceRunIdRequestSchema = z
     includeEvaluation: z.boolean().optional(),
   })
   .strict();
+
+/** Idempotent command to schedule an owned prepared run; repeats never reset its clock. */
+export const ReadyRaceRunRequestSchema = z.object({runId: OpaqueIdSchema, requestId: RequestIdSchema,
+  includeEvaluation: z.boolean().optional()}).strict();
+/** Validated scheduling command. */
+export type ReadyRaceRunRequest = z.infer<typeof ReadyRaceRunRequestSchema>;
 
 /** Schema for an idempotent request to abandon an active run. */
 export const AbandonRaceRunRequestSchema = z
@@ -349,15 +363,27 @@ export const RaceChallengeIdRequestSchema = z
   })
   .strict();
 
-/** Requests one active provider-wide offline opponent in the exact locale. */
-export const FindRedditRaceMatchRequestSchema = z.object({locale: RaceLocaleSchema}).strict();
-/** Answer-safe result of Reddit's Firebase-global offline matchmaking lookup. */
-export const FindRedditRaceMatchResponseSchema = z.discriminatedUnion("status", [
+/** Requests a recorded opponent; provider scope is derived by the trusted adapter. */
+export const RaceMatchRequestSchema = z.object({
+  locale: RaceLocaleSchema,
+  categoryId: RaceCategoryIdSchema.optional(),
+  requestId: RequestIdSchema.optional(),
+}).strict();
+/** Provider-neutral recorded opponent request. */
+export type RaceMatchRequest = z.infer<typeof RaceMatchRequestSchema>;
+/** Answer-safe recorded matchmaking result shared by supported provider adapters. */
+export const RaceMatchResponseSchema = z.discriminatedUnion("status", [
   z.object({status: z.literal("matched"), challenge: RaceChallengePreviewSchema}).strict(),
   z.object({status: z.literal("empty"), locale: RaceLocaleSchema}).strict(),
 ]);
-/** Describes find reddit race match response. */
-export type FindRedditRaceMatchResponse = z.infer<typeof FindRedditRaceMatchResponseSchema>;
+/** Provider-neutral recorded opponent result. */
+export type RaceMatchResponse = z.infer<typeof RaceMatchResponseSchema>;
+/** Compatibility alias for deployed Reddit gateway requests. */
+export const FindRedditRaceMatchRequestSchema = RaceMatchRequestSchema;
+/** Compatibility alias for deployed Reddit gateway responses. */
+export const FindRedditRaceMatchResponseSchema = RaceMatchResponseSchema;
+/** Compatibility type for existing Reddit adapters. */
+export type FindRedditRaceMatchResponse = RaceMatchResponse;
 
 /** Schema for one answer-free multiplayer result inbox item. */
 export const RaceInboxItemSchema = z

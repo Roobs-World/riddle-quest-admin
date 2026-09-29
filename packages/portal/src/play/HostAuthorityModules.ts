@@ -23,6 +23,7 @@ export type HostAuthorityModules = Readonly<{
     HostServices,
     | "listRaceCategories"
     | "startRace"
+    | "readyRace"
     | "submitRaceGuess"
     | "requestRaceHint"
     | "skipRaceRiddle"

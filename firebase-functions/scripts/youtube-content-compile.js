@@ -108,7 +108,7 @@ void (async () => {
   });
   audit.inputs.canonicalAuthoring = {
     sourceDescriptorSha256: sha256(sourceInput.raw),
-    generatorModel: YOUTUBE_TRANSLATOR_MODEL,
+    generatorModel: sourceInput.value.appendReceipts.at(-1)?.generatorModel ?? YOUTUBE_TRANSLATOR_MODEL,
     criticModel: YOUTUBE_CRITIC_MODEL,
     appendReceiptCount: sourceInput.value.appendReceipts.length,
     appendReceiptsSha256: sha256(stableJson(sourceInput.value.appendReceipts)),

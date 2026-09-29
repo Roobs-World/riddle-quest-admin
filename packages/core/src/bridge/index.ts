@@ -21,6 +21,7 @@ import {
   RequestRaceHintRequestSchema,
   SkipRaceRiddleRequestSchema,
   StartRaceRunRequestSchema,
+  ReadyRaceRunRequestSchema,
   SubmitRaceGuessRequestSchema,
 } from "../race";
 
@@ -53,6 +54,7 @@ const OperationSchema = z.enum([
   "leaderboard",
   "raceCategories",
   "raceStart",
+  "raceReady",
   "raceGuess",
   "raceHint",
   "raceSkip",
@@ -341,6 +343,8 @@ export const GameDeleteAccountMessageSchema = envelope("game:deleteAccount", Emp
 export const GameListRaceCategoriesMessageSchema = envelope("game:listRaceCategories", ListRaceCategoriesRequestSchema);
 /** Validates the game start race message data shape. */
 export const GameStartRaceMessageSchema = envelope("game:startRace", StartRaceRunRequestSchema);
+/** Schedules a prepared run using an immutable server start timestamp. */
+export const GameReadyRaceMessageSchema = envelope("game:readyRace", ReadyRaceRunRequestSchema);
 /** Validates the game submit race guess message data shape. */
 export const GameSubmitRaceGuessMessageSchema = envelope("game:submitRaceGuess", SubmitRaceGuessRequestSchema);
 /** Validates the game request race hint message data shape. */
@@ -414,6 +418,7 @@ export const GameToHostMessageSchema = z.discriminatedUnion("type", [
   GameRequestRaceHintMessageSchema,
   GameSkipRaceRiddleMessageSchema,
   GameResumeRaceMessageSchema,
+  GameReadyRaceMessageSchema,
   GameAbandonRaceMessageSchema,
   GamePublishRaceMessageSchema,
   GameReserveRaceInviteMessageSchema,

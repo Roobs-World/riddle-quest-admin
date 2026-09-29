@@ -105,10 +105,11 @@ export async function generateLocalizedDailyChallengeForDate(
       if (totalAttemptCount >= MAX_DAILY_ATTEMPTS_PER_RUN) break;
       totalAttemptCount += 1;
       /** Provides riddle behavior. */
-      const riddle = await generateUniqueRiddle(locale, [
-        ...existing.answers,
-        ...generatedAttempts.map((item) => item.answer),
-      ]);
+      const riddle = await generateUniqueRiddle(
+        locale,
+        [...existing.answers, ...generatedAttempts.map((item) => item.answer)],
+        {mode: "daily", excludedQuestions: [...existing.questions, ...generatedAttempts.map((item) => item.question)]},
+      );
       if (!riddle) continue;
 
       /** Provides candidate behavior. */
@@ -171,7 +172,10 @@ export async function generateLocalizedDailyChallengeForDate(
       failedLocales: failures.map((entry) => entry.locale),
       attemptCount: totalAttemptCount,
     });
-    throw new DailyGenerationIncompleteError(failures.map((entry) => entry.locale), totalAttemptCount);
+    throw new DailyGenerationIncompleteError(
+      failures.map((entry) => entry.locale),
+      totalAttemptCount,
+    );
   }
   logger.info("Immutable localized daily generation completed.", {
     challengeDate,

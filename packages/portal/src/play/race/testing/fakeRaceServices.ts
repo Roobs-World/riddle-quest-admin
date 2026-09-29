@@ -16,6 +16,8 @@ type RaceMethods = Pick<
   HostServices,
   | "listRaceCategories"
   | "startRace"
+  | "readyRace"
+  | "readyRace"
   | "submitRaceGuess"
   | "requestRaceHint"
   | "skipRaceRiddle"
@@ -213,10 +215,14 @@ export const createFakeRaceServices = (): RaceMethods => {
   /** Produces the current externally visible run view from mutable harness state. */
   const syncView = (run: FakeRun): RaceRunView => {
     /** Wall-clock duration captured or advanced for the run. */
+    if (run.view.status === "scheduled" && Date.now() >= run.startedAtMs) run.view.status = "active";
+    if (run.view.status === "prepared" && Date.now() >= (run.view.preparationExpiresAtMs ?? Infinity)) run.view.status = "abandoned";
     const wallElapsedMs =
       run.view.status === "active" ? Math.max(0, Date.now() - run.startedAtMs) : run.view.wallElapsedMs;
     return {
       ...run.view,
+      serverNowMs: Date.now(),
+      ...(run.view.status !== "prepared" ? {startsAtMs: run.startedAtMs} : {}),
       wallElapsedMs,
       totalPenaltyMs: run.hintPenaltyMs + run.skipPenaltyMs,
       adjustedElapsedMs: wallElapsedMs + run.hintPenaltyMs + run.skipPenaltyMs,
@@ -343,7 +349,8 @@ export const createFakeRaceServices = (): RaceMethods => {
           challengeId: input.challengeId,
           rivalryChallengeId: input.rivalryChallengeId,
           role: input.challengeId ? "challenger" : "creator",
-          status: "active",
+          status: input.prepare ? "prepared" : "active",
+          ...(input.prepare ? {preparationExpiresAtMs: Date.now() + 30_000} : {}),
           categoryId,
           locale: input.locale,
           rules: RACE_RULES,
@@ -372,6 +379,17 @@ export const createFakeRaceServices = (): RaceMethods => {
         },
       };
       runs.set(runId, run);
+      return {run: syncView(run)};
+    },
+    /** Marks a prepared harness run ready without resetting its clock. */
+    async readyRace(input) {
+      return {run: syncView(getRun(input.runId))};
+    },
+    /** Schedules one prepared harness run; retries preserve its first server start. */
+    async readyRace(input) {
+      const run = getRun(input.runId);
+      syncView(run);
+      if (run.view.status === "prepared") { run.startedAtMs = Date.now() + 3_000; run.view.status = "scheduled"; }
       return {run: syncView(run)};
     },
     /** Scores and idempotently records a guess against the active harness riddle. */

@@ -59,8 +59,12 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
 /** Runs the active pnpm installation without depending on a global shim. */
 function readLicenseInventory(packageNames) {
   const npmExecutable = process.env.npm_execpath;
-  const command = npmExecutable ? process.execPath : "pnpm";
-  const prefixArguments = npmExecutable ? [npmExecutable] : [];
+  // Vercel sets npm_execpath to npm even when the install was performed by
+  // pnpm. Only invoke it when it is actually a pnpm entrypoint; npm does not
+  // implement `pnpm licenses list` and exits before producing JSON.
+  const usesPnpmExecutable = typeof npmExecutable === "string" && /(?:^|[/\\])pnpm(?:\.cjs)?$/.test(npmExecutable);
+  const command = usesPnpmExecutable ? process.execPath : "pnpm";
+  const prefixArguments = usesPnpmExecutable ? [npmExecutable] : [];
   const output = execFileSync(
     command,
     [...prefixArguments, "--filter", licensePackage, "licenses", "list", ...(packageNames ? [] : ["--prod"]), "--json"],

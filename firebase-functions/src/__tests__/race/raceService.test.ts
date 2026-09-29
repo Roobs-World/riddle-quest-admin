@@ -27,31 +27,25 @@ const makePool = (locale: RaceLocale): ExistingRaceContentRecord[] =>
   });
 
 describe("Race to 10 deterministic deck service", () => {
-  it("keeps published challenges playable after their riddles leave the eligible pool", async () => {
-    /** Provides challenge behavior. */
-    const challenge = {canonicalRiddleIds: ["history:retired"]} as RaceChallengeRecord;
-    /** Provides db behavior. */
-    const db = {
-      collection: jest.fn(() => ({
-        where: jest.fn(() => ({
-          get: jest.fn(async () => ({docs: [{data: () => ({
-            canonicalRiddleId: "history:retired",
-            riddleId: "retired-riddle",
-            text: "Which ship sank in 1912?",
-            answer: "titanic",
-            raceEligible: false,
-          })}]})),
-        })),
-      })),
-    } as unknown as FirebaseFirestore.Firestore;
+  it("keeps the creator's immutable deck after catalog riddles are edited or retired", async () => {
+    const riddle = {riddleId: "retired-riddle", canonicalRiddleId: "history:retired",
+      text: "Which ship sank in 1912?", answer: "titanic", position: 0};
+    const challenge = {locale: "en", canonicalRiddleIds: [riddle.canonicalRiddleId], riddles: [riddle]} as RaceChallengeRecord;
+    const db = {} as FirebaseFirestore.Firestore;
+    await expect(resolveChallengeRiddles(db, "en", challenge)).resolves.toEqual([riddle]);
+  });
 
-    await expect(resolveChallengeRiddles(db, "en", challenge)).resolves.toEqual([{
-      riddleId: "retired-riddle",
-      canonicalRiddleId: "history:retired",
-      text: "Which ship sank in 1912?",
-      answer: "titanic",
-      position: 0,
-    }]);
+  it("resolves legacy challenges from the original creator run, never the mutable catalog", async () => {
+    const riddle = {riddleId: "original", canonicalRiddleId: "history:original", text: "Original clue", answer: "original", position: 0};
+    const challenge = {locale: "en", creatorId: "creator", creatorRunId: "original-run", canonicalRiddleIds: [riddle.canonicalRiddleId]} as RaceChallengeRecord;
+    const db = {doc: () => ({get: async () => ({exists: true, data: () => ({userId: "creator", locale: "en", riddles: [riddle]})})})} as unknown as FirebaseFirestore.Firestore;
+    await expect(resolveChallengeRiddles(db, "en", challenge)).resolves.toEqual([riddle]);
+  });
+
+  it("rejects a legacy challenge if its authoritative content is no longer recoverable", async () => {
+    const challenge = {locale: "en", creatorRunId: "gone", canonicalRiddleIds: []} as unknown as RaceChallengeRecord;
+    const db = {doc: () => ({get: async () => ({exists: false, data: () => undefined})})} as unknown as FirebaseFirestore.Firestore;
+    await expect(resolveChallengeRiddles(db, "en", challenge)).rejects.toThrow("original challenge deck is unavailable");
   });
 
   it("rejects challenge, rematch, and rivalry entry across locale boundaries", () => {

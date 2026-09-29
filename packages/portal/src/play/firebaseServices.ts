@@ -13,6 +13,7 @@ import {
   listRaceCategories,
   listRaceInbox,
   startRaceRun,
+  readyRaceRun,
   submitRaceGuess,
   requestRaceHint,
   skipRaceRiddle,
@@ -356,6 +357,8 @@ export const createFirebaseHostServices = (): HostServices => {
       return (await listRaceCategories({locale})).data;
     },
     /** Starts race. */
+    /** Schedules a prepared run after deck delivery. */
+    async readyRace(input) { return (await readyRaceRun(input)).data; },
     async startRace(input) {
       return (await startRaceRun(input)).data;
     },

@@ -146,6 +146,7 @@ export const createRedditGuestHostServices = (savedProfile?: BridgeProfile): Hos
     deleteAccount: unavailable,
     listRaceCategories: unavailable,
     startRace: unavailable,
+    readyRace: unavailable,
     submitRaceGuess: unavailable,
     requestRaceHint: unavailable,
     skipRaceRiddle: unavailable,

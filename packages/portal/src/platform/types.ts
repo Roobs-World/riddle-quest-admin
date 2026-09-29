@@ -2,7 +2,8 @@ import type {BridgeProfile} from "@qwordly/core/bridge";
 import type {Feedback, GameEngineSnapshot, ScoredGuess} from "@qwordly/core/game";
 import type {
   ListFacebookTournamentResponse,
-  FindRedditRaceMatchResponse,
+  RaceMatchResponse,
+  RaceMatchRequest,
   RaceLocale,
   RecordFacebookTournamentRunResponse,
   ListFacebookContextBoardResponse,
@@ -395,9 +396,9 @@ export type MatchmakingCapability = {
   /**
    * Finds an identity-minimized offline opponent through the authoritative backend.
    *
-   * @param locale - Validated race content locale.
+   * @param input - Locale, category preference, and optional retry correlation.
    */
-  find(locale: RaceLocale): Promise<PlatformResult<FindRedditRaceMatchResponse>>;
+  find(input: RaceMatchRequest | RaceLocale): Promise<PlatformResult<RaceMatchResponse>>;
 };
 
 /** Privacy-safe activity vocabulary shared by provider presence adapters. */
