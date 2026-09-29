@@ -8,7 +8,6 @@ import {
 } from "@qwordly/core/game";
 import type {BridgeProfile} from "@qwordly/core/bridge";
 import type {GameSessionAction, GameSessionState} from "./gameSessionTypes";
-import {PLAYER_PREFERENCE_STORAGE_KEYS, safeBrowserStorageGet} from "./playerPreferences";
 import {predictCompletionAchievementIds} from "./achievements";
 
 export type {GameModal, GameSessionAction, GameSessionState} from "./gameSessionTypes";
@@ -36,8 +35,9 @@ export const createInitialGameSession = (): GameSessionState => ({
   pendingHintState: null,
   engineSnapshot: null,
   modal: null,
-  // Sound is enabled by default; only an explicit saved opt-out starts muted.
-  muted: safeBrowserStorageGet("local", PLAYER_PREFERENCE_STORAGE_KEYS.soundEnabled) === "false",
+  // The game must never start in the muted state. The mute control persists
+  // changes after startup through setPlayerMuted.
+  muted: false,
   notice: null,
   lastRewards: null,
   optimisticAchievementIds: [],
