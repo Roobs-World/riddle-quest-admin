@@ -236,6 +236,7 @@ const main = async () => {
         schemaName: "youtube_english_riddle_batch",
         instructions:
           "Create each requested all-ages English riddle. Obey the supplied canonical ID, category, and difficulty. " +
+          "These riddles serve Classic and Daily: ONLY easy or medium difficulty, with no specialist knowledge, obscure dates, trick wording, or multi-step deductions. " +
           "The clue must be factual, unambiguous, naturally phrased, and must not contain its answer. The answer must " +
           "be NFC-normalized Unicode letters/marks only, with no spaces or punctuation, and one through seven grapheme " +
           "clusters. Do not repeat or lightly paraphrase any existing clue and do not reuse any existing answer. " +
@@ -260,6 +261,7 @@ const main = async () => {
         instructions:
           "Independently audit each proposed English riddle. Check the fact and exact answer, ambiguity, answer leakage, " +
           "all-ages safety, category, difficulty, and duplication against the existing catalog. Do not repair anything. " +
+          "For new Classic and Daily riddles, easy means everyday recognition and medium means one straightforward inference from familiar facts. Set difficultyMatch false for hard riddles or a mismatch with the requested band. " +
           "Set every boolean strictly and return every requested canonicalRiddleId exactly once.",
         input: {expectedCount: drafts.length, specs, drafts, existing: source},
         cacheKey: "riddlequest-youtube-english-critic-v1",

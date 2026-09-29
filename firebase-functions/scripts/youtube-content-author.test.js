@@ -741,3 +741,45 @@ test("keeps the strict Race seed at exactly 180 while allocating deterministic f
     {canonicalRiddleId: "race:history:32", categoryId: "history", difficultyBand: "easy"},
   ]);
 });
+
+test("allocates only easy and medium Classic and Daily additions across later batches", async () => {
+  const {source} = await inputs();
+  const specs = createYouTubeAppendSpecs(source, 180);
+  assert.equal(specs.filter(({difficultyBand}) => difficultyBand === "easy").length, 120);
+  assert.equal(specs.filter(({difficultyBand}) => difficultyBand === "medium").length, 60);
+  assert.equal(specs.filter(({difficultyBand}) => difficultyBand === "hard").length, 0);
+});
+
+test("keeps legacy append receipts readable when their historical policy included hard cards", async () => {
+  const {sourceDocument, seedRaw, seed, source} = await inputs();
+  const appendedRiddles = createYouTubeAppendSpecs(source, 121, {legacyDifficulty: true}).map((spec, index) => ({
+    ...spec,
+    text: `A historical clue for puzzle number ${index}.`,
+    answer: `zzzz${String.fromCharCode(97 + Math.floor(index / 26))}${String.fromCharCode(97 + index % 26)}`,
+    qualityVersion: "automated_review_v1",
+  }));
+  assert.equal(appendedRiddles.at(-1).difficultyBand, "hard");
+  const criticApprovals = appendedRiddles.map(({canonicalRiddleId, text, answer}) => ({
+    canonicalRiddleId,
+    factual: true, answerCorrect: true, unambiguous: true, clueLeak: false, prohibitedContent: false,
+    categoryMatch: true, difficultyMatch: true,
+    draftSha256: stableHash("youtube-english-draft-v1", {canonicalRiddleId, text, answer}),
+  }));
+  const document = {
+    ...sourceDocument,
+    appendedRiddles,
+    appendReceipts: [{
+      batchId: "1".repeat(64),
+      baseCanonicalSha256: stableHash("youtube-resolved-source-v1", source),
+      generatorModel: "gpt-5.6-sol",
+      criticModel: YOUTUBE_CRITIC_MODEL,
+      canonicalIds: appendedRiddles.map(({canonicalRiddleId}) => canonicalRiddleId),
+      generatedRiddlesSha256: stableHash("youtube-appended-riddles-v1", appendedRiddles),
+      criticApprovals,
+      criticApprovalsSha256: stableHash("youtube-english-critiques-v1", criticApprovals),
+    }],
+  };
+  assert.equal(resolveYouTubeCanonicalSource({document, seedRaw, seed}).riddles.length, 301);
+  document.appendedRiddles.at(-1).qualityVersion = YOUTUBE_ENGLISH_QUALITY_VERSION;
+  assert.throws(() => resolveYouTubeCanonicalSource({document, seedRaw, seed}), /youtube-source-append-policy/u);
+});

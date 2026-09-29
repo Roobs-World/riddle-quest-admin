@@ -293,9 +293,26 @@ describe("OpenAI Service", () => {
         for (const index of [0, 2]) {
           const request = mockParse.mock.calls[index][0] as {instructions: string};
           expect(request.instructions).toContain(`Mode: ${mode}`);
+          expect(request.instructions).toContain("ONLY easy or medium riddles and questions");
         }
       },
     );
+
+    test.each(["classic", "daily"] as const)("rejects hard %s candidates after independent review", async (mode) => {
+      mockParse
+        .mockResolvedValueOnce(parsedRiddleResponse("Seen after rain, I bend sunlight into a coloured arc.", "rainbow"))
+        .mockResolvedValueOnce(approvedBlindSolveResponse("rainbow"))
+        .mockResolvedValueOnce({output_parsed: {...approvedReviewResponse().output_parsed, difficulty: "hard"}});
+      await expect(generateUniqueRiddle("en", [], {mode})).resolves.toBeNull();
+    });
+
+    test.each(["classic", "daily"] as const)("accepts medium %s candidates after independent review", async (mode) => {
+      mockParse
+        .mockResolvedValueOnce(parsedRiddleResponse("Seen after rain, I bend sunlight into a coloured arc.", "rainbow"))
+        .mockResolvedValueOnce(approvedBlindSolveResponse("rainbow"))
+        .mockResolvedValueOnce({output_parsed: {...approvedReviewResponse().output_parsed, difficulty: "medium"}});
+      await expect(generateUniqueRiddle("en", [], {mode})).resolves.not.toBeNull();
+    });
 
     test.each([
       {difficulty: "hard", categoryMatch: true},

@@ -20,10 +20,11 @@ const {
   validateTranslationBundle,
 } = require("./youtube-content-pack.js");
 
-const YOUTUBE_AUTHOR_CONTRACT_SCHEMA_VERSION = 2;
+const YOUTUBE_AUTHOR_CONTRACT_SCHEMA_VERSION = 3;
 const YOUTUBE_AUTHOR_SCHEMA_VERSION = 4;
 const YOUTUBE_TRANSLATION_RETRY_POLICY_VERSION = 6;
-const YOUTUBE_ENGLISH_QUALITY_VERSION = "automated_review_v1";
+const YOUTUBE_ENGLISH_QUALITY_VERSION = "automated_review_easy_medium_v2";
+const LEGACY_ENGLISH_QUALITY_VERSION = "automated_review_v1";
 const YOUTUBE_AUTHOR_MAX_ATTEMPTS = 6;
 const SHA256_PATTERN = /^[0-9a-f]{64}$/u;
 const SAFE_SEED_FILE_PATTERN = /^[A-Za-z0-9._-]+$/u;
@@ -139,7 +140,7 @@ const validateCommittedEnglishApproval = (value) => {
 };
 
 /** Allocates append-only IDs and metadata without asking a model to make release-order decisions. */
-const createYouTubeAppendSpecs = (source, appendCount) => {
+const createYouTubeAppendSpecs = (source, appendCount, {legacyDifficulty = false} = {}) => {
   validateCanonicalSource(source);
   assert(Number.isSafeInteger(appendCount) && appendCount >= 0 && appendCount <= 7_820,
     "append-count-invalid");
@@ -148,7 +149,9 @@ const createYouTubeAppendSpecs = (source, appendCount) => {
   return Array.from({length: appendCount}, (_, offset) => {
     const globalIndex = source.riddles.length + offset;
     const categoryId = CATEGORY_IDS[globalIndex % CATEGORY_IDS.length];
-    const difficultyBand = DIFFICULTY_BANDS[Math.floor(globalIndex / 60) % DIFFICULTY_BANDS.length];
+    const difficultyBand = legacyDifficulty
+      ? DIFFICULTY_BANDS[Math.floor(globalIndex / 60) % DIFFICULTY_BANDS.length]
+      : ["easy", "medium"][Math.floor((globalIndex - 180) / 60) % 2];
     perCategory[categoryId] += 1;
     return {
       canonicalRiddleId: `race:${categoryId}:${String(perCategory[categoryId]).padStart(2, "0")}`,
@@ -202,12 +205,13 @@ const resolveYouTubeCanonicalSource = ({document, seedRaw, seed}) => {
     riddles: [...validatedSeed.riddles, ...document.appendedRiddles],
   });
   const expectedSpecs = createYouTubeAppendSpecs(validatedSeed, document.appendedRiddles.length);
+  const legacySpecs = createYouTubeAppendSpecs(validatedSeed, document.appendedRiddles.length, {legacyDifficulty: true});
   document.appendedRiddles.forEach((riddle, index) => {
-    const expected = expectedSpecs[index];
+    const expected = riddle.qualityVersion === LEGACY_ENGLISH_QUALITY_VERSION ? legacySpecs[index] : expectedSpecs[index];
     assert(riddle.canonicalRiddleId === expected.canonicalRiddleId &&
       riddle.categoryId === expected.categoryId && riddle.difficultyBand === expected.difficultyBand,
     "youtube-source-append-policy", riddle.canonicalRiddleId);
-    assert(riddle.qualityVersion === YOUTUBE_ENGLISH_QUALITY_VERSION,
+    assert([YOUTUBE_ENGLISH_QUALITY_VERSION, LEGACY_ENGLISH_QUALITY_VERSION].includes(riddle.qualityVersion),
       "youtube-source-append-quality", riddle.canonicalRiddleId);
   });
   const receiptIds = document.appendReceipts.flatMap((receipt) => validateAppendReceipt(receipt).canonicalIds);

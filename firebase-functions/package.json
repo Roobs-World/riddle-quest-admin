@@ -43,6 +43,7 @@
     "test:youtube-content": "node --test scripts/youtube-content-compile.test.js scripts/youtube-content-author.test.js scripts/youtube-content-author-cli.test.js",
     "race:rollout:configure": "node scripts/run-with-functions-node.js scripts/race-rollout-configure.js",
     "race:privacy:anonymize": "pnpm build && node scripts/run-with-functions-node.js scripts/anonymize-legacy-race-identities.js",
+    "race:architecture:migrate": "pnpm build && node scripts/run-with-functions-node.js scripts/race-architecture-migrate.js",
     "leaderboard:privacy:purge-orphans": "pnpm build && node scripts/run-with-functions-node.js scripts/purge-orphan-leaderboard-rows.js",
     "notifications:configure": "node scripts/run-with-functions-node.js scripts/notification-copy-configure.js",
     "usernames:migrate": "node scripts/prepare-deploy.js && pnpm build && node scripts/run-with-functions-node.js scripts/migrate-username-reservations.js",

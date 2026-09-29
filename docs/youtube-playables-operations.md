@@ -20,6 +20,8 @@ The public [Developer Portal guide](https://developers.google.com/youtube/gaming
 
 Content authoring is networked and resumable; ordinary builds are offline. From the repository root:
 
+New Classic and Daily additions alternate easy and medium batches. The author and independent critic use everyday recognition for easy riddles and one straightforward inference for medium riddles; hard additions are excluded. Legacy released content remains bound to its original receipt and difficulty policy.
+
 ```sh
 pnpm --dir firebase-functions youtube:content:author
 pnpm --dir firebase-functions youtube:content:compile

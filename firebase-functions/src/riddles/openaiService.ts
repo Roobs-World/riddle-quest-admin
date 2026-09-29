@@ -215,8 +215,9 @@ function getGenerationBrief(options: RiddleGenerationOptions): string {
   const mode = options.mode ?? "classic";
   return (
     `Mode: ${mode}. ` +
+    "ONLY easy or medium riddles and questions. Easy means immediate recognition from everyday knowledge; medium means one straightforward inference from familiar facts. No specialist knowledge, obscure dates, trick wording, or multi-step deductions. " +
     (mode === "multiplayer"
-      ? "This is a timed multiplayer race: ONLY easy or medium questions. Easy means immediate recognition from everyday knowledge; medium means one straightforward inference from familiar facts. No specialist knowledge, obscure dates, trick wording, or multi-step deductions. "
+      ? "This is a timed multiplayer race. "
       : mode === "daily"
         ? "Create a satisfying daily puzzle with a small aha moment, solvable from familiar knowledge and one fair inference. "
         : "Create a varied, accessible classic riddle with concrete clues and a satisfying deduction. ") +
