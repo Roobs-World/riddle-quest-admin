@@ -64,8 +64,6 @@ export function useJestRegistration({
   const completingRef = useRef(false);
   /** Provides source ref behavior. */
   const sourceRef = useRef<RegistrationSource>("profile");
-  /** Records reward dismissal even if optional milestone persistence is still pending. */
-  const victoryDismissedRef = useRef(false);
   /** Holds the automatic prompt until the player finishes the reward sequence. */
   const awaitingVictoryDismissalRef = useRef(false);
 
@@ -160,22 +158,14 @@ export function useJestRegistration({
     withPlatformActivity,
   ]);
 
-  /** Provides open behavior. */
-  const open = useCallback(
+  /** Shows registration after the current completion sequence has ended. */
+  const showPrompt = useCallback(
     (source: RegistrationSource, showGamePrompt: boolean) => {
       /** Provides session behavior. */
       const session = sessionRef.current;
       if (!session || session.player.registered) {
         window.dispatchEvent(new CustomEvent("riddle-quest:registration-prompt-closed", {detail: {registered: true}}));
         return;
-      }
-      if (source === "authoritative_win") {
-        if (!victoryDismissedRef.current) {
-          awaitingVictoryDismissalRef.current = true;
-          return;
-        }
-        victoryDismissedRef.current = false;
-        awaitingVictoryDismissalRef.current = false;
       }
       sourceRef.current = source;
       if (!overlayRef.current) {
@@ -194,6 +184,15 @@ export function useJestRegistration({
     },
     [complete, platform, sessionRef, trackFunnel],
   );
+
+  /** Queues win prompts behind the victory and achievement popups. */
+  const open = useCallback((source: RegistrationSource, showGamePrompt: boolean) => {
+    if (source === "authoritative_win") {
+      awaitingVictoryDismissalRef.current = true;
+      return;
+    }
+    showPrompt(source, showGamePrompt);
+  }, [showPrompt]);
 
   /** Provides dismiss behavior. */
   const dismiss = useCallback(() => {
@@ -261,28 +260,24 @@ export function useJestRegistration({
   useEffect(() => {
     /** Opens signup only after a voluntary profile action. */
     const openFromProfile = () => open("profile", true);
-    /** Records that the victory sequence is closed before the remaining guidance popups finish. */
-    const onVictoryDismissed = () => {
-      victoryDismissedRef.current = true;
-    };
     const onCompletionPopupsDismissed = () => {
-      if (awaitingVictoryDismissalRef.current) open("authoritative_win", true);
+      if (!awaitingVictoryDismissalRef.current) return;
+      awaitingVictoryDismissalRef.current = false;
+      showPrompt("authoritative_win", true);
     };
-    window.addEventListener("riddle-quest:victory-dismissed", onVictoryDismissed);
     window.addEventListener("riddle-quest:completion-popups-dismissed", onCompletionPopupsDismissed);
     window.addEventListener("riddle-quest:registration-prompt-opened", openFromProfile);
     window.addEventListener("riddle-quest:register-player", register);
     window.addEventListener("riddle-quest:login-player", login);
     window.addEventListener("riddle-quest:dismiss-registration", dismiss);
     return () => {
-      window.removeEventListener("riddle-quest:victory-dismissed", onVictoryDismissed);
       window.removeEventListener("riddle-quest:completion-popups-dismissed", onCompletionPopupsDismissed);
       window.removeEventListener("riddle-quest:registration-prompt-opened", openFromProfile);
       window.removeEventListener("riddle-quest:register-player", register);
       window.removeEventListener("riddle-quest:login-player", login);
       window.removeEventListener("riddle-quest:dismiss-registration", dismiss);
     };
-  }, [dismiss, login, open, register]);
+  }, [dismiss, login, open, register, showPrompt]);
 
   return {showRegistration, registrationPending, registrationFailure, open, dismiss, register, login};
 }

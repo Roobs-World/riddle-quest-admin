@@ -770,6 +770,36 @@ describeBrowser("Jest authentication integration", () => {
     await context.close();
   });
 
+  it("offers registration after the first Classic victory while reward syncing is delayed", async () => {
+    const {context, page} = await openHarness(browser);
+    await enterRegisteredGame(page);
+    await page.evaluate(() => {
+      const dispatch = window.dispatchEvent.bind(window);
+      window.dispatchEvent = (event: Event) => {
+        if (event.type === "riddle-quest:game-to-host" &&
+          (event as CustomEvent).detail?.type === "game:completeGame") return true;
+        return dispatch(event);
+      };
+    });
+    for (const letter of "PIANO") {
+      await page.locator(".keyboard").getByRole("button", {name: letter, exact: true}).click();
+    }
+    await page.locator(".game-input-actions").getByRole("button", {name: /submit/i}).click();
+    await page.locator(".modal-victory").waitFor();
+    for (let step = 0; step < 6 && await page.locator(".modal-victory").count(); step += 1) {
+      await page.locator(".reward-continue").click();
+    }
+    for (let step = 0; step < 5; step += 1) {
+      if (await page.locator(".jest-registration-dialog").count()) break;
+      const tooltip = page.locator(".tooltip-backdrop");
+      await tooltip.waitFor({state: "visible", timeout: 5_000});
+      await tooltip.getByRole("button", {name: /^got it$/i}).click();
+    }
+    await page.getByText("Keep your progress", {exact: true}).waitFor({timeout: 5_000});
+    expect(await page.locator(".jest-registration-dialog").isVisible()).toBe(true);
+    await context.close();
+  });
+
   it("registers with a stable player id, re-signs identity, refreshes profile, and survives reload", async () => {
     /** Provides {context, page} behavior. */
     const {context, page} = await openHarness(browser);

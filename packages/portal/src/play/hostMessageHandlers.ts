@@ -163,6 +163,8 @@ export type CreateHostMessageHandlersOptions = {
   persistAchievementProjection: (achievementIds: string[]) => void;
   /** Stores on playable. */
   onPlayable?: () => void;
+  /** Runs when the backend confirms a correct single-player answer. */
+  onAuthoritativeGuessWin?: (input: {riddleId: string; gameMode: WebGameMode}) => void;
   /** Stores on authoritative complete. */
   onAuthoritativeComplete?: (
     input: {
@@ -205,6 +207,7 @@ export const createPlayHostMessageHandlers = ({
   syncRaceAchievementProgress,
   persistAchievementProjection,
   onPlayable,
+  onAuthoritativeGuessWin,
   onAuthoritativeComplete,
   onAuthoritativeRaceResult,
   onAccountDeleted,
@@ -237,6 +240,13 @@ export const createPlayHostMessageHandlers = ({
     try {
       /** Provides result behavior. */
       const result = await authority.gameplay.submitGuess(message.payload);
+      if (result.isCorrect) {
+        try {
+          onAuthoritativeGuessWin?.(message.payload);
+        } catch (error) {
+          reportHostOperationError(error, "guess");
+        }
+      }
       postOperation(message.requestId, "guess", true, result);
       trackEvent("guess_submitted", {
         game_mode: message.payload.gameMode,

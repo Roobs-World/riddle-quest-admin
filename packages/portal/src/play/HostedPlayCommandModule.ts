@@ -35,6 +35,7 @@ export type HostedPlayCommandContext = Readonly<{
   callbacks: Pick<
     CreateHostMessageHandlersOptions,
     | "onPlayable"
+    | "onAuthoritativeGuessWin"
     | "onAuthoritativeComplete"
     | "onAuthoritativeRaceResult"
     | "onAccountDeleted"

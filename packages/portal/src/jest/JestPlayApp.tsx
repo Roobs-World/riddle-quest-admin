@@ -53,6 +53,8 @@ import {createHostedPlaySession} from "../play/HostedPlaySession";
 export function JestPlayApp() {
   /** Counts confirmed guest Classic wins in this play session for the registration cadence. */
   const guestWinsThisSessionRef = useRef(0);
+  /** Prevents retried answers from counting the same Classic win twice. */
+  const countedGuestWinIdsRef = useRef(new Set<string>());
   /** Prevents concurrent completion callbacks from duplicating the first-milestone funnel event. */
   const firstMilestoneFunnelRecordedRef = useRef(false);
   /** Provides locale behavior. */
@@ -425,6 +427,17 @@ export function JestPlayApp() {
     withPlatformActivity,
     trackFunnel,
   });
+  /** Queues the guest prompt as soon as the correct answer is confirmed. */
+  const handleAuthoritativeGuessWin = useCallback((input: {riddleId: string; gameMode: "classic" | "challenge"}) => {
+    const activeSession = sessionRef.current;
+    if (!activeSession || activeSession.player.registered || input.gameMode !== "classic" ||
+      countedGuestWinIdsRef.current.has(input.riddleId)) return;
+    countedGuestWinIdsRef.current.add(input.riddleId);
+    guestWinsThisSessionRef.current += 1;
+    if (shouldPromptGuestRegistration(activeSession, input.gameMode, guestWinsThisSessionRef.current)) {
+      openRegistrationPrompt("authoritative_win", true);
+    }
+  }, [openRegistrationPrompt]);
   /** Handles authoritative complete. */
   const handleAuthoritativeComplete = useCallback(
     async (
@@ -451,12 +464,6 @@ export function JestPlayApp() {
         winStreak: result.newWinStreak ?? current.winStreak,
         wins: current.wins + 1,
       }));
-      if (!session.player.registered && input.gameMode === "classic") {
-        guestWinsThisSessionRef.current += 1;
-        if (shouldPromptGuestRegistration(session, input.gameMode, guestWinsThisSessionRef.current)) {
-          openRegistrationPrompt("authoritative_win", true);
-        }
-      }
       /** Records ed. */
       const recorded = await notificationOperationGate.run(() =>
         recordAuthoritativeCompletion(platform, session, {
@@ -475,7 +482,7 @@ export function JestPlayApp() {
         trackFunnel("first_milestone_marked");
       }
     },
-    [notificationOperationGate, openRegistrationPrompt, platform, session, trackFunnel],
+    [notificationOperationGate, platform, session, trackFunnel],
   );
   /** Provides {set presence state, toggle presence} behavior. */
   const {setPresenceState, togglePresence} = useJestPresence({
@@ -554,6 +561,7 @@ export function JestPlayApp() {
             referralSharing,
           })}
           onPlayable={() => markJestPlayable(platform)}
+          onAuthoritativeGuessWin={handleAuthoritativeGuessWin}
           onAuthoritativeComplete={handleAuthoritativeComplete}
           onAccountDeletionRequested={() => markAccountDeletionRequested(platform.getPlayer().playerId)}
           onAccountDeleted={clearPlayerState}

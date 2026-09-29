@@ -51,6 +51,7 @@ export function PlayHostApp({
     referralSharing,
   },
   onPlayable,
+  onAuthoritativeGuessWin,
   onAuthoritativeComplete,
   onResultScreen,
   onAuthoritativeRaceResult,
@@ -61,6 +62,8 @@ export function PlayHostApp({
   session: HostedPlaySession;
   /** Stores on playable. */
   onPlayable?: () => void;
+  /** Runs when a correct answer is confirmed before reward delivery. */
+  onAuthoritativeGuessWin?: (input: {riddleId: string; gameMode: WebGameMode}) => void;
   /** Stores on authoritative complete. */
   onAuthoritativeComplete?: (
     input: {
@@ -308,6 +311,7 @@ export function PlayHostApp({
         },
         callbacks: {
           onPlayable,
+          onAuthoritativeGuessWin,
           onAuthoritativeComplete: handleAuthoritativeComplete,
           onAuthoritativeRaceResult: handleAuthoritativeRaceResult,
           onAccountDeleted,
@@ -327,6 +331,7 @@ export function PlayHostApp({
       handleAuthoritativeRaceResult,
       onResultScreen,
       onPlayable,
+      onAuthoritativeGuessWin,
       postOperation,
       runRaceOperation,
       sendInit,
