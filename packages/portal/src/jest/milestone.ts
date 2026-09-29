@@ -11,10 +11,10 @@ export type AuthoritativeCompletion = {
 };
 
 /** Decides whether a confirmed guest win should offer registration. */
-export function shouldPromptGuestRegistration(session: JestSession): boolean {
+export function shouldPromptGuestRegistration(session: JestSession, completedRiddles?: number): boolean {
   if (session.player.registered) return false;
-  const completedRiddles = (session.preferences.jestGuestCompletedRiddles ?? 0) + 1;
-  return (completedRiddles - 1) % 3 === 0;
+  const count = completedRiddles ?? (session.preferences.jestGuestCompletedRiddles ?? 0) + 1;
+  return count > 0 && (count - 1) % 3 === 0;
 }
 
 /** Records authoritative completion. */

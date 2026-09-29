@@ -1,6 +1,6 @@
 import {describe, expect, jest, test} from "@jest/globals";
 import {MockJestPlatform} from "../MockJestPlatform";
-import {recordAuthoritativeCompletion} from "../milestone";
+import {recordAuthoritativeCompletion, shouldPromptGuestRegistration} from "../milestone";
 import type {JestSession} from "../types";
 
 /** Provides session behavior. */
@@ -15,6 +15,13 @@ const session = (overrides: Partial<JestSession> = {}): JestSession => ({
 });
 
 describe("authoritative first milestone", () => {
+  test("offers registration after session wins 1, 4, and 7 even with saved wins", () => {
+    const returningGuest = session({preferences: {jestGuestCompletedRiddles: 2}});
+    expect(Array.from({length: 7}, (_, index) => shouldPromptGuestRegistration(returningGuest, index + 1)))
+      .toEqual([true, false, false, true, false, false, true]);
+    expect(shouldPromptGuestRegistration(session({player: {playerId: "stable-player", registered: true}}), 1))
+      .toBe(false);
+  });
   test("marks only after an authoritative win and opens contextual registration", async () => {
     /** Provides platform behavior. */
     const platform = new MockJestPlatform();

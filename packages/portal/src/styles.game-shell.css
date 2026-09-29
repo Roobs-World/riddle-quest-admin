@@ -81,9 +81,9 @@
   display: block;
 }
 .game-mode-label {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+  justify-self: center;
+  position: relative;
+  left: -17px;
   color: #fff;
   font:
     400 clamp(20px, 5vw, 30px)/1 "Poetsen One",

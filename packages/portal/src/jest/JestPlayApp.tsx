@@ -51,6 +51,8 @@ import {useJestRegistration} from "./useJestRegistration";
 import {createHostedPlaySession} from "../play/HostedPlaySession";
 /** Provides jest play app behavior. */
 export function JestPlayApp() {
+  /** Counts confirmed guest wins in this play session for the registration cadence. */
+  const guestWinsThisSessionRef = useRef(0);
   /** Provides locale behavior. */
   const locale = useLocale();
   /** Provides host services mode behavior. */
@@ -421,7 +423,12 @@ export function JestPlayApp() {
         winStreak: result.newWinStreak ?? current.winStreak,
         wins: current.wins + 1,
       }));
-      if (shouldPromptGuestRegistration(session)) openRegistrationPrompt("authoritative_win", true);
+      if (!session.player.registered) {
+        guestWinsThisSessionRef.current += 1;
+        if (shouldPromptGuestRegistration(session, guestWinsThisSessionRef.current)) {
+          openRegistrationPrompt("authoritative_win", true);
+        }
+      }
       /** Records ed. */
       const recorded = await notificationOperationGate.run(() =>
         recordAuthoritativeCompletion(platform, session, {

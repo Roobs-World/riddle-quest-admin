@@ -79,7 +79,7 @@ describe("ProfileModalPage", () => {
     );
     expect(html).toContain("Guest");
     expect(html).toContain("profile-avatar-fallback");
-    expect(html).toContain("Upgrade Account");
+    expect(html).toContain("Register or Log In");
   });
 
   it("renders registered identity, progression, and profile destinations", () => {

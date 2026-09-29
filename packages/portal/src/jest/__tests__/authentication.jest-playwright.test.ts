@@ -140,7 +140,8 @@ const installJestSdkHarness = async (page: Page, scenario = "success") => {
     };
     /** Provides preferences behavior. */
     const preferences: Record<string, unknown> = selectedScenario === "returning-milestone"
-      ? {firstMilestoneMarked: true} : {};
+      ? {firstMilestoneMarked: true} : selectedScenario === "returning-guest-two-wins"
+        ? {firstMilestoneMarked: true, jestGuestCompletedRiddles: 2} : {};
     /** Provides overlay closed behavior. */
     let overlayClosed = false;
     /** Provides subscription active behavior. */
@@ -680,6 +681,7 @@ describeBrowser("Jest authentication integration", () => {
   it.each([
     ["new guest", "success"],
     ["guest with a legacy milestone", "returning-milestone"],
+    ["returning guest with two saved wins", "returning-guest-two-wins"],
     ["guest when the milestone call fails", "milestone-failure"],
   ])("prompts a %s after the first solved riddle", async (_label, scenario) => {
     /** Fresh guest with no prior milestone or onboarding. */
@@ -705,7 +707,7 @@ describeBrowser("Jest authentication integration", () => {
     expect((await getHarnessState(page)).overlayOptions).toEqual([]);
     await page.locator('.modal-victory').waitFor();
     for (let step = 0; step < 6 && await page.locator('.modal-victory').count(); step += 1) {
-      expect(await page.locator('.jest-registration-alert').count()).toBe(0);
+      expect(await page.locator('.jest-registration-dialog').count()).toBe(0);
       if (await page.getByRole('button', {name: /tap the chest/i}).isVisible()) {
         await page.getByRole('button', {name: /tap the chest/i}).click();
       }
@@ -713,9 +715,14 @@ describeBrowser("Jest authentication integration", () => {
       await page.locator('.reward-continue').click();
     }
     await page.getByText("Keep your progress", {exact: true}).waitFor();
+    const dialog = page.locator(".jest-registration-dialog");
+    expect(await dialog.isVisible()).toBe(true);
+    await page.waitForFunction(() => !document.querySelector(".jest-registration-dialog")?.hasAttribute("inert"));
     const state = await getHarnessState(page);
     expect(state.calls.filter((call) => call === "sdk.markFirstMilestone")).toHaveLength(1);
     expect(state.overlayOptions).toEqual([expect.objectContaining({source: "authoritative_win"})]);
+    await dialog.locator(".play-text-button").click();
+    await dialog.waitFor({state: "detached"});
     await context.close();
   });
 
