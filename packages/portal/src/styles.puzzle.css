@@ -2,6 +2,7 @@
   width: min(900px, 100%);
   justify-self: center;
   display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
   justify-items: center;
   align-content: start;
   gap: 12px;
@@ -64,6 +65,7 @@
 }
 .guess-board {
   width: min(100%, var(--board-max-width));
+  align-self: center;
   display: grid;
   gap: 8px;
   margin-top: 8px;
