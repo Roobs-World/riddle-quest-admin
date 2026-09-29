@@ -8,6 +8,10 @@ import {
 } from "../gameSession";
 import {createSavedGame} from "../game/hooks/useGameSessionPersistence";
 
+it("starts with sound enabled when no sound preference is saved", () => {
+  expect(createInitialGameSession().muted).toBe(false);
+});
+
 /** Provides riddle behavior. */
 const riddle = {
   riddleId: "classic-1",
@@ -44,6 +48,15 @@ const resolveGuess = (
   });
 
 describe("game session reducer", () => {
+  it("keeps the victory sequence open when a late riddle arrives", () => {
+    let state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle});
+    state = resolveGuess(state, "PIANO", 1, {isCorrect: true, gameOver: true});
+    const nextRiddle = {...riddle, riddleId: "classic-2", sessionToken: "00000000-0000-4000-8000-000000000002", index: 2};
+    expect(reduce(state, {type: "loadRiddle", riddle: nextRiddle})).toBe(state);
+    state = reduce(state, {type: "closeModal"});
+    expect(reduce(state, {type: "loadRiddle", riddle: nextRiddle}).riddle).toEqual(nextRiddle);
+  });
+
   it("shows one 100-coin charge immediately, keeps it through stale profiles, and reconciles by request", () => {
     /** Guest account used to exercise the local charge. */
     let state = reduce(createInitialGameSession(), {type: "hostInit", locale: "en", gameMode: "classic",

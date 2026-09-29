@@ -41,7 +41,7 @@ export function useHostAuthSession({
   /** Auth lifetime is independent of reconstructed commerce and capability wrappers. */
   const auth = services.auth;
   /** Latest authentication snapshot supplied by the active target adapter. */
-  const [snapshot, setSnapshot] = useState<AuthSnapshot>({user: null, profile: null});
+  const [snapshot, setSnapshot] = useState<AuthSnapshot>({user: null, profile: initialProfile ?? null});
   /** User representation enriched only with target registration state. */
   const bridgeUser = useMemo(
     () => (snapshot.user ? {...snapshot.user, platformRegistered} : null),
@@ -57,8 +57,8 @@ export function useHostAuthSession({
   );
 
   useEffect(() => {
-    if (snapshot.profile) onProfileChange?.(snapshot.profile);
-  }, [onProfileChange, snapshot.profile]);
+    if (snapshot.user && snapshot.profile) onProfileChange?.(snapshot.profile);
+  }, [onProfileChange, snapshot.profile, snapshot.user]);
 
   useEffect(() => {
     postToGame({

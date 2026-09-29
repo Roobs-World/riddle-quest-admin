@@ -687,6 +687,7 @@ describeBrowser("Jest authentication integration", () => {
     /** Fresh guest with no prior milestone or onboarding. */
     const {context, page} = await openHarness(browser, {customName: "Nova", scenario});
     await enterRegisteredGame(page);
+    expect(await page.locator(".game-header .coin-pill strong").innerText()).toBe("300");
     expect((await getHarnessState(page)).overlayOptions).toEqual([]);
     expect(await page.getByText("Keep your progress", {exact: true}).count()).toBe(0);
     await page.locator('.keyboard').getByRole('button', {name: /^P$/}).click();
@@ -748,12 +749,17 @@ describeBrowser("Jest authentication integration", () => {
     }
     await page.locator(".game-input-actions").getByRole("button", {name: /submit/i}).click();
     await page.locator(".modal-victory").waitFor();
+    await page.getByRole("button", {name: /tap the chest/i}).waitFor();
     for (let step = 0; step < 6 && await page.locator(".modal-victory").count(); step += 1) {
+      await page.locator(".reward-continue").waitFor();
+      const currentStep = await page.locator(".modal-victory").textContent();
       if (await page.getByRole("button", {name: /tap the chest/i}).isVisible()) {
         await page.getByRole("button", {name: /tap the chest/i}).click();
       }
-      await page.waitForFunction(() => !document.querySelector<HTMLButtonElement>(".reward-continue")?.disabled);
+      await page.waitForFunction(() => Boolean(document.querySelector<HTMLButtonElement>(".reward-continue:not(:disabled)")));
       await page.locator(".reward-continue").click();
+      await page.waitForFunction((previous) => !document.querySelector(".modal-victory") ||
+        document.querySelector(".modal-victory")?.textContent !== previous, currentStep);
     }
     await page.locator(".tooltip-backdrop").waitFor({state: "detached"});
     const state = await getHarnessState(page);

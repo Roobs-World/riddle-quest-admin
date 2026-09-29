@@ -315,10 +315,36 @@ export function JestPlayApp() {
       }
       if (result.status === "success") {
         try {
+          // The server creates the Jest user with its starting balance during identity exchange.
+          // Read that profile before showing play so a fresh guest never sees the empty 0-coin fallback.
+          let readySession = result.value;
+          if (hostServicesMode === "firebase" && !authHarness && !mockRuntime) {
+            const [{loadUserDocument}, {toBridgeProfile}] = await Promise.all([
+              import("../firebase"),
+              import("../play/profileMapper"),
+            ]);
+            const profileData = await loadUserDocument(readySession.firebaseUid);
+            if (!profileData) throw new Error("jest-initial-profile-unavailable");
+            const profile = toBridgeProfile({
+              uid: readySession.firebaseUid,
+              displayName: undefined,
+              email: undefined,
+              isAnonymous: !readySession.player.registered,
+            }, profileData);
+            readySession = {
+              ...readySession,
+              playerData: {
+                ...readySession.playerData,
+                schemaVersion: 1,
+                updatedAt: Date.now(),
+                profile,
+              },
+            };
+          }
           await commitJestStartupSession({
             gate: notificationOperationGate,
             isActive: () => active,
-            session: result.value,
+            session: readySession,
             enablePlayerStateWrites: playerStateWrites.enable,
             setEngagementProgress,
             setSession,

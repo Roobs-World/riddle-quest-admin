@@ -30,6 +30,7 @@ describe("fanfare modal content", () => {
     /** Provides state behavior. */
     const state = {
       ...createInitialGameSession(),
+      completionAcknowledged: true,
       lastRewards: {
         coinsEarned: 0,
         newXp: 25,
@@ -68,6 +69,9 @@ describe("fanfare modal content", () => {
     );
     expect(victoryWithoutSharing).toContain("reward-details");
     expect(victoryWithoutSharing).not.toContain("Invite a friend");
+    expect(renderToString(
+      <VictoryFanfareContent {...sharedProps} state={{...state, completionAcknowledged: false}} activeStep={{kind: "victory"}} />,
+    )).toContain('disabled=""');
     expect(
       renderToString(
         <ReferralSharingProvider capability={referralSharing}>

@@ -8,7 +8,7 @@ import {
 } from "@qwordly/core/game";
 import type {BridgeProfile} from "@qwordly/core/bridge";
 import type {GameSessionAction, GameSessionState} from "./gameSessionTypes";
-import {safeBrowserStorageGet} from "./playerPreferences";
+import {PLAYER_PREFERENCE_STORAGE_KEYS, safeBrowserStorageGet} from "./playerPreferences";
 import {predictCompletionAchievementIds} from "./achievements";
 
 export type {GameModal, GameSessionAction, GameSessionState} from "./gameSessionTypes";
@@ -36,7 +36,8 @@ export const createInitialGameSession = (): GameSessionState => ({
   pendingHintState: null,
   engineSnapshot: null,
   modal: null,
-  muted: safeBrowserStorageGet("local", "riddleQuest:soundEnabled") === "false",
+  // Sound is enabled by default; only an explicit saved opt-out starts muted.
+  muted: safeBrowserStorageGet("local", PLAYER_PREFERENCE_STORAGE_KEYS.soundEnabled) === "false",
   notice: null,
   lastRewards: null,
   optimisticAchievementIds: [],
@@ -148,6 +149,9 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
       };
     }
     case "loadRiddle": {
+      // Background or late host loads must not replace a completed question before
+      // the player has dismissed its victory and achievement sequence.
+      if (state.modal === "victory" && state.lastOutcome?.kind === "win") return state;
       /** Provides snapshot behavior. */
       const snapshot = {
         guesses: [],

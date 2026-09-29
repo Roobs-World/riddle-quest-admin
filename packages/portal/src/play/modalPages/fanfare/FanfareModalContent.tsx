@@ -98,8 +98,8 @@ export function VictoryFanfareContent({
         <>
           <strong className="fanfare-title" aria-live="polite">{tr("VictoryModal.YOU_WON_TITLE")}</strong>
           {state.riddle?.gameMode === "classic" && state.lastOutcome?.kind === "win" && (
-            <button className="play-primary reward-continue" disabled={synchronizing} onClick={onAdvance}>
-              {tr(synchronizing ? "VictoryModal.SYNCING_PROGRESS" : "VictoryModal.NEXT_LEVEL_BUTTON")}
+            <button className="play-primary reward-continue" disabled={synchronizing || !state.completionAcknowledged} onClick={onAdvance}>
+              {tr(synchronizing || !state.completionAcknowledged ? "VictoryModal.SYNCING_PROGRESS" : "VictoryModal.NEXT_LEVEL_BUTTON")}
             </button>
           )}
         </>
@@ -171,9 +171,9 @@ export function VictoryFanfareContent({
             {stepIndex + 1}/{displayedStepCount}
           </small>
           <button className="play-primary reward-continue" disabled={coinCollectionPending ||
-            (synchronizing && stepIndex + 1 === displayedStepCount)} onClick={onAdvance}>
+            ((synchronizing || !state.completionAcknowledged) && stepIndex + 1 === displayedStepCount)} onClick={onAdvance}>
             {stepIndex + 1 < displayedStepCount ? tr("GameScreenAlerts.NEXT_BUTTON") :
-              tr(synchronizing ? "VictoryModal.SYNCING_PROGRESS" : "VictoryModal.NEXT_LEVEL_BUTTON")}
+              tr(synchronizing || !state.completionAcknowledged ? "VictoryModal.SYNCING_PROGRESS" : "VictoryModal.NEXT_LEVEL_BUTTON")}
           </button>
         </>
       ) : null}
