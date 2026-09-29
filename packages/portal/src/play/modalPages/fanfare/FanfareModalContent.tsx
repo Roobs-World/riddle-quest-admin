@@ -82,6 +82,8 @@ export function VictoryFanfareContent({
 }: VictoryFanfareContentProps) {
   /** Optional outbound sharing supplied by the active release target. */
   const referralSharing = useReferralSharing();
+  /** Keeps the progress indicator coherent if reward details refresh mid-fanfare. */
+  const displayedStepCount = Math.max(stepCount, stepIndex + 1);
   /** Provides victory level behavior. */
   const victoryLevel = state.lastRewards?.newLevel;
   /** Provides victory rank behavior. */
@@ -166,11 +168,11 @@ export function VictoryFanfareContent({
       {activeStep ? (
         <>
           <small className="sequence-progress">
-            {stepIndex + 1}/{stepCount}
+            {stepIndex + 1}/{displayedStepCount}
           </small>
           <button className="play-primary reward-continue" disabled={coinCollectionPending ||
-            (synchronizing && stepIndex + 1 === stepCount)} onClick={onAdvance}>
-            {stepIndex + 1 < stepCount ? tr("GameScreenAlerts.NEXT_BUTTON") :
+            (synchronizing && stepIndex + 1 === displayedStepCount)} onClick={onAdvance}>
+            {stepIndex + 1 < displayedStepCount ? tr("GameScreenAlerts.NEXT_BUTTON") :
               tr(synchronizing ? "VictoryModal.SYNCING_PROGRESS" : "VictoryModal.NEXT_LEVEL_BUTTON")}
           </button>
         </>

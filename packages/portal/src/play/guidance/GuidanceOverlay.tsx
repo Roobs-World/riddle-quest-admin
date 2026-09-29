@@ -61,6 +61,7 @@ export function GuidanceOverlay({
   const [sequenceIndex, setSequenceIndex] = useState(0);
   /** Provides [target rect, set target rect] behavior. */
   const [targetRect, setTargetRect] = useState<DOMRect | null>(null);
+  const [completionPopupsPending, setCompletionPopupsPending] = useState(false);
   /** Provides onboarding card ref behavior. */
   const onboardingCardRef = useRef<HTMLDivElement | null>(null);
   /** Provides tooltip card ref behavior. */
@@ -69,6 +70,12 @@ export function GuidanceOverlay({
   const activeTooltip = sequenceName === "profileTour" && modal !== "profile" ? undefined : sequence[sequenceIndex];
   /** Provides guidance active behavior. */
   const guidanceActive = onboardingStep !== null || Boolean(activeTooltip);
+
+  useEffect(() => {
+    const onVictoryDismissed = () => setCompletionPopupsPending(true);
+    window.addEventListener("riddle-quest:victory-dismissed", onVictoryDismissed);
+    return () => window.removeEventListener("riddle-quest:victory-dismissed", onVictoryDismissed);
+  }, []);
 
   useEffect(() => {
     if (sequenceName !== "profileTour" || modal === "profile") return;
@@ -234,6 +241,20 @@ export function GuidanceOverlay({
     state.profile,
     userId,
   ]);
+
+  useEffect(() => {
+    if (!completionPopupsPending || modal !== null || onboardingStep !== null || sequence.length > 0) return;
+    const contextualGuidanceReady = hasCompletedPlayerOnboarding(createGuidanceStorageKey("onboarding", userId)) &&
+      safeBrowserStorageGet("local", createTooltipTourStorageKey("gameTour", userId)) === "seen";
+    const hasPendingTooltip = contextualGuidanceReady && getContextualTooltipCandidates(state, modal).some(
+      ({id, when}) => when &&
+        safeBrowserStorageGet("local", createGuidanceStorageKey(`tooltipSeen:${id}`, userId)) !== "seen",
+    );
+    if (!hasPendingTooltip) {
+      setCompletionPopupsPending(false);
+      window.dispatchEvent(new CustomEvent("riddle-quest:completion-popups-dismissed"));
+    }
+  }, [completionPopupsPending, modal, onboardingStep, sequence.length, state.gameMode, state.lastOutcome, state.lastRewards, state.profile, userId]);
 
   useLayoutEffect(() => {
     if (!activeTooltip) {

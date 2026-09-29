@@ -1,6 +1,7 @@
 import {useState} from "react";
 import type {GameSessionState} from "../../gameSession";
 import {tr} from "../../i18n";
+import {PulsingSpinner} from "../../SpinningWheelLoader";
 import {LEADERBOARD_PAGE_SIZE, paginateLeaderboard} from "./leaderboardPagination";
 
 /** Supported server-authoritative leaderboard measurements. */
@@ -39,6 +40,7 @@ export function LeaderboardModalPage({
         {LEADERBOARD_TYPES.map((type) => (
           <button
             className={leaderboardType === type ? "active" : ""}
+            disabled={loading}
             key={type}
             onClick={() => onRequestLeaderboard(type)}
           >
@@ -52,6 +54,11 @@ export function LeaderboardModalPage({
           </button>
         ))}
       </div>
+      {loading ? (
+        <div className="leaderboard-loading" role="status" aria-label={tr("Accessibility.LOADING")}>
+          <PulsingSpinner />
+        </div>
+      ) : null}
       <ol className="leaderboard-list" aria-busy={loading}>
         {!loading && entries.length === 0 ? <li>{tr("Leaderboard.NO_SCORES_YET")}</li> : null}
         {visibleEntries.map((entry, index) => (

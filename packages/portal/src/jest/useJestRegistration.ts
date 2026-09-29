@@ -261,18 +261,22 @@ export function useJestRegistration({
   useEffect(() => {
     /** Opens signup only after a voluntary profile action. */
     const openFromProfile = () => open("profile", true);
-    /** Hands ownership to signup after every win/achievement panel has closed. */
+    /** Records that the victory sequence is closed before the remaining guidance popups finish. */
     const onVictoryDismissed = () => {
       victoryDismissedRef.current = true;
+    };
+    const onCompletionPopupsDismissed = () => {
       if (awaitingVictoryDismissalRef.current) open("authoritative_win", true);
     };
     window.addEventListener("riddle-quest:victory-dismissed", onVictoryDismissed);
+    window.addEventListener("riddle-quest:completion-popups-dismissed", onCompletionPopupsDismissed);
     window.addEventListener("riddle-quest:registration-prompt-opened", openFromProfile);
     window.addEventListener("riddle-quest:register-player", register);
     window.addEventListener("riddle-quest:login-player", login);
     window.addEventListener("riddle-quest:dismiss-registration", dismiss);
     return () => {
       window.removeEventListener("riddle-quest:victory-dismissed", onVictoryDismissed);
+      window.removeEventListener("riddle-quest:completion-popups-dismissed", onCompletionPopupsDismissed);
       window.removeEventListener("riddle-quest:registration-prompt-opened", openFromProfile);
       window.removeEventListener("riddle-quest:register-player", register);
       window.removeEventListener("riddle-quest:login-player", login);

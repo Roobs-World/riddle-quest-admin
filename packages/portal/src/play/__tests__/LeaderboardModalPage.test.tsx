@@ -25,6 +25,12 @@ describe("LeaderboardModalPage", () => {
         <LeaderboardModalPage entries={[]} loading leaderboardType="xp" onRequestLeaderboard={requestLeaderboard} />,
       ),
     ).toContain('aria-busy="true"');
+    const loadingHtml = renderToString(
+      <LeaderboardModalPage entries={[]} loading leaderboardType="xp" onRequestLeaderboard={requestLeaderboard} />,
+    );
+    expect(loadingHtml).toContain("leaderboard-loading");
+    expect(loadingHtml).toMatch(/disabled=""/g);
+    expect(loadingHtml.match(/disabled=""/g)).toHaveLength(3);
     expect(
       renderToString(
         <LeaderboardModalPage

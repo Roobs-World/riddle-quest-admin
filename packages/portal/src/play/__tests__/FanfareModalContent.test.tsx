@@ -102,4 +102,25 @@ describe("fanfare modal content", () => {
       ).replaceAll("<!-- -->", ""),
     ).toContain("+11 Coins");
   });
+
+  it("keeps victory progress valid when reward details refresh mid-sequence", () => {
+    const state = createInitialGameSession();
+    const html = renderToString(
+      <VictoryFanfareContent
+        activeCoinAward={null}
+        activeStep={{kind: "victory"}}
+        coinCollectionPending={false}
+        onAdvance={noop}
+        onBalancePreview={noop}
+        onCoinCollected={noop}
+        state={state}
+        stepCount={1}
+        stepIndex={5}
+      />,
+    );
+
+    const progress = html.match(/sequence-progress[^>]*>(.*?)<\/small>/)?.[1].replaceAll("<!-- -->", "");
+    expect(progress).toBe("6/6");
+    expect(progress).not.toBe("6/1");
+  });
 });

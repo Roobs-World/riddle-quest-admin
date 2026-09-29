@@ -376,6 +376,32 @@
 .leaderboard-panel .leaderboard-tabs {
   margin-top: 0;
 }
+.leaderboard-loading {
+  position: relative;
+  min-height: 72px;
+}
+.leaderboard-loading .pulsing-spinner {
+  width: 52px;
+  height: 52px;
+}
+.leaderboard-loading .pulsing-spinner-dot {
+  width: 12px;
+  height: 12px;
+  margin: -6px;
+  transform: rotate(var(--spinner-dot-angle)) translateY(-19px) scale(1);
+  animation-name: leaderboard-spinner-dot;
+}
+@keyframes leaderboard-spinner-dot {
+  0%,
+  100% {
+    opacity: 1;
+    transform: rotate(var(--spinner-dot-angle)) translateY(-19px) scale(1);
+  }
+  25% {
+    opacity: 0.2;
+    transform: rotate(var(--spinner-dot-angle)) translateY(-19px) scale(0.5);
+  }
+}
 .leaderboard-panel .leaderboard-list {
   min-height: 0;
   margin: 0;

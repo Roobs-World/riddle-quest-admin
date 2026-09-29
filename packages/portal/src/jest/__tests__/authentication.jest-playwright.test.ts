@@ -714,6 +714,12 @@ describeBrowser("Jest authentication integration", () => {
       await page.waitForFunction(() => !document.querySelector<HTMLButtonElement>('.reward-continue')?.disabled);
       await page.locator('.reward-continue').click();
     }
+    await page.locator('.tooltip-backdrop').waitFor({timeout: 3_000});
+    for (let step = 0; step < 5 && await page.locator('.tooltip-backdrop').count(); step += 1) {
+      expect(await page.locator('.jest-registration-dialog').count()).toBe(0);
+      await page.locator('.tooltip-backdrop').getByRole('button', {name: /^got it$/i}).click();
+    }
+    await page.locator('.tooltip-backdrop').waitFor({state: 'detached'});
     await page.getByText("Keep your progress", {exact: true}).waitFor();
     const dialog = page.locator(".jest-registration-dialog");
     expect(await dialog.isVisible()).toBe(true);
