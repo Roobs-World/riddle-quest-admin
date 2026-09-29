@@ -1,8 +1,16 @@
-import type {YouTubeContent, YouTubeRiddle, YouTubeSavedGuess, YouTubeSaveV1} from "../types";
-import {LocalSoloAuthority, YouTubeAuthorityError, YouTubeAuthorityRestoreSaveError} from "../LocalSoloAuthority";
-import {YOUTUBE_SAVE_BUDGET_BYTES, createEmptyYouTubeSave, parseYouTubeSave, serializeYouTubeSave} from "../save";
-import {YouTubeSaveGate} from "../YouTubeSaveGate";
-
+import type {YouTubeContent, YouTubeRiddle, YouTubeSavedGuess, YouTubeSaveV1} from "../../playable/types";
+import {
+  LocalSoloAuthority,
+  YouTubeAuthorityError,
+  YouTubeAuthorityRestoreSaveError,
+} from "../../playable/LocalSoloAuthority";
+import {
+  YOUTUBE_SAVE_BUDGET_BYTES,
+  createEmptyYouTubeSave,
+  parseYouTubeSave,
+  serializeYouTubeSave,
+} from "../../playable/save";
+import {YouTubeSaveGate} from "../../playable/YouTubeSaveGate";
 /** Provides riddles behavior. */
 const riddles: YouTubeRiddle[] = [
   {
@@ -22,7 +30,6 @@ const riddles: YouTubeRiddle[] = [
     contentFingerprint: "abcdef0123456789",
   },
 ];
-
 /** Provides content behavior. */
 const content: YouTubeContent = {
   contentVersion: "content-v1",
@@ -34,14 +41,12 @@ const content: YouTubeContent = {
   },
   riddles: new Map(riddles.map((riddle) => [riddle.canonicalId, riddle])),
 };
-
 /** Creates authority. */
 const createAuthority = async (
   saveData: (data: string) => Promise<void> = async () => undefined,
   loaded: YouTubeSaveV1 = createEmptyYouTubeSave(content.contentVersion),
   now = () => new Date("2026-01-01T12:00:00.000Z"),
 ) => LocalSoloAuthority.restore(loaded, content, new YouTubeSaveGate({saveData}), now);
-
 /** Creates near budget save. */
 const createNearBudgetSave = (combiningMarks: number): YouTubeSaveV1 => {
   /** Provides save behavior. */
@@ -135,9 +140,15 @@ describe("LocalSoloAuthority", () => {
     /** Releases the deliberately delayed save. */
     let releaseSave = () => {};
     /** Simulates a slow platform save after starting play. */
-    const saveData = jest.fn<Promise<void>, [string]>()
+    const saveData = jest
+      .fn<Promise<void>, [string]>()
       .mockResolvedValueOnce(undefined)
-      .mockImplementationOnce(() => new Promise<void>((resolve) => { releaseSave = resolve; }));
+      .mockImplementationOnce(
+        () =>
+          new Promise<void>((resolve) => {
+            releaseSave = resolve;
+          }),
+      );
     /** Owns the local game and save transaction. */
     const authority = await createAuthority(saveData);
     await authority.start("classic");
@@ -174,7 +185,6 @@ describe("LocalSoloAuthority", () => {
     expect(authority.getSnapshot()).toMatchObject({saveBlocked: true});
     /** Provides exact failed payload behavior. */
     const exactFailedPayload = saveData.mock.calls[1]?.[0];
-
     /** Provides staged letters behavior. */
     const stagedLetters = authority.getSnapshot().displayLetters;
     authority.setInput(["r", "o", "m", "e"], 3);
@@ -218,7 +228,6 @@ describe("LocalSoloAuthority", () => {
     });
     await authority.start("classic");
     for (let index = 0; index < 4; index += 1) await authority.requestHint();
-
     /** Provides snapshot behavior. */
     const snapshot = authority.getSnapshot();
     expect(snapshot.displayLetters?.join("")).toBe("rome");
@@ -268,7 +277,6 @@ describe("LocalSoloAuthority", () => {
     );
     await beforeSegment.start("daily");
     expect(beforeSegment.getSnapshot().save.activeGame?.riddleId).toBe("riddle:moon");
-
     /** Provides on new segment behavior. */
     const onNewSegment = await LocalSoloAuthority.restore(
       createEmptyYouTubeSave(content.contentVersion),

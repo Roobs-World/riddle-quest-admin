@@ -124,6 +124,7 @@ describe("race presentation helpers", () => {
   });
 
   it("shows the next preloaded clue immediately after a correct guess", () => {
+    /** Provides preloaded riddles behavior. */
     const preloadedRiddles = Array.from({length: RACE_RULES.deckSize}, (_, position) => ({
       riddleId: `riddle-${position + 1}`,
       text: `Clue ${position + 1}`,
@@ -136,6 +137,7 @@ describe("race presentation helpers", () => {
       currentRiddle: {riddleId: "riddle-2", text: "Clue 2", guessesUsed: 0},
     });
     expect(projectInstantCorrectGuess(run())).toBeNull();
+    expect(projectInstantCorrectGuess(run({preloadedRiddles: []}))).toBeNull();
     expect(projectInstantCorrectGuess(run({correctCount: 9, preloadedRiddles}))).toBeNull();
   });
 

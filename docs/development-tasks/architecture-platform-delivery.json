@@ -1,0 +1,90 @@
+{
+  "taskId": "architecture:isolated-platform-delivery",
+  "targets": [
+    "jest",
+    "facebook",
+    "reddit",
+    "youtube",
+    "netflix",
+    "yahoo",
+    "gamesnacks",
+    "itch"
+  ],
+  "work": "Isolate build dependencies; centralize 52 release destinations and reusable neutral HTML5 handoffs; verify completion presentation, provisional recovery and Race ownership; automate development completion in the existing dashboard.",
+  "checks": [
+    {
+      "id": "architecture-contracts",
+      "executable": "pnpm",
+      "args": [
+        "test:architecture"
+      ]
+    },
+    {
+      "id": "workspace-types",
+      "executable": "pnpm",
+      "args": [
+        "check:types"
+      ]
+    },
+    {
+      "id": "target-inventories",
+      "executable": "node",
+      "args": [
+        "scripts/release/verify-target-dependency-evidence.mjs"
+      ]
+    },
+    {
+      "id": "release-integrity",
+      "executable": "node",
+      "args": [
+        "scripts/release/verify-release-target-e2e.mjs"
+      ]
+    },
+    {
+      "id": "browser-archive-digests",
+      "executable": "node",
+      "args": [
+        "scripts/release/verify-packaged-game-evidence.mjs"
+      ]
+    }
+  ],
+  "remainingGates": [
+    "Merge the workflow into main to enable automatic accepted-revision CI updates.",
+    "Provider credentials, submission, partner review, approval and publication require separate evidence."
+  ],
+  "nextAction": "Review the implementation and merge; then follow each platform's existing submission checklist.",
+  "artifacts": [
+    {
+      "target": "jest",
+      "file": "packages/portal/dist-jest/index.html"
+    },
+    {
+      "target": "facebook",
+      "file": "packages/portal/dist-facebook/index.html"
+    },
+    {
+      "target": "reddit",
+      "file": "packages/portal/dist-reddit/index.html"
+    },
+    {
+      "target": "youtube",
+      "file": "packages/portal/dist-youtube/index.html"
+    },
+    {
+      "target": "netflix",
+      "file": "packages/portal/dist-netflix/index.html"
+    },
+    {
+      "target": "yahoo",
+      "file": "packages/portal/dist-yahoo/index.html"
+    },
+    {
+      "target": "gamesnacks",
+      "file": "build-gamesnacks.zip"
+    },
+    {
+      "target": "itch",
+      "file": "build-itch.zip"
+    }
+  ]
+}

@@ -1,5 +1,4 @@
-import type {YouTubeSdkPort} from "../youtube/types";
-
+import type {YouTubeSdkPort} from "../playable/types";
 /** Describes game snacks runtime. */
 type GameSnacksRuntime = Readonly<{
   /** Stores audio. */
@@ -28,7 +27,6 @@ type GameSnacksRuntime = Readonly<{
     setItem(key: string, value: string): void;
   }>;
 }>;
-
 /** Documents global. */
 declare global {
   /** Defines the contract for window. */
@@ -37,10 +35,8 @@ declare global {
     GameSnacks?: GameSnacksRuntime;
   }
 }
-
 /** Saves key. */
 const saveKey = "riddle-quest-save-v1";
-
 /** Provides runtime behavior. */
 function runtime(): GameSnacksRuntime {
   /** Provides sdk behavior. */
@@ -48,7 +44,6 @@ function runtime(): GameSnacksRuntime {
   if (!sdk) throw new Error("gamesnacks-sdk-missing");
   return sdk;
 }
-
 /** Adapts the provider-injected GameSnacks SDK to the self-contained playable runtime. */
 export function createGameSnacksSdkPort(): YouTubeSdkPort {
   return {
@@ -56,11 +51,17 @@ export function createGameSnacksSdkPort(): YouTubeSdkPort {
     firstFrameReady: () => runtime().game.firstFrameReady(),
     gameReady: () => runtime().game.ready(),
     /** Loads data. */
-    async loadData() { return runtime().storage.getItem(saveKey) ?? ""; },
+    async loadData() {
+      return runtime().storage.getItem(saveKey) ?? "";
+    },
     /** Saves data. */
-    async saveData(data) { runtime().storage.setItem(saveKey, data); },
+    async saveData(data) {
+      runtime().storage.setItem(saveKey, data);
+    },
     /** Gets language. */
-    async getLanguage() { return globalThis.navigator.language || "en"; },
+    async getLanguage() {
+      return globalThis.navigator.language || "en";
+    },
     isAudioEnabled: () => runtime().audio.isEnabled,
     /** Provides on audio enabled change behavior. */
     onAudioEnabledChange(callback) {

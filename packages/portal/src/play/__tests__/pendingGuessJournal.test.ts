@@ -1,38 +1,77 @@
 import {afterEach, describe, expect, it} from "@jest/globals";
-import {
-  acquirePendingPlayLease, clearPendingGuessJournal, pendingPlayScope,
-  readPendingGuessJournal, releasePendingPlayLease, writePendingGuessJournal,
-  type PendingGuessJournal,
-} from "../pendingGuessJournal";
-
+import {createPendingPlayJournalStorage, pendingPlayScope, type PendingGuessJournal} from "../pendingGuessJournal";
 /** The values used by this regression scenario. */
 const values = new Map<string, string>();
-Object.defineProperty(globalThis, "localStorage", {configurable: true, value: {
+/** Provides storage behavior. */
+const storage = createPendingPlayJournalStorage({
   getItem: (key: string) => values.get(key) ?? null,
-  setItem: (key: string, value: string) => { values.set(key, value); },
-  removeItem: (key: string) => { values.delete(key); },
-}});
+  setItem: (key: string, value: string) => {
+    values.set(key, value);
+  },
+  removeItem: (key: string) => {
+    values.delete(key);
+  },
+});
+/** Provides {read: read pending guess journal, write: write pending guess journal, clear: clear pending guess journal,
+  acquire: acquire pending play lease, release: release pending play lease} behavior. */
+const {
+  read: readPendingGuessJournal,
+  write: writePendingGuessJournal,
+  clear: clearPendingGuessJournal,
+  acquire: acquirePendingPlayLease,
+  release: releasePendingPlayLease,
+} = storage;
 
 afterEach(() => values.clear());
-
 /** The scope used by this regression scenario. */
 const scope = pendingPlayScope("player-1", 2, "en");
 /** The journal used by this regression scenario. */
 const journal = (): PendingGuessJournal => ({
-  version: 1, scope, confirmedClassicIndex: 4,
-  riddle: {riddleId: "classic-4", text: "Clue", answerLength: 5,
-    sessionToken: "00000000-0000-4000-8000-000000000001", gameMode: "classic",
-    attemptsUsed: 0, hasUsedContinue: false, awaitingContinue: false,
-    evaluation: {answer: "piano", locale: "en"}},
-  base: {currentLetters: ["P", "I", "A", "N", "O"], activeSlotIndex: 0,
-    guesses: [], engineSnapshot: {guesses: [], attemptsUsed: 0, hasUsedContinue: false, gameOver: false},
-    modal: null, lastOutcome: null, completionAcknowledged: false, letterStates: {}},
+  version: 1,
+  scope,
+  confirmedClassicIndex: 4,
+  riddle: {
+    riddleId: "classic-4",
+    text: "Clue",
+    answerLength: 5,
+    sessionToken: "00000000-0000-4000-8000-000000000001",
+    gameMode: "classic",
+    attemptsUsed: 0,
+    hasUsedContinue: false,
+    awaitingContinue: false,
+    evaluation: {answer: "piano", locale: "en"},
+  },
+  base: {
+    currentLetters: ["P", "I", "A", "N", "O"],
+    activeSlotIndex: 0,
+    guesses: [],
+    engineSnapshot: {guesses: [], attemptsUsed: 0, hasUsedContinue: false, gameOver: false},
+    modal: null,
+    lastOutcome: null,
+    completionAcknowledged: false,
+    letterStates: {},
+  },
   successors: [],
-  queue: [{message: {type: "game:submitGuess", requestId: "request-123",
-    payload: {riddleId: "classic-4", gameMode: "classic",
-      sessionToken: "00000000-0000-4000-8000-000000000001", guess: "PIANO", requestId: "request-123"}},
-    attempts: 1, isCorrect: true, gameOver: true, canContinue: false,
-    feedback: ["green", "green", "green", "green", "green"]}],
+  queue: [
+    {
+      message: {
+        type: "game:submitGuess",
+        requestId: "request-123",
+        payload: {
+          riddleId: "classic-4",
+          gameMode: "classic",
+          sessionToken: "00000000-0000-4000-8000-000000000001",
+          guess: "PIANO",
+          requestId: "request-123",
+        },
+      },
+      attempts: 1,
+      isCorrect: true,
+      gameOver: true,
+      canContinue: false,
+      feedback: ["green", "green", "green", "green", "green"],
+    },
+  ],
   draft: [],
 });
 
@@ -40,10 +79,17 @@ describe("pending guess journal", () => {
   it("retains a confirmed hint behind answers and after the answer queue drains", () => {
     /** Journal with a paid request whose identity must survive a reload. */
     const pending = journal();
-    pending.coinAction = {type: "game:requestHint", requestId: "hint-request-123", payload: {
-      riddleId: pending.riddle.riddleId, gameMode: "classic", sessionToken: pending.riddle.sessionToken,
-      requestId: "hint-request-123", currentAttempt: ["", "", "", "", ""],
-    }};
+    pending.coinAction = {
+      type: "game:requestHint",
+      requestId: "hint-request-123",
+      payload: {
+        riddleId: pending.riddle.riddleId,
+        gameMode: "classic",
+        sessionToken: pending.riddle.sessionToken,
+        requestId: "hint-request-123",
+        currentAttempt: ["", "", "", "", ""],
+      },
+    };
     expect(writePendingGuessJournal(pending)).toBe(true);
     expect(readPendingGuessJournal(scope)?.coinAction).toEqual(pending.coinAction);
     pending.queue = [];
@@ -55,10 +101,17 @@ describe("pending guess journal", () => {
   it("retains a continue choice behind the final unconfirmed answer", () => {
     /** Continue choice that must be delivered only after the earlier answer settles. */
     const pending = journal();
-    pending.coinAction = {type: "game:spendCoins", requestId: "continue-request-123", payload: {
-      reason: "continue", riddleId: pending.riddle.riddleId, gameMode: "classic",
-      sessionToken: pending.riddle.sessionToken, amount: 100,
-    }};
+    pending.coinAction = {
+      type: "game:spendCoins",
+      requestId: "continue-request-123",
+      payload: {
+        reason: "continue",
+        riddleId: pending.riddle.riddleId,
+        gameMode: "classic",
+        sessionToken: pending.riddle.sessionToken,
+        amount: 100,
+      },
+    };
     expect(writePendingGuessJournal(pending)).toBe(true);
     expect(readPendingGuessJournal(scope)?.coinAction).toEqual(pending.coinAction);
   });

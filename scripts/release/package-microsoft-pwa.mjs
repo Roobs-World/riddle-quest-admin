@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+import {getReleaseDefinition} from "./release-registry.mjs";
+import {createHtml5HandoffPreparation, loadPreparedHtml5Source} from "./html5-handoff-preparation.mjs";
 import {createHash} from "node:crypto";
 import {execFile} from "node:child_process";
 import {cp, mkdir, readFile, readdir, rm, writeFile} from "node:fs/promises";
@@ -9,13 +11,14 @@ import path from "node:path";
 const execute = promisify(execFile);
 const repository = fileURLToPath(new URL("../..", import.meta.url));
 const staging = path.join(repository, "packages/portal/dist-microsoft-pwa");
-const artifact = path.join(repository, "build-microsoft-pwa.zip");
+const artifact = path.join(repository, getReleaseDefinition("microsoft-pwa").artifact);
 
 /** Builds an installable PWA review package without Store identity or commerce credentials. */
-export async function packageMicrosoftPwa({run = execute} = {}) {
-  await run("pnpm", ["release:html5"], {cwd: repository});
+export async function packageMicrosoftPwa({run = execute, source} = {}) {
+  const prepared = source ?? (process.env.HTML5_SOURCE_PREPARED === "1"
+    ? await loadPreparedHtml5Source({run}) : await createHtml5HandoffPreparation({run}).prepare());
   await rm(staging, {recursive: true, force: true});
-  await cp(path.join(repository, "packages/portal/dist-netflix"), staging, {recursive: true});
+  await run("unzip", ["-q", path.join(repository, prepared.artifact), "-d", staging], {cwd: repository});
   await mkdir(path.join(staging, "icons"), {recursive: true});
   await cp(path.join(repository, "assets/images/icon.png"), path.join(staging, "icons/riddle-quest.png"));
 
@@ -67,7 +70,9 @@ self.addEventListener("fetch",event=>{
     artifact: path.basename(artifact),
     sha256: digest,
     sourceArtifact: "build-html5.zip",
-    releaseBoundary: "Partner Center enrollment, product reservation, identity-bound MSIX packaging, commerce and certification remain manual.",
+    sourceRevision: prepared.revision,
+    sourceSha256: prepared.sha256,
+    releaseBoundary: getReleaseDefinition("microsoft-pwa").releaseGate,
   };
   await writeFile(`${artifact}.manifest.json`, `${JSON.stringify(receipt, null, 2)}\n`);
   console.log(`Prepared Microsoft Store PWA handoff ${path.basename(artifact)} (${digest}).`);

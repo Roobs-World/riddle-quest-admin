@@ -1,3 +1,4 @@
+import {completionPresentationKey} from "../play/completionPresentation";
 import {ProviderProfileContext} from "../play/ProviderProfileContext";
 import {ShopSubscriptionContext} from "../play/modalPages/commerce/ShopSubscriptionContext";
 import {useCallback, useEffect, useMemo, useRef, useState} from "react";
@@ -96,22 +97,29 @@ export function JestPlayApp() {
   /** Avoids duplicate avatar syncs while the same Jest session rerenders. */
   const syncedAvatarRef = useRef<string | null>(null);
   useEffect(() => {
+    /** Provides avatar url behavior. */
     const avatarUrl = session?.player.registered ? session.profile?.avatarUrl : null;
     if (!avatarUrl || !session || authHarness || mockRuntime) return;
+    /** Provides key behavior. */
     const key = `${session.firebaseUid}:${avatarUrl}`;
     if (syncedAvatarRef.current === key) return;
     syncedAvatarRef.current = key;
-    void import("../firebase").then(({syncJestAvatar}) => syncJestAvatar({avatarUrl})).catch((error) => {
-      captureBrowserException(error, {component: "jest_avatar_sync"});
-    });
+    void import("../firebase")
+      .then(({syncJestAvatar}) => syncJestAvatar({avatarUrl}))
+      .catch((error) => {
+        captureBrowserException(error, {component: "jest_avatar_sync"});
+      });
   }, [authHarness, mockRuntime, session]);
   /** Keeps host authority assembly stable while player progress and SDK activity update. */
-  const platformCapabilities = useMemo(() => ({
-    accountUpgrade: {
-      state: session?.player.registered ? "complete" as const : "available" as const,
-      begin: async () => ({status: "unavailable" as const, message: "Use the Jest registration controls."}),
-    },
-  }), [session?.player.registered]);
+  const platformCapabilities = useMemo(
+    () => ({
+      accountUpgrade: {
+        state: session?.player.registered ? ("complete" as const) : ("available" as const),
+        begin: async () => ({status: "unavailable" as const, message: "Use the Jest registration controls."}),
+      },
+    }),
+    [session?.player.registered],
+  );
   /** Provides [error, set error] behavior. */
   const [error, setError] = useState<string | null>(null);
   /** Provides [account deleted, set account deleted] behavior. */
@@ -207,15 +215,18 @@ export function JestPlayApp() {
     withPlatformActivity: withBackgroundPlatformActivity,
   });
   /** Supplies shop operations through the Jest adapter. */
-  const subscriptionActions = useMemo(() => ({
-    refresh: refreshProducts,
-    cancel: async (sku: string): Promise<"success" | "cancelled" | "error"> => {
-      /** Waits for the provider cancellation confirmation. */
-      const result = await withPlatformActivity(() => platform.cancelSubscription(sku));
-      await refreshProducts();
-      return result.status === "success" || result.status === "cancelled" ? result.status : "error";
-    },
-  }), [platform, refreshProducts, withPlatformActivity]);
+  const subscriptionActions = useMemo(
+    () => ({
+      refresh: refreshProducts,
+      cancel: async (sku: string): Promise<"success" | "cancelled" | "error"> => {
+        /** Waits for the provider cancellation confirmation. */
+        const result = await withPlatformActivity(() => platform.cancelSubscription(sku));
+        await refreshProducts();
+        return result.status === "success" || result.status === "cancelled" ? result.status : "error";
+      },
+    }),
+    [platform, refreshProducts, withPlatformActivity],
+  );
   /** Provides purchase product behavior. */
   const purchaseProduct = useJestPurchase({
     products: jestProducts,
@@ -285,8 +296,7 @@ export function JestPlayApp() {
       },
       onAuthenticated: isAccountDeletionCleanupPending,
       onIdentityDeleted: completeTombstonedPlayerCleanup,
-      deletionRecovery: () =>
-        getAccountDeletionPendingPhase() === ACCOUNT_DELETION_PENDING_PHASE.authoritativeDeletion,
+      deletionRecovery: () => getAccountDeletionPendingPhase() === ACCOUNT_DELETION_PENDING_PHASE.authoritativeDeletion,
       recoverAccountDeletion: (playerSigned) =>
         recoverPendingAccountDeletion(platform, "signed", {
           clearFirebaseAuthentication: deletionCleanupOptions.clearFirebaseAuthentication,
@@ -319,20 +329,27 @@ export function JestPlayApp() {
         try {
           // The server creates the Jest user with its starting balance during identity exchange.
           // Read that profile before showing play so a fresh guest never sees the empty 0-coin fallback.
+          /** Provides ready session behavior. */
           let readySession = result.value;
           if (hostServicesMode === "firebase" && !authHarness && !mockRuntime) {
+            /** Provides [{load user document}, {to bridge profile}] behavior. */
             const [{loadUserDocument}, {toBridgeProfile}] = await Promise.all([
               import("../firebase"),
               import("../play/profileMapper"),
             ]);
+            /** Provides profile data behavior. */
             const profileData = await loadUserDocument(readySession.firebaseUid);
             if (!profileData) throw new Error("jest-initial-profile-unavailable");
-            const profile = toBridgeProfile({
-              uid: readySession.firebaseUid,
-              displayName: undefined,
-              email: undefined,
-              isAnonymous: !readySession.player.registered,
-            }, profileData);
+            /** Provides profile behavior. */
+            const profile = toBridgeProfile(
+              {
+                uid: readySession.firebaseUid,
+                displayName: undefined,
+                email: undefined,
+                isAnonymous: !readySession.player.registered,
+              },
+              profileData,
+            );
             readySession = {
               ...readySession,
               playerData: {
@@ -359,7 +376,9 @@ export function JestPlayApp() {
       } else {
         /** Provides message behavior. */
         const message = "message" in result ? result.message : tr("ErrorMessages.CHECK_INTERNET_AND_TRY_AGAIN");
-        setError(message === JEST_SDK_INIT_TIMEOUT_MESSAGE ? tr("ErrorMessages.CHECK_INTERNET_AND_TRY_AGAIN") : message);
+        setError(
+          message === JEST_SDK_INIT_TIMEOUT_MESSAGE ? tr("ErrorMessages.CHECK_INTERNET_AND_TRY_AGAIN") : message,
+        );
       }
     });
     return () => {
@@ -428,16 +447,32 @@ export function JestPlayApp() {
     trackFunnel,
   });
   /** Queues the guest prompt as soon as the correct answer is confirmed. */
-  const handleAuthoritativeGuessWin = useCallback((input: {riddleId: string; gameMode: "classic" | "challenge"}) => {
-    const activeSession = sessionRef.current;
-    if (!activeSession || activeSession.player.registered || input.gameMode !== "classic" ||
-      countedGuestWinIdsRef.current.has(input.riddleId)) return;
-    countedGuestWinIdsRef.current.add(input.riddleId);
-    guestWinsThisSessionRef.current += 1;
-    if (shouldPromptGuestRegistration(activeSession, input.gameMode, guestWinsThisSessionRef.current)) {
-      openRegistrationPrompt("authoritative_win", true);
-    }
-  }, [openRegistrationPrompt]);
+  const handleAuthoritativeGuessWin = useCallback(
+    (input: {
+      /** Stores riddle id. */
+      riddleId: string;
+      /** Stores session token. */
+      sessionToken: string;
+      /** Stores game mode. */
+      gameMode: "classic" | "challenge";
+    }) => {
+      /** Provides active session behavior. */
+      const activeSession = sessionRef.current;
+      if (
+        !activeSession ||
+        activeSession.player.registered ||
+        input.gameMode !== "classic" ||
+        countedGuestWinIdsRef.current.has(input.riddleId)
+      )
+        return;
+      countedGuestWinIdsRef.current.add(input.riddleId);
+      guestWinsThisSessionRef.current += 1;
+      if (shouldPromptGuestRegistration(activeSession, input.gameMode, guestWinsThisSessionRef.current)) {
+        openRegistrationPrompt("authoritative_win", true, completionPresentationKey(input));
+      }
+    },
+    [openRegistrationPrompt],
+  );
   /** Handles authoritative complete. */
   const handleAuthoritativeComplete = useCallback(
     async (
@@ -447,9 +482,9 @@ export function JestPlayApp() {
       },
       result: {
         /** Stores is correct. */
-        isCorrect: boolean; /** Stores new level. */
+        isCorrect: boolean;
         /** Stores new level. */
-        newLevel?: number; /** Stores new win streak. */
+        newLevel?: number;
         /** Stores new win streak. */
         newWinStreak?: number;
       },
@@ -535,38 +570,40 @@ export function JestPlayApp() {
           onDismiss={dismissRegistration}
         />
       ) : null}
-      <ProviderProfileContext.Provider value={{username: session.profile?.username ?? null, avatarUrl: session.profile?.avatarUrl ?? null}}>
-      <ShopSubscriptionContext.Provider value={subscriptionsEnabled ? subscriptionActions : null}>
-        <PlayHostApp
-          session={createHostedPlaySession({
-            hostServices,
-            hostConfigurationWarning,
-            initialGameMode: session.entryIntent.gameMode,
-            initialRaceChallengeId: resolveRaceChallengeId(session.entryIntent),
-            initialRaceInbox: session.entryIntent.challengeDestination === "inbox",
-            initialRaceLobby: session.entryIntent.challengeDestination === "multiplayer",
-            registrationName: session.entryIntent.customName,
-            registrationInviterName: session.entryIntent.inviterName,
-            platformProducts: jestProducts,
-            platformPurchase: purchaseProduct,
-            raceAvailable: true,
-            platformCapabilities,
-            externalInteractionBlocked: pendingPlatformOperations > 0,
-            initialPlayerData: session.playerData,
-            onPlayerDataChange: playerStateWrites.savePlayerData,
-            accountDeletionServiceGate: notificationOperationGate,
-            presenceEnabled: session.preferences.presenceEnabled === true,
-            onTogglePresence: togglePresence,
-            onPresenceStateChange: setPresenceState,
-            referralSharing,
-          })}
-          onPlayable={() => markJestPlayable(platform)}
-          onAuthoritativeGuessWin={handleAuthoritativeGuessWin}
-          onAuthoritativeComplete={handleAuthoritativeComplete}
-          onAccountDeletionRequested={() => markAccountDeletionRequested(platform.getPlayer().playerId)}
-          onAccountDeleted={clearPlayerState}
-        />
-      </ShopSubscriptionContext.Provider>
+      <ProviderProfileContext.Provider
+        value={{username: session.profile?.username ?? null, avatarUrl: session.profile?.avatarUrl ?? null}}
+      >
+        <ShopSubscriptionContext.Provider value={subscriptionsEnabled ? subscriptionActions : null}>
+          <PlayHostApp
+            session={createHostedPlaySession({
+              hostServices,
+              hostConfigurationWarning,
+              initialGameMode: session.entryIntent.gameMode,
+              initialRaceChallengeId: resolveRaceChallengeId(session.entryIntent),
+              initialRaceInbox: session.entryIntent.challengeDestination === "inbox",
+              initialRaceLobby: session.entryIntent.challengeDestination === "multiplayer",
+              registrationName: session.entryIntent.customName,
+              registrationInviterName: session.entryIntent.inviterName,
+              platformProducts: jestProducts,
+              platformPurchase: purchaseProduct,
+              raceAvailable: true,
+              platformCapabilities,
+              externalInteractionBlocked: pendingPlatformOperations > 0,
+              initialPlayerData: session.playerData,
+              onPlayerDataChange: playerStateWrites.savePlayerData,
+              accountDeletionServiceGate: notificationOperationGate,
+              presenceEnabled: session.preferences.presenceEnabled === true,
+              onTogglePresence: togglePresence,
+              onPresenceStateChange: setPresenceState,
+              referralSharing,
+            })}
+            onPlayable={() => markJestPlayable(platform)}
+            onAuthoritativeGuessWin={handleAuthoritativeGuessWin}
+            onAuthoritativeComplete={handleAuthoritativeComplete}
+            onAccountDeletionRequested={() => markAccountDeletionRequested(platform.getPlayer().playerId)}
+            onAccountDeleted={clearPlayerState}
+          />
+        </ShopSubscriptionContext.Provider>
       </ProviderProfileContext.Provider>
     </>
   );

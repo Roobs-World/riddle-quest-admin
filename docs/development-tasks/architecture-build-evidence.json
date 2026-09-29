@@ -1,0 +1,85 @@
+{
+  "taskId": "architecture:build-evidence-isolation",
+  "targets": [
+    "jest",
+    "facebook",
+    "reddit",
+    "youtube",
+    "netflix",
+    "yahoo",
+    "gamesnacks",
+    "itch"
+  ],
+  "work": "Keep dependency inventories independent across custom and canonical outputs; publish evidence only after writing and final postprocessing; reject late build failures and generate-only runs without leaving successful inventories.",
+  "checks": [
+    {
+      "id": "architecture-contracts",
+      "executable": "pnpm",
+      "args": [
+        "test:architecture"
+      ]
+    },
+    {
+      "id": "portal-types",
+      "executable": "pnpm",
+      "args": [
+        "--filter",
+        "@qwordly/portal",
+        "check:types"
+      ]
+    },
+    {
+      "id": "canonical-artifact-inventories",
+      "executable": "node",
+      "args": [
+        "scripts/release/verify-target-dependency-evidence.mjs"
+      ]
+    },
+    {
+      "id": "tested-archive-digests",
+      "executable": "node",
+      "args": [
+        "scripts/release/verify-packaged-game-evidence.mjs"
+      ]
+    }
+  ],
+  "remainingGates": [
+    "Merge the workflow into main to enable automatic accepted-revision CI updates.",
+    "Provider submission, review and publication require separate receipts."
+  ],
+  "nextAction": "Review and merge the build evidence improvements, then follow the existing platform submission gates.",
+  "artifacts": [
+    {
+      "target": "jest",
+      "file": "packages/portal/dist-jest/index.html"
+    },
+    {
+      "target": "facebook",
+      "file": "packages/portal/dist-facebook/index.html"
+    },
+    {
+      "target": "reddit",
+      "file": "packages/portal/dist-reddit/index.html"
+    },
+    {
+      "target": "youtube",
+      "file": "packages/portal/dist-youtube/index.html"
+    },
+    {
+      "target": "netflix",
+      "file": "packages/portal/dist-netflix/index.html"
+    },
+    {
+      "target": "yahoo",
+      "file": "packages/portal/dist-yahoo/index.html"
+    },
+    {
+      "target": "gamesnacks",
+      "file": "build-gamesnacks.zip"
+    },
+    {
+      "target": "itch",
+      "file": "build-itch.zip"
+    }
+  ]
+}

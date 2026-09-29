@@ -134,6 +134,7 @@ test("the Web Target config resolves one isolated build profile for every releas
       name.startsWith("riddle-quest-") && ![
         "riddle-quest-web-target-build-contract",
         "riddle-quest-web-target-html",
+        "riddle-quest-target-dependencies",
       ].includes(name)
     ), false);
     runBuildContract(config);
@@ -349,8 +350,8 @@ test("each target-owned HTML document imports one explicit target main and only 
       module: "/src/youtube/main.tsx",
       externalScripts: ["https://www.youtube.com/game_api/v1"],
     },
-    {file: "targets/netflix/index.html", module: "/src/youtube/standaloneMain.tsx", externalScripts: []},
-    {file: "targets/yahoo/index.html", module: "/src/youtube/standaloneMain.tsx", externalScripts: []},
+    {file: "targets/netflix/index.html", module: "/src/standalone/main.tsx", externalScripts: []},
+    {file: "targets/yahoo/index.html", module: "/src/standalone/main.tsx", externalScripts: []},
   ];
 
   for (const document of documents) {

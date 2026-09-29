@@ -121,7 +121,9 @@
     "test:release-artifacts:browser": "node scripts/release/verify-packaged-games.mjs",
     "deploy:web": "node scripts/release/deploy-standalone.mjs web",
     "deploy:pwa": "node scripts/release/deploy-standalone.mjs pwa",
-    "test:deployments:live": "node scripts/release/verify-live-web-games.mjs"
+    "test:deployments:live": "node scripts/release/verify-live-web-games.mjs",
+    "development:complete": "node scripts/release/complete-development-task.mjs",
+    "test:architecture": "node --test scripts/release/*.test.mjs packages/portal/scripts/web-target-dependencies.test.mjs scripts/monitoring/publish-release-status.test.mjs"
   },
   "engines": {
     "node": ">=24.17.0"

@@ -2,23 +2,20 @@ import {afterAll, beforeAll, describe, expect, it} from "@jest/globals";
 import {chromium, type Browser, type Page} from "@playwright/test";
 import {readFile} from "node:fs/promises";
 import path from "node:path";
-import {createEmptyYouTubeSave} from "../save";
+import {createEmptyYouTubeSave} from "../../playable/save";
 import {
   installYouTubeSdkHarness,
   startYouTubeArtifactServer,
   youtubeHarnessSnapshot,
   type YouTubeArtifactServer,
 } from "./youtubeBrowser.jest-playwright.support";
-
 /** Provides describe browser behavior. */
 const describeBrowser = process.env.PORTAL_BROWSER_TESTS === "1" ? describe : describe.skip;
-
 /** Describes the artifact fields needed by the browser harness. */
 interface YouTubeArtifactManifest {
   /** Stores the exact content version embedded in the artifact under test. */
   contentVersion: string;
 }
-
 /** Provides expect ordered behavior. */
 const expectOrdered = (events: readonly string[], expected: readonly string[]): void => {
   /** Provides cursor behavior. */
@@ -31,7 +28,6 @@ const expectOrdered = (events: readonly string[], expected: readonly string[]): 
     cursor = next;
   }
 };
-
 /** Provides wait for sdk event behavior. */
 const waitForSdkEvent = (page: Page, event: string): Promise<unknown> =>
   page.waitForFunction((expected) => window.__youtubeHarness.events.includes(expected), event);
@@ -67,7 +63,7 @@ describeBrowser("YouTube Playables artifact with injected Game API", () => {
     /** Requests s. */
     const requests: Array<{
       /** Stores url. */
-      url: string; /** Stores type. */
+      url: string;
       /** Stores type. */
       type: string;
     }> = [];
@@ -131,7 +127,6 @@ describeBrowser("YouTube Playables artifact with injected Game API", () => {
         .locator('script[src*="firebase"],script[src*="sentry"],script[src*="fbinstant"],script[src*="jest.com"]')
         .count(),
     ).toBe(0);
-
     /** Provides external requests behavior. */
     const externalRequests = requests.filter(({url}) => !url.startsWith(artifact.origin));
     expect(externalRequests).toEqual([{url: "https://www.youtube.com/game_api/v1", type: "script"}]);
@@ -261,7 +256,7 @@ describeBrowser("YouTube Playables artifact with injected Game API", () => {
       (button as HTMLButtonElement).click();
       while (document.querySelectorAll(".yt-guess-row .yt-tile.red").length !== 4) {
         if (performance.now() - started > 1000) throw new Error("Feedback waited for platform save");
-        await new Promise(resolve => requestAnimationFrame(resolve));
+        await new Promise((resolve) => requestAnimationFrame(resolve));
       }
       return performance.now() - started;
     });
@@ -287,7 +282,6 @@ describeBrowser("YouTube Playables artifact with injected Game API", () => {
     await page.getByRole("heading", {name: "Choose a puzzle"}).waitFor();
     await page.getByRole("button", {name: /Classic/}).click();
     await page.getByRole("heading", {name: /Which ancient city/}).waitFor();
-
     /** Provides input behavior. */
     const input = page.getByRole("textbox", {name: "Type your answer"});
     await input.press("r");
@@ -324,7 +318,6 @@ describeBrowser("YouTube Playables artifact with injected Game API", () => {
     await page.locator(".yt-guess-row.current").getByText("e", {exact: true}).waitFor();
     await page.getByRole("button", {name: "Submit"}).click();
     await page.getByRole("alert").getByRole("button", {name: "Retry"}).waitFor();
-
     /** Provides snapshot behavior. */
     let snapshot = await youtubeHarnessSnapshot(page);
     expectOrdered(snapshot.events, [
@@ -440,7 +433,6 @@ describeBrowser("YouTube Playables artifact with injected Game API", () => {
     if (!activePayload) throw new Error("youtube-active-save-fixture-missing");
     expect(JSON.parse(activePayload)).toMatchObject({activeGame: {mode: "classic", riddleId: "race:history:01"}});
     await resetPage.close();
-
     /** Provides restored page behavior. */
     const restoredPage = await browser.newPage({viewport: {width: 390, height: 844}});
     await installYouTubeSdkHarness(restoredPage, {
@@ -499,7 +491,6 @@ describeBrowser("YouTube Playables artifact with injected Game API", () => {
     expect(pausedSnapshot.savedPayloads).toHaveLength(savesBeforePause);
     expect(pausedSnapshot.savedPayloads.at(-1)).not.toContain("currentLetters");
     expect(pausedSnapshot.savedPayloads.at(-1)).not.toContain('"answer"');
-
     /** Provides events before browser signals behavior. */
     const eventsBeforeBrowserSignals = (await youtubeHarnessSnapshot(page)).events;
     await page.evaluate(() => {
@@ -571,7 +562,6 @@ describeBrowser("YouTube Playables artifact with injected Game API", () => {
         height: element.getBoundingClientRect().height,
       })),
     ).toEqual({width: 0, height: 0});
-
     /** Provides dimensions behavior. */
     const dimensions = [
       [360, 1280],

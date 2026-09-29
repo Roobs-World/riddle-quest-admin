@@ -19,6 +19,7 @@ const validFile = () => ({
 
 describe("English Race content import planning", () => {
   it("accepts the new easier English pool", () => {
+    /** Provides plan behavior. */
     const plan = createRaceContentImportPlan(easierEnglish);
     expect(plan.valid).toBe(true);
     expect(plan.totalRiddles).toBe(180);

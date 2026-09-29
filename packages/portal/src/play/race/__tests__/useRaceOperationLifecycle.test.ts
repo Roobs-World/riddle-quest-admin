@@ -1,158 +1,266 @@
-import {beforeEach, describe, expect, it, jest} from "@jest/globals";
+import {describe, expect, it} from "@jest/globals";
+import {RACE_RULES, type RaceRunView, type SubmitRaceGuessResponse} from "@qwordly/core/race";
 import type {GameToHostMessage} from "@qwordly/core/bridge";
-import type {RaceOperation} from "../logic/raceOperations";
-
-/** Describes effect. */
-type Effect = () => void | (() => void);
-
-/** Provides mock effects behavior. */
-const mockEffects: Effect[] = [];
-/** Provides mock refs behavior. */
-const mockRefs: Array<{
-  /** Stores current. */
-  current: unknown;
-}> = [];
-/** Provides mock set pending behavior. */
-const mockSetPending = jest.fn();
-/** Provides mock set race guess loading behavior. */
-const mockSetRaceGuessLoading = jest.fn();
-/** Provides mock create request id behavior. */
-const mockCreateRequestId = jest.fn((operation: string) => `request-${operation}`);
-/** Provides mock state call behavior. */
-let mockStateCall = 0;
-
-jest.mock("react", () => ({
-  useCallback: (callback: unknown) => callback,
-  useEffect: (effect: Effect) => mockEffects.push(effect),
-  useRef: (initialValue: unknown) => {
-    /** Provides ref behavior. */
-    const ref = {current: initialValue};
-    mockRefs.push(ref);
-    return ref;
-  },
-  useState: () => (mockStateCall++ === 0 ? [null, mockSetPending] : [false, mockSetRaceGuessLoading]),
-}));
-
-jest.mock("../../requestIds", () => ({
-  createRequestId: mockCreateRequestId,
-}));
-
-import {useRaceOperationLifecycle} from "../hooks/useRaceOperationLifecycle";
-
-/** Creates harness. */
-const createHarness = () => {
-  /** Provides post to host behavior. */
-  const postToHost = jest.fn<(message: GameToHostMessage) => void>();
-  /** Sets error. */
-  const setError = jest.fn();
-  /** Provides lifecycle behavior. */
-  const lifecycle = useRaceOperationLifecycle({postToHost, setError: setError as never});
-  expect(mockRefs).toHaveLength(5);
-  expect(mockEffects).toHaveLength(1);
-  return {lifecycle, postToHost, setError};
+import {RacePlay} from "../RacePlay";
+/** Complete deck and authoritative run for deterministic reconciliation scenarios. */
+const run = (): RaceRunView => {
+  /** Provides preloaded riddles behavior. */
+  const preloadedRiddles = Array.from({length: RACE_RULES.deckSize}, (_, position) => ({
+    riddleId: `riddle-${position}`,
+    text: `Clue ${position}`,
+    answerLength: 4,
+    position,
+    evaluation: {answer: "test", locale: "en" as const},
+  }));
+  return {
+    runId: "run-1",
+    challengeId: "challenge-1",
+    role: "challenger",
+    status: "active",
+    categoryId: "mixed",
+    locale: "en",
+    rules: RACE_RULES,
+    correctCount: 0,
+    wallElapsedMs: 100,
+    adjustedElapsedMs: 100,
+    totalPenaltyMs: 0,
+    currentRiddle: {
+      ...preloadedRiddles[0],
+      guessesUsed: 0,
+      guessesRemaining: 5,
+      hintAvailable: true,
+      revealedLetters: [],
+    },
+    preloadedRiddles,
+    events: [],
+    opponent: {displayName: "Ava", adjustedFinishMs: 3000, events: []},
+  };
 };
-
-beforeEach(() => {
-  jest.clearAllMocks();
-  mockEffects.length = 0;
-  mockRefs.length = 0;
-  mockStateCall = 0;
-  Object.defineProperty(globalThis, "performance", {
-    configurable: true,
-    value: {now: jest.fn(() => 0)},
-  });
-  Object.defineProperty(globalThis, "window", {
-    configurable: true,
-    value: {
-      clearTimeout: jest.fn(),
-      setTimeout: jest.fn(() => 17),
+/** Time and command adapters exercise the module interface without mocking React internals. */
+const harness = () => {
+  /** Provides now behavior. */
+  let now = 0,
+    id = 0;
+  /** Provides timers behavior. */
+  const timers = new Map<
+    number,
+    {
+      /** Stores at. */
+      at: number;
+      /** Stores callback. */
+      callback: () => void;
+    }
+  >();
+  /** Provides commands behavior. */
+  const commands: GameToHostMessage[] = [];
+  /** Provides play behavior. */
+  const play = new RacePlay({
+    postToHost: (message) => commands.push(message),
+    requestId: (operation) => `${operation}-${++id}`,
+    clock: {
+      now: () => now,
+      schedule: (callback, delay) => {
+        /** Provides timer behavior. */
+        const timer = ++id;
+        timers.set(timer, {at: now + delay, callback});
+        return timer;
+      },
+      cancel: (timer) => {
+        timers.delete(timer);
+      },
     },
   });
+  return {
+    play,
+    commands,
+    timers,
+    advance: (elapsed: number) => {
+      now += elapsed;
+      for (const [id, timer] of timers)
+        if (timer.at <= now) {
+          timers.delete(id);
+          timer.callback();
+        }
+    },
+  };
+};
+/** Provides confirm behavior. */
+const confirm = (next: RaceRunView): SubmitRaceGuessResponse => ({
+  run: next,
+  isCorrect: true,
+  autoSkipped: false,
+  feedback: [..."test"].map((letter) => ({letter, status: "green"})),
 });
 
-describe("useRaceOperationLifecycle", () => {
-  it("correlates read operations without adding mutation receipts", () => {
-    /** Provides {lifecycle, post to host, set error} behavior. */
-    const {lifecycle, postToHost, setError} = createHarness();
-
-    lifecycle.send("raceInbox", "game:listRaceInbox", {limit: 20});
-
-    expect(lifecycle.expectedRequestRef.current).toBe("request-raceInbox");
-    expect(mockSetPending).toHaveBeenCalledWith("raceInbox");
-    expect(setError).toHaveBeenCalledWith(null);
-    expect(postToHost).toHaveBeenCalledWith({
-      type: "game:listRaceInbox",
-      requestId: "request-raceInbox",
-      payload: {limit: 20},
+describe("Race play module", () => {
+  it("handles unavailable projections and reconciles an unprojected receipt", () => {
+    /** Provides {play} behavior. */
+    const {play} = harness();
+    /** Provides original behavior. */
+    const original = run();
+    /** Provides unavailable behavior. */
+    const unavailable = {...original, currentRiddle: null};
+    expect(play.projectGuess(unavailable, [..."test"], [], 0)).toBeNull();
+    expect(play.projectPaid("raceHint", unavailable)).toBeNull();
+    expect(play.projectPaid("raceSkip", unavailable)).toBeNull();
+    expect(play.acceptResponse(undefined, "raceGuess")).toBe(false);
+    expect(play.confirmGuess(confirm(original), original, [], [..."test"])).toEqual({
+      resetAttempt: true,
+      guesses: [{guess: [..."test"], feedback: ["green", "green", "green", "green"]}],
     });
-    /** Provides cleanup behavior. */
-    const cleanup = mockEffects[0]() as () => void;
-    cleanup();
-    expect(window.clearTimeout).not.toHaveBeenCalled();
+    expect(play.confirmGuess(confirm(original), null, [], [..."test"])).toEqual({resetAttempt: true, guesses: null});
+    expect(play.canPublish(null)).toBe(false);
+    play.dispose();
   });
-
-  it("adds the same idempotency receipt used for bridge correlation to mutations", () => {
-    /** Provides {lifecycle, post to host} behavior. */
-    const {lifecycle, postToHost} = createHarness();
-
-    lifecycle.send("raceHint", "game:requestRaceHint", {runId: "run-1", riddleId: "riddle-1"});
-
-    expect(postToHost).toHaveBeenCalledWith({
-      type: "game:requestRaceHint",
-      requestId: "request-raceHint",
-      payload: {
-        runId: "run-1",
-        riddleId: "riddle-1",
-        requestId: "request-raceHint",
+  it("rolls back a wrong guess and retains unmatched paid checkpoints", () => {
+    /** Provides {play} behavior. */
+    const {play} = harness();
+    /** Provides original behavior. */
+    const original = run();
+    /** Provides projection behavior. */
+    const projection = play.projectGuess(original, [..."nope"], [], 0)!;
+    expect(projection.feedback).toBe("incorrect");
+    expect(projection.run).toBeNull();
+    expect(play.rejectProjection("raceGuess")).toEqual({kind: "guess", run: null, guesses: [], letters: [..."nope"], receivedAt: 0});
+    play.projectPaid("raceHint", original);
+    play.confirmPaid("raceSkip");
+    expect(play.rejectProjection("raceSkip")).toBeNull();
+    expect(play.canPublish({...original, status: "completed"})).toBe(false);
+    expect(play.rejectProjection("raceHint")?.run).toEqual(original);
+  });
+  it("uses the browser clock and cancels its scheduled work", () => {
+    /** Provides original window behavior. */
+    const originalWindow = globalThis.window;
+    /** Provides callbacks behavior. */
+    const callbacks = new Map<number, () => void>();
+    Object.defineProperty(globalThis, "window", {
+      configurable: true,
+      value: {
+        setTimeout: (callback: () => void) => {
+          callbacks.set(1, callback);
+          return 1;
+        },
+        clearTimeout: (id: number) => {
+          callbacks.delete(id);
+        },
       },
     });
+    try {
+      /** Provides play behavior. */
+      const play = new RacePlay({postToHost: () => undefined});
+      play.send("raceGuess", "game:submitRaceGuess", {});
+      play.finish("raceGuess");
+      expect(callbacks.size).toBe(1);
+      play.dispose();
+      expect(callbacks.size).toBe(0);
+    } finally {
+      Object.defineProperty(globalThis, "window", {configurable: true, value: originalWindow});
+    }
   });
-
-  it("keeps the answer loader visible for its minimum duration", () => {
-    /** Provides {lifecycle} behavior. */
-    const {lifecycle} = createHarness();
-    lifecycle.send("raceGuess", "game:submitRaceGuess", {});
-
-    expect(mockSetRaceGuessLoading).toHaveBeenCalledWith(true);
-    lifecycle.finishOperation("raceGuess");
-
-    /** Provides pending updater behavior. */
-    const pendingUpdater = mockSetPending.mock.calls.at(-1)?.[0] as (
-      current: RaceOperation | null,
-    ) => RaceOperation | null;
-    expect(pendingUpdater("raceGuess")).toBeNull();
-    expect(pendingUpdater("raceHint")).toBe("raceHint");
-    expect(window.setTimeout).toHaveBeenCalledWith(expect.any(Function), 180);
-    /** Provides finish loader behavior. */
-    const finishLoader = (window.setTimeout as jest.Mock).mock.calls[0][0] as () => void;
-    finishLoader();
-    expect(mockSetRaceGuessLoading).toHaveBeenLastCalledWith(false);
+  it("uses exact operation/request receipts and consumes duplicates", () => {
+    /** Provides {play,commands} behavior. */
+    const {play, commands} = harness();
+    play.send("raceHint", "game:requestRaceHint", {runId: "run-1"});
+    expect(commands[0].payload).toMatchObject({requestId: commands[0].requestId});
+    expect(play.acceptResponse("stale", "raceHint")).toBe(false);
+    expect(play.acceptResponse(commands[0].requestId, "raceSkip")).toBe(false);
+    expect(play.acceptResponse(commands[0].requestId, "raceHint")).toBe(true);
+    expect(play.acceptResponse(commands[0].requestId, "raceHint")).toBe(false);
+    play.send("raceInbox", "game:listRaceInbox", {limit: 20});
+    expect(commands[1].payload).toEqual({limit: 20});
+    play.send("raceAbandon", "game:abandonRace", {runId: "run-1"});
+    play.finish("raceHint");
+    expect(play.getSnapshot().pending).toBe("raceAbandon");
   });
-
-  it("hands a completed guess loader over to the outcome request", () => {
-    /** Provides {lifecycle} behavior. */
-    const {lifecycle} = createHarness();
-    lifecycle.send("raceGuess", "game:submitRaceGuess", {});
-    lifecycle.setRaceGuessAwaitingOutcome(true);
-
-    lifecycle.finishOperation("raceGuess");
-    expect(window.setTimeout).not.toHaveBeenCalled();
-    lifecycle.finishOperation("raceOutcome");
-    expect(window.setTimeout).toHaveBeenCalledTimes(1);
+  it("retains the loader for 180ms and carries it across authoritative outcome loading", () => {
+    /** Provides h behavior. */
+    const h = harness();
+    /** Provides notifications behavior. */
+    let notifications = 0;
+    /** Provides unsubscribe behavior. */
+    const unsubscribe = h.play.subscribe(() => notifications++);
+    h.play.send("raceGuess", "game:submitRaceGuess", {});
+    h.advance(40);
+    h.play.finish("raceGuess");
+    h.advance(139);
+    expect(h.play.getSnapshot().raceGuessLoading).toBe(true);
+    h.advance(1);
+    expect(h.play.getSnapshot().raceGuessLoading).toBe(false);
+    h.play.send("raceGuess", "game:submitRaceGuess", {});
+    h.play.setAwaitingOutcome(true);
+    h.play.finish("raceGuess");
+    h.advance(500);
+    expect(h.play.getSnapshot().raceGuessLoading).toBe(true);
+    h.play.send("raceOutcome", "game:getRaceOutcome", {});
+    h.play.finish("raceOutcome");
+    h.advance(0);
+    expect(h.play.getSnapshot().raceGuessLoading).toBe(false);
+    expect(notifications).toBeGreaterThan(0);
+    unsubscribe();
+    h.play.send("raceGuess", "game:submitRaceGuess", {});
+    h.play.finish("raceGuess");
+    h.play.send("raceGuess", "game:submitRaceGuess", {});
+    expect(h.timers.size).toBe(0);
+    h.play.finish("raceGuess");
+    h.play.dispose();
+    expect(h.timers.size).toBe(0);
   });
-
-  it("cancels stale loader timers on a new guess and during unmount", () => {
-    /** Provides {lifecycle} behavior. */
-    const {lifecycle} = createHarness();
-    lifecycle.send("raceGuess", "game:submitRaceGuess", {});
-    lifecycle.finishOperation("raceGuess");
-
-    lifecycle.send("raceGuess", "game:submitRaceGuess", {});
-    expect(window.clearTimeout).toHaveBeenCalledWith(17);
-    lifecycle.finishOperation("raceGuess");
-    /** Provides cleanup behavior. */
-    const cleanup = mockEffects[0]() as () => void;
-    cleanup();
-    expect(window.clearTimeout).toHaveBeenLastCalledWith(17);
+  it("restores the prior clue, submitted answer and history after typing into a projected successor", () => {
+    /** Provides {play} behavior. */
+    const {play} = harness();
+    /** Provides original behavior. */
+    const original = run();
+    /** Provides projection behavior. */
+    const projection = play.projectGuess(original, [..."test"], [], 0)!;
+    expect(projection.run?.currentRiddle?.riddleId).toBe("riddle-1");
+    expect(play.typingWhilePending).toBe(true);
+    /** Provides next draft behavior. */
+    const nextDraft = [..."next"];
+    expect(nextDraft).toHaveLength(4);
+    expect(play.rejectProjection("raceGuess")).toEqual({
+      kind: "guess",
+      run: original,
+      guesses: [],
+      letters: [..."test"],
+      receivedAt: 0,
+    });
+    expect(play.typingWhilePending).toBe(false);
+    expect(play.rejectProjection("raceGuess")).toBeNull();
+  });
+  it("confirmation preserves next-question input and malformed paid actions restore their own checkpoint", () => {
+    /** Provides {play} behavior. */
+    const {play} = harness();
+    /** Provides original behavior. */
+    const original = run();
+    /** Provides projection behavior. */
+    const projection = play.projectGuess(original, [..."test"], [], 0)!;
+    expect(play.confirmGuess(confirm(projection.run!), projection.run, [], [..."next"])).toEqual({
+      resetAttempt: false,
+      guesses: null,
+    });
+    expect(play.typingWhilePending).toBe(false);
+    for (const operation of ["raceHint", "raceSkip"] as const) {
+      expect(play.projectPaid(operation, original)).not.toBeNull();
+      expect(play.rejectProjection(operation)).toEqual({kind: "paid", run: original, guesses: null, letters: null});
+      play.projectPaid(operation, original);
+      play.confirmPaid(operation);
+      expect(play.rejectProjection(operation)).toBeNull();
+    }
+  });
+  it("defers ghost/deadline results during mutation and publication until authoritative completion", () => {
+    /** Provides {play} behavior. */
+    const {play} = harness();
+    /** Provides original behavior. */
+    const original = run();
+    play.send("raceGuess", "game:submitRaceGuess", {});
+    expect(play.projectOutcome(original, RACE_RULES.maxAdjustedTimeMs)).toBeNull();
+    expect(play.canPublish(original)).toBe(false);
+    play.finish("raceGuess");
+    expect(play.projectOutcome(original, RACE_RULES.maxAdjustedTimeMs)).not.toBeNull();
+    /** Provides completed behavior. */
+    const completed = {...original, status: "completed" as const, currentRiddle: null};
+    expect(play.canPublish(completed)).toBe(true);
+    play.projectGuess(original, [..."test"], [], 0);
+    expect(play.canPublish(completed)).toBe(false);
   });
 });

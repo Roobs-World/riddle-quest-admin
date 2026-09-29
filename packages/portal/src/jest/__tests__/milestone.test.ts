@@ -16,6 +16,7 @@ const session = (overrides: Partial<JestSession> = {}): JestSession => ({
 
 describe("authoritative first milestone", () => {
   test("offers registration after session wins 1, 4, and 7 even with saved wins", () => {
+    /** Provides returning guest behavior. */
     const returningGuest = session({preferences: {jestGuestCompletedRiddles: 2}});
     expect(Array.from({length: 7}, (_, index) => shouldPromptGuestRegistration(returningGuest, "classic", index + 1)))
       .toEqual([true, false, false, true, false, false, true]);
@@ -24,8 +25,11 @@ describe("authoritative first milestone", () => {
       .toBe(false);
   });
   test("reports a Daily win without advancing the Classic guest prompt cadence", async () => {
+    /** Provides platform behavior. */
     const platform = new MockJestPlatform();
+    /** Provides mark behavior. */
     const mark = jest.spyOn(platform, "markFirstMilestone");
+    /** Provides result behavior. */
     const result = await recordAuthoritativeCompletion(
       platform,
       session({preferences: {firstMilestoneMarked: true, jestGuestCompletedRiddles: 3}}),
@@ -95,10 +99,14 @@ describe("authoritative first milestone", () => {
   });
 
   test("prompts on guest wins 1, 4, and 7 across saved preferences", async () => {
+    /** Provides platform behavior. */
     const platform = new MockJestPlatform();
+    /** Provides preferences behavior. */
     let preferences: JestSession["preferences"] = {};
+    /** Provides prompts behavior. */
     const prompts: number[] = [];
     for (let win = 1; win <= 7; win += 1) {
+      /** Provides result behavior. */
       const result = await recordAuthoritativeCompletion(platform, session({preferences}), {
         gameMode: "classic", isCorrect: true,
       });

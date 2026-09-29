@@ -1,0 +1,61 @@
+{
+  "verifiedAt": "2026-09-29T22:09:54.499395+00:00",
+  "checks": [
+    {
+      "id": "architecture-contracts",
+      "status": "passed",
+      "count": 31,
+      "log": "/tmp/build-evidence-architecture.log",
+      "outputSha256": "5ba757b5b2d9f356e14b8ca6bde4eb3a902c622f0847aa7eb6c55a376520b901"
+    },
+    {
+      "id": "all-target-builds",
+      "status": "passed",
+      "count": 7,
+      "log": "/tmp/build-evidence-all-builds.log",
+      "outputSha256": "5babd6eca2111bfd739e1bfb81ea690a13995f2945975605f6db9c16eadcf3b7"
+    },
+    {
+      "id": "facebook-browser",
+      "status": "passed",
+      "count": 1,
+      "log": "/tmp/build-evidence-facebook-browser.log",
+      "outputSha256": "b7d995283f1fa98b188290c23616de9d63ab0c007f4bbc4d600bb7172945fc43"
+    },
+    {
+      "id": "packaged-browser",
+      "status": "passed",
+      "count": 48,
+      "log": "/tmp/build-evidence-packaged-browser.log",
+      "outputSha256": "2cc651e276c7f47e7e7b521230c501ca6f46e215ae10d779dfb0f7835a3df7d5"
+    },
+    {
+      "id": "dependency-inventories",
+      "status": "passed",
+      "count": 7,
+      "log": "/tmp/build-evidence-inventories.log",
+      "outputSha256": "670eb62b511ead400de6efa503aeab74eb1c2542fc43e8d736c006e0c971ee24"
+    }
+  ],
+  "canonicalFacebookInventoryPreserved": true,
+  "scope": "Development verification; provider submission and publication require separate evidence.",
+  "dashboardPublication": {
+    "receipt": "artifacts/development-progress/architecture_build-evidence-isolation-2f1eb897f8ef31d29cebd4a7868bd9d0333700c5.json",
+    "status": "published",
+    "completedAt": "2026-09-29T22:10:03.877Z",
+    "sourceDigest": "175142633c89d22a75d53087025746c4c3b1d6725b888dc3d0decfd24b5cad5a",
+    "verifiedTargets": [
+      "jest",
+      "facebook",
+      "reddit",
+      "youtube",
+      "netflix",
+      "yahoo",
+      "gamesnacks",
+      "itch"
+    ],
+    "priorRowsPreserved": true,
+    "providerEvidencePreserved": true,
+    "submissionActivityPreserved": true
+  }
+}

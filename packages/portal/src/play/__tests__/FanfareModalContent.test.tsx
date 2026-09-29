@@ -69,6 +69,7 @@ describe("fanfare modal content", () => {
     );
     expect(victoryWithoutSharing).toContain("reward-details");
     expect(victoryWithoutSharing).not.toContain("Invite a friend");
+    /** Provides pending victory behavior. */
     const pendingVictory = renderToString(
       <VictoryFanfareContent {...sharedProps} state={{...state, completionAcknowledged: false}} activeStep={{kind: "victory"}} />,
     );
@@ -110,7 +111,9 @@ describe("fanfare modal content", () => {
   });
 
   it("keeps victory progress valid when reward details refresh mid-sequence", () => {
+    /** Provides state behavior. */
     const state = createInitialGameSession();
+    /** Provides html behavior. */
     const html = renderToString(
       <VictoryFanfareContent
         activeCoinAward={null}
@@ -125,6 +128,7 @@ describe("fanfare modal content", () => {
       />,
     );
 
+    /** Provides progress behavior. */
     const progress = html.match(/sequence-progress[^>]*>(.*?)<\/small>/)?.[1].replaceAll("<!-- -->", "");
     expect(progress).toBe("6/6");
     expect(progress).not.toBe("6/1");

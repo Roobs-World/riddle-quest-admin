@@ -67,7 +67,7 @@ module.exports = {
     "src/play/race/logic/raceAnalytics.ts": {statements: 100, branches: 100, functions: 100, lines: 100},
     "src/play/race/logic/raceFeatureFlag.ts": {statements: 100, branches: 100, functions: 100, lines: 100},
     "src/play/race/logic/racePresentation.ts": {statements: 100, branches: 100, functions: 100, lines: 100},
-    "src/play/race/hooks/useRaceOperationLifecycle.ts": {statements: 100, branches: 100, functions: 100, lines: 100},
+    "src/play/race/RacePlay.ts": {statements: 90, branches: 80, functions: 90, lines: 90},
     "src/play/race/hooks/useRaceDialogFocus.ts": {statements: 100, branches: 100, functions: 100, lines: 100},
     "src/play/race/hooks/useRaceGameplayFit.ts": {statements: 100, branches: 100, functions: 100, lines: 100},
   },

@@ -1,4 +1,4 @@
-import {YOUTUBE_COPY} from "../i18n";
+import {YOUTUBE_COPY} from "../../playable/i18n";
 
 describe("YouTube target copy", () => {
   it("contains the same non-empty keys in every supported locale", () => {

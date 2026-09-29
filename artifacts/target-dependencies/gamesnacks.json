@@ -1,0 +1,138 @@
+{
+  "schemaVersion": 1,
+  "target": "gamesnacks",
+  "outputDirectory": "/home/craig-beswetherick/Documents/riddle-quest/packages/portal/dist-gamesnacks",
+  "packages": [
+    "react",
+    "react-dom",
+    "scheduler"
+  ],
+  "modules": [
+    "packages/portal/\u0000rolldown/runtime.js",
+    "node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/cjs/react-dom-client.production.js",
+    "node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/cjs/react-dom.production.js",
+    "node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/client.js",
+    "node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/index.js",
+    "node_modules/.pnpm/react@19.2.8/node_modules/react/cjs/react-compiler-runtime.production.js",
+    "node_modules/.pnpm/react@19.2.8/node_modules/react/cjs/react-jsx-runtime.production.js",
+    "node_modules/.pnpm/react@19.2.8/node_modules/react/cjs/react.production.js",
+    "node_modules/.pnpm/react@19.2.8/node_modules/react/compiler-runtime.js",
+    "node_modules/.pnpm/react@19.2.8/node_modules/react/index.js",
+    "node_modules/.pnpm/react@19.2.8/node_modules/react/jsx-runtime.js",
+    "node_modules/.pnpm/scheduler@0.27.0/node_modules/scheduler/cjs/scheduler.production.js",
+    "node_modules/.pnpm/scheduler@0.27.0/node_modules/scheduler/index.js",
+    "packages/core/src/game/graphemes.ts",
+    "packages/portal/src/gamesnacks/GameSnacksSdkPort.ts",
+    "packages/portal/src/gamesnacks/main.tsx",
+    "packages/portal/src/playable/LocalSoloAuthority.contract.ts",
+    "packages/portal/src/playable/LocalSoloAuthority.ts",
+    "packages/portal/src/playable/YouTubeNativeAnswerInput.tsx",
+    "packages/portal/src/playable/YouTubePlayableApp.tsx",
+    "packages/portal/src/playable/YouTubePlayableViews.tsx",
+    "packages/portal/src/playable/YouTubeSaveGate.ts",
+    "packages/portal/src/playable/achievements.ts",
+    "packages/portal/src/playable/content.ts",
+    "packages/portal/src/playable/economy.ts",
+    "packages/portal/src/playable/generated/youtube-content-v1.json",
+    "packages/portal/src/playable/i18n.ts",
+    "packages/portal/src/playable/input.ts",
+    "packages/portal/src/playable/localSoloGameRules.ts",
+    "packages/portal/src/playable/save.ts",
+    "packages/portal/src/playable/styles.css",
+    "packages/portal/src/playable/useYouTubePlayableBoot.ts",
+    "packages/portal/src/playable/useYouTubeReadySession.ts",
+    "packages/portal/targets/gamesnacks/index.html"
+  ],
+  "chunks": [
+    {
+      "file": "assets/index.js",
+      "entry": true,
+      "dynamicEntry": false,
+      "imports": [
+        "assets/vendor-react.js",
+        "assets/core-game.js",
+        "assets/rolldown-runtime.js"
+      ],
+      "dynamicImports": [],
+      "sha256": "df5b64a26874919d4d16bcecdc77a8433b23f97366d0cc61324a76a53ec6556c"
+    },
+    {
+      "file": "assets/core-game.js",
+      "entry": false,
+      "dynamicEntry": false,
+      "imports": [
+        "assets/rolldown-runtime.js"
+      ],
+      "dynamicImports": [],
+      "sha256": "8a72474b3905324e3c21abac87c55b909b5da27164214714fbf09f75c63df64a"
+    },
+    {
+      "file": "assets/rolldown-runtime.js",
+      "entry": false,
+      "dynamicEntry": false,
+      "imports": [],
+      "dynamicImports": [],
+      "sha256": "8e1de6b69118fd7bae15fd7ae6ac3033b575231de9a0931c99a9f53200fc88c6"
+    },
+    {
+      "file": "assets/vendor-react.js",
+      "entry": false,
+      "dynamicEntry": false,
+      "imports": [
+        "assets/rolldown-runtime.js"
+      ],
+      "dynamicImports": [],
+      "sha256": "94b5f12597debb69eab09ed9222f25e2005394048ec3aeaf271ee5932f98e98e"
+    }
+  ],
+  "files": [
+    {
+      "file": "assets/core-game.js",
+      "sha256": "8a72474b3905324e3c21abac87c55b909b5da27164214714fbf09f75c63df64a"
+    },
+    {
+      "file": "assets/index.css",
+      "sha256": "838a7feff2b201fe61bd0afd5e7a216ca355ba0b7386d1adc94780b097dc1be0"
+    },
+    {
+      "file": "assets/index.js",
+      "sha256": "df5b64a26874919d4d16bcecdc77a8433b23f97366d0cc61324a76a53ec6556c"
+    },
+    {
+      "file": "assets/rolldown-runtime.js",
+      "sha256": "8e1de6b69118fd7bae15fd7ae6ac3033b575231de9a0931c99a9f53200fc88c6"
+    },
+    {
+      "file": "assets/vendor-react.js",
+      "sha256": "94b5f12597debb69eab09ed9222f25e2005394048ec3aeaf271ee5932f98e98e"
+    },
+    {
+      "file": "game.json",
+      "sha256": "e914a896cfd366bc2f703546c28d61ba0f0baf61737410e2310cdfac68540189"
+    },
+    {
+      "file": "index.html",
+      "sha256": "f6007e16052747c6a785e53129bcbdfd3303d0d052c36d425829fa5d2017217e"
+    },
+    {
+      "file": "marketing/horizontal.png",
+      "sha256": "af5520b4e2e36b2252d2abe4cf8b51ba4d9b4aebb58ad9f7aecccde116996eac"
+    },
+    {
+      "file": "marketing/icon.png",
+      "sha256": "2697efc7d9442b1cc865b63a3f4034993af07f75f58b1690a312609ceb0a7053"
+    },
+    {
+      "file": "marketing/vertical.png",
+      "sha256": "0c48450091da15c21b118655e2ad07b49a5b4d165f4810310e14e0be66fa169c"
+    },
+    {
+      "file": "third-party-licenses.txt",
+      "sha256": "fa24de5e41ed08068c63f4b6a349f9afe2cd026168eaff86c876f3f61b3641f7"
+    },
+    {
+      "file": "youtube-content-manifest.json",
+      "sha256": "2e7de5f49d614b1b52859f9891fcb0d6a524e62ede9980c1014fa8b2a66f425c"
+    }
+  ]
+}

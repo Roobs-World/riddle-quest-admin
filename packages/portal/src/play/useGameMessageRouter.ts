@@ -223,6 +223,7 @@ export function useGameMessageRouter({
             const reward = getNumber(data.coinsEarned);
             /** Whether this reward still belongs to the visible riddle. */
             const currentCompletion = onCompletionResult?.(true, message.requestId) ?? true;
+            /** Provides completed outcome behavior. */
             const completedOutcome = currentCompletion ? stateRef.current.lastOutcome : null;
             if (currentCompletion) dispatch({
               type: "completionReward",

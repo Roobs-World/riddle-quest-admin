@@ -25,6 +25,7 @@ describe("LeaderboardModalPage", () => {
         <LeaderboardModalPage entries={[]} loading leaderboardType="xp" onRequestLeaderboard={requestLeaderboard} />,
       ),
     ).toContain('aria-busy="true"');
+    /** Provides loading html behavior. */
     const loadingHtml = renderToString(
       <LeaderboardModalPage entries={[]} loading leaderboardType="xp" onRequestLeaderboard={requestLeaderboard} />,
     );

@@ -1,3 +1,4 @@
+import {completionPresentationKey} from "./completionPresentation";
 import {useEffect, useRef, useState} from "react";
 import "../styles.modal-shell.css";
 import "../styles.modal-rewards.css";
@@ -15,7 +16,6 @@ import {
   getActiveFanfareStep,
   isCoinCollectionPending,
 } from "./modalPages/fanfare/fanfareSequence";
-
 /** Event handlers and state required by the game modal shell. */
 export type GameModalViewProps = {
   /** Stores state. */
@@ -49,7 +49,6 @@ export type GameModalViewProps = {
   /** Stores on coin balance preview. */
   onCoinBalancePreview: (balance: number | null) => void;
 };
-
 /** Coordinates the accessible modal shell and delegates modal-specific content. */
 export function GameModalView({
   state,
@@ -160,7 +159,6 @@ export function GameModalView({
   if (!state.modal) {
     return null;
   }
-
   /** Provides victory steps behavior. */
   const victorySteps = createVictoryFanfareSteps(state.lastRewards);
   /** Provides auxiliary steps behavior. */
@@ -204,10 +202,9 @@ export function GameModalView({
   } else if (activeFanfareStep?.kind === "referral") {
     titles.reward = tr("VictoryModal.REFERRAL_REWARD_TITLE");
   }
-
   /** Indicates whether is mandatory outcome. */
-  const isMandatoryOutcome = state.modal === "victory" || coinCollectionPending ||
-    (state.modal === "continue" && state.guessPending);
+  const isMandatoryOutcome =
+    state.modal === "victory" || coinCollectionPending || (state.modal === "continue" && state.guessPending);
   /** Provides advance victory fanfare behavior. */
   const advanceVictoryFanfare = () => {
     if (victoryStepIndex + 1 < victorySteps.length) {
@@ -215,7 +212,13 @@ export function GameModalView({
       return;
     }
     onClose();
-    window.dispatchEvent(new CustomEvent("riddle-quest:victory-dismissed"));
+    window.dispatchEvent(
+      new CustomEvent("riddle-quest:victory-dismissed", {
+        detail: {
+          outcomeKey: state.lastOutcome ? completionPresentationKey(state.lastOutcome) : null,
+        },
+      }),
+    );
     onNext();
   };
   /** Provides advance reward fanfare behavior. */

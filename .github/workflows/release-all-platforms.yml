@@ -41,72 +41,25 @@ jobs:
         run: |
           set -euo pipefail
           if [[ -n "${JEST_GAME_UPLOAD_TOKEN}" ]]; then
-            pnpm release:jest
+            node scripts/release/platform-releases.mjs jest
           else
             echo "Jest publish skipped: configure JEST_GAME_UPLOAD_TOKEN in the jest-production environment."
           fi
-          pnpm release:facebook
-          pnpm release:youtube
+          node scripts/release/platform-releases.mjs facebook
+          node scripts/release/platform-releases.mjs youtube
           if pnpm --filter @qwordly/reddit-app validate:contracts; then
-            pnpm release:reddit
+            node scripts/release/platform-releases.mjs reddit
           else
             echo "Reddit release handoff skipped: capture the six sanitized production contract fixtures first."
           fi
-          pnpm release:netflix
-          pnpm release:yahoo
-          pnpm release:gamesnacks
+          node scripts/release/platform-releases.mjs netflix
+          node scripts/release/platform-releases.mjs yahoo
+          node scripts/release/platform-releases.mjs gamesnacks
         env:
           JEST_GAME_UPLOAD_TOKEN: ${{ secrets.JEST_GAME_UPLOAD_TOKEN }}
           JEST_NOTIFICATION_EMAIL: ${{ secrets.JEST_NOTIFICATION_EMAIL }}
-      - name: Create neutral HTML5 handoff
-        run: pnpm release:html5
-      - name: Create distribution-specific HTML5 handoffs
-        run: |
-          pnpm release:itch
-          pnpm release:crazygames
-          pnpm release:newgrounds
-          pnpm release:gamejolt
-          pnpm release:coolmath
-          pnpm release:armor
-          pnpm release:gamepix
-          pnpm release:addictinggames
-          pnpm release:htmlgames
-          pnpm release:playkovo
-          pnpm release:kongregate
-          pnpm release:lagged
-          pnpm release:gamedistribution
-          pnpm release:gamemonetize
-          pnpm release:yandex
-          pnpm release:telegram
-          pnpm release:microsoft-pwa
-          pnpm release:y8
-          pnpm release:playgama
-          pnpm release:amazon
-          pnpm release:jiogames
-          pnpm release:famobi
-          pnpm release:gamepush
-          pnpm release:softgames
-          pnpm release:wgplayground
-          pnpm release:miniplay
-          pnpm release:kizi
-          pnpm release:huawei
-          pnpm release:gameflare
-          pnpm release:shockwave
-          pnpm release:airconsole
-          pnpm release:world
-          pnpm release:farcaster
-          pnpm release:pi
-          pnpm release:minipay
-          pnpm release:zoom
-          pnpm release:pwa-directory
-          pnpm release:miro
-          pnpm release:greenhouse
-          pnpm release:ozogames
-          pnpm release:slowden
-          pnpm release:noadsgames
-          pnpm release:yalgames
-          pnpm release:rando
-          pnpm release:pwastore
+      - name: Prepare one neutral source and package registered distribution handoffs
+        run: node scripts/release/package-neutral-handoffs.mjs
       - name: Verify packaged gameplay before recording readiness
         run: pnpm test:release-artifacts:browser
       - name: Record the verified release evidence in the dashboard
@@ -130,103 +83,10 @@ jobs:
           retention-days: 30
           path: |
             artifacts/release-e2e/
-            build-html5.zip
+            build-*.zip
+            build-*.manifest.json
             build-html5.sha256
-            build-itch.zip
-            build-itch.zip.manifest.json
-            build-crazygames-basic.zip
-            build-crazygames-basic.zip.manifest.json
-            build-newgrounds.zip
-            build-newgrounds.zip.manifest.json
-            build-gamejolt.zip
-            build-gamejolt.zip.manifest.json
-            build-coolmath-pitch.zip
-            build-coolmath-pitch.zip.manifest.json
-            build-armor-pitch.zip
-            build-armor-pitch.zip.manifest.json
-            build-gamepix-review.zip
-            build-gamepix-review.zip.manifest.json
-            build-addictinggames-review.zip
-            build-addictinggames-review.zip.manifest.json
-            build-htmlgames-pitch.zip
-            build-htmlgames-pitch.zip.manifest.json
-            build-playkovo-review.zip
-            build-playkovo-review.zip.manifest.json
-            build-kongregate.zip
-            build-kongregate.zip.manifest.json
-            build-lagged-review.zip
-            build-lagged-review.zip.manifest.json
-            build-gamedistribution-review.zip
-            build-gamedistribution-review.zip.manifest.json
-            build-gamemonetize-review.zip
-            build-gamemonetize-review.zip.manifest.json
-            build-yandex-review.zip
-            build-yandex-review.zip.manifest.json
-            build-telegram-review.zip
-            build-telegram-review.zip.manifest.json
-            build-microsoft-pwa.zip
-            build-microsoft-pwa.zip.manifest.json
-            build-gamesnacks.zip
-            build-gamesnacks.zip.manifest.json
-            build-y8-review.zip
-            build-y8-review.zip.manifest.json
-            build-playgama-review.zip
-            build-playgama-review.zip.manifest.json
-            build-amazon-webapp-review.zip
-            build-amazon-webapp-review.zip.manifest.json
-            build-jiogames-review.zip
-            build-jiogames-review.zip.manifest.json
-            build-famobi-pitch.zip
-            build-famobi-pitch.zip.manifest.json
-            build-gamepush-review.zip
-            build-gamepush-review.zip.manifest.json
-            build-softgames-pitch.zip
-            build-softgames-pitch.zip.manifest.json
-            build-wgplayground-review.zip
-            build-wgplayground-review.zip.manifest.json
-            build-miniplay-review.zip
-            build-miniplay-review.zip.manifest.json
-            build-kizi-pitch.zip
-            build-kizi-pitch.zip.manifest.json
-            build-huawei-quick-game-review.zip
-            build-huawei-quick-game-review.zip.manifest.json
-            build-gameflare-review.zip
-            build-gameflare-review.zip.manifest.json
-            build-shockwave-review.zip
-            build-shockwave-review.zip.manifest.json
-            build-airconsole-review.zip
-            build-airconsole-review.zip.manifest.json
-            build-world-mini-app-review.zip
-            build-world-mini-app-review.zip.manifest.json
-            build-farcaster-mini-app-review.zip
-            build-farcaster-mini-app-review.zip.manifest.json
-            build-pi-apps-review.zip
-            build-pi-apps-review.zip.manifest.json
-            build-minipay-mini-app-review.zip
-            build-minipay-mini-app-review.zip.manifest.json
-            build-zoom-app-review.zip
-            build-zoom-app-review.zip.manifest.json
-            build-pwa-directory-review.zip
-            build-pwa-directory-review.zip.manifest.json
-            build-miro-marketplace-review.zip
-            build-miro-marketplace-review.zip.manifest.json
-            build-greenhouse-review.zip
-            build-greenhouse-review.zip.manifest.json
-            build-ozogames-review.zip
-            build-ozogames-review.zip.manifest.json
-            build-slowden-review.zip
-            build-slowden-review.zip.manifest.json
-            build-noadsgames-review.zip
-            build-noadsgames-review.zip.manifest.json
-            build-yalgames-review.zip
-            build-yalgames-review.zip.manifest.json
-            build-rando-review.zip
-            build-rando-review.zip.manifest.json
-            build-pwastore-review.zip
-            build-pwastore-review.zip.manifest.json
-            build-youtube.zip
-            build-youtube.manifest.json
-            build-youtube.test-report.json
+            build-html5.zip.source.json
             packages/portal/dist-facebook
             packages/portal/dist-reddit
             packages/portal/dist-yahoo

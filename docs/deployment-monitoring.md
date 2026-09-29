@@ -130,3 +130,43 @@ backend and connected Jest collections retain these deployment reports.
 The dashboard is an English evidence document; the game's 17 locale bundles are
 unchanged. Validation: importer/calculation tests, dashboard tests and protected
 runtime integrity, rendered desktop/mobile filtering, and six isolated target builds.
+
+## Verified development completion
+
+`pnpm development:complete /absolute/task.json` runs every declared check, then
+records completion in the existing dashboard. A task declares `taskId`, stable
+`targets` (for example `facebook` and `itch`), `work`, `checks` containing `id`,
+`executable` and `args`, `remainingGates`, `nextAction`, and optional `artifacts`
+containing `target` and `file`. Artifact hashes are calculated from the tested bytes.
+Local tasks record the base revision and a digest of the working source, and reject
+source changes during verification. Generated evidence under `artifacts/`, the
+dashboard snapshot and pre-existing `.codex/` state are excluded from that source
+digest; artifact bytes are checked and hashed separately. CI tasks record the exact
+verified commit.
+No provider submission, approval or live status is changed.
+
+Use `--publish` with the existing gcloud identity to update the persistent snapshot.
+Publication checks the current remote accepted branch (`main` by default), re-reads
+on generation conflicts and preserves newer monitoring measurements. The browser
+uses its existing one-minute refresh. Failed delivery leaves a durable receipt in
+`artifacts/development-progress/`; retry with
+`pnpm development:complete --retry /absolute/receipt.json --publish`.
+
+Production readiness automatically records successful development checks on the
+repository's default branch and publishes the same receipt through Workload Identity
+Federation. Configure repository variables `DEVELOPMENT_DASHBOARD_WIF_PROVIDER` and
+`DEVELOPMENT_DASHBOARD_SERVICE_ACCOUNT` for an identity restricted to this repository,
+default branch and workflow, with read/write access only to the existing monitoring
+snapshot. Missing credentials fail the delivery job visibly; its completion receipt
+is retained as a 90-day Actions artifact and can be replayed. Pull requests and stale
+branch revisions cannot replace accepted progress. The authentication action's
+[official setup instructions](https://github.com/google-github-actions/auth) describe
+its trust configuration; no long-lived service-account key is required.
+
+The existing delivery identity and repository variables are configured by
+`bash scripts/monitoring/configure-development-dashboard-ci.sh`. Its trust requires
+this repository's `main` production-readiness workflow, and its bucket grant permits
+only `snapshot.json`. The workflow begins automatic delivery when these changes
+reach the default branch. Local accepted-branch handoffs can be published before
+then with `DEVELOPMENT_ACCEPTED_BRANCH=jest`; the dashboard labels their base revision
+and working-source digest explicitly.

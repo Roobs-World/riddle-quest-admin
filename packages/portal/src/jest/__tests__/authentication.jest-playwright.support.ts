@@ -5,7 +5,7 @@ import type {Page} from "@playwright/test";
 export const advanceToRegistration = async (page: Page) => {
   await enterRegisteredGame(page);
   await openProfileAfterGuidance(page);
-  await page.getByRole("button", {name: /upgrade account/i}).click();
+  await page.getByRole("button", {name: /register or log in/i}).click();
   await page.locator('.modal-profile').waitFor({state: 'detached'});
   await page.getByText("Keep your progress", {exact: true}).waitFor();
   expect(await page.getByRole("button", {name: /^register$/i}).isVisible()).toBe(true);

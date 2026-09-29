@@ -426,6 +426,13 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
         appCheck: appCheckToken,
         body: JSON.stringify({data: {}}),
       });
+      // SDK preference restore precedes gameplay startup. Wait for the game's
+      // deliberate unmuted initial state before checking the settled preferences.
+      await successPage.waitForFunction(
+        () => localStorage.getItem("riddleQuest:soundEnabled") === "true",
+        undefined,
+        {timeout: 5_000},
+      );
       expect(
         await successPage.evaluate(() => ({
           locale: localStorage.getItem("appLanguage"),
@@ -433,7 +440,7 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
           reducedMotion: document.documentElement.dataset.riddleQuestReducedMotion,
           highContrast: document.documentElement.dataset.riddleQuestHighContrast,
         })),
-      ).toEqual({locale: "fr", soundEnabled: "false", reducedMotion: "true", highContrast: "true"});
+      ).toEqual({locale: "fr", soundEnabled: "true", reducedMotion: "true", highContrast: "true"});
       expect(
         await successPage.evaluate(() => {
           /** Provides original language behavior. */

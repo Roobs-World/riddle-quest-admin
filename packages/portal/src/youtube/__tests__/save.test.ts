@@ -4,7 +4,7 @@ import {
   createEmptyYouTubeSave,
   parseYouTubeSave,
   serializeYouTubeSave,
-} from "../save";
+} from "../../playable/save";
 
 describe("YouTubeSaveV1", () => {
   it("creates 300-coin target-local defaults only after an empty successful load", () => {

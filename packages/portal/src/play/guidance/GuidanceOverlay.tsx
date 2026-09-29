@@ -22,7 +22,6 @@ import {
 } from "../playerPreferences";
 
 export {getOnboardingTotalSteps} from "./guidanceConfig";
-
 /** State and optional callbacks required by the guidance coordinator. */
 export type GuidanceOverlayProps = {
   /** Stores state. */
@@ -38,14 +37,8 @@ export type GuidanceOverlayProps = {
   /** Prevents an obscured guidance surface from taking or handling focus. */
   interactionBlocked?: boolean;
 };
-
 /** Coordinates onboarding, feature tours, and contextual guidance tooltips. */
-export function GuidanceOverlay({
-  state,
-  modal,
-  onActiveChange,
-  interactionBlocked = false,
-}: GuidanceOverlayProps) {
+export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocked = false}: GuidanceOverlayProps) {
   useLocale();
   /** Provides r id. */
   const userId = state.user?.uid;
@@ -61,7 +54,8 @@ export function GuidanceOverlay({
   const [sequenceIndex, setSequenceIndex] = useState(0);
   /** Provides [target rect, set target rect] behavior. */
   const [targetRect, setTargetRect] = useState<DOMRect | null>(null);
-  const [completionPopupsPending, setCompletionPopupsPending] = useState(false);
+  /** Provides [completion popups pending, set completion popups pending] behavior. */
+  const [completionPopupsPending, setCompletionPopupsPending] = useState<string | null>(null);
   /** Provides onboarding card ref behavior. */
   const onboardingCardRef = useRef<HTMLDivElement | null>(null);
   /** Provides tooltip card ref behavior. */
@@ -78,11 +72,20 @@ export function GuidanceOverlay({
   }, [modal, state.lastRewards, userId]);
 
   useEffect(() => {
-    const onVictoryDismissed = () => {
+    /** Provides on victory dismissed behavior. */
+    const onVictoryDismissed = (event: Event) => {
+      /** Provides key behavior. */
+      const key: unknown = (
+        event as CustomEvent<{
+          /** Stores outcome key. */
+          outcomeKey?: unknown;
+        }>
+      ).detail?.outcomeKey;
+      if (typeof key !== "string") return;
       // A reward may arrive after the player leaves the fanfare. Do not let its
       // achievement guidance interrupt the next riddle.
       safeBrowserStorageSet("local", createGuidanceStorageKey("tooltipSeen:achievementEarned", userId), "seen");
-      setCompletionPopupsPending(true);
+      setCompletionPopupsPending(key);
     };
     window.addEventListener("riddle-quest:victory-dismissed", onVictoryDismissed);
     return () => window.removeEventListener("riddle-quest:victory-dismissed", onVictoryDismissed);
@@ -161,7 +164,6 @@ export function GuidanceOverlay({
   useEffect(() => {
     onboardingCardRef.current?.scrollTo({top: 0});
   }, [onboardingStep]);
-
 
   useEffect(() => {
     onActiveChange?.(guidanceActive);
@@ -255,17 +257,34 @@ export function GuidanceOverlay({
 
   useEffect(() => {
     if (!completionPopupsPending || modal !== null || onboardingStep !== null || sequence.length > 0) return;
-    const contextualGuidanceReady = hasCompletedPlayerOnboarding(createGuidanceStorageKey("onboarding", userId)) &&
+    /** Provides contextual guidance ready behavior. */
+    const contextualGuidanceReady =
+      hasCompletedPlayerOnboarding(createGuidanceStorageKey("onboarding", userId)) &&
       safeBrowserStorageGet("local", createTooltipTourStorageKey("gameTour", userId)) === "seen";
-    const hasPendingTooltip = contextualGuidanceReady && getContextualTooltipCandidates(state, modal).some(
-      ({id, when}) => when &&
-        safeBrowserStorageGet("local", createGuidanceStorageKey(`tooltipSeen:${id}`, userId)) !== "seen",
-    );
+    /** Indicates whether has pending tooltip. */
+    const hasPendingTooltip =
+      contextualGuidanceReady &&
+      getContextualTooltipCandidates(state, modal).some(
+        ({id, when}) =>
+          when && safeBrowserStorageGet("local", createGuidanceStorageKey(`tooltipSeen:${id}`, userId)) !== "seen",
+      );
     if (!hasPendingTooltip) {
-      setCompletionPopupsPending(false);
-      window.dispatchEvent(new CustomEvent("riddle-quest:completion-popups-dismissed"));
+      setCompletionPopupsPending(null);
+      window.dispatchEvent(
+        new CustomEvent("riddle-quest:completion-popups-dismissed", {detail: {outcomeKey: completionPopupsPending}}),
+      );
     }
-  }, [completionPopupsPending, modal, onboardingStep, sequence.length, state.gameMode, state.lastOutcome, state.lastRewards, state.profile, userId]);
+  }, [
+    completionPopupsPending,
+    modal,
+    onboardingStep,
+    sequence.length,
+    state.gameMode,
+    state.lastOutcome,
+    state.lastRewards,
+    state.profile,
+    userId,
+  ]);
 
   useLayoutEffect(() => {
     if (!activeTooltip) {
@@ -306,7 +325,6 @@ export function GuidanceOverlay({
       window.removeEventListener("scroll", updateRect, true);
     };
   }, [activeTooltip]);
-
   /** Provides tooltip content behavior. */
   const tooltipContent = useMemo(() => {
     if (!activeTooltip) {
@@ -316,7 +334,6 @@ export function GuidanceOverlay({
     const [title, body] = TOOLTIP_KEYS[activeTooltip];
     return {title: tr(title), body: tr(body)};
   }, [activeTooltip]);
-
   /** Provides finish sequence behavior. */
   const finishSequence = () => {
     if (sequenceName?.startsWith("contextual:")) {

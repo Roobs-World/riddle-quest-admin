@@ -22,7 +22,7 @@ function EvidenceTable({id, queryId, title, rows, columns}) {
       <div className="evidence-table-frame__toolbar"><span>{rows.length} {rows.length === 1 ? "record" : "records"}</span><span>Scroll table to inspect all details</span></div>
       <Table className="integration-table">
         <TableHeader><TableRow>{columns.map(({key, label}) => <TableHead key={key}>{label}</TableHead>)}</TableRow></TableHeader>
-        <TableBody>{rows.map((row) => <TableRow key={row.platform ?? row.service ?? row.check}>
+        <TableBody>{rows.map((row) => <TableRow key={row.taskId ? `${row.taskId}:${row.target}:${row.revision}` : row.platform ?? row.service ?? row.check}>
           {columns.map(({key, status, link, linkLabel}) => <TableCell key={key}>{link && row[key]
             ? <Button><a href={row[key]} target="_blank" rel="noreferrer">{linkLabel ?? "Open"}</a></Button>
             : status ? <Status>{row[key]}</Status> : row[key]}</TableCell>)}
@@ -80,6 +80,7 @@ export function DashboardContent() {
   const submissions = reviewedRows("submission_activity");
   const distributionCandidates = reviewedRows("html5_distribution_candidates");
   const releaseAutomation = reviewedRows("release_automation");
+  const developmentProgress = reviewedRows("development_progress");
   const manualActions = reviewedRows("manual_action_checklist");
   const monetization = reviewedRows("monetization_readiness");
   const services = reviewedRows("service_status");
@@ -170,6 +171,15 @@ export function DashboardContent() {
           {key:"platform",label:"Platform"}, {key:"releaseModel",label:"Release model"},
           {key:"integration",label:"Required integration"}, {key:"submissionProgress",label:"Submission progress"},
           {key:"nextGate",label:"Next gate"},
+        ]} />
+      </Section>
+      <Section>
+        <SectionHeader id="development-progress-title" title="Verified development progress" />
+        <EvidenceTable id="development-progress" queryId="development_progress" title="Completed work and remaining submission gates" rows={developmentProgress} columns={[
+          {key:"platform",label:"Platform"}, {key:"taskId",label:"Task"}, {key:"status",label:"Development",status:true},
+          {key:"work",label:"Completed work"}, {key:"revision",label:"Base revision"}, {key:"sourceDigest",label:"Verified source digest"}, {key:"completedAt",label:"Verified (UTC)"},
+          {key:"checks",label:"Checks"}, {key:"artifacts",label:"Artifact digests"},
+          {key:"remainingGates",label:"Remaining gates"}, {key:"nextAction",label:"Next action"},
         ]} />
       </Section>
       <Section>

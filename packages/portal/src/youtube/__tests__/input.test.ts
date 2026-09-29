@@ -4,7 +4,7 @@ import {
   insertYouTubeAnswerText,
   normalizeLatinShortcutKey,
   normalizeYouTubeAnswerText,
-} from "../input";
+} from "../../playable/input";
 
 describe("YouTube native answer input", () => {
   it("normalizes native IME text into NFC graphemes and rejects punctuation", () => {

@@ -1,10 +1,10 @@
+import {completeMockOnboarding} from "./mockOnboarding.jest-playwright.support";
 import {afterAll, beforeAll, describe, it} from "@jest/globals";
 import {chromium, expect, type Browser, type Page} from "@playwright/test";
 import {createServer, type Server} from "node:http";
 import {readFile} from "node:fs/promises";
 import path from "node:path";
 import {PROFILE_TOUR} from "../guidance/guidanceConfig";
-
 /** Runs against the injected Jest harness in the built artifact. */
 const describeBrowser = process.env.PORTAL_BROWSER_TESTS === "1" ? describe : describe.skip;
 
@@ -20,7 +20,13 @@ describeBrowser("profile walkthrough", () => {
     /** Directory containing the built Jest artifact. */
     const dist = path.resolve(__dirname, "../../../dist-jest");
     /** Content types used to serve artifact resources. */
-    const types: Record<string, string> = {".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".svg": "image/svg+xml"};
+    const types: Record<string, string> = {
+      ".html": "text/html",
+      ".js": "text/javascript",
+      ".css": "text/css",
+      ".json": "application/json",
+      ".svg": "image/svg+xml",
+    };
     server = createServer(async (request, response) => {
       /** Requested path within the artifact. */
       const pathname = new URL(request.url ?? "/", "http://localhost").pathname;
@@ -35,7 +41,7 @@ describeBrowser("profile walkthrough", () => {
         response.writeHead(404).end();
       }
     });
-    await new Promise<void>(resolve => server.listen(0, "127.0.0.1", resolve));
+    await new Promise<void>((resolve) => server.listen(0, "127.0.0.1", resolve));
     /** Bound server address used to construct the harness origin. */
     const address = server.address();
     if (!address || typeof address === "string") throw new Error("Missing test server address");
@@ -45,9 +51,8 @@ describeBrowser("profile walkthrough", () => {
 
   afterAll(async () => {
     await browser?.close();
-    await new Promise<void>(resolve => server?.close(() => resolve()));
+    await new Promise<void>((resolve) => server?.close(() => resolve()));
   });
-
   /** Opens the actual profile with only its first-run tour still unseen. */
   const openProfile = async (page: Page) => {
     await page.addInitScript(() => {
@@ -57,50 +62,70 @@ describeBrowser("profile walkthrough", () => {
       sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
     });
     await page.goto(`${origin}/?harness=jest`);
+    await completeMockOnboarding(page);
     await page.getByRole("button", {name: /^profile$/i}).click();
     await expect(page.locator(".tooltip-backdrop")).toHaveAttribute("data-tooltip-id", PROFILE_TOUR[0]);
   };
 
-  it.each([{width: 459, height: 591}, {width: 320, height: 568}])("advances every step with one tap and keeps profile open at %j", async viewport => {
-    /** Isolated page for this walkthrough scenario. */
-    const page = await browser.newPage({viewport, hasTouch: true});
-    try {
-      await openProfile(page);
-      for (const id of PROFILE_TOUR) {
-        await expect(page.locator(".tooltip-backdrop")).toHaveAttribute("data-tooltip-id", id);
-        // Let the target measurement settle, then exercise actual touch hit testing.
-        await page.waitForTimeout(150);
-        /** Tooltip bounds used to verify viewport containment. */
-        const card = await page.locator(".tooltip-card").boundingBox();
-        expect(card!.y).toBeGreaterThanOrEqual(0);
-        expect(card!.y + card!.height).toBeLessThanOrEqual(viewport.height);
-        if (["profileProgression", "profileAchievements", "profileRanks", "profileStatistics", "profileLeaderboard", "profileTreasure"].includes(id)) {
-          /** Spotlight bounds used to verify viewport containment. */
-          const spotlight = await page.locator(".tooltip-spotlight").boundingBox();
-          expect(spotlight!.y).toBeGreaterThanOrEqual(0);
-          expect(spotlight!.y + spotlight!.height).toBeLessThanOrEqual(viewport.height);
-          if (id !== "profileProgression") {
-            /** Provides separated behavior. */
-            const separated = card!.y + card!.height < spotlight!.y
-              || card!.y > spotlight!.y + spotlight!.height;
-            expect(separated).toBe(true);
+  it.each([
+    {width: 459, height: 591},
+    {width: 320, height: 568},
+  ])(
+    "advances every step with one tap and keeps profile open at %j",
+    async (viewport) => {
+      /** Isolated page for this walkthrough scenario. */
+      const page = await browser.newPage({viewport, hasTouch: true});
+      // The SDK is injected by this mock harness; avoid an unrelated external startup request.
+      await page.route("https://cdn.jest.com/**", (route) => route.fulfill({status: 200, contentType: "application/javascript", body: ""}));
+      try {
+        await openProfile(page);
+        for (const id of PROFILE_TOUR) {
+          await expect(page.locator(".tooltip-backdrop")).toHaveAttribute("data-tooltip-id", id);
+          // Let the target measurement settle, then exercise actual touch hit testing.
+          await page.waitForTimeout(150);
+          /** Tooltip bounds used to verify viewport containment. */
+          const card = await page.locator(".tooltip-card").boundingBox();
+          expect(card!.y).toBeGreaterThanOrEqual(0);
+          expect(card!.y + card!.height).toBeLessThanOrEqual(viewport.height);
+          if (
+            [
+              "profileProgression",
+              "profileAchievements",
+              "profileRanks",
+              "profileStatistics",
+              "profileLeaderboard",
+              "profileTreasure",
+            ].includes(id)
+          ) {
+            /** Spotlight bounds used to verify viewport containment. */
+            const spotlight = await page.locator(".tooltip-spotlight").boundingBox();
+            expect(spotlight!.y).toBeGreaterThanOrEqual(0);
+            expect(spotlight!.y + spotlight!.height).toBeLessThanOrEqual(viewport.height);
+            if (id !== "profileProgression") {
+              /** Provides separated behavior. */
+              const separated = card!.y + card!.height < spotlight!.y || card!.y > spotlight!.y + spotlight!.height;
+              expect(separated).toBe(true);
+            }
           }
+          if (id === "profileStats" && viewport.width === 459) {
+            await page.screenshot({path: "/tmp/profile-tour-stats.png"});
+          }
+          await page.locator(".tooltip-card button").tap({timeout: 2000});
+          await expect(page.locator(".modal-profile")).toBeVisible();
         }
-        if (id === "profileStats" && viewport.width === 459) {
-          await page.screenshot({path: "/tmp/profile-tour-stats.png"});
-        }
-        await page.locator(".tooltip-card button").tap({timeout: 2000});
-        await expect(page.locator(".modal-profile")).toBeVisible();
+        await expect(page.locator(".tooltip-card")).toHaveCount(0);
+      } finally {
+        await page.close();
       }
-      await expect(page.locator(".tooltip-card")).toHaveCount(0);
-    } finally {
-      await page.close();
-    }
-  }, 30_000);
+    },
+    30_000,
+  );
 
   it("keeps the next step's button in place throughout an immediate press", async () => {
     /** Isolated page for this walkthrough scenario. */
     const page = await browser.newPage({viewport: {width: 459, height: 591}});
+    // The SDK is injected by this mock harness; avoid an unrelated external startup request.
+    await page.route("https://cdn.jest.com/**", (route) => route.fulfill({status: 200, contentType: "application/javascript", body: ""}));
     try {
       await openProfile(page);
       await page.locator(".tooltip-card button").click();
@@ -121,6 +146,8 @@ describeBrowser("profile walkthrough", () => {
   it("removes the tour when its profile closes and permits a fresh tour on reopening", async () => {
     /** Isolated page for this walkthrough scenario. */
     const page = await browser.newPage({viewport: {width: 459, height: 591}});
+    // The SDK is injected by this mock harness; avoid an unrelated external startup request.
+    await page.route("https://cdn.jest.com/**", (route) => route.fulfill({status: 200, contentType: "application/javascript", body: ""}));
     try {
       await openProfile(page);
       // Simulate a modal dismissal arriving while the walkthrough owns input.
@@ -137,6 +164,8 @@ describeBrowser("profile walkthrough", () => {
   it("opens the coin shop without a guidance popup", async () => {
     /** Browser page for the shop navigation check. */
     const page = await browser.newPage({viewport: {width: 390, height: 844}});
+    // The SDK is injected by this mock harness; avoid an unrelated external startup request.
+    await page.route("https://cdn.jest.com/**", (route) => route.fulfill({status: 200, contentType: "application/javascript", body: ""}));
     try {
       await page.addInitScript(() => {
         Object.assign(window, {__RIDDLE_QUEST_BROWSER_TEST__: true});
@@ -145,12 +174,15 @@ describeBrowser("profile walkthrough", () => {
         sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
       });
       await page.goto(`${origin}/?harness=jest`);
-      await page.getByRole("button", {name: /buy coins/i}).first().click();
+      await completeMockOnboarding(page);
+      await page
+        .getByRole("button", {name: /buy coins/i})
+        .first()
+        .click();
       await expect(page.getByRole("heading", {name: /coin shop/i})).toBeVisible();
       await expect(page.locator(".tooltip-card")).toHaveCount(0);
     } finally {
       await page.close();
     }
   }, 15_000);
-
 });

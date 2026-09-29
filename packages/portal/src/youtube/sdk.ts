@@ -1,5 +1,4 @@
-import type {YouTubeSdkPort} from "./types";
-
+import type {YouTubeSdkPort} from "../playable/types";
 /** Describes you tube sdk global. */
 type YouTubeSdkGlobal = Readonly<{
   /** Stores in playables env. */
@@ -36,14 +35,12 @@ type YouTubeSdkGlobal = Readonly<{
     logWarning(): void;
   }>;
 }>;
-
 /** Documents global. */
 declare global {
   // Loaded synchronously by the YouTube target document before its module entry.
   /** Provides ytgame behavior. */
   var ytgame: YouTubeSdkGlobal | undefined;
 }
-
 /** Indicates whether is sdk global. */
 const isSdkGlobal = (value: unknown): value is YouTubeSdkGlobal => {
   if (typeof value !== "object" || value === null) return false;
@@ -64,13 +61,11 @@ const isSdkGlobal = (value: unknown): value is YouTubeSdkGlobal => {
     typeof candidate.health.logWarning === "function"
   );
 };
-
 /** Returns the SDK injected by YouTube, failing closed when the required contract is incomplete. */
 export function createYouTubeSdkPort(candidate: unknown = globalThis.ytgame): YouTubeSdkPort {
   if (!isSdkGlobal(candidate)) {
     throw new Error("youtube-sdk-unavailable");
   }
-
   /** Provides first frame sent behavior. */
   let firstFrameSent = false;
   /** Provides game ready sent behavior. */

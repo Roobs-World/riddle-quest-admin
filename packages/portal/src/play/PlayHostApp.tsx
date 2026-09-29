@@ -9,10 +9,7 @@ import type {CompletionResult, WebGameMode} from "./types";
 import type {RaceOutcome} from "@qwordly/core/race";
 import {SpinningWheelLoader} from "./SpinningWheelLoader";
 import type {PlayerData} from "../platform/types";
-import {
-  getHostNoticeMessage,
-  type HostOperationName,
-} from "./hostMessageHandlers";
+import {getHostNoticeMessage, type HostOperationName} from "./hostMessageHandlers";
 import {safeBrowserStorageGet} from "./playerPreferences";
 import {ReferralSharingProvider} from "./sharing/ReferralSharingCapability";
 import {useHostOperations} from "./useHostOperations";
@@ -22,13 +19,11 @@ import {useHostAuthSession} from "./useHostAuthSession";
 import {useHostBridgeLifecycle} from "./useHostBridgeLifecycle";
 import {createHostedPlayCommandModule} from "./HostedPlayCommandModule";
 import type {HostedPlaySession} from "./HostedPlaySession";
-
 /** Creates host message. */
 const createHostMessage = <Message extends HostToGameMessage>(message: Message): Message => ({
   ...message,
   sentAt: Date.now(),
 });
-
 /** Provides play host app behavior. */
 export function PlayHostApp({
   session: {
@@ -63,12 +58,19 @@ export function PlayHostApp({
   /** Stores on playable. */
   onPlayable?: () => void;
   /** Runs when a correct answer is confirmed before reward delivery. */
-  onAuthoritativeGuessWin?: (input: {riddleId: string; gameMode: WebGameMode}) => void;
+  onAuthoritativeGuessWin?: (input: {
+    /** Stores riddle id. */
+    riddleId: string;
+    /** Stores session token. */
+    sessionToken: string;
+    /** Stores game mode. */
+    gameMode: WebGameMode;
+  }) => void;
   /** Stores on authoritative complete. */
   onAuthoritativeComplete?: (
     input: {
       /** Stores riddle id. */
-      riddleId: string; /** Stores game mode. */
+      riddleId: string;
       /** Stores game mode. */
       gameMode: WebGameMode;
     },
@@ -101,7 +103,6 @@ export function PlayHostApp({
     const timer = window.setTimeout(() => setNotice(null), 4_000);
     return () => window.clearTimeout(timer);
   }, [notice, configurationWarning]);
-
   /** Loads ed user id ref. */
   const loadedUserIdRef = useRef<string | null>(null);
   /** Provides playable reported ref behavior. */
@@ -123,16 +124,12 @@ export function PlayHostApp({
   useEffect(() => {
     detectDeviceLanguage(safeBrowserStorageGet("local", "appLanguage") ?? navigator.language);
   }, []);
-
   /** Provides post to game behavior. */
   const postToGame = useCallback((message: HostToGameMessage) => {
     dispatchLocalBridge(HOST_TO_GAME_EVENT, createHostMessage(message));
   }, []);
   /** Persists an authoritative profile through the active target adapter. */
-  const persistProfile = useCallback(
-    (profile: BridgeProfile) => onPlayerDataChange?.({profile}),
-    [onPlayerDataChange],
-  );
+  const persistProfile = useCallback((profile: BridgeProfile) => onPlayerDataChange?.({profile}), [onPlayerDataChange]);
   /** Authenticated state, persistence, and game-bridge synchronization. */
   const {
     snapshot: authSnapshot,
@@ -161,16 +158,20 @@ export function PlayHostApp({
     },
     [authSnapshot.profile, onPlayerDataChange],
   );
-
   /** Latest init delivery, used by riddle recovery without a dependency cycle. */
   const sendInitRef = useRef<() => void>(() => undefined);
   /** Delivers the latest init state before an automatic riddle recovery. */
   const sendRecoveryInit = useCallback(() => sendInitRef.current(), []);
-
   /** Provides post operation behavior. */
   const postOperation = useCallback(
-    (requestId: string | undefined, operation: HostOperationName, ok: boolean, data?: unknown, error?: string,
-      errorKind?: "retryable" | "rejected") => {
+    (
+      requestId: string | undefined,
+      operation: HostOperationName,
+      ok: boolean,
+      data?: unknown,
+      error?: string,
+      errorKind?: "retryable" | "rejected",
+    ) => {
       postToGame({
         type: "host:operationResult",
         requestId,
@@ -185,14 +186,12 @@ export function PlayHostApp({
     },
     [postToGame],
   );
-
   /** Server-operation module shared by bridge handlers and the host view. */
   const {
     activityActive: serverActivityActive,
     withActivity: withServerActivity,
     runRace: runRaceOperation,
   } = useHostOperations({postOperation});
-
   /** Single-player riddle loading, recovery, and readiness module. */
   const {
     gameMode,
@@ -214,7 +213,6 @@ export function PlayHostApp({
   });
   /** Whether startup, server work, or the target lifecycle blocks interaction. */
   const serverInteractionActive = serverActivityActive || externalInteractionBlocked || !startupComplete;
-
   /** Sends the complete current host state to the game. */
   const sendInit = useCallback(() => {
     postToGame({
@@ -244,13 +242,11 @@ export function PlayHostApp({
     sentProductsRef.current = products;
     sendInit();
   }, [authority.commerce, frameReady, sendInit]);
-
   /** Applies purchase balance. */
   const applyPurchaseBalance = useCallback(
     (result: import("./types").PurchaseResult) => applyCoinBalance(result.newCoins),
     [applyCoinBalance],
   );
-
   /** Multiplayer rollout, preload, and authoritative reward reconciliation. */
   const {
     enabled: raceBuildEnabled,
@@ -268,13 +264,12 @@ export function PlayHostApp({
     replaceProfile,
     postToGame,
   });
-
   /** Handles authoritative complete. */
   const handleAuthoritativeComplete = useCallback(
     async (
       input: {
         /** Stores riddle id. */
-        riddleId: string; /** Stores game mode. */
+        riddleId: string;
         /** Stores game mode. */
         gameMode: WebGameMode;
       },
@@ -285,7 +280,6 @@ export function PlayHostApp({
     },
     [onAuthoritativeComplete, onResultScreen],
   );
-
   /** Handles authoritative race result. */
   const handleAuthoritativeRaceResult = useCallback(
     async (result: RaceOutcome) => {
@@ -294,7 +288,6 @@ export function PlayHostApp({
     },
     [onAuthoritativeRaceResult, onResultScreen],
   );
-
   /** Provides hosted-play command behavior. */
   const commands = useMemo(
     () =>
@@ -341,7 +334,6 @@ export function PlayHostApp({
       withServerActivity,
     ],
   );
-
   /** Stable local message routing and document visibility projection. */
   useHostBridgeLifecycle({router: commands.execute, postToGame, setNotice});
 

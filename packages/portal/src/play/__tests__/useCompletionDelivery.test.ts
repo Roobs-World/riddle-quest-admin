@@ -10,6 +10,7 @@ const mockRefs: Array<{
   /** Stores current. */
   current: unknown;
 }> = [];
+/** Provides mock ref index behavior. */
 let mockRefIndex = 0;
 /** Provides mock set retry signal behavior. */
 const mockSetRetrySignal = jest.fn();
@@ -18,6 +19,7 @@ jest.mock("react", () => ({
   useCallback: (callback: unknown) => callback,
   useEffect: (effect: Effect) => mockEffects.push(effect),
   useRef: (initialValue: unknown) => {
+    /** Provides ref behavior. */
     const ref = mockRefs[mockRefIndex] ?? {current: initialValue};
     mockRefs[mockRefIndex] = ref;
     mockRefIndex += 1;
@@ -90,7 +92,9 @@ describe("useCompletionDelivery", () => {
   });
 
   it("keeps retrying after play advances and ignores a late acknowledgement for the new riddle", () => {
+    /** Provides post to host behavior. */
     const postToHost = jest.fn<(message: GameToHostMessage) => void>();
+    /** Provides dispatch behavior. */
     const dispatch = jest.fn();
     useCompletionDelivery({
       outcome: {
@@ -103,8 +107,10 @@ describe("useCompletionDelivery", () => {
     mockEffects[0]();
     mockRefIndex = 0;
     mockEffects.length = 0;
+    /** Handles late result. */
     const handleLateResult = useCompletionDelivery({outcome: null, dispatch, postToHost});
     mockEffects[0]();
+    /** Provides schedule retry behavior. */
     const scheduleRetry = (window.setTimeout as jest.Mock).mock.calls[0][0] as () => void;
     scheduleRetry();
     mockEffects[0]();

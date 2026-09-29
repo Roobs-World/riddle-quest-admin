@@ -5,16 +5,19 @@ import {createServer, type Server} from "node:http";
 import {mkdir, readFile} from "node:fs/promises";
 import path from "node:path";
 
-import {advanceToRegistration, enterRegisteredGame, openProfileAfterGuidance, solveFakeRace} from "./authentication.jest-playwright.support";
+import {
+  advanceToRegistration,
+  enterRegisteredGame,
+  openProfileAfterGuidance,
+  solveFakeRace,
+} from "./authentication.jest-playwright.support";
 import {PLAYER_NOTIFICATION_IDS} from "../notifications/engagement";
-
 /** Provides describe browser behavior. */
 const describeBrowser = process.env.PORTAL_BROWSER_TESTS === "1" ? describe : describe.skip;
 /** Provides base url behavior. */
 let baseUrl: string;
 /** Provides shared race challenges behavior. */
 const sharedRaceChallenges = new Map<string, string>();
-
 /** Captures optional durable evidence for the two-player race journey. */
 const captureMultiplayerEvidence = async (page: Page, filename: string) => {
   /** Directory selected only by an explicit evidence run. */
@@ -23,7 +26,6 @@ const captureMultiplayerEvidence = async (page: Page, filename: string) => {
   await mkdir(directory, {recursive: true});
   await page.screenshot({path: path.join(directory, filename), fullPage: true});
 };
-
 /** Describes auth harness state. */
 type AuthHarnessState = {
   /** Stores scenario. */
@@ -102,7 +104,6 @@ type AuthHarnessState = {
   /** Records whether each referral request began synchronously in the profile click. */
   referralSharesStartedFromProfileClick: boolean[];
 };
-
 /** Provides install jest sdk harness behavior. */
 const installJestSdkHarness = async (page: Page, scenario = "success") => {
   await page.addInitScript((selectedScenario) => {
@@ -136,12 +137,16 @@ const installJestSdkHarness = async (page: Page, scenario = "success") => {
     /** Provides player behavior. */
     const player = {
       playerId: params.get("playerId") ?? "jest-auth-player-stable",
-      registered: params.get("registered") === "1" || localStorage.getItem("riddleQuest:jestAuthHarness:registered") === "1",
+      registered:
+        params.get("registered") === "1" || localStorage.getItem("riddleQuest:jestAuthHarness:registered") === "1",
     };
     /** Provides preferences behavior. */
-    const preferences: Record<string, unknown> = selectedScenario === "returning-milestone"
-      ? {firstMilestoneMarked: true} : selectedScenario === "returning-guest-two-wins"
-        ? {firstMilestoneMarked: true, jestGuestCompletedRiddles: 2} : {};
+    const preferences: Record<string, unknown> =
+      selectedScenario === "returning-milestone"
+        ? {firstMilestoneMarked: true}
+        : selectedScenario === "returning-guest-two-wins"
+          ? {firstMilestoneMarked: true, jestGuestCompletedRiddles: 2}
+          : {};
     /** Provides overlay closed behavior. */
     let overlayClosed = false;
     /** Provides subscription active behavior. */
@@ -171,9 +176,11 @@ const installJestSdkHarness = async (page: Page, scenario = "success") => {
         }
         return {player: {...player}, playerSigned: `signed:${player.playerId}:${player.registered}`};
       },
-      login: async (options?: {/** Stores entry payload. */ /** Stores entry payload. */ /** Stores entry payload. */
-      /** Stores entry payload. */
-      entryPayload?: Record<string, string>}) => {
+      login: async (options?: {
+        /** Stores entry payload. */
+        /** Stores entry payload. */
+        entryPayload?: Record<string, string>;
+      }) => {
         state.calls.push("sdk.login");
         state.loginPayloads.push(structuredClone(options?.entryPayload ?? {}));
         if (selectedScenario === "overlay-login-failure") {
@@ -214,7 +221,9 @@ const installJestSdkHarness = async (page: Page, scenario = "success") => {
           source: options.entryPayload?.source,
           campaign: options.entryPayload?.campaign,
           reference: options.entryPayload?.reference,
-          ...(options.entryPayload?.acquisition_reference ? {acquisitionReference: options.entryPayload.acquisition_reference} : {}),
+          ...(options.entryPayload?.acquisition_reference
+            ? {acquisitionReference: options.entryPayload.acquisition_reference}
+            : {}),
           ...(options.entryPayload?.inviteKind ? {inviteKind: options.entryPayload.inviteKind} : {}),
           ...(options.entryPayload?.inviterName ? {inviterName: options.entryPayload.inviterName} : {}),
           customName: options.entryPayload?.customName,
@@ -256,7 +265,10 @@ const installJestSdkHarness = async (page: Page, scenario = "success") => {
         set: (...args: unknown[]) => {
           state.calls.push("sdk.data.set");
           /** Provides update behavior. */
-          const update = args.length === 2 && typeof args[0] === "string" ? {[String(args[0])]: args[1]} : (args[0] as Record<string, unknown>);
+          const update =
+            args.length === 2 && typeof args[0] === "string"
+              ? {[String(args[0])]: args[1]}
+              : (args[0] as Record<string, unknown>);
           Object.assign(preferences, update);
           state.preferenceWrites.push(update);
         },
@@ -296,9 +308,13 @@ const installJestSdkHarness = async (page: Page, scenario = "success") => {
           state.calls.push("sdk.notifications.scheduleNotification");
           state.notificationSchedules.push(structuredClone(input));
         },
-        unscheduleNotification: async ({identifier}: {/** Stores identifier. */ /** Stores identifier. */ /** Stores identifier. */
-        /** Stores identifier. */
-        identifier: string}) => {
+        unscheduleNotification: async ({
+          identifier,
+        }: {
+          /** Stores identifier. */
+          /** Stores identifier. */
+          identifier: string;
+        }) => {
           state.calls.push("sdk.notifications.unscheduleNotification");
           state.notificationRemovals.push(identifier);
         },
@@ -307,13 +323,16 @@ const installJestSdkHarness = async (page: Page, scenario = "success") => {
         listReferrals: async () => ({referralsSigned: "signed-referrals"}),
         shareReferralLink: async (input: AuthHarnessState["referralShares"][number]) => {
           state.calls.push("sdk.referrals.shareReferralLink");
-          state.referralSharesStartedFromProfileClick.push(Boolean(
-            (window as typeof window & {
-              /** True only while the profile invite button's synchronous handler is running. */
-              __RIDDLE_QUEST_PROFILE_INVITE_CLICK__?: boolean;
-            })
-              .__RIDDLE_QUEST_PROFILE_INVITE_CLICK__,
-          ));
+          state.referralSharesStartedFromProfileClick.push(
+            Boolean(
+              (
+                window as typeof window & {
+                  /** True only while the profile invite button's synchronous handler is running. */
+                  __RIDDLE_QUEST_PROFILE_INVITE_CLICK__?: boolean;
+                }
+              ).__RIDDLE_QUEST_PROFILE_INVITE_CLICK__,
+            ),
+          );
           if (selectedScenario === "race-share-delay" && input.entryPayload?.inviteKind === "race") {
             await new Promise((resolve) => window.setTimeout(resolve, 2_000));
           }
@@ -360,7 +379,9 @@ const installJestSdkHarness = async (page: Page, scenario = "success") => {
             signed: subscriptionActive ? "mock.subscriptions.active.signed" : "mock.subscriptions.inactive.signed",
           };
         },
-        cancelSubscription: async ({subscriptionSku}: {
+        cancelSubscription: async ({
+          subscriptionSku,
+        }: {
           /** Provider SKU selected by the shop. */
           subscriptionSku: string;
         }) => {
@@ -369,9 +390,13 @@ const installJestSdkHarness = async (page: Page, scenario = "success") => {
           if (state.scenario === "subscription-cancel-error") return {result: "error", error: "internal_error"};
           return {result: "success"};
         },
-        beginSubscription: async ({subscriptionSku}: {/** Stores subscription sku. */ /** Stores subscription sku. */ /** Stores subscription sku. */
-        /** Stores subscription sku. */
-        subscriptionSku: string}) => {
+        beginSubscription: async ({
+          subscriptionSku,
+        }: {
+          /** Stores subscription sku. */
+          /** Stores subscription sku. */
+          subscriptionSku: string;
+        }) => {
           state.calls.push("sdk.payments.beginSubscription");
           subscriptionActive = true;
           return {
@@ -403,7 +428,6 @@ const installJestSdkHarness = async (page: Page, scenario = "success") => {
     });
   }, scenario);
 };
-
 /** Gets harness state. */
 const getHarnessState = (page: Page) =>
   page.evaluate(
@@ -415,7 +439,6 @@ const getHarnessState = (page: Page) =>
         }
       ).__RIDDLE_QUEST_JEST_AUTH_TEST__,
   );
-
 /** Provides open harness behavior. */
 const openHarness = async (
   browser: Browser,
@@ -521,7 +544,9 @@ describeBrowser("Jest authentication integration", () => {
       });
     }
     /** Provides dist dir behavior. */
-    const distDir = process.env.PORTAL_JEST_BUILD_DIR ? path.resolve(process.env.PORTAL_JEST_BUILD_DIR) : path.join(packageRoot, "dist-jest");
+    const distDir = process.env.PORTAL_JEST_BUILD_DIR
+      ? path.resolve(process.env.PORTAL_JEST_BUILD_DIR)
+      : path.join(packageRoot, "dist-jest");
     /** Provides content types behavior. */
     const contentTypes: Record<string, string> = {
       ".css": "text/css; charset=utf-8",
@@ -585,7 +610,9 @@ describeBrowser("Jest authentication integration", () => {
     browser = await chromium.launch({headless: true, args: ["--renderer-process-limit=4"]});
   });
 
-  afterEach(async () => Promise.all(browser?.contexts().map((context) => context.close().catch(() => undefined)) ?? []));
+  afterEach(async () =>
+    Promise.all(browser?.contexts().map((context) => context.close().catch(() => undefined)) ?? []),
+  );
 
   afterAll(async () => {
     await browser?.close();
@@ -596,7 +623,10 @@ describeBrowser("Jest authentication integration", () => {
     /** Starts a registered wallet in the injected SDK harness. */
     const {page} = await openHarness(browser, {registered: true});
     await enterRegisteredGame(page);
-    await page.getByRole("button", {name: /buy coins/i}).first().click();
+    await page
+      .getByRole("button", {name: /buy coins/i})
+      .first()
+      .click();
     await page.getByRole("button", {name: /start free trial/i}).waitFor();
     await page.evaluate(() => window.dispatchEvent(new CustomEvent("test:subscription-state", {detail: true})));
     /** Finds the active plan’s cancellation action. */
@@ -610,12 +640,18 @@ describeBrowser("Jest authentication integration", () => {
       }, scenario);
       await cancel.click();
       await page.getByTestId("server-activity-loader").waitFor({state: "hidden"});
-      if (scenario === "subscription-cancel-error") await page.getByRole("alert").filter({hasText: /unexpected error/i}).waitFor();
+      if (scenario === "subscription-cancel-error")
+        await page
+          .getByRole("alert")
+          .filter({hasText: /unexpected error/i})
+          .waitFor();
       if (scenario !== "success") expect(await page.getByText(/renewal cancelled/i).count()).toBe(0);
     }
     await page.getByText(/renewal cancelled/i).waitFor();
     expect(await page.getByText("Premium active", {exact: true}).isVisible()).toBe(true);
-    expect((await getHarnessState(page)).calls.filter((call) => call.startsWith("sdk.payments.cancelSubscription:"))).toHaveLength(3);
+    expect(
+      (await getHarnessState(page)).calls.filter((call) => call.startsWith("sdk.payments.cancelSubscription:")),
+    ).toHaveLength(3);
     await page.screenshot({path: "/tmp/riddle-subscription-cancelled.png"});
     await page.evaluate(() => window.dispatchEvent(new CustomEvent("test:subscription-state", {detail: false})));
     await page.getByRole("button", {name: /start free trial/i}).waitFor();
@@ -626,13 +662,17 @@ describeBrowser("Jest authentication integration", () => {
     const {page} = await openHarness(browser, {registered: true, scenario: "returning-milestone"});
     await enterRegisteredGame(page);
     expect((await getHarnessState(page)).calls).not.toContain("sdk.markFirstMilestone");
-    for (const letter of "PIANO") await page.locator(".keyboard").getByRole("button", {name: letter, exact: true}).click();
+    for (const letter of "PIANO")
+      await page.locator(".keyboard").getByRole("button", {name: letter, exact: true}).click();
     await page.getByRole("button", {name: /submit/i}).click();
     await page.waitForFunction(() =>
-      (window as typeof window & {
-        /** Observed SDK calls for this test session. */
-        __RIDDLE_QUEST_JEST_AUTH_TEST__: AuthHarnessState;
-      }).__RIDDLE_QUEST_JEST_AUTH_TEST__.calls.includes("sdk.markFirstMilestone"));
+      (
+        window as typeof window & {
+          /** Observed SDK calls for this test session. */
+          __RIDDLE_QUEST_JEST_AUTH_TEST__: AuthHarnessState;
+        }
+      ).__RIDDLE_QUEST_JEST_AUTH_TEST__.calls.includes("sdk.markFirstMilestone"),
+    );
     expect((await getHarnessState(page)).calls.filter((call) => call === "sdk.markFirstMilestone")).toHaveLength(1);
   }, 30_000);
 
@@ -690,49 +730,62 @@ describeBrowser("Jest authentication integration", () => {
     expect(await page.locator(".game-header .coin-pill strong").innerText()).toBe("300");
     expect((await getHarnessState(page)).overlayOptions).toEqual([]);
     expect(await page.getByText("Keep your progress", {exact: true}).count()).toBe(0);
-    await page.locator('.keyboard').getByRole('button', {name: /^P$/}).click();
-    expect(await page.getByRole('button', {name: /^letter 1: p$/i}).isVisible()).toBe(true);
+    await page.locator(".keyboard").getByRole("button", {name: /^P$/}).click();
+    expect(await page.getByRole("button", {name: /^letter 1: p$/i}).isVisible()).toBe(true);
     expect((await getHarnessState(page)).overlayOptions).toEqual([]);
     for (const letter of ["I", "A", "N", "O"]) {
-      await page.locator('.keyboard').getByRole('button', {name: letter, exact: true}).click();
+      await page.locator(".keyboard").getByRole("button", {name: letter, exact: true}).click();
     }
-    await page.locator('.game-input-actions').getByRole('button', {name: /submit/i}).click();
+    await page
+      .locator(".game-input-actions")
+      .getByRole("button", {name: /submit/i})
+      .click();
     await page.waitForFunction((milestoneFailure) => {
-      const state = (window as typeof window & {
-        /** Captured provider calls and preferences from the injected SDK. */
-        __RIDDLE_QUEST_JEST_AUTH_TEST__: AuthHarnessState;
-      }).__RIDDLE_QUEST_JEST_AUTH_TEST__;
-      return milestoneFailure ? state.calls.includes("sdk.markFirstMilestone") :
-        state.preferenceWrites.some(value => value.firstMilestoneMarked === true);
+      /** Provides state behavior. */
+      const state = (
+        window as typeof window & {
+          /** Captured provider calls and preferences from the injected SDK. */
+          __RIDDLE_QUEST_JEST_AUTH_TEST__: AuthHarnessState;
+        }
+      ).__RIDDLE_QUEST_JEST_AUTH_TEST__;
+      return milestoneFailure
+        ? state.calls.includes("sdk.markFirstMilestone")
+        : state.preferenceWrites.some((value) => value.firstMilestoneMarked === true);
     }, scenario === "milestone-failure");
     expect((await getHarnessState(page)).overlayOptions).toEqual([]);
-    await page.locator('.modal-victory').waitFor();
-    await page.getByRole('button', {name: /tap the chest/i}).waitFor();
+    await page.locator(".modal-victory").waitFor();
+    await page.getByRole("button", {name: /tap the chest/i}).waitFor();
+    /** Provides fanfare steps behavior. */
     const fanfareSteps: string[] = [];
-    for (let step = 0; step < 6 && await page.locator('.modal-victory').count(); step += 1) {
-      fanfareSteps.push(await page.locator('.modal-victory').innerText());
-      expect(await page.locator('.jest-registration-dialog').count()).toBe(0);
-      if (await page.getByRole('button', {name: /tap the chest/i}).isVisible()) {
-        await page.getByRole('button', {name: /tap the chest/i}).click();
+    for (let step = 0; step < 6 && (await page.locator(".modal-victory").count()); step += 1) {
+      fanfareSteps.push(await page.locator(".modal-victory").innerText());
+      expect(await page.locator(".jest-registration-dialog").count()).toBe(0);
+      if (await page.getByRole("button", {name: /tap the chest/i}).isVisible()) {
+        await page.getByRole("button", {name: /tap the chest/i}).click();
       }
-      await page.waitForFunction(() => !document.querySelector<HTMLButtonElement>('.reward-continue')?.disabled);
-      await page.locator('.reward-continue').click();
+      await page.waitForFunction(() => !document.querySelector<HTMLButtonElement>(".reward-continue")?.disabled);
+      await page.locator(".reward-continue").click();
     }
     expect(fanfareSteps[0]).toContain("NICE JOB!");
-    expect(fanfareSteps.filter(value => value.includes("NICE JOB!"))).toHaveLength(1);
-    expect(fanfareSteps.some(value => value.includes("Achievement Unlocked!"))).toBe(true);
+    expect(fanfareSteps.filter((value) => value.includes("NICE JOB!"))).toHaveLength(1);
+    expect(fanfareSteps.some((value) => value.includes("Achievement Unlocked!"))).toBe(true);
     for (let step = 0; step < 5; step += 1) {
-      await page.waitForFunction(() => Boolean(document.querySelector('.tooltip-backdrop, .jest-registration-dialog')));
-      if (await page.locator('.jest-registration-dialog').count()) break;
-      expect(await page.locator('.jest-registration-dialog').count()).toBe(0);
+      await page.waitForFunction(() => Boolean(document.querySelector(".tooltip-backdrop, .jest-registration-dialog")));
+      if (await page.locator(".jest-registration-dialog").count()) break;
+      expect(await page.locator(".jest-registration-dialog").count()).toBe(0);
       expect(await page.locator("[data-tooltip-id='achievementEarned']").count()).toBe(0);
-      await page.locator('.tooltip-backdrop').getByRole('button', {name: /^got it$/i}).click();
+      await page
+        .locator(".tooltip-backdrop")
+        .getByRole("button", {name: /^got it$/i})
+        .click();
     }
-    await page.locator('.tooltip-backdrop').waitFor({state: 'detached'});
+    await page.locator(".tooltip-backdrop").waitFor({state: "detached"});
     await page.getByText("Keep your progress", {exact: true}).waitFor();
+    /** Provides dialog behavior. */
     const dialog = page.locator(".jest-registration-dialog");
     expect(await dialog.isVisible()).toBe(true);
     await page.waitForFunction(() => !document.querySelector(".jest-registration-dialog")?.hasAttribute("inert"));
+    /** Provides state behavior. */
     const state = await getHarnessState(page);
     expect(state.calls.filter((call) => call === "sdk.markFirstMilestone")).toHaveLength(1);
     expect(state.overlayOptions).toEqual([expect.objectContaining({source: "authoritative_win"})]);
@@ -742,27 +795,39 @@ describeBrowser("Jest authentication integration", () => {
   });
 
   it("reports a guest Daily completion without opening registration", async () => {
+    /** Provides {context, page} behavior. */
     const {context, page} = await openHarness(browser, {gameMode: "challenge"});
     await enterRegisteredGame(page, /i speak without a mouth/i);
     await page.locator(".game-mode-label").getByText(/daily/i).waitFor();
     for (const letter of "ECHO") {
       await page.locator(".keyboard").getByRole("button", {name: letter, exact: true}).click();
     }
-    await page.locator(".game-input-actions").getByRole("button", {name: /submit/i}).click();
+    await page
+      .locator(".game-input-actions")
+      .getByRole("button", {name: /submit/i})
+      .click();
     await page.locator(".modal-victory").waitFor();
     await page.getByRole("button", {name: /tap the chest/i}).waitFor();
-    for (let step = 0; step < 6 && await page.locator(".modal-victory").count(); step += 1) {
+    for (let step = 0; step < 6 && (await page.locator(".modal-victory").count()); step += 1) {
       await page.locator(".reward-continue").waitFor();
+      /** Provides current step behavior. */
       const currentStep = await page.locator(".modal-victory").textContent();
       if (await page.getByRole("button", {name: /tap the chest/i}).isVisible()) {
         await page.getByRole("button", {name: /tap the chest/i}).click();
       }
-      await page.waitForFunction(() => Boolean(document.querySelector<HTMLButtonElement>(".reward-continue:not(:disabled)")));
+      await page.waitForFunction(() =>
+        Boolean(document.querySelector<HTMLButtonElement>(".reward-continue:not(:disabled)")),
+      );
       await page.locator(".reward-continue").click();
-      await page.waitForFunction((previous) => !document.querySelector(".modal-victory") ||
-        document.querySelector(".modal-victory")?.textContent !== previous, currentStep);
+      await page.waitForFunction(
+        (previous) =>
+          !document.querySelector(".modal-victory") ||
+          document.querySelector(".modal-victory")?.textContent !== previous,
+        currentStep,
+      );
     }
     await page.locator(".tooltip-backdrop").waitFor({state: "detached"});
+    /** Provides state behavior. */
     const state = await getHarnessState(page);
     expect(state.calls.filter((call) => call === "sdk.markFirstMilestone")).toHaveLength(1);
     expect(state.overlayOptions).toEqual([]);
@@ -770,27 +835,117 @@ describeBrowser("Jest authentication integration", () => {
     await context.close();
   });
 
+  it("offers registration when confirmation arrives after all completion popups were dismissed", async () => {
+    /** Provides {context, page} behavior. */
+    const {context, page} = await openHarness(browser);
+    try {
+      await enterRegisteredGame(page);
+      await page.evaluate(() => {
+        /** Provides dispatch behavior. */
+        const dispatch = window.dispatchEvent.bind(window);
+        /** Provides deferred behavior. */
+        const deferred: Event[] = [];
+        Object.assign(window, {
+          __RELEASE_DELAYED_GUESS__: () => deferred.splice(0).forEach((event) => dispatch(event)),
+        });
+        window.dispatchEvent = (event: Event) => {
+          if (event.type === "riddle-quest:completion-popups-dismissed")
+            Object.assign(window, {__COMPLETION_DISMISSED__: true});
+          if (
+            event.type === "riddle-quest:game-to-host" &&
+            (event as CustomEvent).detail?.type === "game:submitGuess"
+          ) {
+            deferred.push(event);
+            return true;
+          }
+          return dispatch(event);
+        };
+      });
+      for (const letter of "PIANO")
+        await page.locator(".keyboard").getByRole("button", {name: letter, exact: true}).click();
+      await page
+        .locator(".game-input-actions")
+        .getByRole("button", {name: /submit/i})
+        .click();
+      await page.locator(".modal-victory").waitFor();
+      for (let step = 0; step < 6 && (await page.locator(".modal-victory").count()); step++) {
+        /** Provides chest behavior. */
+        const chest = page.getByRole("button", {name: /tap the chest/i});
+        if (await chest.isVisible()) await chest.click();
+        await page.waitForFunction(() => !document.querySelector<HTMLButtonElement>(".reward-continue")?.disabled);
+        await page.locator(".reward-continue").click();
+      }
+      for (let step = 0; step < 5; step++) {
+        await page.waitForFunction(
+          () =>
+            (
+              window as typeof window & {
+                /** Stores completion dismissed. */
+                __COMPLETION_DISMISSED__?: boolean;
+              }
+            ).__COMPLETION_DISMISSED__ || Boolean(document.querySelector(".tooltip-backdrop")),
+        );
+        if (
+          await page.evaluate(() =>
+            Boolean(
+              (
+                window as typeof window & {
+                  /** Stores completion dismissed. */
+                  __COMPLETION_DISMISSED__?: boolean;
+                }
+              ).__COMPLETION_DISMISSED__,
+            ),
+          )
+        )
+          break;
+        await page
+          .locator(".tooltip-backdrop")
+          .getByRole("button", {name: /^got it$/i})
+          .click();
+      }
+      expect(await page.locator(".jest-registration-dialog").count()).toBe(0);
+      await page.evaluate(() =>
+        (
+          window as typeof window & {
+            /** Stores release delayed guess. */
+            __RELEASE_DELAYED_GUESS__: () => void;
+          }
+        ).__RELEASE_DELAYED_GUESS__(),
+      );
+      await page.getByText("Keep your progress", {exact: true}).waitFor();
+      expect((await getHarnessState(page)).overlayOptions).toHaveLength(1);
+    } finally {
+      await context.close();
+    }
+  });
+
   it("offers registration after the first Classic victory while reward syncing is delayed", async () => {
+    /** Provides {context, page} behavior. */
     const {context, page} = await openHarness(browser);
     await enterRegisteredGame(page);
     await page.evaluate(() => {
+      /** Provides dispatch behavior. */
       const dispatch = window.dispatchEvent.bind(window);
       window.dispatchEvent = (event: Event) => {
-        if (event.type === "riddle-quest:game-to-host" &&
-          (event as CustomEvent).detail?.type === "game:completeGame") return true;
+        if (event.type === "riddle-quest:game-to-host" && (event as CustomEvent).detail?.type === "game:completeGame")
+          return true;
         return dispatch(event);
       };
     });
     for (const letter of "PIANO") {
       await page.locator(".keyboard").getByRole("button", {name: letter, exact: true}).click();
     }
-    await page.locator(".game-input-actions").getByRole("button", {name: /submit/i}).click();
+    await page
+      .locator(".game-input-actions")
+      .getByRole("button", {name: /submit/i})
+      .click();
     await page.locator(".modal-victory").waitFor();
-    for (let step = 0; step < 6 && await page.locator(".modal-victory").count(); step += 1) {
+    for (let step = 0; step < 6 && (await page.locator(".modal-victory").count()); step += 1) {
       await page.locator(".reward-continue").click();
     }
     for (let step = 0; step < 5; step += 1) {
       if (await page.locator(".jest-registration-dialog").count()) break;
+      /** Provides tooltip behavior. */
       const tooltip = page.locator(".tooltip-backdrop");
       await tooltip.waitFor({state: "visible", timeout: 5_000});
       await tooltip.getByRole("button", {name: /^got it$/i}).click();
@@ -830,7 +985,10 @@ describeBrowser("Jest authentication integration", () => {
     /** Provides state behavior. */
     let state = await getHarnessState(page);
     expect(state.calls).toContain("sdk.registration.loginButtonAction");
-    expect(state.backendExchanges).toEqual(["signed:jest-auth-player-stable:false", "signed:jest-auth-player-stable:true"]);
+    expect(state.backendExchanges).toEqual([
+      "signed:jest-auth-player-stable:false",
+      "signed:jest-auth-player-stable:true",
+    ]);
     expect(state.firebaseTokens).toEqual(["mock", "mock"]);
     expect(state.profileReads).toBe(1);
     await page.waitForFunction(
@@ -952,7 +1110,8 @@ describeBrowser("Jest authentication integration", () => {
       expect.objectContaining({
         reference: "riddle_quest_friend_challenge_v2",
         shareTitle: "Riddle Quest",
-        shareText: "Authenticated Solver challenged you to Riddle Quest. Register through this invite and you both earn 100 coins!",
+        shareText:
+          "Authenticated Solver challenged you to Riddle Quest. Register through this invite and you both earn 100 coins!",
         shareImage: expect.stringMatching(/^data:image\/png;base64,/),
         entryPayload: expect.objectContaining({
           inviteKind: "open",
@@ -972,11 +1131,13 @@ describeBrowser("Jest authentication integration", () => {
   });
 
   it("prefills the Jest profile picture from the SDK avatar", async () => {
+    /** Provides {context, page} behavior. */
     const {context, page} = await openHarness(browser, {registered: true, scenario: "avatar-profile"});
     await enterRegisteredGame(page);
     await openProfileAfterGuidance(page);
-    expect(await page.locator(".profile-identity img").getAttribute("src"))
-      .toBe("https://cdn.jest.com/mock-avatar.webp");
+    expect(await page.locator(".profile-identity img").getAttribute("src")).toBe(
+      "https://cdn.jest.com/mock-avatar.webp",
+    );
     await context.close();
   });
 
@@ -988,8 +1149,8 @@ describeBrowser("Jest authentication integration", () => {
     });
     await enterRegisteredGame(creator.page);
     await openProfileAfterGuidance(creator.page);
-    expect(await creator.page.locator('.profile-identity').innerText()).toContain('Authenticated Solver');
-    expect(await creator.page.locator('.profile-identity input[type=file]').count()).toBe(0);
+    expect(await creator.page.locator(".profile-identity").innerText()).toContain("Authenticated Solver");
+    expect(await creator.page.locator(".profile-identity input[type=file]").count()).toBe(0);
     /** Provides invite button behavior. */
     const inviteButton = creator.page.getByRole("button", {name: /invite a friend/i});
     await inviteButton.waitFor({state: "visible"});
@@ -1026,7 +1187,8 @@ describeBrowser("Jest authentication integration", () => {
       expect.objectContaining({
         reference: "riddle_quest_friend_challenge_v2",
         shareTitle: "Riddle Quest",
-        shareText: "Authenticated Solver challenged you to Riddle Quest. Register through this invite and you both earn 100 coins!",
+        shareText:
+          "Authenticated Solver challenged you to Riddle Quest. Register through this invite and you both earn 100 coins!",
         shareImage: expect.stringMatching(/^data:image\/png;base64,/),
         entryPayload: expect.objectContaining({
           campaign: "open_invite_v1",
@@ -1036,7 +1198,6 @@ describeBrowser("Jest authentication integration", () => {
         }),
       }),
     );
-
     /** Provides entry payload behavior. */
     const entryPayload = share.entryPayload!;
     /** Provides recipient behavior. */
@@ -1071,9 +1232,11 @@ describeBrowser("Jest authentication integration", () => {
           }
         ).__RIDDLE_QUEST_JEST_AUTH_TEST__.backendExchanges.length === 2,
     );
-    expect((await getHarnessState(recipient.page)).backendExchanges).toEqual(["signed:viral-recipient:false", "signed:viral-recipient:true"]);
+    expect((await getHarnessState(recipient.page)).backendExchanges).toEqual([
+      "signed:viral-recipient:false",
+      "signed:viral-recipient:true",
+    ]);
     await Promise.all([creator.context.close(), recipient.context.close()]);
-
     /** Provides rewarded creator behavior. */
     const rewardedCreator = await openHarness(browser, {
       registered: true,
@@ -1159,7 +1322,10 @@ describeBrowser("Jest authentication integration", () => {
           __RIDDLE_QUEST_JEST_AUTH_TEST__: AuthHarnessState;
         }
       ).__RIDDLE_QUEST_JEST_AUTH_TEST__;
-      return state.notificationSchedules.some((item) => item.identifier === "race_to_10_results_v1") && state.referralShares.some((item) => /^rq_r10_v1_[0-9a-f]{16}$/.test(item.reference ?? ""));
+      return (
+        state.notificationSchedules.some((item) => item.identifier === "race_to_10_results_v1") &&
+        state.referralShares.some((item) => /^rq_r10_v1_[0-9a-f]{16}$/.test(item.reference ?? ""))
+      );
     });
     /** Provides state behavior. */
     let state = await getHarnessState(page);
@@ -1209,7 +1375,9 @@ describeBrowser("Jest authentication integration", () => {
     );
     state = await getHarnessState(page);
     /** Provides second race share behavior. */
-    const secondRaceShare = state.referralShares.find((item) => item.entryPayload?.challengeId === "race-challenge-43")!;
+    const secondRaceShare = state.referralShares.find(
+      (item) => item.entryPayload?.challengeId === "race-challenge-43",
+    )!;
     expect(secondRaceShare.reference).toMatch(/^rq_r10_v1_[0-9a-f]{16}$/);
     expect(secondRaceShare.reference).not.toBe(firstRaceShare.reference);
     await context.close();
@@ -1290,7 +1458,9 @@ describeBrowser("Jest authentication integration", () => {
     const actionLabels = await creator.page.locator(".game-input-actions > button").allInnerTexts();
     expect(actionLabels).toEqual(["Hint", "SUBMIT", "Skip"]);
     /** Provides navigation labels behavior. */
-    const navigationLabels = await creator.page.locator(".game-bottom-navigation > button").evaluateAll((buttons) => buttons.map((button) => button.getAttribute("aria-label")));
+    const navigationLabels = await creator.page
+      .locator(".game-bottom-navigation > button")
+      .evaluateAll((buttons) => buttons.map((button) => button.getAttribute("aria-label")));
     expect(navigationLabels).toEqual(["Settings", "Multiplayer", "Profile"]);
     await creator.page.setViewportSize({width: 390, height: 667});
     await multiplayerButton.click();
@@ -1299,13 +1469,15 @@ describeBrowser("Jest authentication integration", () => {
     await captureMultiplayerEvidence(creator.page, "01-player-1-multiplayer-lobby.png");
     expect(await creator.page.locator('[data-testid="server-activity-loader"]').count()).toBe(0);
     /** Every lobby surface stays inside the narrow embedded game viewport. */
-    const lobbyBounds = await creator.page.locator(".race-topbar, .race-hub-tabs, .race-panel").evaluateAll((elements) =>
-      elements.map((element) => {
-        /** Element bounds relative to the embedded game viewport. */
-        const bounds = element.getBoundingClientRect();
-        return {left: bounds.left, right: bounds.right};
-      }),
-    );
+    const lobbyBounds = await creator.page
+      .locator(".race-topbar, .race-hub-tabs, .race-panel")
+      .evaluateAll((elements) =>
+        elements.map((element) => {
+          /** Element bounds relative to the embedded game viewport. */
+          const bounds = element.getBoundingClientRect();
+          return {left: bounds.left, right: bounds.right};
+        }),
+      );
     expect(lobbyBounds).toHaveLength(3);
     for (const bounds of lobbyBounds) {
       expect(bounds.left).toBeGreaterThanOrEqual(0);
@@ -1330,7 +1502,7 @@ describeBrowser("Jest authentication integration", () => {
         /** Stores riddle quest race start timing. */
         __RIDDLE_QUEST_RACE_START_TIMING__?: {
           /** Stores go at. */
-          goAt?: number; /** Stores gameplay at. */
+          goAt?: number;
           /** Stores gameplay at. */
           gameplayAt?: number;
         };
@@ -1338,14 +1510,17 @@ describeBrowser("Jest authentication integration", () => {
       /** Provides timing behavior. */
       const timing = {} as {
         /** Stores go at. */
-        goAt?: number; /** Stores gameplay at. */
+        goAt?: number;
         /** Stores gameplay at. */
         gameplayAt?: number;
       };
       timingWindow.__RIDDLE_QUEST_RACE_START_TIMING__ = timing;
       /** Provides observer behavior. */
       const observer = new MutationObserver(() => {
-        if (timing.goAt === undefined && document.querySelector(".race-countdown > span")?.textContent?.trim() === "GO!") {
+        if (
+          timing.goAt === undefined &&
+          document.querySelector(".race-countdown > span")?.textContent?.trim() === "GO!"
+        ) {
           timing.goAt = performance.now();
         }
         if (timing.goAt !== undefined && document.querySelector(".race-gameplay")) {
@@ -1421,7 +1596,7 @@ describeBrowser("Jest authentication integration", () => {
             /** Stores riddle quest race start timing. */
             __RIDDLE_QUEST_RACE_START_TIMING__?: {
               /** Stores go at. */
-              goAt?: number; /** Stores gameplay at. */
+              goAt?: number;
               /** Stores gameplay at. */
               gameplayAt?: number;
             };
@@ -1452,13 +1627,16 @@ describeBrowser("Jest authentication integration", () => {
     await creator.page.setViewportSize({width: 900, height: 844});
     expect(await getMultiplayerLayout()).toEqual(expectedMultiplayerLayout);
     await creator.page.setViewportSize({width: 390, height: 667});
-    await creator.page.waitForFunction(() => Boolean(document.querySelector(".race-gameplay-viewport")?.getAttribute("data-viewport-scale")));
+    await creator.page.waitForFunction(() =>
+      Boolean(document.querySelector(".race-gameplay-viewport")?.getAttribute("data-viewport-scale")),
+    );
     /** Captures use of the available portrait multiplayer height. */
     const portraitRaceLayout = await creator.page.locator(".race-gameplay-viewport").evaluate((viewport) => {
       /** Captures the multiplayer screen bounds. */
       const screen = viewport.closest(".race-screen")!;
       /** Captures the screen's usable lower edge. */
-      const usableBottom = screen.getBoundingClientRect().bottom - Number.parseFloat(getComputedStyle(screen).paddingBottom);
+      const usableBottom =
+        screen.getBoundingClientRect().bottom - Number.parseFloat(getComputedStyle(screen).paddingBottom);
       /** Captures every rendered multiplayer answer cell. */
       const answerCells = [...viewport.querySelectorAll<HTMLElement>(".guess-board .cell")].map((cell) =>
         cell.getBoundingClientRect(),
@@ -1495,12 +1673,14 @@ describeBrowser("Jest authentication integration", () => {
     await sharingButton.waitFor({timeout: 10_000});
     expect(await sharingButton.getAttribute("aria-busy")).toBe("true");
     expect(await sharingButton.isDisabled()).toBe(true);
-    await creator.page.waitForFunction(() =>
-      (window as typeof window & {
-        /** Captured referral shares from the injected Jest SDK. */
-        __RIDDLE_QUEST_JEST_AUTH_TEST__: AuthHarnessState;
-      })
-        .__RIDDLE_QUEST_JEST_AUTH_TEST__.referralShares.length === 1,
+    await creator.page.waitForFunction(
+      () =>
+        (
+          window as typeof window & {
+            /** Captured referral shares from the injected Jest SDK. */
+            __RIDDLE_QUEST_JEST_AUTH_TEST__: AuthHarnessState;
+          }
+        ).__RIDDLE_QUEST_JEST_AUTH_TEST__.referralShares.length === 1,
     );
     /** First post-result share contains an already-published immutable score. */
     const firstInvite = (await getHarnessState(creator.page)).referralShares[0]!;
@@ -1514,16 +1694,17 @@ describeBrowser("Jest authentication integration", () => {
     expect(sharedRaceChallenges.has(invitedChallengeId!)).toBe(true);
     await creator.page.getByRole("button", {name: /challenge a friend/i}).waitFor({timeout: 10_000});
     await captureMultiplayerEvidence(creator.page, "04-player-1-challenge-ready.png");
-
     /** The same completed challenge may be sent to as many Jest recipients as desired. */
     await creator.page.getByRole("button", {name: /challenge a friend/i}).click();
     await creator.page.getByRole("button", {name: /challenge a friend/i}).click();
-    await creator.page.waitForFunction(() =>
-      (window as typeof window & {
-        /** Captured referral shares from the injected Jest SDK. */
-        __RIDDLE_QUEST_JEST_AUTH_TEST__: AuthHarnessState;
-      })
-        .__RIDDLE_QUEST_JEST_AUTH_TEST__.referralShares.length === 3,
+    await creator.page.waitForFunction(
+      () =>
+        (
+          window as typeof window & {
+            /** Captured referral shares from the injected Jest SDK. */
+            __RIDDLE_QUEST_JEST_AUTH_TEST__: AuthHarnessState;
+          }
+        ).__RIDDLE_QUEST_JEST_AUTH_TEST__.referralShares.length === 3,
     );
     /** All repeated sends made from the same completed result. */
     const repeatedInvites = (await getHarnessState(creator.page)).referralShares;
@@ -1533,7 +1714,6 @@ describeBrowser("Jest authentication integration", () => {
       invitedChallengeId,
     ]);
     expect(new Set(repeatedInvites.map((invite) => invite.reference)).size).toBe(3);
-
     /** Recipient opens only after the creator's score and challenge both exist. */
     const recipient = await openHarness(browser, {
       registered: true,
@@ -1582,21 +1762,24 @@ describeBrowser("Jest authentication integration", () => {
       adjustedElapsedMs: (index + 1) * 300,
       correctCount: index + 1,
     }));
-    sharedRaceChallenges.set(challengeId, JSON.stringify({
-      preview: {
-        challengeId,
-        creator: {displayName: "Fast Opponent"},
-        categoryId: "mixed",
-        locale: "en",
-        targetCorrect: 10,
-        adjustedTimeToBeatMs: 3_000,
-        rulesVersion: "race10_v1",
-        expiresAtMs: Date.now() + 60_000,
-        status: "active",
-      },
-      runId: "fast-opponent-run",
-      events,
-    }));
+    sharedRaceChallenges.set(
+      challengeId,
+      JSON.stringify({
+        preview: {
+          challengeId,
+          creator: {displayName: "Fast Opponent"},
+          categoryId: "mixed",
+          locale: "en",
+          targetCorrect: 10,
+          adjustedTimeToBeatMs: 3_000,
+          rulesVersion: "race10_v1",
+          expiresAtMs: Date.now() + 60_000,
+          status: "active",
+        },
+        runId: "fast-opponent-run",
+        events,
+      }),
+    );
     /** Recipient whose outcome response is deliberately slower than the local result presentation. */
     const recipient = await openHarness(browser, {
       registered: true,
@@ -1613,10 +1796,15 @@ describeBrowser("Jest authentication integration", () => {
       window.addEventListener("riddle-quest:host-to-game", (event) => {
         if ((event as CustomEvent).detail?.payload?.operation === "raceOutcome") {
           Object.assign(window, {
-            __raceOutcomeResultCount: Number((window as typeof window & {
-              /** Counts authoritative race-outcome responses received by the game. */
-              __raceOutcomeResultCount?: number;
-            }).__raceOutcomeResultCount ?? 0) + 1,
+            __raceOutcomeResultCount:
+              Number(
+                (
+                  window as typeof window & {
+                    /** Counts authoritative race-outcome responses received by the game. */
+                    __raceOutcomeResultCount?: number;
+                  }
+                ).__raceOutcomeResultCount ?? 0,
+              ) + 1,
           });
         }
       });
@@ -1625,19 +1813,29 @@ describeBrowser("Jest authentication integration", () => {
     await recipient.page.getByRole("button", {name: /accept challenge/i}).click();
     await recipient.page.locator(".race-countdown").waitFor({state: "visible", timeout: 10_000});
     await recipient.page.getByRole("heading", {name: /opponent wins/i}).waitFor({timeout: 5_000});
-    expect(await recipient.page.evaluate(() => (window as typeof window & {
-      /** Counts authoritative race-outcome responses received by the game. */
-      __raceOutcomeResultCount?: number;
-    }).__raceOutcomeResultCount)).toBe(0);
+    expect(
+      await recipient.page.evaluate(
+        () =>
+          (
+            window as typeof window & {
+              /** Counts authoritative race-outcome responses received by the game. */
+              __raceOutcomeResultCount?: number;
+            }
+          ).__raceOutcomeResultCount,
+      ),
+    ).toBe(0);
     expect(await recipient.page.getByRole("alert").count()).toBe(0);
     /** Cached category navigation must invalidate obsolete outcome presentation without a replacement request. */
     await recipient.page.getByRole("button", {name: /choose your category/i}).click();
     await recipient.page.locator(".race-category-grid").waitFor({state: "visible", timeout: 1_000});
     await recipient.page.waitForFunction(
-      () => (window as typeof window & {
-        /** Counts authoritative race-outcome responses received by the game. */
-        __raceOutcomeResultCount?: number;
-      }).__raceOutcomeResultCount === 1,
+      () =>
+        (
+          window as typeof window & {
+            /** Counts authoritative race-outcome responses received by the game. */
+            __raceOutcomeResultCount?: number;
+          }
+        ).__raceOutcomeResultCount === 1,
       undefined,
       {timeout: 5_000},
     );
@@ -1663,10 +1861,15 @@ describeBrowser("Jest authentication integration", () => {
       window.addEventListener("riddle-quest:host-to-game", (event) => {
         if ((event as CustomEvent).detail?.payload?.operation === "raceOutcome") {
           Object.assign(window, {
-            __raceOutcomeResultCount: Number((window as typeof window & {
-              /** Counts authoritative race-outcome responses received by the game. */
-              __raceOutcomeResultCount?: number;
-            }).__raceOutcomeResultCount ?? 0) + 1,
+            __raceOutcomeResultCount:
+              Number(
+                (
+                  window as typeof window & {
+                    /** Counts authoritative race-outcome responses received by the game. */
+                    __raceOutcomeResultCount?: number;
+                  }
+                ).__raceOutcomeResultCount ?? 0,
+              ) + 1,
           });
         }
       });
@@ -1675,10 +1878,17 @@ describeBrowser("Jest authentication integration", () => {
       expectChainedSubmitLoader: true,
       onFinalSubmitted: async () => {
         await creator.page.getByRole("heading", {name: /run recorded/i}).waitFor({timeout: 1_000});
-        expect(await creator.page.evaluate(() => (window as typeof window & {
-          /** Counts authoritative race-outcome responses received by the game. */
-          __raceOutcomeResultCount?: number;
-        }).__raceOutcomeResultCount)).toBe(0);
+        expect(
+          await creator.page.evaluate(
+            () =>
+              (
+                window as typeof window & {
+                  /** Counts authoritative race-outcome responses received by the game. */
+                  __raceOutcomeResultCount?: number;
+                }
+              ).__raceOutcomeResultCount,
+          ),
+        ).toBe(0);
         /** The player's next intent is accepted immediately while outcome confirmation remains in flight. */
         const sendChallenge = creator.page.getByRole("button", {name: /send challenge/i});
         await sendChallenge.click({timeout: 1_000});
@@ -1687,19 +1897,25 @@ describeBrowser("Jest authentication integration", () => {
       },
     });
     await creator.page.waitForFunction(
-      () => (window as typeof window & {
-        /** Counts authoritative race-outcome responses received by the game. */
-        __raceOutcomeResultCount?: number;
-      }).__raceOutcomeResultCount === 1,
+      () =>
+        (
+          window as typeof window & {
+            /** Counts authoritative race-outcome responses received by the game. */
+            __raceOutcomeResultCount?: number;
+          }
+        ).__raceOutcomeResultCount === 1,
       undefined,
       {timeout: 5_000},
     );
     expect(await creator.page.getByRole("heading", {name: /run recorded/i}).isVisible()).toBe(true);
-    await creator.page.waitForFunction(() =>
-      (window as typeof window & {
-        /** Captured referral shares from the injected Jest SDK. */
-        __RIDDLE_QUEST_JEST_AUTH_TEST__: AuthHarnessState;
-      }).__RIDDLE_QUEST_JEST_AUTH_TEST__.referralShares.length === 1,
+    await creator.page.waitForFunction(
+      () =>
+        (
+          window as typeof window & {
+            /** Captured referral shares from the injected Jest SDK. */
+            __RIDDLE_QUEST_JEST_AUTH_TEST__: AuthHarnessState;
+          }
+        ).__RIDDLE_QUEST_JEST_AUTH_TEST__.referralShares.length === 1,
     );
     await creator.page.getByRole("button", {name: /challenge a friend/i}).waitFor({timeout: 5_000});
     await creator.context.close();
@@ -1709,21 +1925,24 @@ describeBrowser("Jest authentication integration", () => {
     sharedRaceChallenges.clear();
     /** Challenge long enough for the first guess to begin before, but finish after, the ghost deadline. */
     const challengeId = `jest-invite-${"c".repeat(64)}-${"d".repeat(32)}`;
-    sharedRaceChallenges.set(challengeId, JSON.stringify({
-      preview: {
-        challengeId,
-        creator: {displayName: "Deadline Opponent"},
-        categoryId: "mixed",
-        locale: "en",
-        targetCorrect: 10,
-        adjustedTimeToBeatMs: 5_000,
-        rulesVersion: "race10_v1",
-        expiresAtMs: Date.now() + 60_000,
-        status: "active",
-      },
-      runId: "deadline-opponent-run",
-      events: [],
-    }));
+    sharedRaceChallenges.set(
+      challengeId,
+      JSON.stringify({
+        preview: {
+          challengeId,
+          creator: {displayName: "Deadline Opponent"},
+          categoryId: "mixed",
+          locale: "en",
+          targetCorrect: 10,
+          adjustedTimeToBeatMs: 5_000,
+          rulesVersion: "race10_v1",
+          expiresAtMs: Date.now() + 60_000,
+          status: "active",
+        },
+        runId: "deadline-opponent-run",
+        events: [],
+      }),
+    );
     /** Recipient whose in-flight guess crosses the authoritative opponent deadline. */
     const recipient = await openHarness(browser, {
       registered: true,
@@ -1913,7 +2132,6 @@ describeBrowser("Jest authentication integration", () => {
     const registerButton = page.getByRole("button", {name: /^register$/i});
     await registerButton.waitFor();
     await expect(registerButton.isEnabled()).resolves.toBe(true);
-
     /** Provides state behavior. */
     let state = await getHarnessState(page);
     expect(state.calls.filter((call) => call === "sdk.login")).toHaveLength(1);
@@ -2021,7 +2239,10 @@ describeBrowser("Jest authentication integration", () => {
           ).__REGISTRATION_CLOSED__,
       ),
     ).toEqual([false]);
-    expect((await getHarnessState(page)).backendExchanges).toEqual(["signed:jest-auth-player-stable:false", "signed:jest-auth-player-stable:true"]);
+    expect((await getHarnessState(page)).backendExchanges).toEqual([
+      "signed:jest-auth-player-stable:false",
+      "signed:jest-auth-player-stable:true",
+    ]);
 
     await page.getByRole("button", {name: /retry/i}).click();
     await page.getByText(/what has keys/i).waitFor({timeout: 15_000});
@@ -2083,7 +2304,7 @@ describeBrowser("Jest authentication integration", () => {
     expect(await page.getByRole("button", {name: /retry/i}).isVisible()).toBe(true);
     expect(pageErrors).toEqual([]);
     if (scenario === "identity-failure") {
-      expect((await getHarnessState(page)).calls).toContain("sdk.payments.getIncompletePurchases");
+      expect((await getHarnessState(page)).calls).not.toContain("sdk.payments.getIncompletePurchases");
     }
     await context.close();
   });

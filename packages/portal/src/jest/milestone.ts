@@ -17,6 +17,7 @@ export function shouldPromptGuestRegistration(
   completedRiddles?: number,
 ): boolean {
   if (session.player.registered || gameMode !== "classic") return false;
+  /** Provides count behavior. */
   const count = completedRiddles ?? (session.preferences.jestGuestCompletedRiddles ?? 0) + 1;
   return count > 0 && (count - 1) % 3 === 0;
 }
@@ -57,7 +58,9 @@ export async function recordAuthoritativeCompletion(
   let preferences = session.preferences;
   /** Provides milestone marked behavior. */
   let milestoneMarked = false;
+  /** Indicates whether is classic guest win. */
   const isClassicGuestWin = !session.player.registered && completion.gameMode === "classic";
+  /** Provides guest completed riddles behavior. */
   const guestCompletedRiddles = (preferences.jestGuestCompletedRiddles ?? 0) + (isClassicGuestWin ? 1 : 0);
   if (!preferences.firstMilestoneMarked || isClassicGuestWin) {
     preferences = {

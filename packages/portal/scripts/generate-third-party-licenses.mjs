@@ -1,7 +1,7 @@
 import {execFileSync} from "node:child_process";
 import {readFileSync, readdirSync, statSync, writeFileSync} from "node:fs";
 import {isAbsolute, resolve} from "node:path";
-import {fileURLToPath} from "node:url";
+import {fileURLToPath, pathToFileURL} from "node:url";
 
 const portalDirectory = fileURLToPath(new URL("../", import.meta.url));
 const repositoryDirectory = resolve(portalDirectory, "../..");
@@ -54,18 +54,16 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
   return undefined;
 };
 
-if (!new Set(["--check", "--write"]).has(mode)) {
-  throw new Error("Usage: node scripts/generate-third-party-licenses.mjs [--check|--write]");
-}
+
 
 /** Runs the active pnpm installation without depending on a global shim. */
-function readLicenseInventory() {
+function readLicenseInventory(packageNames) {
   const npmExecutable = process.env.npm_execpath;
   const command = npmExecutable ? process.execPath : "pnpm";
   const prefixArguments = npmExecutable ? [npmExecutable] : [];
   const output = execFileSync(
     command,
-    [...prefixArguments, "--filter", licensePackage, "licenses", "list", "--prod", "--json"],
+    [...prefixArguments, "--filter", licensePackage, "licenses", "list", ...(packageNames ? [] : ["--prod"]), "--json"],
     {
       cwd: repositoryDirectory,
       encoding: "utf8",
@@ -91,8 +89,8 @@ function readNoticeFiles(packageDirectory) {
 }
 
 /** Produces the committed third-party notice from the installed production graph. */
-function createNotice() {
-  const inventory = readLicenseInventory();
+export function createNotice(packageNames, {includeHomepages = true} = {}) {
+  const inventory = readLicenseInventory(packageNames);
   const packages = new Map();
   const missingNotices = [];
 
@@ -100,6 +98,7 @@ function createNotice() {
     for (const record of records) {
       for (const packageDirectory of record.paths) {
         const manifest = JSON.parse(readFileSync(resolve(packageDirectory, "package.json"), "utf8"));
+        if (packageNames && !packageNames.has(manifest.name)) continue;
         const id = `${manifest.name}@${manifest.version}`;
         const license = typeof manifest.license === "string" ? manifest.license : record.license;
         if (!license || /^(?:unknown|unlicensed)$/i.test(license)) {
@@ -140,6 +139,11 @@ function createNotice() {
     );
   }
 
+  if (packageNames) {
+    const names = new Set([...packages.values()].map(record => record.id.slice(0, record.id.lastIndexOf("@"))));
+    for (const name of packageNames) if (!names.has(name)) throw new Error(`Emitted package has no notice: ${name}`);
+  }
+
   const sortedPackages = [...packages.values()].sort((left, right) => left.id.localeCompare(right.id));
   const textGroups = new Map();
   for (const dependency of sortedPackages) {
@@ -157,12 +161,12 @@ function createNotice() {
     "==========================================",
     "",
     "This file lists the production runtime dependencies distributed with Riddle Quest.",
-    "It is generated from the locked @qwordly/portal production dependency graph.",
+    packageNames ? "It includes only packages emitted in this Web Target." : "It is generated from the locked @qwordly/portal production dependency graph.",
     "",
     "Dependency inventory",
     "--------------------",
     ...sortedPackages.map(({homepage, id, license}) =>
-      `- ${id} | ${license}${homepage ? ` | ${homepage}` : ""}`,
+      `- ${id} | ${license}${includeHomepages && homepage ? ` | ${homepage}` : ""}`,
     ),
     "",
     "License and notice texts",
@@ -184,6 +188,10 @@ function createNotice() {
   return `${lines.join("\n")}\n`;
 }
 
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (!new Set(["--check", "--write"]).has(mode)) {
+  throw new Error("Usage: node scripts/generate-third-party-licenses.mjs [--check|--write]");
+}
 const generatedNotice = createNotice();
 const generatedNoticeBytes = Buffer.byteLength(generatedNotice, "utf8");
 if (mode === "--write") {
@@ -200,4 +208,6 @@ if (mode === "--write") {
     throw new Error("Third-party notices are stale; run `pnpm licenses:generate` and commit the result");
   }
   console.log(`Third-party notices are current (${generatedNoticeBytes} bytes)`);
+}
+
 }

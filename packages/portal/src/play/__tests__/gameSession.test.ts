@@ -49,8 +49,10 @@ const resolveGuess = (
 
 describe("game session reducer", () => {
   it("keeps the victory sequence open when a late riddle arrives", () => {
+    /** Provides state behavior. */
     let state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle});
     state = resolveGuess(state, "PIANO", 1, {isCorrect: true, gameOver: true});
+    /** Provides next riddle behavior. */
     const nextRiddle = {...riddle, riddleId: "classic-2", sessionToken: "00000000-0000-4000-8000-000000000002", index: 2};
     expect(reduce(state, {type: "loadRiddle", riddle: nextRiddle})).toBe(state);
     state = reduce(state, {type: "closeModal"});
@@ -511,11 +513,14 @@ describe("game session reducer", () => {
   });
 
   it("does not replay a daily achievement when its completion response arrives after the next riddle loads", () => {
+    /** Provides achievement behavior. */
     const achievement = "daily_completed";
+    /** Provides profile behavior. */
     const profile = {
       coins: 5, level: 1, xp: 10, winStreak: 0, gamesPlayed: 1, wins: 1,
       achievements: [achievement], classicIndex: 0,
     };
+    /** Provides state behavior. */
     let state = reduce({...createInitialGameSession(), profile}, {type: "loadRiddle", riddle});
     state = reduce(state, {type: "completionReward", reward: {
       coinsEarned: 25, newlyUnlockedAchievementIds: [achievement],

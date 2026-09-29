@@ -1,3 +1,5 @@
+import {webBuildFacts} from "../../scripts/release/release-registry.mjs";
+import {webTargetDependencyPlugin} from "./webTargetDependencies.ts";
 import react, {reactCompilerPreset} from "@vitejs/plugin-react";
 import babel from "@rolldown/plugin-babel";
 import {sentryVitePlugin} from "@sentry/vite-plugin";
@@ -33,7 +35,7 @@ const yahooHtmlEntry = fileURLToPath(new URL("./targets/yahoo/index.html", impor
 const gameSnacksHtmlEntry = fileURLToPath(new URL("./targets/gamesnacks/index.html", import.meta.url));
 /** Provides youtube release content behavior. */
 const youtubeReleaseContent = fileURLToPath(
-  new URL("./src/youtube/generated/youtube-content-v1.json", import.meta.url),
+  new URL("./src/playable/generated/youtube-content-v1.json", import.meta.url),
 );
 /** Provides youtube fixture content behavior. */
 const youtubeFixtureContent = fileURLToPath(
@@ -50,15 +52,9 @@ const youtubeLocales = [
 export type WebTarget = "jest" | "facebook" | "reddit" | "youtube" | "netflix" | "yahoo" | "gamesnacks";
 
 /** Provides canonical build output directories behavior. */
-const canonicalBuildOutputDirectories: Readonly<Record<WebTarget, string>> = Object.freeze({
-  jest: "dist-jest",
-  facebook: "dist-facebook",
-  reddit: "dist-reddit",
-  youtube: "dist-youtube",
-  netflix: "dist-netflix",
-  yahoo: "dist-yahoo",
-  gamesnacks: "dist-gamesnacks",
-});
+const canonicalBuildOutputDirectories = Object.freeze(Object.fromEntries(
+  Object.entries(webBuildFacts).map(([target, facts]) => [target, facts.outputDirectory]),
+)) as Readonly<Record<WebTarget, string>>;
 
 /** Input to the single Web Target build-configuration interface. */
 export type WebTargetViteConfigRequest = Readonly<{
@@ -578,6 +574,7 @@ export function createWebTargetViteConfig({
   const plugins: PluginOption[] = [
     webTargetBuildContractPlugin(profile.id, selectedBuildOutDir),
     targetHtmlPlugin(profile),
+    webTargetDependencyPlugin(profile.id),
     react(),
     babel({presets: [reactCompilerPreset()]}),
     ...profile.createArtifactPlugins({allowYouTubeFixture, youtubeContent}),
@@ -643,6 +640,7 @@ export function createWebTargetViteConfig({
       },
     },
     build: {
+      emptyOutDir: true,
       outDir: selectedBuildOutDir,
       sourcemap: uploadSentrySourceMaps ? "hidden" : false,
       chunkSizeWarningLimit: 450,

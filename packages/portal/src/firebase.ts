@@ -132,13 +132,13 @@ export const getCurrentClassicRiddle = httpsCallable<
 >(functions, "getCurrentClassicRiddle");
 
 /** Issues the current Classic question and up to two future questions. */
-export const getClassicRiddleBuffer = httpsCallable<{
-  /** Requested content locale. */
-  locale: string;
-}, ClassicRiddleBufferResponse>(
-  functions,
-  "getClassicRiddleBuffer",
-);
+export const getClassicRiddleBuffer = httpsCallable<
+  {
+    /** Requested content locale. */
+    locale: string;
+  },
+  ClassicRiddleBufferResponse
+>(functions, "getClassicRiddleBuffer");
 
 /** Completes game. */
 export const completeGame = httpsCallable<CompleteGameInput, CompleteGameOutput>(functions, "completeGame");
@@ -231,7 +231,16 @@ export const updateAvatar = httpsCallable<
   }
 >(functions, "updateAvatar");
 /** Fills an empty Jest game profile avatar from the platform profile. */
-export const syncJestAvatar = httpsCallable<{avatarUrl: string}, {avatarUrl: string}>(functions, "syncJestAvatar");
+export const syncJestAvatar = httpsCallable<
+  {
+    /** Stores avatar url. */
+    avatarUrl: string;
+  },
+  {
+    /** Stores avatar url. */
+    avatarUrl: string;
+  }
+>(functions, "syncJestAvatar");
 /** Deletes account. */
 export const deleteAccount = httpsCallable<
   Record<string, never>,

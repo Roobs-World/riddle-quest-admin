@@ -59,6 +59,7 @@ export const projectInstantRaceSkip = (run: RaceRunView): RaceRunView | null => 
 export const projectInstantCorrectGuess = (run: RaceRunView): RaceRunView | null => {
   if (run.status !== "active" || !run.currentRiddle || !run.preloadedRiddles ||
     run.correctCount + 1 >= run.rules.targetCorrect) return null;
+  /** Provides next behavior. */
   const next = run.preloadedRiddles[run.currentRiddle.position + 1];
   if (!next) return null;
   return {

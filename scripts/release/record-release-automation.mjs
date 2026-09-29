@@ -5,7 +5,7 @@ import {readFile, rename, writeFile} from 'node:fs/promises';
 import {fileURLToPath, pathToFileURL} from 'node:url';
 import path from 'node:path';
 import {listPlatformReleasePlans} from './platform-releases.mjs';
-import {listHtml5DistributionDefinitions} from './package-html5-platform.mjs';
+import {releaseRegistry} from "./release-registry.mjs";
 import {expectedName} from './release-target-names.mjs';
 
 const repository = fileURLToPath(new URL('../..', import.meta.url));
@@ -25,9 +25,7 @@ export async function recordReleaseAutomation(root = repository) {
   const json = async relative => JSON.parse(await readFile(path.join(root, relative), 'utf8'));
   const snapshot = await json('docs/reports/platform-release-readiness/src/data.json');
   const report = await json('artifacts/release-e2e/packaged-games.json').catch(() => null);
-  const artifacts = new Map(listHtml5DistributionDefinitions().map(row => [row.target, row.artifact]));
-  artifacts.set('gamesnacks', 'build-gamesnacks.zip');
-  artifacts.set('microsoft-pwa', 'build-microsoft-pwa.zip');
+  const artifacts = new Map(releaseRegistry.filter(row => row.artifact).map(row => [row.target, row.artifact]));
   const revision = execFileSync('git', ['rev-parse', 'HEAD'], {cwd: root, encoding: 'utf8'}).trim();
   const rows = [];
   for (const plan of listPlatformReleasePlans()) {

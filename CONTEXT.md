@@ -99,3 +99,21 @@ _Avoid_: Game socket, event store
 **Platform Product**:
 A provider-specific sellable item and receipt contract that may grant a shared game entitlement but is not interchangeable with another provider's product.
 _Avoid_: Shared SKU, universal receipt
+
+## Completion and release evidence
+
+**Completion Presentation**:
+The victory, achievements and guidance shown for one issued solo question, whose dismissal can happen before or after Confirmed Progress accepts the answer.
+_Avoid_: Current modal, completed reward
+
+**Development Completion**:
+A named development task whose required checks have passed for an identified source revision, independently of provider submission, approval or publication.
+_Avoid_: Released platform, approved submission
+
+**Neutral Handoff**:
+A self-contained game prepared for a distribution destination while that destination's partner integrations and publication gates remain absent or pending.
+_Avoid_: Provider integration, live release
+
+**Race Projection**:
+The immediate local display of a competitive answer or action, which the game authority may confirm or roll back without accepting local scores or rankings as authoritative.
+_Avoid_: Confirmed race result, local ranking

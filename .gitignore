@@ -140,3 +140,7 @@ build-rando-review.zip
 build-rando-review.zip.manifest.json
 build-pwastore-review.zip
 build-pwastore-review.zip.manifest.json
+
+# Local source receipts and short-lived CI credentials
+build-html5.zip.source.json
+gha-creds-*.json

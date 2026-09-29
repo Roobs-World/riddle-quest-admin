@@ -27,10 +27,12 @@ export function useCompletionDelivery({
     requestId: string; /** Stores attempts. */
     /** Stores attempts. */
     attempts: number; /** Stores outcome. */
+    /** Stores outcome. */
     outcome: NonNullable<GameSessionState["lastOutcome"]>; /** Stores timer. */
     /** Stores timer. */
     timer?: number;
   }>());
+  /** Provides current outcome ref behavior. */
   const currentOutcomeRef = useRef(outcome);
   currentOutcomeRef.current = outcome;
   /** Provides [retry signal, set retry signal] behavior. */
@@ -40,11 +42,13 @@ export function useCompletionDelivery({
   const handleResult = useCallback(
     (ok: boolean, requestId?: string): boolean => {
       if (!ok || !requestId) return false;
+      /** Provides delivery behavior. */
       const delivery = [...deliveriesRef.current.values()].find((entry) => entry.requestId === requestId);
       if (!delivery) return false;
       if (delivery.timer !== undefined) window.clearTimeout(delivery.timer);
       completedIdsRef.current.add(delivery.outcomeId);
       deliveriesRef.current.delete(delivery.outcomeId);
+      /** Indicates whether is current. */
       const isCurrent = currentOutcomeRef.current?.id === delivery.outcomeId;
       if (isCurrent) dispatch({type: "completionAcknowledged"});
       return isCurrent;

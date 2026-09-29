@@ -28,7 +28,9 @@ const makePool = (locale: RaceLocale): ExistingRaceContentRecord[] =>
 
 describe("Race to 10 deterministic deck service", () => {
   it("keeps published challenges playable after their riddles leave the eligible pool", async () => {
+    /** Provides challenge behavior. */
     const challenge = {canonicalRiddleIds: ["history:retired"]} as RaceChallengeRecord;
+    /** Provides db behavior. */
     const db = {
       collection: jest.fn(() => ({
         where: jest.fn(() => ({

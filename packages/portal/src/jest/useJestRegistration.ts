@@ -7,17 +7,16 @@ import {
   type MutableRefObject,
   type SetStateAction,
 } from "react";
+import {CompletionPresentation} from "../play/completionPresentation";
 import {tr} from "../play/i18n";
 import {captureBrowserException} from "../observability/browserErrorReporter";
 import type {JestBackendPort} from "./backend";
 import {createRegistrationEntryPayload, type RegistrationSource} from "./registrationAttribution";
 import type {JestPlatformPort, JestRegistrationOverlayHandle, JestSession} from "./types";
-
 /** Records one registration-funnel event with optional low-cardinality context. */
 type TrackFunnel = (eventName: string, params?: Record<string, string | number | boolean>) => void;
 /** Runs an asynchronous operation while the shared platform activity indicator is active. */
 type WithPlatformActivity = <Result>(operation: () => Promise<Result>) => Promise<Result>;
-
 /** Collaborators required by the Jest registration flow. */
 type UseJestRegistrationOptions = {
   /** Jest SDK boundary used for player identity, profile, preferences, and registration UI. */
@@ -39,7 +38,6 @@ type UseJestRegistrationOptions = {
   /** Records registration and login funnel outcomes. */
   trackFunnel: TrackFunnel;
 };
-
 /** Owns the complete Jest registration overlay, login fallback, and identity resynchronization flow. */
 export function useJestRegistration({
   platform,
@@ -65,9 +63,7 @@ export function useJestRegistration({
   /** Provides source ref behavior. */
   const sourceRef = useRef<RegistrationSource>("profile");
   /** Holds the automatic prompt until the player finishes the reward sequence. */
-  const awaitingVictoryDismissalRef = useRef(false);
-
-
+  const completionPresentationRef = useRef(new CompletionPresentation());
   /** Provides complete behavior. */
   const complete = useCallback(() => {
     if (completingRef.current) return;
@@ -157,7 +153,6 @@ export function useJestRegistration({
     trackFunnel,
     withPlatformActivity,
   ]);
-
   /** Shows registration after the current completion sequence has ended. */
   const showPrompt = useCallback(
     (source: RegistrationSource, showGamePrompt: boolean) => {
@@ -184,16 +179,17 @@ export function useJestRegistration({
     },
     [complete, platform, sessionRef, trackFunnel],
   );
-
   /** Queues win prompts behind the victory and achievement popups. */
-  const open = useCallback((source: RegistrationSource, showGamePrompt: boolean) => {
-    if (source === "authoritative_win") {
-      awaitingVictoryDismissalRef.current = true;
-      return;
-    }
-    showPrompt(source, showGamePrompt);
-  }, [showPrompt]);
-
+  const open = useCallback(
+    (source: RegistrationSource, showGamePrompt: boolean, outcomeKey?: string) => {
+      if (source === "authoritative_win") {
+        if (outcomeKey && completionPresentationRef.current.confirm(outcomeKey)) showPrompt(source, showGamePrompt);
+        return;
+      }
+      showPrompt(source, showGamePrompt);
+    },
+    [showPrompt],
+  );
   /** Provides dismiss behavior. */
   const dismiss = useCallback(() => {
     setRegistrationFailure(null);
@@ -206,7 +202,6 @@ export function useJestRegistration({
       complete();
     }
   }, [complete]);
-
   /** Provides register behavior. */
   const register = useCallback(() => {
     setRegistrationFailure(null);
@@ -234,7 +229,6 @@ export function useJestRegistration({
       complete();
     });
   }, [complete, platform, sessionRef, trackFunnel, withPlatformActivity]);
-
   /** Provides login behavior. */
   const login = useCallback(() => {
     setRegistrationFailure(null);
@@ -260,10 +254,17 @@ export function useJestRegistration({
   useEffect(() => {
     /** Opens signup only after a voluntary profile action. */
     const openFromProfile = () => open("profile", true);
-    const onCompletionPopupsDismissed = () => {
-      if (!awaitingVictoryDismissalRef.current) return;
-      awaitingVictoryDismissalRef.current = false;
-      showPrompt("authoritative_win", true);
+    /** Provides on completion popups dismissed behavior. */
+    const onCompletionPopupsDismissed = (event: Event) => {
+      /** Provides key behavior. */
+      const key: unknown = (
+        event as CustomEvent<{
+          /** Stores outcome key. */
+          outcomeKey?: unknown;
+        }>
+      ).detail?.outcomeKey;
+      if (typeof key === "string" && completionPresentationRef.current.dismiss(key))
+        showPrompt("authoritative_win", true);
     };
     window.addEventListener("riddle-quest:completion-popups-dismissed", onCompletionPopupsDismissed);
     window.addEventListener("riddle-quest:registration-prompt-opened", openFromProfile);

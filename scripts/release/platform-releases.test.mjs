@@ -172,7 +172,9 @@ test("the combined release verifies once before running every adapter", async ()
     log: () => {},
   });
   assert.deepEqual(invocations[0].args, ["verify:all-targets"]);
-  assert.deepEqual(invocations.slice(1).map(({args}) => args), [
+  assert.equal(invocations.filter(({args}) => args[0] === "release:html5").length, 1);
+  assert.equal(invocations.find(({args}) => args[1] === "itch").environment.HTML5_SOURCE_PREPARED, "1");
+  assert.deepEqual(invocations.slice(1).filter(({args}) => args[0] !== "release:html5").map(({args}) => args), [
     expectedCommands.get("jest"),
     expectedCommands.get("facebook"),
     expectedCommands.get("youtube"),

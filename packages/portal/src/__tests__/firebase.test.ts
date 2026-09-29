@@ -60,6 +60,7 @@ describe("Firebase browser adapter", () => {
       "getLeaderboard",
       "updateUsername",
       "updateAvatar",
+      "syncJestAvatar",
       "deleteAccount",
       "setPresenceConsent",
       "listRaceCategories",

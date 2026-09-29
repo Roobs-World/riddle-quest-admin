@@ -71,6 +71,22 @@ const manifest = {
   supportsLowEndDevices: false,
 };
 await writeFile(path.join(output, "game.json"), `${JSON.stringify(manifest, null, 2)}\n`);
+// Provider metadata and marketing are added after Vite; bind them to the same
+// inventory while proving every previously audited runtime byte is unchanged.
+const inventoryPath = path.join(repository, "artifacts/target-dependencies/gamesnacks.json");
+const inventory = JSON.parse(await readFile(inventoryPath, "utf8"));
+for (const row of inventory.files) {
+  const hash = createHash("sha256").update(await readFile(path.join(output, row.file))).digest("hex");
+  if (hash !== row.sha256) throw new Error(`Changed audited GameSnacks runtime: ${row.file}`);
+}
+const metadataFiles = new Set(["game.json", "marketing/icon.png", "marketing/horizontal.png", "marketing/vertical.png"]);
+const packagedFiles = (await filesBelow(output)).sort();
+for (const file of packagedFiles) {
+  if (!inventory.files.some(row => row.file === file) && !metadataFiles.has(file)) throw new Error(`Untracked GameSnacks package file: ${file}`);
+}
+inventory.files = await Promise.all(packagedFiles.map(async file => ({file,
+  sha256: createHash("sha256").update(await readFile(path.join(output, file))).digest("hex")})));
+await writeFile(inventoryPath, `${JSON.stringify(inventory, null, 2)}\n`);
 const archivePath = path.join(repository, "build-gamesnacks.zip");
 await unlink(archivePath).catch((error) => {
   if (error?.code !== "ENOENT") throw error;

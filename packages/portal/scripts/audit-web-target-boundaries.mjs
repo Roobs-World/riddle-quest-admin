@@ -7,9 +7,7 @@ const defaultSourceDirectory = fileURLToPath(new URL("../src", import.meta.url))
 const targetOwners = new Set(["jest", "facebook", "reddit", "youtube", "yahoo", "gamesnacks"]);
 const sharedOwner = "shared";
 const externalOwner = "external";
-// GameSnacks reuses the audited self-contained playable UI and content engine. Its
-// provider port remains GameSnacks-owned and the artifact audit rejects YouTube APIs.
-const allowedCrossTargetEdges = new Set(["gamesnacks:youtube"]);
+const allowedCrossTargetEdges = new Set();
 const compilerOptions = Object.freeze({
   allowImportingTsExtensions: true,
   jsx: ts.JsxEmit.ReactJSX,

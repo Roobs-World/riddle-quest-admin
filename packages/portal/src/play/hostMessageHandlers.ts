@@ -6,7 +6,6 @@ import type {RaceOutcome} from "@qwordly/core/race";
 import type {AuthSnapshot, CompletionResult, PurchaseResult, WebGameMode} from "./types";
 import type {HostAuthorityModules} from "./HostAuthorityModules";
 import {captureBrowserException} from "../observability/browserErrorReporter";
-
 /** Describes host operation name. */
 export type HostOperationName =
   | "loadRiddle"
@@ -34,7 +33,6 @@ export type HostOperationName =
   | "raceInbox"
   | "raceBlock"
   | "raceReport";
-
 /** Gets host error message. */
 export const getHostErrorMessage = (error: unknown): string => {
   if (
@@ -49,34 +47,31 @@ export const getHostErrorMessage = (error: unknown): string => {
   }
   return tr("ErrorMessages.GENERIC_UNEXPECTED_ERROR");
 };
-
 /** Translates server-provided locale keys while preserving already rendered notices. */
 export const getHostNoticeMessage = (notice: string): string =>
   notice.startsWith("WebPortal.") || notice.startsWith("ErrorMessages.") ? tr(notice) : notice;
-
 /** Reports a failed host operation before its safe message is returned to the game frame. */
 const reportHostOperationError = (error: unknown, operation: HostOperationName): void => {
   captureBrowserException(error, {component: "play_host", operation});
 };
-
 /** Keeps ambiguous transport failures replayable with the original paid request ID. */
 const coinActionErrorKind = (error: unknown): "retryable" | "rejected" => {
   /** Callable errors distinguish a definitive refusal from an unknown network outcome. */
   const code = typeof error === "object" && error !== null && "code" in error ? String(error.code) : "";
-  return /(?:^|\/)(invalid-argument|permission-denied|failed-precondition|not-found|unauthenticated|resource-exhausted)$/.test(code)
-    ? "rejected" : "retryable";
+  return /(?:^|\/)(invalid-argument|permission-denied|failed-precondition|not-found|unauthenticated|resource-exhausted)$/.test(
+    code,
+  )
+    ? "rejected"
+    : "retryable";
 };
-
 /** Requires a capability-shaped authority module before crossing its seam. */
 const requireAuthority = <Module>(module: Module | undefined, message: string): Module => {
   if (!module) throw new Error(message);
   return module;
 };
-
 /** Requires the race authority through one shared Capability Gap policy. */
 const requireRaceAuthority = (authority: HostAuthorityModules): NonNullable<HostAuthorityModules["race"]> =>
   requireAuthority(authority.race, "host-race-capability-unavailable");
-
 /** Describes load and post riddle. */
 type LoadAndPostRiddle = (
   input: {
@@ -95,7 +90,6 @@ type LoadAndPostRiddle = (
   },
   requestId?: string,
 ) => Promise<boolean>;
-
 /** Describes post operation. */
 type PostOperation = (
   requestId: string | undefined,
@@ -105,17 +99,14 @@ type PostOperation = (
   error?: string,
   errorKind?: "retryable" | "rejected",
 ) => void;
-
 /** Describes run race operation. */
 type RunRaceOperation = (
   requestId: string | undefined,
   operation: HostOperationName,
   action: () => Promise<unknown>,
 ) => Promise<void>;
-
 /** Describes with server activity. */
 type WithServerActivity = <Result>(operation: () => Promise<Result>) => Promise<Result>;
-
 /** Describes create host message handlers options. */
 export type CreateHostMessageHandlersOptions = {
   /** Stores auth snapshot. */
@@ -155,7 +146,7 @@ export type CreateHostMessageHandlersOptions = {
   /** Stores sync race achievement progress. */
   syncRaceAchievementProgress: (result: {
     /** Stores newly unlocked achievement ids. */
-    newlyUnlockedAchievementIds?: string[]; /** Stores new coins. */
+    newlyUnlockedAchievementIds?: string[];
     /** Stores new coins. */
     newCoins?: number;
   }) => Promise<void>;
@@ -164,12 +155,19 @@ export type CreateHostMessageHandlersOptions = {
   /** Stores on playable. */
   onPlayable?: () => void;
   /** Runs when the backend confirms a correct single-player answer. */
-  onAuthoritativeGuessWin?: (input: {riddleId: string; gameMode: WebGameMode}) => void;
+  onAuthoritativeGuessWin?: (input: {
+    /** Stores riddle id. */
+    riddleId: string;
+    /** Stores session token. */
+    sessionToken: string;
+    /** Stores game mode. */
+    gameMode: WebGameMode;
+  }) => void;
   /** Stores on authoritative complete. */
   onAuthoritativeComplete?: (
     input: {
       /** Stores riddle id. */
-      riddleId: string; /** Stores game mode. */
+      riddleId: string;
       /** Stores game mode. */
       gameMode: WebGameMode;
     },
@@ -187,7 +185,6 @@ export type CreateHostMessageHandlersOptions = {
     current: boolean;
   };
 };
-
 /** Builds the schema-routed commands that connect the game frame to authoritative host services. */
 export const createPlayHostMessageHandlers = ({
   authSnapshot,
@@ -258,8 +255,16 @@ export const createPlayHostMessageHandlers = ({
       /** The code used by the current operation. */
       const code = typeof error === "object" && error !== null && "code" in error ? String(error.code) : "";
       /** The rejected used by the current operation. */
-      const rejected = /(?:^|\/)(invalid-argument|permission-denied|failed-precondition|not-found|unauthenticated)$/.test(code);
-      postOperation(message.requestId, "guess", false, undefined, getHostErrorMessage(error), rejected ? "rejected" : "retryable");
+      const rejected =
+        /(?:^|\/)(invalid-argument|permission-denied|failed-precondition|not-found|unauthenticated)$/.test(code);
+      postOperation(
+        message.requestId,
+        "guess",
+        false,
+        undefined,
+        getHostErrorMessage(error),
+        rejected ? "rejected" : "retryable",
+      );
     }
   },
   completeGame: async (message) => {
@@ -269,8 +274,9 @@ export const createPlayHostMessageHandlers = ({
       postOperation(message.requestId, "completeGame", true, result);
       // Rewards are already authoritative. Optional notification/storage work must
       // neither delay their presentation nor turn a completed win into an error.
-      void Promise.resolve().then(() => onAuthoritativeComplete?.(message.payload, result))
-        .catch(error => reportHostOperationError(error, "completeGame"));
+      void Promise.resolve()
+        .then(() => onAuthoritativeComplete?.(message.payload, result))
+        .catch((error) => reportHostOperationError(error, "completeGame"));
       trackEvent("level_end", {
         game_mode: message.payload.gameMode,
         success: result.isCorrect,
@@ -303,7 +309,14 @@ export const createPlayHostMessageHandlers = ({
       });
     } catch (error) {
       reportHostOperationError(error, "hint");
-      postOperation(message.requestId, "hint", false, undefined, getHostErrorMessage(error), coinActionErrorKind(error));
+      postOperation(
+        message.requestId,
+        "hint",
+        false,
+        undefined,
+        getHostErrorMessage(error),
+        coinActionErrorKind(error),
+      );
     }
   },
   spendCoins: async (message) => {
@@ -335,21 +348,31 @@ export const createPlayHostMessageHandlers = ({
       const {riddleId, gameMode: skipGameMode, sessionToken} = message.payload;
       /** Provides result behavior. */
       const result = await authority.gameplay.skipRiddle({
-          riddleId,
-          gameMode: skipGameMode,
-          sessionToken,
-          requestId: message.requestId ?? createRequestId("skip"),
-        });
+        riddleId,
+        gameMode: skipGameMode,
+        sessionToken,
+        requestId: message.requestId ?? createRequestId("skip"),
+      });
       postOperation(message.requestId, "skip", true, result);
       trackEvent("riddle_skipped", {game_mode: skipGameMode, value: result.costDeducted});
-      await loadAndPostRiddle({
-        gameMode: skipGameMode,
-        locale,
-        classicIndex: result.newProgress?.classicIndex ?? authSnapshot.profile?.classicIndex,
-      }, message.requestId);
+      await loadAndPostRiddle(
+        {
+          gameMode: skipGameMode,
+          locale,
+          classicIndex: result.newProgress?.classicIndex ?? authSnapshot.profile?.classicIndex,
+        },
+        message.requestId,
+      );
     } catch (error) {
       reportHostOperationError(error, "skip");
-      postOperation(message.requestId, "skip", false, undefined, getHostErrorMessage(error), coinActionErrorKind(error));
+      postOperation(
+        message.requestId,
+        "skip",
+        false,
+        undefined,
+        getHostErrorMessage(error),
+        coinActionErrorKind(error),
+      );
     }
   },
   requestPurchase: async (message) => {
@@ -376,7 +399,6 @@ export const createPlayHostMessageHandlers = ({
   },
   loadLeaderboard: async (message) => {
     try {
-      /** Provides entries behavior. */
       /** Provides entries behavior. */
       const entries = await authority.leaderboard.loadLeaderboard(message.payload.leaderboardType);
       postOperation(message.requestId, "leaderboard", true, {
@@ -481,8 +503,9 @@ export const createPlayHostMessageHandlers = ({
       const race = requireRaceAuthority(authority);
       /** Provides result behavior. */
       const result = await race.publishRace(message.payload);
-      void Promise.resolve().then(() => syncRaceAchievementProgress(result))
-        .catch(error => reportHostOperationError(error, "racePublish"));
+      void Promise.resolve()
+        .then(() => syncRaceAchievementProgress(result))
+        .catch((error) => reportHostOperationError(error, "racePublish"));
       return result;
     }),
   reserveRaceInvite: (message) =>
@@ -505,10 +528,12 @@ export const createPlayHostMessageHandlers = ({
       /** Provides result behavior. */
       const result = await race.getRaceOutcome(message.payload.runId);
       // Present the confirmed outcome while optional profile and platform work finishes.
-      void Promise.resolve().then(async () => {
-        await syncRaceAchievementProgress(result);
-        await onAuthoritativeRaceResult?.(result);
-      }).catch(error => reportHostOperationError(error, "raceOutcome"));
+      void Promise.resolve()
+        .then(async () => {
+          await syncRaceAchievementProgress(result);
+          await onAuthoritativeRaceResult?.(result);
+        })
+        .catch((error) => reportHostOperationError(error, "raceOutcome"));
       return result;
     }),
   listRaceInbox: (message) =>

@@ -1,108 +1,33 @@
-import {useCallback, useEffect, useRef, useState, type Dispatch, type SetStateAction} from "react";
+import {useCallback, useEffect, useRef, useSyncExternalStore, type Dispatch, type SetStateAction} from "react";
 import type {GameToHostMessage} from "@qwordly/core/bridge";
-import {createRequestId} from "../../requestIds";
-import {raceOperationRequiresReceipt, type RaceOperation} from "../logic/raceOperations";
-
-/** Minimum answer-loader duration used to avoid a distracting visual flash. */
-const RACE_GUESS_LOADER_MIN_VISIBLE_MS = 180;
-
-/** Describes race operation lifecycle options. */
+import {RacePlay} from "../RacePlay";
+import type {RaceOperation} from "../logic/raceOperations";
+/** React delivery collaborators for the race owner. */
 export type RaceOperationLifecycleOptions = {
-  /** Stores post to host. */
-  postToHost: (message: GameToHostMessage) => void;
-  /** Stores set error. */
-  setError: Dispatch<SetStateAction<string | null>>;
+  /** Host command adapter. */ postToHost: (message: GameToHostMessage) => void;
+  /** User-visible recovery error. */ setError: Dispatch<SetStateAction<string | null>>;
 };
-
-/** Owns request correlation and the loader lifecycle shared by race operations. */
-export function useRaceOperationLifecycle({postToHost, setError}: RaceOperationLifecycleOptions) {
-  /** Provides [pending, set pending] behavior. */
-  const [pending, setPending] = useState<RaceOperation | null>(null);
-  /** Provides [race guess loading, set race guess loading] behavior. */
-  const [raceGuessLoading, setRaceGuessLoading] = useState(false);
-  /** Provides expected request ref behavior. */
-  const expectedRequestRef = useRef<string | null>(null);
-  /** Loads ing started at ref. */
-  const loadingStartedAtRef = useRef(0);
-  /** Loads ing timer ref. */
-  const loadingTimerRef = useRef<number | undefined>(undefined);
-  /** Loads ing active ref. */
-  const loadingActiveRef = useRef(false);
-  /** Provides awaiting outcome ref behavior. */
-  const awaitingOutcomeRef = useRef(false);
-
-  /** Sends one correlated operation and injects receipts for server mutations. */
+/** Adapts one deep Race play module to React rendering without exposing protocol refs. */
+export function useRaceOperationLifecycle(options: RaceOperationLifecycleOptions) {
+  /** Provides options ref behavior. */
+  const optionsRef = useRef(options);
+  optionsRef.current = options;
+  /** Provides play ref behavior. */
+  const playRef = useRef<RacePlay | null>(null);
+  if (!playRef.current)
+    playRef.current = new RacePlay({postToHost: (message) => optionsRef.current.postToHost(message)});
+  /** Provides play behavior. */
+  const play = playRef.current;
+  /** Provides state behavior. */
+  const state = useSyncExternalStore(play.subscribe, play.getSnapshot, play.getSnapshot);
+  /** Provides send behavior. */
   const send = useCallback(
     (operation: RaceOperation, type: GameToHostMessage["type"], payload: Record<string, unknown>) => {
-      /** Requests id. */
-      const requestId = createRequestId(operation);
-      expectedRequestRef.current = requestId;
-      setPending(operation);
-      if (operation === "raceGuess") {
-        if (loadingTimerRef.current !== undefined) {
-          window.clearTimeout(loadingTimerRef.current);
-          loadingTimerRef.current = undefined;
-        }
-        loadingStartedAtRef.current = performance.now();
-        loadingActiveRef.current = true;
-        awaitingOutcomeRef.current = false;
-        setRaceGuessLoading(true);
-      }
-      setError(null);
-      postToHost({
-        type,
-        requestId,
-        payload: raceOperationRequiresReceipt(operation) ? {...payload, requestId} : payload,
-      } as GameToHostMessage);
+      optionsRef.current.setError(null);
+      play.send(operation, type, payload);
     },
-    [postToHost, setError],
+    [play],
   );
-
-  /** Ends the current answer loader after its minimum visible duration. */
-  const finishRaceGuessLoading = useCallback(() => {
-    /** Provides elapsed ms behavior. */
-    const elapsedMs = performance.now() - loadingStartedAtRef.current;
-    /** Provides remaining ms behavior. */
-    const remainingMs = Math.max(0, RACE_GUESS_LOADER_MIN_VISIBLE_MS - elapsedMs);
-    loadingTimerRef.current = window.setTimeout(() => {
-      loadingActiveRef.current = false;
-      awaitingOutcomeRef.current = false;
-      setRaceGuessLoading(false);
-      loadingTimerRef.current = undefined;
-    }, remainingMs);
-  }, []);
-
-  /** Clears pending state and hands completed guesses over to outcome loading. */
-  const finishOperation = useCallback(
-    (operation: RaceOperation) => {
-      setPending((current) => (current === operation ? null : current));
-      if (operation === "raceGuess" && !awaitingOutcomeRef.current) {
-        finishRaceGuessLoading();
-      } else if (operation === "raceOutcome" && loadingActiveRef.current) {
-        finishRaceGuessLoading();
-      }
-    },
-    [finishRaceGuessLoading],
-  );
-
-  /** Sets race guess awaiting outcome. */
-  const setRaceGuessAwaitingOutcome = useCallback((awaiting: boolean) => {
-    awaitingOutcomeRef.current = awaiting;
-  }, []);
-
-  useEffect(
-    () => () => {
-      if (loadingTimerRef.current !== undefined) window.clearTimeout(loadingTimerRef.current);
-    },
-    [],
-  );
-
-  return {
-    expectedRequestRef,
-    finishOperation,
-    pending,
-    raceGuessLoading,
-    send,
-    setRaceGuessAwaitingOutcome,
-  };
+  useEffect(() => () => play.dispose(), [play]);
+  return {...state, play, send, finishOperation: play.finish, setRaceGuessAwaitingOutcome: play.setAwaitingOutcome};
 }

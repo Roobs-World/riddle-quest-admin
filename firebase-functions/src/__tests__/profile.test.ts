@@ -517,9 +517,13 @@ describe("Profile Cloud Functions", () => {
   });
 
   describe("syncJestAvatar", () => {
+    /** Provides player id behavior. */
     const playerId = "jest-player-1";
+    /** Provides uid behavior. */
     const uid = jestFirebaseUid(playerId);
+    /** Provides avatar url behavior. */
     const avatarUrl = "https://cdn.jest.com/avatars/player.webp";
+    /** Provides request behavior. */
     const request = (url = avatarUrl) => ({
       auth: {uid, token: {jestPlayerId: playerId, jestRegistered: true}},
       data: {avatarUrl: url},

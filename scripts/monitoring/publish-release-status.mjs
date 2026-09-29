@@ -23,6 +23,7 @@ export function mergeReleaseStatus(current, reviewed, now = new Date()) {
   if (!queries.provider_daily_activity?.source?.tables?.some(table => table.includes(jestGame.gameId))) {
     queries.provider_daily_activity = reviewed.queries.provider_daily_activity;
   }
+  if (!queries.development_progress && reviewed.queries.development_progress) queries.development_progress = reviewed.queries.development_progress;
   return {...current, generatedAt: now.toISOString(), buildStatus: reviewed.buildStatus, queries};
 }
 

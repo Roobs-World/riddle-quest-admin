@@ -13,8 +13,8 @@ import {
   getYouTubeLevelFromXp,
   getYouTubeWinXp,
   nextYouTubeDailyStreak,
-} from "../economy";
-import {createEmptyYouTubeSave} from "../save";
+} from "../../playable/economy";
+import {createEmptyYouTubeSave} from "../../playable/save";
 
 describe("YouTube local economy parity", () => {
   it("locks the established solo coin and attempt contract", () => {

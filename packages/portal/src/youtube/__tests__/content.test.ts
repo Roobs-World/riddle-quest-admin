@@ -1,5 +1,4 @@
-import {parseYouTubeContentDocument, resolveYouTubeLocale} from "../content";
-
+import {parseYouTubeContentDocument, resolveYouTubeLocale} from "../../playable/content";
 /** Provides content document behavior. */
 const contentDocument = (startsOn: string) => ({
   schemaVersion: 1,

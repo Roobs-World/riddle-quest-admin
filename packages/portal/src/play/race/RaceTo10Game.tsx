@@ -2,7 +2,7 @@ import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import "../../styles.race-lobby.css";
 import "../../styles.race-gameplay.css";
 import {parseHostToGameMessage} from "@qwordly/core/bridge";
-import {computeFeedback, type ScoredGuess} from "@qwordly/core/game";
+import {type ScoredGuess} from "@qwordly/core/game";
 import {
   AbandonRaceRunResponseSchema,
   ListRaceCategoriesResponseSchema,
@@ -27,18 +27,33 @@ import {
 import {tr} from "../i18n";
 import {HOST_TO_GAME_EVENT} from "../localBridge";
 import {createRaceAnalyticsMessage} from "./logic/raceAnalytics";
-import {advanceRaceLoadingProgress, RACE_COUNTDOWN_START, RACE_LOADING_COMPLETE_DISPLAY_MS, RACE_LOADING_TICK_MS} from "./logic/raceCountdown";
+import {
+  advanceRaceLoadingProgress,
+  RACE_COUNTDOWN_START,
+  RACE_LOADING_COMPLETE_DISPLAY_MS,
+  RACE_LOADING_TICK_MS,
+} from "./logic/raceCountdown";
 import {deleteRaceLetter, insertRaceLetter, insertRaceText, isRaceSlotEditable} from "./logic/raceInput";
 import type {RaceOperation} from "./logic/raceOperations";
 import {getGhostCorrectCount} from "./logic/racePlayback";
-import {applyRaceOutcome, createRaceAttempt, findFirstEditableRaceSlot, getAdjustedRaceTime, getRaceLetterStates, projectInstantCorrectGuess, projectInstantRaceHint, projectInstantRaceSkip, projectRaceOutcome} from "./logic/racePresentation";
+import {
+  applyRaceOutcome,
+  createRaceAttempt,
+  findFirstEditableRaceSlot,
+  getAdjustedRaceTime,
+  getRaceLetterStates,
+} from "./logic/racePresentation";
 import {useRaceDialogFocus, useRaceGameplayFit, useRaceGameplayKeyboard, useRaceOperationLifecycle} from "./hooks";
 import {RaceTo10View, type RaceStage} from "./RaceTo10View";
 import {readActiveRace, clearActiveRace} from "./logic/activeRaceStorage";
 import {EMPTY_RACE_CATEGORIES, type RaceTo10GameProps} from "./RaceTo10Game.types";
-import {useActiveRacePersistence, useRaceClockEffects, useRaceEntryTracking, useRaceFeedbackTimers} from "./hooks/useRaceRuntimeEffects";
+import {
+  useActiveRacePersistence,
+  useRaceClockEffects,
+  useRaceEntryTracking,
+  useRaceFeedbackTimers,
+} from "./hooks/useRaceRuntimeEffects";
 import {useReferralSharing} from "../sharing/ReferralSharingCapability";
-
 /** Coordinates the complete server-authoritative Race to 10 multiplayer experience. */
 export function RaceTo10Game({
   locale,
@@ -98,20 +113,6 @@ export function RaceTo10Game({
   const [raceGuesses, setRaceGuesses] = useState<ScoredGuess[]>([]);
   /** Temporary correctness feedback for the latest submitted guess. */
   const [feedback, setFeedback] = useState<"correct" | "incorrect" | null>(null);
-  /** Marks a local row that the next authoritative guess response must replace or undo. */
-  const previewedGuessRef = useRef(false);
-  /** Submitted letters retained while the preview occupies the scored row. */
-  const submittedGuessRef = useRef<string[] | null>(null);
-  /** Original riddle and run retained while the next clue is shown optimistically. */
-  const guessRollbackRef = useRef<RaceRunView | null>(null);
-  /** Previous riddle's guess rows restored if a projected advance is rejected. */
-  const guessHistoryRollbackRef = useRef<ScoredGuess[] | null>(null);
-  /** Projected next riddle whose in-progress typing survives server confirmation. */
-  const guessProjectedNextRef = useRef<string | null>(null);
-  /** Authoritative view restored if an instant local skip cannot be recorded by the server. */
-  const skipRollbackRef = useRef<RaceRunView | null>(null);
-  /** Authoritative view restored if an instant local hint cannot be recorded by the server. */
-  const hintRollbackRef = useRef<RaceRunView | null>(null);
   /** Run most recently reported after this client entered its final screen. */
   const finalScreenNotifiedRunRef = useRef<string | null>(null);
   /** Temporary text describing a server-applied time penalty. */
@@ -144,11 +145,12 @@ export function RaceTo10Game({
     send,
     set race guess awaiting outcome,
   } behavior. */
-  const {expectedRequestRef, finishOperation, pending, raceGuessLoading, send, setRaceGuessAwaitingOutcome} = useRaceOperationLifecycle({postToHost, setError});
+  const {play, finishOperation, pending, raceGuessLoading, send, setRaceGuessAwaitingOutcome} =
+    useRaceOperationLifecycle({postToHost, setError});
   /** Latest rivalry identifier available synchronously to rematch callbacks. */
   const rivalryChallengeIdRef = useRef<string | undefined>(undefined);
   /** Target associated with the one correlated social-safety operation. */
-  const safetyTargetRef = useRef<string | null>(null);
+  const [safetyTargetUserId, setSafetyTargetUserId] = useState<string | null>(null);
   /** Whether a successful publication should immediately open Jest's recipient picker. */
   const shareAfterPublishRef = useRef(false);
   /** Synchronous guard preventing duplicate provider share dialogs. */
@@ -162,7 +164,7 @@ export function RaceTo10Game({
   /** Provides close state ref behavior. */
   const closeStateRef = useRef<{
     /** Stores stage. */
-    stage: RaceStage; /** Stores run status. */
+    stage: RaceStage;
     /** Stores run status. */
     runStatus?: RaceRunView["status"];
   }>({stage});
@@ -176,7 +178,6 @@ export function RaceTo10Game({
   /** Quit dialog used for focus management while abandonment is confirmed. */
   const quitDialogRef = useRef<HTMLDivElement | null>(null);
   useRaceEntryTracking(stage, challengeId);
-
   /** Resets local answer input from the latest authoritative riddle. */
   const resetAttempt = useCallback((nextRun: RaceRunView) => {
     setCurrentLetters(createRaceAttempt(nextRun.currentRiddle));
@@ -184,9 +185,12 @@ export function RaceTo10Game({
     setRaceGuesses([]);
     setFeedback(null);
   }, []);
-
   /** Emits a schema-constrained multiplayer analytics event through the host. */
-  const analytics = useCallback((eventName: RaceAnalyticsEventName, params: Record<string, string | number | boolean> = {}) => postToHost(createRaceAnalyticsMessage(eventName, params)), [postToHost]);
+  const analytics = useCallback(
+    (eventName: RaceAnalyticsEventName, params: Record<string, string | number | boolean> = {}) =>
+      postToHost(createRaceAnalyticsMessage(eventName, params)),
+    [postToHost],
+  );
   /** Opens the host-owned recipient picker for an authoritative published challenge. */
   const sharePublishedChallenge = useCallback(
     async (publication: ReturnType<typeof PublishRaceChallengeResponseSchema.parse>) => {
@@ -195,7 +199,10 @@ export function RaceTo10Game({
       setSharing(true);
       analytics("race_share_dialog_opened", {categoryId: publication.preview.categoryId});
       try {
-        if ((await referralSharing.shareRace({challengeId: publication.challengeId, preview: publication.preview})) === "error") {
+        if (
+          (await referralSharing.shareRace({challengeId: publication.challengeId, preview: publication.preview})) ===
+          "error"
+        ) {
           setError(tr("RaceTo10.ERROR_GENERIC"));
         }
       } finally {
@@ -230,7 +237,6 @@ export function RaceTo10Game({
       .catch(() => setError(tr("RaceTo10.ERROR_GENERIC")))
       .finally(() => setTournamentLoading(false));
   }, [locale, tournamentLoading, tournaments]);
-
   /** Closes the race or opens confirmation when an active run would be abandoned. */
   const requestClose = useCallback(() => {
     if (closeStateRef.current.stage === "countdown" && pending === "raceStart") {
@@ -244,7 +250,6 @@ export function RaceTo10Game({
     }
     onClose();
   }, [onClose, pending]);
-
   /** Hides the active-race abandonment confirmation. */
   const dismissQuitConfirmation = useCallback(() => setQuitConfirmationOpen(false), []);
   useRaceDialogFocus({
@@ -254,15 +259,11 @@ export function RaceTo10Game({
     dismissQuitConfirmation,
     requestClose,
   });
-
   /** Stores a new authoritative run view. */
-  const updateRun = useCallback(
-    (next: RaceRunView) => {
-      setRun(next);
-      setReceivedAtMs(Date.now());
-    },
-    [],
-  );
+  const updateRun = useCallback((next: RaceRunView) => {
+    setRun(next);
+    setReceivedAtMs(Date.now());
+  }, []);
 
   useEffect(() => {
     /** Deferred request used to avoid issuing host messages during render. */
@@ -278,6 +279,29 @@ export function RaceTo10Game({
     }, 0);
     return () => window.clearTimeout(timer);
   }, [challengeId, initialCategories.length, locale, openInbox, ownerId, send]);
+  /** Applies one module-owned rollback for rejected or malformed authority responses. */
+  const rollbackProjection = useCallback(
+    (operation: RaceOperation) => {
+      /** Provides rollback behavior. */
+      const rollback = play.rejectProjection(operation);
+      if (!rollback) return;
+      if (rollback.kind === "guess") {
+        setRaceGuesses(rollback.guesses);
+        if (rollback.run) {
+          setRun(rollback.run);
+          setReceivedAtMs(rollback.receivedAt);
+        }
+        setCurrentLetters(rollback.letters);
+        setFeedback(null);
+      } else {
+        setRun(rollback.run);
+        setReceivedAtMs(Date.now());
+        resetAttempt(rollback.run);
+        setPenaltyFlash(null);
+      }
+    },
+    [play, resetAttempt, updateRun],
+  );
 
   useEffect(() => {
     /** Processes correlated race-operation responses emitted by the host bridge. */
@@ -290,54 +314,34 @@ export function RaceTo10Game({
         return;
       }
       if (message.type !== "host:operationResult" || !message.payload.operation.startsWith("race")) return;
-      if (message.requestId !== expectedRequestRef.current) return;
       /** Provides operation behavior. */
       const operation = message.payload.operation as RaceOperation;
+      if (!play.acceptResponse(message.requestId, operation)) return;
       if (!message.payload.ok) {
-        if (operation === "raceGuess" && previewedGuessRef.current) {
-          const priorGuesses = guessHistoryRollbackRef.current;
-          setRaceGuesses((guesses) => priorGuesses ?? guesses.slice(0, -1));
-          guessHistoryRollbackRef.current = null;
-          guessProjectedNextRef.current = null;
-          if (guessRollbackRef.current) updateRun(guessRollbackRef.current);
-          guessRollbackRef.current = null;
-          if (submittedGuessRef.current) setCurrentLetters(submittedGuessRef.current);
-          submittedGuessRef.current = null;
-          setFeedback(null);
-          previewedGuessRef.current = false;
-        }
+        rollbackProjection(operation);
+
         if (operation === "racePublish") {
           shareAfterPublishRef.current = false;
           setPublishRequested(false);
         }
-        if (operation === "raceSkip" && skipRollbackRef.current) {
-          /** Optimistic run snapshot restored when a skip request fails. */
-          const rollback = skipRollbackRef.current;
-          skipRollbackRef.current = null;
-          setRun(rollback);
-          setReceivedAtMs(Date.now());
-          resetAttempt(rollback);
-          setPenaltyFlash(null);
-        }
-        if (operation === "raceHint" && hintRollbackRef.current) {
-          /** Optimistic run snapshot restored when a hint request fails. */
-          const rollback = hintRollbackRef.current;
-          hintRollbackRef.current = null;
-          setRun(rollback);
-          setReceivedAtMs(Date.now());
-          resetAttempt(rollback);
-          setPenaltyFlash(null);
-        }
-        if (operation === "raceChallenge" && activeChallengeId?.startsWith("jest-invite-") && message.payload.error?.includes("not found")) {
+        if (
+          operation === "raceChallenge" &&
+          activeChallengeId?.startsWith("jest-invite-") &&
+          message.payload.error?.includes("not found")
+        ) {
           setError(null);
         } else if (operation === "raceGuess" && message.payload.error?.includes("no longer active")) {
           // The local ghost clock presents the terminal result as soon as this
           // request settles, then reconciles the authoritative outcome.
           setError(null);
         } else {
-          setError(message.payload.error === "RaceTo10.ERROR_LOCALE_MISMATCH" ? tr("RaceTo10.ERROR_LOCALE_MISMATCH") : (message.payload.error ?? tr("RaceTo10.ERROR_GENERIC")));
+          setError(
+            message.payload.error === "RaceTo10.ERROR_LOCALE_MISMATCH"
+              ? tr("RaceTo10.ERROR_LOCALE_MISMATCH")
+              : (message.payload.error ?? tr("RaceTo10.ERROR_GENERIC")),
+          );
         }
-        if (operation === "raceBlock" || operation === "raceReport") safetyTargetRef.current = null;
+        if (operation === "raceBlock" || operation === "raceReport") setSafetyTargetUserId(null);
         if (operation === "raceStart") {
           setRun(null);
           if (closeAfterStartRef.current) {
@@ -378,7 +382,7 @@ export function RaceTo10Game({
           analytics("race_inbox_viewed", {resultCount: inbox.items.length});
         } else if (operation === "raceBlock") {
           /** Provides target user id behavior. */
-          const targetUserId = safetyTargetRef.current;
+          const targetUserId = safetyTargetUserId;
           if (
             !targetUserId ||
             typeof message.payload.data !== "object" ||
@@ -393,7 +397,7 @@ export function RaceTo10Game({
             throw new Error("Invalid block response");
           setInboxItems((items) => items.filter((item) => item.opponentUserId !== targetUserId));
           setSafetyNotice(tr("RaceTo10.BLOCK_SUCCESS"));
-          safetyTargetRef.current = null;
+          setSafetyTargetUserId(null);
         } else if (operation === "raceReport") {
           if (
             typeof message.payload.data !== "object" ||
@@ -407,7 +411,7 @@ export function RaceTo10Game({
           )
             throw new Error("Invalid report response");
           setSafetyNotice(tr("RaceTo10.REPORT_SUCCESS"));
-          safetyTargetRef.current = null;
+          setSafetyTargetUserId(null);
         } else if (operation === "raceChallenge") {
           /** Provides preview behavior. */
           const preview = RaceChallengePreviewSchema.parse(message.payload.data);
@@ -428,7 +432,8 @@ export function RaceTo10Game({
         } else if (operation === "raceAbandon") {
           /** Provides abandoned behavior. */
           const abandoned = AbandonRaceRunResponseSchema.parse(message.payload.data);
-          if (abandoned.run.status !== "abandoned" || abandoned.result !== null) throw new Error("Invalid abandon response");
+          if (abandoned.run.status !== "abandoned" || abandoned.result !== null)
+            throw new Error("Invalid abandon response");
           clearActiveRace(ownerId);
           closeAfterStartRef.current = false;
           setCloseAfterStart(false);
@@ -438,35 +443,18 @@ export function RaceTo10Game({
         } else if (operation === "raceGuess") {
           /** Provides result behavior. */
           const result = SubmitRaceGuessResponseSchema.parse(message.payload.data);
-          /** Provides previous riddle behavior. */
-          const previousRiddle = guessRollbackRef.current?.currentRiddle?.riddleId ?? run?.currentRiddle?.riddleId;
+          /** Provides confirmation behavior. */
+          const confirmation = play.confirmGuess(result, run, raceGuesses, currentLetters);
           setRaceGuessAwaitingOutcome(result.run.status !== "active");
           updateRun(result.run);
           if (result.autoSkipped) setPenaltyFlash(tr("RaceTo10.SKIP_PENALTY"));
-          if (previousRiddle !== result.run.currentRiddle?.riddleId) {
-            if (guessProjectedNextRef.current !== result.run.currentRiddle?.riddleId) resetAttempt(result.run);
-          } else {
-            /** Whether this response replaces feedback already projected before the host round trip. */
-            const replacesPreview = previewedGuessRef.current;
-            setRaceGuesses((guesses) => [
-              ...(replacesPreview ? guesses.slice(0, -1) : guesses),
-              {guess: submittedGuessRef.current ?? currentLetters, feedback: result.feedback.map(({status}) => status)},
-            ]);
-            if (!replacesPreview) {
-              setCurrentLetters(createRaceAttempt(result.run.currentRiddle));
-              setActiveSlotIndex(findFirstEditableRaceSlot(result.run.currentRiddle));
-            }
-          }
-          previewedGuessRef.current = false;
-          submittedGuessRef.current = null;
-          guessRollbackRef.current = null;
-          guessHistoryRollbackRef.current = null;
-          guessProjectedNextRef.current = null;
+          if (confirmation.guesses) setRaceGuesses(confirmation.guesses);
+          if (confirmation.resetAttempt) resetAttempt(result.run);
           setFeedback(result.isCorrect ? "correct" : "incorrect");
         } else if (operation === "raceHint") {
           /** Provides result behavior. */
           const result = RequestRaceHintResponseSchema.parse(message.payload.data);
-          hintRollbackRef.current = null;
+          play.confirmPaid("raceHint");
           updateRun(result.run);
           setCurrentLetters((letters) => {
             /** Provides next behavior. */
@@ -480,7 +468,7 @@ export function RaceTo10Game({
         } else if (operation === "raceSkip") {
           /** Provides result behavior. */
           const result = SkipRaceRiddleResponseSchema.parse(message.payload.data);
-          skipRollbackRef.current = null;
+          play.confirmPaid("raceSkip");
           updateRun(result.run);
           resetAttempt(result.run);
           setPenaltyFlash(tr("RaceTo10.SKIP_PENALTY"));
@@ -489,7 +477,9 @@ export function RaceTo10Game({
           /** Confirmed outcome replacing any immediate deterministic projection. */
           const result = RaceOutcomeSchema.parse(message.payload.data);
           setOutcome(result);
-          setRun((current) => current && current.runId === result.runId ? applyRaceOutcome(current, result) : current);
+          setRun((current) =>
+            current && current.runId === result.runId ? applyRaceOutcome(current, result) : current,
+          );
           setReceivedAtMs(Date.now());
           setStage("result");
           analytics("race_completed", {
@@ -533,36 +523,7 @@ export function RaceTo10Game({
           }
         }
       } catch {
-        if (operation === "raceGuess" && previewedGuessRef.current) {
-          const priorGuesses = guessHistoryRollbackRef.current;
-          setRaceGuesses((guesses) => priorGuesses ?? guesses.slice(0, -1));
-          guessHistoryRollbackRef.current = null;
-          guessProjectedNextRef.current = null;
-          if (guessRollbackRef.current) updateRun(guessRollbackRef.current);
-          guessRollbackRef.current = null;
-          if (submittedGuessRef.current) setCurrentLetters(submittedGuessRef.current);
-          submittedGuessRef.current = null;
-          setFeedback(null);
-          previewedGuessRef.current = false;
-        }
-        if (operation === "raceSkip" && skipRollbackRef.current) {
-          /** Optimistic run snapshot restored when a skip response is invalid. */
-          const rollback = skipRollbackRef.current;
-          skipRollbackRef.current = null;
-          setRun(rollback);
-          setReceivedAtMs(Date.now());
-          resetAttempt(rollback);
-          setPenaltyFlash(null);
-        }
-        if (operation === "raceHint" && hintRollbackRef.current) {
-          /** Optimistic run snapshot restored when a hint response is invalid. */
-          const rollback = hintRollbackRef.current;
-          hintRollbackRef.current = null;
-          setRun(rollback);
-          setReceivedAtMs(Date.now());
-          resetAttempt(rollback);
-          setPenaltyFlash(null);
-        }
+        rollbackProjection(operation);
         setError(tr("RaceTo10.ERROR_INVALID_RESPONSE"));
       } finally {
         finishOperation(operation);
@@ -570,10 +531,37 @@ export function RaceTo10Game({
     };
     window.addEventListener(HOST_TO_GAME_EVENT, handle);
     return () => window.removeEventListener(HOST_TO_GAME_EVENT, handle);
-  }, [activeChallengeId, activeSlotIndex, analytics, currentLetters, finishOperation, initialCategories.length, locale, onClose, ownerId, referralSharing, resetAttempt, run?.currentRiddle?.riddleId, send, setRaceGuessAwaitingOutcome, sharePublishedChallenge, updateRun]);
+  }, [
+    activeChallengeId,
+    activeSlotIndex,
+    analytics,
+    currentLetters,
+    raceGuesses,
+    play,
+    rollbackProjection,
+    finishOperation,
+    initialCategories.length,
+    locale,
+    onClose,
+    ownerId,
+    referralSharing,
+    resetAttempt,
+    run?.currentRiddle?.riddleId,
+    safetyTargetUserId,
+    send,
+    setRaceGuessAwaitingOutcome,
+    sharePublishedChallenge,
+    updateRun,
+  ]);
 
   useEffect(() => {
-    if (stage !== "challenge" || !activeChallengeId?.startsWith("jest-invite-") || challenge || pending === "raceChallenge") return;
+    if (
+      stage !== "challenge" ||
+      !activeChallengeId?.startsWith("jest-invite-") ||
+      challenge ||
+      pending === "raceChallenge"
+    )
+      return;
     /** Retry timer while the creator records the invitation's time to beat. */
     const timer = window.setTimeout(() => {
       send("raceChallenge", "game:getRaceChallenge", {challengeId: activeChallengeId, locale});
@@ -597,7 +585,14 @@ export function RaceTo10Game({
     return () => window.clearInterval(progressTimer);
   }, [run, stage]);
 
-  useRaceClockEffects(stage, countdown, closeAfterStart || !countdownReady ? null : run, setStage, setCountdown, setTick);
+  useRaceClockEffects(
+    stage,
+    countdown,
+    closeAfterStart || !countdownReady ? null : run,
+    setStage,
+    setCountdown,
+    setTick,
+  );
 
   useRaceGameplayFit({
     active: stage === "racing",
@@ -607,21 +602,19 @@ export function RaceTo10Game({
   });
 
   useRaceFeedbackTimers(penaltyFlash, feedback, setPenaltyFlash, setFeedback);
-
   /** Authoritative adjusted elapsed time advanced locally since the last response. */
   const adjustedNow = getAdjustedRaceTime(run, receivedAtMs);
 
   useEffect(() => {
     if (stage !== "racing" || !run || outcome) return;
     // A mutation already in flight may still establish a last-moment win.
-    if (run.status === "active" && pending) return;
     /** Immediate result determined entirely by the latest authoritative run and shared clock. */
-    const projected = projectRaceOutcome(run, adjustedNow);
+    const projected = play.projectOutcome(run, adjustedNow);
     if (!projected) return;
     setError(null);
     setOutcome(projected);
     setStage("result");
-  }, [adjustedNow, outcome, pending, run, stage]);
+  }, [adjustedNow, outcome, pending, play, run, stage]);
 
   useEffect(() => {
     if (stage !== "result" || !run || finalScreenNotifiedRunRef.current === run.runId) return;
@@ -630,23 +623,22 @@ export function RaceTo10Game({
   }, [run, send, stage]);
 
   useEffect(() => {
-    if (!publishRequested || published || pending || !referralSharing || !run || run.status !== "completed") return;
+    if (!publishRequested || published || !play.canPublish(run) || !referralSharing || !run) return;
     shareAfterPublishRef.current = true;
     send("racePublish", "game:publishRace", {runId: run.runId});
-  }, [pending, publishRequested, published, referralSharing, run, send]);
+  }, [pending, play, publishRequested, published, referralSharing, run, send]);
 
   useActiveRacePersistence(run, ownerId);
   /** Opponent score replayed against the adjusted race clock. */
   const ghostCorrect = useMemo(() => getGhostCorrectCount(run?.opponent, adjustedNow), [adjustedNow, run?.opponent]);
   /** Best server-scored feedback seen for each keyboard letter. */
   const letterStates = useMemo(() => getRaceLetterStates(raceGuesses), [raceGuesses]);
-
   /** Starts an authoritative run and displays its synchronized countdown. */
   const begin = (
     categoryId: RaceCategoryId,
     startContext?: {
       /** Stores challenge id. */
-      challengeId?: string; /** Stores rivalry challenge id. */
+      challengeId?: string;
       /** Stores rivalry challenge id. */
       rivalryChallengeId?: string;
     },
@@ -662,37 +654,36 @@ export function RaceTo10Game({
     setLoadingProgress(0);
     setCountdownReady(false);
     setStage("countdown");
-    send("raceStart", "game:startRace", challengeIdForStart ? {locale, challengeId: challengeIdForStart, includeEvaluation: true} : {locale, categoryId, includeEvaluation: true, ...(rivalryIdForStart ? {rivalryChallengeId: rivalryIdForStart} : {})});
+    send(
+      "raceStart",
+      "game:startRace",
+      challengeIdForStart
+        ? {locale, challengeId: challengeIdForStart, includeEvaluation: true}
+        : {
+            locale,
+            categoryId,
+            includeEvaluation: true,
+            ...(rivalryIdForStart ? {rivalryChallengeId: rivalryIdForStart} : {}),
+          },
+    );
   };
   /** Submits the complete current answer attempt to the server. */
   const submit = () => {
-    if (!run?.currentRiddle || currentLetters.length !== run.currentRiddle.answerLength || currentLetters.some((letter) => !letter) || pending) return;
-    if (run.currentRiddle.evaluation) {
-      /** The scored used by the current operation. */
-      const scored = computeFeedback(currentLetters.join(""), run.currentRiddle.evaluation.answer);
-      previewedGuessRef.current = true;
-      submittedGuessRef.current = [...currentLetters];
-      setRaceGuesses((guesses) => [...guesses, {guess: [...currentLetters], feedback: scored}]);
-      setCurrentLetters(createRaceAttempt(run.currentRiddle));
-      setActiveSlotIndex(findFirstEditableRaceSlot(run.currentRiddle));
-      setFeedback(scored.every((status) => status === "green") ? "correct" : "incorrect");
-      if (scored.every((status) => status === "green")) {
-        const projected = projectInstantCorrectGuess(run);
-        if (projected) {
-          guessRollbackRef.current = run;
-          guessHistoryRollbackRef.current = raceGuesses;
-          guessProjectedNextRef.current = projected.currentRiddle?.riddleId ?? null;
-          const elapsedSinceReceipt = Math.max(0, Date.now() - receivedAtMs);
-          updateRun({
-            ...projected,
-            wallElapsedMs: run.wallElapsedMs + elapsedSinceReceipt,
-            adjustedElapsedMs: getAdjustedRaceTime(run, receivedAtMs),
-          });
-          setCurrentLetters(createRaceAttempt(projected.currentRiddle));
-          setActiveSlotIndex(findFirstEditableRaceSlot(projected.currentRiddle));
-          setRaceGuesses([]);
-        }
-      }
+    if (
+      !run?.currentRiddle ||
+      currentLetters.length !== run.currentRiddle.answerLength ||
+      currentLetters.some((letter) => !letter) ||
+      pending
+    )
+      return;
+    /** Provides projection behavior. */
+    const projection = play.projectGuess(run, currentLetters, raceGuesses, receivedAtMs);
+    if (projection) {
+      setRaceGuesses(projection.guesses);
+      setCurrentLetters(projection.letters);
+      setActiveSlotIndex(projection.slot);
+      setFeedback(projection.feedback);
+      if (projection.run) updateRun(projection.run);
     }
     send("raceGuess", "game:submitRaceGuess", {
       runId: run.runId,
@@ -705,9 +696,8 @@ export function RaceTo10Game({
   const requestHint = () => {
     if (!run?.currentRiddle || pending) return;
     /** Hint projected entirely from the deck downloaded before the countdown. */
-    const projected = projectInstantRaceHint(run);
+    const projected = play.projectPaid("raceHint", run);
     if (projected) {
-      hintRollbackRef.current = run;
       setRun(projected);
       setReceivedAtMs(Date.now());
       setCurrentLetters(createRaceAttempt(projected.currentRiddle));
@@ -724,15 +714,18 @@ export function RaceTo10Game({
   const skip = () => {
     if (!run?.currentRiddle || pending) return;
     /** Next riddle projected entirely from the deck downloaded before the countdown. */
-    const projected = projectInstantRaceSkip(run);
+    const projected = play.projectPaid("raceSkip", run);
     if (projected) {
-      skipRollbackRef.current = run;
       setRun(projected);
       setReceivedAtMs(Date.now());
       resetAttempt(projected);
       setPenaltyFlash(tr("RaceTo10.SKIP_PENALTY"));
     }
-    send("raceSkip", "game:skipRaceRiddle", {runId: run.runId, riddleId: run.currentRiddle.riddleId, includeEvaluation: true});
+    send("raceSkip", "game:skipRaceRiddle", {
+      runId: run.runId,
+      riddleId: run.currentRiddle.riddleId,
+      includeEvaluation: true,
+    });
   };
   /** Selects an editable answer position. */
   const selectSlot = (index: number) => {
@@ -743,7 +736,7 @@ export function RaceTo10Game({
   const typeLetter = (letter: string) => {
     /** Current authoritative riddle accepting the letter. */
     const riddle = run?.currentRiddle;
-    if (!riddle || (pending && !previewedGuessRef.current)) return;
+    if (!riddle || (pending && !play.typingWhilePending)) return;
     /** Input state produced by the pure multiplayer editing rules. */
     const nextState = insertRaceLetter(riddle, {letters: currentLetters, activeSlotIndex}, letter);
     if (nextState.letters === currentLetters) return;
@@ -754,7 +747,7 @@ export function RaceTo10Game({
   const typeText = (text: string) => {
     /** Provides riddle behavior. */
     const riddle = run?.currentRiddle;
-    if (!riddle || (pending && !previewedGuessRef.current)) return;
+    if (!riddle || (pending && !play.typingWhilePending)) return;
     /** Provides next state behavior. */
     const nextState = insertRaceText(riddle, {letters: currentLetters, activeSlotIndex}, text);
     if (nextState.letters === currentLetters) return;
@@ -765,7 +758,7 @@ export function RaceTo10Game({
   const backspace = () => {
     /** Current authoritative riddle accepting deletion. */
     const riddle = run?.currentRiddle;
-    if (!riddle || (pending && !previewedGuessRef.current)) return;
+    if (!riddle || (pending && !play.typingWhilePending)) return;
     /** Input state produced by the pure multiplayer deletion rules. */
     const nextState = deleteRaceLetter(riddle, {letters: currentLetters, activeSlotIndex});
     if (nextState.letters === currentLetters) return;
@@ -774,12 +767,11 @@ export function RaceTo10Game({
   };
 
   useRaceGameplayKeyboard({
-    active: stage === "racing" && !quitConfirmationOpen && (!pending || previewedGuessRef.current),
+    active: stage === "racing" && !quitConfirmationOpen && (!pending || play.typingWhilePending),
     onLetter: typeLetter,
     onBackspace: backspace,
     onSubmit: submit,
   });
-
   /** Publishes a completed creator run as a shareable challenge. */
   const publish = () => {
     if (!referralSharing || !run || published || publishRequested) return;
@@ -825,14 +817,14 @@ export function RaceTo10Game({
   /** Immediately blocks a linked rival through the authenticated host boundary. */
   const blockInboxRival = (item: RaceInboxItem) => {
     if (!item.opponentUserId || pending) return;
-    safetyTargetRef.current = item.opponentUserId;
+    setSafetyTargetUserId(item.opponentUserId);
     setSafetyNotice(null);
     send("raceBlock", "game:blockRival", {targetUserId: item.opponentUserId});
   };
   /** Sends one categorized report through the authenticated host boundary. */
   const reportInboxRival = (item: RaceInboxItem, category: import("@qwordly/core/race").SocialReportCategory) => {
     if (!item.opponentUserId || pending) return;
-    safetyTargetRef.current = item.opponentUserId;
+    setSafetyTargetUserId(item.opponentUserId);
     setSafetyNotice(null);
     send("raceReport", "game:reportRival", {targetUserId: item.opponentUserId, category});
   };
@@ -841,7 +833,8 @@ export function RaceTo10Game({
     if (stage === "result" && run) send("raceOutcome", "game:getRaceOutcome", {runId: run.runId});
     else if (stage === "tournaments") showTournaments();
     else if (stage === "inbox") send("raceInbox", "game:listRaceInbox", {limit: 20});
-    else if (activeChallengeId) send("raceChallenge", "game:getRaceChallenge", {challengeId: activeChallengeId, locale});
+    else if (activeChallengeId)
+      send("raceChallenge", "game:getRaceChallenge", {challengeId: activeChallengeId, locale});
     else send("raceCategories", "game:listRaceCategories", {locale});
   };
   /** Provides run native social behavior. */
@@ -851,7 +844,8 @@ export function RaceTo10Game({
     setError(null);
     try {
       /** Provides result behavior. */
-      const result = kind === "context" ? await nativeSocial.chooseContext() : await nativeSocial.matchPlayer(`race10_v1:${locale}`);
+      const result =
+        kind === "context" ? await nativeSocial.chooseContext() : await nativeSocial.matchPlayer(`race10_v1:${locale}`);
       if (result.status !== "success" && result.status !== "cancelled") {
         setError(tr("RaceTo10.ERROR_GENERIC"));
       }
@@ -889,7 +883,7 @@ export function RaceTo10Game({
         coins,
         error,
         safetyNotice,
-        safetyTargetUserId: safetyTargetRef.current,
+        safetyTargetUserId: safetyTargetUserId,
         categories,
         inboxItems,
         tournament,
@@ -913,7 +907,7 @@ export function RaceTo10Game({
         letterStates,
         quitConfirmationOpen,
         raceGuessLoading,
-        allowTypingWhilePending: previewedGuessRef.current,
+        allowTypingWhilePending: play.typingWhilePending,
         closeAfterStart,
         published,
         dialogRef,
@@ -949,7 +943,9 @@ export function RaceTo10Game({
       onRematch={resetForNewRace}
       onDismissQuit={dismissQuitConfirmation}
       onChooseNativeContext={nativeSocial ? () => void runNativeSocial("context") : undefined}
-      onMatchNativePlayer={matchmaking ? () => void findOfflineMatch() : nativeSocial ? () => void runNativeSocial("match") : undefined}
+      onMatchNativePlayer={
+        matchmaking ? () => void findOfflineMatch() : nativeSocial ? () => void runNativeSocial("match") : undefined
+      }
       onAbandon={() => run && send("raceAbandon", "game:abandonRace", {runId: run.runId})}
     />
   );
