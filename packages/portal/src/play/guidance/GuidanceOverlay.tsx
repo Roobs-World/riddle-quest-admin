@@ -72,6 +72,12 @@ export function GuidanceOverlay({
   const guidanceActive = onboardingStep !== null || Boolean(activeTooltip);
 
   useEffect(() => {
+    if (modal === "victory" && (state.lastRewards?.newlyUnlockedAchievementIds.length ?? 0) > 0) {
+      safeBrowserStorageSet("local", createGuidanceStorageKey("tooltipSeen:achievementEarned", userId), "seen");
+    }
+  }, [modal, state.lastRewards, userId]);
+
+  useEffect(() => {
     const onVictoryDismissed = () => setCompletionPopupsPending(true);
     window.addEventListener("riddle-quest:victory-dismissed", onVictoryDismissed);
     return () => window.removeEventListener("riddle-quest:victory-dismissed", onVictoryDismissed);

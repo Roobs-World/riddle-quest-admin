@@ -63,8 +63,8 @@ export function createVictoryFanfareSteps(reward: GameSessionState["lastRewards"
     getRankForLevel(Math.max(1, victoryLevel - 1)).id !== getRankForLevel(victoryLevel).id;
 
   return [
-    ...reward.newlyUnlockedAchievementIds.map((achievementId): FanfareStep => ({kind: "achievement", achievementId})),
     {kind: "victory"},
+    ...reward.newlyUnlockedAchievementIds.map((achievementId): FanfareStep => ({kind: "achievement", achievementId})),
     ...(reward.leveledUp ? ([{kind: "level"}] as FanfareStep[]) : []),
     ...(reachedNewRank ? ([{kind: "rank"}] as FanfareStep[]) : []),
   ];

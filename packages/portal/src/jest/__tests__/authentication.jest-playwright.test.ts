@@ -706,7 +706,9 @@ describeBrowser("Jest authentication integration", () => {
     }, scenario === "milestone-failure");
     expect((await getHarnessState(page)).overlayOptions).toEqual([]);
     await page.locator('.modal-victory').waitFor();
+    const fanfareSteps: string[] = [];
     for (let step = 0; step < 6 && await page.locator('.modal-victory').count(); step += 1) {
+      fanfareSteps.push(await page.locator('.modal-victory').innerText());
       expect(await page.locator('.jest-registration-dialog').count()).toBe(0);
       if (await page.getByRole('button', {name: /tap the chest/i}).isVisible()) {
         await page.getByRole('button', {name: /tap the chest/i}).click();
@@ -714,9 +716,14 @@ describeBrowser("Jest authentication integration", () => {
       await page.waitForFunction(() => !document.querySelector<HTMLButtonElement>('.reward-continue')?.disabled);
       await page.locator('.reward-continue').click();
     }
-    await page.locator('.tooltip-backdrop').waitFor({timeout: 3_000});
-    for (let step = 0; step < 5 && await page.locator('.tooltip-backdrop').count(); step += 1) {
+    expect(fanfareSteps[0]).toContain("NICE JOB!");
+    expect(fanfareSteps.filter(value => value.includes("NICE JOB!"))).toHaveLength(1);
+    expect(fanfareSteps.some(value => value.includes("Achievement Unlocked!"))).toBe(true);
+    for (let step = 0; step < 5; step += 1) {
+      await page.waitForFunction(() => Boolean(document.querySelector('.tooltip-backdrop, .jest-registration-dialog')));
+      if (await page.locator('.jest-registration-dialog').count()) break;
       expect(await page.locator('.jest-registration-dialog').count()).toBe(0);
+      expect(await page.locator("[data-tooltip-id='achievementEarned']").count()).toBe(0);
       await page.locator('.tooltip-backdrop').getByRole('button', {name: /^got it$/i}).click();
     }
     await page.locator('.tooltip-backdrop').waitFor({state: 'detached'});
