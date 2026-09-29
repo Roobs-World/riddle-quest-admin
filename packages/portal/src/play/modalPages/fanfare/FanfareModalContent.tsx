@@ -23,8 +23,6 @@ type SharedFanfareProps = {
 
 /** Props for the victory fanfare content. */
 export type VictoryFanfareContentProps = SharedFanfareProps & {
-  /** The synchronizing used by the current operation. */
-  synchronizing?: boolean;
   /** Stores active step. */
   activeStep: FanfareStep | undefined;
   /** Stores state. */
@@ -76,7 +74,6 @@ export function VictoryFanfareContent({
   onBalancePreview,
   onCoinCollected,
   state,
-  synchronizing = false,
   stepCount,
   stepIndex,
 }: VictoryFanfareContentProps) {
@@ -97,9 +94,9 @@ export function VictoryFanfareContent({
       {!activeStep ? (
         <>
           <strong className="fanfare-title" aria-live="polite">{tr("VictoryModal.YOU_WON_TITLE")}</strong>
-          {state.riddle?.gameMode === "classic" && state.lastOutcome?.kind === "win" && (
-            <button className="play-primary reward-continue" disabled={synchronizing || !state.completionAcknowledged} onClick={onAdvance}>
-              {tr(synchronizing || !state.completionAcknowledged ? "VictoryModal.SYNCING_PROGRESS" : "VictoryModal.NEXT_LEVEL_BUTTON")}
+          {state.lastOutcome?.kind === "win" && (
+            <button className="play-primary reward-continue" onClick={onAdvance}>
+              {tr(state.riddle?.gameMode === "classic" ? "VictoryModal.NEXT_LEVEL_BUTTON" : "GameScreenAlerts.NEXT_BUTTON")}
             </button>
           )}
         </>
@@ -170,10 +167,9 @@ export function VictoryFanfareContent({
           <small className="sequence-progress">
             {stepIndex + 1}/{displayedStepCount}
           </small>
-          <button className="play-primary reward-continue" disabled={coinCollectionPending ||
-            ((synchronizing || !state.completionAcknowledged) && stepIndex + 1 === displayedStepCount)} onClick={onAdvance}>
+          <button className="play-primary reward-continue" disabled={coinCollectionPending} onClick={onAdvance}>
             {stepIndex + 1 < displayedStepCount ? tr("GameScreenAlerts.NEXT_BUTTON") :
-              tr(synchronizing || !state.completionAcknowledged ? "VictoryModal.SYNCING_PROGRESS" : "VictoryModal.NEXT_LEVEL_BUTTON")}
+              tr("VictoryModal.NEXT_LEVEL_BUTTON")}
           </button>
         </>
       ) : null}

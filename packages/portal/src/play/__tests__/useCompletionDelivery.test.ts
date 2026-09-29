@@ -10,6 +10,7 @@ const mockRefs: Array<{
   /** Stores current. */
   current: unknown;
 }> = [];
+let mockRefIndex = 0;
 /** Provides mock set retry signal behavior. */
 const mockSetRetrySignal = jest.fn();
 
@@ -17,9 +18,9 @@ jest.mock("react", () => ({
   useCallback: (callback: unknown) => callback,
   useEffect: (effect: Effect) => mockEffects.push(effect),
   useRef: (initialValue: unknown) => {
-    /** Provides ref behavior. */
-    const ref = {current: initialValue};
-    mockRefs.push(ref);
+    const ref = mockRefs[mockRefIndex] ?? {current: initialValue};
+    mockRefs[mockRefIndex] = ref;
+    mockRefIndex += 1;
     return ref;
   },
   useState: () => [0, mockSetRetrySignal],
@@ -34,6 +35,7 @@ describe("useCompletionDelivery", () => {
     jest.clearAllMocks();
     mockEffects.length = 0;
     mockRefs.length = 0;
+    mockRefIndex = 0;
     /** Provides timer id behavior. */
     let timerId = 0;
     Object.defineProperty(globalThis, "window", {
@@ -82,8 +84,32 @@ describe("useCompletionDelivery", () => {
     expect(window.setTimeout).toHaveBeenNthCalledWith(1, expect.any(Function), 1_000);
     expect(window.setTimeout).toHaveBeenNthCalledWith(2, expect.any(Function), 2_000);
 
-    handleResult(true);
+    handleResult(true, "complete-request-stable");
     expect(dispatch).toHaveBeenCalledWith({type: "completionAcknowledged"});
     expect(window.clearTimeout).toHaveBeenLastCalledWith(2);
+  });
+
+  it("keeps retrying after play advances and ignores a late acknowledgement for the new riddle", () => {
+    const postToHost = jest.fn<(message: GameToHostMessage) => void>();
+    const dispatch = jest.fn();
+    useCompletionDelivery({
+      outcome: {
+        id: "daily-win", kind: "win", riddleId: "daily-1", gameMode: "challenge",
+        sessionToken: "00000000-0000-4000-8000-000000000001", attempts: 1, isCorrect: true,
+      },
+      dispatch,
+      postToHost,
+    });
+    mockEffects[0]();
+    mockRefIndex = 0;
+    mockEffects.length = 0;
+    const handleLateResult = useCompletionDelivery({outcome: null, dispatch, postToHost});
+    mockEffects[0]();
+    const scheduleRetry = (window.setTimeout as jest.Mock).mock.calls[0][0] as () => void;
+    scheduleRetry();
+    mockEffects[0]();
+    expect(postToHost).toHaveBeenCalledTimes(2);
+    expect(handleLateResult(true, "complete-request-stable")).toBe(false);
+    expect(dispatch).not.toHaveBeenCalled();
   });
 });

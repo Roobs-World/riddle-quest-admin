@@ -69,9 +69,11 @@ describe("fanfare modal content", () => {
     );
     expect(victoryWithoutSharing).toContain("reward-details");
     expect(victoryWithoutSharing).not.toContain("Invite a friend");
-    expect(renderToString(
+    const pendingVictory = renderToString(
       <VictoryFanfareContent {...sharedProps} state={{...state, completionAcknowledged: false}} activeStep={{kind: "victory"}} />,
-    )).toContain('disabled=""');
+    );
+    expect(pendingVictory).toContain("Next Level");
+    expect(pendingVictory).not.toContain('disabled=""');
     expect(
       renderToString(
         <ReferralSharingProvider capability={referralSharing}>

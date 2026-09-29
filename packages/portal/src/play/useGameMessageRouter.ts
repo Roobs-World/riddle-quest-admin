@@ -60,7 +60,7 @@ export function useGameMessageRouter({
   /** Stores request riddle. */
   requestRiddle: () => void;
   /** Stores on completion result. */
-  onCompletionResult?: (ok: boolean) => void;
+  onCompletionResult?: (ok: boolean, requestId?: string) => boolean;
   /** Handles an optimistic guess before the default single-response reducer path. */
   onGuessResult?: (message: Extract<HostToGameMessage, {
     /** Correlated result discriminator. */ type: "host:operationResult";
@@ -100,7 +100,10 @@ export function useGameMessageRouter({
               dispatch({type: "rejectCoinSpend", requestId: message.requestId});
             if (message.payload.operation === "leaderboard") dispatch({type: "leaderboardLoadFailed"});
             if (message.payload.operation === "guess") dispatch({type: "guessFailed"});
-            if (message.payload.operation === "completeGame") onCompletionResult?.(false);
+            if (message.payload.operation === "completeGame") {
+              onCompletionResult?.(false, message.requestId);
+              return;
+            }
             dispatch({type: "setNotice", notice: message.payload.error ?? "ErrorMessages.GENERIC_UNEXPECTED_ERROR"});
             return;
           }
@@ -218,9 +221,10 @@ export function useGameMessageRouter({
           if (message.payload.operation === "completeGame") {
             /** Provides reward behavior. */
             const reward = getNumber(data.coinsEarned);
-            /** Completes d outcome. */
-            const completedOutcome = stateRef.current.lastOutcome;
-            dispatch({
+            /** Whether this reward still belongs to the visible riddle. */
+            const currentCompletion = onCompletionResult?.(true, message.requestId) ?? true;
+            const completedOutcome = currentCompletion ? stateRef.current.lastOutcome : null;
+            if (currentCompletion) dispatch({
               type: "completionReward",
               reward: {
                 coinsEarned: reward ?? 0,
@@ -236,8 +240,7 @@ export function useGameMessageRouter({
                 newlyUnlockedAchievementIds: getStringArray(data.newlyUnlockedAchievementIds),
               },
             });
-            onCompletionResult?.(true);
-            if (reward && stateRef.current.profile) {
+            if (currentCompletion && reward && stateRef.current.profile) {
               dispatch({type: "setNotice", notice: tr("GameMessages.COINS_EARNED") + reward});
             }
             if (completedOutcome?.kind === "loss") requestRiddle();

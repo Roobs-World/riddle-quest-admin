@@ -16,68 +16,70 @@ export function useCompletionDelivery({
   /** Unacknowledged authoritative terminal outcome. */ outcome: GameSessionState["lastOutcome"];
   /** Game-session reducer dispatcher. */ dispatch: Dispatch<GameSessionAction>;
   /** Sends a validated command to the host. */ postToHost: (message: GameToHostMessage) => void;
-}): (ok: boolean) => void {
+}): (ok: boolean, requestId?: string) => boolean {
   /** Completes d ids ref. */
   const completedIdsRef = useRef(new Set<string>());
   /** Provides delivery ref behavior. */
-  const deliveryRef = useRef<{
+  const deliveriesRef = useRef(new Map<string, {
     /** Stores outcome id. */
     outcomeId: string; /** Stores request id. */
     /** Stores request id. */
     requestId: string; /** Stores attempts. */
     /** Stores attempts. */
-    attempts: number; /** Stores timer. */
+    attempts: number; /** Stores outcome. */
+    outcome: NonNullable<GameSessionState["lastOutcome"]>; /** Stores timer. */
     /** Stores timer. */
     timer?: number;
-  } | null>(null);
+  }>());
+  const currentOutcomeRef = useRef(outcome);
+  currentOutcomeRef.current = outcome;
   /** Provides [retry signal, set retry signal] behavior. */
   const [retrySignal, setRetrySignal] = useState(0);
 
   /** Handles result. */
   const handleResult = useCallback(
-    (ok: boolean) => {
-      /** Provides delivery behavior. */
-      const delivery = deliveryRef.current;
-      if (!ok || !delivery) return;
+    (ok: boolean, requestId?: string): boolean => {
+      if (!ok || !requestId) return false;
+      const delivery = [...deliveriesRef.current.values()].find((entry) => entry.requestId === requestId);
+      if (!delivery) return false;
       if (delivery.timer !== undefined) window.clearTimeout(delivery.timer);
       completedIdsRef.current.add(delivery.outcomeId);
-      deliveryRef.current = null;
-      dispatch({type: "completionAcknowledged"});
+      deliveriesRef.current.delete(delivery.outcomeId);
+      const isCurrent = currentOutcomeRef.current?.id === delivery.outcomeId;
+      if (isCurrent) dispatch({type: "completionAcknowledged"});
+      return isCurrent;
     },
     [dispatch],
   );
 
   useEffect(() => {
-    if (!outcome || completedIdsRef.current.has(outcome.id)) return;
-    /** Provides delivery behavior. */
-    let delivery = deliveryRef.current;
-    if (!delivery || delivery.outcomeId !== outcome.id) {
-      if (delivery?.timer !== undefined) window.clearTimeout(delivery.timer);
-      delivery = {outcomeId: outcome.id, requestId: createRequestId("complete"), attempts: 0};
-      deliveryRef.current = delivery;
+    if (outcome && !completedIdsRef.current.has(outcome.id) && !deliveriesRef.current.has(outcome.id))
+      deliveriesRef.current.set(outcome.id, {
+        outcomeId: outcome.id, outcome, requestId: createRequestId("complete"), attempts: 0,
+      });
+    for (const delivery of deliveriesRef.current.values()) {
+      if (delivery.timer !== undefined) continue;
+      postToHost({
+        type: "game:completeGame",
+        requestId: delivery.requestId,
+        payload: {
+          riddleId: delivery.outcome.riddleId,
+          gameMode: delivery.outcome.gameMode,
+          sessionToken: delivery.outcome.sessionToken,
+        },
+      });
+      delivery.attempts += 1;
+      delivery.timer = window.setTimeout(() => {
+        delivery.timer = undefined;
+        setRetrySignal((signal) => signal + 1);
+      }, COMPLETION_RETRY_DELAYS[Math.min(delivery.attempts - 1, COMPLETION_RETRY_DELAYS.length - 1)]);
     }
-    postToHost({
-      type: "game:completeGame",
-      requestId: delivery.requestId,
-      payload: {
-        riddleId: outcome.riddleId,
-        gameMode: outcome.gameMode,
-        sessionToken: outcome.sessionToken,
-      },
-    });
-    delivery.attempts += 1;
-    if (delivery.timer !== undefined) window.clearTimeout(delivery.timer);
-    delivery.timer = window.setTimeout(
-      () => setRetrySignal((signal) => signal + 1),
-      COMPLETION_RETRY_DELAYS[Math.min(delivery.attempts - 1, COMPLETION_RETRY_DELAYS.length - 1)],
-    );
   }, [outcome, postToHost, retrySignal]);
 
   useEffect(
     () => () => {
-      /** Provides timer behavior. */
-      const timer = deliveryRef.current?.timer;
-      if (timer !== undefined) window.clearTimeout(timer);
+      for (const delivery of deliveriesRef.current.values())
+        if (delivery.timer !== undefined) window.clearTimeout(delivery.timer);
     },
     [],
   );

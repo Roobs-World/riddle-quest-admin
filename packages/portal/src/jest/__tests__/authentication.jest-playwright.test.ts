@@ -707,6 +707,7 @@ describeBrowser("Jest authentication integration", () => {
     }, scenario === "milestone-failure");
     expect((await getHarnessState(page)).overlayOptions).toEqual([]);
     await page.locator('.modal-victory').waitFor();
+    await page.getByRole('button', {name: /tap the chest/i}).waitFor();
     const fanfareSteps: string[] = [];
     for (let step = 0; step < 6 && await page.locator('.modal-victory').count(); step += 1) {
       fanfareSteps.push(await page.locator('.modal-victory').innerText());

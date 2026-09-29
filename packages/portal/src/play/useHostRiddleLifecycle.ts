@@ -94,7 +94,6 @@ export function useHostRiddleLifecycle({
   /** Latest classic progression index used by recovery. */
   const classicIndexRef = useRef(profile?.classicIndex);
   gameModeRef.current = gameMode;
-  classicIndexRef.current = profile?.classicIndex;
 
   /** Loads and delivers one correlated or automatic riddle. */
   const loadRiddle = useCallback(
@@ -111,6 +110,7 @@ export function useHostRiddleLifecycle({
       },
       requestId?: string,
     ): Promise<boolean> => {
+      if (input.classicIndex !== undefined) classicIndexRef.current = input.classicIndex;
       // Recovery calls may share one request. Correlated game requests must run
       // independently so every requestId receives its own response.
       if (!requestId && loadInFlightRef.current) return loadInFlightRef.current;

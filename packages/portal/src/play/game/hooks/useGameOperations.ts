@@ -258,8 +258,6 @@ export function useGameOperations({
     /** The next classic used by the current operation. */
     const nextClassic = current.gameMode === "classic" && current.lastOutcome?.kind === "win" &&
       current.riddle?.index !== undefined;
-    if (nextClassic && journalRef.current &&
-      current.riddle!.index! + 1 > journalRef.current.confirmedClassicIndex + 3) return;
     postToHost({
       type: "game:loadRiddle",
       requestId: createRequestId("load"),
@@ -807,9 +805,6 @@ export function useGameOperations({
 
   return {
     canSubmit,
-    bufferExhausted: pendingCount > 0 && state.gameMode === "classic" &&
-      state.lastOutcome?.kind === "win" && state.riddle?.index !== undefined &&
-      state.riddle.index + 1 > (journalRef.current?.confirmedClassicIndex ?? state.profile?.classicIndex ?? 1) + 3,
     submitGuess,
     handleQueuedGuessResult,
     acceptRiddleResult,

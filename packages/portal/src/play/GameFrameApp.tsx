@@ -193,7 +193,6 @@ export function GameFrameApp({
   } behavior. */
   const {
     canSubmit,
-    bufferExhausted,
     submitGuess,
     handleQueuedGuessResult,
     acceptRiddleResult,
@@ -400,7 +399,6 @@ export function GameFrameApp({
               onContinue={requestContinue}
               onPurchase={requestPurchase}
               onNext={requestRiddle}
-              synchronizing={bufferExhausted}
               onOpenModal={(modal) => dispatch({type: "openModal", modal})}
               onToggleMute={() => dispatch({type: "toggleMute"})}
               commerceAvailable={state.products.length > 0}

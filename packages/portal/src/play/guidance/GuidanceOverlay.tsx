@@ -78,10 +78,15 @@ export function GuidanceOverlay({
   }, [modal, state.lastRewards, userId]);
 
   useEffect(() => {
-    const onVictoryDismissed = () => setCompletionPopupsPending(true);
+    const onVictoryDismissed = () => {
+      // A reward may arrive after the player leaves the fanfare. Do not let its
+      // achievement guidance interrupt the next riddle.
+      safeBrowserStorageSet("local", createGuidanceStorageKey("tooltipSeen:achievementEarned", userId), "seen");
+      setCompletionPopupsPending(true);
+    };
     window.addEventListener("riddle-quest:victory-dismissed", onVictoryDismissed);
     return () => window.removeEventListener("riddle-quest:victory-dismissed", onVictoryDismissed);
-  }, []);
+  }, [userId]);
 
   useEffect(() => {
     if (sequenceName !== "profileTour" || modal === "profile") return;
