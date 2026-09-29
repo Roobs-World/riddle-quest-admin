@@ -2,7 +2,7 @@ import {useEffect, type Dispatch, type SetStateAction} from "react";
 import type {RaceRunView} from "@qwordly/core/race";
 import {trackEvent, trackScreen} from "../../../analytics/events";
 import {clearActiveRace, saveActiveRace} from "../logic/activeRaceStorage";
-import {getRaceCountdownStep} from "../logic/raceCountdown";
+import {getRaceCountdownStep, estimatedRaceServerNow, scheduledRaceCountdown} from "../logic/raceCountdown";
 import type {RaceStage} from "../RaceTo10View";
 
 /** Local-storage key used to remember the currently active race run. */
@@ -24,9 +24,26 @@ export const useRaceClockEffects = (
   setStage: Dispatch<SetStateAction<RaceStage>>,
   setCountdown: Dispatch<SetStateAction<number>>,
   setTick: Dispatch<SetStateAction<number>>,
+  receivedAtMs?: number,
+  onScheduledStart?: (serverNowMs: number) => void,
 ): void => {
   useEffect(() => {
     if (stage !== "countdown") return;
+    if (run?.startsAtMs !== undefined && run.serverNowMs !== undefined && receivedAtMs !== undefined) {
+      const synchronize = () => {
+        const serverNowMs = estimatedRaceServerNow(run.serverNowMs!, receivedAtMs, performance.now());
+        setCountdown(scheduledRaceCountdown(run.startsAtMs!, serverNowMs));
+        if (serverNowMs >= run.startsAtMs!) {
+          onScheduledStart?.(serverNowMs);
+          setStage("racing");
+        }
+      };
+      synchronize();
+      const timer = window.setInterval(synchronize, 50);
+      const visible = () => { if (document.visibilityState === "visible") synchronize(); };
+      document.addEventListener("visibilitychange", visible);
+      return () => { window.clearInterval(timer); document.removeEventListener("visibilitychange", visible); };
+    }
     /** Provides step behavior. */
     const step = getRaceCountdownStep(countdown, Boolean(run));
     if (step.kind === "wait") return;
@@ -36,7 +53,7 @@ export const useRaceClockEffects = (
       else setCountdown(step.nextValue);
     }, step.delayMs);
     return () => window.clearTimeout(timer);
-  }, [countdown, run, setCountdown, setStage, stage]);
+  }, [countdown, run, receivedAtMs, onScheduledStart, setCountdown, setStage, stage]);
 
   useEffect(() => {
     if (stage !== "racing") return;

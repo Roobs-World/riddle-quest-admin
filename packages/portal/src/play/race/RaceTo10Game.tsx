@@ -265,6 +265,13 @@ export function RaceTo10Game({
     setRun(next);
     setReceivedAtMs(performance.now());
   }, []);
+  /** Promotes the displayed scheduled run using the same server-clock anchor as countdown. */
+  const activateScheduledRun = useCallback((serverNowMs: number) => {
+    if (run?.status !== "scheduled" || run.startsAtMs === undefined) return;
+    const wallElapsedMs = Math.max(0, serverNowMs - run.startsAtMs);
+    updateRun({...run, status: "active", serverNowMs, wallElapsedMs,
+      adjustedElapsedMs: wallElapsedMs + run.totalPenaltyMs});
+  }, [run, updateRun]);
 
   useEffect(() => {
     /** Deferred request used to avoid issuing host messages during render. */
@@ -596,6 +603,8 @@ export function RaceTo10Game({
     setStage,
     setCountdown,
     setTick,
+    receivedAtMs,
+    activateScheduledRun,
   );
 
   useRaceGameplayFit({
