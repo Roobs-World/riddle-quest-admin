@@ -732,6 +732,30 @@ describeBrowser("Jest authentication integration", () => {
     await context.close();
   });
 
+  it("reports a guest Daily completion without opening registration", async () => {
+    const {context, page} = await openHarness(browser, {gameMode: "challenge"});
+    await enterRegisteredGame(page, /i speak without a mouth/i);
+    await page.locator(".game-mode-label").getByText(/daily/i).waitFor();
+    for (const letter of "ECHO") {
+      await page.locator(".keyboard").getByRole("button", {name: letter, exact: true}).click();
+    }
+    await page.locator(".game-input-actions").getByRole("button", {name: /submit/i}).click();
+    await page.locator(".modal-victory").waitFor();
+    for (let step = 0; step < 6 && await page.locator(".modal-victory").count(); step += 1) {
+      if (await page.getByRole("button", {name: /tap the chest/i}).isVisible()) {
+        await page.getByRole("button", {name: /tap the chest/i}).click();
+      }
+      await page.waitForFunction(() => !document.querySelector<HTMLButtonElement>(".reward-continue")?.disabled);
+      await page.locator(".reward-continue").click();
+    }
+    await page.locator(".tooltip-backdrop").waitFor({state: "detached"});
+    const state = await getHarnessState(page);
+    expect(state.calls.filter((call) => call === "sdk.markFirstMilestone")).toHaveLength(1);
+    expect(state.overlayOptions).toEqual([]);
+    expect(await page.locator(".jest-registration-dialog").count()).toBe(0);
+    await context.close();
+  });
+
   it("registers with a stable player id, re-signs identity, refreshes profile, and survives reload", async () => {
     /** Provides {context, page} behavior. */
     const {context, page} = await openHarness(browser);

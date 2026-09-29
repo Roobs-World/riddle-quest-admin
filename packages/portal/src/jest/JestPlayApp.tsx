@@ -51,8 +51,10 @@ import {useJestRegistration} from "./useJestRegistration";
 import {createHostedPlaySession} from "../play/HostedPlaySession";
 /** Provides jest play app behavior. */
 export function JestPlayApp() {
-  /** Counts confirmed guest wins in this play session for the registration cadence. */
+  /** Counts confirmed guest Classic wins in this play session for the registration cadence. */
   const guestWinsThisSessionRef = useRef(0);
+  /** Prevents concurrent completion callbacks from duplicating the first-milestone funnel event. */
+  const firstMilestoneFunnelRecordedRef = useRef(false);
   /** Provides locale behavior. */
   const locale = useLocale();
   /** Provides host services mode behavior. */
@@ -423,9 +425,9 @@ export function JestPlayApp() {
         winStreak: result.newWinStreak ?? current.winStreak,
         wins: current.wins + 1,
       }));
-      if (!session.player.registered) {
+      if (!session.player.registered && input.gameMode === "classic") {
         guestWinsThisSessionRef.current += 1;
-        if (shouldPromptGuestRegistration(session, guestWinsThisSessionRef.current)) {
+        if (shouldPromptGuestRegistration(session, input.gameMode, guestWinsThisSessionRef.current)) {
           openRegistrationPrompt("authoritative_win", true);
         }
       }
@@ -442,7 +444,10 @@ export function JestPlayApp() {
         return;
       }
       setSession((current) => (current ? {...current, preferences: recorded.value.preferences} : current));
-      if (recorded.value.milestoneMarked) trackFunnel("first_milestone_marked");
+      if (recorded.value.milestoneMarked && !firstMilestoneFunnelRecordedRef.current) {
+        firstMilestoneFunnelRecordedRef.current = true;
+        trackFunnel("first_milestone_marked");
+      }
     },
     [notificationOperationGate, openRegistrationPrompt, platform, session, trackFunnel],
   );

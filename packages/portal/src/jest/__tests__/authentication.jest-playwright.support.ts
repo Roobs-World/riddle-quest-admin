@@ -14,11 +14,11 @@ export const advanceToRegistration = async (page: Page) => {
 };
 
 /** Provides enter registered game behavior. */
-export const enterRegisteredGame = async (page: Page) => {
+export const enterRegisteredGame = async (page: Page, expectedRiddle = /what has keys/i) => {
   await page.getByRole("button", {name: /let's play/i}).waitFor({timeout: 15_000});
   await page.getByRole("button", {name: /let's play/i}).click();
   await page.getByRole("button", {name: /got it/i}).click();
-  await page.getByText(/what has keys/i).waitFor({timeout: 15_000});
+  await page.getByText(expectedRiddle).waitFor({timeout: 15_000});
   await page.waitForTimeout(500);
   for (let step = 0; step < 5; step += 1) {
     /** Provides tooltip button behavior. */

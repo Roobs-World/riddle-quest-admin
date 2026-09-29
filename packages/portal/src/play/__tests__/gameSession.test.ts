@@ -496,4 +496,17 @@ describe("game session reducer", () => {
     expect(reduce(ranked, {type: "authState", user, profile: {...profile, xp: 20}}).leaderboard)
       .toHaveLength(0);
   });
+
+  it("does not replay a daily achievement when its completion response arrives after the next riddle loads", () => {
+    const achievement = "daily_completed";
+    const profile = {
+      coins: 5, level: 1, xp: 10, winStreak: 0, gamesPlayed: 1, wins: 1,
+      achievements: [achievement], classicIndex: 0,
+    };
+    let state = reduce({...createInitialGameSession(), profile}, {type: "loadRiddle", riddle});
+    state = reduce(state, {type: "completionReward", reward: {
+      coinsEarned: 25, newlyUnlockedAchievementIds: [achievement],
+    }});
+    expect(state.lastRewards?.newlyUnlockedAchievementIds).toEqual([]);
+  });
 });

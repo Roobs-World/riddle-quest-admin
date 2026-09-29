@@ -482,13 +482,17 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
     case "profileUpdated":
       return {...state, profile: preservePendingCoins(state, action.profile), leaderboard: []};
     case "completionReward":
+      /** Keep server replayed unlocks from reopening an already-shown fanfare after loading another riddle. */
+      const authoritativeAchievementIds = action.reward.newlyUnlockedAchievementIds.filter(
+        (id) => !state.profile?.achievements.includes(id) || state.optimisticAchievementIds.includes(id),
+      );
       return {
         ...state,
         lastRewards: {
           ...action.reward,
           newlyUnlockedAchievementIds: [
             ...state.optimisticAchievementIds,
-            ...action.reward.newlyUnlockedAchievementIds.filter(id => !state.optimisticAchievementIds.includes(id)),
+            ...authoritativeAchievementIds.filter(id => !state.optimisticAchievementIds.includes(id)),
           ],
         },
         profile: state.profile

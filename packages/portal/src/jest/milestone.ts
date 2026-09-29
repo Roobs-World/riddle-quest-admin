@@ -11,8 +11,12 @@ export type AuthoritativeCompletion = {
 };
 
 /** Decides whether a confirmed guest win should offer registration. */
-export function shouldPromptGuestRegistration(session: JestSession, completedRiddles?: number): boolean {
-  if (session.player.registered) return false;
+export function shouldPromptGuestRegistration(
+  session: JestSession,
+  gameMode: AuthoritativeCompletion["gameMode"],
+  completedRiddles?: number,
+): boolean {
+  if (session.player.registered || gameMode !== "classic") return false;
   const count = completedRiddles ?? (session.preferences.jestGuestCompletedRiddles ?? 0) + 1;
   return count > 0 && (count - 1) % 3 === 0;
 }
@@ -53,13 +57,13 @@ export async function recordAuthoritativeCompletion(
   let preferences = session.preferences;
   /** Provides milestone marked behavior. */
   let milestoneMarked = false;
-  const guestCompletedRiddles = session.player.registered ? 0 :
-    (preferences.jestGuestCompletedRiddles ?? 0) + 1;
-  if (!preferences.firstMilestoneMarked || !session.player.registered) {
+  const isClassicGuestWin = !session.player.registered && completion.gameMode === "classic";
+  const guestCompletedRiddles = (preferences.jestGuestCompletedRiddles ?? 0) + (isClassicGuestWin ? 1 : 0);
+  if (!preferences.firstMilestoneMarked || isClassicGuestWin) {
     preferences = {
       ...preferences,
       firstMilestoneMarked: true,
-      ...(!session.player.registered && {jestGuestCompletedRiddles: guestCompletedRiddles}),
+      ...(isClassicGuestWin && {jestGuestCompletedRiddles: guestCompletedRiddles}),
     };
     await platform.writePreferences(preferences);
     milestoneMarked = !session.preferences.firstMilestoneMarked;
@@ -70,7 +74,7 @@ export async function recordAuthoritativeCompletion(
     value: {
       preferences,
       milestoneMarked,
-      shouldPromptRegistration: shouldPromptGuestRegistration(session),
+      shouldPromptRegistration: shouldPromptGuestRegistration(session, completion.gameMode),
     },
   };
 }
