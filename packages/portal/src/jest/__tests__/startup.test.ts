@@ -195,6 +195,7 @@ it("grants and completes incomplete purchases before a later identity exchange f
 it("stops startup when the incomplete-purchase check fails", async () => {
   /** Provides platform behavior. */
   const platform = new MockJestPlatform();
+  platform.player.registered = true;
   platform.getIncompletePurchases = jest.fn(async () => ({
     status: "retryable-failure" as const,
     message: "purchase recovery unavailable",
@@ -212,6 +213,7 @@ it("stops startup when the incomplete-purchase check fails", async () => {
 it("continues urgent recovery when an empty first page reports more purchases", async () => {
   /** Provides platform behavior. */
   const platform = new MockJestPlatform();
+  platform.player.registered = true;
   platform.getIncompletePurchases = jest.fn(async () => ({
     status: "success" as const,
     value: {purchases: [], purchasesSigned: "signed-purchases", hasMore: true},
@@ -241,6 +243,7 @@ it("continues urgent recovery when an empty first page reports more purchases", 
 it("stops startup when urgent purchase recovery cannot complete", async () => {
   /** Provides platform behavior. */
   const platform = new MockJestPlatform();
+  platform.player.registered = true;
   platform.getIncompletePurchases = jest.fn(async () => ({
     status: "success" as const,
     value: {
@@ -267,6 +270,7 @@ it("stops startup when urgent purchase recovery cannot complete", async () => {
 it("does not run successful urgent recovery a second time after authentication", async () => {
   /** Provides platform behavior. */
   const platform = new MockJestPlatform();
+  platform.player.registered = true;
   platform.getIncompletePurchases = jest.fn(async () => ({
     status: "success" as const,
     value: {
@@ -431,8 +435,31 @@ it("restores saved progress but skips the registered-only profile for guests", a
     status: "success",
     value: {player: {registered: false}, playerData: null, profile: null},
   });
-  expect(order).toEqual(["preferences", "playerData", "exchange", "firebase", "recover"]);
+  expect(order).toEqual(["preferences", "playerData", "exchange", "firebase"]);
   expect(updates).toEqual(["player", "game"]);
+});
+
+it("skips Jest purchase recovery for guests", async () => {
+  /** Provides the isolated guest platform. */
+  const platform = new MockJestPlatform();
+  /** Fails if a guest attempts to inspect provider purchases. */
+  platform.getIncompletePurchases = jest.fn(async () => {
+    throw new Error("guest purchase recovery must not run");
+  });
+  /** Fails if a guest attempts to reconcile provider purchases. */
+  const reconcile = jest.fn();
+
+  await expect(
+    startJestSession(
+      platform,
+      {exchangeIdentity: async () => ({customToken: "firebase", uid: "uid"})} as never,
+      {reconcile} as never,
+      async () => undefined,
+    ),
+  ).resolves.toMatchObject({status: "success", value: {player: {registered: false}}});
+
+  expect(platform.getIncompletePurchases).not.toHaveBeenCalled();
+  expect(reconcile).not.toHaveBeenCalled();
 });
 
 it("stops startup on an authoritative tombstone without Firebase auth or purchase recovery", async () => {
@@ -561,6 +588,7 @@ it("initializes the SDK before reporting manual loading progress", async () => {
 it("fails closed when identity exchange omits the authoritative Firebase uid", async () => {
   /** Provides platform behavior. */
   const platform = new MockJestPlatform();
+  platform.player.registered = true;
   /** Provides authenticate firebase behavior. */
   const authenticateFirebase = jest.fn(async () => undefined);
   /** Provides reconcile behavior. */
@@ -584,6 +612,7 @@ it("fails closed when identity exchange omits the authoritative Firebase uid", a
 it("returns a retryable failure when SDK initialization never settles", async () => {
   /** Provides platform behavior. */
   const platform = new MockJestPlatform();
+  platform.player.registered = true;
   platform.init = () => new Promise(() => undefined);
   /** Provides backend behavior. */
   const backend = {exchangeIdentity: async () => ({customToken: "firebase", uid: "uid"})};
@@ -618,6 +647,7 @@ it("returns platform initialization and purchase reconciliation failures unchang
 
   /** Provides platform behavior. */
   const platform = new MockJestPlatform();
+  platform.player.registered = true;
   /** Provides recovery failure behavior. */
   const recoveryFailure = {status: "cancelled", message: "purchase cancelled"} as const;
   await expect(

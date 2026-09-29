@@ -159,10 +159,13 @@ export async function startJestSession(
         return {entryIntent, preferences, playerData};
       })(),
     ]);
-    // Read the first recovery page before optional profile and identity work so
-    // Jest can always observe the required startup check.
+    // Purchase recovery is registered-player-only. A guest must not expose or
+    // reconcile provider receipts, since doing so can grant stale purchases to
+    // the guest's server-side identity.
     /** Stores the first recovery page read before optional startup work. */
-    const initialIncompletePurchases = await platform.getIncompletePurchases();
+    const initialIncompletePurchases = player.registered
+      ? await platform.getIncompletePurchases()
+      : {status: "success" as const, value: {purchases: [], purchasesSigned: "", hasMore: false}};
     if (initialIncompletePurchases.status !== "success") return initialIncompletePurchases;
     // A non-empty signed recovery envelope lets the backend verify ownership,
     // grant idempotently, and enforce the canonical account-deletion guard.
@@ -227,7 +230,7 @@ export async function startJestSession(
     }
     reportJestLoadingProgress(platform, phaseProgress[4]);
 
-    if (!urgentRecovery) {
+    if (player.registered && !urgentRecovery) {
       /** Provides recovered behavior. */
       const recovered = options.withAccountOperation ? await options.withAccountOperation(reconcile) : await reconcile();
       if (recovered.status !== "success") return recovered;
