@@ -4,115 +4,498 @@
       "collectionGroup": "raceChallenges",
       "queryScope": "COLLECTION",
       "fields": [
-        {"fieldPath": "locale", "order": "ASCENDING"},
-        {"fieldPath": "status", "order": "ASCENDING"},
-        {"fieldPath": "expiresAtMs", "order": "ASCENDING"}
+        {
+          "fieldPath": "locale",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "expiresAtMs",
+          "order": "ASCENDING"
+        }
       ]
     },
     {
       "collectionGroup": "riddles",
       "queryScope": "COLLECTION",
       "fields": [
-        {"fieldPath": "raceEligible", "order": "ASCENDING"},
-        {"fieldPath": "categoryId", "order": "ASCENDING"}
+        {
+          "fieldPath": "raceEligible",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "categoryId",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "raceRuns",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "deadlineAtMs",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "raceSettlementOutbox",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "delivered",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "createdAtMs",
+          "order": "ASCENDING"
+        }
       ]
     }
   ],
   "fieldOverrides": [
-    {"collectionGroup": "facebookIdentityRateLimits", "fieldPath": "expiresAt", "ttl": true, "indexes": []},
-    {"collectionGroup": "users", "fieldPath": "lastLogin", "indexes": []},
-    {"collectionGroup": "users", "fieldPath": "createdAt", "indexes": []},
-    {"collectionGroup": "users", "fieldPath": "registeredAt", "indexes": []},
-    {"collectionGroup": "users", "fieldPath": "lastDailyChallengeCompletedAt", "indexes": []},
-    {"collectionGroup": "users", "fieldPath": "progress", "indexes": []},
-    {"collectionGroup": "users", "fieldPath": "stats", "indexes": []},
-    {"collectionGroup": "users", "fieldPath": "unlockedAchievements", "indexes": []},
-    {"collectionGroup": "leaderboard", "fieldPath": "updatedAt", "indexes": []},
-    {"collectionGroup": "jestPurchaseGrants", "fieldPath": "grantedAt", "indexes": []},
-    {"collectionGroup": "jestReferralRewards", "fieldPath": "grantedAt", "indexes": []},
-    {"collectionGroup": "jestReferralVerifications", "fieldPath": "verifiedAt", "indexes": []},
-    {"collectionGroup": "riddleSupplyRequests", "fieldPath": "requestedAt", "indexes": []},
-    {"collectionGroup": "raceDecks", "fieldPath": "expiresAt", "ttl": true, "indexes": []},
-    {"collectionGroup": "raceRuns", "fieldPath": "expiresAt", "ttl": true, "indexes": []},
-    {"collectionGroup": "raceChallenges", "fieldPath": "expiresAt", "ttl": true, "indexes": []},
-    {"collectionGroup": "raceInviteLobbies", "fieldPath": "expiresAt", "ttl": true, "indexes": []},
-    {"collectionGroup": "raceInviteRequests", "fieldPath": "expiresAt", "ttl": true, "indexes": []},
-    {"collectionGroup": "raceAttempts", "fieldPath": "expiresAt", "ttl": true, "indexes": []},
-    {"collectionGroup": "raceStartRequests", "fieldPath": "expiresAt", "ttl": true, "indexes": []},
-    {"collectionGroup": "requests", "fieldPath": "expiresAt", "ttl": true, "indexes": []},
+    {
+      "collectionGroup": "facebookIdentityRateLimits",
+      "fieldPath": "expiresAt",
+      "ttl": true,
+      "indexes": []
+    },
+    {
+      "collectionGroup": "users",
+      "fieldPath": "lastLogin",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "users",
+      "fieldPath": "createdAt",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "users",
+      "fieldPath": "registeredAt",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "users",
+      "fieldPath": "lastDailyChallengeCompletedAt",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "users",
+      "fieldPath": "progress",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "users",
+      "fieldPath": "stats",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "users",
+      "fieldPath": "unlockedAchievements",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "leaderboard",
+      "fieldPath": "updatedAt",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "jestPurchaseGrants",
+      "fieldPath": "grantedAt",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "jestReferralRewards",
+      "fieldPath": "grantedAt",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "jestReferralVerifications",
+      "fieldPath": "verifiedAt",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "riddleSupplyRequests",
+      "fieldPath": "requestedAt",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "raceDecks",
+      "fieldPath": "expiresAt",
+      "ttl": true,
+      "indexes": []
+    },
+    {
+      "collectionGroup": "raceRuns",
+      "fieldPath": "expiresAt",
+      "ttl": true,
+      "indexes": []
+    },
+    {
+      "collectionGroup": "raceChallenges",
+      "fieldPath": "expiresAt",
+      "ttl": true,
+      "indexes": []
+    },
+    {
+      "collectionGroup": "raceInviteLobbies",
+      "fieldPath": "expiresAt",
+      "ttl": true,
+      "indexes": []
+    },
+    {
+      "collectionGroup": "raceInviteRequests",
+      "fieldPath": "expiresAt",
+      "ttl": true,
+      "indexes": []
+    },
+    {
+      "collectionGroup": "raceAttempts",
+      "fieldPath": "expiresAt",
+      "ttl": true,
+      "indexes": []
+    },
+    {
+      "collectionGroup": "raceStartRequests",
+      "fieldPath": "expiresAt",
+      "ttl": true,
+      "indexes": []
+    },
+    {
+      "collectionGroup": "requests",
+      "fieldPath": "expiresAt",
+      "ttl": true,
+      "indexes": []
+    },
     {
       "collectionGroup": "requests",
       "fieldPath": "userId",
-      "indexes": [{"order": "ASCENDING", "queryScope": "COLLECTION_GROUP"}]
+      "indexes": [
+        {
+          "order": "ASCENDING",
+          "queryScope": "COLLECTION_GROUP"
+        }
+      ]
     },
     {
       "collectionGroup": "knownRivals",
       "fieldPath": "targetUserId",
-      "indexes": [{"order": "ASCENDING", "queryScope": "COLLECTION_GROUP"}]
+      "indexes": [
+        {
+          "order": "ASCENDING",
+          "queryScope": "COLLECTION_GROUP"
+        }
+      ]
     },
     {
       "collectionGroup": "blockedRivals",
       "fieldPath": "targetUserId",
-      "indexes": [{"order": "ASCENDING", "queryScope": "COLLECTION_GROUP"}]
+      "indexes": [
+        {
+          "order": "ASCENDING",
+          "queryScope": "COLLECTION_GROUP"
+        }
+      ]
     },
-    {"collectionGroup": "raceAnalytics", "fieldPath": "expiresAt", "ttl": true, "indexes": []},
-    {"collectionGroup": "raceInbox", "fieldPath": "expiresAt", "ttl": true, "indexes": []},
-    {"collectionGroup": "facebookContextCompetitionHistory", "fieldPath": "expiresAt", "ttl": true, "indexes": []},
-    {"collectionGroup": "entries", "fieldPath": "expiresAt", "ttl": true, "indexes": []},
-    {"collectionGroup": "facebookTournaments", "fieldPath": "expiresAt", "ttl": true, "indexes": []},
-    {"collectionGroup": "redditTournaments", "fieldPath": "expiresAt", "ttl": true, "indexes": []},
+    {
+      "collectionGroup": "raceAnalytics",
+      "fieldPath": "expiresAt",
+      "ttl": true,
+      "indexes": []
+    },
+    {
+      "collectionGroup": "raceInbox",
+      "fieldPath": "expiresAt",
+      "ttl": true,
+      "indexes": []
+    },
+    {
+      "collectionGroup": "facebookContextCompetitionHistory",
+      "fieldPath": "expiresAt",
+      "ttl": true,
+      "indexes": []
+    },
+    {
+      "collectionGroup": "entries",
+      "fieldPath": "expiresAt",
+      "ttl": true,
+      "indexes": []
+    },
+    {
+      "collectionGroup": "facebookTournaments",
+      "fieldPath": "expiresAt",
+      "ttl": true,
+      "indexes": []
+    },
+    {
+      "collectionGroup": "redditTournaments",
+      "fieldPath": "expiresAt",
+      "ttl": true,
+      "indexes": []
+    },
     {
       "collectionGroup": "raceInbox",
       "fieldPath": "opponentUserId",
-      "indexes": [{"order": "ASCENDING", "queryScope": "COLLECTION_GROUP"}]
+      "indexes": [
+        {
+          "order": "ASCENDING",
+          "queryScope": "COLLECTION_GROUP"
+        }
+      ]
     },
     {
       "collectionGroup": "raceInbox",
       "fieldPath": "itemId",
-      "indexes": [{"order": "ASCENDING", "queryScope": "COLLECTION_GROUP"}]
+      "indexes": [
+        {
+          "order": "ASCENDING",
+          "queryScope": "COLLECTION_GROUP"
+        }
+      ]
     },
-    {"collectionGroup": "gameCompletionReceipts", "fieldPath": "expiresAt", "ttl": true, "indexes": []},
-    {"collectionGroup": "singlePlayerSessions", "fieldPath": "answer", "indexes": []},
-    {"collectionGroup": "singlePlayerSessions", "fieldPath": "gameMode", "indexes": []},
-    {"collectionGroup": "singlePlayerSessions", "fieldPath": "riddleId", "indexes": []},
-    {"collectionGroup": "singlePlayerSessions", "fieldPath": "contentKey", "indexes": []},
-    {"collectionGroup": "singlePlayerSessions", "fieldPath": "completionKey", "indexes": []},
-    {"collectionGroup": "singlePlayerSessions", "fieldPath": "locale", "indexes": []},
-    {"collectionGroup": "singlePlayerSessions", "fieldPath": "classicIndex", "indexes": []},
-    {"collectionGroup": "singlePlayerSessions", "fieldPath": "challengeDate", "indexes": []},
-    {"collectionGroup": "singlePlayerSessions", "fieldPath": "attempts", "indexes": []},
-    {"collectionGroup": "singlePlayerSessions", "fieldPath": "lastGuess", "indexes": []},
-    {"collectionGroup": "singlePlayerSessions", "fieldPath": "lastGuessResult", "indexes": []},
-    {"collectionGroup": "singlePlayerSessions", "fieldPath": "guessReceipts", "indexes": []},
-    {"collectionGroup": "singlePlayerSessions", "fieldPath": "continueRequestHash", "indexes": []},
-    {"collectionGroup": "singlePlayerSessions", "fieldPath": "hintRevealedIndices", "indexes": []},
-    {"collectionGroup": "singlePlayerSessions", "fieldPath": "hintReceipts", "indexes": []},
-    {"collectionGroup": "singlePlayerSessions", "fieldPath": "lastHintAttemptHash", "indexes": []},
-    {"collectionGroup": "singlePlayerSessions", "fieldPath": "lastHintResult", "indexes": []},
-    {"collectionGroup": "singlePlayerSessions", "fieldPath": "skipRequestHash", "indexes": []},
-    {"collectionGroup": "singlePlayerSessions", "fieldPath": "skipResult", "indexes": []},
-    {"collectionGroup": "singlePlayerSessions", "fieldPath": "hasUsedContinue", "indexes": []},
-    {"collectionGroup": "singlePlayerSessions", "fieldPath": "awaitingContinue", "indexes": []},
-    {"collectionGroup": "singlePlayerSessions", "fieldPath": "terminal", "indexes": []},
-    {"collectionGroup": "singlePlayerSessions", "fieldPath": "isCorrect", "indexes": []},
-    {"collectionGroup": "singlePlayerSessions", "fieldPath": "terminalAt", "indexes": []},
-    {"collectionGroup": "singlePlayerSessions", "fieldPath": "isSkipped", "indexes": []},
-    {"collectionGroup": "singlePlayerSessions", "fieldPath": "createdAt", "indexes": []},
-    {"collectionGroup": "singlePlayerSessions", "fieldPath": "updatedAt", "indexes": []},
-    {"collectionGroup": "singlePlayerSessionBindings", "fieldPath": "sessionToken", "indexes": []},
-    {"collectionGroup": "singlePlayerSessionBindings", "fieldPath": "gameMode", "indexes": []},
-    {"collectionGroup": "singlePlayerSessionBindings", "fieldPath": "riddleId", "indexes": []},
-    {"collectionGroup": "singlePlayerSessionBindings", "fieldPath": "locale", "indexes": []},
-    {"collectionGroup": "singlePlayerSessionBindings", "fieldPath": "createdAt", "indexes": []},
-    {"collectionGroup": "singlePlayerCompletionBindings", "fieldPath": "sessionToken", "indexes": []},
-    {"collectionGroup": "singlePlayerCompletionBindings", "fieldPath": "gameMode", "indexes": []},
-    {"collectionGroup": "singlePlayerCompletionBindings", "fieldPath": "completionKey", "indexes": []},
-    {"collectionGroup": "singlePlayerCompletionBindings", "fieldPath": "riddleId", "indexes": []},
-    {"collectionGroup": "singlePlayerCompletionBindings", "fieldPath": "terminal", "indexes": []},
-    {"collectionGroup": "singlePlayerCompletionBindings", "fieldPath": "isCorrect", "indexes": []},
-    {"collectionGroup": "singlePlayerCompletionBindings", "fieldPath": "terminalAt", "indexes": []},
-    {"collectionGroup": "singlePlayerSessions", "fieldPath": "expiresAt", "ttl": true, "indexes": []},
-    {"collectionGroup": "singlePlayerSessionBindings", "fieldPath": "expiresAt", "ttl": true, "indexes": []},
-    {"collectionGroup": "singlePlayerCompletionBindings", "fieldPath": "expiresAt", "ttl": true, "indexes": []}
+    {
+      "collectionGroup": "gameCompletionReceipts",
+      "fieldPath": "expiresAt",
+      "ttl": true,
+      "indexes": []
+    },
+    {
+      "collectionGroup": "singlePlayerSessions",
+      "fieldPath": "answer",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "singlePlayerSessions",
+      "fieldPath": "gameMode",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "singlePlayerSessions",
+      "fieldPath": "riddleId",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "singlePlayerSessions",
+      "fieldPath": "contentKey",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "singlePlayerSessions",
+      "fieldPath": "completionKey",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "singlePlayerSessions",
+      "fieldPath": "locale",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "singlePlayerSessions",
+      "fieldPath": "classicIndex",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "singlePlayerSessions",
+      "fieldPath": "challengeDate",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "singlePlayerSessions",
+      "fieldPath": "attempts",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "singlePlayerSessions",
+      "fieldPath": "lastGuess",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "singlePlayerSessions",
+      "fieldPath": "lastGuessResult",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "singlePlayerSessions",
+      "fieldPath": "guessReceipts",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "singlePlayerSessions",
+      "fieldPath": "continueRequestHash",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "singlePlayerSessions",
+      "fieldPath": "hintRevealedIndices",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "singlePlayerSessions",
+      "fieldPath": "hintReceipts",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "singlePlayerSessions",
+      "fieldPath": "lastHintAttemptHash",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "singlePlayerSessions",
+      "fieldPath": "lastHintResult",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "singlePlayerSessions",
+      "fieldPath": "skipRequestHash",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "singlePlayerSessions",
+      "fieldPath": "skipResult",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "singlePlayerSessions",
+      "fieldPath": "hasUsedContinue",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "singlePlayerSessions",
+      "fieldPath": "awaitingContinue",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "singlePlayerSessions",
+      "fieldPath": "terminal",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "singlePlayerSessions",
+      "fieldPath": "isCorrect",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "singlePlayerSessions",
+      "fieldPath": "terminalAt",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "singlePlayerSessions",
+      "fieldPath": "isSkipped",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "singlePlayerSessions",
+      "fieldPath": "createdAt",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "singlePlayerSessions",
+      "fieldPath": "updatedAt",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "singlePlayerSessionBindings",
+      "fieldPath": "sessionToken",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "singlePlayerSessionBindings",
+      "fieldPath": "gameMode",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "singlePlayerSessionBindings",
+      "fieldPath": "riddleId",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "singlePlayerSessionBindings",
+      "fieldPath": "locale",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "singlePlayerSessionBindings",
+      "fieldPath": "createdAt",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "singlePlayerCompletionBindings",
+      "fieldPath": "sessionToken",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "singlePlayerCompletionBindings",
+      "fieldPath": "gameMode",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "singlePlayerCompletionBindings",
+      "fieldPath": "completionKey",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "singlePlayerCompletionBindings",
+      "fieldPath": "riddleId",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "singlePlayerCompletionBindings",
+      "fieldPath": "terminal",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "singlePlayerCompletionBindings",
+      "fieldPath": "isCorrect",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "singlePlayerCompletionBindings",
+      "fieldPath": "terminalAt",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "singlePlayerSessions",
+      "fieldPath": "expiresAt",
+      "ttl": true,
+      "indexes": []
+    },
+    {
+      "collectionGroup": "singlePlayerSessionBindings",
+      "fieldPath": "expiresAt",
+      "ttl": true,
+      "indexes": []
+    },
+    {
+      "collectionGroup": "singlePlayerCompletionBindings",
+      "fieldPath": "expiresAt",
+      "ttl": true,
+      "indexes": []
+    },
+    {
+      "collectionGroup": "raceSettlementOutbox",
+      "fieldPath": "expiresAt",
+      "ttl": true,
+      "indexes": []
+    },
+    {
+      "collectionGroup": "raceRuns",
+      "fieldPath": "settledOutcome",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "raceRuns",
+      "fieldPath": "settlementAwards",
+      "indexes": []
+    }
   ]
 }

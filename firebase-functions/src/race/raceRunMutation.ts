@@ -1,7 +1,7 @@
 import {RACE_CHALLENGE_TTL_MS} from "@qwordly/core/race";
 import {HttpsError} from "firebase-functions/v2/https";
-import {applyRaceCompletionPrivacy} from "./raceCompletionPrivacy";
-import {type RaceRunRecord} from "./raceEngine";
+import {settleRaceRun} from "./raceSettlement";
+import {raceDeadlineAtMs, type RaceRunRecord} from "./raceEngine";
 import {raceRunPrivacyWrite, resolveRaceOpponentPrivacy} from "./raceOpponentPrivacy";
 import {hydrateRaceReceiptResponse, minimizeRaceReceiptResponse, raceReceiptExpiresAt} from "./raceReceiptPrivacy";
 import {evaluateRaceRollout} from "./raceRollout";
@@ -85,25 +85,16 @@ export async function mutateRaceRun<T>(
     ) {
       throw new HttpsError("permission-denied", "Race to 10 is not enabled for this player.");
     }
-    /** Completes d. */
-    const completed = await applyRaceCompletionPrivacy(
-      transaction,
-      db,
-      userId,
-      run,
-      mutate(applyActionRateLimit(run, userId, nowMs)),
-      nowMs,
-      privacy.scrubbed,
-    );
-    /** Provides {result} behavior. */
-    const {result} = completed;
-    transaction.set(runRef, raceRunPrivacyWrite(result.run, completed.scrubbed), {merge: true});
+    const mutation = mutate(applyActionRateLimit(run, userId, nowMs));
+    const settled = await settleRaceRun(transaction, db, mutation.run, nowMs);
+    const response = hydrateRaceReceiptResponse(mutation.response, settled);
+    transaction.set(runRef, raceRunPrivacyWrite({...settled, deadlineAtMs: raceDeadlineAtMs(settled)}, privacy.scrubbed), {merge: true});
     transaction.create(requestRef, {
       userId,
       createdAtMs: nowMs,
-      response: stripUndefined(minimizeRaceReceiptResponse(result.response)),
+      response: stripUndefined(minimizeRaceReceiptResponse(response)),
       expiresAt: raceReceiptExpiresAt(runSnapshot.data()?.expiresAt, nowMs + RACE_CHALLENGE_TTL_MS),
     });
-    return result.response;
+    return response;
   });
 }

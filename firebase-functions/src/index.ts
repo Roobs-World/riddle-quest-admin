@@ -137,3 +137,5 @@ export {
   confirmYahooStripeCheckout,
   yahooStripeWebhook,
 };
+
+export {deliverRaceSettlementEvent, settleRaceDeadlines} from "./race/raceSettlementJobs";

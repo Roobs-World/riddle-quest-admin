@@ -34,7 +34,7 @@ import {
   applyRaceHint,
   applyRaceSkip,
   raceOutcome,
-  refreshRaceRun,
+  raceDeadlineAtMs,
   toRaceRunView,
   type RaceOpponentRecord,
   type RaceRiddleSnapshot,
@@ -61,6 +61,7 @@ import {
   type RaceDeckRecord,
 } from "./raceSetupService";
 import {assertRaceInteractionAllowed, mutateRaceRun} from "./raceRunMutation";
+import {settleRaceRun} from "./raceSettlement";
 export {buildDeterministicRaceDeck, listRaceCategoriesForLocale} from "./raceSetupService";
 
 /** Server-owned two-seat lobby created before Jest opens its referral dialog. */
@@ -350,7 +351,7 @@ export async function startRaceRunForUser(
       throw new HttpsError("already-exists", "This player already has a ranked attempt for the challenge.");
     }
     transaction.create(deckRef, stripUndefined(deck));
-    transaction.create(runRef, {...stripUndefined(run), expiresAt});
+    transaction.create(runRef, {...stripUndefined({...run, deadlineAtMs: raceDeadlineAtMs(run)}), expiresAt});
     transaction.create(startRequestRef, {runId: runRef.id, userId, createdAtMs: nowMs, expiresAt});
     if (input.challengeId) {
       transaction.create(db.collection("raceAttempts").doc(requestDocumentId(input.challengeId, userId)), {
@@ -533,7 +534,7 @@ export async function resumeRaceRunForUser(
     /** Provides privacy behavior. */
     const privacy = await resolveRaceOpponentPrivacy(transaction, db, stored);
     /** Provides refreshed behavior. */
-    const refreshed = refreshRaceRun(privacy.run, nowMs);
+    const refreshed = await settleRaceRun(transaction, db, privacy.run, nowMs);
     if (JSON.stringify(refreshed) !== JSON.stringify(stored)) {
       transaction.set(runRef, raceRunPrivacyWrite(refreshed, privacy.scrubbed), {merge: true});
     }

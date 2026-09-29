@@ -86,6 +86,8 @@ export type RaceRunRecord = {
   }>;
   /** Stores started at ms. */
   startedAtMs: number;
+  /** Indexed unattended-settlement deadline for a challenger run. */
+  deadlineAtMs?: number;
   /** Stores finished at ms. */
   finishedAtMs?: number;
   /** Stores wall finish ms. */
@@ -102,6 +104,14 @@ export type RaceRunRecord = {
   rateLimitWindowStartedAtMs?: number;
   /** Stores rate limit action count. */
   rateLimitActionCount?: number;
+  /** Immutable canonical terminal outcome recorded by settlement. */
+  settledOutcome?: RaceOutcome;
+  /** Idempotency marker for all terminal settlement paths. */
+  settledAtMs?: number;
+  /** Granted owner rewards retained until their first outcome presentation. */
+  settlementAwards?: Pick<RaceOutcome, "newlyUnlockedAchievementIds" | "achievementCoinsAwarded">;
+  /** Reward presentation marker, independent of the currency grant receipt. */
+  achievementOutcomePresentedAtMs?: number;
   /** Stores achievement progress recorded at ms. */
   achievementProgressRecordedAtMs?: number;
 };
@@ -134,6 +144,14 @@ export function raceClock(run: RaceRunRecord, nowMs: number): RaceClock {
   return {wallElapsedMs, totalPenaltyMs, adjustedElapsedMs: wallElapsedMs + totalPenaltyMs};
 }
 
+/** Computes the next authoritative ghost/maximum-time deadline after penalties. */
+export function raceDeadlineAtMs(run: RaceRunRecord): number | undefined {
+  if (run.role !== "challenger" || run.status !== "active") return undefined;
+  const maximum = RACE_MAX_ADJUSTED_TIME_MS;
+  const target = Math.min(maximum, run.opponent ? run.opponent.adjustedFinishMs + 1 : maximum);
+  return run.startedAtMs + Math.max(0, target - run.hintPenaltyMs - run.skipPenaltyMs);
+}
+
 /** Provides finish run behavior. */
 const finishRun = (
   run: RaceRunRecord,
@@ -161,7 +179,7 @@ const finishCompletedRun = (run: RaceRunRecord, nowMs: number): RaceRunRecord =>
   const result: RaceOutcome["result"] = run.opponent
     ? adjustedFinishMs < run.opponent.adjustedFinishMs
       ? "player_win"
-      : "tie"
+      : adjustedFinishMs === run.opponent.adjustedFinishMs ? "tie" : "ghost_win"
     : "recorded";
   return finishRun(run, result, adjustedFinishMs);
 };

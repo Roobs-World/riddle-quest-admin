@@ -1,7 +1,6 @@
 import {admin} from "../shared/firebaseAdmin";
 import {
   ListRaceInboxResponseSchema,
-  RACE_TARGET_CORRECT,
   RaceInboxItemSchema,
   RaceOutcomeSchema,
   type RaceLocale,
@@ -13,14 +12,13 @@ import {
 import {HttpsError} from "firebase-functions/v2/https";
 import {validateCallableResponse} from "../validation/callableValidation";
 import {getJestAccountDeletionRef} from "../jest/jestAccountDeletion";
-import {raceOutcome} from "./raceEngine";
+import {readSettledRaceOutcome} from "./raceSettlement";
 import {PRIVATE_RACE_PLAYER_NAME} from "./raceOpponentPrivacy";
 import {
   challengePreview,
   dbOrDefault,
   parseChallengeRecord,
   parseRunRecord,
-  persistRaceAchievementEvent,
   type Firestore,
 } from "./raceSetupService";
 
@@ -74,40 +72,12 @@ export async function getRaceOutcomeForUser(
   const nowMs = options.nowMs ?? Date.now();
   /** Provides run ref behavior. */
   const runRef = db.collection("raceRuns").doc(runId);
-  /** Provides r ref. */
-  const userRef = db.collection("users").doc(userId);
-  /** Provides outcome behavior. */
   const outcome = await db.runTransaction(async (transaction) => {
-    /** Provides [run snapshot, user snapshot] behavior. */
-    const [runSnapshot, userSnapshot] = await Promise.all([transaction.get(runRef), transaction.get(userRef)]);
+    const runSnapshot = await transaction.get(runRef);
     if (!runSnapshot.exists) throw new HttpsError("not-found", "Race to 10 run not found.");
-    /** Provides run behavior. */
     const run = parseRunRecord(runSnapshot.data());
     if (run.userId !== userId) throw new HttpsError("permission-denied", "This race run belongs to another player.");
-    /** Provides base outcome behavior. */
-    const baseOutcome = raceOutcome(run, nowMs);
-    if (run.achievementProgressRecordedAtMs !== undefined) return baseOutcome;
-    if (!userSnapshot.exists) throw new HttpsError("internal", "Player progress is unavailable for this race.");
-
-    /** Provides update behavior. */
-    const update = persistRaceAchievementEvent(
-      transaction,
-      userRef,
-      userSnapshot.data() ?? {},
-      {
-        kind: "completed",
-        won: baseOutcome.result === "player_win",
-        cleanRun: baseOutcome.correctCount === RACE_TARGET_CORRECT && baseOutcome.totalPenaltyMs === 0,
-      },
-      nowMs,
-    );
-    transaction.set(runRef, {achievementProgressRecordedAtMs: nowMs}, {merge: true});
-    return {
-      ...baseOutcome,
-      newlyUnlockedAchievementIds: update.newlyUnlockedAchievementIds,
-      achievementCoinsAwarded: update.achievementCoinsAwarded,
-      newCoins: update.newCoins,
-    };
+    return readSettledRaceOutcome(transaction, db, run, nowMs);
   });
   return validateCallableResponse(RaceOutcomeSchema, outcome, "getRaceOutcome");
 }
