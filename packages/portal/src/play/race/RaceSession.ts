@@ -180,6 +180,7 @@ export class RaceSession {
   };
   /** Invalidates late host/provider responses and scheduled projection loaders. */
   dispose = (): void => {
+    this.lastMatchmaking = undefined;
     this.ownedSnapshot = null;
     this.active = false;
     this.generation++;

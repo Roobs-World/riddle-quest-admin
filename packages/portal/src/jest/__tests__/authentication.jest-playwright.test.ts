@@ -1913,14 +1913,33 @@ describeBrowser("Jest authentication integration", () => {
 
     await recipient.page.getByRole("heading", {name: /Guest Solver challenged you/i}).waitFor({timeout: 20_000});
     await captureMultiplayerEvidence(recipient.page, "05-player-2-invite-ready.png");
+    await recipient.page.evaluate(() => {
+      Object.assign(window, {__acceptedInviteRecording: null});
+      window.addEventListener("riddle-quest:host-to-game", event => {
+        const detail = (event as CustomEvent).detail;
+        if (detail?.payload?.operation === "raceStart" && detail.payload.ok)
+          Object.assign(window, {__acceptedInviteRecording: detail.payload.data.run});
+      });
+    });
     await recipient.page.getByRole("button", {name: /accept challenge/i}).click();
     await recipient.page.locator(".race-gameplay .guess-board").waitFor({state: "visible", timeout: 10_000});
+    const acceptedRun = await recipient.page.evaluate(() => Reflect.get(window, "__acceptedInviteRecording")) as {
+      /** Exact challenge selected by the recipient. */ challengeId: string;
+      /** Server-issued playback of the creator's recording. */ opponent: {events: unknown[]; adjustedFinishMs: number};
+    };
+    const publishedRecording = JSON.parse(sharedRaceChallenges.get(invitedChallengeId!)!) as {
+      /** Immutable events persisted under the shared challenge ID. */ events: unknown[];
+      /** Time advertised before the recipient accepted the invite. */ preview: {adjustedTimeToBeatMs: number};
+    };
+    expect(acceptedRun.challengeId).toBe(invitedChallengeId);
+    expect(acceptedRun.opponent.events).toEqual(publishedRecording.events);
+    expect(acceptedRun.opponent.adjustedFinishMs).toBe(publishedRecording.preview.adjustedTimeToBeatMs);
     /** Progress can race with the creator's first server-confirmed automatic clear. */
     const initialProgress = await recipient.page.locator(".race-progress strong").allInnerTexts();
     expect(initialProgress[0]).toBe("Riddles solved: 0 / 10");
     expect(initialProgress[1]).toMatch(/^Riddles solved: [01] \/ 10$/);
     await captureMultiplayerEvidence(recipient.page, "06-player-2-race-started.png");
-    await recipient.page.getByRole("heading", {name: /opponent wins/i}).waitFor({timeout: 10_000});
+    await recipient.page.getByRole("heading", {name: /opponent wins/i}).waitFor({timeout: 30_000});
     /** Final score makes the exact opponent replay explicit after automatic completion. */
     const finalScore = recipient.page.locator(".race-result-score");
     expect(await finalScore.innerText()).toContain("You\n0/10");

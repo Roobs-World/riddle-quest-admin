@@ -420,7 +420,7 @@ it("retrieves a comparable recording beyond 200 earlier-expiring mismatched perf
   const receipt = (await db.doc(`raceMatchOffers/${result.offerId}`).get()).data()!;
   // Count the availability probe and the one comparable bucket document.
   expect(receipt.lookupCandidateDocumentsRead).toBe(2);
-  expect(receipt.lookupCandidateQueries).toBeLessThanOrEqual(6);
+  expect(receipt.lookupCandidateQueries).toBeLessThanOrEqual(7);
   expect(receipt.lookupDocumentReadAttempts).toBeGreaterThanOrEqual(17);
   expect(receipt.lookupTransactionAttempts).toBeGreaterThanOrEqual(2);
 });

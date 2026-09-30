@@ -89,3 +89,10 @@ The additive `reconcileRaceMatchProjections` scheduler is idle unless server-onl
 Each five-minute invocation processes at most 100 records. A canonical challenge pass repairs missing/stale projections from the original immutable archive; a candidate pass removes orphaned, private, expired, deleted-account and corrupt-source projections. Neither pass reconstructs questions from the mutable catalog. Both use the same transaction implementation as the migration. A dry-run candidate page is available through `reconcileRaceCandidatePage`.
 
 The server-only `raceMaintenance/projectionReconciliation` checkpoint records phase, document-ID cursor, lease and the last bounded page report. A five-minute lease exceeds the worker's 120-second timeout and permits later recovery after a crash. Only the current lease owner may advance the checkpoint. Failed pages retain their previous cursor for idempotent replay; a superseded worker cannot overwrite a newer cursor. Full passes repeat so publications inserted before a previous cursor are visited in a later pass. Monitor unavailable-record counts and last successful page time; diagnostics never include archived answers.
+
+
+### Immutable recording provenance
+
+New recorded match offers and prepared challenger runs persist a server-only recording fingerprint. It binds actual archived content and fixed scoring/source facts independently of legacy catalog tokens and mutable identity presentation. Transactional eligibility returns the resolved authorized archive so offer issuance, acceptance and readiness compare the same authoritative content without duplicate legacy reads. Drift fails before conversion/scored-start writes; it does not rewrite an issued receipt. Equivalent snapshot backfills remain valid.
+
+Historical offers/runs missing the fingerprint are supported with explicit limits: only actually retained facts can be compared, and no past source identity is invented. Already scheduled runs remain self-contained after challenge/source retention ends. Fingerprints are never included in client views. This additive storage change does not enable ranked answer protection or synchronous matches.

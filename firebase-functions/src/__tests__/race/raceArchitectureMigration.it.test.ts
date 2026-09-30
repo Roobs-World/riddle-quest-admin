@@ -545,3 +545,29 @@ it.each(["acceptance", "readiness"])("leaves offer conversion clocks unchanged a
     expect((await offerRef.get()).data()).toEqual(before);
   }
 });
+
+it.each(["acceptance", "replay"])("rejects a changed recording after discovery at %s without rewriting the offer", async phase => {
+  /** Genuine discovery binds its original scoring facts before any preparation request. */
+  const ref = db.doc("raceChallenges/discovery-drift");
+  await ref.set({...challenge(ref.id), riddles: RIDDLES, snapshotVersion: 1, contentVersion: raceDeckContentVersion(RIDDLES)});
+  await migrateRaceArchitecturePage(db, {collection: "challenges", dryRun: false}, NOW);
+  /** Search identity remains stable through rejected replay. */
+  const search = {locale: "en" as const, requestId: "discovery-drift-search"};
+  /** Owned offer contains no client-visible provenance or source content. */
+  const offer = await findRecordedRaceMatch(PLAYER, search, {db, nowMs: NOW});
+  if (offer.status !== "matched" || !offer.offerId) throw new Error("expected-recorded-offer");
+  /** Persisted receipt must remain unchanged after immutable source drift. */
+  const receipt = db.doc(`raceMatchOffers/${offer.offerId}`);
+  /** Exact original fingerprint and policy attribution survive the failed command. */
+  const before = (await receipt.get()).data();
+  expect(before?.recordingFingerprint).toMatch(/^[a-f0-9]{64}$/);
+  await ref.update({creatorWallFinishMs: 21000, creatorAdjustedFinishMs: 21000});
+  if (phase === "acceptance") await expect(startRaceRunForUser(PLAYER, {locale: "en", challengeId: ref.id,
+    offerId: offer.offerId, requestId: "discovery-drift-accept", prepare: true}, {db, nowMs: NOW + 1}))
+    .rejects.toMatchObject({code: "failed-precondition"});
+  else await expect(findRecordedRaceMatch(PLAYER, search, {db, nowMs: NOW + 1}))
+    .rejects.toMatchObject({code: "aborted"});
+  expect((await receipt.get()).data()).toEqual(before);
+  expect((await db.collection("raceAttempts").get()).empty).toBe(true);
+  expect((await db.collection("raceStartRequests").get()).empty).toBe(true);
+});

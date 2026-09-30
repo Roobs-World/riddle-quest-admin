@@ -12,6 +12,7 @@ const Count = z.number().int().min(0).max(Number.MAX_SAFE_INTEGER);
 const Preferences = z.object({locale: RaceLocaleSchema, categoryId: RaceCategoryIdSchema.nullable()}).strict();
 /** Owned receipt fields are validated while Firestore TTL and future extension metadata survive reads. */
 const Offer = z.looseObject({
+  recordingFingerprint: z.string().regex(/^[a-f0-9]{64}$/).optional(),
   recordVersion: z.literal(1).optional(), requestId: z.string().min(1).max(160).optional(), userId: Id, challengeId: Id, fingerprint: z.string().min(1).max(1000),
   createdAtMs: Count, expiresAtMs: Count,
   provider: z.enum(["jest", "facebook", "reddit"]).optional(), locale: RaceLocaleSchema.optional(), categoryId: RaceCategoryIdSchema.optional(),

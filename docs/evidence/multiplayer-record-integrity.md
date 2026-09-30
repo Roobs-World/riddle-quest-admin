@@ -20,6 +20,14 @@ Synthetic matchmaking/tournament fixtures were corrected to keep wall and finish
 
 All six guarded benchmark scenarios and successful replay phases passed against the final compiled backend with the default five observations. This is fixture/lookup regression evidence, not production latency or billing evidence. Backend lint, scoped documentation (403 declarations across thirteen selected files), security/CI-security, scalability and whitespace checks passed. This backend-only change did not alter client UI or target capabilities.
 
+## Recording provenance through discovery and readiness
+
+New recorded offers and challenger runs retain a private SHA-256 digest of the immutable recording: physical challenge/source-run/source-deck identities, creator, category/language, ordered canonical IDs and actual content hash, target, owned rules/evaluation policy, fixed wall/penalty/adjusted durations and ordered ghost scoring facts. Presentation, availability clocks, legacy catalog tokens and archive storage representation are excluded. The ordered projection ignores property insertion order and unknown event metadata.
+
+Eligibility inspection now returns the authorized archive resolved in that same transaction. Offer issuance compares the committed recording with the one inspected/ranked; replay detects immutable drift. Acceptance checks both offer provenance and the prepared run against current transactional authority before exposure, run/deck/attempt/start receipt or conversion writes. Readiness checks the same source and the run's actual owned scoring snapshot before assigning a start or updating offer readiness clocks. A matching digest cannot excuse a corrupt run snapshot. No additional legacy source read is required.
+
+Equivalent legacy-to-archived backfills and changed display metadata remain supported. New private digests do not enter client run/offer projections. Historical receipts without a digest remain supported without inventing historical source evidence; historical prepared runs compare their retained deck/category/language/rules/evaluation/opponent facts. They cannot retroactively prove source identities or separate timing components they never stored. Once scheduled, source challenge/creator-record removal does not invalidate resume or reset a ready retry.
+
 ## Remaining audit
 
-Cross-record completion remains unproven. Acceptance and readiness still need a complete comparison between the archive used for preparation and the transactionally revalidated challenge, including immutable ghost and creator/category/deck facts. Session ownership and the original MP1–MP9/VERIFY audit remain required. This evidence does not close those requirements.
+The recording-provenance changes close the identified preparation/acceptance/readiness gap for newly issued records, with explicit historical limits above. Broad cross-record completion remains unproven. Session ownership and the original MP1–MP9/VERIFY audit still require current-state verification. This evidence does not close those requirements.

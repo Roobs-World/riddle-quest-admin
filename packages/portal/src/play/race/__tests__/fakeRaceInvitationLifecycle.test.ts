@@ -35,11 +35,16 @@ afterEach(() => {
 
 describe("injected invitation transport lifecycle", () => {
   it("opens each shared link against its own creator recording across separate surfaces", async () => {
+    /** First independently completed creator recording. */
     const first = await completedCreator();
+    /** Second creator uses a different recorded event sequence. */
     const second = await completedCreator(true);
+    /** Publication receipt bound to the first recording. */
     const firstShare = await first.services.publishRace({runId: first.run.runId, requestId: "publish-first"});
+    /** Publication receipt bound to the second recording. */
     const secondShare = await second.services.publishRace({runId: second.run.runId, requestId: "publish-second"});
     expect(firstShare.challengeId).not.toBe(secondShare.challengeId);
+    /** Separate surface resolves persisted publication ownership. */
     const recipient = createFakeRaceServices();
     for (const [publication, recording, other] of [
       [firstShare, first.run, second.run], [secondShare, second.run, first.run],
@@ -47,6 +52,7 @@ describe("injected invitation transport lifecycle", () => {
       await expect(recipient.getRaceEntry!(publication.challengeId, "en")).resolves.toMatchObject({
         status: "ready", challenge: {challengeId: publication.challengeId},
       });
+      /** Accepted run must carry this publication's recorded opponent. */
       const {run} = await recipient.startRace({locale: "en", challengeId: publication.challengeId,
         requestId: `accept-${publication.challengeId}`});
       expect(run.challengeId).toBe(publication.challengeId);

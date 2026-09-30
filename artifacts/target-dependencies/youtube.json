@@ -9,18 +9,19 @@
   ],
   "modules": [
     "packages/portal/\u0000rolldown/runtime.js",
-    "node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/cjs/react-dom-client.production.js",
-    "node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/cjs/react-dom.production.js",
-    "node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/client.js",
-    "node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/index.js",
-    "node_modules/.pnpm/react@19.2.8/node_modules/react/cjs/react-compiler-runtime.production.js",
-    "node_modules/.pnpm/react@19.2.8/node_modules/react/cjs/react-jsx-runtime.production.js",
-    "node_modules/.pnpm/react@19.2.8/node_modules/react/cjs/react.production.js",
-    "node_modules/.pnpm/react@19.2.8/node_modules/react/compiler-runtime.js",
-    "node_modules/.pnpm/react@19.2.8/node_modules/react/index.js",
-    "node_modules/.pnpm/react@19.2.8/node_modules/react/jsx-runtime.js",
-    "node_modules/.pnpm/scheduler@0.27.0/node_modules/scheduler/cjs/scheduler.production.js",
-    "node_modules/.pnpm/scheduler@0.27.0/node_modules/scheduler/index.js",
+    "firebase-functions/content/youtube-fixtures/youtube-content-fixture-v1.json",
+    "node_modules/.pnpm/react-dom@19.3.0_react@19.3.0/node_modules/react-dom/cjs/react-dom-client.production.js",
+    "node_modules/.pnpm/react-dom@19.3.0_react@19.3.0/node_modules/react-dom/cjs/react-dom.production.js",
+    "node_modules/.pnpm/react-dom@19.3.0_react@19.3.0/node_modules/react-dom/client.js",
+    "node_modules/.pnpm/react-dom@19.3.0_react@19.3.0/node_modules/react-dom/index.js",
+    "node_modules/.pnpm/react@19.3.0/node_modules/react/cjs/react-compiler-runtime.production.js",
+    "node_modules/.pnpm/react@19.3.0/node_modules/react/cjs/react-jsx-runtime.production.js",
+    "node_modules/.pnpm/react@19.3.0/node_modules/react/cjs/react.production.js",
+    "node_modules/.pnpm/react@19.3.0/node_modules/react/compiler-runtime.js",
+    "node_modules/.pnpm/react@19.3.0/node_modules/react/index.js",
+    "node_modules/.pnpm/react@19.3.0/node_modules/react/jsx-runtime.js",
+    "node_modules/.pnpm/scheduler@0.28.0/node_modules/scheduler/cjs/scheduler.production.js",
+    "node_modules/.pnpm/scheduler@0.28.0/node_modules/scheduler/index.js",
     "packages/core/src/game/graphemes.ts",
     "packages/portal/src/playable/LocalSoloAuthority.contract.ts",
     "packages/portal/src/playable/LocalSoloAuthority.ts",
@@ -31,7 +32,6 @@
     "packages/portal/src/playable/achievements.ts",
     "packages/portal/src/playable/content.ts",
     "packages/portal/src/playable/economy.ts",
-    "packages/portal/src/playable/generated/youtube-content-v1.json",
     "packages/portal/src/playable/i18n.ts",
     "packages/portal/src/playable/input.ts",
     "packages/portal/src/playable/localSoloGameRules.ts",
@@ -45,16 +45,16 @@
   ],
   "chunks": [
     {
-      "file": "assets/index-CkexbO_b.js",
+      "file": "assets/index-CmV3P9L2.js",
       "entry": true,
       "dynamicEntry": false,
       "imports": [
-        "assets/vendor-react-D5RwWBEv.js",
+        "assets/vendor-react-CzolT8tg.js",
         "assets/core-game-CbSzCw0b.js",
         "assets/rolldown-runtime-Czjbc987.js"
       ],
       "dynamicImports": [],
-      "sha256": "4a085113fba7c71ea982de7cc8e34aa0c4bbd16c5c4364914b902b5e993edc73"
+      "sha256": "cbf61a7bb728e2c8e093d7f9ba267160400cf4731ce681244d13635ec0301ce3"
     },
     {
       "file": "assets/core-game-CbSzCw0b.js",
@@ -75,14 +75,14 @@
       "sha256": "8e1de6b69118fd7bae15fd7ae6ac3033b575231de9a0931c99a9f53200fc88c6"
     },
     {
-      "file": "assets/vendor-react-D5RwWBEv.js",
+      "file": "assets/vendor-react-CzolT8tg.js",
       "entry": false,
       "dynamicEntry": false,
       "imports": [
         "assets/rolldown-runtime-Czjbc987.js"
       ],
       "dynamicImports": [],
-      "sha256": "8ad6a210248228d77bd9820a1980948dc77df6135d9e9b38607f8683d69c7775"
+      "sha256": "17edcf9bd2f8eb65ec3547491935a3e9a658416faa23d41a9148c62312551b81"
     }
   ],
   "files": [
@@ -91,8 +91,8 @@
       "sha256": "7c28b1a52eabdefbff7197a7fea69623b0952e4a7e0796343e22e7707bfbbd45"
     },
     {
-      "file": "assets/index-CkexbO_b.js",
-      "sha256": "4a085113fba7c71ea982de7cc8e34aa0c4bbd16c5c4364914b902b5e993edc73"
+      "file": "assets/index-CmV3P9L2.js",
+      "sha256": "cbf61a7bb728e2c8e093d7f9ba267160400cf4731ce681244d13635ec0301ce3"
     },
     {
       "file": "assets/index-DhsmAOC4.css",
@@ -103,20 +103,20 @@
       "sha256": "8e1de6b69118fd7bae15fd7ae6ac3033b575231de9a0931c99a9f53200fc88c6"
     },
     {
-      "file": "assets/vendor-react-D5RwWBEv.js",
-      "sha256": "8ad6a210248228d77bd9820a1980948dc77df6135d9e9b38607f8683d69c7775"
+      "file": "assets/vendor-react-CzolT8tg.js",
+      "sha256": "17edcf9bd2f8eb65ec3547491935a3e9a658416faa23d41a9148c62312551b81"
     },
     {
       "file": "index.html",
-      "sha256": "252df27efe1a25e7c60363dc401088d981f4a2ae7d72d16c75afcd4918e21dd0"
+      "sha256": "776f48ef968c8b829bc3b04c6bd733f284b0bad7e83f8df2004356db37a6d30e"
     },
     {
       "file": "third-party-licenses.txt",
-      "sha256": "7e852bf96abd86d2ef061d834ffb7d28f9f376a88b5e5a285465433a259dc07d"
+      "sha256": "0191e203e9b03a2301fbadfb5786a0c4b7a0fb2007f00b1efb560cc7e19235f2"
     },
     {
       "file": "youtube-content-manifest.json",
-      "sha256": "71d1265e4efe68791c915f3516b9749d3304dea8bc13024621368f47767aa93f"
+      "sha256": "8a19fd1b5c587d059dc57e21e1df6be2bf6865325309da0661757c8f280267ca"
     }
   ]
 }

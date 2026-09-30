@@ -11,14 +11,17 @@ const PLAYER = `jest_${"1".repeat(40)}`, CREATOR = `jest_${"2".repeat(40)}`;
 const NOW = 1800000000000;
 /** Emulator-only storage; never use production fixtures for destructive cleanup. */
 let db: FirebaseFirestore.Firestore;
+/** Collections owned by the emulator fixtures. */
 const collections = ["raceBotOffers", "raceMatchOffers", "raceMatchCandidates", "raceChallenges", "raceRuns", "raceDecks",
   "raceStartRequests", "raceAttempts", "racePerformanceOutbox", "raceSettlementOutbox", "users", "localizedRiddles/en/riddles"];
 
 /** Clears emulator fixtures between independent full-service scenarios. */
 async function clear() {
   for (const path of collections) {
+    /** Current emulator documents to remove. */
     const snapshot = await db.collection(path).get();
     if (snapshot.empty) continue;
+    /** Atomic emulator fixture write. */
     const batch = db.batch(); snapshot.docs.forEach(document => batch.delete(document.ref)); await batch.commit();
   }
   for (const owner of [PLAYER, CREATOR]) await db.recursiveDelete(db.doc(`users/${owner}`));
@@ -31,6 +34,7 @@ beforeAll(() => {
 });
 beforeEach(async () => {
   await clear();
+  /** Atomic emulator fixture write. */
   const batch = db.batch();
   for (let index = 0; index < 30; index++) batch.set(db.doc(`localizedRiddles/en/riddles/history-${index}`), {
     riddleId: `history-${index}`, canonicalRiddleId: `history:${index}`, categoryId: "history",
@@ -45,6 +49,7 @@ afterAll(async () => {await clear();});
 
 /** Real empty lookup must supply an owner-bound fallback before any race can start. */
 async function find(requestId = "empty-search-0001") {
+  /** Canonical matchmaking response under test. */
   const response = await findRecordedRaceMatch(PLAYER, {locale: "en", requestId}, {db, nowMs: NOW});
   expect(response.status).toBe("empty");
   if (response.status !== "empty" || !response.fallback) throw new Error("Missing fallback offer");
@@ -52,9 +57,16 @@ async function find(requestId = "empty-search-0001") {
 }
 
 it("starts one rival under concurrent acceptance, resumes its countdown and completes a verified win", async () => {
+  /** Captured empty-pool query telemetry. */
+  const lookup = jest.spyOn(logger, "info");
+  /** Owner-bound fallback selected by the real service. */
   const offered = await find();
+  expect(lookup).toHaveBeenCalledWith("Race matchmaking lookup", expect.objectContaining({disposition: "empty", candidateQueries: 1, candidateDocumentsRead: 0}));
+  lookup.mockRestore();
   expect(await find()).toEqual(offered);
+  /** Fallback preparation request shared by concurrent deliveries. */
   const input = {locale: "en" as const, categoryId: offered.categoryId, fallbackOfferId: offered.offerId, prepare: true, includeEvaluation: true};
+  /** Concurrent starts must resolve the same canonical run. */
   const [first, duplicate] = await Promise.all([
     startRaceRunForUser(PLAYER, {...input, requestId: "fallback-start-0001"}, {db, nowMs: NOW}),
     startRaceRunForUser(PLAYER, {...input, requestId: "fallback-start-0002"}, {db, nowMs: NOW}),
@@ -65,18 +77,23 @@ it("starts one rival under concurrent acceptance, resumes its countdown and comp
   expect(first.run.opponent?.displayName).not.toBe("Riddle Quest player");
   expect(first.run.opponent).not.toHaveProperty("kind");
   expect(first.run.challengeId).toBeUndefined();
+  /** Readiness fixes one immutable scored start. */
   const scheduled = await readyRaceRunForUser(PLAYER, {runId: first.run.runId, requestId: "fallback-ready-0001", includeEvaluation: true}, {db, nowMs: NOW + 500});
   expect(scheduled.run.startsAtMs).toBe(NOW + 3500);
+  /** A fresh read retains the selected rival and countdown. */
   const resumed = await resumeRaceRunForUser(PLAYER, first.run.runId, {db, nowMs: NOW + 4000, includeEvaluation: true});
   expect(resumed.run.opponent).toEqual(first.run.opponent);
   expect(resumed.run.startsAtMs).toBe(scheduled.run.startsAtMs);
+  /** Latest authoritative race snapshot. */
   let run = resumed.run;
   for (let index = 0; index < 10; index++) {
+    /** Server-provided current question and evaluation. */
     const riddle = run.currentRiddle!;
     run = (await submitRaceGuessForUser(PLAYER, {runId: run.runId, riddleId: riddle.riddleId,
       guess: riddle.evaluation!.answer, requestId: `fallback-answer-${index}`, includeEvaluation: true}, {db, nowMs: NOW + 4500 + index * 1000})).run;
   }
   expect(run.status).toBe("completed");
+  /** Settled server result reused across retries. */
   const outcome = await getRaceOutcomeForUser(PLAYER, run.runId, {db, nowMs: NOW + 15000});
   expect(outcome).toMatchObject({result: "player_win", correctCount: 10, publishable: false});
   expect((await getRaceOutcomeForUser(PLAYER, run.runId, {db, nowMs: NOW + 16000})).adjustedFinishMs).toBe(outcome.adjustedFinishMs);
@@ -85,7 +102,9 @@ it("starts one rival under concurrent acceptance, resumes its countdown and comp
 });
 
 it("rejects an unrelated owner, changed category and expired offer", async () => {
+  /** Owner-bound fallback selected by the real service. */
   const offered = await find();
+  /** Fallback preparation request shared by concurrent deliveries. */
   const input = {locale: "en" as const, categoryId: offered.categoryId, fallbackOfferId: offered.offerId, requestId: "fallback-unauthorized"};
   await expect(startRaceRunForUser(CREATOR, input, {db, nowMs: NOW})).rejects.toMatchObject({code: "permission-denied"});
   await expect(startRaceRunForUser(PLAYER, {...input, categoryId: "science"}, {db, nowMs: NOW})).rejects.toMatchObject({code: "invalid-argument"});
@@ -94,31 +113,41 @@ it("rejects an unrelated owner, changed category and expired offer", async () =>
 });
 
 it("settles an unattended fallback exactly at its immutable finish", async () => {
+  /** Owner-bound fallback selected by the real service. */
   const offered = await find();
+  /** Accepted fallback race. */
   const first = await startRaceRunForUser(PLAYER, {locale: "en", categoryId: offered.categoryId,
     fallbackOfferId: offered.offerId, requestId: "fallback-loss-start"}, {db, nowMs: NOW});
+  /** Immutable finish attached to the selected opponent. */
   const finish = first.run.opponent!.adjustedFinishMs;
+  /** Settled server result reused across retries. */
   const outcome = await getRaceOutcomeForUser(PLAYER, first.run.runId, {db, nowMs: NOW + finish + 1});
   expect(outcome).toMatchObject({result: "ghost_win", wallFinishMs: finish, opponentAdjustedFinishMs: finish});
+  /** A fresh read retains the selected rival and countdown. */
   const resumed = await resumeRaceRunForUser(PLAYER, first.run.runId, {db, nowMs: NOW + finish + 1000});
   expect(resumed.run.status).toBe("completed");
   expect(resumed.run.opponent).toEqual(first.run.opponent);
 });
 
 it("prefers a published human recording and creates no fallback offer for that search", async () => {
+  /** Latest authoritative race snapshot. */
   let run = (await startRaceRunForUser(CREATOR, {locale: "en", categoryId: "history", requestId: "human-create-0001", includeEvaluation: true}, {db, nowMs: NOW})).run;
   for (let index = 0; index < 10; index++) {
+    /** Server-provided current question and evaluation. */
     const riddle = run.currentRiddle!;
     run = (await submitRaceGuessForUser(CREATOR, {runId: run.runId, riddleId: riddle.riddleId,
       guess: riddle.evaluation!.answer, requestId: `human-answer-${index}`, includeEvaluation: true}, {db, nowMs: NOW + (index + 1) * 9000})).run;
   }
+  /** Published human recording eligible for discovery. */
   const challenge = await publishRaceChallengeForUser(CREATOR, {runId: run.runId, requestId: "human-publish-0001"}, {db, nowMs: NOW + 100000});
+  /** Canonical matchmaking response under test. */
   const response = await findRecordedRaceMatch(PLAYER, {locale: "en", requestId: "human-match-0001"}, {db, nowMs: NOW + 110000});
   expect(response).toMatchObject({status: "matched", challenge: {challengeId: challenge.challengeId}});
   expect((await db.collection("raceBotOffers").get()).empty).toBe(true);
 });
 
 it("does not conceal corrupt matchmaking projections with a fallback", async () => {
+  /** Captured expected corrupt-projection diagnostics. */
   const logging = jest.spyOn(logger, "warn").mockImplementation(() => {});
   await db.doc("raceMatchCandidates/broken").set({provider: "jest", locale: "en", status: "active", rulesVersion: "race10_v1",
     performanceBucket: 11, selectionKey: "a".repeat(64), expiresAtMs: NOW + 100000});

@@ -7,7 +7,7 @@ import {racePerformanceSample} from "./raceMatchPerformance";
 import type {Firestore} from "./raceSetupService";
 
 /** Attribution is accepted only from the server-issued owner/challenge/language receipt. */
-export function assertRaceMatchOfferForStart(offer: FirebaseFirestore.DocumentSnapshot | null, userId: string, input: StartRaceRunRequest): void {
+export function assertRaceMatchOfferForStart(offer: FirebaseFirestore.DocumentSnapshot | null, userId: string, input: StartRaceRunRequest, prepared?: RaceRunRecord): void {
   if (!input.offerId) return;
   if (!offer?.exists) throw new HttpsError("permission-denied", "The matchmaking offer does not belong to this challenge and player.");
   /** Acceptance consumes only a validated server receipt. */
@@ -15,6 +15,8 @@ export function assertRaceMatchOfferForStart(offer: FirebaseFirestore.DocumentSn
   if (data.userId !== userId || data.challengeId !== input.challengeId || data.locale !== input.locale) {
     throw new HttpsError("permission-denied", "The matchmaking offer does not belong to this challenge and player.");
   }
+  if (data.recordingFingerprint !== undefined && data.recordingFingerprint !== prepared?.recordingFingerprint)
+    throw new HttpsError("failed-precondition", "The offered recording changed during preparation.");
   if (data.acceptedRunId !== undefined) throw new HttpsError("already-exists", "The matchmaking offer has already been accepted.");
 }
 
@@ -28,7 +30,8 @@ export async function readRaceMatchOffer(transaction: FirebaseFirestore.Transact
   try {
     /** Derived attribution is checked independently of canonical scoring. */
     const data = parseRaceMatchOffer(offer.data(), offer.id);
-    if (data.userId === run.userId && data.challengeId === run.challengeId && data.acceptedRunId === run.runId && data.locale === run.locale) return offer;
+    if (data.userId === run.userId && data.challengeId === run.challengeId && data.acceptedRunId === run.runId && data.locale === run.locale &&
+      (data.recordingFingerprint === undefined || data.recordingFingerprint === run.recordingFingerprint)) return offer;
   } catch (error) {
     if (!(error instanceof HttpsError) || error.code !== "data-loss") throw error;
   }

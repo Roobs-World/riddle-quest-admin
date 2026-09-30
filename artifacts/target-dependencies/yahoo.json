@@ -9,18 +9,18 @@
   ],
   "modules": [
     "packages/portal/\u0000rolldown/runtime.js",
-    "node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/cjs/react-dom-client.production.js",
-    "node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/cjs/react-dom.production.js",
-    "node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/client.js",
-    "node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/index.js",
-    "node_modules/.pnpm/react@19.2.8/node_modules/react/cjs/react-compiler-runtime.production.js",
-    "node_modules/.pnpm/react@19.2.8/node_modules/react/cjs/react-jsx-runtime.production.js",
-    "node_modules/.pnpm/react@19.2.8/node_modules/react/cjs/react.production.js",
-    "node_modules/.pnpm/react@19.2.8/node_modules/react/compiler-runtime.js",
-    "node_modules/.pnpm/react@19.2.8/node_modules/react/index.js",
-    "node_modules/.pnpm/react@19.2.8/node_modules/react/jsx-runtime.js",
-    "node_modules/.pnpm/scheduler@0.27.0/node_modules/scheduler/cjs/scheduler.production.js",
-    "node_modules/.pnpm/scheduler@0.27.0/node_modules/scheduler/index.js",
+    "node_modules/.pnpm/react-dom@19.3.0_react@19.3.0/node_modules/react-dom/cjs/react-dom-client.production.js",
+    "node_modules/.pnpm/react-dom@19.3.0_react@19.3.0/node_modules/react-dom/cjs/react-dom.production.js",
+    "node_modules/.pnpm/react-dom@19.3.0_react@19.3.0/node_modules/react-dom/client.js",
+    "node_modules/.pnpm/react-dom@19.3.0_react@19.3.0/node_modules/react-dom/index.js",
+    "node_modules/.pnpm/react@19.3.0/node_modules/react/cjs/react-compiler-runtime.production.js",
+    "node_modules/.pnpm/react@19.3.0/node_modules/react/cjs/react-jsx-runtime.production.js",
+    "node_modules/.pnpm/react@19.3.0/node_modules/react/cjs/react.production.js",
+    "node_modules/.pnpm/react@19.3.0/node_modules/react/compiler-runtime.js",
+    "node_modules/.pnpm/react@19.3.0/node_modules/react/index.js",
+    "node_modules/.pnpm/react@19.3.0/node_modules/react/jsx-runtime.js",
+    "node_modules/.pnpm/scheduler@0.28.0/node_modules/scheduler/cjs/scheduler.production.js",
+    "node_modules/.pnpm/scheduler@0.28.0/node_modules/scheduler/index.js",
     "packages/core/src/game/graphemes.ts",
     "packages/portal/src/playable/LocalSoloAuthority.contract.ts",
     "packages/portal/src/playable/LocalSoloAuthority.ts",
@@ -45,16 +45,16 @@
   ],
   "chunks": [
     {
-      "file": "assets/index-BQCSII38.js",
+      "file": "assets/index-rJHgvFjn.js",
       "entry": true,
       "dynamicEntry": false,
       "imports": [
-        "assets/vendor-react-D5RwWBEv.js",
+        "assets/vendor-react-CzolT8tg.js",
         "assets/core-game-CbSzCw0b.js",
         "assets/rolldown-runtime-Czjbc987.js"
       ],
       "dynamicImports": [],
-      "sha256": "288bd5bd6d4eb83549f78b9f3209fe0761566feb67236139ded4bbe616e3be8b"
+      "sha256": "9579ed413e02c7f1e7d27b55a393c214e0fbbba0d3e14ca398cae018634ddae2"
     },
     {
       "file": "assets/core-game-CbSzCw0b.js",
@@ -75,14 +75,14 @@
       "sha256": "8e1de6b69118fd7bae15fd7ae6ac3033b575231de9a0931c99a9f53200fc88c6"
     },
     {
-      "file": "assets/vendor-react-D5RwWBEv.js",
+      "file": "assets/vendor-react-CzolT8tg.js",
       "entry": false,
       "dynamicEntry": false,
       "imports": [
         "assets/rolldown-runtime-Czjbc987.js"
       ],
       "dynamicImports": [],
-      "sha256": "8ad6a210248228d77bd9820a1980948dc77df6135d9e9b38607f8683d69c7775"
+      "sha256": "17edcf9bd2f8eb65ec3547491935a3e9a658416faa23d41a9148c62312551b81"
     }
   ],
   "files": [
@@ -91,28 +91,28 @@
       "sha256": "7c28b1a52eabdefbff7197a7fea69623b0952e4a7e0796343e22e7707bfbbd45"
     },
     {
-      "file": "assets/index-BQCSII38.js",
-      "sha256": "288bd5bd6d4eb83549f78b9f3209fe0761566feb67236139ded4bbe616e3be8b"
-    },
-    {
       "file": "assets/index-DhsmAOC4.css",
       "sha256": "838a7feff2b201fe61bd0afd5e7a216ca355ba0b7386d1adc94780b097dc1be0"
+    },
+    {
+      "file": "assets/index-rJHgvFjn.js",
+      "sha256": "9579ed413e02c7f1e7d27b55a393c214e0fbbba0d3e14ca398cae018634ddae2"
     },
     {
       "file": "assets/rolldown-runtime-Czjbc987.js",
       "sha256": "8e1de6b69118fd7bae15fd7ae6ac3033b575231de9a0931c99a9f53200fc88c6"
     },
     {
-      "file": "assets/vendor-react-D5RwWBEv.js",
-      "sha256": "8ad6a210248228d77bd9820a1980948dc77df6135d9e9b38607f8683d69c7775"
+      "file": "assets/vendor-react-CzolT8tg.js",
+      "sha256": "17edcf9bd2f8eb65ec3547491935a3e9a658416faa23d41a9148c62312551b81"
     },
     {
       "file": "index.html",
-      "sha256": "5ac1a5e1a979caf3dd47a7e12d7fb217fc4613fdbc35dd830bf6fa096e06b443"
+      "sha256": "ef70b6ef072b270c331f62ca81e788728e7a2e4c22ec399f7a1e3a29a205fa02"
     },
     {
       "file": "third-party-licenses.txt",
-      "sha256": "fa24de5e41ed08068c63f4b6a349f9afe2cd026168eaff86c876f3f61b3641f7"
+      "sha256": "879df39161840b5e3cc2ea3f14771d8bba7ad61cb5579410573d78a18327e1f3"
     },
     {
       "file": "youtube-content-manifest.json",

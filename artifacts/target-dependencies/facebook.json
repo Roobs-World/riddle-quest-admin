@@ -52,416 +52,427 @@
     "assets/images/backspace-key.svg",
     "assets/images/coin.svg",
     "assets/images/main-logo.webp",
-    "node_modules/.pnpm/@firebase+app-check@0.13.1_@firebase+app@0.16.1/node_modules/@firebase/app-check/dist/esm/index.esm.js",
-    "node_modules/.pnpm/@firebase+app@0.16.1/node_modules/@firebase/app/dist/esm/index.esm.js",
-    "node_modules/.pnpm/@firebase+auth@1.13.5_@firebase+app@0.16.1/node_modules/@firebase/auth/dist/esm/index-CvXU3_1x.js",
-    "node_modules/.pnpm/@firebase+auth@1.13.5_@firebase+app@0.16.1/node_modules/@firebase/auth/dist/esm/index.js",
+    "node_modules/.pnpm/@firebase+app-check@0.13.1_@firebase+app@0.16.2/node_modules/@firebase/app-check/dist/esm/index.esm.js",
+    "node_modules/.pnpm/@firebase+app@0.16.2/node_modules/@firebase/app/dist/esm/index.esm.js",
+    "node_modules/.pnpm/@firebase+auth@1.13.6_@firebase+app@0.16.2/node_modules/@firebase/auth/dist/esm/index-4NFEPWkC.js",
+    "node_modules/.pnpm/@firebase+auth@1.13.6_@firebase+app@0.16.2/node_modules/@firebase/auth/dist/esm/index.js",
     "node_modules/.pnpm/@firebase+component@0.7.5/node_modules/@firebase/component/dist/esm/index.esm.js",
     "node_modules/.pnpm/@firebase+database@1.1.5/node_modules/@firebase/database/dist/index.esm.js",
-    "node_modules/.pnpm/@firebase+firestore@4.17.1_@firebase+app@0.16.1/node_modules/@firebase/firestore/dist/lite/common-BoLGakHo.esm.js",
-    "node_modules/.pnpm/@firebase+firestore@4.17.1_@firebase+app@0.16.1/node_modules/@firebase/firestore/dist/lite/index.browser.esm.js",
-    "node_modules/.pnpm/@firebase+functions@0.14.0_@firebase+app@0.16.1/node_modules/@firebase/functions/dist/esm/index.esm.js",
+    "node_modules/.pnpm/@firebase+firestore@4.17.2_@firebase+app@0.16.2/node_modules/@firebase/firestore/dist/lite/common-B8fiiKst.esm.js",
+    "node_modules/.pnpm/@firebase+firestore@4.17.2_@firebase+app@0.16.2/node_modules/@firebase/firestore/dist/lite/index.browser.esm.js",
+    "node_modules/.pnpm/@firebase+functions@0.14.0_@firebase+app@0.16.2/node_modules/@firebase/functions/dist/esm/index.esm.js",
     "node_modules/.pnpm/@firebase+logger@0.5.2/node_modules/@firebase/logger/dist/esm/index.esm.js",
     "node_modules/.pnpm/@firebase+util@1.15.3/node_modules/@firebase/util/dist/index.esm.js",
     "node_modules/.pnpm/@firebase+util@1.15.3/node_modules/@firebase/util/dist/postinstall.mjs",
     "node_modules/.pnpm/@firebase+webchannel-wrapper@1.0.7/node_modules/@firebase/webchannel-wrapper/dist/bloom-blob/esm/bloom_blob_es2018.js",
-    "node_modules/.pnpm/@sentry+browser-utils@10.70.0/node_modules/@sentry/browser-utils/build/esm/debug-build.js",
-    "node_modules/.pnpm/@sentry+browser-utils@10.70.0/node_modules/@sentry/browser-utils/build/esm/getNativeImplementation.js",
-    "node_modules/.pnpm/@sentry+browser-utils@10.70.0/node_modules/@sentry/browser-utils/build/esm/htmlTreeAsString.js",
-    "node_modules/.pnpm/@sentry+browser-utils@10.70.0/node_modules/@sentry/browser-utils/build/esm/instrument/dom.js",
-    "node_modules/.pnpm/@sentry+browser-utils@10.70.0/node_modules/@sentry/browser-utils/build/esm/instrument/history.js",
-    "node_modules/.pnpm/@sentry+browser-utils@10.70.0/node_modules/@sentry/browser-utils/build/esm/instrument/xhr.js",
-    "node_modules/.pnpm/@sentry+browser-utils@10.70.0/node_modules/@sentry/browser-utils/build/esm/is.js",
-    "node_modules/.pnpm/@sentry+browser-utils@10.70.0/node_modules/@sentry/browser-utils/build/esm/metrics/web-vitals/lib/globalListeners.js",
-    "node_modules/.pnpm/@sentry+browser-utils@10.70.0/node_modules/@sentry/browser-utils/build/esm/metrics/web-vitals/lib/runOnce.js",
-    "node_modules/.pnpm/@sentry+browser-utils@10.70.0/node_modules/@sentry/browser-utils/build/esm/metrics/web-vitals/lib/whenIdleOrHidden.js",
-    "node_modules/.pnpm/@sentry+browser-utils@10.70.0/node_modules/@sentry/browser-utils/build/esm/types.js",
-    "node_modules/.pnpm/@sentry+browser@10.70.0/node_modules/@sentry/browser/build/npm/esm/prod/client.js",
-    "node_modules/.pnpm/@sentry+browser@10.70.0/node_modules/@sentry/browser/build/npm/esm/prod/debug-build.js",
-    "node_modules/.pnpm/@sentry+browser@10.70.0/node_modules/@sentry/browser/build/npm/esm/prod/eventbuilder.js",
-    "node_modules/.pnpm/@sentry+browser@10.70.0/node_modules/@sentry/browser/build/npm/esm/prod/helpers.js",
-    "node_modules/.pnpm/@sentry+browser@10.70.0/node_modules/@sentry/browser/build/npm/esm/prod/integrations/breadcrumbs.js",
-    "node_modules/.pnpm/@sentry+browser@10.70.0/node_modules/@sentry/browser/build/npm/esm/prod/integrations/browserapierrors.js",
-    "node_modules/.pnpm/@sentry+browser@10.70.0/node_modules/@sentry/browser/build/npm/esm/prod/integrations/browsersession.js",
-    "node_modules/.pnpm/@sentry+browser@10.70.0/node_modules/@sentry/browser/build/npm/esm/prod/integrations/culturecontext.js",
-    "node_modules/.pnpm/@sentry+browser@10.70.0/node_modules/@sentry/browser/build/npm/esm/prod/integrations/globalhandlers.js",
-    "node_modules/.pnpm/@sentry+browser@10.70.0/node_modules/@sentry/browser/build/npm/esm/prod/integrations/httpcontext.js",
-    "node_modules/.pnpm/@sentry+browser@10.70.0/node_modules/@sentry/browser/build/npm/esm/prod/integrations/linkederrors.js",
-    "node_modules/.pnpm/@sentry+browser@10.70.0/node_modules/@sentry/browser/build/npm/esm/prod/normalizeStringifyValue.js",
-    "node_modules/.pnpm/@sentry+browser@10.70.0/node_modules/@sentry/browser/build/npm/esm/prod/sdk.js",
-    "node_modules/.pnpm/@sentry+browser@10.70.0/node_modules/@sentry/browser/build/npm/esm/prod/stack-parsers.js",
-    "node_modules/.pnpm/@sentry+browser@10.70.0/node_modules/@sentry/browser/build/npm/esm/prod/transports/fetch.js",
-    "node_modules/.pnpm/@sentry+browser@10.70.0/node_modules/@sentry/browser/build/npm/esm/prod/utils/detectBrowserExtension.js",
-    "node_modules/.pnpm/@sentry+conventions@0.16.0/node_modules/@sentry/conventions/dist/attributes.mjs",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/api.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/asyncContext/index.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/asyncContext/stackStrategy.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/attributes.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/breadcrumbs.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/carrier.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/client.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/constants.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/currentScopes.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/debug-build.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/defaultScopes.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/envelope.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/eventProcessors.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/exports.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/instrument/console.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/instrument/fetch.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/instrument/globalError.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/instrument/globalUnhandledRejection.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/instrument/handlers.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/integration.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/integrations/conversationId.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/integrations/dedupe.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/integrations/eventFilters.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/integrations/functiontostring.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/logs/envelope.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/logs/internal.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/metrics/envelope.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/metrics/internal.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/scope.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/sdk.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/semanticAttributes.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/session.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/tracing/dynamicSamplingContext.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/tracing/sentryNonRecordingSpan.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/tracing/spans/beforeSendSpan.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/tracing/spans/captureSpan.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/tracing/spans/extractGenAiSpans.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/tracing/spans/hasSpanStreamingEnabled.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/tracing/spans/spanJsonToStreamedSpan.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/tracing/utils.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/transports/base.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/utils/aggregate-errors.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/utils/baggage.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/utils/breadcrumb-log-level.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/utils/browser.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/utils/chain-and-copy-promiselike.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/utils/clientreport.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/utils/data-collection/defaultPiiToCollectionOptions.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/utils/data-collection/filtering-snippets.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/utils/data-collection/resolveDataCollectionOptions.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/utils/debug-ids.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/utils/debug-logger.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/utils/dsn.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/utils/env.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/utils/envelope.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/utils/eventUtils.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/utils/eventbuilder.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/utils/hasSpansEnabled.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/utils/ipAddress.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/utils/is.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/utils/isBrowser.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/utils/merge.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/utils/misc.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/utils/node.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/utils/normalizationHints.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/utils/normalize.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/utils/object.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/utils/parseSampleRate.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/utils/prepareEvent.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/utils/promisebuffer.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/utils/propagationContext.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/utils/randomSafeContext.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/utils/ratelimit.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/utils/scopeData.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/utils/sdkMetadata.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/utils/severity.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/utils/should-ignore-span.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/utils/spanOnScope.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/utils/spanUtils.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/utils/stacktrace.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/utils/string.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/utils/supports.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/utils/syncpromise.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/utils/time.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/utils/timer.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/utils/transactionEvent.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/utils/url.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/utils/version.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/utils/weakRef.js",
-    "node_modules/.pnpm/@sentry+core@10.70.0/node_modules/@sentry/core/build/esm/utils/worldwide.js",
-    "node_modules/.pnpm/firebase@12.18.0/node_modules/firebase/app-check/dist/esm/index.esm.js",
-    "node_modules/.pnpm/firebase@12.18.0/node_modules/firebase/app/dist/esm/index.esm.js",
-    "node_modules/.pnpm/firebase@12.18.0/node_modules/firebase/auth/dist/esm/index.esm.js",
-    "node_modules/.pnpm/firebase@12.18.0/node_modules/firebase/database/dist/esm/index.esm.js",
-    "node_modules/.pnpm/firebase@12.18.0/node_modules/firebase/firestore/lite/dist/esm/index.esm.js",
-    "node_modules/.pnpm/firebase@12.18.0/node_modules/firebase/functions/dist/esm/index.esm.js",
+    "node_modules/.pnpm/@sentry+browser-utils@11.1.0/node_modules/@sentry/browser-utils/build/esm/component-name.js",
+    "node_modules/.pnpm/@sentry+browser-utils@11.1.0/node_modules/@sentry/browser-utils/build/esm/debug-build.js",
+    "node_modules/.pnpm/@sentry+browser-utils@11.1.0/node_modules/@sentry/browser-utils/build/esm/getLocationHref.js",
+    "node_modules/.pnpm/@sentry+browser-utils@11.1.0/node_modules/@sentry/browser-utils/build/esm/getNativeImplementation.js",
+    "node_modules/.pnpm/@sentry+browser-utils@11.1.0/node_modules/@sentry/browser-utils/build/esm/htmlTreeAsString.js",
+    "node_modules/.pnpm/@sentry+browser-utils@11.1.0/node_modules/@sentry/browser-utils/build/esm/instrumentation/dom.js",
+    "node_modules/.pnpm/@sentry+browser-utils@11.1.0/node_modules/@sentry/browser-utils/build/esm/instrumentation/history.js",
+    "node_modules/.pnpm/@sentry+browser-utils@11.1.0/node_modules/@sentry/browser-utils/build/esm/instrumentation/xhr.js",
+    "node_modules/.pnpm/@sentry+browser-utils@11.1.0/node_modules/@sentry/browser-utils/build/esm/is.js",
+    "node_modules/.pnpm/@sentry+browser-utils@11.1.0/node_modules/@sentry/browser-utils/build/esm/types.js",
+    "node_modules/.pnpm/@sentry+browser-utils@11.1.0/node_modules/@sentry/browser-utils/build/esm/web-vitals/utils.js",
+    "node_modules/.pnpm/@sentry+browser@11.1.0/node_modules/@sentry/browser/build/npm/esm/prod/client.js",
+    "node_modules/.pnpm/@sentry+browser@11.1.0/node_modules/@sentry/browser/build/npm/esm/prod/debug-build.js",
+    "node_modules/.pnpm/@sentry+browser@11.1.0/node_modules/@sentry/browser/build/npm/esm/prod/eventbuilder.js",
+    "node_modules/.pnpm/@sentry+browser@11.1.0/node_modules/@sentry/browser/build/npm/esm/prod/helpers.js",
+    "node_modules/.pnpm/@sentry+browser@11.1.0/node_modules/@sentry/browser/build/npm/esm/prod/integrations/breadcrumbs.js",
+    "node_modules/.pnpm/@sentry+browser@11.1.0/node_modules/@sentry/browser/build/npm/esm/prod/integrations/browserapierrors.js",
+    "node_modules/.pnpm/@sentry+browser@11.1.0/node_modules/@sentry/browser/build/npm/esm/prod/integrations/browsersession.js",
+    "node_modules/.pnpm/@sentry+browser@11.1.0/node_modules/@sentry/browser/build/npm/esm/prod/integrations/culturecontext.js",
+    "node_modules/.pnpm/@sentry+browser@11.1.0/node_modules/@sentry/browser/build/npm/esm/prod/integrations/globalhandlers.js",
+    "node_modules/.pnpm/@sentry+browser@11.1.0/node_modules/@sentry/browser/build/npm/esm/prod/integrations/httpcontext.js",
+    "node_modules/.pnpm/@sentry+browser@11.1.0/node_modules/@sentry/browser/build/npm/esm/prod/integrations/linkederrors.js",
+    "node_modules/.pnpm/@sentry+browser@11.1.0/node_modules/@sentry/browser/build/npm/esm/prod/normalizeStringifyValue.js",
+    "node_modules/.pnpm/@sentry+browser@11.1.0/node_modules/@sentry/browser/build/npm/esm/prod/sdk.js",
+    "node_modules/.pnpm/@sentry+browser@11.1.0/node_modules/@sentry/browser/build/npm/esm/prod/stack-parsers.js",
+    "node_modules/.pnpm/@sentry+browser@11.1.0/node_modules/@sentry/browser/build/npm/esm/prod/transports/fetch.js",
+    "node_modules/.pnpm/@sentry+browser@11.1.0/node_modules/@sentry/browser/build/npm/esm/prod/utils/detectBrowserExtension.js",
+    "node_modules/.pnpm/@sentry+conventions@0.24.0/node_modules/@sentry/conventions/dist/attributes.mjs",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/api.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/asyncContext/index.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/asyncContext/stackStrategy.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/attributes.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/breadcrumbs.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/carrier.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/client.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/constants.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/currentScopes.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/debug-build.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/defaultScopes.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/envelope.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/eventProcessors.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/exports.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/instrument/console.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/instrument/fetch.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/instrument/globalError.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/instrument/globalUnhandledRejection.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/instrument/handlers.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/integration.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/integrations/console.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/integrations/conversationId.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/integrations/dedupe.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/integrations/eventFilters.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/integrations/functiontostring.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/logs/envelope.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/logs/internal.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/metrics/envelope.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/metrics/internal.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/scope.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/sdk.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/semanticAttributes.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/session.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/tracing/constants.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/tracing/dynamicSamplingContext.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/tracing/sentryNonRecordingSpan.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/tracing/spans/beforeSendSpan.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/tracing/spans/captureSpan.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/tracing/spans/envelope.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/tracing/spans/extractGenAiSpans.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/tracing/spans/hasSpanStreamingEnabled.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/tracing/spans/spanJsonToStreamedSpan.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/tracing/spanstatus.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/tracing/utils.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/transports/base.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/types/spanStatus.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/utils/aggregate-errors.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/utils/baggage.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/utils/breadcrumb-log-level.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/utils/chain-and-copy-promiselike.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/utils/clientreport.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/utils/data-collection/filterCollectedUrl.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/utils/data-collection/filterKeyValueData.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/utils/data-collection/filterQueryParams.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/utils/data-collection/filterUrlQuery.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/utils/data-collection/filtering-snippets.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/utils/data-collection/resolveDataCollectionOptions.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/utils/debug-ids.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/utils/debug-logger.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/utils/dsn.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/utils/env.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/utils/envelope.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/utils/errorSpanAttribution.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/utils/eventUtils.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/utils/eventbuilder.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/utils/hasSpansEnabled.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/utils/ipAddress.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/utils/is.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/utils/isBrowser.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/utils/merge.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/utils/misc.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/utils/node.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/utils/normalizationHints.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/utils/normalize.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/utils/object.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/utils/parseSampleRate.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/utils/prepareEvent.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/utils/promisebuffer.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/utils/propagationContext.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/utils/randomSafeContext.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/utils/ratelimit.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/utils/safeCallback.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/utils/scopeData.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/utils/sdkMetadata.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/utils/severity.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/utils/should-ignore-span.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/utils/spanOnScope.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/utils/spanUtils.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/utils/stacktrace.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/utils/string.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/utils/supports.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/utils/syncpromise.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/utils/time.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/utils/timer.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/utils/transactionEvent.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/utils/url.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/utils/version.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/utils/warnAboutIgnoredTransactionOptions.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/utils/weakRef.js",
+    "node_modules/.pnpm/@sentry+core@11.1.0/node_modules/@sentry/core/build/esm/utils/worldwide.js",
+    "node_modules/.pnpm/firebase@12.19.0/node_modules/firebase/app-check/dist/esm/index.esm.js",
+    "node_modules/.pnpm/firebase@12.19.0/node_modules/firebase/app/dist/esm/index.esm.js",
+    "node_modules/.pnpm/firebase@12.19.0/node_modules/firebase/auth/dist/esm/index.esm.js",
+    "node_modules/.pnpm/firebase@12.19.0/node_modules/firebase/database/dist/esm/index.esm.js",
+    "node_modules/.pnpm/firebase@12.19.0/node_modules/firebase/firestore/lite/dist/esm/index.esm.js",
+    "node_modules/.pnpm/firebase@12.19.0/node_modules/firebase/functions/dist/esm/index.esm.js",
     "node_modules/.pnpm/idb@7.1.1/node_modules/idb/build/index.js",
     "node_modules/.pnpm/idb@7.1.1/node_modules/idb/build/wrap-idb-value.js",
-    "node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/cjs/react-dom-client.production.js",
-    "node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/cjs/react-dom.production.js",
-    "node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/client.js",
-    "node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/index.js",
-    "node_modules/.pnpm/react@19.2.8/node_modules/react/cjs/react-compiler-runtime.production.js",
-    "node_modules/.pnpm/react@19.2.8/node_modules/react/cjs/react-jsx-runtime.production.js",
-    "node_modules/.pnpm/react@19.2.8/node_modules/react/cjs/react.production.js",
-    "node_modules/.pnpm/react@19.2.8/node_modules/react/compiler-runtime.js",
-    "node_modules/.pnpm/react@19.2.8/node_modules/react/index.js",
-    "node_modules/.pnpm/react@19.2.8/node_modules/react/jsx-runtime.js",
-    "node_modules/.pnpm/scheduler@0.27.0/node_modules/scheduler/cjs/scheduler.production.js",
-    "node_modules/.pnpm/scheduler@0.27.0/node_modules/scheduler/index.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/cameras/ArrayCamera.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/cameras/Camera.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/cameras/CubeCamera.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/cameras/OrthographicCamera.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/cameras/PerspectiveCamera.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/constants.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/core/BufferAttribute.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/core/BufferGeometry.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/core/EventDispatcher.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/core/InterleavedBuffer.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/core/InterleavedBufferAttribute.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/core/Layers.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/core/Object3D.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/core/RenderTarget.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/extras/ImageUtils.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/extras/PMREMGenerator.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/extras/TextureUtils.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/geometries/BoxGeometry.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/geometries/PlaneGeometry.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/geometries/RingGeometry.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/geometries/SphereGeometry.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/lights/AmbientLight.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/lights/Light.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/lights/LightShadow.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/lights/PointLight.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/lights/PointLightShadow.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/loaders/Cache.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/loaders/ImageLoader.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/loaders/Loader.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/loaders/LoadingManager.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/loaders/TextureLoader.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/materials/Material.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/materials/MeshBasicMaterial.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/materials/MeshDepthMaterial.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/materials/MeshDistanceMaterial.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/materials/MeshPhongMaterial.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/materials/PointsMaterial.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/materials/RawShaderMaterial.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/materials/ShaderMaterial.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/materials/SpriteMaterial.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/math/Box3.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/math/Color.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/math/ColorManagement.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/math/Euler.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/math/Frustum.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/math/MathUtils.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/math/Matrix3.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/math/Matrix4.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/math/Plane.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/math/Quaternion.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/math/Ray.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/math/Sphere.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/math/Triangle.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/math/Vector2.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/math/Vector3.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/math/Vector4.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/objects/Group.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/objects/Mesh.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/objects/Points.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/objects/Sprite.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/WebGLCubeRenderTarget.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/WebGLRenderTarget.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/WebGLRenderer.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/DFGLUTData.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/alphahash_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/alphahash_pars_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/alphamap_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/alphamap_pars_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/alphatest_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/alphatest_pars_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/aomap_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/aomap_pars_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/batching_pars_vertex.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/batching_vertex.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/begin_vertex.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/beginnormal_vertex.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/bsdfs.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/bumpmap_pars_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/clearcoat_normal_fragment_begin.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/clearcoat_normal_fragment_maps.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/clearcoat_pars_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/clipping_planes_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/clipping_planes_pars_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/clipping_planes_pars_vertex.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/clipping_planes_vertex.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/color_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/color_pars_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/color_pars_vertex.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/color_vertex.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/colorspace_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/colorspace_pars_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/common.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/cube_uv_reflection_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/default_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/default_vertex.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/defaultnormal_vertex.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/displacementmap_pars_vertex.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/displacementmap_vertex.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/dithering_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/dithering_pars_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/emissivemap_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/emissivemap_pars_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/envmap_common_pars_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/envmap_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/envmap_pars_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/envmap_pars_vertex.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/envmap_physical_pars_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/envmap_vertex.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/fog_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/fog_pars_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/fog_pars_vertex.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/fog_vertex.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/gradientmap_pars_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/iridescence_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/iridescence_pars_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/lightmap_pars_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/lightprobes_pars_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/lights_fragment_begin.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/lights_fragment_end.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/lights_fragment_maps.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/lights_lambert_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/lights_lambert_pars_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/lights_pars_begin.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/lights_phong_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/lights_phong_pars_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/lights_physical_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/lights_physical_pars_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/lights_toon_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/lights_toon_pars_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/logdepthbuf_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/logdepthbuf_pars_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/logdepthbuf_pars_vertex.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/logdepthbuf_vertex.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/map_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/map_pars_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/map_particle_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/map_particle_pars_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/metalnessmap_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/metalnessmap_pars_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/morphcolor_vertex.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/morphinstance_vertex.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/morphnormal_vertex.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/morphtarget_pars_vertex.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/morphtarget_vertex.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/normal_fragment_begin.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/normal_fragment_maps.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/normal_pars_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/normal_pars_vertex.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/normal_vertex.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/normalmap_pars_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/opaque_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/packing.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/premultiplied_alpha_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/project_vertex.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/roughnessmap_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/roughnessmap_pars_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/shadowmap_pars_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/shadowmap_pars_vertex.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/shadowmap_vertex.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/shadowmask_pars_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/skinbase_vertex.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/skinning_pars_vertex.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/skinning_vertex.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/skinnormal_vertex.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/specularmap_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/specularmap_pars_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/tonemapping_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/tonemapping_pars_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/transmission_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/transmission_pars_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/uv_pars_fragment.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/uv_pars_vertex.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/uv_vertex.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderChunk/worldpos_vertex.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderLib.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderLib/background.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderLib/backgroundCube.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderLib/cube.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderLib/depth.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderLib/distance.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderLib/equirect.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderLib/linedashed.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderLib/meshbasic.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderLib/meshlambert.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderLib/meshmatcap.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderLib/meshnormal.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderLib/meshphong.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderLib/meshphysical.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderLib/meshtoon.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderLib/points.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderLib/shadow.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderLib/sprite.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/ShaderLib/vsm.glsl.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/UniformsLib.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/shaders/UniformsUtils.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/webgl/WebGLAnimation.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/webgl/WebGLAttributes.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/webgl/WebGLBackground.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/webgl/WebGLBindingStates.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/webgl/WebGLBufferRenderer.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/webgl/WebGLCapabilities.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/webgl/WebGLClipping.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/webgl/WebGLEnvironments.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/webgl/WebGLExtensions.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/webgl/WebGLGeometries.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/webgl/WebGLIndexedBufferRenderer.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/webgl/WebGLInfo.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/webgl/WebGLLights.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/webgl/WebGLMaterials.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/webgl/WebGLMorphtargets.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/webgl/WebGLObjects.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/webgl/WebGLOutput.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/webgl/WebGLProgram.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/webgl/WebGLPrograms.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/webgl/WebGLProperties.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/webgl/WebGLRenderLists.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/webgl/WebGLRenderStates.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/webgl/WebGLShader.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/webgl/WebGLShaderCache.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/webgl/WebGLShadowMap.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/webgl/WebGLState.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/webgl/WebGLTextures.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/webgl/WebGLUniforms.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/webgl/WebGLUniformsGroups.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/webgl/WebGLUtils.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/webxr/WebXRController.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/webxr/WebXRDepthSensing.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/renderers/webxr/WebXRManager.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/scenes/Scene.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/textures/CanvasTexture.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/textures/CubeDepthTexture.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/textures/CubeTexture.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/textures/Data3DTexture.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/textures/DataArrayTexture.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/textures/DataTexture.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/textures/DepthTexture.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/textures/ExternalTexture.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/textures/Source.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/textures/Texture.js",
-    "node_modules/.pnpm/three@0.185.1/node_modules/three/src/utils.js",
-    "node_modules/.pnpm/zod@4.4.3/node_modules/zod/v4/classic/compat.js",
-    "node_modules/.pnpm/zod@4.4.3/node_modules/zod/v4/classic/errors.js",
-    "node_modules/.pnpm/zod@4.4.3/node_modules/zod/v4/classic/iso.js",
-    "node_modules/.pnpm/zod@4.4.3/node_modules/zod/v4/classic/parse.js",
-    "node_modules/.pnpm/zod@4.4.3/node_modules/zod/v4/classic/schemas.js",
-    "node_modules/.pnpm/zod@4.4.3/node_modules/zod/v4/core/api.js",
-    "node_modules/.pnpm/zod@4.4.3/node_modules/zod/v4/core/checks.js",
-    "node_modules/.pnpm/zod@4.4.3/node_modules/zod/v4/core/core.js",
-    "node_modules/.pnpm/zod@4.4.3/node_modules/zod/v4/core/doc.js",
-    "node_modules/.pnpm/zod@4.4.3/node_modules/zod/v4/core/errors.js",
-    "node_modules/.pnpm/zod@4.4.3/node_modules/zod/v4/core/json-schema-processors.js",
-    "node_modules/.pnpm/zod@4.4.3/node_modules/zod/v4/core/parse.js",
-    "node_modules/.pnpm/zod@4.4.3/node_modules/zod/v4/core/regexes.js",
-    "node_modules/.pnpm/zod@4.4.3/node_modules/zod/v4/core/registries.js",
-    "node_modules/.pnpm/zod@4.4.3/node_modules/zod/v4/core/schemas.js",
-    "node_modules/.pnpm/zod@4.4.3/node_modules/zod/v4/core/to-json-schema.js",
-    "node_modules/.pnpm/zod@4.4.3/node_modules/zod/v4/core/util.js",
-    "node_modules/.pnpm/zod@4.4.3/node_modules/zod/v4/core/versions.js",
+    "node_modules/.pnpm/react-dom@19.3.0_react@19.3.0/node_modules/react-dom/cjs/react-dom-client.production.js",
+    "node_modules/.pnpm/react-dom@19.3.0_react@19.3.0/node_modules/react-dom/cjs/react-dom.production.js",
+    "node_modules/.pnpm/react-dom@19.3.0_react@19.3.0/node_modules/react-dom/client.js",
+    "node_modules/.pnpm/react-dom@19.3.0_react@19.3.0/node_modules/react-dom/index.js",
+    "node_modules/.pnpm/react@19.3.0/node_modules/react/cjs/react-compiler-runtime.production.js",
+    "node_modules/.pnpm/react@19.3.0/node_modules/react/cjs/react-jsx-runtime.production.js",
+    "node_modules/.pnpm/react@19.3.0/node_modules/react/cjs/react.production.js",
+    "node_modules/.pnpm/react@19.3.0/node_modules/react/compiler-runtime.js",
+    "node_modules/.pnpm/react@19.3.0/node_modules/react/index.js",
+    "node_modules/.pnpm/react@19.3.0/node_modules/react/jsx-runtime.js",
+    "node_modules/.pnpm/scheduler@0.28.0/node_modules/scheduler/cjs/scheduler.production.js",
+    "node_modules/.pnpm/scheduler@0.28.0/node_modules/scheduler/index.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/cameras/ArrayCamera.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/cameras/Camera.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/cameras/CubeCamera.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/cameras/OrthographicCamera.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/cameras/PerspectiveCamera.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/constants.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/core/BufferAttribute.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/core/BufferGeometry.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/core/EventDispatcher.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/core/InterleavedBuffer.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/core/InterleavedBufferAttribute.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/core/Layers.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/core/Object3D.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/core/RenderTarget.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/extras/ImageUtils.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/extras/PMREMGenerator.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/extras/TextureUtils.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/geometries/BoxGeometry.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/geometries/PlaneGeometry.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/geometries/RingGeometry.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/geometries/SphereGeometry.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/lights/AmbientLight.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/lights/Light.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/lights/LightShadow.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/lights/PointLight.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/lights/PointLightShadow.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/loaders/Cache.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/loaders/ImageLoader.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/loaders/Loader.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/loaders/LoadingManager.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/loaders/TextureLoader.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/materials/Material.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/materials/MeshBasicMaterial.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/materials/MeshDepthMaterial.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/materials/MeshDistanceMaterial.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/materials/MeshPhongMaterial.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/materials/PointsMaterial.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/materials/RawShaderMaterial.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/materials/ShaderMaterial.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/materials/SpriteMaterial.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/math/Box3.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/math/Color.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/math/ColorManagement.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/math/Euler.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/math/Frustum.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/math/MathUtils.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/math/Matrix3.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/math/Matrix4.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/math/Plane.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/math/Quaternion.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/math/Ray.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/math/Sphere.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/math/Triangle.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/math/Vector2.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/math/Vector3.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/math/Vector4.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/objects/Group.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/objects/Mesh.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/objects/Points.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/objects/Sprite.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/WebGLCubeRenderTarget.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/WebGLRenderTarget.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/WebGLRenderer.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/DFGLUTData.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/alphahash_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/alphahash_pars_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/alphamap_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/alphamap_pars_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/alphatest_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/alphatest_pars_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/aomap_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/aomap_pars_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/batching_pars_vertex.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/batching_vertex.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/begin_vertex.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/beginnormal_vertex.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/bsdfs.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/bumpmap_pars_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/clearcoat_normal_fragment_begin.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/clearcoat_normal_fragment_maps.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/clearcoat_pars_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/clipping_planes_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/clipping_planes_pars_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/clipping_planes_pars_vertex.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/clipping_planes_vertex.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/color_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/color_pars_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/color_pars_vertex.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/color_vertex.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/colorspace_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/colorspace_pars_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/common.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/cube_uv_reflection_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/default_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/default_vertex.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/defaultnormal_vertex.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/displacementmap_pars_vertex.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/displacementmap_vertex.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/dithering_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/dithering_pars_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/emissivemap_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/emissivemap_pars_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/envmap_common_pars_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/envmap_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/envmap_pars_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/envmap_pars_vertex.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/envmap_physical_pars_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/envmap_vertex.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/fog_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/fog_pars_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/fog_pars_vertex.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/fog_vertex.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/gradientmap_pars_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/iridescence_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/iridescence_pars_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/lightmap_pars_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/lightprobes_pars_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/lights_fragment_begin.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/lights_fragment_end.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/lights_fragment_maps.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/lights_lambert_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/lights_lambert_pars_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/lights_pars_begin.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/lights_phong_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/lights_phong_pars_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/lights_physical_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/lights_physical_pars_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/lights_toon_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/lights_toon_pars_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/logdepthbuf_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/logdepthbuf_pars_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/logdepthbuf_pars_vertex.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/logdepthbuf_vertex.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/map_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/map_pars_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/map_particle_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/map_particle_pars_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/metalnessmap_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/metalnessmap_pars_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/morphcolor_vertex.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/morphinstance_vertex.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/morphnormal_vertex.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/morphtarget_pars_vertex.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/morphtarget_vertex.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/normal_fragment_begin.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/normal_fragment_maps.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/normal_pars_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/normal_pars_vertex.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/normal_vertex.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/normalmap_pars_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/opaque_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/packing.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/premultiplied_alpha_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/project_vertex.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/roughnessmap_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/roughnessmap_pars_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/shadowmap_pars_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/shadowmap_pars_vertex.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/shadowmap_vertex.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/shadowmask_pars_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/skinbase_vertex.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/skinning_pars_vertex.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/skinning_vertex.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/skinnormal_vertex.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/specularmap_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/specularmap_pars_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/tonemapping_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/tonemapping_pars_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/transmission_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/transmission_pars_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/uv_pars_fragment.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/uv_pars_vertex.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/uv_vertex.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderChunk/worldpos_vertex.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderLib.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderLib/background.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderLib/backgroundCube.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderLib/cube.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderLib/depth.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderLib/distance.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderLib/equirect.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderLib/linedashed.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderLib/meshbasic.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderLib/meshlambert.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderLib/meshmatcap.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderLib/meshnormal.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderLib/meshphong.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderLib/meshphysical.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderLib/meshtoon.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderLib/points.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderLib/shadow.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderLib/sprite.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/ShaderLib/vsm.glsl.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/UniformsLib.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/shaders/UniformsUtils.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/webgl/WebGLAnimation.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/webgl/WebGLAttributes.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/webgl/WebGLBackground.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/webgl/WebGLBindingStates.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/webgl/WebGLBufferRenderer.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/webgl/WebGLCapabilities.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/webgl/WebGLClipping.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/webgl/WebGLEnvironments.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/webgl/WebGLExtensions.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/webgl/WebGLGeometries.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/webgl/WebGLIndexedBufferRenderer.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/webgl/WebGLInfo.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/webgl/WebGLLights.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/webgl/WebGLMaterials.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/webgl/WebGLMorphtargets.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/webgl/WebGLObjects.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/webgl/WebGLOutput.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/webgl/WebGLProgram.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/webgl/WebGLPrograms.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/webgl/WebGLProperties.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/webgl/WebGLRenderLists.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/webgl/WebGLRenderStates.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/webgl/WebGLShader.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/webgl/WebGLShaderCache.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/webgl/WebGLShadowMap.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/webgl/WebGLState.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/webgl/WebGLTextures.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/webgl/WebGLUniforms.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/webgl/WebGLUniformsGroups.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/webgl/WebGLUtils.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/webxr/WebXRController.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/webxr/WebXRDepthSensing.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/renderers/webxr/WebXRManager.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/scenes/Scene.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/textures/CanvasTexture.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/textures/CubeDepthTexture.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/textures/CubeTexture.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/textures/Data3DTexture.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/textures/DataArrayTexture.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/textures/DataTexture.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/textures/DepthTexture.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/textures/ExternalTexture.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/textures/Texture.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/textures/TextureSource.js",
+    "node_modules/.pnpm/three@0.186.1/node_modules/three/src/utils.js",
+    "node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/classic/compat.js",
+    "node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/classic/errors.js",
+    "node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/classic/parse.js",
+    "node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/classic/schemas.js",
+    "node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/core/api.js",
+    "node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/core/checks.js",
+    "node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/core/core.js",
+    "node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/core/doc.js",
+    "node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/core/errors.js",
+    "node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/core/json-schema-processors.js",
+    "node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/core/memoizer.js",
+    "node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/core/parse.js",
+    "node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/core/regexes.js",
+    "node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/core/registries.js",
+    "node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/core/schemas.js",
+    "node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/core/to-json-schema.js",
+    "node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/core/util.js",
+    "node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/core/versions.js",
+    "node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/en.js",
     "packages/core/src/bridge/constants.ts",
     "packages/core/src/bridge/index.ts",
     "packages/core/src/game/computeFeedback.ts",
@@ -1022,99 +1033,99 @@
   ],
   "chunks": [
     {
-      "file": "assets/index-Bm1NPoMo.js",
+      "file": "assets/index-BC9jnqms.js",
       "entry": true,
       "dynamicEntry": false,
       "imports": [
-        "assets/facebook-B39ATvm5.js"
+        "assets/facebook-COncUVEb.js"
       ],
       "dynamicImports": [],
-      "sha256": "10de76697a3b1d156237301c12f241351be2b42bbdcbc38ed7eec799e706719c"
+      "sha256": "69b3d54716b3adc51d41c3e1f68520be604f3cf4b2691af0dbfd0a4f515b4da3"
     },
     {
-      "file": "assets/FacebookFirebaseAppCheck-CJfkQnqB.js",
+      "file": "assets/FacebookFirebaseAppCheck-CZQhDicL.js",
       "entry": false,
       "dynamicEntry": true,
       "imports": [
         "assets/rolldown-runtime-BX80bFGj.js",
-        "assets/facebook-B39ATvm5.js",
-        "assets/vendor-firebase-CAnPaZge.js",
-        "assets/firebase-CQ-vyXzo.js"
+        "assets/facebook-COncUVEb.js",
+        "assets/vendor-firebase-CyFV1TBK.js",
+        "assets/firebase-BAlO4i7E.js"
       ],
       "dynamicImports": [],
-      "sha256": "9439cb5b7de255a766c610c3a2181ab408b18a95b197e92330c373020a8808fc"
+      "sha256": "e76e8b1a44c218be0ab24916c3ead696882e4335410b068cba7aecb0418f60f6"
     },
     {
-      "file": "assets/FirebasePresenceTransport-BuXvvOTv.js",
+      "file": "assets/FirebasePresenceTransport-BpyEB4qd.js",
       "entry": false,
       "dynamicEntry": true,
       "imports": [
         "assets/rolldown-runtime-BX80bFGj.js",
-        "assets/vendor-firebase-CAnPaZge.js",
-        "assets/firebase-CQ-vyXzo.js"
+        "assets/vendor-firebase-CyFV1TBK.js",
+        "assets/firebase-BAlO4i7E.js"
       ],
       "dynamicImports": [],
-      "sha256": "33bcfc43c57eb3cad1f7efba6a51fda29ac529ad429dd8eeb11520ca3972a52a"
+      "sha256": "390ea764872b505669f573ed203ba5fe5b9628a0ebf142ef850c612771bba31b"
     },
     {
-      "file": "assets/GameModalView-DtaE_Id5.js",
+      "file": "assets/GameModalView-Be2kRZJR.js",
       "entry": false,
       "dynamicEntry": true,
       "imports": [
         "assets/rolldown-runtime-BX80bFGj.js",
-        "assets/vendor-react-DZSEe6zt.js",
-        "assets/facebook-B39ATvm5.js",
-        "assets/raceSchemas-Bj0czjBN.js",
-        "assets/requestSchemas-BoVVrVTD.js"
+        "assets/vendor-react-BsJIBMEs.js",
+        "assets/facebook-COncUVEb.js",
+        "assets/raceSchemas-B1b0t5vO.js",
+        "assets/requestSchemas-kItSjLnW.js"
       ],
       "dynamicImports": [],
-      "sha256": "e3e92b36920573b11211987ef58eda97ed483283a5222eae9f6ea53435a1ce3a"
+      "sha256": "ee979764dd33f4cc984c3be97fd90833c2d0fb8ee7c934b06dbf3882c38905fb"
     },
     {
-      "file": "assets/PlatformPresenceSession-CD9Qlkc1.js",
+      "file": "assets/PlatformPresenceSession-CzEhWnuL.js",
       "entry": false,
       "dynamicEntry": true,
       "imports": [
         "assets/rolldown-runtime-BX80bFGj.js"
       ],
       "dynamicImports": [],
-      "sha256": "d8cabb33ef8ec091f4d0f5ee207aa400853f22167656db7d8a073be8a139f943"
+      "sha256": "52df05a575608dbd872f31e458127a4856f0819d7200623dc3cedc6a3381f037"
     },
     {
-      "file": "assets/RaceTo10Game-BDe0H6e_.js",
+      "file": "assets/RaceTo10Game-CbarA1iN.js",
       "entry": false,
       "dynamicEntry": true,
       "imports": [
         "assets/rolldown-runtime-BX80bFGj.js",
-        "assets/vendor-react-DZSEe6zt.js",
+        "assets/vendor-react-BsJIBMEs.js",
         "assets/core-game-DXo9-C3d.js",
-        "assets/facebook-B39ATvm5.js",
-        "assets/raceSchemas-Bj0czjBN.js",
-        "assets/race-C1FMyyk4.js",
-        "assets/bridge-D9MpUJWr.js"
+        "assets/facebook-COncUVEb.js",
+        "assets/raceSchemas-B1b0t5vO.js",
+        "assets/race-DosBUtzt.js",
+        "assets/bridge-DVAgs4K7.js"
       ],
       "dynamicImports": [],
-      "sha256": "59bb5e2e8d4bb08573913ee300240544bf06814cbc76fbf88ed2117efcfabb72"
+      "sha256": "bbdf2f4caacf53429199c3c8df7d369a21dd618e6aceba1a1fb70b573a69c981"
     },
     {
-      "file": "assets/SolarSystem-DwVh7aHE.js",
+      "file": "assets/SolarSystem-sK4Dz0ty.js",
       "entry": false,
       "dynamicEntry": true,
       "imports": [
         "assets/rolldown-runtime-BX80bFGj.js",
-        "assets/vendor-react-DZSEe6zt.js",
-        "assets/facebook-B39ATvm5.js",
-        "assets/vendor-three-DCllFb3O.js",
-        "assets/vendor-three-BxlKoL7k.js",
-        "assets/vendor-three-CBZSnZz1.js",
-        "assets/vendor-three-D31rZTDZ.js",
-        "assets/vendor-three-B-pukeHR.js",
-        "assets/vendor-three-D01N061H.js",
-        "assets/vendor-three-BQRrQ69_.js",
-        "assets/vendor-three-BEPZwxbG.js"
+        "assets/vendor-react-BsJIBMEs.js",
+        "assets/facebook-COncUVEb.js",
+        "assets/vendor-three-CqvblP5O.js",
+        "assets/vendor-three-ByJ-Rtdi.js",
+        "assets/vendor-three-BChfjRca.js",
+        "assets/vendor-three-j2n53szm.js",
+        "assets/vendor-three-Y1Z8nY45.js",
+        "assets/vendor-three-DsdThxkc.js",
+        "assets/vendor-three--DK9f_7z.js",
+        "assets/vendor-three-DdYm31wi.js"
       ],
       "dynamicImports": [],
-      "sha256": "1eaaabfd58a00c3001214902fdc600977edcac4499caae2c6094eac0fed4510e"
+      "sha256": "3a1d6bc0d6a9517385084b6406b634eebddfbd91cd5415bde2eebbae125de9eb"
     },
     {
       "file": "assets/aboutLegal-BAlSQDJA.js",
@@ -1757,18 +1768,18 @@
       "sha256": "ac614fc6c50760e7196b4ffccfef57c4dcac3a335b47f389b32afae3381c94f9"
     },
     {
-      "file": "assets/bridge-D9MpUJWr.js",
+      "file": "assets/bridge-DVAgs4K7.js",
       "entry": false,
       "dynamicEntry": false,
       "imports": [
         "assets/rolldown-runtime-BX80bFGj.js",
         "assets/core-bridge-constants--aS0k-qf.js",
-        "assets/raceSchemas-Bj0czjBN.js",
-        "assets/requestSchemas-BoVVrVTD.js",
-        "assets/race-C1FMyyk4.js"
+        "assets/raceSchemas-B1b0t5vO.js",
+        "assets/requestSchemas-kItSjLnW.js",
+        "assets/race-DosBUtzt.js"
       ],
       "dynamicImports": [],
-      "sha256": "3f3f21d5445ca6a2193a3d12364c641ee295bdadc2159d32278b9130004b7c48"
+      "sha256": "4bb782df87ae47be4a64ba7c2317b6d9f79b8e43e119038b30e6d53327a3fc5e"
     },
     {
       "file": "assets/coinPurchase-BV6JOECJ.js",
@@ -2441,86 +2452,86 @@
       "sha256": "bcbcd50c9cbb91a13121ae4e86295d4fb951c0217191f88fbf2a94efce388218"
     },
     {
-      "file": "assets/facebook-B39ATvm5.js",
+      "file": "assets/facebook-COncUVEb.js",
       "entry": false,
       "dynamicEntry": false,
       "imports": [
         "assets/rolldown-runtime-BX80bFGj.js",
-        "assets/vendor-react-DZSEe6zt.js",
+        "assets/vendor-react-BsJIBMEs.js",
         "assets/core-bridge-constants--aS0k-qf.js",
         "assets/core-game-DXo9-C3d.js"
       ],
       "dynamicImports": [
-        "assets/localeModules-CSznaiaH.js",
-        "assets/bridge-D9MpUJWr.js",
-        "assets/GameModalView-DtaE_Id5.js",
-        "assets/RaceTo10Game-BDe0H6e_.js",
-        "assets/SolarSystem-DwVh7aHE.js",
-        "assets/firebase-CQ-vyXzo.js",
-        "assets/race-C1FMyyk4.js",
-        "assets/raceMatchmakingFailure-BzTjnd6V.js",
-        "assets/FacebookFirebaseAppCheck-CJfkQnqB.js",
-        "assets/vendor-firebase-CAnPaZge.js",
+        "assets/localeModules-CuUSn6sn.js",
+        "assets/bridge-DVAgs4K7.js",
+        "assets/GameModalView-Be2kRZJR.js",
+        "assets/RaceTo10Game-CbarA1iN.js",
+        "assets/SolarSystem-sK4Dz0ty.js",
+        "assets/firebase-BAlO4i7E.js",
+        "assets/race-DosBUtzt.js",
+        "assets/raceMatchmakingFailure-BWicQrBW.js",
+        "assets/FacebookFirebaseAppCheck-CZQhDicL.js",
+        "assets/vendor-firebase-CyFV1TBK.js",
         "assets/defaultBackend-BFqaAmDo.js",
-        "assets/firebaseServices-gZqVnvTp.js",
-        "assets/fakeServices-D31UtTzm.js",
-        "assets/firebaseClient-i4wHoJR_.js",
-        "assets/FirebasePresenceTransport-BuXvvOTv.js",
-        "assets/PlatformPresenceSession-CD9Qlkc1.js"
+        "assets/firebaseServices-DfbKU-BJ.js",
+        "assets/fakeServices-Ctru_cF9.js",
+        "assets/firebaseClient-DxbJsakl.js",
+        "assets/FirebasePresenceTransport-BpyEB4qd.js",
+        "assets/PlatformPresenceSession-CzEhWnuL.js"
       ],
-      "sha256": "bdb8ab599510a8a31482b150d5c0bbae4329c090d479ce89aea31c3a43220eb3"
+      "sha256": "30421cda7a93a3f5b8fb949b050f980c2fef77690d0148d3fd9253d5d3201128"
     },
     {
-      "file": "assets/fakeServices-D31UtTzm.js",
+      "file": "assets/fakeServices-Ctru_cF9.js",
       "entry": false,
       "dynamicEntry": true,
       "imports": [
         "assets/rolldown-runtime-BX80bFGj.js",
         "assets/core-game-DXo9-C3d.js",
-        "assets/facebook-B39ATvm5.js",
-        "assets/raceSchemas-Bj0czjBN.js",
-        "assets/race-C1FMyyk4.js"
+        "assets/facebook-COncUVEb.js",
+        "assets/raceSchemas-B1b0t5vO.js",
+        "assets/race-DosBUtzt.js"
       ],
       "dynamicImports": [],
-      "sha256": "ac4b6edfd58b8afd72bfaac6f1ac42706f00e7b09130f8ca22c9732a8343c82f"
+      "sha256": "cdf33c31c662586961fadced437787437b40fae6d3b4cd08a5dc144bf15453ab"
     },
     {
-      "file": "assets/firebase-CQ-vyXzo.js",
+      "file": "assets/firebase-BAlO4i7E.js",
       "entry": false,
       "dynamicEntry": false,
       "imports": [
         "assets/rolldown-runtime-BX80bFGj.js",
-        "assets/facebook-B39ATvm5.js",
-        "assets/vendor-firebase-CAnPaZge.js"
+        "assets/facebook-COncUVEb.js",
+        "assets/vendor-firebase-CyFV1TBK.js"
       ],
       "dynamicImports": [],
-      "sha256": "97f7cc0104eade3efbbb237b15cebfd4ecdfc0e56a38daf7318ee1d9b2ff3b5b"
+      "sha256": "da19fac3a09580a53837edeedd48cef8e4ebaa91196f7faddd2958f36e9ab544"
     },
     {
-      "file": "assets/firebaseClient-i4wHoJR_.js",
+      "file": "assets/firebaseClient-DxbJsakl.js",
       "entry": false,
       "dynamicEntry": true,
       "imports": [
         "assets/rolldown-runtime-BX80bFGj.js",
-        "assets/vendor-firebase-CAnPaZge.js",
-        "assets/raceSchemas-Bj0czjBN.js",
-        "assets/race-C1FMyyk4.js",
-        "assets/firebase-CQ-vyXzo.js"
+        "assets/vendor-firebase-CyFV1TBK.js",
+        "assets/raceSchemas-B1b0t5vO.js",
+        "assets/race-DosBUtzt.js",
+        "assets/firebase-BAlO4i7E.js"
       ],
       "dynamicImports": [],
-      "sha256": "2fd8fbacf30a6eb87b12090a9b93aadb8e663ba6c6f2336c1670ff6ee3735ceb"
+      "sha256": "531a60aaeccba3b0ed8c7425d40b9edc6833d3230aae94d6792767ea723639e4"
     },
     {
-      "file": "assets/firebaseServices-gZqVnvTp.js",
+      "file": "assets/firebaseServices-DfbKU-BJ.js",
       "entry": false,
       "dynamicEntry": true,
       "imports": [
         "assets/rolldown-runtime-BX80bFGj.js",
-        "assets/vendor-firebase-CAnPaZge.js",
-        "assets/firebase-CQ-vyXzo.js"
+        "assets/vendor-firebase-CyFV1TBK.js",
+        "assets/firebase-BAlO4i7E.js"
       ],
       "dynamicImports": [],
-      "sha256": "a39ccc8a631b9a20fe8ed38d14a8b6b6f32171077dda5957ca99be14f36f04fa"
+      "sha256": "c8744acfa0347e23550453f158e35314d6ae61bad998e405da8b9e53362c4c69"
     },
     {
       "file": "assets/game-1Y1gZeIn.js",
@@ -3003,12 +3014,12 @@
       "sha256": "d321636dd434b1cdab5f7471090ab693cd257877ece63d81868364551f0da817"
     },
     {
-      "file": "assets/localeModules-CSznaiaH.js",
+      "file": "assets/localeModules-CuUSn6sn.js",
       "entry": false,
       "dynamicEntry": true,
       "imports": [
         "assets/rolldown-runtime-BX80bFGj.js",
-        "assets/facebook-B39ATvm5.js"
+        "assets/facebook-COncUVEb.js"
       ],
       "dynamicImports": [
         "assets/aboutLegal-DWAsypAb.js",
@@ -3364,7 +3375,7 @@
         "assets/tooltips-CmnDijP9.js",
         "assets/victory-C4dphOeC.js"
       ],
-      "sha256": "847c16811697afffaac67dd82dd7d72b75e8b3eae1511d5872a00a7a47e922d0"
+      "sha256": "092c66a41dc8be9e1b3eabf1e77c4f2c1b1e6cbae250827f630dff64874fc36f"
     },
     {
       "file": "assets/loss-1H_CF-JL.js",
@@ -4087,17 +4098,6 @@
       "sha256": "443a77922483da4f0d86fe974613a87ab81e120fecc47db7d6e726f21ca8dba8"
     },
     {
-      "file": "assets/race-C1FMyyk4.js",
-      "entry": false,
-      "dynamicEntry": false,
-      "imports": [
-        "assets/rolldown-runtime-BX80bFGj.js",
-        "assets/raceSchemas-Bj0czjBN.js"
-      ],
-      "dynamicImports": [],
-      "sha256": "e9840719c4b970fe214520faa35c0609f0f88f1cef49553dd7cb3f7788a6d618"
-    },
-    {
       "file": "assets/race-Ca7KeYIu.js",
       "entry": false,
       "dynamicEntry": true,
@@ -4136,6 +4136,17 @@
       ],
       "dynamicImports": [],
       "sha256": "151d158e2436d29f67749afd8c17c464c6aa5f3325192164092c5cf39da2ec19"
+    },
+    {
+      "file": "assets/race-DosBUtzt.js",
+      "entry": false,
+      "dynamicEntry": false,
+      "imports": [
+        "assets/rolldown-runtime-BX80bFGj.js",
+        "assets/raceSchemas-B1b0t5vO.js"
+      ],
+      "dynamicImports": [],
+      "sha256": "f2f84d2f41a86025528cf11573bc347140adfff669aaa367902a817d785a97d4"
     },
     {
       "file": "assets/race-Rn_mohi4.js",
@@ -4178,36 +4189,36 @@
       "sha256": "a752f8df3e680a8c7df36c9a95d2b9df963082f5468545c89ad7512c37c4a404"
     },
     {
-      "file": "assets/raceMatchmakingFailure-BzTjnd6V.js",
+      "file": "assets/raceMatchmakingFailure-BWicQrBW.js",
       "entry": false,
       "dynamicEntry": true,
       "imports": [
         "assets/rolldown-runtime-BX80bFGj.js",
-        "assets/race-C1FMyyk4.js"
+        "assets/race-DosBUtzt.js"
       ],
       "dynamicImports": [],
-      "sha256": "fe4fb0d4bc4857d89e35f4743a3fcc2105e390cbc425f8506594b3b899eac0ea"
+      "sha256": "02e4faecd2e85ef454936a60588778f5dfce8773e388478a5b883dd1c5195d52"
     },
     {
-      "file": "assets/raceSchemas-Bj0czjBN.js",
+      "file": "assets/raceSchemas-B1b0t5vO.js",
       "entry": false,
       "dynamicEntry": false,
       "imports": [
         "assets/rolldown-runtime-BX80bFGj.js"
       ],
       "dynamicImports": [],
-      "sha256": "9ccf0dc03dec3da47bb7e7df4f776b826bc2e44d72216eb7aa6289a254e11fbf"
+      "sha256": "dc2e30186ed9ba8b2d8588ef036009ff0e862cafba7f8c57e7e449a4b3ec1d41"
     },
     {
-      "file": "assets/requestSchemas-BoVVrVTD.js",
+      "file": "assets/requestSchemas-kItSjLnW.js",
       "entry": false,
       "dynamicEntry": false,
       "imports": [
         "assets/rolldown-runtime-BX80bFGj.js",
-        "assets/raceSchemas-Bj0czjBN.js"
+        "assets/raceSchemas-B1b0t5vO.js"
       ],
       "dynamicImports": [],
-      "sha256": "9641703ca7e9ff281cc4964dc0900b1cce646a691894689cf4752db30c8b18b6"
+      "sha256": "d2f81b53a2d325c792fa6740f0e072d7abc4ec0f682833cb4de91cbdd830dea2"
     },
     {
       "file": "assets/rolldown-runtime-BX80bFGj.js",
@@ -5018,206 +5029,206 @@
       "sha256": "d98506d32c16b78d0b62542dce41779bf75e156202d9715c07a03b26fc263e28"
     },
     {
-      "file": "assets/vendor-firebase-CAnPaZge.js",
+      "file": "assets/vendor-firebase-CyFV1TBK.js",
       "entry": false,
       "dynamicEntry": false,
       "imports": [
         "assets/rolldown-runtime-BX80bFGj.js"
       ],
       "dynamicImports": [],
-      "sha256": "79c588678c89c23adb8ccc59c472b2823903f8c0ed2bf9143333c67ddc18e4f4"
+      "sha256": "43280ecb7e43110a306c84dd15af55ee5014ea8ed910a187da56847cb67a3434"
     },
     {
-      "file": "assets/vendor-react-DZSEe6zt.js",
+      "file": "assets/vendor-react-BsJIBMEs.js",
       "entry": false,
       "dynamicEntry": false,
       "imports": [
         "assets/rolldown-runtime-BX80bFGj.js"
       ],
       "dynamicImports": [],
-      "sha256": "fd2739dcf8b2cc31048c5b879068209821fe25829ba42d9596ac82a341702d4f"
+      "sha256": "4f47a13da69b75835ae4b0790a6224e21469fc70ee5ac09d403283a237e0cf07"
     },
     {
-      "file": "assets/vendor-three-B-pukeHR.js",
+      "file": "assets/vendor-three--DK9f_7z.js",
       "entry": false,
       "dynamicEntry": false,
       "imports": [
         "assets/rolldown-runtime-BX80bFGj.js",
-        "assets/vendor-three-D31rZTDZ.js"
+        "assets/vendor-three-CqvblP5O.js",
+        "assets/vendor-three-ByJ-Rtdi.js",
+        "assets/vendor-three-BChfjRca.js",
+        "assets/vendor-three-j2n53szm.js",
+        "assets/vendor-three-Y1Z8nY45.js"
       ],
       "dynamicImports": [],
-      "sha256": "d1dd94960bd176362b6060c2e51d3b763fba3a0bc4cf33af9a9c064f66f47636"
+      "sha256": "f295325fdef305864b0e0c019c4cb03d0ce2c1260c86cd4ea0c970b27bf9ffe3"
     },
     {
-      "file": "assets/vendor-three-BEPZwxbG.js",
+      "file": "assets/vendor-three-B10rdh0-.js",
       "entry": false,
       "dynamicEntry": false,
       "imports": [
         "assets/rolldown-runtime-BX80bFGj.js",
-        "assets/vendor-three-CBZSnZz1.js",
-        "assets/vendor-three-D31rZTDZ.js"
+        "assets/vendor-three-CqvblP5O.js",
+        "assets/vendor-three-ByJ-Rtdi.js",
+        "assets/vendor-three-BChfjRca.js",
+        "assets/vendor-three-j2n53szm.js",
+        "assets/vendor-three-Y1Z8nY45.js"
       ],
       "dynamicImports": [],
-      "sha256": "a52a01b49b8beae4bfc28ae4e6de0dd88617358f5e0cf2d919526f39a36663f0"
+      "sha256": "0f29bbc884addc853b9a174eeafb25eeccc264e8ee00fbbef198b529a43bc3b4"
     },
     {
-      "file": "assets/vendor-three-BQRrQ69_.js",
+      "file": "assets/vendor-three-BChfjRca.js",
       "entry": false,
       "dynamicEntry": false,
       "imports": [
         "assets/rolldown-runtime-BX80bFGj.js",
-        "assets/vendor-three-DCllFb3O.js",
-        "assets/vendor-three-BxlKoL7k.js",
-        "assets/vendor-three-CBZSnZz1.js",
-        "assets/vendor-three-D31rZTDZ.js",
-        "assets/vendor-three-B-pukeHR.js"
+        "assets/vendor-three-CqvblP5O.js",
+        "assets/vendor-three-ByJ-Rtdi.js",
+        "assets/vendor-three-j2n53szm.js",
+        "assets/vendor-three-Y1Z8nY45.js",
+        "assets/vendor-three-DsdThxkc.js",
+        "assets/vendor-three--DK9f_7z.js"
       ],
       "dynamicImports": [],
-      "sha256": "60340d0e3a5ecc5a87db3c2391bf15dd6465c08e27e2403c497d23596d73df20"
+      "sha256": "8a6749cabc5818add3252691a6f922fe5e7c55ab0fdc8ae41263c919117b7e33"
     },
     {
-      "file": "assets/vendor-three-BebWbzdy.js",
+      "file": "assets/vendor-three-ByJ-Rtdi.js",
       "entry": false,
       "dynamicEntry": false,
       "imports": [
         "assets/rolldown-runtime-BX80bFGj.js",
-        "assets/vendor-three-DCllFb3O.js",
-        "assets/vendor-three-BxlKoL7k.js",
-        "assets/vendor-three-CBZSnZz1.js",
-        "assets/vendor-three-D31rZTDZ.js",
-        "assets/vendor-three-B-pukeHR.js",
-        "assets/vendor-three-D01N061H.js",
-        "assets/vendor-three-BQRrQ69_.js",
-        "assets/vendor-three-Cx5wJnB7.js"
+        "assets/vendor-three-CqvblP5O.js",
+        "assets/vendor-three-BChfjRca.js",
+        "assets/vendor-three-j2n53szm.js",
+        "assets/vendor-three-Y1Z8nY45.js"
       ],
       "dynamicImports": [],
-      "sha256": "a8101b24e99aa2a0e105259c7f8a0b62c0724b1a2207f50bcac54d3e380b4598"
+      "sha256": "4f35f9769ca4e32822a05467c8a681fb12abd105cf32f042ba15e00dbc021790"
     },
     {
-      "file": "assets/vendor-three-BorRW3XP.js",
+      "file": "assets/vendor-three-CPNFdt8a.js",
       "entry": false,
       "dynamicEntry": false,
       "imports": [
         "assets/rolldown-runtime-BX80bFGj.js",
-        "assets/vendor-three-DCllFb3O.js",
-        "assets/vendor-three-BxlKoL7k.js",
-        "assets/vendor-three-CBZSnZz1.js",
-        "assets/vendor-three-D31rZTDZ.js",
-        "assets/vendor-three-B-pukeHR.js"
+        "assets/vendor-three-CqvblP5O.js",
+        "assets/vendor-three-ByJ-Rtdi.js",
+        "assets/vendor-three-BChfjRca.js",
+        "assets/vendor-three-j2n53szm.js",
+        "assets/vendor-three-Y1Z8nY45.js",
+        "assets/vendor-three-DsdThxkc.js",
+        "assets/vendor-three--DK9f_7z.js",
+        "assets/vendor-three-D5TcQsOm.js",
+        "assets/vendor-three-B10rdh0-.js"
       ],
       "dynamicImports": [],
-      "sha256": "4295d8a5ea53213d0c201fba47699b5d7e299ecb11f232b0669357769333eabe"
+      "sha256": "432550aec2437b25d784d2c1399587ce0c1abd2630448b57c1bc316a8444a4ee"
     },
     {
-      "file": "assets/vendor-three-BxlKoL7k.js",
+      "file": "assets/vendor-three-CkWfOPsS.js",
       "entry": false,
       "dynamicEntry": false,
       "imports": [
         "assets/rolldown-runtime-BX80bFGj.js",
-        "assets/vendor-three-DCllFb3O.js",
-        "assets/vendor-three-CBZSnZz1.js",
-        "assets/vendor-three-D31rZTDZ.js",
-        "assets/vendor-three-B-pukeHR.js"
+        "assets/vendor-three-CqvblP5O.js",
+        "assets/vendor-three-ByJ-Rtdi.js",
+        "assets/vendor-three-BChfjRca.js",
+        "assets/vendor-three-j2n53szm.js",
+        "assets/vendor-three-Y1Z8nY45.js",
+        "assets/vendor-three-DsdThxkc.js",
+        "assets/vendor-three--DK9f_7z.js",
+        "assets/vendor-three-CPNFdt8a.js"
       ],
       "dynamicImports": [],
-      "sha256": "837ee6991f0723fed732052954b0a2f65a053d6069d3f225e1c8e1aa142c5717"
+      "sha256": "3c06bee92a7f9ab7a7f708fe9b6e697b4cb83ff77dc3717b79f8f90a6ff93ad0"
     },
     {
-      "file": "assets/vendor-three-CBZSnZz1.js",
+      "file": "assets/vendor-three-CqvblP5O.js",
       "entry": false,
       "dynamicEntry": false,
       "imports": [
         "assets/rolldown-runtime-BX80bFGj.js",
-        "assets/vendor-three-DCllFb3O.js",
-        "assets/vendor-three-BxlKoL7k.js",
-        "assets/vendor-three-D31rZTDZ.js",
-        "assets/vendor-three-B-pukeHR.js",
-        "assets/vendor-three-D01N061H.js",
-        "assets/vendor-three-BQRrQ69_.js"
+        "assets/vendor-three-BChfjRca.js",
+        "assets/vendor-three-j2n53szm.js",
+        "assets/vendor-three-Y1Z8nY45.js"
       ],
       "dynamicImports": [],
-      "sha256": "b72c241836609cb55441b95b2f2377806ced1c60c707e0b9ee29e789800ecda0"
+      "sha256": "e101825af2fcfdcd83411ffaf405ad0254d4a1ee2ae614daf8dcfc377dee7302"
     },
     {
-      "file": "assets/vendor-three-Cx5wJnB7.js",
+      "file": "assets/vendor-three-D5TcQsOm.js",
       "entry": false,
       "dynamicEntry": false,
       "imports": [
         "assets/rolldown-runtime-BX80bFGj.js",
-        "assets/vendor-three-DCllFb3O.js",
-        "assets/vendor-three-BxlKoL7k.js",
-        "assets/vendor-three-CBZSnZz1.js",
-        "assets/vendor-three-D31rZTDZ.js",
-        "assets/vendor-three-B-pukeHR.js",
-        "assets/vendor-three-D01N061H.js",
-        "assets/vendor-three-BQRrQ69_.js",
-        "assets/vendor-three-DXOB3Rca.js",
-        "assets/vendor-three-BorRW3XP.js"
+        "assets/vendor-three-CqvblP5O.js",
+        "assets/vendor-three-ByJ-Rtdi.js",
+        "assets/vendor-three-j2n53szm.js",
+        "assets/vendor-three-Y1Z8nY45.js"
       ],
       "dynamicImports": [],
-      "sha256": "5bf0f74c9f44078756e84d75e02af71ed210d2736100f1f0bf286d71996c8ea9"
+      "sha256": "4765624cfad232965cdaeb93fda23ec2e917b29565aef43215bec6c507f0cdd7"
     },
     {
-      "file": "assets/vendor-three-D01N061H.js",
+      "file": "assets/vendor-three-DdYm31wi.js",
       "entry": false,
       "dynamicEntry": false,
       "imports": [
         "assets/rolldown-runtime-BX80bFGj.js",
-        "assets/vendor-three-DCllFb3O.js",
-        "assets/vendor-three-BxlKoL7k.js",
-        "assets/vendor-three-CBZSnZz1.js",
-        "assets/vendor-three-D31rZTDZ.js",
-        "assets/vendor-three-B-pukeHR.js",
-        "assets/vendor-three-BQRrQ69_.js",
-        "assets/vendor-three-BebWbzdy.js",
-        "assets/vendor-three-DXOB3Rca.js",
-        "assets/vendor-three-Cx5wJnB7.js",
-        "assets/vendor-three-BorRW3XP.js"
+        "assets/vendor-three-BChfjRca.js",
+        "assets/vendor-three-j2n53szm.js"
       ],
       "dynamicImports": [],
-      "sha256": "f72fe779779e1fb79810bbdaa2713127e642ec51f59a4823a2d764981e3d7f68"
+      "sha256": "bfe9bce21f2b49cb87312c34427963c3d92c13c1ffc49ea5b9a8d234bf8fd361"
     },
     {
-      "file": "assets/vendor-three-D31rZTDZ.js",
+      "file": "assets/vendor-three-DsdThxkc.js",
       "entry": false,
       "dynamicEntry": false,
       "imports": [
         "assets/rolldown-runtime-BX80bFGj.js",
-        "assets/vendor-three-DCllFb3O.js",
-        "assets/vendor-three-BxlKoL7k.js",
-        "assets/vendor-three-CBZSnZz1.js",
-        "assets/vendor-three-B-pukeHR.js",
-        "assets/vendor-three-DXOB3Rca.js"
+        "assets/vendor-three-CqvblP5O.js",
+        "assets/vendor-three-ByJ-Rtdi.js",
+        "assets/vendor-three-BChfjRca.js",
+        "assets/vendor-three-j2n53szm.js",
+        "assets/vendor-three-Y1Z8nY45.js",
+        "assets/vendor-three--DK9f_7z.js",
+        "assets/vendor-three-CkWfOPsS.js",
+        "assets/vendor-three-D5TcQsOm.js",
+        "assets/vendor-three-CPNFdt8a.js",
+        "assets/vendor-three-B10rdh0-.js"
       ],
       "dynamicImports": [],
-      "sha256": "afb0b8b999fb40e3ce0c019b384626f0a3975989145185895427b70ef3dcbe89"
+      "sha256": "23529007451bab0495b95c93cf091fa098fb4ffe8cbf3b5bb746e41312faac0a"
     },
     {
-      "file": "assets/vendor-three-DCllFb3O.js",
+      "file": "assets/vendor-three-Y1Z8nY45.js",
       "entry": false,
       "dynamicEntry": false,
       "imports": [
         "assets/rolldown-runtime-BX80bFGj.js",
-        "assets/vendor-three-CBZSnZz1.js",
-        "assets/vendor-three-D31rZTDZ.js",
-        "assets/vendor-three-B-pukeHR.js"
+        "assets/vendor-three-j2n53szm.js"
       ],
       "dynamicImports": [],
-      "sha256": "6a1c01a0e9f5a903aa235a0cddb08a0d16ba9564a4511628299266fc41c475ef"
+      "sha256": "931d89682ab9d4a522cb5681ae2fd2db1583a527926400fc2da28f9f4ea2a359"
     },
     {
-      "file": "assets/vendor-three-DXOB3Rca.js",
+      "file": "assets/vendor-three-j2n53szm.js",
       "entry": false,
       "dynamicEntry": false,
       "imports": [
         "assets/rolldown-runtime-BX80bFGj.js",
-        "assets/vendor-three-DCllFb3O.js",
-        "assets/vendor-three-BxlKoL7k.js",
-        "assets/vendor-three-D31rZTDZ.js",
-        "assets/vendor-three-B-pukeHR.js"
+        "assets/vendor-three-CqvblP5O.js",
+        "assets/vendor-three-ByJ-Rtdi.js",
+        "assets/vendor-three-BChfjRca.js",
+        "assets/vendor-three-Y1Z8nY45.js",
+        "assets/vendor-three-D5TcQsOm.js"
       ],
       "dynamicImports": [],
-      "sha256": "0f1d86944057b69de3a63a348c27a1e2c4e2de609a39e0c7e17b93861b5b37f0"
+      "sha256": "3aa8ae4daae13eee08d66284eebe6d5918079905947362a869a0134dd3b2f051"
     },
     {
       "file": "assets/victory-B6XayoZD.js",
@@ -5382,24 +5393,24 @@
   ],
   "files": [
     {
-      "file": "assets/FacebookFirebaseAppCheck-CJfkQnqB.js",
-      "sha256": "9439cb5b7de255a766c610c3a2181ab408b18a95b197e92330c373020a8808fc"
+      "file": "assets/FacebookFirebaseAppCheck-CZQhDicL.js",
+      "sha256": "e76e8b1a44c218be0ab24916c3ead696882e4335410b068cba7aecb0418f60f6"
     },
     {
-      "file": "assets/FirebasePresenceTransport-BuXvvOTv.js",
-      "sha256": "33bcfc43c57eb3cad1f7efba6a51fda29ac529ad429dd8eeb11520ca3972a52a"
+      "file": "assets/FirebasePresenceTransport-BpyEB4qd.js",
+      "sha256": "390ea764872b505669f573ed203ba5fe5b9628a0ebf142ef850c612771bba31b"
+    },
+    {
+      "file": "assets/GameModalView-Be2kRZJR.js",
+      "sha256": "ee979764dd33f4cc984c3be97fd90833c2d0fb8ee7c934b06dbf3882c38905fb"
     },
     {
       "file": "assets/GameModalView-BkNktww9.css",
       "sha256": "707167a2ff8baf68ec87cf92bc98d826a5ab131537c82c9f7f0094b4065b1614"
     },
     {
-      "file": "assets/GameModalView-DtaE_Id5.js",
-      "sha256": "e3e92b36920573b11211987ef58eda97ed483283a5222eae9f6ea53435a1ce3a"
-    },
-    {
-      "file": "assets/PlatformPresenceSession-CD9Qlkc1.js",
-      "sha256": "d8cabb33ef8ec091f4d0f5ee207aa400853f22167656db7d8a073be8a139f943"
+      "file": "assets/PlatformPresenceSession-CzEhWnuL.js",
+      "sha256": "52df05a575608dbd872f31e458127a4856f0819d7200623dc3cedc6a3381f037"
     },
     {
       "file": "assets/PoetsenOne-Regular-C2losmxN.woff2",
@@ -5422,12 +5433,12 @@
       "sha256": "7018eeafca06f5eb939ae35fb4eaf7b6cbc5f5f1c37f49d171154cb123ff9b27"
     },
     {
-      "file": "assets/RaceTo10Game-BDe0H6e_.js",
-      "sha256": "59bb5e2e8d4bb08573913ee300240544bf06814cbc76fbf88ed2117efcfabb72"
+      "file": "assets/RaceTo10Game-CbarA1iN.js",
+      "sha256": "bbdf2f4caacf53429199c3c8df7d369a21dd618e6aceba1a1fb70b573a69c981"
     },
     {
-      "file": "assets/SolarSystem-DwVh7aHE.js",
-      "sha256": "1eaaabfd58a00c3001214902fdc600977edcac4499caae2c6094eac0fed4510e"
+      "file": "assets/SolarSystem-sK4Dz0ty.js",
+      "sha256": "3a1d6bc0d6a9517385084b6406b634eebddfbd91cd5415bde2eebbae125de9eb"
     },
     {
       "file": "assets/aboutLegal-BAlSQDJA.js",
@@ -5686,8 +5697,8 @@
       "sha256": "ac614fc6c50760e7196b4ffccfef57c4dcac3a335b47f389b32afae3381c94f9"
     },
     {
-      "file": "assets/bridge-D9MpUJWr.js",
-      "sha256": "3f3f21d5445ca6a2193a3d12364c641ee295bdadc2159d32278b9130004b7c48"
+      "file": "assets/bridge-DVAgs4K7.js",
+      "sha256": "4bb782df87ae47be4a64ba7c2317b6d9f79b8e43e119038b30e6d53327a3fc5e"
     },
     {
       "file": "assets/chest-closed-GI3XjnpL.png",
@@ -5970,28 +5981,28 @@
       "sha256": "bcbcd50c9cbb91a13121ae4e86295d4fb951c0217191f88fbf2a94efce388218"
     },
     {
-      "file": "assets/facebook-B39ATvm5.js",
-      "sha256": "bdb8ab599510a8a31482b150d5c0bbae4329c090d479ce89aea31c3a43220eb3"
+      "file": "assets/facebook-COncUVEb.js",
+      "sha256": "30421cda7a93a3f5b8fb949b050f980c2fef77690d0148d3fd9253d5d3201128"
     },
     {
       "file": "assets/facebook-D7cyO-rZ.css",
       "sha256": "488ddbd252fe043bc4ad08b7774fa8d1f7ec250d6b8f880808c20ca02cac4750"
     },
     {
-      "file": "assets/fakeServices-D31UtTzm.js",
-      "sha256": "ac4b6edfd58b8afd72bfaac6f1ac42706f00e7b09130f8ca22c9732a8343c82f"
+      "file": "assets/fakeServices-Ctru_cF9.js",
+      "sha256": "cdf33c31c662586961fadced437787437b40fae6d3b4cd08a5dc144bf15453ab"
     },
     {
-      "file": "assets/firebase-CQ-vyXzo.js",
-      "sha256": "97f7cc0104eade3efbbb237b15cebfd4ecdfc0e56a38daf7318ee1d9b2ff3b5b"
+      "file": "assets/firebase-BAlO4i7E.js",
+      "sha256": "da19fac3a09580a53837edeedd48cef8e4ebaa91196f7faddd2958f36e9ab544"
     },
     {
-      "file": "assets/firebaseClient-i4wHoJR_.js",
-      "sha256": "2fd8fbacf30a6eb87b12090a9b93aadb8e663ba6c6f2336c1670ff6ee3735ceb"
+      "file": "assets/firebaseClient-DxbJsakl.js",
+      "sha256": "531a60aaeccba3b0ed8c7425d40b9edc6833d3230aae94d6792767ea723639e4"
     },
     {
-      "file": "assets/firebaseServices-gZqVnvTp.js",
-      "sha256": "a39ccc8a631b9a20fe8ed38d14a8b6b6f32171077dda5957ca99be14f36f04fa"
+      "file": "assets/firebaseServices-DfbKU-BJ.js",
+      "sha256": "c8744acfa0347e23550453f158e35314d6ae61bad998e405da8b9e53362c4c69"
     },
     {
       "file": "assets/game-1Y1gZeIn.js",
@@ -6058,8 +6069,8 @@
       "sha256": "aa67a98e82fa3153c0cf7dc066c44f446ce5b7d967cd4a83467df5345cf8511f"
     },
     {
-      "file": "assets/index-Bm1NPoMo.js",
-      "sha256": "10de76697a3b1d156237301c12f241351be2b42bbdcbc38ed7eec799e706719c"
+      "file": "assets/index-BC9jnqms.js",
+      "sha256": "69b3d54716b3adc51d41c3e1f68520be604f3cf4b2691af0dbfd0a4f515b4da3"
     },
     {
       "file": "assets/leaderboard-3QimbkFr.js",
@@ -6190,8 +6201,8 @@
       "sha256": "d321636dd434b1cdab5f7471090ab693cd257877ece63d81868364551f0da817"
     },
     {
-      "file": "assets/localeModules-CSznaiaH.js",
-      "sha256": "847c16811697afffaac67dd82dd7d72b75e8b3eae1511d5872a00a7a47e922d0"
+      "file": "assets/localeModules-CuUSn6sn.js",
+      "sha256": "092c66a41dc8be9e1b3eabf1e77c4f2c1b1e6cbae250827f630dff64874fc36f"
     },
     {
       "file": "assets/loss-1H_CF-JL.js",
@@ -6490,10 +6501,6 @@
       "sha256": "443a77922483da4f0d86fe974613a87ab81e120fecc47db7d6e726f21ca8dba8"
     },
     {
-      "file": "assets/race-C1FMyyk4.js",
-      "sha256": "e9840719c4b970fe214520faa35c0609f0f88f1cef49553dd7cb3f7788a6d618"
-    },
-    {
       "file": "assets/race-Ca7KeYIu.js",
       "sha256": "b14ac945fca9386e8538b2f1381fb412ea175d2009dc0a51c07805d8fb5e8cdd"
     },
@@ -6508,6 +6515,10 @@
     {
       "file": "assets/race-DgNdmZvV.js",
       "sha256": "151d158e2436d29f67749afd8c17c464c6aa5f3325192164092c5cf39da2ec19"
+    },
+    {
+      "file": "assets/race-DosBUtzt.js",
+      "sha256": "f2f84d2f41a86025528cf11573bc347140adfff669aaa367902a817d785a97d4"
     },
     {
       "file": "assets/race-Rn_mohi4.js",
@@ -6526,16 +6537,16 @@
       "sha256": "a752f8df3e680a8c7df36c9a95d2b9df963082f5468545c89ad7512c37c4a404"
     },
     {
-      "file": "assets/raceMatchmakingFailure-BzTjnd6V.js",
-      "sha256": "fe4fb0d4bc4857d89e35f4743a3fcc2105e390cbc425f8506594b3b899eac0ea"
+      "file": "assets/raceMatchmakingFailure-BWicQrBW.js",
+      "sha256": "02e4faecd2e85ef454936a60588778f5dfce8773e388478a5b883dd1c5195d52"
     },
     {
-      "file": "assets/raceSchemas-Bj0czjBN.js",
-      "sha256": "9ccf0dc03dec3da47bb7e7df4f776b826bc2e44d72216eb7aa6289a254e11fbf"
+      "file": "assets/raceSchemas-B1b0t5vO.js",
+      "sha256": "dc2e30186ed9ba8b2d8588ef036009ff0e862cafba7f8c57e7e449a4b3ec1d41"
     },
     {
-      "file": "assets/requestSchemas-BoVVrVTD.js",
-      "sha256": "9641703ca7e9ff281cc4964dc0900b1cce646a691894689cf4752db30c8b18b6"
+      "file": "assets/requestSchemas-kItSjLnW.js",
+      "sha256": "d2f81b53a2d325c792fa6740f0e072d7abc4ec0f682833cb4de91cbdd830dea2"
     },
     {
       "file": "assets/riddlequest-r-kPbkvcmu.webp",
@@ -6930,60 +6941,60 @@
       "sha256": "d98506d32c16b78d0b62542dce41779bf75e156202d9715c07a03b26fc263e28"
     },
     {
-      "file": "assets/vendor-firebase-CAnPaZge.js",
-      "sha256": "79c588678c89c23adb8ccc59c472b2823903f8c0ed2bf9143333c67ddc18e4f4"
+      "file": "assets/vendor-firebase-CyFV1TBK.js",
+      "sha256": "43280ecb7e43110a306c84dd15af55ee5014ea8ed910a187da56847cb67a3434"
     },
     {
-      "file": "assets/vendor-react-DZSEe6zt.js",
-      "sha256": "fd2739dcf8b2cc31048c5b879068209821fe25829ba42d9596ac82a341702d4f"
+      "file": "assets/vendor-react-BsJIBMEs.js",
+      "sha256": "4f47a13da69b75835ae4b0790a6224e21469fc70ee5ac09d403283a237e0cf07"
     },
     {
-      "file": "assets/vendor-three-B-pukeHR.js",
-      "sha256": "d1dd94960bd176362b6060c2e51d3b763fba3a0bc4cf33af9a9c064f66f47636"
+      "file": "assets/vendor-three--DK9f_7z.js",
+      "sha256": "f295325fdef305864b0e0c019c4cb03d0ce2c1260c86cd4ea0c970b27bf9ffe3"
     },
     {
-      "file": "assets/vendor-three-BEPZwxbG.js",
-      "sha256": "a52a01b49b8beae4bfc28ae4e6de0dd88617358f5e0cf2d919526f39a36663f0"
+      "file": "assets/vendor-three-B10rdh0-.js",
+      "sha256": "0f29bbc884addc853b9a174eeafb25eeccc264e8ee00fbbef198b529a43bc3b4"
     },
     {
-      "file": "assets/vendor-three-BQRrQ69_.js",
-      "sha256": "60340d0e3a5ecc5a87db3c2391bf15dd6465c08e27e2403c497d23596d73df20"
+      "file": "assets/vendor-three-BChfjRca.js",
+      "sha256": "8a6749cabc5818add3252691a6f922fe5e7c55ab0fdc8ae41263c919117b7e33"
     },
     {
-      "file": "assets/vendor-three-BebWbzdy.js",
-      "sha256": "a8101b24e99aa2a0e105259c7f8a0b62c0724b1a2207f50bcac54d3e380b4598"
+      "file": "assets/vendor-three-ByJ-Rtdi.js",
+      "sha256": "4f35f9769ca4e32822a05467c8a681fb12abd105cf32f042ba15e00dbc021790"
     },
     {
-      "file": "assets/vendor-three-BorRW3XP.js",
-      "sha256": "4295d8a5ea53213d0c201fba47699b5d7e299ecb11f232b0669357769333eabe"
+      "file": "assets/vendor-three-CPNFdt8a.js",
+      "sha256": "432550aec2437b25d784d2c1399587ce0c1abd2630448b57c1bc316a8444a4ee"
     },
     {
-      "file": "assets/vendor-three-BxlKoL7k.js",
-      "sha256": "837ee6991f0723fed732052954b0a2f65a053d6069d3f225e1c8e1aa142c5717"
+      "file": "assets/vendor-three-CkWfOPsS.js",
+      "sha256": "3c06bee92a7f9ab7a7f708fe9b6e697b4cb83ff77dc3717b79f8f90a6ff93ad0"
     },
     {
-      "file": "assets/vendor-three-CBZSnZz1.js",
-      "sha256": "b72c241836609cb55441b95b2f2377806ced1c60c707e0b9ee29e789800ecda0"
+      "file": "assets/vendor-three-CqvblP5O.js",
+      "sha256": "e101825af2fcfdcd83411ffaf405ad0254d4a1ee2ae614daf8dcfc377dee7302"
     },
     {
-      "file": "assets/vendor-three-Cx5wJnB7.js",
-      "sha256": "5bf0f74c9f44078756e84d75e02af71ed210d2736100f1f0bf286d71996c8ea9"
+      "file": "assets/vendor-three-D5TcQsOm.js",
+      "sha256": "4765624cfad232965cdaeb93fda23ec2e917b29565aef43215bec6c507f0cdd7"
     },
     {
-      "file": "assets/vendor-three-D01N061H.js",
-      "sha256": "f72fe779779e1fb79810bbdaa2713127e642ec51f59a4823a2d764981e3d7f68"
+      "file": "assets/vendor-three-DdYm31wi.js",
+      "sha256": "bfe9bce21f2b49cb87312c34427963c3d92c13c1ffc49ea5b9a8d234bf8fd361"
     },
     {
-      "file": "assets/vendor-three-D31rZTDZ.js",
-      "sha256": "afb0b8b999fb40e3ce0c019b384626f0a3975989145185895427b70ef3dcbe89"
+      "file": "assets/vendor-three-DsdThxkc.js",
+      "sha256": "23529007451bab0495b95c93cf091fa098fb4ffe8cbf3b5bb746e41312faac0a"
     },
     {
-      "file": "assets/vendor-three-DCllFb3O.js",
-      "sha256": "6a1c01a0e9f5a903aa235a0cddb08a0d16ba9564a4511628299266fc41c475ef"
+      "file": "assets/vendor-three-Y1Z8nY45.js",
+      "sha256": "931d89682ab9d4a522cb5681ae2fd2db1583a527926400fc2da28f9f4ea2a359"
     },
     {
-      "file": "assets/vendor-three-DXOB3Rca.js",
-      "sha256": "0f1d86944057b69de3a63a348c27a1e2c4e2de609a39e0c7e17b93861b5b37f0"
+      "file": "assets/vendor-three-j2n53szm.js",
+      "sha256": "3aa8ae4daae13eee08d66284eebe6d5918079905947362a869a0134dd3b2f051"
     },
     {
       "file": "assets/victory-B6XayoZD.js",
@@ -7059,11 +7070,11 @@
     },
     {
       "file": "index.html",
-      "sha256": "018b08d09d4b760e17dc80c527f1570c71606630020b75b94e8d756d4526c297"
+      "sha256": "2eec3d5c1fddec1955ce8987cd2ec4fd698987b8e01046ab08079a748ba173f7"
     },
     {
       "file": "third-party-licenses.txt",
-      "sha256": "0c684e534d3cb87a734065fbac609f73f479c7383f4da75b32715b1f0aa9e8cc"
+      "sha256": "27bb0e18942c1252546d36d1e1ce0d53486f6d1bc29491741b4984d94aceb06e"
     }
   ]
 }

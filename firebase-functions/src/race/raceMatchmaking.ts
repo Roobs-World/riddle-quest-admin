@@ -3,7 +3,7 @@ import {logger} from "firebase-functions";
 import {HttpsError} from "firebase-functions/v2/https";
 import {RaceMatchResponseSchema, RACE_CHALLENGE_TTL_MS, RACE_RULES, type RaceMatchRequest, type RaceMatchResponse} from "@qwordly/core/race";
 import {admin} from "../shared/firebaseAdmin";
-import {raceChallengeEligibility, readRaceEligibilityDocuments, raceProviderScope, type RaceEligibilityReason} from "./raceEligibility";
+import {inspectRaceChallengeEligibility, readRaceEligibilityDocuments, raceProviderScope, type RaceEligibilityReason} from "./raceEligibility";
 import {emptyRaceMatchProfile, RaceMatchProfileSchema, scoreRaceCandidate, raceDifficultyAdjustedMs, racePerformanceExpectation} from "./raceMatchPerformance";
 import {loadRaceMatchPolicy, raceMatchContext, raceMatchPolicySnapshot, type RaceMatchExperimentAssignment} from "./raceMatchPolicy";
 import {challengePreview, parseChallengeRecord, requestDocumentId, type RaceChallengeRecord, type Firestore} from "./raceSetupService";
@@ -14,6 +14,7 @@ import {classifyRaceMatchFailure, raceMatchFailure} from "@qwordly/core/race";
 
 import {parseRaceMatchOffer} from "./raceMatchOfferRecord";
 import {raceCandidateNeedsFreshness, selectRaceFreshCandidate} from "./raceMatchFreshness";
+import {raceRecordingFingerprint} from "./raceDeckSnapshot";
 import {offerRaceBot} from "./raceBot";
 
 export {RACE_MATCH_PAGE_SIZE, RACE_MATCH_READ_BUDGET} from "./raceCandidateSearch";
@@ -24,6 +25,8 @@ export const RACE_MATCH_OFFER_MS = 60_000;
 type CandidateInspection = {
   /** Eligible canonical archive. */
   challenge?: RaceChallengeRecord;
+  /** Immutable archive identity checked before receipt replay. */
+  recordingFingerprint?: string;
   /** Stable rejection category. */
   reason?: RaceEligibilityReason;
 };
@@ -45,8 +48,8 @@ async function readEligibleChallenges(db: Firestore, userId: string, challengeId
       }
       if (input.categoryId && challenge.categoryId !== input.categoryId) return {reason: "content"};
       /** Staged eligibility uses the transaction's shared document cache. */
-      const reason = await raceChallengeEligibility(transaction, db, userId, challenge, input.locale, nowMs);
-      return reason ? {reason} : {challenge};
+      const inspection = await inspectRaceChallengeEligibility(transaction, db, userId, challenge, input.locale, nowMs);
+      return inspection.reason ? {reason: inspection.reason} : {challenge, recordingFingerprint: raceRecordingFingerprint(challenge, inspection.riddles!)};
     }));
     return new Map(challengeIds.map((id, index) => [id, results[index]]));
   });
@@ -108,6 +111,8 @@ export async function findRecordedRaceMatch(
     /** Provides replay behavior. */
     const replay = await readEligibleChallenge(db, userId, previousOffer!.challengeId, input, nowMs, meter);
     if (replay.challenge) {
+      if (previousOffer.recordingFingerprint !== undefined && previousOffer.recordingFingerprint !== replay.recordingFingerprint)
+        throw new HttpsError("aborted", "The offered recording changed; begin a new search.");
       /** Validate the response before emitting a terminal success event. */
       const response = RaceMatchResponseSchema.parse({status: "matched", offerId: receipt.id, challenge: challengePreview(replay.challenge, nowMs)});
       logger.info("Race matchmaking lookup", {telemetryVersion: 1, disposition: "replayed", provider, locale: input.locale, matched: true, replayed: true,
@@ -146,10 +151,12 @@ export async function findRecordedRaceMatch(
   const profile = history.exists ? RaceMatchProfileSchema.parse(history.data()) : emptyRaceMatchProfile();
   /** One existing scope index proves an absent pool without scanning every performance bucket. */
   assertRaceMatchReadBudget(meter);
+  /** Scope-only probe shares the existing expiry index with candidate retrieval. */
   let availabilityQuery = db.collection("raceMatchCandidates").where("provider", "==", provider)
     .where("locale", "==", input.locale).where("rulesVersion", "==", RACE_RULES.version)
     .where("status", "==", "active").where("expiresAtMs", ">", nowMs).orderBy("expiresAtMs").limit(1);
   if (input.categoryId) availabilityQuery = availabilityQuery.where("categoryId", "==", input.categoryId);
+  /** One probe document is included in the fixed physical candidate budget. */
   const availability = await availabilityQuery.get();
   retrieval.candidateQueries = 1;
   retrieval.candidateDocumentsRead = availability.size;
@@ -245,6 +252,7 @@ export async function findRecordedRaceMatch(
     }, progress => {Object.assign(retrieval, {candidateQueries: progress.candidateQueries + 1,
       candidateDocumentsRead: progress.candidateDocumentsRead + availability.size}); assertRaceMatchReadBudget(meter);},
     context, RACE_MATCH_READ_BUDGET - availability.size);
+  /** Includes the scope probe in operational lookup cost. */
   const candidateQueries = bucketQueries + 1;
   if (!availability.empty && exhausted && pool.length === 0) throw new HttpsError("unavailable", "Match projections require reconciliation.",
     {matchmaking: raceMatchFailure("projection-unavailable", 15000)});
@@ -284,7 +292,11 @@ export async function findRecordedRaceMatch(
           if (previousSnapshot.exists) {
             /** Provides previous challenge behavior. */
             const previousChallenge = parseChallengeRecord(previousSnapshot.data(), previousSnapshot.id);
-            if (!await raceChallengeEligibility(transaction, db, userId, previousChallenge, input.locale, nowMs)) {
+            /** Replayed offers revalidate authorization and their immutable recording fingerprint. */
+            const previousInspection = await inspectRaceChallengeEligibility(transaction, db, userId, previousChallenge, input.locale, nowMs);
+            if (!previousInspection.reason) {
+              if (existingOffer?.recordingFingerprint !== undefined && existingOffer.recordingFingerprint !== raceRecordingFingerprint(previousChallenge, previousInspection.riddles!))
+                throw new HttpsError("aborted", "The offered recording changed; begin a new search.");
               /** A concurrent winner owns its original immutable attribution; replay never rewrites it. */
               const winnerPolicy = existingOffer?.matchPolicySnapshot;
               /** Legacy receipts remain replayable without inventing a historical policy snapshot. */
@@ -305,7 +317,12 @@ export async function findRecordedRaceMatch(
         /** Provides challenge behavior. */
         const challenge = parseChallengeRecord(snapshot.data(), snapshot.id);
         if (input.categoryId && challenge.categoryId !== input.categoryId) return null;
-        if (await raceChallengeEligibility(transaction, db, userId, challenge, input.locale, nowMs)) return null;
+        /** Commit selects only the canonical recording authorized in this transaction. */
+        const inspection = await inspectRaceChallengeEligibility(transaction, db, userId, challenge, input.locale, nowMs);
+        if (inspection.reason) return null;
+        /** Commit only the immutable recording actually inspected and ranked by this lookup. */
+        const recordingFingerprint = raceRecordingFingerprint(challenge, inspection.riddles!);
+        if (result.recordingFingerprint !== recordingFingerprint) return null;
         /** Provides expires at ms behavior. */
         const expiresAtMs = challengeId === previousId ? existingOffer!.expiresAtMs : Math.min(nowMs + RACE_MATCH_OFFER_MS, challenge.expiresAtMs);
         /** Provides performance ms behavior. */
@@ -313,7 +330,7 @@ export async function findRecordedRaceMatch(
         /** Provides quality behavior. */
         const quality = scoreRaceCandidate(profile, userId, {creatorId: challenge.creatorId, categoryId: challenge.categoryId,
           performanceMs, canonicalRiddleIds: challenge.canonicalRiddleIds}, nowMs, context);
-        transaction.set(receipt, {recordVersion: 1, requestId, userId, fingerprint, challengeId, expiresAtMs, createdAtMs: existingOffer?.createdAtMs ?? nowMs,
+        transaction.set(receipt, {recordVersion: 1, recordingFingerprint, requestId, userId, fingerprint, challengeId, expiresAtMs, createdAtMs: existingOffer?.createdAtMs ?? nowMs,
           ...(context.experiment ? {matchExperiment: context.experiment} : {}),
           provider, locale: input.locale, categoryId: challenge.categoryId, matchPolicyVersion: context.policy.algorithmVersion,
           matchPolicyRevision: context.policy.revision, matchPolicyHash: context.hash, matchPolicySnapshot: context.policy,

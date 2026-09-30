@@ -624,10 +624,13 @@ describe("Race Session ownership and authority orchestration", () => {
     expect(h.session.getSnapshot().challenge?.challengeId).toBe("second");
   });
   it("rejects a start receipt whose opponent differs from the invited recording", async () => {
+    /** Invitation owns the exact recording expected during preparation. */
     const h = harness({challengeId: "invited-recording"});
+    /** Answer-free preview pins the opponent's immutable finish. */
     const invited = preview("invited-recording");
     h.respond("raceEntry", {status: "ready", challenge: invited, serverNowMs: 1000});
     h.session.begin(invited.categoryId);
+    /** Matching prepared challenger snapshot supplied after an invalid receipt. */
     const run = {...await fixture(true), role: "challenger" as const, challengeId: invited.challengeId,
       opponent: {displayName: invited.creator.displayName, adjustedFinishMs: invited.adjustedTimeToBeatMs, events: []}};
     h.respond("raceStart", {run: {...run, opponent: {...run.opponent, adjustedFinishMs: invited.adjustedTimeToBeatMs + 1}}});

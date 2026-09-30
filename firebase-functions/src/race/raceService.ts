@@ -200,11 +200,6 @@ async function prepareRaceRunForUser(
       categoryId,
       seed: botOfferRef?.id ?? runRef.id,
     }));
-    if (botOfferRef) {
-      /** Canonical receipt fixes deterministic ghost playback for this preparation. */
-      const snapshot = await botOfferRef.get();
-      opponent = buildRaceBotOpponent(parseRaceBotOffer(snapshot.data(), userId, input, botOfferRef.id), botOfferRef.id, riddles);
-    }
   }
 
   /** Provides run behavior. */
@@ -286,7 +281,7 @@ async function prepareRaceRunForUser(
       opponent = buildRaceBotOpponent(committedOffer, botOfferRef.id, riddles);
       run.opponent = opponent;
     }
-    assertRaceMatchOfferForStart(matchOffer, userId, input);
+    assertRaceMatchOfferForStart(matchOffer, userId, input, run);
     if (input.challengeId) {
       if (!committedChallengeSnapshot?.exists) throw new HttpsError("not-found", "Race to 10 challenge not found.");
       /** Provides committed challenge behavior. */

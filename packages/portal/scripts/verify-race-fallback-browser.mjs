@@ -31,7 +31,7 @@ const operations = {'game:listRaceCategories':'raceCategories','game:startRace':
 async function postToHost(message) {
  if (!methods[message.type]) return;
  window.commands.push(message);
- let data = await services[methods[message.type]](message.payload);
+ let data = await services[methods[message.type]](['game:getRaceOutcome','game:resumeRace'].includes(message.type) ? message.payload.runId : message.payload);
  if (data.run) {data = {...data, run:{...data.run, role:'challenger', opponent}}; window.views.push(data.run);}
  if (message.type === 'game:getRaceOutcome') data = {...data, result:'player_win', publishable:false, rematchEligible:true, opponentAdjustedFinishMs:120000};
  window.dispatchEvent(new CustomEvent('riddle-quest:host-to-game', {detail:{type:'host:operationResult',
@@ -58,7 +58,7 @@ try {
     } catch {response.writeHead(404).end();}
   });
   await new Promise(resolve => server.listen(0, "127.0.0.1", resolve));
-  browser = await chromium.launch({headless: true});
+  browser = await chromium.launch({headless: true, ...(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH ? {executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH} : {})});
   for (const viewport of [{width:1280,height:900}, {width:390,height:844}]) {
     const context = await browser.newContext({viewport});
     const page = await context.newPage();
