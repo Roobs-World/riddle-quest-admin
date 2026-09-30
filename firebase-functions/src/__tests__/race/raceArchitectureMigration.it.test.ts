@@ -408,6 +408,8 @@ it("rejects mismatched canonical challenge identity without accepting or project
 
 /** Valid changes retain the same legacy token while altering immutable source meaning. */
 const recordingDrifts = [
+  {label: "category", patch: {categoryId: "science"}},
+  {label: "rules", patch: {rules: {...RACE_RULES, maxHintsPerRiddle: 1}}},
   {label: "creator", patch: {creatorId: `reddit_${"c".repeat(40)}`}},
   {label: "creator run", patch: {creatorRunId: "different-recording"}},
   {label: "source deck", patch: {deckId: "different-source-deck"}},

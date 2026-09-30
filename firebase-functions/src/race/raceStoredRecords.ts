@@ -33,6 +33,8 @@ const Run = z.looseObject({recordVersion: z.literal(1).optional(), runId: Id, us
   achievementProgressRecordedAtMs: Ms.optional(), achievementOutcomePresentedAtMs: Ms.optional(),
   settlementAwards: z.object({newlyUnlockedAchievementIds: z.array(z.string()), achievementCoinsAwarded: z.number().int().nonnegative()}).optional(),
 }).superRefine((run, context) => {
+  if (run.recordingFingerprint !== undefined && (!run.challengeId || run.role !== "challenger"))
+    context.addIssue({code: "custom", message: "Recording provenance requires a challenger source."});
   if (run.opponent?.kind === "bot" && (run.opponent.subjectUserId !== undefined || run.role !== "challenger" ||
     run.challengeId !== undefined || run.fallbackOfferId === undefined))
     context.addIssue({code: "custom", message: "Synthetic opponents require an owned fallback run without account linkage."});

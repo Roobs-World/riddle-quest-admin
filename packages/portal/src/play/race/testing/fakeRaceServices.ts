@@ -629,7 +629,8 @@ export const createFakeRaceServices = (): RaceMethods => {
       const cached = run.responses.get(input.requestId);
       if (cached) return cached as Awaited<ReturnType<RaceMethods["publishRace"]>>;
       /** Provides challenge id behavior. */
-      const challengeId = input.reservedChallengeId ?? `fake-challenge-${++sequence}`;
+      /** Separate creator surfaces must never publish different recordings under one shared link. */
+      const challengeId = input.reservedChallengeId ?? `fake-challenge-${crypto.randomUUID()}`;
       if (input.reservedChallengeId) {
         /** Reserved publication cannot revive a cancelled or expired invitation. */
         const invitation = loadInvitation(challengeId);

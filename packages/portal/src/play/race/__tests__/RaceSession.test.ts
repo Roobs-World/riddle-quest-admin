@@ -258,7 +258,8 @@ describe("Race Session ownership and authority orchestration", () => {
     h.session.retry();
     expect(h.commands.filter(command => command.type === "game:startRace")).toHaveLength(2);
     /** Prepared run recovered from the original server request. */
-    const run = {...await fixture(true), ...(challenge ? {role: "challenger" as const, challengeId: "original-challenge"} : {})};
+    const run = {...await fixture(true), ...(challenge ? {role: "challenger" as const, challengeId: "original-challenge",
+      opponent: {displayName: "Nova", adjustedFinishMs: 60000, events: []}} : {})};
     h.respond("raceStart", {run});
     expect(h.last()).toMatchObject({type: "game:readyRace", payload: {runId: run.runId}});
     expect(h.saved).toEqual([{ownerId: "owner-1", runId: run.runId}]);
@@ -621,6 +622,20 @@ describe("Race Session ownership and authority orchestration", () => {
     expect(h.session.getSnapshot().challenge).toBeNull();
     h.respond("raceEntry", {status: "ready", challenge: {...preview("second"), locale: "es"}, serverNowMs: 1000});
     expect(h.session.getSnapshot().challenge?.challengeId).toBe("second");
+  });
+  it("rejects a start receipt whose opponent differs from the invited recording", async () => {
+    const h = harness({challengeId: "invited-recording"});
+    const invited = preview("invited-recording");
+    h.respond("raceEntry", {status: "ready", challenge: invited, serverNowMs: 1000});
+    h.session.begin(invited.categoryId);
+    const run = {...await fixture(true), role: "challenger" as const, challengeId: invited.challengeId,
+      opponent: {displayName: invited.creator.displayName, adjustedFinishMs: invited.adjustedTimeToBeatMs, events: []}};
+    h.respond("raceStart", {run: {...run, opponent: {...run.opponent, adjustedFinishMs: invited.adjustedTimeToBeatMs + 1}}});
+    expect(h.session.getSnapshot()).toMatchObject({run: null, error: "RaceTo10.ERROR_INVALID_RESPONSE"});
+    h.session.retry();
+    h.respond("raceStart", {run});
+    expect(h.session.getSnapshot()).toMatchObject({run: {challengeId: invited.challengeId,
+      opponent: {adjustedFinishMs: invited.adjustedTimeToBeatMs}}, error: null});
   });
   it("ignores delayed discovery after navigation, disposal and a newer search", async () => {
     /** Public session harness for this player journey. */

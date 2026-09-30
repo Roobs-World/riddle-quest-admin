@@ -173,7 +173,6 @@ if (dsn) {
     environment: process.env.SENTRY_ENVIRONMENT?.trim() || process.env.GCLOUD_PROJECT || "production",
     release: resolveSentryRelease(process.env),
     sampleRate: 1,
-    sendDefaultPii: false,
     // Keep operational reporting errors-only; performance traces are
     // nonessential and require a separate, owner-approved telemetry decision.
     tracesSampleRate: 0,

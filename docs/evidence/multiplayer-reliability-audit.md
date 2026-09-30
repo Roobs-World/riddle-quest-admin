@@ -59,6 +59,14 @@ and PWA release builds are excluded.
 
 ## Still to review before whole-goal completion
 
+- Fixed: owned deck, prompt, evaluation and known scheduling timestamps are
+  validated before rollback checkpoints are consumed. Legacy answer-free views,
+  prepared scheduling, new-run content and genuine other-tab progress retain
+  compatibility. Exhausted legacy hint rules suppress extra paid requests.
+  Evidence and stable-source recording are in
+  `multiplayer-immutable-snapshot-recovery.md` and
+  `race-immutable-snapshot-recovery.json`; the broader gates below remain open.
+
 - Further semantic run validation, including immutable deck/rules, lifecycle
   progression and event/clock consistency beyond the validated context/outcomes.
 - Provider side effects, invitations and cache results across navigation, account

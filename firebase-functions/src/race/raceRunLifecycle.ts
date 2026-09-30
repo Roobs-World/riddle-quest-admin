@@ -42,6 +42,7 @@ export async function readyRaceRunForUser(userId: string, input: ReadyRaceRunReq
       if (!challengeSnapshot.exists) throw new HttpsError("failed-precondition", "Race challenge is unavailable.");
       /** Provides challenge behavior. */
       const challenge = parseChallengeRecord(challengeSnapshot.data(), challengeSnapshot.id);
+      /** Readiness rechecks authorization and immutable recording content transactionally. */
       const inspection = await inspectRaceChallengeEligibility(transaction, db, userId, challenge, stored.locale,
         options.nowMs ?? Date.now(), stored.runId);
       assertRaceChallengeEligible(inspection.reason);

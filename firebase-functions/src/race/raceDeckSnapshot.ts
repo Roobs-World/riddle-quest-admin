@@ -77,6 +77,7 @@ function recordingEvents(events: RaceRunRecord["events"]): unknown {
 
 /** Binds the resolved content and immutable recording facts while allowing equivalent legacy snapshot backfills. */
 export function raceRecordingFingerprint(challenge: RaceChallengeRecord, riddles: RaceRiddleSnapshot[]): string {
+  /** Ordered ownership, content, rules and scoring facts define the immutable recording. */
   const source = [1, challenge.challengeId, challenge.creatorId, challenge.creatorRunId, challenge.categoryId,
     challenge.locale, challenge.deckId, challenge.canonicalRiddleIds, challenge.targetCorrect,
     challenge.evaluationPolicy ?? "preloaded", recordingRules(challenge.rules), raceDeckContentVersion(riddles),

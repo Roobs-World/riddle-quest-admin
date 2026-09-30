@@ -118,6 +118,8 @@ async function prepareRaceRunForUser(
   /** Provides existing start behavior. */
   const existingStart = await startRequestRef.get();
   if (existingStart.exists) {
+    if (existingStart.data()?.fallbackOfferId !== input.fallbackOfferId)
+      throw new HttpsError("invalid-argument", "Race start request was reused for another opponent.");
     /** Provides run id behavior. */
     const runId = existingStart.data()?.runId;
     if (typeof runId !== "string") throw new HttpsError("internal", "Stored race start request is invalid.");
@@ -145,9 +147,9 @@ async function prepareRaceRunForUser(
     const snapshot = await botOfferRef.get();
     if (!snapshot.exists) throw new HttpsError("not-found", "Opponent offer is unavailable.");
     /** Previously accepted offers resume their existing run. */
-    const offer = parseRaceBotOffer(snapshot.data(), userId, input);
+    const offer = parseRaceBotOffer(snapshot.data(), userId, input, botOfferRef.id);
     if (offer.acceptedRunId) return resumeRaceRunForUser(userId, offer.acceptedRunId, {db, nowMs, includeEvaluation: input.includeEvaluation});
-    if (offer.expiresAtMs <= nowMs) throw new HttpsError("failed-precondition", "Opponent offer expired.");
+    if (offer.createdAtMs > nowMs || offer.expiresAtMs <= nowMs) throw new HttpsError("failed-precondition", "Opponent offer expired.");
   }
 
   if (input.rivalryChallengeId) {
@@ -201,7 +203,7 @@ async function prepareRaceRunForUser(
     if (botOfferRef) {
       /** Canonical receipt fixes deterministic ghost playback for this preparation. */
       const snapshot = await botOfferRef.get();
-      opponent = buildRaceBotOpponent(parseRaceBotOffer(snapshot.data(), userId, input), botOfferRef.id, riddles);
+      opponent = buildRaceBotOpponent(parseRaceBotOffer(snapshot.data(), userId, input, botOfferRef.id), botOfferRef.id, riddles);
     }
   }
 
@@ -264,16 +266,22 @@ async function prepareRaceRunForUser(
       botOfferRef ? transaction.get(botOfferRef) : Promise.resolve(null),
     ]);
     assertJestAccountActive(deletion);
-    if (duplicateStart.exists) return;
+    if (duplicateStart.exists) {
+      if (duplicateStart.data()?.fallbackOfferId !== input.fallbackOfferId)
+        throw new HttpsError("invalid-argument", "Race start request was reused for another opponent.");
+      return;
+    }
     if (botOfferRef) {
       if (!botOffer?.exists) throw new HttpsError("not-found", "Opponent offer is unavailable.");
       /** Transactional acceptance revalidates ownership and expiry before creating a run. */
-      const committedOffer = parseRaceBotOffer(botOffer.data(), userId, input);
+      const committedOffer = parseRaceBotOffer(botOffer.data(), userId, input, botOfferRef.id);
       if (committedOffer.acceptedRunId) {
-        transaction.create(startRequestRef, {runId: committedOffer.acceptedRunId, userId, createdAtMs: nowMs, expiresAt});
+        transaction.create(startRequestRef, {runId: committedOffer.acceptedRunId, userId, fallbackOfferId: input.fallbackOfferId, createdAtMs: nowMs, expiresAt});
         return;
       }
-      if (committedOffer.expiresAtMs <= nowMs) throw new HttpsError("failed-precondition", "Opponent offer expired.");
+      const acceptanceNow = options.nowMs ?? Date.now();
+      if (committedOffer.createdAtMs > acceptanceNow || committedOffer.expiresAtMs <= acceptanceNow)
+        throw new HttpsError("failed-precondition", "Opponent offer expired.");
       opponent = buildRaceBotOpponent(committedOffer, botOfferRef.id, riddles);
       run.opponent = opponent;
     }
@@ -282,6 +290,7 @@ async function prepareRaceRunForUser(
       if (!committedChallengeSnapshot?.exists) throw new HttpsError("not-found", "Race to 10 challenge not found.");
       /** Provides committed challenge behavior. */
       const committedChallenge = parseChallengeRecord(committedChallengeSnapshot.data(), committedChallengeSnapshot.id);
+      /** Acceptance binds the prepared run to the same authorized immutable recording. */
       const inspection = await inspectRaceChallengeEligibility(transaction, db, userId, committedChallenge, input.locale, nowMs);
       assertRaceChallengeEligible(inspection.reason);
       assertRacePreparedRecording(run, committedChallenge, inspection.riddles!);
@@ -291,7 +300,7 @@ async function prepareRaceRunForUser(
     transaction.set(matchProfileRef, recordRaceExposure(profile, userId, riddles, challenge?.creatorId));
     transaction.create(deckRef, stripUndefined(deck));
     transaction.create(runRef, {...stripUndefined({...run, deadlineAtMs: raceDeadlineAtMs(run)}), expiresAt});
-    transaction.create(startRequestRef, {runId: runRef.id, userId, createdAtMs: nowMs, expiresAt});
+    transaction.create(startRequestRef, {runId: runRef.id, userId, ...(input.fallbackOfferId ? {fallbackOfferId: input.fallbackOfferId} : {}), createdAtMs: nowMs, expiresAt});
     if (botOfferRef) transaction.update(botOfferRef, {acceptedRunId: runRef.id});
     if (matchOffer) transaction.update(matchOffer.ref, {acceptedRunId: runRef.id, acceptedAtMs: nowMs,
       preparationRequested: Boolean(input.prepare), offerExpiredAtAcceptance: matchOffer.data()!.expiresAtMs <= nowMs,

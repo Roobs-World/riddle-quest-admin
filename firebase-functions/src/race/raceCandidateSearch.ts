@@ -50,7 +50,7 @@ type SearchExpectation = {
 export async function searchRaceCandidates(db: Firestore, userId: string, provider: RaceProviderScope, input: RaceMatchRequest,
   profile: RaceMatchProfile, requestId: string, nowMs: number,
   onTier?: (documents: FirebaseFirestore.QueryDocumentSnapshot[], tier: number) => Promise<boolean>,
-  checkWorkBudget?: (progress: SearchProgress) => void, context: RaceMatchContext = DEFAULT_RACE_MATCH_CONTEXT) {
+  checkWorkBudget?: (progress: SearchProgress) => void, context: RaceMatchContext = DEFAULT_RACE_MATCH_CONTEXT, candidateBudget = RACE_MATCH_READ_BUDGET) {
   /** Categories with identical expectations share queries without changing ranking semantics. */
   const groups = new Map<string, SearchExpectation>();
   for (const category of input.categoryId ? [input.categoryId] : RACE_CATEGORY_IDS) {
@@ -84,11 +84,11 @@ export async function searchRaceCandidates(db: Firestore, userId: string, provid
   /** If no eligible fallback exists, spend unused wider capacity on the remaining nearest window before far matches. */
   const tiers = context.policy.algorithmVersion === 3 ? [0, 1, 0, 2] : [0, 1, 2];
   for (const [pass, tier] of tiers.entries()) {
-    if (documents.length >= RACE_MATCH_READ_BUDGET) break;
+    if (documents.length >= candidateBudget) break;
     /** Provides active behavior. */
     const active = cursors.filter(cursor => cursor.tier === tier);
     /** Reserve candidate capacity for comparable freshness alternatives in dense nearest pools. */
-    const tierBudget = pass === 0 && context.policy.algorithmVersion === 3 ? context.policy.freshness.nearCandidateBudget : RACE_MATCH_READ_BUDGET;
+    const tierBudget = pass === 0 && context.policy.algorithmVersion === 3 ? context.policy.freshness.nearCandidateBudget : candidateBudget;
     while (active.some(cursor => cursor.half < 2) && documents.length < tierBudget) {
       /** Provides pending behavior. */
       const pending = active.filter(cursor => cursor.half < 2);

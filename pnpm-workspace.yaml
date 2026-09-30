@@ -55,6 +55,7 @@ onlyBuiltDependencies:
 
 allowBuilds:
   "@firebase/util": true
+  '@parcel/watcher': false
   "@sentry/cli": true
   "@swc/core": true
   dtrace-provider: false

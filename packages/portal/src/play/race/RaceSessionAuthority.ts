@@ -97,7 +97,10 @@ export function applyRaceAuthority(state: RaceSessionState, operation: RaceOpera
       /** Every editable authority snapshot must have a coherent reveal set before recovery can consume input. */
       const revealed = raceReveals(run.currentRiddle);
       if (operation === "raceReady" || operation === "raceResume" && state.run) owned(run);
-      if (operation === "raceStart" && state.activeChallengeId && run.challengeId !== state.activeChallengeId) throw new Error("Wrong challenge run");
+      if (operation === "raceStart" && state.activeChallengeId &&
+        (run.challengeId !== state.activeChallengeId || run.role !== "challenger" || !run.opponent ||
+          state.challenge && (run.opponent.adjustedFinishMs !== state.challenge.adjustedTimeToBeatMs ||
+            run.opponent.displayName !== state.challenge.creator.displayName))) throw new Error("Wrong challenge run");
       /** Recovery preserves known input only for the same authority-owned question. */
       let attempt = raceAttemptState(run);
       /** Provisional input supplies letters only after the server confirms its exact question. */

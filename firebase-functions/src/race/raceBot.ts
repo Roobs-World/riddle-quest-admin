@@ -13,7 +13,8 @@ import type {RaceOpponentRecord, RaceRiddleSnapshot} from "./raceEngine";
 const BotOffer = z.object({version: z.literal(1), userId: z.string().min(1), requestId: z.string().min(8),
   locale: RaceLocaleSchema, categoryId: RaceCategoryIdSchema, requestedCategoryId: RaceCategoryIdSchema.nullable(),
   performanceMs: z.number().finite().min(1000).max(300000), createdAtMs: z.number().int().nonnegative(),
-  expiresAtMs: z.number().int().nonnegative(), acceptedRunId: z.string().min(1).optional()});
+  expiresAtMs: z.number().int().nonnegative(), acceptedRunId: z.string().min(1).max(160).refine(value => !value.includes("/")).optional()})
+  .refine(offer => offer.expiresAtMs === offer.createdAtMs + 60_000, {message: "Invalid fallback lifetime"});
 /** Server-selected fallback receipt; timing never comes from the player. */
 export type RaceBotOffer = z.infer<typeof BotOffer>;
 /** Short selection window; accepted runs retain their own lifecycle and countdown. */
@@ -22,12 +23,14 @@ const OFFER_MS = 60_000;
 const NAMES = ["Nova", "RiddleRider", "ClueFox", "Luna", "PuzzlePilot", "Echo", "WordWanderer", "Atlas"];
 
 /** Validates the canonical receipt before any bot preparation or concurrent acceptance. */
-export function parseRaceBotOffer(value: unknown, userId: string, input: Pick<StartRaceRunRequest, "locale" | "categoryId">): RaceBotOffer {
+export function parseRaceBotOffer(value: unknown, userId: string, input: Pick<StartRaceRunRequest, "locale" | "categoryId">, expectedId?: string): RaceBotOffer {
   /** Complete receipt schema result before ownership checks. */
   const parsed = BotOffer.safeParse(value);
   if (!parsed.success) throw new HttpsError("data-loss", "Fallback opponent receipt is invalid.");
   /** Validated immutable selection receipt. */
   const offer = parsed.data;
+  if (expectedId !== undefined && requestDocumentId(offer.userId, offer.requestId) !== expectedId)
+    throw new HttpsError("data-loss", "Fallback opponent receipt identity is invalid.");
   if (offer.userId !== userId) throw new HttpsError("permission-denied", "Opponent offer belongs to another player.");
   if (offer.locale !== input.locale || offer.categoryId !== input.categoryId)
     throw new HttpsError("invalid-argument", "Opponent offer preferences changed.");

@@ -35,18 +35,18 @@
     "prepublishOnly": "node scripts/direct-release-guard.mjs publish"
   },
   "dependencies": {
-    "@devvit/web": "0.14.1",
-    "@hono/node-server": "2.1.1",
+    "@devvit/web": "0.14.6",
+    "@hono/node-server": "2.1.3",
     "@qwordly/core": "workspace:*",
-    "devvit": "0.14.1",
-    "hono": "4.13.3"
+    "devvit": "0.14.6",
+    "hono": "4.13.11"
   },
   "devDependencies": {
-    "@types/node": "^24.13.3",
+    "@types/node": "^26.6.3",
     "chrome-launcher": "1.2.1",
-    "google-protobuf": "3.21.4",
-    "lighthouse": "13.4.1",
+    "google-protobuf": "4.0.3",
+    "lighthouse": "13.5.0",
     "typescript": "npm:@typescript/typescript6@6.0.2",
-    "vite": "8.2.2"
+    "vite": "8.3.1"
   }
 }

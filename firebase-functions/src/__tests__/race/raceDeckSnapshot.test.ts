@@ -1,5 +1,6 @@
 import {RACE_RULES} from "@qwordly/core/race";
-import {raceDeckContentVersion, validateRaceDeckSnapshot} from "../../race/raceDeckSnapshot";
+import {raceDeckContentVersion, validateRaceDeckSnapshot, raceRecordingFingerprint, assertRacePreparedRecording} from "../../race/raceDeckSnapshot";
+import {parseChallengeRecord} from "../../race/raceSetupService";
 import {applyRaceHint, toRaceRunView, type RaceRunRecord} from "../../race/raceEngine";
 
 /** Minimal authoritative run used to exercise archived rules and answer policy. */
@@ -47,4 +48,34 @@ it("enforces a server-owned answer policy even when the caller asks for evaluati
   expect(view.preloadedRiddles).toBeUndefined();
   expect(view.currentRiddle?.evaluation).toBeUndefined();
   expect(toRaceRunView({...run(), evaluationPolicy: "preloaded"}, 2_000, true).preloadedRiddles).toHaveLength(1);
+});
+
+/** Archived source with legacy content token and a complete owned scoring projection. */
+const sourceRecording = () => parseChallengeRecord({challengeId: "challenge", creatorId: "creator", creatorRunId: "recording",
+  creatorSnapshot: {displayName: "Creator"}, categoryId: "history", locale: "en", deckId: "source-deck",
+  canonicalRiddleIds: ["q:1"], riddles: run().riddles, rules: run().rulesSnapshot, targetCorrect: 10,
+  creatorWallFinishMs: 20000, creatorHintPenaltyMs: 0, creatorSkipPenaltyMs: 0,
+  creatorTotalPenaltyMs: 0, creatorAdjustedFinishMs: 20000, ghostEvents: [], contentVersion: "legacy-token",
+  status: "active", createdAtMs: 21000, expiresAtMs: 100000});
+
+it("checks legacy prepared snapshots even without a provenance digest", () => {
+  const challenge = sourceRecording();
+  const prepared: RaceRunRecord = {...run(), challengeId: challenge.challengeId, role: "challenger", status: "prepared",
+    startedAtMs: 0, opponent: {displayName: "Creator", subjectUserId: "creator", adjustedFinishMs: 20000, events: []}};
+  expect(() => assertRacePreparedRecording(prepared, challenge, challenge.riddles!)).not.toThrow();
+  expect(() => assertRacePreparedRecording({...prepared, opponent: {...prepared.opponent!, adjustedFinishMs: 21000}},
+    challenge, challenge.riddles!)).toThrow("changed during preparation");
+  expect(() => assertRacePreparedRecording({...prepared, riddles: [{...prepared.riddles[0], answer: "organ"}]},
+    challenge, challenge.riddles!)).toThrow("changed during preparation");
+});
+
+it("never trusts the source digest in place of the run's own prepared scoring snapshot", () => {
+  const challenge = sourceRecording();
+  const prepared: RaceRunRecord = {...run(), challengeId: challenge.challengeId, role: "challenger", status: "prepared",
+    startedAtMs: 0, recordingFingerprint: raceRecordingFingerprint(challenge, challenge.riddles!),
+    opponent: {displayName: "Creator", subjectUserId: "creator", adjustedFinishMs: 20000, events: []}};
+  expect(() => assertRacePreparedRecording({...prepared, evaluationPolicy: "server-only"}, challenge, challenge.riddles!))
+    .toThrow("changed during preparation");
+  expect(() => assertRacePreparedRecording({...prepared, recordingFingerprint: "a".repeat(64)}, challenge, challenge.riddles!))
+    .toThrow("changed during preparation");
 });

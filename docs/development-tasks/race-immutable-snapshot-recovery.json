@@ -1,0 +1,25 @@
+{
+  "taskId": "multiplayer:race-immutable-snapshot-recovery",
+  "targets": ["jest", "facebook", "reddit", "youtube", "netflix", "yahoo", "gamesnacks"],
+  "work": "Validate owned immutable race content and scheduling before consuming rollback state, preserve compatible legacy snapshots, honor legacy hint limits and accept server-issued fallback challenger starts.",
+  "remainingGates": ["Full multiplayer reliability and requirement-by-requirement integration audits remain open.", "Provider approval and deployment require independent evidence."],
+  "nextAction": "Continue multiplayer lifecycle, event/clock consistency and rules compatibility audits for platform-specific HTML5 targets.",
+  "checks": [
+    {"id": "race-transitions", "executable": "pnpm", "args": ["--filter", "@qwordly/portal", "test", "--runInBand", "--testPathPatterns=src/play/race/__tests__"]},
+    {"id": "portal-types", "executable": "pnpm", "args": ["--filter", "@qwordly/portal", "check:types"]},
+    {"id": "isolated-html5-builds", "executable": "pnpm", "args": ["--filter", "@qwordly/portal", "build:all-targets"]},
+    {"id": "injected-web-authority-recovery-and-sharing", "executable": "env", "args": ["PORTAL_BROWSER_TESTS=1", "PORTAL_USE_EXISTING_BUILD=1", "pnpm", "--filter", "@qwordly/portal", "test", "--runInBand", "--runTestsByPath", "src/jest/__tests__/authentication.jest-playwright.test.ts", "--testNamePattern=rejects inconsistent hint confirmations|publishes a completed score before reusable Jest invites"]},
+    {"id": "artifact-dependency-evidence", "executable": "node", "args": ["scripts/release/verify-target-dependency-evidence.mjs"]},
+    {"id": "maintainable-file-sizes", "executable": "pnpm", "args": ["check:file-sizes"]},
+    {"id": "documented-declarations", "executable": "pnpm", "args": ["check:tsdoc"]}
+  ],
+  "artifacts": [
+    {"target": "jest", "file": "artifacts/target-dependencies/jest.json"},
+    {"target": "facebook", "file": "artifacts/target-dependencies/facebook.json"},
+    {"target": "reddit", "file": "artifacts/target-dependencies/reddit.json"},
+    {"target": "youtube", "file": "artifacts/target-dependencies/youtube.json"},
+    {"target": "netflix", "file": "artifacts/target-dependencies/netflix.json"},
+    {"target": "yahoo", "file": "artifacts/target-dependencies/yahoo.json"},
+    {"target": "gamesnacks", "file": "artifacts/target-dependencies/gamesnacks.json"}
+  ]
+}

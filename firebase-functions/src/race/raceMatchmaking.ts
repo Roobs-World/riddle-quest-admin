@@ -1,7 +1,7 @@
 import {createHash, randomUUID} from "node:crypto";
 import {logger} from "firebase-functions";
 import {HttpsError} from "firebase-functions/v2/https";
-import {RaceMatchResponseSchema, RACE_CHALLENGE_TTL_MS, type RaceMatchRequest, type RaceMatchResponse} from "@qwordly/core/race";
+import {RaceMatchResponseSchema, RACE_CHALLENGE_TTL_MS, RACE_RULES, type RaceMatchRequest, type RaceMatchResponse} from "@qwordly/core/race";
 import {admin} from "../shared/firebaseAdmin";
 import {raceChallengeEligibility, readRaceEligibilityDocuments, raceProviderScope, type RaceEligibilityReason} from "./raceEligibility";
 import {emptyRaceMatchProfile, RaceMatchProfileSchema, scoreRaceCandidate, raceDifficultyAdjustedMs, racePerformanceExpectation} from "./raceMatchPerformance";
@@ -144,6 +144,16 @@ export async function findRecordedRaceMatch(
   const context = raceMatchContext(snapshot, input.locale);
   /** Provides profile behavior. */
   const profile = history.exists ? RaceMatchProfileSchema.parse(history.data()) : emptyRaceMatchProfile();
+  /** One existing scope index proves an absent pool without scanning every performance bucket. */
+  assertRaceMatchReadBudget(meter);
+  let availabilityQuery = db.collection("raceMatchCandidates").where("provider", "==", provider)
+    .where("locale", "==", input.locale).where("rulesVersion", "==", RACE_RULES.version)
+    .where("status", "==", "active").where("expiresAtMs", ">", nowMs).orderBy("expiresAtMs").limit(1);
+  if (input.categoryId) availabilityQuery = availabilityQuery.where("categoryId", "==", input.categoryId);
+  const availability = await availabilityQuery.get();
+  retrieval.candidateQueries = 1;
+  retrieval.candidateDocumentsRead = availability.size;
+  assertRaceMatchReadBudget(meter);
   /** Bounded indexed retrieval precedes scored selection and canonical revalidation. */
   const rejectedProjections = new Set<string>();
   /** Parsed retrieval metadata must also match its canonical source before affecting an offer. */
@@ -201,7 +211,7 @@ export async function findRecordedRaceMatch(
   /** Optional freshness work cannot consume the canonical reads needed to commit a fallback offer. */
   const freshnessChecks = [0, 0];
   /** Provides {documents: pool, exhausted, queries: candidate queries} behavior. */
-  const {documents: pool, exhausted, queries: candidateQueries} = await searchRaceCandidates(db, userId, provider, input, profile, requestId, nowMs,
+  const {documents: pool, exhausted, queries: bucketQueries} = availability.empty ? {documents: [], exhausted: true, queries: 0} : await searchRaceCandidates(db, userId, provider, input, profile, requestId, nowMs,
     async (documents, tier) => {
       /** Eligibility is checked before a fresh projection can stop or widen discovery. */
       let baseline: ReturnType<typeof rank>[number] | undefined;
@@ -232,7 +242,12 @@ export async function findRecordedRaceMatch(
       }
       // One wider comparable tier is enough; retain the nearest eligible fallback.
       return baseline !== undefined && tier >= 1;
-    }, progress => {Object.assign(retrieval, progress); assertRaceMatchReadBudget(meter);}, context);
+    }, progress => {Object.assign(retrieval, {candidateQueries: progress.candidateQueries + 1,
+      candidateDocumentsRead: progress.candidateDocumentsRead + availability.size}); assertRaceMatchReadBudget(meter);},
+    context, RACE_MATCH_READ_BUDGET - availability.size);
+  const candidateQueries = bucketQueries + 1;
+  if (!availability.empty && exhausted && pool.length === 0) throw new HttpsError("unavailable", "Match projections require reconciliation.",
+    {matchmaking: raceMatchFailure("projection-unavailable", 15000)});
   /** Provides ranked behavior. */
   const ranked = rank(pool);
   /** Cached canonical checks prevent blocked or stale projections from winning freshness selection. */
@@ -307,7 +322,7 @@ export async function findRecordedRaceMatch(
           freshnessBaselineBand: eligible[0]?.band ?? quality.band,
           freshnessBaselineRepeats: eligible[0]?.repeats ?? quality.repeats,
           freshnessBaselineOverlap: eligible[0]?.exposure ?? quality.exposure,
-          lookupCandidateDocumentsRead: existingOffer?.lookupCandidateDocumentsRead ?? pool.length,
+          lookupCandidateDocumentsRead: existingOffer?.lookupCandidateDocumentsRead ?? retrieval.candidateDocumentsRead,
           lookupCandidateQueries: existingOffer?.lookupCandidateQueries ?? candidateQueries,
           lookupDocumentReadAttempts: existingOffer?.lookupDocumentReadAttempts ?? meter.documentReadAttempts,
           lookupTransactionAttempts: existingOffer?.lookupTransactionAttempts ?? meter.transactionAttempts,
@@ -321,9 +336,9 @@ export async function findRecordedRaceMatch(
     /** One final event follows response validation and the committed offer. */
     const response = RaceMatchResponseSchema.parse({status: "matched", offerId: receipt.id, challenge: offered.challenge});
     logger.info("Race matchmaking lookup", {telemetryVersion: 1, disposition: "matched", provider, locale: input.locale, examined, rejected, matched: true,
-      candidateDocumentsRead: pool.length, candidateQueries, offerBand: offered.quality.band, performanceConfidence: offered.quality.confidence,
+      candidateDocumentsRead: retrieval.candidateDocumentsRead, candidateQueries, offerBand: offered.quality.band, performanceConfidence: offered.quality.confidence,
       policyHash: offered.policyHash, policyRevision: offered.policyRevision, matchExperiment: offered.matchExperiment, freshnessRelaxed: offered.freshnessRelaxed,
-      ...meter, searchCapped: !exhausted && pool.length >= RACE_MATCH_READ_BUDGET, durationMs: Date.now() - started});
+      ...meter, searchCapped: !exhausted && pool.length + availability.size >= RACE_MATCH_READ_BUDGET, durationMs: Date.now() - started});
     return response;
   }
   if (exhausted && rejectedProjections.size) throw new HttpsError("unavailable", "Match projections require reconciliation. Please retry later.",
@@ -334,11 +349,11 @@ export async function findRecordedRaceMatch(
     /** Typed empty-pool response can carry one server-selected fallback receipt. */
     const response = RaceMatchResponseSchema.parse({status: "empty", locale: input.locale, ...(fallback ? {fallback} : {})});
     logger.info("Race matchmaking lookup", {telemetryVersion: 1, disposition: "empty", provider, locale: input.locale, examined, rejected, matched: false,
-      policyHash: context.hash, policyRevision: context.policy.revision, matchExperiment: context.experiment, candidateDocumentsRead: pool.length, candidateQueries,
+      policyHash: context.hash, policyRevision: context.policy.revision, matchExperiment: context.experiment, candidateDocumentsRead: retrieval.candidateDocumentsRead, candidateQueries,
       ...meter, searchCapped: false, durationMs: Date.now() - started});
     return response;
   }
-  if (pool.length < RACE_MATCH_READ_BUDGET) throw new HttpsError("aborted", "Match eligibility changed during selection. Please retry.");
+  if (pool.length + availability.size < RACE_MATCH_READ_BUDGET) throw new HttpsError("aborted", "Match eligibility changed during selection. Please retry.");
   throw new HttpsError("resource-exhausted", "Match search reached its bounded candidate budget. Please retry.");
   } catch (error) {
     /** Stable terminal classification allows mutually exclusive operational counters. */

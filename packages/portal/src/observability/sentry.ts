@@ -49,7 +49,6 @@ export function initializeBrowserSentry(configuration: BrowserSentryConfiguratio
     environment: configuration.environment?.trim() || "production",
     release: configuration.release?.trim() || undefined,
     sampleRate: 1,
-    sendDefaultPii: false,
     tracesSampleRate: 0,
     integrations: (defaults) => defaults.filter(({name}) => !nonEssentialBrowserIntegrations.has(name)),
     beforeSend: (event) => redactBrowserSentryEvent(event),

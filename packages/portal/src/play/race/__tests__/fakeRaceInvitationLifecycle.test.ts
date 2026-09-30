@@ -3,11 +3,13 @@ import {RaceEntryResponseSchema} from "@qwordly/core/race";
 import {createFakeRaceServices} from "../testing/fakeRaceServices";
 
 /** Completes a creator recording through the same typed mutation interface used by browser flows. */
-async function completedCreator() {
+async function completedCreator(withHint = false) {
   /** Independent creator transport adapter. */
   const services = createFakeRaceServices();
   /** Immutable preloaded fixture supplies authoritative answers to this test. */
   let {run} = await services.startRace({locale: "en", categoryId: "mixed", requestId: "creator-start", includeEvaluation: true});
+  if (withHint) run = (await services.requestRaceHint({runId: run.runId, riddleId: run.currentRiddle!.riddleId,
+    requestId: "creator-hint"})).run;
   for (let position = 0; position < 10; position++) {
     run = (await services.submitRaceGuess({runId: run.runId, riddleId: run.currentRiddle!.riddleId,
       guess: run.currentRiddle!.evaluation!.answer, requestId: `creator-answer-${position}`})).run;
@@ -32,6 +34,27 @@ afterEach(() => {
 });
 
 describe("injected invitation transport lifecycle", () => {
+  it("opens each shared link against its own creator recording across separate surfaces", async () => {
+    const first = await completedCreator();
+    const second = await completedCreator(true);
+    const firstShare = await first.services.publishRace({runId: first.run.runId, requestId: "publish-first"});
+    const secondShare = await second.services.publishRace({runId: second.run.runId, requestId: "publish-second"});
+    expect(firstShare.challengeId).not.toBe(secondShare.challengeId);
+    const recipient = createFakeRaceServices();
+    for (const [publication, recording, other] of [
+      [firstShare, first.run, second.run], [secondShare, second.run, first.run],
+    ] as const) {
+      await expect(recipient.getRaceEntry!(publication.challengeId, "en")).resolves.toMatchObject({
+        status: "ready", challenge: {challengeId: publication.challengeId},
+      });
+      const {run} = await recipient.startRace({locale: "en", challengeId: publication.challengeId,
+        requestId: `accept-${publication.challengeId}`});
+      expect(run.challengeId).toBe(publication.challengeId);
+      expect(run.opponent?.events).toEqual(recording.events);
+      expect(run.opponent?.events).not.toEqual(other.events);
+      expect(run.opponent?.adjustedFinishMs).toBe(publication.preview.adjustedTimeToBeatMs);
+    }
+  });
   it.each([false, true])("preserves typed recipient readiness when publication comes first: %s", async publishFirst => {
     /** Creator's complete recording can be published before or after recipient arrival. */
     const {services: creator, run} = await completedCreator();

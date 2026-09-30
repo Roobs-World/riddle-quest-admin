@@ -38,7 +38,12 @@ export async function inspectRaceChallengeEligibility(
   locale: RaceChallengeRecord["locale"],
   nowMs: number,
   acceptedRunId?: string,
-): Promise<{reason: RaceEligibilityReason | null; riddles?: RaceRiddleSnapshot[]}> {
+): Promise<{
+  /** Rejection classification, or null after every eligibility check succeeds. */
+  reason: RaceEligibilityReason | null;
+  /** Canonical immutable content resolved only for an authorized recording. */
+  riddles?: RaceRiddleSnapshot[];
+}> {
   if (challenge.creatorId === userId) return {reason: "self"};
   /** Provides provider behavior. */
   const provider = raceProviderScope(userId);
@@ -75,6 +80,7 @@ export async function inspectRaceChallengeEligibility(
     const original = creatorRun?.data();
     if (!challenge.riddles && (!creatorRun?.exists || original?.userId !== challenge.creatorId || original?.locale !== locale)) return {reason: "content"};
     if (!challenge.riddles) assertRaceCreatorArchiveLink(parseRunRecord(original, challenge.creatorRunId), challenge);
+    /** Ordered canonical deck validated against retained recording identifiers and content version. */
     const riddles = validateRaceDeckSnapshot(challenge.riddles ?? original?.riddles, challenge.canonicalRiddleIds,
       challenge.snapshotVersion === 1 ? challenge.contentVersion : undefined);
     return {reason: null, riddles};
