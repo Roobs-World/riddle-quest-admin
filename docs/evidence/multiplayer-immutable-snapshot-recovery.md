@@ -29,7 +29,7 @@ now confirms an accepted run before checking the next search. Documentation-only
 changes cover declarations in concurrent multiplayer backend and test work; their
 behavioural rollout remains separate.
 
-Focused public-interface verification passed 311 race tests in 19 suites. The
+Focused public-interface verification passed 313 race tests in 19 suites. The
 injected Jest browser flow corrupts a real paid hint's outgoing deck or schedule,
 verifies rollback and read-only recovery, and asserts exactly one hint charge and
 one resume read. The full creator/publication/reusable-recipient journey passed.
@@ -50,3 +50,9 @@ pnpm development:complete docs/development-tasks/race-immutable-snapshot-recover
 This is partial reliability evidence. Rules compatibility, lifecycle progression,
 event/clock coherence and the complete multiplayer requirement audit remain open.
 A stable-source recorder receipt is required before claiming dashboard completion.
+
+The first recorder attempt failed a start-recovery test while the shared checkout
+and dependency state were changing. Its isolated retry and subsequent complete
+race-suite run passed. The current repository-wide TSDoc gate still reports
+undocumented declarations in concurrent backend integration and test additions;
+these remain a completion gate until resolved against the final source.

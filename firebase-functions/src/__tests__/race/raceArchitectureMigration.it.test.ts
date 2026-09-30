@@ -421,11 +421,14 @@ const recordingDrifts = [
 ];
 
 it.each(recordingDrifts)("rejects $label drift before acceptance without consuming an attempt", async ({patch}) => {
+  /** Provides ref behavior. */
   const ref = db.doc("raceChallenges/drift");
   await ref.set({...challenge("drift"), riddles: RIDDLES});
   /** Change authority after outside preparation, before the real acceptance transaction. */
   const original = db.runTransaction.bind(db);
+  /** Provides changed behavior. */
   let changed = false;
+  /** Provides interleave behavior. */
   const interleave = jest.spyOn(db, "runTransaction").mockImplementation(async (operation, options) => {
     if (!changed) {changed = true; await ref.update(patch);}
     return original(operation, options);
@@ -440,10 +443,13 @@ it.each(recordingDrifts)("rejects $label drift before acceptance without consumi
 });
 
 it.each(recordingDrifts)("rejects $label drift at readiness without assigning a scored start", async ({patch}) => {
+  /** Provides ref behavior. */
   const ref = db.doc("raceChallenges/drift");
   await ref.set({...challenge("drift"), riddles: RIDDLES});
+  /** Provides prepared behavior. */
   const prepared = await startRaceRunForUser(PLAYER, {locale: "en", challengeId: "drift", requestId: "drift-preparation", prepare: true},
     {db, nowMs: NOW});
+  /** Provides run ref behavior. */
   const runRef = db.doc(`raceRuns/${prepared.run.runId}`);
   expect((await runRef.get()).data()?.recordingFingerprint).toMatch(/^[a-f0-9]{64}$/);
   expect(prepared.run).not.toHaveProperty("recordingFingerprint");
@@ -454,12 +460,15 @@ it.each(recordingDrifts)("rejects $label drift at readiness without assigning a 
 });
 
 it("allows equivalent legacy backfill and presentation changes, then resumes independently of the source", async () => {
+  /** Provides ref behavior. */
   const ref = db.doc("raceChallenges/backfill-ready");
   await ref.set(challenge(ref.id));
+  /** Provides prepared behavior. */
   const prepared = await startRaceRunForUser(PLAYER, {locale: "en", challengeId: ref.id, requestId: "backfill-preparation", prepare: true},
     {db, nowMs: NOW});
   await ref.update({riddles: RIDDLES, snapshotVersion: 1, contentVersion: raceDeckContentVersion(RIDDLES),
     creatorSnapshot: {displayName: "New presentation"}, rules: Object.fromEntries(Object.entries(RACE_RULES).reverse())});
+  /** Provides scheduled behavior. */
   const scheduled = await readyRaceRunForUser(PLAYER, {runId: prepared.run.runId, requestId: "backfill-readiness"},
     {db, nowMs: NOW + 1000});
   expect(scheduled.run.status).toBe("scheduled");
@@ -472,18 +481,24 @@ it("allows equivalent legacy backfill and presentation changes, then resumes ind
 });
 
 it.each(["acceptance", "readiness"])("rejects legacy source content drift at %s with an unchanged catalog token", async phase => {
+  /** Provides ref behavior. */
   const ref = db.doc("raceChallenges/legacy-drift");
   await ref.set(challenge(ref.id));
+  /** Provides source behavior. */
   const source = db.doc("raceRuns/recording");
+  /** Provides input behavior. */
   const input = {locale: "en" as const, challengeId: ref.id, requestId: "legacy-drift-prepare", prepare: true};
   if (phase === "readiness") {
+    /** Provides prepared behavior. */
     const prepared = await startRaceRunForUser(PLAYER, input, {db, nowMs: NOW});
     await source.update({riddles: RIDDLES.map(riddle => ({...riddle, answer: "changed"}))});
     await expect(readyRaceRunForUser(PLAYER, {runId: prepared.run.runId, requestId: "legacy-drift-ready"},
       {db, nowMs: NOW + 1000})).rejects.toMatchObject({code: "failed-precondition"});
     expect((await db.doc(`raceRuns/${prepared.run.runId}`).get()).data()).toMatchObject({status: "prepared", startedAtMs: 0});
   } else {
+    /** Provides original behavior. */
     const original = db.runTransaction.bind(db);
+    /** Provides interleave behavior. */
     const interleave = jest.spyOn(db, "runTransaction").mockImplementation(async (operation, options) => {
       await source.update({riddles: RIDDLES.map(riddle => ({...riddle, answer: "changed"}))});
       return original(operation, options);
@@ -491,5 +506,42 @@ it.each(["acceptance", "readiness"])("rejects legacy source content drift at %s 
     try {await expect(startRaceRunForUser(PLAYER, input, {db, nowMs: NOW})).rejects.toMatchObject({code: "failed-precondition"});}
     finally {interleave.mockRestore();}
     expect((await db.collection("raceAttempts").get()).empty).toBe(true);
+  }
+});
+
+it.each(["acceptance", "readiness"])("leaves offer conversion clocks unchanged after recording drift at %s", async phase => {
+  /** Provides ref behavior. */
+  const ref = db.doc("raceChallenges/offered-drift");
+  await ref.set({...challenge(ref.id), riddles: RIDDLES, snapshotVersion: 1, contentVersion: raceDeckContentVersion(RIDDLES)});
+  await migrateRaceArchitecturePage(db, {collection: "challenges", dryRun: false}, NOW);
+  /** Provides offer behavior. */
+  const offer = await findRecordedRaceMatch(PLAYER, {locale: "en", requestId: "offered-drift-search"}, {db, nowMs: NOW});
+  if (offer.status !== "matched" || !offer.offerId) throw new Error("expected-recorded-offer");
+  /** Provides offer ref behavior. */
+  const offerRef = db.doc(`raceMatchOffers/${offer.offerId}`);
+  /** Provides input behavior. */
+  const input = {locale: "en" as const, challengeId: ref.id, offerId: offer.offerId, requestId: "offered-drift-prepare", prepare: true};
+  if (phase === "readiness") {
+    /** Provides prepared behavior. */
+    const prepared = await startRaceRunForUser(PLAYER, input, {db, nowMs: NOW});
+    /** Provides before behavior. */
+    const before = (await offerRef.get()).data();
+    await ref.update({creatorWallFinishMs: 21000, creatorAdjustedFinishMs: 21000});
+    await expect(readyRaceRunForUser(PLAYER, {runId: prepared.run.runId, requestId: "offered-drift-ready"},
+      {db, nowMs: NOW + 1000})).rejects.toMatchObject({code: "failed-precondition"});
+    expect((await offerRef.get()).data()).toEqual(before);
+  } else {
+    /** Provides before behavior. */
+    const before = (await offerRef.get()).data();
+    /** Provides original behavior. */
+    const original = db.runTransaction.bind(db);
+    /** Provides interleave behavior. */
+    const interleave = jest.spyOn(db, "runTransaction").mockImplementation(async (operation, options) => {
+      await ref.update({creatorWallFinishMs: 21000, creatorAdjustedFinishMs: 21000});
+      return original(operation, options);
+    });
+    try {await expect(startRaceRunForUser(PLAYER, input, {db, nowMs: NOW})).rejects.toMatchObject({code: "failed-precondition"});}
+    finally {interleave.mockRestore();}
+    expect((await offerRef.get()).data()).toEqual(before);
   }
 });

@@ -6,29 +6,29 @@ It is generated from the locked @qwordly/portal production dependency graph.
 
 Dependency inventory
 --------------------
-- @firebase/ai@2.15.0 | Apache-2.0 | https://github.com/firebase/firebase-js-sdk#readme
-- @firebase/analytics-compat@0.2.30 | Apache-2.0 | https://github.com/firebase/firebase-js-sdk#readme
+- @firebase/ai@2.16.0 | Apache-2.0 | https://github.com/firebase/firebase-js-sdk#readme
+- @firebase/analytics-compat@0.2.31 | Apache-2.0 | https://github.com/firebase/firebase-js-sdk#readme
 - @firebase/analytics-types@0.8.5 | Apache-2.0 | https://github.com/firebase/firebase-js-sdk#readme
-- @firebase/analytics@0.10.24 | Apache-2.0 | https://github.com/firebase/firebase-js-sdk#readme
+- @firebase/analytics@0.10.25 | Apache-2.0 | https://github.com/firebase/firebase-js-sdk#readme
 - @firebase/app-check-compat@0.4.7 | Apache-2.0 | https://github.com/firebase/firebase-js-sdk#readme
 - @firebase/app-check-interop-types@0.3.5 | Apache-2.0 | https://github.com/firebase/firebase-js-sdk#readme
 - @firebase/app-check-types@0.5.5 | Apache-2.0 | https://github.com/firebase/firebase-js-sdk#readme
 - @firebase/app-check@0.13.1 | Apache-2.0 | https://github.com/firebase/firebase-js-sdk#readme
-- @firebase/app-compat@0.5.17 | Apache-2.0 | https://github.com/firebase/firebase-js-sdk#readme
+- @firebase/app-compat@0.5.18 | Apache-2.0 | https://github.com/firebase/firebase-js-sdk#readme
 - @firebase/app-types@0.9.6 | Apache-2.0 | https://github.com/firebase/firebase-js-sdk#readme
-- @firebase/app@0.16.1 | Apache-2.0 | https://github.com/firebase/firebase-js-sdk#readme
-- @firebase/auth-compat@0.6.10 | Apache-2.0 | https://github.com/firebase/firebase-js-sdk#readme
+- @firebase/app@0.16.2 | Apache-2.0 | https://github.com/firebase/firebase-js-sdk#readme
+- @firebase/auth-compat@0.6.11 | Apache-2.0 | https://github.com/firebase/firebase-js-sdk#readme
 - @firebase/auth-interop-types@0.2.6 | Apache-2.0 | https://github.com/firebase/firebase-js-sdk#readme
 - @firebase/auth-types@0.13.2 | Apache-2.0 | https://github.com/firebase/firebase-js-sdk#readme
-- @firebase/auth@1.13.5 | Apache-2.0 | https://github.com/firebase/firebase-js-sdk#readme
+- @firebase/auth@1.13.6 | Apache-2.0 | https://github.com/firebase/firebase-js-sdk#readme
 - @firebase/component@0.7.5 | Apache-2.0 | https://github.com/firebase/firebase-js-sdk#readme
 - @firebase/data-connect@0.7.4 | Apache-2.0 | https://github.com/firebase/firebase-js-sdk#readme
 - @firebase/database-compat@2.1.7 | Apache-2.0 | https://github.com/firebase/firebase-js-sdk#readme
 - @firebase/database-types@1.0.22 | Apache-2.0 | https://github.com/firebase/firebase-js-sdk#readme
 - @firebase/database@1.1.5 | Apache-2.0 | https://github.com/firebase/firebase-js-sdk#readme
-- @firebase/firestore-compat@0.4.13 | Apache-2.0 | https://github.com/firebase/firebase-js-sdk#readme
+- @firebase/firestore-compat@0.4.14 | Apache-2.0 | https://github.com/firebase/firebase-js-sdk#readme
 - @firebase/firestore-types@3.0.5 | Apache-2.0 | https://github.com/firebase/firebase-js-sdk#readme
-- @firebase/firestore@4.17.1 | Apache-2.0 | https://github.com/firebase/firebase-js-sdk#readme
+- @firebase/firestore@4.17.2 | Apache-2.0 | https://github.com/firebase/firebase-js-sdk#readme
 - @firebase/functions-compat@0.5.0 | Apache-2.0 | https://github.com/firebase/firebase-js-sdk#readme
 - @firebase/functions-types@0.6.5 | Apache-2.0 | https://github.com/firebase/firebase-js-sdk#readme
 - @firebase/functions@0.14.0 | Apache-2.0 | https://github.com/firebase/firebase-js-sdk#readme
@@ -36,9 +36,9 @@ Dependency inventory
 - @firebase/installations-types@0.5.5 | Apache-2.0 | https://github.com/firebase/firebase-js-sdk#readme
 - @firebase/installations@0.6.24 | Apache-2.0 | https://github.com/firebase/firebase-js-sdk#readme
 - @firebase/logger@0.5.2 | Apache-2.0 | https://github.com/firebase/firebase-js-sdk#readme
-- @firebase/messaging-compat@0.2.29 | Apache-2.0 | https://github.com/firebase/firebase-js-sdk#readme
+- @firebase/messaging-compat@0.2.30 | Apache-2.0 | https://github.com/firebase/firebase-js-sdk#readme
 - @firebase/messaging-interop-types@0.2.6 | Apache-2.0 | https://github.com/firebase/firebase-js-sdk#readme
-- @firebase/messaging@0.13.2 | Apache-2.0 | https://github.com/firebase/firebase-js-sdk#readme
+- @firebase/messaging@0.13.3 | Apache-2.0 | https://github.com/firebase/firebase-js-sdk#readme
 - @firebase/performance-compat@0.2.27 | Apache-2.0 | https://github.com/firebase/firebase-js-sdk#readme
 - @firebase/performance-types@0.2.5 | Apache-2.0 | https://github.com/firebase/firebase-js-sdk#readme
 - @firebase/performance@0.7.14 | Apache-2.0 | https://github.com/firebase/firebase-js-sdk#readme
@@ -61,15 +61,14 @@ Dependency inventory
 - @protobufjs/path@1.1.2 | BSD-3-Clause | https://github.com/dcodeIO/protobuf.js#readme
 - @protobufjs/pool@1.1.0 | BSD-3-Clause | https://github.com/dcodeIO/protobuf.js#readme
 - @protobufjs/utf8@1.1.2 | BSD-3-Clause | https://github.com/protobufjs/protobuf.js#readme
-- @sentry/browser-utils@10.70.0 | MIT | https://github.com/getsentry/sentry-javascript/tree/master/packages/browser-utils
-- @sentry/browser@10.70.0 | MIT | https://github.com/getsentry/sentry-javascript/tree/master/packages/browser
-- @sentry/conventions@0.16.0 | MIT | https://github.com/getsentry/sentry-conventions#readme
-- @sentry/core@10.70.0 | MIT | https://github.com/getsentry/sentry-javascript/tree/master/packages/core
-- @sentry/feedback@10.70.0 | MIT | https://github.com/getsentry/sentry-javascript/tree/master/packages/feedback
-- @sentry/replay-canvas@10.70.0 | MIT | https://docs.sentry.io/platforms/javascript/session-replay/
-- @sentry/replay@10.70.0 | MIT | https://docs.sentry.io/platforms/javascript/session-replay/
-- @types/node@22.20.1 | MIT | https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/node
-- @types/node@24.13.3 | MIT | https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/node
+- @sentry/browser-utils@11.1.0 | MIT | https://github.com/getsentry/sentry-javascript/tree/master/packages/browser-utils
+- @sentry/browser@11.1.0 | MIT | https://github.com/getsentry/sentry-javascript/tree/master/packages/browser
+- @sentry/conventions@0.24.0 | MIT | https://github.com/getsentry/sentry-conventions#readme
+- @sentry/core@11.1.0 | MIT | https://github.com/getsentry/sentry-javascript/tree/master/packages/core
+- @sentry/feedback@11.1.0 | MIT | https://github.com/getsentry/sentry-javascript/tree/master/packages/feedback
+- @sentry/replay-canvas@11.1.0 | MIT | https://docs.sentry.io/platforms/javascript/session-replay/
+- @sentry/replay@11.1.0 | MIT | https://docs.sentry.io/platforms/javascript/session-replay/
+- @types/node@26.6.3 | MIT | https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/node
 - ansi-regex@5.0.1 | MIT | https://github.com/chalk/ansi-regex#readme
 - ansi-styles@4.3.0 | MIT | https://github.com/chalk/ansi-styles#readme
 - cliui@8.0.1 | ISC | https://github.com/yargs/cliui#readme
@@ -78,7 +77,7 @@ Dependency inventory
 - emoji-regex@8.0.0 | MIT | https://mths.be/emoji-regex
 - escalade@3.2.0 | MIT | https://github.com/lukeed/escalade#readme
 - faye-websocket@0.11.4 | Apache-2.0 | https://github.com/faye/faye-websocket-node
-- firebase@12.18.0 | Apache-2.0 | https://firebase.google.com/
+- firebase@12.19.0 | Apache-2.0 | https://firebase.google.com/
 - get-caller-file@2.0.5 | ISC | https://github.com/stefanpenner/get-caller-file#readme
 - http-parser-js@0.5.10 | MIT | https://github.com/creationix/http-parser-js#readme
 - idb@7.1.1 | ISC | https://github.com/jakearchibald/idb#readme
@@ -87,18 +86,18 @@ Dependency inventory
 - long@5.3.2 | Apache-2.0 | https://github.com/dcodeIO/long.js#readme
 - protobufjs@7.6.5 | BSD-3-Clause | https://protobufjs.github.io/protobuf.js/
 - re2js@2.8.6 | MIT | https://github.com/le0pard/re2js#readme
-- react-dom@19.2.8 | MIT | https://react.dev/
-- react@19.2.8 | MIT | https://react.dev/
+- react-dom@19.3.0 | MIT | https://react.dev/
+- react@19.3.0 | MIT | https://react.dev/
 - require-directory@2.1.1 | MIT | https://github.com/troygoode/node-require-directory/
 - safe-buffer@5.2.1 | MIT | https://github.com/feross/safe-buffer
-- scheduler@0.27.0 | MIT | https://react.dev/
+- scheduler@0.28.0 | MIT | https://react.dev/
 - string-width@4.2.3 | MIT | https://github.com/sindresorhus/string-width#readme
 - strip-ansi@6.0.1 | MIT | https://github.com/chalk/strip-ansi#readme
-- three@0.185.1 | MIT | https://threejs.org/
+- three@0.186.1 | MIT | https://threejs.org/
 - tslib@2.8.1 | 0BSD | https://www.typescriptlang.org/
-- undici-types@6.21.0 | MIT | https://undici.nodejs.org
-- undici-types@7.18.2 | MIT | https://undici.nodejs.org
+- undici-types@8.9.0 | MIT | https://undici.nodejs.org
 - web-vitals@4.2.4 | Apache-2.0 | https://github.com/GoogleChrome/web-vitals#readme
+- web-vitals@6.2.2 | Apache-2.0 | https://github.com/GoogleChrome/web-vitals#readme
 - websocket-driver@0.7.5 | Apache-2.0 | https://github.com/faye/websocket-driver-node
 - websocket-extensions@0.1.4 | Apache-2.0 | http://github.com/faye/websocket-extensions-node
 - wrap-ansi@7.0.0 | MIT | https://github.com/chalk/wrap-ansi#readme
@@ -110,7 +109,7 @@ License and notice texts
 ------------------------
 
 ===============================================================================
-Packages: @firebase/ai@2.15.0, @firebase/analytics-compat@0.2.30, @firebase/analytics-types@0.8.5, @firebase/analytics@0.10.24, @firebase/app-check-compat@0.4.7, @firebase/app-check-interop-types@0.3.5, @firebase/app-check-types@0.5.5, @firebase/app-check@0.13.1, @firebase/app-compat@0.5.17, @firebase/app-types@0.9.6, @firebase/app@0.16.1, @firebase/auth-compat@0.6.10, @firebase/auth-interop-types@0.2.6, @firebase/auth-types@0.13.2, @firebase/auth@1.13.5, @firebase/component@0.7.5, @firebase/data-connect@0.7.4, @firebase/database-compat@2.1.7, @firebase/database-types@1.0.22, @firebase/database@1.1.5, @firebase/firestore-compat@0.4.13, @firebase/firestore-types@3.0.5, @firebase/firestore@4.17.1, @firebase/functions-compat@0.5.0, @firebase/functions-types@0.6.5, @firebase/functions@0.14.0, @firebase/installations-compat@0.2.24, @firebase/installations-types@0.5.5, @firebase/installations@0.6.24, @firebase/logger@0.5.2, @firebase/messaging-compat@0.2.29, @firebase/messaging-interop-types@0.2.6, @firebase/messaging@0.13.2, @firebase/performance-compat@0.2.27, @firebase/performance-types@0.2.5, @firebase/performance@0.7.14, @firebase/remote-config-compat@0.2.29, @firebase/remote-config-types@0.5.2, @firebase/remote-config@0.9.2, @firebase/storage-compat@0.4.5, @firebase/storage-types@0.8.5, @firebase/storage@0.14.5, @firebase/util@1.15.3, @firebase/webchannel-wrapper@1.0.7, firebase@12.18.0
+Packages: @firebase/ai@2.16.0, @firebase/analytics-compat@0.2.31, @firebase/analytics-types@0.8.5, @firebase/analytics@0.10.25, @firebase/app-check-compat@0.4.7, @firebase/app-check-interop-types@0.3.5, @firebase/app-check-types@0.5.5, @firebase/app-check@0.13.1, @firebase/app-compat@0.5.18, @firebase/app-types@0.9.6, @firebase/app@0.16.2, @firebase/auth-compat@0.6.11, @firebase/auth-interop-types@0.2.6, @firebase/auth-types@0.13.2, @firebase/auth@1.13.6, @firebase/component@0.7.5, @firebase/data-connect@0.7.4, @firebase/database-compat@2.1.7, @firebase/database-types@1.0.22, @firebase/database@1.1.5, @firebase/firestore-compat@0.4.14, @firebase/firestore-types@3.0.5, @firebase/firestore@4.17.2, @firebase/functions-compat@0.5.0, @firebase/functions-types@0.6.5, @firebase/functions@0.14.0, @firebase/installations-compat@0.2.24, @firebase/installations-types@0.5.5, @firebase/installations@0.6.24, @firebase/logger@0.5.2, @firebase/messaging-compat@0.2.30, @firebase/messaging-interop-types@0.2.6, @firebase/messaging@0.13.3, @firebase/performance-compat@0.2.27, @firebase/performance-types@0.2.5, @firebase/performance@0.7.14, @firebase/remote-config-compat@0.2.29, @firebase/remote-config-types@0.5.2, @firebase/remote-config@0.9.2, @firebase/storage-compat@0.4.5, @firebase/storage-types@0.8.5, @firebase/storage@0.14.5, @firebase/util@1.15.3, @firebase/webchannel-wrapper@1.0.7, firebase@12.19.0
 Declared license: Apache-2.0
 ===============================================================================
 --- firebase-js-sdk.LICENSE ---
@@ -612,7 +611,7 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ===============================================================================
-Packages: @sentry/browser-utils@10.70.0
+Packages: @sentry/browser-utils@11.1.0
 Declared license: MIT
 ===============================================================================
 --- LICENSE ---
@@ -639,7 +638,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ===============================================================================
-Packages: @sentry/browser@10.70.0, @sentry/core@10.70.0
+Packages: @sentry/browser@11.1.0, @sentry/core@11.1.0
 Declared license: MIT
 ===============================================================================
 --- LICENSE ---
@@ -666,7 +665,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ===============================================================================
-Packages: @sentry/conventions@0.16.0
+Packages: @sentry/conventions@0.24.0
 Declared license: MIT
 ===============================================================================
 --- LICENSE ---
@@ -693,7 +692,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ===============================================================================
-Packages: @sentry/feedback@10.70.0
+Packages: @sentry/feedback@11.1.0
 Declared license: MIT
 ===============================================================================
 --- LICENSE ---
@@ -720,7 +719,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ===============================================================================
-Packages: @sentry/replay-canvas@10.70.0
+Packages: @sentry/replay-canvas@11.1.0
 Declared license: MIT
 ===============================================================================
 --- LICENSE ---
@@ -747,7 +746,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ===============================================================================
-Packages: @sentry/replay@10.70.0
+Packages: @sentry/replay@11.1.0
 Declared license: MIT
 ===============================================================================
 --- LICENSE ---
@@ -774,7 +773,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ===============================================================================
-Packages: @types/node@22.20.1, @types/node@24.13.3
+Packages: @types/node@26.6.3
 Declared license: MIT
 ===============================================================================
 --- LICENSE ---
@@ -1406,7 +1405,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ===============================================================================
-Packages: react-dom@19.2.8, react@19.2.8, scheduler@0.27.0
+Packages: react-dom@19.3.0, react@19.3.0, scheduler@0.28.0
 Declared license: MIT
 ===============================================================================
 --- LICENSE ---
@@ -1488,7 +1487,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 ===============================================================================
-Packages: three@0.185.1
+Packages: three@0.186.1
 Declared license: MIT
 ===============================================================================
 --- LICENSE ---
@@ -1533,7 +1532,7 @@ OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
 
 ===============================================================================
-Packages: undici-types@6.21.0, undici-types@7.18.2
+Packages: undici-types@8.9.0
 Declared license: MIT
 ===============================================================================
 --- LICENSE ---
@@ -1560,7 +1559,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ===============================================================================
-Packages: web-vitals@4.2.4
+Packages: web-vitals@4.2.4, web-vitals@6.2.2
 Declared license: Apache-2.0
 ===============================================================================
 --- LICENSE ---

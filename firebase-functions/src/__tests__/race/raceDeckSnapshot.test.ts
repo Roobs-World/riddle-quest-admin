@@ -59,7 +59,9 @@ const sourceRecording = () => parseChallengeRecord({challengeId: "challenge", cr
   status: "active", createdAtMs: 21000, expiresAtMs: 100000});
 
 it("checks legacy prepared snapshots even without a provenance digest", () => {
+  /** Provides challenge behavior. */
   const challenge = sourceRecording();
+  /** Provides prepared behavior. */
   const prepared: RaceRunRecord = {...run(), challengeId: challenge.challengeId, role: "challenger", status: "prepared",
     startedAtMs: 0, opponent: {displayName: "Creator", subjectUserId: "creator", adjustedFinishMs: 20000, events: []}};
   expect(() => assertRacePreparedRecording(prepared, challenge, challenge.riddles!)).not.toThrow();
@@ -70,7 +72,9 @@ it("checks legacy prepared snapshots even without a provenance digest", () => {
 });
 
 it("never trusts the source digest in place of the run's own prepared scoring snapshot", () => {
+  /** Provides challenge behavior. */
   const challenge = sourceRecording();
+  /** Provides prepared behavior. */
   const prepared: RaceRunRecord = {...run(), challengeId: challenge.challengeId, role: "challenger", status: "prepared",
     startedAtMs: 0, recordingFingerprint: raceRecordingFingerprint(challenge, challenge.riddles!),
     opponent: {displayName: "Creator", subjectUserId: "creator", adjustedFinishMs: 20000, events: []}};

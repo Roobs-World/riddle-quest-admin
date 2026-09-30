@@ -407,11 +407,9 @@ it("retrieves a comparable recording beyond 200 earlier-expiring mismatched perf
   for (let index = 0; index < 220; index++) {
     /** Provides id behavior. */
     const id = `far-${index}`;
-    batch.set(db.doc(`raceChallenges/${id}`), {...challenge(id, uid("b"), "en"), creatorAdjustedFinishMs: 260000, creatorWallFinishMs: 260000,
-      creatorWallFinishMs: 260000, expiresAtMs: NOW + 30000});
+    batch.set(db.doc(`raceChallenges/${id}`), {...challenge(id, uid("b"), "en"), creatorAdjustedFinishMs: 260000, creatorWallFinishMs: 260000, expiresAtMs: NOW + 30000});
   }
-  batch.set(db.doc("raceChallenges/comparable"), {...challenge("comparable", uid("c"), "en"), creatorAdjustedFinishMs: 120000, creatorWallFinishMs: 120000,
-    creatorWallFinishMs: 120000});
+  batch.set(db.doc("raceChallenges/comparable"), {...challenge("comparable", uid("c"), "en"), creatorAdjustedFinishMs: 120000, creatorWallFinishMs: 120000});
   await batch.commit();
   await projectCandidates();
   /** Provides result behavior. */
@@ -420,7 +418,8 @@ it("retrieves a comparable recording beyond 200 earlier-expiring mismatched perf
   if (result.status !== "matched" || !result.offerId) throw new Error("expected-issued-offer");
   /** Provides receipt behavior. */
   const receipt = (await db.doc(`raceMatchOffers/${result.offerId}`).get()).data()!;
-  expect(receipt.lookupCandidateDocumentsRead).toBe(1);
+  // Count the availability probe and the one comparable bucket document.
+  expect(receipt.lookupCandidateDocumentsRead).toBe(2);
   expect(receipt.lookupCandidateQueries).toBeLessThanOrEqual(6);
   expect(receipt.lookupDocumentReadAttempts).toBeGreaterThanOrEqual(17);
   expect(receipt.lookupTransactionAttempts).toBeGreaterThanOrEqual(2);

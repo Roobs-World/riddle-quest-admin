@@ -23,7 +23,8 @@ it.each([
   {categoryId: "unknown"}, {locale: "unknown"}, {status: "unknown"}, {startedAtMs: NaN}, {hintPenaltyMs: -1},
   {skipPenaltyMs: Infinity}, {correctCount: 11}, {currentPosition: -1}, {guessesUsed: 6}, {recordVersion: 2},
   {userId: "other/account"}, {revealedLetters: [{index: -1, letter: "a"}]},
-  {opponent: {displayName: "Rival", adjustedFinishMs: -1, events: []}}, {evaluationPolicy: "client-selected"},
+  {opponent: {displayName: "Rival", adjustedFinishMs: -1, events: []}}, {evaluationPolicy: "client-selected"}, {recordingFingerprint: "not-a-digest"},
+  {recordingFingerprint: "a".repeat(64)}, {recordingFingerprint: "a".repeat(64), role: "creator", challengeId: "challenge"},
 ])("rejects malformed run scoring/identity data %j", invalid => {
   expect(() => parseRunRecord({...run, ...invalid})).toThrow("Stored Race to 10 run is invalid");
 });

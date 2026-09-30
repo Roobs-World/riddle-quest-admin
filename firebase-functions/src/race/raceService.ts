@@ -279,6 +279,7 @@ async function prepareRaceRunForUser(
         transaction.create(startRequestRef, {runId: committedOffer.acceptedRunId, userId, fallbackOfferId: input.fallbackOfferId, createdAtMs: nowMs, expiresAt});
         return;
       }
+      /** Provides acceptance now behavior. */
       const acceptanceNow = options.nowMs ?? Date.now();
       if (committedOffer.createdAtMs > acceptanceNow || committedOffer.expiresAtMs <= acceptanceNow)
         throw new HttpsError("failed-precondition", "Opponent offer expired.");
